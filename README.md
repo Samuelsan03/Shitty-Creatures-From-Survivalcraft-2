@@ -8,3 +8,6 @@ Beyond that, the mod is experimental. It doesn’t rely on external assets yet, 
 ![1000158976](https://github.com/user-attachments/assets/22fb8115-b05f-4d05-99b2-93e62f721b86)
 
 <img width="761" height="445" alt="1000159014" src="https://github.com/user-attachments/assets/d5125893-dba1-4b85-9eea-1eb77277a85a" />
+![1000159012](https://github.com/user-attachments/assets/c96c01f2-d9ed-4c56-b118-2ac65ac55e99)
+![1000159011](https://github.com/user-attachments/assets/05aea66a-4241-45d9-99c8-4ba30555fc48)
+![1000159010](https://github.com/user-attachments/assets/6fb25fd2-668a-405b-82cc-29e60d10862c)
