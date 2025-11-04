@@ -487,5 +487,170 @@
         <Parameter Name="EggTypeIndex" Guid="a9b0c1d2-e3f4-0890-5678-123456789abc" Value="206" Type="int" />
     </ParameterSet>
 </EntityTemplate>
+
+<EntityTemplate Name="FumadorQuimico" Guid="b3c4d5e6-f7a8-4789-9012-3456789abcde" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+    <!-- COMPORTAMIENTOS BÁSICOS -->
+    <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="c4d5e6f7-a8b9-4890-9123-456789abcdef" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
+        <Parameter Name="DayRange" Guid="d5e6f7a8-b9c0-4901-2345-6789abcdef01" Value="0" Type="float" />
+        <Parameter Name="NightRange" Guid="e6f7a8b9-c0d1-5012-3456-789abcdef012" Value="0" Type="float" />
+    </MemberComponentTemplate>
+    
+    <MemberComponentTemplate Name="EatPickableBehavior" Guid="f7a8b9c0-d1e2-5123-4567-89abcdef0123">
+        <ParameterSet Name="FoodFactors" Guid="a8b9c0d1-e2f3-5234-5678-9abcdef01234">
+            <Parameter Name="Fruit" Guid="b9c0d1e2-f3a4-5345-6789-abcdef012345" Value="1" Type="float" />
+        </ParameterSet>
+    </MemberComponentTemplate>
+
+    <!-- SONIDOS -->
+    <MemberComponentTemplate Name="CreatureSounds" Guid="d1e2f3a4-b5c6-4d7e-9f0a-1b2c3d4e5f6a">
+        <Parameter Name="PainSound" Guid="e2f3a4b5-c6d7-4e8f-9a0b-2c3d4e5f6a7b" Value="Audio/Creatures/FumadorQuimico/Pain" Type="string" />
+        <Parameter Name="IdleSound" Guid="f3a4b5c6-d7e8-4f9a-8b0c-3d4e5f6a7b8c" Value="Audio/Creatures/FumadorQuimico/Idle" Type="string" />
+        <Parameter Name="AttackSound" Guid="a4b5c6d7-e8f9-4a0b-9c1d-4e5f6a7b8c9d" Value="Audio/Creatures/FumadorQuimico/Attack" Type="string" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="AvoidFireBehavior" Guid="b9c0d1e2-f3a4-5567-89ab-cdef01234567" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c" />
+    <MemberComponentTemplate Name="Locomotion" Guid="c0d1e2f3-a4b5-5678-9abc-def012345678">
+        <Parameter Name="AccelerationFactor" Guid="d1e2f3a4-b5c6-5789-abcd-ef0123456789" Value="1.1" Type="float" />
+        <Parameter Name="FlySpeed" Guid="e2f3a4b5-c6d7-5890-bcde-f0123456789a" Value="0" Type="float" />
+        <Parameter Name="TurnSpeed" Guid="f3a4b5c6-d7e8-5901-cdef-0123456789ab" Value="6" Type="float" />
+        <Parameter Name="WalkSpeed" Guid="a4b5c6d7-e8f9-6012-def0-123456789abc" Value="3.5" Type="float" />
+        <Parameter Name="LadderSpeed" Guid="b5c6d7e8-f9a0-6123-ef01-23456789abcd" Value="0" Type="float" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Loot" Guid="d7e8f9a0-b1c2-6234-f012-3456789abcde">
+        <ParameterSet Name="Loot" Guid="e8f9a0b1-c2d3-6345-0123-456789abcdef">
+            <Parameter Name="1" Guid="f9a0b1c2-d3e4-6456-1234-56789abcdef0" Value="GunpowderBlock;15;25" Type="string" />
+            <Parameter Name="2" Guid="a0b1c2d3-e4f5-6567-2345-6789abcdef01" Value="CoalChunkBlock;10;20" Type="string" />
+        </ParameterSet>
+        <ParameterSet Name="LootOnFire" Guid="b1c2d3e4-f5a6-6678-3456-789abcdef012" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Body" Guid="e9f0a1b2-c3d4-6789-4567-89abcdef0123">
+        <Parameter Name="Mass" Guid="f0a1b2c3-d4e5-6890-5678-9abcdef01234" Value="58" Type="float" />
+        <Parameter Name="BoxSize" Guid="a1b2c3d4-e5f6-6901-6789-abcdef012345" Value="0.85,0.92,0.85" Type="Vector3" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Creature" Guid="c3d4e5f6-a7b8-7012-789a-bcdef0123456">
+        <Parameter Name="DisplayName" Guid="d4e5f6a7-b8c9-7123-89ab-cdef01234567" Value="Fumador Químico" Type="string" />
+        <Parameter Name="Category" Guid="e5f6a7b8-c9d0-7234-9abc-def012345678" Value="LandOther" Type="Game.CreatureCategory" />
+        <Parameter Name="Description" Guid="f6a7b8c9-d0e1-7345-abcd-ef0123456789" Value="Her outfit suggests she has experience in chemical and toxic environments. Although she looks threatening, she is part of the Alianza group meaning she supports her team when attacked or harmed by enemies. She possesses a mysterious hidden power: during a full moon or new moon, she transforms into a giant muscular mutant (similar to a Tank), gaining enhanced strength, greater resistance, and other abilities." Type="string" />
+        <Parameter Name="KillVerbs" Guid="a7b8c9d0-e1f2-7456-bcde-f0123456789a" Value="Chemically intoxicated" Type="string" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="FindPlayerBehavior" Guid="b8c9d0e1-f2a3-7567-cdef-0123456789ab" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031" />
+    <MemberComponentTemplate Name="Miner" Guid="c9d0e1f2-a3b4-7678-def0-123456789abc" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
+        <Parameter Name="AttackPower" Guid="d0e1f2a3-b4c5-7789-ef01-23456789abcd" Value="4.25" Type="float" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="HumanModel" Guid="e1f2a3b4-c5d6-7890-f012-3456789abcde" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
+        <Parameter Name="WalkLegsAngle" Guid="f2a3b4c5-d6e7-7901-0123-456789abcdef" Value="0.25" Type="float" />
+        <Parameter Name="ModelName" Guid="a3b4c5d6-e7f8-8012-1234-56789abcdef0" Value="Models/HumanMale" Type="string" />
+        <Parameter Name="TextureOverride" Guid="b4c5d6e7-f8a9-8123-2345-6789abcdef01" Value="Textures/FumadorQuimico" Type="string" />
+        <Parameter Name="WalkAnimationSpeed" Guid="c5d6e7f8-a9b0-8234-3456-789abcdef012" Value="0.55" Type="float" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Health" Guid="d6e7f8a9-b0c1-8345-4567-89abcdef0123">
+        <Parameter Name="Health" Guid="e7f8a9b0-c1d2-8456-5678-9abcdef01234" Value="14" Type="float" />
+        <Parameter Name="FireResilience" Guid="f8a9b0c1-d2e3-8567-6789-abcdef012345" Value="10" Type="float" />
+        <Parameter Name="AttackResilience" Guid="a9b0c1d2-e3f4-8678-789a-bcdef0123456" Value="10" Type="float" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="OnFire" Guid="b0c1d2e3-f4a5-8789-89ab-cdef01234567" />
+    <MemberComponentTemplate Name="WalkAroundBehavior" Guid="c1d2e3f4-a5b6-8890-9abc-def012345678" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71" />
+    <MemberComponentTemplate Name="HerdBehavior" Guid="d2e3f4a5-b6c7-8901-abcd-ef0123456789" InheritanceParent="dfe7218e-ce14-4bde-8dac-f919c38e9efe">
+        <Parameter Name="HerdName" Guid="e3f4a5b6-c7d8-9012-bcde-f0123456789a" Value="Alianza" Type="string" />
+        <Parameter Name="AutoNearbyCreaturesHelp" Guid="f4a5b6c7-d8e9-9123-cdef-0123456789ab" Value="True" Type="bool" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="FeedBehavior" Guid="e5f6a7b8-c9d0-9234-def0-123456789abc" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
+        <Parameter Name="AutoFeed" Guid="f6a7b8c9-d0e1-9345-ef01-23456789abcd" Value="False" Type="bool" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="ChaseBehavior" Guid="a7b8c9d0-e1f2-9456-f012-3456789abcde" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
+        <Parameter Name="AutoChaseMask" Guid="b8c9d0e1-f2a3-9567-0123-456789abcdef" Value="LandPredator, WaterPredator" Type="Game.CreatureCategory" />
+        <Parameter Name="DayChaseRange" Guid="c9d0e1f2-a3b4-9678-1234-56789abcdef0" Value="5" Type="float" />
+        <Parameter Name="NightChaseRange" Guid="d0e1f2a3-b4c5-9789-2345-6789abcdef01" Value="7" Type="float" />
+        <Parameter Name="ChaseNonPlayerProbability" Guid="e1f2a3b4-c5d6-9890-3456-789abcdef012" Value="0.015" Type="float" />
+        <Parameter Name="NightChaseTime" Guid="f2a3b4c5-d6e7-9901-4567-89abcdef0123" Value="10" Type="float" />
+    </MemberComponentTemplate>
+    <ParameterSet Name="CreatureEggData" Guid="c9d0e1f2-a3b4-0012-5678-9abcdef01234">
+        <Parameter Name="Color" Guid="d0e1f2a3-b4c5-0123-6789-abcdef012345" Value="64,224,208" Type="Color" />
+        <Parameter Name="TextureSlot" Guid="e1f2a3b4-c5d6-0234-789a-bcdef0123456" Value="167" Type="int" />
+        <Parameter Name="SwapUV" Guid="f2a3b4c5-d6e7-0345-89ab-cdef01234567" Value="False" Type="bool" />
+        <Parameter Name="DisplayName" Guid="a3b4c5d6-e7f8-0456-9abc-def012345678" Value="Fumador Químico Egg" Type="string" />
+        <Parameter Name="EggTypeIndex" Guid="b4c5d6e7-f8a9-0567-abcd-ef0123456789" Value="207" Type="int" />
+    </ParameterSet>
+</EntityTemplate>
+
+<EntityTemplate Name="FumadorQuimicoBrawny" Guid="a1b2c3d4-e5f6-4789-9012-3456789abcff" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+    <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="b2c3d4e5-f6a7-4890-9123-456789abcdf0" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
+        <Parameter Name="DayRange" Guid="c3d4e5f6-a7b8-4901-2345-6789abcdf001" Value="0" Type="float" />
+        <Parameter Name="NightRange" Guid="d4e5f6a7-b8c9-5012-3456-789abcdf0123" Value="0" Type="float" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="EatPickableBehavior" Guid="e5f6a7b8-c9d0-5123-4567-89abcdf01234">
+        <ParameterSet Name="FoodFactors" Guid="f6a7b8c9-d0e1-5234-5678-9abcdf012345">
+            <Parameter Name="Meat" Guid="a7b8c9d0-e1f2-5345-6789-abcdf0123456" Value="1" Type="float" />
+            <Parameter Name="Fish" Guid="b8c9d0e1-f2a3-5456-789a-bcdf01234567" Value="1" Type="float" />
+        </ParameterSet>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="CreatureSounds" Guid="c9d0e1f2-a3b4-5567-89ab-cdf012345678">
+        <Parameter Name="PainSound" Guid="d0e1f2a3-b4c5-5678-9abc-df0123456789" Value="Audio/Creatures/FumadorQuimicoBrawny/Pain" Type="string" />
+        <Parameter Name="IdleSound" Guid="e1f2a3b4-c5d6-5789-abcd-f0123456789a" Value="Audio/Creatures/FumadorQuimicoBrawny/Idle" Type="string" />
+        <Parameter Name="AttackSound" Guid="f2a3b4c5-d6e7-5890-bcde-0123456789ab" Value="Audio/Creatures/FumadorQuimicoBrawny/Attack" Type="string" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="AvoidFireBehavior" Guid="a3b4c5d6-e7f8-5901-cdef-123456789abc" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c" />
+    <MemberComponentTemplate Name="Locomotion" Guid="b4c5d6e7-f8a9-6012-def0-23456789abcd">
+        <Parameter Name="AccelerationFactor" Guid="c5d6e7f8-a9b0-6123-ef01-3456789abcde" Value="0.9" Type="float" />
+        <Parameter Name="FlySpeed" Guid="d6e7f8a9-b0c1-6234-f012-456789abcdef" Value="0" Type="float" />
+        <Parameter Name="TurnSpeed" Guid="e7f8a9b0-c1d2-6345-0123-56789abcdef0" Value="5.5" Type="float" />
+        <Parameter Name="WalkSpeed" Guid="f8a9b0c1-d2e3-6456-1234-6789abcdef01" Value="3.8" Type="float" />
+        <Parameter Name="LadderSpeed" Guid="a9b0c1d2-e3f4-6567-2345-789abcdef012" Value="0" Type="float" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Loot" Guid="b0c1d2e3-f4a5-6678-3456-89abcdef0123">
+        <ParameterSet Name="Loot" Guid="c1d2e3f4-a5b6-6789-4567-9abcdef01234">
+            <Parameter Name="1" Guid="d2e3f4a5-b6c7-6890-5678-abcdef012345" Value="IronBlock;5;10" Type="string" />
+            <Parameter Name="2" Guid="e3f4a5b6-c7d8-6901-6789-bcdef0123456" Value="CoalChunkBlock;3;5" Type="string" />
+        </ParameterSet>
+        <ParameterSet Name="LootOnFire" Guid="f4a5b6c7-d8e9-7012-789a-cdef01234567" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Body" Guid="a5b6c7d8-e9f0-7123-89ab-def012345678">
+        <Parameter Name="Mass" Guid="b6c7d8e9-f0a1-7234-9abc-ef0123456789" Value="120" Type="float" />
+        <Parameter Name="BoxSize" Guid="c7d8e9f0-a1b2-7345-abcd-f0123456789a" Value="1.2,1.5,1.2" Type="Vector3" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Creature" Guid="d8e9f0a1-b2c3-7456-bcde-0123456789ab">
+        <Parameter Name="DisplayName" Guid="e9f0a1b2-c3d4-7567-cdef-123456789abc" Value="Fumador Químico Brawny" Type="string" />
+        <Parameter Name="Category" Guid="f0a1b2c3-d4e5-7678-def0-23456789abcd" Value="LandOther" Type="Game.CreatureCategory" />
+        <Parameter Name="Description" Guid="a1b2c3d4-e5f6-7789-ef01-3456789abcde" Value="More powerful, stronger than its original form, it will only be available on a full moon or new moon" Type="string" />
+        <Parameter Name="KillVerbs" Guid="b2c3d4e5-f6a7-7890-f012-456789abcdef" Value="Crushed" Type="string" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="FindPlayerBehavior" Guid="c3d4e5f6-a7b8-7901-0123-56789abcdef0" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031" />
+    <MemberComponentTemplate Name="Miner" Guid="d4e5f6a7-b8c9-8012-1234-6789abcdef01" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
+        <Parameter Name="AttackPower" Guid="e5f6a7b8-c9d0-8123-2345-789abcdef0123" Value="30" Type="float" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="HumanModel" Guid="f6a7b8c9-d0e1-8234-3456-89abcdef0123" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
+        <Parameter Name="WalkLegsAngle" Guid="a7b8c9d0-e1f2-8345-4567-9abcdef01234" Value="0.2" Type="float" />
+        <Parameter Name="ModelName" Guid="b8c9d0e1-f2a3-8456-5678-abcdef012345" Value="Models/Tank" Type="string" />
+        <Parameter Name="TextureOverride" Guid="c9d0e1f2-a3b4-8567-6789-bcdef0123456" Value="Textures/FumadorQuimico" Type="string" />
+        <Parameter Name="WalkAnimationSpeed" Guid="d0e1f2a3-b4c5-8678-789a-cdef01234567" Value="0.4" Type="float" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Health" Guid="e1f2a3b4-c5d6-8789-89ab-def012345678">
+        <Parameter Name="Health" Guid="f2a3b4c5-d6e7-8890-9abc-ef0123456789" Value="50" Type="float" />
+        <Parameter Name="FireResilience" Guid="a3b4c5d6-e7f8-8901-abcd-f0123456789a" Value="25" Type="float" />
+        <Parameter Name="AttackResilience" Guid="b4c5d6e7-f8a9-9012-bcde-0123456789ab" Value="25" Type="float" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="OnFire" Guid="c5d6e7f8-a9b0-9123-cdef-123456789abc" />
+    <MemberComponentTemplate Name="WalkAroundBehavior" Guid="d6e7f8a9-b0c1-9234-def0-23456789abcd" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71" />
+    <MemberComponentTemplate Name="HerdBehavior" Guid="e7f8a9b0-c1d2-9345-ef01-3456789abcde" InheritanceParent="dfe7218e-ce14-4bde-8dac-f919c38e9efe">
+        <Parameter Name="HerdName" Guid="f8a9b0c1-d2e3-9456-f012-456789abcdef" Value="Alianza" Type="string" />
+        <Parameter Name="AutoNearbyCreaturesHelp" Guid="a9b0c1d2-e3f4-9567-0123-56789abcdef0" Value="True" Type="bool" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="FeedBehavior" Guid="b0c1d2e3-f4a5-9678-1234-6789abcdef01" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
+        <Parameter Name="AutoFeed" Guid="c1d2e3f4-a5b6-9789-2345-789abcdef0123" Value="False" Type="bool" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="ChaseBehavior" Guid="d2e3f4a5-b6c7-9890-3456-89abcdef0123" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
+        <Parameter Name="AutoChaseMask" Guid="e3f4a5b6-c7d8-9901-4567-9abcdef01234" Value="LandPredator, WaterPredator" Type="Game.CreatureCategory" />
+        <Parameter Name="DayChaseRange" Guid="f4a5b6c7-d8e9-0012-5678-abcdef012345" Value="8" Type="float" />
+        <Parameter Name="NightChaseRange" Guid="a5b6c7d8-e9f0-0123-6789-bcdef0123456" Value="12" Type="float" />
+        <Parameter Name="ChaseNonPlayerProbability" Guid="b6c7d8e9-f0a1-0234-789a-cdef01234567" Value="0.05" Type="float" />
+        <Parameter Name="NightChaseTime" Guid="c7d8e9f0-a1b2-0345-89ab-def012345678" Value="20" Type="float" />
+    </MemberComponentTemplate>
+    <ParameterSet Name="CreatureEggData" Guid="d8e9f0a1-b2c3-0456-bcde-0123456789ab">
+        <Parameter Name="Color" Guid="e9f0a1b2-c3d4-0567-cdef-123456789abc" Value="64,224,208" Type="Color" />
+        <Parameter Name="TextureSlot" Guid="f0a1b2c3-d4e5-0678-def0-23456789abcd" Value="168" Type="int" />
+        <Parameter Name="SwapUV" Guid="a1b2c3d4-e5f6-0789-ef01-3456789abcde" Value="False" Type="bool" />
+        <Parameter Name="DisplayName" Guid="b2c3d4e5-f6a7-0890-f012-456789abcdef" Value="Fumador Químico Brawny Egg" Type="string" />
+        <Parameter Name="EggTypeIndex" Guid="c3d4e5f6-a7b8-0901-0123-56789abcdef0" Value="208" Type="int" />
+    </ParameterSet>
+</EntityTemplate>
     </Folder>
 </samu>
