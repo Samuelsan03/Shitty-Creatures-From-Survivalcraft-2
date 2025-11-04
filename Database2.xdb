@@ -3,7 +3,7 @@
         
         <EntityTemplate Name="Naomi" Guid="da9a1c74-142c-4b2c-b61f-5c8ccef9f658" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="0e162231-badf-4572-8ff2-ed1cb3e5e42b" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
-                <Parameter Name="DayRange" Guid="0fb1841e-006d-4c8c-b7d2-06dbf11fa35d" Value="20" Type="float" />
+                <Parameter Name="DayRange" Guid="0fb1841e-006d-4c8c-b7d2-06dbf11fa35d" Value="0" Type="float" />
                 <Parameter Name="NightRange" Guid="4a91f09d-f273-43e3-a56e-1184d2ed8b5d" Value="0" Type="float" />
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="EatPickableBehavior" Guid="1244a11a-ef22-4292-915e-9f75af22654e">
@@ -13,9 +13,9 @@
                 </ParameterSet>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="CreatureSounds" Guid="134231ae-611e-4da5-8c3e-4ff2ccad25e4">
-                <Parameter Name="PainSound" Guid="e539477b-3538-4bbe-a909-fd368aeb1430" Value="Audio/Creatures/Naomi" Type="string" />
-                <Parameter Name="IdleSound" Guid="2f85625f-b0e3-47b4-9b6a-41f9ba81b291" Value="Audio/Creatures/Naomi" Type="string" />
-                <Parameter Name="AttackSound" Guid="98af08fd-d410-4d68-b538-c012aa2b1257" Value="Audio/Creatures/Naomi" Type="string" />
+                <Parameter Name="PainSound" Guid="e539477b-3538-4bbe-a909-fd368aeb1430" Value="Audio/Creatures/Naomi/Pain" Type="string" />
+                <Parameter Name="IdleSound" Guid="2f85625f-b0e3-47b4-9b6a-41f9ba81b291" Value="Audio/Creatures/Naomi/Idie" Type="string" />
+                <Parameter Name="AttackSound" Guid="98af08fd-d410-4d68-b538-c012aa2b1257" Value="Audio/Creatures/Naomi/Attack" Type="string" />
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidFireBehavior" Guid="2d9409a2-11db-47fa-a987-501d3dbfc18c" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c" />
             <MemberComponentTemplate Name="Locomotion" Guid="326a3597-7997-4114-9d13-435addc0b967">
@@ -84,7 +84,7 @@
 
         <EntityTemplate Name="Ricardo" Guid="b7f3e8a2-9c14-4d82-a5f3-8c2d6e9a1b47" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="c4a2d3e1-f8b2-4c65-93a7-d5e6f7a8b9c0" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
-                <Parameter Name="DayRange" Guid="e9f8d7c6-b5a4-4e39-82c1-d0e1f2a3b4c5" Value="20" Type="float" />
+                <Parameter Name="DayRange" Guid="e9f8d7c6-b5a4-4e39-82c1-d0e1f2a3b4c5" Value="0" Type="float" />
                 <Parameter Name="NightRange" Guid="a1b2c3d4-e5f6-4789-9012-3456789abcdf" Value="0" Type="float" />
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="EatPickableBehavior" Guid="d5e6f7a8-b9c0-4d1e-82f3-a4b5c6d7e8f9">
@@ -93,11 +93,10 @@
                     <Parameter Name="Meat" Guid="b3c4d5e6-f7a8-4890-9123-456789abcde1" Value="1" Type="float" />
                 </ParameterSet>
             </MemberComponentTemplate>
-            <!-- CORREGIDO: CreatureSounds FUERA de EatPickableBehavior -->
             <MemberComponentTemplate Name="CreatureSounds" Guid="bb443c01-799b-4b2a-8ddb-c183898cc5cc">
-                <Parameter Name="PainSound" Guid="25e7cfe2-6a09-463a-81cf-48732a6a8ef7" Value="Audio/Creatures/Ricardo" Type="string" />
-                <Parameter Name="IdleSound" Guid="15715274-d2d3-4990-882c-d13f85f0e620" Value="Audio/Creatures/Ricardo" Type="string" />
-                <Parameter Name="AttackSound" Guid="5dd033bd-39fb-42be-a0d1-ee70da8c0016" Value="Audio/Creatures/Ricardo" Type="string" />
+                <Parameter Name="PainSound" Guid="25e7cfe2-6a09-463a-81cf-48732a6a8ef7" Value="Audio/Creatures/Ricardo/Pain" Type="string" />
+                <Parameter Name="IdleSound" Guid="15715274-d2d3-4990-882c-d13f85f0e620" Value="Audio/Creatures/Ricardo/Idie" Type="string" />
+                <Parameter Name="AttackSound" Guid="5dd033bd-39fb-42be-a0d1-ee70da8c0016" Value="Audio/Creatures/Ricardo/Attack" Type="string" />
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidFireBehavior" Guid="c8d9e0f1-a2b3-4c45-8d6e-7f8a9b0c1d2e" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c" />
             <MemberComponentTemplate Name="Locomotion" Guid="e1f2a3b4-c5d6-4e78-9f01-a2b3c4d5e6f7">
@@ -166,15 +165,19 @@
         
         <EntityTemplate Name="Paco" Guid="a1b2c3d4-e5f6-4789-9012-3456789abcde" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="b2c3d4e5-f6a7-4890-9123-456789abcdef" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
-        <Parameter Name="DayRange" Guid="c3d4e5f6-a7b8-4901-2345-6789abcdef01" Value="20" Type="float" />
+        <Parameter Name="DayRange" Guid="c3d4e5f6-a7b8-4901-2345-6789abcdef01" Value="0" Type="float" />
         <Parameter Name="NightRange" Guid="d4e5f6a7-b8c9-5012-3456-789abcdef012" Value="0" Type="float" />
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="EatPickableBehavior" Guid="e5f6a7b8-c9d0-5123-4567-89abcdef0123">
-        <ParameterSet Name="FoodFactors" Guid="f6a7b8c9-d0e1-5234-5678-9abcdef01234">
-            <Parameter Name="Fish" Guid="a7b8c9d0-e1f2-5345-6789-abcdef012345" Value="1" Type="float" />
-            <Parameter Name="Meat" Guid="b8c9d0e1-f2a3-5456-789a-bcdef0123456" Value="1" Type="float" />
-        </ParameterSet>
-    </MemberComponentTemplate>
+    <ParameterSet Name="FoodFactors" Guid="f6a7b8c9-d0e1-5234-5678-9abcdef01234">
+        <Parameter Name="Bread" Guid="a7b8c9d0-e1f2-5345-6789-abcdef012345" Value="1" Type="float" />
+    </ParameterSet>
+</MemberComponentTemplate>  <!-- CIERRE CORRECTO -->
+<MemberComponentTemplate Name="CreatureSounds" Guid="f3a1c9d2-4e7b-4c3f-9a6e-2b7d5c8e1f44">
+    <Parameter Name="PainSound" Guid="a9d3f7b1-2c4e-4d8f-9f3a-7e6b2c1d8a90" Value="Audio/Creatures/Eslabones/Pain" Type="string" />
+    <Parameter Name="IdleSound" Guid="c1e8a2f4-5b3d-4f7e-8c9a-1d2f3b7e6a55" Value="Audio/Creatures/Eslabones/Idie" Type="string" />
+    <Parameter Name="AttackSound" Guid="52fcc56b-22a6-4a85-9b53-e6ddfd23f772" Value="Audio/Creatures/Eslabones/Attack" Type="string" />
+</MemberComponentTemplate>  <!-- CIERRE CORRECTO -->
     <MemberComponentTemplate Name="AvoidFireBehavior" Guid="c9d0e1f2-a3b4-5567-89ab-cdef01234567" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c" />
     <MemberComponentTemplate Name="Locomotion" Guid="d0e1f2a3-b4c5-5678-9abc-def012345678">
         <Parameter Name="AccelerationFactor" Guid="e1f2a3b4-c5d6-5789-abcd-ef0123456789" Value="1.2" Type="float" />
@@ -242,7 +245,7 @@
 
          <EntityTemplate Name="Barack" Guid="f8a9b0c1-d2e3-4456-9234-56789abcdef0" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="a9b0c1d2-e3f4-4567-9345-6789abcdef01" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
-        <Parameter Name="DayRange" Guid="b0c1d2e3-f4a5-4678-9456-789abcdef012" Value="15" Type="float" />
+        <Parameter Name="DayRange" Guid="b0c1d2e3-f4a5-4678-9456-789abcdef012" Value="0" Type="float" />
         <Parameter Name="NightRange" Guid="c1d2e3f4-a5b6-4789-9567-89abcdef0123" Value="0" Type="float" />
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="EatPickableBehavior" Guid="d2e3f4a5-b6c7-4890-9678-9abcdef01234">
@@ -251,6 +254,12 @@
             <Parameter Name="Meat" Guid="a5b6c7d8-e9f0-5123-9901-cdef01234567" Value="1" Type="float" />
         </ParameterSet>
     </MemberComponentTemplate>
+    <!-- COMPONENTE DE SONIDOS AGREGADO -->
+    <MemberComponentTemplate Name="CreatureSounds" Guid="8e8de667-0d1a-42ee-8722-c88f55881113">
+        <Parameter Name="PainSound" Guid="87663b93-21a5-469f-b354-fb4f0d11cb0e" Value="Audio/Creatures/Barack/Pain" Type="string" />
+        <Parameter Name="IdleSound" Guid="cb10aadc-6512-4478-9579-b3e45d95715f" Value="Audio/Creatures/Barack/Idle" Type="string" />
+        <Parameter Name="AttackSound" Guid="d7c5e8d4-2b30-4d7f-8a9c-4e3f1b8e6c77" Value="Audio/Creatures/Barack/Attack" Type="string" />
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidFireBehavior" Guid="b6c7d8e9-f0a1-5234-0012-def012345678" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c" />
     <MemberComponentTemplate Name="Locomotion" Guid="c7d8e9f0-a1b2-5345-0123-ef0123456789">
         <Parameter Name="AccelerationFactor" Guid="d8e9f0a1-b2c3-5456-1234-f0123456789a" Value="1.3" Type="float" />
@@ -314,6 +323,7 @@
         <Parameter Name="EggTypeIndex" Guid="d6e7f8a9-b0c1-0234-9012-f0123456789a" Value="204" Type="int" />
     </ParameterSet>
 </EntityTemplate>
+
 <EntityTemplate Name="ElMarihuanero" Guid="c7d8e9f0-a1b2-4789-9012-3456789abcde" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="d8e9f0a1-b2c3-4890-9123-456789abcdef" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
         <Parameter Name="DayRange" Guid="e9f0a1b2-c3d4-4901-2345-6789abcdef01" Value="0" Type="float" />
@@ -388,9 +398,9 @@
     </ParameterSet>
 </EntityTemplate>
 
-        <EntityTemplate Name="ElMarihuaneroMamon" Guid="f8a9b0c1-d2e3-4789-9012-3456789abcde" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <EntityTemplate Name="ElMarihuaneroMamon" Guid="a1b2c3d4-e5f6-4789-9012-3456789abcd1" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="a9b0c1d2-e3f4-4890-9123-456789abcdef" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
-                <Parameter Name="DayRange" Guid="b0c1d2e3-f4a5-4901-2345-6789abcdef01" Value="30" Type="float" />
+                <Parameter Name="DayRange" Guid="b0c1d2e3-f4a5-4901-2345-6789abcdef01" Value="0" Type="float" />
                 <Parameter Name="NightRange" Guid="c1d2e3f4-a5b6-5012-3456-789abcdef012" Value="0" Type="float" />
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="EatPickableBehavior" Guid="d2e3f4a5-b6c7-5123-4567-89abcdef0123">
