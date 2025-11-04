@@ -1,0 +1,11 @@
+{
+  "Name": "Prueba",
+  "Version": "1.0.0",
+  "ApiVersion": "1.80",
+  "Description": "Chupapi",
+  "ScVersion": "2.4.0.0",
+  "Link": "",
+  "Author": "",
+  "PackageName": "samu.mod",
+  "Dependencies": []
+}
