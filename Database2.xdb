@@ -28,7 +28,7 @@
             <MemberComponentTemplate Name="Loot" Guid="6e3895e7-9750-48c3-2237-c346a02b0816">
                 <ParameterSet Name="Loot" Guid="06d9ad2f-3d30-44bc-899b-a7220b9829f6">
                     <Parameter Name="1" Guid="2c4fdb30-e032-44c2-9fdc-7d58227add29" Value="PumpkinBlock;100;100" Type="string" />
-                    <Parameter Name="2" Guid="f4111177-8e86-4bd8-af7e-2e73225e4d7a" Value="MusketBlock;1;1;1" Type="string" />
+                    <Parameter Name="2" Guid="f4111177-8e86-4bd8-af7e-2e73225e4d7a" Value="BreadBlock;1;1;1" Type="string" />
                 </ParameterSet>
                 <ParameterSet Name="LootOnFire" Guid="56ac1204-6aa3-4a40-22a3-16186603ee21" />
             </MemberComponentTemplate>
@@ -438,7 +438,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Loot" Guid="e5f6a7b8-c9d0-6456-1234-56789abcdef0">
         <ParameterSet Name="Loot" Guid="f6a7b8c9-d0e1-6567-2345-6789abcdef01">
-            <Parameter Name="1" Guid="c9d0e1f2-a3b4-6890-5678-9abcdef01234" Value="MusketBlock;1;1;1" Type="string" />
+            <Parameter Name="1" Guid="c9d0e1f2-a3b4-6890-5678-9abcdef01234" Value="StringBlock;1;10;1" Type="string" />
         </ParameterSet>
         <ParameterSet Name="LootOnFire" Guid="d0e1f2a3-b4c5-6901-6789-abcdef012345" />
     </MemberComponentTemplate>
