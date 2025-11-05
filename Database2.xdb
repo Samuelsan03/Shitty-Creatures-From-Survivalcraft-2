@@ -660,5 +660,87 @@
         <Parameter Name="EggTypeIndex" Guid="c3d4e5f6-a7b8-0901-0123-56789abcdef0" Value="208" Type="int" />
     </ParameterSet>
 </EntityTemplate>
+
+<EntityTemplate Name="ClaudeSpeed" Guid="a1b2c3d4-e5f6-4789-9012-3456789abcfe" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+    <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="b2c3d4e5-f6a7-4890-9123-456789abcdf1" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
+        <Parameter Name="DayRange" Guid="c3d4e5f6-a7b8-4901-2345-6789abcdf002" Value="0" Type="float" />
+        <Parameter Name="NightRange" Guid="d4e5f6a7-b8c9-5012-3456-789abcdf0124" Value="0" Type="float" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="EatPickableBehavior" Guid="e5f6a7b8-c9d0-5123-4567-89abcdf01235">
+        <ParameterSet Name="FoodFactors" Guid="f6a7b8c9-d0e1-5234-5678-9abcdf012346">
+            <Parameter Name="Bread" Guid="a7b8c9d0-e1f2-5345-6789-abcdf0123457" Value="1" Type="float" />
+        </ParameterSet>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="AvoidFireBehavior" Guid="a3b4c5d6-e7f8-5901-cdef-123456789abd" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c" />
+    <MemberComponentTemplate Name="Locomotion" Guid="b4c5d6e7-f8a9-6012-def0-23456789abce">
+        <Parameter Name="AccelerationFactor" Guid="c5d6e7f8-a9b0-6123-ef01-3456789abcdf" Value="1.4" Type="float" />
+        <Parameter Name="FlySpeed" Guid="d6e7f8a9-b0c1-6234-f012-456789abcdef0" Value="0" Type="float" />
+        <Parameter Name="TurnSpeed" Guid="e7f8a9b0-c1d2-6345-0123-56789abcdef1" Value="8" Type="float" />
+        <Parameter Name="WalkSpeed" Guid="f8a9b0c1-d2e3-6456-1234-6789abcdef02" Value="4.5" Type="float" />
+        <Parameter Name="LadderSpeed" Guid="a9b0c1d2-e3f4-6567-2345-789abcdef013" Value="0" Type="float" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Inventory" Guid="b0c1d2e3-f4a5-6678-3456-89abcdef0124" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
+        <ParameterSet Name="Slots">
+            <ParameterSet Name="Slot0">
+                <Parameter Name="Contents" Value="123" Type="int" />
+                <Parameter Name="Count" Value="1" Type="int" />
+            </ParameterSet>
+        </ParameterSet>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Loot" Guid="c1d2e3f4-a5b6-6789-4567-9abcdef01235">
+        <ParameterSet Name="Loot" Guid="d2e3f4a5-b6c7-6890-5678-abcdef012346">
+            <Parameter Name="1" Guid="e3f4a5b6-c7d8-6901-6789-bcdef0123457" Value="IronIngotBlock;25;50" Type="string" />
+        </ParameterSet>
+        <ParameterSet Name="LootOnFire" Guid="f4a5b6c7-d8e9-7012-789a-cdef01234568" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Body" Guid="d5e6f7a8-b9c0-7123-89ab-def012345679">
+        <Parameter Name="Mass" Guid="e6f7a8b9-c0d1-7234-9abc-ef0123456780" Value="65" Type="float" />
+        <Parameter Name="BoxSize" Guid="f7a8b9c0-d1e2-7345-abcd-f01234567891" Value="0.9,1.0,0.9" Type="Vector3" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Creature" Guid="a8b9c0d1-e2f3-7456-bcde-0123456789a3">
+        <Parameter Name="DisplayName" Guid="b9c0d1e2-f3a4-7567-cdef-123456789ab4" Value="Claude Speed" Type="string" />
+        <Parameter Name="Category" Guid="c0d1e2f3-a4b5-7678-def0-23456789abc5" Value="LandOther" Type="Game.CreatureCategory" />
+        <Parameter Name="Description" Guid="d1e2f3a4-b5c6-7789-ef01-3456789abcd6" Value="A silent figure known for his cold demeanor and rise through the criminal underworld of Anywhere City, USA. Although he appears to be a ruthless outlaw, he is also part of the Alliance group, where he protects and supports his allies when attacked by hostile gangs or other threats." Type="string" />
+        <Parameter Name="KillVerbs" Guid="e2f3a4b5-c6d7-7890-f012-456789abcde7" Value="Outran" Type="string" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="FindPlayerBehavior" Guid="f3a4b5c6-d7e8-7901-0123-56789abcdef8" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031" />
+    <MemberComponentTemplate Name="Miner" Guid="a4b5c6d7-e8f9-8012-1234-6789abcdef09" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
+        <Parameter Name="AttackPower" Guid="b5c6d7e8-f9a0-8123-2345-789abcdef01a" Value="0.8" Type="float" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="HumanModel" Guid="c6d7e8f9-a0b1-8234-3456-89abcdef012b" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
+        <Parameter Name="WalkLegsAngle" Guid="d7e8f9a0-b1c2-8345-4567-9abcdef0123c" Value="0.4" Type="float" />
+        <Parameter Name="ModelName" Guid="e8f9a0b1-c2d3-8456-5678-abcdef01234d" Value="Models/HumanMale" Type="string" />
+        <Parameter Name="TextureOverride" Guid="f9a0b1c2-d3e4-8567-6789-bcdef012345e" Value="Textures/Claude Speed" Type="string" />
+        <Parameter Name="WalkAnimationSpeed" Guid="a0b1c2d3-e4f5-8678-789a-cdef0123456f" Value="0.7" Type="float" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Health" Guid="b1c2d3e4-f5a6-8789-89ab-def012345670">
+        <Parameter Name="Health" Guid="c2d3e4f5-a6b7-8890-9abc-ef0123456781" Value="25" Type="float" />
+        <Parameter Name="FireResilience" Guid="d3e4f5a6-b7c8-8901-abcd-f01234567892" Value="15" Type="float" />
+        <Parameter Name="AttackResilience" Guid="e4f5a6b7-c8d9-9012-bcde-0123456789a3" Value="18" Type="float" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="OnFire" Guid="f5a6b7c8-d9e0-9123-cdef-123456789ab4" />
+    <MemberComponentTemplate Name="WalkAroundBehavior" Guid="a6b7c8d9-e0f1-9234-def0-23456789abc5" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71" />
+    <MemberComponentTemplate Name="HerdBehavior" Guid="b7c8d9e0-f1a2-9345-ef01-3456789abcd6" InheritanceParent="dfe7218e-ce14-4bde-8dac-f919c38e9efe">
+        <Parameter Name="HerdName" Guid="c8d9e0f1-a2b3-9456-f012-456789abcde7" Value="Alianza" Type="string" />
+        <Parameter Name="AutoNearbyCreaturesHelp" Guid="d9e0f1a2-b3c4-9567-0123-56789abcdef8" Value="True" Type="bool" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="FeedBehavior" Guid="e0f1a2b3-c4d5-9678-1234-6789abcdef09" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
+        <Parameter Name="AutoFeed" Guid="f1a2b3c4-d5e6-9789-2345-789abcdef01a" Value="False" Type="bool" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="ChaseBehavior" Guid="a2b3c4d5-e6f7-9890-3456-89abcdef012b" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
+        <Parameter Name="AutoChaseMask" Guid="b3c4d5e6-f7a8-9901-4567-9abcdef0123c" Value="LandPredator, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory" />
+        <Parameter Name="DayChaseRange" Guid="c4d5e6f7-a8b9-0012-5678-abcdef01234d" Value="8" Type="float" />
+        <Parameter Name="NightChaseRange" Guid="d5e6f7a8-b9c0-0123-6789-bcdef012345e" Value="12" Type="float" />
+        <Parameter Name="ChaseNonPlayerProbability" Guid="e6f7a8b9-c0d1-0234-789a-cdef0123456f" Value="0.04" Type="float" />
+        <Parameter Name="NightChaseTime" Guid="f7a8b9c0-d1e2-0345-89ab-def012345670" Value="18" Type="float" />
+    </MemberComponentTemplate>
+    <ParameterSet Name="CreatureEggData" Guid="b8c9d0e1-f2a3-0456-bcde-0123456789ab">
+        <Parameter Name="Color" Guid="c9d0e1f2-a3b4-0567-cdef-123456789abc" Value="30,144,255" Type="Color" />
+        <Parameter Name="TextureSlot" Guid="d0e1f2a3-b4c5-0678-def0-23456789abcd" Value="169" Type="int" />
+        <Parameter Name="SwapUV" Guid="e1f2a3b4-c5d6-0789-ef01-3456789abcde" Value="False" Type="bool" />
+        <Parameter Name="DisplayName" Guid="f2a3b4c5-d6e7-0890-f012-456789abcdef" Value="Claude Speed Egg" Type="string" />
+        <Parameter Name="EggTypeIndex" Guid="a3b4c5d6-e7f8-0901-0123-56789abcdef0" Value="209" Type="int" />
+    </ParameterSet>
+</EntityTemplate>
     </Folder>
 </samu>
