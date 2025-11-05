@@ -482,7 +482,7 @@
         <Parameter Name="Color" Guid="c5d6e7f8-a9b0-0456-1234-def012345678" Value="173,121,75" Type="Color" />
         <Parameter Name="TextureSlot" Guid="d6e7f8a9-b0c1-0567-2345-ef0123456789" Value="166" Type="int" />
         <Parameter Name="SwapUV" Guid="e7f8a9b0-c1d2-0678-3456-f0123456789a" Value="False" Type="bool" />
-        <Parameter Name="DisplayName" Guid="f8a9b0c1-d2e3-0789-4567-0123456789ab" Value="El Marihuanero Mamón" Type="string" />
+        <Parameter Name="DisplayName" Guid="f8a9b0c1-d2e3-0789-4567-0123456789ab" Value="El Marihuanero Mamón Egg" Type="string" />
         <Parameter Name="EggTypeIndex" Guid="a9b0c1d2-e3f4-0890-5678-123456789abc" Value="206" Type="int" />
     </ParameterSet>
 </EntityTemplate>
@@ -657,3 +657,4 @@
 </EntityTemplate>
     </Folder>
 </samu>
+
