@@ -499,7 +499,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="CreatureSounds" Guid="d1e2f3a4-b5c6-4d7e-9f0a-1b2c3d4e5f6a">
         <Parameter Name="PainSound" Guid="e2f3a4b5-c6d7-4e8f-9a0b-2c3d4e5f6a7b" Value="Audio/Creatures/FumadorQuimico/Pain" Type="string" />
-        <Parameter Name="IdleSound" Guid="f3a4b5c6-d7e8-4f9a-8b0c-3d4e5f6a7b8c" Value="Audio/Creatures/FumadorQuimico/Idle" Type="string" />
+        <Parameter Name="IdleSound" Guid="f3a4b5c6-d7e8-4f9a-8b0c-3d4e5f6a7b8c" Value="Audio/Creatures/FumadorQuimico/Idie" Type="string" />
         <Parameter Name="AttackSound" Guid="a4b5c6d7-e8f9-4a0b-9c1d-4e5f6a7b8c9d" Value="Audio/Creatures/FumadorQuimico/Attack" Type="string" />
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidFireBehavior" Guid="b9c0d1e2-f3a4-5567-89ab-cdef01234567" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c" />
@@ -584,7 +584,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="CreatureSounds" Guid="c9d0e1f2-a3b4-5567-89ab-cdf012345678">
         <Parameter Name="PainSound" Guid="d0e1f2a3-b4c5-5678-9abc-df0123456789" Value="Audio/Creatures/FumadorQuimicoBrawny/Pain" Type="string" />
-        <Parameter Name="IdleSound" Guid="e1f2a3b4-c5d6-5789-abcd-f0123456789a" Value="Audio/Creatures/FumadorQuimicoBrawny/Idle" Type="string" />
+        <Parameter Name="IdleSound" Guid="e1f2a3b4-c5d6-5789-abcd-f0123456789a" Value="Audio/Creatures/FumadorQuimicoBrawny/Idie" Type="string" />
         <Parameter Name="AttackSound" Guid="f2a3b4c5-d6e7-5890-bcde-0123456789ab" Value="Audio/Creatures/FumadorQuimicoBrawny/Attack" Type="string" />
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidFireBehavior" Guid="a3b4c5d6-e7f8-5901-cdef-123456789abc" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c" />
