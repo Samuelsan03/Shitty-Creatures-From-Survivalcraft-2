@@ -404,7 +404,7 @@
     </ParameterSet>
 </EntityTemplate>
 
-        <EntityTemplate Name="ElMarihuaneroMamon" Guid="a1b2c3d4-e5f6-4789-9012-3456789abcd1" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<EntityTemplate Name="ElMarihuaneroMamon" Guid="a1b2c3d4-e5f6-4789-9012-3456789abcd1" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="a9b0c1d2-e3f4-4890-9123-456789abcdef" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
         <Parameter Name="DayRange" Guid="b0c1d2e3-f4a5-4901-2345-6789abcdef01" Value="0" Type="float" />
         <Parameter Name="NightRange" Guid="c1d2c3d4-e5f6-5012-3456-789abcdef012" Value="0" Type="float" />
@@ -429,7 +429,12 @@
         <Parameter Name="LadderSpeed" Guid="b2c3d4e5-f6a7-6123-ef01-23456789abcd" Value="0" Type="float" />
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Inventory" Guid="c3d4e5f6-a7b8-6234-f012-3456789abcde" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
-        <Parameter Name="SlotsCount" Guid="d4e5f6a7-b8c9-6345-0123-456789abcdef" Value="6" Type="int" />
+        <ParameterSet Name="Slots">
+            <ParameterSet Name="Slot0">
+                <Parameter Name="Contents" Value="212" Type="int" />
+                <Parameter Name="Count" Value="1" Type="int" />
+            </ParameterSet>
+        </ParameterSet>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Loot" Guid="e5f6a7b8-c9d0-6456-1234-56789abcdef0">
         <ParameterSet Name="Loot" Guid="f6a7b8c9-d0e1-6567-2345-6789abcdef01">
