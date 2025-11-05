@@ -429,13 +429,13 @@
         <Parameter Name="LadderSpeed" Guid="b2c3d4e5-f6a7-6123-ef01-23456789abcd" Value="0" Type="float" />
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Inventory" Guid="c3d4e5f6-a7b8-6234-f012-3456789abcde" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
-        <ParameterSet Name="Slots">
-            <ParameterSet Name="Slot0">
-                <Parameter Name="Contents" Value="212" Type="int" />
-                <Parameter Name="Count" Value="1" Type="int" />
-            </ParameterSet>
+    <ParameterSet Name="Slots">
+        <ParameterSet Name="Slot0">
+            <Parameter Name="Contents" Value="212" Type="int" />  <!-- ✅ CORREGIDO -->
+            <Parameter Name="Count" Value="1" Type="int" />       <!-- ✅ CORREGIDO -->
         </ParameterSet>
-    </MemberComponentTemplate>
+    </ParameterSet>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="Loot" Guid="e5f6a7b8-c9d0-6456-1234-56789abcdef0">
         <ParameterSet Name="Loot" Guid="f6a7b8c9-d0e1-6567-2345-6789abcdef01">
             <Parameter Name="1" Guid="c9d0e1f2-a3b4-6890-5678-9abcdef01234" Value="StringBlock;1;10;1" Type="string" />
@@ -680,13 +680,13 @@
         <Parameter Name="LadderSpeed" Guid="a9b0c1d2-e3f4-6567-2345-789abcdef013" Value="0" Type="float" />
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Inventory" Guid="b0c1d2e3-f4a5-6678-3456-89abcdef0124" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
-        <ParameterSet Name="Slots">
-            <ParameterSet Name="Slot0">
-                <Parameter Name="Contents" Value="123" Type="int" />
-                <Parameter Name="Count" Value="1" Type="int" />
-            </ParameterSet>
+    <ParameterSet Name="Slots">
+        <ParameterSet Name="Slot0">
+            <Parameter Name="Contents" Value="123" Type="int" />
+            <Parameter Name="Count" Value="1" Type="int" />
         </ParameterSet>
-    </MemberComponentTemplate>
+    </ParameterSet>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="Loot" Guid="c1d2e3f4-a5b6-6789-4567-9abcdef01235">
         <ParameterSet Name="Loot" Guid="d2e3f4a5-b6c7-6890-5678-abcdef012346">
             <Parameter Name="1" Guid="e3f4a5b6-c7d8-6901-6789-bcdef0123457" Value="IronIngotBlock;25;50" Type="string" />
@@ -740,6 +740,176 @@
         <Parameter Name="SwapUV" Guid="e1f2a3b4-c5d6-0789-ef01-3456789abcde" Value="False" Type="bool" />
         <Parameter Name="DisplayName" Guid="f2a3b4c5-d6e7-0890-f012-456789abcdef" Value="Claude Speed Egg" Type="string" />
         <Parameter Name="EggTypeIndex" Guid="a3b4c5d6-e7f8-0901-0123-56789abcdef0" Value="209" Type="int" />
+    </ParameterSet>
+</EntityTemplate>
+
+<EntityTemplate Name="TommyVercetti" Guid="c7d8e9f0-a1b2-4789-9012-3456789abcfa" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+    <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="d8e9f0a1-b2c3-4890-9123-456789abcdfb" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
+        <Parameter Name="DayRange" Guid="e9f0a1b2-c3d4-4901-2345-6789abcdf003" Value="0" Type="float" />
+        <Parameter Name="NightRange" Guid="f0a1b2c3-d4e5-5012-3456-789abcdf0125" Value="0" Type="float" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="EatPickableBehavior" Guid="a1b2c3d4-e5f6-5123-4567-89abcdf01236">
+    <ParameterSet Name="FoodFactors" Guid="b2c3d4e5-f6a7-5234-5678-9abcdf012347">
+        <Parameter Name="Fish" Guid="c3d4e5f6-a7b8-5345-6789-abcdf0123458" Value="1" Type="float" />
+    </ParameterSet>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureSounds" Guid="29d0e1f2-a3b4-5567-89ab-cdf0123456wd">
+    <Parameter Name="PainSound" Guid="d0e1f2a3-b4c5-5678-9abc-df0123456712" Value="Audio/Creatures/TommyVercetti/Pain" Type="string" />
+    <Parameter Name="IdleSound" Guid="e1f2a3b4-c5d6-5789-abcd-f012345678aw" Value="Audio/Creatures/TommyVercetti/Idie" Type="string" />
+    <Parameter Name="AttackSound" Guid="f0a3p0c5-d6e7-0190-bcde-0123456789mq" Value="Audio/Creatures/TommyVercetti/Attack" Type="string" />
+</MemberComponentTemplate>
+    <MemberComponentTemplate Name="AvoidFireBehavior" Guid="b4c5d6e7-f8a9-5901-cdef-123456789abe" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c" />
+    <MemberComponentTemplate Name="Locomotion" Guid="c5d6e7f8-a9b0-6012-def0-23456789abcf">
+        <Parameter Name="AccelerationFactor" Guid="d6e7f8a9-b0c1-6123-ef01-3456789abcde" Value="1.3" Type="float" />
+        <Parameter Name="FlySpeed" Guid="e7f8a9b0-c1d2-6234-f012-456789abcdef1" Value="0" Type="float" />
+        <Parameter Name="TurnSpeed" Guid="f8a9b0c1-d2e3-6345-0123-56789abcdef2" Value="7" Type="float" />
+        <Parameter Name="WalkSpeed" Guid="a9b0c1d2-e3f4-6456-1234-6789abcdef03" Value="4.0" Type="float" />
+        <Parameter Name="LadderSpeed" Guid="b0c1d2e3-f4a5-6567-2345-789abcdef014" Value="0" Type="float" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Inventory" Guid="c1d2e3f4-a5b6-6678-3456-89abcdef0125" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
+    <ParameterSet Name="Slots">
+        <ParameterSet Name="Slot0">
+            <Parameter Name="Contents" Value="212" Type="int" /> 
+            <Parameter Name="Count" Value="1" Type="int" />
+        </ParameterSet>
+        <ParameterSet Name="Slot1">
+            <Parameter Name="Contents" Value="125" Type="int" />
+            <Parameter Name="Count" Value="1" Type="int" />
+        </ParameterSet>
+    </ParameterSet>
+</MemberComponentTemplate>
+    <MemberComponentTemplate Name="Loot" Guid="d2e3f4a5-b6c7-6789-4567-9abcdef01236">
+        <ParameterSet Name="Loot" Guid="e3f4a5b6-c7d8-6890-5678-abcdef012347">
+            <Parameter Name="1" Guid="f4a5b6c7-d8e9-6901-6789-bcdef0123458" Value="DiamondBlock;15;25" Type="string" />
+        </ParameterSet>
+        <ParameterSet Name="LootOnFire" Guid="a5b6c7d8-e9f0-7012-789a-cdef01234569" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Body" Guid="e6f7a8b9-c0d1-7123-89ab-def01234567a">
+        <Parameter Name="Mass" Guid="f7a8b9c0-d1e2-7234-9abc-ef0123456781" Value="70" Type="float" />
+        <Parameter Name="BoxSize" Guid="a8b9c0d1-e2f3-7345-abcd-f01234567892" Value="0.9,1.0,0.9" Type="Vector3" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Creature" Guid="b9c0d1e2-f3a4-7456-bcde-0123456789a4">
+        <Parameter Name="DisplayName" Guid="c0d1e2f3-a4b5-7567-cdef-123456789ab5" Value="Tommy Vercetti" Type="string" />
+        <Parameter Name="Category" Guid="d1e2f3a4-b5c6-7678-def0-23456789abc6" Value="LandOther" Type="Game.CreatureCategory" />
+        <Parameter Name="Description" Guid="e2f3a4b5-c6d7-7789-ef01-3456789abcd7" Value="A violent and ambitious figure in the criminal world, known for his rise from the Forelli family in Liberty City. Originally of Italian descent, he now resides in Vice City, Florida, where he built his own empire after a failed drug deal in 1986. Despite his reputation, he is also part of the Alliance group, supporting and defending his allies when threatened by rival gangs or hostile forces." Type="string" />
+        <Parameter Name="KillVerbs" Guid="f3a4b5c6-d7e8-7890-f012-456789abcde8" Value="Eliminated" Type="string" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="FindPlayerBehavior" Guid="a4b5c6d7-e8f9-7901-0123-56789abcdef9" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031" />
+    <MemberComponentTemplate Name="Miner" Guid="b5c6d7e8-f9a0-8012-1234-6789abcdef0a" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
+        <Parameter Name="AttackPower" Guid="c6d7e8f9-a0b1-8123-2345-789abcdef01b" Value="6.5" Type="float" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="HumanModel" Guid="d7e8f9a0-b1c2-8234-3456-89abcdef012c" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
+        <Parameter Name="WalkLegsAngle" Guid="e8f9a0b1-c2d3-8345-4567-9abcdef0123d" Value="0.35" Type="float" />
+        <Parameter Name="ModelName" Guid="f9a0b1c2-d3e4-8456-5678-abcdef01234e" Value="Models/HumanMale" Type="string" />
+        <Parameter Name="TextureOverride" Guid="a0b1c2d3-e4f5-8567-6789-bcdef012345f" Value="Textures/Tommy Vercetti" Type="string" />
+        <Parameter Name="WalkAnimationSpeed" Guid="b1c2d3e4-f5a6-8678-789a-cdef01234570" Value="0.6" Type="float" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Health" Guid="c2d3e4f5-a6b7-8789-89ab-def012345671">
+        <Parameter Name="Health" Guid="d3e4f5a6-b7c8-8890-9abc-ef0123456782" Value="30" Type="float" />
+        <Parameter Name="FireResilience" Guid="e4f5a6b7-c8d9-8901-abcd-f01234567893" Value="20" Type="float" />
+        <Parameter Name="AttackResilience" Guid="f5a6b7c8-d9e0-9012-bcde-0123456789a4" Value="22" Type="float" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="OnFire" Guid="a6b7c8d9-e0f1-9123-cdef-123456789ab5" />
+    <MemberComponentTemplate Name="WalkAroundBehavior" Guid="b7c8d9e0-f1a2-9234-def0-23456789abc6" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71" />
+    <MemberComponentTemplate Name="HerdBehavior" Guid="c8d9e0f1-a2b3-9345-ef01-3456789abcd7" InheritanceParent="dfe7218e-ce14-4bde-8dac-f919c38e9efe">
+        <Parameter Name="HerdName" Guid="d9e0f1a2-b3c4-9456-f012-456789abcde8" Value="Alianza" Type="string" />
+        <Parameter Name="AutoNearbyCreaturesHelp" Guid="e0f1a2b3-c4d5-9567-0123-56789abcdef9" Value="True" Type="bool" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="FeedBehavior" Guid="f1a2b3c4-d5e6-9678-1234-6789abcdef0a" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
+        <Parameter Name="AutoFeed" Guid="a2b3c4d5-e6f7-9789-2345-789abcdef01b" Value="False" Type="bool" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="ChaseBehavior" Guid="b3c4d5e6-f7a8-9890-3456-89abcdef012c" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
+        <Parameter Name="AutoChaseMask" Guid="c4d5e6f7-a8b9-9901-4567-9abcdef0123d" Value="LandPredator, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory" />
+        <Parameter Name="DayChaseRange" Guid="d5e6f7a8-b9c0-0012-5678-abcdef01234e" Value="7" Type="float" />
+        <Parameter Name="NightChaseRange" Guid="e6f7a8b9-c0d1-0123-6789-bcdef012345f" Value="10" Type="float" />
+        <Parameter Name="ChaseNonPlayerProbability" Guid="f7a8b9c0-d1e2-0234-789a-cdef01234570" Value="0.03" Type="float" />
+        <Parameter Name="NightChaseTime" Guid="a8b9c0d1-e2f3-0345-89ab-def012345671" Value="15" Type="float" />
+    </MemberComponentTemplate>
+    <ParameterSet Name="CreatureEggData" Guid="c9d0e1f2-a3b4-0456-bcde-0123456789ac">
+        <Parameter Name="Color" Guid="d0e1f2a3-b4c5-0567-cdef-123456789abd" Value="255,140,0" Type="Color" /> <!-- Naranja oscuro -->
+        <Parameter Name="TextureSlot" Guid="e1f2a3b4-c5d6-0678-def0-23456789abce" Value="170" Type="int" />
+        <Parameter Name="SwapUV" Guid="f2a3b4c5-d6e7-0789-ef01-3456789abcdf" Value="False" Type="bool" />
+        <Parameter Name="DisplayName" Guid="a3b4c5d6-e7f8-0890-f012-456789abcde0" Value="Tommy Vercetti Egg" Type="string" />
+        <Parameter Name="EggTypeIndex" Guid="b4c5d6e7-f8a9-0901-0123-56789abcdef1" Value="210" Type="int" />
+    </ParameterSet>
+</EntityTemplate>
+
+<EntityTemplate Name="LaMuerteX" Guid="d4e5f6a7-b8c9-4789-9012-3456789abcfa" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+    <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="e5f6a7b8-c9d0-4890-9123-456789abcdfc" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
+        <Parameter Name="DayRange" Guid="f6a7b8c9-d0e1-4901-2345-6789abcdf004" Value="0" Type="float" />
+        <Parameter Name="NightRange" Guid="a7b8c9d0-e1f2-5012-3456-789abcdf0126" Value="0" Type="float" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="EatPickableBehavior" Guid="b8c9d0e1-f2a3-5123-4567-89abcdf01237">
+        <ParameterSet Name="FoodFactors" Guid="c9d0e1f2-a3b4-5234-5678-9abcdf012348">
+            <Parameter Name="Meat" Guid="d0e1f2a3-b4c5-5345-6789-abcdf0123459" Value="1" Type="float" />
+        </ParameterSet>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="CreatureSounds" Guid="e9f0a1b2-c3d4-5567-89ab-cdf01234567e">
+        <Parameter Name="PainSound" Guid="f0a1b2c3-d4e5-5678-9abc-df0123456713" Value="Audio/Creatures/LaMuerteX/Pain" Type="string" />
+        <Parameter Name="IdleSound" Guid="a1b2c3d4-e5f6-5789-abcd-f012345678b1" Value="Audio/Creatures/LaMuerteX/Idie" Type="string" />
+        <Parameter Name="AttackSound" Guid="b2c3d4e5-f6a7-5890-bcde-0123456789n2" Value="Audio/Creatures/LaMuerteX/Attack" Type="string" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="AvoidFireBehavior" Guid="c5d6e7f8-a9b0-5901-cdef-123456789abf" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c" />
+    <MemberComponentTemplate Name="Locomotion" Guid="d6e7f8a9-b0c1-6012-def0-23456789abd0">
+        <Parameter Name="AccelerationFactor" Guid="e7f8a9b0-c1d2-6123-ef01-3456789abcdf" Value="1.5" Type="float" />
+        <Parameter Name="FlySpeed" Guid="f8a9b0c1-d2e3-6234-f012-456789abcdef2" Value="0" Type="float" />
+        <Parameter Name="TurnSpeed" Guid="a9b0c1d2-e3f4-6345-0123-56789abcdef3" Value="9" Type="float" />
+        <Parameter Name="WalkSpeed" Guid="b0c1d2e3-f4a5-6456-1234-6789abcdef04" Value="4.8" Type="float" />
+        <Parameter Name="LadderSpeed" Guid="c1d2e3f4-a5b6-6567-2345-789abcdef015" Value="0" Type="float" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Loot" Guid="e3f4a5b6-c7d8-6789-4567-9abcdef01237">
+        <ParameterSet Name="Loot" Guid="f4a5b6c7-d8e9-6890-5678-abcdef012348">
+            <Parameter Name="1" Guid="a5b6c7d8-e9f0-6901-6789-bcdef0123459" Value="DiamondBlock;20;35" Type="string" />
+        </ParameterSet>
+        <ParameterSet Name="LootOnFire" Guid="b6c7d8e9-f0a1-7012-789a-cdef01234570" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Body" Guid="f7a8b9c0-d1e2-7123-89ab-def01234567b">
+        <Parameter Name="Mass" Guid="a8b9c0d1-e2f3-7234-9abc-ef0123456782" Value="75" Type="float" />
+        <Parameter Name="BoxSize" Guid="b9c0d1e2-f3a4-7345-abcd-f01234567893" Value="0.9,1.0,0.9" Type="Vector3" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Creature" Guid="c0d1e2f3-a4b5-7456-bcde-0123456789a5">
+        <Parameter Name="DisplayName" Guid="d1e2f3a4-b5c6-7567-cdef-123456789ab6" Value="La Muerte X" Type="string" />
+        <Parameter Name="Category" Guid="e2f3a4b5-c6d7-7678-def0-23456789abc7" Value="LandOther" Type="Game.CreatureCategory" />
+        <Parameter Name="Description" Guid="f3a4b5c6-d7e8-7789-ef01-3456789abcd8" Value="La Muerte X emerged from the violet infernal shadows, with skin and behavior forged in darkness. He is far from friendly his hostile nature drives him to destroy anything in his path. Approach him, and he will hunt you relentlessly… until death. His powers range from moderately strong physical strikes to deadly flame attacks; if you try to escape, he will launch fireballs at you. In the worst case, he hurls magical rocks that inflict devastating damage." Type="string" />
+        <Parameter Name="KillVerbs" Guid="a4b5c6d7-e8f9-7890-f012-456789abcde9" Value="Annihilated" Type="string" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="FindPlayerBehavior" Guid="b5c6d7e8-f9a0-7901-0123-56789abcdf0a" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031" />
+    <MemberComponentTemplate Name="Miner" Guid="c6d7e8f9-a0b1-8012-1234-6789abcdef0b" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
+        <Parameter Name="AttackPower" Guid="d7e8f9a0-b1c2-8123-2345-789abcdef01c" Value="9.0" Type="float" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="HumanModel" Guid="e8f9a0b1-c2d3-8234-3456-89abcdef012d" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
+        <Parameter Name="WalkLegsAngle" Guid="f9a0b1c2-d3e4-8345-4567-9abcdef0123e" Value="0.45" Type="float" />
+        <Parameter Name="ModelName" Guid="a0b1c2d3-e4f5-8456-5678-abcdef01234f" Value="Models/HumanMale" Type="string" />
+        <Parameter Name="TextureOverride" Guid="b1c2d3e4-f5a6-8567-6789-bcdef0123450" Value="Textures/La Muerte X" Type="string" />
+        <Parameter Name="WalkAnimationSpeed" Guid="c2d3e4f5-a6b7-8678-789a-cdef01234571" Value="0.75" Type="float" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Health" Guid="d3e4f5a6-b7c8-8789-89ab-def012345672">
+        <Parameter Name="Health" Guid="e4f5a6b7-c8d9-8890-9abc-ef0123456783" Value="35" Type="float" />
+        <Parameter Name="FireResilience" Guid="f5a6b7c8-d9e0-8901-abcd-f01234567894" Value="25" Type="float" />
+        <Parameter Name="AttackResilience" Guid="a6b7c8d9-e0f1-9012-bcde-0123456789a5" Value="28" Type="float" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="OnFire" Guid="b7c8d9e0-f1a2-9123-cdef-123456789ab6" />
+    <MemberComponentTemplate Name="WalkAroundBehavior" Guid="c8d9e0f1-a2b3-9234-def0-23456789abc7" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71" />
+    <MemberComponentTemplate Name="HerdBehavior" Guid="d9e0f1a2-b3c4-9345-ef01-3456789abcd8" InheritanceParent="dfe7218e-ce14-4bde-8dac-f919c38e9efe">
+        <Parameter Name="HerdName" Guid="e0f1a2b3-c4d5-9456-f012-456789abcde9" Value="Muerte" Type="string" />
+        <Parameter Name="AutoNearbyCreaturesHelp" Guid="f1a2b3c4-d5e6-9567-0123-56789abcdf0a" Value="True" Type="bool" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="FeedBehavior" Guid="a2b3c4d5-e6f7-9678-1234-6789abcdef0b" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
+        <Parameter Name="AutoFeed" Guid="b3c4d5e6-f7a8-9789-2345-789abcdef01c" Value="False" Type="bool" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="ChaseBehavior" Guid="c4d5e6f7-a8b9-9890-3456-89abcdef012d" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
+        <Parameter Name="AutoChaseMask" Guid="d5e6f7a8-b9c0-9901-4567-9abcdef0123e" Value="LandPredator, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory" />
+        <Parameter Name="DayChaseRange" Guid="e6f7a8b9-c0d1-0012-5678-abcdef01234f" Value="9" Type="float" />
+        <Parameter Name="NightChaseRange" Guid="f7a8b9c0-d1e2-0123-6789-bcdef0123450" Value="14" Type="float" />
+        <Parameter Name="ChaseNonPlayerProbability" Guid="a8b9c0d1-e2f3-0234-789a-cdef01234571" Value="0.05" Type="float" />
+        <Parameter Name="NightChaseTime" Guid="b9c0d1e2-f3a4-0345-89ab-def012345672" Value="20" Type="float" />
+    </MemberComponentTemplate>
+    <ParameterSet Name="CreatureEggData" Guid="d0e1f2a3-b4c5-0456-bcde-0123456789ad">
+        <Parameter Name="Color" Guid="e1f2a3b4-c5d6-0567-cdef-123456789abe" Value="180,70,255" Type="Color" /> <!-- Púrpura neón claro -->
+        <Parameter Name="TextureSlot" Guid="f2a3b4c5-d6e7-0678-def0-23456789abcf" Value="171" Type="int" />
+        <Parameter Name="SwapUV" Guid="a3b4c5d6-e7f8-0789-ef01-3456789abcde" Value="False" Type="bool" />
+        <Parameter Name="DisplayName" Guid="b4c5d6e7-f8a9-0890-f012-456789abcde1" Value="La Muerte X Egg" Type="string" />
+        <Parameter Name="EggTypeIndex" Guid="c5d6e7f8-a9b0-0901-0123-56789abcdef2" Value="211" Type="int" />
     </ParameterSet>
 </EntityTemplate>
     </Folder>
