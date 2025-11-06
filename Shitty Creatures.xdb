@@ -172,12 +172,12 @@
     <ParameterSet Name="FoodFactors" Guid="f6a7b8c9-d0e1-5234-5678-9abcdef01234">
         <Parameter Name="Bread" Guid="a7b8c9d0-e1f2-5345-6789-abcdef012345" Value="1" Type="float" />
     </ParameterSet>
-</MemberComponentTemplate>
+</MemberComponentTemplate>  <!-- CIERRE CORRECTO -->
 <MemberComponentTemplate Name="CreatureSounds" Guid="f3a1c9d2-4e7b-4c3f-9a6e-2b7d5c8e1f44">
-    <Parameter Name="PainSound" Guid="a9d3f7b1-2c4e-4d8f-9f3a-7e6b2c1d8a90" Value="Audio/Creatures/Paco/Pain" Type="string" />
-    <Parameter Name="IdleSound" Guid="c1e8a2f4-5b3d-4f7e-8c9a-1d2f3b7e6a55" Value="Audio/Creatures/Paco/Idie" Type="string" />
-    <Parameter Name="AttackSound" Guid="52fcc56b-22a6-4a85-9b53-e6ddfd23f772" Value="Audio/Creatures/Paco/Attack" Type="string" />
-</MemberComponentTemplate>
+    <Parameter Name="PainSound" Guid="a9d3f7b1-2c4e-4d8f-9f3a-7e6b2c1d8a90" Value="Audio/Creatures/Eslabon/Pain" Type="string" />
+    <Parameter Name="IdleSound" Guid="c1e8a2f4-5b3d-4f7e-8c9a-1d2f3b7e6a55" Value="Audio/Creatures/Eslabon/Idie" Type="string" />
+    <Parameter Name="AttackSound" Guid="52fcc56b-22a6-4a85-9b53-e6ddfd23f772" Value="Audio/Creatures/Eslabon/Attack" Type="string" />
+</MemberComponentTemplate>  <!-- CIERRE CORRECTO -->
     <MemberComponentTemplate Name="AvoidFireBehavior" Guid="c9d0e1f2-a3b4-5567-89ab-cdef01234567" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c" />
     <MemberComponentTemplate Name="Locomotion" Guid="d0e1f2a3-b4c5-5678-9abc-def012345678">
         <Parameter Name="AccelerationFactor" Guid="e1f2a3b4-c5d6-5789-abcd-ef0123456789" Value="1.2" Type="float" />
@@ -869,7 +869,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="c0d1e2f3-a4b5-7456-bcde-0123456789a5">
         <Parameter Name="DisplayName" Guid="d1e2f3a4-b5c6-7567-cdef-123456789ab6" Value="La Muerte X" Type="string" />
-        <Parameter Name="Category" Guid="e2f3a4b5-c6d7-7678-def0-23456789abc7" Value="LandPredator, WaterOther" Type="Game.CreatureCategory" />
+        <Parameter Name="Category" Guid="e2f3a4b5-c6d7-7678-def0-23456789abc7" Value="LandOther" Type="Game.CreatureCategory" />
         <Parameter Name="Description" Guid="f3a4b5c6-d7e8-7789-ef01-3456789abcd8" Value="La Muerte X emerged from the violet infernal shadows, with skin and behavior forged in darkness. He is far from friendly his hostile nature drives him to destroy anything in his path. Approach him, and he will hunt you relentlessly… until death. His powers range from moderately strong physical strikes to deadly flame attacks; if you try to escape, he will launch fireballs at you. In the worst case, he hurls magical rocks that inflict devastating damage." Type="string" />
         <Parameter Name="KillVerbs" Guid="a4b5c6d7-e8f9-7890-f012-456789abcde9" Value="Annihilated" Type="string" />
     </MemberComponentTemplate>
@@ -880,7 +880,7 @@
     <MemberComponentTemplate Name="HumanModel" Guid="e8f9a0b1-c2d3-8234-3456-89abcdef012d" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
         <Parameter Name="WalkLegsAngle" Guid="f9a0b1c2-d3e4-8345-4567-9abcdef0123e" Value="0.45" Type="float" />
         <Parameter Name="ModelName" Guid="a0b1c2d3-e4f5-8456-5678-abcdef01234f" Value="Models/HumanMale" Type="string" />
-        <Parameter Name="TextureOverride" Guid="b1c2d3e4-f5a6-8567-6789-bcdef0123450" Value="Textures/La Muerte X" Type="string" />
+        <Parameter Name="TextureOverride" Guid="b1c2d3e4-f5a6-8567-6789-bcdef0123450" Value="Textures/LaMuerteX" Type="string" />
         <Parameter Name="WalkAnimationSpeed" Guid="c2d3e4f5-a6b7-8678-789a-cdef01234571" Value="0.75" Type="float" />
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="d3e4f5a6-b7c8-8789-89ab-def012345672">
@@ -898,7 +898,7 @@
         <Parameter Name="AutoFeed" Guid="b3c4d5e6-f7a8-9789-2345-789abcdef01c" Value="False" Type="bool" />
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="ChaseBehavior" Guid="c4d5e6f7-a8b9-9890-3456-89abcdef012d" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
-    <Parameter Name="AutoChaseMask" Guid="d5e6f7a8-b9c0-9901-4567-9abcdef0123e" Value="LandOther, LandPredator" Type="Game.CreatureCategory" />
+    <Parameter Name="AutoChaseMask" Guid="d5e6f7a8-b9c0-9901-4567-9abcdef0123e" Value="LandPredator, WaterPredator" Type="Game.CreatureCategory" />
     <Parameter Name="DayChaseRange" Guid="e6f7a8b9-c0d1-0012-5678-abcdef01234f" Value="15" Type="float" />
     <Parameter Name="NightChaseRange" Guid="f7a8b9c0-d1e2-0123-6789-bcdef0123450" Value="20" Type="float" />
     <Parameter Name="ChaseNonPlayerProbability" Guid="a8b9c0d1-e2f3-0234-789a-cdef01234571" Value="0.1" Type="float" />
@@ -907,7 +907,7 @@
     <ParameterSet Name="CreatureEggData" Guid="d0e1f2a3-b4c5-0456-bcde-0123456789ad">
         <Parameter Name="Color" Guid="e1f2a3b4-c5d6-0567-cdef-123456789abe" Value="180,70,255" Type="Color" />
         <Parameter Name="TextureSlot" Guid="f2a3b4c5-d6e7-0678-def0-23456789abcf" Value="171" Type="int" />
-        <Parameter Name="SwapUV" Guid="a3b4c5d6-e7f8-0789-ef01-3456789abcde" Value="False" Type="bool" />
+        <Parameter Name="SwapUV" Guid="a3b4c5d6-e7f8-0789-ef01-3456789abcde" Value="True" Type="bool" />
         <Parameter Name="DisplayName" Guid="b4c5d6e7-f8a9-0890-f012-456789abcde1" Value="La Muerte X Egg" Type="string" />
         <Parameter Name="EggTypeIndex" Guid="c5d6e7f8-a9b0-0901-0123-56789abcdef2" Value="211" Type="int" />
     </ParameterSet>
@@ -954,7 +954,7 @@
     <MemberComponentTemplate Name="HumanModel" Guid="b2c3d4e5-f6a7-8123-8901-901234567890" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
         <Parameter Name="WalkLegsAngle" Guid="c3d4e5f6-a7b8-8234-9012-012345678901" Value="0.3" Type="float" />
         <Parameter Name="ModelName" Guid="d4e5f6a7-b8c9-8345-0123-123456789012" Value="Models/HumanMale" Type="string" />
-        <Parameter Name="TextureOverride" Guid="e5f6a7b8-c9d0-8456-1234-234567890123" Value="Textures/El Señor De Las Tumbas Moradas" Type="string" />
+        <Parameter Name="TextureOverride" Guid="e5f6a7b8-c9d0-8456-1234-234567890123" Value="Textures/El Senor De Las Tumbas Moradas" Type="string" />
         <Parameter Name="WalkAnimationSpeed" Guid="f6a7b8c9-d0e1-8567-2345-345678901234" Value="0.55" Type="float" />
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="a7b8c9d0-e1f2-8678-3456-456789012345">
@@ -1097,7 +1097,7 @@
     <MemberComponentTemplate Name="Creature" Guid="c6d7e8f9-a0b1-7345-0123-323456789012">
         <Parameter Name="DisplayName" Guid="d7e8f9a0-b1c2-7456-1234-434567890123" Value="Lider Calaverico Supremo Alfa" Type="string" />
         <Parameter Name="Category" Guid="e8f9a0b1-c2d3-7567-2345-545678901234" Value="LandOther" Type="Game.CreatureCategory" />
-        <Parameter Name="Description" Guid="f9a0b1c2-d3e4-7678-3456-656789012345" Value="He’s not just a threat he’s a declaration of war. Líder Calavérico Supremo Alfa is the mid-tier juggernaut of the tomb realm, a refined beast forged from chaos and vengeance. Stronger than most, faster than many, and meaner than you’d expect, he’s the kind of enemy that doesn’t wait for introductions. His attacks? Heavy and relentless. His speed? Almost unnatural. And when the moon shifts be it full or new he mutates into something far more dangerous. Some say his form resembles a Tank. Others wonder if he’s meant to rival Fumador Químico Brawny in raw strength, impact, and destruction. Want to know for sure? Then set the stage and watch them clash. Just don’t try it in Creative Mode that’s like watching a storm from behind bulletproof glass. Líder Calavérico Supremo Alfa is not your ally. He’s not here to talk, negotiate, or join your cause. He is your enemy. And if you’re not ready… he’ll make sure you never get the chance to be." Type="string" />
+        <Parameter Name="Description" Guid="f9a0b1c2-d3e4-7678-3456-656789012345" Value="" Type="string" />
         <Parameter Name="KillVerbs" Guid="a0b1c2d3-e4f5-7789-4567-767890123456" Value="Aniquilado" Type="string" />
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="b1c2d3e4-f5a6-7890-5678-878901234567" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031" />
