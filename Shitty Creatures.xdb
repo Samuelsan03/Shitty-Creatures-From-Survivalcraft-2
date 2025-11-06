@@ -172,12 +172,12 @@
     <ParameterSet Name="FoodFactors" Guid="f6a7b8c9-d0e1-5234-5678-9abcdef01234">
         <Parameter Name="Bread" Guid="a7b8c9d0-e1f2-5345-6789-abcdef012345" Value="1" Type="float" />
     </ParameterSet>
-</MemberComponentTemplate>  <!-- CIERRE CORRECTO -->
+</MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureSounds" Guid="f3a1c9d2-4e7b-4c3f-9a6e-2b7d5c8e1f44">
-    <Parameter Name="PainSound" Guid="a9d3f7b1-2c4e-4d8f-9f3a-7e6b2c1d8a90" Value="Audio/Creatures/Eslabon/Pain" Type="string" />
-    <Parameter Name="IdleSound" Guid="c1e8a2f4-5b3d-4f7e-8c9a-1d2f3b7e6a55" Value="Audio/Creatures/Eslabon/Idie" Type="string" />
-    <Parameter Name="AttackSound" Guid="52fcc56b-22a6-4a85-9b53-e6ddfd23f772" Value="Audio/Creatures/Eslabon/Attack" Type="string" />
-</MemberComponentTemplate>  <!-- CIERRE CORRECTO -->
+    <Parameter Name="PainSound" Guid="a9d3f7b1-2c4e-4d8f-9f3a-7e6b2c1d8a90" Value="Audio/Creatures/Paco/Pain" Type="string" />
+    <Parameter Name="IdleSound" Guid="c1e8a2f4-5b3d-4f7e-8c9a-1d2f3b7e6a55" Value="Audio/Creatures/Paco/Idie" Type="string" />
+    <Parameter Name="AttackSound" Guid="52fcc56b-22a6-4a85-9b53-e6ddfd23f772" Value="Audio/Creatures/Paco/Attack" Type="string" />
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidFireBehavior" Guid="c9d0e1f2-a3b4-5567-89ab-cdef01234567" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c" />
     <MemberComponentTemplate Name="Locomotion" Guid="d0e1f2a3-b4c5-5678-9abc-def012345678">
         <Parameter Name="AccelerationFactor" Guid="e1f2a3b4-c5d6-5789-abcd-ef0123456789" Value="1.2" Type="float" />
