@@ -1619,9 +1619,9 @@
         </ParameterSet>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="CreatureSounds" Guid="7e6f5a4b-3c2d-4e5f-9a8b-1c2d3e4f5a6b">
-        <Parameter Name="PainSound" Guid="8d7e6f5a-4b3c-4f5e-9a8b-2d3e4f5a6b7c" Value="Audio/Creatures/Paco/Pain" Type="string"/>
-        <Parameter Name="IdleSound" Guid="9e8f7a6b-5c4d-4a5f-8b9c-3e4f5a6b7c8d" Value="Audio/Creatures/Paco/Idie" Type="string"/>
-        <Parameter Name="AttackSound" Guid="a0f9e8b7-6d5c-4b6a-9c8d-4f5a6b7c8d9e" Value="Audio/Creatures/Paco/Attack" Type="string"/>
+        <Parameter Name="PainSound" Guid="8d7e6f5a-4b3c-4f5e-9a8b-2d3e4f5a6b7c" Value="Audio/Creatures/CarlJohnson/Pain" Type="string"/>
+        <Parameter Name="IdleSound" Guid="9e8f7a6b-5c4d-4a5f-8b9c-3e4f5a6b7c8d" Value="Audio/Creatures/CarlJohnson/Idie" Type="string"/>
+        <Parameter Name="AttackSound" Guid="a0f9e8b7-6d5c-4b6a-9c8d-4f5a6b7c8d9e" Value="Audio/Creatures/CarlJohnson/Attack" Type="string"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidFireBehavior" Guid="b6c7d8e9-f0a1-5567-89ab-cdef01234567" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
     <MemberComponentTemplate Name="Locomotion" Guid="c7d8e9f0-a1b2-5678-9abc-def012345678">
