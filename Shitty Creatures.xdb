@@ -1476,7 +1476,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="e1f2a3b4-c5d6-7567-cdef-123456789ab3">
         <Parameter Name="DisplayName" Guid="f2a3b4c5-d6e7-7678-def0-23456789abc4" Value="Hombre Agua" Type="string"/>
-        <Parameter Name="Category" Guid="a3b4c5d6-e7f8-7789-ef01-3456789abcd5" Value="WaterPredator" Type="Game.CreatureCategory"/>
+        <Parameter Name="Category" Guid="a3b4c5d6-e7f8-7789-ef01-3456789abcd5" Value="LandPredator" Type="Game.CreatureCategory"/>
         <Parameter Name="Description" Guid="b4c5d6e7-f8a9-7890-f012-456789abcde6" Value="Hombre Agua is calm but deadly. He hides in rivers and rain, striking with freezing bursts and crushing waves. Fire heals him. Explosives barely scratch him. His body flows like liquid—hard to hit, harder to stop. He’s part of Muerte, and fights beside his best brother, Hombre Lava. Together, they cover land and water, burning and drowning anything in their way. If you’re Alianza, bring lightning, frost, or stay far away. Wet terrain is his home. Dry ground is your only chance." Type="string"/>
         <Parameter Name="KillVerbs" Guid="c5d6e7f8-a9b0-7901-0123-56789abcdef7" Value="Wet, Bathed" Type="string"/>
     </MemberComponentTemplate>
