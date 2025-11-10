@@ -1,0 +1,325 @@
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using Engine;
+using GameEntitySystem;
+using TemplatesDatabase;
+
+namespace Game
+{
+	// Token: 0x0200016B RID: 363
+	public abstract class ComponentInventoryBase : Component, IInventory
+	{
+		// Token: 0x17000112 RID: 274
+		// (get) Token: 0x06000A47 RID: 2631 RVA: 0x0003FA1B File Offset: 0x0003DC1B
+		Project IInventory.Project
+		{
+			get
+			{
+				return base.Project;
+			}
+		}
+
+		// Token: 0x17000113 RID: 275
+		// (get) Token: 0x06000A48 RID: 2632 RVA: 0x0003FA23 File Offset: 0x0003DC23
+		public virtual int SlotsCount
+		{
+			get
+			{
+				return this.m_slots.Count;
+			}
+		}
+
+		// Token: 0x17000114 RID: 276
+		// (get) Token: 0x06000A49 RID: 2633 RVA: 0x0003FA30 File Offset: 0x0003DC30
+		// (set) Token: 0x06000A4A RID: 2634 RVA: 0x0003FA38 File Offset: 0x0003DC38
+		public virtual int VisibleSlotsCount
+		{
+			get
+			{
+				return this.SlotsCount;
+			}
+			set
+			{
+			}
+		}
+
+		// Token: 0x17000115 RID: 277
+		// (get) Token: 0x06000A4B RID: 2635 RVA: 0x0003FA3A File Offset: 0x0003DC3A
+		// (set) Token: 0x06000A4C RID: 2636 RVA: 0x0003FA3D File Offset: 0x0003DC3D
+		public virtual int ActiveSlotIndex
+		{
+			get
+			{
+				return -1;
+			}
+			set
+			{
+			}
+		}
+
+		// Token: 0x06000A4D RID: 2637 RVA: 0x0003FA40 File Offset: 0x0003DC40
+		public static int FindAcquireSlotForItem(IInventory inventory, int value)
+		{
+			for (int i = 0; i < inventory.SlotsCount; i++)
+			{
+				if (inventory.GetSlotCount(i) > 0 && inventory.GetSlotValue(i) == value && inventory.GetSlotCount(i) < inventory.GetSlotCapacity(i, value))
+				{
+					return i;
+				}
+			}
+			for (int j = 0; j < inventory.SlotsCount; j++)
+			{
+				if (inventory.GetSlotCount(j) == 0 && inventory.GetSlotCapacity(j, value) > 0)
+				{
+					return j;
+				}
+			}
+			return -1;
+		}
+
+		// Token: 0x06000A4E RID: 2638 RVA: 0x0003FAB0 File Offset: 0x0003DCB0
+		public static int AcquireItems(IInventory inventory, int value, int count)
+		{
+			while (count > 0)
+			{
+				int num = ComponentInventoryBase.FindAcquireSlotForItem(inventory, value);
+				if (num < 0)
+				{
+					break;
+				}
+				inventory.AddSlotItems(num, value, 1);
+				count--;
+			}
+			return count;
+		}
+
+		// Token: 0x06000A4F RID: 2639 RVA: 0x0003FAE0 File Offset: 0x0003DCE0
+		public ComponentPlayer FindInteractingPlayer()
+		{
+			ComponentPlayer componentPlayer = base.Entity.FindComponent<ComponentPlayer>();
+			if (componentPlayer == null)
+			{
+				ComponentBlockEntity componentBlockEntity = base.Entity.FindComponent<ComponentBlockEntity>();
+				if (componentBlockEntity != null)
+				{
+					Vector3 position;
+					position..ctor(componentBlockEntity.Coordinates);
+					componentPlayer = base.Project.FindSubsystem<SubsystemPlayers>(true).FindNearestPlayer(position);
+				}
+			}
+			return componentPlayer;
+		}
+
+		// Token: 0x06000A50 RID: 2640 RVA: 0x0003FB2C File Offset: 0x0003DD2C
+		public static void DropSlotItems(IInventory inventory, int slotIndex, Vector3 position, Vector3 velocity)
+		{
+			int slotCount = inventory.GetSlotCount(slotIndex);
+			if (slotCount > 0)
+			{
+				int slotValue = inventory.GetSlotValue(slotIndex);
+				int num = inventory.RemoveSlotItems(slotIndex, slotCount);
+				if (num > 0)
+				{
+					Entity owner = null;
+					Component component = inventory as Component;
+					if (component != null)
+					{
+						owner = component.Entity;
+					}
+					inventory.Project.FindSubsystem<SubsystemPickables>(true).AddPickable(slotValue, num, position, new Vector3?(velocity), null, owner);
+				}
+			}
+		}
+
+		// Token: 0x06000A51 RID: 2641 RVA: 0x0003FB98 File Offset: 0x0003DD98
+		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
+		{
+			int value = valuesDictionary.GetValue<int>("SlotsCount");
+			for (int i = 0; i < value; i++)
+			{
+				this.m_slots.Add(new ComponentInventoryBase.Slot());
+			}
+			ValuesDictionary value2 = valuesDictionary.GetValue<ValuesDictionary>("Slots");
+			for (int j = 0; j < this.m_slots.Count; j++)
+			{
+				ValuesDictionary value3 = value2.GetValue<ValuesDictionary>("Slot" + j.ToString(CultureInfo.InvariantCulture), null);
+				if (value3 != null)
+				{
+					ComponentInventoryBase.Slot slot = this.m_slots[j];
+					slot.Value = value3.GetValue<int>("Contents");
+					slot.Count = value3.GetValue<int>("Count");
+				}
+			}
+		}
+
+		// Token: 0x06000A52 RID: 2642 RVA: 0x0003FC44 File Offset: 0x0003DE44
+		public override void Save(ValuesDictionary valuesDictionary, EntityToIdMap entityToIdMap)
+		{
+			ValuesDictionary valuesDictionary2 = new ValuesDictionary();
+			valuesDictionary.SetValue<ValuesDictionary>("Slots", valuesDictionary2);
+			for (int i = 0; i < this.m_slots.Count; i++)
+			{
+				ComponentInventoryBase.Slot slot = this.m_slots[i];
+				if (slot.Count > 0)
+				{
+					ValuesDictionary valuesDictionary3 = new ValuesDictionary();
+					valuesDictionary2.SetValue<ValuesDictionary>("Slot" + i.ToString(CultureInfo.InvariantCulture), valuesDictionary3);
+					valuesDictionary3.SetValue<int>("Contents", slot.Value);
+					valuesDictionary3.SetValue<int>("Count", slot.Count);
+				}
+			}
+		}
+
+		// Token: 0x06000A53 RID: 2643 RVA: 0x0003FCD4 File Offset: 0x0003DED4
+		public virtual int GetSlotValue(int slotIndex)
+		{
+			if (slotIndex < 0 || slotIndex >= this.m_slots.Count)
+			{
+				return 0;
+			}
+			if (this.m_slots[slotIndex].Count <= 0)
+			{
+				return 0;
+			}
+			return this.m_slots[slotIndex].Value;
+		}
+
+		// Token: 0x06000A54 RID: 2644 RVA: 0x0003FD11 File Offset: 0x0003DF11
+		public virtual int GetSlotCount(int slotIndex)
+		{
+			if (slotIndex >= 0 && slotIndex < this.m_slots.Count)
+			{
+				return this.m_slots[slotIndex].Count;
+			}
+			return 0;
+		}
+
+		// Token: 0x06000A55 RID: 2645 RVA: 0x0003FD38 File Offset: 0x0003DF38
+		public virtual int GetSlotCapacity(int slotIndex, int value)
+		{
+			if (slotIndex >= 0 && slotIndex < this.m_slots.Count)
+			{
+				return BlocksManager.Blocks[Terrain.ExtractContents(value)].GetMaxStacking(value);
+			}
+			return 0;
+		}
+
+		// Token: 0x06000A56 RID: 2646 RVA: 0x0003FD60 File Offset: 0x0003DF60
+		public virtual int GetSlotProcessCapacity(int slotIndex, int value)
+		{
+			int slotCount = this.GetSlotCount(slotIndex);
+			int slotValue = this.GetSlotValue(slotIndex);
+			if (slotCount > 0 && slotValue != 0)
+			{
+				SubsystemBlockBehavior[] blockBehaviors = base.Project.FindSubsystem<SubsystemBlockBehaviors>(true).GetBlockBehaviors(Terrain.ExtractContents(slotValue));
+				for (int i = 0; i < blockBehaviors.Length; i++)
+				{
+					int processInventoryItemCapacity = blockBehaviors[i].GetProcessInventoryItemCapacity(this, slotIndex, value);
+					if (processInventoryItemCapacity > 0)
+					{
+						return processInventoryItemCapacity;
+					}
+				}
+			}
+			return 0;
+		}
+
+		// Token: 0x06000A57 RID: 2647 RVA: 0x0003FDBC File Offset: 0x0003DFBC
+		public unsafe virtual void AddSlotItems(int slotIndex, int value, int count)
+		{
+			if (count > 0 && slotIndex >= 0 && slotIndex < this.m_slots.Count)
+			{
+				ComponentInventoryBase.Slot slot = this.m_slots[slotIndex];
+				int slotValue = this.GetSlotValue(slotIndex);
+				int slotCount = this.GetSlotCount(slotIndex);
+				int slotCapacity = this.GetSlotCapacity(slotIndex, value);
+				if (slotCount != 0 && slotValue != value)
+				{
+					string text = "Cannot add slot items because items are different. Slot {0} Contains BlockValue {1} with count {2}. The value to add is {3} with count {4}. Slot capacity is {5}";
+					<>y__InlineArray6<object> <>y__InlineArray = default(<>y__InlineArray6<object>);
+					*<PrivateImplementationDetails>.InlineArrayElementRef<<>y__InlineArray6<object>, object>(ref <>y__InlineArray, 0) = slotIndex;
+					*<PrivateImplementationDetails>.InlineArrayElementRef<<>y__InlineArray6<object>, object>(ref <>y__InlineArray, 1) = slotValue;
+					*<PrivateImplementationDetails>.InlineArrayElementRef<<>y__InlineArray6<object>, object>(ref <>y__InlineArray, 2) = slotCount;
+					*<PrivateImplementationDetails>.InlineArrayElementRef<<>y__InlineArray6<object>, object>(ref <>y__InlineArray, 3) = value;
+					*<PrivateImplementationDetails>.InlineArrayElementRef<<>y__InlineArray6<object>, object>(ref <>y__InlineArray, 4) = count;
+					*<PrivateImplementationDetails>.InlineArrayElementRef<<>y__InlineArray6<object>, object>(ref <>y__InlineArray, 5) = slotCapacity;
+					throw new InvalidOperationException(string.Format(text, <PrivateImplementationDetails>.InlineArrayAsReadOnlySpan<<>y__InlineArray6<object>, object>(<>y__InlineArray, 6)));
+				}
+				if (this.GetSlotCount(slotIndex) + count > slotCapacity)
+				{
+					string text2 = "Cannot add slot items because it exceeded capacity. Slot {0} Contains BlockValue {1} with count {2}. The value to add is {3} with count {4}. Slot capacity is {5}";
+					<>y__InlineArray6<object> <>y__InlineArray2 = default(<>y__InlineArray6<object>);
+					*<PrivateImplementationDetails>.InlineArrayElementRef<<>y__InlineArray6<object>, object>(ref <>y__InlineArray2, 0) = slotIndex;
+					*<PrivateImplementationDetails>.InlineArrayElementRef<<>y__InlineArray6<object>, object>(ref <>y__InlineArray2, 1) = slotValue;
+					*<PrivateImplementationDetails>.InlineArrayElementRef<<>y__InlineArray6<object>, object>(ref <>y__InlineArray2, 2) = slotCount;
+					*<PrivateImplementationDetails>.InlineArrayElementRef<<>y__InlineArray6<object>, object>(ref <>y__InlineArray2, 3) = value;
+					*<PrivateImplementationDetails>.InlineArrayElementRef<<>y__InlineArray6<object>, object>(ref <>y__InlineArray2, 4) = count;
+					*<PrivateImplementationDetails>.InlineArrayElementRef<<>y__InlineArray6<object>, object>(ref <>y__InlineArray2, 5) = slotCapacity;
+					throw new InvalidOperationException(string.Format(text2, <PrivateImplementationDetails>.InlineArrayAsReadOnlySpan<<>y__InlineArray6<object>, object>(<>y__InlineArray2, 6)));
+				}
+				slot.Value = value;
+				slot.Count += count;
+			}
+		}
+
+		// Token: 0x06000A58 RID: 2648 RVA: 0x0003FF2C File Offset: 0x0003E12C
+		public virtual void ProcessSlotItems(int slotIndex, int value, int count, int processCount, out int processedValue, out int processedCount)
+		{
+			int slotCount = this.GetSlotCount(slotIndex);
+			int slotValue = this.GetSlotValue(slotIndex);
+			if (slotCount > 0 && slotValue != 0)
+			{
+				foreach (SubsystemBlockBehavior subsystemBlockBehavior in base.Project.FindSubsystem<SubsystemBlockBehaviors>(true).GetBlockBehaviors(Terrain.ExtractContents(slotValue)))
+				{
+					int processInventoryItemCapacity = subsystemBlockBehavior.GetProcessInventoryItemCapacity(this, slotIndex, value);
+					if (processInventoryItemCapacity > 0)
+					{
+						subsystemBlockBehavior.ProcessInventoryItem(this, slotIndex, value, count, MathUtils.Min(processInventoryItemCapacity, processCount), out processedValue, out processedCount);
+						return;
+					}
+				}
+			}
+			processedValue = value;
+			processedCount = count;
+		}
+
+		// Token: 0x06000A59 RID: 2649 RVA: 0x0003FFA8 File Offset: 0x0003E1A8
+		public virtual int RemoveSlotItems(int slotIndex, int count)
+		{
+			if (slotIndex >= 0 && slotIndex < this.m_slots.Count)
+			{
+				ComponentInventoryBase.Slot slot = this.m_slots[slotIndex];
+				count = MathUtils.Min(count, this.GetSlotCount(slotIndex));
+				slot.Count -= count;
+				return count;
+			}
+			return 0;
+		}
+
+		// Token: 0x06000A5A RID: 2650 RVA: 0x0003FFE8 File Offset: 0x0003E1E8
+		public virtual void DropAllItems(Vector3 position)
+		{
+			for (int i = 0; i < this.SlotsCount; i++)
+			{
+				ComponentInventoryBase.DropSlotItems(this, i, position, this.m_random.Float(5f, 10f) * Vector3.Normalize(new Vector3(this.m_random.Float(-1f, 1f), this.m_random.Float(1f, 2f), this.m_random.Float(-1f, 1f))));
+			}
+		}
+
+		// Token: 0x040005D6 RID: 1494
+		public List<ComponentInventoryBase.Slot> m_slots = new List<ComponentInventoryBase.Slot>();
+
+		// Token: 0x040005D7 RID: 1495
+		public Random m_random = new Random();
+
+		// Token: 0x0200049F RID: 1183
+		public class Slot
+		{
+			// Token: 0x04001994 RID: 6548
+			public int Value;
+
+			// Token: 0x04001995 RID: 6549
+			public int Count;
+		}
+	}
+}
