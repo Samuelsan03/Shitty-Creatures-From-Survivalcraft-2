@@ -2,6 +2,7 @@ using Engine;
 using GameEntitySystem;
 using System.Collections.Generic;
 using TemplatesDatabase;
+using System; // Añadir para Math.Pow
 
 namespace Game
 {
@@ -133,7 +134,6 @@ namespace Game
                 // Si está vacío, no hay objetos especiales
                 m_specialThrowableItemValues.Clear();
             }
-
 
             if (!string.IsNullOrEmpty(excludedItemsString))
             {
@@ -281,10 +281,7 @@ namespace Game
                     currentDistance > m_maxDistance ||
                     (m_componenttChaseBehavior.Target.Entity.FindComponent<ComponentHealth>()?.Health <= 0f) == true)
                 {
-                    if (m_componentModel is ComponentComboModel comboModel)
-                    {
-                        comboModel.JawFactor = 0f;
-                    }
+                    // Eliminado: JawFactor no existe en ComponentComboModel
                     m_isCharging = false;
                     return;
                 }
@@ -304,10 +301,7 @@ namespace Game
                     {
                         m_ChargeTime *= 0.9;
                     }
-                    if (m_componentModel is ComponentComboModel comboModel)
-                    {
-                        comboModel.JawFactor = 0f;
-                    }
+                    // Eliminado: JawFactor no existe en ComponentComboModel
 
                     m_nextUpdateTime = currentTime + m_ChargeTime;
                 }
@@ -347,11 +341,7 @@ namespace Game
                         m_isCharging = true;
                         m_chargeDuration = m_random.Float(m_randomWaitMin, m_randomWaitMax);
                         m_chargeStartTime = currentTime;
-                        // Iniciar animación de mandíbula
-                        if (m_componentModel is ComponentComboModel comboModel)
-                        {
-                            comboModel.JawFactor = 1f;
-                        }
+                        // Eliminado: JawFactor no existe en ComponentComboModel
                     }
                 }
                 else
@@ -391,7 +381,9 @@ namespace Game
             Vector3 vector2 = m_componenttChaseBehavior.Target.ComponentBody.Position - vector;
             m_distance = vector2.Length();
             Vector3 vector3 = Vector3.Normalize(vector2 + m_random.Vector3((m_distance < 10f) ? 0.4f : 1f));
-            float num = MathUtils.Lerp(0f, 40f, MathUtils.Pow((float)m_ChargeTime / 4f, 1f));
+
+            // CORREGIDO: Reemplazar MathUtils.Pow obsoleto por Math.Pow
+            float num = MathUtils.Lerp(0f, 40f, (float)Math.Pow((float)m_ChargeTime / 4f, 1f));
 
             // Disparar el proyectil
             m_subsystemProjectiles.FireProjectile(
