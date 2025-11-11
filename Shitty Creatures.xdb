@@ -324,82 +324,82 @@
     </ParameterSet>
 </EntityTemplate>
 
-<EntityTemplate Name="ElMarihuanero" Guid="7f7512b2-3936-4c4b-ba37-60ddd104ccd0" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-    <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="a7abb28d-523f-4c19-8fa4-9a9eb4d8ab0e" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
-        <Parameter Name="DayRange" Guid="dd9cdd4b-59ed-4f5a-83de-cb141a75f8e6" Value="0" Type="float"/>
-        <Parameter Name="NightRange" Guid="6787e5d6-c79f-4bb2-a0b6-b1598beca4d1" Value="0" Type="float"/>
+<EntityTemplate Name="ElMarihuanero" Guid="0d9b62e7-35da-4135-8a31-e53a316fbe25" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+    <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="b97afdb3-b551-467b-b044-4989ddc430aa" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
+        <Parameter Name="DayRange" Guid="50095d71-5c8c-4507-8c18-c7c08a187efb" Value="0" Type="float"/>
+        <Parameter Name="NightRange" Guid="103dd1f6-04c7-4e54-a423-459443ee5aa8" Value="0" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="EatPickableBehavior" Guid="cc53ccb7-a0f9-4230-a758-b3c6d989a811">
-        <ParameterSet Name="FoodFactors" Guid="5541a766-9d3d-4d97-bc84-d5e33b58736e">
-            <Parameter Name="Bread" Guid="4fc3edf1-fc4b-457e-991a-b8b65f14855f" Value="1" Type="float"/>
+    <MemberComponentTemplate Name="EatPickableBehavior" Guid="9a1eed05-7b6e-476d-9361-63fc5582dd57">
+        <ParameterSet Name="FoodFactors" Guid="a0c75c4f-8d00-468d-aa8b-0aab5d93e5c3">
+            <Parameter Name="Bread" Guid="fc8b3058-9e4a-4c61-8702-fc5f710d0623" Value="1" Type="float"/>
         </ParameterSet>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="CreatureSounds" Guid="9a8b7c6d-5e4f-4a3b-8c9d-0e1f2a3b4c5d">
-        <Parameter Name="PainSound" Guid="b9c8d7e6-f5a4-4b3c-9d8e-1f0a2b3c4d5e" Value="Audio/Creatures/ElMarihuanero/Pain" Type="string"/>
-        <Parameter Name="IdleSound" Guid="c8d9e0f1-a6b5-4c4d-8e9f-2a1b3c4d5e6f" Value="Audio/Creatures/ElMarihuanero/Idie" Type="string"/>
-        <Parameter Name="AttackSound" Guid="d7e6f5a4-b3c2-4d5e-9f0a-3b4c5d6e7f8a" Value="Audio/Creatures/ElMarihuanero/Attack" Type="string"/>
+    <MemberComponentTemplate Name="CreatureSounds" Guid="d7982663-2d94-48d1-b62a-5b237fb3b293">
+        <Parameter Name="PainSound" Guid="6bd82d18-dea5-4b1f-9ff7-c08f2181070a" Value="Audio/Creatures/ElMarihuanero/Pain" Type="string"/>
+        <Parameter Name="IdleSound" Guid="ec7c93b9-a63a-4b54-9f9d-1d243a18a84a" Value="Audio/Creatures/ElMarihuanero/Idie" Type="string"/>
+        <Parameter Name="AttackSound" Guid="5e427217-d6ee-43e8-85b6-a241fac1a15f" Value="Audio/Creatures/ElMarihuanero/Attack" Type="string"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="AvoidFireBehavior" Guid="b16afa81-5712-4446-9cb0-2283ea873e3e" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
-    <MemberComponentTemplate Name="Locomotion" Guid="0bf31de5-b741-40d2-9941-878c8409b647">
-        <Parameter Name="AccelerationFactor" Guid="6d2beb05-e6e6-4990-beec-2f38d5d40149" Value="0.8" Type="float"/>
-        <Parameter Name="FlySpeed" Guid="7945f06a-0760-481e-8159-af0f78e7297b" Value="0" Type="float"/>
-        <Parameter Name="TurnSpeed" Guid="b0f5405c-c9b0-4d97-9b3c-58cd61a41724" Value="3.5" Type="float"/>
-        <Parameter Name="WalkSpeed" Guid="f3c37817-9228-4884-8972-060c38374dbd" Value="2.5" Type="float"/>
-        <Parameter Name="LadderSpeed" Guid="5b898b24-c389-4d3e-afa4-2d316e7ad120" Value="0" Type="float"/>
+    <MemberComponentTemplate Name="AvoidFireBehavior" Guid="aaa8e2f3-923d-4205-be24-02d7135a479e" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
+    <MemberComponentTemplate Name="Locomotion" Guid="78cc9adc-9b35-41c8-9c0d-e575f9b63c00">
+        <Parameter Name="AccelerationFactor" Guid="4903bc31-d7d6-4041-8042-5e6e52074a12" Value="0.8" Type="float"/>
+        <Parameter Name="FlySpeed" Guid="1be8b9dc-c9c5-4cbe-9b04-dacd9dace5e6" Value="0" Type="float"/>
+        <Parameter Name="TurnSpeed" Guid="de66ee60-2088-42ea-ad10-b7dffa68dd1a" Value="3.5" Type="float"/>
+        <Parameter Name="WalkSpeed" Guid="09cb2534-5be4-43d0-a9f2-5e30b94615ec" Value="2.5" Type="float"/>
+        <Parameter Name="LadderSpeed" Guid="750e20d4-4347-41c0-a0cf-4a737b7cdcdf" Value="0" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="Loot" Guid="6debd42f-4bde-4eee-916c-e80f4f8b291e">
-        <ParameterSet Name="Loot" Guid="09cf6153-a693-476b-bba2-ecaae138e03b">
-            <Parameter Name="1" Guid="d90efdf6-ddaf-4e26-8082-0debfc070255" Value="Diamond;20;15" Type="string"/>
+    <MemberComponentTemplate Name="Loot" Guid="05240855-3d26-4c7f-8aa5-1aa62bac7e28">
+        <ParameterSet Name="Loot" Guid="5b0b8bc1-c752-49c4-aa90-3b11d701a8fc">
+            <Parameter Name="1" Guid="83e3b6af-40e7-4430-9972-dea1a3c0c018" Value="Diamond;20;15" Type="string"/>
         </ParameterSet>
-        <ParameterSet Name="LootOnFire" Guid="64133ef9-9f7c-4d9b-af73-51f7f14decc7"/>
+        <ParameterSet Name="LootOnFire" Guid="01f48bbf-ed6a-430c-9741-36df1c36b653"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="Body" Guid="8f02a65d-8371-4cdc-a9b8-465d8a5fe14b">
-        <Parameter Name="Mass" Guid="d0d73b83-930c-4055-8716-d13a7f04503a" Value="55" Type="float"/>
-        <Parameter Name="BoxSize" Guid="7c227fd6-d784-4db9-bc24-29ddf487197a" Value="0.8,0.9,0.8" Type="Vector3"/>
+    <MemberComponentTemplate Name="Body" Guid="553ca0fd-a9ac-40ae-8f4f-b4069a627ba2">
+        <Parameter Name="Mass" Guid="1fde294b-8b66-49bd-ad15-26b49bb66e2f" Value="55" Type="float"/>
+        <Parameter Name="BoxSize" Guid="8d78e8d8-dd27-4d83-b9ed-272dd96657a8" Value="0.8,0.9,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="Creature" Guid="5edda1bb-a597-4a77-b051-c1c8b17fbb41">
-        <Parameter Name="DisplayName" Guid="121c276e-1e0f-49ee-9652-3e481283e57e" Value="El Marihuanero" Type="string"/>
-        <Parameter Name="Category" Guid="7965b12f-567b-45f2-a9f3-d38e970404b9" Value="LandOther" Type="Game.CreatureCategory"/>
-        <Parameter Name="Description" Guid="6d1ae39f-255b-4af3-985f-1326dcd4b7d1" Value="Paco's missing link brother, he likes to smoke marijuana 24 hours a day non-stop. He's high from using a lot of marijuana, even if you don't trust him. If you touch him he will break your balls while he is high. It seems that his life almost touches Paco's heels but his blows are like medium strong not the same as Paco's" Type="string"/>
-        <Parameter Name="KillVerbs" Guid="da797b26-7ab2-4c97-b9a8-5da559013165" Value="He put the weed up your ass" Type="string"/>
+    <MemberComponentTemplate Name="Creature" Guid="063ee5a6-a891-4f81-845b-dbe944b1aa0a">
+        <Parameter Name="DisplayName" Guid="b754143c-574b-4164-a5f3-389ed583083b" Value="El Marihuanero" Type="string"/>
+        <Parameter Name="Category" Guid="7decf018-4bbe-44ce-8a3e-516d36fe63ee" Value="LandOther" Type="Game.CreatureCategory"/>
+        <Parameter Name="Description" Guid="cedc98b7-5e9a-47dc-af72-fe4542a5e4da" Value="Paco's missing link brother, he likes to smoke marijuana 24 hours a day non-stop. He's high from using a lot of marijuana, even if you don't trust him. If you touch him he will break your balls while he is high. It seems that his life almost touches Paco's heels but his blows are like medium strong not the same as Paco's" Type="string"/>
+        <Parameter Name="KillVerbs" Guid="e86ffc5f-0e5a-438b-b14f-7dc83a9ea82e" Value="He put the weed up your ass" Type="string"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="FindPlayerBehavior" Guid="71949db8-1fa7-4ada-9da6-e8acb8c807ab" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
-    <MemberComponentTemplate Name="Miner" Guid="fe7e9ade-f96f-4a01-8278-1fc5eca6ef82" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
-        <Parameter Name="AttackPower" Guid="2809901b-0b84-429f-983e-7c96254123a2" Value="3.2" Type="float"/>
+    <MemberComponentTemplate Name="FindPlayerBehavior" Guid="325937f0-e327-4fac-b236-33d0317a8c73" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
+    <MemberComponentTemplate Name="Miner" Guid="71e06217-4d5d-439b-b4ea-a1e11d778115" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
+        <Parameter Name="AttackPower" Guid="841fa564-4d90-44a0-8071-1effc03bd6cf" Value="3.2" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="HumanModel" Guid="4086d78b-4a6f-4737-a587-62bf123c86e0" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
-        <Parameter Name="WalkLegsAngle" Guid="78ebe2cc-f911-4081-acbf-6d3e32a80f5d" Value="0.2" Type="float"/>
-        <Parameter Name="ModelName" Guid="b084b28d-eca3-4db2-8057-607f172c9cc2" Value="Models/HumanRealist" Type="string"/>
-        <Parameter Name="TextureOverride" Guid="900a3807-dfbd-4f4b-9764-f85dd9da7019" Value="Textures/El Marihuanero" Type="string"/>
-        <Parameter Name="WalkAnimationSpeed" Guid="60abb653-18da-4380-beee-fc094d60332e" Value="0.4" Type="float"/>
+    <MemberComponentTemplate Name="HumanModel" Guid="ec7e2892-d4d9-4fae-92ff-b77e769017b4" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
+        <Parameter Name="WalkLegsAngle" Guid="acdb3778-5a3a-45b1-9d29-aa0ef849dd57" Value="0.2" Type="float"/>
+        <Parameter Name="ModelName" Guid="af7f2cd2-8ea5-4eaf-9928-e53b54115bb1" Value="Models/HumanRealist" Type="string"/>
+        <Parameter Name="TextureOverride" Guid="041671f8-d151-4522-950c-aa7616cc0498" Value="Textures/El Marihuanero" Type="string"/>
+        <Parameter Name="WalkAnimationSpeed" Guid="376afdd5-5aca-4dcc-bff7-eea2c446de90" Value="0.4" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="Health" Guid="fa08542a-516a-451b-a730-cc1c2e85a3ee">
-        <Parameter Name="Health" Guid="31604823-df48-479e-9b06-ccebc864ead2" Value="12" Type="float"/>
-        <Parameter Name="FireResilience" Guid="d724b531-f9d0-4139-a6d2-a14cfaae6d2e" Value="8" Type="float"/>
-        <Parameter Name="AttackResilience" Guid="cf355ca5-1dab-4d44-81b8-701c8ab624e7" Value="8" Type="float"/>
+    <MemberComponentTemplate Name="Health" Guid="ed2db84f-ffe1-4517-b1a9-d55ebee202d6">
+        <Parameter Name="Health" Guid="18ca29fd-02fb-4df5-8746-b98083877f84" Value="12" Type="float"/>
+        <Parameter Name="FireResilience" Guid="19742761-30ed-4e9b-80ac-aad729234ce9" Value="8" Type="float"/>
+        <Parameter Name="AttackResilience" Guid="aab18fcf-b785-43da-a6e4-f980b03fc8fb" Value="8" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="OnFire" Guid="bdc6ae6a-2481-42cb-86b3-c6dc0c2e7645"/>
-    <MemberComponentTemplate Name="WalkAroundBehavior" Guid="d5264eb6-22ac-4714-8c41-39aab04cd3b7" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
-    <MemberComponentTemplate Name="HerdBehavior" Guid="9544d4e8-2fc3-42e9-9f49-6e0a33acc146" InheritanceParent="dfe7218e-ce14-4bde-8dac-f919c38e9efe">
-        <Parameter Name="HerdName" Guid="92fe66ad-cd6a-4b53-a743-5703e9431344" Value="Alianza" Type="string"/>
-        <Parameter Name="AutoNearbyCreaturesHelp" Guid="bfd6d50c-c93a-46f1-bd3a-a3987486393f" Value="True" Type="bool"/>
+    <MemberComponentTemplate Name="OnFire" Guid="12bd61c1-52da-4b74-a16b-a9ff1db72ece"/>
+    <MemberComponentTemplate Name="WalkAroundBehavior" Guid="ba20bd8a-0f6c-459f-b9ca-c6bbeecd40b2" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
+    <MemberComponentTemplate Name="HerdBehavior" Guid="0299e805-14f6-4873-ad0b-0e767c598914" InheritanceParent="dfe7218e-ce14-4bde-8dac-f919c38e9efe">
+        <Parameter Name="HerdName" Guid="d6849e4b-8315-4121-a76a-eac85043dcfc" Value="Alianza" Type="string"/>
+        <Parameter Name="AutoNearbyCreaturesHelp" Guid="4d9ea770-1719-448e-b90b-b73da3640bc4" Value="True" Type="bool"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="FeedBehavior" Guid="6db3611f-39e7-4588-88d6-3c11fb8cdcb0" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
-        <Parameter Name="AutoFeed" Guid="9de462ca-9a58-4394-9c50-d3305ba157d5" Value="False" Type="bool"/>
+    <MemberComponentTemplate Name="FeedBehavior" Guid="3e2c006e-f057-4ec7-b8ff-fdae0f14f6d1" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
+        <Parameter Name="AutoFeed" Guid="b7761103-ad33-4f31-9486-d017a12fc6a9" Value="False" Type="bool"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="ChaseBehavior" Guid="044c2180-fcd9-48ee-93c1-7b83ddae7a16" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
-        <Parameter Name="AutoChaseMask" Guid="11d04df9-6d9d-4356-a69b-b4b64d62c1bc" Value="LandPredator, WaterPredator" Type="Game.CreatureCategory"/>
-        <Parameter Name="DayChaseRange" Guid="4194794b-a202-4344-a31e-4491cba1fb24" Value="4" Type="float"/>
-        <Parameter Name="NightChaseRange" Guid="c8d6d783-97a4-4f8c-b3f3-ea9bc870d5a7" Value="6" Type="float"/>
-        <Parameter Name="ChaseNonPlayerProbability" Guid="b6e2fa42-5a2d-481a-b691-50a33aaf0981" Value="0.01" Type="float"/>
-        <Parameter Name="NightChaseTime" Guid="a504a145-8199-427a-b2e8-82d6adcf339e" Value="8" Type="float"/>
+    <MemberComponentTemplate Name="ChaseBehavior" Guid="afc9b186-4c2f-452e-87e4-25a567315fbc" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
+        <Parameter Name="AutoChaseMask" Guid="d0e191df-5c22-43ff-867f-949a0127f008" Value="LandPredator, WaterPredator" Type="Game.CreatureCategory"/>
+        <Parameter Name="DayChaseRange" Guid="a1f7611f-d86e-4ad2-805c-6244834fa363" Value="4" Type="float"/>
+        <Parameter Name="NightChaseRange" Guid="d72fe83e-3d04-4794-86ae-93799d045a28" Value="6" Type="float"/>
+        <Parameter Name="ChaseNonPlayerProbability" Guid="515b4494-dd28-475b-9353-4bd906ba2daf" Value="0.01" Type="float"/>
+        <Parameter Name="NightChaseTime" Guid="8395d4b2-43de-416c-924e-709fba712ffc" Value="8" Type="float"/>
     </MemberComponentTemplate>
-    <ParameterSet Name="CreatureEggData" Guid="198253a4-839d-4367-83c1-93ff7992a5b9">
-        <Parameter Name="Color" Guid="b8d9f90f-9112-4d2e-9a20-48cbe01a53b7" Value="168,88,111" Type="Color"/>
-        <Parameter Name="TextureSlot" Guid="b455b941-6694-441b-9c37-b1c540c1877f" Value="165" Type="int"/>
-        <Parameter Name="SwapUV" Guid="cd1b37a1-b393-40c9-96ab-dbbb126e1f41" Value="False" Type="bool"/>
-        <Parameter Name="DisplayName" Guid="32be0bae-4a33-4179-948f-55fe469f07f2" Value="El Marihuanero Egg" Type="string"/>
-        <Parameter Name="EggTypeIndex" Guid="44da3450-b725-4bf1-a3a6-a8064363854e" Value="205" Type="int"/>
+    <ParameterSet Name="CreatureEggData" Guid="95ab93b5-17c8-43d6-bab0-27af40c4e78b">
+        <Parameter Name="Color" Guid="a8dfff79-34b7-40e0-b52a-cde2ccfb0205" Value="168,88,111" Type="Color"/>
+        <Parameter Name="TextureSlot" Guid="ba71fc0b-7cad-4306-bc5e-49f4fdc94a4c" Value="165" Type="int"/>
+        <Parameter Name="SwapUV" Guid="75bf253b-e2f9-48aa-baa5-692de5609595" Value="False" Type="bool"/>
+        <Parameter Name="DisplayName" Guid="1af800c6-7af2-44e7-90b4-7f1a95cbbce4" Value="El Marihuanero Egg" Type="string"/>
+        <Parameter Name="EggTypeIndex" Guid="8c4c9a83-aaca-4dc4-8e4c-2585907bc132" Value="205" Type="int"/>
     </ParameterSet>
 </EntityTemplate>
 
@@ -427,7 +427,7 @@
         <Parameter Name="WalkSpeed" Guid="8accac43-d197-44ce-8691-9e892e5d9657" Value="3.0" Type="float"/>
         <Parameter Name="LadderSpeed" Guid="1d56c528-a0c7-4efb-8a6d-97ab35611445" Value="0" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="Inventory" Guid="b1843c0f-78ce-414c-9969-6ece82c5650d" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
+<MemberComponentTemplate Name="Inventory" Guid="b1843c0f-78ce-414c-9969-6ece82c5650d" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
     <ParameterSet Name="Slots">
         <ParameterSet Name="Slot0">
             <Parameter Name="Contents" Value="212" Type="int"/>
@@ -1369,7 +1369,7 @@
     </ParameterSet>
 </EntityTemplate>
 
-<EntityTemplate Name="Hombre Lava" Guid="91a29a85-7d4d-42f5-9c5e-8ab440806336" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<EntityTemplate Name="HombreLava" Guid="91a29a85-7d4d-42f5-9c5e-8ab440806336" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="07e6138e-a7a6-45b9-b51c-289a97e1215f" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
         <Parameter Name="DayRange" Guid="866e8fca-14d8-4f87-add0-632eff6bac2d" Value="0" Type="float"/>
         <Parameter Name="NightRange" Guid="d9fb6e21-4e84-4b80-a4ad-fb9a682d17cc" Value="0" Type="float"/>
@@ -1444,7 +1444,7 @@
     </ParameterSet>
 </EntityTemplate>
 
-<EntityTemplate Name="Hombre Agua" Guid="a1b2c3d4-e5f6-4789-9012-3456789abcfe" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<EntityTemplate Name="HombreAgua" Guid="a1b2c3d4-e5f6-4789-9012-3456789abcfe" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="b2c3d4e5-f6a7-4890-9123-456789abcdf1" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
         <Parameter Name="DayRange" Guid="c3d4e5f6-a7b8-4901-2345-6789abcdf002" Value="0" Type="float"/>
         <Parameter Name="NightRange" Guid="d4e5f6a7-b8c9-5012-3456-789abcdf0124" Value="0" Type="float"/>
@@ -1767,6 +1767,80 @@
         <Parameter Name="SwapUV" Guid="e7f8a9b0-c1d2-0678-3456-f0123456789a" Value="True" Type="bool"/>
         <Parameter Name="DisplayName" Guid="f8a9b0c1-d2e3-0789-4567-0123456789ab" Value="El Arquero Egg" Type="string"/>
         <Parameter Name="EggTypeIndex" Guid="a9b0c1d2-e3f4-0890-5678-123456789abc" Value="222" Type="int"/>
+    </ParameterSet>
+</EntityTemplate>
+
+<EntityTemplate Name="CarlJohnson" Guid="7f7512b2-3936-4c4b-ba37-60ddd104ccd0" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+    <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="a7abb28d-523f-4c19-8fa4-9a9eb4d8ab0e" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
+        <Parameter Name="DayRange" Guid="dd9cdd4b-59ed-4f5a-83de-cb141a75f8e6" Value="0" Type="float"/>
+        <Parameter Name="NightRange" Guid="6787e5d6-c79f-4bb2-a0b6-b1598beca4d1" Value="0" Type="float"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="EatPickableBehavior" Guid="cc53ccb7-a0f9-4230-a758-b3c6d989a811">
+        <ParameterSet Name="FoodFactors" Guid="5541a766-9d3d-4d97-bc84-d5e33b58736e">
+            <Parameter Name="Bread" Guid="4fc3edf1-fc4b-457e-991a-b8b65f14855f" Value="1" Type="float"/>
+        </ParameterSet>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="AvoidFireBehavior" Guid="b16afa81-5712-4446-9cb0-2283ea873e3e" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
+    <MemberComponentTemplate Name="Locomotion" Guid="0bf31de5-b741-40d2-9941-878c8409b647">
+        <Parameter Name="AccelerationFactor" Guid="6d2beb05-e6e6-4990-beec-2f38d5d40149" Value="1.2" Type="float"/>
+        <Parameter Name="FlySpeed" Guid="7945f06a-0760-481e-8159-af0f78e7297b" Value="0" Type="float"/>
+        <Parameter Name="TurnSpeed" Guid="b0f5405c-c9b0-4d97-9b3c-58cd61a41724" Value="4.0" Type="float"/>
+        <Parameter Name="WalkSpeed" Guid="f3c37817-9228-4884-8972-060c38374dbd" Value="3.0" Type="float"/>
+        <Parameter Name="LadderSpeed" Guid="5b898b24-c389-4d3e-afa4-2d316e7ad120" Value="0" Type="float"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Loot" Guid="6debd42f-4bde-4eee-916c-e80f4f8b291e">
+        <ParameterSet Name="Loot" Guid="09cf6153-a693-476b-bba2-ecaae138e03b">
+            <Parameter Name="1" Guid="d90efdf6-ddaf-4e26-8082-0debfc070255" Value="Diamond;20;15" Type="string"/>
+        </ParameterSet>
+        <ParameterSet Name="LootOnFire" Guid="64133ef9-9f7c-4d9b-af73-51f7f14decc7"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Body" Guid="8f02a65d-8371-4cdc-a9b8-465d8a5fe14b">
+        <Parameter Name="Mass" Guid="d0d73b83-930c-4055-8716-d13a7f04503a" Value="70" Type="float"/>
+        <Parameter Name="BoxSize" Guid="7c227fd6-d784-4db9-bc24-29ddf487197a" Value="0.9,1.0,0.9" Type="Vector3"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Creature" Guid="5edda1bb-a597-4a77-b051-c1c8b17fbb41">
+        <Parameter Name="DisplayName" Guid="121c276e-1e0f-49ee-9652-3e481283e57e" Value="Carl Johnson" Type="string"/>
+        <Parameter Name="Category" Guid="7965b12f-567b-45f2-a9f3-d38e970404b9" Value="LandOther" Type="Game.CreatureCategory"/>
+        <Parameter Name="Description" Guid="6d1ae39f-255b-4af3-985f-1326dcd4b7d1" Value="CJ, whose full name is Carl Johnson, appeared as the protagonist in the video game Grand Theft Auto: San Andreas in 2004. He was originally born in Los Santos, United States, and currently lives in San Andreas, where he returns after his mother’s death to rebuild his life and support his family. CJ is a charismatic character, loyal, and with a strong sense of responsibility toward his neighborhood and friends, although he also becomes involved in conflicts with gangs and police corruption. A controversial aspect of his story is the 'Hot Coffee' minigame, a hidden content unlocked by modders in 2005 that showed interactive sexual scenes with CJ’s girlfriends, which sparked an international scandal, legal lawsuits, and the reclassification of the game to 'Adults Only' in the United States. CJ is part of the Alianza group and is portrayed as a cool character, willing to help players and maintain a positive spirit despite everything." Type="string"/>
+        <Parameter Name="KillVerbs" Guid="da797b26-7ab2-4c97-b9a8-5da559013165" Value="Fucked" Type="string"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="FindPlayerBehavior" Guid="71949db8-1fa7-4ada-9da6-e8acb8c807ab" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
+    <MemberComponentTemplate Name="Miner" Guid="fe7e9ade-f96f-4a01-8278-1fc5eca6ef82" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
+        <Parameter Name="AttackPower" Guid="2809901b-0b84-429f-983e-7c96254123a2" Value="5.0" Type="float"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="HumanModel" Guid="4086d78b-4a6f-4737-a587-62bf123c86e0" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
+        <Parameter Name="WalkLegsAngle" Guid="78ebe2cc-f911-4081-acbf-6d3e32a80f5d" Value="0.2" Type="float"/>
+        <Parameter Name="ModelName" Guid="b084b28d-eca3-4db2-8057-607f172c9cc2" Value="Models/HumanMale" Type="string"/>
+        <Parameter Name="TextureOverride" Guid="900a3807-dfbd-4f4b-9764-f85dd9da7019" Value="Textures/Carl Johnson" Type="string"/>
+        <Parameter Name="WalkAnimationSpeed" Guid="60abb653-18da-4380-beee-fc094d60332e" Value="0.4" Type="float"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Health" Guid="fa08542a-516a-451b-a730-cc1c2e85a3ee">
+        <Parameter Name="Health" Guid="31604823-df48-479e-9b06-ccebc864ead2" Value="20" Type="float"/>
+        <Parameter Name="FireResilience" Guid="d724b531-f9d0-4139-a6d2-a14cfaae6d2e" Value="10" Type="float"/>
+        <Parameter Name="AttackResilience" Guid="cf355ca5-1dab-4d44-81b8-701c8ab624e7" Value="10" Type="float"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="OnFire" Guid="bdc6ae6a-2481-42cb-86b3-c6dc0c2e7645"/>
+    <MemberComponentTemplate Name="WalkAroundBehavior" Guid="d5264eb6-22ac-4714-8c41-39aab04cd3b7" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
+    <MemberComponentTemplate Name="HerdBehavior" Guid="9544d4e8-2fc3-42e9-9f49-6e0a33acc146" InheritanceParent="dfe7218e-ce14-4bde-8dac-f919c38e9efe">
+        <Parameter Name="HerdName" Guid="92fe66ad-cd6a-4b53-a743-5703e9431344" Value="player" Type="string"/>
+        <Parameter Name="AutoNearbyCreaturesHelp" Guid="bfd6d50c-c93a-46f1-bd3a-a3987486393f" Value="True" Type="bool"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="FeedBehavior" Guid="6db3611f-39e7-4588-88d6-3c11fb8cdcb0" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
+        <Parameter Name="AutoFeed" Guid="9de462ca-9a58-4394-9c50-d3305ba157d5" Value="False" Type="bool"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="ChaseBehavior" Guid="044c2180-fcd9-48ee-93c1-7b83ddae7a16" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
+        <Parameter Name="AutoChaseMask" Guid="11d04df9-6d9d-4356-a69b-b4b64d62c1bc" Value="LandPredator, WaterPredator" Type="Game.CreatureCategory"/>
+        <Parameter Name="DayChaseRange" Guid="4194794b-a202-4344-a31e-4491cba1fb24" Value="6" Type="float"/>
+        <Parameter Name="NightChaseRange" Guid="c8d6d783-97a4-4f8c-b3f3-ea9bc870d5a7" Value="8" Type="float"/>
+        <Parameter Name="ChaseNonPlayerProbability" Guid="b6e2fa42-5a2d-481a-b691-50a33aaf0981" Value="0.01" Type="float"/>
+        <Parameter Name="NightChaseTime" Guid="a504a145-8199-427a-b2e8-82d6adcf339e" Value="8" Type="float"/>
+    </MemberComponentTemplate>
+    <ParameterSet Name="CreatureEggData" Guid="198253a4-839d-4367-83c1-93ff7992a5b9">
+        <Parameter Name="Color" Guid="b8d9f90f-9112-4d2e-9a20-48cbe01a53b7" Value="103,71,54" Type="Color"/>
+        <Parameter Name="TextureSlot" Guid="b455b941-6694-441b-9c37-b1c540c1877f" Value="165" Type="int"/>
+        <Parameter Name="SwapUV" Guid="cd1b37a1-b393-40c9-96ab-dbbb126e1f41" Value="False" Type="bool"/>
+        <Parameter Name="DisplayName" Guid="32be0bae-4a33-4179-948f-55fe469f07f2" Value="Carl Johnson Egg" Type="string"/>
+        <Parameter Name="EggTypeIndex" Guid="44da3450-b725-4bf1-a3a6-a8064363854e" Value="223" Type="int"/>
     </ParameterSet>
 </EntityTemplate>
 </Folder>
