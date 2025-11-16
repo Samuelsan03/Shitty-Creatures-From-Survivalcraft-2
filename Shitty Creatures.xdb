@@ -1874,7 +1874,194 @@
     </ParameterSet>
 </EntityTemplate>
 
-<EntityTemplate Name="ArqueroPrisionero" Guid="a1b2c3d4-e5f6-4789-9012-3456789abcd1" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<EntityTemplate Name="ArqueroPrisionero" Guid="e8831650-83a1-4ba7-b796-1149dfa88eae" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+    <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="021403dd-2d64-4689-87b3-06e2643d7616" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
+        <Parameter Name="DayRange" Guid="22e92c14-b22e-4af0-aa56-69dee0589403" Value="0" Type="float"/>
+        <Parameter Name="NightRange" Guid="ab9e1233-4a79-4edf-806d-f135b9708406" Value="5" Type="float"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="EatPickableBehavior" Guid="adcbdd27-5dd2-41f9-b001-d4bb67b7258c">
+        <ParameterSet Name="FoodFactors" Guid="932e7ca7-8ed5-41db-b7b2-4c72f646f977">
+            <Parameter Name="Bread" Guid="6b98c262-e765-4192-bc8a-c9e370b062ac" Value="1" Type="float"/>
+            <Parameter Name="Meat" Guid="ed79dc60-916a-458d-9ae6-60622f96869d" Value="1" Type="float"/>
+        </ParameterSet>
+    </MemberComponentTemplate>
+<MemberComponentTemplate Name="AvoidFireBehavior" Guid="58c62d9d-e227-4958-80ad-bb6b7e5e0b9e" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
+    <MemberComponentTemplate Name="Locomotion" Guid="54d5d255-86f3-450a-ac09-d2358862cc65">
+        <Parameter Name="AccelerationFactor" Guid="f9c8fcea-4885-44d7-96eb-6cacfe167eaa" Value="1.0" Type="float"/>
+        <Parameter Name="FlySpeed" Guid="caa2329d-465e-4b6e-b58b-693953144493" Value="0" Type="float"/>
+        <Parameter Name="TurnSpeed" Guid="696dcaa8-7e1c-4884-8e73-c0e7a7bb7926" Value="6" Type="float"/>
+        <Parameter Name="WalkSpeed" Guid="fb5e649b-a6cb-4e0c-a35c-4f7067c5fcde" Value="5.5" Type="float"/>
+        <Parameter Name="LadderSpeed" Guid="efbb60d0-7fe6-4c75-b162-e65dedcaaea8" Value="0" Type="float"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Inventory" Guid="9e50686d-0c12-42a4-84d1-1ea76ea1e8aa" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
+    <ParameterSet Name="Slots">
+        <ParameterSet Name="Slot0">
+            <Parameter Name="Contents" Value="191" Type="int"/>
+            <Parameter Name="Count" Value="1" Type="int"/>
+        </ParameterSet>
+    </ParameterSet>
+</MemberComponentTemplate>
+			<MemberComponentTemplate Name="InvShooterBehavior" Guid="6e4007e6-1597-4780-8d09-0ac184a35b56" InheritanceParent="456e3558-0e7f-42c3-bc05-35eef7540900">
+    <Parameter Name="SpecialThrowableItem" Guid="2fd06dcf-4d12-4721-aaa3-efdbce4adbb6" Value="ArrowBlock:3,ArrowBlock:4" Type="string"/>
+    <Parameter Name="DiscountFromInventory" Guid="e5478db8-2d4c-41a1-a4c6-435b2fbfa217" Value="True" Type="bool"/>
+    <Parameter Name="SelectRandomThrowableItems" Guid="80fa4777-418f-4bbb-b136-365fb0c2697f" Value="False" Type="bool"/>
+    <Parameter Name="ThrowFromHead" Guid="839856be-50e7-4fdf-beec-78db6ce2f16a" Value="True" Type="bool"/>
+    <Parameter Name="MinMaxRandomChargeTime" Guid="93170d70-5b69-48f2-8085-2c3411d6c7c6" Value="1;1" Type="string"/>
+    <Parameter Name="MinMaxRandomWaitTime" Guid="f80a8082-a617-4e07-99a4-20cbefe9f585" Value="0.5;0.8" Type="string"/>
+    <Parameter Name="MinMaxDistance" Guid="2fcb8042-a7d5-4ea8-8bc2-12f081befb26" Value="2;25" Type="string"/>
+    <Parameter Name="ThrowingSound" Guid="8f1ca650-849e-401c-9b86-6cb549321d83" Value="Audio/Bow" Type="string"/>
+    <Parameter Name="ThrowingSoundDistance" Guid="549d4cb1-8abb-4076-aaf5-fef3e8c76e42" Value="15" Type="float"/>
+    <Parameter Name="ExcludedThrowableItems" Guid="ad119b15-4257-44c2-8e22-2220d7946a65" Value="BowBlock" Type="string"/>
+</MemberComponentTemplate>
+    <MemberComponentTemplate Name="Loot" Guid="17f5367a-ccff-4cbd-801a-573906bcbfe3">
+        <ParameterSet Name="Loot" Guid="de790e87-d30b-45ee-ac50-8a5fce82a94f">
+            <Parameter Name="1" Guid="a3ef9d0e-6984-4e0f-ae1b-3d469877acd8" Value="ArrowBlock:4;1;10;1" Type="string"/>
+        </ParameterSet>
+        <ParameterSet Name="LootOnFire" Guid="6f5bbaa1-0b16-42ff-a7cc-d209294f5204"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Body" Guid="2c3e7df9-fca4-45ce-8366-ddf751c51279">
+        <Parameter Name="Mass" Guid="6b0620a1-d78e-48f2-b669-d30b9eb42aae" Value="50" Type="float"/>
+        <Parameter Name="BoxSize" Guid="70323df9-2cdd-4a83-9b84-1be629673a9c" Value="0.8,0.85,0.8" Type="Vector3"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Creature" Guid="76b3a37c-66d5-41b5-ab9e-0413590ce5a9">
+        <Parameter Name="DisplayName" Guid="45f817eb-849e-4fe0-a804-b1f2b52046da" Value="Arquero Prisionero" Type="string"/>
+        <Parameter Name="Category" Guid="99dabc2a-e522-4dee-8f7a-c864cf133d80" Value="LandOther" Type="Game.CreatureCategory"/>
+        <Parameter Name="Description" Guid="1bad7bdc-f43d-4a20-9390-83392199b486" Value="Born as the twin brother of El Arquero, the Prisoner Archer carries a past scarred by the Nazi era. Surviving the horrors of the Holocaust, he emerged with resilience and a newfound purpose. Unlike his brother and El Ballestador, who aligned with a malevolent faction, the Prisoner Archer chose the path of the Alliance, determined to oppose tyranny rather than serve it. His weapon of choice is the bow, adopted after witnessing his brother’s skill and vowing to defend himself and others with equal precision. During captivity, he secretly crafted crude fire arrows, though Nazi control forbade prisoners from wielding such weapons. This defiance became the seed of his mastery: when freedom came, he refined his skill into silent, lethal archery. Now, he stands as a guardian—swift, vigilant, and unyielding. If he sees his allies or the Alliance under attack, he will not hesitate to unleash a storm of arrows. His armor is light, built for speed and survival, allowing him to move across ruins and high structures with ease. He communicates through subtle signals, preferring silence over words, and rarely misses a shot. Upon defeat, he drops usable arrows, a reminder of his resourcefulness and the hardships he endured. Though his past is marked by sorrow, the Prisoner Archer fights forward with determination, embodying a hostile Robin Hood of the high ground. His story is one of survival, rebellion, and the relentless pursuit of justice—proof that even in the aftermath of tragedy, one can rise to protect others and continue the struggle for freedom." Type="string"/>
+        <Parameter Name="KillVerbs" Guid="1054cce7-47a3-48fc-b102-0be025ff0145" Value="Hunted with arrows" Type="string"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="FindPlayerBehavior" Guid="d49516b6-0991-4ae0-9b53-01e5da652a47" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
+    <MemberComponentTemplate Name="Miner" Guid="ec18be0a-bd32-45c5-87d4-d2a6c95acfb3" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
+        <Parameter Name="AttackPower" Guid="524cc0ab-fc9a-48ab-934b-50c53f64e739" Value="15" Type="float"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="HumanModel" Guid="54284080-bff0-4013-af85-fe1aced355f1" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
+        <Parameter Name="WalkLegsAngle" Guid="107dec5a-5414-4dca-a7d4-68340b43f5b6" Value="0.25" Type="float"/>
+        <Parameter Name="ModelName" Guid="4af9700c-3cf5-441b-9d46-ca08650679e2" Value="Models/HumanMale" Type="string"/>
+        <Parameter Name="TextureOverride" Guid="cbc442b8-d739-48b2-b0b5-6095804a9be1" Value="Textures/Arquero Prisionero" Type="string"/>
+        <Parameter Name="WalkAnimationSpeed" Guid="932e8659-9c9c-4cae-9565-407c406f9736" Value="0.5" Type="float"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Health" Guid="31ab08b5-54b3-481b-b5eb-dc17e962a0a1">
+        <Parameter Name="Health" Guid="97eaec76-2fa5-4aba-8ab9-dab889d725af" Value="80" Type="float"/>
+        <Parameter Name="FireResilience" Guid="3459c49f-f363-4fc8-b51c-9ecbacbf1042" Value="8" Type="float"/>
+        <Parameter Name="AttackResilience" Guid="b5a8a139-3fbe-4d8d-a27a-add4d2621f7c" Value="6" Type="float"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="OnFire" Guid="2f0c3333-deea-4928-8977-1856c8469569"/>
+    <MemberComponentTemplate Name="WalkAroundBehavior" Guid="cb4a9137-898f-470b-a4cb-0146f94c18de" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
+    <MemberComponentTemplate Name="HerdBehavior" Guid="21d9cd3d-ee06-4655-8d1a-ecf703c6efb3" InheritanceParent="dfe7218e-ce14-4bde-8dac-f919c38e9efe">
+        <Parameter Name="HerdName" Guid="59d2ba35-5b20-428b-94ab-90faaff6a9f2" Value="Alianza" Type="string"/>
+        <Parameter Name="AutoNearbyCreaturesHelp" Guid="a98a2029-39b1-4cc8-9745-1ae8025402ee" Value="True" Type="bool"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="FeedBehavior" Guid="3742ccc3-ad51-4e8c-b93d-ce9c3cb650aa" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
+        <Parameter Name="AutoFeed" Guid="f6e415e3-17ab-4e19-8190-1ac42fb24137" Value="False" Type="bool"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="ChaseBehavior" Guid="50121ee8-78d4-45a6-9dc0-660d60768b39" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
+        <Parameter Name="AutoChaseMask" Guid="b92c8e22-a9fb-4a49-bf7d-738638aada8f" Value="LandPredator, WaterPredator, WaterOther" Type="Game.CreatureCategory"/>
+        <Parameter Name="DayChaseRange" Guid="6ea980a9-7eb5-4e48-af2f-f10c1cdfe5f3" Value="4" Type="float"/>
+        <Parameter Name="NightChaseRange" Guid="fcb56f27-27d0-48c3-9023-48078bcb9f3a" Value="6" Type="float"/>
+        <Parameter Name="ChaseNonPlayerProbability" Guid="f8860097-b94d-40f5-8ca2-78e04198c081" Value="0.005" Type="float"/>
+        <Parameter Name="NightChaseTime" Guid="e9a5ea3f-f991-4846-8fbb-aca17a8fd529" Value="6" Type="float"/>
+    </MemberComponentTemplate>
+    <ParameterSet Name="CreatureEggData" Guid="1c67287d-b669-46ce-97e6-6fa06d2f8bc5">
+        <Parameter Name="Color" Guid="71c0aa3f-71bc-4a42-8f5e-fe218394187e" Value="124,128,101" Type="Color"/>
+        <Parameter Name="TextureSlot" Guid="53d2f385-3182-4011-b7d5-216a6e33617a" Value="188" Type="int"/>
+        <Parameter Name="SwapUV" Guid="a62c2a9c-2d48-42e5-969e-0fb18aee8fd6" Value="True" Type="bool"/>
+        <Parameter Name="DisplayName" Guid="431d0b1c-7e6b-4ddc-b3b2-a48fa43f0c98" Value="Arquero Prisionero Egg" Type="string"/>
+        <Parameter Name="EggTypeIndex" Guid="943808d2-a602-477d-860d-d1e4f4c943a8" Value="224" Type="int"/>
+    </ParameterSet>
+</EntityTemplate>
+
+<EntityTemplate Name="Veemon" Guid="27207048-7b75-409d-b98d-e400275b884c" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+    <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="f932b384-0199-422e-8f46-5176123b3310" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
+        <Parameter Name="DayRange" Guid="adc269c8-c896-4b19-8f8a-6d1f0e987de8" Value="0" Type="float"/>
+        <Parameter Name="NightRange" Guid="bcea5d70-effc-4103-8383-8f0ec47c0225" Value="5" Type="float"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="EatPickableBehavior" Guid="bedefd19-152d-4ef2-ae1a-6a128e57e857">
+        <ParameterSet Name="FoodFactors" Guid="ef08b490-8b89-4b9f-96fd-e45d091c7bbb">
+            <Parameter Name="Bread" Guid="b86c1086-7d1c-4897-8560-18c1a8518536" Value="1" Type="float"/>
+            <Parameter Name="Meat" Guid="05c19f05-8a96-4aa6-920d-bf2623320071" Value="1" Type="float"/>
+        </ParameterSet>
+    </MemberComponentTemplate>
+<MemberComponentTemplate Name="AvoidFireBehavior" Guid="f7e4962c-c4fb-4b05-868c-55abe83ce231" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
+    <MemberComponentTemplate Name="Locomotion" Guid="d95f10ca-10c0-4afb-8eda-44080ce53889">
+        <Parameter Name="AccelerationFactor" Guid="2ebaeb13-3405-4358-b96f-e7ed7621391e" Value="1.0" Type="float"/>
+        <Parameter Name="FlySpeed" Guid="de319a54-8c04-4456-a3c5-598c939dd17e" Value="0" Type="float"/>
+        <Parameter Name="TurnSpeed" Guid="7b3705b3-8e46-4712-8cc7-5be24bab0428" Value="6" Type="float"/>
+        <Parameter Name="WalkSpeed" Guid="5a74b4b7-b60a-463e-b441-1e289e4b3cdd" Value="5.5" Type="float"/>
+        <Parameter Name="LadderSpeed" Guid="42434728-56b6-4804-a2ba-278145a46f10" Value="0" Type="float"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Inventory" Guid="997c9d66-af9f-42b5-a5a0-6e89651093c0" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
+    <ParameterSet Name="Slots">
+        <ParameterSet Name="Slot0">
+            <Parameter Name="Contents" Value="0" Type="int"/>
+            <Parameter Name="Count" Value="1" Type="int"/>
+        </ParameterSet>
+    </ParameterSet>
+</MemberComponentTemplate>
+			<MemberComponentTemplate Name="InvShooterBehavior" Guid="34fdeb1a-8ef5-45af-adac-2c4c11ed30d0" InheritanceParent="456e3558-0e7f-42c3-bc05-35eef7540900">
+    <Parameter Name="SpecialThrowableItem" Guid="4cdf6271-edd9-4921-b82e-a99121b79b0f" Value="ArrowBlock:4" Type="string"/>
+    <Parameter Name="DiscountFromInventory" Guid="c0c3a68e-0e37-4163-9a60-8e6cdea7e2ef" Value="True" Type="bool"/>
+    <Parameter Name="SelectRandomThrowableItems" Guid="b60603a9-ef1b-49e6-a71a-dc59d9a69f5d" Value="False" Type="bool"/>
+    <Parameter Name="ThrowFromHead" Guid="dc666c2f-3b00-42b7-aeec-b4bffd63d7c7" Value="True" Type="bool"/>
+    <Parameter Name="MinMaxRandomChargeTime" Guid="327711b1-a813-491e-9563-4a4bf87ba8a3" Value="1;1" Type="string"/>
+    <Parameter Name="MinMaxRandomWaitTime" Guid="9a654ec6-211a-4aca-bdc9-197d63f5ef4a" Value="0.5;0.8" Type="string"/>
+    <Parameter Name="MinMaxDistance" Guid="e2bfd5f6-24ef-4d0c-a874-750a0e529afa" Value="2;25" Type="string"/>
+</MemberComponentTemplate>
+    <MemberComponentTemplate Name="Loot" Guid="788a2b2a-7b5d-4bab-bf7e-aa114aa0fef9">
+        <ParameterSet Name="Loot" Guid="c2086f84-e727-42cf-9cc6-20c439a90018">
+            <Parameter Name="1" Guid="e86fa114-53c0-4630-bfd9-8cb82a61acfc" Value="ArrowBlock:4;1;10;1" Type="string"/>
+        </ParameterSet>
+        <ParameterSet Name="LootOnFire" Guid="a124fa38-fd21-45d2-8eef-26d2c3939df8"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Body" Guid="162624a9-9521-4aec-8ed0-2ae170ec0d1f">
+        <Parameter Name="Mass" Guid="f4ff4bf4-e906-4ad1-99b3-6d79a818254f" Value="50" Type="float"/>
+        <Parameter Name="BoxSize" Guid="d7838859-5e18-45c3-80bc-50b27da53ea4" Value="0.8,0.85,0.8" Type="Vector3"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Creature" Guid="3377318d-f5b3-49d2-8ecc-ef29d6c8c5e2">
+        <Parameter Name="DisplayName" Guid="14528df2-be37-4927-bf51-e5582ad52f7b" Value="Veemon" Type="string"/>
+        <Parameter Name="Category" Guid="cb78a325-0fa1-4220-af6b-e21c687e8aa4" Value="LandOther" Type="Game.CreatureCategory"/>
+        <Parameter Name="Description" Guid="fb80417f-b0c8-4264-a968-ffb5acd7f4a4" Value="Veemon first appeared in Digimon Adventure 02 (2000), introduced as Davis Motomiya’s partner and quickly recognized for his playful yet courageous nature. Although aligned with the Alliance group, Veemon can also ally with the player, offering versatile support in battle through his unique ability to Armor Digivolve using Digi-Eggs. This makes him adaptable to multiple combat situations, from Flamedramon’s fiery offense to Magnamon’s miraculous defense. Veemon was originally designed by Kenji Watanabe, the illustrator behind many Digimon species, whose creative vision drew inspiration from the letter V (symbolizing victory) and the manga magazine V-Jump where Digimon V-Tamer 01 was serialized. His design reflects both a dragon motif and a youthful, energetic personality that resonated with fans worldwide. Beyond his origins, Veemon embodies loyalty, optimism, and resilience. He is mischievous yet deeply committed to protecting his allies, often charging headfirst into danger with a smile. In gameplay, he rarely hesitates to fight for justice, and his presence reassures companions that courage and friendship can overcome any obstacle. Ultimately, Veemon is more than a fighter—he is a symbol of hope, proving that even in the toughest battles, goodness and determination will always shine through." Type="string"/>
+        <Parameter Name="KillVerbs" Guid="ec23fa7c-686f-4c57-8e6f-2522b3c1863a" Value="Fuck" Type="string"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="FindPlayerBehavior" Guid="0fb32930-f78e-43e3-8ecd-4baec970b7d8" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
+    <MemberComponentTemplate Name="Miner" Guid="f57a04d0-aef1-488e-bb59-f9dbaa261677" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
+        <Parameter Name="AttackPower" Guid="de8b9e0b-d242-4f18-a121-388a689a6366" Value="15" Type="float"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="HumanModel" Guid="25290629-b84c-4a5f-9697-a7325e8f59da" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
+        <Parameter Name="WalkLegsAngle" Guid="d4e12efa-d48f-40a0-88ee-bbd1600fe029" Value="0.25" Type="float"/>
+        <Parameter Name="ModelName" Guid="e069096d-34bd-4a52-ba67-beadbc338f3a" Value="Models/MC 1" Type="string"/>
+        <Parameter Name="TextureOverride" Guid="7e68186f-4743-4f16-b2a8-3724e701528b" Value="Textures/Veemon" Type="string"/>
+        <Parameter Name="WalkAnimationSpeed" Guid="4cd20293-2699-4341-aadb-e4672bf36439" Value="0.5" Type="float"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Health" Guid="e912494b-c0fd-4238-9682-1f65b13436a5">
+        <Parameter Name="Health" Guid="1a5e2dd7-2c2e-4979-9d67-56cfe9dc918d" Value="80" Type="float"/>
+        <Parameter Name="FireResilience" Guid="4514d465-d559-4afd-8bd4-e50dfc9d842c" Value="8" Type="float"/>
+        <Parameter Name="AttackResilience" Guid="e31bb31d-23ce-4aac-8972-e0f3c70db0ff" Value="6" Type="float"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="OnFire" Guid="44e9217d-1369-4d7d-9a46-4f5ae141bdce"/>
+    <MemberComponentTemplate Name="WalkAroundBehavior" Guid="251f5042-49fc-401d-8db6-866b8e559ca5" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
+    <MemberComponentTemplate Name="HerdBehavior" Guid="00d5b029-eb33-474c-8f26-8fafe8d40443" InheritanceParent="dfe7218e-ce14-4bde-8dac-f919c38e9efe">
+        <Parameter Name="HerdName" Guid="cfa637ec-875b-44cb-a7bb-9a75f42738ec" Value="Alianza" Type="string"/>
+        <Parameter Name="AutoNearbyCreaturesHelp" Guid="80e585a5-04db-4a4f-beb3-9bfbc2e6a650" Value="True" Type="bool"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="FeedBehavior" Guid="3b06f3c6-cc95-4387-86b1-21ffc97e8bad" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
+        <Parameter Name="AutoFeed" Guid="3b8015de-9145-4d00-9188-d9f931593c2e" Value="False" Type="bool"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="ChaseBehavior" Guid="1a9c2e7f-f9d1-4933-aec4-082f8ed85c0e" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
+        <Parameter Name="AutoChaseMask" Guid="c1b60894-b54d-488a-bf07-5a41c359e02d" Value="LandPredator, WaterPredator, WaterOther" Type="Game.CreatureCategory"/>
+        <Parameter Name="DayChaseRange" Guid="5e633aa2-9310-44f9-90cd-00c17bdaf7fb" Value="4" Type="float"/>
+        <Parameter Name="NightChaseRange" Guid="2a37e650-bea1-470c-b387-fef3fef31862" Value="6" Type="float"/>
+        <Parameter Name="ChaseNonPlayerProbability" Guid="0e4b7955-b7a0-4d27-8c81-a7af52606b6f" Value="0.005" Type="float"/>
+        <Parameter Name="NightChaseTime" Guid="1ea31ead-25e6-47d0-ba5d-8df7545751e5" Value="6" Type="float"/>
+    </MemberComponentTemplate>
+    <ParameterSet Name="CreatureEggData" Guid="87c12af8-a3ca-4a5f-9f6b-1891de38d363">
+        <Parameter Name="Color" Guid="d5a63056-4627-413f-bd1b-b33f61c5327a" Value="178,218,250" Type="Color"/>
+        <Parameter Name="TextureSlot" Guid="78cbf257-a1e1-4f62-9a98-427dfcbd52d0" Value="188" Type="int"/>
+        <Parameter Name="SwapUV" Guid="85b31623-c12f-4a09-ad34-96646905e273" Value="True" Type="bool"/>
+        <Parameter Name="DisplayName" Guid="2f5ebeb5-ebc5-4857-9685-4cb586c8d1d0" Value="Veemon Egg" Type="string"/>
+        <Parameter Name="EggTypeIndex" Guid="6581d370-5a0f-422d-a98a-4a04ffe87200" Value="225" Type="int"/>
+    </ParameterSet>
+</EntityTemplate>
+
+<EntityTemplate Name="Shoutmon" Guid="a1b2c3d4-e5f6-4789-9012-3456789abcd1" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="a9b0c1d2-e3f4-4890-9123-456789abcdef" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
         <Parameter Name="DayRange" Guid="b0c1d2e3-f4a5-4901-2345-6789abcdef01" Value="0" Type="float"/>
         <Parameter Name="NightRange" Guid="c1d2c3d4-e5f6-5012-3456-789abcdef012" Value="5" Type="float"/>
@@ -1896,22 +2083,19 @@
     <MemberComponentTemplate Name="Inventory" Guid="2e39358b-2230-45d2-b7d6-b6f855318db4" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
     <ParameterSet Name="Slots">
         <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="191" Type="int"/>
+            <Parameter Name="Contents" Value="0" Type="int"/>
             <Parameter Name="Count" Value="1" Type="int"/>
         </ParameterSet>
     </ParameterSet>
 </MemberComponentTemplate>
 			<MemberComponentTemplate Name="InvShooterBehavior" Guid="bbc33485-1bde-4b84-abfc-274a742b5d04" InheritanceParent="456e3558-0e7f-42c3-bc05-35eef7540900">
-    <Parameter Name="SpecialThrowableItem" Guid="314a5bf9-dfa4-447c-9d3b-37f47c74ef18" Value="ArrowBlock:3,ArrowBlock:4" Type="string"/>
+    <Parameter Name="SpecialThrowableItem" Guid="314a5bf9-dfa4-447c-9d3b-37f47c74ef18" Value="ArrowBlock:4" Type="string"/>
     <Parameter Name="DiscountFromInventory" Guid="cc43ef07-f445-4ece-b2f6-c60438f5cc52" Value="True" Type="bool"/>
     <Parameter Name="SelectRandomThrowableItems" Guid="faf52c50-9037-42af-ac85-2074b63bf8fd" Value="False" Type="bool"/>
     <Parameter Name="ThrowFromHead" Guid="5df089b9-4909-4143-88ec-62d7eabefd7b" Value="True" Type="bool"/>
     <Parameter Name="MinMaxRandomChargeTime" Guid="9d9d5397-c9b3-49a4-9a44-a02f204710b9" Value="1;1" Type="string"/>
     <Parameter Name="MinMaxRandomWaitTime" Guid="b763b505-118a-4adb-921b-f96e3843a618" Value="0.5;0.8" Type="string"/>
     <Parameter Name="MinMaxDistance" Guid="ef9a4d3e-eb50-4a44-838d-50092fe052a8" Value="2;25" Type="string"/>
-    <Parameter Name="ThrowingSound" Guid="8f1ca650-849e-401c-9b86-6cb549321d83" Value="Audio/Bow" Type="string"/>
-    <Parameter Name="ThrowingSoundDistance" Guid="549d4cb1-8abb-4076-aaf5-fef3e8c76e42" Value="15" Type="float"/>
-    <Parameter Name="ExcludedThrowableItems" Guid="ad119b15-4257-44c2-8e22-2220d7946a65" Value="BowBlock" Type="string"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Loot" Guid="e5f6a7b8-c9d0-6456-1234-56789abcdef0">
         <ParameterSet Name="Loot" Guid="f6a7b8c9-d0e1-6567-2345-6789abcdef01">
@@ -1924,10 +2108,10 @@
         <Parameter Name="BoxSize" Guid="a3b4c5d6-e7f8-7234-9012-def012345678" Value="0.8,0.85,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="b4c5d6e7-f8a9-7345-0123-ef0123456789">
-        <Parameter Name="DisplayName" Guid="c5d6e7f8-a9b0-7456-1234-f0123456789a" Value="Arquero Prisionero" Type="string"/>
+        <Parameter Name="DisplayName" Guid="c5d6e7f8-a9b0-7456-1234-f0123456789a" Value="Shoutmon" Type="string"/>
         <Parameter Name="Category" Guid="d6e7f8a9-b0c1-7567-2345-0123456789ab" Value="LandOther" Type="Game.CreatureCategory"/>
-        <Parameter Name="Description" Guid="e3f4a5b6-c7d8-7345-abcd-ef0123456789" Value="Born as the twin brother of El Arquero, the Prisoner Archer carries a past scarred by the Nazi era. Surviving the horrors of the Holocaust, he emerged with resilience and a newfound purpose. Unlike his brother and El Ballestador, who aligned with a malevolent faction, the Prisoner Archer chose the path of the Alliance, determined to oppose tyranny rather than serve it. His weapon of choice is the bow, adopted after witnessing his brother’s skill and vowing to defend himself and others with equal precision. During captivity, he secretly crafted crude fire arrows, though Nazi control forbade prisoners from wielding such weapons. This defiance became the seed of his mastery: when freedom came, he refined his skill into silent, lethal archery. Now, he stands as a guardian—swift, vigilant, and unyielding. If he sees his allies or the Alliance under attack, he will not hesitate to unleash a storm of arrows. His armor is light, built for speed and survival, allowing him to move across ruins and high structures with ease. He communicates through subtle signals, preferring silence over words, and rarely misses a shot. Upon defeat, he drops usable arrows, a reminder of his resourcefulness and the hardships he endured. Though his past is marked by sorrow, the Prisoner Archer fights forward with determination, embodying a hostile Robin Hood of the high ground. His story is one of survival, rebellion, and the relentless pursuit of justice—proof that even in the aftermath of tragedy, one can rise to protect others and continue the struggle for freedom." Type="string"/>
-        <Parameter Name="KillVerbs" Guid="f8a9b0c1-d2e3-7789-4567-23456789abcd" Value="Hunted with arrows" Type="string"/>
+        <Parameter Name="Description" Guid="e3f4a5b6-c7d8-7345-abcd-ef0123456789" Value="Shoutmon first appeared in Digimon Xros Wars (2010), quickly becoming known as the energetic and determined partner of Taiki Kudo. Although aligned with the Alliance group, Shoutmon can also ally with the player, bringing his fiery spirit and powerful voice-based attacks to the battlefield. His ability to DigiFuse with other Digimon makes him highly versatile, adapting to both offensive and defensive strategies. Shoutmon was originally designed by Kenji Watanabe, the illustrator responsible for many Digimon species, whose creativity emphasized Shoutmon’s microphone motif and his dream of becoming the Digimon King. His design reflects both musical energy and heroic ambition, resonating strongly with fans. Beyond his origins, Shoutmon embodies courage, leadership, and optimism. He inspires allies with his determination, often charging into danger with unshakable confidence. In gameplay, he rarely hesitates to fight for justice, and his presence assures companions that unity and friendship can overcome any obstacle. Ultimately, Shoutmon is more than a fighter—he is a symbol of hope and perseverance, proving that even in the toughest battles, goodness and determination will always shine through." Type="string"/>
+        <Parameter Name="KillVerbs" Guid="f8a9b0c1-d2e3-7789-4567-23456789abcd" Value="burned" Type="string"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="a9b0c1d2-e3f4-7890-5678-3456789abcde" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="b0c1d2e3-f4a5-7901-6789-456789abcdef" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
@@ -1935,8 +2119,8 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="HumanModel" Guid="d2e3f4a5-b6c7-8123-8901-6789abcdef01" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
         <Parameter Name="WalkLegsAngle" Guid="e3f4a5b6-c7d8-8234-9012-789abcdef012" Value="0.25" Type="float"/>
-        <Parameter Name="ModelName" Guid="f4a5b6c7-d8e9-8345-0123-89abcdef0123" Value="Models/HumanMale" Type="string"/>
-        <Parameter Name="TextureOverride" Guid="a5b6c7d8-e9f0-8456-1234-9abcdef01234" Value="Textures/Arquero Prisionero" Type="string"/>
+        <Parameter Name="ModelName" Guid="f4a5b6c7-d8e9-8345-0123-89abcdef0123" Value="Models/MC 1" Type="string"/>
+        <Parameter Name="TextureOverride" Guid="a5b6c7d8-e9f0-8456-1234-9abcdef01234" Value="Textures/Shoutmon" Type="string"/>
         <Parameter Name="WalkAnimationSpeed" Guid="b6c7d8e9-f0a1-8567-2345-abcdef012345" Value="0.5" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="c7d8e9f0-a1b2-8678-3456-bcdef0123456">
@@ -1961,11 +2145,11 @@
         <Parameter Name="NightChaseTime" Guid="a3b4c5d6-e7f8-0234-9012-bcdef0123456" Value="6" Type="float"/>
     </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="b4c5d6e7-f8a9-0345-0123-cdef01234567">
-        <Parameter Name="Color" Guid="c5d6e7f8-a9b0-0456-1234-def012345678" Value="124,128,101" Type="Color"/>
+        <Parameter Name="Color" Guid="c5d6e7f8-a9b0-0456-1234-def012345678" Value="255,105,97" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="d6e7f8a9-b0c1-0567-2345-ef0123456789" Value="188" Type="int"/>
         <Parameter Name="SwapUV" Guid="e7f8a9b0-c1d2-0678-3456-f0123456789a" Value="True" Type="bool"/>
-        <Parameter Name="DisplayName" Guid="f8a9b0c1-d2e3-0789-4567-0123456789ab" Value="Arquero Prisionero Egg" Type="string"/>
-        <Parameter Name="EggTypeIndex" Guid="a9b0c1d2-e3f4-0890-5678-123456789abc" Value="224" Type="int"/>
+        <Parameter Name="DisplayName" Guid="f8a9b0c1-d2e3-0789-4567-0123456789ab" Value="Shoutmon Egg" Type="string"/>
+        <Parameter Name="EggTypeIndex" Guid="a9b0c1d2-e3f4-0890-5678-123456789abc" Value="226" Type="int"/>
     </ParameterSet>
 </EntityTemplate>
 </Folder>
