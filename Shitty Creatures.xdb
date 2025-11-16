@@ -2080,7 +2080,7 @@
         <Parameter Name="WalkSpeed" Guid="3e2546dc-37cf-42a4-92b6-a744ce8f10b9" Value="7.0" Type="float"/>
         <Parameter Name="LadderSpeed" Guid="a72acecf-523f-4335-b9f0-a37308fe583b" Value="0" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="Inventory" Guid="15a6b3b2-96ea-499f-a536-9f993f74d82d" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
+    <MemberComponentTemplate Name="Inventory" Guid="0a5551c3-79c9-495c-860f-07a9126c5208" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
     <ParameterSet Name="Slots">
         <ParameterSet Name="Slot0">
             <Parameter Name="Contents" Value="0" Type="int"/>
@@ -2088,14 +2088,14 @@
         </ParameterSet>
     </ParameterSet>
 </MemberComponentTemplate>
-			<MemberComponentTemplate Name="InvShooterBehavior" Guid="07d59cfc-9c04-4d08-8332-b86d04fc24fe" InheritanceParent="456e3558-0e7f-42c3-bc05-35eef7540900">
-    <Parameter Name="SpecialThrowableItem" Guid="da6af166-5a89-41e4-a548-9e430b463c40" Value="ArrowBlock:4" Type="string"/>
-    <Parameter Name="DiscountFromInventory" Guid="aadb5282-79d9-466c-93f4-aaa5943c73b1" Value="True" Type="bool"/>
-    <Parameter Name="SelectRandomThrowableItems" Guid="2b2d63c0-70e8-41a4-a24c-63fed98c0d69" Value="False" Type="bool"/>
-    <Parameter Name="ThrowFromHead" Guid="939b91b4-3abd-4ca0-a18f-d7d4ef77cc79" Value="True" Type="bool"/>
-    <Parameter Name="MinMaxRandomChargeTime" Guid="f763b007-b145-4405-887d-d176d5bd754d" Value="0.7;1.0" Type="string"/>
-    <Parameter Name="MinMaxRandomWaitTime" Guid="573cfaa5-a7a0-432b-8af8-b2abe77eec3d" Value="0.3;0.6" Type="string"/>
-    <Parameter Name="MinMaxDistance" Guid="78991b51-3691-4309-8643-6c3f04f4e2d7" Value="3;30" Type="string"/>
+			<MemberComponentTemplate Name="InvShooterBehavior" Guid="a42f816c-d403-4f50-8195-f2f1e9cffc04" InheritanceParent="456e3558-0e7f-42c3-bc05-35eef7540900">
+    <Parameter Name="SpecialThrowableItem" Guid="1e863891-bb3c-479b-8135-c4d27d93b268" Value="ArrowBlock:4" Type="string"/>
+    <Parameter Name="DiscountFromInventory" Guid="43646225-f728-49db-aace-7087c090d597" Value="True" Type="bool"/>
+    <Parameter Name="SelectRandomThrowableItems" Guid="38254f0d-f5a0-489e-bbd3-8afd66f72b4f" Value="False" Type="bool"/>
+    <Parameter Name="ThrowFromHead" Guid="e6fcb203-165a-44aa-9a24-f1a06cf9b4db" Value="True" Type="bool"/>
+    <Parameter Name="MinMaxRandomChargeTime" Guid="9892cfdc-c648-4cac-ab45-11cb0991b2ff" Value="0.7;1.0" Type="string"/>
+    <Parameter Name="MinMaxRandomWaitTime" Guid="e19eac2d-750b-4db5-af96-ee6a34ff2c73" Value="0.3;0.6" Type="string"/>
+    <Parameter Name="MinMaxDistance" Guid="ad643f82-2cde-4919-89e7-82c6c2fb41b1" Value="3;30" Type="string"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Loot" Guid="a3086732-cfff-4c08-99ac-a7139bf4c94b">
         <ParameterSet Name="Loot" Guid="22099c20-f68e-4c1b-8d2e-76e7c6ae1255">
@@ -2432,7 +2432,174 @@
     </ParameterSet>
 </EntityTemplate>
 
-<EntityTemplate Name="Gumdramon" Guid="a1b2c3d4-e5f6-4789-9012-3456789abcd1" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<EntityTemplate Name="Gumdramon" Guid="001bcd0a-686c-4552-9a14-2d7bda4efa32" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+    <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="ee0e0241-e296-4479-a98c-a6a68be582ce" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
+        <Parameter Name="DayRange" Guid="bad9fca8-3f0b-4f2b-a303-1fefce32c5ce" Value="0" Type="float"/>
+        <Parameter Name="NightRange" Guid="d37983a1-a56a-4814-9ceb-26ae6ddea29f" Value="5" Type="float"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="EatPickableBehavior" Guid="16721223-1965-4058-9e4f-d84680542343">
+        <ParameterSet Name="FoodFactors" Guid="cc71fd22-2407-4783-91f9-7b8807e52e17">
+            <Parameter Name="Bread" Guid="4b4f31c9-76d9-4328-9ecb-7aeed884cddc" Value="1" Type="float"/>
+            <Parameter Name="Meat" Guid="a17a9c56-d2a1-485b-a5c7-3432b1e4b756" Value="1" Type="float"/>
+        </ParameterSet>
+    </MemberComponentTemplate>
+<MemberComponentTemplate Name="AvoidFireBehavior" Guid="099d1752-bba0-42b7-9935-60b52fba117f" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
+    <MemberComponentTemplate Name="Locomotion" Guid="e4880962-c666-47c1-9913-276ab494f98f">
+        <Parameter Name="AccelerationFactor" Guid="6b897c0f-e862-44e5-8d7a-04a3abfa49d8" Value="1.3" Type="float"/>
+        <Parameter Name="FlySpeed" Guid="98ffa51d-27a5-45f8-9e71-a1fd38046a6a" Value="0" Type="float"/>
+        <Parameter Name="TurnSpeed" Guid="f7f1d3a5-9b14-4344-94be-e3f4252b1e53" Value="9" Type="float"/>
+        <Parameter Name="WalkSpeed" Guid="cbe2ad57-91b9-4cd0-8d0a-9cc98ed50d92" Value="7.5" Type="float"/>
+        <Parameter Name="LadderSpeed" Guid="084f36fa-e525-4c01-9fa6-94c41bd99fc4" Value="0" Type="float"/>
+    </MemberComponentTemplate>
+<MemberComponentTemplate Name="Loot" Guid="813f53fc-e1a8-4511-b359-e5098f20ce23">
+        <ParameterSet Name="Loot" Guid="a28be219-7759-4cf5-9b6d-1d873e08ca29">
+            <Parameter Name="1" Guid="975bfa40-fa73-4b41-811d-dcfeebeba2ae" Value="ExperienceBlock;15;35" Type="string"/>
+        </ParameterSet>
+        <ParameterSet Name="LootOnFire" Guid="4de66835-f60e-42c9-973a-6f43fe3e7478"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Body" Guid="284a862d-a8ce-4a73-b9e0-590e87ac7115">
+        <Parameter Name="Mass" Guid="094faea0-3f1b-4701-802e-2d50fa82a6d2" Value="50" Type="float"/>
+        <Parameter Name="BoxSize" Guid="f6246c18-a3a8-4be5-89ba-8e0b54ca2161" Value="0.9,0.95,0.9" Type="Vector3"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Creature" Guid="bc000ed5-e521-4047-b309-32ca470b9731">
+        <Parameter Name="DisplayName" Guid="e2f1309e-8bf6-4fe3-bc0e-add2102a9ece" Value="Gumdramon" Type="string"/>
+        <Parameter Name="Category" Guid="2d85c00f-da88-4f4b-9d41-ab00e22da930" Value="LandOther" Type="Game.CreatureCategory"/>
+        <Parameter Name="Description" Guid="418dd8b1-155a-4081-996e-4711179163ee" Value="Gumdramon first appeared in Digimon Xros Wars: The Young Hunters Who Leapt Through Time (2011), introduced as the Rookie partner of Tagiru Akashi. Designed by Kenji Watanabe, Gumdramon was created with a dragon-like form featuring a powerful tail weapon, symbolizing both his mischievous personality and his explosive combat style. Aligned with the Alliance group, Gumdramon can also ally with the player, offering versatile support through his signature attack Jamming Strike and his ability to evolve into stronger forms such as Arresterdramon. His design emphasizes agility, energy, and rebellious charm, making him stand out among Rookie Digimon. Beyond his origins, Gumdramon embodies determination, independence, and loyalty. He often rushes into battle with bold confidence, learning to balance his playful nature with responsibility. In gameplay, Gumdramon offers fast offense and adaptable strategies, assuring companions that courage and persistence can overcome any obstacle. Ultimately, Gumdramon is more than a fighter—he is a symbol of growth, proving that even youthful recklessness can transform into strength when guided by trust and friendship." Type="string"/>
+        <Parameter Name="KillVerbs" Guid="4f2a2ca9-7f5f-43b5-8cf7-c30018073f65" Value="burned" Type="string"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="FindPlayerBehavior" Guid="902c50bd-9a47-4811-ad1f-1929d6d7fb01" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
+    <MemberComponentTemplate Name="Miner" Guid="7a9f0963-f7a2-425d-8763-0db31d56c257" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
+        <Parameter Name="AttackPower" Guid="1849cf02-7d3b-4004-af27-adaf103c47be" Value="28" Type="float"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="HumanModel" Guid="764cedf0-40cc-47a4-b179-66d9cbe5172d" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
+        <Parameter Name="WalkLegsAngle" Guid="01b6f676-7dd4-45a1-a722-72be7575fe94" Value="0.25" Type="float"/>
+        <Parameter Name="ModelName" Guid="ff814998-f496-424d-962a-d99ca90e4b5b" Value="Models/MC 2" Type="string"/>
+        <Parameter Name="TextureOverride" Guid="e83e7acb-e261-4d56-9d01-7dd16d9e9f34" Value="Textures/Gumdramon" Type="string"/>
+        <Parameter Name="WalkAnimationSpeed" Guid="d4210e0f-4ae4-483b-b491-d4bb9b966d2d" Value="0.5" Type="float"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Health" Guid="309aa37d-42cb-4af7-9f19-957050c1621a">
+        <Parameter Name="Health" Guid="1ab16167-f1d0-41b7-b292-2193a3dd18b5" Value="95" Type="float"/>
+        <Parameter Name="FireResilience" Guid="26e7634f-b128-4cb0-9f15-55c78583ad65" Value="14" Type="float"/>
+        <Parameter Name="AttackResilience" Guid="18198cb2-469d-4256-8020-c1b9e710913d" Value="9" Type="float"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="OnFire" Guid="1037e4b0-b241-418a-a5cc-99003d7e2685"/>
+    <MemberComponentTemplate Name="WalkAroundBehavior" Guid="90ed3ce6-3a99-4d5e-ac3e-bee31b6eebe8" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
+    <MemberComponentTemplate Name="HerdBehavior" Guid="7496b68e-fb05-4afc-ad6d-2205b3ecfb31" InheritanceParent="dfe7218e-ce14-4bde-8dac-f919c38e9efe">
+        <Parameter Name="HerdName" Guid="c890408a-d179-422a-baa7-ba5215db273a" Value="Alianza" Type="string"/>
+        <Parameter Name="AutoNearbyCreaturesHelp" Guid="a4a46406-6ccf-4279-8e77-df5feb2a9370" Value="True" Type="bool"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="FeedBehavior" Guid="22141b3a-aebf-454c-823d-496217c300ff" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
+        <Parameter Name="AutoFeed" Guid="8c2f696d-48df-4fe7-ad7d-9d6a3ff7e545" Value="False" Type="bool"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="ChaseBehavior" Guid="8470badd-25f9-4217-8c43-0e04ae5a3e95" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
+        <Parameter Name="AutoChaseMask" Guid="f4499ddd-e00b-4c21-84ff-ce0b82dc44ed" Value="LandPredator, WaterPredator, WaterOther" Type="Game.CreatureCategory"/>
+        <Parameter Name="DayChaseRange" Guid="a0e5691b-1c16-41ca-9946-d01c2eca26a2" Value="6" Type="float"/>
+        <Parameter Name="NightChaseRange" Guid="abad65d8-e1e5-4d0f-9619-f486442c2107" Value="8" Type="float"/>
+        <Parameter Name="ChaseNonPlayerProbability" Guid="7d6e59d4-b76f-4a50-a48a-f671e7a01710" Value="0.015" Type="float"/>
+        <Parameter Name="NightChaseTime" Guid="46e6012a-2808-4112-9424-a6844ca333b9" Value="6" Type="float"/>
+    </MemberComponentTemplate>
+    <ParameterSet Name="CreatureEggData" Guid="204bd3af-5931-49d7-8d1d-7b2edba0174b">
+        <Parameter Name="Color" Guid="f5c3583a-ab6c-44a6-a357-552c0875d8d8" Value="145,115,183" Type="Color"/>
+        <Parameter Name="TextureSlot" Guid="7807d185-92b5-4308-a5f4-22c7ff66bf58" Value="189" Type="int"/>
+        <Parameter Name="SwapUV" Guid="ab500056-06c4-4d60-9fda-ee28a9ae7fd6" Value="True" Type="bool"/>
+        <Parameter Name="DisplayName" Guid="19158fb0-d040-4a1c-9cc4-f91f383779ca" Value="Gumdramon Egg" Type="string"/>
+        <Parameter Name="EggTypeIndex" Guid="c3f4af5b-06b0-4f21-92b3-270c11915ab4" Value="229" Type="int"/>
+    </ParameterSet>
+</EntityTemplate>
+
+<EntityTemplate Name="BetelGammamon" Guid="3a98e44b-5f2d-4bbb-8ddd-67bebe84e5be" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+    <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="32a2bac6-4aac-4f99-b0d9-bdee4a798ece" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
+        <Parameter Name="DayRange" Guid="7d8bc166-c5f6-4e4b-a2a6-925b0c0bb04d" Value="0" Type="float"/>
+        <Parameter Name="NightRange" Guid="95740803-e649-4079-bfd3-f2de0eb467c6" Value="5" Type="float"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="EatPickableBehavior" Guid="ca647c97-d1ae-4dca-8f53-031b01c9e910">
+        <ParameterSet Name="FoodFactors" Guid="64e8bc3f-0390-4024-8f63-fcef6bef387b">
+            <Parameter Name="Bread" Guid="b3e88658-aa94-457b-85c1-ccc954c40c8f" Value="1" Type="float"/>
+            <Parameter Name="Meat" Guid="08796c18-fafe-4d18-ad58-dc7cce1c46f4" Value="1" Type="float"/>
+        </ParameterSet>
+    </MemberComponentTemplate>
+<MemberComponentTemplate Name="AvoidFireBehavior" Guid="49f84ccf-89e5-4f04-ae93-a2c6ab8304f5" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
+    <MemberComponentTemplate Name="Locomotion" Guid="02d08192-118a-4bc6-b02d-ae3240bdfd20">
+        <Parameter Name="AccelerationFactor" Guid="ca153422-ac45-4d88-b3e0-629f41978357" Value="1.4" Type="float"/>
+        <Parameter Name="FlySpeed" Guid="25e9fcba-fe7e-47c6-97b5-22f16b18428f" Value="0" Type="float"/>
+        <Parameter Name="TurnSpeed" Guid="deecf3ca-a773-43f7-9417-557b7d69ca38" Value="10" Type="float"/>
+        <Parameter Name="WalkSpeed" Guid="85640acd-a9c4-43de-adc4-f1df4aa4db9b" Value="8.5" Type="float"/>
+        <Parameter Name="LadderSpeed" Guid="b79bff18-1a99-42fb-883c-2d2dca64a270" Value="0" Type="float"/>
+    </MemberComponentTemplate>
+<MemberComponentTemplate Name="Loot" Guid="5b551a9d-6cae-45cd-ae88-a14cbedb22b9">
+        <ParameterSet Name="Loot" Guid="21b50c16-4dd2-42b3-ba91-a26394460dee">
+            <Parameter Name="1" Guid="24b2ef10-a5d6-4020-9916-54cdea3306ba" Value="ArrowBlock:4;1;10;1" Type="string"/>
+        </ParameterSet>
+        <ParameterSet Name="LootOnFire" Guid="49cbdec7-2131-4541-b569-9db6dbfde2e1"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Inventory" Guid="15a6b3b2-96ea-499f-a536-9f993f74d82d" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
+    <ParameterSet Name="Slots">
+        <ParameterSet Name="Slot0">
+            <Parameter Name="Contents" Value="0" Type="int"/>
+            <Parameter Name="Count" Value="1" Type="int"/>
+        </ParameterSet>
+    </ParameterSet>
+</MemberComponentTemplate>
+			<MemberComponentTemplate Name="InvShooterBehavior" Guid="07d59cfc-9c04-4d08-8332-b86d04fc24fe" InheritanceParent="456e3558-0e7f-42c3-bc05-35eef7540900">
+    <Parameter Name="SpecialThrowableItem" Guid="da6af166-5a89-41e4-a548-9e430b463c40" Value="ArrowBlock:4" Type="string"/>
+    <Parameter Name="DiscountFromInventory" Guid="aadb5282-79d9-466c-93f4-aaa5943c73b1" Value="True" Type="bool"/>
+    <Parameter Name="SelectRandomThrowableItems" Guid="2b2d63c0-70e8-41a4-a24c-63fed98c0d69" Value="False" Type="bool"/>
+    <Parameter Name="ThrowFromHead" Guid="939b91b4-3abd-4ca0-a18f-d7d4ef77cc79" Value="False" Type="bool"/>
+    <Parameter Name="MinMaxRandomChargeTime" Guid="f763b007-b145-4405-887d-d176d5bd754d" Value="1.0;1.5" Type="string"/>
+    <Parameter Name="MinMaxRandomWaitTime" Guid="573cfaa5-a7a0-432b-8af8-b2abe77eec3d" Value="0.2;0.4" Type="string"/>
+    <Parameter Name="MinMaxDistance" Guid="78991b51-3691-4309-8643-6c3f04f4e2d7" Value="5,35" Type="string"/>
+</MemberComponentTemplate>
+    <MemberComponentTemplate Name="Body" Guid="0f5b9c12-705f-4bf8-82d3-2be4dcea32f7">
+        <Parameter Name="Mass" Guid="95a4b859-f34d-4dc1-939f-517ce9e85e61" Value="5 " Type="float"/>
+        <Parameter Name="BoxSize" Guid="8c53efdc-3b32-4916-afc2-a8e10b6b9828" Value="0.9,0.95,0.9" Type="Vector3"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Creature" Guid="2e526c2e-d829-4ab5-b63e-b35c30b4ed13">
+        <Parameter Name="DisplayName" Guid="46251f3c-d603-4f8c-9093-e854871b0117" Value="BetelGammamon" Type="string"/>
+        <Parameter Name="Category" Guid="f07d1110-d59f-43fa-b5ee-b835e83547f0" Value="LandOther" Type="Game.CreatureCategory"/>
+        <Parameter Name="Description" Guid="c0e87090-8878-4411-ac0e-8f2e7883f80d" Value="BetelGammamon first appeared in Digimon Ghost Game (2021), introduced as the Champion evolution of Gammamon, the Rookie partner of Hiro Amanokawa. Designed by Kenji Watanabe, BetelGammamon was created with a humanoid warrior-like form, symbolizing fiery energy, speed, and close-combat strength. Aligned with the Alliance group, BetelGammamon can also ally with the player, offering powerful support through his signature attack Betel G Shout and his ability to evolve into stronger forms such as Canoweissmon and Siriusmon. His design emphasizes agility, courage, and heroic ambition, making him a standout Champion Digimon recognized for his determination. Beyond his origins, BetelGammamon embodies bravery, loyalty, and the drive to protect others. He often charges into battle with unwavering confidence, balancing youthful spirit with growing responsibility. In gameplay, BetelGammamon provides fast offense and versatile strategies, assuring companions that unity and courage can overcome any challenge. Ultimately, BetelGammamon is more than a fighter—he is a symbol of heroic growth, proving that true strength shines brightest when guided by trust and friendship." Type="string"/>
+        <Parameter Name="KillVerbs" Guid="4c961204-ce17-422d-bac0-97112742e507" Value="burned" Type="string"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="FindPlayerBehavior" Guid="2b965f22-6ea9-4638-8a38-7275bef39a4b" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
+    <MemberComponentTemplate Name="Miner" Guid="a23d1e91-2701-43ba-b803-0d5514b46820" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
+        <Parameter Name="AttackPower" Guid="94b70c70-062a-47b9-b78c-7f0624fe805d" Value="32" Type="float"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="HumanModel" Guid="3137b9e5-a388-4433-8bae-c541f9943e4e" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
+        <Parameter Name="WalkLegsAngle" Guid="bb2575c4-3c40-425c-a78e-722dde98cdc5" Value="0.25" Type="float"/>
+        <Parameter Name="ModelName" Guid="d84149d0-94ce-4aae-88ed-283e938a942c" Value="Models/MC 2" Type="string"/>
+        <Parameter Name="TextureOverride" Guid="72ca03c3-24f8-4096-82f5-0faa2979dd96" Value="Textures/BettelGammamon" Type="string"/>
+        <Parameter Name="WalkAnimationSpeed" Guid="e04a2f14-834c-4bff-b219-424f0b5f5596" Value="0.5" Type="float"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Health" Guid="32c5a461-3e07-4870-8c37-ce9779c349e1">
+        <Parameter Name="Health" Guid="5cba343c-e951-4f27-9f92-7befff5d41d1" Value="100" Type="float"/>
+        <Parameter Name="FireResilience" Guid="bdae1001-43de-4c4f-babf-ba7007422a9a" Value="15" Type="float"/>
+        <Parameter Name="AttackResilience" Guid="b7bd255a-8a4d-4179-a835-ff91b09d78ca" Value="11" Type="float"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="OnFire" Guid="2393b2eb-9377-4510-bec6-fdcdaaf05b75"/>
+    <MemberComponentTemplate Name="WalkAroundBehavior" Guid="41879e28-c03c-438f-b685-22a2f05df163" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
+    <MemberComponentTemplate Name="HerdBehavior" Guid="75353b91-2a7e-4e26-af2d-581e06ed8d8e" InheritanceParent="dfe7218e-ce14-4bde-8dac-f919c38e9efe">
+        <Parameter Name="HerdName" Guid="0b573002-002e-4419-8f78-ed0d4b773461" Value="Alianza" Type="string"/>
+        <Parameter Name="AutoNearbyCreaturesHelp" Guid="517b2fba-1918-4643-8485-130b3e5fbba9" Value="True" Type="bool"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="FeedBehavior" Guid="8e89fa27-7e49-4e72-9e71-d3b9bdc7486c" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
+        <Parameter Name="AutoFeed" Guid="bcb35bca-d4cd-4bea-8858-18a42fc9f902" Value="False" Type="bool"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="ChaseBehavior" Guid="1c8ba90e-0932-4146-ac07-dedab023d181" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
+        <Parameter Name="AutoChaseMask" Guid="824af388-0953-4f20-94b4-7ac249864eba" Value="LandPredator, WaterPredator, WaterOther" Type="Game.CreatureCategory"/>
+        <Parameter Name="DayChaseRange" Guid="112553c9-8976-4029-be28-1b3ac3a21c44" Value="6" Type="float"/>
+        <Parameter Name="NightChaseRange" Guid="41b6167d-2f97-40b7-8e7c-596af837c37c" Value="8" Type="float"/>
+        <Parameter Name="ChaseNonPlayerProbability" Guid="ac87fd56-b569-498a-b25b-d2393b7b2978" Value="0.015" Type="float"/>
+        <Parameter Name="NightChaseTime" Guid="7c137a70-1904-4658-af02-0dc7670d711b" Value="6" Type="float"/>
+    </MemberComponentTemplate>
+    <ParameterSet Name="CreatureEggData" Guid="d1b9fde2-af50-439c-b13a-d7da1a571dc9">
+        <Parameter Name="Color" Guid="e73fb3d6-b68c-40cb-82d9-2c99f6ea4d23" Value="200,40,40" Type="Color"/>
+        <Parameter Name="TextureSlot" Guid="51ece2f8-7c09-4ba3-bd46-1b5fb9fec454" Value="189" Type="int"/>
+        <Parameter Name="SwapUV" Guid="8a400181-16fe-4813-8f38-b37e5a62a36e" Value="True" Type="bool"/>
+        <Parameter Name="DisplayName" Guid="adab8e46-5c85-4949-8856-9e8be62aa534" Value="BetelGammamon Egg" Type="string"/>
+        <Parameter Name="EggTypeIndex" Guid="38943c12-c71b-45f3-9922-9c8df3743d92" Value="230" Type="int"/>
+    </ParameterSet>
+</EntityTemplate>
+
+<EntityTemplate Name="Gaomon" Guid="a1b2c3d4-e5f6-4789-9012-3456789abcd1" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="a9b0c1d2-e3f4-4890-9123-456789abcdef" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
         <Parameter Name="DayRange" Guid="b0c1d2e3-f4a5-4901-2345-6789abcdef01" Value="0" Type="float"/>
         <Parameter Name="NightRange" Guid="c1d2c3d4-e5f6-5012-3456-789abcdef012" Value="5" Type="float"/>
@@ -2445,42 +2612,42 @@
     </MemberComponentTemplate>
 <MemberComponentTemplate Name="AvoidFireBehavior" Guid="b6c7d8e9-f0a1-5567-89ab-cdef01234567" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
     <MemberComponentTemplate Name="Locomotion" Guid="c7d8e9f0-a1b2-5678-9abc-def012345678">
-        <Parameter Name="AccelerationFactor" Guid="d8e9f0a1-b2c3-5789-abcd-ef0123456789" Value="1.3" Type="float"/>
+        <Parameter Name="AccelerationFactor" Guid="d8e9f0a1-b2c3-5789-abcd-ef0123456789" Value="1.4" Type="float"/>
         <Parameter Name="FlySpeed" Guid="e9f0a1b2-c3d4-5890-bcde-f0123456789a" Value="0" Type="float"/>
-        <Parameter Name="TurnSpeed" Guid="f0a1b2c3-d4e5-5901-cdef-0123456789ab" Value="9" Type="float"/>
-        <Parameter Name="WalkSpeed" Guid="a1b2c3d4-e5f6-6012-def0-123456789abc" Value="7.5" Type="float"/>
+        <Parameter Name="TurnSpeed" Guid="f0a1b2c3-d4e5-5901-cdef-0123456789ab" Value="10" Type="float"/>
+        <Parameter Name="WalkSpeed" Guid="a1b2c3d4-e5f6-6012-def0-123456789abc" Value="8.0" Type="float"/>
         <Parameter Name="LadderSpeed" Guid="b2c3d4e5-f6a7-6123-ef01-23456789abcd" Value="0" Type="float"/>
     </MemberComponentTemplate>
 <MemberComponentTemplate Name="Loot" Guid="e5f6a7b8-c9d0-6456-1234-56789abcdef0">
         <ParameterSet Name="Loot" Guid="f6a7b8c9-d0e1-6567-2345-6789abcdef01">
-            <Parameter Name="1" Guid="c9d0e1f2-a3b4-6890-5678-9abcdef01234" Value="ArrowBlock:4;1;10;1" Type="string"/>
+            <Parameter Name="1" Guid="c9d0e1f2-a3b4-6890-5678-9abcdef01234" Value="102;10;1" Type="string"/>
         </ParameterSet>
         <ParameterSet Name="LootOnFire" Guid="d0e1f2a3-b4c5-6901-6789-abcdef012345"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="e1f2a3b4-c5d6-7012-7890-bcdef0123456">
         <Parameter Name="Mass" Guid="f2a3b4c5-d6e7-7123-8901-cdef01234567" Value="50" Type="float"/>
-        <Parameter Name="BoxSize" Guid="a3b4c5d6-e7f8-7234-9012-def012345678" Value="0.9,0.95,0.9" Type="Vector3"/>
+        <Parameter Name="BoxSize" Guid="a3b4c5d6-e7f8-7234-9012-def012345678" Value="0.85,0.9,0.85" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="b4c5d6e7-f8a9-7345-0123-ef0123456789">
-        <Parameter Name="DisplayName" Guid="c5d6e7f8-a9b0-7456-1234-f0123456789a" Value="Gumdramon" Type="string"/>
+        <Parameter Name="DisplayName" Guid="c5d6e7f8-a9b0-7456-1234-f0123456789a" Value="Gaomon" Type="string"/>
         <Parameter Name="Category" Guid="d6e7f8a9-b0c1-7567-2345-0123456789ab" Value="LandOther" Type="Game.CreatureCategory"/>
-        <Parameter Name="Description" Guid="e3f4a5b6-c7d8-7345-abcd-ef0123456789" Value="Gumdramon first appeared in Digimon Xros Wars: The Young Hunters Who Leapt Through Time (2011), introduced as the Rookie partner of Tagiru Akashi. Designed by Kenji Watanabe, Gumdramon was created with a dragon-like form featuring a powerful tail weapon, symbolizing both his mischievous personality and his explosive combat style. Aligned with the Alliance group, Gumdramon can also ally with the player, offering versatile support through his signature attack Jamming Strike and his ability to evolve into stronger forms such as Arresterdramon. His design emphasizes agility, energy, and rebellious charm, making him stand out among Rookie Digimon. Beyond his origins, Gumdramon embodies determination, independence, and loyalty. He often rushes into battle with bold confidence, learning to balance his playful nature with responsibility. In gameplay, Gumdramon offers fast offense and adaptable strategies, assuring companions that courage and persistence can overcome any obstacle. Ultimately, Gumdramon is more than a fighter—he is a symbol of growth, proving that even youthful recklessness can transform into strength when guided by trust and friendship." Type="string"/>
+        <Parameter Name="Description" Guid="e3f4a5b6-c7d8-7345-abcd-ef0123456789" Value="Gaomon first appeared in Digimon Savers (2006), introduced as the Rookie partner of Thomas H. Norstein. Designed by Kenji Watanabe, Gaomon was created with a canine-like form wearing red boxing gloves, symbolizing discipline, loyalty, and his martial arts-inspired combat style. Aligned with the Alliance group, Gaomon can also ally with the player, offering reliable support through his signature attacks such as Double Backhand and Rolling Upper, while evolving into stronger forms like Gaogamon and MachGaogamon. His design emphasizes speed, precision, and determination, making him a distinctive Rookie Digimon recognized for his fighting spirit. Beyond his origins, Gaomon embodies loyalty, courage, and resilience. He often enters battle with calm focus, balancing obedience with independent strength. In gameplay, Gaomon provides fast offense and dependable defense, assuring companions that discipline and teamwork can overcome any challenge. Ultimately, Gaomon is more than a fighter—he is a symbol of trust, proving that true strength comes from loyalty and unity." Type="string"/>
         <Parameter Name="KillVerbs" Guid="f8a9b0c1-d2e3-7789-4567-23456789abcd" Value="burned" Type="string"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="a9b0c1d2-e3f4-7890-5678-3456789abcde" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="b0c1d2e3-f4a5-7901-6789-456789abcdef" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
-        <Parameter Name="AttackPower" Guid="c1d2e3f4-a5b6-8012-7890-56789abcdef0" Value="28" Type="float"/>
+        <Parameter Name="AttackPower" Guid="c1d2e3f4-a5b6-8012-7890-56789abcdef0" Value="30" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="HumanModel" Guid="d2e3f4a5-b6c7-8123-8901-6789abcdef01" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
         <Parameter Name="WalkLegsAngle" Guid="e3f4a5b6-c7d8-8234-9012-789abcdef012" Value="0.25" Type="float"/>
         <Parameter Name="ModelName" Guid="f4a5b6c7-d8e9-8345-0123-89abcdef0123" Value="Models/MC 2" Type="string"/>
-        <Parameter Name="TextureOverride" Guid="a5b6c7d8-e9f0-8456-1234-9abcdef01234" Value="Textures/Gumdramon" Type="string"/>
+        <Parameter Name="TextureOverride" Guid="a5b6c7d8-e9f0-8456-1234-9abcdef01234" Value="Textures/Gaomon" Type="string"/>
         <Parameter Name="WalkAnimationSpeed" Guid="b6c7d8e9-f0a1-8567-2345-abcdef012345" Value="0.5" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="c7d8e9f0-a1b2-8678-3456-bcdef0123456">
         <Parameter Name="Health" Guid="d8e9f0a1-b2c3-8789-4567-cdef01234567" Value="95" Type="float"/>
         <Parameter Name="FireResilience" Guid="e9f0a1b2-c3d4-8890-5678-def012345678" Value="14" Type="float"/>
-        <Parameter Name="AttackResilience" Guid="f0a1b2c3-d4e5-8901-6789-ef0123456789" Value="9" Type="float"/>
+        <Parameter Name="AttackResilience" Guid="f0a1b2c3-d4e5-8901-6789-ef0123456789" Value="10" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="a1b2c3d4-e5f6-9012-7890-f0123456789a"/>
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="b2c3d4e5-f6a7-9123-8901-0123456789ab" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
@@ -2499,11 +2666,11 @@
         <Parameter Name="NightChaseTime" Guid="a3b4c5d6-e7f8-0234-9012-bcdef0123456" Value="6" Type="float"/>
     </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="b4c5d6e7-f8a9-0345-0123-cdef01234567">
-        <Parameter Name="Color" Guid="c5d6e7f8-a9b0-0456-1234-def012345678" Value="145,115,183" Type="Color"/>
+        <Parameter Name="Color" Guid="c5d6e7f8-a9b0-0456-1234-def012345678" Value="70,100,180" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="d6e7f8a9-b0c1-0567-2345-ef0123456789" Value="189" Type="int"/>
         <Parameter Name="SwapUV" Guid="e7f8a9b0-c1d2-0678-3456-f0123456789a" Value="True" Type="bool"/>
-        <Parameter Name="DisplayName" Guid="f8a9b0c1-d2e3-0789-4567-0123456789ab" Value="Gumdramon Egg" Type="string"/>
-        <Parameter Name="EggTypeIndex" Guid="a9b0c1d2-e3f4-0890-5678-123456789abc" Value="229" Type="int"/>
+        <Parameter Name="DisplayName" Guid="f8a9b0c1-d2e3-0789-4567-0123456789ab" Value="Gaomon Egg" Type="string"/>
+        <Parameter Name="EggTypeIndex" Guid="a9b0c1d2-e3f4-0890-5678-123456789abc" Value="231" Type="int"/>
     </ParameterSet>
 </EntityTemplate>
 </Folder>
