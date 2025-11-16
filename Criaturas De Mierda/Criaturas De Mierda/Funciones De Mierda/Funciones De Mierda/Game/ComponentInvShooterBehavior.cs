@@ -493,6 +493,260 @@ namespace Game
 			}
 		}
 
+		// Token: 0x06000150 RID: 336 RVA: 0x00013314 File Offset: 0x00011514
+		private void TryReloadWeapon(ComponentInvShooterBehavior.WeaponInfo weaponToReload)
+		{
+			if (!this.DiscountFromInventory || weaponToReload.Type == ComponentInvShooterBehavior.WeaponType.None)
+			{
+				return;
+			}
+			if (weaponToReload.Type == ComponentInvShooterBehavior.WeaponType.Bow || weaponToReload.Type == ComponentInvShooterBehavior.WeaponType.Crossbow)
+			{
+				ArrowBlock.ArrowType[] array = (weaponToReload.Type == ComponentInvShooterBehavior.WeaponType.Bow) ? new SubsystemBowBlockBehavior().m_supportedArrowTypes : new SubsystemCrossbowBlockBehavior().m_supportedArrowTypes;
+				int blockIndex = BlocksManager.GetBlockIndex<ArrowBlock>(false, false);
+				for (int i = 0; i < this.m_componentInventory.SlotsCount; i++)
+				{
+					int slotValue = this.m_componentInventory.GetSlotValue(i);
+					if (Terrain.ExtractContents(slotValue) == blockIndex)
+					{
+						ArrowBlock.ArrowType arrowType = ArrowBlock.GetArrowType(Terrain.ExtractData(slotValue));
+						bool flag = false;
+						ArrowBlock.ArrowType[] array2 = array;
+						for (int j = 0; j < array2.Length; j++)
+						{
+							if (array2[j] == arrowType)
+							{
+								flag = true;
+							}
+						}
+						if (flag)
+						{
+							int data = Terrain.ExtractData(weaponToReload.WeaponValue);
+							int data2 = (weaponToReload.Type == ComponentInvShooterBehavior.WeaponType.Bow) ? BowBlock.SetArrowType(data, new ArrowBlock.ArrowType?(arrowType)) : CrossbowBlock.SetDraw(CrossbowBlock.SetArrowType(data, new ArrowBlock.ArrowType?(arrowType)), 15);
+							this.m_componentInventory.RemoveSlotItems(weaponToReload.WeaponSlot, 1);
+							this.m_componentInventory.AddSlotItems(weaponToReload.WeaponSlot, Terrain.ReplaceData(weaponToReload.WeaponValue, data2), 1);
+							this.m_componentInventory.RemoveSlotItems(i, 1);
+							return;
+						}
+					}
+				}
+				return;
+			}
+			if (weaponToReload.Type == ComponentInvShooterBehavior.WeaponType.Musket)
+			{
+				int num = this.FindItemSlotByContents(109);
+				int num2 = this.FindItemSlotByContents(205);
+				int value;
+				int num3 = this.FindBulletSlot(out value);
+				if (num != -1 && num2 != -1 && num3 != -1)
+				{
+					BulletBlock.BulletType bulletType = BulletBlock.GetBulletType(Terrain.ExtractData(value));
+					this.m_componentInventory.RemoveSlotItems(num, 1);
+					this.m_componentInventory.RemoveSlotItems(num2, 1);
+					this.m_componentInventory.RemoveSlotItems(num3, 1);
+					int data3 = MusketBlock.SetLoadState(Terrain.ExtractData(weaponToReload.WeaponValue), MusketBlock.LoadState.Loaded);
+					data3 = MusketBlock.SetBulletType(data3, new BulletBlock.BulletType?(bulletType));
+					this.m_componentInventory.RemoveSlotItems(weaponToReload.WeaponSlot, 1);
+					this.m_componentInventory.AddSlotItems(weaponToReload.WeaponSlot, Terrain.ReplaceData(weaponToReload.WeaponValue, data3), 1);
+				}
+			}
+		}
+
+		// Token: 0x06000151 RID: 337 RVA: 0x00013530 File Offset: 0x00011730
+		private int FindItemSlotByContents(int contents)
+		{
+			for (int i = 0; i < this.m_componentInventory.SlotsCount; i++)
+			{
+				if (Terrain.ExtractContents(this.m_componentInventory.GetSlotValue(i)) == contents)
+				{
+					return i;
+				}
+			}
+			return -1;
+		}
+
+		// Token: 0x06000152 RID: 338 RVA: 0x0001356C File Offset: 0x0001176C
+		private int FindBulletSlot(out int bulletValue)
+		{
+			int blockIndex = BlocksManager.GetBlockIndex<BulletBlock>(false, false);
+			for (int i = 0; i < this.m_componentInventory.SlotsCount; i++)
+			{
+				int slotValue = this.m_componentInventory.GetSlotValue(i);
+				if (Terrain.ExtractContents(slotValue) == blockIndex)
+				{
+					bulletValue = slotValue;
+					return i;
+				}
+			}
+			bulletValue = 0;
+			return -1;
+		}
+
+		// Token: 0x06000153 RID: 339 RVA: 0x000135B8 File Offset: 0x000117B8
+		private bool IsWeaponReady(ComponentInvShooterBehavior.WeaponInfo weaponInfo)
+		{
+			if (weaponInfo.Type == ComponentInvShooterBehavior.WeaponType.None)
+			{
+				return false;
+			}
+			if (weaponInfo.Type == ComponentInvShooterBehavior.WeaponType.Throwable)
+			{
+				return true;
+			}
+			int slotValue = this.m_componentInventory.GetSlotValue(weaponInfo.WeaponSlot);
+			Block block = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)];
+			int data = Terrain.ExtractData(slotValue);
+			if (block is BowBlock)
+			{
+				return BowBlock.GetArrowType(data) != null;
+			}
+			if (block is CrossbowBlock)
+			{
+				return CrossbowBlock.GetArrowType(data) != null && CrossbowBlock.GetDraw(data) == 15;
+			}
+			return block is MusketBlock && MusketBlock.GetLoadState(data) == MusketBlock.LoadState.Loaded;
+		}
+
+		// Token: 0x06000154 RID: 340 RVA: 0x00013650 File Offset: 0x00011850
+		private void ProactiveReloadCheck()
+		{
+			ComponentInvShooterBehavior.WeaponInfo weaponInfo = this.FindReloadableRangedWeapon();
+			if (weaponInfo.Type != ComponentInvShooterBehavior.WeaponType.None)
+			{
+				if (this.m_componentInventory.ActiveSlotIndex != weaponInfo.WeaponSlot)
+				{
+					this.m_componentInventory.ActiveSlotIndex = weaponInfo.WeaponSlot;
+				}
+				this.TryReloadWeapon(weaponInfo);
+			}
+		}
+
+		// Token: 0x06000155 RID: 341 RVA: 0x00013698 File Offset: 0x00011898
+		private ComponentInvShooterBehavior.WeaponInfo FindReadyRangedWeapon()
+		{
+			for (int i = 0; i < this.m_componentInventory.SlotsCount; i++)
+			{
+				int slotValue = this.m_componentInventory.GetSlotValue(i);
+				if (slotValue != 0)
+				{
+					Block block = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)];
+					int data = Terrain.ExtractData(slotValue);
+					if (block is BowBlock && BowBlock.GetArrowType(data) != null)
+					{
+						return new ComponentInvShooterBehavior.WeaponInfo
+						{
+							WeaponSlot = i,
+							WeaponValue = slotValue,
+							Type = ComponentInvShooterBehavior.WeaponType.Bow
+						};
+					}
+					if (block is CrossbowBlock && CrossbowBlock.GetArrowType(data) != null && CrossbowBlock.GetDraw(data) == 15)
+					{
+						return new ComponentInvShooterBehavior.WeaponInfo
+						{
+							WeaponSlot = i,
+							WeaponValue = slotValue,
+							Type = ComponentInvShooterBehavior.WeaponType.Crossbow
+						};
+					}
+					if (block is MusketBlock && MusketBlock.GetLoadState(data) == MusketBlock.LoadState.Loaded)
+					{
+						return new ComponentInvShooterBehavior.WeaponInfo
+						{
+							WeaponSlot = i,
+							WeaponValue = slotValue,
+							Type = ComponentInvShooterBehavior.WeaponType.Musket
+						};
+					}
+				}
+			}
+			return default(ComponentInvShooterBehavior.WeaponInfo);
+		}
+
+		// Token: 0x06000156 RID: 342 RVA: 0x000137A8 File Offset: 0x000119A8
+		private ComponentInvShooterBehavior.WeaponInfo FindReloadableRangedWeapon()
+		{
+			for (int i = 0; i < this.m_componentInventory.SlotsCount; i++)
+			{
+				int slotValue = this.m_componentInventory.GetSlotValue(i);
+				if (slotValue != 0)
+				{
+					Block block = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)];
+					int data = Terrain.ExtractData(slotValue);
+					if (block is BowBlock && BowBlock.GetArrowType(data) == null)
+					{
+						return new ComponentInvShooterBehavior.WeaponInfo
+						{
+							WeaponSlot = i,
+							WeaponValue = slotValue,
+							Type = ComponentInvShooterBehavior.WeaponType.Bow
+						};
+					}
+					if (block is CrossbowBlock && (CrossbowBlock.GetArrowType(data) == null || CrossbowBlock.GetDraw(data) < 15))
+					{
+						return new ComponentInvShooterBehavior.WeaponInfo
+						{
+							WeaponSlot = i,
+							WeaponValue = slotValue,
+							Type = ComponentInvShooterBehavior.WeaponType.Crossbow
+						};
+					}
+					if (block is MusketBlock && MusketBlock.GetLoadState(data) == MusketBlock.LoadState.Empty)
+					{
+						return new ComponentInvShooterBehavior.WeaponInfo
+						{
+							WeaponSlot = i,
+							WeaponValue = slotValue,
+							Type = ComponentInvShooterBehavior.WeaponType.Musket
+						};
+					}
+				}
+			}
+			return default(ComponentInvShooterBehavior.WeaponInfo);
+		}
+
+		// Token: 0x06000157 RID: 343 RVA: 0x000138B8 File Offset: 0x00011AB8
+		private ComponentInvShooterBehavior.WeaponInfo FindThrowableWeapon()
+		{
+			for (int i = 0; i < this.m_componentInventory.SlotsCount; i++)
+			{
+				int slotValue = this.m_componentInventory.GetSlotValue(i);
+				if (slotValue != 0 && BlocksManager.Blocks[Terrain.ExtractContents(slotValue)] is SpearBlock)
+				{
+					return new ComponentInvShooterBehavior.WeaponInfo
+					{
+						WeaponSlot = i,
+						WeaponValue = slotValue,
+						Type = ComponentInvShooterBehavior.WeaponType.Throwable
+					};
+				}
+			}
+			return default(ComponentInvShooterBehavior.WeaponInfo);
+		}
+
+		// Token: 0x06000158 RID: 344 RVA: 0x0001392C File Offset: 0x00011B2C
+		private ComponentInvShooterBehavior.WeaponInfo FindMeleeWeapon()
+		{
+			for (int i = 0; i < this.m_componentInventory.SlotsCount; i++)
+			{
+				int slotValue = this.m_componentInventory.GetSlotValue(i);
+				if (slotValue != 0)
+				{
+					Block block = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)];
+					if (block is MacheteBlock || block is WoodenClubBlock || block is StoneClubBlock || block is AxeBlock || block is SpearBlock)
+					{
+						return new ComponentInvShooterBehavior.WeaponInfo
+						{
+							WeaponSlot = i,
+							WeaponValue = slotValue,
+							Type = ComponentInvShooterBehavior.WeaponType.Melee
+						};
+					}
+				}
+			}
+			return default(ComponentInvShooterBehavior.WeaponInfo);
+		}
+
 		// Token: 0x0400019C RID: 412
 		public ComponentCreature m_componentCreature;
 
@@ -597,5 +851,41 @@ namespace Game
 
 		// Token: 0x040001BE RID: 446
 		public ComponentInventory m_componentInventory;
+
+		// Token: 0x040001BF RID: 447
+		private double m_nextProactiveReloadTime;
+
+		// Token: 0x040001C0 RID: 448
+		private ComponentInvShooterBehavior.WeaponInfo m_weaponInfo;
+
+		// Token: 0x0200003D RID: 61
+		public enum WeaponType
+		{
+			// Token: 0x040001C2 RID: 450
+			None,
+			// Token: 0x040001C3 RID: 451
+			Throwable,
+			// Token: 0x040001C4 RID: 452
+			Bow,
+			// Token: 0x040001C5 RID: 453
+			Crossbow,
+			// Token: 0x040001C6 RID: 454
+			Musket,
+			// Token: 0x040001C7 RID: 455
+			Melee
+		}
+
+		// Token: 0x0200003E RID: 62
+		public struct WeaponInfo
+		{
+			// Token: 0x040001C8 RID: 456
+			public int WeaponSlot;
+
+			// Token: 0x040001C9 RID: 457
+			public int WeaponValue;
+
+			// Token: 0x040001CA RID: 458
+			public ComponentInvShooterBehavior.WeaponType Type;
+		}
 	}
 }
