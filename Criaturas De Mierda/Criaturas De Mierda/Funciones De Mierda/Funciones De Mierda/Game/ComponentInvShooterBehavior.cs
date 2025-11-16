@@ -155,8 +155,8 @@ namespace Game
 			bool flag10 = array6.Length >= 2 && float.TryParse(array6[0], out this.m_randomWaitMin) && float.TryParse(array6[1], out this.m_randomWaitMax);
 			if (!flag10)
 			{
-				this.m_randomWaitMin = 1f;
-				this.m_randomWaitMax = 10f;
+				this.m_randomWaitMin = 0.8f;
+				this.m_randomWaitMax = 1.2f;
 				DefaultInterpolatedStringHandler defaultInterpolatedStringHandler = new DefaultInterpolatedStringHandler(79, 3);
 				defaultInterpolatedStringHandler.AppendLiteral("Invalid MinMaxRandomWaitTime format or empty: '");
 				defaultInterpolatedStringHandler.AppendFormatted(this.MinMaxRandomWaitTime);
@@ -171,8 +171,8 @@ namespace Game
 			bool flag11 = array7.Length >= 2 && float.TryParse(array7[0], out this.m_minDistance) && float.TryParse(array7[1], out this.m_maxDistance);
 			if (!flag11)
 			{
-				this.m_minDistance = 2f;
-				this.m_maxDistance = 16f;
+				this.m_minDistance = 3f;
+				this.m_maxDistance = 15f;
 				DefaultInterpolatedStringHandler defaultInterpolatedStringHandler = new DefaultInterpolatedStringHandler(64, 3);
 				defaultInterpolatedStringHandler.AppendLiteral("Invalid MinMaxDistance format: '");
 				defaultInterpolatedStringHandler.AppendFormatted(this.MinMaxDistance);
@@ -215,8 +215,8 @@ namespace Game
 			bool flag15 = array8.Length >= 2 && float.TryParse(array8[0], out this.m_randomThrowMin) && float.TryParse(array8[1], out this.m_randomThrowMax);
 			if (!flag15)
 			{
-				this.m_randomThrowMin = 1.6f;
-				this.m_randomThrowMax = 2.2f;
+				this.m_randomThrowMin = 1.0f;
+				this.m_randomThrowMax = 1.5f;
 				DefaultInterpolatedStringHandler defaultInterpolatedStringHandler = new DefaultInterpolatedStringHandler(70, 3);
 				defaultInterpolatedStringHandler.AppendLiteral("Invalid MinMaxRandomWaitTime format: '");
 				defaultInterpolatedStringHandler.AppendFormatted(this.MinMaxRandomWaitTime);
@@ -313,7 +313,9 @@ namespace Game
 							if (flag13)
 							{
 								this.m_isCharging = true;
-								this.m_chargeDuration = this.m_random.Float(this.m_randomWaitMin, this.m_randomWaitMax);
+								// MEJORA: Tiempos de carga más consistentes
+								float chargeVariation = this.m_random.Float(0.8f, 1.2f);
+								this.m_chargeDuration = ((this.m_randomWaitMin + this.m_randomWaitMax) / 2f) * chargeVariation;
 								this.m_chargeStartTime = gameTime;
 							}
 						}
@@ -346,30 +348,63 @@ namespace Game
 		// Token: 0x0600014D RID: 333 RVA: 0x00012F4C File Offset: 0x0001114C
 		private void FireProjectile()
 		{
-			Vector3 vector = this.m_componentCreature.ComponentCreatureModel.EyePosition + this.m_componentCreature.ComponentBody.Matrix.Right * 0.3f - this.m_componentCreature.ComponentBody.Matrix.Up * 0.2f + this.m_componentCreature.ComponentBody.Matrix.Forward * 0.2f;
-			Vector3 vector2 = this.m_componenttChaseBehavior.Target.ComponentBody.Position - vector;
-			this.m_distance = vector2.Length();
-			Vector3 vector3 = Vector3.Normalize(vector2 + this.m_random.Vector3((this.m_distance < 10f) ? 0.4f : 1f));
-			float num = MathUtils.Lerp(0f, 40f, MathUtils.Pow((float)this.m_ChargeTime / 4f, 1f));
-			this.m_subsystemProjectiles.FireProjectile(this.m_arrowValue, vector, vector3 * num + new Vector3(0f, this.m_random.Float(5f, 8f) * this.m_distance / num, 0f), Vector3.Zero, this.m_componentCreature);
-			bool flag = this.m_componentModel != null;
-			if (flag)
+			Vector3 position;
+			if (this.ThrowFromHead)
+			{
+				position = this.m_componentCreature.ComponentCreatureModel.EyePosition;
+			}
+			else
+			{
+				position = this.m_componentCreature.ComponentCreatureModel.EyePosition + 
+						   this.m_componentCreature.ComponentBody.Matrix.Right * 0.3f - 
+						   this.m_componentCreature.ComponentBody.Matrix.Up * 0.2f + 
+						   this.m_componentCreature.ComponentBody.Matrix.Forward * 0.2f;
+			}
+			
+			Vector3 targetDirection = this.m_componenttChaseBehavior.Target.ComponentBody.Position - position;
+			this.m_distance = targetDirection.Length();
+			
+			// CORRECCIÓN PRINCIPAL: Cálculo de velocidad mejorado
+			float baseSpeed = 25f; // Velocidad base aumentada
+			float distanceFactor = MathUtils.Clamp(this.m_distance / 10f, 0.5f, 2f);
+			float speed = baseSpeed * distanceFactor;
+			
+			// CORRECCIÓN: Reducir dispersión aleatoria y mejorar precisión
+			Vector3 direction = Vector3.Normalize(targetDirection);
+			Vector3 adjustedDirection = direction + this.m_random.Vector3(0.1f); // Menos dispersión
+			
+			// CORRECCIÓN: Cálculo de gravedad mejorado
+			float gravityCompensation = MathUtils.Lerp(3f, 8f, this.m_distance / 20f);
+			Vector3 velocity = Vector3.Normalize(adjustedDirection) * speed + new Vector3(0f, gravityCompensation, 0f);
+			
+			// Disparar el proyectil con mejor velocidad
+			this.m_subsystemProjectiles.FireProjectile(
+				this.m_arrowValue, 
+				position, 
+				velocity, 
+				Vector3.Zero, 
+				this.m_componentCreature
+			);
+
+			// Animación
+			if (this.m_componentModel != null)
 			{
 				ComponentHumanModel componentHumanModel = this.m_componentModel as ComponentHumanModel;
-				bool flag2 = componentHumanModel != null;
-				if (flag2)
+				if (componentHumanModel != null)
 				{
 					componentHumanModel.m_handAngles2 = new Vector2(MathUtils.DegToRad(-90f), componentHumanModel.m_handAngles2.Y);
 				}
 			}
-			bool flag3 = !string.IsNullOrEmpty(this.ThrowingSound);
-			if (flag3)
+			
+			// Sonido
+			if (!string.IsNullOrEmpty(this.ThrowingSound))
 			{
-				float num2 = this.m_random.Float(-0.1f, 0.1f);
-				this.m_subsystemAudio.PlaySound(this.ThrowingSound, 1f, num2, vector, this.ThrowingSoundDistance, 0.1f);
+				float pitch = this.m_random.Float(-0.1f, 0.1f);
+				this.m_subsystemAudio.PlaySound(this.ThrowingSound, 1f, pitch, position, this.ThrowingSoundDistance, 0.1f);
 			}
-			bool discountFromInventory = this.DiscountFromInventory;
-			if (discountFromInventory)
+			
+			// Remover del inventario
+			if (this.DiscountFromInventory)
 			{
 				this.RemoveAimableItemFromInventory(this.m_arrowValue);
 			}
@@ -563,4 +598,3 @@ namespace Game
 		public ComponentInventory m_componentInventory;
 	}
 }
-
