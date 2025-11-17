@@ -2149,7 +2149,7 @@
         <Parameter Name="TextureSlot" Guid="57537e8a-4750-4760-8b07-26f447c27970" Value="188" Type="int"/>
         <Parameter Name="SwapUV" Guid="e67bb7d4-b9bd-4a7d-9a71-f15ff6fb41ba" Value="True" Type="bool"/>
         <Parameter Name="DisplayName" Guid="b79aaaf7-cb59-4f05-8e75-57428cfcc0d5" Value="Shoutmon Egg" Type="string"/>
-        <Parameter Name="EggTypeIndex" Guid="84c7b2ca-3f67-48a9-97e5-6f3edb8320ce" Value="225" Type="int"/>
+        <Parameter Name="EggTypeIndex" Guid="84c7b2ca-3f67-48a9-97e5-6f3edb8320ce" Value="226" Type="int"/>
     </ParameterSet>
 </EntityTemplate>
 
@@ -2244,7 +2244,7 @@
         <Parameter Name="TextureSlot" Guid="df46ac23-a62b-4ed4-8353-f89f9d80657c" Value="189" Type="int"/>
         <Parameter Name="SwapUV" Guid="0ca057fa-43bc-4feb-9fec-d59171d51153" Value="True" Type="bool"/>
         <Parameter Name="DisplayName" Guid="2f7d0063-7465-4af4-8f3c-3b8f8b87709a" Value="Ballestadora Musculosa Egg" Type="string"/>
-        <Parameter Name="EggTypeIndex" Guid="807dfd94-8f8b-4a09-bfc9-b76b7c8541ed" Value="226" Type="int"/>
+        <Parameter Name="EggTypeIndex" Guid="807dfd94-8f8b-4a09-bfc9-b76b7c8541ed" Value="232" Type="int"/>
     </ParameterSet>
 </EntityTemplate>
 
