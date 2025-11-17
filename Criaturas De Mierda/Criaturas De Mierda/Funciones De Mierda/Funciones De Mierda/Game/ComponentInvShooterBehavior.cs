@@ -45,13 +45,14 @@ namespace Game
 		{
 			base.Load(valuesDictionary, idToEntityMap);
 			this.m_componentCreature = base.Entity.FindComponent<ComponentCreature>(true);
-			this.m_componenttChaseBehavior = base.Entity.FindComponent<ComponentChaseBehavior>(true);
+			this.m_componentChaseBehavior = base.Entity.FindComponent<ComponentChaseBehavior>(true);
+			this.m_componentInventory = base.Entity.FindComponent<ComponentInventory>(true);
 			this.m_subsystemTerrain = base.Project.FindSubsystem<SubsystemTerrain>(true);
 			this.m_subsystemTime = base.Project.FindSubsystem<SubsystemTime>(true);
 			this.m_subsystemProjectiles = base.Project.FindSubsystem<SubsystemProjectiles>(true);
 			this.m_subsystemAudio = base.Project.FindSubsystem<SubsystemAudio>(true);
-			this.m_componentInventory = base.Entity.FindComponent<ComponentInventory>(true);
 			this.m_componentModel = base.Entity.FindComponent<ComponentCreatureModel>(false);
+
 			this.ThrowingSound = valuesDictionary.GetValue<string>("ThrowingSound");
 			this.ThrowingSoundDistance = valuesDictionary.GetValue<float>("ThrowingSoundDistance");
 			this.DiscountFromInventory = valuesDictionary.GetValue<bool>("DiscountFromInventory");
@@ -60,6 +61,14 @@ namespace Game
 			this.MinMaxRandomWaitTime = base.ValuesDictionary.GetValue<string>("MinMaxRandomWaitTime");
 			this.SelectRandomThrowableItems = base.ValuesDictionary.GetValue<bool>("SelectRandomThrowableItems");
 			this.ThrowFromHead = base.ValuesDictionary.GetValue<bool>("ThrowFromHead");
+
+			// Agregar estados de la máquina de estados
+			this.m_stateMachine.AddState("Idle", null, new Action(this.Idle_Update), null);
+			this.m_stateMachine.AddState("Aiming", new Action(this.Aiming_Enter), new Action(this.Aiming_Update), null);
+			this.m_stateMachine.AddState("Fire", new Action(this.Fire_Enter), new Action(this.Fire_Update), new Action(this.Fire_Leave));
+			this.m_stateMachine.AddState("Reloading", null, new Action(this.Reloading_Update), null);
+			this.TransitionToState("Idle");
+
 			string value = valuesDictionary.GetValue<string>("ExcludedThrowableItems", string.Empty);
 			string value2 = base.ValuesDictionary.GetValue<string>("SpecialThrowableItem", string.Empty);
 			bool flag = !string.IsNullOrEmpty(value2);
@@ -235,11 +244,28 @@ namespace Game
 			bool flag = this.m_componentCreature.ComponentHealth.Health <= 0f;
 			if (!flag)
 			{
+				// Recarga proactiva
+				if (this.m_subsystemTime.GameTime >= this.m_nextProactiveReloadTime)
+				{
+					this.m_nextProactiveReloadTime = this.m_subsystemTime.GameTime + 1.0;
+					if (this.m_currentStateName == "Idle")
+					{
+						this.ProactiveReloadCheck();
+					}
+				}
+
+				// Actualización de la máquina de estados para armas de proyectiles
+				if (this.m_subsystemTime.GameTime >= this.m_nextCombatUpdateTime)
+				{
+					this.m_stateMachine.Update();
+				}
+
+				// Lógica original de armas arrojadizas
 				double gameTime = this.m_subsystemTime.GameTime;
 				bool isCharging = this.m_isCharging;
 				if (isCharging)
 				{
-					bool flag2 = this.m_componenttChaseBehavior.Target != null;
+					bool flag2 = this.m_componentChaseBehavior.Target != null;
 					float num = 0f;
 					bool flag3 = flag2;
 					if (flag3)
@@ -254,12 +280,12 @@ namespace Game
 						{
 							vector = this.m_componentCreature.ComponentCreatureModel.EyePosition + this.m_componentCreature.ComponentBody.Matrix.Right * 0.3f - this.m_componentCreature.ComponentBody.Matrix.Up * 0.2f + this.m_componentCreature.ComponentBody.Matrix.Forward * 0.2f;
 						}
-						num = Vector3.Distance(vector, this.m_componenttChaseBehavior.Target.ComponentBody.Position);
+						num = Vector3.Distance(vector, this.m_componentChaseBehavior.Target.ComponentBody.Position);
 					}
 					bool flag4;
 					if (flag2 && num >= this.m_minDistance && num <= this.m_maxDistance)
 					{
-						ComponentHealth componentHealth = this.m_componenttChaseBehavior.Target.Entity.FindComponent<ComponentHealth>();
+						ComponentHealth componentHealth = this.m_componentChaseBehavior.Target.Entity.FindComponent<ComponentHealth>();
 						flag4 = (componentHealth != null && componentHealth.Health <= 0f);
 					}
 					else
@@ -295,7 +321,7 @@ namespace Game
 					{
 						this.m_arrowValue = this.FindAimableItemInInventory();
 						bool flag11 = this.m_arrowValue != 0;
-						bool flag12 = flag11 && this.m_componenttChaseBehavior.Target != null;
+						bool flag12 = flag11 && this.m_componentChaseBehavior.Target != null;
 						if (flag12)
 						{
 							bool throwFromHead2 = this.ThrowFromHead;
@@ -308,7 +334,7 @@ namespace Game
 							{
 								vector2 = this.m_componentCreature.ComponentCreatureModel.EyePosition + this.m_componentCreature.ComponentBody.Matrix.Right * 0.3f - this.m_componentCreature.ComponentBody.Matrix.Up * 0.2f + this.m_componentCreature.ComponentBody.Matrix.Forward * 0.2f;
 							}
-							this.m_distance = (this.m_componenttChaseBehavior.Target.ComponentBody.Position - vector2).Length();
+							this.m_distance = (this.m_componentChaseBehavior.Target.ComponentBody.Position - vector2).Length();
 							bool flag13 = this.m_distance >= this.m_minDistance && this.m_distance <= this.m_maxDistance;
 							if (flag13)
 							{
@@ -329,7 +355,6 @@ namespace Game
 							}
 							this.m_nextUpdateTime = gameTime + this.m_ChargeTime;
 						}
-						this.m_stateMachine.Update();
 						bool flag16 = !this.m_isCharging && this.m_componentModel != null;
 						if (flag16)
 						{
@@ -342,6 +367,243 @@ namespace Game
 						}
 					}
 				}
+			}
+		}
+
+		// ========== MÉTODOS DE MÁQUINA DE ESTADOS ==========
+
+		private void TransitionToState(string stateName)
+		{
+			this.m_currentStateName = stateName;
+			this.m_stateMachine.TransitionTo(stateName);
+		}
+
+		private void Idle_Update()
+		{
+			if (this.m_componentChaseBehavior.Target == null)
+			{
+				return;
+			}
+
+			float distance = Vector3.Distance(this.m_componentCreature.ComponentBody.Position, this.m_componentChaseBehavior.Target.ComponentBody.Position);
+
+			// Buscar armas listas
+			ComponentInvShooterBehavior.WeaponInfo weaponInfo = this.FindReadyRangedWeapon();
+			if (weaponInfo.Type == ComponentInvShooterBehavior.WeaponType.None)
+			{
+				weaponInfo = this.FindReloadableRangedWeapon();
+			}
+			if (weaponInfo.Type == ComponentInvShooterBehavior.WeaponType.None)
+			{
+				weaponInfo = this.FindThrowableWeapon();
+			}
+
+			if (weaponInfo.Type != ComponentInvShooterBehavior.WeaponType.None && distance >= this.m_minDistance && distance <= this.m_maxDistance)
+			{
+				this.m_weaponInfo = weaponInfo;
+				this.m_componentInventory.ActiveSlotIndex = this.m_weaponInfo.WeaponSlot;
+				this.TransitionToState(this.IsWeaponReady(this.m_weaponInfo) ? "Aiming" : "Reloading");
+			}
+		}
+
+		private void Aiming_Enter()
+		{
+			this.m_aimStartTime = this.m_subsystemTime.GameTime;
+			this.m_bowDraw = 0;
+			this.m_aimDuration = 0f;
+		}
+
+		private void Aiming_Update()
+		{
+			if (this.m_componentChaseBehavior.Target == null)
+			{
+				this.TransitionToState("Idle");
+				return;
+			}
+
+			this.ApplyAimingAnimation();
+			int activeSlotIndex = this.m_componentInventory.ActiveSlotIndex;
+			int slotValue = this.m_componentInventory.GetSlotValue(activeSlotIndex);
+			int data = Terrain.ExtractData(slotValue);
+			int newValue = slotValue;
+
+			if (this.m_weaponInfo.Type == ComponentInvShooterBehavior.WeaponType.Bow)
+			{
+				float progress = (float)((this.m_subsystemTime.GameTime - this.m_aimStartTime) / (double)this.m_aimDuration);
+				this.m_bowDraw = MathUtils.Min((int)(progress * 16f), 15);
+				newValue = Terrain.ReplaceData(slotValue, BowBlock.SetDraw(data, this.m_bowDraw));
+			}
+			else if (this.m_weaponInfo.Type == ComponentInvShooterBehavior.WeaponType.Musket && !MusketBlock.GetHammerState(data) && this.m_subsystemTime.GameTime > this.m_aimStartTime + 0.5)
+			{
+				newValue = Terrain.ReplaceData(slotValue, MusketBlock.SetHammerState(data, true));
+				this.m_subsystemAudio.PlaySound("Audio/HammerCock", 1f, this.m_random.Float(-0.1f, 0.1f), this.m_componentCreature.ComponentBody.Position, 3f, false);
+			}
+
+			if (newValue != slotValue)
+			{
+				this.m_componentInventory.RemoveSlotItems(activeSlotIndex, 1);
+				this.m_componentInventory.AddSlotItems(activeSlotIndex, newValue, 1);
+			}
+
+			if (this.m_subsystemTime.GameTime > this.m_aimStartTime + (double)this.m_aimDuration)
+			{
+				this.TransitionToState("Fire");
+			}
+		}
+
+		private void Fire_Enter()
+		{
+			if (this.m_componentChaseBehavior.Target != null)
+			{
+				this.PerformRangedFireAction();
+			}
+			this.m_fireStateEndTime = this.m_subsystemTime.GameTime + 0.2;
+		}
+
+		private void Fire_Update()
+		{
+			this.ApplyRecoilAnimation();
+			if (this.m_subsystemTime.GameTime >= this.m_fireStateEndTime)
+			{
+				this.m_nextCombatUpdateTime = this.m_subsystemTime.GameTime + (double)this.m_random.Float(2.5f, 3.5f);
+				this.TransitionToState("Reloading");
+			}
+		}
+
+		private void Fire_Leave()
+		{
+			if (this.m_componentModel != null)
+			{
+				this.m_componentModel.AimHandAngleOrder = 0f;
+				this.m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
+				this.m_componentModel.InHandItemRotationOrder = Vector3.Zero;
+			}
+		}
+
+		private void Reloading_Update()
+		{
+			this.TryReloadWeapon(this.m_weaponInfo);
+			this.TransitionToState("Idle");
+		}
+
+		// ========== MÉTODOS DE ANIMACIÓN ==========
+
+		private void ApplyAimingAnimation()
+		{
+			if (this.m_aimDuration == 0f)
+			{
+				switch (this.m_weaponInfo.Type)
+				{
+					case ComponentInvShooterBehavior.WeaponType.Bow:
+						this.m_aimDuration = this.m_random.Float(1.2f, 1.8f);
+						break;
+					case ComponentInvShooterBehavior.WeaponType.Crossbow:
+						this.m_aimDuration = this.m_random.Float(0.8f, 1.2f);
+						break;
+					case ComponentInvShooterBehavior.WeaponType.Musket:
+						this.m_aimDuration = this.m_random.Float(1f, 1.5f);
+						break;
+					default:
+						this.m_aimDuration = this.m_random.Float(0.8f, 1.2f);
+						break;
+				}
+			}
+
+			if (this.m_componentChaseBehavior.Target != null && this.m_componentModel != null)
+			{
+				this.m_componentModel.LookAtOrder = new Vector3?(this.m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition);
+			}
+
+			if (this.m_componentModel != null)
+			{
+				switch (this.m_weaponInfo.Type)
+				{
+					case ComponentInvShooterBehavior.WeaponType.Throwable:
+						this.m_componentModel.AimHandAngleOrder = 1.6f;
+						break;
+					case ComponentInvShooterBehavior.WeaponType.Bow:
+						this.m_componentModel.AimHandAngleOrder = 1.2f;
+						this.m_componentModel.InHandItemRotationOrder = new Vector3(0f, -0.2f, 0f);
+						break;
+					case ComponentInvShooterBehavior.WeaponType.Crossbow:
+						this.m_componentModel.AimHandAngleOrder = 1.3f;
+						this.m_componentModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.1f, 0.07f);
+						this.m_componentModel.InHandItemRotationOrder = new Vector3(-1.55f, 0f, 0f);
+						break;
+					case ComponentInvShooterBehavior.WeaponType.Musket:
+						this.m_componentModel.AimHandAngleOrder = 1.4f;
+						this.m_componentModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
+						this.m_componentModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
+						break;
+				}
+			}
+		}
+
+		private void ApplyRecoilAnimation()
+		{
+			if (this.m_componentModel != null)
+			{
+				this.m_componentModel.AimHandAngleOrder *= 1.1f;
+				this.m_componentModel.InHandItemOffsetOrder -= new Vector3(0f, 0f, 0.05f);
+			}
+		}
+
+		// ========== MÉTODOS DE DISPARO ==========
+
+		private void PerformRangedFireAction()
+		{
+			int activeSlotIndex = this.m_componentInventory.ActiveSlotIndex;
+			int slotValue = this.m_componentInventory.GetSlotValue(activeSlotIndex);
+			if (slotValue == 0) return;
+
+			Vector3 eyePosition = this.m_componentCreature.ComponentCreatureModel.EyePosition;
+			Vector3 targetPosition = this.m_componentChaseBehavior.Target.ComponentBody.Position + new Vector3(0f, this.m_componentChaseBehavior.Target.ComponentBody.StanceBoxSize.Y * 0.75f, 0f);
+			float distance = Vector3.Distance(eyePosition, targetPosition);
+			Vector3 direction = Vector3.Normalize(targetPosition - eyePosition);
+
+			int data = Terrain.ExtractData(slotValue);
+			int newValue = slotValue;
+
+			switch (this.m_weaponInfo.Type)
+			{
+				case ComponentInvShooterBehavior.WeaponType.Bow:
+					ArrowBlock.ArrowType? arrowType = BowBlock.GetArrowType(data);
+					if (arrowType != null)
+					{
+						Vector3 velocity = (direction + this.m_random.Vector3(0.05f) + new Vector3(0f, 0.15f * (distance / 20f), 0f)) * MathUtils.Lerp(0f, 28f, (float)Math.Pow((double)((float)this.m_bowDraw / 15f), 0.75));
+						this.m_subsystemProjectiles.FireProjectile(Terrain.MakeBlockValue(BlocksManager.GetBlockIndex<ArrowBlock>(false, false), 0, ArrowBlock.SetArrowType(0, arrowType.Value)), eyePosition, velocity, Vector3.Zero, this.m_componentCreature);
+						this.m_subsystemAudio.PlaySound("Audio/Bow", 1f, this.m_random.Float(-0.1f, 0.1f), eyePosition, 4f, false);
+					}
+					newValue = Terrain.ReplaceData(slotValue, BowBlock.SetDraw(BowBlock.SetArrowType(data, default(ArrowBlock.ArrowType?)), 0));
+					break;
+
+				case ComponentInvShooterBehavior.WeaponType.Crossbow:
+					ArrowBlock.ArrowType? arrowType2 = CrossbowBlock.GetArrowType(data);
+					if (arrowType2 != null)
+					{
+						Vector3 velocity = (direction + this.m_random.Vector3(0.02f) + new Vector3(0f, 0.1f * (distance / 30f), 0f)) * 38f;
+						this.m_subsystemProjectiles.FireProjectile(Terrain.MakeBlockValue(BlocksManager.GetBlockIndex<ArrowBlock>(false, false), 0, ArrowBlock.SetArrowType(0, arrowType2.Value)), eyePosition, velocity, Vector3.Zero, this.m_componentCreature);
+						this.m_subsystemAudio.PlaySound("Audio/CrossbowBoing", 1f, this.m_random.Float(-0.1f, 0.1f), eyePosition, 4f, false);
+					}
+					newValue = Terrain.ReplaceData(slotValue, CrossbowBlock.SetDraw(CrossbowBlock.SetArrowType(data, default(ArrowBlock.ArrowType?)), 0));
+					break;
+
+				case ComponentInvShooterBehavior.WeaponType.Musket:
+					if (MusketBlock.GetLoadState(data) == MusketBlock.LoadState.Loaded && MusketBlock.GetHammerState(data))
+					{
+						BulletBlock.BulletType bulletType = MusketBlock.GetBulletType(data).GetValueOrDefault();
+						int bulletData = BulletBlock.SetBulletType(0, bulletType);
+						this.m_subsystemProjectiles.FireProjectile(Terrain.MakeBlockValue(BlocksManager.GetBlockIndex<BulletBlock>(false, false), 0, bulletData), eyePosition, direction * 120f, Vector3.Zero, this.m_componentCreature);
+						this.m_subsystemAudio.PlaySound("Audio/MusketFire", 1f, this.m_random.Float(-0.1f, 0.1f), eyePosition, 10f, false);
+					}
+					newValue = Terrain.ReplaceData(slotValue, MusketBlock.SetLoadState(data, 0));
+					break;
+			}
+
+			if (this.m_weaponInfo.Type != ComponentInvShooterBehavior.WeaponType.Throwable)
+			{
+				this.m_componentInventory.RemoveSlotItems(activeSlotIndex, 1);
+				this.m_componentInventory.AddSlotItems(activeSlotIndex, newValue, 1);
 			}
 		}
 
@@ -361,7 +623,7 @@ namespace Game
 						   this.m_componentCreature.ComponentBody.Matrix.Forward * 0.2f;
 			}
 
-			Vector3 targetDirection = this.m_componenttChaseBehavior.Target.ComponentBody.Position - position;
+			Vector3 targetDirection = this.m_componentChaseBehavior.Target.ComponentBody.Position - position;
 			this.m_distance = targetDirection.Length();
 
 			// CORRECCIÓN MEJORADA: Disparo perfectamente lineal y preciso
@@ -497,57 +759,67 @@ namespace Game
 		private void TryReloadWeapon(ComponentInvShooterBehavior.WeaponInfo weaponToReload)
 		{
 			if (!this.DiscountFromInventory || weaponToReload.Type == ComponentInvShooterBehavior.WeaponType.None)
-			{
 				return;
-			}
+
 			if (weaponToReload.Type == ComponentInvShooterBehavior.WeaponType.Bow || weaponToReload.Type == ComponentInvShooterBehavior.WeaponType.Crossbow)
 			{
-				ArrowBlock.ArrowType[] array = (weaponToReload.Type == ComponentInvShooterBehavior.WeaponType.Bow) ? new SubsystemBowBlockBehavior().m_supportedArrowTypes : new SubsystemCrossbowBlockBehavior().m_supportedArrowTypes;
-				int blockIndex = BlocksManager.GetBlockIndex<ArrowBlock>(false, false);
+				ArrowBlock.ArrowType[] supportedArrows = (weaponToReload.Type == ComponentInvShooterBehavior.WeaponType.Bow) ?
+					new SubsystemBowBlockBehavior().m_supportedArrowTypes :
+					new SubsystemCrossbowBlockBehavior().m_supportedArrowTypes;
+
+				int arrowBlockIndex = BlocksManager.GetBlockIndex<ArrowBlock>(false, false);
+
 				for (int i = 0; i < this.m_componentInventory.SlotsCount; i++)
 				{
 					int slotValue = this.m_componentInventory.GetSlotValue(i);
-					if (Terrain.ExtractContents(slotValue) == blockIndex)
+					if (Terrain.ExtractContents(slotValue) == arrowBlockIndex)
 					{
 						ArrowBlock.ArrowType arrowType = ArrowBlock.GetArrowType(Terrain.ExtractData(slotValue));
-						bool flag = false;
-						ArrowBlock.ArrowType[] array2 = array;
-						for (int j = 0; j < array2.Length; j++)
+						bool isSupported = false;
+
+						foreach (ArrowBlock.ArrowType supportedType in supportedArrows)
 						{
-							if (array2[j] == arrowType)
+							if (supportedType == arrowType)
 							{
-								flag = true;
+								isSupported = true;
+								break;
 							}
 						}
-						if (flag)
+
+						if (isSupported)
 						{
-							int data = Terrain.ExtractData(weaponToReload.WeaponValue);
-							int data2 = (weaponToReload.Type == ComponentInvShooterBehavior.WeaponType.Bow) ? BowBlock.SetArrowType(data, new ArrowBlock.ArrowType?(arrowType)) : CrossbowBlock.SetDraw(CrossbowBlock.SetArrowType(data, new ArrowBlock.ArrowType?(arrowType)), 15);
+							int weaponData = Terrain.ExtractData(weaponToReload.WeaponValue);
+							int newData = (weaponToReload.Type == ComponentInvShooterBehavior.WeaponType.Bow) ?
+								BowBlock.SetArrowType(weaponData, new ArrowBlock.ArrowType?(arrowType)) :
+								CrossbowBlock.SetDraw(CrossbowBlock.SetArrowType(weaponData, new ArrowBlock.ArrowType?(arrowType)), 15);
+
 							this.m_componentInventory.RemoveSlotItems(weaponToReload.WeaponSlot, 1);
-							this.m_componentInventory.AddSlotItems(weaponToReload.WeaponSlot, Terrain.ReplaceData(weaponToReload.WeaponValue, data2), 1);
+							this.m_componentInventory.AddSlotItems(weaponToReload.WeaponSlot, Terrain.ReplaceData(weaponToReload.WeaponValue, newData), 1);
 							this.m_componentInventory.RemoveSlotItems(i, 1);
 							return;
 						}
 					}
 				}
-				return;
 			}
-			if (weaponToReload.Type == ComponentInvShooterBehavior.WeaponType.Musket)
+			else if (weaponToReload.Type == ComponentInvShooterBehavior.WeaponType.Musket)
 			{
-				int num = this.FindItemSlotByContents(109);
-				int num2 = this.FindItemSlotByContents(205);
-				int value;
-				int num3 = this.FindBulletSlot(out value);
-				if (num != -1 && num2 != -1 && num3 != -1)
+				int powderSlot = this.FindItemSlotByContents(109);    // Pólvora
+				int fuseSlot = this.FindItemSlotByContents(205);      // Mecha
+				int bulletValue;
+				int bulletSlot = this.FindBulletSlot(out bulletValue); // Bala
+
+				if (powderSlot != -1 && fuseSlot != -1 && bulletSlot != -1)
 				{
-					BulletBlock.BulletType bulletType = BulletBlock.GetBulletType(Terrain.ExtractData(value));
-					this.m_componentInventory.RemoveSlotItems(num, 1);
-					this.m_componentInventory.RemoveSlotItems(num2, 1);
-					this.m_componentInventory.RemoveSlotItems(num3, 1);
-					int data3 = MusketBlock.SetLoadState(Terrain.ExtractData(weaponToReload.WeaponValue), MusketBlock.LoadState.Loaded);
-					data3 = MusketBlock.SetBulletType(data3, new BulletBlock.BulletType?(bulletType));
+					BulletBlock.BulletType bulletType = BulletBlock.GetBulletType(Terrain.ExtractData(bulletValue));
+					this.m_componentInventory.RemoveSlotItems(powderSlot, 1);
+					this.m_componentInventory.RemoveSlotItems(fuseSlot, 1);
+					this.m_componentInventory.RemoveSlotItems(bulletSlot, 1);
+
+					int weaponData = MusketBlock.SetLoadState(Terrain.ExtractData(weaponToReload.WeaponValue), (MusketBlock.LoadState)3);
+					weaponData = MusketBlock.SetBulletType(weaponData, new BulletBlock.BulletType?(bulletType));
+
 					this.m_componentInventory.RemoveSlotItems(weaponToReload.WeaponSlot, 1);
-					this.m_componentInventory.AddSlotItems(weaponToReload.WeaponSlot, Terrain.ReplaceData(weaponToReload.WeaponValue, data3), 1);
+					this.m_componentInventory.AddSlotItems(weaponToReload.WeaponSlot, Terrain.ReplaceData(weaponToReload.WeaponValue, weaponData), 1);
 				}
 			}
 		}
@@ -586,24 +858,21 @@ namespace Game
 		private bool IsWeaponReady(ComponentInvShooterBehavior.WeaponInfo weaponInfo)
 		{
 			if (weaponInfo.Type == ComponentInvShooterBehavior.WeaponType.None)
-			{
 				return false;
-			}
+
 			if (weaponInfo.Type == ComponentInvShooterBehavior.WeaponType.Throwable)
-			{
 				return true;
-			}
+
 			int slotValue = this.m_componentInventory.GetSlotValue(weaponInfo.WeaponSlot);
 			Block block = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)];
 			int data = Terrain.ExtractData(slotValue);
+
 			if (block is BowBlock)
-			{
 				return BowBlock.GetArrowType(data) != null;
-			}
+
 			if (block is CrossbowBlock)
-			{
 				return CrossbowBlock.GetArrowType(data) != null && CrossbowBlock.GetDraw(data) == 15;
-			}
+
 			return block is MusketBlock && MusketBlock.GetLoadState(data) == MusketBlock.LoadState.Loaded;
 		}
 
@@ -631,6 +900,7 @@ namespace Game
 				{
 					Block block = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)];
 					int data = Terrain.ExtractData(slotValue);
+
 					if (block is BowBlock && BowBlock.GetArrowType(data) != null)
 					{
 						return new ComponentInvShooterBehavior.WeaponInfo
@@ -640,6 +910,7 @@ namespace Game
 							Type = ComponentInvShooterBehavior.WeaponType.Bow
 						};
 					}
+
 					if (block is CrossbowBlock && CrossbowBlock.GetArrowType(data) != null && CrossbowBlock.GetDraw(data) == 15)
 					{
 						return new ComponentInvShooterBehavior.WeaponInfo
@@ -649,6 +920,7 @@ namespace Game
 							Type = ComponentInvShooterBehavior.WeaponType.Crossbow
 						};
 					}
+
 					if (block is MusketBlock && MusketBlock.GetLoadState(data) == MusketBlock.LoadState.Loaded)
 					{
 						return new ComponentInvShooterBehavior.WeaponInfo
@@ -673,6 +945,7 @@ namespace Game
 				{
 					Block block = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)];
 					int data = Terrain.ExtractData(slotValue);
+
 					if (block is BowBlock && BowBlock.GetArrowType(data) == null)
 					{
 						return new ComponentInvShooterBehavior.WeaponInfo
@@ -682,6 +955,7 @@ namespace Game
 							Type = ComponentInvShooterBehavior.WeaponType.Bow
 						};
 					}
+
 					if (block is CrossbowBlock && (CrossbowBlock.GetArrowType(data) == null || CrossbowBlock.GetDraw(data) < 15))
 					{
 						return new ComponentInvShooterBehavior.WeaponInfo
@@ -691,7 +965,8 @@ namespace Game
 							Type = ComponentInvShooterBehavior.WeaponType.Crossbow
 						};
 					}
-					if (block is MusketBlock && MusketBlock.GetLoadState(data) == MusketBlock.LoadState.Empty)
+
+					if (block is MusketBlock && MusketBlock.GetLoadState(data) == 0)
 					{
 						return new ComponentInvShooterBehavior.WeaponInfo
 						{
@@ -747,11 +1022,13 @@ namespace Game
 			return default(ComponentInvShooterBehavior.WeaponInfo);
 		}
 
+		// ========== VARIABLES ADICIONALES ==========
+
 		// Token: 0x0400019C RID: 412
 		public ComponentCreature m_componentCreature;
 
 		// Token: 0x0400019D RID: 413
-		public ComponentChaseBehavior m_componenttChaseBehavior;
+		public ComponentChaseBehavior m_componentChaseBehavior;
 
 		// Token: 0x0400019E RID: 414
 		public SubsystemTerrain m_subsystemTerrain;
@@ -852,11 +1129,16 @@ namespace Game
 		// Token: 0x040001BE RID: 446
 		public ComponentInventory m_componentInventory;
 
-		// Token: 0x040001BF RID: 447
-		private double m_nextProactiveReloadTime;
+		// ========== VARIABLES NUEVAS PARA EL SISTEMA DE RECARGA ==========
 
-		// Token: 0x040001C0 RID: 448
+		private string m_currentStateName;
+		private double m_nextCombatUpdateTime;
+		private double m_nextProactiveReloadTime;
+		private double m_fireStateEndTime;
 		private ComponentInvShooterBehavior.WeaponInfo m_weaponInfo;
+		private double m_aimStartTime;
+		private float m_aimDuration;
+		private int m_bowDraw;
 
 		// Token: 0x0200003D RID: 61
 		public enum WeaponType
