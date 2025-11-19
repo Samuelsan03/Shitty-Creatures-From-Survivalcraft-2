@@ -2859,7 +2859,7 @@
     <ParameterSet Name="CreatureEggData" Guid="5115b357-6d29-46c2-9a9a-054c7e00b5ac">
         <Parameter Name="Color" Guid="831ae302-6830-4648-8f8e-71fd973d5cea" Value="171,134,116" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="11ca5c73-7491-46d0-9140-f382a3250ef5" Value="172" Type="int"/>
-        <Parameter Name="SwapUV" Guid="88415298-45a2-4f03-b053-a12990c29962" Value="True Type="bool"/>
+        <Parameter Name="SwapUV" Guid="233e7b98-4a6e-45b7-b059-c96edbbbe159" Value="True" Type="bool"/>
         <Parameter Name="DisplayName" Guid="e8dfd133-0945-44d3-926a-3caa410ef070" Value="Walter Zombie Mamadísimo Egg" Type="string"/>
         <Parameter Name="EggTypeIndex" Guid="0d8d9f82-244a-488c-a6bd-4f1ea5007a28" Value="233" Type="int"/>
     </ParameterSet>
@@ -2909,7 +2909,7 @@
     <MemberComponentTemplate Name="Creature" Guid="c3d4e5f6-a7b8-7012-789a-bcdef0123456">
         <Parameter Name="DisplayName" Guid="d4e5f6a7-b8c9-7123-89ab-cdef01234567" Value="Aladina Corrupta" Type="string"/>
         <Parameter Name="Category" Guid="e5f6a7b8-c9d0-7234-9abc-def012345678" Value="LandOther" Type="Game.CreatureCategory"/>
-        <Parameter Name="Description" Guid="f6a7b8c9-d0e1-7345-abcd-ef0123456789" Value="Aladina Corrupta was once a benevolent figure during the Arab Middle Ages, known for helping the poor and those in need. As the modern era arrived, she was excluded by the changing Arab system in Libya around the late 1800s, when the region was still under Ottoman control. Her decline worsened in the 20th century: by the 1990s Libya was under Muammar Gaddafi’s dictatorship, and her abilities weakened, no longer resembling her medieval strength. The fall of Gaddafi in 2011 brought further chaos instead of improvement. Witnessing civilians fighting for power, Aladina Corrupta reflected on years of suffering and began adopting techniques inspired by Arab militant groups, such as suicide attacks and bombings, though she never formally joined them. Ultimately, she aligned herself with the faction known as Muerte, driven by vengeance for the pain and mistreatment she endured." Type="string"/>
+        <Parameter Name="Description" Guid="f6a7b8c9-d0e1-7345-abcd-ef0123456789" Value="Aladina Corrupta was once a benevolent figure during the Arab Middle Ages, known for helping the poor and those in need. As the modern era arrived, she was excluded by the changing Arab system in Libya around the late 1800s, when the region was still under Ottoman control. Her decline worsened in the 20th century: by the 1990s Libya was under Muammar Gaddafi’s dictatorship, and her abilities weakened, no longer resembling her medieval strength. The fall of Gaddafi in 2011 brought further chaos instead of improvement. Witnessing civilians fighting for power, Aladina Corrupta reflected on years of suffering and began adopting techniques inspired by Arab militant groups, such as suicide attacks and bombings, though she never formally joined them. Ultimately, she aligned herself with the faction known as Muerte, driven by vengeance for the pain and mistreatment she endured. Now she feels a grim relief after joining Muerte. Unlike other members of the group, she has a distinctive attack: when an NPC or player targets her or her allies, she ignites a medium incendiary barrel. Distance does not matter—she will charge directly at the attacker, light the barrel, and give only five seconds to escape. Failure to flee results in being torn apart and blasted into the air. In her fury she even sacrifices her own companions, and herself, whenever the group is under attack." Type="string"/>
         <Parameter Name="KillVerbs" Guid="a7b8c9d0-e1f2-7456-bcde-f0123456789a" Value="Eaten" Type="string"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="b8c9d0e1-f2a3-7567-cdef-0123456789ab" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
@@ -2944,8 +2944,8 @@
         <Parameter Name="NightChaseTime" Guid="f2a3b4c5-d6e7-9901-4567-89abcdef0123" Value="100" Type="float"/>
     </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="c9d0e1f2-a3b4-0012-5678-9abcdef01234">
-        <Parameter Name="Color" Guid="d0e1f2a3-b4c5-0123-6789-abcdef012345" Value="76,0,153" Type="Color"/>
-        <Parameter Name="TextureSlot" Guid="e1f2a3b4-c5d6-0234-789a-bcdef0123456" Value="122" Type="int"/>
+        <Parameter Name="Color" Guid="d0e1f2a3-b4c5-0123-6789-abcdef012345" Value="165,0,154" Type="Color"/>
+        <Parameter Name="TextureSlot" Guid="e1f2a3b4-c5d6-0234-789a-bcdef0123456" Value="80" Type="int"/>
         <Parameter Name="SwapUV" Guid="f2a3b4c5-d6e7-0345-89ab-cdef01234567" Value="True" Type="bool"/>
         <Parameter Name="DisplayName" Guid="a3b4c5d6-e7f8-0456-9abc-def012345678" Value="Aladina Corrupta Egg" Type="string"/>
         <Parameter Name="EggTypeIndex" Guid="b4c5d6e7-f8a9-0567-abcd-ef0123456789" Value="235" Type="int"/>
