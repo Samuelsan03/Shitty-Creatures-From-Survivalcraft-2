@@ -181,6 +181,17 @@
                 <Parameter Name="Description" Guid="c9d0e1f2-a3b4-4i56-9j78-e9f0a1b2c3d4" Value="Run bitch run, or else Ricardo will send you to fuck off" Type="string"/>
                 <Parameter Name="KillVerbs" Guid="d0e1f2a3-b4c5-4j67-9k89-f0a1b2c3d4e5" Value="Quartered" Type="string"/>
             </MemberComponentTemplate>
+            <MemberComponentTemplate Name="ComponentRandomChatter" Guid="e79f5758-7de6-45f7-adee-73b5189fb566">
+    <Parameter Name="Class" Value="Game.ComponentRandomChatter" Type="string"/>
+    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
+    <Parameter Name="IsOptional" Value="False" Type="bool"/>
+    <Parameter Name="ActivationDistance" Value="5" Type="float"/>
+    <Parameter Name="DisplayDistance" Value="10" Type="float"/>
+    <Parameter Name="MinInterval" Value="3" Type="float"/>
+    <Parameter Name="MaxInterval" Value="30" Type="float"/>
+    <Parameter Name="RiseDuration" Value="0.5" Type="float"/>
+    <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
+</MemberComponentTemplate>
             <MemberComponentTemplate Name="FindPlayerBehavior" Guid="e1f2a3b4-c5d6-4k78-9l90-a1b2c3d4e5f6" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
             <MemberComponentTemplate Name="Miner" Guid="f2a3b4c5-d6e7-4l89-9m01-b2c3d4e5f6a7" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="a3b4c5d6-e7f8-4m90-9n12-c3d4e5f6a7b8" Value="5.95" Type="float"/>
@@ -1084,12 +1095,13 @@
     <MemberComponentTemplate Name="FeedBehavior" Guid="a2b3c4d5-e6f7-9678-1234-6789abcdef0b" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
         <Parameter Name="AutoFeed" Guid="b3c4d5e6-f7a8-9789-2345-789abcdef01c" Value="False" Type="bool"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="ChaseBehavior" Guid="c4d5e6f7-a8b9-9890-3456-89abcdef012d" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
-    <Parameter Name="AutoChaseMask" Guid="d5e6f7a8-b9c0-9901-4567-9abcdef0123e" Value="LandOther, WaterPredator, WaterOther" Type="Game.CreatureCategory"/>
-    <Parameter Name="DayChaseRange" Guid="e6f7a8b9-c0d1-0012-5678-abcdef01234f" Value="15" Type="float"/>
-    <Parameter Name="NightChaseRange" Guid="f7a8b9c0-d1e2-0123-6789-bcdef0123450" Value="20" Type="float"/>
-    <Parameter Name="ChaseNonPlayerProbability" Guid="a8b9c0d1-e2f3-0234-789a-cdef01234571" Value="0.1" Type="float"/>
-    <Parameter Name="NightChaseTime" Guid="b9c0d1e2-f3a4-0345-89ab-def012345672" Value="30" Type="float"/>
+    <MemberComponentTemplate Name="ChaseBehavior" Guid="a70b5ac7-e1fa-44ed-807b-e071c666f379" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
+    <Parameter Name="AutoChaseMask" Guid="aea542b4-ece9-47ce-9556-52e5bfcf9c17" Value="LandOther, WaterPredator, WaterOther" Type="Game.CreatureCategory"/>
+    <Parameter Name="DayChaseRange" Guid="f98438e1-2632-4f10-a165-572ccdc260a9" Value="990" Type="float"/>
+    <Parameter Name="DayChaseTime" Guid="f9b440e8-0ef6-42d5-8dbe-798354f74f8d" Value="990" Type="float"/>
+    <Parameter Name="NightChaseRange" Guid="1df2ad0b-8dff-4ef9-9c16-7bc87e5da589" Value="920" Type="float"/>
+    <Parameter Name="ChaseNonPlayerProbability" Guid="23bb5837-58a1-43a8-b3c7-82767e0aedba" Value="0.1" Type="float"/>
+    <Parameter Name="NightChaseTime" Guid="ac5ad8a3-ad00-4765-a58a-0e9398dd99bd" Value="930" Type="float"/>
 </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="d0e1f2a3-b4c5-0456-bcde-0123456789ad">
         <Parameter Name="Color" Guid="e1f2a3b4-c5d6-0567-cdef-123456789abe" Value="180,70,255" Type="Color"/>
@@ -1171,10 +1183,11 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="ChaseBehavior" Guid="f8a9b0c1-d2e3-9789-4567-567890123456" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
         <Parameter Name="AutoChaseMask" Guid="a9b0c1d2-e3f4-9890-5678-678901234567" Value="LandOther, WaterPredator, WaterOther" Type="Game.CreatureCategory"/>
-        <Parameter Name="DayChaseRange" Guid="b0c1d2e3-f4a5-9901-6789-789012345678" Value="6" Type="float"/>
-        <Parameter Name="NightChaseRange" Guid="c1d2e3f4-a5b6-0012-7890-890123456789" Value="9" Type="float"/>
+        <Parameter Name="DayChaseRange" Guid="b0c1d2e3-f4a5-9901-6789-789012345678" Value="996" Type="float"/>
+        <Parameter Name="DayChaseTime" Guid="fb0843e0-2a7f-40e9-afc5-5fffa848d3ca" Value="930" Type="float"/>
+        <Parameter Name="NightChaseRange" Guid="c1d2e3f4-a5b6-0012-7890-890123456789" Value="999" Type="float"/>
         <Parameter Name="ChaseNonPlayerProbability" Guid="d2e3f4a5-b6c7-0123-8901-901234567890" Value="0.02" Type="float"/>
-        <Parameter Name="NightChaseTime" Guid="e3f4a5b6-c7d8-0234-9012-012345678901" Value="12" Type="float"/>
+        <Parameter Name="NightChaseTime" Guid="e3f4a5b6-c7d8-0234-9012-012345678901" Value="912" Type="float"/>
     </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="f4a5b6c7-d8e9-0345-0123-123456789012">
         <Parameter Name="Color" Guid="a5b6c7d8-e9f0-0456-1234-234567890123" Value="180,160,100" Type="Color"/>
@@ -1254,17 +1267,14 @@
     <MemberComponentTemplate Name="FeedBehavior" Guid="f7a8b9c0-d1e2-9567-2345-445678901234" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
         <Parameter Name="AutoFeed" Guid="a8b9c0d1-e2f3-9678-3456-556789012345" Value="False" Type="bool"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="ChaseBehavior" Guid="b9c0d1e2-f3a4-9789-4567-667890123456" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
-        <Parameter Name="AutoChaseMask" Guid="c0d1e2f3-a4b5-9890-5678-778901234567" Value="LandOther, WaterPredator, WaterOther" Type="Game.CreatureCategory"/>
-        <Parameter Name="DayChaseRange" Guid="d1e2f3a4-b5c6-9901-6789-889012345678" Value="7" Type="float"/>
-        <Parameter Name="NightChaseRange" Guid="e2f3a4b5-c6d7-0012-7890-990123456789" Value="11" Type="float"/>
-        <Parameter Name="ChaseNonPlayerProbability" Guid="f3a4b5c6-d7e8-0123-8901-001234567890" Value="0.03" Type="float"/>
-        <Parameter Name="NightChaseTime" Guid="a4b5c6d7-e8f9-0234-9012-111345678901" Value="15" Type="float"/>
-    </MemberComponentTemplate>
-    <MemberComponentTemplate Name="Shapeshifter" Guid="f4a5b6c7-d8e9-9999-9abc-def012345699" InheritanceParent="92e52f46-5d88-4273-80d2-1b5bfb7fdee8">
-        <Parameter Name="NightEntityTemplateName" Guid="b5c6d7e8-f9a0-9999-9abc-def012345700" Value="LiderCalavericoSupremoAlfa" Type="string"/>
-        <Parameter Name="Probability" Guid="d7e8f9a0-b1c2-9999-9abc-def012345702" Value="1.0" Type="float"/>
-    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="ChaseBehavior" Guid="9e5fa30b-8009-49ad-a2da-975bc36c7a2c" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
+    <Parameter Name="AutoChaseMask" Guid="3c09a205-bb05-41b2-9a47-7ac5f9ae2416" Value="LandOther, WaterPredator, WaterOther" Type="Game.CreatureCategory"/>
+    <Parameter Name="DayChaseRange" Guid="d7720f0b-a4dd-46e1-bc2a-b7ccfd3dfd24" Value="990" Type="float"/>
+    <Parameter Name="DayChaseTime" Guid="cb97e6a9-7c16-43ba-920b-2f3f30a71ff0" Value="990" Type="float"/>
+    <Parameter Name="NightChaseRange" Guid="b6450574-d8d5-4988-83b8-33ab932a495d" Value="920" Type="float"/>
+    <Parameter Name="ChaseNonPlayerProbability" Guid="aab9d01a-db18-4335-a04b-4b710774a140" Value="0.1" Type="float"/>
+    <Parameter Name="NightChaseTime" Guid="144bf85f-8f20-4fe5-9d21-ec230549f097" Value="930" Type="float"/>
+</MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="b9c0d1e2-f3a4-0345-0123-223456789012">
         <Parameter Name="Color" Guid="c0d1e2f3-a4b5-0456-1234-334567890123" Value="200,180,120" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="d1e2f3a4-b5c6-0567-2345-445678901234" Value="173" Type="int"/>
@@ -1335,8 +1345,8 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="ChaseBehavior" Guid="c0d1e2f3-a4b5-9789-4567-767890123456" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
         <Parameter Name="AutoChaseMask" Guid="d1e2f3a4-b5c6-9890-5678-878901234567" Value="LandOther, WaterPredator, WaterOther" Type="Game.CreatureCategory"/>
-        <Parameter Name="DayChaseRange" Guid="e2f3a4b5-c6d7-9901-6789-989012345678" Value="8" Type="float"/>
-        <Parameter Name="NightChaseRange" Guid="f3a4b5c6-d7e8-0012-7890-099123456789" Value="13" Type="float"/>
+        <Parameter Name="DayChaseRange" Guid="e2f3a4b5-c6d7-9901-6789-989012345678" Value="998" Type="float"/>
+        <Parameter Name="NightChaseRange" Guid="f3a4b5c6-d7e8-0012-7890-099123456789" Value="913" Type="float"/>
         <Parameter Name="ChaseNonPlayerProbability" Guid="a4b5c6d7-e8f9-0123-8901-101234567890" Value="0.04" Type="float"/>
         <Parameter Name="NightChaseTime" Guid="b5c6d7e8-f9a0-0234-9012-211345678901" Value="18" Type="float"/>
     </MemberComponentTemplate>
@@ -1658,14 +1668,15 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="ChaseBehavior" Guid="de7e8740-046c-4a0e-b468-f811e8355410" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
         <Parameter Name="AutoChaseMask" Guid="a5b11c8a-222d-4ff6-bcee-9be56b1d1fb8" Value="LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
-        <Parameter Name="DayChaseRange" Guid="ee2d6ae1-8e9f-4f2c-a096-7735d36e39ab" Value="6" Type="float"/>
-        <Parameter Name="NightChaseRange" Guid="92124fe5-224b-4eae-acee-cc75486eaffd" Value="8" Type="float"/>
+        <Parameter Name="DayChaseRange" Guid="ee2d6ae1-8e9f-4f2c-a096-7735d36e39ab" Value="996" Type="float"/>
+        <Parameter Name="DayChaseTime" Guid="168321e4-654e-40f0-82ea-12276fd09bfc" Value="915" Type="float"/>
+        <Parameter Name="NightChaseRange" Guid="92124fe5-224b-4eae-acee-cc75486eaffd" Value="998" Type="float"/>
         <Parameter Name="ChaseNonPlayerProbability" Guid="6ff52bd5-3a5c-4031-9790-6545079f8930" Value="1.0" Type="float"/>
-        <Parameter Name="NightChaseTime" Guid="c925f024-f65c-435b-8147-9101f8274cdd" Value="15" Type="float"/>
+        <Parameter Name="NightChaseTime" Guid="c925f024-f65c-435b-8147-9101f8274cdd" Value="915" Type="float"/>
     </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="1639d8af-97f8-4fe4-9bdc-4ab4ac202279">
         <Parameter Name="Color" Guid="e3fce4a4-a3e5-4d58-90bf-94bdb85a8e78" Value="219,95,0" Type="Color"/>
-        <Parameter Name="TextureSlot" Guid="bd3fb858-4de1-4573-a9ab-1fc0988c9157" Value="92" Type="int"/>
+        <Parameter Name="TextureSlot" Guid="bd3fb858-4de1-4573-a9ab-1fc0988c9157" Value="192" Type="int"/>
         <Parameter Name="SwapUV" Guid="e1bcfc2f-f1c8-4513-9cd2-630b38d8fd73" Value="False" Type="bool"/>
         <Parameter Name="DisplayName" Guid="d4110dca-3f0d-4ee3-a7d6-a13d437c7a80" Value="Hombre Lava Egg" Type="string"/>
         <Parameter Name="EggTypeIndex" Guid="62c4425c-f09f-44c9-ae80-3a6f8cd77755" Value="218" Type="int"/>
@@ -1733,8 +1744,9 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="ChaseBehavior" Guid="e5f6a7b8-c9d0-9901-4567-9abcdef0123b" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
         <Parameter Name="AutoChaseMask" Guid="f6a7b8c9-d0e1-0012-5678-abcdef01234c" Value="LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
-        <Parameter Name="DayChaseRange" Guid="a7b8c9d0-e1f2-0123-6789-bcdef012345d" Value="96" Type="float"/>
-        <Parameter Name="NightChaseRange" Guid="b8c9d0e1-f2a3-0234-789a-cdef0123456e" Value="90" Type="float"/>
+        <Parameter Name="DayChaseRange" Guid="a7b8c9d0-e1f2-0123-6789-bcdef012345d" Value="996" Type="float"/>
+        <Parameter Name="DayChaseTime" Guid="81b70684-4919-4f75-a76f-ed1e8d368997" Value="996" Type="float"/>
+        <Parameter Name="NightChaseRange" Guid="b8c9d0e1-f2a3-0234-789a-cdef0123456e" Value="990" Type="float"/>
         <Parameter Name="ChaseNonPlayerProbability" Guid="c9d0e1f2-a3b4-0345-89ab-def01234567f" Value="1.0" Type="float"/>
         <Parameter Name="NightChaseTime" Guid="d0e1f2a3-b4c5-0456-9abc-ef0123456780" Value="15" Type="float"/>
     </MemberComponentTemplate>
@@ -1842,13 +1854,14 @@
     <MemberComponentTemplate Name="FeedBehavior" Guid="7d410866-7969-4151-be8e-5a937e44dab3" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
         <Parameter Name="AutoFeed" Guid="b7c175dc-4d90-46bc-8019-eeac225bff20" Value="False" Type="bool"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="ChaseBehavior" Guid="c2978349-46ee-42e4-ac52-b24ff476632e" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
-        <Parameter Name="AutoChaseMask" Guid="0020d88f-6e7d-4436-864c-3e5dfe6b6846" Value="LandOther, WaterPredator, WaterOther" Type="Game.CreatureCategory"/>
-        <Parameter Name="DayChaseRange" Guid="7a48e28d-de6e-43ef-920d-8c378a55a8da" Value="993" Type="float"/>
-        <Parameter Name="NightChaseRange" Guid="d19aa3de-c21c-443a-84db-39b5f3fd4e44" Value="995" Type="float"/>
-        <Parameter Name="ChaseNonPlayerProbability" Guid="f55e6d2d-1687-4b70-8f5a-bb82f91ad89a" Value="0.005" Type="float"/>
-        <Parameter Name="NightChaseTime" Guid="381415fc-b08a-48aa-a12c-a26a03bb30a7" Value="6" Type="float"/>
-    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="ChaseBehavior" Guid="c2099dfb-8233-48c7-8f18-752cc8f895f9" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
+    <Parameter Name="AutoChaseMask" Guid="9b87b216-fdbd-44a0-8371-829ef22efe7b" Value="LandOther, WaterPredator, WaterOther" Type="Game.CreatureCategory"/>
+    <Parameter Name="DayChaseRange" Guid="114c38c8-ba1a-4a38-ade5-61dd11f752e9" Value="990" Type="float"/>
+    <Parameter Name="DayChaseTime" Guid="602e193f-8482-49ee-bf7a-28e3d45f374a" Value="990" Type="float"/>
+    <Parameter Name="NightChaseRange" Guid="07317fdc-8ed6-464e-8d47-e4fe244a13bf" Value="920" Type="float"/>
+    <Parameter Name="ChaseNonPlayerProbability" Guid="632ec04b-2836-4e54-a97c-6cf32812d743" Value="0.1" Type="float"/>
+    <Parameter Name="NightChaseTime" Guid="57dedee1-ed73-480b-96f1-ccf56f860e9a" Value="930" Type="float"/>
+</MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="47f859ec-1a09-484b-9b8b-67983a0ac421">
         <Parameter Name="Color" Guid="aa76100a-7176-41d8-bd11-df9b43f54f48" Value="151,82,82" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="1d2fae94-1bad-44fe-82df-c6e720662858" Value="188" Type="int"/>
@@ -1916,13 +1929,14 @@
     <MemberComponentTemplate Name="FeedBehavior" Guid="f2a3b4c5-d6e7-9234-def0-123456789abc" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
         <Parameter Name="AutoFeed" Guid="a3b4c5d6-e7f8-9345-ef01-23456789abcd" Value="False" Type="bool"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="ChaseBehavior" Guid="b4c5d6e7-f8a9-9456-f012-3456789abcde" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
-        <Parameter Name="AutoChaseMask" Guid="c5d6e7f8-a9b0-9567-0123-456789abcdef" Value="LandOther, WaterPredator" Type="Game.CreatureCategory"/>
-        <Parameter Name="DayChaseRange" Guid="d6e7f8a9-b0c1-9678-1234-56789abcdef0" Value="6" Type="float"/>
-        <Parameter Name="NightChaseRange" Guid="e7f8a9b0-c1d2-9789-2345-6789abcdef01" Value="8.5" Type="float"/>
-        <Parameter Name="ChaseNonPlayerProbability" Guid="f8a9b0c1-d2e3-9890-3456-789abcdef012" Value="0.05" Type="float"/>
-        <Parameter Name="NightChaseTime" Guid="a9b0c1d2-e3f4-9901-4567-89abcdef0123" Value="8" Type="float"/>
-    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="ChaseBehavior" Guid="4a699e7e-bb43-498b-973c-f000538a79ab" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
+    <Parameter Name="AutoChaseMask" Guid="9cf66d73-d4e4-4b6b-9637-5d5b69a03bb3" Value="LandOther, WaterPredator, WaterOther" Type="Game.CreatureCategory"/>
+    <Parameter Name="DayChaseRange" Guid="7f1d71c9-8b18-4130-a5a7-8a13d348e4ab" Value="990" Type="float"/>
+    <Parameter Name="DayChaseTime" Guid="a79d8c27-9fba-4bb6-b535-94551391001e" Value="990" Type="float"/>
+    <Parameter Name="NightChaseRange" Guid="45544f44-7742-465c-89a0-435bb804d743" Value="920" Type="float"/>
+    <Parameter Name="ChaseNonPlayerProbability" Guid="a4648340-d92e-45fc-a937-00a1b2c9ca7b" Value="0.1" Type="float"/>
+    <Parameter Name="NightChaseTime" Guid="e9b9c926-6a68-4fab-a790-1c3cc91d6c6e" Value="930" Type="float"/>
+</MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="b0c1d2e3-f4a5-0012-5678-9abcdef01234">
         <Parameter Name="Color" Guid="c1d2e3f4-a5b6-0123-6789-abcdef012345" Value="255,229,180" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="d2e3f4a5-b6c7-0234-789a-bcdef0123456" Value="121" Type="int"/>
@@ -2028,13 +2042,14 @@
     <MemberComponentTemplate Name="FeedBehavior" Guid="275b77fb-f786-44f6-a7cf-d1e06674c703" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
         <Parameter Name="AutoFeed" Guid="7724d903-38ba-4a51-b8ed-5dbd0bea7f57" Value="False" Type="bool"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="ChaseBehavior" Guid="011cc36e-8a9c-445f-b615-0a035f5408e4" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
-        <Parameter Name="AutoChaseMask" Guid="8db6a36c-4193-467f-b2ab-b931925795c0" Value="LandOther, WaterPredator, WaterOther" Type="Game.CreatureCategory"/>
-        <Parameter Name="DayChaseRange" Guid="cd22588a-8fc7-45f2-bfbb-0e5f59d61a7e" Value="94" Type="float"/>
-        <Parameter Name="NightChaseRange" Guid="dc4d5c03-9fd8-4135-8770-3f150ef4a42e" Value="86" Type="float"/>
-        <Parameter Name="ChaseNonPlayerProbability" Guid="b70f887c-9074-4eae-b7de-058afbc9b701" Value="0.005" Type="float"/>
-        <Parameter Name="NightChaseTime" Guid="e732427e-08c6-4477-8971-a9737e38a7db" Value="6" Type="float"/>
-    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="ChaseBehavior" Guid="4d0aba9e-99b3-4169-9f11-a58047dd20e9" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
+    <Parameter Name="AutoChaseMask" Guid="d9db80f6-0842-4f1b-837a-8fd205d87080" Value="LandOther, WaterPredator, WaterOther" Type="Game.CreatureCategory"/>
+    <Parameter Name="DayChaseRange" Guid="71269a94-43be-4ec0-8886-f47af5c3d8f5" Value="990" Type="float"/>
+    <Parameter Name="DayChaseTime" Guid="90011a21-95b2-4ebc-a6ed-dd2d8c073377" Value="990" Type="float"/>
+    <Parameter Name="NightChaseRange" Guid="1ed9b359-ed05-4d39-8491-03186f4a3e2f" Value="920" Type="float"/>
+    <Parameter Name="ChaseNonPlayerProbability" Guid="b7eb544d-de43-428d-8261-9540de259b21" Value="0.1" Type="float"/>
+    <Parameter Name="NightChaseTime" Guid="d48583b0-eeb8-43a3-a993-3ef4860ccc05" Value="930" Type="float"/>
+</MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="7530ee35-8622-4ebe-a572-3da9813c1f4c">
         <Parameter Name="Color" Guid="f3b903e6-2f48-4e7a-aaa7-b865f79a2ca5" Value="239,184,16" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="76616220-4415-409a-95b7-b069923246da" Value="188" Type="int"/>
@@ -3115,7 +3130,7 @@
         <Parameter Name="WalkAnimationSpeed" Guid="c5d6e7f8-a9b0-8234-3456-789abcdef012" Value="0.55" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="d6e7f8a9-b0c1-8345-4567-89abcdef0123">
-        <Parameter Name="Health" Guid="e7f8a9b0-c1d2-8456-5678-9abcdef01234" Value="1" Type="float"/>
+        <Parameter Name="Health" Guid="e7f8a9b0-c1d2-8456-5678-9abcdef01234" Value="4.5" Type="float"/>
         <Parameter Name="FireResilience" Guid="f8a9b0c1-d2e3-8567-6789-abcdef012345" Value="10" Type="float"/>
         <Parameter Name="AttackResilience" Guid="a9b0c1d2-e3f4-8678-789a-bcdef0123456" Value="10" Type="float"/>
     </MemberComponentTemplate>
@@ -3128,13 +3143,14 @@
     <MemberComponentTemplate Name="FeedBehavior" Guid="e5f6a7b8-c9d0-9234-def0-123456789abc" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
         <Parameter Name="AutoFeed" Guid="f6a7b8c9-d0e1-9345-ef01-23456789abcd" Value="False" Type="bool"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="ChaseBehavior" Guid="a7b8c9d0-e1f2-9456-f012-3456789abcde" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
-        <Parameter Name="AutoChaseMask" Guid="b8c9d0e1-f2a3-9567-0123-456789abcdef" Value="LandOther, WaterPredator" Type="Game.CreatureCategory"/>
-        <Parameter Name="DayChaseRange" Guid="c9d0e1f2-a3b4-9678-1234-56789abcdef0" Value="2225" Type="float"/>
-        <Parameter Name="NightChaseRange" Guid="d0e1f2a3-b4c5-9789-2345-6789abcdef01" Value="2227" Type="float"/>
-        <Parameter Name="ChaseNonPlayerProbability" Guid="e1f2a3b4-c5d6-9890-3456-789abcdef012" Value="0.1" Type="float"/>
-        <Parameter Name="NightChaseTime" Guid="f2a3b4c5-d6e7-9901-4567-89abcdef0123" Value="100" Type="float"/>
-    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="ChaseBehavior" Guid="c4d5e6f7-a8b9-9890-3456-89abcdef012d" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
+    <Parameter Name="AutoChaseMask" Guid="d5e6f7a8-b9c0-9901-4567-9abcdef0123e" Value="LandOther, WaterPredator, WaterOther" Type="Game.CreatureCategory"/>
+    <Parameter Name="DayChaseRange" Guid="e6f7a8b9-c0d1-0012-5678-abcdef01234f" Value="990" Type="float"/>
+    <Parameter Name="DayChaseTime" Guid="0692d6bd-70a5-4118-80cc-2ec598f24635" Value="990" Type="float"/>
+    <Parameter Name="NightChaseRange" Guid="f7a8b9c0-d1e2-0123-6789-bcdef0123450" Value="920" Type="float"/>
+    <Parameter Name="ChaseNonPlayerProbability" Guid="a8b9c0d1-e2f3-0234-789a-cdef01234571" Value="0.1" Type="float"/>
+    <Parameter Name="NightChaseTime" Guid="b9c0d1e2-f3a4-0345-89ab-def012345672" Value="930" Type="float"/>
+</MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="c9d0e1f2-a3b4-0012-5678-9abcdef01234">
         <Parameter Name="Color" Guid="d0e1f2a3-b4c5-0123-6789-abcdef012345" Value="165,0,154" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="e1f2a3b4-c5d6-0234-789a-bcdef0123456" Value="80" Type="int"/>
