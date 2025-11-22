@@ -22,10 +22,8 @@ namespace Game
 		public float DisplayDistance { get; set; }
 		public float MinInterval { get; set; }
 		public float MaxInterval { get; set; }
-		public float HoldDuration { get; set; }
+		public float RiseDuration { get; set; }
 		public float FadeDuration { get; set; }
-		public float FloatHeight { get; set; }
-		public float FloatSpeed { get; set; }
 
 		public UpdateOrder UpdateOrder
 		{
@@ -47,10 +45,8 @@ namespace Game
 			this.DisplayDistance = values.GetValue<float>("DisplayDistance", 10f);
 			this.MinInterval = values.GetValue<float>("MinInterval", 8f);
 			this.MaxInterval = values.GetValue<float>("MaxInterval", 30f);
-			this.HoldDuration = values.GetValue<float>("HoldDuration", 4f);
+			this.RiseDuration = values.GetValue<float>("RiseDuration", 2f);
 			this.FadeDuration = values.GetValue<float>("FadeDuration", 0.5f);
-			this.FloatHeight = values.GetValue<float>("FloatHeight", 3f);
-			this.FloatSpeed = values.GetValue<float>("FloatSpeed", 0.5f);
 
 			this.SetNextChatterTime();
 		}
@@ -77,9 +73,8 @@ namespace Game
 					if (playerNear)
 					{
 						this.m_activePhrase = m_phrases[this.m_random.Int(0, m_phrases.Count - 1)];
-						this.m_currentState = State.FadeIn;
-						this.m_stateStartTime = gameTime;
-						this.m_floatStartTime = gameTime;
+						this.m_currentState = State.Rising;
+						this.m_riseStartTime = gameTime;
 						this.SetNextChatterTime();
 						return;
 					}
@@ -87,25 +82,19 @@ namespace Game
 					return;
 				}
 			}
-			else if (this.m_currentState == State.FadeIn)
+			else if (this.m_currentState == State.Rising)
 			{
-				if (gameTime > this.m_stateStartTime + this.FadeDuration)
-				{
-					this.m_currentState = State.Visible;
-					this.m_stateStartTime = gameTime;
-				}
-			}
-			else if (this.m_currentState == State.Visible)
-			{
-				if (gameTime > this.m_stateStartTime + this.HoldDuration)
+				double riseProgress = (gameTime - this.m_riseStartTime) / this.RiseDuration;
+
+				if (riseProgress >= 1f)
 				{
 					this.m_currentState = State.FadeOut;
-					this.m_stateStartTime = gameTime;
+					this.m_fadeStartTime = gameTime;
 				}
 			}
 			else if (this.m_currentState == State.FadeOut)
 			{
-				if (gameTime > this.m_stateStartTime + this.FadeDuration)
+				if (gameTime > this.m_fadeStartTime + this.FadeDuration)
 				{
 					this.m_currentState = State.Inactive;
 					this.m_activePhrase = null;
@@ -138,31 +127,29 @@ namespace Game
 
 			// Calcular alpha basado en el estado actual
 			float alpha = 1f;
-			double stateProgress = this.m_subsystemTime.GameTime - this.m_stateStartTime;
+			double currentTime = this.m_subsystemTime.GameTime;
 
-			if (this.m_currentState == State.FadeIn)
+			if (this.m_currentState == State.FadeOut)
 			{
-				alpha = (float)(stateProgress / this.FadeDuration);
-			}
-			else if (this.m_currentState == State.FadeOut)
-			{
-				alpha = 1f - (float)(stateProgress / this.FadeDuration);
+				double fadeProgress = (currentTime - this.m_fadeStartTime) / this.FadeDuration;
+				alpha = 1f - MathUtils.Clamp((float)fadeProgress, 0f, 1f);
 			}
 
-			// Asegurar que alpha esté en el rango [0, 1]
-			alpha = MathUtils.Clamp(alpha, 0f, 1f);
-
-			// Calcular posición flotante (desciende desde arriba)
-			float floatProgress = MathUtils.Clamp((float)((this.m_subsystemTime.GameTime - this.m_floatStartTime) / (this.FadeDuration * 2)), 0f, 1f);
-			float verticalOffset = this.FloatHeight * (1f - floatProgress);
+			// Calcular progreso del ascenso
+			double riseProgress = (currentTime - this.m_riseStartTime) / this.RiseDuration;
+			float progress = MathUtils.Clamp((float)riseProgress, 0f, 1f);
 
 			FontBatch3D fontBatch = this.m_subsystemModelsRenderer.PrimitivesRenderer.FontBatch(this.m_font, 1, DepthStencilState.None, RasterizerState.CullNoneScissor, BlendState.AlphaBlend, SamplerState.LinearClamp);
 
 			Vector3 center = (this.m_componentBody.BoundingBox.Min + this.m_componentBody.BoundingBox.Max) * 0.5f;
 			float height = this.m_componentBody.BoundingBox.Max.Y - this.m_componentBody.BoundingBox.Min.Y;
 
-			// Posición base en la cabeza + offset de flotación
-			Vector3 position = new Vector3(center.X, center.Y + height + verticalOffset, center.Z);
+			// Posición que asciende desde las rodillas hasta la cabeza
+			float startHeight = height * 0.3f; // Rodillas
+			float endHeight = height * 0.9f;   // Cabeza
+			float currentHeight = startHeight + (endHeight - startHeight) * progress;
+
+			Vector3 position = new Vector3(center.X, center.Y + currentHeight, center.Z);
 
 			Vector3 right = Vector3.Normalize(Vector3.Cross(camera.ViewDirection, camera.ViewUp));
 			float scale = 0.005f;
@@ -189,15 +176,14 @@ namespace Game
 		private Game.Random m_random = new Game.Random();
 		private State m_currentState;
 		private string m_activePhrase;
-		private double m_stateStartTime;
-		private double m_floatStartTime;
+		private double m_riseStartTime;
+		private double m_fadeStartTime;
 		private double m_nextChatterTime;
 
 		private enum State
 		{
 			Inactive,
-			FadeIn,
-			Visible,
+			Rising,
 			FadeOut
 		}
 
