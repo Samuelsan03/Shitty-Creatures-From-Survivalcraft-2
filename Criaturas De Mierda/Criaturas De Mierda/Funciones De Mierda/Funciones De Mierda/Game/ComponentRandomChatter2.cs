@@ -202,7 +202,12 @@ namespace Game
 			"Te vamos a follar zorra",
 			"Somos tus machos a joderte la vida she",
 			"Fuck, esto es lo mejor",
-			"Oh yeah baby"
+			"Oh yeah baby",
+			"Chinga tu madre, motherfucker",
+			"Son a bitch",
+			"Yo te boté\r\nTe di banda y te solté, yo te solté\r\nPa'l carajo te mandé, yo te mandé\r\nY a tu amiga me clavé, me la clavé\r\nFuck you, hijueputa, yeh",
+			"Vete a la VRG",
+			"Criminal, cri-criminal\r\nTu estilo, tu flow, mami, muy criminal"
 		};
 	}
 }
