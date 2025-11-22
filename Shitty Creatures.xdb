@@ -1,4 +1,19 @@
 <samu>
+<Folder Name="Gameplay" Guid="d3d4b692-acc9-4128-9b99-a5acf1de1fbb">
+        <ComponentTemplate Name="ComponentRandomChatter" 
+                           Guid="a93baf1c-930f-47a8-a98a-f79fd0de910f">
+            <Parameter Name="Class" Value="Game.ComponentRandomChatter" Type="string" Description="El nombre de la clase C# que implementa la lógica." />
+            <Parameter Name="LoadOrder" Value="-1" Type="int" Guid="4dd04a27-f015-4576-ad54-0eddc8afa940" Description="Orden de carga para resolver dependencias con otros componentes." />
+            <Parameter Name="IsOptional" Value="False" Type="bool" Guid="6c443521-568b-4616-80ac-71fe4edc6cab" Description="Indica si la criatura puede existir sin este componente." />
+            <Parameter Name="ActivationDistance" Value="5" Type="float" Description="Distancia (en bloques) a la que el jugador debe estar para que la criatura empiece a hablar." />
+            <Parameter Name="DisplayDistance" Value="10" Type="float" Description="Distancia máxima a la que el texto es visible para el jugador." />
+            <Parameter Name="MinInterval" Value="8" Type="float" Description="Tiempo mínimo en segundos que la criatura esperará para decir una nueva frase." />
+            <Parameter Name="MaxInterval" Value="30" Type="float" Description="Tiempo máximo en segundos que la criatura esperará para decir una nueva frase." />
+            <Parameter Name="HoldDuration" Value="4" Type="float" Description="Tiempo en segundos que la frase se queda visible." />
+            <Parameter Name="FadeDuration" Value="0.5" Type="float" Description="Duración en segundos de los efectos de desvanecimiento al aparecer y desaparecer." />
+        </ComponentTemplate>
+    </Folder>
+
 <Folder Name="ProgramedInteligence" Guid="33dfd132-3c41-4dfa-a385-af3ba34ff86b">
 	<ComponentTemplate Name="InvShooterBehavior" Description="Comportamiento que hace a una criatura arrojar objetos, es requerido Inventory para funcionar." Guid="456e3558-0e7f-42c3-bc05-35eef7540900" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
     <Parameter Name="DiscountFromInventory" Description="Descontar objetos del inventario por cada objeto arrojado, si es falso, la criatura podra arrojar objetos indefinidamente." Guid="632b972c-db56-4348-a2ca-35f42a841aa0" Value="true" Type="bool"/>
@@ -62,6 +77,17 @@
                 <Parameter Name="Description" Guid="7ef63359-cceb-417b-8a22-786f59f7cb1e" Value="Your god who left your ass broken" Type="string"/>
                 <Parameter Name="KillVerbs" Guid="eb41096a-18df-458c-b198-22069f75663b" Value="Kicked your ass" Type="string"/>
             </MemberComponentTemplate>
+            <MemberComponentTemplate Name="ComponentRandomChatter" Guid="56e00cfe-824a-4c2b-a455-53e6127ac52c">
+    <Parameter Name="Class" Value="Game.ComponentRandomChatter" Type="string"/>
+    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
+    <Parameter Name="IsOptional" Value="False" Type="bool"/>
+    <Parameter Name="ActivationDistance" Value="5" Type="float"/>
+    <Parameter Name="DisplayDistance" Value="10" Type="float"/>
+    <Parameter Name="MinInterval" Value="3" Type="float"/>
+    <Parameter Name="MaxInterval" Value="30" Type="float"/>
+    <Parameter Name="HoldDuration" Value="4" Type="float"/>
+    <Parameter Name="FadeDuration" Value="0.5" Type="float"/>
+</MemberComponentTemplate>
             <MemberComponentTemplate Name="FindPlayerBehavior" Guid="ba520229-b06a-4b09-949e-4217be90a7c3" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
             <MemberComponentTemplate Name="Miner" Guid="c1a2e28a-4292-4229-acce-7373a0c256a0" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="bb34c589-5102-4e76-225c-deca29dcdd6b" Value="5.95" Type="float"/>
