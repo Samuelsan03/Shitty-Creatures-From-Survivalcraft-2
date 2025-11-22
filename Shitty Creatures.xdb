@@ -788,6 +788,7 @@
     <ParameterSet Name="CreatureEggData" Guid="d8e9f0a1-b2c3-0456-bcde-0123456789ab">
         <Parameter Name="Color" Guid="e9f0a1b2-c3d4-0567-cdef-123456789abc" Value="64,224,208" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="f0a1b2c3-d4e5-0678-def0-23456789abcd" Value="168" Type="int"/>
+        <Parameter Name="Scale" Guid="b7b6cc43-d560-4857-ab7d-d82643af37de" Value="3" Type="float"/>
         <Parameter Name="SwapUV" Guid="a1b2c3d4-e5f6-0789-ef01-3456789abcde" Value="False" Type="bool"/>
         <Parameter Name="DisplayName" Guid="b2c3d4e5-f6a7-0890-f012-456789abcdef" Value="Fumador Químico Brawny Egg" Type="string"/>
         <Parameter Name="EggTypeIndex" Guid="c3d4e5f6-a7b8-0901-0123-56789abcdef0" Value="208" Type="int"/>
@@ -1314,7 +1315,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="HumanModel" Guid="e4f5a6b7-c8d9-8123-8901-101234567890" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
         <Parameter Name="WalkLegsAngle" Guid="f5a6b7c8-d9e0-8234-9012-211345678901" Value="0.4" Type="float"/>
-        <Parameter Name="ModelName" Guid="a6b7c8d9-e0f1-8345-0123-321456789012" Value="Models/Tank chafa" Type="string"/>
+        <Parameter Name="ModelName" Guid="a6b7c8d9-e0f1-8345-0123-321456789012" Value="Models/Tank superior" Type="string"/>
         <Parameter Name="TextureOverride" Guid="b7c8d9e0-f1a2-8456-1234-431567890123" Value="Textures/Lider Calaverico Supremo" Type="string"/>
         <Parameter Name="WalkAnimationSpeed" Guid="c8d9e0f1-a2b3-8567-2345-541678901234" Value="0.65" Type="float"/>
     </MemberComponentTemplate>
@@ -1346,6 +1347,7 @@
     <ParameterSet Name="CreatureEggData" Guid="c0d1e2f3-a4b5-0345-0123-323456789012">
         <Parameter Name="Color" Guid="d1e2f3a4-b5c6-0456-1234-434567890123" Value="120,20,40" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="e2f3a4b5-c6d7-0567-2345-545678901234" Value="174" Type="int"/>
+        <Parameter Name="Scale" Guid="be104920-adf9-4596-a8ee-5dea74ffb426" Value="3" Type="float"/>
         <Parameter Name="SwapUV" Guid="f3a4b5c6-d7e8-0678-3456-656789012345" Value="False" Type="bool"/>
         <Parameter Name="DisplayName" Guid="a4b5c6d7-e8f9-0789-4567-767890123456" Value="Lider Calaverico Supremo Alfa Egg" Type="string"/>
         <Parameter Name="EggTypeIndex" Guid="b5c6d7e8-f9a0-0890-5678-878901234567" Value="214" Type="int"/>
@@ -2434,7 +2436,7 @@
         <Parameter Name="TextureSlot" Guid="df46ac23-a62b-4ed4-8353-f89f9d80657c" Value="189" Type="int"/>
         <Parameter Name="SwapUV" Guid="0ca057fa-43bc-4feb-9fec-d59171d51153" Value="True" Type="bool"/>
         <Parameter Name="DisplayName" Guid="2f7d0063-7465-4af4-8f3c-3b8f8b87709a" Value="Ballestadora Musculosa Egg" Type="string"/>
-        <Parameter Name="EggTypeIndex" Guid="807dfd94-8f8b-4a09-bfc9-b76b7c8541ed" Value="232" Type="int"/>
+        <Parameter Name="EggTypeIndex" Guid="807dfd94-8f8b-4a09-bfc9-b76b7c8541ed" Value="237" Type="int"/>
     </ParameterSet>
 </EntityTemplate>
 
@@ -2948,8 +2950,8 @@
         <Parameter Name="NightChaseTime" Guid="8fdcf217-6bc2-4d62-8334-aa598d3a0629" Value="10" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Shapeshifter" Guid="f4a5b6c7-d8e9-9999-9abc-def012345679" InheritanceParent="92e52f46-5d88-4273-80d2-1b5bfb7fdee8">
-        <Parameter Name="NightEntityTemplateName" Guid="b5c6d7e8-f9a0-9999-9abc-def012345680" Value="WalterZombieMamon" Type="string"/>
-        <Parameter Name="Probability" Guid="d7e8f9a0-b1c2-9999-9abc-def012345682" Value="0.5" Type="float"/>
+        <Parameter Name="NightEntityTemplateName" Guid="b5c6d7e8-f9a0-9999-9abc-def012345680" Value="WalterZombieMamadisimo" Type="string"/>
+        <Parameter Name="Probability" Guid="d7e8f9a0-b1c2-9999-9abc-def012345682" Value="0.55" Type="float"/>
     </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="a084bfe4-8cfa-4c25-bf93-0fc33dc9967f">
         <Parameter Name="Color" Guid="350838ea-dd9b-40a4-ba93-9252d176f992" Value="181,138,117" Type="Color"/>
@@ -3050,6 +3052,7 @@
     <ParameterSet Name="CreatureEggData" Guid="5115b357-6d29-46c2-9a9a-054c7e00b5ac">
         <Parameter Name="Color" Guid="831ae302-6830-4648-8f8e-71fd973d5cea" Value="171,134,116" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="11ca5c73-7491-46d0-9140-f382a3250ef5" Value="172" Type="int"/>
+        <Parameter Name="Scale" Guid="2f16fee8-e08f-49a9-83f5-b33dfe5b71f0" Value="3" Type="float"/>
         <Parameter Name="SwapUV" Guid="233e7b98-4a6e-45b7-b059-c96edbbbe159" Value="True" Type="bool"/>
         <Parameter Name="DisplayName" Guid="e8dfd133-0945-44d3-926a-3caa410ef070" Value="Walter Zombie Mamadísimo Egg" Type="string"/>
         <Parameter Name="EggTypeIndex" Guid="0d8d9f82-244a-488c-a6bd-4f1ea5007a28" Value="233" Type="int"/>
