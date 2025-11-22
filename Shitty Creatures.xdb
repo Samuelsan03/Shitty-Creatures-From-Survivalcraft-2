@@ -1,15 +1,27 @@
 <samu>
 <Folder Name="Gameplay" Guid="d3d4b692-acc9-4128-9b99-a5acf1de1fbb">
     <ComponentTemplate Name="ComponentRandomChatter" Guid="a93baf1c-930f-47a8-a98a-f79fd0de910f">
-        <Parameter Name="Class" Value="Game.ComponentRandomChatter" Type="string" Description="El nombre de la clase C# que implementa la lógica." />
-        <Parameter Name="LoadOrder" Value="-1" Type="int" Guid="4dd04a27-f015-4576-ad54-0eddc8afa940" Description="Orden de carga para resolver dependencias con otros componentes." />
-        <Parameter Name="IsOptional" Value="False" Type="bool" Guid="6c443521-568b-4616-80ac-71fe4edc6cab" Description="Indica si la criatura puede existir sin este componente." />
-        <Parameter Name="ActivationDistance" Value="5" Type="float" Description="Distancia (en bloques) a la que el jugador debe estar para que la criatura empiece a hablar. AJUSTA: Qué tan cerca debe estar el jugador para activar el diálogo." />
-        <Parameter Name="DisplayDistance" Value="10" Type="float" Description="Distancia máxima a la que el texto es visible para el jugador. AJUSTA: Hasta qué distancia se puede ver el texto flotante." />
-        <Parameter Name="MinInterval" Value="8" Type="float" Description="Tiempo mínimo en segundos que la criatura esperará para decir una nueva frase. AJUSTA: Frecuencia mínima entre diálogos." />
-        <Parameter Name="MaxInterval" Value="30" Type="float" Description="Tiempo máximo en segundos que la criatura esperará para decir una nueva frase. AJUSTA: Frecuencia máxima entre diálogos." />
-        <Parameter Name="RiseDuration" Value="2" Type="float" Description="Duración en segundos del ascenso del texto desde las rodillas hasta la cabeza. AJUSTA: Qué tan rápido sube el texto desde abajo hacia arriba." />
-        <Parameter Name="FadeDuration" Value="0.5" Type="float" Description="Duración en segundos del desvanecimiento final cuando llega a la cabeza. AJUSTA: Qué tan rápido desaparece el texto al final." />
+        <Parameter Name="Class" Value="Game.ComponentRandomChatter" Type="string" Description="El nombre de la clase C# que implementa la lógica."/>
+        <Parameter Name="LoadOrder" Value="-1" Type="int" Guid="4dd04a27-f015-4576-ad54-0eddc8afa940" Description="Orden de carga para resolver dependencias con otros componentes."/>
+        <Parameter Name="IsOptional" Value="False" Type="bool" Guid="6c443521-568b-4616-80ac-71fe4edc6cab" Description="Indica si la criatura puede existir sin este componente."/>
+        <Parameter Name="ActivationDistance" Value="5" Type="float" Description="Distancia (en bloques) a la que el jugador debe estar para que la criatura empiece a hablar. AJUSTA: Qué tan cerca debe estar el jugador para activar el diálogo."/>
+        <Parameter Name="DisplayDistance" Value="10" Type="float" Description="Distancia máxima a la que el texto es visible para el jugador. AJUSTA: Hasta qué distancia se puede ver el texto flotante."/>
+        <Parameter Name="MinInterval" Value="8" Type="float" Description="Tiempo mínimo en segundos que la criatura esperará para decir una nueva frase. AJUSTA: Frecuencia mínima entre diálogos."/>
+        <Parameter Name="MaxInterval" Value="30" Type="float" Description="Tiempo máximo en segundos que la criatura esperará para decir una nueva frase. AJUSTA: Frecuencia máxima entre diálogos."/>
+        <Parameter Name="RiseDuration" Value="2" Type="float" Description="Duración en segundos del ascenso del texto desde las rodillas hasta la cabeza. AJUSTA: Qué tan rápido sube el texto desde abajo hacia arriba."/>
+        <Parameter Name="FadeDuration" Value="0.5" Type="float" Description="Duración en segundos del desvanecimiento final cuando llega a la cabeza. AJUSTA: Qué tan rápido desaparece el texto al final."/>
+    </ComponentTemplate>
+    
+    <ComponentTemplate Name="ComponentRandomChatter2" Guid="40891058-39e7-4823-9f93-37a3b6d9dbb5">
+        <Parameter Name="Class" Value="Game.ComponentRandomChatter2" Type="string" Description="El nombre de la clase C# que implementa la lógica para NPCs hostiles."/>
+        <Parameter Name="LoadOrder" Value="-1" Type="int" Guid="5927fedf-417d-4bad-93cd-8b16e76b4d6f" Description="Orden de carga para resolver dependencias con otros componentes."/>
+        <Parameter Name="IsOptional" Value="False" Type="bool" Description="Indica si la criatura puede existir sin este componente."/>
+        <Parameter Name="ActivationDistance" Value="8" Type="float" Description="Distancia (en bloques) a la que el jugador debe estar para que la criatura hostil empiece a hablar. AJUSTA: Qué tan cerca debe estar el jugador para activar el diálogo hostil."/>
+        <Parameter Name="DisplayDistance" Value="12" Type="float" Description="Distancia máxima a la que el texto hostil es visible para el jugador. AJUSTA: Hasta qué distancia se puede ver el texto flotante hostil."/>
+        <Parameter Name="MinInterval" Value="5" Type="float" Description="Tiempo mínimo en segundos que la criatura hostil esperará para decir una nueva frase. AJUSTA: Frecuencia mínima entre diálogos hostiles."/>
+        <Parameter Name="MaxInterval" Value="20" Type="float" Description="Tiempo máximo en segundos que la criatura hostil esperará para decir una nueva frase. AJUSTA: Frecuencia máxima entre diálogos hostiles."/>
+        <Parameter Name="RiseDuration" Value="1.5" Type="float" Description="Duración en segundos del ascenso del texto hostil desde las rodillas hasta la cabeza. AJUSTA: Qué tan rápido sube el texto hostil desde abajo hacia arriba."/>
+        <Parameter Name="FadeDuration" Value="0.3" Type="float" Description="Duración en segundos del desvanecimiento final cuando llega a la cabeza. AJUSTA: Qué tan rápido desaparece el texto hostil al final."/>
     </ComponentTemplate>
 </Folder>
 
@@ -250,6 +262,17 @@
         <Parameter Name="Description" Guid="c7d8e9f0-a1b2-7345-abcd-ef0123456789" Value="What the hell did that man come out of, it seems that the aliens brought him" Type="string"/>
         <Parameter Name="KillVerbs" Guid="d8e9f0a1-b2c3-7456-bcde-f0123456789a" Value="Pecked" Type="string"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="ComponentRandomChatter" Guid="91d9a8ec-276f-4dec-8591-965f594eae9b">
+    <Parameter Name="Class" Value="Game.ComponentRandomChatter" Type="string"/>
+    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
+    <Parameter Name="IsOptional" Value="False" Type="bool"/>
+    <Parameter Name="ActivationDistance" Value="5" Type="float"/>
+    <Parameter Name="DisplayDistance" Value="10" Type="float"/>
+    <Parameter Name="MinInterval" Value="3" Type="float"/>
+    <Parameter Name="MaxInterval" Value="30" Type="float"/>
+    <Parameter Name="RiseDuration" Value="0.5" Type="float"/>
+    <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="e9f0a1b2-c3d4-7567-cdef-0123456789ab" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="f0a1b2c3-d4e5-7678-def0-123456789abc" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="a1b2c3d4-e5f6-7789-ef01-23456789abcd" Value="15.95" Type="float"/>
@@ -330,6 +353,17 @@
         <Parameter Name="Description" Guid="b4c5d6e7-f8a9-7012-7890-f0123456789a" Value="Ricardo's twin brother, unlike his twin brother, is human, or so we think. Almost half strong and his power attack is a little less than his older brother's. If you him he will break your buttocks penetrated" Type="string"/>
         <Parameter Name="KillVerbs" Guid="c5d6e7f8-a9b0-7123-8901-0123456789ab" Value="Negotiated" Type="string"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="ComponentRandomChatter" Guid="210780ff-1756-470a-a0b8-2168da58fb71">
+    <Parameter Name="Class" Value="Game.ComponentRandomChatter" Type="string"/>
+    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
+    <Parameter Name="IsOptional" Value="False" Type="bool"/>
+    <Parameter Name="ActivationDistance" Value="5" Type="float"/>
+    <Parameter Name="DisplayDistance" Value="10" Type="float"/>
+    <Parameter Name="MinInterval" Value="3" Type="float"/>
+    <Parameter Name="MaxInterval" Value="30" Type="float"/>
+    <Parameter Name="RiseDuration" Value="0.5" Type="float"/>
+    <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="d6e7f8a9-b0c1-7234-9012-123456789abc" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="e7f8a9b0-c1d2-7345-0123-23456789abcd" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="f8a9b0c1-d2e3-7456-1234-3456789abcde" Value="4.95" Type="float"/>
@@ -409,6 +443,17 @@
         <Parameter Name="Description" Guid="cedc98b7-5e9a-47dc-af72-fe4542a5e4da" Value="Paco's missing link brother, he likes to smoke marijuana 24 hours a day non-stop. He's high from using a lot of marijuana, even if you don't trust him. If you touch him he will break your balls while he is high. It seems that his life almost touches Paco's heels but his blows are like medium strong not the same as Paco's" Type="string"/>
         <Parameter Name="KillVerbs" Guid="e86ffc5f-0e5a-438b-b14f-7dc83a9ea82e" Value="He put the weed up your ass" Type="string"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="ComponentRandomChatter" Guid="1adf0a5d-39b2-4b5b-806e-f2e6ef5c9d88">
+    <Parameter Name="Class" Value="Game.ComponentRandomChatter" Type="string"/>
+    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
+    <Parameter Name="IsOptional" Value="False" Type="bool"/>
+    <Parameter Name="ActivationDistance" Value="5" Type="float"/>
+    <Parameter Name="DisplayDistance" Value="10" Type="float"/>
+    <Parameter Name="MinInterval" Value="3" Type="float"/>
+    <Parameter Name="MaxInterval" Value="30" Type="float"/>
+    <Parameter Name="RiseDuration" Value="0.5" Type="float"/>
+    <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="325937f0-e327-4fac-b236-33d0317a8c73" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="71e06217-4d5d-439b-b4ea-a1e11d778115" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="841fa564-4d90-44a0-8071-1effc03bd6cf" Value="3.2" Type="float"/>
@@ -512,6 +557,17 @@
         <Parameter Name="Description" Guid="954d9f04-d47b-4033-843f-03757c3b2fbd" Value="Another missing link brother of paco and twin brother of El Marihuanero, but this one is more muscular but his attack power is low and he is muscular. However, despite his half-high life and not strong blows he has his musket on, if you it, it will tear you to shreds in 3 or 5 seconds. So watch out for him, he's an expert in firearms and has good aim" Type="string"/>
         <Parameter Name="KillVerbs" Guid="dd068946-0f2d-42f6-baa5-d59bc07290ce" Value="Shot drugged" Type="string"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="ComponentRandomChatter" Guid="6f0c56e3-849c-436d-9ba4-0b1e81007552">
+    <Parameter Name="Class" Value="Game.ComponentRandomChatter" Type="string"/>
+    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
+    <Parameter Name="IsOptional" Value="False" Type="bool"/>
+    <Parameter Name="ActivationDistance" Value="5" Type="float"/>
+    <Parameter Name="DisplayDistance" Value="10" Type="float"/>
+    <Parameter Name="MinInterval" Value="3" Type="float"/>
+    <Parameter Name="MaxInterval" Value="30" Type="float"/>
+    <Parameter Name="RiseDuration" Value="0.5" Type="float"/>
+    <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="7a5f28d1-f3eb-4923-9e6d-7a0b42c22d0f" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="5226597d-239d-4f09-a61f-147907109158" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="02c0ca9d-43ea-4533-be55-b241256d234e" Value="2.85" Type="float"/>
@@ -780,6 +836,17 @@
         <Parameter Name="Description" Guid="d1e2f3a4-b5c6-7789-ef01-3456789abcd6" Value="A silent figure known for his cold demeanor and rise through the criminal underworld of Anywhere City, USA. Although he appears to be a ruthless outlaw, he is also part of the Alliance group, where he protects and supports his allies when attacked by hostile gangs or other threats." Type="string"/>
         <Parameter Name="KillVerbs" Guid="e2f3a4b5-c6d7-7890-f012-456789abcde7" Value="Outran" Type="string"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="ComponentRandomChatter" Guid="1eac9f2d-2b62-4fca-9295-858ee66f75e5">
+    <Parameter Name="Class" Value="Game.ComponentRandomChatter" Type="string"/>
+    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
+    <Parameter Name="IsOptional" Value="False" Type="bool"/>
+    <Parameter Name="ActivationDistance" Value="5" Type="float"/>
+    <Parameter Name="DisplayDistance" Value="10" Type="float"/>
+    <Parameter Name="MinInterval" Value="3" Type="float"/>
+    <Parameter Name="MaxInterval" Value="30" Type="float"/>
+    <Parameter Name="RiseDuration" Value="0.5" Type="float"/>
+    <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="f3a4b5c6-d7e8-7901-0123-56789abcdef8" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="a4b5c6d7-e8f9-8012-1234-6789abcdef09" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="b5c6d7e8-f9a0-8123-2345-789abcdef01a" Value="0.8" Type="float"/>
@@ -891,6 +958,17 @@
         <Parameter Name="Description" Guid="e2f3a4b5-c6d7-7789-ef01-3456789abcd7" Value="A violent and ambitious figure in the criminal world, known for his rise from the Forelli family in Liberty City. Originally of Italian descent, he now resides in Vice City, Florida, where he built his own empire after a failed drug deal in 1986. Despite his reputation, he is also part of the Alliance group, supporting and defending his allies when threatened by rival gangs or hostile forces." Type="string"/>
         <Parameter Name="KillVerbs" Guid="f3a4b5c6-d7e8-7890-f012-456789abcde8" Value="Eliminated" Type="string"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="ComponentRandomChatter" Guid="b8e3a758-80ae-4b4a-a3f6-df135ec2f18f">
+    <Parameter Name="Class" Value="Game.ComponentRandomChatter" Type="string"/>
+    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
+    <Parameter Name="IsOptional" Value="False" Type="bool"/>
+    <Parameter Name="ActivationDistance" Value="5" Type="float"/>
+    <Parameter Name="DisplayDistance" Value="10" Type="float"/>
+    <Parameter Name="MinInterval" Value="3" Type="float"/>
+    <Parameter Name="MaxInterval" Value="30" Type="float"/>
+    <Parameter Name="RiseDuration" Value="0.5" Type="float"/>
+    <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="a4b5c6d7-e8f9-7901-0123-56789abcdef9" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="b5c6d7e8-f9a0-8012-1234-6789abcdef0a" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="c6d7e8f9-a0b1-8123-2345-789abcdef01b" Value="6.5" Type="float"/>
@@ -970,6 +1048,17 @@
         <Parameter Name="Description" Guid="f3a4b5c6-d7e8-7789-ef01-3456789abcd8" Value="La Muerte X emerged from the violet infernal shadows, with skin and behavior forged in darkness. He is far from friendly his hostile nature drives him to destroy anything in his path. Approach him, and he will hunt you relentlessly… until death. His powers range from moderately strong physical strikes to deadly flame attacks; if you try to escape, he will launch fireballs at you. In the worst case, he hurls magical rocks that inflict devastating damage." Type="string"/>
         <Parameter Name="KillVerbs" Guid="a4b5c6d7-e8f9-7890-f012-456789abcde9" Value="Annihilated" Type="string"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="ComponentRandomChatter2" Guid="8a17bf8c-e4a7-4e2d-8de5-5646aa56a747">
+    <Parameter Name="Class" Value="Game.ComponentRandomChatter2" Type="string"/>
+    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
+    <Parameter Name="IsOptional" Value="False" Type="bool"/>
+    <Parameter Name="ActivationDistance" Value="8" Type="float"/>
+    <Parameter Name="DisplayDistance" Value="12" Type="float"/>
+    <Parameter Name="MinInterval" Value="5" Type="float"/>
+    <Parameter Name="MaxInterval" Value="20" Type="float"/>
+    <Parameter Name="RiseDuration" Value="1.5" Type="float"/>
+    <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="b5c6d7e8-f9a0-7901-0123-56789abcdf0a" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="c6d7e8f9-a0b1-8012-1234-6789abcdef0b" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="d7e8f9a0-b1c2-8123-2345-789abcdef01c" Value="9.0" Type="float"/>
@@ -1044,6 +1133,17 @@
         <Parameter Name="Description" Guid="c7d8e9f0-a1b2-7678-3456-456789012345" Value="What a surprise, I suppose. El Señor De Las Tumbas Moradas is the closest companion of La Muerte X they’re always together, always helping one another. But El Señor De Las Tumbas Moradas has received some mysterious upgrades beyond his friend. What kind of power does he hide? What attacks might he unleash? Could he summon something darker when threatened? That’s for you to find out. (Let’s just say you’ll understand once you face him yourself.) But be warned: if you strike him, he won’t forgive you. He’ll drag you down into the purple tombs and from that moment on, you’ll become his eternal slave in the shadows. He won’t be your friend not because he hates you, but because friendship was never part of his design." Type="string"/>
         <Parameter Name="KillVerbs" Guid="d8e9f0a1-b2c3-7789-4567-567890123456" Value="Buried" Type="string"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="ComponentRandomChatter2" Guid="e9e0742a-bb2d-437a-9e86-66159cd0b984">
+    <Parameter Name="Class" Value="Game.ComponentRandomChatter2" Type="string"/>
+    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
+    <Parameter Name="IsOptional" Value="False" Type="bool"/>
+    <Parameter Name="ActivationDistance" Value="8" Type="float"/>
+    <Parameter Name="DisplayDistance" Value="12" Type="float"/>
+    <Parameter Name="MinInterval" Value="5" Type="float"/>
+    <Parameter Name="MaxInterval" Value="20" Type="float"/>
+    <Parameter Name="RiseDuration" Value="1.5" Type="float"/>
+    <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="e9f0a1b2-c3d4-7890-5678-678901234567" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="f0a1b2c3-d4e5-7901-6789-789012345678" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="a1b2c3d4-e5f6-8012-7890-890123456789" Value="4.5" Type="float"/>
@@ -1118,6 +1218,17 @@
         <Parameter Name="Description" Guid="e8f9a0b1-c2d3-7678-3456-556789012345" Value="Who is the true ruler of darkness and tombs? It's none other than Líder Calavérico Supremo the highest and most fearsome leader of this world. At first glance, he may seem underwhelming, with attacks that appear weak... but don't be fooled. His speed rivals that of a cheetah, and when the full moon or new moon rises, he transforms into a monstrous force of nature. His mutated form might remind you of a Tank. Could he be a worthy rival to Fumador Químico Brawny in terms of brute strength, raw impact, and sheer chaos? That's a question only battle can answer." Type="string"/>
         <Parameter Name="KillVerbs" Guid="f9a0b1c2-d3e4-7789-4567-667890123456" Value="Dominated" Type="string"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="ComponentRandomChatter2" Guid="90e76740-f3d8-4db9-94c0-17b4f8914511">
+    <Parameter Name="Class" Value="Game.ComponentRandomChatter2" Type="string"/>
+    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
+    <Parameter Name="IsOptional" Value="False" Type="bool"/>
+    <Parameter Name="ActivationDistance" Value="8" Type="float"/>
+    <Parameter Name="DisplayDistance" Value="12" Type="float"/>
+    <Parameter Name="MinInterval" Value="5" Type="float"/>
+    <Parameter Name="MaxInterval" Value="20" Type="float"/>
+    <Parameter Name="RiseDuration" Value="1.5" Type="float"/>
+    <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="a0b1c2d3-e4f5-7890-5678-778901234567" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="b1c2d3e4-f5a6-7901-6789-889012345678" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="c2d3e4f5-a6b7-8012-7890-990123456789" Value="6.2" Type="float"/>
@@ -1694,6 +1805,17 @@
         <Parameter Name="Description" Guid="59a9b248-9e3c-4986-a524-cc42162a646c" Value="El Ballestador isn’t the strongest fighter, but don’t let that fool you—his cursed crossbow never leaves his side. He’s not part of your Alianza and belongs to Muerte, standing out as the only human in his faction wielding a possessed weapon. His bolts are fast, silent, and unforgiving. Confront him or try to escape—either way, you’re already dead. If he sees you, he fires. If you move, he hits. His diamond arrows pierce almost everything, except the rhino, beluga, and orca, who can endure more hits if they fight back. To survive, use terrain to break his line of sight. Zigzag when running, jump unpredictably, and never stay still. If you’re solo, bait his shot and rush in before he reloads. In a group, flank while one teammate draws fire. Splash damage or shock can disrupt his aim, but timing is everything. If you hear the click of his bow, it might already be too late. They say his crossbow was forged in silence, bound to him after he survived a betrayal that left him voiceless. Since then, it’s been his only companion—never speaks, never misses, never leaves. That’s why he trusts it more than any ally." Type="string"/>
         <Parameter Name="KillVerbs" Guid="b7337a01-ab16-4208-ade1-7ee7d5882412" Value="Shot with arrows" Type="string"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="ComponentRandomChatter2" Guid="ff015f5b-ef26-422d-b29e-d92fd15042a1">
+    <Parameter Name="Class" Value="Game.ComponentRandomChatter2" Type="string"/>
+    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
+    <Parameter Name="IsOptional" Value="False" Type="bool"/>
+    <Parameter Name="ActivationDistance" Value="8" Type="float"/>
+    <Parameter Name="DisplayDistance" Value="12" Type="float"/>
+    <Parameter Name="MinInterval" Value="5" Type="float"/>
+    <Parameter Name="MaxInterval" Value="20" Type="float"/>
+    <Parameter Name="RiseDuration" Value="1.5" Type="float"/>
+    <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="4af5b163-9b8a-439d-8019-fbef8de00cbf" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="08dd88c6-df82-4e53-aaa9-693b0c8b8cab" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="2b6b2d1e-9e67-4857-9768-8dfbd30724c7" Value="2.85" Type="float"/>
@@ -1869,6 +1991,17 @@
         <Parameter Name="Description" Guid="a82cd753-b101-46bb-bbab-cc2c75bfef07" Value="Twin brother of El Ballestador, El Arquero excels in pinpoint accuracy and rapid-fire archery using reinforced bows. Both share tactical agility, night vision, and synchronized patrol behavior, but El Arquero favors elevated ambushes and silent strikes. His armor is lighter, allowing swift movement across high structures. He communicates through optical signals and rarely misses a shot. Like El Ballestador, he is highly dangerous—provoking him will result in a lethal barrage of arrows. Upon death, he drops usable bow-grade arrows, ideal if you're low on resources. To survive, use cover, bait his shots, and flank from blind angles to avoid direct line-of-sight. Curiously, El Arquero began using his bow after witnessing his brother fire a bow for the first time. Wanting to defend himself equally, he stole a bow and arrows from a weapons shop—giving rise to a hostile Robin Hood of the high ground." Type="string"/>
         <Parameter Name="KillVerbs" Guid="7ce38653-070e-46db-934e-86457828cfe8" Value="Shot with arrows" Type="string"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="ComponentRandomChatter2" Guid="e0981784-9d2a-4d53-af3f-cd8101c87374">
+    <Parameter Name="Class" Value="Game.ComponentRandomChatter2" Type="string"/>
+    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
+    <Parameter Name="IsOptional" Value="False" Type="bool"/>
+    <Parameter Name="ActivationDistance" Value="8" Type="float"/>
+    <Parameter Name="DisplayDistance" Value="12" Type="float"/>
+    <Parameter Name="MinInterval" Value="5" Type="float"/>
+    <Parameter Name="MaxInterval" Value="20" Type="float"/>
+    <Parameter Name="RiseDuration" Value="1.5" Type="float"/>
+    <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="335b40bd-1a56-4e68-9e53-752938d5d946" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="018d2078-f08f-4988-b0e5-dd26a4d69f7d" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="812eb111-ff65-435e-bf32-3cd84caad593" Value="10" Type="float"/>
@@ -1964,6 +2097,17 @@
         <Parameter Name="Description" Guid="1bad7bdc-f43d-4a20-9390-83392199b486" Value="Born as the twin brother of El Arquero, the Prisoner Archer carries a past scarred by the Nazi era. Surviving the horrors of the Holocaust, he emerged with resilience and a newfound purpose. Unlike his brother and El Ballestador, who aligned with a malevolent faction, the Prisoner Archer chose the path of the Alliance, determined to oppose tyranny rather than serve it. His weapon of choice is the bow, adopted after witnessing his brother’s skill and vowing to defend himself and others with equal precision. During captivity, he secretly crafted crude fire arrows, though Nazi control forbade prisoners from wielding such weapons. This defiance became the seed of his mastery: when freedom came, he refined his skill into silent, lethal archery. Now, he stands as a guardian—swift, vigilant, and unyielding. If he sees his allies or the Alliance under attack, he will not hesitate to unleash a storm of arrows. His armor is light, built for speed and survival, allowing him to move across ruins and high structures with ease. He communicates through subtle signals, preferring silence over words, and rarely misses a shot. Upon defeat, he drops usable arrows, a reminder of his resourcefulness and the hardships he endured. Though his past is marked by sorrow, the Prisoner Archer fights forward with determination, embodying a hostile Robin Hood of the high ground. His story is one of survival, rebellion, and the relentless pursuit of justice—proof that even in the aftermath of tragedy, one can rise to protect others and continue the struggle for freedom." Type="string"/>
         <Parameter Name="KillVerbs" Guid="1054cce7-47a3-48fc-b102-0be025ff0145" Value="Hunted with arrows" Type="string"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="ComponentRandomChatter" Guid="d708b362-e0a7-4e5b-b060-d27b93f40ba2">
+    <Parameter Name="Class" Value="Game.ComponentRandomChatter" Type="string"/>
+    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
+    <Parameter Name="IsOptional" Value="False" Type="bool"/>
+    <Parameter Name="ActivationDistance" Value="5" Type="float"/>
+    <Parameter Name="DisplayDistance" Value="10" Type="float"/>
+    <Parameter Name="MinInterval" Value="3" Type="float"/>
+    <Parameter Name="MaxInterval" Value="30" Type="float"/>
+    <Parameter Name="RiseDuration" Value="0.5" Type="float"/>
+    <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="d49516b6-0991-4ae0-9b53-01e5da652a47" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="ec18be0a-bd32-45c5-87d4-d2a6c95acfb3" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="524cc0ab-fc9a-48ab-934b-50c53f64e739" Value="15" Type="float"/>
@@ -2243,6 +2387,17 @@
         <Parameter Name="Description" Guid="e7f8a9b0-c1d2-7678-3456-123456789abc" Value="Ballestadora Musculosa is stronger and more muscular than El Ballestador. They met on a training range where she was practicing with a simple bow and he was testing a crossbow; he noticed her discipline, offered direct guidance, and they started working together on distance shots. That cooperation became a relationship, and he taught her step by step: stances, timing, wind reading, and precision, moving from bow drills to crossbow routines. When he chose a dark path and joined a hostile faction, she ended the relationship and set clear goals: train harder, add muscle, and surpass him in strength and accuracy. She kept the lessons of precision and claimed the second crossbow that had been prepared as a backup, now her main weapon. She joined the Alliance and targets his faction without hesitation. Her shots are powerful and accurate, her endurance high, and her focus strict. What remains from the past is methodical ranged combat and the decision to be better than her former partner. Ballestadora Musculosa fights with muscle and conviction, stands as a loyal ally, and does not turn back to evil." Type="string"/>
         <Parameter Name="KillVerbs" Guid="d516d9ca-cb34-4508-a1de-45e41c9deeb4" Value="Shot with arrows" Type="string"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="ComponentRandomChatter" Guid="a785de85-1933-476c-92e4-a7d5a49e18c6">
+    <Parameter Name="Class" Value="Game.ComponentRandomChatter" Type="string"/>
+    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
+    <Parameter Name="IsOptional" Value="False" Type="bool"/>
+    <Parameter Name="ActivationDistance" Value="5" Type="float"/>
+    <Parameter Name="DisplayDistance" Value="10" Type="float"/>
+    <Parameter Name="MinInterval" Value="3" Type="float"/>
+    <Parameter Name="MaxInterval" Value="30" Type="float"/>
+    <Parameter Name="RiseDuration" Value="0.5" Type="float"/>
+    <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="dae23531-9ea2-481b-bf77-e9cea7be0d0a" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="50150646-6812-459d-b085-dbf9a6e3bf14" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="5852c536-3cc4-421a-833e-673987d16bca" Value="8" Type="float"/>
@@ -2750,6 +2905,17 @@
         <Parameter Name="Description" Guid="9da16f92-3c03-400c-bf22-d8550f9fcf30" Value="Walter Zombie is a product of a catastrophic chemical mutation caused by the company CONASUPO, which was initially known for its dairy products. After accidentally consuming radioactive milk in 1986, the incident originated from the fallout of the Chernobyl disaster. Following the explosion in April 1986, radioactive material spread across Europe, resulting in acid rain that contaminated pastures in Ireland. Cows grazed on this tainted grass, leading to the production of radioactive milk, which was subsequently exported to Mexico. Defying the odds of death, Walter transformed into a hostile creature rather than succumbing to the effects of the radiation. However, unlike traditional zombies, he retained a measure of his intelligence and consciousness. In his quest to regain his human life, Walter allied himself with the Alianza group, seeking both redemption and a cure for his condition. Despite his aspirations, a second chemical treatment was administered to him, intended to end his existence as a zombie. Instead, it triggered an unexpected transformation into a Mamón (Tank) form, enhancing his physical prowess. This transformation occurs only during full or new moons, with a mere 0.5% chance of shifting into this formidable state. In this form, Walter becomes a more powerful adversary, capable of withstanding significant damage while still holding onto the hope of one day reclaiming his humanity. As he navigates this duality, Walter Zombie embodies the struggle between his monstrous instincts and the remnants of the man he once was." Type="string"/>
         <Parameter Name="KillVerbs" Guid="dc09bd32-722f-4e8c-bab2-72c19e6afe75" Value="Eaten" Type="string"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="ComponentRandomChatter" Guid="7314d658-b2e8-49be-ab27-c13dafa586b9">
+    <Parameter Name="Class" Value="Game.ComponentRandomChatter" Type="string"/>
+    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
+    <Parameter Name="IsOptional" Value="False" Type="bool"/>
+    <Parameter Name="ActivationDistance" Value="5" Type="float"/>
+    <Parameter Name="DisplayDistance" Value="10" Type="float"/>
+    <Parameter Name="MinInterval" Value="3" Type="float"/>
+    <Parameter Name="MaxInterval" Value="30" Type="float"/>
+    <Parameter Name="RiseDuration" Value="0.5" Type="float"/>
+    <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="de13a336-a0c2-418f-a400-ee599be26e1d" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="6f4ec9c1-5d50-4d86-aa0c-47f704ea8887" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="3abe2de4-f58d-4652-acb2-ee932fb6bb49" Value="4.25" Type="float"/>
@@ -2924,6 +3090,17 @@
         <Parameter Name="Description" Guid="f6a7b8c9-d0e1-7345-abcd-ef0123456789" Value="Aladina Corrupta was once a benevolent figure during the Arab Middle Ages, known for helping the poor and those in need. As the modern era arrived, she was excluded by the changing Arab system in Libya around the late 1800s, when the region was still under Ottoman control. Her decline worsened in the 20th century: by the 1990s Libya was under Muammar Gaddafi’s dictatorship, and her abilities weakened, no longer resembling her medieval strength. The fall of Gaddafi in 2011 brought further chaos instead of improvement. Witnessing civilians fighting for power, Aladina Corrupta reflected on years of suffering and began adopting techniques inspired by Arab militant groups, such as suicide attacks and bombings, though she never formally joined them. Ultimately, she aligned herself with the faction known as Muerte, driven by vengeance for the pain and mistreatment she endured. Now she feels a grim relief after joining Muerte. Unlike other members of the group, she has a distinctive attack: when an NPC or player targets her or her allies, she ignites a medium incendiary barrel. Distance does not matter—she will charge directly at the attacker, light the barrel, and give only five seconds to escape. Failure to flee results in being torn apart and blasted into the air. In her fury she even sacrifices her own companions, and herself, whenever the group is under attack." Type="string"/>
         <Parameter Name="KillVerbs" Guid="a7b8c9d0-e1f2-7456-bcde-f0123456789a" Value="beaten" Type="string"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="ComponentRandomChatter2" Guid="05461b92-5a29-4ba1-8d2a-3cbe2ab37b40">
+    <Parameter Name="Class" Value="Game.ComponentRandomChatter2" Type="string"/>
+    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
+    <Parameter Name="IsOptional" Value="False" Type="bool"/>
+    <Parameter Name="ActivationDistance" Value="8" Type="float"/>
+    <Parameter Name="DisplayDistance" Value="12" Type="float"/>
+    <Parameter Name="MinInterval" Value="5" Type="float"/>
+    <Parameter Name="MaxInterval" Value="20" Type="float"/>
+    <Parameter Name="RiseDuration" Value="1.5" Type="float"/>
+    <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="b8c9d0e1-f2a3-7567-cdef-0123456789ab" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="c9d0e1f2-a3b4-7678-def0-123456789abc" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="d0e1f2a3-b4c5-7789-ef01-23456789abcd" Value="444.25" Type="float"/>
