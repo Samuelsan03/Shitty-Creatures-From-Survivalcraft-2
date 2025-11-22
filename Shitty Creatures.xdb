@@ -84,8 +84,8 @@
     <Parameter Name="DisplayDistance" Value="10" Type="float"/>
     <Parameter Name="MinInterval" Value="3" Type="float"/>
     <Parameter Name="MaxInterval" Value="30" Type="float"/>
-    <Parameter Name="RiseDuration" Value="2" Type="float"/>
-    <Parameter Name="FadeDuration" Value="0.5" Type="float"/>
+    <Parameter Name="RiseDuration" Value="0.5" Type="float"/>
+    <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="FindPlayerBehavior" Guid="ba520229-b06a-4b09-949e-4217be90a7c3" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
             <MemberComponentTemplate Name="Miner" Guid="c1a2e28a-4292-4229-acce-7373a0c256a0" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
