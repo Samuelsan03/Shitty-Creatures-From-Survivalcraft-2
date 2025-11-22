@@ -201,7 +201,15 @@ namespace Game
 			"Te dome sin condon",
 			"La bebecita bebe lean y bebe whisky",
 			"Soy guapo, lo sé\r\nLas mujeres se calientan, ya lo sé",
-			"Dejenmen en paz!"
+			"Dejenmen en paz!",
+			"Aw shit, here we go again",
+			"Come on sweetheart",
+			"La marihuana para siempre",
+			"I shot the sheriff",
+			"Estoy en tu cesped Nebbercracker xdxdxdxd",
+			"¿Dónde están los que hablan de mí?\r\n¿Dónde están? Por el techo van a salir\r\n¿Dónde están los que hablan de mí?\r\n¿Dónde están? Por el techo van a salir" +
+			"La quimica no fisica magnifica lirica mistica\r\nla habilidad lenguistica y calidad olimpica\r\nhara que esa nena bella baile\r\nen la casa cuando wiso cante" +
+			"Ohh yes,\r\nElla es mi chica de la voz sensual\r\nUna romántica llamada\r\nQue penetra en mi corazón y me hace enamorar.\r\nCon forme con forme... one more time"
 		};
 	}
 }
