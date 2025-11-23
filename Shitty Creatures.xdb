@@ -546,15 +546,15 @@
         </ParameterSet>
         <ParameterSet Name="Slot1">
             <Parameter Name="Contents" Value="214" Type="int"/>
-            <Parameter Name="Count" Value="100" Type="int"/>
+            <Parameter Name="Count" Value="1000" Type="int"/>
         </ParameterSet>
         <ParameterSet Name="Slot2">
             <Parameter Name="Contents" Value="109" Type="int"/>
-            <Parameter Name="Count" Value="100" Type="int"/>
+            <Parameter Name="Count" Value="1000" Type="int"/>
         </ParameterSet>
         <ParameterSet Name="Slot3">
             <Parameter Name="Contents" Value="205" Type="int"/>
-            <Parameter Name="Count" Value="100" Type="int"/>
+            <Parameter Name="Count" Value="1000" Type="int"/>
         </ParameterSet>
     </ParameterSet>   
 </MemberComponentTemplate>
@@ -569,7 +569,7 @@
 <MemberComponentTemplate Name="InvShooterBehavior" Guid="ce6db8c5-099e-4fec-a374-979f9009bcb6" InheritanceParent="456e3558-0e7f-42c3-bc05-35eef7540900">
     <Parameter Name="SpecialThrowableItem" Value="" Type="string"/> <!-- vacío -->
     <Parameter Name="DiscountFromInventory" Value="True" Type="bool"/>
-    <Parameter Name="SelectRandomThrowableItems" Value="False" Type="bool"/>
+    <Parameter Name="SelectRandomThrowableItems" Value="True" Type="bool"/>
     <Parameter Name="ThrowFromHead" Value="True" Type="bool"/>
     <Parameter Name="MinMaxRandomChargeTime" Value="0.1;0.1" Type="string"/> <!-- recarga rápida -->
     <Parameter Name="MinMaxRandomWaitTime" Value="2;2" Type="string"/> <!-- disparo cada 2s -->
@@ -578,7 +578,7 @@
     <Parameter Name="ThrowingSoundDistance" Value="15" Type="float"/>
     <Parameter Name="ExcludedThrowableItems" Value="MusketBlock;BulletBlock;GunpowderBlock;CottonWadBlock" Type="string"/>
     <Parameter Name="MeleeRange" Value="1.75" Type="float"/>
-    <Parameter Name="RangedWeaponEnabled" Value="true" Type="bool"/>
+    <Parameter Name="RangedWeaponEnabled" Value="False" Type="bool"/>
     <Parameter Name="AutoReload" Value="true" Type="bool"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Loot" Guid="98a2ba6d-8793-494e-b812-e62952626a56">
