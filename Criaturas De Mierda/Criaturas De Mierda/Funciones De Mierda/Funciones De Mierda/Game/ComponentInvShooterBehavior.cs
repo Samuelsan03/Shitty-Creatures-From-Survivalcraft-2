@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Engine;
 using GameEntitySystem;
 using TemplatesDatabase;
@@ -156,8 +157,8 @@ namespace Game
 			bool flag10 = array6.Length >= 2 && float.TryParse(array6[0], out this.m_randomWaitMin) && float.TryParse(array6[1], out this.m_randomWaitMax);
 			if (!flag10)
 			{
-				this.m_randomWaitMin = 0.8f;
-				this.m_randomWaitMax = 1.2f;
+				this.m_randomWaitMin = 0.3f;
+				this.m_randomWaitMax = 0.3f;
 				DefaultInterpolatedStringHandler defaultInterpolatedStringHandler = new DefaultInterpolatedStringHandler(79, 3);
 				defaultInterpolatedStringHandler.AppendLiteral("Invalid MinMaxRandomWaitTime format or empty: '");
 				defaultInterpolatedStringHandler.AppendFormatted(this.MinMaxRandomWaitTime);
@@ -216,8 +217,8 @@ namespace Game
 			bool flag15 = array8.Length >= 2 && float.TryParse(array8[0], out this.m_randomThrowMin) && float.TryParse(array8[1], out this.m_randomThrowMax);
 			if (!flag15)
 			{
-				this.m_randomThrowMin = 1.0f;
-				this.m_randomThrowMax = 1.5f;
+				this.m_randomThrowMin = 0.3f;
+				this.m_randomThrowMax = 0.3f;
 				DefaultInterpolatedStringHandler defaultInterpolatedStringHandler = new DefaultInterpolatedStringHandler(70, 3);
 				defaultInterpolatedStringHandler.AppendLiteral("Invalid MinMaxRandomWaitTime format: '");
 				defaultInterpolatedStringHandler.AppendFormatted(this.MinMaxRandomWaitTime);
@@ -237,7 +238,7 @@ namespace Game
 			{
 				if (this.m_subsystemTime.GameTime >= this.m_nextProactiveReloadTime)
 				{
-					this.m_nextProactiveReloadTime = this.m_subsystemTime.GameTime + 1.0;
+					this.m_nextProactiveReloadTime = this.m_subsystemTime.GameTime + 0.3;
 					if (this.m_currentStateName == "Idle")
 					{
 						this.ProactiveReloadCheck();
@@ -460,7 +461,7 @@ namespace Game
 			this.ApplyRecoilAnimation();
 			if (this.m_subsystemTime.GameTime >= this.m_fireStateEndTime)
 			{
-				this.m_nextCombatUpdateTime = this.m_subsystemTime.GameTime + (double)this.m_random.Float(2.5f, 3.5f);
+				this.m_nextCombatUpdateTime = this.m_subsystemTime.GameTime + 0.3;
 				this.TransitionToState("Reloading");
 			}
 		}
@@ -881,11 +882,11 @@ namespace Game
 		{
 			if (weaponInfo.Type == ComponentInvShooterBehavior.WeaponType.None)
 				return false;
-				
+
 			if (weaponInfo.Type == ComponentInvShooterBehavior.WeaponType.Throwable)
 				return true;
-				
-			if (weaponInfo.Type == ComponentInvShooterBehavior.WeaponType.Bow || 
+
+			if (weaponInfo.Type == ComponentInvShooterBehavior.WeaponType.Bow ||
 				weaponInfo.Type == ComponentInvShooterBehavior.WeaponType.Crossbow)
 			{
 				int arrowBlockIndex = BlocksManager.GetBlockIndex<ArrowBlock>(false, false);
@@ -896,16 +897,16 @@ namespace Game
 				}
 				return false;
 			}
-			
+
 			if (weaponInfo.Type == ComponentInvShooterBehavior.WeaponType.Musket)
 			{
 				bool hasPowder = this.FindItemSlotByContents(109) != -1;
 				bool hasFuse = this.FindItemSlotByContents(205) != -1;
 				int bulletSlot = this.FindBulletSlot(out _);
-				
+
 				return hasPowder && hasFuse && bulletSlot != -1;
 			}
-			
+
 			return false;
 		}
 
@@ -953,7 +954,7 @@ namespace Game
 					}
 				}
 			}
-			
+
 			return this.FindMeleeWeapon();
 		}
 
