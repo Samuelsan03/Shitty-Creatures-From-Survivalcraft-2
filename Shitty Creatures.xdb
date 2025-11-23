@@ -2119,7 +2119,7 @@
         </ParameterSet>
         <ParameterSet Name="Slot1">
             <Parameter Name="Contents" Value="49344" Type="int"/>
-            <Parameter Name="Count" Value="1000 Type="int"/>
+            <Parameter Name="Count" Value="1000" Type="int"/>
         </ParameterSet>
     </ParameterSet>
 </MemberComponentTemplate>
@@ -2412,8 +2412,8 @@
             <Parameter Name="Count" Value="1" Type="int"/>
         </ParameterSet>
         <ParameterSet Name="Slot1">
-            <Parameter Name="Contents" Value="192" Type="int"/>
-            <Parameter Name="Count" Value="100" Type="int"/>
+            <Parameter Name="Contents" Value="98496" Type="int"/>
+            <Parameter Name="Count" Value="1000" Type="int"/>
         </ParameterSet>
     </ParameterSet>
 </MemberComponentTemplate>
