@@ -1,136 +1,174 @@
-using Engine;
-using Engine.Graphics;
-using GameEntitySystem;
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using Engine;
+using GameEntitySystem;
 using TemplatesDatabase;
-
 
 namespace Game
 {
-    public class ComponentCreatureCollect : Component, IUpdateable
-    {
-        public SubsystemGameInfo m_subsystemGameInfo;
-        public SubsystemTerrain subsystemTerrain;
-        public SubsystemPickables subsystemPickables;
-        public ComponentCreature componentCreature;
-        private ComponentPathfinding m_componentPathfinding;
-        public ComponentMiner m_componentMiner;
-        public bool Activate;
-        public bool CanOpenInventory;
-        public float DetectionDistance;
-        public string SpecificItems;
-        public bool IgnoreOrAcept;
-        private HashSet<int> m_specificItemsSet = new HashSet<int>(); // Nuevo campo para almacenar IDs de bloques
+	// Token: 0x02000025 RID: 37
+	public class ComponentCreatureCollect : Component, IUpdateable
+	{
+		// Token: 0x1700001B RID: 27
+		// (get) Token: 0x06000102 RID: 258 RVA: 0x0000BD79 File Offset: 0x00009F79
+		public UpdateOrder UpdateOrder
+		{
+			get
+			{
+				return 0;
+			}
+		}
 
-        public UpdateOrder UpdateOrder => UpdateOrder.Default;
+		// Token: 0x06000103 RID: 259 RVA: 0x0000BD7C File Offset: 0x00009F7C
+		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
+		{
+			base.Load(valuesDictionary, idToEntityMap);
+			this.m_componentMiner = base.Entity.FindComponent<ComponentMiner>(true);
+			this.subsystemTerrain = base.Project.FindSubsystem<SubsystemTerrain>(true);
+			this.subsystemPickables = base.Project.FindSubsystem<SubsystemPickables>(true);
+			this.m_audio = base.Project.FindSubsystem<SubsystemAudio>(true);
+			this.componentCreature = base.Entity.FindComponent<ComponentCreature>();
+			this.m_componentPathfinding = base.Entity.FindComponent<ComponentPathfinding>(true);
+			this.Activate = valuesDictionary.GetValue<bool>("Activate");
+			this.CanOpenInventory = valuesDictionary.GetValue<bool>("CanOpenInventory");
+			this.DetectionDistance = valuesDictionary.GetValue<float>("DetectionDistance");
+			this.SpecificItems = valuesDictionary.GetValue<string>("SpecificItems");
+			this.IgnoreOrAcept = valuesDictionary.GetValue<bool>("IgnoreOrAcept");
+			string[] array = this.SpecificItems.Split(',', StringSplitOptions.None);
+			foreach (string text in array)
+			{
+				bool flag = string.IsNullOrWhiteSpace(text);
+				if (!flag)
+				{
+					int num;
+					bool flag2 = int.TryParse(text, out num);
+					if (flag2)
+					{
+						bool flag3 = num > 0 && num < BlocksManager.Blocks.Length;
+						if (flag3)
+						{
+							this.m_specificItemsSet.Add(num);
+						}
+					}
+					else
+					{
+						Type type = Type.GetType("Game." + text);
+						Block block = BlocksManager.GetBlock(type, false, true);
+						bool flag4 = block != null;
+						if (flag4)
+						{
+							this.m_specificItemsSet.Add(block.BlockIndex);
+						}
+					}
+				}
+			}
+		}
 
-        public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
-        {
-            base.Load(valuesDictionary, idToEntityMap);
-            this.m_componentMiner = this.Entity.FindComponent<ComponentMiner>(true);
-            this.subsystemTerrain = this.Project.FindSubsystem<SubsystemTerrain>(true);
-            this.subsystemPickables = this.Project.FindSubsystem<SubsystemPickables>(true);
-            this.m_subsystemGameInfo = this.Project.FindSubsystem<SubsystemGameInfo>(true);
-            this.componentCreature = this.Entity.FindComponent<ComponentCreature>();
-            this.m_componentPathfinding = this.Entity.FindComponent<ComponentPathfinding>(true);
-            this.Activate = valuesDictionary.GetValue<bool>("Activate");
-            this.CanOpenInventory = valuesDictionary.GetValue<bool>("CanOpenInventory");
-            this.DetectionDistance = valuesDictionary.GetValue<float>("DetectionDistance");
-            this.SpecificItems = valuesDictionary.GetValue<string>("SpecificItems"); // Objetos especificos para recogerlos, valores definidos por ID o nombre de la clase del bloque, por ejemplo: 2 o DirtBlock. Se puede crear una cadena de bloques con valores mixtos, por ejemplo: DirtBlock,StoneBlock,3,4.
-            this.IgnoreOrAcept = valuesDictionary.GetValue<bool>("IgnoreOrAcept"); // Ignorar o aceptar los objetos especificados de "SpecificItems", true para aceptar, false para ignorar.
+		// Token: 0x06000104 RID: 260 RVA: 0x0000BF08 File Offset: 0x0000A108
+		public void Update(float dt)
+		{
+			IInventory inventory = this.m_componentMiner.Inventory;
+			ComponentInventory componentInventory = base.Entity.FindComponent<ComponentInventory>();
+			ComponentChaseBehavior componentChaseBehavior = base.Entity.FindComponent<ComponentChaseBehavior>();
+			bool flag = !this.Activate;
+			if (!flag)
+			{
+				foreach (Pickable pickable in this.subsystemPickables.Pickables)
+				{
+					int item = Terrain.ExtractContents(pickable.Value);
+					bool flag2 = this.m_specificItemsSet.Contains(item);
+					bool flag3 = this.m_specificItemsSet.Count > 0;
+					if (flag3)
+					{
+						bool flag4 = this.IgnoreOrAcept && !flag2;
+						if (flag4)
+						{
+							continue;
+						}
+						bool flag5 = !this.IgnoreOrAcept && flag2;
+						if (flag5)
+						{
+							continue;
+						}
+					}
+					TerrainChunk chunkAtCell = this.subsystemTerrain.Terrain.GetChunkAtCell(Terrain.ToCell(pickable.Position.X), Terrain.ToCell(pickable.Position.Z));
+					bool flag6 = componentInventory != null && chunkAtCell != null && pickable.FlyToPosition == null && (double)this.componentCreature.ComponentHealth.Health > 0.0 && componentChaseBehavior.Target == null;
+					if (flag6)
+					{
+						Vector3 vector = this.componentCreature.ComponentBody.Position + new Vector3(0f, 0.8f, 0f);
+						float num = (vector - pickable.Position).LengthSquared();
+						float num2 = this.DetectionDistance * this.DetectionDistance;
+						bool flag7 = num < num2;
+						if (flag7)
+						{
+							for (int i = 0; i < inventory.SlotsCount; i++)
+							{
+								int num3 = ComponentInventoryBase.FindAcquireSlotForItem(inventory, pickable.Value);
+								bool flag8 = num3 >= 0;
+								if (flag8)
+								{
+									this.m_componentPathfinding.SetDestination(new Vector3?(pickable.Position), 3f, 3.75f, 20, true, false, false, null);
+									break;
+								}
+							}
+						}
+						bool flag9 = (double)num < 4.0;
+						if (flag9)
+						{
+							for (int j = 0; j < inventory.SlotsCount; j++)
+							{
+								int num4 = ComponentInventoryBase.FindAcquireSlotForItem(inventory, pickable.Value);
+								bool flag10 = num4 >= 0;
+								if (flag10)
+								{
+									pickable.ToRemove = true;
+									pickable.FlyToPosition = new Vector3?(vector);
+									pickable.Count = ComponentInventoryBase.AcquireItems(componentInventory, pickable.Value, pickable.Count);
+									this.m_audio.PlaySound("Audio/PickableCollected", 1f, -0.4f, vector, 6f, false);
+									break;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 
-            // Parsear SpecificItems y llenar el conjunto
-            string[] specificItems = this.SpecificItems.Split(',');
-            foreach (string item in specificItems)
-            {
-                if (string.IsNullOrWhiteSpace(item)) continue;
+		// Token: 0x040000F1 RID: 241
+		public SubsystemTerrain subsystemTerrain;
 
-                if (int.TryParse(item, out int blockId))
-                {
-                    // Es un ID numérico
-                    if (blockId > 0 && blockId < BlocksManager.Blocks.Length)
-                    {
-                        m_specificItemsSet.Add(blockId);
-                    }
-                }
-                else
-                {
-                    // Es un nombre de clase (ej: "DirtBlock")
-                    Type blockType = Type.GetType($"Game.{item}");
-                    // CORRECCIÓN: Usar GetBlock en lugar de FindBlockByType
-                    Block block = BlocksManager.GetBlock(blockType, false, true);
-                    if (block != null)
-                    {
-                        m_specificItemsSet.Add(block.BlockIndex);
-                    }
-                }
-            }
-        }
+		// Token: 0x040000F2 RID: 242
+		public SubsystemPickables subsystemPickables;
 
-        public void Update(float dt)
-        {
-            IInventory inventory = this.m_componentMiner.Inventory;
-            ComponentInventory component1 = this.Entity.FindComponent<ComponentInventory>();
-            ComponentChaseBehavior component2 = this.Entity.FindComponent<ComponentChaseBehavior>();
+		// Token: 0x040000F3 RID: 243
+		public ComponentCreature componentCreature;
 
-            if (!this.Activate)
-                return;
+		// Token: 0x040000F4 RID: 244
+		private ComponentPathfinding m_componentPathfinding;
 
-            foreach (Pickable pickable in this.subsystemPickables.Pickables)
-            {
-                // ... (verificaciones existentes)
+		// Token: 0x040000F5 RID: 245
+		public ComponentMiner m_componentMiner;
 
-                int blockId = Terrain.ExtractContents(pickable.Value);
-                bool isSpecificItem = m_specificItemsSet.Contains(blockId);
+		// Token: 0x040000F6 RID: 246
+		public bool Activate;
 
-                // Aplicar filtro según configuración
-                if (m_specificItemsSet.Count > 0)
-                {
-                    if (IgnoreOrAcept && !isSpecificItem) continue; // Solo aceptar específicos
-                    if (!IgnoreOrAcept && isSpecificItem) continue; // Ignorar específicos
-                }
+		// Token: 0x040000F7 RID: 247
+		public bool CanOpenInventory;
 
-                // ... (lógica existente de recolección)
-                TerrainChunk chunkAtCell = this.subsystemTerrain.Terrain.GetChunkAtCell(Terrain.ToCell(pickable.Position.X), Terrain.ToCell(pickable.Position.Z));
-                if (component1 != null && chunkAtCell != null && !pickable.FlyToPosition.HasValue && this.componentCreature.ComponentHealth.Health > 0.0 && component2.Target == null)
-                {
-                    Vector3 vector3_1 = this.componentCreature.ComponentBody.Position + new Vector3(0.0f, 0.8f, 0.0f);
-                    Vector3 vector3_2 = vector3_1 - pickable.Position;
-                    float num = vector3_2.LengthSquared();
-                    float detectionSquared = this.DetectionDistance * this.DetectionDistance;
+		// Token: 0x040000F8 RID: 248
+		public float DetectionDistance;
 
-                    // Usar DetectionDistance para la detección inicial
-                    if (num < detectionSquared)
-                    {
-                        for (int index = 0; index < inventory.SlotsCount; ++index)
-                        {
-                            int acquireSlotForItem = ComponentInventoryBase.FindAcquireSlotForItem(inventory, pickable.Value);
-                            if (acquireSlotForItem >= 0)
-                            {
-                                this.m_componentPathfinding.SetDestination(new Vector3?(pickable.Position), 3f, 3.75f, 20, true, false, false, null);
-                                break; // Salir después de encontrar un slot válido
-                            }
-                        }
-                    }
+		// Token: 0x040000F9 RID: 249
+		public string SpecificItems;
 
-                    // Mantener 4.0 como distancia fija para recoger (o ajustar si se desea)
-                    if (num < 4.0)
-                    {
-                        for (int index = 0; index < inventory.SlotsCount; ++index)
-                        {
-                            int acquireSlotForItem = ComponentInventoryBase.FindAcquireSlotForItem(inventory, pickable.Value);
-                            if (acquireSlotForItem >= 0)
-                            {
-                                pickable.ToRemove = true;
-                                pickable.FlyToPosition = new Vector3?(vector3_1);
-                                pickable.Count = ComponentInventoryBase.AcquireItems(component1, pickable.Value, pickable.Count);
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+		// Token: 0x040000FA RID: 250
+		public bool IgnoreOrAcept;
+
+		// Token: 0x040000FB RID: 251
+		public SubsystemAudio m_audio;
+
+		// Token: 0x040000FC RID: 252
+		private HashSet<int> m_specificItemsSet = new HashSet<int>();
+	}
 }
