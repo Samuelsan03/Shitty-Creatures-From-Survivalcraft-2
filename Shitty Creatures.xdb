@@ -26,6 +26,15 @@
 </Folder>
 
 <Folder Name="ProgramedInteligence" Guid="33dfd132-3c41-4dfa-a385-af3ba34ff86b">
+<ComponentTemplate Name="CreatureCollect" Description="Permite a la criatura recoger objetos automáticamente" Guid="b0295147-0a80-4aed-9a1b-c784faf1297b" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
+        <Parameter Name="Activate" Description="Permitir a la criatura recojer obejos." Guid="67a07091-a837-4ef2-bebc-460fa669f18e" Value="true" Type="bool"/>
+        <Parameter Name="CanOpenInventory" Description="Permitir al jugador abrir el inventario de la criatura." Guid="8514719e-6dd5-4564-bca5-19ea18def146" Value="False" Type="bool"/>
+        <Parameter Name="DetectionDistance" Description="Rango de deteccion para que la criatura valla a recojer el objeto." Guid="0c245cc2-ff24-43f2-ae1a-a47e6f1d6cf5" Value="10" Type="float"/>
+        <Parameter Name="IgnoreOrAcept" Description="" Guid="dde98736-8d81-4621-b5df-8a0460d2afc7" Value="True" Type="bool"/>
+        <Parameter Name="SpecificItems" Description="" Guid="c7791b3b-3ad4-42cd-b232-314b8ee6fb8d" Value="" Type="string"/>
+        <Parameter Name="Class" Guid="d3391f80-40c8-455f-b0b9-35f88b8527da" Value="Game.ComponentCreatureCollect" Type="string"/>
+    </ComponentTemplate>
+    
 	<ComponentTemplate Name="InvShooterBehavior" Description="Comportamiento que hace a una criatura arrojar objetos, es requerido Inventory para funcionar." Guid="456e3558-0e7f-42c3-bc05-35eef7540900" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
     <Parameter Name="DiscountFromInventory" Description="Descontar objetos del inventario por cada objeto arrojado, si es falso, la criatura podra arrojar objetos indefinidamente." Guid="632b972c-db56-4348-a2ca-35f42a841aa0" Value="true" Type="bool"/>
     <Parameter Name="SelectRandomThrowableItems" Description="La criatura selecciona objetos aleatoriamente que se puedan lanzar de su inventario si es true." Guid="b6486805-6109-4c6c-8a91-63e3f581c8e3" Value="false" Type="bool"/>
@@ -536,6 +545,14 @@
             <Parameter Name="Count" Value="1" Type="int"/>
         </ParameterSet>
     </ParameterSet>    
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureCollect" Guid="a1b2c3d4-e5f6-7890-abcd-ef1234567890" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+    <Parameter Name="Activate" Value="true" Type="bool"/>
+    <Parameter Name="CanOpenInventory" Value="False" Type="bool"/>
+    <Parameter Name="DetectionDistance" Value="8" Type="float"/>
+    <Parameter Name="IgnoreOrAcept" Value="True" Type="bool"/>
+    <Parameter Name="SpecificItems" Value="" Type="string"/>
+    <Parameter Name="Class" Value="Game.ComponentCreatureCollect" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="InvShooterBehavior" Guid="ce6db8c5-099e-4fec-a374-979f9009bcb6" InheritanceParent="456e3558-0e7f-42c3-bc05-35eef7540900">
     <Parameter Name="SpecialThrowableItem" Guid="9cf5af41-81d5-4e97-96b3-b03b90a15411" Value="BulletBlock:0" Type="string"/>
