@@ -1,17 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using Engine;
 using GameEntitySystem;
 using TemplatesDatabase;
 
 namespace Game
 {
-	// Token: 0x0200003C RID: 60
 	public class ComponentInvShooterBehavior : ComponentBehavior, IUpdateable
 	{
-		// Token: 0x17000021 RID: 33
-		// (get) Token: 0x06000148 RID: 328 RVA: 0x000123A0 File Offset: 0x000105A0
 		public int UpdateOrder
 		{
 			get
@@ -20,8 +16,6 @@ namespace Game
 			}
 		}
 
-		// Token: 0x17000022 RID: 34
-		// (get) Token: 0x06000149 RID: 329 RVA: 0x000123A3 File Offset: 0x000105A3
 		public override float ImportanceLevel
 		{
 			get
@@ -30,8 +24,6 @@ namespace Game
 			}
 		}
 
-		// Token: 0x17000023 RID: 35
-		// (get) Token: 0x0600014A RID: 330 RVA: 0x000123AA File Offset: 0x000105AA
 		UpdateOrder IUpdateable.UpdateOrder
 		{
 			get
@@ -40,7 +32,6 @@ namespace Game
 			}
 		}
 
-		// Token: 0x0600014B RID: 331 RVA: 0x000123B8 File Offset: 0x000105B8
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
 			base.Load(valuesDictionary, idToEntityMap);
@@ -61,8 +52,8 @@ namespace Game
 			this.MinMaxRandomWaitTime = base.ValuesDictionary.GetValue<string>("MinMaxRandomWaitTime");
 			this.SelectRandomThrowableItems = base.ValuesDictionary.GetValue<bool>("SelectRandomThrowableItems");
 			this.ThrowFromHead = base.ValuesDictionary.GetValue<bool>("ThrowFromHead");
+			this.MeleeRange = valuesDictionary.GetValue<float>("MeleeRange", 2.5f);
 
-			// Agregar estados de la máquina de estados
 			this.m_stateMachine.AddState("Idle", null, new Action(this.Idle_Update), null);
 			this.m_stateMachine.AddState("Aiming", new Action(this.Aiming_Enter), new Action(this.Aiming_Update), null);
 			this.m_stateMachine.AddState("Fire", new Action(this.Fire_Enter), new Action(this.Fire_Update), new Action(this.Fire_Leave));
@@ -118,6 +109,7 @@ namespace Game
 							int blockIndex2 = BlocksManager.GetBlockIndex(text2, false);
 							bool flag6 = blockIndex2 >= 0;
 							if (flag6)
+
 							{
 								this.m_specialThrowableItemValues.Add(Terrain.MakeBlockValue(blockIndex2));
 							}
@@ -238,13 +230,11 @@ namespace Game
 			}
 		}
 
-		// Token: 0x0600014C RID: 332 RVA: 0x00012A68 File Offset: 0x00010C68
 		public void Update(float dt)
 		{
 			bool flag = this.m_componentCreature.ComponentHealth.Health <= 0f;
 			if (!flag)
 			{
-				// Recarga proactiva
 				if (this.m_subsystemTime.GameTime >= this.m_nextProactiveReloadTime)
 				{
 					this.m_nextProactiveReloadTime = this.m_subsystemTime.GameTime + 1.0;
@@ -254,13 +244,11 @@ namespace Game
 					}
 				}
 
-				// Actualización de la máquina de estados para armas de proyectiles
 				if (this.m_subsystemTime.GameTime >= this.m_nextCombatUpdateTime)
 				{
 					this.m_stateMachine.Update();
 				}
 
-				// Lógica original de armas arrojadizas
 				double gameTime = this.m_subsystemTime.GameTime;
 				bool isCharging = this.m_isCharging;
 				if (isCharging)
@@ -339,7 +327,6 @@ namespace Game
 							if (flag13)
 							{
 								this.m_isCharging = true;
-								// MEJORA: Tiempos de carga más consistentes
 								float chargeVariation = this.m_random.Float(0.8f, 1.2f);
 								this.m_chargeDuration = ((this.m_randomWaitMin + this.m_randomWaitMax) / 2f) * chargeVariation;
 								this.m_chargeStartTime = gameTime;
@@ -370,8 +357,6 @@ namespace Game
 			}
 		}
 
-		// ========== MÉTODOS DE MÁQUINA DE ESTADOS ==========
-
 		private void TransitionToState(string stateName)
 		{
 			this.m_currentStateName = stateName;
@@ -387,7 +372,17 @@ namespace Game
 
 			float distance = Vector3.Distance(this.m_componentCreature.ComponentBody.Position, this.m_componentChaseBehavior.Target.ComponentBody.Position);
 
-			// Buscar armas listas
+			if (distance <= this.MeleeRange)
+			{
+				ComponentInvShooterBehavior.WeaponInfo meleeWeapon = this.FindMeleeWeapon();
+				if (meleeWeapon.Type != ComponentInvShooterBehavior.WeaponType.None)
+				{
+					this.m_weaponInfo = meleeWeapon;
+					this.m_componentInventory.ActiveSlotIndex = this.m_weaponInfo.WeaponSlot;
+					return;
+				}
+			}
+
 			ComponentInvShooterBehavior.WeaponInfo weaponInfo = this.FindReadyRangedWeapon();
 			if (weaponInfo.Type == ComponentInvShooterBehavior.WeaponType.None)
 			{
@@ -482,11 +477,21 @@ namespace Game
 
 		private void Reloading_Update()
 		{
-			this.TryReloadWeapon(this.m_weaponInfo);
+			if (this.CanReloadWeapon(this.m_weaponInfo))
+			{
+				this.TryReloadWeapon(this.m_weaponInfo);
+			}
+			else
+			{
+				ComponentInvShooterBehavior.WeaponInfo alternativeWeapon = this.FindMeleeWeapon();
+				if (alternativeWeapon.Type != ComponentInvShooterBehavior.WeaponType.None)
+				{
+					this.m_weaponInfo = alternativeWeapon;
+					this.m_componentInventory.ActiveSlotIndex = this.m_weaponInfo.WeaponSlot;
+				}
+			}
 			this.TransitionToState("Idle");
 		}
-
-		// ========== MÉTODOS DE ANIMACIÓN ==========
 
 		private void ApplyAimingAnimation()
 		{
@@ -548,8 +553,6 @@ namespace Game
 			}
 		}
 
-		// ========== MÉTODOS DE DISPARO ==========
-
 		private void PerformRangedFireAction()
 		{
 			int activeSlotIndex = this.m_componentInventory.ActiveSlotIndex;
@@ -607,7 +610,6 @@ namespace Game
 			}
 		}
 
-		// Token: 0x0600014D RID: 333 RVA: 0x00012F4C File Offset: 0x0001114C
 		private void FireProjectile()
 		{
 			Vector3 position;
@@ -626,21 +628,16 @@ namespace Game
 			Vector3 targetDirection = this.m_componentChaseBehavior.Target.ComponentBody.Position - position;
 			this.m_distance = targetDirection.Length();
 
-			// CORRECCIÓN MEJORADA: Disparo perfectamente lineal y preciso
-			float baseSpeed = 30f; // Velocidad aumentada para mejor impacto
+			float baseSpeed = 30f;
 			float distanceFactor = MathUtils.Clamp(this.m_distance / 12f, 0.6f, 1.8f);
 			float speed = baseSpeed * distanceFactor;
 
-			// DISPARO PERFECTAMENTE LINEAL - Sin dispersión aleatoria
 			Vector3 direction = Vector3.Normalize(targetDirection);
 
-			// Compensación de gravedad mínima para trayectoria recta
 			float gravityCompensation = MathUtils.Lerp(1f, 3f, this.m_distance / 25f);
 
-			// Velocidad directa y precisa
 			Vector3 velocity = direction * speed + new Vector3(0f, gravityCompensation, 0f);
 
-			// Disparar el proyectil con máxima precisión
 			this.m_subsystemProjectiles.FireProjectile(
 				this.m_arrowValue,
 				position,
@@ -649,7 +646,6 @@ namespace Game
 				this.m_componentCreature
 			);
 
-			// Animación
 			if (this.m_componentModel != null)
 			{
 				ComponentHumanModel componentHumanModel = this.m_componentModel as ComponentHumanModel;
@@ -659,21 +655,18 @@ namespace Game
 				}
 			}
 
-			// Sonido
 			if (!string.IsNullOrEmpty(this.ThrowingSound))
 			{
 				float pitch = this.m_random.Float(-0.1f, 0.1f);
 				this.m_subsystemAudio.PlaySound(this.ThrowingSound, 1f, pitch, position, this.ThrowingSoundDistance, 0.1f);
 			}
 
-			// Remover del inventario
 			if (this.DiscountFromInventory)
 			{
 				this.RemoveAimableItemFromInventory(this.m_arrowValue);
 			}
 		}
 
-		// Token: 0x0600014E RID: 334 RVA: 0x00013174 File Offset: 0x00011374
 		private int FindAimableItemInInventory()
 		{
 			bool flag = this.m_specialThrowableItemValues.Count > 0;
@@ -737,7 +730,6 @@ namespace Game
 			return result;
 		}
 
-		// Token: 0x0600014F RID: 335 RVA: 0x000132AC File Offset: 0x000114AC
 		private void RemoveAimableItemFromInventory(int value)
 		{
 			bool flag = this.m_componentInventory == null;
@@ -755,7 +747,6 @@ namespace Game
 			}
 		}
 
-		// Token: 0x06000150 RID: 336 RVA: 0x00013314 File Offset: 0x00011514
 		private void TryReloadWeapon(ComponentInvShooterBehavior.WeaponInfo weaponToReload)
 		{
 			if (!this.DiscountFromInventory || weaponToReload.Type == ComponentInvShooterBehavior.WeaponType.None)
@@ -803,10 +794,10 @@ namespace Game
 			}
 			else if (weaponToReload.Type == ComponentInvShooterBehavior.WeaponType.Musket)
 			{
-				int powderSlot = this.FindItemSlotByContents(109);    // Pólvora
-				int fuseSlot = this.FindItemSlotByContents(205);      // Mecha
+				int powderSlot = this.FindItemSlotByContents(109);
+				int fuseSlot = this.FindItemSlotByContents(205);
 				int bulletValue;
-				int bulletSlot = this.FindBulletSlot(out bulletValue); // Bala
+				int bulletSlot = this.FindBulletSlot(out bulletValue);
 
 				if (powderSlot != -1 && fuseSlot != -1 && bulletSlot != -1)
 				{
@@ -824,7 +815,6 @@ namespace Game
 			}
 		}
 
-		// Token: 0x06000151 RID: 337 RVA: 0x00013530 File Offset: 0x00011730
 		private int FindItemSlotByContents(int contents)
 		{
 			for (int i = 0; i < this.m_componentInventory.SlotsCount; i++)
@@ -837,7 +827,6 @@ namespace Game
 			return -1;
 		}
 
-		// Token: 0x06000152 RID: 338 RVA: 0x0001356C File Offset: 0x0001176C
 		private int FindBulletSlot(out int bulletValue)
 		{
 			int blockIndex = BlocksManager.GetBlockIndex<BulletBlock>(false, false);
@@ -854,7 +843,6 @@ namespace Game
 			return -1;
 		}
 
-		// Token: 0x06000153 RID: 339 RVA: 0x000135B8 File Offset: 0x000117B8
 		private bool IsWeaponReady(ComponentInvShooterBehavior.WeaponInfo weaponInfo)
 		{
 			if (weaponInfo.Type == ComponentInvShooterBehavior.WeaponType.None)
@@ -876,7 +864,6 @@ namespace Game
 			return block is MusketBlock && MusketBlock.GetLoadState(data) == MusketBlock.LoadState.Loaded;
 		}
 
-		// Token: 0x06000154 RID: 340 RVA: 0x00013650 File Offset: 0x00011850
 		private void ProactiveReloadCheck()
 		{
 			ComponentInvShooterBehavior.WeaponInfo weaponInfo = this.FindReloadableRangedWeapon();
@@ -890,7 +877,43 @@ namespace Game
 			}
 		}
 
-		// Token: 0x06000155 RID: 341 RVA: 0x00013698 File Offset: 0x00011898
+		private bool HasAmmoForWeapon(ComponentInvShooterBehavior.WeaponInfo weaponInfo)
+		{
+			if (weaponInfo.Type == ComponentInvShooterBehavior.WeaponType.None)
+				return false;
+				
+			if (weaponInfo.Type == ComponentInvShooterBehavior.WeaponType.Throwable)
+				return true;
+				
+			if (weaponInfo.Type == ComponentInvShooterBehavior.WeaponType.Bow || 
+				weaponInfo.Type == ComponentInvShooterBehavior.WeaponType.Crossbow)
+			{
+				int arrowBlockIndex = BlocksManager.GetBlockIndex<ArrowBlock>(false, false);
+				for (int i = 0; i < this.m_componentInventory.SlotsCount; i++)
+				{
+					if (Terrain.ExtractContents(this.m_componentInventory.GetSlotValue(i)) == arrowBlockIndex)
+						return true;
+				}
+				return false;
+			}
+			
+			if (weaponInfo.Type == ComponentInvShooterBehavior.WeaponType.Musket)
+			{
+				bool hasPowder = this.FindItemSlotByContents(109) != -1;
+				bool hasFuse = this.FindItemSlotByContents(205) != -1;
+				int bulletSlot = this.FindBulletSlot(out _);
+				
+				return hasPowder && hasFuse && bulletSlot != -1;
+			}
+			
+			return false;
+		}
+
+		private bool CanReloadWeapon(ComponentInvShooterBehavior.WeaponInfo weaponInfo)
+		{
+			return this.HasAmmoForWeapon(weaponInfo);
+		}
+
 		private ComponentInvShooterBehavior.WeaponInfo FindReadyRangedWeapon()
 		{
 			for (int i = 0; i < this.m_componentInventory.SlotsCount; i++)
@@ -910,8 +933,7 @@ namespace Game
 							Type = ComponentInvShooterBehavior.WeaponType.Bow
 						};
 					}
-
-					if (block is CrossbowBlock && CrossbowBlock.GetArrowType(data) != null && CrossbowBlock.GetDraw(data) == 15)
+					else if (block is CrossbowBlock && CrossbowBlock.GetArrowType(data) != null && CrossbowBlock.GetDraw(data) == 15)
 					{
 						return new ComponentInvShooterBehavior.WeaponInfo
 						{
@@ -920,8 +942,7 @@ namespace Game
 							Type = ComponentInvShooterBehavior.WeaponType.Crossbow
 						};
 					}
-
-					if (block is MusketBlock && MusketBlock.GetLoadState(data) == MusketBlock.LoadState.Loaded)
+					else if (block is MusketBlock && MusketBlock.GetLoadState(data) == MusketBlock.LoadState.Loaded)
 					{
 						return new ComponentInvShooterBehavior.WeaponInfo
 						{
@@ -932,10 +953,10 @@ namespace Game
 					}
 				}
 			}
-			return default(ComponentInvShooterBehavior.WeaponInfo);
+			
+			return this.FindMeleeWeapon();
 		}
 
-		// Token: 0x06000156 RID: 342 RVA: 0x000137A8 File Offset: 0x000119A8
 		private ComponentInvShooterBehavior.WeaponInfo FindReloadableRangedWeapon()
 		{
 			for (int i = 0; i < this.m_componentInventory.SlotsCount; i++)
@@ -980,7 +1001,6 @@ namespace Game
 			return default(ComponentInvShooterBehavior.WeaponInfo);
 		}
 
-		// Token: 0x06000157 RID: 343 RVA: 0x000138B8 File Offset: 0x00011AB8
 		private ComponentInvShooterBehavior.WeaponInfo FindThrowableWeapon()
 		{
 			for (int i = 0; i < this.m_componentInventory.SlotsCount; i++)
@@ -999,7 +1019,6 @@ namespace Game
 			return default(ComponentInvShooterBehavior.WeaponInfo);
 		}
 
-		// Token: 0x06000158 RID: 344 RVA: 0x0001392C File Offset: 0x00011B2C
 		private ComponentInvShooterBehavior.WeaponInfo FindMeleeWeapon()
 		{
 			for (int i = 0; i < this.m_componentInventory.SlotsCount; i++)
@@ -1022,114 +1041,42 @@ namespace Game
 			return default(ComponentInvShooterBehavior.WeaponInfo);
 		}
 
-		// ========== VARIABLES ADICIONALES ==========
-
-		// Token: 0x0400019C RID: 412
 		public ComponentCreature m_componentCreature;
-
-		// Token: 0x0400019D RID: 413
+		public float MeleeRange;
 		public ComponentChaseBehavior m_componentChaseBehavior;
-
-		// Token: 0x0400019E RID: 414
 		public SubsystemTerrain m_subsystemTerrain;
-
-		// Token: 0x0400019F RID: 415
 		public StateMachine m_stateMachine = new StateMachine();
-
-		// Token: 0x040001A0 RID: 416
 		public SubsystemTime m_subsystemTime;
-
-		// Token: 0x040001A1 RID: 417
 		public SubsystemProjectiles m_subsystemProjectiles;
-
-		// Token: 0x040001A2 RID: 418
 		public Random m_random = new Random();
-
-		// Token: 0x040001A3 RID: 419
 		public int m_arrowValue;
-
-		// Token: 0x040001A4 RID: 420
 		public double m_nextUpdateTime;
-
-		// Token: 0x040001A5 RID: 421
 		public double m_ChargeTime;
-
-		// Token: 0x040001A6 RID: 422
 		public float m_distance;
-
-		// Token: 0x040001A7 RID: 423
 		public bool DiscountFromInventory;
-
-		// Token: 0x040001A8 RID: 424
 		public string MinMaxRandomChargeTime;
-
-		// Token: 0x040001A9 RID: 425
 		public float m_randomThrowMin;
-
-		// Token: 0x040001AA RID: 426
 		public float m_randomThrowMax;
-
-		// Token: 0x040001AB RID: 427
 		public SubsystemAudio m_subsystemAudio;
-
-		// Token: 0x040001AC RID: 428
 		public string ThrowingSound;
-
-		// Token: 0x040001AD RID: 429
 		public float ThrowingSoundDistance;
-
-		// Token: 0x040001AE RID: 430
 		public bool SelectRandomThrowableItems;
-
-		// Token: 0x040001AF RID: 431
 		public string SpecialThrowableItem;
-
-		// Token: 0x040001B0 RID: 432
 		public int m_specialThrowableItemValue;
-
-		// Token: 0x040001B1 RID: 433
 		public List<int> m_specialThrowableItemValues = new List<int>();
-
-		// Token: 0x040001B2 RID: 434
 		public float m_minDistance;
-
-		// Token: 0x040001B3 RID: 435
 		public float m_maxDistance;
-
-		// Token: 0x040001B4 RID: 436
 		public string MinMaxDistance;
-
-		// Token: 0x040001B5 RID: 437
 		public float m_randomWaitMin;
-
-		// Token: 0x040001B6 RID: 438
 		public float m_randomWaitMax;
-
-		// Token: 0x040001B7 RID: 439
 		public string MinMaxRandomWaitTime;
-
-		// Token: 0x040001B8 RID: 440
 		public double m_chargeStartTime;
-
-		// Token: 0x040001B9 RID: 441
 		public bool m_isCharging;
-
-		// Token: 0x040001BA RID: 442
 		public float m_chargeDuration;
-
-		// Token: 0x040001BB RID: 443
 		public bool ThrowFromHead;
-
-		// Token: 0x040001BC RID: 444
 		public ComponentCreatureModel m_componentModel;
-
-		// Token: 0x040001BD RID: 445
 		public List<int> m_excludedItems = new List<int>();
-
-		// Token: 0x040001BE RID: 446
 		public ComponentInventory m_componentInventory;
-
-		// ========== VARIABLES NUEVAS PARA EL SISTEMA DE RECARGA ==========
 
 		private string m_currentStateName;
 		private double m_nextCombatUpdateTime;
@@ -1140,33 +1087,20 @@ namespace Game
 		private float m_aimDuration;
 		private int m_bowDraw;
 
-		// Token: 0x0200003D RID: 61
 		public enum WeaponType
 		{
-			// Token: 0x040001C2 RID: 450
 			None,
-			// Token: 0x040001C3 RID: 451
 			Throwable,
-			// Token: 0x040001C4 RID: 452
 			Bow,
-			// Token: 0x040001C5 RID: 453
 			Crossbow,
-			// Token: 0x040001C6 RID: 454
 			Musket,
-			// Token: 0x040001C7 RID: 455
 			Melee
 		}
 
-		// Token: 0x0200003E RID: 62
 		public struct WeaponInfo
 		{
-			// Token: 0x040001C8 RID: 456
 			public int WeaponSlot;
-
-			// Token: 0x040001C9 RID: 457
 			public int WeaponValue;
-
-			// Token: 0x040001CA RID: 458
 			public ComponentInvShooterBehavior.WeaponType Type;
 		}
 	}
