@@ -66,10 +66,10 @@
                     <Parameter Name="Meat" Guid="d4e381af-ead3-4cb6-b77e-63118b31220b" Value="1" Type="float"/>
                 </ParameterSet>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="CreatureSounds" Guid="134231ae-611e-4da5-8c3e-4ff2ccad25e4">
-                <Parameter Name="PainSound" Guid="e539477b-3538-4bbe-a909-fd368aeb1430" Value="Audio/Creatures/Naomi/Pain" Type="string"/>
-                <Parameter Name="IdleSound" Guid="2f85625f-b0e3-47b4-9b6a-41f9ba81b291" Value="Audio/Creatures/Naomi/Idie" Type="string"/>
-                <Parameter Name="AttackSound" Guid="98af08fd-d410-4d68-b538-c012aa2b1257" Value="Audio/Creatures/Naomi/Attack" Type="string"/>
+            <MemberComponentTemplate Name="CreatureSounds" Guid="a7b1175f-0019-4ac7-b000-8183b442e535">
+                <Parameter Name="PainSound" Guid="7bd550ad-f6a2-4647-a0e8-2f1e89d5d81c" Value="Audio/Creatures/Naomi/Pain" Type="string"/>
+                <Parameter Name="IdleSound" Guid="fa3b4ab8-e4e3-4fbe-a401-5c2186575e07" Value="Audio/Creatures/Naomi/Idie" Type="string"/>
+                <Parameter Name="AttackSound" Guid="60079426-e7e0-47a1-9c69-299e5afb1672" Value="Audio/Creatures/Naomi/Attack" Type="string"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidFireBehavior" Guid="2d9409a2-11db-47fa-a987-501d3dbfc18c" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
             <MemberComponentTemplate Name="Locomotion" Guid="326a3597-7997-4114-9d13-435addc0b967">
@@ -2355,6 +2355,11 @@
             <Parameter Name="Meat" Guid="ec7019b6-e073-49fe-9998-4912ad81b3e5" Value="1" Type="float"/>
         </ParameterSet>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="CreatureSounds" Guid="134231ae-611e-4da5-8c3e-4ff2ccad25e4">
+                <Parameter Name="PainSound" Guid="e539477b-3538-4bbe-a909-fd368aeb1430" Value="Audio/Creatures/Shoutmon/Pain" Type="string"/>
+                <Parameter Name="IdleSound" Guid="2f85625f-b0e3-47b4-9b6a-41f9ba81b291" Value="Audio/Creatures/Shoutmon/Idie" Type="string"/>
+                <Parameter Name="AttackSound" Guid="98af08fd-d410-4d68-b538-c012aa2b1257" Value="Audio/Creatures/Shoutmon/Attack" Type="string"/>
+            </MemberComponentTemplate>
 <MemberComponentTemplate Name="AvoidFireBehavior" Guid="9d834a86-1838-4088-b0ff-540cb8f11d9b" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
     <MemberComponentTemplate Name="Locomotion" Guid="0cb47729-55c3-4865-9feb-0d79e5f032cc">
         <Parameter Name="AccelerationFactor" Guid="f9016e2a-0f74-439f-a60f-0133ad06dc15" Value="1.3" Type="float"/>
