@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mod>
+	<ProjectTemplate Name="Project" Guid="85023bf8-1c90-4dd1-9442-e6c13691d078">
+		<MemberSubsystemTemplate Name="ItemsLauncherBlockBehavior" Guid="addaadea-e865-4840-8d4b-682b5accdd20" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+			<Parameter Name="Class" Guid="f4147ab1-38b5-4fee-bccc-9c520b17874e" Value="SubsystemItemsLauncherBlockBehavior" Type="string" />
+		</MemberSubsystemTemplate>
+	
+	</ProjectTemplate>
+</Mod>
