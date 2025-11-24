@@ -2661,10 +2661,10 @@
         <Parameter Name="DayRange" Guid="2b3b932d-c81f-4167-beb3-19f70138f3be" Value="0" Type="float"/>
         <Parameter Name="NightRange" Guid="55c5c1a9-7a60-42be-be84-9a24d1e93cb1" Value="5" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="CreatureSounds" Guid="9dba2f73-4cb3-4324-8218-656635f20529">
+    <MemberComponentTemplate Name="CreatureSounds" Guid="">
     <Parameter Name="PainSound" Guid="4370c6c1-899b-46f1-b313-bfadfffefbf9" Value="Audio/Creatures/Guilmon/Pain" Type="string"/>
-    <Parameter Name="IdleSound" Guid="6dc7a201-1f03-475a-b45c-526fdfabdf41" Value="Audio/Creatures/Guilmon/Idie" Type="string"/>
-    <Parameter Name="AttackSound" Guid="970af7eb-9b75-4849-b28c-41d405389e2f" Value="Audio/Creatures/Guilmon/Attack" Type="string"/>
+    <Parameter Name="IdleSound" Guid="" Value="Audio/Creatures/Guilmon/Idie" Type="string"/>
+    <Parameter Name="AttackSound" Guid="82baa8ee-aac0-4dcd-ae48-226aee4df1d9" Value="Audio/Creatures/Guilmon/Attack" Type="string"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="EatPickableBehavior" Guid="0f37ebc1-2ada-4496-bb6f-bfe2dd7a866b">
         <ParameterSet Name="FoodFactors" Guid="5066873d-8bfa-4c65-b440-57e6c698acb6">
@@ -2764,6 +2764,11 @@
             <Parameter Name="Meat" Guid="a17a9c56-d2a1-485b-a5c7-3432b1e4b756" Value="1" Type="float"/>
         </ParameterSet>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="CreatureSounds" Guid="b23f6830-79c0-4568-b0d2-e18088fb8526">
+    <Parameter Name="PainSound" Guid="3779b6f0-0606-42f3-ba74-98d9e1d8f632" Value="Audio/Creatures/Gumdramon/Pain" Type="string"/>
+    <Parameter Name="IdleSound" Guid="6dc7a201-1f03-475a-b45c-526fdfabdf41" Value="Audio/Creatures/Gumdramon/Idie" Type="string"/>
+    <Parameter Name="AttackSound" Guid="7969e94e-ae10-4cbc-bba3-bfaddc3dc1db" Value="Audio/Creatures/Gumdramon/Attack" Type="string"/>
+</MemberComponentTemplate>
 <MemberComponentTemplate Name="AvoidFireBehavior" Guid="099d1752-bba0-42b7-9935-60b52fba117f" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
     <MemberComponentTemplate Name="Locomotion" Guid="e4880962-c666-47c1-9913-276ab494f98f">
         <Parameter Name="AccelerationFactor" Guid="6b897c0f-e862-44e5-8d7a-04a3abfa49d8" Value="1.3" Type="float"/>
@@ -2839,6 +2844,11 @@
             <Parameter Name="Meat" Guid="08796c18-fafe-4d18-ad58-dc7cce1c46f4" Value="1" Type="float"/>
         </ParameterSet>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="CreatureSounds" Guid="9dba2f73-4cb3-4324-8218-656635f20529">
+    <Parameter Name="PainSound" Guid="51e0b5de-7b89-4d6b-a464-b3e8e949f0b4" Value="Audio/Creatures/BetelGammamon/Pain" Type="string"/>
+    <Parameter Name="IdleSound" Guid="bd11f17e-f9c1-4c4f-8eab-773bf4a0f37d" Value="Audio/Creatures/BetelGammamon/Idie" Type="string"/>
+    <Parameter Name="AttackSound" Guid="970af7eb-9b75-4849-b28c-41d405389e2f" Value="Audio/Creatures/BetelGammamon/Attack" Type="string"/>
+</MemberComponentTemplate>
 <MemberComponentTemplate Name="AvoidFireBehavior" Guid="49f84ccf-89e5-4f04-ae93-a2c6ab8304f5" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
     <MemberComponentTemplate Name="Locomotion" Guid="02d08192-118a-4bc6-b02d-ae3240bdfd20">
         <Parameter Name="AccelerationFactor" Guid="ca153422-ac45-4d88-b3e0-629f41978357" Value="1.4" Type="float"/>
@@ -2887,7 +2897,7 @@
     <MemberComponentTemplate Name="HumanModel" Guid="3137b9e5-a388-4433-8bae-c541f9943e4e" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
         <Parameter Name="WalkLegsAngle" Guid="bb2575c4-3c40-425c-a78e-722dde98cdc5" Value="0.25" Type="float"/>
         <Parameter Name="ModelName" Guid="d84149d0-94ce-4aae-88ed-283e938a942c" Value="Models/MC 2" Type="string"/>
-        <Parameter Name="TextureOverride" Guid="72ca03c3-24f8-4096-82f5-0faa2979dd96" Value="Textures/BettelGammamon" Type="string"/>
+        <Parameter Name="TextureOverride" Guid="72ca03c3-24f8-4096-82f5-0faa2979dd96" Value="Textures/BetelGammamon" Type="string"/>
         <Parameter Name="WalkAnimationSpeed" Guid="e04a2f14-834c-4bff-b219-424f0b5f5596" Value="0.5" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="32c5a461-3e07-4870-8c37-ce9779c349e1">
@@ -2930,6 +2940,11 @@
             <Parameter Name="Bread" Guid="9c0c37f5-4295-4f9e-993d-abe8ac0b680e" Value="1" Type="float"/>
             <Parameter Name="Meat" Guid="6933a8d1-b9bd-4cd3-a5d5-665ab730e8dd" Value="1" Type="float"/>
         </ParameterSet>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="CreatureSounds" Guid="d1e2f3a4-b5c6-4d7e-9f0a-1b2c3d4e5f6a">
+        <Parameter Name="PainSound" Guid="379e3111-13c2-46b8-98dd-6e92c3e7e088" Value="Audio/Creatures/Gaomon/Pain" Type="string"/>
+        <Parameter Name="IdleSound" Guid="d1b27f43-c677-4229-8a76-5d5017b6d39b" Value="Audio/Creatures/Gaomon/Idie" Type="string"/>
+        <Parameter Name="AttackSound" Guid="78130dd9-7ac3-4d4c-9271-54eb8902001c" Value="Audio/Creatures/Gaomon/Attack" Type="string"/>
     </MemberComponentTemplate>
 <MemberComponentTemplate Name="AvoidFireBehavior" Guid="0bcb7ba1-df69-4601-9d61-82ce99903701" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
     <MemberComponentTemplate Name="Locomotion" Guid="332292ad-1f8b-43c0-8786-0daa1e196255">
@@ -3101,10 +3116,10 @@
             <Parameter Name="Meat" Guid="f33f78f2-c404-426e-a0c7-7ae4cf4fd160" Value="1" Type="float"/>
         </ParameterSet>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="CreatureSounds" Guid="d1e2f3a4-b5c6-4d7e-9f0a-1b2c3d4e5f6a">
-        <Parameter Name="PainSound" Guid="e2f3a4b5-c6d7-4e8f-9a0b-2c3d4e5f6a7b" Value="Audio/Creatures/Zombie 1/Pain" Type="string"/>
-        <Parameter Name="IdleSound" Guid="f3a4b5c6-d7e8-4f9a-8b0c-3d4e5f6a7b8c" Value="Audio/Creatures/Zombie 1/Idie" Type="string"/>
-        <Parameter Name="AttackSound" Guid="a4b5c6d7-e8f9-4a0b-9c1d-4e5f6a7b8c9d" Value="Audio/Creatures/Zombie 1/Attack" Type="string"/>
+    <MemberComponentTemplate Name="CreatureSounds" Guid="b34e670c-c4a7-4e26-8bde-fbc35e0f2a91">
+        <Parameter Name="PainSound" Guid="3ab15f95-299a-439e-b482-12b2bbd3921a" Value="Audio/Creatures/Zombie 1/Pain" Type="string"/>
+        <Parameter Name="IdleSound" Guid="0e07f46e-f5e9-4929-a33f-e5ce73240140" Value="Audio/Creatures/Zombie 1/Idie" Type="string"/>
+        <Parameter Name="AttackSound" Guid="648dae1b-e90c-446d-95d3-b5fb0eb9239b" Value="Audio/Creatures/Zombie 1/Attack" Type="string"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidFireBehavior" Guid="003b7a59-960d-4d08-aa0b-0c8a788bd00d" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
     <MemberComponentTemplate Name="Locomotion" Guid="903ec52f-1896-45fc-a3fa-6cd37d4ba787">
@@ -3302,6 +3317,11 @@
             <Parameter Name="Meat" Guid="a5b6c7d8-e9f0-5456-789a-bcdef0123456" Value="1" Type="float"/>
         </ParameterSet>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="CreatureSounds" Guid="d4b0e4db-8042-44c6-9a21-dfb6f4321df8">
+        <Parameter Name="PainSound" Guid="e2f3a4b5-c6d7-4e8f-9a0b-2c3d4e5f6a7b" Value="Audio/Creatures/Impmon/Pain" Type="string"/>
+        <Parameter Name="IdleSound" Guid="8e34af83-cc4a-4c3d-8d7c-d222fa8099bb" Value="Audio/Creatures/Impmon/Idie" Type="string"/>
+        <Parameter Name="AttackSound" Guid="a4b5c6d7-e8f9-4a0b-9c1d-4e5f6a7b8c9d" Value="Audio/Creatures/Impmon" Type="string"/>
+        </MemberComponentTemplate>
 <MemberComponentTemplate Name="AvoidFireBehavior" Guid="b6c7d8e9-f0a1-5567-89ab-cdef01234567" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
     <MemberComponentTemplate Name="Locomotion" Guid="c7d8e9f0-a1b2-5678-9abc-def012345678">
         <Parameter Name="AccelerationFactor" Guid="d8e9f0a1-b2c3-5789-abcd-ef0123456789" Value="1.6" Type="float"/>
