@@ -2258,6 +2258,11 @@
             <Parameter Name="Meat" Guid="05c19f05-8a96-4aa6-920d-bf2623320071" Value="1" Type="float"/>
         </ParameterSet>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="CreatureSounds" Guid="c56ec079-48f7-429a-a3da-46f36bf04dfc">
+    <Parameter Name="PainSound" Guid="83b17c35-9a3d-4779-8a90-03814cebe84f" Value="Audio/Creatures/Veemon/Pain" Type="string"/>
+    <Parameter Name="IdleSound" Guid="c7b1f65a-b436-4756-88f3-24c8248ee116" Value="Audio/Creatures/Veemon/Idie" Type="string"/>
+    <Parameter Name="AttackSound" Guid="08fb29a7-34f2-4e96-9b91-94f7e92e652c" Value="Audio/Creatures/Veemon/Attack" Type="string"/>
+</MemberComponentTemplate>
 <MemberComponentTemplate Name="AvoidFireBehavior" Guid="f7e4962c-c4fb-4b05-868c-55abe83ce231" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
     <MemberComponentTemplate Name="Locomotion" Guid="d95f10ca-10c0-4afb-8eda-44080ce53889">
         <Parameter Name="AccelerationFactor" Guid="2ebaeb13-3405-4358-b96f-e7ed7621391e" Value="1.2" Type="float"/>
