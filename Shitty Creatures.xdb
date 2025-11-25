@@ -11,7 +11,6 @@
         <Parameter Name="RiseDuration" Value="2" Type="float" Description="Duración en segundos del ascenso del texto desde las rodillas hasta la cabeza. AJUSTA: Qué tan rápido sube el texto desde abajo hacia arriba."/>
         <Parameter Name="FadeDuration" Value="0.5" Type="float" Description="Duración en segundos del desvanecimiento final cuando llega a la cabeza. AJUSTA: Qué tan rápido desaparece el texto al final."/>
     </ComponentTemplate>
-    
     <ComponentTemplate Name="ComponentRandomChatter2" Guid="40891058-39e7-4823-9f93-37a3b6d9dbb5">
         <Parameter Name="Class" Value="Game.ComponentRandomChatter2" Type="string" Description="El nombre de la clase C# que implementa la lógica para NPCs hostiles."/>
         <Parameter Name="LoadOrder" Value="-1" Type="int" Guid="5927fedf-417d-4bad-93cd-8b16e76b4d6f" Description="Orden de carga para resolver dependencias con otros componentes."/>
@@ -34,7 +33,6 @@
         <Parameter Name="SpecificItems" Description="" Guid="c7791b3b-3ad4-42cd-b232-314b8ee6fb8d" Value="" Type="string"/>
         <Parameter Name="Class" Guid="d3391f80-40c8-455f-b0b9-35f88b8527da" Value="Game.ComponentCreatureCollect" Type="string"/>
     </ComponentTemplate>
-    
 	<ComponentTemplate Name="InvShooterBehavior" Description="Comportamiento que hace a una criatura arrojar objetos, es requerido Inventory para funcionar." Guid="456e3558-0e7f-42c3-bc05-35eef7540900" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
     <Parameter Name="DiscountFromInventory" Description="Descontar objetos del inventario por cada objeto arrojado, si es falso, la criatura podra arrojar objetos indefinidamente." Guid="632b972c-db56-4348-a2ca-35f42a841aa0" Value="true" Type="bool"/>
     <Parameter Name="SelectRandomThrowableItems" Description="La criatura selecciona objetos aleatoriamente que se puedan lanzar de su inventario si es true." Guid="b6486805-6109-4c6c-8a91-63e3f581c8e3" Value="false" Type="bool"/>
