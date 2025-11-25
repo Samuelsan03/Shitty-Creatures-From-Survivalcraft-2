@@ -3320,7 +3320,7 @@
     <MemberComponentTemplate Name="CreatureSounds" Guid="d4b0e4db-8042-44c6-9a21-dfb6f4321df8">
         <Parameter Name="PainSound" Guid="e2f3a4b5-c6d7-4e8f-9a0b-2c3d4e5f6a7b" Value="Audio/Creatures/Impmon/Pain" Type="string"/>
         <Parameter Name="IdleSound" Guid="8e34af83-cc4a-4c3d-8d7c-d222fa8099bb" Value="Audio/Creatures/Impmon/Idie" Type="string"/>
-        <Parameter Name="AttackSound" Guid="a4b5c6d7-e8f9-4a0b-9c1d-4e5f6a7b8c9d" Value="Audio/Creatures/Impmon" Type="string"/>
+        <Parameter Name="AttackSound" Guid="a4b5c6d7-e8f9-4a0b-9c1d-4e5f6a7b8c9d" Value="Audio/Creatures/Impmon/Attack" Type="string"/>
         </MemberComponentTemplate>
 <MemberComponentTemplate Name="AvoidFireBehavior" Guid="b6c7d8e9-f0a1-5567-89ab-cdef01234567" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
     <MemberComponentTemplate Name="Locomotion" Guid="c7d8e9f0-a1b2-5678-9abc-def012345678">
