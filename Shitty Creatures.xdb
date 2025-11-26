@@ -1,4 +1,4 @@
-<samu>
+<ShittyCreatures>
 <Folder Name="Gameplay" Guid="d3d4b692-acc9-4128-9b99-a5acf1de1fbb">
 <ComponentTemplate Name="HealthBarDisplay" Guid="cc577309-064e-4bd3-82ed-89be72213cc6" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
         <Parameter Name="Class" Guid="b2c3d4e5-f6a7-8901-bcde-f23456789012" Value="Game.ComponentHealthBar" Type="string"/>
@@ -121,8 +121,10 @@
                 <Parameter Name="TextureOverride" Guid="96a84a19-1df6-2227-a58e-dc24ff5f8585" Value="Textures/Naomi" Type="string"/>
                 <Parameter Name="WalkAnimationSpeed" Guid="e49f62bf-e22a-4f29-b064-ba88d8d5d04c" Value="0.65" Type="float"/>
             </MemberComponentTemplate>
+            <MemberComponentTemplate Name="HealthBarDisplay" Guid="25df0933-3c92-4a6d-8008-5605e304ab22" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
+    </MemberComponentTemplate>
             <MemberComponentTemplate Name="Health" Guid="d337003f-ae19-22b9-b031-5ba66c2bb0b7">
-                <Parameter Name="Health" Guid="7e85990c-0477-4757-a4f7-323644b934b6" Value="15" Type="float"/>
                 <Parameter Name="FireResilience" Guid="0b2f0fd2-b368-4225-a537-bbe141c51172" Value="15" Type="float"/>
                 <Parameter Name="AttackResilience" Guid="9c518940-b941-225b-a284-6c53cd50cdfb" Value="15" Type="float"/>
             </MemberComponentTemplate>
@@ -305,8 +307,10 @@
         <Parameter Name="TextureOverride" Guid="e5f6a7b8-c9d0-8123-2345-6789abcdef01" Value="Textures/Paco" Type="string"/>
         <Parameter Name="WalkAnimationSpeed" Guid="f6a7b8c9-d0e1-8234-3456-789abcdef012" Value="0.65" Type="float"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="HealthBarDisplay" Guid="f5c43270-b51f-41f7-b0ac-e7083e21eabf" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
+    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="a7b8c9d0-e1f2-8345-4567-89abcdef0123">
-        <Parameter Name="Health" Guid="b8c9d0e1-f2a3-8456-5678-9abcdef01234" Value="20" Type="float"/>
         <Parameter Name="FireResilience" Guid="c9d0e1f2-a3b4-8567-6789-abcdef012345" Value="15" Type="float"/>
         <Parameter Name="AttackResilience" Guid="d0e1f2a3-b4c5-8678-789a-bcdef0123456" Value="15" Type="float"/>
     </MemberComponentTemplate>
@@ -396,8 +400,10 @@
         <Parameter Name="TextureOverride" Guid="d2e3f4a5-b6c7-7890-5678-789abcdef012" Value="Textures/Barack" Type="string"/>
         <Parameter Name="WalkAnimationSpeed" Guid="e3f4a5b6-c7d8-7901-6789-89abcdef0123" Value="0.6" Type="float"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="HealthBarDisplay" Guid="650ff4d7-762a-4751-a792-2baeb6ee15a7" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
+    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="f4a5b6c7-d8e9-8012-7890-9abcdef01234">
-        <Parameter Name="Health" Guid="a5b6c7d8-e9f0-8123-8901-abcdef012345" Value="3.5" Type="float"/>
         <Parameter Name="FireResilience" Guid="b6c7d8e9-f0a1-8234-9012-bcdef0123456" Value="12" Type="float"/>
         <Parameter Name="AttackResilience" Guid="c7d8e9f0-a1b2-8345-0123-cdef01234567" Value="12" Type="float"/>
     </MemberComponentTemplate>
@@ -486,8 +492,10 @@
         <Parameter Name="TextureOverride" Guid="041671f8-d151-4522-950c-aa7616cc0498" Value="Textures/El Marihuanero" Type="string"/>
         <Parameter Name="WalkAnimationSpeed" Guid="376afdd5-5aca-4dcc-bff7-eea2c446de90" Value="0.4" Type="float"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="HealthBarDisplay" Guid="6669d00e-a068-439d-9661-330d9dbc49f2" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
+    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="ed2db84f-ffe1-4517-b1a9-d55ebee202d6">
-        <Parameter Name="Health" Guid="18ca29fd-02fb-4df5-8746-b98083877f84" Value="12" Type="float"/>
         <Parameter Name="FireResilience" Guid="19742761-30ed-4e9b-80ac-aad729234ce9" Value="8" Type="float"/>
         <Parameter Name="AttackResilience" Guid="aab18fcf-b785-43da-a6e4-f980b03fc8fb" Value="8" Type="float"/>
     </MemberComponentTemplate>
@@ -619,8 +627,10 @@
         <Parameter Name="TextureOverride" Guid="40cb4a67-5b76-4af9-b7cc-78d37f4d6cd3" Value="Textures/El Marihuanero Mamon" Type="string"/>
         <Parameter Name="WalkAnimationSpeed" Guid="37062224-05fa-467d-9deb-22f725ec1fea" Value="0.5" Type="float"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="HealthBarDisplay" Guid="79615e52-c23d-4a94-a6f1-9897ef2064a7" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
+    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="cc2f05b6-8742-4f96-ae75-f29e601703c6">
-        <Parameter Name="Health" Guid="c3b6896e-2341-4174-9139-6c006044ad0c" Value="10" Type="float"/>
         <Parameter Name="FireResilience" Guid="14e8183b-ef68-4e86-baa6-62e75ee6afca" Value="6" Type="float"/>
         <Parameter Name="AttackResilience" Guid="8ce4a174-5305-465f-abfc-9d4a9a3b70f3" Value="6" Type="float"/>
     </MemberComponentTemplate>
@@ -699,8 +709,10 @@
         <Parameter Name="TextureOverride" Guid="604f0fd6-1c26-4fa3-8735-096414614806" Value="Textures/FumadorQuimico" Type="string"/>
         <Parameter Name="WalkAnimationSpeed" Guid="8fecd36c-ee9f-4a7a-843c-41314677d5d5" Value="0.55" Type="float"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="HealthBarDisplay" Guid="53618103-2f60-42b1-9257-32e63cfa8424" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
+    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="e2715c93-cbdc-4ed9-8743-e03bf5a4e9ef">
-        <Parameter Name="Health" Guid="621a5ebc-a4be-4596-b901-68463a5dc81e" Value="14" Type="float"/>
         <Parameter Name="FireResilience" Guid="aefb7554-8f14-43f8-a99b-8e6bbb77c196" Value="10" Type="float"/>
         <Parameter Name="AttackResilience" Guid="aa81563f-484d-4882-bb4d-cb58d8f2924f" Value="10" Type="float"/>
     </MemberComponentTemplate>
@@ -801,8 +813,10 @@
         <Parameter Name="TextureOverride" Guid="c9d0e1f2-a3b4-8567-6789-bcdef0123456" Value="Textures/FumadorQuimico" Type="string"/>
         <Parameter Name="WalkAnimationSpeed" Guid="d0e1f2a3-b4c5-8678-789a-cdef01234567" Value="0.4" Type="float"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="HealthBarDisplay" Guid="d7fda3a3-96ec-4a4c-858a-1b8eea3ae813" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
+    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="e1f2a3b4-c5d6-8789-89ab-def012345678">
-        <Parameter Name="Health" Guid="f2a3b4c5-d6e7-8890-9abc-ef0123456789" Value="50.55" Type="float"/>
         <Parameter Name="FireResilience" Guid="a3b4c5d6-e7f8-8901-abcd-f0123456789a" Value="25" Type="float"/>
         <Parameter Name="AttackResilience" Guid="b4c5d6e7-f8a9-9012-bcde-0123456789ab" Value="25" Type="float"/>
     </MemberComponentTemplate>
@@ -899,8 +913,10 @@
         <Parameter Name="TextureOverride" Guid="f9a0b1c2-d3e4-8567-6789-bcdef012345e" Value="Textures/Claude Speed" Type="string"/>
         <Parameter Name="WalkAnimationSpeed" Guid="a0b1c2d3-e4f5-8678-789a-cdef0123456f" Value="0.7" Type="float"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="HealthBarDisplay" Guid="497856fe-b6e2-496d-85e3-788c94a14a5c" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
+    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="b1c2d3e4-f5a6-8789-89ab-def012345670">
-        <Parameter Name="Health" Guid="c2d3e4f5-a6b7-8890-9abc-ef0123456781" Value="25" Type="float"/>
         <Parameter Name="FireResilience" Guid="d3e4f5a6-b7c8-8901-abcd-f01234567892" Value="15" Type="float"/>
         <Parameter Name="AttackResilience" Guid="e4f5a6b7-c8d9-9012-bcde-0123456789a3" Value="18" Type="float"/>
     </MemberComponentTemplate>
@@ -1023,8 +1039,10 @@
         <Parameter Name="TextureOverride" Guid="a0b1c2d3-e4f5-8567-6789-bcdef012345f" Value="Textures/Tommy Vercetti" Type="string"/>
         <Parameter Name="WalkAnimationSpeed" Guid="b1c2d3e4-f5a6-8678-789a-cdef01234570" Value="0.6" Type="float"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="HealthBarDisplay" Guid="3bbe8d8f-b27b-40a9-9b83-6a128938c9ef" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
+    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="c2d3e4f5-a6b7-8789-89ab-def012345671">
-        <Parameter Name="Health" Guid="d3e4f5a6-b7c8-8890-9abc-ef0123456782" Value="30" Type="float"/>
         <Parameter Name="FireResilience" Guid="e4f5a6b7-c8d9-8901-abcd-f01234567893" Value="20" Type="float"/>
         <Parameter Name="AttackResilience" Guid="f5a6b7c8-d9e0-9012-bcde-0123456789a4" Value="22" Type="float"/>
     </MemberComponentTemplate>
@@ -1113,8 +1131,10 @@
         <Parameter Name="TextureOverride" Guid="b1c2d3e4-f5a6-8567-6789-bcdef0123450" Value="Textures/LaMuerteX" Type="string"/>
         <Parameter Name="WalkAnimationSpeed" Guid="c2d3e4f5-a6b7-8678-789a-cdef01234571" Value="0.75" Type="float"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="HealthBarDisplay" Guid="6e01f4e7-8b13-4030-a30a-a1b5bc7c0141" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
+    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="d3e4f5a6-b7c8-8789-89ab-def012345672">
-        <Parameter Name="Health" Guid="e4f5a6b7-c8d9-8890-9abc-ef0123456783" Value="35" Type="float"/>
         <Parameter Name="FireResilience" Guid="f5a6b7c8-d9e0-8901-abcd-f01234567894" Value="25" Type="float"/>
         <Parameter Name="AttackResilience" Guid="a6b7c8d9-e0f1-9012-bcde-0123456789a5" Value="28" Type="float"/>
     </MemberComponentTemplate>
@@ -1199,8 +1219,10 @@
         <Parameter Name="TextureOverride" Guid="e5f6a7b8-c9d0-8456-1234-234567890123" Value="Textures/El Senor De Las Tumbas Moradas" Type="string"/>
         <Parameter Name="WalkAnimationSpeed" Guid="f6a7b8c9-d0e1-8567-2345-345678901234" Value="0.55" Type="float"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="HealthBarDisplay" Guid="0c101032-a0b7-4700-8e1b-7620e7398713" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
+    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="a7b8c9d0-e1f2-8678-3456-456789012345">
-        <Parameter Name="Health" Guid="b8c9d0e1-f2a3-8789-4567-567890123456" Value="18" Type="float"/>
         <Parameter Name="FireResilience" Guid="c9d0e1f2-a3b4-8890-5678-678901234567" Value="12" Type="float"/>
         <Parameter Name="AttackResilience" Guid="d0e1f2a3-b4c5-8901-6789-789012345678" Value="14" Type="float"/>
     </MemberComponentTemplate>
@@ -1285,8 +1307,10 @@
         <Parameter Name="TextureOverride" Guid="a6b7c8d9-e0f1-8456-1234-331567890123" Value="Textures/Lider Calaverico Supremo" Type="string"/>
         <Parameter Name="WalkAnimationSpeed" Guid="b7c8d9e0-f1a2-8567-2345-441678901234" Value="0.6" Type="float"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="HealthBarDisplay" Guid="63825269-8801-4598-82e7-07217a350e31" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
+    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="c8d9e0f1-a2b3-8678-3456-551789012345">
-        <Parameter Name="Health" Guid="d9e0f1a2-b3c4-8789-4567-661890123456" Value="22" Type="float"/>
         <Parameter Name="FireResilience" Guid="e0f1a2b3-c4d5-8890-5678-771901234567" Value="15" Type="float"/>
         <Parameter Name="AttackResilience" Guid="f1a2b3c4-d5e6-8901-6789-881012345678" Value="18" Type="float"/>
     </MemberComponentTemplate>
@@ -1361,8 +1385,10 @@
         <Parameter Name="TextureOverride" Guid="b7c8d9e0-f1a2-8456-1234-431567890123" Value="Textures/Lider Calaverico Supremo" Type="string"/>
         <Parameter Name="WalkAnimationSpeed" Guid="c8d9e0f1-a2b3-8567-2345-541678901234" Value="0.65" Type="float"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="HealthBarDisplay" Guid="9250d44f-460f-4a0c-853b-109c3286c40c" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
+    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="d9e0f1a2-b3c4-8678-3456-651789012345">
-        <Parameter Name="Health" Guid="e0f1a2b3-c4d5-8789-4567-761890123456" Value="52.35" Type="float"/>
         <Parameter Name="FireResilience" Guid="f1a2b3c4-d5e6-8890-5678-871901234567" Value="18" Type="float"/>
         <Parameter Name="AttackResilience" Guid="a2b3c4d5-e6f7-8901-6789-981012345678" Value="22" Type="float"/>
     </MemberComponentTemplate>
@@ -1441,8 +1467,10 @@
         <Parameter Name="TextureOverride" Guid="ed5b0322-f720-4742-94f0-a706338ca382" Value="Textures/Conker" Type="string"/>
         <Parameter Name="WalkAnimationSpeed" Guid="ff215a7e-00a2-4fa5-8b56-76bd433bb926" Value="0.65" Type="float"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="HealthBarDisplay" Guid="fcabab84-4011-4e4d-9af0-9c8729626248" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
+    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="f6125d54-5b1f-4380-a926-5c4fdd8f9756">
-        <Parameter Name="Health" Guid="35e57c50-306b-4d4f-8a52-c059d01a6014" Value="15" Type="float"/>
         <Parameter Name="FireResilience" Guid="57d402e6-827b-4471-b3da-2dc9f8335aed" Value="15" Type="float"/>
         <Parameter Name="AttackResilience" Guid="718f9702-db56-4c16-8fbd-8bdcd2aa35be" Value="15" Type="float"/>
     </MemberComponentTemplate>
@@ -1517,8 +1545,10 @@
         <Parameter Name="TextureOverride" Guid="7fa86282-a61f-404b-862f-924524c81023" Value="Textures/Beavis" Type="string"/>
         <Parameter Name="WalkAnimationSpeed" Guid="fad75870-dff1-4b5a-8dde-cbd0643d193c" Value="0.65" Type="float"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="HealthBarDisplay" Guid="e4f31d99-0c23-467c-ad52-b8fa0976ee5f" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
+    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="1371fd61-9e3d-454f-bb07-8906a85b2a88">
-        <Parameter Name="Health" Guid="0a11c1ca-0770-4afb-a5a2-05ee1888a1cc" Value="12" Type="float"/>
         <Parameter Name="FireResilience" Guid="3f10f02f-a3e5-4b4e-8528-76626da3cfdc" Value="8" Type="float"/>
         <Parameter Name="AttackResilience" Guid="77f87b63-96d3-4c7e-a467-79f5db3fdb54" Value="10" Type="float"/>
     </MemberComponentTemplate>
@@ -1592,8 +1622,10 @@
         <Parameter Name="TextureOverride" Guid="8d101fa5-9a1e-42da-b5c3-74f14b781592" Value="Textures/Butt-Head" Type="string"/>
         <Parameter Name="WalkAnimationSpeed" Guid="770cbe49-b1bf-4036-bada-3bb1bb64c18d" Value="0.65" Type="float"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="HealthBarDisplay" Guid="78e80b06-6ffa-4229-aefe-ee2add71c7ec" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
+    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="82c9c9e8-48f1-40b8-89b4-138dd255abde">
-        <Parameter Name="Health" Guid="096170bc-4ecf-4f5e-b705-e494c0786212" Value="20" Type="float"/>
         <Parameter Name="FireResilience" Guid="c479e2ce-1d3a-4672-b4a2-565458e5f467" Value="12" Type="float"/>
         <Parameter Name="AttackResilience" Guid="4d454d90-2ea3-4142-883f-0977e89bc179" Value="14" Type="float"/>
     </MemberComponentTemplate>
@@ -1684,8 +1716,10 @@
         <Parameter Name="TextureOverride" Guid="643df728-3f57-4200-85a1-5058bc8363fc" Value="Textures/Hombre Lava" Type="string"/>
         <Parameter Name="WalkAnimationSpeed" Guid="9db175f1-88ec-4b42-8f75-c8dddf0749c4" Value="0.65" Type="float"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="HealthBarDisplay" Guid="ec1f0d86-3bd0-48f1-8e9c-64e70afedcab" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
+    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="4a0a9114-1d1c-4257-8b53-317c63d678d2">
-        <Parameter Name="Health" Guid="14e1705b-359f-4cf8-aa73-9d27a437c2d2" Value="30" Type="float"/>
         <Parameter Name="FireResilience" Guid="dda60125-0512-498a-baa9-1b22b1ef744a" Value="20" Type="float"/>
         <Parameter Name="AttackResilience" Guid="216209fd-e4b5-4138-9b75-7fe34eb9cfc6" Value="22" Type="float"/>
     </MemberComponentTemplate>
@@ -1760,8 +1794,10 @@
         <Parameter Name="TextureOverride" Guid="d2e3f4a5-b6c7-8678-789a-cdef0123456e" Value="Textures/Hombre Agua" Type="string"/>
         <Parameter Name="WalkAnimationSpeed" Guid="e3f4a5b6-c7d8-8789-89ab-def01234567f" Value="0.65" Type="float"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="HealthBarDisplay" Guid="6da5ff60-2fb2-4457-8dc9-97bb2895506f" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
+    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="f4a5b6c7-d8e9-8890-9abc-ef0123456780">
-        <Parameter Name="Health" Guid="a5b6c7d8-e9f0-8901-abcd-f01234567891" Value="35" Type="float"/>
         <Parameter Name="FireResilience" Guid="b6c7d8e9-f0a1-9012-bcde-0123456789a2" Value="25" Type="float"/>
         <Parameter Name="AttackResilience" Guid="c7d8e9f0-a1b2-9123-cdef-123456789ab3" Value="26" Type="float"/>
     </MemberComponentTemplate>
@@ -1888,8 +1924,10 @@
         <Parameter Name="TextureOverride" Guid="f6b7cfc7-2703-4628-88db-fde3637830f5" Value="Textures/El Ballestador" Type="string"/>
         <Parameter Name="WalkAnimationSpeed" Guid="0d1c92de-d64e-4a38-8e3d-dd01bcee04f4" Value="0.5" Type="float"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="HealthBarDisplay" Guid="dad0262c-b40a-4d31-b76b-945d28b32f28" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
+    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="f6602d48-65a0-42d1-9c60-489a7030ac49">
-        <Parameter Name="Health" Guid="de1d121f-5e0f-4cfd-946e-519daef9106b" Value="10" Type="float"/>
         <Parameter Name="FireResilience" Guid="b924f387-d844-48b5-85b4-95b7c241af04" Value="6" Type="float"/>
         <Parameter Name="AttackResilience" Guid="50be24ff-25f4-41df-8b35-22a384613c84" Value="6" Type="float"/>
     </MemberComponentTemplate>
@@ -1963,8 +2001,10 @@
         <Parameter Name="TextureOverride" Guid="a1b2c3d4-e5f6-8123-2345-6789abcdef01" Value="Textures/Headcrab Bloody Humano" Type="string"/>
         <Parameter Name="WalkAnimationSpeed" Guid="b2c3d4e5-f6a7-8234-3456-789abcdef012" Value="0.4" Type="float"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="HealthBarDisplay" Guid="adfafc32-afec-4846-b82f-8b4f7144c77a" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
+    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="c3d4e5f6-a7b8-8345-4567-89abcdef0123">
-        <Parameter Name="Health" Guid="d4e5f6a7-b8c9-8456-5678-9abcdef01234" Value="16" Type="float"/>
         <Parameter Name="FireResilience" Guid="e5f6a7b8-c9d0-8567-6789-abcdef012345" Value="10" Type="float"/>
         <Parameter Name="AttackResilience" Guid="f6a7b8c9-d0e1-8678-789a-bcdef0123456" Value="10" Type="float"/>
     </MemberComponentTemplate>
@@ -1993,7 +2033,6 @@
         <Parameter Name="EggTypeIndex" Guid="a5b6c7d8-e9f0-0567-abcd-ef0123456789" Value="221" Type="int"/>
     </ParameterSet>
 </EntityTemplate>
-
 
 <EntityTemplate Name="ElArquero" Guid="ab8ad3f1-8232-4b2c-9007-4a7c54d8134f" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="6594a4b2-1504-4db9-b010-bac63ccb9a85" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
@@ -2108,8 +2147,10 @@
         <Parameter Name="TextureOverride" Guid="747428da-e209-4a6c-8fb1-c65a3f554b05" Value="Textures/El Arquero" Type="string"/>
         <Parameter Name="WalkAnimationSpeed" Guid="5c3441d3-afcc-4e28-bcf4-31b2b00e3da2" Value="0.5" Type="float"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="HealthBarDisplay" Guid="3e23fef3-7ae8-4472-95cb-82ac07a47f32" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
+    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="c1f71021-a41e-48ba-bfd5-8fb4cfcd9128">
-        <Parameter Name="Health" Guid="54709e70-273d-455d-9ff1-768d79b52008" Value="10" Type="float"/>
         <Parameter Name="FireResilience" Guid="0705e1b8-d2bd-41df-921b-96e12b9c86ff" Value="6" Type="float"/>
         <Parameter Name="AttackResilience" Guid="cac9839a-886b-4eb9-8b1b-407bc2cf12de" Value="6" Type="float"/>
     </MemberComponentTemplate>
@@ -2219,8 +2260,10 @@
         <Parameter Name="TextureOverride" Guid="cbc442b8-d739-48b2-b0b5-6095804a9be1" Value="Textures/Arquero Prisionero" Type="string"/>
         <Parameter Name="WalkAnimationSpeed" Guid="932e8659-9c9c-4cae-9565-407c406f9736" Value="0.5" Type="float"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="HealthBarDisplay" Guid="0ec8509e-72c9-4243-9b3e-5b8572e9ca6c" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
+    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="31ab08b5-54b3-481b-b5eb-dc17e962a0a1">
-        <Parameter Name="Health" Guid="97eaec76-2fa5-4aba-8ab9-dab889d725af" Value="80" Type="float"/>
         <Parameter Name="FireResilience" Guid="3459c49f-f363-4fc8-b51c-9ecbacbf1042" Value="8" Type="float"/>
         <Parameter Name="AttackResilience" Guid="b5a8a139-3fbe-4d8d-a27a-add4d2621f7c" Value="6" Type="float"/>
     </MemberComponentTemplate>
@@ -2316,8 +2359,10 @@
         <Parameter Name="TextureOverride" Guid="7e68186f-4743-4f16-b2a8-3724e701528b" Value="Textures/Veemon" Type="string"/>
         <Parameter Name="WalkAnimationSpeed" Guid="4cd20293-2699-4341-aadb-e4672bf36439" Value="0.5" Type="float"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="HealthBarDisplay" Guid="9ddea5df-80b5-4bda-a44f-51fb194b5eaf" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
+    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="e912494b-c0fd-4238-9682-1f65b13436a5">
-        <Parameter Name="Health" Guid="1a5e2dd7-2c2e-4979-9d67-56cfe9dc918d" Value="95" Type="float"/>
         <Parameter Name="FireResilience" Guid="4514d465-d559-4afd-8bd4-e50dfc9d842c" Value="10" Type="float"/>
         <Parameter Name="AttackResilience" Guid="e31bb31d-23ce-4aac-8972-e0f3c70db0ff" Value="8" Type="float"/>
     </MemberComponentTemplate>
@@ -2413,8 +2458,10 @@
         <Parameter Name="TextureOverride" Guid="675f2719-3b30-48ef-80d8-0eb327764486" Value="Textures/Shoutmon" Type="string"/>
         <Parameter Name="WalkAnimationSpeed" Guid="c4afa109-c79c-4d5b-9cfd-c8ad8435cd40" Value="0.5" Type="float"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="HealthBarDisplay" Guid="74888973-d861-4566-a594-5e39fb47679a" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
+    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="719afdc6-f565-4351-afce-323142a2afd5">
-        <Parameter Name="Health" Guid="a38a1a66-9629-4b65-b73d-ca57b7e73fdc" Value="95" Type="float"/>
         <Parameter Name="FireResilience" Guid="c875be29-0f19-4f1b-873e-845099e05a45" Value="12" Type="float"/>
         <Parameter Name="AttackResilience" Guid="36aa17e3-ca08-4d9d-bc69-222dc60a8b8b" Value="9" Type="float"/>
     </MemberComponentTemplate>
@@ -2531,8 +2578,10 @@
         <Parameter Name="TextureOverride" Guid="6a572659-39b4-42c2-8193-03250d2d29c0" Value="Textures/Ballestadora Musculosa" Type="string"/>
         <Parameter Name="WalkAnimationSpeed" Guid="ac618cef-1708-45da-b3a5-43d460a91c9f" Value="0.5" Type="float"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="HealthBarDisplay" Guid="147a4ee2-1292-4c35-9a33-53e454c8c8b7" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
+    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="04e1868d-4721-4e13-b5c9-06c9b3ff507d">
-        <Parameter Name="Health" Guid="020e9291-c91f-4fa8-9d95-be63e5ecf1f6" Value="15" Type="float"/>
         <Parameter Name="FireResilience" Guid="e12a7f7c-18a1-46af-9f24-12f883fc8929" Value="8" Type="float"/>
         <Parameter Name="AttackResilience" Guid="ee644b39-36a4-4e78-b82f-4cfb1e66dd91" Value="8" Type="float"/>
     </MemberComponentTemplate>
@@ -2628,8 +2677,10 @@
         <Parameter Name="TextureOverride" Guid="84bbdccc-56ac-4943-beb6-32ae67e3492e" Value="Textures/Agumon" Type="string"/>
         <Parameter Name="WalkAnimationSpeed" Guid="9d28c2a3-a28b-4609-aa09-f88a93fc00b1" Value="0.5" Type="float"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="HealthBarDisplay" Guid="7ad843dc-9b25-40c7-81f0-af6c5cc82a8a" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
+    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="a25a4086-4050-43d1-864d-d246cc7d34a5">
-        <Parameter Name="Health" Guid="b9e29411-305e-4025-90bb-4a5b20598e81" Value="100" Type="float"/>
         <Parameter Name="FireResilience" Guid="f927707d-a90f-41c6-86fc-fc53f697c843" Value="15" Type="float"/>
         <Parameter Name="AttackResilience" Guid="9d0e68fd-9731-435d-a69b-78679666b5a9" Value="15" Type="float"/>
     </MemberComponentTemplate>
@@ -2725,8 +2776,10 @@
         <Parameter Name="TextureOverride" Guid="dcd075c7-106f-45df-b6a5-e79fd87bf600" Value="Textures/Guilmon" Type="string"/>
         <Parameter Name="WalkAnimationSpeed" Guid="8538cd7f-e119-4f01-b0fd-75f473b00eac" Value="0.5" Type="float"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="HealthBarDisplay" Guid="bcd77b66-b7d1-4891-8532-e2369310c371" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
+    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="09a39277-7125-4e5d-8df5-fbc1ba4e13bd">
-        <Parameter Name="Health" Guid="a3ff17e5-6fe2-4bba-a0ae-82094ec3e0aa" Value="90" Type="float"/>
         <Parameter Name="FireResilience" Guid="ea167bf3-3315-4efa-9e0f-b9fa9a58bfbf" Value="12" Type="float"/>
         <Parameter Name="AttackResilience" Guid="8d689d17-fa43-48c7-b226-4aeaa0e61aa1" Value="8" Type="float"/>
     </MemberComponentTemplate>
@@ -2805,8 +2858,10 @@
         <Parameter Name="TextureOverride" Guid="e83e7acb-e261-4d56-9d01-7dd16d9e9f34" Value="Textures/Gumdramon" Type="string"/>
         <Parameter Name="WalkAnimationSpeed" Guid="d4210e0f-4ae4-483b-b491-d4bb9b966d2d" Value="0.5" Type="float"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="HealthBarDisplay" Guid="7d4d64f7-0777-45c9-968b-0b0addca4d69" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
+    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="309aa37d-42cb-4af7-9f19-957050c1621a">
-        <Parameter Name="Health" Guid="1ab16167-f1d0-41b7-b292-2193a3dd18b5" Value="95" Type="float"/>
         <Parameter Name="FireResilience" Guid="26e7634f-b128-4cb0-9f15-55c78583ad65" Value="14" Type="float"/>
         <Parameter Name="AttackResilience" Guid="18198cb2-469d-4256-8020-c1b9e710913d" Value="9" Type="float"/>
     </MemberComponentTemplate>
@@ -2901,6 +2956,9 @@
         <Parameter Name="ModelName" Guid="d84149d0-94ce-4aae-88ed-283e938a942c" Value="Models/MC 2" Type="string"/>
         <Parameter Name="TextureOverride" Guid="72ca03c3-24f8-4096-82f5-0faa2979dd96" Value="Textures/BetelGammamon" Type="string"/>
         <Parameter Name="WalkAnimationSpeed" Guid="e04a2f14-834c-4bff-b219-424f0b5f5596" Value="0.5" Type="float"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="HealthBarDisplay" Guid="61b4ba84-15c2-4597-9901-ef27e9371c3b" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="32c5a461-3e07-4870-8c37-ce9779c349e1">
         <Parameter Name="Health" Guid="5cba343c-e951-4f27-9f92-7befff5d41d1" Value="100" Type="float"/>
@@ -3074,8 +3132,10 @@
         <Parameter Name="TextureOverride" Guid="9e16503e-c332-4eed-bd56-66d1c178b23d" Value="Textures/Walter Zombie" Type="string"/>
         <Parameter Name="WalkAnimationSpeed" Guid="d77bc24b-7afd-4686-b958-da07d63a240d" Value="0.55" Type="float"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="HealthBarDisplay" Guid="18c1ae71-e52d-42b5-a61f-b1b189c972b1" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
+    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="5f43b80b-ef0a-4315-bad4-f5d99610fc19">
-        <Parameter Name="Health" Guid="073e4aa3-887b-49af-af24-f9dca960f000" Value="14" Type="float"/>
         <Parameter Name="FireResilience" Guid="4325c5a8-89b3-46d0-b703-781f3514c2c3" Value="10" Type="float"/>
         <Parameter Name="AttackResilience" Guid="a92c6c6a-793f-49b4-a62b-56319876af07" Value="10" Type="float"/>
     </MemberComponentTemplate>
@@ -3174,8 +3234,10 @@
         <Parameter Name="TextureOverride" Guid="1f85b61e-34ef-4859-bed1-6a7ddd1c0521" Value="Textures/Walter Zombie" Type="string"/>
         <Parameter Name="WalkAnimationSpeed" Guid="0716e4f5-de84-44e8-b3f0-db9da5bf2f8e" Value="0.55" Type="float"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="HealthBarDisplay" Guid="fea30469-3f5b-4a16-a1a9-5ea9bdfd8024" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
+    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="5c9d7c5c-6298-4a01-bd35-0ba8212aee8f">
-        <Parameter Name="Health" Guid="2d07503f-f4c3-486d-bb3e-78403d23e064" Value="155" Type="float"/>
         <Parameter Name="FireResilience" Guid="dec0726c-d4d4-44f5-8bae-ace8a9cbcde3" Value="10" Type="float"/>
         <Parameter Name="AttackResilience" Guid="acaa5633-0d87-4b23-b89b-b5d442e261ee" Value="10" Type="float"/>
     </MemberComponentTemplate>
@@ -3277,8 +3339,10 @@
         <Parameter Name="TextureOverride" Guid="b4c5d6e7-f8a9-8123-2345-6789abcdef01" Value="Textures/Aladina Corrupta" Type="string"/>
         <Parameter Name="WalkAnimationSpeed" Guid="c5d6e7f8-a9b0-8234-3456-789abcdef012" Value="0.55" Type="float"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="HealthBarDisplay" Guid="418e2f87-934c-4ca6-bd93-eb2f5ff3cb13" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
+    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="d6e7f8a9-b0c1-8345-4567-89abcdef0123">
-        <Parameter Name="Health" Guid="e7f8a9b0-c1d2-8456-5678-9abcdef01234" Value="4.5" Type="float"/>
         <Parameter Name="FireResilience" Guid="f8a9b0c1-d2e3-8567-6789-abcdef012345" Value="10" Type="float"/>
         <Parameter Name="AttackResilience" Guid="a9b0c1d2-e3f4-8678-789a-bcdef0123456" Value="10" Type="float"/>
     </MemberComponentTemplate>
@@ -3379,7 +3443,6 @@
         <Parameter Name="WalkAnimationSpeed" Guid="b6c7d8e9-f0a1-8567-2345-abcdef012345" Value="0.5" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="c7d8e9f0-a1b2-8678-3456-bcdef0123456">
-        <Parameter Name="Health" Guid="d8e9f0a1-b2c3-8789-4567-cdef01234567" Value="80" Type="float"/>
         <Parameter Name="FireResilience" Guid="e9f0a1b2-c3d4-8890-5678-def012345678" Value="20" Type="float"/>
         <Parameter Name="AttackResilience" Guid="f0a1b2c3-d4e5-8901-6789-ef0123456789" Value="8" Type="float"/>
     </MemberComponentTemplate>
@@ -3407,4 +3470,4 @@
         <Parameter Name="EggTypeIndex" Guid="a9b0c1d2-e3f4-0890-5678-123456789abc" Value="236" Type="int"/>
     </ParameterSet>
 </EntityTemplate>
-</samu>
+</ShittyCreatures>
