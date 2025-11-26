@@ -3339,15 +3339,15 @@
       </ParameterSet>
     </EntityTemplate>
    
-<EntityTemplate Name="Impmon" Guid="a1b2c3d4-e5f6-4789-9012-3456789abcd1" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-    <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="a9b0c1d2-e3f4-4890-9123-456789abcdef" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
-        <Parameter Name="DayRange" Guid="b0c1d2e3-f4a5-4901-2345-6789abcdef01" Value="3" Type="float"/>
-        <Parameter Name="NightRange" Guid="c1d2c3d4-e5f6-5012-3456-789abcdef012" Value="7" Type="float"/>
+<EntityTemplate Name="Impmon" Guid="553f7956-032c-4d09-ae7c-c95dbef465cf" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+    <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="dd491463-2b74-4e40-9825-6bbd01c9e80d" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
+        <Parameter Name="DayRange" Guid="451c5759-8091-4094-9c9b-6f7688b5845d" Value="3" Type="float"/>
+        <Parameter Name="NightRange" Guid="34e04e78-8756-4f2a-8066-2fc6c14dc858" Value="7" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="EatPickableBehavior" Guid="d2e3f4a5-b6c7-5123-4567-89abcdef0123">
-        <ParameterSet Name="FoodFactors" Guid="e3f4a5b6-c7d8-5234-5678-9abcdef01234">
-            <Parameter Name="Bread" Guid="f4a5b6c7-d8e9-5345-6789-abcdef012345" Value="1" Type="float"/>
-            <Parameter Name="Meat" Guid="a5b6c7d8-e9f0-5456-789a-bcdef0123456" Value="1" Type="float"/>
+    <MemberComponentTemplate Name="EatPickableBehavior" Guid="fcc0728b-b0a9-4a9a-85dd-fbe80d7dc92c">
+        <ParameterSet Name="FoodFactors" Guid="bcb618e1-331f-49c2-a166-2f4231c47b7d">
+            <Parameter Name="Bread" Guid="e7bc7229-8a1d-4e9c-9a15-2f7d215e6e61" Value="1" Type="float"/>
+            <Parameter Name="Meat" Guid="66c2f429-8a99-4367-9533-9b88e1cbd95a" Value="1" Type="float"/>
         </ParameterSet>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="CreatureSounds" Guid="d4b0e4db-8042-44c6-9a21-dfb6f4321df8">
@@ -3355,19 +3355,19 @@
         <Parameter Name="IdleSound" Guid="8e34af83-cc4a-4c3d-8d7c-d222fa8099bb" Value="Audio/Creatures/Impmon/Idie" Type="string"/>
         <Parameter Name="AttackSound" Guid="a4b5c6d7-e8f9-4a0b-9c1d-4e5f6a7b8c9d" Value="Audio/Creatures/Impmon/Attack" Type="string"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="AvoidFireBehavior" Guid="b6c7d8e9-f0a1-5567-89ab-cdef01234567" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
-    <MemberComponentTemplate Name="Locomotion" Guid="c7d8e9f0-a1b2-5678-9abc-def012345678">
-        <Parameter Name="AccelerationFactor" Guid="d8e9f0a1-b2c3-5789-abcd-ef0123456789" Value="1.6" Type="float"/>
-        <Parameter Name="FlySpeed" Guid="e9f0a1b2-c3d4-5890-bcde-f0123456789a" Value="0" Type="float"/>
-        <Parameter Name="TurnSpeed" Guid="f0a1b2c3-d4e5-5901-cdef-0123456789ab" Value="12" Type="float"/>
-        <Parameter Name="WalkSpeed" Guid="a1b2c3d4-e5f6-6012-def0-123456789abc" Value="9.0" Type="float"/>
-        <Parameter Name="LadderSpeed" Guid="b2c3d4e5-f6a7-6123-ef01-23456789abcd" Value="0" Type="float"/>
+    <MemberComponentTemplate Name="AvoidFireBehavior" Guid="5e642b72-b8a1-4a87-80ab-c4972b148760" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
+    <MemberComponentTemplate Name="Locomotion" Guid="a6ac911a-fa3d-4834-9d57-2ec83af911bd">
+        <Parameter Name="AccelerationFactor" Guid="ba718132-f947-4d4c-b387-729033a519cc" Value="1.6" Type="float"/>
+        <Parameter Name="FlySpeed" Guid="755595fd-4ddf-4899-bb89-2cc23346d7a8" Value="0" Type="float"/>
+        <Parameter Name="TurnSpeed" Guid="e802bae1-1845-4f03-88db-e8481eac3f8d" Value="12" Type="float"/>
+        <Parameter Name="WalkSpeed" Guid="4d9c2dc7-111e-43c4-a8d5-2c7b2e2c481c" Value="9.0" Type="float"/>
+        <Parameter Name="LadderSpeed" Guid="2a3892b4-af83-430f-8b40-bd880c382780" Value="0" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="Loot" Guid="e5f6a7b8-c9d0-6456-1234-56789abcdef0">
-        <ParameterSet Name="Loot" Guid="f6a7b8c9-d0e1-6567-2345-6789abcdef01">
-            <Parameter Name="1" Guid="c9d0e1f2-a3b4-6890-5678-9abcdef01234" Value="102;10;1" Type="string"/>
+    <MemberComponentTemplate Name="Loot" Guid="1b12df49-f6a6-48b2-85d3-cfa4c1a76bcd">
+        <ParameterSet Name="Loot" Guid="bad433f0-d301-48e1-8f86-ae5e5e3efdaf">
+            <Parameter Name="1" Guid="39885e0d-9e1b-43e2-b9c3-66a87f46c404" Value="102;10;1" Type="string"/>
         </ParameterSet>
-        <ParameterSet Name="LootOnFire" Guid="d0e1f2a3-b4c5-6901-6789-abcdef012345"/>
+        <ParameterSet Name="LootOnFire" Guid="b4ccf08f-546f-4aea-a0f9-10588d53e238"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Inventory" Guid="a08a86dd-8857-4d83-9c29-3003aa9488ee" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
         <ParameterSet Name="Slots">
@@ -3386,31 +3386,107 @@
         <Parameter Name="MinMaxRandomWaitTime" Value="0.2;0.5" Type="string"/>
         <Parameter Name="MinMaxDistance" Value="8;40" Type="string"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="HealthBarDisplay" Guid="f3a4b5c6-d7e8-9012-3456-789abcdef012" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+    <MemberComponentTemplate Name="HealthBarDisplay" Guid="9666c3a4-d5b8-4801-81f3-8f4e10f0fdd7" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
         <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="Body" Guid="e1f2a3b4-c5d6-7012-7890-bcdef0123456">
-        <Parameter Name="Mass" Guid="f2a3b4c5-d6e7-7123-8901-cdef01234567" Value="50" Type="float"/>
-        <Parameter Name="BoxSize" Guid="a3b4c5d6-e7f8-7234-9012-def012345678" Value="0.85,0.9,0.85" Type="Vector3"/>
+    <MemberComponentTemplate Name="Body" Guid="6b7d0bce-5cb7-48ea-a80d-044dc51715f8">
+        <Parameter Name="Mass" Guid="ecbf7b89-631c-4c11-8510-e2cd4a483391" Value="50" Type="float"/>
+        <Parameter Name="BoxSize" Guid="8df747e1-204d-42be-9845-85021a1a1edd" Value="0.85,0.9,0.85" Type="Vector3"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="Creature" Guid="b4c5d6e7-f8a9-7345-0123-ef0123456789">
+    <MemberComponentTemplate Name="Creature" Guid="923f585d-38c7-4f18-9580-2e2444cf4557">
         <Parameter Name="DisplayName" Guid="c5d6e7f8-a9b0-7456-1234-f0123456789a" Value="Impmon" Type="string"/>
         <Parameter Name="Category" Guid="d6e7f8a9-b0c1-7567-2345-0123456789ab" Value="LandOther" Type="Game.CreatureCategory"/>
-        <Parameter Name="Description" Guid="e3f4a5b6-c7d8-7345-abcd-ef0123456789" Value="Impmon first appeared in Digimon Tamers (2001) as a Rookie Digimon created by Kenji Watanabe, designed with a mischievous demon-like form, purple body, red scarf, and gloves. In the anime he was portrayed as a troublemaker and sometimes antagonist, reflecting resentment and loneliness, but in this mod he belongs to the Alliance group and can befriend the player, standing equal to other Digimon of the same subgroup. Known for his signature attack Night of Fire, Impmon embodies agility, cunning, and fiery offense, while his evolution path leads to Beelzemon. Ultimately, Impmon is more than a villain—he is a symbol of loyalty and unity when given trust." Type="string"/>
-        <Parameter Name="KillVerbs" Guid="f8a9b0c1-d2e3-7789-4567-23456789abcd" Value="burned" Type="string"/>
+        <Parameter Name="Description" Guid="10982bf5-28b4-4e3e-a3e2-3da4a91912ed" Value="Impmon first appeared in Digimon Tamers (2001) as a Rookie Digimon created by Kenji Watanabe, designed with a mischievous demon-like form, purple body, red scarf, and gloves. In the anime he was portrayed as a troublemaker and sometimes antagonist, reflecting resentment and loneliness, but in this mod he belongs to the Alliance group and can befriend the player, standing equal to other Digimon of the same subgroup. Known for his signature attack Night of Fire, Impmon embodies agility, cunning, and fiery offense, while his evolution path leads to Beelzemon. Ultimately, Impmon is more than a villain—he is a symbol of loyalty and unity when given trust." Type="string"/>
+        <Parameter Name="KillVerbs" Guid="fc0a0db3-421c-4c42-95e8-62a72953d3f0" Value="burned" Type="string"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="FindPlayerBehavior" Guid="9591dd60-cc27-4300-abd4-1a6e504fc3d2" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
+    <MemberComponentTemplate Name="Miner" Guid="d9c64723-f135-40cb-97ad-13aecaf9e93f" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
+        <Parameter Name="AttackPower" Guid="5e29c826-922d-4a81-b4bb-7c458b795096" Value="25" Type="float"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="HumanModel" Guid="3b8bab3c-a3f2-4acc-9f4d-3310c7d0ad96" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
+        <Parameter Name="WalkLegsAngle" Guid="57af8460-7ec9-4889-adc8-77822b672407" Value="0.25" Type="float"/>
+        <Parameter Name="ModelName" Guid="7edce850-1cd5-41f7-8c03-9cae8b738210" Value="Models/MC 2" Type="string"/>
+        <Parameter Name="TextureOverride" Guid="c34baeca-cd80-438f-909c-91413f26e435" Value="Textures/Impmon" Type="string"/>
+        <Parameter Name="WalkAnimationSpeed" Guid="8496a9b5-13b1-473e-9938-4ba67695dc3f" Value="0.5" Type="float"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Health" Guid="16659630-0da2-4317-8b63-c6b9280397ef">
+        <Parameter Name="Health" Guid="d5ac239c-c83b-4c88-80d1-c738602a2341" Value="200" Type="float"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="OnFire" Guid="52ba3243-f209-4c79-9e18-0147109cf946"/>
+    <MemberComponentTemplate Name="WalkAroundBehavior" Guid="ad02e8bc-cfb9-48c5-bd7a-a459012768bc" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
+    <MemberComponentTemplate Name="HerdBehavior" Guid="b4859875-2019-4ad8-b12a-a1a7868c1c7a" InheritanceParent="dfe7218e-ce14-4bde-8dac-f919c38e9efe">
+        <Parameter Name="HerdName" Guid="fc27f9cd-7f41-4df2-9814-a54a9a57d33f" Value="Alianza" Type="string"/>
+        <Parameter Name="AutoNearbyCreaturesHelp" Guid="d2d3b1aa-fbe2-4607-8fd8-9fa3c8776896" Value="True" Type="bool"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="FeedBehavior" Guid="6aeb74c1-45ed-4d9b-9977-b78a9a778e77" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
+        <Parameter Name="AutoFeed" Guid="7107f138-a271-4081-81ca-221e044ec2f9" Value="False" Type="bool"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="ChaseBehavior" Guid="51d96c9e-7b70-4175-860e-58d2619c73b0" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
+        <Parameter Name="AutoChaseMask" Guid="409a20c0-8fe1-4fd2-8c4f-b7da88196456" Value="LandPredator, WaterPredator, WaterOther" Type="Game.CreatureCategory"/>
+        <Parameter Name="DayChaseRange" Guid="2a63f410-7f46-403b-b509-54c8363fcec8" Value="4" Type="float"/>
+        <Parameter Name="NightChaseRange" Guid="9a7e61fc-8fbf-4cd7-81c0-86d22c792a90" Value="9" Type="float"/>
+        <Parameter Name="ChaseNonPlayerProbability" Guid="c3bdc009-54aa-4a05-be21-dd16c2578dfc" Value="0.015" Type="float"/>
+        <Parameter Name="NightChaseTime" Guid="8945d035-443f-4877-82b5-bd4e0903b937" Value="6" Type="float"/>
+    </MemberComponentTemplate>
+    <ParameterSet Name="CreatureEggData" Guid="0a1a103e-af0a-47f6-9133-b7c78802fb5d">
+        <Parameter Name="Color" Guid="2688fa44-04ed-4a96-8511-b6c11c105cbe" Value="90,40,120" Type="Color"/>
+        <Parameter Name="TextureSlot" Guid="07b1d13a-10ce-4978-8598-873a47846dad" Value="189" Type="int"/>
+        <Parameter Name="SwapUV" Guid="75621806-5e44-46f3-886d-7bb1bab831e3" Value="True" Type="bool"/>
+        <Parameter Name="DisplayName" Guid="57f33cb5-4372-4160-9dcb-7cdaa6015f39" Value="Impmon Egg" Type="string"/>
+        <Parameter Name="EggTypeIndex" Guid="8f88e902-5378-4265-8b32-0ec541db05f3" Value="236" Type="int"/>
+    </ParameterSet>
+</EntityTemplate>
+
+<EntityTemplate Name="CarlJohnson" Guid="a1b2c3d4-e5f6-4789-9012-3456789abcd1" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+    <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="a9b0c1d2-e3f4-4890-9123-456789abcdef" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
+        <Parameter Name="DayRange" Guid="b0c1d2e3-f4a5-4901-2345-6789abcdef01" Value="3" Type="float"/>
+        <Parameter Name="NightRange" Guid="c1d2c3d4-e5f6-5012-3456-789abcdef012" Value="5" Type="float"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="EatPickableBehavior" Guid="d2e3f4a5-b6c7-5123-4567-89abcdef0123">
+        <ParameterSet Name="FoodFactors" Guid="e3f4a5b6-c7d8-5234-5678-9abcdef01234">
+            <Parameter Name="Bread" Guid="f4a5b6c7-d8e9-5345-6789-abcdef012345" Value="0.8" Type="float"/>
+            <Parameter Name="Meat" Guid="a5b6c7d8-e9f0-5456-789a-bcdef0123456" Value="1.2" Type="float"/>
+        </ParameterSet>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="AvoidFireBehavior" Guid="b6c7d8e9-f0a1-5567-89ab-cdef01234567" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
+    <MemberComponentTemplate Name="Locomotion" Guid="c7d8e9f0-a1b2-5678-9abc-def012345678">
+        <Parameter Name="AccelerationFactor" Guid="d8e9f0a1-b2c3-5789-abcd-ef0123456789" Value="2.0" Type="float"/>
+        <Parameter Name="FlySpeed" Guid="e9f0a1b2-c3d4-5890-bcde-f0123456789a" Value="0" Type="float"/>
+        <Parameter Name="TurnSpeed" Guid="f0a1b2c3-d4e5-5901-cdef-0123456789ab" Value="15" Type="float"/>
+        <Parameter Name="WalkSpeed" Guid="a1b2c3d4-e5f6-6012-def0-123456789abc" Value="9.0" Type="float"/>
+        <Parameter Name="LadderSpeed" Guid="b2c3d4e5-f6a7-6123-ef01-23456789abcd" Value="0" Type="float"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Loot" Guid="e5f6a7b8-c9d0-6456-1234-56789abcdef0">
+        <ParameterSet Name="Loot" Guid="f6a7b8c9-d0e1-6567-2345-6789abcdef01">
+            <Parameter Name="1" Guid="c9d0e1f2-a3b4-6890-5678-9abcdef01234" Value="102;10;1" Type="string"/>
+        </ParameterSet>
+        <ParameterSet Name="LootOnFire" Guid="d0e1f2a3-b4c5-6901-6789-abcdef012345"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="HealthBarDisplay" Guid="f3a4b5c6-d7e8-9012-3456-789abcdef012" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="MaxDisplayDistance" Value="15" Type="float"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Body" Guid="e1f2a3b4-c5d6-7012-7890-bcdef0123456">
+        <Parameter Name="Mass" Guid="f2a3b4c5-d6e7-7123-8901-cdef01234567" Value="85" Type="float"/>
+        <Parameter Name="BoxSize" Guid="a3b4c5d6-e7f8-7234-9012-def012345678" Value="0.75,1.85,0.75" Type="Vector3"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Creature" Guid="b4c5d6e7-f8a9-7345-0123-ef0123456789">
+        <Parameter Name="DisplayName" Guid="1b70ac5c-bedd-445e-8287-245c1c58cc3f" Value="Carl Johnson" Type="string"/>
+        <Parameter Name="Category" Guid="1b33f68a-e546-4100-87ba-75b6e8838444" Value="LandOther" Type="Game.CreatureCategory"/>
+        <Parameter Name="Description" Guid="b756025d-0620-4f0e-ae4c-67bcaae8948d" Value="Carl 'CJ' Johnson, born in Los Santos, San Andreas, United States, currently lives in his hometown where he controls the streets; he became the central figure in the infamous 'Hot Coffee' controversy from Grand Theft Auto: San Andreas in 2005, a hidden minigame that sparked moral panic, lawsuits, and forced Rockstar Games to reclassify the title; despite his criminal path, CJ shares an unbreakable friendship with Tommy Vercetti and Claude Speed, together forming the group 'Alliance' to dominate the criminal underworld." Type="string"/>
+        <Parameter Name="KillVerbs" Guid="f8a9b0c1-d2e3-7789-4567-23456789abcd" Value="eliminado" Type="string"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="a9b0c1d2-e3f4-7890-5678-3456789abcde" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="b0c1d2e3-f4a5-7901-6789-456789abcdef" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
-        <Parameter Name="AttackPower" Guid="c1d2e3f4-a5b6-8012-7890-56789abcdef0" Value="25" Type="float"/>
+        <Parameter Name="AttackPower" Guid="c1d2e3f4-a5b6-8012-7890-56789abcdef0" Value="35" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="HumanModel" Guid="d2e3f4a5-b6c7-8123-8901-6789abcdef01" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
-        <Parameter Name="WalkLegsAngle" Guid="e3f4a5b6-c7d8-8234-9012-789abcdef012" Value="0.25" Type="float"/>
-        <Parameter Name="ModelName" Guid="f4a5b6c7-d8e9-8345-0123-89abcdef0123" Value="Models/MC 2" Type="string"/>
-        <Parameter Name="TextureOverride" Guid="a5b6c7d8-e9f0-8456-1234-9abcdef01234" Value="Textures/Impmon" Type="string"/>
-        <Parameter Name="WalkAnimationSpeed" Guid="b6c7d8e9-f0a1-8567-2345-abcdef012345" Value="0.5" Type="float"/>
+        <Parameter Name="WalkLegsAngle" Guid="e3f4a5b6-c7d8-8234-9012-789abcdef012" Value="0.3" Type="float"/>
+        <Parameter Name="ModelName" Guid="f4a5b6c7-d8e9-8345-0123-89abcdef0123" Value="Models/HumanMale" Type="string"/>
+        <Parameter Name="TextureOverride" Guid="a5b6c7d8-e9f0-8456-1234-9abcdef01234" Value="Textures/Carl Johnson" Type="string"/>
+        <Parameter Name="WalkAnimationSpeed" Guid="b6c7d8e9-f0a1-8567-2345-abcdef012345" Value="0.7" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="c7d8e9f0-a1b2-8678-3456-bcdef0123456">
-        <Parameter Name="Health" Guid="a62fd3e2-b074-4926-ae76-591f3e3aace5" Value="200" Type="float"/>
+        <Parameter Name="Health" Guid="a62fd3e2-b074-4926-ae76-591f3e3aace5" Value="275" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="a1b2c3d4-e5f6-9012-7890-f0123456789a"/>
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="b2c3d4e5-f6a7-9123-8901-0123456789ab" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
@@ -3422,18 +3498,18 @@
         <Parameter Name="AutoFeed" Guid="a7b8c9d0-e1f2-9678-3456-56789abcdef0" Value="False" Type="bool"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="ChaseBehavior" Guid="b8c9d0e1-f2a3-9789-4567-6789abcdef01" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
-        <Parameter Name="AutoChaseMask" Guid="c9d0e1f2-a3b4-9890-5678-789abcdef012" Value="LandPredator, WaterPredator, WaterOther" Type="Game.CreatureCategory"/>
-        <Parameter Name="DayChaseRange" Guid="d0e1f2a3-b4c5-9901-6789-89abcdef0123" Value="4" Type="float"/>
-        <Parameter Name="NightChaseRange" Guid="e1f2a3b4-c5d6-0012-7890-9abcdef01234" Value="9" Type="float"/>
-        <Parameter Name="ChaseNonPlayerProbability" Guid="f2a3b4c5-d6e7-0123-8901-abcdef012345" Value="0.015" Type="float"/>
-        <Parameter Name="NightChaseTime" Guid="a3b4c5d6-e7f8-0234-9012-bcdef0123456" Value="6" Type="float"/>
+        <Parameter Name="AutoChaseMask" Guid="c9d0e1f2-a3b4-9890-5678-789abcdef012" Value="LandPredator, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
+        <Parameter Name="DayChaseRange" Guid="d0e1f2a3-b4c5-9901-6789-89abcdef0123" Value="8" Type="float"/>
+        <Parameter Name="NightChaseRange" Guid="e1f2a3b4-c5d6-0012-7890-9abcdef01234" Value="12" Type="float"/>
+        <Parameter Name="ChaseNonPlayerProbability" Guid="f2a3b4c5-d6e7-0123-8901-abcdef012345" Value="0.025" Type="float"/>
+        <Parameter Name="NightChaseTime" Guid="a3b4c5d6-e7f8-0234-9012-bcdef0123456" Value="8" Type="float"/>
     </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="b4c5d6e7-f8a9-0345-0123-cdef01234567">
-        <Parameter Name="Color" Guid="c5d6e7f8-a9b0-0456-1234-def012345678" Value="90,40,120" Type="Color"/>
+        <Parameter Name="Color" Guid="c5d6e7f8-a9b0-0456-1234-def012345678" Value="57,0,0" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="d6e7f8a9-b0c1-0567-2345-ef0123456789" Value="189" Type="int"/>
-        <Parameter Name="SwapUV" Guid="e7f8a9b0-c1d2-0678-3456-f0123456789a" Value="True" Type="bool"/>
-        <Parameter Name="DisplayName" Guid="f8a9b0c1-d2e3-0789-4567-0123456789ab" Value="Impmon Egg" Type="string"/>
-        <Parameter Name="EggTypeIndex" Guid="a9b0c1d2-e3f4-0890-5678-123456789abc" Value="236" Type="int"/>
+        <Parameter Name="SwapUV" Guid="e7f8a9b0-c1d2-0678-3456-f0123456789a" Value="False" Type="bool"/>
+        <Parameter Name="DisplayName" Guid="f8a9b0c1-d2e3-0789-4567-0123456789ab" Value="Carl Johnson Egg" Type="string"/>
+        <Parameter Name="EggTypeIndex" Guid="a9b0c1d2-e3f4-0890-5678-123456789abc" Value="238" Type="int"/>
     </ParameterSet>
 </EntityTemplate>
 </ShittyCreatures>
