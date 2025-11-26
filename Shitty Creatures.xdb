@@ -113,7 +113,7 @@
             <MemberComponentTemplate Name="FindPlayerBehavior" Guid="ba520229-b06a-4b09-949e-4217be90a7c3" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
             <MemberComponentTemplate Name="Miner" Guid="c1a2e28a-4292-4229-acce-7373a0c256a0" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="bb34c589-5102-4e76-225c-deca29dcdd6b" Value="5.95" Type="float"/>
-                <Parameter Name="AutoInteractRate" Guid="1234e5cd-a92c-49be-8e39-93e29f43a3ec" Value="1" Type="float"/>
+                <Parameter Name="AutoInteractRate" Guid="d636ccf8-422e-4b71-8b23-fd61b6d535f9" Value="1.0" Type="float"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="HumanModel" Guid="9ca7c9d5-622e-47c9-a0c4-21ea752301c6" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
                 <Parameter Name="WalkLegsAngle" Guid="495feebc-7b26-4228-8af3-688638752c30" Value="0.35" Type="float"/>
@@ -208,7 +208,7 @@
             <MemberComponentTemplate Name="FindPlayerBehavior" Guid="e1f2a3b4-c5d6-4k78-9l90-a1b2c3d4e5f6" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
             <MemberComponentTemplate Name="Miner" Guid="f2a3b4c5-d6e7-4l89-9m01-b2c3d4e5f6a7" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="a3b4c5d6-e7f8-4m90-9n12-c3d4e5f6a7b8" Value="5.95" Type="float"/>
-                <Parameter Name="AutoInteractRate" Guid="e8855440-a6c0-4c7d-9045-ca4b93bf20c8" Value="1" Type="float"/>
+                <Parameter Name="AutoInteractRate" Guid="da437804-5549-43dc-b376-4cd882cccf69" Value="1.0" Type="float"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="HumanModel" Guid="b4c5d6e7-f8a9-4n01-9o23-d4e5f6a7b8c9" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
                 <Parameter Name="WalkLegsAngle" Guid="c5d6e7f8-a9b0-4o12-9p34-e5f6a7b8c9d0" Value="0.35" Type="float"/>
@@ -300,6 +300,7 @@
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="e9f0a1b2-c3d4-7567-cdef-0123456789ab" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="f0a1b2c3-d4e5-7678-def0-123456789abc" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="a1b2c3d4-e5f6-7789-ef01-23456789abcd" Value="15.95" Type="float"/>
+        <Parameter Name="AutoInteractRate" Guid="1234e5cd-a92c-49be-8e39-93e29f43a3ec" Value="1.0" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="HumanModel" Guid="b2c3d4e5-f6a7-7890-f012-3456789abcde" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
         <Parameter Name="WalkLegsAngle" Guid="c3d4e5f6-a7b8-7901-0123-456789abcdef" Value="0.35" Type="float"/>
@@ -393,6 +394,7 @@
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="d6e7f8a9-b0c1-7234-9012-123456789abc" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="e7f8a9b0-c1d2-7345-0123-23456789abcd" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="f8a9b0c1-d2e3-7456-1234-3456789abcde" Value="4.95" Type="float"/>
+        <Parameter Name="AutoInteractRate" Guid="9edf6844-03ce-4ddb-87bb-e8ea7a27d877" Value="1.0" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="HumanModel" Guid="a9b0c1d2-e3f4-7567-2345-456789abcdef" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
         <Parameter Name="WalkLegsAngle" Guid="b0c1d2e3-f4a5-7678-3456-56789abcdef0" Value="0.3" Type="float"/>
@@ -485,6 +487,7 @@
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="325937f0-e327-4fac-b236-33d0317a8c73" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="71e06217-4d5d-439b-b4ea-a1e11d778115" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="841fa564-4d90-44a0-8071-1effc03bd6cf" Value="3.2" Type="float"/>
+        <Parameter Name="AutoInteractRate" Guid="e5104da7-4336-48c7-a730-5a5d72c8b38f" Value="1.0" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="HumanModel" Guid="ec7e2892-d4d9-4fae-92ff-b77e769017b4" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
         <Parameter Name="WalkLegsAngle" Guid="acdb3778-5a3a-45b1-9d29-aa0ef849dd57" Value="0.2" Type="float"/>
@@ -620,6 +623,7 @@
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="7a5f28d1-f3eb-4923-9e6d-7a0b42c22d0f" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="5226597d-239d-4f09-a61f-147907109158" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="02c0ca9d-43ea-4533-be55-b241256d234e" Value="2.85" Type="float"/>
+        <Parameter Name="AutoInteractRate" Guid="ad3f3e02-b800-4be8-985c-4d8049a8ace5" Value="1.0" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="HumanModel" Guid="6813e820-5e4a-4065-a1e5-2605ba9afec3" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
         <Parameter Name="WalkLegsAngle" Guid="0c9854fb-1091-41d3-8690-0bf8402696a3" Value="0.25" Type="float"/>
@@ -702,6 +706,7 @@
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="a797a471-df53-470a-8653-71d346c2e24e" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="38afa6db-b090-4cef-8ce6-e05353b1ff99" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="0f54f33e-1459-4ccf-81b9-66f595dbfe07" Value="4.25" Type="float"/>
+        <Parameter Name="AutoInteractRate" Guid="38634612-bbee-4fa2-b3fc-bd7283317bff" Value="1.0" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="HumanModel" Guid="0eb5d3ad-fb35-4f17-be14-e29cfd7013e4" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
         <Parameter Name="WalkLegsAngle" Guid="42ba32a6-eebd-4a55-b39d-eae9de6f0e3d" Value="0.25" Type="float"/>
@@ -906,6 +911,7 @@
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="f3a4b5c6-d7e8-7901-0123-56789abcdef8" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="a4b5c6d7-e8f9-8012-1234-6789abcdef09" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="b5c6d7e8-f9a0-8123-2345-789abcdef01a" Value="0.8" Type="float"/>
+        <Parameter Name="AutoInteractRate" Guid="8fa557f5-6ef8-454e-b502-99f53dfabf8e" Value="1.0" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="HumanModel" Guid="c6d7e8f9-a0b1-8234-3456-89abcdef012b" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
         <Parameter Name="WalkLegsAngle" Guid="d7e8f9a0-b1c2-8345-4567-9abcdef0123c" Value="0.4" Type="float"/>
@@ -1032,6 +1038,7 @@
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="a4b5c6d7-e8f9-7901-0123-56789abcdef9" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="b5c6d7e8-f9a0-8012-1234-6789abcdef0a" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="c6d7e8f9-a0b1-8123-2345-789abcdef01b" Value="6.5" Type="float"/>
+        <Parameter Name="AutoInteractRate" Guid="9300eb3e-d2dc-4da9-b767-30fcbcb14316" Value="1.0" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="HumanModel" Guid="d7e8f9a0-b1c2-8234-3456-89abcdef012c" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
         <Parameter Name="WalkLegsAngle" Guid="e8f9a0b1-c2d3-8345-4567-9abcdef0123d" Value="0.35" Type="float"/>
@@ -1106,7 +1113,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="c0d1e2f3-a4b5-7456-bcde-0123456789a5">
         <Parameter Name="DisplayName" Guid="d1e2f3a4-b5c6-7567-cdef-123456789ab6" Value="La Muerte X" Type="string"/>
-        <Parameter Name="Category" Guid="e2f3a4b5-c6d7-7678-def0-23456789abc7" Value="LandPredator" Type="Game.CreatureCategory"/>
+        <Parameter Name="Category" Guid="e2f3a4b5-c6d7-7678-def0-23456789abc7" Value="Bird" Type="Game.CreatureCategory"/>
         <Parameter Name="Description" Guid="f3a4b5c6-d7e8-7789-ef01-3456789abcd8" Value="La Muerte X emerged from the violet infernal shadows, with skin and behavior forged in darkness. He is far from friendly his hostile nature drives him to destroy anything in his path. Approach him, and he will hunt you relentlessly… until death. His powers range from moderately strong physical strikes to deadly flame attacks; if you try to escape, he will launch fireballs at you. In the worst case, he hurls magical rocks that inflict devastating damage." Type="string"/>
         <Parameter Name="KillVerbs" Guid="a4b5c6d7-e8f9-7890-f012-456789abcde9" Value="Annihilated" Type="string"/>
     </MemberComponentTemplate>
@@ -1124,6 +1131,7 @@
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="b5c6d7e8-f9a0-7901-0123-56789abcdf0a" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="c6d7e8f9-a0b1-8012-1234-6789abcdef0b" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="d7e8f9a0-b1c2-8123-2345-789abcdef01c" Value="9.0" Type="float"/>
+        <Parameter Name="AutoInteractRate" Guid="75d08eb8-8906-4578-aea6-771aa47c34c8" Value="1.0" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="HumanModel" Guid="e8f9a0b1-c2d3-8234-3456-89abcdef012d" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
         <Parameter Name="WalkLegsAngle" Guid="f9a0b1c2-d3e4-8345-4567-9abcdef0123e" Value="0.45" Type="float"/>
@@ -1212,6 +1220,7 @@
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="e9f0a1b2-c3d4-7890-5678-678901234567" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="f0a1b2c3-d4e5-7901-6789-789012345678" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="a1b2c3d4-e5f6-8012-7890-890123456789" Value="4.5" Type="float"/>
+        <Parameter Name="AutoInteractRate" Guid="a33be66e-4bc3-43a6-a4ee-ca3084ac3514" Value="1.0" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="HumanModel" Guid="b2c3d4e5-f6a7-8123-8901-901234567890" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
         <Parameter Name="WalkLegsAngle" Guid="c3d4e5f6-a7b8-8234-9012-012345678901" Value="0.3" Type="float"/>
@@ -1300,6 +1309,7 @@
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="a0b1c2d3-e4f5-7890-5678-778901234567" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="b1c2d3e4-f5a6-7901-6789-889012345678" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="c2d3e4f5-a6b7-8012-7890-990123456789" Value="6.2" Type="float"/>
+        <Parameter Name="AutoInteractRate" Guid="c71d3600-1813-4744-bd55-a10a8aa85534" Value="1.0" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="HumanModel" Guid="d3e4f5a6-b7c8-8123-8901-001234567890" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
         <Parameter Name="WalkLegsAngle" Guid="e4f5a6b7-c8d9-8234-9012-111345678901" Value="0.35" Type="float"/>
@@ -1460,6 +1470,7 @@
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="daab2c03-fc36-482a-bbdb-4ad099313998" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="dc5011b5-5a7d-468c-bdc5-c728b6735fec" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="862b6dd5-e4c7-418c-a43e-c9793b1327b3" Value="5.95" Type="float"/>
+        <Parameter Name="AutoInteractRate" Guid="51aa0adc-4fd6-4ce1-bf93-1444f59f4c0b" Value="1.0" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="HumanModel" Guid="b8f1c442-0588-4a3b-b8f3-552c2094f74e" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
         <Parameter Name="WalkLegsAngle" Guid="9d137656-373e-452b-9f17-22a3412ffb85" Value="0.35" Type="float"/>
@@ -1538,6 +1549,7 @@
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="8bd9c76b-3ac0-48b2-97c2-2d195f381d66" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="4e4a1d67-f9e2-40f7-bbf4-5f8cb7986be6" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="c5aefaeb-d463-48e4-822a-c3f9873eac3c" Value="4.5" Type="float"/>
+        <Parameter Name="AutoInteractRate" Guid="6f48e293-f478-48b5-9add-ebc500170e1d" Value="1.0" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="HumanModel" Guid="d31c27e5-d4e2-4e2b-ab79-0c44805122c1" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
         <Parameter Name="WalkLegsAngle" Guid="95288121-7133-4215-9972-0b0c3048a713" Value="0.35" Type="float"/>
@@ -1615,6 +1627,7 @@
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="47484a23-a26f-4a35-8c65-ecad5f3d64d5" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="9d339f4d-e8ae-4b76-a152-d503431c27c1" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="635ad25e-c444-420a-baa2-606324a63288" Value="5.5" Type="float"/>
+        <Parameter Name="AutoInteractRate" Guid="6e54a9b2-fe02-46ce-88c7-74bb4007ffba" Value="1.0" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="HumanModel" Guid="333d9d4c-9e4c-4e99-a22a-bcbc8c13bae3" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
         <Parameter Name="WalkLegsAngle" Guid="f1939c45-b3c0-4ec2-bc0d-aff645e0cc81" Value="0.35" Type="float"/>
@@ -1917,6 +1930,7 @@
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="4af5b163-9b8a-439d-8019-fbef8de00cbf" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="08dd88c6-df82-4e53-aaa9-693b0c8b8cab" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="2b6b2d1e-9e67-4857-9768-8dfbd30724c7" Value="2.85" Type="float"/>
+        <Parameter Name="AutoInteractRate" Guid="f3141c9e-1384-41aa-9cea-a8d20aae6a3b" Value="1.0" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="HumanModel" Guid="4eebae82-a573-4f24-ab93-b37429c62107" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
         <Parameter Name="WalkLegsAngle" Guid="d6b5695a-c447-497f-823d-ff69a044a5e4" Value="0.25" Type="float"/>
@@ -1994,6 +2008,7 @@
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="a5b6c7d8-e9f0-7567-cdef-0123456789ab" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="b6c7d8e9-f0a1-7678-def0-123456789abc" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="c7d8e9f0-a1b2-7789-ef01-23456789abcd" Value="4.5" Type="float"/>
+        <Parameter Name="AutoInteractRate" Guid="3393b4a7-db07-4184-b89e-4ad431e01682" Value="1.0" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="HumanModel" Guid="d8e9f0a1-b2c3-7890-f012-3456789abcde" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
         <Parameter Name="WalkLegsAngle" Guid="e9f0a1b2-c3d4-7901-0123-456789abcdef" Value="0.2" Type="float"/>
@@ -2140,6 +2155,7 @@
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="335b40bd-1a56-4e68-9e53-752938d5d946" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="018d2078-f08f-4988-b0e5-dd26a4d69f7d" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="812eb111-ff65-435e-bf32-3cd84caad593" Value="10" Type="float"/>
+        <Parameter Name="AutoInteractRate" Guid="53ede2fb-13c2-413b-add6-4d5e3764b2d2" Value="1.0" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="HumanModel" Guid="197708cc-3c17-4fcc-837e-0f0a88f5e2b7" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
         <Parameter Name="WalkLegsAngle" Guid="1321257c-ca6d-4dfc-8d69-a34da7ce06cb" Value="0.25" Type="float"/>
@@ -2253,6 +2269,7 @@
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="d49516b6-0991-4ae0-9b53-01e5da652a47" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="ec18be0a-bd32-45c5-87d4-d2a6c95acfb3" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="524cc0ab-fc9a-48ab-934b-50c53f64e739" Value="15" Type="float"/>
+        <Parameter Name="AutoInteractRate" Guid="e951937e-c9cd-4595-b2b8-67be6559592a" Value="1.0" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="HumanModel" Guid="54284080-bff0-4013-af85-fe1aced355f1" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
         <Parameter Name="WalkLegsAngle" Guid="107dec5a-5414-4dca-a7d4-68340b43f5b6" Value="0.25" Type="float"/>
@@ -2352,6 +2369,7 @@
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="0fb32930-f78e-43e3-8ecd-4baec970b7d8" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="f57a04d0-aef1-488e-bb59-f9dbaa261677" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="de8b9e0b-d242-4f18-a121-388a689a6366" Value="20" Type="float"/>
+        <Parameter Name="AutoInteractRate" Guid="429f1b75-8a47-4219-ab61-e4554fdc2e8f" Value="1.0" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="HumanModel" Guid="25290629-b84c-4a5f-9697-a7325e8f59da" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
         <Parameter Name="WalkLegsAngle" Guid="d4e12efa-d48f-40a0-88ee-bbd1600fe029" Value="0.25" Type="float"/>
@@ -2451,6 +2469,7 @@
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="3989e865-ab41-4476-a99d-803e20f060a0" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="49e82d79-78bc-4e00-b5e3-35103403325c" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="5411571e-ef17-49b7-8c52-e14aaf1c0aa3" Value="28" Type="float"/>
+        <Parameter Name="AutoInteractRate" Guid="5e45972a-1e53-484a-a260-8004f9b040e7" Value="1.0" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="HumanModel" Guid="bacddc5e-4db9-435c-a0c8-b57faa3a04e8" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
         <Parameter Name="WalkLegsAngle" Guid="fec98a98-7738-4404-a2e4-9c68c5d32a2a" Value="0.25" Type="float"/>
@@ -2571,6 +2590,7 @@
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="dae23531-9ea2-481b-bf77-e9cea7be0d0a" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="50150646-6812-459d-b085-dbf9a6e3bf14" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="5852c536-3cc4-421a-833e-673987d16bca" Value="8" Type="float"/>
+        <Parameter Name="AutoInteractRate" Guid="9942527b-a632-46a9-9186-a8ef9865e22f" Value="1.0" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="HumanModel" Guid="cd662319-afbb-44ba-8edd-1006729b2aa2" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
         <Parameter Name="WalkLegsAngle" Guid="4900af74-a0fb-4f93-8a62-2c6648375388" Value="0.25" Type="float"/>
@@ -2670,6 +2690,7 @@
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="49a7292f-9a8e-4f05-88ac-16ef3f5f4b8e" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="ff99b342-d5fe-487c-be19-d8068bca4458" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="04d9e397-1ab4-48f1-8ad3-a39fd3746de9" Value="25" Type="float"/>
+        <Parameter Name="AutoInteractRate" Guid="c2ba6621-19dc-484a-8060-be33d146685c" Value="1.0" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="HumanModel" Guid="640a93aa-4633-4812-a7e8-fd87530452ce" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
         <Parameter Name="WalkLegsAngle" Guid="e0a7be1d-2516-40c2-91cb-7bad22076153" Value="0.25" Type="float"/>
@@ -2769,6 +2790,7 @@
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="3904495c-555b-4ed6-aa1d-1a67b145a0a2" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="f7bd13c2-81c9-4b86-9286-3dcc495e639f" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="45062ab1-6ea8-4c68-8b5e-efcd3fbc7b86" Value="25" Type="float"/>
+        <Parameter Name="AutoInteractRate" Guid="beb769cc-5c42-4ce1-97a3-962aecc80e4b" Value="1.0" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="HumanModel" Guid="ec4ddc3d-809c-479f-987f-b5d8dde77c18" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
         <Parameter Name="WalkLegsAngle" Guid="a4a712bc-b54a-448f-b006-8ee6ebf6c87e" Value="0.25" Type="float"/>
@@ -2851,6 +2873,7 @@
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="902c50bd-9a47-4811-ad1f-1929d6d7fb01" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="7a9f0963-f7a2-425d-8763-0db31d56c257" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="1849cf02-7d3b-4004-af27-adaf103c47be" Value="28" Type="float"/>
+        <Parameter Name="AutoInteractRate" Guid="a2abd448-0641-4da7-8c69-6330b1c4b2da" Value="1.0" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="HumanModel" Guid="764cedf0-40cc-47a4-b179-66d9cbe5172d" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
         <Parameter Name="WalkLegsAngle" Guid="01b6f676-7dd4-45a1-a722-72be7575fe94" Value="0.25" Type="float"/>
@@ -2950,6 +2973,7 @@
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="2b965f22-6ea9-4638-8a38-7275bef39a4b" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="a23d1e91-2701-43ba-b803-0d5514b46820" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="94b70c70-062a-47b9-b78c-7f0624fe805d" Value="32" Type="float"/>
+        <Parameter Name="AutoInteractRate" Guid="347becdd-e8ec-465c-be9d-2b2e987ed18f" Value="1.0" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="HumanModel" Guid="3137b9e5-a388-4433-8bae-c541f9943e4e" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
         <Parameter Name="WalkLegsAngle" Guid="bb2575c4-3c40-425c-a78e-722dde98cdc5" Value="0.25" Type="float"/>
@@ -3033,6 +3057,7 @@
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="a7456033-6997-42a8-853d-b8f261bc9f0c" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="a9330744-f92d-48ab-9d2b-466e8331b0d4" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="1286cdbd-ed77-42ab-b49c-f3127557618e" Value="30" Type="float"/>
+        <Parameter Name="AutoInteractRate" Guid="b8c61907-b13e-4d51-8851-09fcc94bb1fd" Value="1.0" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="HumanModel" Guid="e7626629-26bf-42c7-aaeb-ee6bd9857cff" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
         <Parameter Name="WalkLegsAngle" Guid="aa4f661c-9c4e-45cf-beb8-09e03b9a71c5" Value="0.25" Type="float"/>
@@ -3125,6 +3150,7 @@
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="de13a336-a0c2-418f-a400-ee599be26e1d" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="6f4ec9c1-5d50-4d86-aa0c-47f704ea8887" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="3abe2de4-f58d-4652-acb2-ee932fb6bb49" Value="4.25" Type="float"/>
+        <Parameter Name="AutoInteractRate" Guid="d426ae0b-fbc8-41cf-8d9b-2a7a5e9b223a" Value="1.0" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="HumanModel" Guid="cb448395-8391-4524-9af7-f820d9baa3f6" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
         <Parameter Name="WalkLegsAngle" Guid="d8c19909-e270-4e04-b676-d7daa2c91f79" Value="0.25" Type="float"/>
@@ -3332,6 +3358,7 @@
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="b8c9d0e1-f2a3-7567-cdef-0123456789ab" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="c9d0e1f2-a3b4-7678-def0-123456789abc" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="d0e1f2a3-b4c5-7789-ef01-23456789abcd" Value="444.25" Type="float"/>
+        <Parameter Name="AutoInteractRate" Guid="89fd7009-8da9-41d7-a077-a2d0c5a6bc86" Value="1.0" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="HumanModel" Guid="e1f2a3b4-c5d6-7890-f012-3456789abcde" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
         <Parameter Name="WalkLegsAngle" Guid="f2a3b4c5-d6e7-7901-0123-456789abcdef" Value="0.25" Type="float"/>
@@ -3435,6 +3462,7 @@
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="a9b0c1d2-e3f4-7890-5678-3456789abcde" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="b0c1d2e3-f4a5-7901-6789-456789abcdef" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="c1d2e3f4-a5b6-8012-7890-56789abcdef0" Value="25" Type="float"/>
+        <Parameter Name="AutoInteractRate" Guid="e8855440-a6c0-4c7d-9045-ca4b93bf20c8" Value="1.0" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="HumanModel" Guid="d2e3f4a5-b6c7-8123-8901-6789abcdef01" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
         <Parameter Name="WalkLegsAngle" Guid="e3f4a5b6-c7d8-8234-9012-789abcdef012" Value="0.25" Type="float"/>
