@@ -60,7 +60,16 @@ namespace Game
 			float attackResilience = this.m_health.AttackResilience;
 			float num3 = this.m_health.Health * attackResilience;
 
-			Color color = (num2 < 0.3f) ? Color.Red : ((num2 < 0.7f) ? Color.Yellow : Color.Green);
+			// Determinar el color de la barra de salud según la vida
+			Color healthColor;
+			if (num2 < 0.3f)
+				healthColor = Color.Red;       // Rojo cuando está a punto de morir
+			else if (num2 < 0.7f)
+				healthColor = Color.Yellow;    // Amarillo cuando está a medio
+			else
+				healthColor = Color.Green;     // Verde cuando está lleno
+
+			Color textColor = (num2 < 0.3f) ? Color.Red : ((num2 < 0.7f) ? Color.Yellow : Color.Green);
 
 			string text = this.m_creature.DisplayName + " " + num3.ToString("0") + " HP";
 
@@ -68,42 +77,46 @@ namespace Game
 			FontBatch3D fontBatch3D = this.m_modelsRenderer.PrimitivesRenderer.FontBatch(bitmapFont, 1, DepthStencilState.DepthRead, RasterizerState.CullNoneScissor, BlendState.AlphaBlend, SamplerState.LinearClamp);
 
 			// CORRECCIÓN: Usar 0 en lugar de TextAnchor
-			fontBatch3D.QueueText(text, vector4, vector6, vector7, color, 0);
+			fontBatch3D.QueueText(text, vector4, vector6, vector7, textColor, 0);
 			fontBatch3D.Flush(camera.ViewProjectionMatrix, false);
 
 			float num4 = 120f;
 			float num5 = 5f;
-			float outlineThickness = 0.5f; // Grosor del contorno
-
+			float outlineThickness = 1f; // Grosor del contorno
+			
 			Vector3 vector8 = vector6 * (num4 * 0.5f);
-			Vector3 vector9 = vector7 * (num5 * 1f);
+			Vector3 vector9 = vector7 * num5;
 			Vector3 vector10 = vector5 - vector8;
 			Vector3 vector11 = vector5 + vector8;
 			Vector3 vector12 = vector10 + vector9;
 			Vector3 vector13 = vector11 + vector9;
 
 			FlatBatch3D flatBatch3D = this.m_modelsRenderer.PrimitivesRenderer.FlatBatch(0, null, null, null);
-
-			// Dibujar contorno de la barra completa
+			
+			// Calcular los vértices del contorno (rectángulo más grande)
 			Vector3 outlineOffsetX = vector6 * outlineThickness;
 			Vector3 outlineOffsetY = vector7 * outlineThickness;
-
-			// Contorno exterior (más grande que la barra)
-			Vector3 outlineStart = vector10 - outlineOffsetX - outlineOffsetY;
-			Vector3 outlineEnd = vector13 + outlineOffsetX + outlineOffsetY;
-
-			// Dibujar el fondo del contorno (borde blanco)
-			flatBatch3D.QueueQuad(outlineStart, outlineStart + vector9 + 2f * outlineOffsetY, outlineEnd + vector9 + 2f * outlineOffsetY, outlineEnd, new Color(255, 255, 255, 150));
-
-			// Barra de salud principal
-			flatBatch3D.QueueQuad(vector10, vector12, Vector3.Lerp(vector12, vector13, num2), Vector3.Lerp(vector10, vector11, num2), Color.Lerp(Color.Red, Color.Green, num2));
-
-			if (num2 < 1f)
+			
+			// Vértices del contorno exterior
+			Vector3 outlineBottomLeft = vector10 - outlineOffsetX - outlineOffsetY;
+			Vector3 outlineBottomRight = vector11 + outlineOffsetX - outlineOffsetY;
+			Vector3 outlineTopLeft = vector12 - outlineOffsetX + outlineOffsetY;
+			Vector3 outlineTopRight = vector13 + outlineOffsetX + outlineOffsetY;
+			
+			// Dibujar el contorno blanco
+			flatBatch3D.QueueQuad(outlineBottomLeft, outlineTopLeft, outlineTopRight, outlineBottomRight, new Color(255, 255, 255, 200));
+			
+			// Dibujar el fondo de la barra (parte negra detrás de la salud)
+			flatBatch3D.QueueQuad(vector10, vector12, vector13, vector11, new Color(0, 0, 0, 180));
+			
+			// Barra de salud principal con el color correspondiente según la vida
+			if (num2 > 0f)
 			{
-				// Parte vacía de la barra
-				flatBatch3D.QueueQuad(Vector3.Lerp(vector10, vector11, num2), Vector3.Lerp(vector12, vector13, num2), vector13, vector11, new Color(0, 0, 0, 180));
+				Vector3 healthEnd = Vector3.Lerp(vector10, vector11, num2);
+				Vector3 healthEndTop = Vector3.Lerp(vector12, vector13, num2);
+				flatBatch3D.QueueQuad(vector10, vector12, healthEndTop, healthEnd, healthColor);
 			}
-
+			
 			flatBatch3D.Flush(camera.ViewProjectionMatrix, false);
 		}
 
