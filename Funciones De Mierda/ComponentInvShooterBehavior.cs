@@ -650,8 +650,8 @@ namespace Game
 							this.m_subsystemProjectiles.FireProjectile(itemToShoot, eyePosition, velocity, Vector3.Zero, this.m_componentCreature);
 
 							// Reproducir sonidos
-							this.m_subsystemAudio.PlaySound("Audio/MusketFire", 0.5f, this.m_random.Float(-0.1f, 0.1f), eyePosition, 10f, false);
-							this.m_subsystemAudio.PlaySound("Audio/HammerCock", 0.75f, this.m_random.Float(-0.1f, 0.1f), eyePosition, 10f, false);
+							this.m_subsystemAudio.PlaySound("Audio/Items/ItemLauncher/Item Cannon Fire", 0.5f, this.m_random.Float(-0.1f, 0.1f), eyePosition, 10f, false);
+							this.m_subsystemAudio.PlaySound("Audio/Items/ItemLauncher/Item Cannon Reload", 0.75f, this.m_random.Float(-0.1f, 0.1f), eyePosition, 10f, false);
 
 							// Consumir combustible y item
 							int newFuel = ItemsLauncherBlock.GetFuel(data) - 1;
