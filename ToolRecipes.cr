@@ -1,7 +1,7 @@
 <mod>
 <Recipes>
-<Recipe Result="SIngotBlock:1" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="4" a="diamond" b="ironingot" Description="Steel Ingot Smelting">
-"ba"
+<Recipe Result="SIngotBlock:1" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="4" a="ironingot" Description="Steel Ingot Smelting">
+"aa"
 </Recipe>
 <Recipe Result="SIngotBlock:0" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="2" a="goldorechunk" Description="Gold Ingot Smelting">
 "a"
