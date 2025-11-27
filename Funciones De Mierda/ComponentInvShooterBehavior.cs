@@ -9,9 +9,9 @@ namespace Game
 {
 	public class ComponentInvShooterBehavior : ComponentBehavior, IUpdateable
 	{
-		// Arrays estáticos para ItemsLauncher (copiados de SubsystemItemsLauncherBlockBehavior)
-		private static readonly float[] m_speedValues = new float[] { 10f, 35f, 60f };
-		private static readonly float[] m_spreadValues = new float[] { 0.01f, 0.1f, 0.5f };
+		// Arrays estáticos modificados para Auto-Cannon - Mayor velocidad y spread mínimo
+		private static readonly float[] m_speedValues = new float[] { 50f, 75f, 100f };
+		private static readonly float[] m_spreadValues = new float[] { 0.001f, 0.01f, 0.05f };
 
 		public int UpdateOrder
 		{
@@ -514,7 +514,7 @@ namespace Game
 						this.m_aimDuration = this.m_random.Float(1f, 1.5f);
 						break;
 					case ComponentInvShooterBehavior.WeaponType.ItemsLauncher:
-						this.m_aimDuration = this.m_random.Float(0.5f, 1f);
+						this.m_aimDuration = this.m_random.Float(0.3f, 0.6f); // Más rápido para Auto-Cannon
 						break;
 					default:
 						this.m_aimDuration = this.m_random.Float(0.8f, 1.2f);
@@ -573,7 +573,9 @@ namespace Game
 			if (slotValue == 0) return;
 
 			Vector3 eyePosition = this.m_componentCreature.ComponentCreatureModel.EyePosition;
-			Vector3 targetPosition = this.m_componentChaseBehavior.Target.ComponentBody.Position + new Vector3(0f, this.m_componentChaseBehavior.Target.ComponentBody.StanceBoxSize.Y * 0.75f, 0f);
+
+			// PUNTERÍA MEJORADA: Apuntar directamente a los ojos del objetivo
+			Vector3 targetPosition = this.m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition;
 			float distance = Vector3.Distance(eyePosition, targetPosition);
 			Vector3 direction = Vector3.Normalize(targetPosition - eyePosition);
 
@@ -618,47 +620,75 @@ namespace Game
 				case ComponentInvShooterBehavior.WeaponType.ItemsLauncher:
 					if (ItemsLauncherBlock.GetFuel(data) > 0)
 					{
-						// Encontrar un item para disparar
-						int itemToShoot = 0;
-						int itemSlot = -1;
+						// AUTO-CANNON: Encontrar múltiples items para ráfaga
+						List<int> itemsToShoot = new List<int>();
+						List<int> itemSlots = new List<int>();
 
 						for (int i = 0; i < this.m_componentInventory.SlotsCount; i++)
 						{
 							if (i != activeSlotIndex && this.m_componentInventory.GetSlotCount(i) > 0)
 							{
-								itemToShoot = this.m_componentInventory.GetSlotValue(i);
-								itemSlot = i;
-								break;
+								itemsToShoot.Add(this.m_componentInventory.GetSlotValue(i));
+								itemSlots.Add(i);
+								// Limitar a 5 proyectiles por ráfaga (como en la imagen)
+								if (itemsToShoot.Count >= 5) break;
 							}
 						}
 
-						if (itemToShoot != 0)
+						if (itemsToShoot.Count > 0)
 						{
-							// Configurar parámetros de disparo
+							// CONFIGURACIÓN AUTO-CANNON BASADA EN LA IMAGEN
 							int speedLevel = ItemsLauncherBlock.GetSpeedLevel(data);
 							int spreadLevel = ItemsLauncherBlock.GetSpreadLevel(data);
 
-							if (speedLevel == 0) speedLevel = 2;
-							if (spreadLevel == 0) spreadLevel = 2;
+							// PROJECTILE SPEED: 5 (Máximo) -> Nivel 3
+							// SHOTS PER SECOND: 5 (Ráfaga rápida)  
+							// PROJECTILE SPREAD: 5 (Mínimo spread) -> Nivel 1
+							if (speedLevel == 0) speedLevel = 3; // Máxima velocidad
+							if (spreadLevel == 0) spreadLevel = 1; // Mínimo spread
 
-							float speed = m_speedValues[speedLevel - 1];
-							float spread = m_spreadValues[spreadLevel - 1];
+							float speed = m_speedValues[speedLevel - 1];  // 50, 75, 100
+							float spread = m_spreadValues[spreadLevel - 1];  // 0.001, 0.01, 0.05|
 
-							Vector3 velocity = Vector3.Normalize(direction + spread * this.m_random.Vector3(0.5f)) * speed;
-
-							// Disparar el proyectil
-							this.m_subsystemProjectiles.FireProjectile(itemToShoot, eyePosition, velocity, Vector3.Zero, this.m_componentCreature);
-
-							// Reproducir sonidos
 							this.m_subsystemAudio.PlaySound("Audio/Items/ItemLauncher/Item Cannon Fire", 0.5f, this.m_random.Float(-0.1f, 0.1f), eyePosition, 10f, false);
-							this.m_subsystemAudio.PlaySound("Audio/Items/ItemLauncher/Item Cannon Reload", 0.75f, this.m_random.Float(-0.1f, 0.1f), eyePosition, 10f, false);
 
-							// Consumir combustible y item
+							// DISPARO EN RÁFAGA (5 disparos por segundo)
+							int shotsInBurst = Math.Min(5, itemsToShoot.Count); // Máximo 5 disparos
+							float burstDelay = 0.2f; // 5 disparos por segundo = 0.2s entre disparos
+
+							for (int shotIndex = 0; shotIndex < shotsInBurst; shotIndex++)
+							{
+								// Pequeñas variaciones en dirección para cada disparo
+								Vector3 shotDirection = Vector3.Normalize(direction + spread * this.m_random.Vector3(0.3f));
+
+								// DISPARO RECTO Y LINEAL - Sin compensación de gravedad
+								Vector3 velocity = shotDirection * speed;
+
+								// Disparar el proyectil
+								this.m_subsystemProjectiles.FireProjectile(
+									itemsToShoot[shotIndex],
+									eyePosition,
+									velocity,
+									Vector3.Zero,
+									this.m_componentCreature
+								);
+
+								// Consumir el item del inventario
+								this.m_componentInventory.RemoveSlotItems(itemSlots[shotIndex], 1);
+
+								// Pequeño delay visual entre disparos (solo para el último sonido)
+								if (shotIndex == shotsInBurst - 1)
+								{
+									// Sonido de cañón automático (solo el último disparo)
+									this.m_subsystemAudio.PlaySound("Audio/Items/ItemLauncher/AutoCannonFire", 1f,
+										this.m_random.Float(-0.1f, 0.1f), eyePosition, 15f, false);
+								}
+							}
+
+							// Consumir combustible (1 por ráfaga completa)
 							int newFuel = ItemsLauncherBlock.GetFuel(data) - 1;
 							int newData = ItemsLauncherBlock.SetFuel(data, newFuel);
 							newValue = Terrain.ReplaceData(slotValue, newData);
-
-							this.m_componentInventory.RemoveSlotItems(itemSlot, 1);
 						}
 					}
 					break;
@@ -881,7 +911,7 @@ namespace Game
 			}
 			else if (weaponToReload.Type == ComponentInvShooterBehavior.WeaponType.ItemsLauncher)
 			{
-				// Para ItemsLauncher, recargar significa añadir combustible
+				// Para Auto-Cannon, recargar significa añadir combustible
 				int fuelSlot = this.FindItemSlotByContents(ItemsLauncherBlock.Index);
 				if (fuelSlot != -1)
 				{
