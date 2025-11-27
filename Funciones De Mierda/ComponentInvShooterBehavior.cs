@@ -9,6 +9,10 @@ namespace Game
 {
 	public class ComponentInvShooterBehavior : ComponentBehavior, IUpdateable
 	{
+		// Arrays estáticos para ItemsLauncher (copiados de SubsystemItemsLauncherBlockBehavior)
+		private static readonly float[] m_speedValues = new float[] { 10f, 35f, 60f };
+		private static readonly float[] m_spreadValues = new float[] { 0.01f, 0.1f, 0.5f };
+
 		public int UpdateOrder
 		{
 			get
@@ -509,6 +513,9 @@ namespace Game
 					case ComponentInvShooterBehavior.WeaponType.Musket:
 						this.m_aimDuration = this.m_random.Float(1f, 1.5f);
 						break;
+					case ComponentInvShooterBehavior.WeaponType.ItemsLauncher:
+						this.m_aimDuration = this.m_random.Float(0.5f, 1f);
+						break;
 					default:
 						this.m_aimDuration = this.m_random.Float(0.8f, 1.2f);
 						break;
@@ -537,6 +544,11 @@ namespace Game
 						this.m_componentModel.InHandItemRotationOrder = new Vector3(-1.55f, 0f, 0f);
 						break;
 					case ComponentInvShooterBehavior.WeaponType.Musket:
+						this.m_componentModel.AimHandAngleOrder = 1.4f;
+						this.m_componentModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
+						this.m_componentModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
+						break;
+					case ComponentInvShooterBehavior.WeaponType.ItemsLauncher:
 						this.m_componentModel.AimHandAngleOrder = 1.4f;
 						this.m_componentModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
 						this.m_componentModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
@@ -602,9 +614,62 @@ namespace Game
 					}
 					newValue = Terrain.ReplaceData(slotValue, MusketBlock.SetLoadState(data, 0));
 					break;
+
+				case ComponentInvShooterBehavior.WeaponType.ItemsLauncher:
+					if (ItemsLauncherBlock.GetFuel(data) > 0)
+					{
+						// Encontrar un item para disparar
+						int itemToShoot = 0;
+						int itemSlot = -1;
+
+						for (int i = 0; i < this.m_componentInventory.SlotsCount; i++)
+						{
+							if (i != activeSlotIndex && this.m_componentInventory.GetSlotCount(i) > 0)
+							{
+								itemToShoot = this.m_componentInventory.GetSlotValue(i);
+								itemSlot = i;
+								break;
+							}
+						}
+
+						if (itemToShoot != 0)
+						{
+							// Configurar parámetros de disparo
+							int speedLevel = ItemsLauncherBlock.GetSpeedLevel(data);
+							int spreadLevel = ItemsLauncherBlock.GetSpreadLevel(data);
+
+							if (speedLevel == 0) speedLevel = 2;
+							if (spreadLevel == 0) spreadLevel = 2;
+
+							float speed = m_speedValues[speedLevel - 1];
+							float spread = m_spreadValues[spreadLevel - 1];
+
+							Vector3 velocity = Vector3.Normalize(direction + spread * this.m_random.Vector3(0.5f)) * speed;
+
+							// Disparar el proyectil
+							this.m_subsystemProjectiles.FireProjectile(itemToShoot, eyePosition, velocity, Vector3.Zero, this.m_componentCreature);
+
+							// Reproducir sonidos
+							this.m_subsystemAudio.PlaySound("Audio/MusketFire", 0.5f, this.m_random.Float(-0.1f, 0.1f), eyePosition, 10f, false);
+							this.m_subsystemAudio.PlaySound("Audio/HammerCock", 0.75f, this.m_random.Float(-0.1f, 0.1f), eyePosition, 10f, false);
+
+							// Consumir combustible y item
+							int newFuel = ItemsLauncherBlock.GetFuel(data) - 1;
+							int newData = ItemsLauncherBlock.SetFuel(data, newFuel);
+							newValue = Terrain.ReplaceData(slotValue, newData);
+
+							this.m_componentInventory.RemoveSlotItems(itemSlot, 1);
+						}
+					}
+					break;
 			}
 
-			if (this.m_weaponInfo.Type != ComponentInvShooterBehavior.WeaponType.Throwable)
+			if (this.m_weaponInfo.Type != ComponentInvShooterBehavior.WeaponType.Throwable && this.m_weaponInfo.Type != ComponentInvShooterBehavior.WeaponType.ItemsLauncher)
+			{
+				this.m_componentInventory.RemoveSlotItems(activeSlotIndex, 1);
+				this.m_componentInventory.AddSlotItems(activeSlotIndex, newValue, 1);
+			}
+			else if (this.m_weaponInfo.Type == ComponentInvShooterBehavior.WeaponType.ItemsLauncher && newValue != slotValue)
 			{
 				this.m_componentInventory.RemoveSlotItems(activeSlotIndex, 1);
 				this.m_componentInventory.AddSlotItems(activeSlotIndex, newValue, 1);
@@ -814,6 +879,27 @@ namespace Game
 					this.m_componentInventory.AddSlotItems(weaponToReload.WeaponSlot, Terrain.ReplaceData(weaponToReload.WeaponValue, weaponData), 1);
 				}
 			}
+			else if (weaponToReload.Type == ComponentInvShooterBehavior.WeaponType.ItemsLauncher)
+			{
+				// Para ItemsLauncher, recargar significa añadir combustible
+				int fuelSlot = this.FindItemSlotByContents(ItemsLauncherBlock.Index);
+				if (fuelSlot != -1)
+				{
+					int fuelValue = this.m_componentInventory.GetSlotValue(fuelSlot);
+					int fuelData = Terrain.ExtractData(fuelValue);
+					int currentFuel = ItemsLauncherBlock.GetFuel(fuelData);
+
+					if (currentFuel < 15) // Máximo de combustible
+					{
+						int newFuel = Math.Min(currentFuel + 5, 15); // Añadir 5 de combustible
+						int newData = ItemsLauncherBlock.SetFuel(fuelData, newFuel);
+						int newValue = Terrain.ReplaceData(fuelValue, newData);
+
+						this.m_componentInventory.RemoveSlotItems(fuelSlot, 1);
+						this.m_componentInventory.AddSlotItems(fuelSlot, newValue, 1);
+					}
+				}
+			}
 		}
 
 		private int FindItemSlotByContents(int contents)
@@ -862,7 +948,13 @@ namespace Game
 			if (block is CrossbowBlock)
 				return CrossbowBlock.GetArrowType(data) != null && CrossbowBlock.GetDraw(data) == 15;
 
-			return block is MusketBlock && MusketBlock.GetLoadState(data) == MusketBlock.LoadState.Loaded;
+			if (block is MusketBlock)
+				return MusketBlock.GetLoadState(data) == MusketBlock.LoadState.Loaded;
+
+			if (block is ItemsLauncherBlock)
+				return ItemsLauncherBlock.GetFuel(data) > 0;
+
+			return false;
 		}
 
 		private void ProactiveReloadCheck()
@@ -905,6 +997,20 @@ namespace Game
 				int bulletSlot = this.FindBulletSlot(out _);
 
 				return hasPowder && hasFuse && bulletSlot != -1;
+			}
+
+			if (weaponInfo.Type == ComponentInvShooterBehavior.WeaponType.ItemsLauncher)
+			{
+				// Verificar que tiene combustible y al menos un item para disparar
+				if (ItemsLauncherBlock.GetFuel(weaponInfo.WeaponValue) <= 0)
+					return false;
+
+				for (int i = 0; i < this.m_componentInventory.SlotsCount; i++)
+				{
+					if (i != weaponInfo.WeaponSlot && this.m_componentInventory.GetSlotCount(i) > 0)
+						return true;
+				}
+				return false;
 			}
 
 			return false;
@@ -952,6 +1058,15 @@ namespace Game
 							Type = ComponentInvShooterBehavior.WeaponType.Musket
 						};
 					}
+					else if (block is ItemsLauncherBlock && ItemsLauncherBlock.GetFuel(data) > 0)
+					{
+						return new ComponentInvShooterBehavior.WeaponInfo
+						{
+							WeaponSlot = i,
+							WeaponValue = slotValue,
+							Type = ComponentInvShooterBehavior.WeaponType.ItemsLauncher
+						};
+					}
 				}
 			}
 
@@ -995,6 +1110,16 @@ namespace Game
 							WeaponSlot = i,
 							WeaponValue = slotValue,
 							Type = ComponentInvShooterBehavior.WeaponType.Musket
+						};
+					}
+
+					if (block is ItemsLauncherBlock)
+					{
+						return new ComponentInvShooterBehavior.WeaponInfo
+						{
+							WeaponSlot = i,
+							WeaponValue = slotValue,
+							Type = ComponentInvShooterBehavior.WeaponType.ItemsLauncher
 						};
 					}
 				}
@@ -1095,6 +1220,7 @@ namespace Game
 			Bow,
 			Crossbow,
 			Musket,
+			ItemsLauncher,
 			Melee
 		}
 
