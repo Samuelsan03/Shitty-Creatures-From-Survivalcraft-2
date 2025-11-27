@@ -1,9 +1,16 @@
 <ShittyCreatures>
 <Folder Name="Gameplay" Guid="d3d4b692-acc9-4128-9b99-a5acf1de1fbb">
-<ComponentTemplate Name="HealthBarDisplay" Guid="cc577309-064e-4bd3-82ed-89be72213cc6" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
+    <ComponentTemplate Name="HealthBarDisplay" Guid="cc577309-064e-4bd3-82ed-89be72213cc6" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
         <Parameter Name="Class" Guid="b2c3d4e5-f6a7-8901-bcde-f23456789012" Value="Game.ComponentHealthBar" Type="string"/>
         <Parameter Name="IsOptional" Guid="c3d4e5f6-a7b8-9012-cdef-345678901234" Value="True" Type="bool"/>
     </ComponentTemplate>
+    
+    <ComponentTemplate Name="ComponentMusic" Guid="f1e2d3c4-b5a6-4789-9012-3456789abcde" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
+        <Parameter Name="Class" Guid="f2e3d4c5-b6a7-4789-9012-3456789abcdf" Value="Game.ComponentMusic" Type="string"/>
+        <Parameter Name="IsOptional" Guid="f3e4d5c6-b7a8-4789-9012-3456789abcd0" Value="True" Type="bool"/>
+        <Parameter Name="MusicButtonVisible" Guid="f4e5d6c7-b8a9-4789-9012-3456789abcd1" Value="True" Type="bool"/>
+    </ComponentTemplate>
+    
     <ComponentTemplate Name="ComponentRandomChatter" Guid="a93baf1c-930f-47a8-a98a-f79fd0de910f">
         <Parameter Name="Class" Value="Game.ComponentRandomChatter" Type="string" Description="El nombre de la clase C# que implementa la lógica."/>
         <Parameter Name="LoadOrder" Value="-1" Type="int" Guid="4dd04a27-f015-4576-ad54-0eddc8afa940" Description="Orden de carga para resolver dependencias con otros componentes."/>
@@ -15,6 +22,7 @@
         <Parameter Name="RiseDuration" Value="2" Type="float" Description="Duración en segundos del ascenso del texto desde las rodillas hasta la cabeza. AJUSTA: Qué tan rápido sube el texto desde abajo hacia arriba."/>
         <Parameter Name="FadeDuration" Value="0.5" Type="float" Description="Duración en segundos del desvanecimiento final cuando llega a la cabeza. AJUSTA: Qué tan rápido desaparece el texto al final."/>
     </ComponentTemplate>
+    
     <ComponentTemplate Name="ComponentRandomChatter2" Guid="40891058-39e7-4823-9f93-37a3b6d9dbb5">
         <Parameter Name="Class" Value="Game.ComponentRandomChatter2" Type="string" Description="El nombre de la clase C# que implementa la lógica para NPCs hostiles."/>
         <Parameter Name="LoadOrder" Value="-1" Type="int" Guid="5927fedf-417d-4bad-93cd-8b16e76b4d6f" Description="Orden de carga para resolver dependencias con otros componentes."/>
@@ -29,7 +37,7 @@
 </Folder>
 
 <Folder Name="ProgramedInteligence" Guid="33dfd132-3c41-4dfa-a385-af3ba34ff86b">
-<ComponentTemplate Name="CreatureCollect" Description="Permite a la criatura recoger objetos automáticamente" Guid="b0295147-0a80-4aed-9a1b-c784faf1297b" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
+    <ComponentTemplate Name="CreatureCollect" Description="Permite a la criatura recoger objetos automáticamente" Guid="b0295147-0a80-4aed-9a1b-c784faf1297b" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
         <Parameter Name="Activate" Description="Permitir a la criatura recojer obejos." Guid="67a07091-a837-4ef2-bebc-460fa669f18e" Value="true" Type="bool"/>
         <Parameter Name="CanOpenInventory" Description="Permitir al jugador abrir el inventario de la criatura." Guid="8514719e-6dd5-4564-bca5-19ea18def146" Value="False" Type="bool"/>
         <Parameter Name="DetectionDistance" Description="Rango de deteccion para que la criatura valla a recojer el objeto." Guid="0c245cc2-ff24-43f2-ae1a-a47e6f1d6cf5" Value="10" Type="float"/>
@@ -37,22 +45,23 @@
         <Parameter Name="SpecificItems" Description="" Guid="c7791b3b-3ad4-42cd-b232-314b8ee6fb8d" Value="" Type="string"/>
         <Parameter Name="Class" Guid="d3391f80-40c8-455f-b0b9-35f88b8527da" Value="Game.ComponentCreatureCollect" Type="string"/>
     </ComponentTemplate>
-	<ComponentTemplate Name="InvShooterBehavior" Description="Comportamiento que hace a una criatura arrojar objetos, es requerido Inventory para funcionar." Guid="456e3558-0e7f-42c3-bc05-35eef7540900" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
-    <Parameter Name="DiscountFromInventory" Description="Descontar objetos del inventario por cada objeto arrojado, si es falso, la criatura podra arrojar objetos indefinidamente." Guid="632b972c-db56-4348-a2ca-35f42a841aa0" Value="true" Type="bool"/>
-    <Parameter Name="SelectRandomThrowableItems" Description="La criatura selecciona objetos aleatoriamente que se puedan lanzar de su inventario si es true." Guid="b6486805-6109-4c6c-8a91-63e3f581c8e3" Value="false" Type="bool"/>
-    <Parameter Name="ThrowFromHead" Description="Los objetos salen arrojados de la caveza de la criatura si el valor es true." Guid="e339df62-e1ab-42b5-8b6e-c7783d1eaeae" Value="false" Type="bool"/>
-    <Parameter Name="MinMaxRandomChargeTime" Description="Establece un intervalo de tiempo en segundos minimo y maximo determinado para que la criatura este a punto de arrojar el objeto en un momento aleatorio, deje una relacion 1;1 para que no sea aleatorio, e.g 1;3" Guid="2d4d6577-42bb-48ca-912c-e896346e5c13" Value="1;3" Type="string"/>
-    <Parameter Name="MinMaxRandomWaitTime" Description="Tiempo de espera aleatorio minimo y maximo en segundos aleatorio para que la criatura empiece por la fase de carga del proyectil, los valores se representan en Min;Max ejemplo: 1;16." Guid="5496abd5-dbe7-4e5e-a1db-19ba431e0500" Value="1;16" Type="string"/>
-    <Parameter Name="MinMaxDistance" Description="Distancia minima y maxima para que la criatura arroje el objeto, los valores se representan de este modo Min;Max ejemplo: 2;16." Guid="b54e72f8-3cdb-425a-9eaf-d2ef7e76e616" Value="4;20" Type="string"/>
-    <Parameter Name="ThrowingSound" Description="Genera un sonido cuando la criatura arroje el objeto. ejemplo: Audio/Throw." Guid="e8e9bbd4-e535-4b7b-b4b1-d1c5002a0e1a" Value="Audio/Throw" Type="string"/>
-    <Parameter Name="ThrowingSoundDistance" Description="Rango de distancia para escuchar el sonido." Guid="5503c7a1-b473-4bbf-8338-be994e120c34" Value="10" Type="float"/>
-    <Parameter Name="SpecialThrowableItem" Description="Objetos que la criatura puede lanzar aun que no esten en su inventario y sin importar si IsAimable false. El valor debe ser el nombre de la clase del bloque o el ID, ejemplo: DirtBlock o 2." Guid="bb26976a-103a-4e5c-be43-d7b2b496ef9a" Value="" Type="string"/>
-    <Parameter Name="MeleeRange" Description="Rango de ataque cuerpo a cuerpo. Si el objetivo está más cerca de esta distancia, la criatura cambiará a combate melee." Guid="f3338091-4528-49a7-a802-d04bf0ac9ae2" Value="2.5" Type="float"/>
-    <Parameter Name="RangedWeaponEnabled" Description="Habilita sistema de armas a distancia" Guid="37540888-6ede-4deb-8b6f-ee76ca4cb474" Value="true" Type="bool"/>
-    <Parameter Name="AutoReload" Description="Recarga automática de armas" Guid="59210f95-a6ae-4da0-b91f-abfa5b2953cb" Value="true" Type="bool"/>
-    <Parameter Name="ExcludedThrowableItems" Description="Lista de items excluidos para lanzar, separados por punto y coma." Guid="040fde49-d7d1-4b67-9373-8f2a3b1b8009" Value="" Type="string"/>
-    <Parameter Name="Class" Guid="195523d4-9a71-4be0-ad61-04613053c78d" Value="Game.ComponentInvShooterBehavior" Type="string"/>
-</ComponentTemplate>
+    
+    <ComponentTemplate Name="InvShooterBehavior" Description="Comportamiento que hace a una criatura arrojar objetos, es requerido Inventory para funcionar." Guid="456e3558-0e7f-42c3-bc05-35eef7540900" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+        <Parameter Name="DiscountFromInventory" Description="Descontar objetos del inventario por cada objeto arrojado, si es falso, la criatura podra arrojar objetos indefinidamente." Guid="632b972c-db56-4348-a2ca-35f42a841aa0" Value="true" Type="bool"/>
+        <Parameter Name="SelectRandomThrowableItems" Description="La criatura selecciona objetos aleatoriamente que se puedan lanzar de su inventario si es true." Guid="b6486805-6109-4c6c-8a91-63e3f581c8e3" Value="false" Type="bool"/>
+        <Parameter Name="ThrowFromHead" Description="Los objetos salen arrojados de la caveza de la criatura si el valor es true." Guid="e339df62-e1ab-42b5-8b6e-c7783d1eaeae" Value="false" Type="bool"/>
+        <Parameter Name="MinMaxRandomChargeTime" Description="Establece un intervalo de tiempo en segundos minimo y maximo determinado para que la criatura este a punto de arrojar el objeto en un momento aleatorio, deje una relacion 1;1 para que no sea aleatorio, e.g 1;3" Guid="2d4d6577-42bb-48ca-912c-e896346e5c13" Value="1;3" Type="string"/>
+        <Parameter Name="MinMaxRandomWaitTime" Description="Tiempo de espera aleatorio minimo y maximo en segundos aleatorio para que la criatura empiece por la fase de carga del proyectil, los valores se representan en Min;Max ejemplo: 1;16." Guid="5496abd5-dbe7-4e5e-a1db-19ba431e0500" Value="1;16" Type="string"/>
+        <Parameter Name="MinMaxDistance" Description="Distancia minima y maxima para que la criatura arroje el objeto, los valores se representan de este modo Min;Max ejemplo: 2;16." Guid="b54e72f8-3cdb-425a-9eaf-d2ef7e76e616" Value="4;20" Type="string"/>
+        <Parameter Name="ThrowingSound" Description="Genera un sonido cuando la criatura arroje el objeto. ejemplo: Audio/Throw." Guid="e8e9bbd4-e535-4b7b-b4b1-d1c5002a0e1a" Value="Audio/Throw" Type="string"/>
+        <Parameter Name="ThrowingSoundDistance" Description="Rango de distancia para escuchar el sonido." Guid="5503c7a1-b473-4bbf-8338-be994e120c34" Value="10" Type="float"/>
+        <Parameter Name="SpecialThrowableItem" Description="Objetos que la criatura puede lanzar aun que no esten en su inventario y sin importar si IsAimable false. El valor debe ser el nombre de la clase del bloque o el ID, ejemplo: DirtBlock o 2." Guid="bb26976a-103a-4e5c-be43-d7b2b496ef9a" Value="" Type="string"/>
+        <Parameter Name="MeleeRange" Description="Rango de ataque cuerpo a cuerpo. Si el objetivo está más cerca de esta distancia, la criatura cambiará a combate melee." Guid="f3338091-4528-49a7-a802-d04bf0ac9ae2" Value="2.5" Type="float"/>
+        <Parameter Name="RangedWeaponEnabled" Description="Habilita sistema de armas a distancia" Guid="37540888-6ede-4deb-8b6f-ee76ca4cb474" Value="true" Type="bool"/>
+        <Parameter Name="AutoReload" Description="Recarga automática de armas" Guid="59210f95-a6ae-4da0-b91f-abfa5b2953cb" Value="true" Type="bool"/>
+        <Parameter Name="ExcludedThrowableItems" Description="Lista de items excluidos para lanzar, separados por punto y coma." Guid="040fde49-d7d1-4b67-9373-8f2a3b1b8009" Value="" Type="string"/>
+        <Parameter Name="Class" Guid="195523d4-9a71-4be0-ad61-04613053c78d" Value="Game.ComponentInvShooterBehavior" Type="string"/>
+    </ComponentTemplate>
 </Folder>
 
     <Folder Name="Animals" Guid="6cc49cbb-cdd2-4479-9b40-fbadd9db3425">
@@ -640,7 +649,7 @@
         <Parameter Name="AutoFeed" Guid="e6aac57d-919b-47b8-97a0-1c428be7d7cf" Value="False" Type="bool"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="ChaseBehavior" Guid="4eaeb534-3647-4fec-910f-6ae7f4d7ca27" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
-        <Parameter Name="AutoChaseMask" Guid="ce681d43-106c-4d3b-8361-a1284c0357cd" Value="LandPredator" Type="Game.CreatureCategory"/>
+        <Parameter Name="AutoChaseMask" Guid="ce681d43-106c-4d3b-8361-a1284c0357cd" Value="LandPredator, Bird, WaterPredator" Type="Game.CreatureCategory"/>
         <Parameter Name="DayChaseRange" Guid="bfdb4476-dd60-4076-9a58-47e40a5318a6" Value="3" Type="float"/>
         <Parameter Name="NightChaseRange" Guid="cb33ab47-98dd-40a0-90c6-d756108ccf77" Value="5" Type="float"/>
         <Parameter Name="ChaseNonPlayerProbability" Guid="7168aa78-02b1-4848-9483-ed4419789b66" Value="0.005" Type="float"/>
@@ -1143,7 +1152,7 @@
     <Parameter Name="DayChaseRange" Guid="f98438e1-2632-4f10-a165-572ccdc260a9" Value="990" Type="float"/>
     <Parameter Name="DayChaseTime" Guid="f9b440e8-0ef6-42d5-8dbe-798354f74f8d" Value="990" Type="float"/>
     <Parameter Name="NightChaseRange" Guid="1df2ad0b-8dff-4ef9-9c16-7bc87e5da589" Value="920" Type="float"/>
-    <Parameter Name="ChaseNonPlayerProbability" Guid="23bb5837-58a1-43a8-b3c7-82767e0aedba" Value="0.1" Type="float"/>
+    <Parameter Name="ChaseNonPlayerProbability" Guid="23bb5837-58a1-43a8-b3c7-82767e0aedba" Value="1" Type="float"/>
     <Parameter Name="NightChaseTime" Guid="ac5ad8a3-ad00-4765-a58a-0e9398dd99bd" Value="930" Type="float"/>
 </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="d0e1f2a3-b4c5-0456-bcde-0123456789ad">
@@ -1230,7 +1239,7 @@
         <Parameter Name="DayChaseRange" Guid="b0c1d2e3-f4a5-9901-6789-789012345678" Value="996" Type="float"/>
         <Parameter Name="DayChaseTime" Guid="fb0843e0-2a7f-40e9-afc5-5fffa848d3ca" Value="930" Type="float"/>
         <Parameter Name="NightChaseRange" Guid="c1d2e3f4-a5b6-0012-7890-890123456789" Value="999" Type="float"/>
-        <Parameter Name="ChaseNonPlayerProbability" Guid="d2e3f4a5-b6c7-0123-8901-901234567890" Value="0.02" Type="float"/>
+        <Parameter Name="ChaseNonPlayerProbability" Guid="d2e3f4a5-b6c7-0123-8901-901234567890" Value="1" Type="float"/>
         <Parameter Name="NightChaseTime" Guid="e3f4a5b6-c7d8-0234-9012-012345678901" Value="912" Type="float"/>
     </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="f4a5b6c7-d8e9-0345-0123-123456789012">
@@ -1317,7 +1326,7 @@
     <Parameter Name="DayChaseRange" Guid="d7720f0b-a4dd-46e1-bc2a-b7ccfd3dfd24" Value="990" Type="float"/>
     <Parameter Name="DayChaseTime" Guid="cb97e6a9-7c16-43ba-920b-2f3f30a71ff0" Value="990" Type="float"/>
     <Parameter Name="NightChaseRange" Guid="b6450574-d8d5-4988-83b8-33ab932a495d" Value="920" Type="float"/>
-    <Parameter Name="ChaseNonPlayerProbability" Guid="aab9d01a-db18-4335-a04b-4b710774a140" Value="0.1" Type="float"/>
+    <Parameter Name="ChaseNonPlayerProbability" Guid="aab9d01a-db18-4335-a04b-4b710774a140" Value="1" Type="float"/>
     <Parameter Name="NightChaseTime" Guid="144bf85f-8f20-4fe5-9d21-ec230549f097" Value="930" Type="float"/>
 </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="b9c0d1e2-f3a4-0345-0123-223456789012">
@@ -1393,7 +1402,7 @@
         <Parameter Name="AutoChaseMask" Guid="d1e2f3a4-b5c6-9890-5678-878901234567" Value="LandPredator, LandOther, WaterPredator, WaterOther" Type="Game.CreatureCategory"/>
         <Parameter Name="DayChaseRange" Guid="e2f3a4b5-c6d7-9901-6789-989012345678" Value="998" Type="float"/>
         <Parameter Name="NightChaseRange" Guid="f3a4b5c6-d7e8-0012-7890-099123456789" Value="913" Type="float"/>
-        <Parameter Name="ChaseNonPlayerProbability" Guid="a4b5c6d7-e8f9-0123-8901-101234567890" Value="0.04" Type="float"/>
+        <Parameter Name="ChaseNonPlayerProbability" Guid="a4b5c6d7-e8f9-0123-8901-101234567890" Value="1" Type="float"/>
         <Parameter Name="NightChaseTime" Guid="b5c6d7e8-f9a0-0234-9012-211345678901" Value="18" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Shapeshifter" Guid="f3a4b5c6-d7e8-9999-9abc-def012345703" InheritanceParent="92e52f46-5d88-4273-80d2-1b5bfb7fdee8">
@@ -1924,11 +1933,11 @@
         <Parameter Name="AutoFeed" Guid="b7c175dc-4d90-46bc-8019-eeac225bff20" Value="False" Type="bool"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="ChaseBehavior" Guid="c2099dfb-8233-48c7-8f18-752cc8f895f9" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
-    <Parameter Name="AutoChaseMask" Guid="9b87b216-fdbd-44a0-8371-829ef22efe7b" Value="LandOther, WaterPredator, WaterOther, LandPredator" Type="Game.CreatureCategory"/>
+    <Parameter Name="AutoChaseMask" Guid="9b87b216-fdbd-44a0-8371-829ef22efe7b" Value="LandPredator, LandOther, WaterPredator, WaterOther" Type="Game.CreatureCategory"/>
     <Parameter Name="DayChaseRange" Guid="114c38c8-ba1a-4a38-ade5-61dd11f752e9" Value="990" Type="float"/>
     <Parameter Name="DayChaseTime" Guid="602e193f-8482-49ee-bf7a-28e3d45f374a" Value="990" Type="float"/>
     <Parameter Name="NightChaseRange" Guid="07317fdc-8ed6-464e-8d47-e4fe244a13bf" Value="920" Type="float"/>
-    <Parameter Name="ChaseNonPlayerProbability" Guid="632ec04b-2836-4e54-a97c-6cf32812d743" Value="0.1" Type="float"/>
+    <Parameter Name="ChaseNonPlayerProbability" Guid="632ec04b-2836-4e54-a97c-6cf32812d743" Value="1" Type="float"/>
     <Parameter Name="NightChaseTime" Guid="57dedee1-ed73-480b-96f1-ccf56f860e9a" Value="930" Type="float"/>
 </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="47f859ec-1a09-484b-9b8b-67983a0ac421">
@@ -1940,7 +1949,7 @@
     </ParameterSet>
 </EntityTemplate>
 
-<EntityTemplate Name="HeadcrabBloody" Guid="c7d8e9f0-a1b2-4789-9012-3456789abcde" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<EntityTemplate Name="HeadcrabBloodyHuman" Guid="c7d8e9f0-a1b2-4789-9012-3456789abcde" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="d8e9f0a1-b2c3-4890-9123-456789abcdef" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
         <Parameter Name="DayRange" Guid="e9f0a1b2-c3d4-4901-2345-6789abcdef01" Value="0" Type="float"/>
         <Parameter Name="NightRange" Guid="f0a1b2c3-d4e5-5012-3456-789abcdef012" Value="0" Type="float"/>
@@ -1969,7 +1978,7 @@
         <Parameter Name="BoxSize" Guid="a9b0c1d2-e3f4-6901-6789-abcdef012345" Value="0.9,1.0,0.9" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="b0c1d2e3-f4a5-7012-789a-bcdef0123456">
-        <Parameter Name="DisplayName" Guid="c1d2e3f4-a5b6-7123-89ab-cdef01234567" Value="Headcrab Bloody" Type="string"/>
+        <Parameter Name="DisplayName" Guid="c1d2e3f4-a5b6-7123-89ab-cdef01234567" Value="Headcrab Bloody Human" Type="string"/>
         <Parameter Name="Category" Guid="d2e3f4a5-b6c7-7234-9abc-def012345678" Value="Bird" Type="Game.CreatureCategory"/>
         <Parameter Name="Description" Guid="2d975a92-d724-4360-a93c-1262b2634b42" Value="A more aggressive and blood-soaked variant of the standard headcrab. The Bloody Headcrab features torn exoskeletal tissue, soaked in hemolymph and exposed muscle fibers, likely caused by radiation or failed bioweapon experiments. It moves faster, jumps farther, and attaches to hosts with brutal force, triggering near-instant zombification. Its screech is sharper, and its presence often signals high-contamination zones. Not recommended for low-tier encounters." Type="string"/>
         <Parameter Name="KillVerbs" Guid="f4a5b6c7-d8e9-7456-bcde-f0123456789a" Value="He put the weed up your ass" Type="string"/>
@@ -2004,14 +2013,14 @@
     <Parameter Name="DayChaseRange" Guid="7f1d71c9-8b18-4130-a5a7-8a13d348e4ab" Value="990" Type="float"/>
     <Parameter Name="DayChaseTime" Guid="a79d8c27-9fba-4bb6-b535-94551391001e" Value="990" Type="float"/>
     <Parameter Name="NightChaseRange" Guid="45544f44-7742-465c-89a0-435bb804d743" Value="920" Type="float"/>
-    <Parameter Name="ChaseNonPlayerProbability" Guid="a4648340-d92e-45fc-a937-00a1b2c9ca7b" Value="0.1" Type="float"/>
+    <Parameter Name="ChaseNonPlayerProbability" Guid="a4648340-d92e-45fc-a937-00a1b2c9ca7b" Value="1" Type="float"/>
     <Parameter Name="NightChaseTime" Guid="e9b9c926-6a68-4fab-a790-1c3cc91d6c6e" Value="930" Type="float"/>
 </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="b0c1d2e3-f4a5-0012-5678-9abcdef01234">
         <Parameter Name="Color" Guid="c1d2e3f4-a5b6-0123-6789-abcdef012345" Value="255,229,180" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="d2e3f4a5-b6c7-0234-789a-bcdef0123456" Value="121" Type="int"/>
         <Parameter Name="SwapUV" Guid="e3f4a5b6-c7d8-0345-89ab-cdef01234567" Value="False" Type="bool"/>
-        <Parameter Name="DisplayName" Guid="f4a5b6c7-d8e9-0456-9abc-def012345678" Value="Headcrab Bloody Egg" Type="string"/>
+        <Parameter Name="DisplayName" Guid="f4a5b6c7-d8e9-0456-9abc-def012345678" Value="Headcrab Bloody Human Egg" Type="string"/>
         <Parameter Name="EggTypeIndex" Guid="a5b6c7d8-e9f0-0567-abcd-ef0123456789" Value="221" Type="int"/>
     </ParameterSet>
 </EntityTemplate>
@@ -2145,11 +2154,11 @@
         <Parameter Name="AutoFeed" Guid="7724d903-38ba-4a51-b8ed-5dbd0bea7f57" Value="False" Type="bool"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="ChaseBehavior" Guid="4d0aba9e-99b3-4169-9f11-a58047dd20e9" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
-    <Parameter Name="AutoChaseMask" Guid="d9db80f6-0842-4f1b-837a-8fd205d87080" Value="LandOther, WaterPredator, WaterOther, LandPredator" Type="Game.CreatureCategory"/>
+    <Parameter Name="AutoChaseMask" Guid="d9db80f6-0842-4f1b-837a-8fd205d87080" Value="LandPredator, LandOther, WaterPredator, WaterOther" Type="Game.CreatureCategory"/>
     <Parameter Name="DayChaseRange" Guid="71269a94-43be-4ec0-8886-f47af5c3d8f5" Value="990" Type="float"/>
     <Parameter Name="DayChaseTime" Guid="90011a21-95b2-4ebc-a6ed-dd2d8c073377" Value="990" Type="float"/>
     <Parameter Name="NightChaseRange" Guid="1ed9b359-ed05-4d39-8491-03186f4a3e2f" Value="920" Type="float"/>
-    <Parameter Name="ChaseNonPlayerProbability" Guid="b7eb544d-de43-428d-8261-9540de259b21" Value="0.1" Type="float"/>
+    <Parameter Name="ChaseNonPlayerProbability" Guid="b7eb544d-de43-428d-8261-9540de259b21" Value="1" Type="float"/>
     <Parameter Name="NightChaseTime" Guid="d48583b0-eeb8-43a3-a993-3ef4860ccc05" Value="930" Type="float"/>
 </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="7530ee35-8622-4ebe-a572-3da9813c1f4c">
@@ -3282,7 +3291,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="c3d4e5f6-a7b8-7012-789a-bcdef0123456">
         <Parameter Name="DisplayName" Guid="d4e5f6a7-b8c9-7123-89ab-cdef01234567" Value="Aladina Corrupta" Type="string"/>
-        <Parameter Name="Category" Guid="e5f6a7b8-c9d0-7234-9abc-def012345678" Value="LandPredator" Type="Game.CreatureCategory"/>
+        <Parameter Name="Category" Guid="e5f6a7b8-c9d0-7234-9abc-def012345678" Value="Bird" Type="Game.CreatureCategory"/>
         <Parameter Name="Description" Guid="f6a7b8c9-d0e1-7345-abcd-ef0123456789" Value="Aladina Corrupta was once a benevolent figure during the Arab Middle Ages, known for helping the poor and those in need. As the modern era arrived, she was excluded by the changing Arab system in Libya around the late 1800s, when the region was still under Ottoman control. Her decline worsened in the 20th century: by the 1990s Libya was under Muammar Gaddafi’s dictatorship, and her abilities weakened, no longer resembling her medieval strength. The fall of Gaddafi in 2011 brought further chaos instead of improvement. Witnessing civilians fighting for power, Aladina Corrupta reflected on years of suffering and began adopting techniques inspired by Arab militant groups, such as suicide attacks and bombings, though she never formally joined them. Ultimately, she aligned herself with the faction known as Muerte, driven by vengeance for the pain and mistreatment she endured. Now she feels a grim relief after joining Muerte. Unlike other members of the group, she has a distinctive attack: when an NPC or player targets her or her allies, she ignites a medium incendiary barrel. Distance does not matter—she will charge directly at the attacker, light the barrel, and give only five seconds to escape. Failure to flee results in being torn apart and blasted into the air. In her fury she even sacrifices her own companions, and herself, whenever the group is under attack." Type="string"/>
         <Parameter Name="KillVerbs" Guid="a7b8c9d0-e1f2-7456-bcde-f0123456789a" Value="beaten" Type="string"/>
     </MemberComponentTemplate>
@@ -3323,11 +3332,11 @@
         <Parameter Name="AutoFeed" Guid="f6a7b8c9-d0e1-9345-ef01-23456789abcd" Value="False" Type="bool"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="ChaseBehavior" Guid="c4d5e6f7-a8b9-9890-3456-89abcdef012d" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
-    <Parameter Name="AutoChaseMask" Guid="d5e6f7a8-b9c0-9901-4567-9abcdef0123e" Value="LandOther, WaterPredator, WaterOther" Type="Game.CreatureCategory"/>
+    <Parameter Name="AutoChaseMask" Guid="d5e6f7a8-b9c0-9901-4567-9abcdef0123e" Value="LandPredator, LandOther, WaterPredator, WaterOther" Type="Game.CreatureCategory"/>
     <Parameter Name="DayChaseRange" Guid="e6f7a8b9-c0d1-0012-5678-abcdef01234f" Value="990" Type="float"/>
     <Parameter Name="DayChaseTime" Guid="0692d6bd-70a5-4118-80cc-2ec598f24635" Value="990" Type="float"/>
     <Parameter Name="NightChaseRange" Guid="f7a8b9c0-d1e2-0123-6789-bcdef0123450" Value="920" Type="float"/>
-    <Parameter Name="ChaseNonPlayerProbability" Guid="a8b9c0d1-e2f3-0234-789a-cdef01234571" Value="0.1" Type="float"/>
+    <Parameter Name="ChaseNonPlayerProbability" Guid="a8b9c0d1-e2f3-0234-789a-cdef01234571" Value="1" Type="float"/>
     <Parameter Name="NightChaseTime" Guid="b9c0d1e2-f3a4-0345-89ab-def012345672" Value="930" Type="float"/>
 </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="c9d0e1f2-a3b4-0012-5678-9abcdef01234">
@@ -3437,7 +3446,7 @@
     </ParameterSet>
 </EntityTemplate>
 
-<EntityTemplate Name="CarlJohnson" Guid="a1b2c3d4-e5f6-4789-9012-3456789abcd1" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<EntityTemplate Name="CarlJohnson" Guid="1e9bf665-6998-478e-ba9d-3f850d0dbb7b" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="a9b0c1d2-e3f4-4890-9123-456789abcdef" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
         <Parameter Name="DayRange" Guid="b0c1d2e3-f4a5-4901-2345-6789abcdef01" Value="3" Type="float"/>
         <Parameter Name="NightRange" Guid="c1d2c3d4-e5f6-5012-3456-789abcdef012" Value="5" Type="float"/>
