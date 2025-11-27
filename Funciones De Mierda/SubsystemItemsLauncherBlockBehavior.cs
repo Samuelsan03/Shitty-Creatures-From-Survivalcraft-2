@@ -1,17 +1,14 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using Engine;
 using Game;
 using TemplatesDatabase;
 
 // Token: 0x02000005 RID: 5
-[NullableContext(1)]
-[Nullable(0)]
 public class SubsystemItemsLauncherBlockBehavior : SubsystemBlockBehavior
 {
 	// Token: 0x17000001 RID: 1
-	// (get) Token: 0x06000018 RID: 24 RVA: 0x00002B68 File Offset: 0x00000D68
+	// (get) Token: 0x06000018 RID: 24 RVA: 0x00002A6B File Offset: 0x00000C6B
 	public override int[] HandledBlocks
 	{
 		get
@@ -23,20 +20,19 @@ public class SubsystemItemsLauncherBlockBehavior : SubsystemBlockBehavior
 		}
 	}
 
-	// Token: 0x06000019 RID: 25 RVA: 0x00002B88 File Offset: 0x00000D88
+	// Token: 0x06000019 RID: 25 RVA: 0x00002A7C File Offset: 0x00000C7C
 	public override bool OnEditInventoryItem(IInventory inventory, int slotIndex, ComponentPlayer componentPlayer)
 	{
 		componentPlayer.ComponentGui.ModalPanelWidget = new AutoCannonWidget(componentPlayer, slotIndex);
 		return true;
 	}
 
-	// Token: 0x0600001A RID: 26 RVA: 0x00002BB0 File Offset: 0x00000DB0
+	// Token: 0x0600001A RID: 26 RVA: 0x00002AA4 File Offset: 0x00000CA4
 	public override bool OnAim(Ray3 aim, ComponentMiner miner, AimState state)
 	{
 		bool flag = miner.Inventory == null;
-		bool flag9 = flag;
 		bool result;
-		if (flag9)
+		if (flag)
 		{
 			result = false;
 		}
@@ -44,8 +40,7 @@ public class SubsystemItemsLauncherBlockBehavior : SubsystemBlockBehavior
 		{
 			int slotValue = miner.Inventory.GetSlotValue(miner.Inventory.ActiveSlotIndex);
 			bool flag2 = Terrain.ExtractContents(slotValue) != ItemsLauncherBlock.Index;
-			bool flag10 = flag2;
-			if (flag10)
+			if (flag2)
 			{
 				result = false;
 			}
@@ -54,70 +49,63 @@ public class SubsystemItemsLauncherBlockBehavior : SubsystemBlockBehavior
 				int data = Terrain.ExtractData(slotValue);
 				int num = ItemsLauncherBlock.GetRateLevel(data);
 				bool flag3 = num == 0;
-				bool flag11 = flag3;
-				if (flag11)
+				if (flag3)
 				{
 					num = 2;
 				}
 				switch (state)
 				{
-				case AimState.InProgress:
-				{
-					ComponentFirstPersonModel componentFirstPersonModel = miner.Entity.FindComponent<ComponentFirstPersonModel>();
-					bool flag4 = componentFirstPersonModel != null;
-					bool flag12 = flag4;
-					if (flag12)
-					{
-						ComponentPlayer componentPlayer = miner.ComponentPlayer;
-						bool flag13 = componentPlayer != null;
-						if (flag13)
+					case 0:
 						{
-							componentPlayer.ComponentAimingSights.ShowAimingSights(aim.Position, aim.Direction);
+							ComponentFirstPersonModel componentFirstPersonModel = miner.Entity.FindComponent<ComponentFirstPersonModel>();
+							bool flag4 = componentFirstPersonModel != null;
+							if (flag4)
+							{
+								ComponentPlayer componentPlayer = miner.ComponentPlayer;
+								if (componentPlayer != null)
+								{
+									componentPlayer.ComponentAimingSights.ShowAimingSights(aim.Position, aim.Direction);
+								}
+								componentFirstPersonModel.ItemOffsetOrder = new Vector3(-0.21f, 0.15f, 0.08f);
+								componentFirstPersonModel.ItemRotationOrder = new Vector3(-0.7f, 0f, 0f);
+							}
+							miner.ComponentCreature.ComponentCreatureModel.AimHandAngleOrder = 1.4f;
+							miner.ComponentCreature.ComponentCreatureModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
+							miner.ComponentCreature.ComponentCreatureModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
+							bool flag5 = num > 1;
+							if (flag5)
+							{
+								float num2 = SubsystemItemsLauncherBlockBehavior.m_rateValues[num - 1];
+								double gameTime = this.m_subsystemTime.GameTime;
+								double num3;
+								bool flag6 = !this.m_nextFireTimes.TryGetValue(miner, out num3);
+								if (flag6)
+								{
+									num3 = gameTime + 0.2;
+									this.m_nextFireTimes[miner] = num3;
+								}
+								bool flag7 = gameTime >= num3;
+								if (flag7)
+								{
+									this.Fire(miner, aim);
+									this.m_nextFireTimes[miner] = gameTime + 1.0 / (double)num2;
+								}
+							}
+							break;
 						}
-						componentFirstPersonModel.ItemOffsetOrder = new Vector3(-0.21f, 0.15f, 0.08f);
-						componentFirstPersonModel.ItemRotationOrder = new Vector3(-0.7f, 0f, 0f);
-					}
-					miner.ComponentCreature.ComponentCreatureModel.AimHandAngleOrder = 1.4f;
-					miner.ComponentCreature.ComponentCreatureModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
-					miner.ComponentCreature.ComponentCreatureModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
-					bool flag5 = num > 1;
-					bool flag14 = flag5;
-					if (flag14)
-					{
-						float num2 = SubsystemItemsLauncherBlockBehavior.m_rateValues[num - 1];
-						double gameTime = this.m_subsystemTime.GameTime;
-						double num3;
-						bool flag6 = !this.m_nextFireTimes.TryGetValue(miner, out num3);
-						bool flag15 = flag6;
-						if (flag15)
+					case (AimState)1:
+						this.m_nextFireTimes.Remove(miner);
+						break;
+					case (AimState)2:
 						{
-							num3 = gameTime + 0.2;
-							this.m_nextFireTimes[miner] = num3;
+							bool flag8 = num == 1;
+							if (flag8)
+							{
+								this.Fire(miner, aim);
+							}
+							this.m_nextFireTimes.Remove(miner);
+							break;
 						}
-						bool flag7 = gameTime >= num3;
-						bool flag16 = flag7;
-						if (flag16)
-						{
-							this.Fire(miner, aim);
-							this.m_nextFireTimes[miner] = gameTime + 1.0 / (double)num2;
-						}
-					}
-					break;
-				}
-				case AimState.Cancelled:
-					this.m_nextFireTimes.Remove(miner);
-					break;
-				case AimState.Completed:
-				{
-					bool flag8 = num == 1;
-					bool flag17 = flag8;
-					if (flag17)
-					{
-						this.Fire(miner, aim);
-					}
-					this.m_nextFireTimes.Remove(miner);
-					break;
-				}
 				}
 				result = false;
 			}
@@ -125,7 +113,7 @@ public class SubsystemItemsLauncherBlockBehavior : SubsystemBlockBehavior
 		return result;
 	}
 
-	// Token: 0x0600001B RID: 27 RVA: 0x00002E24 File Offset: 0x00001024
+	// Token: 0x0600001B RID: 27 RVA: 0x00002CDC File Offset: 0x00000EDC
 	private void Fire(ComponentMiner miner, Ray3 aim)
 	{
 		IInventory inventory = miner.Inventory;
@@ -133,14 +121,12 @@ public class SubsystemItemsLauncherBlockBehavior : SubsystemBlockBehavior
 		int slotValue = inventory.GetSlotValue(activeSlotIndex);
 		int data = Terrain.ExtractData(slotValue);
 		GameMode gameMode = this.m_subsystemGameInfo.WorldSettings.GameMode;
-		bool flag = gameMode > GameMode.Creative;
-		bool flag10 = flag;
-		if (flag10)
+		bool flag = gameMode > 0;
+		if (flag)
 		{
 			int fuel = ItemsLauncherBlock.GetFuel(data);
 			bool flag2 = fuel <= 0;
-			bool flag11 = flag2;
-			if (flag11)
+			if (flag2)
 			{
 				base.Project.FindSubsystem<SubsystemAudio>(true).PlaySound("Audio/HammerRelease", 0.75f, this.m_random.Float(-0.1f, 0.1f), miner.ComponentCreature.ComponentCreatureModel.EyePosition, 2f, false);
 				return;
@@ -151,12 +137,10 @@ public class SubsystemItemsLauncherBlockBehavior : SubsystemBlockBehavior
 		for (int i = 0; i < 10; i++)
 		{
 			bool flag3 = i != activeSlotIndex;
-			bool flag12 = flag3;
-			if (flag12)
+			if (flag3)
 			{
 				bool flag4 = inventory.GetSlotCount(i) > 0;
-				bool flag13 = flag4;
-				if (flag13)
+				if (flag4)
 				{
 					num = inventory.GetSlotValue(i);
 					num2 = i;
@@ -165,12 +149,10 @@ public class SubsystemItemsLauncherBlockBehavior : SubsystemBlockBehavior
 			}
 		}
 		bool flag5 = num2 != -1;
-		bool flag14 = flag5;
-		if (flag14)
+		if (flag5)
 		{
-			bool flag6 = gameMode > GameMode.Creative;
-			bool flag15 = flag6;
-			if (flag15)
+			bool flag6 = gameMode > 0;
+			if (flag6)
 			{
 				int fuel2 = ItemsLauncherBlock.GetFuel(data);
 				int num3 = ItemsLauncherBlock.SetFuel(data, fuel2 - 1);
@@ -182,14 +164,12 @@ public class SubsystemItemsLauncherBlockBehavior : SubsystemBlockBehavior
 			int num5 = ItemsLauncherBlock.GetSpeedLevel(data);
 			int num6 = ItemsLauncherBlock.GetSpreadLevel(data);
 			bool flag7 = num5 == 0;
-			bool flag16 = flag7;
-			if (flag16)
+			if (flag7)
 			{
 				num5 = 2;
 			}
 			bool flag8 = num6 == 0;
-			bool flag17 = flag8;
-			if (flag17)
+			if (flag8)
 			{
 				num6 = 2;
 			}
@@ -202,12 +182,11 @@ public class SubsystemItemsLauncherBlockBehavior : SubsystemBlockBehavior
 			SubsystemParticles subsystemParticles = base.Project.FindSubsystem<SubsystemParticles>(true);
 			SubsystemTerrain subsystemTerrain = base.Project.FindSubsystem<SubsystemTerrain>(true);
 			subsystemProjectiles.FireProjectile(num, eyePosition, vector * num7, Vector3.Zero, miner.ComponentCreature);
-			subsystemAudio.PlaySound("Audio/MusketFire", 0.5f, this.m_random.Float(-0.1f, 0.1f), eyePosition, 10f, true);
-			subsystemAudio.PlaySound("Audio/HammerCock", 0.75f, this.m_random.Float(-0.1f, 0.1f), eyePosition, 10f, true);
+			subsystemAudio.PlaySound("Audio/Items/ItemLauncher/Item Cannon Fire", 0.5f, this.m_random.Float(-0.1f, 0.1f), eyePosition, 10f, true);
+			subsystemAudio.PlaySound("Audio/Items/ItemLauncher/Item Cannon Reload", 0.75f, this.m_random.Float(-0.1f, 0.1f), eyePosition, 10f, true);
 			subsystemParticles.AddParticleSystem(new GunSmokeParticleSystem(subsystemTerrain, eyePosition + 0.5f * vector, vector), false);
-			bool flag9 = gameMode > GameMode.Creative;
-			bool flag18 = flag9;
-			if (flag18)
+			bool flag9 = gameMode > 0;
+			if (flag9)
 			{
 				miner.ComponentCreature.ComponentBody.ApplyImpulse(-4f * vector);
 				this.m_subsystemNoise.MakeNoise(eyePosition, 1f, 15f);
@@ -219,7 +198,7 @@ public class SubsystemItemsLauncherBlockBehavior : SubsystemBlockBehavior
 		}
 	}
 
-	// Token: 0x0600001C RID: 28 RVA: 0x000031C8 File Offset: 0x000013C8
+	// Token: 0x0600001C RID: 28 RVA: 0x00003058 File Offset: 0x00001258
 	public override void Load(ValuesDictionary valuesDictionary)
 	{
 		base.Load(valuesDictionary);
