@@ -66,9 +66,9 @@
 
 <ProjectTemplate Name="Project" Guid="85023bf8-1c90-4dd1-9442-e6c13691d078">
     <MemberSubsystemTemplate Name="ItemsLauncherBlockBehavior" Guid="addaadea-e865-4840-8d4b-682b5accdd20" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
-      <Parameter Name="Class" Guid="f4147ab1-38b5-4fee-bccc-9c520b17874e" Value="SubsystemItemsLauncherBlockBehavior" Type="string" />
+        <Parameter Name="Class" Guid="f4147ab1-38b5-4fee-bccc-9c520b17874e" Value="SubsystemItemsLauncherBlockBehavior" Type="string" />
     </MemberSubsystemTemplate>
-  </ProjectTemplate>
+</ProjectTemplate>
 
     <Folder Name="Animals" Guid="6cc49cbb-cdd2-4479-9b40-fbadd9db3425">
 
@@ -114,6 +114,9 @@
                 <Parameter Name="Description" Guid="7ef63359-cceb-417b-8a22-786f59f7cb1e" Value="Your god who left your ass broken" Type="string"/>
                 <Parameter Name="KillVerbs" Guid="eb41096a-18df-458c-b198-22069f75663b" Value="Kicked your ass" Type="string"/>
             </MemberComponentTemplate>
+            <MemberComponentTemplate Name="Spawn" Guid="e6eb6f1f-3d91-4db7-aebb-f8a2cf996656">
+    <Parameter Name="AutoDespawn" Guid="ba48792f-8492-42e8-9447-f94206b503e3" Value="False" Type="bool" />
+</MemberComponentTemplate>
            <MemberComponentTemplate Name="ComponentRandomChatter" Guid="56e00cfe-824a-4c2b-a455-53e6127ac52c">
     <Parameter Name="Class" Value="Game.ComponentRandomChatter" Type="string"/>
     <Parameter Name="LoadOrder" Value="-1" Type="int"/>
@@ -128,7 +131,7 @@
             <MemberComponentTemplate Name="FindPlayerBehavior" Guid="ba520229-b06a-4b09-949e-4217be90a7c3" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
             <MemberComponentTemplate Name="Miner" Guid="c1a2e28a-4292-4229-acce-7373a0c256a0" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="bb34c589-5102-4e76-225c-deca29dcdd6b" Value="5.95" Type="float"/>
-                <Parameter Name="AutoInteractRate" Guid="1234e5cd-a92c-49be-8e39-93e29f43a3ec" Value="1" Type="float"/>
+                <Parameter Name="AutoInteractRate" Guid="1234e5cd-a92c-49be-8e39-93e29f43a3ec" Value="1.0" Type="float"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="HumanModel" Guid="9ca7c9d5-622e-47c9-a0c4-21ea752301c6" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
                 <Parameter Name="WalkLegsAngle" Guid="495feebc-7b26-4228-8af3-688638752c30" Value="0.35" Type="float"/>
@@ -145,9 +148,10 @@
             <MemberComponentTemplate Name="OnFire" Guid="d73978b1-f856-22bc-82bd-8f32a8801ed7"/>
             <MemberComponentTemplate Name="WalkAroundBehavior" Guid="de223181-266a-4973-bee4-d7fbec697875" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
             <MemberComponentTemplate Name="HerdBehavior" Guid="f5c8f221-3f1d-4058-a392-f4ba15636940" InheritanceParent="dfe7218e-ce14-4bde-8dac-f919c38e9efe">
-                <Parameter Name="HerdName" Guid="53c9bab9-7820-4689-b227-cb755e22ea69" Value="Alianza" Type="string"/>
-                <Parameter Name="AutoNearbyCreaturesHelp" Guid="872216d6-f97f-400e-980b-eb1596fecf9b" Value="True" Type="bool"/>
-            </MemberComponentTemplate>
+    <Parameter Name="HerdName" Guid="53c9bab9-7820-4689-b227-cb755e22ea69" Value="Alianza" Type="string"/>
+    <Parameter Name="AutoNearbyCreaturesHelp" Guid="872216d6-f97f-400e-980b-eb1596fecf9b" Value="True" Type="bool"/>
+    <Parameter Name="HerdingRange" Guid="eb2e55a6-c924-490a-a799-9f9e74e8285d" Value="40" Type="float"/>
+</MemberComponentTemplate>
             <MemberComponentTemplate Name="FeedBehavior" Guid="fac220ad-1770-49d5-92e3-bbc87b406be3" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="9fdc2864-0b0f-4114-a030-1d57837b31e7" Value="False" Type="bool"/>
             </MemberComponentTemplate>
@@ -202,6 +206,9 @@
                 <Parameter Name="Mass" Guid="d4e5f6a7-b8c9-4d01-9e23-f4a5b6c7d8e9" Value="60" Type="float"/>
                 <Parameter Name="BoxSize" Guid="e5f6a7b8-c9d0-4e12-9f34-a5b6c7d8e9f0" Value="0.9,0.95,0.9" Type="Vector3"/>
             </MemberComponentTemplate>
+            <MemberComponentTemplate Name="Spawn" Guid="ca7ab4ca-ec20-4d1f-8d3e-82e32681827b">
+    <Parameter Name="AutoDespawn" Guid="2cc38ee2-221d-4a07-813a-dfa8cfcf072a" Value="False" Type="bool" />
+</MemberComponentTemplate>
             <MemberComponentTemplate Name="Creature" Guid="f6a7b8c9-d0e1-4f23-9g45-b6c7d8e9f0a1">
                 <Parameter Name="DisplayName" Guid="a7b8c9d0-e1f2-4g34-9h56-c7d8e9f0a1b2" Value="Ricardo" Type="string"/>
                 <Parameter Name="Category" Guid="b8c9d0e1-f2a3-4h45-9i67-d8e9f0a1b2c3" Value="LandOther" Type="Game.CreatureCategory"/>
@@ -240,6 +247,7 @@
             <MemberComponentTemplate Name="WalkAroundBehavior" Guid="f4a5b6c7-d8e9-4x01-9y23-b4c5d6e7f8a9" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
             <MemberComponentTemplate Name="HerdBehavior" Guid="a5b6c7d8-e9f0-4y12-9z34-c5d6e7f8a9b0" InheritanceParent="dfe7218e-ce14-4bde-8dac-f919c38e9efe">
                 <Parameter Name="HerdName" Guid="b6c7d8e9-f0a1-4z23-9a45-d6e7f8a9b0c1" Value="Alianza" Type="string"/>
+                <Parameter Name="HerdingRange" Guid="d53aee8b-8326-4c46-85ea-6d3e772b3c37" Value="40" Type="float"/>
                 <Parameter Name="AutoNearbyCreaturesHelp" Guid="c7d8e9f0-a1b2-4a34-9b56-e7f8a9b0c1d2" Value="True" Type="bool"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="FeedBehavior" Guid="d8e9f0a1-b2c3-4b45-9c67-f8a9b0c1d2e3" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
@@ -1128,6 +1136,9 @@
     <Parameter Name="RiseDuration" Value="1.5" Type="float"/>
     <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="Spawn" Guid="096697fa-a354-4d4f-92b5-819c3e747943">
+    <Parameter Name="AutoDespawn" Guid="9c30bebe-f3ad-4297-8afd-f4c855f20fdd" Value="False" Type="bool" />
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="b5c6d7e8-f9a0-7901-0123-56789abcdf0a" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="c6d7e8f9-a0b1-8012-1234-6789abcdef0b" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="d7e8f9a0-b1c2-8123-2345-789abcdef01c" Value="9.0" Type="float"/>
@@ -1148,6 +1159,7 @@
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="c8d9e0f1-a2b3-9234-def0-23456789abc7" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
     <MemberComponentTemplate Name="HerdBehavior" Guid="d9e0f1a2-b3c4-9345-ef01-3456789abcd8" InheritanceParent="dfe7218e-ce14-4bde-8dac-f919c38e9efe">
         <Parameter Name="HerdName" Guid="e0f1a2b3-c4d5-9456-f012-456789abcde9" Value="Muerte" Type="string"/>
+        <Parameter Name="HerdingRange" Guid="17b58199-954e-4979-8dd8-08b8733ae43c" Value="40" Type="float"/>
         <Parameter Name="AutoNearbyCreaturesHelp" Guid="f1a2b3c4-d5e6-9567-0123-56789abcdf0a" Value="True" Type="bool"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="FeedBehavior" Guid="a2b3c4d5-e6f7-9678-1234-6789abcdef0b" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
@@ -1899,7 +1911,7 @@
     <MemberComponentTemplate Name="Creature" Guid="589f2b73-df92-4bf0-af0c-f600b9b3b6d7">
         <Parameter Name="DisplayName" Guid="bca8f147-2595-4d99-82c8-53f4a176d6bd" Value="El Ballestador" Type="string"/>
         <Parameter Name="Category" Guid="14c0baff-92ac-405c-a1de-120b28b6483b" Value="Bird" Type="Game.CreatureCategory"/>
-        <Parameter Name="Description" Guid="59a9b248-9e3c-4986-a524-cc42162a646c" Value="El Ballestador isn’t the strongest fighter, but don’t let that fool you—his cursed crossbow never leaves his side. He’s not part of your Alianza and belongs to Muerte, standing out as the only human in his faction wielding a possessed weapon. His bolts are fast, silent, and unforgiving. Confront him or try to escape—either way, you’re already dead. If he sees you, he fires. If you move, he hits. His diamond arrows pierce almost everything, except the rhino, beluga, and orca, who can endure more hits if they fight back. To survive, use terrain to break his line of sight. Zigzag when running, jump unpredictably, and never stay still. If you’re solo, bait his shot and rush in before he reloads. In a group, flank while one teammate draws fire. Splash damage or shock can disrupt his aim, but timing is everything. If you hear the click of his bow, it might already be too late. They say his crossbow was forged in silence, bound to him after he survived a betrayal that left him voiceless. Since then, it’s been his only companion—never speaks, never misses, never leaves. That’s why he trusts it more than any ally." Type="string"/>
+        <Parameter Name="Description" Guid="59a9b248-9e3c-4986-a524-cc42162a646c" Value="El Ballestador isn’t the strongest fighter, but don’t let that fool you—his cursed bow never leaves his side. He’s not part of your Alianza and belongs to Muerte, standing out as the only human in his faction wielding a possessed weapon. His arrows are fast, silent, and unforgiving. Confront him or try to escape—either way, you’re already dead. If he sees you, he fires. If you move, he hits. His diamond arrows pierce almost everything, except the rhino, beluga, and orca, who can endure more hits if they fight back. To survive, use terrain to break his line of sight. Zigzag when running, jump unpredictably, and never stay still. If you’re solo, bait his shot and rush in before he reloads. In a group, flank while one teammate draws fire. Splash damage or shock can disrupt his aim, but timing is everything. If you hear the click of his bow, it might already be too late. They say his bow was forged in silence, bound to him after he survived a betrayal that left him voiceless. Since then, it’s been his only companion—never speaks, never misses, never leaves. That’s why he trusts it more than any ally. He appears only at night starting from day 5, and during these nights players can set traps to capture his bows and ammunition, turning his own arsenal into a valuable resource." Type="string"/>
         <Parameter Name="KillVerbs" Guid="b7337a01-ab16-4208-ade1-7ee7d5882412" Value="Shot with arrows" Type="string"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="ComponentRandomChatter2" Guid="ff015f5b-ef26-422d-b29e-d92fd15042a1">
@@ -1917,6 +1929,9 @@
     <MemberComponentTemplate Name="Miner" Guid="08dd88c6-df82-4e53-aaa9-693b0c8b8cab" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="2b6b2d1e-9e67-4857-9768-8dfbd30724c7" Value="2.85" Type="float"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Spawn" Guid="69cb8706-38a5-4b25-86e2-3e8714946256">
+    <Parameter Name="AutoDespawn" Guid="ee792136-2def-4a42-86b5-819adb50d982" Value="False" Type="bool" />
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="HumanModel" Guid="4eebae82-a573-4f24-ab93-b37429c62107" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
         <Parameter Name="WalkLegsAngle" Guid="d6b5695a-c447-497f-823d-ff69a044a5e4" Value="0.25" Type="float"/>
         <Parameter Name="ModelName" Guid="21bdcd69-bf56-41e9-aab1-9df48fb4a1fa" Value="Models/HumanRealist" Type="string"/>
@@ -1933,6 +1948,7 @@
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="974c12a5-80ed-4a52-bb72-ad2d03655526" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
     <MemberComponentTemplate Name="HerdBehavior" Guid="a08872fd-0426-4eae-925a-193b7252f4c8" InheritanceParent="dfe7218e-ce14-4bde-8dac-f919c38e9efe">
         <Parameter Name="HerdName" Guid="9ae3e311-756a-43a9-b603-c99364772e13" Value="Muerte" Type="string"/>
+        <Parameter Name="HerdingRange" Guid="eb232769-39eb-45a8-ba08-90f68e9dd80d" Value="40" Type="float"/>
         <Parameter Name="AutoNearbyCreaturesHelp" Guid="07369da7-4b4c-4af7-90af-5be012d60d5b" Value="True" Type="bool"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="FeedBehavior" Guid="7d410866-7969-4151-be8e-5a937e44dab3" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
@@ -2117,10 +2133,13 @@
         <Parameter Name="Mass" Guid="ef230e29-ed58-4388-a235-c8f53fd6e2d4" Value="50" Type="float"/>
         <Parameter Name="BoxSize" Guid="80731875-a31d-4a8d-8457-972b129f1a05" Value="0.8,0.85,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Spawn" Guid="7972b288-e62d-4b20-b10b-426dfb5e309d">
+    <Parameter Name="AutoDespawn" Guid="659c4758-f801-484b-8b2f-519adff476da" Value="False" Type="bool" />
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="08fffad3-3ede-4581-a38b-98d534da8667">
         <Parameter Name="DisplayName" Guid="ca08fd0f-562c-4dc1-99d0-9c0ced52a743" Value="El Arquero" Type="string"/>
         <Parameter Name="Category" Guid="8252ee2e-5e5e-406d-ab16-48ed2493461c" Value="Bird" Type="Game.CreatureCategory"/>
-        <Parameter Name="Description" Guid="a82cd753-b101-46bb-bbab-cc2c75bfef07" Value="Twin brother of El Ballestador, El Arquero excels in pinpoint accuracy and rapid-fire archery using reinforced bows. Both share tactical agility, night vision, and synchronized patrol behavior, but El Arquero favors elevated ambushes and silent strikes. His armor is lighter, allowing swift movement across high structures. He communicates through optical signals and rarely misses a shot. Like El Ballestador, he is highly dangerous—provoking him will result in a lethal barrage of arrows. Upon death, he drops usable bow-grade arrows, ideal if you're low on resources. To survive, use cover, bait his shots, and flank from blind angles to avoid direct line-of-sight. Curiously, El Arquero began using his bow after witnessing his brother fire a bow for the first time. Wanting to defend himself equally, he stole a bow and arrows from a weapons shop—giving rise to a hostile Robin Hood of the high ground." Type="string"/>
+        <Parameter Name="Description" Guid="a82cd753-b101-46bb-bbab-cc2c75bfef07" Value="Twin brother of El Ballestador, El Arquero excels in pinpoint accuracy and rapid-fire archery using reinforced bows. Both share tactical agility, night vision, and synchronized patrol behavior, but El Arquero favors elevated ambushes and silent strikes. His armor is lighter, allowing swift movement across high structures. He communicates through optical signals and rarely misses a shot. Like El Ballestador, he is highly dangerous—provoking him will result in a lethal barrage of arrows. Upon death, he drops usable bow-grade arrows, ideal if you're low on resources. To survive, use cover, bait his shots, and flank from blind angles to avoid direct line-of-sight. Curiously, El Arquero began using his bow after witnessing his brother fire a bow for the first time. Wanting to defend himself equally, he stole a bow and arrows from a weapons shop—giving rise to a hostile Robin Hood of the high ground. He appears only at night starting from day 10, making his encounters rarer but significantly more threatening as the world grows darker." Type="string"/>
         <Parameter Name="KillVerbs" Guid="7ce38653-070e-46db-934e-86457828cfe8" Value="Shot with arrows" Type="string"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="ComponentRandomChatter2" Guid="e0981784-9d2a-4d53-af3f-cd8101c87374">
@@ -2154,6 +2173,7 @@
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="c7fa9be5-d1cb-4dae-91e3-4276326cca30" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
     <MemberComponentTemplate Name="HerdBehavior" Guid="2c8272fd-7528-4cd8-9672-fd939d8e8b1f" InheritanceParent="dfe7218e-ce14-4bde-8dac-f919c38e9efe">
         <Parameter Name="HerdName" Guid="e008a060-d5ee-46d7-bb94-f331bbbc504d" Value="Muerte" Type="string"/>
+        <Parameter Name="HerdingRange" Guid="44350b1b-c4e6-4148-a0b2-48e055b5b9b7" Value="40" Type="float"/>
         <Parameter Name="AutoNearbyCreaturesHelp" Guid="59ff0fa0-35e5-4eee-902a-a3bf352923ef" Value="True" Type="bool"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="FeedBehavior" Guid="275b77fb-f786-44f6-a7cf-d1e06674c703" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
