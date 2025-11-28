@@ -66,7 +66,7 @@
 
 <ProjectTemplate Name="Project" Guid="85023bf8-1c90-4dd1-9442-e6c13691d078">
     <MemberSubsystemTemplate Name="ItemsLauncherBlockBehavior" Guid="addaadea-e865-4840-8d4b-682b5accdd20" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
-        <Parameter Name="Class" Guid="f4147ab1-38b5-4fee-bccc-9c520b17874e" Value="SubsystemItemsLauncherBlockBehavior" Type="string" />
+        <Parameter Name="Class" Guid="f4147ab1-38b5-4fee-bccc-9c520b17874e" Value="SubsystemItemsLauncherBlockBehavior" Type="string"/>
     </MemberSubsystemTemplate>
 </ProjectTemplate>
 
@@ -114,8 +114,8 @@
                 <Parameter Name="Description" Guid="7ef63359-cceb-417b-8a22-786f59f7cb1e" Value="Your god who left your ass broken" Type="string"/>
                 <Parameter Name="KillVerbs" Guid="eb41096a-18df-458c-b198-22069f75663b" Value="Kicked your ass" Type="string"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="Spawn" Guid="e6eb6f1f-3d91-4db7-aebb-f8a2cf996656">
-    <Parameter Name="AutoDespawn" Guid="ba48792f-8492-42e8-9447-f94206b503e3" Value="False" Type="bool" />
+            <MemberComponentTemplate Name="Spawn" Guid="8d92fb70-65ca-41be-a423-28f4cc57c80b">
+    <Parameter Name="AutoDespawn" Guid="d1a8b4b9-67f2-4f4d-924d-3449d4b40bfc" Value="False" Type="bool"/>
 </MemberComponentTemplate>
            <MemberComponentTemplate Name="ComponentRandomChatter" Guid="56e00cfe-824a-4c2b-a455-53e6127ac52c">
     <Parameter Name="Class" Value="Game.ComponentRandomChatter" Type="string"/>
@@ -207,7 +207,7 @@
                 <Parameter Name="BoxSize" Guid="e5f6a7b8-c9d0-4e12-9f34-a5b6c7d8e9f0" Value="0.9,0.95,0.9" Type="Vector3"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Spawn" Guid="ca7ab4ca-ec20-4d1f-8d3e-82e32681827b">
-    <Parameter Name="AutoDespawn" Guid="2cc38ee2-221d-4a07-813a-dfa8cfcf072a" Value="False" Type="bool" />
+    <Parameter Name="AutoDespawn" Guid="2cc38ee2-221d-4a07-813a-dfa8cfcf072a" Value="False" Type="bool"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="Creature" Guid="f6a7b8c9-d0e1-4f23-9g45-b6c7d8e9f0a1">
                 <Parameter Name="DisplayName" Guid="a7b8c9d0-e1f2-4g34-9h56-c7d8e9f0a1b2" Value="Ricardo" Type="string"/>
@@ -1137,7 +1137,7 @@
     <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="Spawn" Guid="096697fa-a354-4d4f-92b5-819c3e747943">
-    <Parameter Name="AutoDespawn" Guid="9c30bebe-f3ad-4297-8afd-f4c855f20fdd" Value="False" Type="bool" />
+    <Parameter Name="AutoDespawn" Guid="9c30bebe-f3ad-4297-8afd-f4c855f20fdd" Value="False" Type="bool"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="b5c6d7e8-f9a0-7901-0123-56789abcdf0a" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="c6d7e8f9-a0b1-8012-1234-6789abcdef0b" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
@@ -1930,7 +1930,7 @@
         <Parameter Name="AttackPower" Guid="2b6b2d1e-9e67-4857-9768-8dfbd30724c7" Value="2.85" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Spawn" Guid="69cb8706-38a5-4b25-86e2-3e8714946256">
-    <Parameter Name="AutoDespawn" Guid="ee792136-2def-4a42-86b5-819adb50d982" Value="False" Type="bool" />
+    <Parameter Name="AutoDespawn" Guid="ee792136-2def-4a42-86b5-819adb50d982" Value="False" Type="bool"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="HumanModel" Guid="4eebae82-a573-4f24-ab93-b37429c62107" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
         <Parameter Name="WalkLegsAngle" Guid="d6b5695a-c447-497f-823d-ff69a044a5e4" Value="0.25" Type="float"/>
@@ -2133,8 +2133,8 @@
         <Parameter Name="Mass" Guid="ef230e29-ed58-4388-a235-c8f53fd6e2d4" Value="50" Type="float"/>
         <Parameter Name="BoxSize" Guid="80731875-a31d-4a8d-8457-972b129f1a05" Value="0.8,0.85,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="Spawn" Guid="7972b288-e62d-4b20-b10b-426dfb5e309d">
-    <Parameter Name="AutoDespawn" Guid="659c4758-f801-484b-8b2f-519adff476da" Value="False" Type="bool" />
+    <MemberComponentTemplate Name="Spawn" Guid="3c577653-9e1a-4a3a-a701-1fc4a391d746">
+    <Parameter Name="AutoDespawn" Guid="d54eb620-2513-4f0f-98f2-8837c2ff1b4c" Value="False" Type="bool"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="08fffad3-3ede-4581-a38b-98d534da8667">
         <Parameter Name="DisplayName" Guid="ca08fd0f-562c-4dc1-99d0-9c0ced52a743" Value="El Arquero" Type="string"/>
@@ -2348,6 +2348,9 @@
     <Parameter Name="MinMaxRandomWaitTime" Guid="9a654ec6-211a-4aca-bdc9-197d63f5ef4a" Value="0.5;0.8" Type="string"/>
     <Parameter Name="MinMaxDistance" Guid="e2bfd5f6-24ef-4d0c-a874-750a0e529afa" Value="2;25" Type="string"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="Spawn" Guid="bf57e634-5748-44c0-b1bb-05728824d4ed">
+    <Parameter Name="AutoDespawn" Guid="f97872b2-677e-455b-906d-40f67ae84241" Value="False" Type="bool"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="Loot" Guid="788a2b2a-7b5d-4bab-bf7e-aa114aa0fef9">
         <ParameterSet Name="Loot" Guid="c2086f84-e727-42cf-9cc6-20c439a90018">
             <Parameter Name="1" Guid="e86fa114-53c0-4630-bfd9-8cb82a61acfc" Value="ArrowBlock:4;1;10;1" Type="string"/>
@@ -2472,6 +2475,9 @@
         <Parameter Name="TextureOverride" Guid="675f2719-3b30-48ef-80d8-0eb327764486" Value="Textures/Shoutmon" Type="string"/>
         <Parameter Name="WalkAnimationSpeed" Guid="c4afa109-c79c-4d5b-9cfd-c8ad8435cd40" Value="0.5" Type="float"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Spawn" Guid="d30c0965-0e24-4a12-9143-323d21f9f600">
+    <Parameter Name="AutoDespawn" Guid="b0654a7e-2b20-44a7-895c-edc6b12e17b4" Value="False" Type="bool"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="HealthBarDisplay" Guid="74888973-d861-4566-a594-5e39fb47679a" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
         <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
     </MemberComponentTemplate>
@@ -2771,6 +2777,9 @@
         <Parameter Name="Mass" Guid="6b33c92e-1a59-4f88-90eb-080d5c728d23" Value="50" Type="float"/>
         <Parameter Name="BoxSize" Guid="06a9adfb-fa9e-4c5b-8ab0-44dd3f7e96fa" Value="0.85,0.9,0.85" Type="Vector3"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Spawn" Guid="7972b288-e62d-4b20-b10b-426dfb5e309d">
+    <Parameter Name="AutoDespawn" Guid="659c4758-f801-484b-8b2f-519adff476da" Value="False" Type="bool"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="fd6ac663-7c9d-4490-9af7-e722bf6b875c">
         <Parameter Name="DisplayName" Guid="28edcf01-2fc5-4c2e-b3e0-98f41f67b728" Value="Guilmon" Type="string"/>
         <Parameter Name="Category" Guid="4486d16e-b775-46d2-a195-03ead242e3ec" Value="LandOther" Type="Game.CreatureCategory"/>
@@ -2880,6 +2889,9 @@
         <Parameter Name="HerdName" Guid="c890408a-d179-422a-baa7-ba5215db273a" Value="Alianza" Type="string"/>
         <Parameter Name="AutoNearbyCreaturesHelp" Guid="a4a46406-6ccf-4279-8e77-df5feb2a9370" Value="True" Type="bool"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Spawn" Guid="2e91a9a2-4884-4f40-b74e-dc1b06bc04c9">
+    <Parameter Name="AutoDespawn" Guid="434bac36-a877-484b-9507-90446037ffda" Value="False" Type="bool"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="FeedBehavior" Guid="22141b3a-aebf-454c-823d-496217c300ff" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
         <Parameter Name="AutoFeed" Guid="8c2f696d-48df-4fe7-ad7d-9d6a3ff7e545" Value="False" Type="bool"/>
     </MemberComponentTemplate>
@@ -3031,6 +3043,9 @@
         <Parameter Name="Mass" Guid="991c9037-a83a-4a47-ae18-97a59316ac36" Value="50" Type="float"/>
         <Parameter Name="BoxSize" Guid="f58fbebc-4d46-4178-9cb2-fb01b2690e2b" Value="0.85,0.9,0.85" Type="Vector3"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Spawn" Guid="82bfbdc3-7beb-4257-8f43-b15c28b8b383">
+    <Parameter Name="AutoDespawn" Guid="a4adf331-3e5b-4850-bef3-5657ffd6c7ad" Value="False" Type="bool"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="4d997a9b-14f6-4491-9a09-4a89f1695413">
         <Parameter Name="DisplayName" Guid="90838e86-35f5-4c1a-b28d-0f2deb7602ff" Value="Gaomon" Type="string"/>
         <Parameter Name="Category" Guid="3315bfa2-21a7-43c5-a9fd-f369b7a4a916" Value="LandOther" Type="Game.CreatureCategory"/>
@@ -3424,6 +3439,9 @@
     <MemberComponentTemplate Name="HealthBarDisplay" Guid="9666c3a4-d5b8-4801-81f3-8f4e10f0fdd7" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
         <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Spawn" Guid="e6eb6f1f-3d91-4db7-aebb-f8a2cf996656">
+    <Parameter Name="AutoDespawn" Guid="ba48792f-8492-42e8-9447-f94206b503e3" Value="False" Type="bool"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="6b7d0bce-5cb7-48ea-a80d-044dc51715f8">
         <Parameter Name="Mass" Guid="ecbf7b89-631c-4c11-8510-e2cd4a483391" Value="50" Type="float"/>
         <Parameter Name="BoxSize" Guid="8df747e1-204d-42be-9845-85021a1a1edd" Value="0.85,0.9,0.85" Type="Vector3"/>
