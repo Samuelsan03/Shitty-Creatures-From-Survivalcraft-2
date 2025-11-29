@@ -328,7 +328,7 @@ namespace Game
 				})
 			});
 
-			// BETELGAMMAMON - Día 15+ + INVIERNO + BIOMAS FRÍOS (ultra legendario)
+			// BETELGAMMAMON - Día 15+ + INVIERNO + BIOMAS FRÍOS
 			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Betelgammamon", 0, false, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType creatureType, Point3 point)
@@ -347,7 +347,7 @@ namespace Game
 
 					if (isDay15OrLater && isDay && isWinter && isColdBiome && point.Y < 90 && point.Y > 50)
 					{
-						return 0.1f;
+						return 1.0f;
 					}
 					return 0f;
 				},
