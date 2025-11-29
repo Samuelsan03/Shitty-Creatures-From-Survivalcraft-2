@@ -466,7 +466,7 @@ namespace Game
 				})
 			});
 
-			// Para FumadorQuimico - Día 6 en adelante, solo atardecer y amanecer
+			// Para FumadorQuimico - Día 6 en adelante, solo de noche
 			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("FumadorQuimico", 0, false, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType creatureType, Point3 point)
@@ -478,12 +478,10 @@ namespace Game
 					SubsystemTimeOfDay timeOfDay = spawn.Project.FindSubsystem<SubsystemTimeOfDay>(true);
 					bool isDay6OrLater = timeOfDay != null && timeOfDay.Day >= 5.0;
 
-					// Solo atardecer (Dusk) y amanecer (Dawn)
-					bool isDusk = timeOfDay != null && timeOfDay.TimeOfDay >= timeOfDay.DuskStart && timeOfDay.TimeOfDay < timeOfDay.NightStart;
-					bool isDawn = timeOfDay != null && timeOfDay.TimeOfDay >= timeOfDay.DawnStart && timeOfDay.TimeOfDay < timeOfDay.DayStart;
-					bool isTwilight = isDusk || isDawn;
+					// Solo durante la noche
+					bool isNight = timeOfDay != null && (timeOfDay.TimeOfDay >= timeOfDay.NightStart || timeOfDay.TimeOfDay < timeOfDay.DawnStart);
 
-					if (isDay6OrLater && isTwilight && point.Y < 90 && point.Y > 50 &&
+					if (isDay6OrLater && isNight && point.Y < 90 && point.Y > 50 &&
 						(groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
 						return 1.0f; // 100% de probabilidad
