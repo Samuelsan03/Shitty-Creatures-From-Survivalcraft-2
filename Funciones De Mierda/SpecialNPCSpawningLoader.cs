@@ -108,7 +108,7 @@ namespace Game
 				},
 				SpawnFunction = ((SubsystemCreatureSpawn.CreatureType creatureType, Point3 point) =>
 				{
-					var creatures = spawn.SpawnCreatures(creatureType, "ElArquero", point, 4);
+					var creatures = spawn.SpawnCreatures(creatureType, "ElArquero", point, 5);
 					return creatures.Count;
 				})
 			});
@@ -161,32 +161,6 @@ namespace Game
 				SpawnFunction = ((SubsystemCreatureSpawn.CreatureType creatureType, Point3 point) =>
 				{
 					var creatures = spawn.SpawnCreatures(creatureType, "Veemon", point, 2);
-					return creatures.Count;
-				})
-			});
-
-			// SHOUTMON - Día 5+ (de día, 100%)
-			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Shoutmon", 0, false, false)
-			{
-				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType creatureType, Point3 point)
-				{
-					SubsystemTerrain subsystemTerrain = spawn.m_subsystemTerrain;
-					int cellValue = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
-					int groundBlock = Terrain.ExtractContents(cellValue);
-
-					SubsystemTimeOfDay timeOfDay = spawn.Project.FindSubsystem<SubsystemTimeOfDay>(true);
-					bool isDay = timeOfDay != null && timeOfDay.TimeOfDay >= timeOfDay.DawnStart && timeOfDay.TimeOfDay < timeOfDay.DuskStart;
-					bool isDay5OrLater = timeOfDay != null && timeOfDay.Day >= 4.0;
-
-					if (isDay5OrLater && isDay && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
-					{
-						return 1.0f;
-					}
-					return 0f;
-				},
-				SpawnFunction = ((SubsystemCreatureSpawn.CreatureType creatureType, Point3 point) =>
-				{
-					var creatures = spawn.SpawnCreatures(creatureType, "Shoutmon", point, 2);
 					return creatures.Count;
 				})
 			});
@@ -295,7 +269,7 @@ namespace Game
 				})
 			});
 
-			// BETELGAMMAMON - Día 15+ + INVIERNO + BIOMAS FRÍOS
+			// BETELGAMMAMON - Día 15+ (cualquier estación)
 			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("BetelGammamon", 0, false, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType creatureType, Point3 point)
@@ -308,11 +282,9 @@ namespace Game
 					bool isDay = timeOfDay != null && timeOfDay.TimeOfDay >= timeOfDay.DawnStart && timeOfDay.TimeOfDay < timeOfDay.DuskStart;
 					bool isDay15OrLater = timeOfDay != null && timeOfDay.Day >= 14.0;
 
-					SubsystemSeasons seasons = spawn.Project.FindSubsystem<SubsystemSeasons>(true);
-					bool isWinter = seasons != null && seasons.Season == Season.Winter;
-					bool isColdBiome = groundBlock == 62 || groundBlock == 63 || groundBlock == 2;
-
-					if (isDay15OrLater && isDay && isWinter && isColdBiome)
+					// Aparece en cualquier estación desde el día 15
+					if (isDay15OrLater && isDay &&
+						(groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8 || groundBlock == 62))
 					{
 						return 1.0f;
 					}
@@ -649,75 +621,7 @@ namespace Game
 				})
 			});
 
-			// Para HombreAgua - Día 21 en adelante, solo de noche y en agua con 85% de probabilidad
-			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("HombreAgua", 0, false, false)
-			{
-				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType creatureType, Point3 point)
-				{
-					SubsystemTerrain subsystemTerrain = spawn.m_subsystemTerrain;
-
-					// Verificar que el bloque en la posición sea agua (bloque 18) o que esté cerca de agua
-					int cellValue = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
-					int blockAtPoint = Terrain.ExtractContents(cellValue);
-
-					// Verificar bloques alrededor para determinar tipo de zona acuática
-					bool isNearWater = false;
-					bool isCoast = false;
-					bool isDeepOcean = false;
-
-					int waterBlocksCount = 0;
-					int landBlocksCount = 0;
-
-					for (int x = -5; x <= 5; x++)
-					{
-						for (int z = -5; z <= 5; z++)
-						{
-							int nearbyCellValue = subsystemTerrain.Terrain.GetCellValueFast(point.X + x, point.Y, point.Z + z);
-							int nearbyBlock = Terrain.ExtractContents(nearbyCellValue);
-
-							if (nearbyBlock == 18) // Bloque de agua
-							{
-								waterBlocksCount++;
-								isNearWater = true;
-							}
-							else if (nearbyBlock == 2 || nearbyBlock == 3 || nearbyBlock == 7 || nearbyBlock == 8) // Bloques de tierra
-							{
-								landBlocksCount++;
-							}
-						}
-					}
-
-					// Determinar si es costa (mezcla de agua y tierra) - no océano profundo
-					isCoast = isNearWater && landBlocksCount > 5 && waterBlocksCount > 5;
-					isDeepOcean = isNearWater && landBlocksCount <= 2; // Muy poca tierra = océano profundo
-
-					SubsystemTimeOfDay timeOfDay = spawn.Project.FindSubsystem<SubsystemTimeOfDay>(true);
-					bool isDay21OrLater = timeOfDay != null && timeOfDay.Day >= 20.0;
-
-					// Solo durante la noche
-					bool isNight = timeOfDay != null && (timeOfDay.TimeOfDay >= timeOfDay.NightStart || timeOfDay.TimeOfDay < timeOfDay.DawnStart);
-
-					// HombreAgua aparece en zonas acuáticas, preferencia por costas
-					if (isDay21OrLater && isNight && isNearWater && !isDeepOcean)
-					{
-						// 85% de probabilidad base, mayor en costas
-						if (isCoast)
-						{
-							return 0.95f; // 95% en costas
-						}
-						else
-						{
-							return 0.85f; // 85% en otras zonas acuáticas
-						}
-					}
-					return 0f;
-				},
-				SpawnFunction = ((SubsystemCreatureSpawn.CreatureType creatureType, Point3 point) =>
-				{
-					var creatures = spawn.SpawnCreatures(creatureType, "HombreAgua", point, 2);
-					return creatures.Count;
-				})
-			});
+			
 
 			// Para BallestadoraMusculosa - Día 25 en adelante, solo de noche y en grupo de 4
 			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("BallestadoraMusculosa", 0, false, false)
@@ -799,7 +703,7 @@ namespace Game
 				})
 			});
 
-			// Para HombreLava - Día 29 en adelante, cualquier hora
+			// Para HombreLava - Día 29 en adelantbe, cualquier hora
 			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("HombreLava", 0, false, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType creatureType, Point3 point)
@@ -812,9 +716,8 @@ namespace Game
 					bool isDay29OrLater = timeOfDay != null && timeOfDay.Day >= 28.0;
 
 					// Cualquier hora del día - SIN RESTRICCIÓN DE ALTURA
-					// Aparece en bloques de grava (6), cobblestone (5), granite (3), sandstone (4), limestone (66)
-					if (isDay29OrLater &&
-						(groundBlock == 6 || groundBlock == 5 || groundBlock == 3 || groundBlock == 4 || groundBlock == 66))
+					// Aparece SOLO en bloques rocosos: grava (6), cobblestone (5), granite (3), sandstone (4), limestone (66)
+					if (isDay29OrLater && (groundBlock == 6 || groundBlock == 5 || groundBlock == 3 || groundBlock == 4 || groundBlock == 66))
 					{
 						return 1.0f; // 100% de probabilidad
 					}
@@ -823,6 +726,63 @@ namespace Game
 				SpawnFunction = ((SubsystemCreatureSpawn.CreatureType creatureType, Point3 point) =>
 				{
 					var creatures = spawn.SpawnCreatures(creatureType, "HombreLava", point, 2);
+					return creatures.Count;
+				})
+			});
+
+			// Para HombreAgua - Día 21 en adelante, solo de noche y en TIERRA/ARENA cerca de agua
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("HombreAgua", 0, false, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType creatureType, Point3 point)
+				{
+					SubsystemTerrain subsystemTerrain = spawn.m_subsystemTerrain;
+
+					// Verificar el bloque en la posición actual (donde aparecería)
+					int cellValue = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAtPoint = Terrain.ExtractContents(cellValue);
+
+					// Verificar el bloque DEBAJO (donde estaría parado)
+					int cellValueBelow = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueBelow);
+
+					// Solo puede aparecer en bloques de tierra y arena
+					bool isValidGround = groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8;
+
+					// Verificar bloques alrededor para detectar agua cercana
+					bool isNearWater = false;
+					int waterBlocksCount = 0;
+
+					for (int x = -3; x <= 3; x++)
+					{
+						for (int z = -3; z <= 3; z++)
+						{
+							int nearbyCellValue = subsystemTerrain.Terrain.GetCellValueFast(point.X + x, point.Y, point.Z + z);
+							int nearbyBlock = Terrain.ExtractContents(nearbyCellValue);
+
+							if (nearbyBlock == 18) // Bloque de agua
+							{
+								waterBlocksCount++;
+								isNearWater = true;
+							}
+						}
+					}
+
+					SubsystemTimeOfDay timeOfDay = spawn.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					bool isDay21OrLater = timeOfDay != null && timeOfDay.Day >= 20.0;
+
+					// Solo durante la noche
+					bool isNight = timeOfDay != null && (timeOfDay.TimeOfDay >= timeOfDay.NightStart || timeOfDay.TimeOfDay < timeOfDay.DawnStart);
+
+					// HombreAgua aparece en tierra/arena cerca de agua
+					if (isDay21OrLater && isNight && isValidGround && isNearWater && waterBlocksCount >= 2)
+					{
+						return 1.0f; // 100% de probabilidad
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemCreatureSpawn.CreatureType creatureType, Point3 point) =>
+				{
+					var creatures = spawn.SpawnCreatures(creatureType, "HombreAgua", point, 2);
 					return creatures.Count;
 				})
 			});
@@ -888,4 +848,3 @@ namespace Game
 		}
 	}
 }
-
