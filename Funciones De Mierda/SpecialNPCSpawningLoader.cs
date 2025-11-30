@@ -320,7 +320,7 @@ namespace Game
 				},
 				SpawnFunction = ((SubsystemCreatureSpawn.CreatureType creatureType, Point3 point) =>
 				{
-					var creatures = spawn.SpawnCreatures(creatureType, "Betelgammamon", point, 2);
+					var creatures = spawn.SpawnCreatures(creatureType, "BetelGammamon", point, 2);
 					return creatures.Count;
 				})
 			});
@@ -888,3 +888,4 @@ namespace Game
 		}
 	}
 }
+
