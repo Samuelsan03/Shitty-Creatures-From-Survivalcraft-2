@@ -23,9 +23,8 @@ namespace Game
 					int cellValue = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
 					int groundBlock = Terrain.ExtractContents(cellValue);
 
-					// Condiciones flexibles para Naomi
-					if (point.Y < 90 && point.Y > 50 &&
-						(groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+					// Condiciones flexibles para Naomi - SIN RESTRICCIÓN DE ALTURA
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
 						return 1.0f; // 100% de probabilidad
 					}
@@ -34,28 +33,6 @@ namespace Game
 				SpawnFunction = ((SubsystemCreatureSpawn.CreatureType creatureType, Point3 point) =>
 				{
 					var creatures = spawn.SpawnCreatures(creatureType, "Naomi", point, 3);
-					return creatures.Count;
-				})
-			});
-
-			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Ricardo", 0, false, false)
-			{
-				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType creatureType, Point3 point)
-				{
-					SubsystemTerrain subsystemTerrain = spawn.m_subsystemTerrain;
-					int cellValue = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
-					int groundBlock = Terrain.ExtractContents(cellValue);
-
-					if (point.Y < 90 && point.Y > 50 &&
-						(groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
-					{
-						return 1.0f;
-					}
-					return 0f;
-				},
-				SpawnFunction = ((SubsystemCreatureSpawn.CreatureType creatureType, Point3 point) =>
-				{
-					var creatures = spawn.SpawnCreatures(creatureType, "Ricardo", point, 2);
 					return creatures.Count;
 				})
 			});
@@ -71,8 +48,7 @@ namespace Game
 					SubsystemTimeOfDay timeOfDay = spawn.Project.FindSubsystem<SubsystemTimeOfDay>(true);
 					bool isNight = timeOfDay != null && (timeOfDay.TimeOfDay >= timeOfDay.NightStart || timeOfDay.TimeOfDay < timeOfDay.DawnStart);
 
-					if (isNight && point.Y < 90 && point.Y > 50 &&
-						(groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+					if (isNight && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
 						return 1.0f;
 					}
@@ -98,8 +74,7 @@ namespace Game
 					bool isNight = timeOfDay != null && (timeOfDay.TimeOfDay >= timeOfDay.NightStart || timeOfDay.TimeOfDay < timeOfDay.DawnStart);
 					bool isDay5OrLater = timeOfDay != null && timeOfDay.Day >= 4.0;
 
-					if (isDay5OrLater && isNight && point.Y < 90 && point.Y > 50 &&
-						(groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+					if (isDay5OrLater && isNight && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
 						return 1.0f;
 					}
@@ -125,8 +100,7 @@ namespace Game
 					bool isNight = timeOfDay != null && (timeOfDay.TimeOfDay >= timeOfDay.NightStart || timeOfDay.TimeOfDay < timeOfDay.DawnStart);
 					bool isDay10OrLater = timeOfDay != null && timeOfDay.Day >= 9.0;
 
-					if (isDay10OrLater && isNight && point.Y < 90 && point.Y > 50 &&
-						(groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+					if (isDay10OrLater && isNight && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
 						return 1.0f;
 					}
@@ -152,8 +126,7 @@ namespace Game
 					bool isProperDaytime = timeOfDay != null && timeOfDay.TimeOfDay >= timeOfDay.DayStart + 0.1f && timeOfDay.TimeOfDay < timeOfDay.DuskStart - 0.1f;
 					bool isDay3OrLater = timeOfDay != null && timeOfDay.Day >= 2.0;
 
-					if (isDay3OrLater && isProperDaytime && point.Y < 90 && point.Y > 50 &&
-						(groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+					if (isDay3OrLater && isProperDaytime && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
 						return 1.0f;
 					}
@@ -179,8 +152,7 @@ namespace Game
 					bool isProperDaytime = timeOfDay != null && timeOfDay.TimeOfDay >= timeOfDay.DayStart + 0.1f && timeOfDay.TimeOfDay < timeOfDay.DuskStart - 0.1f;
 					bool isDay3OrLater = timeOfDay != null && timeOfDay.Day >= 2.0;
 
-					if (isDay3OrLater && isProperDaytime && point.Y < 90 && point.Y > 50 &&
-						(groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+					if (isDay3OrLater && isProperDaytime && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
 						return 1.0f;
 					}
@@ -189,33 +161,6 @@ namespace Game
 				SpawnFunction = ((SubsystemCreatureSpawn.CreatureType creatureType, Point3 point) =>
 				{
 					var creatures = spawn.SpawnCreatures(creatureType, "Veemon", point, 2);
-					return creatures.Count;
-				})
-			});
-
-			// GAOMON - Día 3+ (solo horario central del día)
-			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Gaomon", 0, false, false)
-			{
-				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType creatureType, Point3 point)
-				{
-					SubsystemTerrain subsystemTerrain = spawn.m_subsystemTerrain;
-					int cellValue = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
-					int groundBlock = Terrain.ExtractContents(cellValue);
-
-					SubsystemTimeOfDay timeOfDay = spawn.Project.FindSubsystem<SubsystemTimeOfDay>(true);
-					bool isProperDaytime = timeOfDay != null && timeOfDay.TimeOfDay >= timeOfDay.DayStart + 0.1f && timeOfDay.TimeOfDay < timeOfDay.DuskStart - 0.1f;
-					bool isDay3OrLater = timeOfDay != null && timeOfDay.Day >= 2.0;
-
-					if (isDay3OrLater && isProperDaytime && point.Y < 90 && point.Y > 50 &&
-						(groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
-					{
-						return 1.0f;
-					}
-					return 0f;
-				},
-				SpawnFunction = ((SubsystemCreatureSpawn.CreatureType creatureType, Point3 point) =>
-				{
-					var creatures = spawn.SpawnCreatures(creatureType, "Gaomon", point, 2);
 					return creatures.Count;
 				})
 			});
@@ -233,8 +178,33 @@ namespace Game
 					bool isDay = timeOfDay != null && timeOfDay.TimeOfDay >= timeOfDay.DawnStart && timeOfDay.TimeOfDay < timeOfDay.DuskStart;
 					bool isDay5OrLater = timeOfDay != null && timeOfDay.Day >= 4.0;
 
-					if (isDay5OrLater && isDay && point.Y < 90 && point.Y > 50 &&
-						(groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+					if (isDay5OrLater && isDay && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+					{
+						return 1.0f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemCreatureSpawn.CreatureType creatureType, Point3 point) =>
+				{
+					var creatures = spawn.SpawnCreatures(creatureType, "Shoutmon", point, 2);
+					return creatures.Count;
+				})
+			});
+
+			// SHOUTMON - Día 5+ (de día, 100%)
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Shoutmon", 0, false, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType creatureType, Point3 point)
+				{
+					SubsystemTerrain subsystemTerrain = spawn.m_subsystemTerrain;
+					int cellValue = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValue);
+
+					SubsystemTimeOfDay timeOfDay = spawn.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					bool isDay = timeOfDay != null && timeOfDay.TimeOfDay >= timeOfDay.DawnStart && timeOfDay.TimeOfDay < timeOfDay.DuskStart;
+					bool isDay5OrLater = timeOfDay != null && timeOfDay.Day >= 4.0;
+
+					if (isDay5OrLater && isDay && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
 						return 1.0f;
 					}
@@ -260,8 +230,7 @@ namespace Game
 					bool isNight = timeOfDay != null && (timeOfDay.TimeOfDay >= timeOfDay.NightStart || timeOfDay.TimeOfDay < timeOfDay.DawnStart);
 					bool isDay5OrLater = timeOfDay != null && timeOfDay.Day >= 4.0;
 
-					if (isDay5OrLater && isNight && point.Y < 90 && point.Y > 50 &&
-						(groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+					if (isDay5OrLater && isNight && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
 						return 1.0f;
 					}
@@ -287,8 +256,7 @@ namespace Game
 					bool isProperDaytime = timeOfDay != null && timeOfDay.TimeOfDay >= timeOfDay.DayStart + 0.1f && timeOfDay.TimeOfDay < timeOfDay.DuskStart - 0.1f;
 					bool isDay12OrLater = timeOfDay != null && timeOfDay.Day >= 11.0;
 
-					if (isDay12OrLater && isProperDaytime && point.Y < 90 && point.Y > 50 &&
-						(groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+					if (isDay12OrLater && isProperDaytime && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
 						return 1.0f;
 					}
@@ -314,8 +282,7 @@ namespace Game
 					bool isProperDaytime = timeOfDay != null && timeOfDay.TimeOfDay >= timeOfDay.DayStart + 0.1f && timeOfDay.TimeOfDay < timeOfDay.DuskStart - 0.1f;
 					bool isDay12OrLater = timeOfDay != null && timeOfDay.Day >= 11.0;
 
-					if (isDay12OrLater && isProperDaytime && point.Y < 90 && point.Y > 50 &&
-						(groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+					if (isDay12OrLater && isProperDaytime && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
 						return 1.0f;
 					}
@@ -329,7 +296,7 @@ namespace Game
 			});
 
 			// BETELGAMMAMON - Día 15+ + INVIERNO + BIOMAS FRÍOS
-			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Betelgammamon", 0, false, false)
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("BetelGammamon", 0, false, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType creatureType, Point3 point)
 				{
@@ -345,7 +312,7 @@ namespace Game
 					bool isWinter = seasons != null && seasons.Season == Season.Winter;
 					bool isColdBiome = groundBlock == 62 || groundBlock == 63 || groundBlock == 2;
 
-					if (isDay15OrLater && isDay && isWinter && isColdBiome && point.Y < 90 && point.Y > 50)
+					if (isDay15OrLater && isDay && isWinter && isColdBiome)
 					{
 						return 1.0f;
 					}
@@ -370,8 +337,7 @@ namespace Game
 					SubsystemGameInfo gameInfo = spawn.Project.FindSubsystem<SubsystemGameInfo>(true);
 					bool isDay2OrLater = gameInfo != null && (gameInfo.TotalElapsedGameTime / 1200.0) >= 1.0;
 
-					if (isDay2OrLater && point.Y < 90 && point.Y > 50 &&
-						(groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+					if (isDay2OrLater && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
 						return 1.0f;
 					}
@@ -398,8 +364,7 @@ namespace Game
 					bool isNight = timeOfDay != null && (timeOfDay.TimeOfDay >= timeOfDay.NightStart || timeOfDay.TimeOfDay < timeOfDay.DawnStart);
 					bool isDay2OrLater = gameInfo != null && (gameInfo.TotalElapsedGameTime / 1200.0) >= 1.0;
 
-					if (isDay2OrLater && isNight && point.Y < 90 && point.Y > 50 &&
-						(groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+					if (isDay2OrLater && isNight && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
 						return 1.0f;
 					}
@@ -425,8 +390,7 @@ namespace Game
 					bool isNight = timeOfDay != null && (timeOfDay.TimeOfDay >= timeOfDay.NightStart || timeOfDay.TimeOfDay < timeOfDay.DawnStart);
 					bool isDay7OrLater = timeOfDay != null && timeOfDay.Day >= 6.0; // Día 7 en adelante
 
-					if (isDay7OrLater && isNight && point.Y < 90 && point.Y > 50 &&
-						(groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+					if (isDay7OrLater && isNight && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
 						return 1.0f; // 100% de probabilidad desde noche del día 7
 					}
@@ -452,8 +416,7 @@ namespace Game
 					bool isDay4OrLater = timeOfDay != null && timeOfDay.Day >= 3.0;
 
 					// Condiciones flexibles igual que Naomi - cualquier hora, cualquier lugar
-					if (isDay4OrLater && point.Y < 90 && point.Y > 50 &&
-						(groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+					if (isDay4OrLater && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
 						return 1.0f; // 100% de probabilidad
 					}
@@ -481,8 +444,7 @@ namespace Game
 					// Solo durante la noche
 					bool isNight = timeOfDay != null && (timeOfDay.TimeOfDay >= timeOfDay.NightStart || timeOfDay.TimeOfDay < timeOfDay.DawnStart);
 
-					if (isDay6OrLater && isNight && point.Y < 90 && point.Y > 50 &&
-						(groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+					if (isDay6OrLater && isNight && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
 						return 1.0f; // 100% de probabilidad
 					}
@@ -510,8 +472,7 @@ namespace Game
 					// Solo durante el día (excluyendo amanecer y atardecer)
 					bool isDay = timeOfDay != null && timeOfDay.TimeOfDay >= timeOfDay.DayStart && timeOfDay.TimeOfDay < timeOfDay.DuskStart;
 
-					if (isDay8OrLater && isDay && point.Y < 90 && point.Y > 50 &&
-						(groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+					if (isDay8OrLater && isDay && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
 						return 1.0f; // 100% de probabilidad
 					}
@@ -539,8 +500,7 @@ namespace Game
 					// Solo durante la noche
 					bool isNight = timeOfDay != null && (timeOfDay.TimeOfDay >= timeOfDay.NightStart || timeOfDay.TimeOfDay < timeOfDay.DawnStart);
 
-					if (isDay9OrLater && isNight && point.Y < 90 && point.Y > 50 &&
-						(groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+					if (isDay9OrLater && isNight && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
 						return 1.0f; // 100% de probabilidad
 					}
@@ -566,8 +526,7 @@ namespace Game
 					bool isDay13OrLater = timeOfDay != null && timeOfDay.Day >= 12.0;
 
 					// Cualquier hora del día
-					if (isDay13OrLater && point.Y < 90 && point.Y > 50 &&
-						(groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+					if (isDay13OrLater && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
 						return 1.0f; // 100% de probabilidad
 					}
@@ -593,8 +552,7 @@ namespace Game
 					bool isDay13OrLater = timeOfDay != null && timeOfDay.Day >= 12.0;
 
 					// Cualquier hora del día
-					if (isDay13OrLater && point.Y < 90 && point.Y > 50 &&
-						(groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+					if (isDay13OrLater && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
 						return 1.0f; // 100% de probabilidad
 					}
@@ -622,8 +580,7 @@ namespace Game
 					// Solo durante el día (excluyendo amanecer y atardecer)
 					bool isDay = timeOfDay != null && timeOfDay.TimeOfDay >= timeOfDay.DayStart && timeOfDay.TimeOfDay < timeOfDay.DuskStart;
 
-					if (isDay18OrLater && isDay && point.Y < 90 && point.Y > 50 &&
-						(groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+					if (isDay18OrLater && isDay && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
 						return 1.0f; // 100% de probabilidad
 					}
@@ -651,8 +608,7 @@ namespace Game
 					// Solo durante el día (excluyendo amanecer y atardecer)
 					bool isDay = timeOfDay != null && timeOfDay.TimeOfDay >= timeOfDay.DayStart && timeOfDay.TimeOfDay < timeOfDay.DuskStart;
 
-					if (isDay14OrLater && isDay && point.Y < 90 && point.Y > 50 &&
-						(groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+					if (isDay14OrLater && isDay && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
 						return 1.0f; // 100% de probabilidad
 					}
@@ -680,8 +636,7 @@ namespace Game
 					// Solo durante el día (excluyendo amanecer y atardecer)
 					bool isDay = timeOfDay != null && timeOfDay.TimeOfDay >= timeOfDay.DayStart && timeOfDay.TimeOfDay < timeOfDay.DuskStart;
 
-					if (isDay14OrLater && isDay && point.Y < 90 && point.Y > 50 &&
-						(groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+					if (isDay14OrLater && isDay && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
 						return 1.0f; // 100% de probabilidad
 					}
@@ -743,7 +698,7 @@ namespace Game
 					bool isNight = timeOfDay != null && (timeOfDay.TimeOfDay >= timeOfDay.NightStart || timeOfDay.TimeOfDay < timeOfDay.DawnStart);
 
 					// HombreAgua aparece en zonas acuáticas, preferencia por costas
-					if (isDay21OrLater && isNight && point.Y < 90 && point.Y > 50 && isNearWater && !isDeepOcean)
+					if (isDay21OrLater && isNight && isNearWater && !isDeepOcean)
 					{
 						// 85% de probabilidad base, mayor en costas
 						if (isCoast)
@@ -779,8 +734,7 @@ namespace Game
 					// Solo durante la noche
 					bool isNight = timeOfDay != null && (timeOfDay.TimeOfDay >= timeOfDay.NightStart || timeOfDay.TimeOfDay < timeOfDay.DawnStart);
 
-					if (isDay25OrLater && isNight && point.Y < 90 && point.Y > 50 &&
-						(groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+					if (isDay25OrLater && isNight && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
 						return 1.0f; // 100% de probabilidad
 					}
@@ -806,8 +760,7 @@ namespace Game
 					bool isDay26OrLater = timeOfDay != null && timeOfDay.Day >= 25.0;
 
 					// Cualquier hora del día
-					if (isDay26OrLater && point.Y < 90 && point.Y > 50 &&
-						(groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+					if (isDay26OrLater && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
 						return 1.0f; // 100% de probabilidad
 					}
@@ -833,8 +786,7 @@ namespace Game
 					bool isDay29OrLater = timeOfDay != null && timeOfDay.Day >= 28.0;
 
 					// Cualquier hora del día
-					if (isDay29OrLater && point.Y < 90 && point.Y > 50 &&
-						(groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+					if (isDay29OrLater && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
 						return 1.0f; // 100% de probabilidad
 					}
@@ -842,13 +794,13 @@ namespace Game
 				},
 				SpawnFunction = ((SubsystemCreatureSpawn.CreatureType creatureType, Point3 point) =>
 				{
-					var creatures = spawn.SpawnCreatures(creatureType, "AladinaCorrupta", point, 3);
+					var creatures = spawn.SpawnCreatures(creatureType, "AladinaCorrupta", point, 2);
 					return creatures.Count;
 				})
 			});
 
-			// Para AladinaCorrupta - Día 29 en adelante, cualquier hora
-			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("AladinaCorrupta", 0, false, false)
+			// Para HombreLava - Día 29 en adelante, cualquier hora
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("HombreLava", 0, false, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType creatureType, Point3 point)
 				{
@@ -859,9 +811,10 @@ namespace Game
 					SubsystemTimeOfDay timeOfDay = spawn.Project.FindSubsystem<SubsystemTimeOfDay>(true);
 					bool isDay29OrLater = timeOfDay != null && timeOfDay.Day >= 28.0;
 
-					// Cualquier hora del día
-					if (isDay29OrLater && point.Y < 90 && point.Y > 50 &&
-						(groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+					// Cualquier hora del día - SIN RESTRICCIÓN DE ALTURA
+					// Aparece en bloques de grava (6), cobblestone (5), granite (3), sandstone (4), limestone (66)
+					if (isDay29OrLater &&
+						(groundBlock == 6 || groundBlock == 5 || groundBlock == 3 || groundBlock == 4 || groundBlock == 66))
 					{
 						return 1.0f; // 100% de probabilidad
 					}
@@ -869,7 +822,7 @@ namespace Game
 				},
 				SpawnFunction = ((SubsystemCreatureSpawn.CreatureType creatureType, Point3 point) =>
 				{
-					var creatures = spawn.SpawnCreatures(creatureType, "AladinaCorrupta", point, 2);
+					var creatures = spawn.SpawnCreatures(creatureType, "HombreLava", point, 2);
 					return creatures.Count;
 				})
 			});
