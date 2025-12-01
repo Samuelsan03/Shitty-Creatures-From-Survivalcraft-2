@@ -891,7 +891,7 @@ namespace Game
 
 					if (isDay17 && isNight && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
-						return 1f;
+						return 1.0f;
 					}
 					return 0f;
 				},
@@ -923,7 +923,7 @@ namespace Game
 				},
 				SpawnFunction = ((SubsystemCreatureSpawn.CreatureType creatureType, Point3 point) =>
 				{
-					var creatures = spawn.SpawnCreatures(creatureType, "CamisasMorenas", point, 1);
+					var creatures = spawn.SpawnCreatures(creatureType, "CamisasMorenas", point, 2);
 					return creatures.Count;
 				})
 			});
