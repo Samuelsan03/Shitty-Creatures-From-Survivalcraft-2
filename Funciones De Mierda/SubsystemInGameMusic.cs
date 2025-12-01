@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using Engine;
 using GameEntitySystem;
 using TemplatesDatabase;
@@ -25,14 +22,14 @@ namespace Game
 		{
 			get
 			{
-				return UpdateOrder.Default;
+				return 0;
 			}
 		}
 
 		// Token: 0x06000231 RID: 561 RVA: 0x0001BAA0 File Offset: 0x00019CA0
 		public void Update(float dt)
 		{
-			bool flag = MusicManager.CurrentMix != MusicManager.Mix.InGame;
+			bool flag = (int)MusicManager.CurrentMix != 2;
 			if (!flag)
 			{
 				bool flag2 = this.m_nextMusicTime == 0.0;
@@ -163,8 +160,12 @@ namespace Game
 		// Token: 0x040002E2 RID: 738
 		private readonly SubsystemInGameMusic.TrackInfo[] m_tracks = new SubsystemInGameMusic.TrackInfo[]
 		{
-			new SubsystemInGameMusic.TrackInfo("Music/InGame/Dead silence", 154.79999f)
+			new SubsystemInGameMusic.TrackInfo("MenuMusic/Digimon02OpeningThemeSong", 177f),
+			new SubsystemInGameMusic.TrackInfo("MenuMusic/Touhou2MimasThemeCompleteDarkness", 177f),
+			new SubsystemInGameMusic.TrackInfo("MenuMusic/Touhou2EasternWind", 177f),
+			new SubsystemInGameMusic.TrackInfo("MenuMusic/Touhou2RecordoftheSealingofanOrientalDemon", 177f)
 		};
+
 		// Token: 0x02000065 RID: 101
 		private struct TrackInfo
 		{
