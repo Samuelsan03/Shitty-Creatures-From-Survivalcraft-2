@@ -1,3 +1,4 @@
+
 using System;
 using System.Collections.Generic;
 using Engine;
@@ -121,17 +122,24 @@ public class SubsystemItemsLauncherBlockBehavior : SubsystemBlockBehavior
 		int slotValue = inventory.GetSlotValue(activeSlotIndex);
 		int data = Terrain.ExtractData(slotValue);
 		GameMode gameMode = this.m_subsystemGameInfo.WorldSettings.GameMode;
-		bool flag = gameMode > 0;
-		if (flag)
+
+		// Verificar si hay fuel disponible (pero no impedir el disparo)
+		bool hasFuel = false;
+		if (gameMode > 0)
 		{
 			int fuel = ItemsLauncherBlock.GetFuel(data);
-			bool flag2 = fuel <= 0;
-			if (flag2)
+			hasFuel = fuel > 0;
+
+			// Consumir fuel si está disponible
+			if (hasFuel)
 			{
-				base.Project.FindSubsystem<SubsystemAudio>(true).PlaySound("Audio/HammerRelease", 0.75f, this.m_random.Float(-0.1f, 0.1f), miner.ComponentCreature.ComponentCreatureModel.EyePosition, 2f, false);
-				return;
+				int num3 = ItemsLauncherBlock.SetFuel(data, fuel - 1);
+				int num4 = Terrain.ReplaceData(slotValue, num3);
+				inventory.RemoveSlotItems(activeSlotIndex, 1);
+				inventory.AddSlotItems(activeSlotIndex, num4, 1);
 			}
 		}
+
 		int num = 0;
 		int num2 = -1;
 		for (int i = 0; i < 10; i++)
@@ -148,19 +156,11 @@ public class SubsystemItemsLauncherBlockBehavior : SubsystemBlockBehavior
 				}
 			}
 		}
+
 		bool flag5 = num2 != -1;
 		if (flag5)
 		{
-			bool flag6 = gameMode > 0;
-			if (flag6)
-			{
-				int fuel2 = ItemsLauncherBlock.GetFuel(data);
-				int num3 = ItemsLauncherBlock.SetFuel(data, fuel2 - 1);
-				int num4 = Terrain.ReplaceData(slotValue, num3);
-				inventory.RemoveSlotItems(activeSlotIndex, 1);
-				inventory.AddSlotItems(activeSlotIndex, num4, 1);
-			}
-			inventory.RemoveSlotItems(num2, 1);
+			// Configurar parámetros de disparo
 			int num5 = ItemsLauncherBlock.GetSpeedLevel(data);
 			int num6 = ItemsLauncherBlock.GetSpreadLevel(data);
 			bool flag7 = num5 == 0;
@@ -173,28 +173,42 @@ public class SubsystemItemsLauncherBlockBehavior : SubsystemBlockBehavior
 			{
 				num6 = 2;
 			}
+
 			float num7 = SubsystemItemsLauncherBlockBehavior.m_speedValues[num5 - 1];
 			float num8 = SubsystemItemsLauncherBlockBehavior.m_spreadValues[num6 - 1];
 			Vector3 eyePosition = miner.ComponentCreature.ComponentCreatureModel.EyePosition;
 			Vector3 vector = Vector3.Normalize(aim.Direction + num8 * new Vector3(this.m_random.Float(-1f, 1f), this.m_random.Float(-1f, 1f), this.m_random.Float(-1f, 1f)));
+
 			SubsystemProjectiles subsystemProjectiles = base.Project.FindSubsystem<SubsystemProjectiles>(true);
 			SubsystemAudio subsystemAudio = base.Project.FindSubsystem<SubsystemAudio>(true);
 			SubsystemParticles subsystemParticles = base.Project.FindSubsystem<SubsystemParticles>(true);
 			SubsystemTerrain subsystemTerrain = base.Project.FindSubsystem<SubsystemTerrain>(true);
+
+			// Disparar el proyectil
 			subsystemProjectiles.FireProjectile(num, eyePosition, vector * num7, Vector3.Zero, miner.ComponentCreature);
 			subsystemAudio.PlaySound("Audio/Items/ItemLauncher/Item Cannon Fire", 0.5f, this.m_random.Float(-0.1f, 0.1f), eyePosition, 10f, true);
-			subsystemAudio.PlaySound("Audio/Items/ItemLauncher/Item Cannon Reload", 0.75f, this.m_random.Float(-0.1f, 0.1f), eyePosition, 10f, true);
 			subsystemParticles.AddParticleSystem(new GunSmokeParticleSystem(subsystemTerrain, eyePosition + 0.5f * vector, vector), false);
-			bool flag9 = gameMode > 0;
-			if (flag9)
+
+			// Aplicar efectos solo si hay fuel
+			if (gameMode > 0 && hasFuel)
 			{
 				miner.ComponentCreature.ComponentBody.ApplyImpulse(-4f * vector);
 				this.m_subsystemNoise.MakeNoise(eyePosition, 1f, 15f);
 			}
+
+			// Remover el proyectil del inventario
+			inventory.RemoveSlotItems(num2, 1);
 		}
 		else
 		{
-			base.Project.FindSubsystem<SubsystemAudio>(true).PlaySound("Audio/HammerRelease", 1f, this.m_random.Float(-0.1f, 0.1f), miner.ComponentCreature.ComponentCreatureModel.EyePosition, 2f, false);
+			// Mostrar mensaje cuando no hay munición
+			ComponentPlayer componentPlayer = miner.ComponentPlayer;
+			if (componentPlayer != null)
+			{
+				componentPlayer.ComponentGui.DisplaySmallMessage("You need ammunition to fire the item launcher", Color.Yellow, true, true);
+			}
+
+			base.Project.FindSubsystem<SubsystemAudio>(true).PlaySound("Audio/Items/ItemLauncher/Item Launcher Hammer Release", 1f, this.m_random.Float(-0.1f, 0.1f), miner.ComponentCreature.ComponentCreatureModel.EyePosition, 2f, false);
 		}
 	}
 
