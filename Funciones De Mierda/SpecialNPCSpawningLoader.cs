@@ -845,6 +845,88 @@ namespace Game
 					return creatures.Count;
 				})
 			});
+
+			// EL GUERRILLERO - aparece CADA NOCHE desde el día 16 en adelante
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("ElGuerrillero", 0, false, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType creatureType, Point3 point)
+				{
+					SubsystemTerrain subsystemTerrain = spawn.m_subsystemTerrain;
+					int cellValue = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValue);
+
+					SubsystemTimeOfDay timeOfDay = spawn.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					bool isNight = timeOfDay != null && (timeOfDay.TimeOfDay >= timeOfDay.NightStart || timeOfDay.TimeOfDay < timeOfDay.DawnStart);
+					bool isDay16OrLater = timeOfDay != null && timeOfDay.Day >= 15.0;
+
+					if (isDay16OrLater && isNight && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+					{
+						return 1.0f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemCreatureSpawn.CreatureType creatureType, Point3 point) =>
+				{
+					// Genera un número aleatorio entre 0 y 1
+					float randomValue = spawn.m_random.Float(0f, 1f);
+					int groupSize = (randomValue > 0.5f) ? 3 : 2; // 50% probabilidad de 3
+
+					var creatures = spawn.SpawnCreatures(creatureType, "ElGuerrillero", point, groupSize);
+					return creatures.Count;
+				})
+			});
+
+			// EL GUERRILLERO TENEBROSO - aparece SOLO UNA NOCHE en el día 17
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("ElGuerrilleroTenebroso", 0, false, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType creatureType, Point3 point)
+				{
+					SubsystemTerrain subsystemTerrain = spawn.m_subsystemTerrain;
+					int cellValue = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValue);
+
+					SubsystemTimeOfDay timeOfDay = spawn.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					bool isNight = timeOfDay != null && (timeOfDay.TimeOfDay >= timeOfDay.NightStart || timeOfDay.TimeOfDay < timeOfDay.DawnStart);
+					bool isDay17 = timeOfDay != null && timeOfDay.Day >= 16.0 && timeOfDay.Day < 17.0;
+
+					if (isDay17 && isNight && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+					{
+						return 1f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemCreatureSpawn.CreatureType creatureType, Point3 point) =>
+				{
+					var creatures = spawn.SpawnCreatures(creatureType, "ElGuerrilleroTenebroso", point, 1);
+					return creatures.Count;
+				})
+			});
+
+			// CAMISAS MORENAS - aparece SOLO UNA NOCHE en el día 21
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("CamisasMorenas", 0, false, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType creatureType, Point3 point)
+				{
+					SubsystemTerrain subsystemTerrain = spawn.m_subsystemTerrain;
+					int cellValue = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValue);
+
+					SubsystemTimeOfDay timeOfDay = spawn.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					bool isNight = timeOfDay != null && (timeOfDay.TimeOfDay >= timeOfDay.NightStart || timeOfDay.TimeOfDay < timeOfDay.DawnStart);
+					bool isDay21 = timeOfDay != null && timeOfDay.Day >= 20.0 && timeOfDay.Day < 21.0;
+
+					if (isDay21 && isNight && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+					{
+						return 1.0f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemCreatureSpawn.CreatureType creatureType, Point3 point) =>
+				{
+					var creatures = spawn.SpawnCreatures(creatureType, "CamisasMorenas", point, 1);
+					return creatures.Count;
+				})
+			});
 		}
 	}
 }
