@@ -4013,7 +4013,7 @@
     <MemberComponentTemplate Name="Inventory" Guid="b36efa22-5c93-46a2-889d-aa35798b2b76" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
     <ParameterSet Name="Slots">
         <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="313" Type="int"/> <!-- Machete de Piedra-->
+            <Parameter Name="Contents" Value="312" Type="int"/> <!-- Machete de Piedra-->
             <Parameter Name="Count" Value="1" Type="int"/>
         </ParameterSet>
      </ParameterSet>
