@@ -134,7 +134,7 @@
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="FindPlayerBehavior" Guid="ba520229-b06a-4b09-949e-4217be90a7c3" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
             <MemberComponentTemplate Name="Miner" Guid="c1a2e28a-4292-4229-acce-7373a0c256a0" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
-                <Parameter Name="AttackPower" Guid="bb34c589-5102-4e76-225c-deca29dcdd6b" Value="5.95" Type="float"/>
+                <Parameter Name="AttackPower" Guid="bb34c589-5102-4e76-225c-deca29dcdd6b" Value="2" Type="float"/>
                 <Parameter Name="AutoInteractRate" Guid="1234e5cd-a92c-49be-8e39-93e29f43a3ec" Value="1.0" Type="float"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="HumanModel" Guid="9ca7c9d5-622e-47c9-a0c4-21ea752301c6" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
@@ -147,7 +147,7 @@
         <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
     </MemberComponentTemplate>
             <MemberComponentTemplate Name="Health" Guid="d337003f-ae19-22b9-b031-5ba66c2bb0b7">
-                <Parameter Name="Health" Guid="301a07fd-bc35-48d8-9b7c-cb74579a7f94" Value="13.5" Type="float"/>
+                <Parameter Name="Health" Guid="301a07fd-bc35-48d8-9b7c-cb74579a7f94" Value="2" Type="float"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="OnFire" Guid="d73978b1-f856-22bc-82bd-8f32a8801ed7"/>
             <MemberComponentTemplate Name="WalkAroundBehavior" Guid="de223181-266a-4973-bee4-d7fbec697875" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
@@ -232,8 +232,8 @@
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="FindPlayerBehavior" Guid="e1f2a3b4-c5d6-4k78-9l90-a1b2c3d4e5f6" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
             <MemberComponentTemplate Name="Miner" Guid="f2a3b4c5-d6e7-4l89-9m01-b2c3d4e5f6a7" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
-                <Parameter Name="AttackPower" Guid="a3b4c5d6-e7f8-4m90-9n12-c3d4e5f6a7b8" Value="5.95" Type="float"/>
-                <Parameter Name="AutoInteractRate" Guid="e8855440-a6c0-4c7d-9045-ca4b93bf20c8" Value="1" Type="float"/>
+                <Parameter Name="AttackPower" Guid="a3b4c5d6-e7f8-4m90-9n12-c3d4e5f6a7b8" Value="3.0" Type="float"/>
+                <Parameter Name="AutoInteractRate" Guid="e8855440-a6c0-4c7d-9045-ca4b93bf20c8" Value="1.0" Type="float"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="HumanModel" Guid="b4c5d6e7-f8a9-4n01-9o23-d4e5f6a7b8c9" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
                 <Parameter Name="WalkLegsAngle" Guid="c5d6e7f8-a9b0-4o12-9p34-e5f6a7b8c9d0" Value="0.35" Type="float"/>
@@ -245,7 +245,7 @@
         <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
     </MemberComponentTemplate>
             <MemberComponentTemplate Name="Health" Guid="a9b0c1d2-e3f4-4s56-9t78-c9d0e1f2a3b4">
-                <Parameter Name="Health" Guid="b0c1d2e3-f4a5-4t67-9u89-d0e1f2a3b4c5" Value="17.55" Type="float"/>
+                <Parameter Name="Health" Guid="b0c1d2e3-f4a5-4t67-9u89-d0e1f2a3b4c5" Value="2.2" Type="float"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="OnFire" Guid="e3f4a5b6-c7d8-4w90-9x12-a3b4c5d6e7f8"/>
             <MemberComponentTemplate Name="WalkAroundBehavior" Guid="f4a5b6c7-d8e9-4x01-9y23-b4c5d6e7f8a9" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
@@ -330,7 +330,7 @@
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="e9f0a1b2-c3d4-7567-cdef-0123456789ab" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="f0a1b2c3-d4e5-7678-def0-123456789abc" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
-        <Parameter Name="AttackPower" Guid="a1b2c3d4-e5f6-7789-ef01-23456789abcd" Value="15.95" Type="float"/>
+        <Parameter Name="AttackPower" Guid="a1b2c3d4-e5f6-7789-ef01-23456789abcd" Value="4.0" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="HumanModel" Guid="b2c3d4e5-f6a7-7890-f012-3456789abcde" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
         <Parameter Name="WalkLegsAngle" Guid="c3d4e5f6-a7b8-7901-0123-456789abcdef" Value="0.35" Type="float"/>
@@ -342,7 +342,7 @@
         <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="a7b8c9d0-e1f2-8345-4567-89abcdef0123">
-        <Parameter Name="Health" Guid="480fd431-7720-4798-9988-41e96029d294" Value="10" Type="float"/>
+        <Parameter Name="Health" Guid="480fd431-7720-4798-9988-41e96029d294" Value="2.25" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="e1f2a3b4-c5d6-8789-89ab-cdef01234567"/>
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="f2a3b4c5-d6e7-8890-9abc-def012345678" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
@@ -439,7 +439,7 @@
         <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="f4a5b6c7-d8e9-8012-7890-9abcdef01234">
-        <Parameter Name="Health" Guid="ae837a72-6dc0-47b0-96e2-dc5b036da121" Value="5.55" Type="float"/>
+        <Parameter Name="Health" Guid="ae837a72-6dc0-47b0-96e2-dc5b036da121" Value="6.0" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="d8e9f0a1-b2c3-8456-1234-def012345678"/>
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="e9f0a1b2-c3d4-8567-2345-ef0123456789" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
@@ -522,7 +522,7 @@
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="325937f0-e327-4fac-b236-33d0317a8c73" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="71e06217-4d5d-439b-b4ea-a1e11d778115" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
-        <Parameter Name="AttackPower" Guid="841fa564-4d90-44a0-8071-1effc03bd6cf" Value="3.2" Type="float"/>
+        <Parameter Name="AttackPower" Guid="841fa564-4d90-44a0-8071-1effc03bd6cf" Value="3.25" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="HumanModel" Guid="ec7e2892-d4d9-4fae-92ff-b77e769017b4" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
         <Parameter Name="WalkLegsAngle" Guid="acdb3778-5a3a-45b1-9d29-aa0ef849dd57" Value="0.2" Type="float"/>
@@ -534,7 +534,7 @@
         <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="ed2db84f-ffe1-4517-b1a9-d55ebee202d6">
-        <Parameter Name="Health" Guid="0217c71f-1b0e-46cd-8d0e-1e2921de81e7" Value="9.89" Type="float"/>
+        <Parameter Name="Health" Guid="0217c71f-1b0e-46cd-8d0e-1e2921de81e7" Value="7.0" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="12bd61c1-52da-4b74-a16b-a9ff1db72ece"/>
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="ba20bd8a-0f6c-459f-b9ca-c6bbeecd40b2" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
@@ -660,7 +660,7 @@
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="7a5f28d1-f3eb-4923-9e6d-7a0b42c22d0f" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="5226597d-239d-4f09-a61f-147907109158" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
-        <Parameter Name="AttackPower" Guid="02c0ca9d-43ea-4533-be55-b241256d234e" Value="2.85" Type="float"/>
+        <Parameter Name="AttackPower" Guid="02c0ca9d-43ea-4533-be55-b241256d234e" Value="4.85" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="HumanModel" Guid="6813e820-5e4a-4065-a1e5-2605ba9afec3" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
         <Parameter Name="WalkLegsAngle" Guid="0c9854fb-1091-41d3-8690-0bf8402696a3" Value="0.25" Type="float"/>
@@ -672,7 +672,7 @@
         <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="cc2f05b6-8742-4f96-ae75-f29e601703c6">
-        <Parameter Name="Health" Guid="5da4b61a-05e2-4e69-a1e4-fc174dd791f6" Value="11.34" Type="float"/>
+        <Parameter Name="Health" Guid="5da4b61a-05e2-4e69-a1e4-fc174dd791f6" Value="7.5" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="af860938-3f1b-4be6-9917-c3c5498d318e"/>
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="d5e55075-02b4-4851-b2dd-48d4bb17fa18" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
@@ -1177,7 +1177,7 @@
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="b5c6d7e8-f9a0-7901-0123-56789abcdf0a" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="c6d7e8f9-a0b1-8012-1234-6789abcdef0b" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
-        <Parameter Name="AttackPower" Guid="d7e8f9a0-b1c2-8123-2345-789abcdef01c" Value="9.0" Type="float"/>
+        <Parameter Name="AttackPower" Guid="d7e8f9a0-b1c2-8123-2345-789abcdef01c" Value="3.0" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="HumanModel" Guid="e8f9a0b1-c2d3-8234-3456-89abcdef012d" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
         <Parameter Name="WalkLegsAngle" Guid="f9a0b1c2-d3e4-8345-4567-9abcdef0123e" Value="0.45" Type="float"/>
@@ -1189,7 +1189,7 @@
         <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="d3e4f5a6-b7c8-8789-89ab-def012345672">
-        <Parameter Name="Health" Guid="e28952b8-3ba5-48ef-8f0f-dc46ae5e4fae" Value="50" Type="float"/>
+        <Parameter Name="Health" Guid="e28952b8-3ba5-48ef-8f0f-dc46ae5e4fae" Value="2" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="b7c8d9e0-f1a2-9123-cdef-123456789ab6"/>
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="c8d9e0f1-a2b3-9234-def0-23456789abc7" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
@@ -1281,7 +1281,7 @@
         <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="a7b8c9d0-e1f2-8678-3456-456789012345">
-        <Parameter Name="Health" Guid="1994f477-202f-4da2-81bf-b354376a7bb5" Value="55" Type="float"/>
+        <Parameter Name="Health" Guid="1994f477-202f-4da2-81bf-b354376a7bb5" Value="5.5" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="e1f2a3b4-c5d6-9012-7890-890123456789"/>
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="f2a3b4c5-d6e7-9123-8901-901234567890" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
@@ -1373,7 +1373,7 @@
         <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="c8d9e0f1-a2b3-8678-3456-551789012345">
-        <Parameter Name="Health" Guid="8644154f-25b0-43fd-be92-58fb8bb5d8b2" Value="30.5" Type="float"/>
+        <Parameter Name="Health" Guid="8644154f-25b0-43fd-be92-58fb8bb5d8b2" Value="5.55" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="a2b3c4d5-e6f7-9012-7890-991123456789"/>
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="b3c4d5e6-f7a8-9123-8901-002234567890" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
