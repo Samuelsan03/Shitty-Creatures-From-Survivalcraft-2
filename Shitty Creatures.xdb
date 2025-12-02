@@ -31,6 +31,14 @@
     </Folder>
 
     <Folder Name="ProgramedInteligence" Guid="33dfd132-3c41-4dfa-a385-af3ba34ff86b">
+        <ComponentTemplate Name="TargetedChaseBehavior" Description="Similar a ChaseBehavior con la diferencia de usar nombres de entidades en vez de categorias, trabaja en conjunto con ChaseBehavior" Guid="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+			<Parameter Name="ChaseToCreatures" Description="Esta criatura perseguira a las criaturas especificadas por sus nombres de entidad" Guid="bf00b70a-e7ae-4e7d-92d7-c983d3fa8e4a" Value="" Type="string"/>
+			<Parameter Name="ChaseByCreatures" Description="Esta criatura sera perseguida por las criaturas especificadas por sus nombres de entidad" Guid="9f84f102-0878-4201-8463-94010952b847" Value="" Type="string"/>
+			<Parameter Name="ChaseToCreatureProbability" Description="Probabilidad para que esta criatura persegua a las criaturas especificadas" Guid="2a163295-dc70-4d0c-970a-95641f1cba91" Value="0.5" Type="float"/>
+			<Parameter Name="ChaseByCreatureProbability" Description="Probabilidad para que esta criatura sea perseguida por las criaturas especificadas" Guid="b698e775-c34d-47cf-8840-83edfcca8ceb" Value="0.5" Type="float"/>
+			<Parameter Name="Class" Guid="45077340-7b89-42da-b8d3-18b0e44a6f34" Value="Game.ComponentCustomChaseBehavior" Type="string"/>
+		</ComponentTemplate>
+
         <ComponentTemplate Name="ComponentSuicideBomber" Guid="bbeb4cf0-0c23-44e9-88f8-def2b79fa8f5">
             <Parameter Name="Class" Value="Game.ComponentSuicideBomber" Type="string" Guid="a2caf84b-0d7f-4ebb-b061-aa182794b564"/>
             <Parameter Name="IsOptional" Value="false" Type="bool" Guid="3f06ece9-5db6-40e4-beec-e0c9864791bd"/>
@@ -2147,6 +2155,11 @@
         <Parameter Name="HerdingRange" Guid="c575e38e-3980-496a-b1a3-881ce98f8af6" Value="40" Type="float"/>
         <Parameter Name="AutoNearbyCreaturesHelp" Guid="e1f2a3b4-c5d6-9123-cdef-0123456789ab" Value="True" Type="bool"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="PathBreaker" Guid="3d26d55c-d01b-42de-a298-a97bf3b03b9f" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
+		<Parameter Name="CanBreakBlocks" Guid="a7891843-fa38-46e5-add3-9b39e34eb889" Value="True" Type="bool"/>
+		<Parameter Name="SpecificBlocks" Guid="a9a9f99f-a478-4da4-89f0-4764f90a6c07" Value="" Type="string"/>
+		<Parameter Name="BreakProbability" Guid="ae055e9c-50e3-4657-bc0f-ffbd74bd5a12" Value="1.0" Type="float"/>
+	</MemberComponentTemplate>
     <MemberComponentTemplate Name="FeedBehavior" Guid="f2a3b4c5-d6e7-9234-def0-123456789abc" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
         <Parameter Name="AutoFeed" Guid="a3b4c5d6-e7f8-9345-ef01-23456789abcd" Value="False" Type="bool"/>
     </MemberComponentTemplate>
@@ -3419,6 +3432,9 @@
 		<Parameter Name="SpecificBlocks" Guid="1e1e1c57-dd07-4e12-9f6d-bdfd48b45f04" Value="" Type="string"/>
 		<Parameter Name="BreakProbability" Guid="0799d524-fd67-400e-8a0b-4f4f7c6a1e10" Value="1.0" Type="float"/>
 	</MemberComponentTemplate>
+    <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="eca22015-c900-4528-b7ca-29c2bfc89f79" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
+				<Parameter Name="ChaseToCreatures" Guid="1155356a-e08e-48cf-9c17-312cfcfb027a" Value="LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
+			</MemberComponentTemplate>
     <MemberComponentTemplate Name="ChaseBehavior" Guid="c98580c2-ce25-4412-b591-fa462c9b554f" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
         <Parameter Name="AutoChaseMask" Guid="f3d2190e-2ec7-495d-a77a-500a3738baac" Value="LandPredator, WaterPredator" Type="Game.CreatureCategory"/>
         <Parameter Name="DayChaseRange" Guid="3bd0f38f-370a-4952-9abe-0ce484e51d52" Value="995" Type="float"/>
