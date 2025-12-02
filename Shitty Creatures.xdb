@@ -115,7 +115,7 @@
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Body" Guid="7eac3b49-2f09-498e-226a-74d4f69b47b6">
                 <Parameter Name="Mass" Guid="3233c444-dd74-4d8c-812b-c25d522305a1" Value="60" Type="float"/>
-                <Parameter Name="BoxSize" Guid="fd85a7f0-71b6-4aaf-8807-3222f1f23cbd" Value="0.9,0.95,0.9" Type="Vector3"/>
+                <Parameter Name="BoxSize" Guid="fd85a7f0-71b6-4aaf-8807-3222f1f23cbd" Value="0.8,1.8,0.8" Type="Vector3"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Creature" Guid="8db29f2c-131e-4223-917f-90c29c977e13">
                 <Parameter Name="DisplayName" Guid="42d4fbe0-e974-403c-b223-5539220f42ac" Value="Naomi" Type="string"/>
@@ -214,7 +214,7 @@
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Body" Guid="c3d4e5f6-a7b8-4c90-9d12-e3f4a5b6c7d8">
                 <Parameter Name="Mass" Guid="d4e5f6a7-b8c9-4d01-9e23-f4a5b6c7d8e9" Value="60" Type="float"/>
-                <Parameter Name="BoxSize" Guid="e5f6a7b8-c9d0-4e12-9f34-a5b6c7d8e9f0" Value="0.9,0.95,0.9" Type="Vector3"/>
+                <Parameter Name="BoxSize" Guid="e5f6a7b8-c9d0-4e12-9f34-a5b6c7d8e9f0" Value="0.8,1.8,0.8" Type="Vector3"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Spawn" Guid="b95dfa94-74eb-40cb-a396-4655e311e727">
     <Parameter Name="AutoDespawn" Guid="a84a1003-77b2-4f13-aa38-2aeeb19914de" Value="False" Type="bool"/>
@@ -314,7 +314,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="c1d2e3f4-a5b6-6789-4567-89abcdef0123">
         <Parameter Name="Mass" Guid="d2e3f4a5-b6c7-6890-5678-9abcdef01234" Value="60" Type="float"/>
-        <Parameter Name="BoxSize" Guid="e3f4a5b6-c7d8-6901-6789-abcdef012345" Value="0.9,0.95,0.9" Type="Vector3"/>
+        <Parameter Name="BoxSize" Guid="e3f4a5b6-c7d8-6901-6789-abcdef012345" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="f4a5b6c7-d8e9-7012-789a-bcdef0123456">
         <Parameter Name="DisplayName" Guid="a5b6c7d8-e9f0-7123-89ab-cdef01234567" Value="Paco" Type="string"/>
@@ -506,7 +506,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="553ca0fd-a9ac-40ae-8f4f-b4069a627ba2">
         <Parameter Name="Mass" Guid="1fde294b-8b66-49bd-ad15-26b49bb66e2f" Value="55" Type="float"/>
-        <Parameter Name="BoxSize" Guid="8d78e8d8-dd27-4d83-b9ed-272dd96657a8" Value="0.8,0.9,0.8" Type="Vector3"/>
+        <Parameter Name="BoxSize" Guid="8d78e8d8-dd27-4d83-b9ed-272dd96657a8" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="063ee5a6-a891-4f81-845b-dbe944b1aa0a">
         <Parameter Name="DisplayName" Guid="b754143c-574b-4164-a5f3-389ed583083b" Value="El Marihuanero" Type="string"/>
@@ -644,7 +644,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="572ceae3-dffc-4d49-a44d-7a495b7170c1">
         <Parameter Name="Mass" Guid="f9bf2976-80f8-4cca-a881-cad9f90751ae" Value="50" Type="float"/>
-        <Parameter Name="BoxSize" Guid="04facd0f-c10f-44d2-9b90-a5b5a10d5866" Value="0.8,0.85,0.8" Type="Vector3"/>
+        <Parameter Name="BoxSize" Guid="04facd0f-c10f-44d2-9b90-a5b5a10d5866" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="bb741b05-534c-4fd8-a6ca-54c9e0fc76fa">
         <Parameter Name="DisplayName" Guid="f736a736-9def-46e2-9ef9-cbdb29106fc5" Value="El Marihuanero Mamón" Type="string"/>
@@ -740,7 +740,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="95cef5df-30cc-4160-9764-0c6cc6371490">
         <Parameter Name="Mass" Guid="6b886329-c80b-4181-9e8c-091bdfe9fe0c" Value="58" Type="float"/>
-        <Parameter Name="BoxSize" Guid="cba4446a-ca1c-49d0-a62a-0c31dd0dba0b" Value="0.85,0.92,0.85" Type="Vector3"/>
+        <Parameter Name="BoxSize" Guid="cba4446a-ca1c-49d0-a62a-0c31dd0dba0b" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="316b9ae9-7cd0-439b-9f02-e7003d940cd1">
         <Parameter Name="DisplayName" Guid="689ae605-43ca-4392-865a-2494d8fc7c75" Value="Fumador Químico" Type="string"/>
@@ -844,7 +844,7 @@
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="a5b6c7d8-e9f0-7123-89ab-def012345678">
         <Parameter Name="Mass" Guid="b6c7d8e9-f0a1-7234-9abc-ef0123456789" Value="120" Type="float"/>
-        <Parameter Name="BoxSize" Guid="c7d8e9f0-a1b2-7345-abcd-f0123456789a" Value="1.2,1.5,1.2" Type="Vector3"/>
+        <Parameter Name="BoxSize" Guid="c7d8e9f0-a1b2-7345-abcd-f0123456789a" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="d8e9f0a1-b2c3-7456-bcde-0123456789ab">
         <Parameter Name="DisplayName" Guid="e9f0a1b2-c3d4-7567-cdef-123456789abc" Value="Fumador Químico Brawny" Type="string"/>
@@ -936,7 +936,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="d5e6f7a8-b9c0-7123-89ab-def012345679">
         <Parameter Name="Mass" Guid="e6f7a8b9-c0d1-7234-9abc-ef0123456780" Value="65" Type="float"/>
-        <Parameter Name="BoxSize" Guid="f7a8b9c0-d1e2-7345-abcd-f01234567891" Value="0.9,1.0,0.9" Type="Vector3"/>
+        <Parameter Name="BoxSize" Guid="f7a8b9c0-d1e2-7345-abcd-f01234567891" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="a8b9c0d1-e2f3-7456-bcde-0123456789a3">
         <Parameter Name="DisplayName" Guid="b9c0d1e2-f3a4-7567-cdef-123456789ab4" Value="Claude Speed" Type="string"/>
@@ -1065,7 +1065,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="f8b8b702-bb33-4404-8ca1-168c270dc979">
         <Parameter Name="Mass" Guid="a9bdb8c6-4f2f-4e4a-91fc-6a6be75c3468" Value="70" Type="float"/>
-        <Parameter Name="BoxSize" Guid="8217cb6b-aea3-4ca9-8c81-1e1776d233ad" Value="0.9,1.0,0.9" Type="Vector3"/>
+        <Parameter Name="BoxSize" Guid="8217cb6b-aea3-4ca9-8c81-1e1776d233ad" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="0cdb0fed-e85e-460a-8703-3f0b8bb37bfc">
         <Parameter Name="DisplayName" Guid="cbcfd443-95e9-4b9a-8640-47944ae021f0" Value="Tommy Vercetti" Type="string"/>
@@ -1250,7 +1250,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="c1d2e3f4-a5b6-7012-789a-000123456789">
         <Parameter Name="Mass" Guid="d2e3f4a5-b6c7-7123-8901-001234567890" Value="65" Type="float"/>
-        <Parameter Name="BoxSize" Guid="e3f4a5b6-c7d8-7234-9012-012345678901" Value="0.9,1.0,0.9" Type="Vector3"/>
+        <Parameter Name="BoxSize" Guid="e3f4a5b6-c7d8-7234-9012-012345678901" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="f4a5b6c7-d8e9-7345-0123-123456789012">
         <Parameter Name="DisplayName" Guid="a5b6c7d8-e9f0-7456-1234-234567890123" Value="El Señor De Las Tumbas Moradas" Type="string"/>
@@ -1342,7 +1342,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="e2f3a4b5-c6d7-7012-789a-100123456789">
         <Parameter Name="Mass" Guid="f3a4b5c6-d7e8-7123-8901-101234567890" Value="70" Type="float"/>
-        <Parameter Name="BoxSize" Guid="a4b5c6d7-e8f9-7234-9012-112345678901" Value="0.9,1.1,0.9" Type="Vector3"/>
+        <Parameter Name="BoxSize" Guid="a4b5c6d7-e8f9-7234-9012-112345678901" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="b5c6d7e8-f9a0-7345-0123-223456789012">
         <Parameter Name="DisplayName" Guid="c6d7e8f9-a0b1-7456-1234-334567890123" Value="Lider Calaverico Supremo" Type="string"/>
@@ -1434,7 +1434,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="f3a4b5c6-d7e8-7012-789a-200123456789">
         <Parameter Name="Mass" Guid="a4b5c6d7-e8f9-7123-8901-201234567890" Value="75" Type="float"/>
-        <Parameter Name="BoxSize" Guid="b5c6d7e8-f9a0-7234-9012-212345678901" Value="0.95,1.2,0.95" Type="Vector3"/>
+        <Parameter Name="BoxSize" Guid="b5c6d7e8-f9a0-7234-9012-212345678901" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="c6d7e8f9-a0b1-7345-0123-323456789012">
         <Parameter Name="DisplayName" Guid="d7e8f9a0-b1c2-7456-1234-434567890123" Value="Lider Calaverico Supremo Alfa" Type="string"/>
@@ -1516,7 +1516,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="045ed1a0-0655-4fdc-9060-866d1568165c">
         <Parameter Name="Mass" Guid="40626e83-5faa-4683-a02c-b881d4ba19b7" Value="60" Type="float"/>
-        <Parameter Name="BoxSize" Guid="00f3e1d5-0f5e-4ff0-8ad9-90823adec90c" Value="0.9,0.95,0.9" Type="Vector3"/>
+        <Parameter Name="BoxSize" Guid="00f3e1d5-0f5e-4ff0-8ad9-90823adec90c" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="27cf4975-ee6a-423b-a84f-72c94f64271c">
         <Parameter Name="DisplayName" Guid="252bc49e-7c1c-4eb6-8f8e-5770230202c3" Value="Conker" Type="string"/>
@@ -1598,7 +1598,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="1b51cf5f-dd45-42b9-b919-936545059ec8">
         <Parameter Name="Mass" Guid="486f1c75-b2de-4d66-89b0-88cc7d7cda7a" Value="60" Type="float"/>
-        <Parameter Name="BoxSize" Guid="4a02f3ad-d910-43b8-997c-33873b665c60" Value="0.9,0.95,0.9" Type="Vector3"/>
+        <Parameter Name="BoxSize" Guid="4a02f3ad-d910-43b8-997c-33873b665c60" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="5bc14380-812f-4285-93e4-bf9b9fc62c0c">
         <Parameter Name="DisplayName" Guid="f1cacd1d-85f6-456d-8bce-7be35f03831e" Value="Beavis" Type="string"/>
@@ -1683,7 +1683,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="42077da0-ce0a-448f-94ca-faac95b153a8">
         <Parameter Name="Mass" Guid="6c77f50a-b90f-4763-b252-90755b6f5b7a" Value="60" Type="float"/>
-        <Parameter Name="BoxSize" Guid="5e9bbda2-d0ff-435f-bbff-ebce635c3c50" Value="0.9,0.95,0.9" Type="Vector3"/>
+        <Parameter Name="BoxSize" Guid="5e9bbda2-d0ff-435f-bbff-ebce635c3c50" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="c0cd4901-4930-4f62-94b4-5aa1849bdfed">
         <Parameter Name="DisplayName" Guid="dc91aaa8-032e-4582-bdfd-6a44f06e6b99" Value="Butt-Head" Type="string"/>
@@ -1781,7 +1781,7 @@
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="8d2f5381-35e2-478d-a659-8b187f81578f">
         <Parameter Name="Mass" Guid="dc37b2f7-c827-47b7-9113-01bc6ba5b82a" Value="80" Type="float"/>
-        <Parameter Name="BoxSize" Guid="c253ecc6-0977-40ec-905b-88269463c088" Value="0.9,0.95,0.9" Type="Vector3"/>
+        <Parameter Name="BoxSize" Guid="c253ecc6-0977-40ec-905b-88269463c088" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="23519ea9-e5de-4670-bdb6-3d3e99964349">
         <Parameter Name="DisplayName" Guid="128622f2-2c7c-4d80-8702-d03b9a7d925e" Value="Hombre Lava" Type="string"/>
@@ -1863,7 +1863,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="b8c9d0e1-f2a3-7234-9abc-ef0123456780">
         <Parameter Name="Mass" Guid="c9d0e1f2-a3b4-7345-abcd-f01234567891" Value="85" Type="float"/>
-        <Parameter Name="BoxSize" Guid="d0e1f2a3-b4c5-7456-bcde-0123456789a2" Value="0.9,0.95,0.9" Type="Vector3"/>
+        <Parameter Name="BoxSize" Guid="d0e1f2a3-b4c5-7456-bcde-0123456789a2" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="e1f2a3b4-c5d6-7567-cdef-123456789ab3">
         <Parameter Name="DisplayName" Guid="f2a3b4c5-d6e7-7678-def0-23456789abc4" Value="Hombre Agua" Type="string"/>
@@ -1983,7 +1983,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="bf4e2eb7-0321-4dcc-8265-39bc89ca74e5">
         <Parameter Name="Mass" Guid="dfd6cb94-da5c-4a1c-8294-a0c4215e0909" Value="50" Type="float"/>
-        <Parameter Name="BoxSize" Guid="3361b9f9-6ec1-480e-9dd8-2a453d78301f" Value="0.8,0.85,0.8" Type="Vector3"/>
+        <Parameter Name="BoxSize" Guid="3361b9f9-6ec1-480e-9dd8-2a453d78301f" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="589f2b73-df92-4bf0-af0c-f600b9b3b6d7">
         <Parameter Name="DisplayName" Guid="bca8f147-2595-4d99-82c8-53f4a176d6bd" Value="El Ballestador" Type="string"/>
@@ -2078,7 +2078,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="e7f8a9b0-c1d2-6789-4567-89abcdef0123">
         <Parameter Name="Mass" Guid="f8a9b0c1-d2e3-6890-5678-9abcdef01234" Value="60" Type="float"/>
-        <Parameter Name="BoxSize" Guid="a9b0c1d2-e3f4-6901-6789-abcdef012345" Value="0.9,1.0,0.9" Type="Vector3"/>
+        <Parameter Name="BoxSize" Guid="a9b0c1d2-e3f4-6901-6789-abcdef012345" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="b0c1d2e3-f4a5-7012-789a-bcdef0123456">
         <Parameter Name="DisplayName" Guid="c1d2e3f4-a5b6-7123-89ab-cdef01234567" Value="Headcrab Bloody Human" Type="string"/>
@@ -2214,7 +2214,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="b1b509f1-f68f-46e8-88f2-9139163b1896">
         <Parameter Name="Mass" Guid="ef230e29-ed58-4388-a235-c8f53fd6e2d4" Value="50" Type="float"/>
-        <Parameter Name="BoxSize" Guid="80731875-a31d-4a8d-8457-972b129f1a05" Value="0.8,0.85,0.8" Type="Vector3"/>
+        <Parameter Name="BoxSize" Guid="80731875-a31d-4a8d-8457-972b129f1a05" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Spawn" Guid="3c577653-9e1a-4a3a-a701-1fc4a391d746">
     <Parameter Name="AutoDespawn" Guid="d54eb620-2513-4f0f-98f2-8837c2ff1b4c" Value="False" Type="bool"/>
@@ -2334,7 +2334,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="2c3e7df9-fca4-45ce-8366-ddf751c51279">
         <Parameter Name="Mass" Guid="6b0620a1-d78e-48f2-b669-d30b9eb42aae" Value="50" Type="float"/>
-        <Parameter Name="BoxSize" Guid="70323df9-2cdd-4a83-9b84-1be629673a9c" Value="0.8,0.85,0.8" Type="Vector3"/>
+        <Parameter Name="BoxSize" Guid="70323df9-2cdd-4a83-9b84-1be629673a9c" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="76b3a37c-66d5-41b5-ab9e-0413590ce5a9">
         <Parameter Name="DisplayName" Guid="45f817eb-849e-4fe0-a804-b1f2b52046da" Value="Arquero Prisionero" Type="string"/>
@@ -2448,7 +2448,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="162624a9-9521-4aec-8ed0-2ae170ec0d1f">
         <Parameter Name="Mass" Guid="f4ff4bf4-e906-4ad1-99b3-6d79a818254f" Value="48" Type="float"/>
-        <Parameter Name="BoxSize" Guid="d7838859-5e18-45c3-80bc-50b27da53ea4" Value="0.78,0.8,0.75" Type="Vector3"/>
+        <Parameter Name="BoxSize" Guid="d7838859-5e18-45c3-80bc-50b27da53ea4" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="3377318d-f5b3-49d2-8ecc-ef29d6c8c5e2">
         <Parameter Name="DisplayName" Guid="14528df2-be37-4927-bf51-e5582ad52f7b" Value="Veemon" Type="string"/>
@@ -2547,7 +2547,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="ff325fd5-2e0b-448a-96ba-3f96239c776d">
         <Parameter Name="Mass" Guid="be0c4849-73ad-4893-9470-02800aa339c5" Value="52" Type="float"/>
-        <Parameter Name="BoxSize" Guid="469821d3-96f3-400f-a3f5-fc03ce6da15b" Value="0.85,0.9,0.85" Type="Vector3"/>
+        <Parameter Name="BoxSize" Guid="469821d3-96f3-400f-a3f5-fc03ce6da15b" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="b3fbdb73-7a7f-45c5-b383-58c74e7912a5">
         <Parameter Name="DisplayName" Guid="35c92f50-6f58-4e7b-a0d9-0c87887ad3ff" Value="Shoutmon" Type="string"/>
@@ -2662,7 +2662,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="6cc20faf-9cb3-4fdb-9772-2e53d2607c02">
         <Parameter Name="Mass" Guid="44894f56-d52f-4ed0-b7ad-b74d88bbbe4c" Value="50" Type="float"/>
-        <Parameter Name="BoxSize" Guid="b4fa8c20-c3d3-44f3-b082-4b0494007362" Value="0.8,0.85,0.8" Type="Vector3"/>
+        <Parameter Name="BoxSize" Guid="b4fa8c20-c3d3-44f3-b082-4b0494007362" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="5e3b38c4-f797-48e2-8c75-ac7a1234b131">
         <Parameter Name="DisplayName" Guid="d56c9999-eb06-45c9-ab16-ef978e86a363" Value="Ballestadora Musculosa" Type="string"/>
@@ -2772,7 +2772,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="dddfd55d-1d68-4452-a36a-9282d0a28b6e">
         <Parameter Name="Mass" Guid="7bb9a1d9-f08d-417b-ab25-7bfabbcb5988" Value="55" Type="float"/>
-        <Parameter Name="BoxSize" Guid="55430f3d-a341-49cc-a8ef-5d3250473c71" Value="0.9,0.9,0.9" Type="Vector3"/>
+        <Parameter Name="BoxSize" Guid="55430f3d-a341-49cc-a8ef-5d3250473c71" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="40c74fa9-510b-4742-abc3-87174aee9fad">
         <Parameter Name="DisplayName" Guid="ee6dfd5e-a262-4409-bc4f-9b64f3aadf76" Value="Agumon" Type="string"/>
@@ -2871,7 +2871,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="253160a5-8dea-44de-b945-db496e9e6cac">
         <Parameter Name="Mass" Guid="6b33c92e-1a59-4f88-90eb-080d5c728d23" Value="50" Type="float"/>
-        <Parameter Name="BoxSize" Guid="06a9adfb-fa9e-4c5b-8ab0-44dd3f7e96fa" Value="0.85,0.9,0.85" Type="Vector3"/>
+        <Parameter Name="BoxSize" Guid="06a9adfb-fa9e-4c5b-8ab0-44dd3f7e96fa" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Spawn" Guid="7972b288-e62d-4b20-b10b-426dfb5e309d">
     <Parameter Name="AutoDespawn" Guid="659c4758-f801-484b-8b2f-519adff476da" Value="False" Type="bool"/>
@@ -2956,7 +2956,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="284a862d-a8ce-4a73-b9e0-590e87ac7115">
         <Parameter Name="Mass" Guid="094faea0-3f1b-4701-802e-2d50fa82a6d2" Value="50" Type="float"/>
-        <Parameter Name="BoxSize" Guid="f6246c18-a3a8-4be5-89ba-8e0b54ca2161" Value="0.9,0.95,0.9" Type="Vector3"/>
+        <Parameter Name="BoxSize" Guid="f6246c18-a3a8-4be5-89ba-8e0b54ca2161" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="bc000ed5-e521-4047-b309-32ca470b9731">
         <Parameter Name="DisplayName" Guid="e2f1309e-8bf6-4fe3-bc0e-add2102a9ece" Value="Gumdramon" Type="string"/>
@@ -3058,7 +3058,7 @@
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="0f5b9c12-705f-4bf8-82d3-2be4dcea32f7">
         <Parameter Name="Mass" Guid="95a4b859-f34d-4dc1-939f-517ce9e85e61" Value="5 " Type="float"/>
-        <Parameter Name="BoxSize" Guid="8c53efdc-3b32-4916-afc2-a8e10b6b9828" Value="0.9,0.95,0.9" Type="Vector3"/>
+        <Parameter Name="BoxSize" Guid="8c53efdc-3b32-4916-afc2-a8e10b6b9828" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="2e526c2e-d829-4ab5-b63e-b35c30b4ed13">
         <Parameter Name="DisplayName" Guid="46251f3c-d603-4f8c-9093-e854871b0117" Value="BetelGammamon" Type="string"/>
@@ -3143,7 +3143,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="48eabfaa-e879-4a35-9bc7-999f64d449a9">
         <Parameter Name="Mass" Guid="991c9037-a83a-4a47-ae18-97a59316ac36" Value="50" Type="float"/>
-        <Parameter Name="BoxSize" Guid="f58fbebc-4d46-4178-9cb2-fb01b2690e2b" Value="0.85,0.9,0.85" Type="Vector3"/>
+        <Parameter Name="BoxSize" Guid="f58fbebc-4d46-4178-9cb2-fb01b2690e2b" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Spawn" Guid="82bfbdc3-7beb-4257-8f43-b15c28b8b383">
     <Parameter Name="AutoDespawn" Guid="a4adf331-3e5b-4850-bef3-5657ffd6c7ad" Value="False" Type="bool"/>
@@ -3229,7 +3229,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="4395f6aa-e68c-4b7b-b9cc-f19137c44cec">
         <Parameter Name="Mass" Guid="2d79e968-f49f-410f-a0f4-183de7c755f8" Value="58" Type="float"/>
-        <Parameter Name="BoxSize" Guid="a8956396-a34f-46b8-81d6-0681004ad386" Value="0.85,0.92,0.85" Type="Vector3"/>
+        <Parameter Name="BoxSize" Guid="a8956396-a34f-46b8-81d6-0681004ad386" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="bafbe76a-8010-48d0-aeeb-ac0fb59b1d84">
         <Parameter Name="DisplayName" Guid="0d34700b-5abe-474b-91ab-a2e5ad716b2e" Value="Walter Zombie" Type="string"/>
@@ -3343,7 +3343,7 @@
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="c3ebdfd8-e704-4da5-a525-36c8b4a7847a">
         <Parameter Name="Mass" Guid="5d721d1a-0dd6-460a-afc6-5664c8cb9fe7" Value="58" Type="float"/>
-        <Parameter Name="BoxSize" Guid="c01fa48d-7c89-4860-934e-648059e82656" Value="0.85,0.92,0.85" Type="Vector3"/>
+        <Parameter Name="BoxSize" Guid="c01fa48d-7c89-4860-934e-648059e82656" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="a5535a0c-95b3-4682-935f-1f66b0713e48">
         <Parameter Name="DisplayName" Guid="39695c46-eea6-4838-afcd-450a4c6ab081" Value="Walter Zombie Mamadísimo" Type="string"/>
@@ -3440,7 +3440,7 @@
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="Body" Guid="e9f0a1b2-c3d4-6789-4567-89abcdef0123">
         <Parameter Name="Mass" Guid="f0a1b2c3-d4e5-6890-5678-9abcdef01234" Value="58" Type="float"/>
-        <Parameter Name="BoxSize" Guid="a1b2c3d4-e5f6-6901-6789-abcdef012345" Value="0.85,0.92,0.85" Type="Vector3"/>
+        <Parameter Name="BoxSize" Guid="a1b2c3d4-e5f6-6901-6789-abcdef012345" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="c3d4e5f6-a7b8-7012-789a-bcdef0123456">
         <Parameter Name="DisplayName" Guid="d4e5f6a7-b8c9-7123-89ab-cdef01234567" Value="Aladina Corrupta" Type="string"/>
@@ -3558,7 +3558,7 @@
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="6b7d0bce-5cb7-48ea-a80d-044dc51715f8">
         <Parameter Name="Mass" Guid="ecbf7b89-631c-4c11-8510-e2cd4a483391" Value="50" Type="float"/>
-        <Parameter Name="BoxSize" Guid="8df747e1-204d-42be-9845-85021a1a1edd" Value="0.85,0.9,0.85" Type="Vector3"/>
+        <Parameter Name="BoxSize" Guid="8df747e1-204d-42be-9845-85021a1a1edd" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="923f585d-38c7-4f18-9580-2e2444cf4557">
         <Parameter Name="DisplayName" Guid="c5d6e7f8-a9b0-7456-1234-f0123456789a" Value="Impmon" Type="string"/>
@@ -3663,7 +3663,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="e1f2a3b4-c5d6-7012-7890-bcdef0123456">
         <Parameter Name="Mass" Guid="f2a3b4c5-d6e7-7123-8901-cdef01234567" Value="85" Type="float"/>
-        <Parameter Name="BoxSize" Guid="a3b4c5d6-e7f8-7234-9012-def012345678" Value="0.75,1.85,0.75" Type="Vector3"/>
+        <Parameter Name="BoxSize" Guid="a3b4c5d6-e7f8-7234-9012-def012345678" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="ComponentRandomChatter" Guid="e79f5758-7de6-45f7-adee-73b5189fb566">
     <Parameter Name="Class" Value="Game.ComponentRandomChatter" Type="string"/>
@@ -3791,7 +3791,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="3466d22a-7501-47ca-88cd-f7cb94acb7d1">
         <Parameter Name="Mass" Guid="3b5796b4-1d45-4d30-b0f2-599d1979b9b9" Value="70" Type="float"/>
-        <Parameter Name="BoxSize" Guid="ba704ca7-2fb4-4403-9ad1-98f87b3598b5" Value="1.0,1.1,1.0" Type="Vector3"/>
+        <Parameter Name="BoxSize" Guid="ba704ca7-2fb4-4403-9ad1-98f87b3598b5" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="ccb7bbd7-21ac-46c8-9565-cfebf06a5f5b">
         <Parameter Name="DisplayName" Guid="e9f80d76-9c35-478a-945f-c53545cdbaf1" Value="El Guerrillero" Type="string"/>
@@ -3923,7 +3923,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="006110ea-b8a0-4d4c-ad8b-01d5c4a698b2">
         <Parameter Name="Mass" Guid="c11a0358-8346-487b-bc3f-1c1d755400e8" Value="70" Type="float"/>
-        <Parameter Name="BoxSize" Guid="1b50dc03-a5af-47c8-bf71-14f5e3535b4a" Value="1.0,1.1,1.0" Type="Vector3"/>
+        <Parameter Name="BoxSize" Guid="1b50dc03-a5af-47c8-bf71-14f5e3535b4a" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="dc3505c0-379d-4976-a158-4a5872099ab5">
         <Parameter Name="DisplayName" Guid="d7edb4dd-b472-4b33-b022-5910229b2775" Value="El Guerrillero Tenebroso" Type="string"/>
@@ -4029,7 +4029,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="e6f7a8b9-c0d1-7123-89ab-def01234567a">
         <Parameter Name="Mass" Guid="f7a8b9c0-d1e2-7234-9abc-ef0123456781" Value="70" Type="float"/>
-        <Parameter Name="BoxSize" Guid="a8b9c0d1-e2f3-7345-abcd-f01234567892" Value="1.0,1.1,1.0" Type="Vector3"/>
+        <Parameter Name="BoxSize" Guid="a8b9c0d1-e2f3-7345-abcd-f01234567892" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="b9c0d1e2-f3a4-7456-bcde-0123456789a4">
         <Parameter Name="DisplayName" Guid="c0d1e2f3-a4b5-7567-cdef-123456789ab5" Value="Camisas Morenas" Type="string"/>
