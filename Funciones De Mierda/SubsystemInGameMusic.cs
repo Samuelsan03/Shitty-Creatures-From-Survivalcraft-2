@@ -163,7 +163,16 @@ namespace Game
 			new SubsystemInGameMusic.TrackInfo("MenuMusic/Digimon02OpeningThemeSong", 177f),
 			new SubsystemInGameMusic.TrackInfo("MenuMusic/Touhou2MimasThemeCompleteDarkness", 177f),
 			new SubsystemInGameMusic.TrackInfo("MenuMusic/Touhou2EasternWind", 177f),
-			new SubsystemInGameMusic.TrackInfo("MenuMusic/Touhou2RecordoftheSealingofanOrientalDemon", 177f)
+			new SubsystemInGameMusic.TrackInfo("MenuMusic/Touhou2RecordoftheSealingofanOrientalDemon", 177f),
+			new SubsystemInGameMusic.TrackInfo("MenuMusic/Digimon02EvolutionThemeBreakUp", 177f),
+			new SubsystemInGameMusic.TrackInfo("MenuMusic/DigimonAdventure01BraveHeart", 177f),
+			new SubsystemInGameMusic.TrackInfo("MenuMusic/DigimonAdventure01Butterfly", 177f),
+			new SubsystemInGameMusic.TrackInfo("MenuMusic/DigimonSaversOP1ThemeSongGou-ingGoingMySoul", 177f),
+			new SubsystemInGameMusic.TrackInfo("MenuMusic/DigimonSaversOP2Hirari", 177f),
+			new SubsystemInGameMusic.TrackInfo("MenuMusic/EoSDCreditsThemeCrimsonBelvedereEasternDream", 177f),
+			new SubsystemInGameMusic.TrackInfo("MenuMusic/TheBiggestDreamerDigimonTamers", 177f),
+			new SubsystemInGameMusic.TrackInfo("MenuMusic/Touhou6FlandreScarletsThemeU.N.Owenwasher", 177f),
+			new SubsystemInGameMusic.TrackInfo("MenuMusic/WadaKoujiFIREDigimonFrontiers", 177f),
 		};
 
 		// Token: 0x02000065 RID: 101
