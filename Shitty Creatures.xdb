@@ -1,8 +1,8 @@
 <ShittyCreatures>
     <Folder Name="Gameplay" Guid="d3d4b692-acc9-4128-9b99-a5acf1de1fbb">
         <ComponentTemplate Name="HealthBarDisplay" Guid="cc577309-064e-4bd3-82ed-89be72213cc6" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
-            <Parameter Name="Class" Guid="b2c3d4e5-f6a7-8901-bcde-f23456789012" Value="Game.ComponentHealthBar" Type="string"/>
-            <Parameter Name="IsOptional" Guid="c3d4e5f6-a7b8-9012-cdef-345678901234" Value="True" Type="bool"/>
+            <Parameter Name="Class" Guid="63d41ee3-3ab0-4715-b666-693c08a49360" Value="Game.ComponentHealthBar" Type="string"/>
+            <Parameter Name="IsOptional" Guid="ef55b5cd-a52c-47ad-afa0-abd660047a5a" Value="True" Type="bool"/>
         </ComponentTemplate>
         
         <ComponentTemplate Name="ComponentRandomChatter" Guid="a93baf1c-930f-47a8-a98a-f79fd0de910f">
@@ -31,6 +31,32 @@
     </Folder>
 
     <Folder Name="ProgramedInteligence" Guid="33dfd132-3c41-4dfa-a385-af3ba34ff86b">
+    <ComponentTemplate Name="SuicideBomber" Guid="a1b2c3d4-e5f6-7890-abcd-ef0123456789">
+    <Parameter Name="Class" Value="Game.ComponentSuicideBomber" Type="string" Guid="b2c3d4e5-f6a7-8901-bcde-f23456789012"/>
+    <Parameter Name="ActivationRange" Value="3" Type="float" Description="Rango de activación en bloques" Guid="c3d4e5f6-a7b8-9012-cdef-345678901234"/>
+    <Parameter Name="CountdownDuration" Value="5" Type="float" Description="Duración de la cuenta regresiva en segundos" Guid="d4e5f6a7-b8c9-0123-def0-456789012345"/>
+    <Parameter Name="SparkSound" Value="Audio/Spark" Type="string" Description="Sonido de chispa durante la cuenta regresiva" Guid="e5f6a7b8-c9d0-1234-ef01-567890123456"/>
+    <Parameter Name="ExplosionPressure" Value="10" Type="float" Description="Presión de la explosión" Guid="f6a7b8c9-d0e1-2345-f012-678901234567"/>
+    <Parameter Name="IsIncendiary" Value="true" Type="bool" Description="Si la explosión es incendiaria" Guid="a7b8c9d0-e1f2-3456-0123-789012345678"/>
+    <Parameter Name="TargetCategories" Value="Player,LandPredator,LandOther" Type="string" Description="Categorías de objetivos" Guid="b8c9d0e1-f2a3-4567-1234-890123456789"/>
+    <Parameter Name="ExplosionRadius" Value="12" Type="float" Description="Radio máximo de la explosión" Guid="2e4f6732-8ef2-486f-8c8e-c44d753b69ec"/>
+    <Parameter Name="ShockwaveDamage" Value="30" Type="float" Description="Daño de la onda expansiva" Guid="df5f0e63-9d12-43e5-971b-56d1ccf64c16"/>
+    <Parameter Name="ShockwaveForce" Value="15" Type="float" Description="Fuerza de empuje de la onda" Guid="a6054eeb-53a2-4537-9436-79f062b144f1"/>
+    <Parameter Name="DestroyBlocks" Value="true" Type="bool" Description="Si destruye bloques" Guid="87e4fe11-bd73-482e-87fb-d75670a1469a"/>
+    <Parameter Name="BlockDamageRadius" Value="8" Type="float" Description="Radio de daño a bloques" Guid="1e562458-bb3d-49b5-99f4-46a5a01c1053"/>
+    <Parameter Name="EntityDamageRadius" Value="15" Type="float" Description="Radio de daño a entidades" Guid="3ba52c51-59b3-470e-82dd-4dbc4a17fb9f"/>
+</ComponentTemplate>
+
+        <ComponentTemplate Name="PathBreaker" Guid="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+			<Parameter Name="CanBreakBlocks" Description="La criatura puede romper bloques si el valor es true." Guid="4992bbe3-770e-4fe5-a977-40e8608428db" Value="False" Type="bool"/>
+			<Parameter Name="CanPlaceBlocks" Description="La criatura pudede colocar bloques si el valor es true." Guid="635fe6d7-ac27-461b-b72d-bef51f5ade53" Value="False" Type="bool"/>
+			<Parameter Name="CustomSound" Description="Bloques especificos que la criatura puede romper/colocar." Guid="ebacbbb3-591b-4853-b838-591066b29dd7" Value="" Type="string"/>
+			<Parameter Name="SpecificBlocks" Description="Bloques especificos que la criatura puede romper/colocar." Guid="5545bf1b-3fd7-4951-9748-c20fa1e87cfc" Value="" Type="string"/>
+			<Parameter Name="UseFromInventory" Description="la criatura verifica si tiene bloques en su inventario para colocar si el valor es true, de lo contrario la criatura podra colocar bloques infinitamente si el valor es false." Guid="549f2cff-8688-4b9f-849e-8f7f78a7f2a6" Value="False" Type="bool"/>
+			<Parameter Name="BreakProbability" Description="Probabilidad para que la criatura rompa un bloque en el momento, si el valor es 1, siempre rompera bloques todo el tiempo" Guid="55e537a2-04d1-4802-8448-026a4ce27681" Value="1" Type="float"/>
+			<Parameter Name="Class" Guid="14f8fc75-13bd-4731-a8aa-23143b498e93" Value="Game.ComponentPathBreaker" Type="string"/>
+		</ComponentTemplate>
+
         <ComponentTemplate Name="CreatureCollect" Description="Permite a la criatura recoger objetos automáticamente" Guid="b0295147-0a80-4aed-9a1b-c784faf1297b" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
             <Parameter Name="Activate" Description="Permitir a la criatura recojer obejos." Guid="67a07091-a837-4ef2-bebc-460fa669f18e" Value="true" Type="bool"/>
             <Parameter Name="CanOpenInventory" Description="Permitir al jugador abrir el inventario de la criatura." Guid="8514719e-6dd5-4564-bca5-19ea18def146" Value="False" Type="bool"/>
@@ -836,6 +862,11 @@
     <Parameter Name="MinMaxRandomWaitTime" Value="0.3;0.7" Type="string"/>
     <Parameter Name="MinMaxDistance" Value="5;50" Type="string"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="PathBreaker" Guid="b40e387d-040a-4d27-9c4b-dd3ab0b5441c" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
+		<Parameter Name="CanBreakBlocks" Guid="926f581e-374c-46e4-b13e-69f917bd5bf3" Value="True" Type="bool"/>
+		<Parameter Name="SpecificBlocks" Guid="143086a3-4b98-4365-ba46-bc91e0ae79e0" Value="" Type="string"/>
+		<Parameter Name="BreakProbability" Guid="5b464c44-bdb2-4615-abbb-fccdc0ef3cb8" Value="1.0" Type="float"/>
+	</MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="a5b6c7d8-e9f0-7123-89ab-def012345678">
         <Parameter Name="Mass" Guid="b6c7d8e9-f0a1-7234-9abc-ef0123456789" Value="120" Type="float"/>
         <Parameter Name="BoxSize" Guid="c7d8e9f0-a1b2-7345-abcd-f0123456789a" Value="0.8,1.8,0.8" Type="Vector3"/>
@@ -1440,6 +1471,11 @@
     <MemberComponentTemplate Name="Miner" Guid="c2d3e4f5-a6b7-7901-6789-989012345678" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="d3e4f5a6-b7c8-8012-7890-099123456789" Value="48" Type="float"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="PathBreaker" Guid="19e97faa-c9e9-4629-91af-5a4495fb3a08" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
+		<Parameter Name="CanBreakBlocks" Guid="f1a74b82-fbba-4ea7-a1f4-46f760da2da5" Value="True" Type="bool"/>
+		<Parameter Name="SpecificBlocks" Guid="98633cde-32e0-4795-b37f-d8357a846ee1" Value="" Type="string"/>
+		<Parameter Name="BreakProbability" Guid="ec41f113-cbeb-473c-bad8-707096cd9a15" Value="1.0" Type="float"/>
+	</MemberComponentTemplate>
     <MemberComponentTemplate Name="HumanModel" Guid="e4f5a6b7-c8d9-8123-8901-101234567890" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
         <Parameter Name="WalkLegsAngle" Guid="f5a6b7c8-d9e0-8234-9012-211345678901" Value="0.4" Type="float"/>
         <Parameter Name="ModelName" Guid="a6b7c8d9-e0f1-8345-0123-321456789012" Value="Models/Tank superior" Type="string"/>
@@ -3333,7 +3369,7 @@
     <Parameter Name="ThrowFromHead" Value="True" Type="bool"/>
     <Parameter Name="MinMaxRandomChargeTime" Value="0.8;1.2" Type="string"/>
     <Parameter Name="MinMaxRandomWaitTime" Value="0.3;0.7" Type="string"/>
-    <Parameter Name="MinMaxDistance" Value="5;50" Type="string"/>
+    <Parameter Name="MinMaxDistance" Value="15;50" Type="string"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="c3ebdfd8-e704-4da5-a525-36c8b4a7847a">
         <Parameter Name="Mass" Guid="5d721d1a-0dd6-460a-afc6-5664c8cb9fe7" Value="58" Type="float"/>
@@ -3371,6 +3407,11 @@
     <MemberComponentTemplate Name="FeedBehavior" Guid="413d738c-64f0-4258-8eb8-a38d039718f8" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
         <Parameter Name="AutoFeed" Guid="e12c668c-a29d-4dc7-a6d3-96e2b1c40dc9" Value="False" Type="bool"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="PathBreaker" Guid="0a2c9824-e283-437c-8e81-bc4bcbc706dc" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
+		<Parameter Name="CanBreakBlocks" Guid="76f2b221-5ec9-4af2-af75-4a2243cdf83f" Value="True" Type="bool"/>
+		<Parameter Name="SpecificBlocks" Guid="1e1e1c57-dd07-4e12-9f6d-bdfd48b45f04" Value="" Type="string"/>
+		<Parameter Name="BreakProbability" Guid="0799d524-fd67-400e-8a0b-4f4f7c6a1e10" Value="1.0" Type="float"/>
+	</MemberComponentTemplate>
     <MemberComponentTemplate Name="ChaseBehavior" Guid="c98580c2-ce25-4412-b591-fa462c9b554f" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
         <Parameter Name="AutoChaseMask" Guid="f3d2190e-2ec7-495d-a77a-500a3738baac" Value="LandPredator, WaterPredator" Type="Game.CreatureCategory"/>
         <Parameter Name="DayChaseRange" Guid="3bd0f38f-370a-4952-9abe-0ce484e51d52" Value="995" Type="float"/>
@@ -3415,22 +3456,22 @@
         </ParameterSet>
         <ParameterSet Name="LootOnFire" Guid="b1c2d3e4-f5a6-6678-3456-789abcdef012"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="Inventory" Guid="b1843c0f-78ce-414c-9969-6ece82c5650d" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
-    <ParameterSet Name="Slots">
-        <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="234" Type="int"/>
-            <Parameter Name="Count" Value="40" Type="int"/>
-        </ParameterSet>
-    </ParameterSet>    
-</MemberComponentTemplate>
-<MemberComponentTemplate Name="InvShooterBehavior" Guid="06c4b4e9-41c0-4761-a5c9-005148f93205" InheritanceParent="456e3558-0e7f-42c3-bc05-35eef7540900">
-    <Parameter Name="SpecialThrowableItem" Guid="b942bef7-43df-46ad-af52-f3e0eb15a009" Value="SmallIncendiaryKegBlock" Type="string"/>
-    <Parameter Name="DiscountFromInventory" Guid="c8e785f3-a95f-4db6-8aba-82044c5a9c7d" Value="True" Type="bool"/>
-    <Parameter Name="SelectRandomThrowableItems" Guid="290c31d7-5a0e-4239-955c-7b697cb878f4" Value="False" Type="bool"/>
-    <Parameter Name="ThrowFromHead" Guid="762f04e5-d305-4853-adb0-0c6ddba7aaa4" Value="True" Type="bool"/>
-    <Parameter Name="MinMaxRandomChargeTime" Guid="aef63467-a637-4b4a-9413-efcf8cd5c643" Value="1;1" Type="string"/>
-    <Parameter Name="MinMaxRandomWaitTime" Guid="d290a024-3639-4e4e-a500-ff31ece40dfc" Value="0.5;0.8" Type="string"/>
-    <Parameter Name="MinMaxDistance" Guid="3b2c64a5-ed43-4292-9076-c20c7a48bc76" Value="11;60" Type="string"/>
+<MemberComponentTemplate Name="SuicideBomber" Guid="f1e2d3c4-b5a6-4789-90ab-cdef01234567">
+    <Parameter Name="Class" Value="Game.ComponentSuicideBomber" Type="string" Guid="a0b1c2d3-e4f5-6789-90ab-cdef12345678"/>
+    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="b94f0a6f-e9dc-4b15-af12-ac1e0344acff"/>
+    <Parameter Name="LoadOrder" Value="-1" Type="int" Description="Orden de carga del componente" Guid="368661f7-5dab-4e0d-9255-a340141836bc"/>
+    <Parameter Name="ActivationRange" Value="1" Type="float" Guid="d2e3f4a5-b6c7-4890-91ab-cdef11234568"/>
+    <Parameter Name="CountdownDuration" Value="0.1" Type="float" Guid="e3f4a5b6-c7d8-5901-a2bc-def212345679"/>
+    <Parameter Name="SparkSound" Value="Audio/Fuse" Type="string" Guid="f4a5b6c7-d8e9-6012-b3cd-ef312345680"/>
+    <Parameter Name="ExplosionPressure" Value="110" Type="float" Guid="a5b6c7d8-e9f0-7123-c4de-f412345681"/>
+    <Parameter Name="IsIncendiary" Value="true" Type="bool" Guid="b6c7d8e9-f0a1-8234-d5ef-012345682"/>
+    <Parameter Name="TargetCategories" Value="LandPredator,LandOther,WaterPredator,WaterOther" Type="string" Guid="c7d8e9f0-a1b2-9345-e6f0-123456783"/>
+    <Parameter Name="ExplosionRadius" Value="136" Type="float" Guid="6c1d11a9-b235-47d0-aacc-3584e1472bde"/>
+    <Parameter Name="ShockwaveDamage" Value="135" Type="float" Guid="43536f4f-39d4-48d5-9953-1ddc529e201e"/>
+    <Parameter Name="ShockwaveForce" Value="20" Type="float" Guid="bd8da5d2-d0ea-489c-83e1-5dff53107b66"/>
+    <Parameter Name="DestroyBlocks" Value="true" Type="bool" Guid="8093638f-b8bf-4492-8a2b-60a2baba46ce"/>
+    <Parameter Name="BlockDamageRadius" Value="136" Type="float" Guid="b6d120e4-9705-4c3f-a995-4cd939e1c28b"/>
+    <Parameter Name="EntityDamageRadius" Value="136" Type="float" Guid="8c992e9e-d0b7-4d95-a981-3e3956b467f9"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="Body" Guid="e9f0a1b2-c3d4-6789-4567-89abcdef0123">
         <Parameter Name="Mass" Guid="f0a1b2c3-d4e5-6890-5678-9abcdef01234" Value="58" Type="float"/>
@@ -3456,7 +3497,7 @@
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="b8c9d0e1-f2a3-7567-cdef-0123456789ab" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="c9d0e1f2-a3b4-7678-def0-123456789abc" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
-        <Parameter Name="AttackPower" Guid="d0e1f2a3-b4c5-7789-ef01-23456789abcd" Value="444.25" Type="float"/>
+        <Parameter Name="AttackPower" Guid="d0e1f2a3-b4c5-7789-ef01-23456789abcd" Value="3.5" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="HumanModel" Guid="e1f2a3b4-c5d6-7890-f012-3456789abcde" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
         <Parameter Name="WalkLegsAngle" Guid="f2a3b4c5-d6e7-7901-0123-456789abcdef" Value="0.25" Type="float"/>
@@ -3465,10 +3506,10 @@
         <Parameter Name="WalkAnimationSpeed" Guid="c5d6e7f8-a9b0-8234-3456-789abcdef012" Value="0.55" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="HealthBarDisplay" Guid="418e2f87-934c-4ca6-bd93-eb2f5ff3cb13" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
+        <Parameter Name="MaxDisplayDistance" Value="20" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="d6e7f8a9-b0c1-8345-4567-89abcdef0123">
-        <Parameter Name="Health" Guid="7f2bb0da-d0d2-4218-9506-9e2218be1041" Value="17" Type="float"/>
+        <Parameter Name="Health" Guid="7f2bb0da-d0d2-4218-9506-9e2218be1041" Value="6.35" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="b0c1d2e3-f4a5-8789-89ab-cdef01234567"/>
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="c1d2e3f4-a5b6-8890-9abc-def012345678" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
