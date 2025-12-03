@@ -1,0 +1,408 @@
+// ComponentMusketShooterBehavior.cs
+using System;
+using Engine;
+using Game;
+using GameEntitySystem;
+using TemplatesDatabase;
+
+public class ComponentMusketShooterBehavior : Component, IUpdateable
+{
+	// Parámetros configurables similares a InvShooterBehavior
+	public float MinRange = 3f;
+	public float MaxRange = 25f;
+	public float MinWaitTime = 2f;
+	public float MaxWaitTime = 3f;
+	public float ChargeTime = 0.5f;
+	public string ThrowingSound = "Audio/MusketFire";
+	public float ThrowingSoundDistance = 15f;
+	public bool ThrowFromHead = true;
+	public string BulletType = "MusketBall";
+	public float BulletSpeed = 120f;
+
+	// Subsistemas
+	private SubsystemTime m_subsystemTime;
+	private SubsystemProjectiles m_subsystemProjectiles;
+	private SubsystemAudio m_subsystemAudio;
+	private SubsystemNoise m_subsystemNoise;
+	private SubsystemParticles m_subsystemParticles;
+	private SubsystemTerrain m_subsystemTerrain;
+	private SubsystemBodies m_subsystemBodies;
+
+	// Componentes de la entidad
+	private ComponentCreature m_componentCreature;
+	private ComponentBody m_componentBody;
+	private ComponentMiner m_componentMiner;
+	private ComponentCreatureModel m_creatureModel;
+	private ComponentChaseBehavior m_chaseBehavior;
+
+	// Estado
+	private double m_nextActionTime;
+	private bool m_isCharging = false;
+	private double m_chargeStartTime;
+	private int m_bulletBlockIndex;
+	private Engine.Random m_random = new Engine.Random();
+
+	public UpdateOrder UpdateOrder => UpdateOrder.Default;
+
+	public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
+	{
+		base.Load(valuesDictionary, idToEntityMap);
+
+		// Obtener subsistemas
+		m_subsystemTime = Project.FindSubsystem<SubsystemTime>(true);
+		m_subsystemProjectiles = Project.FindSubsystem<SubsystemProjectiles>(true);
+		m_subsystemAudio = Project.FindSubsystem<SubsystemAudio>(true);
+		m_subsystemNoise = Project.FindSubsystem<SubsystemNoise>(true);
+		m_subsystemParticles = Project.FindSubsystem<SubsystemParticles>(true);
+		m_subsystemTerrain = Project.FindSubsystem<SubsystemTerrain>(true);
+		m_subsystemBodies = Project.FindSubsystem<SubsystemBodies>(true);
+
+		// Obtener componentes de la entidad
+		m_componentCreature = Entity.FindComponent<ComponentCreature>(true);
+		m_componentBody = Entity.FindComponent<ComponentBody>(true);
+		m_componentMiner = Entity.FindComponent<ComponentMiner>(false);
+		m_creatureModel = Entity.FindComponent<ComponentCreatureModel>(true);
+		m_chaseBehavior = Entity.FindComponent<ComponentChaseBehavior>(false);
+
+		// Cargar parámetros (similar a InvShooterBehavior)
+		MinRange = valuesDictionary.GetValue("MinRange", MinRange);
+		MaxRange = valuesDictionary.GetValue("MaxRange", MaxRange);
+
+		// Parsear tiempos de espera (formato "min;max")
+		string waitTimeStr = valuesDictionary.GetValue("MinMaxRandomWaitTime", $"{MinWaitTime};{MaxWaitTime}");
+		string[] waitParts = waitTimeStr.Split(';');
+		if (waitParts.Length >= 2)
+		{
+			float.TryParse(waitParts[0], out MinWaitTime);
+			float.TryParse(waitParts[1], out MaxWaitTime);
+		}
+
+		// Parsear tiempo de carga
+		string chargeTimeStr = valuesDictionary.GetValue("MinMaxRandomChargeTime", $"{ChargeTime};{ChargeTime}");
+		string[] chargeParts = chargeTimeStr.Split(';');
+		if (chargeParts.Length >= 1)
+		{
+			float.TryParse(chargeParts[0], out ChargeTime);
+		}
+
+		ThrowingSound = valuesDictionary.GetValue("ThrowingSound", ThrowingSound);
+		ThrowingSoundDistance = valuesDictionary.GetValue("ThrowingSoundDistance", ThrowingSoundDistance);
+		ThrowFromHead = valuesDictionary.GetValue("ThrowFromHead", ThrowFromHead);
+		BulletType = valuesDictionary.GetValue("BulletType", BulletType);
+		BulletSpeed = valuesDictionary.GetValue("BulletSpeed", BulletSpeed);
+
+		// Obtener índice del bloque de bala
+		m_bulletBlockIndex = BlocksManager.GetBlockIndex<BulletBlock>(false, false);
+
+		// Inicializar tiempo para primera acción
+		m_nextActionTime = m_subsystemTime.GameTime + m_random.Float(MinWaitTime, MaxWaitTime);
+	}
+
+	public void Update(float dt)
+	{
+		double currentTime = m_subsystemTime.GameTime;
+
+		// Obtener objetivo
+		ComponentBody target = GetCurrentTarget();
+		if (target == null)
+		{
+			m_isCharging = false;
+			return;
+		}
+
+		// Calcular distancia al objetivo
+		float distance = Vector3.Distance(m_componentBody.Position, target.Position);
+
+		// Verificar si está en rango
+		if (distance < MinRange || distance > MaxRange)
+		{
+			m_isCharging = false;
+			return;
+		}
+
+		// Calcular dirección hacia el objetivo
+		Vector3 direction = Vector3.Normalize(target.Position - m_componentBody.Position);
+
+		// Verificar fase de acción
+		if (m_isCharging)
+		{
+			// En fase de carga
+			if (currentTime - m_chargeStartTime >= ChargeTime)
+			{
+				// Disparar
+				Fire(direction);
+				m_isCharging = false;
+				m_nextActionTime = currentTime + m_random.Float(MinWaitTime, MaxWaitTime);
+			}
+		}
+		else if (currentTime >= m_nextActionTime)
+		{
+			// Iniciar carga
+			m_isCharging = true;
+			m_chargeStartTime = currentTime;
+
+			// Animación de apuntar
+			if (m_creatureModel != null)
+			{
+				m_creatureModel.AimHandAngleOrder = 1.4f;
+				m_creatureModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
+				m_creatureModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
+			}
+
+			// Sonido de amartillar
+			m_subsystemAudio.PlaySound("Audio/HammerCock", 1f, m_random.Float(-0.1f, 0.1f),
+									  m_componentBody.Position, 5f, true);
+		}
+
+		// Rotar hacia el objetivo
+		if (m_componentBody != null && m_componentCreature != null && m_componentCreature.ComponentLocomotion != null)
+		{
+			Vector3 forward = m_componentBody.Matrix.Forward;
+			Vector3 targetDirection = direction;
+			targetDirection.Y = 0f; // Mantener nivelado
+
+			if (targetDirection.LengthSquared() > 0.01f)
+			{
+				targetDirection = Vector3.Normalize(targetDirection);
+				float angle = MathUtils.Atan2(targetDirection.X, targetDirection.Z) -
+							 MathUtils.Atan2(forward.X, forward.Z);
+
+				// Wrap angle para obtener el ángulo más corto (TwoPI = 2 * PI)
+				float twoPi = 2f * MathUtils.PI;
+				while (angle > MathUtils.PI) angle -= twoPi;
+				while (angle < -MathUtils.PI) angle += twoPi;
+
+				// Suavizar la rotación
+				float turnSpeed = 5f; // Radianes por segundo
+				m_componentCreature.ComponentLocomotion.TurnOrder = new Vector2(angle * turnSpeed, 0f);
+			}
+		}
+	}
+
+	private ComponentBody GetCurrentTarget()
+	{
+		// Prioridad 1: Objetivo del ComponentChaseBehavior si existe
+		if (m_chaseBehavior != null)
+		{
+			return FindNearestEnemy();
+		}
+
+		// Prioridad 2: Objetivo del ComponentMiner si existe
+		if (m_componentMiner != null)
+		{
+			return FindNearestEnemy();
+		}
+
+		return FindNearestEnemy();
+	}
+
+	private bool IsValidEnemy(ComponentCreature creature)
+	{
+		if (creature == null || creature == m_componentCreature)
+			return false;
+
+		// Verificar si es del mismo tipo (basado en el nombre de la plantilla)
+		string entityName = creature.Entity.ValuesDictionary.DatabaseObject.Name;
+		if (entityName.Contains("Marihuanero"))
+			return false;
+
+		// Verificar si tiene componente de salud (es atacable)
+		if (creature.Entity.FindComponent<ComponentHealth>() == null)
+			return false;
+
+		// Verificar categoría de la criatura a través del componente Creature
+		// (no existe ComponentCreatureInfo, usamos ComponentCreature)
+		if (creature.Entity.FindComponent<ComponentCreature>() != null)
+		{
+			// Verificar si es un jugador
+			if (creature.Entity.FindComponent<ComponentPlayer>() != null)
+				return true; // Ataca a jugadores
+				
+			// Verificar categorías de enemigos comunes
+			// Nota: No hay acceso directo a CreatureCategory desde ComponentCreature
+			// Usaremos una lista de nombres de criaturas enemigas
+			string[] enemyCreatures = {
+				"Werewolf", "HeadcrabBloodyHuman", "HombreAgua", "HombreLava",
+				"AladinaCorrupta", "Hyena", "LiderCalavericoSupremo", 
+				"Wolf", "Coyote", "Lion", "Tiger", "Bear", "Shark"
+			};
+			
+			foreach (string enemy in enemyCreatures)
+			{
+				if (entityName.Contains(enemy))
+					return true;
+			}
+		}
+
+		return false;
+	}
+
+	private ComponentBody FindNearestEnemy()
+	{
+		if (m_subsystemBodies == null || m_componentBody == null)
+			return null;
+
+		float nearestDistance = float.MaxValue;
+		ComponentBody nearestTarget = null;
+		Vector3 myPosition = m_componentBody.Position;
+
+		// Buscar en el subsistema de cuerpos
+		foreach (ComponentBody body in m_subsystemBodies.Bodies)
+		{
+			if (body.Entity == Entity) 
+				continue;
+
+			ComponentHealth health = body.Entity.FindComponent<ComponentHealth>();
+			if (health == null) 
+				continue;
+
+			// Verificar si es una criatura
+			ComponentCreature creature = body.Entity.FindComponent<ComponentCreature>();
+			if (creature != null && IsValidEnemy(creature))
+			{
+				float distance = Vector3.Distance(myPosition, body.Position);
+				if (distance < MaxRange && distance >= MinRange && distance < nearestDistance)
+				{
+					// Verificar línea de visión
+					if (HasLineOfSight(body.Position))
+					{
+						nearestDistance = distance;
+						nearestTarget = body;
+					}
+				}
+			}
+		}
+
+		return nearestTarget;
+	}
+
+	private bool HasLineOfSight(Vector3 targetPosition)
+	{
+		// Verificar si hay línea de visión (sin bloques en el camino)
+		Vector3 startPos = m_componentBody.Position + new Vector3(0, m_componentBody.BoxSize.Y * 0.5f, 0);
+		Vector3 direction = Vector3.Normalize(targetPosition - startPos);
+		float distance = Vector3.Distance(startPos, targetPosition);
+		
+		// Hacer un raycast para verificar obstrucciones
+		TerrainRaycastResult? result = m_subsystemTerrain.Raycast(
+			startPos, 
+			startPos + direction * distance, 
+			false, 
+			true, 
+			null
+		);
+		
+		// Si no hay resultado o el impacto está muy cerca del objetivo, hay línea de visión
+		return !result.HasValue || result.Value.Distance > distance - 1f;
+	}
+
+	private void Fire(Vector3 direction)
+	{
+		try
+		{
+			// Configurar tipo de bala
+			BulletBlock.BulletType bulletType;
+			try
+			{
+				bulletType = (BulletBlock.BulletType)Enum.Parse(typeof(BulletBlock.BulletType), BulletType, true);
+			}
+			catch
+			{
+				bulletType = BulletBlock.BulletType.MusketBall;
+			}
+
+			// Crear valor del bloque de bala
+			int bulletValue = Terrain.MakeBlockValue(
+				m_bulletBlockIndex,
+				0,
+				BulletBlock.SetBulletType(0, bulletType)
+			);
+
+			// Calcular posición de disparo
+			Vector3 firePosition;
+			if (ThrowFromHead)
+			{
+				// Desde la cabeza
+				firePosition = m_componentBody.Position +
+							 new Vector3(0, m_componentBody.BoxSize.Y * 0.9f, 0);
+			}
+			else
+			{
+				// Desde las manos
+				firePosition = m_componentBody.Position +
+							 new Vector3(0, m_componentBody.BoxSize.Y * 0.6f, 0) +
+							 m_componentBody.Matrix.Right * 0.3f;
+			}
+
+			// Añadir un pequeño error de puntería para hacerlo más realista
+			Vector3 aimError = new Vector3(
+				m_random.Float(-0.02f, 0.02f),
+				m_random.Float(-0.02f, 0.02f),
+				m_random.Float(-0.01f, 0.01f)
+			);
+
+			Vector3 finalDirection = Vector3.Normalize(direction + aimError);
+
+			// Velocidad de la bala
+			Vector3 velocity = m_componentBody.Velocity + finalDirection * BulletSpeed;
+
+			// Lanzar proyectil
+			Projectile projectile = m_subsystemProjectiles.FireProjectile(
+				bulletValue,
+				firePosition,
+				velocity,
+				Vector3.Zero,
+				m_componentCreature
+			);
+
+			if (projectile != null)
+			{
+				projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
+			}
+
+			// Efectos de sonido
+			if (!string.IsNullOrEmpty(ThrowingSound))
+			{
+				m_subsystemAudio.PlaySound(ThrowingSound, 1f, m_random.Float(-0.1f, 0.1f),
+										  firePosition, ThrowingSoundDistance, true);
+			}
+
+			// Sonido de disparo del mosquete
+			m_subsystemAudio.PlaySound("Audio/MusketFire", 1f, m_random.Float(-0.1f, 0.1f),
+									  firePosition, 20f, true);
+
+			// Sonido de liberación del martillo
+			m_subsystemAudio.PlaySound("Audio/HammerRelease", 0.8f, m_random.Float(-0.1f, 0.1f),
+									  firePosition, 10f, true);
+
+			// Partículas de humo (usando el subsistema de terreno)
+			if (m_subsystemTerrain != null)
+			{
+				m_subsystemParticles.AddParticleSystem(
+					new GunSmokeParticleSystem(m_subsystemTerrain,
+											  firePosition + finalDirection * 0.3f,
+											  finalDirection),
+					false
+				);
+			}
+
+			// Ruido
+			m_subsystemNoise.MakeNoise(firePosition, 1f, 40f);
+
+			// Retroceso
+			m_componentBody.ApplyImpulse(-finalDirection * 3f);
+
+			// Resetear animaciones
+			if (m_creatureModel != null)
+			{
+				m_creatureModel.AimHandAngleOrder = 0f;
+				m_creatureModel.InHandItemOffsetOrder = Vector3.Zero;
+				m_creatureModel.InHandItemRotationOrder = Vector3.Zero;
+			}
+		}
+		catch (Exception ex)
+		{
+			Log.Error($"Error en ComponentMusketShooterBehavior.Fire: {ex.Message}");
+		}
+	}
+}
