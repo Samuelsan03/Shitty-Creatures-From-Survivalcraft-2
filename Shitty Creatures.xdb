@@ -2147,7 +2147,7 @@
         <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="f6602d48-65a0-42d1-9c60-489a7030ac49">
-        <Parameter Name="Health" Guid="c0f58d82-dd2e-426e-8d53-4333ae0ca0da" Value="19.3" Type="float"/>
+        <Parameter Name="Health" Guid="c0f58d82-dd2e-426e-8d53-4333ae0ca0da" Value="19" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="75e39015-4a38-4114-858c-93b090dd55cd"/>
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="974c12a5-80ed-4a52-bb72-ad2d03655526" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
@@ -2391,7 +2391,7 @@
         <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="c1f71021-a41e-48ba-bfd5-8fb4cfcd9128">
-        <Parameter Name="Health" Guid="0852cc31-f14a-418b-bb1a-ff20d2eafe01" Value="130" Type="float"/>
+        <Parameter Name="Health" Guid="0852cc31-f14a-418b-bb1a-ff20d2eafe01" Value="13" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="a8583176-b479-4351-b3b6-8b0eb80ea02a"/>
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="c7fa9be5-d1cb-4dae-91e3-4276326cca30" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
