@@ -14,7 +14,7 @@ namespace Game
 
 		public override void InitializeCreatureTypes(SubsystemCreatureSpawn spawn, List<SubsystemCreatureSpawn.CreatureType> creatureTypes)
 		{
-			// Spawn para Naomi con 100% de probabilidad
+			// Spawn para Naomi con 100% de probabilidad - DESDE DÍA 0
 			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Naomi", 0, false, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType creatureType, Point3 point)
@@ -24,6 +24,7 @@ namespace Game
 					int groundBlock = Terrain.ExtractContents(cellValue);
 
 					// Condiciones flexibles para Naomi - SIN RESTRICCIÓN DE ALTURA
+					// SIN RESTRICCIÓN DE DÍAS - aparece desde el inicio
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
 						return 1.0f; // 100% de probabilidad
@@ -33,6 +34,30 @@ namespace Game
 				SpawnFunction = ((SubsystemCreatureSpawn.CreatureType creatureType, Point3 point) =>
 				{
 					var creatures = spawn.SpawnCreatures(creatureType, "Naomi", point, 3);
+					return creatures.Count;
+				})
+			});
+
+			// Spawn para Ricardo con 100% de probabilidad
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Ricardo", 0, false, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType creatureType, Point3 point)
+				{
+					SubsystemTerrain subsystemTerrain = spawn.m_subsystemTerrain;
+					int cellValue = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValue);
+
+					// Condiciones flexibles para Ricardo - SIN RESTRICCIÓN DE ALTURA
+					// Aparece desde el día 0 (cuando se crea el mundo)
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 1.0f; // 100% de probabilidad
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemCreatureSpawn.CreatureType creatureType, Point3 point) =>
+				{
+					var creatures = spawn.SpawnCreatures(creatureType, "Ricardo", point, 3);
 					return creatures.Count;
 				})
 			});
@@ -61,7 +86,7 @@ namespace Game
 				})
 			});
 
-			// EL BALLESTADOR - aparece CADA NOCHE desde el día 5 en adelante
+			// EL BALLESTADOR - aparece CADA NOCHE desde el día 10 en adelante
 			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("ElBallestador", 0, false, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType creatureType, Point3 point)
@@ -72,9 +97,9 @@ namespace Game
 
 					SubsystemTimeOfDay timeOfDay = spawn.Project.FindSubsystem<SubsystemTimeOfDay>(true);
 					bool isNight = timeOfDay != null && (timeOfDay.TimeOfDay >= timeOfDay.NightStart || timeOfDay.TimeOfDay < timeOfDay.DawnStart);
-					bool isDay5OrLater = timeOfDay != null && timeOfDay.Day >= 4.0;
+					bool isDay10OrLater = timeOfDay != null && timeOfDay.Day >= 4.0;
 
-					if (isDay5OrLater && isNight && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+					if (isDay10OrLater && isNight && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
 						return 1.0f;
 					}
@@ -87,7 +112,7 @@ namespace Game
 				})
 			});
 
-			// EL ARQUERO - aparece CADA NOCHE desde el día 10 en adelante  
+			// EL ARQUERO - aparece CADA NOCHE desde el día 5 en adelante  
 			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("ElArquero", 0, false, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType creatureType, Point3 point)
@@ -98,9 +123,9 @@ namespace Game
 
 					SubsystemTimeOfDay timeOfDay = spawn.Project.FindSubsystem<SubsystemTimeOfDay>(true);
 					bool isNight = timeOfDay != null && (timeOfDay.TimeOfDay >= timeOfDay.NightStart || timeOfDay.TimeOfDay < timeOfDay.DawnStart);
-					bool isDay10OrLater = timeOfDay != null && timeOfDay.Day >= 9.0;
+					bool isDay5OrLater = timeOfDay != null && timeOfDay.Day >= 9.0;
 
-					if (isDay10OrLater && isNight && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+					if (isDay5OrLater && isNight && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
 						return 1.0f;
 					}
@@ -322,7 +347,7 @@ namespace Game
 				})
 			});
 
-			// Para ElSenorDeLasTumbasMoradas - Día 2+ y noche
+			// EL SEÑOR DE LAS TUMBAS MORADAS - aparece CADA NOCHE desde el día 1 en adelante
 			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("ElSenorDeLasTumbasMoradas", 0, false, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType creatureType, Point3 point)
@@ -331,20 +356,32 @@ namespace Game
 					int cellValue = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
 					int groundBlock = Terrain.ExtractContents(cellValue);
 
+					// Obtener el sistema de tiempo
 					SubsystemTimeOfDay timeOfDay = spawn.Project.FindSubsystem<SubsystemTimeOfDay>(true);
-					SubsystemGameInfo gameInfo = spawn.Project.FindSubsystem<SubsystemGameInfo>(true);
-					bool isNight = timeOfDay != null && (timeOfDay.TimeOfDay >= timeOfDay.NightStart || timeOfDay.TimeOfDay < timeOfDay.DawnStart);
-					bool isDay2OrLater = gameInfo != null && (gameInfo.TotalElapsedGameTime / 1200.0) >= 1.0;
 
-					if (isDay2OrLater && isNight && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+					if (timeOfDay != null)
 					{
-						return 1.0f;
+						// Aparece desde el día 1 en adelante (Día >= 1.0)
+						bool isDay1OrLater = timeOfDay.Day >= 1.0;
+
+						// Solo aparece de noche
+						bool isNight = timeOfDay.TimeOfDay >= timeOfDay.NightStart || timeOfDay.TimeOfDay < timeOfDay.DawnStart;
+
+						// Bloques de terreno válidos
+						bool validGround = groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8;
+
+						// CONDICIÓN: Día 1+ + Noche + Terreno válido
+						if (isDay1OrLater && isNight && validGround)
+						{
+							return 1.0f; // 100% de probabilidad
+						}
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemCreatureSpawn.CreatureType creatureType, Point3 point) =>
 				{
-					var creatures = spawn.SpawnCreatures(creatureType, "ElSenorDeLasTumbasMoradas", point, 3);
+					// Spawn del Señor de las Tumbas Moradas
+					var creatures = spawn.SpawnCreatures(creatureType, "ElSenorDeLasTumbasMoradas", point, 5);
 					return creatures.Count;
 				})
 			});
@@ -621,7 +658,7 @@ namespace Game
 				})
 			});
 
-			
+
 
 			// Para BallestadoraMusculosa - Día 25 en adelante, solo de noche y en grupo de 4
 			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("BallestadoraMusculosa", 0, false, false)
