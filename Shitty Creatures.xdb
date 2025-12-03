@@ -200,9 +200,9 @@
             <MemberComponentTemplate Name="FeedBehavior" Guid="fac220ad-1770-49d5-92e3-bbc87b406be3" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="9fdc2864-0b0f-4114-a030-1d57837b31e7" Value="False" Type="bool"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="44f153ee-2e0d-4ec3-b376-8e08cf698a37" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
-    <Parameter Name="ChaseToCreatures" Guid="9ff13090-3da1-459b-a85e-237f46d2b2dc" Value="HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
-    <Parameter Name="ChaseToCreatureProbability" Guid="59dba77c-4d22-438a-b10f-c81056405868" Value="1.0" Type="float"/>
+            <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="475973dc-526e-4d46-b54a-c914c8a451b0" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
+    <Parameter Name="ChaseToCreatures" Guid="b93fd11d-43f1-4aae-9cfc-cfc3f7e2b990" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="3f1aba5e-d688-4edd-bdfe-1b36786778d0" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="ChaseBehavior" Guid="f11e9dfc-66e8-4a6c-9ecb-ca2eab529d8f" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
                 <Parameter Name="AutoChaseMask" Guid="5896c4f5-aee7-45e2-9caf-0196c8b1b197" Value="LandPredator, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
@@ -231,9 +231,9 @@
                     <Parameter Name="Meat" Guid="b3c4d5e6-f7a8-4890-9123-456789abcde1" Value="1" Type="float"/>
                 </ParameterSet>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="95baac65-c2f3-48b4-92db-f9617b36a4ba" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
-    <Parameter Name="ChaseToCreatures" Guid="98a1e4eb-ec9f-45bb-9de8-b7c2c562c54c" Value="HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
-    <Parameter Name="ChaseToCreatureProbability" Guid="200fd85a-cdce-43db-a16f-bb0e51c20554" Value="1.0" Type="float"/>
+            <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="c1e80425-7fb4-4f22-893c-e0ea1b476aa9" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
+    <Parameter Name="ChaseToCreatures" Guid="ae3b9e79-b16c-4bb4-97a4-237cba926e11" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="6f778b62-e681-4f0c-948d-d4968dab2682" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="CreatureSounds" Guid="bb443c01-799b-4b2a-8ddb-c183898cc5cc">
                 <Parameter Name="PainSound" Guid="25e7cfe2-6a09-463a-81cf-48732a6a8ef7" Value="Audio/Creatures/Ricardo/Pain" Type="string"/>
@@ -327,9 +327,9 @@
         <Parameter Name="DayRange" Guid="c3d4e5f6-a7b8-4901-2345-6789abcdef01" Value="0" Type="float"/>
         <Parameter Name="NightRange" Guid="d4e5f6a7-b8c9-5012-3456-789abcdef012" Value="0" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="5bdc5b02-5e08-4d54-859a-67f7acf2f9f4" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
-    <Parameter Name="ChaseToCreatures" Guid="7f1dcf75-2260-4db1-8e44-3fdde3a3d466" Value="HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
-    <Parameter Name="ChaseToCreatureProbability" Guid="57de5c2a-e36d-4bc1-843c-164aa898cef8" Value="1.0" Type="float"/>
+    <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="326f3897-de45-42ad-856b-9d98d9437b10" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
+    <Parameter Name="ChaseToCreatures" Guid="ba79f890-d50b-417a-bd8b-464057848126" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="a53ace80-983f-492b-9893-1e58396d446c" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Spawn" Guid="2ceb94e7-5a0b-432a-9f54-e02f546cc0c1">
     <Parameter Name="AutoDespawn" Guid="054ae38e-c3f7-4fb9-9d05-a49004ff105f" Value="False" Type="bool"/>
@@ -428,9 +428,9 @@
         <Parameter Name="DayRange" Guid="b0c1d2e3-f4a5-4678-9456-789abcdef012" Value="0" Type="float"/>
         <Parameter Name="NightRange" Guid="c1d2e3f4-a5b6-4789-9567-89abcdef0123" Value="0" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="48f07e29-8672-4d13-a1ed-886543d96a2c" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
-    <Parameter Name="ChaseToCreatures" Guid="282d6ad7-bea4-4138-9756-72b839ec8f26" Value="HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
-    <Parameter Name="ChaseToCreatureProbability" Guid="5971ccfb-220e-4dab-8ddd-3f92f18900d0" Value="1.0" Type="float"/>
+    <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="cd066edb-ef58-491b-989e-1f2d8d7d50e9" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
+    <Parameter Name="ChaseToCreatures" Guid="2ec5b739-976d-4212-b395-756eca9d7936" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="94eb70e4-22fa-4027-a7a6-5d32670fdd5a" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="EatPickableBehavior" Guid="d2e3f4a5-b6c7-4890-9678-9abcdef01234">
         <ParameterSet Name="FoodFactors" Guid="e3f4a5b6-c7d8-4901-9789-abcdef012345">
@@ -534,9 +534,9 @@
             <Parameter Name="Bread" Guid="fc8b3058-9e4a-4c61-8702-fc5f710d0623" Value="1" Type="float"/>
         </ParameterSet>
     </MemberComponentTemplate>    
-    <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="55058602-87cb-421f-a8ad-f500e98c022b" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
-    <Parameter Name="ChaseToCreatures" Guid="b1b4f0eb-9bdb-4f50-80c3-5fe6c2b8dc3f" Value="HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
-    <Parameter Name="ChaseToCreatureProbability" Guid="c5645bde-8b95-41ac-8d03-27eeefd13c16" Value="1.0" Type="float"/>
+    <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="028a05bb-7e21-4f6b-b580-575a139dead3" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
+    <Parameter Name="ChaseToCreatures" Guid="74f6068a-ecf9-4850-b1b7-9f0f5db89cb0" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="18debc76-6340-4893-a003-070f1e88078f" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="CreatureSounds" Guid="d7982663-2d94-48d1-b62a-5b237fb3b293">
         <Parameter Name="PainSound" Guid="6bd82d18-dea5-4b1f-9ff7-c08f2181070a" Value="Audio/Creatures/ElMarihuanero/Pain" Type="string"/>
@@ -628,9 +628,9 @@
         <Parameter Name="DayRange" Guid="9b076227-e610-41ab-9452-c6a5e8fddf92" Value="0" Type="float"/>
         <Parameter Name="NightRange" Guid="97b2050a-0f6f-4c82-8af6-3f44838805c9" Value="0" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="e48bd115-4f22-4168-b4fa-d14e2e0552eb" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
-    <Parameter Name="ChaseToCreatures" Guid="7192ca37-842c-441c-9367-6c7acd734dc4" Value="HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
-    <Parameter Name="ChaseToCreatureProbability" Guid="b2d39e52-b9e2-4267-bf17-9d0ffd6953ae" Value="1.0" Type="float"/>
+    <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="e5cdecd4-48f4-4505-99c1-9e745ed72e2c" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
+    <Parameter Name="ChaseToCreatures" Guid="f2c7861b-daa0-4611-9add-1d61cd827ca6" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="e33ce270-b49e-4428-b63e-3a41488f4bc2" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="EatPickableBehavior" Guid="9c04b5de-f37d-4a0e-9cef-73cc2b9a22b1">
         <ParameterSet Name="FoodFactors" Guid="5fa53cb0-f400-49a3-8685-62c2fa5bae41">
@@ -842,9 +842,9 @@
         <Parameter Name="ChaseNonPlayerProbability" Guid="13f7b6b1-60c4-4f46-96c1-4c7062ba8f05" Value="0.015" Type="float"/>
         <Parameter Name="NightChaseTime" Guid="94d6e5e7-a936-416f-a443-55287bfa681e" Value="10" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="3e804c4a-72fc-4d2b-bad3-71991b9c6290" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
-    <Parameter Name="ChaseToCreatures" Guid="179893f6-e841-4137-962a-c679a3a4975e" Value="HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
-    <Parameter Name="ChaseToCreatureProbability" Guid="c6cdef59-bee4-438e-a629-5f7eede58208" Value="1.0" Type="float"/>
+    <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="a80f4529-eff8-441c-bad8-af36ea7d2e27" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
+    <Parameter Name="ChaseToCreatures" Guid="bb7d343e-6895-4958-9b6e-8a95e9e6e442" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="4ea13ca5-c66f-4449-8d68-9d831d569d60" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Shapeshifter" Guid="5af8fd8e-f425-42ad-a4c0-1d850b132109" InheritanceParent="92e52f46-5d88-4273-80d2-1b5bfb7fdee8">
         <Parameter Name="NightEntityTemplateName" Guid="013cc071-8eab-45f7-bba3-963ad3a77608" Value="FumadorQuimicoBrawny" Type="string"/>
@@ -864,9 +864,9 @@
         <Parameter Name="DayRange" Guid="c3d4e5f6-a7b8-4901-2345-6789abcdf001" Value="0" Type="float"/>
         <Parameter Name="NightRange" Guid="d4e5f6a7-b8c9-5012-3456-789abcdf0123" Value="0" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="bf4f631b-2172-49da-8060-951725d79ed2" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
-    <Parameter Name="ChaseToCreatures" Guid="2db79367-c1ad-4c61-91bd-e1248be40409" Value="HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
-    <Parameter Name="ChaseToCreatureProbability" Guid="9c342456-5f91-4856-aeeb-602a79ed77f5" Value="1.0" Type="float"/>
+    <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="4146b5fd-56d3-4536-9d11-7cb7cda98875" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
+    <Parameter Name="ChaseToCreatures" Guid="61d2007c-8fee-4aea-81c3-0eee7912546b" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="a473714c-4f70-46d8-9364-86f357a23bb1" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="EatPickableBehavior" Guid="e5f6a7b8-c9d0-5123-4567-89abcdf01234">
         <ParameterSet Name="FoodFactors" Guid="f6a7b8c9-d0e1-5234-5678-9abcdf012345">
@@ -1062,9 +1062,9 @@
         <Parameter Name="ChaseNonPlayerProbability" Guid="e6f7a8b9-c0d1-0234-789a-cdef0123456f" Value="0.04" Type="float"/>
         <Parameter Name="NightChaseTime" Guid="f7a8b9c0-d1e2-0345-89ab-def012345670" Value="18" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="d97b3cde-0f3a-4bff-9875-06a3503a2f69" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
-    <Parameter Name="ChaseToCreatures" Guid="1055bcd6-b879-4f1e-8a63-e5917f470216" Value="HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
-    <Parameter Name="ChaseToCreatureProbability" Guid="de106d25-cc0a-419c-9490-71f3d35029ce" Value="1.0" Type="float"/>
+    <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="db8a8bf6-45e9-4cd8-971c-c2ad9021d195" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
+    <Parameter Name="ChaseToCreatures" Guid="d4ed3d82-20d9-4ff9-9df0-4d3e5ebd4697" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="4d8d4528-e812-4334-9286-bf4baa7d1468" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="b8c9d0e1-f2a3-0456-bcde-0123456789ab">
         <Parameter Name="Color" Guid="c9d0e1f2-a3b4-0567-cdef-123456789abc" Value="30,144,255" Type="Color"/>
@@ -1080,9 +1080,9 @@
         <Parameter Name="DayRange" Guid="5d7d3359-238a-405e-955f-49aa87232d74" Value="0" Type="float"/>
         <Parameter Name="NightRange" Guid="075f9c9b-bc21-48e6-8f73-9b2934e6ee71" Value="0" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="1e2a9da3-cf7f-4608-837b-e75ab0c71dc8" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
-    <Parameter Name="ChaseToCreatures" Guid="3d53d77c-12ab-4b95-98af-2724444b59a8" Value="HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
-    <Parameter Name="ChaseToCreatureProbability" Guid="61319a76-dcc0-4431-b032-470bb5baa7da" Value="1.0" Type="float"/>
+    <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="fb0e7c12-67ea-4491-8769-565b5f141543" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
+    <Parameter Name="ChaseToCreatures" Guid="45055382-e38b-4765-8dc5-9c8c7a01ee47" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="a3b5b2e7-392e-46ff-8a5c-d8d9f3ad2b59" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="EatPickableBehavior" Guid="5a9ea65f-1a7f-456d-931a-fe5f88ce360f">
     <ParameterSet Name="FoodFactors" Guid="44225750-baf3-43d5-b633-d4952be652ed">
@@ -1210,9 +1210,9 @@
 </EntityTemplate>
 
 <EntityTemplate Name="LaMuerteX" Guid="d4e5f6a7-b8c9-4789-9012-3456789abcfa" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="TargetedChaseBehavior" Guid="3c86bb57-299a-4725-aac0-238c16db73bb" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
-    <Parameter Name="ChaseToCreatures" Guid="521acaeb-6eee-4876-8e33-4dc94fa338ea" Value="Naomi, Ricardo, Paco, Barack, ElMarihuanero, ElMarihuaneroMamon, TommyVercetti, ClaudeSpeed, ArqueroPrisionero, BallestadoraMusculosa, CarlJohnson, BetelGammamon, Gaomon, Agumon, Veemon, Guilmon, WalterZombie, WalterZombieMamadisimo, FumadorQuimico, FumadorQuimicoBrawny, Conker, Beavis, Butt-Head, Shoutmon, Gumdramon, Bass_Sea, Seagull, Sparrow, Reindeer, Horse_White, Horse_White_Saddled, Horse_Chestnut, Horse_Chestnut_Saddled, Horse_Bay, Horse_Bay_Saddled, Horse_Palomino, Horse_Palomino_Saddled, Horse_Black, Horse_Black_Saddled, Camel, Camel_Saddled, Zebra, Wildboar, Bison, Bull_Brown, Bull_Black, Cow_Brown, Cow_Black, Bull_White, Duck, Pigeon, Raven, Giraffe, Moose, Donkey, Donkey_Saddled, Cassowary, Ostrich, Gnu, Werewolf, Ray_Yellow, Ray_Brown, Beluga,Hyena, Rhino, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite, Player" Type="string"/>
-    <Parameter Name="ChaseToCreatureProbability" Guid="ee972402-7b86-44ce-9902-4ad9409c3973" Value="1.0" Type="float"/>
+<MemberComponentTemplate Name="TargetedChaseBehavior" Guid="49a529ba-30db-47e2-9d62-e27f298a93b5" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
+    <Parameter Name="ChaseToCreatures" Guid="f28c36c1-cca4-4c3b-a7a5-a0d0aacff54d" Value="Naomi, Ricardo, Paco, Barack, ElMarihuanero, ElMarihuaneroMamon, TommyVercetti, ClaudeSpeed, ArqueroPrisionero, BallestadoraMusculosa, CarlJohnson, BetelGammamon, Gaomon, Agumon, Veemon, Guilmon, WalterZombie, WalterZombieMamadisimo, FumadorQuimico, FumadorQuimicoBrawny, Conker, Beavis, Butt-Head, Shoutmon, Gumdramon, Bass_Sea, Seagull, Sparrow, Reindeer, Horse_White, Horse_White_Saddled, Horse_Chestnut, Horse_Chestnut_Saddled, Horse_Bay, Horse_Bay_Saddled, Horse_Palomino, Horse_Palomino_Saddled, Horse_Black, Horse_Black_Saddled, Camel, Camel_Saddled, Zebra, Wildboar, Bison, Bull_Brown, Bull_Black, Cow_Brown, Cow_Black, Bull_White, Duck, Pigeon, Raven, Giraffe, Moose, Donkey, Donkey_Saddled, Cassowary, Ostrich, Gnu, Werewolf, Ray_Yellow, Ray_Brown, Beluga,Hyena, Rhino, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite, Player" Type="string"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="4cc8f27d-fb41-49b1-9719-a050d30d354f" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="e5f6a7b8-c9d0-4890-9123-456789abcdfc" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
         <Parameter Name="DayRange" Guid="f6a7b8c9-d0e1-4901-2345-6789abcdf004" Value="0" Type="float"/>
@@ -1311,6 +1311,10 @@
 </EntityTemplate>
 
 <EntityTemplate Name="ElSenorDeLasTumbasMoradas" Guid="a1b2c3d4-e5f6-4789-9012-3456789abc99" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="TargetedChaseBehavior" Guid="530c1090-9270-4d55-83f1-660c826e1cfd" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
+    <Parameter Name="ChaseToCreatures" Guid="d4aa4732-3db6-4b04-bef8-b9a68471782f" Value="Naomi, Ricardo, Paco, Barack, ElMarihuanero, ElMarihuaneroMamon, TommyVercetti, ClaudeSpeed, ArqueroPrisionero, BallestadoraMusculosa, CarlJohnson, BetelGammamon, Gaomon, Agumon, Veemon, Guilmon, WalterZombie, WalterZombieMamadisimo, FumadorQuimico, FumadorQuimicoBrawny, Conker, Beavis, Butt-Head, Shoutmon, Gumdramon, Bass_Sea, Seagull, Sparrow, Reindeer, Horse_White, Horse_White_Saddled, Horse_Chestnut, Horse_Chestnut_Saddled, Horse_Bay, Horse_Bay_Saddled, Horse_Palomino, Horse_Palomino_Saddled, Horse_Black, Horse_Black_Saddled, Camel, Camel_Saddled, Zebra, Wildboar, Bison, Bull_Brown, Bull_Black, Cow_Brown, Cow_Black, Bull_White, Duck, Pigeon, Raven, Giraffe, Moose, Donkey, Donkey_Saddled, Cassowary, Ostrich, Gnu, Werewolf, Ray_Yellow, Ray_Brown, Beluga,Hyena, Rhino, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite, Player" Type="string"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="49dcefbe-c410-4964-b11b-7f48053c0e2a" Value="1.0" Type="float"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="b2c3d4e5-f6a7-4890-9123-456789abcd00" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
         <Parameter Name="DayRange" Guid="c3d4e5f6-a7b8-4901-2345-6789abcd0001" Value="0" Type="float"/>
         <Parameter Name="NightRange" Guid="d4e5f6a7-b8c9-5012-3456-789abcd00012" Value="0" Type="float"/>
@@ -1403,6 +1407,10 @@
 </EntityTemplate>
 
 <EntityTemplate Name="LiderCalavericoSupremo" Guid="b2c3d4e5-f6a7-4789-9012-3456789abc88" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="TargetedChaseBehavior" Guid="131113f6-2e16-4184-ae88-161a93d85620" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
+    <Parameter Name="ChaseToCreatures" Guid="6ff34eed-bdb1-4227-b22c-2428dd88b662" Value="Naomi, Ricardo, Paco, Barack, ElMarihuanero, ElMarihuaneroMamon, TommyVercetti, ClaudeSpeed, ArqueroPrisionero, BallestadoraMusculosa, CarlJohnson, BetelGammamon, Gaomon, Agumon, Veemon, Guilmon, WalterZombie, WalterZombieMamadisimo, FumadorQuimico, FumadorQuimicoBrawny, Conker, Beavis, Butt-Head, Shoutmon, Gumdramon, Bass_Sea, Seagull, Sparrow, Reindeer, Horse_White, Horse_White_Saddled, Horse_Chestnut, Horse_Chestnut_Saddled, Horse_Bay, Horse_Bay_Saddled, Horse_Palomino, Horse_Palomino_Saddled, Horse_Black, Horse_Black_Saddled, Camel, Camel_Saddled, Zebra, Wildboar, Bison, Bull_Brown, Bull_Black, Cow_Brown, Cow_Black, Bull_White, Duck, Pigeon, Raven, Giraffe, Moose, Donkey, Donkey_Saddled, Cassowary, Ostrich, Gnu, Werewolf, Ray_Yellow, Ray_Brown, Beluga,Hyena, Rhino, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite, Player" Type="string"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="32306c90-030d-4628-b1b6-ea988b837f69" Value="1.0" Type="float"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="c3d4e5f6-a7b8-4890-9123-456789abcd11" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
         <Parameter Name="DayRange" Guid="d4e5f6a7-b8c9-4901-2345-6789abcd1001" Value="0" Type="float"/>
         <Parameter Name="NightRange" Guid="e5f6a7b8-c9d0-5012-3456-789abcd10012" Value="0" Type="float"/>
@@ -1494,6 +1502,10 @@
 </EntityTemplate>
 
 <EntityTemplate Name="LiderCalavericoSupremoAlfa" Guid="c3d4e5f6-a7b8-4789-9012-3456789abc77" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="TargetedChaseBehavior" Guid="0eb9d606-2611-4033-a9f7-018af376675f" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
+    <Parameter Name="ChaseToCreatures" Guid="10ed7f7d-f630-4c4a-819c-49b084166a4b" Value="Naomi, Ricardo, Paco, Barack, ElMarihuanero, ElMarihuaneroMamon, TommyVercetti, ClaudeSpeed, ArqueroPrisionero, BallestadoraMusculosa, CarlJohnson, BetelGammamon, Gaomon, Agumon, Veemon, Guilmon, WalterZombie, WalterZombieMamadisimo, FumadorQuimico, FumadorQuimicoBrawny, Conker, Beavis, Butt-Head, Shoutmon, Gumdramon, Bass_Sea, Seagull, Sparrow, Reindeer, Horse_White, Horse_White_Saddled, Horse_Chestnut, Horse_Chestnut_Saddled, Horse_Bay, Horse_Bay_Saddled, Horse_Palomino, Horse_Palomino_Saddled, Horse_Black, Horse_Black_Saddled, Camel, Camel_Saddled, Zebra, Wildboar, Bison, Bull_Brown, Bull_Black, Cow_Brown, Cow_Black, Bull_White, Duck, Pigeon, Raven, Giraffe, Moose, Donkey, Donkey_Saddled, Cassowary, Ostrich, Gnu, Werewolf, Ray_Yellow, Ray_Brown, Beluga,Hyena, Rhino, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite, Player" Type="string"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="7f720bb2-120c-4e63-b5d0-2ca734b233bc" Value="1.0" Type="float"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="d4e5f6a7-b8c9-4890-9123-456789abcd22" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
         <Parameter Name="DayRange" Guid="e5f6a7b8-c9d0-4901-2345-6789abcd2001" Value="0" Type="float"/>
         <Parameter Name="NightRange" Guid="f6a7b8c9-d0e1-5012-3456-789abcd20012" Value="0" Type="float"/>
@@ -1590,9 +1602,9 @@
             <Parameter Name="Bread" Guid="a55851e2-9713-4d61-9362-bc8a6cfe8ae8" Value="1" Type="float"/>
     </ParameterSet>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="57738ab2-05c1-4aaf-b27f-31d53a8a58e3" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
-    <Parameter Name="ChaseToCreatures" Guid="114877c2-1103-4fec-a506-2a82fa90ea63" Value="HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
-    <Parameter Name="ChaseToCreatureProbability" Guid="fd8f63bc-307d-4524-a2b0-f71cb0aaf400" Value="1.0" Type="float"/>
+    <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="6db4efc5-2ed3-4e06-a776-75df13d5997c" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
+    <Parameter Name="ChaseToCreatures" Guid="d53c8da3-0c8b-4236-b21a-d47cab1c6375" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="7e7a8129-bb30-4c13-9ded-d40962c7c8f5" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidFireBehavior" Guid="4fa556d3-ec97-45d5-a77c-70b80639b955" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
     <MemberComponentTemplate Name="Locomotion" Guid="ba97853b-b0c0-49f9-9633-23ef50495318">
@@ -1666,9 +1678,9 @@
 </EntityTemplate>
 
 <EntityTemplate Name="Beavis" Guid="e9d8d930-9dd1-49b8-8140-a35cc200be64" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="TargetedChaseBehavior" Guid="8cf51b74-e4fa-406a-b16a-1e1601853f7b" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
-    <Parameter Name="ChaseToCreatures" Guid="fe467a36-6d6a-4ad5-94fe-afa62e7af9ad" Value="HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
-    <Parameter Name="ChaseToCreatureProbability" Guid="58a408d3-2f30-4639-ab35-8551f2d6da0d" Value="1.0" Type="float"/>
+<MemberComponentTemplate Name="TargetedChaseBehavior" Guid="614afeff-8964-42a3-a2e1-e0dc9066aa43" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
+    <Parameter Name="ChaseToCreatures" Guid="cad67434-604f-4cd8-8aee-b329a21b2749" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="0b1e7d55-18e9-428f-b913-2defdce8a347" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="64165fab-5711-48f5-a2a1-f2431d5ff43c" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
         <Parameter Name="DayRange" Guid="0ccd67d1-2fb9-4406-8130-5384564366f8" Value="0" Type="float"/>
@@ -1753,9 +1765,9 @@
 </EntityTemplate>
 
 <EntityTemplate Name="Butt-Head" Guid="09699a5a-89f9-4883-b77f-e8adf8f52473" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="TargetedChaseBehavior" Guid="2ddece97-efb6-45d4-8d60-2add85495cf0" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
-    <Parameter Name="ChaseToCreatures" Guid="1527a5c5-3362-4d0a-84ec-8eaae75a3ffa" Value="HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
-    <Parameter Name="ChaseToCreatureProbability" Guid="3fe687ac-5f14-477d-a327-1b8aaea08850" Value="1.0" Type="float"/>
+<MemberComponentTemplate Name="TargetedChaseBehavior" Guid="acb6d319-911a-4c33-b789-24560ed70e84" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
+    <Parameter Name="ChaseToCreatures" Guid="16f39974-a1df-46cd-b530-17f972a6f6ea" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="a52f57d9-37c9-4280-9466-c47583507c97" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="3c2bb0f8-19c9-45b1-91b6-8616c5320cc7" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
         <Parameter Name="DayRange" Guid="3540aed3-f9ee-4dea-89fe-4702c4d54346" Value="0" Type="float"/>
@@ -1927,6 +1939,10 @@
         <Parameter Name="ChaseNonPlayerProbability" Guid="6ff52bd5-3a5c-4031-9790-6545079f8930" Value="1.0" Type="float"/>
         <Parameter Name="NightChaseTime" Guid="c925f024-f65c-435b-8147-9101f8274cdd" Value="915" Type="float"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="ba9a5e8a-002f-4764-b4bc-28e854d0bde8" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
+    <Parameter Name="ChaseToCreatures" Guid="6e871857-56fc-41b1-8895-80c656f96272" Value="Naomi, Ricardo, Paco, Barack, ElMarihuanero, ElMarihuaneroMamon, TommyVercetti, ClaudeSpeed, ArqueroPrisionero, BallestadoraMusculosa, CarlJohnson, BetelGammamon, Gaomon, Agumon, Veemon, Guilmon, WalterZombie, WalterZombieMamadisimo, FumadorQuimico, FumadorQuimicoBrawny, Conker, Beavis, Butt-Head, Shoutmon, Gumdramon, Bass_Sea, Seagull, Sparrow, Reindeer, Horse_White, Horse_White_Saddled, Horse_Chestnut, Horse_Chestnut_Saddled, Horse_Bay, Horse_Bay_Saddled, Horse_Palomino, Horse_Palomino_Saddled, Horse_Black, Horse_Black_Saddled, Camel, Camel_Saddled, Zebra, Wildboar, Bison, Bull_Brown, Bull_Black, Cow_Brown, Cow_Black, Bull_White, Duck, Pigeon, Raven, Giraffe, Moose, Donkey, Donkey_Saddled, Cassowary, Ostrich, Gnu, Werewolf, Ray_Yellow, Ray_Brown, Beluga,Hyena, Rhino, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite, Player" Type="string"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="64424516-d984-4092-abbc-5c15f92d77a6" Value="1.0" Type="float"/>
+</MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="1639d8af-97f8-4fe4-9bdc-4ab4ac202279">
         <Parameter Name="Color" Guid="e3fce4a4-a3e5-4d58-90bf-94bdb85a8e78" Value="219,95,0" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="bd3fb858-4de1-4573-a9ab-1fc0988c9157" Value="192" Type="int"/>
@@ -1937,6 +1953,10 @@
 </EntityTemplate>
 
 <EntityTemplate Name="HombreAgua" Guid="a1b2c3d4-e5f6-4789-9012-3456789abcfe" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="TargetedChaseBehavior" Guid="3e4009ab-a929-486a-ac62-f7d653e3a323" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
+    <Parameter Name="ChaseToCreatures" Guid="a784c6f5-9863-4d72-8291-ff5d40866095" Value="Naomi, Ricardo, Paco, Barack, ElMarihuanero, ElMarihuaneroMamon, TommyVercetti, ClaudeSpeed, ArqueroPrisionero, BallestadoraMusculosa, CarlJohnson, BetelGammamon, Gaomon, Agumon, Veemon, Guilmon, WalterZombie, WalterZombieMamadisimo, FumadorQuimico, FumadorQuimicoBrawny, Conker, Beavis, Butt-Head, Shoutmon, Gumdramon, Bass_Sea, Seagull, Sparrow, Reindeer, Horse_White, Horse_White_Saddled, Horse_Chestnut, Horse_Chestnut_Saddled, Horse_Bay, Horse_Bay_Saddled, Horse_Palomino, Horse_Palomino_Saddled, Horse_Black, Horse_Black_Saddled, Camel, Camel_Saddled, Zebra, Wildboar, Bison, Bull_Brown, Bull_Black, Cow_Brown, Cow_Black, Bull_White, Duck, Pigeon, Raven, Giraffe, Moose, Donkey, Donkey_Saddled, Cassowary, Ostrich, Gnu, Werewolf, Ray_Yellow, Ray_Brown, Beluga,Hyena, Rhino, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite, Player" Type="string"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="823fa334-a164-45e3-a359-0efb039da50a" Value="1.0" Type="float"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="b2c3d4e5-f6a7-4890-9123-456789abcdf1" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
         <Parameter Name="DayRange" Guid="c3d4e5f6-a7b8-4901-2345-6789abcdf002" Value="0" Type="float"/>
         <Parameter Name="NightRange" Guid="d4e5f6a7-b8c9-5012-3456-789abcdf0124" Value="0" Type="float"/>
@@ -2029,6 +2049,10 @@
             <Parameter Name="Meat" Guid="a0a6d5f0-44c2-4b91-9da4-3696b259ddd1" Value="1" Type="float"/>
         </ParameterSet>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="1dcdca7c-8aff-48b1-9274-e14c2a8c9c40" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
+    <Parameter Name="ChaseToCreatures" Guid="8033fe72-afa6-4ef5-bad3-0ef2bc4a2b50" Value="Naomi, Ricardo, Paco, Barack, ElMarihuanero, ElMarihuaneroMamon, TommyVercetti, ClaudeSpeed, ArqueroPrisionero, BallestadoraMusculosa, CarlJohnson, BetelGammamon, Gaomon, Agumon, Veemon, Guilmon, WalterZombie, WalterZombieMamadisimo, FumadorQuimico, FumadorQuimicoBrawny, Conker, Beavis, Butt-Head, Shoutmon, Gumdramon, Bass_Sea, Seagull, Sparrow, Reindeer, Horse_White, Horse_White_Saddled, Horse_Chestnut, Horse_Chestnut_Saddled, Horse_Bay, Horse_Bay_Saddled, Horse_Palomino, Horse_Palomino_Saddled, Horse_Black, Horse_Black_Saddled, Camel, Camel_Saddled, Zebra, Wildboar, Bison, Bull_Brown, Bull_Black, Cow_Brown, Cow_Black, Bull_White, Duck, Pigeon, Raven, Giraffe, Moose, Donkey, Donkey_Saddled, Cassowary, Ostrich, Gnu, Werewolf, Ray_Yellow, Ray_Brown, Beluga,Hyena, Rhino, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite, Player" Type="string"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="cb4a007f-7d54-4cff-8284-3e63e5f8918f" Value="1.0" Type="float"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="CreatureSounds" Guid="96d8af4f-7c4d-4316-8c45-df9f135afe0d">
         <Parameter Name="PainSound" Guid="7de332c7-e697-4d02-8fdf-2d38a51cdb38" Value="Audio/Creatures/Paco/Pain" Type="string"/>
         <Parameter Name="IdleSound" Guid="416f9aa0-70ec-436a-b084-adcb6bb027d3" Value="Audio/Creatures/Paco/Idie" Type="string"/>
@@ -2162,6 +2186,10 @@
             <Parameter Name="Meat" Guid="c3d4e5f6-a7b8-5345-6789-abcdef012345" Value="1" Type="float"/>
         </ParameterSet>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="8934b86e-4b81-4166-a151-9fc2e236c836" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
+    <Parameter Name="ChaseToCreatures" Guid="ef1632e5-5cb8-4558-8d7a-615b56b59df7" Value="Naomi, Ricardo, Paco, Barack, ElMarihuanero, ElMarihuaneroMamon, TommyVercetti, ClaudeSpeed, ArqueroPrisionero, BallestadoraMusculosa, CarlJohnson, BetelGammamon, Gaomon, Agumon, Veemon, Guilmon, WalterZombie, WalterZombieMamadisimo, FumadorQuimico, FumadorQuimicoBrawny, Conker, Beavis, Butt-Head, Shoutmon, Gumdramon, Bass_Sea, Seagull, Sparrow, Reindeer, Horse_White, Horse_White_Saddled, Horse_Chestnut, Horse_Chestnut_Saddled, Horse_Bay, Horse_Bay_Saddled, Horse_Palomino, Horse_Palomino_Saddled, Horse_Black, Horse_Black_Saddled, Camel, Camel_Saddled, Zebra, Wildboar, Bison, Bull_Brown, Bull_Black, Cow_Brown, Cow_Black, Bull_White, Duck, Pigeon, Raven, Giraffe, Moose, Donkey, Donkey_Saddled, Cassowary, Ostrich, Gnu, Werewolf, Ray_Yellow, Ray_Brown, Beluga,Hyena, Rhino, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite, Player" Type="string"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="527030b7-46f7-4929-a7b3-35d913e7906f" Value="1.0" Type="float"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="Spawn" Guid="8b0b657a-0721-4d46-8325-107a4b9749df">
     <Parameter Name="AutoDespawn" Guid="7a08d33b-19dd-4391-b748-cef6437c3ae2" Value="False" Type="bool"/>
 </MemberComponentTemplate>
@@ -2243,6 +2271,10 @@
         <Parameter Name="DayRange" Guid="519aa085-7c6f-4ced-93bb-03ecfdb499f9" Value="0" Type="float"/>
         <Parameter Name="NightRange" Guid="0f394c29-eddb-4c55-9d1c-ccd17d1363f3" Value="5" Type="float"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="adea0c27-9aa6-42f2-98db-45d3a4f97319" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
+    <Parameter Name="ChaseToCreatures" Guid="e5e1207e-a658-4c4b-ba10-630371bd5bdf" Value="Naomi, Ricardo, Paco, Barack, ElMarihuanero, ElMarihuaneroMamon, TommyVercetti, ClaudeSpeed, ArqueroPrisionero, BallestadoraMusculosa, CarlJohnson, BetelGammamon, Gaomon, Agumon, Veemon, Guilmon, WalterZombie, WalterZombieMamadisimo, FumadorQuimico, FumadorQuimicoBrawny, Conker, Beavis, Butt-Head, Shoutmon, Gumdramon, Bass_Sea, Seagull, Sparrow, Reindeer, Horse_White, Horse_White_Saddled, Horse_Chestnut, Horse_Chestnut_Saddled, Horse_Bay, Horse_Bay_Saddled, Horse_Palomino, Horse_Palomino_Saddled, Horse_Black, Horse_Black_Saddled, Camel, Camel_Saddled, Zebra, Wildboar, Bison, Bull_Brown, Bull_Black, Cow_Brown, Cow_Black, Bull_White, Duck, Pigeon, Raven, Giraffe, Moose, Donkey, Donkey_Saddled, Cassowary, Ostrich, Gnu, Werewolf, Ray_Yellow, Ray_Brown, Beluga,Hyena, Rhino, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite, Player" Type="string"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="3de7d10c-3c5d-4d73-895d-ff057da54004" Value="1.0" Type="float"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="EatPickableBehavior" Guid="b928c9c7-e38a-4818-869c-98ec7b6dcbe7">
         <ParameterSet Name="FoodFactors" Guid="1d21a2fa-ab0c-4562-8a3e-83e1afbefe98">
             <Parameter Name="Fish" Guid="c2c917eb-27d9-441b-855b-1a5d6a372e82" Value="1" Type="float"/>
@@ -2495,9 +2527,9 @@
         <Parameter Name="ChaseNonPlayerProbability" Guid="f8860097-b94d-40f5-8ca2-78e04198c081" Value="0.005" Type="float"/>
         <Parameter Name="NightChaseTime" Guid="e9a5ea3f-f991-4846-8fbb-aca17a8fd529" Value="6" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="c8be804a-d235-409e-8115-9509ebfc158e" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
-    <Parameter Name="ChaseToCreatures" Guid="984e0a03-c27b-44f0-b9f7-4ff20b2cff39" Value="HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
-    <Parameter Name="ChaseToCreatureProbability" Guid="e8208934-e5d9-45fc-87e4-bd02a2569043" Value="1.0" Type="float"/>
+    <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="f063768c-1029-425a-84d3-e8b29dc490e7" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
+    <Parameter Name="ChaseToCreatures" Guid="d22fb50d-e455-4b15-8e0b-0789b22026d6" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="c03be18e-d853-4590-abca-5f7bed6364ba" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="1c67287d-b669-46ce-97e6-6fa06d2f8bc5">
         <Parameter Name="Color" Guid="71c0aa3f-71bc-4a42-8f5e-fe218394187e" Value="124,128,101" Type="Color"/>
@@ -2601,9 +2633,9 @@
         <Parameter Name="ChaseNonPlayerProbability" Guid="0e4b7955-b7a0-4d27-8c81-a7af52606b6f" Value="0.01" Type="float"/>
         <Parameter Name="NightChaseTime" Guid="1ea31ead-25e6-47d0-ba5d-8df7545751e5" Value="6" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="ce98e0fc-8aed-4886-b823-2f9765668682" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
-    <Parameter Name="ChaseToCreatures" Guid="3c091c48-b185-46f9-aef7-a852d57cb928" Value="HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
-    <Parameter Name="ChaseToCreatureProbability" Guid="f0a8f7b6-2d87-416c-9ac4-727e3cbb63e8" Value="1.0" Type="float"/>
+    <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="5f0f0b7f-88af-4d8e-8e2a-7f757524e12f" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
+    <Parameter Name="ChaseToCreatures" Guid="32ba78d4-46a0-49ab-b693-678b27058b4d" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="9b9fd8b8-2c10-4d34-afe2-6d0ca7035493" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="87c12af8-a3ca-4a5f-9f6b-1891de38d363">
         <Parameter Name="Color" Guid="d5a63056-4627-413f-bd1b-b33f61c5327a" Value="178,218,250" Type="Color"/>
@@ -2707,9 +2739,9 @@
         <Parameter Name="ChaseNonPlayerProbability" Guid="f87afe98-e0b8-4c54-8cf5-831531b82835" Value="0.015" Type="float"/>
         <Parameter Name="NightChaseTime" Guid="d1d0f204-8a51-40b9-b6ea-3932e30eb598" Value="6" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="143dc71c-d224-4a03-844a-45e6562b5d9a" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
-    <Parameter Name="ChaseToCreatures" Guid="6292c420-ace1-4be8-b390-1b935dbe9488" Value="HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
-    <Parameter Name="ChaseToCreatureProbability" Guid="ae03cb5d-6601-42a0-98c5-883b72cf1404" Value="1.0" Type="float"/>
+    <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="2d6af576-8529-48e2-89dd-1d9ed324b5f0" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
+    <Parameter Name="ChaseToCreatures" Guid="e92792da-50e6-4080-a742-8d3ecb257455" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="0ef96502-6c4f-466a-98c4-46a7b79bd6ff" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="225b6ff5-fc78-42b6-b162-28200572b3e4">
         <Parameter Name="Color" Guid="8bac4c74-9132-4f01-a217-8e20c5d894ed" Value="255,105,97" Type="Color"/>
@@ -2834,9 +2866,9 @@
         <Parameter Name="ChaseNonPlayerProbability" Guid="8a766aa6-5f6a-45df-9fac-35c00b4945c9" Value="0.005" Type="float"/>
         <Parameter Name="NightChaseTime" Guid="5a8e5c85-e39a-47de-a613-b4a9f8ea79d4" Value="6" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="c859ebdd-8f5d-4488-9805-d17e35d6ed4e" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
-    <Parameter Name="ChaseToCreatures" Guid="7908ee5f-90dd-4cb6-aadd-6b07c10050d8" Value="HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
-    <Parameter Name="ChaseToCreatureProbability" Guid="b770aeee-184a-4cdf-b89f-429a9e9a1a07" Value="1.0" Type="float"/>
+    <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="b54cf202-929e-4645-8932-1e2138eb47c1" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
+    <Parameter Name="ChaseToCreatures" Guid="433ae38c-0db1-4bb0-9472-bacbb4c98226" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="49c5b5b3-7fa1-4d39-957a-840223799809" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="20afd762-8fce-4acc-893b-1cd2018519a4">
         <Parameter Name="Color" Guid="c50ba1e7-4163-4dfd-9a15-f382039d176f" Value="236,172,243" Type="Color"/>
@@ -2937,9 +2969,9 @@
         <Parameter Name="ChaseNonPlayerProbability" Guid="95b930ca-30ba-4ca5-9c85-309a37ec7b93" Value="0.1" Type="float"/>
         <Parameter Name="NightChaseTime" Guid="00ef4b48-104e-4884-a210-534fb64b6d58" Value="6" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="3f65d137-0e09-44f3-a113-385729dd6c26" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
-    <Parameter Name="ChaseToCreatures" Guid="4dcc3cea-53a0-41ac-9422-e99cd90a2ee8" Value="HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
-    <Parameter Name="ChaseToCreatureProbability" Guid="41b224dc-e4a4-4ada-bbbf-dd8c316cce7a" Value="1.0" Type="float"/>
+    <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="cbfb0d16-1705-4cb8-8407-87b494d3389e" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
+    <Parameter Name="ChaseToCreatures" Guid="75d60863-085b-42e5-8cce-a68dcb2b8d09" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="ebd03d7c-16b6-46ca-829f-0aa5f252dad2" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="d80ce8a8-5a44-47f4-900f-dcbd920f737a">
         <Parameter Name="Color" Guid="a3c9fb4e-f9cf-47d3-bea3-e04ba20760ed" Value="229,190,1" Type="Color"/>
@@ -3043,9 +3075,9 @@
         <Parameter Name="ChaseNonPlayerProbability" Guid="a51f0adc-87de-465c-9033-cbc39a2bf266" Value="0.01" Type="float"/>
         <Parameter Name="NightChaseTime" Guid="a1231aa8-9a43-4bb4-b7f4-31b115e584e4" Value="6" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="597eea70-3591-4e2d-8542-07c3a515d8ef" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
-    <Parameter Name="ChaseToCreatures" Guid="f0231647-c7de-447b-a847-901250108cea" Value="HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
-    <Parameter Name="ChaseToCreatureProbability" Guid="616275a6-1d72-4edc-9af9-acf644a58a33" Value="1.0" Type="float"/>
+    <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="460398dd-5b9d-4ed0-bc4d-a2bfef20c4f3" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
+    <Parameter Name="ChaseToCreatures" Guid="7986ad5c-f4a7-4371-a86b-e3b4cfb382ca" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="3e437545-1e03-42f6-a161-fa2a0fcce949" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="12518712-1610-4d52-a09a-956e49d5e824">
         <Parameter Name="Color" Guid="e3a6da80-6c4f-4ce7-9c58-e69115d1d9c8" Value="168,17,17" Type="Color"/>
@@ -3132,9 +3164,9 @@
         <Parameter Name="ChaseNonPlayerProbability" Guid="7d6e59d4-b76f-4a50-a48a-f671e7a01710" Value="0.015" Type="float"/>
         <Parameter Name="NightChaseTime" Guid="46e6012a-2808-4112-9424-a6844ca333b9" Value="6" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="c36bdb61-abbc-4d9d-8454-8cb5a5fa959e" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
-    <Parameter Name="ChaseToCreatures" Guid="60fc8776-7844-4be4-9cd0-5faab3dc8b33" Value="HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
-    <Parameter Name="ChaseToCreatureProbability" Guid="914dc8af-6666-4710-be01-2516ce07ce01" Value="1.0" Type="float"/>
+    <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="4b833ce2-5f71-47d7-994b-5fe1f207eda3" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
+    <Parameter Name="ChaseToCreatures" Guid="8dc4ec8e-46a7-4dc2-9b96-4b8548324245" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="8e47344a-8be6-4c0d-88c5-9168eb101254" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="204bd3af-5931-49d7-8d1d-7b2edba0174b">
         <Parameter Name="Color" Guid="f5c3583a-ab6c-44a6-a357-552c0875d8d8" Value="145,115,183" Type="Color"/>
@@ -3238,9 +3270,9 @@
         <Parameter Name="ChaseNonPlayerProbability" Guid="ac87fd56-b569-498a-b25b-d2393b7b2978" Value="0.015" Type="float"/>
         <Parameter Name="NightChaseTime" Guid="7c137a70-1904-4658-af02-0dc7670d711b" Value="6" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="33034fb3-ce4c-498b-8ae1-697aca8f2c5c" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
-    <Parameter Name="ChaseToCreatures" Guid="3c386148-6679-4d78-8dfa-992bb097bf16" Value="HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
-    <Parameter Name="ChaseToCreatureProbability" Guid="774bd2fc-bbb8-47dd-bdbb-d42b31038f23" Value="1.0" Type="float"/>
+    <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="5dcdf1b2-05c2-46d4-9679-f5fa26782325" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
+    <Parameter Name="ChaseToCreatures" Guid="4b029685-d08f-46a8-b159-641f835dc936" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="5f8c3029-7e1f-4d0c-a8ab-4a2326f4cafe" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="d1b9fde2-af50-439c-b13a-d7da1a571dc9">
         <Parameter Name="Color" Guid="e73fb3d6-b68c-40cb-82d9-2c99f6ea4d23" Value="200,40,40" Type="Color"/>
@@ -3317,9 +3349,9 @@
     <MemberComponentTemplate Name="FeedBehavior" Guid="3df2d523-d8e9-4250-95c4-b5378ef0bd3a" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
         <Parameter Name="AutoFeed" Guid="08469ba8-9c47-4135-bb50-8df82c7ae7c7" Value="False" Type="bool"/>
     </MemberComponentTemplate>
-   <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="d6e259f2-9e63-49ec-a476-0e27c6b190b6" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
-    <Parameter Name="ChaseToCreatures" Guid="8d83b6a0-e2d5-409f-bb65-4c8bbd3f016d" Value="HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
-    <Parameter Name="ChaseToCreatureProbability" Guid="e95aabdc-afe1-45f0-96cd-3fa8b31b805f" Value="1.0" Type="float"/>
+   <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="67dfc93b-8ebf-4a6d-9a72-b37ae115997a" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
+    <Parameter Name="ChaseToCreatures" Guid="5857e974-8d72-4487-83ab-1c52ca2f46ce" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="cec9c8a9-b6bf-49e2-a176-4624c286dcb2" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="ChaseBehavior" Guid="e00f3c56-5263-4f36-9fd4-e3fd8d0b2a91" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
         <Parameter Name="AutoChaseMask" Guid="67b68c0b-eb40-4126-9006-809bf9f47062" Value="LandPredator, WaterPredator, WaterOther" Type="Game.CreatureCategory"/>
@@ -3430,9 +3462,9 @@
         <Parameter Name="NightEntityTemplateName" Guid="b5c6d7e8-f9a0-9999-9abc-def012345680" Value="WalterZombieMamadisimo" Type="string"/>
         <Parameter Name="Probability" Guid="d7e8f9a0-b1c2-9999-9abc-def012345682" Value="0.55" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="fbf1e6da-160d-42e2-9bd7-ae81fdd9a2be" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
-    <Parameter Name="ChaseToCreatures" Guid="cb190b3d-e09e-48e3-b3ce-1f016a44d229" Value="HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
-    <Parameter Name="ChaseToCreatureProbability" Guid="523d57c7-7231-47b9-9d1f-312bc560c4d2" Value="1.0" Type="float"/>
+    <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="a248eadc-e1c0-4f9f-b515-051603b4381c" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
+    <Parameter Name="ChaseToCreatures" Guid="908345be-3658-4f03-883b-636eff7c4ad0" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="d12f0057-7d55-4f3d-b623-e54d3c953968" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="a084bfe4-8cfa-4c25-bf93-0fc33dc9967f">
         <Parameter Name="Color" Guid="350838ea-dd9b-40a4-ba93-9252d176f992" Value="181,138,117" Type="Color"/>
@@ -3530,9 +3562,9 @@
 		<Parameter Name="SpecificBlocks" Guid="1e1e1c57-dd07-4e12-9f6d-bdfd48b45f04" Value="" Type="string"/>
 		<Parameter Name="BreakProbability" Guid="0799d524-fd67-400e-8a0b-4f4f7c6a1e10" Value="1.0" Type="float"/>
 	</MemberComponentTemplate>
-    <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="b3b06d32-674c-415c-8384-e144e9daae1d" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
-    <Parameter Name="ChaseToCreatures" Guid="ef61acc2-a0b6-4606-b5e5-e97e71c23238" Value="HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
-    <Parameter Name="ChaseToCreatureProbability" Guid="0e2f886a-dcbe-408a-bd42-673931e6e79b" Value="1.0" Type="float"/>
+    <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="182b4dc0-94b4-4a79-ad52-d87f87e7e396" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
+    <Parameter Name="ChaseToCreatures" Guid="684d98ad-39e5-45d7-ba44-cb46f5b5bdb3" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="d5077cc1-0860-4c4c-8cba-9b80915fcf7f" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="ChaseBehavior" Guid="c98580c2-ce25-4412-b591-fa462c9b554f" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
         <Parameter Name="AutoChaseMask" Guid="f3d2190e-2ec7-495d-a77a-500a3738baac" Value="LandPredator, WaterPredator" Type="Game.CreatureCategory"/>
@@ -3552,6 +3584,10 @@
 </EntityTemplate>
 
 <EntityTemplate Name="AladinaCorrupta" Guid="b3c4d5e6-f7a8-4789-9012-3456789abcde" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="TargetedChaseBehavior" Guid="360aec2d-1167-4297-915d-e6225ef1c369" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
+    <Parameter Name="ChaseToCreatures" Guid="d567f808-3e30-4b54-977f-e7a6ea1d9d20" Value="Naomi, Ricardo, Paco, Barack, ElMarihuanero, ElMarihuaneroMamon, TommyVercetti, ClaudeSpeed, ArqueroPrisionero, BallestadoraMusculosa, CarlJohnson, BetelGammamon, Gaomon, Agumon, Veemon, Guilmon, WalterZombie, WalterZombieMamadisimo, FumadorQuimico, FumadorQuimicoBrawny, Conker, Beavis, Butt-Head, Shoutmon, Gumdramon, Bass_Sea, Seagull, Sparrow, Reindeer, Horse_White, Horse_White_Saddled, Horse_Chestnut, Horse_Chestnut_Saddled, Horse_Bay, Horse_Bay_Saddled, Horse_Palomino, Horse_Palomino_Saddled, Horse_Black, Horse_Black_Saddled, Camel, Camel_Saddled, Zebra, Wildboar, Bison, Bull_Brown, Bull_Black, Cow_Brown, Cow_Black, Bull_White, Duck, Pigeon, Raven, Giraffe, Moose, Donkey, Donkey_Saddled, Cassowary, Ostrich, Gnu, Werewolf, Ray_Yellow, Ray_Brown, Beluga,Hyena, Rhino, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite, Player" Type="string"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="73cfb9ef-0ba3-41ec-a3a0-8084749f1274" Value="1.0" Type="float"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="c4d5e6f7-a8b9-4890-9123-456789abcdef" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
         <Parameter Name="DayRange" Guid="d5e6f7a8-b9c0-4901-2345-6789abcdef01" Value="0" Type="float"/>
         <Parameter Name="NightRange" Guid="e6f7a8b9-c0d1-5012-3456-789abcdef012" Value="0" Type="float"/>
@@ -3751,9 +3787,9 @@
         <Parameter Name="ChaseNonPlayerProbability" Guid="c3bdc009-54aa-4a05-be21-dd16c2578dfc" Value="0.015" Type="float"/>
         <Parameter Name="NightChaseTime" Guid="8945d035-443f-4877-82b5-bd4e0903b937" Value="6" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="7225a8ac-b457-45ca-bcee-295cbe219837" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
-    <Parameter Name="ChaseToCreatures" Guid="9c7c5550-f403-4156-aa2c-13e5aec36cad" Value="HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
-    <Parameter Name="ChaseToCreatureProbability" Guid="c4f1ce48-c650-4675-b402-e0aa8800c145" Value="1.0" Type="float"/>
+    <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="f941ec32-4ec3-4c86-88dd-422e0fa2ec33" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
+    <Parameter Name="ChaseToCreatures" Guid="2f27b111-b882-480a-bdf4-91755a70b84a" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="21438bbf-46ee-4298-8ac8-ee7a6eeb69ad" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="0a1a103e-af0a-47f6-9133-b7c78802fb5d">
         <Parameter Name="Color" Guid="2688fa44-04ed-4a96-8511-b6c11c105cbe" Value="90,40,120" Type="Color"/>
@@ -3872,9 +3908,9 @@
         <Parameter Name="ChaseNonPlayerProbability" Guid="f2a3b4c5-d6e7-0123-8901-abcdef012345" Value="0.025" Type="float"/>
         <Parameter Name="NightChaseTime" Guid="a3b4c5d6-e7f8-0234-9012-bcdef0123456" Value="8" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="c0370f1e-33ae-419b-a1a0-b0f52147191d" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
-    <Parameter Name="ChaseToCreatures" Guid="051a3883-014c-4752-9e8b-c0719d34df36" Value="HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
-    <Parameter Name="ChaseToCreatureProbability" Guid="8799fb23-050b-4c93-b025-7ed36388e554" Value="1.0" Type="float"/>
+    <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="c0e30f5e-09d6-4f4b-a4dd-8d2bf500e5b0" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
+    <Parameter Name="ChaseToCreatures" Guid="f9e0e8ed-0954-4f0c-b663-c67786aca9e2" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="6f6ba9ab-6f78-446a-af4e-a54cbe968c4a" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="b4c5d6e7-f8a9-0345-0123-cdef01234567">
         <Parameter Name="Color" Guid="c5d6e7f8-a9b0-0456-1234-def012345678" Value="57,0,0" Type="Color"/>
@@ -4007,6 +4043,10 @@
         <Parameter Name="ChaseNonPlayerProbability" Guid="b6f300a1-b9f3-4163-be8f-52746013aa7d" Value="0.03" Type="float"/>
         <Parameter Name="NightChaseTime" Guid="e1f95784-313b-4c6d-b2d6-72485ad9aa30" Value="999" Type="float"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="384d6528-f88c-43d7-91d3-8bb647734565" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
+    <Parameter Name="ChaseToCreatures" Guid="8dae0ed6-3edc-496d-a191-5b1294884fbd" Value="Naomi, Ricardo, Paco, Barack, ElMarihuanero, ElMarihuaneroMamon, TommyVercetti, ClaudeSpeed, ArqueroPrisionero, BallestadoraMusculosa, CarlJohnson, BetelGammamon, Gaomon, Agumon, Veemon, Guilmon, WalterZombie, WalterZombieMamadisimo, FumadorQuimico, FumadorQuimicoBrawny, Conker, Beavis, Butt-Head, Shoutmon, Gumdramon, Bass_Sea, Seagull, Sparrow, Reindeer, Horse_White, Horse_White_Saddled, Horse_Chestnut, Horse_Chestnut_Saddled, Horse_Bay, Horse_Bay_Saddled, Horse_Palomino, Horse_Palomino_Saddled, Horse_Black, Horse_Black_Saddled, Camel, Camel_Saddled, Zebra, Wildboar, Bison, Bull_Brown, Bull_Black, Cow_Brown, Cow_Black, Bull_White, Duck, Pigeon, Raven, Giraffe, Moose, Donkey, Donkey_Saddled, Cassowary, Ostrich, Gnu, Werewolf, Ray_Yellow, Ray_Brown, Beluga,Hyena, Rhino, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite, Player" Type="string"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="81bd2674-df96-4cdd-858c-ec5b995f1332" Value="1.0" Type="float"/>
+</MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="aa1ed1ac-efdc-49b8-a26a-e5e542fee1b6">
         <Parameter Name="Color" Guid="dd72addb-043f-470f-b870-c472e9565599" Value="49,112,0" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="bfeded40-0321-429f-8664-41193c41bfc4" Value="2" Type="int"/>
@@ -4018,9 +4058,9 @@
 </EntityTemplate>
 
 <EntityTemplate Name="ElGuerrilleroTenebroso" Guid="d076df21-0ee8-4a9e-a85a-0953b32a77b9" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="TargetedChaseBehavior" Guid="622ba098-c9dc-4057-8de2-8a27c9c54a91" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
-    <Parameter Name="ChaseToCreatures" Guid="683e4cd5-c746-4ef4-b07d-c050578f9159" Value="HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
-    <Parameter Name="ChaseToCreatureProbability" Guid="eeacfc04-586d-4abe-ab17-55df33c080e5" Value="1.0" Type="float"/>
+<MemberComponentTemplate Name="TargetedChaseBehavior" Guid="44f153ee-2e0d-4ec3-b376-8e08cf698a37" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
+    <Parameter Name="ChaseToCreatures" Guid="9ff13090-3da1-459b-a85e-237f46d2b2dc" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="59dba77c-4d22-438a-b10f-c81056405868" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="540da0fa-333d-4aa3-b750-2372bd253c9e" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
         <Parameter Name="DayRange" Guid="8a9e864e-2e75-40fb-aeb4-f07f793147f7" Value="0" Type="float"/>
@@ -4249,6 +4289,10 @@
         <Parameter Name="ChaseNonPlayerProbability" Guid="f7a8b9c0-d1e2-0234-789a-cdef01234570" Value="0.1" Type="float"/>
         <Parameter Name="NightChaseTime" Guid="a8b9c0d1-e2f3-0345-89ab-def012345671" Value="999" Type="float"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="3c86bb57-299a-4725-aac0-238c16db73bb" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
+    <Parameter Name="ChaseToCreatures" Guid="521acaeb-6eee-4876-8e33-4dc94fa338ea" Value="Naomi, Ricardo, Paco, Barack, ElMarihuanero, ElMarihuaneroMamon, TommyVercetti, ClaudeSpeed, ArqueroPrisionero, BallestadoraMusculosa, CarlJohnson, BetelGammamon, Gaomon, Agumon, Veemon, Guilmon, WalterZombie, WalterZombieMamadisimo, FumadorQuimico, FumadorQuimicoBrawny, Conker, Beavis, Butt-Head, Shoutmon, Gumdramon, Bass_Sea, Seagull, Sparrow, Reindeer, Horse_White, Horse_White_Saddled, Horse_Chestnut, Horse_Chestnut_Saddled, Horse_Bay, Horse_Bay_Saddled, Horse_Palomino, Horse_Palomino_Saddled, Horse_Black, Horse_Black_Saddled, Camel, Camel_Saddled, Zebra, Wildboar, Bison, Bull_Brown, Bull_Black, Cow_Brown, Cow_Black, Bull_White, Duck, Pigeon, Raven, Giraffe, Moose, Donkey, Donkey_Saddled, Cassowary, Ostrich, Gnu, Werewolf, Ray_Yellow, Ray_Brown, Beluga,Hyena, Rhino, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite, Player" Type="string"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="ee972402-7b86-44ce-9902-4ad9409c3973" Value="1.0" Type="float"/>
+</MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="c9d0e1f2-a3b4-0456-bcde-0123456789ac">
         <Parameter Name="Color" Guid="d0e1f2a3-b4c5-0567-cdef-123456789abd" Value="59,79,134" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="e1f2a3b4-c5d6-0678-def0-23456789abce" Value="5" Type="int"/>
