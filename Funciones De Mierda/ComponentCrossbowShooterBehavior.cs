@@ -198,9 +198,15 @@ namespace Game
 					// Quitar virote después de disparar
 					ClearBoltFromCrossbow();
 
+					// CICLAR TIPOS DE VIROTE
 					if (CycleBoltTypes && AvailableBoltTypes.Length > 1)
 					{
 						m_currentBoltTypeIndex = (m_currentBoltTypeIndex + 1) % AvailableBoltTypes.Length;
+					}
+					else if (!CycleBoltTypes)
+					{
+						// Si no cicla, usar solo un tipo (índice 0 por defecto)
+						m_currentBoltTypeIndex = 0;
 					}
 
 					// Pausa antes de recargar
@@ -488,11 +494,9 @@ namespace Game
 					m_componentCreature
 				);
 
-				// Si es un virote explosivo, agregar efectos
+				// Solo agregar humo para virotes explosivos (como en el arco con flechas de fuego)
 				if (boltType == ArrowBlock.ArrowType.ExplosiveBolt && projectile != null)
 				{
-					m_subsystemProjectiles.AddTrail(projectile, Vector3.Zero,
-						new SmokeTrailParticleSystem(20, 0.5f, float.MaxValue, Color.White));
 					projectile.IsIncendiary = true;
 				}
 
@@ -508,5 +512,4 @@ namespace Game
 			}
 		}
 	}
-
 }
