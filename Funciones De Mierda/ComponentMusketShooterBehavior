@@ -17,7 +17,6 @@ namespace Game
 		private ComponentCreatureModel m_componentModel;
 		private SubsystemParticles m_subsystemParticles;
 		private SubsystemNoise m_subsystemNoise;
-		private ComponentPathfinding m_componentPathfinding;
 
 		// Configuración
 		public float MinDistance = 5f;
@@ -33,8 +32,6 @@ namespace Game
 		public bool UseRecoil = true;
 		public float BulletSpeed = 120f;
 		public bool RequireCocking = true;
-		public float FleeDistance = 8f;
-		public float MaxFireAngle = 45f; // NUEVO: Ángulo máximo para disparar (grados)
 
 		// Estado de animación
 		private bool m_isAiming = false;
@@ -69,8 +66,6 @@ namespace Game
 			UseRecoil = valuesDictionary.GetValue<bool>("UseRecoil", true);
 			BulletSpeed = valuesDictionary.GetValue<float>("BulletSpeed", 120f);
 			RequireCocking = valuesDictionary.GetValue<bool>("RequireCocking", true);
-			FleeDistance = valuesDictionary.GetValue<float>("FleeDistance", 8f);
-			MaxFireAngle = valuesDictionary.GetValue<float>("MaxFireAngle", 45f); // NUEVO
 
 			// Inicializar componentes
 			m_componentCreature = base.Entity.FindComponent<ComponentCreature>(true);
@@ -82,7 +77,6 @@ namespace Game
 			m_componentModel = base.Entity.FindComponent<ComponentCreatureModel>(true);
 			m_subsystemParticles = base.Project.FindSubsystem<SubsystemParticles>(true);
 			m_subsystemNoise = base.Project.FindSubsystem<SubsystemNoise>(true);
-			m_componentPathfinding = base.Entity.FindComponent<ComponentPathfinding>(true);
 		}
 
 		public void Update(float dt)
@@ -94,8 +88,6 @@ namespace Game
 			if (m_componentChaseBehavior.Target == null)
 			{
 				ResetAnimations();
-				if (m_componentPathfinding != null)
-					m_componentPathfinding.Stop();
 				return;
 			}
 
@@ -105,35 +97,8 @@ namespace Game
 				m_componentChaseBehavior.Target.ComponentBody.Position
 			);
 
-			// NUEVO: Calcular ángulo entre la mirada del NPC y el objetivo
-			bool isFacingTarget = IsFacingTarget();
-
-			// LÓGICA DE MOVIMIENTO MEJORADA
-			if (m_componentPathfinding != null)
-			{
-				// Si está demasiado lejos (fuera de MaxDistance), acercarse
-				if (distance > MaxDistance)
-				{
-					MoveToTarget(m_componentChaseBehavior.Target.ComponentBody.Position, 1f);
-					ResetAnimations();
-					return;
-				}
-				// Si está demasiado cerca (dentro de MinDistance), alejarse un poco
-				else if (distance < MinDistance && !m_isReloading)
-				{
-					MoveAwayFromTarget(distance);
-					ResetAnimations();
-					return;
-				}
-				// Si está en rango óptimo, detenerse para disparar
-				else if (distance >= MinDistance && distance <= MaxDistance)
-				{
-					m_componentPathfinding.Stop();
-				}
-			}
-
-			// Lógica de ataque (solo cuando está en rango Y mirando al objetivo)
-			if (distance >= MinDistance && distance <= MaxDistance && isFacingTarget)
+			// Lógica de ataque
+			if (distance >= MinDistance && distance <= MaxDistance)
 			{
 				// Si no está haciendo nada, empezar a apuntar
 				if (!m_isAiming && !m_isFiring && !m_isReloading && !m_isCocking)
@@ -143,17 +108,9 @@ namespace Game
 			}
 			else
 			{
-				// Si no está mirando al objetivo, resetear animaciones
-				if (m_isAiming || m_isCocking)
-				{
-					ResetAnimations();
-				}
-			}
-
-			// NUEVA LÓGICA: Si está recargando y el enemigo está demasiado cerca, alejarse
-			if (m_isReloading && distance < FleeDistance && m_componentPathfinding != null)
-			{
-				FleeFromTarget(distance);
+				// Fuera de rango, resetear
+				ResetAnimations();
+				return;
 			}
 
 			// Aplicar animaciones
@@ -161,7 +118,7 @@ namespace Game
 			{
 				ApplyCockingAnimation(dt);
 
-				// Después de tiempo de amartillado, empezar a apuntar (USANDO CockTime)
+				// Después de tiempo de amartillado, empezar a apuntar
 				if (m_subsystemTime.GameTime - m_cockStartTime >= CockTime)
 				{
 					m_isCocking = false;
@@ -173,15 +130,10 @@ namespace Game
 			{
 				ApplyAimingAnimation(dt);
 
-				// NUEVO: Solo disparar si sigue mirando al objetivo
-				if (m_subsystemTime.GameTime - m_animationStartTime >= AimTime && isFacingTarget)
+				// Después de tiempo de apuntado, disparar
+				if (m_subsystemTime.GameTime - m_animationStartTime >= AimTime)
 				{
 					Fire();
-				}
-				// Si dejó de mirar al objetivo, cancelar
-				else if (!isFacingTarget)
-				{
-					ResetAnimations();
 				}
 			}
 			else if (m_isFiring)
@@ -203,147 +155,8 @@ namespace Game
 				if (m_subsystemTime.GameTime - m_animationStartTime >= ReloadTime)
 				{
 					m_isReloading = false;
-					// Solo volver a apuntar si sigue en rango y mirando al objetivo
-					if (distance >= MinDistance && distance <= MaxDistance && isFacingTarget)
-					{
-						StartAiming();
-					}
+					StartAiming(); // Volver a apuntar para repetir ciclo
 				}
-			}
-		}
-
-		// NUEVO MÉTODO: Verificar si está mirando al objetivo
-		private bool IsFacingTarget()
-		{
-			if (m_componentChaseBehavior.Target == null || m_componentCreature == null)
-				return false;
-
-			try
-			{
-				Vector3 selfPosition = m_componentCreature.ComponentBody.Position;
-				Vector3 targetPosition = m_componentChaseBehavior.Target.ComponentBody.Position;
-
-				// Dirección hacia el objetivo
-				Vector3 toTarget = targetPosition - selfPosition;
-				toTarget.Y = 0; // Ignorar diferencia de altura
-				toTarget = Vector3.Normalize(toTarget);
-
-				// Dirección en la que mira el NPC
-				Vector3 forward = m_componentCreature.ComponentBody.Matrix.Forward;
-				forward.Y = 0;
-				forward = Vector3.Normalize(forward);
-
-				// Calcular ángulo entre las dos direcciones
-				float dotProduct = Vector3.Dot(forward, toTarget);
-				float angle = MathUtils.Acos(dotProduct) * (180f / MathUtils.PI);
-
-				// Retornar true si el ángulo es menor que MaxFireAngle
-				return angle <= MaxFireAngle;
-			}
-			catch (Exception)
-			{
-				return false;
-			}
-		}
-
-		// MÉTODO MEJORADO: Acercarse al objetivo
-		private void MoveToTarget(Vector3 targetPosition, float speedMultiplier)
-		{
-			if (m_componentPathfinding == null)
-				return;
-
-			try
-			{
-				m_componentPathfinding.SetDestination(
-					new Vector3?(targetPosition),
-					1f * speedMultiplier,
-					2f, // Rango de aceptación mayor cuando se acerca
-					0,
-					false,
-					false,
-					false,
-					null
-				);
-			}
-			catch (Exception)
-			{
-				// Ignorar errores de pathfinding
-			}
-		}
-
-		// NUEVO MÉTODO: Alejarse cuando está demasiado cerca (pero no recargando)
-		private void MoveAwayFromTarget(float currentDistance)
-		{
-			if (m_componentChaseBehavior.Target == null || m_componentPathfinding == null)
-				return;
-
-			try
-			{
-				Vector3 selfPosition = m_componentCreature.ComponentBody.Position;
-				Vector3 targetPosition = m_componentChaseBehavior.Target.ComponentBody.Position;
-
-				// Calcular dirección opuesta
-				Vector3 awayDirection = Vector3.Normalize(selfPosition - targetPosition);
-
-				// Posición objetivo para alejarse
-				float desiredDistance = MinDistance + 2f; // Un poco más que la distancia mínima
-				Vector3 awayTarget = selfPosition + awayDirection * (desiredDistance - currentDistance);
-
-				m_componentPathfinding.SetDestination(
-					new Vector3?(awayTarget),
-					1f,
-					1f,
-					0,
-					false,
-					false,
-					false,
-					null
-				);
-			}
-			catch (Exception)
-			{
-				// Ignorar errores de pathfinding
-			}
-		}
-
-		// MÉTODO: Huir del objetivo cuando está demasiado cerca y recargando
-		private void FleeFromTarget(float currentDistance)
-		{
-			if (m_componentChaseBehavior.Target == null || m_componentPathfinding == null)
-				return;
-
-			try
-			{
-				Vector3 selfPosition = m_componentCreature.ComponentBody.Position;
-				Vector3 targetPosition = m_componentChaseBehavior.Target.ComponentBody.Position;
-
-				// Calcular dirección opuesta al objetivo
-				Vector3 fleeDirection = Vector3.Normalize(selfPosition - targetPosition);
-
-				// Posición objetivo para huir (más lejos que la distancia mínima)
-				float desiredFleeDistance = FleeDistance + 3f; // Un poco más que la distancia de huida
-				Vector3 fleeTarget = selfPosition + fleeDirection * desiredFleeDistance;
-
-				m_componentPathfinding.SetDestination(
-					new Vector3?(fleeTarget),
-					1f,
-					1f,
-					0,
-					false,
-					false,
-					false,
-					null
-				);
-
-				// Mientras huye, puede mirar brevemente hacia atrás
-				if (m_componentModel != null && m_random.Float(0f, 1f) > 0.7f)
-				{
-					m_componentModel.LookAtOrder = new Vector3?(targetPosition);
-				}
-			}
-			catch (Exception)
-			{
-				// Ignorar errores de pathfinding
 			}
 		}
 
@@ -397,7 +210,7 @@ namespace Game
 		{
 			if (m_componentModel != null)
 			{
-				// ANIMACIÓN DE AMARTILLADO (USANDO CockTime)
+				// ANIMACIÓN DE AMARTILLADO
 				float cockProgress = (float)((m_subsystemTime.GameTime - m_cockStartTime) / CockTime);
 
 				// Pequeño movimiento hacia atrás para simular amartillar
@@ -440,13 +253,6 @@ namespace Game
 
 		private void Fire()
 		{
-			// NUEVO: Verificar nuevamente que está mirando al objetivo
-			if (!IsFacingTarget())
-			{
-				ResetAnimations();
-				return;
-			}
-
 			m_isAiming = false;
 			m_isFiring = true;
 			m_isReloading = false;
@@ -559,10 +365,6 @@ namespace Game
 			if (m_componentChaseBehavior.Target == null)
 				return;
 
-			// NUEVO: Verificar nuevamente que está mirando al objetivo
-			if (!IsFacingTarget())
-				return;
-
 			try
 			{
 				Vector3 firePosition = m_componentCreature.ComponentCreatureModel.EyePosition;
@@ -594,7 +396,7 @@ namespace Game
 						m_componentCreature
 					);
 
-					// AGREGAR HUMO (igual que en SubsystemMusketBlockBehavior)
+					// AGREGAR HUMO
 					Vector3 smokePosition = firePosition + direction * 0.3f;
 
 					// Crear sistema de partículas de humo
@@ -610,7 +412,7 @@ namespace Game
 						}
 					}
 
-					// AGREGAR RUIDO (igual que en SubsystemMusketBlockBehavior)
+					// AGREGAR RUIDO
 					if (m_subsystemNoise != null)
 					{
 						m_subsystemNoise.MakeNoise(firePosition, 1f, 40f);
