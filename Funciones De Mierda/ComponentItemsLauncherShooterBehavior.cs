@@ -25,8 +25,6 @@ namespace Game
 		public float AimTime = 1f;
 		public string FireSound = "Audio/Items/ItemLauncher/Item Cannon Fire";
 		public float FireSoundDistance = 15f;
-		public string CockSound = "Audio/HammerCock";
-		public string ReloadSound = "Audio/Reload";
 		public float Accuracy = 0.05f;
 		public bool UseRecoil = true;
 		public float BulletSpeed = 60f;
@@ -64,8 +62,6 @@ namespace Game
 			AimTime = valuesDictionary.GetValue<float>("AimTime", 1f);
 			FireSound = valuesDictionary.GetValue<string>("FireSound", "Audio/Items/ItemLauncher/Item Cannon Fire");
 			FireSoundDistance = valuesDictionary.GetValue<float>("FireSoundDistance", 15f);
-			CockSound = valuesDictionary.GetValue<string>("CockSound", "Audio/HammerCock");
-			ReloadSound = valuesDictionary.GetValue<string>("ReloadSound", "Audio/Reload");
 			Accuracy = valuesDictionary.GetValue<float>("Accuracy", 0.05f);
 			UseRecoil = valuesDictionary.GetValue<bool>("UseRecoil", true);
 			BulletSpeed = valuesDictionary.GetValue<float>("BulletSpeed", 60f);
@@ -176,22 +172,6 @@ namespace Game
 			}
 		}
 
-		private void StartCocking()
-		{
-			m_isCocking = true;
-			m_isAiming = false;
-			m_isFiring = false;
-			m_isReloading = false;
-			m_cockStartTime = m_subsystemTime.GameTime;
-
-			// Sonido de amartillar
-			if (!string.IsNullOrEmpty(CockSound))
-			{
-				m_subsystemAudio.PlaySound(CockSound, 1f, m_random.Float(-0.1f, 0.1f),
-					m_componentCreature.ComponentBody.Position, 3f, false);
-			}
-		}
-
 		private void StartAiming()
 		{
 			m_isAiming = true;
@@ -202,18 +182,10 @@ namespace Game
 
 			// Encontrar ItemsLauncher en inventario
 			FindItemsLauncher();
-
-			// Si requiere amartillar, hacerlo
-			if (RequireCocking)
-			{
-				StartCocking();
-			}
-			else
-			{
 				// Inicializar tiempo para primer disparo
 				m_nextFireTime = m_subsystemTime.GameTime + 0.1;
 			}
-		}
+		
 
 		private void FindItemsLauncher()
 		{
@@ -332,12 +304,7 @@ namespace Game
 			m_isCocking = false;
 			m_animationStartTime = m_subsystemTime.GameTime;
 
-			// Sonido de recarga
-			if (!string.IsNullOrEmpty(ReloadSound))
-			{
-				m_subsystemAudio.PlaySound(ReloadSound, 1.2f, m_random.Float(-0.1f, 0.1f),
-					m_componentCreature.ComponentBody.Position, 5f, false);
-			}
+			// NOTA: Se ha eliminado el sonido de recarga según la solicitud
 		}
 
 		private void ApplyReloadingAnimation(float dt)
