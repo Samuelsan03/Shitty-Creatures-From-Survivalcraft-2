@@ -15,6 +15,8 @@ namespace Game
 		private SubsystemProjectiles m_subsystemProjectiles;
 		private SubsystemAudio m_subsystemAudio;
 		private ComponentCreatureModel m_componentModel;
+		private SubsystemParticles m_subsystemParticles;
+		private SubsystemNoise m_subsystemNoise;
 
 		// Configuración
 		public float MinDistance = 5f;
@@ -71,6 +73,8 @@ namespace Game
 			m_subsystemProjectiles = base.Project.FindSubsystem<SubsystemProjectiles>(true);
 			m_subsystemAudio = base.Project.FindSubsystem<SubsystemAudio>(true);
 			m_componentModel = base.Entity.FindComponent<ComponentCreatureModel>(true);
+			m_subsystemParticles = base.Project.FindSubsystem<SubsystemParticles>(true);
+			m_subsystemNoise = base.Project.FindSubsystem<SubsystemNoise>(true);
 		}
 
 		public void Update(float dt)
@@ -397,6 +401,30 @@ namespace Game
 						Vector3.Zero,
 						m_componentCreature
 					);
+
+					// AGREGAR HUMO (igual que en SubsystemMusketBlockBehavior)
+					// Calcular posición para el humo (ligeramente adelante de la posición de disparo)
+					Vector3 smokePosition = firePosition + direction * 0.3f;
+
+					// Crear sistema de partículas de humo
+					if (m_subsystemParticles != null)
+					{
+						// Necesitamos SubsystemTerrain para crear GunSmokeParticleSystem
+						SubsystemTerrain subsystemTerrain = base.Project.FindSubsystem<SubsystemTerrain>(true);
+						if (subsystemTerrain != null)
+						{
+							m_subsystemParticles.AddParticleSystem(
+								new GunSmokeParticleSystem(subsystemTerrain, smokePosition, direction),
+								false
+							);
+						}
+					}
+
+					// AGREGAR RUIDO (igual que en SubsystemMusketBlockBehavior)
+					if (m_subsystemNoise != null)
+					{
+						m_subsystemNoise.MakeNoise(firePosition, 1f, 40f);
+					}
 				}
 			}
 			catch
