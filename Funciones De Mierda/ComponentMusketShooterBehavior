@@ -1,408 +1,318 @@
-// ComponentMusketShooterBehavior.cs
 using System;
 using Engine;
-using Game;
 using GameEntitySystem;
 using TemplatesDatabase;
 
-public class ComponentMusketShooterBehavior : Component, IUpdateable
+namespace Game
 {
-	// Parámetros configurables similares a InvShooterBehavior
-	public float MinRange = 3f;
-	public float MaxRange = 25f;
-	public float MinWaitTime = 2f;
-	public float MaxWaitTime = 3f;
-	public float ChargeTime = 0.5f;
-	public string ThrowingSound = "Audio/MusketFire";
-	public float ThrowingSoundDistance = 15f;
-	public bool ThrowFromHead = true;
-	public string BulletType = "MusketBall";
-	public float BulletSpeed = 120f;
-
-	// Subsistemas
-	private SubsystemTime m_subsystemTime;
-	private SubsystemProjectiles m_subsystemProjectiles;
-	private SubsystemAudio m_subsystemAudio;
-	private SubsystemNoise m_subsystemNoise;
-	private SubsystemParticles m_subsystemParticles;
-	private SubsystemTerrain m_subsystemTerrain;
-	private SubsystemBodies m_subsystemBodies;
-
-	// Componentes de la entidad
-	private ComponentCreature m_componentCreature;
-	private ComponentBody m_componentBody;
-	private ComponentMiner m_componentMiner;
-	private ComponentCreatureModel m_creatureModel;
-	private ComponentChaseBehavior m_chaseBehavior;
-
-	// Estado
-	private double m_nextActionTime;
-	private bool m_isCharging = false;
-	private double m_chargeStartTime;
-	private int m_bulletBlockIndex;
-	private Engine.Random m_random = new Engine.Random();
-
-	public UpdateOrder UpdateOrder => UpdateOrder.Default;
-
-	public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
+	public class ComponentMusketShooterBehavior : ComponentBehavior, IUpdateable
 	{
-		base.Load(valuesDictionary, idToEntityMap);
+		// Componentes necesarios
+		private ComponentCreature m_componentCreature;
+		private ComponentChaseBehavior m_componentChaseBehavior;
+		private ComponentInventory m_componentInventory;
+		private SubsystemTime m_subsystemTime;
+		private SubsystemProjectiles m_subsystemProjectiles;
+		private SubsystemAudio m_subsystemAudio;
+		private ComponentCreatureModel m_componentModel;
 
-		// Obtener subsistemas
-		m_subsystemTime = Project.FindSubsystem<SubsystemTime>(true);
-		m_subsystemProjectiles = Project.FindSubsystem<SubsystemProjectiles>(true);
-		m_subsystemAudio = Project.FindSubsystem<SubsystemAudio>(true);
-		m_subsystemNoise = Project.FindSubsystem<SubsystemNoise>(true);
-		m_subsystemParticles = Project.FindSubsystem<SubsystemParticles>(true);
-		m_subsystemTerrain = Project.FindSubsystem<SubsystemTerrain>(true);
-		m_subsystemBodies = Project.FindSubsystem<SubsystemBodies>(true);
+		// Configuración
+		public float MinDistance = 5f;
+		public float MaxDistance = 25f;
+		public float MeleeRange = 2.5f;
+		public float ReloadTime = 0.55f;
+		public float AimTime = 1f;
+		public string FireSound = "Audio/MusketFire";
+		public float FireSoundDistance = 15f;
+		public string CockSound = "Audio/HammerCock";
 
-		// Obtener componentes de la entidad
-		m_componentCreature = Entity.FindComponent<ComponentCreature>(true);
-		m_componentBody = Entity.FindComponent<ComponentBody>(true);
-		m_componentMiner = Entity.FindComponent<ComponentMiner>(false);
-		m_creatureModel = Entity.FindComponent<ComponentCreatureModel>(true);
-		m_chaseBehavior = Entity.FindComponent<ComponentChaseBehavior>(false);
+		// Estado de animación
+		private bool m_isAiming = false;
+		private bool m_isFiring = false;
+		private bool m_isReloading = false;
+		private double m_animationStartTime;
+		private double m_fireTime;
+		private int m_musketSlot = -1;
+		private Random m_random = new Random();
 
-		// Cargar parámetros (similar a InvShooterBehavior)
-		MinRange = valuesDictionary.GetValue("MinRange", MinRange);
-		MaxRange = valuesDictionary.GetValue("MaxRange", MaxRange);
+		// UpdateOrder
+		public int UpdateOrder => 0;
+		public override float ImportanceLevel => 0f;
 
-		// Parsear tiempos de espera (formato "min;max")
-		string waitTimeStr = valuesDictionary.GetValue("MinMaxRandomWaitTime", $"{MinWaitTime};{MaxWaitTime}");
-		string[] waitParts = waitTimeStr.Split(';');
-		if (waitParts.Length >= 2)
+		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
-			float.TryParse(waitParts[0], out MinWaitTime);
-			float.TryParse(waitParts[1], out MaxWaitTime);
+			base.Load(valuesDictionary, idToEntityMap);
+
+			// Inicializar componentes
+			m_componentCreature = base.Entity.FindComponent<ComponentCreature>(true);
+			m_componentChaseBehavior = base.Entity.FindComponent<ComponentChaseBehavior>(true);
+			m_componentInventory = base.Entity.FindComponent<ComponentInventory>(true);
+			m_subsystemTime = base.Project.FindSubsystem<SubsystemTime>(true);
+			m_subsystemProjectiles = base.Project.FindSubsystem<SubsystemProjectiles>(true);
+			m_subsystemAudio = base.Project.FindSubsystem<SubsystemAudio>(true);
+			m_componentModel = base.Entity.FindComponent<ComponentCreatureModel>(true);
 		}
 
-		// Parsear tiempo de carga
-		string chargeTimeStr = valuesDictionary.GetValue("MinMaxRandomChargeTime", $"{ChargeTime};{ChargeTime}");
-		string[] chargeParts = chargeTimeStr.Split(';');
-		if (chargeParts.Length >= 1)
+		public void Update(float dt)
 		{
-			float.TryParse(chargeParts[0], out ChargeTime);
-		}
+			if (m_componentCreature.ComponentHealth.Health <= 0f)
+				return;
 
-		ThrowingSound = valuesDictionary.GetValue("ThrowingSound", ThrowingSound);
-		ThrowingSoundDistance = valuesDictionary.GetValue("ThrowingSoundDistance", ThrowingSoundDistance);
-		ThrowFromHead = valuesDictionary.GetValue("ThrowFromHead", ThrowFromHead);
-		BulletType = valuesDictionary.GetValue("BulletType", BulletType);
-		BulletSpeed = valuesDictionary.GetValue("BulletSpeed", BulletSpeed);
-
-		// Obtener índice del bloque de bala
-		m_bulletBlockIndex = BlocksManager.GetBlockIndex<BulletBlock>(false, false);
-
-		// Inicializar tiempo para primera acción
-		m_nextActionTime = m_subsystemTime.GameTime + m_random.Float(MinWaitTime, MaxWaitTime);
-	}
-
-	public void Update(float dt)
-	{
-		double currentTime = m_subsystemTime.GameTime;
-
-		// Obtener objetivo
-		ComponentBody target = GetCurrentTarget();
-		if (target == null)
-		{
-			m_isCharging = false;
-			return;
-		}
-
-		// Calcular distancia al objetivo
-		float distance = Vector3.Distance(m_componentBody.Position, target.Position);
-
-		// Verificar si está en rango
-		if (distance < MinRange || distance > MaxRange)
-		{
-			m_isCharging = false;
-			return;
-		}
-
-		// Calcular dirección hacia el objetivo
-		Vector3 direction = Vector3.Normalize(target.Position - m_componentBody.Position);
-
-		// Verificar fase de acción
-		if (m_isCharging)
-		{
-			// En fase de carga
-			if (currentTime - m_chargeStartTime >= ChargeTime)
+			// Verificar objetivo
+			if (m_componentChaseBehavior.Target == null)
 			{
-				// Disparar
-				Fire(direction);
-				m_isCharging = false;
-				m_nextActionTime = currentTime + m_random.Float(MinWaitTime, MaxWaitTime);
-			}
-		}
-		else if (currentTime >= m_nextActionTime)
-		{
-			// Iniciar carga
-			m_isCharging = true;
-			m_chargeStartTime = currentTime;
-
-			// Animación de apuntar
-			if (m_creatureModel != null)
-			{
-				m_creatureModel.AimHandAngleOrder = 1.4f;
-				m_creatureModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
-				m_creatureModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
+				ResetAnimations();
+				return;
 			}
 
-			// Sonido de amartillar
-			m_subsystemAudio.PlaySound("Audio/HammerCock", 1f, m_random.Float(-0.1f, 0.1f),
-									  m_componentBody.Position, 5f, true);
-		}
+			// Calcular distancia
+			float distance = Vector3.Distance(
+				m_componentCreature.ComponentBody.Position,
+				m_componentChaseBehavior.Target.ComponentBody.Position
+			);
 
-		// Rotar hacia el objetivo
-		if (m_componentBody != null && m_componentCreature != null && m_componentCreature.ComponentLocomotion != null)
-		{
-			Vector3 forward = m_componentBody.Matrix.Forward;
-			Vector3 targetDirection = direction;
-			targetDirection.Y = 0f; // Mantener nivelado
-
-			if (targetDirection.LengthSquared() > 0.01f)
+			// Lógica de ataque
+			if (distance >= MinDistance && distance <= MaxDistance)
 			{
-				targetDirection = Vector3.Normalize(targetDirection);
-				float angle = MathUtils.Atan2(targetDirection.X, targetDirection.Z) -
-							 MathUtils.Atan2(forward.X, forward.Z);
-
-				// Wrap angle para obtener el ángulo más corto (TwoPI = 2 * PI)
-				float twoPi = 2f * MathUtils.PI;
-				while (angle > MathUtils.PI) angle -= twoPi;
-				while (angle < -MathUtils.PI) angle += twoPi;
-
-				// Suavizar la rotación
-				float turnSpeed = 5f; // Radianes por segundo
-				m_componentCreature.ComponentLocomotion.TurnOrder = new Vector2(angle * turnSpeed, 0f);
-			}
-		}
-	}
-
-	private ComponentBody GetCurrentTarget()
-	{
-		// Prioridad 1: Objetivo del ComponentChaseBehavior si existe
-		if (m_chaseBehavior != null)
-		{
-			return FindNearestEnemy();
-		}
-
-		// Prioridad 2: Objetivo del ComponentMiner si existe
-		if (m_componentMiner != null)
-		{
-			return FindNearestEnemy();
-		}
-
-		return FindNearestEnemy();
-	}
-
-	private bool IsValidEnemy(ComponentCreature creature)
-	{
-		if (creature == null || creature == m_componentCreature)
-			return false;
-
-		// Verificar si es del mismo tipo (basado en el nombre de la plantilla)
-		string entityName = creature.Entity.ValuesDictionary.DatabaseObject.Name;
-		if (entityName.Contains("Marihuanero"))
-			return false;
-
-		// Verificar si tiene componente de salud (es atacable)
-		if (creature.Entity.FindComponent<ComponentHealth>() == null)
-			return false;
-
-		// Verificar categoría de la criatura a través del componente Creature
-		// (no existe ComponentCreatureInfo, usamos ComponentCreature)
-		if (creature.Entity.FindComponent<ComponentCreature>() != null)
-		{
-			// Verificar si es un jugador
-			if (creature.Entity.FindComponent<ComponentPlayer>() != null)
-				return true; // Ataca a jugadores
-				
-			// Verificar categorías de enemigos comunes
-			// Nota: No hay acceso directo a CreatureCategory desde ComponentCreature
-			// Usaremos una lista de nombres de criaturas enemigas
-			string[] enemyCreatures = {
-				"Werewolf", "HeadcrabBloodyHuman", "HombreAgua", "HombreLava",
-				"AladinaCorrupta", "Hyena", "LiderCalavericoSupremo", 
-				"Wolf", "Coyote", "Lion", "Tiger", "Bear", "Shark"
-			};
-			
-			foreach (string enemy in enemyCreatures)
-			{
-				if (entityName.Contains(enemy))
-					return true;
-			}
-		}
-
-		return false;
-	}
-
-	private ComponentBody FindNearestEnemy()
-	{
-		if (m_subsystemBodies == null || m_componentBody == null)
-			return null;
-
-		float nearestDistance = float.MaxValue;
-		ComponentBody nearestTarget = null;
-		Vector3 myPosition = m_componentBody.Position;
-
-		// Buscar en el subsistema de cuerpos
-		foreach (ComponentBody body in m_subsystemBodies.Bodies)
-		{
-			if (body.Entity == Entity) 
-				continue;
-
-			ComponentHealth health = body.Entity.FindComponent<ComponentHealth>();
-			if (health == null) 
-				continue;
-
-			// Verificar si es una criatura
-			ComponentCreature creature = body.Entity.FindComponent<ComponentCreature>();
-			if (creature != null && IsValidEnemy(creature))
-			{
-				float distance = Vector3.Distance(myPosition, body.Position);
-				if (distance < MaxRange && distance >= MinRange && distance < nearestDistance)
+				// Si no está haciendo nada, empezar a apuntar
+				if (!m_isAiming && !m_isFiring && !m_isReloading)
 				{
-					// Verificar línea de visión
-					if (HasLineOfSight(body.Position))
-					{
-						nearestDistance = distance;
-						nearestTarget = body;
-					}
+					StartAiming();
+				}
+			}
+			else
+			{
+				// Fuera de rango, resetear
+				ResetAnimations();
+				return;
+			}
+
+			// Aplicar animaciones CONTINUAMENTE
+			if (m_isAiming)
+			{
+				ApplyAimingAnimation(dt);
+
+				// Después de tiempo de apuntado, disparar
+				if (m_subsystemTime.GameTime - m_animationStartTime >= AimTime)
+				{
+					Fire();
+				}
+			}
+			else if (m_isFiring)
+			{
+				ApplyFiringAnimation(dt);
+
+				// Después de corta animación de fuego, recargar
+				if (m_subsystemTime.GameTime - m_fireTime >= 0.2)
+				{
+					StartReloading();
+				}
+			}
+			else if (m_isReloading)
+			{
+				ApplyReloadingAnimation(dt);
+
+				// Después de tiempo de recarga, volver a apuntar
+				if (m_subsystemTime.GameTime - m_animationStartTime >= ReloadTime)
+				{
+					StartAiming();
 				}
 			}
 		}
 
-		return nearestTarget;
-	}
-
-	private bool HasLineOfSight(Vector3 targetPosition)
-	{
-		// Verificar si hay línea de visión (sin bloques en el camino)
-		Vector3 startPos = m_componentBody.Position + new Vector3(0, m_componentBody.BoxSize.Y * 0.5f, 0);
-		Vector3 direction = Vector3.Normalize(targetPosition - startPos);
-		float distance = Vector3.Distance(startPos, targetPosition);
-		
-		// Hacer un raycast para verificar obstrucciones
-		TerrainRaycastResult? result = m_subsystemTerrain.Raycast(
-			startPos, 
-			startPos + direction * distance, 
-			false, 
-			true, 
-			null
-		);
-		
-		// Si no hay resultado o el impacto está muy cerca del objetivo, hay línea de visión
-		return !result.HasValue || result.Value.Distance > distance - 1f;
-	}
-
-	private void Fire(Vector3 direction)
-	{
-		try
+		private void StartAiming()
 		{
-			// Configurar tipo de bala
-			BulletBlock.BulletType bulletType;
+			m_isAiming = true;
+			m_isFiring = false;
+			m_isReloading = false;
+			m_animationStartTime = m_subsystemTime.GameTime;
+
+			// Encontrar mosquete en inventario
+			FindMusket();
+
+			// Sonido de amartillar
+			if (!string.IsNullOrEmpty(CockSound))
+			{
+				m_subsystemAudio.PlaySound(CockSound, 1f, m_random.Float(-0.1f, 0.1f),
+					m_componentCreature.ComponentBody.Position, 3f, false);
+			}
+		}
+
+		private void FindMusket()
+		{
+			// Buscar mosquete
+			for (int i = 0; i < m_componentInventory.SlotsCount; i++)
+			{
+				int slotValue = m_componentInventory.GetSlotValue(i);
+				if (slotValue != 0 && Terrain.ExtractContents(slotValue) == 212)
+				{
+					m_musketSlot = i;
+					m_componentInventory.ActiveSlotIndex = i;
+					break;
+				}
+			}
+		}
+
+		private void ApplyAimingAnimation(float dt)
+		{
+			if (m_componentModel != null)
+			{
+				// ANIMACIÓN DE APUNTADO (MOSQUETE)
+				m_componentModel.AimHandAngleOrder = 1.4f;
+				m_componentModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
+				m_componentModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
+
+				// Mirar al objetivo
+				if (m_componentChaseBehavior.Target != null)
+				{
+					m_componentModel.LookAtOrder = new Vector3?(
+						m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition
+					);
+				}
+			}
+		}
+
+		private void Fire()
+		{
+			m_isAiming = false;
+			m_isFiring = true;
+			m_isReloading = false;
+			m_fireTime = m_subsystemTime.GameTime;
+
+			// Sonido de disparo
+			if (!string.IsNullOrEmpty(FireSound))
+			{
+				m_subsystemAudio.PlaySound(FireSound, 1f, m_random.Float(-0.1f, 0.1f),
+					m_componentCreature.ComponentBody.Position, FireSoundDistance, false);
+			}
+
+			// Disparar bala real
+			ShootBullet();
+
+			// Retroceso
+			if (m_componentChaseBehavior.Target != null)
+			{
+				Vector3 direction = Vector3.Normalize(
+					m_componentChaseBehavior.Target.ComponentBody.Position -
+					m_componentCreature.ComponentBody.Position
+				);
+				m_componentCreature.ComponentBody.ApplyImpulse(-direction * 3f);
+			}
+		}
+
+		private void ApplyFiringAnimation(float dt)
+		{
+			if (m_componentModel != null)
+			{
+				// ANIMACIÓN DE RETROCESO (similar a ComponentInvShooterBehavior)
+				float recoilFactor = (float)(1.5f - (m_subsystemTime.GameTime - m_fireTime) * 5f);
+				recoilFactor = MathUtils.Max(recoilFactor, 1.0f);
+
+				m_componentModel.AimHandAngleOrder = 1.4f * recoilFactor;
+				m_componentModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f - (0.05f * (1.5f - recoilFactor)));
+
+				// También aplicar movimiento rápido de las manos
+				m_componentModel.InHandItemRotationOrder = new Vector3(
+					-1.7f + (0.3f * (1.5f - recoilFactor)),
+					0f,
+					0f
+				);
+			}
+		}
+
+		private void StartReloading()
+		{
+			m_isAiming = false;
+			m_isFiring = false;
+			m_isReloading = true;
+			m_animationStartTime = m_subsystemTime.GameTime;
+
+			// Sonido de recarga (opcional)
+			m_subsystemAudio.PlaySound("Audio/Reload", 1.5f, m_random.Float(-0.1f, 0.1f),
+				m_componentCreature.ComponentBody.Position, 5f, false);
+		}
+
+		private void ApplyReloadingAnimation(float dt)
+		{
+			if (m_componentModel != null)
+			{
+				// ANIMACIÓN DE RECARGA
+				float reloadProgress = (float)((m_subsystemTime.GameTime - m_animationStartTime) / ReloadTime);
+
+				// Durante la recarga, las manos bajan un poco
+				m_componentModel.AimHandAngleOrder = MathUtils.Lerp(1.0f, 0.5f, reloadProgress);
+				m_componentModel.InHandItemOffsetOrder = new Vector3(
+					-0.08f,
+					-0.08f,
+					0.07f - (0.1f * reloadProgress)
+				);
+				m_componentModel.InHandItemRotationOrder = new Vector3(
+					-1.7f + (0.5f * reloadProgress),
+					0f,
+					0f
+				);
+
+				// Resetear look at durante recarga
+				m_componentModel.LookAtOrder = null;
+			}
+		}
+
+		private void ResetAnimations()
+		{
+			m_isAiming = false;
+			m_isFiring = false;
+			m_isReloading = false;
+
+			if (m_componentModel != null)
+			{
+				m_componentModel.AimHandAngleOrder = 0f;
+				m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
+				m_componentModel.InHandItemRotationOrder = Vector3.Zero;
+				m_componentModel.LookAtOrder = null;
+			}
+		}
+
+		private void ShootBullet()
+		{
+			if (m_componentChaseBehavior.Target == null)
+				return;
+
 			try
 			{
-				bulletType = (BulletBlock.BulletType)Enum.Parse(typeof(BulletBlock.BulletType), BulletType, true);
+				Vector3 firePosition = m_componentCreature.ComponentCreatureModel.EyePosition;
+				Vector3 targetPosition = m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition;
+
+				Vector3 direction = Vector3.Normalize(targetPosition - firePosition);
+
+				// Un poco de error de puntería
+				direction += new Vector3(
+					m_random.Float(-0.02f, 0.02f),
+					m_random.Float(-0.01f, 0.01f),
+					m_random.Float(-0.02f, 0.02f)
+				);
+				direction = Vector3.Normalize(direction);
+
+				// Crear bala
+				int bulletBlockIndex = BlocksManager.GetBlockIndex<BulletBlock>(false, false);
+				if (bulletBlockIndex > 0)
+				{
+					int bulletData = BulletBlock.SetBulletType(0, BulletBlock.BulletType.MusketBall);
+					int bulletValue = Terrain.MakeBlockValue(bulletBlockIndex, 0, bulletData);
+
+					// Disparar
+					m_subsystemProjectiles.FireProjectile(
+						bulletValue,
+						firePosition,
+						direction * 120f, // Velocidad fija
+						Vector3.Zero,
+						m_componentCreature
+					);
+				}
 			}
 			catch
 			{
-				bulletType = BulletBlock.BulletType.MusketBall;
+				// Ignorar errores de disparo
 			}
-
-			// Crear valor del bloque de bala
-			int bulletValue = Terrain.MakeBlockValue(
-				m_bulletBlockIndex,
-				0,
-				BulletBlock.SetBulletType(0, bulletType)
-			);
-
-			// Calcular posición de disparo
-			Vector3 firePosition;
-			if (ThrowFromHead)
-			{
-				// Desde la cabeza
-				firePosition = m_componentBody.Position +
-							 new Vector3(0, m_componentBody.BoxSize.Y * 0.9f, 0);
-			}
-			else
-			{
-				// Desde las manos
-				firePosition = m_componentBody.Position +
-							 new Vector3(0, m_componentBody.BoxSize.Y * 0.6f, 0) +
-							 m_componentBody.Matrix.Right * 0.3f;
-			}
-
-			// Añadir un pequeño error de puntería para hacerlo más realista
-			Vector3 aimError = new Vector3(
-				m_random.Float(-0.02f, 0.02f),
-				m_random.Float(-0.02f, 0.02f),
-				m_random.Float(-0.01f, 0.01f)
-			);
-
-			Vector3 finalDirection = Vector3.Normalize(direction + aimError);
-
-			// Velocidad de la bala
-			Vector3 velocity = m_componentBody.Velocity + finalDirection * BulletSpeed;
-
-			// Lanzar proyectil
-			Projectile projectile = m_subsystemProjectiles.FireProjectile(
-				bulletValue,
-				firePosition,
-				velocity,
-				Vector3.Zero,
-				m_componentCreature
-			);
-
-			if (projectile != null)
-			{
-				projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
-			}
-
-			// Efectos de sonido
-			if (!string.IsNullOrEmpty(ThrowingSound))
-			{
-				m_subsystemAudio.PlaySound(ThrowingSound, 1f, m_random.Float(-0.1f, 0.1f),
-										  firePosition, ThrowingSoundDistance, true);
-			}
-
-			// Sonido de disparo del mosquete
-			m_subsystemAudio.PlaySound("Audio/MusketFire", 1f, m_random.Float(-0.1f, 0.1f),
-									  firePosition, 20f, true);
-
-			// Sonido de liberación del martillo
-			m_subsystemAudio.PlaySound("Audio/HammerRelease", 0.8f, m_random.Float(-0.1f, 0.1f),
-									  firePosition, 10f, true);
-
-			// Partículas de humo (usando el subsistema de terreno)
-			if (m_subsystemTerrain != null)
-			{
-				m_subsystemParticles.AddParticleSystem(
-					new GunSmokeParticleSystem(m_subsystemTerrain,
-											  firePosition + finalDirection * 0.3f,
-											  finalDirection),
-					false
-				);
-			}
-
-			// Ruido
-			m_subsystemNoise.MakeNoise(firePosition, 1f, 40f);
-
-			// Retroceso
-			m_componentBody.ApplyImpulse(-finalDirection * 3f);
-
-			// Resetear animaciones
-			if (m_creatureModel != null)
-			{
-				m_creatureModel.AimHandAngleOrder = 0f;
-				m_creatureModel.InHandItemOffsetOrder = Vector3.Zero;
-				m_creatureModel.InHandItemRotationOrder = Vector3.Zero;
-			}
-		}
-		catch (Exception ex)
-		{
-			Log.Error($"Error en ComponentMusketShooterBehavior.Fire: {ex.Message}");
 		}
 	}
 }
