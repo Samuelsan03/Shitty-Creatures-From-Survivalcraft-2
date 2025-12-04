@@ -56,6 +56,7 @@ namespace Game
 		private int m_crossbowBlockIndex = 200; // ID de la ballesta
 		private int m_arrowBlockIndex = 192;    // ID de las flechas (se usa para virotes también)
 		private bool m_initialized = false;
+		private bool m_hasCycledForNextShot = false;
 
 		// UpdateOrder
 		public int UpdateOrder => 0;
@@ -98,6 +99,7 @@ namespace Game
 			// Inicializar con virote aleatorio
 			m_currentBoltTypeIndex = m_random.Int(0, AvailableBoltTypes.Length);
 			m_initialized = true;
+			m_hasCycledForNextShot = false;
 
 			// Buscar ballesta
 			FindCrossbow();
@@ -198,14 +200,14 @@ namespace Game
 					// Quitar virote después de disparar
 					ClearBoltFromCrossbow();
 
-					// CICLAR TIPOS DE VIROTE
+					// IMPORTANTE: Ciclar para el próximo disparo aquí
 					if (CycleBoltTypes && AvailableBoltTypes.Length > 1)
 					{
 						m_currentBoltTypeIndex = (m_currentBoltTypeIndex + 1) % AvailableBoltTypes.Length;
+						m_hasCycledForNextShot = true;
 					}
-					else if (!CycleBoltTypes)
+					else if (!CycleBoltTypes && AvailableBoltTypes.Length > 0)
 					{
-						// Si no cicla, usar solo un tipo (índice 0 por defecto)
 						m_currentBoltTypeIndex = 0;
 					}
 
@@ -246,7 +248,30 @@ namespace Game
 				if (currentCrossbowValue == 0) return;
 
 				int currentData = Terrain.ExtractData(currentCrossbowValue);
-				ArrowBlock.ArrowType? boltType = hasBolt ? AvailableBoltTypes[m_currentBoltTypeIndex] : (ArrowBlock.ArrowType?)null;
+
+				// Asegurarnos de que el índice está dentro del rango
+				ArrowBlock.ArrowType? boltType = null;
+				if (hasBolt && AvailableBoltTypes.Length > 0)
+				{
+					// IMPORTANTE: Usar el índice actual para este disparo
+					int indexToUse = m_currentBoltTypeIndex;
+
+					// Si ya ciclamos para el próximo disparo, usar el índice anterior
+					if (m_hasCycledForNextShot && CycleBoltTypes && AvailableBoltTypes.Length > 1)
+					{
+						indexToUse = (m_currentBoltTypeIndex - 1 + AvailableBoltTypes.Length) % AvailableBoltTypes.Length;
+					}
+
+					if (indexToUse >= 0 && indexToUse < AvailableBoltTypes.Length)
+					{
+						boltType = AvailableBoltTypes[indexToUse];
+					}
+					else
+					{
+						indexToUse = 0;
+						boltType = AvailableBoltTypes[0];
+					}
+				}
 
 				// Configurar ballesta con tensión y virote
 				int newData = CrossbowBlock.SetDraw(currentData, MathUtils.Clamp(drawValue, 0, 15));
@@ -257,9 +282,9 @@ namespace Game
 				m_componentInventory.RemoveSlotItems(m_crossbowSlot, 1);
 				m_componentInventory.AddSlotItems(m_crossbowSlot, newCrossbowValue, 1);
 			}
-			catch
+			catch (Exception ex)
 			{
-				// Ignorar errores
+				// Log.Error($"Error en SetCrossbowWithBolt: {ex.Message}");
 			}
 		}
 
@@ -276,6 +301,7 @@ namespace Game
 			m_isReloading = false;
 			m_animationStartTime = m_subsystemTime.GameTime;
 			m_currentDraw = 0f;
+			m_hasCycledForNextShot = false; // Resetear el flag de ciclado
 
 			// Mostrar ballesta sin virote
 			SetCrossbowWithBolt(0, false);
@@ -385,7 +411,7 @@ namespace Game
 			m_isFiring = true;
 			m_fireTime = m_subsystemTime.GameTime;
 
-			// Disparar virote
+			// Disparar virote (usar el índice actual sin ciclar todavía)
 			ShootBolt();
 
 			if (!string.IsNullOrEmpty(FireSound))
@@ -446,6 +472,7 @@ namespace Game
 			m_isFiring = false;
 			m_isReloading = false;
 			m_currentDraw = 0f;
+			m_hasCycledForNextShot = false;
 
 			if (m_componentModel != null)
 			{
@@ -463,7 +490,24 @@ namespace Game
 
 			try
 			{
-				ArrowBlock.ArrowType boltType = AvailableBoltTypes[m_currentBoltTypeIndex];
+				// IMPORTANTE: Usar el índice actual sin ciclar todavía
+				int indexToUse = m_currentBoltTypeIndex;
+
+				// Si ya ciclamos para el próximo disparo, usar el índice anterior
+				if (m_hasCycledForNextShot && CycleBoltTypes && AvailableBoltTypes.Length > 1)
+				{
+					indexToUse = (m_currentBoltTypeIndex - 1 + AvailableBoltTypes.Length) % AvailableBoltTypes.Length;
+				}
+
+				if (indexToUse < 0 || indexToUse >= AvailableBoltTypes.Length)
+				{
+					indexToUse = 0;
+				}
+
+				ArrowBlock.ArrowType boltType = AvailableBoltTypes[indexToUse];
+
+				// DEBUG: Para verificar qué tipo se está disparando
+				// Log.Information($"Disparando virote tipo: {boltType} (índice actual: {m_currentBoltTypeIndex}, índice usado: {indexToUse})");
 
 				// Posición de disparo
 				Vector3 firePosition = m_componentCreature.ComponentCreatureModel.EyePosition;
@@ -494,10 +538,11 @@ namespace Game
 					m_componentCreature
 				);
 
-				// Solo agregar humo para virotes explosivos (como en el arco con flechas de fuego)
+				// Configurar propiedades según el tipo de virote
 				if (boltType == ArrowBlock.ArrowType.ExplosiveBolt && projectile != null)
 				{
-					projectile.IsIncendiary = true;
+					projectile.IsIncendiary = false;
+					// Los virotes explosivos ya tienen presión de explosión definida en ArrowBlock
 				}
 
 				// Ruido
@@ -505,10 +550,16 @@ namespace Game
 				{
 					m_subsystemNoise.MakeNoise(firePosition, 0.5f, 20f);
 				}
+
+				// NOTA: El ciclado se hace ahora en el método Update, después de la animación de disparo
+				// para asegurar que el próximo disparo use un tipo diferente
 			}
-			catch
+			catch (Exception ex)
 			{
-				// Ignorar errores
+				// DEBUG: Para ver errores
+				// Log.Error($"Error disparando virote: {ex.Message}");
+				m_currentBoltTypeIndex = 0;
+				m_hasCycledForNextShot = false;
 			}
 		}
 	}
