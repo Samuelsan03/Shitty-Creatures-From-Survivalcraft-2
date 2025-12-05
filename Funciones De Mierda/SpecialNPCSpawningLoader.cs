@@ -27,7 +27,7 @@ namespace Game
 					// SIN RESTRICCIÓN DE DÍAS - aparece desde el inicio
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 1.0f; // 100% de probabilidad
+						return 100f; // 100% de probabilidad
 					}
 					return 0f;
 				},
@@ -51,7 +51,7 @@ namespace Game
 					// Aparece desde el día 0 (cuando se crea el mundo)
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 1.0f; // 100% de probabilidad
+						return 100f; // 100% de probabilidad
 					}
 					return 0f;
 				},
@@ -75,7 +75,7 @@ namespace Game
 
 					if (isNight && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
-						return 1.0f;
+						return 100f;
 					}
 					return 0f;
 				},
@@ -101,39 +101,13 @@ namespace Game
 
 					if (isDay10OrLater && isNight && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
-						return 1.0f;
+						return 100f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemCreatureSpawn.CreatureType creatureType, Point3 point) =>
 				{
 					var creatures = spawn.SpawnCreatures(creatureType, "ElBallestador", point, 5);
-					return creatures.Count;
-				})
-			});
-
-			// EL ARQUERO - aparece CADA NOCHE desde el día 5 en adelante  
-			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("ElArquero", 0, false, false)
-			{
-				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType creatureType, Point3 point)
-				{
-					SubsystemTerrain subsystemTerrain = spawn.m_subsystemTerrain;
-					int cellValue = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
-					int groundBlock = Terrain.ExtractContents(cellValue);
-
-					SubsystemTimeOfDay timeOfDay = spawn.Project.FindSubsystem<SubsystemTimeOfDay>(true);
-					bool isNight = timeOfDay != null && (timeOfDay.TimeOfDay >= timeOfDay.NightStart || timeOfDay.TimeOfDay < timeOfDay.DawnStart);
-					bool isDay5OrLater = timeOfDay != null && timeOfDay.Day >= 9.0;
-
-					if (isDay5OrLater && isNight && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
-					{
-						return 1.0f;
-					}
-					return 0f;
-				},
-				SpawnFunction = ((SubsystemCreatureSpawn.CreatureType creatureType, Point3 point) =>
-				{
-					var creatures = spawn.SpawnCreatures(creatureType, "ElArquero", point, 5);
 					return creatures.Count;
 				})
 			});
@@ -149,11 +123,11 @@ namespace Game
 
 					SubsystemTimeOfDay timeOfDay = spawn.Project.FindSubsystem<SubsystemTimeOfDay>(true);
 					bool isProperDaytime = timeOfDay != null && timeOfDay.TimeOfDay >= timeOfDay.DayStart + 0.1f && timeOfDay.TimeOfDay < timeOfDay.DuskStart - 0.1f;
-					bool isDay3OrLater = timeOfDay != null && timeOfDay.Day >= 2.0;
+					bool isDay3OrLater = timeOfDay != null && timeOfDay.Day >= 3.0;
 
 					if (isDay3OrLater && isProperDaytime && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
-						return 1.0f;
+						return 100f;
 					}
 					return 0f;
 				},
@@ -175,17 +149,43 @@ namespace Game
 
 					SubsystemTimeOfDay timeOfDay = spawn.Project.FindSubsystem<SubsystemTimeOfDay>(true);
 					bool isProperDaytime = timeOfDay != null && timeOfDay.TimeOfDay >= timeOfDay.DayStart + 0.1f && timeOfDay.TimeOfDay < timeOfDay.DuskStart - 0.1f;
-					bool isDay3OrLater = timeOfDay != null && timeOfDay.Day >= 2.0;
+					bool isDay3OrLater = timeOfDay != null && timeOfDay.Day >= 3.0;
 
 					if (isDay3OrLater && isProperDaytime && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
-						return 1.0f;
+						return 100f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemCreatureSpawn.CreatureType creatureType, Point3 point) =>
 				{
 					var creatures = spawn.SpawnCreatures(creatureType, "Veemon", point, 2);
+					return creatures.Count;
+				})
+			});
+
+			// GAOMON - Día 3+ (solo horario central del día)
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Gaomon", 0, false, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType creatureType, Point3 point)
+				{
+					SubsystemTerrain subsystemTerrain = spawn.m_subsystemTerrain;
+					int cellValue = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValue);
+
+					SubsystemTimeOfDay timeOfDay = spawn.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					bool isProperDaytime = timeOfDay != null && timeOfDay.TimeOfDay >= timeOfDay.DayStart + 0.1f && timeOfDay.TimeOfDay < timeOfDay.DuskStart - 0.1f;
+					bool isDay3OrLater = timeOfDay != null && timeOfDay.Day >= 3.0;
+
+					if (isDay3OrLater && isProperDaytime && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemCreatureSpawn.CreatureType creatureType, Point3 point) =>
+				{
+					var creatures = spawn.SpawnCreatures(creatureType, "Gaomon", point, 2);
 					return creatures.Count;
 				})
 			});
@@ -205,7 +205,7 @@ namespace Game
 
 					if (isDay5OrLater && isDay && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
-						return 1.0f;
+						return 100f;
 					}
 					return 0f;
 				},
@@ -231,7 +231,7 @@ namespace Game
 
 					if (isDay5OrLater && isNight && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
-						return 1.0f;
+						return 100f;
 					}
 					return 0f;
 				},
@@ -257,7 +257,7 @@ namespace Game
 
 					if (isDay12OrLater && isProperDaytime && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
-						return 1.0f;
+						return 100f;
 					}
 					return 0f;
 				},
@@ -283,7 +283,7 @@ namespace Game
 
 					if (isDay12OrLater && isProperDaytime && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
-						return 1.0f;
+						return 100f;
 					}
 					return 0f;
 				},
@@ -294,7 +294,7 @@ namespace Game
 				})
 			});
 
-			// BETELGAMMAMON - Día 15+ (cualquier estación)
+			// BETELGAMMAMON - Día 15+ (solo parte central de Otoño e Invierno)
 			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("BetelGammamon", 0, false, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType creatureType, Point3 point)
@@ -305,13 +305,33 @@ namespace Game
 
 					SubsystemTimeOfDay timeOfDay = spawn.Project.FindSubsystem<SubsystemTimeOfDay>(true);
 					bool isDay = timeOfDay != null && timeOfDay.TimeOfDay >= timeOfDay.DawnStart && timeOfDay.TimeOfDay < timeOfDay.DuskStart;
-					bool isDay15OrLater = timeOfDay != null && timeOfDay.Day >= 14.0;
+					bool isDay15OrLater = timeOfDay != null && timeOfDay.Day >= 15.0;
 
-					// Aparece en cualquier estación desde el día 15
-					if (isDay15OrLater && isDay &&
+					// Obtener el tiempo del año
+					SubsystemGameInfo gameInfo = spawn.Project.FindSubsystem<SubsystemGameInfo>(true);
+					bool isMiddleOfAutumnOrWinter = false;
+
+					if (gameInfo != null)
+					{
+						float timeOfYear = gameInfo.WorldSettings.TimeOfYear;
+
+						// Definir márgenes (20% de margen al inicio y final de cada estación)
+						float margin = 0.05f; // 5% de margen
+
+						// Otoño central: desde 0.25 + margen hasta 0.5 - margen
+						bool isMiddleAutumn = timeOfYear >= (0.25f + margin) && timeOfYear < (0.5f - margin);
+
+						// Invierno central: desde 0.5 + margen hasta 0.75 - margen
+						bool isMiddleWinter = timeOfYear >= (0.5f + margin) && timeOfYear < (0.75f - margin);
+
+						isMiddleOfAutumnOrWinter = isMiddleAutumn || isMiddleWinter;
+					}
+
+					// Aparece solo en la parte central de Otoño e Invierno, desde el día 15, durante el día
+					if (isDay15OrLater && isDay && isMiddleOfAutumnOrWinter &&
 						(groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8 || groundBlock == 62))
 					{
-						return 1.0f;
+						return 100f;
 					}
 					return 0f;
 				},
@@ -336,7 +356,7 @@ namespace Game
 
 					if (isDay2OrLater && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
-						return 1.0f;
+						return 100f;
 					}
 					return 0f;
 				},
@@ -347,7 +367,7 @@ namespace Game
 				})
 			});
 
-			// EL SEÑOR DE LAS TUMBAS MORADAS - aparece CADA NOCHE desde el día 1 en adelante
+			// EL SEÑOR DE LAS TUMBAS MORADAS - aparece CADA NOCHE desde el día 2 en adelante
 			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("ElSenorDeLasTumbasMoradas", 0, false, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType creatureType, Point3 point)
@@ -361,8 +381,8 @@ namespace Game
 
 					if (timeOfDay != null)
 					{
-						// Aparece desde el día 1 en adelante (Día >= 1.0)
-						bool isDay1OrLater = timeOfDay.Day >= 1.0;
+						// MODIFICADO: Ahora aparece desde el día 2 en adelante (Día >= 2.0)
+						bool isDay2OrLater = timeOfDay.Day >= 2.0;
 
 						// Solo aparece de noche
 						bool isNight = timeOfDay.TimeOfDay >= timeOfDay.NightStart || timeOfDay.TimeOfDay < timeOfDay.DawnStart;
@@ -370,10 +390,10 @@ namespace Game
 						// Bloques de terreno válidos
 						bool validGround = groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8;
 
-						// CONDICIÓN: Día 1+ + Noche + Terreno válido
-						if (isDay1OrLater && isNight && validGround)
+						// CONDICIÓN: Día 2+ + Noche + Terreno válido
+						if (isDay2OrLater && isNight && validGround)
 						{
-							return 1.0f; // 100% de probabilidad
+							return 100f; // 100% de probabilidad
 						}
 					}
 					return 0f;
@@ -401,7 +421,7 @@ namespace Game
 
 					if (isDay7OrLater && isNight && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
-						return 1.0f; // 100% de probabilidad desde noche del día 7
+						return 100f; // 100% de probabilidad desde noche del día 7
 					}
 					return 0f;
 				},
@@ -427,7 +447,7 @@ namespace Game
 					// Condiciones flexibles igual que Naomi - cualquier hora, cualquier lugar
 					if (isDay4OrLater && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
-						return 1.0f; // 100% de probabilidad
+						return 100f; // 100% de probabilidad
 					}
 					return 0f;
 				},
@@ -455,7 +475,7 @@ namespace Game
 
 					if (isDay6OrLater && isNight && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
-						return 1.0f; // 100% de probabilidad
+						return 100f; // 100% de probabilidad
 					}
 					return 0f;
 				},
@@ -483,7 +503,7 @@ namespace Game
 
 					if (isDay8OrLater && isDay && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
-						return 1.0f; // 100% de probabilidad
+						return 100f; // 100% de probabilidad
 					}
 					return 0f;
 				},
@@ -511,7 +531,7 @@ namespace Game
 
 					if (isDay9OrLater && isNight && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
-						return 1.0f; // 100% de probabilidad
+						return 100f; // 100% de probabilidad
 					}
 					return 0f;
 				},
@@ -537,7 +557,7 @@ namespace Game
 					// Cualquier hora del día
 					if (isDay13OrLater && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
-						return 1.0f; // 100% de probabilidad
+						return 100f; // 100% de probabilidad
 					}
 					return 0f;
 				},
@@ -563,7 +583,7 @@ namespace Game
 					// Cualquier hora del día
 					if (isDay13OrLater && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
-						return 1.0f; // 100% de probabilidad
+						return 100f; // 100% de probabilidad
 					}
 					return 0f;
 				},
@@ -591,7 +611,7 @@ namespace Game
 
 					if (isDay18OrLater && isDay && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
-						return 1.0f; // 100% de probabilidad
+						return 100f; // 100% de probabilidad
 					}
 					return 0f;
 				},
@@ -619,7 +639,7 @@ namespace Game
 
 					if (isDay14OrLater && isDay && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
-						return 1.0f; // 100% de probabilidad
+						return 100f; // 100% de probabilidad
 					}
 					return 0f;
 				},
@@ -647,7 +667,7 @@ namespace Game
 
 					if (isDay14OrLater && isDay && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
-						return 1.0f; // 100% de probabilidad
+						return 100f; // 100% de probabilidad
 					}
 					return 0f;
 				},
@@ -657,8 +677,6 @@ namespace Game
 					return creatures.Count;
 				})
 			});
-
-
 
 			// Para BallestadoraMusculosa - Día 25 en adelante, solo de noche y en grupo de 4
 			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("BallestadoraMusculosa", 0, false, false)
@@ -677,7 +695,7 @@ namespace Game
 
 					if (isDay25OrLater && isNight && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
-						return 1.0f; // 100% de probabilidad
+						return 100f; // 100% de probabilidad
 					}
 					return 0f;
 				},
@@ -703,7 +721,7 @@ namespace Game
 					// Cualquier hora del día
 					if (isDay26OrLater && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
-						return 1.0f; // 100% de probabilidad
+						return 100f; // 100% de probabilidad
 					}
 					return 0f;
 				},
@@ -729,7 +747,7 @@ namespace Game
 					// Cualquier hora del día
 					if (isDay29OrLater && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
-						return 1.0f; // 100% de probabilidad
+						return 100f; // 100% de probabilidad
 					}
 					return 0f;
 				},
@@ -756,7 +774,7 @@ namespace Game
 					// Aparece SOLO en bloques rocosos: grava (6), cobblestone (5), granite (3), sandstone (4), limestone (66)
 					if (isDay29OrLater && (groundBlock == 6 || groundBlock == 5 || groundBlock == 3 || groundBlock == 4 || groundBlock == 66))
 					{
-						return 1.0f; // 100% de probabilidad
+						return 100f; // 100% de probabilidad
 					}
 					return 0f;
 				},
@@ -813,7 +831,7 @@ namespace Game
 					// HombreAgua aparece en tierra/arena cerca de agua
 					if (isDay21OrLater && isNight && isValidGround && isNearWater && waterBlocksCount >= 2)
 					{
-						return 1.0f; // 100% de probabilidad
+						return 100f; // 100% de probabilidad
 					}
 					return 0f;
 				},
@@ -842,7 +860,7 @@ namespace Game
 					if (isDay17OrLater && isNight && point.Y < 90 && point.Y > 50 &&
 						(groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
-						return 1.0f; // 100% de probabilidad
+						return 100f; // 100% de probabilidad
 					}
 					return 0f;
 				},
@@ -872,7 +890,7 @@ namespace Game
 					if (isDay22OrLater && isNight &&
 						(groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
-						return 1.0f; // 100% de probabilidad
+						return 100f; // 100% de probabilidad
 					}
 					return 0f;
 				},
@@ -898,7 +916,7 @@ namespace Game
 
 					if (isDay16OrLater && isNight && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
-						return 1.0f;
+						return 100f;
 					}
 					return 0f;
 				},
@@ -928,7 +946,7 @@ namespace Game
 
 					if (isDay17 && isNight && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
-						return 1.0f;
+						return 100f;
 					}
 					return 0f;
 				},
@@ -939,7 +957,6 @@ namespace Game
 				})
 			});
 
-			// CAMISAS MORENAS - aparece SOLO UNA NOCHE en el día 21
 			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("CamisasMorenas", 0, false, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType creatureType, Point3 point)
@@ -950,11 +967,13 @@ namespace Game
 
 					SubsystemTimeOfDay timeOfDay = spawn.Project.FindSubsystem<SubsystemTimeOfDay>(true);
 					bool isNight = timeOfDay != null && (timeOfDay.TimeOfDay >= timeOfDay.NightStart || timeOfDay.TimeOfDay < timeOfDay.DawnStart);
-					bool isDay21 = timeOfDay != null && timeOfDay.Day >= 20.0 && timeOfDay.Day < 21.0;
 
-					if (isDay21 && isNight && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+					// MODIFICACIÓN AQUÍ: Aparece en cualquier noche DESPUÉS del día 20
+					bool isAfterDebut = timeOfDay != null && timeOfDay.Day >= 20.0;
+
+					if (isAfterDebut && isNight && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
-						return 1.0f;
+						return 100f;
 					}
 					return 0f;
 				},
