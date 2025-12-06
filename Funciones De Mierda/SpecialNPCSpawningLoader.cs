@@ -62,6 +62,7 @@ namespace Game
 				})
 			});
 
+			// Para LaMuerteX - Desde el inicio, solo de noche
 			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("LaMuerteX", 0, false, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType creatureType, Point3 point)
@@ -73,9 +74,11 @@ namespace Game
 					SubsystemTimeOfDay timeOfDay = spawn.Project.FindSubsystem<SubsystemTimeOfDay>(true);
 					bool isNight = timeOfDay != null && (timeOfDay.TimeOfDay >= timeOfDay.NightStart || timeOfDay.TimeOfDay < timeOfDay.DawnStart);
 
+					// SIN RESTRICCIÓN DE DÍAS - aparece desde el inicio
+					// SIN RESTRICCIÓN DE ALTURA
 					if (isNight && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
-						return 100f;
+						return 100f; // 100% de probabilidad
 					}
 					return 0f;
 				},
@@ -376,13 +379,12 @@ namespace Game
 					int cellValue = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
 					int groundBlock = Terrain.ExtractContents(cellValue);
 
-					// Obtener el sistema de tiempo
 					SubsystemTimeOfDay timeOfDay = spawn.Project.FindSubsystem<SubsystemTimeOfDay>(true);
 
 					if (timeOfDay != null)
 					{
-						// MODIFICADO: Ahora aparece desde el día 2 en adelante (Día >= 2.0)
-						bool isDay2OrLater = timeOfDay.Day >= 2.0;
+						// CORREGIDO: Día 2 en adelante (Día >= 1.0)
+						bool isDay2OrLater = timeOfDay.Day >= 1.0;
 
 						// Solo aparece de noche
 						bool isNight = timeOfDay.TimeOfDay >= timeOfDay.NightStart || timeOfDay.TimeOfDay < timeOfDay.DawnStart;
@@ -393,14 +395,13 @@ namespace Game
 						// CONDICIÓN: Día 2+ + Noche + Terreno válido
 						if (isDay2OrLater && isNight && validGround)
 						{
-							return 100f; // 100% de probabilidad
+							return 1.0f; // Cambiado de 100f a 1.0f (100%)
 						}
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemCreatureSpawn.CreatureType creatureType, Point3 point) =>
 				{
-					// Spawn del Señor de las Tumbas Moradas
 					var creatures = spawn.SpawnCreatures(creatureType, "ElSenorDeLasTumbasMoradas", point, 5);
 					return creatures.Count;
 				})
