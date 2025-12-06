@@ -1,11 +1,14 @@
-using System;
+﻿using System;
 using Game;
 using TemplatesDatabase;
 
 namespace Game
 {
+	// Token: 0x020000D1 RID: 209
 	public class SubsystemFlameBulletBlockBehavior : SubsystemBlockBehavior
 	{
+		// Token: 0x17000093 RID: 147
+		// (get) Token: 0x0600063C RID: 1596 RVA: 0x00029025 File Offset: 0x00027225
 		public override int[] HandledBlocks
 		{
 			get
@@ -17,34 +20,26 @@ namespace Game
 			}
 		}
 
+		// Token: 0x0600063D RID: 1597 RVA: 0x00029038 File Offset: 0x00027238
 		public override bool OnHitAsProjectile(CellFace? cellFace, ComponentBody componentBody, WorldItem worldItem)
 		{
-			// Solo manejar llamas regulares, no poison
+			// Todas las balas son de fuego ahora, no hay veneno
 			if (cellFace != null)
 			{
-				int cellValue = m_subsystemTerrain.Terrain.GetCellValue(cellFace.Value.X, cellFace.Value.Y, cellFace.Value.Z);
-
-				// Si la bala va muy rápido, puede causar explosión
+				int cellValue = this.m_subsystemTerrain.Terrain.GetCellValue(cellFace.Value.X, cellFace.Value.Y, cellFace.Value.Z);
 				if (worldItem.Velocity.Length() > 30f)
 				{
-					m_subsystemExplosions.TryExplodeBlock(cellFace.Value.X, cellFace.Value.Y, cellFace.Value.Z, cellValue);
+					this.m_subsystemExplosions.TryExplodeBlock(cellFace.Value.X, cellFace.Value.Y, cellFace.Value.Z, cellValue);
 				}
-
-				// Encender el bloque donde impactó
-				m_subsystemFireBlockBehavior.SetCellOnFire(cellFace.Value.X, cellFace.Value.Y, cellFace.Value.Z, 1f);
+				this.m_subsystemFireBlockBehavior.SetCellOnFire(cellFace.Value.X, cellFace.Value.Y, cellFace.Value.Z, 1f);
 			}
-
-			// Si impactó en una entidad, prenderla fuego
 			ComponentOnFire componentOnFire = (componentBody != null) ? componentBody.Entity.FindComponent<ComponentOnFire>() : null;
 			if (componentOnFire != null)
 			{
 				Projectile projectile = worldItem as Projectile;
 				if (projectile != null)
 				{
-					// Prender fuego a la entidad
-					componentOnFire.SetOnFire(projectile.Owner, m_random.Float(4f, 6f));
-
-					// Causar daño por fuego
+					componentOnFire.SetOnFire(projectile.Owner, this.m_random.Float(4f, 6f));
 					ComponentHealth componentHealth = componentBody.Entity.FindComponent<ComponentHealth>();
 					if (componentHealth != null)
 					{
@@ -52,22 +47,28 @@ namespace Game
 					}
 				}
 			}
-
 			return true;
 		}
 
+		// Token: 0x0600063E RID: 1598 RVA: 0x0002924A File Offset: 0x0002744A
 		public override void Load(ValuesDictionary valuesDictionary)
 		{
 			base.Load(valuesDictionary);
-			m_subsystemTerrain = Project.FindSubsystem<SubsystemTerrain>(true);
-			m_subsystemExplosions = Project.FindSubsystem<SubsystemExplosions>(true);
-			m_subsystemFireBlockBehavior = Project.FindSubsystem<SubsystemFireBlockBehavior>(true);
+			this.m_subsystemTerrain = base.Project.FindSubsystem<SubsystemTerrain>(true);
+			this.m_subsystemExplosions = base.Project.FindSubsystem<SubsystemExplosions>(true);
+			this.m_subsystemFireBlockBehavior = base.Project.FindSubsystem<SubsystemFireBlockBehavior>(true);
 		}
 
-		// Campos
+		// Token: 0x04000392 RID: 914
 		public SubsystemTerrain m_subsystemTerrain;
+
+		// Token: 0x04000393 RID: 915
 		public SubsystemExplosions m_subsystemExplosions;
+
+		// Token: 0x04000394 RID: 916
 		public SubsystemFireBlockBehavior m_subsystemFireBlockBehavior;
+
+		// Token: 0x04000395 RID: 917
 		public Random m_random = new Random();
 	}
 }

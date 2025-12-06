@@ -1,9 +1,9 @@
-using System;
+﻿using System;
 using Engine;
 using Engine.Graphics;
 using Game;
 
-namespace WonderfulEra
+namespace Game
 {
 	// Token: 0x020000AB RID: 171
 	public class FlameSmokeParticleSystem : ParticleSystem<FlameSmokeParticleSystem.Particle>

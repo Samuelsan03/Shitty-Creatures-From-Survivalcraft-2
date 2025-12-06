@@ -1,16 +1,16 @@
-using System;
+﻿using System;
 using Engine;
 using Engine.Graphics;
 using Game;
 
-namespace WonderfulEra
+namespace Game
 {
+	// Token: 0x02000075 RID: 117
 	public class FlameThrowerBlock : Block
 	{
 		// Token: 0x06000352 RID: 850 RVA: 0x0000CC64 File Offset: 0x0000AE64
 		public override void Initialize()
 		{
-			base.Initialize();
 			this.m_texture1 = ContentManager.Get<Texture2D>("Textures/FlameThrower");
 			Model model = ContentManager.Get<Model>("Models/FlameThrower");
 			Matrix boneAbsoluteTransform = BlockMesh.GetBoneAbsoluteTransform(model.FindMesh("Body", true).ParentBone);
@@ -21,6 +21,7 @@ namespace WonderfulEra
 			this.m_standaloneBlockMeshLoaded = new BlockMesh();
 			this.m_standaloneBlockMeshLoaded.AppendModelMeshPart(model.FindMesh("Body", true).MeshParts[0], boneAbsoluteTransform, false, false, false, false, Color.White);
 			this.m_standaloneBlockMeshLoaded.AppendModelMeshPart(model.FindMesh("Switch", true).MeshParts[0], Matrix.CreateRotationZ(1.5707964f) * boneAbsoluteTransform2, false, false, false, false, Color.White);
+			base.Initialize();
 		}
 
 		// Token: 0x06000353 RID: 851 RVA: 0x0000CDA1 File Offset: 0x0000AFA1
@@ -31,7 +32,7 @@ namespace WonderfulEra
 		// Token: 0x06000354 RID: 852 RVA: 0x0000CDA4 File Offset: 0x0000AFA4
 		public override void DrawBlock(PrimitivesRenderer3D primitivesRenderer, int value, Color color, float size, ref Matrix matrix, DrawBlockEnvironmentData environmentData)
 		{
-			if (GetSwitchState(Terrain.ExtractData(value)))
+			if (FlameThrowerBlock.GetSwitchState(Terrain.ExtractData(value)))
 			{
 				BlocksManager.DrawMeshBlock(primitivesRenderer, this.m_standaloneBlockMeshLoaded, this.m_texture1, color, 2f * size, ref matrix, environmentData);
 				return;
@@ -53,7 +54,7 @@ namespace WonderfulEra
 				return true;
 			}
 			int data = Terrain.ExtractData(oldValue);
-			return SetSwitchState(Terrain.ExtractData(newValue), true) != SetSwitchState(data, true);
+			return FlameThrowerBlock.SetSwitchState(Terrain.ExtractData(newValue), true) != FlameThrowerBlock.SetSwitchState(data, true);
 		}
 
 		// Token: 0x06000357 RID: 855 RVA: 0x0000CE60 File Offset: 0x0000B060
@@ -72,15 +73,15 @@ namespace WonderfulEra
 		}
 
 		// Token: 0x06000359 RID: 857 RVA: 0x0000CEA4 File Offset: 0x0000B0A4
-		public static LoadState GetLoadState(int data)
+		public static FlameThrowerBlock.LoadState GetLoadState(int data)
 		{
-			return (LoadState)(data & 3);
+			return (FlameThrowerBlock.LoadState)(data & 3);
 		}
 
 		// Token: 0x0600035A RID: 858 RVA: 0x0000CEA9 File Offset: 0x0000B0A9
-		public static int SetLoadState(int data, LoadState loadState)
+		public static int SetLoadState(int data, FlameThrowerBlock.LoadState loadState)
 		{
-			return (data & -4) | (int)(loadState);
+			return (data & -4) | (int)(loadState & FlameThrowerBlock.LoadState.Loaded);
 		}
 
 		// Token: 0x0600035B RID: 859 RVA: 0x0000CEB3 File Offset: 0x0000B0B3
@@ -92,25 +93,25 @@ namespace WonderfulEra
 		// Token: 0x0600035C RID: 860 RVA: 0x0000CEBB File Offset: 0x0000B0BB
 		public static int SetSwitchState(int data, bool state)
 		{
-			if (state)
-				return data | 4;
-			else
-				return data & ~4;
+			return (data & -5) | (state ? 4 : 0);
 		}
 
 		// Token: 0x0600035D RID: 861 RVA: 0x0000CEC8 File Offset: 0x0000B0C8
-		public static bool GetIsLoaded(int data)
+		public static FlameBulletBlock.FlameBulletType? GetBulletType(int data)
 		{
-			return (data & 16) != 0; // Usar bit 4 para indicar si está cargado
+			int num = data >> 4 & 15;
+			if (num != 0)
+			{
+				return new FlameBulletBlock.FlameBulletType?((FlameBulletBlock.FlameBulletType)(num - 1));
+			}
+			return null;
 		}
 
 		// Token: 0x0600035E RID: 862 RVA: 0x0000CEF4 File Offset: 0x0000B0F4
-		public static int SetIsLoaded(int data, bool isLoaded)
+		public static int SetBulletType(int data, FlameBulletBlock.FlameBulletType? type)
 		{
-			if (isLoaded)
-				return data | 16;
-			else
-				return data & ~16;
+			int num = (int)((type != null) ? (type.Value + 1) : FlameBulletBlock.FlameBulletType.Flame);
+			return (data & -241) | (num & 15) << 4;
 		}
 
 		// Token: 0x0600035F RID: 863 RVA: 0x0000CF25 File Offset: 0x0000B125
@@ -136,46 +137,6 @@ namespace WonderfulEra
 
 		// Token: 0x0400010D RID: 269
 		public Texture2D m_texture1;
-
-		// Implementaciones faltantes de métodos abstractos
-		public override BlockPlacementData GetPlacementValue(SubsystemTerrain subsystemTerrain, ComponentMiner componentMiner, int value, TerrainRaycastResult raycastResult)
-		{
-			BlockPlacementData result = default(BlockPlacementData);
-			result.Value = Terrain.MakeBlockValue(0);
-			result.CellFace = raycastResult.CellFace;
-			return result;
-		}
-
-		public override bool IsFaceTransparent(SubsystemTerrain subsystemTerrain, int face, int value)
-		{
-			return true;
-		}
-
-		public override int GetFaceTextureSlot(int face, int value)
-		{
-			return 0;
-		}
-
-		public override float GetProjectilePower(int value)
-		{
-			return 0f;
-		}
-
-		public override float GetExplosionPressure(int value)
-		{
-			return 0f;
-		}
-
-		public override void GetDropValues(SubsystemTerrain subsystemTerrain, int oldValue, int newValue, int toolLevel, List<BlockDropValue> dropValues, out bool showDebris)
-		{
-			dropValues.Clear();
-			showDebris = false;
-		}
-
-		public override IEnumerable<int> GetCreativeValues()
-		{
-			yield return Terrain.MakeBlockValue(Index, 0, 0);
-		}
 
 		// Token: 0x02000126 RID: 294
 		public enum LoadState
