@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Engine;
 using Engine.Graphics;
@@ -17,22 +17,31 @@ namespace Game
 				{
 					throw new InvalidOperationException("Too many arrow types.");
 				}
+
+				// Solo procesar los 4 tipos que tenemos
+				if (num >= 4) continue;
+
 				Matrix boneAbsoluteTransform = BlockMesh.GetBoneAbsoluteTransform(model.FindMesh(RepeatArrowBlock.m_shaftNames[num], true).ParentBone);
 				Matrix boneAbsoluteTransform2 = BlockMesh.GetBoneAbsoluteTransform(model.FindMesh(RepeatArrowBlock.m_stabilizerNames[num], true).ParentBone);
 				Matrix boneAbsoluteTransform3 = BlockMesh.GetBoneAbsoluteTransform(model.FindMesh(RepeatArrowBlock.m_tipNames[num], true).ParentBone);
+
 				BlockMesh blockMesh = new BlockMesh();
 				blockMesh.AppendModelMeshPart(model.FindMesh(RepeatArrowBlock.m_tipNames[num], true).MeshParts[0], boneAbsoluteTransform3 * Matrix.CreateTranslation(0f, RepeatArrowBlock.m_offsets[num], 0f), false, false, false, false, Color.White);
 				blockMesh.TransformTextureCoordinates(Matrix.CreateTranslation((float)(RepeatArrowBlock.m_tipTextureSlots[num] % 16) / 16f, (float)(RepeatArrowBlock.m_tipTextureSlots[num] / 16) / 16f, 0f), -1);
+
 				BlockMesh blockMesh2 = new BlockMesh();
 				blockMesh2.AppendModelMeshPart(model.FindMesh(RepeatArrowBlock.m_shaftNames[num], true).MeshParts[0], boneAbsoluteTransform * Matrix.CreateTranslation(0f, RepeatArrowBlock.m_offsets[num], 0f), false, false, false, false, Color.White);
 				blockMesh2.TransformTextureCoordinates(Matrix.CreateTranslation((float)(RepeatArrowBlock.m_shaftTextureSlots[num] % 16) / 16f, (float)(RepeatArrowBlock.m_shaftTextureSlots[num] / 16) / 16f, 0f), -1);
+
 				BlockMesh blockMesh3 = new BlockMesh();
 				blockMesh3.AppendModelMeshPart(model.FindMesh(RepeatArrowBlock.m_stabilizerNames[num], true).MeshParts[0], boneAbsoluteTransform2 * Matrix.CreateTranslation(0f, RepeatArrowBlock.m_offsets[num], 0f), false, false, true, false, Color.White);
 				blockMesh3.TransformTextureCoordinates(Matrix.CreateTranslation((float)(RepeatArrowBlock.m_stabilizerTextureSlots[num] % 16) / 16f, (float)(RepeatArrowBlock.m_stabilizerTextureSlots[num] / 16) / 16f, 0f), -1);
+
 				BlockMesh blockMesh4 = new BlockMesh();
 				blockMesh4.AppendBlockMesh(blockMesh);
 				blockMesh4.AppendBlockMesh(blockMesh2);
 				blockMesh4.AppendBlockMesh(blockMesh3);
+
 				this.m_standaloneBlockMeshes.Add(blockMesh4);
 			}
 			base.Initialize();
@@ -54,7 +63,7 @@ namespace Game
 		public override float GetProjectilePower(int value)
 		{
 			int arrowType = (int)RepeatArrowBlock.GetArrowType(Terrain.ExtractData(value));
-			if (arrowType < 0 || arrowType >= RepeatArrowBlock.m_weaponPowers.Length)
+			if (arrowType < 0 || arrowType >= 4)
 			{
 				return 0f;
 			}
@@ -64,7 +73,7 @@ namespace Game
 		public override float GetExplosionPressure(int value)
 		{
 			int arrowType = (int)RepeatArrowBlock.GetArrowType(Terrain.ExtractData(value));
-			if (arrowType < 0 || arrowType >= RepeatArrowBlock.m_explosionPressures.Length)
+			if (arrowType < 0 || arrowType >= 4)
 			{
 				return 0f;
 			}
@@ -74,7 +83,7 @@ namespace Game
 		public override float GetIconViewScale(int value, DrawBlockEnvironmentData environmentData)
 		{
 			int arrowType = (int)RepeatArrowBlock.GetArrowType(Terrain.ExtractData(value));
-			if (arrowType < 0 || arrowType >= RepeatArrowBlock.m_iconViewScales.Length)
+			if (arrowType < 0 || arrowType >= 4)
 			{
 				return 1f;
 			}
@@ -87,18 +96,20 @@ namespace Game
 			yield return Terrain.MakeBlockValue(this.BlockIndex, 0, RepeatArrowBlock.SetArrowType(0, RepeatArrowBlock.ArrowType.IronArrow));
 			yield return Terrain.MakeBlockValue(this.BlockIndex, 0, RepeatArrowBlock.SetArrowType(0, RepeatArrowBlock.ArrowType.DiamondArrow));
 			yield return Terrain.MakeBlockValue(this.BlockIndex, 0, RepeatArrowBlock.SetArrowType(0, RepeatArrowBlock.ArrowType.ExplosiveArrow));
-			// Note: There are 6 arrow types defined in arrays but only 4 in the enum
-			// You may need to add the missing 2 arrow types to the enum and yield them here
 		}
 
 		public override string GetDisplayName(SubsystemTerrain subsystemTerrain, int value)
 		{
 			int arrowType = (int)RepeatArrowBlock.GetArrowType(Terrain.ExtractData(value));
-			if (arrowType < 0 || arrowType >= Enum.GetValues(typeof(RepeatArrowBlock.ArrowType)).Length)
+
+			switch (arrowType)
 			{
-				return string.Empty;
+				case 0: return "Copper Repeating Arrow";
+				case 1: return "Iron Repeating Arrow";
+				case 2: return "Diamond Repeating Arrow";
+				case 3: return "Explosive Repeating Arrow";
+				default: return "Unknown Arrow";
 			}
-			return LanguageControl.Get(base.GetType().Name, arrowType);
 		}
 
 		public static RepeatArrowBlock.ArrowType GetArrowType(int data)
@@ -113,7 +124,7 @@ namespace Game
 
 		static RepeatArrowBlock()
 		{
-			float[] array = new float[6];
+			float[] array = new float[4];
 			array[3] = 50f;
 			RepeatArrowBlock.m_explosionPressures = array;
 		}
@@ -122,20 +133,10 @@ namespace Game
 
 		public List<BlockMesh> m_standaloneBlockMeshes = new List<BlockMesh>();
 
-		public static int[] m_order = new int[]
-		{
-			0,
-			1,
-			2,
-			3,
-			4,
-			5
-		};
+		public static int[] m_order = new int[] { 0, 1, 2, 3 };
 
 		public static string[] m_tipNames = new string[]
 		{
-			"ArrowTip",
-			"ArrowTip",
 			"ArrowTip",
 			"ArrowTip",
 			"ArrowTip",
@@ -147,9 +148,7 @@ namespace Game
 			79,
 			63,
 			182,
-			225,
-			100,
-			60
+			225
 		};
 
 		public static string[] m_shaftNames = new string[]
@@ -157,70 +156,32 @@ namespace Game
 			"ArrowShaft",
 			"ArrowShaft",
 			"ArrowShaft",
-			"ArrowShaft",
-			"ArrowShaft",
 			"ArrowShaft"
 		};
 
-		public static int[] m_shaftTextureSlots = new int[]
-		{
-			51,
-			51,
-			51,
-			51,
-			51,
-			51
-		};
+		public static int[] m_shaftTextureSlots = new int[] { 51, 51, 51, 51 };
 
 		public static string[] m_stabilizerNames = new string[]
 		{
 			"ArrowStabilizer",
 			"ArrowStabilizer",
 			"ArrowStabilizer",
-			"ArrowStabilizer",
-			"ArrowStabilizer",
 			"ArrowStabilizer"
 		};
 
-		public static int[] m_stabilizerTextureSlots = new int[]
-		{
-			15,
-			15,
-			15,
-			15,
-			15,
-			15
-		};
+		public static int[] m_stabilizerTextureSlots = new int[] { 15, 15, 15, 15 };
 
-		public static float[] m_offsets = new float[]
-		{
-			-0.45f,
-			-0.45f,
-			-0.45f,
-			-0.45f,
-			-0.45f,
-			-0.45f
-		};
+		public static float[] m_offsets = new float[] { -0.45f, -0.45f, -0.45f, -0.45f };
 
 		public static float[] m_weaponPowers = new float[]
 		{
 			16f,
 			24f,
 			36f,
-			8f,
-			6f,
-			12f
+			8f
 		};
 
-		public static float[] m_iconViewScales = new float[]
-		{
-			0.8f,
-			0.8f,
-			0.8f,
-			0.8f,
-			0.8f,
-			0.8f
-		};
+		public static float[] m_iconViewScales = new float[] { 0.8f, 0.8f, 0.8f, 0.8f };
 
 		public static float[] m_explosionPressures;
 

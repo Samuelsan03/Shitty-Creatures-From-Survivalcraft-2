@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Engine;
 using Game;
 using TemplatesDatabase;
@@ -29,8 +29,7 @@ namespace Game
 		{
 			RepeatArrowBlock.ArrowType arrowType = RepeatArrowBlock.GetArrowType(Terrain.ExtractData(worldItem.Value));
 
-			// Removed all poison-related code
-
+			// Probabilidad de rotura según el tipo de flecha
 			if (worldItem.Velocity.Length() > 10f)
 			{
 				float breakChance = 0f;
@@ -38,13 +37,22 @@ namespace Game
 				switch (arrowType)
 				{
 					case RepeatArrowBlock.ArrowType.CopperArrow:
-						breakChance = 0.15f;
+						breakChance = 0.15f; // 15% de romperse
+						break;
+					case RepeatArrowBlock.ArrowType.IronArrow:
+						breakChance = 0.075f; // 7.5% de romperse
+						break;
+					case RepeatArrowBlock.ArrowType.DiamondArrow:
+						breakChance = 0f; // Indestructible
+						break;
+					case RepeatArrowBlock.ArrowType.ExplosiveArrow:
+						breakChance = 0.05f; // 5% de romperse
 						break;
 				}
 
 				if (this.m_random.Float(0f, 1f) < breakChance)
 				{
-					// Si se rompe la flecha, desaparece (no se convierte en otro tipo)
+					// Si se rompe la flecha, desaparece
 					return true;
 				}
 			}
@@ -58,7 +66,6 @@ namespace Game
 		}
 
 		public SubsystemProjectiles m_subsystemProjectiles;
-
 		public Engine.Random m_random = new Engine.Random();
 	}
 }

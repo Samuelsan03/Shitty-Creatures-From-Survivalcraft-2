@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Engine;
 using Game;
@@ -6,11 +6,8 @@ using TemplatesDatabase;
 
 namespace Game
 {
-	// Token: 0x020000ED RID: 237
 	public class SubsystemRepeatCrossbowBlockBehavior : SubsystemBlockBehavior
 	{
-		// Token: 0x170000B3 RID: 179
-		// (get) Token: 0x060006D9 RID: 1753 RVA: 0x0002DE50 File Offset: 0x0002C050
 		public override int[] HandledBlocks
 		{
 			get
@@ -19,14 +16,12 @@ namespace Game
 			}
 		}
 
-		// Token: 0x060006DA RID: 1754 RVA: 0x0002DE57 File Offset: 0x0002C057
 		public override bool OnEditInventoryItem(IInventory inventory, int slotIndex, ComponentPlayer componentPlayer)
 		{
 			componentPlayer.ComponentGui.ModalPanelWidget = ((componentPlayer.ComponentGui.ModalPanelWidget == null) ? new RepeatCrossbowWidget(inventory, slotIndex) : null);
 			return true;
 		}
 
-		// Token: 0x060006DB RID: 1755 RVA: 0x0002DE7C File Offset: 0x0002C07C
 		public override bool OnAim(Ray3 aim, ComponentMiner componentMiner, AimState state)
 		{
 			IInventory inventory = componentMiner.Inventory;
@@ -117,7 +112,7 @@ namespace Game
 							ComponentPlayer componentPlayer2 = componentMiner.ComponentPlayer;
 							if (componentPlayer2 != null)
 							{
-								componentPlayer2.ComponentGui.DisplaySmallMessage("先放拉开弓弩！", Color.Orange, true, false);
+								componentPlayer2.ComponentGui.DisplaySmallMessage("First pull back the crossbow!", Color.Orange, true, false);
 							}
 						}
 						else if (arrowType2 == null)
@@ -125,7 +120,7 @@ namespace Game
 							ComponentPlayer componentPlayer3 = componentMiner.ComponentPlayer;
 							if (componentPlayer3 != null)
 							{
-								componentPlayer3.ComponentGui.DisplaySmallMessage("先装载箭头！", Color.Orange, true, false);
+								componentPlayer3.ComponentGui.DisplaySmallMessage("First load an arrow!", Color.Orange, true, false);
 							}
 						}
 						else
@@ -141,13 +136,14 @@ namespace Game
 							Projectile projectile = this.m_subsystemProjectiles.FireProjectile(value, vector, v5 * 40f, Vector3.Zero, componentMiner.ComponentCreature);
 							if (projectile != null)
 							{
-								if (RepeatCrossbowBlock.GetLoadCount(slotValue) == 0)
+								if (loadCount == 0) // CORREGIDO: usar la variable local loadCount
 								{
 									data = RepeatCrossbowBlock.SetArrowType(data, null);
 								}
 								else
 								{
-									RepeatCrossbowBlock.SetLoadCount(slotValue, RepeatCrossbowBlock.GetLoadCount(slotValue) - 1);
+									slotValue = RepeatCrossbowBlock.SetLoadCount(slotValue, loadCount - 1); // CORREGIDO
+									data = Terrain.ExtractData(slotValue); // Actualizar data
 								}
 								this.m_subsystemAudio.PlaySound("Audio/Bow", 1f, this.m_random.Float(-0.1f, 0.1f), componentMiner.ComponentCreature.ComponentCreatureModel.EyePosition, 3f, 0.05f);
 								if (componentMiner.ComponentPlayer == null)
@@ -157,7 +153,7 @@ namespace Game
 							}
 						}
 						inventory.RemoveSlotItems(activeSlotIndex, 1);
-						int value2 = (loadCount > 1) ? Terrain.MakeBlockValue(num, loadCount - 1, RepeatCrossbowBlock.SetDraw(data, 15)) : Terrain.MakeBlockValue(num, 0, RepeatCrossbowBlock.SetDraw(RepeatCrossbowBlock.SetArrowType(data, null), 0));
+						int value2 = (loadCount > 1) ? Terrain.MakeBlockValue(num, 0, RepeatCrossbowBlock.SetDraw(data, 15)) : Terrain.MakeBlockValue(num, 0, RepeatCrossbowBlock.SetDraw(RepeatCrossbowBlock.SetArrowType(data, null), 0));
 						inventory.AddSlotItems(activeSlotIndex, value2, 1);
 						if (draw > 0)
 						{
@@ -173,7 +169,6 @@ namespace Game
 			return false;
 		}
 
-		// Token: 0x060006DC RID: 1756 RVA: 0x0002E438 File Offset: 0x0002C638
 		public override int GetProcessInventoryItemCapacity(IInventory inventory, int slotIndex, int value)
 		{
 			int num = Terrain.ExtractContents(value);
@@ -192,9 +187,9 @@ namespace Game
 			RepeatArrowBlock.ArrowType? arrowType2 = RepeatCrossbowBlock.GetArrowType(data);
 			if (arrowType2 == null)
 			{
-				return 8;
+				return 8 - loadCount; // CORREGIDO: máximo 8
 			}
-			if (loadCount >= 8)
+			if (loadCount >= 8) // CORREGIDO: límite de 8
 			{
 				return 0;
 			}
@@ -202,32 +197,35 @@ namespace Game
 			{
 				return 0;
 			}
-			return 8 - loadCount;
+			return 8 - loadCount; // CORREGIDO: máximo 8
 		}
 
-		// Token: 0x060006DD RID: 1757 RVA: 0x0002E4B8 File Offset: 0x0002C6B8
 		public override void ProcessInventoryItem(IInventory inventory, int slotIndex, int value, int count, int processCount, out int processedValue, out int processedCount)
 		{
 			RepeatArrowBlock.ArrowType arrowType = RepeatArrowBlock.GetArrowType(Terrain.ExtractData(value));
 			int slotValue = inventory.GetSlotValue(slotIndex);
 			int data = Terrain.ExtractData(slotValue);
 			int loadCount = RepeatCrossbowBlock.GetLoadCount(slotValue);
-			processedCount = count - processCount;
-			if (loadCount != 0)
+
+			// LIMITAR a máximo 8 flechas
+			int maxToAdd = 8 - loadCount;
+			if (processCount > maxToAdd)
 			{
-				processCount += loadCount;
+				processCount = maxToAdd;
 			}
+
+			processedCount = count - processCount;
 			processedValue = value;
 			if (processedCount == 0)
 			{
 				processedValue = 0;
 			}
 			inventory.RemoveSlotItems(slotIndex, 1);
-			int value2 = Terrain.MakeBlockValue(RepeatCrossbowBlock.Index, processCount, RepeatCrossbowBlock.SetArrowType(data, new RepeatArrowBlock.ArrowType?(arrowType)));
+			int value2 = Terrain.MakeBlockValue(RepeatCrossbowBlock.Index, 0, RepeatCrossbowBlock.SetArrowType(data, new RepeatArrowBlock.ArrowType?(arrowType)));
+			value2 = RepeatCrossbowBlock.SetLoadCount(value2, loadCount + processCount); // CORREGIDO: usar SetLoadCount
 			inventory.AddSlotItems(slotIndex, value2, 1);
 		}
 
-		// Token: 0x060006DE RID: 1758 RVA: 0x0002E52E File Offset: 0x0002C72E
 		public override void Load(ValuesDictionary valuesDictionary)
 		{
 			this.m_subsystemTime = base.Project.FindSubsystem<SubsystemTime>(true);
@@ -236,22 +234,11 @@ namespace Game
 			base.Load(valuesDictionary);
 		}
 
-		// Token: 0x040003DD RID: 989
 		public SubsystemTime m_subsystemTime;
-
-		// Token: 0x040003DE RID: 990
 		public SubsystemProjectiles m_subsystemProjectiles;
-
-		// Token: 0x040003DF RID: 991
 		public SubsystemAudio m_subsystemAudio;
-
-		// Token: 0x040003E0 RID: 992
 		public Game.Random m_random = new Game.Random();
-
-		// Token: 0x040003E1 RID: 993
 		public Dictionary<ComponentMiner, double> m_aimStartTimes = new Dictionary<ComponentMiner, double>();
-
-		// Token: 0x040003E2 RID: 994
-		public const int MCount = 8;
+		public const int MaxArrowCount = 8; // CONSTANTE CLARA
 	}
 }

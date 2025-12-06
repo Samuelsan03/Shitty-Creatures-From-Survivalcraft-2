@@ -1,14 +1,12 @@
-using System;
+﻿using System;
 using Engine;
 using Engine.Graphics;
 using Game;
 
 namespace Game
 {
-	// Token: 0x02000077 RID: 119
 	public class RepeatCrossbowBlock : Block
 	{
-		// Token: 0x0600036F RID: 879 RVA: 0x0000D4C8 File Offset: 0x0000B6C8
 		public override void Initialize()
 		{
 			Model model = ContentManager.Get<Model>("Models/RepeatCrossbow");
@@ -36,12 +34,10 @@ namespace Game
 			base.Initialize();
 		}
 
-		// Token: 0x06000370 RID: 880 RVA: 0x0000D761 File Offset: 0x0000B961
 		public override void GenerateTerrainVertices(BlockGeometryGenerator generator, TerrainGeometry geometry, int value, int x, int y, int z)
 		{
 		}
 
-		// Token: 0x06000371 RID: 881 RVA: 0x0000D764 File Offset: 0x0000B964
 		public override void DrawBlock(PrimitivesRenderer3D primitivesRenderer, int value, Color color, float size, ref Matrix matrix, DrawBlockEnvironmentData environmentData)
 		{
 			int data = Terrain.ExtractData(value);
@@ -56,13 +52,11 @@ namespace Game
 			}
 		}
 
-		// Token: 0x06000372 RID: 882 RVA: 0x0000D811 File Offset: 0x0000BA11
 		public override int GetDamage(int value)
 		{
 			return Terrain.ExtractData(value) >> 8 & 255;
 		}
 
-		// Token: 0x06000373 RID: 883 RVA: 0x0000D824 File Offset: 0x0000BA24
 		public override int SetDamage(int value, int damage)
 		{
 			int num = Terrain.ExtractData(value);
@@ -71,7 +65,6 @@ namespace Game
 			return Terrain.ReplaceData(value, num);
 		}
 
-		// Token: 0x06000374 RID: 884 RVA: 0x0000D858 File Offset: 0x0000BA58
 		public override bool IsSwapAnimationNeeded(int oldValue, int newValue)
 		{
 			int num = Terrain.ExtractContents(oldValue);
@@ -86,7 +79,6 @@ namespace Game
 			return true;
 		}
 
-		// Token: 0x06000375 RID: 885 RVA: 0x0000D8B8 File Offset: 0x0000BAB8
 		public static RepeatArrowBlock.ArrowType? GetArrowType(int data)
 		{
 			int num = data >> 4 & 15;
@@ -97,44 +89,37 @@ namespace Game
 			return null;
 		}
 
-		// Token: 0x06000376 RID: 886 RVA: 0x0000D8E4 File Offset: 0x0000BAE4
 		public static int SetArrowType(int data, RepeatArrowBlock.ArrowType? arrowType)
 		{
 			int num = (int)((arrowType != null) ? (arrowType.Value + 1) : RepeatArrowBlock.ArrowType.CopperArrow);
 			return (data & -241) | (num & 15) << 4;
 		}
 
-		// Token: 0x06000377 RID: 887 RVA: 0x0000D915 File Offset: 0x0000BB15
 		public static int GetDraw(int data)
 		{
 			return data & 15;
 		}
 
-		// Token: 0x06000378 RID: 888 RVA: 0x0000D91B File Offset: 0x0000BB1B
 		public static int SetDraw(int data, int draw)
 		{
 			return (data & -16) | (draw & 15);
 		}
 
-		// Token: 0x06000379 RID: 889 RVA: 0x0000D926 File Offset: 0x0000BB26
 		public static int GetLoadCount(int value)
 		{
-			return (value & 15360) >> 10;
+			return (Terrain.ExtractData(value) & 15360) >> 10; // CORREGIDO: usar Terrain.ExtractData
 		}
 
-		// Token: 0x0600037A RID: 890 RVA: 0x0000D932 File Offset: 0x0000BB32
 		public static int SetLoadCount(int value, int count)
 		{
-			return value ^ ((value ^ count << 10) & 15360);
+			int data = Terrain.ExtractData(value);
+			data &= -15361;
+			data |= (Math.Clamp(count, 0, 8) & 15) << 10; // LIMITAR a 8
+			return Terrain.ReplaceData(value, data);
 		}
 
-		// Token: 0x0400011B RID: 283
 		public static int Index = 805;
-
-		// Token: 0x0400011C RID: 284
 		public BlockMesh[] m_standaloneBlockMeshes = new BlockMesh[16];
-
-		// Token: 0x0400011D RID: 285
 		private Block arrowBlock;
 	}
 }
