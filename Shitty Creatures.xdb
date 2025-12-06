@@ -179,6 +179,12 @@
     <MemberSubsystemTemplate Name="ItemsLauncherBlockBehavior" Guid="addaadea-e865-4840-8d4b-682b5accdd20" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
         <Parameter Name="Class" Guid="f4147ab1-38b5-4fee-bccc-9c520b17874e" Value="SubsystemItemsLauncherBlockBehavior" Type="string"/>
     </MemberSubsystemTemplate>
+    <MemberSubsystemTemplate Name="RepeatCrossbowBlockBehavior" Guid="3d1d067f-3af8-42c5-a843-469089a86bfa" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+      <Parameter Name="Class" Guid="" Value="Game.SubsystemRepeatCrossbowBlockBehavior" Type="string"/>
+    </MemberSubsystemTemplate>
+    <MemberSubsystemTemplate Name="RepeatArrowBlockBehavior" Guid="f3ddd459-db6c-4b00-99b0-97c09d0b6e25" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+      <Parameter Name="Class" Guid="" Value="Game.SubsystemRepeatArrowBlockBehavior" Type="string"/>
+    </MemberSubsystemTemplate>
     <MemberSubsystemTemplate Name="SubsystemInGameMusic" Description="Reproduccion músical durante el juego." Guid="f009f348-e373-4936-bf4d-fbe684c64cbd" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
         <Parameter Name="Class" Guid="12016d6d-2f3a-4c74-88a4-6dc50e5427fe" Value="Game.SubsystemInGameMusic" Type="string"/>
     </MemberSubsystemTemplate>
