@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Engine;
 using GameEntitySystem;
@@ -21,50 +21,39 @@ namespace Game
 
 		// Configuración
 		public float MaxDistance = 25f;
-		public float MinDistance = 5f;
-		public float DrawTime = 2.5f;    // Tiempo para tensar completamente
-		public float AimTime = 0.5f;
-		public float TimeBetweenShots = 1.0f;  // Tiempo entre disparos de flechas múltiples
-		public float MaxInaccuracy = 0.03f; // Mayor imprecisión para NPC
+		public float DrawTime = 2.0f;    // Tiempo para tensar completamente
+		public float AimTime = 0.3f;
+		public float ReloadTime = 0.5f;  // Tiempo entre disparos
+		public float MaxInaccuracy = 0.04f;
 		public string DrawSound = "Audio/CrossbowDraw";
 		public string FireSound = "Audio/Bow";
 		public string ReleaseSound = "Audio/CrossbowBoing";
 		public float FireSoundDistance = 15f;
 		public bool UseRecoil = true;
-		public float BoltSpeed = 40f;
+		public float BoltSpeed = 35f;
 
-		// Tipos de flechas que puede disparar (usa los 4 tipos de RepeatArrowBlock)
-		private RepeatArrowBlock.ArrowType[] m_arrowTypes = new RepeatArrowBlock.ArrowType[]
-		{
-			RepeatArrowBlock.ArrowType.CopperArrow,    // 16 daño
-            RepeatArrowBlock.ArrowType.IronArrow,      // 24 daño  
-            RepeatArrowBlock.ArrowType.DiamondArrow,   // 36 daño
-            RepeatArrowBlock.ArrowType.ExplosiveArrow  // 8 daño + explosión
-        };
-
-		// Estado
-		private enum State
-		{
-			Idle,
-			Aiming,
-			Drawing,
-			ReadyToFire,
-			Firing
-		}
-
-		private State m_currentState = State.Idle;
-		private double m_stateStartTime;
+		// Estado (simplificado como el original)
+		private bool m_isAiming = false;
+		private bool m_isDrawing = false;
+		private bool m_isFiring = false;
+		private bool m_isReloading = false;
+		private double m_animationStartTime;
+		private double m_drawStartTime;
+		private double m_fireTime;
 		private int m_crossbowSlot = -1;
-		private int m_currentArrowType = 0; // Índice del tipo de flecha actual
-		private int m_arrowsInCurrentVolley = 0; // Flechas en la ráfaga actual
-		private int m_arrowsFired = 0; // Flechas disparadas en la ráfaga actual
 		private float m_currentDraw = 0f;
-		private bool m_isFullyDrawn = false;
+		private bool m_hasCrossbow = false;
 
-		// Constantes
-		private const int RepeatCrossbowIndex = 805; // RepeatCrossbowBlock.Index
-		private const int RepeatArrowIndex = 804; // RepeatArrowBlock.Index
-		private const int MaxArrowsPerVolley = 8; // Máximo según RepeatCrossbowBlock
+		// Tipos de flechas disponibles
+		private RepeatArrowBlock.ArrowType[] m_availableArrowTypes = new RepeatArrowBlock.ArrowType[]
+		{
+			RepeatArrowBlock.ArrowType.CopperArrow,
+			RepeatArrowBlock.ArrowType.IronArrow,
+			RepeatArrowBlock.ArrowType.DiamondArrow,
+			RepeatArrowBlock.ArrowType.ExplosiveArrow
+		};
+		
+		private int m_currentArrowTypeIndex = 0;
 
 		public int UpdateOrder => 0;
 		public override float ImportanceLevel => 0.5f;
@@ -75,17 +64,16 @@ namespace Game
 
 			// Cargar parámetros
 			MaxDistance = valuesDictionary.GetValue<float>("MaxDistance", 25f);
-			MinDistance = valuesDictionary.GetValue<float>("MinDistance", 5f);
-			DrawTime = valuesDictionary.GetValue<float>("DrawTime", 2.5f);
-			AimTime = valuesDictionary.GetValue<float>("AimTime", 0.5f);
-			TimeBetweenShots = valuesDictionary.GetValue<float>("TimeBetweenShots", 1.0f);
-			MaxInaccuracy = valuesDictionary.GetValue<float>("MaxInaccuracy", 0.03f);
+			DrawTime = valuesDictionary.GetValue<float>("DrawTime", 2.0f);
+			AimTime = valuesDictionary.GetValue<float>("AimTime", 0.3f);
+			ReloadTime = valuesDictionary.GetValue<float>("ReloadTime", 0.5f);
+			MaxInaccuracy = valuesDictionary.GetValue<float>("MaxInaccuracy", 0.04f);
 			DrawSound = valuesDictionary.GetValue<string>("DrawSound", "Audio/CrossbowDraw");
 			FireSound = valuesDictionary.GetValue<string>("FireSound", "Audio/Bow");
 			ReleaseSound = valuesDictionary.GetValue<string>("ReleaseSound", "Audio/CrossbowBoing");
 			FireSoundDistance = valuesDictionary.GetValue<float>("FireSoundDistance", 15f);
 			UseRecoil = valuesDictionary.GetValue<bool>("UseRecoil", true);
-			BoltSpeed = valuesDictionary.GetValue<float>("BoltSpeed", 40f);
+			BoltSpeed = valuesDictionary.GetValue<float>("BoltSpeed", 35f);
 
 			// Inicializar componentes
 			m_componentCreature = base.Entity.FindComponent<ComponentCreature>(true);
@@ -101,15 +89,12 @@ namespace Game
 		public override void OnEntityAdded()
 		{
 			base.OnEntityAdded();
-
+			
 			// Elegir tipo de flecha aleatorio inicial
-			m_currentArrowType = m_random.Int(0, m_arrowTypes.Length);
-
-			// Buscar ballesta en el inventario
+			m_currentArrowTypeIndex = m_random.Int(0, m_availableArrowTypes.Length);
+			
+			// Buscar ballesta repetidora
 			FindCrossbow();
-
-			// Inicializar con tensión mínima
-			ResetCrossbowState();
 		}
 
 		public void Update(float dt)
@@ -120,8 +105,15 @@ namespace Game
 			// Verificar objetivo
 			if (m_componentChaseBehavior.Target == null)
 			{
-				SetState(State.Idle);
+				ResetAnimations();
 				return;
+			}
+
+			// Buscar ballesta si no la tenemos
+			if (!m_hasCrossbow)
+			{
+				FindCrossbow();
+				if (!m_hasCrossbow) return;
 			}
 
 			// Calcular distancia
@@ -130,195 +122,78 @@ namespace Game
 				m_componentChaseBehavior.Target.ComponentBody.Position
 			);
 
-			// Verificar distancia mínima
-			if (distance < MinDistance)
+			// Lógica de ataque - Solo verifica distancia máxima
+			if (distance <= MaxDistance)
 			{
-				SetState(State.Idle);
-				return;
-			}
-
-			// Lógica de ataque
-			if (distance <= MaxDistance && m_crossbowSlot >= 0)
-			{
-				ProcessAttackState();
+				if (!m_isAiming && !m_isDrawing && !m_isFiring && !m_isReloading)
+				{
+					StartAiming();
+				}
 			}
 			else
 			{
-				SetState(State.Idle);
+				ResetAnimations();
+				return;
 			}
 
-			// Actualizar animaciones según estado
-			UpdateAnimations(dt);
-		}
-
-		private void ProcessAttackState()
-		{
-			switch (m_currentState)
+			// Aplicar animaciones y lógica de estado
+			if (m_isAiming)
 			{
-				case State.Idle:
-					// Comenzar a apuntar
-					StartAiming();
-					break;
+				ApplyAimingAnimation(dt);
 
-				case State.Aiming:
-					// Después de apuntar, comenzar a tensar
-					if (m_subsystemTime.GameTime - m_stateStartTime >= AimTime)
+				if (m_subsystemTime.GameTime - m_animationStartTime >= AimTime)
+				{
+					m_isAiming = false;
+					StartDrawing();
+				}
+			}
+			else if (m_isDrawing)
+			{
+				ApplyDrawingAnimation(dt);
+
+				m_currentDraw = MathUtils.Clamp((float)((m_subsystemTime.GameTime - m_drawStartTime) / DrawTime), 0f, 1f);
+
+				// Actualizar tensión visual (0-15)
+				UpdateCrossbowDraw((int)(m_currentDraw * 15f));
+
+				if (m_subsystemTime.GameTime - m_drawStartTime >= DrawTime)
+				{
+					// Tensado completo, cargar flecha
+					m_isDrawing = false;
+					LoadArrow();
+				}
+			}
+			else if (m_isReloading)
+			{
+				ApplyReloadingAnimation(dt);
+
+				// Después de cargar la flecha, disparar inmediatamente
+				if (m_subsystemTime.GameTime - m_animationStartTime >= 0.2f)
+				{
+					m_isReloading = false;
+					Fire();
+				}
+			}
+			else if (m_isFiring)
+			{
+				ApplyFiringAnimation(dt);
+
+				if (m_subsystemTime.GameTime - m_fireTime >= 0.2f)
+				{
+					m_isFiring = false;
+
+					// Quitar flecha después de disparar
+					ClearArrowFromCrossbow();
+
+					// Cambiar tipo de flecha para el próximo disparo
+					m_currentArrowTypeIndex = (m_currentArrowTypeIndex + 1) % m_availableArrowTypes.Length;
+
+					// Pausa antes de recargar
+					if (m_subsystemTime.GameTime - m_fireTime >= ReloadTime)
 					{
-						StartDrawing();
+						StartAiming();
 					}
-					break;
-
-				case State.Drawing:
-					UpdateDrawing();
-					break;
-
-				case State.ReadyToFire:
-					// Disparar ráfaga de flechas
-					if (m_arrowsInCurrentVolley == 0)
-					{
-						// Decidir cuántas flechas disparar (1-8)
-						m_arrowsInCurrentVolley = m_random.Int(1, MaxArrowsPerVolley + 1);
-						m_arrowsFired = 0;
-
-						// Decidir tipo de flecha para esta ráfaga
-						m_currentArrowType = m_random.Int(0, m_arrowTypes.Length);
-					}
-
-					// Disparar siguiente flecha
-					if (m_subsystemTime.GameTime - m_stateStartTime >= TimeBetweenShots / m_arrowsInCurrentVolley)
-					{
-						FireArrow();
-						m_arrowsFired++;
-
-						if (m_arrowsFired >= m_arrowsInCurrentVolley)
-						{
-							// Terminó la ráfaga, volver a tensar
-							m_arrowsInCurrentVolley = 0;
-							m_isFullyDrawn = false;
-							UpdateCrossbowDraw(0); // Destensar
-							SetState(State.Aiming, 0.5f); // Breve pausa
-						}
-						else
-						{
-							// Preparar siguiente disparo en la ráfaga
-							SetState(State.ReadyToFire, 0.1f);
-						}
-					}
-					break;
-
-				case State.Firing:
-					// Terminar animación de disparo
-					if (m_subsystemTime.GameTime - m_stateStartTime >= 0.2f)
-					{
-						SetState(State.ReadyToFire);
-					}
-					break;
-			}
-		}
-
-		private void StartAiming()
-		{
-			SetState(State.Aiming);
-			m_currentDraw = 0f;
-			m_isFullyDrawn = false;
-			UpdateCrossbowDraw(0);
-		}
-
-		private void StartDrawing()
-		{
-			SetState(State.Drawing);
-
-			// Sonido de tensar
-			if (!string.IsNullOrEmpty(DrawSound))
-			{
-				m_subsystemAudio.PlaySound(DrawSound, 0.5f, m_random.Float(-0.1f, 0.1f),
-					m_componentCreature.ComponentBody.Position, 3f, false);
-			}
-		}
-
-		private void UpdateDrawing()
-		{
-			double elapsed = m_subsystemTime.GameTime - m_stateStartTime;
-			m_currentDraw = MathUtils.Clamp((float)(elapsed / DrawTime), 0f, 1f);
-
-			// Actualizar estado visual de la ballesta
-			UpdateCrossbowDraw((int)(m_currentDraw * 15f));
-
-			if (elapsed >= DrawTime)
-			{
-				// Tensado completo
-				m_isFullyDrawn = true;
-				UpdateCrossbowDraw(15);
-
-				// Actualizar visualmente con tipo de flecha actual
-				UpdateCrossbowArrowType(m_arrowTypes[m_currentArrowType]);
-
-				// Listo para disparar
-				SetState(State.ReadyToFire, 0.1f);
-			}
-		}
-
-		private void FireArrow()
-		{
-			SetState(State.Firing);
-
-			// Obtener tipo de flecha actual
-			RepeatArrowBlock.ArrowType arrowType = m_arrowTypes[m_currentArrowType];
-
-			// Posición de disparo (desde los ojos)
-			Vector3 firePosition = m_componentCreature.ComponentCreatureModel.EyePosition;
-			firePosition.Y -= 0.1f;
-
-			Vector3 targetPosition = m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition;
-			Vector3 direction = Vector3.Normalize(targetPosition - firePosition);
-
-			// Aplicar imprecisión (menor cuando está más cerca)
-			float inaccuracyFactor = MathUtils.Lerp(0.5f, 1.0f,
-				Vector3.Distance(firePosition, targetPosition) / MaxDistance);
-
-			direction += new Vector3(
-				m_random.Float(-MaxInaccuracy, MaxInaccuracy) * inaccuracyFactor,
-				m_random.Float(-MaxInaccuracy * 0.5f, MaxInaccuracy * 0.5f) * inaccuracyFactor,
-				m_random.Float(-MaxInaccuracy, MaxInaccuracy) * inaccuracyFactor
-			);
-			direction = Vector3.Normalize(direction);
-
-			// Crear flecha
-			int arrowData = RepeatArrowBlock.SetArrowType(0, arrowType);
-			int arrowValue = Terrain.MakeBlockValue(RepeatArrowIndex, 0, arrowData);
-
-			// Disparar
-			var projectile = m_subsystemProjectiles.FireProjectile(
-				arrowValue,
-				firePosition,
-				direction * BoltSpeed,
-				Vector3.Zero,
-				m_componentCreature
-			);
-
-			// Si es flecha explosiva, configurar para que desaparezca al impactar
-			if (arrowType == RepeatArrowBlock.ArrowType.ExplosiveArrow && projectile != null)
-			{
-				projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
-			}
-
-			// Sonido de disparo
-			if (!string.IsNullOrEmpty(FireSound))
-			{
-				m_subsystemAudio.PlaySound(FireSound, 1f, m_random.Float(-0.1f, 0.1f),
-					m_componentCreature.ComponentBody.Position, FireSoundDistance, false);
-			}
-
-			// Ruido
-			if (m_subsystemNoise != null)
-			{
-				m_subsystemNoise.MakeNoise(firePosition, 0.5f, 20f);
-			}
-
-			// Retroceso
-			if (UseRecoil)
-			{
-				m_componentCreature.ComponentBody.ApplyImpulse(-direction * 1.0f);
+				}
 			}
 		}
 
@@ -327,31 +202,23 @@ namespace Game
 			for (int i = 0; i < m_componentInventory.SlotsCount; i++)
 			{
 				int slotValue = m_componentInventory.GetSlotValue(i);
-				if (slotValue != 0 && Terrain.ExtractContents(slotValue) == RepeatCrossbowIndex)
+				if (slotValue != 0)
 				{
-					m_crossbowSlot = i;
-					m_componentInventory.ActiveSlotIndex = i;
-					break;
+					Block block = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)];
+					if (block is RepeatCrossbowBlock)
+					{
+						m_crossbowSlot = i;
+						m_componentInventory.ActiveSlotIndex = i;
+						m_hasCrossbow = true;
+						break;
+					}
 				}
 			}
-		}
-
-		private void ResetCrossbowState()
-		{
-			if (m_crossbowSlot < 0) return;
-
-			int crossbowValue = m_componentInventory.GetSlotValue(m_crossbowSlot);
-			if (crossbowValue == 0) return;
-
-			int data = Terrain.ExtractData(crossbowValue);
-
-			// Resetear a estado sin tensar y sin flechas
-			data = RepeatCrossbowBlock.SetDraw(data, 0);
-			data = RepeatCrossbowBlock.SetArrowType(data, null);
-			crossbowValue = RepeatCrossbowBlock.SetLoadCount(crossbowValue, 0);
-
-			// Actualizar en inventario
-			UpdateInventorySlot(crossbowValue);
+			
+			if (!m_hasCrossbow)
+			{
+				m_crossbowSlot = -1;
+			}
 		}
 
 		private void UpdateCrossbowDraw(int draw)
@@ -364,11 +231,10 @@ namespace Game
 			int data = Terrain.ExtractData(crossbowValue);
 			data = RepeatCrossbowBlock.SetDraw(data, MathUtils.Clamp(draw, 0, 15));
 
-			crossbowValue = Terrain.ReplaceData(crossbowValue, data);
-			UpdateInventorySlot(crossbowValue);
+			UpdateInventorySlot(Terrain.ReplaceData(crossbowValue, data));
 		}
 
-		private void UpdateCrossbowArrowType(RepeatArrowBlock.ArrowType arrowType)
+		private void UpdateCrossbowArrowType(RepeatArrowBlock.ArrowType? arrowType)
 		{
 			if (m_crossbowSlot < 0) return;
 
@@ -376,21 +242,9 @@ namespace Game
 			if (crossbowValue == 0) return;
 
 			int data = Terrain.ExtractData(crossbowValue);
-			data = RepeatCrossbowBlock.SetArrowType(data, new RepeatArrowBlock.ArrowType?(arrowType));
+			data = RepeatCrossbowBlock.SetArrowType(data, arrowType);
 
-			crossbowValue = Terrain.ReplaceData(crossbowValue, data);
-			UpdateInventorySlot(crossbowValue);
-		}
-
-		private void UpdateCrossbowLoadCount(int count)
-		{
-			if (m_crossbowSlot < 0) return;
-
-			int crossbowValue = m_componentInventory.GetSlotValue(m_crossbowSlot);
-			if (crossbowValue == 0) return;
-
-			crossbowValue = RepeatCrossbowBlock.SetLoadCount(crossbowValue, MathUtils.Clamp(count, 0, MaxArrowsPerVolley));
-			UpdateInventorySlot(crossbowValue);
+			UpdateInventorySlot(Terrain.ReplaceData(crossbowValue, data));
 		}
 
 		private void UpdateInventorySlot(int value)
@@ -399,90 +253,251 @@ namespace Game
 			m_componentInventory.AddSlotItems(m_crossbowSlot, value, 1);
 		}
 
-		private void UpdateAnimations(float dt)
+		private void ClearArrowFromCrossbow()
 		{
-			if (m_componentModel == null) return;
+			UpdateCrossbowDraw(0);
+			UpdateCrossbowArrowType(null);
+		}
 
-			switch (m_currentState)
+		private void StartAiming()
+		{
+			m_isAiming = true;
+			m_isDrawing = false;
+			m_isFiring = false;
+			m_isReloading = false;
+			m_animationStartTime = m_subsystemTime.GameTime;
+			m_currentDraw = 0f;
+
+			// Mostrar ballesta sin tensar y sin flecha
+			UpdateCrossbowDraw(0);
+			UpdateCrossbowArrowType(null);
+		}
+
+		private void ApplyAimingAnimation(float dt)
+		{
+			if (m_componentModel != null)
 			{
-				case State.Idle:
-					m_componentModel.AimHandAngleOrder = 0f;
-					m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
-					m_componentModel.InHandItemRotationOrder = Vector3.Zero;
-					m_componentModel.LookAtOrder = null;
-					break;
+				// ANIMACIÓN DE APUNTADO
+				m_componentModel.AimHandAngleOrder = 1.3f;
+				m_componentModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.1f, 0.07f);
+				m_componentModel.InHandItemRotationOrder = new Vector3(-1.55f, 0f, 0f);
 
-				case State.Aiming:
-					// Posición de apuntado vertical
-					m_componentModel.AimHandAngleOrder = 1.3f;
-					m_componentModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.1f, 0.07f);
-					m_componentModel.InHandItemRotationOrder = new Vector3(-1.55f, 0f, 0f);
-
-					if (m_componentChaseBehavior.Target != null)
-					{
-						m_componentModel.LookAtOrder = new Vector3?(
-							m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition
-						);
-					}
-					break;
-
-				case State.Drawing:
-					// Animación de tensado
-					float drawProgress = m_currentDraw;
-					m_componentModel.AimHandAngleOrder = 1.3f + drawProgress * 0.1f;
-					m_componentModel.InHandItemOffsetOrder = new Vector3(
-						-0.08f + (0.05f * drawProgress),
-						-0.1f,
-						0.07f - (0.03f * drawProgress)
+				if (m_componentChaseBehavior.Target != null)
+				{
+					m_componentModel.LookAtOrder = new Vector3?(
+						m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition
 					);
-					m_componentModel.InHandItemRotationOrder = new Vector3(-1.55f, 0f, 0f);
-
-					if (m_componentChaseBehavior.Target != null)
-					{
-						m_componentModel.LookAtOrder = new Vector3?(
-							m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition
-						);
-					}
-					break;
-
-				case State.ReadyToFire:
-					// Mantener posición tensada
-					m_componentModel.AimHandAngleOrder = 1.4f;
-					m_componentModel.InHandItemOffsetOrder = new Vector3(-0.03f, -0.1f, 0.04f);
-					m_componentModel.InHandItemRotationOrder = new Vector3(-1.55f, 0f, 0f);
-
-					if (m_componentChaseBehavior.Target != null)
-					{
-						m_componentModel.LookAtOrder = new Vector3?(
-							m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition
-						);
-					}
-					break;
-
-				case State.Firing:
-					// Animación de retroceso
-					float fireProgress = (float)((m_subsystemTime.GameTime - m_stateStartTime) / 0.2f);
-					float recoil = 0.08f * (1f - fireProgress);
-
-					m_componentModel.AimHandAngleOrder = 1.4f;
-					m_componentModel.InHandItemOffsetOrder = new Vector3(
-						-0.03f + recoil,
-						-0.1f,
-						0.04f
-					);
-					m_componentModel.InHandItemRotationOrder = new Vector3(
-						-1.55f + recoil * 1.5f,
-						0f,
-						0f
-					);
-					break;
+				}
 			}
 		}
 
-		private void SetState(State newState, double delay = 0)
+		private void StartDrawing()
 		{
-			m_currentState = newState;
-			m_stateStartTime = m_subsystemTime.GameTime + delay;
+			m_isAiming = false;
+			m_isDrawing = true;
+			m_isFiring = false;
+			m_isReloading = false;
+			m_drawStartTime = m_subsystemTime.GameTime;
+
+			if (!string.IsNullOrEmpty(DrawSound))
+			{
+				m_subsystemAudio.PlaySound(DrawSound, 0.5f, m_random.Float(-0.1f, 0.1f),
+					m_componentCreature.ComponentBody.Position, 3f, false);
+			}
+		}
+
+		private void ApplyDrawingAnimation(float dt)
+		{
+			if (m_componentModel != null)
+			{
+				float drawFactor = m_currentDraw;
+
+				m_componentModel.AimHandAngleOrder = 1.3f + drawFactor * 0.1f;
+				m_componentModel.InHandItemOffsetOrder = new Vector3(
+					-0.08f + (0.05f * drawFactor),
+					-0.1f,
+					0.07f - (0.03f * drawFactor)
+				);
+				m_componentModel.InHandItemRotationOrder = new Vector3(-1.55f, 0f, 0f);
+
+				if (m_componentChaseBehavior.Target != null)
+				{
+					m_componentModel.LookAtOrder = new Vector3?(
+						m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition
+					);
+				}
+			}
+		}
+
+		private void LoadArrow()
+		{
+			m_isDrawing = false;
+			m_isReloading = true;
+			m_animationStartTime = m_subsystemTime.GameTime;
+
+			// Cargar flecha en la ballesta (tensada completamente)
+			UpdateCrossbowDraw(15);
+			UpdateCrossbowArrowType(m_availableArrowTypes[m_currentArrowTypeIndex]);
+		}
+
+		private void ApplyReloadingAnimation(float dt)
+		{
+			if (m_componentModel != null)
+			{
+				float reloadProgress = (float)((m_subsystemTime.GameTime - m_animationStartTime) / 0.2f);
+
+				m_componentModel.AimHandAngleOrder = 1.4f;
+				m_componentModel.InHandItemOffsetOrder = new Vector3(
+					-0.03f,
+					-0.1f - (0.05f * reloadProgress),
+					0.04f
+				);
+				m_componentModel.InHandItemRotationOrder = new Vector3(-1.55f, 0f, 0f);
+
+				if (m_componentChaseBehavior.Target != null)
+				{
+					m_componentModel.LookAtOrder = new Vector3?(
+						m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition
+					);
+				}
+			}
+		}
+
+		private void Fire()
+		{
+			m_isReloading = false;
+			m_isFiring = true;
+			m_fireTime = m_subsystemTime.GameTime;
+
+			// Disparar flecha
+			ShootArrow();
+
+			if (!string.IsNullOrEmpty(FireSound))
+			{
+				m_subsystemAudio.PlaySound(FireSound, 1f, m_random.Float(-0.1f, 0.1f),
+					m_componentCreature.ComponentBody.Position, FireSoundDistance, false);
+			}
+
+			// Retroceso
+			if (UseRecoil && m_componentChaseBehavior.Target != null)
+			{
+				Vector3 direction = Vector3.Normalize(
+					m_componentChaseBehavior.Target.ComponentBody.Position -
+					m_componentCreature.ComponentBody.Position
+				);
+				m_componentCreature.ComponentBody.ApplyImpulse(-direction * 1.0f);
+			}
+		}
+
+		private void ApplyFiringAnimation(float dt)
+		{
+			if (m_componentModel != null)
+			{
+				float fireProgress = (float)((m_subsystemTime.GameTime - m_fireTime) / 0.2f);
+
+				if (fireProgress < 0.5f)
+				{
+					// Pequeño retroceso
+					float recoil = 0.05f * (1f - (fireProgress * 2f));
+
+					m_componentModel.InHandItemOffsetOrder += new Vector3(recoil, 0f, 0f);
+					m_componentModel.InHandItemRotationOrder += new Vector3(recoil * 2f, 0f, 0f);
+				}
+				else
+				{
+					// Volver a posición normal gradualmente
+					float returnProgress = (fireProgress - 0.5f) / 0.5f;
+
+					m_componentModel.AimHandAngleOrder = 1.4f * (1f - returnProgress);
+					m_componentModel.InHandItemOffsetOrder = new Vector3(
+						-0.03f * (1f - returnProgress),
+						-0.1f * (1f - returnProgress),
+						0.04f * (1f - returnProgress)
+					);
+					m_componentModel.InHandItemRotationOrder = new Vector3(
+						-1.55f * (1f - returnProgress),
+						0f,
+						0f
+					);
+				}
+			}
+		}
+
+		private void ResetAnimations()
+		{
+			m_isAiming = false;
+			m_isDrawing = false;
+			m_isFiring = false;
+			m_isReloading = false;
+			m_currentDraw = 0f;
+
+			if (m_componentModel != null)
+			{
+				m_componentModel.AimHandAngleOrder = 0f;
+				m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
+				m_componentModel.InHandItemRotationOrder = Vector3.Zero;
+				m_componentModel.LookAtOrder = null;
+			}
+		}
+
+		private void ShootArrow()
+		{
+			if (m_componentChaseBehavior.Target == null)
+				return;
+
+			try
+			{
+				// Obtener tipo de flecha actual
+				RepeatArrowBlock.ArrowType arrowType = m_availableArrowTypes[m_currentArrowTypeIndex];
+
+				// Posición de disparo
+				Vector3 firePosition = m_componentCreature.ComponentCreatureModel.EyePosition;
+				firePosition.Y -= 0.1f;
+
+				Vector3 targetPosition = m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition;
+				Vector3 direction = Vector3.Normalize(targetPosition - firePosition);
+
+				// Aplicar imprecisión
+				direction += new Vector3(
+					m_random.Float(-MaxInaccuracy, MaxInaccuracy),
+					m_random.Float(-MaxInaccuracy * 0.5f, MaxInaccuracy * 0.5f),
+					m_random.Float(-MaxInaccuracy, MaxInaccuracy)
+				);
+				direction = Vector3.Normalize(direction);
+
+				// Velocidad de la flecha
+				float speed = BoltSpeed * (0.8f + (m_currentDraw * 0.4f));
+
+				// Crear flecha de RepeatArrowBlock
+				int arrowData = RepeatArrowBlock.SetArrowType(0, arrowType);
+				int arrowValue = Terrain.MakeBlockValue(RepeatArrowBlock.Index, 0, arrowData);
+
+				var projectile = m_subsystemProjectiles.FireProjectile(
+					arrowValue,
+					firePosition,
+					direction * speed,
+					Vector3.Zero,
+					m_componentCreature
+				);
+
+				// Configurar propiedades según el tipo de flecha
+				if (arrowType == RepeatArrowBlock.ArrowType.ExplosiveArrow && projectile != null)
+				{
+					projectile.IsIncendiary = false;
+					projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
+				}
+
+				// Ruido
+				if (m_subsystemNoise != null)
+				{
+					m_subsystemNoise.MakeNoise(firePosition, 0.5f, 20f);
+				}
+			}
+			catch (Exception ex)
+			{
+				// En caso de error, resetear al primer tipo de flecha
+				m_currentArrowTypeIndex = 0;
+			}
 		}
 	}
 }
