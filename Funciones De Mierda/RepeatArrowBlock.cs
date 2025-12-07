@@ -125,7 +125,7 @@ namespace Game
 		static RepeatArrowBlock()
 		{
 			float[] array = new float[4];
-			array[3] = 50f;
+			array[3] = 85f;
 			RepeatArrowBlock.m_explosionPressures = array;
 		}
 
@@ -175,10 +175,10 @@ namespace Game
 
 		public static float[] m_weaponPowers = new float[]
 		{
-			16f,
-			24f,
-			36f,
-			8f
+			28f,
+			38f,
+			55f,
+			18f
 		};
 
 		public static float[] m_iconViewScales = new float[] { 0.8f, 0.8f, 0.8f, 0.8f };

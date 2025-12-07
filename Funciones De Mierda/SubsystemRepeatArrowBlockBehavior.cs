@@ -37,16 +37,16 @@ namespace Game
 				switch (arrowType)
 				{
 					case RepeatArrowBlock.ArrowType.CopperArrow:
-						breakChance = 0.15f; // 15% de romperse
+						breakChance = 0.20f;
 						break;
 					case RepeatArrowBlock.ArrowType.IronArrow:
-						breakChance = 0.075f; // 7.5% de romperse
+						breakChance = 0.10f;
 						break;
 					case RepeatArrowBlock.ArrowType.DiamondArrow:
-						breakChance = 0f; // Indestructible
+						breakChance = 0f;
 						break;
 					case RepeatArrowBlock.ArrowType.ExplosiveArrow:
-						breakChance = 0.05f; // 5% de romperse
+						breakChance = 0.08f;
 						break;
 				}
 
