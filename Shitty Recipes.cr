@@ -107,5 +107,14 @@
     "bd "
     "aca"
 </Recipe>
+<Recipe Result="FlameThrowerBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="5" a="musket" b="ironingot" c="string" d="sulphurchunk" Description="Upgraded musket with fuel tank and ignition system. Uses Flame Bullets.">
+            " b "
+            "dad"
+            " c "
+        </Recipe>
+        <Recipe Result="FlameBulletBlock" ResultCount="8" RequiredHeatLevel="0" a="gunpowder" b="sulphurchunk" c="bullet" Description="Incendiary ammo for flamethrower. Burns on impact.">
+            " b "
+            "aca"
+        </Recipe>
     </Recipes>
 </ShittyRecipes>
