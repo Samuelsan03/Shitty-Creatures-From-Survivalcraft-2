@@ -2,6 +2,7 @@
 using Engine;
 using Game;
 using TemplatesDatabase;
+using WonderfulEra;
 
 namespace Game
 {
@@ -11,7 +12,10 @@ namespace Game
 		{
 			get
 			{
-				return Array.Empty<int>();
+				return new int[]
+				{
+					RepeatArrowBlock.Index
+				};
 			}
 		}
 
@@ -29,7 +33,40 @@ namespace Game
 		{
 			RepeatArrowBlock.ArrowType arrowType = RepeatArrowBlock.GetArrowType(Terrain.ExtractData(worldItem.Value));
 
-			// Probabilidad de rotura según el tipo de flecha
+			// Aplicar efectos de veneno si la flecha es de veneno
+			if (arrowType == RepeatArrowBlock.ArrowType.PoisonArrow || arrowType == RepeatArrowBlock.ArrowType.SeriousPoisonArrow)
+			{
+				float poisonIntensity = (arrowType == RepeatArrowBlock.ArrowType.PoisonArrow) ? 150f : 300f;
+				ComponentPoisonInfected componentPoisonInfected = (componentBody != null) ? componentBody.Entity.FindComponent<ComponentPoisonInfected>() : null;
+				ComponentPlayer componentPlayer = ((componentBody != null) ? componentBody.Entity.FindComponent<ComponentCreature>() : null) as ComponentPlayer;
+
+				if (componentPlayer != null)
+				{
+					if (!componentPlayer.ComponentSickness.IsSick)
+					{
+						componentPlayer.ComponentSickness.StartSickness();
+						componentPlayer.ComponentSickness.m_sicknessDuration = Math.Max(0f, poisonIntensity - (componentPoisonInfected != null ? componentPoisonInfected.PoisonResistance : 0f));
+					}
+				}
+				else if (componentPoisonInfected != null)
+				{
+					componentPoisonInfected.StartInfect(poisonIntensity);
+				}
+
+				// Aplicar daño de veneno
+				ComponentHealth componentHealth = (componentBody != null) ? componentBody.Entity.FindComponent<ComponentHealth>() : null;
+				Projectile projectile = worldItem as Projectile;
+				if (projectile != null && componentHealth != null)
+				{
+					float damage = (arrowType == RepeatArrowBlock.ArrowType.PoisonArrow) ? 0.2f : 0.4f;
+					componentHealth.Injure(new FireInjury(damage / componentHealth.FireResilience, projectile.Owner));
+				}
+
+				// Las flechas de veneno no se rompen
+				return false;
+			}
+
+			// Probabilidad de rotura para flechas normales
 			if (worldItem.Velocity.Length() > 10f)
 			{
 				float breakChance = 0f;
@@ -52,7 +89,6 @@ namespace Game
 
 				if (this.m_random.Float(0f, 1f) < breakChance)
 				{
-					// Si se rompe la flecha, desaparece
 					return true;
 				}
 			}

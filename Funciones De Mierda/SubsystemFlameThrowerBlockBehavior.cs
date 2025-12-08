@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using Engine;
 using Game;
 using TemplatesDatabase;
+using WonderfulEra;
 
 namespace Game
 {
-	// Token: 0x020000D2 RID: 210
 	public class SubsystemFlameThrowerBlockBehavior : SubsystemBlockBehavior
 	{
-		// Token: 0x06000640 RID: 1600 RVA: 0x0002929C File Offset: 0x0002749C
 		public override int[] HandledBlocks
 		{
 			get
@@ -21,10 +20,8 @@ namespace Game
 			}
 		}
 
-		// Token: 0x06000641 RID: 1601 RVA: 0x000292AE File Offset: 0x000274AE
 		public override bool OnEditInventoryItem(IInventory inventory, int slotIndex, ComponentPlayer componentPlayer)
 		{
-			// Solo crear el widget si no hay uno activo
 			if (componentPlayer.ComponentGui.ModalPanelWidget == null)
 			{
 				componentPlayer.ComponentGui.ModalPanelWidget = new FlameThrowerWidget(inventory, slotIndex);
@@ -32,7 +29,6 @@ namespace Game
 			return true;
 		}
 
-		// Token: 0x06000642 RID: 1602 RVA: 0x000292D4 File Offset: 0x000274D4
 		public override bool OnAim(Ray3 aim, ComponentMiner componentMiner, AimState state)
 		{
 			IInventory inventory = componentMiner.Inventory;
@@ -131,7 +127,6 @@ namespace Game
 										ComponentPlayer componentPlayer2 = componentMiner.ComponentPlayer;
 										if (componentPlayer2 != null)
 										{
-											// Mensaje en inglés
 											componentPlayer2.ComponentGui.DisplaySmallMessage("Load flame ammo first", Color.Orange, true, false);
 										}
 										return true;
@@ -166,9 +161,18 @@ namespace Game
 												projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
 											}
 										}
-										// Solo se reproduce sonido de fuego ya que no hay veneno
-										this.m_subsystemAudio.PlaySound("Audio/Flamethrower/Flamethrower Fire", 1f, this.m_random.Float(-0.1f, 0.1f), componentMiner.ComponentCreature.ComponentCreatureModel.EyePosition, 10f, true);
-										this.m_subsystemParticles.AddParticleSystem(new FlameSmokeParticleSystem(this.m_subsystemTerrain, vector + 0.3f * vector2, vector2), false);
+
+										// Reproducir sonido y partículas según el tipo de bala
+										if (bulletType == FlameBulletBlock.FlameBulletType.Flame)
+										{
+											this.m_subsystemAudio.PlaySound("Audio/Flamethrower/Flamethrower Fire", 1f, this.m_random.Float(-0.1f, 0.1f), componentMiner.ComponentCreature.ComponentCreatureModel.EyePosition, 10f, true);
+											this.m_subsystemParticles.AddParticleSystem(new FlameSmokeParticleSystem(this.m_subsystemTerrain, vector + 0.3f * vector2, vector2), false);
+										}
+										else // Poison
+										{
+											this.m_subsystemAudio.PlaySound("Audio/Flamethrower/PoisonSmoke", 1f, this.m_random.Float(-0.1f, 0.1f), componentMiner.ComponentCreature.ComponentCreatureModel.EyePosition, 8f, true);
+											this.m_subsystemParticles.AddParticleSystem(new PoisonSmokeParticleSystem(this.m_subsystemTerrain, vector + 0.3f * vector2, vector2), false);
+										}
 									}
 									this.nextTime = num4 + 0.3f;
 								}
@@ -217,7 +221,6 @@ namespace Game
 			return false;
 		}
 
-		// Token: 0x06000643 RID: 1603 RVA: 0x00029B4C File Offset: 0x00027D4C
 		public override int GetProcessInventoryItemCapacity(IInventory inventory, int slotIndex, int value)
 		{
 			int num = Terrain.ExtractContents(value);
@@ -245,7 +248,6 @@ namespace Game
 			return 15 - loadCount;
 		}
 
-		// Token: 0x06000644 RID: 1604 RVA: 0x00029BBC File Offset: 0x00027DBC
 		public override void ProcessInventoryItem(IInventory inventory, int slotIndex, int value, int count, int processCount, out int processedValue, out int processedCount)
 		{
 			FlameBulletBlock.FlameBulletType bulletType = FlameBulletBlock.GetBulletType(Terrain.ExtractData(value));
@@ -272,7 +274,6 @@ namespace Game
 			inventory.AddSlotItems(slotIndex, value2, 1);
 		}
 
-		// Token: 0x06000645 RID: 1605 RVA: 0x00029C48 File Offset: 0x00027E48
 		public override void Load(ValuesDictionary valuesDictionary)
 		{
 			this.m_subsystemTerrain = base.Project.FindSubsystem<SubsystemTerrain>(true);
@@ -285,37 +286,16 @@ namespace Game
 			base.Load(valuesDictionary);
 		}
 
-		// Token: 0x04000396 RID: 918
 		public SubsystemTerrain m_subsystemTerrain;
-
-		// Token: 0x04000397 RID: 919
 		public SubsystemTime m_subsystemTime;
-
-		// Token: 0x04000398 RID: 920
 		public SubsystemProjectiles m_subsystemProjectiles;
-
-		// Token: 0x04000399 RID: 921
 		public SubsystemParticles m_subsystemParticles;
-
-		// Token: 0x0400039A RID: 922
 		public SubsystemAudio m_subsystemAudio;
-
-		// Token: 0x0400039B RID: 923
 		public Game.Random m_random = new Game.Random();
-
-		// Token: 0x0400039D RID: 925
 		public Dictionary<ComponentMiner, double> m_aimStartTimes = new Dictionary<ComponentMiner, double>();
-
-		// Token: 0x0400039E RID: 926
 		public int m_BulletBlockIndex;
-
-		// Token: 0x0400039F RID: 927
 		public int m_FlameThrowerBlockIndex;
-
-		// Token: 0x040003A0 RID: 928
 		public float nextTime;
-
-		// Token: 0x040003A1 RID: 929
 		public const int MaxCount = 15;
 	}
 }

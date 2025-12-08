@@ -60,8 +60,15 @@ namespace Game
 				return;
 			}
 
-			// Solo hay balas de fuego ahora
-			this.m_instructionsLabel.Text = "Prepare to spray fire " + FlameThrowerBlock.GetLoadCount(slotValue).ToString() + "/15";
+			// Obtener tipo de bala
+			FlameBulletBlock.FlameBulletType? bulletType = FlameThrowerBlock.GetBulletType(Terrain.ExtractData(slotValue));
+			string ammoType = "fire";
+			if (bulletType == FlameBulletBlock.FlameBulletType.Poison)
+			{
+				ammoType = "poison";
+			}
+
+			this.m_instructionsLabel.Text = "Prepare to spray " + ammoType + " " + FlameThrowerBlock.GetLoadCount(slotValue).ToString() + "/15";
 			this.m_instructionsLabel.Color = Color.White;
 		}
 

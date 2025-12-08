@@ -18,8 +18,8 @@ namespace Game
 					throw new InvalidOperationException("Too many arrow types.");
 				}
 
-				// Solo procesar los 4 tipos que tenemos
-				if (num >= 4) continue;
+				// Solo procesar los 6 tipos que tenemos
+				if (num >= 6) continue;
 
 				Matrix boneAbsoluteTransform = BlockMesh.GetBoneAbsoluteTransform(model.FindMesh(RepeatArrowBlock.m_shaftNames[num], true).ParentBone);
 				Matrix boneAbsoluteTransform2 = BlockMesh.GetBoneAbsoluteTransform(model.FindMesh(RepeatArrowBlock.m_stabilizerNames[num], true).ParentBone);
@@ -63,7 +63,7 @@ namespace Game
 		public override float GetProjectilePower(int value)
 		{
 			int arrowType = (int)RepeatArrowBlock.GetArrowType(Terrain.ExtractData(value));
-			if (arrowType < 0 || arrowType >= 4)
+			if (arrowType < 0 || arrowType >= 6)
 			{
 				return 0f;
 			}
@@ -73,7 +73,7 @@ namespace Game
 		public override float GetExplosionPressure(int value)
 		{
 			int arrowType = (int)RepeatArrowBlock.GetArrowType(Terrain.ExtractData(value));
-			if (arrowType < 0 || arrowType >= 4)
+			if (arrowType < 0 || arrowType >= 6)
 			{
 				return 0f;
 			}
@@ -83,7 +83,7 @@ namespace Game
 		public override float GetIconViewScale(int value, DrawBlockEnvironmentData environmentData)
 		{
 			int arrowType = (int)RepeatArrowBlock.GetArrowType(Terrain.ExtractData(value));
-			if (arrowType < 0 || arrowType >= 4)
+			if (arrowType < 0 || arrowType >= 6)
 			{
 				return 1f;
 			}
@@ -96,6 +96,8 @@ namespace Game
 			yield return Terrain.MakeBlockValue(this.BlockIndex, 0, RepeatArrowBlock.SetArrowType(0, RepeatArrowBlock.ArrowType.IronArrow));
 			yield return Terrain.MakeBlockValue(this.BlockIndex, 0, RepeatArrowBlock.SetArrowType(0, RepeatArrowBlock.ArrowType.DiamondArrow));
 			yield return Terrain.MakeBlockValue(this.BlockIndex, 0, RepeatArrowBlock.SetArrowType(0, RepeatArrowBlock.ArrowType.ExplosiveArrow));
+			yield return Terrain.MakeBlockValue(this.BlockIndex, 0, RepeatArrowBlock.SetArrowType(0, RepeatArrowBlock.ArrowType.PoisonArrow));
+			yield return Terrain.MakeBlockValue(this.BlockIndex, 0, RepeatArrowBlock.SetArrowType(0, RepeatArrowBlock.ArrowType.SeriousPoisonArrow));
 		}
 
 		public override string GetDisplayName(SubsystemTerrain subsystemTerrain, int value)
@@ -108,6 +110,8 @@ namespace Game
 				case 1: return "Iron Repeating Arrow";
 				case 2: return "Diamond Repeating Arrow";
 				case 3: return "Explosive Repeating Arrow";
+				case 4: return "Poison Repeating Arrow";
+				case 5: return "Serious Poison Repeating Arrow";
 				default: return "Unknown Arrow";
 			}
 		}
@@ -124,65 +128,32 @@ namespace Game
 
 		static RepeatArrowBlock()
 		{
-			float[] array = new float[4];
-			array[3] = 85f;
+			float[] array = new float[6];
+			array[3] = 85f; // Explosive arrow
 			RepeatArrowBlock.m_explosionPressures = array;
 		}
 
-		public static int Index = 804;
-
+		public static int Index = 301;
 		public List<BlockMesh> m_standaloneBlockMeshes = new List<BlockMesh>();
-
-		public static int[] m_order = new int[] { 0, 1, 2, 3 };
-
+		public static int[] m_order = new int[] { 0, 1, 2, 3, 4, 5 };
 		public static string[] m_tipNames = new string[]
 		{
-			"ArrowTip",
-			"ArrowTip",
-			"ArrowTip",
-			"ArrowTip"
+			"ArrowTip", "ArrowTip", "ArrowTip", "ArrowTip", "ArrowTip", "ArrowTip"
 		};
-
-		public static int[] m_tipTextureSlots = new int[]
-		{
-			79,
-			63,
-			182,
-			225
-		};
-
+		public static int[] m_tipTextureSlots = new int[] { 79, 63, 182, 225, 100, 60 };
 		public static string[] m_shaftNames = new string[]
 		{
-			"ArrowShaft",
-			"ArrowShaft",
-			"ArrowShaft",
-			"ArrowShaft"
+			"ArrowShaft", "ArrowShaft", "ArrowShaft", "ArrowShaft", "ArrowShaft", "ArrowShaft"
 		};
-
-		public static int[] m_shaftTextureSlots = new int[] { 51, 51, 51, 51 };
-
+		public static int[] m_shaftTextureSlots = new int[] { 51, 51, 51, 51, 51, 51 };
 		public static string[] m_stabilizerNames = new string[]
 		{
-			"ArrowStabilizer",
-			"ArrowStabilizer",
-			"ArrowStabilizer",
-			"ArrowStabilizer"
+			"ArrowStabilizer", "ArrowStabilizer", "ArrowStabilizer", "ArrowStabilizer", "ArrowStabilizer", "ArrowStabilizer"
 		};
-
-		public static int[] m_stabilizerTextureSlots = new int[] { 15, 15, 15, 15 };
-
-		public static float[] m_offsets = new float[] { -0.45f, -0.45f, -0.45f, -0.45f };
-
-		public static float[] m_weaponPowers = new float[]
-		{
-			28f,
-			38f,
-			55f,
-			18f
-		};
-
-		public static float[] m_iconViewScales = new float[] { 0.8f, 0.8f, 0.8f, 0.8f };
-
+		public static int[] m_stabilizerTextureSlots = new int[] { 15, 15, 15, 15, 15, 15 };
+		public static float[] m_offsets = new float[] { -0.45f, -0.45f, -0.45f, -0.45f, -0.45f, -0.45f };
+		public static float[] m_weaponPowers = new float[] { 16f, 24f, 36f, 8f, 6f, 12f };
+		public static float[] m_iconViewScales = new float[] { 0.8f, 0.8f, 0.8f, 0.8f, 0.8f, 0.8f };
 		public static float[] m_explosionPressures;
 
 		public enum ArrowType
@@ -190,7 +161,9 @@ namespace Game
 			CopperArrow,
 			IronArrow,
 			DiamondArrow,
-			ExplosiveArrow
+			ExplosiveArrow,
+			PoisonArrow,
+			SeriousPoisonArrow
 		}
 	}
 }
