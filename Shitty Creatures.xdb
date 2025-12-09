@@ -29,12 +29,11 @@
             <Parameter Name="FadeDuration" Value="0.3" Type="float" Description="Duración en segundos del desvanecimiento final cuando llega a la cabeza. AJUSTA: Qué tan rápido desaparece el texto hostil al final."/>
         </ComponentTemplate>
 
-        <ComponentTemplate Name="PoisonInfected" Description="Estado de infección por veneno" Guid="15e5e4f3-bd8c-4f26-a81f-69f5ebb2dea4">
-  <Parameter Name="Class" Guid="97cb3890-473a-4cb8-8fcf-ab4d90c77097" Value="Game.ComponentPoisonInfected" Type="string"/>
+        <ComponentTemplate Name="PoisonInfected" Description="Componente de criatura infectada por veneno" Guid="d5e7f9a1-b3c5-4d9f-1a3b-5c7d9f1a3b5c">
+  <Parameter Name="Class" Guid="e6f8a0b2-c4d6-4e0a-2b4c-6d8e0a2b4c6d" Value="Game.ComponentPoisonInfected" Type="string"/>
   <Parameter Name="IsOptional" Value="true" Type="bool"/>
-  <Parameter Name="LoadOrder" Value="-1" Type="int"/>
-  <Parameter Name="PoisonResistance" Description="Resistencia al veneno (mayor = menos efecto)" Guid="33a03b36-68c7-459c-b081-0cb4ff963335" Value="0" Type="float"/>
-  <Parameter Name="IsJumpMove" Description="Si la criatura tiene movimientos espasmódicos cuando está envenenada" Guid="999d73d0-ab0a-4197-9c2c-2a093327706a" Value="false" Type="bool"/>
+  <Parameter Name="LoadOrder" Value="60" Type="int"/>
+  <Parameter Name="PoisonResistance" Description="Resistencia al veneno (reduce duración)" Guid="f7a9b1c3-d5e7-4f1b-3c5d-7e9f1b3c5d7e" Value="0" Type="float"/>
 </ComponentTemplate>
     </Folder>
 
@@ -239,6 +238,9 @@
   <Parameter Name="IsOptional" Value="true" Type="bool"/>
   <Parameter Name="LoadOrder" Value="50" Type="int"/>
   <Parameter Name="PoisonIntensity" Description="Intensidad del veneno (mayor = más tiempo de infección)" Guid="638c7b31-cdec-47ff-ae63-0e35a8481011" Value="400" Type="float"/>
+  <Parameter Name="InfectionProbability" Description="Probabilidad de infección por ataque (0-1)" Guid="a2b4c6d8-e0f2-4a6c-8d1e-3f5a7b9c1d3e" Value="0.3" Type="float"/>
+  <Parameter Name="InfectionCooldown" Description="Tiempo entre posibles infecciones (segundos)" Guid="b3c5d7e9-f1a3-4b7d-9e2f-4a6c8e0f2b4d" Value="10" Type="float"/>
+  <Parameter Name="AttackRange" Description="Rango máximo para infectar" Guid="c4d6e8f0-a2b4-4c8e-0f2b-4d6e8f0a2b4c" Value="2" Type="float"/>
 </ComponentTemplate>
         
         <ComponentTemplate Name="ComponentCreatureDefender" Guid="a11226c4-db03-4e42-a725-f8797f911726">
@@ -354,6 +356,22 @@
                 <Parameter Name="TextureOverride" Guid="96a84a19-1df6-2227-a58e-dc24ff5f8585" Value="Textures/Naomi" Type="string"/>
                 <Parameter Name="WalkAnimationSpeed" Guid="ad201b2b-b72d-4091-bd7c-d39e357c53ab" Value="0.65" Type="float"/>
             </MemberComponentTemplate>
+            <MemberComponentTemplate Name="PoisonInfectBehavior" Guid="36fe135b-19e6-4b78-acab-663801dc4f6c">
+    <Parameter Name="Class" Value="Game.ComponentPoisonInfectedBehavior" Type="string"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+    <Parameter Name="PoisonIntensity" Value="0" Type="float"/> <!-- 0 = no infecta -->
+    <Parameter Name="InfectionProbability" Value="0" Type="float"/> <!-- 0 = 0% chance -->
+    <Parameter Name="InfectionCooldown" Value="0" Type="float"/>
+    <Parameter Name="AttackRange" Value="0" Type="float"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="PoisonInfected" Guid="3fd330eb-7e72-42a2-896d-35ecc9753979">
+    <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int"/>
+    <Parameter Name="PoisonResistance" Value="-50" Type="float"/>
+    <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
+</MemberComponentTemplate>
             <MemberComponentTemplate Name="HealthBarDisplay" Guid="148506c9-43d4-4d51-97d7-59b7db079cd4" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
         <Parameter Name="MaxDisplayDistance" Value="19" Type="float"/>
     </MemberComponentTemplate>
