@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Engine;
 using Game;
 using GameEntitySystem;
@@ -29,6 +29,7 @@ namespace Game
 		public void StartInfect(float infectDuration)
 		{
 			this.m_InfectDuration = MathUtils.Max(infectDuration - this.PoisonResistance, 0f);
+			this.m_lastPukeTime = this.m_subsystemTime.GameTime; // Iniciar contador
 		}
 
 		public void NauseaEffect()
@@ -81,6 +82,8 @@ namespace Game
 			{
 				this.m_componentCreature.ComponentCreatureSounds.PlayIdleSound(true);
 			}
+
+			this.m_lastPukeTime = this.m_subsystemTime.GameTime; // Actualizar tiempo del último vómito
 		}
 
 		public void Update(float dt)
@@ -110,12 +113,23 @@ namespace Game
 			if (this.m_InfectDuration > 0f)
 			{
 				this.m_InfectDuration = MathUtils.Max(this.m_InfectDuration - dt, 0f);
+
+				// EFECTO DE NÁUSEA CADA 5-10 SEGUNDOS
 				if (componentHealth.Health > 0f && this.m_subsystemTime.PeriodicGameTimeEvent(3.0, -0.01))
 				{
-					double num = (double)((this.m_InfectDuration > 150f) ? 7 : 15);
-					if (this.m_lastNauseaTime == null || this.m_subsystemTime.GameTime - this.m_lastNauseaTime.Value > num)
+					double nauseaInterval = (double)((this.m_InfectDuration > 150f) ? 5 : 10);
+					if (this.m_lastNauseaTime == null || this.m_subsystemTime.GameTime - this.m_lastNauseaTime.Value > nauseaInterval)
 					{
 						this.NauseaEffect();
+					}
+				}
+
+				// VÓMITO PERIÓDICO CADA 30 SEGUNDOS MIENTRAS ESTÉ INFECTADO
+				if (this.m_lastPukeTime == null || this.m_subsystemTime.GameTime - this.m_lastPukeTime.Value > 30.0)
+				{
+					if (this.m_pukeParticleSystem == null || this.m_pukeParticleSystem.IsStopped)
+					{
+						this.StartPuking();
 					}
 				}
 			}
