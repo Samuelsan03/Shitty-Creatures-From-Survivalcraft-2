@@ -28,6 +28,7 @@ namespace Game
 		public float BurstTime = 2f;
 		public float CooldownTime = 1f;
 		public string FireSound = "Audio/Flamethrower/Flamethrower Fire";
+		public string PoisonSound = "Audio/Flamethrower/PoisonSmoke"; // Nuevo sonido para veneno
 		public string HammerSound = "Audio/HammerCock";
 		public float FireSoundDistance = 30f;
 		public float HammerSoundDistance = 20f;
@@ -36,6 +37,13 @@ namespace Game
 		public float FlameSpeed = 40f;
 		public int BurstCount = 15;
 		public float SpreadAngle = 15f;
+
+		// Tipos de bala disponibles - INCLUYENDO VENENO
+		private FlameBulletBlock.FlameBulletType[] m_availableBulletTypes = new FlameBulletBlock.FlameBulletType[]
+		{
+			FlameBulletBlock.FlameBulletType.Flame,
+			FlameBulletBlock.FlameBulletType.Poison
+		};
 
 		// Estado de animación
 		private bool m_isAiming = false;
@@ -47,6 +55,7 @@ namespace Game
 		private Random m_random = new Random();
 		private float m_soundVolume = 0f;
 		private bool m_hammerSoundPlayed = false;
+		private int m_currentBulletTypeIndex = 0; // Índice del tipo de bala actual
 
 		// UpdateOrder
 		public int UpdateOrder
@@ -100,6 +109,9 @@ namespace Game
 
 			// Obtener el índice del bloque FlameThrower
 			this.m_flameThrowerBlockIndex = BlocksManager.GetBlockIndex<FlameThrowerBlock>(false, false);
+
+			// Inicializar tipo de bala aleatorio
+			this.m_currentBulletTypeIndex = m_random.Int(0, m_availableBulletTypes.Length);
 		}
 
 		public void Update(float dt)
@@ -192,6 +204,10 @@ namespace Game
 				if (this.m_subsystemTime.GameTime - this.m_animationStartTime >= (double)this.CooldownTime)
 				{
 					this.m_isCooldown = false;
+
+					// Cambiar tipo de bala para la próxima ráfaga
+					this.m_currentBulletTypeIndex = (this.m_currentBulletTypeIndex + 1) % m_availableBulletTypes.Length;
+
 					this.StartAiming();
 				}
 			}
@@ -312,15 +328,22 @@ namespace Game
 			if (this.m_soundVolume > 0.01f && !string.IsNullOrEmpty(this.FireSound) &&
 				this.m_subsystemTime.GameTime - this.m_burstStartTime < (double)this.BurstTime - 0.1)
 			{
-				float fireVolume = MathUtils.Max(this.m_soundVolume, 0.9f);
-				this.m_subsystemAudio.PlaySound(
-					this.FireSound,
-					fireVolume,
-					this.m_random.Float(-0.1f, 0.1f),
-					this.m_componentCreature.ComponentBody.Position,
-					this.FireSoundDistance,
-					true
-				);
+				// Seleccionar sonido según tipo de bala
+				string soundToPlay = (m_availableBulletTypes[m_currentBulletTypeIndex] == FlameBulletBlock.FlameBulletType.Flame) ?
+					this.FireSound : this.PoisonSound;
+
+				if (!string.IsNullOrEmpty(soundToPlay))
+				{
+					float fireVolume = MathUtils.Max(this.m_soundVolume, 0.9f);
+					this.m_subsystemAudio.PlaySound(
+						soundToPlay,
+						fireVolume,
+						this.m_random.Float(-0.1f, 0.1f),
+						this.m_componentCreature.ComponentBody.Position,
+						this.FireSoundDistance,
+						true
+					);
+				}
 			}
 		}
 
@@ -397,7 +420,7 @@ namespace Game
 
 		private void ShootFlame()
 		{
-			// Solo disparar si tiene lanzallamas equipado
+			// Solo disparar si tiene lanzallamas equipado y hay objetivo
 			if (!HasFlameThrowerEquipped() || this.m_componentChaseBehavior.Target == null)
 			{
 				return;
@@ -420,7 +443,10 @@ namespace Game
 				int flameBulletIndex = BlocksManager.GetBlockIndex<FlameBulletBlock>(false, false);
 				if (flameBulletIndex > 0)
 				{
-					int bulletData = FlameBulletBlock.SetBulletType(0, FlameBulletBlock.FlameBulletType.Flame);
+					// Obtener tipo de bala actual
+					FlameBulletBlock.FlameBulletType currentBulletType = m_availableBulletTypes[m_currentBulletTypeIndex];
+
+					int bulletData = FlameBulletBlock.SetBulletType(0, currentBulletType);
 					int blockValue = Terrain.MakeBlockValue(flameBulletIndex, 0, bulletData);
 
 					this.m_subsystemProjectiles.FireProjectile(
@@ -435,10 +461,21 @@ namespace Game
 
 					if (this.m_subsystemParticles != null && this.m_subsystemTerrain != null)
 					{
-						this.m_subsystemParticles.AddParticleSystem(
-							new FlameSmokeParticleSystem(this.m_subsystemTerrain, particlePosition, adjustedDirection),
-							false
-						);
+						// Crear sistema de partículas según el tipo de bala
+						if (currentBulletType == FlameBulletBlock.FlameBulletType.Flame)
+						{
+							this.m_subsystemParticles.AddParticleSystem(
+								new FlameSmokeParticleSystem(this.m_subsystemTerrain, particlePosition, adjustedDirection),
+								false
+							);
+						}
+						else // Poison
+						{
+							this.m_subsystemParticles.AddParticleSystem(
+								new PoisonSmokeParticleSystem(this.m_subsystemTerrain, particlePosition, adjustedDirection),
+								false
+							);
+						}
 					}
 
 					if (this.m_subsystemNoise != null)
