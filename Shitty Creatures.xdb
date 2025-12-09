@@ -66,14 +66,15 @@
     <Parameter Name="Class" Guid="12345678-1234-1234-1234-123456789013" Value="Game.ComponentRangedShooterBehavior" Type="string"/>
 </ComponentTemplate>
 
-<ComponentTemplate Name="FlameThrowerShooterBehavior" Description="Comportamiento para NPCs que usan lanzallamas con disparos ilimitados de fuego" Guid="87654321-1234-1234-1234-123456789012" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+<ComponentTemplate Name="FlameThrowerShooterBehavior" Description="Comportamiento para NPCs que usan lanzallamas con disparos ilimitados de fuego y veneno" Guid="87654321-1234-1234-1234-123456789012" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
     <Parameter Name="MaxDistance" Description="Distancia máxima de disparo efectivo" Guid="1545802d-570b-4185-9e52-14d4dab61467" Value="20" Type="float"/>
-    <Parameter Name="MinDistance" Description="Distancia mínima para comenzar a disparar" Guid="cbf6fd16-9c67-4e8a-bf55-a84658e17434" Value="5" Type="float"/>
     <Parameter Name="AimTime" Description="Tiempo de apuntado antes de comenzar a disparar" Guid="a81dd914-84dd-46ce-95ee-e86873ed0827" Value="0.5" Type="float"/>
     <Parameter Name="BurstTime" Description="Duración de la ráfaga de llamas en segundos" Guid="e08241cc-b72b-4f9c-9abb-fd212f69ed22" Value="2.0" Type="float"/>
     <Parameter Name="CooldownTime" Description="Tiempo de enfriamiento entre ráfagas en segundos" Guid="c349fb23-a566-4550-b250-f6fe4ce8c2ca" Value="1.0" Type="float"/>
-    <Parameter Name="FireSound" Description="Sonido de lanzallamas en funcionamiento" Guid="78a5a7ce-20c9-434c-b3b0-3ebfb992266a" Value="Audio/Flamethrower/Flamethrower Fire" Type="string"/>
+    <Parameter Name="FireSound" Description="Sonido de lanzallamas de fuego" Guid="78a5a7ce-20c9-434c-b3b0-3ebfb992266a" Value="Audio/Flamethrower/Flamethrower Fire" Type="string"/>
+    <Parameter Name="HammerSound" Description="Sonido del martillo del lanzallamas" Guid="f4b4af44-88f9-455d-adb9-f3e44a12dfbd" Value="Audio/HammerCock" Type="string"/>
     <Parameter Name="FireSoundDistance" Description="Distancia del sonido de lanzallamas" Guid="c5abe7d9-4bac-491b-a197-3db041af5818" Value="25" Type="float"/>
+    <Parameter Name="HammerSoundDistance" Description="Distancia del sonido del martillo" Guid="bb6940f6-5ec6-4479-8eb6-d329eeafb361" Value="20" Type="float"/>
     <Parameter Name="Accuracy" Description="Precisión del disparo (menor = más preciso)" Guid="d83a08e4-6012-4710-be48-164d5e64e32a" Value="0.1" Type="float"/>
     <Parameter Name="UseRecoil" Description="Aplicar retroceso físico al disparar" Guid="ceb7d934-19a8-4f7b-bb49-70c59b618ed3" Value="true" Type="bool"/>
     <Parameter Name="FlameSpeed" Description="Velocidad base de las llamas" Guid="2103428d-22b6-4f92-b5bc-133d7b7a3543" Value="40" Type="float"/>
@@ -83,7 +84,6 @@
 </ComponentTemplate>
 
     <ComponentTemplate Name="RepeatCrossbowShooterBehavior" Description="Comportamiento para NPCs que usan ballestas repetidoras con disparos ilimitados y ráfagas múltiples" Guid="e40dd82e-a7a5-42de-83ee-8dc7d8cdf2f2" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
-    <Parameter Name="MinDistance" Description="Distancia mínima para comenzar a disparar" Guid="e60d0a42-2e8f-494c-8878-ad1c47932b19" Value="5" Type="float"/>
     <Parameter Name="MaxDistance" Description="Distancia máxima de disparo efectivo" Guid="9fa47466-a1bc-49a7-b965-85b21e08476d" Value="25" Type="float"/>
     <Parameter Name="DrawTime" Description="Tiempo para tensar completamente la ballesta en segundos" Guid="ebe23e28-67f7-4fc4-bacf-bddf3fce892e" Value="2.5" Type="float"/>
     <Parameter Name="AimTime" Description="Tiempo de apuntado antes de comenzar a tensar" Guid="6317aefb-5093-439e-9e48-82677d8b305b" Value="0.5" Type="float"/>
@@ -956,21 +956,23 @@
     </ParameterSet>   
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="FlameThrowerShooterBehavior" Guid="61152e11-ab57-426a-aa5d-bc0c332b6a2c">
-        <Parameter Name="LoadOrder" Value="0" Type="int"/>
-        <Parameter Name="IsOptional" Value="false" Type="bool"/>
-        <Parameter Name="Class" Value="Game.ComponentFlameThrowerShooterBehavior" Type="string"/>
-        <Parameter Name="MaxDistance" Value="30" Type="float"/>
-        <Parameter Name="AimTime" Value="0.4" Type="float"/>
-        <Parameter Name="BurstTime" Value="5" Type="float"/>
-        <Parameter Name="CooldownTime" Value="1.0" Type="float"/>
-        <Parameter Name="FireSound" Value="Audio/Flamethrower/Flamethrower Fire" Type="string"/>
-        <Parameter Name="FireSoundDistance" Value="20" Type="float"/>
-        <Parameter Name="Accuracy" Value="0.12" Type="float"/>
-        <Parameter Name="UseRecoil" Value="true" Type="bool"/>
-        <Parameter Name="FlameSpeed" Value="35" Type="float"/>
-        <Parameter Name="BurstCount" Value="12" Type="int"/>
-        <Parameter Name="SpreadAngle" Value="15" Type="float"/>
-    </MemberComponentTemplate>
+    <Parameter Name="LoadOrder" Value="0" Type="int"/>
+    <Parameter Name="IsOptional" Value="false" Type="bool"/>
+    <Parameter Name="Class" Value="Game.ComponentFlameThrowerShooterBehavior" Type="string"/>
+    <Parameter Name="MaxDistance" Value="30" Type="float"/>
+    <Parameter Name="AimTime" Value="0.4" Type="float"/>
+    <Parameter Name="BurstTime" Value="5" Type="float"/>
+    <Parameter Name="CooldownTime" Value="1.0" Type="float"/>
+    <Parameter Name="FireSound" Value="Audio/Flamethrower/Flamethrower Fire" Type="string"/>
+    <Parameter Name="HammerSound" Value="Audio/HammerCock" Type="string"/>
+    <Parameter Name="FireSoundDistance" Value="20" Type="float"/>
+    <Parameter Name="HammerSoundDistance" Value="20" Type="float"/>
+    <Parameter Name="Accuracy" Value="0.12" Type="float"/>
+    <Parameter Name="UseRecoil" Value="true" Type="bool"/>
+    <Parameter Name="FlameSpeed" Value="35" Type="float"/>
+    <Parameter Name="BurstCount" Value="12" Type="int"/>
+    <Parameter Name="SpreadAngle" Value="15" Type="float"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="CreatureSounds" Guid="af01f5d9-3b84-4fb2-a842-e823f9521d4e">
         <Parameter Name="PainSound" Guid="759694c1-e8c1-4773-9f65-105764c01895" Value="Audio/Creatures/FumadorQuimico/Pain" Type="string"/>
         <Parameter Name="IdleSound" Guid="90015d6d-f972-4ee3-9c18-91d52934d524" Value="Audio/Creatures/FumadorQuimico/Idie" Type="string"/>
@@ -4525,21 +4527,22 @@
         </ParameterSet>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="RepeatCrossbowShooterBehavior" Guid="13db5ca4-3b92-4cb5-b4b1-c07943116e62">
-        <Parameter Name="LoadOrder" Value="-1" Type="int"/>
-        <Parameter Name="IsOptional" Value="False" Type="bool"/>
-        <Parameter Name="MaxDistance" Guid="f1469dc5-258b-4005-bdee-327efd604076" Value="50" Type="float"/>
-        <Parameter Name="DrawTime" Guid="9581aebb-1ab4-4f8e-ad98-8196a65df3fa" Value="0.5" Type="float"/>
-        <Parameter Name="AimTime" Guid="15ae7b52-dc55-4a16-a87f-68efbc81755e" Value="0.5" Type="float"/>
-        <Parameter Name="TimeBetweenShots" Guid="e4463f94-f9a7-43b9-8663-4f3c0b0c25e8" Value="1.0" Type="float"/>
-        <Parameter Name="MaxInaccuracy" Guid="ec88e2a5-aee7-469e-9aa3-e162862265b4" Value="0.03" Type="float"/>
-        <Parameter Name="DrawSound" Guid="f4b4af44-88f9-455d-adb9-f3e44a12dfbd" Value="Audio/CrossbowDraw" Type="string"/>
-        <Parameter Name="FireSound" Guid="3938c14d-012f-4606-b834-dffe534ecc27" Value="Audio/Bow" Type="string"/>
-        <Parameter Name="ReleaseSound" Guid="e4350a5d-d73a-4235-b919-26a7247ca925" Value="Audio/CrossbowBoing" Type="string"/>
-        <Parameter Name="FireSoundDistance" Guid="bb6940f6-5ec6-4479-8eb6-d329eeafb361" Value="15" Type="float"/>
-        <Parameter Name="UseRecoil" Guid="598ab8c8-1396-478a-91fe-bfbad38f589f" Value="true" Type="bool"/>
-        <Parameter Name="BoltSpeed" Guid="5709b67d-0b65-4d91-a9fe-2e3cd341b86a" Value="40" Type="float"/>
-        <Parameter Name="Class" Guid="5bcd763f-84b3-4a99-b1f8-4bb115514aae" Value="Game.ComponentRepeatCrossbowShooterBehavior" Type="string"/>
-    </MemberComponentTemplate>
+    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
+    <Parameter Name="IsOptional" Value="False" Type="bool"/>
+    <Parameter Name="MaxDistance" Value="50" Type="float"/>
+    <Parameter Name="DrawTime" Value="0.5" Type="float"/>
+    <Parameter Name="AimTime" Value="0.5" Type="float"/>
+    <Parameter Name="CooldownTime" Value="0.5" Type="float"/>
+    <Parameter Name="TimeBetweenShots" Value="1.0" Type="float"/>
+    <Parameter Name="MaxInaccuracy" Value="0.03" Type="float"/>
+    <Parameter Name="DrawSound" Value="Audio/CrossbowDraw" Type="string"/>
+    <Parameter Name="FireSound" Value="Audio/Bow" Type="string"/>
+    <Parameter Name="ReleaseSound" Value="Audio/CrossbowBoing" Type="string"/>
+    <Parameter Name="FireSoundDistance" Value="15" Type="float"/>
+    <Parameter Name="UseRecoil" Value="true" Type="bool"/>
+    <Parameter Name="BoltSpeed" Value="40" Type="float"/>
+    <Parameter Name="Class" Value="Game.ComponentRepeatCrossbowShooterBehavior" Type="string"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidFireBehavior" Guid="2d9409a2-11db-47fa-a987-501d3dbfc18c" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
     <MemberComponentTemplate Name="Locomotion" Guid="326a3597-7997-4114-9d13-435addc0b967">
         <Parameter Name="AccelerationFactor" Guid="0a1d31cf-bfd2-4116-ab34-55ae95048c9b" Value="1.2" Type="float"/>
