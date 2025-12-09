@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Engine;
 using GameEntitySystem;
@@ -19,11 +19,11 @@ namespace Game
 		private SubsystemNoise m_subsystemNoise;
 		private Random m_random = new Random();
 
-		// Configuración
+		// Configuración - Mantener nombres originales del XML
 		public float MaxDistance = 25f;
 		public float DrawTime = 2.0f;    // Tiempo para tensar completamente
 		public float AimTime = 0.3f;
-		public float ReloadTime = 0.5f;  // Tiempo entre disparos
+		public float TimeBetweenShots = 0.5f;  // Tiempo entre disparos
 		public float MaxInaccuracy = 0.04f;
 		public string DrawSound = "Audio/CrossbowDraw";
 		public string FireSound = "Audio/Bow";
@@ -44,15 +44,17 @@ namespace Game
 		private float m_currentDraw = 0f;
 		private bool m_hasCrossbow = false;
 
-		// Tipos de flechas disponibles
+		// Tipos de flechas disponibles - AHORA INCLUYEN TODAS LAS FLECHAS
 		private RepeatArrowBlock.ArrowType[] m_availableArrowTypes = new RepeatArrowBlock.ArrowType[]
 		{
 			RepeatArrowBlock.ArrowType.CopperArrow,
 			RepeatArrowBlock.ArrowType.IronArrow,
 			RepeatArrowBlock.ArrowType.DiamondArrow,
-			RepeatArrowBlock.ArrowType.ExplosiveArrow
+			RepeatArrowBlock.ArrowType.ExplosiveArrow,
+			RepeatArrowBlock.ArrowType.PoisonArrow,
+			RepeatArrowBlock.ArrowType.SeriousPoisonArrow
 		};
-		
+
 		private int m_currentArrowTypeIndex = 0;
 
 		public int UpdateOrder => 0;
@@ -62,11 +64,11 @@ namespace Game
 		{
 			base.Load(valuesDictionary, idToEntityMap);
 
-			// Cargar parámetros
+			// Cargar parámetros según XML
 			MaxDistance = valuesDictionary.GetValue<float>("MaxDistance", 25f);
 			DrawTime = valuesDictionary.GetValue<float>("DrawTime", 2.0f);
 			AimTime = valuesDictionary.GetValue<float>("AimTime", 0.3f);
-			ReloadTime = valuesDictionary.GetValue<float>("ReloadTime", 0.5f);
+			TimeBetweenShots = valuesDictionary.GetValue<float>("TimeBetweenShots", 0.5f);
 			MaxInaccuracy = valuesDictionary.GetValue<float>("MaxInaccuracy", 0.04f);
 			DrawSound = valuesDictionary.GetValue<string>("DrawSound", "Audio/CrossbowDraw");
 			FireSound = valuesDictionary.GetValue<string>("FireSound", "Audio/Bow");
@@ -89,10 +91,10 @@ namespace Game
 		public override void OnEntityAdded()
 		{
 			base.OnEntityAdded();
-			
+
 			// Elegir tipo de flecha aleatorio inicial
 			m_currentArrowTypeIndex = m_random.Int(0, m_availableArrowTypes.Length);
-			
+
 			// Buscar ballesta repetidora
 			FindCrossbow();
 		}
@@ -122,7 +124,7 @@ namespace Game
 				m_componentChaseBehavior.Target.ComponentBody.Position
 			);
 
-			// Lógica de ataque - Solo verifica distancia máxima
+			// Lógica de ataque - Solo verifica distancia máxima (sin mínima)
 			if (distance <= MaxDistance)
 			{
 				if (!m_isAiming && !m_isDrawing && !m_isFiring && !m_isReloading)
@@ -185,11 +187,11 @@ namespace Game
 					// Quitar flecha después de disparar
 					ClearArrowFromCrossbow();
 
-					// Cambiar tipo de flecha para el próximo disparo
+					// Cambiar tipo de flecha para el próximo disparo (ciclo a través de todas)
 					m_currentArrowTypeIndex = (m_currentArrowTypeIndex + 1) % m_availableArrowTypes.Length;
 
-					// Pausa antes de recargar
-					if (m_subsystemTime.GameTime - m_fireTime >= ReloadTime)
+					// Pausa antes de recargar según TimeBetweenShots del XML
+					if (m_subsystemTime.GameTime - m_fireTime >= TimeBetweenShots)
 					{
 						StartAiming();
 					}
@@ -214,7 +216,7 @@ namespace Game
 					}
 				}
 			}
-			
+
 			if (!m_hasCrossbow)
 			{
 				m_crossbowSlot = -1;
@@ -450,31 +452,60 @@ namespace Game
 				// Obtener tipo de flecha actual
 				RepeatArrowBlock.ArrowType arrowType = m_availableArrowTypes[m_currentArrowTypeIndex];
 
-				// Posición de disparo
+				// Posición de disparo (desde los ojos del NPC)
 				Vector3 firePosition = m_componentCreature.ComponentCreatureModel.EyePosition;
-				firePosition.Y -= 0.1f;
 
-				Vector3 targetPosition = m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition;
-				Vector3 direction = Vector3.Normalize(targetPosition - firePosition);
+				// Posición objetivo (punto central del cuerpo)
+				Vector3 targetPosition = m_componentChaseBehavior.Target.ComponentBody.Position;
 
-				// Aplicar imprecisión
+				// Ajustar para apuntar a un punto más central (pecho/abdomen)
+				targetPosition.Y += m_componentChaseBehavior.Target.ComponentBody.BoxSize.Y * 0.4f;
+
+				// Calcular dirección PRECISA
+				Vector3 direction = targetPosition - firePosition;
+				float distance = direction.Length();
+
+				// Normalizar dirección
+				if (distance > 0.001f)
+				{
+					direction /= distance;
+				}
+				else
+				{
+					direction = Vector3.UnitX;
+				}
+
+				// PRECISIÓN MEJORADA:
+				// 1. Menor imprecisión base
+				float baseInaccuracy = MaxInaccuracy * 0.3f;
+
+				// 2. Factor de distancia (más preciso a distancia media)
+				float distanceFactor = MathUtils.Clamp(distance / MaxDistance, 0.1f, 1.0f);
+				float inaccuracy = baseInaccuracy * distanceFactor;
+
+				// 3. Aplicar menos imprecisión vertical que horizontal
 				direction += new Vector3(
-					m_random.Float(-MaxInaccuracy, MaxInaccuracy),
-					m_random.Float(-MaxInaccuracy * 0.5f, MaxInaccuracy * 0.5f),
-					m_random.Float(-MaxInaccuracy, MaxInaccuracy)
+					m_random.Float(-inaccuracy, inaccuracy),
+					m_random.Float(-inaccuracy * 0.3f, inaccuracy * 0.3f), // Vertical: 30% del horizontal
+					m_random.Float(-inaccuracy, inaccuracy)
 				);
+
+				// 4. Re-normalizar para mantener velocidad constante
 				direction = Vector3.Normalize(direction);
 
-				// Velocidad de la flecha
-				float speed = BoltSpeed * (0.8f + (m_currentDraw * 0.4f));
+				// 5. Velocidad constante (sin variación por tensión para NPC)
+				float speed = BoltSpeed * 1.1f; // 10% más rápido que el valor base
 
 				// Crear flecha de RepeatArrowBlock
 				int arrowData = RepeatArrowBlock.SetArrowType(0, arrowType);
 				int arrowValue = Terrain.MakeBlockValue(RepeatArrowBlock.Index, 0, arrowData);
 
+				// Ajustar ligeramente la posición de inicio para mejor alineación
+				Vector3 adjustedFirePosition = firePosition + direction * 0.3f;
+
 				var projectile = m_subsystemProjectiles.FireProjectile(
 					arrowValue,
-					firePosition,
+					adjustedFirePosition,
 					direction * speed,
 					Vector3.Zero,
 					m_componentCreature
@@ -486,6 +517,7 @@ namespace Game
 					projectile.IsIncendiary = false;
 					projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
 				}
+				// Las flechas de veneno ya tienen su comportamiento especial en SubsystemRepeatArrowBlockBehavior
 
 				// Ruido
 				if (m_subsystemNoise != null)
