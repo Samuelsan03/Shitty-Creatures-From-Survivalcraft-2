@@ -116,6 +116,36 @@ namespace Game
 			}
 		}
 
+		// ADD: Descriptions for all repeating arrow types
+		public override string GetDescription(int value)
+		{
+			int arrowType = (int)RepeatArrowBlock.GetArrowType(Terrain.ExtractData(value));
+
+			switch (arrowType)
+			{
+				case 0: // Copper Repeating Arrow
+					return "A specialized bolt for repeating crossbows. Made from copper, this arrow has moderate penetration power and is more accurate than regular Survivalcraft 2 arrows. Designed specifically for rapid-fire crossbows, it offers better stability during continuous firing.";
+
+				case 1: // Iron Repeating Arrow
+					return "An iron-tipped bolt engineered for repeating crossbows. With superior damage and armor penetration compared to regular iron arrows, this projectile maintains accuracy during rapid-fire sequences. The repeating crossbow mechanism allows faster shooting than standard crossbows.";
+
+				case 2: // Diamond Repeating Arrow
+					return "A high-end diamond-tipped bolt for advanced repeating crossbows. Features exceptional armor-piercing capability and damage output. Unlike standard diamond arrows, these are optimized for the repeating crossbow's unique firing mechanism, providing sustained high-damage output in automatic fire.";
+
+				case 3: // Explosive Repeating Arrow
+					return "An explosive-tipped bolt designed for repeating crossbows. Creates a small explosion on impact with 90 pressure force. While regular explosive arrows have a higher individual damage, these allow for rapid explosive shots, making them ideal for area denial and crowd control.";
+
+				case 4: // Poison Repeating Arrow
+					return "A poison-coated bolt for repeating crossbows. Inflicts poison damage over time on targets with moderate initial impact (11 damage). Causes poison effect for 30 seconds. Compared to regular poison arrows, these allow for faster application of poison effects, enabling quick poisoning of multiple enemies in succession.";
+
+				case 5: // Serious Poison Repeating Arrow
+					return "A heavily poisoned bolt for repeating crossbows. Delivers a stronger poison effect with higher poison duration (100 seconds) and initial damage (13 damage) than regular poison arrows. The repeating crossbow mechanism lets you apply serious poison to multiple targets rapidly, making it effective against groups of enemies.";
+
+				default:
+					return base.GetDescription(value);
+			}
+		}
+
 		public static RepeatArrowBlock.ArrowType GetArrowType(int data)
 		{
 			return (RepeatArrowBlock.ArrowType)(data & 15);
@@ -129,7 +159,7 @@ namespace Game
 		static RepeatArrowBlock()
 		{
 			float[] array = new float[6];
-			array[3] = 85f; // Explosive arrow
+			array[3] = 90f; // Explosive arrow (aumentado de 85 a 90)
 			RepeatArrowBlock.m_explosionPressures = array;
 		}
 
@@ -152,7 +182,12 @@ namespace Game
 		};
 		public static int[] m_stabilizerTextureSlots = new int[] { 15, 15, 15, 15, 15, 15 };
 		public static float[] m_offsets = new float[] { -0.45f, -0.45f, -0.45f, -0.45f, -0.45f, -0.45f };
-		public static float[] m_weaponPowers = new float[] { 16f, 24f, 36f, 8f, 6f, 12f };
+
+		// DAÑOS AJUSTADOS:
+		// Originales: 16f, 24f, 36f, 8f, 6f, 12f
+		// Nuevos: 18f, 26f, 40f, 10f, 11f, 13f
+		public static float[] m_weaponPowers = new float[] { 18f, 26f, 40f, 10f, 11f, 13f };
+
 		public static float[] m_iconViewScales = new float[] { 0.8f, 0.8f, 0.8f, 0.8f, 0.8f, 0.8f };
 		public static float[] m_explosionPressures;
 
@@ -166,4 +201,5 @@ namespace Game
 			SeriousPoisonArrow
 		}
 	}
+
 }
