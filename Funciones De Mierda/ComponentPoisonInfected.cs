@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Engine;
 using Game;
 using GameEntitySystem;
@@ -163,31 +163,35 @@ namespace Game
 				}
 			}
 
-			// REDUCCIÓN DE VELOCIDADES
+			// REDUCCIÓN DE VELOCIDADES - CORREGIDO
 			float infectDuration = this.m_InfectDuration;
-			if (infectDuration <= 150f)
+			if (infectDuration <= 0f)
 			{
-				if (infectDuration <= 0f)
-				{
-					componentLocomotion.WalkSpeed = this.oldWalkSpeed;
-					componentLocomotion.FlySpeed = this.oldFlySpeed;
-					componentLocomotion.SwimSpeed = this.oldSwimSpeed;
-					componentLocomotion.JumpSpeed = this.oldJumpSpeed;
-				}
-				else
-				{
-					// 40-60% de velocidad
-					float factor = MathUtils.Lerp(0.6f, 0.4f, infectDuration / 150f);
-					componentLocomotion.WalkSpeed = factor * this.oldWalkSpeed;
-					componentLocomotion.FlySpeed = factor * this.oldFlySpeed;
-					componentLocomotion.SwimSpeed = factor * this.oldSwimSpeed;
-					componentLocomotion.JumpSpeed = factor * this.oldJumpSpeed;
-				}
+				// CUANDO LA INFECCIÓN TERMINA: RESTAURAR VELOCIDADES NORMALES
+				componentLocomotion.WalkSpeed = this.oldWalkSpeed;
+				componentLocomotion.FlySpeed = this.oldFlySpeed;
+				componentLocomotion.SwimSpeed = this.oldSwimSpeed;
+				componentLocomotion.JumpSpeed = this.oldJumpSpeed;
+			}
+			else if (infectDuration <= 150f)
+			{
+				// INFECCIÓN MODERADA: 40-60% de velocidad
+				// Cuando infectDuration es alto (inicio), velocidad baja (40%)
+				// Cuando infectDuration es bajo (final), velocidad sube (60%)
+				float progress = infectDuration / 150f; // De 1 a 0
+				float factor = MathUtils.Lerp(0.6f, 0.4f, progress); // De 60% a 40%
+
+				componentLocomotion.WalkSpeed = factor * this.oldWalkSpeed;
+				componentLocomotion.FlySpeed = factor * this.oldFlySpeed;
+				componentLocomotion.SwimSpeed = factor * this.oldSwimSpeed;
+				componentLocomotion.JumpSpeed = factor * this.oldJumpSpeed;
 			}
 			else
 			{
-				// 20-40% de velocidad
-				float factor = MathUtils.Lerp(0.4f, 0.2f, MathUtils.Min((infectDuration - 150f) / 150f, 1f));
+				// INFECCIÓN GRAVE: 20-40% de velocidad
+				float progress = MathUtils.Min((infectDuration - 150f) / 150f, 1f);
+				float factor = MathUtils.Lerp(0.4f, 0.2f, progress); // De 40% a 20%
+
 				componentLocomotion.WalkSpeed = factor * this.oldWalkSpeed;
 				componentLocomotion.FlySpeed = factor * this.oldFlySpeed;
 				componentLocomotion.SwimSpeed = factor * this.oldSwimSpeed;

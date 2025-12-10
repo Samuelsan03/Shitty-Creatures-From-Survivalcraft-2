@@ -2,7 +2,6 @@
 using Engine;
 using Game;
 using TemplatesDatabase;
-using WonderfulEra;
 
 namespace Game
 {
@@ -36,30 +35,48 @@ namespace Game
 			// Aplicar efectos de veneno si la flecha es de veneno
 			if (arrowType == RepeatArrowBlock.ArrowType.PoisonArrow || arrowType == RepeatArrowBlock.ArrowType.SeriousPoisonArrow)
 			{
-				float poisonIntensity = (arrowType == RepeatArrowBlock.ArrowType.PoisonArrow) ? 150f : 300f;
-				ComponentPoisonInfected componentPoisonInfected = (componentBody != null) ? componentBody.Entity.FindComponent<ComponentPoisonInfected>() : null;
-				ComponentPlayer componentPlayer = ((componentBody != null) ? componentBody.Entity.FindComponent<ComponentCreature>() : null) as ComponentPlayer;
+				// Intensidades de veneno
+				float poisonIntensity = (arrowType == RepeatArrowBlock.ArrowType.PoisonArrow) ? 60f : 100f;
 
-				if (componentPlayer != null)
+				// Obtener el objetivo
+				if (componentBody != null && componentBody.Entity != null)
 				{
-					if (!componentPlayer.ComponentSickness.IsSick)
+					ComponentCreature targetCreature = componentBody.Entity.FindComponent<ComponentCreature>();
+
+					if (targetCreature != null)
 					{
-						componentPlayer.ComponentSickness.StartSickness();
-						componentPlayer.ComponentSickness.m_sicknessDuration = Math.Max(0f, poisonIntensity - (componentPoisonInfected != null ? componentPoisonInfected.PoisonResistance : 0f));
+						// Buscar componente de veneno
+						ComponentPoisonInfected componentPoisonInfected = targetCreature.Entity.FindComponent<ComponentPoisonInfected>();
+						ComponentPlayer componentPlayer = targetCreature as ComponentPlayer;
+
+						// Aplicar veneno a jugadores
+						if (componentPlayer != null)
+						{
+							if (componentPlayer.ComponentSickness != null && !componentPlayer.ComponentSickness.IsSick)
+							{
+								componentPlayer.ComponentSickness.StartSickness();
+								float resistance = (componentPoisonInfected != null) ? componentPoisonInfected.PoisonResistance : 0f;
+								componentPlayer.ComponentSickness.m_sicknessDuration = MathUtils.Max(0f, poisonIntensity - resistance);
+							}
+						}
+						// Aplicar veneno a criaturas
+						else if (componentPoisonInfected != null)
+						{
+							componentPoisonInfected.StartInfect(poisonIntensity);
+						}
 					}
 				}
-				else if (componentPoisonInfected != null)
-				{
-					componentPoisonInfected.StartInfect(poisonIntensity);
-				}
 
-				// Aplicar daño de veneno
+				// DAÑO INICIAL REDUCIDO: Solo 3-4 de daño en lugar de 11-13
 				ComponentHealth componentHealth = (componentBody != null) ? componentBody.Entity.FindComponent<ComponentHealth>() : null;
 				Projectile projectile = worldItem as Projectile;
 				if (projectile != null && componentHealth != null)
 				{
-					float damage = (arrowType == RepeatArrowBlock.ArrowType.PoisonArrow) ? 0.2f : 0.4f;
-					componentHealth.Injure(new FireInjury(damage / componentHealth.FireResilience, projectile.Owner));
+					// Daño MUY reducido: 3 para Poison, 4 para Serious Poison
+					float damage = (arrowType == RepeatArrowBlock.ArrowType.PoisonArrow) ? 3f : 4f;
+
+					// Aplicar daño reducido
+					componentHealth.Injure(damage, projectile.Owner, false, "ShotByArrow");
 				}
 
 				// Las flechas de veneno no se rompen
