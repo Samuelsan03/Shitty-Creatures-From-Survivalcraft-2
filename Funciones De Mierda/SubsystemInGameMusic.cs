@@ -1,34 +1,77 @@
 using Engine;
+using Engine.Audio;
+using Engine.Media;
 using GameEntitySystem;
 using TemplatesDatabase;
+using System.Collections.Generic;
 
 namespace Game
 {
-	// Token: 0x02000043 RID: 67
 	public class SubsystemInGameMusic : Subsystem, IUpdateable
 	{
-		// Token: 0x0600022F RID: 559 RVA: 0x0001BA2C File Offset: 0x00019C2C
+		// Variables para el estado de la música
+		private bool m_musicEnabled = false;
+		private ValuesDictionary m_valuesDictionary;
+		private StreamingSound m_currentMusic = null;
+		private string m_currentTrackPath = "";
+		private bool m_isPlaying = false;
+
+		// Variables para manejar los botones
+		private SubsystemPlayers m_subsystemPlayers;
+		private Dictionary<ComponentPlayer, BevelledButtonWidget> m_playerButtons = new Dictionary<ComponentPlayer, BevelledButtonWidget>();
+		private HashSet<BevelledButtonWidget> m_clickedButtons = new HashSet<BevelledButtonWidget>();
+
 		private void ShowMessageToAllPlayers(string message)
 		{
-			foreach (ComponentPlayer componentPlayer in this.m_subsystemPlayers.ComponentPlayers)
+			if (m_subsystemPlayers == null)
+				return;
+
+			var componentPlayers = m_subsystemPlayers.ComponentPlayers;
+			// No comparamos con null, solo verificamos si hay jugadores
+			if (componentPlayers.Count == 0)
+				return;
+
+			foreach (ComponentPlayer componentPlayer in componentPlayers)
 			{
-				componentPlayer.ComponentGui.DisplaySmallMessage(message, Color.White, false, false);
+				if (componentPlayer != null && componentPlayer.ComponentGui != null)
+				{
+					componentPlayer.ComponentGui.DisplaySmallMessage(message, Color.White, false, false);
+				}
 			}
 		}
 
-		// Token: 0x1700005D RID: 93
-		// (get) Token: 0x06000230 RID: 560 RVA: 0x0001BA9C File Offset: 0x00019C9C
 		public UpdateOrder UpdateOrder
 		{
 			get
 			{
-				return 0;
+				return UpdateOrder.Default;
 			}
 		}
 
-		// Token: 0x06000231 RID: 561 RVA: 0x0001BAA0 File Offset: 0x00019CA0
 		public void Update(float dt)
 		{
+			// Manejar los botones de música para cada jugador
+			HandleMusicButtons();
+
+			// Solo reproducir música si está activada
+			if (!m_musicEnabled)
+			{
+				// Si la música está desactivada pero se está reproduciendo, detenerla
+				if (m_isPlaying && m_currentMusic != null && m_currentMusic.State > SoundState.Stopped)
+				{
+					StopCurrentMusic();
+				}
+				return;
+			}
+
+			// Verificar si la música actual terminó
+			if (m_currentMusic != null && m_currentMusic.State == SoundState.Stopped)
+			{
+				m_isPlaying = false;
+				m_currentMusic = null;
+			}
+
+			// Usar el MusicManager original para verificar el mix actual
 			bool flag = (int)MusicManager.CurrentMix != 2;
 			if (!flag)
 			{
@@ -37,7 +80,7 @@ namespace Game
 				{
 					this.ScheduleNextMusic();
 				}
-				bool flag3 = this.m_subsystemTime.GameTime >= this.m_nextMusicTime && !MusicManager.IsPlaying;
+				bool flag3 = this.m_subsystemTime.GameTime >= this.m_nextMusicTime && !m_isPlaying;
 				if (flag3)
 				{
 					this.PlayRandomMusic();
@@ -46,7 +89,246 @@ namespace Game
 			}
 		}
 
-		// Token: 0x06000232 RID: 562 RVA: 0x0001BB10 File Offset: 0x00019D10
+		// Manejar la creación y clics de los botones
+		private void HandleMusicButtons()
+		{
+			if (m_subsystemPlayers == null)
+				return;
+
+			var componentPlayers = m_subsystemPlayers.ComponentPlayers;
+
+			// Para cada jugador, asegurarse de que tenga un botón de música
+			for (int i = 0; i < componentPlayers.Count; i++)
+			{
+				ComponentPlayer player = componentPlayers[i];
+				if (player != null && player.ComponentGui != null)
+				{
+					// Verificar si el jugador ya tiene un botón
+					if (!m_playerButtons.ContainsKey(player) || m_playerButtons[player] == null)
+					{
+						AddMusicButtonToPlayer(player);
+					}
+
+					// Manejar clic en el botón
+					BevelledButtonWidget button = m_playerButtons.ContainsKey(player) ? m_playerButtons[player] : null;
+					if (button != null && button.IsClicked && !m_clickedButtons.Contains(button))
+					{
+						m_clickedButtons.Add(button);
+						ToggleMusic();
+						button.Text = m_musicEnabled ? "Music ON" : "Music OFF";
+					}
+					else if (button != null && !button.IsClicked && m_clickedButtons.Contains(button))
+					{
+						m_clickedButtons.Remove(button);
+					}
+				}
+			}
+
+			// Limpiar botones de jugadores que ya no existen
+			CleanupPlayerButtons();
+		}
+
+		// Agregar botón a un jugador
+		private void AddMusicButtonToPlayer(ComponentPlayer player)
+		{
+			if (player == null || player.ComponentGui == null)
+				return;
+
+			// Obtener el contenedor de controles derecho
+			ContainerWidget rightControlsContainerWidget = player.ComponentGui.m_rightControlsContainerWidget;
+			if (rightControlsContainerWidget == null)
+				return;
+
+			// Buscar si ya existe un botón de música
+			BevelledButtonWidget musicButton = rightControlsContainerWidget.Children.Find<BevelledButtonWidget>("InGameMusicButton", false);
+
+			if (musicButton != null)
+			{
+				m_playerButtons[player] = musicButton;
+				return;
+			}
+
+			// Crear nuevo botón
+			musicButton = new BevelledButtonWidget
+			{
+				Name = "InGameMusicButton",
+				Text = m_musicEnabled ? "Music ON" : "Music OFF",
+				Size = new Vector2(88f, 56f),
+				IsEnabled = true,
+				IsVisible = true,
+				HorizontalAlignment = WidgetAlignment.Far,
+				IsAutoCheckingEnabled = false
+			};
+
+			// Configurar el label del botón
+			if (musicButton.m_labelWidget != null)
+			{
+				musicButton.m_labelWidget.FontScale = 0.8f;
+			}
+
+			rightControlsContainerWidget.Children.Add(musicButton);
+			m_playerButtons[player] = musicButton;
+		}
+
+		// Limpiar botones de jugadores que ya no existen
+		private void CleanupPlayerButtons()
+		{
+			if (m_subsystemPlayers == null)
+			{
+				m_playerButtons.Clear();
+				return;
+			}
+
+			var componentPlayers = m_subsystemPlayers.ComponentPlayers;
+			List<ComponentPlayer> playersToRemove = new List<ComponentPlayer>();
+
+			foreach (var kvp in m_playerButtons)
+			{
+				ComponentPlayer player = kvp.Key;
+				BevelledButtonWidget button = kvp.Value;
+
+				// Verificar si el jugador todavía está en la lista de jugadores
+				bool playerExists = false;
+				for (int i = 0; i < componentPlayers.Count; i++)
+				{
+					if (componentPlayers[i] == player)
+					{
+						playerExists = true;
+						break;
+					}
+				}
+
+				if (!playerExists || player == null || player.ComponentGui == null)
+				{
+					playersToRemove.Add(player);
+
+					// Intentar remover el botón de la UI
+					if (button != null && player != null && player.ComponentGui != null)
+					{
+						ContainerWidget rightControlsContainerWidget = player.ComponentGui.m_rightControlsContainerWidget;
+						if (rightControlsContainerWidget != null)
+						{
+							rightControlsContainerWidget.Children.Remove(button);
+						}
+					}
+				}
+			}
+
+			// Remover de la lista
+			foreach (ComponentPlayer player in playersToRemove)
+			{
+				m_playerButtons.Remove(player);
+			}
+		}
+
+		// Método para detener la música actual
+		private void StopCurrentMusic()
+		{
+			if (m_currentMusic == null)
+			{
+				return;
+			}
+
+			m_currentMusic.Stop();
+			m_currentMusic = null;
+			m_isPlaying = false;
+			m_currentTrackPath = "";
+			Log.Information("Music stopped");
+		}
+
+		// Método público para alternar la música
+		public void ToggleMusic()
+		{
+			m_musicEnabled = !m_musicEnabled;
+
+			// Guardar el estado en ValuesDictionary
+			if (m_valuesDictionary != null)
+			{
+				m_valuesDictionary.SetValue<bool>("MusicEnabled", m_musicEnabled);
+			}
+
+			if (m_musicEnabled)
+			{
+				ShowMessageToAllPlayers("Music enabled");
+				// Si se activa la música, reproducir inmediatamente si no hay música sonando
+				if (!m_isPlaying && (int)MusicManager.CurrentMix != 2)
+				{
+					this.PlayRandomMusic();
+					this.ScheduleNextMusic();
+				}
+				else if (m_currentTrackPath != "" && (m_currentMusic == null || m_currentMusic.State == SoundState.Stopped))
+				{
+					// Reanudar la última canción si había una
+					try
+					{
+						PlayTrack(m_currentTrackPath);
+						ShowMessageToAllPlayers("Resuming: " + System.IO.Path.GetFileName(m_currentTrackPath));
+					}
+					catch (Exception ex)
+					{
+						Log.Error("Error resuming music: " + ex.Message);
+						this.PlayRandomMusic();
+						this.ScheduleNextMusic();
+					}
+				}
+			}
+			else
+			{
+				ShowMessageToAllPlayers("Music disabled");
+				// Si se desactiva la música, detener la reproducción actual
+				if (m_currentMusic != null && m_currentMusic.State > SoundState.Stopped)
+				{
+					StopCurrentMusic();
+				}
+			}
+
+			// Actualizar texto de todos los botones
+			foreach (var button in m_playerButtons.Values)
+			{
+				if (button != null)
+				{
+					button.Text = m_musicEnabled ? "Music ON" : "Music OFF";
+				}
+			}
+		}
+
+		// Método para reproducir un track específico
+		private void PlayTrack(string trackPath)
+		{
+			try
+			{
+				StopCurrentMusic();
+
+				// Crear un nuevo StreamingSound
+				m_currentMusic = new StreamingSound(
+					ContentManager.Get<StreamingSource>(trackPath),
+					SettingsManager.MusicVolume * 2f,
+					1f,
+					0f,
+					false,
+					true,
+					1f
+				);
+
+				m_currentTrackPath = trackPath;
+				m_isPlaying = true;
+				m_currentMusic.Play();
+
+				Log.Information("Playing music: " + trackPath);
+
+				// Mostrar el nombre del archivo a los jugadores
+				string fileName = System.IO.Path.GetFileName(trackPath);
+				ShowMessageToAllPlayers("Now playing: " + fileName);
+			}
+			catch (Exception ex)
+			{
+				Log.Error("Error playing music \"" + trackPath + "\": " + ex.Message);
+				m_currentMusic = null;
+				m_isPlaying = false;
+				m_currentTrackPath = "";
+			}
+		}
+
 		private void PlayRandomMusic()
 		{
 			bool flag = this.m_availableTracks.Count == 0;
@@ -74,26 +356,19 @@ namespace Game
 			int num = this.m_availableTracks[index];
 			SubsystemInGameMusic.TrackInfo trackInfo = this.m_tracks[num];
 			this.UpdateTrackHistory(num);
-			try
-			{
-				MusicManager.PlayMusic(trackInfo.Path, 0f);
-				this.m_musicDuration = (double)trackInfo.Duration;
-				Log.Information("Reproduciendo música: " + trackInfo.Path);
-			}
-			catch (Exception ex)
-			{
-				Log.Error("SubsystemInGameMusic error: " + ex.Message);
-			}
+
+			PlayTrack(trackInfo.Path);
+			this.m_musicDuration = (double)trackInfo.Duration;
 		}
 
-		// Token: 0x06000233 RID: 563 RVA: 0x0001BC68 File Offset: 0x00019E68
 		private void ScheduleNextMusic()
 		{
+			if (!m_musicEnabled) return;
+
 			bool flag = SettingsManager.MusicVolume > 0f;
 			if (flag)
 			{
-				double num = (double)this.m_random.Float(30f, 180f);
-				this.m_nextMusicTime = this.m_subsystemTime.GameTime + this.m_musicDuration + num;
+				this.m_nextMusicTime = this.m_subsystemTime.GameTime + this.m_musicDuration;
 			}
 			else
 			{
@@ -101,7 +376,6 @@ namespace Game
 			}
 		}
 
-		// Token: 0x06000234 RID: 564 RVA: 0x0001BCD8 File Offset: 0x00019ED8
 		private void UpdateTrackHistory(int playedIndex)
 		{
 			this.m_recentTracks.Enqueue(playedIndex);
@@ -118,46 +392,71 @@ namespace Game
 			}
 		}
 
-		// Token: 0x06000235 RID: 565 RVA: 0x0001BD40 File Offset: 0x00019F40
 		public override void Load(ValuesDictionary valuesDictionary)
 		{
 			this.m_subsystemTime = base.Project.FindSubsystem<SubsystemTime>(true);
 			this.m_subsystemPlayers = base.Project.FindSubsystem<SubsystemPlayers>(true);
+
+			// Guardar referencia al ValuesDictionary
+			m_valuesDictionary = valuesDictionary;
+
+			// Leer el estado de la música (por defecto false para nuevos mundos)
+			m_musicEnabled = valuesDictionary.GetValue<bool>("MusicEnabled", false);
+
 			for (int i = 0; i < this.m_tracks.Length; i++)
 			{
 				this.m_availableTracks.Add(i);
 			}
-			this.m_nextMusicTime = this.m_subsystemTime.GameTime + 5.0;
+
+			// Solo programar música si está activada
+			if (m_musicEnabled)
+			{
+				this.m_nextMusicTime = this.m_subsystemTime.GameTime + 5.0;
+			}
+			else
+			{
+				this.m_nextMusicTime = double.MaxValue; // Nunca programar música
+			}
 		}
 
-		// Token: 0x06000236 RID: 566 RVA: 0x0001BDB3 File Offset: 0x00019FB3
 		public override void Dispose()
 		{
+			// Detener la música al destruir el subsistema
+			StopCurrentMusic();
+
+			// Limpiar todos los botones
+			foreach (var kvp in m_playerButtons)
+			{
+				ComponentPlayer player = kvp.Key;
+				BevelledButtonWidget button = kvp.Value;
+
+				if (player != null && player.ComponentGui != null && button != null)
+				{
+					ContainerWidget rightControlsContainerWidget = player.ComponentGui.m_rightControlsContainerWidget;
+					if (rightControlsContainerWidget != null)
+					{
+						rightControlsContainerWidget.Children.Remove(button);
+					}
+				}
+			}
+			m_playerButtons.Clear();
+
 			base.Dispose();
 		}
 
-		// Token: 0x040002DB RID: 731
+		// Propiedad pública para verificar si la música está habilitada
+		public bool IsMusicEnabled
+		{
+			get { return m_musicEnabled; }
+		}
+
+		// Campos existentes...
 		public SubsystemTime m_subsystemTime;
-
-		// Token: 0x040002DC RID: 732
 		public Random m_random = new Random();
-
-		// Token: 0x040002DD RID: 733
 		private double m_nextMusicTime;
-
-		// Token: 0x040002DE RID: 734
 		private double m_musicDuration;
-
-		// Token: 0x040002DF RID: 735
-		public SubsystemPlayers m_subsystemPlayers;
-
-		// Token: 0x040002E0 RID: 736
 		private readonly Queue<int> m_recentTracks = new Queue<int>(2);
-
-		// Token: 0x040002E1 RID: 737
 		private readonly List<int> m_availableTracks = new List<int>();
-
-		// Token: 0x040002E2 RID: 738
 		private readonly SubsystemInGameMusic.TrackInfo[] m_tracks = new SubsystemInGameMusic.TrackInfo[]
 		{
 			new SubsystemInGameMusic.TrackInfo("MenuMusic/Digimon02OpeningThemeSong", 177f),
@@ -175,20 +474,15 @@ namespace Game
 			new SubsystemInGameMusic.TrackInfo("MenuMusic/WadaKoujiFIREDigimonFrontiers", 177f),
 		};
 
-		// Token: 0x02000065 RID: 101
 		private struct TrackInfo
 		{
-			// Token: 0x06000326 RID: 806 RVA: 0x000241FD File Offset: 0x000223FD
 			public TrackInfo(string path, float duration)
 			{
 				this.Path = path;
 				this.Duration = duration;
 			}
 
-			// Token: 0x04000384 RID: 900
 			public string Path;
-
-			// Token: 0x04000385 RID: 901
 			public float Duration;
 		}
 	}
