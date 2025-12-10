@@ -562,6 +562,10 @@ namespace Game
 			new SubsystemInGameMusic.TrackInfo("MenuMusic/TheBiggestDreamerDigimonTamers", 177f),
 			new SubsystemInGameMusic.TrackInfo("MenuMusic/Touhou6FlandreScarletsThemeU.N.Owenwasher", 177f),
 			new SubsystemInGameMusic.TrackInfo("MenuMusic/WadaKoujiFIREDigimonFrontiers", 177f),
+			new SubsystemInGameMusic.TrackInfo("MenuMusic/RocketKnightAdventuresStage1-1", 177f),
+			new SubsystemInGameMusic.TrackInfo("MenuMusic/RocketKnightAdventuresStage1-2", 177f),
+			new SubsystemInGameMusic.TrackInfo("MenuMusic/RocketKnightAdventures2Stage1-1", 177f),
+			new SubsystemInGameMusic.TrackInfo("MenuMusic/SparksterStageLakeside", 177f),
 		};
 
 		private struct TrackInfo
