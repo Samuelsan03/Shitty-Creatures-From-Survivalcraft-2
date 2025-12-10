@@ -1,4 +1,4 @@
-﻿﻿using System;
+using System;
 using Engine;
 using GameEntitySystem;
 using TemplatesDatabase;
@@ -18,6 +18,7 @@ namespace Game
 		private SubsystemNoise m_subsystemNoise;
 		private SubsystemTerrain m_subsystemTerrain;
 		private ComponentInventory m_componentInventory;
+		private ComponentPoisonInfected m_componentPoisonInfected;
 
 		// Índice del bloque FlameThrower
 		private int m_flameThrowerBlockIndex;
@@ -28,7 +29,7 @@ namespace Game
 		public float BurstTime = 2f;
 		public float CooldownTime = 1f;
 		public string FireSound = "Audio/Flamethrower/Flamethrower Fire";
-		public string PoisonSound = "Audio/Flamethrower/PoisonSmoke"; // Nuevo sonido para veneno
+		public string PoisonSound = "Audio/Flamethrower/PoisonSmoke";
 		public string HammerSound = "Audio/HammerCock";
 		public float FireSoundDistance = 30f;
 		public float HammerSoundDistance = 20f;
@@ -38,14 +39,14 @@ namespace Game
 		public int BurstCount = 15;
 		public float SpreadAngle = 15f;
 
-		// Tipos de bala disponibles - INCLUYENDO VENENO
+		// Tipos de bala
 		private FlameBulletBlock.FlameBulletType[] m_availableBulletTypes = new FlameBulletBlock.FlameBulletType[]
 		{
 			FlameBulletBlock.FlameBulletType.Flame,
 			FlameBulletBlock.FlameBulletType.Poison
 		};
 
-		// Estado de animación
+		// Estado
 		private bool m_isAiming = false;
 		private bool m_isFiring = false;
 		private bool m_isCooldown = false;
@@ -55,27 +56,28 @@ namespace Game
 		private Random m_random = new Random();
 		private float m_soundVolume = 0f;
 		private bool m_hammerSoundPlayed = false;
-		private int m_currentBulletTypeIndex = 0; // Índice del tipo de bala actual
+		private int m_currentBulletTypeIndex = 0;
+		private bool m_canShoot = true;
 
 		// UpdateOrder
 		public int UpdateOrder
 		{
-			get
-			{
-				return 0;
-			}
+			get { return 0; }
 		}
 
 		public override float ImportanceLevel
 		{
 			get
 			{
-				// Solo es importante si tiene un lanzallamas equipado
-				if (HasFlameThrowerEquipped())
+				// Verificar si está envenenado
+				bool isPoisoned = (this.m_componentPoisonInfected != null && this.m_componentPoisonInfected.IsInfected);
+				bool canShootNow = !isPoisoned && HasFlameThrowerEquipped();
+
+				if (canShootNow)
 				{
 					return 0.5f;
 				}
-				return 0f; // Si no tiene lanzallamas, no es importante
+				return 0f;
 			}
 		}
 
@@ -85,7 +87,7 @@ namespace Game
 			this.MaxDistance = valuesDictionary.GetValue<float>("MaxDistance", 20f);
 			this.AimTime = valuesDictionary.GetValue<float>("AimTime", 0.5f);
 			this.BurstTime = valuesDictionary.GetValue<float>("BurstTime", 2f);
-			this.CooldownTime = valuesDictionary.GetValue<float>("CooldownTime", 1f);
+			this.CooldownTime = valuesDictionary.GetValue<float>("CooldownTime", 0.5f);
 			this.FireSound = valuesDictionary.GetValue<string>("FireSound", "Audio/Flamethrower/Flamethrower Fire");
 			this.HammerSound = valuesDictionary.GetValue<string>("HammerSound", "Audio/HammerCock");
 			this.FireSoundDistance = valuesDictionary.GetValue<float>("FireSoundDistance", 30f);
@@ -106,11 +108,9 @@ namespace Game
 			this.m_subsystemNoise = base.Project.FindSubsystem<SubsystemNoise>(true);
 			this.m_subsystemTerrain = base.Project.FindSubsystem<SubsystemTerrain>(true);
 			this.m_componentInventory = base.Entity.FindComponent<ComponentInventory>(true);
+			this.m_componentPoisonInfected = base.Entity.FindComponent<ComponentPoisonInfected>();
 
-			// Obtener el índice del bloque FlameThrower
 			this.m_flameThrowerBlockIndex = BlocksManager.GetBlockIndex<FlameThrowerBlock>(false, false);
-
-			// Inicializar tipo de bala aleatorio
 			this.m_currentBulletTypeIndex = m_random.Int(0, m_availableBulletTypes.Length);
 		}
 
@@ -119,53 +119,83 @@ namespace Game
 			// Verificar si el NPC está vivo
 			if (this.m_componentCreature.ComponentHealth.Health <= 0f)
 			{
-				this.ResetAnimations();
+				ResetAnimations();
+				return;
+			}
+
+			// Verificar si puede disparar (no envenenado)
+			bool isPoisoned = (this.m_componentPoisonInfected != null && this.m_componentPoisonInfected.IsInfected);
+
+			// Actualizar m_canShoot basado en el estado actual de envenenamiento
+			this.m_canShoot = !isPoisoned;
+
+			if (isPoisoned)
+			{
+				// Si está envenenado, huir y no disparar
+				ResetAnimations();
 				return;
 			}
 
 			// Verificar si tiene un lanzallamas equipado
 			if (!HasFlameThrowerEquipped())
 			{
-				this.ResetAnimations();
+				ResetAnimations();
 				return;
 			}
 
 			// Verificar si tiene un objetivo
 			if (this.m_componentChaseBehavior.Target == null)
 			{
-				this.ResetAnimations();
+				ResetAnimations();
 				return;
 			}
 
 			float distance = Vector3.Distance(this.m_componentCreature.ComponentBody.Position,
 											this.m_componentChaseBehavior.Target.ComponentBody.Position);
 
-			// Solo activar si está dentro del rango y tiene lanzallamas equipado
-			if (distance <= this.MaxDistance)
+			// Solo activar si está dentro del rango y puede disparar
+			if (distance <= this.MaxDistance && this.m_canShoot)
 			{
 				if (!this.m_isAiming && !this.m_isFiring && !this.m_isCooldown)
 				{
-					this.StartAiming();
+					StartAiming();
 				}
 			}
 			else
 			{
-				this.ResetAnimations();
+				ResetAnimations();
 				return;
+			}
+
+			// RESTAURAR EL MOVIMIENTO MIENTRAS DISPARA
+			// Asegurarse de que el NPC siga moviéndose hacia el objetivo mientras dispara
+			if ((this.m_isAiming || this.m_isFiring) && this.m_componentChaseBehavior.Target != null)
+			{
+				// Permitir que el ComponentChaseBehavior continúe funcionando
+				// Esto hará que el NPC siga persiguiendo al objetivo mientras apunta/dispara
+				this.m_componentChaseBehavior.IsActive = true;
+
+				// También podemos forzar un movimiento adicional si es necesario
+				Vector3 directionToTarget = Vector3.Normalize(this.m_componentChaseBehavior.Target.ComponentBody.Position -
+															this.m_componentCreature.ComponentBody.Position);
+
+				// Aplicar un impulso hacia el objetivo mientras dispara
+				// Convertir Vector3 a Vector2 para WalkOrder (solo componentes X y Z)
+				this.m_componentCreature.ComponentLocomotion.WalkOrder = new Vector2?(new Vector2(directionToTarget.X, directionToTarget.Z));
 			}
 
 			// Resto de la lógica de animación y disparo...
 			if (this.m_isAiming)
 			{
-				this.ApplyAimingAnimation(dt);
+				ApplyAimingAnimation(dt);
 				if (this.m_subsystemTime.GameTime - this.m_animationStartTime >= (double)this.AimTime)
 				{
-					this.StartFiring();
+					StartFiring();
 				}
 			}
 			else if (this.m_isFiring)
 			{
-				this.ApplyFiringAnimation(dt);
+				ApplyFiringAnimation(dt);
 				double burstElapsed = this.m_subsystemTime.GameTime - this.m_burstStartTime;
 				float timeLeft = (float)((double)this.BurstTime - burstElapsed);
 
@@ -185,41 +215,38 @@ namespace Game
 					{
 						if (!this.m_hammerSoundPlayed && this.m_bulletsFired == 0)
 						{
-							this.PlayHammerSound();
+							PlayHammerSound();
 							this.m_hammerSoundPlayed = true;
 						}
-						this.ShootFlame();
+						ShootFlame();
 						this.m_bulletsFired++;
 					}
 				}
 				else
 				{
 					this.m_isFiring = false;
-					this.StartCooldown();
+					StartCooldown();
 				}
 			}
 			else if (this.m_isCooldown)
 			{
-				this.ApplyCooldownAnimation(dt);
+				ApplyCooldownAnimation(dt);
 				if (this.m_subsystemTime.GameTime - this.m_animationStartTime >= (double)this.CooldownTime)
 				{
 					this.m_isCooldown = false;
 
-					// Cambiar tipo de bala para la próxima ráfaga
 					this.m_currentBulletTypeIndex = (this.m_currentBulletTypeIndex + 1) % m_availableBulletTypes.Length;
 
-					this.StartAiming();
+					StartAiming();
 				}
 			}
 		}
 
-		// MÉTODO SIMPLIFICADO: Verifica si el NPC tiene un lanzallamas
 		private bool HasFlameThrowerEquipped()
 		{
 			if (this.m_componentInventory == null)
 				return false;
 
-			// Enfoque más simple: verificar si hay algún lanzallamas en el inventario
 			for (int slotIndex = 0; slotIndex < this.m_componentInventory.SlotsCount; slotIndex++)
 			{
 				int slotValue = this.m_componentInventory.GetSlotValue(slotIndex);
@@ -238,10 +265,9 @@ namespace Game
 
 		private void StartAiming()
 		{
-			// Solo iniciar apuntado si tiene lanzallamas equipado
-			if (!HasFlameThrowerEquipped())
+			if (!HasFlameThrowerEquipped() || !this.m_canShoot)
 			{
-				this.ResetAnimations();
+				ResetAnimations();
 				return;
 			}
 
@@ -271,10 +297,9 @@ namespace Game
 
 		private void StartFiring()
 		{
-			// Solo iniciar disparo si tiene lanzallamas equipado
-			if (!HasFlameThrowerEquipped())
+			if (!HasFlameThrowerEquipped() || !this.m_canShoot)
 			{
-				this.ResetAnimations();
+				ResetAnimations();
 				return;
 			}
 
@@ -289,10 +314,9 @@ namespace Game
 
 		private void ApplyFiringAnimation(float dt)
 		{
-			// Solo animar si tiene lanzallamas equipado
-			if (!HasFlameThrowerEquipped())
+			if (!HasFlameThrowerEquipped() || !this.m_canShoot)
 			{
-				this.ResetAnimations();
+				ResetAnimations();
 				return;
 			}
 
@@ -321,14 +345,14 @@ namespace Game
 				if (this.UseRecoil && this.m_componentChaseBehavior.Target != null)
 				{
 					Vector3 direction = Vector3.Normalize(this.m_componentChaseBehavior.Target.ComponentBody.Position - this.m_componentCreature.ComponentBody.Position);
-					this.m_componentCreature.ComponentBody.ApplyImpulse(-direction * 0.3f * dt);
+					// Reducir el retroceso para no afectar tanto el movimiento
+					this.m_componentCreature.ComponentBody.ApplyImpulse(-direction * 0.1f * dt);
 				}
 			}
 
 			if (this.m_soundVolume > 0.01f && !string.IsNullOrEmpty(this.FireSound) &&
 				this.m_subsystemTime.GameTime - this.m_burstStartTime < (double)this.BurstTime - 0.1)
 			{
-				// Seleccionar sonido según tipo de bala
 				string soundToPlay = (m_availableBulletTypes[m_currentBulletTypeIndex] == FlameBulletBlock.FlameBulletType.Flame) ?
 					this.FireSound : this.PoisonSound;
 
@@ -420,8 +444,7 @@ namespace Game
 
 		private void ShootFlame()
 		{
-			// Solo disparar si tiene lanzallamas equipado y hay objetivo
-			if (!HasFlameThrowerEquipped() || this.m_componentChaseBehavior.Target == null)
+			if (!this.m_canShoot || !HasFlameThrowerEquipped() || this.m_componentChaseBehavior.Target == null)
 			{
 				return;
 			}
@@ -443,7 +466,6 @@ namespace Game
 				int flameBulletIndex = BlocksManager.GetBlockIndex<FlameBulletBlock>(false, false);
 				if (flameBulletIndex > 0)
 				{
-					// Obtener tipo de bala actual
 					FlameBulletBlock.FlameBulletType currentBulletType = m_availableBulletTypes[m_currentBulletTypeIndex];
 
 					int bulletData = FlameBulletBlock.SetBulletType(0, currentBulletType);
@@ -461,7 +483,6 @@ namespace Game
 
 					if (this.m_subsystemParticles != null && this.m_subsystemTerrain != null)
 					{
-						// Crear sistema de partículas según el tipo de bala
 						if (currentBulletType == FlameBulletBlock.FlameBulletType.Flame)
 						{
 							this.m_subsystemParticles.AddParticleSystem(
@@ -486,7 +507,7 @@ namespace Game
 			}
 			catch
 			{
-				// Ignorar errores al disparar
+				// Ignorar errores
 			}
 		}
 	}
