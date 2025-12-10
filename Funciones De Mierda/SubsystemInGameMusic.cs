@@ -16,26 +16,33 @@ namespace Game
 		private string m_currentTrackPath = "";
 		private bool m_isPlaying = false;
 
+		// Variables para mostrar mensajes con delay
+		private double m_nextTrackNameDisplayTime = 0.0;
+		private string m_pendingTrackName = "";
+
 		// Variables para manejar los botones
 		private SubsystemPlayers m_subsystemPlayers;
 		private Dictionary<ComponentPlayer, BevelledButtonWidget> m_playerButtons = new Dictionary<ComponentPlayer, BevelledButtonWidget>();
 		private HashSet<BevelledButtonWidget> m_clickedButtons = new HashSet<BevelledButtonWidget>();
 
-		private void ShowMessageToAllPlayers(string message)
+		private void ShowMessageToAllPlayers(string message, Color? color = null)
 		{
 			if (m_subsystemPlayers == null)
 				return;
 
 			var componentPlayers = m_subsystemPlayers.ComponentPlayers;
-			// No comparamos con null, solo verificamos si hay jugadores
 			if (componentPlayers.Count == 0)
 				return;
+
+			// Color por defecto es blanco
+			Color messageColor = color ?? Color.White;
 
 			foreach (ComponentPlayer componentPlayer in componentPlayers)
 			{
 				if (componentPlayer != null && componentPlayer.ComponentGui != null)
 				{
-					componentPlayer.ComponentGui.DisplaySmallMessage(message, Color.White, false, false);
+					// Mostrar mensaje normal
+					componentPlayer.ComponentGui.DisplaySmallMessage(message, messageColor, false, false);
 				}
 			}
 		}
@@ -53,6 +60,14 @@ namespace Game
 			// Manejar los botones de música para cada jugador
 			HandleMusicButtons();
 
+			// Manejar la visualización del nombre de la canción con delay
+			if (m_pendingTrackName != "" && m_subsystemTime != null &&
+				m_subsystemTime.GameTime >= m_nextTrackNameDisplayTime)
+			{
+				ShowMessageToAllPlayers(m_pendingTrackName, Color.Green);
+				m_pendingTrackName = "";
+			}
+
 			// Solo reproducir música si está activada
 			if (!m_musicEnabled)
 			{
@@ -69,19 +84,20 @@ namespace Game
 			{
 				m_isPlaying = false;
 				m_currentMusic = null;
+				// Programar la siguiente canción inmediatamente
+				this.m_nextMusicTime = this.m_subsystemTime.GameTime;
 			}
 
-			// Usar el MusicManager original para verificar el mix actual
-			bool flag = (int)MusicManager.CurrentMix != 2;
-			if (!flag)
+			// Programar y reproducir música si es necesario
+			if (m_musicEnabled)
 			{
-				bool flag2 = this.m_nextMusicTime == 0.0;
-				if (flag2)
+				bool flag = this.m_nextMusicTime == 0.0;
+				if (flag)
 				{
 					this.ScheduleNextMusic();
 				}
-				bool flag3 = this.m_subsystemTime.GameTime >= this.m_nextMusicTime && !m_isPlaying;
-				if (flag3)
+				bool flag2 = this.m_subsystemTime.GameTime >= this.m_nextMusicTime && !m_isPlaying;
+				if (flag2)
 				{
 					this.PlayRandomMusic();
 					this.ScheduleNextMusic();
@@ -239,6 +255,7 @@ namespace Game
 		// Método público para alternar la música
 		public void ToggleMusic()
 		{
+			bool oldState = m_musicEnabled;
 			m_musicEnabled = !m_musicEnabled;
 
 			// Guardar el estado en ValuesDictionary
@@ -247,29 +264,21 @@ namespace Game
 				m_valuesDictionary.SetValue<bool>("MusicEnabled", m_musicEnabled);
 			}
 
+			Log.Information($"Music toggled from {oldState} to {m_musicEnabled}");
+
 			if (m_musicEnabled)
 			{
 				ShowMessageToAllPlayers("Music enabled");
-				// Si se activa la música, reproducir inmediatamente si no hay música sonando
-				if (!m_isPlaying && (int)MusicManager.CurrentMix != 2)
+
+				// Si estamos activando la música y no hay música reproduciéndose, iniciar inmediatamente
+				if (!m_isPlaying)
 				{
-					this.PlayRandomMusic();
-					this.ScheduleNextMusic();
+					Log.Information("Starting music playback");
+					this.m_nextMusicTime = this.m_subsystemTime.GameTime; // Reproducir inmediatamente
 				}
-				else if (m_currentTrackPath != "" && (m_currentMusic == null || m_currentMusic.State == SoundState.Stopped))
+				else
 				{
-					// Reanudar la última canción si había una
-					try
-					{
-						PlayTrack(m_currentTrackPath);
-						ShowMessageToAllPlayers("Resuming: " + System.IO.Path.GetFileName(m_currentTrackPath));
-					}
-					catch (Exception ex)
-					{
-						Log.Error("Error resuming music: " + ex.Message);
-						this.PlayRandomMusic();
-						this.ScheduleNextMusic();
-					}
+					Log.Information($"Music is already playing: {m_currentTrackPath}");
 				}
 			}
 			else
@@ -280,6 +289,8 @@ namespace Game
 				{
 					StopCurrentMusic();
 				}
+				// Establecer un tiempo futuro lejano para no programar más música
+				this.m_nextMusicTime = double.MaxValue;
 			}
 
 			// Actualizar texto de todos los botones
@@ -292,6 +303,47 @@ namespace Game
 			}
 		}
 
+		// Método para obtener un nombre de display amigable para la pista
+		private string GetTrackDisplayName(string trackPath)
+		{
+			try
+			{
+				// Extraer el nombre del archivo del path
+				string fileName = System.IO.Path.GetFileName(trackPath);
+
+				// Si el path está vacío, retornar string vacío
+				if (string.IsNullOrEmpty(fileName))
+					return "Unknown Track";
+
+				// Remover la extensión si existe
+				int dotIndex = fileName.LastIndexOf('.');
+				if (dotIndex > 0)
+				{
+					fileName = fileName.Substring(0, dotIndex);
+				}
+
+				// Reemplazar guiones bajos y otros caracteres con espacios
+				fileName = fileName.Replace('_', ' ').Replace('-', ' ');
+
+				// Capitalizar cada palabra
+				string[] words = fileName.Split(' ');
+				for (int i = 0; i < words.Length; i++)
+				{
+					if (!string.IsNullOrEmpty(words[i]))
+					{
+						words[i] = char.ToUpper(words[i][0]) + words[i].Substring(1).ToLower();
+					}
+				}
+
+				return string.Join(" ", words);
+			}
+			catch
+			{
+				// En caso de error, retornar el nombre simple
+				return "Music Track";
+			}
+		}
+
 		// Método para reproducir un track específico
 		private void PlayTrack(string trackPath)
 		{
@@ -299,9 +351,20 @@ namespace Game
 			{
 				StopCurrentMusic();
 
+				Log.Information($"Attempting to play track: {trackPath}");
+
+				// Obtener el streaming source
+				var streamingSource = ContentManager.Get<StreamingSource>(trackPath);
+				if (streamingSource == null)
+				{
+					Log.Error($"StreamingSource not found for: {trackPath}");
+					ShowMessageToAllPlayers("Music file not found", Color.Red);
+					return;
+				}
+
 				// Crear un nuevo StreamingSound
 				m_currentMusic = new StreamingSound(
-					ContentManager.Get<StreamingSource>(trackPath),
+					streamingSource,
 					SettingsManager.MusicVolume * 2f,
 					1f,
 					0f,
@@ -314,23 +377,34 @@ namespace Game
 				m_isPlaying = true;
 				m_currentMusic.Play();
 
-				Log.Information("Playing music: " + trackPath);
+				Log.Information($"Playing music: {trackPath}, State: {m_currentMusic.State}, IsPlaying: {m_isPlaying}");
 
-				// Mostrar el nombre del archivo a los jugadores
-				string fileName = System.IO.Path.GetFileName(trackPath);
-				ShowMessageToAllPlayers("Now playing: " + fileName);
+				// Mostrar "Now playing:" en blanco
+				ShowMessageToAllPlayers("Now playing:");
+
+				// Programar mostrar el nombre de la canción en verde después de 0.5 segundos
+				string displayName = GetTrackDisplayName(trackPath);
+				m_pendingTrackName = displayName;
+				m_nextTrackNameDisplayTime = m_subsystemTime.GameTime + 0.5;
 			}
 			catch (Exception ex)
 			{
-				Log.Error("Error playing music \"" + trackPath + "\": " + ex.Message);
+				Log.Error($"Error playing music \"{trackPath}\": {ex.Message}");
 				m_currentMusic = null;
 				m_isPlaying = false;
 				m_currentTrackPath = "";
+				ShowMessageToAllPlayers("Error playing music", Color.Red);
 			}
 		}
 
 		private void PlayRandomMusic()
 		{
+			if (m_tracks.Length == 0)
+			{
+				Log.Error("No tracks available to play");
+				return;
+			}
+
 			bool flag = this.m_availableTracks.Count == 0;
 			if (flag)
 			{
@@ -352,23 +426,36 @@ namespace Game
 					}
 				}
 			}
+
+			if (m_availableTracks.Count == 0)
+			{
+				Log.Error("No available tracks to play");
+				return;
+			}
+
 			int index = this.m_random.Int(0, this.m_availableTracks.Count - 1);
 			int num = this.m_availableTracks[index];
 			SubsystemInGameMusic.TrackInfo trackInfo = this.m_tracks[num];
 			this.UpdateTrackHistory(num);
 
+			Log.Information($"Selected track {num}: {trackInfo.Path}");
 			PlayTrack(trackInfo.Path);
 			this.m_musicDuration = (double)trackInfo.Duration;
 		}
 
 		private void ScheduleNextMusic()
 		{
-			if (!m_musicEnabled) return;
+			if (!m_musicEnabled)
+			{
+				this.m_nextMusicTime = double.MaxValue;
+				return;
+			}
 
 			bool flag = SettingsManager.MusicVolume > 0f;
-			if (flag)
+			if (flag && m_musicDuration > 0)
 			{
 				this.m_nextMusicTime = this.m_subsystemTime.GameTime + this.m_musicDuration;
+				Log.Information($"Next music scheduled in {m_musicDuration} seconds");
 			}
 			else
 			{
@@ -403,6 +490,8 @@ namespace Game
 			// Leer el estado de la música (por defecto false para nuevos mundos)
 			m_musicEnabled = valuesDictionary.GetValue<bool>("MusicEnabled", false);
 
+			Log.Information($"SubsystemInGameMusic loaded. Music enabled: {m_musicEnabled}");
+
 			for (int i = 0; i < this.m_tracks.Length; i++)
 			{
 				this.m_availableTracks.Add(i);
@@ -411,7 +500,8 @@ namespace Game
 			// Solo programar música si está activada
 			if (m_musicEnabled)
 			{
-				this.m_nextMusicTime = this.m_subsystemTime.GameTime + 5.0;
+				this.m_nextMusicTime = this.m_subsystemTime.GameTime + 2.0; // Esperar 2 segundos al inicio
+				Log.Information("Music enabled on load, will start playing soon");
 			}
 			else
 			{
