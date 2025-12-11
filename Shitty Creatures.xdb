@@ -1341,8 +1341,8 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="ChaseBehavior" Guid="a2b3c4d5-e6f7-9890-3456-89abcdef012b" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
         <Parameter Name="AutoChaseMask" Guid="b3c4d5e6-f7a8-9901-4567-9abcdef0123c" Value="LandPredator, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
-        <Parameter Name="DayChaseRange" Guid="c4d5e6f7-a8b9-0012-5678-abcdef01234d" Value="8" Type="float"/>
-        <Parameter Name="NightChaseRange" Guid="d5e6f7a8-b9c0-0123-6789-bcdef012345e" Value="12" Type="float"/>
+        <Parameter Name="DayChaseRange" Guid="c4d5e6f7-a8b9-0012-5678-abcdef01234d" Value="1.8" Type="float"/>
+        <Parameter Name="NightChaseRange" Guid="d5e6f7a8-b9c0-0123-6789-bcdef012345e" Value="1.2" Type="float"/>
         <Parameter Name="ChaseNonPlayerProbability" Guid="e6f7a8b9-c0d1-0234-789a-cdef0123456f" Value="0.04" Type="float"/>
         <Parameter Name="NightChaseTime" Guid="f7a8b9c0-d1e2-0345-89ab-def012345670" Value="18" Type="float"/>
     </MemberComponentTemplate>
