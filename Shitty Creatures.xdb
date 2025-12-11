@@ -38,13 +38,6 @@
     </Folder>
 
     <Folder Name="ProgramedInteligence" Guid="33dfd132-3c41-4dfa-a385-af3ba34ff86b">
-    <ComponentTemplate Name="RangedShooterBehavior" Description="Comportamiento unificado para NPCs que usan armas a distancia" Guid="ad1ba5c9-9d73-47a1-913b-626567a97de4" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
-        <Parameter Name="MaxDistance" Description="Distancia máxima de disparo efectivo" Guid="c5088a3f-3e7f-42d6-92a8-c723efb01a8a" Value="25" Type="float"/>
-        <Parameter Name="DetectionDistance" Description="Distancia para detectar y recoger armas del suelo" Guid="71d7138c-0553-4f00-8ce0-b58544c96627" Value="10" Type="float"/>
-        <Parameter Name="AutoCollectWeapons" Description="Recoger automáticamente armas del suelo" Guid="3618a80b-83c7-4256-a624-de36d3ad6693" Value="true" Type="bool"/>
-        <Parameter Name="Class" Guid="83b94b9b-f125-44ad-8b0d-c818a87018d1" Value="Game.ComponentRangedShooterBehavior" Type="string"/>
-    </ComponentTemplate>
-
 <ComponentTemplate Name="FlameThrowerShooterBehavior" Description="Comportamiento para NPCs que usan lanzallamas con disparos ilimitados de fuego y veneno" Guid="87654321-1234-1234-1234-123456789012" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
     <Parameter Name="MaxDistance" Description="Distancia máxima de disparo efectivo" Guid="1545802d-570b-4185-9e52-14d4dab61467" Value="20" Type="float"/>
     <Parameter Name="AimTime" Description="Tiempo de apuntado antes de comenzar a disparar" Guid="a81dd914-84dd-46ce-95ee-e86873ed0827" Value="0.5" Type="float"/>
@@ -277,14 +270,6 @@
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Inventory" Guid="3e2bdca8-c473-44c8-b6e1-373ebf1c8e82" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="RangedShooterBehavior" Guid="4e322c5b-aafa-4027-b370-60b57264a35a">
-            <Parameter Name="Class" Value="Game.ComponentRangedShooterBehavior" Type="string"/>
-            <Parameter Name="LoadOrder" Value="-1" Type="int"/>
-            <Parameter Name="IsOptional" Value="False" Type="bool"/>
-            <Parameter Name="MaxDistance" Value="25" Type="float"/>
-            <Parameter Name="DetectionDistance" Value="10" Type="float"/>
-            <Parameter Name="AutoCollectWeapons" Value="true" Type="bool"/>
-        </MemberComponentTemplate>
             <MemberComponentTemplate Name="CreatureCollect" Guid="2220d0ad-a68f-46d2-88d0-720b15b976a7" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
     <Parameter Name="Activate" Value="true" Type="bool"/>
     <Parameter Name="CanOpenInventory" Value="False" Type="bool"/>
