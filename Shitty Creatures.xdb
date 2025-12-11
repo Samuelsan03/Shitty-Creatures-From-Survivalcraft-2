@@ -521,7 +521,7 @@
             </MemberComponentTemplate>
             <ParameterSet Name="CreatureEggData" Guid="d0e1f2a3-b4c5-4n67-9o89-f0a1b2c3d4e5">
                 <Parameter Name="Color" Guid="e1f2a3b4-c5d6-4o78-9p90-a1b2c3d4e5f6" Value="178,148,43" Type="Color"/>
-                <Parameter Name="TextureSlot" Guid="f2a3b4c5-d6e7-4p89-9q01-b2c3d4e5f6a7" Value="163" Type="int"/>
+                <Parameter Name="TextureSlot" Guid="f2a3b4c5-d6e7-4p89-9q01-b2c3d4e5f6a7" Value="20" Type="int"/>
                 <Parameter Name="SwapUV" Guid="a3b4c5d6-e7f8-4q90-9r12-c3d4e5f6a7b8" Value="False" Type="bool"/>
                 <Parameter Name="DisplayName" Guid="b4c5d6e7-f8a9-4r01-9s23-d4e5f6a7b8c9" Value="Ricardo Egg" Type="string"/>
                 <Parameter Name="EggTypeIndex" Guid="c5d6e7f8-a9b0-4s12-9t34-e5f6a7b8c9d0" Value="202" Type="int"/>
@@ -850,8 +850,8 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="ChaseBehavior" Guid="afc9b186-4c2f-452e-87e4-25a567315fbc" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
         <Parameter Name="AutoChaseMask" Guid="d0e191df-5c22-43ff-867f-949a0127f008" Value="LandPredator, WaterPredator" Type="Game.CreatureCategory"/>
-        <Parameter Name="DayChaseRange" Guid="a1f7611f-d86e-4ad2-805c-6244834fa363" Value="4" Type="float"/>
-        <Parameter Name="NightChaseRange" Guid="d72fe83e-3d04-4794-86ae-93799d045a28" Value="6" Type="float"/>
+        <Parameter Name="DayChaseRange" Guid="a1f7611f-d86e-4ad2-805c-6244834fa363" Value="1.4" Type="float"/>
+        <Parameter Name="NightChaseRange" Guid="d72fe83e-3d04-4794-86ae-93799d045a28" Value="1.6" Type="float"/>
         <Parameter Name="ChaseNonPlayerProbability" Guid="515b4494-dd28-475b-9353-4bd906ba2daf" Value="0.01" Type="float"/>
         <Parameter Name="NightChaseTime" Guid="8395d4b2-43de-416c-924e-709fba712ffc" Value="8" Type="float"/>
     </MemberComponentTemplate>
@@ -1002,8 +1002,8 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="ChaseBehavior" Guid="4eaeb534-3647-4fec-910f-6ae7f4d7ca27" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
         <Parameter Name="AutoChaseMask" Guid="ce681d43-106c-4d3b-8361-a1284c0357cd" Value="LandPredator, Bird, WaterPredator" Type="Game.CreatureCategory"/>
-        <Parameter Name="DayChaseRange" Guid="bfdb4476-dd60-4076-9a58-47e40a5318a6" Value="3" Type="float"/>
-        <Parameter Name="NightChaseRange" Guid="cb33ab47-98dd-40a0-90c6-d756108ccf77" Value="5" Type="float"/>
+        <Parameter Name="DayChaseRange" Guid="bfdb4476-dd60-4076-9a58-47e40a5318a6" Value="1.3" Type="float"/>
+        <Parameter Name="NightChaseRange" Guid="cb33ab47-98dd-40a0-90c6-d756108ccf77" Value="1.5" Type="float"/>
         <Parameter Name="ChaseNonPlayerProbability" Guid="7168aa78-02b1-4848-9483-ed4419789b66" Value="0.005" Type="float"/>
         <Parameter Name="NightChaseTime" Guid="72bc61ee-0030-44c2-8f67-23a778ec8bd2" Value="6" Type="float"/>
     </MemberComponentTemplate>
@@ -1057,14 +1057,14 @@
     <Parameter Name="LoadOrder" Value="0" Type="int"/>
     <Parameter Name="IsOptional" Value="false" Type="bool"/>
     <Parameter Name="Class" Value="Game.ComponentFlameThrowerShooterBehavior" Type="string"/>
-    <Parameter Name="MaxDistance" Value="30" Type="float"/>
+    <Parameter Name="MaxDistance" Value="55" Type="float"/>
     <Parameter Name="AimTime" Value="0.4" Type="float"/>
     <Parameter Name="BurstTime" Value="5" Type="float"/>
     <Parameter Name="CooldownTime" Value="0.3" Type="float"/>
     <Parameter Name="FireSound" Value="Audio/Flamethrower/Flamethrower Fire" Type="string"/>
     <Parameter Name="HammerSound" Value="Audio/HammerCock" Type="string"/>
-    <Parameter Name="FireSoundDistance" Value="20" Type="float"/>
-    <Parameter Name="HammerSoundDistance" Value="20" Type="float"/>
+    <Parameter Name="FireSoundDistance" Value="100" Type="float"/>
+    <Parameter Name="HammerSoundDistance" Value="100" Type="float"/>
     <Parameter Name="Accuracy" Value="0.12" Type="float"/>
     <Parameter Name="UseRecoil" Value="true" Type="bool"/>
     <Parameter Name="FlameSpeed" Value="35" Type="float"/>
@@ -1124,6 +1124,7 @@
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="5a871871-41ef-4f2f-b011-de3379615731" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
     <MemberComponentTemplate Name="HerdBehavior" Guid="53a8c432-4706-43bd-9a73-ebd4424c425d" InheritanceParent="dfe7218e-ce14-4bde-8dac-f919c38e9efe">
         <Parameter Name="HerdName" Guid="583e07ad-bc65-4b27-801a-0f99fc010778" Value="Alianza" Type="string"/>
+        <Parameter Name="HerdingRange" Guid="f9b33d6f-c664-4be1-a0f3-3411eb1e2898" Value="55.5" Type="float"/>
         <Parameter Name="AutoNearbyCreaturesHelp" Guid="5040e79c-9f1f-466d-b0dd-eeb4d271797d" Value="True" Type="bool"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="FeedBehavior" Guid="f5e9d2d7-80cc-46a5-a880-156e2b1340e3" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
@@ -1485,8 +1486,8 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="ChaseBehavior" Guid="d10118fe-4310-44e1-bc27-554fa2062435" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
         <Parameter Name="AutoChaseMask" Guid="cea20dca-197b-4bb8-b345-aadb03455860" Value="LandPredator, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
-        <Parameter Name="DayChaseRange" Guid="9019a81a-f08e-4e88-a868-20c0e7250ce3" Value="3" Type="float"/>
-        <Parameter Name="NightChaseRange" Guid="11e67084-b4b4-4b29-851d-e0d8e81bbae1" Value="10" Type="float"/>
+        <Parameter Name="DayChaseRange" Guid="9019a81a-f08e-4e88-a868-20c0e7250ce3" Value="1.3" Type="float"/>
+        <Parameter Name="NightChaseRange" Guid="11e67084-b4b4-4b29-851d-e0d8e81bbae1" Value="1" Type="float"/>
         <Parameter Name="ChaseNonPlayerProbability" Guid="7d97ca41-d87c-4af3-b3d6-7e30250c0cd6" Value="0.03" Type="float"/>
         <Parameter Name="NightChaseTime" Guid="23b4477c-4951-458d-adfd-194d9b95ffed" Value="15" Type="float"/>
     </MemberComponentTemplate>
@@ -1893,6 +1894,11 @@
 </EntityTemplate>
 
 <EntityTemplate Name="Conker" Guid="8d959f25-edc7-4572-b545-4eba05869e45" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="CreatureSounds" Guid="672489ab-0fea-4c98-850a-2e91e2a2f6d2">
+                <Parameter Name="PainSound" Guid="13066d37-9108-48f4-a59c-62b92768e5b3" Value="Audio/Creatures/Conker/Pain" Type="string"/>
+                <Parameter Name="IdleSound" Guid="14ca07d9-a79a-465f-848e-d575b4b5d39c" Value="Audio/Creatures/Conker/Idie" Type="string"/>
+                <Parameter Name="AttackSound" Guid="4ba11990-0809-41d0-85af-175f9e0a4c48" Value="Audio/Creatures/Conker/Attack" Type="string"/>
+            </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="3cc18aae-f466-4f59-930c-c3966de42ff8" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
         <Parameter Name="DayRange" Guid="14132a70-6a59-4d8b-bfd8-01ba7b0bc890" Value="0" Type="float"/>
         <Parameter Name="NightRange" Guid="8f4e7e10-9ffe-426f-b22d-45a156c2e55e" Value="0" Type="float"/>
@@ -1965,8 +1971,8 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="ChaseBehavior" Guid="f25f09b3-f002-41f2-9b60-1260a4b42250" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
         <Parameter Name="AutoChaseMask" Guid="cb4b7a45-8a5d-4a43-b05b-e75bae4ded3f" Value="LandPredator, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
-        <Parameter Name="DayChaseRange" Guid="f8d8cc10-d075-418a-b55d-dad83482a652" Value="6" Type="float"/>
-        <Parameter Name="NightChaseRange" Guid="6fbfb72e-7815-43a3-980b-4462641006f0" Value="10" Type="float"/>
+        <Parameter Name="DayChaseRange" Guid="f8d8cc10-d075-418a-b55d-dad83482a652" Value="1.6" Type="float"/>
+        <Parameter Name="NightChaseRange" Guid="6fbfb72e-7815-43a3-980b-4462641006f0" Value="1" Type="float"/>
         <Parameter Name="ChaseNonPlayerProbability" Guid="6b07a9f2-b4d5-43dd-b71e-ede40bfc4724" Value="0.03" Type="float"/>
         <Parameter Name="NightChaseTime" Guid="6790406c-9c2d-4c43-b5f7-7e368c141b53" Value="15" Type="float"/>
     </MemberComponentTemplate>
@@ -1980,6 +1986,11 @@
 </EntityTemplate>
 
 <EntityTemplate Name="Beavis" Guid="e9d8d930-9dd1-49b8-8140-a35cc200be64" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="CreatureSounds" Guid="7bb3ccf6-5a3f-4cf2-85c4-17e6715f33f4">
+                <Parameter Name="PainSound" Guid="7fc93f43-d038-4a74-97b1-0b49395466b2" Value="Audio/Creatures/Beavis/Pain" Type="string"/>
+                <Parameter Name="IdleSound" Guid="681ad69a-f824-460e-8002-84d136a19584" Value="Audio/Creatures/Beavis/Idie" Type="string"/>
+                <Parameter Name="AttackSound" Guid="e68e5434-7965-4188-a342-b5207cdaa7dd" Value="Audio/Creatures/Beavis/Attack" Type="string"/>
+            </MemberComponentTemplate>
 <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="614afeff-8964-42a3-a2e1-e0dc9066aa43" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
     <Parameter Name="ChaseToCreatures" Guid="cad67434-604f-4cd8-8aee-b329a21b2749" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
     <Parameter Name="ChaseToCreatureProbability" Guid="0b1e7d55-18e9-428f-b913-2defdce8a347" Value="1.0" Type="float"/>
@@ -2052,8 +2063,8 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="ChaseBehavior" Guid="40f09dc2-44bf-4867-ab4c-60d7679cbc6d" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
         <Parameter Name="AutoChaseMask" Guid="770905cd-aa4e-4f9e-a240-1464070a3be4" Value="LandPredator, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
-        <Parameter Name="DayChaseRange" Guid="a40740d7-071a-4180-b2c4-c6994316c9c4" Value="6" Type="float"/>
-        <Parameter Name="NightChaseRange" Guid="200665f2-c616-420d-981e-2e38a6835630" Value="10" Type="float"/>
+        <Parameter Name="DayChaseRange" Guid="a40740d7-071a-4180-b2c4-c6994316c9c4" Value="1.6" Type="float"/>
+        <Parameter Name="NightChaseRange" Guid="200665f2-c616-420d-981e-2e38a6835630" Value="1" Type="float"/>
         <Parameter Name="ChaseNonPlayerProbability" Guid="3ed57f2d-e3f0-4603-9610-a007a04bb454" Value="0.1" Type="float"/>
         <Parameter Name="NightChaseTime" Guid="bb82bd9c-77e1-450f-9e40-11ca47a5ffdb" Value="15" Type="float"/>
     </MemberComponentTemplate>
@@ -2067,6 +2078,11 @@
 </EntityTemplate>
 
 <EntityTemplate Name="Butt-Head" Guid="09699a5a-89f9-4883-b77f-e8adf8f52473" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="CreatureSounds" Guid="21850bcf-39f1-4f32-a2a6-018c789c50fd">
+                <Parameter Name="PainSound" Guid="138b0584-9829-418f-9f37-90acd4ec8d12" Value="Audio/Creatures/Butt-Head/Pain" Type="string"/>
+                <Parameter Name="IdleSound" Guid="d5d762cf-60f8-4af9-bb6b-2952a5964229" Value="Audio/Creatures/Butt-Head/Idie" Type="string"/>
+                <Parameter Name="AttackSound" Guid="bdebe2d8-a019-4610-a8d3-3985598e7706" Value="Audio/Creatures/Butt-Head/Attack" Type="string"/>
+            </MemberComponentTemplate>
 <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="acb6d319-911a-4c33-b789-24560ed70e84" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
     <Parameter Name="ChaseToCreatures" Guid="16f39974-a1df-46cd-b530-17f972a6f6ea" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
     <Parameter Name="ChaseToCreatureProbability" Guid="a52f57d9-37c9-4280-9466-c47583507c97" Value="1.0" Type="float"/>
@@ -2138,8 +2154,8 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="ChaseBehavior" Guid="9c752dbb-2bec-4a60-a9d8-1a5c5933c28a" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
         <Parameter Name="AutoChaseMask" Guid="f54ce61e-1bb9-4270-99cd-f3667ec7b9ad" Value="LandPredator, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
-        <Parameter Name="DayChaseRange" Guid="2714b5ac-ca96-4384-a340-b69976f880a2" Value="6" Type="float"/>
-        <Parameter Name="NightChaseRange" Guid="4aa6bed9-6479-40f5-a392-da886e1a57c6" Value="8" Type="float"/>
+        <Parameter Name="DayChaseRange" Guid="2714b5ac-ca96-4384-a340-b69976f880a2" Value="1.6" Type="float"/>
+        <Parameter Name="NightChaseRange" Guid="4aa6bed9-6479-40f5-a392-da886e1a57c6" Value="1.8" Type="float"/>
         <Parameter Name="ChaseNonPlayerProbability" Guid="7b3d1a04-ed41-4c0c-8eb1-7d3ebdca7980" Value="0.02" Type="float"/>
         <Parameter Name="NightChaseTime" Guid="e9b82b1f-100c-463e-a11b-674f7b1676e0" Value="15" Type="float"/>
     </MemberComponentTemplate>
@@ -4103,6 +4119,11 @@
 </EntityTemplate>
 
 <EntityTemplate Name="CarlJohnson" Guid="1e9bf665-6998-478e-ba9d-3f850d0dbb7b" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="CreatureSounds" Guid="2ee91741-453f-46a5-b21e-3318c491c1c2">
+                <Parameter Name="PainSound" Guid="23115064-92a7-4e4f-b822-a9c1596b2b0a" Value="Audio/Creatures/Carl Johnson/Pain" Type="string"/>
+                <Parameter Name="IdleSound" Guid="fdd4d940-9704-456a-bd6a-9d88775381ad" Value="Audio/Creatures/Carl Johnson/Idie" Type="string"/>
+                <Parameter Name="AttackSound" Guid="c6f231c6-cff3-4271-91fd-f8b25bca00e4" Value="Audio/Creatures/Carl Johnson/Attack" Type="string"/>
+            </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="a9b0c1d2-e3f4-4890-9123-456789abcdef" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
         <Parameter Name="DayRange" Guid="b0c1d2e3-f4a5-4901-2345-6789abcdef01" Value="3" Type="float"/>
         <Parameter Name="NightRange" Guid="c1d2c3d4-e5f6-5012-3456-789abcdef012" Value="5" Type="float"/>
