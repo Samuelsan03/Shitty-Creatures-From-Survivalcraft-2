@@ -35,8 +35,8 @@ namespace Game
 			// Aplicar efectos de veneno si la flecha es de veneno
 			if (arrowType == RepeatArrowBlock.ArrowType.PoisonArrow || arrowType == RepeatArrowBlock.ArrowType.SeriousPoisonArrow)
 			{
-				// Intensidades de veneno
-				float poisonIntensity = (arrowType == RepeatArrowBlock.ArrowType.PoisonArrow) ? 60f : 100f;
+				// Intensidades de veneno - ajustadas para que no maten rápido
+				float poisonIntensity = (arrowType == RepeatArrowBlock.ArrowType.PoisonArrow) ? 3f : 5f;
 
 				// Obtener el objetivo
 				if (componentBody != null && componentBody.Entity != null)
@@ -45,7 +45,6 @@ namespace Game
 
 					if (targetCreature != null)
 					{
-						// Buscar componente de veneno
 						ComponentPoisonInfected componentPoisonInfected = targetCreature.Entity.FindComponent<ComponentPoisonInfected>();
 						ComponentPlayer componentPlayer = targetCreature as ComponentPlayer;
 
@@ -67,17 +66,8 @@ namespace Game
 					}
 				}
 
-				// DAÑO INICIAL REDUCIDO: Solo 3-4 de daño en lugar de 11-13
-				ComponentHealth componentHealth = (componentBody != null) ? componentBody.Entity.FindComponent<ComponentHealth>() : null;
-				Projectile projectile = worldItem as Projectile;
-				if (projectile != null && componentHealth != null)
-				{
-					// Daño MUY reducido: 3 para Poison, 4 para Serious Poison
-					float damage = (arrowType == RepeatArrowBlock.ArrowType.PoisonArrow) ? 3f : 4f;
-
-					// Aplicar daño reducido
-					componentHealth.Injure(damage, projectile.Owner, false, "ShotByArrow");
-				}
+				// DAÑO INICIAL MUY BAJO - ya viene de m_weaponPowers (3 y 4)
+				// No aplicamos daño adicional aquí para evitar doble daño
 
 				// Las flechas de veneno no se rompen
 				return false;

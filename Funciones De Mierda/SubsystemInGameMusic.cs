@@ -1,4 +1,4 @@
-using Engine;
+﻿using Engine;
 using Engine.Audio;
 using Engine.Media;
 using GameEntitySystem;
@@ -570,7 +570,7 @@ namespace Game
 			new SubsystemInGameMusic.TrackInfo("MenuMusic/MAGICAL SOUND SHOWER OutRun", 177f),
 			new SubsystemInGameMusic.TrackInfo("MenuMusic/Super Hang-On Outride A Crisis", 177f),
 			new SubsystemInGameMusic.TrackInfo("MenuMusic/Super Hang-On Sprinter", 177f),
-			new SubsystemInGameMusic.TrackInfo("MenuMusic/Super Hang-On Winning", 177f),
+			new SubsystemInGameMusic.TrackInfo("MenuMusic/Super Hang-On Winning Run", 177f),
 		};
 
 		private struct TrackInfo

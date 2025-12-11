@@ -136,10 +136,10 @@ namespace Game
 					return "An explosive-tipped bolt designed for repeating crossbows. Creates a small explosion on impact with 90 pressure force. While regular explosive arrows have a higher individual damage, these allow for rapid explosive shots, making them ideal for area denial and crowd control.";
 
 				case 4: // Poison Repeating Arrow
-					return "A poison-coated bolt for repeating crossbows. Inflicts poison damage over time on targets with moderate initial impact (11 damage). Causes poison effect for 30 seconds. Compared to regular poison arrows, these allow for faster application of poison effects, enabling quick poisoning of multiple enemies in succession.";
+					return "A poison-coated bolt for repeating crossbows. Inflicts poison damage over time on targets with very low initial impact (3 damage). Causes poison effect for 30 seconds. Designed to weaken enemies over time rather than kill instantly, making them ideal for capturing or slowing down targets.";
 
 				case 5: // Serious Poison Repeating Arrow
-					return "A heavily poisoned bolt for repeating crossbows. Delivers a stronger poison effect with higher poison duration (100 seconds) and initial damage (13 damage) than regular poison arrows. The repeating crossbow mechanism lets you apply serious poison to multiple targets rapidly, making it effective against groups of enemies.";
+					return "A heavily poisoned bolt for repeating crossbows. Delivers a stronger poison effect with higher poison duration (100 seconds) and very low initial damage (4 damage). The repeating crossbow mechanism lets you apply serious poison to multiple targets rapidly, weakening groups of enemies without killing them outright.";
 
 				default:
 					return base.GetDescription(value);
@@ -183,10 +183,10 @@ namespace Game
 		public static int[] m_stabilizerTextureSlots = new int[] { 15, 15, 15, 15, 15, 15 };
 		public static float[] m_offsets = new float[] { -0.45f, -0.45f, -0.45f, -0.45f, -0.45f, -0.45f };
 
-		// DAÑOS AJUSTADOS:
-		// Originales: 16f, 24f, 36f, 8f, 6f, 12f
-		// Nuevos: 18f, 26f, 40f, 10f, 11f, 13f
-		public static float[] m_weaponPowers = new float[] { 18f, 26f, 40f, 10f, 11f, 13f };
+		// DAÑOS AJUSTADOS PARA VENENOS:
+		// Daño inicial MUY reducido - solo 3 para veneno, 4 para veneno grave
+		// El daño principal vendrá del efecto de veneno con el tiempo
+		public static float[] m_weaponPowers = new float[] { 18f, 26f, 40f, 10f, 3f, 4f };
 
 		public static float[] m_iconViewScales = new float[] { 0.8f, 0.8f, 0.8f, 0.8f, 0.8f, 0.8f };
 		public static float[] m_explosionPressures;
