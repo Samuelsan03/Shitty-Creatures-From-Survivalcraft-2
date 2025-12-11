@@ -1021,22 +1021,6 @@
         <Parameter Name="DayRange" Guid="701dd54b-21ac-4f7c-a84c-9d3125234e5d" Value="0" Type="float"/>
         <Parameter Name="NightRange" Guid="cbab13e1-9741-4e27-96e1-82d528b7fa1f" Value="0" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="PoisonInfectBehavior" Guid="36fe135b-19e6-4b78-acab-663801dc4f6c">
-    <Parameter Name="Class" Value="Game.ComponentPoisonInfectedBehavior" Type="string"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
-    <Parameter Name="PoisonIntensity" Value="1" Type="float"/> <!-- Duración BASE del veneno en segundos -->
-    <Parameter Name="InfectionProbability" Value="0" Type="float"/> <!-- 50% chance de infectar -->
-    <Parameter Name="InfectionCooldown" Value="0.55" Type="float"/> <!-- 10s entre infecciones -->
-    <Parameter Name="AttackRange" Value="0" Type="float"/> <!-- Rango de 2 metros -->
-</MemberComponentTemplate>
-<MemberComponentTemplate Name="PoisonInfected" Guid="3fd330eb-7e72-42a2-896d-35ecc9753979">
-    <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int"/>
-    <Parameter Name="PoisonResistance" Value="999" Type="float"/> <!-- 0 = sin resistencia (dura 100s) -->
-    <Parameter Name="IsJumpMove" Value="false" Type="bool"/> <!-- Con tambaleo -->
-</MemberComponentTemplate>
     <MemberComponentTemplate Name="EatPickableBehavior" Guid="ca9f8094-63d4-4037-81c8-30dae4930778">
         <ParameterSet Name="FoodFactors" Guid="037ea2d0-f8a6-4c37-a698-c27f4698716d">
             <Parameter Name="Fruit" Guid="81567f9a-be8a-4081-8de1-a7eefe5e86cf" Value="1" Type="float"/>
@@ -2407,7 +2391,7 @@
     <Parameter Name="DrawTime" Value="0.5" Type="float"/>
     <Parameter Name="AimTime" Value="0.5" Type="float"/>
     <Parameter Name="DrawSound" Value="Audio/CrossbowDraw" Type="string"/>
-    <Parameter Name="FireSound" Value="Audio/Bow" Type="string"/>
+    <Parameter Name="FireSound" Value="Audio/CrossbowBoing" Type="string"/>
     <Parameter Name="ReloadSound" Value="Audio/Reload" Type="string"/>
     <Parameter Name="FireSoundDistance" Value="15" Type="float"/>
     <Parameter Name="Accuracy" Value="0.02" Type="float"/>
@@ -3094,7 +3078,7 @@
     <Parameter Name="DrawTime" Value="0.5" Type="float"/>
     <Parameter Name="AimTime" Value="0.5" Type="float"/>
     <Parameter Name="DrawSound" Value="Audio/CrossbowDraw" Type="string"/>
-    <Parameter Name="FireSound" Value="Audio/Bow" Type="string"/>
+    <Parameter Name="FireSound" Value="Audio/CrossbowBoing" Type="string"/>
     <Parameter Name="ReloadSound" Value="Audio/Reload" Type="string"/>
     <Parameter Name="FireSoundDistance" Value="15" Type="float"/>
     <Parameter Name="Accuracy" Value="0.02" Type="float"/>
@@ -4655,7 +4639,7 @@
     <Parameter Name="TimeBetweenShots" Value="1.0" Type="float"/>
     <Parameter Name="MaxInaccuracy" Value="0.03" Type="float"/>
     <Parameter Name="DrawSound" Value="Audio/CrossbowDraw" Type="string"/>
-    <Parameter Name="FireSound" Value="Audio/Bow" Type="string"/>
+    <Parameter Name="FireSound" Value="Audio/CrossbowBoing" Type="string"/>
     <Parameter Name="ReleaseSound" Value="Audio/CrossbowBoing" Type="string"/>
     <Parameter Name="FireSoundDistance" Value="15" Type="float"/>
     <Parameter Name="UseRecoil" Value="true" Type="bool"/>
