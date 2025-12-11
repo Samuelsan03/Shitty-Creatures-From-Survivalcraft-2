@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Engine;
 using Game;
 using GameEntitySystem;
@@ -42,6 +42,31 @@ namespace Game
 		public bool StartInfect(ComponentCreature target)
 		{
 			if (target == null) return false;
+
+			// === NUEVO: VERIFICAR SI EL OBJETIVO ES UN JUGADOR EN MODO CREATIVO ===
+			ComponentPlayer targetPlayer = target as ComponentPlayer;
+			if (targetPlayer != null)
+			{
+				// Verificar si el mundo permite mecánicas de supervivencia
+				SubsystemGameInfo subsystemGameInfo = target.Project.FindSubsystem<SubsystemGameInfo>();
+				if (subsystemGameInfo != null)
+				{
+					// Si está en modo creativo O las mecánicas de supervivencia están desactivadas, NO infectar
+					if (subsystemGameInfo.WorldSettings.GameMode == GameMode.Creative ||
+						!subsystemGameInfo.WorldSettings.AreAdventureSurvivalMechanicsEnabled)
+					{
+						return false; // Jugador en modo creativo, NO infectar
+					}
+				}
+
+				// También verificar mediante el componente de inmunidad si existe
+				ComponentPlayerPoisonImmunity immunity = target.Entity.FindComponent<ComponentPlayerPoisonImmunity>();
+				if (immunity != null && !immunity.CanReceivePoison(this.m_poisonIntensity))
+				{
+					return false; // El componente de inmunidad bloquea la infección
+				}
+			}
+			// === FIN DE LA NUEVA VERIFICACIÓN ===
 
 			// Verificar cooldown
 			if (this.m_subsystemTime.GameTime - this.m_lastInfectionTime < (double)this.m_infectionCooldown)
