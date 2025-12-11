@@ -38,32 +38,12 @@
     </Folder>
 
     <Folder Name="ProgramedInteligence" Guid="33dfd132-3c41-4dfa-a385-af3ba34ff86b">
-    <ComponentTemplate Name="RangedShooterBehavior" Description="Comportamiento unificado para NPCs que usan armas a distancia (arco, ballesta, ballesta repetidora, mosquete, ItemsLauncher) con disparos ilimitados" Guid="12345678-1234-1234-1234-123456789012" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
-    <Parameter Name="MinDistance" Description="Distancia mínima para comenzar a disparar" Guid="798614b7-678a-4b20-bb47-efc7c8ef5e89" Value="5" Type="float"/>
-    <Parameter Name="MaxDistance" Description="Distancia máxima de disparo efectivo" Guid="89163c1b-0bcb-46f1-a958-36e0258ca524" Value="25" Type="float"/>
-    <Parameter Name="DrawTime" Description="Tiempo para tensar completamente el arco/ballesta en segundos" Guid="632ec271-4d56-4a8d-bcfb-a848633c378b" Value="1.5" Type="float"/>
-    <Parameter Name="ReloadTime" Description="Tiempo de recarga para mosquete/ItemsLauncher en segundos" Guid="af4ca3af-c160-4aef-b827-850747be4a7b" Value="0.55" Type="float"/>
-    <Parameter Name="AimTime" Description="Tiempo de apuntado antes de comenzar a disparar/tensar" Guid="867b42ae-7fe0-4c75-b34d-77d0b3402a19" Value="0.5" Type="float"/>
-    <Parameter Name="CockTime" Description="Tiempo de amartillado para mosquete/ItemsLauncher" Guid="20ca544d-6ac9-4c13-8f84-546d9368333c" Value="0.5" Type="float"/>
-    <Parameter Name="TimeBetweenShots" Description="Tiempo entre disparos para ballesta repetidora" Guid="a00403f4-e3c7-4d6e-891f-dbc235e4c948" Value="1.0" Type="float"/>
-    <Parameter Name="DrawSound" Description="Sonido de tensar arco/ballesta" Guid="a50a71a2-5fc4-4e28-aafa-ddcec4982da6" Value="Audio/BowDraw" Type="string"/>
-    <Parameter Name="FireSound" Description="Sonido de disparo" Guid="53f0d464-15be-4a77-baf0-b9467716533b" Value="Audio/Bow" Type="string"/>
-    <Parameter Name="ReloadSound" Description="Sonido de recarga" Guid="bd237418-c5c2-4c1b-b6ff-3b44bd46999b" Value="Audio/Reload" Type="string"/>
-    <Parameter Name="CockSound" Description="Sonido de amartillado" Guid="30b916a3-78cf-4314-8061-d0c214d84381" Value="Audio/HammerCock" Type="string"/>
-    <Parameter Name="ReleaseSound" Description="Sonido al destensar ballesta" Guid="78f0c5a7-cc2b-452c-ab5a-bda7cad38b12" Value="Audio/CrossbowBoing" Type="string"/>
-    <Parameter Name="FireSoundDistance" Description="Distancia del sonido de disparo" Guid="152afe57-4672-404a-a3f8-6e017c02fe43" Value="15" Type="float"/>
-    <Parameter Name="Accuracy" Description="Precisión del disparo para arco/ballesta/mosquete (menor = más preciso)" Guid="32fd1541-5f2b-46a7-a8ef-cd2b94d72c16" Value="0.03" Type="float"/>
-    <Parameter Name="MaxInaccuracy" Description="Imprecisión máxima para ballesta repetidora" Guid="cb33f14b-e3d6-4a05-80ad-868ddc9369c3" Value="0.03" Type="float"/>
-    <Parameter Name="UseRecoil" Description="Aplicar retroceso al disparar" Guid="dbe33199-31f5-436f-9f6b-e3f16c7571d7" Value="true" Type="bool"/>
-    <Parameter Name="ArrowSpeed" Description="Velocidad base de flechas de arco" Guid="7ab6ccbe-18d9-45f7-af05-e654ef181587" Value="35" Type="float"/>
-    <Parameter Name="BoltSpeed" Description="Velocidad base de virotes de ballesta" Guid="b36571c1-5884-4b92-a6cc-acf31b1c5210" Value="45" Type="float"/>
-    <Parameter Name="BulletSpeed" Description="Velocidad base de balas de mosquete" Guid="b59f598d-da07-4d66-bb9d-ab408fe151f2" Value="120" Type="float"/>
-    <Parameter Name="CycleArrowTypes" Description="Ciclar entre diferentes tipos de flechas/virotes al disparar" Guid="faae7108-2376-490c-984f-baeee3927563" Value="true" Type="bool"/>
-    <Parameter Name="ShowArrowWhenIdle" Description="Mostrar flecha cuando el arco está inactivo" Guid="391ef30a-2494-4d8f-8895-a944d0922f18" Value="true" Type="bool"/>
-    <Parameter Name="ShowBoltWhenIdle" Description="Mostrar virote cuando la ballesta está inactivo" Guid="bd55e4b0-6e60-44bf-908c-473dfdd306d1" Value="false" Type="bool"/>
-    <Parameter Name="RequireCocking" Description="Requiere amartillar antes de disparar (mosquete/ItemsLauncher)" Guid="505f0f01-46e1-4b1f-bcd9-b5036ec06884" Value="true" Type="bool"/>
-    <Parameter Name="Class" Guid="12345678-1234-1234-1234-123456789013" Value="Game.ComponentRangedShooterBehavior" Type="string"/>
-</ComponentTemplate>
+    <ComponentTemplate Name="RangedShooterBehavior" Description="Comportamiento unificado para NPCs que usan armas a distancia" Guid="ad1ba5c9-9d73-47a1-913b-626567a97de4" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+        <Parameter Name="MaxDistance" Description="Distancia máxima de disparo efectivo" Guid="c5088a3f-3e7f-42d6-92a8-c723efb01a8a" Value="25" Type="float"/>
+        <Parameter Name="DetectionDistance" Description="Distancia para detectar y recoger armas del suelo" Guid="71d7138c-0553-4f00-8ce0-b58544c96627" Value="10" Type="float"/>
+        <Parameter Name="AutoCollectWeapons" Description="Recoger automáticamente armas del suelo" Guid="3618a80b-83c7-4256-a624-de36d3ad6693" Value="true" Type="bool"/>
+        <Parameter Name="Class" Guid="83b94b9b-f125-44ad-8b0d-c818a87018d1" Value="Game.ComponentRangedShooterBehavior" Type="string"/>
+    </ComponentTemplate>
 
 <ComponentTemplate Name="FlameThrowerShooterBehavior" Description="Comportamiento para NPCs que usan lanzallamas con disparos ilimitados de fuego y veneno" Guid="87654321-1234-1234-1234-123456789012" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
     <Parameter Name="MaxDistance" Description="Distancia máxima de disparo efectivo" Guid="1545802d-570b-4185-9e52-14d4dab61467" Value="20" Type="float"/>
@@ -297,6 +277,14 @@
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Inventory" Guid="3e2bdca8-c473-44c8-b6e1-373ebf1c8e82" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
             </MemberComponentTemplate>
+            <MemberComponentTemplate Name="RangedShooterBehavior" Guid="4e322c5b-aafa-4027-b370-60b57264a35a">
+            <Parameter Name="Class" Value="Game.ComponentRangedShooterBehavior" Type="string"/>
+            <Parameter Name="LoadOrder" Value="-1" Type="int"/>
+            <Parameter Name="IsOptional" Value="False" Type="bool"/>
+            <Parameter Name="MaxDistance" Value="25" Type="float"/>
+            <Parameter Name="DetectionDistance" Value="10" Type="float"/>
+            <Parameter Name="AutoCollectWeapons" Value="true" Type="bool"/>
+        </MemberComponentTemplate>
             <MemberComponentTemplate Name="CreatureCollect" Guid="2220d0ad-a68f-46d2-88d0-720b15b976a7" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
     <Parameter Name="Activate" Value="true" Type="bool"/>
     <Parameter Name="CanOpenInventory" Value="False" Type="bool"/>
