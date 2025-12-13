@@ -1,8 +1,92 @@
 {
-  "Help": {
-    "40": {
-      "Title": "About This Shit Mod",
-      "value": "This mod contains creatures of all kinds, stupid names and absurd descriptions, black humor, and unapologetic assholery. Some characters are inspired by TV shows, video games, books, or come directly from the creator's imagination. Expect nonsense, satire, and offensive stupidity. If you're looking for balance, lore consistency, or moral clarity, you're in the wrong place. This mod exists simply because someone thought it was funny enough to make. This mod was created on October 4, 2025, when the developer tried to make mods using a creature based on his own skin. He quickly realized it looked terrible—unoriginal and almost pirated. He abandoned the project for a month to focus on his wiki, Guns Mod, and Siyah Akrep on Fandom. Near the beginning of November 2025, he revived the mod, this time replacing the skin texture with one he imagined himself. That moment became his entry point into the world of Survivalcraft 2 modding. If you want to follow his messy progress, check out the YouTube channel called Felenork, or better yet, visit his GitHub profile under the name Samuelsan03 and look for the project titled 'Npc mod' to stay updated on future changes."
+  "MusicToggleButton": "Music",
+  "MusicOn": "ON",
+  "MusicOff": "OFF",
+  "MusicEnabled": "Music enabled",
+  "MusicDisabled": "Music disabled",
+  "NowPlaying": "You are listening to:",
+  "MusicFileNotFound": "Music file not found",
+  "MusicPlayError": "Error playing music",
+  "AutoCannonTitle": "Auto-Cannon",
+  "InventoryTitle": "Inventory",
+  "ProjectileSpeed": "Projectile Speed",
+  "ShotsPerSecond": "Shots Per Second",
+  "ProjectileSpread": "Projectile Spread",
+  "Fuel": "Fuel",
+  "Accept": "Accept",
+  "Cancel": "X",
+  "YouNeedAmmunition": "You need ammunition to fire the item launcher",
+  "UseAutoCannon": "Use Auto-Cannon",
+  "AutoCannonHelp": "Authors\nFire Dragon\nKike\n----------\nThis weapon uses the first slot of the hotbar or the first available slot with an object. To save any changes, you must press 'Accept', or 'X' to discard. The spread and velocity settings determine the direction and distance of the projectiles.\n\nTo use it, simply hold right click if you are on PC, or hold the screen if you are on a mobile device, and it will automatically fire the times per second you have configured. Useful for shooting spawn eggs and generating creatures in large quantities in a short time.\n\nYou can also have fun launching fireworks or any other object.\n\n\nShitty code stolen by Samuelsan03, so do whatever you want with this code xd",
+  "Blocks": {
+    "ItemsLauncher:0": {
+      "DisplayName": "Items Launcher",
+      "Description": "Launches any type of block or object. Although expensive to craft, it's a powerful weapon like the musket. Be careful!"
+    },
+    "FlameThrower:0": {
+      "DisplayName": "Flamethrower",
+      "Description": "The flamethrower is an incendiary weapon designed to project controlled fire. It was invented by Richard Fiedler in 1901 and first used in combat by the German army in 1915 during World War I. It works by using a fuel tank (usually thickened gasoline or oil) and compressed gas to propel the burning stream through a nozzle with ignition. To use it, the operator must insert Flame Bullets as ammunition, then pull the trigger to unleash fire against enemy fortifications or groups of soldiers. The advantage is that it supports up to 15 rounds (15/15), giving the player sustained firepower before reloading. The Flame Bullet is the secondary ammunition: incendiary projectiles that complement the flamethrower, useful for ranged attacks and maintaining pressure on the enemy."
+    },
+    "FlameBullet:0": {
+      "DisplayName": "Flame Bullet",
+      "Description": "Standard flame ammunition for the flamethrower. Creates fire on impact."
+    },
+    "FlameBullet:1": {
+      "DisplayName": "Poison Bullet",
+      "Description": "Toxic ammunition for the flamethrower. Releases poisonous chemicals that infect targets."
+    },
+    "RepeatCrossbow:0": {
+      "DisplayName": "Repeating Crossbow",
+      "Description": "Enhanced version of the normal crossbow, designed for durability and sustained ranged attacks. Unlike the standard crossbow that fires a single bolt before reloading, the Repeat Crossbow features an 8-bolt magazine and progressive draw states, allowing continuous shots at distance. Compatible with multiple bolt types (Copper, Iron, Diamond, Explosive), each with distinct damage and effects. Automatic crossbow with 8-bolt magazine. Faster reload than normal crossbow but slightly less power."
+    },
+    "RepeatArrow:0": {
+      "DisplayName": "Copper Repeating Bolt",
+      "Description": "A specialized bolt for repeating crossbows. Made from copper, this bolt has moderate penetration power and is more accurate than regular Survivalcraft 2 bolts. Designed specifically for rapid-fire crossbows, it offers better stability during continuous firing."
+    },
+    "RepeatArrow:1": {
+      "DisplayName": "Iron Repeating Bolt",
+      "Description": "An iron-tipped bolt engineered for repeating crossbows. With superior damage and armor penetration compared to regular iron bolts, this projectile maintains accuracy during rapid-fire sequences. The repeating crossbow mechanism allows faster shooting than standard crossbows."
+    },
+    "RepeatArrow:2": {
+      "DisplayName": "Diamond Repeating Bolt",
+      "Description": "A high-end diamond-tipped bolt for advanced repeating crossbows. Features exceptional armor-piercing capability and damage output. Unlike standard diamond bolts, these are optimized for the repeating crossbow's unique firing mechanism, providing sustained high-damage output in automatic fire."
+    },
+    "RepeatArrow:3": {
+      "DisplayName": "Explosive Repeating Bolt",
+      "Description": "An explosive-tipped bolt designed for repeating crossbows. Creates a small explosion on impact with 90 pressure force. While regular explosive bolts have a higher individual damage, these allow for rapid explosive shots, making them ideal for area denial and crowd control."
+    },
+    "RepeatArrow:4": {
+      "DisplayName": "Poison Repeating Bolt",
+      "Description": "A poison-coated bolt for repeating crossbows. Inflicts poison damage over time on targets with very low initial impact (3 damage). Causes poison effect for 30 seconds. Designed to weaken enemies over time rather than kill instantly, making them ideal for capturing or slowing down targets."
+    },
+    "RepeatArrow:5": {
+      "DisplayName": "Serious Poison Repeating Bolt",
+      "Description": "A heavily poisoned bolt for repeating crossbows. Delivers a stronger poison effect with higher poison duration (100 seconds) and very low initial damage (4 damage). The repeating crossbow mechanism lets you apply serious poison to multiple targets rapidly, weakening groups of enemies without killing them outright."
     }
+  },
+  "ContentWidgets": {
+    "FlameThrowerWidget": {
+      "Title": "Flame Thrower",
+      "Inventory": "Inventory",
+      "LoadAmmunition": "Load ammunition",
+      "SprayFire": "Prepare to spray fire {0}/15",
+      "SprayPoison": "Prepare to spray poison {0}/15"
+    },
+    "RepeatCrossbowWidget": {
+      "Title": "Repeating Crossbow",
+      "Inventory": "Inventory",
+      "InstructionsPull": "Pull back to load",
+      "InstructionsInsert": "Insert arrows",
+      "InstructionsArrows": "Arrows: {0}/8"
+    }
+  },
+  "Messages": {
+    "FirstPullCrossbow": "First pull back the crossbow!",
+    "FirstLoadArrow": "First load an arrow!",
+    "ArrowCount": "Arrows: {0}/8"
+  },
+  "Usual": {
+    "ok": "OK",
+    "cancel": "Cancel"
   }
 }
