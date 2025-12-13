@@ -317,8 +317,8 @@
                 <Parameter Name="DisplayName" Guid="b64d0373-7983-43e2-9b50-c3eafa8ad5f3" Value="Naomi" Type="string"/>
                 <Parameter Name="Category" Guid="b09dfbef-0b18-4b32-a9d3-590deaf353a7" Value="LandOther" Type="Game.CreatureCategory"/>
                 <Parameter Name="ConstantSpawn" Guid="296b2400-56e5-472c-9901-ab072edcc274" Value="True" Type="bool"/>
-                <Parameter Name="Description" Guid="f534c8da-e6d2-4181-baad-d35e8f6d8b7c" Value="Your god who left your ass broken" Type="string"/>
-                <Parameter Name="KillVerbs" Guid="38447fb4-d0ad-437e-9d12-2492aefdec76" Value="Kicked your ass" Type="string"/>
+                <Parameter Name="Description" Guid="f534c8da-e6d2-4181-baad-d35e8f6d8b7c" Value="Naomi (ナオミ). A mystery to solve. She is Japanese, but… is she truly human or robotic? How did she arrive on the island of Survivalcraft 2? A tremendous mystery. It begins in Kyoto, with an inventor named Takachi (高智). In 1999, Naomi was created because Takachi needed an automatic assistant for biological scientific research. The prototype tests went well, and the final result looks human. Since then, the robot has been a success for executing both complex and simple tasks. One day, Takachi had a research project from Kyoto University to investigate new species and rare places outside of Japan. Needing companionship, he used Naomi as his partner. Halfway across the sea, Takachi accidentally dropped his humanoid robot, Naomi, into the water, causing a wave of panic. He feared that the robot was damaged due to its electrical components. What he didn't know was that she was water-resistant. This led Naomi to a mysterious island or large continent. From that day, her life as a humanoid robot changed. How will she survive without resources? Previously, she had practiced survival skills during their research trips. Will she need the player's help? You'll find out in the game!" Type="string"/>
+                <Parameter Name="KillVerbs" Guid="38447fb4-d0ad-437e-9d12-2492aefdec76" Value="Kicked your ass,shit with fists" Type="string"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Spawn" Guid="8632862e-2627-43da-bcec-d2b8462dbec8">
     <Parameter Name="AutoDespawn" Guid="af0fc3e6-f719-4225-9f36-cb6d925363cf" Value="False" Type="bool"/>
@@ -443,7 +443,7 @@
             <MemberComponentTemplate Name="Creature" Guid="f6a7b8c9-d0e1-4f23-9g45-b6c7d8e9f0a1">
                 <Parameter Name="DisplayName" Guid="a7b8c9d0-e1f2-4g34-9h56-c7d8e9f0a1b2" Value="Ricardo" Type="string"/>
                 <Parameter Name="Category" Guid="b8c9d0e1-f2a3-4h45-9i67-d8e9f0a1b2c3" Value="LandOther" Type="Game.CreatureCategory"/>
-                <Parameter Name="Description" Guid="c9d0e1f2-a3b4-4i56-9j78-e9f0a1b2c3d4" Value="Run bitch run, or else Ricardo will send you to fuck off" Type="string"/>
+                <Parameter Name="Description" Guid="c9d0e1f2-a3b4-4i56-9j78-e9f0a1b2c3d4" Value="Ricardo is an ordinary civilian from Tlatelolco, born on June 4, 1998. Since childhood, he enjoyed walking like a playful dog and felt a deep connection to nature, always dreaming of traveling to islands. In 2021, the University of Tlatelolco offered him a place in a scientific-biological research program to explore islands outside of Mexico. He seized the opportunity and joined the expedition. During the journey across the Pacific Ocean, violent waves and strong winds endangered the crew. Ricardo was swept away by the wind into the water, and his companions, seeing him far away without a lifebuoy, believed he had drowned. Yet fortune favored him: the currents carried him to an unknown island, one not marked on the Pacific maps. Awakening there, Ricardo had to find ways to survive. One night, while exploring, he encountered Naomi, a humanoid robot who had faced a similar fate. From that moment, they became friends." Type="string"/>
                 <Parameter Name="KillVerbs" Guid="d0e1f2a3-b4c5-4j67-9k89-f0a1b2c3d4e5" Value="Quartered" Type="string"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="ComponentRandomChatter" Guid="4736ee89-4570-4ce7-8c66-39b987a94c76">
@@ -561,7 +561,7 @@
     <MemberComponentTemplate Name="Creature" Guid="f4a5b6c7-d8e9-7012-789a-bcdef0123456">
         <Parameter Name="DisplayName" Guid="a5b6c7d8-e9f0-7123-89ab-cdef01234567" Value="Paco" Type="string"/>
         <Parameter Name="Category" Guid="b6c7d8e9-f0a1-7234-9abc-def012345678" Value="LandOther" Type="Game.CreatureCategory"/>
-        <Parameter Name="Description" Guid="c7d8e9f0-a1b2-7345-abcd-ef0123456789" Value="What the hell did that man come out of, it seems that the aliens brought him" Type="string"/>
+        <Parameter Name="Description" Guid="c7d8e9f0-a1b2-7345-abcd-ef0123456789" Value="What the hell did that man come out of, it seems that the aliens brought him. This was a phrase said by a human who saw him in a city somewhere in Mexico. Paco is a human-alien created by a Martian race in 1968, when the Soviet Union launched another expedition to compete against the United States. During that mission, some crew members saw a red light coming from another planet and traveled to investigate beyond the Moon. What they discovered was the creation of a being almost human but with alien traits, possessing intelligence superior to a normal human. Things changed in 2001, when Russia (no longer the USSR after its dissolution in 1991) entered into war with the United States due to a misunderstanding: supposed terrorists had destroyed one of their ships near Mars. A solar conflict erupted, reminiscent of Star Wars, and Paco’s alien creators saw their home planet under attack. Fearing destruction, they armed themselves, and both nations also had to face them. In a mishap, Russia shot an alien holding a ship’s control device, breaking it and injuring the alien. This caused the ship to drift away automatically, carrying Paco and his two clones. They eventually arrived on Earth, landing on a mysterious, unidentified island in the Pacific Ocean—the same island where Naomi and Ricardo had fallen. There, they sought ways to survive. Later, Paco encountered Naomi and Ricardo. At first, they thought each other threats, but they became friends after Paco demonstrated survival skills far more advanced than theirs." Type="string"/>
         <Parameter Name="KillVerbs" Guid="d8e9f0a1-b2c3-7456-bcde-f0123456789a" Value="Pecked" Type="string"/>
         <Parameter Name="ConstantSpawn" Guid="facfeda6-3f52-4eec-8d96-c1b446e643fe" Value="True" Type="bool"/>
     </MemberComponentTemplate>
@@ -680,7 +680,7 @@
         <Parameter Name="DisplayName" Guid="f2a3b4c5-d6e7-6890-5678-def012345678" Value="Barack" Type="string"/>
         <Parameter Name="ConstantSpawn" Guid="553364b0-9df0-41d9-9e94-a4b0507f94ef" Value="True" Type="bool"/>
         <Parameter Name="Category" Guid="a3b4c5d6-e7f8-6901-6789-ef0123456789" Value="LandOther" Type="Game.CreatureCategory"/>
-        <Parameter Name="Description" Guid="b4c5d6e7-f8a9-7012-7890-f0123456789a" Value="Ricardo's twin brother, unlike his twin brother, is human, or so we think. Almost half strong and his power attack is a little less than his older brother's. If you him he will break your buttocks penetrated" Type="string"/>
+        <Parameter Name="Description" Guid="b4c5d6e7-f8a9-7012-7890-f0123456789a" Value="Barack, as some Russians and Americans affirmed after the alien war of 2001, was said to be a twin brother similar to Paco. Unlike Paco, Barack was a devoted follower of Barack Obama, who would later become President of the United States in 2008 and take office in January 2009. In the game’s world, you can hear references to Obama, showing that Barack is his number one fan. Barack, Paco’s twin brother, arrived on one of the mysterious islands where Paco had fallen, though his origin dates back to July 7, 1980. He was created by the same alien race as Paco, but the reason he was brought to Earth was different: the aliens sought to recover their lost child, yet instead they remained. This forged a deep connection between Barack and Paco. Like Paco, Barack had to survive on the unknown island, facing the same trials of nature and destiny. Eventually, he too encountered Naomi and Ricardo, and although suspicion marked their first meeting, they became allies after proving their survival skills and intelligence. As a curiosity, Barack later founded the group 'Alianza', dedicated to searching for survivors who fall onto the mysterious Pacific islands, while scientists—especially Russians and Americans—investigate obsessively what these islands are called and where they are located." Type="string"/>
         <Parameter Name="KillVerbs" Guid="c5d6e7f8-a9b0-7123-8901-0123456789ab" Value="Negotiated" Type="string"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="ComponentRandomChatter" Guid="210780ff-1756-470a-a0b8-2168da58fb71">
@@ -781,7 +781,7 @@
         <Parameter Name="DisplayName" Guid="b754143c-574b-4164-a5f3-389ed583083b" Value="El Marihuanero" Type="string"/>
         <Parameter Name="Category" Guid="7decf018-4bbe-44ce-8a3e-516d36fe63ee" Value="LandOther" Type="Game.CreatureCategory"/>
         <Parameter Name="ConstantSpawn" Guid="b374e910-b17c-41a5-8487-4be4caa92739" Value="True" Type="bool"/>
-        <Parameter Name="Description" Guid="cedc98b7-5e9a-47dc-af72-fe4542a5e4da" Value="Paco's missing link brother, he likes to smoke marijuana 24 hours a day non-stop. He's high from using a lot of marijuana, even if you don't trust him. If you touch him he will break your balls while he is high. It seems that his life almost touches Paco's heels but his blows are like medium strong not the same as Paco's" Type="string"/>
+        <Parameter Name="Description" Guid="cedc98b7-5e9a-47dc-af72-fe4542a5e4da" Value="Known as 'El Marihuanero', he is remembered as Paco’s missing link brother, a mysterious survivor whose origins trace back to the same alien experiments that created Paco. His strength is moderate compared to Paco’s, but his cunning and adaptability make him a formidable presence on the islands. The nickname 'El Marihuanero' was not given lightly: during his wanderings across the Pacific islands, he discovered wild cannabis plants growing in hidden valleys. Fascinated by their properties, he began cultivating them and claimed they gave him clarity, endurance, and a strange bond with nature. This obsession eventually tied him symbolically to Mexico, where cannabis culture and folklore became part of his identity. Over time, he also embraced the Rastafari movement, adopting its philosophy of unity, resistance, and spiritual connection, and looked to Jamaica as a cultural homeland. Legends say that he carried seeds wherever he traveled, planting them as markers of his journey. Though at first distrusted by Naomi, Ricardo, and Paco, he proved his loyalty and resourcefulness, showing survival skills that rivaled his brother’s. His blows were not as strong as Paco’s, but his strategies and resilience often turned the tide in desperate situations. Over time, El Marihuanero became a figure of curiosity and myth, remembered not only for his alien-human heritage but also for the plants, the Rastafari ideals, and the Jamaican spirit that defined his name and destiny on the mysterious Pacific islands." Type="string"/>
         <Parameter Name="KillVerbs" Guid="e86ffc5f-0e5a-438b-b14f-7dc83a9ea82e" Value="He put the weed up your ass" Type="string"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="ComponentRandomChatter" Guid="1adf0a5d-39b2-4b5b-806e-f2e6ef5c9d88">
@@ -932,7 +932,7 @@
         <Parameter Name="DisplayName" Guid="f736a736-9def-46e2-9ef9-cbdb29106fc5" Value="El Marihuanero Mamón" Type="string"/>
         <Parameter Name="Category" Guid="ed512e3e-b4d6-4440-ac8d-4e7170503689" Value="LandOther" Type="Game.CreatureCategory"/>
         <Parameter Name="ConstantSpawn" Guid="1a93ac1d-4eb2-4967-8c2d-10cc1c603744" Value="True" Type="bool"/>
-        <Parameter Name="Description" Guid="954d9f04-d47b-4033-843f-03757c3b2fbd" Value="Another missing link brother of paco and twin brother of El Marihuanero, but this one is more muscular but his attack power is low and he is muscular. However, despite his half-high life and not strong blows he has his musket on, if you it, it will tear you to shreds in 3 or 5 seconds. So watch out for him, he's an expert in firearms and has good aim" Type="string"/>
+        <Parameter Name="Description" Guid="954d9f04-d47b-4033-843f-03757c3b2fbd" Value="Another missing link brother of Paco and twin brother of El Marihuanero, this one is more muscular and physically imposing. His raw attack power is lower than Paco’s, but his endurance and brute strength make him a dangerous opponent. Unlike his twin, he dedicated himself to mastering the musket. His story begins when he discovered an abandoned colonial outpost on one of the mysterious Pacific islands. Inside, he found old weapon crates and manuals left behind by explorers and soldiers from centuries past. Fascinated, he spent years studying the mechanisms of the musket, practicing its loading, aiming, and firing until he became an expert marksman. His discipline and patience turned him into a skilled hunter and defender, able to strike with precision even under harsh conditions. Survivors who encountered him learned to fear his musket more than his fists, for his shots could tear enemies apart within seconds. Legends say he carried the musket everywhere, treating it as both weapon and symbol of survival. Eventually, he crossed paths with Paco, Naomi, and Ricardo, and though suspicion marked their first meetings, his mastery of firearms earned him respect among the group." Type="string"/>
         <Parameter Name="KillVerbs" Guid="dd068946-0f2d-42f6-baa5-d59bc07290ce" Value="Shot drugged" Type="string"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="ComponentRandomChatter" Guid="6f0c56e3-849c-436d-9ba4-0b1e81007552">
@@ -4176,8 +4176,9 @@
         <Parameter Name="WalkAnimationSpeed" Guid="b6c7d8e9-f0a1-8567-2345-abcdef012345" Value="0.7" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="c7d8e9f0-a1b2-8678-3456-bcdef0123456">
-        <Parameter Name="AttackResilience" Guid="ccd39418-aa74-4ddf-b67c-0be9b3b9b1c8" Value="275" Type="float"/>
+        <Parameter Name="AttackResilience" Guid="ccd39418-aa74-4ddf-b67c-0be9b3b9b1c8" Value="1200" Type="float"/>
 <Parameter Name="FireResilience" Guid="b639bb0e-b41c-4e09-b7a5-8946a1d89b11" Value="15" Type="float"/>
+<Parameter Name="ExplosionResilience" Guid="0bdf0360-021b-4d16-835b-c75d1f0f6fa2" Value="15" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="a1b2c3d4-e5f6-9012-7890-f0123456789a"/>
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="b2c3d4e5-f6a7-9123-8901-0123456789ab" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
@@ -4349,8 +4350,10 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="EatPickableBehavior" Guid="2b454791-0d20-4a9c-8a60-6e28391646d7">
     <ParameterSet Name="FoodFactors" Guid="354ccc53-a9ec-425d-8762-2db5991ee2a6">
-        <Parameter Name="Fish" Guid="b27f37aa-8d6f-4e31-910e-ca7c9116850c" Value="1" Type="float"/>
-        <Parameter Name="Fruit" Guid="89b74d1e-051b-4611-b8f0-9e1ea5a56a2f" Value="1" Type="float"/>
+        <Parameter Name="Fish" Guid="f6e84d7b-9b4e-44ee-8733-567ed3554170" Value="1" Type="float"/>
+        <Parameter Name="Fruit" Guid="5ed7bfc9-45ec-4a10-b58f-5c1a2ade9cdf" Value="1" Type="float"/>
+        <Parameter Name="Meat" Guid="81c5f953-2723-4810-bdc6-fe94c05eadbc" Value="1" Type="float"/>
+        <Parameter Name="Bird" Guid="7eef9966-f4c3-4b82-b7a2-c2261782d059" Value="1" Type="float"/>
     </ParameterSet>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="Spawn" Guid="09095a75-9565-4fd7-8625-1fa08c3e484f">
@@ -4842,8 +4845,8 @@
     <Parameter Name="Class" Value="Game.ComponentPoisonInfectedBehavior" Type="string"/>
     <Parameter Name="IsOptional" Value="true" Type="bool"/>
     <Parameter Name="LoadOrder" Value="50" Type="int"/>
-    <Parameter Name="PoisonIntensity" Value="0" Type="float"/> <!-- 0 = no infecta -->
-    <Parameter Name="InfectionProbability" Value="0" Type="float"/> <!-- 0 = 0% chance -->
+    <Parameter Name="PoisonIntensity" Value="0" Type="float"/>
+    <Parameter Name="InfectionProbability" Value="0" Type="float"/>
     <Parameter Name="InfectionCooldown" Value="0" Type="float"/>
     <Parameter Name="AttackRange" Value="0" Type="float"/>
 </MemberComponentTemplate>
@@ -4894,8 +4897,8 @@
         <Parameter Name="DisplayName" Guid="d4312a14-b6e9-4437-9ae6-a2df02210f49" Value="Tulio" Type="string"/>
         <Parameter Name="ConstantSpawn" Guid="4ec71a83-761d-40ee-9e86-3328484085b5" Value="True" Type="bool"/>
         <Parameter Name="Category" Guid="bcb75e11-3591-4587-afb0-600fb58b099c" Value="LandOther" Type="Game.CreatureCategory"/>
-        <Parameter Name="Description" Guid="adda200c-cc69-456b-8965-d0cd3687d226" Value="Ricardo's twin brother, unlike his twin brother, is human, or so we think. Almost half strong and his power attack is a little less than his older brother's. If you him he will break your buttocks penetrated" Type="string"/>
-        <Parameter Name="KillVerbs" Guid="cd45666c-3037-4a88-a642-1f0890b8e0d2" Value="Negotiated" Type="string"/>
+        <Parameter Name="Description" Guid="adda200c-cc69-456b-8965-d0cd3687d226" Value="Born in Santiago de Chile in 1995, during the post-Pinochet era, he grew up fascinated by fashion trends—jeans and striped shirts defined his style—and his curiosity about the world only grew stronger. At the age of 18, he chose not to attend the University of Santiago, preferring instead to dedicate himself to uncovering the truth behind the mysterious, unidentified Pacific islands. He had seen reports on TVN describing these islands, places that neither the United States nor Russia had managed to investigate despite their obsession. Rumors spread that only certain living beings could enter, and only they could learn the islands’ true origin. Determined, he sought illegal means to reach them, traveling to Easter Island in hopes of finding an abandoned boat to continue his journey. Fate intervened when violent winds and hurricanes struck, throwing him into the ocean. Yet nature itself seemed to protect him, carrying him safely to the very islands he sought. There he encountered both humans and non-humans—Naomi, Paco, El Marihuanero, El Marihuanero Mamón, and Ricardo. Together they formed a family, bound by survival and mystery. Eventually, he joined the group known as Alianza, dedicated to searching for survivors and uncovering the secrets of the Pacific islands. His journey became not only a quest for knowledge but also a testament to resilience, curiosity, and the strange destiny that united him with others on the islands." Type="string"/>
+        <Parameter Name="KillVerbs" Guid="cd45666c-3037-4a88-a642-1f0890b8e0d2" Value="lynched,asphyxiated" Type="string"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="ComponentRandomChatter" Guid="d8960571-25e2-4a35-8907-d126197a569f">
     <Parameter Name="Class" Value="Game.ComponentRandomChatter" Type="string"/>
@@ -5012,8 +5015,8 @@
         <Parameter Name="DisplayName" Guid="bf1bfb3d-adc0-4f1e-804a-d9d90ecaa85a" Value="Brayan" Type="string"/>
         <Parameter Name="ConstantSpawn" Guid="1818b088-4375-4d4a-9925-37e59be4cb4c" Value="True" Type="bool"/>
         <Parameter Name="Category" Guid="462dcfac-5081-45ba-b0df-c431b8ed49d3" Value="LandOther" Type="Game.CreatureCategory"/>
-        <Parameter Name="Description" Guid="613ec9d6-aa8c-40cc-8975-5531c7084993" Value="Ricardo's twin brother, unlike his twin brother, is human, or so we think. Almost half strong and his power attack is a little less than his older brother's. If you him he will break your buttocks penetrated" Type="string"/>
-        <Parameter Name="KillVerbs" Guid="db5d91f1-9ed2-4a85-9d20-9a8fa1fcc934" Value="Negotiated" Type="string"/>
+        <Parameter Name="Description" Guid="613ec9d6-aa8c-40cc-8975-5531c7084993" Value="Brayan was born on January 12, 2000, in London, England. From a young age he dedicated himself to studying physics and biology, inspired by figures such as Charles Darwin and Isaac Newton. At the age of 25, he received a special voucher to travel to Alaska, United States, to further his studies of nature and frozen physics. He accepted, but during the journey an unexpected accident changed his life: the pilot fainted due to a natural cause, the plane lost control, and it crashed. Brayan survived thanks to the winds of nature, which carried him away from drowning and guided him to a mysterious island in the Pacific. From that moment, he began to survive using the knowledge he had acquired in his studies, applying physics and biology to endure the harsh environment. One day he met Tulio, who was impressed by Brayan’s survival methods and offered him the chance to join the group known as Alianza. This group was formed by people of good spirit, dedicated to protecting each other while collecting information about the unknown and mysterious islands. Brayan accepted, and from then on he became part of a family on the island, while keeping alive his hope of one day returning to England." Type="string"/>
+        <Parameter Name="KillVerbs" Guid="db5d91f1-9ed2-4a85-9d20-9a8fa1fcc934" Value="bitched,broken arm,broken skull" Type="string"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="ComponentRandomChatter" Guid="4a9873e9-5a02-4c6a-a979-b9444be2b55b">
     <Parameter Name="Class" Value="Game.ComponentRandomChatter" Type="string"/>
