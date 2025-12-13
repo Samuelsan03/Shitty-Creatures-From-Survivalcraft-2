@@ -1,0 +1,92 @@
+{
+  "MusicToggleButton": "音乐",
+  "MusicOn": "开",
+  "MusicOff": "关",
+  "MusicEnabled": "音乐已启用",
+  "MusicDisabled": "音乐已禁用",
+  "NowPlaying": "您正在收听：",
+  "MusicFileNotFound": "音乐文件未找到",
+  "MusicPlayError": "播放音乐时出错",
+  "AutoCannonTitle": "自动加农炮",
+  "InventoryTitle": "库存",
+  "ProjectileSpeed": "弹丸速度",
+  "ShotsPerSecond": "每秒射击数",
+  "ProjectileSpread": "弹丸散布",
+  "Fuel": "燃料",
+  "Accept": "接受",
+  "Cancel": "X",
+  "YouNeedAmmunition": "你需要弹药来发射物品发射器",
+  "UseAutoCannon": "使用自动加农炮",
+  "AutoCannonHelp": "作者\nFire Dragon\nKike\n----------\n该武器使用快捷栏的第一个槽位或第一个有物品的可用槽位。要保存更改，必须按'接受'，或按'X'放弃。散布和速度设置决定了弹丸的方向和距离。\n\n要使用它，只需按住右键（PC）或按住屏幕（移动设备），它会自动以你配置的每秒次数开火。对于发射生成蛋并在短时间内大量生成生物非常有用。\n\n你也可以发射烟花或其他任何物品来娱乐。\n\n\nSamuelsan03盗用的糟糕代码，所以随你怎么用这个代码 xd",
+  "Blocks": {
+    "ItemsLauncher:0": {
+      "DisplayName": "物品发射器",
+      "Description": "可发射任意类型的方块或物品。尽管制作昂贵，但它是像滑膛枪一样的强大武器。请小心使用！"
+    },
+    "FlameThrower:0": {
+      "DisplayName": "火焰喷射器",
+      "Description": "火焰喷射器是一种燃烧性武器，设计用于喷射可控火焰。它由理查德·费德勒于1901年发明，并在1915年第一次世界大战期间由德国军队首次投入战斗。其工作原理是利用燃料箱（通常是浓稠的汽油或油）和压缩气体，通过带点火装置的喷嘴将燃烧的火流喷射出去。使用时，操作者必须装填火焰子弹作为弹药，然后扣动扳机，将火焰释放到敌方工事或士兵群体。它的优点是支持最多15发（15/15），在重新装填前为玩家提供持续火力。火焰子弹是辅助弹药：补充火焰喷射器的燃烧性弹丸，适合远程攻击并保持对敌人的压力。"
+    },
+    "FlameBullet:0": {
+      "DisplayName": "火焰子弹",
+      "Description": "火焰喷射器的标准火焰弹药。在撞击时产生火焰。"
+    },
+    "FlameBullet:1": {
+      "DisplayName": "毒药子弹",
+      "Description": "火焰喷射器的有毒弹药。释放感染目标的毒性化学物质。"
+    },
+    "RepeatCrossbow:0": {
+      "DisplayName": "连发弩",
+      "Description": "改进版的普通弩，专为耐用性与持续远程输出而设计。不同于标准弩每次仅发射一枚弩箭后需装填，连发弩配备8箭弹匣与渐进式拉弦机制，可实现连续远距离射击。兼容多种弩箭类型（铜、铁、钻石、爆炸），每种具备不同的伤害与效果。自动弩配备8箭弹匣，装填速度快于普通弩，但威力略低。"
+    },
+    "RepeatArrow:0": {
+      "DisplayName": "连发铜弩箭",
+      "Description": "用于连发弩的专业铜质弩箭。具有中等穿透力，精准度高于 Survivalcraft 2 的普通弩箭。专为速射优化，在连续射击中提供更高稳定性。"
+    },
+    "RepeatArrow:1": {
+      "DisplayName": "连发铁弩箭",
+      "Description": "为连发弩设计的铁尖弩箭。相较于普通铁弩箭，拥有更高伤害与护甲穿透，并在速射情况下保持精准。连发弩的机制使其射速快于标准弩。"
+    },
+    "RepeatArrow:2": {
+      "DisplayName": "连发钻石弩箭",
+      "Description": "适用于高级连发弩的高端钻石尖弩箭。具备卓越的护甲穿透能力与伤害输出。不同于标准钻石弩箭，此款针对连发弩的独特射击机制优化，可在自动射击中维持高额持续伤害。"
+    },
+    "RepeatArrow:3": {
+      "DisplayName": "连发爆炸弩箭",
+      "Description": "为连发弩设计的爆炸尖弩箭。命中时产生小型爆炸，压力强度为90。尽管单发伤害低于普通爆炸弩箭，但可快速连发爆炸，适合区域封锁与群控。"
+    },
+    "RepeatArrow:4": {
+      "DisplayName": "连发毒弩箭",
+      "Description": "用于连发弩的涂毒弩箭。命中后以极低初始伤害（3点）造成持续性毒伤，并施加30秒的中毒效果。用于随时间削弱敌人，而非瞬间击杀，适合抓捕或减速目标。"
+    },
+    "RepeatArrow:5": {
+      "DisplayName": "连发剧毒弩箭",
+      "Description": "用于连发弩的高强度涂毒弩箭。中毒效果更强且持续更久（100秒），初始伤害较低（4点）。借助连发弩的速射机制，可迅速对多个目标施加剧毒，削弱成群敌人而非直接击杀。"
+    }
+  },
+  "ContentWidgets": {
+    "FlameThrowerWidget": {
+      "Title": "火焰喷射器",
+      "Inventory": "库存",
+      "LoadAmmunition": "装填弹药",
+      "SprayFire": "准备喷射火焰 {0}/15",
+      "SprayPoison": "准备喷射毒药 {0}/15"
+    },
+    "RepeatCrossbowWidget": {
+      "Title": "连发弩",
+      "Inventory": "库存",
+      "InstructionsPull": "上弦以装填",
+      "InstructionsInsert": "插入箭矢",
+      "InstructionsArrows": "箭矢: {0}/8"
+    }
+  },
+  "Messages": {
+    "FirstPullCrossbow": "首先需要上弦弩！",
+    "FirstLoadArrow": "首先需要装箭！",
+    "ArrowCount": "箭矢: {0}/8"
+  },
+  "Usual": {
+    "ok": "确定",
+    "cancel": "取消"
+  }
+}
