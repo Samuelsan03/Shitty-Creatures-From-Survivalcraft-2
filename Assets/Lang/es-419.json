@@ -1,8 +1,92 @@
 {
-  "Help": {
-    "41": {
-      "Title": "Acerca De Este Mod De Mierda",
-      "value": "Este mod contiene criaturas de todo tipo, nombres estúpidos y descripciones absurdas, humor negro y groserías sin disculpas. Algunos personajes están inspirados en programas de televisión, videojuegos, libros o vienen directamente de la imaginación del creador. Espera incoherencias, sátira y estupideces ofensivas. Si buscas equilibrio, coherencia narrativa o claridad moral, estás en el lugar equivocado. Este mod existe simplemente porque a alguien le pareció lo suficientemente gracioso como para hacerlo. Este mod fue creado el 4 de octubre de 2025, cuando el desarrollador intentó hacer mods usando una criatura basada en su propia skin. Rápidamente se dio cuenta de que se veía horrible, poco original y casi como una copia pirata. Abandonó el proyecto durante un mes para enfocarse en su wiki, Guns Mod y Siyah Akrep en Fandom. Cerca del inicio de noviembre de 2025, revivió el mod, esta vez reemplazando la textura de la skin por una que imaginó él mismo. Ese momento marcó su entrada al mundo del modding en Survivalcraft 2. Si quieres seguir su progreso desordenado, visita el canal de YouTube llamado Felenork, o mejor aún, entra a su perfil de GitHub bajo el nombre Samuelsan03 y busca el proyecto llamado 'Npc mod' para estar al tanto de los cambios que hará."
+  "MusicToggleButton": "Música",
+  "MusicOn": "ACTIVADA",
+  "MusicOff": "DESACTIVADA",
+  "MusicEnabled": "Música activada",
+  "MusicDisabled": "Música desactivada",
+  "NowPlaying": "Estas escuchando:",
+  "MusicFileNotFound": "Archivo de música no encontrado",
+  "MusicPlayError": "Error al reproducir música",
+  "AutoCannonTitle": "Cañón Automático",
+  "InventoryTitle": "Inventario",
+  "ProjectileSpeed": "Velocidad del Proyectil",
+  "ShotsPerSecond": "Disparos Por Segundo",
+  "ProjectileSpread": "Dispersión del Proyectil",
+  "Fuel": "Combustible",
+  "Accept": "Aceptar",
+  "Cancel": "X",
+  "YouNeedAmmunition": "Necesitas munición para disparar el lanzador de objetos",
+  "UseAutoCannon": "Usar Cañón Automático",
+  "AutoCannonHelp": "Autores\nFire Dragon\nKike\n----------\nEsta arma usa el primer espacio de la barra rápida o el primer espacio disponible con un objeto. Para guardar los cambios, debes presionar 'Aceptar', o 'X' para descartar. Los ajustes de dispersión y velocidad determinan la dirección y distancia de los proyectiles.\n\nPara usarlo, simplemente mantén presionado clic derecho si estás en PC, o mantén presionada la pantalla si estás en dispositivo móvil, y disparará automáticamente las veces por segundo que hayas configurado. Útil para disparar huevos de spawn y generar criaturas en grandes cantidades en poco tiempo.\n\nTambién puedes divertirte lanzando fuegos artificiales o cualquier otro objeto.\n\n\nCódigo robado por Samuelsan03, así que haz lo que quieras con este código xd",
+  "Blocks": {
+    "ItemsLauncher:0": {
+      "DisplayName": "Lanzador de Objetos",
+      "Description": "Lanza cualquier tipo de bloque u objeto. Aunque es costoso de fabricar, es un arma poderosa como el mosquete. ¡Ten cuidado!"
+    },
+    "FlameThrower:0": {
+      "DisplayName": "Lanzallamas",
+      "Description": "El lanzallamas es un arma incendiaria diseñada para proyectar fuego controlado. Fue inventado por Richard Fiedler en 1901 y utilizado por primera vez en combate por el ejército alemán en 1915 durante la Primera Guerra Mundial. Funciona mediante un tanque de combustible (generalmente gasolina espesa o aceite) y gas comprimido que impulsa la corriente ardiente a través de una boquilla con ignición. Para usarlo, el operador debe insertar Balas de Fuego como munición y luego accionar el gatillo para desatar fuego contra fortificaciones enemigas o grupos de soldados. Lo bueno es que admite hasta 15 disparos (15/15), otorgando al jugador potencia de fuego sostenida antes de recargar. La Bala de Fuego es la munición secundaria: proyectiles incendiarios que complementan el lanzallamas, útiles para ataques a distancia y mantener presión sobre el enemigo."
+    },
+    "FlameBullet:0": {
+      "DisplayName": "Bala de Fuego",
+      "Description": "Munición estándar de fuego para el lanzallamas. Crea fuego al impacto."
+    },
+    "FlameBullet:1": {
+      "DisplayName": "Bala Venenosa",
+      "Description": "Munición tóxica para el lanzallamas. Libera químicos venenosos que infectan a los objetivos."
+    },
+    "RepeatCrossbow:0": {
+      "DisplayName": "Ballesta Repetidora",
+      "Description": "Versión mejorada de la ballesta normal, diseñada para durabilidad y ataques a distancia sostenidos. A diferencia de la ballesta estándar que dispara un solo virote antes de recargar, la Ballesta Repetidora cuenta con un cargador de 8 virotes y estados de tensado progresivo, permitiendo disparos continuos a distancia. Compatible con múltiples tipos de virotes (Cobre, Hierro, Diamante, Explosivo), cada uno con daño y efectos distintos. Ballesta automática con cargador de 8 virotes. Recarga más rápida que la ballesta normal pero con un poco menos de potencia."
+    },
+    "RepeatArrow:0": {
+      "DisplayName": "Virote de Cobre Repetidor",
+      "Description": "Virote especializado para ballestas repetidoras, fabricado en cobre. Ofrece penetración moderada y mayor precisión que los virotes normales de Survivalcraft 2. Diseñado para fuego rápido, proporciona mejor estabilidad durante secuencias de disparo continuo."
+    },
+    "RepeatArrow:1": {
+      "DisplayName": "Virote de Hierro Repetidor",
+      "Description": "Virote con punta de hierro diseñado para ballestas repetidoras. Presenta daño superior y mejor penetración de armadura frente a los virotes de hierro estándar, manteniendo la precisión durante ráfagas rápidas. El mecanismo de la repetidora permite disparar más rápido que las ballestas estándar."
+    },
+    "RepeatArrow:2": {
+      "DisplayName": "Virote de Diamante Repetidor",
+      "Description": "Virote de alta gama con punta de diamante para ballestas repetidoras avanzadas. Destaca por su excepcional capacidad de perforación de armadura y alto daño. A diferencia de los virotes de diamante estándar, está optimizado para el mecanismo de disparo de la repetidora, ofreciendo daño alto sostenido en fuego automático."
+    },
+    "RepeatArrow:3": {
+      "DisplayName": "Virote Explosivo Repetidor",
+      "Description": "Virote con punta explosiva diseñado para ballestas repetidoras. Crea una pequeña explosión al impacto con fuerza de presión de 90. Aunque los virotes explosivos normales tienen daño individual mayor, estos permiten explosiones en ráfagas rápidas, ideales para negación de área y control de multitudes."
+    },
+    "RepeatArrow:4": {
+      "DisplayName": "Virote Venenoso Repetidor",
+      "Description": "Virote recubierto de veneno para ballestas repetidoras. Inflige daño por veneno con el tiempo con impacto inicial muy bajo (3 de daño) y aplica efecto de veneno durante 30 segundos. Diseñado para debilitar enemigos progresivamente en lugar de eliminarlos al instante, útil para capturar o ralentizar objetivos."
+    },
+    "RepeatArrow:5": {
+      "DisplayName": "Virote de Veneno Grave Repetidor",
+      "Description": "Virote fuertemente envenenado para ballestas repetidoras. Aplica un efecto de veneno más intenso y prolongado (100 segundos) con daño inicial bajo (4 de daño). El mecanismo de la repetidora permite aplicar veneno grave rápidamente a múltiples objetivos, debilitando grupos sin matarlos directamente."
     }
+  },
+  "ContentWidgets": {
+    "FlameThrowerWidget": {
+      "Title": "Lanzallamas",
+      "Inventory": "Inventario",
+      "LoadAmmunition": "Carga una munición",
+      "SprayFire": "Prepárate para rociar fuego {0}/15",
+      "SprayPoison": "Prepárate para rociar veneno {0}/15"
+    },
+    "RepeatCrossbowWidget": {
+      "Title": "Ballesta Repetidora",
+      "Inventory": "Inventario",
+      "InstructionsPull": "Tensa para cargar",
+      "InstructionsInsert": "Inserta flechas",
+      "InstructionsArrows": "Flechas: {0}/8"
+    }
+  },
+  "Messages": {
+    "FirstPullCrossbow": "¡Primero tensa la ballesta!",
+    "FirstLoadArrow": "¡Primero carga una flecha!",
+    "ArrowCount": "Flechas: {0}/8"
+  },
+  "Usual": {
+    "ok": "Aceptar",
+    "cancel": "Cancelar"
   }
 }
