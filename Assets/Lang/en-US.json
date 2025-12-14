@@ -18,10 +18,126 @@
   "YouNeedAmmunition": "You need ammunition to fire the item launcher",
   "UseAutoCannon": "Use Auto-Cannon",
   "AutoCannonHelp": "Authors\nFire Dragon\nKike\n----------\nThis weapon uses the first slot of the hotbar or the first available slot with an object. To save any changes, you must press 'Accept', or 'X' to discard. The spread and velocity settings determine the direction and distance of the projectiles.\n\nTo use it, simply hold right click if you are on PC, or hold the screen if you are on a mobile device, and it will automatically fire the times per second you have configured. Useful for shooting spawn eggs and generating creatures in large quantities in a short time.\n\nYou can also have fun launching fireworks or any other object.\n\n\nShitty code stolen by Samuelsan03, so do whatever you want with this code xd",
+  "Poisoned": "Poisoned",
+  "HP": "HP",
+  "Database": {
+  "DisplayName": {
+    "Naomi": "Naomi",
+    "Ricardo": "Ricardo",
+    "Paco": "Paco",
+    "Barack": "Barack",
+    "ElMarihuanero": "El Marihuanero",
+    "ElMarihuaneroMamon": "El Marihuanero Mamón",
+    "FumadorQuimico": "Fumador Químico",
+    "FumadorQuimicoBrawny": "Fumador Químico Brawny",
+    "TommyVercetti": "Tommy Vercetti",
+    "ClaudeSpeed": "Claude Speed",
+    "CarlJohnson": "Carl Johnson",
+    "LaMuerteX": "La Muerte X",
+    "ElSenorDeLasTumbasMoradas": "El Señor de las Tumbas Moradas",
+    "LiderCalavericoSupremo:0": "Líder Calavérico Supremo",
+    "LiderCalavericoSupremoAlfa": "Líder Calavérico Supremo Alfa",
+    "Sparkster": "Sparkster",
+    "ElArquero": "El Arquero",
+    "ElBallestador": "El Ballestador",
+    "ArqueroPrisionero": "Arquero Prisionero",
+    "BallestadoraMusculosa": "Ballestadora Musculosa",
+    "Conker": "Conker",
+    "Beavis": "Beavis",
+    "Butt-Head": "Butt-Head",
+    "HombreLava": "Hombre Lava",
+    "HombreAgua": "Hombre Agua",
+    "Shoutmon": "Shoutmon",
+    "Veemon": "Veemon",
+    "Gaomon": "Gaomon",
+    "Agumon": "Agumon",
+    "Impmon": "Impmon",
+    "Gumdramon": "Gumdramon",
+    "Guilmon": "Guilmon",
+    "BetelGammamon": "BetelGammamon",
+    "HeadcrabBloodyHuman": "Headcrab Bloody Human",
+    "Tulio": "Tulio",
+    "Brayan": "Brayan",
+    "AladinaCorrupta": "Aladina Corrupta",
+    "ElGuerrillero": "El Guerrillero",
+    "ElGuerrilleroTenebroso": "El Guerrillero Tenebroso",
+    "WalterZombie": "Walter Zombie",
+    "WalterZombieMamadisimo": "Walter Zombie Mamadísimo",
+    "ZombieRepetidor": "Zombie Repetidor",
+    "CamisasMorenas": "Camisas Morenas"
+  },
+  "Description": {
+    "Naomi": "Naomi (ナオミ). A mystery to solve. She is Japanese, but… is she truly human or robotic? How did she arrive on the island of Survivalcraft 2? A tremendous mystery. It begins in Kyoto, with an inventor named Takachi (高智). In 1999, Naomi was created because Takachi needed an automatic assistant for biological scientific research. The prototype tests went well, and the final result looked human. Since then, the robot has been successful in performing both complex and simple tasks. One day, Takachi received a research project from Kyoto University to investigate new species and rare places outside of Japan. Needing companionship, he chose Naomi as his partner. Halfway across the sea, Takachi accidentally dropped his humanoid robot Naomi into the water, causing panic. He feared the robot was damaged due to its electrical components, but what he didn’t know was that Naomi was water-resistant. This led Naomi to a mysterious island or large continent. From that day, her life as a humanoid robot changed. How will she survive without resources? Previously, she had practiced survival skills during their research trips. Will she need the player’s help? You’ll find out in the game!"
+  },
   "Blocks": {
+    "WoodAxeBlock:0": {
+  "DisplayName": "Wood Axe",
+  "Description": "Back to basics - like the old days"
+},
+"WoodMacheteBlock:0": {
+  "DisplayName": "Wood Machete",
+  "Description": "Classic tool from version 2.0"
+},
+"WoodPickaxeBlock:0": {
+  "DisplayName": "Wood Pickaxe",
+  "Description": "Nostalgic mining - pre-2.1 era"
+},
+"WoodShovelBlock:0": {
+  "DisplayName": "Wood Shovel",
+  "Description": "Simple digging - back when life was easier"
+},
+"StoneShovelBlock:0": {
+  "DisplayName": "Stone Shovel",
+  "Description": "Stone age technology revived"
+},
+"StoneAxeOriginalBlock:0": {
+  "DisplayName": "Stone Axe (Original)",
+  "Description": "Primitive but effective - pre-2.2"
+},
+"StoneMacheteBlock:0": {
+  "DisplayName": "Stone Machete",
+  "Description": "Back when stone could cut - version 2.0 memories"
+},
+"StoneRakeBlock:0": {
+  "DisplayName": "Stone Rake",
+  "Description": "Ancient farming tool - back to roots"
+},
+"StonePickaxeBlock:0": {
+  "DisplayName": "Stone Pickaxe",
+  "Description": "How could I forget the old days, bro? :\")"
+},
+    "LavaSpear:0": {
+    "DisplayName": "Lava Spear",
+    "Description": "Forged in magma - burns through anything"
+  },
+  "LavaMachete:0": {
+    "DisplayName": "Lava Machete",
+    "Description": "Molten blade that dismembers with burning precision"
+  },
+  "LavaPickaxe:0": {
+    "DisplayName": "Lava Pickaxe",
+    "Description": "Mines ores with molten power"
+  },
+  "LavaShovel:0": {
+    "DisplayName": "Lava Shovel",
+    "Description": "Digs through earth like it's butter - hot butter"
+  },
+  "LavaHammer:0": {
+    "DisplayName": "Lava Hammer",
+    "Description": "Smashes rocks with volcanic force"
+  },
+  "LavaAxe:0": {
+    "DisplayName": "Lava Axe",
+    "Description": "Chops wood with burning fury"
+  },
+  "LavaRake:0": {
+    "DisplayName": "Lava Rake",
+    "Description": "Tills soil with volcanic efficiency"
+  },
     "ItemsLauncher:0": {
       "DisplayName": "Items Launcher",
-      "Description": "Launches any type of block or object. Although expensive to craft, it's a powerful weapon like the musket. Be careful!"
+      "Description": "Launches any type of block or object. Although expensive to craft, it's a powerful weapon like the musket. Be careful!",
+      "CRDescription:0":  "Make an object launcher by modifying a new musket."
     },
     "FlameThrower:0": {
       "DisplayName": "Flamethrower",
@@ -76,17 +192,18 @@
       "Title": "Repeating Crossbow",
       "Inventory": "Inventory",
       "InstructionsPull": "Pull back to load",
-      "InstructionsInsert": "Insert arrows",
+      "InstructionsInsert": "Insert bolts",
       "InstructionsArrows": "Arrows: {0}/8"
     }
   },
   "Messages": {
     "FirstPullCrossbow": "First pull back the crossbow!",
-    "FirstLoadArrow": "First load an arrow!",
+    "FirstLoadArrow": "First load an bolt!",
     "ArrowCount": "Arrows: {0}/8"
   },
   "Usual": {
     "ok": "OK",
     "cancel": "Cancel"
   }
+}
 }
