@@ -18,10 +18,126 @@
   "YouNeedAmmunition": "Necesitas munición para disparar el lanzador de objetos",
   "UseAutoCannon": "Usar Cañón Automático",
   "AutoCannonHelp": "Autores\nFire Dragon\nKike\n----------\nEsta arma usa el primer espacio de la barra rápida o el primer espacio disponible con un objeto. Para guardar los cambios, debes presionar 'Aceptar', o 'X' para descartar. Los ajustes de dispersión y velocidad determinan la dirección y distancia de los proyectiles.\n\nPara usarlo, simplemente mantén presionado clic derecho si estás en PC, o mantén presionada la pantalla si estás en dispositivo móvil, y disparará automáticamente las veces por segundo que hayas configurado. Útil para disparar huevos de spawn y generar criaturas en grandes cantidades en poco tiempo.\n\nTambién puedes divertirte lanzando fuegos artificiales o cualquier otro objeto.\n\n\nCódigo robado por Samuelsan03, así que haz lo que quieras con este código xd",
+  "Poisoned": "Envenenado",
+  "HP": "PV",
+  "Database": {
+  "DisplayName": {
+    "Naomi": "Naomi",
+    "Ricardo": "Ricardo",
+    "Paco": "Paco",
+    "Barack": "Barack",
+    "ElMarihuanero": "El Marihuanero",
+    "ElMarihuaneroMamon": "El Marihuanero Mamón",
+    "FumadorQuimico": "Fumador Químico",
+    "FumadorQuimicoBrawny": "Fumador Químico Brawny",
+    "TommyVercetti": "Tommy Vercetti",
+    "ClaudeSpeed": "Claude Speed",
+    "CarlJohnson": "Carl Johnson",
+    "LaMuerteX": "La Muerte X",
+    "ElSenorDeLasTumbasMoradas": "El Señor de las Tumbas Moradas",
+    "LiderCalavericoSupremo:0": "Líder Calavérico Supremo",
+    "LiderCalavericoSupremoAlfa": "Líder Calavérico Supremo Alfa",
+    "Sparkster": "Sparkster",
+    "ElArquero": "El Arquero",
+    "ElBallestador": "El Ballestador",
+    "ArqueroPrisionero": "Arquero Prisionero",
+    "BallestadoraMusculosa": "Ballestadora Musculosa",
+    "Conker": "Conker",
+    "Beavis": "Beavis",
+    "Butt-Head": "Butt-Head",
+    "HombreLava": "Hombre Lava",
+    "HombreAgua": "Hombre Agua",
+    "Shoutmon": "Shoutmon",
+    "Veemon": "Veemon",
+    "Gaomon": "Gaomon",
+    "Agumon": "Agumon",
+    "Impmon": "Impmon",
+    "Gumdramon": "Gumdramon",
+    "Guilmon": "Guilmon",
+    "BetelGammamon": "BetelGammamon",
+    "HeadcrabBloodyHuman": "Headcrab Bloody Human",
+    "Tulio": "Tulio",
+    "Brayan": "Brayan",
+    "AladinaCorrupta": "Aladina Corrupta",
+    "ElGuerrillero": "El Guerrillero",
+    "ElGuerrilleroTenebroso": "El Guerrillero Tenebroso",
+    "WalterZombie": "Walter Zombie",
+    "WalterZombieMamadisimo": "Walter Zombie Mamadísimo",
+    "ZombieRepetidor": "Zombie Repetidor",
+    "CamisasMorenas": "Camisas Morenas"
+  },
+  "Description": {
+    "Naomi": "Naomi (ナオミ). Un misterio por resolver. Ella es japonesa, pero… ¿es realmente humana o robótica? ¿Cómo llegó a la isla de Survivalcraft 2? Un gran misterio. La historia comienza en Kioto, con un inventor llamado Takachi (高智). En 1999, Naomi fue creada porque Takachi necesitaba una asistente automática para la investigación científica biológica. Las pruebas del prototipo fueron exitosas y el resultado final parecía humano. Desde entonces, el robot fue un éxito en la ejecución de tareas tanto complejas como simples. Un día, Takachi recibió un proyecto de investigación de la Universidad de Kioto para estudiar nuevas especies y lugares raros fuera de Japón. Necesitando compañía, eligió a Naomi como su compañera. Durante el viaje por el mar, Takachi accidentalmente dejó caer a su robot humanoide Naomi al agua, causando pánico. Temía que el robot se dañara por sus componentes eléctricos, pero lo que no sabía era que Naomi era resistente al agua. Esto la llevó a una misteriosa isla o gran continente. Desde ese día, su vida como robot humanoide cambió. ¿Cómo sobrevivirá sin recursos? Anteriormente, había practicado habilidades de supervivencia durante sus viajes de investigación. ¿Necesitará la ayuda del jugador? ¡Lo descubrirás en el juego!"
+  },
   "Blocks": {
+    "WoodAxeBlock:0": {
+  "DisplayName": "Hacha de Madera",
+  "Description": "Volviendo a lo básico - como en los viejos tiempos"
+},
+"WoodMacheteBlock:0": {
+  "DisplayName": "Machete de Madera",
+  "Description": "Herramienta clásica de la versión 2.0"
+},
+"WoodPickaxeBlock:0": {
+  "DisplayName": "Pico de Madera",
+  "Description": "Minería nostálgica - era previa a 2.1"
+},
+"WoodShovelBlock:0": {
+  "DisplayName": "Pala de Madera",
+  "Description": "Excavación simple - cuando la vida era más fácil"
+},
+"StoneShovelBlock:0": {
+  "DisplayName": "Pala de Piedra",
+  "Description": "Tecnología de la Edad de Piedra revivida"
+},
+"StoneAxeOriginalBlock:0": {
+  "DisplayName": "Hacha de Piedra (Original)",
+  "Description": "Primitiva pero efectiva - previa a 2.2"
+},
+"StoneMacheteBlock:0": {
+  "DisplayName": "Machete de Piedra",
+  "Description": "Cuando la piedra podía cortar - recuerdos de la versión 2.0"
+},
+"StoneRakeBlock:0": {
+  "DisplayName": "Rastrillo de Piedra",
+  "Description": "Herramienta agrícola antigua - volver a las raíces"
+},
+"StonePickaxeBlock:0": {
+  "DisplayName": "Pico de Piedra",
+  "Description": "¿Cómo podría olvidar los viejos tiempos, hermano? :\")"
+},
+    "LavaSpear:0": {
+    "DisplayName": "Lanza de Lava",
+    "Description": "Forjada en magma - quema todo a su paso"
+  },
+  "LavaMachete:0": {
+    "DisplayName": "Machete de Lava",
+    "Description": "Filo fundido que desmembra con precisión ardiente"
+  },
+  "LavaPickaxe:0": {
+    "DisplayName": "Pico de Lava",
+    "Description": "Excava minerales con poder volcánico"
+  },
+  "LavaShovel:0": {
+    "DisplayName": "Pala de Lava",
+    "Description": "Cava en la tierra como si fuera mantequilla - mantequilla caliente"
+  },
+  "LavaHammer:0": {
+    "DisplayName": "Martillo de Lava",
+    "Description": "Aplasta rocas con fuerza volcánica"
+  },
+  "LavaAxe:0": {
+    "DisplayName": "Hacha de Lava",
+    "Description": "Corta madera con furia ardiente"
+  },
+  "LavaRake:0": {
+    "DisplayName": "Rastrillo de Lava",
+    "Description": "Labra el suelo con eficiencia volcánica"
+  },
     "ItemsLauncher:0": {
       "DisplayName": "Lanzador de Objetos",
-      "Description": "Lanza cualquier tipo de bloque u objeto. Aunque es costoso de fabricar, es un arma poderosa como el mosquete. ¡Ten cuidado!"
+      "Description": "Lanza cualquier tipo de bloque u objeto. Aunque es costoso de fabricar, es un arma poderosa como el mosquete. ¡Ten cuidado!",
+      "CRDescription":  "Crea un lanzador de objetos modificando un mosquete nuevo."
     },
     "FlameThrower:0": {
       "DisplayName": "Lanzallamas",
@@ -76,17 +192,18 @@
       "Title": "Ballesta Repetidora",
       "Inventory": "Inventario",
       "InstructionsPull": "Tensa para cargar",
-      "InstructionsInsert": "Inserta flechas",
+      "InstructionsInsert": "Inserta virotes",
       "InstructionsArrows": "Flechas: {0}/8"
     }
   },
   "Messages": {
     "FirstPullCrossbow": "¡Primero tensa la ballesta!",
-    "FirstLoadArrow": "¡Primero carga una flecha!",
+    "FirstLoadArrow": "¡Primero carga una virote!",
     "ArrowCount": "Flechas: {0}/8"
   },
   "Usual": {
     "ok": "Aceptar",
     "cancel": "Cancelar"
   }
+}
 }
