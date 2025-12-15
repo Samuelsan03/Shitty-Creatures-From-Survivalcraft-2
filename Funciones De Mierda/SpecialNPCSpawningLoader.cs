@@ -47,6 +47,72 @@ namespace Game
 				})
 			});
 
+			// Spawn para Brayan con 100% de probabilidad - DESDE DÍA 0, cualquier estación y hora
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Brayan", 0, false, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType creatureType, Point3 point)
+				{
+					SubsystemTerrain subsystemTerrain = spawn.m_subsystemTerrain;
+					int cellValue = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValue);
+
+					// Verificar que no esté en agua o lava
+					int cellValueAbove = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValueAbove);
+
+					if (blockAbove == 18 || blockAbove == 92) // Agua o lava
+					{
+						return 0f;
+					}
+
+					// Condiciones flexibles para Naomi - SIN RESTRICCIÓN DE ALTURA
+					// SIN RESTRICCIÓN DE DÍAS, HORAS O ESTACIONES - aparece desde el inicio
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f; // 100% de probabilidad
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemCreatureSpawn.CreatureType creatureType, Point3 point) =>
+				{
+					var creatures = spawn.SpawnCreatures(creatureType, "Brayan", point, 1);
+					return creatures.Count;
+				})
+			});
+
+			// Spawn para Tulio con 100% de probabilidad - DESDE DÍA 0, cualquier estación y hora
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Tulio", 0, false, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType creatureType, Point3 point)
+				{
+					SubsystemTerrain subsystemTerrain = spawn.m_subsystemTerrain;
+					int cellValue = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValue);
+
+					// Verificar que no esté en agua o lava
+					int cellValueAbove = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValueAbove);
+
+					if (blockAbove == 18 || blockAbove == 92) // Agua o lava
+					{
+						return 0f;
+					}
+
+					// Condiciones flexibles para Naomi - SIN RESTRICCIÓN DE ALTURA
+					// SIN RESTRICCIÓN DE DÍAS, HORAS O ESTACIONES - aparece desde el inicio
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f; // 100% de probabilidad
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemCreatureSpawn.CreatureType creatureType, Point3 point) =>
+				{
+					var creatures = spawn.SpawnCreatures(creatureType, "Tulio", point, 1);
+					return creatures.Count;
+				})
+			});
+
 			// Spawn para Ricardo con 100% de probabilidad - DESDE DÍA 0, cualquier estación y hora
 			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Ricardo", 0, false, false)
 			{
