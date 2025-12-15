@@ -122,21 +122,25 @@
     <Parameter Name="Class" Guid="293422c9-9c60-4d3f-b949-a8e6cc3b2d5a" Value="Game.ComponentItemsLauncherShooterBehavior" Type="string"/>
 </ComponentTemplate>
 
-    <ComponentTemplate Name="MusketShooterBehavior" Description="Comportamiento especializado para NPCs que usan mosquetes con animaciones de apuntado, recarga y amartillado" Guid="ada4b176-9948-4c4c-ae63-7ff09c0c66fb" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
-    <Parameter Name="MinDistance" Description="Distancia mínima para comenzar a disparar" Guid="a1b2c3d4-e5f6-7890-abcd-ef1234567890" Value="5" Type="float"/>
-    <Parameter Name="MaxDistance" Description="Distancia máxima de disparo efectivo" Guid="b2c3d4e5-f6g7-8901-bcde-f23456789012" Value="25" Type="float"/>
-    <Parameter Name="ReloadTime" Description="Tiempo de recarga en segundos" Guid="d4e5f6g7-h8i9-0123-defg-456789012345" Value="2" Type="float"/>
-    <Parameter Name="AimTime" Description="Tiempo de apuntado antes de disparar" Guid="e5f6g7h8-i9j0-1234-efgh-567890123456" Value="1" Type="float"/>
-    <Parameter Name="CockTime" Description="Tiempo de amartillado" Guid="f6g7h8i9-j0k1-2345-fghi-678901234567" Value="0.5" Type="float"/>
-    <Parameter Name="FireSound" Description="Sonido de disparo" Guid="g7h8i9j0-k1l2-3456-ghij-789012345678" Value="Audio/MusketFire" Type="string"/>
-    <Parameter Name="FireSoundDistance" Description="Distancia del sonido de disparo" Guid="h8i9j0k1-l2m3-4567-hijk-890123456789" Value="15" Type="float"/>
-    <Parameter Name="CockSound" Description="Sonido de amartillado" Guid="i9j0k1l2-m3n4-5678-ijkl-901234567890" Value="Audio/HammerCock" Type="string"/>
-    <Parameter Name="ReloadSound" Description="Sonido de recarga" Guid="j0k1l2m3-n4o5-6789-jklm-012345678901" Value="Audio/Reload" Type="string"/>
-    <Parameter Name="Accuracy" Description="Precisión del disparo (menor = más preciso)" Guid="k1l2m3n4-o5p6-7890-klmn-123456789012" Value="0.02" Type="float"/>
-    <Parameter Name="UseRecoil" Description="Aplicar retroceso al disparar" Guid="l2m3n4o5-p6q7-8901-lmno-234567890123" Value="true" Type="bool"/>
-    <Parameter Name="BulletSpeed" Description="Velocidad de la bala" Guid="m3n4o5p6-q7r8-9012-mnop-345678901234" Value="120" Type="float"/>
-    <Parameter Name="RequireCocking" Description="Requiere amartillar antes de disparar" Guid="n4o5p6q7-r8s9-0123-nopq-456789012345" Value="true" Type="bool"/>
-    <Parameter Name="Class" Guid="o5p6q7r8-s9t0-1234-opqr-567890123456" Value="Game.ComponentMusketShooterBehavior" Type="string"/>
+    <ComponentTemplate Name="MusketShooterBehavior" Description="Comportamiento especializado para NPCs que usan mosquetes con animaciones de apuntado, recarga y amartillado. Incluye cambio automático a armas cuerpo a cuerpo cuando el enemigo está cerca." Guid="9bc13dd4-84ad-4a30-a971-e7bf9294e4cd" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+    <Parameter Name="MinDistance" Description="Distancia mínima para comenzar a disparar" Guid="8a8a979b-6d74-4158-97b0-887c720f1070" Value="5" Type="float"/>
+    <Parameter Name="MaxDistance" Description="Distancia máxima de disparo efectivo" Guid="e6e3ce00-2101-477e-84a5-df9aef69ffe1" Value="25" Type="float"/>
+    <Parameter Name="MeleeSwitchDistance" Description="Distancia a la que cambia a armas cuerpo a cuerpo" Guid="6dfba604-f696-4367-b73e-2328927b0154" Value="5" Type="float"/>
+    <Parameter Name="ReloadTime" Description="Tiempo de recarga en segundos" Guid="9a1f7e88-f0b2-4808-8fc4-c0aef2d987b1" Value="2" Type="float"/>
+    <Parameter Name="AimTime" Description="Tiempo de apuntado antes de disparar" Guid="cddaa4a1-f391-4c97-ba8f-64e8c2e68522" Value="1" Type="float"/>
+    <Parameter Name="CockTime" Description="Tiempo de amartillado" Guid="8bda8692-1c7b-4c14-b566-726741c02a01" Value="0.5" Type="float"/>
+    <Parameter Name="MeleeAttackTime" Description="Tiempo entre ataques cuerpo a cuerpo" Guid="aa03927a-33ee-4252-bf0e-0136e01ac089" Value="0.8" Type="float"/>
+    <Parameter Name="FireSound" Description="Sonido de disparo" Guid="5efbd497-4898-4452-98e7-df87bbe50795" Value="Audio/MusketFire" Type="string"/>
+    <Parameter Name="FireSoundDistance" Description="Distancia del sonido de disparo" Guid="aa032cfb-d884-443b-9b88-f166b0f069c6" Value="15" Type="float"/>
+    <Parameter Name="CockSound" Description="Sonido de amartillado" Guid="f7b02276-c7f2-4ab3-9f7f-ccae07ee9cc0" Value="Audio/HammerCock" Type="string"/>
+    <Parameter Name="ReloadSound" Description="Sonido de recarga" Guid="ecb69c31-5ad6-4d94-89b7-977aed7e5f68" Value="Audio/Reload" Type="string"/>
+    <Parameter Name="UncockSound" Description="Sonido de liberación del martillo" Guid="01f11842-ba62-4268-a5fe-0e55290715e9" Value="Audio/HammerUncock" Type="string"/>
+    <Parameter Name="MisfireSound" Description="Sonido de fallo de disparo" Guid="a3b55e98-5f12-40d9-acaf-55cc255d7232" Value="Audio/MusketMisfire" Type="string"/>
+    <Parameter Name="Accuracy" Description="Precisión del disparo (menor = más preciso)" Guid="53c9a42a-e6b0-4c1e-82fa-1c2a7313df2a" Value="0.02" Type="float"/>
+    <Parameter Name="UseRecoil" Description="Aplicar retroceso al disparar" Guid="63289a96-a465-458f-8d5e-609375cf1007" Value="true" Type="bool"/>
+    <Parameter Name="BulletSpeed" Description="Velocidad de la bala" Guid="899ce2f2-1b60-4efe-8f35-71d164a60045" Value="120" Type="float"/>
+    <Parameter Name="RequireCocking" Description="Requiere amartillar antes de disparar" Guid="f9cf491f-7e55-40eb-a170-6efc7381f406" Value="true" Type="bool"/>
+    <Parameter Name="Class" Guid="e9110941-d3e6-4595-864b-6ecd33c2d640" Value="Game.ComponentMusketShooterBehavior" Type="string"/>
 </ComponentTemplate>
 
         <ComponentTemplate Name="TargetedChaseBehavior" Description="Similar a ChaseBehavior con la diferencia de usar nombres de entidades en vez de categorias, trabaja en conjunto con ChaseBehavior" Guid="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
@@ -890,21 +894,28 @@
             <Parameter Name="Contents" Value="212" Type="int"/>
             <Parameter Name="Count" Value="1" Type="int"/>
         </ParameterSet>
-    </ParameterSet>   
+    <ParameterSet Name="Slot1">
+            <Parameter Name="Contents" Value="125" Type="int"/>
+            <Parameter Name="Count" Value="1" Type="int"/>
+        </ParameterSet>
+    </ParameterSet>      
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="MusketShooterBehavior" Guid="853b56f8-91f2-4ae6-9dd3-4e0944d910bc">
+<MemberComponentTemplate Name="MusketShooterBehavior" Guid="1cf95492-6805-4393-9628-d5d0cb67ae90">
     <Parameter Name="Class" Value="Game.ComponentMusketShooterBehavior" Type="string"/>
     <Parameter Name="IsOptional" Value="False" Type="bool"/>
     <Parameter Name="LoadOrder" Value="-1" Type="int"/>
-    <Parameter Name="MinDistance" Value="3" Type="float"/>
     <Parameter Name="MaxDistance" Value="30" Type="float"/>
+    <Parameter Name="MeleeSwitchDistance" Value="5" Type="float"/>
     <Parameter Name="ReloadTime" Value="1" Type="float"/>
     <Parameter Name="AimTime" Value="0.8" Type="float"/>
     <Parameter Name="CockTime" Value="0.5" Type="float"/>
+    <Parameter Name="MeleeAttackTime" Value="0.8" Type="float"/>
     <Parameter Name="FireSound" Value="Audio/MusketFire" Type="string"/>
     <Parameter Name="FireSoundDistance" Value="20" Type="float"/>
     <Parameter Name="CockSound" Value="Audio/HammerCock" Type="string"/>
     <Parameter Name="ReloadSound" Value="Audio/Reload" Type="string"/>
+    <Parameter Name="UncockSound" Value="Audio/HammerUncock" Type="string"/>
+    <Parameter Name="MisfireSound" Value="Audio/MusketMisfire" Type="string"/>
     <Parameter Name="Accuracy" Value="0.015" Type="float"/>
     <Parameter Name="UseRecoil" Value="False" Type="bool"/>
     <Parameter Name="BulletSpeed" Value="140" Type="float"/>
@@ -2476,11 +2487,11 @@
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidFireBehavior" Guid="e5f6a7b8-c9d0-5567-89ab-cdef01234567" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
     <MemberComponentTemplate Name="Locomotion" Guid="f6a7b8c9-d0e1-5678-9abc-def012345678">
-        <Parameter Name="AccelerationFactor" Guid="a7b8c9d0-e1f2-5789-abcd-ef0123456789" Value="1.2" Type="float"/>
-        <Parameter Name="FlySpeed" Guid="b8c9d0e1-f2a3-5890-bcde-f0123456789a" Value="0" Type="float"/>
-        <Parameter Name="TurnSpeed" Guid="c9d0e1f2-a3b4-5901-cdef-0123456789ab" Value="4.0" Type="float"/>
-        <Parameter Name="WalkSpeed" Guid="d0e1f2a3-b4c5-6012-def0-123456789abc" Value="3.0" Type="float"/>
-        <Parameter Name="LadderSpeed" Guid="e1f2a3b4-c5d6-6123-ef01-23456789abcd" Value="0" Type="float"/>
+        <Parameter Name="AccelerationFactor" Guid="5e1f8e2a-ce37-4c7a-817e-75f8b0d97016" Value="1.0" Type="float"/>
+        <Parameter Name="FlySpeed" Guid="c29ae68d-3380-406f-95a2-7c1eeab9e4ff" Value="0" Type="float"/>
+        <Parameter Name="TurnSpeed" Guid="6ae7accd-d169-447b-a556-fc6973a25f7b" Value="5" Type="float"/>
+        <Parameter Name="WalkSpeed" Guid="e9073120-aae7-4304-9ba9-e8c1d2911478" Value="3.0" Type="float"/>
+        <Parameter Name="LadderSpeed" Guid="51001ef8-3dfb-4022-927f-d3f15d22f90e" Value="0" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Loot" Guid="f2a3b4c5-d6e7-6234-f012-3456789abcde">
         <ParameterSet Name="Loot" Guid="a3b4c5d6-e7f8-6345-0123-456789abcdef">
@@ -4231,10 +4242,10 @@
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidFireBehavior" Guid="2a9c882d-5117-4324-b08d-a4f1ca09baa3" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
     <MemberComponentTemplate Name="Locomotion" Guid="44982534-869e-4670-8052-55c098016f19">
-        <Parameter Name="AccelerationFactor" Guid="1a86f317-991e-478f-82dd-e3fbbd104cd6" Value="1.5" Type="float"/>
+        <Parameter Name="AccelerationFactor" Guid="1a86f317-991e-478f-82dd-e3fbbd104cd6" Value="1.0" Type="float"/>
         <Parameter Name="FlySpeed" Guid="94a18c1a-1e53-428f-8645-aba6881c1b7b" Value="0" Type="float"/>
-        <Parameter Name="TurnSpeed" Guid="231726f7-c743-4c2c-b601-e15f1de06c1f" Value="5" Type="float"/>
-        <Parameter Name="WalkSpeed" Guid="5357028e-0874-4c2e-9115-eda28c54affd" Value="5.5" Type="float"/>
+        <Parameter Name="TurnSpeed" Guid="231726f7-c743-4c2c-b601-e15f1de06c1f" Value="3" Type="float"/>
+        <Parameter Name="WalkSpeed" Guid="5357028e-0874-4c2e-9115-eda28c54affd" Value="4" Type="float"/>
         <Parameter Name="LadderSpeed" Guid="6b790cf4-8081-4b69-8aa4-ec72b9e5f509" Value="0" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Inventory" Guid="ec856735-e360-4891-9d41-e60f03e7d649" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
@@ -4319,7 +4330,7 @@
         <Parameter Name="AutoFeed" Guid="6292cf66-ee82-4b37-bf17-40b647e27553" Value="False" Type="bool"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="ChaseBehavior" Guid="af9787a1-5fd3-403e-81b0-4cb43f6bcab6" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
-        <Parameter Name="AutoChaseMask" Guid="dd51fd51-07e4-4278-920a-391918a3b117" Value="LandPredator, WaterPredator, WaterOther, LandOther" Type="Game.CreatureCategory"/>
+        <Parameter Name="AutoChaseMask" Guid="dd51fd51-07e4-4278-920a-391918a3b117" Value="LandPredator" Type="Game.CreatureCategory"/>
         <Parameter Name="DayChaseRange" Guid="7199738b-6ffa-4999-9972-7e4387fc43df" Value="999" Type="float"/>
         <Parameter Name="NightChaseRange" Guid="48de3ff3-3100-4c77-8d77-11b7572943ac" Value="999" Type="float"/>
         <Parameter Name="ChaseNonPlayerProbability" Guid="b6f300a1-b9f3-4163-be8f-52746013aa7d" Value="1.0" Type="float"/>
@@ -4327,7 +4338,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="384d6528-f88c-43d7-91d3-8bb647734565" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
     <Parameter Name="ChaseToCreatures" Guid="8dae0ed6-3edc-496d-a191-5b1294884fbd" Value="Naomi, Ricardo, Paco, Barack, ElMarihuanero, ElMarihuaneroMamon, TommyVercetti, ClaudeSpeed, ArqueroPrisionero, BallestadoraMusculosa, CarlJohnson, BetelGammamon, Gaomon, Agumon, Veemon, Guilmon, WalterZombie, WalterZombieMamadisimo, FumadorQuimico, FumadorQuimicoBrawny, Conker, Beavis, Butt-Head, Shoutmon, Gumdramon, Bass_Sea, Seagull, Sparrow, Reindeer, Horse_White, Horse_White_Saddled, Horse_Chestnut, Horse_Chestnut_Saddled, Horse_Bay, Horse_Bay_Saddled, Horse_Palomino, Horse_Palomino_Saddled, Horse_Black, Horse_Black_Saddled, Camel, Camel_Saddled, Zebra, Wildboar, Bison, Bull_Brown, Bull_Black, Cow_Brown, Cow_Black, Bull_White, Duck, Pigeon, Raven, Giraffe, Moose, Donkey, Donkey_Saddled, Cassowary, Ostrich, Gnu, Werewolf, Ray_Yellow, Ray_Brown, Beluga,Hyena, Rhino, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite, Player" Type="string"/>
-    <Parameter Name="ChaseToCreatureProbability" Guid="81bd2674-df96-4cdd-858c-ec5b995f1332" Value="1.0" Type="float"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="81bd2674-df96-4cdd-858c-ec5b995f1332" Value="999999999" Type="float"/>
 </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="aa1ed1ac-efdc-49b8-a26a-e5e542fee1b6">
         <Parameter Name="Color" Guid="dd72addb-043f-470f-b870-c472e9565599" Value="49,112,0" Type="Color"/>
@@ -4366,11 +4377,11 @@
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidFireBehavior" Guid="ad0eef78-db37-4e5e-9efe-308c25e5e49d" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
     <MemberComponentTemplate Name="Locomotion" Guid="90365abc-223f-4e2d-a358-01d20cf28666">
-        <Parameter Name="AccelerationFactor" Guid="0d13688f-0897-4c14-8a1b-af19bac6a9ec" Value="1.5" Type="float"/>
-        <Parameter Name="FlySpeed" Guid="8dc697c8-1897-48ad-b253-a2a4c994ea1e" Value="0" Type="float"/>
-        <Parameter Name="TurnSpeed" Guid="81a52922-ccc2-413e-84c0-a906ccbcb094" Value="6" Type="float"/>
-        <Parameter Name="WalkSpeed" Guid="887a4cd7-fb46-46e9-a48b-d1a46052427d" Value="6.0" Type="float"/>
-        <Parameter Name="LadderSpeed" Guid="f8e73435-aa25-4d5e-a46e-036ab9026b30" Value="0" Type="float"/>
+        <Parameter Name="AccelerationFactor" Guid="5e133ef6-e131-469c-90d0-6775589c9382" Value="1.0" Type="float"/>
+        <Parameter Name="FlySpeed" Guid="18e4cb5e-3269-4968-b357-48932ca2fb71" Value="0" Type="float"/>
+        <Parameter Name="TurnSpeed" Guid="e52aeb8d-3df0-4637-84b1-85f664dd6a0b" Value="3" Type="float"/>
+        <Parameter Name="WalkSpeed" Guid="2acc85e2-288c-4327-9eac-432f8ff15450" Value="4" Type="float"/>
+        <Parameter Name="LadderSpeed" Guid="74b2e0e0-8f2b-4e2a-aa10-a5b481ccd42f" Value="0" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Inventory" Guid="3bb4367e-d36b-48d9-a9d0-a5a45686abd9" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
     <ParameterSet Name="Slots">
@@ -5057,7 +5068,7 @@
         <Parameter Name="AutoFeed" Guid="a24b0157-5f21-4933-aa73-0e95453e2123" Value="False" Type="bool"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="ChaseBehavior" Guid="c8d90540-f88c-4407-bb4f-cd58840a56bf" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
-        <Parameter Name="AutoChaseMask" Guid="b010f3e0-4ec4-4b60-a55d-0454760d4a8a" Value="LandPredator, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
+        <Parameter Name="AutoChaseMask" Guid="b010f3e0-4ec4-4b60-a55d-0454760d4a8a" Value="LandPredator" Type="Game.CreatureCategory"/>
         <Parameter Name="DayChaseRange" Guid="514826a8-b7d3-4441-84c2-c6a47e3d691d" Value="1.5" Type="float"/>
         <Parameter Name="NightChaseRange" Guid="77c8976b-f55e-403a-85e4-ece9b2c45c10" Value="1.8" Type="float"/>
         <Parameter Name="ChaseNonPlayerProbability" Guid="e13a6fbe-6f44-43ba-a176-b82a61d65de5" Value="0.02" Type="float"/>
