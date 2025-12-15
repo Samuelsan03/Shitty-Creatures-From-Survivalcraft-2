@@ -18,12 +18,17 @@ namespace Game
 		private SubsystemParticles m_subsystemParticles;
 		private SubsystemNoise m_subsystemNoise;
 		private SubsystemTerrain m_subsystemTerrain;
+		private ComponentMiner m_componentMiner;
+		private SubsystemBodies m_subsystemBodies;
+		private ComponentPathfinding m_componentPathfinding;
 
 		// Configuración
 		public float MaxDistance = 25f;
+		public float MeleeSwitchDistance = 5f; // Distancia para cambiar a arma cuerpo a cuerpo
 		public float ReloadTime = 0.55f;
 		public float AimTime = 1f;
 		public float CockTime = 0.5f;
+		public float MeleeAttackTime = 0.8f; // Tiempo entre ataques cuerpo a cuerpo
 		public string FireSound = "Audio/MusketFire";
 		public float FireSoundDistance = 15f;
 		public string CockSound = "Audio/HammerCock";
@@ -40,9 +45,11 @@ namespace Game
 		private bool m_isFiring = false;
 		private bool m_isReloading = false;
 		private bool m_isCocking = false;
+		private bool m_isMelee = false; // Modo cuerpo a cuerpo
 		private double m_animationStartTime;
 		private double m_cockStartTime;
 		private double m_fireTime;
+		private double m_meleeAttackTime;
 		private int m_musketSlot = -1;
 		private Random m_random = new Random();
 
@@ -56,9 +63,11 @@ namespace Game
 
 			// Cargar parámetros
 			MaxDistance = valuesDictionary.GetValue<float>("MaxDistance", 25f);
+			MeleeSwitchDistance = valuesDictionary.GetValue<float>("MeleeSwitchDistance", 5f);
 			ReloadTime = valuesDictionary.GetValue<float>("ReloadTime", 0.55f);
 			AimTime = valuesDictionary.GetValue<float>("AimTime", 1f);
 			CockTime = valuesDictionary.GetValue<float>("CockTime", 0.5f);
+			MeleeAttackTime = valuesDictionary.GetValue<float>("MeleeAttackTime", 0.8f);
 			FireSound = valuesDictionary.GetValue<string>("FireSound", "Audio/MusketFire");
 			FireSoundDistance = valuesDictionary.GetValue<float>("FireSoundDistance", 15f);
 			CockSound = valuesDictionary.GetValue<string>("CockSound", "Audio/HammerCock");
@@ -74,6 +83,8 @@ namespace Game
 			m_componentCreature = base.Entity.FindComponent<ComponentCreature>(true);
 			m_componentChaseBehavior = base.Entity.FindComponent<ComponentChaseBehavior>(true);
 			m_componentInventory = base.Entity.FindComponent<ComponentInventory>(true);
+			m_componentMiner = base.Entity.FindComponent<ComponentMiner>(true);
+			m_componentPathfinding = base.Entity.FindComponent<ComponentPathfinding>(true);
 			m_subsystemTime = base.Project.FindSubsystem<SubsystemTime>(true);
 			m_subsystemProjectiles = base.Project.FindSubsystem<SubsystemProjectiles>(true);
 			m_subsystemAudio = base.Project.FindSubsystem<SubsystemAudio>(true);
@@ -81,6 +92,7 @@ namespace Game
 			m_subsystemParticles = base.Project.FindSubsystem<SubsystemParticles>(true);
 			m_subsystemNoise = base.Project.FindSubsystem<SubsystemNoise>(true);
 			m_subsystemTerrain = base.Project.FindSubsystem<SubsystemTerrain>(true);
+			m_subsystemBodies = base.Project.FindSubsystem<SubsystemBodies>(true);
 		}
 
 		public void Update(float dt)
@@ -101,13 +113,32 @@ namespace Game
 				m_componentChaseBehavior.Target.ComponentBody.Position
 			);
 
-			// Lógica de ataque - Solo verifica distancia máxima
+			// Lógica de ataque basada en distancia
 			if (distance <= MaxDistance)
 			{
-				// Si no está haciendo nada, empezar a apuntar
-				if (!m_isAiming && !m_isFiring && !m_isReloading && !m_isCocking)
+				// Si el enemigo está cerca, cambiar a cuerpo a cuerpo
+				if (distance <= MeleeSwitchDistance)
 				{
-					StartAiming();
+					if (!m_isMelee && !m_isFiring && !m_isReloading)
+					{
+						SwitchToMelee();
+					}
+				}
+				// Si está a distancia media/lejana, usar mosquete
+				else
+				{
+					// Cancelar modo cuerpo a cuerpo si estaba activo
+					if (m_isMelee)
+					{
+						m_isMelee = false;
+						m_componentModel.AttackOrder = false;
+					}
+
+					// Si no está haciendo nada, empezar a apuntar
+					if (!m_isAiming && !m_isFiring && !m_isReloading && !m_isCocking)
+					{
+						StartAiming();
+					}
 				}
 			}
 			else
@@ -117,7 +148,20 @@ namespace Game
 				return;
 			}
 
-			// Aplicar animaciones
+			// Aplicar animaciones según el modo
+			if (m_isMelee)
+			{
+				UpdateMeleeMode(dt);
+			}
+			else
+			{
+				UpdateRangedMode(dt);
+			}
+		}
+
+		private void UpdateRangedMode(float dt)
+		{
+			// Lógica original del mosquete
 			if (m_isCocking)
 			{
 				ApplyCockingAnimation(dt);
@@ -171,6 +215,136 @@ namespace Game
 				}
 			}
 		}
+
+		private void UpdateMeleeMode(float dt)
+		{
+			// Buscar y equipar mejor arma cuerpo a cuerpo
+			if (FindMeleeWeapon())
+			{
+				// Mirar al objetivo
+				if (m_componentChaseBehavior.Target != null)
+				{
+					m_componentModel.LookAtOrder = new Vector3?(
+						m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition
+					);
+				}
+
+				// Atacar periódicamente
+				if (m_subsystemTime.GameTime - m_meleeAttackTime >= MeleeAttackTime)
+				{
+					m_componentModel.AttackOrder = true;
+					m_meleeAttackTime = m_subsystemTime.GameTime;
+
+					// Si es momento de golpear, aplicar daño
+					if (m_componentModel.IsAttackHitMoment)
+					{
+						Vector3 hitPoint;
+						ComponentBody hitBody = GetHitBody(m_componentChaseBehavior.Target.ComponentBody, out hitPoint);
+						if (hitBody != null)
+						{
+							m_componentMiner.Hit(hitBody, hitPoint, m_componentCreature.ComponentBody.Matrix.Forward);
+							m_componentCreature.ComponentCreatureSounds.PlayAttackSound();
+						}
+					}
+				}
+			}
+			else
+			{
+				// Si no tiene arma cuerpo a cuerpo, retroceder
+				if (m_componentPathfinding != null && m_componentChaseBehavior.Target != null)
+				{
+					Vector3 retreatDirection = Vector3.Normalize(
+						m_componentCreature.ComponentBody.Position - m_componentChaseBehavior.Target.ComponentBody.Position
+					);
+					Vector3 retreatPosition = m_componentCreature.ComponentBody.Position + retreatDirection * 3f;
+					m_componentPathfinding.SetDestination(new Vector3?(retreatPosition), 1f, 1f, 0, false, true, false, null);
+				}
+			}
+		}
+
+		private void SwitchToMelee()
+		{
+			m_isMelee = true;
+			m_isAiming = false;
+			m_isFiring = false;
+			m_isReloading = false;
+			m_isCocking = false;
+			m_meleeAttackTime = m_subsystemTime.GameTime;
+
+			// Resetear animaciones de mosquete
+			if (m_componentModel != null)
+			{
+				m_componentModel.AimHandAngleOrder = 0f;
+				m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
+				m_componentModel.InHandItemRotationOrder = Vector3.Zero;
+			}
+
+			// Buscar y equipar arma cuerpo a cuerpo
+			FindMeleeWeapon();
+		}
+
+		private bool FindMeleeWeapon()
+		{
+			if (m_componentMiner.Inventory == null)
+				return false;
+
+			// Verificar si el arma actual es cuerpo a cuerpo
+			int activeBlockValue = m_componentMiner.ActiveBlockValue;
+			if (BlocksManager.Blocks[Terrain.ExtractContents(activeBlockValue)].GetMeleePower(activeBlockValue) > 1f)
+			{
+				return true;
+			}
+
+			// Buscar mejor arma cuerpo a cuerpo en inventario
+			float bestPower = 1f;
+			int bestSlot = -1;
+
+			for (int i = 0; i < 6; i++) // Solo primeros 6 slots (armas equipables)
+			{
+				int slotValue = m_componentMiner.Inventory.GetSlotValue(i);
+				float meleePower = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)].GetMeleePower(slotValue);
+				if (meleePower > bestPower)
+				{
+					bestPower = meleePower;
+					bestSlot = i;
+				}
+			}
+
+			if (bestSlot >= 0)
+			{
+				m_componentMiner.Inventory.ActiveSlotIndex = bestSlot;
+				return true;
+			}
+
+			return false;
+		}
+
+		private ComponentBody GetHitBody(ComponentBody target, out Vector3 hitPoint)
+		{
+			Vector3 vector = m_componentCreature.ComponentBody.BoundingBox.Center();
+			Vector3 v = target.BoundingBox.Center();
+			Ray3 ray = new Ray3(vector, Vector3.Normalize(v - vector));
+
+			BodyRaycastResult? bodyRaycastResult = m_componentMiner.Raycast<BodyRaycastResult>(ray, RaycastMode.Interaction, true, true, true, null);
+
+			if (bodyRaycastResult != null && bodyRaycastResult.Value.Distance < 1.75f &&
+				(bodyRaycastResult.Value.ComponentBody == target ||
+				 bodyRaycastResult.Value.ComponentBody.IsChildOfBody(target) ||
+				 target.IsChildOfBody(bodyRaycastResult.Value.ComponentBody) ||
+				 target.StandingOnBody == bodyRaycastResult.Value.ComponentBody))
+			{
+				hitPoint = bodyRaycastResult.Value.HitPoint();
+				return bodyRaycastResult.Value.ComponentBody;
+			}
+
+			hitPoint = default(Vector3);
+			return null;
+		}
+
+		// El resto de los métodos se mantienen igual que en el código original
+		// (StartCocking, StartAiming, FindMusket, UpdateMusketHammerState, UpdateMusketLoadState, 
+		// UpdateMusketBulletType, ApplyCockingAnimation, ApplyAimingAnimation, Fire, 
+		// ApplyFiringAnimation, StartReloading, ApplyReloadingAnimation, ResetAnimations, ShootBullet)
 
 		private void StartCocking()
 		{
@@ -484,6 +658,7 @@ namespace Game
 			m_isFiring = false;
 			m_isReloading = false;
 			m_isCocking = false;
+			m_isMelee = false;
 
 			if (m_componentModel != null)
 			{
@@ -491,6 +666,7 @@ namespace Game
 				m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
 				m_componentModel.InHandItemRotationOrder = Vector3.Zero;
 				m_componentModel.LookAtOrder = null;
+				m_componentModel.AttackOrder = false;
 			}
 		}
 
