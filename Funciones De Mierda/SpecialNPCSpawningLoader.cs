@@ -75,7 +75,7 @@ namespace Game
 				},
 				SpawnFunction = ((SubsystemCreatureSpawn.CreatureType creatureType, Point3 point) =>
 				{
-					var creatures = spawn.SpawnCreatures(creatureType, "Brayan", point, 1);
+					var creatures = spawn.SpawnCreatures(creatureType, "Brayan", point, 2);
 					return creatures.Count;
 				})
 			});
@@ -108,7 +108,7 @@ namespace Game
 				},
 				SpawnFunction = ((SubsystemCreatureSpawn.CreatureType creatureType, Point3 point) =>
 				{
-					var creatures = spawn.SpawnCreatures(creatureType, "Tulio", point, 1);
+					var creatures = spawn.SpawnCreatures(creatureType, "Tulio", point, 2);
 					return creatures.Count;
 				})
 			});
