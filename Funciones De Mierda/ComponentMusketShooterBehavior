@@ -17,9 +17,9 @@ namespace Game
 		private ComponentCreatureModel m_componentModel;
 		private SubsystemParticles m_subsystemParticles;
 		private SubsystemNoise m_subsystemNoise;
+		private SubsystemTerrain m_subsystemTerrain;
 
 		// Configuración
-		public float MinDistance = 5f;
 		public float MaxDistance = 25f;
 		public float ReloadTime = 0.55f;
 		public float AimTime = 1f;
@@ -28,6 +28,8 @@ namespace Game
 		public float FireSoundDistance = 15f;
 		public string CockSound = "Audio/HammerCock";
 		public string ReloadSound = "Audio/Reload";
+		public string UncockSound = "Audio/HammerUncock";
+		public string MisfireSound = "Audio/MusketMisfire";
 		public float Accuracy = 0.02f;
 		public bool UseRecoil = true;
 		public float BulletSpeed = 120f;
@@ -53,7 +55,6 @@ namespace Game
 			base.Load(valuesDictionary, idToEntityMap);
 
 			// Cargar parámetros
-			MinDistance = valuesDictionary.GetValue<float>("MinDistance", 5f);
 			MaxDistance = valuesDictionary.GetValue<float>("MaxDistance", 25f);
 			ReloadTime = valuesDictionary.GetValue<float>("ReloadTime", 0.55f);
 			AimTime = valuesDictionary.GetValue<float>("AimTime", 1f);
@@ -62,6 +63,8 @@ namespace Game
 			FireSoundDistance = valuesDictionary.GetValue<float>("FireSoundDistance", 15f);
 			CockSound = valuesDictionary.GetValue<string>("CockSound", "Audio/HammerCock");
 			ReloadSound = valuesDictionary.GetValue<string>("ReloadSound", "Audio/Reload");
+			UncockSound = valuesDictionary.GetValue<string>("UncockSound", "Audio/HammerUncock");
+			MisfireSound = valuesDictionary.GetValue<string>("MisfireSound", "Audio/MusketMisfire");
 			Accuracy = valuesDictionary.GetValue<float>("Accuracy", 0.02f);
 			UseRecoil = valuesDictionary.GetValue<bool>("UseRecoil", true);
 			BulletSpeed = valuesDictionary.GetValue<float>("BulletSpeed", 120f);
@@ -77,6 +80,7 @@ namespace Game
 			m_componentModel = base.Entity.FindComponent<ComponentCreatureModel>(true);
 			m_subsystemParticles = base.Project.FindSubsystem<SubsystemParticles>(true);
 			m_subsystemNoise = base.Project.FindSubsystem<SubsystemNoise>(true);
+			m_subsystemTerrain = base.Project.FindSubsystem<SubsystemTerrain>(true);
 		}
 
 		public void Update(float dt)
@@ -97,8 +101,8 @@ namespace Game
 				m_componentChaseBehavior.Target.ComponentBody.Position
 			);
 
-			// Lógica de ataque
-			if (distance >= MinDistance && distance <= MaxDistance)
+			// Lógica de ataque - Solo verifica distancia máxima
+			if (distance <= MaxDistance)
 			{
 				// Si no está haciendo nada, empezar a apuntar
 				if (!m_isAiming && !m_isFiring && !m_isReloading && !m_isCocking)
@@ -108,7 +112,7 @@ namespace Game
 			}
 			else
 			{
-				// Fuera de rango, resetear
+				// Fuera de rango máximo, resetear
 				ResetAnimations();
 				return;
 			}
@@ -124,6 +128,9 @@ namespace Game
 					m_isCocking = false;
 					m_isAiming = true;
 					m_animationStartTime = m_subsystemTime.GameTime;
+
+					// Actualizar estado del martillo en el mosquete
+					UpdateMusketHammerState(true);
 				}
 			}
 			else if (m_isAiming)
@@ -155,6 +162,11 @@ namespace Game
 				if (m_subsystemTime.GameTime - m_animationStartTime >= ReloadTime)
 				{
 					m_isReloading = false;
+
+					// Actualizar estado de carga del mosquete
+					UpdateMusketLoadState(MusketBlock.LoadState.Loaded);
+					UpdateMusketBulletType(BulletBlock.BulletType.MusketBall);
+
 					StartAiming(); // Volver a apuntar para repetir ciclo
 				}
 			}
@@ -178,6 +190,25 @@ namespace Game
 
 		private void StartAiming()
 		{
+			// Encontrar mosquete en inventario
+			FindMusket();
+
+			// Si no tiene mosquete, no hacer nada
+			if (m_musketSlot == -1)
+				return;
+
+			// Verificar estado de carga del mosquete
+			int slotValue = m_componentInventory.GetSlotValue(m_musketSlot);
+			int data = Terrain.ExtractData(slotValue);
+			MusketBlock.LoadState loadState = MusketBlock.GetLoadState(data);
+
+			// Si el mosquete no está cargado, recargarlo
+			if (loadState != MusketBlock.LoadState.Loaded)
+			{
+				UpdateMusketLoadState(MusketBlock.LoadState.Loaded);
+				UpdateMusketBulletType(BulletBlock.BulletType.MusketBall);
+			}
+
 			m_isAiming = true;
 			m_isFiring = false;
 			m_isReloading = false;
@@ -187,7 +218,18 @@ namespace Game
 			// Si requiere amartillar, hacerlo
 			if (RequireCocking)
 			{
-				StartCocking();
+				// Verificar si el martillo ya está amartillado
+				bool hammerState = MusketBlock.GetHammerState(Terrain.ExtractData(slotValue));
+				if (!hammerState)
+				{
+					StartCocking();
+				}
+				else
+				{
+					// Si ya está amartillado, ir directamente a apuntar
+					m_isAiming = true;
+					m_isCocking = false;
+				}
 			}
 		}
 
@@ -202,6 +244,57 @@ namespace Game
 					m_musketSlot = i;
 					m_componentInventory.ActiveSlotIndex = i;
 					break;
+				}
+			}
+		}
+
+		private void UpdateMusketHammerState(bool hammerState)
+		{
+			if (m_musketSlot >= 0)
+			{
+				int slotValue = m_componentInventory.GetSlotValue(m_musketSlot);
+				int contents = Terrain.ExtractContents(slotValue);
+				if (contents == 212) // Mosquete
+				{
+					int data = Terrain.ExtractData(slotValue);
+					data = MusketBlock.SetHammerState(data, hammerState);
+					int newValue = Terrain.ReplaceData(slotValue, data);
+					m_componentInventory.RemoveSlotItems(m_musketSlot, 1);
+					m_componentInventory.AddSlotItems(m_musketSlot, newValue, 1);
+				}
+			}
+		}
+
+		private void UpdateMusketLoadState(MusketBlock.LoadState loadState)
+		{
+			if (m_musketSlot >= 0)
+			{
+				int slotValue = m_componentInventory.GetSlotValue(m_musketSlot);
+				int contents = Terrain.ExtractContents(slotValue);
+				if (contents == 212) // Mosquete
+				{
+					int data = Terrain.ExtractData(slotValue);
+					data = MusketBlock.SetLoadState(data, loadState);
+					int newValue = Terrain.ReplaceData(slotValue, data);
+					m_componentInventory.RemoveSlotItems(m_musketSlot, 1);
+					m_componentInventory.AddSlotItems(m_musketSlot, newValue, 1);
+				}
+			}
+		}
+
+		private void UpdateMusketBulletType(BulletBlock.BulletType bulletType)
+		{
+			if (m_musketSlot >= 0)
+			{
+				int slotValue = m_componentInventory.GetSlotValue(m_musketSlot);
+				int contents = Terrain.ExtractContents(slotValue);
+				if (contents == 212) // Mosquete
+				{
+					int data = Terrain.ExtractData(slotValue);
+					data = MusketBlock.SetBulletType(data, bulletType);
+					int newValue = Terrain.ReplaceData(slotValue, data);
+					m_componentInventory.RemoveSlotItems(m_musketSlot, 1);
+					m_componentInventory.AddSlotItems(m_musketSlot, newValue, 1);
 				}
 			}
 		}
@@ -260,7 +353,31 @@ namespace Game
 			m_fireTime = m_subsystemTime.GameTime;
 
 			// Encontrar mosquete en inventario (asegurarse que lo tiene)
-			FindMusket();
+			if (m_musketSlot == -1)
+			{
+				FindMusket();
+				if (m_musketSlot == -1)
+					return;
+			}
+
+			// Verificar estado de carga
+			int slotValue = m_componentInventory.GetSlotValue(m_musketSlot);
+			int data = Terrain.ExtractData(slotValue);
+			MusketBlock.LoadState loadState = MusketBlock.GetLoadState(data);
+
+			// Si no está cargado, no disparar
+			if (loadState != MusketBlock.LoadState.Loaded)
+			{
+				// Sonido de fallo
+				if (!string.IsNullOrEmpty(MisfireSound))
+				{
+					m_subsystemAudio.PlaySound(MisfireSound, 1f, m_random.Float(-0.1f, 0.1f),
+						m_componentCreature.ComponentBody.Position, 3f, false);
+				}
+				m_isFiring = false;
+				StartReloading();
+				return;
+			}
 
 			// Sonido de disparo
 			if (!string.IsNullOrEmpty(FireSound))
@@ -269,8 +386,20 @@ namespace Game
 					m_componentCreature.ComponentBody.Position, FireSoundDistance, false);
 			}
 
+			// Sonido de liberación del martillo
+			if (!string.IsNullOrEmpty(UncockSound))
+			{
+				m_subsystemAudio.PlaySound(UncockSound, 1f, m_random.Float(-0.1f, 0.1f),
+					m_componentCreature.ComponentBody.Position, 3f, false);
+			}
+
 			// Disparar bala real
 			ShootBullet();
+
+			// Actualizar estado del mosquete después de disparar
+			UpdateMusketLoadState(MusketBlock.LoadState.Empty);
+			UpdateMusketHammerState(false);
+			UpdateMusketBulletType(null);
 
 			// Retroceso
 			if (UseRecoil && m_componentChaseBehavior.Target != null)
@@ -283,7 +412,12 @@ namespace Game
 			}
 		}
 
-		private void ApplyFiringAnimation(float dt)
+        private void UpdateMusketBulletType(object value)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void ApplyFiringAnimation(float dt)
 		{
 			if (m_componentModel != null)
 			{
@@ -402,11 +536,10 @@ namespace Game
 					// Crear sistema de partículas de humo
 					if (m_subsystemParticles != null)
 					{
-						SubsystemTerrain subsystemTerrain = base.Project.FindSubsystem<SubsystemTerrain>(true);
-						if (subsystemTerrain != null)
+						if (m_subsystemTerrain != null)
 						{
 							m_subsystemParticles.AddParticleSystem(
-								new GunSmokeParticleSystem(subsystemTerrain, smokePosition, direction),
+								new GunSmokeParticleSystem(m_subsystemTerrain, smokePosition, direction),
 								false
 							);
 						}
