@@ -43,13 +43,14 @@ namespace Game
 				"MenuMusic/Digimon Frontiers FIRE Wada Kouji",
 				"MenuMusic/Rocket Knight Adventures Stage 1-1",
 				"MenuMusic/Rocket Knight Adventures Stage 1-2",
-				"MenuMusic/Rocket Knight Adventures 2 Stage 1-1",
-				"MenuMusic/Sparkster Stage Lakeside",
+				"MenuMusic/Sparkster (SEGA Genesis) Stage 1-1",
+				"MenuMusic/Sparkster (SNES) Stage Lakeside",
 				"MenuMusic/Space Harrier Theme",
 				"MenuMusic/MAGICAL SOUND SHOWER OutRun",
 				"MenuMusic/Super Hang-On Outride A Crisis",
 				"MenuMusic/Super Hang-On Sprinter",
-				"MenuMusic/Super Hang-On Winning Run"
+				"MenuMusic/Super Hang-On Winning Run",
+				"MenuMusic/Nichijou Koigokoro Wa Dangan Mo Yawarakakusuru"
 			};
 
 			// Usar Environment.TickCount como semilla simple
