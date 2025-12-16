@@ -399,6 +399,12 @@
         </EntityTemplate>
 
         <EntityTemplate Name="Ricardo" Guid="b7f3e8a2-9c14-4d82-a5f3-8c2d6e9a1b47" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="34e0104a-6cfb-4c4c-b65b-d2e3a3b3cbb4">
+    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
+    <Parameter Name="IsOptional" Value="false" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+    <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
+</MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="c4a2d3e1-f8b2-4c65-93a7-d5e6f7a8b9c0" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
                 <Parameter Name="DayRange" Guid="e9f8d7c6-b5a4-4e39-82c1-d0e1f2a3b4c5" Value="0" Type="float"/>
                 <Parameter Name="NightRange" Guid="a1b2c3d4-e5f6-4789-9012-3456789abcdf" Value="0" Type="float"/>
@@ -518,6 +524,12 @@
         </EntityTemplate>
         
         <EntityTemplate Name="Paco" Guid="a1b2c3d4-e5f6-4789-9012-3456789abcde" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="bac18658-fe51-4473-91e8-e37a73c5db44">
+    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
+    <Parameter Name="IsOptional" Value="false" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+    <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="b2c3d4e5-f6a7-4890-9123-456789abcdef" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
         <Parameter Name="DayRange" Guid="c3d4e5f6-a7b8-4901-2345-6789abcdef01" Value="0" Type="float"/>
         <Parameter Name="NightRange" Guid="d4e5f6a7-b8c9-5012-3456-789abcdef012" Value="0" Type="float"/>
@@ -636,6 +648,12 @@
 </EntityTemplate>
 
          <EntityTemplate Name="Barack" Guid="f8a9b0c1-d2e3-4456-9234-56789abcdef0" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+         <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="8f4ea672-e894-4c25-b5ee-420563ab2f85">
+    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
+    <Parameter Name="IsOptional" Value="false" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+    <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="a9b0c1d2-e3f4-4567-9345-6789abcdef01" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
         <Parameter Name="DayRange" Guid="b0c1d2e3-f4a5-4678-9456-789abcdef012" Value="0" Type="float"/>
         <Parameter Name="NightRange" Guid="c1d2e3f4-a5b6-4789-9567-89abcdef0123" Value="0" Type="float"/>
@@ -754,6 +772,12 @@
 </EntityTemplate>
 
 <EntityTemplate Name="ElMarihuanero" Guid="0d9b62e7-35da-4135-8a31-e53a316fbe25" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="5203726e-758d-4918-bf93-10d8e4108891">
+    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
+    <Parameter Name="IsOptional" Value="false" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+    <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="b97afdb3-b551-467b-b044-4989ddc430aa" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
         <Parameter Name="DayRange" Guid="50095d71-5c8c-4507-8c18-c7c08a187efb" Value="0" Type="float"/>
         <Parameter Name="NightRange" Guid="103dd1f6-04c7-4e54-a423-459443ee5aa8" Value="0" Type="float"/>
@@ -765,7 +789,7 @@
     </MemberComponentTemplate>    
     <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="028a05bb-7e21-4f6b-b580-575a139dead3" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
     <Parameter Name="ChaseToCreatures" Guid="74f6068a-ecf9-4850-b1b7-9f0f5db89cb0" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
-    <Parameter Name="ChaseToCreatureProbability" Guid="18debc76-6340-4893-a003-070f1e88078f" Value="1.0" Type="float"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="18debc76-6340-4893-a003-070f1e88078f" Value="999999999" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="CreatureSounds" Guid="d7982663-2d94-48d1-b62a-5b237fb3b293">
         <Parameter Name="PainSound" Guid="6bd82d18-dea5-4b1f-9ff7-c08f2181070a" Value="Audio/Creatures/ElMarihuanero/Pain" Type="string"/>
@@ -854,13 +878,19 @@
 </EntityTemplate>
 
 <EntityTemplate Name="ElMarihuaneroMamon" Guid="2c6c8cd6-acb6-433a-b5a4-2f5b5b4cd52c" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="c6242a04-a7e9-440f-b9a2-3467b9012e12">
+    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
+    <Parameter Name="IsOptional" Value="false" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+    <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="1d930f8b-056c-4eff-862d-6b1256418e72" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
         <Parameter Name="DayRange" Guid="9b076227-e610-41ab-9452-c6a5e8fddf92" Value="0" Type="float"/>
         <Parameter Name="NightRange" Guid="97b2050a-0f6f-4c82-8af6-3f44838805c9" Value="0" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="e5cdecd4-48f4-4505-99c1-9e745ed72e2c" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
     <Parameter Name="ChaseToCreatures" Guid="f2c7861b-daa0-4611-9add-1d61cd827ca6" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
-    <Parameter Name="ChaseToCreatureProbability" Guid="e33ce270-b49e-4428-b63e-3a41488f4bc2" Value="1.0" Type="float"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="e33ce270-b49e-4428-b63e-3a41488f4bc2" Value="999999999" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="EatPickableBehavior" Guid="9c04b5de-f37d-4a0e-9cef-73cc2b9a22b1">
         <ParameterSet Name="FoodFactors" Guid="5fa53cb0-f400-49a3-8685-62c2fa5bae41">
@@ -1013,6 +1043,12 @@
 </EntityTemplate>
 
 <EntityTemplate Name="FumadorQuimico" Guid="6054c1b3-834c-471d-af2f-dee55e898e51" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="65c91319-a946-4c11-a725-6b9088879f84">
+    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
+    <Parameter Name="IsOptional" Value="false" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+    <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="1319f21c-d651-466f-b9f6-3c475e7b86f7" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
         <Parameter Name="DayRange" Guid="701dd54b-21ac-4f7c-a84c-9d3125234e5d" Value="0" Type="float"/>
         <Parameter Name="NightRange" Guid="cbab13e1-9741-4e27-96e1-82d528b7fa1f" Value="0" Type="float"/>
@@ -1252,6 +1288,12 @@
 </EntityTemplate>
 
 <EntityTemplate Name="ClaudeSpeed" Guid="58c0c0b3-dbf7-49df-b394-64373fa05c04" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="e07fb355-4dc1-4be2-93e0-f641057addc7">
+    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
+    <Parameter Name="IsOptional" Value="false" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+    <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="c308e6f5-f947-46e3-bc5c-65e48c1609e9" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
         <Parameter Name="DayRange" Guid="03c21908-dcae-451d-8835-e129b5523fa9" Value="0" Type="float"/>
         <Parameter Name="NightRange" Guid="b546b148-874c-4e98-a5f0-eedc3aecb638" Value="0" Type="float"/>
@@ -1492,7 +1534,7 @@
 <EntityTemplate Name="LaMuerteX" Guid="d4e5f6a7-b8c9-4789-9012-3456789abcfa" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
 <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="49a529ba-30db-47e2-9d62-e27f298a93b5" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
     <Parameter Name="ChaseToCreatures" Guid="26d59d67-f4ba-4550-8e03-921ec6f03fc9" Value="Naomi, Ricardo, Paco, Barack, ElMarihuanero, ElMarihuaneroMamon, TommyVercetti, ClaudeSpeed, ArqueroPrisionero, BallestadoraMusculosa, CarlJohnson, BetelGammamon, Gaomon, Agumon, Veemon, Guilmon, WalterZombie, WalterZombieMamadisimo, FumadorQuimico, FumadorQuimicoBrawny, Conker, Beavis, Butt-Head, Shoutmon, Gumdramon, Bass_Sea, Seagull, Sparrow, Reindeer, Horse_White, Horse_White_Saddled, Horse_Chestnut, Horse_Chestnut_Saddled, Horse_Bay, Horse_Bay_Saddled, Horse_Palomino, Horse_Palomino_Saddled, Horse_Black, Horse_Black_Saddled, Camel, Camel_Saddled, Zebra, Wildboar, Bison, Bull_Brown, Bull_Black, Cow_Brown, Cow_Black, Bull_White, Duck, Pigeon, Raven, Giraffe, Moose, Donkey, Donkey_Saddled, Cassowary, Ostrich, Gnu, Werewolf, Ray_Yellow, Ray_Brown, Beluga,Hyena, Rhino, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite, Player" Type="string"/>
-    <Parameter Name="ChaseToCreatureProbability" Guid="8bdd635c-3e26-4baf-94f0-38dd51f7331a" Value="1.0" Type="float"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="8bdd635c-3e26-4baf-94f0-38dd51f7331a" Value="999999999" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="e5f6a7b8-c9d0-4890-9123-456789abcdfc" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
         <Parameter Name="DayRange" Guid="f6a7b8c9-d0e1-4901-2345-6789abcdf004" Value="0" Type="float"/>
@@ -1593,6 +1635,12 @@
 </EntityTemplate>
 
 <EntityTemplate Name="ElSenorDeLasTumbasMoradas" Guid="a1b2c3d4-e5f6-4789-9012-3456789abc99" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="30320352-952a-401f-b9bb-ccc24cb90072">
+    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
+    <Parameter Name="IsOptional" Value="false" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+    <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
+</MemberComponentTemplate>
 <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="530c1090-9270-4d55-83f1-660c826e1cfd" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
     <Parameter Name="ChaseToCreatures" Guid="d4aa4732-3db6-4b04-bef8-b9a68471782f" Value="Naomi, Ricardo, Paco, Barack, ElMarihuanero, ElMarihuaneroMamon, TommyVercetti, ClaudeSpeed, ArqueroPrisionero, BallestadoraMusculosa, CarlJohnson, BetelGammamon, Gaomon, Agumon, Veemon, Guilmon, WalterZombie, WalterZombieMamadisimo, FumadorQuimico, FumadorQuimicoBrawny, Conker, Beavis, Butt-Head, Shoutmon, Gumdramon, Bass_Sea, Seagull, Sparrow, Reindeer, Horse_White, Horse_White_Saddled, Horse_Chestnut, Horse_Chestnut_Saddled, Horse_Bay, Horse_Bay_Saddled, Horse_Palomino, Horse_Palomino_Saddled, Horse_Black, Horse_Black_Saddled, Camel, Camel_Saddled, Zebra, Wildboar, Bison, Bull_Brown, Bull_Black, Cow_Brown, Cow_Black, Bull_White, Duck, Pigeon, Raven, Giraffe, Moose, Donkey, Donkey_Saddled, Cassowary, Ostrich, Gnu, Werewolf, Ray_Yellow, Ray_Brown, Beluga,Hyena, Rhino, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite, Player" Type="string"/>
     <Parameter Name="ChaseToCreatureProbability" Guid="49dcefbe-c410-4964-b11b-7f48053c0e2a" Value="1.0" Type="float"/>
@@ -1862,7 +1910,7 @@
         <Parameter Name="AutoFeed" Guid="b9c0d1e2-f3a4-9678-3456-656789012345" Value="False" Type="bool"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="ChaseBehavior" Guid="c0d1e2f3-a4b5-9789-4567-767890123456" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
-        <Parameter Name="AutoChaseMask" Guid="d1e2f3a4-b5c6-9890-5678-878901234567" Value="LandPredator, LandOther, WaterPredator, WaterOther" Type="Game.CreatureCategory"/>
+        <Parameter Name="AutoChaseMask" Guid="d1e2f3a4-b5c6-9890-5678-878901234567" Value="LandPredator" Type="Game.CreatureCategory"/>
         <Parameter Name="DayChaseRange" Guid="e2f3a4b5-c6d7-9901-6789-989012345678" Value="998" Type="float"/>
         <Parameter Name="NightChaseRange" Guid="f3a4b5c6-d7e8-0012-7890-099123456789" Value="913" Type="float"/>
         <Parameter Name="ChaseNonPlayerProbability" Guid="a4b5c6d7-e8f9-0123-8901-101234567890" Value="1" Type="float"/>
@@ -1872,6 +1920,12 @@
         <Parameter Name="DayEntityTemplateName" Guid="a4b5c6d7-e8f9-9999-9abc-def012345704" Value="LiderCalavericoSupremo" Type="string"/>
         <Parameter Name="Probability" Guid="c6d7e8f9-a0b1-9999-9abc-def012345705" Value="1.0" Type="float"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="b10b460f-80c1-4bd7-9618-afe786ed25d9">
+    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
+    <Parameter Name="IsOptional" Value="false" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+    <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
+</MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="c0d1e2f3-a4b5-0345-0123-323456789012">
         <Parameter Name="Color" Guid="d1e2f3a4-b5c6-0456-1234-434567890123" Value="120,20,40" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="e2f3a4b5-c6d7-0567-2345-545678901234" Value="174" Type="int"/>
@@ -1883,6 +1937,12 @@
 </EntityTemplate>
 
 <EntityTemplate Name="Conker" Guid="8d959f25-edc7-4572-b545-4eba05869e45" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="5638a324-bd04-44b0-9e9a-e04613bba61b">
+    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
+    <Parameter Name="IsOptional" Value="false" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+    <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
+</MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureSounds" Guid="672489ab-0fea-4c98-850a-2e91e2a2f6d2">
                 <Parameter Name="PainSound" Guid="13066d37-9108-48f4-a59c-62b92768e5b3" Value="Audio/Creatures/Conker/Pain" Type="string"/>
                 <Parameter Name="IdleSound" Guid="14ca07d9-a79a-465f-848e-d575b4b5d39c" Value="Audio/Creatures/Conker/Idie" Type="string"/>
@@ -2057,6 +2117,12 @@
         <Parameter Name="ChaseNonPlayerProbability" Guid="3ed57f2d-e3f0-4603-9610-a007a04bb454" Value="0.1" Type="float"/>
         <Parameter Name="NightChaseTime" Guid="bb82bd9c-77e1-450f-9e40-11ca47a5ffdb" Value="15" Type="float"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="70853e39-01df-4888-ab14-7398f90894a5">
+    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
+    <Parameter Name="IsOptional" Value="false" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+    <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
+</MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="29c68a36-1a56-4e6b-946b-651244dcbbb5">
         <Parameter Name="Color" Guid="10c74489-6a7b-4f3a-8fe1-a29bc8e2e76e" Value="70,83,135" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="2626a3c7-00f4-4c4e-867c-8e4dde8335f4" Value="175" Type="int"/>
@@ -2067,6 +2133,12 @@
 </EntityTemplate>
 
 <EntityTemplate Name="Butt-Head" Guid="09699a5a-89f9-4883-b77f-e8adf8f52473" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="522166f9-f59e-45de-bb5f-4441c32e30d6">
+    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
+    <Parameter Name="IsOptional" Value="false" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+    <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
+</MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureSounds" Guid="21850bcf-39f1-4f32-a2a6-018c789c50fd">
                 <Parameter Name="PainSound" Guid="138b0584-9829-418f-9f37-90acd4ec8d12" Value="Audio/Creatures/Butt-Head/Pain" Type="string"/>
                 <Parameter Name="IdleSound" Guid="d5d762cf-60f8-4af9-bb6b-2952a5964229" Value="Audio/Creatures/Butt-Head/Idie" Type="string"/>
@@ -2480,6 +2552,12 @@
     <Parameter Name="ChaseNonPlayerProbability" Guid="632ec04b-2836-4e54-a97c-6cf32812d743" Value="1" Type="float"/>
     <Parameter Name="NightChaseTime" Guid="57dedee1-ed73-480b-96f1-ccf56f860e9a" Value="930" Type="float"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="c0cd22fc-913a-431a-a955-578a8290b9f0">
+    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
+    <Parameter Name="IsOptional" Value="false" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+    <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
+</MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="47f859ec-1a09-484b-9b8b-67983a0ac421">
         <Parameter Name="Color" Guid="aa76100a-7176-41d8-bd11-df9b43f54f48" Value="151,82,82" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="1d2fae94-1bad-44fe-82df-c6e720662858" Value="188" Type="int"/>
@@ -2490,6 +2568,12 @@
 </EntityTemplate>
 
 <EntityTemplate Name="HeadcrabBloodyHuman" Guid="c7d8e9f0-a1b2-4789-9012-3456789abcde" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="80580eaa-c83a-4511-a8f7-c8f2f7102454">
+    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
+    <Parameter Name="IsOptional" Value="false" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+    <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="d8e9f0a1-b2c3-4890-9123-456789abcdef" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
         <Parameter Name="DayRange" Guid="e9f0a1b2-c3d4-4901-2345-6789abcdef01" Value="0" Type="float"/>
         <Parameter Name="NightRange" Guid="f0a1b2c3-d4e5-5012-3456-789abcdef012" Value="0" Type="float"/>
@@ -2715,6 +2799,12 @@
 </EntityTemplate>
 
 <EntityTemplate Name="ArqueroPrisionero" Guid="e8831650-83a1-4ba7-b796-1149dfa88eae" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="1353a96f-2dc9-4bf7-88be-9d07e7ecf045">
+    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
+    <Parameter Name="IsOptional" Value="false" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+    <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="021403dd-2d64-4689-87b3-06e2643d7616" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
         <Parameter Name="DayRange" Guid="22e92c14-b22e-4af0-aa56-69dee0589403" Value="0" Type="float"/>
         <Parameter Name="NightRange" Guid="ab9e1233-4a79-4edf-806d-f135b9708406" Value="5" Type="float"/>
@@ -2835,6 +2925,12 @@
 </EntityTemplate>
 
 <EntityTemplate Name="Veemon" Guid="27207048-7b75-409d-b98d-e400275b884c" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="9ebadf6d-3274-4ece-bdca-001120d85ac8">
+    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
+    <Parameter Name="IsOptional" Value="false" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+    <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="f932b384-0199-422e-8f46-5176123b3310" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
         <Parameter Name="DayRange" Guid="adc269c8-c896-4b19-8f8a-6d1f0e987de8" Value="0" Type="float"/>
         <Parameter Name="NightRange" Guid="bcea5d70-effc-4103-8383-8f0ec47c0225" Value="5" Type="float"/>
@@ -2930,7 +3026,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="5f0f0b7f-88af-4d8e-8e2a-7f757524e12f" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
     <Parameter Name="ChaseToCreatures" Guid="32ba78d4-46a0-49ab-b693-678b27058b4d" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
-    <Parameter Name="ChaseToCreatureProbability" Guid="9b9fd8b8-2c10-4d34-afe2-6d0ca7035493" Value="1.0" Type="float"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="9b9fd8b8-2c10-4d34-afe2-6d0ca7035493" Value="999999999" Type="float"/>
 </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="87c12af8-a3ca-4a5f-9f6b-1891de38d363">
         <Parameter Name="Color" Guid="d5a63056-4627-413f-bd1b-b33f61c5327a" Value="178,218,250" Type="Color"/>
@@ -2942,6 +3038,12 @@
 </EntityTemplate>
 
 <EntityTemplate Name="Shoutmon" Guid="82b317b7-89f9-408d-a722-578a8b61ace9" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="8e1c931f-2ed1-4ebf-a25b-8d44f472a44a">
+    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
+    <Parameter Name="IsOptional" Value="false" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+    <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="96e8abe2-3c50-44a0-8761-28f9e22a3c8f" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
         <Parameter Name="DayRange" Guid="dc01e9d0-b9a1-40d4-ae5e-9d55057c42fe" Value="0" Type="float"/>
         <Parameter Name="NightRange" Guid="86b5cdd8-2ad9-4ad6-890d-29dad055ff9c" Value="5" Type="float"/>
@@ -3037,7 +3139,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="2d6af576-8529-48e2-89dd-1d9ed324b5f0" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
     <Parameter Name="ChaseToCreatures" Guid="e92792da-50e6-4080-a742-8d3ecb257455" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
-    <Parameter Name="ChaseToCreatureProbability" Guid="0ef96502-6c4f-466a-98c4-46a7b79bd6ff" Value="1.0" Type="float"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="0ef96502-6c4f-466a-98c4-46a7b79bd6ff" Value="999999999" Type="float"/>
 </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="225b6ff5-fc78-42b6-b162-28200572b3e4">
         <Parameter Name="Color" Guid="8bac4c74-9132-4f01-a217-8e20c5d894ed" Value="255,105,97" Type="Color"/>
@@ -3049,6 +3151,12 @@
 </EntityTemplate>
 
 <EntityTemplate Name="BallestadoraMusculosa" Guid="95999472-71b3-4a92-9d6a-da99378b3d2c" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="ed3a9f66-6522-40ba-8a8e-5ae9a2a74b23">
+    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
+    <Parameter Name="IsOptional" Value="false" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+    <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="d2ee0399-6e0b-4cdb-a1a1-a82ea3ccabd8" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
         <Parameter Name="DayRange" Guid="16a603e7-e2fc-4813-ac64-7f68cb8e370d" Value="0" Type="float"/>
         <Parameter Name="NightRange" Guid="bd04d36a-4c75-454d-8f72-faccd3ef6c3b" Value="0" Type="float"/>
@@ -3268,7 +3376,13 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="cbfb0d16-1705-4cb8-8407-87b494d3389e" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
     <Parameter Name="ChaseToCreatures" Guid="75d60863-085b-42e5-8cce-a68dcb2b8d09" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
-    <Parameter Name="ChaseToCreatureProbability" Guid="ebd03d7c-16b6-46ca-829f-0aa5f252dad2" Value="1.0" Type="float"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="ebd03d7c-16b6-46ca-829f-0aa5f252dad2" Value="999999999" Type="float"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="29eb12a4-e1b9-47af-9a0e-e2b78fa24f2d">
+    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
+    <Parameter Name="IsOptional" Value="false" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+    <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="d80ce8a8-5a44-47f4-900f-dcbd920f737a">
         <Parameter Name="Color" Guid="a3c9fb4e-f9cf-47d3-bea3-e04ba20760ed" Value="229,190,1" Type="Color"/>
@@ -3377,6 +3491,12 @@
     <Parameter Name="ChaseToCreatures" Guid="7986ad5c-f4a7-4371-a86b-e3b4cfb382ca" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
     <Parameter Name="ChaseToCreatureProbability" Guid="3e437545-1e03-42f6-a161-fa2a0fcce949" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="b7ba48d9-4dc5-41eb-a289-372d48893bc9">
+    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
+    <Parameter Name="IsOptional" Value="false" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+    <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
+</MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="12518712-1610-4d52-a09a-956e49d5e824">
         <Parameter Name="Color" Guid="e3a6da80-6c4f-4ce7-9c58-e69115d1d9c8" Value="168,17,17" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="94ac6333-cc45-42ac-ab2b-3e5e087d8383" Value="189" Type="int"/>
@@ -3387,6 +3507,12 @@
 </EntityTemplate>
 
 <EntityTemplate Name="Gumdramon" Guid="001bcd0a-686c-4552-9a14-2d7bda4efa32" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="27696516-ee72-4fbd-a0de-292074426948">
+    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
+    <Parameter Name="IsOptional" Value="false" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+    <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="ee0e0241-e296-4479-a98c-a6a68be582ce" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
         <Parameter Name="DayRange" Guid="bad9fca8-3f0b-4f2b-a303-1fefce32c5ce" Value="0" Type="float"/>
         <Parameter Name="NightRange" Guid="d37983a1-a56a-4814-9ceb-26ae6ddea29f" Value="5" Type="float"/>
@@ -3477,6 +3603,12 @@
 </EntityTemplate>
 
 <EntityTemplate Name="BetelGammamon" Guid="3a98e44b-5f2d-4bbb-8ddd-67bebe84e5be" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="ff0e9f21-441b-4f18-8cd9-887f785e0097">
+    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
+    <Parameter Name="IsOptional" Value="false" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+    <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="32a2bac6-4aac-4f99-b0d9-bdee4a798ece" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
         <Parameter Name="DayRange" Guid="7d8bc166-c5f6-4e4b-a2a6-925b0c0bb04d" Value="0" Type="float"/>
         <Parameter Name="NightRange" Guid="95740803-e649-4079-bfd3-f2de0eb467c6" Value="5" Type="float"/>
@@ -3584,6 +3716,12 @@
 </EntityTemplate>
 
 <EntityTemplate Name="Gaomon" Guid="7f3b2886-cb9c-4645-af3c-feb3ca375c8a" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="0729cb6b-17e6-45b8-a3da-25ad1831734a">
+    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
+    <Parameter Name="IsOptional" Value="false" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+    <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="42a78c06-d69b-44f8-9e34-23819a025cd3" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
         <Parameter Name="DayRange" Guid="4ba09003-1fa8-4d58-a62a-3885f3e32299" Value="0" Type="float"/>
         <Parameter Name="NightRange" Guid="22e249a5-cd88-4e73-9793-ca00c19b9a20" Value="5" Type="float"/>
@@ -3672,6 +3810,12 @@
 </Folder>
 
 <EntityTemplate Name="WalterZombie" Guid="5288697e-9260-479d-b3f8-6bda303ee665" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="301a4f52-7201-459a-8985-f2fe41af9882">
+    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
+    <Parameter Name="IsOptional" Value="false" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+    <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="dcabd3ea-2c9f-48e0-bf0f-7388af2cdc97" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
         <Parameter Name="DayRange" Guid="0bb7b225-106c-4c96-b3c9-bd81740d6291" Value="0" Type="float"/>
         <Parameter Name="NightRange" Guid="641b31f5-aeba-4197-9cb3-51d847d20463" Value="0" Type="float"/>
@@ -3889,9 +4033,15 @@
 </EntityTemplate>
 
 <EntityTemplate Name="AladinaCorrupta" Guid="b3c4d5e6-f7a8-4789-9012-3456789abcde" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="f15f2293-ddea-48ec-a8a4-52664d31beb2">
+    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
+    <Parameter Name="IsOptional" Value="false" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+    <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
+</MemberComponentTemplate>
 <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="360aec2d-1167-4297-915d-e6225ef1c369" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
     <Parameter Name="ChaseToCreatures" Guid="d567f808-3e30-4b54-977f-e7a6ea1d9d20" Value="Naomi, Ricardo, Paco, Barack, ElMarihuanero, ElMarihuaneroMamon, TommyVercetti, ClaudeSpeed, ArqueroPrisionero, BallestadoraMusculosa, CarlJohnson, BetelGammamon, Gaomon, Agumon, Veemon, Guilmon, WalterZombie, WalterZombieMamadisimo, FumadorQuimico, FumadorQuimicoBrawny, Conker, Beavis, Butt-Head, Shoutmon, Gumdramon, Bass_Sea, Seagull, Sparrow, Reindeer, Horse_White, Horse_White_Saddled, Horse_Chestnut, Horse_Chestnut_Saddled, Horse_Bay, Horse_Bay_Saddled, Horse_Palomino, Horse_Palomino_Saddled, Horse_Black, Horse_Black_Saddled, Camel, Camel_Saddled, Zebra, Wildboar, Bison, Bull_Brown, Bull_Black, Cow_Brown, Cow_Black, Bull_White, Duck, Pigeon, Raven, Giraffe, Moose, Donkey, Donkey_Saddled, Cassowary, Ostrich, Gnu, Werewolf, Ray_Yellow, Ray_Brown, Beluga,Hyena, Rhino, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite, Player" Type="string"/>
-    <Parameter Name="ChaseToCreatureProbability" Guid="73cfb9ef-0ba3-41ec-a3a0-8084749f1274" Value="1.0" Type="float"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="73cfb9ef-0ba3-41ec-a3a0-8084749f1274" Value="999999999" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="c4d5e6f7-a8b9-4890-9123-456789abcdef" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
         <Parameter Name="DayRange" Guid="d5e6f7a8-b9c0-4901-2345-6789abcdef01" Value="0" Type="float"/>
@@ -4232,7 +4382,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="c0e30f5e-09d6-4f4b-a4dd-8d2bf500e5b0" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
     <Parameter Name="ChaseToCreatures" Guid="f9e0e8ed-0954-4f0c-b663-c67786aca9e2" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
-    <Parameter Name="ChaseToCreatureProbability" Guid="6f6ba9ab-6f78-446a-af4e-a54cbe968c4a" Value="1.0" Type="float"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="6f6ba9ab-6f78-446a-af4e-a54cbe968c4a" Value="999999999" Type="float"/>
 </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="b4c5d6e7-f8a9-0345-0123-cdef01234567">
         <Parameter Name="Color" Guid="c5d6e7f8-a9b0-0456-1234-def012345678" Value="57,0,0" Type="Color"/>
@@ -4244,6 +4394,12 @@
 </EntityTemplate>
 
 <EntityTemplate Name="ElGuerrillero" Guid="5424f3d9-6e79-4eb9-a1a4-03ccd52d5286" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="ae0f3323-a07c-4e97-bca4-80b02ae4bcc5">
+    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
+    <Parameter Name="IsOptional" Value="false" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+    <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="4f9f69ca-88f7-4783-a686-8f72ea072829" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
         <Parameter Name="DayRange" Guid="8b2d4108-b0af-45d2-b699-6ef91971c9c8" Value="0" Type="float"/>
         <Parameter Name="NightRange" Guid="74379c34-89f4-4e98-8483-7281fd1e31ab" Value="0" Type="float"/>
@@ -4382,9 +4538,15 @@
 </EntityTemplate>
 
 <EntityTemplate Name="ElGuerrilleroTenebroso" Guid="d076df21-0ee8-4a9e-a85a-0953b32a77b9" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="d435c23d-48fb-4b49-b949-f9212cab2f2d">
+    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
+    <Parameter Name="IsOptional" Value="false" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+    <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
+</MemberComponentTemplate>
 <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="44f153ee-2e0d-4ec3-b376-8e08cf698a37" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
     <Parameter Name="ChaseToCreatures" Guid="9ff13090-3da1-459b-a85e-237f46d2b2dc" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
-    <Parameter Name="ChaseToCreatureProbability" Guid="59dba77c-4d22-438a-b10f-c81056405868" Value="1.0" Type="float"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="59dba77c-4d22-438a-b10f-c81056405868" Value="999999999" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="540da0fa-333d-4aa3-b750-2372bd253c9e" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
         <Parameter Name="DayRange" Guid="8a9e864e-2e75-40fb-aeb4-f07f793147f7" Value="0" Type="float"/>
@@ -4521,6 +4683,12 @@
 </EntityTemplate>
 
 <EntityTemplate Name="CamisasMorenas" Guid="c7d8e9f0-a1b2-4789-9012-3456789abcfa" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="dcda323a-b8d0-452e-8631-04ab82c594a5">
+    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
+    <Parameter Name="IsOptional" Value="false" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+    <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="d8e9f0a1-b2c3-4890-9123-456789abcdfb" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
         <Parameter Name="DayRange" Guid="e9f0a1b2-c3d4-4901-2345-6789abcdf003" Value="0" Type="float"/>
         <Parameter Name="NightRange" Guid="f0a1b2c3-d4e5-5012-3456-789abcdf0125" Value="0" Type="float"/>
@@ -4633,6 +4801,12 @@
 </EntityTemplate>
 
 <EntityTemplate Name="ZombieRepetidor" Guid="da9a1c74-142c-4b2c-b61f-5c8ccef9f658" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="5c1519de-3306-4cc6-a817-46bd601da227">
+    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
+    <Parameter Name="IsOptional" Value="false" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+    <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="0e162231-badf-4572-8ff2-ed1cb3e5e42b" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
         <Parameter Name="DayRange" Guid="0fb1841e-006d-4c8c-b7d2-06dbf11fa35d" Value="0" Type="float"/>
         <Parameter Name="NightRange" Guid="4a91f09d-f273-43e3-a56e-1184d2ed8b5d" Value="0" Type="float"/>
@@ -4763,6 +4937,12 @@
 </EntityTemplate>
 
 <EntityTemplate Name="Sparkster" Guid="f7e2a9c3-8d1b-4f5a-9b2c-6a3e7b1d4c0f" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="604b3a9b-559e-4d3d-a2ae-7ce21cd33380">
+    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
+    <Parameter Name="IsOptional" Value="false" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+    <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
+</MemberComponentTemplate>
   <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="a5b6c7d8-e9f1-4a2b-8c3d-5f6e7a9b1c2d" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
     <Parameter Name="DayRange" Guid="c8d9e0f1-2a3b-4c5d-8e7f-9a1b2c3d4e5f" Value="0" Type="float"/>
     <Parameter Name="NightRange" Guid="8829b6fc-a7ac-43e7-930f-50f4cc10d97f" Value="0" Type="float"/>
@@ -4888,6 +5068,12 @@
 </EntityTemplate>
 
 <EntityTemplate Name="Tulio" Guid="5ff2501e-8568-4f85-a1d7-cb30437148f1" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="5ff57fcb-7beb-4f20-959d-b2e65cad1568">
+    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
+    <Parameter Name="IsOptional" Value="false" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+    <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="49149c53-56ce-4163-bf87-95773986851f" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
         <Parameter Name="DayRange" Guid="1aff5bf1-eb10-4a81-8d59-b516ab113e4f" Value="0" Type="float"/>
         <Parameter Name="NightRange" Guid="0637edd9-3f13-404c-bd69-f2c1dd16e85d" Value="0" Type="float"/>
@@ -5006,6 +5192,12 @@
 </EntityTemplate>
 
 <EntityTemplate Name="Brayan" Guid="ecfa50bc-836c-4103-a3f7-0249aa579ea2" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="50508180-4eb4-4424-8531-79d6e89d5364">
+    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
+    <Parameter Name="IsOptional" Value="false" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+    <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="e1b6d904-4e9c-40f9-810e-2996c8bb6fa5" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
         <Parameter Name="DayRange" Guid="e26a80fd-6ab2-4abc-a883-a3f8727e1be1" Value="0" Type="float"/>
         <Parameter Name="NightRange" Guid="b3a21349-83e2-401d-b2c1-bcbca8d862c6" Value="0" Type="float"/>
@@ -5124,6 +5316,12 @@
 </EntityTemplate>
 
 <EntityTemplate Name="Richard" Guid="2454e93e-9dfc-4388-ac02-e777deb8ab51" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="3f19d950-fa57-465f-983a-425e07d667f8">
+    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
+    <Parameter Name="IsOptional" Value="false" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+    <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
+</MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="c10fc862-092d-4056-b2c4-005b882ebba0" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
                 <Parameter Name="DayRange" Guid="fcd16af8-0b9b-45ae-979c-43ebec1bb59b" Value="0" Type="float"/>
                 <Parameter Name="NightRange" Guid="29c25c6e-ec6f-4353-b4e8-29cc3572551f" Value="0" Type="float"/>
