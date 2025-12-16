@@ -18,7 +18,6 @@ namespace Game
 		private SubsystemNoise m_subsystemNoise;
 		private SubsystemTerrain m_subsystemTerrain;
 		private ComponentInventory m_componentInventory;
-		private ComponentPoisonInfected m_componentPoisonInfected;
 
 		// Índice del bloque FlameThrower
 		private int m_flameThrowerBlockIndex;
@@ -39,41 +38,41 @@ namespace Game
 		public int BurstCount = 15;
 		public float SpreadAngle = 15f;
 
-		// Tipos de bala
+		// Tipos de bala disponibles - INCLUYENDO VENENO
 		private FlameBulletBlock.FlameBulletType[] m_availableBulletTypes = new FlameBulletBlock.FlameBulletType[]
 		{
 			FlameBulletBlock.FlameBulletType.Flame,
 			FlameBulletBlock.FlameBulletType.Poison
 		};
 
-		// Estado
+		// Estado de animación
 		private bool m_isAiming = false;
 		private bool m_isFiring = false;
 		private bool m_isCooldown = false;
+		private bool m_isReady = true; // NUEVO: Indica si puede comenzar nuevo ciclo
 		private double m_animationStartTime;
 		private double m_burstStartTime;
+		private double m_cooldownStartTime; // NUEVO: Tiempo de inicio del cooldown
 		private int m_bulletsFired = 0;
 		private Random m_random = new Random();
 		private float m_soundVolume = 0f;
 		private bool m_hammerSoundPlayed = false;
 		private int m_currentBulletTypeIndex = 0;
-		private bool m_canShoot = true;
 
 		// UpdateOrder
 		public int UpdateOrder
 		{
-			get { return 0; }
+			get
+			{
+				return 0;
+			}
 		}
 
 		public override float ImportanceLevel
 		{
 			get
 			{
-				// Verificar si está envenenado
-				bool isPoisoned = (this.m_componentPoisonInfected != null && this.m_componentPoisonInfected.IsInfected);
-				bool canShootNow = !isPoisoned && HasFlameThrowerEquipped();
-
-				if (canShootNow)
+				if (HasFlameThrowerEquipped())
 				{
 					return 0.5f;
 				}
@@ -87,7 +86,7 @@ namespace Game
 			this.MaxDistance = valuesDictionary.GetValue<float>("MaxDistance", 20f);
 			this.AimTime = valuesDictionary.GetValue<float>("AimTime", 0.5f);
 			this.BurstTime = valuesDictionary.GetValue<float>("BurstTime", 2f);
-			this.CooldownTime = valuesDictionary.GetValue<float>("CooldownTime", 0.5f);
+			this.CooldownTime = valuesDictionary.GetValue<float>("CooldownTime", 1f);
 			this.FireSound = valuesDictionary.GetValue<string>("FireSound", "Audio/Flamethrower/Flamethrower Fire");
 			this.HammerSound = valuesDictionary.GetValue<string>("HammerSound", "Audio/HammerCock");
 			this.FireSoundDistance = valuesDictionary.GetValue<float>("FireSoundDistance", 30f);
@@ -108,7 +107,6 @@ namespace Game
 			this.m_subsystemNoise = base.Project.FindSubsystem<SubsystemNoise>(true);
 			this.m_subsystemTerrain = base.Project.FindSubsystem<SubsystemTerrain>(true);
 			this.m_componentInventory = base.Entity.FindComponent<ComponentInventory>(true);
-			this.m_componentPoisonInfected = base.Entity.FindComponent<ComponentPoisonInfected>();
 
 			this.m_flameThrowerBlockIndex = BlocksManager.GetBlockIndex<FlameThrowerBlock>(false, false);
 			this.m_currentBulletTypeIndex = m_random.Int(0, m_availableBulletTypes.Length);
@@ -116,89 +114,61 @@ namespace Game
 
 		public void Update(float dt)
 		{
-			// Verificar si el NPC está vivo
 			if (this.m_componentCreature.ComponentHealth.Health <= 0f)
 			{
-				ResetAnimations();
+				this.ResetAnimations();
 				return;
 			}
 
-			// Verificar si puede disparar (no envenenado)
-			bool isPoisoned = (this.m_componentPoisonInfected != null && this.m_componentPoisonInfected.IsInfected);
-
-			// Actualizar m_canShoot basado en el estado actual de envenenamiento
-			this.m_canShoot = !isPoisoned;
-
-			if (isPoisoned)
-			{
-				// Si está envenenado, huir y no disparar
-				ResetAnimations();
-				return;
-			}
-
-			// Verificar si tiene un lanzallamas equipado
 			if (!HasFlameThrowerEquipped())
 			{
-				ResetAnimations();
+				this.ResetAnimations();
 				return;
 			}
 
-			// Verificar si tiene un objetivo
 			if (this.m_componentChaseBehavior.Target == null)
 			{
-				ResetAnimations();
+				this.ResetAnimations();
 				return;
 			}
 
 			float distance = Vector3.Distance(this.m_componentCreature.ComponentBody.Position,
 											this.m_componentChaseBehavior.Target.ComponentBody.Position);
 
-			// Solo activar si está dentro del rango y puede disparar
-			if (distance <= this.MaxDistance && this.m_canShoot)
+			// LÓGICA CORREGIDA: Solo comenzar nuevo ciclo si está listo y en rango
+			if (distance <= this.MaxDistance && this.m_isReady)
 			{
 				if (!this.m_isAiming && !this.m_isFiring && !this.m_isCooldown)
 				{
-					StartAiming();
+					this.StartAiming();
 				}
 			}
-			else
+			else if (distance > this.MaxDistance)
 			{
-				ResetAnimations();
+				// Si sale del rango, resetear todo
+				this.ResetAnimations();
+				this.m_isReady = true; // Volver a estar listo
 				return;
 			}
 
-			// RESTAURAR EL MOVIMIENTO MIENTRAS DISPARA
-			// Asegurarse de que el NPC siga moviéndose hacia el objetivo mientras dispara
-			if ((this.m_isAiming || this.m_isFiring) && this.m_componentChaseBehavior.Target != null)
-			{
-				// Permitir que el ComponentChaseBehavior continúe funcionando
-				// Esto hará que el NPC siga persiguiendo al objetivo mientras apunta/dispara
-				this.m_componentChaseBehavior.IsActive = true;
-
-				// También podemos forzar un movimiento adicional si es necesario
-				Vector3 directionToTarget = Vector3.Normalize(this.m_componentChaseBehavior.Target.ComponentBody.Position -
-															this.m_componentCreature.ComponentBody.Position);
-
-				// Aplicar un impulso hacia el objetivo mientras dispara
-				// Convertir Vector3 a Vector2 para WalkOrder (solo componentes X y Z)
-				this.m_componentCreature.ComponentLocomotion.WalkOrder = new Vector2?(new Vector2(directionToTarget.X, directionToTarget.Z));
-			}
-
-			// Resto de la lógica de animación y disparo...
+			// MÁQUINA DE ESTADOS MEJORADA
 			if (this.m_isAiming)
 			{
-				ApplyAimingAnimation(dt);
+				this.ApplyAimingAnimation(dt);
+
+				// Esperar tiempo de apuntado
 				if (this.m_subsystemTime.GameTime - this.m_animationStartTime >= (double)this.AimTime)
 				{
-					StartFiring();
+					this.StartFiring();
 				}
 			}
 			else if (this.m_isFiring)
 			{
-				ApplyFiringAnimation(dt);
+				this.ApplyFiringAnimation(dt);
 				double burstElapsed = this.m_subsystemTime.GameTime - this.m_burstStartTime;
-				float timeLeft = (float)((double)this.BurstTime - burstElapsed);
 
+				// Control de volumen de sonido
+				float timeLeft = (float)((double)this.BurstTime - burstElapsed);
 				if (timeLeft < 0.3f)
 				{
 					this.m_soundVolume = MathUtils.Lerp(0f, 1f, timeLeft / 0.3f);
@@ -208,6 +178,7 @@ namespace Game
 					this.m_soundVolume = 1f;
 				}
 
+				// Disparar balas durante la ráfaga
 				if (burstElapsed < (double)this.BurstTime)
 				{
 					int expectedBullets = (int)(burstElapsed * (double)((float)this.BurstCount / this.BurstTime));
@@ -215,29 +186,47 @@ namespace Game
 					{
 						if (!this.m_hammerSoundPlayed && this.m_bulletsFired == 0)
 						{
-							PlayHammerSound();
+							this.PlayHammerSound();
 							this.m_hammerSoundPlayed = true;
 						}
-						ShootFlame();
+						this.ShootFlame();
 						this.m_bulletsFired++;
 					}
 				}
 				else
 				{
+					// FIN DE LA RÁFAGA - Iniciar cooldown
 					this.m_isFiring = false;
-					StartCooldown();
+					this.StartCooldown();
 				}
 			}
 			else if (this.m_isCooldown)
 			{
-				ApplyCooldownAnimation(dt);
-				if (this.m_subsystemTime.GameTime - this.m_animationStartTime >= (double)this.CooldownTime)
+				this.ApplyCooldownAnimation(dt);
+
+				// VERIFICAR COOLDOWN TIME - CORRECCIÓN IMPORTANTE
+				double cooldownElapsed = this.m_subsystemTime.GameTime - this.m_cooldownStartTime;
+
+				if (cooldownElapsed >= (double)this.CooldownTime)
 				{
+					// COOLDOWN COMPLETADO
 					this.m_isCooldown = false;
 
+					// Cambiar tipo de bala para la próxima ráfaga
 					this.m_currentBulletTypeIndex = (this.m_currentBulletTypeIndex + 1) % m_availableBulletTypes.Length;
 
-					StartAiming();
+					// Resetear estado para permitir nuevo ciclo
+					this.m_isReady = true;
+
+					// Verificar si todavía hay objetivo en rango
+					float currentDistance = Vector3.Distance(this.m_componentCreature.ComponentBody.Position,
+														  this.m_componentChaseBehavior.Target.ComponentBody.Position);
+
+					if (currentDistance <= this.MaxDistance)
+					{
+						// Comenzar nuevo ciclo inmediatamente
+						this.StartAiming();
+					}
 				}
 			}
 		}
@@ -265,12 +254,13 @@ namespace Game
 
 		private void StartAiming()
 		{
-			if (!HasFlameThrowerEquipped() || !this.m_canShoot)
+			if (!HasFlameThrowerEquipped())
 			{
-				ResetAnimations();
+				this.ResetAnimations();
 				return;
 			}
 
+			this.m_isReady = false; // Ya no está listo para nuevo ciclo
 			this.m_isAiming = true;
 			this.m_isFiring = false;
 			this.m_isCooldown = false;
@@ -297,9 +287,9 @@ namespace Game
 
 		private void StartFiring()
 		{
-			if (!HasFlameThrowerEquipped() || !this.m_canShoot)
+			if (!HasFlameThrowerEquipped())
 			{
-				ResetAnimations();
+				this.ResetAnimations();
 				return;
 			}
 
@@ -314,9 +304,9 @@ namespace Game
 
 		private void ApplyFiringAnimation(float dt)
 		{
-			if (!HasFlameThrowerEquipped() || !this.m_canShoot)
+			if (!HasFlameThrowerEquipped())
 			{
-				ResetAnimations();
+				this.ResetAnimations();
 				return;
 			}
 
@@ -345,12 +335,11 @@ namespace Game
 				if (this.UseRecoil && this.m_componentChaseBehavior.Target != null)
 				{
 					Vector3 direction = Vector3.Normalize(this.m_componentChaseBehavior.Target.ComponentBody.Position - this.m_componentCreature.ComponentBody.Position);
-					// Reducir el retroceso para no afectar tanto el movimiento
-					this.m_componentCreature.ComponentBody.ApplyImpulse(-direction * 0.1f * dt);
+					this.m_componentCreature.ComponentBody.ApplyImpulse(-direction * 0.3f * dt);
 				}
 			}
 
-			if (this.m_soundVolume > 0.01f && !string.IsNullOrEmpty(this.FireSound) &&
+			if (this.m_soundVolume > 0.01f &&
 				this.m_subsystemTime.GameTime - this.m_burstStartTime < (double)this.BurstTime - 0.1)
 			{
 				string soundToPlay = (m_availableBulletTypes[m_currentBulletTypeIndex] == FlameBulletBlock.FlameBulletType.Flame) ?
@@ -376,7 +365,7 @@ namespace Game
 			this.m_isAiming = false;
 			this.m_isFiring = false;
 			this.m_isCooldown = true;
-			this.m_animationStartTime = this.m_subsystemTime.GameTime;
+			this.m_cooldownStartTime = this.m_subsystemTime.GameTime; // REGISTRAR INICIO DEL COOLDOWN
 			this.m_soundVolume = 0f;
 		}
 
@@ -384,19 +373,28 @@ namespace Game
 		{
 			if (this.m_componentModel != null)
 			{
-				float cooldownRatio = (float)((this.m_subsystemTime.GameTime - this.m_animationStartTime) / (double)this.CooldownTime);
+				double cooldownElapsed = this.m_subsystemTime.GameTime - this.m_cooldownStartTime;
+				float cooldownRatio = (float)(cooldownElapsed / (double)this.CooldownTime);
 
-				this.m_componentModel.AimHandAngleOrder = MathUtils.Lerp(1.1f, 0.7f, cooldownRatio);
+				// Animación suave durante el cooldown
+				this.m_componentModel.AimHandAngleOrder = MathUtils.Lerp(1.1f, 0.7f, MathUtils.Saturate(cooldownRatio));
 				this.m_componentModel.InHandItemOffsetOrder = new Vector3(
 					-0.12f,
-					-0.05f - 0.08f * cooldownRatio,
-					0.1f - 0.05f * cooldownRatio
+					-0.05f - 0.08f * MathUtils.Saturate(cooldownRatio),
+					0.1f - 0.05f * MathUtils.Saturate(cooldownRatio)
 				);
 				this.m_componentModel.InHandItemRotationOrder = new Vector3(
-					-1.3f + 0.4f * cooldownRatio,
+					-1.3f + 0.4f * MathUtils.Saturate(cooldownRatio),
 					-0.2f,
 					0f
 				);
+
+				// Si el cooldown está por terminar, mostrar que está casi listo
+				if (cooldownRatio > 0.8f)
+				{
+					float readyPulse = 0.1f * MathUtils.Sin(cooldownRatio * 20f);
+					this.m_componentModel.InHandItemOffsetOrder += new Vector3(0f, readyPulse, 0f);
+				}
 			}
 		}
 
@@ -444,7 +442,7 @@ namespace Game
 
 		private void ShootFlame()
 		{
-			if (!this.m_canShoot || !HasFlameThrowerEquipped() || this.m_componentChaseBehavior.Target == null)
+			if (!HasFlameThrowerEquipped() || this.m_componentChaseBehavior.Target == null)
 			{
 				return;
 			}
@@ -471,13 +469,28 @@ namespace Game
 					int bulletData = FlameBulletBlock.SetBulletType(0, currentBulletType);
 					int blockValue = Terrain.MakeBlockValue(flameBulletIndex, 0, bulletData);
 
-					this.m_subsystemProjectiles.FireProjectile(
+					var projectile = this.m_subsystemProjectiles.FireProjectile(
 						blockValue,
 						eyePosition + adjustedDirection * 0.3f,
 						adjustedDirection * this.FlameSpeed,
 						Vector3.Zero,
 						this.m_componentCreature
 					);
+
+					// Configurar acción del proyectil
+					if (projectile != null)
+					{
+						projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
+
+						if (currentBulletType == FlameBulletBlock.FlameBulletType.Flame)
+						{
+							projectile.IsIncendiary = true;
+						}
+						else if (currentBulletType == FlameBulletBlock.FlameBulletType.Poison)
+						{
+							projectile.IsIncendiary = false;
+						}
+					}
 
 					Vector3 particlePosition = eyePosition + adjustedDirection * 0.3f;
 
@@ -490,7 +503,7 @@ namespace Game
 								false
 							);
 						}
-						else // Poison
+						else
 						{
 							this.m_subsystemParticles.AddParticleSystem(
 								new PoisonSmokeParticleSystem(this.m_subsystemTerrain, particlePosition, adjustedDirection),
