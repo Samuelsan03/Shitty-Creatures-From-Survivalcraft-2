@@ -1,5 +1,5 @@
 {
-  "MusicToggleButton": "Music",
+  "MusicToggleButton": "Music\n",
   "MusicOn": "ON",
   "MusicOff": "OFF",
   "MusicEnabled": "Music enabled",
@@ -21,123 +21,193 @@
   "Poisoned": "Poisoned",
   "HP": "HP",
   "Database": {
-  "DisplayName": {
-    "Naomi": "Naomi",
-    "Ricardo": "Ricardo",
-    "Paco": "Paco",
-    "Barack": "Barack",
-    "ElMarihuanero": "El Marihuanero",
-    "ElMarihuaneroMamon": "El Marihuanero Mamón",
-    "FumadorQuimico": "Fumador Químico",
-    "FumadorQuimicoBrawny": "Fumador Químico Brawny",
-    "TommyVercetti": "Tommy Vercetti",
-    "ClaudeSpeed": "Claude Speed",
-    "CarlJohnson": "Carl Johnson",
-    "LaMuerteX": "La Muerte X",
-    "ElSenorDeLasTumbasMoradas": "El Señor de las Tumbas Moradas",
-    "LiderCalavericoSupremo:0": "Líder Calavérico Supremo",
-    "LiderCalavericoSupremoAlfa": "Líder Calavérico Supremo Alfa",
-    "Sparkster": "Sparkster",
-    "ElArquero": "El Arquero",
-    "ElBallestador": "El Ballestador",
-    "ArqueroPrisionero": "Arquero Prisionero",
-    "BallestadoraMusculosa": "Ballestadora Musculosa",
-    "Conker": "Conker",
-    "Beavis": "Beavis",
-    "Butt-Head": "Butt-Head",
-    "HombreLava": "Hombre Lava",
-    "HombreAgua": "Hombre Agua",
-    "Shoutmon": "Shoutmon",
-    "Veemon": "Veemon",
-    "Gaomon": "Gaomon",
-    "Agumon": "Agumon",
-    "Impmon": "Impmon",
-    "Gumdramon": "Gumdramon",
-    "Guilmon": "Guilmon",
-    "BetelGammamon": "BetelGammamon",
-    "HeadcrabBloodyHuman": "Headcrab Bloody Human",
-    "Tulio": "Tulio",
-    "Brayan": "Brayan",
-    "AladinaCorrupta": "Aladina Corrupta",
-    "ElGuerrillero": "El Guerrillero",
-    "ElGuerrilleroTenebroso": "El Guerrillero Tenebroso",
-    "WalterZombie": "Walter Zombie",
-    "WalterZombieMamadisimo": "Walter Zombie Mamadísimo",
-    "ZombieRepetidor": "Zombie Repetidor",
-    "CamisasMorenas": "Camisas Morenas"
+    "DisplayName": {
+      "Naomi": "Naomi",
+      "Ricardo": "Ricardo",
+      "Paco": "Paco",
+      "Barack": "Barack",
+      "ElMarihuanero": "El Marihuanero",
+      "ElMarihuaneroMamon": "El Marihuanero Mamón",
+      "FumadorQuimico": "Fumador Químico",
+      "FumadorQuimicoBrawny": "Fumador Químico Brawny",
+      "TommyVercetti": "Tommy Vercetti",
+      "ClaudeSpeed": "Claude Speed",
+      "CarlJohnson": "Carl Johnson",
+      "LaMuerteX": "La Muerte X",
+      "ElSenorDeLasTumbasMoradas": "El Señor de las Tumbas Moradas",
+      "LiderCalavericoSupremo:0": "Líder Calavérico Supremo",
+      "LiderCalavericoSupremoAlfa": "Líder Calavérico Supremo Alfa",
+      "Sparkster": "Sparkster",
+      "ElArquero": "El Arquero",
+      "ElBallestador": "El Ballestador",
+      "ArqueroPrisionero": "Arquero Prisionero",
+      "BallestadoraMusculosa": "Ballestadora Musculosa",
+      "Conker": "Conker",
+      "Beavis": "Beavis",
+      "Butt-Head": "Butt-Head",
+      "HombreLava": "Hombre Lava",
+      "HombreAgua": "Hombre Agua",
+      "Shoutmon": "Shoutmon",
+      "Veemon": "Veemon",
+      "Gaomon": "Gaomon",
+      "Agumon": "Agumon",
+      "Impmon": "Impmon",
+      "Gumdramon": "Gumdramon",
+      "Guilmon": "Guilmon",
+      "BetelGammamon": "BetelGammamon",
+      "HeadcrabBloodyHuman": "Headcrab Bloody Human",
+      "Tulio": "Tulio",
+      "Brayan": "Brayan",
+      "AladinaCorrupta": "Aladina Corrupta",
+      "ElGuerrillero": "El Guerrillero",
+      "ElGuerrilleroTenebroso": "El Guerrillero Tenebroso",
+      "WalterZombie": "Walter Zombie",
+      "WalterZombieMamadisimo": "Walter Zombie Mamadísimo",
+      "ZombieRepetidor": "Zombie Repetidor",
+      "CamisasMorenas": "Camisas Morenas",
+      "Richard": "Richard"
+    },
+    "Description": {
+      "Naomi": "Naomi (ナオミ). A mystery to solve. She is Japanese, but… is she truly human or robotic? How did she arrive on the island of Survivalcraft 2? A tremendous mystery. It begins in Kyoto, with an inventor named Takachi (高智). In 1999, Naomi was created because Takachi needed an automatic assistant for biological scientific research. The prototype tests went well, and the final result looked human. Since then, the robot has been successful in performing both complex and simple tasks. One day, Takachi received a research project from Kyoto University to investigate new species and rare places outside of Japan. Needing companionship, he chose Naomi as his partner. Halfway across the sea, Takachi accidentally dropped his humanoid robot Naomi into the water, causing panic. He feared the robot was damaged due to its electrical components, but what he didn’t know was that Naomi was water-resistant. This led Naomi to a mysterious island or large continent. From that day, her life as a humanoid robot changed. How will she survive without resources? Previously, she had practiced survival skills during their research trips. Will she need the player’s help? You’ll find out in the game!",
+      "Ricardo": "Ricardo is an ordinary civilian from Tlatelolco, born on June 4, 1998. Since childhood, he enjoyed walking like a playful dog and felt a deep connection to nature, always dreaming of traveling to islands. In 2021, the University of Tlatelolco offered him a place in a scientific-biological research program to explore islands outside of Mexico. He seized the opportunity and joined the expedition. During the journey across the Pacific Ocean, violent waves and strong winds endangered the crew. Ricardo was swept away by the wind into the water, and his companions, seeing him far away without a lifebuoy, believed he had drowned. Yet fortune favored him: the currents carried him to an unknown island, one not marked on the Pacific maps. Awakening there, Ricardo had to find ways to survive. One night, while exploring, he encountered Naomi, a humanoid robot who had faced a similar fate. From that moment, they became friends.",
+      "Paco": "What the hell did that man come out of, it seems that the aliens brought him. This was a phrase said by a human who saw him in a city somewhere in Mexico. Paco is a human-alien created by a Martian race in 1968, when the Soviet Union launched another expedition to compete against the United States. During that mission, some crew members saw a red light coming from another planet and traveled to investigate beyond the Moon. What they discovered was the creation of a being almost human but with alien traits, possessing intelligence superior to a normal human. Things changed in 2001, when Russia (no longer the USSR after its dissolution in 1991) entered into war with the United States due to a misunderstanding: supposed terrorists had destroyed one of their ships near Mars. A solar conflict erupted, reminiscent of Star Wars, and Paco’s alien creators saw their home planet under attack. Fearing destruction, they armed themselves, and both nations also had to face them. In a mishap, Russia shot an alien holding a ship’s control device, breaking it and injuring the alien. This caused the ship to drift away automatically, carrying Paco and his two clones. They eventually arrived on Earth, landing on a mysterious, unidentified island in the Pacific Ocean—the same island where Naomi and Ricardo had fallen. There, they sought ways to survive. Later, Paco encountered Naomi and Ricardo. At first, they thought each other threats, but they became friends after Paco demonstrated survival skills far more advanced than theirs.",
+      "Barack": "Barack, as some Russians and Americans affirmed after the alien war of 2001, was said to be a twin brother similar to Paco. Unlike Paco, Barack was a devoted follower of Barack Obama, who would later become President of the United States in 2008 and take office in January 2009. In the game’s world, you can hear references to Obama, showing that Barack is his number one fan. Barack, Paco’s twin brother, arrived on one of the mysterious islands where Paco had fallen, though his origin dates back to July 7, 1980. He was created by the same alien race as Paco, but the reason he was brought to Earth was different: the aliens sought to recover their lost child, yet instead they remained. This forged a deep connection between Barack and Paco. Like Paco, Barack had to survive on the unknown island, facing the same trials of nature and destiny. Eventually, he too encountered Naomi and Ricardo, and although suspicion marked their first meeting, they became allies after proving their survival skills and intelligence. As a curiosity, Barack later founded the group 'Alianza', dedicated to searching for survivors who fall onto the mysterious Pacific islands, while scientists—especially Russians and Americans—investigate obsessively what these islands are called and where they are located.",
+      "ElMarihuanero": "Known as 'El Marihuanero', he is remembered as Paco’s missing link brother, a mysterious survivor whose origins trace back to the same alien experiments that created Paco. His strength is moderate compared to Paco’s, but his cunning and adaptability make him a formidable presence on the islands. The nickname 'El Marihuanero' was not given lightly: during his wanderings across the Pacific islands, he discovered wild cannabis plants growing in hidden valleys. Fascinated by their properties, he began cultivating them and claimed they gave him clarity, endurance, and a strange bond with nature. This obsession eventually tied him symbolically to Mexico, where cannabis culture and folklore became part of his identity. Over time, he also embraced the Rastafari movement, adopting its philosophy of unity, resistance, and spiritual connection, and looked to Jamaica as a cultural homeland. Legends say that he carried seeds wherever he traveled, planting them as markers of his journey. Though at first distrusted by Naomi, Ricardo, and Paco, he proved his loyalty and resourcefulness, showing survival skills that rivaled his brother’s. His blows were not as strong as Paco’s, but his strategies and resilience often turned the tide in desperate situations. Over time, El Marihuanero became a figure of curiosity and myth, remembered not only for his alien-human heritage but also for the plants, the Rastafari ideals, and the Jamaican spirit that defined his name and destiny on the mysterious Pacific islands.",
+      "ElMarihuaneroMamon": "Another missing link brother of Paco and twin brother of El Marihuanero, this one is more muscular and physically imposing. His raw attack power is lower than Paco’s, but his endurance and brute strength make him a dangerous opponent. Unlike his twin, he dedicated himself to mastering the musket. His story begins when he discovered an abandoned colonial outpost on one of the mysterious Pacific islands. Inside, he found old weapon crates and manuals left behind by explorers and soldiers from centuries past. Fascinated, he spent years studying the mechanisms of the musket, practicing its loading, aiming, and firing until he became an expert marksman. His discipline and patience turned him into a skilled hunter and defender, able to strike with precision even under harsh conditions. Survivors who encountered him learned to fear his musket more than his fists, for his shots could tear enemies apart within seconds. Legends say he carried the musket everywhere, treating it as both weapon and symbol of survival. Eventually, he crossed paths with Paco, Naomi, and Ricardo, and though suspicion marked their first meetings, his mastery of firearms earned him respect among the group.",
+      "FumadorQuimico": "Her outfit suggests she has experience in chemical and toxic environments. Although she looks threatening, she is part of the Alianza group meaning she supports her team when attacked or harmed by enemies. She possesses a mysterious hidden power: during a full moon or new moon, she transforms into a giant muscular mutant (similar to a Tank), gaining enhanced strength, greater resistance, and other abilities.",
+      "FumadorQuimicoBrawny": "More powerful, stronger than its original form, it will only be available on a full moon or new moon",
+      "TommyVercetti": "A violent and ambitious figure in the criminal world, known for his rise from the Forelli family in Liberty City. Originally of Italian descent, he now resides in Vice City, Florida, where he built his own empire after a failed drug deal in 1986. Despite his reputation, he is also part of the Alliance group, supporting and defending his allies when threatened by rival gangs or hostile forces.",
+      "ClaudeSpeed": "A silent and ruthless criminal, known for his efficiency and lack of mercy. Born in Liberty City, he rose through the ranks of the criminal underworld, becoming a feared figure in the city. Despite his violent nature, he is part of the Alliance group, supporting and defending his allies when threatened by rival gangs or hostile forces.",
+      "LaMuerteX": "La Muerte X emerged from the violet infernal shadows, with skin and behavior forged in darkness. He is far from friendly his hostile nature drives him to destroy anything in his path. Approach him, and he will hunt you relentlessly… until death. His powers range from moderately strong physical strikes to deadly flame attacks; if you try to escape, he will launch fireballs at you. In the worst case, he hurls magical rocks that inflict devastating damage.",
+      "ElSenorDeLasTumbasMoradas": "What a surprise, I suppose. El Señor De Las Tumbas Moradas is the closest companion of La Muerte X they’re always together, always helping one another. But El Señor De Las Tumbas Moradas has received some mysterious upgrades beyond his friend. What kind of power does he hide? What attacks might he unleash? Could he summon something darker when threatened? That’s for you to find out. (Let’s just say you’ll understand once you face him yourself.) But be warned: if you strike him, he won’t forgive you. He’ll drag you down into the purple tombs and from that moment on, you’ll become his eternal slave in the shadows. He won’t be your friend not because he hates you, but because friendship was never part of his design.",
+      "LiderCalavericoSupremo": "Who is the true ruler of darkness and tombs? It's none other than Líder Calavérico Supremo the highest and most fearsome leader of this world. At first glance, he may seem underwhelming, with attacks that appear weak... but don't be fooled. His speed rivals that of a cheetah, and when the full moon or new moon rises, he transforms into a monstrous force of nature. His mutated form might remind you of a Tank. Could he be a worthy rival to Fumador Químico Brawny in terms of brute strength, raw impact, and sheer chaos? That's a question only battle can answer.",
+      "LiderCalavericoSupremoAlfa": "He’s not just a threat he’s a declaration of war. Líder Calavérico Supremo Alfa is the mid-tier juggernaut of the tomb realm, a refined beast forged from chaos and vengeance. Stronger than most, faster than many, and meaner than you’d expect, he’s the kind of enemy that doesn’t wait for introductions. His attacks? Heavy and relentless. His speed? Almost unnatural. And when the moon shifts be it full or new he mutates into something far more dangerous. Some say his form resembles a Tank. Others wonder if he’s meant to rival Fumador Químico Brawny in raw strength, impact, and destruction. Want to know for sure? Then set the stage and watch them clash. Just don’t try it in Creative Mode—that’s like watching a storm from behind bulletproof glass. Líder Calavérico Supremo Alfa is not your ally. He’s not here to talk, negotiate, or join your cause. He is your enemy. And if you’re not ready… he’ll make sure you never get the chance to be.",
+      "Conker": "Conker is a squirrel with a cute appearance but a cynical, opportunistic, and shameless personality. While most people know him from Conker’s Bad Fur Day, his origin was very different: he first appeared in 1997 as a child-friendly character and starred in a beta project called Twelve Tales: Conker 64, originally designed as a colorful game for kids. That concept was later scrapped and radically transformed. The result is a character who drinks, insults, manipulates, and acts purely out of self-interest. He doesn’t seek justice, adventure, or redemption he survives simply because he does, with no clear purpose, no ethics, and no empathy. His speech is crude and mocking, and his attitude reflects total indifference to the chaos around him. Conker isn’t a hero or a villain; he’s a survivor who crawls forward for his own gain, completely at odds with his cartoonish design.",
+      "Beavis": "Beavis is a teenage boy with a nervous laugh, broken speech, and a volatile personality. He’s impulsive, emotionally unstable, and easily distracted, often triggered by fire, violence, or loud music. He speaks in short, repetitive phrases and acts without thinking, showing no awareness of consequences. Controversially, Beavis became the focus of criticism after the episode 'Comedians' aired in 1993, when his fascination with fire was linked by commentators and comedians to real-life incidents, sparking debates about whether the show irresponsibly glorified dangerous behavior or simply reflected absurd teenage impulses. Though he often follows Butt-Head, he’s not just a sidekick; he has unpredictable outbursts, especially when he transforms into his hyperactive alter ego 'Cornholio,' obsessing over toilet paper and speaking incoherently. Beavis doesn’t seek meaning, control, or purpose. He survives simply because he does, unaware of the damage he causes or the world around him.",
+      "Butt-Head": "Butt-Head is a teenage boy with a deep, slow laugh, slurred speech, and a smug personality. He’s lazy, sarcastic, and often cruel, showing little empathy or intelligence. He speaks in short, mocking phrases and usually manipulates situations to amuse himself, rarely thinking beyond the moment. Controversially, Butt-Head became the center of debate after the episode 'Comedians' aired in 1993, when critics and comedians argued whether his character represented sharp satire of teenage apathy or simply glorified stupidity and crude humor, raising questions about comedy’s responsibility in shaping youth culture. Though he often leads Beavis, he’s not just a leader; he has his own reckless impulses, especially when he provokes chaos for amusement, laughing at pain or destruction. Butt-Head doesn’t seek meaning, growth, or responsibility. He exists simply to ridicule, unaware of the harm he causes or the emptiness of his actions.",
+      "HombreLava": "Hombre Lava is a powerful creature that blends into the crowd until provoked. If you get too close, expect to be burned by his melee strikes. Try to run, and you’ll be hunted down by fireballs hurled with deadly precision. He belongs to the Muerte faction, so if you're part of Alianza, you'd better gear up with weapons beyond standard Survivalcraft 2 gear unless you're packing a musket, explosives, or an explosive crossbow, you're likely toast. Fire and magma are his allies; burning him only fuels his rage. His one true weakness is water submersion slows him, weakens his flame core, and eventually extinguishes his power. He avoids rivers, panics in rain, and takes heavy damage from splash-based weapons. If you want to survive an encounter, lure him into wet terrain and strike fast before he reignites.",
+      "HombreAgua": "Hombre Agua is calm but deadly. He hides in rivers and rain, striking with freezing bursts and crushing waves. Fire heals him. Explosives barely scratch him. His body flows like liquid—hard to hit, harder to stop. He’s part of Muerte, and fights beside his best brother, Hombre Lava. Together, they cover land and water, burning and drowning anything in their way. If you’re Alianza, bring lightning, frost, or stay far away. Wet terrain is his home. Dry ground is your only chance.",
+      "ElBallestador": "l Ballestador isn’t the strongest fighter, but don’t let that fool you—his cursed bow never leaves his side. He’s not part of your Alianza and belongs to Muerte, standing out as the only human in his faction wielding a possessed weapon. His arrows are fast, silent, and unforgiving. Confront him or try to escape—either way, you’re already dead. If he sees you, he fires. If you move, he hits. His diamond arrows pierce almost everything, except the rhino, beluga, and orca, who can endure more hits if they fight back. To survive, use terrain to break his line of sight. Zigzag when running, jump unpredictably, and never stay still. If you’re solo, bait his shot and rush in before he reloads. In a group, flank while one teammate draws fire. Splash damage or shock can disrupt his aim, but timing is everything. If you hear the click of his bow, it might already be too late. They say his bow was forged in silence, bound to him after he survived a betrayal that left him voiceless. Since then, it’s been his only companion—never speaks, never misses, never leaves. That’s why he trusts it more than any ally. He appears only at night starting from day 5, and during these nights players can set traps to capture his bows and ammunition, turning his own arsenal into a valuable resource.",
+      "HeadcrabBloodyHuman": "A more aggressive and blood-soaked variant of the standard headcrab. The Bloody Headcrab features torn exoskeletal tissue, soaked in hemolymph and exposed muscle fibers, likely caused by radiation or failed bioweapon experiments. It moves faster, jumps farther, and attaches to hosts with brutal force, triggering near-instant zombification. Its screech is sharper, and its presence often signals high-contamination zones. Not recommended for low-tier encounters.",
+      "ElArquero": "Twin brother of El Ballestador, El Arquero excels in pinpoint accuracy and rapid-fire archery using reinforced bows. Both share tactical agility, night vision, and synchronized patrol behavior, but El Arquero favors elevated ambushes and silent strikes. His armor is lighter, allowing swift movement across high structures. He communicates through optical signals and rarely misses a shot. Like El Ballestador, he is highly dangerous—provoking him will result in a lethal barrage of arrows. Upon death, he drops usable bow-grade arrows, ideal if you're low on resources. To survive, use cover, bait his shots, and flank from blind angles to avoid direct line-of-sight. Curiously, El Arquero began using his bow after witnessing his brother fire a bow for the first time. Wanting to defend himself equally, he stole a bow and arrows from a weapons shop—giving rise to a hostile Robin Hood of the high ground. He appears only at night starting from day 10, making his encounters rarer but significantly more threatening as the world grows darker.",
+    "ArqueroPrisionero": "Born as the twin brother of El Arquero, the Prisoner Archer carries a past scarred by the Nazi era. Surviving the horrors of the Holocaust, he emerged with resilience and a newfound purpose. Unlike his brother and El Ballestador, who aligned with a malevolent faction, the Prisoner Archer chose the path of the Alliance, determined to oppose tyranny rather than serve it. His weapon of choice is the bow, adopted after witnessing his brother’s skill and vowing to defend himself and others with equal precision. During captivity, he secretly crafted crude fire arrows, though Nazi control forbade prisoners from wielding such weapons. This defiance became the seed of his mastery: when freedom came, he refined his skill into silent, lethal archery. Now, he stands as a guardian—swift, vigilant, and unyielding. If he sees his allies or the Alliance under attack, he will not hesitate to unleash a storm of arrows. His armor is light, built for speed and survival, allowing him to move across ruins and high structures with ease. He communicates through subtle signals, preferring silence over words, and rarely misses a shot. Upon defeat, he drops usable arrows, a reminder of his resourcefulness and the hardships he endured. Though his past is marked by sorrow, the Prisoner Archer fights forward with determination, embodying a hostile Robin Hood of the high ground. His story is one of survival, rebellion, and the relentless pursuit of justice—proof that even in the aftermath of tragedy, one can rise to protect others and continue the struggle for freedom.",
+    "Veemon": "Veemon first appeared in Digimon Adventure 02 (2000), introduced as Davis Motomiya’s partner and quickly recognized for his playful yet courageous nature. Although aligned with the Alliance group, Veemon can also ally with the player, offering versatile support in battle through his unique ability to Armor Digivolve using Digi-Eggs. This makes him adaptable to multiple combat situations, from Flamedramon’s fiery offense to Magnamon’s miraculous defense. Veemon was originally designed by Kenji Watanabe, the illustrator behind many Digimon species, whose creative vision drew inspiration from the letter V (symbolizing victory) and the manga magazine V-Jump where Digimon V-Tamer 01 was serialized. His design reflects both a dragon motif and a youthful, energetic personality that resonated with fans worldwide. Beyond his origins, Veemon embodies loyalty, optimism, and resilience. He is mischievous yet deeply committed to protecting his allies, often charging headfirst into danger with a smile. In gameplay, he rarely hesitates to fight for justice, and his presence reassures companions that courage and friendship can overcome any obstacle. Ultimately, Veemon is more than a fighter—he is a symbol of hope, proving that even in the toughest battles, goodness and determination will always shine through.",
+    "Shoutmon": "Shoutmon first appeared in Digimon Xros Wars (2010), quickly becoming known as the energetic and determined partner of Taiki Kudo. Although aligned with the Alliance group, Shoutmon can also ally with the player, bringing his fiery spirit and powerful voice-based attacks to the battlefield. His ability to DigiFuse with other Digimon makes him highly versatile, adapting to both offensive and defensive strategies. Shoutmon was originally designed by Kenji Watanabe, the illustrator responsible for many Digimon species, whose creativity emphasized Shoutmon’s microphone motif and his dream of becoming the Digimon King. His design reflects both musical energy and heroic ambition, resonating strongly with fans. Beyond his origins, Shoutmon embodies courage, leadership, and optimism. He inspires allies with his determination, often charging into danger with unshakable confidence. In gameplay, he rarely hesitates to fight for justice, and his presence assures companions that unity and friendship can overcome any obstacle. Ultimately, Shoutmon is more than a fighter—he is a symbol of hope and perseverance, proving that even in the toughest battles, goodness and determination will always shine through.",
+    "BallestadoraMusculosa": "Ballestadora Musculosa is stronger and more muscular than El Ballestador. They met on a training range where she was practicing with a simple bow and he was testing a crossbow; he noticed her discipline, offered direct guidance, and they started working together on distance shots. That cooperation became a relationship, and he taught her step by step: stances, timing, wind reading, and precision, moving from bow drills to crossbow routines. When he chose a dark path and joined a hostile faction, she ended the relationship and set clear goals: train harder, add muscle, and surpass him in strength and accuracy. She kept the lessons of precision and claimed the second crossbow that had been prepared as a backup, now her main weapon. She joined the Alliance and targets his faction without hesitation. Her shots are powerful and accurate, her endurance high, and her focus strict. What remains from the past is methodical ranged combat and the decision to be better than her former partner. Ballestadora Musculosa fights with muscle and conviction, stands as a loyal ally, and does not turn back to evil.",
+    "Agumon": "Agumon first appeared in Digital Monster Ver.1 (1997) and later became widely recognized in Digimon Adventure (1999) as Tai Kamiya’s loyal partner. Designed by Kenji Watanabe, Agumon was created with a reptile-like form resembling a small dinosaur, symbolizing growth and the potential to evolve into stronger Digimon such as Greymon. Aligned with the Alliance group, Agumon can also ally with the player, offering balanced combat support through his fiery Baby Flame attack. His design emphasizes both simplicity and ferocity, making him a central figure in the Digimon franchise across anime, games, and merchandise. Beyond his origins, Agumon embodies loyalty, courage, and resilience. He stands as a dependable partner who fights with determination, reminding allies that even in difficult battles, friendship and bravery can lead to victory.",
+    "Guilmon": "Guilmon first appeared in Digimon Tamers (2002), introduced as the Rookie partner of Takato Matsuda. Designed by Kenji Watanabe, Guilmon was created with a youthful dinosaur-like form marked by the Digital Hazard symbol, representing both great destructive potential and the possibility of protecting the Digital World if guided by trust. Although aligned with the Alliance group, Guilmon can also ally with the player, offering strong support through his fire-based attacks such as Pyro Sphere and his ability to evolve into powerful forms like Growmon and Dukemon. His design emphasizes raw energy and instinct balanced by loyalty, making him a fan favorite across anime and games. Beyond his origins, Guilmon embodies curiosity, courage, and friendship. He often charges into battle with determination, learning and growing alongside his allies. In gameplay, Guilmon provides versatile offense and dependable resilience, assuring companions that unity and trust can overcome any challenge. Ultimately, Guilmon is more than a fighter—he is a symbol of potential, showing that even great power can be used for good when guided by bonds of friendship.",
+    "Gumdramon": "Gumdramon first appeared in Digimon Xros Wars: The Young Hunters Who Leapt Through Time (2011), introduced as the Rookie partner of Tagiru Akashi. Designed by Kenji Watanabe, Gumdramon was created with a dragon-like form featuring a powerful tail weapon, symbolizing both his mischievous personality and his explosive combat style. Aligned with the Alliance group, Gumdramon can also ally with the player, offering versatile support through his signature attack Jamming Strike and his ability to evolve into stronger forms such as Arresterdramon. His design emphasizes agility, energy, and rebellious charm, making him stand out among Rookie Digimon. Beyond his origins, Gumdramon embodies determination, independence, and loyalty. He often rushes into battle with bold confidence, learning to balance his playful nature with responsibility. In gameplay, Gumdramon offers fast offense and adaptable strategies, assuring companions that courage and persistence can overcome any obstacle. Ultimately, Gumdramon is more than a fighter—he is a symbol of growth, proving that even youthful recklessness can transform into strength when guided by trust and friendship.",
+    "BetelGammamon": "BetelGammamon first appeared in Digimon Ghost Game (2021), introduced as the Champion evolution of Gammamon, the Rookie partner of Hiro Amanokawa. Designed by Kenji Watanabe, BetelGammamon was created with a humanoid warrior-like form, symbolizing fiery energy, speed, and close-combat strength. Aligned with the Alliance group, BetelGammamon can also ally with the player, offering powerful support through his signature attack Betel G Shout and his ability to evolve into stronger forms such as Canoweissmon and Siriusmon. His design emphasizes agility, courage, and heroic ambition, making him a standout Champion Digimon recognized for his determination. Beyond his origins, BetelGammamon embodies bravery, loyalty, and the drive to protect others. He often charges into battle with unwavering confidence, balancing youthful spirit with growing responsibility. In gameplay, BetelGammamon provides fast offense and versatile strategies, assuring companions that unity and courage can overcome any challenge. Ultimately, BetelGammamon is more than a fighter—he is a symbol of heroic growth, proving that true strength shines brightest when guided by trust and friendship.",
+    "Gaomon": "Gaomon first appeared in Digimon Savers (2006), introduced as the Rookie partner of Thomas H. Norstein. Designed by Kenji Watanabe, Gaomon was created with a canine-like form wearing red boxing gloves, symbolizing discipline, loyalty, and his martial arts-inspired combat style. Aligned with the Alliance group, Gaomon can also ally with the player, offering reliable support through his signature attacks such as Double Backhand and Rolling Upper, while evolving into stronger forms like Gaogamon and MachGaogamon. His design emphasizes speed, precision, and determination, making him a distinctive Rookie Digimon recognized for his fighting spirit. Beyond his origins, Gaomon embodies loyalty, courage, and resilience. He often enters battle with calm focus, balancing obedience with independent strength. In gameplay, Gaomon provides fast offense and dependable defense, assuring companions that discipline and teamwork can overcome any challenge. Ultimately, Gaomon is more than a fighter—he is a symbol of trust, proving that true strength comes from loyalty and unity.",
+    "Impmon": "Impmon first appeared in Digimon Tamers (2001) as a Rookie Digimon created by Kenji Watanabe, designed with a mischievous demon-like form, purple body, red scarf, and gloves. In the anime he was portrayed as a troublemaker and sometimes antagonist, reflecting resentment and loneliness, but in this mod he belongs to the Alliance group and can befriend the player, standing equal to other Digimon of the same subgroup. Known for his signature attack Night of Fire, Impmon embodies agility, cunning, and fiery offense, while his evolution path leads to Beelzemon. Ultimately, Impmon is more than a villain—he is a symbol of loyalty and unity when given trust.",
+    "WalterZombie": "Walter Zombie is a product of a catastrophic chemical mutation caused by the company CONASUPO, which was initially known for its dairy products. After accidentally consuming radioactive milk in 1986, the incident originated from the fallout of the Chernobyl disaster. Following the explosion in April 1986, radioactive material spread across Europe, resulting in acid rain that contaminated pastures in Ireland. Cows grazed on this tainted grass, leading to the production of radioactive milk, which was subsequently exported to Mexico. Defying the odds of death, Walter transformed into a hostile creature rather than succumbing to the effects of the radiation. However, unlike traditional zombies, he retained a measure of his intelligence and consciousness. In his quest to regain his human life, Walter allied himself with the Alianza group, seeking both redemption and a cure for his condition. Despite his aspirations, a second chemical treatment was administered to him, intended to end his existence as a zombie. Instead, it triggered an unexpected transformation into a Mamón (Tank) form, enhancing his physical prowess. This transformation occurs only during full or new moons, with a mere 0.5% chance of shifting into this formidable state. In this form, Walter becomes a more powerful adversary, capable of withstanding significant damage while still holding onto the hope of one day reclaiming his humanity. As he navigates this duality, Walter Zombie embodies the struggle between his monstrous instincts and the remnants of the man he once was.",
+    "WalterZombieMamadisimo": "Walter Zombie Tank Form is an extreme mutation that only manifests during full or new moons with a 0.5% chance, meaning sometimes he transforms and other times he remains in his normal state. If provoked or if his Alianza group is attacked, and the player moves away around 10 blocks, he will relentlessly throw bombs until the enemy is destroyed, even sacrificing his own allies to eliminate those who threaten him. To defeat him, it is recommended to use a musket and a crossbow with explosive arrows, avoiding combat in his base or home since there is a high risk of him blowing up everything and ruining the player's effort. It is safer to retreat and find shelters to protect yourself from the explosions, while setting traps such as spikes to limit his mobility and increase the chances of survival.",
+    "AladinaCorrupta": "Aladina Corrupta was once a benevolent figure during the Arab Middle Ages, known for helping the poor and those in need. As the modern era arrived, she was excluded by the changing Arab system in Libya around the late 1800s, when the region was still under Ottoman control. Her decline worsened in the 20th century: by the 1990s Libya was under Muammar Gaddafi’s dictatorship, and her abilities weakened, no longer resembling her medieval strength. The fall of Gaddafi in 2011 brought further chaos instead of improvement. Witnessing civilians fighting for power, Aladina Corrupta reflected on years of suffering and began adopting techniques inspired by Arab militant groups, such as suicide attacks and bombings, though she never formally joined them. Ultimately, she aligned herself with the faction known as Muerte, driven by vengeance for the pain and mistreatment she endured. Now she feels a grim relief after joining Muerte. Unlike other members of the group, she has a distinctive attack: when an NPC or player targets her or her allies, she ignites a medium incendiary barrel. Distance does not matter—she will charge directly at the attacker, light the barrel, and give only five seconds to escape. Failure to flee results in being torn apart and blasted into the air. In her fury she even sacrifices her own companions, and herself, whenever the group is under attack.",
+    "CarlJohnson": "Carl 'CJ' Johnson, born in Los Santos, San Andreas, United States, currently lives in his hometown where he controls the streets; he became the central figure in the infamous 'Hot Coffee' controversy from Grand Theft Auto: San Andreas in 2005, a hidden minigame that sparked moral panic, lawsuits, and forced Rockstar Games to reclassify the title; despite his criminal path, CJ shares an unbreakable friendship with Tommy Vercetti and Claude Speed, together forming the group 'Alliance' to dominate the criminal underworld.",
+    "ElGuerrillero": "Pepito Omencio Del Moreno, known as El Guerrillero, was born in Arauca, Colombia on June 7, 1997. Once a kind man who loved the countryside and dreamed of joining the Colombian military to fight against narcotrafficking, his life changed at the age of 23. After enduring abuse from his parents, bullying for revealing his dream, poverty, and the violent conflict in Arauca, he abandoned his home and allied with the FARC. There he adopted their techniques and found a new family, turning ruthless in the process. Rumors spread that El Espectador, Noticias Caracol, RCN, Canal Uno and others named him among the most wanted, alongside leaders of the FARC and ELN. After years of practice, he left the FARC not to betray them but to follow his own path of survival, eventually joining the group Muerte. From that moment he became happier yet more evil, renowned for his mastery of the traditional musket. If he sees you, you are doomed. He may appear in groups of two or three, applying tactics learned during his FARC era. He can emerge at any time, day or night, and will appear on day 16.00",
+    "ElGuerrilleroTenebroso": "Alejandro Risaraldo Castillo, born into a guerrilla family within the FARC, chose to join them at the age of 8 by his own will. He gained experience until he met El Guerrillero, forming a special friendship. At 23 he retired without sadness, but sensed something was wrong. Disguised, he left the camp after hearing gunfire he mistook for pistols but were muskets, and discovered his friend allied with Muerte, fighting Alianza. El Guerrillero was wounded and his group lost, so Alejandro fled. Seeking sect ritual refuge, he asked a shaman to restore his friendship in exchange for his soul. The shaman set conditions: join Alianza and inform only a few of El Guerrillero’s closest friends and selected countryside comrades—never the entire group—to prevent a far worse conflict. He must also keep secret that he is aligned with Alianza, which is not police or armed forces, and reveal instead that El Guerrillero traded their friendship for another within Muerte, especially with the one who became most special to him. Alejandro accepted, deciding to hunt his friend to recover who he once was, while maintaining guerrilla tactics. It is said that he will appear on day 17 only at night.",
+    "CamisasMorenas": "Camisas Morenas was born in Zacatecas, Mexico, from a humble family. He moved to Mexico City seeking better economic opportunities, where cartel wars still rage over territory. There he entered the world of the street markets, and on his birthday his uncle, the brother of his father, gifted him a stone machete. He kept it as a weapon of defense, to be used only if provoked to the extreme or if his belongings were stolen. He ran a stall selling shirts, but eventually abandoned the tianguis business when he joined a local gang, not part of the cartels but rooted in Mexico City itself. After many years of experience, the gang encountered a faction called Muerte and accepted their offer to unite. Camisas Morenas became hardened, using his machete as both symbol and weapon, and his reputation grew as someone who defended his group fiercely. Though he once dreamed of a simple life, his path led him deeper into conflict, and his loyalty to Muerte marked him as a dangerous figure. It is said that he will appear on day 21 at night.",
+    "ZombieRepetidor": "Zombie Repetidor was once a human who lived in the Marshall Islands, especially on Bikini Atoll. He was of Ecuadorian origin, known as Elver Gonzalo Samboni, who traveled there seeking a new life. A skilled farmer, he specialized in fruits and vegetables, dedicating himself to his harvests. Everything changed drastically in 1954 when the United States detonated nuclear bombs on the islands. Residents were forced to abandon their homes to avoid death from the experiments, but Elver refused, believing it was all lies, and hid underground. When the explosions occurred, everyone thought he had died. The islands became desolate, uninhabitable due to radiation. Yet, against all odds, Elver survived. His skin became burned and rotten over the years, and he transformed into a zombie. This was partly due to a strange enchanted eggplant salad he had created, designed to revive him after explosions though only as a zombie. Despite his transformation, he remained alive and devised a way to return to Ecuador. He infiltrated a luxury boat bound for Ecuador, arriving in Atacames, and later returned to his hometown of Quito. There, he began eating junk food, which made him obese but also increased his muscular strength. One day, he decided to steal a Ballesta Repetidora to practice shooting, since he had no legal permits to own a firearm and stealing one could have cost him his life. He trained relentlessly until he became an expert marksman. Although he may look like just another common zombie, do not be fooled if he sees you, he will start shooting. Eventually, he allied himself with the group Muerte, becoming another deadly shooter. He will appear on day 13 at night.",
+    "Sparkster": "Sparkster is the opossum Rocket Knight hero created by Konami, first appearing in Rocket Knight Adventures (1993) and continuing in Sparkster (1994) and later entries. Armed with a sword and a rocket pack, he defends the Kingdom of Zephyrus with courage and agility. Midway in his lore here, Sparkster aligns with the Alianza, a protective group dedicated to defending allies and resisting corruption — he is non-hostile by default and only retaliates when provoked. Recognizable by his blue-and-red armor, Sparkster is brave, loyal, and resilient, excelling at fast movement and precise strikes while inspiring those around him. He will appear on Day 2 at any hour.",
+    "Tulio": "Born in Santiago de Chile in 1995, during the post-Pinochet era, he grew up fascinated by fashion trends—jeans and striped shirts defined his style—and his curiosity about the world only grew stronger. At the age of 18, he chose not to attend the University of Santiago, preferring instead to dedicate himself to uncovering the truth behind the mysterious, unidentified Pacific islands. He had seen reports on TVN describing these islands, places that neither the United States nor Russia had managed to investigate despite their obsession. Rumors spread that only certain living beings could enter, and only they could learn the islands’ true origin. Determined, he sought illegal means to reach them, traveling to Easter Island in hopes of finding an abandoned boat to continue his journey. Fate intervened when violent winds and hurricanes struck, throwing him into the ocean. Yet nature itself seemed to protect him, carrying him safely to the very islands he sought. There he encountered both humans and non-humans—Naomi, Paco, El Marihuanero, El Marihuanero Mamón, and Ricardo. Together they formed a family, bound by survival and mystery. Eventually, he joined the group known as Alianza, dedicated to searching for survivors and uncovering the secrets of the Pacific islands. His journey became not only a quest for knowledge but also a testament to resilience, curiosity, and the strange destiny that united him with others on the islands.",
+    "Brayan": "Brayan was born on January 12, 2000, in London, England. From a young age he dedicated himself to studying physics and biology, inspired by figures such as Charles Darwin and Isaac Newton. At the age of 25, he received a special voucher to travel to Alaska, United States, to further his studies of nature and frozen physics. He accepted, but during the journey an unexpected accident changed his life: the pilot fainted due to a natural cause, the plane lost control, and it crashed. Brayan survived thanks to the winds of nature, which carried him away from drowning and guided him to a mysterious island in the Pacific. From that moment, he began to survive using the knowledge he had acquired in his studies, applying physics and biology to endure the harsh environment. One day he met Tulio, who was impressed by Brayan’s survival methods and offered him the chance to join the group known as Alianza. This group was formed by people of good spirit, dedicated to protecting each other while collecting information about the unknown and mysterious islands. Brayan accepted, and from then on he became part of a family on the island, while keeping alive his hope of one day returning to England.",
+    "Richard": "Richard is the twin brother of Ricardo. Unlike him, Richard was born in South Africa in 2004, during the post-apartheid era. When he turned 18, he began his life as an adventurer, driven by curiosity and a desire to explore the unknown. Later, he met Ricardo during a scientific journey in Mexico, and despite their different origins, they bonded deeply and became brothers in spirit. When Ricardo departed for the mysterious Pacific islands, Richard decided to undertake the same expedition, but with a unique difference: he designed and built a machine capable of traveling anywhere without the need for ships, boats, or conventional vehicles. His invention was a success, and he used it to embark on his journey, eventually arriving at the same destination as Ricardo. Upon reaching the island, Ricardo welcomed him as his true brother and introduced him to the companions he had met there. From that moment, Richard became part of the family and joined the group known as Alianza. His arrival brought new energy to the team, as his inventive mind and adventurous spirit complemented Ricardo’s resilience. Richard’s machine, though damaged during the voyage, became a symbol of hope for the group, showing that human ingenuity could rival even the mysteries of the islands. Together with Naomi, Paco, and the others, Richard contributed to the survival and exploration of the unknown land, strengthening the bonds of Alianza and keeping alive the dream of one day uncovering the secrets of the Pacific islands."
   },
-  "Description": {
-    "Naomi": "Naomi (ナオミ). A mystery to solve. She is Japanese, but… is she truly human or robotic? How did she arrive on the island of Survivalcraft 2? A tremendous mystery. It begins in Kyoto, with an inventor named Takachi (高智). In 1999, Naomi was created because Takachi needed an automatic assistant for biological scientific research. The prototype tests went well, and the final result looked human. Since then, the robot has been successful in performing both complex and simple tasks. One day, Takachi received a research project from Kyoto University to investigate new species and rare places outside of Japan. Needing companionship, he chose Naomi as his partner. Halfway across the sea, Takachi accidentally dropped his humanoid robot Naomi into the water, causing panic. He feared the robot was damaged due to its electrical components, but what he didn’t know was that Naomi was water-resistant. This led Naomi to a mysterious island or large continent. From that day, her life as a humanoid robot changed. How will she survive without resources? Previously, she had practiced survival skills during their research trips. Will she need the player’s help? You’ll find out in the game!"
+    "ContentWidgets": {
+      "FlameThrowerWidget": {
+        "Title": "Flame Thrower",
+        "Inventory": "Inventory",
+        "LoadAmmunition": "Load ammunition",
+        "SprayFire": "Prepare to spray fire {0}/15",
+        "SprayPoison": "Prepare to spray poison {0}/15"
+      },
+      "RepeatCrossbowWidget": {
+        "Title": "Repeating Crossbow",
+        "Inventory": "Inventory",
+        "InstructionsPull": "Pull back to load",
+        "InstructionsInsert": "Insert bolts",
+        "InstructionsArrows": "Arrows: {0}/8"
+      }
+    },
+    "Messages": {
+      "FirstPullCrossbow": "First pull back the crossbow!",
+      "FirstLoadArrow": "First load an bolt!",
+      "ArrowCount": "Arrows: {0}/8"
+    },
+    "Usual": {
+      "ok": "OK",
+      "cancel": "Cancel"
+    }
   },
   "Blocks": {
     "WoodAxeBlock:0": {
-  "DisplayName": "Wood Axe",
-  "Description": "Back to basics - like the old days"
-},
-"WoodMacheteBlock:0": {
-  "DisplayName": "Wood Machete",
-  "Description": "Classic tool from version 2.0"
-},
-"WoodPickaxeBlock:0": {
-  "DisplayName": "Wood Pickaxe",
-  "Description": "Nostalgic mining - pre-2.1 era"
-},
-"WoodShovelBlock:0": {
-  "DisplayName": "Wood Shovel",
-  "Description": "Simple digging - back when life was easier"
-},
-"StoneShovelBlock:0": {
-  "DisplayName": "Stone Shovel",
-  "Description": "Stone age technology revived"
-},
-"StoneAxeOriginalBlock:0": {
-  "DisplayName": "Stone Axe (Original)",
-  "Description": "Primitive but effective - pre-2.2"
-},
-"StoneMacheteBlock:0": {
-  "DisplayName": "Stone Machete",
-  "Description": "Back when stone could cut - version 2.0 memories"
-},
-"StoneRakeBlock:0": {
-  "DisplayName": "Stone Rake",
-  "Description": "Ancient farming tool - back to roots"
-},
-"StonePickaxeBlock:0": {
-  "DisplayName": "Stone Pickaxe",
-  "Description": "How could I forget the old days, bro? :\")"
-},
+      "DisplayName": "Wood Axe",
+      "Description": "Back to basics - like the old days"
+    },
+    "WoodMacheteBlock:0": {
+      "DisplayName": "Wood Machete",
+      "Description": "Classic tool from version 2.0"
+    },
+    "WoodPickaxeBlock:0": {
+      "DisplayName": "Wood Pickaxe",
+      "Description": "Nostalgic mining - pre-2.1 era"
+    },
+    "WoodShovelBlock:0": {
+      "DisplayName": "Wood Shovel",
+      "Description": "Simple digging - back when life was easier"
+    },
+    "StoneShovelBlock:0": {
+      "DisplayName": "Stone Shovel",
+      "Description": "Stone age technology revived"
+    },
+    "StoneAxeOriginalBlock:0": {
+      "DisplayName": "Stone Axe (Original)",
+      "Description": "Primitive but effective - pre-2.2"
+    },
+    "StoneMacheteBlock:0": {
+      "DisplayName": "Stone Machete",
+      "Description": "Back when stone could cut - version 2.0 memories"
+    },
+    "StoneRakeBlock:0": {
+      "DisplayName": "Stone Rake",
+      "Description": "Ancient farming tool - back to roots"
+    },
+    "StonePickaxeBlock:0": {
+      "DisplayName": "Stone Pickaxe",
+      "Description": "How could I forget the old days, bro? :\")"
+    },
     "LavaSpear:0": {
-    "DisplayName": "Lava Spear",
-    "Description": "Forged in magma - burns through anything"
-  },
-  "LavaMachete:0": {
-    "DisplayName": "Lava Machete",
-    "Description": "Molten blade that dismembers with burning precision"
-  },
-  "LavaPickaxe:0": {
-    "DisplayName": "Lava Pickaxe",
-    "Description": "Mines ores with molten power"
-  },
-  "LavaShovel:0": {
-    "DisplayName": "Lava Shovel",
-    "Description": "Digs through earth like it's butter - hot butter"
-  },
-  "LavaHammer:0": {
-    "DisplayName": "Lava Hammer",
-    "Description": "Smashes rocks with volcanic force"
-  },
-  "LavaAxe:0": {
-    "DisplayName": "Lava Axe",
-    "Description": "Chops wood with burning fury"
-  },
-  "LavaRake:0": {
-    "DisplayName": "Lava Rake",
-    "Description": "Tills soil with volcanic efficiency"
-  },
+      "DisplayName": "Lava Spear",
+      "Description": "Forged in magma - burns through anything"
+    },
+    "LavaMachete:0": {
+      "DisplayName": "Lava Machete",
+      "Description": "Molten blade that dismembers with burning precision"
+    },
+    "LavaPickaxe:0": {
+      "DisplayName": "Lava Pickaxe",
+      "Description": "Mines ores with molten power"
+    },
+    "LavaShovel:0": {
+      "DisplayName": "Lava Shovel",
+      "Description": "Digs through earth like it's butter - hot butter"
+    },
+    "LavaHammer:0": {
+      "DisplayName": "Lava Hammer",
+      "Description": "Smashes rocks with volcanic force"
+    },
+    "LavaAxe:0": {
+      "DisplayName": "Lava Axe",
+      "Description": "Chops wood with burning fury"
+    },
+    "LavaRake:0": {
+      "DisplayName": "Lava Rake",
+      "Description": "Tills soil with volcanic efficiency"
+    },
     "ItemsLauncher:0": {
       "DisplayName": "Items Launcher",
       "Description": "Launches any type of block or object. Although expensive to craft, it's a powerful weapon like the musket. Be careful!",
-      "CRDescription:0":  "Make an object launcher by modifying a new musket."
+      "CRDescription:0": "Make an object launcher by modifying a new musket."
     },
     "FlameThrower:0": {
       "DisplayName": "Flamethrower",
@@ -205,5 +275,4 @@
     "ok": "OK",
     "cancel": "Cancel"
   }
-}
 }
