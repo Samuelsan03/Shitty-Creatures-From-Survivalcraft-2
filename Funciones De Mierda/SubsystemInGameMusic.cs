@@ -1,4 +1,4 @@
-﻿using Engine;
+using Engine;
 using Engine.Audio;
 using Engine.Media;
 using GameEntitySystem;
@@ -131,7 +131,7 @@ namespace Game
 					{
 						m_clickedButtons.Add(button);
 						ToggleMusic();
-						button.Text = m_musicEnabled ? "Music ON" : "Music OFF";
+						UpdateButtonText(button);
 					}
 					else if (button != null && !button.IsClicked && m_clickedButtons.Contains(button))
 					{
@@ -142,6 +142,27 @@ namespace Game
 
 			// Limpiar botones de jugadores que ya no existen
 			CleanupPlayerButtons();
+		}
+
+		// Actualizar el texto del botón según el idioma y estado
+		private void UpdateButtonText(BevelledButtonWidget button)
+		{
+			if (button == null) return;
+
+			// Obtener el texto localizado para el botón
+			string buttonText = GetLocalizedString("MusicToggleButton", "Music");
+			string statusText = m_musicEnabled ?
+				GetLocalizedString("MusicOn", "ON") :
+				GetLocalizedString("MusicOff", "OFF");
+
+			button.Text = $"{buttonText} {statusText}";
+		}
+
+		// Método auxiliar para obtener cadenas localizadas
+		private string GetLocalizedString(string key, string defaultValue)
+		{
+			// Usar el método estático Get de LanguageControl
+			return LanguageControl.Get(key, defaultValue);
 		}
 
 		// Agregar botón a un jugador
@@ -161,6 +182,7 @@ namespace Game
 			if (musicButton != null)
 			{
 				m_playerButtons[player] = musicButton;
+				UpdateButtonText(musicButton);
 				return;
 			}
 
@@ -168,7 +190,7 @@ namespace Game
 			musicButton = new BevelledButtonWidget
 			{
 				Name = "InGameMusicButton",
-				Text = m_musicEnabled ? "Music ON" : "Music OFF",
+				Text = "", // Se establecerá con UpdateButtonText
 				Size = new Vector2(88f, 56f),
 				IsEnabled = true,
 				IsVisible = true,
@@ -184,6 +206,7 @@ namespace Game
 
 			rightControlsContainerWidget.Children.Add(musicButton);
 			m_playerButtons[player] = musicButton;
+			UpdateButtonText(musicButton);
 		}
 
 		// Limpiar botones de jugadores que ya no existen
@@ -268,7 +291,8 @@ namespace Game
 
 			if (m_musicEnabled)
 			{
-				ShowMessageToAllPlayers("Music enabled");
+				string message = GetLocalizedString("MusicEnabled", "Music enabled");
+				ShowMessageToAllPlayers(message);
 
 				// Si estamos activando la música y no hay música reproduciéndose, iniciar inmediatamente
 				if (!m_isPlaying)
@@ -283,7 +307,8 @@ namespace Game
 			}
 			else
 			{
-				ShowMessageToAllPlayers("Music disabled");
+				string message = GetLocalizedString("MusicDisabled", "Music disabled");
+				ShowMessageToAllPlayers(message);
 				// Si se desactiva la música, detener la reproducción actual
 				if (m_currentMusic != null && m_currentMusic.State > SoundState.Stopped)
 				{
@@ -298,7 +323,7 @@ namespace Game
 			{
 				if (button != null)
 				{
-					button.Text = m_musicEnabled ? "Music ON" : "Music OFF";
+					UpdateButtonText(button);
 				}
 			}
 		}
@@ -358,7 +383,8 @@ namespace Game
 				if (streamingSource == null)
 				{
 					Log.Error($"StreamingSource not found for: {trackPath}");
-					ShowMessageToAllPlayers("Music file not found", Color.Red);
+					string errorMessage = GetLocalizedString("MusicFileNotFound", "Music file not found");
+					ShowMessageToAllPlayers(errorMessage, Color.Red);
 					return;
 				}
 
@@ -379,8 +405,9 @@ namespace Game
 
 				Log.Information($"Playing music: {trackPath}, State: {m_currentMusic.State}, IsPlaying: {m_isPlaying}");
 
-				// Mostrar "Now playing:" en blanco
-				ShowMessageToAllPlayers("Now playing:");
+				// Mostrar "Now playing:" en blanco usando la cadena localizada
+				string nowPlayingText = GetLocalizedString("NowPlaying", "Now playing:");
+				ShowMessageToAllPlayers(nowPlayingText);
 
 				// Programar mostrar el nombre de la canción en verde después de 0.5 segundos
 				string displayName = GetTrackDisplayName(trackPath);
@@ -393,7 +420,8 @@ namespace Game
 				m_currentMusic = null;
 				m_isPlaying = false;
 				m_currentTrackPath = "";
-				ShowMessageToAllPlayers("Error playing music", Color.Red);
+				string errorMessage = GetLocalizedString("MusicPlayError", "Error playing music");
+				ShowMessageToAllPlayers(errorMessage, Color.Red);
 			}
 		}
 
@@ -550,6 +578,7 @@ namespace Game
 		private readonly SubsystemInGameMusic.TrackInfo[] m_tracks = new SubsystemInGameMusic.TrackInfo[]
 		{
 			new SubsystemInGameMusic.TrackInfo("MenuMusic/Digimon 02 Target Wada Kouji", 177f),
+			new SubsystemInGameMusic.TrackInfo("MenuMusic/Nichijou Koigokoro Wa Dangan Mo Yawarakakusuru", 177f),
 			new SubsystemInGameMusic.TrackInfo("MenuMusic/Touhou 2 Mimas Theme Complete Darkness", 177f),
 			new SubsystemInGameMusic.TrackInfo("MenuMusic/Touhou 2 Eastern Wind", 177f),
 			new SubsystemInGameMusic.TrackInfo("MenuMusic/Touhou 2 Record of the Sealing of an Oriental Demon", 177f),
@@ -564,8 +593,8 @@ namespace Game
 			new SubsystemInGameMusic.TrackInfo("MenuMusic/Digimon Frontiers FIRE Wada Kouji", 177f),
 			new SubsystemInGameMusic.TrackInfo("MenuMusic/Rocket Knight Adventures Stage 1-1", 177f),
 			new SubsystemInGameMusic.TrackInfo("MenuMusic/Rocket Knight Adventures Stage 1-2", 177f),
-			new SubsystemInGameMusic.TrackInfo("MenuMusic/Rocket Knight Adventures 2 Stage 1-1", 177f),
-			new SubsystemInGameMusic.TrackInfo("MenuMusic/Sparkster Stage Lakeside", 177f),
+			new SubsystemInGameMusic.TrackInfo("MenuMusic/Sparkster (SEGA Genesis) Stage 1-1", 177f),
+			new SubsystemInGameMusic.TrackInfo("MenuMusic/Sparkster (SNES) Stage Lakeside", 177f),
 			new SubsystemInGameMusic.TrackInfo("MenuMusic/Space Harrier Theme", 177f),
 			new SubsystemInGameMusic.TrackInfo("MenuMusic/MAGICAL SOUND SHOWER OutRun", 177f),
 			new SubsystemInGameMusic.TrackInfo("MenuMusic/Super Hang-On Outride A Crisis", 177f),
