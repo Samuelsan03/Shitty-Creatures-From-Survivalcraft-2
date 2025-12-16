@@ -1,5 +1,5 @@
 {
-  "MusicToggleButton": "Música",
+  "MusicToggleButton": "Música\n",
   "MusicOn": "ACTIVADA",
   "MusicOff": "DESACTIVADA",
   "MusicEnabled": "Música activada",
@@ -21,123 +21,193 @@
   "Poisoned": "Envenenado",
   "HP": "PV",
   "Database": {
-  "DisplayName": {
-    "Naomi": "Naomi",
-    "Ricardo": "Ricardo",
-    "Paco": "Paco",
-    "Barack": "Barack",
-    "ElMarihuanero": "El Marihuanero",
-    "ElMarihuaneroMamon": "El Marihuanero Mamón",
-    "FumadorQuimico": "Fumador Químico",
-    "FumadorQuimicoBrawny": "Fumador Químico Brawny",
-    "TommyVercetti": "Tommy Vercetti",
-    "ClaudeSpeed": "Claude Speed",
-    "CarlJohnson": "Carl Johnson",
-    "LaMuerteX": "La Muerte X",
-    "ElSenorDeLasTumbasMoradas": "El Señor de las Tumbas Moradas",
-    "LiderCalavericoSupremo:0": "Líder Calavérico Supremo",
-    "LiderCalavericoSupremoAlfa": "Líder Calavérico Supremo Alfa",
-    "Sparkster": "Sparkster",
-    "ElArquero": "El Arquero",
-    "ElBallestador": "El Ballestador",
-    "ArqueroPrisionero": "Arquero Prisionero",
-    "BallestadoraMusculosa": "Ballestadora Musculosa",
-    "Conker": "Conker",
-    "Beavis": "Beavis",
-    "Butt-Head": "Butt-Head",
-    "HombreLava": "Hombre Lava",
-    "HombreAgua": "Hombre Agua",
-    "Shoutmon": "Shoutmon",
-    "Veemon": "Veemon",
-    "Gaomon": "Gaomon",
-    "Agumon": "Agumon",
-    "Impmon": "Impmon",
-    "Gumdramon": "Gumdramon",
-    "Guilmon": "Guilmon",
-    "BetelGammamon": "BetelGammamon",
-    "HeadcrabBloodyHuman": "Headcrab Bloody Human",
-    "Tulio": "Tulio",
-    "Brayan": "Brayan",
-    "AladinaCorrupta": "Aladina Corrupta",
-    "ElGuerrillero": "El Guerrillero",
-    "ElGuerrilleroTenebroso": "El Guerrillero Tenebroso",
-    "WalterZombie": "Walter Zombie",
-    "WalterZombieMamadisimo": "Walter Zombie Mamadísimo",
-    "ZombieRepetidor": "Zombie Repetidor",
-    "CamisasMorenas": "Camisas Morenas"
-  },
-  "Description": {
-    "Naomi": "Naomi (ナオミ). Un misterio por resolver. Ella es japonesa, pero… ¿es realmente humana o robótica? ¿Cómo llegó a la isla de Survivalcraft 2? Un gran misterio. La historia comienza en Kioto, con un inventor llamado Takachi (高智). En 1999, Naomi fue creada porque Takachi necesitaba una asistente automática para la investigación científica biológica. Las pruebas del prototipo fueron exitosas y el resultado final parecía humano. Desde entonces, el robot fue un éxito en la ejecución de tareas tanto complejas como simples. Un día, Takachi recibió un proyecto de investigación de la Universidad de Kioto para estudiar nuevas especies y lugares raros fuera de Japón. Necesitando compañía, eligió a Naomi como su compañera. Durante el viaje por el mar, Takachi accidentalmente dejó caer a su robot humanoide Naomi al agua, causando pánico. Temía que el robot se dañara por sus componentes eléctricos, pero lo que no sabía era que Naomi era resistente al agua. Esto la llevó a una misteriosa isla o gran continente. Desde ese día, su vida como robot humanoide cambió. ¿Cómo sobrevivirá sin recursos? Anteriormente, había practicado habilidades de supervivencia durante sus viajes de investigación. ¿Necesitará la ayuda del jugador? ¡Lo descubrirás en el juego!"
+    "DisplayName": {
+      "Naomi": "Naomi",
+      "Ricardo": "Ricardo",
+      "Paco": "Paco",
+      "Barack": "Barack",
+      "ElMarihuanero": "El Marihuanero",
+      "ElMarihuaneroMamon": "El Marihuanero Mamón",
+      "FumadorQuimico": "Fumador Químico",
+      "FumadorQuimicoBrawny": "Fumador Químico Brawny",
+      "TommyVercetti": "Tommy Vercetti",
+      "ClaudeSpeed": "Claude Speed",
+      "CarlJohnson": "Carl Johnson",
+      "LaMuerteX": "La Muerte X",
+      "ElSenorDeLasTumbasMoradas": "El Señor de las Tumbas Moradas",
+      "LiderCalavericoSupremo:0": "Líder Calavérico Supremo",
+      "LiderCalavericoSupremoAlfa": "Líder Calavérico Supremo Alfa",
+      "Sparkster": "Sparkster",
+      "ElArquero": "El Arquero",
+      "ElBallestador": "El Ballestador",
+      "ArqueroPrisionero": "Arquero Prisionero",
+      "BallestadoraMusculosa": "Ballestadora Musculosa",
+      "Conker": "Conker",
+      "Beavis": "Beavis",
+      "Butt-Head": "Butt-Head",
+      "HombreLava": "Hombre Lava",
+      "HombreAgua": "Hombre Agua",
+      "Shoutmon": "Shoutmon",
+      "Veemon": "Veemon",
+      "Gaomon": "Gaomon",
+      "Agumon": "Agumon",
+      "Impmon": "Impmon",
+      "Gumdramon": "Gumdramon",
+      "Guilmon": "Guilmon",
+      "BetelGammamon": "BetelGammamon",
+      "HeadcrabBloodyHuman": "Headcrab Bloody Human",
+      "Tulio": "Tulio",
+      "Brayan": "Brayan",
+      "AladinaCorrupta": "Aladina Corrupta",
+      "ElGuerrillero": "El Guerrillero",
+      "ElGuerrilleroTenebroso": "El Guerrillero Tenebroso",
+      "WalterZombie": "Walter Zombie",
+      "WalterZombieMamadisimo": "Walter Zombie Mamadísimo",
+      "ZombieRepetidor": "Zombie Repetidor",
+      "CamisasMorenas": "Camisas Morenas",
+      "RichardFiedler": "Richard"
+    },
+    "Description": {
+      "Naomi": "Naomi (ナオミ). Un misterio por resolver. Ella es japonesa, pero… ¿es realmente humana o robótica? ¿Cómo llegó a la isla de Survivalcraft 2? Un gran misterio. La historia comienza en Kioto, con un inventor llamado Takachi (高智). En 1999, Naomi fue creada porque Takachi necesitaba una asistente automática para la investigación científica biológica. Las pruebas del prototipo fueron exitosas y el resultado final parecía humano. Desde entonces, el robot fue un éxito en la ejecución de tareas tanto complejas como simples. Un día, Takachi recibió un proyecto de investigación de la Universidad de Kioto para estudiar nuevas especies y lugares raros fuera de Japón. Necesitando compañía, eligió a Naomi como su compañera. Durante el viaje por el mar, Takachi accidentalmente dejó caer a su robot humanoide Naomi al agua, causando pánico. Temía que el robot se dañara por sus componentes eléctricos, pero lo que no sabía era que Naomi era resistente al agua. Esto la llevó a una misteriosa isla o gran continente. Desde ese día, su vida como robot humanoide cambió. ¿Cómo sobrevivirá sin recursos? Anteriormente, había practicado habilidades de supervivencia durante sus viajes de investigación. ¿Necesitará la ayuda del jugador? ¡Lo descubrirás en el juego!",
+      "Ricardo": "Ricardo es un civil común de Tlatelolco, nacido el 4 de junio de 1998. Desde niño, disfrutaba caminar como un perro juguetón y sentía una profunda conexión con la naturaleza, siempre soñando con viajar a islas. En 2021, la Universidad de Tlatelolco le ofreció un lugar en un programa de investigación científico-biológica para explorar islas fuera de México. Aprovechó la oportunidad y se unió a la expedición. Durante el viaje a través del Océano Pacífico, violentas olas y fuertes vientos pusieron en peligro a la tripulación. Ricardo fue arrastrado por el viento al agua, y sus compañeros, al verlo lejos sin salvavidas, creyeron que se había ahogado. Sin embargo, la fortuna lo favoreció: las corrientes lo llevaron a una isla desconocida, que no estaba marcada en los mapas del Pacífico. Al despertar allí, Ricardo tuvo que encontrar formas de sobrevivir. Una noche, mientras exploraba, se encontró con Naomi, un robot humanoide que había enfrentado un destino similar. Desde ese momento, se hicieron amigos.",
+      "Paco": "¿De dónde diablos salió ese hombre, parece que los alienígenas lo trajeron? Esta fue una frase dicha por un humano que lo vio en una ciudad de México. Paco es un humano-alienígena creado por una raza marciana en 1968, cuando la Unión Soviética lanzó otra expedición para competir contra Estados Unidos. Durante esa misión, algunos miembros de la tripulación vieron una luz roja proveniente de otro planeta y viajaron para investigar más allá de la Luna. Lo que descubrieron fue la creación de un ser casi humano pero con rasgos alienígenas, poseyendo una inteligencia superior a la de un humano normal. Las cosas cambiaron en 2001, cuando Rusia (ya no la URSS después de su disolución en 1991) entró en guerra con Estados Unidos debido a un malentendido: supuestos terroristas habían destruido una de sus naves cerca de Marte. Surgió un conflicto solar, que recordaba a Star Wars, y los creadores alienígenas de Paco vieron su planeta natal bajo ataque. Temiendo la destrucción, se armaron, y ambas naciones también tuvieron que enfrentarlos. En un percance, Rusia disparó a un alienígena que sostenía un dispositivo de control de la nave, rompiéndolo e hiriendo al alienígena. Esto hizo que la nave se alejara automáticamente, llevando a Paco y sus dos clones. Eventualmente llegaron a la Tierra, aterrizando en una misteriosa isla no identificada en el Océano Pacífico, la misma isla donde habían caído Naomi y Ricardo. Allí, buscaron formas de sobrevivir. Más tarde, Paco se encontró con Naomi y Ricardo. Al principio, se consideraron mutuamente como amenazas, pero se hicieron amigos después de que Paco demostrara habilidades de supervivencia mucho más avanzadas que las de ellos.",
+      "Barack": "Barack, como afirmaron algunos rusos y estadounidenses después de la guerra alienígena de 2001, se dijo que era un hermano gemelo similar a Paco. A diferencia de Paco, Barack era un seguidor devoto de Barack Obama, quien más tarde se convertiría en Presidente de Estados Unidos en 2008 y asumiría el cargo en enero de 2009. En el mundo del juego, puedes escuchar referencias a Obama, mostrando que Barack es su fan número uno. Barack, el hermano gemelo de Paco, llegó a una de las misteriosas islas donde Paco había caído, aunque su origen se remonta al 7 de julio de 1980. Fue creado por la misma raza alienígena que Paco, pero la razón por la que fue traído a la Tierra fue diferente: los alienígenas buscaban recuperar a su hijo perdido, pero en su lugar se quedaron. Esto forjó una profunda conexión entre Barack y Paco. Como Paco, Barack tuvo que sobrevivir en la isla desconocida, enfrentando las mismas pruebas de la naturaleza y el destino. Finalmente, él también se encontró con Naomi y Ricardo, y aunque la sospecha marcó su primer encuentro, se convirtieron en aliados después de demostrar sus habilidades de supervivencia e inteligencia. Como curiosidad, Barack más tarde fundó el grupo 'Alianza', dedicado a buscar sobrevivientes que caen en las misteriosas islas del Pacífico, mientras que científicos, especialmente rusos y estadounidenses, investigan obsesivamente cómo se llaman estas islas y dónde se encuentran.",
+      "ElMarihuanero": "Conocido como 'El Marihuanero', es recordado como el hermano eslabón perdido de Paco, un sobreviviente misterioso cuyos orígenes se remontan a los mismos experimentos alienígenas que crearon a Paco. Su fuerza es moderada en comparación con la de Paco, pero su astucia y adaptabilidad lo convierten en una presencia formidable en las islas. El apodo 'El Marihuanero' no se dio a la ligera: durante sus recorridos por las islas del Pacífico, descubrió plantas de cannabis silvestres que crecían en valles ocultos. Fascinado por sus propiedades, comenzó a cultivarlas y afirmó que le daban claridad, resistencia y un extraño vínculo con la naturaleza. Esta obsesión eventualmente lo ató simbólicamente a México, donde la cultura y el folklore del cannabis se convirtieron en parte de su identidad. Con el tiempo, también abrazó el movimiento rastafari, adoptando su filosofía de unidad, resistencia y conexión espiritual, y miró a Jamaica como una patria cultural. Las leyendas dicen que llevaba semillas dondequiera que viajaba, plantándolas como marcadores de su viaje. Aunque al principio fue desconfiado por Naomi, Ricardo y Paco, demostró su lealtad y recursos, mostrando habilidades de supervivencia que rivalizaban con las de su hermano. Sus golpes no eran tan fuertes como los de Paco, pero sus estrategias y resistencia a menudo cambiaban el rumbo en situaciones desesperadas. Con el tiempo, El Marihuanero se convirtió en una figura de curiosidad y mito, recordado no solo por su herencia humano-alienígena, sino también por las plantas, los ideales rastafari y el espíritu jamaicano que definieron su nombre y destino en las misteriosas islas del Pacífico.",
+      "ElMarihuaneroMamon": "Otro hermano eslabón perdido de Paco y hermano gemelo de El Marihuanero, este es más musculoso e imponente físicamente. Su poder de ataque bruto es menor que el de Paco, pero su resistencia y fuerza bruta lo convierten en un oponente peligroso. A diferencia de su gemelo, se dedicó a dominar el mosquete. Su historia comienza cuando descubrió un puesto colonial abandonado en una de las misteriosas islas del Pacífico. Dentro, encontró cajas de armas viejas y manuales dejados por exploradores y soldados de siglos pasados. Fascinado, pasó años estudiando los mecanismos del mosquete, practicando su carga, puntería y disparo hasta convertirse en un tirador experto. Su disciplina y paciencia lo convirtieron en un hábil cazador y defensor, capaz de golpear con precisión incluso en condiciones difíciles. Los sobrevivientes que lo encontraron aprendieron a temer su mosquete más que sus puños, porque sus disparos podían destrozar enemigos en segundos. Las leyendas dicen que llevaba el mosquete a todas partes, tratándolo como arma y símbolo de supervivencia. Eventualmente, se cruzó con Paco, Naomi y Ricardo, y aunque la sospecha marcó sus primeros encuentros, su dominio de las armas de fuego le ganó respeto dentro del grupo.",
+      "FumadorQuimico": "Su atuendo sugiere que tiene experiencia en entornos químicos y tóxicos. Aunque parece amenazante, forma parte del grupo Alianza, lo que significa que apoya a su equipo cuando es atacado o dañado por enemigos. Posee un misterioso poder oculto: durante la luna llena o la luna nueva, se transforma en un mutante musculoso gigante (similar a un Tanque), ganando fuerza mejorada, mayor resistencia y otras habilidades.",
+    "FumadorQuimicoBrawny": "Más poderoso y fuerte que su forma original, solo estará disponible durante la luna llena o luna nueva.",
+    "TommyVercetti": "Una figura violenta y ambiciosa en el mundo criminal, conocido por su ascenso desde la familia Forelli en Liberty City. Originalmente de ascendencia italiana, ahora reside en Vice City, Florida, donde construyó su propio imperio después de un fallido trato de drogas en 1986. A pesar de su reputación, también forma parte del grupo Alianza, apoyando y defendiendo a sus aliados cuando son amenazados por pandillas rivales o fuerzas hostiles.",
+    "ClaudeSpeed": "Un criminal silencioso y despiadado, conocido por su eficiencia y falta de piedad. Nacido en Liberty City, ascendió en el inframundo criminal, convirtiéndose en una figura temida en la ciudad. A pesar de su naturaleza violenta, forma parte del grupo Alianza, apoyando y defendiendo a sus aliados cuando son amenazados por pandillas rivales o fuerzas hostiles.",
+    "LaMuerteX": "La Muerte X emergió de las sombras infernales violetas, con piel y comportamiento forjados en la oscuridad. Está lejos de ser amigable; su naturaleza hostil lo impulsa a destruir todo a su paso. Acércate y te cazará implacablemente... hasta la muerte. Sus poderes van desde golpes físicos moderadamente fuertes hasta ataques de fuego mortales; si intentas escapar, te lanzará bolas de fuego. En el peor de los casos, lanza rocas mágicas que infligen daño devastador.",
+    "ElSenorDeLasTumbasMoradas": "Qué sorpresa, supongo. El Señor De Las Tumbas Moradas es el compañero más cercano de La Muerte X; siempre están juntos, ayudándose mutuamente. Pero El Señor De Las Tumbas Moradas ha recibido mejoras misteriosas más allá de las de su amigo. ¿Qué tipo de poder oculta? ¿Qué ataques podría desatar? ¿Podría invocar algo más oscuro cuando sea amenazado? Eso es para que lo descubras. (Digamos que lo entenderás una vez que te enfrente a él). Pero ten cuidado: si lo golpeas, no te perdonará. Te arrastrará a las tumbas moradas y, desde ese momento, te convertirás en su esclavo eterno en las sombras. No será tu amigo, no porque te odie, sino porque la amistad nunca fue parte de su diseño.",
+    "LiderCalavericoSupremo": "¿Quién es el verdadero gobernante de la oscuridad y las tumbas? No es otro que Líder Calavérico Supremo, el líder más alto y temible de este mundo. A primera vista, puede parecer poco impresionante, con ataques que parecen débiles... pero no te dejes engañar. Su velocidad rivaliza con la de un guepardo, y cuando sale la luna llena o la luna nueva, se transforma en una fuerza monstruosa de la naturaleza. Su forma mutada podría recordarte a un Tanque. ¿Podría ser un rival digno de Fumador Químico Brawny en términos de fuerza bruta, impacto puro y caos total? Esa es una pregunta que solo la batalla puede responder.",
+    "LiderCalavericoSupremoAlfa": "No es solo una amenaza, es una declaración de guerra. Líder Calavérico Supremo Alfa es el gigante de nivel medio del reino de las tumbas, una bestia refinada forjada a partir del caos y la venganza. Más fuerte que la mayoría, más rápido que muchos y más malvado de lo que esperarías, es el tipo de enemigo que no espera presentaciones. ¿Sus ataques? Pesados e implacables. ¿Su velocidad? Casi antinatural. Y cuando la luna cambia, ya sea llena o nueva, muta en algo mucho más peligroso. Algunos dicen que su forma se parece a un Tanque. Otros se preguntan si está destinado a rivalizar con Fumador Químico Brawny en fuerza bruta, impacto y destrucción. ¿Quieres saberlo con seguridad? Entonces prepara el escenario y obsérvalos chocar. Solo no lo intentes en el Modo Creativo; eso es como ver una tormenta desde detrás de un cristal a prueba de balas. Líder Calavérico Supremo Alfa no es tu aliado. No está aquí para hablar, negociar o unirse a tu causa. Él es tu enemigo. Y si no estás listo... se asegurará de que nunca tengas la oportunidad de estarlo.",
+    "Conker": "Conker es una ardilla de apariencia linda pero con una personalidad cínica, oportunista y desvergonzada. Aunque la mayoría lo conoce por Conker's Bad Fur Day, su origen fue muy diferente: apareció por primera vez en 1997 como un personaje amigable para niños y protagonizó un proyecto beta llamado Twelve Tales: Conker 64, originalmente diseñado como un juego colorido para niños. Ese concepto fue posteriormente descartado y transformado radicalmente. El resultado es un personaje que bebe, insulta, manipula y actúa puramente por interés propio. No busca justicia, aventura o redención; sobrevive simplemente porque lo hace, sin un propósito claro, sin ética y sin empatía. Su habla es cruda y burlona, y su actitud refleja una indiferencia total hacia el caos a su alrededor. Conker no es un héroe ni un villano; es un sobreviviente que avanza por su propio beneficio, en total contradicción con su diseño caricaturesco.",
+    "Beavis": "Beavis es un adolescente con una risa nerviosa, un habla entrecortada y una personalidad volátil. Es impulsivo, emocionalmente inestable y se distrae fácilmente, a menudo activado por el fuego, la violencia o la música fuerte. Habla en frases cortas y repetitivas y actúa sin pensar, sin mostrar conciencia de las consecuencias. De manera controvertida, Beavis se convirtió en el centro de críticas después de que se emitiera el episodio 'Comedians' en 1993, cuando su fascinación por el fuego fue vinculada por comentaristas y comediantes a incidentes de la vida real, generando debates sobre si el programa glorificaba irresponsablemente comportamientos peligrosos o simplemente reflejaba impulsos adolescentes absurdos. Aunque a menudo sigue a Butt-Head, no es solo un compañero; tiene arrebatos impredecibles, especialmente cuando se transforma en su alter ego hiperactivo 'Cornholio', obsesionándose con el papel higiénico y hablando de manera incoherente. Beavis no busca significado, control o propósito. Sobrevive simplemente porque lo hace, inconsciente del daño que causa o del mundo que lo rodea.",
+    "Butt-Head": "Butt-Head es un adolescente con una risa profunda y lenta, un habla arrastrada y una personalidad presumida. Es perezoso, sarcástico y a menudo cruel, mostrando poca empatía o inteligencia. Habla en frases cortas y burlonas y generalmente manipula situaciones para divertirse, rara vez pensando más allá del momento. De manera controvertida, Butt-Head se convirtió en el centro de debate después de que se emitiera el episodio 'Comedians' en 1993, cuando los críticos y comediantes argumentaron si su personaje representaba una sátira aguda de la apatía adolescente o simplemente glorificaba la estupidez y el humor crudo, planteando preguntas sobre la responsabilidad de la comedia en la formación de la cultura juvenil. Aunque a menudo lidera a Beavis, no es solo un líder; tiene sus propios impulsos temerarios, especialmente cuando provoca caos por diversión, riéndose del dolor o la destrucción. Butt-Head no busca significado, crecimiento o responsabilidad. Existe simplemente para ridiculizar, inconsciente del daño que causa o del vacío de sus acciones.",
+    "HombreLava": "Hombre Lava es una criatura poderosa que se camufla entre la multitud hasta que es provocada. Si te acercas demasiado, espera ser quemado por sus golpes cuerpo a cuerpo. Intenta huir y serás perseguido por bolas de fuego lanzadas con precisión mortal. Pertenece a la facción Muerte, así que si eres parte de Alianza, será mejor que te equipares con armas más allá del equipo estándar de Survivalcraft 2; a menos que tengas un mosquete, explosivos o una ballesta explosiva, es probable que termines tostado. El fuego y el magma son sus aliados; quemarlo solo alimenta su furia. Su única debilidad verdadera es el agua: la inmersión lo ralentiza, debilita su núcleo de fuego y eventualmente extingue su poder. Evita los ríos, entra en pánico con la lluvia y recibe mucho daño de armas basadas en salpicaduras. Si quieres sobrevivir a un encuentro, atráelo a terreno húmedo y golpea rápido antes de que se reavive.",
+    "HombreAgua": "Hombre Agua es tranquilo pero mortal. Se esconde en ríos y lluvia, atacando con ráfagas heladas y olas aplastantes. El fuego lo cura. Los explosivos apenas lo rasguñan. Su cuerpo fluye como un líquido, difícil de golpear, más difícil de detener. Es parte de Muerte y lucha junto a su mejor hermano, Hombre Lava. Juntos, cubren tierra y agua, quemando y ahogando todo a su paso. Si eres Alianza, trae relámpagos, escarcha o mantente alejado. El terreno húmedo es su hogar. El suelo seco es tu única oportunidad.",
+    "ElBallestador": "El Ballestador no es el luchador más fuerte, pero no dejes que eso te engañe: su ballesta maldita nunca se separa de su lado. No es parte de tu Alianza y pertenece a Muerte, destacando como el único humano en su facción que empuña un arma poseída. Sus flechas son rápidas, silenciosas e implacables. Enfréntalo o intenta escapar; de cualquier manera, ya estás muerto. Si te ve, dispara. Si te mueves, acierta. Sus flechas de diamante atraviesan casi todo, excepto el rinoceronte, la beluga y la orca, que pueden aguantar más golpes si contraatacan. Para sobrevivir, usa el terreno para romper su línea de visión. Zigzaguea al correr, salta de manera impredecible y nunca te quedes quieto. Si estás solo, atrae su disparo y avanza antes de que recargue. En grupo, flanquea mientras un compañero atrae el fuego. El daño por salpicadura o choque puede interrumpir su puntería, pero el tiempo lo es todo. Si escuchas el clic de su ballesta, puede que ya sea demasiado tarde. Dicen que su ballesta fue forjada en silencio, vinculada a él después de sobrevivir a una traición que lo dejó mudo. Desde entonces, ha sido su única compañía; nunca habla, nunca falla, nunca se va. Por eso la confía más que a cualquier aliado. Aparece solo de noche a partir del día 5, y durante estas noches los jugadores pueden colocar trampas para capturar sus ballestas y munición, convirtiendo su propio arsenal en un recurso valioso.",
+    "HeadcrabBloodyHuman": "Una variante más agresiva y ensangrentada del headcrab estándar. El Headcrab Sangriento presenta tejido exoesquelético desgarrado, empapado en hemolinfa y fibras musculares expuestas, probablemente causado por radiación o experimentos fallidos de bioweapon. Se mueve más rápido, salta más lejos y se adhiere a los huéspedes con fuerza brutal, desencadenando una casi instantánea zombificación. Su chillido es más agudo y su presencia a menudo señala zonas de alta contaminación. No recomendado para encuentros de bajo nivel.",
+    "ElArquero": "Hermano gemelo de El Ballestador, El Arquero destaca en precisión milimétrica y arquería de fuego rápido usando arcos reforzados. Ambos comparten agilidad táctica, visión nocturna y comportamiento de patrulla sincronizado, pero El Arquero prefiere emboscadas elevadas y golpes silenciosos. Su armadura es más ligera, permitiendo un movimiento ágil a través de estructuras altas. Se comunica mediante señales ópticas y rara vez falla un disparo. Al igual que El Ballestador, es altamente peligroso: provocarlo resultará en una lluvia letal de flechas. Al morir, suelta flechas de calidad de arco utilizables, ideales si te quedas sin recursos. Para sobrevivir, usa cobertura, atrae sus disparos y flanquéalo desde ángulos ciegos para evitar su línea de visión directa. Curiosamente, El Arquero comenzó a usar su arco después de ver a su hermano disparar un arco por primera vez. Queriendo defenderse por igual, robó un arco y flechas de una tienda de armas, dando lugar a un Robin Hood hostil de las alturas. Aparece solo de noche a partir del día 10, haciendo sus encuentros más raros pero significativamente más amenazantes a medida que el mundo se oscurece.",
+    "ArqueroPrisionero": "Nacido como el hermano gemelo de El Arquero, el Arquero Prisionero lleva un pasado marcado por la era nazi. Sobreviviendo a los horrores del Holocausto, emergió con resiliencia y un nuevo propósito. A diferencia de su hermano y El Ballestador, que se alinearon con una facción malévola, el Arquero Prisionero eligió el camino de la Alianza, decidido a oponerse a la tiranía en lugar de servirla. Su arma elegida es el arco, adoptado después de presenciar la habilidad de su hermano y prometiendo defenderse a sí mismo y a otros con igual precisión. Durante el cautiverio, creó en secreto flechas de fuego rudimentarias, aunque el control nazi prohibía a los prisioneros empuñar tales armas. Esta desobediencia se convirtió en la semilla de su maestría: cuando llegó la libertad, refinó su habilidad en una arquería silenciosa y letal. Ahora, se erige como un guardián: rápido, vigilante e implacable. Si ve a sus aliados o a la Alianza bajo ataque, no dudará en desatar una tormenta de flechas. Su armadura es ligera, construida para velocidad y supervivencia, permitiéndole moverse por ruinas y estructuras altas con facilidad. Se comunica mediante señales sutiles, prefiriendo el silencio a las palabras, y rara vez falla un disparo. Al ser derrotado, suelta flechas utilizables, un recordatorio de su ingenio y las dificultades que soportó. Aunque su pasado está marcado por el dolor, el Arquero Prisionero lucha hacia adelante con determinación, encarnando a un Robin Hood hostil de las alturas. Su historia es de supervivencia, rebelión y la búsqueda implacable de la justicia, demostrando que incluso después de una tragedia, uno puede levantarse para proteger a otros y continuar la lucha por la libertad.",
+    "Veemon": "Veemon apareció por primera vez en Digimon Adventure 02 (2000), presentado como el compañero de Davis Motomiya y rápidamente reconocido por su naturaleza juguetona pero valiente. Aunque alineado con el grupo Alianza, Veemon también puede aliarse con el jugador, ofreciendo apoyo versátil en batalla a través de su habilidad única para digievolucionar en armadura usando Digi-Huevos. Esto lo hace adaptable a múltiples situaciones de combate, desde la ofensiva ígnea de Flamedramon hasta la defensa milagrosa de Magnamon. Veemon fue originalmente diseñado por Kenji Watanabe, el ilustrador detrás de muchas especies Digimon, cuya visión creativa se inspiró en la letra V (simbolizando victoria) y la revista de manga V-Jump donde se serializaba Digimon V-Tamer 01. Su diseño refleja tanto un motivo de dragón como una personalidad juvenil y enérgica que resonó con los fans en todo el mundo. Más allá de sus orígenes, Veemon encarna lealtad, optimismo y resiliencia. Es travieso pero profundamente comprometido a proteger a sus aliados, a menudo lanzándose de cabeza al peligro con una sonrisa. En el juego, rara vez duda en luchar por la justicia, y su presencia asegura a los compañeros que el coraje y la amistad pueden superar cualquier obstáculo. En última instancia, Veemon es más que un luchador; es un símbolo de esperanza, demostrando que incluso en las batallas más duras, la bondad y la determinación siempre brillarán.",
+    "Shoutmon": "Shoutmon apareció por primera vez en Digimon Xros Wars (2010), rápidamente conocido como el compañero enérgico y determinado de Taiki Kudo. Aunque alineado con el grupo Alianza, Shoutmon también puede aliarse con el jugador, aportando su espíritu ardiente y sus poderosos ataques basados en la voz al campo de batalla. Su habilidad para digifusionarse con otros Digimon lo hace muy versátil, adaptándose tanto a estrategias ofensivas como defensivas. Shoutmon fue originalmente diseñado por Kenji Watanabe, el ilustrador responsable de muchas especies Digimon, cuya creatividad enfatizó el motivo del micrófono de Shoutmon y su sueño de convertirse en el Rey Digimon. Su diseño refleja tanto energía musical como ambición heroica, resonando fuertemente con los fans. Más allá de sus orígenes, Shoutmon encarna coraje, liderazgo y optimismo. Inspira a los aliados con su determinación, a menudo lanzándose al peligro con una confianza inquebrantable. En el juego, rara vez duda en luchar por la justicia, y su presencia asegura a los compañeros que la unidad y la amistad pueden superar cualquier obstáculo. En última instancia, Shoutmon es más que un luchador; es un símbolo de esperanza y perseverancia, demostrando que incluso en las batallas más duras, la bondad y la determinación siempre brillarán.",
+    "BallestadoraMusculosa": "Ballestadora Musculosa es más fuerte y musculosa que El Ballestador. Se conocieron en un campo de entrenamiento donde ella practicaba con un arco simple y él probaba una ballesta; él notó su disciplina, ofreció orientación directa y comenzaron a trabajar juntos en disparos a distancia. Esa cooperación se convirtió en una relación, y él le enseñó paso a paso: posturas, sincronización, lectura del viento y precisión, pasando de ejercicios con arco a rutinas con ballesta. Cuando él eligió un camino oscuro y se unió a una facción hostil, ella terminó la relación y estableció metas claras: entrenar más duro, ganar músculo y superarlo en fuerza y precisión. Conservó las lecciones de precisión y reclamó la segunda ballesta que se había preparado como respaldo, ahora su arma principal. Se unió a la Alianza y apunta a su facción sin dudar. Sus disparos son potentes y precisos, su resistencia es alta y su enfoque es estricto. Lo que queda del pasado es el combate a distancia metódico y la decisión de ser mejor que su antiguo compañero. Ballestadora Musculosa lucha con músculo y convicción, se erige como una aliada leal y no vuelve al mal.",
+    "Agumon": "Agumon apareció por primera vez en Digital Monster Ver.1 (1997) y luego se hizo ampliamente reconocido en Digimon Adventure (1999) como el leal compañero de Tai Kamiya. Diseñado por Kenji Watanabe, Agumon fue creado con una forma similar a un reptil que se asemeja a un pequeño dinosaurio, simbolizando el crecimiento y el potencial de evolucionar en Digimon más fuertes como Greymon. Alineado con el grupo Alianza, Agumon también puede aliarse con el jugador, ofreciendo apoyo equilibrado en combate a través de su ataque ígneo Baby Flame. Su diseño enfatiza tanto la simplicidad como la ferocidad, convirtiéndolo en una figura central en la franquicia Digimon a través del anime, juegos y mercancía. Más allá de sus orígenes, Agumon encarna lealtad, coraje y resiliencia. Se erige como un compañero confiable que lucha con determinación, recordando a los aliados que incluso en batallas difíciles, la amistad y la valentía pueden llevar a la victoria.",
+    "Guilmon": "Guilmon apareció por primera vez en Digimon Tamers (2002), presentado como el compañero Rookie de Takato Matsuda. Diseñado por Kenji Watanabe, Guilmon fue creado con una forma juvenil similar a un dinosaurio marcada por el símbolo de Peligro Digital, representando tanto un gran potencial destructivo como la posibilidad de proteger el Mundo Digital si es guiado por la confianza. Aunque alineado con el grupo Alianza, Guilmon también puede aliarse con el jugador, ofreciendo un fuerte apoyo a través de sus ataques basados en fuego como Pyro Sphere y su habilidad para evolucionar a formas poderosas como Growmon y Dukemon. Su diseño enfatiza energía cruda e instinto equilibrado por lealtad, convirtiéndolo en un favorito de los fans a través del anime y juegos. Más allá de sus orígenes, Guilmon encarna curiosidad, coraje y amistad. A menudo se lanza a la batalla con determinación, aprendiendo y creciendo junto a sus aliados. En el juego, Guilmon proporciona ofensiva versátil y resiliencia confiable, asegurando a los compañeros que la unidad y la confianza pueden superar cualquier desafío. En última instancia, Guilmon es más que un luchador; es un símbolo de potencial, mostrando que incluso un gran poder puede usarse para el bien cuando es guiado por lazos de amistad.",
+    "Gumdramon": "Gumdramon apareció por primera vez en Digimon Xros Wars: The Young Hunters Who Leapt Through Time (2011), presentado como el compañero Rookie de Tagiru Akashi. Diseñado por Kenji Watanabe, Gumdramon fue creado con una forma similar a un dragón que presenta un arma de cola poderosa, simbolizando tanto su personalidad traviesa como su estilo de combate explosivo. Alineado con el grupo Alianza, Gumdramon también puede aliarse con el jugador, ofreciendo apoyo versátil a través de su ataque característico Jamming Strike y su habilidad para evolucionar a formas más fuertes como Arresterdramon. Su diseño enfatiza agilidad, energía y encanto rebelde, haciéndolo destacar entre los Digimon Rookie. Más allá de sus orígenes, Gumdramon encarna determinación, independencia y lealtad. A menudo se lanza a la batalla con audaz confianza, aprendiendo a equilibrar su naturaleza juguetona con la responsabilidad. En el juego, Gumdramon ofrece ofensiva rápida y estrategias adaptables, asegurando a los compañeros que el coraje y la persistencia pueden superar cualquier obstáculo. En última instancia, Gumdramon es más que un luchador; es un símbolo de crecimiento, demostrando que incluso la imprudencia juvenil puede transformarse en fuerza cuando es guiada por la confianza y la amistad.",
+    "BetelGammamon": "BetelGammamon apareció por primera vez en Digimon Ghost Game (2021), presentado como la evolución Champion de Gammamon, el compañero Rookie de Hiro Amanokawa. Diseñado por Kenji Watanabe, BetelGammamon fue creado con una forma humanoide similar a un guerrero, simbolizando energía ígnea, velocidad y fuerza en combate cuerpo a cuerpo. Alineado con el grupo Alianza, BetelGammamon también puede aliarse con el jugador, ofreciendo un poderoso apoyo a través de su ataque característico Betel G Shout y su habilidad para evolucionar a formas más fuertes como Canoweissmon y Siriusmon. Su diseño enfatiza agilidad, coraje y ambición heroica, convirtiéndolo en un Digimon Champion destacado reconocido por su determinación. Más allá de sus orígenes, BetelGammamon encarna valentía, lealtad y el impulso de proteger a otros. A menudo se lanza a la batalla con inquebrantable confianza, equilibrando espíritu juvenil con creciente responsabilidad. En el juego, BetelGammamon proporciona ofensiva rápida y estrategias versátiles, asegurando a los compañeros que la unidad y el coraje pueden superar cualquier desafío. En última instancia, BetelGammamon es más que un luchador; es un símbolo de crecimiento heroico, demostrando que la verdadera fuerza brilla más cuando es guiada por la confianza y la amistad.",
+    "Gaomon": "Gaomon apareció por primera vez en Digimon Savers (2006), presentado como el compañero Rookie de Thomas H. Norstein. Diseñado por Kenji Watanabe, Gaomon fue creado con una forma similar a un canino que usa guantes de boxeo rojos, simbolizando disciplina, lealtad y su estilo de combate inspirado en artes marciales. Alineado con el grupo Alianza, Gaomon también puede aliarse con el jugador, ofreciendo apoyo confiable a través de sus ataques característicos como Double Backhand y Rolling Upper, mientras evoluciona a formas más fuertes como Gaogamon y MachGaogamon. Su diseño enfatiza velocidad, precisión y determinación, convirtiéndolo en un Digimon Rookie distintivo reconocido por su espíritu luchador. Más allá de sus orígenes, Gaomon encarna lealtad, coraje y resiliencia. A menudo entra en batalla con calma y enfoque, equilibrando obediencia con fuerza independiente. En el juego, Gaomon proporciona ofensiva rápida y defensa confiable, asegurando a los compañeros que la disciplina y el trabajo en equipo pueden superar cualquier desafío. En última instancia, Gaomon es más que un luchador; es un símbolo de confianza, demostrando que la verdadera fuerza proviene de la lealtad y la unidad.",
+    "Impmon": "Impmon apareció por primera vez en Digimon Tamers (2001) como un Digimon Rookie creado por Kenji Watanabe, diseñado con una forma demoníaca traviesa, cuerpo púrpura, bufanda roja y guantes. En el anime fue retratado como un alborotador y a veces antagonista, reflejando resentimiento y soledad, pero en este mod pertenece al grupo Alianza y puede hacerse amigo del jugador, estando a la par de otros Digimon del mismo subgrupo. Conocido por su ataque característico Night of Fire, Impmon encarna agilidad, astucia y ofensiva ígnea, mientras que su camino de evolución conduce a Beelzemon. En última instancia, Impmon es más que un villano; es un símbolo de lealtad y unidad cuando se le da confianza.",
+    "WalterZombie": "Walter Zombie es producto de una mutación química catastrófica causada por la empresa CONASUPO, inicialmente conocida por sus productos lácteos. Después de consumir accidentalmente leche radioactiva en 1986, el incidente se originó por las consecuencias del desastre de Chernóbil. Tras la explosión en abril de 1986, material radioactivo se extendió por Europa, resultando en lluvia ácida que contaminó pastos en Irlanda. Las vacas pastaron en esta hierba contaminada, llevando a la producción de leche radioactiva, que posteriormente fue exportada a México. Desafiando las probabilidades de muerte, Walter se transformó en una criatura hostil en lugar de sucumbir a los efectos de la radiación. Sin embargo, a diferencia de los zombis tradicionales, conservó una medida de su inteligencia y conciencia. En su búsqueda por recuperar su vida humana, Walter se alió con el grupo Alianza, buscando tanto redención como una cura para su condición. A pesar de sus aspiraciones, se le administró un segundo tratamiento químico, destinado a terminar su existencia como zombi. En cambio, desencadenó una transformación inesperada en una forma Mamón (Tanque), mejorando su destreza física. Esta transformación ocurre solo durante lunas llenas o nuevas, con un mero 0.5% de probabilidad de cambiar a este estado formidable. En esta forma, Walter se convierte en un adversario más poderoso, capaz de resistir daño significativo mientras aún se aferra a la esperanza de algún día reclamar su humanidad. Mientras navega esta dualidad, Walter Zombie encarna la lucha entre sus instintos monstruosos y los restos del hombre que una vez fue.",
+    "WalterZombieMamadisimo": "La Forma Tanque de Walter Zombie es una mutación extrema que solo se manifiesta durante lunas llenas o nuevas con un 0.5% de probabilidad, lo que significa que a veces se transforma y otras veces permanece en su estado normal. Si es provocado o si su grupo Alianza es atacado, y el jugador se aleja alrededor de 10 bloques, lanzará bombas implacablemente hasta que el enemigo sea destruido, incluso sacrificando a sus propios aliados para eliminar a quienes lo amenazan. Para derrotarlo, se recomienda usar un mosquete y una ballesta con flechas explosivas, evitando el combate en su base o hogar ya que existe un alto riesgo de que lo haga volar todo y arruine el esfuerzo del jugador. Es más seguro retirarse y encontrar refugios para protegerse de las explosiones, mientras se colocan trampas como púas para limitar su movilidad y aumentar las posibilidades de supervivencia.",
+    "AladinaCorrupta": "Aladina Corrupta fue una vez una figura benévola durante la Edad Media árabe, conocida por ayudar a los pobres y necesitados. A medida que llegó la era moderna, fue excluida por el cambiante sistema árabe en Libia alrededor de fines del siglo XIX, cuando la región aún estaba bajo control otomano. Su declive empeoró en el siglo XX: para la década de 1990 Libia estaba bajo la dictadura de Muammar Gaddafi, y sus habilidades se debilitaron, ya no pareciéndose a su fuerza medieval. La caída de Gaddafi en 2011 trajo más caos en lugar de mejora. Presenciando a civiles luchando por el poder, Aladina Corrupta reflexionó sobre años de sufrimiento y comenzó a adoptar técnicas inspiradas en grupos militantes árabes, como ataques suicidas y bombardeos, aunque nunca se unió formalmente a ellos. Finalmente, se alineó con la facción conocida como Muerte, impulsada por la venganza por el dolor y maltrato que soportó. Ahora siente un sombrío alivio después de unirse a Muerte. A diferencia de otros miembros del grupo, tiene un ataque distintivo: cuando un NPC o jugador la ataca a ella o a sus aliados, enciende un barril incendiario mediano. La distancia no importa; cargará directamente hacia el atacante, encenderá el barril y dará solo cinco segundos para escapar. Fallar en huir resulta en ser destrozado y lanzado por los aires. En su furia incluso sacrifica a sus propios compañeros, y a sí misma, siempre que el grupo está bajo ataque.",
+    "CarlJohnson": "Carl 'CJ' Johnson, nacido en Los Santos, San Andreas, Estados Unidos, actualmente vive en su ciudad natal donde controla las calles; se convirtió en la figura central en la infame controversia 'Hot Coffee' de Grand Theft Auto: San Andreas en 2005, un minijuego oculto que desató pánico moral, demandas y obligó a Rockstar Games a reclasificar el título; a pesar de su camino criminal, CJ comparte una amistad inquebrantable con Tommy Vercetti y Claude Speed, juntos formando el grupo 'Alianza' para dominar el inframundo criminal.",
+    "ElGuerrillero": "Pepito Omencio Del Moreno, conocido como El Guerrillero, nació en Arauca, Colombia el 7 de junio de 1997. Una vez un hombre amable que amaba el campo y soñaba con unirse al ejército colombiano para luchar contra el narcotráfico, su vida cambió a los 23 años. Después de soportar abuso de sus padres, bullying por revelar su sueño, pobreza y el violento conflicto en Arauca, abandonó su hogar y se alió con las FARC. Allí adoptó sus técnicas y encontró una nueva familia, volviéndose despiadado en el proceso. Se extendieron rumores de que El Espectador, Noticias Caracol, RCN, Canal Uno y otros lo nombraron entre los más buscados, junto a líderes de las FARC y el ELN. Después de años de práctica, dejó las FARC no para traicionarlas sino para seguir su propio camino de supervivencia, eventualmente uniéndose al grupo Muerte. Desde ese momento se volvió más feliz pero más malvado, reconocido por su dominio del mosquete tradicional. Si te ve, estás condenado. Puede aparecer en grupos de dos o tres, aplicando tácticas aprendidas durante su era en las FARC. Puede emerger en cualquier momento, de día o de noche, y aparecerá en el día 16.00",
+    "ElGuerrilleroTenebroso": "Alejandro Risaraldo Castillo, nacido en una familia guerrillera dentro de las FARC, eligió unirse a ellos a la edad de 8 años por su propia voluntad. Ganó experiencia hasta que conoció a El Guerrillero, formando una amistad especial. A los 23 se retiró sin tristeza, pero sintió que algo andaba mal. Disfrazado, dejó el campamento después de escuchar disparos que confundió con pistolas pero eran mosquetes, y descubrió que su amigo se había aliado con Muerte, luchando contra Alianza. El Guerrillero fue herido y su grupo perdió, así que Alejandro huyó. Buscando refugio en un ritual sectario, le pidió a un chamán que restaurara su amistad a cambio de su alma. El chamán estableció condiciones: unirse a Alianza e informar solo a unos pocos de los amigos más cercanos de El Guerrillero y compañeros de campo seleccionados, nunca a todo el grupo, para evitar un conflicto mucho peor. También debe mantener en secreto que está alineado con Alianza, que no es policía ni fuerzas armadas, y revelar en cambio que El Guerrillero intercambió su amistad por otra dentro de Muerte, especialmente con quien se volvió más especial para él. Alejandro aceptó, decidiendo cazar a su amigo para recuperar quien una vez fue, mientras mantiene tácticas guerrilleras. Se dice que aparecerá en el día 17 solo de noche.",
+    "CamisasMorenas": "Camisas Morenas nació en Zacatecas, México, de una familia humilde. Se mudó a la Ciudad de México buscando mejores oportunidades económicas, donde las guerras de carteles aún rugen por el territorio. Allí entró en el mundo de los mercados callejeros, y en su cumpleaños su tío, el hermano de su padre, le regaló un machete de piedra. Lo guardó como arma de defensa, para ser usado solo si era provocado al extremo o si sus pertenencias eran robadas. Tenía un puesto vendiendo camisas, pero eventualmente abandonó el negocio del tianguis cuando se unió a una pandilla local, no parte de los carteles sino arraigada en la Ciudad de México misma. Después de muchos años de experiencia, la pandilla encontró una facción llamada Muerte y aceptó su oferta de unirse. Camisas Morenas se endureció, usando su machete como símbolo y arma, y su reputación creció como alguien que defendía ferozmente a su grupo. Aunque una vez soñó con una vida simple, su camino lo llevó más profundo al conflicto, y su lealtad a Muerte lo marcó como una figura peligrosa. Se dice que aparecerá en el día 21 de noche.",
+    "ZombieRepetidor": "Zombie Repetidor fue una vez un humano que vivía en las Islas Marshall, especialmente en el Atolón Bikini. Era de origen ecuatoriano, conocido como Elver Gonzalo Samboni, que viajó allí buscando una nueva vida. Un agricultor hábil, se especializaba en frutas y verduras, dedicándose a sus cosechas. Todo cambió drásticamente en 1954 cuando Estados Unidos detonó bombas nucleares en las islas. Los residentes fueron forzados a abandonar sus hogares para evitar la muerte por los experimentos, pero Elver se negó, creyendo que todo eran mentiras, y se escondió bajo tierra. Cuando ocurrieron las explosiones, todos pensaron que había muerto. Las islas se volvieron desoladas, inhabitables debido a la radiación. Sin embargo, contra toda probabilidad, Elver sobrevivió. Su piel se quemó y pudrió con los años, y se transformó en un zombi. Esto se debió en parte a una extraña ensalada de berenjena encantada que había creado, diseñada para revivirlo después de explosiones, aunque solo como zombi. A pesar de su transformación, permaneció vivo e ideó una forma de regresar a Ecuador. Se infiltró en un barco de lujo con destino a Ecuador, llegando a Atacames, y luego regresó a su ciudad natal de Quito. Allí, comenzó a comer comida chatarra, lo que lo volvió obeso pero también aumentó su fuerza muscular. Un día, decidió robar una Ballesta Repetidora para practicar disparos, ya que no tenía permisos legales para poseer un arma de fuego y robarla podría haberle costado la vida. Entrenó implacablemente hasta volverse un experto tirador. Aunque puede parecer solo otro zombi común, no te dejes engañar; si te ve, comenzará a disparar. Eventualmente, se alió con el grupo Muerte, convirtiéndose en otro tirador mortal. Aparecerá en el día 13 de noche.",
+    "Sparkster": "Sparkster es el héroe zarigüeya Rocket Knight creado por Konami, apareciendo por primera vez en Rocket Knight Adventures (1993) y continuando en Sparkster (1994) y entradas posteriores. Armado con una espada y un cohete, defiende el Reino de Zephyrus con coraje y agilidad. A mitad de su historia aquí, Sparkster se alinea con la Alianza, un grupo protector dedicado a defender aliados y resistir la corrupción; es no hostil por defecto y solo contraataca cuando es provocado. Reconocible por su armadura azul y roja, Sparkster es valiente, leal y resiliente, sobresaliendo en movimiento rápido y golpes precisos mientras inspira a quienes lo rodean. Aparecerá en el Día 2 a cualquier hora.",
+    "Tulio": "Nacido en Santiago de Chile en 1995, durante la era post-Pinochet, creció fascinado por las tendencias de moda—los jeans y camisas a rayas definían su estilo—y su curiosidad sobre el mundo solo crecía. A la edad de 18 años, eligió no asistir a la Universidad de Santiago, prefiriendo dedicarse a descubrir la verdad detrás de las misteriosas islas del Pacífico no identificadas. Había visto reportes en TVN describiendo estas islas, lugares que ni Estados Unidos ni Rusia habían logrado investigar a pesar de su obsesión. Se extendieron rumores de que solo ciertos seres vivos podían entrar, y solo ellos podían aprender el verdadero origen de las islas. Determinado, buscó medios ilegales para llegar, viajando a la Isla de Pascua con la esperanza de encontrar un bote abandonado para continuar su viaje. El destino intervino cuando vientos violentos y huracanes azotaron, arrojándolo al océano. Sin embargo, la naturaleza misma pareció protegerlo, llevándolo sano y salvo a las mismas islas que buscaba. Allí encontró tanto humanos como no humanos—Naomi, Paco, El Marihuanero, El Marihuanero Mamón y Ricardo. Juntos formaron una familia, unidos por la supervivencia y el misterio. Eventualmente, se unió al grupo conocido como Alianza, dedicado a buscar sobrevivientes y descubrir los secretos de las islas del Pacífico. Su viaje se convirtió no solo en una búsqueda de conocimiento, sino también en un testimonio de resiliencia, curiosidad y el extraño destino que lo unió con otros en las islas.",
+    "Brayan": "Brayan nació el 12 de enero de 2000 en Londres, Inglaterra. Desde joven se dedicó a estudiar física y biología, inspirado por figuras como Charles Darwin e Isaac Newton. A la edad de 25 años, recibió un boleto especial para viajar a Alaska, Estados Unidos, para profundizar sus estudios de naturaleza y física congelada. Aceptó, pero durante el viaje un accidente inesperado cambió su vida: el piloto se desmayó debido a una causa natural, el avión perdió el control y se estrelló. Brayan sobrevivió gracias a los vientos de la naturaleza, que lo alejaron de ahogarse y lo guiaron a una misteriosa isla en el Pacífico. Desde ese momento, comenzó a sobrevivir usando el conocimiento que había adquirido en sus estudios, aplicando física y biología para soportar el duro ambiente. Un día conoció a Tulio, quien quedó impresionado por los métodos de supervivencia de Brayan y le ofreció la oportunidad de unirse al grupo conocido como Alianza. Este grupo estaba formado por personas de buen espíritu, dedicadas a protegerse mutuamente mientras recolectaban información sobre las desconocidas y misteriosas islas. Brayan aceptó, y desde entonces se convirtió en parte de una familia en la isla, manteniendo viva su esperanza de algún día regresar a Inglaterra.",
+    "Richard": "Richard es el hermano gemelo de Ricardo. A diferencia de él, Richard nació en Sudáfrica en 2004, durante la era post-apartheid. Cuando cumplió 18 años, comenzó su vida como aventurero, impulsado por la curiosidad y el deseo de explorar lo desconocido. Más tarde, conoció a Ricardo durante un viaje científico en México, y a pesar de sus diferentes orígenes, se unieron profundamente y se convirtieron en hermanos en espíritu. Cuando Ricardo partió hacia las misteriosas islas del Pacífico, Richard decidió emprender la misma expedición, pero con una diferencia única: diseñó y construyó una máquina capaz de viajar a cualquier lugar sin la necesidad de barcos, botes o vehículos convencionales. Su invento fue un éxito, y lo usó para embarcarse en su viaje, llegando eventualmente al mismo destino que Ricardo. Al llegar a la isla, Ricardo lo recibió como su verdadero hermano y lo presentó a los compañeros que había conocido allí. Desde ese momento, Richard se convirtió en parte de la familia y se unió al grupo conocido como Alianza. Su llegada trajo nueva energía al equipo, ya que su mente inventiva y espíritu aventurero complementaron la resiliencia de Ricardo. La máquina de Richard, aunque dañada durante el viaje, se convirtió en un símbolo de esperanza para el grupo, mostrando que el ingenio humano podía rivalizar incluso con los misterios de las islas. Junto con Naomi, Paco y los demás, Richard contribuyó a la supervivencia y exploración de la tierra desconocida, fortaleciendo los lazos de Alianza y manteniendo vivo el sueño de algún día descubrir los secretos de las islas del Pacífico."
+    },
+    "ContentWidgets": {
+      "FlameThrowerWidget": {
+        "Title": "Lanzallamas",
+        "Inventory": "Inventario",
+        "LoadAmmunition": "Carga una munición",
+        "SprayFire": "Prepárate para rociar fuego {0}/15",
+        "SprayPoison": "Prepárate para rociar veneno {0}/15"
+      },
+      "RepeatCrossbowWidget": {
+        "Title": "Ballesta Repetidora",
+        "Inventory": "Inventario",
+        "InstructionsPull": "Tensa para cargar",
+        "InstructionsInsert": "Inserta virotes",
+        "InstructionsArrows": "Flechas: {0}/8"
+      }
+    },
+    "Messages": {
+      "FirstPullCrossbow": "¡Primero tensa la ballesta!",
+      "FirstLoadArrow": "¡Primero carga una virote!",
+      "ArrowCount": "Flechas: {0}/8"
+    },
+    "Usual": {
+      "ok": "Aceptar",
+      "cancel": "Cancelar"
+    }
   },
   "Blocks": {
     "WoodAxeBlock:0": {
-  "DisplayName": "Hacha de Madera",
-  "Description": "Volviendo a lo básico - como en los viejos tiempos"
-},
-"WoodMacheteBlock:0": {
-  "DisplayName": "Machete de Madera",
-  "Description": "Herramienta clásica de la versión 2.0"
-},
-"WoodPickaxeBlock:0": {
-  "DisplayName": "Pico de Madera",
-  "Description": "Minería nostálgica - era previa a 2.1"
-},
-"WoodShovelBlock:0": {
-  "DisplayName": "Pala de Madera",
-  "Description": "Excavación simple - cuando la vida era más fácil"
-},
-"StoneShovelBlock:0": {
-  "DisplayName": "Pala de Piedra",
-  "Description": "Tecnología de la Edad de Piedra revivida"
-},
-"StoneAxeOriginalBlock:0": {
-  "DisplayName": "Hacha de Piedra (Original)",
-  "Description": "Primitiva pero efectiva - previa a 2.2"
-},
-"StoneMacheteBlock:0": {
-  "DisplayName": "Machete de Piedra",
-  "Description": "Cuando la piedra podía cortar - recuerdos de la versión 2.0"
-},
-"StoneRakeBlock:0": {
-  "DisplayName": "Rastrillo de Piedra",
-  "Description": "Herramienta agrícola antigua - volver a las raíces"
-},
-"StonePickaxeBlock:0": {
-  "DisplayName": "Pico de Piedra",
-  "Description": "¿Cómo podría olvidar los viejos tiempos, hermano? :\")"
-},
+      "DisplayName": "Hacha de Madera",
+      "Description": "Volviendo a lo básico - como en los viejos tiempos"
+    },
+    "WoodMacheteBlock:0": {
+      "DisplayName": "Machete de Madera",
+      "Description": "Herramienta clásica de la versión 2.0"
+    },
+    "WoodPickaxeBlock:0": {
+      "DisplayName": "Pico de Madera",
+      "Description": "Minería nostálgica - era previa a 2.1"
+    },
+    "WoodShovelBlock:0": {
+      "DisplayName": "Pala de Madera",
+      "Description": "Excavación simple - cuando la vida era más fácil"
+    },
+    "StoneShovelBlock:0": {
+      "DisplayName": "Pala de Piedra",
+      "Description": "Tecnología de la Edad de Piedra revivida"
+    },
+    "StoneAxeOriginalBlock:0": {
+      "DisplayName": "Hacha de Piedra (Original)",
+      "Description": "Primitiva pero efectiva - previa a 2.2"
+    },
+    "StoneMacheteBlock:0": {
+      "DisplayName": "Machete de Piedra",
+      "Description": "Cuando la piedra podía cortar - recuerdos de la versión 2.0"
+    },
+    "StoneRakeBlock:0": {
+      "DisplayName": "Rastrillo de Piedra",
+      "Description": "Herramienta agrícola antigua - volver a las raíces"
+    },
+    "StonePickaxeBlock:0": {
+      "DisplayName": "Pico de Piedra",
+      "Description": "¿Cómo podría olvidar los viejos tiempos, hermano? :\")"
+    },
     "LavaSpear:0": {
-    "DisplayName": "Lanza de Lava",
-    "Description": "Forjada en magma - quema todo a su paso"
-  },
-  "LavaMachete:0": {
-    "DisplayName": "Machete de Lava",
-    "Description": "Filo fundido que desmembra con precisión ardiente"
-  },
-  "LavaPickaxe:0": {
-    "DisplayName": "Pico de Lava",
-    "Description": "Excava minerales con poder volcánico"
-  },
-  "LavaShovel:0": {
-    "DisplayName": "Pala de Lava",
-    "Description": "Cava en la tierra como si fuera mantequilla - mantequilla caliente"
-  },
-  "LavaHammer:0": {
-    "DisplayName": "Martillo de Lava",
-    "Description": "Aplasta rocas con fuerza volcánica"
-  },
-  "LavaAxe:0": {
-    "DisplayName": "Hacha de Lava",
-    "Description": "Corta madera con furia ardiente"
-  },
-  "LavaRake:0": {
-    "DisplayName": "Rastrillo de Lava",
-    "Description": "Labra el suelo con eficiencia volcánica"
-  },
+      "DisplayName": "Lanza de Lava",
+      "Description": "Forjada en magma - quema todo a su paso"
+    },
+    "LavaMachete:0": {
+      "DisplayName": "Machete de Lava",
+      "Description": "Filo fundido que desmembra con precisión ardiente"
+    },
+    "LavaPickaxe:0": {
+      "DisplayName": "Pico de Lava",
+      "Description": "Excava minerales con poder volcánico"
+    },
+    "LavaShovel:0": {
+      "DisplayName": "Pala de Lava",
+      "Description": "Cava en la tierra como si fuera mantequilla - mantequilla caliente"
+    },
+    "LavaHammer:0": {
+      "DisplayName": "Martillo de Lava",
+      "Description": "Aplasta rocas con fuerza volcánica"
+    },
+    "LavaAxe:0": {
+      "DisplayName": "Hacha de Lava",
+      "Description": "Corta madera con furia ardiente"
+    },
+    "LavaRake:0": {
+      "DisplayName": "Rastrillo de Lava",
+      "Description": "Labra el suelo con eficiencia volcánica"
+    },
     "ItemsLauncher:0": {
       "DisplayName": "Lanzador de Objetos",
       "Description": "Lanza cualquier tipo de bloque u objeto. Aunque es costoso de fabricar, es un arma poderosa como el mosquete. ¡Ten cuidado!",
-      "CRDescription":  "Crea un lanzador de objetos modificando un mosquete nuevo."
+      "CRDescription:0": "Crea un lanzador de objetos modificando un mosquete nuevo."
     },
     "FlameThrower:0": {
       "DisplayName": "Lanzallamas",
@@ -193,17 +263,16 @@
       "Inventory": "Inventario",
       "InstructionsPull": "Tensa para cargar",
       "InstructionsInsert": "Inserta virotes",
-      "InstructionsArrows": "Flechas: {0}/8"
+      "InstructionsArrows": "Virotes: {0}/8"
     }
   },
   "Messages": {
     "FirstPullCrossbow": "¡Primero tensa la ballesta!",
     "FirstLoadArrow": "¡Primero carga una virote!",
-    "ArrowCount": "Flechas: {0}/8"
+    "ArrowCount": "Virotes: {0}/8"
   },
   "Usual": {
     "ok": "Aceptar",
     "cancel": "Cancelar"
   }
-}
 }
