@@ -1668,6 +1668,14 @@
         </ParameterSet>
         <ParameterSet Name="LootOnFire" Guid="e3f4a5b6-c7d8-6901-6789-000012345678"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Inventory" Guid="6257b4be-1cb8-4a41-82ee-6e03c70d8dd9" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
+    <ParameterSet Name="Slots">
+        <ParameterSet Name="Slot0">
+            <Parameter Name="Contents" Value="321" Type="int"/>
+            <Parameter Name="Count" Value="1" Type="int"/>
+        </ParameterSet>
+    </ParameterSet>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="c1d2e3f4-a5b6-7012-789a-000123456789">
         <Parameter Name="Mass" Guid="d2e3f4a5-b6c7-7123-8901-001234567890" Value="65" Type="float"/>
         <Parameter Name="BoxSize" Guid="e3f4a5b6-c7d8-7234-9012-012345678901" Value="0.8,1.8,0.8" Type="Vector3"/>
@@ -2384,6 +2392,14 @@
     <MemberComponentTemplate Name="Miner" Guid="e7f8a9b0-c1d2-8123-2345-789abcdef019" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="f8a9b0c1-d2e3-8234-3456-89abcdef012a" Value="9.15" Type="float"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Inventory" Guid="61874bbc-1c1f-4b61-8387-f1d2a1eeddfe" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
+    <ParameterSet Name="Slots">
+        <ParameterSet Name="Slot0">
+            <Parameter Name="Contents" Value="322" Type="int"/>
+            <Parameter Name="Count" Value="1" Type="int"/>
+        </ParameterSet>
+    </ParameterSet>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="HumanModel" Guid="a9b0c1d2-e3f4-8345-4567-9abcdef0123b" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
         <Parameter Name="WalkLegsAngle" Guid="b0c1d2e3-f4a5-8456-5678-abcdef01234c" Value="0.35" Type="float"/>
         <Parameter Name="ModelName" Guid="c1d2e3f4-a5b6-8567-6789-bcdef012345d" Value="Models/Tank superior" Type="string"/>
