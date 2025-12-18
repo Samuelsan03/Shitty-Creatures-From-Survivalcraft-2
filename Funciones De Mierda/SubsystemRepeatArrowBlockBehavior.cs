@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Engine;
 using Game;
 using TemplatesDatabase;
@@ -20,12 +20,11 @@ namespace Game
 
 		public override void OnFiredAsProjectile(Projectile projectile)
 		{
-			if (RepeatArrowBlock.GetArrowType(Terrain.ExtractData(projectile.Value)) != RepeatArrowBlock.ArrowType.ExplosiveArrow)
+			if (RepeatArrowBlock.GetArrowType(Terrain.ExtractData(projectile.Value)) == RepeatArrowBlock.ArrowType.ExplosiveArrow)
 			{
-				return;
+				this.m_subsystemProjectiles.AddTrail(projectile, Vector3.Zero, new SmokeTrailParticleSystem(20, 0.5f, float.MaxValue, Color.White));
+				projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
 			}
-			this.m_subsystemProjectiles.AddTrail(projectile, Vector3.Zero, new SmokeTrailParticleSystem(20, 0.5f, float.MaxValue, Color.White));
-			projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
 		}
 
 		public override bool OnHitAsProjectile(CellFace? cellFace, ComponentBody componentBody, WorldItem worldItem)
@@ -35,9 +34,6 @@ namespace Game
 			// Aplicar efectos de veneno si la flecha es de veneno
 			if (arrowType == RepeatArrowBlock.ArrowType.PoisonArrow || arrowType == RepeatArrowBlock.ArrowType.SeriousPoisonArrow)
 			{
-				// Intensidades de veneno - ajustadas para que no maten rápido
-				float poisonIntensity = (arrowType == RepeatArrowBlock.ArrowType.PoisonArrow) ? 3f : 5f;
-
 				// Obtener el objetivo
 				if (componentBody != null && componentBody.Entity != null)
 				{
@@ -45,29 +41,57 @@ namespace Game
 
 					if (targetCreature != null)
 					{
+						// Determinar duración del veneno
+						float poisonDuration = (arrowType == RepeatArrowBlock.ArrowType.PoisonArrow) ? 30f : 100f;
+
 						ComponentPoisonInfected componentPoisonInfected = targetCreature.Entity.FindComponent<ComponentPoisonInfected>();
 						ComponentPlayer componentPlayer = targetCreature as ComponentPlayer;
 
 						// Aplicar veneno a jugadores
 						if (componentPlayer != null)
 						{
-							if (componentPlayer.ComponentSickness != null && !componentPlayer.ComponentSickness.IsSick)
+							// Verificar si el jugador está en modo creativo o si las mecánicas de supervivencia están deshabilitadas
+							SubsystemGameInfo subsystemGameInfo = base.Project.FindSubsystem<SubsystemGameInfo>();
+							if (subsystemGameInfo != null &&
+								(subsystemGameInfo.WorldSettings.GameMode == GameMode.Creative ||
+								!subsystemGameInfo.WorldSettings.AreAdventureSurvivalMechanicsEnabled))
 							{
-								componentPlayer.ComponentSickness.StartSickness();
+								return false; // No aplicar veneno en modo creativo
+							}
+
+							if (componentPlayer.ComponentSickness != null)
+							{
 								float resistance = (componentPoisonInfected != null) ? componentPoisonInfected.PoisonResistance : 0f;
-								componentPlayer.ComponentSickness.m_sicknessDuration = MathUtils.Max(0f, poisonIntensity - resistance);
+								float effectiveDuration = MathUtils.Max(0f, poisonDuration - resistance);
+
+								if (effectiveDuration > 0f)
+								{
+									if (!componentPlayer.ComponentSickness.IsSick)
+									{
+										componentPlayer.ComponentSickness.StartSickness();
+									}
+
+									// Asegurar que la duración sea suficiente
+									componentPlayer.ComponentSickness.m_sicknessDuration = MathUtils.Max(
+										componentPlayer.ComponentSickness.m_sicknessDuration,
+										effectiveDuration
+									);
+								}
 							}
 						}
 						// Aplicar veneno a criaturas
 						else if (componentPoisonInfected != null)
 						{
-							componentPoisonInfected.StartInfect(poisonIntensity);
+							float resistance = componentPoisonInfected.PoisonResistance;
+							float effectiveDuration = MathUtils.Max(0f, poisonDuration - resistance);
+
+							if (effectiveDuration > 0f)
+							{
+								componentPoisonInfected.StartInfect(effectiveDuration);
+							}
 						}
 					}
 				}
-
-				// DAÑO INICIAL MUY BAJO - ya viene de m_weaponPowers (3 y 4)
-				// No aplicamos daño adicional aquí para evitar doble daño
 
 				// Las flechas de veneno no se rompen
 				return false;
