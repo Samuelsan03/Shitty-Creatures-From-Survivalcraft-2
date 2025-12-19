@@ -600,6 +600,14 @@ namespace Game
 			new SubsystemInGameMusic.TrackInfo("MenuMusic/Super Hang-On Outride A Crisis", 177f),
 			new SubsystemInGameMusic.TrackInfo("MenuMusic/Super Hang-On Sprinter", 177f),
 			new SubsystemInGameMusic.TrackInfo("MenuMusic/Super Hang-On Winning Run", 177f),
+			new SubsystemInGameMusic.TrackInfo("MenuMusic/SEGA Mega CD Japanese European Gamerip BIOS", 177f),
+			new SubsystemInGameMusic.TrackInfo("MenuMusic/SEGA CD American BIOS Gamerip Version 01", 177f),
+			new SubsystemInGameMusic.TrackInfo("MenuMusic/SEGA CD American BIOS Gamerip Version 02", 177f),
+			new SubsystemInGameMusic.TrackInfo("MenuMusic/Sonic The Hedgehog 1991 Spring Yard Zone", 177f),
+			new SubsystemInGameMusic.TrackInfo("MenuMusic/Sonic The Hedgehog 1991 Marble Zone", 177f),
+			new SubsystemInGameMusic.TrackInfo("MenuMusic/Sonic The Hedgehog 2 1992 Hill Top Zone", 177f),
+			new SubsystemInGameMusic.TrackInfo("MenuMusic/Mio Honda 本田未央 Step! ステップ", 177f),
+			new SubsystemInGameMusic.TrackInfo("MenuMusic/Yahpp Sorceress Elise", 177f),
 		};
 
 		private struct TrackInfo
