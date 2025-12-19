@@ -50,7 +50,15 @@ namespace Game
 				"MenuMusic/Super Hang-On Outride A Crisis",
 				"MenuMusic/Super Hang-On Sprinter",
 				"MenuMusic/Super Hang-On Winning Run",
-				"MenuMusic/Nichijou Koigokoro Wa Dangan Mo Yawarakakusuru"
+				"MenuMusic/Nichijou Koigokoro Wa Dangan Mo Yawarakakusuru",
+				"MenuMusic/SEGA Mega CD Japanese European Gamerip BIOS",
+                "MenuMusic/SEGA CD American BIOS Gamerip Version 01",
+                "MenuMusic/SEGA CD American BIOS Gamerip Version 02",
+                "MenuMusic/Sonic The Hedgehog 1991 Spring Yard Zone",
+                "MenuMusic/Sonic The Hedgehog 1991 Marble Zone",
+                "MenuMusic/Sonic The Hedgehog 2 1992 Hill Top Zone",
+                "MenuMusic/Mio Honda 本田未央 Step! ステップ",
+                "MenuMusic/Yahpp Sorceress Elise",
 			};
 
 			// Usar Environment.TickCount como semilla simple
