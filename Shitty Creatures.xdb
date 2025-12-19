@@ -1689,7 +1689,7 @@
     <MemberComponentTemplate Name="Inventory" Guid="6257b4be-1cb8-4a41-82ee-6e03c70d8dd9" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
     <ParameterSet Name="Slots">
         <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="321" Type="int"/>
+            <Parameter Name="Contents" Value="322" Type="int"/> <!-- Guadaña -->
             <Parameter Name="Count" Value="1" Type="int"/>
         </ParameterSet>
     </ParameterSet>
@@ -2958,6 +2958,25 @@
 </EntityTemplate>
 
 <EntityTemplate Name="Veemon" Guid="27207048-7b75-409d-b98d-e400275b884c" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="SummonBehavior" Guid="f5bb8a92-0189-4a5a-9d01-193d778e9e34">
+              <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="59f6ba29-ff6b-423b-aa8b-d96fa2c206ae"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="1c30814b-27ea-4ec1-9654-2dfead828fc8"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="7a2f907c-e808-4b8f-937d-a9a8e1fba9a4"/>
+              <Parameter Name="IsEnabled" Guid="f8bcf0c8-8ef2-4f55-a2bd-53e626a77b79" Value="True" Type="bool"/>
+            </MemberComponentTemplate>
+<MemberComponentTemplate Name="NewChaseBehavior" Guid="7711bd50-1a1c-4e6e-b2b4-68f4a9ac5aac">
+    <Parameter Name="Class" Value="Game.ComponentNewChaseBehavior" Type="string" Guid="ace2db37-4f9d-49be-8119-6ef855e39f49"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="5955194d-e9fd-4dc4-9f24-5b354f300adc"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="0020f34a-dded-4285-8db8-07472c35c8b9"/>
+    <Parameter Name="DayChaseRange" Value="16" Type="float" Guid="ceea338e-db8b-4c56-b017-39cdf3796df1"/>
+    <Parameter Name="NightChaseRange" Value="24" Type="float" Guid="adf0a545-9c25-46cc-b757-23004a0508f1"/>
+    <Parameter Name="DayChaseTime" Value="30" Type="float" Guid="ba66926f-f53c-4d52-a76b-c72129a50c09"/>
+    <Parameter Name="NightChaseTime" Value="60" Type="float" Guid="9562a5cb-98cd-42c3-bfac-4182c93d1bfb"/>
+    <Parameter Name="ChaseNonPlayerProbability" Value="0.2" Type="float" Guid="dd457183-3671-426d-a988-d3a75873621f"/>
+    <Parameter Name="ChaseWhenAttackedProbability" Value="0.8" Type="float" Guid="eb6d5776-1a82-45b1-bf1c-6e1750de025f"/>
+    <Parameter Name="ChaseOnTouchProbability" Value="0.5" Type="float" Guid="0188c3aa-5862-42e9-957f-3bed5294e1dd"/>
+    <Parameter Name="AutoChaseMask" Value="LandPredator" Type="string" Guid="5f08b71c-ac38-42ea-8de1-342a1295fa7b"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="NewHerdBehavior" Guid="bfa4a491-70a5-433d-a240-39ae31531b79">
         <Parameter Name="Class" Value="Game.ComponentNewHerdBehavior" Type="string" Guid="cdc71886-80c1-411b-8277-f5a8529c79a7"/>
         <Parameter Name="IsOptional" Value="true" Type="bool" Guid="5a37b30b-4890-4b17-8878-78e518a079ce"/>
