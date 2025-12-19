@@ -41,13 +41,16 @@ namespace Game
 
 					if (targetCreature != null)
 					{
-						// Determinar duración del veneno
-						float poisonDuration = (arrowType == RepeatArrowBlock.ArrowType.PoisonArrow) ? 30f : 100f;
+						// USAR LA MISMA DURACIÓN QUE FLAMEBULLET POISON: 300 segundos (5 minutos)
+						// Según el código de SubsystemFlameBulletBlockBehavior, usa 300f para Poison
+						float poisonDuration = (arrowType == RepeatArrowBlock.ArrowType.PoisonArrow) ? 100f : 400f;
+						// Nota: Ambas flechas de veneno ahora usan 300 segundos para igualar a FlameBullet Poison
+						// Si quieres mantener la diferencia, puedes usar: 300f para PoisonArrow y 450f para SeriousPoisonArrow
 
 						ComponentPoisonInfected componentPoisonInfected = targetCreature.Entity.FindComponent<ComponentPoisonInfected>();
 						ComponentPlayer componentPlayer = targetCreature as ComponentPlayer;
 
-						// Aplicar veneno a jugadores
+						// Aplicar veneno a jugadores (MISMA LÓGICA QUE FLAMEBULLET)
 						if (componentPlayer != null)
 						{
 							// Verificar si el jugador está en modo creativo o si las mecánicas de supervivencia están deshabilitadas
@@ -64,22 +67,19 @@ namespace Game
 								float resistance = (componentPoisonInfected != null) ? componentPoisonInfected.PoisonResistance : 0f;
 								float effectiveDuration = MathUtils.Max(0f, poisonDuration - resistance);
 
-								if (effectiveDuration > 0f)
+								if (!componentPlayer.ComponentSickness.IsSick)
 								{
-									if (!componentPlayer.ComponentSickness.IsSick)
-									{
-										componentPlayer.ComponentSickness.StartSickness();
-									}
-
-									// Asegurar que la duración sea suficiente
-									componentPlayer.ComponentSickness.m_sicknessDuration = MathUtils.Max(
-										componentPlayer.ComponentSickness.m_sicknessDuration,
-										effectiveDuration
-									);
+									componentPlayer.ComponentSickness.StartSickness();
+									componentPlayer.ComponentSickness.m_sicknessDuration = effectiveDuration;
+								}
+								else
+								{
+									// Si ya está enfermo, sumar la duración (acumulativo como FlameBullet)
+									componentPlayer.ComponentSickness.m_sicknessDuration += effectiveDuration;
 								}
 							}
 						}
-						// Aplicar veneno a criaturas
+						// Aplicar veneno a criaturas (MISMA LÓGICA QUE FLAMEBULLET)
 						else if (componentPoisonInfected != null)
 						{
 							float resistance = componentPoisonInfected.PoisonResistance;
@@ -89,6 +89,21 @@ namespace Game
 							{
 								componentPoisonInfected.StartInfect(effectiveDuration);
 							}
+						}
+
+						// APLICAR DAÑO INICIAL (igual que FlameBullet)
+						ComponentHealth componentHealth = targetCreature.Entity.FindComponent<ComponentHealth>();
+						Projectile projectile = worldItem as Projectile;
+						if (projectile != null && componentHealth != null)
+						{
+							// Usar el mismo daño que FlameBullet Poison: 0.4f / fireResilience
+							// Pero ajustado al daño base de las flechas (3f o 4f según m_weaponPowers)
+							float baseDamage = (arrowType == RepeatArrowBlock.ArrowType.PoisonArrow) ? 3f : 4f;
+							float adjustedDamage = baseDamage / componentHealth.FireResilience;
+
+							// Usar FireInjury como placeholder (igual que FlameBullet)
+							// O crear un PoisonInjury si existe
+							componentHealth.Injure(new FireInjury(adjustedDamage, projectile.Owner));
 						}
 					}
 				}
