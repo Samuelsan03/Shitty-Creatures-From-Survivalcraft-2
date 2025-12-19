@@ -10,8 +10,8 @@ namespace Game
 
 		// 1. PARÁMETROS DE ACTIVACIÓN
 		public float ActivationRange = 3f;
-		public float CountdownDuration = 0.1f;
-		public string SparkSound = "Audio/Fuse";
+		public float CountdownDuration = 3f;
+		public string SparkSound = "Audio/Explosion De Mierda/Cuenta Regresiva Explosion";
 
 		// 2. TIPO DE EXPLOSIÓN
 		public bool UseStandardExplosion = true;
@@ -224,7 +224,7 @@ namespace Game
 			{
 				float explosionVolume = MathUtils.Clamp(ExplosionRadius / 20f, 1f, 4f);
 				float explosionRange = MathUtils.Clamp(ExplosionRadius * 3f, 30f, 200f);
-				m_subsystemAudio.PlaySound("Audio/ExplosionLarge", explosionVolume, 0f,
+				m_subsystemAudio.PlaySound("Audio/Explosion De Mierda/Explosion Mejorada", explosionVolume, 5.55f,
 					position, explosionRange, 0f);
 			}
 		}
