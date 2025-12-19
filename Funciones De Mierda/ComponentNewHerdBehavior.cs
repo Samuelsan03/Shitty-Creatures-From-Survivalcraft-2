@@ -212,23 +212,6 @@ namespace Game
 			// Configurar el evento de lesión para llamar ayuda
 			ComponentHealth componentHealth = this.m_componentCreature.ComponentHealth;
 			componentHealth.Injured = (Action<Injury>)Delegate.Combine(componentHealth.Injured, new Action<Injury>(this.OnInjured));
-
-			// Si tenemos ComponentChaseBehavior, hookear sus eventos
-			if (this.m_componentChase != null)
-			{
-				// Hookear el evento de ataque para verificar la manada antes de atacar
-				this.m_chaseAttackDelegate = new Action<ComponentCreature, float, float, bool>(this.OnChaseAttack);
-
-				// Crear un método alternativo para hookear el chase behavior
-				this.HookChaseBehaviorEvents();
-			}
-		}
-
-		// Hookear eventos del ComponentChaseBehavior
-		private void HookChaseBehaviorEvents()
-		{
-			// No podemos reasignar métodos directamente, pero podemos usar un proxy
-			// O mejor, simplemente verificar en nuestro Update
 		}
 
 		// Evento cuando la criatura es herida
@@ -242,24 +225,6 @@ namespace Game
 				{
 					this.CallNearbyCreaturesHelp(attacker, 20f, 30f, false);
 				}
-			}
-		}
-
-		// Evento cuando el chase behavior intenta atacar
-		private void OnChaseAttack(ComponentCreature target, float maxRange, float maxChaseTime, bool isPersistent)
-		{
-			// Verificar si debe atacar a este objetivo
-			if (!this.ShouldAttackCreature(target))
-			{
-				// No atacar si es de la misma manada
-				return;
-			}
-
-			// Si llegamos aquí, puede atacar
-			// Llamar al método original si existe
-			if (this.m_originalChaseAttack != null)
-			{
-				this.m_originalChaseAttack(target, maxRange, maxChaseTime, isPersistent);
 			}
 		}
 
@@ -422,8 +387,6 @@ namespace Game
 		private ComponentCreature m_componentCreature;
 		private ComponentPathfinding m_componentPathfinding;
 		private ComponentChaseBehavior m_componentChase;
-		private Action<ComponentCreature, float, float, bool> m_originalChaseAttack;
-		private Action<ComponentCreature, float, float, bool> m_chaseAttackDelegate;
 		private StateMachine m_stateMachine = new StateMachine();
 		private float m_dt;
 		private float m_importanceLevel;
