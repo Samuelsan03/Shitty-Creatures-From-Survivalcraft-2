@@ -1743,8 +1743,13 @@
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Miner" Guid="d47bf6eb-6d75-4b9f-9e37-5a97dc15d8fd" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
               <Parameter Name="AttackPower" Guid="cf608320-e57c-46be-9ffd-351aa10a9683" Value="3" Type="float"/>
-              <Parameter Name="AutoInteractRate" Guid="d0c0e5cd-a92c-49be-8e39-93e29f43a3ec" Value="0.5" Type="float"/>
             </MemberComponentTemplate>
+            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="105cb977-d3e2-470f-bcdc-2769865ebc49">
+    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
+    <Parameter Name="IsOptional" Value="false" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+    <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
+</MemberComponentTemplate>
             <MemberComponentTemplate Name="ChaseBehavior" Guid="d71acd48-f5d5-4b5e-8baf-9a4a1db39841" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
               <Parameter Name="ChaseNonPlayerProbability" Guid="0dbdd746-b568-4001-bcda-c07580605ad8" Value="0.253" Type="float"/>
               <Parameter Name="NightChaseRange" Guid="42b0ca10-e48b-4079-b513-966221ecb1ab" Value="20" Type="float"/>
