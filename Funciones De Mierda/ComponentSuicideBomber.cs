@@ -224,7 +224,7 @@ namespace Game
 			{
 				float explosionVolume = MathUtils.Clamp(ExplosionRadius / 20f, 1f, 4f);
 				float explosionRange = MathUtils.Clamp(ExplosionRadius * 3f, 30f, 200f);
-				m_subsystemAudio.PlaySound("Audio/Explosion De Mierda/Explosion Mejorada", explosionVolume, 5.55f,
+				m_subsystemAudio.PlaySound("Audio/Explosion De Mierda/Explosion Mejorada", explosionVolume, 0f,
 					position, explosionRange, 0f);
 			}
 		}
