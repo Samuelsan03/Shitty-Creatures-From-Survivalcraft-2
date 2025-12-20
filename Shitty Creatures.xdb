@@ -1132,7 +1132,7 @@
     <Parameter Name="IsOptional" Value="false" Type="bool"/>
     <Parameter Name="Class" Value="Game.ComponentFlameThrowerShooterBehavior" Type="string"/>
     <Parameter Name="MaxDistance" Value="55" Type="float"/>
-    <Parameter Name="AimTime" Value="0.4" Type="float"/>
+    <Parameter Name="AimTime" Value="0.3" Type="float"/>
     <Parameter Name="BurstTime" Value="5" Type="float"/>
     <Parameter Name="CooldownTime" Value="0.3" Type="float"/>
     <Parameter Name="FireSound" Value="Audio/Flamethrower/Flamethrower Fire" Type="string"/>
@@ -3138,7 +3138,7 @@
         <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="e912494b-c0fd-4238-9682-1f65b13436a5">
-        <Parameter Name="FireResilience" Guid="50e77cdc-e45b-4a47-97fc-0edd7500ac91" Value="91.5" Type="float"/>
+        <Parameter Name="FireResilience" Guid="50e77cdc-e45b-4a47-97fc-0edd7500ac91" Value="100" Type="float"/>
 <Parameter Name="AttackResilience" Guid="64135668-67e0-4e64-813c-f697acdc7c79" Value="185" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="44e9217d-1369-4d7d-9a46-4f5ae141bdce"/>
@@ -3281,8 +3281,8 @@
         <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="719afdc6-f565-4351-afce-323142a2afd5">
-        <Parameter Name="FireResilience" Guid="571a6f73-4a45-4818-8187-ef84a9befed6" Value="5.5" Type="float"/>
-<Parameter Name="AttackResilience" Guid="6d39db86-fe75-4d18-bfbe-c04441af99a8" Value="115" Type="float"/>
+        <Parameter Name="FireResilience" Guid="571a6f73-4a45-4818-8187-ef84a9befed6" Value="155.5" Type="float"/>
+<Parameter Name="AttackResilience" Guid="6d39db86-fe75-4d18-bfbe-c04441af99a8" Value="295.5" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="a9727cbf-c213-4800-bbc8-9f15956fd6a9"/>
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="a0cf35ac-d58d-412d-b074-53cf8ea6ea74" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
@@ -3549,7 +3549,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="a25a4086-4050-43d1-864d-d246cc7d34a5">
         <Parameter Name="AttackResilience" Guid="a26b2524-5503-4f96-8eec-c0f79a2766e7" Value="235.23" Type="float"/>
-        <Parameter Name="FireResilience" Guid="d1b4653a-9b46-4160-8aa8-dc74e8c3ee33" Value="75" Type="float"/>
+        <Parameter Name="FireResilience" Guid="d1b4653a-9b46-4160-8aa8-dc74e8c3ee33" Value="175" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="2818c1b9-4d54-4013-92e4-63fac1709a82"/>
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="cc7b7d04-e6b8-498d-9ffc-bf3e5dda9c7b" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
@@ -3820,8 +3820,8 @@
         <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="309aa37d-42cb-4af7-9f19-957050c1621a">
-        <Parameter Name="FireResilience" Guid="cea24ba6-1d08-4f48-bab6-8a6d7c19a6c5" Value="21" Type="float"/>
-<Parameter Name="AttackResilience" Guid="c1c5bccf-1e11-492c-861b-5caecb581b81" Value="240" Type="float"/>
+        <Parameter Name="FireResilience" Guid="cea24ba6-1d08-4f48-bab6-8a6d7c19a6c5" Value="191" Type="float"/>
+<Parameter Name="AttackResilience" Guid="c1c5bccf-1e11-492c-861b-5caecb581b81" Value="245" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="1037e4b0-b241-418a-a5cc-99003d7e2685"/>
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="90ed3ce6-3a99-4d5e-ac3e-bee31b6eebe8" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
@@ -3963,7 +3963,7 @@
         <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="32c5a461-3e07-4870-8c37-ce9779c349e1">
-        <Parameter Name="FireResilience" Guid="6724c9f9-8cd1-4552-bc90-02e906cb35b2" Value="555" Type="float"/>
+        <Parameter Name="FireResilience" Guid="6724c9f9-8cd1-4552-bc90-02e906cb35b2" Value="555.55" Type="float"/>
 <Parameter Name="AttackResilience" Guid="0c6ddfea-e972-4768-9796-c211a5ca2513" Value="600" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="2393b2eb-9377-4510-bec6-fdcdaaf05b75"/>
@@ -4043,6 +4043,8 @@
         <ParameterSet Name="FoodFactors" Guid="509004d5-9df1-4693-bae1-d5d09d799f3f">
             <Parameter Name="Bread" Guid="9c0c37f5-4295-4f9e-993d-abe8ac0b680e" Value="1" Type="float"/>
             <Parameter Name="Meat" Guid="6933a8d1-b9bd-4cd3-a5d5-665ab730e8dd" Value="1" Type="float"/>
+            <Parameter Name="Fish" Guid="59ca58bb-b954-4bd0-af03-90cc5dff3431" Value="1" Type="float"/>
+            <Parameter Name="Fruit" Guid="4150731d-a210-4aa6-8dd0-d56715055198" Value="1" Type="float"/>
         </ParameterSet>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="CreatureSounds" Guid="d1e2f3a4-b5c6-4d7e-9f0a-1b2c3d4e5f6a">
@@ -4089,8 +4091,8 @@
         <Parameter Name="WalkAnimationSpeed" Guid="50478121-d32e-4c1c-aee1-6e3d91cd6719" Value="0.5" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="2f43f80e-7c2f-4f2c-890a-4671ae334d3a">
-        <Parameter Name="FireResilience" Guid="fe699a62-7d93-44f7-92ff-83a24d73b895" Value="15" Type="float"/>
-<Parameter Name="AttackResilience" Guid="b41ace02-f6ae-4f07-9f58-ea48d2f919ea" Value="230" Type="float"/>
+        <Parameter Name="FireResilience" Guid="fe699a62-7d93-44f7-92ff-83a24d73b895" Value="155.5" Type="float"/>
+<Parameter Name="AttackResilience" Guid="b41ace02-f6ae-4f07-9f58-ea48d2f919ea" Value="236.35" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="73617aaa-ac9e-443d-ad66-6175d7672b3b"/>
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="ecf3554f-355d-498f-b238-dc4d74caf5ef" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
@@ -4577,8 +4579,8 @@
         <Parameter Name="WalkAnimationSpeed" Guid="8496a9b5-13b1-473e-9938-4ba67695dc3f" Value="0.5" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="16659630-0da2-4317-8b63-c6b9280397ef">
-        <Parameter Name="FireResilience" Guid="7da30065-c798-47eb-875c-9d0c6311a9f9" Value="13" Type="float"/>
-<Parameter Name="AttackResilience" Guid="51e6a1ee-70c7-4ec9-b406-0b0e0c219817" Value="200" Type="float"/>
+        <Parameter Name="FireResilience" Guid="7da30065-c798-47eb-875c-9d0c6311a9f9" Value="315.55" Type="float"/>
+<Parameter Name="AttackResilience" Guid="51e6a1ee-70c7-4ec9-b406-0b0e0c219817" Value="430.55" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="52ba3243-f209-4c79-9e18-0147109cf946"/>
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="ad02e8bc-cfb9-48c5-bd7a-a459012768bc" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
@@ -5837,7 +5839,8 @@
         <Parameter Name="MaxDisplayDistance" Value="19" Type="float"/>
     </MemberComponentTemplate>
             <MemberComponentTemplate Name="Health" Guid="67b2b477-d87d-4488-8f41-8e2df9c7fe8e">
-                <Parameter Name="FireResilience" Guid="13de065f-1d62-4f31-a7e3-d4a280e9a68a" Value="37.5" Type="float"/>
+                <Parameter Name="FireResilience" Guid="13de065f-1d62-4f31-a7e3-d4a280e9a68a" Value="57.5" Type="float"/>
+                <Parameter Name="ExplosionResilience" Guid="c3475d3d-bade-4699-9bb6-5893a6c6e902" Value="77.5" Type="float"/>
         <Parameter Name="AttackResilience" Guid="15031633-2442-4559-b67b-09a743bf96cc" Value="87.6" Type="float"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="OnFire" Guid="5b9327cb-d058-4e84-b8d8-ac2832b3ae13"/>
