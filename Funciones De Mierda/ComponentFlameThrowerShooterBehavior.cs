@@ -26,7 +26,7 @@ namespace Game
 		public float AimTime = 0.5f;
 		public float BurstTime = 2.0f;      // Cambiado de FireTime a BurstTime
 		public float CooldownTime = 1.0f;   // Cambiado de ReloadTime a CooldownTime
-		public string FireSound = "Audio/FlamethrowerShooter/FlameShot";
+		public string FireSound = "Audio/Flamethrower/Flamethrower Fire";
 		public string HammerSound = "Audio/Items/Hammer Cock Remake";
 		public float FireSoundDistance = 25f;
 		public float HammerSoundDistance = 20f; // Nuevo parámetro del XML
@@ -66,7 +66,7 @@ namespace Game
 			AimTime = valuesDictionary.GetValue<float>("AimTime", 0.5f);
 			BurstTime = valuesDictionary.GetValue<float>("BurstTime", 2.0f);      // Cambiado
 			CooldownTime = valuesDictionary.GetValue<float>("CooldownTime", 1.0f); // Cambiado
-			FireSound = valuesDictionary.GetValue<string>("FireSound", "Audio/FlamethrowerShooter/FlameShot");
+			FireSound = valuesDictionary.GetValue<string>("FireSound", "Audio/Flamethrower/Flamethrower Fire");
 			HammerSound = valuesDictionary.GetValue<string>("HammerSound", "Audio/Items/Hammer Cock Remake");
 			FireSoundDistance = valuesDictionary.GetValue<float>("FireSoundDistance", 25f);
 			HammerSoundDistance = valuesDictionary.GetValue<float>("HammerSoundDistance", 20f); // Nuevo
