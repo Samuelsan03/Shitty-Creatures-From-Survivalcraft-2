@@ -1,9 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Engine;
 using Game;
 using TemplatesDatabase;
-using WonderfulEra;
 
 namespace Game
 {
@@ -95,7 +94,7 @@ namespace Game
 							if (num4 > 0.5f && !FlameThrowerBlock.GetSwitchState(Terrain.ExtractData(num2)))
 							{
 								num2 = FlameThrowerBlock.SetLoadCount(Terrain.MakeBlockValue(num, 0, FlameThrowerBlock.SetSwitchState(Terrain.ExtractData(num2), true)), FlameThrowerBlock.GetLoadCount(num2));
-								this.m_subsystemAudio.PlaySound("Audio/HammerCock", 1f, this.m_random.Float(-0.1f, 0.1f), 0f, 0f);
+								this.m_subsystemAudio.PlaySound("Audio/Items/Hammer Cock Remake", 1f, this.m_random.Float(-0.1f, 0.1f), 0f, 0f);
 							}
 							ComponentFirstPersonModel componentFirstPersonModel = componentMiner.Entity.FindComponent<ComponentFirstPersonModel>();
 							if (componentFirstPersonModel != null)
@@ -127,7 +126,7 @@ namespace Game
 										ComponentPlayer componentPlayer2 = componentMiner.ComponentPlayer;
 										if (componentPlayer2 != null)
 										{
-											componentPlayer2.ComponentGui.DisplaySmallMessage("Load flame ammo first", Color.Orange, true, false);
+											componentPlayer2.ComponentGui.DisplaySmallMessage(LanguageControl.GetContentWidgets("FlameThrowerWidget", "LoadAmmunition"), Color.Orange, true, false);
 										}
 										return true;
 									}
@@ -183,7 +182,7 @@ namespace Game
 						if (FlameThrowerBlock.GetSwitchState(Terrain.ExtractData(num2)))
 						{
 							num2 = FlameThrowerBlock.SetLoadCount(Terrain.MakeBlockValue(num, 0, FlameThrowerBlock.SetSwitchState(Terrain.ExtractData(num2), false)), FlameThrowerBlock.GetLoadCount(num2));
-							this.m_subsystemAudio.PlaySound("Audio/HammerUncock", 1f, this.m_random.Float(-0.1f, 0.1f), 0f, 0f);
+							this.m_subsystemAudio.PlaySound("Audio/Items/Hammer Uncock Remake", 1f, this.m_random.Float(-0.1f, 0.1f), 0f, 0f);
 						}
 						this.nextTime = 0f;
 						this.m_aimStartTimes.Remove(componentMiner);
@@ -202,7 +201,7 @@ namespace Game
 								num2 = Terrain.MakeBlockValue(num, 0, FlameThrowerBlock.SetLoadState(FlameThrowerBlock.SetBulletType(Terrain.ExtractData(num2), null), FlameThrowerBlock.LoadState.Empty));
 							}
 							num2 = FlameThrowerBlock.SetLoadCount(Terrain.MakeBlockValue(num, 0, FlameThrowerBlock.SetSwitchState(Terrain.ExtractData(num2), false)), FlameThrowerBlock.GetLoadCount(num2));
-							this.m_subsystemAudio.PlaySound("Audio/HammerRelease", 1f, this.m_random.Float(-0.1f, 0.1f), 0f, 0f);
+							this.m_subsystemAudio.PlaySound("Audio/Items/Hammer Cock Remake", 1f, this.m_random.Float(-0.1f, 0.1f), 0f, 0f);
 						}
 						this.nextTime = 0f;
 						this.m_aimStartTimes.Remove(componentMiner);
