@@ -45,21 +45,22 @@
     <Parameter Name="AutoInteractRate" Value="0.1" Type="float" Description="Frecuencia de interacción automática (0-1)"/>
 </ComponentTemplate>
 
-<ComponentTemplate Name="FlameThrowerShooterBehavior" Description="Comportamiento para NPCs que usan lanzallamas con disparos ilimitados de fuego y veneno" Guid="87654321-1234-1234-1234-123456789012" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
-    <Parameter Name="MaxDistance" Description="Distancia máxima de disparo efectivo" Guid="1545802d-570b-4185-9e52-14d4dab61467" Value="20" Type="float"/>
-    <Parameter Name="AimTime" Description="Tiempo de apuntado antes de comenzar a disparar" Guid="a81dd914-84dd-46ce-95ee-e86873ed0827" Value="0.5" Type="float"/>
-    <Parameter Name="BurstTime" Description="Duración de la ráfaga de llamas en segundos" Guid="e08241cc-b72b-4f9c-9abb-fd212f69ed22" Value="2.0" Type="float"/>
-    <Parameter Name="CooldownTime" Description="Tiempo de enfriamiento entre ráfagas en segundos" Guid="c349fb23-a566-4550-b250-f6fe4ce8c2ca" Value="1.0" Type="float"/>
-    <Parameter Name="FireSound" Description="Sonido de lanzallamas de fuego" Guid="78a5a7ce-20c9-434c-b3b0-3ebfb992266a" Value="Audio/Flamethrower/Flamethrower Fire" Type="string"/>
-    <Parameter Name="HammerSound" Description="Sonido del martillo del lanzallamas" Guid="f4b4af44-88f9-455d-adb9-f3e44a12dfbd" Value="Audio/HammerCock" Type="string"/>
-    <Parameter Name="FireSoundDistance" Description="Distancia del sonido de lanzallamas" Guid="c5abe7d9-4bac-491b-a197-3db041af5818" Value="25" Type="float"/>
-    <Parameter Name="HammerSoundDistance" Description="Distancia del sonido del martillo" Guid="bb6940f6-5ec6-4479-8eb6-d329eeafb361" Value="20" Type="float"/>
-    <Parameter Name="Accuracy" Description="Precisión del disparo (menor = más preciso)" Guid="d83a08e4-6012-4710-be48-164d5e64e32a" Value="0.1" Type="float"/>
-    <Parameter Name="UseRecoil" Description="Aplicar retroceso físico al disparar" Guid="ceb7d934-19a8-4f7b-bb49-70c59b618ed3" Value="true" Type="bool"/>
-    <Parameter Name="FlameSpeed" Description="Velocidad base de las llamas" Guid="2103428d-22b6-4f92-b5bc-133d7b7a3543" Value="40" Type="float"/>
-    <Parameter Name="BurstCount" Description="Número de proyectiles de fuego por ráfaga" Guid="9a03362e-68a3-4a10-bbe9-92f1f3ec747f" Value="15" Type="int"/>
-    <Parameter Name="SpreadAngle" Description="Ángulo de dispersión de las llamas en grados" Guid="ab42b3ca-3b3f-4854-8f8e-c78d6c8cf109" Value="15" Type="float"/>
-    <Parameter Name="Class" Guid="12345678-1234-1234-1234-123456789014" Value="Game.ComponentFlameThrowerShooterBehavior" Type="string"/>
+<ComponentTemplate Name="FlameThrowerShooterBehavior" Description="Comportamiento para NPCs que usan lanzallamas con disparos ilimitados de fuego y veneno" Guid="b3bc9331-ad8a-4454-9a3a-fec7a52d85f2" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+    <Parameter Name="MaxDistance" Description="Distancia máxima de disparo efectivo" Guid="4346bf5f-3a19-40cd-9ed8-2fdebdeebea3" Value="20" Type="float"/>
+    <Parameter Name="AimTime" Description="Tiempo de apuntado antes de comenzar a disparar" Guid="fff3a361-6506-4837-a432-1d1e41b5939c" Value="0.5" Type="float"/>
+    <Parameter Name="BurstTime" Description="Duración de la ráfaga de llamas en segundos" Guid="d52172f1-c19c-4f9d-81a9-6c53a6cf15a7" Value="2.0" Type="float"/>
+    <Parameter Name="CooldownTime" Description="Tiempo de enfriamiento entre ráfagas en segundos" Guid="42656985-a446-44d8-bf8f-c5896bda2b60" Value="1.0" Type="float"/>
+    <Parameter Name="FireSound" Description="Sonido de lanzallamas de fuego" Guid="fae46791-2894-435c-a0b4-ece53e05388a" Value="Audio/Flamethrower/Flamethrower Fire" Type="string"/>
+    <Parameter Name="HammerSound" Description="Sonido del martillo del lanzallamas" Guid="962ef714-dab5-4bbd-a6b1-7e976d27fc5a" Value="Audio/Items/Hammer Cock Remake" Type="string"/>
+    <Parameter Name="FireSoundDistance" Description="Distancia del sonido de lanzallamas" Guid="5c62f9e8-4988-47e5-b91b-84bbe0c1f25c" Value="25" Type="float"/>
+    <Parameter Name="HammerSoundDistance" Description="Distancia del sonido del martillo" Guid="7c13bb1e-4b25-4625-9479-a808eebf8f0b" Value="20" Type="float"/>
+    <Parameter Name="Accuracy" Description="Precisión del disparo (menor = más preciso)" Guid="b171a609-bb53-4b89-84eb-725d6b8ca0c8" Value="0.1" Type="float"/>
+    <Parameter Name="UseRecoil" Description="Aplicar retroceso físico al disparar" Guid="4ec72dcf-7df4-40ba-bfdf-557c0efb4cd5" Value="true" Type="bool"/>
+    <Parameter Name="FlameSpeed" Description="Velocidad base de las llamas" Guid="24c33087-7809-429f-881c-6388b89fa1f8" Value="40" Type="float"/>
+    <Parameter Name="BurstCount" Description="Número de proyectiles de fuego por ráfaga" Guid="b2f4cd6c-cb67-4407-a595-81db3ca1a076" Value="15" Type="int"/>
+    <Parameter Name="SpreadAngle" Description="Ángulo de dispersión de las llamas en grados" Guid="a967f7ff-f503-4e51-a6f0-565394f43fc9" Value="15" Type="float"/>
+    <Parameter Name="CycleBulletTypes" Description="Alternar entre balas de fuego y veneno automáticamente" Guid="33e58433-3d2e-49d3-83aa-d54544381ddb" Value="true" Type="bool"/>
+    <Parameter Name="Class" Guid="a7ada27d-d400-43ce-ba43-1e9f37cd848a" Value="Game.ComponentFlameThrowerShooterBehavior" Type="string"/>
 </ComponentTemplate>
 
     <ComponentTemplate Name="RepeatCrossbowShooterBehavior" Description="Comportamiento para NPCs que usan ballestas repetidoras con disparos ilimitados y ráfagas múltiples" Guid="e40dd82e-a7a5-42de-83ee-8dc7d8cdf2f2" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
@@ -343,10 +344,10 @@
                 <Parameter Name="BoxSize" Guid="67ec50d9-6bb6-4eac-a79d-ae7529f6aa0c" Value="0.8,1.8,0.8" Type="Vector3"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Creature" Guid="7466de2b-5bf8-4e6e-9012-ecb58bfd5333">
-                <Parameter Name="DisplayName" Guid="b64d0373-7983-43e2-9b50-c3eafa8ad5f3" Value="Naomi" Type="string"/>
+                <Parameter Name="DisplayName" Guid="b64d0373-7983-43e2-9b50-c3eafa8ad5f3" Value="[DisplayName:Naomi]" Type="string"/>
                 <Parameter Name="Category" Guid="b09dfbef-0b18-4b32-a9d3-590deaf353a7" Value="LandOther" Type="Game.CreatureCategory"/>
                 <Parameter Name="ConstantSpawn" Guid="296b2400-56e5-472c-9901-ab072edcc274" Value="True" Type="bool"/>
-                <Parameter Name="Description" Guid="f534c8da-e6d2-4181-baad-d35e8f6d8b7c" Value="Naomi (ナオミ). A mystery to solve. She is Japanese, but… is she truly human or robotic? How did she arrive on the island of Survivalcraft 2? A tremendous mystery. It begins in Kyoto, with an inventor named Takachi (高智). In 1999, Naomi was created because Takachi needed an automatic assistant for biological scientific research. The prototype tests went well, and the final result looks human. Since then, the robot has been a success for executing both complex and simple tasks. One day, Takachi had a research project from Kyoto University to investigate new species and rare places outside of Japan. Needing companionship, he used Naomi as his partner. Halfway across the sea, Takachi accidentally dropped his humanoid robot, Naomi, into the water, causing a wave of panic. He feared that the robot was damaged due to its electrical components. What he didn't know was that she was water-resistant. This led Naomi to a mysterious island or large continent. From that day, her life as a humanoid robot changed. How will she survive without resources? Previously, she had practiced survival skills during their research trips. Will she need the player's help? You'll find out in the game!" Type="string"/>
+                <Parameter Name="Description" Guid="f534c8da-e6d2-4181-baad-d35e8f6d8b7c" Value="[Description:Naomi]" Type="string"/>
                 <Parameter Name="KillVerbs" Guid="38447fb4-d0ad-437e-9d12-2492aefdec76" Value="Kicked your ass,shit with fists" Type="string"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Spawn" Guid="8632862e-2627-43da-bcec-d2b8462dbec8">
@@ -1127,16 +1128,16 @@
         </ParameterSet>
     </ParameterSet>   
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="FlameThrowerShooterBehavior" Guid="61152e11-ab57-426a-aa5d-bc0c332b6a2c">
+<MemberComponentTemplate Name="FlameThrowerShooterBehavior" Guid="4d8a136c-0050-400c-9784-82d98ed218ff">
     <Parameter Name="LoadOrder" Value="0" Type="int"/>
     <Parameter Name="IsOptional" Value="false" Type="bool"/>
     <Parameter Name="Class" Value="Game.ComponentFlameThrowerShooterBehavior" Type="string"/>
     <Parameter Name="MaxDistance" Value="55" Type="float"/>
-    <Parameter Name="AimTime" Value="0.3" Type="float"/>
+    <Parameter Name="AimTime" Value="0.35" Type="float"/>
     <Parameter Name="BurstTime" Value="5" Type="float"/>
-    <Parameter Name="CooldownTime" Value="0.3" Type="float"/>
+    <Parameter Name="CooldownTime" Value="1" Type="float"/>
     <Parameter Name="FireSound" Value="Audio/Flamethrower/Flamethrower Fire" Type="string"/>
-    <Parameter Name="HammerSound" Value="Audio/HammerCock" Type="string"/>
+    <Parameter Name="HammerSound" Value="Audio/Items/Hammer Cock Remake" Type="string"/>
     <Parameter Name="FireSoundDistance" Value="100" Type="float"/>
     <Parameter Name="HammerSoundDistance" Value="100" Type="float"/>
     <Parameter Name="Accuracy" Value="0.12" Type="float"/>
@@ -1144,6 +1145,7 @@
     <Parameter Name="FlameSpeed" Value="35" Type="float"/>
     <Parameter Name="BurstCount" Value="12" Type="int"/>
     <Parameter Name="SpreadAngle" Value="15" Type="float"/>
+    <Parameter Name="CycleBulletTypes" Value="true" Type="bool"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="CreatureSounds" Guid="af01f5d9-3b84-4fb2-a842-e823f9521d4e">
         <Parameter Name="PainSound" Guid="759694c1-e8c1-4773-9f65-105764c01895" Value="Audio/Creatures/FumadorQuimico/Pain" Type="string"/>
