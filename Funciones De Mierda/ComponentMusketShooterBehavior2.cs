@@ -5,7 +5,7 @@ using TemplatesDatabase;
 
 namespace Game
 {
-	public class ComponentMusketShooterBehavior : ComponentBehavior, IUpdateable
+	public class ComponentMusketShooterBehavior2 : ComponentBehavior, IUpdateable
 	{
 		// Componentes necesarios
 		private ComponentCreature m_componentCreature;
