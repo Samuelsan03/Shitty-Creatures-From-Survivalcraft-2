@@ -64,7 +64,7 @@ namespace Game
 			// Cargar parámetros del XML
 			MaxDistance = valuesDictionary.GetValue<float>("MaxDistance", 20f);
 			AimTime = valuesDictionary.GetValue<float>("AimTime", 0.5f);
-			BurstTime = valuesDictionary.GetValue<float>("BurstTime", 2.0f);      // Cambiado
+			BurstTime = valuesDictionary.GetValue<float>("BurstTime", 5.0f);      // Cambiado
 			CooldownTime = valuesDictionary.GetValue<float>("CooldownTime", 1.0f); // Cambiado
 			FireSound = valuesDictionary.GetValue<string>("FireSound", "Audio/Flamethrower/Flamethrower Fire");
 			HammerSound = valuesDictionary.GetValue<string>("HammerSound", "Audio/Items/Hammer Cock Remake");
@@ -84,7 +84,7 @@ namespace Game
 			}
 			else
 			{
-				BurstInterval = 0.15f; // Valor por defecto
+				BurstInterval = 5.0f; // Valor por defecto
 			}
 
 			// Inicializar componentes
