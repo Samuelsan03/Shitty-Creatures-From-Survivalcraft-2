@@ -326,15 +326,6 @@
     <Parameter Name="SpecificItems" Value="125,221,124,165,37,114,311,314,320,203" Type="string"/>
     <Parameter Name="Class" Value="Game.ComponentCreatureCollect" Type="string"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="PoisonInfectBehavior" Guid="524f0018-7299-44a6-a540-569e9681551a">
-    <Parameter Name="Class" Value="Game.ComponentPoisonInfectedBehavior" Type="string"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
-    <Parameter Name="PoisonIntensity" Value="0" Type="float"/> <!-- 0 = no infecta -->
-    <Parameter Name="InfectionProbability" Value="0" Type="float"/> <!-- 0 = 0% chance -->
-    <Parameter Name="InfectionCooldown" Value="0" Type="float"/>
-    <Parameter Name="AttackRange" Value="0" Type="float"/>
-</MemberComponentTemplate>
 <MemberComponentTemplate Name="PoisonInfected" Guid="b8dedc50-e557-4b78-8a41-b48f61fb96d8">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
     <Parameter Name="IsOptional" Value="true" Type="bool"/>
@@ -430,7 +421,7 @@
                 <Parameter Name="Color" Guid="1cccb9c1-5954-438c-1146-583df877ef80" Value="82,55,15" Type="Color"/>
                 <Parameter Name="TextureSlot" Guid="23399930-6b05-11c2-82d5-281a7b5aba7c" Value="188" Type="int"/>
                 <Parameter Name="SwapUV" Guid="e0d1ccde-9a22-4c81-bcec-eae3811a1545" Value="False" Type="bool"/>
-                <Parameter Name="DisplayName" Guid="f40fd21f-7c41-41e0-9872-6f3f5c184b60" Value="Naomi Egg" Type="string"/>
+                <Parameter Name="DisplayName" Guid="f40fd21f-7c41-41e0-9872-6f3f5c184b60" Value="[DisplayName:Naomi]" Type="string"/>
                 <Parameter Name="EggTypeIndex" Guid="d2a2998d-e560-1172-8129-9211172b98da" Value="201" Type="int"/>
             </ParameterSet>
         </EntityTemplate>
@@ -455,15 +446,6 @@
             <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="c1e80425-7fb4-4f22-893c-e0ea1b476aa9" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
     <Parameter Name="ChaseToCreatures" Guid="ae3b9e79-b16c-4bb4-97a4-237cba926e11" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
     <Parameter Name="ChaseToCreatureProbability" Guid="6f778b62-e681-4f0c-948d-d4968dab2682" Value="999999999" Type="float"/>
-</MemberComponentTemplate>
-<MemberComponentTemplate Name="PoisonInfectBehavior" Guid="20f430d0-a5aa-4be6-8944-3da8ab6521b8">
-    <Parameter Name="Class" Value="Game.ComponentPoisonInfectedBehavior" Type="string"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
-    <Parameter Name="PoisonIntensity" Value="0" Type="float"/> <!-- 0 = no infecta -->
-    <Parameter Name="InfectionProbability" Value="0" Type="float"/> <!-- 0 = 0% chance -->
-    <Parameter Name="InfectionCooldown" Value="0" Type="float"/>
-    <Parameter Name="AttackRange" Value="0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="PoisonInfected" Guid="d162f59d-096d-4ef4-9c03-03a680f394dd">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
@@ -497,8 +479,8 @@
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Loot" Guid="d8e9f0a1-b2c3-4d45-8e67-f8a9b0c1d2e3">
                 <ParameterSet Name="Loot" Guid="e9f0a1b2-c3d4-4e56-8f78-a9b0c1d2e3f4">
-                    <Parameter Name="1" Guid="f0a1b2c3-d4e5-4f67-8a89-b0c1d2e3f4a5" Value="IronIngotBlock;3;10;75" Type="string"/>
-                    <Parameter Name="2" Guid="a1b2c3d4-e5f6-4a78-9b01-c1d2e3f4a5b6" Value="RottenMeatBlock;1;7;1" Type="string"/>
+                    <Parameter Name="1" Guid="f0a1b2c3-d4e5-4f67-8a89-b0c1d2e3f4a5" Value="IronIngotBlock;3;5;75" Type="string"/>
+                    <Parameter Name="2" Guid="a1b2c3d4-e5f6-4a78-9b01-c1d2e3f4a5b6" Value="RottenMeatBlock;1;7" Type="string"/>
                 </ParameterSet>
                 <ParameterSet Name="LootOnFire" Guid="b2c3d4e5-f6a7-4b89-9c12-d2e3f4a5b6c7"/>
             </MemberComponentTemplate>
@@ -510,9 +492,9 @@
     <Parameter Name="AutoDespawn" Guid="a84a1003-77b2-4f13-aa38-2aeeb19914de" Value="False" Type="bool"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="Creature" Guid="f6a7b8c9-d0e1-4f23-9g45-b6c7d8e9f0a1">
-                <Parameter Name="DisplayName" Guid="a7b8c9d0-e1f2-4g34-9h56-c7d8e9f0a1b2" Value="Ricardo" Type="string"/>
+                <Parameter Name="DisplayName" Guid="a7b8c9d0-e1f2-4g34-9h56-c7d8e9f0a1b2" Value="[DisplayName:Ricardo]" Type="string"/>
                 <Parameter Name="Category" Guid="b8c9d0e1-f2a3-4h45-9i67-d8e9f0a1b2c3" Value="LandOther" Type="Game.CreatureCategory"/>
-                <Parameter Name="Description" Guid="c9d0e1f2-a3b4-4i56-9j78-e9f0a1b2c3d4" Value="Ricardo is an ordinary civilian from Tlatelolco, born on June 4, 1998. Since childhood, he enjoyed walking like a playful dog and felt a deep connection to nature, always dreaming of traveling to islands. In 2021, the University of Tlatelolco offered him a place in a scientific-biological research program to explore islands outside of Mexico. He seized the opportunity and joined the expedition. During the journey across the Pacific Ocean, violent waves and strong winds endangered the crew. Ricardo was swept away by the wind into the water, and his companions, seeing him far away without a lifebuoy, believed he had drowned. Yet fortune favored him: the currents carried him to an unknown island, one not marked on the Pacific maps. Awakening there, Ricardo had to find ways to survive. One night, while exploring, he encountered Naomi, a humanoid robot who had faced a similar fate. From that moment, they became friends." Type="string"/>
+                <Parameter Name="Description" Guid="c9d0e1f2-a3b4-4i56-9j78-e9f0a1b2c3d4" Value="[Description:Ricardo]" Type="string"/>
                 <Parameter Name="KillVerbs" Guid="d0e1f2a3-b4c5-4j67-9k89-f0a1b2c3d4e5" Value="Quartered" Type="string"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="ComponentRandomChatter" Guid="4736ee89-4570-4ce7-8c66-39b987a94c76">
@@ -565,7 +547,7 @@
                 <Parameter Name="Color" Guid="e1f2a3b4-c5d6-4o78-9p90-a1b2c3d4e5f6" Value="178,148,43" Type="Color"/>
                 <Parameter Name="TextureSlot" Guid="f2a3b4c5-d6e7-4p89-9q01-b2c3d4e5f6a7" Value="20" Type="int"/>
                 <Parameter Name="SwapUV" Guid="a3b4c5d6-e7f8-4q90-9r12-c3d4e5f6a7b8" Value="False" Type="bool"/>
-                <Parameter Name="DisplayName" Guid="b4c5d6e7-f8a9-4r01-9s23-d4e5f6a7b8c9" Value="Ricardo Egg" Type="string"/>
+                <Parameter Name="DisplayName" Guid="b4c5d6e7-f8a9-4r01-9s23-d4e5f6a7b8c9" Value="[DisplayName:Ricardo]" Type="string"/>
                 <Parameter Name="EggTypeIndex" Guid="c5d6e7f8-a9b0-4s12-9t34-e5f6a7b8c9d0" Value="202" Type="int"/>
             </ParameterSet>
         </EntityTemplate>
@@ -581,15 +563,6 @@
         <Parameter Name="DayRange" Guid="c3d4e5f6-a7b8-4901-2345-6789abcdef01" Value="0" Type="float"/>
         <Parameter Name="NightRange" Guid="d4e5f6a7-b8c9-5012-3456-789abcdef012" Value="0" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="PoisonInfectBehavior" Guid="1702633d-b59f-49bb-90b1-f69e390fb039">
-    <Parameter Name="Class" Value="Game.ComponentPoisonInfectedBehavior" Type="string"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
-    <Parameter Name="PoisonIntensity" Value="0" Type="float"/> <!-- 0 = no infecta -->
-    <Parameter Name="InfectionProbability" Value="0" Type="float"/> <!-- 0 = 0% chance -->
-    <Parameter Name="InfectionCooldown" Value="0" Type="float"/>
-    <Parameter Name="AttackRange" Value="0" Type="float"/>
-</MemberComponentTemplate>
 <MemberComponentTemplate Name="PoisonInfected" Guid="c3e18a23-f8d3-489a-915b-521fd7b8edd0">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
     <Parameter Name="IsOptional" Value="true" Type="bool"/>
@@ -599,7 +572,7 @@
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="326f3897-de45-42ad-856b-9d98d9437b10" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
     <Parameter Name="ChaseToCreatures" Guid="ba79f890-d50b-417a-bd8b-464057848126" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
-    <Parameter Name="ChaseToCreatureProbability" Guid="a53ace80-983f-492b-9893-1e58396d446c" Value="1.0" Type="float"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="a53ace80-983f-492b-9893-1e58396d446c" Value="999999999" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Spawn" Guid="2ceb94e7-5a0b-432a-9f54-e02f546cc0c1">
     <Parameter Name="AutoDespawn" Guid="054ae38e-c3f7-4fb9-9d05-a49004ff105f" Value="False" Type="bool"/>
@@ -644,9 +617,9 @@
         <Parameter Name="BoxSize" Guid="e3f4a5b6-c7d8-6901-6789-abcdef012345" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="f4a5b6c7-d8e9-7012-789a-bcdef0123456">
-        <Parameter Name="DisplayName" Guid="a5b6c7d8-e9f0-7123-89ab-cdef01234567" Value="Paco" Type="string"/>
+        <Parameter Name="DisplayName" Guid="a5b6c7d8-e9f0-7123-89ab-cdef01234567" Value="[DisplayName:Paco]" Type="string"/>
         <Parameter Name="Category" Guid="b6c7d8e9-f0a1-7234-9abc-def012345678" Value="LandOther" Type="Game.CreatureCategory"/>
-        <Parameter Name="Description" Guid="c7d8e9f0-a1b2-7345-abcd-ef0123456789" Value="What the hell did that man come out of, it seems that the aliens brought him. This was a phrase said by a human who saw him in a city somewhere in Mexico. Paco is a human-alien created by a Martian race in 1968, when the Soviet Union launched another expedition to compete against the United States. During that mission, some crew members saw a red light coming from another planet and traveled to investigate beyond the Moon. What they discovered was the creation of a being almost human but with alien traits, possessing intelligence superior to a normal human. Things changed in 2001, when Russia (no longer the USSR after its dissolution in 1991) entered into war with the United States due to a misunderstanding: supposed terrorists had destroyed one of their ships near Mars. A solar conflict erupted, reminiscent of Star Wars, and Paco’s alien creators saw their home planet under attack. Fearing destruction, they armed themselves, and both nations also had to face them. In a mishap, Russia shot an alien holding a ship’s control device, breaking it and injuring the alien. This caused the ship to drift away automatically, carrying Paco and his two clones. They eventually arrived on Earth, landing on a mysterious, unidentified island in the Pacific Ocean—the same island where Naomi and Ricardo had fallen. There, they sought ways to survive. Later, Paco encountered Naomi and Ricardo. At first, they thought each other threats, but they became friends after Paco demonstrated survival skills far more advanced than theirs." Type="string"/>
+        <Parameter Name="Description" Guid="c7d8e9f0-a1b2-7345-abcd-ef0123456789" Value="[Description:Paco]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="d8e9f0a1-b2c3-7456-bcde-f0123456789a" Value="Pecked" Type="string"/>
         <Parameter Name="ConstantSpawn" Guid="facfeda6-3f52-4eec-8d96-c1b446e643fe" Value="True" Type="bool"/>
     </MemberComponentTemplate>
@@ -699,7 +672,7 @@
         <Parameter Name="Color" Guid="a5b6c7d8-e9f0-0123-6789-abcdef012345" Value="83,255,0" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="b6c7d8e9-f0a1-0234-789a-bcdef0123456" Value="34" Type="int"/>
         <Parameter Name="SwapUV" Guid="c7d8e9f0-a1b2-0345-89ab-cdef01234567" Value="False" Type="bool"/>
-        <Parameter Name="DisplayName" Guid="d8e9f0a1-b2c3-0456-9abc-def012345678" Value="Paco Egg" Type="string"/>
+        <Parameter Name="DisplayName" Guid="d8e9f0a1-b2c3-0456-9abc-def012345678" Value="[DisplayName:Paco]" Type="string"/>
         <Parameter Name="EggTypeIndex" Guid="e9f0a1b2-c3d4-0567-abcd-ef0123456789" Value="203" Type="int"/>
     </ParameterSet>
 </EntityTemplate>
@@ -715,15 +688,6 @@
         <Parameter Name="DayRange" Guid="b0c1d2e3-f4a5-4678-9456-789abcdef012" Value="0" Type="float"/>
         <Parameter Name="NightRange" Guid="c1d2e3f4-a5b6-4789-9567-89abcdef0123" Value="0" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="PoisonInfectBehavior" Guid="f3c0259b-07e9-4b66-b57d-0be0d0f7bb33">
-    <Parameter Name="Class" Value="Game.ComponentPoisonInfectedBehavior" Type="string"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
-    <Parameter Name="PoisonIntensity" Value="0" Type="float"/> <!-- 0 = no infecta -->
-    <Parameter Name="InfectionProbability" Value="0" Type="float"/> <!-- 0 = 0% chance -->
-    <Parameter Name="InfectionCooldown" Value="0" Type="float"/>
-    <Parameter Name="AttackRange" Value="0" Type="float"/>
-</MemberComponentTemplate>
 <MemberComponentTemplate Name="PoisonInfected" Guid="64de3a9a-08ae-44f3-b089-c14d1f869050">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
     <Parameter Name="IsOptional" Value="true" Type="bool"/>
@@ -733,7 +697,7 @@
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="cd066edb-ef58-491b-989e-1f2d8d7d50e9" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
     <Parameter Name="ChaseToCreatures" Guid="2ec5b739-976d-4212-b395-756eca9d7936" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
-    <Parameter Name="ChaseToCreatureProbability" Guid="94eb70e4-22fa-4027-a7a6-5d32670fdd5a" Value="1.0" Type="float"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="94eb70e4-22fa-4027-a7a6-5d32670fdd5a" Value="999999999" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="EatPickableBehavior" Guid="d2e3f4a5-b6c7-4890-9678-9abcdef01234">
         <ParameterSet Name="FoodFactors" Guid="e3f4a5b6-c7d8-4901-9789-abcdef012345">
@@ -769,7 +733,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Loot" Guid="c3d4e5f6-a7b8-5901-6789-456789abcdef">
         <ParameterSet Name="Loot" Guid="d4e5f6a7-b8c9-6012-7890-56789abcdef0">
-            <Parameter Name="1" Guid="e5f6a7b8-c9d0-6123-8901-6789abcdef01" Value="IronIngotBlock;25;50" Type="string"/>
+            <Parameter Name="1" Guid="e5f6a7b8-c9d0-6123-8901-6789abcdef01" Value="IronIngotBlock;3;1" Type="string"/>
         </ParameterSet>
         <ParameterSet Name="LootOnFire" Guid="a7b8c9d0-e1f2-6345-0123-89abcdef0123"/>
     </MemberComponentTemplate>
@@ -778,10 +742,10 @@
         <Parameter Name="BoxSize" Guid="d0e1f2a3-b4c5-6678-3456-bcdef0123456" Value="0.9,1.0,0.9" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="e1f2a3b4-c5d6-6789-4567-cdef01234567">
-        <Parameter Name="DisplayName" Guid="f2a3b4c5-d6e7-6890-5678-def012345678" Value="Barack" Type="string"/>
+        <Parameter Name="DisplayName" Guid="f2a3b4c5-d6e7-6890-5678-def012345678" Value="[DisplayName:Barack]" Type="string"/>
         <Parameter Name="ConstantSpawn" Guid="553364b0-9df0-41d9-9e94-a4b0507f94ef" Value="True" Type="bool"/>
         <Parameter Name="Category" Guid="a3b4c5d6-e7f8-6901-6789-ef0123456789" Value="LandOther" Type="Game.CreatureCategory"/>
-        <Parameter Name="Description" Guid="b4c5d6e7-f8a9-7012-7890-f0123456789a" Value="Barack, as some Russians and Americans affirmed after the alien war of 2001, was said to be a twin brother similar to Paco. Unlike Paco, Barack was a devoted follower of Barack Obama, who would later become President of the United States in 2008 and take office in January 2009. In the game’s world, you can hear references to Obama, showing that Barack is his number one fan. Barack, Paco’s twin brother, arrived on one of the mysterious islands where Paco had fallen, though his origin dates back to July 7, 1980. He was created by the same alien race as Paco, but the reason he was brought to Earth was different: the aliens sought to recover their lost child, yet instead they remained. This forged a deep connection between Barack and Paco. Like Paco, Barack had to survive on the unknown island, facing the same trials of nature and destiny. Eventually, he too encountered Naomi and Ricardo, and although suspicion marked their first meeting, they became allies after proving their survival skills and intelligence. As a curiosity, Barack later founded the group 'Alianza', dedicated to searching for survivors who fall onto the mysterious Pacific islands, while scientists—especially Russians and Americans—investigate obsessively what these islands are called and where they are located." Type="string"/>
+        <Parameter Name="Description" Guid="b4c5d6e7-f8a9-7012-7890-f0123456789a" Value="[Description:Barack]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="c5d6e7f8-a9b0-7123-8901-0123456789ab" Value="Negotiated" Type="string"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="ComponentRandomChatter" Guid="210780ff-1756-470a-a0b8-2168da58fb71">
@@ -833,7 +797,7 @@
         <Parameter Name="Color" Guid="f2a3b4c5-d6e7-9890-5678-bcdef0123456" Value="76,120,119" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="a3b4c5d6-e7f8-9901-6789-cdef01234567" Value="164" Type="int"/>
         <Parameter Name="SwapUV" Guid="b4c5d6e7-f8a9-0012-7890-def012345678" Value="False" Type="bool"/>
-        <Parameter Name="DisplayName" Guid="c5d6e7f8-a9b0-0123-8901-ef0123456789" Value="Barack Egg" Type="string"/>
+        <Parameter Name="DisplayName" Guid="c5d6e7f8-a9b0-0123-8901-ef0123456789" Value="[DisplayName:Barack]" Type="string"/>
         <Parameter Name="EggTypeIndex" Guid="d6e7f8a9-b0c1-0234-9012-f0123456789a" Value="204" Type="int"/>
     </ParameterSet>
 </EntityTemplate>
@@ -886,7 +850,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Loot" Guid="05240855-3d26-4c7f-8aa5-1aa62bac7e28">
         <ParameterSet Name="Loot" Guid="5b0b8bc1-c752-49c4-aa90-3b11d701a8fc">
-            <Parameter Name="1" Guid="83e3b6af-40e7-4430-9972-dea1a3c0c018" Value="Diamond;20;15" Type="string"/>
+            <Parameter Name="1" Guid="83e3b6af-40e7-4430-9972-dea1a3c0c018" Value="Diamond;5;5;0.55" Type="string"/>
         </ParameterSet>
         <ParameterSet Name="LootOnFire" Guid="01f48bbf-ed6a-430c-9741-36df1c36b653"/>
     </MemberComponentTemplate>
@@ -895,10 +859,10 @@
         <Parameter Name="BoxSize" Guid="8d78e8d8-dd27-4d83-b9ed-272dd96657a8" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="063ee5a6-a891-4f81-845b-dbe944b1aa0a">
-        <Parameter Name="DisplayName" Guid="b754143c-574b-4164-a5f3-389ed583083b" Value="El Marihuanero" Type="string"/>
+        <Parameter Name="DisplayName" Guid="b754143c-574b-4164-a5f3-389ed583083b" Value="[DisplayName:ElMarihuanero]" Type="string"/>
         <Parameter Name="Category" Guid="7decf018-4bbe-44ce-8a3e-516d36fe63ee" Value="LandOther" Type="Game.CreatureCategory"/>
         <Parameter Name="ConstantSpawn" Guid="b374e910-b17c-41a5-8487-4be4caa92739" Value="True" Type="bool"/>
-        <Parameter Name="Description" Guid="cedc98b7-5e9a-47dc-af72-fe4542a5e4da" Value="Known as 'El Marihuanero', he is remembered as Paco’s missing link brother, a mysterious survivor whose origins trace back to the same alien experiments that created Paco. His strength is moderate compared to Paco’s, but his cunning and adaptability make him a formidable presence on the islands. The nickname 'El Marihuanero' was not given lightly: during his wanderings across the Pacific islands, he discovered wild cannabis plants growing in hidden valleys. Fascinated by their properties, he began cultivating them and claimed they gave him clarity, endurance, and a strange bond with nature. This obsession eventually tied him symbolically to Mexico, where cannabis culture and folklore became part of his identity. Over time, he also embraced the Rastafari movement, adopting its philosophy of unity, resistance, and spiritual connection, and looked to Jamaica as a cultural homeland. Legends say that he carried seeds wherever he traveled, planting them as markers of his journey. Though at first distrusted by Naomi, Ricardo, and Paco, he proved his loyalty and resourcefulness, showing survival skills that rivaled his brother’s. His blows were not as strong as Paco’s, but his strategies and resilience often turned the tide in desperate situations. Over time, El Marihuanero became a figure of curiosity and myth, remembered not only for his alien-human heritage but also for the plants, the Rastafari ideals, and the Jamaican spirit that defined his name and destiny on the mysterious Pacific islands." Type="string"/>
+        <Parameter Name="Description" Guid="cedc98b7-5e9a-47dc-af72-fe4542a5e4da" Value="[Description:ElMarihuanero]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="e86ffc5f-0e5a-438b-b14f-7dc83a9ea82e" Value="He put the weed up your ass" Type="string"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="ComponentRandomChatter" Guid="1adf0a5d-39b2-4b5b-806e-f2e6ef5c9d88">
@@ -949,7 +913,7 @@
         <Parameter Name="Color" Guid="a8dfff79-34b7-40e0-b52a-cde2ccfb0205" Value="168,88,111" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="ba71fc0b-7cad-4306-bc5e-49f4fdc94a4c" Value="165" Type="int"/>
         <Parameter Name="SwapUV" Guid="75bf253b-e2f9-48aa-baa5-692de5609595" Value="False" Type="bool"/>
-        <Parameter Name="DisplayName" Guid="1af800c6-7af2-44e7-90b4-7f1a95cbbce4" Value="El Marihuanero Egg" Type="string"/>
+        <Parameter Name="DisplayName" Guid="1af800c6-7af2-44e7-90b4-7f1a95cbbce4" Value="[DisplayName:ElMarihuanero]" Type="string"/>
         <Parameter Name="EggTypeIndex" Guid="8c4c9a83-aaca-4dc4-8e4c-2585907bc132" Value="205" Type="int"/>
     </ParameterSet>
 </EntityTemplate>
@@ -978,20 +942,11 @@
     <MemberComponentTemplate Name="Spawn" Guid="70813739-5fd5-42c8-860f-4d77fa176fd5">
     <Parameter Name="AutoDespawn" Guid="46c69f13-7e8b-4930-88b9-98fed1ac85f9" Value="False" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="PoisonInfectBehavior" Guid="51ebbde6-e3e7-49c9-ab69-86cc661ad938">
-    <Parameter Name="Class" Value="Game.ComponentPoisonInfectedBehavior" Type="string"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
-    <Parameter Name="PoisonIntensity" Value="0" Type="float"/> <!-- 0 = no infecta -->
-    <Parameter Name="InfectionProbability" Value="0" Type="float"/> <!-- 0 = 0% chance -->
-    <Parameter Name="InfectionCooldown" Value="0" Type="float"/>
-    <Parameter Name="AttackRange" Value="0" Type="float"/>
-</MemberComponentTemplate>
 <MemberComponentTemplate Name="PoisonInfected" Guid="22b89b83-a719-4605-92fc-21d45b886601">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
     <Parameter Name="IsOptional" Value="true" Type="bool"/>
     <Parameter Name="LoadOrder" Value="60" Type="int"/>
-    <Parameter Name="PoisonResistance" Value="-50" Type="float"/>
+    <Parameter Name="PoisonResistance" Value="400" Type="float"/>
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="CreatureSounds" Guid="4aa5f754-9236-4392-ac2a-491298319328">
@@ -1050,7 +1005,7 @@
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Loot" Guid="98a2ba6d-8793-494e-b812-e62952626a56">
         <ParameterSet Name="Loot" Guid="54961395-8a25-4f24-a811-390822cf9493">
-            <Parameter Name="1" Guid="48c7c608-e8e1-4175-91ac-00a2d1d10c6b" Value="StringBlock;1;10;1" Type="string"/>
+            <Parameter Name="1" Guid="48c7c608-e8e1-4175-91ac-00a2d1d10c6b" Value="StringBlock;1;4;1" Type="string"/>
         </ParameterSet>
         <ParameterSet Name="LootOnFire" Guid="55ce278f-df49-49f6-abd3-33dbccc79987"/>
     </MemberComponentTemplate>
@@ -1059,10 +1014,10 @@
         <Parameter Name="BoxSize" Guid="04facd0f-c10f-44d2-9b90-a5b5a10d5866" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="bb741b05-534c-4fd8-a6ca-54c9e0fc76fa">
-        <Parameter Name="DisplayName" Guid="f736a736-9def-46e2-9ef9-cbdb29106fc5" Value="El Marihuanero Mamón" Type="string"/>
+        <Parameter Name="DisplayName" Guid="f736a736-9def-46e2-9ef9-cbdb29106fc5" Value="[DisplayName:ElMarihuaneroMamon]" Type="string"/>
         <Parameter Name="Category" Guid="ed512e3e-b4d6-4440-ac8d-4e7170503689" Value="LandOther" Type="Game.CreatureCategory"/>
         <Parameter Name="ConstantSpawn" Guid="1a93ac1d-4eb2-4967-8c2d-10cc1c603744" Value="True" Type="bool"/>
-        <Parameter Name="Description" Guid="954d9f04-d47b-4033-843f-03757c3b2fbd" Value="Another missing link brother of Paco and twin brother of El Marihuanero, this one is more muscular and physically imposing. His raw attack power is lower than Paco’s, but his endurance and brute strength make him a dangerous opponent. Unlike his twin, he dedicated himself to mastering the musket. His story begins when he discovered an abandoned colonial outpost on one of the mysterious Pacific islands. Inside, he found old weapon crates and manuals left behind by explorers and soldiers from centuries past. Fascinated, he spent years studying the mechanisms of the musket, practicing its loading, aiming, and firing until he became an expert marksman. His discipline and patience turned him into a skilled hunter and defender, able to strike with precision even under harsh conditions. Survivors who encountered him learned to fear his musket more than his fists, for his shots could tear enemies apart within seconds. Legends say he carried the musket everywhere, treating it as both weapon and symbol of survival. Eventually, he crossed paths with Paco, Naomi, and Ricardo, and though suspicion marked their first meetings, his mastery of firearms earned him respect among the group." Type="string"/>
+        <Parameter Name="Description" Guid="954d9f04-d47b-4033-843f-03757c3b2fbd" Value="[Description:ElMarihuaneroMamon]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="dd068946-0f2d-42f6-baa5-d59bc07290ce" Value="Shot drugged" Type="string"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="ComponentRandomChatter" Guid="6f0c56e3-849c-436d-9ba4-0b1e81007552">
@@ -1114,7 +1069,7 @@
         <Parameter Name="Color" Guid="b41206d7-32e2-492c-b523-96f8a93047f8" Value="173,121,75" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="a2b3f80c-86fe-4a49-be1b-98251a314bcf" Value="166" Type="int"/>
         <Parameter Name="SwapUV" Guid="caf5271f-9517-478c-8393-c46089c93cf8" Value="False" Type="bool"/>
-        <Parameter Name="DisplayName" Guid="6cda031d-0e75-4197-8e12-465dc89a649d" Value="El Marihuanero Mamón Egg" Type="string"/>
+        <Parameter Name="DisplayName" Guid="6cda031d-0e75-4197-8e12-465dc89a649d" Value="[DisplayName:ElMarihuaneroMamon]" Type="string"/>
         <Parameter Name="EggTypeIndex" Guid="7b68523d-3869-4851-9e53-cde4d254e973" Value="206" Type="int"/>
     </ParameterSet>
 </EntityTemplate>
@@ -1133,6 +1088,8 @@
     <MemberComponentTemplate Name="EatPickableBehavior" Guid="ca9f8094-63d4-4037-81c8-30dae4930778">
         <ParameterSet Name="FoodFactors" Guid="037ea2d0-f8a6-4c37-a698-c27f4698716d">
             <Parameter Name="Fruit" Guid="81567f9a-be8a-4081-8de1-a7eefe5e86cf" Value="1" Type="float"/>
+            <Parameter Name="Meat" Guid="33d5c35b-d6b9-429f-ae22-b4f845fbf0c9" Value="1" Type="float"/>
+            <Parameter Name="Fish" Guid="92faabb5-ee1d-43ef-a30f-264b931f4719" Value="1" Type="float"/>
         </ParameterSet>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Spawn" Guid="a66d43c4-260f-4ba6-8a5a-4852591ab74a">
@@ -1180,8 +1137,8 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Loot" Guid="cdf5b3e2-c85d-47ca-a946-a0f017f12de0">
         <ParameterSet Name="Loot" Guid="ea2cf73d-1c68-46a5-959e-2c4ad8d163c9">
-            <Parameter Name="1" Guid="f348429d-8b0c-40f0-8e76-d4de08a129d1" Value="GunpowderBlock;15;25" Type="string"/>
-            <Parameter Name="2" Guid="17b4a912-fdfb-4088-95ed-de2bbc0e72af" Value="CoalChunkBlock;10;20" Type="string"/>
+            <Parameter Name="1" Guid="f348429d-8b0c-40f0-8e76-d4de08a129d1" Value="GunpowderBlock;5;1;0.5" Type="string"/>
+            <Parameter Name="2" Guid="17b4a912-fdfb-4088-95ed-de2bbc0e72af" Value="CoalChunkBlock;10;1;0.4" Type="string"/>
         </ParameterSet>
         <ParameterSet Name="LootOnFire" Guid="0eb49fd2-6001-4e52-a110-ead67752c6d2"/>
     </MemberComponentTemplate>
@@ -1190,10 +1147,10 @@
         <Parameter Name="BoxSize" Guid="cba4446a-ca1c-49d0-a62a-0c31dd0dba0b" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="316b9ae9-7cd0-439b-9f02-e7003d940cd1">
-        <Parameter Name="DisplayName" Guid="689ae605-43ca-4392-865a-2494d8fc7c75" Value="Fumador Químico" Type="string"/>
+        <Parameter Name="DisplayName" Guid="689ae605-43ca-4392-865a-2494d8fc7c75" Value="[DisplayName:FumadorQuimico]" Type="string"/>
         <Parameter Name="Category" Guid="af0aba75-9b09-431a-9451-be00b95e7694" Value="LandOther" Type="Game.CreatureCategory"/>
         <Parameter Name="ConstantSpawn" Guid="5e857d37-bf52-418f-8ec1-4802da6b660b" Value="True" Type="bool"/>
-        <Parameter Name="Description" Guid="963706f7-97f3-4147-a314-a5e70a0a7231" Value="Her outfit suggests she has experience in chemical and toxic environments. Although she looks threatening, she is part of the Alianza group meaning she supports her team when attacked or harmed by enemies. She possesses a mysterious hidden power: during a full moon or new moon, she transforms into a giant muscular mutant (similar to a Tank), gaining enhanced strength, greater resistance, and other abilities." Type="string"/>
+        <Parameter Name="Description" Guid="963706f7-97f3-4147-a314-a5e70a0a7231" Value="[Description:FumadorQuimico]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="f8dd6120-1660-4aa2-9521-d47458e7bfcc" Value="Chemically intoxicated" Type="string"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="a797a471-df53-470a-8653-71d346c2e24e" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
@@ -1212,6 +1169,7 @@
     <MemberComponentTemplate Name="Health" Guid="9b50910e-560d-4e8f-80b2-e69d517a1392">
         <Parameter Name="FireResilience" Guid="3055ec68-6465-4699-9a9b-874c17589abb" Value="37.5" Type="float"/>
         <Parameter Name="FallResilience" Guid="a0e4485a-8410-46b3-a3a4-7e75f53152cc" Value="37.5" Type="float"/>
+        <Parameter Name="ExplosionResilience" Guid="37034659-7927-4917-8e72-78c02ff452de" Value="20" Type="float"/>
         <Parameter Name="AttackResilience" Guid="bf1623b2-fd87-4a27-bbe3-afce801d4cde" Value="37.55" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="a15aa6e9-e1f0-4685-b89c-f5dabbe74195"/>
@@ -1233,7 +1191,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="a80f4529-eff8-441c-bad8-af36ea7d2e27" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
     <Parameter Name="ChaseToCreatures" Guid="bb7d343e-6895-4958-9b6e-8a95e9e6e442" Value="ZombieRepetidor, Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
-    <Parameter Name="ChaseToCreatureProbability" Guid="4ea13ca5-c66f-4449-8d68-9d831d569d60" Value="1.0" Type="float"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="4ea13ca5-c66f-4449-8d68-9d831d569d60" Value="999999999" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Shapeshifter" Guid="5af8fd8e-f425-42ad-a4c0-1d850b132109" InheritanceParent="92e52f46-5d88-4273-80d2-1b5bfb7fdee8">
         <Parameter Name="NightEntityTemplateName" Guid="013cc071-8eab-45f7-bba3-963ad3a77608" Value="FumadorQuimicoBrawny" Type="string"/>
@@ -1243,7 +1201,7 @@
         <Parameter Name="Color" Guid="0927dcf1-58b9-4397-a036-ce9dd28f4ab6" Value="64,224,208" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="563ea3b5-0c5a-430e-8508-8ad990f28034" Value="167" Type="int"/>
         <Parameter Name="SwapUV" Guid="533630f5-4c8b-4add-ab4f-4f59fa0f5acc" Value="False" Type="bool"/>
-        <Parameter Name="DisplayName" Guid="9f751b30-2962-41f8-a3ac-bca57c6c710a" Value="Fumador Químico Egg" Type="string"/>
+        <Parameter Name="DisplayName" Guid="9f751b30-2962-41f8-a3ac-bca57c6c710a" Value="[DisplayName:FumadorQuimico]" Type="string"/>
         <Parameter Name="EggTypeIndex" Guid="3fb81e25-7188-4adf-9010-d58323968083" Value="207" Type="int"/>
     </ParameterSet>
 </EntityTemplate>
@@ -1278,7 +1236,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Loot" Guid="b0c1d2e3-f4a5-6678-3456-89abcdef0123">
         <ParameterSet Name="Loot" Guid="c1d2e3f4-a5b6-6789-4567-9abcdef01234">
-            <Parameter Name="1" Guid="d2e3f4a5-b6c7-6890-5678-abcdef012345" Value="IronBlock;5;10" Type="string"/>
+            <Parameter Name="1" Guid="d2e3f4a5-b6c7-6890-5678-abcdef012345" Value="IronBlock;5;1;0.6" Type="string"/>
             <Parameter Name="2" Guid="e3f4a5b6-c7d8-6901-6789-bcdef0123456" Value="CoalChunkBlock;3;5" Type="string"/>
         </ParameterSet>
         <ParameterSet Name="LootOnFire" Guid="f4a5b6c7-d8e9-7012-789a-cdef01234567"/>
@@ -1298,8 +1256,15 @@
     <Parameter Name="ThrowFromHead" Value="True" Type="bool"/>
     <Parameter Name="MinMaxRandomChargeTime" Value="0.8;1.2" Type="string"/>
     <Parameter Name="MinMaxRandomWaitTime" Value="0.3;0.7" Type="string"/>
-    <Parameter Name="MinMaxDistance" Value="5;50" Type="string"/>
+    <Parameter Name="MinMaxDistance" Value="10;85.5" Type="string"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="PoisonInfected" Guid="3ef4a974-f840-48b4-8629-95aec2aa47a8">
+    <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int"/>
+    <Parameter Name="PoisonResistance" Value="999" Type="float"/>
+    <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
+  </MemberComponentTemplate>
 <MemberComponentTemplate Name="PathBreaker" Guid="b40e387d-040a-4d27-9c4b-dd3ab0b5441c" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
 		<Parameter Name="CanBreakBlocks" Guid="926f581e-374c-46e4-b13e-69f917bd5bf3" Value="True" Type="bool"/>
 		<Parameter Name="SpecificBlocks" Guid="143086a3-4b98-4365-ba46-bc91e0ae79e0" Value="" Type="string"/>
@@ -1310,9 +1275,9 @@
         <Parameter Name="BoxSize" Guid="c7d8e9f0-a1b2-7345-abcd-f0123456789a" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="d8e9f0a1-b2c3-7456-bcde-0123456789ab">
-        <Parameter Name="DisplayName" Guid="e9f0a1b2-c3d4-7567-cdef-123456789abc" Value="Fumador Químico Brawny" Type="string"/>
+        <Parameter Name="DisplayName" Guid="e9f0a1b2-c3d4-7567-cdef-123456789abc" Value="[DisplayName:FumadorQuimicoBrawny]" Type="string"/>
         <Parameter Name="Category" Guid="f0a1b2c3-d4e5-7678-def0-23456789abcd" Value="LandOther" Type="Game.CreatureCategory"/>
-        <Parameter Name="Description" Guid="a1b2c3d4-e5f6-7789-ef01-3456789abcde" Value="More powerful, stronger than its original form, it will only be available on a full moon or new moon" Type="string"/>
+        <Parameter Name="Description" Guid="a1b2c3d4-e5f6-7789-ef01-3456789abcde" Value="[Description:FumadorQuimicoBrawny]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="b2c3d4e5-f6a7-7890-f012-456789abcdef" Value="Crushed" Type="string"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="c3d4e5f6-a7b8-7901-0123-56789abcdef0" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
@@ -1360,7 +1325,7 @@
         <Parameter Name="TextureSlot" Guid="f0a1b2c3-d4e5-0678-def0-23456789abcd" Value="168" Type="int"/>
         <Parameter Name="Scale" Guid="b7b6cc43-d560-4857-ab7d-d82643af37de" Value="3" Type="float"/>
         <Parameter Name="SwapUV" Guid="a1b2c3d4-e5f6-0789-ef01-3456789abcde" Value="False" Type="bool"/>
-        <Parameter Name="DisplayName" Guid="b2c3d4e5-f6a7-0890-f012-456789abcdef" Value="Fumador Químico Brawny Egg" Type="string"/>
+        <Parameter Name="DisplayName" Guid="b2c3d4e5-f6a7-0890-f012-456789abcdef" Value="[DisplayName:FumadorQuimicoBrawny]" Type="string"/>
         <Parameter Name="EggTypeIndex" Guid="c3d4e5f6-a7b8-0901-0123-56789abcdef0" Value="208" Type="int"/>
     </ParameterSet>
 </EntityTemplate>
@@ -5366,15 +5331,6 @@
     <Parameter Name="SpecificItems" Value="125,221,124,165,37,114,311,314,320" Type="string"/>
     <Parameter Name="Class" Value="Game.ComponentCreatureCollect" Type="string"/>
   </MemberComponentTemplate>
-  <MemberComponentTemplate Name="PoisonInfectBehavior" Guid="f0ba5c05-533d-47d3-b442-2b759e7fc4f2">
-    <Parameter Name="Class" Value="Game.ComponentPoisonInfectedBehavior" Type="string"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
-    <Parameter Name="PoisonIntensity" Value="0" Type="float"/>
-    <Parameter Name="InfectionProbability" Value="0" Type="float"/>
-    <Parameter Name="InfectionCooldown" Value="0" Type="float"/>
-    <Parameter Name="AttackRange" Value="0" Type="float"/>
-  </MemberComponentTemplate>
   <MemberComponentTemplate Name="PoisonInfected" Guid="8fa15daf-836a-4b17-b099-ab2e0769a538">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
     <Parameter Name="IsOptional" Value="true" Type="bool"/>
@@ -5402,10 +5358,10 @@
     <Parameter Name="BoxSize" Guid="e4dc639e-5cdc-4f5a-b61a-92238944bfaf" Value="0.8,1.8,0.8" Type="Vector3"/>
   </MemberComponentTemplate>
   <MemberComponentTemplate Name="Creature" Guid="9ae7570b-4374-4228-af2f-033ebe3be5d8">
-    <Parameter Name="DisplayName" Guid="a1add9a9-b623-486b-a3f4-d80fccd5179c" Value="Sparkster" Type="string"/>
+    <Parameter Name="DisplayName" Guid="a1add9a9-b623-486b-a3f4-d80fccd5179c" Value="[DisplayName:Sparkster]" Type="string"/>
     <Parameter Name="Category" Guid="c34ccd4e-fec5-46f0-a63b-64b637e4c43e" Value="LandOther" Type="Game.CreatureCategory"/>
     <Parameter Name="ConstantSpawn" Guid="37bc8f2c-8994-4abd-9500-e430fed97a8a" Value="True" Type="bool"/>
-    <Parameter Name="Description" Guid="a47a287f-2bae-4a66-9824-e4f1516774e9" Value="Sparkster is the opossum Rocket Knight hero created by Konami, first appearing in Rocket Knight Adventures (1993) and continuing in Sparkster (1994) and later entries. Armed with a sword and a rocket pack, he defends the Kingdom of Zephyrus with courage and agility. Midway in his lore here, Sparkster aligns with the Alianza, a protective group dedicated to defending allies and resisting corruption — he is non-hostile by default and only retaliates when provoked. Recognizable by his blue-and-red armor, Sparkster is brave, loyal, and resilient, excelling at fast movement and precise strikes while inspiring those around him. He will appear on Day 2 at any hour." Type="string"/>
+    <Parameter Name="Description" Guid="a47a287f-2bae-4a66-9824-e4f1516774e9" Value="[Description:Sparkster]" Type="string"/>
     <Parameter Name="KillVerbs" Guid="63793717-955c-4d07-a29a-9124a2ba34c4" Value="defeated the foe with a rocket dash" Type="string"/>
   </MemberComponentTemplate>
   <MemberComponentTemplate Name="Spawn" Guid="f135611a-4950-4afb-acd7-feb01cef3c68">
@@ -5452,7 +5408,7 @@
   </MemberComponentTemplate>
   <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="a2b3c4d5-6e7f-8a9b-0c1d-2e3f4a5b6c7d" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
     <Parameter Name="ChaseToCreatures" Guid="b3c4d5e6-7f8a-9b0c-1d2e-3f4a5b6c7d8e" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
-    <Parameter Name="ChaseToCreatureProbability" Guid="c4d5e6f7-8a9b-0c1d-2e3f-4a5b6c7d8e9f" Value="1.0" Type="float"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="c4d5e6f7-8a9b-0c1d-2e3f-4a5b6c7d8e9f" Value="999999999" Type="float"/>
   </MemberComponentTemplate>
   <MemberComponentTemplate Name="ChaseBehavior" Guid="d5e6f7a8-9b0c-1d2e-3f4a-5b6c7d8e9f0a" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
     <Parameter Name="AutoChaseMask" Guid="e6f7a8b9-0c1d-2e3f-4a5b-6c7d8e9f0a1b" Value="LandPredator, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
@@ -5465,7 +5421,7 @@
     <Parameter Name="Color" Guid="e2f3a4b5-6c7d-8e9f-0a1b-2c3d4e5f6a7b" Value="0,112,225" Type="Color"/>
     <Parameter Name="TextureSlot" Guid="f3a4b5c6-7d8e-9f0a-1b2c-3d4e5f6a7b8c" Value="8" Type="int"/>
     <Parameter Name="SwapUV" Guid="a4b5c6d7-8e9f-0a1b-2c3d-4e5f6a7b8c9d" Value="False" Type="bool"/>
-    <Parameter Name="DisplayName" Guid="b5c6d7e8-9f0a-1b2c-3d4e-5f6a7b8c9d0e" Value="Sparkster Egg" Type="string"/>
+    <Parameter Name="DisplayName" Guid="b5c6d7e8-9f0a-1b2c-3d4e-5f6a7b8c9d0e" Value="[DisplayName:Sparkster]" Type="string"/>
     <Parameter Name="EggTypeIndex" Guid="c6d7e8f9-0a1b-2c3d-4e5f-6a7b8c9d0e1f" Value="243" Type="int"/>
   </ParameterSet>
 </EntityTemplate>
