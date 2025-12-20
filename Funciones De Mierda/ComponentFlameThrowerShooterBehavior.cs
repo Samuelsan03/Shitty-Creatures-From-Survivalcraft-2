@@ -1,5 +1,6 @@
 using System;
 using Engine;
+using Game;
 using GameEntitySystem;
 using TemplatesDatabase;
 
@@ -10,511 +11,400 @@ namespace Game
 		// Componentes necesarios
 		private ComponentCreature m_componentCreature;
 		private ComponentChaseBehavior m_componentChaseBehavior;
+		private ComponentInventory m_componentInventory;
 		private SubsystemTime m_subsystemTime;
 		private SubsystemProjectiles m_subsystemProjectiles;
 		private SubsystemAudio m_subsystemAudio;
 		private ComponentCreatureModel m_componentModel;
 		private SubsystemParticles m_subsystemParticles;
-		private SubsystemNoise m_subsystemNoise;
 		private SubsystemTerrain m_subsystemTerrain;
-		private ComponentInventory m_componentInventory;
-
-		// Índice del bloque FlameThrower
-		private int m_flameThrowerBlockIndex;
+		private ComponentMiner m_componentMiner;
+		private SubsystemNoise m_subsystemNoise;
 
 		// Configuración
 		public float MaxDistance = 20f;
 		public float AimTime = 0.5f;
-		public float BurstTime = 2f;
-		public float CooldownTime = 1f;
-		public string FireSound = "Audio/Flamethrower/Flamethrower Fire";
-		public string PoisonSound = "Audio/Flamethrower/PoisonSmoke";
-		public string HammerSound = "Audio/HammerCock";
-		public float FireSoundDistance = 30f;
-		public float HammerSoundDistance = 20f;
+		public float BurstTime = 2.0f;      // Cambiado de FireTime a BurstTime
+		public float CooldownTime = 1.0f;   // Cambiado de ReloadTime a CooldownTime
+		public string FireSound = "Audio/FlamethrowerShooter/FlameShot";
+		public string HammerSound = "Audio/Items/Hammer Cock Remake";
+		public float FireSoundDistance = 25f;
+		public float HammerSoundDistance = 20f; // Nuevo parámetro del XML
 		public float Accuracy = 0.1f;
 		public bool UseRecoil = true;
 		public float FlameSpeed = 40f;
-		public int BurstCount = 15;
-		public float SpreadAngle = 15f;
+		public int BurstCount = 15;         // Cambiado de ShotsPerBurst a BurstCount
+		public float SpreadAngle = 15f;     // Definido pero no implementado en código
+		public float BurstInterval = 0.15f;
+		public bool CycleBulletTypes = true;
 
-		// Tipos de bala disponibles - INCLUYENDO VENENO
-		private FlameBulletBlock.FlameBulletType[] m_availableBulletTypes = new FlameBulletBlock.FlameBulletType[]
-		{
-			FlameBulletBlock.FlameBulletType.Flame,
-			FlameBulletBlock.FlameBulletType.Poison
-		};
-
-		// Estado de animación
+		// Estado
 		private bool m_isAiming = false;
 		private bool m_isFiring = false;
-		private bool m_isCooldown = false;
-		private bool m_isReady = true; // NUEVO: Indica si puede comenzar nuevo ciclo
+		private bool m_isReloading = false;
 		private double m_animationStartTime;
-		private double m_burstStartTime;
-		private double m_cooldownStartTime; // NUEVO: Tiempo de inicio del cooldown
-		private int m_bulletsFired = 0;
-		private Random m_random = new Random();
-		private float m_soundVolume = 0f;
-		private bool m_hammerSoundPlayed = false;
-		private int m_currentBulletTypeIndex = 0;
+		private double m_fireStartTime;
+		private double m_nextShotTime;
+		private int m_shotsFired = 0;
+		private Game.Random m_random = new Game.Random();
+		private int m_flameThrowerSlot = -1;
+		private int m_flameThrowerBlockIndex = 319;
+
+		// Tipo de munición actual
+		private FlameBulletBlock.FlameBulletType m_currentBulletType = FlameBulletBlock.FlameBulletType.Flame;
 
 		// UpdateOrder
-		public int UpdateOrder
-		{
-			get
-			{
-				return 0;
-			}
-		}
-
-		public override float ImportanceLevel
-		{
-			get
-			{
-				if (HasFlameThrowerEquipped())
-				{
-					return 0.5f;
-				}
-				return 0f;
-			}
-		}
+		public int UpdateOrder => 0;
+		public override float ImportanceLevel => 0.5f;
 
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
 			base.Load(valuesDictionary, idToEntityMap);
-			this.MaxDistance = valuesDictionary.GetValue<float>("MaxDistance", 20f);
-			this.AimTime = valuesDictionary.GetValue<float>("AimTime", 0.5f);
-			this.BurstTime = valuesDictionary.GetValue<float>("BurstTime", 2f);
-			this.CooldownTime = valuesDictionary.GetValue<float>("CooldownTime", 1f);
-			this.FireSound = valuesDictionary.GetValue<string>("FireSound", "Audio/Flamethrower/Flamethrower Fire");
-			this.HammerSound = valuesDictionary.GetValue<string>("HammerSound", "Audio/HammerCock");
-			this.FireSoundDistance = valuesDictionary.GetValue<float>("FireSoundDistance", 30f);
-			this.HammerSoundDistance = valuesDictionary.GetValue<float>("HammerSoundDistance", 20f);
-			this.Accuracy = valuesDictionary.GetValue<float>("Accuracy", 0.1f);
-			this.UseRecoil = valuesDictionary.GetValue<bool>("UseRecoil", true);
-			this.FlameSpeed = valuesDictionary.GetValue<float>("FlameSpeed", 40f);
-			this.BurstCount = valuesDictionary.GetValue<int>("BurstCount", 15);
-			this.SpreadAngle = valuesDictionary.GetValue<float>("SpreadAngle", 15f);
 
-			this.m_componentCreature = base.Entity.FindComponent<ComponentCreature>(true);
-			this.m_componentChaseBehavior = base.Entity.FindComponent<ComponentChaseBehavior>(true);
-			this.m_subsystemTime = base.Project.FindSubsystem<SubsystemTime>(true);
-			this.m_subsystemProjectiles = base.Project.FindSubsystem<SubsystemProjectiles>(true);
-			this.m_subsystemAudio = base.Project.FindSubsystem<SubsystemAudio>(true);
-			this.m_componentModel = base.Entity.FindComponent<ComponentCreatureModel>(true);
-			this.m_subsystemParticles = base.Project.FindSubsystem<SubsystemParticles>(true);
-			this.m_subsystemNoise = base.Project.FindSubsystem<SubsystemNoise>(true);
-			this.m_subsystemTerrain = base.Project.FindSubsystem<SubsystemTerrain>(true);
-			this.m_componentInventory = base.Entity.FindComponent<ComponentInventory>(true);
+			// Cargar parámetros del XML
+			MaxDistance = valuesDictionary.GetValue<float>("MaxDistance", 20f);
+			AimTime = valuesDictionary.GetValue<float>("AimTime", 0.5f);
+			BurstTime = valuesDictionary.GetValue<float>("BurstTime", 2.0f);      // Cambiado
+			CooldownTime = valuesDictionary.GetValue<float>("CooldownTime", 1.0f); // Cambiado
+			FireSound = valuesDictionary.GetValue<string>("FireSound", "Audio/FlamethrowerShooter/FlameShot");
+			HammerSound = valuesDictionary.GetValue<string>("HammerSound", "Audio/Items/Hammer Cock Remake");
+			FireSoundDistance = valuesDictionary.GetValue<float>("FireSoundDistance", 25f);
+			HammerSoundDistance = valuesDictionary.GetValue<float>("HammerSoundDistance", 20f); // Nuevo
+			Accuracy = valuesDictionary.GetValue<float>("Accuracy", 0.1f);
+			UseRecoil = valuesDictionary.GetValue<bool>("UseRecoil", true);
+			FlameSpeed = valuesDictionary.GetValue<float>("FlameSpeed", 40f);
+			BurstCount = valuesDictionary.GetValue<int>("BurstCount", 15);         // Cambiado
+			SpreadAngle = valuesDictionary.GetValue<float>("SpreadAngle", 15f);
+			CycleBulletTypes = valuesDictionary.GetValue<bool>("CycleBulletTypes", true);
 
-			this.m_flameThrowerBlockIndex = BlocksManager.GetBlockIndex<FlameThrowerBlock>(false, false);
-			this.m_currentBulletTypeIndex = m_random.Int(0, m_availableBulletTypes.Length);
+			// Calcular BurstInterval automáticamente basado en BurstTime y BurstCount
+			if (BurstCount > 0 && BurstTime > 0)
+			{
+				BurstInterval = BurstTime / BurstCount;
+			}
+			else
+			{
+				BurstInterval = 0.15f; // Valor por defecto
+			}
+
+			// Inicializar componentes
+			m_componentCreature = base.Entity.FindComponent<ComponentCreature>(true);
+			m_componentChaseBehavior = base.Entity.FindComponent<ComponentChaseBehavior>(true);
+			m_componentInventory = base.Entity.FindComponent<ComponentInventory>(true);
+			m_componentMiner = base.Entity.FindComponent<ComponentMiner>(true);
+			m_componentModel = base.Entity.FindComponent<ComponentCreatureModel>(true);
+			m_subsystemTime = base.Project.FindSubsystem<SubsystemTime>(true);
+			m_subsystemProjectiles = base.Project.FindSubsystem<SubsystemProjectiles>(true);
+			m_subsystemAudio = base.Project.FindSubsystem<SubsystemAudio>(true);
+			m_subsystemParticles = base.Project.FindSubsystem<SubsystemParticles>(true);
+			m_subsystemTerrain = base.Project.FindSubsystem<SubsystemTerrain>(true);
+			m_subsystemNoise = base.Project.FindSubsystem<SubsystemNoise>(true);
+
+			// Inicializar tipo de bala aleatorio
+			m_currentBulletType = m_random.Bool() ?
+				FlameBulletBlock.FlameBulletType.Flame :
+				FlameBulletBlock.FlameBulletType.Poison;
 		}
 
 		public void Update(float dt)
 		{
-			if (this.m_componentCreature.ComponentHealth.Health <= 0f)
+			if (m_componentCreature.ComponentHealth.Health <= 0f)
+				return;
+
+			if (m_componentChaseBehavior.Target == null)
 			{
-				this.ResetAnimations();
+				ResetAnimations();
 				return;
 			}
 
-			if (!HasFlameThrowerEquipped())
+			float distance = Vector3.Distance(
+				m_componentCreature.ComponentBody.Position,
+				m_componentChaseBehavior.Target.ComponentBody.Position
+			);
+
+			if (distance <= MaxDistance)
 			{
-				this.ResetAnimations();
+				if (!m_isAiming && !m_isFiring && !m_isReloading)
+				{
+					StartAiming();
+				}
+			}
+			else
+			{
+				ResetAnimations();
 				return;
 			}
 
-			if (this.m_componentChaseBehavior.Target == null)
+			if (m_isAiming)
 			{
-				this.ResetAnimations();
-				return;
-			}
+				ApplyAimingAnimation(dt);
 
-			float distance = Vector3.Distance(this.m_componentCreature.ComponentBody.Position,
-											this.m_componentChaseBehavior.Target.ComponentBody.Position);
-
-			// LÓGICA CORREGIDA: Solo comenzar nuevo ciclo si está listo y en rango
-			if (distance <= this.MaxDistance && this.m_isReady)
-			{
-				if (!this.m_isAiming && !this.m_isFiring && !this.m_isCooldown)
+				if (m_subsystemTime.GameTime - m_animationStartTime >= AimTime)
 				{
-					this.StartAiming();
+					m_isAiming = false;
+					StartFiring();
 				}
 			}
-			else if (distance > this.MaxDistance)
+			else if (m_isFiring)
 			{
-				// Si sale del rango, resetear todo
-				this.ResetAnimations();
-				this.m_isReady = true; // Volver a estar listo
-				return;
-			}
+				ApplyFiringAnimation(dt);
 
-			// MÁQUINA DE ESTADOS MEJORADA
-			if (this.m_isAiming)
-			{
-				this.ApplyAimingAnimation(dt);
-
-				// Esperar tiempo de apuntado
-				if (this.m_subsystemTime.GameTime - this.m_animationStartTime >= (double)this.AimTime)
+				if (m_subsystemTime.GameTime >= m_nextShotTime && m_shotsFired < BurstCount) // Cambiado
 				{
-					this.StartFiring();
+					FireShot();
+					m_shotsFired++;
+					m_nextShotTime = m_subsystemTime.GameTime + BurstInterval;
+				}
+
+				if (m_subsystemTime.GameTime - m_fireStartTime >= BurstTime) // Cambiado
+				{
+					m_isFiring = false;
+					StopFiring();
 				}
 			}
-			else if (this.m_isFiring)
+			else if (m_isReloading)
 			{
-				this.ApplyFiringAnimation(dt);
-				double burstElapsed = this.m_subsystemTime.GameTime - this.m_burstStartTime;
+				ApplyReloadingAnimation(dt);
 
-				// Control de volumen de sonido
-				float timeLeft = (float)((double)this.BurstTime - burstElapsed);
-				if (timeLeft < 0.3f)
+				if (m_subsystemTime.GameTime - m_animationStartTime >= CooldownTime) // Cambiado
 				{
-					this.m_soundVolume = MathUtils.Lerp(0f, 1f, timeLeft / 0.3f);
-				}
-				else
-				{
-					this.m_soundVolume = 1f;
-				}
+					m_isReloading = false;
 
-				// Disparar balas durante la ráfaga
-				if (burstElapsed < (double)this.BurstTime)
-				{
-					int expectedBullets = (int)(burstElapsed * (double)((float)this.BurstCount / this.BurstTime));
-					while (this.m_bulletsFired < expectedBullets && this.m_bulletsFired < this.BurstCount)
+					if (CycleBulletTypes)
 					{
-						if (!this.m_hammerSoundPlayed && this.m_bulletsFired == 0)
-						{
-							this.PlayHammerSound();
-							this.m_hammerSoundPlayed = true;
-						}
-						this.ShootFlame();
-						this.m_bulletsFired++;
+						m_currentBulletType = (m_currentBulletType == FlameBulletBlock.FlameBulletType.Flame) ?
+							FlameBulletBlock.FlameBulletType.Poison :
+							FlameBulletBlock.FlameBulletType.Flame;
 					}
-				}
-				else
-				{
-					// FIN DE LA RÁFAGA - Iniciar cooldown
-					this.m_isFiring = false;
-					this.StartCooldown();
-				}
-			}
-			else if (this.m_isCooldown)
-			{
-				this.ApplyCooldownAnimation(dt);
 
-				// VERIFICAR COOLDOWN TIME - CORRECCIÓN IMPORTANTE
-				double cooldownElapsed = this.m_subsystemTime.GameTime - this.m_cooldownStartTime;
-
-				if (cooldownElapsed >= (double)this.CooldownTime)
-				{
-					// COOLDOWN COMPLETADO
-					this.m_isCooldown = false;
-
-					// Cambiar tipo de bala para la próxima ráfaga
-					this.m_currentBulletTypeIndex = (this.m_currentBulletTypeIndex + 1) % m_availableBulletTypes.Length;
-
-					// Resetear estado para permitir nuevo ciclo
-					this.m_isReady = true;
-
-					// Verificar si todavía hay objetivo en rango
-					float currentDistance = Vector3.Distance(this.m_componentCreature.ComponentBody.Position,
-														  this.m_componentChaseBehavior.Target.ComponentBody.Position);
-
-					if (currentDistance <= this.MaxDistance)
-					{
-						// Comenzar nuevo ciclo inmediatamente
-						this.StartAiming();
-					}
+					StartAiming();
 				}
 			}
 		}
 
-		private bool HasFlameThrowerEquipped()
+		private void FindFlameThrower()
 		{
-			if (this.m_componentInventory == null)
-				return false;
-
-			for (int slotIndex = 0; slotIndex < this.m_componentInventory.SlotsCount; slotIndex++)
+			for (int i = 0; i < m_componentInventory.SlotsCount; i++)
 			{
-				int slotValue = this.m_componentInventory.GetSlotValue(slotIndex);
-				if (slotValue != 0)
+				int slotValue = m_componentInventory.GetSlotValue(i);
+				if (slotValue != 0 && Terrain.ExtractContents(slotValue) == m_flameThrowerBlockIndex)
 				{
-					int blockIndex = Terrain.ExtractContents(slotValue);
-					if (blockIndex == this.m_flameThrowerBlockIndex)
-					{
-						return true;
-					}
+					m_flameThrowerSlot = i;
+					m_componentInventory.ActiveSlotIndex = i;
+					break;
 				}
 			}
-
-			return false;
 		}
 
 		private void StartAiming()
 		{
-			if (!HasFlameThrowerEquipped())
-			{
-				this.ResetAnimations();
-				return;
-			}
+			FindFlameThrower();
 
-			this.m_isReady = false; // Ya no está listo para nuevo ciclo
-			this.m_isAiming = true;
-			this.m_isFiring = false;
-			this.m_isCooldown = false;
-			this.m_animationStartTime = this.m_subsystemTime.GameTime;
-			this.m_bulletsFired = 0;
-			this.m_soundVolume = 0f;
-			this.m_hammerSoundPlayed = false;
+			if (m_flameThrowerSlot == -1)
+				return;
+
+			m_isAiming = true;
+			m_isFiring = false;
+			m_isReloading = false;
+			m_animationStartTime = m_subsystemTime.GameTime;
+			m_shotsFired = 0;
+
+			// Sonido de preparación
+			if (!string.IsNullOrEmpty(HammerSound))
+			{
+				m_subsystemAudio.PlaySound(HammerSound, 1f, m_random.Float(-0.1f, 0.1f),
+					m_componentCreature.ComponentBody.Position, HammerSoundDistance, false); // Usa HammerSoundDistance
+			}
 		}
 
 		private void ApplyAimingAnimation(float dt)
 		{
-			if (this.m_componentModel != null)
+			if (m_componentModel != null)
 			{
-				this.m_componentModel.AimHandAngleOrder = 1.1f;
-				this.m_componentModel.InHandItemOffsetOrder = new Vector3(-0.12f, -0.05f, 0.1f);
-				this.m_componentModel.InHandItemRotationOrder = new Vector3(-1.3f, -0.2f, 0f);
+				m_componentModel.AimHandAngleOrder = 1.4f;
+				m_componentModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
+				m_componentModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
 
-				if (this.m_componentChaseBehavior.Target != null)
+				if (m_componentChaseBehavior.Target != null)
 				{
-					this.m_componentModel.LookAtOrder = new Vector3?(this.m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition);
+					m_componentModel.LookAtOrder = new Vector3?(
+						m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition
+					);
 				}
 			}
 		}
 
 		private void StartFiring()
 		{
-			if (!HasFlameThrowerEquipped())
-			{
-				this.ResetAnimations();
-				return;
-			}
-
-			this.m_isAiming = false;
-			this.m_isFiring = true;
-			this.m_isCooldown = false;
-			this.m_burstStartTime = this.m_subsystemTime.GameTime;
-			this.m_bulletsFired = 0;
-			this.m_soundVolume = 1f;
-			this.m_hammerSoundPlayed = false;
+			m_isAiming = false;
+			m_isFiring = true;
+			m_isReloading = false;
+			m_fireStartTime = m_subsystemTime.GameTime;
+			m_nextShotTime = m_subsystemTime.GameTime;
+			m_shotsFired = 0;
 		}
 
 		private void ApplyFiringAnimation(float dt)
 		{
-			if (!HasFlameThrowerEquipped())
+			if (m_componentModel != null)
 			{
-				this.ResetAnimations();
-				return;
-			}
+				float fireProgress = (float)((m_subsystemTime.GameTime - m_fireStartTime) / BurstTime); // Cambiado
+				float vibration = (float)Math.Sin(fireProgress * 20f) * 0.02f;
 
-			if (this.m_componentModel != null)
-			{
-				float timeRatio = (float)((this.m_subsystemTime.GameTime - this.m_burstStartTime) / (double)this.BurstTime);
-				float handShake = 1f + 0.2f * MathUtils.Sin(timeRatio * 25f);
-
-				this.m_componentModel.AimHandAngleOrder = 1.1f * handShake;
-				this.m_componentModel.InHandItemOffsetOrder = new Vector3(
-					-0.12f + 0.01f * MathUtils.Sin(timeRatio * 20f),
-					-0.05f + 0.005f * MathUtils.Sin(timeRatio * 22f),
-					0.1f
+				m_componentModel.AimHandAngleOrder = 1.4f + vibration;
+				m_componentModel.InHandItemOffsetOrder = new Vector3(
+					-0.08f + vibration,
+					-0.08f,
+					0.07f
 				);
-				this.m_componentModel.InHandItemRotationOrder = new Vector3(
-					-1.3f + 0.15f * MathUtils.Sin(timeRatio * 18f),
-					-0.2f,
+				m_componentModel.InHandItemRotationOrder = new Vector3(
+					-1.7f + vibration * 2f,
+					0f,
 					0f
 				);
 
-				if (this.m_componentChaseBehavior.Target != null)
+				if (m_componentChaseBehavior.Target != null)
 				{
-					this.m_componentModel.LookAtOrder = new Vector3?(this.m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition);
-				}
-
-				if (this.UseRecoil && this.m_componentChaseBehavior.Target != null)
-				{
-					Vector3 direction = Vector3.Normalize(this.m_componentChaseBehavior.Target.ComponentBody.Position - this.m_componentCreature.ComponentBody.Position);
-					this.m_componentCreature.ComponentBody.ApplyImpulse(-direction * 0.3f * dt);
-				}
-			}
-
-			if (this.m_soundVolume > 0.01f &&
-				this.m_subsystemTime.GameTime - this.m_burstStartTime < (double)this.BurstTime - 0.1)
-			{
-				string soundToPlay = (m_availableBulletTypes[m_currentBulletTypeIndex] == FlameBulletBlock.FlameBulletType.Flame) ?
-					this.FireSound : this.PoisonSound;
-
-				if (!string.IsNullOrEmpty(soundToPlay))
-				{
-					float fireVolume = MathUtils.Max(this.m_soundVolume, 0.9f);
-					this.m_subsystemAudio.PlaySound(
-						soundToPlay,
-						fireVolume,
-						this.m_random.Float(-0.1f, 0.1f),
-						this.m_componentCreature.ComponentBody.Position,
-						this.FireSoundDistance,
-						true
+					m_componentModel.LookAtOrder = new Vector3?(
+						m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition
 					);
 				}
 			}
 		}
 
-		private void StartCooldown()
+		private void StopFiring()
 		{
-			this.m_isAiming = false;
-			this.m_isFiring = false;
-			this.m_isCooldown = true;
-			this.m_cooldownStartTime = this.m_subsystemTime.GameTime; // REGISTRAR INICIO DEL COOLDOWN
-			this.m_soundVolume = 0f;
+			StartReloading();
 		}
 
-		private void ApplyCooldownAnimation(float dt)
+		private void StartReloading()
 		{
-			if (this.m_componentModel != null)
-			{
-				double cooldownElapsed = this.m_subsystemTime.GameTime - this.m_cooldownStartTime;
-				float cooldownRatio = (float)(cooldownElapsed / (double)this.CooldownTime);
+			m_isAiming = false;
+			m_isFiring = false;
+			m_isReloading = true;
+			m_animationStartTime = m_subsystemTime.GameTime;
+		}
 
-				// Animación suave durante el cooldown
-				this.m_componentModel.AimHandAngleOrder = MathUtils.Lerp(1.1f, 0.7f, MathUtils.Saturate(cooldownRatio));
-				this.m_componentModel.InHandItemOffsetOrder = new Vector3(
-					-0.12f,
-					-0.05f - 0.08f * MathUtils.Saturate(cooldownRatio),
-					0.1f - 0.05f * MathUtils.Saturate(cooldownRatio)
+		private void ApplyReloadingAnimation(float dt)
+		{
+			if (m_componentModel != null)
+			{
+				float reloadProgress = (float)((m_subsystemTime.GameTime - m_animationStartTime) / CooldownTime); // Cambiado
+
+				m_componentModel.AimHandAngleOrder = MathUtils.Lerp(1.0f, 0.5f, reloadProgress);
+				m_componentModel.InHandItemOffsetOrder = new Vector3(
+					-0.08f,
+					-0.08f,
+					0.07f - (0.1f * reloadProgress)
 				);
-				this.m_componentModel.InHandItemRotationOrder = new Vector3(
-					-1.3f + 0.4f * MathUtils.Saturate(cooldownRatio),
-					-0.2f,
+				m_componentModel.InHandItemRotationOrder = new Vector3(
+					-1.7f + (0.5f * reloadProgress),
+					0f,
 					0f
 				);
 
-				// Si el cooldown está por terminar, mostrar que está casi listo
-				if (cooldownRatio > 0.8f)
-				{
-					float readyPulse = 0.1f * MathUtils.Sin(cooldownRatio * 20f);
-					this.m_componentModel.InHandItemOffsetOrder += new Vector3(0f, readyPulse, 0f);
-				}
+				m_componentModel.LookAtOrder = null;
 			}
 		}
 
 		private void ResetAnimations()
 		{
-			this.m_isAiming = false;
-			this.m_isFiring = false;
-			this.m_isCooldown = false;
-			this.m_bulletsFired = 0;
-			this.m_soundVolume = 0f;
-			this.m_hammerSoundPlayed = false;
+			m_isAiming = false;
+			m_isFiring = false;
+			m_isReloading = false;
+			m_shotsFired = 0;
 
-			if (this.m_componentModel != null)
+			if (m_componentModel != null)
 			{
-				this.m_componentModel.AimHandAngleOrder = 0f;
-				this.m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
-				this.m_componentModel.InHandItemRotationOrder = Vector3.Zero;
-				this.m_componentModel.LookAtOrder = null;
+				m_componentModel.AimHandAngleOrder = 0f;
+				m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
+				m_componentModel.InHandItemRotationOrder = Vector3.Zero;
+				m_componentModel.LookAtOrder = null;
 			}
 		}
 
-		private void PlayHammerSound()
+		private void FireShot()
 		{
-			if (!string.IsNullOrEmpty(this.HammerSound))
-			{
-				this.m_subsystemAudio.PlaySound(
-					this.HammerSound,
-					1.0f,
-					this.m_random.Float(-0.05f, 0.05f),
-					this.m_componentCreature.ComponentBody.Position,
-					this.HammerSoundDistance,
-					false
-				);
-
-				this.m_subsystemAudio.PlaySound(
-					"Audio/Impacts/MetalImpact",
-					0.7f,
-					this.m_random.Float(-0.03f, 0.03f),
-					this.m_componentCreature.ComponentBody.Position,
-					15f,
-					false
-				);
-			}
-		}
-
-		private void ShootFlame()
-		{
-			if (!HasFlameThrowerEquipped() || this.m_componentChaseBehavior.Target == null)
-			{
+			if (m_componentChaseBehavior.Target == null)
 				return;
-			}
 
 			try
 			{
-				Vector3 eyePosition = this.m_componentCreature.ComponentCreatureModel.EyePosition;
-				Vector3 targetEyePosition = this.m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition;
+				Vector3 firePosition = m_componentCreature.ComponentCreatureModel.EyePosition;
+				Vector3 targetPosition = m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition;
 
-				Vector3 direction = Vector3.Normalize(targetEyePosition - eyePosition);
-				float accuracyFactor = this.Accuracy * 0.3f;
+				Vector3 direction = Vector3.Normalize(targetPosition - firePosition);
 
-				Vector3 adjustedDirection = Vector3.Normalize(direction + new Vector3(
-					this.m_random.Float(-accuracyFactor, accuracyFactor),
-					this.m_random.Float(-accuracyFactor * 0.3f, accuracyFactor * 0.3f),
-					this.m_random.Float(-accuracyFactor, accuracyFactor)
-				));
+				// Disparar recto como el mosquete
+				direction += new Vector3(
+					m_random.Float(-Accuracy, Accuracy),
+					m_random.Float(-Accuracy * 0.5f, Accuracy * 0.5f),
+					m_random.Float(-Accuracy, Accuracy)
+				);
+				direction = Vector3.Normalize(direction);
 
-				int flameBulletIndex = BlocksManager.GetBlockIndex<FlameBulletBlock>(false, false);
-				if (flameBulletIndex > 0)
+				int bulletBlockIndex = BlocksManager.GetBlockIndex<FlameBulletBlock>(false, false);
+				if (bulletBlockIndex > 0)
 				{
-					FlameBulletBlock.FlameBulletType currentBulletType = m_availableBulletTypes[m_currentBulletTypeIndex];
+					FlameBulletBlock.FlameBulletType bulletType = m_currentBulletType;
 
-					int bulletData = FlameBulletBlock.SetBulletType(0, currentBulletType);
-					int blockValue = Terrain.MakeBlockValue(flameBulletIndex, 0, bulletData);
+					int bulletData = FlameBulletBlock.SetBulletType(0, bulletType);
+					int bulletValue = Terrain.MakeBlockValue(bulletBlockIndex, 0, bulletData);
 
-					var projectile = this.m_subsystemProjectiles.FireProjectile(
-						blockValue,
-						eyePosition + adjustedDirection * 0.3f,
-						adjustedDirection * this.FlameSpeed,
+					m_subsystemProjectiles.FireProjectile(
+						bulletValue,
+						firePosition,
+						direction * FlameSpeed,
 						Vector3.Zero,
-						this.m_componentCreature
+						m_componentCreature
 					);
 
-					// Configurar acción del proyectil
-					if (projectile != null)
+					// Audio y partículas según tipo
+					Vector3 smokePosition = firePosition + direction * 0.3f;
+
+					if (bulletType == FlameBulletBlock.FlameBulletType.Flame)
 					{
-						projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
-
-						if (currentBulletType == FlameBulletBlock.FlameBulletType.Flame)
+						// Sonido de fuego
+						if (!string.IsNullOrEmpty(FireSound))
 						{
-							projectile.IsIncendiary = true;
+							m_subsystemAudio.PlaySound(FireSound, 1f, m_random.Float(-0.1f, 0.1f),
+								m_componentCreature.ComponentBody.Position, FireSoundDistance, false);
 						}
-						else if (currentBulletType == FlameBulletBlock.FlameBulletType.Poison)
-						{
-							projectile.IsIncendiary = false;
-						}
-					}
 
-					Vector3 particlePosition = eyePosition + adjustedDirection * 0.3f;
-
-					if (this.m_subsystemParticles != null && this.m_subsystemTerrain != null)
-					{
-						if (currentBulletType == FlameBulletBlock.FlameBulletType.Flame)
+						// Partículas de fuego
+						if (m_subsystemParticles != null && m_subsystemTerrain != null)
 						{
-							this.m_subsystemParticles.AddParticleSystem(
-								new FlameSmokeParticleSystem(this.m_subsystemTerrain, particlePosition, adjustedDirection),
-								false
-							);
-						}
-						else
-						{
-							this.m_subsystemParticles.AddParticleSystem(
-								new PoisonSmokeParticleSystem(this.m_subsystemTerrain, particlePosition, adjustedDirection),
+							m_subsystemParticles.AddParticleSystem(
+								new FlameSmokeParticleSystem(m_subsystemTerrain, smokePosition, direction),
 								false
 							);
 						}
 					}
-
-					if (this.m_subsystemNoise != null)
+					else
 					{
-						this.m_subsystemNoise.MakeNoise(eyePosition, 0.8f, 35f);
+						// Sonido de veneno
+						m_subsystemAudio.PlaySound("Audio/Flamethrower/PoisonSmoke", 1f, m_random.Float(-0.1f, 0.1f),
+							m_componentCreature.ComponentCreatureModel.EyePosition, 8f, true);
+
+						// Partículas de veneno
+						if (m_subsystemParticles != null && m_subsystemTerrain != null)
+						{
+							m_subsystemParticles.AddParticleSystem(
+								new PoisonSmokeParticleSystem(m_subsystemTerrain, smokePosition + 0.3f * direction, direction),
+								false
+							);
+						}
+					}
+
+					if (UseRecoil)
+					{
+						float recoilStrength = (bulletType == FlameBulletBlock.FlameBulletType.Flame) ? 0.8f : 0.5f;
+						m_componentCreature.ComponentBody.ApplyImpulse(-direction * recoilStrength);
+					}
+
+					if (m_subsystemNoise != null)
+					{
+						m_subsystemNoise.MakeNoise(firePosition, 0.7f, 25f);
 					}
 				}
 			}
