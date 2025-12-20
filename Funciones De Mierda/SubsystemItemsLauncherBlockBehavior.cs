@@ -1,15 +1,11 @@
-
 using System;
 using System.Collections.Generic;
 using Engine;
 using Game;
 using TemplatesDatabase;
 
-// Token: 0x02000005 RID: 5
 public class SubsystemItemsLauncherBlockBehavior : SubsystemBlockBehavior
 {
-	// Token: 0x17000001 RID: 1
-	// (get) Token: 0x06000018 RID: 24 RVA: 0x00002A6B File Offset: 0x00000C6B
 	public override int[] HandledBlocks
 	{
 		get
@@ -21,14 +17,12 @@ public class SubsystemItemsLauncherBlockBehavior : SubsystemBlockBehavior
 		}
 	}
 
-	// Token: 0x06000019 RID: 25 RVA: 0x00002A7C File Offset: 0x00000C7C
 	public override bool OnEditInventoryItem(IInventory inventory, int slotIndex, ComponentPlayer componentPlayer)
 	{
 		componentPlayer.ComponentGui.ModalPanelWidget = new AutoCannonWidget(componentPlayer, slotIndex);
 		return true;
 	}
 
-	// Token: 0x0600001A RID: 26 RVA: 0x00002AA4 File Offset: 0x00000CA4
 	public override bool OnAim(Ray3 aim, ComponentMiner miner, AimState state)
 	{
 		bool flag = miner.Inventory == null;
@@ -114,7 +108,6 @@ public class SubsystemItemsLauncherBlockBehavior : SubsystemBlockBehavior
 		return result;
 	}
 
-	// Token: 0x0600001B RID: 27 RVA: 0x00002CDC File Offset: 0x00000EDC
 	private void Fire(ComponentMiner miner, Ray3 aim)
 	{
 		IInventory inventory = miner.Inventory;
@@ -201,18 +194,20 @@ public class SubsystemItemsLauncherBlockBehavior : SubsystemBlockBehavior
 		}
 		else
 		{
-			// Mostrar mensaje cuando no hay munición
+			// Mostrar mensaje cuando no hay munición - SIN SONIDO DE NOTIFICACIÓN
 			ComponentPlayer componentPlayer = miner.ComponentPlayer;
 			if (componentPlayer != null)
 			{
-				componentPlayer.ComponentGui.DisplaySmallMessage("You need ammunition to fire the item launcher", Color.Yellow, true, true);
+				// El último parámetro 'false' evita que se reproduzca el sonido de notificación
+				string message = LanguageControl.Get("YouNeedAmmunition", "You need ammunition to fire the item launcher");
+				componentPlayer.ComponentGui.DisplaySmallMessage(message, Color.Orange, true, false);
 			}
 
+			// MANTENER el sonido del martillo del lanzador de ítems
 			base.Project.FindSubsystem<SubsystemAudio>(true).PlaySound("Audio/Items/ItemLauncher/Item Launcher Hammer Release", 1f, this.m_random.Float(-0.1f, 0.1f), miner.ComponentCreature.ComponentCreatureModel.EyePosition, 2f, false);
 		}
 	}
 
-	// Token: 0x0600001C RID: 28 RVA: 0x00003058 File Offset: 0x00001258
 	public override void Load(ValuesDictionary valuesDictionary)
 	{
 		base.Load(valuesDictionary);
@@ -221,19 +216,11 @@ public class SubsystemItemsLauncherBlockBehavior : SubsystemBlockBehavior
 		this.m_subsystemNoise = base.Project.FindSubsystem<SubsystemNoise>(true);
 	}
 
-	// Token: 0x0400001A RID: 26
 	public SubsystemTime m_subsystemTime;
-
-	// Token: 0x0400001B RID: 27
 	public SubsystemGameInfo m_subsystemGameInfo;
-
-	// Token: 0x0400001C RID: 28
 	public Game.Random m_random = new Game.Random();
-
-	// Token: 0x0400001D RID: 29
 	public SubsystemNoise m_subsystemNoise;
 
-	// Token: 0x0400001E RID: 30
 	private static readonly float[] m_speedValues = new float[]
 	{
 		10f,
@@ -241,7 +228,6 @@ public class SubsystemItemsLauncherBlockBehavior : SubsystemBlockBehavior
 		60f
 	};
 
-	// Token: 0x0400001F RID: 31
 	private static readonly float[] m_rateValues = new float[]
 	{
 		1f,
@@ -261,7 +247,6 @@ public class SubsystemItemsLauncherBlockBehavior : SubsystemBlockBehavior
 		15f
 	};
 
-	// Token: 0x04000020 RID: 32
 	private static readonly float[] m_spreadValues = new float[]
 	{
 		0.01f,
@@ -269,6 +254,5 @@ public class SubsystemItemsLauncherBlockBehavior : SubsystemBlockBehavior
 		0.5f
 	};
 
-	// Token: 0x04000021 RID: 33
 	private Dictionary<ComponentMiner, double> m_nextFireTimes = new Dictionary<ComponentMiner, double>();
 }
