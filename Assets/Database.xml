@@ -17,6 +17,10 @@
   </Assemblies>
   <DatabaseObjects RootGuid="2c273f6a-efce-4bf1-a8ae-e3aea7ffb75c">
     <Folder Name="Entities" Guid="5fcdf35f-7001-442c-883e-e0502b15d291">
+    <EntityTemplate Name="RefrigeratorXiaomi" Guid="ba2820ea-9ea1-4b2f-9d4b-5811528dd244">
+    <MemberComponentTemplate Name="RefrigeratorXiaomi" Guid="0a352aa5-3deb-4833-bbd3-7f3d918c719a" InheritanceParent="064a3848-3864-4d94-b078-7e3d8fdc145c"/>
+    <MemberComponentTemplate Name="BlockEntity" Guid="2651f6b3-7bc7-4b9c-9e4d-bc8dcffb4f50" InheritanceParent="09a85cba-d94e-41b8-9497-f20ed942c17e" />
+</EntityTemplate>
       <Folder Name="Creatures" Guid="beb2de3c-1a77-4950-b74f-9dd470f751fe">
         <Folder Name="Abstract" Guid="662d69f8-483c-4271-966b-da9cbb4f5042">
           <EntityTemplate Name="Bird" Guid="0cb14482-b936-410e-9317-66d385d7d2fd" InheritanceParent="3f077159-f492-419b-859a-bb051de6339f">
