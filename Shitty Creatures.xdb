@@ -4210,7 +4210,6 @@
         <Parameter Name="EggTypeIndex" Guid="390ca3e7-a23f-4206-9c68-016ea3966edc" Value="231" Type="int"/>
     </ParameterSet>
 </EntityTemplate>
-</Folder>
 
 <EntityTemplate Name="WalterZombie" Guid="5288697e-9260-479d-b3f8-6bda303ee665" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
 <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="301a4f52-7201-459a-8985-f2fe41af9882">
@@ -4694,7 +4693,7 @@
     <MemberComponentTemplate Name="PoisonInfected" Guid="86dd12f0-63c6-458c-afb9-e58f6463d1e0">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
     <Parameter Name="IsOptional" Value="true" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int"/>
     <Parameter Name="PoisonResistance" Value="430.55" Type="float"/>
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
