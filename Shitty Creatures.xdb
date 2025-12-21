@@ -2816,7 +2816,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="adea0c27-9aa6-42f2-98db-45d3a4f97319" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
     <Parameter Name="ChaseToCreatures" Guid="e5e1207e-a658-4c4b-ba10-630371bd5bdf" Value="Naomi, Ricardo, Paco, Barack, ElMarihuanero, ElMarihuaneroMamon, TommyVercetti, ClaudeSpeed, ArqueroPrisionero, BallestadoraMusculosa, CarlJohnson, BetelGammamon, Gaomon, Agumon, Veemon, Guilmon, WalterZombie, WalterZombieMamadisimo, FumadorQuimico, FumadorQuimicoBrawny, Conker, Beavis, Butt-Head, Shoutmon, Gumdramon, Bass_Sea, Seagull, Sparrow, Reindeer, Horse_White, Horse_White_Saddled, Horse_Chestnut, Horse_Chestnut_Saddled, Horse_Bay, Horse_Bay_Saddled, Horse_Palomino, Horse_Palomino_Saddled, Horse_Black, Horse_Black_Saddled, Camel, Camel_Saddled, Zebra, Wildboar, Bison, Bull_Brown, Bull_Black, Cow_Brown, Cow_Black, Bull_White, Duck, Pigeon, Raven, Giraffe, Moose, Donkey, Donkey_Saddled, Cassowary, Ostrich, Gnu, Werewolf, Ray_Yellow, Ray_Brown, Beluga,Hyena, Rhino, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite, Player" Type="string"/>
-    <Parameter Name="ChaseToCreatureProbability" Guid="3de7d10c-3c5d-4d73-895d-ff057da54004" Value="1.0" Type="float"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="3de7d10c-3c5d-4d73-895d-ff057da54004" Value="999999999" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="EatPickableBehavior" Guid="b928c9c7-e38a-4818-869c-98ec7b6dcbe7">
         <ParameterSet Name="FoodFactors" Guid="1d21a2fa-ab0c-4562-8a3e-83e1afbefe98">
@@ -2882,10 +2882,10 @@
     <Parameter Name="AutoDespawn" Guid="d54eb620-2513-4f0f-98f2-8837c2ff1b4c" Value="False" Type="bool"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="08fffad3-3ede-4581-a38b-98d534da8667">
-        <Parameter Name="DisplayName" Guid="ca08fd0f-562c-4dc1-99d0-9c0ced52a743" Value="El Arquero" Type="string"/>
+        <Parameter Name="DisplayName" Guid="ca08fd0f-562c-4dc1-99d0-9c0ced52a743" Value="[DisplayName:ElArquero]" Type="string"/>
         <Parameter Name="Category" Guid="8252ee2e-5e5e-406d-ab16-48ed2493461c" Value="Bird" Type="Game.CreatureCategory"/>
         <Parameter Name="ConstantSpawn" Guid="5a29f46e-e278-4405-9d2d-7a917ec66a1e" Value="True" Type="bool"/>
-        <Parameter Name="Description" Guid="a82cd753-b101-46bb-bbab-cc2c75bfef07" Value="Twin brother of El Ballestador, El Arquero excels in pinpoint accuracy and rapid-fire archery using reinforced bows. Both share tactical agility, night vision, and synchronized patrol behavior, but El Arquero favors elevated ambushes and silent strikes. His armor is lighter, allowing swift movement across high structures. He communicates through optical signals and rarely misses a shot. Like El Ballestador, he is highly dangerous—provoking him will result in a lethal barrage of arrows. Upon death, he drops usable bow-grade arrows, ideal if you're low on resources. To survive, use cover, bait his shots, and flank from blind angles to avoid direct line-of-sight. Curiously, El Arquero began using his bow after witnessing his brother fire a bow for the first time. Wanting to defend himself equally, he stole a bow and arrows from a weapons shop—giving rise to a hostile Robin Hood of the high ground. He appears only at night starting from day 10, making his encounters rarer but significantly more threatening as the world grows darker." Type="string"/>
+        <Parameter Name="Description" Guid="a82cd753-b101-46bb-bbab-cc2c75bfef07" Value="[Description:ElArquero]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="7ce38653-070e-46db-934e-86457828cfe8" Value="Shot with arrows" Type="string"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="ComponentRandomChatter2" Guid="e0981784-9d2a-4d53-af3f-cd8101c87374">
@@ -2938,7 +2938,7 @@
         <Parameter Name="Color" Guid="f3b903e6-2f48-4e7a-aaa7-b865f79a2ca5" Value="239,184,16" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="76616220-4415-409a-95b7-b069923246da" Value="188" Type="int"/>
         <Parameter Name="SwapUV" Guid="fbc27a64-6b1a-4dbb-815d-2918640498c5" Value="True" Type="bool"/>
-        <Parameter Name="DisplayName" Guid="af1fc649-27e7-41f8-b47e-e6de6b69363e" Value="El Arquero Egg" Type="string"/>
+        <Parameter Name="DisplayName" Guid="af1fc649-27e7-41f8-b47e-e6de6b69363e" Value="[DisplayName:ElArquero]" Type="string"/>
         <Parameter Name="EggTypeIndex" Guid="ca53d352-bc00-46a2-83d2-8cd1e2c23d10" Value="222" Type="int"/>
     </ParameterSet>
 </EntityTemplate>
@@ -3005,10 +3005,10 @@
         <Parameter Name="BoxSize" Guid="70323df9-2cdd-4a83-9b84-1be629673a9c" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="76b3a37c-66d5-41b5-ab9e-0413590ce5a9">
-        <Parameter Name="DisplayName" Guid="45f817eb-849e-4fe0-a804-b1f2b52046da" Value="Arquero Prisionero" Type="string"/>
+        <Parameter Name="DisplayName" Guid="45f817eb-849e-4fe0-a804-b1f2b52046da" Value="[DisplayName:ArqueroPrisionero]" Type="string"/>
         <Parameter Name="Category" Guid="99dabc2a-e522-4dee-8f7a-c864cf133d80" Value="LandOther" Type="Game.CreatureCategory"/>
         <Parameter Name="ConstantSpawn" Guid="f5e78630-595a-47eb-9d57-d2df49afdea8" Value="True" Type="bool"/>
-        <Parameter Name="Description" Guid="1bad7bdc-f43d-4a20-9390-83392199b486" Value="Born as the twin brother of El Arquero, the Prisoner Archer carries a past scarred by the Nazi era. Surviving the horrors of the Holocaust, he emerged with resilience and a newfound purpose. Unlike his brother and El Ballestador, who aligned with a malevolent faction, the Prisoner Archer chose the path of the Alliance, determined to oppose tyranny rather than serve it. His weapon of choice is the bow, adopted after witnessing his brother’s skill and vowing to defend himself and others with equal precision. During captivity, he secretly crafted crude fire arrows, though Nazi control forbade prisoners from wielding such weapons. This defiance became the seed of his mastery: when freedom came, he refined his skill into silent, lethal archery. Now, he stands as a guardian—swift, vigilant, and unyielding. If he sees his allies or the Alliance under attack, he will not hesitate to unleash a storm of arrows. His armor is light, built for speed and survival, allowing him to move across ruins and high structures with ease. He communicates through subtle signals, preferring silence over words, and rarely misses a shot. Upon defeat, he drops usable arrows, a reminder of his resourcefulness and the hardships he endured. Though his past is marked by sorrow, the Prisoner Archer fights forward with determination, embodying a hostile Robin Hood of the high ground. His story is one of survival, rebellion, and the relentless pursuit of justice—proof that even in the aftermath of tragedy, one can rise to protect others and continue the struggle for freedom." Type="string"/>
+        <Parameter Name="Description" Guid="1bad7bdc-f43d-4a20-9390-83392199b486" Value="[Description:ArqueroPrisionero]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="1054cce7-47a3-48fc-b102-0be025ff0145" Value="Hunted with arrows" Type="string"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="ComponentRandomChatter" Guid="d708b362-e0a7-4e5b-b060-d27b93f40ba2">
@@ -3064,7 +3064,7 @@
         <Parameter Name="Color" Guid="71c0aa3f-71bc-4a42-8f5e-fe218394187e" Value="124,128,101" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="53d2f385-3182-4011-b7d5-216a6e33617a" Value="188" Type="int"/>
         <Parameter Name="SwapUV" Guid="a62c2a9c-2d48-42e5-969e-0fb18aee8fd6" Value="True" Type="bool"/>
-        <Parameter Name="DisplayName" Guid="431d0b1c-7e6b-4ddc-b3b2-a48fa43f0c98" Value="Arquero Prisionero Egg" Type="string"/>
+        <Parameter Name="DisplayName" Guid="431d0b1c-7e6b-4ddc-b3b2-a48fa43f0c98" Value="[DisplayName:ArqueroPrisionero]" Type="string"/>
         <Parameter Name="EggTypeIndex" Guid="943808d2-a602-477d-860d-d1e4f4c943a8" Value="224" Type="int"/>
     </ParameterSet>
 </EntityTemplate>
@@ -3160,10 +3160,10 @@
         <Parameter Name="BoxSize" Guid="d7838859-5e18-45c3-80bc-50b27da53ea4" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="3377318d-f5b3-49d2-8ecc-ef29d6c8c5e2">
-        <Parameter Name="DisplayName" Guid="14528df2-be37-4927-bf51-e5582ad52f7b" Value="Veemon" Type="string"/>
+        <Parameter Name="DisplayName" Guid="14528df2-be37-4927-bf51-e5582ad52f7b" Value="[DisplayName:Veemon]" Type="string"/>
         <Parameter Name="Category" Guid="cb78a325-0fa1-4220-af6b-e21c687e8aa4" Value="LandOther" Type="Game.CreatureCategory"/>
-        <Parameter Name="Description" Guid="fb80417f-b0c8-4264-a968-ffb5acd7f4a4" Value="Veemon first appeared in Digimon Adventure 02 (2000), introduced as Davis Motomiya’s partner and quickly recognized for his playful yet courageous nature. Although aligned with the Alliance group, Veemon can also ally with the player, offering versatile support in battle through his unique ability to Armor Digivolve using Digi-Eggs. This makes him adaptable to multiple combat situations, from Flamedramon’s fiery offense to Magnamon’s miraculous defense. Veemon was originally designed by Kenji Watanabe, the illustrator behind many Digimon species, whose creative vision drew inspiration from the letter V (symbolizing victory) and the manga magazine V-Jump where Digimon V-Tamer 01 was serialized. His design reflects both a dragon motif and a youthful, energetic personality that resonated with fans worldwide. Beyond his origins, Veemon embodies loyalty, optimism, and resilience. He is mischievous yet deeply committed to protecting his allies, often charging headfirst into danger with a smile. In gameplay, he rarely hesitates to fight for justice, and his presence reassures companions that courage and friendship can overcome any obstacle. Ultimately, Veemon is more than a fighter—he is a symbol of hope, proving that even in the toughest battles, goodness and determination will always shine through." Type="string"/>
-        <Parameter Name="KillVerbs" Guid="ec23fa7c-686f-4c57-8e6f-2522b3c1863a" Value="Fuck" Type="string"/>
+        <Parameter Name="Description" Guid="fb80417f-b0c8-4264-a968-ffb5acd7f4a4" Value="[Description:Veemon]" Type="string"/>
+        <Parameter Name="KillVerbs" Guid="ec23fa7c-686f-4c57-8e6f-2522b3c1863a" Value="Fucked" Type="string"/>
         <Parameter Name="ConstantSpawn" Guid="1bddaf72-e7a0-4f13-8b51-ec9395bb87d4" Value="True" Type="bool"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="0fb32930-f78e-43e3-8ecd-4baec970b7d8" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
@@ -3183,6 +3183,13 @@
         <Parameter Name="FireResilience" Guid="50e77cdc-e45b-4a47-97fc-0edd7500ac91" Value="100" Type="float"/>
 <Parameter Name="AttackResilience" Guid="64135668-67e0-4e64-813c-f697acdc7c79" Value="185" Type="float"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="PoisonInfected" Guid="d22b90d2-f714-4728-9218-b13552f0a098">
+    <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int"/>
+    <Parameter Name="PoisonResistance" Value="185" Type="float"/>
+    <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="44e9217d-1369-4d7d-9a46-4f5ae141bdce"/>
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="251f5042-49fc-401d-8db6-866b8e559ca5" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
     <MemberComponentTemplate Name="HerdBehavior" Guid="00d5b029-eb33-474c-8f26-8fafe8d40443" InheritanceParent="dfe7218e-ce14-4bde-8dac-f919c38e9efe">
@@ -3207,7 +3214,7 @@
         <Parameter Name="Color" Guid="d5a63056-4627-413f-bd1b-b33f61c5327a" Value="178,218,250" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="78cbf257-a1e1-4f62-9a98-427dfcbd52d0" Value="188" Type="int"/>
         <Parameter Name="SwapUV" Guid="85b31623-c12f-4a09-ad34-96646905e273" Value="True" Type="bool"/>
-        <Parameter Name="DisplayName" Guid="2f5ebeb5-ebc5-4857-9685-4cb586c8d1d0" Value="Veemon Egg" Type="string"/>
+        <Parameter Name="DisplayName" Guid="2f5ebeb5-ebc5-4857-9685-4cb586c8d1d0" Value="[DisplayName:Veemon]" Type="string"/>
         <Parameter Name="EggTypeIndex" Guid="6581d370-5a0f-422d-a98a-4a04ffe87200" Value="225" Type="int"/>
     </ParameterSet>
 </EntityTemplate>
@@ -3300,9 +3307,9 @@
         <Parameter Name="BoxSize" Guid="469821d3-96f3-400f-a3f5-fc03ce6da15b" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="b3fbdb73-7a7f-45c5-b383-58c74e7912a5">
-        <Parameter Name="DisplayName" Guid="35c92f50-6f58-4e7b-a0d9-0c87887ad3ff" Value="Shoutmon" Type="string"/>
+        <Parameter Name="DisplayName" Guid="35c92f50-6f58-4e7b-a0d9-0c87887ad3ff" Value="[DisplayName:Shoutmon]" Type="string"/>
         <Parameter Name="Category" Guid="5ca0ebae-72e1-4958-8fd6-114326005597" Value="LandOther" Type="Game.CreatureCategory"/>
-        <Parameter Name="Description" Guid="b9ab50b3-5f3a-4d28-ba25-0e3bce010f26" Value="Shoutmon first appeared in Digimon Xros Wars (2010), quickly becoming known as the energetic and determined partner of Taiki Kudo. Although aligned with the Alliance group, Shoutmon can also ally with the player, bringing his fiery spirit and powerful voice-based attacks to the battlefield. His ability to DigiFuse with other Digimon makes him highly versatile, adapting to both offensive and defensive strategies. Shoutmon was originally designed by Kenji Watanabe, the illustrator responsible for many Digimon species, whose creativity emphasized Shoutmon’s microphone motif and his dream of becoming the Digimon King. His design reflects both musical energy and heroic ambition, resonating strongly with fans. Beyond his origins, Shoutmon embodies courage, leadership, and optimism. He inspires allies with his determination, often charging into danger with unshakable confidence. In gameplay, he rarely hesitates to fight for justice, and his presence assures companions that unity and friendship can overcome any obstacle. Ultimately, Shoutmon is more than a fighter—he is a symbol of hope and perseverance, proving that even in the toughest battles, goodness and determination will always shine through." Type="string"/>
+        <Parameter Name="Description" Guid="b9ab50b3-5f3a-4d28-ba25-0e3bce010f26" Value="[Description:Shoutmon]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="960299ab-8b67-4001-a5ec-f5dc72da7fcd" Value="burned" Type="string"/>
         <Parameter Name="ConstantSpawn" Guid="b9411b10-c6dc-44b8-b19b-56c46e9a6ff0" Value="True" Type="bool"/>
     </MemberComponentTemplate>
@@ -3326,6 +3333,13 @@
         <Parameter Name="FireResilience" Guid="571a6f73-4a45-4818-8187-ef84a9befed6" Value="155.5" Type="float"/>
 <Parameter Name="AttackResilience" Guid="6d39db86-fe75-4d18-bfbe-c04441af99a8" Value="295.5" Type="float"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="PoisonInfected" Guid="b2ea5ace-4039-472f-8b57-527e2d16d49a">
+    <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int"/>
+    <Parameter Name="PoisonResistance" Value="295" Type="float"/>
+    <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="a9727cbf-c213-4800-bbc8-9f15956fd6a9"/>
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="a0cf35ac-d58d-412d-b074-53cf8ea6ea74" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
     <MemberComponentTemplate Name="HerdBehavior" Guid="a784a764-4f55-4f32-84c5-c10976c590f4" InheritanceParent="dfe7218e-ce14-4bde-8dac-f919c38e9efe">
@@ -3350,7 +3364,7 @@
         <Parameter Name="Color" Guid="8bac4c74-9132-4f01-a217-8e20c5d894ed" Value="255,105,97" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="57537e8a-4750-4760-8b07-26f447c27970" Value="188" Type="int"/>
         <Parameter Name="SwapUV" Guid="e67bb7d4-b9bd-4a7d-9a71-f15ff6fb41ba" Value="True" Type="bool"/>
-        <Parameter Name="DisplayName" Guid="b79aaaf7-cb59-4f05-8e75-57428cfcc0d5" Value="Shoutmon Egg" Type="string"/>
+        <Parameter Name="DisplayName" Guid="b79aaaf7-cb59-4f05-8e75-57428cfcc0d5" Value="[DisplayName:Shoutmon]" Type="string"/>
         <Parameter Name="EggTypeIndex" Guid="84c7b2ca-3f67-48a9-97e5-6f3edb8320ce" Value="226" Type="int"/>
     </ParameterSet>
 </EntityTemplate>
@@ -3425,9 +3439,9 @@
         <Parameter Name="BoxSize" Guid="b4fa8c20-c3d3-44f3-b082-4b0494007362" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="5e3b38c4-f797-48e2-8c75-ac7a1234b131">
-        <Parameter Name="DisplayName" Guid="d56c9999-eb06-45c9-ab16-ef978e86a363" Value="Ballestadora Musculosa" Type="string"/>
+        <Parameter Name="DisplayName" Guid="d56c9999-eb06-45c9-ab16-ef978e86a363" Value="[DisplayName:BallestadoraMusculosa]" Type="string"/>
         <Parameter Name="Category" Guid="84aae4a9-ee67-41fc-bf77-8fbf2efb31b9" Value="LandOther" Type="Game.CreatureCategory"/>
-        <Parameter Name="Description" Guid="e7f8a9b0-c1d2-7678-3456-123456789abc" Value="Ballestadora Musculosa is stronger and more muscular than El Ballestador. They met on a training range where she was practicing with a simple bow and he was testing a crossbow; he noticed her discipline, offered direct guidance, and they started working together on distance shots. That cooperation became a relationship, and he taught her step by step: stances, timing, wind reading, and precision, moving from bow drills to crossbow routines. When he chose a dark path and joined a hostile faction, she ended the relationship and set clear goals: train harder, add muscle, and surpass him in strength and accuracy. She kept the lessons of precision and claimed the second crossbow that had been prepared as a backup, now her main weapon. She joined the Alliance and targets his faction without hesitation. Her shots are powerful and accurate, her endurance high, and her focus strict. What remains from the past is methodical ranged combat and the decision to be better than her former partner. Ballestadora Musculosa fights with muscle and conviction, stands as a loyal ally, and does not turn back to evil." Type="string"/>
+        <Parameter Name="Description" Guid="e7f8a9b0-c1d2-7678-3456-123456789abc" Value="[Description:BallestadoraMusculosa]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="d516d9ca-cb34-4508-a1de-45e41c9deeb4" Value="Shot with arrows" Type="string"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="ComponentRandomChatter" Guid="a785de85-1933-476c-92e4-a7d5a49e18c6">
@@ -3455,9 +3469,17 @@
         <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="04e1868d-4721-4e13-b5c9-06c9b3ff507d">
-        <Parameter Name="FireResilience" Guid="036a9368-a461-48bf-a8fe-8ab36a767020" Value="18" Type="float"/>
-<Parameter Name="AttackResilience" Guid="3ccf519d-ccd2-4e43-bbc0-b03f6545dad1" Value="220.23" Type="float"/>
+        <Parameter Name="FireResilience" Guid="036a9368-a461-48bf-a8fe-8ab36a767020" Value="118" Type="float"/>
+        <Parameter Name="AttackResilience" Guid="3ccf519d-ccd2-4e43-bbc0-b03f6545dad1" Value="220.23" Type="float"/>
+        <Parameter Name="ExplosionResilience" Guid="7d011636-df30-44cc-9522-d6fc292000b9" Value="135" Type="float"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="PoisonInfected" Guid="15862540-6659-470d-b3fa-b33f746ba418">
+    <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int"/>
+    <Parameter Name="PoisonResistance" Value="220.23" Type="float"/>
+    <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="7be35e4b-04b1-44e8-bb1a-ad1e02c76360"/>
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="a8bce01b-5eb3-49a3-866b-9adaed1fe6e7" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
     <MemberComponentTemplate Name="HerdBehavior" Guid="5e5ba4ba-987e-4738-a756-ad7906d60982" InheritanceParent="dfe7218e-ce14-4bde-8dac-f919c38e9efe">
@@ -3477,13 +3499,13 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="b54cf202-929e-4645-8932-1e2138eb47c1" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
     <Parameter Name="ChaseToCreatures" Guid="433ae38c-0db1-4bb0-9472-bacbb4c98226" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
-    <Parameter Name="ChaseToCreatureProbability" Guid="49c5b5b3-7fa1-4d39-957a-840223799809" Value="1.0" Type="float"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="49c5b5b3-7fa1-4d39-957a-840223799809" Value="999999999" Type="float"/>
 </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="20afd762-8fce-4acc-893b-1cd2018519a4">
         <Parameter Name="Color" Guid="c50ba1e7-4163-4dfd-9a15-f382039d176f" Value="236,172,243" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="df46ac23-a62b-4ed4-8353-f89f9d80657c" Value="189" Type="int"/>
         <Parameter Name="SwapUV" Guid="0ca057fa-43bc-4feb-9fec-d59171d51153" Value="True" Type="bool"/>
-        <Parameter Name="DisplayName" Guid="2f7d0063-7465-4af4-8f3c-3b8f8b87709a" Value="Ballestadora Musculosa Egg" Type="string"/>
+        <Parameter Name="DisplayName" Guid="2f7d0063-7465-4af4-8f3c-3b8f8b87709a" Value="[DisplayName:BallestadoraMusculosa]" Type="string"/>
         <Parameter Name="EggTypeIndex" Guid="807dfd94-8f8b-4a09-bfc9-b76b7c8541ed" Value="237" Type="int"/>
     </ParameterSet>
 </EntityTemplate>
@@ -3570,9 +3592,9 @@
         <Parameter Name="BoxSize" Guid="55430f3d-a341-49cc-a8ef-5d3250473c71" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="40c74fa9-510b-4742-abc3-87174aee9fad">
-        <Parameter Name="DisplayName" Guid="ee6dfd5e-a262-4409-bc4f-9b64f3aadf76" Value="Agumon" Type="string"/>
+        <Parameter Name="DisplayName" Guid="ee6dfd5e-a262-4409-bc4f-9b64f3aadf76" Value="[DisplayName:Agumon]" Type="string"/>
         <Parameter Name="Category" Guid="a262430d-391e-4da3-b23e-c980c7f2ce68" Value="LandOther" Type="Game.CreatureCategory"/>
-        <Parameter Name="Description" Guid="05049e53-2a8a-40b8-8c89-1acf405a083a" Value="Agumon first appeared in Digital Monster Ver.1 (1997) and later became widely recognized in Digimon Adventure (1999) as Tai Kamiya’s loyal partner. Designed by Kenji Watanabe, Agumon was created with a reptile-like form resembling a small dinosaur, symbolizing growth and the potential to evolve into stronger Digimon such as Greymon. Aligned with the Alliance group, Agumon can also ally with the player, offering balanced combat support through his fiery Baby Flame attack. His design emphasizes both simplicity and ferocity, making him a central figure in the Digimon franchise across anime, games, and merchandise. Beyond his origins, Agumon embodies loyalty, courage, and resilience. He stands as a dependable partner who fights with determination, reminding allies that even in difficult battles, friendship and bravery can lead to victory." Type="string"/>
+        <Parameter Name="Description" Guid="05049e53-2a8a-40b8-8c89-1acf405a083a" Value="[Description:Agumon]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="9a8603ff-566c-4366-a13e-3aac1c895cc1" Value="burned" Type="string"/>
         <Parameter Name="ConstantSpawn" Guid="fb392996-287f-43d0-aa0c-260c0a9e18b5" Value="True" Type="bool"/>
     </MemberComponentTemplate>
@@ -3590,9 +3612,16 @@
         <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="a25a4086-4050-43d1-864d-d246cc7d34a5">
-        <Parameter Name="AttackResilience" Guid="a26b2524-5503-4f96-8eec-c0f79a2766e7" Value="235.23" Type="float"/>
+        <Parameter Name="AttackResilience" Guid="a26b2524-5503-4f96-8eec-c0f79a2766e7" Value="255.23" Type="float"/>
         <Parameter Name="FireResilience" Guid="d1b4653a-9b46-4160-8aa8-dc74e8c3ee33" Value="175" Type="float"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="PoisonInfected" Guid="1bc20dbb-3477-4308-86df-4b6397de5f7e">
+    <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int"/>
+    <Parameter Name="PoisonResistance" Value="255.23" Type="float"/>
+    <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="2818c1b9-4d54-4013-92e4-63fac1709a82"/>
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="cc7b7d04-e6b8-498d-9ffc-bf3e5dda9c7b" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
     <MemberComponentTemplate Name="HerdBehavior" Guid="dfce645f-71fe-4356-a007-ebfb1a60ec0c" InheritanceParent="dfe7218e-ce14-4bde-8dac-f919c38e9efe">
@@ -3672,6 +3701,7 @@
         <ParameterSet Name="FoodFactors" Guid="5066873d-8bfa-4c65-b440-57e6c698acb6">
             <Parameter Name="Bread" Guid="bbad6d8a-a18e-43f4-a0a0-2dca9a15fb5f" Value="1" Type="float"/>
             <Parameter Name="Meat" Guid="2a098a08-3fad-4e37-9bc1-69c62fe9c1e7" Value="1" Type="float"/>
+            <Parameter Name="Fruit" Guid="591ce3cc-ad47-438d-87e1-fed1b319fdc9" Value="1" Type="float"/>
         </ParameterSet>
     </MemberComponentTemplate>
 <MemberComponentTemplate Name="AvoidFireBehavior" Guid="4c74537e-e468-4696-be33-4aede3a5be15" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
@@ -3713,9 +3743,9 @@
     <Parameter Name="AutoDespawn" Guid="659c4758-f801-484b-8b2f-519adff476da" Value="False" Type="bool"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="fd6ac663-7c9d-4490-9af7-e722bf6b875c">
-        <Parameter Name="DisplayName" Guid="28edcf01-2fc5-4c2e-b3e0-98f41f67b728" Value="Guilmon" Type="string"/>
+        <Parameter Name="DisplayName" Guid="28edcf01-2fc5-4c2e-b3e0-98f41f67b728" Value="[DisplayName:Guilmon]" Type="string"/>
         <Parameter Name="Category" Guid="4486d16e-b775-46d2-a195-03ead242e3ec" Value="LandOther" Type="Game.CreatureCategory"/>
-        <Parameter Name="Description" Guid="5f53ba00-a06e-4f8b-b5f4-70485abfe89e" Value="Guilmon first appeared in Digimon Tamers (2002), introduced as the Rookie partner of Takato Matsuda. Designed by Kenji Watanabe, Guilmon was created with a youthful dinosaur-like form marked by the Digital Hazard symbol, representing both great destructive potential and the possibility of protecting the Digital World if guided by trust. Although aligned with the Alliance group, Guilmon can also ally with the player, offering strong support through his fire-based attacks such as Pyro Sphere and his ability to evolve into powerful forms like Growmon and Dukemon. His design emphasizes raw energy and instinct balanced by loyalty, making him a fan favorite across anime and games. Beyond his origins, Guilmon embodies curiosity, courage, and friendship. He often charges into battle with determination, learning and growing alongside his allies. In gameplay, Guilmon provides versatile offense and dependable resilience, assuring companions that unity and trust can overcome any challenge. Ultimately, Guilmon is more than a fighter—he is a symbol of potential, showing that even great power can be used for good when guided by bonds of friendship." Type="string"/>
+        <Parameter Name="Description" Guid="5f53ba00-a06e-4f8b-b5f4-70485abfe89e" Value="[Description:Guilmon]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="c9d3949f-631f-4124-954f-bd45fd0b4cff" Value="burned" Type="string"/>
         <Parameter Name="ConstantSpawn" Guid="89c3f7d3-c78c-4302-b617-3647b3ef2fb2" Value="True" Type="bool"/>
     </MemberComponentTemplate>
@@ -3754,7 +3784,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="460398dd-5b9d-4ed0-bc4d-a2bfef20c4f3" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
     <Parameter Name="ChaseToCreatures" Guid="7986ad5c-f4a7-4371-a86b-e3b4cfb382ca" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
-    <Parameter Name="ChaseToCreatureProbability" Guid="3e437545-1e03-42f6-a161-fa2a0fcce949" Value="1.0" Type="float"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="3e437545-1e03-42f6-a161-fa2a0fcce949" Value="999999999" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="b7ba48d9-4dc5-41eb-a289-372d48893bc9">
     <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
@@ -3766,7 +3796,7 @@
         <Parameter Name="Color" Guid="e3a6da80-6c4f-4ce7-9c58-e69115d1d9c8" Value="168,17,17" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="94ac6333-cc45-42ac-ab2b-3e5e087d8383" Value="189" Type="int"/>
         <Parameter Name="SwapUV" Guid="67d81ccf-6dd5-4f4d-ae4f-776aa653fa29" Value="True" Type="bool"/>
-        <Parameter Name="DisplayName" Guid="08e52eda-96a3-4d5f-8dce-926016aeeaf5" Value="Guilmon Egg" Type="string"/>
+        <Parameter Name="DisplayName" Guid="08e52eda-96a3-4d5f-8dce-926016aeeaf5" Value="[DisplayName:Guilmon]" Type="string"/>
         <Parameter Name="EggTypeIndex" Guid="a457e3ed-cb7c-463d-99d4-8ccef6835a6b" Value="228" Type="int"/>
     </ParameterSet>
 </EntityTemplate>
@@ -3810,7 +3840,7 @@
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="ee0e0241-e296-4479-a98c-a6a68be582ce" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
         <Parameter Name="DayRange" Guid="bad9fca8-3f0b-4f2b-a303-1fefce32c5ce" Value="0" Type="float"/>
-        <Parameter Name="NightRange" Guid="d37983a1-a56a-4814-9ceb-26ae6ddea29f" Value="5" Type="float"/>
+        <Parameter Name="NightRange" Guid="d37983a1-a56a-4814-9ceb-26ae6ddea29f" Value="0" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="EatPickableBehavior" Guid="16721223-1965-4058-9e4f-d84680542343">
         <ParameterSet Name="FoodFactors" Guid="cc71fd22-2407-4783-91f9-7b8807e52e17">
@@ -3831,20 +3861,14 @@
         <Parameter Name="WalkSpeed" Guid="cbe2ad57-91b9-4cd0-8d0a-9cc98ed50d92" Value="7.5" Type="float"/>
         <Parameter Name="LadderSpeed" Guid="084f36fa-e525-4c01-9fa6-94c41bd99fc4" Value="0" Type="float"/>
     </MemberComponentTemplate>
-<MemberComponentTemplate Name="Loot" Guid="813f53fc-e1a8-4511-b359-e5098f20ce23">
-        <ParameterSet Name="Loot" Guid="a28be219-7759-4cf5-9b6d-1d873e08ca29">
-            <Parameter Name="1" Guid="975bfa40-fa73-4b41-811d-dcfeebeba2ae" Value="ExperienceBlock;15;35" Type="string"/>
-        </ParameterSet>
-        <ParameterSet Name="LootOnFire" Guid="4de66835-f60e-42c9-973a-6f43fe3e7478"/>
-    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="284a862d-a8ce-4a73-b9e0-590e87ac7115">
         <Parameter Name="Mass" Guid="094faea0-3f1b-4701-802e-2d50fa82a6d2" Value="50" Type="float"/>
         <Parameter Name="BoxSize" Guid="f6246c18-a3a8-4be5-89ba-8e0b54ca2161" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="bc000ed5-e521-4047-b309-32ca470b9731">
-        <Parameter Name="DisplayName" Guid="e2f1309e-8bf6-4fe3-bc0e-add2102a9ece" Value="Gumdramon" Type="string"/>
+        <Parameter Name="DisplayName" Guid="e2f1309e-8bf6-4fe3-bc0e-add2102a9ece" Value="[DisplayName:Gumdramon]" Type="string"/>
         <Parameter Name="Category" Guid="2d85c00f-da88-4f4b-9d41-ab00e22da930" Value="LandOther" Type="Game.CreatureCategory"/>
-        <Parameter Name="Description" Guid="418dd8b1-155a-4081-996e-4711179163ee" Value="Gumdramon first appeared in Digimon Xros Wars: The Young Hunters Who Leapt Through Time (2011), introduced as the Rookie partner of Tagiru Akashi. Designed by Kenji Watanabe, Gumdramon was created with a dragon-like form featuring a powerful tail weapon, symbolizing both his mischievous personality and his explosive combat style. Aligned with the Alliance group, Gumdramon can also ally with the player, offering versatile support through his signature attack Jamming Strike and his ability to evolve into stronger forms such as Arresterdramon. His design emphasizes agility, energy, and rebellious charm, making him stand out among Rookie Digimon. Beyond his origins, Gumdramon embodies determination, independence, and loyalty. He often rushes into battle with bold confidence, learning to balance his playful nature with responsibility. In gameplay, Gumdramon offers fast offense and adaptable strategies, assuring companions that courage and persistence can overcome any obstacle. Ultimately, Gumdramon is more than a fighter—he is a symbol of growth, proving that even youthful recklessness can transform into strength when guided by trust and friendship." Type="string"/>
+        <Parameter Name="Description" Guid="418dd8b1-155a-4081-996e-4711179163ee" Value="[Description:Gumdramon]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="4f2a2ca9-7f5f-43b5-8cf7-c30018073f65" Value="burned" Type="string"/>
         <Parameter Name="ConstantSpawn" Guid="a995186f-99dd-4372-98be-b8c12ce8cb0d" Value="True" Type="bool"/>
     </MemberComponentTemplate>
@@ -3862,9 +3886,16 @@
         <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="309aa37d-42cb-4af7-9f19-957050c1621a">
-        <Parameter Name="FireResilience" Guid="cea24ba6-1d08-4f48-bab6-8a6d7c19a6c5" Value="191" Type="float"/>
-<Parameter Name="AttackResilience" Guid="c1c5bccf-1e11-492c-861b-5caecb581b81" Value="245" Type="float"/>
+        <Parameter Name="FireResilience" Guid="cea24ba6-1d08-4f48-bab6-8a6d7c19a6c5" Value="200" Type="float"/>
+<Parameter Name="AttackResilience" Guid="c1c5bccf-1e11-492c-861b-5caecb581b81" Value="275" Type="float"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="PoisonInfected" Guid="36add999-0cc2-4fbb-98ec-c636f8cba6c8">
+    <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int"/>
+    <Parameter Name="PoisonResistance" Value="275" Type="float"/>
+    <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="1037e4b0-b241-418a-a5cc-99003d7e2685"/>
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="90ed3ce6-3a99-4d5e-ac3e-bee31b6eebe8" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
     <MemberComponentTemplate Name="HerdBehavior" Guid="7496b68e-fb05-4afc-ad6d-2205b3ecfb31" InheritanceParent="dfe7218e-ce14-4bde-8dac-f919c38e9efe">
@@ -3886,13 +3917,13 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="4b833ce2-5f71-47d7-994b-5fe1f207eda3" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
     <Parameter Name="ChaseToCreatures" Guid="8dc4ec8e-46a7-4dc2-9b96-4b8548324245" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
-    <Parameter Name="ChaseToCreatureProbability" Guid="8e47344a-8be6-4c0d-88c5-9168eb101254" Value="1.0" Type="float"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="8e47344a-8be6-4c0d-88c5-9168eb101254" Value="999999999" Type="float"/>
 </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="204bd3af-5931-49d7-8d1d-7b2edba0174b">
         <Parameter Name="Color" Guid="f5c3583a-ab6c-44a6-a357-552c0875d8d8" Value="145,115,183" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="7807d185-92b5-4308-a5f4-22c7ff66bf58" Value="189" Type="int"/>
         <Parameter Name="SwapUV" Guid="ab500056-06c4-4d60-9fda-ee28a9ae7fd6" Value="True" Type="bool"/>
-        <Parameter Name="DisplayName" Guid="19158fb0-d040-4a1c-9cc4-f91f383779ca" Value="Gumdramon Egg" Type="string"/>
+        <Parameter Name="DisplayName" Guid="19158fb0-d040-4a1c-9cc4-f91f383779ca" Value="[DisplayName:Gumdramon]" Type="string"/>
         <Parameter Name="EggTypeIndex" Guid="c3f4af5b-06b0-4f21-92b3-270c11915ab4" Value="229" Type="int"/>
     </ParameterSet>
 </EntityTemplate>
@@ -3985,9 +4016,9 @@
         <Parameter Name="BoxSize" Guid="8c53efdc-3b32-4916-afc2-a8e10b6b9828" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="2e526c2e-d829-4ab5-b63e-b35c30b4ed13">
-        <Parameter Name="DisplayName" Guid="46251f3c-d603-4f8c-9093-e854871b0117" Value="BetelGammamon" Type="string"/>
+        <Parameter Name="DisplayName" Guid="46251f3c-d603-4f8c-9093-e854871b0117" Value="[DisplayName:BetelGammamon]" Type="string"/>
         <Parameter Name="Category" Guid="f07d1110-d59f-43fa-b5ee-b835e83547f0" Value="LandOther" Type="Game.CreatureCategory"/>
-        <Parameter Name="Description" Guid="c0e87090-8878-4411-ac0e-8f2e7883f80d" Value="BetelGammamon first appeared in Digimon Ghost Game (2021), introduced as the Champion evolution of Gammamon, the Rookie partner of Hiro Amanokawa. Designed by Kenji Watanabe, BetelGammamon was created with a humanoid warrior-like form, symbolizing fiery energy, speed, and close-combat strength. Aligned with the Alliance group, BetelGammamon can also ally with the player, offering powerful support through his signature attack Betel G Shout and his ability to evolve into stronger forms such as Canoweissmon and Siriusmon. His design emphasizes agility, courage, and heroic ambition, making him a standout Champion Digimon recognized for his determination. Beyond his origins, BetelGammamon embodies bravery, loyalty, and the drive to protect others. He often charges into battle with unwavering confidence, balancing youthful spirit with growing responsibility. In gameplay, BetelGammamon provides fast offense and versatile strategies, assuring companions that unity and courage can overcome any challenge. Ultimately, BetelGammamon is more than a fighter—he is a symbol of heroic growth, proving that true strength shines brightest when guided by trust and friendship." Type="string"/>
+        <Parameter Name="Description" Guid="c0e87090-8878-4411-ac0e-8f2e7883f80d" Value="[Description:BetelGammamon]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="4c961204-ce17-422d-bac0-97112742e507" Value="burned" Type="string"/>
         <Parameter Name="ConstantSpawn" Guid="70ad31f9-3078-4fa0-a0c3-52d83d9f672b" Value="True" Type="bool"/>
     </MemberComponentTemplate>
@@ -4006,8 +4037,16 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="32c5a461-3e07-4870-8c37-ce9779c349e1">
         <Parameter Name="FireResilience" Guid="6724c9f9-8cd1-4552-bc90-02e906cb35b2" Value="555.55" Type="float"/>
+        <Parameter Name="ExplosionResilience" Guid="03c2862f-84c2-48f3-8ed8-ef4afeed8f82" Value="450" Type="float"/>
 <Parameter Name="AttackResilience" Guid="0c6ddfea-e972-4768-9796-c211a5ca2513" Value="600" Type="float"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="PoisonInfected" Guid="87c3da90-0593-4237-853e-6bc693da9bb0">
+    <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int"/>
+    <Parameter Name="PoisonResistance" Value="600" Type="float"/>
+    <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="2393b2eb-9377-4510-bec6-fdcdaaf05b75"/>
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="41879e28-c03c-438f-b685-22a2f05df163" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
     <MemberComponentTemplate Name="HerdBehavior" Guid="75353b91-2a7e-4e26-af2d-581e06ed8d8e" InheritanceParent="dfe7218e-ce14-4bde-8dac-f919c38e9efe">
@@ -4029,13 +4068,13 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="5dcdf1b2-05c2-46d4-9679-f5fa26782325" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
     <Parameter Name="ChaseToCreatures" Guid="4b029685-d08f-46a8-b159-641f835dc936" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
-    <Parameter Name="ChaseToCreatureProbability" Guid="5f8c3029-7e1f-4d0c-a8ab-4a2326f4cafe" Value="1.0" Type="float"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="5f8c3029-7e1f-4d0c-a8ab-4a2326f4cafe" Value="999999999" Type="float"/>
 </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="d1b9fde2-af50-439c-b13a-d7da1a571dc9">
         <Parameter Name="Color" Guid="e73fb3d6-b68c-40cb-82d9-2c99f6ea4d23" Value="200,40,40" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="51ece2f8-7c09-4ba3-bd46-1b5fb9fec454" Value="189" Type="int"/>
         <Parameter Name="SwapUV" Guid="8a400181-16fe-4813-8f38-b37e5a62a36e" Value="True" Type="bool"/>
-        <Parameter Name="DisplayName" Guid="adab8e46-5c85-4949-8856-9e8be62aa534" Value="BetelGammamon Egg" Type="string"/>
+        <Parameter Name="DisplayName" Guid="adab8e46-5c85-4949-8856-9e8be62aa534" Value="[DisplayName:BetelGammamon]" Type="string"/>
         <Parameter Name="EggTypeIndex" Guid="38943c12-c71b-45f3-9922-9c8df3743d92" Value="230" Type="int"/>
     </ParameterSet>
 </EntityTemplate>
@@ -4116,9 +4155,9 @@
     <Parameter Name="AutoDespawn" Guid="a4adf331-3e5b-4850-bef3-5657ffd6c7ad" Value="False" Type="bool"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="4d997a9b-14f6-4491-9a09-4a89f1695413">
-        <Parameter Name="DisplayName" Guid="90838e86-35f5-4c1a-b28d-0f2deb7602ff" Value="Gaomon" Type="string"/>
+        <Parameter Name="DisplayName" Guid="90838e86-35f5-4c1a-b28d-0f2deb7602ff" Value="[DisplayName:Gaomon]" Type="string"/>
         <Parameter Name="Category" Guid="3315bfa2-21a7-43c5-a9fd-f369b7a4a916" Value="LandOther" Type="Game.CreatureCategory"/>
-        <Parameter Name="Description" Guid="da777c36-0394-4e7a-96eb-d56dd20c55ce" Value="Gaomon first appeared in Digimon Savers (2006), introduced as the Rookie partner of Thomas H. Norstein. Designed by Kenji Watanabe, Gaomon was created with a canine-like form wearing red boxing gloves, symbolizing discipline, loyalty, and his martial arts-inspired combat style. Aligned with the Alliance group, Gaomon can also ally with the player, offering reliable support through his signature attacks such as Double Backhand and Rolling Upper, while evolving into stronger forms like Gaogamon and MachGaogamon. His design emphasizes speed, precision, and determination, making him a distinctive Rookie Digimon recognized for his fighting spirit. Beyond his origins, Gaomon embodies loyalty, courage, and resilience. He often enters battle with calm focus, balancing obedience with independent strength. In gameplay, Gaomon provides fast offense and dependable defense, assuring companions that discipline and teamwork can overcome any challenge. Ultimately, Gaomon is more than a fighter—he is a symbol of trust, proving that true strength comes from loyalty and unity." Type="string"/>
+        <Parameter Name="Description" Guid="da777c36-0394-4e7a-96eb-d56dd20c55ce" Value="[Description:Gaomon]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="f16e805e-7291-479e-9d5d-3e7d61932c72" Value="shocked" Type="string"/>
         <Parameter Name="ConstantSpawn" Guid="3bb973d0-c6ba-4074-abde-6a52ed1f9dd5" Value="True" Type="bool"/>
     </MemberComponentTemplate>
@@ -4134,8 +4173,15 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="2f43f80e-7c2f-4f2c-890a-4671ae334d3a">
         <Parameter Name="FireResilience" Guid="fe699a62-7d93-44f7-92ff-83a24d73b895" Value="155.5" Type="float"/>
-<Parameter Name="AttackResilience" Guid="b41ace02-f6ae-4f07-9f58-ea48d2f919ea" Value="236.35" Type="float"/>
+<Parameter Name="AttackResilience" Guid="b41ace02-f6ae-4f07-9f58-ea48d2f919ea" Value="295.35" Type="float"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="PoisonInfected" Guid="2e4c3c20-1965-468e-9ff9-f122ca9d0407">
+    <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int"/>
+    <Parameter Name="PoisonResistance" Value="295" Type="float"/>
+    <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="73617aaa-ac9e-443d-ad66-6175d7672b3b"/>
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="ecf3554f-355d-498f-b238-dc4d74caf5ef" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
     <MemberComponentTemplate Name="HerdBehavior" Guid="59db9258-57f0-47fc-9f55-2786ffefc981" InheritanceParent="dfe7218e-ce14-4bde-8dac-f919c38e9efe">
@@ -4147,7 +4193,7 @@
     </MemberComponentTemplate>
    <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="67dfc93b-8ebf-4a6d-9a72-b37ae115997a" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
     <Parameter Name="ChaseToCreatures" Guid="5857e974-8d72-4487-83ab-1c52ca2f46ce" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
-    <Parameter Name="ChaseToCreatureProbability" Guid="cec9c8a9-b6bf-49e2-a176-4624c286dcb2" Value="1.0" Type="float"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="cec9c8a9-b6bf-49e2-a176-4624c286dcb2" Value="999999999" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="ChaseBehavior" Guid="e00f3c56-5263-4f36-9fd4-e3fd8d0b2a91" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
         <Parameter Name="AutoChaseMask" Guid="67b68c0b-eb40-4126-9006-809bf9f47062" Value="LandPredator, WaterPredator, WaterOther" Type="Game.CreatureCategory"/>
@@ -4160,7 +4206,7 @@
         <Parameter Name="Color" Guid="9f58e54c-fb2f-404a-8cdb-cc9c8a6bcd62" Value="70,100,180" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="d081aba2-d1b7-423a-8807-cef2d25c68f4" Value="189" Type="int"/>
         <Parameter Name="SwapUV" Guid="55b01d88-d05a-43b7-9717-e59cbac69bd2" Value="True" Type="bool"/>
-        <Parameter Name="DisplayName" Guid="12f5e6ac-e366-485c-8416-9c1389679ef7" Value="Gaomon Egg" Type="string"/>
+        <Parameter Name="DisplayName" Guid="12f5e6ac-e366-485c-8416-9c1389679ef7" Value="[DisplayName:Gaomon]" Type="string"/>
         <Parameter Name="EggTypeIndex" Guid="390ca3e7-a23f-4206-9c68-016ea3966edc" Value="231" Type="int"/>
     </ParameterSet>
 </EntityTemplate>
@@ -4210,10 +4256,10 @@
         <Parameter Name="BoxSize" Guid="a8956396-a34f-46b8-81d6-0681004ad386" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="bafbe76a-8010-48d0-aeeb-ac0fb59b1d84">
-        <Parameter Name="DisplayName" Guid="0d34700b-5abe-474b-91ab-a2e5ad716b2e" Value="Walter Zombie" Type="string"/>
+        <Parameter Name="DisplayName" Guid="0d34700b-5abe-474b-91ab-a2e5ad716b2e" Value="[DisplayName:WalterZombie]" Type="string"/>
         <Parameter Name="ConstantSpawn" Guid="49f63769-4788-43e0-85a1-14b0a7c2aaca" Value="True" Type="bool"/>
         <Parameter Name="Category" Guid="63a591c8-9822-4918-9b50-6b67400bb0d9" Value="LandOther" Type="Game.CreatureCategory"/>
-        <Parameter Name="Description" Guid="9da16f92-3c03-400c-bf22-d8550f9fcf30" Value="Walter Zombie is a product of a catastrophic chemical mutation caused by the company CONASUPO, which was initially known for its dairy products. After accidentally consuming radioactive milk in 1986, the incident originated from the fallout of the Chernobyl disaster. Following the explosion in April 1986, radioactive material spread across Europe, resulting in acid rain that contaminated pastures in Ireland. Cows grazed on this tainted grass, leading to the production of radioactive milk, which was subsequently exported to Mexico. Defying the odds of death, Walter transformed into a hostile creature rather than succumbing to the effects of the radiation. However, unlike traditional zombies, he retained a measure of his intelligence and consciousness. In his quest to regain his human life, Walter allied himself with the Alianza group, seeking both redemption and a cure for his condition. Despite his aspirations, a second chemical treatment was administered to him, intended to end his existence as a zombie. Instead, it triggered an unexpected transformation into a Mamón (Tank) form, enhancing his physical prowess. This transformation occurs only during full or new moons, with a mere 0.5% chance of shifting into this formidable state. In this form, Walter becomes a more powerful adversary, capable of withstanding significant damage while still holding onto the hope of one day reclaiming his humanity. As he navigates this duality, Walter Zombie embodies the struggle between his monstrous instincts and the remnants of the man he once was." Type="string"/>
+        <Parameter Name="Description" Guid="9da16f92-3c03-400c-bf22-d8550f9fcf30" Value="[Description:WalterZombie]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="dc09bd32-722f-4e8c-bab2-72c19e6afe75" Value="Eaten" Type="string"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="ComponentRandomChatter" Guid="7314d658-b2e8-49be-ab27-c13dafa586b9">
@@ -4244,6 +4290,13 @@
         <Parameter Name="AttackResilience" Guid="a92d4a1c-563b-4fb3-a184-43cf3e3a5929" Value="76.5" Type="float"/>
         <Parameter Name="FireResilience" Guid="60850b6d-c71b-4f27-a087-5c440eebfcb3" Value="56.89" Type="float"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="PoisonInfected" Guid="fa928d55-32f0-430d-9e14-b1388ee3aab6">
+    <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int"/>
+    <Parameter Name="PoisonResistance" Value="76.5" Type="float"/>
+    <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="0d40b790-160e-45be-9b6e-12266c7a1af7"/>
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="9cab892b-990c-44ed-ab97-b9b9d6da8db4" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
     <MemberComponentTemplate Name="HerdBehavior" Guid="39b814ce-6916-481f-939a-67879364d925" InheritanceParent="dfe7218e-ce14-4bde-8dac-f919c38e9efe">
@@ -4273,7 +4326,7 @@
         <Parameter Name="Color" Guid="350838ea-dd9b-40a4-ba93-9252d176f992" Value="181,138,117" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="1743c4a6-1d83-4ecc-b0df-283f734d2d42" Value="2" Type="int"/>
         <Parameter Name="SwapUV" Guid="24360fa5-5798-4b55-bfc4-9056a8ae229e" Value="False" Type="bool"/>
-        <Parameter Name="DisplayName" Guid="ab9cbc56-7d36-469f-976f-35289eafb95d" Value="Walter Zombie Egg" Type="string"/>
+        <Parameter Name="DisplayName" Guid="ab9cbc56-7d36-469f-976f-35289eafb95d" Value="[DisplayName:WalterZombie]" Type="string"/>
         <Parameter Name="EggTypeIndex" Guid="02f235de-2884-4d36-b7d7-68fd764bd527" Value="232" Type="int"/>
     </ParameterSet>
 </EntityTemplate>
@@ -4329,11 +4382,18 @@
         <Parameter Name="BoxSize" Guid="c01fa48d-7c89-4860-934e-648059e82656" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="a5535a0c-95b3-4682-935f-1f66b0713e48">
-        <Parameter Name="DisplayName" Guid="39695c46-eea6-4838-afcd-450a4c6ab081" Value="Walter Zombie Mamadísimo" Type="string"/>
+        <Parameter Name="DisplayName" Guid="39695c46-eea6-4838-afcd-450a4c6ab081" Value="[DisplayName:WalterZombieMamadisimo]" Type="string"/>
         <Parameter Name="Category" Guid="21627c9f-918d-4ee2-abd1-3f4134aeebb1" Value="LandOther" Type="Game.CreatureCategory"/>
-        <Parameter Name="Description" Guid="4914414d-85eb-44b2-beaf-7df5499aa1f3" Value="Walter Zombie Tank Form is an extreme mutation that only manifests during full or new moons with a 0.5% chance, meaning sometimes he transforms and other times he remains in his normal state. If provoked or if his Alianza group is attacked, and the player moves away around 10 blocks, he will relentlessly throw bombs until the enemy is destroyed, even sacrificing his own allies to eliminate those who threaten him. To defeat him, it is recommended to use a musket and a crossbow with explosive arrows, avoiding combat in his base or home since there is a high risk of him blowing up everything and ruining the player's effort. It is safer to retreat and find shelters to protect yourself from the explosions, while setting traps such as spikes to limit his mobility and increase the chances of survival." Type="string"/>
+        <Parameter Name="Description" Guid="4914414d-85eb-44b2-beaf-7df5499aa1f3" Value="[Description:WalterZombieMamadisimo]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="9e5b258d-9ff7-405e-88f4-7297c0f6606d" Value="Eaten,Beaten" Type="string"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="PoisonInfected" Guid="3690e3cd-64f3-4199-ba5f-7e41d5ae6519">
+    <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int"/>
+    <Parameter Name="PoisonResistance" Value="999" Type="float"/>
+    <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="2a2eb623-a108-4963-9a99-7a0b4f1d013d" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="9c1a7558-671a-4d13-a624-88abd67c628a" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="9e7f2111-5e93-4ee9-90cd-1f91f6f5be42" Value="444.25" Type="float"/>
@@ -4384,7 +4444,7 @@
         <Parameter Name="TextureSlot" Guid="11ca5c73-7491-46d0-9140-f382a3250ef5" Value="172" Type="int"/>
         <Parameter Name="Scale" Guid="2f16fee8-e08f-49a9-83f5-b33dfe5b71f0" Value="3" Type="float"/>
         <Parameter Name="SwapUV" Guid="233e7b98-4a6e-45b7-b059-c96edbbbe159" Value="True" Type="bool"/>
-        <Parameter Name="DisplayName" Guid="e8dfd133-0945-44d3-926a-3caa410ef070" Value="Walter Zombie Mamadísimo Egg" Type="string"/>
+        <Parameter Name="DisplayName" Guid="e8dfd133-0945-44d3-926a-3caa410ef070" Value="[DisplayName:WalterZombieMamadisimo]" Type="string"/>
         <Parameter Name="EggTypeIndex" Guid="0d8d9f82-244a-488c-a6bd-4f1ea5007a28" Value="233" Type="int"/>
     </ParameterSet>
 </EntityTemplate>
@@ -4454,10 +4514,10 @@
         <Parameter Name="BoxSize" Guid="a1b2c3d4-e5f6-6901-6789-abcdef012345" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="c3d4e5f6-a7b8-7012-789a-bcdef0123456">
-        <Parameter Name="DisplayName" Guid="d4e5f6a7-b8c9-7123-89ab-cdef01234567" Value="Aladina Corrupta" Type="string"/>
+        <Parameter Name="DisplayName" Guid="d4e5f6a7-b8c9-7123-89ab-cdef01234567" Value="[DisplayName:AladinaCorrupta]" Type="string"/>
         <Parameter Name="ConstantSpawn" Guid="b40e41eb-1d9d-45c3-9273-81168eb9dbc8" Value="True" Type="bool"/>
         <Parameter Name="Category" Guid="e5f6a7b8-c9d0-7234-9abc-def012345678" Value="Bird" Type="Game.CreatureCategory"/>
-        <Parameter Name="Description" Guid="f6a7b8c9-d0e1-7345-abcd-ef0123456789" Value="Aladina Corrupta was once a benevolent figure during the Arab Middle Ages, known for helping the poor and those in need. As the modern era arrived, she was excluded by the changing Arab system in Libya around the late 1800s, when the region was still under Ottoman control. Her decline worsened in the 20th century: by the 1990s Libya was under Muammar Gaddafi’s dictatorship, and her abilities weakened, no longer resembling her medieval strength. The fall of Gaddafi in 2011 brought further chaos instead of improvement. Witnessing civilians fighting for power, Aladina Corrupta reflected on years of suffering and began adopting techniques inspired by Arab militant groups, such as suicide attacks and bombings, though she never formally joined them. Ultimately, she aligned herself with the faction known as Muerte, driven by vengeance for the pain and mistreatment she endured. Now she feels a grim relief after joining Muerte. Unlike other members of the group, she has a distinctive attack: when an NPC or player targets her or her allies, she ignites a medium incendiary barrel. Distance does not matter—she will charge directly at the attacker, light the barrel, and give only five seconds to escape. Failure to flee results in being torn apart and blasted into the air. In her fury she even sacrifices her own companions, and herself, whenever the group is under attack." Type="string"/>
+        <Parameter Name="Description" Guid="f6a7b8c9-d0e1-7345-abcd-ef0123456789" Value="[Description:AladinaCorrupta]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="a7b8c9d0-e1f2-7456-bcde-f0123456789a" Value="beaten" Type="string"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="ComponentRandomChatter2" Guid="05461b92-5a29-4ba1-8d2a-3cbe2ab37b40">
@@ -4489,6 +4549,13 @@
 <Parameter Name="FallResilience" Guid="f9ca7788-a239-41a8-b49f-26e29dc6308a" Value="10" Type="float"/>
 <Parameter Name="FireResilience" Guid="de85db48-71b7-480b-b39d-db342016873c" Value="5" Type="float"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="PoisonInfected" Guid="6a4bf7b3-3514-4f5b-841c-24e1ef4f8e0e">
+    <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int"/>
+    <Parameter Name="PoisonResistance" Value="30" Type="float"/>
+    <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="b0c1d2e3-f4a5-8789-89ab-cdef01234567"/>
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="c1d2e3f4-a5b6-8890-9abc-def012345678" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
     <MemberComponentTemplate Name="HerdBehavior" Guid="d2e3f4a5-b6c7-8901-abcd-ef0123456789" InheritanceParent="dfe7218e-ce14-4bde-8dac-f919c38e9efe">
@@ -4511,7 +4578,7 @@
         <Parameter Name="Color" Guid="d0e1f2a3-b4c5-0123-6789-abcdef012345" Value="165,0,154" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="e1f2a3b4-c5d6-0234-789a-bcdef0123456" Value="80" Type="int"/>
         <Parameter Name="SwapUV" Guid="f2a3b4c5-d6e7-0345-89ab-cdef01234567" Value="True" Type="bool"/>
-        <Parameter Name="DisplayName" Guid="a3b4c5d6-e7f8-0456-9abc-def012345678" Value="Aladina Corrupta Egg" Type="string"/>
+        <Parameter Name="DisplayName" Guid="a3b4c5d6-e7f8-0456-9abc-def012345678" Value="[DisplayName:AladinaCorrupta]" Type="string"/>
         <Parameter Name="EggTypeIndex" Guid="b4c5d6e7-f8a9-0567-abcd-ef0123456789" Value="235" Type="int"/>
       </ParameterSet>
     </EntityTemplate>
@@ -4604,10 +4671,10 @@
         <Parameter Name="BoxSize" Guid="8df747e1-204d-42be-9845-85021a1a1edd" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="923f585d-38c7-4f18-9580-2e2444cf4557">
-        <Parameter Name="DisplayName" Guid="c5d6e7f8-a9b0-7456-1234-f0123456789a" Value="Impmon" Type="string"/>
+        <Parameter Name="DisplayName" Guid="c5d6e7f8-a9b0-7456-1234-f0123456789a" Value="[DisplayName:Impmon]" Type="string"/>
         <Parameter Name="ConstantSpawn" Guid="8c2e1eed-3609-421f-8957-e4c231cd426c" Value="True" Type="bool"/>
         <Parameter Name="Category" Guid="d6e7f8a9-b0c1-7567-2345-0123456789ab" Value="LandOther" Type="Game.CreatureCategory"/>
-        <Parameter Name="Description" Guid="10982bf5-28b4-4e3e-a3e2-3da4a91912ed" Value="Impmon first appeared in Digimon Tamers (2001) as a Rookie Digimon created by Kenji Watanabe, designed with a mischievous demon-like form, purple body, red scarf, and gloves. In the anime he was portrayed as a troublemaker and sometimes antagonist, reflecting resentment and loneliness, but in this mod he belongs to the Alliance group and can befriend the player, standing equal to other Digimon of the same subgroup. Known for his signature attack Night of Fire, Impmon embodies agility, cunning, and fiery offense, while his evolution path leads to Beelzemon. Ultimately, Impmon is more than a villain—he is a symbol of loyalty and unity when given trust." Type="string"/>
+        <Parameter Name="Description" Guid="10982bf5-28b4-4e3e-a3e2-3da4a91912ed" Value="[Description:Impmon]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="fc0a0db3-421c-4c42-95e8-62a72953d3f0" Value="burned,shocked" Type="string"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="9591dd60-cc27-4300-abd4-1a6e504fc3d2" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
@@ -4624,6 +4691,13 @@
         <Parameter Name="FireResilience" Guid="7da30065-c798-47eb-875c-9d0c6311a9f9" Value="315.55" Type="float"/>
 <Parameter Name="AttackResilience" Guid="51e6a1ee-70c7-4ec9-b406-0b0e0c219817" Value="430.55" Type="float"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="PoisonInfected" Guid="86dd12f0-63c6-458c-afb9-e58f6463d1e0">
+    <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
+    <Parameter Name="PoisonResistance" Value="430.55" Type="float"/>
+    <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="52ba3243-f209-4c79-9e18-0147109cf946"/>
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="ad02e8bc-cfb9-48c5-bd7a-a459012768bc" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
     <MemberComponentTemplate Name="HerdBehavior" Guid="b4859875-2019-4ad8-b12a-a1a7868c1c7a" InheritanceParent="dfe7218e-ce14-4bde-8dac-f919c38e9efe">
@@ -4648,7 +4722,7 @@
         <Parameter Name="Color" Guid="2688fa44-04ed-4a96-8511-b6c11c105cbe" Value="90,40,120" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="07b1d13a-10ce-4978-8598-873a47846dad" Value="189" Type="int"/>
         <Parameter Name="SwapUV" Guid="75621806-5e44-46f3-886d-7bb1bab831e3" Value="True" Type="bool"/>
-        <Parameter Name="DisplayName" Guid="57f33cb5-4372-4160-9dcb-7cdaa6015f39" Value="Impmon Egg" Type="string"/>
+        <Parameter Name="DisplayName" Guid="57f33cb5-4372-4160-9dcb-7cdaa6015f39" Value="[DisplayName:Impmon]" Type="string"/>
         <Parameter Name="EggTypeIndex" Guid="8f88e902-5378-4265-8b32-0ec541db05f3" Value="236" Type="int"/>
     </ParameterSet>
 </EntityTemplate>
@@ -4680,12 +4754,6 @@
     <Parameter Name="WalkSpeed" Guid="a1b2c3d4-e5f6-6012-def0-123456789abc" Value="2.8" Type="float"/>
     <Parameter Name="LadderSpeed" Guid="b2c3d4e5-f6a7-6123-ef01-23456789abcd" Value="1.5" Type="float"/>
 </MemberComponentTemplate>
-    <MemberComponentTemplate Name="Loot" Guid="e5f6a7b8-c9d0-6456-1234-56789abcdef0">
-        <ParameterSet Name="Loot" Guid="f6a7b8c9-d0e1-6567-2345-6789abcdef01">
-            <Parameter Name="1" Guid="c9d0e1f2-a3b4-6890-5678-9abcdef01234" Value="102;10;1" Type="string"/>
-        </ParameterSet>
-        <ParameterSet Name="LootOnFire" Guid="d0e1f2a3-b4c5-6901-6789-abcdef012345"/>
-    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Inventory" Guid="c1d2e3f4-a5b6-6678-3456-89abcdef0125" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
     <ParameterSet Name="Slots">
         <ParameterSet Name="Slot0">
@@ -4737,10 +4805,10 @@
     <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="b4c5d6e7-f8a9-7345-0123-ef0123456789">
-        <Parameter Name="DisplayName" Guid="1b70ac5c-bedd-445e-8287-245c1c58cc3f" Value="Carl Johnson" Type="string"/>
+        <Parameter Name="DisplayName" Guid="1b70ac5c-bedd-445e-8287-245c1c58cc3f" Value="[DisplayName:CarlJohnson]" Type="string"/>
         <Parameter Name="Category" Guid="1b33f68a-e546-4100-87ba-75b6e8838444" Value="LandOther" Type="Game.CreatureCategory"/>
         <Parameter Name="ConstantSpawn" Guid="9691b664-913a-421f-910c-5a08ab93cc76" Value="True" Type="bool"/>
-        <Parameter Name="Description" Guid="b756025d-0620-4f0e-ae4c-67bcaae8948d" Value="Carl 'CJ' Johnson, born in Los Santos, San Andreas, United States, currently lives in his hometown where he controls the streets; he became the central figure in the infamous 'Hot Coffee' controversy from Grand Theft Auto: San Andreas in 2005, a hidden minigame that sparked moral panic, lawsuits, and forced Rockstar Games to reclassify the title; despite his criminal path, CJ shares an unbreakable friendship with Tommy Vercetti and Claude Speed, together forming the group 'Alliance' to dominate the criminal underworld." Type="string"/>
+        <Parameter Name="Description" Guid="b756025d-0620-4f0e-ae4c-67bcaae8948d" Value="[DisplayName:CarlJohnson]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="f8a9b0c1-d2e3-7789-4567-23456789abcd" Value="eliminado" Type="string"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="a9b0c1d2-e3f4-7890-5678-3456789abcde" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
@@ -4783,7 +4851,7 @@
         <Parameter Name="Color" Guid="c5d6e7f8-a9b0-0456-1234-def012345678" Value="57,0,0" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="d6e7f8a9-b0c1-0567-2345-ef0123456789" Value="189" Type="int"/>
         <Parameter Name="SwapUV" Guid="e7f8a9b0-c1d2-0678-3456-f0123456789a" Value="False" Type="bool"/>
-        <Parameter Name="DisplayName" Guid="f8a9b0c1-d2e3-0789-4567-0123456789ab" Value="Carl Johnson Egg" Type="string"/>
+        <Parameter Name="DisplayName" Guid="f8a9b0c1-d2e3-0789-4567-0123456789ab" Value="[DisplayName:CarlJohnson]" Type="string"/>
         <Parameter Name="EggTypeIndex" Guid="a9b0c1d2-e3f4-0890-5678-123456789abc" Value="238" Type="int"/>
     </ParameterSet>
 </EntityTemplate>
@@ -4802,6 +4870,7 @@
     <MemberComponentTemplate Name="EatPickableBehavior" Guid="5dabaac9-b8e2-43fd-a452-7c2aff2d8302">
     <ParameterSet Name="FoodFactors" Guid="2a43547e-144d-4fc6-a987-8b66e67361d6">
         <Parameter Name="Fish" Guid="53e46f53-449c-4800-ab44-e70804da74b2" Value="1" Type="float"/>
+        <Parameter Name="Meat" Guid="71a2d570-f035-4cf3-9736-a65a9e210fba" Value="1" Type="float"/>
         <Parameter Name="Fruit" Guid="15645690-2268-4ee9-a6d9-13652810d6c6" Value="1" Type="float"/>
     </ParameterSet>
 </MemberComponentTemplate>
@@ -4856,8 +4925,7 @@
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Loot" Guid="d3535cb9-466a-40d2-9a7d-8000b0c8fb92">
         <ParameterSet Name="Loot" Guid="64fc81ae-2479-4e09-bda4-2fd5362d4f7a">
-            <Parameter Name="1" Guid="8e281f11-e035-4a06-8a58-ae86852bc4c9" Value="DiamondBlock;15;25" Type="string"/>
-            <Parameter Name="2" Guid="8821b95c-2e90-41a0-bc5b-31658aa98ad3" Value="BulletBlock:0;15;25;0.25" Type="string"/>
+            <Parameter Name="1" Guid="8821b95c-2e90-41a0-bc5b-31658aa98ad3" Value="BulletBlock:0;5;10;0.25" Type="string"/>
         </ParameterSet>
         <ParameterSet Name="LootOnFire" Guid="c58443a9-8603-4871-b0b4-b8d67f492ac3"/>
     </MemberComponentTemplate>
@@ -4866,10 +4934,10 @@
         <Parameter Name="BoxSize" Guid="ba704ca7-2fb4-4403-9ad1-98f87b3598b5" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="ccb7bbd7-21ac-46c8-9565-cfebf06a5f5b">
-        <Parameter Name="DisplayName" Guid="e9f80d76-9c35-478a-945f-c53545cdbaf1" Value="El Guerrillero" Type="string"/>
+        <Parameter Name="DisplayName" Guid="e9f80d76-9c35-478a-945f-c53545cdbaf1" Value="[DisplayName:ElGuerrillero]" Type="string"/>
         <Parameter Name="ConstantSpawn" Guid="01a05ed2-7e13-4ffa-aabc-7fc507738286" Value="True" Type="bool"/>
         <Parameter Name="Category" Guid="7cb68333-b24d-4b0b-a53e-45ac893d58a9" Value="Bird" Type="Game.CreatureCategory"/>
-                <Parameter Name="Description" Guid="af14ffb2-c189-40a5-adfc-6d9fe634b122" Value="Pepito Omencio Del Moreno, known as El Guerrillero, was born in Arauca, Colombia on June 7, 1997. Once a kind man who loved the countryside and dreamed of joining the Colombian military to fight against narcotrafficking, his life changed at the age of 23. After enduring abuse from his parents, bullying for revealing his dream, poverty, and the violent conflict in Arauca, he abandoned his home and allied with the FARC. There he adopted their techniques and found a new family, turning ruthless in the process. Rumors spread that El Espectador, Noticias Caracol, RCN, Canal Uno and others named him among the most wanted, alongside leaders of the FARC and ELN. After years of practice, he left the FARC not to betray them but to follow his own path of survival, eventually joining the group Muerte. From that moment he became happier yet more evil, renowned for his mastery of the traditional musket. If he sees you, you are doomed. He may appear in groups of two or three, applying tactics learned during his FARC era. He can emerge at any time, day or night, and will appear on day 16." Type="string"/>
+                <Parameter Name="Description" Guid="af14ffb2-c189-40a5-adfc-6d9fe634b122" Value="[Description:ElGuerrillero]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="297871a8-61fc-4376-a2dc-882348a4af4f" Value="fusiled" Type="string"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="ComponentRandomChatter2" Guid="9f4adb52-3ee9-4ad8-be6f-8e3c48899b39">
@@ -4901,6 +4969,13 @@
         <Parameter Name="FireResilience" Guid="e7a51d35-ac0a-40fa-a19c-4d627a1ae74b" Value="220" Type="float"/>
         <Parameter Name="FallResilience" Guid="459b4983-3537-45c0-9152-5e796effc49d" Value="300" Type="float"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="PoisonInfected" Guid="1d2d7dde-bbc5-4efe-b165-8877c3478f54">
+    <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
+    <Parameter Name="PoisonResistance" Value="300" Type="float"/>
+    <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="5493e336-282b-49bb-860a-517c95348278"/>
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="67f65945-c1e5-4e1a-8d54-485945b6c7b8" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
     <MemberComponentTemplate Name="HerdBehavior" Guid="82a8a9da-d074-4ed5-a254-81bb8738d89c" InheritanceParent="dfe7218e-ce14-4bde-8dac-f919c38e9efe">
@@ -4926,8 +5001,7 @@
         <Parameter Name="Color" Guid="dd72addb-043f-470f-b870-c472e9565599" Value="49,112,0" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="bfeded40-0321-429f-8664-41193c41bfc4" Value="2" Type="int"/>
         <Parameter Name="SwapUV" Guid="98795764-6653-42f4-802c-c01133795436" Value="False" Type="bool"/>
-        <Parameter Name="Scale" Guid="a1b46365-2335-4bd9-b395-5dbb6b23a376" Value="2.5" Type="float"/>
-        <Parameter Name="DisplayName" Guid="8073bdca-e87d-4991-b24a-614589bf102f" Value="El Guerrillero Egg" Type="string"/>
+        <Parameter Name="DisplayName" Guid="8073bdca-e87d-4991-b24a-614589bf102f" Value="[DisplayName:ElGuerrillero]" Type="string"/>
         <Parameter Name="EggTypeIndex" Guid="183a8dae-64d5-4d71-b089-03ea035c8495" Value="239" Type="int"/>
     </ParameterSet>
 </EntityTemplate>
@@ -5015,10 +5089,10 @@
         <Parameter Name="BoxSize" Guid="1b50dc03-a5af-47c8-bf71-14f5e3535b4a" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="dc3505c0-379d-4976-a158-4a5872099ab5">
-        <Parameter Name="DisplayName" Guid="d7edb4dd-b472-4b33-b022-5910229b2775" Value="El Guerrillero Tenebroso" Type="string"/>
+        <Parameter Name="DisplayName" Guid="d7edb4dd-b472-4b33-b022-5910229b2775" Value="[DisplayName:ElGuerrilleroTenebroso]" Type="string"/>
         <Parameter Name="ConstantSpawn" Guid="b6165c52-ae24-4c75-b4b1-921c59697a77" Value="True" Type="bool"/>
         <Parameter Name="Category" Guid="b6fe4032-38c6-43ed-82f4-f163b6288268" Value="LandOther" Type="Game.CreatureCategory"/>
-        <Parameter Name="Description" Guid="1d666495-02d9-483c-bc77-2f828d919c1f" Value="Alejandro Risaraldo Castillo, born into a guerrilla family within the FARC, chose to join them at the age of 8 by his own will. He gained experience until he met El Guerrillero, forming a special friendship. At 23 he retired without sadness, but sensed something was wrong. Disguised, he left the camp after hearing gunfire he mistook for pistols but were muskets, and discovered his friend allied with Muerte, fighting Alianza. El Guerrillero was wounded and his group lost, so Alejandro fled. Seeking sect ritual refuge, he asked a shaman to restore his friendship in exchange for his soul. The shaman set conditions: join Alianza and inform only a few of El Guerrillero’s closest friends and selected countryside comrades—never the entire group—to prevent a far worse conflict. He must also keep secret that he is aligned with Alianza, which is not police or armed forces, and reveal instead that El Guerrillero traded their friendship for another within Muerte, especially with the one who became most special to him. Alejandro accepted, deciding to hunt his friend to recover who he once was, while maintaining guerrilla tactics. It is said that he will appear on day 17 only at night." Type="string"/>
+        <Parameter Name="Description" Guid="1d666495-02d9-483c-bc77-2f828d919c1f" Value="[Description:ElGuerrilleroTenebroso]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="2bb9a103-ca17-4a55-9d05-04a4b1157b4d" Value="fusiled" Type="string"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="ComponentRandomChatter2" Guid="1a8910f7-5149-4fa9-8212-bb7e2e91caa7">
@@ -5050,6 +5124,13 @@
         <Parameter Name="FallResilience" Guid="69417939-c1da-497d-b15c-39706edaf3dd" Value="445.55" Type="float"/>
         <Parameter Name="FireResilience" Guid="7a9290c8-87d6-48b0-b11b-20d2b2a3db8d" Value="445.55" Type="float"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="PoisonInfected" Guid="8d89fc0a-359d-48f5-9c33-47ecfd52dae1">
+    <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
+    <Parameter Name="PoisonResistance" Value="445.55" Type="float"/>
+    <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="fba11ea0-071b-4dd9-b71e-c041d674ee74"/>
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="f7898fa9-85cd-4ca3-862d-e642a9004d22" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
     <MemberComponentTemplate Name="HerdBehavior" Guid="5b564b12-16ca-4f50-bbba-a1e76c3c4ebf" InheritanceParent="dfe7218e-ce14-4bde-8dac-f919c38e9efe">
@@ -5071,8 +5152,7 @@
         <Parameter Name="Color" Guid="19e27666-3e16-491a-8441-37355108fb72" Value="59,118,0" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="f137c858-a44c-4382-8691-757cd367e68f" Value="5" Type="int"/>
         <Parameter Name="SwapUV" Guid="eb3285ea-7365-4263-aeb8-79b1c45ad3af" Value="False" Type="bool"/>
-        <Parameter Name="Scale" Guid="e35b7238-b14a-4af9-ac98-758bba46097b" Value="1.5" Type="float"/>
-        <Parameter Name="DisplayName" Guid="2ab784b7-fb68-4fd2-b7ff-7ea51406f751" Value="El Guerrillero Tenebroso Egg" Type="string"/>
+        <Parameter Name="DisplayName" Guid="2ab784b7-fb68-4fd2-b7ff-7ea51406f751" Value="[DisplayName:ElGuerrilleroTenebroso]" Type="string"/>
         <Parameter Name="EggTypeIndex" Guid="1e8ab954-059f-4fac-8998-bc4889914632" Value="240" Type="int"/>
     </ParameterSet>
 </EntityTemplate>
@@ -5091,6 +5171,7 @@
     <MemberComponentTemplate Name="EatPickableBehavior" Guid="a1b2c3d4-e5f6-5123-4567-89abcdf01236">
     <ParameterSet Name="FoodFactors" Guid="b2c3d4e5-f6a7-5234-5678-9abcdf012347">
         <Parameter Name="Fish" Guid="32929f1e-d890-47f3-b010-147de2e6b6c7" Value="1" Type="float"/>
+        <Parameter Name="Meat" Guid="a3b8c368-9e06-40af-88e0-20483046102f" Value="1" Type="float"/>
         <Parameter Name="Fruit" Guid="c3d4e5f6-a7b8-5345-6789-abcdf0123458" Value="1" Type="float"/>
     </ParameterSet>
 </MemberComponentTemplate>
@@ -5129,10 +5210,10 @@
         <Parameter Name="BoxSize" Guid="a8b9c0d1-e2f3-7345-abcd-f01234567892" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="b9c0d1e2-f3a4-7456-bcde-0123456789a4">
-        <Parameter Name="DisplayName" Guid="c0d1e2f3-a4b5-7567-cdef-123456789ab5" Value="Camisas Morenas" Type="string"/>
+        <Parameter Name="DisplayName" Guid="c0d1e2f3-a4b5-7567-cdef-123456789ab5" Value="[DisplayName:CamisasMorenas]" Type="string"/>
         <Parameter Name="ConstantSpawn" Guid="8c0867cd-539a-452a-a629-c5633178942b" Value="True" Type="bool"/>
         <Parameter Name="Category" Guid="d1e2f3a4-b5c6-7678-def0-23456789abc6" Value="Bird" Type="Game.CreatureCategory"/>
-        <Parameter Name="Description" Guid="e2f3a4b5-c6d7-7789-ef01-3456789abcd7" Value="Camisas Morenas was born in Zacatecas, Mexico, from a humble family. He moved to Mexico City seeking better economic opportunities, where cartel wars still rage over territory. There he entered the world of the street markets, and on his birthday his uncle, the brother of his father, gifted him a stone machete. He kept it as a weapon of defense, to be used only if provoked to the extreme or if his belongings were stolen. He ran a stall selling shirts, but eventually abandoned the tianguis business when he joined a local gang, not part of the cartels but rooted in Mexico City itself. After many years of experience, the gang encountered a faction called Muerte and accepted their offer to unite. Camisas Morenas became hardened, using his machete as both symbol and weapon, and his reputation grew as someone who defended his group fiercely. Though he once dreamed of a simple life, his path led him deeper into conflict, and his loyalty to Muerte marked him as a dangerous figure. It is said that he will appear on day 21 at night." Type="string"/>
+        <Parameter Name="Description" Guid="e2f3a4b5-c6d7-7789-ef01-3456789abcd7" Value="[Description:CamisasMorenas]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="f3a4b5c6-d7e8-7890-f012-456789abcde8" Value="torn to shreds" Type="string"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="ComponentRandomChatter2" Guid="b8e3a758-80ae-4b4a-a3f6-df135ec2f18f">
@@ -5148,7 +5229,7 @@
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="a4b5c6d7-e8f9-7901-0123-56789abcdef9" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="b5c6d7e8-f9a0-8012-1234-6789abcdef0a" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
-        <Parameter Name="AttackPower" Guid="c6d7e8f9-a0b1-8123-2345-789abcdef01b" Value="15.5" Type="float"/>
+        <Parameter Name="AttackPower" Guid="c6d7e8f9-a0b1-8123-2345-789abcdef01b" Value="2.25" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="HumanModel" Guid="d7e8f9a0-b1c2-8234-3456-89abcdef012c" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
         <Parameter Name="WalkLegsAngle" Guid="e8f9a0b1-c2d3-8345-4567-9abcdef0123d" Value="0.35" Type="float"/>
@@ -5160,10 +5241,17 @@
         <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="c2d3e4f5-a6b7-8789-89ab-def012345671">
-        <Parameter Name="AttackResilience" Guid="2b74d284-7892-434c-9711-ef5c319ae01b" Value="500" Type="float"/>
+        <Parameter Name="AttackResilience" Guid="2b74d284-7892-434c-9711-ef5c319ae01b" Value="555.55" Type="float"/>
         <Parameter Name="FallResilience" Guid="c7dbe269-78d6-436c-9944-9deb08b7c3f4" Value="523" Type="float"/>
         <Parameter Name="FireResilience" Guid="446d07ad-a248-45e5-ae17-a53bd768b80f" Value="523" Type="float"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="PoisonInfected" Guid="2012a48d-8726-479d-8430-a697a0a3766d">
+    <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
+    <Parameter Name="PoisonResistance" Value="555.55" Type="float"/>
+    <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="a6b7c8d9-e0f1-9123-cdef-123456789ab5"/>
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="b7c8d9e0-f1a2-9234-def0-23456789abc6" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
     <MemberComponentTemplate Name="HerdBehavior" Guid="c8d9e0f1-a2b3-9345-ef01-3456789abcd7" InheritanceParent="dfe7218e-ce14-4bde-8dac-f919c38e9efe">
@@ -5183,14 +5271,14 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="3c86bb57-299a-4725-aac0-238c16db73bb" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
     <Parameter Name="ChaseToCreatures" Guid="521acaeb-6eee-4876-8e33-4dc94fa338ea" Value="Naomi, Ricardo, Paco, Barack, ElMarihuanero, ElMarihuaneroMamon, TommyVercetti, ClaudeSpeed, ArqueroPrisionero, BallestadoraMusculosa, CarlJohnson, BetelGammamon, Gaomon, Agumon, Veemon, Guilmon, WalterZombie, WalterZombieMamadisimo, FumadorQuimico, FumadorQuimicoBrawny, Conker, Beavis, Butt-Head, Shoutmon, Gumdramon, Bass_Sea, Seagull, Sparrow, Reindeer, Horse_White, Horse_White_Saddled, Horse_Chestnut, Horse_Chestnut_Saddled, Horse_Bay, Horse_Bay_Saddled, Horse_Palomino, Horse_Palomino_Saddled, Horse_Black, Horse_Black_Saddled, Camel, Camel_Saddled, Zebra, Wildboar, Bison, Bull_Brown, Bull_Black, Cow_Brown, Cow_Black, Bull_White, Duck, Pigeon, Raven, Giraffe, Moose, Donkey, Donkey_Saddled, Cassowary, Ostrich, Gnu, Werewolf, Ray_Yellow, Ray_Brown, Beluga,Hyena, Rhino, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite, Player" Type="string"/>
-    <Parameter Name="ChaseToCreatureProbability" Guid="ee972402-7b86-44ce-9902-4ad9409c3973" Value="1.0" Type="float"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="ee972402-7b86-44ce-9902-4ad9409c3973" Value="999999999" Type="float"/>
 </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="c9d0e1f2-a3b4-0456-bcde-0123456789ac">
         <Parameter Name="Color" Guid="d0e1f2a3-b4c5-0567-cdef-123456789abd" Value="59,79,134" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="e1f2a3b4-c5d6-0678-def0-23456789abce" Value="5" Type="int"/>
         <Parameter Name="SwapUV" Guid="f2a3b4c5-d6e7-0789-ef01-3456789abcdf" Value="False" Type="bool"/>
         <Parameter Name="Scale" Guid="b1e0e0ba-501f-4f07-bcb6-3887c95a57c3" Value="2" Type="float"/>
-        <Parameter Name="DisplayName" Guid="a3b4c5d6-e7f8-0890-f012-456789abcde0" Value="Camisas Morenas Egg" Type="string"/>
+        <Parameter Name="DisplayName" Guid="a3b4c5d6-e7f8-0890-f012-456789abcde0" Value="[DisplayName:CamisasMorenas]" Type="string"/>
         <Parameter Name="EggTypeIndex" Guid="b4c5d6e7-f8a9-0901-0123-56789abcdef1" Value="241" Type="int"/>
     </ParameterSet>
 </EntityTemplate>
@@ -5252,7 +5340,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Loot" Guid="6e3895e7-9750-48c3-a237-c346a02b0816">
         <ParameterSet Name="Loot" Guid="06d9ad2f-3d30-44bc-899b-a7220b9829f6">
-            <Parameter Name="Loot1" Guid="2c4fdb30-e032-44c2-9fdc-7d58227add29" Value="RottenMeatBlock;1;10;5" Type="string"/>
+            <Parameter Name="Loot1" Guid="2c4fdb30-e032-44c2-9fdc-7d58227add29" Value="RottenMeatBlock;1;6;0.5" Type="string"/>
         </ParameterSet>
         <ParameterSet Name="LootOnFire" Guid="56ac1204-6aa3-4a40-a2a3-16186603ee21"/>
     </MemberComponentTemplate>
@@ -5261,10 +5349,10 @@
         <Parameter Name="BoxSize" Guid="fd85a7f0-71b6-4aaf-8807-3222f1f23cbd" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="8db29f2c-131e-4223-917f-90c29c977e13">
-        <Parameter Name="DisplayName" Guid="42d4fbe0-e974-403c-b223-5539220f42ac" Value="Zombie Repetidor" Type="string"/>
+        <Parameter Name="DisplayName" Guid="42d4fbe0-e974-403c-b223-5539220f42ac" Value="[DisplayName:ZombieRepetidor]" Type="string"/>
         <Parameter Name="Category" Guid="507da620-ccaa-4f34-a139-225656dabe14" Value="Bird" Type="Game.CreatureCategory"/>
         <Parameter Name="ConstantSpawn" Guid="c97c58bb-6900-4d51-9a5a-e499aaf58563" Value="True" Type="bool"/>
-        <Parameter Name="Description" Guid="7ef63359-cceb-417b-8a22-786f59f7cb1e" Value="Zombie Repetidor was once a human who lived in the Marshall Islands, especially on Bikini Atoll. He was of Ecuadorian origin, known as Elver Gonzalo Samboni, who traveled there seeking a new life. A skilled farmer, he specialized in fruits and vegetables, dedicating himself to his harvests. Everything changed drastically in 1954 when the United States detonated nuclear bombs on the islands. Residents were forced to abandon their homes to avoid death from the experiments, but Elver refused, believing it was all lies, and hid underground. When the explosions occurred, everyone thought he had died. The islands became desolate, uninhabitable due to radiation. Yet, against all odds, Elver survived. His skin became burned and rotten over the years, and he transformed into a zombie. This was partly due to a strange enchanted eggplant salad he had created, designed to revive him after explosions though only as a zombie. Despite his transformation, he remained alive and devised a way to return to Ecuador. He infiltrated a luxury boat bound for Ecuador, arriving in Atacames, and later returned to his hometown of Quito. There, he began eating junk food, which made him obese but also increased his muscular strength. One day, he decided to steal a Ballesta Repetidora to practice shooting, since he had no legal permits to own a firearm and stealing one could have cost him his life. He trained relentlessly until he became an expert marksman. Although he may look like just another common zombie, do not be fooled if he sees you, he will start shooting. Eventually, he allied himself with the group Muerte, becoming another deadly shooter. He will appear on day 13 at night." Type="string"/>
+        <Parameter Name="Description" Guid="7ef63359-cceb-417b-8a22-786f59f7cb1e" Value="[Description:ZombieRepetidor]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="eb41096a-18df-458c-b198-22069f75663b" Value="eaten,shooted" Type="string"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Spawn" Guid="9c361b96-e4c1-4f56-8e58-28dc03159318">
@@ -5313,7 +5401,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="7b0598b7-ea6d-45fc-b44c-25bcfea475e5" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
         <Parameter Name="ChaseToCreatures" Guid="f28c36c1-cca4-4c3b-a7a5-a0d0aacff54d" Value="Naomi, Ricardo, Paco, Barack, ElMarihuanero, ElMarihuaneroMamon, TommyVercetti, ClaudeSpeed, ArqueroPrisionero, BallestadoraMusculosa, CarlJohnson, BetelGammamon, Gaomon, Agumon, Veemon, Guilmon, WalterZombie, WalterZombieMamadisimo, FumadorQuimico, FumadorQuimicoBrawny, Conker, Beavis, Butt-Head, Shoutmon, Gumdramon, Bass_Sea, Seagull, Sparrow, Reindeer, Horse_White, Horse_White_Saddled, Horse_Chestnut, Horse_Chestnut_Saddled, Horse_Bay, Horse_Bay_Saddled, Horse_Palomino, Horse_Palomino_Saddled, Horse_Black, Horse_Black_Saddled, Camel, Camel_Saddled, Zebra, Wildboar, Bison, Bull_Brown, Bull_Black, Cow_Brown, Cow_Black, Bull_White, Duck, Pigeon, Raven, Giraffe, Moose, Donkey, Donkey_Saddled, Cassowary, Ostrich, Gnu, Werewolf, Ray_Yellow, Ray_Brown, Beluga,Hyena, Rhino, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite, Player" Type="string"/>
-        <Parameter Name="ChaseToCreatureProbability" Guid="4cc8f27d-fb41-49b1-9719-a050d30d354f" Value="1.0" Type="float"/>
+        <Parameter Name="ChaseToCreatureProbability" Guid="4cc8f27d-fb41-49b1-9719-a050d30d354f" Value="999999999" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="ChaseBehavior" Guid="f11e9dfc-66e8-4a6c-9ecb-ca2eab529d8f" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
         <Parameter Name="AutoChaseMask" Guid="5896c4f5-aee7-45e2-9caf-0196c8b1b197" Value="LandOther, WaterPredator, WaterOther, LandPredator" Type="Game.CreatureCategory"/>
@@ -5326,7 +5414,7 @@
         <Parameter Name="Color" Guid="1cccb9c1-5954-438c-4146-583df877ef80" Value="0,92,131" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="23399930-6b05-41c2-82d5-281a7b5aba7c" Value="126" Type="int"/>
         <Parameter Name="SwapUV" Guid="4aa42d51-127b-47d6-911f-35e20ed8f64f" Value="False" Type="bool"/>
-        <Parameter Name="DisplayName" Guid="7b53fc2e-1065-411c-b809-6fba16834d51" Value="Zombie Repetidor Egg" Type="string"/>
+        <Parameter Name="DisplayName" Guid="7b53fc2e-1065-411c-b809-6fba16834d51" Value="[DisplayName:ZombieRepetidor]" Type="string"/>
         <Parameter Name="EggTypeIndex" Guid="e49427ec-eed3-4c6c-a979-1ba2af1d00a1" Value="242" Type="int"/>
     </ParameterSet>
 </EntityTemplate>
