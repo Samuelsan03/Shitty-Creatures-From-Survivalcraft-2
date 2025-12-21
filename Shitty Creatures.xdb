@@ -2544,7 +2544,7 @@
         <Parameter Name="TextureSlot" Guid="a3b4c5d6-e7f8-0789-ef01-3456789abcd5" Value="190" Type="int"/>
         <Parameter Name="Scale" Guid="c2cdf479-02c2-4b3e-ad00-0e145ab5f167" Value="3" Type="float"/>
         <Parameter Name="SwapUV" Guid="b4c5d6e7-f8a9-0890-f012-456789abcde6" Value="True" Type="bool"/>
-        <Parameter Name="DisplayName" Guid="c5d6e7f8-a9b0-0901-0123-56789abcdef7" Value="Hombre Agua Egg" Type="string"/>
+        <Parameter Name="DisplayName" Guid="c5d6e7f8-a9b0-0901-0123-56789abcdef7" Value="[DisplayName:HombreAgua]" Type="string"/>
         <Parameter Name="EggTypeIndex" Guid="d6e7f8a9-b0c1-1012-1234-6789abcdef08" Value="219" Type="int"/>
     </ParameterSet>
 </EntityTemplate>
@@ -3652,7 +3652,7 @@
         <Parameter Name="Color" Guid="a3c9fb4e-f9cf-47d3-bea3-e04ba20760ed" Value="229,190,1" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="d94614dc-eeba-4a09-8926-f8611449c700" Value="189" Type="int"/>
         <Parameter Name="SwapUV" Guid="c3b0a4d1-caa2-45e9-8a14-8897cfc197dc" Value="True" Type="bool"/>
-        <Parameter Name="DisplayName" Guid="cf62c330-984e-4701-a17e-78265c2009a1" Value="Agumon Egg" Type="string"/>
+        <Parameter Name="DisplayName" Guid="cf62c330-984e-4701-a17e-78265c2009a1" Value="[DisplayName:Agumon]" Type="string"/>
         <Parameter Name="EggTypeIndex" Guid="c6f4d660-89cc-4465-803c-45c41b11cb48" Value="227" Type="int"/>
     </ParameterSet>
 </EntityTemplate>
@@ -5000,7 +5000,7 @@
     <ParameterSet Name="CreatureEggData" Guid="aa1ed1ac-efdc-49b8-a26a-e5e542fee1b6">
         <Parameter Name="Color" Guid="dd72addb-043f-470f-b870-c472e9565599" Value="49,112,0" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="bfeded40-0321-429f-8664-41193c41bfc4" Value="2" Type="int"/>
-        <Parameter Name="SwapUV" Guid="98795764-6653-42f4-802c-c01133795436" Value="False" Type="bool"/>
+        <Parameter Name="SwapUV" Guid="98795764-6653-42f4-802c-c01133795436" Value="True" Type="bool"/>
         <Parameter Name="DisplayName" Guid="8073bdca-e87d-4991-b24a-614589bf102f" Value="[DisplayName:ElGuerrillero]" Type="string"/>
         <Parameter Name="EggTypeIndex" Guid="183a8dae-64d5-4d71-b089-03ea035c8495" Value="239" Type="int"/>
     </ParameterSet>
@@ -5151,7 +5151,7 @@
     <ParameterSet Name="CreatureEggData" Guid="eb5f8c06-ab52-45d0-a002-681824b8d621">
         <Parameter Name="Color" Guid="19e27666-3e16-491a-8441-37355108fb72" Value="59,118,0" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="f137c858-a44c-4382-8691-757cd367e68f" Value="5" Type="int"/>
-        <Parameter Name="SwapUV" Guid="eb3285ea-7365-4263-aeb8-79b1c45ad3af" Value="False" Type="bool"/>
+        <Parameter Name="SwapUV" Guid="eb3285ea-7365-4263-aeb8-79b1c45ad3af" Value="True" Type="bool"/>
         <Parameter Name="DisplayName" Guid="2ab784b7-fb68-4fd2-b7ff-7ea51406f751" Value="[DisplayName:ElGuerrilleroTenebroso]" Type="string"/>
         <Parameter Name="EggTypeIndex" Guid="1e8ab954-059f-4fac-8998-bc4889914632" Value="240" Type="int"/>
     </ParameterSet>
@@ -5276,8 +5276,7 @@
     <ParameterSet Name="CreatureEggData" Guid="c9d0e1f2-a3b4-0456-bcde-0123456789ac">
         <Parameter Name="Color" Guid="d0e1f2a3-b4c5-0567-cdef-123456789abd" Value="59,79,134" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="e1f2a3b4-c5d6-0678-def0-23456789abce" Value="5" Type="int"/>
-        <Parameter Name="SwapUV" Guid="f2a3b4c5-d6e7-0789-ef01-3456789abcdf" Value="False" Type="bool"/>
-        <Parameter Name="Scale" Guid="b1e0e0ba-501f-4f07-bcb6-3887c95a57c3" Value="2" Type="float"/>
+        <Parameter Name="SwapUV" Guid="f2a3b4c5-d6e7-0789-ef01-3456789abcdf" Value="True" Type="bool"/>
         <Parameter Name="DisplayName" Guid="a3b4c5d6-e7f8-0890-f012-456789abcde0" Value="[DisplayName:CamisasMorenas]" Type="string"/>
         <Parameter Name="EggTypeIndex" Guid="b4c5d6e7-f8a9-0901-0123-56789abcdef1" Value="241" Type="int"/>
     </ParameterSet>
@@ -5414,6 +5413,7 @@
         <Parameter Name="Color" Guid="1cccb9c1-5954-438c-4146-583df877ef80" Value="0,92,131" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="23399930-6b05-41c2-82d5-281a7b5aba7c" Value="126" Type="int"/>
         <Parameter Name="SwapUV" Guid="4aa42d51-127b-47d6-911f-35e20ed8f64f" Value="False" Type="bool"/>
+        <Parameter Name="Scale" Guid="98eb182f-a0ab-4e0a-a9a5-d5d85534b3d1" Value="1.9" Type="float"/>
         <Parameter Name="DisplayName" Guid="7b53fc2e-1065-411c-b809-6fba16834d51" Value="[DisplayName:ZombieRepetidor]" Type="string"/>
         <Parameter Name="EggTypeIndex" Guid="e49427ec-eed3-4c6c-a979-1ba2af1d00a1" Value="242" Type="int"/>
     </ParameterSet>
@@ -5634,21 +5634,15 @@
         <Parameter Name="WalkSpeed" Guid="4a33f980-c7a1-46aa-8d12-cb9c8b4b5cc2" Value="3.8" Type="float"/>
         <Parameter Name="LadderSpeed" Guid="c20653fb-65e2-4108-bc0e-209c8ffb2e55" Value="0" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="Loot" Guid="1d65f679-855a-4cc1-a385-46d6854ae576">
-        <ParameterSet Name="Loot" Guid="32fdadde-d119-4c1b-8f9e-e8c6662c311f">
-            <Parameter Name="1" Guid="98e479c1-231b-47c3-bd02-988593ef0c63" Value="IronIngotBlock;25;50" Type="string"/>
-        </ParameterSet>
-        <ParameterSet Name="LootOnFire" Guid="1f1bc857-00e0-4367-a077-b6a620be3bc1"/>
-    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="d93dbbc0-a1b9-40ca-9d9b-9ca0653e857e">
         <Parameter Name="Mass" Guid="51ebeaff-0fa7-41c4-8f41-6aff3eade3cf" Value="65" Type="float"/>
         <Parameter Name="BoxSize" Guid="1507754f-bf6d-46c4-8425-93a56de31cbb" Value="0.9,1.0,0.9" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="9be1876a-ce09-4259-9d56-c52f338c65c3">
-        <Parameter Name="DisplayName" Guid="d4312a14-b6e9-4437-9ae6-a2df02210f49" Value="Tulio" Type="string"/>
+        <Parameter Name="DisplayName" Guid="d4312a14-b6e9-4437-9ae6-a2df02210f49" Value="[DisplayName:Tulio]" Type="string"/>
         <Parameter Name="ConstantSpawn" Guid="4ec71a83-761d-40ee-9e86-3328484085b5" Value="True" Type="bool"/>
         <Parameter Name="Category" Guid="bcb75e11-3591-4587-afb0-600fb58b099c" Value="LandOther" Type="Game.CreatureCategory"/>
-        <Parameter Name="Description" Guid="adda200c-cc69-456b-8965-d0cd3687d226" Value="Born in Santiago de Chile in 1995, during the post-Pinochet era, he grew up fascinated by fashion trends—jeans and striped shirts defined his style—and his curiosity about the world only grew stronger. At the age of 18, he chose not to attend the University of Santiago, preferring instead to dedicate himself to uncovering the truth behind the mysterious, unidentified Pacific islands. He had seen reports on TVN describing these islands, places that neither the United States nor Russia had managed to investigate despite their obsession. Rumors spread that only certain living beings could enter, and only they could learn the islands’ true origin. Determined, he sought illegal means to reach them, traveling to Easter Island in hopes of finding an abandoned boat to continue his journey. Fate intervened when violent winds and hurricanes struck, throwing him into the ocean. Yet nature itself seemed to protect him, carrying him safely to the very islands he sought. There he encountered both humans and non-humans—Naomi, Paco, El Marihuanero, El Marihuanero Mamón, and Ricardo. Together they formed a family, bound by survival and mystery. Eventually, he joined the group known as Alianza, dedicated to searching for survivors and uncovering the secrets of the Pacific islands. His journey became not only a quest for knowledge but also a testament to resilience, curiosity, and the strange destiny that united him with others on the islands." Type="string"/>
+        <Parameter Name="Description" Guid="adda200c-cc69-456b-8965-d0cd3687d226" Value="[Description:Tulio]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="cd45666c-3037-4a88-a642-1f0890b8e0d2" Value="lynched,asphyxiated" Type="string"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="ComponentRandomChatter" Guid="d8960571-25e2-4a35-8907-d126197a569f">
@@ -5700,7 +5694,7 @@
         <Parameter Name="Color" Guid="8309dfe3-ef8d-44ea-8e83-07480502d5d7" Value="71,46,70" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="311ec66a-3cbe-4bc7-ac33-a17a4e0e6696" Value="8" Type="int"/>
         <Parameter Name="SwapUV" Guid="42a8a8f3-1e20-46ff-89a2-6d0207988271" Value="False" Type="bool"/>
-        <Parameter Name="DisplayName" Guid="e1839a37-67c1-497e-a4e0-ad45e5f1c1f5" Value="Tulio Egg" Type="string"/>
+        <Parameter Name="DisplayName" Guid="e1839a37-67c1-497e-a4e0-ad45e5f1c1f5" Value="[DisplayName:Tulio]" Type="string"/>
         <Parameter Name="EggTypeIndex" Guid="3d4f0ec6-c689-4b6b-bec8-fcc5eef63ccc" Value="244" Type="int"/>
     </ParameterSet>
 </EntityTemplate>
@@ -5716,25 +5710,9 @@
         <Parameter Name="DayRange" Guid="e26a80fd-6ab2-4abc-a883-a3f8727e1be1" Value="0" Type="float"/>
         <Parameter Name="NightRange" Guid="b3a21349-83e2-401d-b2c1-bcbca8d862c6" Value="0" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="PoisonInfectBehavior" Guid="4cb8713a-44cd-4087-8c0b-4c7dc0092d02">
-    <Parameter Name="Class" Value="Game.ComponentPoisonInfectedBehavior" Type="string"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
-    <Parameter Name="PoisonIntensity" Value="0" Type="float"/> <!-- 0 = no infecta -->
-    <Parameter Name="InfectionProbability" Value="0" Type="float"/> <!-- 0 = 0% chance -->
-    <Parameter Name="InfectionCooldown" Value="0" Type="float"/>
-    <Parameter Name="AttackRange" Value="0" Type="float"/>
-</MemberComponentTemplate>
-<MemberComponentTemplate Name="PoisonInfected" Guid="7f369b9b-a79e-4bfd-8d74-6d1f0f936062">
-    <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int"/>
-    <Parameter Name="PoisonResistance" Value="-50" Type="float"/>
-    <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
-</MemberComponentTemplate>
     <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="66de71b2-6e7e-410f-9ac2-920add6ce1ad" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
     <Parameter Name="ChaseToCreatures" Guid="cb370fef-3bdf-464d-876e-f80dc8124d7e" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
-    <Parameter Name="ChaseToCreatureProbability" Guid="a1448109-6e46-4fdd-bc5e-cf3b4e43f3b9" Value="1.0" Type="float"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="a1448109-6e46-4fdd-bc5e-cf3b4e43f3b9" Value="999999999" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="EatPickableBehavior" Guid="a7f23a9e-1ce8-41bf-9f46-8dc17a399f92">
         <ParameterSet Name="FoodFactors" Guid="4f2c87ef-922b-47fe-985d-b1d809b4cb3d">
@@ -5779,10 +5757,10 @@
         <Parameter Name="BoxSize" Guid="d16ac949-6d52-4b4a-acc9-599036455193" Value="0.9,1.0,0.9" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="9d8c5281-f387-46df-ad94-f70265c70255">
-        <Parameter Name="DisplayName" Guid="bf1bfb3d-adc0-4f1e-804a-d9d90ecaa85a" Value="Brayan" Type="string"/>
+        <Parameter Name="DisplayName" Guid="bf1bfb3d-adc0-4f1e-804a-d9d90ecaa85a" Value="[DisplayName:Brayan]" Type="string"/>
         <Parameter Name="ConstantSpawn" Guid="1818b088-4375-4d4a-9925-37e59be4cb4c" Value="True" Type="bool"/>
         <Parameter Name="Category" Guid="462dcfac-5081-45ba-b0df-c431b8ed49d3" Value="LandOther" Type="Game.CreatureCategory"/>
-        <Parameter Name="Description" Guid="613ec9d6-aa8c-40cc-8975-5531c7084993" Value="Brayan was born on January 12, 2000, in London, England. From a young age he dedicated himself to studying physics and biology, inspired by figures such as Charles Darwin and Isaac Newton. At the age of 25, he received a special voucher to travel to Alaska, United States, to further his studies of nature and frozen physics. He accepted, but during the journey an unexpected accident changed his life: the pilot fainted due to a natural cause, the plane lost control, and it crashed. Brayan survived thanks to the winds of nature, which carried him away from drowning and guided him to a mysterious island in the Pacific. From that moment, he began to survive using the knowledge he had acquired in his studies, applying physics and biology to endure the harsh environment. One day he met Tulio, who was impressed by Brayan’s survival methods and offered him the chance to join the group known as Alianza. This group was formed by people of good spirit, dedicated to protecting each other while collecting information about the unknown and mysterious islands. Brayan accepted, and from then on he became part of a family on the island, while keeping alive his hope of one day returning to England." Type="string"/>
+        <Parameter Name="Description" Guid="613ec9d6-aa8c-40cc-8975-5531c7084993" Value="[Description:Brayan]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="db5d91f1-9ed2-4a85-9d20-9a8fa1fcc934" Value="bitched,broken arm,broken skull" Type="string"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="ComponentRandomChatter" Guid="4a9873e9-5a02-4c6a-a979-b9444be2b55b">
@@ -5834,7 +5812,7 @@
         <Parameter Name="Color" Guid="386569eb-dfd4-4987-b4ff-b4f23a8a2db6" Value="255,102,102" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="2a1123f2-ed07-4f0a-85a3-349d99842346" Value="130" Type="int"/>
         <Parameter Name="SwapUV" Guid="78acfce5-4615-4c40-bd8b-8ccceb71abf0" Value="False" Type="bool"/>
-        <Parameter Name="DisplayName" Guid="1f28ae25-c3bc-4933-8e16-e5dec62f8f3a" Value="Brayan Egg" Type="string"/>
+        <Parameter Name="DisplayName" Guid="1f28ae25-c3bc-4933-8e16-e5dec62f8f3a" Value="[DisplayName:Brayan]" Type="string"/>
         <Parameter Name="EggTypeIndex" Guid="b3ae7954-7421-457b-9a75-75d872e746a4" Value="245" Type="int"/>
     </ParameterSet>
 </EntityTemplate>
@@ -5859,22 +5837,6 @@
             <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="9acad0db-7a04-449d-bd65-f269229db5a2" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
     <Parameter Name="ChaseToCreatures" Guid="02c784fb-2d16-42d1-9641-3e858373c10d" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
     <Parameter Name="ChaseToCreatureProbability" Guid="788a03d0-1643-408a-8bdf-d3d60934f166" Value="999999999" Type="float"/>
-</MemberComponentTemplate>
-<MemberComponentTemplate Name="PoisonInfectBehavior" Guid="9efffd65-ee97-4ed1-9a48-05ba2527bbf5">
-    <Parameter Name="Class" Value="Game.ComponentPoisonInfectedBehavior" Type="string"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
-    <Parameter Name="PoisonIntensity" Value="0" Type="float"/> <!-- 0 = no infecta -->
-    <Parameter Name="InfectionProbability" Value="0" Type="float"/> <!-- 0 = 0% chance -->
-    <Parameter Name="InfectionCooldown" Value="0" Type="float"/>
-    <Parameter Name="AttackRange" Value="0" Type="float"/>
-</MemberComponentTemplate>
-<MemberComponentTemplate Name="PoisonInfected" Guid="1ee26797-0ec4-42ea-86c2-f8a5d069d1fb">
-    <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int"/>
-    <Parameter Name="PoisonResistance" Value="-50" Type="float"/>
-    <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="CreatureSounds" Guid="33600714-2fe2-4e09-929b-3d056615ab53">
                 <Parameter Name="PainSound" Guid="7fc5a417-b4fe-4bbf-ae4a-399edd4ef36a" Value="Audio/Creatures/Richard/Pain" Type="string"/>
@@ -5929,10 +5891,10 @@
     <Parameter Name="AutoDespawn" Guid="128b961d-6df1-4b13-bc41-1e0c3e584607" Value="False" Type="bool"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="Creature" Guid="54ffc72a-6cf5-45de-a575-f3f41c230696">
-                <Parameter Name="DisplayName" Guid="e84e5fb3-8c86-4664-ae3a-851bc831ba76" Value="Richard" Type="string"/>
+                <Parameter Name="DisplayName" Guid="e84e5fb3-8c86-4664-ae3a-851bc831ba76" Value="[DisplayName:Richard]" Type="string"/>
                 <Parameter Name="Category" Guid="85d3058a-af88-4afb-a1e8-d0bab4448ba7" Value="LandOther" Type="Game.CreatureCategory"/>
-                <Parameter Name="Description" Guid="732f9735-e455-4a2c-b04e-2ae5c5a93132" Value="Richard is the twin brother of Ricardo. Unlike him, Richard was born in South Africa in 2004, during the post-apartheid era. When he turned 18, he began his life as an adventurer, driven by curiosity and a desire to explore the unknown. Later, he met Ricardo during a scientific journey in Mexico, and despite their different origins, they bonded deeply and became brothers in spirit. When Ricardo departed for the mysterious Pacific islands, Richard decided to undertake the same expedition, but with a unique difference: he designed and built a machine capable of traveling anywhere without the need for ships, boats, or conventional vehicles. His invention was a success, and he used it to embark on his journey, eventually arriving at the same destination as Ricardo. Upon reaching the island, Ricardo welcomed him as his true brother and introduced him to the companions he had met there. From that moment, Richard became part of the family and joined the group known as Alianza. His arrival brought new energy to the team, as his inventive mind and adventurous spirit complemented Ricardo’s resilience. Richard’s machine, though damaged during the voyage, became a symbol of hope for the group, showing that human ingenuity could rival even the mysteries of the islands. Together with Naomi, Paco, and the others, Richard contributed to the survival and exploration of the unknown land, strengthening the bonds of Alianza and keeping alive the dream of one day uncovering the secrets of the Pacific islands." Type="string"/>
-                <Parameter Name="KillVerbs" Guid="fd9e5488-58e9-4b2b-b2c2-e211982cb8e6" Value="fuck you" Type="string"/>
+                <Parameter Name="Description" Guid="732f9735-e455-4a2c-b04e-2ae5c5a93132" Value="[Description:Richard]" Type="string"/>
+                <Parameter Name="KillVerbs" Guid="fd9e5488-58e9-4b2b-b2c2-e211982cb8e6" Value="lynched" Type="string"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="ComponentRandomChatter" Guid="2b10dd74-d101-47ef-b10c-131159033f7b">
     <Parameter Name="Class" Value="Game.ComponentRandomChatter" Type="string"/>
@@ -5948,7 +5910,6 @@
             <MemberComponentTemplate Name="FindPlayerBehavior" Guid="f458df98-a9f4-4341-9487-0bfc7d7ff172" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
             <MemberComponentTemplate Name="Miner" Guid="5d147685-a72a-42bd-b5b5-54ba9d0ea62b" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="d9264d1d-6702-4952-864d-19b7bdcc223c" Value="3.5" Type="float"/>
-                <Parameter Name="AutoInteractRate" Guid="518ca0ab-0a38-4540-9271-bb40ca6f1f9a" Value="1.0" Type="float"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="HumanModel" Guid="473818eb-5a22-48eb-aae4-b11c5e085ff2" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
                 <Parameter Name="WalkLegsAngle" Guid="2fa4b8a4-be64-48b8-aedd-398af645c144" Value="0.35" Type="float"/>
@@ -5964,6 +5925,13 @@
                 <Parameter Name="ExplosionResilience" Guid="c3475d3d-bade-4699-9bb6-5893a6c6e902" Value="77.5" Type="float"/>
         <Parameter Name="AttackResilience" Guid="15031633-2442-4559-b67b-09a743bf96cc" Value="87.6" Type="float"/>
             </MemberComponentTemplate>
+            <MemberComponentTemplate Name="PoisonInfected" Guid="8c044507-5ad1-4ff0-aad4-08babbd77e14">
+    <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
+    <Parameter Name="PoisonResistance" Value="87.6" Type="float"/>
+    <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
+</MemberComponentTemplate>
             <MemberComponentTemplate Name="OnFire" Guid="5b9327cb-d058-4e84-b8d8-ac2832b3ae13"/>
             <MemberComponentTemplate Name="WalkAroundBehavior" Guid="fe924b83-b898-47c7-a4dd-34e823075f36" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
             <MemberComponentTemplate Name="HerdBehavior" Guid="dac1871a-75de-448f-a46d-e40207bc7b23" InheritanceParent="dfe7218e-ce14-4bde-8dac-f919c38e9efe">
@@ -5985,7 +5953,7 @@
                 <Parameter Name="Color" Guid="93127e60-7b23-43ac-a0cc-430fc0d27b34" Value="191,156,136" Type="Color"/>
                 <Parameter Name="TextureSlot" Guid="473677e4-6990-497f-b440-d7b480402bc2" Value="79" Type="int"/>
                 <Parameter Name="SwapUV" Guid="3ba58a0c-5a95-415b-8b7e-fc4236f9a94d" Value="False" Type="bool"/>
-                <Parameter Name="DisplayName" Guid="cda6d56a-b403-476a-89d8-3464eec1423a" Value="Richard Egg" Type="string"/>
+                <Parameter Name="DisplayName" Guid="cda6d56a-b403-476a-89d8-3464eec1423a" Value="[DisplayName:Richard]" Type="string"/>
                 <Parameter Name="EggTypeIndex" Guid="77c3df99-33b2-43b9-9b37-d01402aa2b3f" Value="246" Type="int"/>
             </ParameterSet>
         </EntityTemplate>
