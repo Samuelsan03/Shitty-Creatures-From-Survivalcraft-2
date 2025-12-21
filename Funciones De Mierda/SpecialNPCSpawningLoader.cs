@@ -393,9 +393,9 @@ namespace Game
 					int cellValueAbove = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
 					int blockAbove = Terrain.ExtractContents(cellValueAbove);
 
-					if (blockAbove == 18 || blockAbove == 92) // Agua o lava
+					if (blockAbove == 18) // Agua o lava
 					{
-						return 0f;
+						return 100f;
 					}
 
 					// Obtener día y hora actual
@@ -441,9 +441,9 @@ namespace Game
 					int cellValueAbove = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
 					int blockAbove = Terrain.ExtractContents(cellValueAbove);
 
-					if (blockAbove == 18 || blockAbove == 92) // Agua o lava
+					if (blockAbove == 18) // Agua o lava
 					{
-						return 0f;
+						return 100f;
 					}
 
 					// Obtener día y hora actual
@@ -1415,9 +1415,9 @@ namespace Game
 					int cellValueAbove = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
 					int blockAbove = Terrain.ExtractContents(cellValueAbove);
 
-					if (blockAbove == 18) // Agua
+					if (blockAbove == 92) // Lava
 					{
-						return 0f;
+						return 100f;
 					}
 
 					// Obtener día actual
@@ -1465,9 +1465,9 @@ namespace Game
 					int cellValueAbove = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
 					int blockAbove = Terrain.ExtractContents(cellValueAbove);
 
-					if (blockAbove == 92) // Lava
+					if (blockAbove == 18) // Agua
 					{
-						return 0f;
+						return 100f;
 					}
 
 					// Verificar bloques alrededor para detectar agua cercana
