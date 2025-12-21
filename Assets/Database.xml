@@ -971,7 +971,7 @@
               <Parameter Name="TextureSlot" Guid="26a95c79-0442-48b6-892c-b4a32a1aaf9a" Value="163" Type="int"/>
               <Parameter Name="DisplayName" Guid="46e46be3-7dc7-444b-a759-0cba250a8215" Value="[DisplayName:13]" Type="string"/>
               <Parameter Name="EggTypeIndex" Guid="61647c7e-0795-4a57-93bf-ef08234822f7" Value="49" Type="int"/>
-              <Parameter Name="ShowEgg" Guid="726d9832-faa0-449b-a273-63d8dc5a4bb0" Value="False" Type="bool"/>
+              <Parameter Name="ShowEgg" Guid="726d9832-faa0-449b-a273-63d8dc5a4bb0" Value="True" Type="bool"/>
               <Parameter Name="SwapUV" Guid="9fe854fb-ea0a-4f70-9cb9-d9647e4d74fa" Value="True" Type="bool"/>
               <Parameter Name="Color" Guid="bf39719b-1bf7-4f10-a865-073c4b65a4d5" Value="96,96,96" Type="Color"/>
             </ParameterSet>
@@ -1802,7 +1802,7 @@
               <Parameter Name="ChaseNonPlayerProbability" Guid="0e890fc3-4de1-48d7-93a0-6fd07e149d6a" Value="0.1" Type="float"/>
             </MemberComponentTemplate>
             <ParameterSet Name="CreatureEggData" Guid="fda00c63-3dd2-4b84-a023-0c41c124cb2d">
-              <Parameter Name="ShowEgg" Guid="181b3b17-d552-4aee-b89e-880554f2b13e" Value="False" Type="bool"/>
+              <Parameter Name="ShowEgg" Guid="181b3b17-d552-4aee-b89e-880554f2b13e" Value="True" Type="bool"/>
               <Parameter Name="EggTypeIndex" Guid="d59d6e1b-c3aa-4090-9ce9-3f538f32b04d" Value="25" Type="int"/>
             </ParameterSet>
           </EntityTemplate>
@@ -1898,7 +1898,7 @@
         <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
         <Parameter Name="IsOptional" Value="true" Type="bool"/>
         <Parameter Name="LoadOrder" Value="60" Type="int"/>
-        <Parameter Name="PoisonResistance" Value="0" Type="float"/> <!-- Resistencia al veneno -->
+        <Parameter Name="PoisonResistance" Value="-300" Type="float"/> <!-- Resistencia al veneno -->
         <Parameter Name="IsJumpMove" Value="false" Type="bool"/> <!-- No tiene movimiento de salto con veneno -->
     </MemberComponentTemplate>
             <MemberComponentTemplate Name="Loot" Guid="02d94972-f761-442c-88c7-04c3d75d16be">
@@ -1960,7 +1960,7 @@
               <Parameter Name="TextureSlot" Guid="62b55e51-98dd-4b21-b5c7-f783d7cdf406" Value="163" Type="int"/>
               <Parameter Name="EggTypeIndex" Guid="c00f9bc1-327e-427a-8f2d-2cdb90f544f4" Value="48" Type="int"/>
               <Parameter Name="DisplayName" Guid="c02dad6d-bcf1-4a25-8146-8d286219c0a5" Value="[DisplayName:40]" Type="string"/>
-              <Parameter Name="ShowEgg" Guid="e07c6721-2ea7-43e9-a5c3-85f2a55f117d" Value="False" Type="bool"/>
+              <Parameter Name="ShowEgg" Guid="e07c6721-2ea7-43e9-a5c3-85f2a55f117d" Value="True" Type="bool"/>
             </ParameterSet>
           </EntityTemplate>
           <EntityTemplate Name="Duck" Guid="7c04f9ec-a7c0-4a56-bd86-c0cfdecf7d94" InheritanceParent="0cb14482-b936-410e-9317-66d385d7d2fd">
@@ -3301,7 +3301,7 @@
             </MemberComponentTemplate>
             <ParameterSet Name="CreatureEggData" Guid="e1058002-a34d-4f19-b419-303267e13018">
               <Parameter Name="EggTypeIndex" Guid="5e0c68eb-c6fb-4a9f-9416-5f328d1eeb3e" Value="7" Type="int"/>
-              <Parameter Name="ShowEgg" Guid="dd79f256-3acd-497c-bc5c-da6b8a51f436" Value="False" Type="bool"/>
+              <Parameter Name="ShowEgg" Guid="dd79f256-3acd-497c-bc5c-da6b8a51f436" Value="True" Type="bool"/>
             </ParameterSet>
           </EntityTemplate>
           <EntityTemplate Name="Shark_GreatWhite" Guid="eb70714a-ee32-4812-8713-33726faaf1a3" InheritanceParent="f5333076-a57d-4864-a30e-19072248224f">
