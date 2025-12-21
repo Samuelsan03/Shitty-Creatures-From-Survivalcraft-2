@@ -2562,7 +2562,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="1dcdca7c-8aff-48b1-9274-e14c2a8c9c40" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
     <Parameter Name="ChaseToCreatures" Guid="8033fe72-afa6-4ef5-bad3-0ef2bc4a2b50" Value="Naomi, Ricardo, Paco, Barack, ElMarihuanero, ElMarihuaneroMamon, TommyVercetti, ClaudeSpeed, ArqueroPrisionero, BallestadoraMusculosa, CarlJohnson, BetelGammamon, Gaomon, Agumon, Veemon, Guilmon, WalterZombie, WalterZombieMamadisimo, FumadorQuimico, FumadorQuimicoBrawny, Conker, Beavis, Butt-Head, Shoutmon, Gumdramon, Bass_Sea, Seagull, Sparrow, Reindeer, Horse_White, Horse_White_Saddled, Horse_Chestnut, Horse_Chestnut_Saddled, Horse_Bay, Horse_Bay_Saddled, Horse_Palomino, Horse_Palomino_Saddled, Horse_Black, Horse_Black_Saddled, Camel, Camel_Saddled, Zebra, Wildboar, Bison, Bull_Brown, Bull_Black, Cow_Brown, Cow_Black, Bull_White, Duck, Pigeon, Raven, Giraffe, Moose, Donkey, Donkey_Saddled, Cassowary, Ostrich, Gnu, Werewolf, Ray_Yellow, Ray_Brown, Beluga,Hyena, Rhino, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite, Player" Type="string"/>
-    <Parameter Name="ChaseToCreatureProbability" Guid="cb4a007f-7d54-4cff-8284-3e63e5f8918f" Value="1.0" Type="float"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="cb4a007f-7d54-4cff-8284-3e63e5f8918f" Value="999999999" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="CreatureSounds" Guid="841cebed-1feb-497a-82d0-1ad72f46981d">
     <Parameter Name="PainSound" Guid="4a7f69e7-b7c0-4601-b6cc-82afe31ba0d8" Value="Audio/Creatures/Paco/Pain" Type="string"/>
@@ -2610,7 +2610,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Loot" Guid="81c253ce-396d-4632-8a25-e873ac46c7e5">
         <ParameterSet Name="Loot" Guid="bf4643b1-6c8f-4cd0-8ec4-93c5bd51fd0c">
-            <Parameter Name="1" Guid="d154dc98-a50c-4942-974a-6a493a7936d1" Value="StringBlock;1;10;1" Type="string"/>
+            <Parameter Name="1" Guid="d154dc98-a50c-4942-974a-6a493a7936d1" Value="StringBlock;1;10;0.2" Type="string"/>
         </ParameterSet>
         <ParameterSet Name="LootOnFire" Guid="34f30fe9-bd57-4afb-8cbb-4d6a25e03922"/>
     </MemberComponentTemplate>
@@ -2619,10 +2619,10 @@
         <Parameter Name="BoxSize" Guid="3361b9f9-6ec1-480e-9dd8-2a453d78301f" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="589f2b73-df92-4bf0-af0c-f600b9b3b6d7">
-        <Parameter Name="DisplayName" Guid="bca8f147-2595-4d99-82c8-53f4a176d6bd" Value="El Ballestador" Type="string"/>
+        <Parameter Name="DisplayName" Guid="bca8f147-2595-4d99-82c8-53f4a176d6bd" Value="[DisplayName:ElBallestador]" Type="string"/>
         <Parameter Name="ConstantSpawn" Guid="0e0a39ed-a2a2-4892-a73c-0a45bcc7097a" Value="True" Type="bool"/>
         <Parameter Name="Category" Guid="14c0baff-92ac-405c-a1de-120b28b6483b" Value="Bird" Type="Game.CreatureCategory"/>
-        <Parameter Name="Description" Guid="59a9b248-9e3c-4986-a524-cc42162a646c" Value="El Ballestador isn’t the strongest fighter, but don’t let that fool you—his cursed bow never leaves his side. He’s not part of your Alianza and belongs to Muerte, standing out as the only human in his faction wielding a possessed weapon. His arrows are fast, silent, and unforgiving. Confront him or try to escape—either way, you’re already dead. If he sees you, he fires. If you move, he hits. His diamond arrows pierce almost everything, except the rhino, beluga, and orca, who can endure more hits if they fight back. To survive, use terrain to break his line of sight. Zigzag when running, jump unpredictably, and never stay still. If you’re solo, bait his shot and rush in before he reloads. In a group, flank while one teammate draws fire. Splash damage or shock can disrupt his aim, but timing is everything. If you hear the click of his bow, it might already be too late. They say his bow was forged in silence, bound to him after he survived a betrayal that left him voiceless. Since then, it’s been his only companion—never speaks, never misses, never leaves. That’s why he trusts it more than any ally. He appears only at night starting from day 5, and during these nights players can set traps to capture his bows and ammunition, turning his own arsenal into a valuable resource." Type="string"/>
+        <Parameter Name="Description" Guid="59a9b248-9e3c-4986-a524-cc42162a646c" Value="[Description:ElBallestador]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="b7337a01-ab16-4208-ade1-7ee7d5882412" Value="Shot with arrows" Type="string"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="ComponentRandomChatter2" Guid="ff015f5b-ef26-422d-b29e-d92fd15042a1">
@@ -2636,6 +2636,14 @@
     <Parameter Name="RiseDuration" Value="1.5" Type="float"/>
     <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="PoisonInfected" Guid="13759dcc-5ef4-4c5c-a73f-cb6c37f585dd">
+    <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int"/>
+    <Parameter Name="PoisonResistance" Value="100" Type="float"/>
+    <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
+  </MemberComponentTemplate>
+<Parameter Name="Scale" Guid="f4d910c3-f3ac-4f32-8caa-90efc13b53be" Value="3" Type="float"/>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="4af5b163-9b8a-439d-8019-fbef8de00cbf" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="08dd88c6-df82-4e53-aaa9-693b0c8b8cab" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="2b6b2d1e-9e67-4857-9768-8dfbd30724c7" Value="2.85" Type="float"/>
@@ -2653,8 +2661,10 @@
         <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="f6602d48-65a0-42d1-9c60-489a7030ac49">
-        <Parameter Name="FireResilience" Guid="a1112222-b333-4444-5555-666677778888" Value="14" Type="float"/>
-<Parameter Name="AttackResilience" Guid="b9990000-c111-2222-3333-444455556666" Value="70" Type="float"/>
+        <Parameter Name="FireResilience" Guid="31049544-bed6-481a-855c-8e4995ac203b" Value="54" Type="float"/>
+<Parameter Name="AttackResilience" Guid="95672e4d-d73e-4e03-b755-94c4a376fc70" Value="70" Type="float"/>
+<Parameter Name="FallResilience" Guid="a56f1f2b-58d3-4dce-a4b2-789277e79294" Value="50" Type="float"/>
+<Parameter Name="ExplosionResilience" Guid="a6b15288-129b-4b13-b3c9-6b59b6d68df8" Value="65.5" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="75e39015-4a38-4114-858c-93b090dd55cd"/>
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="974c12a5-80ed-4a52-bb72-ad2d03655526" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
@@ -2668,11 +2678,11 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="ChaseBehavior" Guid="c2099dfb-8233-48c7-8f18-752cc8f895f9" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
     <Parameter Name="AutoChaseMask" Guid="9b87b216-fdbd-44a0-8371-829ef22efe7b" Value="LandPredator, LandOther, WaterPredator, WaterOther" Type="Game.CreatureCategory"/>
-    <Parameter Name="DayChaseRange" Guid="114c38c8-ba1a-4a38-ade5-61dd11f752e9" Value="990" Type="float"/>
-    <Parameter Name="DayChaseTime" Guid="602e193f-8482-49ee-bf7a-28e3d45f374a" Value="990" Type="float"/>
-    <Parameter Name="NightChaseRange" Guid="07317fdc-8ed6-464e-8d47-e4fe244a13bf" Value="920" Type="float"/>
+    <Parameter Name="DayChaseRange" Guid="114c38c8-ba1a-4a38-ade5-61dd11f752e9" Value="999" Type="float"/>
+    <Parameter Name="DayChaseTime" Guid="602e193f-8482-49ee-bf7a-28e3d45f374a" Value="999" Type="float"/>
+    <Parameter Name="NightChaseRange" Guid="07317fdc-8ed6-464e-8d47-e4fe244a13bf" Value="999" Type="float"/>
     <Parameter Name="ChaseNonPlayerProbability" Guid="632ec04b-2836-4e54-a97c-6cf32812d743" Value="1" Type="float"/>
-    <Parameter Name="NightChaseTime" Guid="57dedee1-ed73-480b-96f1-ccf56f860e9a" Value="930" Type="float"/>
+    <Parameter Name="NightChaseTime" Guid="57dedee1-ed73-480b-96f1-ccf56f860e9a" Value="999" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="c0cd22fc-913a-431a-a955-578a8290b9f0">
     <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
@@ -2684,7 +2694,7 @@
         <Parameter Name="Color" Guid="aa76100a-7176-41d8-bd11-df9b43f54f48" Value="151,82,82" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="1d2fae94-1bad-44fe-82df-c6e720662858" Value="188" Type="int"/>
         <Parameter Name="SwapUV" Guid="16dc62eb-374a-4f8c-8b17-20fc86f77dc9" Value="True" Type="bool"/>
-        <Parameter Name="DisplayName" Guid="f218070f-54d6-4cc3-97c7-88498c924bd9" Value="El Ballestador Egg" Type="string"/>
+        <Parameter Name="DisplayName" Guid="f218070f-54d6-4cc3-97c7-88498c924bd9" Value="[DisplayName:ElBallestador]" Type="string"/>
         <Parameter Name="EggTypeIndex" Guid="c91ae20f-4620-4656-b76f-80ca536562f9" Value="220" Type="int"/>
     </ParameterSet>
 </EntityTemplate>
@@ -2707,22 +2717,22 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="8934b86e-4b81-4166-a151-9fc2e236c836" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
     <Parameter Name="ChaseToCreatures" Guid="ef1632e5-5cb8-4558-8d7a-615b56b59df7" Value="Naomi, Ricardo, Paco, Barack, ElMarihuanero, ElMarihuaneroMamon, TommyVercetti, ClaudeSpeed, ArqueroPrisionero, BallestadoraMusculosa, CarlJohnson, BetelGammamon, Gaomon, Agumon, Veemon, Guilmon, WalterZombie, WalterZombieMamadisimo, FumadorQuimico, FumadorQuimicoBrawny, Conker, Beavis, Butt-Head, Shoutmon, Gumdramon, Bass_Sea, Seagull, Sparrow, Reindeer, Horse_White, Horse_White_Saddled, Horse_Chestnut, Horse_Chestnut_Saddled, Horse_Bay, Horse_Bay_Saddled, Horse_Palomino, Horse_Palomino_Saddled, Horse_Black, Horse_Black_Saddled, Camel, Camel_Saddled, Zebra, Wildboar, Bison, Bull_Brown, Bull_Black, Cow_Brown, Cow_Black, Bull_White, Duck, Pigeon, Raven, Giraffe, Moose, Donkey, Donkey_Saddled, Cassowary, Ostrich, Gnu, Werewolf, Ray_Yellow, Ray_Brown, Beluga,Hyena, Rhino, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite, Player" Type="string"/>
-    <Parameter Name="ChaseToCreatureProbability" Guid="527030b7-46f7-4929-a7b3-35d913e7906f" Value="1.0" Type="float"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="527030b7-46f7-4929-a7b3-35d913e7906f" Value="99999999" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Spawn" Guid="8b0b657a-0721-4d46-8325-107a4b9749df">
     <Parameter Name="AutoDespawn" Guid="7a08d33b-19dd-4391-b748-cef6437c3ae2" Value="False" Type="bool"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidFireBehavior" Guid="e5f6a7b8-c9d0-5567-89ab-cdef01234567" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
-    <MemberComponentTemplate Name="Locomotion" Guid="f6a7b8c9-d0e1-5678-9abc-def012345678">
-        <Parameter Name="AccelerationFactor" Guid="5e1f8e2a-ce37-4c7a-817e-75f8b0d97016" Value="1.0" Type="float"/>
-        <Parameter Name="FlySpeed" Guid="c29ae68d-3380-406f-95a2-7c1eeab9e4ff" Value="0" Type="float"/>
-        <Parameter Name="TurnSpeed" Guid="6ae7accd-d169-447b-a556-fc6973a25f7b" Value="5" Type="float"/>
-        <Parameter Name="WalkSpeed" Guid="e9073120-aae7-4304-9ba9-e8c1d2911478" Value="3.0" Type="float"/>
-        <Parameter Name="LadderSpeed" Guid="51001ef8-3dfb-4022-927f-d3f15d22f90e" Value="0" Type="float"/>
-    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Locomotion" Guid="cd1a5f93-e00a-47fb-b02e-8f5785fbd318">
+                <Parameter Name="AccelerationFactor" Guid="9dd382c5-2ebb-45bb-82c7-fadc54972a20" Value="1.5" Type="float"/>
+                <Parameter Name="FlySpeed" Guid="ae6490cc-e503-499b-9ee1-81011420ca59" Value="0" Type="float"/>
+                <Parameter Name="TurnSpeed" Guid="04674350-a18d-486a-9b89-e011d2015bf7" Value="8" Type="float"/>
+                <Parameter Name="WalkSpeed" Guid="a11fd3a9-c9d7-4d70-b028-0392cfe4fad6" Value="4.2" Type="float"/>
+                <Parameter Name="LadderSpeed" Guid="fb56b9bc-7d0a-4860-bca9-b37c1786783c" Value="0" Type="float"/>
+            </MemberComponentTemplate>
     <MemberComponentTemplate Name="Loot" Guid="f2a3b4c5-d6e7-6234-f012-3456789abcde">
         <ParameterSet Name="Loot" Guid="a3b4c5d6-e7f8-6345-0123-456789abcdef">
-            <Parameter Name="1" Guid="b4c5d6e7-f8a9-6456-1234-56789abcdef0" Value="DiamondChunkBlock;4;10;1" Type="string"/>
+            <Parameter Name="1" Guid="b4c5d6e7-f8a9-6456-1234-56789abcdef0" Value="DiamondChunkBlock;4;1;0.1" Type="string"/>
         </ParameterSet>
         <ParameterSet Name="LootOnFire" Guid="d6e7f8a9-b0c1-6678-3456-789abcdef012"/>
     </MemberComponentTemplate>
@@ -2731,10 +2741,10 @@
         <Parameter Name="BoxSize" Guid="a9b0c1d2-e3f4-6901-6789-abcdef012345" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="b0c1d2e3-f4a5-7012-789a-bcdef0123456">
-        <Parameter Name="DisplayName" Guid="c1d2e3f4-a5b6-7123-89ab-cdef01234567" Value="Headcrab Bloody Human" Type="string"/>
+        <Parameter Name="DisplayName" Guid="c1d2e3f4-a5b6-7123-89ab-cdef01234567" Value="[DisplayName:HeadcrabBloodyHuman]" Type="string"/>
         <Parameter Name="Category" Guid="d2e3f4a5-b6c7-7234-9abc-def012345678" Value="Bird" Type="Game.CreatureCategory"/>
         <Parameter Name="ConstantSpawn" Guid="edbcfbe9-861f-4d29-bcbb-fc56eb397182" Value="True" Type="bool"/>
-        <Parameter Name="Description" Guid="2d975a92-d724-4360-a93c-1262b2634b42" Value="A more aggressive and blood-soaked variant of the standard headcrab. The Bloody Headcrab features torn exoskeletal tissue, soaked in hemolymph and exposed muscle fibers, likely caused by radiation or failed bioweapon experiments. It moves faster, jumps farther, and attaches to hosts with brutal force, triggering near-instant zombification. Its screech is sharper, and its presence often signals high-contamination zones. Not recommended for low-tier encounters." Type="string"/>
+        <Parameter Name="Description" Guid="2d975a92-d724-4360-a93c-1262b2634b42" Value="[Description:HeadcrabBloodyHuman]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="f4a5b6c7-d8e9-7456-bcde-f0123456789a" Value="He put the weed up your ass" Type="string"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="a5b6c7d8-e9f0-7567-cdef-0123456789ab" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
@@ -2754,6 +2764,13 @@
         <Parameter Name="FireResilience" Guid="bb9dace9-a2f3-46f3-be2b-049a934a82e1" Value="80" Type="float"/>
 <Parameter Name="AttackResilience" Guid="9a1a7e13-0635-4f05-ae74-bc2f0fc41ed7" Value="100" Type="float"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="PoisonInfected" Guid="33feb588-39dd-4a22-bd3c-039933e57767">
+    <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int"/>
+    <Parameter Name="PoisonResistance" Value="100" Type="float"/>
+    <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="a7b8c9d0-e1f2-8789-89ab-cdef01234567"/>
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="b8c9d0e1-f2a3-8890-9abc-def012345678" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
     <MemberComponentTemplate Name="HerdBehavior" Guid="c9d0e1f2-a3b4-8901-abcd-ef0123456789" InheritanceParent="dfe7218e-ce14-4bde-8dac-f919c38e9efe">
@@ -2781,7 +2798,7 @@
         <Parameter Name="Color" Guid="c1d2e3f4-a5b6-0123-6789-abcdef012345" Value="255,229,180" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="d2e3f4a5-b6c7-0234-789a-bcdef0123456" Value="121" Type="int"/>
         <Parameter Name="SwapUV" Guid="e3f4a5b6-c7d8-0345-89ab-cdef01234567" Value="False" Type="bool"/>
-        <Parameter Name="DisplayName" Guid="f4a5b6c7-d8e9-0456-9abc-def012345678" Value="Headcrab Bloody Human Egg" Type="string"/>
+        <Parameter Name="DisplayName" Guid="f4a5b6c7-d8e9-0456-9abc-def012345678" Value="[DisplayName:HeadcrabBloodyHuman]" Type="string"/>
         <Parameter Name="EggTypeIndex" Guid="a5b6c7d8-e9f0-0567-abcd-ef0123456789" Value="221" Type="int"/>
     </ParameterSet>
 </EntityTemplate>
