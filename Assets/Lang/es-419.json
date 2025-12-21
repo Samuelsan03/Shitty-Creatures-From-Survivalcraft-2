@@ -132,7 +132,7 @@
     "Messages": {
       "FirstPullCrossbow": "¡Primero tensa la ballesta!",
       "FirstLoadArrow": "¡Primero carga una virote!",
-      "ArrowCount": "Flechas: {0}/8"
+      "ArrowCount": "Virotes: {0}/8"
     },
     "Usual": {
       "ok": "Aceptar",
@@ -140,6 +140,14 @@
     }
   },
   "Blocks": {
+    "TridentBlock:0": {
+  "DisplayName": "Tridente",
+  "Description": "Una legendaria lanza de tres puntas históricamente asociada con deidades marinas como Poseidón en la mitología griega, simbolizando el dominio sobre los océanos. En la antigüedad, era tanto un símbolo divino como un arma formidable usada por guerreros y dioses del mar. Forjado con materiales raros encontrados en las fosas oceánicas más profundas, este Tridente canaliza el poder de las mareas. Aunque puede fabricarse usando recursos extremadamente caros que incluyen bloques de hierro y cristales marinos encantados, el método más directo para obtenerlo es derrotando a Hombre Agua en batalla. Úsalo para imponer respeto tanto en tierra como en mar."
+    },
+    "ScyteBlock:0": {
+  "DisplayName": "Guadaña",
+  "Description": "La Guadaña es un arma de hoja larga y curva originalmente diseñada como herramienta agrícola para cortar cultivos, pero en la fantasía oscura se ve como un arma de la muerte, a menudo empuñada por demonios, esqueletos y segadores. En este mundo, la Guadaña no se puede fabricar porque no tiene receta y es extremadamente difícil de obtener. La única forma de adquirir la Guadaña es matando a El Señor de las Tumbas Moradas. Ten cuidado: su letalidad es extrema, capaz de matarte con un solo golpe."
+    },
     "WoodAxeBlock:0": {
       "DisplayName": "Hacha de Madera",
       "Description": "Volviendo a lo básico - como en los viejos tiempos"
