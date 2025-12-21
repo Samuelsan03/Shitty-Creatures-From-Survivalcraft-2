@@ -5480,7 +5480,7 @@
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
     <Parameter Name="IsOptional" Value="true" Type="bool"/>
     <Parameter Name="LoadOrder" Value="60" Type="int"/>
-    <Parameter Name="PoisonResistance" Value="20" Type="float"/>
+    <Parameter Name="PoisonResistance" Value="199" Type="float"/>
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
   </MemberComponentTemplate>
   <MemberComponentTemplate Name="AvoidFireBehavior" Guid="ee695832-c2b6-48f3-a0b0-fae37557d458" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
@@ -5490,13 +5490,6 @@
     <Parameter Name="TurnSpeed" Guid="e0fbcb90-90dd-4ec1-ad28-84e55159bf63" Value="9" Type="float"/>
     <Parameter Name="WalkSpeed" Guid="6ef48e91-d6d2-4538-bb79-5cd739d2ffb3" Value="5.0" Type="float"/>
     <Parameter Name="LadderSpeed" Guid="f8e9a029-f6a5-413e-854b-87fab45dbfbf" Value="0" Type="float"/>
-  </MemberComponentTemplate>
-  <MemberComponentTemplate Name="Loot" Guid="d7e8f9a0-1b2c-3d4e-5f6a-7b8c9d0e1f2a">
-    <ParameterSet Name="Loot" Guid="86ab8ef6-244d-45ae-8f5a-f114ef7f48dd">
-      <Parameter Name="1" Guid="485a53bf-e2c7-45f7-bf06-19b0e95247d8" Value="PumpkinBlock;5;10" Type="string"/>
-      <Parameter Name="2" Guid="6222cfc1-e0fe-4560-ab18-b354e8982883" Value="BreadBlock;1;1;1" Type="string"/>
-    </ParameterSet>
-    <ParameterSet Name="LootOnFire" Guid="b3633719-983e-452b-9edb-f6a67bc78202"/>
   </MemberComponentTemplate>
   <MemberComponentTemplate Name="Body" Guid="f51c9209-979a-42da-9905-008b1ce2f478">
     <Parameter Name="Mass" Guid="3a6d4398-ac6c-4474-bdc6-33cf470def8f" Value="60" Type="float"/>
@@ -5538,8 +5531,8 @@
     <Parameter Name="MaxDisplayDistance" Value="19" Type="float"/>
   </MemberComponentTemplate>
   <MemberComponentTemplate Name="Health" Guid="e4f5a6b7-8c9d-0e1f-2a3b-4c5d6e7f8a9b">
-    <Parameter Name="FireResilience" Guid="f5a6b7c8-9d0e-1f2a-3b4c-5d6e7f8a9b0c" Value="10" Type="float"/>
-    <Parameter Name="AttackResilience" Guid="a6b7c8d9-0e1f-2a3b-4c5d-6e7f8a9b0c1d" Value="25" Type="float"/>
+    <Parameter Name="FireResilience" Guid="f5a6b7c8-9d0e-1f2a-3b4c-5d6e7f8a9b0c" Value="90" Type="float"/>
+    <Parameter Name="AttackResilience" Guid="a6b7c8d9-0e1f-2a3b-4c5d-6e7f8a9b0c1d" Value="199" Type="float"/>
   </MemberComponentTemplate>
   <MemberComponentTemplate Name="OnFire" Guid="b7c8d9e0-1f2a-3b4c-5d6e-7f8a9b0c1d2e"/>
   <MemberComponentTemplate Name="WalkAroundBehavior" Guid="c8d9e0f1-2a3b-4c5d-6e7f-8a9b0c1d2e3f" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
