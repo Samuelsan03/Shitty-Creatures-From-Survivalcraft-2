@@ -1,5 +1,10 @@
 <ShittyCreatures>
-    <Folder Name="Gameplay" Guid="d3d4b692-acc9-4128-9b99-a5acf1de1fbb">
+<Folder Name="Gameplay" Guid="d509e5e2-2c10-49f1-8223-85cd892c63b0">
+<ComponentTemplate Name="RefrigeratorXiaomi" Description="Refrigerador Xiaomi con control eléctrico" Guid="064a3848-3864-4d94-b078-7e3d8fdc145c" InheritanceParent="81a44c6a-c30a-4f53-8d64-0c30aabab8f9">
+            <Parameter Name="SlotsCount" Guid="a51950cf-39fb-4d50-ab30-b182ef9ece9a" Value="12" Type="int" />
+            <Parameter Name="Class" Guid="e5dee275-a048-4f66-9253-1a6df67b9596" Value="Game.ComponentRefrigeratorXiaomi" Type="string" />
+        </ComponentTemplate>
+
         <ComponentTemplate Name="HealthBarDisplay" Guid="cc577309-064e-4bd3-82ed-89be72213cc6" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
             <Parameter Name="Class" Guid="63d41ee3-3ab0-4715-b666-693c08a49360" Value="Game.ComponentHealthBar" Type="string"/>
             <Parameter Name="IsOptional" Guid="ef55b5cd-a52c-47ad-afa0-abd660047a5a" Value="True" Type="bool"/>
@@ -273,7 +278,10 @@
     </Folder>
 
 <ProjectTemplate Name="Project" Guid="85023bf8-1c90-4dd1-9442-e6c13691d078">
-    <MemberSubsystemTemplate Name="ItemsLauncherBlockBehavior" Guid="addaadea-e865-4840-8d4b-682b5accdd20" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+    <MemberSubsystemTemplate Name="RefrigeratorXiaomiBlockBehavior" Guid="d1a72eee-bad4-461e-af34-aba1c3e4abc9" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+        <Parameter Name="Class" Guid="a184ea7f-480d-46e8-8bce-62c04a67562d" Value="Game.SubsystemRefrigeratorXiaomiBlockBehavior" Type="string"/>
+    </MemberSubsystemTemplate>
+<MemberSubsystemTemplate Name="ItemsLauncherBlockBehavior" Guid="addaadea-e865-4840-8d4b-682b5accdd20" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
         <Parameter Name="Class" Guid="f4147ab1-38b5-4fee-bccc-9c520b17874e" Value="SubsystemItemsLauncherBlockBehavior" Type="string"/>
     </MemberSubsystemTemplate>
     <MemberSubsystemTemplate Name="RepeatCrossbowBlockBehavior" Guid="3d1d067f-3af8-42c5-a843-469089a86bfa" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
@@ -795,7 +803,7 @@
     </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="e1f2a3b4-c5d6-9789-4567-abcdef012345">
         <Parameter Name="Color" Guid="f2a3b4c5-d6e7-9890-5678-bcdef0123456" Value="76,120,119" Type="Color"/>
-        <Parameter Name="TextureSlot" Guid="a3b4c5d6-e7f8-9901-6789-cdef01234567" Value="164" Type="int"/>
+        <Parameter Name="TextureSlot" Guid="a3b4c5d6-e7f8-9901-6789-cdef01234567" Value="8" Type="int"/>
         <Parameter Name="SwapUV" Guid="b4c5d6e7-f8a9-0012-7890-def012345678" Value="False" Type="bool"/>
         <Parameter Name="DisplayName" Guid="c5d6e7f8-a9b0-0123-8901-ef0123456789" Value="[DisplayName:Barack]" Type="string"/>
         <Parameter Name="EggTypeIndex" Guid="d6e7f8a9-b0c1-0234-9012-f0123456789a" Value="204" Type="int"/>
@@ -5320,9 +5328,9 @@
     <Parameter Name="CooldownTime" Value="0.5" Type="float"/>
     <Parameter Name="TimeBetweenShots" Value="1.0" Type="float"/>
     <Parameter Name="MaxInaccuracy" Value="0.03" Type="float"/>
-    <Parameter Name="DrawSound" Value="Audio/CrossbowDraw" Type="string"/>
-    <Parameter Name="FireSound" Value="Audio/CrossbowBoing" Type="string"/>
-    <Parameter Name="ReleaseSound" Value="Audio/CrossbowBoing" Type="string"/>
+    <Parameter Name="DrawSound" Value="Audio/Crossbow Remake/Crossbow Loading Remake" Type="string"/>
+    <Parameter Name="ReleaseSound" Value="Audio/Crossbow Remake/Crossbow Loading Remake" Type="string"/>
+    <Parameter Name="FireSound" Value="Audio/Crossbow Remake/Crossbow Shoot" Type="string"/>
     <Parameter Name="FireSoundDistance" Value="15" Type="float"/>
     <Parameter Name="UseRecoil" Value="true" Type="bool"/>
     <Parameter Name="BoltSpeed" Value="40" Type="float"/>
@@ -5412,7 +5420,7 @@
         <Parameter Name="Color" Guid="1cccb9c1-5954-438c-4146-583df877ef80" Value="0,92,131" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="23399930-6b05-41c2-82d5-281a7b5aba7c" Value="126" Type="int"/>
         <Parameter Name="SwapUV" Guid="4aa42d51-127b-47d6-911f-35e20ed8f64f" Value="False" Type="bool"/>
-        <Parameter Name="Scale" Guid="98eb182f-a0ab-4e0a-a9a5-d5d85534b3d1" Value="1.9" Type="float"/>
+        <Parameter Name="Scale" Guid="98eb182f-a0ab-4e0a-a9a5-d5d85534b3d1" Value="2.8" Type="float"/>
         <Parameter Name="DisplayName" Guid="7b53fc2e-1065-411c-b809-6fba16834d51" Value="[DisplayName:ZombieRepetidor]" Type="string"/>
         <Parameter Name="EggTypeIndex" Guid="e49427ec-eed3-4c6c-a979-1ba2af1d00a1" Value="242" Type="int"/>
     </ParameterSet>
@@ -5843,7 +5851,7 @@
             </ParameterSet>
         </ParameterSet>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="RepeatCrossbowShooterBehavior" Guid="d1a37192-7a02-44ec-a95f-d5aa6f5d3607">
+    <MemberComponentTemplate Name="RepeatCrossbowShooterBehavior" Guid="52fb86b1-57cd-4a25-b9ce-7b4c14ae8d8c">
     <Parameter Name="LoadOrder" Value="-1" Type="int"/>
     <Parameter Name="IsOptional" Value="False" Type="bool"/>
     <Parameter Name="MaxDistance" Value="50" Type="float"/>
@@ -5852,9 +5860,8 @@
     <Parameter Name="CooldownTime" Value="0.5" Type="float"/>
     <Parameter Name="TimeBetweenShots" Value="1.0" Type="float"/>
     <Parameter Name="MaxInaccuracy" Value="0.03" Type="float"/>
-    <Parameter Name="DrawSound" Value="Audio/CrossbowDraw" Type="string"/>
-    <Parameter Name="FireSound" Value="Audio/CrossbowBoing" Type="string"/>
-    <Parameter Name="ReleaseSound" Value="Audio/CrossbowBoing" Type="string"/>
+    <Parameter Name="DrawSound" Value="Audio/Crossbow Remake/Crossbow Loading Remake" Type="string"/>
+    <Parameter Name="FireSound" Value="Audio/Crossbow Remake/Crossbow Shoot" Type="string"/>
     <Parameter Name="FireSoundDistance" Value="15" Type="float"/>
     <Parameter Name="UseRecoil" Value="true" Type="bool"/>
     <Parameter Name="BoltSpeed" Value="40" Type="float"/>
@@ -5949,4 +5956,5 @@
                 <Parameter Name="EggTypeIndex" Guid="77c3df99-33b2-43b9-9b37-d01402aa2b3f" Value="246" Type="int"/>
             </ParameterSet>
         </EntityTemplate>
+        </Folder>
 </ShittyCreatures>
