@@ -20,6 +20,14 @@
   "AutoCannonHelp": "Autores\nFire Dragon\nKike\n----------\nEsta arma usa el primer espacio de la barra rápida o el primer espacio disponible con un objeto. Para guardar los cambios, debes presionar 'Aceptar', o 'X' para descartar. Los ajustes de dispersión y velocidad determinan la dirección y distancia de los proyectiles.\n\nPara usarlo, simplemente mantén presionado clic derecho si estás en PC, o mantén presionada la pantalla si estás en dispositivo móvil, y disparará automáticamente las veces por segundo que hayas configurado. Útil para disparar huevos de spawn y generar criaturas en grandes cantidades en poco tiempo.\n\nTambién puedes divertirte lanzando fuegos artificiales o cualquier otro objeto.\n\n\nCódigo robado por Samuelsan03, así que haz lo que quieras con este código xd",
   "Poisoned": "Envenenado",
   "HP": "PV",
+  "RefrigeratorXiaomi": {
+    "RefrigeratorLabel": "Refrigerador",
+    "InventoryLabel": "Inventario",
+    "CoolingStatus": "Refrigerando...",
+    "NoPowerStatus": "Sin energía",
+    "BlockName": "Refrigerador Xiaomi",
+    "BlockDescription": "Un refrigerador Xiaomi es un electrodoméstico diseñado para enfriar y almacenar alimentos. Se define como un refrigerador inteligente que proporciona una conservación eficiente de productos perecederos. En el mod es útil como un objeto que representa un electrodoméstico moderno y amplía las opciones de construcción. Su utilidad principal es preservar alimentos si estás cansado de que se echen a perder rápidamente, tanto crudos como cocinados, dando más tiempo de durabilidad. Nota: el refrigerador requiere energía como una batería, palanca u otra fuente eléctrica, de lo contrario no funcionará."
+  },
   "Database": {
     "DisplayName": {
       "Naomi": "Naomi",
