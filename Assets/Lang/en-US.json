@@ -20,6 +20,14 @@
   "AutoCannonHelp": "Authors\nFire Dragon\nKike\n----------\nThis weapon uses the first slot of the hotbar or the first available slot with an object. To save any changes, you must press 'Accept', or 'X' to discard. The spread and velocity settings determine the direction and distance of the projectiles.\n\nTo use it, simply hold right click if you are on PC, or hold the screen if you are on a mobile device, and it will automatically fire the times per second you have configured. Useful for shooting spawn eggs and generating creatures in large quantities in a short time.\n\nYou can also have fun launching fireworks or any other object.\n\n\nShitty code stolen by Samuelsan03, so do whatever you want with this code xd",
   "Poisoned": "Poisoned",
   "HP": "HP",
+  "RefrigeratorXiaomi": {
+    "RefrigeratorLabel": "Refrigerator",
+    "InventoryLabel": "Inventory",
+    "CoolingStatus": "Cooling...",
+    "NoPowerStatus": "No Power",
+    "BlockName": "Xiaomi Refrigerator",
+    "BlockDescription": "A Xiaomi refrigerator is a household appliance designed for cooling and storing food. It is defined as a smart refrigerator that provides efficient preservation of perishable goods. In the mod it is useful as an object that represents a modern appliance and expands building options. Its main utility is to preserve food if you are tired of it spoiling quickly, both raw and cooked, giving more durability time. Note: the refrigerator requires energy such as a battery, lever, or another electrical source, otherwise it will not work."
+  },
   "Database": {
     "DisplayName": {
       "Naomi": "Naomi",
@@ -140,7 +148,15 @@
     }
   },
   "Blocks": {
-    "WoodAxeBlock:0": {
+    "TridentBlock:0": {
+  "DisplayName": "Trident",
+  "Description": "A legendary three-pronged spear historically associated with sea deities like Poseidon in Greek mythology, symbolizing dominion over the oceans. In ancient times, it was both a divine symbol and a formidable weapon used by warriors and sea gods alike. Forged from rare materials found in the deepest ocean trenches, this Trident channels the power of the tides. While it can be crafted using extremely expensive resources including iron blocks and enchanted marine crystals, the more direct method to obtain it is by defeating Hombre Agua in battle. Wield it to command respect on both land and sea."
+    },  
+  "ScyteBlock:0": {
+  "DisplayName": "Scythe",
+  "Description": "The Scythe is a long, curved-bladed weapon originally designed as a farming tool for cutting crops, but in dark fantasy it is seen as a weapon of death, often wielded by demons, skeletons, and reapers. In this world, the Scythe cannot be crafted because it has no recipe and is extremely difficult to obtain. The only way to acquire the Scythe is by killing El Señor De Las Tumbas Moradas. Be careful: its lethality is extreme, capable of killing you with a single strike."
+    },  
+  "WoodAxeBlock:0": {
       "DisplayName": "Wood Axe",
       "Description": "Back to basics - like the old days"
     },
@@ -248,9 +264,8 @@
     "RepeatArrow:5": {
       "DisplayName": "Serious Poison Repeating Bolt",
       "Description": "A heavily poisoned bolt for repeating crossbows. Delivers a stronger poison effect with higher poison duration (100 seconds) and very low initial damage (4 damage). The repeating crossbow mechanism lets you apply serious poison to multiple targets rapidly, weakening groups of enemies without killing them outright."
-    }
-  },
-  "ContentWidgets": {
+    },
+      "ContentWidgets": {
     "FlameThrowerWidget": {
       "Title": "Flame Thrower",
       "Inventory": "Inventory",
@@ -275,4 +290,5 @@
     "ok": "OK",
     "cancel": "Cancel"
   }
+}
 }
