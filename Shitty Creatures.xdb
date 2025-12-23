@@ -6155,7 +6155,7 @@
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="HumanModel" Guid="8cf75f53-8752-4d06-837f-76c195df2115" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
                 <Parameter Name="WalkLegsAngle" Guid="4c0754dd-d7e6-48dc-82af-fc85e571e374" Value="0.35" Type="float"/>
-                <Parameter Name="ModelName" Guid="5aa3fa9e-25d7-4a03-81aa-bc342799603c" Value="Models/MuscleHuman" Type="string"/>
+                <Parameter Name="ModelName" Guid="5aa3fa9e-25d7-4a03-81aa-bc342799603c" Value="Models/MuscleHumanLarge" Type="string"/>
                 <Parameter Name="TextureOverride" Guid="516678ec-b7f5-4f32-ac00-378c136975af" Value="Textures/Pirate_Elite_Tame" Type="string"/>
                 <Parameter Name="WalkAnimationSpeed" Guid="66e7edca-1a90-4314-9147-ada31f6d1537" Value="0.65" Type="float"/>
             </MemberComponentTemplate>
