@@ -255,46 +255,17 @@
   <Parameter Name="AttackRange" Description="Rango máximo para infectar" Guid="c4d6e8f0-a2b4-4c8e-0f2b-4d6e8f0a2b4c" Value="2" Type="float"/>
 </ComponentTemplate>
 
-<ComponentTemplate Name="NewHerdBehavior" Description="Comportamiento de manada mejorado que previene ataques entre miembros de la misma manada" Guid="c677dd4e-5eda-4b9a-976a-6a4845c13dca">
-    <Parameter Name="Class" Value="Game.ComponentNewHerdBehavior" Type="string" Guid="aaa13acd-8af7-43ef-bf70-babe1f1186eb"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="2ded010f-fcdb-4641-896b-821653e01be3"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int" Guid="b716aadf-6f98-4ff7-b62a-991f99fc52e3"/>
-    <Parameter Name="HerdName" Value="player" Type="string" Description="Nombre de la manada. Si es 'player', no atacará al jugador ni a otros miembros de la misma manada" Guid="88501e65-2893-4a4f-bb09-f86d99923b70"/>
-    <Parameter Name="HerdingRange" Value="20" Type="float" Description="Rango en bloques para detectar miembros de la manada" Guid="981ba435-4978-4ea8-a270-99ae8138df9f"/>
-    <Parameter Name="AutoNearbyCreaturesHelp" Value="true" Type="bool" Description="Si es true, llama a otros miembros de la manada cuando es atacado" Guid="41df93ff-c2fe-48d6-aefa-d80050ea51d2"/>
-    <Parameter Name="HelpCallRange" Value="16" Type="float" Description="Rango en bloques para llamar ayuda" Guid="7c14fb7f-f2b3-4bbb-8e16-8e7e0780f24b"/>
-    <Parameter Name="MaxHelpChaseTime" Value="30" Type="float" Description="Tiempo máximo en segundos que otros miembros ayudarán" Guid="90a2782e-90ff-4fd5-82cb-8d73110ee22a"/>
-    <Parameter Name="AvoidAttackingSameHerd" Value="true" Type="bool" Description="Si es true, no ataca a miembros de la misma manada" Guid="7782edda-4505-41b9-b43c-c92076b2566a"/>
-</ComponentTemplate>
-
-<ComponentTemplate Name="NewChaseBehavior" Description="Comportamiento de persecución que integra con el sistema de manadas y armas" Guid="adc5b5eb-5e82-491a-9b73-53b0206574fe">
-    <Parameter Name="Class" Value="Game.ComponentNewChaseBehavior" Type="string" Guid="0a526e5b-e131-4fed-be90-1c6359d003fe"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="4acd8d2d-f72a-470a-ab0d-3a33ba868489"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="1d9fffdd-db96-4c6d-89e8-c0d00dac2c6b"/>
-    <Parameter Name="DayChaseRange" Value="16" Type="float" Description="Rango de persecución durante el día" Guid="f3203209-ee22-48ec-ba4b-bcca1ab86a6c"/>
-    <Parameter Name="NightChaseRange" Value="24" Type="float" Description="Rango de persecución durante la noche" Guid="3e5d16fe-a9d4-4efa-b226-ea44152c05d0"/>
-    <Parameter Name="DayChaseTime" Value="30" Type="float" Description="Tiempo máximo de persecución durante el día" Guid="be698e48-cdf3-4f9f-8945-fe42233c8a29"/>
-    <Parameter Name="NightChaseTime" Value="60" Type="float" Description="Tiempo máximo de persecución durante la noche" Guid="3ff44cea-03c0-46ef-8ff7-4af2b01afd9c"/>
-    <Parameter Name="AttackMode" Value="Default" Type="Game.ComponentNewChaseBehavior+AttackMode" Description="Modo de ataque: Default, OnlyHand, Remote" Guid="955ea09b-8c4e-4829-8a93-4623ffc17588"/>
-    <Parameter Name="AttackRange" Value="0,5" Type="Vector2" Description="Rango mínimo y máximo de ataque a distancia" Guid="c0deaf97-f261-46c3-9b83-6b0c9d0555f8"/>
-    <Parameter Name="ChaseNonPlayerProbability" Value="0.2" Type="float" Description="Probabilidad de perseguir criaturas no jugador" Guid="729d54b3-60a8-402a-b9fe-0854bcbe3498"/>
-    <Parameter Name="ChaseWhenAttackedProbability" Value="0.8" Type="float" Description="Probabilidad de perseguir cuando es atacado" Guid="eba04257-701b-4f6b-90ff-10dda627452f"/>
-    <Parameter Name="ChaseOnTouchProbability" Value="0.5" Type="float" Description="Probabilidad de perseguir al tocar" Guid="939609f5-61f6-4383-b72d-ac9ce9477d5f"/>
-    <Parameter Name="AutoChaseMask" Value="LandPredator" Type="Game.CreatureCategory" Description="Tipos de criaturas que ataca automáticamente" Guid="9f41de46-d171-4cf3-83cb-575dbd3c36ab"/>
-    <Parameter Name="AutoDismount" Value="true" Type="bool" Description="Desmontar automáticamente antes de atacar" Guid="075e7c7a-1f95-4a03-b5bb-fd683b91b27f"/>
-    <Parameter Name="ImportanceLevelNonPersistent" Value="200" Type="float" Description="Nivel de importancia para persecuciones no persistentes" Guid="71a2c964-a2ff-49ab-a995-4731fb69a9f3"/>
-    <Parameter Name="ImportanceLevelPersistent" Value="200" Type="float" Description="Nivel de importancia para persecuciones persistentes" Guid="d1bc82e4-c2b7-4d48-a4e7-66dae8811641"/>
-    <Parameter Name="MaxAttackRange" Value="1.75" Type="float" Description="Rango máximo de ataque cuerpo a cuerpo" Guid="b658fea5-00d1-4aed-8d30-030dbde657b2"/>
-    <Parameter Name="AllowAttackingStandingOnBody" Value="true" Type="bool" Description="Permitir atacar cuerpos sobre los que está parado" Guid="6591c075-e8a7-4573-98b9-d8febf553b0a"/>
-    <Parameter Name="JumpWhenTargetStanding" Value="true" Type="bool" Description="Saltar cuando el objetivo está parado encima" Guid="8945541d-1b52-46cd-9237-1ec0af20d0e7"/>
-    <Parameter Name="AttacksPlayer" Value="true" Type="bool" Description="Atacar jugadores" Guid="1b36d80a-7a10-4a9e-8363-2d91d7a05dc3"/>
-    <Parameter Name="AttacksNonPlayerCreature" Value="true" Type="bool" Description="Atacar criaturas no jugador" Guid="866d36bd-b49b-4b68-86c0-ff3ceaceb4ad"/>
-    <Parameter Name="ChaseRangeOnTouch" Value="7" Type="float" Description="Rango de persecución al tocar" Guid="edd48208-1d54-4c1d-86e2-70d34a6183af"/>
-    <Parameter Name="ChaseTimeOnTouch" Value="7" Type="float" Description="Tiempo de persecución al tocar" Guid="e2fac8b8-7c47-4cef-bedd-dd5e4db69d16"/>
-    <Parameter Name="MinHealthToAttackActively" Value="0.4" Type="float" Description="Salud mínima para atacar activamente" Guid="70c3cf76-cb64-41cf-af79-4d2969ce6b44"/>
-    <Parameter Name="PlayIdleSoundWhenStartToChase" Value="true" Type="bool" Description="Reproducir sonido de inactividad al empezar a perseguir" Guid="d825a000-85fa-48b0-ae1b-28e332301caf"/>
-    <Parameter Name="PlayAngrySoundWhenChasing" Value="true" Type="bool" Description="Reproducir sonido de enojo mientras persigue" Guid="f6ea6eef-8a8f-4a92-95a5-fa9591bac222"/>
-    <Parameter Name="TargetInRangeTimeToChase" Value="3" Type="float" Description="Tiempo que el objetivo debe estar en rango para perseguir" Guid="ea6411e2-4d57-43c6-87fc-cd369d659a49"/>
+<ComponentTemplate Name="NewChaseBehavior" Description="Comportamiento de persecución que integra con el sistema de manadas" Guid="1efc342f-4e31-49b9-bbc1-f9285c613a25">
+    <Parameter Name="Class" Value="Game.ComponentNewChaseBehavior" Type="string" Guid="5141eb5d-eb01-4aaa-8bef-5cef58470385"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="556b3a29-3c28-45c1-84bf-d0d5e06ac8e9"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="9543800a-9d51-49e2-a545-617f11fb0c42"/>
+    <Parameter Name="DayChaseRange" Value="16" Type="float" Description="Rango de persecución durante el día" Guid="58a1225b-2b36-43da-8684-d07effe7aace"/>
+    <Parameter Name="NightChaseRange" Value="24" Type="float" Description="Rango de persecución durante la noche" Guid="79b639ce-9f16-4772-9781-ba9411881d0f"/>
+    <Parameter Name="DayChaseTime" Value="30" Type="float" Description="Tiempo máximo de persecución durante el día" Guid="0d9f8821-80e8-4d90-9f52-acc600bdee7d"/>
+    <Parameter Name="NightChaseTime" Value="60" Type="float" Description="Tiempo máximo de persecución durante la noche" Guid="679c29cf-c27f-4d4d-a86a-73d949f77dbf"/>
+    <Parameter Name="ChaseNonPlayerProbability" Value="0.2" Type="float" Description="Probabilidad de perseguir criaturas no jugador" Guid="188a31c3-919a-4c22-a5b0-94c27abe59d7"/>
+    <Parameter Name="ChaseWhenAttackedProbability" Value="0.8" Type="float" Description="Probabilidad de perseguir cuando es atacado" Guid="cd0d0555-7250-4aab-b08e-33660b28ad41"/>
+    <Parameter Name="ChaseOnTouchProbability" Value="0.5" Type="float" Description="Probabilidad de perseguir al tocar" Guid="327bd121-f8eb-4269-bfc8-a1f154baf49c"/>
 </ComponentTemplate>
     </Folder>
 
@@ -5425,18 +5396,18 @@
             <MemberComponentTemplate Name="AutoJump" Guid="1c10ba2b-124a-401b-9d67-8b7da8219379">
               <Parameter Name="JumpStrength" Guid="1c637750-8ab3-4713-a609-a5636864dc70" Value="1.0" Type="float"/>
             </MemberComponentTemplate>
-<MemberComponentTemplate Name="NewChaseBehavior" Guid="7711bd50-1a1c-4e6e-b2b4-68f4a9ac5aac">
-    <Parameter Name="Class" Value="Game.ComponentNewChaseBehavior" Type="string" Guid="ace2db37-4f9d-49be-8119-6ef855e39f49"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="5955194d-e9fd-4dc4-9f24-5b354f300adc"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="0020f34a-dded-4285-8db8-07472c35c8b9"/>
-    <Parameter Name="DayChaseRange" Value="16" Type="float" Guid="ceea338e-db8b-4c56-b017-39cdf3796df1"/>
-    <Parameter Name="NightChaseRange" Value="24" Type="float" Guid="adf0a545-9c25-46cc-b757-23004a0508f1"/>
-    <Parameter Name="DayChaseTime" Value="30" Type="float" Guid="ba66926f-f53c-4d52-a76b-c72129a50c09"/>
-    <Parameter Name="NightChaseTime" Value="60" Type="float" Guid="9562a5cb-98cd-42c3-bfac-4182c93d1bfb"/>
-    <Parameter Name="ChaseNonPlayerProbability" Value="0.2" Type="float" Guid="dd457183-3671-426d-a988-d3a75873621f"/>
-    <Parameter Name="ChaseWhenAttackedProbability" Value="0.8" Type="float" Guid="eb6d5776-1a82-45b1-bf1c-6e1750de025f"/>
-    <Parameter Name="ChaseOnTouchProbability" Value="0.5" Type="float" Guid="0188c3aa-5862-42e9-957f-3bed5294e1dd"/>
-    <Parameter Name="AutoChaseMask" Value="LandPredator" Type="string" Guid="5f08b71c-ac38-42ea-8de1-342a1295fa7b"/>
+<MemberComponentTemplate Name="NewChaseBehavior" Guid="2253b41c-5795-4561-9d25-90f8d64f9b5f">
+    <Parameter Name="Class" Value="Game.ComponentNewChaseBehavior" Type="string" Guid="27b3a70e-4a13-4ed1-8d6f-dd54c9635cdc"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="86c7b233-6424-444b-a0a2-b4bf5ebe08bd"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="00ea081f-128f-4c9e-8ca4-8a321d15b65d"/>
+    <Parameter Name="DayChaseRange" Value="16" Type="float" Guid="e32cf94b-bb90-4498-90a3-ee293a81d58a"/>
+    <Parameter Name="NightChaseRange" Value="24" Type="float" Guid="d2362ba6-29c9-448e-b6fe-85d591ae916b"/>
+    <Parameter Name="DayChaseTime" Value="30" Type="float" Guid="da95181a-6eff-403f-a03a-dbfee698b36e"/>
+    <Parameter Name="NightChaseTime" Value="60" Type="float" Guid="a752ad5c-dc19-4e4d-ac82-fb9754abc086"/>
+    <Parameter Name="ChaseNonPlayerProbability" Value="0.2" Type="float" Guid="b36945ff-b845-4808-802f-07ab08cfbf49"/>
+    <Parameter Name="ChaseWhenAttackedProbability" Value="0.8" Type="float" Guid="7be9fe7e-698c-4648-85ba-e82732eac692"/>
+    <Parameter Name="ChaseOnTouchProbability" Value="0.5" Type="float" Guid="602b414c-02a3-49b2-919e-4f339a34b98b"/>
+    <Parameter Name="AutoChaseMask" Value="LandPredator,LandOther" Type="string" Guid="5f08b71c-ac38-42ea-8de1-342a1295fa7b"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="NewHerdBehavior" Guid="bfa4a491-70a5-433d-a240-39ae31531b79">
         <Parameter Name="Class" Value="Game.ComponentNewHerdBehavior" Type="string" Guid="cdc71886-80c1-411b-8277-f5a8529c79a7"/>
@@ -5960,19 +5931,6 @@
         <Parameter Name="MaxHelpChaseTime" Value="30" Type="float" Guid="bcd661f0-647e-4113-9aa2-98b7f8c75796"/>
         <Parameter Name="AvoidAttackingSameHerd" Value="true" Type="bool" Guid="db78891f-13d4-4205-bbc1-aa65f8e90155"/>
     </MemberComponentTemplate>
-        <MemberComponentTemplate Name="NewChaseBehavior" Guid="39ad1317-a79f-4946-b434-4d7c04d89333">
-    <Parameter Name="Class" Value="Game.ComponentNewChaseBehavior" Type="string" Guid="6e20d16a-2eeb-410a-8ed4-04ba4a4c76c0"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="b906f729-ecf7-4afc-afec-53a2ae04e289"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="9a6648c7-2d43-464c-aac6-d5a745cab103"/>
-    <Parameter Name="DayChaseRange" Value="16" Type="float" Guid="5a33412a-8570-4e5a-ac81-b25658c6f218"/>
-    <Parameter Name="NightChaseRange" Value="24" Type="float" Guid="1ecc5cd0-dba1-44d2-b786-a0f920ce45ba"/>
-    <Parameter Name="DayChaseTime" Value="30" Type="float" Guid="00f403b5-17b6-4f8f-8392-5447cc677ed1"/>
-    <Parameter Name="NightChaseTime" Value="60" Type="float" Guid="f663dc4b-029e-43f6-a84a-49eb380d38f7"/>
-    <Parameter Name="ChaseNonPlayerProbability" Value="0.2" Type="float" Guid="3e1c8b28-b4f1-462e-82bd-5f268b89ab6f"/>
-    <Parameter Name="ChaseWhenAttackedProbability" Value="0.8" Type="float" Guid="0c8a97bc-98f5-4a55-b484-947dab85329c"/>
-    <Parameter Name="ChaseOnTouchProbability" Value="0.5" Type="float" Guid="5aa36f3f-818b-4b43-b6c2-e81c29119a80"/>
-    <Parameter Name="AutoChaseMask" Value="LandPredator" Type="string" Guid="6a723f9c-c94c-40cc-9f70-b8b9db4e25eb"/>
-</MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="227ee263-3d77-4303-b2a8-d63e38845927" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
                 <Parameter Name="DayRange" Guid="86418519-619d-43c5-954e-cb9cfed75319" Value="0" Type="float"/>
                 <Parameter Name="NightRange" Guid="5e7279cd-d457-4bd7-ab66-ad65675982ae" Value="0" Type="float"/>
