@@ -6,11 +6,8 @@ using TemplatesDatabase;
 
 namespace Game
 {
-	// Token: 0x02000011 RID: 17
 	public class ComponentNewChaseBehavior : ComponentBehavior, IUpdateable
 	{
-		// Token: 0x17000017 RID: 23
-		// (get) Token: 0x060000CE RID: 206 RVA: 0x0000D6F4 File Offset: 0x0000B8F4
 		public ComponentCreature Target
 		{
 			get
@@ -19,8 +16,6 @@ namespace Game
 			}
 		}
 
-		// Token: 0x17000018 RID: 24
-		// (get) Token: 0x060000CF RID: 207 RVA: 0x0000D70C File Offset: 0x0000B90C
 		public UpdateOrder UpdateOrder
 		{
 			get
@@ -29,8 +24,6 @@ namespace Game
 			}
 		}
 
-		// Token: 0x17000019 RID: 25
-		// (get) Token: 0x060000D0 RID: 208 RVA: 0x0000D720 File Offset: 0x0000B920
 		public override float ImportanceLevel
 		{
 			get
@@ -39,7 +32,6 @@ namespace Game
 			}
 		}
 
-		// Token: 0x060000D1 RID: 209 RVA: 0x0000D738 File Offset: 0x0000B938
 		public virtual void Attack(ComponentCreature componentCreature, float maxRange, float maxChaseTime, bool isPersistent)
 		{
 			bool suppressed = this.Suppressed;
@@ -64,7 +56,6 @@ namespace Game
 			}
 		}
 
-		// Token: 0x060000D2 RID: 210 RVA: 0x0000D7C0 File Offset: 0x0000B9C0
 		public virtual void StopAttack()
 		{
 			this.m_stateMachine.TransitionTo("LookingForTarget");
@@ -77,7 +68,6 @@ namespace Game
 			this.m_importanceLevel = 0f;
 		}
 
-		// Token: 0x060000D3 RID: 211 RVA: 0x0000D828 File Offset: 0x0000BA28
 		public virtual void Update(float dt)
 		{
 			bool suppressed = this.Suppressed;
@@ -181,7 +171,6 @@ namespace Game
 			}
 		}
 
-		// Token: 0x060000D4 RID: 212 RVA: 0x0000DCA8 File Offset: 0x0000BEA8
 		private bool HasActiveRangedWeaponComponent()
 		{
 			ComponentMusketShooterBehavior componentMusketShooterBehavior = base.Entity.FindComponent<ComponentMusketShooterBehavior>();
@@ -227,7 +216,6 @@ namespace Game
 			return result;
 		}
 
-		// Token: 0x060000D5 RID: 213 RVA: 0x0000DDAC File Offset: 0x0000BFAC
 		private void UpdateChaseMovementOnly(float dt)
 		{
 			bool flag = !this.HasActiveRangedWeaponComponent();
@@ -253,7 +241,6 @@ namespace Game
 			}
 		}
 
-		// Token: 0x060000D6 RID: 214 RVA: 0x0000DEB0 File Offset: 0x0000C0B0
 		private void UpdateChasingState()
 		{
 			bool flag = !this.IsActive || this.m_target == null || this.m_chaseTime <= 0f;
@@ -297,7 +284,6 @@ namespace Game
 			}
 		}
 
-		// Token: 0x060000D7 RID: 215 RVA: 0x0000E0D4 File Offset: 0x0000C2D4
 		public ComponentBody GetHitBody1(ComponentBody target, out float distance)
 		{
 			distance = 0f;
@@ -351,7 +337,6 @@ namespace Game
 			return result;
 		}
 
-		// Token: 0x060000D8 RID: 216 RVA: 0x0000E2B4 File Offset: 0x0000C4B4
 		private TerrainRaycastResult? PickTerrain(Vector3 position, Vector3 direction, float reach)
 		{
 			ComponentMiner componentMiner = this.m_componentMiner;
@@ -371,7 +356,6 @@ namespace Game
 			return result;
 		}
 
-		// Token: 0x060000D9 RID: 217 RVA: 0x0000E378 File Offset: 0x0000C578
 		private BodyRaycastResult? PickBody(Vector3 position, Vector3 direction, float reach)
 		{
 			bool flag = this.m_subsystemBodies == null;
@@ -390,7 +374,6 @@ namespace Game
 			return result;
 		}
 
-		// Token: 0x060000DA RID: 218 RVA: 0x0000E434 File Offset: 0x0000C634
 		public bool FindAimTool(ComponentMiner componentMiner)
 		{
 			bool flag = componentMiner.Inventory == null;
@@ -441,19 +424,24 @@ namespace Game
 			return result;
 		}
 
-		// Token: 0x060000DB RID: 219 RVA: 0x0000E55C File Offset: 0x0000C75C
 		public bool IsReady(int slotValue)
 		{
 			int data = Terrain.ExtractData(slotValue);
 			return !(BlocksManager.Blocks[Terrain.ExtractContents(slotValue)] is FlameThrowerBlock) || (FlameThrowerBlock.GetLoadState(data) == FlameThrowerBlock.LoadState.Loaded && FlameThrowerBlock.GetBulletType(data) != null);
 		}
 
-		// Token: 0x060000DC RID: 220 RVA: 0x0000E5A8 File Offset: 0x0000C7A8
 		public bool IsAimToolNeedToReady(ComponentMiner componentMiner, int slotIndex)
 		{
 			int slotValue = componentMiner.Inventory.GetSlotValue(slotIndex);
 			int data = Terrain.ExtractData(slotValue);
 			Block block = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)];
+
+			// ItemsLauncher siempre está listo para criaturas (usa balas de mosquete directamente)
+			if (block is ItemsLauncherBlock)
+			{
+				return false; // No necesita preparación
+			}
+
 			bool flag = !(block is BowBlock);
 			if (flag)
 			{
@@ -503,61 +491,82 @@ namespace Game
 			return true;
 		}
 
-		// Token: 0x060000DD RID: 221 RVA: 0x0000E6E4 File Offset: 0x0000C8E4
 		public void HandleComplexAimTool(ComponentMiner componentMiner, int slotIndex)
 		{
 			int slotValue = componentMiner.Inventory.GetSlotValue(slotIndex);
-			int num = Terrain.ExtractData(slotValue);
+			int data = Terrain.ExtractData(slotValue);
 			int num2 = Terrain.ExtractContents(slotValue);
 			Block block = BlocksManager.Blocks[num2];
-			int data = num;
-			bool flag = !(block is BowBlock);
-			if (flag)
+
+			// ItemsLauncher no necesita configuración especial para criaturas
+			// (ComponentItemsLauncherShooterBehavior ya dispara balas de mosquete)
+			if (!(block is ItemsLauncherBlock))
 			{
-				bool flag2 = !(block is CrossbowBlock);
-				if (flag2)
+				if (!(block is BowBlock))
 				{
-					bool flag3 = !(block is RepeatCrossbowBlock);
-					if (flag3)
+					bool flag2 = !(block is CrossbowBlock);
+					if (flag2)
 					{
-						bool flag4 = block is MusketBlock;
-						if (flag4)
+						bool flag3 = !(block is RepeatCrossbowBlock);
+						if (flag3)
 						{
-							data = MusketBlock.SetLoadState(MusketBlock.SetBulletType(0, new BulletBlock.BulletType?(BulletBlock.BulletType.Buckshot)), MusketBlock.LoadState.Loaded);
+							bool flag4 = block is MusketBlock;
+							if (flag4)
+							{
+								data = MusketBlock.SetLoadState(MusketBlock.SetBulletType(0, new BulletBlock.BulletType?(BulletBlock.BulletType.MusketBall)), MusketBlock.LoadState.Loaded);
+							}
+							RepeatArrowBlock.ArrowType value;
+							float randomValue = this.m_random.Float(0f, 1f);
+
+							if (randomValue < 0.166666f)
+							{
+								value = RepeatArrowBlock.ArrowType.ExplosiveArrow;
+							}
+							else if (randomValue < 0.333333f)
+							{
+								value = RepeatArrowBlock.ArrowType.PoisonArrow;
+							}
+							else if (randomValue < 0.5f)
+							{
+								value = RepeatArrowBlock.ArrowType.CopperArrow;
+							}
+							else if (randomValue < 0.666666f)
+							{
+								value = RepeatArrowBlock.ArrowType.DiamondArrow;
+							}
+							else if (randomValue < 0.833333f)
+							{
+								value = RepeatArrowBlock.ArrowType.SeriousPoisonArrow;
+							}
+							else
+							{
+								value = RepeatArrowBlock.ArrowType.IronArrow;
+							}
+
+							data = RepeatCrossbowBlock.SetArrowType(data, new RepeatArrowBlock.ArrowType?(value));
+							data = RepeatCrossbowBlock.SetDraw(data, 15);
 						}
 					}
 					else
 					{
-						RepeatArrowBlock.ArrowType value;
+						ArrowBlock.ArrowType value;
 						float randomValue = this.m_random.Float(0f, 1f);
 
-						if (randomValue < 0.166666f) // 16.67%
+						if (randomValue < 0.333333f)
 						{
-							value = RepeatArrowBlock.ArrowType.ExplosiveArrow;
+							value = ArrowBlock.ArrowType.IronBolt;
 						}
-						else if (randomValue < 0.333333f) // 16.67%
+						else if (randomValue < 0.666666f)
 						{
-							value = RepeatArrowBlock.ArrowType.PoisonArrow;
+							value = ArrowBlock.ArrowType.DiamondBolt;
 						}
-						else if (randomValue < 0.5f) // 16.67%
+						else
 						{
-							value = RepeatArrowBlock.ArrowType.CopperArrow;
-						}
-						else if (randomValue < 0.666666f) // 16.67%
-						{
-							value = RepeatArrowBlock.ArrowType.DiamondArrow;
-						}
-						else if (randomValue < 0.833333f) // 16.67%
-						{
-							value = RepeatArrowBlock.ArrowType.SeriousPoisonArrow;
-						}
-						else // 16.67%
-						{
-							value = RepeatArrowBlock.ArrowType.IronArrow;
+							value = ArrowBlock.ArrowType.ExplosiveBolt;
 						}
 
-						data = RepeatCrossbowBlock.SetArrowType(data, new RepeatArrowBlock.ArrowType?(value));
-						data = RepeatCrossbowBlock.SetDraw(data, 15);
+						data = CrossbowBlock.SetArrowType(0, new ArrowBlock.ArrowType?(value));
+						data = CrossbowBlock.SetDraw(data, 15);
 					}
 				}
 				else
@@ -565,62 +574,41 @@ namespace Game
 					ArrowBlock.ArrowType value;
 					float randomValue = this.m_random.Float(0f, 1f);
 
-					if (randomValue < 0.333333f) // 33.33% para IronBolt
+					if (randomValue < 0.166666f)
 					{
-						value = ArrowBlock.ArrowType.IronBolt;
+						value = ArrowBlock.ArrowType.WoodenArrow;
 					}
-					else if (randomValue < 0.666666f) // 33.33% para DiamondBolt
+					else if (randomValue < 0.333333f)
 					{
-						value = ArrowBlock.ArrowType.DiamondBolt;
+						value = ArrowBlock.ArrowType.StoneArrow;
 					}
-					else // 33.33% para ExplosiveBolt
+					else if (randomValue < 0.5f)
 					{
-						value = ArrowBlock.ArrowType.ExplosiveBolt;
+						value = ArrowBlock.ArrowType.IronArrow;
+					}
+					else if (randomValue < 0.666666f)
+					{
+						value = ArrowBlock.ArrowType.DiamondArrow;
+					}
+					else if (randomValue < 0.833333f)
+					{
+						value = ArrowBlock.ArrowType.FireArrow;
+					}
+					else
+					{
+						value = ArrowBlock.ArrowType.CopperArrow;
 					}
 
-					data = CrossbowBlock.SetArrowType(0, new ArrowBlock.ArrowType?(value));
-					data = CrossbowBlock.SetDraw(data, 15);
+					data = BowBlock.SetArrowType(0, new ArrowBlock.ArrowType?(value));
+					data = BowBlock.SetDraw(data, 15);
 				}
+
+				int value2 = Terrain.MakeBlockValue(num2, 0, data);
+				componentMiner.Inventory.RemoveSlotItems(slotIndex, 1);
+				componentMiner.Inventory.AddSlotItems(slotIndex, value2, 1);
 			}
-			else
-			{
-				ArrowBlock.ArrowType value;
-				float randomValue = this.m_random.Float(0f, 1f);
-
-				if (randomValue < 0.166666f) // 16.67% para WoodenArrow
-				{
-					value = ArrowBlock.ArrowType.WoodenArrow;
-				}
-				else if (randomValue < 0.333333f) // 16.67% para StoneArrow
-				{
-					value = ArrowBlock.ArrowType.StoneArrow;
-				}
-				else if (randomValue < 0.5f) // 16.67% para IronArrow
-				{
-					value = ArrowBlock.ArrowType.IronArrow;
-				}
-				else if (randomValue < 0.666666f) // 16.67% para DiamondArrow
-				{
-					value = ArrowBlock.ArrowType.DiamondArrow;
-				}
-				else if (randomValue < 0.833333f) // 16.67% para FireArrow
-				{
-					value = ArrowBlock.ArrowType.FireArrow;
-				}
-				else // 16.67% para CopperArrow
-				{
-					value = ArrowBlock.ArrowType.CopperArrow;
-				}
-
-				data = BowBlock.SetArrowType(0, new ArrowBlock.ArrowType?(value));
-				data = BowBlock.SetDraw(data, 15);
-			}
-			int value2 = Terrain.MakeBlockValue(num2, 0, data);
-			componentMiner.Inventory.RemoveSlotItems(slotIndex, 1);
-			componentMiner.Inventory.AddSlotItems(slotIndex, value2, 1);
 		}
 
-		// Token: 0x060000DE RID: 222 RVA: 0x0000E80C File Offset: 0x0000CA0C
 		public bool FindHitTool(ComponentMiner componentMiner)
 		{
 			int activeBlockValue = componentMiner.ActiveBlockValue;
@@ -667,7 +655,6 @@ namespace Game
 			return result;
 		}
 
-		// Token: 0x060000DF RID: 223 RVA: 0x0000E8DC File Offset: 0x0000CADC
 		private void CheckDefendPlayer(float dt)
 		{
 			try
@@ -705,7 +692,6 @@ namespace Game
 			}
 		}
 
-		// Token: 0x060000E0 RID: 224 RVA: 0x0000EA44 File Offset: 0x0000CC44
 		private ComponentCreature FindPlayerAttacker(ComponentPlayer player)
 		{
 			try
@@ -748,7 +734,6 @@ namespace Game
 			return null;
 		}
 
-		// Token: 0x060000E1 RID: 225 RVA: 0x0000EBC8 File Offset: 0x0000CDC8
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
 			this.m_subsystemGameInfo = base.Project.FindSubsystem<SubsystemGameInfo>(true);
@@ -1044,7 +1029,6 @@ namespace Game
 			this.m_stateMachine.TransitionTo("LookingForTarget");
 		}
 
-		// Token: 0x060000E2 RID: 226 RVA: 0x0000EED4 File Offset: 0x0000D0D4
 		public virtual ComponentCreature FindTarget()
 		{
 			Vector3 position = this.m_componentCreature.ComponentBody.Position;
@@ -1085,7 +1069,6 @@ namespace Game
 			return result;
 		}
 
-		// Token: 0x060000E3 RID: 227 RVA: 0x0000EFCC File Offset: 0x0000D1CC
 		public virtual float ScoreTarget(ComponentCreature componentCreature)
 		{
 			float result = 0f;
@@ -1106,13 +1089,11 @@ namespace Game
 			return result;
 		}
 
-		// Token: 0x060000E4 RID: 228 RVA: 0x0000F110 File Offset: 0x0000D310
 		public virtual bool IsTargetInWater(ComponentBody target)
 		{
 			return target.ImmersionDepth > 0f || (target.ParentBody != null && this.IsTargetInWater(target.ParentBody)) || (target.StandingOnBody != null && target.StandingOnBody.Position.Y < target.Position.Y && this.IsTargetInWater(target.StandingOnBody));
 		}
 
-		// Token: 0x060000E5 RID: 229 RVA: 0x0000F17C File Offset: 0x0000D37C
 		public virtual bool IsTargetInAttackRange(ComponentBody target)
 		{
 			bool flag = this.IsBodyInAttackRange(target);
@@ -1153,7 +1134,6 @@ namespace Game
 			return result;
 		}
 
-		// Token: 0x060000E6 RID: 230 RVA: 0x0000F36C File Offset: 0x0000D56C
 		public virtual bool IsBodyInAttackRange(ComponentBody target)
 		{
 			BoundingBox boundingBox = this.m_componentCreature.ComponentBody.BoundingBox;
@@ -1184,7 +1164,6 @@ namespace Game
 			return false;
 		}
 
-		// Token: 0x060000E7 RID: 231 RVA: 0x0000F4EC File Offset: 0x0000D6EC
 		public virtual ComponentBody GetHitBody(ComponentBody target, out Vector3 hitPoint)
 		{
 			Vector3 vector = this.m_componentCreature.ComponentBody.BoundingBox.Center();
@@ -1206,185 +1185,68 @@ namespace Game
 			return result;
 		}
 
-		// Token: 0x04000158 RID: 344
 		public SubsystemGameInfo m_subsystemGameInfo;
-
-		// Token: 0x04000159 RID: 345
 		public SubsystemPlayers m_subsystemPlayers;
-
-		// Token: 0x0400015A RID: 346
 		public SubsystemSky m_subsystemSky;
-
-		// Token: 0x0400015B RID: 347
 		public SubsystemBodies m_subsystemBodies;
-
-		// Token: 0x0400015C RID: 348
 		public SubsystemTime m_subsystemTime;
-
-		// Token: 0x0400015D RID: 349
 		public SubsystemNoise m_subsystemNoise;
-
-		// Token: 0x0400015E RID: 350
 		public SubsystemCreatureSpawn m_subsystemCreatureSpawn;
-
-		// Token: 0x0400015F RID: 351
 		public ComponentCreature m_componentCreature;
-
-		// Token: 0x04000160 RID: 352
 		public ComponentPathfinding m_componentPathfinding;
-
-		// Token: 0x04000161 RID: 353
 		public ComponentMiner m_componentMiner;
-
-		// Token: 0x04000162 RID: 354
 		public ComponentRandomFeedBehavior m_componentFeedBehavior;
-
-		// Token: 0x04000163 RID: 355
 		public ComponentCreatureModel m_componentCreatureModel;
-
-		// Token: 0x04000164 RID: 356
 		public ComponentFactors m_componentFactors;
-
-		// Token: 0x04000165 RID: 357
 		public ComponentBody m_componentBody;
-
-		// Token: 0x04000166 RID: 358
 		public DynamicArray<ComponentBody> m_componentBodies = new DynamicArray<ComponentBody>();
-
-		// Token: 0x04000167 RID: 359
 		public Random m_random = new Random();
-
-		// Token: 0x04000168 RID: 360
 		public StateMachine m_stateMachine = new StateMachine();
-
-		// Token: 0x04000169 RID: 361
 		public float m_dayChaseRange;
-
-		// Token: 0x0400016A RID: 362
 		public float m_nightChaseRange;
-
-		// Token: 0x0400016B RID: 363
 		public float m_dayChaseTime;
-
-		// Token: 0x0400016C RID: 364
 		public float m_nightChaseTime;
-
-		// Token: 0x0400016D RID: 365
 		public float m_chaseNonPlayerProbability;
-
-		// Token: 0x0400016E RID: 366
 		public float m_chaseWhenAttackedProbability;
-
-		// Token: 0x0400016F RID: 367
 		public float m_chaseOnTouchProbability;
-
-		// Token: 0x04000170 RID: 368
 		public CreatureCategory m_autoChaseMask;
-
-		// Token: 0x04000171 RID: 369
 		public float m_importanceLevel;
-
-		// Token: 0x04000172 RID: 370
 		public float m_targetUnsuitableTime;
-
-		// Token: 0x04000173 RID: 371
 		public float m_targetInRangeTime;
-
-		// Token: 0x04000174 RID: 372
 		public double m_nextUpdateTime;
-
-		// Token: 0x04000175 RID: 373
 		public double m_nextPlayerCheckTime;
-
-		// Token: 0x04000176 RID: 374
 		public double m_lastActionTime;
-
-		// Token: 0x04000177 RID: 375
 		public ComponentCreature m_target;
-
-		// Token: 0x04000178 RID: 376
 		public float m_dt;
-
-		// Token: 0x04000179 RID: 377
 		public float m_range;
-
-		// Token: 0x0400017A RID: 378
 		public float m_chaseTime;
-
-		// Token: 0x0400017B RID: 379
 		public bool m_isPersistent;
-
-		// Token: 0x0400017C RID: 380
 		public bool m_autoDismount = true;
-
-		// Token: 0x0400017D RID: 381
 		public float m_autoChaseSuppressionTime;
-
-		// Token: 0x0400017E RID: 382
 		private ComponentNewChaseBehavior.AttackMode m_attackMode = ComponentNewChaseBehavior.AttackMode.Default;
-
-		// Token: 0x0400017F RID: 383
 		private Vector2 m_attackRange = new Vector2(2f, 15f);
-
-		// Token: 0x04000180 RID: 384
 		public float ImportanceLevelNonPersistent = 200f;
-
-		// Token: 0x04000181 RID: 385
 		public float ImportanceLevelPersistent = 200f;
-
-		// Token: 0x04000182 RID: 386
 		public float MaxAttackRange = 1.75f;
-
-		// Token: 0x04000183 RID: 387
 		public bool AllowAttackingStandingOnBody = true;
-
-		// Token: 0x04000184 RID: 388
 		public bool JumpWhenTargetStanding = true;
-
-		// Token: 0x04000185 RID: 389
 		public bool AttacksPlayer = true;
-
-		// Token: 0x04000186 RID: 390
 		public bool AttacksNonPlayerCreature = true;
-
-		// Token: 0x04000187 RID: 391
 		public float ChaseRangeOnTouch = 7f;
-
-		// Token: 0x04000188 RID: 392
 		public float ChaseTimeOnTouch = 7f;
-
-		// Token: 0x04000189 RID: 393
 		public float? ChaseRangeOnAttacked;
-
-		// Token: 0x0400018A RID: 394
 		public float? ChaseTimeOnAttacked;
-
-		// Token: 0x0400018B RID: 395
 		public bool? ChasePersistentOnAttacked;
-
-		// Token: 0x0400018C RID: 396
 		public float MinHealthToAttackActively = 0.4f;
-
-		// Token: 0x0400018D RID: 397
 		public bool Suppressed;
-
-		// Token: 0x0400018E RID: 398
 		public bool PlayIdleSoundWhenStartToChase = true;
-
-		// Token: 0x0400018F RID: 399
 		public bool PlayAngrySoundWhenChasing = true;
-
-		// Token: 0x04000190 RID: 400
 		public float TargetInRangeTimeToChase = 3f;
 
-		// Token: 0x0200004E RID: 78
 		public enum AttackMode
 		{
-			// Token: 0x040002F7 RID: 759
 			Default,
-			// Token: 0x040002F8 RID: 760
 			OnlyHand,
-			// Token: 0x040002F9 RID: 761
 			Ranged
 		}
 	}
