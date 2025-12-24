@@ -562,7 +562,24 @@ namespace Game
 				}
 				else
 				{
-					data = CrossbowBlock.SetDraw(CrossbowBlock.SetArrowType(0, new ArrowBlock.ArrowType?(ArrowBlock.ArrowType.IronBolt)), 15);
+					ArrowBlock.ArrowType value;
+					float randomValue = this.m_random.Float(0f, 1f);
+
+					if (randomValue < 0.333333f) // 33.33% para IronBolt
+					{
+						value = ArrowBlock.ArrowType.IronBolt;
+					}
+					else if (randomValue < 0.666666f) // 33.33% para DiamondBolt
+					{
+						value = ArrowBlock.ArrowType.DiamondBolt;
+					}
+					else // 33.33% para ExplosiveBolt
+					{
+						value = ArrowBlock.ArrowType.ExplosiveBolt;
+					}
+
+					data = CrossbowBlock.SetArrowType(0, new ArrowBlock.ArrowType?(value));
+					data = CrossbowBlock.SetDraw(data, 15);
 				}
 			}
 			else
