@@ -584,7 +584,36 @@ namespace Game
 			}
 			else
 			{
-				data = BowBlock.SetDraw(BowBlock.SetArrowType(0, new ArrowBlock.ArrowType?(ArrowBlock.ArrowType.StoneArrow)), 15);
+				ArrowBlock.ArrowType value;
+				float randomValue = this.m_random.Float(0f, 1f);
+
+				if (randomValue < 0.166666f) // 16.67% para WoodenArrow
+				{
+					value = ArrowBlock.ArrowType.WoodenArrow;
+				}
+				else if (randomValue < 0.333333f) // 16.67% para StoneArrow
+				{
+					value = ArrowBlock.ArrowType.StoneArrow;
+				}
+				else if (randomValue < 0.5f) // 16.67% para IronArrow
+				{
+					value = ArrowBlock.ArrowType.IronArrow;
+				}
+				else if (randomValue < 0.666666f) // 16.67% para DiamondArrow
+				{
+					value = ArrowBlock.ArrowType.DiamondArrow;
+				}
+				else if (randomValue < 0.833333f) // 16.67% para FireArrow
+				{
+					value = ArrowBlock.ArrowType.FireArrow;
+				}
+				else // 16.67% para CopperArrow
+				{
+					value = ArrowBlock.ArrowType.CopperArrow;
+				}
+
+				data = BowBlock.SetArrowType(0, new ArrowBlock.ArrowType?(value));
+				data = BowBlock.SetDraw(data, 15);
 			}
 			int value2 = Terrain.MakeBlockValue(num2, 0, data);
 			componentMiner.Inventory.RemoveSlotItems(slotIndex, 1);
