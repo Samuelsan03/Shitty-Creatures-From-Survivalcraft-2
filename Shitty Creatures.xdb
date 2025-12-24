@@ -319,11 +319,6 @@
     <Folder Name="NPCS" Guid="6cc49cbb-cdd2-4479-9b40-fbadd9db3425">
 
         <EntityTemplate Name="Naomi" Guid="3d60e4a1-207a-44ce-9635-fa2997824b5c" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-        <MemberComponentTemplate Name="HerdBehavior" Guid="553af80e-3e25-4830-868b-98f2839e6aa0" InheritanceParent="dfe7218e-ce14-4bde-8dac-f919c38e9efe">
-    <Parameter Name="HerdName" Guid="3a57b20e-7f8c-44d5-a6c5-09718faef8bc" Value="Pirate" Type="string"/>
-    <Parameter Name="AutoNearbyCreaturesHelp" Guid="4edb8302-1576-49fc-a387-22a8804b8481" Value="True" Type="bool"/>
-    <Parameter Name="HerdingRange" Guid="c497f401-222a-489b-9de2-17467de6eeb2" Value="40" Type="float"/>
-</MemberComponentTemplate>
         <MemberComponentTemplate Name="NewChaseBehavior" Guid="22d62904-4954-46bf-8b15-c3cf90d4638e">
     <Parameter Name="Class" Value="Game.ComponentNewChaseBehavior" Type="string" Guid="7b34905b-1976-4cac-b73f-4e1bc7dc8926"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="cca6d07b-9c07-4716-95c3-b499006c3a7c"/>
