@@ -528,8 +528,36 @@ namespace Game
 					}
 					else
 					{
-						RepeatArrowBlock.ArrowType value = this.m_random.Bool(0.8f) ? RepeatArrowBlock.ArrowType.ExplosiveArrow : RepeatArrowBlock.ArrowType.PoisonArrow;
-						data = CrossbowBlock.SetDraw(RepeatCrossbowBlock.SetArrowType(0, new RepeatArrowBlock.ArrowType?(value)), 15);
+						RepeatArrowBlock.ArrowType value;
+						float randomValue = this.m_random.Float(0f, 1f);
+
+						if (randomValue < 0.166666f) // 16.67%
+						{
+							value = RepeatArrowBlock.ArrowType.ExplosiveArrow;
+						}
+						else if (randomValue < 0.333333f) // 16.67%
+						{
+							value = RepeatArrowBlock.ArrowType.PoisonArrow;
+						}
+						else if (randomValue < 0.5f) // 16.67%
+						{
+							value = RepeatArrowBlock.ArrowType.CopperArrow;
+						}
+						else if (randomValue < 0.666666f) // 16.67%
+						{
+							value = RepeatArrowBlock.ArrowType.DiamondArrow;
+						}
+						else if (randomValue < 0.833333f) // 16.67%
+						{
+							value = RepeatArrowBlock.ArrowType.SeriousPoisonArrow;
+						}
+						else // 16.67%
+						{
+							value = RepeatArrowBlock.ArrowType.IronArrow;
+						}
+
+						data = RepeatCrossbowBlock.SetArrowType(data, new RepeatArrowBlock.ArrowType?(value));
+						data = RepeatCrossbowBlock.SetDraw(data, 15);
 					}
 				}
 				else
