@@ -24,9 +24,7 @@
     "RefrigeratorLabel": "Refrigerator",
     "InventoryLabel": "Inventory",
     "CoolingStatus": "Cooling...",
-    "NoPowerStatus": "No Power",
-    "BlockName": "Xiaomi Refrigerator",
-    "BlockDescription": "A Xiaomi refrigerator is a household appliance designed for cooling and storing food. It is defined as a smart refrigerator that provides efficient preservation of perishable goods. In the mod it is useful as an object that represents a modern appliance and expands building options. Its main utility is to preserve food if you are tired of it spoiling quickly, both raw and cooked, giving more durability time. Note: the refrigerator requires energy such as a battery, lever, or another electrical source, otherwise it will not work."
+    "NoPowerStatus": "No Power"
   },
   "Database": {
     "DisplayName": {
@@ -159,6 +157,14 @@
     }
   },
   "Blocks": {
+    "RefrigeratorXiaomiBlock:0": {
+      "DisplayName": "Xiaomi Refrigerator",
+      "Description": "A Xiaomi refrigerator is a household appliance designed for cooling and storing food. It is defined as a smart refrigerator that provides efficient preservation of perishable goods. In the mod it is useful as an object that represents a modern appliance and expands building options. Its main utility is to preserve food if you are tired of it spoiling quickly, both raw and cooked, giving more durability time. Note: the refrigerator requires energy such as a battery, lever, or another electrical source, otherwise it will not work."
+    },
+    "AirConditionerBlock:0": {
+      "DisplayName": "Air Conditioner",
+      "Description": "A climate control device that adjusts ambient temperature. Configurable via interface, can cool water and melt ice within an adjustable radius."
+    },
     "BigStoneChunk:0": {
   "DisplayName": "Rare Giant Rock",
   "Description": "A strange rock, seemingly unearthed from the Paleolithic era its true origin remains a mystery. Oh no! What makes it most alarming is its deadly power: a single throw can kill any person instantly. Even worse, the thought of Tanks wielding it as a throwable weapon is a dire omen. Beware if one of these massive stones is hurled your way, you are already as good as dead. As a note, this rare giant rock cannot be crafted; only Tanks will possess it. Unless you resort to cheats such as using Creative mode or similar methods to obtain one but it’s not recommended."

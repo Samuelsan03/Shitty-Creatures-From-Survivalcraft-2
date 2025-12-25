@@ -24,9 +24,7 @@
     "RefrigeratorLabel": "Refrigerador",
     "InventoryLabel": "Inventario",
     "CoolingStatus": "Refrigerando...",
-    "NoPowerStatus": "Sin energía",
-    "BlockName": "Refrigerador Xiaomi",
-    "BlockDescription": "Un refrigerador Xiaomi es un electrodoméstico diseñado para enfriar y almacenar alimentos. Se define como un refrigerador inteligente que proporciona una conservación eficiente de productos perecederos. En el mod es útil como un objeto que representa un electrodoméstico moderno y amplía las opciones de construcción. Su utilidad principal es preservar alimentos si estás cansado de que se echen a perder rápidamente, tanto crudos como cocinados, dando más tiempo de durabilidad. Nota: el refrigerador requiere energía como una batería, palanca u otra fuente eléctrica, de lo contrario no funcionará."
+    "NoPowerStatus": "Sin energía"
   },
   "Database": {
     "DisplayName": {
@@ -160,6 +158,14 @@
     }
   },
   "Blocks": {
+    "RefrigeratorXiaomiBlock:0": {
+      "DisplayName": "Refrigerador Xiaomi",
+      "Description": "Un refrigerador Xiaomi es un electrodoméstico diseñado para enfriar y almacenar alimentos. Se define como un refrigerador inteligente que proporciona una conservación eficiente de productos perecederos. En el mod es útil como un objeto que representa un electrodoméstico moderno y amplía las opciones de construcción. Su utilidad principal es preservar alimentos si estás cansado de que se echen a perder rápidamente, tanto crudos como cocinados, dando más tiempo de durabilidad. Nota: el refrigerador requiere energía como una batería, palanca u otra fuente eléctrica, de lo contrario no funcionará."
+    },
+    "AirConditionerBlock:0": {
+      "DisplayName": "Aire Acondicionado",
+      "Description": "Un dispositivo de climatización que ajusta la temperatura ambiental. Configurable mediante interfaz, puede enfriar agua y derretir hielo en un radio ajustable."
+    },
     "BigStoneChunk:0": {
   "DisplayName": "Roca Gigante Rara",
   "Description": "Una roca extraña, aparentemente desenterrada de la era Paleolítica, su verdadero origen sigue siendo un misterio. ¡Oh no! Lo que lo hace más alarmante es su poder mortal: un solo lanzamiento puede matar a cualquier persona al instante. Peor aún, la idea de que los Tanques la usen como arma arrojadiza es un mal presagio. Ten cuidado si una de estas piedras masivas es lanzada hacia ti, ya estás prácticamente muerto. Como nota, esta roca gigante rara no se puede fabricar; solo los Tanques la poseerán. A menos que recurras a trucos como usar el modo Creativo o métodos similares para obtener una, pero no es recomendable."
