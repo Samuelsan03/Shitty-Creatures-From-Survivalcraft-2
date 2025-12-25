@@ -21,9 +21,7 @@ namespace Game
 
 		private BlockMesh CreateBulletMesh(Texture2D texture, int textureSlot)
 		{
-			// Crear una malla simple para la bala
 			var blockMesh = new BlockMesh();
-			// Implementación de malla básica (similar a la original)
 			return blockMesh;
 		}
 
@@ -50,6 +48,16 @@ namespace Game
 		{
 			yield return Terrain.MakeBlockValue(this.BlockIndex, 0, FlameBulletBlock.SetBulletType(0, FlameBulletBlock.FlameBulletType.Flame));
 			yield return Terrain.MakeBlockValue(this.BlockIndex, 0, FlameBulletBlock.SetBulletType(0, FlameBulletBlock.FlameBulletType.Poison));
+		}
+
+		public override string GetDisplayName(SubsystemTerrain subsystemTerrain, int value)
+		{
+			return LanguageControl.GetBlock("FlameBullet:" + (int)FlameBulletBlock.GetBulletType(Terrain.ExtractData(value)), "DisplayName");
+		}
+
+		public override string GetDescription(int value)
+		{
+			return LanguageControl.GetBlock("FlameBullet:" + (int)FlameBulletBlock.GetBulletType(Terrain.ExtractData(value)), "Description");
 		}
 
 		public override float GetProjectilePower(int value)
@@ -85,7 +93,7 @@ namespace Game
 		public Texture2D m_texture;
 		public Texture2D m_texturePoison;
 		public BlockMesh[] m_blockMeshes;
-		public static int TextureSlot = 68;
+		public static int TextureSlot = 0;
 		public static int PoisonTextureSlot = 69;
 
 		public enum FlameBulletType
@@ -94,5 +102,4 @@ namespace Game
 			Poison = 1
 		}
 	}
-
 }

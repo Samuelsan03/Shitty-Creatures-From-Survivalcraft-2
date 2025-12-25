@@ -16,12 +16,23 @@ namespace Game
 
 		public override string GetDisplayName(SubsystemTerrain subsystemTerrain, int value)
 		{
-			return LanguageControl.Get("RefrigeratorXiaomi", "BlockName");
+			string displayName;
+			if (LanguageControl.TryGetBlock("RefrigeratorXiaomiBlock:0", "DisplayName", out displayName))
+			{
+				return displayName;
+			}
+			return "Xiaomi Refrigerator"; // valor por defecto en inglés
 		}
 
 		public override string GetDescription(int value)
 		{
-			return LanguageControl.Get("RefrigeratorXiaomi", "BlockDescription");
+			string description;
+			if (LanguageControl.TryGetBlock("RefrigeratorXiaomiBlock:0", "Description", out description))
+			{
+				return description;
+			}
+			// Valor por defecto en inglés
+			return "A Xiaomi refrigerator is a household appliance designed for cooling and storing food. It is defined as a smart refrigerator that provides efficient preservation of perishable goods. In the mod it is useful as an object that represents a modern appliance and expands building options. Its main utility is to preserve food if you are tired of it spoiling quickly, both raw and cooked, giving more durability time. Note: the refrigerator requires energy such as a battery, lever, or another electrical source, otherwise it will not work.";
 		}
 
 		public override void GenerateTerrainVertices(BlockGeometryGenerator generator, TerrainGeometry geometry, int value, int x, int y, int z)

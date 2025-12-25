@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Runtime.CompilerServices;
 using Engine;
 using GameEntitySystem;
@@ -47,6 +47,22 @@ namespace Game
 						return;
 					}
 				}
+				// Si no tiene NewHerdBehavior, verificar el original pero permitir ataque
+				else
+				{
+					ComponentHerdBehavior componentHerdBehavior = base.Entity.FindComponent<ComponentHerdBehavior>();
+					if (componentHerdBehavior != null)
+					{
+						// Para herd behavior original, usar lógica simple pero permitir ataque
+						bool isSameHerd = !string.IsNullOrEmpty(componentHerdBehavior.HerdName) &&
+										   componentCreature.Entity.FindComponent<ComponentHerdBehavior>() != null &&
+										   componentCreature.Entity.FindComponent<ComponentHerdBehavior>().HerdName == componentHerdBehavior.HerdName;
+						if (isSameHerd)
+						{
+							return; // No atacar a miembros del mismo rebaño
+						}
+					}
+				}
 				this.m_target = componentCreature;
 				this.m_nextUpdateTime = 0.0;
 				this.m_range = maxRange;
@@ -77,6 +93,19 @@ namespace Game
 			}
 			this.m_autoChaseSuppressionTime -= dt;
 			this.CheckDefendPlayer(dt);
+
+			// VERIFICACIÓN MEJORADA: Permitir que todos los NPCs con armas de distancia disparen
+			// Esto incluye a los que tienen ComponentHerdBehavior original
+			bool hasRangedWeapon = this.HasActiveRangedWeaponComponent();
+			bool isOriginalHerd = base.Entity.FindComponent<ComponentHerdBehavior>() != null &&
+								  base.Entity.FindComponent<ComponentNewHerdBehavior>() == null;
+
+			// Si tiene arma de distancia (ya sea con new herd o original), usar lógica de disparo
+			if (hasRangedWeapon || isOriginalHerd)
+			{
+				this.UpdateRangedWeaponLogic(dt);
+			}
+
 			bool flag = this.IsActive && this.m_target != null;
 			if (flag)
 			{
@@ -168,6 +197,83 @@ namespace Game
 				this.m_dt = this.m_random.Float(0.25f, 0.35f) + MathUtils.Min((float)(this.m_subsystemTime.GameTime - this.m_nextUpdateTime), 0.1f);
 				this.m_nextUpdateTime = this.m_subsystemTime.GameTime + (double)this.m_dt;
 				this.m_stateMachine.Update();
+			}
+		}
+
+		// NUEVO MÉTODO: Lógica específica para armas de distancia
+		private void UpdateRangedWeaponLogic(float dt)
+		{
+			if (this.m_target == null || !this.IsActive)
+				return;
+
+			// Verificar si tiene arma de distancia equipada o puede encontrar una
+			bool hasRangedWeapon = this.HasActiveRangedWeaponComponent();
+
+			if (!hasRangedWeapon)
+			{
+				// Intentar encontrar un arma de distancia en el inventario
+				this.FindAimTool(this.m_componentMiner);
+				hasRangedWeapon = this.HasActiveRangedWeaponComponent();
+			}
+
+			if (hasRangedWeapon && this.m_target != null)
+			{
+				// Calcular distancia al objetivo
+				float distance = Vector3.Distance(this.m_componentCreature.ComponentBody.Position, this.m_target.ComponentBody.Position);
+
+				// Si está dentro del rango de ataque a distancia
+				if (distance >= this.m_attackRange.X && distance <= this.m_attackRange.Y)
+				{
+					// Apuntar al objetivo
+					Vector3 direction = Vector3.Normalize(this.m_target.ComponentCreatureModel.EyePosition - this.m_componentCreature.ComponentCreatureModel.EyePosition);
+
+					// Verificar si hay línea de visión
+					float rayDistance;
+					ComponentBody hitBody = this.GetHitBody1(this.m_target.ComponentBody, out rayDistance);
+
+					if (hitBody != null && Math.Abs(rayDistance - distance) < 2f)
+					{
+						// Disparar si está listo
+						float actionDelay = (this.m_subsystemGameInfo.WorldSettings.GameMode == GameMode.Creative) ? 2.5f : 3f;
+
+						if (this.m_subsystemTime.GameTime - this.m_lastActionTime > actionDelay)
+						{
+							this.m_componentMiner.Aim(new Ray3(this.m_componentCreature.ComponentCreatureModel.EyePosition, direction), AimState.Completed);
+							this.m_lastActionTime = this.m_subsystemTime.GameTime;
+
+							// Extender tiempo de persecución cuando se usa arma de distancia
+							this.m_chaseTime = Math.Max(this.m_chaseTime, this.m_isPersistent ? this.m_random.Float(8f, 10f) : 2f);
+						}
+						else
+						{
+							this.m_componentMiner.Aim(new Ray3(this.m_componentCreature.ComponentCreatureModel.EyePosition, direction), AimState.InProgress);
+						}
+
+						// Detener movimiento cuando está apuntando
+						this.m_componentPathfinding.Destination = null;
+					}
+					else
+					{
+						// Moverse para tener línea de visión
+						this.m_componentPathfinding.SetDestination(
+							new Vector3?(this.m_target.ComponentBody.Position),
+							1f, 1.5f, 0, true, false, true, this.m_target.ComponentBody);
+					}
+				}
+				else if (distance > this.m_attackRange.Y)
+				{
+					// Acercarse si está demasiado lejos
+					this.m_componentPathfinding.SetDestination(
+						new Vector3?(this.m_target.ComponentBody.Position),
+						1f, 1.5f, 0, true, false, true, this.m_target.ComponentBody);
+				}
+				else if (distance < this.m_attackRange.X)
+				{
+					// Alejarse si está demasiado cerca para arma de distancia
+					Vector3 retreatDirection = Vector3.Normalize(this.m_componentCreature.ComponentBody.Position - this.m_target.ComponentBody.Position);
+					Vector3 retreatPosition = this.m_componentCreature.ComponentBody.Position + retreatDirection * 3f;
+					this.m_componentPathfinding.SetDestination(new Vector3?(retreatPosition), 1f, 1f, 0, false, true, false, null);
+				}
 			}
 		}
 
@@ -522,19 +628,19 @@ namespace Game
 							{
 								value = RepeatArrowBlock.ArrowType.ExplosiveArrow;
 							}
-							else if (randomValue < 0.333333f)
+							else if (randomValue < 0.83333f)
 							{
 								value = RepeatArrowBlock.ArrowType.PoisonArrow;
 							}
-							else if (randomValue < 0.5f)
+							else if (randomValue < 0.85555f)
 							{
 								value = RepeatArrowBlock.ArrowType.CopperArrow;
 							}
-							else if (randomValue < 0.666666f)
+							else if (randomValue < 0.866666f)
 							{
 								value = RepeatArrowBlock.ArrowType.DiamondArrow;
 							}
-							else if (randomValue < 0.833333f)
+							else if (randomValue < 0.855555f)
 							{
 								value = RepeatArrowBlock.ArrowType.SeriousPoisonArrow;
 							}
@@ -578,15 +684,15 @@ namespace Game
 					{
 						value = ArrowBlock.ArrowType.WoodenArrow;
 					}
-					else if (randomValue < 0.333333f)
+					else if (randomValue < 0.833333f)
 					{
 						value = ArrowBlock.ArrowType.StoneArrow;
 					}
-					else if (randomValue < 0.5f)
+					else if (randomValue < 0.855555f)
 					{
 						value = ArrowBlock.ArrowType.IronArrow;
 					}
-					else if (randomValue < 0.666666f)
+					else if (randomValue < 0.866666f)
 					{
 						value = ArrowBlock.ArrowType.DiamondArrow;
 					}
@@ -659,29 +765,40 @@ namespace Game
 		{
 			try
 			{
+				// Verificar ambos tipos de herd behavior para defensa de jugador
 				ComponentNewHerdBehavior componentNewHerdBehavior = base.Entity.FindComponent<ComponentNewHerdBehavior>();
-				bool flag = componentNewHerdBehavior == null || string.IsNullOrEmpty(componentNewHerdBehavior.HerdName);
-				if (!flag)
+				ComponentHerdBehavior componentHerdBehavior = base.Entity.FindComponent<ComponentHerdBehavior>();
+
+				bool isPlayerHerd = false;
+
+				if (componentNewHerdBehavior != null && !string.IsNullOrEmpty(componentNewHerdBehavior.HerdName))
 				{
-					bool flag2 = !componentNewHerdBehavior.HerdName.Equals("player", StringComparison.OrdinalIgnoreCase);
-					if (!flag2)
+					isPlayerHerd = componentNewHerdBehavior.HerdName.Equals("player", StringComparison.OrdinalIgnoreCase);
+				}
+				else if (componentHerdBehavior != null && !string.IsNullOrEmpty(componentHerdBehavior.HerdName))
+				{
+					isPlayerHerd = componentHerdBehavior.HerdName.Equals("player", StringComparison.OrdinalIgnoreCase);
+				}
+
+				if (!isPlayerHerd)
+				{
+					return;
+				}
+
+				bool flag3 = this.m_subsystemTime.GameTime < this.m_nextPlayerCheckTime;
+				if (!flag3)
+				{
+					this.m_nextPlayerCheckTime = this.m_subsystemTime.GameTime + 1.0;
+					foreach (ComponentPlayer componentPlayer in this.m_subsystemPlayers.ComponentPlayers)
 					{
-						bool flag3 = this.m_subsystemTime.GameTime < this.m_nextPlayerCheckTime;
-						if (!flag3)
+						bool flag4 = componentPlayer.ComponentHealth.Health > 0f;
+						if (flag4)
 						{
-							this.m_nextPlayerCheckTime = this.m_subsystemTime.GameTime + 1.0;
-							foreach (ComponentPlayer componentPlayer in this.m_subsystemPlayers.ComponentPlayers)
+							ComponentCreature componentCreature = this.FindPlayerAttacker(componentPlayer);
+							bool flag5 = componentCreature != null && (this.m_target == null || this.m_target != componentCreature);
+							if (flag5)
 							{
-								bool flag4 = componentPlayer.ComponentHealth.Health > 0f;
-								if (flag4)
-								{
-									ComponentCreature componentCreature = this.FindPlayerAttacker(componentPlayer);
-									bool flag5 = componentCreature != null && (this.m_target == null || this.m_target != componentCreature);
-									if (flag5)
-									{
-										this.Attack(componentCreature, 20f, 30f, false);
-									}
-								}
+								this.Attack(componentCreature, 20f, 30f, false);
 							}
 						}
 					}
@@ -713,13 +830,39 @@ namespace Game
 						bool flag3 = num3 < num2;
 						if (flag3)
 						{
+							// Verificar si NO es del rebaño "player"
 							ComponentNewHerdBehavior componentNewHerdBehavior = componentCreature.Entity.FindComponent<ComponentNewHerdBehavior>();
-							bool flag4 = componentNewHerdBehavior == null || !componentNewHerdBehavior.HerdName.Equals("player", StringComparison.OrdinalIgnoreCase);
-							if (flag4)
+							ComponentHerdBehavior componentHerdBehavior = componentCreature.Entity.FindComponent<ComponentHerdBehavior>();
+
+							bool isPlayerHerd = false;
+
+							if (componentNewHerdBehavior != null)
 							{
+								isPlayerHerd = componentNewHerdBehavior.HerdName.Equals("player", StringComparison.OrdinalIgnoreCase);
+							}
+							else if (componentHerdBehavior != null)
+							{
+								isPlayerHerd = componentHerdBehavior.HerdName.Equals("player", StringComparison.OrdinalIgnoreCase);
+							}
+
+							if (!isPlayerHerd)
+							{
+								// Verificar si está atacando al jugador
 								ComponentChaseBehavior componentChaseBehavior = componentCreature.Entity.FindComponent<ComponentChaseBehavior>();
-								bool flag5 = componentChaseBehavior != null && componentChaseBehavior.Target == player;
-								if (flag5)
+								ComponentNewChaseBehavior componentNewChaseBehavior = componentCreature.Entity.FindComponent<ComponentNewChaseBehavior>();
+
+								bool isAttackingPlayer = false;
+
+								if (componentChaseBehavior != null && componentChaseBehavior.Target == player)
+								{
+									isAttackingPlayer = true;
+								}
+								else if (componentNewChaseBehavior != null && componentNewChaseBehavior.Target == player)
+								{
+									isAttackingPlayer = true;
+								}
+
+								if (isAttackingPlayer)
 								{
 									return componentCreature;
 								}
@@ -812,7 +955,12 @@ namespace Game
 					float maxChaseTime = this.ChaseTimeOnAttacked ?? ((this.m_chaseWhenAttackedProbability >= 1f) ? 60f : 7f);
 					bool isPersistent = this.ChasePersistentOnAttacked ?? (this.m_chaseWhenAttackedProbability >= 1f);
 					ComponentNewHerdBehavior componentNewHerdBehavior = base.Entity.FindComponent<ComponentNewHerdBehavior>();
-					bool flag2 = componentNewHerdBehavior == null || componentNewHerdBehavior.CanAttackCreature(injury.Attacker);
+					bool flag2 = true;
+					bool flag3 = componentNewHerdBehavior != null;
+					if (flag3)
+					{
+						flag2 = componentNewHerdBehavior.CanAttackCreature(injury.Attacker);
+					}
 					if (flag2)
 					{
 						this.Attack(injury.Attacker, maxRange, maxChaseTime, isPersistent);
@@ -971,7 +1119,13 @@ namespace Game
 											Vector3 vector = 0.5f * (boundingBox2.Min + boundingBox2.Max);
 											float num = Vector3.Distance(v, vector);
 											float num2 = (num < 4f) ? 0.2f : 0f;
-											bool flag10 = this.m_attackMode != ComponentNewChaseBehavior.AttackMode.OnlyHand && num > 5f && this.FindAimTool(this.m_componentMiner);
+
+											// NUEVA LÓGICA: Permitir que NPCs con ComponentHerdBehavior original también usen armas
+											bool hasOriginalHerd = base.Entity.FindComponent<ComponentHerdBehavior>() != null &&
+																   base.Entity.FindComponent<ComponentNewHerdBehavior>() == null;
+											bool flag10 = (this.m_attackMode != ComponentNewChaseBehavior.AttackMode.OnlyHand && num > 5f && this.FindAimTool(this.m_componentMiner)) ||
+														   (hasOriginalHerd && num > 5f && this.FindAimTool(this.m_componentMiner));
+
 											if (flag10)
 											{
 												float num3;
@@ -1076,12 +1230,36 @@ namespace Game
 			bool flag2 = componentCreature == this.Target || this.m_subsystemGameInfo.WorldSettings.GameMode > GameMode.Harmless;
 			bool flag3 = this.m_autoChaseMask > (CreatureCategory)0;
 			bool flag4 = componentCreature == this.Target || (flag3 && MathUtils.Remainder(0.004999999888241291 * this.m_subsystemTime.GameTime + (double)((float)(this.GetHashCode() % 1000) / 1000f) + (double)((float)(componentCreature.GetHashCode() % 1000) / 1000f), 1.0) < (double)this.m_chaseNonPlayerProbability);
-			bool flag5 = componentCreature != this.m_componentCreature && ((!flag && flag4) || (flag && flag2)) && componentCreature.Entity.IsAddedToProject && componentCreature.ComponentHealth.Health > 0f;
-			if (flag5)
+
+			// MODIFICACIÓN: Permitir ataque si no tiene NewHerdBehavior
+			ComponentNewHerdBehavior componentNewHerdBehavior = base.Entity.FindComponent<ComponentNewHerdBehavior>();
+			bool flag5 = true;
+
+			if (componentNewHerdBehavior != null)
+			{
+				flag5 = componentNewHerdBehavior.CanAttackCreature(componentCreature);
+			}
+			// Si no tiene NewHerdBehavior, usar lógica del original
+			else
+			{
+				ComponentHerdBehavior componentHerdBehavior = base.Entity.FindComponent<ComponentHerdBehavior>();
+				if (componentHerdBehavior != null)
+				{
+					// Para herd behavior original, verificar si es del mismo rebaño
+					ComponentHerdBehavior targetHerd = componentCreature.Entity.FindComponent<ComponentHerdBehavior>();
+					if (targetHerd != null && !string.IsNullOrEmpty(targetHerd.HerdName) && targetHerd.HerdName == componentHerdBehavior.HerdName)
+					{
+						flag5 = false; // No atacar a miembros del mismo rebaño
+					}
+				}
+			}
+
+			bool flag6 = componentCreature != this.m_componentCreature && flag5 && ((!flag && flag4) || (flag && flag2)) && componentCreature.Entity.IsAddedToProject && componentCreature.ComponentHealth.Health > 0f;
+			if (flag6)
 			{
 				float num = Vector3.Distance(this.m_componentCreature.ComponentBody.Position, componentCreature.ComponentBody.Position);
-				bool flag6 = num < this.m_range;
-				if (flag6)
+				bool flag7 = num < this.m_range;
+				if (flag7)
 				{
 					result = this.m_range - num;
 				}
