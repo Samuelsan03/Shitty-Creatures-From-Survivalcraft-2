@@ -222,6 +222,13 @@
             <Parameter Name="EntityDamageRadius" Value="10" Type="float" Description="Radio de daño a entidades en bloques" Guid="2bcd22be-dd01-4922-be1b-6e9c5dd076d6"/>
         </ComponentTemplate>
 
+        <ComponentTemplate Name="NewRunAwayBehavior" Description="Comportamiento de huida cuando la criatura es atacada o tiene poca salud" Guid="583a8c94-3ad6-4def-abd0-08414bb1213d">
+    <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="531c21b8-9003-4b74-bfdf-5f00722bfe4d"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="0bff3aff-5372-48b1-8730-92879da35dd6"/>
+    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="86971e5f-55a5-4992-a0c8-7a003d390732"/>
+    <Parameter Name="LowHealthToEscape" Value="0.3" Type="float" Description="Salud mínima para activar huida de emergencia" Guid="36873012-27ad-4612-9da7-1468128fa322"/>
+</ComponentTemplate>
+
         <ComponentTemplate Name="PathBreaker" Guid="c1b4a3e9-6f0e-4b5d-8a7c-1f9d2e8a7b6c" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
             <Parameter Name="CanBreakBlocks" Description="La criatura puede romper bloques si el valor es true." Guid="4992bbe3-770e-4fe5-a977-40e8608428db" Value="False" Type="bool"/>
             <Parameter Name="CanPlaceBlocks" Description="La criatura puede colocar bloques si el valor es true." Guid="635fe6d7-ac27-461b-b72d-bef51f5ade53" Value="False" Type="bool"/>
@@ -319,6 +326,12 @@
     <Folder Name="NPCS" Guid="6cc49cbb-cdd2-4479-9b40-fbadd9db3425">
 
         <EntityTemplate Name="Naomi" Guid="3d60e4a1-207a-44ce-9635-fa2997824b5c" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <MemberComponentTemplate Name="NewRunAwayBehavior" Guid="bd2ff53d-c9f8-42f8-994d-0f5d7f569b4b">
+    <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="18a37ebe-ada6-49d7-a2dc-47f3159c005b"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="cfdd3f90-e5c6-4489-92cc-1af39e826266"/>
+    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="a329bdb4-dc17-4881-9cd1-83eca42bec77"/>
+    <Parameter Name="LowHealthToEscape" Value="0.3" Type="float" Guid="3b1e2e4e-9c9b-4743-95c4-4c26e897508c"/>
+</MemberComponentTemplate>
         <MemberComponentTemplate Name="NewChaseBehavior" Guid="22d62904-4954-46bf-8b15-c3cf90d4638e">
     <Parameter Name="Class" Value="Game.ComponentNewChaseBehavior" Type="string" Guid="7b34905b-1976-4cac-b73f-4e1bc7dc8926"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="cca6d07b-9c07-4716-95c3-b499006c3a7c"/>
