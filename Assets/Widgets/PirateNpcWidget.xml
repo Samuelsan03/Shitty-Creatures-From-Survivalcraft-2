@@ -1,0 +1,28 @@
+<PirateNpcWidget xmlns="runtime-namespace:Game">
+  <BevelledRectangleWidget Size="614, 382" BevelSize="3" />
+  <LabelWidget CanvasWidget.Position="12, 14" Name="SnowManLabel" Text="Trade Items" Color="255, 255, 255, 192"/>
+  <LabelWidget CanvasWidget.Position="306, 14" Name="InventoryLabel" Text="Inventory" Color="255, 255, 255, 192"/>
+  <GridPanelWidget CanvasWidget.Position="12, 52" Name="PirateNpcGrid" ColumnsCount="4" RowsCount="2"/>
+  <GridPanelWidget CanvasWidget.Position="306, 52" Name="InventoryGrid" ColumnsCount="4" RowsCount="4"/>
+  <CanvasWidget CanvasWidget.Position="94, 220">
+    <StackPanelWidget Direction="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+      <LabelWidget Text="Price Rate: " FontScale="0.7" Color="0, 0, 255, 192"/>
+      <LabelWidget Name="Ratio" Text="1.0" FontScale="0.7" Color="255, 255, 255, 192"/>
+    </StackPanelWidget>
+  </CanvasWidget>
+  <CanvasWidget CanvasWidget.Position="94, 250">
+    <StackPanelWidget Direction="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+      <LabelWidget Text="Sell Price:" FontScale="0.7" Color="255, 255, 0, 192"/>
+      <BlockIconWidget Name="Currency" HorizontalAlignment="Center" VerticalAlignment="Center" Size="30,30"/>
+      <LabelWidget Text="* " FontScale="0.7" Color="255, 255, 0, 192"/>
+      <LabelWidget Name="SellPrice" Text="0" FontScale="0.7" Color="255, 255, 0, 192"/>
+    </StackPanelWidget>
+  </CanvasWidget>
+  <InventorySlotWidget Name="TradeSellSlot" CanvasWidget.Position="12, 300">
+    <LabelWidget Text="Money" Color="0, 0, 0, 64" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+  </InventorySlotWidget>
+  <BevelledButtonWidget CanvasWidget.Position="99, 300" Name="TradeButton" Text="Trade" Style="{Styles/ButtonStyle_115x60}" />
+  <InventorySlotWidget Name="TradeResultSlot" CanvasWidget.Position="230, 300">
+    <LabelWidget Text="Item" Color="0, 0, 0, 64" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+  </InventorySlotWidget>
+</PirateNpcWidget>

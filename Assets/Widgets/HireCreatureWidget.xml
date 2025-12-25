@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<HireCreatureWidget xmlns="runtime-namespace:Game">
+    <BevelledRectangleWidget Size="400,200" BevelSize="3" CenterColor="50,50,50,128" BevelColor="80,80,80,128" />
+    
+    <LabelWidget
+        CanvasWidget.Position="50,30"
+        Name="Line1"
+        Text="Hello trainer! Need a partner?"
+        Color="255,255,255,192"/>
+
+    <LabelWidget
+        CanvasWidget.Position="15,55"
+        Name="Line2"
+        Text="Join my team for only 8 copper ingots!"
+        Color="255,255,255,192"/>
+
+    <CanvasWidget
+        CanvasWidget.Position="180,90"
+        Size="120,44">
+
+        <LabelWidget
+            Name="CostLabel"
+            CanvasWidget.Position="0,0"
+            Text="x8"
+            Color="255,255,0,192"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"/>
+    </CanvasWidget>
+    
+    <BevelledButtonWidget
+        CanvasWidget.Position="120,140"
+        Name="HireButton"
+        Text="Hire Digimon"
+        Style="{Styles/ButtonStyle_160x60}"
+        CenterColor="50,50,50,255"
+        BevelColor="80,80,80,255" />
+</HireCreatureWidget>

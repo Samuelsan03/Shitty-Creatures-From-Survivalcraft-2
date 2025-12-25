@@ -1,0 +1,135 @@
+﻿<CanvasWidget xmlns="runtime-namespace:Game" Size="500, 550" ClampToBounds="true" HorizontalAlignment="Center"
+              VerticalAlignment="Center">
+
+  <BevelledRectangleWidget Style="{Styles/ModLogDialogArea}"/>
+  <StackPanelWidget Direction="Vertical" HorizontalAlignment="Center" Margin="10, 10">
+    <LabelWidget Name="ModLogDialog.LargeLabel" Color="255, 255, 255" HorizontalAlignment="Center" Margin="0, 10"/>
+    <ScrollPanelWidget Direction="Vertical" Margin="10, 10">
+      <StackPanelWidget Direction="Vertical" Margin="10, 5">
+        <!--        1.6.0-->
+        <LabelWidget Text="1.6.0" Color="255, 255, 0" HorizontalAlignment="Center" FontScale="1.5" DropShadow="true"
+                     Margin="0, 5"/>
+        <StackPanelWidget Direction="Vertical" HorizontalAlignment="Near" Margin="0, 5">
+          <LabelWidget Text="1、新增智慧生物-海盗。海盗可交易、可雇佣" Color="192, 192, 192" HorizontalAlignment="Near"
+                       FontScale="1" DropShadow="true"
+                       Margin="0, 2"/>
+          <LabelWidget Text="2、新增中毒、解毒机制" Color="192, 192, 192" HorizontalAlignment="Near"
+                       FontScale="1" DropShadow="true"
+                       Margin="0, 2"/>
+          <LabelWidget Text="3、模组生物属性平衡大调整。" Color="192, 192, 192" HorizontalAlignment="Near"
+                       FontScale="1" DropShadow="true"
+                       Margin="0, 2"/>
+          <LabelWidget Text="4、强化武器连弩和喷枪。支持射毒箭和喷毒气" Color="192, 192, 192" HorizontalAlignment="Near"
+                       FontScale="1" DropShadow="true"
+                       Margin="0, 2"/>
+          <LabelWidget Text="5、增加樱桃、农药及其施农药机制" Color="192, 192, 192" HorizontalAlignment="Near"
+                       FontScale="1" DropShadow="true"
+                       Margin="0, 2"/>
+          <LabelWidget Text="6、增加玩家坐标显示(可配置)" Color="192, 192, 192" HorizontalAlignment="Near"
+                       FontScale="1" DropShadow="true"
+                       Margin="0, 2"/>
+          <LabelWidget Text="7、套环、海盗船优化以及Bug修复" Color="192, 192, 192" HorizontalAlignment="Near"
+                       FontScale="1" DropShadow="true"
+                       Margin="0, 2"/>
+        </StackPanelWidget>
+        <!--        1.5.4-->
+        <LabelWidget Text="1.5.4" Color="255, 255, 255" HorizontalAlignment="Center" FontScale="1.5" DropShadow="true"
+                     Margin="0, 5"/>
+        <StackPanelWidget Direction="Vertical" HorizontalAlignment="Near" Margin="0, 5">
+          <LabelWidget Text="1、修复ID冲突问题，兼容更多模组" Color="192, 192, 192" HorizontalAlignment="Near"
+                       FontScale="1" DropShadow="true"
+                       Margin="0, 2"/>
+          <LabelWidget Text="2、增加剪刀工具、羊毛修剪机制" Color="192, 192, 192" HorizontalAlignment="Near"
+                       FontScale="1" DropShadow="true"
+                       Margin="0, 2"/>
+        </StackPanelWidget>
+        <!--        1.5.3-->
+        <LabelWidget Text="1.5.3" Color="255, 255, 255" HorizontalAlignment="Center" FontScale="1.5" DropShadow="true"
+                     Margin="0, 5"/>
+        <StackPanelWidget Direction="Vertical" HorizontalAlignment="Near" Margin="0, 5">
+          <LabelWidget Text="1、载具适配手机版。操作逻辑微调" Color="192, 192, 192" HorizontalAlignment="Near"
+                       FontScale="1" DropShadow="true"
+                       Margin="0, 2"/>
+          <LabelWidget Text="2、载具支持使用钥匙释放、回收" Color="192, 192, 192" HorizontalAlignment="Near"
+                       FontScale="1" DropShadow="true"
+                       Margin="0, 2"/>
+          <LabelWidget Text="3、查看模组更新日志" Color="192, 192, 192" HorizontalAlignment="Near"
+                       FontScale="1" DropShadow="true"
+                       Margin="0, 2"/>
+          <LabelWidget Text="4、玩家搭乘载具支持残酷、挑战模式下脚下放方块" Color="192, 192, 192" HorizontalAlignment="Near"
+                       FontScale="1" DropShadow="true"
+                       Margin="0, 2"/>
+          <LabelWidget Text="5、载具支持运载宠物、雪人" Color="192, 192, 192" HorizontalAlignment="Near"
+                       FontScale="1" DropShadow="true"
+                       Margin="0, 2"/>
+          <LabelWidget Text="6、修复房车冰箱失效问题" Color="192, 192, 192" HorizontalAlignment="Near"
+                       FontScale="1" DropShadow="true"
+                       Margin="0, 2"/>
+        </StackPanelWidget>
+        <!--        1.5-->
+        <LabelWidget Text="1.5.2" Color="255, 255, 255" HorizontalAlignment="Center" FontScale="1.5" DropShadow="true"
+                     Margin="0, 5"/>
+        <StackPanelWidget Direction="Vertical" HorizontalAlignment="Near" Margin="0, 5">
+          <LabelWidget Text="1、增加石油生成以及汽油炼制工艺" Color="192, 192, 192" HorizontalAlignment="Near"
+                       FontScale="1" DropShadow="true"
+                       Margin="0, 2"/>
+          <LabelWidget Text="2、新增推土机载具" Color="192, 192, 192" HorizontalAlignment="Near" FontScale="1"
+                       DropShadow="true"
+                       Margin="0, 2"/>
+          <LabelWidget Text="3、补充蓝莓、西红柿、玉米腐烂机制" Color="192, 192, 192" HorizontalAlignment="Near"
+                       FontScale="1" DropShadow="true"
+                       Margin="0, 2"/>
+          <LabelWidget Text="4、完善模组树木的落叶效果" Color="192, 192, 192" HorizontalAlignment="Near" FontScale="1"
+                       DropShadow="true"
+                       Margin="0, 2"/>
+          <LabelWidget Text="5、增加API版本检测与提示" Color="192, 192, 192" HorizontalAlignment="Near" FontScale="1"
+                       DropShadow="true"
+                       Margin="0, 2"/>
+          <LabelWidget Text="6、修复连弩装载箭头数目异常等Bug" Color="192, 192, 192" HorizontalAlignment="Near"
+                       FontScale="1" DropShadow="true"
+                       Margin="0, 2"/>
+        </StackPanelWidget>
+
+        <LabelWidget Text="1.5.1" Color="192, 192, 192" HorizontalAlignment="Center" FontScale="1.5" DropShadow="true"
+                     Margin="0, 5"/>
+        <StackPanelWidget Direction="Vertical" HorizontalAlignment="Near" Margin="0, 5">
+          <LabelWidget Text="1、火山新地形及其生态" Color="192, 192, 192" HorizontalAlignment="Near" FontScale="1"
+                       DropShadow="true"
+                       Margin="0, 2"/>
+          <LabelWidget Text="2、沉浸式飞机系列载具" Color="192, 192, 192" HorizontalAlignment="Near" FontScale="1"
+                       DropShadow="true"
+                       Margin="0, 2"/>
+          <LabelWidget Text="3、更多的丰富的植物且支持自动化种植" Color="192, 192, 192" HorizontalAlignment="Near"
+                       FontScale="1" DropShadow="true"
+                       Margin="0, 2"/>
+          <LabelWidget Text="4、农业添加害虫、害虫防治机制" Color="192, 192, 192" HorizontalAlignment="Near" FontScale="1"
+                       DropShadow="true"
+                       Margin="0, 2"/>
+          <LabelWidget Text="5、主界面优化以及修复动物驯服相关问题" Color="192, 192, 192" HorizontalAlignment="Near"
+                       FontScale="1" DropShadow="true"
+                       Margin="0, 2"/>
+        </StackPanelWidget>
+        <!--        1.4系列-->
+        <LabelWidget Text="1.4.1" Color="192, 192, 192" HorizontalAlignment="Center" FontScale="1.5" DropShadow="true"
+                     Margin="0, 5"/>
+        <StackPanelWidget Direction="Vertical" HorizontalAlignment="Near" Margin="0, 5">
+          <LabelWidget Text="1、房车优化，增加冰箱功能" Color="192, 192, 192" HorizontalAlignment="Near" FontScale="1"
+                       DropShadow="true"
+                       Margin="0, 2"/>
+          <LabelWidget Text="2、增加熊猫与竹子" Color="192, 192, 192" HorizontalAlignment="Near" FontScale="1"
+                       DropShadow="true"
+                       Margin="0, 2"/>
+          <LabelWidget Text="3、设计图、空心菜、樱花树刷新数值调整" Color="192, 192, 192" HorizontalAlignment="Near"
+                       FontScale="1" DropShadow="true"
+                       Margin="0, 2"/>
+          <LabelWidget Text="4、修复头盔空间狭窄不发光问题" Color="192, 192, 192" HorizontalAlignment="Near"
+                       FontScale="1" DropShadow="true"
+                       Margin="0, 2"/>
+        </StackPanelWidget>
+      </StackPanelWidget>
+    </ScrollPanelWidget>
+    <StackPanelWidget Direction="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Far" Margin="0, 5">
+      <BevelledButtonWidget Name="ModLogDialog.Button1" Style="{Styles/ButtonStyle_160x60}" Margin="40, 0"/>
+    </StackPanelWidget>
+  </StackPanelWidget>
+</CanvasWidget>
