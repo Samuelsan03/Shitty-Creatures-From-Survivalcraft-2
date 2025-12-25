@@ -330,7 +330,7 @@
     <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="18a37ebe-ada6-49d7-a2dc-47f3159c005b"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="cfdd3f90-e5c6-4489-92cc-1af39e826266"/>
     <Parameter Name="LoadOrder" Value="55" Type="int" Guid="a329bdb4-dc17-4881-9cd1-83eca42bec77"/>
-    <Parameter Name="LowHealthToEscape" Value="0.3" Type="float" Guid="3b1e2e4e-9c9b-4743-95c4-4c26e897508c"/>
+    <Parameter Name="LowHealthToEscape" Value="1" Type="float" Guid="3b1e2e4e-9c9b-4743-95c4-4c26e897508c"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="NewChaseBehavior" Guid="22d62904-4954-46bf-8b15-c3cf90d4638e">
     <Parameter Name="Class" Value="Game.ComponentNewChaseBehavior" Type="string" Guid="7b34905b-1976-4cac-b73f-4e1bc7dc8926"/>
@@ -5414,7 +5414,7 @@
               <Parameter Name="IsEnabled" Guid="f8bcf0c8-8ef2-4f55-a2bd-53e626a77b79" Value="True" Type="bool"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="AutoJump" Guid="1c10ba2b-124a-401b-9d67-8b7da8219379">
-              <Parameter Name="JumpStrength" Guid="1c637750-8ab3-4713-a609-a5636864dc70" Value="1.0" Type="float"/>
+              <Parameter Name="JumpStrength" Guid="1c637750-8ab3-4713-a609-a5636864dc70" Value="1" Type="float"/>
             </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewChaseBehavior" Guid="2253b41c-5795-4561-9d25-90f8d64f9b5f">
     <Parameter Name="Class" Value="Game.ComponentNewChaseBehavior" Type="string" Guid="27b3a70e-4a13-4ed1-8d6f-dd54c9635cdc"/>
@@ -5989,14 +5989,17 @@
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidFireBehavior" Guid="fa809441-c6ec-4315-b103-577801c76a9c" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
-            <MemberComponentTemplate Name="Locomotion" Guid="12af13a8-0d68-4664-991c-04207a13d0d9">
-                <Parameter Name="AccelerationFactor" Guid="b45defba-4e4a-419b-bdbd-8ecf932a3717" Value="1.2" Type="float"/>
-                <Parameter Name="FlySpeed" Guid="0cf28b57-a779-4eef-8de3-5c5ee62e7611" Value="0" Type="float"/>
-                <Parameter Name="TurnSpeed" Guid="169f1609-4dab-4424-acf0-97eeb1ac2ade" Value="8" Type="float"/>
-                <Parameter Name="WalkSpeed" Guid="5953327a-e650-4ee4-9cd5-383c3ca00173" Value="4.2" Type="float"/>
-                <Parameter Name="LadderSpeed" Guid="cb5d9d5f-2c1e-444e-884b-640bf4ff8ea3" Value="0" Type="float"/>
-                <Parameter Name="JumpSpeed" Guid="3bb22910-569a-4782-9435-c9a1bea98813" Value="1.0" Type="float"/>
-            </MemberComponentTemplate>
+            <MemberComponentTemplate Name="Locomotion" Guid="14da21fa-c9dd-451c-b6c8-89e50befaa55">
+        <Parameter Name="WalkSpeedWhenTurning" Guid="1c8af8b9-bcb5-417a-8583-1b3e62d7498c" Value="0" Type="float"/>
+        <Parameter Name="LadderSpeed" Guid="aa1d3998-e67b-4444-9ad0-866f5cdb41db" Value="0" Type="float"/>
+        <Parameter Name="InAirWalkFactor" Guid="b58be896-7ff2-4b33-b543-0834c939b6c1" Value="1" Type="float"/>
+        <Parameter Name="WalkSpeed" Guid="32aa0fb6-02b3-4133-bc76-6860d8b2e185" Value="4.7" Type="float"/>
+        <Parameter Name="FlySpeed" Guid="27aae859-fb8d-4169-8ac9-235b34400897" Value="0" Type="float"/>
+        <Parameter Name="TurnSpeed" Guid="b8e02673-b2f4-48eb-8e9f-777f40ba710d" Value="8" Type="float"/>
+        <Parameter Name="JumpSpeed" Guid="6cf4bdcf-2e6a-4fa0-8daf-ddcadced44cc" Value="7" Type="float"/>
+        <Parameter Name="SwimSpeed" Guid="135f4992-6d6d-4279-a474-9001bc1b626b" Value="7" Type="float"/>
+        <Parameter Name="AccelerationFactor" Guid="40530743-77da-40ff-b9a0-8498c08e8ec2" Value="1.5" Type="float"/>
+      </MemberComponentTemplate>
             <MemberComponentTemplate Name="Body" Guid="62f33eb8-b510-4ee0-9ad8-a4d01613a87b">
                 <Parameter Name="Mass" Guid="f8ea56c7-5aa9-48b7-8288-d19743ba3b76" Value="60" Type="float"/>
                 <Parameter Name="BoxSize" Guid="d544467d-2c92-4b12-a9dd-0c2150f0985e" Value="0.8,1.8,0.8" Type="Vector3"/>
@@ -6247,7 +6250,7 @@
            <MemberComponentTemplate Name="Inventory" Guid="f756e2fb-a023-4d95-b5ab-1dc9705fb4bb" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
             <ParameterSet Name="Slots">
             <ParameterSet Name="Slot0">
-                <Parameter Name="Contents" Value="319" Type="int"/>
+                <Parameter Name="Contents" Value="212" Type="int"/>
                 <Parameter Name="Count" Value="1" Type="int"/>
             </ParameterSet>
             <ParameterSet Name="Slot1">
@@ -6268,13 +6271,17 @@
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidFireBehavior" Guid="65966ad8-f083-4ce4-9c33-8d85308274ef" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
-            <MemberComponentTemplate Name="Locomotion" Guid="637c887d-56e7-4557-ae0c-def58b3db234">
-                <Parameter Name="AccelerationFactor" Guid="2b725ee4-ac99-4b4e-a97c-6be9694db8a2" Value="1.2" Type="float"/>
-                <Parameter Name="FlySpeed" Guid="6dcc253b-d7e6-4a48-b756-0b186e73d367" Value="0" Type="float"/>
-                <Parameter Name="TurnSpeed" Guid="e05020ab-8e5c-45be-b282-502af60771b9" Value="8" Type="float"/>
-                <Parameter Name="WalkSpeed" Guid="3e2523e8-6cd1-41fa-85bd-165b9ddb1c29" Value="4.2" Type="float"/>
-                <Parameter Name="LadderSpeed" Guid="8275a3cc-be63-4e1a-86f3-1ac495074399" Value="0" Type="float"/>
-            </MemberComponentTemplate>
+           <MemberComponentTemplate Name="Locomotion" Guid="331bdd4e-948b-4470-a977-cc50a2d66b2b">
+        <Parameter Name="WalkSpeedWhenTurning" Guid="4f3d5f27-ebfb-4d65-9aad-8e5cfbae625c" Value="0" Type="float"/>
+        <Parameter Name="LadderSpeed" Guid="c160c85e-81a8-484a-b214-7f0c9a96198e" Value="0" Type="float"/>
+        <Parameter Name="InAirWalkFactor" Guid="ea3ca713-1964-4084-b06c-51eede67a905" Value="1" Type="float"/>
+        <Parameter Name="WalkSpeed" Guid="a9b15845-5a48-4020-b03d-a3a8d053958c" Value="4.7" Type="float"/>
+        <Parameter Name="FlySpeed" Guid="ca4cc53d-ee2b-450e-b1e9-baa14dcbd75f" Value="0" Type="float"/>
+        <Parameter Name="TurnSpeed" Guid="3cf21877-a07c-4f96-8ac9-e3b88dfdd65a" Value="8" Type="float"/>
+        <Parameter Name="JumpSpeed" Guid="556eeff5-9712-405f-a033-c901cc3230ef" Value="7" Type="float"/>
+        <Parameter Name="SwimSpeed" Guid="ccab4423-1054-4234-890f-5321bd5749bb" Value="7" Type="float"/>
+        <Parameter Name="AccelerationFactor" Guid="4941616a-1e3b-4997-aaca-76e9baf83d97" Value="1.5" Type="float"/>
+      </MemberComponentTemplate>
             <MemberComponentTemplate Name="Body" Guid="9ded0c9d-e3c6-4eb2-bcdb-ea7b4eff22ed">
                 <Parameter Name="Mass" Guid="a20c75f8-f7b6-4680-a51f-c60946a3bea6" Value="60" Type="float"/>
                 <Parameter Name="BoxSize" Guid="93521f5e-c8b0-485e-9b47-9546325d62d8" Value="0.8,1.8,0.8" Type="Vector3"/>
@@ -6320,8 +6327,14 @@
         <Parameter Name="MaxDisplayDistance" Value="19" Type="float"/>
     </MemberComponentTemplate>
             <MemberComponentTemplate Name="Health" Guid="4897b4da-122d-4d72-9c11-cfe8f459bd4e">
-                <Parameter Name="FireResilience" Guid="4c511c73-9707-4ddd-8a69-1b2cbe20c076" Value="120" Type="float"/>
-        <Parameter Name="AttackResilience" Guid="d3e7ba39-1b8c-45e2-bf63-f3bfeb5fcf00" Value="730" Type="float"/>
+            <Parameter Name="AttackResilience" Guid="fc957fa1-83c0-450b-a47c-5bbe3db1fe53" Value="730" Type="float"/>
+        <Parameter Name="FallResilience" Guid="b3c59bac-83a6-4f10-92a3-2db454239218" Value="116" Type="float"/>
+        <Parameter Name="ExplosionResilience" Guid="b19dcaae-ebd4-464c-8f5a-87c03316a196" Value="332" Type="float"/>
+        <Parameter Name="FireResilience" Guid="ccc2df5b-6182-424f-9e84-ada13dccc20f" Value="160" Type="float"/>
+        <Parameter Name="HealFactor" Guid="9158caf1-1489-49c7-9ff8-8e73a09e6052" Value="3" Type="float"/>
+        <Parameter Name="MagmaResilience"  Guid="0f968e89-35d0-4d5c-8563-2bceaa5f4579" Value="118" Type="float"/>
+        <Parameter Name="CrushResilience" Guid="6bbb6b6b-ad67-4fac-bcfe-d05eb41b4040" Value="infinity" Type="float"/>
+        <Parameter Name="SpikeResilience" Guid="96e5543d-7eb4-4aa4-9a63-e410b952f50e" Value="infinity" Type="float"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="OnFire" Guid="e5b5d1dc-94d3-4ddf-9244-6e9e15096d84"/>
             <MemberComponentTemplate Name="WalkAroundBehavior" Guid="747c18a1-0f27-4d32-80c0-4ffcedabb13a" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
@@ -6407,17 +6420,20 @@
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="AutoJump" Guid="ffb5e497-e920-4aca-996a-b8f45071ac96">
-              <Parameter Name="JumpStrength" Guid="30d02c0b-f0cb-46d5-9e40-911de350b06e" Value="1.0" Type="float"/>
+              <Parameter Name="JumpStrength" Guid="30d02c0b-f0cb-46d5-9e40-911de350b06e" Value="2.0" Type="float"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidFireBehavior" Guid="485c24b6-25af-4a78-945b-c922076a2262" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
-            <MemberComponentTemplate Name="Locomotion" Guid="29648d26-0625-443e-aaee-6d344564c5ac">
-                <Parameter Name="AccelerationFactor" Guid="cb28da29-1103-467e-9143-903d1bd3bcd5" Value="1.2" Type="float"/>
-                <Parameter Name="FlySpeed" Guid="24acb10f-0dc1-45a2-944a-8cc696241df2" Value="0" Type="float"/>
-                <Parameter Name="TurnSpeed" Guid="1de5bbe7-a086-4789-ba7a-e4cf7327932f" Value="8" Type="float"/>
-                <Parameter Name="WalkSpeed" Guid="43181912-c49c-4fb6-b88d-e2bceb4d40ca" Value="4.2" Type="float"/>
-                <Parameter Name="JumpSpeed" Guid="6ebd5f07-f187-4057-a42d-2c6adf59ae51" Value="1.0" Type="float"/>
-                <Parameter Name="LadderSpeed" Guid="0ff78913-c322-4719-beb9-cab49a980f1c" Value="0" Type="float"/>
-            </MemberComponentTemplate>
+            <MemberComponentTemplate Name="Locomotion" Guid="4c03c641-9a54-4887-8aac-508e3abc4d88">
+        <Parameter Name="WalkSpeedWhenTurning" Guid="09660e74-dde0-4e1b-b0f6-96ccf8baaf6f" Value="0" Type="float"/>
+        <Parameter Name="LadderSpeed" Guid="fa402585-9059-49ae-a5b7-f3bf4aa2421e" Value="0" Type="float"/>
+        <Parameter Name="InAirWalkFactor" Guid="ccd27551-1157-43f2-8ef4-a701c9685b48" Value="1" Type="float"/>
+        <Parameter Name="WalkSpeed" Guid="df417b2b-c5d5-49bb-8bcd-3f44c7682e96" Value="4.7" Type="float"/>
+        <Parameter Name="FlySpeed" Guid="b22a5279-26d8-4950-a0e8-9bbb241ac4ed" Value="0" Type="float"/>
+        <Parameter Name="TurnSpeed" Guid="807302ee-8e25-4ef8-ab19-09e49b7fc0ca" Value="8" Type="float"/>
+        <Parameter Name="JumpSpeed" Guid="8b0b4371-275e-408c-a02b-58aa8782e3d9" Value="8" Type="float"/>
+        <Parameter Name="SwimSpeed" Guid="f312f476-b62e-4844-851e-c98d49321d68" Value="7" Type="float"/>
+        <Parameter Name="AccelerationFactor" Guid="c4b01414-af7c-492a-800b-394e44f2e76f" Value="1.5" Type="float"/>
+      </MemberComponentTemplate>
             <MemberComponentTemplate Name="Body" Guid="23f3ec85-f0ad-43b8-a560-49a28d4858bb">
                 <Parameter Name="Mass" Guid="f43edb49-6602-4030-aaba-a8469f450c01" Value="60" Type="float"/>
                 <Parameter Name="BoxSize" Guid="46013043-453b-43c6-9394-771445bac20b" Value="0.8,1.8,0.8" Type="Vector3"/>
@@ -6452,8 +6468,14 @@
         <Parameter Name="MaxDisplayDistance" Value="19" Type="float"/>
     </MemberComponentTemplate>
             <MemberComponentTemplate Name="Health" Guid="b3d89cf6-5ba6-42bf-b816-00587dd228ca">
-                <Parameter Name="FireResilience" Guid="49be1e88-7f7a-4f07-88be-2605ffecef79" Value="1000" Type="float"/>
-        <Parameter Name="AttackResilience" Guid="afc3b3bc-3ec6-46e8-9e78-57e7f54ff591" Value="1880" Type="float"/>
+                <Parameter Name="AttackResilience" Guid="74452072-a9d1-4f1f-bf67-478064c5f80c" Value="1880" Type="float"/>
+        <Parameter Name="FallResilience" Guid="8994c3f1-9865-45bd-87fe-0f026c0ee6f3" Value="416" Type="float"/>
+        <Parameter Name="ExplosionResilience" Guid="17e1f596-d8bd-4424-96ff-6d6899d7d457" Value="332" Type="float"/>
+        <Parameter Name="FireResilience" Guid="fe2b8e3f-784b-4e8c-9d28-cc71bc4fc7b8" Value="160" Type="float"/>
+        <Parameter Name="HealFactor" Guid="8a915769-d955-403e-bc20-28af1d13f3ef" Value="3" Type="float"/>
+        <Parameter Name="MagmaResilience"  Guid="41ff402a-aa66-49cb-95fd-eb006bd35897" Value="118" Type="float"/>
+        <Parameter Name="CrushResilience" Guid="15ee3545-483c-4a96-82c9-86f27136baa1" Value="infinity" Type="float"/>
+        <Parameter Name="SpikeResilience" Guid="df503fdf-5541-4dff-ad99-a8de754b4f22" Value="infinity" Type="float"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="OnFire" Guid="e342d840-2f9c-458e-9786-ec8a02204a1a"/>
             <MemberComponentTemplate Name="WalkAroundBehavior" Guid="10ccdc2b-697a-4fd2-b2eb-948a9d8c66d6" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
@@ -6487,6 +6509,11 @@
                 <Parameter Name="IdleSound" Guid="a34b0ecb-c91e-45c1-9a75-d0569f2ba544" Value="Audio/Creatures/Pirata/Idie" Type="string"/>
                 <Parameter Name="AttackSound" Guid="7df593e6-573c-450c-a1f1-ada4215b2f81" Value="Audio/Creatures/Pirata/Attack" Type="string"/>
             </MemberComponentTemplate>
+            <MemberComponentTemplate Name="HerdBehavior" Guid="d0376aea-d3e5-4344-9afa-3cf21462abdc" InheritanceParent="dfe7218e-ce14-4bde-8dac-f919c38e9efe">
+    <Parameter Name="HerdName" Guid="76c03d03-21bb-4b4a-98b3-0d93c4241ab1" Value="Pirate" Type="string"/>
+    <Parameter Name="AutoNearbyCreaturesHelp" Guid="6eca8970-bc3e-43b2-a0f8-c6b735a957f5" Value="True" Type="bool"/>
+    <Parameter Name="HerdingRange" Guid="68125082-55db-4087-8b77-72873ce2b7c2" Value="40" Type="float"/>
+</MemberComponentTemplate>
         <MemberComponentTemplate Name="NewChaseBehavior" Guid="4acecf49-3006-4b22-b931-e17ff5106d03">
     <Parameter Name="Class" Value="Game.ComponentNewChaseBehavior" Type="string" Guid="2fd8868b-1d06-4c39-acf0-4838a98fe4f7"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="bd0cc8d8-5eb4-4862-ada6-5e437458b134"/>
@@ -6518,13 +6545,17 @@
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidFireBehavior" Guid="faead3f6-2248-41e5-85a3-7848c9f573e4" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
-            <MemberComponentTemplate Name="Locomotion" Guid="9c9ebc8f-cb26-4d08-9213-adf773aa4299">
-                <Parameter Name="AccelerationFactor" Guid="ed017ab4-d53a-418d-9d83-20c8099400e1" Value="1.2" Type="float"/>
-                <Parameter Name="FlySpeed" Guid="8a543a48-9c5d-473f-9d87-66dda6c933c0" Value="0" Type="float"/>
-                <Parameter Name="TurnSpeed" Guid="a6142aeb-e964-430f-9bf4-083aa5f81077" Value="8" Type="float"/>
-                <Parameter Name="WalkSpeed" Guid="215e64da-69d9-49b3-be7b-cac5950f4a20" Value="4.2" Type="float"/>
-                <Parameter Name="LadderSpeed" Guid="d3ed1500-4eed-4e8a-81ea-5d3db4498c64" Value="0" Type="float"/>
-            </MemberComponentTemplate>
+            <MemberComponentTemplate Name="Locomotion" Guid="4abccd97-b15d-474e-b83f-6da4889078fd">
+        <Parameter Name="WalkSpeedWhenTurning" Guid="a6477977-a601-4ea1-976c-281dc106f9e6" Value="0" Type="float"/>
+        <Parameter Name="LadderSpeed" Guid="436a9292-373a-471f-9468-a5a7ed7ee721" Value="0" Type="float"/>
+        <Parameter Name="InAirWalkFactor" Guid="58884c25-f479-4721-819e-642a997ca237" Value="1" Type="float"/>
+        <Parameter Name="WalkSpeed" Guid="d0fa8051-b7b7-4475-89d2-96a40dd951e6" Value="4.7" Type="float"/>
+        <Parameter Name="FlySpeed" Guid="0a583f5b-887f-4383-8ae6-03ca92c248bf" Value="0" Type="float"/>
+        <Parameter Name="TurnSpeed" Guid="c65a24c5-a689-4bd2-a3dd-5bc18aaf7bda" Value="8" Type="float"/>
+        <Parameter Name="JumpSpeed" Guid="9ced1bac-3750-4699-a593-8e073f9a477b" Value="7" Type="float"/>
+        <Parameter Name="SwimSpeed" Guid="46705d4c-f2c2-48d4-a69d-08409347f613" Value="7" Type="float"/>
+        <Parameter Name="AccelerationFactor" Guid="5742ab55-01d7-408e-9269-7f3989d163ec" Value="1.5" Type="float"/>
+      </MemberComponentTemplate>
             <MemberComponentTemplate Name="Body" Guid="7ce820d9-5dc1-483d-a720-a2ca422555c5">
                 <Parameter Name="Mass" Guid="6d41d52b-4d56-4da3-85f0-eb9b7009f7d9" Value="60" Type="float"/>
                 <Parameter Name="BoxSize" Guid="28d2d096-f2a5-48c3-91fe-fea2a1ec2b03" Value="0.8,1.8,0.8" Type="Vector3"/>
@@ -6647,13 +6678,17 @@
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidFireBehavior" Guid="b644c788-e296-43df-aee9-3f36a0edc9d5" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
-            <MemberComponentTemplate Name="Locomotion" Guid="51a179db-76c5-415e-be05-3d4a88ed5c45">
-                <Parameter Name="AccelerationFactor" Guid="cb33b6da-f969-49a7-8913-f87ce770bd64" Value="1.2" Type="float"/>
-                <Parameter Name="FlySpeed" Guid="4cfe0178-9ab3-49ae-91f6-4c0c95f99794" Value="0" Type="float"/>
-                <Parameter Name="TurnSpeed" Guid="63c43a38-28ff-459e-9418-cb6595ab221d" Value="8" Type="float"/>
-                <Parameter Name="WalkSpeed" Guid="eff7d2b3-67ce-4f28-8644-c2a3e22910df" Value="4.2" Type="float"/>
-                <Parameter Name="LadderSpeed" Guid="083d76b1-8971-4c30-8637-222d6e0cb512" Value="0" Type="float"/>
-            </MemberComponentTemplate>
+            <MemberComponentTemplate Name="Locomotion" Guid="08b1c1a8-de84-4c3a-803e-aee65aaf042b">
+        <Parameter Name="WalkSpeedWhenTurning" Guid="2dc8468b-ff6b-45ff-9cb6-65d79974186d" Value="0" Type="float"/>
+        <Parameter Name="LadderSpeed" Guid="767967c8-3f76-4d30-a0a4-93e94d6a45c1" Value="0" Type="float"/>
+        <Parameter Name="InAirWalkFactor" Guid="d166beb2-9f1a-44ef-b43a-53fb9c9e386c" Value="1" Type="float"/>
+        <Parameter Name="WalkSpeed" Guid="f8d1bdb9-be6c-4b95-912a-3b4986bc3136" Value="4.7" Type="float"/>
+        <Parameter Name="FlySpeed" Guid="4048037d-6b1c-4b47-a999-83f12b68df9d" Value="0" Type="float"/>
+        <Parameter Name="TurnSpeed" Guid="f8ccc384-9ebf-42e6-9d0b-c1209880284f" Value="8" Type="float"/>
+        <Parameter Name="JumpSpeed" Guid="0fe71f0d-8f61-4799-bc2c-de0ec1be86f8" Value="7" Type="float"/>
+        <Parameter Name="SwimSpeed" Guid="9ac0e8be-72df-4b9f-96dc-ec5684c79adc" Value="7" Type="float"/>
+        <Parameter Name="AccelerationFactor" Guid="e180ff9f-5abe-4484-974a-3bae9e9d14e4" Value="1.5" Type="float"/>
+      </MemberComponentTemplate>
             <MemberComponentTemplate Name="Body" Guid="3c7299ae-5798-4103-8b78-6ffe90c0b997">
                 <Parameter Name="Mass" Guid="4bbc5444-54b5-4e9b-bacb-f260b1ac3824" Value="60" Type="float"/>
                 <Parameter Name="BoxSize" Guid="c53f6427-5390-44a6-9165-8f022e478dd3" Value="0.8,1.8,0.8" Type="Vector3"/>
