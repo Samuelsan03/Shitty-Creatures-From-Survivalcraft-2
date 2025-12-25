@@ -1760,11 +1760,19 @@
     <Parameter Name="LoadOrder" Value="50" Type="int"/>
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ChaseBehavior" Guid="d71acd48-f5d5-4b5e-8baf-9a4a1db39841" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
-              <Parameter Name="ChaseNonPlayerProbability" Guid="0dbdd746-b568-4001-bcda-c07580605ad8" Value="0.253" Type="float"/>
-              <Parameter Name="NightChaseRange" Guid="42b0ca10-e48b-4079-b513-966221ecb1ab" Value="20" Type="float"/>
-              <Parameter Name="NightChaseTime" Guid="61771540-6229-4f79-b9fd-2a39b50cf046" Value="15" Type="float"/>
-            </MemberComponentTemplate>
+            <MemberComponentTemplate Name="NewChaseBehavior" Guid="53ecb660-82b5-48e9-a621-ae54bb9410fb">
+    <Parameter Name="Class" Value="Game.ComponentNewChaseBehavior" Type="string" Guid="85ab6682-6b0b-4841-af24-511f23fa0268"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="36b2a089-4c6d-43a9-940d-5438088210d2"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="bb85aaf7-afb8-49cf-9457-3a8fe2782c0b"/>
+    <Parameter Name="DayChaseRange" Value="16" Type="float" Guid="85e39c92-7ff1-4061-8755-1e89e3b672f6"/>
+    <Parameter Name="NightChaseRange" Value="24" Type="float" Guid="25f73951-ecd5-43f7-9937-769800ad2bba"/>
+    <Parameter Name="DayChaseTime" Value="30" Type="float" Guid="b97295cd-0bf1-47df-a6a5-630725b44fc0"/>
+    <Parameter Name="NightChaseTime" Value="60" Type="float" Guid="ca2e2993-9770-4208-bec1-8488c573fb57"/>
+    <Parameter Name="ChaseNonPlayerProbability" Value="0.2" Type="float" Guid="9114db86-17b9-46a6-8676-e8bc8e4fb233"/>
+    <Parameter Name="ChaseWhenAttackedProbability" Value="0.8" Type="float" Guid="16e9b63e-198d-4de5-8739-af472bddc5c4"/>
+    <Parameter Name="ChaseOnTouchProbability" Value="0.5" Type="float" Guid="c281d36f-4173-40ca-b4b1-972d3c691467"/>
+    <Parameter Name="AutoChaseMask" Value="LandOther,WaterOther" Type="string" Guid="41901c29-6f1c-4d56-94ad-1044984df93e"/>
+</MemberComponentTemplate>
             <MemberComponentTemplate Name="AutoJump" Guid="d8b4e649-ddfd-488a-8b3f-5c3c058b8023">
               <Parameter Name="JumpStrength" Guid="3bfd865f-f058-4e1f-bf54-4e5a6d1a637e" Value="0.7" Type="float"/>
             </MemberComponentTemplate>
