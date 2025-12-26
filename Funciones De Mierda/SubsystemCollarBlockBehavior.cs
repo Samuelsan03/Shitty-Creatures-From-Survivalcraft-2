@@ -94,14 +94,14 @@ namespace Game
 				{
 					try
 					{
-						// Obtener el mensaje traducido - ¡CORREGIDO!
-						// De acuerdo a tu ejemplo y al JSON, debe ser así:
+						// Obtener el mensaje traducido
 						string message = LanguageControl.Get("Messages", "CollarTamedMessage", "You have tamed a hostile Infected! Now it will be your guardian!");
 						Console.WriteLine($"Mostrando mensaje: {message}");
 
-						// Mostrar el mensaje en naranja y con sonido (según tu ejemplo)
+						// Mostrar el mensaje con color RGB personalizado
+						// RGB: R=50, G=205, B=50 (verde claro/lime)
 						// true, true = mostrar tintineo y jugar sonido
-						componentPlayer.ComponentGui.DisplaySmallMessage(message, Color.LightGreen, true, true);
+						componentPlayer.ComponentGui.DisplaySmallMessage(message, new Color(102, 255, 178), true, true);
 					}
 					catch (Exception ex)
 					{
@@ -109,7 +109,7 @@ namespace Game
 						Console.WriteLine($"StackTrace: {ex.StackTrace}");
 
 						// Si falla, mostrar mensaje por defecto
-						componentPlayer.ComponentGui.DisplaySmallMessage("You have tamed a hostile Infected! Now it will be your guardian!", Color.Orange, true, true);
+						componentPlayer.ComponentGui.DisplaySmallMessage("You have tamed a hostile Infected! Now it will be your guardian!", new Color(50, 205, 50), true, true);
 					}
 				}
 				else
