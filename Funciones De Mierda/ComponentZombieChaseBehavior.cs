@@ -37,7 +37,7 @@ namespace Game
 		public bool AttacksSameHerd { get; set; } = false; // Los zombis NO atacan a su propia manada
 		public string ZombieHerdName { get; set; } = "Zombie";
 
-		public virtual void Attack(ComponentCreature componentCreature, float maxRange, float maxChaseTime, bool isPersistent)
+		public virtual void Attack(ComponentCreature componentCreature, float maxRange, float maxChaseTime, bool isPersistent, bool isRetaliation = false)
 		{
 			bool suppressed = this.Suppressed;
 			if (!suppressed)
@@ -56,14 +56,14 @@ namespace Game
 					}
 				}
 
-				// VERIFICACIÓN DE MODO DE JUEGO: Solo atacar en Survival, Challenging o Cruel
+				// VERIFICACIÓN DE MODO DE JUEGO: Solo atacar en Survival, Challenging o Cruel (o si es retaliación)
 				bool isPlayer = componentCreature.Entity.FindComponent<ComponentPlayer>() != null;
-				if (isPlayer)
+				if (isPlayer && !isRetaliation) // Solo aplicar restricción si NO es retaliación
 				{
 					GameMode currentGameMode = this.m_subsystemGameInfo.WorldSettings.GameMode;
 					if (currentGameMode == GameMode.Creative || currentGameMode == GameMode.Harmless)
 					{
-						return; // No atacar jugadores en Creative o Harmless
+						return; // No atacar jugadores en Creative o Harmless (solo si no es retaliación)
 					}
 				}
 
@@ -700,14 +700,14 @@ namespace Game
 						}
 					}
 
-					// Verificar modo de juego para jugadores
+					// Verificar modo de juego para jugadores (ataques no provocados)
 					bool isPlayer = componentCreature.Entity.FindComponent<ComponentPlayer>() != null;
 					if (isPlayer)
 					{
 						GameMode currentGameMode = this.m_subsystemGameInfo.WorldSettings.GameMode;
 						if (currentGameMode == GameMode.Creative || currentGameMode == GameMode.Harmless)
 						{
-							canAttack = false; // No atacar jugadores en Creative o Harmless
+							canAttack = false; // No atacar jugadores en Creative o Harmless (solo ataques no provocados)
 						}
 					}
 
@@ -744,13 +744,13 @@ namespace Game
 				}
 			}
 
-			// Verificar modo de juego para jugadores
+			// Verificar modo de juego para jugadores (ataques no provocados)
 			if (isPlayer)
 			{
 				GameMode currentGameMode = this.m_subsystemGameInfo.WorldSettings.GameMode;
 				if (currentGameMode == GameMode.Creative || currentGameMode == GameMode.Harmless)
 				{
-					canAttack = false; // No atacar jugadores en Creative o Harmless
+					canAttack = false; // No atacar jugadores en Creative o Harmless (solo ataques no provocados)
 				}
 			}
 
@@ -852,13 +852,14 @@ namespace Game
 							}
 						}
 
-						// Verificar modo de juego para jugadores
+						// Verificar modo de juego para jugadores (contacto)
 						if (flag3)
 						{
 							GameMode currentGameMode = this.m_subsystemGameInfo.WorldSettings.GameMode;
+							// NO atacar por contacto en Creative/Harmless
 							if (currentGameMode == GameMode.Creative || currentGameMode == GameMode.Harmless)
 							{
-								canAttack = false; // No atacar jugadores en Creative o Harmless
+								canAttack = false;
 							}
 						}
 
@@ -882,16 +883,8 @@ namespace Game
 					float maxChaseTime = this.ChaseTimeOnAttacked ?? 60f;
 					bool isPersistent = this.ChasePersistentOnAttacked ?? true;
 
-					// Verificar si el atacante es un jugador y el modo de juego no permite atacar
-					bool isPlayerAttacker = injury.Attacker.Entity.FindComponent<ComponentPlayer>() != null;
-					if (isPlayerAttacker)
-					{
-						GameMode currentGameMode = this.m_subsystemGameInfo.WorldSettings.GameMode;
-						if (currentGameMode == GameMode.Creative || currentGameMode == GameMode.Harmless)
-						{
-							return; // No atacar jugadores en Creative o Harmless
-						}
-					}
+					// Permitir retaliación incluso en Creative/Harmless
+					// NO verificar modo de juego para retaliación
 
 					// Verificar si el atacante es del mismo rebaño
 					bool canAttack = true;
@@ -907,7 +900,8 @@ namespace Game
 
 					if (canAttack)
 					{
-						this.Attack(injury.Attacker, maxRange, maxChaseTime, isPersistent);
+						// Pasar true como isRetaliation para permitir ataque en Creative/Harmless
+						this.Attack(injury.Attacker, maxRange, maxChaseTime, isPersistent, true);
 					}
 				}
 			}));
