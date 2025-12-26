@@ -1,4 +1,11 @@
 {
+  "EditTemperatureDialog": {
+  "Settings": "Air Conditioner - Settings",
+  "Ok": "OK",
+  "Cancel": "Cancel",
+  "Off": "Off",
+  "CoverageRadius": "Coverage radius"
+  },
   "MusicToggleButton": "Music\n",
   "MusicOn": "ON",
   "MusicOff": "OFF",

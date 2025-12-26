@@ -1,4 +1,11 @@
 {
+  "EditTemperatureDialog": {
+    "Settings": "空调 - 设置",
+    "Ok": "确定",
+    "Cancel": "取消",
+    "Off": "关闭",
+    "CoverageRadius": "覆盖半径"
+  },
   "MusicToggleButton": "音乐",
   "MusicOn": "开",
   "MusicOff": "关",

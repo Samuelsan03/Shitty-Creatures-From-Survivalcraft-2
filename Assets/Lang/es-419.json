@@ -1,4 +1,11 @@
 {
+  "EditTemperatureDialog": {
+    "Settings": "Aire Acondicionado - Configuración",
+    "Ok": "Aceptar",
+    "Cancel": "Cancelar",
+    "Off": "Apagado",
+    "CoverageRadius": "Radio de Cobertura"
+  },
   "MusicToggleButton": "Música\n",
   "MusicOn": "ACTIVADA",
   "MusicOff": "DESACTIVADA",
