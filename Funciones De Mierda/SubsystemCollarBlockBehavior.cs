@@ -101,7 +101,7 @@ namespace Game
 						// Mostrar el mensaje con color RGB personalizado
 						// RGB: R=50, G=205, B=50 (verde claro/lime)
 						// true, true = mostrar tintineo y jugar sonido
-						componentPlayer.ComponentGui.DisplaySmallMessage(message, new Color(102, 255, 178), true, true);
+						componentPlayer.ComponentGui.DisplaySmallMessage(message, new Color(0, 255, 128), true, true);
 					}
 					catch (Exception ex)
 					{
