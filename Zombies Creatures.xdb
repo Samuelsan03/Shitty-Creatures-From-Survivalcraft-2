@@ -1,4 +1,4 @@
-<Zombie>
+<Zombie xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://gitee.com/THPRC/survivalcraft-api/raw/SCAPI1.8/Survivalcraft/Content/Assets/Database.xsd">
 <Folder Name="Zombies" Guid="070fbf51-8c89-4e3c-9142-e1495bddf918">
 
         <EntityTemplate Name="InfectedNormal1" Guid="e6afa31e-3845-4d07-9451-e3782e6a1889" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
@@ -35,6 +35,22 @@
     <Parameter Name="LoadOrder" Value="60" Type="int"/>
     <Parameter Name="PoisonResistance" Value="-50" Type="float"/>
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="bcdc2b23-9a6c-4847-a593-3b7c91c4c837">
+    <Parameter Name="Class" Value="Game.ComponentZombieChaseBehavior" Type="string"/>
+    <Parameter Name="IsOptional" Value="false" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="40" Type="int"/>
+    <Parameter Name="AttackMode" Value="Default" Type="string"/>
+    <Parameter Name="AttackRange" Value="2,15" Type="Vector2"/>
+    <Parameter Name="DayChaseRange" Value="99" Type="float"/>
+    <Parameter Name="NightChaseRange" Value="999" Type="float"/>
+    <Parameter Name="DayChaseTime" Value="99" Type="float"/>
+    <Parameter Name="NightChaseTime" Value="999" Type="float"/>
+    <Parameter Name="AttacksSameHerd" Value="false" Type="bool"/>
+    <Parameter Name="AttacksAllCategories" Value="true" Type="bool"/>
+    <Parameter Name="ChaseNonPlayerProbability" Value="0.8" Type="float"/>
+    <Parameter Name="ChaseWhenAttackedProbability" Value="1.0" Type="float"/>
+    <Parameter Name="ChaseOnTouchProbability" Value="0.7" Type="float"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidFireBehavior" Guid="97138323-d93a-4d8c-bcc0-f9079b582fc7" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
             <MemberComponentTemplate Name="Locomotion" Guid="e33a7331-b0b6-4d74-9e0e-8ced5deae15a">
@@ -94,6 +110,11 @@
     <Parameter Name="AutoNearbyCreaturesHelp" Guid="266f1cc8-2d20-4d9f-aaf8-aa62c7df45d5" Value="True" Type="bool"/>
     <Parameter Name="HerdingRange" Guid="26aefd74-c212-4839-a00e-6ad7f57d99c9" Value="40" Type="float"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="PathBreaker" Guid="429070c7-c68e-450f-92f8-fa3e869a28d5" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
+		<Parameter Name="CanBreakBlocks" Guid="6a2849a3-0b23-474e-b6f1-4e6d3458ccfa" Value="True" Type="bool"/>
+		<Parameter Name="SpecificBlocks" Guid="36145e7f-67ca-44d6-89ff-e11a6cc8271d" Value="" Type="string"/>
+		<Parameter Name="BreakProbability" Guid="42460859-8226-46d4-9179-d24be4e90220" Value="0.55" Type="float"/>
+	</MemberComponentTemplate>
             <MemberComponentTemplate Name="FeedBehavior" Guid="95ffe1f3-6c51-41cb-a6c5-4eca327b1098" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="abdff48b-31db-4e89-8cc0-5fdfbc5aac85" Value="False" Type="bool"/>
             </MemberComponentTemplate>
