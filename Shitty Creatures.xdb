@@ -1,4 +1,4 @@
-<ShittyCreatures>
+<ShittyCreatures xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://gitee.com/THPRC/survivalcraft-api/raw/SCAPI1.8/Survivalcraft/Content/Assets/Database.xsd">
 <Folder Name="Gameplay" Guid="d509e5e2-2c10-49f1-8223-85cd892c63b0">
 <ComponentTemplate Name="FlushInventory" Description="A flush bag that you can take items" Guid="b86f3409-2929-4d0a-b4ac-3d7b4ef9c404" InheritanceParent="81a44c6a-c30a-4f53-8d64-0c30aabab8f9">
       <Parameter Name="SlotsCount" Description="Cantidad de casillas que contenera la criatura en su inventario." Guid="9eb2101f-4bff-4925-9f8d-ef95591c9342" Value="16" Type="int"/>
@@ -61,6 +61,40 @@
     </Folder>
 
     <Folder Name="ProgramedInteligence" Guid="33dfd132-3c41-4dfa-a385-af3ba34ff86b">
+    <ComponentTemplate Name="ComponentZombieChaseBehavior" Guid="2af27374-a20d-4049-9eb5-57e3d319fec2">
+    <Parameter Name="Class" Value="Game.ComponentZombieChaseBehavior" Type="string" Description="El nombre de la clase C# que implementa el comportamiento de persecución para zombis."/>
+    <Parameter Name="LoadOrder" Value="-1" Type="int" Description="Orden de carga para resolver dependencias con otros componentes."/>
+    <Parameter Name="IsOptional" Value="False" Type="bool" Description="Indica si la criatura puede existir sin este componente."/>
+    <Parameter Name="AttackMode" Value="Default" Type="string" Description="Modo de ataque: Default, OnlyHand, Ranged. AJUSTA: Define si el zombi usa armas de distancia o solo cuerpo a cuerpo."/>
+    <Parameter Name="AttackRange" Value="2,15" Type="Vector2" Description="Rango de ataque mínimo y máximo. AJUSTA: Distancia mínima y máxima para atacar."/>
+    <Parameter Name="DayChaseRange" Value="20" Type="float" Description="Distancia máxima de persecución durante el día. AJUSTA: Qué tan lejos puede detectar objetivos de día."/>
+    <Parameter Name="NightChaseRange" Value="30" Type="float" Description="Distancia máxima de persecución durante la noche. AJUSTA: Qué tan lejos puede detectar objetivos de noche."/>
+    <Parameter Name="DayChaseTime" Value="30" Type="float" Description="Tiempo máximo de persecución durante el día. AJUSTA: Cuánto tiempo persigue objetivos de día."/>
+    <Parameter Name="NightChaseTime" Value="60" Type="float" Description="Tiempo máximo de persecución durante la noche. AJUSTA: Cuánto tiempo persigue objetivos de noche."/>
+    <Parameter Name="AutoDismount" Value="True" Type="bool" Description="Si el zombi debe desmontar automáticamente cuando ataca. AJUSTA: Si baja de monturas al iniciar ataque."/>
+    <Parameter Name="JumpWhenTargetStanding" Value="True" Type="bool" Description="Si el zombi salta cuando el objetivo está encima. AJUSTA: Reacción al estar debajo del objetivo."/>
+    <Parameter Name="AllowAttackingStandingOnBody" Value="True" Type="bool" Description="Permite atacar a criaturas sobre las que está parado. AJUSTA: Atacar objetivos encima del zombi."/>
+    <Parameter Name="AttacksPlayer" Value="True" Type="bool" Description="Si el zombi ataca jugadores. AJUSTA: Agresión hacia jugadores."/>
+    <Parameter Name="AttacksNonPlayerCreature" Value="True" Type="bool" Description="Si el zombi ataca otras criaturas. AJUSTA: Agresión hacia NPCs."/>
+    <Parameter Name="AttacksSameHerd" Value="False" Type="bool" Description="Si ataca a miembros del mismo rebaño. AJUSTA: Friendly fire entre zombis."/>
+    <Parameter Name="AttacksAllCategories" Value="True" Type="bool" Description="Si ataca todas las categorías de criaturas. AJUSTA: Agresión universal."/>
+    <Parameter Name="ChaseNonPlayerProbability" Value="1.0" Type="float" Description="Probabilidad de perseguir criaturas no jugador. AJUSTA: Qué tan agresivo es con NPCs."/>
+    <Parameter Name="ChaseWhenAttackedProbability" Value="1.0" Type="float" Description="Probabilidad de contraatacar cuando es herido. AJUSTA: Reacción al daño."/>
+    <Parameter Name="ChaseOnTouchProbability" Value="0.5" Type="float" Description="Probabilidad de atacar al colisionar. AJUSTA: Agresión por contacto."/>
+    <Parameter Name="ChaseRangeOnTouch" Value="7" Type="float" Description="Rango de persecución al tocar. AJUSTA: Distancia de persecución por contacto."/>
+    <Parameter Name="ChaseTimeOnTouch" Value="7" Type="float" Description="Tiempo de persecución al tocar. AJUSTA: Duración de persecución por contacto."/>
+    <Parameter Name="ChaseRangeOnAttacked" Value="30" Type="float" Description="Rango de persecución cuando es atacado. AJUSTA: Distancia de contraataque."/>
+    <Parameter Name="ChaseTimeOnAttacked" Value="60" Type="float" Description="Tiempo de persecución cuando es atacado. AJUSTA: Duración de contraataque."/>
+    <Parameter Name="ChasePersistentOnAttacked" Value="True" Type="bool" Description="Si la persecución es persistente al ser atacado. AJUSTA: Persistencia de contraataque."/>
+    <Parameter Name="MinHealthToAttackActively" Value="0.4" Type="float" Description="Salud mínima para atacar activamente. AJUSTA: Salud necesaria para buscar objetivos."/>
+    <Parameter Name="TargetInRangeTimeToChase" Value="3" Type="float" Description="Tiempo que un objetivo debe estar en rango para iniciar persecución. AJUSTA: Demora para empezar a perseguir."/>
+    <Parameter Name="PlayIdleSoundWhenStartToChase" Value="True" Type="bool" Description="Reproduce sonido al empezar a perseguir. AJUSTA: Feedback auditivo de inicio de persecución."/>
+    <Parameter Name="PlayAngrySoundWhenChasing" Value="True" Type="bool" Description="Reproduce sonidos de ira durante la persecución. AJUSTA: Feedback auditivo durante persecución."/>
+    <Parameter Name="ImportanceLevelNonPersistent" Value="200" Type="float" Description="Nivel de importancia para persecuciones no persistentes. AJUSTA: Prioridad del comportamiento."/>
+    <Parameter Name="ImportanceLevelPersistent" Value="200" Type="float" Description="Nivel de importancia para persecuciones persistentes. AJUSTA: Prioridad del comportamiento persistente."/>
+    <Parameter Name="MaxAttackRange" Value="1.75" Type="float" Description="Rango máximo para ataques cuerpo a cuerpo. AJUSTA: Alcance de ataque físico."/>
+</ComponentTemplate>
+
     <ComponentTemplate Name="UniversalRangedBehavior" Description="Comportamiento universal para armas de distancia con compatibilidad para todos los tipos de rebaño" Guid="8b19b162-8a89-4c37-9b1d-ea3f6140d918">
     <Parameter Name="Class" Value="Game.ComponentUniversalRangedBehavior" Type="string" Guid="9a9e70c3-61c7-4624-9533-9c2abbe6b10d"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="1f570e32-6fd8-48e9-ab5e-2a3f94821808"/>
@@ -254,11 +288,11 @@
             <Parameter Name="EntityDamageRadius" Value="10" Type="float" Description="Radio de daño a entidades en bloques" Guid="2bcd22be-dd01-4922-be1b-6e9c5dd076d6"/>
         </ComponentTemplate>
 
-        <ComponentTemplate Name="ComponentNewRunAwayBehavior" Guid="9c62f443-db92-4447-8f7d-3675393e75d1" ReplaceGuid="original-guid-si-es-para-reemplazar">
+        <ComponentTemplate Name="ComponentNewRunAwayBehavior" Guid="9c62f443-db92-4447-8f7d-3675393e75d1">
     <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Description="El nombre de la clase C# que implementa la lógica de huida sin reacción a ruidos."/>
     <Parameter Name="LoadOrder" Value="-1" Type="int" Guid="6e5afe28-5d96-4f24-8ac5-e61dce6f1a77" Description="Orden de carga para resolver dependencias con otros componentes."/>
     <Parameter Name="IsOptional" Value="False" Type="bool" Guid="50d46447-b3c1-4a85-825f-c2eca2feaaee" Description="Indica si la criatura puede existir sin este componente."/>
-    <Parameter Name="LowHealthToEscape" Value="0.3" Type="float" Description="Porcentaje de salud (0-1) por debajo del cual la criatura intentará huir automáticamente. AJUSTA: Umbral de salud para activar la huida."/>
+    <Parameter Name="LowHealthToEscape" Value="0.1" Type="float" Description="Porcentaje de salud (0-1) por debajo del cual la criatura intentará huir automáticamente. AJUSTA: Umbral de salud para activar la huida."/>
     <Parameter Name="RunAwayDistance" Value="6" Type="float" Description="Distancia máxima (en bloques) a la que detectará al atacante para huir. AJUSTA: Qué tan lejos puede estar el atacante para que la criatura huya."/>
     <Parameter Name="ForgetAttackerMinTime" Value="10" Type="float" Description="Tiempo mínimo en segundos para olvidar a un atacante. AJUSTA: Cuánto tiempo mínimo recuerda al enemigo después del último ataque."/>
     <Parameter Name="ForgetAttackerMaxTime" Value="20" Type="float" Description="Tiempo máximo en segundos para olvidar a un atacante. AJUSTA: Cuánto tiempo máximo recuerda al enemigo después del último ataque."/>
@@ -336,6 +370,9 @@
     </Folder>
 
 <ProjectTemplate Name="Project" Guid="85023bf8-1c90-4dd1-9442-e6c13691d078">
+<MemberSubsystemTemplate Name="CollarBlockBehavior" Guid="de432b96-c29b-445c-bbde-660e3b5eaded" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+        <Parameter Name="Class" Guid="21eb6fcd-4350-4e1a-8484-69fed75144f0" Value="Game.SubsystemCollarBlockBehavior" Type="string"/>
+    </MemberSubsystemTemplate>
 <MemberSubsystemTemplate Name="AirConditionerBlockBehavior" Guid="39056edd-2192-4a4f-9eb7-8fa96994a603" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
         <Parameter Name="Class" Guid="c22e1e72-2ad8-483c-9ce0-8f1861359924" Value="Game.SubsystemAirConditionerBlockBehavior" Type="string"/>
     </MemberSubsystemTemplate>
@@ -5958,7 +5995,7 @@
         <Parameter Name="WalkAnimationSpeed" Guid="74a83d3e-677d-4ddb-a46b-23ff6e7a1148" Value="0.6" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="HealthBarDisplay" Guid="74542c6b-1ba0-4e1c-b210-f0bf71ff4984" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
+        <Parameter Name="MaxDisplayDistance" Value="19" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="701a0aaf-6255-486a-954f-c5531d119b16">
         <Parameter Name="FireResilience" Guid="e177b835-2322-414d-a571-344bb3044cc7" Value="15" Type="float"/>
@@ -5991,6 +6028,20 @@
 </EntityTemplate>
 
 <EntityTemplate Name="Brayan" Guid="ecfa50bc-836c-4103-a3f7-0249aa579ea2" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="HealthBarDisplay" Guid="ca0b77b2-a1a8-4406-a7e6-5437bd42a661" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="MaxDisplayDistance" Value="19" Type="float"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Health" Guid="c28c4bd1-86f6-49b1-b381-e4720b995720">
+        <Parameter Name="FireResilience" Guid="1cfae114-59d2-4dbf-aff1-6e5755add8ce" Value="15" Type="float"/>
+        <Parameter Name="AttackResilience" Guid="4842e24b-63ff-41f9-9b4b-4fcd20b403ca" Value="36.23" Type="float"/>
+    </MemberComponentTemplate>
+<MemberComponentTemplate Name="PoisonInfected" Guid="242ed50a-20a1-4fbd-a15e-ee15ef6efcfc">
+    <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="100" Type="int"/>
+    <Parameter Name="PoisonResistance" Value="87.6" Type="float"/>
+    <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
+</MemberComponentTemplate>
 <MemberComponentTemplate Name="NewRunAwayBehavior" Guid="75ecbee6-58d7-41f2-8716-5ef88d79b04d">
     <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="26ca207f-73e7-46bf-b0ed-9b03172ae371"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="2a4df67a-6ae7-44c9-adcb-4f06298fe32a"/>
@@ -6076,13 +6127,6 @@
         <Parameter Name="ModelName" Guid="33ac2e56-d69c-4aa6-b878-473b18d191f8" Value="Models/HumanRealist" Type="string"/>
         <Parameter Name="TextureOverride" Guid="caec4ea7-14b8-4b19-940e-faf61fad36ae" Value="Textures/Brayan" Type="string"/>
         <Parameter Name="WalkAnimationSpeed" Guid="ce281a1e-ec32-4045-bec0-f87833c050df" Value="0.6" Type="float"/>
-    </MemberComponentTemplate>
-    <MemberComponentTemplate Name="HealthBarDisplay" Guid="ca0b77b2-a1a8-4406-a7e6-5437bd42a661" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
-    </MemberComponentTemplate>
-    <MemberComponentTemplate Name="Health" Guid="c28c4bd1-86f6-49b1-b381-e4720b995720">
-        <Parameter Name="FireResilience" Guid="1cfae114-59d2-4dbf-aff1-6e5755add8ce" Value="15" Type="float"/>
-        <Parameter Name="AttackResilience" Guid="4842e24b-63ff-41f9-9b4b-4fcd20b403ca" Value="36.23" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="769a03a3-4987-4765-a95d-6b19e730634b"/>
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="4d1cd57c-4e4c-4fb8-af8d-48180e64221e" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
@@ -6226,7 +6270,7 @@
             <MemberComponentTemplate Name="PoisonInfected" Guid="8c044507-5ad1-4ff0-aad4-08babbd77e14">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
     <Parameter Name="IsOptional" Value="true" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
+    <Parameter Name="LoadOrder" Value="100" Type="int"/>
     <Parameter Name="PoisonResistance" Value="87.6" Type="float"/>
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
