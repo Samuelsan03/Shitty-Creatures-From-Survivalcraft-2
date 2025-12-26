@@ -93,7 +93,7 @@ namespace Game
 		public Texture2D m_texture;
 		public Texture2D m_texturePoison;
 		public BlockMesh[] m_blockMeshes;
-		public static int TextureSlot = 0;
+		public static int TextureSlot = 68;
 		public static int PoisonTextureSlot = 69;
 
 		public enum FlameBulletType
