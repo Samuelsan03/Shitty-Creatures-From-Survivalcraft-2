@@ -56,6 +56,17 @@ namespace Game
 					}
 				}
 
+				// VERIFICACIÓN DE MODO DE JUEGO: Solo atacar en Survival, Challenging o Cruel
+				bool isPlayer = componentCreature.Entity.FindComponent<ComponentPlayer>() != null;
+				if (isPlayer)
+				{
+					GameMode currentGameMode = this.m_subsystemGameInfo.WorldSettings.GameMode;
+					if (currentGameMode == GameMode.Creative || currentGameMode == GameMode.Harmless)
+					{
+						return; // No atacar jugadores en Creative o Harmless
+					}
+				}
+
 				this.m_target = componentCreature;
 				this.m_nextUpdateTime = 0.0;
 				this.m_range = maxRange;
@@ -484,11 +495,11 @@ namespace Game
 				ArrowBlock.ArrowType value;
 				float randomValue = this.m_random.Float(0f, 1f);
 
-				if (randomValue < 0.333333f)
+				if (randomValue < 0.833333f)
 				{
 					value = ArrowBlock.ArrowType.IronBolt;
 				}
-				else if (randomValue < 0.666666f)
+				else if (randomValue < 0.866666f)
 				{
 					value = ArrowBlock.ArrowType.DiamondBolt;
 				}
@@ -689,6 +700,17 @@ namespace Game
 						}
 					}
 
+					// Verificar modo de juego para jugadores
+					bool isPlayer = componentCreature.Entity.FindComponent<ComponentPlayer>() != null;
+					if (isPlayer)
+					{
+						GameMode currentGameMode = this.m_subsystemGameInfo.WorldSettings.GameMode;
+						if (currentGameMode == GameMode.Creative || currentGameMode == GameMode.Harmless)
+						{
+							canAttack = false; // No atacar jugadores en Creative o Harmless
+						}
+					}
+
 					if (canAttack)
 					{
 						float num2 = this.ScoreTarget(componentCreature);
@@ -719,6 +741,16 @@ namespace Game
 				if (targetHerd != null && targetHerd.HerdName == thisHerd.HerdName)
 				{
 					canAttack = this.AttacksSameHerd; // Solo atacar si AttacksSameHerd es true
+				}
+			}
+
+			// Verificar modo de juego para jugadores
+			if (isPlayer)
+			{
+				GameMode currentGameMode = this.m_subsystemGameInfo.WorldSettings.GameMode;
+				if (currentGameMode == GameMode.Creative || currentGameMode == GameMode.Harmless)
+				{
+					canAttack = false; // No atacar jugadores en Creative o Harmless
 				}
 			}
 
@@ -820,6 +852,16 @@ namespace Game
 							}
 						}
 
+						// Verificar modo de juego para jugadores
+						if (flag3)
+						{
+							GameMode currentGameMode = this.m_subsystemGameInfo.WorldSettings.GameMode;
+							if (currentGameMode == GameMode.Creative || currentGameMode == GameMode.Harmless)
+							{
+								canAttack = false; // No atacar jugadores en Creative o Harmless
+							}
+						}
+
 						bool flag7 = canAttack && ((this.AttacksPlayer && flag3 && this.m_subsystemGameInfo.WorldSettings.GameMode > GameMode.Harmless) ||
 												   (this.AttacksNonPlayerCreature && !flag3 && flag4));
 						if (flag7)
@@ -839,6 +881,17 @@ namespace Game
 					float maxRange = this.ChaseRangeOnAttacked ?? 30f;
 					float maxChaseTime = this.ChaseTimeOnAttacked ?? 60f;
 					bool isPersistent = this.ChasePersistentOnAttacked ?? true;
+
+					// Verificar si el atacante es un jugador y el modo de juego no permite atacar
+					bool isPlayerAttacker = injury.Attacker.Entity.FindComponent<ComponentPlayer>() != null;
+					if (isPlayerAttacker)
+					{
+						GameMode currentGameMode = this.m_subsystemGameInfo.WorldSettings.GameMode;
+						if (currentGameMode == GameMode.Creative || currentGameMode == GameMode.Harmless)
+						{
+							return; // No atacar jugadores en Creative o Harmless
+						}
+					}
 
 					// Verificar si el atacante es del mismo rebaño
 					bool canAttack = true;
