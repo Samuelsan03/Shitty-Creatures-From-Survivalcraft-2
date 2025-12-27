@@ -13,6 +13,9 @@ namespace Game
 		private SubsystemPlayers m_subsystemPlayers;
 		private SubsystemAudio m_subsystemAudio;
 
+		// Distancia máxima para usar el collar (en metros/bloques)
+		private const float MaxUseDistance = 5f;
+
 		public override int[] HandledBlocks
 		{
 			get
@@ -39,6 +42,16 @@ namespace Game
 			{
 				return false;
 			}
+
+			// VERIFICAR DISTANCIA MÁXIMA (igual que el saddle)
+			float distance = Vector3.Distance(ray.Position, bodyRaycastResult.Value.HitPoint());
+			if (distance > MaxUseDistance)
+			{
+				// Demasiado lejos, no permitir domesticación
+				Console.WriteLine($"Distancia demasiado grande para usar collar: {distance}m (máximo: {MaxUseDistance}m)");
+				return false;
+			}
+
 			Entity entity = bodyRaycastResult.Value.ComponentBody.Entity;
 			ComponentHealth componentHealth = entity.FindComponent<ComponentHealth>();
 			if (componentHealth != null && componentHealth.Health <= 0f)
@@ -50,13 +63,14 @@ namespace Game
 			string currentEntityName = entity.ValuesDictionary.DatabaseObject.Name;
 			string entityTemplateName;
 
-			Console.WriteLine($"Entidad detectada: {currentEntityName}");
+			Console.WriteLine($"Entidad detectada: {currentEntityName} a distancia: {distance}m");
 
 			// DICCIONARIO DE CRIATURAS DOMESTICABLES
 			// [NombreOriginal] -> [NombreDomesticado]
 			Dictionary<string, string> tameableCreatures = new Dictionary<string, string>()
 			{
 				{"InfectedNormal1", "InfectedNormalTamed1"},
+				{"InfectedNormal2", "InfectedNormalTamed2"},
 				// Agrega más criaturas aquí:
 				// {"Wolf", "WolfTamed"},
 				// {"Bear", "BearTamed"},
@@ -96,8 +110,23 @@ namespace Game
 				{
 					try
 					{
-						// Obtener el mensaje traducido
-						string message = LanguageControl.Get("Messages", "CollarTamedMessage", "You have tamed a hostile Infected! Now it will be your guardian!");
+						// Intentar obtener el mensaje traducido con manejo de errores mejorado
+						string message;
+
+						// Método 1: Intentar obtener la traducción
+						bool translationFound;
+						message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedMessage");
+
+						if (!translationFound)
+						{
+							// Si no se encuentra la traducción, usar mensaje por defecto en inglés
+							Console.WriteLine("Traducción no encontrada, usando mensaje por defecto en inglés");
+							message = "You have tamed a hostile Infected! Now it will be your guardian!";
+						}
+
+						// Método alternativo: Usar el método Get con valor por defecto
+						// message = LanguageControl.Get("Messages", "CollarTamedMessage", "You have tamed a hostile Infected! Now it will be your guardian!");
+
 						Console.WriteLine($"Mostrando mensaje: {message}");
 
 						// Mostrar el mensaje con color RGB personalizado
@@ -110,7 +139,7 @@ namespace Game
 						{
 							try
 							{
-								this.m_subsystemAudio.PlaySound("Audio/UI/Tada", 1f, 0f, 0f, 0.001f);
+								this.m_subsystemAudio.PlaySound("Audio/UI/Tada", 1f, 0f, 0f, 0.0001f);
 								Console.WriteLine("Sonido Tada reproducido");
 							}
 							catch (Exception soundEx)
@@ -127,7 +156,8 @@ namespace Game
 						Console.WriteLine($"StackTrace: {ex.StackTrace}");
 
 						// Si falla, mostrar mensaje por defecto con sonido estándar
-						componentPlayer.ComponentGui.DisplaySmallMessage("You have tamed a hostile Infected! Now it will be your guardian!", new Color(0, 255, 128), false, true);
+						string defaultMessage = "You have tamed a hostile Infected! Now it will be your guardian!";
+						componentPlayer.ComponentGui.DisplaySmallMessage(defaultMessage, new Color(0, 255, 128), false, true);
 					}
 				}
 				else
