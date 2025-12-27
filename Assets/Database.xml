@@ -21,6 +21,10 @@
     <MemberComponentTemplate Name="RefrigeratorXiaomi" Guid="0a352aa5-3deb-4833-bbd3-7f3d918c719a" InheritanceParent="064a3848-3864-4d94-b078-7e3d8fdc145c"/>
     <MemberComponentTemplate Name="BlockEntity" Guid="2651f6b3-7bc7-4b9c-9e4d-bc8dcffb4f50" InheritanceParent="09a85cba-d94e-41b8-9497-f20ed942c17e" />
 </EntityTemplate>
+<EntityTemplate Name="AirConditioner" Guid="4c8ba2d6-c2b4-4489-b0a6-021aebb207a1">
+    <MemberComponentTemplate Name="AirConditioner" Guid="42372225-5008-431b-9655-b9697a184f29" InheritanceParent="064a3848-3864-4d94-b078-7e3d8fdc145c"/>
+    <MemberComponentTemplate Name="BlockEntity" Guid="19a73036-ac88-4490-8e42-e35dd2e67bb5" InheritanceParent="09a85cba-d94e-41b8-9497-f20ed942c17e" />
+</EntityTemplate>
       <Folder Name="Creatures" Guid="beb2de3c-1a77-4950-b74f-9dd470f751fe">
         <Folder Name="Abstract" Guid="662d69f8-483c-4271-966b-da9cbb4f5042">
           <EntityTemplate Name="Bird" Guid="0cb14482-b936-410e-9317-66d385d7d2fd" InheritanceParent="3f077159-f492-419b-859a-bb051de6339f">
