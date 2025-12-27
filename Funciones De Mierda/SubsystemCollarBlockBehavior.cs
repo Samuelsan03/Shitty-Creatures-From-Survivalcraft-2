@@ -11,6 +11,7 @@ namespace Game
 	{
 		private SubsystemGameInfo m_subsystemGameInfo;
 		private SubsystemPlayers m_subsystemPlayers;
+		private SubsystemAudio m_subsystemAudio;
 
 		public override int[] HandledBlocks
 		{
@@ -28,6 +29,7 @@ namespace Game
 			base.Load(valuesDictionary);
 			this.m_subsystemGameInfo = base.Project.FindSubsystem<SubsystemGameInfo>(true);
 			this.m_subsystemPlayers = base.Project.FindSubsystem<SubsystemPlayers>(true);
+			this.m_subsystemAudio = base.Project.FindSubsystem<SubsystemAudio>(true);
 		}
 
 		public override bool OnUse(Ray3 ray, ComponentMiner componentMiner)
@@ -99,17 +101,33 @@ namespace Game
 						Console.WriteLine($"Mostrando mensaje: {message}");
 
 						// Mostrar el mensaje con color RGB personalizado
-						// RGB: R=50, G=205, B=50 (verde claro/lime)
-						// true, true = mostrar tintineo y jugar sonido
-						componentPlayer.ComponentGui.DisplaySmallMessage(message, new Color(0, 255, 128), true, true);
+						// RGB: R=0, G=255, B=128 (verde azulado brillante)
+						// false, false = NO mostrar tintineo ni jugar sonido por defecto
+						componentPlayer.ComponentGui.DisplaySmallMessage(message, new Color(0, 255, 128), false, false);
+
+						// Reproducir sonido personalizado "Audio/UI/Tada"
+						if (this.m_subsystemAudio != null)
+						{
+							try
+							{
+								this.m_subsystemAudio.PlaySound("Audio/UI/Tada", 1f, 0f, 0f, 0.001f);
+								Console.WriteLine("Sonido Tada reproducido");
+							}
+							catch (Exception soundEx)
+							{
+								Console.WriteLine($"Error al reproducir sonido: {soundEx.Message}");
+								// Si falla el sonido personalizado, usar el sonido por defecto
+								componentPlayer.ComponentGui.DisplaySmallMessage(message, new Color(0, 255, 128), false, true);
+							}
+						}
 					}
 					catch (Exception ex)
 					{
 						Console.WriteLine($"Error al mostrar mensaje: {ex.Message}");
 						Console.WriteLine($"StackTrace: {ex.StackTrace}");
 
-						// Si falla, mostrar mensaje por defecto
-						componentPlayer.ComponentGui.DisplaySmallMessage("You have tamed a hostile Infected! Now it will be your guardian!", new Color(50, 205, 50), true, true);
+						// Si falla, mostrar mensaje por defecto con sonido estándar
+						componentPlayer.ComponentGui.DisplaySmallMessage("You have tamed a hostile Infected! Now it will be your guardian!", new Color(0, 255, 128), false, true);
 					}
 				}
 				else
