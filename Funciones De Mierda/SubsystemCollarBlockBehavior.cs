@@ -14,7 +14,7 @@ namespace Game
 		private SubsystemAudio m_subsystemAudio;
 
 		// Distancia máxima para usar el collar (en metros/bloques)
-		private const float MaxUseDistance = 5f;
+		private const float MaxUseDistance = 2f;
 
 		public override int[] HandledBlocks
 		{
@@ -241,3 +241,4 @@ namespace Game
 		};
 	}
 }
+
