@@ -259,5 +259,15 @@
             "aba"
             "aaa"
 		</Recipe>
+        <Recipe Result="AirConditionerBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="0" a="ironblock" b="copperblock" c="battery" Description="To control the temperature in your beautiful home">
+			"aba"
+            "bcb"
+            "aba"
+		</Recipe>
+        <Recipe Result="CollarBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="0" a="saddle" b="rod" c="string" Description="Use it wisely to enslave the infected">
+			"bcb"
+            " a "
+            "bcb"
+		</Recipe>
     </Recipes>
 </ShittyRecipes>
