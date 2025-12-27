@@ -14,6 +14,84 @@ namespace Game
 
 		public override void InitializeCreatureTypes(SubsystemCreatureSpawn spawn, List<SubsystemCreatureSpawn.CreatureType> creatureTypes)
 		{
+			// Spawn para Infectado Normal 1 con 100% de probabilidad - DESDE DÍA 0, cualquier estación y hora
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("InfectedNormal1", 0, false, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType creatureType, Point3 point)
+				{
+					SubsystemTerrain subsystemTerrain = spawn.m_subsystemTerrain;
+					int cellValue = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValue);
+
+					// Verificar que no esté en agua o lava
+					int cellValueAbove = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValueAbove);
+
+					if (blockAbove == 18) // Agua o lava
+					{
+						return 0f;
+					}
+
+					// Condiciones flexibles para Naomi - SIN RESTRICCIÓN DE ALTURA
+					// SIN RESTRICCIÓN DE DÍAS, HORAS O ESTACIONES - aparece desde el inicio
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f; // 100% de probabilidad
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemCreatureSpawn.CreatureType creatureType, Point3 point) =>
+				{
+					var creatures = spawn.SpawnCreatures(creatureType, "InfectedNormal1", point, 1);
+					return creatures.Count;
+				})
+			});
+
+			// Para Infectado Normal 2 - Desde el inicio, solo de noche, cualquier estación
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("InfectedNormal2", 0, false, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType creatureType, Point3 point)
+				{
+					SubsystemTerrain subsystemTerrain = spawn.m_subsystemTerrain;
+					int cellValue = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValue);
+
+					// Verificar que no esté en agua o lava
+					int cellValueAbove = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValueAbove);
+
+					if (blockAbove == 18) // Agua o lava
+					{
+						return 999f;
+					}
+
+					// Obtener hora del día
+					SubsystemTimeOfDay timeOfDay = spawn.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+
+					// Verificar si es de noche (entre NightStart y DawnStart)
+					bool isNight = false;
+					if (timeOfDay != null)
+					{
+						float time = timeOfDay.TimeOfDay;
+						// Es noche si está entre NightStart y DawnStart (considerando wrap-around)
+						isNight = (time >= timeOfDay.NightStart || time < timeOfDay.DawnStart);
+					}
+
+					// SIN RESTRICCIÓN DE DÍAS - aparece desde el inicio cada noche
+					// SIN RESTRICCIÓN DE ESTACIÓN - aparece en cualquier estación
+					if (isNight && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+					{
+						return 999999f; // 100% de probabilidad
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemCreatureSpawn.CreatureType creatureType, Point3 point) =>
+				{
+					var creatures = spawn.SpawnCreatures(creatureType, "InfectedNormal2", point, 1);
+					return creatures.Count;
+				})
+			});
+
 			// Spawn para Naomi con 100% de probabilidad - DESDE DÍA 0, cualquier estación y hora
 			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Naomi", 0, false, false)
 			{
@@ -204,7 +282,7 @@ namespace Game
 					int cellValueAbove = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
 					int blockAbove = Terrain.ExtractContents(cellValueAbove);
 
-					if (blockAbove == 18 || blockAbove == 92) // Agua o lava
+					if (blockAbove == 18) // Agua o lava
 					{
 						return 999f;
 					}
@@ -1841,6 +1919,54 @@ namespace Game
 				SpawnFunction = ((SubsystemCreatureSpawn.CreatureType creatureType, Point3 point) =>
 				{
 					var creatures = spawn.SpawnCreatures(creatureType, "Richard", point, 3);
+					return creatures.Count;
+				})
+			});
+
+			// Pirata Normal Aliado - Día 3+ (solo horario central del día), cualquier estación
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("PirataNormalAliado", 0, false, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType creatureType, Point3 point)
+				{
+					SubsystemTerrain subsystemTerrain = spawn.m_subsystemTerrain;
+					int cellValue = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValue);
+
+					// Verificar que no esté en agua o lava
+					int cellValueAbove = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValueAbove);
+
+					if (blockAbove == 18) // Agua
+					{
+						return 100f;
+					}
+
+					// Obtener día y hora actual
+					SubsystemTimeOfDay timeOfDay = spawn.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+
+					// Verificar si es horario central del día (excluye amanecer/atardecer)
+					bool isProperDaytime = false;
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						float time = timeOfDay.TimeOfDay;
+						// Horario central del día (excluyendo primeros y últimos 10% del día)
+						isProperDaytime = (time >= timeOfDay.DayStart + 0.1f && time < timeOfDay.DuskStart - 0.1f);
+						currentDay = (int)Math.Floor(timeOfDay.Day); // Día actual como entero
+					}
+
+					// Aparece CADA DÍA desde el día 3 en adelante, solo en horario central
+					bool isDay3OrLater = currentDay >= 3;
+
+					if (isDay3OrLater && isProperDaytime && (groundBlock == 21))
+					{
+						return 100f; // 100% de probabilidad cada día desde día 3
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemCreatureSpawn.CreatureType creatureType, Point3 point) =>
+				{
+					var creatures = spawn.SpawnCreatures(creatureType, "PirataNormalAliado", point, 2);
 					return creatures.Count;
 				})
 			});
