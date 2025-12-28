@@ -1618,5 +1618,149 @@
                 <Parameter Name="NightChaseTime" Guid="2b3bd144-bbde-4b39-9296-220f0fb187b1" Value="0" Type="float"/>
             </MemberComponentTemplate>
         </EntityTemplate>
+
+        <EntityTemplate Name="PoisonousInfected1" Guid="c431a439-532b-4460-ac1e-df6fa2d783b1" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <MemberComponentTemplate Name="GlowingEyes" Guid="d2bf99c6-1093-4196-bc53-01ca1cc1eb36" InheritanceParent="bb8701d3-3a4f-44f7-8a1f-3a455533f632">
+              <Parameter Name="GlowingEyesColor" Guid="1328c240-1969-43c1-a7e8-20f4055e2fcd" Value="0,255,0" Type="Color"/>
+              <Parameter Name="GlowingEyesOffset" Guid="9c29d113-aa31-455f-807f-6adf55fdaa5d" Value="0.06,0.2,0.1" Type="Vector3"/>
+            </MemberComponentTemplate>
+        <MemberComponentTemplate Name="NewRunAwayBehavior" Guid="3a7b9458-c477-47a4-a0f4-f2fb46a9aced">
+    <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="1b0c3dc5-7cbf-4780-88f3-67dd72e6f2f6"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="442fd244-4543-4e90-b650-82d830c5dc93"/>
+    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="6c75e15e-5fbe-4241-b03c-01547c11f15b"/>
+    <Parameter Name="LowHealthToEscape" Value="0.1" Type="float" Guid="8271c611-9f8b-4ffe-912b-2c32c6507ae4"/>
+</MemberComponentTemplate>
+            <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="2f285970-ce0a-434d-a22e-c65a51aeb829" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
+                <Parameter Name="DayRange" Guid="ce245934-8a79-4748-8898-1363231f1fef" Value="0" Type="float"/>
+                <Parameter Name="NightRange" Guid="2c163c48-bedd-43ec-a1f0-00d6b68c2437" Value="0" Type="float"/>
+            </MemberComponentTemplate>
+            <MemberComponentTemplate Name="EatPickableBehavior" Guid="9e3ad349-fa72-443a-98e0-35fd77880d7f">
+                <ParameterSet Name="FoodFactors" Guid="5ed54e2d-cf2f-413b-aa50-efa546070d30">
+                    <Parameter Name="Fish" Guid="4187cbd2-2984-4640-b9b9-a726d98716d9" Value="1" Type="float"/>
+                    <Parameter Name="Meat" Guid="e19d314c-fc8f-431e-9330-ec0b89f3b500" Value="1" Type="float"/>
+                </ParameterSet>
+            </MemberComponentTemplate>
+            <MemberComponentTemplate Name="CreatureSounds" Guid="f39194cc-73fe-4c26-9088-8758a741a1c5">
+                <Parameter Name="PainSound" Guid="f4916f28-fc29-45b7-a3cb-b86a649f7199" Value="Audio/Creatures/Zombie 1/Pain" Type="string"/>
+        <Parameter Name="IdleSound" Guid="68354ba7-2796-4b4b-b88c-9fffed3cf003" Value="Audio/Creatures/Zombie 1/Idie" Type="string"/>
+        <Parameter Name="AttackSound" Guid="2f135a7c-0e56-497b-aefa-a03114a9761f" Value="Audio/Creatures/Zombie 1/Attack" Type="string"/>
+            </MemberComponentTemplate>
+<MemberComponentTemplate Name="PoisonInfectBehavior" Guid="945009e8-f788-4d27-9f54-25abd1caa3bb">
+    <Parameter Name="Class" Value="Game.ComponentPoisonInfectedBehavior" Type="string"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+    <!-- Intensidad del veneno, puedes ajustarla según cuánto dure el efecto -->
+    <Parameter Name="PoisonIntensity" Value="100" Type="float"/>
+    <!-- 55% de probabilidad de que te de veneno -->
+    <Parameter Name="InfectionProbability" Value="0.55" Type="float"/>
+    <!-- Tiempo de espera entre infecciones (en segundos) -->
+    <Parameter Name="InfectionCooldown" Value="1.0" Type="float"/>
+    <!-- Rango máximo para infectar -->
+    <Parameter Name="AttackRange" Value="1" Type="float"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="PoisonInfected" Guid="80fa9aeb-ac21-4d80-b604-a16452f1e156">
+    <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int"/>
+    <Parameter Name="PoisonResistance" Value="50" Type="float"/>
+    <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="e9957916-7671-427f-a1da-ad71df4feb5f">
+    <Parameter Name="Class" Value="Game.ComponentZombieChaseBehavior" Type="string"/>
+    <Parameter Name="IsOptional" Value="false" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="40" Type="int"/>
+    <Parameter Name="AttackMode" Value="Default" Type="string"/>
+    <Parameter Name="AttackRange" Value="2,15" Type="Vector2"/>
+    <Parameter Name="DayChaseRange" Value="999" Type="float"/>
+    <Parameter Name="NightChaseRange" Value="999" Type="float"/>
+    <Parameter Name="DayChaseTime" Value="999" Type="float"/>
+    <Parameter Name="NightChaseTime" Value="999" Type="float"/>
+    <Parameter Name="AttacksSameHerd" Value="false" Type="bool"/>
+    <Parameter Name="AttacksAllCategories" Value="true" Type="bool"/>
+    <Parameter Name="ChaseNonPlayerProbability" Value="0.8" Type="float"/>
+    <Parameter Name="ChaseWhenAttackedProbability" Value="1.0" Type="float"/>
+    <Parameter Name="ChaseOnTouchProbability" Value="0.7" Type="float"/>
+</MemberComponentTemplate>
+            <MemberComponentTemplate Name="AvoidFireBehavior" Guid="f936dd56-3239-4535-bb47-6ed78898b9bd" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
+            <MemberComponentTemplate Name="Locomotion" Guid="425e51ee-df2f-4a10-a58c-04df1ad3eb57">
+                <Parameter Name="AccelerationFactor" Guid="d55f635c-8517-41b2-b192-b57d98c6bc8a" Value="1.2" Type="float"/>
+                <Parameter Name="FlySpeed" Guid="9fe12e85-b33e-4f96-bcbb-758399f82826" Value="0" Type="float"/>
+                <Parameter Name="TurnSpeed" Guid="64aad990-2366-4d0e-a5e6-de20b7eeab2b" Value="4" Type="float"/>
+                <Parameter Name="WalkSpeed" Guid="9e12451a-e439-427e-99e9-972fa2b91a3a" Value="4.2" Type="float"/>
+                <Parameter Name="LadderSpeed" Guid="0e614b6b-d208-4121-b002-9bbb567d5909" Value="0" Type="float"/>
+            </MemberComponentTemplate>
+            <MemberComponentTemplate Name="Loot" Guid="b9d0c17e-247d-459b-a8df-25e72cb5b435">
+                <ParameterSet Name="Loot" Guid="f758b868-6f8b-4e40-8dc7-464b311974a9">
+                    <Parameter Name="1" Guid="62218951-215a-4c4a-8129-d41843817161" Value="RottenMeatBlock;5;10;0.5" Type="string"/>
+                </ParameterSet>
+                <ParameterSet Name="LootOnFire" Guid="e1cbe6ac-2ed1-4596-b8a2-154db17d8216"/>
+            </MemberComponentTemplate>
+            <MemberComponentTemplate Name="Body" Guid="8ef622e6-e783-412d-bdf6-ed7fbe10723d">
+                <Parameter Name="Mass" Guid="7754d5a0-d41c-4801-b949-fa4a64b0285e" Value="60" Type="float"/>
+                <Parameter Name="BoxSize" Guid="6ac8b742-8d22-4bcc-a523-c8fe3ca9df94" Value="0.8,1.8,0.8" Type="Vector3"/>
+            </MemberComponentTemplate>
+            <MemberComponentTemplate Name="Creature" Guid="4f421336-bb7c-4380-838f-c44ea75dab27">
+                <Parameter Name="DisplayName" Guid="1be8336e-46ad-453e-9030-317513f975fb" Value="[DisplayName:PoisonousInfected1]" Type="string"/>
+                <Parameter Name="Category" Guid="a6f56c42-0e11-4e63-a3c4-358c81dd270d" Value="LandPredator" Type="Game.CreatureCategory"/>
+                <Parameter Name="ConstantSpawn" Guid="84f97a8f-7330-48bb-a445-0d7309989a87" Value="True" Type="bool"/>
+                <Parameter Name="Description" Guid="aebd061e-084d-4002-aa02-8ac061b3dd1e" Value="[Description:PoisonousInfected1]" Type="string"/> <!-- En realidad el infectado supuestamente normal tiene probabilidad de atacarte con veneno -->
+                <Parameter Name="KillVerbs" Guid="207d2732-a8cd-4a4e-999d-fd40308ea024" Value="eaten" Type="string"/>
+            </MemberComponentTemplate>
+            <MemberComponentTemplate Name="Spawn" Guid="a5f5ce93-58fa-4e91-9c4f-ecd06b2e913f">
+    <Parameter Name="AutoDespawn" Guid="b8583de6-d742-47fd-a386-76a0abe3a90d" Value="False" Type="bool"/>
+</MemberComponentTemplate>
+            <MemberComponentTemplate Name="FindPlayerBehavior" Guid="e92acae3-1d79-4423-9b89-0f1abeb585b4" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
+            <MemberComponentTemplate Name="Miner" Guid="f61b1d80-5de2-4eee-aa2f-7b11054e9ea5" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
+                <Parameter Name="AttackPower" Guid="e74b5f1a-713f-40c8-83e3-f0ee67254334" Value="3.5" Type="float"/>
+            </MemberComponentTemplate>
+            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="8e54d559-b7aa-49d8-9f2c-7ba29f968725">
+    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
+    <Parameter Name="IsOptional" Value="false" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+    <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
+</MemberComponentTemplate>
+            <MemberComponentTemplate Name="HumanModel" Guid="337ee766-4bc2-4991-9d92-6454f8faae23" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
+                <Parameter Name="WalkLegsAngle" Guid="a3565257-5614-4687-952e-867f21016199" Value="0.35" Type="float"/>
+                <Parameter Name="ModelName" Guid="3597067b-84ab-485a-9f21-9484eaaf121e" Value="Models/Zombies Modelos De Cagada/ZombieNormal" Type="string"/>
+                <Parameter Name="TextureOverride" Guid="315cf59e-b514-4ce1-869d-66116c2c77d8" Value="Textures/ZombiesDeMierda/PoisonousZombie1" Type="string"/>
+                <Parameter Name="WalkAnimationSpeed" Guid="721ff9a4-228c-4267-9a90-9b7c4194f0a4" Value="0.65" Type="float"/>
+            </MemberComponentTemplate>
+            <MemberComponentTemplate Name="HealthBarDisplay" Guid="aea72a53-7cbb-4cf2-b460-70178acac046" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="MaxDisplayDistance" Value="19" Type="float"/>
+    </MemberComponentTemplate>
+            <MemberComponentTemplate Name="Health" Guid="05b549bd-1d73-4893-8dd8-7524956581f2">
+                <Parameter Name="FireResilience" Guid="ea24fbfa-b28b-480c-a029-4ab4f5c86a7b" Value="90" Type="float"/>
+        <Parameter Name="AttackResilience" Guid="99694db0-2ef3-4315-914d-09d2e86ba8fa" Value="115" Type="float"/>
+            </MemberComponentTemplate>
+            <MemberComponentTemplate Name="OnFire" Guid="0d16880f-f03d-4606-9771-42836508f09a"/>
+            <MemberComponentTemplate Name="WalkAroundBehavior" Guid="6f3325bc-6625-4384-a80a-2b3d7aab73c2" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
+            <MemberComponentTemplate Name="HerdBehavior" Guid="6b68bcf8-ca87-4990-993c-dab9cb9965f1" InheritanceParent="dfe7218e-ce14-4bde-8dac-f919c38e9efe">
+    <Parameter Name="HerdName" Guid="2b96a935-72df-481f-96b3-c7250f67a1ea" Value="Zombie" Type="string"/>
+    <Parameter Name="AutoNearbyCreaturesHelp" Guid="9d1f476e-8694-47ce-96a7-6d6645fc5f1a" Value="True" Type="bool"/>
+    <Parameter Name="HerdingRange" Guid="10f86092-aacb-4d4f-aab1-4bb676d5f474" Value="40" Type="float"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="PathBreaker" Guid="ddac6f62-e04b-467a-9b41-95975f79302e" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
+		<Parameter Name="CanBreakBlocks" Guid="d60385ab-0271-4e0f-9552-4dc5bfe06acb" Value="True" Type="bool"/>
+		<Parameter Name="SpecificBlocks" Guid="2302cbd0-5469-4298-bf53-3795ad4a2b16" Value="" Type="string"/>
+		<Parameter Name="BreakProbability" Guid="607b0b73-4e6e-41b0-a6b9-315742df2c24" Value="0.55" Type="float"/>
+	</MemberComponentTemplate>
+            <MemberComponentTemplate Name="FeedBehavior" Guid="2dbeee1c-a334-4156-a56c-a17d16f7011d" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
+                <Parameter Name="AutoFeed" Guid="8b63af34-0417-4d2f-9e24-795278d8744f" Value="False" Type="bool"/>
+            </MemberComponentTemplate>
+            <MemberComponentTemplate Name="ChaseBehavior" Guid="4b88230d-cb76-4ea7-91a7-c95fe0d2372a" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
+                <Parameter Name="AutoChaseMask" Guid="86fa46b3-743f-41ff-ab42-0949fc9c7733" Value="LandOther,WaterPredator,Bird" Type="Game.CreatureCategory"/>
+                <Parameter Name="DayChaseRange" Guid="f9cdc997-8ad1-424c-b3dd-a3e0fc5035a9" Value="0" Type="float"/>
+                <Parameter Name="NightChaseRange" Guid="87871151-402a-4363-88fd-bb347cc5ad03" Value="0" Type="float"/>
+                <Parameter Name="ChaseNonPlayerProbability" Guid="56e003f3-2301-492f-b88c-a646c087a468" Value="0" Type="float"/>
+                <Parameter Name="NightChaseTime" Guid="3c04ca43-cc13-47b4-9e29-3d0c105fe9a8" Value="0" Type="float"/>
+            </MemberComponentTemplate>
+            <ParameterSet Name="CreatureEggData" Guid="a86e1ac0-8ca0-4260-a921-ea43e14a68a8">
+                <Parameter Name="Color" Guid="a8518c7b-cf9f-4b7d-8a63-e2c6cd02b422" Value="86,139,25" Type="Color"/>
+                <Parameter Name="TextureSlot" Guid="cf5fc360-762a-479f-9bbe-5b98ce06aef8" Value="7" Type="int"/>
+                <Parameter Name="SwapUV" Guid="a061b03f-b6c8-466c-9394-e3c3e7406ce8" Value="False" Type="bool"/>
+                <Parameter Name="DisplayName" Guid="8d9a69bd-73cb-4e65-ba15-7fc297f76f87" Value="[DisplayName:PoisonousInfected1]" Type="string"/>
+                <Parameter Name="EggTypeIndex" Guid="11bd540d-3b48-43fc-a7d3-9d9cde2fec42" Value="1006" Type="int"/>
+            </ParameterSet>
+        </EntityTemplate>
         </Folder>
         </Zombie>
