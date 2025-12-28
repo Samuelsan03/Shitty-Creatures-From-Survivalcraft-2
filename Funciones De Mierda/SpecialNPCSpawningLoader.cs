@@ -14,6 +14,199 @@ namespace Game
 
 		public override void InitializeCreatureTypes(SubsystemCreatureSpawn spawn, List<SubsystemCreatureSpawn.CreatureType> creatureTypes)
 		{
+
+			// Infectado Musculoso 2 - Día 5+ (solo de noche, 100%), cualquier estación
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("InfectedMuscle1", 0, false, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType creatureType, Point3 point)
+				{
+					SubsystemTerrain subsystemTerrain = spawn.m_subsystemTerrain;
+					int cellValue = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValue);
+
+					// Verificar que no esté en agua o lava
+					int cellValueAbove = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValueAbove);
+
+					if (blockAbove == 18) // Agua o lava
+					{
+						return 100f;
+					}
+
+					// Obtener día y hora actual
+					SubsystemTimeOfDay timeOfDay = spawn.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+
+					// Verificar si es de noche (entre NightStart y DawnStart)
+					bool isNight = false;
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						float time = timeOfDay.TimeOfDay;
+						// Es noche si está entre NightStart y DawnStart (considerando wrap-around)
+						isNight = (time >= timeOfDay.NightStart || time < timeOfDay.DawnStart);
+						currentDay = (int)Math.Floor(timeOfDay.Day); // Día actual como entero
+					}
+
+					// Aparece CADA NOCHE desde el día 5 en adelante
+					bool isDay5OrLater = currentDay >= 5;
+
+					if (isDay5OrLater && isNight && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+					{
+						return 100f; // 100% de probabilidad cada noche desde día 5
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemCreatureSpawn.CreatureType creatureType, Point3 point) =>
+				{
+					var creatures = spawn.SpawnCreatures(creatureType, "InfectedMuscle2", point, 2);
+					return creatures.Count;
+				})
+			});
+
+			// Infectado Musculoso 1 - Día 5+ (solo de noche, 100%), cualquier estación
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("InfectedMuscle1", 0, false, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType creatureType, Point3 point)
+				{
+					SubsystemTerrain subsystemTerrain = spawn.m_subsystemTerrain;
+					int cellValue = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValue);
+
+					// Verificar que no esté en agua o lava
+					int cellValueAbove = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValueAbove);
+
+					if (blockAbove == 18) // Agua o lava
+					{
+						return 100f;
+					}
+
+					// Obtener día y hora actual
+					SubsystemTimeOfDay timeOfDay = spawn.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+
+					// Verificar si es de noche (entre NightStart y DawnStart)
+					bool isNight = false;
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						float time = timeOfDay.TimeOfDay;
+						// Es noche si está entre NightStart y DawnStart (considerando wrap-around)
+						isNight = (time >= timeOfDay.NightStart || time < timeOfDay.DawnStart);
+						currentDay = (int)Math.Floor(timeOfDay.Day); // Día actual como entero
+					}
+
+					// Aparece CADA NOCHE desde el día 5 en adelante
+					bool isDay5OrLater = currentDay >= 5;
+
+					if (isDay5OrLater && isNight && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+					{
+						return 100f; // 100% de probabilidad cada noche desde día 5
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemCreatureSpawn.CreatureType creatureType, Point3 point) =>
+				{
+					var creatures = spawn.SpawnCreatures(creatureType, "InfectedMuscle1", point, 2);
+					return creatures.Count;
+				})
+			});
+
+			// Infectado Veloz 2 - Día 3+ (solo de noche, 100%), cualquier estación
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("InfectedFast2", 0, false, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType creatureType, Point3 point)
+				{
+					SubsystemTerrain subsystemTerrain = spawn.m_subsystemTerrain;
+					int cellValue = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValue);
+
+					// Verificar que no esté en agua o lava
+					int cellValueAbove = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValueAbove);
+
+					if (blockAbove == 18) // Agua o lava
+					{
+						return 100f;
+					}
+
+					// Obtener día y hora actual
+					SubsystemTimeOfDay timeOfDay = spawn.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+
+					// Verificar si es de noche (entre NightStart y DawnStart)
+					bool isNight = false;
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						float time = timeOfDay.TimeOfDay;
+						// Es noche si está entre NightStart y DawnStart (considerando wrap-around)
+						isNight = (time >= timeOfDay.NightStart || time < timeOfDay.DawnStart);
+						currentDay = (int)Math.Floor(timeOfDay.Day); // Día actual como entero
+					}
+
+					// Aparece CADA NOCHE desde el día 5 en adelante
+					bool isDay2OrLater = currentDay >= 5;
+
+					if (isDay2OrLater && isNight && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+					{
+						return 100f; // 100% de probabilidad cada noche desde día 2
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemCreatureSpawn.CreatureType creatureType, Point3 point) =>
+				{
+					var creatures = spawn.SpawnCreatures(creatureType, "InfectedFast1", point, 2);
+					return creatures.Count;
+				})
+			});
+
+			// Infectado Veloz 1 - Día 3+ (solo de noche, 100%), cualquier estación
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("InfectedFast1", 0, false, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType creatureType, Point3 point)
+				{
+					SubsystemTerrain subsystemTerrain = spawn.m_subsystemTerrain;
+					int cellValue = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValue);
+
+					// Verificar que no esté en agua o lava
+					int cellValueAbove = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValueAbove);
+
+					if (blockAbove == 18) // Agua o lava
+					{
+						return 100f;
+					}
+
+					// Obtener día y hora actual
+					SubsystemTimeOfDay timeOfDay = spawn.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+
+					// Verificar si es de noche (entre NightStart y DawnStart)
+					bool isNight = false;
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						float time = timeOfDay.TimeOfDay;
+						// Es noche si está entre NightStart y DawnStart (considerando wrap-around)
+						isNight = (time >= timeOfDay.NightStart || time < timeOfDay.DawnStart);
+						currentDay = (int)Math.Floor(timeOfDay.Day); // Día actual como entero
+					}
+
+					// Aparece CADA NOCHE desde el día 5 en adelante
+					bool isDay2OrLater = currentDay >= 5;
+
+					if (isDay2OrLater && isNight && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+					{
+						return 100f; // 100% de probabilidad cada noche desde día 2
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemCreatureSpawn.CreatureType creatureType, Point3 point) =>
+				{
+					var creatures = spawn.SpawnCreatures(creatureType, "InfectedFast1", point, 2);
+					return creatures.Count;
+				})
+			});
+
 			// Spawn para Infectado Normal 1 con 100% de probabilidad - DESDE DÍA 0, cualquier estación y hora
 			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("InfectedNormal1", 0, false, false)
 			{
@@ -29,20 +222,20 @@ namespace Game
 
 					if (blockAbove == 18) // Agua o lava
 					{
-						return 0f;
+						return 0.86f;
 					}
 
 					// Condiciones flexibles para Naomi - SIN RESTRICCIÓN DE ALTURA
 					// SIN RESTRICCIÓN DE DÍAS, HORAS O ESTACIONES - aparece desde el inicio
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f; // 100% de probabilidad
+						return 0.85f; // 85% de probabilidad
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemCreatureSpawn.CreatureType creatureType, Point3 point) =>
 				{
-					var creatures = spawn.SpawnCreatures(creatureType, "InfectedNormal1", point, 1);
+					var creatures = spawn.SpawnCreatures(creatureType, "InfectedNormal1", point, 2);
 					return creatures.Count;
 				})
 			});
@@ -62,7 +255,7 @@ namespace Game
 
 					if (blockAbove == 18) // Agua o lava
 					{
-						return 999f;
+						return 100f;
 					}
 
 					// Obtener hora del día
@@ -81,13 +274,13 @@ namespace Game
 					// SIN RESTRICCIÓN DE ESTACIÓN - aparece en cualquier estación
 					if (isNight && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
-						return 999999f; // 100% de probabilidad
+						return 0.85f; // 100% de probabilidad
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemCreatureSpawn.CreatureType creatureType, Point3 point) =>
 				{
-					var creatures = spawn.SpawnCreatures(creatureType, "InfectedNormal2", point, 1);
+					var creatures = spawn.SpawnCreatures(creatureType, "InfectedNormal2", point, 2);
 					return creatures.Count;
 				})
 			});
@@ -614,7 +807,7 @@ namespace Game
 					int cellValueAbove = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
 					int blockAbove = Terrain.ExtractContents(cellValueAbove);
 
-					if (blockAbove == 18 || blockAbove == 92) // Agua o lava
+					if (blockAbove == 18) // Agua o lava
 					{
 						return 0f;
 					}
