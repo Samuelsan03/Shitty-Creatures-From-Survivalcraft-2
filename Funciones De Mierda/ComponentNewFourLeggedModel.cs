@@ -1,65 +1,145 @@
 using System;
 using Engine;
 using Engine.Graphics;
-using Game;
 using GameEntitySystem;
 using TemplatesDatabase;
 
 namespace Game
 {
-	// Token: 0x02000090 RID: 144
 	public class ComponentNewFourLeggedModel : ComponentCreatureModel
 	{
-		// Token: 0x1700003A RID: 58
-		// (get) Token: 0x06000453 RID: 1107 RVA: 0x00015B17 File Offset: 0x00013D17
-		// (set) Token: 0x06000454 RID: 1108 RVA: 0x00015B1F File Offset: 0x00013D1F
-		public float GrowStage { get; set; } = 1f;
+		public override float AttackPhase
+		{
+			get { return this.m_buttPhase; }
+			set { this.m_buttPhase = value; }
+		}
 
-		// Token: 0x06000455 RID: 1109 RVA: 0x00015B28 File Offset: 0x00013D28
+		public override float AttackFactor
+		{
+			get { return this.m_buttFactor; }
+			set { this.m_buttFactor = value; }
+		}
+
 		public override void Update(float dt)
 		{
 			float footstepsPhase = this.m_footstepsPhase;
-			float num = this.m_componentCreature.ComponentLocomotion.SlipSpeed ?? Vector3.Dot(this.m_componentCreature.ComponentBody.Velocity, this.m_componentCreature.ComponentBody.Matrix.Forward);
+			float num = this.m_componentCreature.ComponentLocomotion.SlipSpeed ??
+						Vector3.Dot(this.m_componentCreature.ComponentBody.Velocity,
+						this.m_componentCreature.ComponentBody.Matrix.Forward);
+
+			// Determinar gait objetivo - CORREGIDO: usar el enum local
+			Gait targetGait = Gait.Walk;
+			float animationSpeedMultiplier = 1f;
+
 			if (this.m_canCanter && num > 0.7f * this.m_componentCreature.ComponentLocomotion.WalkSpeed)
 			{
-				this.m_gait = ComponentNewFourLeggedModel.Gait.Canter;
-				base.MovementAnimationPhase += num * dt * 0.7f * this.m_walkAnimationSpeed;
-				this.m_footstepsPhase += 0.7f * this.m_walkAnimationSpeed * num * dt;
+				targetGait = Gait.Canter;
+				animationSpeedMultiplier = 0.7f;
 			}
 			else if (this.m_canTrot && num > 0.5f * this.m_componentCreature.ComponentLocomotion.WalkSpeed)
 			{
-				this.m_gait = ComponentNewFourLeggedModel.Gait.Trot;
-				base.MovementAnimationPhase += num * dt * this.m_walkAnimationSpeed;
-				this.m_footstepsPhase += 1.25f * this.m_walkAnimationSpeed * num * dt;
+				targetGait = Gait.Trot;
+				animationSpeedMultiplier = 1f;
 			}
 			else if (MathF.Abs(num) > 0.2f)
 			{
-				this.m_gait = ComponentNewFourLeggedModel.Gait.Walk;
-				base.MovementAnimationPhase += num * dt * this.m_walkAnimationSpeed;
-				this.m_footstepsPhase += 1.25f * this.m_walkAnimationSpeed * num * dt;
+				targetGait = Gait.Walk;
+				animationSpeedMultiplier = 1f;
+			}
+
+			// Transición suave entre gaits
+			if (this.m_targetGait != targetGait)
+			{
+				this.m_targetGait = targetGait;
+				this.m_gaitTransitionFactor = 0f;
+			}
+
+			// Actualizar factor de transición
+			if (this.m_gaitTransitionFactor < 1f)
+			{
+				this.m_gaitTransitionFactor = MathUtils.Min(
+					this.m_gaitTransitionFactor + dt * this.m_gaitTransitionSpeed, 1f);
+			}
+
+			// Interpolar suavemente entre gaits - CORREGIDO: crear función SmoothStep de un parámetro
+			float transition = this.SmoothStep(this.m_gaitTransitionFactor);
+
+			if (transition < 1f)
+			{
+				// Durante transición, interpolar parámetros
+				this.m_gait = this.m_targetGait;
 			}
 			else
 			{
-				this.m_gait = ComponentNewFourLeggedModel.Gait.Walk;
+				this.m_gait = this.m_targetGait;
+			}
+
+			// Calcular intensidad de paso basada en aceleración
+			float currentSpeed = num;
+			float acceleration = MathF.Abs(currentSpeed - m_lastSpeed) / Math.Max(dt, 0.001f);
+			m_lastSpeed = currentSpeed;
+
+			m_stepIntensity = MathUtils.Lerp(m_stepIntensity,
+				MathUtils.Clamp(1f + acceleration * 0.5f, 0.5f, 1.5f),
+				dt * 8f);
+
+			// Añadir balanceo natural de la cabeza
+			if (MathF.Abs(num) > 0.1f)
+			{
+				m_headSwayPhase += dt * num * 0.5f;
+				m_headSwayAmount = MathUtils.Lerp(m_headSwayAmount,
+					MathUtils.DegToRad(3f), dt * 4f);
+			}
+			else
+			{
+				m_headSwayAmount = MathUtils.Lerp(m_headSwayAmount, 0f, dt * 4f);
+			}
+
+			// Actualizar animaciones según gait actual con transición suave - CORREGIDO: usar enum local
+			if (this.m_gait == Gait.Canter)
+			{
+				base.MovementAnimationPhase += num * dt * 0.7f * this.m_walkAnimationSpeed * transition;
+				this.m_footstepsPhase += 0.7f * this.m_walkAnimationSpeed * num * dt * transition;
+			}
+			else if (this.m_gait == Gait.Trot)
+			{
+				base.MovementAnimationPhase += num * dt * this.m_walkAnimationSpeed * transition;
+				this.m_footstepsPhase += 1.25f * this.m_walkAnimationSpeed * num * dt * transition;
+			}
+			else if (MathF.Abs(num) > 0.2f)
+			{
+				this.m_gait = Gait.Walk;
+				base.MovementAnimationPhase += num * dt * this.m_walkAnimationSpeed * transition;
+				this.m_footstepsPhase += 1.25f * this.m_walkAnimationSpeed * num * dt * transition;
+			}
+			else
+			{
+				this.m_gait = Gait.Walk;
 				base.MovementAnimationPhase = 0f;
 				this.m_footstepsPhase = 0f;
 			}
-			float num2 = 0f;
-			if (this.m_gait == ComponentNewFourLeggedModel.Gait.Canter)
+
+			// Calcular bobbing con interpolación suave
+			float targetBob = 0f;
+			if (this.m_gait == Gait.Canter)
 			{
-				num2 = (0f - this.m_walkBobHeight) * 1.5f * MathF.Sin(6.2831855f * base.MovementAnimationPhase);
+				targetBob = (0f - this.m_walkBobHeight) * 1.5f * MathF.Sin(6.2831855f * base.MovementAnimationPhase);
 			}
-			else if (this.m_gait == ComponentNewFourLeggedModel.Gait.Trot)
+			else if (this.m_gait == Gait.Trot)
 			{
-				num2 = this.m_walkBobHeight * 1.5f * MathUtils.Sqr(MathF.Sin(6.2831855f * base.MovementAnimationPhase));
+				targetBob = this.m_walkBobHeight * 1.5f * MathUtils.Sqr(MathF.Sin(6.2831855f * base.MovementAnimationPhase));
 			}
-			else if (this.m_gait == ComponentNewFourLeggedModel.Gait.Walk)
+			else if (this.m_gait == Gait.Walk)
 			{
-				num2 = (0f - this.m_walkBobHeight) * MathUtils.Sqr(MathF.Sin(6.2831855f * base.MovementAnimationPhase));
+				targetBob = (0f - this.m_walkBobHeight) * MathUtils.Sqr(MathF.Sin(6.2831855f * base.MovementAnimationPhase));
 			}
-			float num3 = MathUtils.Min(12f * this.m_subsystemTime.GameTimeDelta, 1f);
-			base.Bob += num3 * (num2 - base.Bob);
-			if (this.m_gait == ComponentNewFourLeggedModel.Gait.Canter && this.m_useCanterSound)
+
+			float bobTransition = MathUtils.Min(12f * this.m_subsystemTime.GameTimeDelta, 1f);
+			bobTransition = this.SmoothStep(bobTransition);
+			base.Bob += bobTransition * (targetBob - base.Bob);
+
+			// Sonidos de pasos con intensidad dinámica - CORREGIDO: usar enum local
+			if (this.m_gait == Gait.Canter && this.m_useCanterSound)
 			{
 				float num4 = MathF.Floor(this.m_footstepsPhase);
 				if (this.m_footstepsPhase > num4 && footstepsPhase <= num4)
@@ -67,7 +147,11 @@ namespace Game
 					string footstepSoundMaterialName = this.m_subsystemSoundMaterials.GetFootstepSoundMaterialName(this.m_componentCreature);
 					if (!string.IsNullOrEmpty(footstepSoundMaterialName) && footstepSoundMaterialName != "Water")
 					{
-						this.m_subsystemAudio.PlayRandomSound("Audio/Footsteps/CanterDirt", 0.75f, this.m_random.Float(-0.25f, 0f), this.m_componentCreature.ComponentBody.Position, 3f, true);
+						float volume = 0.75f * m_stepIntensity;
+						float pitch = this.m_random.Float(-0.2f, 0.1f);
+						this.m_subsystemAudio.PlayRandomSound("Audio/Footsteps/CanterDirt",
+							volume, pitch, this.m_componentCreature.ComponentBody.Position,
+							3f * m_stepIntensity, true);
 					}
 				}
 			}
@@ -76,10 +160,16 @@ namespace Game
 				float num5 = MathF.Floor(this.m_footstepsPhase);
 				if (this.m_footstepsPhase > num5 && footstepsPhase <= num5)
 				{
-					this.m_componentCreature.ComponentCreatureSounds.PlayFootstepSound(1f);
+					this.m_componentCreature.ComponentCreatureSounds.PlayFootstepSound(1f * m_stepIntensity);
 				}
 			}
-			this.m_feedFactor = (base.FeedOrder ? MathUtils.Min(this.m_feedFactor + 2f * dt, 1f) : MathUtils.Max(this.m_feedFactor - 2f * dt, 0f));
+
+			// Animación de alimentación
+			this.m_feedFactor = (base.FeedOrder ?
+				MathUtils.Min(this.m_feedFactor + 2f * dt, 1f) :
+				MathUtils.Max(this.m_feedFactor - 2f * dt, 0f));
+
+			// Animación de ataque
 			base.IsAttackHitMoment = false;
 			if (base.AttackOrder)
 			{
@@ -106,18 +196,17 @@ namespace Game
 					}
 				}
 			}
+
 			base.FeedOrder = false;
 			base.AttackOrder = false;
-			{
-			}
 			base.Update(dt);
 		}
 
-		// Token: 0x06000456 RID: 1110 RVA: 0x00015FCC File Offset: 0x000141CC
 		public override void AnimateCreature()
 		{
 			Vector3 position = this.m_componentCreature.ComponentBody.Position;
 			Vector3 vector = this.m_componentCreature.ComponentBody.Rotation.ToYawPitchRoll();
+
 			if (this.m_componentCreature.ComponentHealth.Health > 0f)
 			{
 				float num = 0f;
@@ -125,9 +214,13 @@ namespace Game
 				float num3 = 0f;
 				float num4 = 0f;
 				float num5 = 0f;
-				if (base.MovementAnimationPhase != 0f && (this.m_componentCreature.ComponentBody.StandingOnValue != null || this.m_componentCreature.ComponentBody.ImmersionFactor > 0f))
+
+				if (base.MovementAnimationPhase != 0f &&
+					(this.m_componentCreature.ComponentBody.StandingOnValue != null ||
+					 this.m_componentCreature.ComponentBody.ImmersionFactor > 0f))
 				{
-					if (this.m_gait == ComponentNewFourLeggedModel.Gait.Canter)
+					// CORREGIDO: usar enum local
+					if (this.m_gait == Gait.Canter)
 					{
 						float num6 = MathF.Sin(6.2831855f * (base.MovementAnimationPhase + 0f));
 						float num7 = MathF.Sin(6.2831855f * (base.MovementAnimationPhase + 0.25f));
@@ -139,7 +232,7 @@ namespace Game
 						num4 = this.m_walkHindLegsAngle * this.m_canterLegsAngleFactor * num9;
 						num5 = MathUtils.DegToRad(8f) * MathF.Sin(6.2831855f * base.MovementAnimationPhase);
 					}
-					else if (this.m_gait == ComponentNewFourLeggedModel.Gait.Trot)
+					else if (this.m_gait == Gait.Trot)
 					{
 						float num10 = MathF.Sin(6.2831855f * (base.MovementAnimationPhase + 0f));
 						float num11 = MathF.Sin(6.2831855f * (base.MovementAnimationPhase + 0.5f));
@@ -164,72 +257,128 @@ namespace Game
 						num5 = MathUtils.DegToRad(3f) * MathF.Sin(12.566371f * base.MovementAnimationPhase);
 					}
 				}
-				float num18 = MathUtils.Min(12f * this.m_subsystemTime.GameTimeDelta, 1f);
-				this.m_legAngle1 += num18 * (num - this.m_legAngle1);
-				this.m_legAngle2 += num18 * (num2 - this.m_legAngle2);
-				this.m_legAngle3 += num18 * (num3 - this.m_legAngle3);
-				this.m_legAngle4 += num18 * (num4 - this.m_legAngle4);
-				this.m_headAngleY += num18 * (num5 - this.m_headAngleY);
+
+				// Interpolación mejorada con easing
+				float interpolationSpeed = 16f;
+				float t = MathUtils.Min(interpolationSpeed * this.m_subsystemTime.GameTimeDelta, 1f);
+				t = this.SmoothStep(t); // CORREGIDO: usar función local
+
+				this.m_legAngle1 += t * (num - this.m_legAngle1);
+				this.m_legAngle2 += t * (num2 - this.m_legAngle2);
+				this.m_legAngle3 += t * (num3 - this.m_legAngle3);
+				this.m_legAngle4 += t * (num4 - this.m_legAngle4);
+				this.m_headAngleY += t * (num5 - this.m_headAngleY);
+
 				Vector2 vector2 = this.m_componentCreature.ComponentLocomotion.LookAngles;
 				vector2.Y += this.m_headAngleY;
+
+				// Añadir balanceo natural a la cabeza
+				float headSway = MathF.Sin(m_headSwayPhase * 6.2831855f) * m_headSwayAmount;
+				vector2.Y += headSway;
+
 				vector2.X = Math.Clamp(vector2.X, 0f - MathUtils.DegToRad(65f), MathUtils.DegToRad(65f));
 				vector2.Y = Math.Clamp(vector2.Y, 0f - MathUtils.DegToRad(55f), MathUtils.DegToRad(55f));
+
 				Vector2 vector3 = Vector2.Zero;
 				if (this.m_neckBone != null)
 				{
 					vector3 = 0.6f * vector2;
 					vector2 = 0.4f * vector2;
 				}
+
+				// Animación de alimentación
 				if (this.m_feedFactor > 0f)
 				{
-					float y = 0f - MathUtils.DegToRad(25f + 45f * SimplexNoise.OctavedNoise((float)this.m_subsystemTime.GameTime, 3f, 2, 2f, 0.75f, false));
+					float y = 0f - MathUtils.DegToRad(25f + 45f * SimplexNoise.OctavedNoise(
+						(float)this.m_subsystemTime.GameTime, 3f, 2, 2f, 0.75f, false));
 					Vector2 v = new Vector2(0f, y);
 					vector2 = Vector2.Lerp(vector2, v, this.m_feedFactor);
-					if (this.m_moveLegWhenFeeding)
-					{
-						float x = MathUtils.DegToRad(20f) + MathUtils.PowSign(SimplexNoise.OctavedNoise((float)this.m_subsystemTime.GameTime, 1f, 1, 1f, 1f, false) - 0.5f, 0.33f) / 0.5f * MathUtils.DegToRad(25f) * (float)Math.Sin(17.0 * this.m_subsystemTime.GameTime);
-						num2 = MathUtils.Lerp(num2, x, this.m_feedFactor);
-					}
 				}
+
+				// Animación de ataque
 				if (this.m_buttFactor != 0f)
 				{
 					float y2 = (0f - MathUtils.DegToRad(40f)) * MathF.Sin(6.2831855f * MathUtils.Sigmoid(this.m_buttPhase, 4f));
 					Vector2 v = new Vector2(0f, y2);
 					vector2 = Vector2.Lerp(vector2, v, this.m_buttFactor);
 				}
-				this.SetBoneTransform(this.m_bodyBone.Index, new Matrix?(Matrix.CreateScale(this.m_bodyScale * this.GrowStage) * Matrix.CreateRotationY(vector.X) * Matrix.CreateTranslation(position.X, position.Y + base.Bob, position.Z)));
-				this.SetBoneTransform(this.m_headBone.Index, new Matrix?(Matrix.CreateRotationX(vector2.Y) * Matrix.CreateRotationZ(0f - vector2.X)));
+
+				// Transformación del cuerpo con balanceo natural durante movimiento
+				float currentSpeed = Vector3.Dot(this.m_componentCreature.ComponentBody.Velocity,
+					this.m_componentCreature.ComponentBody.Matrix.Forward);
+				float transition = this.SmoothStep(this.m_gaitTransitionFactor); // CORREGIDO: usar función local
+
+				// CORREGIDO: usar enum local
+				if ((this.m_gait != Gait.Walk || MathF.Abs(currentSpeed) > 0.3f) && transition > 0.5f)
+				{
+					float bodyRoll = MathUtils.DegToRad(2f) * MathF.Sin(6.2831855f * base.MovementAnimationPhase + 1.5707964f);
+					float bodyYaw = MathUtils.DegToRad(1f) * MathF.Sin(6.2831855f * base.MovementAnimationPhase);
+
+					Matrix bodyTransform =
+						Matrix.CreateRotationZ(bodyRoll * m_bodySwayAmount) *
+						Matrix.CreateRotationY(bodyYaw * m_bodySwayAmount + vector.X) *
+						Matrix.CreateTranslation(position.X, position.Y + base.Bob, position.Z);
+
+					this.SetBoneTransform(this.m_bodyBone.Index, new Matrix?(bodyTransform));
+				}
+				else
+				{
+					this.SetBoneTransform(this.m_bodyBone.Index,
+						new Matrix?(Matrix.CreateRotationY(vector.X) *
+						Matrix.CreateTranslation(position.X, position.Y + base.Bob, position.Z)));
+				}
+
+				this.SetBoneTransform(this.m_headBone.Index,
+					new Matrix?(Matrix.CreateRotationX(vector2.Y) * Matrix.CreateRotationZ(0f - vector2.X)));
+
 				if (this.m_neckBone != null)
 				{
-					this.SetBoneTransform(this.m_neckBone.Index, new Matrix?(Matrix.CreateRotationX(vector3.Y) * Matrix.CreateRotationZ(0f - vector3.X)));
+					this.SetBoneTransform(this.m_neckBone.Index,
+						new Matrix?(Matrix.CreateRotationX(vector3.Y) * Matrix.CreateRotationZ(0f - vector3.X)));
 				}
+
 				this.SetBoneTransform(this.m_leg1Bone.Index, new Matrix?(Matrix.CreateRotationX(this.m_legAngle1)));
 				this.SetBoneTransform(this.m_leg2Bone.Index, new Matrix?(Matrix.CreateRotationX(this.m_legAngle2)));
 				this.SetBoneTransform(this.m_leg3Bone.Index, new Matrix?(Matrix.CreateRotationX(this.m_legAngle3)));
 				this.SetBoneTransform(this.m_leg4Bone.Index, new Matrix?(Matrix.CreateRotationX(this.m_legAngle4)));
 				return;
 			}
+
+			// Animación de muerte
 			float num19 = 1f - base.DeathPhase;
 			float num20 = (float)((Vector3.Dot(this.m_componentFrame.Matrix.Right, base.DeathCauseOffset) > 0f) ? 1 : -1);
 			float num21 = this.m_componentCreature.ComponentBody.BoundingBox.Max.Y - this.m_componentCreature.ComponentBody.BoundingBox.Min.Y;
-			this.SetBoneTransform(this.m_bodyBone.Index, new Matrix?(Matrix.CreateScale(this.m_bodyScale * this.GrowStage) * Matrix.CreateTranslation(-0.5f * num21 * Vector3.UnitY * base.DeathPhase) * Matrix.CreateFromYawPitchRoll(vector.X, 0f, 1.5707964f * base.DeathPhase * num20) * Matrix.CreateTranslation(0.2f * num21 * Vector3.UnitY * base.DeathPhase) * Matrix.CreateTranslation(position)));
-			this.SetBoneTransform(this.m_headBone.Index, new Matrix?(Matrix.CreateRotationX(MathUtils.DegToRad(50f) * base.DeathPhase)));
+
+			this.SetBoneTransform(this.m_bodyBone.Index,
+				new Matrix?(Matrix.CreateTranslation(-0.5f * num21 * Vector3.UnitY * base.DeathPhase) *
+				Matrix.CreateFromYawPitchRoll(vector.X, 0f, 1.5707964f * base.DeathPhase * num20) *
+				Matrix.CreateTranslation(0.2f * num21 * Vector3.UnitY * base.DeathPhase) *
+				Matrix.CreateTranslation(position)));
+
+			this.SetBoneTransform(this.m_headBone.Index,
+				new Matrix?(Matrix.CreateRotationX(MathUtils.DegToRad(50f) * base.DeathPhase)));
+
 			if (this.m_neckBone != null)
 			{
 				this.SetBoneTransform(this.m_neckBone.Index, new Matrix?(Matrix.Identity));
 			}
-			this.SetBoneTransform(this.m_leg1Bone.Index, new Matrix?(Matrix.CreateRotationX(this.m_legAngle1 * num19)));
-			this.SetBoneTransform(this.m_leg2Bone.Index, new Matrix?(Matrix.CreateRotationX(this.m_legAngle2 * num19)));
-			this.SetBoneTransform(this.m_leg3Bone.Index, new Matrix?(Matrix.CreateRotationX(this.m_legAngle3 * num19)));
-			this.SetBoneTransform(this.m_leg4Bone.Index, new Matrix?(Matrix.CreateRotationX(this.m_legAngle4 * num19)));
+
+			this.SetBoneTransform(this.m_leg1Bone.Index,
+				new Matrix?(Matrix.CreateRotationX(this.m_legAngle1 * num19)));
+			this.SetBoneTransform(this.m_leg2Bone.Index,
+				new Matrix?(Matrix.CreateRotationX(this.m_legAngle2 * num19)));
+			this.SetBoneTransform(this.m_leg3Bone.Index,
+				new Matrix?(Matrix.CreateRotationX(this.m_legAngle3 * num19)));
+			this.SetBoneTransform(this.m_leg4Bone.Index,
+				new Matrix?(Matrix.CreateRotationX(this.m_legAngle4 * num19)));
 		}
 
-		// Token: 0x06000457 RID: 1111 RVA: 0x000168A4 File Offset: 0x00014AA4
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
 			base.Load(valuesDictionary, idToEntityMap);
 			this.m_subsystemAudio = base.Project.FindSubsystem<SubsystemAudio>(true);
 			this.m_subsystemSoundMaterials = base.Project.FindSubsystem<SubsystemSoundMaterials>(true);
+
 			this.m_walkAnimationSpeed = valuesDictionary.GetValue<float>("WalkAnimationSpeed");
 			this.m_walkFrontLegsAngle = valuesDictionary.GetValue<float>("WalkFrontLegsAngle");
 			this.m_walkHindLegsAngle = valuesDictionary.GetValue<float>("WalkHindLegsAngle");
@@ -239,13 +388,19 @@ namespace Game
 			this.m_canCanter = valuesDictionary.GetValue<bool>("CanCanter");
 			this.m_canTrot = valuesDictionary.GetValue<bool>("CanTrot");
 			this.m_useCanterSound = valuesDictionary.GetValue<bool>("UseCanterSound");
-			this.m_bodyScale = valuesDictionary.GetValue<float>("Scale", 1f);
+
+			// Nuevos parámetros para suavidad
+			this.m_gaitTransitionSpeed = valuesDictionary.GetValue<float>("GaitTransitionSpeed", 4f);
+			this.m_bodySwayAmount = valuesDictionary.GetValue<float>("BodySwayAmount", 1f);
 		}
 
-		// Token: 0x06000458 RID: 1112 RVA: 0x000169A0 File Offset: 0x00014BA0
 		public override void SetModel(Model model)
 		{
 			base.SetModel(model);
+			if (this.IsSet)
+			{
+				return;
+			}
 			if (base.Model != null)
 			{
 				this.m_bodyBone = base.Model.FindBone("Body", true);
@@ -266,101 +421,57 @@ namespace Game
 			this.m_leg4Bone = null;
 		}
 
-		// Token: 0x040001F4 RID: 500
+		// Función auxiliar para SmoothStep con un parámetro
+		private float SmoothStep(float x)
+		{
+			// SmoothStep function: 3x² - 2x³
+			return x * x * (3f - 2f * x);
+		}
+
+		// Campos existentes
 		public SubsystemAudio m_subsystemAudio;
-
-		// Token: 0x040001F5 RID: 501
 		public SubsystemSoundMaterials m_subsystemSoundMaterials;
-
-		// Token: 0x040001F6 RID: 502
 		public ModelBone m_bodyBone;
-
-		// Token: 0x040001F7 RID: 503
 		public ModelBone m_neckBone;
-
-		// Token: 0x040001F8 RID: 504
 		public ModelBone m_headBone;
-
-		// Token: 0x040001F9 RID: 505
 		public ModelBone m_leg1Bone;
-
-		// Token: 0x040001FA RID: 506
 		public ModelBone m_leg2Bone;
-
-		// Token: 0x040001FB RID: 507
 		public ModelBone m_leg3Bone;
-
-		// Token: 0x040001FC RID: 508
 		public ModelBone m_leg4Bone;
-
-		// Token: 0x040001FD RID: 509
 		public float m_walkAnimationSpeed;
-
-		// Token: 0x040001FE RID: 510
 		public float m_canterLegsAngleFactor;
-
-		// Token: 0x040001FF RID: 511
 		public float m_walkFrontLegsAngle;
-
-		// Token: 0x04000200 RID: 512
 		public float m_walkHindLegsAngle;
-
-		// Token: 0x04000201 RID: 513
 		public float m_walkBobHeight;
-
-		// Token: 0x04000202 RID: 514
 		public bool m_moveLegWhenFeeding;
-
-		// Token: 0x04000203 RID: 515
 		public bool m_canCanter;
-
-		// Token: 0x04000204 RID: 516
 		public bool m_canTrot;
-
-		// Token: 0x04000205 RID: 517
 		public bool m_useCanterSound;
-
-		// Token: 0x04000206 RID: 518
-		public ComponentNewFourLeggedModel.Gait m_gait;
-
-		// Token: 0x04000207 RID: 519
+		public Gait m_gait; // CORREGIDO: usar el enum local en lugar de ComponentFourLeggedModel.Gait
 		public float m_feedFactor;
-
-		// Token: 0x04000208 RID: 520
 		public float m_buttFactor;
-
-		// Token: 0x04000209 RID: 521
 		public float m_buttPhase;
-
-		// Token: 0x0400020A RID: 522
 		public float m_footstepsPhase;
-
-		// Token: 0x0400020B RID: 523
 		public float m_legAngle1;
-
-		// Token: 0x0400020C RID: 524
 		public float m_legAngle2;
-
-		// Token: 0x0400020D RID: 525
 		public float m_legAngle3;
-
-		// Token: 0x0400020E RID: 526
 		public float m_legAngle4;
-
-		// Token: 0x0400020F RID: 527
 		public float m_headAngleY;
 
-		// Token: 0x04000210 RID: 528
-		public float m_bodyScale = 1f;
+		// Nuevos campos para mejorar la fluidez
+		private float m_gaitTransitionFactor = 1f;
+		private Gait m_targetGait; // CORREGIDO: usar el enum local
+		private float m_gaitTransitionSpeed = 4f;
+		private float m_stepIntensity = 1f;
+		private float m_lastSpeed = 0f;
+		private float m_headSwayPhase;
+		private float m_headSwayAmount;
+		private float m_bodySwayAmount = 1f;
 
-		// Token: 0x02000131 RID: 305
 		public enum Gait
 		{
-			// Token: 0x04000519 RID: 1305
 			Walk,
-			// Token: 0x0400051A RID: 1306
 			Trot,
-			// Token: 0x0400051B RID: 1307
 			Canter
 		}
 	}
