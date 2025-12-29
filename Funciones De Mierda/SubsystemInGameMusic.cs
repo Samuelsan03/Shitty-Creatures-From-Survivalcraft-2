@@ -608,6 +608,7 @@ namespace Game
 			new SubsystemInGameMusic.TrackInfo("MenuMusic/Sonic The Hedgehog 2 1992 Hill Top Zone", 177f),
 			new SubsystemInGameMusic.TrackInfo("MenuMusic/Mio Honda 本田未央 Step! ステップ", 177f),
 			new SubsystemInGameMusic.TrackInfo("MenuMusic/Yahpp Sorceress Elise", 177f),
+			new SubsystemInGameMusic.TrackInfo("MenuMusic/Chrono Trigger Main Theme", 177f),
 		};
 
 		private struct TrackInfo
