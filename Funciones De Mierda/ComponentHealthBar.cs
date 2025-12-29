@@ -39,65 +39,74 @@ namespace Game
 				return;
 			}
 
-			Vector3 vector2 = new Vector3(vector.X, this.m_body.BoundingBox.Max.Y + num * 0.3f, vector.Z);
-			Vector3 vector3 = new Vector3(vector.X, this.m_body.BoundingBox.Max.Y + num * 0.2f, vector.Z);
+			// Punto para el texto (centrado sobre la entidad)
+			Vector3 textPosition = new Vector3(vector.X, this.m_body.BoundingBox.Max.Y + num * 0.3f, vector.Z);
 
-			if (Vector3.Dot(camera.ViewDirection, vector2 - camera.ViewPosition) <= 0f)
+			// Punto para la barra (debajo del texto)
+			Vector3 barPosition = new Vector3(vector.X, this.m_body.BoundingBox.Max.Y + num * 0.2f, vector.Z);
+
+			if (Vector3.Dot(camera.ViewDirection, textPosition - camera.ViewPosition) <= 0f)
 			{
 				return;
 			}
-			if (Vector3.Dot(camera.ViewDirection, vector3 - camera.ViewPosition) <= 0f)
+			if (Vector3.Dot(camera.ViewDirection, barPosition - camera.ViewPosition) <= 0f)
 			{
 				return;
 			}
 
-			Vector3 vector4 = Vector3.Transform(vector2, camera.ViewMatrix);
-			Vector3 vector5 = Vector3.Transform(vector3, camera.ViewMatrix);
-			Vector3 vector6 = Vector3.TransformNormal(0.005f * Vector3.Normalize(Vector3.Cross(camera.ViewDirection, camera.ViewUp)), camera.ViewMatrix);
-			Vector3 vector7 = Vector3.TransformNormal(-0.005f * Vector3.UnitY, camera.ViewMatrix);
+			Vector3 textViewPosition = Vector3.Transform(textPosition, camera.ViewMatrix);
+			Vector3 barViewPosition = Vector3.Transform(barPosition, camera.ViewMatrix);
 
-			float num2 = MathUtils.Saturate(this.m_health.Health);
+			Vector3 horizontalOffset = Vector3.TransformNormal(0.005f * Vector3.Normalize(Vector3.Cross(camera.ViewDirection, camera.ViewUp)), camera.ViewMatrix);
+			Vector3 verticalOffset = Vector3.TransformNormal(-0.005f * Vector3.UnitY, camera.ViewMatrix);
+
+			float healthPercent = MathUtils.Saturate(this.m_health.Health);
 			float attackResilience = this.m_health.AttackResilience;
-			float num3 = this.m_health.Health * attackResilience;
+			float displayedHealth = this.m_health.Health * attackResilience;
 
-			Color color = (num2 < 0.3f) ? Color.Red : ((num2 < 0.7f) ? Color.Yellow : Color.Green);
+			Color color = (healthPercent < 0.3f) ? Color.Red : ((healthPercent < 0.7f) ? Color.Yellow : Color.Green);
 
-			// CORRECCIÓN: Obtener el texto localizado para "HP"
+			// Texto HP localizado
 			string hpText = GetLocalizedHPText();
-			string text = this.m_creature.DisplayName + " " + num3.ToString("0") + " " + hpText;
+			string text = this.m_creature.DisplayName + " " + displayedHealth.ToString("0") + " " + hpText;
 
 			BitmapFont bitmapFont = ContentManager.Get<BitmapFont>("Fonts/Pericles");
 			FontBatch3D fontBatch3D = this.m_modelsRenderer.PrimitivesRenderer.FontBatch(bitmapFont, 1, DepthStencilState.DepthRead, RasterizerState.CullNoneScissor, BlendState.AlphaBlend, SamplerState.LinearClamp);
 
-			// CORRECCIÓN: Usar 0 en lugar de TextAnchor
-			fontBatch3D.QueueText(text, vector4, vector6, vector7, color, 0);
+			// Dibujar texto centrado usando TextAnchor.Center (igual que en tu código de referencia)
+			fontBatch3D.QueueText(text, textViewPosition, horizontalOffset, verticalOffset, color, TextAnchor.Center);
 			fontBatch3D.Flush(camera.ViewProjectionMatrix, false);
 
-			float num4 = 120f;
-			float num5 = 5f;
-			Vector3 vector8 = vector6 * (num4 * 0.5f);
-			Vector3 vector9 = vector7 * (num5 * 1f);
-			Vector3 vector10 = vector5 - vector8;
-			Vector3 vector11 = vector5 + vector8;
-			Vector3 vector12 = vector10 + vector9;
-			Vector3 vector13 = vector11 + vector9;
+			// Dimensiones de la barra de salud
+			float barWidth = 120f;
+			float barHeight = 12.5f; // 2.5 veces más gruesa (original: 5f)
+
+			Vector3 barStart = barViewPosition - horizontalOffset * (barWidth * 0.5f);
+			Vector3 barEnd = barViewPosition + horizontalOffset * (barWidth * 0.5f);
+			Vector3 barTop = barStart + verticalOffset * barHeight;
+			Vector3 barTopEnd = barEnd + verticalOffset * barHeight;
 
 			FlatBatch3D flatBatch3D = this.m_modelsRenderer.PrimitivesRenderer.FlatBatch(0, null, null, null);
-			flatBatch3D.QueueQuad(vector10, vector12, Vector3.Lerp(vector12, vector13, num2), Vector3.Lerp(vector10, vector11, num2), Color.Lerp(Color.Red, Color.Green, num2));
 
-			if (num2 < 1f)
+			// Parte llena de la barra
+			flatBatch3D.QueueQuad(barStart, barTop,
+								  Vector3.Lerp(barTop, barTopEnd, healthPercent),
+								  Vector3.Lerp(barStart, barEnd, healthPercent),
+								  Color.Lerp(Color.Red, Color.Green, healthPercent));
+
+			// Parte vacía de la barra (si no está llena)
+			if (healthPercent < 1f)
 			{
-				flatBatch3D.QueueQuad(Vector3.Lerp(vector10, vector11, num2), Vector3.Lerp(vector12, vector13, num2), vector13, vector11, new Color(0, 0, 0, 180));
+				flatBatch3D.QueueQuad(Vector3.Lerp(barStart, barEnd, healthPercent),
+									  Vector3.Lerp(barTop, barTopEnd, healthPercent),
+									  barTopEnd, barEnd, new Color(0, 0, 0, 180));
 			}
 			flatBatch3D.Flush(camera.ViewProjectionMatrix, false);
 		}
 
 		private string GetLocalizedHPText()
 		{
-			// Intentar obtener el texto localizado para "HP"
 			string hpText = LanguageControl.Get("HP");
-
-			// Si no se encuentra, usar el texto por defecto
 			return string.IsNullOrEmpty(hpText) ? "HP" : hpText;
 		}
 
