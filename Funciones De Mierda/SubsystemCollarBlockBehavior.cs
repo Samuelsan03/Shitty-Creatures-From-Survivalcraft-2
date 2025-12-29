@@ -71,6 +71,13 @@ namespace Game
 			{
 				{"InfectedNormal1", "InfectedNormalTamed1"},
 				{"InfectedNormal2", "InfectedNormalTamed2"},
+				{"InfectedFast1", "InfectedFastTamed1" },
+				{"InfectedFast2", "InfectedFastTamed2" },
+				{"InfectedMuscle1", "InfectedMuscleTamed1" },
+				{"InfectedMuscle2", "InfectedMuscleTamed2" },
+				{"PoisonousInfected1", "PoisonousInfectedTamed1" },
+				{"PoisonousInfected2", "PoisonousInfectedTamed2" },
+				{"InfectedFly1", "InfectedFlyTamed1" }
 				// Agrega más criaturas aquí:
 				// {"Wolf", "WolfTamed"},
 				// {"Bear", "BearTamed"},
@@ -241,5 +248,3 @@ namespace Game
 		};
 	}
 }
-
-
