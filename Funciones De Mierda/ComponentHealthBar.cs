@@ -62,7 +62,9 @@ namespace Game
 
 			Color color = (num2 < 0.3f) ? Color.Red : ((num2 < 0.7f) ? Color.Yellow : Color.Green);
 
-			string text = this.m_creature.DisplayName + " " + num3.ToString("0") + " HP";
+			// CORRECCIÓN: Obtener el texto localizado para "HP"
+			string hpText = GetLocalizedHPText();
+			string text = this.m_creature.DisplayName + " " + num3.ToString("0") + " " + hpText;
 
 			BitmapFont bitmapFont = ContentManager.Get<BitmapFont>("Fonts/Pericles");
 			FontBatch3D fontBatch3D = this.m_modelsRenderer.PrimitivesRenderer.FontBatch(bitmapFont, 1, DepthStencilState.DepthRead, RasterizerState.CullNoneScissor, BlendState.AlphaBlend, SamplerState.LinearClamp);
@@ -88,6 +90,15 @@ namespace Game
 				flatBatch3D.QueueQuad(Vector3.Lerp(vector10, vector11, num2), Vector3.Lerp(vector12, vector13, num2), vector13, vector11, new Color(0, 0, 0, 180));
 			}
 			flatBatch3D.Flush(camera.ViewProjectionMatrix, false);
+		}
+
+		private string GetLocalizedHPText()
+		{
+			// Intentar obtener el texto localizado para "HP"
+			string hpText = LanguageControl.Get("HP");
+
+			// Si no se encuentra, usar el texto por defecto
+			return string.IsNullOrEmpty(hpText) ? "HP" : hpText;
 		}
 
 		private SubsystemModelsRenderer m_modelsRenderer;
