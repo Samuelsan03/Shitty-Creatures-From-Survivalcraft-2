@@ -1,4 +1,17 @@
 <ShittyCreatures xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://gitee.com/THPRC/survivalcraft-api/raw/SCAPI1.8/Survivalcraft/Content/Assets/Database.xsd">
+<Folder Name="NewRendering" Guid="a74436fd-e173-45e4-bd9a-bf4b0b928e68">
+<ComponentTemplate Name="NewHumanModel" Description="Modelo humano mejorado con animaciones fluidas" Guid="c48d5760-c2bc-457b-add4-f43f68c9fb9b" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
+  <Parameter Name="WalkAnimationSpeed" Description="Velocidad de animación al caminar, en ciclos por metro" Guid="1563ba38-409b-4f05-bb7b-1ff57719b51e" Value="1" Type="float"/>
+  <Parameter Name="WalkLegsAngle" Description="Ángulo de animación de las piernas, en radianes" Guid="5f6f6770-2bf8-417c-81fe-0d98bc810c21" Value="0.5" Type="float"/>
+  <Parameter Name="WalkBobHeight" Description="Altura del balanceo al caminar, en metros" Guid="46bf2ae9-9417-4b1e-a3d5-eca1da5b6269" Value="0.05" Type="float"/>
+  <Parameter Name="MovementSmoothness" Description="Suavidad del movimiento" Guid="439570ea-6139-4160-8d1a-9d1f70818318" Value="15" Type="float"/>
+  <Parameter Name="RotationSmoothness" Description="Suavidad de la rotación" Guid="0e9e9753-d81f-4ed1-aeb9-22267da503d3" Value="20" Type="float"/>
+  <Parameter Name="IdleSwayAmount" Description="Cantidad de balanceo en estado inactivo" Guid="0f24e289-1a13-44e9-9f9c-20b461b1b129" Value="0.05" Type="float"/>
+  <Parameter Name="BreathingAmplitude" Description="Amplitud de la respiración" Guid="b4a046a5-72a6-462c-a401-10c74b09cffb" Value="0.005" Type="float"/>
+  <Parameter Name="Class" Guid="00a3648e-f4cc-42c5-b34a-7f5644d5d4ef" Value="Game.ComponentNewHumanModel" Type="string"/>
+</ComponentTemplate>
+</Folder>
+
 <Folder Name="Gameplay" Guid="d509e5e2-2c10-49f1-8223-85cd892c63b0">
 <ComponentTemplate Name="FlushInventory" Description="A flush bag that you can take items" Guid="b86f3409-2929-4d0a-b4ac-3d7b4ef9c404" InheritanceParent="81a44c6a-c30a-4f53-8d64-0c30aabab8f9">
       <Parameter Name="SlotsCount" Description="Cantidad de casillas que contenera la criatura en su inventario." Guid="9eb2101f-4bff-4925-9f8d-ef95591c9342" Value="16" Type="int"/>
@@ -345,14 +358,11 @@
             <Parameter Name="Class" Guid="195523d4-9a71-4be0-ad61-04613053c78d" Value="Game.ComponentInvShooterBehavior" Type="string"/>
         </ComponentTemplate>
 
-        <ComponentTemplate Name="PoisonInfectBehavior" Description="Comportamiento de infección por veneno" Guid="2e6bc32f-4ed5-48c3-8af4-f6c8ab14b835">
-  <Parameter Name="Class" Guid="c7351e14-d169-4ef2-93d2-585efd535fc3" Value="Game.ComponentPoisonInfectedBehavior" Type="string"/>
+        <ComponentTemplate Name="PoisonInfectedBehavior" Description="Comportamiento de infección por veneno" Guid="2e6bc32f-4ed5-48c3-8af4-f6c8ab14b835">
+  <Parameter Name="Class" Guid="c7351e14-d169-4ef2-93d2-585efd535fc3" Value="Game.ComponentPoisonInfectBehavior" Type="string"/>
   <Parameter Name="IsOptional" Value="true" Type="bool"/>
   <Parameter Name="LoadOrder" Value="50" Type="int"/>
   <Parameter Name="PoisonIntensity" Description="Intensidad del veneno (mayor = más tiempo de infección)" Guid="638c7b31-cdec-47ff-ae63-0e35a8481011" Value="400" Type="float"/>
-  <Parameter Name="InfectionProbability" Description="Probabilidad de infección por ataque (0-1)" Guid="a2b4c6d8-e0f2-4a6c-8d1e-3f5a7b9c1d3e" Value="0.3" Type="float"/>
-  <Parameter Name="InfectionCooldown" Description="Tiempo entre posibles infecciones (segundos)" Guid="b3c5d7e9-f1a3-4b7d-9e2f-4a6c8e0f2b4d" Value="10" Type="float"/>
-  <Parameter Name="AttackRange" Description="Rango máximo para infectar" Guid="c4d6e8f0-a2b4-4c8e-0f2b-4d6e8f0a2b4c" Value="2" Type="float"/>
 </ComponentTemplate>
 
 <ComponentTemplate Name="NewChaseBehavior" Description="Comportamiento de persecución que integra con el sistema de manadas" Guid="1efc342f-4e31-49b9-bbc1-f9285c613a25">
@@ -428,7 +438,7 @@
     <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="cd3fd8b7-7348-4e1f-a5d5-a0df798fe6f0"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="fc9edfe3-b7e2-41d0-b32e-29b8eeff31c1"/>
     <Parameter Name="LoadOrder" Value="55" Type="int" Guid="6bd2c3bb-d6e5-45a7-abf9-984784581515"/>
-    <Parameter Name="LowHealthToEscape" Value="0.55" Type="float" Guid="15204422-49ca-459c-b630-976aa61bd5a0"/>
+    <Parameter Name="LowHealthToEscape" Value="0.1" Type="float" Guid="15204422-49ca-459c-b630-976aa61bd5a0"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="246b53a1-570e-4506-96c4-8f71e80ff243" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
                 <Parameter Name="DayRange" Guid="07ef7cf6-752e-4f38-8896-ad7c266c4774" Value="0" Type="float"/>
@@ -546,10 +556,10 @@
     <Parameter Name="Class" Value="Game.ComponentNewChaseBehavior" Type="string" Guid="ee4c3319-50ef-4d62-ba04-e9915b410803"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="0a8dbde3-34cd-4fab-b10a-e9588802d746"/>
     <Parameter Name="LoadOrder" Value="60" Type="int" Guid="afd1ec64-b65a-4d35-bdd2-7a1ff234cbf0"/>
-    <Parameter Name="DayChaseRange" Value="16" Type="float" Guid="ea5456f1-a677-44be-b4e3-fda0e7bfc857"/>
-    <Parameter Name="NightChaseRange" Value="24" Type="float" Guid="5d548450-79b3-4205-85ee-5fdc1d4f2b82"/>
-    <Parameter Name="DayChaseTime" Value="30" Type="float" Guid="8b667fbf-b540-4566-8b24-1d96b27becc0"/>
-    <Parameter Name="NightChaseTime" Value="60" Type="float" Guid="17e7bf30-6261-45b2-8585-a8ed85974caa"/>
+    <Parameter Name="DayChaseRange" Value="1" Type="float" Guid="ea5456f1-a677-44be-b4e3-fda0e7bfc857"/>
+    <Parameter Name="NightChaseRange" Value="1" Type="float" Guid="5d548450-79b3-4205-85ee-5fdc1d4f2b82"/>
+    <Parameter Name="DayChaseTime" Value="1" Type="float" Guid="8b667fbf-b540-4566-8b24-1d96b27becc0"/>
+    <Parameter Name="NightChaseTime" Value="1" Type="float" Guid="17e7bf30-6261-45b2-8585-a8ed85974caa"/>
     <Parameter Name="ChaseNonPlayerProbability" Value="0.2" Type="float" Guid="68ba6f29-8586-44d5-aa59-5b737e9f06b3"/>
     <Parameter Name="ChaseWhenAttackedProbability" Value="0.8" Type="float" Guid="f2fd4e53-dc8a-454e-a530-7ba691ce8784"/>
     <Parameter Name="ChaseOnTouchProbability" Value="0.5" Type="float" Guid="35346e69-01c2-48af-a9fe-265bb6e5a4be"/>
@@ -569,7 +579,7 @@
     <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="dc9ec555-4cf4-4339-9404-b605d4ed9e61"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="20a315cc-06cb-4c39-be75-eb1b781cf2ea"/>
     <Parameter Name="LoadOrder" Value="55" Type="int" Guid="1aecc6dd-37a1-450c-b9ff-c3eeaedd9a5d"/>
-    <Parameter Name="LowHealthToEscape" Value="0.5" Type="float" Guid="f9107b38-a0a4-474c-b6bc-2f820731e22e"/>
+    <Parameter Name="LowHealthToEscape" Value="0.1" Type="float" Guid="f9107b38-a0a4-474c-b6bc-2f820731e22e"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="34e0104a-6cfb-4c4c-b65b-d2e3a3b3cbb4">
     <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
@@ -697,7 +707,7 @@
     <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="6baf0a67-2324-4338-809f-84046453bf1a"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="6fa06f15-8b48-4f3b-b969-f13c9ca72532"/>
     <Parameter Name="LoadOrder" Value="55" Type="int" Guid="e1d4a11b-7070-4612-97ed-a37b18e2172a"/>
-    <Parameter Name="LowHealthToEscape" Value="0.5" Type="float" Guid="41cb1cff-1d49-4506-b8f4-66342fcc7394"/>
+    <Parameter Name="LowHealthToEscape" Value="0.1" Type="float" Guid="41cb1cff-1d49-4506-b8f4-66342fcc7394"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="bac18658-fe51-4473-91e8-e37a73c5db44">
     <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
@@ -877,7 +887,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="b8c9d0e1-f2a3-6456-1234-9abcdef01234">
         <Parameter Name="Mass" Guid="c9d0e1f2-a3b4-6567-2345-abcdef012345" Value="65" Type="float"/>
-        <Parameter Name="BoxSize" Guid="d0e1f2a3-b4c5-6678-3456-bcdef0123456" Value="0.9,1.0,0.9" Type="Vector3"/>
+        <Parameter Name="BoxSize" Guid="d0e1f2a3-b4c5-6678-3456-bcdef0123456" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="e1f2a3b4-c5d6-6789-4567-cdef01234567">
         <Parameter Name="DisplayName" Guid="f2a3b4c5-d6e7-6890-5678-def012345678" Value="[DisplayName:Barack]" Type="string"/>
@@ -935,7 +945,7 @@
     <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="77f05900-f571-40f4-a761-e1c9d60a2de4"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="df19bb25-1f62-4d0b-abd7-fec46f304583"/>
     <Parameter Name="LoadOrder" Value="55" Type="int" Guid="52225687-95e7-49fb-a12a-9f04d2d00317"/>
-    <Parameter Name="LowHealthToEscape" Value="0.5" Type="float" Guid="b8c56fe3-3e4e-44ac-8cd4-d972da6f2ef1"/>
+    <Parameter Name="LowHealthToEscape" Value="0.1" Type="float" Guid="b8c56fe3-3e4e-44ac-8cd4-d972da6f2ef1"/>
 </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="e1f2a3b4-c5d6-9789-4567-abcdef012345">
         <Parameter Name="Color" Guid="f2a3b4c5-d6e7-9890-5678-bcdef0123456" Value="76,120,119" Type="Color"/>
@@ -951,7 +961,7 @@
     <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="79e92781-4fd4-4729-8197-d0b8b57967d5"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="ccc5aa05-01b9-47bb-86b1-a95c50b993fe"/>
     <Parameter Name="LoadOrder" Value="55" Type="int" Guid="c8d13874-3b12-4590-a70a-75b14f9b0c73"/>
-    <Parameter Name="LowHealthToEscape" Value="0.5" Type="float" Guid="4819ae71-49fc-4af1-964c-01be72b4bd7f"/>
+    <Parameter Name="LowHealthToEscape" Value="0.1" Type="float" Guid="4819ae71-49fc-4af1-964c-01be72b4bd7f"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="5203726e-758d-4918-bf93-10d8e4108891">
     <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
@@ -1069,7 +1079,7 @@
     <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="dc3ac25d-15ae-4275-8d8c-7f813e12ad7a"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="0540f5c2-dc04-4faf-8b4e-ce7aea701ef0"/>
     <Parameter Name="LoadOrder" Value="55" Type="int" Guid="d30b65e0-fc30-4e0c-92bb-f3fb768ca008"/>
-    <Parameter Name="LowHealthToEscape" Value="0.5" Type="float" Guid="12cdbdc6-8cfe-4a04-9111-c29a148f2244"/>
+    <Parameter Name="LowHealthToEscape" Value="0.1" Type="float" Guid="12cdbdc6-8cfe-4a04-9111-c29a148f2244"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="c6242a04-a7e9-440f-b9a2-3467b9012e12">
     <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
@@ -1223,7 +1233,7 @@
     <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="565520a3-c5f2-4fb4-8e97-11fc853fc963"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="91dffcf4-4773-4444-a8ce-e58a7051348d"/>
     <Parameter Name="LoadOrder" Value="55" Type="int" Guid="0eaf4b77-2ec6-499e-8ef4-6eb888f50bac"/>
-    <Parameter Name="LowHealthToEscape" Value="0.5" Type="float" Guid="f55268e6-5c72-4385-944b-c2d8b2ea1a25"/>
+    <Parameter Name="LowHealthToEscape" Value="0.1" Type="float" Guid="f55268e6-5c72-4385-944b-c2d8b2ea1a25"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="65c91319-a946-4c11-a725-6b9088879f84">
     <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
@@ -5743,6 +5753,11 @@
 </EntityTemplate>
 
 <EntityTemplate Name="Sparkster" Guid="f7e2a9c3-8d1b-4f5a-9b2c-6a3e7b1d4c0f" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="CreatureSounds" Guid="53d33183-852c-48b1-9c20-665c98fcd498">
+    <Parameter Name="PainSound" Guid="5e34e974-f469-49c6-8dc6-51122c302b2f" Value="Audio/Creatures/Sparkster/Pain" Type="string"/>
+    <Parameter Name="IdleSound" Guid="bd5f401a-f7f3-40d8-b566-b5995f80b7ce" Value="Audio/Creatures/Sparkster/Idie" Type="string"/>
+    <Parameter Name="AttackSound" Guid="65ed698e-2192-4504-abf0-1264f155b4da" Value="Audio/Creatures/Sparkster/Idie" Type="string"/>
+</MemberComponentTemplate>
 <MemberComponentTemplate Name="NewRunAwayBehavior" Guid="825d731f-c79f-4b1b-8247-71e0e343b02d">
     <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="5e86fd5e-d5cc-4d73-a22a-eb7a066a8027"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="5e9ba453-ca54-4983-a9cb-c7d0b3e8baae"/>
@@ -5914,15 +5929,6 @@
         <Parameter Name="DayRange" Guid="1aff5bf1-eb10-4a81-8d59-b516ab113e4f" Value="0" Type="float"/>
         <Parameter Name="NightRange" Guid="0637edd9-3f13-404c-bd69-f2c1dd16e85d" Value="0" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="PoisonInfectBehavior" Guid="b0e5bf56-b54d-4af7-aa29-cb7bef139375">
-    <Parameter Name="Class" Value="Game.ComponentPoisonInfectedBehavior" Type="string"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
-    <Parameter Name="PoisonIntensity" Value="0" Type="float"/>
-    <Parameter Name="InfectionProbability" Value="0" Type="float"/>
-    <Parameter Name="InfectionCooldown" Value="0" Type="float"/>
-    <Parameter Name="AttackRange" Value="0" Type="float"/>
-</MemberComponentTemplate>
 <MemberComponentTemplate Name="PoisonInfected" Guid="a871bce4-798a-4e58-9395-654d77267634">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
     <Parameter Name="IsOptional" Value="true" Type="bool"/>
