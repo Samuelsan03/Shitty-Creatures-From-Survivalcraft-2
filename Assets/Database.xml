@@ -735,6 +735,11 @@
             </ParameterSet>
           </EntityTemplate>
           <EntityTemplate Name="Bear_Brown" Guid="0f54d16e-a877-48ac-aedc-9c0d0e1be36d" InheritanceParent="437e6af3-ea9f-4f3c-8b96-d81de6223831">
+          <MemberComponentTemplate Name="HealthBarDisplay" Guid="4396c164-a013-4680-90b1-4c52a3f3addb" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="Class" Value="Game.ComponentHealthBar" Type="string"/>
+        <Parameter Name="LoadOrder" Value="60" Type="int"/>
+        <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    </MemberComponentTemplate>
           <MemberComponentTemplate Name="PoisonInfected" Guid="1c0a8809-e762-4123-bbff-7ff99b33c00a">
         <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
         <Parameter Name="IsOptional" Value="true" Type="bool"/>
@@ -834,6 +839,11 @@
             </ParameterSet>
           </EntityTemplate>
           <EntityTemplate Name="Cow_Black" Guid="16cc06c8-2f23-45c6-ad97-c3eeeb457e03" InheritanceParent="1d117619-4104-4e47-b1a4-431854f94a24">
+          <MemberComponentTemplate Name="HealthBarDisplay" Guid="1a040428-ea34-411a-9a8f-60305843a96d" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="Class" Value="Game.ComponentHealthBar" Type="string"/>
+        <Parameter Name="LoadOrder" Value="60" Type="int"/>
+        <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    </MemberComponentTemplate>
           <MemberComponentTemplate Name="PoisonInfected" Guid="bf0538b1-8371-4bf3-a6dc-90d3a86fc817">
         <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
         <Parameter Name="IsOptional" Value="true" Type="bool"/>
@@ -864,6 +874,11 @@
             </ParameterSet>
           </EntityTemplate>
           <EntityTemplate Name="Horse_Bay_Saddled" Guid="185e0251-199c-4f35-a8a1-6c740cd84deb" InheritanceParent="bb3d0699-9373-429b-9f4f-2f4562e6ba5c">
+          <MemberComponentTemplate Name="HealthBarDisplay" Guid="5839bc55-9f8c-4524-9644-a097c5cc5970" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="Class" Value="Game.ComponentHealthBar" Type="string"/>
+        <Parameter Name="LoadOrder" Value="60" Type="int"/>
+        <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    </MemberComponentTemplate>
           <MemberComponentTemplate Name="PoisonInfected" Guid="02592107-d699-40ec-8b50-851b3840bb3e">
         <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
         <Parameter Name="IsOptional" Value="true" Type="bool"/>
@@ -890,6 +905,11 @@
             </ParameterSet>
           </EntityTemplate>
           <EntityTemplate Name="Donkey_Saddled" Guid="1fb86c83-ec28-420f-aa95-98c83951e3b4" InheritanceParent="9fd6d136-6824-4fc8-9564-e9cbb07588c9">
+          <MemberComponentTemplate Name="HealthBarDisplay" Guid="b8bc606f-05fe-40c6-aec2-4cdef7061ad0" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="Class" Value="Game.ComponentHealthBar" Type="string"/>
+        <Parameter Name="LoadOrder" Value="60" Type="int"/>
+        <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    </MemberComponentTemplate>
           <MemberComponentTemplate Name="PoisonInfected" Guid="07b7f15d-47f1-4c1b-9ac4-717785c99c21">
         <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
         <Parameter Name="IsOptional" Value="true" Type="bool"/>
@@ -916,6 +936,11 @@
             </ParameterSet>
           </EntityTemplate>
           <EntityTemplate Name="Beluga" Guid="2260c463-4dfd-4395-aa25-28ba876ed391" InheritanceParent="c68b9c49-aeb4-4fe2-ba8f-c166b3d19158">
+          <MemberComponentTemplate Name="HealthBarDisplay" Guid="d7b4cb84-86e1-498f-a506-85bc17a93b6f" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="Class" Value="Game.ComponentHealthBar" Type="string"/>
+        <Parameter Name="LoadOrder" Value="60" Type="int"/>
+        <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    </MemberComponentTemplate>
           <MemberComponentTemplate Name="PoisonInfected" Guid="848fd167-126b-42f9-9c2d-8984dad0eb01">
         <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
         <Parameter Name="IsOptional" Value="true" Type="bool"/>
@@ -985,6 +1010,11 @@
             </ParameterSet>
           </EntityTemplate>
           <EntityTemplate Name="Ostrich" Guid="28f03854-b0d9-4d5f-a345-a7b386a9b901" InheritanceParent="548cf071-2593-45c2-b1c5-623b7c473612">
+          <MemberComponentTemplate Name="HealthBarDisplay" Guid="8b8d5b35-fce8-405a-9dd5-e87127f04d08" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="Class" Value="Game.ComponentHealthBar" Type="string"/>
+        <Parameter Name="LoadOrder" Value="60" Type="int"/>
+        <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    </MemberComponentTemplate>
           <MemberComponentTemplate Name="PoisonInfected" Guid="dd2857c2-8e90-402a-b4c0-261ef20c123c">
         <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
         <Parameter Name="IsOptional" Value="true" Type="bool"/>
@@ -1054,6 +1084,11 @@
             </ParameterSet>
           </EntityTemplate>
           <EntityTemplate Name="Horse_Chestnut_Saddled" Guid="303f8a3d-08bc-422e-af16-957f2a4c56b9" InheritanceParent="11387979-378c-402f-aff7-31549765f65f">
+          <MemberComponentTemplate Name="HealthBarDisplay" Guid="4da89e5f-ebd7-4d1a-afae-30ccd2095abe" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="Class" Value="Game.ComponentHealthBar" Type="string"/>
+        <Parameter Name="LoadOrder" Value="60" Type="int"/>
+        <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    </MemberComponentTemplate>
           <MemberComponentTemplate Name="PoisonInfected" Guid="8fc84b44-c5e4-4595-bfd3-328f0a204d5e">
         <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
         <Parameter Name="IsOptional" Value="true" Type="bool"/>
@@ -1105,6 +1140,11 @@
             </ParameterSet>
           </EntityTemplate>
           <EntityTemplate Name="Leopard" Guid="368d6525-a6df-4232-9c78-6737aa52dcab" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+          <MemberComponentTemplate Name="HealthBarDisplay" Guid="31961c4a-85c2-4dd3-9171-28d94720ebac" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="Class" Value="Game.ComponentHealthBar" Type="string"/>
+        <Parameter Name="LoadOrder" Value="60" Type="int"/>
+        <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    </MemberComponentTemplate>
           <MemberComponentTemplate Name="PoisonInfected" Guid="151171d6-7b5f-49d9-8406-a4ebfcbd9726">
         <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
         <Parameter Name="IsOptional" Value="true" Type="bool"/>
@@ -1193,6 +1233,11 @@
             </ParameterSet>
           </EntityTemplate>
           <EntityTemplate Name="Gnu" Guid="370d9585-5d51-42b0-8ced-ff5f7a91e3f8" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+          <MemberComponentTemplate Name="HealthBarDisplay" Guid="8fa0e6de-0a6d-46fa-98ef-6963203cf9ac" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="Class" Value="Game.ComponentHealthBar" Type="string"/>
+        <Parameter Name="LoadOrder" Value="60" Type="int"/>
+        <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    </MemberComponentTemplate>
           <MemberComponentTemplate Name="PoisonInfected" Guid="82640581-d9a8-45ad-a3c5-38015e60b23c">
         <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
         <Parameter Name="IsOptional" Value="true" Type="bool"/>
@@ -1275,6 +1320,11 @@
             </ParameterSet>
           </EntityTemplate>
           <EntityTemplate Name="Wolf_Gray" Guid="3cec3729-3807-427c-82e1-07dda02a89ba" InheritanceParent="49a9845c-3810-4092-ba53-df213d10d563">
+          <MemberComponentTemplate Name="HealthBarDisplay" Guid="8ff2a959-d494-4c51-bfaf-ba92ed55dedf" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="Class" Value="Game.ComponentHealthBar" Type="string"/>
+        <Parameter Name="LoadOrder" Value="60" Type="int"/>
+        <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    </MemberComponentTemplate>
           <MemberComponentTemplate Name="PoisonInfected" Guid="2a353257-8b9f-45d8-998d-df124af019eb">
         <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
         <Parameter Name="IsOptional" Value="true" Type="bool"/>
@@ -1306,6 +1356,11 @@
             </ParameterSet>
           </EntityTemplate>
           <EntityTemplate Name="Camel_Saddled" Guid="3cfbb40d-b60f-4026-a2c9-d8f6ce5d3fe0" InheritanceParent="621a317e-478a-4623-9b47-6137dae37de9">
+          <MemberComponentTemplate Name="HealthBarDisplay" Guid="88bedb9c-7454-42f0-8e6c-d06acd453e6c" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="Class" Value="Game.ComponentHealthBar" Type="string"/>
+        <Parameter Name="LoadOrder" Value="60" Type="int"/>
+        <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    </MemberComponentTemplate>
           <MemberComponentTemplate Name="PoisonInfected" Guid="298a2717-894b-4a67-bdd7-f93739b68636">
         <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
         <Parameter Name="IsOptional" Value="true" Type="bool"/>
@@ -1336,6 +1391,11 @@
             </ParameterSet>
           </EntityTemplate>
           <EntityTemplate Name="Rhino" Guid="4d02fd7e-3054-4121-b2a5-787db985df5f" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+          <MemberComponentTemplate Name="HealthBarDisplay" Guid="796e75cd-72b2-4394-886d-bd037e9e283a" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="Class" Value="Game.ComponentHealthBar" Type="string"/>
+        <Parameter Name="LoadOrder" Value="60" Type="int"/>
+        <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    </MemberComponentTemplate>
           <MemberComponentTemplate Name="PoisonInfected" Guid="b556e504-3f6b-43a5-b143-cde86b32ce0f">
         <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
         <Parameter Name="IsOptional" Value="true" Type="bool"/>
@@ -1414,11 +1474,16 @@
             </ParameterSet>
           </EntityTemplate>
           <EntityTemplate Name="Reindeer" Guid="4e0b98d5-4986-49f8-a627-ab63e9097a89" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+          <MemberComponentTemplate Name="HealthBarDisplay" Guid="230df9a9-bb38-4c64-b540-b0c734c04abc" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="Class" Value="Game.ComponentHealthBar" Type="string"/>
+        <Parameter Name="LoadOrder" Value="60" Type="int"/>
+        <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    </MemberComponentTemplate>
           <MemberComponentTemplate Name="PoisonInfected" Guid="bbd5a125-8003-4602-bb74-daf955b39030">
         <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
         <Parameter Name="IsOptional" Value="true" Type="bool"/>
         <Parameter Name="LoadOrder" Value="60" Type="int"/>
-        <Parameter Name="PoisonResistance" Value="0" Type="float"/> <!-- Resistencia al veneno -->
+        <Parameter Name="PoisonResistance" Value="-1000" Type="float"/> <!-- Resistencia al veneno -->
         <Parameter Name="IsJumpMove" Value="false" Type="bool"/> <!-- No tiene movimiento de salto con veneno -->
     </MemberComponentTemplate>
             <MemberComponentTemplate Name="CreatureSounds" Guid="34356507-f9e3-497e-ab22-7dd1acb3aea0">
@@ -1490,6 +1555,11 @@
             </ParameterSet>
           </EntityTemplate>
           <EntityTemplate Name="Barracuda" Guid="5ff90ec7-5f83-4e23-aa20-4d4dfd5fdf74" InheritanceParent="fd4a36cf-ede3-4f5b-85c1-f5f3151d0051">
+          <MemberComponentTemplate Name="HealthBarDisplay" Guid="6792e7c7-56e1-4369-884f-76a647fc8e69" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="Class" Value="Game.ComponentHealthBar" Type="string"/>
+        <Parameter Name="LoadOrder" Value="60" Type="int"/>
+        <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    </MemberComponentTemplate>
           <MemberComponentTemplate Name="PoisonInfected" Guid="9d02c781-5b68-44a5-9cb6-1e5cf903e0ef">
         <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
         <Parameter Name="IsOptional" Value="true" Type="bool"/>
@@ -1552,11 +1622,16 @@
             </ParameterSet>
           </EntityTemplate>
           <EntityTemplate Name="Raven" Guid="60dc514b-2b8e-40a7-9bc3-09bb1efe0732" InheritanceParent="0cb14482-b936-410e-9317-66d385d7d2fd">
+          <MemberComponentTemplate Name="HealthBarDisplay" Guid="5972110f-c53b-402a-ba05-29d0128d1097" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="Class" Value="Game.ComponentHealthBar" Type="string"/>
+        <Parameter Name="LoadOrder" Value="60" Type="int"/>
+        <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    </MemberComponentTemplate>
           <MemberComponentTemplate Name="PoisonInfected" Guid="b392a1c6-4567-4757-abf2-ad9da62d5920">
         <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
         <Parameter Name="IsOptional" Value="true" Type="bool"/>
         <Parameter Name="LoadOrder" Value="60" Type="int"/>
-        <Parameter Name="PoisonResistance" Value="0" Type="float"/> <!-- Resistencia al veneno -->
+        <Parameter Name="PoisonResistance" Value="-1000" Type="float"/> <!-- Resistencia al veneno -->
         <Parameter Name="IsJumpMove" Value="false" Type="bool"/> <!-- No tiene movimiento de salto con veneno -->
     </MemberComponentTemplate>
             <MemberComponentTemplate Name="OnFire" Guid="4ab421af-36f3-4d26-b238-60206381f954"/>
@@ -1602,6 +1677,11 @@
             </ParameterSet>
           </EntityTemplate>
           <EntityTemplate Name="Camel" Guid="621a317e-478a-4623-9b47-6137dae37de9" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+          <MemberComponentTemplate Name="HealthBarDisplay" Guid="367e19d5-b212-450f-bbc6-19796418ada8" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="Class" Value="Game.ComponentHealthBar" Type="string"/>
+        <Parameter Name="LoadOrder" Value="60" Type="int"/>
+        <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    </MemberComponentTemplate>
           <MemberComponentTemplate Name="PoisonInfected" Guid="d653cd12-5237-4ae0-93d7-e337013daf0f">
         <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
         <Parameter Name="IsOptional" Value="true" Type="bool"/>
@@ -1698,6 +1778,11 @@
             </ParameterSet>
           </EntityTemplate>
           <EntityTemplate Name="Werewolf" Guid="6a4c3ee2-bb65-4d45-9b91-e1ec3dc3e865" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+          <MemberComponentTemplate Name="HealthBarDisplay" Guid="3d5dd865-7402-46be-a2e1-036ea15ae42e" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="Class" Value="Game.ComponentHealthBar" Type="string"/>
+        <Parameter Name="LoadOrder" Value="60" Type="int"/>
+        <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    </MemberComponentTemplate>
           <MemberComponentTemplate Name="PoisonInfected" Guid="f0079c4b-ec87-44fc-a8e2-3dbc7366d7d5">
         <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
         <Parameter Name="IsOptional" Value="true" Type="bool"/>
@@ -1804,11 +1889,16 @@
             </ParameterSet>
           </EntityTemplate>
           <EntityTemplate Name="Tiger_White" Guid="6effc493-b96a-4168-8855-9f3dd2f1af85" InheritanceParent="9c11dd66-6496-48c8-bb78-7ac8652df1ff">
+          <MemberComponentTemplate Name="HealthBarDisplay" Guid="95da8741-3245-43aa-8a72-9a98dfd3b001" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="Class" Value="Game.ComponentHealthBar" Type="string"/>
+        <Parameter Name="LoadOrder" Value="60" Type="int"/>
+        <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    </MemberComponentTemplate>
           <MemberComponentTemplate Name="PoisonInfected" Guid="de19120e-d38d-4b38-a70f-5c0def835167">
         <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
         <Parameter Name="IsOptional" Value="true" Type="bool"/>
         <Parameter Name="LoadOrder" Value="60" Type="int"/>
-        <Parameter Name="PoisonResistance" Value="0" Type="float"/> <!-- Resistencia al veneno -->
+        <Parameter Name="PoisonResistance" Value="-1000" Type="float"/> <!-- Resistencia al veneno -->
         <Parameter Name="IsJumpMove" Value="false" Type="bool"/> <!-- No tiene movimiento de salto con veneno -->
     </MemberComponentTemplate>
             <MemberComponentTemplate Name="Creature" Guid="697ff355-a387-4df0-a741-78b9f96c80af">
@@ -1829,6 +1919,11 @@
             </ParameterSet>
           </EntityTemplate>
           <EntityTemplate Name="Sparrow" Guid="724fa0ab-366d-4917-9202-251f914ebc32" InheritanceParent="0cb14482-b936-410e-9317-66d385d7d2fd">
+          <MemberComponentTemplate Name="HealthBarDisplay" Guid="dae8d14d-fb42-429b-9cd0-c49f042a18a5" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="Class" Value="Game.ComponentHealthBar" Type="string"/>
+        <Parameter Name="LoadOrder" Value="60" Type="int"/>
+        <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    </MemberComponentTemplate>
             <MemberComponentTemplate Name="Loot" Guid="1b309975-b9b7-4715-ac51-ba14941e2bab">
               <ParameterSet Name="LootOnFire" Guid="a61cdff7-3bb9-4700-a179-0997e1d5197e">
                 <Parameter Name="1" Guid="8421ef2b-89fa-41d8-b0f6-5f5c30eacff7" Value="RottenBirdBlock;0;1" Type="string"/>
@@ -1892,11 +1987,16 @@
             <ParameterSet Name="CreatureEggData" Guid="db2518ea-6102-4216-8993-ad5e2fa461d5"/>
           </EntityTemplate>
           <EntityTemplate Name="Bull_Brown" Guid="76555391-1202-4c5a-a34f-1d7acdfc370c" InheritanceParent="36262183-b7d8-42c1-8e54-775395f3d690">
+          <MemberComponentTemplate Name="HealthBarDisplay" Guid="e4c73d96-406b-4a4d-85d7-d76b802b469f" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="Class" Value="Game.ComponentHealthBar" Type="string"/>
+        <Parameter Name="LoadOrder" Value="60" Type="int"/>
+        <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    </MemberComponentTemplate>
           <MemberComponentTemplate Name="PoisonInfected" Guid="e2a565ce-c5aa-4a1e-9aaa-16bb77f49f67">
         <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
         <Parameter Name="IsOptional" Value="true" Type="bool"/>
         <Parameter Name="LoadOrder" Value="60" Type="int"/>
-        <Parameter Name="PoisonResistance" Value="0" Type="float"/> <!-- Resistencia al veneno -->
+        <Parameter Name="PoisonResistance" Value="-10000" Type="float"/> <!-- Resistencia al veneno -->
         <Parameter Name="IsJumpMove" Value="false" Type="bool"/> <!-- No tiene movimiento de salto con veneno -->
     </MemberComponentTemplate>
             <MemberComponentTemplate Name="HerdBehavior" Guid="6e2f2401-3db9-4468-9947-a260817afa3c">
@@ -1916,6 +2016,11 @@
             </ParameterSet>
           </EntityTemplate>
           <EntityTemplate Name="Orca" Guid="78605a8d-e335-49b4-867d-5b4555e02fd4" InheritanceParent="c68b9c49-aeb4-4fe2-ba8f-c166b3d19158">
+          <MemberComponentTemplate Name="HealthBarDisplay" Guid="3431ce7e-63d2-45d4-a017-d275a57d41bf" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="Class" Value="Game.ComponentHealthBar" Type="string"/>
+        <Parameter Name="LoadOrder" Value="60" Type="int"/>
+        <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    </MemberComponentTemplate>
           <MemberComponentTemplate Name="PoisonInfected" Guid="6b4ea8fa-af4b-4340-a44c-6b1b2688569d">
         <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
         <Parameter Name="IsOptional" Value="true" Type="bool"/>
@@ -1986,11 +2091,16 @@
             </ParameterSet>
           </EntityTemplate>
           <EntityTemplate Name="Duck" Guid="7c04f9ec-a7c0-4a56-bd86-c0cfdecf7d94" InheritanceParent="0cb14482-b936-410e-9317-66d385d7d2fd">
+          <MemberComponentTemplate Name="HealthBarDisplay" Guid="3950bacf-f6c4-4d91-83c5-a29b7c01007d" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="Class" Value="Game.ComponentHealthBar" Type="string"/>
+        <Parameter Name="LoadOrder" Value="60" Type="int"/>
+        <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    </MemberComponentTemplate>
           <MemberComponentTemplate Name="PoisonInfected" Guid="db19149e-fb32-4ff0-979a-6d8f42f0b984">
         <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
         <Parameter Name="IsOptional" Value="true" Type="bool"/>
         <Parameter Name="LoadOrder" Value="60" Type="int"/>
-        <Parameter Name="PoisonResistance" Value="0" Type="float"/> <!-- Resistencia al veneno -->
+        <Parameter Name="PoisonResistance" Value="-1000" Type="float"/> <!-- Resistencia al veneno -->
         <Parameter Name="IsJumpMove" Value="false" Type="bool"/> <!-- No tiene movimiento de salto con veneno -->
     </MemberComponentTemplate>
             <MemberComponentTemplate Name="BirdModel" Guid="019185fc-e97f-41e3-bf67-eb6b13a2ef2f">
@@ -2038,11 +2148,16 @@
             </ParameterSet>
           </EntityTemplate>
           <EntityTemplate Name="Giraffe" Guid="7f07b877-5404-40ec-813f-03899189d1ae" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+          <MemberComponentTemplate Name="HealthBarDisplay" Guid="2c24af0e-6436-4265-af34-f9a30d6debd9" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="Class" Value="Game.ComponentHealthBar" Type="string"/>
+        <Parameter Name="LoadOrder" Value="60" Type="int"/>
+        <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    </MemberComponentTemplate>
           <MemberComponentTemplate Name="PoisonInfected" Guid="af01d5c0-90ad-4588-9f02-39387b95b973">
         <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
         <Parameter Name="IsOptional" Value="true" Type="bool"/>
         <Parameter Name="LoadOrder" Value="60" Type="int"/>
-        <Parameter Name="PoisonResistance" Value="0" Type="float"/> <!-- Resistencia al veneno -->
+        <Parameter Name="PoisonResistance" Value="-1000" Type="float"/> <!-- Resistencia al veneno -->
         <Parameter Name="IsJumpMove" Value="false" Type="bool"/> <!-- No tiene movimiento de salto con veneno -->
     </MemberComponentTemplate>
             <MemberComponentTemplate Name="Loot" Guid="060633ea-6470-4c93-badb-288d3c1ef825">
@@ -2124,6 +2239,11 @@
             </ParameterSet>
           </EntityTemplate>
           <EntityTemplate Name="Shark_Bull" Guid="8096e529-aa57-40c5-a47a-49f74c87cdbf" InheritanceParent="f5333076-a57d-4864-a30e-19072248224f">
+          <MemberComponentTemplate Name="HealthBarDisplay" Guid="a4633c24-b5fd-4ebf-a39b-596db4c7fc44" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="Class" Value="Game.ComponentHealthBar" Type="string"/>
+        <Parameter Name="LoadOrder" Value="60" Type="int"/>
+        <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    </MemberComponentTemplate>
           <MemberComponentTemplate Name="PoisonInfected" Guid="fc7a7c5b-0205-4326-a237-c863cf527bc5">
         <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
         <Parameter Name="IsOptional" Value="true" Type="bool"/>
@@ -2167,6 +2287,11 @@
             </ParameterSet>
           </EntityTemplate>
           <EntityTemplate Name="Shark_Tiger" Guid="82f4d38b-df7f-4a86-8529-ea63168a568a" InheritanceParent="f5333076-a57d-4864-a30e-19072248224f">
+          <MemberComponentTemplate Name="HealthBarDisplay" Guid="f14cf024-ee98-42dc-b834-251ae26ccfbc" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="Class" Value="Game.ComponentHealthBar" Type="string"/>
+        <Parameter Name="LoadOrder" Value="60" Type="int"/>
+        <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    </MemberComponentTemplate>
           <MemberComponentTemplate Name="PoisonInfected" Guid="56367b5f-f4d9-41ca-b2d3-949d287cccce">
         <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
         <Parameter Name="IsOptional" Value="true" Type="bool"/>
@@ -2234,6 +2359,11 @@
             </ParameterSet>
           </EntityTemplate>
           <EntityTemplate Name="Bear_Black" Guid="88fb4748-b1fd-4cf4-94cc-f397a15c7303" InheritanceParent="437e6af3-ea9f-4f3c-8b96-d81de6223831">
+          <MemberComponentTemplate Name="HealthBarDisplay" Guid="c56443a5-8373-4ee2-9dfa-f16e90a74334" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="Class" Value="Game.ComponentHealthBar" Type="string"/>
+        <Parameter Name="LoadOrder" Value="60" Type="int"/>
+        <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    </MemberComponentTemplate>
           <MemberComponentTemplate Name="PoisonInfected" Guid="f2d603f2-4410-4016-836b-b9d89b539546">
         <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
         <Parameter Name="IsOptional" Value="true" Type="bool"/>
@@ -2258,6 +2388,11 @@
             </ParameterSet>
           </EntityTemplate>
           <EntityTemplate Name="Lion" Guid="9430a185-85a1-426c-8bbb-1e681f9413f9" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+          <MemberComponentTemplate Name="HealthBarDisplay" Guid="14e174a1-70e4-4706-99e7-c5ec4923a67e" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="Class" Value="Game.ComponentHealthBar" Type="string"/>
+        <Parameter Name="LoadOrder" Value="60" Type="int"/>
+        <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    </MemberComponentTemplate>
           <MemberComponentTemplate Name="PoisonInfected" Guid="70fbea98-0512-469f-9151-5ee01a975747">
         <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
         <Parameter Name="IsOptional" Value="true" Type="bool"/>
@@ -2343,6 +2478,11 @@
             </ParameterSet>
           </EntityTemplate>
           <EntityTemplate Name="Tiger" Guid="9c11dd66-6496-48c8-bb78-7ac8652df1ff" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+          <MemberComponentTemplate Name="HealthBarDisplay" Guid="8190ea93-fc8a-4b01-855c-e2a805052034" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="Class" Value="Game.ComponentHealthBar" Type="string"/>
+        <Parameter Name="LoadOrder" Value="60" Type="int"/>
+        <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    </MemberComponentTemplate>
           <MemberComponentTemplate Name="PoisonInfected" Guid="dc18d0b8-6dec-4ddc-9e1a-c4cc274adaf0">
         <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
         <Parameter Name="IsOptional" Value="true" Type="bool"/>
@@ -2428,6 +2568,11 @@
             </ParameterSet>
           </EntityTemplate>
           <EntityTemplate Name="Horse_Black_Saddled" Guid="9d89b0fb-8222-4fb3-9fb9-e239d09000e6" InheritanceParent="853e2aef-2cc6-4140-82cb-924d47883c0a">
+          <MemberComponentTemplate Name="HealthBarDisplay" Guid="22aaf499-7339-472f-add6-caae5fc8fd9e" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="Class" Value="Game.ComponentHealthBar" Type="string"/>
+        <Parameter Name="LoadOrder" Value="60" Type="int"/>
+        <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    </MemberComponentTemplate>
           <MemberComponentTemplate Name="PoisonInfected" Guid="be80e902-38e8-4cb4-bb94-f1959ae4a6f7">
         <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
         <Parameter Name="IsOptional" Value="true" Type="bool"/>
@@ -2544,6 +2689,11 @@
             </ParameterSet>
           </EntityTemplate>
           <EntityTemplate Name="Cow_Brown" Guid="a122813a-4898-4926-bb3b-75af391262ed" InheritanceParent="1d117619-4104-4e47-b1a4-431854f94a24">
+          <MemberComponentTemplate Name="HealthBarDisplay" Guid="b6e7fc22-2474-44f0-a470-4d70eb66afe7" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="Class" Value="Game.ComponentHealthBar" Type="string"/>
+        <Parameter Name="LoadOrder" Value="60" Type="int"/>
+        <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    </MemberComponentTemplate>
           <MemberComponentTemplate Name="PoisonInfected" Guid="a2151f67-ebc7-437c-953d-71411d59b592">
         <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
         <Parameter Name="IsOptional" Value="true" Type="bool"/>
@@ -2574,6 +2724,11 @@
             </ParameterSet>
           </EntityTemplate>
           <EntityTemplate Name="Bull_Black" Guid="a78e277a-1f8e-4a22-9518-c29c0066e653" InheritanceParent="36262183-b7d8-42c1-8e54-775395f3d690">
+          <MemberComponentTemplate Name="HealthBarDisplay" Guid="a237d717-8f60-4c21-b230-e7b3ce10ef20" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="Class" Value="Game.ComponentHealthBar" Type="string"/>
+        <Parameter Name="LoadOrder" Value="60" Type="int"/>
+        <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    </MemberComponentTemplate>
           <MemberComponentTemplate Name="PoisonInfected" Guid="b96f4f64-424c-4dda-b407-76b796c693b3">
         <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
         <Parameter Name="IsOptional" Value="true" Type="bool"/>
@@ -2598,6 +2753,11 @@
             </ParameterSet>
           </EntityTemplate>
           <EntityTemplate Name="Piranha" Guid="abf17893-e4d4-4638-943d-50a545761ecc" InheritanceParent="fd4a36cf-ede3-4f5b-85c1-f5f3151d0051">
+          <MemberComponentTemplate Name="HealthBarDisplay" Guid="52ab2877-9d69-430c-b123-a4248351b4e3" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="Class" Value="Game.ComponentHealthBar" Type="string"/>
+        <Parameter Name="LoadOrder" Value="60" Type="int"/>
+        <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    </MemberComponentTemplate>
           <MemberComponentTemplate Name="PoisonInfected" Guid="919abb8e-4138-4926-81ce-defc245e6b58">
         <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
         <Parameter Name="IsOptional" Value="true" Type="bool"/>
@@ -2663,6 +2823,11 @@
             </ParameterSet>
           </EntityTemplate>
           <EntityTemplate Name="Wildboar" Guid="ae43396b-e4a6-4ead-aaa5-26c4feb458da" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+          <MemberComponentTemplate Name="HealthBarDisplay" Guid="06508355-b999-4286-afcb-91ea201d69a8" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="Class" Value="Game.ComponentHealthBar" Type="string"/>
+        <Parameter Name="LoadOrder" Value="60" Type="int"/>
+        <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    </MemberComponentTemplate>
           <MemberComponentTemplate Name="PoisonInfected" Guid="b6c8e714-21d9-4b6d-96c5-5b295efad3be">
         <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
         <Parameter Name="IsOptional" Value="true" Type="bool"/>
@@ -2744,6 +2909,11 @@
             </ParameterSet>
           </EntityTemplate>
           <EntityTemplate Name="Horse_Palomino_Saddled" Guid="b2326e8f-cdc0-406c-bc14-f3e96be3c376" InheritanceParent="35c74e15-469a-4520-99ca-bf1cbcc33046">
+          <MemberComponentTemplate Name="HealthBarDisplay" Guid="8e6f056d-f526-4fb0-b120-ecd6efd3abb2" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="Class" Value="Game.ComponentHealthBar" Type="string"/>
+        <Parameter Name="LoadOrder" Value="60" Type="int"/>
+        <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    </MemberComponentTemplate>
           <MemberComponentTemplate Name="PoisonInfected" Guid="c93bb719-86a8-4f07-843b-7fe3370bc479">
         <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
         <Parameter Name="IsOptional" Value="true" Type="bool"/>
@@ -2770,6 +2940,11 @@
             </ParameterSet>
           </EntityTemplate>
           <EntityTemplate Name="Bear_Polar" Guid="b81fc74c-86c5-4987-a1bd-16fdcabf14ab" InheritanceParent="437e6af3-ea9f-4f3c-8b96-d81de6223831">
+          <MemberComponentTemplate Name="HealthBarDisplay" Guid="42dd3c9c-01ed-4cf1-afac-226e7e337f0e" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="Class" Value="Game.ComponentHealthBar" Type="string"/>
+        <Parameter Name="LoadOrder" Value="60" Type="int"/>
+        <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    </MemberComponentTemplate>
           <MemberComponentTemplate Name="PoisonInfected" Guid="ffa58805-cf7a-47f7-bac5-479b836ed280">
         <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
         <Parameter Name="IsOptional" Value="true" Type="bool"/>
@@ -2811,6 +2986,11 @@
             </ParameterSet>
           </EntityTemplate>
           <EntityTemplate Name="Horse_White_Saddled" Guid="ba79c837-ba1d-4b21-af32-5e1f0a332206" InheritanceParent="01a02915-1fbc-45dc-801e-7bd15c75b9b9">
+          <MemberComponentTemplate Name="HealthBarDisplay" Guid="f0a99b89-aa2e-4d97-a9f0-8db4fb9cd0aa" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="Class" Value="Game.ComponentHealthBar" Type="string"/>
+        <Parameter Name="LoadOrder" Value="60" Type="int"/>
+        <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    </MemberComponentTemplate>
           <MemberComponentTemplate Name="PoisonInfected" Guid="6da267e0-b91e-4fda-9878-71f769cfdb8f">
         <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
         <Parameter Name="IsOptional" Value="true" Type="bool"/>
@@ -2838,6 +3018,11 @@
             </ParameterSet>
           </EntityTemplate>
           <EntityTemplate Name="Horse_Bay" Guid="bb3d0699-9373-429b-9f4f-2f4562e6ba5c" InheritanceParent="8907cec4-3a39-4d81-953b-82287de4c871">
+          <MemberComponentTemplate Name="HealthBarDisplay" Guid="fdc44526-45f1-4d94-9c7b-42c0a6a7e1bd" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="Class" Value="Game.ComponentHealthBar" Type="string"/>
+        <Parameter Name="LoadOrder" Value="60" Type="int"/>
+        <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    </MemberComponentTemplate>
           <MemberComponentTemplate Name="PoisonInfected" Guid="308047da-d3cb-45e2-b352-e42657519bcf">
         <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
         <Parameter Name="IsOptional" Value="true" Type="bool"/>
@@ -2860,11 +3045,16 @@
             </ParameterSet>
           </EntityTemplate>
           <EntityTemplate Name="Ray_Yellow" Guid="bbc2c9ad-1b8b-4e91-a6b1-12495d1f9089" InheritanceParent="b36fa363-d4d4-4287-a3f3-744a813f6bb5">
+          <MemberComponentTemplate Name="HealthBarDisplay" Guid="362844a5-85ff-4716-8dea-1b6235865373" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="Class" Value="Game.ComponentHealthBar" Type="string"/>
+        <Parameter Name="LoadOrder" Value="60" Type="int"/>
+        <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    </MemberComponentTemplate>
           <MemberComponentTemplate Name="PoisonInfected" Guid="8820fe61-1f57-4eeb-9d67-4912deabefe0">
         <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
         <Parameter Name="IsOptional" Value="true" Type="bool"/>
         <Parameter Name="LoadOrder" Value="60" Type="int"/>
-        <Parameter Name="PoisonResistance" Value="0" Type="float"/> <!-- Resistencia al veneno -->
+        <Parameter Name="PoisonResistance" Value="-1000" Type="float"/> <!-- Resistencia al veneno -->
         <Parameter Name="IsJumpMove" Value="false" Type="bool"/> <!-- No tiene movimiento de salto con veneno -->
     </MemberComponentTemplate>
             <MemberComponentTemplate Name="StareBehavior" Guid="1269c74c-fc2c-4128-91d1-7ec04fc7560c" InheritanceParent="e4fdbb74-183f-4075-9d92-c67f58d700b9"/>
@@ -2890,11 +3080,16 @@
             </ParameterSet>
           </EntityTemplate>
           <EntityTemplate Name="Moose" Guid="c7df5fe5-216a-4683-8a2b-47a8da1575f1" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+          <MemberComponentTemplate Name="HealthBarDisplay" Guid="81766fac-f290-44ef-9318-5daca42e2e1c" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="Class" Value="Game.ComponentHealthBar" Type="string"/>
+        <Parameter Name="LoadOrder" Value="60" Type="int"/>
+        <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    </MemberComponentTemplate>
           <MemberComponentTemplate Name="PoisonInfected" Guid="90df2d44-df79-40f1-a9bc-c747b5075172">
         <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
         <Parameter Name="IsOptional" Value="true" Type="bool"/>
         <Parameter Name="LoadOrder" Value="60" Type="int"/>
-        <Parameter Name="PoisonResistance" Value="0" Type="float"/> <!-- Resistencia al veneno -->
+        <Parameter Name="PoisonResistance" Value="-1000" Type="float"/> <!-- Resistencia al veneno -->
         <Parameter Name="IsJumpMove" Value="false" Type="bool"/> <!-- No tiene movimiento de salto con veneno -->
     </MemberComponentTemplate>
             <MemberComponentTemplate Name="Creature" Guid="0a13ac88-a9b7-4d17-8fd6-f14f811a91b2">
@@ -2970,11 +3165,16 @@
             </ParameterSet>
           </EntityTemplate>
           <EntityTemplate Name="Ray_Brown" Guid="c7dfa822-ba6e-4f3f-905c-0241823edf15" InheritanceParent="b36fa363-d4d4-4287-a3f3-744a813f6bb5">
+          <MemberComponentTemplate Name="HealthBarDisplay" Guid="87bc0a2d-0b9c-4ac2-8705-1794f6079c43" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="Class" Value="Game.ComponentHealthBar" Type="string"/>
+        <Parameter Name="LoadOrder" Value="60" Type="int"/>
+        <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    </MemberComponentTemplate>
           <MemberComponentTemplate Name="PoisonInfected" Guid="445647ab-f4c9-4230-8692-6a15791a4be5">
         <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
         <Parameter Name="IsOptional" Value="true" Type="bool"/>
         <Parameter Name="LoadOrder" Value="60" Type="int"/>
-        <Parameter Name="PoisonResistance" Value="0" Type="float"/> <!-- Resistencia al veneno -->
+        <Parameter Name="PoisonResistance" Value="-1000" Type="float"/> <!-- Resistencia al veneno -->
         <Parameter Name="IsJumpMove" Value="false" Type="bool"/> <!-- No tiene movimiento de salto con veneno -->
     </MemberComponentTemplate>
             <MemberComponentTemplate Name="DigInMudBehavior" Guid="2f99c953-4980-4794-af32-9b5123fd947f">
@@ -3000,6 +3200,11 @@
             </ParameterSet>
           </EntityTemplate>
           <EntityTemplate Name="Wolf_Coyote" Guid="c82243d6-85be-4b45-b35c-175409f287d7" InheritanceParent="49a9845c-3810-4092-ba53-df213d10d563">
+          <MemberComponentTemplate Name="HealthBarDisplay" Guid="1b02599a-1e37-44f7-a140-d099b39431c0" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="Class" Value="Game.ComponentHealthBar" Type="string"/>
+        <Parameter Name="LoadOrder" Value="60" Type="int"/>
+        <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    </MemberComponentTemplate>
           <MemberComponentTemplate Name="PoisonInfected" Guid="eac057f0-a617-4bad-b8aa-897104d03f96">
         <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
         <Parameter Name="IsOptional" Value="true" Type="bool"/>
@@ -3027,6 +3232,11 @@
             </ParameterSet>
           </EntityTemplate>
           <EntityTemplate Name="Bass_Sea" Guid="cdec5d3c-523b-4904-b9ea-e51b51a13345" InheritanceParent="fd4a36cf-ede3-4f5b-85c1-f5f3151d0051">
+          <MemberComponentTemplate Name="HealthBarDisplay" Guid="a307d50b-d189-4144-9142-221dd832870f" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="Class" Value="Game.ComponentHealthBar" Type="string"/>
+        <Parameter Name="LoadOrder" Value="60" Type="int"/>
+        <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    </MemberComponentTemplate>
           <MemberComponentTemplate Name="PoisonInfected" Guid="87cbd261-070e-4ce5-ba25-01b2f3946c4f">
         <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
         <Parameter Name="IsOptional" Value="true" Type="bool"/>
@@ -3080,6 +3290,11 @@
             </ParameterSet>
           </EntityTemplate>
           <EntityTemplate Name="Pigeon" Guid="d36b94f4-8549-4d74-8471-9f1fcc2e55aa" InheritanceParent="0cb14482-b936-410e-9317-66d385d7d2fd">
+          <MemberComponentTemplate Name="HealthBarDisplay" Guid="2879eafd-65a9-4b14-a812-c908d45ca29d" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="Class" Value="Game.ComponentHealthBar" Type="string"/>
+        <Parameter Name="LoadOrder" Value="60" Type="int"/>
+        <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    </MemberComponentTemplate>
           <MemberComponentTemplate Name="PoisonInfected" Guid="181dd0a7-d893-4ed0-820c-452a6e3315ce">
         <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
         <Parameter Name="IsOptional" Value="true" Type="bool"/>
@@ -3139,6 +3354,11 @@
             </ParameterSet>
           </EntityTemplate>
           <EntityTemplate Name="Hyena" Guid="da9a1c74-142c-4b2c-b61f-5c86def9f658" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+          <MemberComponentTemplate Name="HealthBarDisplay" Guid="d9e8183c-da1b-4b5b-9bf4-5eacab735ae8" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="Class" Value="Game.ComponentHealthBar" Type="string"/>
+        <Parameter Name="LoadOrder" Value="60" Type="int"/>
+        <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    </MemberComponentTemplate>
           <MemberComponentTemplate Name="PoisonInfected" Guid="576f3989-7497-4717-a684-0315f11fd155">
         <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
         <Parameter Name="IsOptional" Value="true" Type="bool"/>
@@ -3232,6 +3452,11 @@
             </ParameterSet>
           </EntityTemplate>
           <EntityTemplate Name="Seagull" Guid="dd2f737c-30f8-4762-8de3-9ab48559c3ae" InheritanceParent="0cb14482-b936-410e-9317-66d385d7d2fd">
+          <MemberComponentTemplate Name="HealthBarDisplay" Guid="8caee1d6-3203-422b-ba6b-bc27419637d7" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="Class" Value="Game.ComponentHealthBar" Type="string"/>
+        <Parameter Name="LoadOrder" Value="60" Type="int"/>
+        <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    </MemberComponentTemplate>
           <MemberComponentTemplate Name="PoisonInfected" Guid="d7ccb495-f362-4a2e-9cab-df5c69bea29d">
         <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
         <Parameter Name="IsOptional" Value="true" Type="bool"/>
@@ -3296,6 +3521,11 @@
             </ParameterSet>
           </EntityTemplate>
           <EntityTemplate Name="Bull_White" Guid="eaef1318-a143-4013-9354-bbe37a611285" InheritanceParent="36262183-b7d8-42c1-8e54-775395f3d690">
+          <MemberComponentTemplate Name="HealthBarDisplay" Guid="8f4dc3fd-ce64-4165-b6bf-c2fbc0f9591a" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="Class" Value="Game.ComponentHealthBar" Type="string"/>
+        <Parameter Name="LoadOrder" Value="60" Type="int"/>
+        <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    </MemberComponentTemplate>
           <MemberComponentTemplate Name="PoisonInfected" Guid="656b29bd-a32b-4b65-8484-5020cbbf553d">
         <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
         <Parameter Name="IsOptional" Value="true" Type="bool"/>
@@ -3327,6 +3557,11 @@
             </ParameterSet>
           </EntityTemplate>
           <EntityTemplate Name="Shark_GreatWhite" Guid="eb70714a-ee32-4812-8713-33726faaf1a3" InheritanceParent="f5333076-a57d-4864-a30e-19072248224f">
+          <MemberComponentTemplate Name="HealthBarDisplay" Guid="09ee677a-47a5-463d-bd26-ef744f6abac7" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="Class" Value="Game.ComponentHealthBar" Type="string"/>
+        <Parameter Name="LoadOrder" Value="60" Type="int"/>
+        <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    </MemberComponentTemplate>
           <MemberComponentTemplate Name="PoisonInfected" Guid="f87c10ea-b23c-4b43-a20a-b9f555c29e8f">
         <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
         <Parameter Name="IsOptional" Value="true" Type="bool"/>
@@ -3377,6 +3612,11 @@
             </ParameterSet>
           </EntityTemplate>
           <EntityTemplate Name="Bison" Guid="f00144f5-ede0-461c-96f9-2206babbbf06" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+          <MemberComponentTemplate Name="HealthBarDisplay" Guid="9869e98a-a26e-4724-8309-536260bf07e7" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="Class" Value="Game.ComponentHealthBar" Type="string"/>
+        <Parameter Name="LoadOrder" Value="60" Type="int"/>
+        <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    </MemberComponentTemplate>
           <MemberComponentTemplate Name="PoisonInfected" Guid="e0c655d1-1b36-45cb-a92e-5d70104182a8">
         <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
         <Parameter Name="IsOptional" Value="true" Type="bool"/>
@@ -3460,6 +3700,11 @@
             </ParameterSet>
           </EntityTemplate>
           <EntityTemplate Name="Jaguar" Guid="f36d8eea-f172-4960-ab15-99de3aa1d423" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+          <MemberComponentTemplate Name="HealthBarDisplay" Guid="6d263806-4672-42b8-920c-6bd1f04c0bc5" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="Class" Value="Game.ComponentHealthBar" Type="string"/>
+        <Parameter Name="LoadOrder" Value="60" Type="int"/>
+        <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    </MemberComponentTemplate>
           <MemberComponentTemplate Name="PoisonInfected" Guid="ce796935-1ef8-46a3-93c3-482e4fe241ff">
         <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
         <Parameter Name="IsOptional" Value="true" Type="bool"/>
@@ -3549,6 +3794,11 @@
             </ParameterSet>
           </EntityTemplate>
           <EntityTemplate Name="Zebra" Guid="f3c6487d-6f75-4ea0-a31c-fb95285fd453" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+          <MemberComponentTemplate Name="HealthBarDisplay" Guid="e2cfbc8a-bcc4-4d4b-9017-4e41d69c92a2" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="Class" Value="Game.ComponentHealthBar" Type="string"/>
+        <Parameter Name="LoadOrder" Value="60" Type="int"/>
+        <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    </MemberComponentTemplate>
             <MemberComponentTemplate Name="WalkAroundBehavior" Guid="22f6e3f5-c339-484f-b4b0-4998cfb4d17e" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
             <MemberComponentTemplate Name="FourLeggedModel" Guid="33e93678-e6d4-4405-97f6-76e84c09bf77" InheritanceParent="76d24f74-5f25-4d30-92ef-658c1a4d66c8">
               <Parameter Name="CanterLegsAngleFactor" Guid="3783adeb-a385-412a-a2b5-8d09eed7962f" Value="1.65" Type="float"/>
@@ -3617,11 +3867,16 @@
             </ParameterSet>
           </EntityTemplate>
           <EntityTemplate Name="Cassowary" Guid="fca58e0a-965e-481d-8482-bcb7c78e4595" InheritanceParent="548cf071-2593-45c2-b1c5-623b7c473612">
+          <MemberComponentTemplate Name="HealthBarDisplay" Guid="cd27e21c-49b8-4af4-bb3c-c47cef0fc89e" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="Class" Value="Game.ComponentHealthBar" Type="string"/>
+        <Parameter Name="LoadOrder" Value="60" Type="int"/>
+        <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    </MemberComponentTemplate>
           <MemberComponentTemplate Name="PoisonInfected" Guid="a1505c64-eea3-402c-9d69-7cc9be4066b8">
         <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
         <Parameter Name="IsOptional" Value="true" Type="bool"/>
         <Parameter Name="LoadOrder" Value="60" Type="int"/>
-        <Parameter Name="PoisonResistance" Value="0" Type="float"/> <!-- Resistencia al veneno -->
+        <Parameter Name="PoisonResistance" Value="-1000" Type="float"/> <!-- Resistencia al veneno -->
         <Parameter Name="IsJumpMove" Value="false" Type="bool"/> <!-- No tiene movimiento de salto con veneno -->
     </MemberComponentTemplate>
             <MemberComponentTemplate Name="HerdBehavior" Guid="1c2c4175-8821-46ac-884f-645bfc5c7b62" InheritanceParent="dfe7218e-ce14-4bde-8dac-f919c38e9efe">
