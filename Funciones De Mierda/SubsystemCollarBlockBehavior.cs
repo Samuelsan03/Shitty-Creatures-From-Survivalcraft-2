@@ -77,11 +77,10 @@ namespace Game
 				{"InfectedMuscle2", "InfectedMuscleTamed2" },
 				{"PoisonousInfected1", "PoisonousInfectedTamed1" },
 				{"PoisonousInfected2", "PoisonousInfectedTamed2" },
-				{"InfectedFly1", "InfectedFlyTamed1" }
-				// Agrega más criaturas aquí:
-				// {"Wolf", "WolfTamed"},
-				// {"Bear", "BearTamed"},
-				// {"Lion", "LionTamed"}
+				{"InfectedFly1", "InfectedFlyTamed1" },
+				{"InfectedFly2", "InfectedFlyTamed2" },
+				{"InfectedFly3", "InfectedFlyTamed3" },
+				{"FlyingInfectedBoss", "FlyingInfectedBossTamed" }
 			};
 
 			// VERIFICAR SI ES UNA CRIATURA DOMESTICABLE
@@ -128,7 +127,7 @@ namespace Game
 						{
 							// Si no se encuentra la traducción, usar mensaje por defecto en inglés
 							Console.WriteLine("Traducción no encontrada, usando mensaje por defecto en inglés");
-							message = "You have tamed a hostile Infected! Now it will be your guardian!";
+							message = "You have tamed a hostile Infected!\n Now it will be your guardian!";
 						}
 
 						// Método alternativo: Usar el método Get con valor por defecto
