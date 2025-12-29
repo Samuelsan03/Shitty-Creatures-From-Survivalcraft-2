@@ -74,6 +74,10 @@
     </Folder>
 
     <Folder Name="ProgramedInteligence" Guid="33dfd132-3c41-4dfa-a385-af3ba34ff86b">
+    <ComponentTemplate Name="NewCattleDriveBehavior" Description="Comportamiento mejorado de manejo del ganado compatible con los sistemas de rebaño originales y nuevos" Guid="220a154a-398a-40c5-9808-7ce8ed53da00" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+  <Parameter Name="Class" Guid="a7316be1-7fce-428e-ab66-bb2def9865ea" Value="Game.ComponentNewCattleDriveBehavior" Type="string"/>
+</ComponentTemplate>
+
     <ComponentTemplate Name="ComponentZombieChaseBehavior" Guid="2af27374-a20d-4049-9eb5-57e3d319fec2">
     <Parameter Name="Class" Value="Game.ComponentZombieChaseBehavior" Type="string" Description="El nombre de la clase C# que implementa el comportamiento de persecución para zombis."/>
     <Parameter Name="LoadOrder" Value="-1" Type="int" Description="Orden de carga para resolver dependencias con otros componentes."/>
@@ -380,6 +384,9 @@
     </Folder>
 
 <ProjectTemplate Name="Project" Guid="85023bf8-1c90-4dd1-9442-e6c13691d078">
+<MemberSubsystemTemplate Name="PoisonBulletBlockBehavior" Guid="fc95d14d-87db-4f63-9dfc-e5624c8b033f" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+        <Parameter Name="Class" Guid="4a9520e6-1988-4a8a-8e2d-5b84303d2576" Value="Game.SubsystemPoisonBulletBlockBehavior" Type="string"/>
+    </MemberSubsystemTemplate>
 <MemberSubsystemTemplate Name="CollarBlockBehavior" Guid="de432b96-c29b-445c-bbde-660e3b5eaded" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
         <Parameter Name="Class" Guid="21eb6fcd-4350-4e1a-8484-69fed75144f0" Value="Game.SubsystemCollarBlockBehavior" Type="string"/>
     </MemberSubsystemTemplate>
@@ -4364,6 +4371,9 @@
 </EntityTemplate>
 
 <EntityTemplate Name="Gaomon" Guid="7f3b2886-cb9c-4645-af3c-feb3ca375c8a" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="HealthBarDisplay" Guid="e8857afe-163c-4585-aafa-f4e0ba35e2c2" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+        <Parameter Name="MaxDisplayDistance" Value="19" Type="float"/>
+    </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewRunAwayBehavior" Guid="417d9a7d-efa1-47ff-8bc2-33e529b6cf3b">
     <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="218ff29e-3da9-44d7-a44f-af895a1ed548"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="7e779c4f-117b-4192-a5d3-ec005ca493f1"/>
