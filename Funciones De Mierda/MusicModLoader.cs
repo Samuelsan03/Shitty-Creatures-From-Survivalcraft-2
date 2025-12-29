@@ -59,6 +59,7 @@ namespace Game
                 "MenuMusic/Sonic The Hedgehog 2 1992 Hill Top Zone",
                 "MenuMusic/Mio Honda 本田未央 Step! ステップ",
                 "MenuMusic/Yahpp Sorceress Elise",
+				"MenuMusic/Chrono Trigger Main Theme",
 			};
 
 			// Usar Environment.TickCount como semilla simple
