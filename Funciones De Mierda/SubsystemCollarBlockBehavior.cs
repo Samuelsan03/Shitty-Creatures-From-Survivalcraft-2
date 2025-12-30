@@ -89,14 +89,13 @@ namespace Game
 				bool isBoomer = currentEntityName.StartsWith("Boomer");
 				ComponentBoomerExplosion boomerExplosion = null;
 				ComponentBoomerExplosion2 boomerExplosion2 = null;
-				ComponentBoomerPoisonExplosion boomerPoisonExplosion = null; // NUEVO: Referencia al componente de veneno
+				ComponentBoomerPoisonExplosion boomerPoisonExplosion = null;
 
 				if (isBoomer)
 				{
-					// Intentar obtener todos los tipos de componentes de explosión
 					boomerExplosion = entity.FindComponent<ComponentBoomerExplosion>();
 					boomerExplosion2 = entity.FindComponent<ComponentBoomerExplosion2>();
-					boomerPoisonExplosion = entity.FindComponent<ComponentBoomerPoisonExplosion>(); // NUEVO: Buscar componente de veneno
+					boomerPoisonExplosion = entity.FindComponent<ComponentBoomerPoisonExplosion>();
 
 					if (boomerExplosion != null)
 					{
@@ -110,7 +109,6 @@ namespace Game
 						Console.WriteLine($"Prevenida explosión del Boomer (ComponentBoomerExplosion2) durante domesticación");
 					}
 
-					// NUEVO: Prevenir explosión de veneno si existe el componente
 					if (boomerPoisonExplosion != null)
 					{
 						boomerPoisonExplosion.PreventExplosion = true;
@@ -125,10 +123,9 @@ namespace Game
 				if (entity2 == null)
 				{
 					Console.WriteLine($"ERROR: No se pudo crear la entidad: {entityTemplateName}");
-					// Restaurar la configuración de explosión si falla
 					if (boomerExplosion != null) boomerExplosion.PreventExplosion = false;
 					if (boomerExplosion2 != null) boomerExplosion2.PreventExplosion = false;
-					if (boomerPoisonExplosion != null) boomerPoisonExplosion.PreventExplosion = false; // NUEVO: Restaurar
+					if (boomerPoisonExplosion != null) boomerPoisonExplosion.PreventExplosion = false;
 					return true;
 				}
 
@@ -147,6 +144,8 @@ namespace Game
 
 				bool isTamedBoss = entityTemplateName == "FlyingInfectedBossTamed";
 				bool isTamedBoomer = entityTemplateName.StartsWith("BoomerTamed");
+				bool isTamedCharger = entityTemplateName.StartsWith("ChargerTamed");
+				bool isTamedTank = entityTemplateName.StartsWith("TankTamed");
 
 				ComponentPlayer componentPlayer = FindPlayerWithMiner(componentMiner);
 				if (componentPlayer != null)
@@ -168,7 +167,7 @@ namespace Game
 							}
 
 							messageColor = new Color(66, 0, 142);
-							soundToPlay = "Audio/UI/Bosses FNAF 3";
+							soundToPlay = "Audio/UI/Tada";
 						}
 						else if (isTamedBoomer)
 						{
@@ -183,6 +182,32 @@ namespace Game
 							messageColor = new Color(153, 0, 76);
 							soundToPlay = "Audio/UI/Bosses FNAF 3";
 						}
+						else if (isTamedCharger)
+						{
+							bool translationFound;
+							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedChargerMessage");
+
+							if (!translationFound)
+							{
+								message = "You have tamed a Charger! Its brute force to push enemies strongly will now be your tool! Use it well and wisely!";
+							}
+
+							messageColor = new Color(44, 44, 110);
+							soundToPlay = "Audio/UI/Bosses FNAF 3";
+						}
+						else if (isTamedTank)
+						{
+							bool translationFound;
+							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedTankMessage");
+
+							if (!translationFound)
+							{
+								message = "You have tamed a Tank! The most feared boss of bosses is now your slave! Take advantage of its brute force as your guardian!";
+							}
+
+							messageColor = new Color(153, 0, 0);
+							soundToPlay = "Audio/UI/Bosses FNAF 3";
+						}
 						else
 						{
 							bool translationFound;
@@ -194,7 +219,7 @@ namespace Game
 							}
 
 							messageColor = new Color(0, 255, 128);
-							soundToPlay = "Audio/UI/Tada";
+							soundToPlay = "Audio/UI/Bosses FNAF 3";
 						}
 
 						Console.WriteLine($"Mostrando mensaje: {message}");
@@ -231,6 +256,16 @@ namespace Game
 						{
 							defaultMessage = "You have tamed a Boomer!\nNow you can use it as an explosive guardian slave.\nUse it wisely in emergency cases!";
 							defaultColor = new Color(153, 0, 76);
+						}
+						else if (isTamedCharger)
+						{
+							defaultMessage = "You have tamed a Charger! Its brute force to push enemies strongly will now be your tool! Use it well and wisely!";
+							defaultColor = new Color(44, 44, 110);
+						}
+						else if (isTamedTank)
+						{
+							defaultMessage = "You have tamed a Tank! The most feared boss of bosses is now your slave! Take advantage of its brute force as your guardian!";
+							defaultColor = new Color(153, 0, 0);
 						}
 						else
 						{
