@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using Engine;
 using Engine.Graphics;
 using Game;
 
-namespace WonderfulEra
+namespace Game
 {
 	// Token: 0x020000B3 RID: 179
 	public class PoisonSmokeParticleSystem : ParticleSystem<PoisonSmokeParticleSystem.Particle>
@@ -11,7 +11,7 @@ namespace WonderfulEra
 		// Token: 0x06000572 RID: 1394 RVA: 0x00022E68 File Offset: 0x00021068
 		public PoisonSmokeParticleSystem(SubsystemTerrain terrain, Vector3 position, Vector3 direction) : base(50)
 		{
-			base.Texture = ContentManager.Get<Texture2D>("Textures/PukeParticle");
+			base.Texture = ContentManager.Get<Texture2D>("Textures/Items/Puke Particle Remake");
 			base.TextureSlotsCount = 3;
 			this.m_position = position;
 			this.m_direction = Vector3.Normalize(direction);
