@@ -89,12 +89,14 @@ namespace Game
 				bool isBoomer = currentEntityName.StartsWith("Boomer");
 				ComponentBoomerExplosion boomerExplosion = null;
 				ComponentBoomerExplosion2 boomerExplosion2 = null;
+				ComponentBoomerPoisonExplosion boomerPoisonExplosion = null; // NUEVO: Referencia al componente de veneno
 
 				if (isBoomer)
 				{
-					// Intentar obtener ambos tipos de componentes de explosión
+					// Intentar obtener todos los tipos de componentes de explosión
 					boomerExplosion = entity.FindComponent<ComponentBoomerExplosion>();
 					boomerExplosion2 = entity.FindComponent<ComponentBoomerExplosion2>();
+					boomerPoisonExplosion = entity.FindComponent<ComponentBoomerPoisonExplosion>(); // NUEVO: Buscar componente de veneno
 
 					if (boomerExplosion != null)
 					{
@@ -106,6 +108,13 @@ namespace Game
 					{
 						boomerExplosion2.PreventExplosion = true;
 						Console.WriteLine($"Prevenida explosión del Boomer (ComponentBoomerExplosion2) durante domesticación");
+					}
+
+					// NUEVO: Prevenir explosión de veneno si existe el componente
+					if (boomerPoisonExplosion != null)
+					{
+						boomerPoisonExplosion.PreventExplosion = true;
+						Console.WriteLine($"Prevenida explosión de veneno del Boomer (ComponentBoomerPoisonExplosion) durante domesticación");
 					}
 				}
 
@@ -119,6 +128,7 @@ namespace Game
 					// Restaurar la configuración de explosión si falla
 					if (boomerExplosion != null) boomerExplosion.PreventExplosion = false;
 					if (boomerExplosion2 != null) boomerExplosion2.PreventExplosion = false;
+					if (boomerPoisonExplosion != null) boomerPoisonExplosion.PreventExplosion = false; // NUEVO: Restaurar
 					return true;
 				}
 
