@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Engine;
 using Engine.Graphics;
+using Engine.Graphics;
 using GameEntitySystem;
 using TemplatesDatabase;
 
@@ -11,11 +12,10 @@ namespace Game
 	{
 		// ===== CONFIGURACIÓN =====
 		public float PoisonRadius = 8f;
-		public float PoisonIntensity = 200f; // Duración base del envenenamiento
-		public float CloudDuration = 15f; // Duración de la nube venenosa
-		public float CloudRadius = 6f; // Radio de la nube
-		public float ExplosionPressure = 40f; // Presión de la explosión
-		public bool PlaySound = true;
+		public float PoisonIntensity = 200f;
+		public float CloudDuration = 15f;
+		public float CloudRadius = 6f;
+		public float ExplosionPressure = 40f;
 
 		// ===== NUEVA VARIABLE PARA PREVENIR EXPLOSIÓN =====
 		public bool PreventExplosion = false;
@@ -47,7 +47,6 @@ namespace Game
 			CloudDuration = valuesDictionary.GetValue<float>("CloudDuration", CloudDuration);
 			CloudRadius = valuesDictionary.GetValue<float>("CloudRadius", CloudRadius);
 			ExplosionPressure = valuesDictionary.GetValue<float>("ExplosionPressure", ExplosionPressure);
-			PlaySound = valuesDictionary.GetValue<bool>("PlaySound", PlaySound);
 
 			// Obtener referencias
 			m_subsystemAudio = base.Project.FindSubsystem<SubsystemAudio>(true);
@@ -82,7 +81,6 @@ namespace Game
 			valuesDictionary.SetValue("CloudDuration", CloudDuration);
 			valuesDictionary.SetValue("CloudRadius", CloudRadius);
 			valuesDictionary.SetValue("ExplosionPressure", ExplosionPressure);
-			valuesDictionary.SetValue("PlaySound", PlaySound);
 		}
 
 		public void Update(float dt)
@@ -117,70 +115,65 @@ namespace Game
 			int y = (int)MathUtils.Floor(position.Y);
 			int z = (int)MathUtils.Floor(position.Z);
 
-			// 1. EXPLOSIÓN ESTÁNDAR SIN FUEGO
-			if (m_subsystemExplosions != null && ExplosionPressure > 0)
+			// 1. REPRODUCIR SONIDO DE EXPLOSIÓN
+			if (m_subsystemAudio != null)
 			{
-				// IMPORTANTE: Usar false para isIncendiary para que no genere fuego
-				m_subsystemExplosions.AddExplosion(x, y, z, ExplosionPressure, false, false);
-
-				// También agregar explosiones secundarias para mejor efecto
-				CreateScaledPoisonExplosion(x, y, z);
+				m_subsystemAudio.PlaySound("Audio/Explosion De Mierda/Explosion Smoke", 1f, 0f, position, 4f, true);
 			}
 
-			// 2. CREAR EFECTO VISUAL DE EXPLOSIÓN VENENOSA CON ONDA EXPANSIVA
-			CreatePoisonExplosionEffect(position);
+			// 2. CREAR EFECTO DE PRESIÓN SIN DESTRUIR BLOQUES
+			CreatePressureEffect(position);
 
-			// 3. INFECTAR ENTIDADES CERCANAS
+			// 3. CREAR EFECTO VISUAL DE ONDA EXPANSIVA VENENOSA
+			CreatePoisonShockwaveEffect(position);
+
+			// 4. INFECTAR ENTIDADES CERCANAS
 			InfectNearbyEntities(position);
 
-			// 4. CREAR NUBE VENENOSA PERSISTENTE
+			// 5. CREAR NUBE VENENOSA PERSISTENTE
 			CreatePersistentPoisonCloud(position);
 		}
 
-		public void CreateScaledPoisonExplosion(int centerX, int centerY, int centerZ)
+		public void CreatePressureEffect(Vector3 center)
 		{
-			if (m_subsystemExplosions == null) return;
+			if (m_subsystemBodies == null) return;
 
-			if (CloudRadius > 3f)
+			float radius = CloudRadius;
+			float pressure = ExplosionPressure;
+
+			// Aplicar fuerza a cuerpos cercanos SIN DESTRUIR BLOQUES
+			foreach (ComponentBody body in m_subsystemBodies.Bodies)
 			{
-				int extraExplosions = (int)(CloudRadius / 2f);
+				if (body == m_componentBody || body.Entity == null) continue;
 
-				for (int i = 0; i < extraExplosions; i++)
+				Vector3 bodyPos = body.Position;
+				float distance = Vector3.Distance(bodyPos, center);
+
+				if (distance <= radius && distance > 0.5f)
 				{
-					float angle = (float)i * (MathUtils.PI * 2f / extraExplosions);
-					float distance = MathUtils.Lerp(1f, CloudRadius * 0.5f, (float)i / extraExplosions);
+					float forceMultiplier = 1f - (distance / radius);
+					Vector3 direction = Vector3.Normalize(bodyPos - center);
 
-					int offsetX = (int)(MathUtils.Cos(angle) * distance);
-					int offsetZ = (int)(MathUtils.Sin(angle) * distance);
+					// Aplicar fuerza de explosión (empuje)
+					float force = pressure * forceMultiplier * 3f;
+					body.ApplyImpulse(direction * force);
 
-					float secondaryPressure = ExplosionPressure * MathUtils.Lerp(0.6f, 0.2f, distance / CloudRadius);
-
-					if (secondaryPressure > 5f)
-					{
-						// IMPORTANTE: Siempre false para isIncendiary
-						m_subsystemExplosions.AddExplosion(
-							centerX + offsetX,
-							centerY,
-							centerZ + offsetZ,
-							secondaryPressure,
-							false, // No incendaria
-							false
-						);
-					}
+					// También aplicar un poco de fuerza ascendente
+					body.ApplyImpulse(new Vector3(0f, force * 0.3f, 0f));
 				}
 			}
 		}
 
-		public void CreatePoisonExplosionEffect(Vector3 center)
+		public void CreatePoisonShockwaveEffect(Vector3 center)
 		{
 			if (m_subsystemParticles == null) return;
 
-			// Crear sistema de partículas principal con movimiento de onda expansiva
-			PoisonWaveParticleSystem waveSystem = new PoisonWaveParticleSystem(center, CloudRadius);
-			m_subsystemParticles.AddParticleSystem(waveSystem, false);
+			// Crear onda expansiva de veneno
+			PoisonShockwaveParticleSystem shockwaveSystem = new PoisonShockwaveParticleSystem(center, CloudRadius);
+			m_subsystemParticles.AddParticleSystem(shockwaveSystem, false);
 
-			// Crear partículas adicionales para efecto más denso
-			for (int i = 0; i < 20; i++)
+			// Crear humo verde
+			for (int i = 0; i < 25; i++) // Más partículas
 			{
 				float angle = m_random.Float(0f, MathUtils.PI * 2f);
 				float verticalAngle = m_random.Float(-MathUtils.PI / 4f, MathUtils.PI / 4f);
@@ -194,12 +187,12 @@ namespace Game
 				PoisonSmokeParticleSystem smokeSystem = new PoisonSmokeParticleSystem(
 					m_subsystemTerrain,
 					center,
-					Vector3.Normalize(direction)
+					Vector3.Normalize(direction) * 3f // Más rápido
 				);
 
 				// Ajustar parámetros para efecto de explosión
 				smokeSystem.m_time = 0f;
-				smokeSystem.m_toGenerate = 50f;
+				smokeSystem.m_toGenerate = 50f; // Más partículas
 
 				m_subsystemParticles.AddParticleSystem(smokeSystem, false);
 			}
@@ -209,28 +202,31 @@ namespace Game
 		{
 			if (m_subsystemParticles == null) return;
 
-			// Crear nube venenosa persistente que queda flotando
-			for (int i = 0; i < 8; i++)
+			// Crear nube venenosa persistente que dura 4 segundos
+			for (int i = 0; i < 12; i++) // Más nubes
 			{
-				float angle = (float)i * (MathUtils.PI * 2f / 8f);
-				float distance = m_random.Float(CloudRadius * 0.3f, CloudRadius * 0.8f);
+				float angle = (float)i * (MathUtils.PI * 2f / 12f);
+				float distance = m_random.Float(CloudRadius * 0.4f, CloudRadius * 0.9f);
 
 				Vector3 cloudPosition = center + new Vector3(
 					MathUtils.Cos(angle) * distance,
-					m_random.Float(0.5f, 2f),
+					m_random.Float(0.5f, 3f), // Más alto
 					MathUtils.Sin(angle) * distance
 				);
 
 				PoisonSmokeParticleSystem poisonCloud = new PoisonSmokeParticleSystem(
 					m_subsystemTerrain,
 					cloudPosition,
-					new Vector3(0f, 0.05f, 0f) // Movimiento muy lento hacia arriba
+					new Vector3(
+						m_random.Float(-0.02f, 0.02f),
+						m_random.Float(0.01f, 0.04f), // Movimiento más lento
+						m_random.Float(-0.02f, 0.02f)
+					)
 				);
 
-				// Ajustar para nube persistente
+				// Ajustar para nube que dura 4 segundos
 				poisonCloud.m_time = 0f;
-				poisonCloud.m_toGenerate = 30f;
-				poisonCloud.m_color = new Color(60, 220, 60, 180); // Verde más intenso
+				poisonCloud.m_toGenerate = 30f; // Más partículas
 
 				m_subsystemParticles.AddParticleSystem(poisonCloud, false);
 			}
@@ -255,42 +251,29 @@ namespace Game
 					float intensityMultiplier = 1f - (distance / PoisonRadius);
 					float finalIntensity = PoisonIntensity * intensityMultiplier;
 
-					// Aplicar envenenamiento
+					// Aplicar envenenamiento USANDO SOLO ComponentPoisonInfected
 					ComponentCreature creature = body.Entity.FindComponent<ComponentCreature>();
 					if (creature != null)
 					{
-						// Para jugadores
-						ComponentPlayer player = creature as ComponentPlayer;
-						if (player != null)
+						// Buscar ComponentPoisonInfected en la entidad
+						ComponentPoisonInfected poisonInfected = body.Entity.FindComponent<ComponentPoisonInfected>();
+
+						// Si no existe el componente, no podemos añadirlo dinámicamente en tiempo de ejecución
+						// Solo infectar si ya tiene el componente
+						if (poisonInfected != null)
 						{
-							if (!player.ComponentSickness.IsSick)
+							if (!poisonInfected.IsInfected)
 							{
-								player.ComponentSickness.StartSickness();
-								player.ComponentSickness.m_sicknessDuration = finalIntensity;
+								poisonInfected.StartInfect(finalIntensity);
 							}
 							else
 							{
-								player.ComponentSickness.m_sicknessDuration = MathUtils.Max(
-									player.ComponentSickness.m_sicknessDuration, finalIntensity);
+								poisonInfected.m_InfectDuration = MathUtils.Max(
+									poisonInfected.m_InfectDuration, finalIntensity);
 							}
 						}
-						// Para otras criaturas
-						else
-						{
-							ComponentPoisonInfected poisonInfected = body.Entity.FindComponent<ComponentPoisonInfected>();
-							if (poisonInfected != null)
-							{
-								if (!poisonInfected.IsInfected)
-								{
-									poisonInfected.StartInfect(finalIntensity);
-								}
-								else
-								{
-									poisonInfected.m_InfectDuration = MathUtils.Max(
-										poisonInfected.m_InfectDuration, finalIntensity);
-								}
-							}
-						}
+						// Si la entidad no tiene ComponentPoisonInfected, simplemente no hacer nada
+						// o puedes agregar un efecto alternativo si lo deseas
 					}
 				}
 			}
@@ -307,27 +290,26 @@ namespace Game
 		}
 	}
 
-	// ===== SISTEMA DE PARTÍCULAS DE ONDA VENENOSA =====
-	// Similar a una explosión pero con movimiento radial de humo
-	public class PoisonWaveParticleSystem : ParticleSystem<PoisonWaveParticleSystem.Particle>
+	// ===== SISTEMA DE PARTÍCULAS DE ONDA EXPANSIVA VENENOSA =====
+	public class PoisonShockwaveParticleSystem : ParticleSystem<PoisonShockwaveParticleSystem.Particle>
 	{
 		public Vector3 m_center;
 		public float m_radius;
 		public float m_time;
 		public Random m_random = new Random();
-		public const float m_duration = 1.5f;
+		public const float m_duration = 4.0f;
 
-		public PoisonWaveParticleSystem(Vector3 center, float radius) : base(800)
+		public PoisonShockwaveParticleSystem(Vector3 center, float radius) : base(1000) // Más partículas
 		{
-			base.Texture = ContentManager.Get<Texture2D>("Textures/Items/Puke Particle Remake");
+			base.Texture = ContentManager.Get<Texture2D>("Textures/Gui/Puke Particle Remake");
 			base.TextureSlotsCount = 3;
 			this.m_center = center;
 			this.m_radius = radius;
 
 			// Generar partículas iniciales
-			for (int i = 0; i < 400; i++)
+			for (int i = 0; i < 800; i++)
 			{
-				AddWaveParticle();
+				AddShockwaveParticle();
 			}
 		}
 
@@ -335,12 +317,12 @@ namespace Game
 		{
 			m_time += dt;
 
-			// Generar más partículas al inicio
-			if (m_time < 0.3f)
+			// Generar más partículas solo al inicio
+			if (m_time < 0.5f)
 			{
 				for (int i = 0; i < 10; i++)
 				{
-					AddWaveParticle();
+					AddShockwaveParticle();
 				}
 			}
 
@@ -357,36 +339,34 @@ namespace Game
 
 					if (particle.Time < particle.Duration)
 					{
-						// MOVIMIENTO DE ONDA EXPANSIVA (radial hacia afuera)
-						// Mantener dirección radial pero con desaceleración
-						particle.Velocity *= 0.92f;
-
-						// Ligero movimiento ascendente
-						particle.Velocity.Y += 0.1f * dt;
-
-						// Actualizar posición
+						// MOVIMIENTO DE ONDA EXPANSIVA
+						particle.Velocity *= 0.92f; // Desaceleración
+						particle.Velocity.Y += 0.1f * dt; // Flotación
 						particle.Position += particle.Velocity * dt;
 
-						// Cambiar tamaño (crecer y luego encoger)
+						// Cambiar tamaño
 						float lifeRatio = particle.Time / particle.Duration;
-						if (lifeRatio < 0.3f)
+
+						if (lifeRatio < 0.2f)
 						{
-							// Crecer al inicio
-							particle.Size = new Vector2(0.3f + lifeRatio * 0.4f);
+							particle.Size = new Vector2(0.2f + lifeRatio * 1.0f); // Crecer
+						}
+						else if (lifeRatio < 0.6f)
+						{
+							particle.Size = new Vector2(1.2f); // Mantener
 						}
 						else
 						{
-							// Encoger al final
-							particle.Size = new Vector2(0.7f * (1f - lifeRatio));
+							particle.Size = new Vector2(1.2f * (1f - (lifeRatio - 0.6f) * 2.5f)); // Encoger
 						}
 
-						// Cambiar opacidad (verde venenoso que se desvanece)
-						float alpha = 200f * (1f - lifeRatio);
+						// Color verde (sin error)
+						float alpha = 220f * (1f - lifeRatio * lifeRatio); // Desvanecimiento cuadrático
 						particle.Color = new Color(
-							(byte)MathUtils.Clamp(30 + lifeRatio * 50, 30, 80),
-							(byte)MathUtils.Clamp(180 + lifeRatio * 40, 180, 220),
-							(byte)MathUtils.Clamp(30 + lifeRatio * 50, 30, 80),
-							(byte)alpha
+							(byte)40,
+							(byte)200,
+							(byte)40,
+							(byte)(int)alpha
 						);
 
 						// Animación de textura
@@ -402,44 +382,42 @@ namespace Game
 			return m_time < m_duration || hasActiveParticles;
 		}
 
-		private void AddWaveParticle()
+		private void AddShockwaveParticle()
 		{
-			// Encontrar partícula inactiva
 			for (int i = 0; i < base.Particles.Length; i++)
 			{
 				if (!base.Particles[i].IsActive)
 				{
 					Particle particle = base.Particles[i];
 
-					// Dirección aleatoria radial desde el centro
+					// Dirección radial
 					Vector3 direction = m_random.Vector3(0f, 1f);
-					direction.Y *= 0.3f; // Menor componente vertical
+					direction.Y *= 0.3f; // Más plano
 					direction = Vector3.Normalize(direction);
 
-					// Posición inicial cerca del centro
-					float startDistance = m_random.Float(0f, m_radius * 0.2f);
-					particle.Position = m_center + direction * startDistance;
+					// Posición inicial en el centro
+					particle.Position = m_center;
 
-					// Velocidad radial hacia afuera (movimiento de onda)
-					float speed = m_random.Float(2f, 8f);
+					// Velocidad para efecto explosivo
+					float speed = m_random.Float(5f, 15f);
 					particle.Velocity = direction * speed;
 
-					// Agregar un poco de variación aleatoria
-					particle.Velocity += m_random.Vector3(0f, 0.5f);
+					// Variación aleatoria
+					particle.Velocity += m_random.Vector3(0f, 1.5f);
 
-					// Color verde venenoso
+					// Color verde
 					particle.Color = new Color(
-						(byte)m_random.Int(20, 40),
-						(byte)m_random.Int(180, 220),
-						(byte)m_random.Int(20, 40),
-						(byte)220
+						(byte)m_random.Int(30, 60),
+						(byte)m_random.Int(190, 230),
+						(byte)m_random.Int(30, 60),
+						(byte)240
 					);
 
-					// Tamaño inicial
-					particle.Size = new Vector2(m_random.Float(0.2f, 0.5f));
+					// Tamaño
+					particle.Size = new Vector2(m_random.Float(0.1f, 0.4f));
 
 					particle.Time = 0f;
-					particle.Duration = m_random.Float(0.8f, 1.5f);
+					particle.Duration = m_random.Float(3f, 4.5f); // Duración similar al audio
 					particle.IsActive = true;
 					particle.FlipX = m_random.Bool();
 					particle.FlipY = m_random.Bool();
