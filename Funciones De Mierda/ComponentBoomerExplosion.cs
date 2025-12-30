@@ -7,27 +7,20 @@ namespace Game
 	public class ComponentBoomerExplosion : Component, IUpdateable
 	{
 		// ===== CONFIGURACIÓN =====
-
-		// 1. PARÁMETROS DE ACTIVACIÓN (Ya no se usan para proximidad, pero se mantienen por compatibilidad)
 		public float ActivationRange = 3f;
-
-		// 2. TIPO DE EXPLOSIÓN
 		public bool UseStandardExplosion = true;
 		public bool UseCustomShockwave = false;
-
-		// 3. EXPLOSIÓN ESTÁNDAR
 		public float ExplosionPressure = 80f;
 		public bool IsIncendiary = false;
-
-		// 4. RADIOS CONFIGURABLES
 		public float ExplosionRadius = 10f;
 		public float BlockDamageRadius = 8f;
 		public float EntityDamageRadius = 10f;
-
-		// 5. ONDA EXPANSIVA PERSONALIZADA
 		public float ShockwaveDamage = 100f;
 		public float ShockwaveForce = 50f;
 		public bool DestroyBlocks = true;
+
+		// ===== NUEVA VARIABLE PARA PREVENIR EXPLOSIÓN =====
+		public bool PreventExplosion = false;
 
 		// ===== REFERENCIAS =====
 		public SubsystemExplosions m_subsystemExplosions;
@@ -126,8 +119,8 @@ namespace Game
 		{
 			if (m_componentHealth == null) return;
 
-			if ((m_lastHealth > 0 && m_componentHealth.Health <= 0 && !m_exploded) ||
-				(m_componentHealth.Health <= 0 && !m_exploded))
+			if (!PreventExplosion && ((m_lastHealth > 0 && m_componentHealth.Health <= 0 && !m_exploded) ||
+				(m_componentHealth.Health <= 0 && !m_exploded)))
 			{
 				CreateExplosionImmediately();
 			}
@@ -292,7 +285,7 @@ namespace Game
 		{
 			base.OnEntityRemoved();
 
-			if (!m_exploded && m_componentBody != null)
+			if (!PreventExplosion && !m_exploded && m_componentBody != null)
 			{
 				CreateExplosionImmediately();
 			}
