@@ -356,7 +356,7 @@
     }
   },
   "Messages": {
-    "CollarTamedBossMessage": "You have tamed the Flying Infected Boss!\nNow it will be your guardian, use it wisely in case of emergency.",
+    "CollarTamedBossMessage": "You have tamed the Flying Infected Boss, use it wisely for emergency cases",
     "CollarTamedMessage": "You have tamed a hostile Infected!\n Now it will be your guardian!",
     "FirstPullCrossbow": "First pull back the crossbow!",
     "FirstLoadArrow": "First load an bolt!",

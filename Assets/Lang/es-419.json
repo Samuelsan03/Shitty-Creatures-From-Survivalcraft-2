@@ -355,7 +355,7 @@
     }
   },
   "Messages": {
-    "CollarTamedBossMessage": "¡Has domesticado al Jefe Infectado Volador!\nAhora será tu guardián, úsalo sabiamente en caso de emergencia.",
+    "CollarTamedBossMessage": "Has domesticado al Jefe Infectado Volador, úsalo sabiamente para casos de emergencia!",
     "CollarTamedMessage": "¡Has domesticado a un Infectado hostil!\n ¡Ahora será tu guardián!",
     "FirstPullCrossbow": "¡Primero tensa la ballesta!",
     "FirstLoadArrow": "¡Primero carga una virote!",

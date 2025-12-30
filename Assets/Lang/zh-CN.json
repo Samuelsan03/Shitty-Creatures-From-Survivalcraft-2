@@ -357,7 +357,7 @@
     }
   },
   "Messages": {
-    "CollarTamedBossMessage": "你已经驯服了飞行感染者首领！\n它现在将成为你的守护者——请在紧急情况下明智地使用它。",
+    "CollarTamedBossMessage": "你已驯服飞行感染首领，请在紧急情况下明智使用它！",
     "CollarTamedMessage": "你已驯服了一个敌对的感染者！\n现在它将成为你的守护者！",
     "FirstPullCrossbow": "首先需要上弦弩！",
     "FirstLoadArrow": "首先需要装箭！",
