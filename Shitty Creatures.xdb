@@ -74,8 +74,53 @@
     </Folder>
 
     <Folder Name="ProgramedInteligence" Guid="33dfd132-3c41-4dfa-a385-af3ba34ff86b">
-    <ComponentTemplate Name="NewCattleDriveBehavior" Description="Comportamiento mejorado de manejo del ganado compatible con los sistemas de rebaño originales y nuevos" Guid="220a154a-398a-40c5-9808-7ce8ed53da00" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
-  <Parameter Name="Class" Guid="a7316be1-7fce-428e-ab66-bb2def9865ea" Value="Game.ComponentNewCattleDriveBehavior" Type="string"/>
+    <ComponentTemplate Name="BoomerPoisonExplosion" Guid="94c4aae0-adc3-405b-91b5-fbaa7ad0f7b8">
+    <Parameter Name="Class" Value="Game.ComponentBoomerPoisonExplosion" Type="string" Guid="4f3220be-2395-4f37-aed5-a1d2fbd5f128" Description="Componente que hace que la criatura explote al morir liberando una nube venenosa."/>
+    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="1e4fd0e9-1501-4b1c-adf0-d352a6a6d0df" Description="Si es opcional o requerido para el funcionamiento."/>
+    <Parameter Name="LoadOrder" Value="70" Type="int" Guid="14535130-7fbd-41a1-8ca5-a8bf6e6d0c60" Description="Orden de carga del componente."/>
+    <Parameter Name="PoisonRadius" Value="8" Type="float" Guid="f88c8685-cffe-480b-8ec2-f5aaecd93073" Description="Radio del efecto de envenenamiento inicial."/>
+    <Parameter Name="PoisonIntensity" Value="200" Type="float" Guid="37d6effb-20c0-4b2d-b3ff-fe17d70a9da0" Description="Intensidad base del envenenamiento (duración)."/>
+    <Parameter Name="CloudDuration" Value="15" Type="float" Guid="6b83c1c5-c7c0-493f-8310-1a793299b9b8" Description="Duración de la nube venenosa en segundos."/>
+    <Parameter Name="CloudRadius" Value="6" Type="float" Guid="91db0405-b770-4fbd-9375-4fbe9de4af15" Description="Radio de la nube venenosa."/>
+    <Parameter Name="ParticleCount" Value="150" Type="int" Guid="78a85698-3e22-4f21-a450-648069996eb4" Description="Cantidad de partículas para la nube venenosa."/>
+    <Parameter Name="PlaySound" Value="true" Type="bool" Guid="afc40226-dfff-47e8-8ba5-d5894f14e403" Description="Reproducir sonido al explotar."/>
+    <Parameter Name="PreventExplosion" Value="false" Type="bool" Guid="b788d065-f269-43ea-b114-34069a7c5de2" Description="Prevenir la explosión venenosa (útil para debugging)."/>
+</ComponentTemplate>
+
+    <ComponentTemplate Name="BoomerExplosion2" Guid="e1fbd7f5-5086-4743-aa37-14daf2172d5f">
+    <Parameter Name="Class" Value="Game.ComponentBoomerExplosion2" Type="string" Guid="6980dd8a-f8b0-49d6-9cc2-61383a26612f" Description="Componente que hace que la criatura explote al morir de forma incendiaria."/>
+    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="3107346f-389f-44bd-bc43-e94b0bcc15c6" Description="Si es opcional o requerido para el funcionamiento."/>
+    <Parameter Name="LoadOrder" Value="70" Type="int" Guid="4b046db9-16a3-4bca-956a-39b344af641b" Description="Orden de carga del componente."/>
+    <Parameter Name="ActivationRange" Value="3" Type="float" Guid="166324a5-76e7-4c98-9b67-cdb61d9619cf" Description="Rango de activación (en bloques) para detectar entidades cercanas y explotar."/>
+    <Parameter Name="UseStandardExplosion" Value="true" Type="bool" Guid="15afb5c8-6602-4eec-8971-d089484403ea" Description="Usar el sistema de explosiones estándar del juego."/>
+    <Parameter Name="UseCustomShockwave" Value="false" Type="bool" Guid="60173f65-c6db-4ff1-9f1f-e1dab4f1746a" Description="Usar onda expansiva personalizada además de la explosión estándar."/>
+    <Parameter Name="ExplosionPressure" Value="80" Type="float" Guid="80d31c97-4ce2-4c00-be62-43b0ad24e5c1" Description="Presión de la explosión (afecta la fuerza)."/>
+    <Parameter Name="IsIncendiary" Value="true" Type="bool" Guid="0936b609-c3f2-410d-b768-895e43173f6c" Description="Si la explosión causa fuego (como bombas incendiarias). ¡TRUE por defecto en esta versión!"/>
+    <Parameter Name="ExplosionRadius" Value="10" Type="float" Guid="1cd22b6b-87af-4bda-9a67-34b42f2465fa" Description="Radio total de la explosión (visual + efectos)."/>
+    <Parameter Name="BlockDamageRadius" Value="8" Type="float" Guid="ab2e688f-55f8-435c-841f-95567241966d" Description="Radio de destrucción de bloques."/>
+    <Parameter Name="EntityDamageRadius" Value="10" Type="float" Guid="479bcd77-11b3-412c-b0fe-d990344e34b8" Description="Radio de daño a entidades."/>
+    <Parameter Name="ShockwaveDamage" Value="100" Type="float" Guid="17c36a00-b2e7-4ce1-8fa5-5cf345ee03a7" Description="Daño adicional de la onda expansiva personalizada."/>
+    <Parameter Name="ShockwaveForce" Value="50" Type="float" Guid="5501f04f-20f7-40c4-aed1-76626eebf96b" Description="Fuerza de empuje de la onda expansiva."/>
+    <Parameter Name="DestroyBlocks" Value="true" Type="bool" Guid="6afd7079-a298-4431-a127-aece208e4b9e" Description="Si destruye bloques con la onda expansiva personalizada."/>
+    <Parameter Name="FireSpreadChance" Value="0.4" Type="float" Guid="ef3ce5e4-20cd-4f93-beca-e16c5378b07c" Description="Probabilidad de propagar fuego (0-1). Más alto = más fuego se propaga."/>
+    <Parameter Name="FireDuration" Value="10" Type="float" Guid="ee27b419-b84e-4ea4-a2f5-a484bbc01a52" Description="Duración del fuego en segundos."/>
+</ComponentTemplate>
+
+    <ComponentTemplate Name="BoomerExplosion" Guid="f0256105-afbc-4209-84cb-2fae41881524">
+    <Parameter Name="Class" Value="Game.ComponentBoomerExplosion" Type="string" Guid="b2774fa3-d656-4fff-9ab9-dc7223da9c8b" Description="Componente que hace que la criatura explote al morir o cuando entidades se acercan."/>
+    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="3d0ab350-1df2-4d98-ba2a-f217e1e39141" Description="Si es opcional o requerido para el funcionamiento."/>
+    <Parameter Name="LoadOrder" Value="70" Type="int" Guid="4a3c4862-c310-4798-935a-c5595fb8cb47" Description="Orden de carga del componente."/>
+    <Parameter Name="ActivationRange" Value="3" Type="float" Guid="439bfff8-9a15-4cc6-ac6a-4c7110282679" Description="Rango de activación (en bloques) para detectar entidades cercanas y explotar."/>
+    <Parameter Name="UseStandardExplosion" Value="true" Type="bool" Guid="00173457-bd82-4572-a5bd-6013fb57fc03" Description="Usar el sistema de explosiones estándar del juego."/>
+    <Parameter Name="UseCustomShockwave" Value="false" Type="bool" Guid="2c62034c-bc9c-4b8a-a668-90b70301c089" Description="Usar onda expansiva personalizada además de la explosión estándar."/>
+    <Parameter Name="ExplosionPressure" Value="80" Type="float" Guid="8f402b9c-0838-4761-9fdb-9d1a0139eb4c" Description="Presión de la explosión (afecta la fuerza)."/>
+    <Parameter Name="IsIncendiary" Value="false" Type="bool" Guid="25320076-42e0-4287-ac4f-50cdc38f5032" Description="Si la explosión causa fuego (como bombas incendiarias)."/>
+    <Parameter Name="ExplosionRadius" Value="10" Type="float" Guid="c6c9666d-9f06-46ff-886f-47464dc7fb78" Description="Radio total de la explosión (visual + efectos)."/>
+    <Parameter Name="BlockDamageRadius" Value="8" Type="float" Guid="4df991c9-31f4-478b-a436-9b85be52de8a" Description="Radio de destrucción de bloques."/>
+    <Parameter Name="EntityDamageRadius" Value="10" Type="float" Guid="45b31126-c301-4f1f-a593-d1eb885c5cb1" Description="Radio de daño a entidades."/>
+    <Parameter Name="ShockwaveDamage" Value="100" Type="float" Guid="e3b66731-b0f3-4648-9a26-90461bfbeccc" Description="Daño adicional de la onda expansiva personalizada."/>
+    <Parameter Name="ShockwaveForce" Value="50" Type="float" Guid="0c1700b6-7727-4088-befa-6d0810c85d17" Description="Fuerza de empuje de la onda expansiva."/>
+    <Parameter Name="DestroyBlocks" Value="true" Type="bool" Guid="ab31c1c8-f5f4-406a-a635-cde1f4d4fbf6" Description="Si destruye bloques con la onda expansiva personalizada."/>
 </ComponentTemplate>
 
     <ComponentTemplate Name="ComponentZombieChaseBehavior" Guid="2af27374-a20d-4049-9eb5-57e3d319fec2">
@@ -485,8 +530,8 @@
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Loot" Guid="6e3895e7-9750-48c3-2237-c346a02b0816">
                 <ParameterSet Name="Loot" Guid="bb5ff0a8-3fff-4e4e-a178-e31bfa098067">
-                    <Parameter Name="1" Guid="7d8af924-5160-4a8e-8065-f16ec6cbcdd6" Value="PumpkinBlock;5;10" Type="string"/>
-                    <Parameter Name="2" Guid="f4111177-8e86-4bd8-af7e-2e73225e4d7a" Value="BreadBlock;1;1;1" Type="string"/>
+                    <Parameter Name="1" Guid="7d8af924-5160-4a8e-8065-f16ec6cbcdd6" Value="PumpkinBlock;5;10;0.4" Type="string"/>
+                    <Parameter Name="2" Guid="f4111177-8e86-4bd8-af7e-2e73225e4d7a" Value="BreadBlock;1;1;0.4" Type="string"/>
                 </ParameterSet>
                 <ParameterSet Name="LootOnFire" Guid="56ac1204-6aa3-4a40-22a3-16186603ee21"/>
             </MemberComponentTemplate>
@@ -636,8 +681,8 @@
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Loot" Guid="d8e9f0a1-b2c3-4d45-8e67-f8a9b0c1d2e3">
                 <ParameterSet Name="Loot" Guid="e9f0a1b2-c3d4-4e56-8f78-a9b0c1d2e3f4">
-                    <Parameter Name="1" Guid="f0a1b2c3-d4e5-4f67-8a89-b0c1d2e3f4a5" Value="IronIngotBlock;3;5;75" Type="string"/>
-                    <Parameter Name="2" Guid="a1b2c3d4-e5f6-4a78-9b01-c1d2e3f4a5b6" Value="RottenMeatBlock;1;7" Type="string"/>
+                    <Parameter Name="1" Guid="f0a1b2c3-d4e5-4f67-8a89-b0c1d2e3f4a5" Value="IronIngotBlock;3;5;0.35" Type="string"/>
+                    <Parameter Name="2" Guid="a1b2c3d4-e5f6-4a78-9b01-c1d2e3f4a5b6" Value="RottenMeatBlock;1;7;0.5" Type="string"/>
                 </ParameterSet>
                 <ParameterSet Name="LootOnFire" Guid="b2c3d4e5-f6a7-4b89-9c12-d2e3f4a5b6c7"/>
             </MemberComponentTemplate>
@@ -766,7 +811,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Loot" Guid="d6e7f8a9-b0c1-6234-f012-3456789abcde">
         <ParameterSet Name="Loot" Guid="e7f8a9b0-c1d2-6345-0123-456789abcdef">
-            <Parameter Name="1" Guid="f8a9b0c1-d2e3-6456-1234-56789abcdef0" Value="CopperIngotBlock;10;15" Type="string"/>
+            <Parameter Name="1" Guid="f8a9b0c1-d2e3-6456-1234-56789abcdef0" Value="CopperIngotBlock;10;15;0.25" Type="string"/>
             <Parameter Name="2" Guid="a9b0c1d2-e3f4-6567-2345-6789abcdef01" Value="RepeatArrowBlock:2;1;13;0.78" Type="string"/>
         </ParameterSet>
         <ParameterSet Name="LootOnFire" Guid="b0c1d2e3-f4a5-6678-3456-789abcdef012"/>
