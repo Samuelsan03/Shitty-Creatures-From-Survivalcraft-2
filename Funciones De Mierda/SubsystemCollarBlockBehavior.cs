@@ -206,7 +206,7 @@ namespace Game
 							}
 
 							messageColor = new Color(153, 0, 0);
-							soundToPlay = "Audio/UI/Bosses FNAF 3";
+							soundToPlay = "Audio/UI/Tank Tamed Sound";
 						}
 						else
 						{
