@@ -11,7 +11,7 @@ namespace Game
 		// Token: 0x06000572 RID: 1394 RVA: 0x00022E68 File Offset: 0x00021068
 		public PoisonSmokeParticleSystem(SubsystemTerrain terrain, Vector3 position, Vector3 direction) : base(50)
 		{
-			base.Texture = ContentManager.Get<Texture2D>("Textures/Items/Puke Particle Remake");
+			base.Texture = ContentManager.Get<Texture2D>("Textures/Gui/Puke Particle Remake");
 			base.TextureSlotsCount = 3;
 			this.m_position = position;
 			this.m_direction = Vector3.Normalize(direction);
@@ -26,7 +26,19 @@ namespace Game
 			num4 = MathUtils.Max(num4, terrain.Terrain.GetCellLight(num, num2, num3 + 1));
 			num4 = MathUtils.Max(num4, terrain.Terrain.GetCellLight(num, num2, num3 - 1));
 			float num5 = LightingManager.LightIntensityByLightValue[num4];
-			this.m_color = new Color(num5, num5, num5);
+
+			// CAMBIO AQUÍ: En lugar de usar solo la intensidad de luz (gris),
+			// multiplicamos por el color verde deseado (51, 255, 51)
+			// Dividimos por 255 para convertir de 0-255 a 0-1
+			float greenR = 51f / 255f;
+			float greenG = 255f / 255f;
+			float greenB = 51f / 255f;
+
+			this.m_color = new Color(
+				num5 * greenR,
+				num5 * greenG,
+				num5 * greenB
+			);
 		}
 
 		// Token: 0x06000573 RID: 1395 RVA: 0x00022F7C File Offset: 0x0002117C
