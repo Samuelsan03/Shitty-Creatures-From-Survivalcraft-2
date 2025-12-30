@@ -88,14 +88,24 @@ namespace Game
 			{
 				bool isBoomer = currentEntityName.StartsWith("Boomer");
 				ComponentBoomerExplosion boomerExplosion = null;
-				
+				ComponentBoomerExplosion2 boomerExplosion2 = null;
+
 				if (isBoomer)
 				{
+					// Intentar obtener ambos tipos de componentes de explosión
 					boomerExplosion = entity.FindComponent<ComponentBoomerExplosion>();
+					boomerExplosion2 = entity.FindComponent<ComponentBoomerExplosion2>();
+
 					if (boomerExplosion != null)
 					{
 						boomerExplosion.PreventExplosion = true;
-						Console.WriteLine($"Prevenida explosión del Boomer durante domesticación");
+						Console.WriteLine($"Prevenida explosión del Boomer (ComponentBoomerExplosion) durante domesticación");
+					}
+
+					if (boomerExplosion2 != null)
+					{
+						boomerExplosion2.PreventExplosion = true;
+						Console.WriteLine($"Prevenida explosión del Boomer (ComponentBoomerExplosion2) durante domesticación");
 					}
 				}
 
@@ -106,7 +116,9 @@ namespace Game
 				if (entity2 == null)
 				{
 					Console.WriteLine($"ERROR: No se pudo crear la entidad: {entityTemplateName}");
+					// Restaurar la configuración de explosión si falla
 					if (boomerExplosion != null) boomerExplosion.PreventExplosion = false;
+					if (boomerExplosion2 != null) boomerExplosion2.PreventExplosion = false;
 					return true;
 				}
 
@@ -118,16 +130,7 @@ namespace Game
 				componentBody.Velocity = bodyRaycastResult.Value.ComponentBody.Velocity;
 				entity2.FindComponent<ComponentSpawn>(true).SpawnDuration = 0f;
 				base.Project.RemoveEntity(entity, true);
-				
-				if (isBoomer)
-				{
-					ComponentBoomerExplosion newBoomerExplosion = entity2.FindComponent<ComponentBoomerExplosion>();
-					if (newBoomerExplosion != null)
-					{
-						newBoomerExplosion.PreventExplosion = false;
-					}
-				}
-				
+
 				base.Project.AddEntity(entity2);
 
 				Console.WriteLine("Transformación completada exitosamente!");
