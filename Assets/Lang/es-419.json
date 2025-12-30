@@ -35,6 +35,34 @@
   },
   "Database": {
     "DisplayName": {
+      "BoomerTamed1": "Boomer Aliado 1",
+      "BoomerTamed2": "Boomer Aliado 2",
+      "Boomer2": "Boomer 2",
+      "Boomer1": "Boomer 1",
+      "FlyingInfectedBossTamed": "Jefe Infectado Volador Aliado",
+      "FlyingInfectedBoss": "Jefe Infectado Volador",
+      "InfectedFlyTamed3": "Infectado Volador Aliado 3",
+      "InfectedFly3": "Infectado Volador 3",
+      "InfectedFlyTamed2": "Infectado Volador Aliado 2",
+      "InfectedFly2": "Infectado Volador 2",
+      "InfectedFlyTamed1": "Infectado Volador Aliado 1",
+      "InfectedFly1": "Infectado Volador 1",
+      "PoisonousInfectedTamed2": "Infectado Normal Aliado 4",
+      "PoisonousInfectedTamed1": "Infectado Normal Aliado 3",
+      "PoisonousInfected2": "Infectado Normal 4",
+      "PoisonousInfected1": "Infectado Normal 3",
+      "InfectedMuscleTamed2": "Infectado Musculoso Aliado 2",
+      "InfectedMuscle2": "Infectado Musculoso 2",
+      "InfectedMuscleTamed1": "Infectado Musculoso Aliado 1",
+      "InfectedMuscle1": "Infectado Musculoso 1",
+      "InfectedFastTamed2": "Infectado Veloz Aliado 2",
+      "InfectedFast2": "Infectado Veloz 2",
+      "InfectedFastTamed1": "Infectado Veloz Aliado 1",
+      "InfectedFast1": "Infectado Veloz 1",
+      "InfectedNormalTamed2": "Infectado Normal Aliado 2",
+      "InfectedNormal2": "Infectado Normal 2",
+      "InfectedNormalTamed1": "Infectado Normal Aliado 1",
+      "InfectedNormal1": "Infectado Normal 1",
       "PirataNormal": "Pirata Normal",
       "PirataElite": "Pirata Élite",
       "CapitanPirata": "Capitán Pirata",
@@ -87,6 +115,13 @@
       "RichardFiedler": "Richard"
     },
     "Description": {
+      "Boomer1": "El Boomer es otro tipo de infectado, caracterizado por su enorme tamaño y aspecto grotesco. Lo más llamativo es que, al morir, explota, lo que lo convierte en una amenaza mortal: si lo eliminas demasiado cerca, terminarás hecho pedazos. Sin embargo, la leyenda cuenta que con el collar zombi puede convertirse en aliado. Si logras domesticarlo, se transformará en tu guardián. Al hacerlo tendrás control sobre él y podrás aprovechar sus habilidades, aunque siempre existe el riesgo de que muera explotando. Inténtalo bajo tu propio riesgo, pero nunca lo hagas cerca de otros zombis o compañeros, pues podrían morir en la explosión.",
+      "FlyingInfectedBoss": "El Jefe Infectado Volador es otro tipo de infectado volador, pero lo que realmente lo distingue es que posee cuatro cabezas, algo sumamente monstruoso. Lo más peligroso es la variedad de sus ataques: puede golpearte de forma normal, lanzarte fuego o lanzarte veneno, lo cual lo hace extremadamente riesgoso. Como corresponde a un jefe, aparece en el día 31 a cualquier hora, y su mayor amenaza es la velocidad, ya que es mucho más rápido que los infectados comunes. Por ello, necesitarás preparar buenas armas para enfrentarlo. La leyenda cuenta que el collar zombi puede calmar su furia. De esta manera, el Jefe Infectado Volador puede ser domesticado y convertirse en tu primer jefe esclavizado. ¿Qué ventajas podrás obtener de él?",
+      "InfectedFly1": "El Infectado Volador es otro tipo de zombi, pero a diferencia de los demás, este puede volar. ¿Cómo logró convertirse en un pájaro infectado? Tal vez una empresa química experimentó con humanos y aves, y este fue el resultado. Aparecen la noche del día 9, siempre en grupos de tres. Ten cuidado, porque al ser voladores a veces son difíciles de eliminar. No obstante, la leyenda dice que si usas el collar zombi en uno de ellos, se convertirán en tus guardianes esclavos, lo cual resulta útil cuando no puedes alcanzar a tu objetivo volador.",
+      "PoisonousInfected1": "El Infectado Normal aparenta ser un zombie común, con la misma apariencia y comportamiento inicial que cualquier otro. Se mueve torpemente y se mezcla entre los demás sin levantar sospechas, lo que hace que muchos lo subestimen al primer encuentro. Aparece desde el día 6 en la noche, normalmente en grupos pequeños, y su presencia parece no diferir de la de otros infectados. Sin embargo, algunos sobrevivientes cuentan que tras enfrentarse a uno de estos “zombies normales”, algo extraño ocurre en su salud. Se dice que, con el collar zombie, incluso estos infectados podrían dejar de ser enemigos y convertirse en aliados.",
+      "InfectedMuscle1": "El Infectado Musculoso es una versión más imponente del zombie normal. Su cuerpo está marcado por músculos exagerados, resultado de la infección que lo transformó en una bestia de fuerza bruta. A diferencia de otros infectados, este no solo confía en su poder físico: también puede utilizar armas, tanto de cuerpo a cuerpo como a distancia, lo que lo convierte en un enemigo doblemente peligroso. Comienza a aparecer después del día 3 en la noche, y seguirá manifestándose en adelante, generalmente en solitario o acompañado de otro infectado musculoso. Su golpe es devastador: un solo impacto puede derribar defensas improvisadas y dejar al jugador vulnerable. Además, su capacidad de blandir armas lo hace impredecible, pues puede alternar entre ataques brutales y embestidas armadas. Provocarlo es un error que pocos sobreviven. Sin embargo, existe una leyenda que habla de la posibilidad de domesticarlo mediante el collar zombie. Si logras colocárselo, el Infectado Musculoso dejará de ser tu enemigo y se convertirá en tu guardián. Desde ese momento, su fuerza descomunal estará de tu lado, protegiéndote y enfrentando a cualquier amenaza con ferocidad. Algunos relatos cuentan que los Infectados Musculosos domesticados muestran una lealtad inquebrantable, obedeciendo órdenes simples y utilizando su poder para defender a su amo. Otros aseguran que pueden romper obstáculos y abrir paso en lugares donde ningún otro infectado podría. Su fuerza, resistencia y capacidad de usar armas hacen que enfrentarlo sea un desafío mortal. Necesitarás suerte y buenas armas para derrotarlo… o valor para intentar domarlo.",
+      "InfectedFast1": "El Infectado Veloz es una variante del zombie normal, pero con una habilidad que lo hace aún más peligroso: su velocidad. A diferencia de otros infectados, no utiliza armas, pero compensa esa carencia con la capacidad de correr más rápido que cualquier criatura similar. Comienza a aparecer en el día 2 durante la noche, y seguirá manifestándose en adelante, siempre en grupos pequeños de dos infectados, nunca más. Esto lo convierte en una amenaza constante, ya que su rapidez les permite rodear y atacar antes de que el jugador pueda reaccionar. Provocarlo es un error grave, pues su instinto es devorar cerebros y la oscuridad le da ventaja para emboscar sin descanso. Sin embargo, existe una leyenda que habla de la posibilidad de domesticarlo: si logras colocarle un collar zombie, el Infectado Veloz dejará de ser tu enemigo y pasará a formar parte de tu grupo. Desde ese momento se convertirá en tu guardián, utilizando su velocidad para protegerte, perseguir enemigos y actuar como centinela incansable. Algunos relatos cuentan que los Infectados Veloz domesticados desarrollan un vínculo especial con su dueño, obedeciendo órdenes simples y reaccionando con rapidez ante cualquier amenaza. Otros aseguran que pueden detectar movimientos a gran distancia, anticipando ataques antes de que ocurran. Aunque no porta armas, su fuerza y resistencia combinadas con su velocidad hacen que enfrentarlo sea un desafío riesgoso. Necesitarás suerte y buenas armas para derrotarlo… o valor para intentar domarlo.",
+      "InfectedNormal1": "El Infectado Normal es una criatura hostil que ataca sin distinción, apareciendo desde el inicio del mundo. Puede surgir en manadas de dos o tres, lo que aumenta el peligro de encontrarse con ellos. Provocarlo es un error fatal, ya que intentará devorar tu cerebro sin piedad. Durante la noche su amenaza se intensifica, pues es el momento en que busca alimentarse de todos los que encuentre. A pesar de su peligrosidad, existe una leyenda que habla de un extraño objeto: el collar zombie. Se dice que si logras colocárselo, el Infectado Normal dejará de ser tu enemigo y pasará a formar parte de tu grupo. Desde ese instante se convertirá en tu guardián, protegiéndote de otros enemigos y atacando a quienes intenten acercarse. Algunos relatos cuentan que los Infectados convertidos en guardianes desarrollan una especie de vínculo con su dueño, reconociendo su presencia y obedeciendo órdenes simples. Otros aseguran que incluso pueden detectar peligros antes de que ocurran, actuando como centinelas silenciosos. Sin embargo, conseguir un collar zombie no es tarea fácil: pocos han logrado encontrarlo y aún menos han sobrevivido para contar la historia. Parecen zombies normales como los viste en otros mods, ¿no? Pues a pesar de eso pueden usar armas tanto de cuerpo a cuerpo como a distancia, e incluso romper todo a su paso. Su fuerza y resistencia hacen que enfrentarlo sea riesgoso, así que necesitarás suerte y buenas armas para derrotarlo… o valor para intentar domarlo.",
       "PirataNormal": "El Pirata Normal es un pirata común que siempre obedece las órdenes del Capitán Pirata. Aunque no posee la fuerza de los más poderosos, sigue siendo peligroso, ya que disfruta creando caos y muestra odio hacia cualquier cosa que se cruce en su camino. Su comportamiento impredecible lo convierte en una amenaza constante. Lo peor es que siempre porta armas, desde espadas oxidadas hasta cuchillos improvisados, y no duda en utilizarlas contra cualquiera que se interponga. En ocasiones se le ha visto atacar incluso sin motivo, solo por diversión o para demostrar su lealtad al capitán. Su presencia en las batallas suele ser numerosa, pues los Piratas Normales forman la base de la tripulación y actúan en grupo, lo que aumenta el riesgo de enfrentarse a ellos. Debido a sus travesuras peligrosas, enfrentarlos es complicado, aunque no tan mortales como los Piratas Élite o el propio capitán. Aun así, no debes subestimarlos: su fuerza en números y su agresividad pueden acabar contigo si no estás preparado. Ten buena suerte y asegúrate de contar con buenas armas para matarlo.",
       "PirataElite": "El Pirata Élite es considerado la sombra más peligrosa del mar. Se dice que fue entrenado desde joven por el propio Capitan Pirata, aprendiendo tácticas de combate y obediencia absoluta. Su presencia impone respeto: donde aparece, el silencio domina y los demás piratas se mantienen a distancia. Algunos relatos cuentan que el Pirata Élite nunca duerme, siempre vigila los alrededores con la mirada fija en posibles amenazas. Otros aseguran que guarda cicatrices de innumerables batallas, cada una como prueba de su resistencia. Su fidelidad al capitán lo convierte en un sirviente temible, dispuesto a dar la vida sin dudar. Su fuerza y resistencia hacen que sea riesgoso enfrentarte a él, así que ten suerte de matarlo con buenas armas.",
       "CapitanPirata": "El Capitán Pirata es el líder absoluto de la tripulación de los piratas. Su ojo cubierto no es señal de debilidad, sino un símbolo de su aguda visión y experiencia en batalla. Siempre ha sido el temor de los esclavos piratas, pues cuando su barco o su tripulación son amenazados, ordena el ataque de inmediato. Si sus hombres caen heridos, él mismo toma las armas y lucha con una habilidad superior a la de cualquier otro. Enfrentarlo cara a cara es un desafío mortal: necesitarás las mejores armas para tener alguna oportunidad. Ten cuidado, porque es el más peligroso de todos. Sin embargo, derrotarlo trae recompensas valiosas. ¿Qué tesoros caerán de sus manos al morir? Ese misterio es lo que motiva a muchos a arriesgarse contra él.",
@@ -151,7 +186,7 @@
         "Inventory": "Inventario",
         "InstructionsPull": "Tensa para cargar",
         "InstructionsInsert": "Inserta virotes",
-        "InstructionsArrows": "Flechas: {0}/8"
+        "InstructionsArrows": "Virotes: {0}/8"
       }
     },
     "Messages": {
@@ -165,6 +200,14 @@
     }
   },
   "Blocks": {
+    "PoisonBulletBlock:0": {
+  "DisplayName": "Bala Envenenada",
+  "Description": "Similar a una bala de mosquete, pero no puede usarse como munición del mosquete y tampoco se puede fabricar."
+},
+    "CollarBlock:0": {
+  "DisplayName": "Collar Zombie",
+  "Description": "Un collar especial que se puede fabricar y es esencial para domesticar zombies hostiles. Una vez colocado en un zombie, pacifica a la criatura y permite domesticarla como un compañero leal. El collar también proporciona protección contra otros ataques de zombies y puede encantarse para obtener efectos adicionales. Extremadamente útil para jugadores que buscan construir un ejército de no muertos o asegurar su base con guardianes zombis."
+},
     "RefrigeratorXiaomiBlock:0": {
       "DisplayName": "Refrigerador Xiaomi",
       "Description": "Un refrigerador Xiaomi es un electrodoméstico diseñado para enfriar y almacenar alimentos. Se define como un refrigerador inteligente que proporciona una conservación eficiente de productos perecederos. En el mod es útil como un objeto que representa un electrodoméstico moderno y amplía las opciones de construcción. Su utilidad principal es preservar alimentos si estás cansado de que se echen a perder rápidamente, tanto crudos como cocinados, dando más tiempo de durabilidad. Nota: el refrigerador requiere energía como una batería, palanca u otra fuente eléctrica, de lo contrario no funcionará."
@@ -312,6 +355,8 @@
     }
   },
   "Messages": {
+    "CollarTamedBossMessage": "¡Has domesticado al Jefe Infectado Volador!\nAhora será tu guardián, úsalo sabiamente en caso de emergencia.",
+    "CollarTamedMessage": "¡Has domesticado a un Infectado hostil!\n ¡Ahora será tu guardián!",
     "FirstPullCrossbow": "¡Primero tensa la ballesta!",
     "FirstLoadArrow": "¡Primero carga una virote!",
     "ArrowCount": "Virotes: {0}/8"

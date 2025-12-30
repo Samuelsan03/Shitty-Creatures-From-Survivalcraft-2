@@ -35,10 +35,41 @@
   },
   "Database": {
     "DisplayName": {
+      "BoomerTamed3": "Boomer Ally 3",
+      "Boomer3": "Boomer 3",
+      "BoomerTamed2": "Boomer Ally 2",
+      "Boomer2": "Boomer 2",
+      "BoomerTamed1": "Boomer Ally 1",
+      "Boomer1": "Boomer 1",
+      "FlyingInfectedBossTamed": "Flying Infected Boss Ally",
+      "FlyingInfectedBoss": "Flying Infected Boss",
+      "InfectedFlyTamed3": "Flying Infected Ally 3",
+      "InfectedFly3": "Flying Infected 3",
+      "InfectedFlyTamed2": "Flying Infected Ally 1",
+      "InfectedFly2": "Flying Infected 2",
+      "InfectedFlyTamed1": "Flying Infected Ally 1",
+      "InfectedFly1": "Flying Infected 1",
+      "PoisonousInfectedTamed2": "Infected Normal Ally 4",
+      "PoisonousInfectedTamed1": "Infected Normal Ally 3",
+      "PoisonousInfected2": "Infected Normal 4",
+      "PoisonousInfected1": "Infected Normal 3",
+      "InfectedMuscleTamed2": "Infected Muscle Ally 2",
+      "InfectedMuscle2": "Infected Muscle 2",
+      "InfectedMuscleTamed1": "Infected Muscle Ally 1",
+      "InfectedMuscle1": "Infected Muscle 1",
+      "InfectedFastTamed2": "Infected Faster Ally 2",
+      "InfectedFast2": "Infected Faster 2",
+      "InfectedFastTamed1": "Infected Faster Ally 1",
+      "InfectedFast1": "Infected Faster 1",
+      "InfectedNormalTamed2": "Infected Normal Ally 2",
+      "InfectedNormal2": "Infected Normal 2",
+      "InfectedNormalTamed1": "Infected Normal Ally 1",
+      "InfectedNormal1": "Infected Normal 1",
       "PirataNormal": "Pirata Normal",
       "PirataElite": "Pirata Élite",
       "CapitanPirata": "Capitán Pirata",
       "PirataHostilComerciante": "Pirata Hostil Comerciante",
+      "PirataEliteAliado": "Pirata Élite Aliado",
       "PirataNormalAliado": "Pirata Normal Aliado",
       "Naomi": "Naomi",
       "Ricardo": "Ricardo",
@@ -86,6 +117,13 @@
       "Richard": "Richard"
     },
     "Description": {
+      "Boomer1": "The Boomer is another type of infected, known for its massive size and grotesque appearance. Its most distinctive trait is that upon death it explodes, making it a deadly threat: kill it too close, and you’ll be blown to pieces. Yet legend says that with the zombie collar it can become an ally. If you manage to tame it, the Boomer will serve as your guardian. You will gain control over it and can take advantage of its abilities, though there is always the risk of it dying in an explosion. Try it at your own risk, but never near other zombies or allies, as they could perish in the blast.",
+      "FlyingInfectedBoss": "The Flying Infected Boss is another type of flying infected, but what truly sets it apart is its four heads, making it a terrifying monster. Its greatest danger lies in the variety of its attacks: it can strike normally, throw fire, or throw poison, making it extremely hazardous. As a true boss, it appears on day 31 at any time, and its most threatening trait is speed, being far faster than regular infected. Therefore, you must prepare strong weapons to defeat it. Legend says the zombie collar can calm its rage. In this way, the Flying Infected Boss can be tamed and become your first enslaved boss. What advantages will you gain from it?",
+      "InfectedFly1": "The Flying Infected is another type of zombie, but unlike others, this one can fly. How did it become an infected bird? Perhaps chemical experiments mixing humans and birds led to this result. They appear on the 9th night, always flying in groups of three. Be careful, as flying enemies are harder to kill. However, as the legend says, if you use the zombie collar on one of them, they will become your guardian slaves useful when you cannot reach your flying target.",
+      "PoisonousInfected1": "The Normal Infected looks just like an ordinary zombie, with the same appearance and initial behavior as any other. It moves clumsily and blends in among the rest without raising suspicion, which makes many underestimate it at first sight. It begins to appear on day 6 at night, usually in small groups, and its presence seems no different from other infected. Yet, some survivors claim that after fighting what seemed to be a “normal zombie,” something unusual happens to their health. It is said that with the zombie collar, even these infected could stop being enemies and become allies.",
+      "InfectedMuscle1": "The Muscle Infected is a more imposing version of the normal zombie. Its body is marked by exaggerated muscles, the result of the infection that turned it into a brute of raw strength. Unlike other infected, it does not rely solely on physical power: it can also wield weapons, both melee and ranged, making it a doubly dangerous foe. It begins to appear after day 3 at night, and will continue to spawn afterwards, usually alone or accompanied by another Muscle Infected. Its strike is devastating: a single blow can break improvised defenses and leave the player vulnerable. In addition, its ability to wield weapons makes it unpredictable, alternating between brutal punches and armed assaults. Provoking it is a mistake few survive. However, there is a legend that speaks of the possibility of taming it with a zombie collar. If you manage to place it, the Muscle Infected will cease to be your enemy and become your guardian. From that moment on, its overwhelming strength will be on your side, protecting you and facing any threat with ferocity. Some tales claim that tamed Muscle Infected show unwavering loyalty, obeying simple commands and using their power to defend their master. Others insist they can break obstacles and clear paths where no other infected could. Its strength, resilience, and ability to use weapons make facing it a deadly challenge. You will need luck and good weapons to defeat it… or courage to try to tame it.",
+      "InfectedFast1": "The Fast Infected is a variant of the normal zombie, but with a skill that makes it even more dangerous: speed. Unlike other infected, it does not use weapons, but compensates for this by running faster than any similar creature. It begins to appear on day 2 at night, and will continue to spawn afterwards, always in small groups of two infected, no more. This makes it a constant threat, as their speed allows them to surround and attack before the player can react. Provoking them is a serious mistake, as their instinct is to devour brains and the darkness gives them an advantage to ambush relentlessly. However, there is a legend that speaks of the possibility of taming them: if you manage to place a zombie collar on a Fast Infected, it will cease to be your enemy and instead join your group. From that moment on, it becomes your guardian, using its speed to protect you, chase enemies, and act as a tireless sentinel. Some tales claim that tamed Fast Infected develop a special bond with their master, obeying simple commands and reacting quickly to any threat. Others insist they can detect movement from great distances, anticipating attacks before they happen. Although they do not carry weapons, their strength and resilience combined with their speed make facing them a risky challenge. You will need luck and good weapons to defeat them… or courage to try to tame them.",
+      "InfectedNormal1": "The Normal Infected is a hostile creature that attacks indiscriminately, appearing from the very beginning of the world. They can spawn in packs of two or three, increasing the danger of encountering them. Provoking one is a fatal mistake, as it will attempt to devour your brain without mercy. At night, their threat intensifies, as that is when they seek to feed on everyone they find. Despite their danger, there is a legend of a strange item: the zombie collar. It is said that if you manage to place it on a Normal Infected, it will cease to be your enemy and instead join your group. From that moment on, it becomes your guardian, protecting you from other foes and attacking anyone who dares approach. Some tales claim that Infected turned into guardians develop a bond with their master, recognizing their presence and obeying simple commands. Others insist they can even sense danger before it happens, acting as silent sentinels. However, obtaining a zombie collar is no easy task—few have ever found one, and even fewer have survived to tell the tale. They may look like ordinary zombies you’ve seen in other mods, right? Yet despite that, they can wield both melee and ranged weapons, and even destroy everything in their path. Their strength and resilience make facing them risky, so you’ll need luck and good weapons to defeat them… or courage to try to tame them.",
       "PirataNormal": "The Pirata Normal is a common pirate who always follows the orders of the Capitán Pirata. Although he lacks the strength of the more powerful ones, he is still dangerous, as he enjoys creating chaos and shows hatred toward anything in his path. His unpredictable behavior makes him a constant threat. The worst part is that he always carries weapons, ranging from rusty swords to improvised knives, and he does not hesitate to use them against anyone who stands in his way. At times, he has been seen attacking without reason, simply for amusement or to prove his loyalty to the captain. In battles, Pirata Normals often appear in large numbers, forming the backbone of the crew and fighting in groups, which increases the risk of facing them. Because of their dangerous antics, fighting them is difficult, though not as deadly as the Pirata Élite or the captain himself. Still, they should not be underestimated: their strength in numbers and aggressiveness can overwhelm you if you are not prepared. Good luck—you’ll need strong weapons to bring him down.",
       "PirataElite": "The Pirata Élite is regarded as the most dangerous shadow of the sea. It is said he was trained from a young age by the Capitan Pirata himself, mastering combat tactics and absolute obedience. His presence commands respect: wherever he appears, silence falls and other pirates keep their distance. Some tales claim the Pirata Élite never sleeps, always watching the surroundings with eyes fixed on potential threats. Others say he carries scars from countless battles, each one a testament to his resilience. His loyalty to the captain makes him a fearsome servant, willing to give his life without hesitation. His strength and resilience make facing him risky, so you’ll need luck and good weapons to bring him down.",
       "CapitanPirata": "The Capitán Pirata is the ultimate leader of the pirate crew. His covered eye is not a sign of weakness, but rather a symbol of sharp vision and battle-hardened experience. He has always been feared by the pirate slaves, for when his ship or crew are threatened, he orders an immediate attack. If his men are wounded, he takes up arms himself, fighting with skill far greater than any other. Facing him head-on is a deadly challenge—you will need the best weapons to stand a chance. Be warned, he is the most lethal of them all. Yet defeating him yields valuable rewards. What treasures will fall from his grasp upon death? That mystery drives many to risk everything against him.",
@@ -150,13 +188,13 @@
         "Inventory": "Inventory",
         "InstructionsPull": "Pull back to load",
         "InstructionsInsert": "Insert bolts",
-        "InstructionsArrows": "Arrows: {0}/8"
+        "InstructionsArrows": "Bolts: {0}/8"
       }
     },
     "Messages": {
       "FirstPullCrossbow": "First pull back the crossbow!",
       "FirstLoadArrow": "First load an bolt!",
-      "ArrowCount": "Arrows: {0}/8"
+      "ArrowCount": "Bolts: {0}/8"
     },
     "Usual": {
       "ok": "OK",
@@ -164,6 +202,14 @@
     }
   },
   "Blocks": {
+    "PoisonBulletBlock:0": {
+  "DisplayName": "Poison Bullet",
+  "Description": "Similar to a musket round, but it cannot be used as musket ammunition and is not available for crafting."
+    },
+    "CollarBlock:0": {
+  "DisplayName": "Zombie Collar",
+  "Description": "A special collar that can be crafted and is essential for taming hostile zombies. Once placed on a zombie, it pacifies the creature and allows it to be domesticated as a loyal companion. The collar also provides protection against other zombie attacks and can be enchanted for additional effects. Extremely useful for players looking to build an undead army or secure their base with zombie guardians."
+    },
     "RefrigeratorXiaomiBlock:0": {
       "DisplayName": "Xiaomi Refrigerator",
       "Description": "A Xiaomi refrigerator is a household appliance designed for cooling and storing food. It is defined as a smart refrigerator that provides efficient preservation of perishable goods. In the mod it is useful as an object that represents a modern appliance and expands building options. Its main utility is to preserve food if you are tired of it spoiling quickly, both raw and cooked, giving more durability time. Note: the refrigerator requires energy such as a battery, lever, or another electrical source, otherwise it will not work."
@@ -310,9 +356,11 @@
     }
   },
   "Messages": {
+    "CollarTamedBossMessage": "You have tamed the Flying Infected Boss!\nNow it will be your guardian, use it wisely in case of emergency.",
+    "CollarTamedMessage": "You have tamed a hostile Infected!\n Now it will be your guardian!",
     "FirstPullCrossbow": "First pull back the crossbow!",
     "FirstLoadArrow": "First load an bolt!",
-    "ArrowCount": "Arrows: {0}/8"
+    "ArrowCount": "Bolts: {0}/8"
   },
   "Usual": {
     "ok": "OK",
