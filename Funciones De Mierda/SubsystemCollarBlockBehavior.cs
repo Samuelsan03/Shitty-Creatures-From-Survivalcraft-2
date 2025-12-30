@@ -73,7 +73,15 @@ namespace Game
 				{"InfectedFly1", "InfectedFlyTamed1"},
 				{"InfectedFly2", "InfectedFlyTamed2"},
 				{"InfectedFly3", "InfectedFlyTamed3"},
-				{"FlyingInfectedBoss", "FlyingInfectedBossTamed"}
+				{"FlyingInfectedBoss", "FlyingInfectedBossTamed"},
+				{"Boomer1", "BoomerTamed1"},
+				{"Boomer2", "BoomerTamed2"},
+				{"Boomer3", "BoomerTamed3"},
+				{"Charger1", "ChargerTamed1"},
+				{"Charger2", "ChargerTamed2"},
+				{"Tank1", "TankTamed1" },
+				{"Tank2", "TankTamed2" },
+				{"Tank3", "TankTamed3" }
 			};
 
 			if (tameableCreatures.ContainsKey(currentEntityName))
