@@ -167,7 +167,7 @@ namespace Game
 							}
 
 							messageColor = new Color(66, 0, 142);
-							soundToPlay = "Audio/UI/Tada";
+							soundToPlay = "Audio/UI/Bosses FNAF 3";
 						}
 						else if (isTamedBoomer)
 						{
