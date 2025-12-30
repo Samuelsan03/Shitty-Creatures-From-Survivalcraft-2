@@ -86,6 +86,19 @@ namespace Game
 
 			if (tameableCreatures.ContainsKey(currentEntityName))
 			{
+				bool isBoomer = currentEntityName.StartsWith("Boomer");
+				ComponentBoomerExplosion boomerExplosion = null;
+				
+				if (isBoomer)
+				{
+					boomerExplosion = entity.FindComponent<ComponentBoomerExplosion>();
+					if (boomerExplosion != null)
+					{
+						boomerExplosion.PreventExplosion = true;
+						Console.WriteLine($"Prevenida explosión del Boomer durante domesticación");
+					}
+				}
+
 				entityTemplateName = tameableCreatures[currentEntityName];
 				Console.WriteLine($"¡{currentEntityName} detectado! Transformando a {entityTemplateName}...");
 
@@ -93,6 +106,7 @@ namespace Game
 				if (entity2 == null)
 				{
 					Console.WriteLine($"ERROR: No se pudo crear la entidad: {entityTemplateName}");
+					if (boomerExplosion != null) boomerExplosion.PreventExplosion = false;
 					return true;
 				}
 
@@ -104,11 +118,22 @@ namespace Game
 				componentBody.Velocity = bodyRaycastResult.Value.ComponentBody.Velocity;
 				entity2.FindComponent<ComponentSpawn>(true).SpawnDuration = 0f;
 				base.Project.RemoveEntity(entity, true);
+				
+				if (isBoomer)
+				{
+					ComponentBoomerExplosion newBoomerExplosion = entity2.FindComponent<ComponentBoomerExplosion>();
+					if (newBoomerExplosion != null)
+					{
+						newBoomerExplosion.PreventExplosion = false;
+					}
+				}
+				
 				base.Project.AddEntity(entity2);
 
 				Console.WriteLine("Transformación completada exitosamente!");
 
 				bool isTamedBoss = entityTemplateName == "FlyingInfectedBossTamed";
+				bool isTamedBoomer = entityTemplateName.StartsWith("BoomerTamed");
 
 				ComponentPlayer componentPlayer = FindPlayerWithMiner(componentMiner);
 				if (componentPlayer != null)
@@ -126,10 +151,23 @@ namespace Game
 
 							if (!translationFound)
 							{
-								message = "You have tamed the Flying Infected Boss!\nNow it will be your guardian—use it wisely in case of emergency.";
+								message = "You have tamed the Flying Infected Boss, use it wisely for emergency cases";
 							}
 
 							messageColor = new Color(66, 0, 142);
+							soundToPlay = "Audio/UI/Bosses FNAF 3";
+						}
+						else if (isTamedBoomer)
+						{
+							bool translationFound;
+							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedBoomerMessage");
+
+							if (!translationFound)
+							{
+								message = "You have tamed a Boomer!\nNow you can use it as an explosive guardian slave.\nUse it wisely in emergency cases!";
+							}
+
+							messageColor = new Color(153, 0, 76);
 							soundToPlay = "Audio/UI/Bosses FNAF 3";
 						}
 						else
@@ -139,7 +177,7 @@ namespace Game
 
 							if (!translationFound)
 							{
-								message = "You have tamed a hostile Infected!\n Now it will be your guardian!";
+								message = "You have tamed a hostile Infected!\nNow it will be your guardian!";
 							}
 
 							messageColor = new Color(0, 255, 128);
@@ -168,11 +206,25 @@ namespace Game
 						Console.WriteLine($"Error al mostrar mensaje: {ex.Message}");
 						Console.WriteLine($"StackTrace: {ex.StackTrace}");
 
-						string defaultMessage = isTamedBoss ?
-							"You have tamed the Flying Infected Boss, use it wisely for emergency cases" :
-							"You have tamed a hostile Infected! Now it will be your guardian!";
+						string defaultMessage;
+						Color defaultColor;
 
-						Color defaultColor = isTamedBoss ? new Color(66, 0, 142) : new Color(0, 255, 128);
+						if (isTamedBoss)
+						{
+							defaultMessage = "You have tamed the Flying Infected Boss, use it wisely for emergency cases";
+							defaultColor = new Color(66, 0, 142);
+						}
+						else if (isTamedBoomer)
+						{
+							defaultMessage = "You have tamed a Boomer!\nNow you can use it as an explosive guardian slave.\nUse it wisely in emergency cases!";
+							defaultColor = new Color(153, 0, 76);
+						}
+						else
+						{
+							defaultMessage = "You have tamed a hostile Infected! Now it will be your guardian!";
+							defaultColor = new Color(0, 255, 128);
+						}
+
 						componentPlayer.ComponentGui.DisplaySmallMessage(defaultMessage, defaultColor, false, true);
 					}
 				}
