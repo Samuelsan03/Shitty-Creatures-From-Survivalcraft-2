@@ -455,6 +455,16 @@
     </Folder>
 
 <ProjectTemplate Name="Project" Guid="85023bf8-1c90-4dd1-9442-e6c13691d078">
+<MemberSubsystemTemplate Name="BigStonePoisonChunkBlockBehavior" Guid="bdb7755a-97a8-4527-9876-c507323471cc">
+<Parameter Name="IsOptional" Value="false" Type="bool" Guid="12df1582-c33f-4750-b8a1-afa2851c38f2"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="94024efc-7655-45de-9535-7237ee865d8a"/>
+        <Parameter Name="Class" Guid="ba4d2876-54dc-4507-bf5e-f8484b096a84" Value="Game.SubsystemBigStonePoisonChunkBlockBehavior" Type="string"/>
+    </MemberSubsystemTemplate>
+<MemberSubsystemTemplate Name="BigStoneFlameChunkBlockBehavior" Guid="be5c6275-eee2-44f1-9f8e-eacdea6b2225">
+<Parameter Name="IsOptional" Value="false" Type="bool" Guid="3fee25be-1d4d-4a74-811f-f73b29013e1e"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="db0b48ef-2478-4381-8149-47a76bc73759"/>
+        <Parameter Name="Class" Guid="2d2850e8-3e08-4184-8bf1-57cbbe2f1b57" Value="Game.SubsystemBigStoneFlameChunkBlockBehavior" Type="string"/>
+    </MemberSubsystemTemplate>
 <MemberSubsystemTemplate Name="PoisonExplosions" Guid="6602178c-624b-426d-870f-8b21cd6a8400">
 <Parameter Name="IsOptional" Value="false" Type="bool" Guid="87040f01-93d5-4cb2-a890-edb430b09c25"/>
     <Parameter Name="LoadOrder" Value="60" Type="int" Guid="3f8f2490-cbc9-40ed-a983-02c654228961"/>
