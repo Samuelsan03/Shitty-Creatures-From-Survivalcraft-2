@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Runtime.CompilerServices;
 using Engine;
 using GameEntitySystem;
@@ -43,10 +43,10 @@ namespace Game
 			if (!suppressed)
 			{
 				// Verificar si es del mismo rebaño zombi
-				ComponentHerdBehavior thisHerd = base.Entity.FindComponent<ComponentHerdBehavior>();
+				ComponentZombieHerdBehavior thisHerd = base.Entity.FindComponent<ComponentZombieHerdBehavior>();
 				if (thisHerd != null && !string.IsNullOrEmpty(thisHerd.HerdName))
 				{
-					ComponentHerdBehavior targetHerd = componentCreature.Entity.FindComponent<ComponentHerdBehavior>();
+					ComponentZombieHerdBehavior targetHerd = componentCreature.Entity.FindComponent<ComponentZombieHerdBehavior>();
 					if (targetHerd != null && targetHerd.HerdName == thisHerd.HerdName)
 					{
 						if (!this.AttacksSameHerd)
@@ -221,24 +221,40 @@ namespace Game
 			if (hasRangedWeapon && this.m_target != null)
 			{
 				float distance = Vector3.Distance(this.m_componentCreature.ComponentBody.Position, this.m_target.ComponentBody.Position);
+
+				// MEJORA DE PUNTERÍA: Cálculo más preciso como en ComponentInvShooterBehavior
+				Vector3 eyePosition = this.m_componentCreature.ComponentCreatureModel.EyePosition;
+				Vector3 targetPosition = this.m_target.ComponentCreatureModel.EyePosition;
+
+				// Ajuste vertical basado en distancia (como en ComponentInvShooterBehavior.FireProjectile)
+				float verticalAdjustment = MathUtils.Lerp(1f, 3f, distance / 25f);
+				Vector3 adjustedTargetPosition = targetPosition + new Vector3(0f, verticalAdjustment, 0f);
+
+				Vector3 direction = Vector3.Normalize(adjustedTargetPosition - eyePosition);
+
 				if (distance >= this.m_attackRange.X && distance <= this.m_attackRange.Y)
 				{
-					Vector3 direction = Vector3.Normalize(this.m_target.ComponentCreatureModel.EyePosition - this.m_componentCreature.ComponentCreatureModel.EyePosition);
 					float rayDistance;
 					ComponentBody hitBody = this.GetHitBody1(this.m_target.ComponentBody, out rayDistance);
 
-					if (hitBody != null && Math.Abs(rayDistance - distance) < 2f)
+					// MEJORA: Tolerancia aumentada para puntería más precisa
+					if (hitBody != null && Math.Abs(rayDistance - distance) < 3f)
 					{
 						float actionDelay = (this.m_subsystemGameInfo.WorldSettings.GameMode == GameMode.Creative) ? 2.5f : 3f;
 						if (this.m_subsystemTime.GameTime - this.m_lastActionTime > actionDelay)
 						{
-							this.m_componentMiner.Aim(new Ray3(this.m_componentCreature.ComponentCreatureModel.EyePosition, direction), AimState.Completed);
+							// MEJORA: Puntería más recta y precisa
+							Vector3 preciseDirection = Vector3.Normalize(targetPosition - eyePosition);
+							preciseDirection = preciseDirection + this.m_random.Vector3(0.02f); // Menor dispersión
+							preciseDirection = Vector3.Normalize(preciseDirection);
+
+							this.m_componentMiner.Aim(new Ray3(eyePosition, preciseDirection), AimState.Completed);
 							this.m_lastActionTime = this.m_subsystemTime.GameTime;
 							this.m_chaseTime = Math.Max(this.m_chaseTime, this.m_isPersistent ? this.m_random.Float(8f, 10f) : 2f);
 						}
 						else
 						{
-							this.m_componentMiner.Aim(new Ray3(this.m_componentCreature.ComponentCreatureModel.EyePosition, direction), AimState.InProgress);
+							this.m_componentMiner.Aim(new Ray3(eyePosition, direction), AimState.InProgress);
 						}
 						this.m_componentPathfinding.Destination = null;
 					}
@@ -457,28 +473,30 @@ namespace Game
 				return;
 			}
 
+			// MEJORA: 100% DE VARIACIÓN DE MUNICIONES COMO EN ComponentNewChaseBehavior
 			if (block is BowBlock)
 			{
 				ArrowBlock.ArrowType value;
 				float randomValue = this.m_random.Float(0f, 1f);
 
-				if (randomValue < 0.166666f)
+				// Distribución igualitaria como en ComponentNewChaseBehavior
+				if (randomValue < 0.166f)
 				{
 					value = ArrowBlock.ArrowType.WoodenArrow;
 				}
-				else if (randomValue < 0.833333f)
+				else if (randomValue < 0.332f)
 				{
 					value = ArrowBlock.ArrowType.StoneArrow;
 				}
-				else if (randomValue < 0.855555f)
+				else if (randomValue < 0.498f)
 				{
 					value = ArrowBlock.ArrowType.IronArrow;
 				}
-				else if (randomValue < 0.866666f)
+				else if (randomValue < 0.664f)
 				{
 					value = ArrowBlock.ArrowType.DiamondArrow;
 				}
-				else if (randomValue < 0.833333f)
+				else if (randomValue < 0.83f)
 				{
 					value = ArrowBlock.ArrowType.FireArrow;
 				}
@@ -495,11 +513,12 @@ namespace Game
 				ArrowBlock.ArrowType value;
 				float randomValue = this.m_random.Float(0f, 1f);
 
-				if (randomValue < 0.833333f)
+				// Distribución igualitaria
+				if (randomValue < 0.333f)
 				{
 					value = ArrowBlock.ArrowType.IronBolt;
 				}
-				else if (randomValue < 0.866666f)
+				else if (randomValue < 0.666f)
 				{
 					value = ArrowBlock.ArrowType.DiamondBolt;
 				}
@@ -516,23 +535,24 @@ namespace Game
 				RepeatArrowBlock.ArrowType value;
 				float randomValue = this.m_random.Float(0f, 1f);
 
-				if (randomValue < 0.166666f)
+				// Distribución igualitaria
+				if (randomValue < 0.166f)
 				{
 					value = RepeatArrowBlock.ArrowType.ExplosiveArrow;
 				}
-				else if (randomValue < 0.83333f)
+				else if (randomValue < 0.332f)
 				{
 					value = RepeatArrowBlock.ArrowType.PoisonArrow;
 				}
-				else if (randomValue < 0.85555f)
+				else if (randomValue < 0.498f)
 				{
 					value = RepeatArrowBlock.ArrowType.CopperArrow;
 				}
-				else if (randomValue < 0.866666f)
+				else if (randomValue < 0.664f)
 				{
 					value = RepeatArrowBlock.ArrowType.DiamondArrow;
 				}
-				else if (randomValue < 0.855555f)
+				else if (randomValue < 0.83f)
 				{
 					value = RepeatArrowBlock.ArrowType.SeriousPoisonArrow;
 				}
@@ -690,10 +710,10 @@ namespace Game
 				{
 					// Verificar si no es del mismo rebaño zombi
 					bool canAttack = true;
-					ComponentHerdBehavior thisHerd = base.Entity.FindComponent<ComponentHerdBehavior>();
+					ComponentZombieHerdBehavior thisHerd = base.Entity.FindComponent<ComponentZombieHerdBehavior>();
 					if (thisHerd != null && !string.IsNullOrEmpty(thisHerd.HerdName))
 					{
-						ComponentHerdBehavior targetHerd = componentCreature.Entity.FindComponent<ComponentHerdBehavior>();
+						ComponentZombieHerdBehavior targetHerd = componentCreature.Entity.FindComponent<ComponentZombieHerdBehavior>();
 						if (targetHerd != null && targetHerd.HerdName == thisHerd.HerdName)
 						{
 							canAttack = this.AttacksSameHerd; // Solo atacar si AttacksSameHerd es true
@@ -734,10 +754,10 @@ namespace Game
 			bool canAttack = true;
 
 			// Verificar si es del mismo rebaño zombi
-			ComponentHerdBehavior thisHerd = base.Entity.FindComponent<ComponentHerdBehavior>();
+			ComponentZombieHerdBehavior thisHerd = base.Entity.FindComponent<ComponentZombieHerdBehavior>();
 			if (thisHerd != null && !string.IsNullOrEmpty(thisHerd.HerdName))
 			{
-				ComponentHerdBehavior targetHerd = componentCreature.Entity.FindComponent<ComponentHerdBehavior>();
+				ComponentZombieHerdBehavior targetHerd = componentCreature.Entity.FindComponent<ComponentZombieHerdBehavior>();
 				if (targetHerd != null && targetHerd.HerdName == thisHerd.HerdName)
 				{
 					canAttack = this.AttacksSameHerd; // Solo atacar si AttacksSameHerd es true
@@ -815,7 +835,7 @@ namespace Game
 			this.m_chaseOnTouchProbability = 0.5f; // 50% de probabilidad al tocar
 
 			// Obtener el nombre del rebaño zombi del ComponentHerdBehavior
-			ComponentHerdBehavior herdBehavior = base.Entity.FindComponent<ComponentHerdBehavior>();
+			ComponentZombieHerdBehavior herdBehavior = base.Entity.FindComponent<ComponentZombieHerdBehavior>();
 			if (herdBehavior != null)
 			{
 				this.ZombieHerdName = herdBehavior.HerdName;
@@ -842,10 +862,10 @@ namespace Game
 
 						// Verificar si es del mismo rebaño
 						bool canAttack = true;
-						ComponentHerdBehavior thisHerd = base.Entity.FindComponent<ComponentHerdBehavior>();
+						ComponentZombieHerdBehavior thisHerd = base.Entity.FindComponent<ComponentZombieHerdBehavior>();
 						if (thisHerd != null && !string.IsNullOrEmpty(thisHerd.HerdName))
 						{
-							ComponentHerdBehavior targetHerd = componentCreature.Entity.FindComponent<ComponentHerdBehavior>();
+							ComponentZombieHerdBehavior targetHerd = componentCreature.Entity.FindComponent<ComponentZombieHerdBehavior>();
 							if (targetHerd != null && targetHerd.HerdName == thisHerd.HerdName)
 							{
 								canAttack = this.AttacksSameHerd;
@@ -888,10 +908,10 @@ namespace Game
 
 					// Verificar si el atacante es del mismo rebaño
 					bool canAttack = true;
-					ComponentHerdBehavior thisHerd = base.Entity.FindComponent<ComponentHerdBehavior>();
+					ComponentZombieHerdBehavior thisHerd = base.Entity.FindComponent<ComponentZombieHerdBehavior>();
 					if (thisHerd != null && !string.IsNullOrEmpty(thisHerd.HerdName))
 					{
-						ComponentHerdBehavior attackerHerd = injury.Attacker.Entity.FindComponent<ComponentHerdBehavior>();
+						ComponentZombieHerdBehavior attackerHerd = injury.Attacker.Entity.FindComponent<ComponentZombieHerdBehavior>();
 						if (attackerHerd != null && attackerHerd.HerdName == thisHerd.HerdName)
 						{
 							canAttack = this.AttacksSameHerd;
@@ -1064,9 +1084,9 @@ namespace Game
 											float num = Vector3.Distance(v, vector);
 											float num2 = (num < 4f) ? 0.2f : 0f;
 
-											bool hasOriginalHerd = base.Entity.FindComponent<ComponentHerdBehavior>() != null;
+											bool hasZombieHerd = base.Entity.FindComponent<ComponentZombieHerdBehavior>() != null;
 											bool flag10 = (this.m_attackMode != AttackMode.OnlyHand && num > 5f && this.FindAimTool(this.m_componentMiner)) ||
-														   (hasOriginalHerd && num > 5f && this.FindAimTool(this.m_componentMiner));
+														   (hasZombieHerd && num > 5f && this.FindAimTool(this.m_componentMiner));
 
 											if (flag10)
 											{
