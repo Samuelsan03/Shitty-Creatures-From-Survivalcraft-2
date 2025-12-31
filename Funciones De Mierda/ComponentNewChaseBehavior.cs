@@ -106,6 +106,22 @@ namespace Game
 			{
 				this.m_chaseTime -= dt;
 				this.m_componentCreature.ComponentCreatureModel.LookAtOrder = new Vector3?(this.m_target.ComponentCreatureModel.EyePosition);
+
+				// NUEVA LÓGICA: Cambio inmediato de arma basado en distancia
+				float distance = Vector3.Distance(this.m_componentCreature.ComponentBody.Position, this.m_target.ComponentBody.Position);
+
+				// Si el objetivo está cerca (dentro de 5 unidades), cambiar inmediatamente a arma cuerpo a cuerpo
+				if (distance < 5f && this.m_target != null && this.IsActive)
+				{
+					// Cambiar a modo cuerpo a cuerpo inmediatamente
+					this.SwitchToMeleeModeImmediately();
+				}
+				else
+				{
+					// Si está lejos, asegurarse de que tiene arma a distancia
+					this.FindAimTool(this.m_componentMiner);
+				}
+
 				float num = (this.m_subsystemGameInfo.WorldSettings.GameMode == GameMode.Creative) ? 2.5f : 3f;
 				bool flag2 = this.m_attackMode != ComponentNewChaseBehavior.AttackMode.OnlyHand;
 				if (flag2)
@@ -117,8 +133,7 @@ namespace Game
 					{
 						Vector3 eyePosition = this.m_componentCreature.ComponentCreatureModel.EyePosition;
 						Vector3 targetPosition = this.m_target.ComponentCreatureModel.EyePosition;
-						float distance = Vector3.Distance(eyePosition, targetPosition);
-						float verticalAdjustment = MathUtils.Lerp(0f, 0.3f, distance / 20f);
+                        float verticalAdjustment = MathUtils.Lerp(0f, 0.3f, (float)Vector3.Distance(eyePosition, targetPosition) / 20f);
 						Vector3 adjustedTargetPosition = targetPosition + new Vector3(0f, verticalAdjustment, 0f);
 						Vector3 vector = Vector3.Normalize(adjustedTargetPosition - eyePosition);
 						this.m_chaseTime = Math.Max(this.m_chaseTime, this.m_isPersistent ? this.m_random.Float(8f, 10f) : 2f);
@@ -200,6 +215,37 @@ namespace Game
 			}
 		}
 
+		// NUEVO MÉTODO: Cambio inmediato a modo cuerpo a cuerpo
+		private void SwitchToMeleeModeImmediately()
+		{
+			// Buscar mejor arma cuerpo a cuerpo en inventario
+			float bestPower = 1f;
+			int bestSlot = -1;
+
+			if (this.m_componentMiner.Inventory != null)
+			{
+				for (int i = 0; i < 6; i++) // Solo primeros 6 slots (armas equipables)
+				{
+					int slotValue = this.m_componentMiner.Inventory.GetSlotValue(i);
+					float meleePower = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)].GetMeleePower(slotValue);
+					if (meleePower > bestPower)
+					{
+						bestPower = meleePower;
+						bestSlot = i;
+					}
+				}
+
+				// Si encontró un arma cuerpo a cuerpo mejor que las manos (meleePower > 1), equiparla
+				if (bestSlot >= 0)
+				{
+					this.m_componentMiner.Inventory.ActiveSlotIndex = bestSlot;
+				}
+
+				// Si no hay arma cuerpo a cuerpo, usar lo que tenga en la mano
+				// (el ataque cuerpo a cuerpo se hará con lo que tenga equipado)
+			}
+		}
+
 		private void UpdateRangedWeaponLogic(float dt)
 		{
 			if (this.m_target == null || !this.IsActive)
@@ -216,6 +262,13 @@ namespace Game
 			if (hasRangedWeapon && this.m_target != null)
 			{
 				float distance = Vector3.Distance(this.m_componentCreature.ComponentBody.Position, this.m_target.ComponentBody.Position);
+
+				// NUEVO: Si el objetivo está muy cerca, cambiar inmediatamente a cuerpo a cuerpo
+				if (distance < 5f)
+				{
+					this.SwitchToMeleeModeImmediately();
+					return; // Salir de la lógica de arma a distancia
+				}
 
 				if (distance >= this.m_attackRange.X && distance <= this.m_attackRange.Y)
 				{
