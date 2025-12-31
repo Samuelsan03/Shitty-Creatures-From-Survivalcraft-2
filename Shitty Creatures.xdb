@@ -1462,7 +1462,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="4146b5fd-56d3-4536-9d11-7cb7cda98875" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
     <Parameter Name="ChaseToCreatures" Guid="61d2007c-8fee-4aea-81c3-0eee7912546b" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
-    <Parameter Name="ChaseToCreatureProbability" Guid="a473714c-4f70-46d8-9364-86f357a23bb1" Value="1.0" Type="float"/>
+    <Parameter Name="ChaseToCreatureProbability" Guid="a473714c-4f70-46d8-9364-86f357a23bb1" Value="999999999" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="EatPickableBehavior" Guid="e5f6a7b8-c9d0-5123-4567-89abcdf01234">
         <ParameterSet Name="FoodFactors" Guid="f6a7b8c9-d0e1-5234-5678-9abcdf012345">
@@ -3849,7 +3849,7 @@
         <Parameter Name="TextureSlot" Guid="df46ac23-a62b-4ed4-8353-f89f9d80657c" Value="189" Type="int"/>
         <Parameter Name="SwapUV" Guid="0ca057fa-43bc-4feb-9fec-d59171d51153" Value="True" Type="bool"/>
         <Parameter Name="DisplayName" Guid="2f7d0063-7465-4af4-8f3c-3b8f8b87709a" Value="[DisplayName:BallestadoraMusculosa]" Type="string"/>
-        <Parameter Name="EggTypeIndex" Guid="807dfd94-8f8b-4a09-bfc9-b76b7c8541ed" Value="237" Type="int"/>
+        <Parameter Name="EggTypeIndex" Guid="807dfd94-8f8b-4a09-bfc9-b76b7c8541ed" Value="233" Type="int"/>
     </ParameterSet>
 </EntityTemplate>
 
@@ -4708,7 +4708,7 @@
         <Parameter Name="TextureSlot" Guid="1743c4a6-1d83-4ecc-b0df-283f734d2d42" Value="2" Type="int"/>
         <Parameter Name="SwapUV" Guid="24360fa5-5798-4b55-bfc4-9056a8ae229e" Value="False" Type="bool"/>
         <Parameter Name="DisplayName" Guid="ab9cbc56-7d36-469f-976f-35289eafb95d" Value="[DisplayName:WalterZombie]" Type="string"/>
-        <Parameter Name="EggTypeIndex" Guid="02f235de-2884-4d36-b7d7-68fd764bd527" Value="232" Type="int"/>
+        <Parameter Name="EggTypeIndex" Guid="02f235de-2884-4d36-b7d7-68fd764bd527" Value="236" Type="int"/>
     </ParameterSet>
 </EntityTemplate>
 
@@ -4836,7 +4836,7 @@
         <Parameter Name="Scale" Guid="2f16fee8-e08f-49a9-83f5-b33dfe5b71f0" Value="3" Type="float"/>
         <Parameter Name="SwapUV" Guid="233e7b98-4a6e-45b7-b059-c96edbbbe159" Value="True" Type="bool"/>
         <Parameter Name="DisplayName" Guid="e8dfd133-0945-44d3-926a-3caa410ef070" Value="[DisplayName:WalterZombieMamadisimo]" Type="string"/>
-        <Parameter Name="EggTypeIndex" Guid="0d8d9f82-244a-488c-a6bd-4f1ea5007a28" Value="233" Type="int"/>
+        <Parameter Name="EggTypeIndex" Guid="0d8d9f82-244a-488c-a6bd-4f1ea5007a28" Value="237" Type="int"/>
     </ParameterSet>
 </EntityTemplate>
 
@@ -5126,7 +5126,7 @@
         <Parameter Name="TextureSlot" Guid="07b1d13a-10ce-4978-8598-873a47846dad" Value="189" Type="int"/>
         <Parameter Name="SwapUV" Guid="75621806-5e44-46f3-886d-7bb1bab831e3" Value="True" Type="bool"/>
         <Parameter Name="DisplayName" Guid="57f33cb5-4372-4160-9dcb-7cdaa6015f39" Value="[DisplayName:Impmon]" Type="string"/>
-        <Parameter Name="EggTypeIndex" Guid="8f88e902-5378-4265-8b32-0ec541db05f3" Value="236" Type="int"/>
+        <Parameter Name="EggTypeIndex" Guid="8f88e902-5378-4265-8b32-0ec541db05f3" Value="232" Type="int"/>
     </ParameterSet>
 </EntityTemplate>
 
