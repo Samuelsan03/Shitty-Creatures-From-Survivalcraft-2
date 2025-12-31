@@ -16,6 +16,7 @@ namespace Game
 		// Componentes referenciados
 		public ComponentCreature ComponentCreature { get; set; }
 		public ComponentBody ComponentBody { get; set; }
+		public ComponentZombieChaseBehavior ZombieChaseBehavior { get; set; }
 
 		// Subsystems
 		public SubsystemTime m_subsystemTime;
@@ -28,10 +29,12 @@ namespace Game
 		private Vector3 m_chargeDirection;
 		private float m_chargeTime;
 		private DynamicArray<ComponentBody> m_tempBodiesList = new DynamicArray<ComponentBody>();
-		private Dictionary<ComponentBody, double> m_lastHitTimes = new Dictionary<ComponentBody, double>();
-		private const float HIT_COOLDOWN = 0.5f; // Tiempo mínimo entre golpes al mismo objetivo
-		private const float CHARGE_DURATION = 1.5f;
-		private const float CHARGE_SPEED = 25f;
+		private const float CHARGE_DURATION = 1.2f;
+		private const float CHARGE_SPEED = 20f;
+		private const float MIN_ATTACK_DISTANCE = 0.8f;
+		private const float MAX_ATTACK_DISTANCE = 1.2f;
+		private bool m_isProvoked = false;
+		private double m_provokedUntilTime = 0;
 
 		public UpdateOrder UpdateOrder => UpdateOrder.Default;
 
@@ -47,6 +50,7 @@ namespace Game
 			// Obtener componentes de la entidad
 			ComponentCreature = base.Entity.FindComponent<ComponentCreature>(true);
 			ComponentBody = base.Entity.FindComponent<ComponentBody>(true);
+			ZombieChaseBehavior = base.Entity.FindComponent<ComponentZombieChaseBehavior>();
 
 			// Cargar propiedades desde XML si existen
 			if (valuesDictionary.ContainsKey("AttackRange"))
@@ -64,185 +68,189 @@ namespace Game
 			if (ComponentCreature == null || ComponentBody == null)
 				return;
 
-			// Verificar si podemos atacar (enfriamiento global)
 			double currentTime = m_subsystemTime.GameTime;
-			if (currentTime - m_lastAttackTime < AttackCooldown && !m_isCharging)
-				return;
 
-			// Limpiar hit times antiguos
-			CleanOldHitTimes(currentTime);
-
-			// Buscar objetivos cercanos si no estamos cargando
-			if (!m_isCharging)
+			// Verificar si el tiempo de provocación ha expirado
+			if (m_isProvoked && currentTime > m_provokedUntilTime)
 			{
-				// Buscar primero jugadores
-				ComponentBody playerTarget = FindPlayerTarget();
-				if (playerTarget != null)
-				{
-					StartCharge(playerTarget.Position);
-				}
-				else
-				{
-					// Si no hay jugadores, buscar NPCs
-					ComponentBody npcTarget = FindNPCTarget();
-					if (npcTarget != null)
-					{
-						StartCharge(npcTarget.Position);
-					}
-				}
+				m_isProvoked = false;
 			}
 
-			// Si está cargando, aplicar movimiento continuo
+			// Si está cargando, manejar la carga
 			if (m_isCharging)
 			{
-				m_chargeTime += dt;
+				UpdateCharge(dt, currentTime);
+				return;
+			}
 
+			// Verificar cooldown de ataque
+			if (currentTime - m_lastAttackTime < AttackCooldown)
+				return;
+
+			// Buscar objetivos si está provocado
+			if (m_isProvoked)
+			{
+				TryFindAndChargeTarget();
+			}
+		}
+
+		private void UpdateCharge(float dt, double currentTime)
+		{
+			m_chargeTime += dt;
+
+			// Solo aplicar impulso si está en el suelo
+			if (ComponentBody.StandingOnValue != null)
+			{
 				// Aplicar impulso en la dirección de carga
 				Vector3 impulse = m_chargeDirection * CHARGE_SPEED * dt;
-				ComponentBody.Velocity += impulse;
+				
+				// Solo aplicar en X y Z, mantener Y como está
+				ComponentBody.Velocity = new Vector3(
+					ComponentBody.Velocity.X + impulse.X,
+					ComponentBody.Velocity.Y,
+					ComponentBody.Velocity.Z + impulse.Z
+				);
+			}
 
-				// Verificar colisiones durante la carga
+			// Verificar colisiones solo después de cierto tiempo
+			if (m_chargeTime > 0.2f)
+			{
 				CheckChargeCollisions();
+			}
 
-				// Terminar carga después de tiempo máximo
-				if (m_chargeTime > CHARGE_DURATION)
-				{
-					EndCharge();
-				}
+			// Terminar carga después de tiempo máximo
+			if (m_chargeTime > CHARGE_DURATION)
+			{
+				EndCharge();
 			}
 		}
 
-		private ComponentBody FindPlayerTarget()
+		private void TryFindAndChargeTarget()
 		{
-			if (m_subsystemPlayers == null)
-				return null;
-
-			foreach (ComponentPlayer player in m_subsystemPlayers.ComponentPlayers)
+			// Buscar jugador primero
+			ComponentBody target = FindNearestTarget();
+			
+			if (target != null)
 			{
-				if (player == null || player.ComponentHealth == null)
-					continue;
-
-				ComponentBody playerBody = player.ComponentBody;
-				if (playerBody == null || playerBody.Entity == Entity)
-					continue;
-
-				// Verificar si este jugador fue golpeado recientemente
-				if (m_lastHitTimes.ContainsKey(playerBody))
-				{
-					double currentTime = m_subsystemTime.GameTime;
-					if (currentTime - m_lastHitTimes[playerBody] < HIT_COOLDOWN)
-						continue;
-				}
-
-				// Calcular distancia y dirección
-				Vector3 delta = playerBody.Position - ComponentBody.Position;
-				float distance = delta.Length();
-
-				if (distance <= AttackRange)
-				{
-					// Verificar si el jugador está frente al cargador
-					Vector3 forward = ComponentBody.Rotation.GetForwardVector();
-					Vector3 directionToPlayer = Vector3.Normalize(delta);
-					float dot = Vector3.Dot(forward, directionToPlayer);
-
-					// Si está dentro del campo de visión (60 grados)
-					if (dot > 0.5f)
-					{
-						return playerBody;
-					}
-				}
+				StartCharge(target.Position);
 			}
-
-			return null;
 		}
 
-		private ComponentBody FindNPCTarget()
+		private ComponentBody FindNearestTarget()
 		{
-			if (m_subsystemBodies == null)
-				return null;
+			ComponentBody nearestTarget = null;
+			float nearestDistance = float.MaxValue;
 
-			// Crear área de búsqueda
-			Vector3 searchMin = ComponentBody.Position - new Vector3(AttackRange, AttackRange, AttackRange);
-			Vector3 searchMax = ComponentBody.Position + new Vector3(AttackRange, AttackRange, AttackRange);
-
-			Vector2 min2D = new Vector2(searchMin.X, searchMin.Z);
-			Vector2 max2D = new Vector2(searchMax.X, searchMax.Z);
-
-			m_tempBodiesList.Clear();
-			m_subsystemBodies.FindBodiesInArea(min2D, max2D, m_tempBodiesList);
-
-			ComponentBody bestTarget = null;
-			float bestScore = 0f;
-
-			foreach (ComponentBody body in m_tempBodiesList)
+			// Buscar jugadores
+			if (m_subsystemPlayers != null)
 			{
-				if (body == null || body.Entity == Entity || body == ComponentBody)
-					continue;
-
-				// Verificar si este objetivo fue golpeado recientemente
-				if (m_lastHitTimes.ContainsKey(body))
+				foreach (ComponentPlayer player in m_subsystemPlayers.ComponentPlayers)
 				{
-					double currentTime = m_subsystemTime.GameTime;
-					if (currentTime - m_lastHitTimes[body] < HIT_COOLDOWN)
+					if (player == null || player.ComponentHealth == null || player.ComponentHealth.Health <= 0)
 						continue;
-				}
 
-				// Verificar si es una criatura (NPC o jugador)
-				ComponentCreature targetCreature = body.Entity.FindComponent<ComponentCreature>();
-				if (targetCreature == null)
-					continue;
+					ComponentBody playerBody = player.ComponentBody;
+					if (playerBody == null || playerBody.Entity == Entity)
+						continue;
 
-				// Verificar si tiene salud
-				ComponentHealth targetHealth = body.Entity.FindComponent<ComponentHealth>();
-				if (targetHealth == null || targetHealth.Health <= 0)
-					continue;
-
-				// Calcular distancia y dirección
-				Vector3 delta = body.Position - ComponentBody.Position;
-				float distance = delta.Length();
-
-				if (distance <= AttackRange)
-				{
-					// Verificar si el objetivo está frente al cargador
-					Vector3 forward = ComponentBody.Rotation.GetForwardVector();
-					Vector3 directionToTarget = Vector3.Normalize(delta);
-					float dot = Vector3.Dot(forward, directionToTarget);
-
-					// Si está dentro del campo de visión (60 grados)
-					if (dot > 0.5f)
+					float distance = Vector3.Distance(playerBody.Position, ComponentBody.Position);
+					
+					if (distance <= AttackRange && distance < nearestDistance)
 					{
-						// Calcular puntuación basada en proximidad y alineación
-						float distanceScore = 1f - (distance / AttackRange);
-						float alignmentScore = (dot - 0.5f) * 2f; // Normalizar 0.5-1.0 a 0.0-1.0
-						float totalScore = distanceScore * 0.7f + alignmentScore * 0.3f;
-
-						if (totalScore > bestScore)
+						// Verificar línea de visión
+						Vector3 directionToPlayer = Vector3.Normalize(playerBody.Position - ComponentBody.Position);
+						Vector3 forward = ComponentBody.Rotation.GetForwardVector();
+						float dot = Vector3.Dot(forward, directionToPlayer);
+						
+						if (dot > 0.3f) // Campo de visión amplio
 						{
-							bestScore = totalScore;
-							bestTarget = body;
+							nearestDistance = distance;
+							nearestTarget = playerBody;
 						}
 					}
 				}
 			}
 
-			return bestTarget;
+			// Si no hay jugadores, buscar NPCs
+			if (nearestTarget == null && m_subsystemBodies != null)
+			{
+				Vector3 searchMin = ComponentBody.Position - new Vector3(AttackRange, 2f, AttackRange);
+				Vector3 searchMax = ComponentBody.Position + new Vector3(AttackRange, 2f, AttackRange);
+				Vector2 min2D = new Vector2(searchMin.X, searchMin.Z);
+				Vector2 max2D = new Vector2(searchMax.X, searchMax.Z);
+
+				m_tempBodiesList.Clear();
+				m_subsystemBodies.FindBodiesInArea(min2D, max2D, m_tempBodiesList);
+
+				foreach (ComponentBody body in m_tempBodiesList)
+				{
+					if (body == null || body.Entity == Entity || body == ComponentBody)
+						continue;
+
+					ComponentCreature creature = body.Entity.FindComponent<ComponentCreature>();
+					if (creature == null || creature.ComponentHealth == null || creature.ComponentHealth.Health <= 0)
+						continue;
+
+					float distance = Vector3.Distance(body.Position, ComponentBody.Position);
+					
+					if (distance <= AttackRange && distance < nearestDistance)
+					{
+						Vector3 directionToTarget = Vector3.Normalize(body.Position - ComponentBody.Position);
+						Vector3 forward = ComponentBody.Rotation.GetForwardVector();
+						float dot = Vector3.Dot(forward, directionToTarget);
+						
+						if (dot > 0.3f)
+						{
+							nearestDistance = distance;
+							nearestTarget = body;
+						}
+					}
+				}
+			}
+
+			return nearestTarget;
 		}
 
 		private void StartCharge(Vector3 targetPosition)
 		{
-			// Calcular dirección del ataque
-			m_chargeDirection = Vector3.Normalize(targetPosition - ComponentBody.Position);
+			// Calcular dirección horizontal hacia el objetivo
+			Vector3 toTarget = targetPosition - ComponentBody.Position;
+			m_chargeDirection = new Vector3(toTarget.X, 0, toTarget.Z);
+			
+			if (m_chargeDirection.LengthSquared() > 0.01f)
+			{
+				m_chargeDirection = Vector3.Normalize(m_chargeDirection);
+			}
+			else
+			{
+				// Si está muy cerca, usar la dirección forward
+				m_chargeDirection = ComponentBody.Rotation.GetForwardVector();
+				m_chargeDirection = new Vector3(m_chargeDirection.X, 0, m_chargeDirection.Z);
+				m_chargeDirection = Vector3.Normalize(m_chargeDirection);
+			}
+
 			m_isCharging = true;
 			m_chargeTime = 0f;
 			m_lastAttackTime = m_subsystemTime.GameTime;
+			
+			// Desactivar temporalmente el ZombieChaseBehavior si existe
+			if (ZombieChaseBehavior != null)
+			{
+				// Podríamos intentar desactivarlo si tiene un método para eso
+			}
 		}
 
 		private void EndCharge()
 		{
 			m_isCharging = false;
 			m_chargeTime = 0f;
-			// Reducir velocidad gradualmente
-			ComponentBody.Velocity *= 0.5f;
+			
+			// Frenar gradualmente
+			ComponentBody.Velocity *= 0.4f;
+			
+			// Extender el tiempo de provocación
+			m_provokedUntilTime = m_subsystemTime.GameTime + 3.0;
+			m_isProvoked = true;
 		}
 
 		private void CheckChargeCollisions()
@@ -250,52 +258,49 @@ namespace Game
 			if (m_subsystemBodies == null || ComponentBody == null)
 				return;
 
-			// Crear caja de colisión para la carga (más pequeña y en la dirección del movimiento)
-			Vector3 chargeCenter = ComponentBody.Position + m_chargeDirection * 0.5f;
-			Vector3 halfExtents = new Vector3(0.5f, 0.9f, 0.5f);
+			// Área de colisión pequeña justo delante
+			Vector3 checkPosition = ComponentBody.Position + m_chargeDirection * 0.5f;
+			float checkRadius = 0.6f;
+			float checkHeight = 1.0f;
 
-			BoundingBox chargeBox = new BoundingBox(
-				chargeCenter - halfExtents,
-				chargeCenter + halfExtents
-			);
+			Vector3 searchMin = checkPosition - new Vector3(checkRadius, checkHeight, checkRadius);
+			Vector3 searchMax = checkPosition + new Vector3(checkRadius, checkHeight, checkRadius);
 
-			// Obtener todos los cuerpos en el área
+			Vector2 min2D = new Vector2(searchMin.X, searchMin.Z);
+			Vector2 max2D = new Vector2(searchMax.X, searchMax.Z);
+
 			m_tempBodiesList.Clear();
-
-			// Convertir Vector3 a Vector2 para FindBodiesInArea
-			Vector2 min2D = new Vector2(chargeBox.Min.X, chargeBox.Min.Z);
-			Vector2 max2D = new Vector2(chargeBox.Max.X, chargeBox.Max.Z);
 			m_subsystemBodies.FindBodiesInArea(min2D, max2D, m_tempBodiesList);
 
 			foreach (ComponentBody body in m_tempBodiesList)
 			{
-				if (body == null || body.Entity == Entity) // Ignorarse a sí mismo
+				if (body == null || body.Entity == Entity)
 					continue;
 
-				// Verificar si el cuerpo está dentro del rango Y
-				if (body.Position.Y < chargeBox.Min.Y || body.Position.Y > chargeBox.Max.Y)
+				// Verificar distancia real
+				float distance = Vector3.Distance(body.Position, ComponentBody.Position);
+
+				// Solo atacar si está en el rango correcto
+				if (distance < MIN_ATTACK_DISTANCE || distance > MAX_ATTACK_DISTANCE)
 					continue;
 
-				// Verificar colisión entre las cajas de colisión
-				if (body.BoundingBox != null && BoundingBox.Intersection(chargeBox, body.BoundingBox) != null)
+				// Verificar si está en la dirección de carga
+				Vector3 directionToTarget = Vector3.Normalize(body.Position - ComponentBody.Position);
+				float dot = Vector3.Dot(m_chargeDirection, directionToTarget);
+
+				// Solo atacar si el objetivo está en la dirección frontal
+				if (dot < 0.8f)
+					continue;
+
+				// Verificar si es una criatura viva
+				ComponentCreature creature = body.Entity.FindComponent<ComponentCreature>();
+				ComponentHealth health = body.Entity.FindComponent<ComponentHealth>();
+				
+				if (creature != null && health != null && health.Health > 0)
 				{
-					// Verificar si es una criatura
-					ComponentCreature creature = body.Entity.FindComponent<ComponentCreature>();
-					if (creature != null)
-					{
-						// Verificar cooldown por objetivo
-						double currentTime = m_subsystemTime.GameTime;
-						if (m_lastHitTimes.ContainsKey(body))
-						{
-							if (currentTime - m_lastHitTimes[body] < HIT_COOLDOWN)
-								continue;
-						}
-
-						AttackCreature(creature, body);
-
-						// Registrar el tiempo del golpe
-						m_lastHitTimes[body] = currentTime;
-					}
+					AttackCreature(creature, body);
+					EndCharge();
+					return;
 				}
 			}
 		}
@@ -307,47 +312,47 @@ namespace Game
 			if (creatureHealth == null || creatureBody == null)
 				return;
 
-			// Calcular dirección del empuje (usar la dirección de carga para consistencia)
-			Vector3 direction = m_chargeDirection;
+			// Calcular dirección del empuje
+			Vector3 direction = Vector3.Normalize(creatureBody.Position - ComponentBody.Position);
+			// Hacerlo principalmente horizontal con un poco de fuerza hacia arriba
+			direction = new Vector3(direction.X, 0.15f, direction.Z);
+			direction = Vector3.Normalize(direction);
 
 			// Aplicar daño
 			creatureHealth.Injure(AttackDamage, null, false, "Charger attack");
 
-			// Aplicar fuerza de empuje a la criatura (en la dirección de la carga)
-			creatureBody.Velocity += direction * PushForce;
+			// Aplicar fuerza de empuje a la criatura
+			Vector3 pushForce = direction * PushForce;
+			creatureBody.Velocity = new Vector3(
+				creatureBody.Velocity.X + pushForce.X,
+				Math.Min(creatureBody.Velocity.Y + 1.2f, 6f), // Fuerza vertical limitada
+				creatureBody.Velocity.Z + pushForce.Z
+			);
 
-			// Empujar al cargador ligeramente hacia atrás (pero no demasiado)
-			ComponentBody.Velocity += -direction * PushForce * 0.1f;
-
-			// Pequeña reducción de velocidad después de golpear
-			ComponentBody.Velocity *= 0.8f;
+			// Frenar al cargador más
+			ComponentBody.Velocity *= 0.3f;
 		}
 
-		private void CleanOldHitTimes(double currentTime)
+		// Método para provocar al Charger (llamar desde otros componentes o cuando es atacado)
+		public void Provoke()
 		{
-			// Eliminar entradas antiguas del diccionario
-			List<ComponentBody> toRemove = new List<ComponentBody>();
-			foreach (var kvp in m_lastHitTimes)
-			{
-				if (currentTime - kvp.Value > HIT_COOLDOWN * 2)
-				{
-					toRemove.Add(kvp.Key);
-				}
-			}
-
-			foreach (var body in toRemove)
-			{
-				m_lastHitTimes.Remove(body);
-			}
+			m_isProvoked = true;
+			m_provokedUntilTime = m_subsystemTime.GameTime + 5.0; // Provocado por 5 segundos
 		}
 
-		// Método para ataque manual (desde otros componentes)
+		// Método para forzar una carga en una dirección
 		public void ChargeInDirection(Vector3 direction)
 		{
-			m_chargeDirection = Vector3.Normalize(direction);
+			m_chargeDirection = new Vector3(direction.X, 0, direction.Z);
+			if (m_chargeDirection.LengthSquared() > 0.01f)
+			{
+				m_chargeDirection = Vector3.Normalize(m_chargeDirection);
+			}
+			
 			m_isCharging = true;
 			m_chargeTime = 0f;
 			m_lastAttackTime = m_subsystemTime.GameTime;
+			Provoke();
 		}
 
 		// Método para verificar si está cargando
@@ -360,6 +365,12 @@ namespace Game
 		public Vector3 GetChargeDirection()
 		{
 			return m_chargeDirection;
+		}
+		
+		// Método para verificar si está provocado
+		public bool IsProvoked()
+		{
+			return m_isProvoked;
 		}
 	}
 }
