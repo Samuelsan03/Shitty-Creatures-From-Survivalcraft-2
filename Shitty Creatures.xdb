@@ -74,6 +74,32 @@
     </Folder>
 
     <Folder Name="ProgramedInteligence" Guid="33dfd132-3c41-4dfa-a385-af3ba34ff86b">
+    <ComponentTemplate Name="ComponentZombieHerdBehavior" Guid="f544e4df-1bac-4041-b0a0-816d2e46b950">
+    <Parameter Name="Class" Value="Game.ComponentZombieHerdBehavior" Type="string" Guid="db9e9aaa-d573-4ad2-a815-ce00aa4a84be" Description="Componente de comportamiento de manada específico para zombis, extendiendo la funcionalidad de ComponentHerdBehavior."/>
+    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="968a2ba5-0614-4d76-bb4e-5f2d063a274f" Description="Si es opcional o requerido para el funcionamiento."/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="298fd870-4c58-42df-879c-51e7e3ca0a49" Description="Orden de carga del componente (antes de ComponentZombieChaseBehavior)."/>
+    <!-- Parámetros heredados de ComponentHerdBehavior -->
+    <Parameter Name="HerdName" Value="Zombie" Type="string" Guid="aff3a45b-b502-4b2b-97f1-88d1b81afaaa" Description="Nombre de la manada. Los zombis con el mismo nombre trabajan juntos y no se atacan entre sí."/>
+    <Parameter Name="HerdingRange" Value="40" Type="float" Guid="d58f9d1d-5fb1-4c31-b2ce-cf6e6f136cf6" Description="Rango máximo para detectar otros miembros de la manada (en bloques)."/>
+    <Parameter Name="AutoNearbyCreaturesHelp" Value="true" Type="bool" Guid="fd5fb3f6-827f-430b-a735-056022f60a33" Description="Si llama automáticamente a otros miembros de la manada cuando es atacado."/>
+    <!-- Parámetros específicos para zombis -->
+    <Parameter Name="CallForHelpWhenAttacked" Value="true" Type="bool" Guid="40e35ce1-e821-47dc-8753-7ac751b3ac54" Description="Si los zombis llaman a otros cuando son atacados."/>
+    <Parameter Name="HelpCallRange" Value="25" Type="float" Guid="165b0d1c-6588-464d-9acb-43bcd7b94dbe" Description="Rango para llamar a otros zombis en ayuda (en bloques)."/>
+    <Parameter Name="HelpChaseTime" Value="30" Type="float" Guid="e0f5cc82-a038-40b8-8cf3-eb18f9c87f64" Description="Tiempo que los zombis persiguen al atacante (en segundos)."/>
+    <Parameter Name="IsPersistentHelp" Value="false" Type="bool" Guid="f28c5b24-1f6b-4f73-aa39-c393e838d24f" Description="Si la persecución de ayuda es persistente (continúa hasta que el objetivo muere o se pierde)."/>
+    <Parameter Name="ZombieAggressiveGrouping" Value="false" Type="bool" Guid="f292bb6b-5372-4a2c-bc01-07829cf8bb38" Description="Si los zombis se agrupan agresivamente y deambulan cuando no están en combate."/>
+</ComponentTemplate>
+
+    <ComponentTemplate Name="ComponentCharger" Guid="12ff342d-88d2-44a1-8bd0-92ffb738fa9f">
+    <Parameter Name="Class" Value="Game.ComponentCharger" Type="string" Guid="3ee863fa-8d1a-48dc-9f71-b7f895304df8" Description="Componente que permite a la criatura cargar contra objetivos cercanos, infligiendo daño y empujando lejos."/>
+    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="554e08bb-fe1c-4c4c-b595-69c488cf8e96" Description="Si es opcional o requerido para el funcionamiento."/>
+    <Parameter Name="LoadOrder" Value="70" Type="int" Guid="b9645529-2988-42e8-8977-e27f413d2924" Description="Orden de carga del componente."/>
+    <Parameter Name="AttackRange" Value="3" Type="float" Guid="c5d64cb9-774a-4281-9543-7ee1b50c6271" Description="Rango de detección para iniciar la carga."/>
+    <Parameter Name="AttackDamage" Value="10" Type="float" Guid="181f2e02-e20a-424d-92a2-b63d4545cd41" Description="Daño infligido al impactar con un objetivo."/>
+    <Parameter Name="PushForce" Value="20" Type="float" Guid="45112959-def7-441c-9ed9-8eb2140287b0" Description="Fuerza de empuje aplicada al objetivo."/>
+    <Parameter Name="AttackCooldown" Value="2" Type="float" Guid="072bf34e-9321-49f0-b83e-d7b5083fdc85" Description="Tiempo de espera entre cargas en segundos."/>
+</ComponentTemplate>
+
     <ComponentTemplate Name="BoomerPoisonExplosion" Guid="94c4aae0-adc3-405b-91b5-fbaa7ad0f7b8">
     <Parameter Name="Class" Value="Game.ComponentBoomerPoisonExplosion" Type="string" Guid="4f3220be-2395-4f37-aed5-a1d2fbd5f128" Description="Componente que hace que la criatura explote al morir liberando una nube venenosa."/>
     <Parameter Name="IsOptional" Value="false" Type="bool" Guid="1e4fd0e9-1501-4b1c-adf0-d352a6a6d0df" Description="Si es opcional o requerido para el funcionamiento."/>
@@ -429,6 +455,11 @@
     </Folder>
 
 <ProjectTemplate Name="Project" Guid="85023bf8-1c90-4dd1-9442-e6c13691d078">
+<MemberSubsystemTemplate Name="PoisonExplosions" Guid="6602178c-624b-426d-870f-8b21cd6a8400">
+<Parameter Name="IsOptional" Value="false" Type="bool" Guid="87040f01-93d5-4cb2-a890-edb430b09c25"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="3f8f2490-cbc9-40ed-a983-02c654228961"/>
+        <Parameter Name="Class" Guid="1bd7c0bb-0b40-496e-91f6-c889b63f066b" Value="Game.SubsystemPoisonExplosions" Type="string"/>
+    </MemberSubsystemTemplate>
 <MemberSubsystemTemplate Name="PoisonBulletBlockBehavior" Guid="fc95d14d-87db-4f63-9dfc-e5624c8b033f" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
         <Parameter Name="Class" Guid="4a9520e6-1988-4a8a-8e2d-5b84303d2576" Value="Game.SubsystemPoisonBulletBlockBehavior" Type="string"/>
     </MemberSubsystemTemplate>
