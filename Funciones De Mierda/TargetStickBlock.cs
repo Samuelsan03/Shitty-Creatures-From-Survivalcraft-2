@@ -1,16 +1,37 @@
 using System;
+using Engine;
+using Engine.Graphics;
 
 namespace Game
 {
-	// Token: 0x0200001B RID: 27
 	public class TargetStickBlock : Armas
 	{
-		// Token: 0x060000AD RID: 173 RVA: 0x00008BE8 File Offset: 0x00006DE8
 		public TargetStickBlock() : base("Models/Vara", "Textures/Items/Vara")
 		{
 		}
 
-		// Token: 0x040000C5 RID: 197
+		// Método para obtener el nombre mostrado - usa LanguageControl
+		public override string GetDisplayName(SubsystemTerrain subsystemTerrain, int value)
+		{
+			string displayName;
+			if (LanguageControl.TryGetBlock("TargetStickBlock:0", "DisplayName", out displayName))
+			{
+				return displayName;
+			}
+			return "Targeting Stick"; // Valor por defecto en inglés
+		}
+
+		// Método para obtener la descripción
+		public override string GetDescription(int value)
+		{
+			string description;
+			if (LanguageControl.TryGetBlock("TargetStickBlock:0", "Description", out description))
+			{
+				return description;
+			}
+			return "A specialized stick used to command allied creatures. When pointed at an enemy, it signals all nearby player-allied creatures to focus their attacks on the target. Useful for coordinating attacks and managing your creature army in battle."; // Valor por defecto en inglés
+		}
+
 		public const int Index = 329;
 	}
 }
