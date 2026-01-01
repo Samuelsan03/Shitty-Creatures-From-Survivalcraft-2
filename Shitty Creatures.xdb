@@ -455,6 +455,11 @@
     </Folder>
 
 <ProjectTemplate Name="Project" Guid="85023bf8-1c90-4dd1-9442-e6c13691d078">
+<MemberSubsystemTemplate Name="PoisonMacheteBehavior" Guid="f3048892-e76d-4922-8979-6746eaab55a4">
+<Parameter Name="IsOptional" Value="false" Type="bool" Guid="9856c602-760c-46d6-83ca-657750a6dabb"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="a22770d5-6cd0-45d8-b3d0-55d0416ff677"/>
+        <Parameter Name="Class" Guid="7e762be9-79f6-4f3a-97bc-e1356a8d891e" Value="Game.SubsystemPoisonMacheteBehavior" Type="string"/>
+    </MemberSubsystemTemplate>
 <MemberSubsystemTemplate Name="BigStonePoisonChunkBlockBehavior" Guid="bdb7755a-97a8-4527-9876-c507323471cc">
 <Parameter Name="IsOptional" Value="false" Type="bool" Guid="12df1582-c33f-4750-b8a1-afa2851c38f2"/>
     <Parameter Name="LoadOrder" Value="60" Type="int" Guid="94024efc-7655-45de-9535-7237ee865d8a"/>
