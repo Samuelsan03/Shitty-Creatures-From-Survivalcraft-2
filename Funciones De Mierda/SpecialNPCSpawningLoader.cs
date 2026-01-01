@@ -2589,6 +2589,7 @@ namespace Game
 				})
 			});
 
+			// Piratas y sus apariciones
 			// Pirata Normal Aliado - Día 3+ (solo horario central del día), cualquier estación
 			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("PirataNormalAliado", 0, false, false)
 			{
@@ -2624,7 +2625,7 @@ namespace Game
 					// Aparece CADA DÍA desde el día 3 en adelante, solo en horario central
 					bool isDay3OrLater = currentDay >= 3;
 
-					if (isDay3OrLater && isProperDaytime && (groundBlock == 21))
+					if (isDay3OrLater && isProperDaytime && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
 						return 100f; // 100% de probabilidad cada día desde día 3
 					}
@@ -2672,7 +2673,7 @@ namespace Game
 					// Aparece CADA DÍA desde el día 3 en adelante, solo en horario central
 					bool isDay11OrLater = currentDay >= 3;
 
-					if (isDay11OrLater && isProperDaytime && (groundBlock == 21))
+					if (isDay11OrLater && isProperDaytime && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
 						return 100f; // 100% de probabilidad cada día desde día 11
 					}
@@ -2681,6 +2682,194 @@ namespace Game
 				SpawnFunction = ((SubsystemCreatureSpawn.CreatureType creatureType, Point3 point) =>
 				{
 					var creatures = spawn.SpawnCreatures(creatureType, "PirataEliteAliado", point, 2);
+					return creatures.Count;
+				})
+			});
+
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("CapitanPirata", 0, false, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType creatureType, Point3 point)
+				{
+					SubsystemTerrain subsystemTerrain = spawn.m_subsystemTerrain;
+					int cellValue = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValue);
+
+					// Verificar que no esté en agua o lava
+					int cellValueAbove = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValueAbove);
+
+					if (blockAbove == 18) // Agua
+					{
+						return 100f;
+					}
+
+					// Obtener día y hora actual
+					SubsystemTimeOfDay timeOfDay = spawn.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+
+					// Verificar si es horario central del día (excluye amanecer/atardecer)
+					bool isProperDaytime = false;
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						float time = timeOfDay.TimeOfDay;
+						// Horario central del día (excluyendo primeros y últimos 10% del día)
+						isProperDaytime = (time >= timeOfDay.DayStart + 0.1f && time < timeOfDay.DuskStart - 0.1f);
+						currentDay = (int)Math.Floor(timeOfDay.Day); // Día actual como entero
+					}
+
+					// Aparece CADA DÍA desde el día 53 en adelante, solo en horario central
+					bool isDay53OrLater = currentDay >= 53;
+
+					if (isDay53OrLater && isProperDaytime && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+					{
+						return 100f; // 100% de probabilidad cada día desde día 53
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemCreatureSpawn.CreatureType creatureType, Point3 point) =>
+				{
+					var creatures = spawn.SpawnCreatures(creatureType, "CapitanPirata", point, 1);
+					return creatures.Count;
+				})
+			});
+
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("PirataHostilComerciante", 0, false, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType creatureType, Point3 point)
+				{
+					SubsystemTerrain subsystemTerrain = spawn.m_subsystemTerrain;
+					int cellValue = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValue);
+
+					// Verificar que no esté en agua o lava
+					int cellValueAbove = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValueAbove);
+
+					if (blockAbove == 18) // Agua
+					{
+						return 100f;
+					}
+
+					// Obtener día y hora actual
+					SubsystemTimeOfDay timeOfDay = spawn.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+
+					// Verificar si es horario central del día (excluye amanecer/atardecer)
+					bool isProperDaytime = false;
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						float time = timeOfDay.TimeOfDay;
+						// Horario central del día (excluyendo primeros y últimos 10% del día)
+						isProperDaytime = (time >= timeOfDay.DayStart + 0.1f && time < timeOfDay.DuskStart - 0.1f);
+						currentDay = (int)Math.Floor(timeOfDay.Day); // Día actual como entero
+					}
+
+					// Aparece CADA DÍA desde el día 13 en adelante, solo en horario central
+					bool isDay13OrLater = currentDay >= 3;
+
+					if (isDay13OrLater && isProperDaytime && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+					{
+						return 100f; // 100% de probabilidad cada día desde día 13
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemCreatureSpawn.CreatureType creatureType, Point3 point) =>
+				{
+					var creatures = spawn.SpawnCreatures(creatureType, "PirataHostilComerciante", point, 2);
+					return creatures.Count;
+				})
+			});
+
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("PirataNormal", 0, false, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType creatureType, Point3 point)
+				{
+					SubsystemTerrain subsystemTerrain = spawn.m_subsystemTerrain;
+					int cellValue = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValue);
+
+					// Verificar que no esté en agua o lava
+					int cellValueAbove = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValueAbove);
+
+					if (blockAbove == 18) // Agua
+					{
+						return 100f;
+					}
+
+					// Obtener día y hora actual
+					SubsystemTimeOfDay timeOfDay = spawn.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+
+					// Verificar si es horario central del día (excluye amanecer/atardecer)
+					bool isProperDaytime = false;
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						float time = timeOfDay.TimeOfDay;
+						// Horario central del día (excluyendo primeros y últimos 10% del día)
+						isProperDaytime = (time >= timeOfDay.DayStart + 0.1f && time < timeOfDay.DuskStart - 0.1f);
+						currentDay = (int)Math.Floor(timeOfDay.Day); // Día actual como entero
+					}
+
+					// Aparece CADA DÍA desde el día 22 en adelante, solo en horario central
+					bool isDay22OrLater = currentDay >= 3;
+
+					if (isDay22OrLater && isProperDaytime && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+					{
+						return 100f; // 100% de probabilidad cada día desde día 13
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemCreatureSpawn.CreatureType creatureType, Point3 point) =>
+				{
+					var creatures = spawn.SpawnCreatures(creatureType, "PirataNormal", point, 2);
+					return creatures.Count;
+				})
+			});
+
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("PirataElite", 0, false, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType creatureType, Point3 point)
+				{
+					SubsystemTerrain subsystemTerrain = spawn.m_subsystemTerrain;
+					int cellValue = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValue);
+
+					// Verificar que no esté en agua o lava
+					int cellValueAbove = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValueAbove);
+
+					if (blockAbove == 18) // Agua
+					{
+						return 100f;
+					}
+
+					// Obtener día y hora actual
+					SubsystemTimeOfDay timeOfDay = spawn.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+
+					// Verificar si es horario central del día (excluye amanecer/atardecer)
+					bool isProperDaytime = false;
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						float time = timeOfDay.TimeOfDay;
+						// Horario central del día (excluyendo primeros y últimos 10% del día)
+						isProperDaytime = (time >= timeOfDay.DayStart + 0.1f && time < timeOfDay.DuskStart - 0.1f);
+						currentDay = (int)Math.Floor(timeOfDay.Day); // Día actual como entero
+					}
+
+					// Aparece CADA DÍA desde el día 23 en adelante, solo en horario central
+					bool isDay23OrLater = currentDay >= 23;
+
+					if (isDay23OrLater && isProperDaytime && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+					{
+						return 100f; // 100% de probabilidad cada día desde día 13
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemCreatureSpawn.CreatureType creatureType, Point3 point) =>
+				{
+					var creatures = spawn.SpawnCreatures(creatureType, "PirataElite", point, 2);
 					return creatures.Count;
 				})
 			});
