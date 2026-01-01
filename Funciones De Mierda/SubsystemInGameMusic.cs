@@ -1,9 +1,9 @@
 using Engine;
 using Engine.Audio;
 using Engine.Media;
-using GameEntitySystem;
 using TemplatesDatabase;
 using System.Collections.Generic;
+using GameEntitySystem;
 
 namespace Game
 {
@@ -22,8 +22,7 @@ namespace Game
 
 		// Variables para manejar los botones
 		private SubsystemPlayers m_subsystemPlayers;
-		private Dictionary<ComponentPlayer, BevelledButtonWidget> m_playerButtons = new Dictionary<ComponentPlayer, BevelledButtonWidget>();
-		private HashSet<BevelledButtonWidget> m_clickedButtons = new HashSet<BevelledButtonWidget>();
+		private List<ComponentMusic> m_playerComponents = new List<ComponentMusic>();
 
 		private void ShowMessageToAllPlayers(string message, Color? color = null)
 		{
@@ -113,150 +112,56 @@ namespace Game
 
 			var componentPlayers = m_subsystemPlayers.ComponentPlayers;
 
-			// Para cada jugador, asegurarse de que tenga un botón de música
+			// Para cada jugador, asegurarse de que tenga un componente de música
 			for (int i = 0; i < componentPlayers.Count; i++)
 			{
 				ComponentPlayer player = componentPlayers[i];
 				if (player != null && player.ComponentGui != null)
 				{
-					// Verificar si el jugador ya tiene un botón
-					if (!m_playerButtons.ContainsKey(player) || m_playerButtons[player] == null)
+					// Buscar si ya existe un componente para este jugador
+					ComponentMusic existingComponent = null;
+					foreach (var component in m_playerComponents)
 					{
-						AddMusicButtonToPlayer(player);
-					}
-
-					// Manejar clic en el botón
-					BevelledButtonWidget button = m_playerButtons.ContainsKey(player) ? m_playerButtons[player] : null;
-					if (button != null && button.IsClicked && !m_clickedButtons.Contains(button))
-					{
-						m_clickedButtons.Add(button);
-						ToggleMusic();
-						UpdateButtonText(button);
-					}
-					else if (button != null && !button.IsClicked && m_clickedButtons.Contains(button))
-					{
-						m_clickedButtons.Remove(button);
-					}
-				}
-			}
-
-			// Limpiar botones de jugadores que ya no existen
-			CleanupPlayerButtons();
-		}
-
-		// Actualizar el texto del botón según el idioma y estado
-		private void UpdateButtonText(BevelledButtonWidget button)
-		{
-			if (button == null) return;
-
-			// Obtener el texto localizado para el botón
-			string buttonText = GetLocalizedString("MusicToggleButton", "Music");
-			string statusText = m_musicEnabled ?
-				GetLocalizedString("MusicOn", "ON") :
-				GetLocalizedString("MusicOff", "OFF");
-
-			button.Text = $"{buttonText} {statusText}";
-		}
-
-		// Método auxiliar para obtener cadenas localizadas
-		private string GetLocalizedString(string key, string defaultValue)
-		{
-			// Usar el método estático Get de LanguageControl
-			return LanguageControl.Get(key, defaultValue);
-		}
-
-		// Agregar botón a un jugador
-		private void AddMusicButtonToPlayer(ComponentPlayer player)
-		{
-			if (player == null || player.ComponentGui == null)
-				return;
-
-			// Obtener el contenedor de controles derecho
-			ContainerWidget rightControlsContainerWidget = player.ComponentGui.m_rightControlsContainerWidget;
-			if (rightControlsContainerWidget == null)
-				return;
-
-			// Buscar si ya existe un botón de música
-			BevelledButtonWidget musicButton = rightControlsContainerWidget.Children.Find<BevelledButtonWidget>("InGameMusicButton", false);
-
-			if (musicButton != null)
-			{
-				m_playerButtons[player] = musicButton;
-				UpdateButtonText(musicButton);
-				return;
-			}
-
-			// Crear nuevo botón
-			musicButton = new BevelledButtonWidget
-			{
-				Name = "InGameMusicButton",
-				Text = "", // Se establecerá con UpdateButtonText
-				Size = new Vector2(88f, 56f),
-				IsEnabled = true,
-				IsVisible = true,
-				HorizontalAlignment = WidgetAlignment.Far,
-				IsAutoCheckingEnabled = false
-			};
-
-			// Configurar el label del botón
-			if (musicButton.m_labelWidget != null)
-			{
-				musicButton.m_labelWidget.FontScale = 0.8f;
-			}
-
-			rightControlsContainerWidget.Children.Add(musicButton);
-			m_playerButtons[player] = musicButton;
-			UpdateButtonText(musicButton);
-		}
-
-		// Limpiar botones de jugadores que ya no existen
-		private void CleanupPlayerButtons()
-		{
-			if (m_subsystemPlayers == null)
-			{
-				m_playerButtons.Clear();
-				return;
-			}
-
-			var componentPlayers = m_subsystemPlayers.ComponentPlayers;
-			List<ComponentPlayer> playersToRemove = new List<ComponentPlayer>();
-
-			foreach (var kvp in m_playerButtons)
-			{
-				ComponentPlayer player = kvp.Key;
-				BevelledButtonWidget button = kvp.Value;
-
-				// Verificar si el jugador todavía está en la lista de jugadores
-				bool playerExists = false;
-				for (int i = 0; i < componentPlayers.Count; i++)
-				{
-					if (componentPlayers[i] == player)
-					{
-						playerExists = true;
-						break;
-					}
-				}
-
-				if (!playerExists || player == null || player.ComponentGui == null)
-				{
-					playersToRemove.Add(player);
-
-					// Intentar remover el botón de la UI
-					if (button != null && player != null && player.ComponentGui != null)
-					{
-						ContainerWidget rightControlsContainerWidget = player.ComponentGui.m_rightControlsContainerWidget;
-						if (rightControlsContainerWidget != null)
+						if (component != null && component.m_componentPlayer == player)
 						{
-							rightControlsContainerWidget.Children.Remove(button);
+							existingComponent = component;
+							break;
 						}
 					}
+
+					if (existingComponent == null)
+					{
+						// Crear nuevo componente para este jugador
+						existingComponent = new ComponentMusic(this, player);
+						m_playerComponents.Add(existingComponent);
+					}
+
+					// Actualizar el componente
+					existingComponent.Update(0f);
+				}
+			}
+
+			// Limpiar componentes de jugadores que ya no existen
+			CleanupPlayerComponents();
+		}
+
+		// Limpiar componentes de jugadores que ya no existen
+		private void CleanupPlayerComponents()
+		{
+			List<ComponentMusic> componentsToRemove = new List<ComponentMusic>();
+
+			foreach (var component in m_playerComponents)
+			{
+				if (component == null || component.m_componentPlayer == null || component.m_componentPlayer.ComponentGui == null)
+				{
+					componentsToRemove.Add(component);
 				}
 			}
 
 			// Remover de la lista
-			foreach (ComponentPlayer player in playersToRemove)
+			foreach (var component in componentsToRemove)
 			{
-				m_playerButtons.Remove(player);
+				m_playerComponents.Remove(component);
 			}
 		}
 
@@ -319,13 +224,20 @@ namespace Game
 			}
 
 			// Actualizar texto de todos los botones
-			foreach (var button in m_playerButtons.Values)
+			foreach (var component in m_playerComponents)
 			{
-				if (button != null)
+				if (component != null)
 				{
-					UpdateButtonText(button);
+					component.UpdateButtonText();
 				}
 			}
+		}
+
+		// Método auxiliar para obtener cadenas localizadas
+		public string GetLocalizedString(string key, string defaultValue)
+		{
+			// Usar el método estático Get de LanguageControl
+			return LanguageControl.Get(key, defaultValue);
 		}
 
 		// Método para obtener un nombre de display amigable para la pista
@@ -542,22 +454,25 @@ namespace Game
 			// Detener la música al destruir el subsistema
 			StopCurrentMusic();
 
-			// Limpiar todos los botones
-			foreach (var kvp in m_playerButtons)
+			// Limpiar todos los componentes
+			foreach (var component in m_playerComponents)
 			{
-				ComponentPlayer player = kvp.Key;
-				BevelledButtonWidget button = kvp.Value;
-
-				if (player != null && player.ComponentGui != null && button != null)
+				if (component != null)
 				{
-					ContainerWidget rightControlsContainerWidget = player.ComponentGui.m_rightControlsContainerWidget;
-					if (rightControlsContainerWidget != null)
+					// Remover el botón de la interfaz
+					if (component.m_componentPlayer != null && component.m_componentPlayer.ComponentGui != null &&
+						component.MusicButton != null)
 					{
-						rightControlsContainerWidget.Children.Remove(button);
+						ContainerWidget rightControlsContainerWidget = component.m_componentPlayer.ComponentGui.m_rightControlsContainerWidget;
+						if (rightControlsContainerWidget != null)
+						{
+							rightControlsContainerWidget.Children.Remove(component.MusicButton);
+						}
 					}
 				}
 			}
-			m_playerButtons.Clear();
+
+			m_playerComponents.Clear();
 
 			base.Dispose();
 		}
@@ -621,6 +536,97 @@ namespace Game
 
 			public string Path;
 			public float Duration;
+		}
+	}
+
+	// Clase ComponentMusic similar al ejemplo del otro mod
+	public class ComponentMusic
+	{
+		private SubsystemInGameMusic m_subsystemMusic;
+		public ComponentPlayer m_componentPlayer;
+		public BevelledButtonWidget MusicButton;
+		private bool m_buttonClicked;
+
+		public ComponentMusic(SubsystemInGameMusic subsystemMusic, ComponentPlayer player)
+		{
+			m_subsystemMusic = subsystemMusic;
+			m_componentPlayer = player;
+
+			// Crear el botón cuando se crea el componente
+			CreateButton();
+		}
+
+		public void Update(float dt)
+		{
+			if (MusicButton == null || m_componentPlayer == null || m_componentPlayer.ComponentGui == null)
+			{
+				CreateButton();
+				return;
+			}
+
+			if (MusicButton.IsClicked && !m_buttonClicked)
+			{
+				m_buttonClicked = true;
+				m_subsystemMusic.ToggleMusic();
+				UpdateButtonText();
+			}
+			else if (!MusicButton.IsClicked && m_buttonClicked)
+			{
+				m_buttonClicked = false;
+			}
+		}
+
+		private void CreateButton()
+		{
+			if (m_componentPlayer == null || m_componentPlayer.ComponentGui == null)
+				return;
+
+			ContainerWidget rightControlsContainerWidget = m_componentPlayer.ComponentGui.m_rightControlsContainerWidget;
+			if (rightControlsContainerWidget == null)
+				return;
+
+			// Buscar si ya existe un botón de música
+			MusicButton = rightControlsContainerWidget.Children.Find<BevelledButtonWidget>("InGameMusicButton", false);
+
+			if (MusicButton != null)
+			{
+				UpdateButtonText();
+				return;
+			}
+
+			// Crear nuevo botón
+			MusicButton = new BevelledButtonWidget
+			{
+				Name = "InGameMusicButton",
+				Text = "", // Se establecerá con UpdateButtonText
+				Size = new Vector2(88f, 56f),
+				IsEnabled = true,
+				IsVisible = true,
+				HorizontalAlignment = WidgetAlignment.Far,
+				IsAutoCheckingEnabled = false
+			};
+
+			// Configurar el label del botón
+			if (MusicButton.m_labelWidget != null)
+			{
+				MusicButton.m_labelWidget.FontScale = 0.8f;
+			}
+
+			rightControlsContainerWidget.Children.Add(MusicButton);
+			UpdateButtonText();
+		}
+
+		public void UpdateButtonText()
+		{
+			if (MusicButton == null) return;
+
+			// Obtener el texto localizado para el botón
+			string buttonText = m_subsystemMusic.GetLocalizedString("MusicToggleButton", "Music");
+			string statusText = m_subsystemMusic.IsMusicEnabled ?
+				m_subsystemMusic.GetLocalizedString("MusicOn", "ON") :
+				m_subsystemMusic.GetLocalizedString("MusicOff", "OFF");
+
+			MusicButton.Text = $"{buttonText} {statusText}";
 		}
 	}
 }
