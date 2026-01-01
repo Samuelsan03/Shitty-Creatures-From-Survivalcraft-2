@@ -14,6 +14,501 @@ namespace Game
 
 		public override void InitializeCreatureTypes(SubsystemCreatureSpawn spawn, List<SubsystemCreatureSpawn.CreatureType> creatureTypes)
 		{
+			//Tank y sus variantes
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Tank3", 0, false, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType creatureType, Point3 point)
+				{
+					SubsystemTerrain subsystemTerrain = spawn.m_subsystemTerrain;
+					int cellValue = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValue);
+
+					// Verificar que no esté en agua o lava
+					int cellValueAbove = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValueAbove);
+
+					if (blockAbove == 18) // Agua o lava
+					{
+						return 100f;
+					}
+
+					// Obtener día actual
+					SubsystemTimeOfDay timeOfDay = spawn.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					// Aparece CADA DÍA desde el día 55 en adelante, CUALQUIER HORA
+					bool isDay55OrLater = currentDay >= 55;
+
+					if (isDay55OrLater && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+					{
+						return 100f; // 100% de probabilidad cada día desde día 55
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemCreatureSpawn.CreatureType creatureType, Point3 point) =>
+				{
+					var creatures = spawn.SpawnCreatures(creatureType, "Tank3", point, 1);
+					return creatures.Count;
+				})
+			});
+
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Tank2", 0, false, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType creatureType, Point3 point)
+				{
+					SubsystemTerrain subsystemTerrain = spawn.m_subsystemTerrain;
+					int cellValue = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValue);
+
+					// Verificar que no esté en agua o lava
+					int cellValueAbove = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValueAbove);
+
+					if (blockAbove == 18) // Agua o lava
+					{
+						return 100f;
+					}
+
+					// Obtener día actual
+					SubsystemTimeOfDay timeOfDay = spawn.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					// Aparece CADA DÍA desde el día 50 en adelante, CUALQUIER HORA
+					bool isDay50OrLater = currentDay >= 50;
+
+					if (isDay50OrLater && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+					{
+						return 100f; // 100% de probabilidad cada día desde día 50
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemCreatureSpawn.CreatureType creatureType, Point3 point) =>
+				{
+					var creatures = spawn.SpawnCreatures(creatureType, "Tank2", point, 1);
+					return creatures.Count;
+				})
+			});
+
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Tank1", 0, false, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType creatureType, Point3 point)
+				{
+					SubsystemTerrain subsystemTerrain = spawn.m_subsystemTerrain;
+					int cellValue = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValue);
+
+					// Verificar que no esté en agua o lava
+					int cellValueAbove = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValueAbove);
+
+					if (blockAbove == 18) // Agua o lava
+					{
+						return 100f;
+					}
+
+					// Obtener día actual
+					SubsystemTimeOfDay timeOfDay = spawn.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					// Aparece CADA DÍA desde el día 41 en adelante, CUALQUIER HORA
+					bool isDay41OrLater = currentDay >= 41;
+
+					if (isDay41OrLater && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+					{
+						return 100f; // 100% de probabilidad cada día desde día 31
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemCreatureSpawn.CreatureType creatureType, Point3 point) =>
+				{
+					var creatures = spawn.SpawnCreatures(creatureType, "Tank1", point, 1);
+					return creatures.Count;
+				})
+			});
+
+			// Charger y sus variantes
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Boomer2", 0, false, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType creatureType, Point3 point)
+				{
+					SubsystemTerrain subsystemTerrain = spawn.m_subsystemTerrain;
+					int cellValue = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValue);
+
+					// Verificar que no esté en agua o lava
+					int cellValueAbove = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValueAbove);
+
+					if (blockAbove == 18) // Agua o lava
+					{
+						return 100f;
+					}
+
+					// Obtener día actual
+					SubsystemTimeOfDay timeOfDay = spawn.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					// Aparece CADA DÍA desde el día 31 en adelante, CUALQUIER HORA
+					bool isDay20OrLater = currentDay >= 40;
+
+					if (isDay20OrLater && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+					{
+						return 100f; // 100% de probabilidad cada día desde día 20
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemCreatureSpawn.CreatureType creatureType, Point3 point) =>
+				{
+					var creatures = spawn.SpawnCreatures(creatureType, "Charger", point, 1);
+					return creatures.Count;
+				})
+			});
+
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Charger1", 0, false, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType creatureType, Point3 point)
+				{
+					SubsystemTerrain subsystemTerrain = spawn.m_subsystemTerrain;
+					int cellValue = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValue);
+
+					// Verificar que no esté en agua o lava
+					int cellValueAbove = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValueAbove);
+
+					if (blockAbove == 18) // Agua o lava
+					{
+						return 100f;
+					}
+
+					// Obtener día actual
+					SubsystemTimeOfDay timeOfDay = spawn.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					// Aparece CADA DÍA desde el día 19 en adelante, CUALQUIER HORA
+					bool isDay19OrLater = currentDay >= 19;
+
+					if (isDay19OrLater && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+					{
+						return 100f; // 100% de probabilidad cada día desde día 19
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemCreatureSpawn.CreatureType creatureType, Point3 point) =>
+				{
+					var creatures = spawn.SpawnCreatures(creatureType, "Charger1", point, 1);
+					return creatures.Count;
+				})
+			});
+
+			// Boomer y sus variantes
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Boomer3", 0, false, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType creatureType, Point3 point)
+				{
+					SubsystemTerrain subsystemTerrain = spawn.m_subsystemTerrain;
+					int cellValue = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValue);
+
+					// Verificar que no esté en agua o lava
+					int cellValueAbove = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValueAbove);
+
+					if (blockAbove == 18) // Agua o lava
+					{
+						return 100f;
+					}
+
+					// Obtener día actual
+					SubsystemTimeOfDay timeOfDay = spawn.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					// Aparece CADA DÍA desde el día 43 en adelante, CUALQUIER HORA
+					bool isDay43OrLater = currentDay >= 43;
+
+					if (isDay43OrLater && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+					{
+						return 100f; // 100% de probabilidad cada día desde día 31
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemCreatureSpawn.CreatureType creatureType, Point3 point) =>
+				{
+					var creatures = spawn.SpawnCreatures(creatureType, "Boomer3", point, 1);
+					return creatures.Count;
+				})
+			});
+
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Boomer2", 0, false, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType creatureType, Point3 point)
+				{
+					SubsystemTerrain subsystemTerrain = spawn.m_subsystemTerrain;
+					int cellValue = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValue);
+
+					// Verificar que no esté en agua o lava
+					int cellValueAbove = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValueAbove);
+
+					if (blockAbove == 18) // Agua o lava
+					{
+						return 100f;
+					}
+
+					// Obtener día actual
+					SubsystemTimeOfDay timeOfDay = spawn.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					// Aparece CADA DÍA desde el día 41 en adelante, CUALQUIER HORA
+					bool isDay41OrLater = currentDay >= 41;
+
+					if (isDay41OrLater && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+					{
+						return 100f; // 100% de probabilidad cada día desde día 31
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemCreatureSpawn.CreatureType creatureType, Point3 point) =>
+				{
+					var creatures = spawn.SpawnCreatures(creatureType, "Boomer2", point, 1);
+					return creatures.Count;
+				})
+			});
+
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Boomer1", 0, false, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType creatureType, Point3 point)
+				{
+					SubsystemTerrain subsystemTerrain = spawn.m_subsystemTerrain;
+					int cellValue = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValue);
+
+					// Verificar que no esté en agua o lava
+					int cellValueAbove = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValueAbove);
+
+					if (blockAbove == 18) // Agua o lava
+					{
+						return 100f;
+					}
+
+					// Obtener día actual
+					SubsystemTimeOfDay timeOfDay = spawn.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					// Aparece CADA DÍA desde el día 40 en adelante, CUALQUIER HORA
+					bool isDay40OrLater = currentDay >= 40;
+
+					if (isDay40OrLater && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+					{
+						return 100f; // 100% de probabilidad cada día desde día 31
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemCreatureSpawn.CreatureType creatureType, Point3 point) =>
+				{
+					var creatures = spawn.SpawnCreatures(creatureType, "Boomer1", point, 1);
+					return creatures.Count;
+				})
+			});
+
+			// Infectado Volador y sus variantes
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("FlyingInfectedBoss", 0, false, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType creatureType, Point3 point)
+				{
+					SubsystemTerrain subsystemTerrain = spawn.m_subsystemTerrain;
+					int cellValue = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValue);
+
+					// Verificar que no esté en agua o lava
+					int cellValueAbove = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValueAbove);
+
+					if (blockAbove == 18) // Agua o lava
+					{
+						return 100f;
+					}
+
+					// Obtener día actual
+					SubsystemTimeOfDay timeOfDay = spawn.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					// Aparece CADA DÍA desde el día 31 en adelante, CUALQUIER HORA
+					bool isDay31OrLater = currentDay >= 31;
+
+					if (isDay31OrLater && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+					{
+						return 100f; // 100% de probabilidad cada día desde día 31
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemCreatureSpawn.CreatureType creatureType, Point3 point) =>
+				{
+					var creatures = spawn.SpawnCreatures(creatureType, "FlyingInfectedBoss", point, 1);
+					return creatures.Count;
+				})
+			});
+
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("InfectedFly3", 0, false, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType creatureType, Point3 point)
+				{
+					SubsystemTerrain subsystemTerrain = spawn.m_subsystemTerrain;
+					int cellValue = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValue);
+
+					// Verificar que no esté en agua o lava
+					int cellValueAbove = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValueAbove);
+
+					if (blockAbove == 18) // Agua o lava
+					{
+						return 100f;
+					}
+
+					// Obtener día actual
+					SubsystemTimeOfDay timeOfDay = spawn.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					// Aparece CADA DÍA desde el día 26 en adelante, CUALQUIER HORA
+					bool isDay26OrLater = currentDay >= 26;
+
+					if (isDay26OrLater && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+					{
+						return 100f; // 100% de probabilidad cada día desde día 26
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemCreatureSpawn.CreatureType creatureType, Point3 point) =>
+				{
+					var creatures = spawn.SpawnCreatures(creatureType, "InfectedFly3", point, 2);
+					return creatures.Count;
+				})
+			});
+
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("InfectedFly2", 0, false, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType creatureType, Point3 point)
+				{
+					SubsystemTerrain subsystemTerrain = spawn.m_subsystemTerrain;
+					int cellValue = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValue);
+
+					// Verificar que no esté en agua o lava
+					int cellValueAbove = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValueAbove);
+
+					if (blockAbove == 18) // Agua o lava
+					{
+						return 100f;
+					}
+
+					// Obtener día actual
+					SubsystemTimeOfDay timeOfDay = spawn.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					// Aparece CADA DÍA desde el día 25 en adelante, CUALQUIER HORA
+					bool isDay25OrLater = currentDay >= 25;
+
+					if (isDay25OrLater && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+					{
+						return 100f; // 100% de probabilidad cada día desde día 25
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemCreatureSpawn.CreatureType creatureType, Point3 point) =>
+				{
+					var creatures = spawn.SpawnCreatures(creatureType, "InfectedFly2", point, 2);
+					return creatures.Count;
+				})
+			});
+
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("InfectedFly1", 0, false, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType creatureType, Point3 point)
+				{
+					SubsystemTerrain subsystemTerrain = spawn.m_subsystemTerrain;
+					int cellValue = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValue);
+
+					// Verificar que no esté en agua o lava
+					int cellValueAbove = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValueAbove);
+
+					if (blockAbove == 18) // Agua o lava
+					{
+						return 100f;
+					}
+
+					// Obtener día actual
+					SubsystemTimeOfDay timeOfDay = spawn.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					// Aparece CADA DÍA desde el día 24 en adelante, CUALQUIER HORA
+					bool isDay24OrLater = currentDay >= 24;
+
+					if (isDay24OrLater && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+					{
+						return 100f; // 100% de probabilidad cada día desde día 24
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemCreatureSpawn.CreatureType creatureType, Point3 point) =>
+				{
+					var creatures = spawn.SpawnCreatures(creatureType, "InfectedFly1", point, 2);
+					return creatures.Count;
+				})
+			});
 
 			// Infectado Musculoso 2 - Día 5+ (solo de noche, 100%), cualquier estación
 			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("InfectedMuscle1", 0, false, false)
@@ -143,10 +638,10 @@ namespace Game
 						currentDay = (int)Math.Floor(timeOfDay.Day); // Día actual como entero
 					}
 
-					// Aparece CADA NOCHE desde el día 5 en adelante
-					bool isDay2OrLater = currentDay >= 5;
+					// Aparece CADA NOCHE desde el día 3 en adelante
+					bool isDay3OrLater = currentDay >= 3;
 
-					if (isDay2OrLater && isNight && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+					if (isDay3OrLater && isNight && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
 						return 100f; // 100% de probabilidad cada noche desde día 2
 					}
@@ -191,10 +686,10 @@ namespace Game
 						currentDay = (int)Math.Floor(timeOfDay.Day); // Día actual como entero
 					}
 
-					// Aparece CADA NOCHE desde el día 5 en adelante
-					bool isDay2OrLater = currentDay >= 5;
+					// Aparece CADA NOCHE desde el día 3 en adelante
+					bool isDay3OrLater = currentDay >= 3;
 
-					if (isDay2OrLater && isNight && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+					if (isDay3OrLater && isNight && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
 						return 100f; // 100% de probabilidad cada noche desde día 2
 					}
@@ -222,14 +717,14 @@ namespace Game
 
 					if (blockAbove == 18) // Agua o lava
 					{
-						return 0.86f;
+						return 0.96f;
 					}
 
 					// Condiciones flexibles para Naomi - SIN RESTRICCIÓN DE ALTURA
 					// SIN RESTRICCIÓN DE DÍAS, HORAS O ESTACIONES - aparece desde el inicio
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 0.85f; // 85% de probabilidad
+						return 0.99f; // 99% de probabilidad
 					}
 					return 0f;
 				},
@@ -274,7 +769,7 @@ namespace Game
 					// SIN RESTRICCIÓN DE ESTACIÓN - aparece en cualquier estación
 					if (isNight && (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 					{
-						return 0.85f; // 100% de probabilidad
+						return 100f; // 100% de probabilidad
 					}
 					return 0f;
 				},
@@ -938,7 +1433,7 @@ namespace Game
 				})
 			});
 
-			// BETELGAMMAMON - Día 15+ (solo en Otoño o Invierno, solo de día)
+			// BETELGAMMAMON - Aparece en Otoño o Invierno, CUALQUIER HORA del día
 			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("BetelGammamon", 0, false, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType creatureType, Point3 point)
@@ -951,52 +1446,30 @@ namespace Game
 					int cellValueAbove = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
 					int blockAbove = Terrain.ExtractContents(cellValueAbove);
 
-					if (blockAbove == 18 || blockAbove == 92) // Agua o lava
+					if (blockAbove == 18) // Agua o lava
 					{
 						return 0f;
 					}
 
-					// Obtener día y hora actual
-					SubsystemTimeOfDay timeOfDay = spawn.Project.FindSubsystem<SubsystemTimeOfDay>(true);
-
-					// Verificar si es de día (entre DawnStart y DuskStart)
-					bool isDay = false;
-					int currentDay = 0;
-					if (timeOfDay != null)
-					{
-						float time = timeOfDay.TimeOfDay;
-						isDay = (time >= timeOfDay.DawnStart && time < timeOfDay.DuskStart);
-						currentDay = (int)Math.Floor(timeOfDay.Day); // Día actual como entero
-					}
-
-					// Obtener la estación actual
-					SubsystemGameInfo gameInfo = spawn.Project.FindSubsystem<SubsystemGameInfo>(true);
+					// Obtener la estación actual del SubsystemSeasons
+					SubsystemSeasons seasons = spawn.Project.FindSubsystem<SubsystemSeasons>(true);
 					bool isAutumnOrWinter = false;
 
-					if (gameInfo != null)
+					if (seasons != null)
 					{
-						float timeOfYear = gameInfo.WorldSettings.TimeOfYear;
+						// Usar el método original del juego para determinar la estación
+						Season currentSeason = seasons.Season;
 
-						// Verificar si es Otoño (0.25 a 0.5) o Invierno (0.5 a 0.75)
-						// Usando márgenes pequeños para evitar problemas en los límites
-						float margin = 0.001f;
-
-						// Otoño: desde 0.25 hasta 0.5
-						bool isAutumn = timeOfYear >= (0.25f + margin) && timeOfYear < (0.5f - margin);
-
-						// Invierno: desde 0.5 hasta 0.75
-						bool isWinter = timeOfYear >= (0.5f + margin) && timeOfYear < (0.75f - margin);
-
-						isAutumnOrWinter = isAutumn || isWinter;
+						// Aparece en Otoño (Autumn = 1) o Invierno (Winter = 2)
+						// según el enum del código original
+						isAutumnOrWinter = (currentSeason == Season.Autumn || currentSeason == Season.Winter);
 					}
 
-					// Aparece CADA DÍA desde el día 15 en adelante, solo en Otoño o Invierno, solo de día
-					bool isDay15OrLater = currentDay >= 15;
-
-					if (isDay15OrLater && isDay && isAutumnOrWinter &&
+					// Aparece en cualquier hora del día, solo durante Otoño o Invierno
+					if (isAutumnOrWinter &&
 						(groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8 || groundBlock == 62))
 					{
-						return 100f; // 100% de probabilidad cada día desde día 15, en Otoño/Invierno, solo de día
+						return 100f; // 100% de probabilidad durante Otoño/Invierno
 					}
 					return 0f;
 				},
