@@ -26,6 +26,8 @@
   "UseAutoCannon": "Use Auto-Cannon",
   "AutoCannonHelp": "Authors\nFire Dragon\nKike\n----------\nThis weapon uses the first slot of the hotbar or the first available slot with an object. To save any changes, you must press 'Accept', or 'X' to discard. The spread and velocity settings determine the direction and distance of the projectiles.\n\nTo use it, simply hold right click if you are on PC, or hold the screen if you are on a mobile device, and it will automatically fire the times per second you have configured. Useful for shooting spawn eggs and generating creatures in large quantities in a short time.\n\nYou can also have fun launching fireworks or any other object.\n\n\nShitty code stolen by Samuelsan03, so do whatever you want with this code xd",
   "Poisoned": "Poisoned",
+  "DeathByBoomer": "Blown to pieces by a Boomer",
+  "DeathByBoomerFire": "Incinerated by a fiery Boomer explosion",
   "HP": "HP",
   "RefrigeratorXiaomi": {
     "RefrigeratorLabel": "Refrigerator",
@@ -35,6 +37,16 @@
   },
   "Database": {
     "DisplayName": {
+      "Tank1": "Tank 1",
+      "Tank2": "Tank 2",
+      "Tank3": "Tank 3",
+      "TankTamed1": "Tank Ally 1",
+      "TankTamed2": "Tank Ally 2",
+      "TankTamed3": "Tank Ally 3",
+      "ChargerTamed2": "Charger Ally 2",
+      "Charger2": "Charger 2",
+      "ChargerTamed1": "Charger Ally 1",
+      "Charger1": "Charger 1",
       "BoomerTamed3": "Boomer Ally 3",
       "Boomer3": "Boomer 3",
       "BoomerTamed2": "Boomer Ally 2",
@@ -117,6 +129,8 @@
       "Richard": "Richard"
     },
     "Description": {
+      "Tank1": "The Tank is a special infected that surpasses all others in strength and endurance. Its massive build allows it to kill with a single blow, and its deadliest ability is hurling mysterious rocks if one strikes you, your fate is sealed. It is named “Tank” because, like a war machine, it possesses near-impenetrable resistance and devastating power. It appears on day 41, at any time, day or night, and always alone, making it a unique challenge. To face it, you’ll need strong armor and powerful weapons capable of withstanding its brutal attacks. Like other infected, its rage can be subdued with the zombie collar, allowing you to tame it and turn it into your protective slave. Can you truly harness the advantages of having a Tank under your command? Its immense power may become your greatest weapon… or your downfall.",
+      "Charger1": "The Charger is another type of infected, distinguished by its massively thick and powerful arm on one side, while the other remains normal. Its deadliest attack is a brutal charge, capable not only of killing you but also of hurling you with the force of an American football player. It appears on day 19 at night, usually in pairs, making them even more dangerous. Arm yourself well to defeat them, or obtain the zombie collar, for legend says it can tame them and turn them into your guardians.",
       "Boomer1": "The Boomer is another type of infected, known for its massive size and grotesque appearance. Its most distinctive trait is that upon death it explodes, making it a deadly threat: kill it too close, and you’ll be blown to pieces. Yet legend says that with the zombie collar it can become an ally. If you manage to tame it, the Boomer will serve as your guardian. You will gain control over it and can take advantage of its abilities, though there is always the risk of it dying in an explosion. Try it at your own risk, but never near other zombies or allies, as they could perish in the blast.",
       "FlyingInfectedBoss": "The Flying Infected Boss is another type of flying infected, but what truly sets it apart is its four heads, making it a terrifying monster. Its greatest danger lies in the variety of its attacks: it can strike normally, throw fire, or throw poison, making it extremely hazardous. As a true boss, it appears on day 31 at any time, and its most threatening trait is speed, being far faster than regular infected. Therefore, you must prepare strong weapons to defeat it. Legend says the zombie collar can calm its rage. In this way, the Flying Infected Boss can be tamed and become your first enslaved boss. What advantages will you gain from it?",
       "InfectedFly1": "The Flying Infected is another type of zombie, but unlike others, this one can fly. How did it become an infected bird? Perhaps chemical experiments mixing humans and birds led to this result. They appear on the 9th night, always flying in groups of three. Be careful, as flying enemies are harder to kill. However, as the legend says, if you use the zombie collar on one of them, they will become your guardian slaves useful when you cannot reach your flying target.",
@@ -202,6 +216,18 @@
     }
   },
   "Blocks": {
+    "PoisonMacheteBlock:0": {
+  "DisplayName": "Poison Machete",
+  "Description": "A machete coated with a lethal toxin that poisons enemies upon striking them. Each attack has a chance to apply a debilitating poison effect that drains health over time. Perfect for prolonged encounters where you want to slowly wear down your opponents."
+},
+    "BigStonePoisonChunk:0": {
+      "DisplayName": "Poisonous Giant Rock",
+      "Description": "A giant rock imbued with toxic properties. Upon impact, it releases a poisonous cloud that slowly weakens its victims. While the initial damage is moderate, the lingering poison effect can be deadly over time. Like the rare giant rock, it cannot be crafted and can only be obtained through special means."
+    },
+    "BigStoneFlameChunk:0": {
+  "DisplayName": "Flaming Giant Rock",
+  "Description": "A flaming rock that creates fire on impact. The fire lasts for 30 seconds. Can kill instantly and sets area ablaze."
+},
     "PoisonBulletBlock:0": {
   "DisplayName": "Poison Bullet",
   "Description": "Similar to a musket round, but it cannot be used as musket ammunition and is not available for crafting."
@@ -356,6 +382,11 @@
     }
   },
   "Messages": {
+    "DeathByPoisonRock": "Poisoned by toxic giant rock",
+    "DeathByFlamingRock": "Incinerated by a flaming giant rock",
+    "CollarTamedTankMessage": "You have tamed the Tank!\n The most feared boss of bosses is now your slave!\n Take advantage of its brute force as your guardian!",
+    "CollarTamedChargerMessage": "You have tamed a Charger!\n Its brute force to push enemies strongly will now be your tool!\n Use it well and wisely!",
+    "CollarTamedBoomerMessage": "You have tamed a Boomer!\nNow you can use it as an explosive guardian slave.\nUse it wisely in emergency cases!",
     "CollarTamedBossMessage": "You have tamed the Flying Infected Boss, use it wisely for emergency cases",
     "CollarTamedMessage": "You have tamed a hostile Infected!\n Now it will be your guardian!",
     "FirstPullCrossbow": "First pull back the crossbow!",

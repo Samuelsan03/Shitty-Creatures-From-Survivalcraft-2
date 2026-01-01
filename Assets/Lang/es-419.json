@@ -26,6 +26,8 @@
   "UseAutoCannon": "Usar Cañón Automático",
   "AutoCannonHelp": "Autores\nFire Dragon\nKike\n----------\nEsta arma usa el primer espacio de la barra rápida o el primer espacio disponible con un objeto. Para guardar los cambios, debes presionar 'Aceptar', o 'X' para descartar. Los ajustes de dispersión y velocidad determinan la dirección y distancia de los proyectiles.\n\nPara usarlo, simplemente mantén presionado clic derecho si estás en PC, o mantén presionada la pantalla si estás en dispositivo móvil, y disparará automáticamente las veces por segundo que hayas configurado. Útil para disparar huevos de spawn y generar criaturas en grandes cantidades en poco tiempo.\n\nTambién puedes divertirte lanzando fuegos artificiales o cualquier otro objeto.\n\n\nCódigo robado por Samuelsan03, así que haz lo que quieras con este código xd",
   "Poisoned": "Envenenado",
+  "DeathByBoomer": "Volado a pedazos por un Boomer",
+  "DeathByBoomerFire": "Incinerado por una explosión ígnea de Boomer",
   "HP": "PV",
   "RefrigeratorXiaomi": {
     "RefrigeratorLabel": "Refrigerador",
@@ -35,6 +37,18 @@
   },
   "Database": {
     "DisplayName": {
+      "Tank1": "Tank 1",
+      "Tank2": "Tank 2",
+      "Tank3": "Tank 3",
+      "TankTamed1": "Tank Aliado 1",
+      "TankTamed2": "Tank Aliado 2",
+      "TankTamed3": "Tank Aliado 3",
+      "ChargerTamed2": "Charger Aliado 2",
+      "Charger2": "Charger 2",
+      "ChargerTamed1": "Charger Aliado 1",
+      "Charger1": "Charger 1",
+      "BoomerTamed3": "Boomer Aliado 3",
+      "Boomer3": "Boomer 3",
       "BoomerTamed1": "Boomer Aliado 1",
       "BoomerTamed2": "Boomer Aliado 2",
       "Boomer2": "Boomer 2",
@@ -115,6 +129,8 @@
       "RichardFiedler": "Richard"
     },
     "Description": {
+      "Tank1": "El Tank es un infectado especial que supera en fuerza y resistencia a cualquier otro. Su musculatura descomunal le permite matar de un solo golpe, y lo más letal es su capacidad de lanzar rocas misteriosas: si una de ellas te alcanza, tu destino está sellado. Se le llama así porque, al igual que un tanque de guerra, posee una resistencia casi impenetrable y una fuerza devastadora. Aparece en el día 41, a cualquier hora, ya sea de día o de noche, y siempre en solitario, lo que lo convierte en un desafío único. Para enfrentarlo necesitarás armaduras resistentes y armas poderosas capaces de soportar sus ataques brutales. Al igual que otros infectados, su furia puede ser calmada mediante el collar zombi, lo que te permitirá domesticarlo y convertirlo en tu esclavo protector. ¿Podrás aprovechar las ventajas de tener un Tank bajo tu control? Recuerda que su poder es inmenso, pero también difícil de manejar: un aliado tan destructivo puede ser tu mayor arma… o tu perdición.",
+      "Charger1": "El Charger es otro tipo de infectado, reconocido por su brazo descomunalmente grueso y poderoso en un costado, mientras que el otro permanece normal. Su ataque más letal consiste en embestir con una fuerza brutal, capaz no solo de matarte, sino de lanzarte con la violencia de un jugador de fútbol americano. Aparece en el día 19 durante la noche, siempre en pareja, lo que aumenta el peligro. Prepárate con buenas armas para enfrentarlos o consigue el collar zombi, pues la leyenda dice que con él podrás domesticarlos y convertirlos en tus guardianes.",
       "Boomer1": "El Boomer es otro tipo de infectado, caracterizado por su enorme tamaño y aspecto grotesco. Lo más llamativo es que, al morir, explota, lo que lo convierte en una amenaza mortal: si lo eliminas demasiado cerca, terminarás hecho pedazos. Sin embargo, la leyenda cuenta que con el collar zombi puede convertirse en aliado. Si logras domesticarlo, se transformará en tu guardián. Al hacerlo tendrás control sobre él y podrás aprovechar sus habilidades, aunque siempre existe el riesgo de que muera explotando. Inténtalo bajo tu propio riesgo, pero nunca lo hagas cerca de otros zombis o compañeros, pues podrían morir en la explosión.",
       "FlyingInfectedBoss": "El Jefe Infectado Volador es otro tipo de infectado volador, pero lo que realmente lo distingue es que posee cuatro cabezas, algo sumamente monstruoso. Lo más peligroso es la variedad de sus ataques: puede golpearte de forma normal, lanzarte fuego o lanzarte veneno, lo cual lo hace extremadamente riesgoso. Como corresponde a un jefe, aparece en el día 31 a cualquier hora, y su mayor amenaza es la velocidad, ya que es mucho más rápido que los infectados comunes. Por ello, necesitarás preparar buenas armas para enfrentarlo. La leyenda cuenta que el collar zombi puede calmar su furia. De esta manera, el Jefe Infectado Volador puede ser domesticado y convertirse en tu primer jefe esclavizado. ¿Qué ventajas podrás obtener de él?",
       "InfectedFly1": "El Infectado Volador es otro tipo de zombi, pero a diferencia de los demás, este puede volar. ¿Cómo logró convertirse en un pájaro infectado? Tal vez una empresa química experimentó con humanos y aves, y este fue el resultado. Aparecen la noche del día 9, siempre en grupos de tres. Ten cuidado, porque al ser voladores a veces son difíciles de eliminar. No obstante, la leyenda dice que si usas el collar zombi en uno de ellos, se convertirán en tus guardianes esclavos, lo cual resulta útil cuando no puedes alcanzar a tu objetivo volador.",
@@ -200,6 +216,18 @@
     }
   },
   "Blocks": {
+    "PoisonMacheteBlock:0": {
+  "DisplayName": "Machete Envenenado",
+  "Description": "Un machete recubierto con una toxina letal que envenena a los enemigos al golpearlos. Cada ataque tiene la probabilidad de aplicar un efecto de veneno debilitante que drena la salud con el tiempo. Perfecto para enfrentamientos prolongados donde desees desgastar lentamente a tus oponentes."
+},
+    "BigStonePoisonChunk:0": {
+      "DisplayName": "Roca Gigante Venenosa",
+      "Description": "Una roca gigante impregnada de propiedades tóxicas. Al impactar, libera una nube venenosa que debilita lentamente a sus víctimas. Aunque el daño inicial es moderado, el efecto venenoso persistente puede ser letal con el tiempo. Al igual que la roca gigante rara, no se puede fabricar y solo se puede obtener por medios especiales."
+    },
+    "BigStoneFlameChunk:0": {
+  "DisplayName": "Roca Gigante en Llamas",
+  "Description": "Una roca en llamas que crea fuego al impactar. El fuego dura 30 segundos. Puede matar al instante y prende fuego al área."
+    },
     "PoisonBulletBlock:0": {
   "DisplayName": "Bala Envenenada",
   "Description": "Similar a una bala de mosquete, pero no puede usarse como munición del mosquete y tampoco se puede fabricar."
@@ -355,6 +383,11 @@
     }
   },
   "Messages": {
+    "DeathByPoisonRock": "Envenenado por una roca gigante tóxica",
+    "DeathByFlamingRock": "Incinerado por una roca gigante en llamas",
+    "CollarTamedChargerMessage": "¡Has domesticado un Charger!\n ¡Su fuerza bruta para empujar enemigos ahora será tu herramienta!\n ¡Úsalo bien y sabiamente!",
+    "CollarTamedTankMessage": "¡Has domesticado al Tank!\n ¡El jefe de los jefes más temido es tu esclavo!\n Aprovecha su fuerza bruta como tu guardián!",
+    "CollarTamedBoomerMessage": "¡Has domesticado a un Boomer!\nAhora puedes usarlo como un guardián explosivo esclavizado.\nÚsalo sabiamente en casos de emergencia.",
     "CollarTamedBossMessage": "Has domesticado al Jefe Infectado Volador, úsalo sabiamente para casos de emergencia!",
     "CollarTamedMessage": "¡Has domesticado a un Infectado hostil!\n ¡Ahora será tu guardián!",
     "FirstPullCrossbow": "¡Primero tensa la ballesta!",
