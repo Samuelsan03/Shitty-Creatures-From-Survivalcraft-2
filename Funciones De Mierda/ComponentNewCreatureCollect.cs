@@ -316,12 +316,56 @@ namespace Game
 			float num4 = this.m_random.Float(0f, 1f);
 			string name = base.Entity.ValuesDictionary.DatabaseObject.Name;
 
-			// Solo mantener los casos para criaturas que sí quieres
-			// Los casos para SnowMan, Werewolf, SantaClaus, BadSnowMan, Pirate_Elite, Pirate_Normal, 
-			// Pirate_Captain y Pirate_Captain_NPC han sido eliminados como solicitaste
+			if (name == "InfectedNormal1")
+			{
+				// Probabilidad equitativa para cada arma (aproximadamente 14.29% cada una)
+				// 7 opciones: Mosquete, Arco, Ballesta, Ballesta repetidora, Lanzallamas, ItemsLauncher, Machete de cobre
+				if (num4 < 0.1429f) // Mosquete (1/7)
+				{
+					num = Terrain.MakeBlockValue(MusketBlock.Index);
+				}
+				else if (num4 < 0.2858f) // Arco (2/7)
+				{
+					num = Terrain.MakeBlockValue(BowBlock.Index);
+				}
+				else if (num4 < 0.4287f) // Ballesta (3/7)
+				{
+					num = Terrain.MakeBlockValue(CrossbowBlock.Index);
+				}
+				else if (num4 < 0.5716f) // Ballesta repetidora (4/7)
+				{
+					num = Terrain.MakeBlockValue(RepeatCrossbowBlock.Index);
+				}
+				else if (num4 < 0.7145f) // Lanzallamas (5/7)
+				{
+					// Lanzallamas cargado con 8 disparos (50% fuego, 50% veneno)
+					num = FlameThrowerBlock.SetLoadCount(
+						Terrain.MakeBlockValue(FlameThrowerBlock.Index, 0,
+							FlameThrowerBlock.SetBulletType(
+								FlameThrowerBlock.SetLoadState(0, FlameThrowerBlock.LoadState.Loaded),
+								new FlameBulletBlock.FlameBulletType?(this.m_random.Bool(0.5f) ?
+									FlameBulletBlock.FlameBulletType.Flame :
+									FlameBulletBlock.FlameBulletType.Poison)
+							)
+						),
+						8
+					);
+				}
+				else if (num4 < 0.8574f) // ItemsLauncher (6/7)
+				{
+					num = Terrain.MakeBlockValue(ItemsLauncherBlock.Index);
+				}
+				else // Machete de cobre (7/7 - último 14.29%)
+				{
+					num = Terrain.MakeBlockValue(CopperMacheteBlock.Index);
+				}
 
-			// Aquí puedes agregar casos para otras criaturas que sí quieras
-			// if (name == "OtraCriatura") { ... }
+				// Siempre dar un machete de cobre en el slot 2 si no hay otra arma allí
+				if (num2 == 0 && num != Terrain.MakeBlockValue(CopperMacheteBlock.Index))
+				{
+					num2 = Terrain.MakeBlockValue(CopperMacheteBlock.Index);
+				}
+			}
 
 			if (num != 0)
 			{
@@ -334,6 +378,44 @@ namespace Game
 			if (num3 != 0 && inventory.GetSlotCount(2) == 0)
 			{
 				inventory.AddSlotItems(2, num3, 1);
+			}
+		}
+
+		// Agrega un método público para copiar inventario
+		public void CopyInventoryFrom(ComponentNewCreatureCollect source)
+		{
+			if (source == null || this.m_componentMiner == null || source.m_componentMiner == null)
+				return;
+
+			IInventory sourceInventory = source.m_componentMiner.Inventory;
+			IInventory targetInventory = this.m_componentMiner.Inventory;
+
+			if (sourceInventory == null || targetInventory == null)
+				return;
+
+			Console.WriteLine($"Copiando inventario de {source.Entity.ValuesDictionary.DatabaseObject.Name} a {this.Entity.ValuesDictionary.DatabaseObject.Name}");
+			Console.WriteLine($"Source slots: {sourceInventory.SlotsCount}, Target slots: {targetInventory.SlotsCount}");
+
+			// Copiar todos los slots del inventario
+			for (int i = 0; i < sourceInventory.SlotsCount && i < targetInventory.SlotsCount; i++)
+			{
+				int slotValue = sourceInventory.GetSlotValue(i);
+				int slotCount = sourceInventory.GetSlotCount(i);
+
+				Console.WriteLine($"Slot {i}: Valor={slotValue}, Cantidad={slotCount}");
+
+				if (slotValue != 0)
+				{
+					// Limpiar el slot actual si tiene algo
+					int currentCount = targetInventory.GetSlotCount(i);
+					if (currentCount > 0)
+					{
+						targetInventory.RemoveSlotItems(i, currentCount);
+					}
+					// Copiar los items del source
+					targetInventory.AddSlotItems(i, slotValue, slotCount);
+					Console.WriteLine($"  Copiado al slot {i}: {slotCount}x {slotValue}");
+				}
 			}
 		}
 
