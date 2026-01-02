@@ -59,7 +59,7 @@ namespace Game
 
 					if (isAlly)
 					{
-						CommandAllyToAttack(allyCreature, target);
+						CommandAllyToAttackImmediately(allyCreature, target);
 					}
 				}
 			}
@@ -103,21 +103,19 @@ namespace Game
 			return true;
 		}
 
-		private void CommandAllyToAttack(ComponentCreature ally, ComponentCreature target)
+		// MÉTODO NUEVO: Comando inmediato
+		private void CommandAllyToAttackImmediately(ComponentCreature ally, ComponentCreature target)
 		{
 			if (!CanAttackTarget(ally, target))
 			{
 				return;
 			}
 
-			float minDistance = 0f;
-			float maxDistance = 1000f;
-			bool skipIfBusy = false;
-
 			ComponentNewChaseBehavior newChase = ally.Entity.FindComponent<ComponentNewChaseBehavior>();
 			if (newChase != null)
 			{
-				newChase.Attack(target, minDistance, maxDistance, skipIfBusy);
+				// Usar el método de respuesta inmediata
+				newChase.RespondToCommandImmediately(target);
 				return;
 			}
 
@@ -147,7 +145,7 @@ namespace Game
 					{
 						try
 						{
-							callHelpMethod.Invoke(newHerd, new object[] { target, minDistance, maxDistance, skipIfBusy });
+							callHelpMethod.Invoke(newHerd, new object[] { target, 0f, 1000f, false });
 							return;
 						}
 						catch
@@ -165,29 +163,10 @@ namespace Game
 				{
 					try
 					{
-						attackMethod.Invoke(oldChase, new object[] { target, minDistance, maxDistance, skipIfBusy });
+						attackMethod.Invoke(oldChase, new object[] { target, 0f, 1000f, false });
 					}
 					catch
 					{
-					}
-				}
-			}
-
-			if (newChase == null)
-			{
-				var newChaseType = ally.Entity.FindComponent<ComponentNewChaseBehavior>();
-				if (newChaseType != null)
-				{
-					var attackMethod = newChaseType.GetType().GetMethod("Attack");
-					if (attackMethod != null)
-					{
-						try
-						{
-							attackMethod.Invoke(newChaseType, new object[] { target, minDistance, maxDistance, skipIfBusy });
-						}
-						catch
-						{
-						}
 					}
 				}
 			}
