@@ -269,10 +269,10 @@
             " a "
             "bcb"
 		</Recipe>
-        <Smelting>
-        <Recipe Result="PoisonMacheteBlock" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="5" a="diamondmachete" b="flamebullet:1" Description="Use it wisely if you're cornered. Mix it up using the diamond machete and the flamethrower's poison bullet.">
-      "ab"
-    </Recipe>
-  </Smelting>
+  <Recipe Result="PoisonBombBlock" ResultCount="5" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="bomb" b="flamebullet:1" Description="Useful if you're surrounded and want to avoid being killed by explosives.">
+			" b "
+            "bab"
+            " b "
+		</Recipe>
     </Recipes>
 </ShittyRecipes>
