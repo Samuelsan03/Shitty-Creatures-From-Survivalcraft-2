@@ -32,11 +32,13 @@ namespace Game
 			}
 		}
 
+		// MÉTODO MEJORADO: Respuesta inmediata al ataque
 		public virtual void Attack(ComponentCreature componentCreature, float maxRange, float maxChaseTime, bool isPersistent)
 		{
 			bool suppressed = this.Suppressed;
 			if (!suppressed)
 			{
+				// Verificación rápida de manada
 				ComponentNewHerdBehavior componentNewHerdBehavior = base.Entity.FindComponent<ComponentNewHerdBehavior>();
 				bool flag = componentNewHerdBehavior != null;
 				if (flag)
@@ -61,13 +63,41 @@ namespace Game
 						}
 					}
 				}
+
+				// ESTABLECER OBJETIVO INMEDIATAMENTE
 				this.m_target = componentCreature;
 				this.m_nextUpdateTime = 0.0;
 				this.m_range = maxRange;
 				this.m_chaseTime = maxChaseTime;
 				this.m_isPersistent = isPersistent;
 				this.m_importanceLevel = (isPersistent ? this.ImportanceLevelPersistent : this.ImportanceLevelNonPersistent);
+
+				// NUEVO: FORZAR ACTIVACIÓN INMEDIATA
+				this.IsActive = true;
+				this.m_stateMachine.TransitionTo("Chasing");
+
+				// NUEVO: Actualizar inmediatamente el pathfinding
+				if (this.m_target != null && this.m_componentPathfinding != null)
+				{
+					this.m_componentPathfinding.Stop();
+					this.UpdateChasingStateImmediately();
+				}
 			}
+		}
+
+		// MÉTODO NUEVO: Actualización inmediata del estado de persecución
+		private void UpdateChasingStateImmediately()
+		{
+			if (this.m_target == null || !this.IsActive)
+				return;
+
+			Vector3 targetPosition = this.m_target.ComponentBody.Position;
+			this.m_componentPathfinding.SetDestination(
+				new Vector3?(targetPosition),
+				1f, 1.5f, 0, true, false, true, this.m_target.ComponentBody);
+
+			// Mirar inmediatamente al objetivo
+			this.m_componentCreature.ComponentCreatureModel.LookAtOrder = new Vector3?(this.m_target.ComponentCreatureModel.EyePosition);
 		}
 
 		public virtual void StopAttack()
@@ -82,16 +112,20 @@ namespace Game
 			this.m_importanceLevel = 0f;
 		}
 
+		// UPDATE OPTIMIZADO
 		public virtual void Update(float dt)
 		{
 			bool suppressed = this.Suppressed;
 			if (suppressed)
 			{
 				this.StopAttack();
+				return;
 			}
+
 			this.m_autoChaseSuppressionTime -= dt;
 			this.CheckDefendPlayer(dt);
 
+			// Verificación rápida de armas
 			bool hasRangedWeapon = this.HasActiveRangedWeaponComponent();
 			bool isOriginalHerd = base.Entity.FindComponent<ComponentHerdBehavior>() != null &&
 								  base.Entity.FindComponent<ComponentNewHerdBehavior>() == null;
@@ -107,7 +141,7 @@ namespace Game
 				this.m_chaseTime -= dt;
 				this.m_componentCreature.ComponentCreatureModel.LookAtOrder = new Vector3?(this.m_target.ComponentCreatureModel.EyePosition);
 
-				// NUEVA LÓGICA: Cambio inmediato de arma basado en distancia
+				// LOGICA MEJORADA: Cambio inmediato de arma basado en distancia
 				float distance = Vector3.Distance(this.m_componentCreature.ComponentBody.Position, this.m_target.ComponentBody.Position);
 
 				// Si el objetivo está cerca (dentro de 5 unidades), cambiar inmediatamente a arma cuerpo a cuerpo
@@ -116,7 +150,7 @@ namespace Game
 					// Cambiar a modo cuerpo a cuerpo inmediatamente
 					this.SwitchToMeleeModeImmediately();
 				}
-				else
+				else if (distance > 5f)
 				{
 					// Si está lejos, asegurarse de que tiene arma a distancia
 					this.FindAimTool(this.m_componentMiner);
@@ -133,7 +167,7 @@ namespace Game
 					{
 						Vector3 eyePosition = this.m_componentCreature.ComponentCreatureModel.EyePosition;
 						Vector3 targetPosition = this.m_target.ComponentCreatureModel.EyePosition;
-                        float verticalAdjustment = MathUtils.Lerp(0f, 0.3f, (float)Vector3.Distance(eyePosition, targetPosition) / 20f);
+						float verticalAdjustment = MathUtils.Lerp(0f, 0.3f, (float)Vector3.Distance(eyePosition, targetPosition) / 20f);
 						Vector3 adjustedTargetPosition = targetPosition + new Vector3(0f, verticalAdjustment, 0f);
 						Vector3 vector = Vector3.Normalize(adjustedTargetPosition - eyePosition);
 						this.m_chaseTime = Math.Max(this.m_chaseTime, this.m_isPersistent ? this.m_random.Float(8f, 10f) : 2f);
@@ -206,16 +240,19 @@ namespace Game
 					}
 				}
 			}
+
+			// ACTUALIZACIÓN MÁS RÁPIDA DE LA MÁQUINA DE ESTADOS
 			bool flag14 = this.m_subsystemTime.GameTime >= this.m_nextUpdateTime;
 			if (flag14)
 			{
-				this.m_dt = this.m_random.Float(0.25f, 0.35f) + MathUtils.Min((float)(this.m_subsystemTime.GameTime - this.m_nextUpdateTime), 0.1f);
+				// Reducir el tiempo de espera para actualizaciones más rápidas
+				this.m_dt = this.m_random.Float(0.1f, 0.2f) + MathUtils.Min((float)(this.m_subsystemTime.GameTime - this.m_nextUpdateTime), 0.05f);
 				this.m_nextUpdateTime = this.m_subsystemTime.GameTime + (double)this.m_dt;
 				this.m_stateMachine.Update();
 			}
 		}
 
-		// NUEVO MÉTODO: Cambio inmediato a modo cuerpo a cuerpo
+		// MÉTODO MEJORADO: Cambio inmediato a modo cuerpo a cuerpo
 		private void SwitchToMeleeModeImmediately()
 		{
 			// Buscar mejor arma cuerpo a cuerpo en inventario
@@ -235,14 +272,11 @@ namespace Game
 					}
 				}
 
-				// Si encontró un arma cuerpo a cuerpo mejor que las manos (meleePower > 1), equiparla
+				// Si encontró un arma cuerpo a cuerpo mejor que las manos (meleePower > 1), equiparla inmediatamente
 				if (bestSlot >= 0)
 				{
 					this.m_componentMiner.Inventory.ActiveSlotIndex = bestSlot;
 				}
-
-				// Si no hay arma cuerpo a cuerpo, usar lo que tenga en la mano
-				// (el ataque cuerpo a cuerpo se hará con lo que tenga equipado)
 			}
 		}
 
@@ -263,11 +297,11 @@ namespace Game
 			{
 				float distance = Vector3.Distance(this.m_componentCreature.ComponentBody.Position, this.m_target.ComponentBody.Position);
 
-				// NUEVO: Si el objetivo está muy cerca, cambiar inmediatamente a cuerpo a cuerpo
+				// Si el objetivo está muy cerca, cambiar inmediatamente a cuerpo a cuerpo
 				if (distance < 5f)
 				{
 					this.SwitchToMeleeModeImmediately();
-					return; // Salir de la lógica de arma a distancia
+					return;
 				}
 
 				if (distance >= this.m_attackRange.X && distance <= this.m_attackRange.Y)
@@ -321,49 +355,48 @@ namespace Game
 			}
 		}
 
+		// MÉTODO MEJORADO: Verificación más rápida de armas a distancia
 		private bool HasActiveRangedWeaponComponent()
 		{
-			ComponentMusketShooterBehavior componentMusketShooterBehavior = base.Entity.FindComponent<ComponentMusketShooterBehavior>();
-			ComponentBowShooterBehavior componentBowShooterBehavior = base.Entity.FindComponent<ComponentBowShooterBehavior>();
-			ComponentCrossbowShooterBehavior componentCrossbowShooterBehavior = base.Entity.FindComponent<ComponentCrossbowShooterBehavior>();
-			ComponentFlameThrowerShooterBehavior componentFlameThrowerShooterBehavior = base.Entity.FindComponent<ComponentFlameThrowerShooterBehavior>();
-			ComponentItemsLauncherShooterBehavior componentItemsLauncherShooterBehavior = base.Entity.FindComponent<ComponentItemsLauncherShooterBehavior>();
-			bool flag = componentMusketShooterBehavior != null && componentMusketShooterBehavior.IsActive && this.m_target != null;
-			bool result;
-			if (flag)
-			{
-				result = true;
-			}
-			else
-			{
-				bool flag2 = componentBowShooterBehavior != null && componentBowShooterBehavior.IsActive && this.m_target != null;
-				if (flag2)
-				{
-					result = true;
-				}
-				else
-				{
-					bool flag3 = componentCrossbowShooterBehavior != null && componentCrossbowShooterBehavior.IsActive && this.m_target != null;
-					if (flag3)
-					{
-						result = true;
-					}
-					else
-					{
-						bool flag4 = componentFlameThrowerShooterBehavior != null && componentFlameThrowerShooterBehavior.IsActive && this.m_target != null;
-						if (flag4)
-						{
-							result = true;
-						}
-						else
-						{
-							bool flag5 = componentItemsLauncherShooterBehavior != null && componentItemsLauncherShooterBehavior.IsActive && this.m_target != null;
-							result = flag5;
-						}
-					}
-				}
-			}
-			return result;
+			if (this.m_target == null) return false;
+
+			// Verificación optimizada sin tantos if anidados
+			ComponentMusketShooterBehavior musket = base.Entity.FindComponent<ComponentMusketShooterBehavior>();
+			if (musket != null && musket.IsActive) return true;
+
+			ComponentBowShooterBehavior bow = base.Entity.FindComponent<ComponentBowShooterBehavior>();
+			if (bow != null && bow.IsActive) return true;
+
+			ComponentCrossbowShooterBehavior crossbow = base.Entity.FindComponent<ComponentCrossbowShooterBehavior>();
+			if (crossbow != null && crossbow.IsActive) return true;
+
+			ComponentFlameThrowerShooterBehavior flamethrower = base.Entity.FindComponent<ComponentFlameThrowerShooterBehavior>();
+			if (flamethrower != null && flamethrower.IsActive) return true;
+
+			ComponentItemsLauncherShooterBehavior launcher = base.Entity.FindComponent<ComponentItemsLauncherShooterBehavior>();
+			return (launcher != null && launcher.IsActive);
+		}
+
+		// MÉTODO NUEVO: Respuesta inmediata a comandos
+		public void RespondToCommandImmediately(ComponentCreature target)
+		{
+			if (this.Suppressed || target == null)
+				return;
+
+			// Configuración inmediata
+			this.m_target = target;
+			this.m_nextUpdateTime = 0.0;
+			this.m_range = 20f;
+			this.m_chaseTime = 30f;
+			this.m_isPersistent = false;
+			this.m_importanceLevel = this.ImportanceLevelNonPersistent;
+
+			// Activación inmediata
+			this.IsActive = true;
+			this.m_stateMachine.TransitionTo("Chasing");
+
+			// Iniciar persecución inmediata
+			this.UpdateChasingStateImmediately();
 		}
 
 		private void UpdateChaseMovementOnly(float dt)
@@ -379,7 +412,7 @@ namespace Game
 					bool flag3 = this.m_subsystemTime.GameTime >= this.m_nextUpdateTime;
 					if (flag3)
 					{
-						this.m_dt = this.m_random.Float(0.25f, 0.35f) + MathUtils.Min((float)(this.m_subsystemTime.GameTime - this.m_nextUpdateTime), 0.1f);
+						this.m_dt = this.m_random.Float(0.1f, 0.2f) + MathUtils.Min((float)(this.m_subsystemTime.GameTime - this.m_nextUpdateTime), 0.05f);
 						this.m_nextUpdateTime = this.m_subsystemTime.GameTime + (double)this.m_dt;
 						bool flag4 = this.m_stateMachine.CurrentState == "Chasing";
 						if (flag4)
@@ -524,54 +557,55 @@ namespace Game
 			return result;
 		}
 
+		// MÉTODO OPTIMIZADO: Encontrar herramienta de apuntar
 		public bool FindAimTool(ComponentMiner componentMiner)
 		{
 			bool flag = componentMiner.Inventory == null;
-			bool result;
 			if (flag)
 			{
-				result = false;
+				return false;
 			}
-			else
+
+			// Verificar primero el slot activo actual
+			int activeSlotIndex = componentMiner.Inventory.ActiveSlotIndex;
+			int activeBlockValue = componentMiner.ActiveBlockValue;
+			int num = Terrain.ExtractContents(activeBlockValue);
+			Block block = BlocksManager.Blocks[num];
+
+			if (block.IsAimable_(activeBlockValue))
 			{
-				int activeSlotIndex = componentMiner.Inventory.ActiveSlotIndex;
-				int activeBlockValue = componentMiner.ActiveBlockValue;
-				int num = Terrain.ExtractContents(activeBlockValue);
-				Block block = BlocksManager.Blocks[num];
-				bool flag2 = block.IsAimable_(activeBlockValue);
-				if (flag2)
+				if (!(block is FlameThrowerBlock))
 				{
-					bool flag3 = !(block is FlameThrowerBlock);
-					if (flag3)
+					bool flag4 = this.IsAimToolNeedToReady(componentMiner, activeSlotIndex);
+					if (flag4)
 					{
-						bool flag4 = this.IsAimToolNeedToReady(componentMiner, activeSlotIndex);
-						if (flag4)
-						{
-							this.HandleComplexAimTool(componentMiner, activeSlotIndex);
-						}
-						return true;
+						this.HandleComplexAimTool(componentMiner, activeSlotIndex);
 					}
-					bool flag5 = this.IsReady(activeBlockValue);
-					if (flag5)
-					{
-						return true;
-					}
+					return true;
 				}
-				for (int i = 0; i < componentMiner.Inventory.SlotsCount; i++)
+				bool flag5 = this.IsReady(activeBlockValue);
+				if (flag5)
 				{
-					int slotValue = componentMiner.Inventory.GetSlotValue(i);
-					int num2 = Terrain.ExtractContents(slotValue);
-					Block block2 = BlocksManager.Blocks[num2];
-					bool flag6 = block2.IsAimable_(slotValue) && (!(block2 is FlameThrowerBlock) || this.IsReady(slotValue));
-					if (flag6)
-					{
-						componentMiner.Inventory.ActiveSlotIndex = i;
-						return true;
-					}
+					return true;
 				}
-				result = false;
 			}
-			return result;
+
+			// Buscar en otros slots
+			for (int i = 0; i < Math.Min(componentMiner.Inventory.SlotsCount, 10); i++) // Buscar solo en primeros 10 slots
+			{
+				if (i == activeSlotIndex) continue; // Ya verificamos este
+
+				int slotValue = componentMiner.Inventory.GetSlotValue(i);
+				int num2 = Terrain.ExtractContents(slotValue);
+				Block block2 = BlocksManager.Blocks[num2];
+				bool flag6 = block2.IsAimable_(slotValue) && (!(block2 is FlameThrowerBlock) || this.IsReady(slotValue));
+				if (flag6)
+				{
+					componentMiner.Inventory.ActiveSlotIndex = i;
+					return true;
+				}
+			}
+			return false;
 		}
 
 		public bool IsReady(int slotValue)
@@ -640,6 +674,7 @@ namespace Game
 			return true;
 		}
 
+		// MÉTODO MEJORADO: Preparar arma más rápido
 		public void HandleComplexAimTool(ComponentMiner componentMiner, int slotIndex)
 		{
 			int slotValue = componentMiner.Inventory.GetSlotValue(slotIndex);
@@ -757,48 +792,42 @@ namespace Game
 		{
 			int activeBlockValue = componentMiner.ActiveBlockValue;
 			bool flag = componentMiner.Inventory == null;
-			bool result;
 			if (flag)
 			{
-				result = false;
+				return false;
 			}
-			else
+
+			bool flag2 = BlocksManager.Blocks[Terrain.ExtractContents(activeBlockValue)].GetMeleePower(activeBlockValue) > 1f;
+			if (flag2)
 			{
-				bool flag2 = BlocksManager.Blocks[Terrain.ExtractContents(activeBlockValue)].GetMeleePower(activeBlockValue) > 1f;
-				if (flag2)
+				return true;
+			}
+
+			float num = 1f;
+			int activeSlotIndex = 0;
+			for (int i = 0; i < 6; i++)
+			{
+				int slotValue = componentMiner.Inventory.GetSlotValue(i);
+				float meleePower = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)].GetMeleePower(slotValue);
+				bool flag3 = meleePower > num;
+				if (flag3)
 				{
-					result = true;
-				}
-				else
-				{
-					float num = 1f;
-					int activeSlotIndex = 0;
-					for (int i = 0; i < 6; i++)
-					{
-						int slotValue = componentMiner.Inventory.GetSlotValue(i);
-						float meleePower = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)].GetMeleePower(slotValue);
-						bool flag3 = meleePower > num;
-						if (flag3)
-						{
-							num = meleePower;
-							activeSlotIndex = i;
-						}
-					}
-					bool flag4 = num > 1f;
-					if (flag4)
-					{
-						componentMiner.Inventory.ActiveSlotIndex = activeSlotIndex;
-						result = true;
-					}
-					else
-					{
-						result = false;
-					}
+					num = meleePower;
+					activeSlotIndex = i;
 				}
 			}
-			return result;
+
+			bool flag4 = num > 1f;
+			if (flag4)
+			{
+				componentMiner.Inventory.ActiveSlotIndex = activeSlotIndex;
+				return true;
+			}
+
+			return false;
 		}
 
+		// MÉTODO MEJORADO: Verificar defensa del jugador más rápido
 		private void CheckDefendPlayer(float dt)
 		{
 			try
@@ -822,10 +851,11 @@ namespace Game
 					return;
 				}
 
+				// Verificación más frecuente
 				bool flag3 = this.m_subsystemTime.GameTime < this.m_nextPlayerCheckTime;
 				if (!flag3)
 				{
-					this.m_nextPlayerCheckTime = this.m_subsystemTime.GameTime + 1.0;
+					this.m_nextPlayerCheckTime = this.m_subsystemTime.GameTime + 0.5; // Reducido de 1.0 a 0.5 segundos
 					foreach (ComponentPlayer componentPlayer in this.m_subsystemPlayers.ComponentPlayers)
 					{
 						bool flag4 = componentPlayer.ComponentHealth.Health > 0f;
@@ -1068,7 +1098,7 @@ namespace Game
 				{
 					this.m_componentCreature.ComponentCreatureSounds.PlayIdleSound(false);
 				}
-				this.m_nextUpdateTime = 0.0;
+				this.m_nextUpdateTime = 0.0; // Forzar actualización inmediata
 			}, delegate
 			{
 				bool flag = !this.IsActive;
