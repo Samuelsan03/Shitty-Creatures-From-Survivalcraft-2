@@ -316,7 +316,7 @@ namespace Game
 			float num4 = this.m_random.Float(0f, 1f);
 			string name = base.Entity.ValuesDictionary.DatabaseObject.Name;
 
-			if (name == "InfectedNormal1")
+			if (name == "InfectedNormal1" || name == "InfectedNormal2" || name == "InfectedMuscle1" || name == "InfectedMuscle2" || name == "Werewolf" || name == "CapitanPirata" || name == "PirataNormal" || name == "PirataElite" || name == "PirataHostilComerciante")
 			{
 				// Probabilidad equitativa para todas las armas (aproximadamente 5.26% cada una)
 				// 19 opciones en total (sin ItemsLauncher, sin spears como secundarias)
