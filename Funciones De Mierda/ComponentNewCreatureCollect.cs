@@ -318,129 +318,123 @@ namespace Game
 
 			if (name == "InfectedNormal1")
 			{
-				// Probabilidad equitativa para todas las armas (aproximadamente 3.85% cada una)
-				// 26 opciones en total
-				if (num4 < 0.0385f) // 1/26 - StoneClubBlock
+				// Probabilidad equitativa para todas las armas (aproximadamente 5.26% cada una)
+				// 19 opciones en total (sin ItemsLauncher, sin spears como secundarias)
+				if (num4 < 0.0526f) // 1/19 - StoneClubBlock
 				{
 					num = Terrain.MakeBlockValue(StoneClubBlock.Index);
 				}
-				else if (num4 < 0.077f) // 2/26 - WoodenClubBlock
+				else if (num4 < 0.1052f) // 2/19 - WoodenClubBlock
 				{
 					num = Terrain.MakeBlockValue(WoodenClubBlock.Index);
 				}
-				else if (num4 < 0.1155f) // 3/26 - DiamondAxeBlock
+				else if (num4 < 0.1578f) // 3/19 - DiamondAxeBlock
 				{
 					num = Terrain.MakeBlockValue(DiamondAxeBlock.Index);
 				}
-				else if (num4 < 0.154f) // 4/26 - IronMacheteBlock
+				else if (num4 < 0.2104f) // 4/19 - IronMacheteBlock
 				{
 					num = Terrain.MakeBlockValue(IronMacheteBlock.Index);
 				}
-				else if (num4 < 0.1925f) // 5/26 - DiamondMacheteBlock
+				else if (num4 < 0.263f) // 5/19 - DiamondMacheteBlock
 				{
 					num = Terrain.MakeBlockValue(DiamondMacheteBlock.Index);
 				}
-				else if (num4 < 0.231f) // 6/26 - IronAxeBlock
+				else if (num4 < 0.3156f) // 6/19 - IronAxeBlock
 				{
 					num = Terrain.MakeBlockValue(IronAxeBlock.Index);
 				}
-				else if (num4 < 0.2695f) // 7/26 - CopperAxeBlock
+				else if (num4 < 0.3682f) // 7/19 - CopperAxeBlock
 				{
 					num = Terrain.MakeBlockValue(CopperAxeBlock.Index);
 				}
-				else if (num4 < 0.308f) // 8/26 - StoneSpearBlock
+				else if (num4 < 0.4208f) // 8/19 - StoneSpearBlock
 				{
 					num = Terrain.MakeBlockValue(StoneSpearBlock.Index);
 				}
-				else if (num4 < 0.3465f) // 9/26 - WoodenSpearBlock
+				else if (num4 < 0.4734f) // 9/19 - WoodenSpearBlock
 				{
 					num = Terrain.MakeBlockValue(WoodenSpearBlock.Index);
 				}
-				else if (num4 < 0.385f) // 10/26 - IronSpearBlock
+				else if (num4 < 0.526f) // 10/19 - IronSpearBlock
 				{
 					num = Terrain.MakeBlockValue(IronSpearBlock.Index);
 				}
-				else if (num4 < 0.4235f) // 11/26 - DiamondSpearBlock
+				else if (num4 < 0.5786f) // 11/19 - DiamondSpearBlock
 				{
 					num = Terrain.MakeBlockValue(DiamondSpearBlock.Index);
 				}
-				else if (num4 < 0.462f) // 12/26 - CopperSpearBlock
+				else if (num4 < 0.6312f) // 12/19 - CopperSpearBlock
 				{
 					num = Terrain.MakeBlockValue(CopperSpearBlock.Index);
 				}
-				else if (num4 < 0.5005f) // 13/26 - WoodenAxeBlock
+				else if (num4 < 0.6838f) // 13/19 - WoodenAxeBlock
 				{
 					num = Terrain.MakeBlockValue(WoodAxeBlock.Index);
 				}
-				else if (num4 < 0.539f) // 14/26 - WoodenMacheteBlock
+				else if (num4 < 0.7364f) // 14/19 - WoodenMacheteBlock
 				{
 					num = Terrain.MakeBlockValue(WoodMacheteBlock.Index);
 				}
-				else if (num4 < 0.5775f) // 15/26 - StoneAxeOriginalBlock
+				else if (num4 < 0.789f) // 15/19 - StoneAxeOriginalBlock
 				{
 					num = Terrain.MakeBlockValue(StoneAxeOriginalBlock.Index);
 				}
-				else if (num4 < 0.616f) // 16/26 - StoneMacheteBlock
+				else if (num4 < 0.8416f) // 16/19 - StoneMacheteBlock
 				{
 					num = Terrain.MakeBlockValue(StoneMacheteBlock.Index);
 				}
-				else if (num4 < 0.6545f) // 17/26 - LavaAxeBlock
+				else if (num4 < 0.8942f) // 17/19 - LavaAxeBlock
 				{
 					num = Terrain.MakeBlockValue(LavaAxeBlock.Index);
 				}
-				else if (num4 < 0.693f) // 18/26 - LavaMacheteBlock
+				else if (num4 < 0.9468f) // 18/19 - LavaMacheteBlock
 				{
 					num = Terrain.MakeBlockValue(LavaMacheteBlock.Index);
 				}
-				else if (num4 < 0.7315f) // 19/26 - LavaSpearBlock
+				else // 19/19 - LavaSpearBlock (último 5.26%)
 				{
 					num = Terrain.MakeBlockValue(LavaSpearBlock.Index);
 				}
-				else if (num4 < 0.77f) // 20/26 - Mosquete (MusketBlock)
+
+				// SELECCIÓN DE ARMA SECUNDARIA (solo axes y machetes, sin spears)
+				float secondaryWeaponRoll = this.m_random.Float(0f, 1f);
+
+				// Lista de armas secundarias permitidas (axes y machetes)
+				if (secondaryWeaponRoll < 0.1429f) // 1/7 - DiamondAxeBlock
 				{
-					num = Terrain.MakeBlockValue(MusketBlock.Index);
+					num2 = Terrain.MakeBlockValue(DiamondAxeBlock.Index);
 				}
-				else if (num4 < 0.8085f) // 21/26 - Arco (BowBlock)
+				else if (secondaryWeaponRoll < 0.2858f) // 2/7 - IronMacheteBlock
 				{
-					num = Terrain.MakeBlockValue(BowBlock.Index);
+					num2 = Terrain.MakeBlockValue(IronMacheteBlock.Index);
 				}
-				else if (num4 < 0.847f) // 22/26 - Ballesta (CrossbowBlock)
+				else if (secondaryWeaponRoll < 0.4287f) // 3/7 - DiamondMacheteBlock
 				{
-					num = Terrain.MakeBlockValue(CrossbowBlock.Index);
+					num2 = Terrain.MakeBlockValue(DiamondMacheteBlock.Index);
 				}
-				else if (num4 < 0.8855f) // 23/26 - Ballesta repetidora (RepeatCrossbowBlock)
+				else if (secondaryWeaponRoll < 0.5716f) // 4/7 - IronAxeBlock
 				{
-					num = Terrain.MakeBlockValue(RepeatCrossbowBlock.Index);
+					num2 = Terrain.MakeBlockValue(IronAxeBlock.Index);
 				}
-				else if (num4 < 0.924f) // 24/26 - Lanzallamas (FlameThrowerBlock)
+				else if (secondaryWeaponRoll < 0.7145f) // 5/7 - CopperAxeBlock
 				{
-					// Lanzallamas cargado con 8 disparos (50% fuego, 50% veneno)
-					num = FlameThrowerBlock.SetLoadCount(
-						Terrain.MakeBlockValue(FlameThrowerBlock.Index, 0,
-							FlameThrowerBlock.SetBulletType(
-								FlameThrowerBlock.SetLoadState(0, FlameThrowerBlock.LoadState.Loaded),
-								new FlameBulletBlock.FlameBulletType?(this.m_random.Bool(0.5f) ?
-									FlameBulletBlock.FlameBulletType.Flame :
-									FlameBulletBlock.FlameBulletType.Poison)
-							)
-						),
-						8
-					);
+					num2 = Terrain.MakeBlockValue(CopperAxeBlock.Index);
 				}
-				else if (num4 < 0.9625f) // 25/26 - ItemsLauncher
+				else if (secondaryWeaponRoll < 0.8574f) // 6/7 - WoodenAxeBlock
 				{
-					num = Terrain.MakeBlockValue(ItemsLauncherBlock.Index);
+					num2 = Terrain.MakeBlockValue(WoodAxeBlock.Index);
 				}
-				else // 26/26 - Machete de cobre (último 3.85%)
+				else // 7/7 - LavaAxeBlock
 				{
-					num = Terrain.MakeBlockValue(CopperMacheteBlock.Index);
+					num2 = Terrain.MakeBlockValue(LavaAxeBlock.Index);
 				}
 
-				// Dar un machete de cobre en el slot 2 si no hay otra arma allí
-				// y si el slot 1 no es ya un CopperMacheteBlock
-				if (num2 == 0 && num != Terrain.MakeBlockValue(CopperMacheteBlock.Index))
+				// Verificar que el arma secundaria no sea la misma que la primaria
+				if (num2 == num)
 				{
-					num2 = Terrain.MakeBlockValue(CopperMacheteBlock.Index);
+					// Si son iguales, usar LavaMacheteBlock como alternativa
+					num2 = Terrain.MakeBlockValue(LavaMacheteBlock.Index);
 				}
 			}
 
