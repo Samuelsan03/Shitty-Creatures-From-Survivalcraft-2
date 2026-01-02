@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Engine;
@@ -116,6 +116,17 @@ namespace Game
 					}
 				}
 
+				// Obtener el ComponentNewCreatureCollect de la entidad original ANTES de eliminarla
+				ComponentNewCreatureCollect originalCollectComponent = entity.FindComponent<ComponentNewCreatureCollect>();
+				if (originalCollectComponent != null)
+				{
+					Console.WriteLine($"ComponentNewCreatureCollect encontrado en la entidad original");
+				}
+				else
+				{
+					Console.WriteLine($"ComponentNewCreatureCollect NO encontrado en la entidad original");
+				}
+
 				entityTemplateName = tameableCreatures[currentEntityName];
 				Console.WriteLine($"¡{currentEntityName} detectado! Transformando a {entityTemplateName}...");
 
@@ -136,8 +147,31 @@ namespace Game
 				componentBody.Rotation = bodyRaycastResult.Value.ComponentBody.Rotation;
 				componentBody.Velocity = bodyRaycastResult.Value.ComponentBody.Velocity;
 				entity2.FindComponent<ComponentSpawn>(true).SpawnDuration = 0f;
-				base.Project.RemoveEntity(entity, true);
 
+				// Obtener el ComponentNewCreatureCollect de la nueva entidad
+				ComponentNewCreatureCollect newCollectComponent = entity2.FindComponent<ComponentNewCreatureCollect>();
+				if (newCollectComponent != null)
+				{
+					Console.WriteLine($"ComponentNewCreatureCollect encontrado en la nueva entidad");
+				}
+				else
+				{
+					Console.WriteLine($"ComponentNewCreatureCollect NO encontrado en la nueva entidad");
+				}
+
+				// Copiar el inventario de la entidad original a la nueva
+				if (originalCollectComponent != null && newCollectComponent != null)
+				{
+					Console.WriteLine("Copiando inventario de la entidad original a la nueva entidad domesticada...");
+					newCollectComponent.CopyInventoryFrom(originalCollectComponent);
+				}
+				else
+				{
+					Console.WriteLine("No se pudo copiar el inventario - uno de los componentes es null");
+				}
+
+				// Remover la entidad original y agregar la nueva
+				base.Project.RemoveEntity(entity, true);
 				base.Project.AddEntity(entity2);
 
 				Console.WriteLine("Transformación completada exitosamente!");
@@ -219,7 +253,7 @@ namespace Game
 							}
 
 							messageColor = new Color(0, 255, 128);
-							soundToPlay = "Audio/UI/Bosses FNAF 3";
+							soundToPlay = "Audio/UI/Tada";
 						}
 
 						Console.WriteLine($"Mostrando mensaje: {message}");
