@@ -309,146 +309,147 @@ namespace Game
 			{
 				return;
 			}
-			int num = 0;
-			int num2 = 0;
-			int num3 = 0;
-			int count = 1;
-			float num4 = this.m_random.Float(0f, 1f);
+
+			float randomChance = this.m_random.Float(0f, 1f);
 			string name = base.Entity.ValuesDictionary.DatabaseObject.Name;
 
 			if (name == "InfectedNormal1" || name == "InfectedNormal2" || name == "InfectedMuscle1" || name == "InfectedMuscle2" || name == "Werewolf" || name == "CapitanPirata" || name == "PirataNormal" || name == "PirataElite" || name == "PirataHostilComerciante")
 			{
-				// Probabilidad equitativa para todas las armas (aproximadamente 5.26% cada una)
-				// 19 opciones en total (sin ItemsLauncher, sin spears como secundarias)
-				if (num4 < 0.0526f) // 1/19 - StoneClubBlock
+				int weaponValue = 0;
+
+				// Primero decidir el tipo de arma (40% probabilidad de armas principales)
+				if (randomChance < 0.40f)
 				{
-					num = Terrain.MakeBlockValue(StoneClubBlock.Index);
+					// 40% probabilidad de armas principales
+					float mainWeaponChance = this.m_random.Float(0f, 1f);
+
+					if (mainWeaponChance < 0.20f) // 20% de las armas principales: Mosquete
+					{
+						weaponValue = Terrain.MakeBlockValue(MusketBlock.Index);
+					}
+					else if (mainWeaponChance < 0.40f) // 20% de las armas principales: Arco
+					{
+						weaponValue = Terrain.MakeBlockValue(BowBlock.Index);
+					}
+					else if (mainWeaponChance < 0.60f) // 20% de las armas principales: Ballesta
+					{
+						weaponValue = Terrain.MakeBlockValue(CrossbowBlock.Index);
+					}
+					else if (mainWeaponChance < 0.80f) // 20% de las armas principales: Ballesta repetidora
+					{
+						weaponValue = Terrain.MakeBlockValue(RepeatCrossbowBlock.Index);
+					}
+					else // 20% de las armas principales: Lanzallamas
+					{
+						// Lanzallamas cargado con 8 disparos (50% fuego, 50% veneno)
+						weaponValue = FlameThrowerBlock.SetLoadCount(
+							Terrain.MakeBlockValue(FlameThrowerBlock.Index, 0,
+								FlameThrowerBlock.SetBulletType(
+									FlameThrowerBlock.SetLoadState(0, FlameThrowerBlock.LoadState.Loaded),
+									new FlameBulletBlock.FlameBulletType?(this.m_random.Bool(0.5f) ?
+										FlameBulletBlock.FlameBulletType.Flame :
+										FlameBulletBlock.FlameBulletType.Poison)
+								)
+							),
+							8
+						);
+					}
 				}
-				else if (num4 < 0.1052f) // 2/19 - WoodenClubBlock
+				else
 				{
-					num = Terrain.MakeBlockValue(WoodenClubBlock.Index);
-				}
-				else if (num4 < 0.1578f) // 3/19 - DiamondAxeBlock
-				{
-					num = Terrain.MakeBlockValue(DiamondAxeBlock.Index);
-				}
-				else if (num4 < 0.2104f) // 4/19 - IronMacheteBlock
-				{
-					num = Terrain.MakeBlockValue(IronMacheteBlock.Index);
-				}
-				else if (num4 < 0.263f) // 5/19 - DiamondMacheteBlock
-				{
-					num = Terrain.MakeBlockValue(DiamondMacheteBlock.Index);
-				}
-				else if (num4 < 0.3156f) // 6/19 - IronAxeBlock
-				{
-					num = Terrain.MakeBlockValue(IronAxeBlock.Index);
-				}
-				else if (num4 < 0.3682f) // 7/19 - CopperAxeBlock
-				{
-					num = Terrain.MakeBlockValue(CopperAxeBlock.Index);
-				}
-				else if (num4 < 0.4208f) // 8/19 - StoneSpearBlock
-				{
-					num = Terrain.MakeBlockValue(StoneSpearBlock.Index);
-				}
-				else if (num4 < 0.4734f) // 9/19 - WoodenSpearBlock
-				{
-					num = Terrain.MakeBlockValue(WoodenSpearBlock.Index);
-				}
-				else if (num4 < 0.526f) // 10/19 - IronSpearBlock
-				{
-					num = Terrain.MakeBlockValue(IronSpearBlock.Index);
-				}
-				else if (num4 < 0.5786f) // 11/19 - DiamondSpearBlock
-				{
-					num = Terrain.MakeBlockValue(DiamondSpearBlock.Index);
-				}
-				else if (num4 < 0.6312f) // 12/19 - CopperSpearBlock
-				{
-					num = Terrain.MakeBlockValue(CopperSpearBlock.Index);
-				}
-				else if (num4 < 0.6838f) // 13/19 - WoodenAxeBlock
-				{
-					num = Terrain.MakeBlockValue(WoodAxeBlock.Index);
-				}
-				else if (num4 < 0.7364f) // 14/19 - WoodenMacheteBlock
-				{
-					num = Terrain.MakeBlockValue(WoodMacheteBlock.Index);
-				}
-				else if (num4 < 0.789f) // 15/19 - StoneAxeOriginalBlock
-				{
-					num = Terrain.MakeBlockValue(StoneAxeOriginalBlock.Index);
-				}
-				else if (num4 < 0.8416f) // 16/19 - StoneMacheteBlock
-				{
-					num = Terrain.MakeBlockValue(StoneMacheteBlock.Index);
-				}
-				else if (num4 < 0.8942f) // 17/19 - LavaAxeBlock
-				{
-					num = Terrain.MakeBlockValue(LavaAxeBlock.Index);
-				}
-				else if (num4 < 0.9468f) // 18/19 - LavaMacheteBlock
-				{
-					num = Terrain.MakeBlockValue(LavaMacheteBlock.Index);
-				}
-				else // 19/19 - LavaSpearBlock (último 5.26%)
-				{
-					num = Terrain.MakeBlockValue(LavaSpearBlock.Index);
+					// 60% probabilidad de armas tradicionales (machetes, spears, axes)
+					float weaponTypeChance = this.m_random.Float(0f, 1f);
+
+					if (weaponTypeChance < 0.3333f) // 1/3 - Machetes
+					{
+						float macheteRoll = this.m_random.Float(0f, 1f);
+						if (macheteRoll < 0.1667f) // 16.67% - WoodenMachete
+						{
+							weaponValue = Terrain.MakeBlockValue(WoodMacheteBlock.Index);
+						}
+						else if (macheteRoll < 0.3333f) // 16.67% - StoneMachete
+						{
+							weaponValue = Terrain.MakeBlockValue(StoneMacheteBlock.Index);
+						}
+						else if (macheteRoll < 0.50f) // 16.67% - CopperMachete
+						{
+							weaponValue = Terrain.MakeBlockValue(CopperMacheteBlock.Index);
+						}
+						else if (macheteRoll < 0.6667f) // 16.67% - IronMachete
+						{
+							weaponValue = Terrain.MakeBlockValue(IronMacheteBlock.Index);
+						}
+						else if (macheteRoll < 0.8333f) // 16.67% - DiamondMachete
+						{
+							weaponValue = Terrain.MakeBlockValue(DiamondMacheteBlock.Index);
+						}
+						else // 16.67% - LavaMachete
+						{
+							weaponValue = Terrain.MakeBlockValue(LavaMacheteBlock.Index);
+						}
+					}
+					else if (weaponTypeChance < 0.6666f) // 2/3 - Spears
+					{
+						float spearRoll = this.m_random.Float(0f, 1f);
+						if (spearRoll < 0.1667f) // 16.67% - WoodenSpear
+						{
+							weaponValue = Terrain.MakeBlockValue(WoodenSpearBlock.Index);
+						}
+						else if (spearRoll < 0.3333f) // 16.67% - StoneSpear
+						{
+							weaponValue = Terrain.MakeBlockValue(StoneSpearBlock.Index);
+						}
+						else if (spearRoll < 0.50f) // 16.67% - CopperSpear
+						{
+							weaponValue = Terrain.MakeBlockValue(CopperSpearBlock.Index);
+						}
+						else if (spearRoll < 0.6667f) // 16.67% - IronSpear
+						{
+							weaponValue = Terrain.MakeBlockValue(IronSpearBlock.Index);
+						}
+						else if (spearRoll < 0.8333f) // 16.67% - DiamondSpear
+						{
+							weaponValue = Terrain.MakeBlockValue(DiamondSpearBlock.Index);
+						}
+						else // 16.67% - LavaSpear
+						{
+							weaponValue = Terrain.MakeBlockValue(LavaSpearBlock.Index);
+						}
+					}
+					else // 3/3 - Axes
+					{
+						float axeRoll = this.m_random.Float(0f, 1f);
+						if (axeRoll < 0.1667f) // 16.67% - WoodenAxe
+						{
+							weaponValue = Terrain.MakeBlockValue(WoodAxeBlock.Index);
+						}
+						else if (axeRoll < 0.3333f) // 16.67% - StoneAxeOriginal
+						{
+							weaponValue = Terrain.MakeBlockValue(StoneAxeOriginalBlock.Index);
+						}
+						else if (axeRoll < 0.50f) // 16.67% - CopperAxe
+						{
+							weaponValue = Terrain.MakeBlockValue(CopperAxeBlock.Index);
+						}
+						else if (axeRoll < 0.6667f) // 16.67% - IronAxe
+						{
+							weaponValue = Terrain.MakeBlockValue(IronAxeBlock.Index);
+						}
+						else if (axeRoll < 0.8333f) // 16.67% - DiamondAxe
+						{
+							weaponValue = Terrain.MakeBlockValue(DiamondAxeBlock.Index);
+						}
+						else // 16.67% - LavaAxe
+						{
+							weaponValue = Terrain.MakeBlockValue(LavaAxeBlock.Index);
+						}
+					}
 				}
 
-				// SELECCIÓN DE ARMA SECUNDARIA (solo axes y machetes, sin spears)
-				float secondaryWeaponRoll = this.m_random.Float(0f, 1f);
-
-				// Lista de armas secundarias permitidas (axes y machetes)
-				if (secondaryWeaponRoll < 0.1429f) // 1/7 - DiamondAxeBlock
+				if (weaponValue != 0)
 				{
-					num2 = Terrain.MakeBlockValue(DiamondAxeBlock.Index);
+					inventory.AddSlotItems(0, weaponValue, 1);
 				}
-				else if (secondaryWeaponRoll < 0.2858f) // 2/7 - IronMacheteBlock
-				{
-					num2 = Terrain.MakeBlockValue(IronMacheteBlock.Index);
-				}
-				else if (secondaryWeaponRoll < 0.4287f) // 3/7 - DiamondMacheteBlock
-				{
-					num2 = Terrain.MakeBlockValue(DiamondMacheteBlock.Index);
-				}
-				else if (secondaryWeaponRoll < 0.5716f) // 4/7 - IronAxeBlock
-				{
-					num2 = Terrain.MakeBlockValue(IronAxeBlock.Index);
-				}
-				else if (secondaryWeaponRoll < 0.7145f) // 5/7 - CopperAxeBlock
-				{
-					num2 = Terrain.MakeBlockValue(CopperAxeBlock.Index);
-				}
-				else if (secondaryWeaponRoll < 0.8574f) // 6/7 - WoodenAxeBlock
-				{
-					num2 = Terrain.MakeBlockValue(WoodAxeBlock.Index);
-				}
-				else // 7/7 - LavaAxeBlock
-				{
-					num2 = Terrain.MakeBlockValue(LavaAxeBlock.Index);
-				}
-
-				// Verificar que el arma secundaria no sea la misma que la primaria
-				if (num2 == num)
-				{
-					// Si son iguales, usar LavaMacheteBlock como alternativa
-					num2 = Terrain.MakeBlockValue(LavaMacheteBlock.Index);
-				}
-			}
-
-			if (num != 0)
-			{
-				inventory.AddSlotItems(0, num, count);
-			}
-			if (num2 != 0 && inventory.GetSlotCount(1) == 0)
-			{
-				inventory.AddSlotItems(1, num2, 1);
-			}
-			if (num3 != 0 && inventory.GetSlotCount(2) == 0)
-			{
-				inventory.AddSlotItems(2, num3, 1);
 			}
 		}
 
