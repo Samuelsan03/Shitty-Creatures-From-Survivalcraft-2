@@ -1,17 +1,4 @@
 <ShittyCreatures xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://gitee.com/THPRC/survivalcraft-api/raw/SCAPI1.8/Survivalcraft/Content/Assets/Database.xsd">
-<Folder Name="NewRendering" Guid="a74436fd-e173-45e4-bd9a-bf4b0b928e68">
-<ComponentTemplate Name="NewHumanModel" Description="Modelo humano mejorado con animaciones fluidas" Guid="c48d5760-c2bc-457b-add4-f43f68c9fb9b" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-  <Parameter Name="WalkAnimationSpeed" Description="Velocidad de animación al caminar, en ciclos por metro" Guid="1563ba38-409b-4f05-bb7b-1ff57719b51e" Value="1" Type="float"/>
-  <Parameter Name="WalkLegsAngle" Description="Ángulo de animación de las piernas, en radianes" Guid="5f6f6770-2bf8-417c-81fe-0d98bc810c21" Value="0.5" Type="float"/>
-  <Parameter Name="WalkBobHeight" Description="Altura del balanceo al caminar, en metros" Guid="46bf2ae9-9417-4b1e-a3d5-eca1da5b6269" Value="0.05" Type="float"/>
-  <Parameter Name="MovementSmoothness" Description="Suavidad del movimiento" Guid="439570ea-6139-4160-8d1a-9d1f70818318" Value="15" Type="float"/>
-  <Parameter Name="RotationSmoothness" Description="Suavidad de la rotación" Guid="0e9e9753-d81f-4ed1-aeb9-22267da503d3" Value="20" Type="float"/>
-  <Parameter Name="IdleSwayAmount" Description="Cantidad de balanceo en estado inactivo" Guid="0f24e289-1a13-44e9-9f9c-20b461b1b129" Value="0.05" Type="float"/>
-  <Parameter Name="BreathingAmplitude" Description="Amplitud de la respiración" Guid="b4a046a5-72a6-462c-a401-10c74b09cffb" Value="0.005" Type="float"/>
-  <Parameter Name="Class" Guid="00a3648e-f4cc-42c5-b34a-7f5644d5d4ef" Value="Game.ComponentNewHumanModel" Type="string"/>
-</ComponentTemplate>
-</Folder>
-
 <Folder Name="Gameplay" Guid="d509e5e2-2c10-49f1-8223-85cd892c63b0">
 <ComponentTemplate Name="FlushInventory" Description="A flush bag that you can take items" Guid="b86f3409-2929-4d0a-b4ac-3d7b4ef9c404" InheritanceParent="81a44c6a-c30a-4f53-8d64-0c30aabab8f9">
       <Parameter Name="SlotsCount" Description="Cantidad de casillas que contenera la criatura en su inventario." Guid="9eb2101f-4bff-4925-9f8d-ef95591c9342" Value="16" Type="int"/>
@@ -452,13 +439,48 @@
     <Parameter Name="ChaseWhenAttackedProbability" Value="0.8" Type="float" Description="Probabilidad de perseguir cuando es atacado" Guid="cd0d0555-7250-4aab-b08e-33660b28ad41"/>
     <Parameter Name="ChaseOnTouchProbability" Value="0.5" Type="float" Description="Probabilidad de perseguir al tocar" Guid="327bd121-f8eb-4269-bfc8-a1f154baf49c"/>
 </ComponentTemplate>
+
+<ComponentTemplate Name="NewHumanModel" Description="Modelo humano mejorado con animaciones avanzadas y comportamientos de movimiento" Guid="70e462af-f157-402d-95b6-7eadbc9e54c4">
+    <Parameter Name="Class" Value="WonderfulEra.ComponentNewHumanModel" Type="string" Guid="7cb16a3c-0725-40bc-8fed-88b8f6dd2355"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="10a1064b-6edc-4366-817e-7d0f184e75aa"/>
+    <Parameter Name="LoadOrder" Value="50" Type="int" Guid="de0830d0-d90d-426c-943a-affb7001460a"/>
+    <Parameter Name="WalkAnimationSpeed" Value="1.0" Type="float" Description="Velocidad base de la animación de caminar" Guid="54224058-dabc-4c60-9547-eabe132093f7"/>
+    <Parameter Name="WalkBobHeight" Value="0.1" Type="float" Description="Altura del movimiento de cabeceo al caminar" Guid="13447f07-a299-4a67-a122-32adf0e45cd8"/>
+    <Parameter Name="ClimbAnimationSpeed" Value="1.5" Type="float" Description="Velocidad de animación al escalar" Guid="f575a9c6-be4c-4e07-a352-6ef76364267d"/>
+    <Parameter Name="SneakTransitionSpeed" Value="2.0" Type="float" Description="Velocidad de transición al agacharse/levantarse" Guid="92fe23e7-2da8-4658-92f0-64c135cd9de2"/>
+    <Parameter Name="LieDownEyeSpeed" Value="1.0" Type="float" Description="Velocidad para bajar los ojos al acostarse" Guid="5b8ef52b-4eda-4c17-9810-9818c61d5fe5"/>
+    <Parameter Name="LieDownModelSpeed" Value="3.0" Type="float" Description="Velocidad para acostar el modelo completo" Guid="8a5a5609-13c7-4285-87ee-9bf2faf54c96"/>
+    <Parameter Name="VanLieDownEyeLimit" Value="0.2" Type="float" Description="Límite de inclinación ocular en camper van" Guid="da4403f5-b585-49f0-9a1c-df55c2173964"/>
+    <Parameter Name="VanLieDownModelLimit" Value="0.05" Type="float" Description="Límite de inclinación del modelo en camper van" Guid="d84f0bb8-51eb-41a7-852d-14d66287406e"/>
+    <Parameter Name="PunchTransitionSpeed" Value="4.0" Type="float" Description="Velocidad de transición del golpe" Guid="d8cfa6fc-f7da-432f-8451-8f74c9ff2a94"/>
+    <Parameter Name="PunchAnimationSpeed" Value="2.0" Type="float" Description="Velocidad de la animación de golpe" Guid="01163588-ef35-45ca-866e-0a778c250c00"/>
+    <Parameter Name="PunchHitMoment" Value="0.5" Type="float" Description="Momento en la animación donde conecta el golpe" Guid="5a01edf0-d5ef-4b8c-aab5-36d8636e51b6"/>
+    <Parameter Name="HeadingSmoothingFactor" Value="8.0" Type="float" Description="Factor de suavizado de rotación" Guid="d94382e5-e62d-474e-bf3e-7f948d41f383"/>
+    <Parameter Name="BobSmoothingFactor" Value="12.0" Type="float" Description="Factor de suavizado del cabeceo" Guid="032fcbe5-6a48-45ba-b4d1-9fe902a14113"/>
+    <Parameter Name="RandomLookUpdateProbability" Value="0.25" Type="float" Description="Probabilidad de actualizar mirada aleatoria" Guid="a95e428a-7347-4fc5-8917-6c078767dd86"/>
+    <Parameter Name="RandomLookDistance" Value="3.0,8.0" Type="Vector2" Description="Rango de distancia para mirada aleatoria (min,max)" Guid="eefc7ceb-1e15-405c-8555-589427166578"/>
+    <Parameter Name="FootstepNoiseRange" Value="8.0" Type="float" Description="Rango del ruido de pasos" Guid="06a0c9c7-7df5-48ec-9355-079bcf2f47a1"/>
+    <Parameter Name="FootstepNoisePower" Value="0.25" Type="float" Description="Intensidad del ruido de pasos" Guid="b5d91f4f-7888-4b66-9df5-6bda72624d4d"/>
+    <Parameter Name="RowingSoundVolume" Value="0.4,0.6" Type="Vector2" Description="Rango de volumen para sonido de remo (min,max)" Guid="f4fe25c9-0eb2-4680-8157-209796fbb57c"/>
+    <Parameter Name="RowingSoundPitch" Value="-0.3,0.2" Type="Vector2" Description="Rango de tono para sonido de remo (min,max)" Guid="801a8592-7657-48db-9589-fb68e7354bea"/>
+    <Parameter Name="RowingSoundRange" Value="3.0" Type="float" Description="Rango de audición del sonido de remo" Guid="0cb70cb3-0c88-48de-aa46-130dde0ebaa5"/>
+    <Parameter Name="HandItemTransitionSpeed" Value="10.0" Type="float" Description="Velocidad de transición de objetos en mano" Guid="578b2a87-f9c1-4019-81ea-e7df413a366e"/>
+    <Parameter Name="DeathAnimationSpeed" Value="3.0" Type="float" Description="Velocidad de la animación de muerte" Guid="b0c78fe4-e237-4839-9857-0429014b8290"/>
+    <Parameter Name="HeadShakeFrequency" Value="16.0" Type="float" Description="Frecuencia de sacudida de cabeza" Guid="ded30683-7c6f-4e91-8868-7d8b470c5f62"/>
+    <Parameter Name="HeadShakeIntensity" Value="1.0" Type="float" Description="Intensidad máxima de sacudida" Guid="9d9f4c92-74a4-43cb-a624-9d9b5d9f9a6d"/>
+</ComponentTemplate>
     </Folder>
 
 <ProjectTemplate Name="Project" Guid="85023bf8-1c90-4dd1-9442-e6c13691d078">
-<MemberSubsystemTemplate Name="PoisonMacheteBehavior" Guid="f3048892-e76d-4922-8979-6746eaab55a4">
-<Parameter Name="IsOptional" Value="false" Type="bool" Guid="9856c602-760c-46d6-83ca-657750a6dabb"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="a22770d5-6cd0-45d8-b3d0-55d0416ff677"/>
-        <Parameter Name="Class" Guid="7e762be9-79f6-4f3a-97bc-e1356a8d891e" Value="Game.SubsystemPoisonMacheteBehavior" Type="string"/>
+<MemberSubsystemTemplate Name="TargetStickBlockBehavior" Guid="7b76d3e3-0a7b-4de2-9a1e-2e698212fe95">
+<Parameter Name="IsOptional" Value="false" Type="bool" Guid="e14de76f-e3cd-4e22-b4ab-c57d4f114ccf"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="ad9be30d-14a6-4eba-a7c8-1b0fd932e3d7"/>
+        <Parameter Name="Class" Guid="4d38ad37-b22f-4420-9dab-74e486fff741" Value="Game.SubsystemTargetStickBlockBehavior" Type="string"/>
+    </MemberSubsystemTemplate>
+<MemberSubsystemTemplate Name="PoisonBombBlockBehavior" Guid="ef079ad3-48f2-41bd-a9ee-592f529b36b8">
+<Parameter Name="IsOptional" Value="false" Type="bool" Guid="8f998ce8-74cf-43df-a91c-38a7d113b896"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="82d79df6-18ac-4cc5-90d3-37198eb35f0f"/>
+        <Parameter Name="Class" Guid="3f2a92e3-882f-412a-b416-19b7b287d520" Value="Game.SubsystemPoisonBombBlockBehavior" Type="string"/>
     </MemberSubsystemTemplate>
 <MemberSubsystemTemplate Name="BigStonePoisonChunkBlockBehavior" Guid="bdb7755a-97a8-4527-9876-c507323471cc">
 <Parameter Name="IsOptional" Value="false" Type="bool" Guid="12df1582-c33f-4750-b8a1-afa2851c38f2"/>
@@ -5394,7 +5416,7 @@
     <MemberComponentTemplate Name="PoisonInfected" Guid="1d2d7dde-bbc5-4efe-b165-8877c3478f54">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
     <Parameter Name="IsOptional" Value="true" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
+    <Parameter Name="LoadOrder" Value="111" Type="int"/>
     <Parameter Name="PoisonResistance" Value="300" Type="float"/>
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
@@ -5555,7 +5577,7 @@
     <MemberComponentTemplate Name="PoisonInfected" Guid="8d89fc0a-359d-48f5-9c33-47ecfd52dae1">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
     <Parameter Name="IsOptional" Value="true" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
+    <Parameter Name="LoadOrder" Value="111" Type="int"/>
     <Parameter Name="PoisonResistance" Value="445.55" Type="float"/>
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
@@ -6508,7 +6530,7 @@
     <Parameter Name="LoadOrder" Value="50" Type="int"/>
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
-            <MemberComponentTemplate Name="HumanModel" Guid="912e0cd6-953d-4b0f-bf83-f127de413fbb" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
+            <MemberComponentTemplate Name="NewHumanModel" Guid="912e0cd6-953d-4b0f-bf83-f127de413fbb" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
                 <Parameter Name="WalkLegsAngle" Guid="895d1617-e489-4651-8b5d-81b5892b1ddc" Value="0.35" Type="float"/>
                 <Parameter Name="ModelName" Guid="c547456b-f291-4a90-b8a7-71d079cb927d" Value="Models/HumanMale" Type="string"/>
                 <Parameter Name="TextureOverride" Guid="fd7ee629-69a2-4454-8a9a-91fcc1553757" Value="Textures/Pirate_Normal_Tame" Type="string"/>
