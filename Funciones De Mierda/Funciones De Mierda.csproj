@@ -1,74 +1,22 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{53A0FD66-5BC8-4D84-BF13-753B3D9E096C}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Game</RootNamespace>
-    <AssemblyName>Funciones De Mierda</AssemblyName>
-    <TargetFrameworkVersion>v9.0</TargetFrameworkVersion>
-    <TargetFrameworkIdentifier>.NETCoreApp</TargetFrameworkIdentifier>
-    <FileAlignment>512</FileAlignment>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Funciones_De_Mierda</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
+
   <ItemGroup>
     <Reference Include="Engine">
-      <HintPath>..\..\..\Downloads\2.4.Npc.mod.v1.0.5.scmod\Funciones De Mierda\Funciones De Mierda\bin\Debug\net9.0\Engine.dll</HintPath>
+      <HintPath>..\..\..\..\Desktop\Survivalcraft 2 1.8.2.3\Engine.dll</HintPath>
     </Reference>
     <Reference Include="EntitySystem">
-      <HintPath>..\..\..\Downloads\2.4.Npc.mod.v1.0.5.scmod\Funciones De Mierda\Funciones De Mierda\bin\Debug\net9.0\EntitySystem.dll</HintPath>
+      <HintPath>..\..\..\..\Desktop\Survivalcraft 2 1.8.2.3\EntitySystem.dll</HintPath>
     </Reference>
     <Reference Include="Survivalcraft">
-      <HintPath>..\..\..\Downloads\2.4.Npc.mod.v1.0.5.scmod\Funciones De Mierda\Funciones De Mierda\bin\Debug\net9.0\Survivalcraft.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Collections">
-      <HintPath>..\..\..\..\..\Program Files\dotnet\shared\Microsoft.NETCore.App\9.0.11\System.Collections.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Linq">
-      <HintPath>..\..\..\..\..\Program Files\dotnet\shared\Microsoft.NETCore.App\9.0.11\System.Linq.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Runtime">
-      <HintPath>..\..\..\..\..\Program Files\dotnet\shared\Microsoft.NETCore.App\9.0.11\System.Runtime.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Xml.XDocument">
-      <HintPath>..\..\..\..\..\Program Files\dotnet\shared\Microsoft.NETCore.App\9.0.11\System.Xml.XDocument.dll</HintPath>
+      <HintPath>..\..\..\..\Desktop\Survivalcraft 2 1.8.2.3\Survivalcraft.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <ItemGroup>
-    <AppDesigner Include="Properties\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="AutoCannonWidget.cs" />
-    <Compile Include="ComponentCreatureCollect.cs" />
-    <Compile Include="ComponentInvShooterBehavior.cs" />
-    <Compile Include="ComponentRandomChatter.cs" />
-    <Compile Include="ComponentRandomChatter2.cs" />
-    <Compile Include="CreatureCollectInventoryWidget.cs" />
-    <Compile Include="InventoryExtension.cs" />
-    <Compile Include="ItemsLauncherBlock.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SubsystemItemsLauncherBlockBehavior.cs" />
-    <Compile Include="SubsystemModCreatureSpawn.cs" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+
 </Project>
