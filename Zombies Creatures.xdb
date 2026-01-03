@@ -303,25 +303,21 @@
             <MemberComponentTemplate Name="HealthBarDisplay" Guid="d78a781f-bc68-4c0a-8fed-d1ab52808624" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
         <Parameter Name="MaxDisplayDistance" Value="19" Type="float"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Npc" Guid="2ac2411f-201b-4710-8cba-b1d6d5f8fb07">
+    <Parameter Name="Class" Value="Game.ComponentNpc" Type="string"/>
+    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
+    <Parameter Name="IsOptional" Value="False" Type="bool"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="NpcInventory" Guid="e230d359-d329-49a4-a392-fa788332a6a9" InheritanceParent="b86f3409-2929-4d0a-b4ac-3d7b4ef9c404">
+    <Parameter Name="SlotsCount" Value="16" Type="int"/>
+    <Parameter Name="Class" Value="Game.ComponentNpcInventory" Type="string"/>
+</MemberComponentTemplate>
             <MemberComponentTemplate Name="Health" Guid="4d90fd1b-ce64-4be7-9de3-f16be7daff5c">
                 <Parameter Name="FireResilience" Guid="e28235c1-4184-4a3e-896b-8bb2680b9caa" Value="15" Type="float"/>
         <Parameter Name="AttackResilience" Guid="526f8dce-963d-40a8-a0ea-a225c5aa2ca2" Value="20" Type="float"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="OnFire" Guid="b765e235-816f-4a9c-9f51-31ec7548692b"/>
             <MemberComponentTemplate Name="WalkAroundBehavior" Guid="fbe9bb0f-575e-4a0a-8896-03289a0c3a99" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
-            <MemberComponentTemplate Name="ZombieHerdBehavior" Guid="1da8d150-9982-4dbe-af29-d8afdd12639e">
-    <Parameter Name="Class" Value="Game.ComponentZombieHerdBehavior" Type="string" Guid="177381ce-c417-4bce-879c-4d0148ef1fb1"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="3f6b6917-85e5-4099-bc26-1dc47b2488cc"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="e37a46be-45fc-45c7-b514-d181eddbe137"/>
-    <Parameter Name="HerdName" Value="Zombie" Type="string" Guid="5c017fa6-2e1b-4747-93db-8b9e5d80d66d"/>
-    <Parameter Name="HerdingRange" Value="60" Type="float" Guid="2c8343d7-0933-4517-9f33-e7025a9148db"/>
-    <Parameter Name="AutoNearbyCreaturesHelp" Value="true" Type="bool" Guid="32cab59d-ff06-4927-b35e-c8caa261a7c2"/>
-    <Parameter Name="CallForHelpWhenAttacked" Value="true" Type="bool" Guid="6b8042cf-a3b3-43c6-a374-0fb4f9755eb0"/>
-    <Parameter Name="HelpCallRange" Value="25" Type="float" Guid="fbda27bb-86f6-40e9-acc9-a6471fe2e302"/>
-    <Parameter Name="HelpChaseTime" Value="30" Type="float" Guid="f504edb0-5146-4dbc-af5c-77168e31e874"/>
-    <Parameter Name="IsPersistentHelp" Value="false" Type="bool" Guid="4bf4098f-568a-4473-aa84-4234535bea0c"/>
-    <Parameter Name="ZombieAggressiveGrouping" Value="false" Type="bool" Guid="c5fb4a45-c84d-44fc-a956-6cd422f04ece"/>
-</MemberComponentTemplate>
 <MemberComponentTemplate Name="GlowingEyes" Guid="c2f2449b-d596-4bf6-b9d3-950f57482218" InheritanceParent="bb8701d3-3a4f-44f7-8a1f-3a455533f632">
               <Parameter Name="GlowingEyesColor" Guid="e82ca962-c3e3-4856-bd03-aa8f45536a0c" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="7cdc875f-ab07-48a7-a455-023bd093f04b" Value="0.06,0.2,0.1" Type="Vector3"/>
