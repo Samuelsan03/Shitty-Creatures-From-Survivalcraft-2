@@ -1,5 +1,16 @@
 <ShittyCreatures xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://gitee.com/THPRC/survivalcraft-api/raw/SCAPI1.8/Survivalcraft/Content/Assets/Database.xsd">
 <Folder Name="Gameplay" Guid="d509e5e2-2c10-49f1-8223-85cd892c63b0">
+<ComponentTemplate Name="ComponentNpcInventory" Guid="794ee704-031e-4df0-8fd1-5d2a57379a42" InheritanceParent="81a44c6a-c30a-4f53-8d64-0c30aabab8f9">
+    <Parameter Name="SlotsCount" Description="Cantidad de casillas que contendrá el NPC en su inventario." Guid="07002271-69c7-43e5-a71c-bdd748981c6c" Value="16" Type="int"/>
+    <Parameter Name="Class" Guid="8d522f8f-b1c2-4107-81d0-b9a2c28b6beb" Value="Game.ComponentNpcInventory" Type="string"/>
+</ComponentTemplate>
+
+<ComponentTemplate Name="ComponentNpc" Guid="a50f06ce-5e39-4542-bd28-0161663d1ae5">
+    <Parameter Name="Class" Value="Game.ComponentNpc" Type="string" Description="Componente base para NPCs con funcionalidad de interacción e inventario."/>
+    <Parameter Name="LoadOrder" Value="-1" Type="int" Guid="8d1f125f-e69c-4b5c-8e09-25541f5ad1fa" Description="Orden de carga para resolver dependencias con otros componentes."/>
+    <Parameter Name="IsOptional" Value="False" Type="bool" Description="Indica si la criatura puede existir sin este componente."/>
+</ComponentTemplate>
+
 <ComponentTemplate Name="FlushInventory" Description="A flush bag that you can take items" Guid="b86f3409-2929-4d0a-b4ac-3d7b4ef9c404" InheritanceParent="81a44c6a-c30a-4f53-8d64-0c30aabab8f9">
       <Parameter Name="SlotsCount" Description="Cantidad de casillas que contenera la criatura en su inventario." Guid="9eb2101f-4bff-4925-9f8d-ef95591c9342" Value="16" Type="int"/>
       <Parameter Name="ValidBlocks" Description="IDs de objetos que se generaran automaticamente en funcion aleatoria. use comas , para agregar varios ej: 1,2,3." Guid="bfc29eee-4746-442d-aaf5-0f05227ce9c7" Value="" Type="string"/>
@@ -472,6 +483,21 @@
     </Folder>
 
 <ProjectTemplate Name="Project" Guid="85023bf8-1c90-4dd1-9442-e6c13691d078">
+<MemberSubsystemTemplate Name="SubsystemNpcInteraction" Guid="5e4027f6-81ae-4a5c-8f6a-3d8081cd7cd0">
+    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="b758b9db-3f78-4635-88ed-14fd21e02f31"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="7a94e369-ad80-4080-b666-78427907dc7f"/>
+    <Parameter Name="Class" Value="Game.SubsystemNpcInteraction" Type="string" Guid="20d05947-039a-4986-8e86-1b96924f09a2"/>
+</MemberSubsystemTemplate>
+<MemberSubsystemTemplate Name="AntiTanksBulletBlockBehavior" Guid="dc7f2c73-54c5-4dbb-844a-a6a00a018589">
+<Parameter Name="IsOptional" Value="false" Type="bool" Guid="04ca7c03-a46d-494f-b8c7-1064ef240b48"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="04fae416-be40-4597-a540-b9133a43b6fb"/>
+        <Parameter Name="Class" Guid="9b826f1c-14c8-45de-bb01-eb46c3d6ee7f" Value="Game.SubsystemAntiTanksBulletBlockBehavior" Type="string"/>
+    </MemberSubsystemTemplate>
+<MemberSubsystemTemplate Name="TankChaseMusic" Guid="8f97faa0-ef7f-4455-9aaf-116e70e836be">
+<Parameter Name="IsOptional" Value="false" Type="bool" Guid="082db78a-d94f-4704-8862-bec5dcd77139"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="8fe63cde-5e98-433a-b375-7815a349dd6f"/>
+        <Parameter Name="Class" Guid="60986de6-5785-457d-8ddd-a0124ec558ba" Value="Game.SubsystemTankChaseMusic" Type="string"/>
+    </MemberSubsystemTemplate>
 <MemberSubsystemTemplate Name="TargetStickBlockBehavior" Guid="7b76d3e3-0a7b-4de2-9a1e-2e698212fe95">
 <Parameter Name="IsOptional" Value="false" Type="bool" Guid="e14de76f-e3cd-4e22-b4ab-c57d4f114ccf"/>
     <Parameter Name="LoadOrder" Value="60" Type="int" Guid="ad9be30d-14a6-4eba-a7c8-1b0fd932e3d7"/>
@@ -498,6 +524,8 @@
         <Parameter Name="Class" Guid="1bd7c0bb-0b40-496e-91f6-c889b63f066b" Value="Game.SubsystemPoisonExplosions" Type="string"/>
     </MemberSubsystemTemplate>
 <MemberSubsystemTemplate Name="PoisonBulletBlockBehavior" Guid="fc95d14d-87db-4f63-9dfc-e5624c8b033f" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+<Parameter Name="IsOptional" Value="false" Type="bool" Guid="ee980210-8105-486b-9fb0-db4018181e8a"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="a096b7fd-ff59-4a99-9cbf-72fcf53f0197"/>
         <Parameter Name="Class" Guid="4a9520e6-1988-4a8a-8e2d-5b84303d2576" Value="Game.SubsystemPoisonBulletBlockBehavior" Type="string"/>
     </MemberSubsystemTemplate>
 <MemberSubsystemTemplate Name="CollarBlockBehavior" Guid="de432b96-c29b-445c-bbde-660e3b5eaded" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
@@ -537,23 +565,6 @@
     <Folder Name="NPCS" Guid="6cc49cbb-cdd2-4479-9b40-fbadd9db3425">
 
         <EntityTemplate Name="Naomi" Guid="3d60e4a1-207a-44ce-9635-fa2997824b5c" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-        <MemberComponentTemplate Name="UniversalRangedBehavior" Guid="b015f2e3-ac8e-4850-9529-631813ee36b6">
-    <Parameter Name="Class" Value="Game.ComponentUniversalRangedBehavior" Type="string" Guid="9731eedf-c1d1-4e88-b0da-fc4135d295b2"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="e878f5a3-2d8b-485f-b7e4-c234b08def39"/>
-    <Parameter Name="LoadOrder" Value="65" Type="int" Guid="f4eaa6cf-fbf1-40eb-8506-b1aceb4bc066"/>
-    <Parameter Name="DayChaseRange" Value="1" Type="float" Guid="7c7e01bc-5d49-495c-9590-1065947cc7e9"/>
-    <Parameter Name="NightChaseRange" Value="1" Type="float" Guid="3b87af41-4e04-4147-9afa-e93b83afaf53"/>
-    <Parameter Name="DayChaseTime" Value="1" Type="float" Guid="96aab308-bc2f-417a-add8-4b461177940b"/>
-    <Parameter Name="NightChaseTime" Value="1" Type="float" Guid="25428e80-3c48-4fb2-95d0-21aa81c9d3d7"/>
-    <Parameter Name="AttackRange" Value="3,55" Type="Vector2" Guid="b3c86193-5219-431e-8260-41872cf15782"/>
-    <Parameter Name="ChaseNonPlayerProbability" Value="0.2" Type="float" Guid="4a74de8f-8a4b-4461-99cd-4c4a2125ff22"/>
-    <Parameter Name="ChaseWhenAttackedProbability" Value="0.8" Type="float" Guid="b6021c3f-f809-4379-a3dd-135111e76d20"/>
-    <Parameter Name="ChaseOnTouchProbability" Value="0.5" Type="float" Guid="2e8d68e2-a857-4d0f-9363-3571a52bde5e"/>
-    <Parameter Name="AttacksPlayer" Value="true" Type="bool" Guid="b76f856e-c724-4020-b40c-ee1bf64dd12b"/>
-    <Parameter Name="AttacksNonPlayerCreature" Value="true" Type="bool" Guid="16f51d55-3ae0-45ec-a6b0-7ba3ae3d064a"/>
-    <Parameter Name="AutoDismount" Value="true" Type="bool" Guid="6784d9e9-8733-4b1b-8415-b779c33c6ca8"/>
-    <Parameter Name="AutoChaseMask" Value="LandPredator" Type="string" Guid="09441b3c-0cb0-4755-9b73-7f0abbcd83dc"/>
-</MemberComponentTemplate>
         <MemberComponentTemplate Name="NewRunAwayBehavior" Guid="8e572880-7ef4-454e-a497-66e66ecab889">
     <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="cd3fd8b7-7348-4e1f-a5d5-a0df798fe6f0"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="fc9edfe3-b7e2-41d0-b32e-29b8eeff31c1"/>
@@ -6093,7 +6104,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="d93dbbc0-a1b9-40ca-9d9b-9ca0653e857e">
         <Parameter Name="Mass" Guid="51ebeaff-0fa7-41c4-8f41-6aff3eade3cf" Value="65" Type="float"/>
-        <Parameter Name="BoxSize" Guid="1507754f-bf6d-46c4-8425-93a56de31cbb" Value="0.9,1.0,0.9" Type="Vector3"/>
+        <Parameter Name="BoxSize" Guid="1507754f-bf6d-46c4-8425-93a56de31cbb" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="9be1876a-ce09-4259-9d56-c52f338c65c3">
         <Parameter Name="DisplayName" Guid="d4312a14-b6e9-4437-9ae6-a2df02210f49" Value="[DisplayName:Tulio]" Type="string"/>
@@ -6227,7 +6238,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="a135561b-cf4b-4e25-ba9e-b08c7b7c89d3">
         <Parameter Name="Mass" Guid="c4b6414c-bcde-41f4-a4e9-77b729b62b4f" Value="65" Type="float"/>
-        <Parameter Name="BoxSize" Guid="d16ac949-6d52-4b4a-acc9-599036455193" Value="0.9,1.0,0.9" Type="Vector3"/>
+        <Parameter Name="BoxSize" Guid="d16ac949-6d52-4b4a-acc9-599036455193" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="9d8c5281-f387-46df-ad94-f70265c70255">
         <Parameter Name="DisplayName" Guid="bf1bfb3d-adc0-4f1e-804a-d9d90ecaa85a" Value="[DisplayName:Brayan]" Type="string"/>
@@ -6772,16 +6783,6 @@
     <Parameter Name="InitialRatio" Value="1.0" Type="float" Guid="c372a58a-7f98-4bdc-99c5-75cf939b05a9"/>
 </MemberComponentTemplate>
            <MemberComponentTemplate Name="Inventory" Guid="f756e2fb-a023-4d95-b5ab-1dc9705fb4bb" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
-            <ParameterSet Name="Slots">
-            <ParameterSet Name="Slot0">
-                <Parameter Name="Contents" Value="212" Type="int"/>
-                <Parameter Name="Count" Value="1" Type="int"/>
-            </ParameterSet>
-            <ParameterSet Name="Slot1">
-                <Parameter Name="Contents" Value="221" Type="int"/>
-                <Parameter Name="Count" Value="1" Type="int"/>
-            </ParameterSet>
-        </ParameterSet>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="NewCreatureCollect" Guid="00dd9fd1-358d-49c6-8d4f-00f7e3b63438" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
     <Parameter Name="PickFactors" Guid="43c0790e-6af1-4840-8cc4-d3b254fee241" Value="Tools;1.0,Weapons;1.0" Type="string"/>
@@ -6927,16 +6928,6 @@
                 </ParameterSet>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Inventory" Guid="8e62510f-0236-4f5f-8291-1c17272cf20e" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
-            <ParameterSet Name="Slots">
-            <ParameterSet Name="Slot0">
-                <Parameter Name="Contents" Value="212" Type="int"/>
-                <Parameter Name="Count" Value="1" Type="int"/>
-            </ParameterSet>
-            <ParameterSet Name="Slot1">
-                <Parameter Name="Contents" Value="221" Type="int"/>
-                <Parameter Name="Count" Value="1" Type="int"/>
-            </ParameterSet>
-        </ParameterSet>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="NewCreatureCollect" Guid="4bac0a37-4c81-44df-a0b4-8bf57278148c" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
     <Parameter Name="PickFactors" Guid="d9d638c4-d808-4b2d-9149-6ff7b04c4dc5" Value="Tools;1.0,Weapons;1.0" Type="string"/>
