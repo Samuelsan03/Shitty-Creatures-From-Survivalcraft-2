@@ -269,7 +269,17 @@
             " a "
             "bcb"
 		</Recipe>
+        <Recipe Result="TargetStickBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="0" a="saddle" b="stick" Description="Useful for selecting the target to attack so that your slaves attack the selected target.">
+			"bab"
+            " b "
+            " b "
+		</Recipe>
   <Recipe Result="PoisonBombBlock" ResultCount="5" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="bomb" b="flamebullet:1" Description="Useful if you're surrounded and want to avoid being killed by explosives.">
+			" b "
+            "bab"
+            " b "
+		</Recipe>
+        <Recipe Result="AntiTanksBulletBlock" ResultCount="8" RequiredHeatLevel="0" RequiredPlayerLevel="3" a="bullet" b="rod" Description="Use it wisely if powerful heavy bosses have you surrounded and musket balls are ineffective">
 			" b "
             "bab"
             " b "
