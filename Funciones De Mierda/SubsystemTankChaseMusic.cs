@@ -9,78 +9,120 @@ namespace Game
 {
 	public class SubsystemTankChaseMusic : Subsystem, IUpdateable
 	{
+		#region Constants
+
+		private const string MUSIC_PATH = "MenuMusic/ChaseTheme/Tank Theme";
+		private const string ALERT_SOUND_PATH = "Audio/UI/Tank Warning Sound";
+		private const float MUSIC_DURATION = 52.0f; // 00:52 segundos exactos
+		private const float CHECK_INTERVAL = 0.1f;
+		private const float DETECTION_RADIUS = 20f;
+
+		#endregion
+
+		#region Fields
+
 		private bool m_isChaseActive = false;
-		private bool m_chaseMusicPlaying = false;
-		private float m_checkInterval = 0.1f;
+		private bool m_alertShown = false;
 		private float m_timeSinceLastCheck = 0f;
-		private float m_musicCheckInterval = 1f;
-		private float m_timeSinceMusicCheck = 0f;
+		private float m_timeSinceMusicStarted = 0f;
+		private bool m_musicPlaying = false;
 
 		private SubsystemTime m_subsystemTime;
 		private SubsystemPlayers m_subsystemPlayers;
 		private SubsystemAudio m_subsystemAudio;
 
-		public UpdateOrder UpdateOrder
-		{
-			get { return UpdateOrder.Default; }
-		}
+		#endregion
+
+		#region Properties
+
+		public UpdateOrder UpdateOrder => UpdateOrder.Default;
+
+		public bool IsChaseActive => m_isChaseActive;
+
+		public bool IsMusicPlaying => m_musicPlaying;
+
+		#endregion
+
+		#region Initialization
 
 		public override void Load(ValuesDictionary valuesDictionary)
 		{
 			base.Load(valuesDictionary);
-
 			m_subsystemTime = Project.FindSubsystem<SubsystemTime>(true);
 			m_subsystemPlayers = Project.FindSubsystem<SubsystemPlayers>(true);
 			m_subsystemAudio = Project.FindSubsystem<SubsystemAudio>(true);
 		}
 
+		#endregion
+
+		#region Update Loop
+
 		public void Update(float dt)
 		{
 			m_timeSinceLastCheck += dt;
-			m_timeSinceMusicCheck += dt;
 
-			// Verificar periódicamente si hay tanques persiguiendo
-			if (m_timeSinceLastCheck >= m_checkInterval)
+			// Si la música está sonando, actualizar el timer
+			if (m_musicPlaying)
+			{
+				m_timeSinceMusicStarted += dt;
+
+				// Verificar si la música está por terminar (98% de la duración)
+				// Para música de 52s, verificar a los 50.96s (98%)
+				if (m_timeSinceMusicStarted >= MUSIC_DURATION * 0.98f)
+				{
+					// Reiniciar la música desde el principio SIN FADE
+					RestartMusicImmediately();
+				}
+			}
+
+			if (m_timeSinceLastCheck >= CHECK_INTERVAL)
 			{
 				m_timeSinceLastCheck = 0f;
 
 				bool wasChaseActive = m_isChaseActive;
 				m_isChaseActive = CheckForActiveTanks();
 
+				// Cambio de estado
 				if (wasChaseActive != m_isChaseActive)
 				{
 					if (m_isChaseActive)
 					{
-						PlayChaseMusic();
+						StartChaseMusicImmediately();
 						PlayAlertSound();
-						ShowTankAlertMessage();
+
+						if (!m_alertShown)
+						{
+							ShowAlertMessage();
+							m_alertShown = true;
+						}
 					}
 					else
 					{
-						StopChaseMusic();
+						StopChaseMusicImmediately();
+						m_alertShown = false;
 					}
 				}
 			}
 
-			// Verificar periódicamente si la música necesita repetirse
-			if (m_timeSinceMusicCheck >= m_musicCheckInterval)
+			// Verificación de seguridad
+			if (m_isChaseActive && !m_musicPlaying)
 			{
-				m_timeSinceMusicCheck = 0f;
-
-				// Si hay persecución activa pero la música no está sonando, reproducirla de nuevo
-				if (m_isChaseActive && !MusicManager.IsPlaying && !m_chaseMusicPlaying)
-				{
-					PlayChaseMusic();
-				}
+				StartChaseMusicImmediately();
 			}
 		}
+
+		#endregion
+
+		#region Chase Detection
 
 		private bool CheckForActiveTanks()
 		{
 			if (Project == null || m_subsystemPlayers == null)
 				return false;
 
-			bool foundActiveTank = false;
+			var activePlayers = GetActivePlayers();
+			if (activePlayers.Count == 0)
+				return false;
 
 			foreach (Entity entity in Project.Entities)
 			{
@@ -88,180 +130,203 @@ namespace Game
 				{
 					string entityName = entity.ValuesDictionary.DatabaseObject.Name;
 
-					if (entityName == "Tank1" || entityName == "Tank2" || entityName == "Tank3")
+					if (entityName != "Tank1" && entityName != "Tank2" && entityName != "Tank3")
+						continue;
+
+					ComponentHealth health = entity.FindComponent<ComponentHealth>();
+					if (health != null && health.Health <= 0f)
+						continue;
+
+					ComponentZombieChaseBehavior chaseBehavior = entity.FindComponent<ComponentZombieChaseBehavior>();
+					if (chaseBehavior != null && chaseBehavior.IsActive)
 					{
-						ComponentHealth health = entity.FindComponent<ComponentHealth>();
+						return true;
+					}
 
-						// Si el tanque está muerto, ignorarlo completamente
-						if (health != null && health.Health <= 0f)
-							continue;
-
-						// Si el tanque está vivo, verificar si está activo o bajo ataque
-						bool isTankActive = false;
-
-						// Verificar si está persiguiendo
-						ComponentZombieChaseBehavior chaseBehavior = entity.FindComponent<ComponentZombieChaseBehavior>();
-						if (chaseBehavior != null && chaseBehavior.IsActive)
+					ComponentBody tankBody = entity.FindComponent<ComponentBody>();
+					if (tankBody != null)
+					{
+						foreach (ComponentPlayer player in activePlayers)
 						{
-							isTankActive = true;
-						}
-
-						// Verificar si tiene otro comportamiento de persecución
-						ComponentChaseBehavior chaseBehavior2 = entity.FindComponent<ComponentChaseBehavior>();
-						if (chaseBehavior2 != null && chaseBehavior2.IsActive)
-						{
-							isTankActive = true;
-						}
-
-						// Si el tanque no tiene comportamientos de persecución activos,
-						// verificar si algún jugador está lo suficientemente cerca
-						if (!isTankActive && health != null && health.Health > 0f)
-						{
-							ComponentBody tankBody = entity.FindComponent<ComponentBody>();
-							if (tankBody != null)
+							ComponentBody playerBody = player.Entity.FindComponent<ComponentBody>();
+							if (playerBody != null)
 							{
-								bool playerNearby = false;
-								foreach (ComponentPlayer player in m_subsystemPlayers.ComponentPlayers)
+								float distance = (tankBody.Position - playerBody.Position).Length();
+								if (distance < DETECTION_RADIUS)
 								{
-									ComponentHealth playerHealth = player.Entity.FindComponent<ComponentHealth>();
-									if (playerHealth != null && playerHealth.Health > 0f)
-									{
-										ComponentBody playerBody = player.Entity.FindComponent<ComponentBody>();
-										if (playerBody != null)
-										{
-											float distance = (tankBody.Position - playerBody.Position).Length();
-											// Si el jugador está a menos de 20 metros del tanque, mantener la música
-											if (distance < 20f)
-											{
-												playerNearby = true;
-												break;
-											}
-										}
-									}
+									return true;
 								}
-
-								isTankActive = playerNearby;
 							}
-						}
-
-						if (isTankActive)
-						{
-							foundActiveTank = true;
-							// Si encontramos al menos un tanque activo, podemos salir del bucle
-							// pero continuamos para verificar todos los tanques
 						}
 					}
 				}
 				catch (System.Exception)
 				{
-					// Ignorar errores en entidades individuales
+					// Ignorar errores
 				}
 			}
 
-			return foundActiveTank;
+			return false;
 		}
 
-		private void PlayChaseMusic()
+		private List<ComponentPlayer> GetActivePlayers()
+		{
+			var activePlayers = new List<ComponentPlayer>();
+
+			if (m_subsystemPlayers == null)
+				return activePlayers;
+
+			foreach (ComponentPlayer player in m_subsystemPlayers.ComponentPlayers)
+			{
+				ComponentHealth playerHealth = player.Entity.FindComponent<ComponentHealth>();
+				if (playerHealth != null && playerHealth.Health > 0f)
+				{
+					activePlayers.Add(player);
+				}
+			}
+
+			return activePlayers;
+		}
+
+		#endregion
+
+		#region Music Control - SIN FADE
+
+		private void StartChaseMusicImmediately()
 		{
 			try
 			{
-				if (MusicManager.IsPlaying)
+				// Detener cualquier música previa SIN FADE
+				if (MusicManager.m_sound != null)
 				{
-					MusicManager.StopMusic();
+					MusicManager.m_sound.Stop();
+					MusicManager.m_sound.Dispose();
+					MusicManager.m_sound = null;
 				}
 
-				try
+				// Limpiar fade sound si existe
+				if (MusicManager.m_fadeSound != null)
 				{
-					MusicManager.PlayMusic("MenuMusic/ChaseTheme/Tank Theme", 0f);
-					m_chaseMusicPlaying = true;
+					MusicManager.m_fadeSound.Dispose();
+					MusicManager.m_fadeSound = null;
 				}
-				catch
-				{
-					string[] alternativePaths = {
-					};
 
-					foreach (string altPath in alternativePaths)
-					{
-						try
-						{
-							MusicManager.PlayMusic(altPath, 0f);
-							m_chaseMusicPlaying = true;
-							return;
-						}
-						catch
-						{
-						}
-					}
+				// Obtener y reproducir música SIN FADE
+				var streamingSource = ContentManager.Get<StreamingSource>(MUSIC_PATH);
+				if (streamingSource == null)
+				{
+					Log.Warning($"Music not found: {MUSIC_PATH}");
+					return;
 				}
+
+				var duplicateSource = streamingSource.Duplicate();
+
+				// Crear sonido con volumen COMPLETO desde el inicio (1f)
+				var sound = new StreamingSound(duplicateSource, 1f, 1f, 0f, false, true, 1f);
+
+				// Asignar directamente al MusicManager
+				MusicManager.m_sound = sound;
+				MusicManager.m_currentMix = MusicManager.Mix.Other; // Evitar que el MusicManager interfiera
+				MusicManager.m_fadeStartTime = 0.0; // Desactivar fade
+
+				sound.Play();
+				m_musicPlaying = true;
+				m_timeSinceMusicStarted = 0f;
+
+				Log.Debug($"Tank chase music started IMMEDIATELY (no fade)");
 			}
-			catch (System.Exception)
+			catch (System.Exception ex)
 			{
-				m_chaseMusicPlaying = false;
+				Log.Error($"Error starting tank chase music: {ex.Message}");
+				m_musicPlaying = false;
 			}
 		}
+
+		private void RestartMusicImmediately()
+		{
+			if (!m_isChaseActive || !m_musicPlaying)
+				return;
+
+			try
+			{
+				Log.Debug($"Restarting tank music at {m_timeSinceMusicStarted:F2}s");
+
+				// Usar el mismo método para reinicio - SIN FADE
+				StartChaseMusicImmediately();
+
+				Log.Debug($"Tank chase music restarted IMMEDIATELY");
+			}
+			catch (System.Exception ex)
+			{
+				Log.Error($"Error restarting tank chase music: {ex.Message}");
+				m_musicPlaying = false;
+			}
+		}
+
+		private void StopChaseMusicImmediately()
+		{
+			if (m_musicPlaying)
+			{
+				try
+				{
+					// Detener inmediatamente SIN FADE
+					if (MusicManager.m_sound != null)
+					{
+						MusicManager.m_sound.Stop();
+						MusicManager.m_sound.Dispose();
+						MusicManager.m_sound = null;
+					}
+
+					// Limpiar fade sound
+					if (MusicManager.m_fadeSound != null)
+					{
+						MusicManager.m_fadeSound.Dispose();
+						MusicManager.m_fadeSound = null;
+					}
+
+					m_musicPlaying = false;
+					m_timeSinceMusicStarted = 0f;
+					m_alertShown = false;
+
+					Log.Debug("Tank chase music stopped IMMEDIATELY (no fade)");
+				}
+				catch (System.Exception ex)
+				{
+					Log.Error($"Error stopping tank chase music: {ex.Message}");
+				}
+			}
+		}
+
+		#endregion
+
+		#region Alert System
 
 		private void PlayAlertSound()
 		{
-			if (m_subsystemAudio == null)
-				return;
+			if (m_subsystemAudio == null) return;
 
 			try
 			{
-				m_subsystemAudio.PlaySound("Audio/UI/Tank Warning Sound", 1f, 0f, 0f, 0.0001f);
+				m_subsystemAudio.PlaySound(ALERT_SOUND_PATH, 1f, 0f, 0f, 0.0001f);
 			}
 			catch (System.Exception)
 			{
-				try
-				{
-					m_subsystemAudio.PlaySound("Audio/UI/Tank Warning Sound", 1f, 0f, 0f, 0.0001f);
-				}
-				catch
-				{
-					try
-					{
-						m_subsystemAudio.PlaySound("Audio/UI/Tank Warning Sound", 1f, 0f, 0f, 0.0001f);
-					}
-					catch
-					{
-					}
-				}
+				// Ignorar errores de sonido
 			}
 		}
 
-		private void StopChaseMusic()
+		private void ShowAlertMessage()
 		{
-			try
-			{
-				if (m_chaseMusicPlaying)
-				{
-					if (MusicManager.IsPlaying)
-					{
-						MusicManager.StopMusic();
-					}
-					m_chaseMusicPlaying = false;
-				}
-			}
-			catch (System.Exception)
-			{
-			}
-		}
-
-		private void ShowTankAlertMessage()
-		{
-			if (m_subsystemPlayers == null)
-				return;
+			if (m_subsystemPlayers == null) return;
 
 			var componentPlayers = m_subsystemPlayers.ComponentPlayers;
-			if (componentPlayers.Count == 0)
-				return;
+			if (componentPlayers.Count == 0) return;
 
 			string message;
 			bool translationFound;
 
-			// Intentar obtener la traducción del mensaje de alerta
 			message = LanguageControl.Get(out translationFound, "Messages", "TankChaseAlert");
 
-			// Si no se encuentra la traducción, usar el texto en inglés por defecto
 			if (!translationFound)
 			{
 				message = "ALERT!\n A Tank has appeared!\n Take refuge, find good weapons to kill it or use the zombie collar to calm its rage and turn it into an ally!";
@@ -276,34 +341,36 @@ namespace Game
 			}
 		}
 
-		public override void Dispose()
-		{
-			StopChaseMusic();
-			base.Dispose();
-		}
+		#endregion
+
+		#region Public API
 
 		public void ForcePlayChaseMusic()
 		{
-			PlayChaseMusic();
-			PlayAlertSound();
 			m_isChaseActive = true;
-			m_chaseMusicPlaying = true;
+			m_alertShown = false;
+			StartChaseMusicImmediately();
+			PlayAlertSound();
+			ShowAlertMessage();
 		}
 
 		public void ForceStopChaseMusic()
 		{
-			StopChaseMusic();
 			m_isChaseActive = false;
+			m_alertShown = false;
+			StopChaseMusicImmediately();
 		}
 
-		public bool IsChaseActive
+		#endregion
+
+		#region Cleanup
+
+		public override void Dispose()
 		{
-			get { return m_isChaseActive; }
+			StopChaseMusicImmediately();
+			base.Dispose();
 		}
 
-		public bool IsMusicPlaying
-		{
-			get { return m_chaseMusicPlaying; }
-		}
+		#endregion
 	}
 }
