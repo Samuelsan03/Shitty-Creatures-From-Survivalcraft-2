@@ -60,6 +60,8 @@ namespace Game
                 "MenuMusic/Mio Honda 本田未央 Step! ステップ",
                 "MenuMusic/Yahpp Sorceress Elise",
 				"MenuMusic/Chrono Trigger Main Theme",
+				"MenuMusic/Twill STAND UP Digimon Xros Wars Hunters",
+				"MenuMusic/Sonar Pocket Never Give Up! Digimon Fusion"
 			};
 
 			// Usar Environment.TickCount como semilla simple
