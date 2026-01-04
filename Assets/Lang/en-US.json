@@ -37,6 +37,8 @@
   },
   "Database": {
     "DisplayName": {
+      "GhostNormalTamed": "Ghost Ally",
+      "GhostNormal": "Ghost",
       "Tank1": "Tank 1",
       "Tank2": "Tank 2",
       "Tank3": "Tank 3",
@@ -129,6 +131,7 @@
       "Richard": "Richard"
     },
     "Description": {
+      "GhostNormal": "The Ghost is a special infected that belongs to the group of infected. Its unique ability is opacity: its silhouette is barely visible, making it a deadly and almost invisible hunter. If it tries to kill you or manages to catch you, it becomes your greatest danger, as you will rarely know where it is. Like normal and muscular infected, it can also wield melee and ranged weapons, which makes it even more unpredictable. Its invisibility makes it the most dangerous enemy when its location is unknown, and the only way to detect it is through the sounds it emits or the tense music that signals its presence. The Ghost appears on day 4 at night, always lurking in the shadows. Do not be deceived: facing it means choosing between seeking refuge to avoid certain death, devising clever traps such as spikes to catch it, or taming it with the zombie collar to turn it into your invisible slave. Yet a tamed Ghost is a double-edged weapon, for its invisibility may be your greatest advantage or your downfall if it slips from your control and turns against you. Only the most cunning survivors can harness it without falling into their own trap.",
       "Tank1": "The Tank is a special infected that surpasses all others in strength and endurance. Its massive build allows it to kill with a single blow, and its deadliest ability is hurling mysterious rocks if one strikes you, your fate is sealed. It is named “Tank” because, like a war machine, it possesses near-impenetrable resistance and devastating power. It appears on day 41, at any time, day or night, and always alone, making it a unique challenge. To face it, you’ll need strong armor and powerful weapons capable of withstanding its brutal attacks. Like other infected, its rage can be subdued with the zombie collar, allowing you to tame it and turn it into your protective slave. Can you truly harness the advantages of having a Tank under your command? Its immense power may become your greatest weapon… or your downfall.",
       "Charger1": "The Charger is another type of infected, distinguished by its massively thick and powerful arm on one side, while the other remains normal. Its deadliest attack is a brutal charge, capable not only of killing you but also of hurling you with the force of an American football player. It appears on day 19 at night, usually in pairs, making them even more dangerous. Arm yourself well to defeat them, or obtain the zombie collar, for legend says it can tame them and turn them into your guardians.",
       "Boomer1": "The Boomer is another type of infected, known for its massive size and grotesque appearance. Its most distinctive trait is that upon death it explodes, making it a deadly threat: kill it too close, and you’ll be blown to pieces. Yet legend says that with the zombie collar it can become an ally. If you manage to tame it, the Boomer will serve as your guardian. You will gain control over it and can take advantage of its abilities, though there is always the risk of it dying in an explosion. Try it at your own risk, but never near other zombies or allies, as they could perish in the blast.",
@@ -216,6 +219,14 @@
     }
   },
   "Blocks": {
+    "TargetStickBlock:0": {
+  "DisplayName": "Targeting Stick",
+  "Description": "A specialized stick used to command allied creatures. When pointed at an enemy, it signals all nearby player-allied creatures to focus their attacks on the target. Useful for coordinating attacks and managing your creature army in battle."
+},
+    "PoisonBombBlock:0": {
+  "DisplayName": "Poison Bomb",
+  "Description": "A green bomb that releases poisonous gas upon explosion. Perfect for poisoning areas and weakening enemies from a distance."
+},
     "PoisonMacheteBlock:0": {
   "DisplayName": "Poison Machete",
   "Description": "A machete coated with a lethal toxin that poisons enemies upon striking them. Each attack has a chance to apply a debilitating poison effect that drains health over time. Perfect for prolonged encounters where you want to slowly wear down your opponents."
@@ -382,6 +393,9 @@
     }
   },
   "Messages": {
+    "CollarTamedGhostMessage": "You have tamed a Ghost! Its invisibility is now in your hands!",
+    "AntiTankCriticalHit": "Anti-Tank bullet critical hit",
+    "TankChaseAlert": "ALERT!\n A Tank has appeared!\n Take refuge, find good weapons to kill it or use the zombie collar to calm its rage and turn it into an ally!",
     "DeathByPoisonRock": "Poisoned by toxic giant rock",
     "DeathByFlamingRock": "Incinerated by a flaming giant rock",
     "CollarTamedTankMessage": "You have tamed the Tank!\n The most feared boss of bosses is now your slave!\n Take advantage of its brute force as your guardian!",
