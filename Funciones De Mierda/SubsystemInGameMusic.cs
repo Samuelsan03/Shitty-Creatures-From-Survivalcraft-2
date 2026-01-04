@@ -524,6 +524,8 @@ namespace Game
 			new SubsystemInGameMusic.TrackInfo("MenuMusic/Mio Honda 本田未央 Step! ステップ", 177f),
 			new SubsystemInGameMusic.TrackInfo("MenuMusic/Yahpp Sorceress Elise", 177f),
 			new SubsystemInGameMusic.TrackInfo("MenuMusic/Chrono Trigger Main Theme", 177f),
+			new SubsystemInGameMusic.TrackInfo("MenuMusic/Twill STAND UP Digimon Xros Wars Hunters", 177f),
+			new SubsystemInGameMusic.TrackInfo("MenuMusic/Sonar Pocket Never Give Up! Digimon Fusion", 177f),
 		};
 
 		private struct TrackInfo
