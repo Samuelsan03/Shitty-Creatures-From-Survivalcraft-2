@@ -490,6 +490,11 @@
     </Folder>
 
 <ProjectTemplate Name="Project" Guid="85023bf8-1c90-4dd1-9442-e6c13691d078">
+<MemberSubsystemTemplate Name="ZombiesSpawn" Guid="77c4423c-cde8-4d42-886c-74b87a9d23fa">
+    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="9b817948-52de-4bdd-8069-2e698792877b"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="cc2a8c4c-67b8-4ee4-934f-3a118f7fc99f"/>
+    <Parameter Name="Class" Value="Game.SubsystemZombiesSpawn" Type="string" Guid="d546f4a4-f7ef-488e-828d-763c780da925"/>
+</MemberSubsystemTemplate>
 <MemberSubsystemTemplate Name="GhostNormalChaseMusic" Guid="fe454a1e-89d4-4f2a-aa36-9200d7ba1570">
     <Parameter Name="IsOptional" Value="false" Type="bool" Guid="25a03789-1da1-4b19-9068-b99e9c1abc51"/>
     <Parameter Name="LoadOrder" Value="60" Type="int" Guid="b4bbf90f-132a-44f7-a059-6f4558002a1f"/>
