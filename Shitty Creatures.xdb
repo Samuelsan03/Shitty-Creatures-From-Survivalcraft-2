@@ -1,5 +1,12 @@
 <ShittyCreatures xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://gitee.com/THPRC/survivalcraft-api/raw/SCAPI1.8/Survivalcraft/Content/Assets/Database.xsd">
 <Folder Name="Gameplay" Guid="d509e5e2-2c10-49f1-8223-85cd892c63b0">
+<ComponentTemplate Name="ComponentGhostHumanModel" Guid="9b72879f-bc51-4877-a7d2-c212d0e04656">
+    <Parameter Name="Class" Value="Game.ComponentGhostHumanModel" Type="string" Description="Componente especializado para modelos humanos fantasma con control de opacidad y modo de renderizado."/>
+    <Parameter Name="LoadOrder" Value="-1" Type="int" Guid="ff736e03-50ef-4b27-966d-7a0783adbdde" Description="Orden de carga para resolver dependencias con otros componentes."/>
+    <Parameter Name="IsOptional" Value="False" Type="bool" Description="Indica si la criatura puede existir sin este componente."/>
+    <Parameter Name="Opacity" Value="0.5" Type="float" Description="Valor de opacidad del modelo fantasma (entre 0 y 1)."/>
+</ComponentTemplate>
+
 <ComponentTemplate Name="ComponentNpcInventory" Guid="794ee704-031e-4df0-8fd1-5d2a57379a42" InheritanceParent="81a44c6a-c30a-4f53-8d64-0c30aabab8f9">
     <Parameter Name="SlotsCount" Description="Cantidad de casillas que contendrá el NPC en su inventario." Guid="07002271-69c7-43e5-a71c-bdd748981c6c" Value="16" Type="int"/>
     <Parameter Name="Class" Guid="8d522f8f-b1c2-4107-81d0-b9a2c28b6beb" Value="Game.ComponentNpcInventory" Type="string"/>
@@ -483,7 +490,12 @@
     </Folder>
 
 <ProjectTemplate Name="Project" Guid="85023bf8-1c90-4dd1-9442-e6c13691d078">
-<MemberSubsystemTemplate Name="SubsystemNpcInteraction" Guid="5e4027f6-81ae-4a5c-8f6a-3d8081cd7cd0">
+<MemberSubsystemTemplate Name="GhostNormalChaseMusic" Guid="fe454a1e-89d4-4f2a-aa36-9200d7ba1570">
+    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="25a03789-1da1-4b19-9068-b99e9c1abc51"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="b4bbf90f-132a-44f7-a059-6f4558002a1f"/>
+    <Parameter Name="Class" Value="Game.SubsystemGhostNormalChaseMusic" Type="string" Guid="a274b5c9-b092-4d27-8ae0-1c64167ac3e5"/>
+</MemberSubsystemTemplate>
+<MemberSubsystemTemplate Name="NpcInteraction" Guid="5e4027f6-81ae-4a5c-8f6a-3d8081cd7cd0">
     <Parameter Name="IsOptional" Value="false" Type="bool" Guid="b758b9db-3f78-4635-88ed-14fd21e02f31"/>
     <Parameter Name="LoadOrder" Value="60" Type="int" Guid="7a94e369-ad80-4080-b666-78427907dc7f"/>
     <Parameter Name="Class" Value="Game.SubsystemNpcInteraction" Type="string" Guid="20d05947-039a-4986-8e86-1b96924f09a2"/>
