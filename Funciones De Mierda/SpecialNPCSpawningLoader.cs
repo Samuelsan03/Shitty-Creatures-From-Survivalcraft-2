@@ -717,14 +717,14 @@ namespace Game
 
 					if (blockAbove == 18) // Agua o lava
 					{
-						return 0.96f;
+						return 999f;
 					}
 
 					// Condiciones flexibles para Naomi - SIN RESTRICCIÓN DE ALTURA
 					// SIN RESTRICCIÓN DE DÍAS, HORAS O ESTACIONES - aparece desde el inicio
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 0.99f; // 99% de probabilidad
+						return 999f; // 99% de probabilidad
 					}
 					return 0f;
 				},
@@ -932,7 +932,7 @@ namespace Game
 					}
 
 					// Condiciones de terreno
-					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 1 || groundBlock == 7 ||
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 ||
 						groundBlock == 8 || groundBlock == 4 || groundBlock == 5 || groundBlock == 6)
 					{
 						// Verificar que no esté en agua
@@ -2870,6 +2870,55 @@ namespace Game
 				SpawnFunction = ((SubsystemCreatureSpawn.CreatureType creatureType, Point3 point) =>
 				{
 					var creatures = spawn.SpawnCreatures(creatureType, "PirataElite", point, 2);
+					return creatures.Count;
+				})
+			});
+
+			// GhostNormal - Día 4+ (solo de noche, 100%), cualquier estación
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("GhostNormal", 0, false, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType creatureType, Point3 point)
+				{
+					SubsystemTerrain subsystemTerrain = spawn.m_subsystemTerrain;
+					int cellValue = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValue);
+
+					// Verificar que no esté en agua o lava
+					int cellValueAbove = subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValueAbove);
+
+					if (blockAbove == 18 || blockAbove == 92) // Agua o lava
+					{
+						return 0f;
+					}
+
+					// Obtener día y hora actual
+					SubsystemTimeOfDay timeOfDay = spawn.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+
+					// Verificar si es de noche (entre NightStart y DawnStart)
+					bool isNight = false;
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						float time = timeOfDay.TimeOfDay;
+						// Es noche si está entre NightStart y DawnStart (considerando wrap-around)
+						isNight = (time >= timeOfDay.NightStart || time < timeOfDay.DawnStart);
+						currentDay = (int)Math.Floor(timeOfDay.Day); // Día actual como entero
+					}
+
+					// Aparece CADA NOCHE desde el día 4 en adelante
+					bool isDay4OrLater = currentDay >= 4;
+
+					if (isDay4OrLater && isNight &&
+						(groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+					{
+						return 100f; // 100% de probabilidad cada noche desde día 4
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemCreatureSpawn.CreatureType creatureType, Point3 point) =>
+				{
+					var creatures = spawn.SpawnCreatures(creatureType, "GhostNormal", point, 2);
 					return creatures.Count;
 				})
 			});
