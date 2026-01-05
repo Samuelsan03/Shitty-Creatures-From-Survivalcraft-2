@@ -368,7 +368,7 @@ namespace Game
 					this.SpawnCreatures(creatureType, "Ricardo", point, this.m_random.Int(1, 2)).Count)
 			});
 
-			// BetelGammamon - Solo en otoño e invierno, solo de día (versión normal)
+			// BetelGammamon - Solo en otoño e invierno, solo de día (versión normal) - 100% DE PROBABILIDAD
 			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("BetelGammamon", SpawnLocationType.Surface, true, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
@@ -406,14 +406,16 @@ namespace Game
 						return 0f;
 					}
 
-					return (oceanDistance > 20f && temperature >= 8 && point.Y < 100 && lightLevel >= 7 &&
-						(blockBelow == 8 || blockBelow == 2 || blockBelow == 3 || blockBelow == 7)) ? 1f : 0f;
+					// Si todas las condiciones se cumplen, devolver 100f (100%) en lugar de 1f (1%)
+					// SIN RESTRICCIÓN DE ALTURA (se removió: point.Y < 100)
+					return (oceanDistance > 20f && temperature >= 8 && lightLevel >= 7 &&
+						(blockBelow == 8 || blockBelow == 2 || blockBelow == 3 || blockBelow == 7)) ? 100f : 0f;
 				},
 				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
 					this.SpawnCreatures(creatureType, "BetelGammamon", point, this.m_random.Int(1, 2)).Count)
 			});
 
-			// BetelGammamon Constant - Solo en otoño e invierno, solo de día (versión constante)
+			// BetelGammamon Constant - Solo en otoño e invierno, solo de día (versión constante) - 100% DE PROBABILIDAD
 			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("BetelGammamon Constant", SpawnLocationType.Surface, false, true)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
@@ -451,8 +453,10 @@ namespace Game
 						return 0f;
 					}
 
-					return (oceanDistance > 20f && temperature >= 8 && point.Y < 100 && lightLevel >= 7 &&
-						(blockBelow == 8 || blockBelow == 2 || blockBelow == 3 || blockBelow == 7)) ? 1f : 0f;
+					// Si todas las condiciones se cumplen, devolver 100f (100%) en lugar de 1f (1%)
+					// SIN RESTRICCIÓN DE ALTURA (se removió: point.Y < 100)
+					return (oceanDistance > 20f && temperature >= 8 && lightLevel >= 7 &&
+						(blockBelow == 8 || blockBelow == 2 || blockBelow == 3 || blockBelow == 7 || blockBelow == 62)) ? 100f : 0f;
 				},
 				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
 					this.SpawnCreatures(creatureType, "BetelGammamon", point, this.m_random.Int(1, 2)).Count)
