@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using Engine;
 using GameEntitySystem;
 using TemplatesDatabase;
+using static Game.SubsystemCreatureSpawn;
 
 namespace Game
 {
@@ -109,8 +110,8 @@ namespace Game
 		// Token: 0x06000254 RID: 596 RVA: 0x0001D24C File Offset: 0x0001B44C
 		private void InitializeCreatureTypes()
 		{
-			// Spawn para Naomi con 100% de probabilidad - DESDE DÍA 0, cualquier estación y hora
-			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("Naomi", SpawnLocationType.Surface, true, true)
+			// Spawn para Naomi con 100% de probabilidad - DESDE DÍA 0, cualquier estación y hora (versión normal)
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("Naomi", SpawnLocationType.Surface, true, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
 				{
@@ -142,8 +143,41 @@ namespace Game
 					this.SpawnCreatures(creatureType, "Naomi", point, this.m_random.Int(1, 3)).Count)
 			});
 
-			// Spawn para Brayan con 100% de probabilidad - DESDE DÍA 0, cualquier estación y hora
-			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("Brayan", SpawnLocationType.Surface, true, true)
+			// Spawn para Naomi Constant - DESDE DÍA 0, cualquier estación y hora (versión constante)
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("Naomi Constant", SpawnLocationType.Surface, false, true)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					// Agua (18) o lava (92)
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					// Verificar el bloque del suelo
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					// Condiciones flexibles para Naomi - SIN RESTRICCIÓN DE ALTURA, DÍAS, HORAS O ESTACIONES
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f; // 100% de probabilidad
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "Naomi", point, this.m_random.Int(1, 2)).Count)
+			});
+
+			// Spawn para Brayan con 100% de probabilidad - DESDE DÍA 0, cualquier estación y hora (versión normal)
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("Brayan", SpawnLocationType.Surface, true, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
 				{
@@ -174,8 +208,40 @@ namespace Game
 					this.SpawnCreatures(creatureType, "Brayan", point, this.m_random.Int(1, 2)).Count)
 			});
 
-			// Spawn para Tulio con 100% de probabilidad - DESDE DÍA 0, cualquier estación y hora
-			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("Tulio", SpawnLocationType.Surface, true, true)
+			// Spawn para Brayan Constant - DESDE DÍA 0, cualquier estación y hora (versión constante)
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("Brayan Constant", SpawnLocationType.Surface, false, true)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					// Agua (18) o lava (92)
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					// Condiciones flexibles para Brayan
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f; // 100% de probabilidad
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "Brayan", point, 1).Count) // Solo 1 para constante
+			});
+
+			// Spawn para Tulio con 100% de probabilidad - DESDE DÍA 0, cualquier estación y hora (versión normal)
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("Tulio", SpawnLocationType.Surface, true, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
 				{
@@ -206,8 +272,40 @@ namespace Game
 					this.SpawnCreatures(creatureType, "Tulio", point, this.m_random.Int(1, 2)).Count)
 			});
 
-			// Spawn para Ricardo con 100% de probabilidad - DESDE DÍA 0, cualquier estación y hora
-			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("Ricardo", SpawnLocationType.Surface, true, true)
+			// Spawn para Tulio Constant - DESDE DÍA 0, cualquier estación y hora (versión constante)
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("Tulio Constant", SpawnLocationType.Surface, false, true)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					// Agua (18) o lava (92)
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					// Condiciones flexibles para Tulio
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f; // 100% de probabilidad
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "Tulio", point, 1).Count) // Solo 1 para constante
+			});
+
+			// Spawn para Ricardo con 100% de probabilidad - DESDE DÍA 0, cualquier estación y hora (versión normal)
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("Ricardo", SpawnLocationType.Surface, true, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
 				{
@@ -238,8 +336,40 @@ namespace Game
 					this.SpawnCreatures(creatureType, "Ricardo", point, this.m_random.Int(1, 3)).Count)
 			});
 
-			// BetelGammamon - Solo en otoño e invierno, solo de día
-			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("BetelGammamon", SpawnLocationType.Surface, true, true) // ← Cambiado a true, true
+			// Spawn para Ricardo Constant - DESDE DÍA 0, cualquier estación y hora (versión constante)
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("Ricardo Constant", SpawnLocationType.Surface, false, true)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					// Agua (18) o lava (92)
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					// Condiciones flexibles para Ricardo
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f; // 100% de probabilidad
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "Ricardo", point, this.m_random.Int(1, 2)).Count)
+			});
+
+			// BetelGammamon - Solo en otoño e invierno, solo de día (versión normal)
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("BetelGammamon", SpawnLocationType.Surface, true, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
 				{
@@ -263,11 +393,3871 @@ namespace Game
 					int blockBelow = Terrain.ExtractContents(this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z));
 					int lightLevel = this.m_subsystemTerrain.Terrain.GetCellLightFast(point.X, point.Y + 1, point.Z);
 
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAtPoint = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					// Agua (18) o lava (92)
+					if (blockAtPoint == 18 || blockAtPoint == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
 					return (oceanDistance > 20f && temperature >= 8 && point.Y < 100 && lightLevel >= 7 &&
 						(blockBelow == 8 || blockBelow == 2 || blockBelow == 3 || blockBelow == 7)) ? 1f : 0f;
 				},
 				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
 					this.SpawnCreatures(creatureType, "BetelGammamon", point, this.m_random.Int(1, 2)).Count)
+			});
+
+			// BetelGammamon Constant - Solo en otoño e invierno, solo de día (versión constante)
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("BetelGammamon Constant", SpawnLocationType.Surface, false, true)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Obtener la estación actual del sistema de estaciones
+					SubsystemSeasons subsystemSeasons = base.Project.FindSubsystem<SubsystemSeasons>(true);
+					Season currentSeason = subsystemSeasons.Season;
+
+					// Verificar que sea otoño o invierno
+					bool isAutumnOrWinter = (currentSeason == Season.Autumn || currentSeason == Season.Winter);
+					if (!isAutumnOrWinter)
+						return 0f;
+
+					// Verificar que sea de día (SkyLightIntensity alta = día)
+					bool isDay = this.m_subsystemSky.SkyLightIntensity > 0.5f;
+					if (!isDay)
+						return 0f;
+
+					// Otras condiciones de spawn...
+					float oceanDistance = this.m_subsystemTerrain.TerrainContentsGenerator.CalculateOceanShoreDistance((float)point.X, (float)point.Z);
+					int temperature = this.m_subsystemTerrain.Terrain.GetTemperature(point.X, point.Z);
+					int blockBelow = Terrain.ExtractContents(this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z));
+					int lightLevel = this.m_subsystemTerrain.Terrain.GetCellLightFast(point.X, point.Y + 1, point.Z);
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAtPoint = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					// Agua (18) o lava (92)
+					if (blockAtPoint == 18 || blockAtPoint == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					return (oceanDistance > 20f && temperature >= 8 && point.Y < 100 && lightLevel >= 7 &&
+						(blockBelow == 8 || blockBelow == 2 || blockBelow == 3 || blockBelow == 7)) ? 1f : 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "BetelGammamon", point, this.m_random.Int(1, 2)).Count)
+			});
+
+			// Spawn para LaMuerteX con 100% de probabilidad - DESDE DÍA 0, solo de noche
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("LaMuerteX", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Verificar que sea de noche (SkyLightIntensity baja = noche)
+					bool isNight = this.m_subsystemSky.SkyLightIntensity < 0.3f;
+					if (!isNight)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					// Agua (18) o lava (92)
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					// Verificar el bloque del suelo
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					// Condiciones flexibles para LaMuerteX - SIN RESTRICCIÓN DE ALTURA O ESTACIONES, PERO SOLO DE NOCHE
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f; // 100% de probabilidad
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "LaMuerteX", point, this.m_random.Int(1, 2)).Count)
+			});
+
+			// Spawn para LaMuerteX Constant - DESDE DÍA 0, solo de noche (versión constante)
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("LaMuerteX Constant", SpawnLocationType.Surface, false, true)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Verificar que sea de noche (SkyLightIntensity baja = noche)
+					bool isNight = this.m_subsystemSky.SkyLightIntensity < 0.3f;
+					if (!isNight)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					// Agua (18) o lava (92)
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					// Condiciones flexibles para LaMuerteX - SIN RESTRICCIÓN DE ALTURA O ESTACIONES, PERO SOLO DE NOCHE
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f; // 100% de probabilidad
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "LaMuerteX", point, 5).Count) // Solo 1 para constante
+			});
+
+			// Spawn para ElSenorDeLasTumbasMoradas con 100% de probabilidad - DESDE DÍA 2, solo de noche
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("ElSenorDeLasTumbasMoradas", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 2
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay2OrLater = currentDay >= 2;
+					if (!isDay2OrLater)
+						return 0f;
+
+					// Verificar que sea de noche
+					bool isNight = this.m_subsystemSky.SkyLightIntensity < 0.3f;
+					if (!isNight)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "ElSenorDeLasTumbasMoradas", point, 2).Count)
+			});
+
+			// Spawn para ElSenorDeLasTumbasMoradas Constant - DESDE DÍA 2, solo de noche
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("ElSenorDeLasTumbasMoradas Constant", SpawnLocationType.Surface, false, true)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 2
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay2OrLater = currentDay >= 2;
+					if (!isDay2OrLater)
+						return 0f;
+
+					// Verificar que sea de noche
+					bool isNight = this.m_subsystemSky.SkyLightIntensity < 0.3f;
+					if (!isNight)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "ElSenorDeLasTumbasMoradas", point, 2).Count)
+			});
+
+			// Spawn para Paco con 100% de probabilidad - DESDE DÍA 2, solo de día
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("Paco", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 2
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay2OrLater = currentDay >= 2;
+					if (!isDay2OrLater)
+						return 0f;
+
+					// Verificar que sea de día
+					bool isDay = this.m_subsystemSky.SkyLightIntensity > 0.5f;
+					if (!isDay)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "Paco", point, 2).Count)
+			});
+
+			// Spawn para Paco Constant - DESDE DÍA 2, solo de día
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("Paco Constant", SpawnLocationType.Surface, false, true)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 2
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay2OrLater = currentDay >= 2;
+					if (!isDay2OrLater)
+						return 0f;
+
+					// Verificar que sea de día
+					bool isDay = this.m_subsystemSky.SkyLightIntensity > 0.5f;
+					if (!isDay)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "Paco", point, 2).Count)
+			});
+
+			// Spawn para Veemon con 100% de probabilidad - DESDE DÍA 3, solo de día
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("Veemon", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 3
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay3OrLater = currentDay >= 3;
+					if (!isDay3OrLater)
+						return 0f;
+
+					// Verificar que sea de día
+					bool isDay = this.m_subsystemSky.SkyLightIntensity > 0.5f;
+					if (!isDay)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "Veemon", point, 2).Count)
+			});
+
+			// Spawn para Veemon Constant - DESDE DÍA 3, solo de día
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("Veemon Constant", SpawnLocationType.Surface, false, true)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 3
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay3OrLater = currentDay >= 3;
+					if (!isDay3OrLater)
+						return 0f;
+
+					// Verificar que sea de día
+					bool isDay = this.m_subsystemSky.SkyLightIntensity > 0.5f;
+					if (!isDay)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "Veemon", point, 2).Count)
+			});
+
+			// Spawn para Gaomon con 100% de probabilidad - DESDE DÍA 3, solo de día
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("Gaomon", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 3
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay3OrLater = currentDay >= 3;
+					if (!isDay3OrLater)
+						return 0f;
+
+					// Verificar que sea de día
+					bool isDay = this.m_subsystemSky.SkyLightIntensity > 0.5f;
+					if (!isDay)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "Gaomon", point, 2).Count)
+			});
+
+			// Spawn para Gaomon Constant - DESDE DÍA 3, solo de día
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("Gaomon Constant", SpawnLocationType.Surface, false, true)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 3
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay3OrLater = currentDay >= 3;
+					if (!isDay3OrLater)
+						return 0f;
+
+					// Verificar que sea de día
+					bool isDay = this.m_subsystemSky.SkyLightIntensity > 0.5f;
+					if (!isDay)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "Gaomon", point, 2).Count)
+			});
+
+			// Spawn para Agumon con 100% de probabilidad - DESDE DÍA 3, solo de día
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("Agumon", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 3
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay3OrLater = currentDay >= 3;
+					if (!isDay3OrLater)
+						return 0f;
+
+					// Verificar que sea de día
+					bool isDay = this.m_subsystemSky.SkyLightIntensity > 0.5f;
+					if (!isDay)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "Agumon", point, 2).Count)
+			});
+
+			// Spawn para Agumon Constant - DESDE DÍA 3, solo de día
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("Agumon Constant", SpawnLocationType.Surface, false, true)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 3
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay3OrLater = currentDay >= 3;
+					if (!isDay3OrLater)
+						return 0f;
+
+					// Verificar que sea de día
+					bool isDay = this.m_subsystemSky.SkyLightIntensity > 0.5f;
+					if (!isDay)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "Agumon", point, 2).Count)
+			});
+
+			// Spawn para Barack con 100% de probabilidad - DESDE DÍA 4, cualquier hora
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("Barack", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 4
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay4OrLater = currentDay >= 4;
+					if (!isDay4OrLater)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "Barack", point, 2).Count)
+			});
+
+			// Spawn para Barack Constant - DESDE DÍA 4, cualquier hora
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("Barack Constant", SpawnLocationType.Surface, false, true)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 4
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay4OrLater = currentDay >= 4;
+					if (!isDay4OrLater)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "Barack", point, 2).Count)
+			});
+
+			// Spawn para ElMarihuanero con 100% de probabilidad - DESDE DÍA 6, solo de día
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("ElMarihuanero", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 6
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay6OrLater = currentDay >= 6;
+					if (!isDay6OrLater)
+						return 0f;
+
+					// Verificar que sea de día
+					bool isDay = this.m_subsystemSky.SkyLightIntensity > 0.5f;
+					if (!isDay)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "ElMarihuanero", point, 2).Count)
+			});
+
+			// Spawn para ElMarihuanero Constant - DESDE DÍA 6, solo de día
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("ElMarihuanero Constant", SpawnLocationType.Surface, false, true)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 6
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay6OrLater = currentDay >= 6;
+					if (!isDay6OrLater)
+						return 0f;
+
+					// Verificar que sea de día
+					bool isDay = this.m_subsystemSky.SkyLightIntensity > 0.5f;
+					if (!isDay)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "ElMarihuanero", point, 2).Count)
+			});
+
+			// Spawn para ElMarihuaneroMamon con 100% de probabilidad - DESDE DÍA 7, solo de noche
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("ElMarihuaneroMamon", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 7
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay7OrLater = currentDay >= 7;
+					if (!isDay7OrLater)
+						return 0f;
+
+					// Verificar que sea de noche
+					bool isNight = this.m_subsystemSky.SkyLightIntensity < 0.3f;
+					if (!isNight)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "ElMarihuaneroMamon", point, 2).Count)
+			});
+
+			// Spawn para ElMarihuaneroMamon Constant - DESDE DÍA 7, solo de noche
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("ElMarihuaneroMamon Constant", SpawnLocationType.Surface, false, true)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 7
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay7OrLater = currentDay >= 7;
+					if (!isDay7OrLater)
+						return 0f;
+
+					// Verificar que sea de noche
+					bool isNight = this.m_subsystemSky.SkyLightIntensity < 0.3f;
+					if (!isNight)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "ElMarihuaneroMamon", point, 2).Count)
+			});
+
+			// Spawn para Shoutmon con 100% de probabilidad - DESDE DÍA 5, solo de día
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("Shoutmon", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 5
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay5OrLater = currentDay >= 5;
+					if (!isDay5OrLater)
+						return 0f;
+
+					// Verificar que sea de día
+					bool isDay = this.m_subsystemSky.SkyLightIntensity > 0.5f;
+					if (!isDay)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "Shoutmon", point, 2).Count)
+			});
+
+			// Spawn para Shoutmon Constant - DESDE DÍA 5, solo de día
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("Shoutmon Constant", SpawnLocationType.Surface, false, true)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 5
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay5OrLater = currentDay >= 5;
+					if (!isDay5OrLater)
+						return 0f;
+
+					// Verificar que sea de día
+					bool isDay = this.m_subsystemSky.SkyLightIntensity > 0.5f;
+					if (!isDay)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "Shoutmon", point, 2).Count)
+			});
+
+			// Spawn para Impmon con 100% de probabilidad - DESDE DÍA 5, solo de noche
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("Impmon", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 5
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay5OrLater = currentDay >= 5;
+					if (!isDay5OrLater)
+						return 0f;
+
+					// Verificar que sea de noche
+					bool isNight = this.m_subsystemSky.SkyLightIntensity < 0.3f;
+					if (!isNight)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "Impmon", point, 2).Count)
+			});
+
+			// Spawn para Impmon Constant - DESDE DÍA 5, solo de noche
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("Impmon Constant", SpawnLocationType.Surface, false, true)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 5
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay5OrLater = currentDay >= 5;
+					if (!isDay5OrLater)
+						return 0f;
+
+					// Verificar que sea de noche
+					bool isNight = this.m_subsystemSky.SkyLightIntensity < 0.3f;
+					if (!isNight)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "Impmon", point, 2).Count)
+			});
+
+			// Spawn para FumadorQuimico con 100% de probabilidad - DESDE DÍA 7, cualquier hora
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("FumadorQuimico", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 7
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay7OrLater = currentDay >= 7;
+					if (!isDay7OrLater)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "FumadorQuimico", point, 2).Count)
+			});
+
+			// Spawn para FumadorQuimico Constant - DESDE DÍA 7, cualquier hora
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("FumadorQuimico Constant", SpawnLocationType.Surface, false, true)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 7
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay7OrLater = currentDay >= 7;
+					if (!isDay7OrLater)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "FumadorQuimico", point, 2).Count)
+			});
+
+			// Spawn para LiderCalavericoSupremo con 100% de probabilidad - DESDE DÍA 8, solo de noche
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("LiderCalavericoSupremo", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 8
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay8OrLater = currentDay >= 8;
+					if (!isDay8OrLater)
+						return 0f;
+
+					// Verificar que sea de noche
+					bool isNight = this.m_subsystemSky.SkyLightIntensity < 0.3f;
+					if (!isNight)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "LiderCalavericoSupremo", point, 2).Count)
+			});
+
+			// Spawn para LiderCalavericoSupremo Constant - DESDE DÍA 8, solo de noche
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("LiderCalavericoSupremo Constant", SpawnLocationType.Surface, false, true)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 8
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay8OrLater = currentDay >= 8;
+					if (!isDay8OrLater)
+						return 0f;
+
+					// Verificar que sea de noche
+					bool isNight = this.m_subsystemSky.SkyLightIntensity < 0.3f;
+					if (!isNight)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "LiderCalavericoSupremo", point, 2).Count)
+			});
+
+			// Spawn para Guilmon con 100% de probabilidad - DESDE DÍA 10, solo de día
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("Guilmon", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 10
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay10OrLater = currentDay >= 10;
+					if (!isDay10OrLater)
+						return 0f;
+
+					// Verificar que sea de día
+					bool isDay = this.m_subsystemSky.SkyLightIntensity > 0.5f;
+					if (!isDay)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "Guilmon", point, 2).Count)
+			});
+
+			// Spawn para Guilmon Constant - DESDE DÍA 10, solo de día
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("Guilmon Constant", SpawnLocationType.Surface, false, true)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 10
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay10OrLater = currentDay >= 10;
+					if (!isDay10OrLater)
+						return 0f;
+
+					// Verificar que sea de día
+					bool isDay = this.m_subsystemSky.SkyLightIntensity > 0.5f;
+					if (!isDay)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "Guilmon", point, 2).Count)
+			});
+
+			// Spawn para Gumdramon con 100% de probabilidad - DESDE DÍA 10, solo de día
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("Gumdramon", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 10
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay10OrLater = currentDay >= 10;
+					if (!isDay10OrLater)
+						return 0f;
+
+					// Verificar que sea de día
+					bool isDay = this.m_subsystemSky.SkyLightIntensity > 0.5f;
+					if (!isDay)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "Gumdramon", point, 2).Count)
+			});
+
+			// Spawn para Gumdramon Constant - DESDE DÍA 10, solo de día
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("Gumdramon Constant", SpawnLocationType.Surface, false, true)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 10
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay10OrLater = currentDay >= 10;
+					if (!isDay10OrLater)
+						return 0f;
+
+					// Verificar que sea de día
+					bool isDay = this.m_subsystemSky.SkyLightIntensity > 0.5f;
+					if (!isDay)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "Gumdramon", point, 2).Count)
+			});
+
+			// Spawn para Sparkster con 100% de probabilidad - DESDE DÍA 2, cualquier hora (versión normal)
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("Sparkster", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 2
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay2OrLater = currentDay >= 2;
+					if (!isDay2OrLater)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "Sparkster", point, 2).Count)
+			});
+
+			// Spawn para Sparkster Constant - DESDE DÍA 2, cualquier hora
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("Sparkster Constant", SpawnLocationType.Surface, false, true)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 2
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay2OrLater = currentDay >= 2;
+					if (!isDay2OrLater)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "Sparkster", point, 2).Count)
+			});
+
+			// Spawn para ElArquero con 100% de probabilidad - DESDE DÍA 5, solo de noche
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("ElArquero", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 5
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay5OrLater = currentDay >= 5;
+					if (!isDay5OrLater)
+						return 0f;
+
+					// Verificar que sea de noche
+					bool isNight = this.m_subsystemSky.SkyLightIntensity < 0.3f;
+					if (!isNight)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "ElArquero", point, 2).Count)
+			});
+
+			// Spawn para ElArquero Constant - DESDE DÍA 5, solo de noche
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("ElArquero Constant", SpawnLocationType.Surface, false, true)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 5
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay5OrLater = currentDay >= 5;
+					if (!isDay5OrLater)
+						return 0f;
+
+					// Verificar que sea de noche
+					bool isNight = this.m_subsystemSky.SkyLightIntensity < 0.3f;
+					if (!isNight)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "ElArquero", point, 2).Count)
+			});
+
+			// Spawn para Arqueroprisionero con 100% de probabilidad - DESDE DÍA 6, solo de noche
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("Arqueroprisionero", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 6
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay6OrLater = currentDay >= 6;
+					if (!isDay6OrLater)
+						return 0f;
+
+					// Verificar que sea de noche
+					bool isNight = this.m_subsystemSky.SkyLightIntensity < 0.3f;
+					if (!isNight)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "Arqueroprisionero", point, 2).Count)
+			});
+
+			// Spawn para Arqueroprisionero Constant - DESDE DÍA 6, solo de noche
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("Arqueroprisionero Constant", SpawnLocationType.Surface, false, true)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 6
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay6OrLater = currentDay >= 6;
+					if (!isDay6OrLater)
+						return 0f;
+
+					// Verificar que sea de noche
+					bool isNight = this.m_subsystemSky.SkyLightIntensity < 0.3f;
+					if (!isNight)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "Arqueroprisionero", point, 2).Count)
+			});
+
+			// Spawn para Conker con 100% de probabilidad - DESDE DÍA 7, solo de día
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("Conker", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 7
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay7OrLater = currentDay >= 7;
+					if (!isDay7OrLater)
+						return 0f;
+
+					// Verificar que sea de día
+					bool isDay = this.m_subsystemSky.SkyLightIntensity > 0.5f;
+					if (!isDay)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "Conker", point, 2).Count)
+			});
+
+			// Spawn para Conker Constant - DESDE DÍA 7, solo de día
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("Conker Constant", SpawnLocationType.Surface, false, true)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 7
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay7OrLater = currentDay >= 7;
+					if (!isDay7OrLater)
+						return 0f;
+
+					// Verificar que sea de día
+					bool isDay = this.m_subsystemSky.SkyLightIntensity > 0.5f;
+					if (!isDay)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "Conker", point, 2).Count)
+			});
+
+			// Spawn para ElBallestador con 100% de probabilidad - DESDE DÍA 10, solo de noche
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("ElBallestador", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 10
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay10OrLater = currentDay >= 10;
+					if (!isDay10OrLater)
+						return 0f;
+
+					// Verificar que sea de noche
+					bool isNight = this.m_subsystemSky.SkyLightIntensity < 0.3f;
+					if (!isNight)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "ElBallestador", point, 2).Count)
+			});
+
+			// Spawn para ElBallestador Constant - DESDE DÍA 10, solo de noche
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("ElBallestador Constant", SpawnLocationType.Surface, false, true)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 10
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay10OrLater = currentDay >= 10;
+					if (!isDay10OrLater)
+						return 0f;
+
+					// Verificar que sea de noche
+					bool isNight = this.m_subsystemSky.SkyLightIntensity < 0.3f;
+					if (!isNight)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "ElBallestador", point, 2).Count)
+			});
+
+			// Spawn para BallestadoraMusculosa con 100% de probabilidad - DESDE DÍA 11, solo de noche
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("BallestadoraMusculosa", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 11
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay11OrLater = currentDay >= 11;
+					if (!isDay11OrLater)
+						return 0f;
+
+					// Verificar que sea de noche
+					bool isNight = this.m_subsystemSky.SkyLightIntensity < 0.3f;
+					if (!isNight)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "BallestadoraMusculosa", point, 2).Count)
+			});
+
+			// Spawn para BallestadoraMusculosa Constant - DESDE DÍA 11, solo de noche
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("BallestadoraMusculosa Constant", SpawnLocationType.Surface, false, true)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 11
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay11OrLater = currentDay >= 11;
+					if (!isDay11OrLater)
+						return 0f;
+
+					// Verificar que sea de noche
+					bool isNight = this.m_subsystemSky.SkyLightIntensity < 0.3f;
+					if (!isNight)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "BallestadoraMusculosa", point, 2).Count)
+			});
+
+			// Spawn para Claudespeed con 100% de probabilidad - DESDE DÍA 12, solo de día
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("ClaudeSpeed", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 12
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay12OrLater = currentDay >= 12;
+					if (!isDay12OrLater)
+						return 0f;
+
+					// Verificar que sea de día
+					bool isDay = this.m_subsystemSky.SkyLightIntensity > 0.5f;
+					if (!isDay)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "ClaudeSpeed", point, 1).Count) // Individualmente
+			});
+
+			// Spawn para Claudespeed Constant - DESDE DÍA 12, solo de día
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("ClaudeSpeed Constant", SpawnLocationType.Surface, false, true)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 12
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay12OrLater = currentDay >= 12;
+					if (!isDay12OrLater)
+						return 0f;
+
+					// Verificar que sea de día
+					bool isDay = this.m_subsystemSky.SkyLightIntensity > 0.5f;
+					if (!isDay)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "ClaudeSpeed", point, 1).Count) // Individualmente
+			});
+
+			// Spawn para Tommyvercetti con 100% de probabilidad - DESDE DÍA 13, solo de noche
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("TommyVercetti", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 13
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay13OrLater = currentDay >= 13;
+					if (!isDay13OrLater)
+						return 0f;
+
+					// Verificar que sea de noche
+					bool isNight = this.m_subsystemSky.SkyLightIntensity < 0.3f;
+					if (!isNight)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "TommyVercetti", point, 1).Count) // Individualmente
+			});
+
+			// Spawn para Tommyvercetti Constant - DESDE DÍA 13, solo de noche
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("TommyVercetti Constant", SpawnLocationType.Surface, false, true)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 13
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay13OrLater = currentDay >= 13;
+					if (!isDay13OrLater)
+						return 0f;
+
+					// Verificar que sea de noche
+					bool isNight = this.m_subsystemSky.SkyLightIntensity < 0.3f;
+					if (!isNight)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "TommyVercetti", point, 1).Count) // Individualmente
+			});
+
+			// Spawn para Carljohnson con 100% de probabilidad - DESDE DÍA 14, cualquier hora
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("CarlJohnson", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 14
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay14OrLater = currentDay >= 14;
+					if (!isDay14OrLater)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "CarlJohnson", point, 1).Count) // Individualmente
+			});
+
+			// Spawn para Carljohnson Constant - DESDE DÍA 14, cualquier hora
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("CarlJohnson Constant", SpawnLocationType.Surface, false, true)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 14
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay14OrLater = currentDay >= 14;
+					if (!isDay14OrLater)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "CarlJohnson", point, 1).Count) // Individualmente
+			});
+
+			// Spawn para Beavis con 100% de probabilidad - DESDE DÍA 14, solo de día
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("Beavis", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 14
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay14OrLater = currentDay >= 14;
+					if (!isDay14OrLater)
+						return 0f;
+
+					// Verificar que sea de día
+					bool isDay = this.m_subsystemSky.SkyLightIntensity > 0.5f;
+					if (!isDay)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "Beavis", point, 1).Count) // Individualmente
+			});
+
+			// Spawn para Beavis Constant - DESDE DÍA 14, solo de día
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("Beavis Constant", SpawnLocationType.Surface, false, true)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 14
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay14OrLater = currentDay >= 14;
+					if (!isDay14OrLater)
+						return 0f;
+
+					// Verificar que sea de día
+					bool isDay = this.m_subsystemSky.SkyLightIntensity > 0.5f;
+					if (!isDay)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "Beavis", point, 1).Count) // Individualmente
+			});
+
+			// Spawn para Butthead con 100% de probabilidad - DESDE DÍA 14, solo de día
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("Butt-Head", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 14
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay14OrLater = currentDay >= 14;
+					if (!isDay14OrLater)
+						return 0f;
+
+					// Verificar que sea de día
+					bool isDay = this.m_subsystemSky.SkyLightIntensity > 0.5f;
+					if (!isDay)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "Butt-Head", point, 1).Count) // Individualmente
+			});
+
+			// Spawn para Butthead Constant - DESDE DÍA 14, solo de día
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("Butt-Head Constant", SpawnLocationType.Surface, false, true)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 14
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay14OrLater = currentDay >= 14;
+					if (!isDay14OrLater)
+						return 0f;
+
+					// Verificar que sea de día
+					bool isDay = this.m_subsystemSky.SkyLightIntensity > 0.5f;
+					if (!isDay)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "Butt-Head", point, 1).Count) // Individualmente
+			});
+
+			// Spawn para HombreLava con 100% de probabilidad - DESDE DÍA 17, solo de noche, en lava
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("HombreLava", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 17
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay17OrLater = currentDay >= 17;
+					if (!isDay17OrLater)
+						return 0f;
+
+					// Verificar que sea de noche
+					bool isNight = this.m_subsystemSky.SkyLightIntensity < 0.3f;
+					if (!isNight)
+						return 0f;
+
+					// Verificar que esté en lava (bloque 92) o sobre lava
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					// También verificar el bloque actual y el de arriba
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int currentBlock = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int headBlock = Terrain.ExtractContents(cellValueHead);
+
+					// Permitir spawn en lava (92) o sobre lava
+					if (groundBlock == 92 || currentBlock == 92)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "HombreLava", point, 1).Count) // Individualmente
+			});
+
+			// Spawn para HombreLava Constant - DESDE DÍA 17, solo de noche, en lava
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("HombreLava Constant", SpawnLocationType.Surface, false, true)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 17
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay17OrLater = currentDay >= 17;
+					if (!isDay17OrLater)
+						return 0f;
+
+					// Verificar que sea de noche
+					bool isNight = this.m_subsystemSky.SkyLightIntensity < 0.3f;
+					if (!isNight)
+						return 0f;
+
+					// Verificar que esté en lava (bloque 92) o sobre lava
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int currentBlock = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int headBlock = Terrain.ExtractContents(cellValueHead);
+
+					// Permitir spawn en lava (92) o sobre lava
+					if (groundBlock == 92 || currentBlock == 92)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "HombreLava", point, 1).Count) // Individualmente
+			});
+
+			// Spawn para HombreAgua con 100% de probabilidad - DESDE DÍA 18, solo de noche, en agua
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("HombreAgua", SpawnLocationType.Water, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 18
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay18OrLater = currentDay >= 18;
+					if (!isDay18OrLater)
+						return 0f;
+
+					// Verificar que sea de noche
+					bool isNight = this.m_subsystemSky.SkyLightIntensity < 0.3f;
+					if (!isNight)
+						return 0f;
+
+					// Verificar que esté en agua (bloque 18)
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int currentBlock = Terrain.ExtractContents(cellValue);
+
+					// Verificar que haya agua en el bloque actual y espacio arriba
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int headBlock = Terrain.ExtractContents(cellValueHead);
+
+					int cellValueHead2 = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 2, point.Z);
+					int headBlock2 = Terrain.ExtractContents(cellValueHead2);
+
+					if (currentBlock == 18 && headBlock != 18 && headBlock2 != 18)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "HombreAgua", point, 1).Count) // Individualmente
+			});
+
+			// Spawn para HombreAgua Constant - DESDE DÍA 18, solo de noche, en agua
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("HombreAgua Constant", SpawnLocationType.Water, false, true)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 18
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay18OrLater = currentDay >= 18;
+					if (!isDay18OrLater)
+						return 0f;
+
+					// Verificar que sea de noche
+					bool isNight = this.m_subsystemSky.SkyLightIntensity < 0.3f;
+					if (!isNight)
+						return 0f;
+
+					// Verificar que esté en agua (bloque 18)
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int currentBlock = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int headBlock = Terrain.ExtractContents(cellValueHead);
+
+					int cellValueHead2 = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 2, point.Z);
+					int headBlock2 = Terrain.ExtractContents(cellValueHead2);
+
+					if (currentBlock == 18 && headBlock != 18 && headBlock2 != 18)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "HombreAgua", point, 1).Count) // Individualmente
+			});
+
+			// Spawn para Zombierepetidor con 100% de probabilidad - DESDE DÍA 21, solo de noche
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("ZombieRepetidor", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 21
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay21OrLater = currentDay >= 21;
+					if (!isDay21OrLater)
+						return 0f;
+
+					// Verificar que sea de noche
+					bool isNight = this.m_subsystemSky.SkyLightIntensity < 0.3f;
+					if (!isNight)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "ZombieRepetidor", point, 2).Count)
+			});
+
+			// Spawn para Zombierepetidor Constant - DESDE DÍA 21, solo de noche
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("ZombieRepetidor Constant", SpawnLocationType.Surface, false, true)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 21
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay21OrLater = currentDay >= 21;
+					if (!isDay21OrLater)
+						return 0f;
+
+					// Verificar que sea de noche
+					bool isNight = this.m_subsystemSky.SkyLightIntensity < 0.3f;
+					if (!isNight)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "ZombieRepetidor", point, 2).Count)
+			});
+
+			// Spawn para Walterzombie con 100% de probabilidad - DESDE DÍA 22, solo de noche
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("WalterZombie", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 22
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay22OrLater = currentDay >= 22;
+					if (!isDay22OrLater)
+						return 0f;
+
+					// Verificar que sea de noche
+					bool isNight = this.m_subsystemSky.SkyLightIntensity < 0.3f;
+					if (!isNight)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "WalterZombie", point, 1).Count) // Individualmente
+			});
+
+			// Spawn para Walterzombie Constant - DESDE DÍA 22, solo de noche
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("WalterZombie Constant", SpawnLocationType.Surface, false, true)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 22
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay22OrLater = currentDay >= 22;
+					if (!isDay22OrLater)
+						return 0f;
+
+					// Verificar que sea de noche
+					bool isNight = this.m_subsystemSky.SkyLightIntensity < 0.3f;
+					if (!isNight)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "WalterZombie", point, 1).Count) // Individualmente
+			});
+
+			// Spawn para ElGuerrilleroTenebroso con 100% de probabilidad - DESDE DÍA 24, solo de noche
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("ElGuerrilleroTenebroso", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 24
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay24OrLater = currentDay >= 24;
+					if (!isDay24OrLater)
+						return 0f;
+
+					// Verificar que sea de noche
+					bool isNight = this.m_subsystemSky.SkyLightIntensity < 0.3f;
+					if (!isNight)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "ElGuerrilleroTenebroso", point, 1).Count) // Individualmente
+			});
+
+			// Spawn para ElGuerrilleroTenebroso Constant - DESDE DÍA 24, solo de noche
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("ElGuerrilleroTenebroso Constant", SpawnLocationType.Surface, false, true)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 24
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay24OrLater = currentDay >= 24;
+					if (!isDay24OrLater)
+						return 0f;
+
+					// Verificar que sea de noche
+					bool isNight = this.m_subsystemSky.SkyLightIntensity < 0.3f;
+					if (!isNight)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "ElGuerrilleroTenebroso", point, 1).Count) // Individualmente
+			});
+
+			// Spawn para ElGuerrillero con 100% de probabilidad - DESDE DÍA 25, cualquier hora
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("ElGuerrillero", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 25
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay25OrLater = currentDay >= 25;
+					if (!isDay25OrLater)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "ElGuerrillero", point, 1).Count) // Individualmente
+			});
+
+			// Spawn para ElGuerrillero Constant - DESDE DÍA 25, cualquier hora
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("ElGuerrillero Constant", SpawnLocationType.Surface, false, true)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 25
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay25OrLater = currentDay >= 25;
+					if (!isDay25OrLater)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "ElGuerrillero", point, 1).Count) // Individualmente
+			});
+
+			// Spawn para AladinaCorrupta con 100% de probabilidad - DESDE DÍA 28, cualquier hora
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("AladinaCorrupta", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 28
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay28OrLater = currentDay >= 28;
+					if (!isDay28OrLater)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "AladinaCorrupta", point, 2).Count)
+			});
+
+			// Spawn para AladinaCorrupta Constant - DESDE DÍA 28, cualquier hora
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("AladinaCorrupta Constant", SpawnLocationType.Surface, false, true)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 28
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay28OrLater = currentDay >= 28;
+					if (!isDay28OrLater)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "AladinaCorrupta", point, 2).Count)
+			});
+
+			// Spawn para Richard con 100% de probabilidad - DESDE DÍA 30, solo de día
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("Richard", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 30
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay30OrLater = currentDay >= 30;
+					if (!isDay30OrLater)
+						return 0f;
+
+					// Verificar que sea de día
+					bool isDay = this.m_subsystemSky.SkyLightIntensity > 0.5f;
+					if (!isDay)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "Richard", point, 2).Count)
+			});
+
+			// Spawn para Richard Constant - DESDE DÍA 30, solo de día
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("Richard Constant", SpawnLocationType.Surface, false, true)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 30
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay30OrLater = currentDay >= 30;
+					if (!isDay30OrLater)
+						return 0f;
+
+					// Verificar que sea de día
+					bool isDay = this.m_subsystemSky.SkyLightIntensity > 0.5f;
+					if (!isDay)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "Richard", point, 2).Count)
+			});
+
+			// Spawn para PirataNormal con 100% de probabilidad - DESDE DÍA 4, solo de día, cerca del agua
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("PirataNormal", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 4
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay4OrLater = currentDay >= 4;
+					if (!isDay4OrLater)
+						return 0f;
+
+					// Verificar que sea de día
+					bool isDay = this.m_subsystemSky.SkyLightIntensity > 0.5f;
+					if (!isDay)
+						return 0f;
+
+					// Verificar que esté cerca del agua o en la costa
+					float oceanDistance = this.m_subsystemTerrain.TerrainContentsGenerator.CalculateOceanShoreDistance((float)point.X, (float)point.Z);
+
+					// Verificar que esté cerca del agua (menos de 30 bloques de la costa o en agua)
+					bool isNearWater = oceanDistance < 30f;
+					if (!isNearWater)
+						return 0f;
+
+					// Verificar que no esté en lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int currentBlock = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int headBlock = Terrain.ExtractContents(cellValueHead);
+
+					// Solo bloquear lava (92), agua está permitida
+					if (currentBlock == 92 || headBlock == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					// Permitir spawn en arena (8) o tierra (2, 3, 7) cerca del agua
+					if (groundBlock == 8 || groundBlock == 2 || groundBlock == 3 || groundBlock == 7)
+					{
+						return 100f;
+					}
+
+					// También permitir spawn directamente en agua (18)
+					if (currentBlock == 18 || groundBlock == 18)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "PirataNormal", point, 2).Count)
+			});
+
+			// Spawn para PirataNormal Constant - DESDE DÍA 4, solo de día, cerca del agua
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("PirataNormal Constant", SpawnLocationType.Surface, false, true)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 4
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay4OrLater = currentDay >= 4;
+					if (!isDay4OrLater)
+						return 0f;
+
+					// Verificar que sea de día
+					bool isDay = this.m_subsystemSky.SkyLightIntensity > 0.5f;
+					if (!isDay)
+						return 0f;
+
+					// Verificar que esté cerca del agua o en la costa
+					float oceanDistance = this.m_subsystemTerrain.TerrainContentsGenerator.CalculateOceanShoreDistance((float)point.X, (float)point.Z);
+
+					bool isNearWater = oceanDistance < 30f;
+					if (!isNearWater)
+						return 0f;
+
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int currentBlock = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int headBlock = Terrain.ExtractContents(cellValueHead);
+
+					if (currentBlock == 92 || headBlock == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 8 || groundBlock == 2 || groundBlock == 3 || groundBlock == 7)
+					{
+						return 100f;
+					}
+
+					if (currentBlock == 18 || groundBlock == 18)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "PirataNormal", point, 2).Count)
+			});
+
+			// Spawn para PirataNormalAliado con 100% de probabilidad - DESDE DÍA 4, solo de día, cerca del agua
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("PirataNormalAliado", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 4
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay4OrLater = currentDay >= 4;
+					if (!isDay4OrLater)
+						return 0f;
+
+					// Verificar que sea de día
+					bool isDay = this.m_subsystemSky.SkyLightIntensity > 0.5f;
+					if (!isDay)
+						return 0f;
+
+					// Verificar que esté cerca del agua o en la costa
+					float oceanDistance = this.m_subsystemTerrain.TerrainContentsGenerator.CalculateOceanShoreDistance((float)point.X, (float)point.Z);
+
+					bool isNearWater = oceanDistance < 30f;
+					if (!isNearWater)
+						return 0f;
+
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int currentBlock = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int headBlock = Terrain.ExtractContents(cellValueHead);
+
+					if (currentBlock == 92 || headBlock == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 8 || groundBlock == 2 || groundBlock == 3 || groundBlock == 7)
+					{
+						return 100f;
+					}
+
+					if (currentBlock == 18 || groundBlock == 18)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "PirataNormalAliado", point, 2).Count)
+			});
+
+			// Spawn para PirataNormalAliado Constant - DESDE DÍA 4, solo de día, cerca del agua
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("PirataNormalAliado Constant", SpawnLocationType.Surface, false, true)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 4
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay4OrLater = currentDay >= 4;
+					if (!isDay4OrLater)
+						return 0f;
+
+					// Verificar que sea de día
+					bool isDay = this.m_subsystemSky.SkyLightIntensity > 0.5f;
+					if (!isDay)
+						return 0f;
+
+					// Verificar que esté cerca del agua o en la costa
+					float oceanDistance = this.m_subsystemTerrain.TerrainContentsGenerator.CalculateOceanShoreDistance((float)point.X, (float)point.Z);
+
+					bool isNearWater = oceanDistance < 30f;
+					if (!isNearWater)
+						return 0f;
+
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int currentBlock = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int headBlock = Terrain.ExtractContents(cellValueHead);
+
+					if (currentBlock == 92 || headBlock == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 8 || groundBlock == 2 || groundBlock == 3 || groundBlock == 7)
+					{
+						return 100f;
+					}
+
+					if (currentBlock == 18 || groundBlock == 18)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "PirataNormalAliado", point, 2).Count)
+			});
+
+			// Spawn para PirataElite con 100% de probabilidad - DESDE DÍA 5, solo de día, cerca del agua
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("PirataElite", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 5
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay5OrLater = currentDay >= 5;
+					if (!isDay5OrLater)
+						return 0f;
+
+					// Verificar que sea de día
+					bool isDay = this.m_subsystemSky.SkyLightIntensity > 0.5f;
+					if (!isDay)
+						return 0f;
+
+					// Verificar que esté cerca del agua o en la costa
+					float oceanDistance = this.m_subsystemTerrain.TerrainContentsGenerator.CalculateOceanShoreDistance((float)point.X, (float)point.Z);
+
+					bool isNearWater = oceanDistance < 30f;
+					if (!isNearWater)
+						return 0f;
+
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int currentBlock = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int headBlock = Terrain.ExtractContents(cellValueHead);
+
+					if (currentBlock == 92 || headBlock == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 8 || groundBlock == 2 || groundBlock == 3 || groundBlock == 7)
+					{
+						return 100f;
+					}
+
+					if (currentBlock == 18 || groundBlock == 18)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "PirataElite", point, 2).Count)
+			});
+
+			// Spawn para PirataElite Constant - DESDE DÍA 5, solo de día, cerca del agua
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("PirataElite Constant", SpawnLocationType.Surface, false, true)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 5
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay5OrLater = currentDay >= 5;
+					if (!isDay5OrLater)
+						return 0f;
+
+					// Verificar que sea de día
+					bool isDay = this.m_subsystemSky.SkyLightIntensity > 0.5f;
+					if (!isDay)
+						return 0f;
+
+					// Verificar que esté cerca del agua o en la costa
+					float oceanDistance = this.m_subsystemTerrain.TerrainContentsGenerator.CalculateOceanShoreDistance((float)point.X, (float)point.Z);
+
+					bool isNearWater = oceanDistance < 30f;
+					if (!isNearWater)
+						return 0f;
+
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int currentBlock = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int headBlock = Terrain.ExtractContents(cellValueHead);
+
+					if (currentBlock == 92 || headBlock == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 8 || groundBlock == 2 || groundBlock == 3 || groundBlock == 7)
+					{
+						return 100f;
+					}
+
+					if (currentBlock == 18 || groundBlock == 18)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "PirataElite", point, 2).Count)
+			});
+
+			// Spawn para PirataEliteAliado con 100% de probabilidad - DESDE DÍA 5, solo de día, cerca del agua
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("PirataEliteAliado", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 5
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay5OrLater = currentDay >= 5;
+					if (!isDay5OrLater)
+						return 0f;
+
+					// Verificar que sea de día
+					bool isDay = this.m_subsystemSky.SkyLightIntensity > 0.5f;
+					if (!isDay)
+						return 0f;
+
+					// Verificar que esté cerca del agua o en la costa
+					float oceanDistance = this.m_subsystemTerrain.TerrainContentsGenerator.CalculateOceanShoreDistance((float)point.X, (float)point.Z);
+
+					bool isNearWater = oceanDistance < 30f;
+					if (!isNearWater)
+						return 0f;
+
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int currentBlock = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int headBlock = Terrain.ExtractContents(cellValueHead);
+
+					if (currentBlock == 92 || headBlock == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 8 || groundBlock == 2 || groundBlock == 3 || groundBlock == 7)
+					{
+						return 100f;
+					}
+
+					if (currentBlock == 18 || groundBlock == 18)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "PirataEliteAliado", point, 2).Count)
+			});
+
+			// Spawn para PirataEliteAliado Constant - DESDE DÍA 5, solo de día, cerca del agua
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("PirataEliteAliado Constant", SpawnLocationType.Surface, false, true)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 5
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay5OrLater = currentDay >= 5;
+					if (!isDay5OrLater)
+						return 0f;
+
+					// Verificar que sea de día
+					bool isDay = this.m_subsystemSky.SkyLightIntensity > 0.5f;
+					if (!isDay)
+						return 0f;
+
+					// Verificar que esté cerca del agua o en la costa
+					float oceanDistance = this.m_subsystemTerrain.TerrainContentsGenerator.CalculateOceanShoreDistance((float)point.X, (float)point.Z);
+
+					bool isNearWater = oceanDistance < 30f;
+					if (!isNearWater)
+						return 0f;
+
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int currentBlock = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int headBlock = Terrain.ExtractContents(cellValueHead);
+
+					if (currentBlock == 92 || headBlock == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 8 || groundBlock == 2 || groundBlock == 3 || groundBlock == 7)
+					{
+						return 100f;
+					}
+
+					if (currentBlock == 18 || groundBlock == 18)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "PirataEliteAliado", point, 2).Count)
+			});
+
+			// Spawn para PirataHostilComerciante con 100% de probabilidad - DESDE DÍA 27, solo de día, cerca del agua
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("PirataHostilComerciante", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 27
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay27OrLater = currentDay >= 27;
+					if (!isDay27OrLater)
+						return 0f;
+
+					// Verificar que sea de día
+					bool isDay = this.m_subsystemSky.SkyLightIntensity > 0.5f;
+					if (!isDay)
+						return 0f;
+
+					// Verificar que esté cerca del agua o en la costa
+					float oceanDistance = this.m_subsystemTerrain.TerrainContentsGenerator.CalculateOceanShoreDistance((float)point.X, (float)point.Z);
+
+					bool isNearWater = oceanDistance < 30f;
+					if (!isNearWater)
+						return 0f;
+
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int currentBlock = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int headBlock = Terrain.ExtractContents(cellValueHead);
+
+					if (currentBlock == 92 || headBlock == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 8 || groundBlock == 2 || groundBlock == 3 || groundBlock == 7)
+					{
+						return 100f;
+					}
+
+					if (currentBlock == 18 || groundBlock == 18)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "PirataHostilComerciante", point, 1).Count) // Individualmente
+			});
+
+			// Spawn para PirataHostilComerciante Constant - DESDE DÍA 27, solo de día, cerca del agua
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("PirataHostilComerciante Constant", SpawnLocationType.Surface, false, true)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 27
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay27OrLater = currentDay >= 27;
+					if (!isDay27OrLater)
+						return 0f;
+
+					// Verificar que sea de día
+					bool isDay = this.m_subsystemSky.SkyLightIntensity > 0.5f;
+					if (!isDay)
+						return 0f;
+
+					// Verificar que esté cerca del agua o en la costa
+					float oceanDistance = this.m_subsystemTerrain.TerrainContentsGenerator.CalculateOceanShoreDistance((float)point.X, (float)point.Z);
+
+					bool isNearWater = oceanDistance < 30f;
+					if (!isNearWater)
+						return 0f;
+
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int currentBlock = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int headBlock = Terrain.ExtractContents(cellValueHead);
+
+					if (currentBlock == 92 || headBlock == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 8 || groundBlock == 2 || groundBlock == 3 || groundBlock == 7)
+					{
+						return 100f;
+					}
+
+					if (currentBlock == 18 || groundBlock == 18)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "PirataHostilComerciante", point, 1).Count) // Individualmente
+			});
+
+			// Spawn para CapitanPirata con 100% de probabilidad - DESDE DÍA 39, solo de día, cerca del agua
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("CapitanPirata", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 39
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay39OrLater = currentDay >= 39;
+					if (!isDay39OrLater)
+						return 0f;
+
+					// Verificar que sea de día
+					bool isDay = this.m_subsystemSky.SkyLightIntensity > 0.5f;
+					if (!isDay)
+						return 0f;
+
+					// Verificar que esté cerca del agua o en la costa
+					float oceanDistance = this.m_subsystemTerrain.TerrainContentsGenerator.CalculateOceanShoreDistance((float)point.X, (float)point.Z);
+
+					bool isNearWater = oceanDistance < 30f;
+					if (!isNearWater)
+						return 0f;
+
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int currentBlock = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int headBlock = Terrain.ExtractContents(cellValueHead);
+
+					if (currentBlock == 92 || headBlock == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 8 || groundBlock == 2 || groundBlock == 3 || groundBlock == 7)
+					{
+						return 100f;
+					}
+
+					if (currentBlock == 18 || groundBlock == 18)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "CapitanPirata", point, 1).Count) // Individualmente
+			});
+
+			// Spawn para CapitanPirata Constant - DESDE DÍA 39, solo de día, cerca del agua
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("CapitanPirata Constant", SpawnLocationType.Surface, false, true)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 39
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay39OrLater = currentDay >= 39;
+					if (!isDay39OrLater)
+						return 0f;
+
+					// Verificar que sea de día
+					bool isDay = this.m_subsystemSky.SkyLightIntensity > 0.5f;
+					if (!isDay)
+						return 0f;
+
+					// Verificar que esté cerca del agua o en la costa
+					float oceanDistance = this.m_subsystemTerrain.TerrainContentsGenerator.CalculateOceanShoreDistance((float)point.X, (float)point.Z);
+
+					bool isNearWater = oceanDistance < 30f;
+					if (!isNearWater)
+						return 0f;
+
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int currentBlock = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int headBlock = Terrain.ExtractContents(cellValueHead);
+
+					if (currentBlock == 92 || headBlock == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 8 || groundBlock == 2 || groundBlock == 3 || groundBlock == 7)
+					{
+						return 100f;
+					}
+
+					if (currentBlock == 18 || groundBlock == 18)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "CapitanPirata", point, 1).Count) // Individualmente
 			});
 		}
 
