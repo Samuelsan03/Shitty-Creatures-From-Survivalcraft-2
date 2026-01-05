@@ -4157,6 +4157,13 @@
         </EntityTemplate>
 
         <EntityTemplate Name="Charger1" Guid="a6dda037-708c-4958-a02b-f2fe3c1e4713" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <MemberComponentTemplate Name="ComponentKnockbackBehavior" Guid="06d28012-ae64-4488-ab06-a3451f7e9947">
+    <Parameter Name="Class" Value="Game.ComponentKnockbackBehavior" Type="string"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int"/>
+    <Parameter Name="KnockbackForce" Value="999" Type="float"/>
+    <Parameter Name="KnockbackChance" Value="1.0" Type="float"/>
+</MemberComponentTemplate>
         <MemberComponentTemplate Name="GlowingEyes" Guid="eb80813f-6f6a-4cbe-9fa9-3711df033c66" InheritanceParent="bb8701d3-3a4f-44f7-8a1f-3a455533f632">
               <Parameter Name="GlowingEyesColor" Guid="3f3fdfca-6856-4143-a3f5-db413147c874" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="f1a6c603-3eb6-4b12-8dd5-b087e647dbd9" Value="0.06,0.2,0.1" Type="Vector3"/>
@@ -4291,6 +4298,13 @@
         </EntityTemplate>
 
         <EntityTemplate Name="ChargerTamed1" Guid="71b20a82-1915-4d87-bba8-84dce263b294" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <MemberComponentTemplate Name="ComponentKnockbackBehavior" Guid="880fafc6-6a8c-4470-8f5c-8763bf7cb366">
+    <Parameter Name="Class" Value="Game.ComponentKnockbackBehavior" Type="string"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int"/>
+    <Parameter Name="KnockbackForce" Value="999" Type="float"/>
+    <Parameter Name="KnockbackChance" Value="1.0" Type="float"/>
+</MemberComponentTemplate>
         <MemberComponentTemplate Name="SummonBehavior" Guid="b80f62d9-c54f-4495-8fe0-a712d994ca79">
               <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="693659c4-dee8-470b-876b-1c55ee88d41f"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="f9bd5ebd-dfb4-42b4-9788-8b6c7fc7540c"/>
@@ -4418,6 +4432,13 @@
         </EntityTemplate>
 
         <EntityTemplate Name="Charger2" Guid="2937784d-af18-460b-83df-9fbfdffaebb5" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <MemberComponentTemplate Name="ComponentKnockbackBehavior" Guid="c88afb68-b465-4ff5-9d44-634a4b149ff8">
+    <Parameter Name="Class" Value="Game.ComponentKnockbackBehavior" Type="string"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int"/>
+    <Parameter Name="KnockbackForce" Value="999" Type="float"/>
+    <Parameter Name="KnockbackChance" Value="1.0" Type="float"/>
+</MemberComponentTemplate>
         <MemberComponentTemplate Name="GlowingEyes" Guid="eae2a51e-386c-4918-a50f-9b828395afbe" InheritanceParent="bb8701d3-3a4f-44f7-8a1f-3a455533f632">
               <Parameter Name="GlowingEyesColor" Guid="3cabbf0e-8bb0-43bf-a399-4c35d473ba01" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="47a7384f-deba-4943-9ac0-09a051e3a2c7" Value="0.06,0.2,0.1" Type="Vector3"/>
@@ -4552,6 +4573,13 @@
         </EntityTemplate>
 
         <EntityTemplate Name="ChargerTamed2" Guid="4ce8fe98-6334-4b6b-a8a0-70dbc81288ee" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <MemberComponentTemplate Name="ComponentKnockbackBehavior" Guid="431ccfe7-2316-4ecd-b8d4-a7db39af988c">
+    <Parameter Name="Class" Value="Game.ComponentKnockbackBehavior" Type="string"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int"/>
+    <Parameter Name="KnockbackForce" Value="999" Type="float"/>
+    <Parameter Name="KnockbackChance" Value="1.0" Type="float"/>
+</MemberComponentTemplate>
         <MemberComponentTemplate Name="SummonBehavior" Guid="7bb4c758-aaaf-4d29-b2bb-1e4624716932">
               <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="51cf0387-0fe3-42f0-bab6-02b77322dd13"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="47ba1ed2-3912-4ea7-8f97-b32a45d609b9"/>
