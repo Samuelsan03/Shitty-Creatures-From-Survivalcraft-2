@@ -813,7 +813,7 @@
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Creature" Guid="ea9a7e76-0fa7-4c0f-832e-3194afd88dfc">
                 <Parameter Name="DisplayName" Guid="ee6af288-2b09-4d7e-bd5f-4fdd8357598e" Value="[DisplayName:InfectedFastTamed1]" Type="string"/>
-                <Parameter Name="Category" Guid="79229bd7-3625-433f-8b6f-9a9bd0233c7f" Value="LandPredator" Type="Game.CreatureCategory"/>
+                <Parameter Name="Category" Guid="79229bd7-3625-433f-8b6f-9a9bd0233c7f" Value="LandOther" Type="Game.CreatureCategory"/>
                 <Parameter Name="ConstantSpawn" Guid="a3786aef-5789-444d-9c3e-84ba3452bec2" Value="True" Type="bool"/>
                 <Parameter Name="KillVerbs" Guid="c62044f9-a8d1-49a4-976d-48fbbeb8e3a9" Value="eaten" Type="string"/>
             </MemberComponentTemplate>
@@ -1089,7 +1089,7 @@
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Creature" Guid="ff89e285-2b10-4e16-b1f0-ba662c4830b7">
                 <Parameter Name="DisplayName" Guid="5ffb9c47-ccc3-44ff-98f6-5331ac4b29d8" Value="[DisplayName:InfectedFastTamed2]" Type="string"/>
-                <Parameter Name="Category" Guid="edacbff8-51b7-4d61-92fe-57bc4e850a4a" Value="LandPredator" Type="Game.CreatureCategory"/>
+                <Parameter Name="Category" Guid="edacbff8-51b7-4d61-92fe-57bc4e850a4a" Value="LandOther" Type="Game.CreatureCategory"/>
                 <Parameter Name="ConstantSpawn" Guid="b9ca9e20-6338-4ae5-ae76-126d3f1c19de" Value="True" Type="bool"/>
                 <Parameter Name="KillVerbs" Guid="f085021a-ba21-4b72-b91f-e19ba45e3d56" Value="eaten" Type="string"/>
             </MemberComponentTemplate>
@@ -1161,7 +1161,7 @@
                 <Parameter Name="AutoFeed" Guid="a8458c46-af8b-4aaf-b74a-5bbd0bc2a6a8" Value="False" Type="bool"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="ChaseBehavior" Guid="25cc084b-d8fd-4bfe-abfc-c60c6f1a8ef4" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
-                <Parameter Name="AutoChaseMask" Guid="1d224ac1-a8bd-44f4-b9d2-9dcdcd9a08ca" Value="LandOther,WaterPredator,Bird" Type="Game.CreatureCategory"/>
+                <Parameter Name="AutoChaseMask" Guid="1d224ac1-a8bd-44f4-b9d2-9dcdcd9a08ca" Value="WaterPredator,Bird" Type="Game.CreatureCategory"/>
                 <Parameter Name="DayChaseRange" Guid="b42d2839-3031-4c09-8a23-5bd3a355a1a5" Value="0" Type="float"/>
                 <Parameter Name="NightChaseRange" Guid="9c2e40d9-8a91-4b53-9a24-19e21bb01193" Value="0" Type="float"/>
                 <Parameter Name="ChaseNonPlayerProbability" Guid="67d13c59-c79d-4271-95bb-1b2ffdd5d285" Value="0" Type="float"/>
@@ -1403,7 +1403,7 @@
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Creature" Guid="a8fcc65a-186c-48ba-b860-64ec8b36241b">
                 <Parameter Name="DisplayName" Guid="2137019b-4da6-472d-a81d-5519ba2e2cb0" Value="[DisplayName:InfectedMuscleTamed1]" Type="string"/>
-                <Parameter Name="Category" Guid="2a76399b-b096-4b07-b0f0-c8cca846dace" Value="LandPredator" Type="Game.CreatureCategory"/>
+                <Parameter Name="Category" Guid="2a76399b-b096-4b07-b0f0-c8cca846dace" Value="LandOther" Type="Game.CreatureCategory"/>
                 <Parameter Name="ConstantSpawn" Guid="f954cda7-f404-46f8-9531-b27789a509d8" Value="True" Type="bool"/>
                 <Parameter Name="KillVerbs" Guid="05828231-c0d6-455a-a4c5-f366e2b91493" Value="eaten" Type="string"/>
             </MemberComponentTemplate>
@@ -1675,7 +1675,7 @@
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Creature" Guid="88e015c6-b701-4cbd-a944-39639e2a1d95">
                 <Parameter Name="DisplayName" Guid="52f0f1bd-5c8a-49dc-8e8d-3b37c552ee62" Value="[DisplayName:InfectedMuscleTamed2]" Type="string"/>
-                <Parameter Name="Category" Guid="c5fcf1d0-652d-4484-a298-4ca5ee61f93e" Value="LandPredator" Type="Game.CreatureCategory"/>
+                <Parameter Name="Category" Guid="c5fcf1d0-652d-4484-a298-4ca5ee61f93e" Value="LandOther" Type="Game.CreatureCategory"/>
                 <Parameter Name="ConstantSpawn" Guid="c9655dd2-6e12-4bd3-acfc-b14205ebc5aa" Value="True" Type="bool"/>
                 <Parameter Name="KillVerbs" Guid="d69deb65-a169-4b0e-9baf-952543f18a5a" Value="eaten" Type="string"/>
             </MemberComponentTemplate>
@@ -1717,7 +1717,7 @@
                 <Parameter Name="AutoFeed" Guid="c832ece1-a513-4d78-8d48-0154af50a215" Value="False" Type="bool"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="ChaseBehavior" Guid="ce759f42-088d-4997-8c2c-3f75ad52f86e" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
-                <Parameter Name="AutoChaseMask" Guid="617f9530-3858-418a-8246-8692d52d7c5e" Value="LandOther,WaterPredator,Bird" Type="Game.CreatureCategory"/>
+                <Parameter Name="AutoChaseMask" Guid="617f9530-3858-418a-8246-8692d52d7c5e" Value="WaterPredator,Bird" Type="Game.CreatureCategory"/>
                 <Parameter Name="DayChaseRange" Guid="82e8cc54-b236-4277-826c-02be6ea90364" Value="0" Type="float"/>
                 <Parameter Name="NightChaseRange" Guid="4042bba2-7419-40cf-bfab-bdb5a3fb83a1" Value="0" Type="float"/>
                 <Parameter Name="ChaseNonPlayerProbability" Guid="e7ce2f81-f6ec-494f-9257-193aeaed7436" Value="0" Type="float"/>
@@ -1930,7 +1930,7 @@
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Creature" Guid="7e78ad83-2dcc-4add-a0ff-1f4d49ccfeb1">
                 <Parameter Name="DisplayName" Guid="bd1cf09c-6959-45b2-b6a2-592526e49cf5" Value="[DisplayName:PoisonousInfectedTamed1]" Type="string"/>
-                <Parameter Name="Category" Guid="ac4dda37-0014-498e-8394-503a7eefe47d" Value="LandPredator" Type="Game.CreatureCategory"/>
+                <Parameter Name="Category" Guid="ac4dda37-0014-498e-8394-503a7eefe47d" Value="LandOther" Type="Game.CreatureCategory"/>
                 <Parameter Name="ConstantSpawn" Guid="8f860170-0c76-40da-814a-156f9e0ab6c4" Value="True" Type="bool"/>
                 +<Parameter Name="KillVerbs" Guid="4913fa03-fb4f-4109-8be6-a758dee4d2e0" Value="eaten" Type="string"/>
             </MemberComponentTemplate>
@@ -2719,7 +2719,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="fb858fdb-0c7c-475e-b405-6a06ccc13c1a">
         <Parameter Name="DisplayName" Guid="3df7c009-c3f1-4ac8-a428-3c7cd3536232" Value="[DisplayName:InfectedFly2]" Type="string"/>
-        <Parameter Name="Category" Guid="603d1c9e-110a-4249-965c-f52193f00e11" Value="LandPredator" Type="Game.CreatureCategory"/>
+        <Parameter Name="Category" Guid="603d1c9e-110a-4249-965c-f52193f00e11" Value="LandOther" Type="Game.CreatureCategory"/>
         <Parameter Name="ConstantSpawn" Guid="92480353-7338-434f-b775-f994df9d5c76" Value="True" Type="bool"/>
         <Parameter Name="KillVerbs" Guid="b8261395-94a9-462c-b587-a85c2582e50a" Value="eaten" Type="string"/>
     </MemberComponentTemplate>
@@ -3212,7 +3212,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="037ae9b6-12fb-4a04-97ce-b25a650cf053">
         <Parameter Name="DisplayName" Guid="d50b28e7-c714-4e18-b90b-ea90d45a1cf9" Value="[DisplayName:FlyingInfectedBossTamed]" Type="string"/>
-        <Parameter Name="Category" Guid="27ffb45f-ab76-48ba-bd6a-58a7c117b5c9" Value="LandPredator" Type="Game.CreatureCategory"/>
+        <Parameter Name="Category" Guid="27ffb45f-ab76-48ba-bd6a-58a7c117b5c9" Value="LandOther" Type="Game.CreatureCategory"/>
         <Parameter Name="ConstantSpawn" Guid="8e9c337c-13be-4acb-932c-90a5ff3f8bca" Value="True" Type="bool"/>
         <Parameter Name="KillVerbs" Guid="0caa578f-2d39-4ca8-9798-66eb5e681cbf" Value="eaten" Type="string"/>
     </MemberComponentTemplate>
@@ -3811,7 +3811,7 @@
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Creature" Guid="ea4b5782-4a9e-4dce-9f03-eb44edf1840b">
                 <Parameter Name="DisplayName" Guid="16cfa4b0-23fa-4ddc-8c24-1f06a3b2f8c0" Value="[DisplayName:BoomerTamed2]" Type="string"/>
-                <Parameter Name="Category" Guid="6c37d4cc-7d74-4d67-ae54-4de5ca574c00" Value="LandPredator" Type="Game.CreatureCategory"/>
+                <Parameter Name="Category" Guid="6c37d4cc-7d74-4d67-ae54-4de5ca574c00" Value="LandOther" Type="Game.CreatureCategory"/>
                 <Parameter Name="ConstantSpawn" Guid="6c50711c-ac45-4a6b-b0c1-05230c3e95c7" Value="True" Type="bool"/>
                 <Parameter Name="KillVerbs" Guid="58a9f2d2-64ff-4510-b5c0-9fcc6bb9ee0e" Value="eaten" Type="string"/>
             </MemberComponentTemplate>
@@ -4098,7 +4098,7 @@
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Creature" Guid="921b421d-a938-41f8-ab95-3bb576ef5e75">
                 <Parameter Name="DisplayName" Guid="aecd40e0-88fe-43e2-87f8-06e722ba0977" Value="[DisplayName:BoomerTamed3]" Type="string"/>
-                <Parameter Name="Category" Guid="88f3a403-a040-4e4a-840d-b67bd320f069" Value="LandPredator" Type="Game.CreatureCategory"/>
+                <Parameter Name="Category" Guid="88f3a403-a040-4e4a-840d-b67bd320f069" Value="LandOther" Type="Game.CreatureCategory"/>
                 <Parameter Name="ConstantSpawn" Guid="c22aed28-b310-47ec-92bd-680030baac15" Value="True" Type="bool"/>
                 <Parameter Name="KillVerbs" Guid="8420cb63-e53b-40ea-b806-883559523724" Value="eaten" Type="string"/>
             </MemberComponentTemplate>
@@ -4373,7 +4373,7 @@
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Creature" Guid="34e2b9b8-7dfa-4298-a3e7-28ce69cf849c">
                 <Parameter Name="DisplayName" Guid="f2845c66-877f-492d-93b3-26eb7d92e42b" Value="[DisplayName:ChargerTamed1]" Type="string"/>
-                <Parameter Name="Category" Guid="6be49e7d-28d9-4612-a9a8-9a6f0cf2cb74" Value="LandPredator" Type="Game.CreatureCategory"/>
+                <Parameter Name="Category" Guid="6be49e7d-28d9-4612-a9a8-9a6f0cf2cb74" Value="LandOther" Type="Game.CreatureCategory"/>
                 <Parameter Name="ConstantSpawn" Guid="a62b3522-80b4-4f95-8f86-86f2241fad47" Value="True" Type="bool"/>
                 <Parameter Name="KillVerbs" Guid="f0cb0401-3db5-4177-b8de-79cb0e72426f" Value="eaten" Type="string"/>
             </MemberComponentTemplate>
@@ -4634,7 +4634,7 @@
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Creature" Guid="cff4282b-0cdd-45b1-81f3-b10c15f132a0">
                 <Parameter Name="DisplayName" Guid="fc6b074c-3154-4cb0-a8e4-11eb1a25f016" Value="[DisplayName:ChargerTamed2]" Type="string"/>
-                <Parameter Name="Category" Guid="b57fffe7-cfc0-4fb7-9e33-fe25332fc788" Value="LandPredator" Type="Game.CreatureCategory"/>
+                <Parameter Name="Category" Guid="b57fffe7-cfc0-4fb7-9e33-fe25332fc788" Value="LandOther" Type="Game.CreatureCategory"/>
                 <Parameter Name="ConstantSpawn" Guid="288afa57-c4ab-4785-bdfd-3641e8808f3c" Value="True" Type="bool"/>
                 <Parameter Name="KillVerbs" Guid="4b1be480-89c2-478c-8966-20de7ea56229" Value="eaten" Type="string"/>
             </MemberComponentTemplate>
@@ -4924,7 +4924,7 @@
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Creature" Guid="1e01fd63-d987-450e-81e5-2cc942d76539">
                 <Parameter Name="DisplayName" Guid="eafd7e6f-de60-4adc-b60e-754c56336ba1" Value="[DisplayName:TankTamed1]" Type="string"/>
-                <Parameter Name="Category" Guid="1e268494-2bb5-44bd-a234-6402133448e5" Value="LandPredator" Type="Game.CreatureCategory"/>
+                <Parameter Name="Category" Guid="1e268494-2bb5-44bd-a234-6402133448e5" Value="LandOther" Type="Game.CreatureCategory"/>
                 <Parameter Name="ConstantSpawn" Guid="958c3b0b-895f-4b23-92a7-19ac8e37cca3" Value="True" Type="bool"/>
                 <Parameter Name="KillVerbs" Guid="884566b7-0f35-4d7d-85cb-44aee9ae8f13" Value="eaten" Type="string"/>
             </MemberComponentTemplate>
@@ -5245,7 +5245,7 @@
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Creature" Guid="2716d109-fda4-4962-91e4-50b36a8f88ab">
                 <Parameter Name="DisplayName" Guid="4e6bfc12-44bb-4b36-a11e-4ce19795319b" Value="[DisplayName:TankTamed2]" Type="string"/>
-                <Parameter Name="Category" Guid="6821d1f3-d569-48e3-beec-9f180236d153" Value="LandPredator" Type="Game.CreatureCategory"/>
+                <Parameter Name="Category" Guid="6821d1f3-d569-48e3-beec-9f180236d153" Value="LandOther" Type="Game.CreatureCategory"/>
                 <Parameter Name="ConstantSpawn" Guid="bd0735b0-7b37-4c1c-a06c-7ccd88b860fd" Value="True" Type="bool"/>
                 <Parameter Name="KillVerbs" Guid="bca3ebfd-0a26-4a2f-a75f-897d98c34bb2" Value="eaten" Type="string"/>
             </MemberComponentTemplate>
@@ -5558,7 +5558,7 @@
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Creature" Guid="5c6b37c0-b77d-4547-b3dd-6902cd95c176">
                 <Parameter Name="DisplayName" Guid="dc152b54-c411-4519-a78b-e49de328f444" Value="[DisplayName:TankTamed3]" Type="string"/>
-                <Parameter Name="Category" Guid="d235fe1a-d19d-4f87-a6d5-cf722909424e" Value="LandPredator" Type="Game.CreatureCategory"/>
+                <Parameter Name="Category" Guid="d235fe1a-d19d-4f87-a6d5-cf722909424e" Value="LandOther" Type="Game.CreatureCategory"/>
                 <Parameter Name="ConstantSpawn" Guid="b1a887da-4356-4a08-aa43-ac4fe7543e5c" Value="True" Type="bool"/>
                 <Parameter Name="KillVerbs" Guid="773395f5-9685-467b-a271-d6c3b2324a4c" Value="eaten" Type="string"/>
             </MemberComponentTemplate>
@@ -5874,7 +5874,7 @@
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Creature" Guid="a275aead-05db-4206-8a32-2a0a29de727c">
                 <Parameter Name="DisplayName" Guid="f5755a06-b5ee-4253-a4e5-a2bc2caec0ee" Value="[DisplayName:GhostNormalTamed]" Type="string"/>
-                <Parameter Name="Category" Guid="9902ca66-a509-4e40-821d-4d7551325d7b" Value="LandPredator" Type="Game.CreatureCategory"/>
+                <Parameter Name="Category" Guid="9902ca66-a509-4e40-821d-4d7551325d7b" Value="LandOther" Type="Game.CreatureCategory"/>
                 <Parameter Name="ConstantSpawn" Guid="49508691-9f66-41f4-a030-d750f0b7e651" Value="True" Type="bool"/>
                 <Parameter Name="KillVerbs" Guid="45687e2e-293d-4e38-8a69-af4c601fcaa0" Value="endemonied" Type="string"/>
             </MemberComponentTemplate>
