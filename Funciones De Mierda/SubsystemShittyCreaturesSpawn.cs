@@ -2753,7 +2753,7 @@ namespace Game
 					this.SpawnCreatures(creatureType, "Beavis", point, 1).Count) // Individualmente
 			});
 
-			// Spawn para Butthead con 100% de probabilidad - DESDE DÍA 14, solo de día
+			// Spawn para Butt-Head con 100% de probabilidad - DESDE DÍA 14, solo de día
 			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("Butt-Head", SpawnLocationType.Surface, true, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
@@ -2847,7 +2847,7 @@ namespace Game
 					this.SpawnCreatures(creatureType, "Butt-Head", point, 1).Count) // Individualmente
 			});
 
-			// Spawn para HombreLava con 100% de probabilidad - DESDE DÍA 17, solo de noche, en lava
+			// Spawn para HombreLava con 100% de probabilidad - DESDE DÍA 17, solo de noche, en lava O tierra
 			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("HombreLava", SpawnLocationType.Surface, true, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
@@ -2869,21 +2869,38 @@ namespace Game
 					if (!isNight)
 						return 0f;
 
-					// Verificar que esté en lava (bloque 92) o sobre lava
+					// Verificar el bloque del suelo
 					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
 					int groundBlock = Terrain.ExtractContents(cellValueGround);
 
-					// También verificar el bloque actual y el de arriba
+					// Verificar el bloque actual y el de arriba
 					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
 					int currentBlock = Terrain.ExtractContents(cellValue);
 
 					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
 					int headBlock = Terrain.ExtractContents(cellValueHead);
 
-					// Permitir spawn en lava (92) o sobre lava
+					// Agua (18) - NO permitir en agua
+					if (currentBlock == 18 || headBlock == 18)
+					{
+						return 0f;
+					}
+
+					// PERMITIR spawn en lava (92) O en tierra normal
+					// 1. Si está en lava o sobre lava
 					if (groundBlock == 92 || currentBlock == 92)
 					{
 						return 100f;
+					}
+
+					// 2. Si está en tierra normal (como los otros NPCs)
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						// Verificar que no haya lava en el bloque de la cabeza
+						if (headBlock != 92)
+						{
+							return 100f;
+						}
 					}
 					return 0f;
 				},
@@ -2891,7 +2908,7 @@ namespace Game
 					this.SpawnCreatures(creatureType, "HombreLava", point, 1).Count) // Individualmente
 			});
 
-			// Spawn para HombreLava Constant - DESDE DÍA 17, solo de noche, en lava
+			// Spawn para HombreLava Constant - DESDE DÍA 17, solo de noche, en lava O tierra
 			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("HombreLava Constant", SpawnLocationType.Surface, false, true)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
@@ -2913,7 +2930,7 @@ namespace Game
 					if (!isNight)
 						return 0f;
 
-					// Verificar que esté en lava (bloque 92) o sobre lava
+					// Verificar el bloque del suelo
 					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
 					int groundBlock = Terrain.ExtractContents(cellValueGround);
 
@@ -2923,10 +2940,27 @@ namespace Game
 					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
 					int headBlock = Terrain.ExtractContents(cellValueHead);
 
-					// Permitir spawn en lava (92) o sobre lava
+					// Agua (18) - NO permitir en agua
+					if (currentBlock == 18 || headBlock == 18)
+					{
+						return 0f;
+					}
+
+					// PERMITIR spawn en lava (92) O en tierra normal
+					// 1. Si está en lava o sobre lava
 					if (groundBlock == 92 || currentBlock == 92)
 					{
 						return 100f;
+					}
+
+					// 2. Si está en tierra normal (como los otros NPCs)
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						// Verificar que no haya lava en el bloque de la cabeza
+						if (headBlock != 92)
+						{
+							return 100f;
+						}
 					}
 					return 0f;
 				},
