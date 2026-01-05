@@ -141,7 +141,7 @@ namespace Game
 					// Condiciones de terreno
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 70f; // 70% de probabilidad desde día 28, cualquier hora
+						return 100f; // 70% de probabilidad desde día 28, cualquier hora
 					}
 					return 0f;
 				},
@@ -221,7 +221,7 @@ namespace Game
 					// Condiciones de terreno
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 75f; // 75% de probabilidad desde día 34, cualquier hora
+						return 100f; // 75% de probabilidad desde día 34, cualquier hora
 					}
 					return 0f;
 				},
@@ -261,7 +261,7 @@ namespace Game
 					// Condiciones de terreno
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 35f; // 35% de probabilidad para spawn constante
+						return 100f; // 35% de probabilidad para spawn constante
 					}
 					return 0f;
 				},
@@ -301,7 +301,7 @@ namespace Game
 					// Condiciones de terreno
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 80f; // 80% de probabilidad desde día 40, cualquier hora
+						return 100f; // 80% de probabilidad desde día 40, cualquier hora
 					}
 					return 0f;
 				},
@@ -341,7 +341,7 @@ namespace Game
 					// Condiciones de terreno
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 40f; // 40% de probabilidad para spawn constante
+						return 100f; // 40% de probabilidad para spawn constante
 					}
 					return 0f;
 				},
@@ -384,7 +384,7 @@ namespace Game
 					// Condiciones de terreno
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 65f; // 65% de probabilidad cada noche desde día 29
+						return 100f; // 65% de probabilidad cada noche desde día 29
 					}
 					return 0f;
 				},
@@ -427,7 +427,7 @@ namespace Game
 					// Condiciones de terreno
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 25f; // 25% de probabilidad para spawn constante
+						return 100f; // 25% de probabilidad para spawn constante
 					}
 					return 0f;
 				},
@@ -470,7 +470,7 @@ namespace Game
 					// Condiciones de terreno
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 70f; // 70% de probabilidad cada noche desde día 30
+						return 100f; // 70% de probabilidad cada noche desde día 30
 					}
 					return 0f;
 				},
@@ -513,7 +513,7 @@ namespace Game
 					// Condiciones de terreno
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 30f; // 30% de probabilidad para spawn constante
+						return 100f; // 30% de probabilidad para spawn constante
 					}
 					return 0f;
 				},
@@ -593,7 +593,7 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("InfectedFly1 Co
         // Condiciones de terreno
         if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
         {
-            return 50f; // 50% de probabilidad para spawn constante
+            return 100f; // 50% de probabilidad para spawn constante
         }
         return 0f;
     },
@@ -673,7 +673,7 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("InfectedFly2 Co
         // Condiciones de terreno
         if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
         {
-            return 50f; // 50% de probabilidad para spawn constante
+            return 100f; // 50% de probabilidad para spawn constante
         }
         return 0f;
     },
@@ -753,7 +753,7 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("InfectedFly3 Co
         // Condiciones de terreno
         if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
         {
-            return 50f; // 50% de probabilidad para spawn constante
+            return 100f; // 50% de probabilidad para spawn constante
         }
         return 0f;
     },
@@ -833,7 +833,7 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("FlyingInfectedB
         // Condiciones de terreno
         if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
         {
-            return 50f; // 50% de probabilidad para spawn constante
+            return 100f; // 50% de probabilidad para spawn constante
         }
         return 0f;
     },
@@ -919,7 +919,7 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
         // Condiciones de terreno
         if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
         {
-            return 50f; // 50% de probabilidad para spawn constante
+            return 100f; // 50% de probabilidad para spawn constante
         }
         return 0f;
     },
@@ -1005,13 +1005,15 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
         // Condiciones de terreno
         if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
         {
-            return 50f; // 50% de probabilidad para spawn constante
+            return 100f; // 50% de probabilidad para spawn constante
         }
         return 0f;
     },
     SpawnFunction = ((SubsystemZombiesSpawn.CreatureType creatureType, Point3 point) =>
         this.SpawnCreatures(creatureType, "PoisonousInfected2", point, 1).Count) // Individual
-});// InfectedFly1 - Aparece desde el día 9, CUALQUIER HORA (día o noche)
+});
+			
+			// InfectedFly1 - Aparece desde el día 9, CUALQUIER HORA (día o noche)
 			this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("InfectedFly1", SpawnLocationType.Surface, false, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemZombiesSpawn.CreatureType creatureType, Point3 point)
@@ -1083,7 +1085,7 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 					// Condiciones de terreno
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 50f; // 50% de probabilidad para spawn constante
+						return 100f; // 50% de probabilidad para spawn constante
 					}
 					return 0f;
 				},
@@ -1163,7 +1165,7 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 					// Condiciones de terreno
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 50f; // 50% de probabilidad para spawn constante
+						return 100f; // 50% de probabilidad para spawn constante
 					}
 					return 0f;
 				},
@@ -1243,7 +1245,7 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 					// Condiciones de terreno
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 50f; // 50% de probabilidad para spawn constante
+						return 100f; // 50% de probabilidad para spawn constante
 					}
 					return 0f;
 				},
@@ -1323,7 +1325,7 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 					// Condiciones de terreno
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 50f; // 50% de probabilidad para spawn constante
+						return 100f; // 50% de probabilidad para spawn constante
 					}
 					return 0f;
 				},
@@ -1409,7 +1411,7 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 					// Condiciones de terreno
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 50f; // 50% de probabilidad para spawn constante
+						return 100f; // 50% de probabilidad para spawn constante
 					}
 					return 0f;
 				},
@@ -1495,7 +1497,7 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 					// Condiciones de terreno
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 50f; // 50% de probabilidad para spawn constante
+						return 100f; // 50% de probabilidad para spawn constante
 					}
 					return 0f;
 				},
@@ -1543,7 +1545,7 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 							// Condiciones de terreno
 							if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 							{
-								return 70f; // 70% de probabilidad cada noche desde día 13
+								return 100f; // 70% de probabilidad cada noche desde día 13
 							}
 							return 0f;
 						},
@@ -1586,7 +1588,7 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 							// Condiciones de terreno
 							if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 							{
-								return 35f; // 35% de probabilidad para spawn constante
+								return 100f; // 35% de probabilidad para spawn constante
 							}
 							return 0f;
 						},
@@ -1710,7 +1712,7 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 					// Condiciones de terreno
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 75f; // 75% de probabilidad cada noche desde día 9
+						return 100f; // 75% de probabilidad cada noche desde día 9
 					}
 					return 0f;
 				},
@@ -1753,7 +1755,7 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 					// Condiciones de terreno
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 40f; // 40% de probabilidad para spawn constante
+						return 100f; // 40% de probabilidad para spawn constante
 					}
 					return 0f;
 				},
@@ -1796,7 +1798,7 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 					// Condiciones de terreno
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 80f; // 80% de probabilidad cada noche desde día 10
+						return 100f; // 80% de probabilidad cada noche desde día 10
 					}
 					return 0f;
 				},
@@ -1839,7 +1841,7 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 					// Condiciones de terreno
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 45f; // 45% de probabilidad para spawn constante
+						return 100f; // 45% de probabilidad para spawn constante
 					}
 					return 0f;
 				},
@@ -1978,7 +1980,7 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 					// Condiciones de terreno
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 50f; // 50% de probabilidad para spawn constante
+						return 100f; // 50% de probabilidad para spawn constante
 					}
 					return 0f;
 				},
@@ -2058,7 +2060,7 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 					// Condiciones de terreno
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 55f; // 55% de probabilidad para spawn constante
+						return 100f; // 55% de probabilidad para spawn constante
 					}
 					return 0f;
 				},
@@ -2138,7 +2140,7 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 					// Condiciones de terreno
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 60f; // 60% de probabilidad para spawn constante
+						return 100f; // 60% de probabilidad para spawn constante
 					}
 					return 0f;
 				},
@@ -2291,7 +2293,7 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 					// Condiciones de terreno
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 50f; // 50% de probabilidad para spawn constante
+						return 100f; // 50% de probabilidad para spawn constante
 					}
 					return 0f;
 				},
