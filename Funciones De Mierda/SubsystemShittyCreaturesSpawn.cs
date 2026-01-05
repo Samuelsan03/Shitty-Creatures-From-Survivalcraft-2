@@ -4259,6 +4259,90 @@ namespace Game
 				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
 					this.SpawnCreatures(creatureType, "CapitanPirata", point, 1).Count) // Individualmente
 			});
+
+			// Spawn para CamisasMorenas con 100% de probabilidad - DESDE DÍA 29, cualquier hora
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("CamisasMorenas", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 29
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay29OrLater = currentDay >= 29;
+					if (!isDay29OrLater)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "CamisasMorenas", point, 1).Count) // Solo 1 individualmente
+			});
+
+			// Spawn para CamisasMorenas Constant - DESDE DÍA 29, cualquier hora
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("CamisasMorenas Constant", SpawnLocationType.Surface, false, true)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 29
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay29OrLater = currentDay >= 29;
+					if (!isDay29OrLater)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 100f;
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "CamisasMorenas", point, 1).Count) // Solo 1 individualmente
+			});
 		}
 
 		// Token: 0x06000255 RID: 597 RVA: 0x0001E11C File Offset: 0x0001C31C
