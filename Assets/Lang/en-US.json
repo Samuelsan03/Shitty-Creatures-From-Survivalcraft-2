@@ -98,7 +98,7 @@
       "CarlJohnson": "Carl Johnson",
       "LaMuerteX": "La Muerte X",
       "ElSenorDeLasTumbasMoradas": "El Señor de las Tumbas Moradas",
-      "LiderCalavericoSupremo:0": "Líder Calavérico Supremo",
+      "LiderCalavericoSupremo": "Líder Calavérico Supremo",
       "LiderCalavericoSupremoAlfa": "Líder Calavérico Supremo Alfa",
       "Sparkster": "Sparkster",
       "ElArquero": "El Arquero",
@@ -209,7 +209,7 @@
       }
     },
     "Messages": {
-      "FirstPullCrossbow": "First pull back the crossbow!",
+      "FirstPullCrossbow": "First pull back the repeat crossbow!",
       "FirstLoadArrow": "First load an bolt!",
       "ArrowCount": "Bolts: {0}/8"
     },
@@ -219,6 +219,22 @@
     }
   },
   "Blocks": {
+    "CopperSharpHammerBlock:0": {
+      "DisplayName": "Copper Sharp Hammer",
+      "Description": "The Copper Sharp Hammer is a powerful weapon. At first glance it looks like a simple work tool, but in reality its lethality surpasses that of the copper machete. Although it is not as durable as the machete, it is taller and far deadlier, capable of delivering devastating blows that make it one of the most dangerous copper-based weapons."
+    },
+    "IronSharpHammerBlock:0": {
+      "DisplayName": "Iron Sharp Hammer",
+      "Description": "The Iron Sharp Hammer is similar to the iron machete, but slightly more lethal and a bit more durable. While it shares the same brutal design, its enhanced endurance and sharper impact make it a superior choice for those seeking a weapon that balances resilience with deadly efficiency."
+    },
+    "DiamondSharpHammerBlock:0": {
+      "DisplayName": "Diamond Sharp Hammer",
+      "Description": "The Diamond Sharp Hammer is similar to the diamond machete, but far more lethal and durable. Its unmatched resilience and devastating power make it an exceptional weapon, capable of enduring prolonged battles while delivering fatal strikes. Perhaps its greatest value lies in confronting bosses, where its strength and durability can turn the tide of combat."
+    },
+    "LavaSharpHammerBlock:0": {
+      "DisplayName": "Lava Sharp Hammer",
+      "Description": "The Lava Sharp Hammer is similar to the lava machete, but far more lethal and durable. Its blazing core and molten edge make it a weapon of pure destruction, capable of enduring the fiercest battles while delivering catastrophic strikes. It is not just stronger than the machete—it is a true infernal tool of war. This hammer is 100% extremely useful for slaying bosses, a weapon that radiates danger and promise. Players will feel its fiery potential, knowing that when the time comes, it may be the decisive force that turns impossible fights into victories."
+    },
     "TargetStickBlock:0": {
   "DisplayName": "Targeting Stick",
   "Description": "A specialized stick used to command allied creatures. When pointed at an enemy, it signals all nearby player-allied creatures to focus their attacks on the target. Useful for coordinating attacks and managing your creature army in battle."
