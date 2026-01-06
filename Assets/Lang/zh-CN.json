@@ -209,9 +209,9 @@
       }
     },
     "Messages": {
-      "FirstPullCrossbow": "首先需要上弦弩！",
-      "FirstLoadArrow": "首先需要装箭！",
-      "ArrowCount": "箭矢: {0}/8"
+      "FirstPullCrossbow": "首先拉开连发弩！",
+      "FirstLoadArrow": "首先装上一支弩箭！",
+      "ArrowCount": "弩箭: {0}/8"
     },
     "Usual": {
       "ok": "确定",
@@ -424,9 +424,9 @@
     "CollarTamedBoomerMessage": "你已经驯服了一只爆浆者！\n现在你可以把它当作爆炸性的守护奴仆。\n在紧急情况下请明智地使用它。",
     "CollarTamedBossMessage": "你已驯服飞行感染首领，请在紧急情况下明智使用它！",
     "CollarTamedMessage": "你已驯服了一个敌对的感染者！\n现在它将成为你的守护者！",
-    "FirstPullCrossbow": "首先需要上弦弩！",
-    "FirstLoadArrow": "首先需要装箭！",
-    "ArrowCount": "箭矢: {0}/8"
+    "FirstPullCrossbow": "首先拉开连发弩！",
+    "FirstLoadArrow": "首先装上一支弩箭！",
+    "ArrowCount": "弩箭: {0}/8"
   },
   "Usual": {
     "ok": "确定",
