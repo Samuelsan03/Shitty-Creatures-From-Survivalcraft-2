@@ -467,7 +467,7 @@
 </ComponentTemplate>
 
 <ComponentTemplate Name="NewHumanModel" Description="Modelo humano mejorado con animaciones avanzadas y comportamientos de movimiento" Guid="70e462af-f157-402d-95b6-7eadbc9e54c4">
-    <Parameter Name="Class" Value="WonderfulEra.ComponentNewHumanModel" Type="string" Guid="7cb16a3c-0725-40bc-8fed-88b8f6dd2355"/>
+    <Parameter Name="Class" Value="Game.ComponentNewHumanModel" Type="string" Guid="7cb16a3c-0725-40bc-8fed-88b8f6dd2355"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="10a1064b-6edc-4366-817e-7d0f184e75aa"/>
     <Parameter Name="LoadOrder" Value="50" Type="int" Guid="de0830d0-d90d-426c-943a-affb7001460a"/>
     <Parameter Name="WalkAnimationSpeed" Value="1.0" Type="float" Description="Velocidad base de la animación de caminar" Guid="54224058-dabc-4c60-9547-eabe132093f7"/>
@@ -498,11 +498,6 @@
     </Folder>
 
 <ProjectTemplate Name="Project" Guid="85023bf8-1c90-4dd1-9442-e6c13691d078">
-<MemberSubsystemTemplate Name="SlingshotBlockBehavior" Guid="17064d60-e54f-4ac6-9da9-8fa65f98cc82">
-    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="b4b7c9b5-de9b-4627-a9b3-2fed006e47b8"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="58665908-d5c3-4864-9dd6-1def9dc0cd03"/>
-    <Parameter Name="Class" Value="Game.SubsystemSlingshotBlockBehavior" Type="string" Guid="885ba0bb-7af8-4a23-bc8a-fdac42901086"/>
-</MemberSubsystemTemplate>
 <MemberSubsystemTemplate Name="ShittyCreaturesSpawn" Guid="6bf21fee-34d6-4509-a1d4-160a13c6991b">
     <Parameter Name="IsOptional" Value="false" Type="bool" Guid="9b536bae-4995-4982-b821-44241d526932"/>
     <Parameter Name="LoadOrder" Value="60" Type="int" Guid="391ac2b9-9947-47fe-8014-fd2b0fe88c09"/>
@@ -6576,12 +6571,19 @@
     <Parameter Name="LoadOrder" Value="50" Type="int"/>
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
-            <MemberComponentTemplate Name="NewHumanModel" Guid="912e0cd6-953d-4b0f-bf83-f127de413fbb" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
-                <Parameter Name="WalkLegsAngle" Guid="895d1617-e489-4651-8b5d-81b5892b1ddc" Value="0.35" Type="float"/>
-                <Parameter Name="ModelName" Guid="c547456b-f291-4a90-b8a7-71d079cb927d" Value="Models/HumanMale" Type="string"/>
-                <Parameter Name="TextureOverride" Guid="fd7ee629-69a2-4454-8a9a-91fcc1553757" Value="Textures/Pirate_Normal_Tame" Type="string"/>
-                <Parameter Name="WalkAnimationSpeed" Guid="bf5732ad-1a6a-4185-86a7-a043bafeca8e" Value="0.65" Type="float"/>
-            </MemberComponentTemplate>
+            <MemberComponentTemplate Name="NewHumanModel" Guid="715b6454-6612-4303-8aad-d28370bdc920">
+    <Parameter Name="Class" Value="Game.ComponentNewHumanModel" Type="string" Guid="1f1155a1-42ba-41ef-a233-1c149410707d"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="ec0a29c3-3ad7-4053-8a42-6eb250f76101"/>
+    <Parameter Name="LoadOrder" Value="50" Type="int" Guid="2f1458f0-044a-4ddb-9eaa-b2a848dacabe"/>
+    <Parameter Name="PrepareOrder" Value="50" Type="int" Guid="ddea640d-1917-4209-b87c-b4717f7a9300"/>
+    <Parameter Name="WalkLegsAngle" Guid="7a32f21b-698b-4fcb-9bc8-6045b6208a33" Value="0.35" Type="float"/>
+    <Parameter Name="WalkBobHeight" Value="0.05" Type="float" Guid="b5313e1f-2950-4800-a42f-1f860de94b21"/>
+    <Parameter Name="ModelName" Guid="be53022a-72f4-4586-9d72-42a15725cbf1" Value="Models/HumanMale" Type="string"/>
+    <Parameter Name="TextureOverride" Guid="44d6a621-aa54-4dce-822c-01bed6d42ff5" Value="Textures/Pirate_Normal_Tame" Type="string"/>
+    <Parameter Name="WalkAnimationSpeed" Guid="8b121e5a-a63d-4566-a3c9-200a69b56294" Value="0.65" Type="float"/>
+    <Parameter Name="CastsShadow" Value="true" Type="bool" Guid="25f66ec5-ec52-42ef-8ab8-5c52336842f6"/>
+    <Parameter Name="BoundingSphereRadius" Value="1.0" Type="float" Guid="ec7e15bc-555c-4283-80eb-dea2b9a2955f"/>
+</MemberComponentTemplate>
             <MemberComponentTemplate Name="HealthBarDisplay" Guid="dc518bd8-2857-4b38-8b8c-363d5b9c30c1" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
         <Parameter Name="MaxDisplayDistance" Value="19" Type="float"/>
     </MemberComponentTemplate>
