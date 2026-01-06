@@ -94,34 +94,18 @@
     <Parameter Name="LoadOrder" Value="50" Type="int"/>
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
-            <MemberComponentTemplate Name="NewHumanModel" Guid="9bd83ac4-a913-44c0-8add-962058eb2354" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
-    <Parameter Name="WalkLegsAngle" Guid="ac630e40-d9c8-4dc5-926f-b72590513db4" Value="0.35" Type="float"/>
-    <Parameter Name="ModelName" Guid="d53e3b60-f919-4e76-96c5-f5eb90e49f80" Value="Models/Zombies Modelos De Cagada/ZombieNormal" Type="string"/>
-    <Parameter Name="TextureOverride" Guid="785b0f2f-112d-4265-a516-1fd5a58b6c4c" Value="Textures/ZombiesDeMierda/ZombieNormal1" Type="string"/>
-    <Parameter Name="WalkAnimationSpeed" Guid="18bd2950-a56f-4394-aa01-ce95269a82ba" Value="0.65" Type="float"/>
-    <Parameter Name="WalkBobHeight" Value="0.1" Type="float" Guid="c069451f-7b09-46ad-ae68-90cdc01747a9"/>
-    <Parameter Name="ClimbAnimationSpeed" Value="1.5" Type="float" Guid="cb4bfe5c-1843-4038-aaee-30a320d28c5b"/>
-    <Parameter Name="SneakTransitionSpeed" Value="2.0" Type="float" Guid="cdaeef5d-0c0a-43a4-aed8-0faf4691d43c"/>
-    <Parameter Name="LieDownEyeSpeed" Value="1.0" Type="float" Guid="40a98390-d80f-4827-b3b1-bc3b257e5ced"/>
-    <Parameter Name="LieDownModelSpeed" Value="3.0" Type="float" Guid="72c538c2-ad3a-40ae-9256-48f4d7c7cab5"/>
-    <Parameter Name="VanLieDownEyeLimit" Value="0.2" Type="float" Guid="cb2ddd95-4f4e-4557-a9ba-9f5172854908"/>
-    <Parameter Name="VanLieDownModelLimit" Value="0.05" Type="float" Guid="dfb706be-f961-486b-98de-4bac005a404c"/>
-    <Parameter Name="PunchTransitionSpeed" Value="4.0" Type="float" Guid="bc1e62a0-92d6-4915-bdd3-862c9bf0860d"/>
-    <Parameter Name="PunchAnimationSpeed" Value="2.0" Type="float" Guid="cca2cade-ee27-42ad-880f-888bda8df081"/>
-    <Parameter Name="PunchHitMoment" Value="0.5" Type="float" Guid="2e0bb855-7b51-48a8-8f44-4bdf8d9542e7"/>
-    <Parameter Name="HeadingSmoothingFactor" Value="8.0" Type="float" Guid="9db58c33-0949-47f7-9a78-7e1fd2de179f"/>
-    <Parameter Name="BobSmoothingFactor" Value="12.0" Type="float" Guid="5fbc7609-5173-4d02-802c-9e75cc314729"/>
-    <Parameter Name="RandomLookUpdateProbability" Value="0.25" Type="float" Guid="a5720559-5f90-48d2-be4a-92627b0a1b8e"/>
-    <Parameter Name="RandomLookDistance" Value="3.0,8.0" Type="Vector2" Guid="7ee8851b-daa1-4926-b5a3-90e4b3e32053"/>
-    <Parameter Name="FootstepNoiseRange" Value="8.0" Type="float" Guid="c447f5cc-d83c-4b53-8a80-d2941125672f"/>
-    <Parameter Name="FootstepNoisePower" Value="0.25" Type="float" Guid="8b0f522b-792c-4f82-9623-78f3ecaec1f6"/>
-    <Parameter Name="RowingSoundVolume" Value="0.4,0.6" Type="Vector2" Guid="d42c00ff-8e9c-4cd8-86bf-5ca4b9b5659d"/>
-    <Parameter Name="RowingSoundPitch" Value="-0.3,0.2" Type="Vector2" Guid="5f76d03f-379e-456b-8bf5-bd7c3a65c04b"/>
-    <Parameter Name="RowingSoundRange" Value="3.0" Type="float" Guid="506220b1-f040-4012-a043-fd9faa8091fa"/>
-    <Parameter Name="HandItemTransitionSpeed" Value="10.0" Type="float" Guid="fa475c7d-cba8-4569-87ab-e640d284850a"/>
-    <Parameter Name="DeathAnimationSpeed" Value="3.0" Type="float" Guid="cc528afe-92ae-4676-8d45-fd1d574140d2"/>
-    <Parameter Name="HeadShakeFrequency" Value="16.0" Type="float" Guid="d9b80022-1de5-46ec-85d3-fb7980c23e92"/>
-    <Parameter Name="HeadShakeIntensity" Value="1.0" Type="float" Guid="280a9b3a-d492-475a-afe0-e1d3a20750a4"/>
+            <MemberComponentTemplate Name="NewHumanModel" Guid="0a69a2bc-8dbe-4ee0-9215-5947716d5263">
+    <Parameter Name="Class" Value="Game.ComponentNewHumanModel" Type="string" Guid="efd614a3-60ed-4da4-94c9-1ca41df1a098"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="2488688f-d0a1-44f4-9e77-a16f2018945a"/>
+    <Parameter Name="LoadOrder" Value="50" Type="int" Guid="b86939ed-7dab-43a8-be79-cc3b9d08dfc8"/>
+    <Parameter Name="PrepareOrder" Value="50" Type="int" Guid="9dc82794-b851-4208-9365-3e4248497247"/>
+    <Parameter Name="WalkLegsAngle" Guid="872bbcf8-79c7-481a-a04e-d37e5b3a89d8" Value="0.35" Type="float"/>
+    <Parameter Name="WalkBobHeight" Value="0.05" Type="float" Guid="29b1ce6f-0d9d-46bf-ae7d-b50f618ff24c"/>
+    <Parameter Name="ModelName" Guid="aa21bd7d-d764-458c-9304-dbee6b793c14" Value="Models/Zombies Modelos De Cagada/ZombieNormal" Type="string"/>
+    <Parameter Name="TextureOverride" Guid="b36516a0-1078-49f9-bccb-f619f5c25d9d" Value="Textures/ZombiesDeMierda/ZombieNormal1" Type="string"/>
+    <Parameter Name="WalkAnimationSpeed" Guid="ffb2e47f-d40b-484b-853d-e04950b959d6" Value="0.65" Type="float"/>
+    <Parameter Name="CastsShadow" Value="true" Type="bool" Guid="06dda6fc-8abd-4bb2-8e4f-fc288b591071"/>
+    <Parameter Name="BoundingSphereRadius" Value="1.0" Type="float" Guid="a5feba18-c58b-4f4e-bc27-10b3ba46a326"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="HealthBarDisplay" Guid="f485127b-84df-4de9-83f7-19d1516cd5c8" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
         <Parameter Name="MaxDisplayDistance" Value="19" Type="float"/>
@@ -271,34 +255,18 @@
     <Parameter Name="LoadOrder" Value="50" Type="int"/>
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
-            <MemberComponentTemplate Name="NewHumanModel" Guid="a101ccad-b013-4254-933c-e2e64dfc183a" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
-    <Parameter Name="WalkLegsAngle" Guid="693aedf2-35c9-44e1-8519-7e1b985006c7" Value="0.35" Type="float"/>
-    <Parameter Name="ModelName" Guid="a27d12de-d27e-4f2b-98f7-f7bd481265c9" Value="Models/Zombies Modelos De Cagada/ZombieNormal" Type="string"/>
-    <Parameter Name="TextureOverride" Guid="f4464d8a-faa9-4c5c-a39f-0233f2c3a4e7" Value="Textures/ZombiesDeMierda/ZombieNormal1" Type="string"/>
-    <Parameter Name="WalkAnimationSpeed" Guid="ad5a5e0b-4725-4d17-b553-9ae48e362f53" Value="0.65" Type="float"/>
-    <Parameter Name="WalkBobHeight" Value="0.1" Type="float" Guid="d2af5cbb-568e-4f5b-98e5-51248b263862"/>
-    <Parameter Name="ClimbAnimationSpeed" Value="1.5" Type="float" Guid="30441299-da25-4c66-aaa4-493dbc069b31"/>
-    <Parameter Name="SneakTransitionSpeed" Value="2.0" Type="float" Guid="0e0bbefe-45f1-4b7d-98a8-41cc0fb1aac9"/>
-    <Parameter Name="LieDownEyeSpeed" Value="1.0" Type="float" Guid="8466dd8f-202c-4652-8765-1af98bc4328d"/>
-    <Parameter Name="LieDownModelSpeed" Value="3.0" Type="float" Guid="ad2c927e-a5d2-4ce1-a992-f0f6a3398aef"/>
-    <Parameter Name="VanLieDownEyeLimit" Value="0.2" Type="float" Guid="bd0ed852-c9a5-4c43-89da-fec7f38838b6"/>
-    <Parameter Name="VanLieDownModelLimit" Value="0.05" Type="float" Guid="d41e4a24-3f8f-4639-aaaa-8be3819ab40e"/>
-    <Parameter Name="PunchTransitionSpeed" Value="4.0" Type="float" Guid="6e22c257-b279-40e6-851e-0da0ed51642b"/>
-    <Parameter Name="PunchAnimationSpeed" Value="2.0" Type="float" Guid="4fe4eb26-4f95-427c-8a74-7fccb92114b5"/>
-    <Parameter Name="PunchHitMoment" Value="0.5" Type="float" Guid="037883ca-3c8e-45a5-bdef-71b7e3b6fedd"/>
-    <Parameter Name="HeadingSmoothingFactor" Value="8.0" Type="float" Guid="b35b7aad-0e61-40b0-88b0-534b9453ede6"/>
-    <Parameter Name="BobSmoothingFactor" Value="12.0" Type="float" Guid="e9a11158-40ec-4fb5-8b84-e473739b2b0c"/>
-    <Parameter Name="RandomLookUpdateProbability" Value="0.25" Type="float" Guid="10cbef92-fae9-4572-ab67-fde2425aff02"/>
-    <Parameter Name="RandomLookDistance" Value="3.0,8.0" Type="Vector2" Guid="1d745bc0-d3ec-4388-9579-849f076911a1"/>
-    <Parameter Name="FootstepNoiseRange" Value="8.0" Type="float" Guid="339b97b7-d4b6-4d83-b26b-7b97ef48a85a"/>
-    <Parameter Name="FootstepNoisePower" Value="0.25" Type="float" Guid="4878cbdc-26b6-4013-bdb9-16b07088c6f7"/>
-    <Parameter Name="RowingSoundVolume" Value="0.4,0.6" Type="Vector2" Guid="b1f32233-d6de-44e4-b4b0-cac7b899c75b"/>
-    <Parameter Name="RowingSoundPitch" Value="-0.3,0.2" Type="Vector2" Guid="e9efd087-6dcb-4ade-8e44-7c22cb80dc21"/>
-    <Parameter Name="RowingSoundRange" Value="3.0" Type="float" Guid="e8b6056d-213b-4bd2-8da6-82befd5a9bd8"/>
-    <Parameter Name="HandItemTransitionSpeed" Value="10.0" Type="float" Guid="786a355a-e5f2-42ba-9ff4-ee977cf9526e"/>
-    <Parameter Name="DeathAnimationSpeed" Value="3.0" Type="float" Guid="ad65af3f-a4b7-414c-8a6a-804314ca52b2"/>
-    <Parameter Name="HeadShakeFrequency" Value="16.0" Type="float" Guid="f3def9b0-d978-4f57-a06f-09a2e4b40352"/>
-    <Parameter Name="HeadShakeIntensity" Value="1.0" Type="float" Guid="bde9a8cd-c9cc-4bcb-9f50-6e8f54e69b5e"/>
+            <MemberComponentTemplate Name="NewHumanModel" Guid="7fb243e1-dc04-47a5-8652-f47fed69a21b">
+    <Parameter Name="Class" Value="Game.ComponentNewHumanModel" Type="string" Guid="aa16d9e8-b346-4163-913f-e48ea9d09eb8"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="b8b87b5f-7c1d-4cbd-b598-7a545dcebe23"/>
+    <Parameter Name="LoadOrder" Value="50" Type="int" Guid="0bf34674-1db6-4576-8c5d-9685d4823c2a"/>
+    <Parameter Name="PrepareOrder" Value="50" Type="int" Guid="911158cc-76a4-453e-9f54-93ac1eb3a75c"/>
+    <Parameter Name="WalkLegsAngle" Guid="12786f24-bfa6-4e4b-b550-6920b2cc06ea" Value="0.35" Type="float"/>
+    <Parameter Name="WalkBobHeight" Value="0.05" Type="float" Guid="154e5fd6-dea4-4ba5-b869-7beee0e15401"/>
+    <Parameter Name="ModelName" Guid="9170edec-f7e0-4a87-895d-7c995c9e432f" Value="Models/Zombies Modelos De Cagada/ZombieNormal" Type="string"/>
+    <Parameter Name="TextureOverride" Guid="c4dd945d-662f-49a4-b77c-ec7e641a0524" Value="Textures/ZombiesDeMierda/ZombieNormal1" Type="string"/>
+    <Parameter Name="WalkAnimationSpeed" Guid="3832273f-7865-48b8-bc7b-13cabe22be9a" Value="0.65" Type="float"/>
+    <Parameter Name="CastsShadow" Value="true" Type="bool" Guid="eedd112a-b4d4-424a-8f63-7006cf8c3038"/>
+    <Parameter Name="BoundingSphereRadius" Value="1.0" Type="float" Guid="8fc6f264-a924-4faf-840d-dc75d9942243"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="HealthBarDisplay" Guid="d78a781f-bc68-4c0a-8fed-d1ab52808624" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
         <Parameter Name="MaxDisplayDistance" Value="19" Type="float"/>
