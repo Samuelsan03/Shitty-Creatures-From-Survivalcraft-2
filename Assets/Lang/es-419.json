@@ -37,6 +37,7 @@
   },
   "Database": {
     "DisplayName": {
+      "LiderCalavericoSupremo": "Líder Calavérico Supremo",
       "GhostNormalTamed": "Fantasma Aliado",
       "GhostNormal": "Fantasma",
       "Tank1": "Tank 1",
@@ -97,8 +98,7 @@
       "ClaudeSpeed": "Claude Speed",
       "CarlJohnson": "Carl Johnson",
       "LaMuerteX": "La Muerte X",
-      "ElSenorDeLasTumbasMoradas": "El Señor de las Tumbas Moradas",
-      "LiderCalavericoSupremo:0": "Líder Calavérico Supremo",
+      "ElSenorDeLasTumbasMoradas": "El Señor De Las Tumbas Moradas",
       "LiderCalavericoSupremoAlfa": "Líder Calavérico Supremo Alfa",
       "Sparkster": "Sparkster",
       "ElArquero": "El Arquero",
@@ -219,6 +219,22 @@
     }
   },
   "Blocks": {
+    "CopperSharpHammerBlock:0": {
+  "DisplayName": "Martillo de Cobre Afilado",
+  "Description": "El Martillo Afilado de Cobre es un arma poderosa. A primera vista parece una simple herramienta de trabajo, pero en realidad su letalidad supera a la del machete de cobre. Aunque no es tan resistente como el machete, es más alto y mucho más mortal, capaz de asestar golpes devastadores que lo convierten en una de las armas de cobre más peligrosas."
+},
+"IronSharpHammerBlock:0": {
+  "DisplayName": "Martillo de Hierro Afilado",
+  "Description": "El Martillo Afilado de Hierro es similar al machete de hierro, pero resulta un poco más letal y también más duradero. Aunque comparte el mismo diseño brutal, su resistencia mejorada y su golpe más afilado lo convierten en una opción superior para quienes buscan un arma que combine solidez con una letalidad eficaz."
+},
+"DiamondSharpHammerBlock:0": {
+  "DisplayName": "Martillo de Diamante Afilado",
+  "Description": "El Martillo Afilado de Diamante es similar al machete de diamante, pero mucho más letal y duradero. Su resistencia incomparable y su poder devastador lo convierten en un arma excepcional, capaz de soportar combates prolongados mientras asesta golpes mortales. Tal vez su mayor utilidad sea enfrentarse a jefes, donde su fuerza y durabilidad pueden cambiar el curso de la batalla."
+},
+"LavaSharpHammerBlock:0": {
+  "DisplayName": "Martillo de Lava Afilado",
+  "Description": "El Martillo Afilado de Lava es similar al machete de lava, pero mucho más letal y duradero. Su núcleo ardiente y su filo incandescente lo convierten en un arma de pura destrucción, capaz de resistir los combates más feroces mientras asesta golpes catastróficos. No es simplemente más fuerte que el machete: es una auténtica herramienta infernal de guerra. Este martillo es 100% extremadamente útil para matar jefes, un arma que irradia peligro y promesa. El jugador sentirá su potencial ardiente, sabiendo que, llegado el momento, puede ser la fuerza decisiva que transforme batallas imposibles en victorias."
+},
     "AntiTanksBulletBlock:0": {
     "DisplayName": "Bala Anti-Tanks",
     "Description": "Una munición especial que nos ayudará más tarde. Úsala sabiamente y solo en casos de emergencia si la bala de mosquete o perdigón no funciona para aplicar el daño necesario."
