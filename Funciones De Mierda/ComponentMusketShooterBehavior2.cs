@@ -24,11 +24,11 @@ namespace Game
 
 		// Configuración
 		public float MaxDistance = 25f;
-		public float MeleeSwitchDistance = 5f; // Distancia para cambiar a arma cuerpo a cuerpo
+		public float MeleeSwitchDistance = 5f;
 		public float ReloadTime = 0.55f;
 		public float AimTime = 1f;
 		public float CockTime = 0.5f;
-		public float MeleeAttackTime = 0.8f; // Tiempo entre ataques cuerpo a cuerpo
+		public float MeleeAttackTime = 0.8f;
 		public string FireSound = "Audio/MusketFire";
 		public float FireSoundDistance = 15f;
 		public string CockSound = "Audio/HammerCock";
@@ -45,7 +45,7 @@ namespace Game
 		private bool m_isFiring = false;
 		private bool m_isReloading = false;
 		private bool m_isCocking = false;
-		private bool m_isMelee = false; // Modo cuerpo a cuerpo
+		private bool m_isMelee = false;
 		private double m_animationStartTime;
 		private double m_cockStartTime;
 		private double m_fireTime;
@@ -113,15 +113,15 @@ namespace Game
 				m_componentChaseBehavior.Target.ComponentBody.Position
 			);
 
-			// Lógica de ataque basada en distancia
+			// Lógica de ataque basada en distancia - MEJORADA CON LÓGICA DE NEWCHASE
 			if (distance <= MaxDistance)
 			{
-				// Si el enemigo está cerca, cambiar a cuerpo a cuerpo
+				// Si el enemigo está muy cerca (dentro de la distancia de cambio), cambiar inmediatamente a arma cuerpo a cuerpo
 				if (distance <= MeleeSwitchDistance)
 				{
 					if (!m_isMelee && !m_isFiring && !m_isReloading)
 					{
-						SwitchToMelee();
+						SwitchToMeleeModeImmediately();
 					}
 				}
 				// Si está a distancia media/lejana, usar mosquete
@@ -151,7 +151,7 @@ namespace Game
 			// Aplicar animaciones según el modo
 			if (m_isMelee)
 			{
-				UpdateMeleeMode(dt);
+				UpdateMeleeModeImproved(dt);
 			}
 			else
 			{
@@ -216,10 +216,11 @@ namespace Game
 			}
 		}
 
-		private void UpdateMeleeMode(float dt)
+		// MÉTODO MEJORADO: Modo cuerpo a cuerpo con lógica de NewChase
+		private void UpdateMeleeModeImproved(float dt)
 		{
 			// Buscar y equipar mejor arma cuerpo a cuerpo
-			if (FindMeleeWeapon())
+			if (FindHitToolImproved())
 			{
 				// Mirar al objetivo
 				if (m_componentChaseBehavior.Target != null)
@@ -239,7 +240,7 @@ namespace Game
 					if (m_componentModel.IsAttackHitMoment)
 					{
 						Vector3 hitPoint;
-						ComponentBody hitBody = GetHitBody(m_componentChaseBehavior.Target.ComponentBody, out hitPoint);
+						ComponentBody hitBody = GetHitBodyImproved(m_componentChaseBehavior.Target.ComponentBody, out hitPoint);
 						if (hitBody != null)
 						{
 							m_componentMiner.Hit(hitBody, hitPoint, m_componentCreature.ComponentBody.Matrix.Forward);
@@ -250,7 +251,7 @@ namespace Game
 			}
 			else
 			{
-				// Si no tiene arma cuerpo a cuerpo, retroceder
+				// MEJORADO: Si no tiene arma cuerpo a cuerpo, retroceder (como en NewChase)
 				if (m_componentPathfinding != null && m_componentChaseBehavior.Target != null)
 				{
 					Vector3 retreatDirection = Vector3.Normalize(
@@ -262,7 +263,8 @@ namespace Game
 			}
 		}
 
-		private void SwitchToMelee()
+		// MÉTODO MEJORADO: Cambio inmediato a modo cuerpo a cuerpo (como en NewChase)
+		private void SwitchToMeleeModeImmediately()
 		{
 			m_isMelee = true;
 			m_isAiming = false;
@@ -279,11 +281,12 @@ namespace Game
 				m_componentModel.InHandItemRotationOrder = Vector3.Zero;
 			}
 
-			// Buscar y equipar arma cuerpo a cuerpo
-			FindMeleeWeapon();
+			// Buscar y equipar mejor arma cuerpo a cuerpo
+			FindHitToolImproved();
 		}
 
-		private bool FindMeleeWeapon()
+		// MÉTODO MEJORADO: Encontrar arma cuerpo a cuerpo (optimizado como en NewChase)
+		private bool FindHitToolImproved()
 		{
 			if (m_componentMiner.Inventory == null)
 				return false;
@@ -319,7 +322,8 @@ namespace Game
 			return false;
 		}
 
-		private ComponentBody GetHitBody(ComponentBody target, out Vector3 hitPoint)
+		// MÉTODO MEJORADO: Obtener cuerpo golpeado (como en NewChase)
+		private ComponentBody GetHitBodyImproved(ComponentBody target, out Vector3 hitPoint)
 		{
 			Vector3 vector = m_componentCreature.ComponentBody.BoundingBox.Center();
 			Vector3 v = target.BoundingBox.Center();
@@ -341,7 +345,7 @@ namespace Game
 			return null;
 		}
 
-		// El resto de los métodos se mantienen igual que en el código original
+		// Los métodos restantes se mantienen igual que en el código original...
 		// (StartCocking, StartAiming, FindMusket, UpdateMusketHammerState, UpdateMusketLoadState, 
 		// UpdateMusketBulletType, ApplyCockingAnimation, ApplyAimingAnimation, Fire, 
 		// ApplyFiringAnimation, StartReloading, ApplyReloadingAnimation, ResetAnimations, ShootBullet)
@@ -573,7 +577,7 @@ namespace Game
 			// Actualizar estado del mosquete después de disparar
 			UpdateMusketLoadState(MusketBlock.LoadState.Empty);
 			UpdateMusketHammerState(false);
-			UpdateMusketBulletType(null);
+			UpdateMusketBulletType(BulletBlock.BulletType.MusketBall);
 
 			// Retroceso
 			if (UseRecoil && m_componentChaseBehavior.Target != null)
@@ -586,12 +590,7 @@ namespace Game
 			}
 		}
 
-        private void UpdateMusketBulletType(object value)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void ApplyFiringAnimation(float dt)
+		private void ApplyFiringAnimation(float dt)
 		{
 			if (m_componentModel != null)
 			{
