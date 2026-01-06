@@ -23,9 +23,11 @@ namespace Game
 
 		// Configuración
 		public float MaxDistance = 25f;
+		public float MeleeSwitchDistance = 5f; // Nueva: Distancia para cambiar a cuerpo a cuerpo
 		public float ReloadTime = 0.55f;
 		public float AimTime = 1f;
 		public float CockTime = 0.5f;
+		public float MeleeAttackTime = 0.8f; // Nueva: Tiempo entre ataques cuerpo a cuerpo
 		public string FireSound = "Audio/MusketFire";
 		public float FireSoundDistance = 15f;
 		public string CockSound = "Audio/HammerCock";
@@ -42,9 +44,11 @@ namespace Game
 		private bool m_isFiring = false;
 		private bool m_isReloading = false;
 		private bool m_isCocking = false;
+		private bool m_isMelee = false; // Nuevo: Modo cuerpo a cuerpo
 		private double m_animationStartTime;
 		private double m_cockStartTime;
 		private double m_fireTime;
+		private double m_meleeAttackTime;
 		private int m_musketSlot = -1;
 		private Random m_random = new Random();
 
@@ -58,9 +62,11 @@ namespace Game
 
 			// Cargar parámetros
 			MaxDistance = valuesDictionary.GetValue<float>("MaxDistance", 25f);
+			MeleeSwitchDistance = valuesDictionary.GetValue<float>("MeleeSwitchDistance", 5f); // Nuevo
 			ReloadTime = valuesDictionary.GetValue<float>("ReloadTime", 0.55f);
 			AimTime = valuesDictionary.GetValue<float>("AimTime", 1f);
 			CockTime = valuesDictionary.GetValue<float>("CockTime", 0.5f);
+			MeleeAttackTime = valuesDictionary.GetValue<float>("MeleeAttackTime", 0.8f); // Nuevo
 			FireSound = valuesDictionary.GetValue<string>("FireSound", "Audio/MusketFire");
 			FireSoundDistance = valuesDictionary.GetValue<float>("FireSoundDistance", 15f);
 			CockSound = valuesDictionary.GetValue<string>("CockSound", "Audio/HammerCock");
@@ -105,13 +111,32 @@ namespace Game
 				m_componentChaseBehavior.Target.ComponentBody.Position
 			);
 
-			// Lógica de ataque basada en distancia
+			// Lógica de ataque basada en distancia - MEJORADO COMO EN NEWCHASE
 			if (distance <= MaxDistance)
 			{
-				// Si no está haciendo nada, empezar a apuntar
-				if (!m_isAiming && !m_isFiring && !m_isReloading && !m_isCocking)
+				// Si el enemigo está muy cerca (dentro de 5 unidades), cambiar inmediatamente a arma cuerpo a cuerpo
+				if (distance < MeleeSwitchDistance)
 				{
-					StartAiming();
+					if (!m_isMelee && !m_isFiring && !m_isReloading)
+					{
+						SwitchToMeleeModeImmediately();
+					}
+				}
+				// Si está a distancia media/lejana, usar mosquete
+				else
+				{
+					// Cancelar modo cuerpo a cuerpo si estaba activo
+					if (m_isMelee)
+					{
+						m_isMelee = false;
+						m_componentModel.AttackOrder = false;
+					}
+
+					// Si no está haciendo nada, empezar a apuntar
+					if (!m_isAiming && !m_isFiring && !m_isReloading && !m_isCocking)
+					{
+						StartAiming();
+					}
 				}
 			}
 			else
@@ -121,8 +146,15 @@ namespace Game
 				return;
 			}
 
-			// Actualizar animaciones de mosquete
-			UpdateRangedMode(dt);
+			// Aplicar animaciones según el modo - MEJORADO
+			if (m_isMelee)
+			{
+				UpdateMeleeMode(dt);
+			}
+			else
+			{
+				UpdateRangedMode(dt);
+			}
 		}
 
 		private void UpdateRangedMode(float dt)
@@ -180,6 +212,123 @@ namespace Game
 					StartAiming(); // Volver a apuntar para repetir ciclo
 				}
 			}
+		}
+
+		private void UpdateMeleeMode(float dt)
+		{
+			// MEJORADO: Lógica de cuerpo a cuerpo como en NewChase
+			// Buscar y equipar mejor arma cuerpo a cuerpo
+			if (FindHitTool())
+			{
+				// Mirar al objetivo
+				if (m_componentChaseBehavior.Target != null)
+				{
+					m_componentModel.LookAtOrder = new Vector3?(
+						m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition
+					);
+				}
+
+				// Atacar periódicamente
+				if (m_subsystemTime.GameTime - m_meleeAttackTime >= MeleeAttackTime)
+				{
+					m_componentModel.AttackOrder = true;
+					m_meleeAttackTime = m_subsystemTime.GameTime;
+
+					// Si es momento de golpear, aplicar daño
+					if (m_componentModel.IsAttackHitMoment)
+					{
+						Vector3 hitPoint;
+						ComponentBody hitBody = GetHitBody(m_componentChaseBehavior.Target.ComponentBody, out hitPoint);
+						if (hitBody != null)
+						{
+							m_componentMiner.Hit(hitBody, hitPoint, m_componentCreature.ComponentBody.Matrix.Forward);
+							m_componentCreature.ComponentCreatureSounds.PlayAttackSound();
+						}
+					}
+				}
+			}
+		}
+
+		// MÉTODO MEJORADO: Cambio inmediato a modo cuerpo a cuerpo (como en NewChase)
+		private void SwitchToMeleeModeImmediately()
+		{
+			m_isMelee = true;
+			m_isAiming = false;
+			m_isFiring = false;
+			m_isReloading = false;
+			m_isCocking = false;
+			m_meleeAttackTime = m_subsystemTime.GameTime;
+
+			// Resetear animaciones de mosquete
+			if (m_componentModel != null)
+			{
+				m_componentModel.AimHandAngleOrder = 0f;
+				m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
+				m_componentModel.InHandItemRotationOrder = Vector3.Zero;
+			}
+
+			// Buscar y equipar mejor arma cuerpo a cuerpo
+			FindHitTool();
+		}
+
+		// MÉTODO MEJORADO: Encontrar arma cuerpo a cuerpo (como en NewChase)
+		private bool FindHitTool()
+		{
+			if (m_componentMiner.Inventory == null)
+				return false;
+
+			// Verificar si el arma actual es cuerpo a cuerpo
+			int activeBlockValue = m_componentMiner.ActiveBlockValue;
+			if (BlocksManager.Blocks[Terrain.ExtractContents(activeBlockValue)].GetMeleePower(activeBlockValue) > 1f)
+			{
+				return true;
+			}
+
+			// Buscar mejor arma cuerpo a cuerpo en inventario
+			float bestPower = 1f;
+			int bestSlot = -1;
+
+			for (int i = 0; i < 6; i++) // Solo primeros 6 slots (armas equipables)
+			{
+				int slotValue = m_componentMiner.Inventory.GetSlotValue(i);
+				float meleePower = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)].GetMeleePower(slotValue);
+				if (meleePower > bestPower)
+				{
+					bestPower = meleePower;
+					bestSlot = i;
+				}
+			}
+
+			if (bestSlot >= 0)
+			{
+				m_componentMiner.Inventory.ActiveSlotIndex = bestSlot;
+				return true;
+			}
+
+			return false;
+		}
+
+		// MÉTODO MEJORADO: Obtener cuerpo golpeado (como en NewChase)
+		private ComponentBody GetHitBody(ComponentBody target, out Vector3 hitPoint)
+		{
+			Vector3 vector = m_componentCreature.ComponentBody.BoundingBox.Center();
+			Vector3 v = target.BoundingBox.Center();
+			Ray3 ray = new Ray3(vector, Vector3.Normalize(v - vector));
+
+			BodyRaycastResult? bodyRaycastResult = m_componentMiner.Raycast<BodyRaycastResult>(ray, RaycastMode.Interaction, true, true, true, null);
+
+			if (bodyRaycastResult != null && bodyRaycastResult.Value.Distance < 1.75f &&
+				(bodyRaycastResult.Value.ComponentBody == target ||
+				 bodyRaycastResult.Value.ComponentBody.IsChildOfBody(target) ||
+				 target.IsChildOfBody(bodyRaycastResult.Value.ComponentBody) ||
+				 target.StandingOnBody == bodyRaycastResult.Value.ComponentBody))
+			{
+				hitPoint = bodyRaycastResult.Value.HitPoint();
+				return bodyRaycastResult.Value.ComponentBody;
+			}
+
+			hitPoint = default(Vector3);
+			return null;
 		}
 
 		private void StartCocking()
@@ -489,6 +638,7 @@ namespace Game
 			m_isFiring = false;
 			m_isReloading = false;
 			m_isCocking = false;
+			m_isMelee = false;
 
 			if (m_componentModel != null)
 			{
@@ -496,6 +646,7 @@ namespace Game
 				m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
 				m_componentModel.InHandItemRotationOrder = Vector3.Zero;
 				m_componentModel.LookAtOrder = null;
+				m_componentModel.AttackOrder = false;
 			}
 		}
 
