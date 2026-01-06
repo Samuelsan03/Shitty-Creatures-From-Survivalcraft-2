@@ -16,7 +16,7 @@
         <Recipe Result="WoodPickaxeBlock" ResultCount="1" RequiredHeatLevel="0" a="stick" b="planks" Description="Nostalgic mining - pre-2.1 era">
             "bbb"
             " a "
-            " a"
+            " a "
         </Recipe>
         <Recipe Result="WoodShovelBlock" ResultCount="1" RequiredHeatLevel="0" a="stick" b="planks" Description="Simple digging - back when life was easier">
             "b"
@@ -26,7 +26,7 @@
         <Recipe Result="StonePickaxeBlock" ResultCount="1" RequiredHeatLevel="0" a="stick" b="cobblestone" Description="How could I forget the old days, bro?">
             "bbb"
             " a "
-            " a"
+            " a "
         </Recipe>
         <Recipe Result="StoneAxeOriginalBlock" ResultCount="1" RequiredHeatLevel="0" a="stick" b="cobblestoneslab" Description="Primitive but effective - pre-2.2">
             "bb"
@@ -284,5 +284,19 @@
             "bab"
             " b "
 		</Recipe>
+        <Smelting>
+        <Recipe Result="CopperSharpHammerBlock" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="3" a="coppermachete" b="ironhammer" Description="Use the old copper machete and iron hammer and turn him like a monster">
+        "ab"
+        </Recipe>
+        <Recipe Result="IronSharpHammerBlock" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="3" a="ironmachete" b="ironhammer" Description="Use the old iron machete and iron hammer and turn him like a monster">
+        "ab"
+        </Recipe>
+        <Recipe Result="DiamondSharpHammerBlock" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="4" a="diamondmachete" b="ironhammer" Description="Use the old iron machete and iron hammer and turn him into a deadly monster">
+        "ab"
+        </Recipe>
+        <Recipe Result="LavaSharpHammerBlock" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="6" a="lavamachete" b="ironhammer" Description="Use the new lava machete and old iron hammer and turn him into a MEGA MONSTER">
+        "ab"
+        </Recipe>
+        </Smelting>
     </Recipes>
 </ShittyRecipes>
