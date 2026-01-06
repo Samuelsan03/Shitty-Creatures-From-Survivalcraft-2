@@ -209,7 +209,7 @@
       }
     },
     "Messages": {
-      "FirstPullCrossbow": "¡Primero tensa la ballesta!",
+      "FirstPullCrossbow": "¡Primero tensa la ballesta repetidora!",
       "FirstLoadArrow": "¡Primero carga una virote!",
       "ArrowCount": "Virotes: {0}/8"
     },
