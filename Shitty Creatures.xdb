@@ -79,6 +79,14 @@
     </Folder>
 
     <Folder Name="ProgramedInteligence" Guid="33dfd132-3c41-4dfa-a385-af3ba34ff86b">
+    <ComponentTemplate Name="ComponentKnockbackBehavior" Guid="ee103658-d57d-4c34-b922-3c3834a0588d">
+    <Parameter Name="Class" Value="Game.ComponentKnockbackBehavior" Type="string" Description="Componente que aplica fuerza de retroceso a objetivos al atacar."/>
+    <Parameter Name="IsOptional" Value="true" Type="bool" Description="Indica si el componente es opcional para la entidad."/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Description="Orden de carga para asegurar dependencias con ComponentCreatureModel y ComponentChaseBehavior."/>
+    <Parameter Name="KnockbackForce" Value="10" Type="float" Description="Fuerza de retroceso aplicada al objetivo al impactar."/>
+    <Parameter Name="KnockbackChance" Value="0.3" Type="float" Description="Probabilidad (0-1) de que se aplique el retroceso en cada golpe."/>
+</ComponentTemplate>
+
     <ComponentTemplate Name="ComponentZombieHerdBehavior" Guid="f544e4df-1bac-4041-b0a0-816d2e46b950">
     <Parameter Name="Class" Value="Game.ComponentZombieHerdBehavior" Type="string" Guid="db9e9aaa-d573-4ad2-a815-ce00aa4a84be" Description="Componente de comportamiento de manada específico para zombis, extendiendo la funcionalidad de ComponentHerdBehavior."/>
     <Parameter Name="IsOptional" Value="false" Type="bool" Guid="968a2ba5-0614-4d76-bb4e-5f2d063a274f" Description="Si es opcional o requerido para el funcionamiento."/>
@@ -490,6 +498,11 @@
     </Folder>
 
 <ProjectTemplate Name="Project" Guid="85023bf8-1c90-4dd1-9442-e6c13691d078">
+<MemberSubsystemTemplate Name="SlingshotBlockBehavior" Guid="17064d60-e54f-4ac6-9da9-8fa65f98cc82">
+    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="b4b7c9b5-de9b-4627-a9b3-2fed006e47b8"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="58665908-d5c3-4864-9dd6-1def9dc0cd03"/>
+    <Parameter Name="Class" Value="Game.SubsystemSlingshotBlockBehavior" Type="string" Guid="885ba0bb-7af8-4a23-bc8a-fdac42901086"/>
+</MemberSubsystemTemplate>
 <MemberSubsystemTemplate Name="ShittyCreaturesSpawn" Guid="6bf21fee-34d6-4509-a1d4-160a13c6991b">
     <Parameter Name="IsOptional" Value="false" Type="bool" Guid="9b536bae-4995-4982-b821-44241d526932"/>
     <Parameter Name="LoadOrder" Value="60" Type="int" Guid="391ac2b9-9947-47fe-8014-fd2b0fe88c09"/>
