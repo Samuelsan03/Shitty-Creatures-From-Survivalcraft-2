@@ -26,8 +26,8 @@ namespace Game
 			}
 		}
 
-		// Método para llamar ayuda de criaturas cercanas
-		public void CallNearbyCreaturesHelp(ComponentCreature target, float maxRange, float maxChaseTime, bool isPersistent)
+		// Método mejorado para llamar ayuda de criaturas cercanas
+		public void CallNearbyCreaturesHelp(ComponentCreature target, float maxRange, float maxChaseTime, bool isPersistent, bool forceResponse = false)
 		{
 			if (target == null)
 			{
@@ -55,22 +55,50 @@ namespace Game
 					// Verificar que sea de la misma manada y tenga ayuda automática habilitada
 					if (componentHerdBehavior != null && !string.IsNullOrEmpty(componentHerdBehavior.HerdName) &&
 						componentHerdBehavior.HerdName.Equals(this.HerdName, StringComparison.OrdinalIgnoreCase) &&
-						componentHerdBehavior.m_autoNearbyCreaturesHelp)
+						(componentHerdBehavior.m_autoNearbyCreaturesHelp || forceResponse))
 					{
 						// Usar el ComponentChaseBehavior original
 						ComponentChaseBehavior componentChaseBehavior = componentCreature.Entity.FindComponent<ComponentChaseBehavior>();
-						if (componentChaseBehavior != null && componentChaseBehavior.Target == null)
+						if (componentChaseBehavior != null)
 						{
-							// Verificar nuevamente que el objetivo no sea de la misma manada
-							if (targetHerdBehavior == null ||
-								!targetHerdBehavior.HerdName.Equals(componentHerdBehavior.HerdName, StringComparison.OrdinalIgnoreCase))
+							// Si es una respuesta forzada (target stick) o no tiene objetivo actual
+							if (forceResponse || componentChaseBehavior.Target == null)
 							{
-								componentChaseBehavior.Attack(target, maxRange, maxChaseTime, isPersistent);
+								// Verificar nuevamente que el objetivo no sea de la misma manada
+								if (targetHerdBehavior == null ||
+									!targetHerdBehavior.HerdName.Equals(componentHerdBehavior.HerdName, StringComparison.OrdinalIgnoreCase))
+								{
+									componentChaseBehavior.Attack(target, maxRange, maxChaseTime, isPersistent);
+								}
 							}
 						}
 					}
 				}
 			}
+		}
+
+		// Método para respuesta inmediata desde Target Stick
+		public void RespondToCommandImmediately(ComponentCreature target, float maxRange, float maxChaseTime, bool isPersistent)
+		{
+			if (target == null || !this.m_autoNearbyCreaturesHelp)
+			{
+				return;
+			}
+
+			// Verificar si puede atacar al objetivo
+			if (!this.CanAttackCreature(target))
+			{
+				return;
+			}
+
+			// Atacar inmediatamente
+			if (this.m_componentChase != null)
+			{
+				this.m_componentChase.Attack(target, maxRange, maxChaseTime, isPersistent);
+			}
+
+			// También llamar a otras criaturas cercanas (respuesta en cadena rápida)
+			this.CallNearbyCreaturesHelp(target, 15f, 30f, false, true);
 		}
 
 		// Método para encontrar el centro de la manada
@@ -223,7 +251,7 @@ namespace Game
 				// Solo llamar ayuda si el atacante no es de la misma manada
 				if (this.ShouldAttackCreature(attacker))
 				{
-					this.CallNearbyCreaturesHelp(attacker, 20f, 30f, false);
+					this.CallNearbyCreaturesHelp(attacker, 20f, 30f, false, true);
 				}
 			}
 		}
