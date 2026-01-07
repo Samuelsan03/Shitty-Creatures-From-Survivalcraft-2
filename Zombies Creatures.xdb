@@ -432,7 +432,7 @@
                 <Parameter Name="AutoFeed" Guid="522650fe-de81-4624-ae49-e6cfe403f032" Value="False" Type="bool"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="ChaseBehavior" Guid="bc016d7c-5ab2-48ee-ba49-55fae2dafbc4" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
-                <Parameter Name="AutoChaseMask" Guid="bd934d4f-5218-49fe-9213-93b032bc96bd" Value="LandPredator,WaterPredator,Bird" Type="Game.CreatureCategory"/>
+                <Parameter Name="AutoChaseMask" Guid="bd934d4f-5218-49fe-9213-93b032bc96bd" Value="WaterPredator,Bird" Type="Game.CreatureCategory"/>
                 <Parameter Name="DayChaseRange" Guid="222116fd-f5f1-4c74-b24d-9d8c114fd161" Value="0" Type="float"/>
                 <Parameter Name="NightChaseRange" Guid="7a45d4cd-f120-475d-945c-5a28c73eb459" Value="0" Type="float"/>
                 <Parameter Name="ChaseNonPlayerProbability" Guid="b5a083f0-ab06-4e61-bec4-173b78604479" Value="0" Type="float"/>

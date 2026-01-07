@@ -5948,7 +5948,7 @@
     <Parameter Name="ChaseNonPlayerProbability" Value="0.2" Type="float" Guid="b36945ff-b845-4808-802f-07ab08cfbf49"/>
     <Parameter Name="ChaseWhenAttackedProbability" Value="0.8" Type="float" Guid="7be9fe7e-698c-4648-85ba-e82732eac692"/>
     <Parameter Name="ChaseOnTouchProbability" Value="0.5" Type="float" Guid="602b414c-02a3-49b2-919e-4f339a34b98b"/>
-    <Parameter Name="AutoChaseMask" Value="LandPredator,LandOther" Type="string" Guid="5f08b71c-ac38-42ea-8de1-342a1295fa7b"/>
+    <Parameter Name="AutoChaseMask" Value="LandPredator" Type="string" Guid="5f08b71c-ac38-42ea-8de1-342a1295fa7b"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="NewHerdBehavior" Guid="bfa4a491-70a5-433d-a240-39ae31531b79">
         <Parameter Name="Class" Value="Game.ComponentNewHerdBehavior" Type="string" Guid="cdc71886-80c1-411b-8277-f5a8529c79a7"/>
