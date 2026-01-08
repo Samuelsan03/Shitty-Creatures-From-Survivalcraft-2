@@ -3618,10 +3618,10 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="ChaseBehavior" Guid="1a9c2e7f-f9d1-4933-aec4-082f8ed85c0e" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
         <Parameter Name="AutoChaseMask" Guid="c1b60894-b54d-488a-bf07-5a41c359e02d" Value="LandPredator, WaterPredator, WaterOther" Type="Game.CreatureCategory"/>
-        <Parameter Name="DayChaseRange" Guid="5e633aa2-9310-44f9-90cd-00c17bdaf7fb" Value="1.5" Type="float"/>
-        <Parameter Name="NightChaseRange" Guid="2a37e650-bea1-470c-b387-fef3fef31862" Value="1.7" Type="float"/>
-        <Parameter Name="ChaseNonPlayerProbability" Guid="0e4b7955-b7a0-4d27-8c81-a7af52606b6f" Value="0.01" Type="float"/>
-        <Parameter Name="NightChaseTime" Guid="1ea31ead-25e6-47d0-ba5d-8df7545751e5" Value="6" Type="float"/>
+        <Parameter Name="DayChaseRange" Guid="5e633aa2-9310-44f9-90cd-00c17bdaf7fb" Value="0" Type="float"/>
+        <Parameter Name="NightChaseRange" Guid="2a37e650-bea1-470c-b387-fef3fef31862" Value="0" Type="float"/>
+        <Parameter Name="ChaseNonPlayerProbability" Guid="0e4b7955-b7a0-4d27-8c81-a7af52606b6f" Value="0" Type="float"/>
+        <Parameter Name="NightChaseTime" Guid="1ea31ead-25e6-47d0-ba5d-8df7545751e5" Value="0" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="5f0f0b7f-88af-4d8e-8e2a-7f757524e12f" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
     <Parameter Name="ChaseToCreatures" Guid="32ba78d4-46a0-49ab-b693-678b27058b4d" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
@@ -3774,10 +3774,10 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="ChaseBehavior" Guid="555c77d2-6643-4dc1-bb38-1a101df52918" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
         <Parameter Name="AutoChaseMask" Guid="940f8745-f898-4e9d-ac52-d2b7d9cca5cf" Value="LandPredator, WaterPredator, WaterOther" Type="Game.CreatureCategory"/>
-        <Parameter Name="DayChaseRange" Guid="8575e4b3-7916-4229-b0c9-d99d543c9c27" Value="1.6" Type="float"/>
-        <Parameter Name="NightChaseRange" Guid="f678f7b4-e22c-4ad0-ac87-77525ca17c32" Value="1.8" Type="float"/>
-        <Parameter Name="ChaseNonPlayerProbability" Guid="f87afe98-e0b8-4c54-8cf5-831531b82835" Value="0.015" Type="float"/>
-        <Parameter Name="NightChaseTime" Guid="d1d0f204-8a51-40b9-b6ea-3932e30eb598" Value="6" Type="float"/>
+        <Parameter Name="DayChaseRange" Guid="8575e4b3-7916-4229-b0c9-d99d543c9c27" Value="0" Type="float"/>
+        <Parameter Name="NightChaseRange" Guid="f678f7b4-e22c-4ad0-ac87-77525ca17c32" Value="0" Type="float"/>
+        <Parameter Name="ChaseNonPlayerProbability" Guid="f87afe98-e0b8-4c54-8cf5-831531b82835" Value="0" Type="float"/>
+        <Parameter Name="NightChaseTime" Guid="d1d0f204-8a51-40b9-b6ea-3932e30eb598" Value="0" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="2d6af576-8529-48e2-89dd-1d9ed324b5f0" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
     <Parameter Name="ChaseToCreatures" Guid="e92792da-50e6-4080-a742-8d3ecb257455" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
@@ -3907,10 +3907,10 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="ChaseBehavior" Guid="d156f329-8edf-4216-9328-6d6359690088" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
         <Parameter Name="AutoChaseMask" Guid="3b2812d0-2656-4ddb-ad97-4e191625aa55" Value="LandPredator, WaterPredator, WaterOther" Type="Game.CreatureCategory"/>
-        <Parameter Name="DayChaseRange" Guid="11a34fd3-03f3-43f6-b27c-66f77819310e" Value="1.4" Type="float"/>
-        <Parameter Name="NightChaseRange" Guid="0ad2d18b-d76c-4eae-9850-b8aa98570d9c" Value="1.6" Type="float"/>
-        <Parameter Name="ChaseNonPlayerProbability" Guid="8a766aa6-5f6a-45df-9fac-35c00b4945c9" Value="0.005" Type="float"/>
-        <Parameter Name="NightChaseTime" Guid="5a8e5c85-e39a-47de-a613-b4a9f8ea79d4" Value="6" Type="float"/>
+        <Parameter Name="DayChaseRange" Guid="11a34fd3-03f3-43f6-b27c-66f77819310e" Value="0" Type="float"/>
+        <Parameter Name="NightChaseRange" Guid="0ad2d18b-d76c-4eae-9850-b8aa98570d9c" Value="0" Type="float"/>
+        <Parameter Name="ChaseNonPlayerProbability" Guid="8a766aa6-5f6a-45df-9fac-35c00b4945c9" Value="0" Type="float"/>
+        <Parameter Name="NightChaseTime" Guid="5a8e5c85-e39a-47de-a613-b4a9f8ea79d4" Value="0" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="b54cf202-929e-4645-8932-1e2138eb47c1" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
     <Parameter Name="ChaseToCreatures" Guid="433ae38c-0db1-4bb0-9472-bacbb4c98226" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
@@ -4054,10 +4054,10 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="ChaseBehavior" Guid="a6235141-1040-4fd4-8dfa-587bc7ff0d7c" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
         <Parameter Name="AutoChaseMask" Guid="713ed923-76da-4eeb-9c2d-cfcd3ede8916" Value="LandPredator, WaterPredator, WaterOther" Type="Game.CreatureCategory"/>
-        <Parameter Name="DayChaseRange" Guid="62b826b2-00e2-40e5-8e29-0a2bd7e550b8" Value="1.5" Type="float"/>
-        <Parameter Name="NightChaseRange" Guid="2da6a55c-39de-4977-8c7e-dd58779ff325" Value="1.7" Type="float"/>
-        <Parameter Name="ChaseNonPlayerProbability" Guid="95b930ca-30ba-4ca5-9c85-309a37ec7b93" Value="0.1" Type="float"/>
-        <Parameter Name="NightChaseTime" Guid="00ef4b48-104e-4884-a210-534fb64b6d58" Value="6" Type="float"/>
+        <Parameter Name="DayChaseRange" Guid="62b826b2-00e2-40e5-8e29-0a2bd7e550b8" Value="0" Type="float"/>
+        <Parameter Name="NightChaseRange" Guid="2da6a55c-39de-4977-8c7e-dd58779ff325" Value="0" Type="float"/>
+        <Parameter Name="ChaseNonPlayerProbability" Guid="95b930ca-30ba-4ca5-9c85-309a37ec7b93" Value="0" Type="float"/>
+        <Parameter Name="NightChaseTime" Guid="00ef4b48-104e-4884-a210-534fb64b6d58" Value="0" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="cbfb0d16-1705-4cb8-8407-87b494d3389e" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
     <Parameter Name="ChaseToCreatures" Guid="75d60863-085b-42e5-8cce-a68dcb2b8d09" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
@@ -4210,10 +4210,10 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="ChaseBehavior" Guid="632301b6-8fa3-478b-bc6c-1b3495798191" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
         <Parameter Name="AutoChaseMask" Guid="7dad39c9-aafa-4405-bbe5-a383a5b9b9a6" Value="LandPredator, WaterPredator, WaterOther" Type="Game.CreatureCategory"/>
-        <Parameter Name="DayChaseRange" Guid="23abeca8-be57-470a-9fbf-ada3b6d8d2f6" Value="1.5" Type="float"/>
-        <Parameter Name="NightChaseRange" Guid="cac05a3e-4a6a-4e79-89d1-813ae8770f19" Value="1.7" Type="float"/>
-        <Parameter Name="ChaseNonPlayerProbability" Guid="a51f0adc-87de-465c-9033-cbc39a2bf266" Value="0.01" Type="float"/>
-        <Parameter Name="NightChaseTime" Guid="a1231aa8-9a43-4bb4-b7f4-31b115e584e4" Value="6" Type="float"/>
+        <Parameter Name="DayChaseRange" Guid="23abeca8-be57-470a-9fbf-ada3b6d8d2f6" Value="0" Type="float"/>
+        <Parameter Name="NightChaseRange" Guid="cac05a3e-4a6a-4e79-89d1-813ae8770f19" Value="0" Type="float"/>
+        <Parameter Name="ChaseNonPlayerProbability" Guid="a51f0adc-87de-465c-9033-cbc39a2bf266" Value="0" Type="float"/>
+        <Parameter Name="NightChaseTime" Guid="a1231aa8-9a43-4bb4-b7f4-31b115e584e4" Value="0" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="460398dd-5b9d-4ed0-bc4d-a2bfef20c4f3" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
     <Parameter Name="ChaseToCreatures" Guid="7986ad5c-f4a7-4371-a86b-e3b4cfb382ca" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
@@ -4349,10 +4349,10 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="ChaseBehavior" Guid="8470badd-25f9-4217-8c43-0e04ae5a3e95" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
         <Parameter Name="AutoChaseMask" Guid="f4499ddd-e00b-4c21-84ff-ce0b82dc44ed" Value="LandPredator, WaterPredator, WaterOther" Type="Game.CreatureCategory"/>
-        <Parameter Name="DayChaseRange" Guid="a0e5691b-1c16-41ca-9946-d01c2eca26a2" Value="1" Type="float"/>
-        <Parameter Name="NightChaseRange" Guid="abad65d8-e1e5-4d0f-9619-f486442c2107" Value="1" Type="float"/>
-        <Parameter Name="ChaseNonPlayerProbability" Guid="7d6e59d4-b76f-4a50-a48a-f671e7a01710" Value="0.015" Type="float"/>
-        <Parameter Name="NightChaseTime" Guid="46e6012a-2808-4112-9424-a6844ca333b9" Value="6" Type="float"/>
+        <Parameter Name="DayChaseRange" Guid="a0e5691b-1c16-41ca-9946-d01c2eca26a2" Value="0" Type="float"/>
+        <Parameter Name="NightChaseRange" Guid="abad65d8-e1e5-4d0f-9619-f486442c2107" Value="0" Type="float"/>
+        <Parameter Name="ChaseNonPlayerProbability" Guid="7d6e59d4-b76f-4a50-a48a-f671e7a01710" Value="0" Type="float"/>
+        <Parameter Name="NightChaseTime" Guid="46e6012a-2808-4112-9424-a6844ca333b9" Value="0" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="4b833ce2-5f71-47d7-994b-5fe1f207eda3" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
     <Parameter Name="ChaseToCreatures" Guid="8dc4ec8e-46a7-4dc2-9b96-4b8548324245" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
@@ -4651,10 +4651,10 @@
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="ChaseBehavior" Guid="e00f3c56-5263-4f36-9fd4-e3fd8d0b2a91" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
         <Parameter Name="AutoChaseMask" Guid="67b68c0b-eb40-4126-9006-809bf9f47062" Value="LandPredator, WaterPredator, WaterOther" Type="Game.CreatureCategory"/>
-        <Parameter Name="DayChaseRange" Guid="787e59cc-d80f-4058-b121-c30f8407023f" Value="1.6" Type="float"/>
-        <Parameter Name="NightChaseRange" Guid="d4341a5e-b116-425f-b8c4-1ce90be84f03" Value="1.8" Type="float"/>
-        <Parameter Name="ChaseNonPlayerProbability" Guid="b2098877-76f8-43ce-9e30-e0ae5bc63349" Value="0.015" Type="float"/>
-        <Parameter Name="NightChaseTime" Guid="195a6a2f-7c21-41fb-a524-7e995879c52a" Value="6" Type="float"/>
+        <Parameter Name="DayChaseRange" Guid="787e59cc-d80f-4058-b121-c30f8407023f" Value="0" Type="float"/>
+        <Parameter Name="NightChaseRange" Guid="d4341a5e-b116-425f-b8c4-1ce90be84f03" Value="0" Type="float"/>
+        <Parameter Name="ChaseNonPlayerProbability" Guid="b2098877-76f8-43ce-9e30-e0ae5bc63349" Value="0" Type="float"/>
+        <Parameter Name="NightChaseTime" Guid="195a6a2f-7c21-41fb-a524-7e995879c52a" Value="0" Type="float"/>
     </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="671685fc-db8c-45b8-ab1b-e81652f88f58">
         <Parameter Name="Color" Guid="9f58e54c-fb2f-404a-8cdb-cc9c8a6bcd62" Value="70,100,180" Type="Color"/>
@@ -5190,10 +5190,10 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="ChaseBehavior" Guid="51d96c9e-7b70-4175-860e-58d2619c73b0" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
         <Parameter Name="AutoChaseMask" Guid="409a20c0-8fe1-4fd2-8c4f-b7da88196456" Value="LandPredator, WaterPredator, WaterOther" Type="Game.CreatureCategory"/>
-        <Parameter Name="DayChaseRange" Guid="2a63f410-7f46-403b-b509-54c8363fcec8" Value="1.4" Type="float"/>
-        <Parameter Name="NightChaseRange" Guid="9a7e61fc-8fbf-4cd7-81c0-86d22c792a90" Value="1" Type="float"/>
-        <Parameter Name="ChaseNonPlayerProbability" Guid="c3bdc009-54aa-4a05-be21-dd16c2578dfc" Value="0.015" Type="float"/>
-        <Parameter Name="NightChaseTime" Guid="8945d035-443f-4877-82b5-bd4e0903b937" Value="6" Type="float"/>
+        <Parameter Name="DayChaseRange" Guid="2a63f410-7f46-403b-b509-54c8363fcec8" Value="0" Type="float"/>
+        <Parameter Name="NightChaseRange" Guid="9a7e61fc-8fbf-4cd7-81c0-86d22c792a90" Value="0" Type="float"/>
+        <Parameter Name="ChaseNonPlayerProbability" Guid="c3bdc009-54aa-4a05-be21-dd16c2578dfc" Value="0" Type="float"/>
+        <Parameter Name="NightChaseTime" Guid="8945d035-443f-4877-82b5-bd4e0903b937" Value="0" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="f941ec32-4ec3-4c86-88dd-422e0fa2ec33" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
     <Parameter Name="ChaseToCreatures" Guid="2f27b111-b882-480a-bdf4-91755a70b84a" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
