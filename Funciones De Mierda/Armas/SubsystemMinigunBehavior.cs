@@ -120,7 +120,7 @@ namespace Armas
 										}
 										this.m_subsystemAudio.PlaySound("Audio/Armas/Chaingun fuego", 1.3f, this.m_random.Float(-0.15f, 0.15f), componentMiner.ComponentCreature.ComponentCreatureModel.EyePosition, 12f, true);
 										Vector3 vector6 = Vector3.Normalize(componentMiner.ComponentPlayer.GameWidget.ActiveCamera.ViewDirection);
-										this.m_subsystemParticles.AddParticleSystem(new GunSmokeParticleSystem(this.m_subsystemTerrain, vector2 + 1.5f * vector6, vector6), false);
+										this.m_subsystemParticles.AddParticleSystem(new GunFireParticleSystem(this.m_subsystemTerrain, vector2 + 1.5f * vector6, vector6), false);
 										this.m_subsystemNoise.MakeNoise(vector2, 1.3f, 50f);
 										int bulletNum2 = bulletNum - 1;
 										num2 = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex(typeof(MinigunBlock), true, false), 0, MinigunBlock.SetBulletNum(bulletNum2));

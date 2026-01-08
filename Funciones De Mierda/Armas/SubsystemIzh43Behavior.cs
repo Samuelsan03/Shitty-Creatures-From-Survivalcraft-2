@@ -9,19 +9,23 @@ using TemplatesDatabase;
 
 namespace Armas
 {
-	public class SubsystemSPAS12Behavior : SubsystemBlockBehavior
+	// Token: 0x02000032 RID: 50
+	public class SubsystemIzh43Behavior : SubsystemBlockBehavior
 	{
+		// Token: 0x17000014 RID: 20
+		// (get) Token: 0x0600010A RID: 266 RVA: 0x0000AC64 File Offset: 0x00008E64
 		public override int[] HandledBlocks
 		{
 			get
 			{
 				return new int[]
 				{
-					BlocksManager.GetBlockIndex(typeof(SPAS12Block), true, false)
+					BlocksManager.GetBlockIndex(typeof(Izh43Block), true, false)
 				};
 			}
 		}
 
+		// Token: 0x0600010B RID: 267 RVA: 0x0000AC90 File Offset: 0x00008E90
 		public override void Load(ValuesDictionary valuesDictionary)
 		{
 			base.Load(valuesDictionary);
@@ -35,12 +39,13 @@ namespace Armas
 			this.fire = true;
 		}
 
+		// Token: 0x0600010C RID: 268 RVA: 0x0000AD2C File Offset: 0x00008F2C
 		public override bool OnAim(Ray3 aim, ComponentMiner componentMiner, AimState state)
 		{
-			string name = "Audio/Armas/SPAS 12 fuego";
+			string name = "Audio/Armas/shotgun fuego";
 			float num = 0.09f;
 			int slotValue = componentMiner.Inventory.GetSlotValue(componentMiner.Inventory.ActiveSlotIndex);
-			bool flag = Terrain.ExtractContents(slotValue) == BlocksManager.GetBlockIndex(typeof(SPAS12Block), true, false);
+			bool flag = Terrain.ExtractContents(slotValue) == BlocksManager.GetBlockIndex(typeof(Izh43Block), true, false);
 			bool flag2 = flag;
 			if (flag2)
 			{
@@ -115,20 +120,20 @@ namespace Armas
 							bool flag12 = componentPlayer2 != null;
 							if (flag12)
 							{
-								componentPlayer2.ComponentGui.DisplaySmallMessage("Recargue municion", Color.White, false, false);
+								componentPlayer2.ComponentGui.DisplaySmallMessage("Recargue Municion", Color.White, false, false);
 							}
 							break;
 						}
 					case AimState.Completed:
 						{
 							this.m_aimStartTimes.Remove(componentMiner);
-							int bulletNum = SPAS12Block.GetBulletNum(Terrain.ExtractData(slotValue));
+							int bulletNum = Izh43Block.GetBulletNum(Terrain.ExtractData(slotValue));
 							this.fire = (bulletNum > 0);
 							bool flag13 = this.fire;
 							bool flag14 = flag13;
 							if (flag14)
 							{
-								int value = Terrain.MakeBlockValue(214, 0, 2);
+								int value = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex(typeof(NuevaBala), true, false), 0, 2);
 								Vector3 vector = componentMiner.ComponentCreature.ComponentCreatureModel.EyePosition + componentMiner.ComponentCreature.ComponentBody.Matrix.Right * 0.3f - componentMiner.ComponentCreature.ComponentBody.Matrix.Up * 0.2f;
 								Vector3 vector2 = Vector3.Normalize(vector + aim.Direction * 10f - vector);
 								float num4 = this.m_random.Float(-1f * num, num);
@@ -144,13 +149,13 @@ namespace Armas
 									componentPlayer3.ComponentGui.DisplaySmallMessage((bulletNum - 1).ToString(CultureInfo.InvariantCulture), Color.White, false, false);
 								}
 								componentMiner.Inventory.RemoveSlotItems(componentMiner.Inventory.ActiveSlotIndex, 1);
-								componentMiner.Inventory.AddSlotItems(componentMiner.Inventory.ActiveSlotIndex, Terrain.MakeBlockValue(BlocksManager.GetBlockIndex(typeof(SPAS12Block), true, false), 0, SPAS12Block.SetBulletNum(SPAS12Block.GetBulletNum(Terrain.ExtractData(slotValue)) - 1)), 1);
+								componentMiner.Inventory.AddSlotItems(componentMiner.Inventory.ActiveSlotIndex, Terrain.MakeBlockValue(BlocksManager.GetBlockIndex(typeof(Izh43Block), true, false), 0, Izh43Block.SetBulletNum(Izh43Block.GetBulletNum(Terrain.ExtractData(slotValue)) - 1)), 1);
 								Vector3.Normalize(componentMiner.ComponentPlayer.GameWidget.ActiveCamera.ViewDirection);
 								componentMiner.ComponentCreature.ComponentCreatureModel.InHandItemRotationOrder = new Vector3(-1.3f, 0f, 0f);
 								this.m_subsystemAudio.PlaySound(name, 1.5f, this.m_random.Float(-0.1f, 0.1f), componentMiner.ComponentCreature.ComponentCreatureModel.EyePosition, 10f, true);
-								this.m_subsystemParticles.AddParticleSystem(new GunFireParticleSystem(this.m_subsystemTerrain, vector + 0.3f * vector2, vector2), false);
-								this.m_subsystemNoise.MakeNoise(vector, 1f, 40f);
-								// La línea de retroceso ha sido eliminada
+								GunFireParticleSystem particleSystem = new GunFireParticleSystem(vector + 0.3f * vector2, vector2, 10f);
+								this.m_subsystemParticles.AddParticleSystem(particleSystem, false);
+								componentMiner.ComponentCreature.ComponentBody.ApplyImpulse(-7f * vector2);
 							}
 							componentMiner.ComponentCreature.ComponentCreatureModel.InHandItemOffsetOrder = Vector3.Zero;
 							componentMiner.ComponentCreature.ComponentCreatureModel.InHandItemRotationOrder = Vector3.Zero;
@@ -169,9 +174,10 @@ namespace Armas
 			return false;
 		}
 
+		// Token: 0x0600010D RID: 269 RVA: 0x0000B450 File Offset: 0x00009650
 		public override int GetProcessInventoryItemCapacity(IInventory inventory, int slotIndex, int value)
 		{
-			bool flag = value == BlocksManager.GetBlockIndex(typeof(SPAS12BulletBlock), true, false) && SPAS12Block.GetBulletNum(Terrain.ExtractData(inventory.GetSlotValue(slotIndex))) < 8;
+			bool flag = value == BlocksManager.GetBlockIndex(typeof(Izh43Bullet), true, false) && Izh43Block.GetBulletNum(Terrain.ExtractData(inventory.GetSlotValue(slotIndex))) < 2;
 			bool flag2 = flag;
 			int result;
 			if (flag2)
@@ -185,31 +191,51 @@ namespace Armas
 			return result;
 		}
 
+		// Token: 0x0600010E RID: 270 RVA: 0x0000B4A0 File Offset: 0x000096A0
 		public override void ProcessInventoryItem(IInventory inventory, int slotIndex, int value, int count, int processCount, out int processedValue, out int processedCount)
 		{
 			processedValue = value;
 			processedCount = count;
-			int bulletNum = SPAS12Block.GetBulletNum(Terrain.ExtractData(inventory.GetSlotValue(slotIndex)));
-			bool flag = bulletNum < 8;
+			int bulletNum = Izh43Block.GetBulletNum(Terrain.ExtractData(inventory.GetSlotValue(slotIndex)));
+			bool flag = bulletNum < 2;
 			bool flag2 = flag;
 			if (flag2)
 			{
 				processedValue = 0;
 				processedCount = 0;
 				inventory.RemoveSlotItems(slotIndex, 1);
-				inventory.AddSlotItems(slotIndex, Terrain.MakeBlockValue(BlocksManager.GetBlockIndex(typeof(SPAS12Block), true, false), 0, SPAS12Block.SetBulletNum(8)), 1);
+				inventory.AddSlotItems(slotIndex, Terrain.MakeBlockValue(BlocksManager.GetBlockIndex(typeof(Izh43Block), true, false), 0, Izh43Block.SetBulletNum(2)), 1);
 			}
 		}
 
+		// Token: 0x040000CB RID: 203
 		public SubsystemTerrain m_subsystemTerrain;
+
+		// Token: 0x040000CC RID: 204
 		public SubsystemTime m_subsystemTime;
+
+		// Token: 0x040000CD RID: 205
 		public SubsystemProjectiles m_subsystemProjectiles;
+
+		// Token: 0x040000CE RID: 206
 		public SubsystemParticles m_subsystemParticles;
+
+		// Token: 0x040000CF RID: 207
 		public SubsystemAudio m_subsystemAudio;
+
+		// Token: 0x040000D0 RID: 208
 		private SubsystemGameInfo m_subsystemGameInfo;
+
+		// Token: 0x040000D1 RID: 209
 		public SubsystemNoise m_subsystemNoise;
+
+		// Token: 0x040000D2 RID: 210
 		public Game.Random m_random = new Game.Random();
+
+		// Token: 0x040000D3 RID: 211
 		public Dictionary<ComponentMiner, double> m_aimStartTimes = new Dictionary<ComponentMiner, double>();
+
+		// Token: 0x040000D4 RID: 212
 		public bool fire;
 	}
 }

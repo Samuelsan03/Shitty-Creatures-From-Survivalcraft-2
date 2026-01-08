@@ -125,7 +125,7 @@ namespace Armas
 										}
 										this.m_subsystemAudio.PlaySound("Audio/Armas/M6 fuego", 1f, this.m_random.Float(-0.1f, 0.1f), componentMiner.ComponentCreature.ComponentCreatureModel.EyePosition, 10f, true);
 										Vector3 vector6 = Vector3.Normalize(componentMiner.ComponentPlayer.GameWidget.ActiveCamera.ViewDirection);
-										this.m_subsystemParticles.AddParticleSystem(new GunSmokeParticleSystem(this.m_subsystemTerrain, vector2 + 1.3f * vector6, vector6), false);
+										this.m_subsystemParticles.AddParticleSystem(new GunFireParticleSystem(this.m_subsystemTerrain, vector2 + 1.3f * vector6, vector6), false);
 										this.m_subsystemNoise.MakeNoise(vector2, 1f, 40f);
 										int bulletNum2 = bulletNum - 1;
 										num2 = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex(typeof(M4Block), true, false), 0, M4Block.SetBulletNum(bulletNum2));
