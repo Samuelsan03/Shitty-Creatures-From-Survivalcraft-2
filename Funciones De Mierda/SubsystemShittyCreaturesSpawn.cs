@@ -751,7 +751,7 @@ namespace Game
 					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
 					int blockAbove = Terrain.ExtractContents(cellValue);
 
-					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
 					int blockHead = Terrain.ExtractContents(cellValueHead);
 
 					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
@@ -759,7 +759,7 @@ namespace Game
 						return 0f;
 					}
 
-					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
 					int groundBlock = Terrain.ExtractContents(cellValueGround);
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
@@ -798,7 +798,7 @@ namespace Game
 					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
 					int blockAbove = Terrain.ExtractContents(cellValue);
 
-					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
 					int blockHead = Terrain.ExtractContents(cellValueHead);
 
 					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
@@ -845,7 +845,7 @@ namespace Game
 					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
 					int blockAbove = Terrain.ExtractContents(cellValue);
 
-					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
 					int blockHead = Terrain.ExtractContents(cellValueHead);
 
 					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
@@ -892,7 +892,7 @@ namespace Game
 					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
 					int blockAbove = Terrain.ExtractContents(cellValue);
 
-					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
 					int blockHead = Terrain.ExtractContents(cellValueHead);
 
 					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
@@ -1125,7 +1125,7 @@ namespace Game
 						return 0f;
 					}
 
-					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
 					int groundBlock = Terrain.ExtractContents(cellValueGround);
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
@@ -1399,7 +1399,7 @@ namespace Game
 					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
 					int blockAbove = Terrain.ExtractContents(cellValue);
 
-					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
 					int blockHead = Terrain.ExtractContents(cellValueHead);
 
 					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
@@ -1407,7 +1407,7 @@ namespace Game
 						return 0f;
 					}
 
-					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
 					int groundBlock = Terrain.ExtractContents(cellValueGround);
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
@@ -3597,7 +3597,7 @@ namespace Game
 					this.SpawnCreatures(creatureType, "Richard", point, 2).Count)
 			});
 
-			// Spawn para PirataNormal con 100% de probabilidad - DESDE DÍA 4, solo de día, cerca del agua
+			// Spawn para PirataNormal con 100% de probabilidad - DESDE DÍA 4, solo de día, cerca del agua, solo en verano
 			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("PirataNormal", SpawnLocationType.Surface, true, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
@@ -3617,6 +3617,16 @@ namespace Game
 					// Verificar que sea de día
 					bool isDay = this.m_subsystemSky.SkyLightIntensity > 0.5f;
 					if (!isDay)
+						return 0f;
+
+					// Verificar que sea verano
+					SubsystemSeasons seasons = base.Project.FindSubsystem<SubsystemSeasons>(true);
+					bool isSummer = false;
+					if (seasons != null)
+					{
+						isSummer = seasons.Season == Season.Summer;
+					}
+					if (!isSummer)
 						return 0f;
 
 					// Verificar que esté cerca del agua o en la costa
@@ -3660,7 +3670,7 @@ namespace Game
 					this.SpawnCreatures(creatureType, "PirataNormal", point, 2).Count)
 			});
 
-			// Spawn para PirataNormal Constant - DESDE DÍA 4, solo de día, cerca del agua
+			// Spawn para PirataNormal Constant - DESDE DÍA 4, solo de día, cerca del agua, solo en verano
 			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("PirataNormal Constant", SpawnLocationType.Surface, false, true)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
@@ -3680,6 +3690,16 @@ namespace Game
 					// Verificar que sea de día
 					bool isDay = this.m_subsystemSky.SkyLightIntensity > 0.5f;
 					if (!isDay)
+						return 0f;
+
+					// Verificar que sea verano
+					SubsystemSeasons seasons = base.Project.FindSubsystem<SubsystemSeasons>(true);
+					bool isSummer = false;
+					if (seasons != null)
+					{
+						isSummer = seasons.Season == Season.Summer;
+					}
+					if (!isSummer)
 						return 0f;
 
 					// Verificar que esté cerca del agua o en la costa
@@ -3718,7 +3738,7 @@ namespace Game
 					this.SpawnCreatures(creatureType, "PirataNormal", point, 2).Count)
 			});
 
-			// Spawn para PirataNormalAliado con 100% de probabilidad - DESDE DÍA 4, solo de día, cerca del agua
+			// Spawn para PirataNormalAliado con 100% de probabilidad - DESDE DÍA 4, solo de día, cerca del agua, solo en verano
 			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("PirataNormalAliado", SpawnLocationType.Surface, true, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
@@ -3740,6 +3760,16 @@ namespace Game
 					if (!isDay)
 						return 0f;
 
+					// Verificar que sea verano
+					SubsystemSeasons seasons = base.Project.FindSubsystem<SubsystemSeasons>(true);
+					bool isSummer = false;
+					if (seasons != null)
+					{
+						isSummer = seasons.Season == Season.Summer;
+					}
+					if (!isSummer)
+						return 0f;
+
 					// Verificar que esté cerca del agua o en la costa
 					float oceanDistance = this.m_subsystemTerrain.TerrainContentsGenerator.CalculateOceanShoreDistance((float)point.X, (float)point.Z);
 
@@ -3776,7 +3806,7 @@ namespace Game
 					this.SpawnCreatures(creatureType, "PirataNormalAliado", point, 2).Count)
 			});
 
-			// Spawn para PirataNormalAliado Constant - DESDE DÍA 4, solo de día, cerca del agua
+			// Spawn para PirataNormalAliado Constant - DESDE DÍA 4, solo de día, cerca del agua, solo en verano
 			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("PirataNormalAliado Constant", SpawnLocationType.Surface, false, true)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
@@ -3798,6 +3828,16 @@ namespace Game
 					if (!isDay)
 						return 0f;
 
+					// Verificar que sea verano
+					SubsystemSeasons seasons = base.Project.FindSubsystem<SubsystemSeasons>(true);
+					bool isSummer = false;
+					if (seasons != null)
+					{
+						isSummer = seasons.Season == Season.Summer;
+					}
+					if (!isSummer)
+						return 0f;
+
 					// Verificar que esté cerca del agua o en la costa
 					float oceanDistance = this.m_subsystemTerrain.TerrainContentsGenerator.CalculateOceanShoreDistance((float)point.X, (float)point.Z);
 
@@ -3834,7 +3874,7 @@ namespace Game
 					this.SpawnCreatures(creatureType, "PirataNormalAliado", point, 2).Count)
 			});
 
-			// Spawn para PirataElite con 100% de probabilidad - DESDE DÍA 5, solo de día, cerca del agua
+			// Spawn para PirataElite con 100% de probabilidad - DESDE DÍA 5, solo de día, cerca del agua, solo en verano
 			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("PirataElite", SpawnLocationType.Surface, true, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
@@ -3856,6 +3896,16 @@ namespace Game
 					if (!isDay)
 						return 0f;
 
+					// Verificar que sea verano
+					SubsystemSeasons seasons = base.Project.FindSubsystem<SubsystemSeasons>(true);
+					bool isSummer = false;
+					if (seasons != null)
+					{
+						isSummer = seasons.Season == Season.Summer;
+					}
+					if (!isSummer)
+						return 0f;
+
 					// Verificar que esté cerca del agua o en la costa
 					float oceanDistance = this.m_subsystemTerrain.TerrainContentsGenerator.CalculateOceanShoreDistance((float)point.X, (float)point.Z);
 
@@ -3892,7 +3942,7 @@ namespace Game
 					this.SpawnCreatures(creatureType, "PirataElite", point, 2).Count)
 			});
 
-			// Spawn para PirataElite Constant - DESDE DÍA 5, solo de día, cerca del agua
+			// Spawn para PirataElite Constant - DESDE DÍA 5, solo de día, cerca del agua, solo en verano
 			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("PirataElite Constant", SpawnLocationType.Surface, false, true)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
@@ -3914,6 +3964,16 @@ namespace Game
 					if (!isDay)
 						return 0f;
 
+					// Verificar que sea verano
+					SubsystemSeasons seasons = base.Project.FindSubsystem<SubsystemSeasons>(true);
+					bool isSummer = false;
+					if (seasons != null)
+					{
+						isSummer = seasons.Season == Season.Summer;
+					}
+					if (!isSummer)
+						return 0f;
+
 					// Verificar que esté cerca del agua o en la costa
 					float oceanDistance = this.m_subsystemTerrain.TerrainContentsGenerator.CalculateOceanShoreDistance((float)point.X, (float)point.Z);
 
@@ -3950,7 +4010,7 @@ namespace Game
 					this.SpawnCreatures(creatureType, "PirataElite", point, 2).Count)
 			});
 
-			// Spawn para PirataEliteAliado con 100% de probabilidad - DESDE DÍA 5, solo de día, cerca del agua
+			// Spawn para PirataEliteAliado con 100% de probabilidad - DESDE DÍA 5, solo de día, cerca del agua, solo en verano
 			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("PirataEliteAliado", SpawnLocationType.Surface, true, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
@@ -3972,6 +4032,16 @@ namespace Game
 					if (!isDay)
 						return 0f;
 
+					// Verificar que sea verano
+					SubsystemSeasons seasons = base.Project.FindSubsystem<SubsystemSeasons>(true);
+					bool isSummer = false;
+					if (seasons != null)
+					{
+						isSummer = seasons.Season == Season.Summer;
+					}
+					if (!isSummer)
+						return 0f;
+
 					// Verificar que esté cerca del agua o en la costa
 					float oceanDistance = this.m_subsystemTerrain.TerrainContentsGenerator.CalculateOceanShoreDistance((float)point.X, (float)point.Z);
 
@@ -4008,7 +4078,7 @@ namespace Game
 					this.SpawnCreatures(creatureType, "PirataEliteAliado", point, 2).Count)
 			});
 
-			// Spawn para PirataEliteAliado Constant - DESDE DÍA 5, solo de día, cerca del agua
+			// Spawn para PirataEliteAliado Constant - DESDE DÍA 5, solo de día, cerca del agua, solo en verano
 			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("PirataEliteAliado Constant", SpawnLocationType.Surface, false, true)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
@@ -4030,6 +4100,16 @@ namespace Game
 					if (!isDay)
 						return 0f;
 
+					// Verificar que sea verano
+					SubsystemSeasons seasons = base.Project.FindSubsystem<SubsystemSeasons>(true);
+					bool isSummer = false;
+					if (seasons != null)
+					{
+						isSummer = seasons.Season == Season.Summer;
+					}
+					if (!isSummer)
+						return 0f;
+
 					// Verificar que esté cerca del agua o en la costa
 					float oceanDistance = this.m_subsystemTerrain.TerrainContentsGenerator.CalculateOceanShoreDistance((float)point.X, (float)point.Z);
 
@@ -4066,7 +4146,7 @@ namespace Game
 					this.SpawnCreatures(creatureType, "PirataEliteAliado", point, 2).Count)
 			});
 
-			// Spawn para PirataHostilComerciante con 100% de probabilidad - DESDE DÍA 27, solo de día, cerca del agua
+			// Spawn para PirataHostilComerciante con 100% de probabilidad - DESDE DÍA 27, solo de día, cerca del agua, solo en verano
 			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("PirataHostilComerciante", SpawnLocationType.Surface, true, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
@@ -4088,6 +4168,16 @@ namespace Game
 					if (!isDay)
 						return 0f;
 
+					// Verificar que sea verano
+					SubsystemSeasons seasons = base.Project.FindSubsystem<SubsystemSeasons>(true);
+					bool isSummer = false;
+					if (seasons != null)
+					{
+						isSummer = seasons.Season == Season.Summer;
+					}
+					if (!isSummer)
+						return 0f;
+
 					// Verificar que esté cerca del agua o en la costa
 					float oceanDistance = this.m_subsystemTerrain.TerrainContentsGenerator.CalculateOceanShoreDistance((float)point.X, (float)point.Z);
 
@@ -4124,7 +4214,7 @@ namespace Game
 					this.SpawnCreatures(creatureType, "PirataHostilComerciante", point, 1).Count) // Individualmente
 			});
 
-			// Spawn para PirataHostilComerciante Constant - DESDE DÍA 27, solo de día, cerca del agua
+			// Spawn para PirataHostilComerciante Constant - DESDE DÍA 27, solo de día, cerca del agua, solo en verano
 			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("PirataHostilComerciante Constant", SpawnLocationType.Surface, false, true)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
@@ -4146,6 +4236,16 @@ namespace Game
 					if (!isDay)
 						return 0f;
 
+					// Verificar que sea verano
+					SubsystemSeasons seasons = base.Project.FindSubsystem<SubsystemSeasons>(true);
+					bool isSummer = false;
+					if (seasons != null)
+					{
+						isSummer = seasons.Season == Season.Summer;
+					}
+					if (!isSummer)
+						return 0f;
+
 					// Verificar que esté cerca del agua o en la costa
 					float oceanDistance = this.m_subsystemTerrain.TerrainContentsGenerator.CalculateOceanShoreDistance((float)point.X, (float)point.Z);
 
@@ -4182,7 +4282,7 @@ namespace Game
 					this.SpawnCreatures(creatureType, "PirataHostilComerciante", point, 1).Count) // Individualmente
 			});
 
-			// Spawn para CapitanPirata con 100% de probabilidad - DESDE DÍA 39, solo de día, cerca del agua
+			// Spawn para CapitanPirata con 100% de probabilidad - DESDE DÍA 39, solo de día, cerca del agua, solo en verano
 			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("CapitanPirata", SpawnLocationType.Surface, true, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
@@ -4202,6 +4302,16 @@ namespace Game
 					// Verificar que sea de día
 					bool isDay = this.m_subsystemSky.SkyLightIntensity > 0.5f;
 					if (!isDay)
+						return 0f;
+
+					// Verificar que sea verano
+					SubsystemSeasons seasons = base.Project.FindSubsystem<SubsystemSeasons>(true);
+					bool isSummer = false;
+					if (seasons != null)
+					{
+						isSummer = seasons.Season == Season.Summer;
+					}
+					if (!isSummer)
 						return 0f;
 
 					// Verificar que esté cerca del agua o en la costa
@@ -4240,7 +4350,7 @@ namespace Game
 					this.SpawnCreatures(creatureType, "CapitanPirata", point, 1).Count) // Individualmente
 			});
 
-			// Spawn para CapitanPirata Constant - DESDE DÍA 39, solo de día, cerca del agua
+			// Spawn para CapitanPirata Constant - DESDE DÍA 39, solo de día, cerca del agua, solo en verano
 			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("CapitanPirata Constant", SpawnLocationType.Surface, false, true)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
@@ -4260,6 +4370,16 @@ namespace Game
 					// Verificar que sea de día
 					bool isDay = this.m_subsystemSky.SkyLightIntensity > 0.5f;
 					if (!isDay)
+						return 0f;
+
+					// Verificar que sea verano
+					SubsystemSeasons seasons = base.Project.FindSubsystem<SubsystemSeasons>(true);
+					bool isSummer = false;
+					if (seasons != null)
+					{
+						isSummer = seasons.Season == Season.Summer;
+					}
+					if (!isSummer)
 						return 0f;
 
 					// Verificar que esté cerca del agua o en la costa
