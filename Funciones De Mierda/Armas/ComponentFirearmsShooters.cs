@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Engine;
+using Engine.Graphics; // Necesario para Texture2D
 using Armas;
 using Game;
 using GameEntitySystem;
@@ -51,6 +52,9 @@ namespace Armas
 		private int m_currentWeaponIndex = -1;
 		private int m_shotsSinceLastReload = 0;
 
+		// Textura de partícula para recarga
+		private Texture2D m_reloadParticleTexture;
+
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
 			base.Load(valuesDictionary, idToEntityMap);
@@ -81,6 +85,17 @@ namespace Armas
 			m_componentInventory = base.Entity.FindComponent<ComponentInventory>(true);
 			m_componentChaseBehavior = base.Entity.FindComponent<ComponentChaseBehavior>(true);
 			m_componentModel = base.Entity.FindComponent<ComponentCreatureModel>(true);
+
+			// Cargar textura de partícula para recarga
+			try
+			{
+				m_reloadParticleTexture = ContentManager.Get<Texture2D>("Textures/KillParticle", null);
+			}
+			catch (Exception ex)
+			{
+				Log.Warning($"No se pudo cargar la textura de partícula de recarga: {ex.Message}");
+				m_reloadParticleTexture = null;
+			}
 
 			// Inicializar configuraciones de armas si es necesario
 			if (FirearmConfigs.Count == 0)
@@ -363,7 +378,6 @@ namespace Armas
 		private void UpdateAutomaticWeapon(double currentTime)
 		{
 			// PARA ARMAS AUTOMÁTICAS (AK, M4, Mac10, G3, Minigun, Uzi)
-			// También incluye SPAS12 que configuramos como semiautomática pero la tratamos como automática para NPCs
 
 			// Siempre apuntando mientras tiene objetivo
 			if (!m_isAiming)
@@ -390,7 +404,7 @@ namespace Armas
 
 		private void UpdatePistolWeapon(double currentTime)
 		{
-			// PARA PISTOLAS (SWM500) Y ESCOPETAS (Izh43, SPAS12) - CON TIEMPO DE APUNTADO
+			// PARA PISTOLAS (SWM500) Y ESCOPETAS (Izh43, SPAS12) - CON TIEMPO DE APUNTado
 
 			if (!m_isAiming)
 			{
@@ -519,31 +533,31 @@ namespace Armas
 				float timeSinceFire = (float)(m_subsystemTime.GameTime - m_fireTime);
 				float recoilFactor;
 
-				// Determinar fuerza del retroceso según tipo de arma
+				// Determinar fuerza del retroceso según tipo de arma (solo para animación visual)
 				if (m_currentWeaponIndex == BlocksManager.GetBlockIndex(typeof(Armas.SWM500Block), true, false))
 				{
-					// Pistolas (SWM500) - retroceso más fuerte
+					// Pistolas (SWM500)
 					recoilFactor = (float)(1.8f - timeSinceFire * 3f);
 				}
 				else if (m_currentWeaponIndex == BlocksManager.GetBlockIndex(typeof(Armas.Izh43Block), true, false) ||
 						m_currentWeaponIndex == BlocksManager.GetBlockIndex(typeof(Armas.SPAS12Block), true, false))
 				{
-					// Escopetas - retroceso muy fuerte
+					// Escopetas
 					recoilFactor = (float)(2.0f - timeSinceFire * 2.5f);
 				}
 				else if (m_currentWeaponIndex == BlocksManager.GetBlockIndex(typeof(Armas.MinigunBlock), true, false))
 				{
-					// Minigun - retroceso controlado pero constante
+					// Minigun
 					recoilFactor = (float)(1.3f - timeSinceFire * 5f);
 				}
 				else if (m_currentWeaponIndex == BlocksManager.GetBlockIndex(typeof(Armas.SniperBlock), true, false))
 				{
-					// Sniper - retroceso muy fuerte pero controlado
+					// Sniper
 					recoilFactor = (float)(2.5f - timeSinceFire * 1.5f);
 				}
 				else
 				{
-					// Armas automáticas normales - retroceso rápido
+					// Armas automáticas normales
 					recoilFactor = (float)(1.5f - timeSinceFire * 8f);
 				}
 
@@ -709,35 +723,12 @@ namespace Armas
 					pitchVariation,
 					shootPosition, SoundRange, true);
 
-				// RETROCESO COMENTADO/ELIMINADO - NO HAY RECOIL
-				// if (config.IsAutomatic)
-				// {
-				//     ApplyRecoil(direction);
-				// }
-
 			}
 			catch (Exception ex)
 			{
 				Log.Error($"Error al disparar: {ex.Message}");
 			}
 		}
-
-		// Método ApplyRecoil comentado ya que no se usará
-		// private void ApplyRecoil(Vector3 direction)
-		// {
-		//     if (m_currentWeaponIndex == BlocksManager.GetBlockIndex(typeof(Armas.AKBlock), true, false))
-		//     {
-		//         m_componentCreature.ComponentBody.ApplyImpulse(-0.12f * direction);
-		//     }
-		//     else if (m_currentWeaponIndex == BlocksManager.GetBlockIndex(typeof(Armas.M4Block), true, false))
-		//     {
-		//         m_componentCreature.ComponentBody.ApplyImpulse(-0.08f * direction);
-		//     }
-		//     else if (m_currentWeaponIndex == BlocksManager.GetBlockIndex(typeof(Armas.Mac10Block), true, false))
-		//     {
-		//         m_componentCreature.ComponentBody.ApplyImpulse(-0.05f * direction);
-		//     }
-		// }
 
 		private bool ShouldReload(double currentTime)
 		{
@@ -775,6 +766,45 @@ namespace Armas
 			m_isReloading = true;
 			m_animationStartTime = m_subsystemTime.GameTime;
 			m_lastReloadTime = m_subsystemTime.GameTime;
+
+			// Mostrar partícula al inicio de la recarga
+			if (m_subsystemParticles != null && m_reloadParticleTexture != null)
+			{
+				try
+				{
+					Vector3 particlePosition = m_componentCreature.ComponentCreatureModel.EyePosition;
+
+					// Usar un sistema de partículas simple que use la textura KillParticle
+					// Si GunFireParticleSystem acepta textura personalizada, usarla
+					// De lo contrario, usar el sistema estándar
+					GunFireParticleSystem particleSystem = new GunFireParticleSystem(
+						m_subsystemTerrain,
+						particlePosition,
+						Vector3.UnitY
+					);
+
+					// Intentar asignar la textura si es posible
+					try
+					{
+						// Algunas implementaciones de ParticleSystem tienen propiedad Texture
+						var textureProperty = particleSystem.GetType().GetProperty("Texture");
+						if (textureProperty != null && textureProperty.CanWrite)
+						{
+							textureProperty.SetValue(particleSystem, m_reloadParticleTexture);
+						}
+					}
+					catch
+					{
+						// Si no se puede asignar la textura, usar el sistema estándar
+					}
+
+					m_subsystemParticles.AddParticleSystem(particleSystem, false);
+				}
+				catch (Exception ex)
+				{
+					Log.Warning($"Error mostrando partícula de recarga: {ex.Message}");
+				}
+			}
 
 			m_subsystemAudio.PlaySound("Audio/Armas/reload", SoundVolume * 0.8f, 0f,
 				m_componentCreature.ComponentCreatureModel.EyePosition, SoundRange, true);
