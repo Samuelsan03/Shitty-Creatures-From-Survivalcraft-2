@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Engine;
@@ -81,12 +81,25 @@ namespace Game
 				{"Charger2", "ChargerTamed2"},
 				{"Tank1", "TankTamed1" },
 				{"Tank2", "TankTamed2" },
-				{"Tank3", "TankTamed3" }
+				{"Tank3", "TankTamed3" },
+				{"GhostNormal", "GhostNormalTamed" },
+				{"GhostFast", "GhostFastTamed" },
+				{"PoisonousGhost", "PoisonousGhostTamed" },
+				{"GhostCharger", "GhostChargerTamed" },
+				{"GhostBoomer1", "GhostBoomerTamed1" },
+				{"GhostBoomer2", "GhostBoomerTamed2" },
+				{"GhostBoomer3", "GhostBoomerTamed3" },
+				{"TankGhost1", "TankGhostTamed1" },
+				{"TankGhost2", "TankGhostTamed2" },
+				{"TankGhost3", "TankGhostTamed3" }
 			};
 
 			if (tameableCreatures.ContainsKey(currentEntityName))
 			{
-				bool isBoomer = currentEntityName.StartsWith("Boomer");
+				// Verificar si es un Boomer (incluyendo Ghost Boomers)
+				bool isBoomer = currentEntityName.StartsWith("Boomer") || currentEntityName.StartsWith("GhostBoomer");
+				bool isGhostBoomer = currentEntityName.StartsWith("GhostBoomer");
+
 				ComponentBoomerExplosion boomerExplosion = null;
 				ComponentBoomerExplosion2 boomerExplosion2 = null;
 				ComponentBoomerPoisonExplosion boomerPoisonExplosion = null;
@@ -178,8 +191,15 @@ namespace Game
 
 				bool isTamedBoss = entityTemplateName == "FlyingInfectedBossTamed";
 				bool isTamedBoomer = entityTemplateName.StartsWith("BoomerTamed");
+				bool isTamedGhostBoomer = entityTemplateName.StartsWith("GhostBoomerTamed");
 				bool isTamedCharger = entityTemplateName.StartsWith("ChargerTamed");
+				bool isTamedGhostCharger = entityTemplateName == "GhostChargerTamed";
 				bool isTamedTank = entityTemplateName.StartsWith("TankTamed");
+				bool isTamedGhostTank = entityTemplateName.StartsWith("TankGhostTamed");
+				bool isTamedGhost = entityTemplateName == "GhostNormalTamed" ||
+					entityTemplateName == "GhostFastTamed" ||
+					entityTemplateName == "PoisonousGhostTamed";
+				bool isAnyGhost = isTamedGhost || isTamedGhostBoomer || isTamedGhostCharger || isTamedGhostTank;
 
 				ComponentPlayer componentPlayer = FindPlayerWithMiner(componentMiner);
 				if (componentPlayer != null)
@@ -216,6 +236,19 @@ namespace Game
 							messageColor = new Color(153, 0, 76);
 							soundToPlay = "Audio/UI/Bosses FNAF 3";
 						}
+						else if (isTamedGhostBoomer)
+						{
+							bool translationFound;
+							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedGhostBoomerMessage");
+
+							if (!translationFound)
+							{
+								message = "You have tamed a Ghost Boomer!\nIts spectral explosions will haunt your enemies!\nA ghostly explosive guardian is now yours!";
+							}
+
+							messageColor = new Color(102, 0, 153); // Color púrpura oscuro para Ghost Boomer
+							soundToPlay = "Audio/UI/Bosses FNAF 3";
+						}
 						else if (isTamedCharger)
 						{
 							bool translationFound;
@@ -227,6 +260,19 @@ namespace Game
 							}
 
 							messageColor = new Color(44, 44, 110);
+							soundToPlay = "Audio/UI/Bosses FNAF 3";
+						}
+						else if (isTamedGhostCharger)
+						{
+							bool translationFound;
+							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedGhostChargerMessage");
+
+							if (!translationFound)
+							{
+								message = "You have tamed a Ghost Charger!\nIts phantom force will push enemies from beyond!\nA spectral brute is now under your command!";
+							}
+
+							messageColor = new Color(75, 0, 130); // Color índigo para Ghost Charger
 							soundToPlay = "Audio/UI/Bosses FNAF 3";
 						}
 						else if (isTamedTank)
@@ -241,6 +287,32 @@ namespace Game
 
 							messageColor = new Color(153, 0, 0);
 							soundToPlay = "Audio/UI/Tank Tamed Sound";
+						}
+						else if (isTamedGhostTank)
+						{
+							bool translationFound;
+							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedGhostTankMessage");
+
+							if (!translationFound)
+							{
+								message = "You have tamed a Ghost Tank!\nThe spectral terror of bosses is now your phantom slave!\nIts ghostly brute force will guard you from the shadows!";
+							}
+
+							messageColor = new Color(139, 0, 139); // Color magenta oscuro para Ghost Tank
+							soundToPlay = "Audio/UI/Tank Tamed Sound";
+						}
+						else if (isTamedGhost)
+						{
+							bool translationFound;
+							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedGhostMessage");
+
+							if (!translationFound)
+							{
+								message = "You have tamed a Ghost! Its invisibility is now in your hands!";
+							}
+
+							messageColor = new Color(128, 0, 128); // Color púrpura para Ghost normal
+							soundToPlay = "Audio/UI/Tada";
 						}
 						else
 						{
@@ -286,20 +358,49 @@ namespace Game
 							defaultMessage = "You have tamed the Flying Infected Boss, use it wisely for emergency cases";
 							defaultColor = new Color(66, 0, 142);
 						}
-						else if (isTamedBoomer)
+						else if (isTamedBoomer || isTamedGhostBoomer)
 						{
-							defaultMessage = "You have tamed a Boomer!\nNow you can use it as an explosive guardian slave.\nUse it wisely in emergency cases!";
-							defaultColor = new Color(153, 0, 76);
+							if (isTamedGhostBoomer)
+							{
+								defaultMessage = "You have tamed a Ghost Boomer!\nIts spectral explosions will haunt your enemies!\nA ghostly explosive guardian is now yours!";
+								defaultColor = new Color(102, 0, 153);
+							}
+							else
+							{
+								defaultMessage = "You have tamed a Boomer!\nNow you can use it as an explosive guardian slave.\nUse it wisely in emergency cases!";
+								defaultColor = new Color(153, 0, 76);
+							}
 						}
-						else if (isTamedCharger)
+						else if (isTamedCharger || isTamedGhostCharger)
 						{
-							defaultMessage = "You have tamed a Charger! Its brute force to push enemies strongly will now be your tool! Use it well and wisely!";
-							defaultColor = new Color(44, 44, 110);
+							if (isTamedGhostCharger)
+							{
+								defaultMessage = "You have tamed a Ghost Charger!\nIts phantom force will push enemies from beyond!\nA spectral brute is now under your command!";
+								defaultColor = new Color(75, 0, 130);
+							}
+							else
+							{
+								defaultMessage = "You have tamed a Charger! Its brute force to push enemies strongly will now be your tool! Use it well and wisely!";
+								defaultColor = new Color(44, 44, 110);
+							}
 						}
-						else if (isTamedTank)
+						else if (isTamedTank || isTamedGhostTank)
 						{
-							defaultMessage = "You have tamed a Tank! The most feared boss of bosses is now your slave! Take advantage of its brute force as your guardian!";
-							defaultColor = new Color(153, 0, 0);
+							if (isTamedGhostTank)
+							{
+								defaultMessage = "You have tamed a Ghost Tank!\nThe spectral terror of bosses is now your phantom slave!\nIts ghostly brute force will guard you from the shadows!";
+								defaultColor = new Color(139, 0, 139);
+							}
+							else
+							{
+								defaultMessage = "You have tamed a Tank! The most feared boss of bosses is now your slave! Take advantage of its brute force as your guardian!";
+								defaultColor = new Color(153, 0, 0);
+							}
+						}
+						else if (isAnyGhost)
+						{
+							defaultMessage = "You have tamed a Ghost! Its spectral powers are now in your hands!";
+							defaultColor = new Color(128, 0, 128);
 						}
 						else
 						{
