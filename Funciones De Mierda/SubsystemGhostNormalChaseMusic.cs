@@ -118,7 +118,7 @@ namespace Game
 				{
 					string entityName = entity.ValuesDictionary.DatabaseObject.Name;
 
-					if (entityName != "GhostNormal")
+					if (entityName != "GhostNormal" && entityName != "GhostFast" && entityName !="PoisonousGhost" && entityName != "GhostCharger" && entityName != "GhostBoomer1" && entityName != "GhostBoomer2" && entityName != "GhostBoomer2" && entityName != "GhostBoomer3")
 						continue;
 
 					ComponentHealth health = entity.FindComponent<ComponentHealth>();
