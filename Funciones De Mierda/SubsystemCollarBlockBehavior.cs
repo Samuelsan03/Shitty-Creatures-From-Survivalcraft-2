@@ -91,7 +91,8 @@ namespace Game
 				{"GhostBoomer3", "GhostBoomerTamed3" },
 				{"TankGhost1", "TankGhostTamed1" },
 				{"TankGhost2", "TankGhostTamed2" },
-				{"TankGhost3", "TankGhostTamed3" }
+				{"TankGhost3", "TankGhostTamed3" },
+				{"MachineGunInfected", "MachineGunInfectedTamed" }
 			};
 
 			if (tameableCreatures.ContainsKey(currentEntityName))
@@ -196,6 +197,7 @@ namespace Game
 				bool isTamedGhostCharger = entityTemplateName == "GhostChargerTamed";
 				bool isTamedTank = entityTemplateName.StartsWith("TankTamed");
 				bool isTamedGhostTank = entityTemplateName.StartsWith("TankGhostTamed");
+				bool isTamedMachineGun = entityTemplateName == "MachineGunInfectedTamed";
 				bool isTamedGhost = entityTemplateName == "GhostNormalTamed" ||
 					entityTemplateName == "GhostFastTamed" ||
 					entityTemplateName == "PoisonousGhostTamed";
@@ -246,8 +248,8 @@ namespace Game
 								message = "You have tamed a Ghost Boomer!\nIts spectral explosions will haunt your enemies!\nA ghostly explosive guardian is now yours!";
 							}
 
-							messageColor = new Color(102, 0, 153); // Color púrpura oscuro para Ghost Boomer
-							soundToPlay = "Audio/UI/Bosses FNAF 3";
+							messageColor = new Color(102, 0, 153);
+							soundToPlay = "Audio/UI/Ghost Tamed Sound";
 						}
 						else if (isTamedCharger)
 						{
@@ -272,20 +274,36 @@ namespace Game
 								message = "You have tamed a Ghost Charger!\nIts phantom force will push enemies from beyond!\nA spectral brute is now under your command!";
 							}
 
-							messageColor = new Color(75, 0, 130); // Color índigo para Ghost Charger
-							soundToPlay = "Audio/UI/Bosses FNAF 3";
+							messageColor = new Color(75, 0, 130);
+							soundToPlay = "Audio/UI/Ghost Tamed Sound";
 						}
-						else if (isTamedTank)
+						else if (isTamedTank || isTamedMachineGun)
 						{
-							bool translationFound;
-							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedTankMessage");
-
-							if (!translationFound)
+							if (isTamedMachineGun)
 							{
-								message = "You have tamed a Tank! The most feared boss of bosses is now your slave! Take advantage of its brute force as your guardian!";
+								bool translationFound;
+								message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedMachineGunMessage");
+
+								if (!translationFound)
+								{
+									message = "You have tamed a Machine Gun Infected!\nIts devastating minigun is now under your command!\nUnleash a hailstorm of bullets upon your enemies!";
+								}
+
+								messageColor = new Color(255, 140, 0); // Color naranja para Machine Gun
+							}
+							else
+							{
+								bool translationFound;
+								message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedTankMessage");
+
+								if (!translationFound)
+								{
+									message = "You have tamed a Tank! The most feared boss of bosses is now your slave! Take advantage of its brute force as your guardian!";
+								}
+
+								messageColor = new Color(153, 0, 0);
 							}
 
-							messageColor = new Color(153, 0, 0);
 							soundToPlay = "Audio/UI/Tank Tamed Sound";
 						}
 						else if (isTamedGhostTank)
@@ -298,8 +316,8 @@ namespace Game
 								message = "You have tamed a Ghost Tank!\nThe spectral terror of bosses is now your phantom slave!\nIts ghostly brute force will guard you from the shadows!";
 							}
 
-							messageColor = new Color(139, 0, 139); // Color magenta oscuro para Ghost Tank
-							soundToPlay = "Audio/UI/Tank Tamed Sound";
+							messageColor = new Color(139, 0, 139);
+							soundToPlay = "Audio/UI/Ghost Tamed Sound";
 						}
 						else if (isTamedGhost)
 						{
@@ -311,8 +329,8 @@ namespace Game
 								message = "You have tamed a Ghost! Its invisibility is now in your hands!";
 							}
 
-							messageColor = new Color(128, 0, 128); // Color púrpura para Ghost normal
-							soundToPlay = "Audio/UI/Tada";
+							messageColor = new Color(128, 0, 128);
+							soundToPlay = "Audio/UI/Ghost Tamed Sound";
 						}
 						else
 						{
@@ -384,18 +402,23 @@ namespace Game
 								defaultColor = new Color(44, 44, 110);
 							}
 						}
-						else if (isTamedTank || isTamedGhostTank)
+						else if (isTamedTank || isTamedMachineGun)
 						{
-							if (isTamedGhostTank)
+							if (isTamedMachineGun)
 							{
-								defaultMessage = "You have tamed a Ghost Tank!\nThe spectral terror of bosses is now your phantom slave!\nIts ghostly brute force will guard you from the shadows!";
-								defaultColor = new Color(139, 0, 139);
+								defaultMessage = "You have tamed a Machine Gun Infected!\nIts devastating minigun is now under your command!\nUnleash a hailstorm of bullets upon your enemies!";
+								defaultColor = new Color(255, 140, 0);
 							}
 							else
 							{
 								defaultMessage = "You have tamed a Tank! The most feared boss of bosses is now your slave! Take advantage of its brute force as your guardian!";
 								defaultColor = new Color(153, 0, 0);
 							}
+						}
+						else if (isTamedGhostTank)
+						{
+							defaultMessage = "You have tamed a Ghost Tank!\nThe spectral terror of bosses is now your phantom slave!\nIts ghostly brute force will guard you from the shadows!";
+							defaultColor = new Color(139, 0, 139);
 						}
 						else if (isAnyGhost)
 						{
