@@ -241,6 +241,77 @@ namespace Game
 					IsAutomatic = false,
 					IsSniper = true
 				};
+
+				// Nuevas armas agregadas
+				int augIndex = BlocksManager.GetBlockIndex(typeof(Game.AUGBlock), true, false);
+				FirearmConfigs[augIndex] = new FirearmConfig
+				{
+					BulletBlockType = typeof(NuevaBala),
+					ShootSound = "Audio/Armas/AUG fuego",
+					FireRate = 0.17,
+					BulletSpeed = 280f,
+					MaxShotsBeforeReload = 30,
+					ProjectilesPerShot = 2,
+					SpreadVector = new Vector3(0.01f, 0.01f, 0.05f),
+					NoiseRadius = 40f,
+					IsAutomatic = true
+				};
+
+				int p90Index = BlocksManager.GetBlockIndex(typeof(Game.P90Block), true, false);
+				FirearmConfigs[p90Index] = new FirearmConfig
+				{
+					BulletBlockType = typeof(NuevaBala),
+					ShootSound = "Audio/Armas/FN P90 fuego",
+					FireRate = 0.067,
+					BulletSpeed = 320f,
+					MaxShotsBeforeReload = 50,
+					ProjectilesPerShot = 1,
+					SpreadVector = new Vector3(0.012f, 0.012f, 0.04f),
+					NoiseRadius = 35f,
+					IsAutomatic = true
+				};
+
+				int scarIndex = BlocksManager.GetBlockIndex(typeof(Game.SCARBlock), true, false);
+				FirearmConfigs[scarIndex] = new FirearmConfig
+				{
+					BulletBlockType = typeof(NuevaBala),
+					ShootSound = "Audio/Armas/FN Scar fuego",
+					FireRate = 0.1,
+					BulletSpeed = 310f,
+					MaxShotsBeforeReload = 30,
+					ProjectilesPerShot = 1,
+					SpreadVector = new Vector3(0.01f, 0.01f, 0.03f),
+					NoiseRadius = 45f,
+					IsAutomatic = true
+				};
+
+				int revolverIndex = BlocksManager.GetBlockIndex(typeof(Game.RevolverBlock), true, false);
+				FirearmConfigs[revolverIndex] = new FirearmConfig
+				{
+					BulletBlockType = typeof(NuevaBala4),
+					ShootSound = "Audio/Armas/Revolver fuego",
+					FireRate = 0.6,
+					BulletSpeed = 320f,
+					MaxShotsBeforeReload = 6,
+					ProjectilesPerShot = 1,
+					SpreadVector = new Vector3(0.02f, 0.02f, 0.05f),
+					NoiseRadius = 40f,
+					IsAutomatic = false
+				};
+
+				int famasIndex = BlocksManager.GetBlockIndex(typeof(Game.FamasBlock), true, false);
+				FirearmConfigs[famasIndex] = new FirearmConfig
+				{
+					BulletBlockType = typeof(NuevaBala4),
+					ShootSound = "Audio/Armas/FAMAS fuego",
+					FireRate = 0.09,
+					BulletSpeed = 450f,
+					MaxShotsBeforeReload = 30,
+					ProjectilesPerShot = 1,
+					SpreadVector = new Vector3(0.012f, 0.012f, 0.04f),
+					NoiseRadius = 35f,
+					IsAutomatic = true
+				};
 			}
 			catch (Exception ex)
 			{
@@ -495,7 +566,8 @@ namespace Game
 				float timeSinceFire = (float)(m_subsystemTime.GameTime - m_fireTime);
 				float recoilFactor;
 
-				if (m_currentWeaponIndex == BlocksManager.GetBlockIndex(typeof(Game.SWM500Block), true, false))
+				if (m_currentWeaponIndex == BlocksManager.GetBlockIndex(typeof(Game.SWM500Block), true, false) ||
+					m_currentWeaponIndex == BlocksManager.GetBlockIndex(typeof(Game.RevolverBlock), true, false))
 				{
 					recoilFactor = (float)(1.8f - timeSinceFire * 3f);
 				}
@@ -511,6 +583,10 @@ namespace Game
 				else if (m_currentWeaponIndex == BlocksManager.GetBlockIndex(typeof(Game.SniperBlock), true, false))
 				{
 					recoilFactor = (float)(2.5f - timeSinceFire * 1.5f);
+				}
+				else if (m_currentWeaponIndex == BlocksManager.GetBlockIndex(typeof(Game.FamasBlock), true, false))
+				{
+					recoilFactor = (float)(1.6f - timeSinceFire * 6f);
 				}
 				else
 				{
@@ -538,6 +614,10 @@ namespace Game
 				else if (m_currentWeaponIndex == BlocksManager.GetBlockIndex(typeof(Game.SniperBlock), true, false))
 				{
 					reloadProgress = (float)((m_subsystemTime.GameTime - m_animationStartTime) / (ReloadTime * 2.0f));
+				}
+				else if (m_currentWeaponIndex == BlocksManager.GetBlockIndex(typeof(Game.RevolverBlock), true, false))
+				{
+					reloadProgress = (float)((m_subsystemTime.GameTime - m_animationStartTime) / (ReloadTime * 1.2f));
 				}
 
 				m_componentModel.AimHandAngleOrder = MathUtils.Lerp(1.0f, 0.5f, reloadProgress);
