@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Engine;
 using Engine.Graphics;
@@ -9,57 +9,61 @@ namespace Game
 {
 	public class ComponentFirearmsShooters : Component, IUpdateable
 	{
-		// Configuraciones de armas - SIMPLIFICADO
-		private static Dictionary<int, FirearmConfig> m_firearmConfigs;
+		private static readonly Dictionary<int, FirearmConfig> FirearmConfigs = new Dictionary<int, FirearmConfig>();
 
-		// Parámetros
 		public float MaxShootingDistance = 25f;
 		public float SpreadFactor = 0.05f;
 		public float ReloadChance = 0.05f;
 		public float MinReloadInterval = 5f;
 		public float SoundVolume = 1f;
 		public float SoundRange = 10f;
+		public bool UseRandomReloads = true;
 		public float TargetHeightOffset = 0.5f;
 		public float ReloadTime = 1.0f;
+		public float PistolAimTime = 0.5f;
+		public float SniperAimTime = 1.0f;
 
-		// Referencias a subsistemas
+		private bool m_isAiming = false;
+		private bool m_isFiring = false;
+		private bool m_isReloading = false;
+		private double m_animationStartTime;
+		private double m_fireTime;
+
 		private SubsystemTime m_subsystemTime;
 		private SubsystemProjectiles m_subsystemProjectiles;
 		private SubsystemAudio m_subsystemAudio;
 		private SubsystemParticles m_subsystemParticles;
 		private SubsystemNoise m_subsystemNoise;
 		private SubsystemTerrain m_subsystemTerrain;
-
-		// Referencias a componentes
 		private ComponentCreature m_componentCreature;
 		private ComponentInventory m_componentInventory;
-		private ComponentCreatureModel m_componentModel;
-		private ComponentNewChaseBehavior m_componentNewChaseBehavior;
 		private ComponentChaseBehavior m_componentChaseBehavior;
+		private ComponentCreatureModel m_componentModel;
+		private Game.Random m_random = new Game.Random();
 
-		// Estado
-		private Random m_random = new Random();
-		private int m_currentWeaponIndex = -1;
 		private double m_lastShootTime;
 		private double m_lastReloadTime;
+		private int m_currentWeaponIndex = -1;
 		private int m_shotsSinceLastReload = 0;
-		private bool m_isReloading = false;
-		private double m_reloadStartTime;
 
-		public ComponentFirearmsShooters()
-		{
-			// Inicializar configuraciones estáticas solo una vez
-			if (m_firearmConfigs == null)
-			{
-				InitializeFirearmConfigs();
-			}
-		}
+		private Texture2D m_reloadParticleTexture;
 
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
 			base.Load(valuesDictionary, idToEntityMap);
 
-			// Inicializar subsistemas
+			MaxShootingDistance = valuesDictionary.GetValue<float>("MaxShootingDistance", 25f);
+			SpreadFactor = valuesDictionary.GetValue<float>("SpreadFactor", 0.05f);
+			ReloadChance = valuesDictionary.GetValue<float>("ReloadChance", 0.05f);
+			MinReloadInterval = valuesDictionary.GetValue<float>("MinReloadInterval", 5f);
+			SoundVolume = valuesDictionary.GetValue<float>("SoundVolume", 1f);
+			SoundRange = valuesDictionary.GetValue<float>("SoundRange", 10f);
+			UseRandomReloads = valuesDictionary.GetValue<bool>("UseRandomReloads", true);
+			TargetHeightOffset = valuesDictionary.GetValue<float>("TargetHeightOffset", 0.5f);
+			ReloadTime = valuesDictionary.GetValue<float>("ReloadTime", 1.0f);
+			PistolAimTime = valuesDictionary.GetValue<float>("PistolAimTime", 0.5f);
+			SniperAimTime = valuesDictionary.GetValue<float>("SniperAimTime", 1.0f);
+
 			m_subsystemTime = base.Project.FindSubsystem<SubsystemTime>(true);
 			m_subsystemProjectiles = base.Project.FindSubsystem<SubsystemProjectiles>(true);
 			m_subsystemAudio = base.Project.FindSubsystem<SubsystemAudio>(true);
@@ -67,31 +71,38 @@ namespace Game
 			m_subsystemNoise = base.Project.FindSubsystem<SubsystemNoise>(true);
 			m_subsystemTerrain = base.Project.FindSubsystem<SubsystemTerrain>(true);
 
-			// Buscar componentes necesarios
 			m_componentCreature = base.Entity.FindComponent<ComponentCreature>(true);
 			m_componentInventory = base.Entity.FindComponent<ComponentInventory>(true);
+			m_componentChaseBehavior = base.Entity.FindComponent<ComponentChaseBehavior>(true);
 			m_componentModel = base.Entity.FindComponent<ComponentCreatureModel>(true);
 
-			// Buscar comportamientos de persecución
-			m_componentNewChaseBehavior = base.Entity.FindComponent<ComponentNewChaseBehavior>();
-			m_componentChaseBehavior = base.Entity.FindComponent<ComponentChaseBehavior>();
+			try
+			{
+				m_reloadParticleTexture = ContentManager.Get<Texture2D>("Textures/KillParticle", null);
+			}
+			catch (Exception ex)
+			{
+				Log.Warning($"No se pudo cargar la textura de partícula de recarga: {ex.Message}");
+				m_reloadParticleTexture = null;
+			}
+
+			if (FirearmConfigs.Count == 0)
+			{
+				InitializeFirearmConfigs();
+			}
 
 			if (m_componentCreature == null || m_componentInventory == null)
 			{
-				Log.Warning("ComponentFirearmsShooters: Falta ComponentCreature o ComponentInventory");
+				throw new InvalidOperationException("NPC necesita ComponentCreature y ComponentInventory para usar armas de fuego.");
 			}
 		}
 
 		private void InitializeFirearmConfigs()
 		{
-			m_firearmConfigs = new Dictionary<int, FirearmConfig>();
-
 			try
 			{
-				// Configuraciones básicas para todas las armas
-				// AK-47
-				int akIndex = BlocksManager.GetBlockIndex(typeof(AKBlock), true, false);
-				m_firearmConfigs[akIndex] = new FirearmConfig
+				int akIndex = BlocksManager.GetBlockIndex(typeof(Game.AKBlock), true, false);
+				FirearmConfigs[akIndex] = new FirearmConfig
 				{
 					BulletBlockType = typeof(NuevaBala),
 					ShootSound = "Audio/Armas/ak 47 fuego",
@@ -104,9 +115,8 @@ namespace Game
 					IsAutomatic = true
 				};
 
-				// M4
-				int m4Index = BlocksManager.GetBlockIndex(typeof(M4Block), true, false);
-				m_firearmConfigs[m4Index] = new FirearmConfig
+				int m4Index = BlocksManager.GetBlockIndex(typeof(Game.M4Block), true, false);
+				FirearmConfigs[m4Index] = new FirearmConfig
 				{
 					BulletBlockType = typeof(NuevaBala2),
 					ShootSound = "Audio/Armas/M6 fuego",
@@ -119,9 +129,8 @@ namespace Game
 					IsAutomatic = true
 				};
 
-				// Mac10
-				int mac10Index = BlocksManager.GetBlockIndex(typeof(Mac10Block), true, false);
-				m_firearmConfigs[mac10Index] = new FirearmConfig
+				int mac10Index = BlocksManager.GetBlockIndex(typeof(Game.Mac10Block), true, false);
+				FirearmConfigs[mac10Index] = new FirearmConfig
 				{
 					BulletBlockType = typeof(NuevaBala3),
 					ShootSound = "Audio/Armas/mac 10 fuego",
@@ -134,9 +143,8 @@ namespace Game
 					IsAutomatic = true
 				};
 
-				// SWM500
-				int swm500Index = BlocksManager.GetBlockIndex(typeof(SWM500Block), true, false);
-				m_firearmConfigs[swm500Index] = new FirearmConfig
+				int swm500Index = BlocksManager.GetBlockIndex(typeof(Game.SWM500Block), true, false);
+				FirearmConfigs[swm500Index] = new FirearmConfig
 				{
 					BulletBlockType = typeof(NuevaBala4),
 					ShootSound = "Audio/Armas/desert eagle fuego",
@@ -149,9 +157,8 @@ namespace Game
 					IsAutomatic = false
 				};
 
-				// G3
-				int g3Index = BlocksManager.GetBlockIndex(typeof(G3Block), true, false);
-				m_firearmConfigs[g3Index] = new FirearmConfig
+				int g3Index = BlocksManager.GetBlockIndex(typeof(Game.G3Block), true, false);
+				FirearmConfigs[g3Index] = new FirearmConfig
 				{
 					BulletBlockType = typeof(NuevaBala),
 					ShootSound = "Audio/Armas/FX05",
@@ -164,9 +171,8 @@ namespace Game
 					IsAutomatic = true
 				};
 
-				// Izh43
-				int izh43Index = BlocksManager.GetBlockIndex(typeof(Izh43Block), true, false);
-				m_firearmConfigs[izh43Index] = new FirearmConfig
+				int izh43Index = BlocksManager.GetBlockIndex(typeof(Game.Izh43Block), true, false);
+				FirearmConfigs[izh43Index] = new FirearmConfig
 				{
 					BulletBlockType = typeof(NuevaBala),
 					ShootSound = "Audio/Armas/shotgun fuego",
@@ -179,9 +185,8 @@ namespace Game
 					IsAutomatic = false
 				};
 
-				// Minigun
-				int minigunIndex = BlocksManager.GetBlockIndex(typeof(MinigunBlock), true, false);
-				m_firearmConfigs[minigunIndex] = new FirearmConfig
+				int minigunIndex = BlocksManager.GetBlockIndex(typeof(Game.MinigunBlock), true, false);
+				FirearmConfigs[minigunIndex] = new FirearmConfig
 				{
 					BulletBlockType = typeof(NuevaBala6),
 					ShootSound = "Audio/Armas/Chaingun fuego",
@@ -194,9 +199,8 @@ namespace Game
 					IsAutomatic = true
 				};
 
-				// SPAS12
-				int spas12Index = BlocksManager.GetBlockIndex(typeof(SPAS12Block), true, false);
-				m_firearmConfigs[spas12Index] = new FirearmConfig
+				int spas12Index = BlocksManager.GetBlockIndex(typeof(Game.SPAS12Block), true, false);
+				FirearmConfigs[spas12Index] = new FirearmConfig
 				{
 					BulletBlockType = typeof(NuevaBala),
 					ShootSound = "Audio/Armas/SPAS 12 fuego",
@@ -209,9 +213,8 @@ namespace Game
 					IsAutomatic = false
 				};
 
-				// Uzi
-				int uziIndex = BlocksManager.GetBlockIndex(typeof(UziBlock), true, false);
-				m_firearmConfigs[uziIndex] = new FirearmConfig
+				int uziIndex = BlocksManager.GetBlockIndex(typeof(Game.UziBlock), true, false);
+				FirearmConfigs[uziIndex] = new FirearmConfig
 				{
 					BulletBlockType = typeof(NuevaBala2),
 					ShootSound = "Audio/Armas/Uzi fuego",
@@ -224,9 +227,8 @@ namespace Game
 					IsAutomatic = true
 				};
 
-				// Sniper
-				int sniperIndex = BlocksManager.GetBlockIndex(typeof(SniperBlock), true, false);
-				m_firearmConfigs[sniperIndex] = new FirearmConfig
+				int sniperIndex = BlocksManager.GetBlockIndex(typeof(Game.SniperBlock), true, false);
+				FirearmConfigs[sniperIndex] = new FirearmConfig
 				{
 					BulletBlockType = typeof(NuevaBala6),
 					ShootSound = "Audio/Armas/Sniper fuego",
@@ -248,192 +250,200 @@ namespace Game
 
 		public void Update(float dt)
 		{
-			if (m_componentCreature == null || m_componentCreature.ComponentHealth.Health <= 0f)
-				return;
+			double currentTime = m_subsystemTime.GameTime;
 
-			// Verificar si estamos recargando
+			if (m_componentCreature.ComponentHealth.Health <= 0f)
+			{
+				ResetAnimations();
+				return;
+			}
+
 			if (m_isReloading)
 			{
-				if (m_subsystemTime.GameTime - m_reloadStartTime >= ReloadTime)
+				ApplyReloadingAnimation(dt);
+
+				if (currentTime - m_animationStartTime >= ReloadTime)
 				{
 					m_isReloading = false;
 					m_shotsSinceLastReload = 0;
+					m_subsystemAudio.PlaySound("Audio/Armas/reload", SoundVolume, 0f,
+						m_componentCreature.ComponentCreatureModel.EyePosition, SoundRange, true);
 				}
 				return;
 			}
 
-			// Obtener el objetivo actual
-			ComponentCreature target = GetCurrentTarget();
-			if (target == null)
+			if (m_isFiring)
 			{
-				ResetAnimation();
+				ApplyFiringAnimation(dt);
+
+				float fireAnimationTime = IsCurrentWeaponAutomatic() ? 0.1f : 0.2f;
+				if (IsCurrentWeaponSniper())
+				{
+					fireAnimationTime = 0.5f;
+				}
+
+				if (currentTime - m_fireTime >= fireAnimationTime)
+				{
+					m_isFiring = false;
+				}
 				return;
 			}
 
-			// Verificar si tenemos un arma de fuego equipada
-			FindWeaponInInventory();
-			if (m_currentWeaponIndex == -1)
+			if (m_componentChaseBehavior == null || m_componentChaseBehavior.Target == null)
 			{
-				ResetAnimation();
+				ResetAnimations();
+				m_currentWeaponIndex = -1;
 				return;
 			}
 
-			// Obtener configuración del arma
-			FirearmConfig config = GetCurrentConfig();
-			if (config == null)
-			{
-				ResetAnimation();
-				return;
-			}
-
-			// Calcular distancia al objetivo
 			float distance = Vector3.Distance(
 				m_componentCreature.ComponentBody.Position,
-				target.ComponentBody.Position
+				m_componentChaseBehavior.Target.ComponentBody.Position
 			);
 
-			// Ajustar distancia máxima para sniper
 			float maxDistance = MaxShootingDistance;
-			if (config.IsSniper)
+			if (IsCurrentWeaponSniper() && m_currentWeaponIndex != -1)
 			{
-				maxDistance *= 3f;
+				maxDistance = MaxShootingDistance * 3f;
 			}
 
-			// Verificar si está en rango
 			if (distance > maxDistance)
 			{
-				ResetAnimation();
+				ResetAnimations();
+				m_currentWeaponIndex = -1;
 				return;
 			}
 
-			// Aplicar animación de apuntado
-			ApplyAimingAnimation(target, config);
+			FindWeaponInInventory();
 
-			// Verificar si puede disparar
-			double currentTime = m_subsystemTime.GameTime;
-			double fireRate = config.FireRate;
-
-			// Para armas automáticas, disparar continuamente
-			if (config.IsAutomatic || (currentTime - m_lastShootTime >= fireRate))
+			if (m_currentWeaponIndex == -1)
 			{
-				// Verificar línea de visión
-				if (HasLineOfSight(target))
+				ResetAnimations();
+				return;
+			}
+
+			FirearmConfig config = GetCurrentConfig();
+			if (config == null)
+				return;
+
+			if (config.IsSniper)
+			{
+				UpdateSniperWeapon(currentTime);
+			}
+			else if (config.IsAutomatic)
+			{
+				UpdateAutomaticWeapon(currentTime);
+			}
+			else
+			{
+				UpdatePistolWeapon(currentTime);
+			}
+		}
+
+		private void UpdateAutomaticWeapon(double currentTime)
+		{
+			if (!m_isAiming)
+			{
+				m_isAiming = true;
+			}
+
+			ApplyAimingAnimation();
+
+			if (currentTime - m_lastShootTime >= GetCurrentFireRate())
+			{
+				Fire();
+				m_lastShootTime = currentTime;
+				m_shotsSinceLastReload++;
+
+				if (ShouldReload(currentTime))
 				{
-					Fire(target, config);
+					StartReloading();
+				}
+			}
+		}
+
+		private void UpdatePistolWeapon(double currentTime)
+		{
+			if (!m_isAiming)
+			{
+				StartAiming();
+				return;
+			}
+
+			ApplyAimingAnimation();
+
+			float aimTime = PistolAimTime;
+			if (IsCurrentWeaponShotgun())
+			{
+				aimTime *= 0.8f;
+			}
+
+			if (currentTime - m_animationStartTime >= aimTime)
+			{
+				if (currentTime - m_lastShootTime >= GetCurrentFireRate())
+				{
+					Fire();
 					m_lastShootTime = currentTime;
 					m_shotsSinceLastReload++;
 
-					// Verificar si necesita recargar
-					if (m_shotsSinceLastReload >= config.MaxShotsBeforeReload)
+					if (ShouldReload(currentTime))
 					{
 						StartReloading();
 					}
+
+					m_isAiming = false;
 				}
 			}
 		}
 
-		private ComponentCreature GetCurrentTarget()
+		private void UpdateSniperWeapon(double currentTime)
 		{
-			// Priorizar ComponentNewChaseBehavior
-			if (m_componentNewChaseBehavior != null && m_componentNewChaseBehavior.IsActive)
+			if (!m_isAiming)
 			{
-				return m_componentNewChaseBehavior.Target;
-			}
-
-			// Usar ComponentChaseBehavior si está disponible
-			if (m_componentChaseBehavior != null && m_componentChaseBehavior.IsActive)
-			{
-				return m_componentChaseBehavior.Target;
-			}
-
-			return null;
-		}
-
-		private void FindWeaponInInventory()
-		{
-			if (m_componentInventory == null)
+				StartAiming();
 				return;
-
-			// Verificar slot activo actual
-			int activeSlotValue = m_componentInventory.GetSlotValue(m_componentInventory.ActiveSlotIndex);
-			if (activeSlotValue != 0)
-			{
-				int blockIndex = Terrain.ExtractContents(activeSlotValue);
-				if (m_firearmConfigs.ContainsKey(blockIndex))
-				{
-					m_currentWeaponIndex = blockIndex;
-					return;
-				}
 			}
 
-			// Buscar en todos los slots
-			for (int i = 0; i < m_componentInventory.SlotsCount; i++)
+			ApplySniperAimingAnimation();
+
+			if (currentTime - m_animationStartTime >= SniperAimTime)
 			{
-				int slotValue = m_componentInventory.GetSlotValue(i);
-				if (slotValue != 0)
+				if (currentTime - m_lastShootTime >= GetCurrentFireRate())
 				{
-					int blockIndex = Terrain.ExtractContents(slotValue);
-					if (m_firearmConfigs.ContainsKey(blockIndex))
+					Fire();
+					m_lastShootTime = currentTime;
+					m_shotsSinceLastReload++;
+
+					if (m_shotsSinceLastReload >= 1)
 					{
-						m_currentWeaponIndex = blockIndex;
-						m_componentInventory.ActiveSlotIndex = i;
-						return;
-					}
-				}
-			}
-
-			m_currentWeaponIndex = -1;
-		}
-
-		private void ApplyAimingAnimation(ComponentCreature target, FirearmConfig config)
-		{
-			if (m_componentModel != null)
-			{
-				// Animación de apuntado básica
-				m_componentModel.AimHandAngleOrder = 1.4f;
-				m_componentModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
-				m_componentModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
-
-				// Mirar al objetivo
-				if (target != null)
-				{
-					Vector3 lookAtPosition = target.ComponentCreatureModel.EyePosition;
-
-					// Para sniper, apuntar al centro del cuerpo
-					if (config.IsSniper)
-					{
-						lookAtPosition = target.ComponentBody.Position + new Vector3(0f, 0.5f, 0f);
+						StartReloading();
 					}
 
-					m_componentModel.LookAtOrder = new Vector3?(lookAtPosition);
+					m_isAiming = false;
 				}
 			}
 		}
 
-		private void ResetAnimation()
+		private void StartAiming()
 		{
-			if (m_componentModel != null)
-			{
-				m_componentModel.AimHandAngleOrder = 0f;
-				m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
-				m_componentModel.InHandItemRotationOrder = Vector3.Zero;
-				m_componentModel.LookAtOrder = null;
-			}
+			m_isAiming = true;
+			m_isFiring = false;
+			m_isReloading = false;
+			m_animationStartTime = m_subsystemTime.GameTime;
 		}
 
-		private bool HasLineOfSight(ComponentCreature target)
+		private bool HasLineOfSight()
 		{
-			if (target == null || m_componentCreature == null)
+			if (m_componentChaseBehavior == null || m_componentChaseBehavior.Target == null || m_componentCreature == null)
 				return false;
 
 			try
 			{
 				Vector3 startPos = m_componentCreature.ComponentCreatureModel.EyePosition;
-				Vector3 targetPos = target.ComponentCreatureModel.EyePosition;
+				Vector3 targetPos = m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition;
 
-				// Verificación simple de línea de visión
 				float distance = Vector3.Distance(startPos, targetPos);
-				if (distance > MaxShootingDistance * 2f) // Doble de rango para margen
+				if (distance > MaxShootingDistance * 2f)
 					return false;
 
 				return true;
@@ -444,117 +454,336 @@ namespace Game
 			}
 		}
 
-		private void Fire(ComponentCreature target, FirearmConfig config)
+		private void ApplyAimingAnimation()
 		{
-			if (target == null || m_componentCreature == null)
+			if (m_componentModel != null)
+			{
+				m_componentModel.AimHandAngleOrder = 1.4f;
+				m_componentModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
+				m_componentModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
+
+				if (m_componentChaseBehavior != null && m_componentChaseBehavior.Target != null)
+				{
+					m_componentModel.LookAtOrder = new Vector3?(
+						m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition
+					);
+				}
+			}
+		}
+
+		private void ApplySniperAimingAnimation()
+		{
+			if (m_componentModel != null)
+			{
+				m_componentModel.AimHandAngleOrder = 1.2f;
+				m_componentModel.InHandItemOffsetOrder = new Vector3(-0.1f, -0.06f, 0.08f);
+				m_componentModel.InHandItemRotationOrder = new Vector3(-1.5f, 0f, 0f);
+
+				if (m_componentChaseBehavior != null && m_componentChaseBehavior.Target != null)
+				{
+					Vector3 targetPosition = m_componentChaseBehavior.Target.ComponentBody.Position;
+					targetPosition.Y += 0.5f;
+					m_componentModel.LookAtOrder = new Vector3?(targetPosition);
+				}
+			}
+		}
+
+		private void ApplyFiringAnimation(float dt)
+		{
+			if (m_componentModel != null)
+			{
+				float timeSinceFire = (float)(m_subsystemTime.GameTime - m_fireTime);
+				float recoilFactor;
+
+				if (m_currentWeaponIndex == BlocksManager.GetBlockIndex(typeof(Game.SWM500Block), true, false))
+				{
+					recoilFactor = (float)(1.8f - timeSinceFire * 3f);
+				}
+				else if (m_currentWeaponIndex == BlocksManager.GetBlockIndex(typeof(Game.Izh43Block), true, false) ||
+						m_currentWeaponIndex == BlocksManager.GetBlockIndex(typeof(Game.SPAS12Block), true, false))
+				{
+					recoilFactor = (float)(2.0f - timeSinceFire * 2.5f);
+				}
+				else if (m_currentWeaponIndex == BlocksManager.GetBlockIndex(typeof(Game.MinigunBlock), true, false))
+				{
+					recoilFactor = (float)(1.3f - timeSinceFire * 5f);
+				}
+				else if (m_currentWeaponIndex == BlocksManager.GetBlockIndex(typeof(Game.SniperBlock), true, false))
+				{
+					recoilFactor = (float)(2.5f - timeSinceFire * 1.5f);
+				}
+				else
+				{
+					recoilFactor = (float)(1.5f - timeSinceFire * 8f);
+				}
+
+				recoilFactor = MathUtils.Max(recoilFactor, 1.0f);
+
+				m_componentModel.AimHandAngleOrder = 1.4f * recoilFactor;
+				m_componentModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f - (0.05f * (1.5f - recoilFactor)));
+				m_componentModel.InHandItemRotationOrder = new Vector3(-1.7f + (0.3f * (1.5f - recoilFactor)), 0f, 0f);
+			}
+		}
+
+		private void ApplyReloadingAnimation(float dt)
+		{
+			if (m_componentModel != null)
+			{
+				float reloadProgress = (float)((m_subsystemTime.GameTime - m_animationStartTime) / ReloadTime);
+
+				if (m_currentWeaponIndex == BlocksManager.GetBlockIndex(typeof(Game.Izh43Block), true, false))
+				{
+					reloadProgress = (float)((m_subsystemTime.GameTime - m_animationStartTime) / (ReloadTime * 1.5f));
+				}
+				else if (m_currentWeaponIndex == BlocksManager.GetBlockIndex(typeof(Game.SniperBlock), true, false))
+				{
+					reloadProgress = (float)((m_subsystemTime.GameTime - m_animationStartTime) / (ReloadTime * 2.0f));
+				}
+
+				m_componentModel.AimHandAngleOrder = MathUtils.Lerp(1.0f, 0.5f, reloadProgress);
+				m_componentModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f - (0.1f * reloadProgress));
+				m_componentModel.InHandItemRotationOrder = new Vector3(-1.7f + (0.5f * reloadProgress), 0f, 0f);
+				m_componentModel.LookAtOrder = null;
+			}
+		}
+
+		private void ResetAnimations()
+		{
+			m_isAiming = false;
+			m_isFiring = false;
+			m_isReloading = false;
+
+			if (m_componentModel != null)
+			{
+				m_componentModel.AimHandAngleOrder = 0f;
+				m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
+				m_componentModel.InHandItemRotationOrder = Vector3.Zero;
+				m_componentModel.LookAtOrder = null;
+			}
+		}
+
+		private void FindWeaponInInventory()
+		{
+			if (m_componentInventory == null) return;
+
+			int activeSlotValue = m_componentInventory.GetSlotValue(m_componentInventory.ActiveSlotIndex);
+			if (activeSlotValue != 0)
+			{
+				int blockIndex = Terrain.ExtractContents(activeSlotValue);
+				if (FirearmConfigs.ContainsKey(blockIndex))
+				{
+					m_currentWeaponIndex = blockIndex;
+					return;
+				}
+			}
+
+			for (int i = 0; i < m_componentInventory.SlotsCount; i++)
+			{
+				int slotValue = m_componentInventory.GetSlotValue(i);
+				if (slotValue != 0)
+				{
+					int blockIndex = Terrain.ExtractContents(slotValue);
+					if (FirearmConfigs.ContainsKey(blockIndex))
+					{
+						m_currentWeaponIndex = blockIndex;
+						m_componentInventory.ActiveSlotIndex = i;
+						return;
+					}
+				}
+			}
+			m_currentWeaponIndex = -1;
+		}
+
+		private void Fire()
+		{
+			m_isFiring = true;
+			m_fireTime = m_subsystemTime.GameTime;
+
+			if (m_currentWeaponIndex == -1)
+				return;
+
+			FirearmConfig config = GetCurrentConfig();
+			if (config == null || m_componentChaseBehavior == null || m_componentChaseBehavior.Target == null)
 				return;
 
 			try
 			{
-				// Posición de disparo
 				Vector3 shootPosition = m_componentCreature.ComponentCreatureModel.EyePosition +
 					m_componentCreature.ComponentBody.Matrix.Right * 0.3f -
 					m_componentCreature.ComponentBody.Matrix.Up * 0.2f;
 
-				// Posición del objetivo
-				Vector3 targetPosition = target.ComponentCreatureModel.EyePosition;
-				targetPosition.Y -= TargetHeightOffset;
+				Vector3 targetPosition = m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition;
 
-				// Para sniper, apuntar al centro del cuerpo
 				if (config.IsSniper)
 				{
-					targetPosition = target.ComponentBody.Position + new Vector3(0f, 0.5f, 0f);
+					targetPosition = m_componentChaseBehavior.Target.ComponentBody.Position;
+					targetPosition.Y += 0.5f;
+				}
+				else
+				{
+					targetPosition.Y -= TargetHeightOffset;
 				}
 
-				// Dirección de disparo
 				Vector3 direction = Vector3.Normalize(targetPosition - shootPosition);
 
-				// Vectores para dispersión
 				Vector3 rightVector = Vector3.Normalize(Vector3.Cross(direction, Vector3.UnitY));
 				Vector3 upVector = Vector3.Normalize(Vector3.Cross(direction, rightVector));
 
-				// Disparar múltiples proyectiles si es necesario
 				for (int i = 0; i < config.ProjectilesPerShot; i++)
 				{
 					Vector3 spread = m_random.Float(-config.SpreadVector.X, config.SpreadVector.X) * rightVector +
-									m_random.Float(-config.SpreadVector.Y, config.SpreadVector.Y) * upVector +
-									m_random.Float(-config.SpreadVector.Z, config.SpreadVector.Z) * direction;
+						m_random.Float(-config.SpreadVector.Y, config.SpreadVector.Y) * upVector +
+						m_random.Float(-config.SpreadVector.Z, config.SpreadVector.Z) * direction;
 
-					// Crear bala
 					int bulletBlockIndex = BlocksManager.GetBlockIndex(config.BulletBlockType, true, false);
-					if (bulletBlockIndex != 0)
-					{
-						int bulletValue = Terrain.MakeBlockValue(bulletBlockIndex, 0, 2);
+					int bulletValue = Terrain.MakeBlockValue(bulletBlockIndex, 0, 2);
 
-						// Disparar proyectil
-						m_subsystemProjectiles.FireProjectile(
-							bulletValue,
-							shootPosition,
-							config.BulletSpeed * (direction + spread * SpreadFactor),
-							Vector3.Zero,
-							m_componentCreature
-						);
-					}
+					m_subsystemProjectiles.FireProjectile(
+						bulletValue,
+						shootPosition,
+						config.BulletSpeed * (direction + spread),
+						Vector3.Zero,
+						m_componentCreature
+					);
 				}
 
-				// Efectos de partículas
-				if (m_subsystemParticles != null)
+				Vector3 particlePosition = shootPosition + direction * 1.3f;
+
+				if (m_subsystemParticles != null && m_subsystemTerrain != null)
 				{
-					Vector3 particlePosition = shootPosition + direction * 1.3f;
 					m_subsystemParticles.AddParticleSystem(
 						new GunFireParticleSystem(m_subsystemTerrain, particlePosition, direction),
 						false
 					);
 				}
 
-				// Sonido
-				if (m_subsystemAudio != null && !string.IsNullOrEmpty(config.ShootSound))
-				{
-					float pitch = m_random.Float(0.9f, 1.1f);
-					m_subsystemAudio.PlaySound(config.ShootSound, SoundVolume, pitch,
-						shootPosition, SoundRange, true);
-				}
-
-				// Ruido
 				if (m_subsystemNoise != null)
 				{
 					m_subsystemNoise.MakeNoise(shootPosition, 0.8f, config.NoiseRadius);
 				}
+
+				float pitchVariation = m_random.Float(-0.1f, 0.1f);
+				if (config.IsSniper)
+				{
+					pitchVariation = m_random.Float(-0.05f, 0.05f);
+				}
+
+				m_subsystemAudio.PlaySound(config.ShootSound, SoundVolume, pitchVariation, shootPosition, SoundRange, true);
+
 			}
 			catch (Exception ex)
 			{
-				Log.Warning($"Error disparando arma: {ex.Message}");
+				Log.Error($"Error al disparar: {ex.Message}");
 			}
+		}
+
+		private bool ShouldReload(double currentTime)
+		{
+			if (!UseRandomReloads)
+				return false;
+
+			if (currentTime - m_lastReloadTime < MinReloadInterval)
+				return false;
+
+			FirearmConfig config = GetCurrentConfig();
+			if (config != null && m_shotsSinceLastReload >= config.MaxShotsBeforeReload)
+				return true;
+
+			float adjustedReloadChance = ReloadChance;
+			if (config != null)
+			{
+				if (config.MaxShotsBeforeReload <= 2)
+				{
+					adjustedReloadChance *= 2.0f;
+				}
+				else if (config.IsSniper)
+				{
+					return m_shotsSinceLastReload >= 1;
+				}
+			}
+
+			return m_random.Float(0f, 1f) < adjustedReloadChance;
 		}
 
 		private void StartReloading()
 		{
+			m_isAiming = false;
+			m_isFiring = false;
 			m_isReloading = true;
-			m_reloadStartTime = m_subsystemTime.GameTime;
+			m_animationStartTime = m_subsystemTime.GameTime;
 			m_lastReloadTime = m_subsystemTime.GameTime;
 
-			// Sonido de recarga
-			if (m_subsystemAudio != null)
+			if (m_subsystemParticles != null)
 			{
-				m_subsystemAudio.PlaySound("Audio/Armas/reload", SoundVolume * 0.8f, 0f,
-					m_componentCreature.ComponentCreatureModel.EyePosition, SoundRange, true);
+				try
+				{
+					Vector3 basePosition = m_componentCreature.ComponentCreatureModel.EyePosition;
+
+					for (int i = 0; i < 5; i++)
+					{
+						Vector3 offset = new Vector3(
+							m_random.Float(-0.3f, 0.3f),
+							m_random.Float(-0.1f, 0.3f),
+							m_random.Float(-0.3f, 0.3f)
+						);
+
+						Vector3 velocity = new Vector3(
+							m_random.Float(-0.3f, 0.3f),
+							m_random.Float(0.5f, 1.5f),
+							m_random.Float(-0.3f, 0.3f)
+						);
+
+						// En lugar de usar GunFireParticleSystem para recarga, 
+						// simplemente omitimos las partículas de fuego durante la recarga
+						// Ya que solo se deben mostrar partículas de fuego al disparar
+					}
+				}
+				catch (Exception ex)
+				{
+					Log.Warning($"Error mostrando partículas de recarga: {ex.Message}");
+				}
 			}
+
+			m_subsystemAudio.PlaySound("Audio/Armas/reload", SoundVolume * 0.8f, 0f,
+				m_componentCreature.ComponentCreatureModel.EyePosition, SoundRange, true);
+		}
+
+		private double GetCurrentFireRate()
+		{
+			FirearmConfig config = GetCurrentConfig();
+			return config != null ? config.FireRate : 1.0;
 		}
 
 		private FirearmConfig GetCurrentConfig()
 		{
-			if (m_currentWeaponIndex == -1 || m_firearmConfigs == null)
+			if (m_currentWeaponIndex == -1 || !FirearmConfigs.ContainsKey(m_currentWeaponIndex))
 				return null;
 
-			if (m_firearmConfigs.TryGetValue(m_currentWeaponIndex, out FirearmConfig config))
-			{
-				return config;
-			}
-
-			return null;
+			return FirearmConfigs[m_currentWeaponIndex];
 		}
 
-		// Clase de configuración de arma
+		private bool IsCurrentWeaponAutomatic()
+		{
+			FirearmConfig config = GetCurrentConfig();
+			return config != null && config.IsAutomatic;
+		}
+
+		private bool IsCurrentWeaponSniper()
+		{
+			FirearmConfig config = GetCurrentConfig();
+			return config != null && config.IsSniper;
+		}
+
+		private bool IsCurrentWeaponShotgun()
+		{
+			if (m_currentWeaponIndex == BlocksManager.GetBlockIndex(typeof(Game.Izh43Block), true, false) ||
+				m_currentWeaponIndex == BlocksManager.GetBlockIndex(typeof(Game.SPAS12Block), true, false))
+			{
+				return true;
+			}
+			return false;
+		}
+
 		private class FirearmConfig
 		{
 			public Type BulletBlockType { get; set; }
