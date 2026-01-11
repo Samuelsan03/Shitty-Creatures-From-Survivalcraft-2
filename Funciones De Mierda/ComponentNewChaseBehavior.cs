@@ -15,7 +15,6 @@ namespace Game
 				return this.m_target;
 			}
 		}
-
 		public UpdateOrder UpdateOrder
 		{
 			get
@@ -23,7 +22,6 @@ namespace Game
 				return UpdateOrder.Default;
 			}
 		}
-
 		public override float ImportanceLevel
 		{
 			get
@@ -31,14 +29,11 @@ namespace Game
 				return this.m_importanceLevel;
 			}
 		}
-
-		// MÉTODO MEJORADO: Respuesta inmediata al ataque
 		public virtual void Attack(ComponentCreature componentCreature, float maxRange, float maxChaseTime, bool isPersistent)
 		{
 			bool suppressed = this.Suppressed;
 			if (!suppressed)
 			{
-				// Verificación rápida de manada
 				ComponentNewHerdBehavior componentNewHerdBehavior = base.Entity.FindComponent<ComponentNewHerdBehavior>();
 				bool flag = componentNewHerdBehavior != null;
 				if (flag)
@@ -54,29 +49,21 @@ namespace Game
 					ComponentHerdBehavior componentHerdBehavior = base.Entity.FindComponent<ComponentHerdBehavior>();
 					if (componentHerdBehavior != null)
 					{
-						bool isSameHerd = !string.IsNullOrEmpty(componentHerdBehavior.HerdName) &&
-										   componentCreature.Entity.FindComponent<ComponentHerdBehavior>() != null &&
-										   componentCreature.Entity.FindComponent<ComponentHerdBehavior>().HerdName == componentHerdBehavior.HerdName;
+						bool isSameHerd = !string.IsNullOrEmpty(componentHerdBehavior.HerdName) && componentCreature.Entity.FindComponent<ComponentHerdBehavior>() != null && componentCreature.Entity.FindComponent<ComponentHerdBehavior>().HerdName == componentHerdBehavior.HerdName;
 						if (isSameHerd)
 						{
 							return;
 						}
 					}
 				}
-
-				// ESTABLECER OBJETIVO INMEDIATAMENTE
 				this.m_target = componentCreature;
 				this.m_nextUpdateTime = 0.0;
 				this.m_range = maxRange;
 				this.m_chaseTime = maxChaseTime;
 				this.m_isPersistent = isPersistent;
 				this.m_importanceLevel = (isPersistent ? this.ImportanceLevelPersistent : this.ImportanceLevelNonPersistent);
-
-				// NUEVO: FORZAR ACTIVACIÓN INMEDIATA
 				this.IsActive = true;
 				this.m_stateMachine.TransitionTo("Chasing");
-
-				// NUEVO: Actualizar inmediatamente el pathfinding
 				if (this.m_target != null && this.m_componentPathfinding != null)
 				{
 					this.m_componentPathfinding.Stop();
@@ -84,22 +71,14 @@ namespace Game
 				}
 			}
 		}
-
-		// MÉTODO NUEVO: Actualización inmediata del estado de persecución
 		private void UpdateChasingStateImmediately()
 		{
 			if (this.m_target == null || !this.IsActive)
 				return;
-
 			Vector3 targetPosition = this.m_target.ComponentBody.Position;
-			this.m_componentPathfinding.SetDestination(
-				new Vector3?(targetPosition),
-				1f, 1.5f, 0, true, false, true, this.m_target.ComponentBody);
-
-			// Mirar inmediatamente al objetivo
+			this.m_componentPathfinding.SetDestination(new Vector3?(targetPosition), 1f, 1.5f, 0, true, false, true, this.m_target.ComponentBody);
 			this.m_componentCreature.ComponentCreatureModel.LookAtOrder = new Vector3?(this.m_target.ComponentCreatureModel.EyePosition);
 		}
-
 		public virtual void StopAttack()
 		{
 			this.m_stateMachine.TransitionTo("LookingForTarget");
@@ -111,8 +90,6 @@ namespace Game
 			this.m_isPersistent = false;
 			this.m_importanceLevel = 0f;
 		}
-
-		// UPDATE OPTIMIZADO
 		public virtual void Update(float dt)
 		{
 			bool suppressed = this.Suppressed;
@@ -121,41 +98,28 @@ namespace Game
 				this.StopAttack();
 				return;
 			}
-
 			this.m_autoChaseSuppressionTime -= dt;
 			this.CheckDefendPlayer(dt);
-
-			// Verificación rápida de armas
 			bool hasRangedWeapon = this.HasActiveRangedWeaponComponent();
-			bool isOriginalHerd = base.Entity.FindComponent<ComponentHerdBehavior>() != null &&
-								  base.Entity.FindComponent<ComponentNewHerdBehavior>() == null;
-
+			bool isOriginalHerd = base.Entity.FindComponent<ComponentHerdBehavior>() != null && base.Entity.FindComponent<ComponentNewHerdBehavior>() == null;
 			if (hasRangedWeapon || isOriginalHerd)
 			{
 				this.UpdateRangedWeaponLogic(dt);
 			}
-
 			bool flag = this.IsActive && this.m_target != null;
 			if (flag)
 			{
 				this.m_chaseTime -= dt;
 				this.m_componentCreature.ComponentCreatureModel.LookAtOrder = new Vector3?(this.m_target.ComponentCreatureModel.EyePosition);
-
-				// LOGICA MEJORADA: Cambio inmediato de arma basado en distancia
 				float distance = Vector3.Distance(this.m_componentCreature.ComponentBody.Position, this.m_target.ComponentBody.Position);
-
-				// Si el objetivo está cerca (dentro de 5 unidades), cambiar inmediatamente a arma cuerpo a cuerpo
 				if (distance < 5f && this.m_target != null && this.IsActive)
 				{
-					// Cambiar a modo cuerpo a cuerpo inmediatamente
 					this.SwitchToMeleeModeImmediately();
 				}
 				else if (distance > 5f)
 				{
-					// Si está lejos, asegurarse de que tiene arma a distancia
 					this.FindAimTool(this.m_componentMiner);
 				}
-
 				float num = (this.m_subsystemGameInfo.WorldSettings.GameMode == GameMode.Creative) ? 2.5f : 3f;
 				bool flag2 = this.m_attackMode != ComponentNewChaseBehavior.AttackMode.OnlyHand;
 				if (flag2)
@@ -182,7 +146,21 @@ namespace Game
 							}
 							else
 							{
-								this.m_componentPathfinding.Destination = null;
+								if (!this.IsFirearmActive())
+								{
+									this.m_componentPathfinding.Destination = null;
+								}
+								else
+								{
+									float desiredDistance = (this.m_attackRange.X + this.m_attackRange.Y) * 0.5f;
+									if (Math.Abs(distance - desiredDistance) > 2f)
+									{
+										Vector3 toTarget = this.m_target.ComponentBody.Position - this.m_componentCreature.ComponentBody.Position;
+										Vector3 direction = Vector3.Normalize(toTarget);
+										Vector3 destination = this.m_target.ComponentBody.Position - direction * desiredDistance;
+										this.m_componentPathfinding.SetDestination(new Vector3?(destination), 1f, 1.5f, 0, true, false, true, this.m_target.ComponentBody);
+									}
+								}
 							}
 							string category = BlocksManager.Blocks[Terrain.ExtractContents(this.m_componentMiner.ActiveBlockValue)].GetCategory(this.m_componentMiner.ActiveBlockValue);
 							bool flag7 = this.m_subsystemTime.GameTime - this.m_lastActionTime > (double)num;
@@ -192,6 +170,7 @@ namespace Game
 								if (flag8)
 								{
 									this.m_lastActionTime = this.m_subsystemTime.GameTime;
+									this.CreateFirearmEffects(vector);
 								}
 								else
 								{
@@ -240,28 +219,47 @@ namespace Game
 					}
 				}
 			}
-
-			// ACTUALIZACIÓN MÁS RÁPIDA DE LA MÁQUINA DE ESTADOS
 			bool flag14 = this.m_subsystemTime.GameTime >= this.m_nextUpdateTime;
 			if (flag14)
 			{
-				// Reducir el tiempo de espera para actualizaciones más rápidas
 				this.m_dt = this.m_random.Float(0.1f, 0.2f) + MathUtils.Min((float)(this.m_subsystemTime.GameTime - this.m_nextUpdateTime), 0.05f);
 				this.m_nextUpdateTime = this.m_subsystemTime.GameTime + (double)this.m_dt;
 				this.m_stateMachine.Update();
 			}
 		}
+		private void CreateFirearmEffects(Vector3 direction)
+		{
+			if (this.m_subsystemParticles == null)
+			{
+				this.m_subsystemParticles = base.Project.FindSubsystem<SubsystemParticles>(true);
+			}
+			if (this.m_subsystemAudio == null)
+			{
+				this.m_subsystemAudio = base.Project.FindSubsystem<SubsystemAudio>(true);
+			}
+			if (this.m_subsystemTerrain == null)
+			{
+				this.m_subsystemTerrain = base.Project.FindSubsystem<SubsystemTerrain>(true);
+			}
 
-		// MÉTODO MEJORADO: Cambio inmediato a modo cuerpo a cuerpo
+			if (this.m_subsystemParticles != null && this.m_subsystemTerrain != null)
+			{
+				Vector3 position = this.m_componentCreature.ComponentCreatureModel.EyePosition + direction * 1.3f;
+				this.m_subsystemParticles.AddParticleSystem(new GunFireParticleSystem(this.m_subsystemTerrain, position, direction), false);
+			}
+
+			if (this.m_subsystemAudio != null)
+			{
+				this.m_subsystemAudio.PlayRandomSound("Audio/Armas/reload", 0.5f, this.m_random.Float(-0.1f, 0.1f), this.m_componentCreature.ComponentCreatureModel.EyePosition, 3f, true);
+			}
+		}
 		private void SwitchToMeleeModeImmediately()
 		{
-			// Buscar mejor arma cuerpo a cuerpo en inventario
 			float bestPower = 1f;
 			int bestSlot = -1;
-
 			if (this.m_componentMiner.Inventory != null)
 			{
-				for (int i = 0; i < 6; i++) // Solo primeros 6 slots (armas equipables)
+				for (int i = 0; i < 6; i++)
 				{
 					int slotValue = this.m_componentMiner.Inventory.GetSlotValue(i);
 					float meleePower = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)].GetMeleePower(slotValue);
@@ -271,39 +269,30 @@ namespace Game
 						bestSlot = i;
 					}
 				}
-
-				// Si encontró un arma cuerpo a cuerpo mejor que las manos (meleePower > 1), equiparla inmediatamente
 				if (bestSlot >= 0)
 				{
 					this.m_componentMiner.Inventory.ActiveSlotIndex = bestSlot;
 				}
 			}
 		}
-
 		private void UpdateRangedWeaponLogic(float dt)
 		{
 			if (this.m_target == null || !this.IsActive)
 				return;
-
 			bool hasRangedWeapon = this.HasActiveRangedWeaponComponent();
-
 			if (!hasRangedWeapon)
 			{
 				this.FindAimTool(this.m_componentMiner);
 				hasRangedWeapon = this.HasActiveRangedWeaponComponent();
 			}
-
 			if (hasRangedWeapon && this.m_target != null)
 			{
 				float distance = Vector3.Distance(this.m_componentCreature.ComponentBody.Position, this.m_target.ComponentBody.Position);
-
-				// Si el objetivo está muy cerca, cambiar inmediatamente a cuerpo a cuerpo
 				if (distance < 5f)
 				{
 					this.SwitchToMeleeModeImmediately();
 					return;
 				}
-
 				if (distance >= this.m_attackRange.X && distance <= this.m_attackRange.Y)
 				{
 					Vector3 eyePosition = this.m_componentCreature.ComponentCreatureModel.EyePosition;
@@ -311,40 +300,49 @@ namespace Game
 					float verticalAdjustment = MathUtils.Lerp(0f, 0.3f, distance / 20f);
 					Vector3 adjustedTargetPosition = targetPosition + new Vector3(0f, verticalAdjustment, 0f);
 					Vector3 direction = Vector3.Normalize(adjustedTargetPosition - eyePosition);
-
 					float rayDistance;
 					ComponentBody hitBody = this.GetHitBody1(this.m_target.ComponentBody, out rayDistance);
-
 					if (hitBody != null && Math.Abs(rayDistance - distance) < 2f)
 					{
 						float actionDelay = (this.m_subsystemGameInfo.WorldSettings.GameMode == GameMode.Creative) ? 2.5f : 3f;
-
 						if (this.m_subsystemTime.GameTime - this.m_lastActionTime > actionDelay)
 						{
+							if (this.IsFirearmActive())
+							{
+								this.CreateFirearmEffects(direction);
+							}
 							this.m_componentMiner.Aim(new Ray3(this.m_componentCreature.ComponentCreatureModel.EyePosition, direction), AimState.Completed);
 							this.m_lastActionTime = this.m_subsystemTime.GameTime;
-
 							this.m_chaseTime = Math.Max(this.m_chaseTime, this.m_isPersistent ? this.m_random.Float(8f, 10f) : 2f);
 						}
 						else
 						{
 							this.m_componentMiner.Aim(new Ray3(this.m_componentCreature.ComponentCreatureModel.EyePosition, direction), AimState.InProgress);
 						}
-
-						this.m_componentPathfinding.Destination = null;
+						if (!this.IsFirearmActive())
+						{
+							this.m_componentPathfinding.Destination = null;
+						}
+						else
+						{
+							float desiredDistance = (this.m_attackRange.X + this.m_attackRange.Y) * 0.5f;
+							if (Math.Abs(distance - desiredDistance) > 2f)
+							{
+								Vector3 toTarget = this.m_target.ComponentBody.Position - this.m_componentCreature.ComponentBody.Position;
+								Vector3 moveDirection = Vector3.Normalize(toTarget);
+								Vector3 destination = this.m_target.ComponentBody.Position - moveDirection * desiredDistance;
+								this.m_componentPathfinding.SetDestination(new Vector3?(destination), 1f, 1.5f, 0, true, false, true, this.m_target.ComponentBody);
+							}
+						}
 					}
 					else
 					{
-						this.m_componentPathfinding.SetDestination(
-							new Vector3?(this.m_target.ComponentBody.Position),
-							1f, 1.5f, 0, true, false, true, this.m_target.ComponentBody);
+						this.m_componentPathfinding.SetDestination(new Vector3?(this.m_target.ComponentBody.Position), 1f, 1.5f, 0, true, false, true, this.m_target.ComponentBody);
 					}
 				}
 				else if (distance > this.m_attackRange.Y)
 				{
-					this.m_componentPathfinding.SetDestination(
-						new Vector3?(this.m_target.ComponentBody.Position),
-						1f, 1.5f, 0, true, false, true, this.m_target.ComponentBody);
+					this.m_componentPathfinding.SetDestination(new Vector3?(this.m_target.ComponentBody.Position), 1f, 1.5f, 0, true, false, true, this.m_target.ComponentBody);
 				}
 				else if (distance < this.m_attackRange.X)
 				{
@@ -354,51 +352,43 @@ namespace Game
 				}
 			}
 		}
-
-		// MÉTODO MEJORADO: Verificación más rápida de armas a distancia
+		private bool IsFirearmActive()
+		{
+			if (this.m_componentMiner == null || this.m_componentMiner.ActiveBlockValue == 0)
+				return false;
+			int blockId = Terrain.ExtractContents(this.m_componentMiner.ActiveBlockValue);
+			return blockId == BlocksManager.GetBlockIndex(typeof(AKBlock), true, false) || blockId == BlocksManager.GetBlockIndex(typeof(G3Block), true, false) || blockId == BlocksManager.GetBlockIndex(typeof(Izh43Block), true, false) || blockId == BlocksManager.GetBlockIndex(typeof(M4Block), true, false) || blockId == BlocksManager.GetBlockIndex(typeof(Mac10Block), true, false) || blockId == BlocksManager.GetBlockIndex(typeof(MinigunBlock), true, false) || blockId == BlocksManager.GetBlockIndex(typeof(SPAS12Block), true, false) || blockId == BlocksManager.GetBlockIndex(typeof(SWM500Block), true, false) || blockId == BlocksManager.GetBlockIndex(typeof(UziBlock), true, false);
+		}
 		private bool HasActiveRangedWeaponComponent()
 		{
 			if (this.m_target == null) return false;
-
-			// Verificación optimizada sin tantos if anidados
+			if (this.IsFirearmActive()) return true;
 			ComponentMusketShooterBehavior musket = base.Entity.FindComponent<ComponentMusketShooterBehavior>();
 			if (musket != null && musket.IsActive) return true;
-
 			ComponentBowShooterBehavior bow = base.Entity.FindComponent<ComponentBowShooterBehavior>();
 			if (bow != null && bow.IsActive) return true;
-
 			ComponentCrossbowShooterBehavior crossbow = base.Entity.FindComponent<ComponentCrossbowShooterBehavior>();
 			if (crossbow != null && crossbow.IsActive) return true;
-
 			ComponentFlameThrowerShooterBehavior flamethrower = base.Entity.FindComponent<ComponentFlameThrowerShooterBehavior>();
 			if (flamethrower != null && flamethrower.IsActive) return true;
-
 			ComponentItemsLauncherShooterBehavior launcher = base.Entity.FindComponent<ComponentItemsLauncherShooterBehavior>();
-			return (launcher != null && launcher.IsActive);
+			if (launcher != null && launcher.IsActive) return true;
+			return this.IsFirearmActive();
 		}
-
-		// MÉTODO NUEVO: Respuesta inmediata a comandos
 		public void RespondToCommandImmediately(ComponentCreature target)
 		{
 			if (this.Suppressed || target == null)
 				return;
-
-			// Configuración inmediata
 			this.m_target = target;
 			this.m_nextUpdateTime = 0.0;
 			this.m_range = 20f;
 			this.m_chaseTime = 30f;
 			this.m_isPersistent = false;
 			this.m_importanceLevel = this.ImportanceLevelNonPersistent;
-
-			// Activación inmediata
 			this.IsActive = true;
 			this.m_stateMachine.TransitionTo("Chasing");
-
-			// Iniciar persecución inmediata
 			this.UpdateChasingStateImmediately();
 		}
-
 		private void UpdateChaseMovementOnly(float dt)
 		{
 			bool flag = !this.HasActiveRangedWeaponComponent();
@@ -423,7 +413,6 @@ namespace Game
 				}
 			}
 		}
-
 		private void UpdateChasingState()
 		{
 			bool flag = !this.IsActive || this.m_target == null || this.m_chaseTime <= 0f;
@@ -440,7 +429,7 @@ namespace Game
 					BoundingBox boundingBox = this.m_componentCreature.ComponentBody.BoundingBox;
 					BoundingBox boundingBox2 = this.m_target.ComponentBody.BoundingBox;
 					Vector3 v = 0.5f * (boundingBox.Min + boundingBox.Max);
-					Vector3 vector = 0.5f * (boundingBox2.Min + boundingBox2.Max);
+					Vector3 vector = 0.5f * (boundingBox2.Min + boundingBox2.Max) - v;
 					float num = Vector3.Distance(v, vector);
 					float num2 = (num < 4f) ? 0.2f : 0f;
 					float num3 = 10f;
@@ -460,13 +449,26 @@ namespace Game
 						}
 						else
 						{
-							this.m_componentPathfinding.Destination = null;
+							if (!this.IsFirearmActive())
+							{
+								this.m_componentPathfinding.Destination = null;
+							}
+							else
+							{
+								float desiredDistance = (this.m_attackRange.X + this.m_attackRange.Y) * 0.5f;
+								if (Math.Abs(num - desiredDistance) > 2f)
+								{
+									Vector3 toTarget = this.m_target.ComponentBody.Position - this.m_componentCreature.ComponentBody.Position;
+									Vector3 direction = Vector3.Normalize(toTarget);
+									Vector3 destination = this.m_target.ComponentBody.Position - direction * desiredDistance;
+									this.m_componentPathfinding.SetDestination(new Vector3?(destination), 1f, 1.5f, maxPathfindingPositions, true, false, true, this.m_target.ComponentBody);
+								}
+							}
 						}
 					}
 				}
 			}
 		}
-
 		public ComponentBody GetHitBody1(ComponentBody target, out float distance)
 		{
 			distance = 0f;
@@ -519,7 +521,6 @@ namespace Game
 			}
 			return result;
 		}
-
 		private TerrainRaycastResult? PickTerrain(Vector3 position, Vector3 direction, float reach)
 		{
 			ComponentMiner componentMiner = this.m_componentMiner;
@@ -538,7 +539,6 @@ namespace Game
 			}
 			return result;
 		}
-
 		private BodyRaycastResult? PickBody(Vector3 position, Vector3 direction, float reach)
 		{
 			bool flag = this.m_subsystemBodies == null;
@@ -556,8 +556,6 @@ namespace Game
 			}
 			return result;
 		}
-
-		// MÉTODO OPTIMIZADO: Encontrar herramienta de apuntar
 		public bool FindAimTool(ComponentMiner componentMiner)
 		{
 			bool flag = componentMiner.Inventory == null;
@@ -565,14 +563,12 @@ namespace Game
 			{
 				return false;
 			}
-
-			// Verificar primero el slot activo actual
 			int activeSlotIndex = componentMiner.Inventory.ActiveSlotIndex;
 			int activeBlockValue = componentMiner.ActiveBlockValue;
 			int num = Terrain.ExtractContents(activeBlockValue);
 			Block block = BlocksManager.Blocks[num];
-
-			if (block.IsAimable_(activeBlockValue))
+			bool isFirearm = this.IsFirearmActive();
+			if (block.IsAimable_(activeBlockValue) || isFirearm)
 			{
 				if (!(block is FlameThrowerBlock))
 				{
@@ -589,16 +585,13 @@ namespace Game
 					return true;
 				}
 			}
-
-			// Buscar en otros slots
-			for (int i = 0; i < Math.Min(componentMiner.Inventory.SlotsCount, 10); i++) // Buscar solo en primeros 10 slots
+			for (int i = 0; i < Math.Min(componentMiner.Inventory.SlotsCount, 10); i++)
 			{
-				if (i == activeSlotIndex) continue; // Ya verificamos este
-
+				if (i == activeSlotIndex) continue;
 				int slotValue = componentMiner.Inventory.GetSlotValue(i);
 				int num2 = Terrain.ExtractContents(slotValue);
 				Block block2 = BlocksManager.Blocks[num2];
-				bool flag6 = block2.IsAimable_(slotValue) && (!(block2 is FlameThrowerBlock) || this.IsReady(slotValue));
+				bool flag6 = (block2.IsAimable_(slotValue) || this.IsFirearmBlock(slotValue)) && (!(block2 is FlameThrowerBlock) || this.IsReady(slotValue));
 				if (flag6)
 				{
 					componentMiner.Inventory.ActiveSlotIndex = i;
@@ -607,24 +600,22 @@ namespace Game
 			}
 			return false;
 		}
-
+		private bool IsFirearmBlock(int blockValue)
+		{
+			int blockId = Terrain.ExtractContents(blockValue);
+			return blockId == BlocksManager.GetBlockIndex(typeof(AKBlock), true, false) || blockId == BlocksManager.GetBlockIndex(typeof(G3Block), true, false) || blockId == BlocksManager.GetBlockIndex(typeof(Izh43Block), true, false) || blockId == BlocksManager.GetBlockIndex(typeof(M4Block), true, false) || blockId == BlocksManager.GetBlockIndex(typeof(Mac10Block), true, false) || blockId == BlocksManager.GetBlockIndex(typeof(MinigunBlock), true, false) || blockId == BlocksManager.GetBlockIndex(typeof(SPAS12Block), true, false) || blockId == BlocksManager.GetBlockIndex(typeof(SWM500Block), true, false) || blockId == BlocksManager.GetBlockIndex(typeof(UziBlock), true, false);
+		}
 		public bool IsReady(int slotValue)
 		{
 			int data = Terrain.ExtractData(slotValue);
 			return !(BlocksManager.Blocks[Terrain.ExtractContents(slotValue)] is FlameThrowerBlock) || (FlameThrowerBlock.GetLoadState(data) == FlameThrowerBlock.LoadState.Loaded && FlameThrowerBlock.GetBulletType(data) != null);
 		}
-
 		public bool IsAimToolNeedToReady(ComponentMiner componentMiner, int slotIndex)
 		{
 			int slotValue = componentMiner.Inventory.GetSlotValue(slotIndex);
 			int data = Terrain.ExtractData(slotValue);
 			Block block = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)];
-
-			if (block is ItemsLauncherBlock)
-			{
-				return false;
-			}
-
+			if (block is ItemsLauncherBlock) return false;
 			bool flag = !(block is BowBlock);
 			if (flag)
 			{
@@ -637,51 +628,55 @@ namespace Game
 						bool flag4 = !(block is MusketBlock);
 						if (flag4)
 						{
+							if (this.IsFirearmBlock(slotValue))
+							{
+								int bulletNum = this.GetFirearmBulletNum(slotValue);
+								if (bulletNum <= 0)
+								{
+									this.ReloadFirearm(componentMiner, slotIndex, slotValue);
+									return true;
+								}
+								return false;
+							}
 							return false;
 						}
 						bool flag5 = MusketBlock.GetLoadState(data) == MusketBlock.LoadState.Loaded && MusketBlock.GetBulletType(data) != null;
-						if (flag5)
-						{
-							return false;
-						}
+						if (flag5) return false;
 					}
 					else
 					{
 						bool flag6 = RepeatCrossbowBlock.GetDraw(data) >= 15 && RepeatCrossbowBlock.GetArrowType(data) != null;
-						if (flag6)
-						{
-							return false;
-						}
+						if (flag6) return false;
 					}
 				}
 				else
 				{
 					bool flag7 = CrossbowBlock.GetDraw(data) >= 15 && CrossbowBlock.GetArrowType(data) != null;
-					if (flag7)
-					{
-						return false;
-					}
+					if (flag7) return false;
 				}
 			}
 			else
 			{
 				bool flag8 = BowBlock.GetDraw(data) >= 15 && BowBlock.GetArrowType(data) != null;
-				if (flag8)
-				{
-					return false;
-				}
+				if (flag8) return false;
 			}
 			return true;
 		}
-
-		// MÉTODO MEJORADO: Preparar arma más rápido
 		public void HandleComplexAimTool(ComponentMiner componentMiner, int slotIndex)
 		{
 			int slotValue = componentMiner.Inventory.GetSlotValue(slotIndex);
 			int data = Terrain.ExtractData(slotValue);
 			int num2 = Terrain.ExtractContents(slotValue);
 			Block block = BlocksManager.Blocks[num2];
-
+			if (this.IsFirearmBlock(slotValue))
+			{
+				int bulletNum = this.GetFirearmBulletNum(slotValue);
+				if (bulletNum <= 0)
+				{
+					this.ReloadFirearm(componentMiner, slotIndex, slotValue);
+				}
+				return;
+			}
 			if (!(block is ItemsLauncherBlock))
 			{
 				if (!(block is BowBlock))
@@ -702,30 +697,12 @@ namespace Game
 						{
 							float randomValue = this.m_random.Float(0f, 1f);
 							RepeatArrowBlock.ArrowType value;
-							if (randomValue < 0.166f)
-							{
-								value = RepeatArrowBlock.ArrowType.ExplosiveArrow;
-							}
-							else if (randomValue < 0.332f)
-							{
-								value = RepeatArrowBlock.ArrowType.PoisonArrow;
-							}
-							else if (randomValue < 0.498f)
-							{
-								value = RepeatArrowBlock.ArrowType.CopperArrow;
-							}
-							else if (randomValue < 0.664f)
-							{
-								value = RepeatArrowBlock.ArrowType.DiamondArrow;
-							}
-							else if (randomValue < 0.83f)
-							{
-								value = RepeatArrowBlock.ArrowType.SeriousPoisonArrow;
-							}
-							else
-							{
-								value = RepeatArrowBlock.ArrowType.IronArrow;
-							}
+							if (randomValue < 0.166f) value = RepeatArrowBlock.ArrowType.ExplosiveArrow;
+							else if (randomValue < 0.332f) value = RepeatArrowBlock.ArrowType.PoisonArrow;
+							else if (randomValue < 0.498f) value = RepeatArrowBlock.ArrowType.CopperArrow;
+							else if (randomValue < 0.664f) value = RepeatArrowBlock.ArrowType.DiamondArrow;
+							else if (randomValue < 0.83f) value = RepeatArrowBlock.ArrowType.SeriousPoisonArrow;
+							else value = RepeatArrowBlock.ArrowType.IronArrow;
 							data = RepeatCrossbowBlock.SetArrowType(data, new RepeatArrowBlock.ArrowType?(value));
 							data = RepeatCrossbowBlock.SetDraw(data, 15);
 						}
@@ -734,18 +711,9 @@ namespace Game
 					{
 						float randomValue = this.m_random.Float(0f, 1f);
 						ArrowBlock.ArrowType value;
-						if (randomValue < 0.333f)
-						{
-							value = ArrowBlock.ArrowType.IronBolt;
-						}
-						else if (randomValue < 0.666f)
-						{
-							value = ArrowBlock.ArrowType.DiamondBolt;
-						}
-						else
-						{
-							value = ArrowBlock.ArrowType.ExplosiveBolt;
-						}
+						if (randomValue < 0.333f) value = ArrowBlock.ArrowType.IronBolt;
+						else if (randomValue < 0.666f) value = ArrowBlock.ArrowType.DiamondBolt;
+						else value = ArrowBlock.ArrowType.ExplosiveBolt;
 						data = CrossbowBlock.SetArrowType(0, new ArrowBlock.ArrowType?(value));
 						data = CrossbowBlock.SetDraw(data, 15);
 					}
@@ -754,55 +722,76 @@ namespace Game
 				{
 					float randomValue = this.m_random.Float(0f, 1f);
 					ArrowBlock.ArrowType value;
-					if (randomValue < 0.166f)
-					{
-						value = ArrowBlock.ArrowType.WoodenArrow;
-					}
-					else if (randomValue < 0.332f)
-					{
-						value = ArrowBlock.ArrowType.StoneArrow;
-					}
-					else if (randomValue < 0.498f)
-					{
-						value = ArrowBlock.ArrowType.IronArrow;
-					}
-					else if (randomValue < 0.664f)
-					{
-						value = ArrowBlock.ArrowType.DiamondArrow;
-					}
-					else if (randomValue < 0.83f)
-					{
-						value = ArrowBlock.ArrowType.FireArrow;
-					}
-					else
-					{
-						value = ArrowBlock.ArrowType.CopperArrow;
-					}
+					if (randomValue < 0.166f) value = ArrowBlock.ArrowType.WoodenArrow;
+					else if (randomValue < 0.332f) value = ArrowBlock.ArrowType.StoneArrow;
+					else if (randomValue < 0.498f) value = ArrowBlock.ArrowType.IronArrow;
+					else if (randomValue < 0.664f) value = ArrowBlock.ArrowType.DiamondArrow;
+					else if (randomValue < 0.83f) value = ArrowBlock.ArrowType.FireArrow;
+					else value = ArrowBlock.ArrowType.CopperArrow;
 					data = BowBlock.SetArrowType(0, new ArrowBlock.ArrowType?(value));
 					data = BowBlock.SetDraw(data, 15);
 				}
-
 				int value2 = Terrain.MakeBlockValue(num2, 0, data);
 				componentMiner.Inventory.RemoveSlotItems(slotIndex, 1);
 				componentMiner.Inventory.AddSlotItems(slotIndex, value2, 1);
 			}
 		}
-
+		private int GetFirearmBulletNum(int slotValue)
+		{
+			int blockId = Terrain.ExtractContents(slotValue);
+			int data = Terrain.ExtractData(slotValue);
+			if (blockId == BlocksManager.GetBlockIndex(typeof(AKBlock), true, false)) return AKBlock.GetBulletNum(data);
+			if (blockId == BlocksManager.GetBlockIndex(typeof(G3Block), true, false)) return G3Block.GetBulletNum(data);
+			if (blockId == BlocksManager.GetBlockIndex(typeof(Izh43Block), true, false)) return Izh43Block.GetBulletNum(data);
+			if (blockId == BlocksManager.GetBlockIndex(typeof(M4Block), true, false)) return M4Block.GetBulletNum(data);
+			if (blockId == BlocksManager.GetBlockIndex(typeof(Mac10Block), true, false)) return Mac10Block.GetBulletNum(data);
+			if (blockId == BlocksManager.GetBlockIndex(typeof(MinigunBlock), true, false)) return MinigunBlock.GetBulletNum(data);
+			if (blockId == BlocksManager.GetBlockIndex(typeof(SPAS12Block), true, false)) return SPAS12Block.GetBulletNum(data);
+			if (blockId == BlocksManager.GetBlockIndex(typeof(SWM500Block), true, false)) return SWM500Block.GetBulletNum(data);
+			if (blockId == BlocksManager.GetBlockIndex(typeof(UziBlock), true, false)) return UziBlock.GetBulletNum(data);
+			return 0;
+		}
+		private void ReloadFirearm(ComponentMiner componentMiner, int slotIndex, int slotValue)
+		{
+			int blockId = Terrain.ExtractContents(slotValue);
+			int data = Terrain.ExtractData(slotValue);
+			int maxCapacity = 0;
+			if (blockId == BlocksManager.GetBlockIndex(typeof(AKBlock), true, false)) maxCapacity = 30;
+			else if (blockId == BlocksManager.GetBlockIndex(typeof(G3Block), true, false)) maxCapacity = 30;
+			else if (blockId == BlocksManager.GetBlockIndex(typeof(Izh43Block), true, false)) maxCapacity = 2;
+			else if (blockId == BlocksManager.GetBlockIndex(typeof(M4Block), true, false)) maxCapacity = 22;
+			else if (blockId == BlocksManager.GetBlockIndex(typeof(Mac10Block), true, false)) maxCapacity = 30;
+			else if (blockId == BlocksManager.GetBlockIndex(typeof(MinigunBlock), true, false)) maxCapacity = 100;
+			else if (blockId == BlocksManager.GetBlockIndex(typeof(SPAS12Block), true, false)) maxCapacity = 8;
+			else if (blockId == BlocksManager.GetBlockIndex(typeof(SWM500Block), true, false)) maxCapacity = 5;
+			else if (blockId == BlocksManager.GetBlockIndex(typeof(UziBlock), true, false)) maxCapacity = 30;
+			if (maxCapacity > 0)
+			{
+				if (blockId == BlocksManager.GetBlockIndex(typeof(AKBlock), true, false)) data = AKBlock.SetBulletNum(maxCapacity);
+				else if (blockId == BlocksManager.GetBlockIndex(typeof(G3Block), true, false)) data = G3Block.SetBulletNum(maxCapacity);
+				else if (blockId == BlocksManager.GetBlockIndex(typeof(Izh43Block), true, false)) data = Izh43Block.SetBulletNum(maxCapacity);
+				else if (blockId == BlocksManager.GetBlockIndex(typeof(M4Block), true, false)) data = M4Block.SetBulletNum(maxCapacity);
+				else if (blockId == BlocksManager.GetBlockIndex(typeof(Mac10Block), true, false)) data = Mac10Block.SetBulletNum(maxCapacity);
+				else if (blockId == BlocksManager.GetBlockIndex(typeof(MinigunBlock), true, false)) data = MinigunBlock.SetBulletNum(maxCapacity);
+				else if (blockId == BlocksManager.GetBlockIndex(typeof(SPAS12Block), true, false)) data = SPAS12Block.SetBulletNum(maxCapacity);
+				else if (blockId == BlocksManager.GetBlockIndex(typeof(SWM500Block), true, false)) data = SWM500Block.SetBulletNum(maxCapacity);
+				else if (blockId == BlocksManager.GetBlockIndex(typeof(UziBlock), true, false)) data = UziBlock.SetBulletNum(maxCapacity);
+				int value2 = Terrain.MakeBlockValue(blockId, 0, data);
+				componentMiner.Inventory.RemoveSlotItems(slotIndex, 1);
+				componentMiner.Inventory.AddSlotItems(slotIndex, value2, 1);
+				if (this.m_subsystemAudio != null)
+				{
+					this.m_subsystemAudio.PlaySound("Audio/Armas/reload", 1f, this.m_random.Float(-0.1f, 0.1f), this.m_componentCreature.ComponentCreatureModel.EyePosition, 5f, true);
+				}
+			}
+		}
 		public bool FindHitTool(ComponentMiner componentMiner)
 		{
 			int activeBlockValue = componentMiner.ActiveBlockValue;
 			bool flag = componentMiner.Inventory == null;
-			if (flag)
-			{
-				return false;
-			}
-
+			if (flag) return false;
 			bool flag2 = BlocksManager.Blocks[Terrain.ExtractContents(activeBlockValue)].GetMeleePower(activeBlockValue) > 1f;
-			if (flag2)
-			{
-				return true;
-			}
-
+			if (flag2) return true;
 			float num = 1f;
 			int activeSlotIndex = 0;
 			for (int i = 0; i < 6; i++)
@@ -816,27 +805,21 @@ namespace Game
 					activeSlotIndex = i;
 				}
 			}
-
 			bool flag4 = num > 1f;
 			if (flag4)
 			{
 				componentMiner.Inventory.ActiveSlotIndex = activeSlotIndex;
 				return true;
 			}
-
 			return false;
 		}
-
-		// MÉTODO MEJORADO: Verificar defensa del jugador más rápido
 		private void CheckDefendPlayer(float dt)
 		{
 			try
 			{
 				ComponentNewHerdBehavior componentNewHerdBehavior = base.Entity.FindComponent<ComponentNewHerdBehavior>();
 				ComponentHerdBehavior componentHerdBehavior = base.Entity.FindComponent<ComponentHerdBehavior>();
-
 				bool isPlayerHerd = false;
-
 				if (componentNewHerdBehavior != null && !string.IsNullOrEmpty(componentNewHerdBehavior.HerdName))
 				{
 					isPlayerHerd = componentNewHerdBehavior.HerdName.Equals("player", StringComparison.OrdinalIgnoreCase);
@@ -845,17 +828,11 @@ namespace Game
 				{
 					isPlayerHerd = componentHerdBehavior.HerdName.Equals("player", StringComparison.OrdinalIgnoreCase);
 				}
-
-				if (!isPlayerHerd)
-				{
-					return;
-				}
-
-				// Verificación más frecuente
+				if (!isPlayerHerd) return;
 				bool flag3 = this.m_subsystemTime.GameTime < this.m_nextPlayerCheckTime;
 				if (!flag3)
 				{
-					this.m_nextPlayerCheckTime = this.m_subsystemTime.GameTime + 0.5; // Reducido de 1.0 a 0.5 segundos
+					this.m_nextPlayerCheckTime = this.m_subsystemTime.GameTime + 0.5;
 					foreach (ComponentPlayer componentPlayer in this.m_subsystemPlayers.ComponentPlayers)
 					{
 						bool flag4 = componentPlayer.ComponentHealth.Health > 0f;
@@ -871,20 +848,14 @@ namespace Game
 					}
 				}
 			}
-			catch
-			{
-			}
+			catch { }
 		}
-
 		private ComponentCreature FindPlayerAttacker(ComponentPlayer player)
 		{
 			try
 			{
 				bool flag = player == null || player.ComponentBody == null;
-				if (flag)
-				{
-					return null;
-				}
+				if (flag) return null;
 				Vector3 position = player.ComponentBody.Position;
 				float num = 20f;
 				float num2 = num * num;
@@ -899,49 +870,25 @@ namespace Game
 						{
 							ComponentNewHerdBehavior componentNewHerdBehavior = componentCreature.Entity.FindComponent<ComponentNewHerdBehavior>();
 							ComponentHerdBehavior componentHerdBehavior = componentCreature.Entity.FindComponent<ComponentHerdBehavior>();
-
 							bool isPlayerHerd = false;
-
-							if (componentNewHerdBehavior != null)
-							{
-								isPlayerHerd = componentNewHerdBehavior.HerdName.Equals("player", StringComparison.OrdinalIgnoreCase);
-							}
-							else if (componentHerdBehavior != null)
-							{
-								isPlayerHerd = componentHerdBehavior.HerdName.Equals("player", StringComparison.OrdinalIgnoreCase);
-							}
-
+							if (componentNewHerdBehavior != null) isPlayerHerd = componentNewHerdBehavior.HerdName.Equals("player", StringComparison.OrdinalIgnoreCase);
+							else if (componentHerdBehavior != null) isPlayerHerd = componentHerdBehavior.HerdName.Equals("player", StringComparison.OrdinalIgnoreCase);
 							if (!isPlayerHerd)
 							{
 								ComponentChaseBehavior componentChaseBehavior = componentCreature.Entity.FindComponent<ComponentChaseBehavior>();
 								ComponentNewChaseBehavior componentNewChaseBehavior = componentCreature.Entity.FindComponent<ComponentNewChaseBehavior>();
-
 								bool isAttackingPlayer = false;
-
-								if (componentChaseBehavior != null && componentChaseBehavior.Target == player)
-								{
-									isAttackingPlayer = true;
-								}
-								else if (componentNewChaseBehavior != null && componentNewChaseBehavior.Target == player)
-								{
-									isAttackingPlayer = true;
-								}
-
-								if (isAttackingPlayer)
-								{
-									return componentCreature;
-								}
+								if (componentChaseBehavior != null && componentChaseBehavior.Target == player) isAttackingPlayer = true;
+								else if (componentNewChaseBehavior != null && componentNewChaseBehavior.Target == player) isAttackingPlayer = true;
+								if (isAttackingPlayer) return componentCreature;
 							}
 						}
 					}
 				}
 			}
-			catch
-			{
-			}
+			catch { }
 			return null;
 		}
-
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
 			this.m_subsystemGameInfo = base.Project.FindSubsystem<SubsystemGameInfo>(true);
@@ -951,6 +898,9 @@ namespace Game
 			this.m_subsystemTime = base.Project.FindSubsystem<SubsystemTime>(true);
 			this.m_subsystemNoise = base.Project.FindSubsystem<SubsystemNoise>(true);
 			this.m_subsystemCreatureSpawn = base.Project.FindSubsystem<SubsystemCreatureSpawn>(true);
+			this.m_subsystemAudio = base.Project.FindSubsystem<SubsystemAudio>(true);
+			this.m_subsystemParticles = base.Project.FindSubsystem<SubsystemParticles>(true);
+			this.m_subsystemTerrain = base.Project.FindSubsystem<SubsystemTerrain>(true);
 			this.m_componentCreature = base.Entity.FindComponent<ComponentCreature>(true);
 			this.m_componentPathfinding = base.Entity.FindComponent<ComponentPathfinding>(true);
 			this.m_componentMiner = base.Entity.FindComponent<ComponentMiner>(true);
@@ -964,14 +914,8 @@ namespace Game
 			this.m_nightChaseRange = valuesDictionary.GetValue<float>("NightChaseRange");
 			this.m_dayChaseTime = valuesDictionary.GetValue<float>("DayChaseTime");
 			this.m_nightChaseTime = valuesDictionary.GetValue<float>("NightChaseTime");
-			try
-			{
-				this.m_autoChaseMask = valuesDictionary.GetValue<CreatureCategory>("AutoChaseMask");
-			}
-			catch
-			{
-				this.m_autoChaseMask = (CreatureCategory)0;
-			}
+			try { this.m_autoChaseMask = valuesDictionary.GetValue<CreatureCategory>("AutoChaseMask"); }
+			catch { this.m_autoChaseMask = (CreatureCategory)0; }
 			this.m_chaseNonPlayerProbability = valuesDictionary.GetValue<float>("ChaseNonPlayerProbability");
 			this.m_chaseWhenAttackedProbability = valuesDictionary.GetValue<float>("ChaseWhenAttackedProbability");
 			this.m_chaseOnTouchProbability = valuesDictionary.GetValue<float>("ChaseOnTouchProbability");
@@ -1098,7 +1042,7 @@ namespace Game
 				{
 					this.m_componentCreature.ComponentCreatureSounds.PlayIdleSound(false);
 				}
-				this.m_nextUpdateTime = 0.0; // Forzar actualización inmediata
+				this.m_nextUpdateTime = 0.0;
 			}, delegate
 			{
 				bool flag = !this.IsActive;
@@ -1184,12 +1128,8 @@ namespace Game
 											Vector3 vector = 0.5f * (boundingBox2.Min + boundingBox2.Max);
 											float num = Vector3.Distance(v, vector);
 											float num2 = (num < 4f) ? 0.2f : 0f;
-
-											bool hasOriginalHerd = base.Entity.FindComponent<ComponentHerdBehavior>() != null &&
-																   base.Entity.FindComponent<ComponentNewHerdBehavior>() == null;
-											bool flag10 = (this.m_attackMode != ComponentNewChaseBehavior.AttackMode.OnlyHand && num > 5f && this.FindAimTool(this.m_componentMiner)) ||
-														   (hasOriginalHerd && num > 5f && this.FindAimTool(this.m_componentMiner));
-
+											bool hasOriginalHerd = base.Entity.FindComponent<ComponentHerdBehavior>() != null && base.Entity.FindComponent<ComponentNewHerdBehavior>() == null;
+											bool flag10 = (this.m_attackMode != ComponentNewChaseBehavior.AttackMode.OnlyHand && num > 5f && this.FindAimTool(this.m_componentMiner)) || (hasOriginalHerd && num > 5f && this.FindAimTool(this.m_componentMiner));
 											if (flag10)
 											{
 												float num3;
@@ -1215,7 +1155,21 @@ namespace Game
 													}
 													else
 													{
-														this.m_componentPathfinding.Destination = null;
+														if (!this.IsFirearmActive())
+														{
+															this.m_componentPathfinding.Destination = null;
+														}
+														else
+														{
+															float desiredDistance = (this.m_attackRange.X + this.m_attackRange.Y) * 0.5f;
+															if (Math.Abs(num3 - desiredDistance) > 2f)
+															{
+																Vector3 toTarget = this.m_target.ComponentBody.Position - this.m_componentCreature.ComponentBody.Position;
+																Vector3 direction = Vector3.Normalize(toTarget);
+																Vector3 destination = this.m_target.ComponentBody.Position - direction * desiredDistance;
+																this.m_componentPathfinding.SetDestination(new Vector3?(destination), 1f, 1.5f, maxPathfindingPositions, true, false, true, this.m_target.ComponentBody);
+															}
+														}
 													}
 												}
 												else
@@ -1246,7 +1200,6 @@ namespace Game
 			}, null);
 			this.m_stateMachine.TransitionTo("LookingForTarget");
 		}
-
 		public virtual ComponentCreature FindTarget()
 		{
 			Vector3 position = this.m_componentCreature.ComponentBody.Position;
@@ -1286,7 +1239,6 @@ namespace Game
 			}
 			return result;
 		}
-
 		public virtual float ScoreTarget(ComponentCreature componentCreature)
 		{
 			float result = 0f;
@@ -1294,10 +1246,8 @@ namespace Game
 			bool flag2 = componentCreature == this.Target || this.m_subsystemGameInfo.WorldSettings.GameMode > GameMode.Harmless;
 			bool flag3 = this.m_autoChaseMask > (CreatureCategory)0;
 			bool flag4 = componentCreature == this.Target || (flag3 && MathUtils.Remainder(0.004999999888241291 * this.m_subsystemTime.GameTime + (double)((float)(this.GetHashCode() % 1000) / 1000f) + (double)((float)(componentCreature.GetHashCode() % 1000) / 1000f), 1.0) < (double)this.m_chaseNonPlayerProbability);
-
 			ComponentNewHerdBehavior componentNewHerdBehavior = base.Entity.FindComponent<ComponentNewHerdBehavior>();
 			bool flag5 = true;
-
 			if (componentNewHerdBehavior != null)
 			{
 				flag5 = componentNewHerdBehavior.CanAttackCreature(componentCreature);
@@ -1314,7 +1264,6 @@ namespace Game
 					}
 				}
 			}
-
 			bool flag6 = componentCreature != this.m_componentCreature && flag5 && ((!flag && flag4) || (flag && flag2)) && componentCreature.Entity.IsAddedToProject && componentCreature.ComponentHealth.Health > 0f;
 			if (flag6)
 			{
@@ -1327,12 +1276,10 @@ namespace Game
 			}
 			return result;
 		}
-
 		public virtual bool IsTargetInWater(ComponentBody target)
 		{
 			return target.ImmersionDepth > 0f || (target.ParentBody != null && this.IsTargetInWater(target.ParentBody)) || (target.StandingOnBody != null && target.StandingOnBody.Position.Y < target.Position.Y && this.IsTargetInWater(target.StandingOnBody));
 		}
-
 		public virtual bool IsTargetInAttackRange(ComponentBody target)
 		{
 			bool flag = this.IsBodyInAttackRange(target);
@@ -1372,7 +1319,6 @@ namespace Game
 			}
 			return result;
 		}
-
 		public virtual bool IsBodyInAttackRange(ComponentBody target)
 		{
 			BoundingBox boundingBox = this.m_componentCreature.ComponentBody.BoundingBox;
@@ -1402,7 +1348,6 @@ namespace Game
 			}
 			return false;
 		}
-
 		public virtual ComponentBody GetHitBody(ComponentBody target, out Vector3 hitPoint)
 		{
 			Vector3 vector = this.m_componentCreature.ComponentBody.BoundingBox.Center();
@@ -1423,7 +1368,6 @@ namespace Game
 			}
 			return result;
 		}
-
 		public SubsystemGameInfo m_subsystemGameInfo;
 		public SubsystemPlayers m_subsystemPlayers;
 		public SubsystemSky m_subsystemSky;
@@ -1431,6 +1375,9 @@ namespace Game
 		public SubsystemTime m_subsystemTime;
 		public SubsystemNoise m_subsystemNoise;
 		public SubsystemCreatureSpawn m_subsystemCreatureSpawn;
+		public SubsystemAudio m_subsystemAudio;
+		public SubsystemParticles m_subsystemParticles;
+		public SubsystemTerrain m_subsystemTerrain;
 		public ComponentCreature m_componentCreature;
 		public ComponentPathfinding m_componentPathfinding;
 		public ComponentMiner m_componentMiner;
@@ -1481,7 +1428,6 @@ namespace Game
 		public bool PlayIdleSoundWhenStartToChase = true;
 		public bool PlayAngrySoundWhenChasing = true;
 		public float TargetInRangeTimeToChase = 3f;
-
 		public enum AttackMode
 		{
 			Default,
