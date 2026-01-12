@@ -357,7 +357,21 @@ namespace Game
 			if (this.m_componentMiner == null || this.m_componentMiner.ActiveBlockValue == 0)
 				return false;
 			int blockId = Terrain.ExtractContents(this.m_componentMiner.ActiveBlockValue);
-			return blockId == BlocksManager.GetBlockIndex(typeof(AKBlock), true, false) || blockId == BlocksManager.GetBlockIndex(typeof(G3Block), true, false) || blockId == BlocksManager.GetBlockIndex(typeof(Izh43Block), true, false) || blockId == BlocksManager.GetBlockIndex(typeof(M4Block), true, false) || blockId == BlocksManager.GetBlockIndex(typeof(Mac10Block), true, false) || blockId == BlocksManager.GetBlockIndex(typeof(MinigunBlock), true, false) || blockId == BlocksManager.GetBlockIndex(typeof(SPAS12Block), true, false) || blockId == BlocksManager.GetBlockIndex(typeof(SWM500Block), true, false) || blockId == BlocksManager.GetBlockIndex(typeof(UziBlock), true, false);
+			return blockId == BlocksManager.GetBlockIndex(typeof(AKBlock), true, false) ||
+				blockId == BlocksManager.GetBlockIndex(typeof(G3Block), true, false) ||
+				blockId == BlocksManager.GetBlockIndex(typeof(Izh43Block), true, false) ||
+				blockId == BlocksManager.GetBlockIndex(typeof(M4Block), true, false) ||
+				blockId == BlocksManager.GetBlockIndex(typeof(Mac10Block), true, false) ||
+				blockId == BlocksManager.GetBlockIndex(typeof(MinigunBlock), true, false) ||
+				blockId == BlocksManager.GetBlockIndex(typeof(SPAS12Block), true, false) ||
+				blockId == BlocksManager.GetBlockIndex(typeof(SWM500Block), true, false) ||
+				blockId == BlocksManager.GetBlockIndex(typeof(UziBlock), true, false) ||
+				// Nuevas armas añadidas
+				blockId == BlocksManager.GetBlockIndex(typeof(AUGBlock), true, false) ||
+				blockId == BlocksManager.GetBlockIndex(typeof(P90Block), true, false) ||
+				blockId == BlocksManager.GetBlockIndex(typeof(SCARBlock), true, false) ||
+				blockId == BlocksManager.GetBlockIndex(typeof(RevolverBlock), true, false) ||
+				blockId == BlocksManager.GetBlockIndex(typeof(FamasBlock), true, false);
 		}
 		private bool HasActiveRangedWeaponComponent()
 		{
@@ -603,7 +617,21 @@ namespace Game
 		private bool IsFirearmBlock(int blockValue)
 		{
 			int blockId = Terrain.ExtractContents(blockValue);
-			return blockId == BlocksManager.GetBlockIndex(typeof(AKBlock), true, false) || blockId == BlocksManager.GetBlockIndex(typeof(G3Block), true, false) || blockId == BlocksManager.GetBlockIndex(typeof(Izh43Block), true, false) || blockId == BlocksManager.GetBlockIndex(typeof(M4Block), true, false) || blockId == BlocksManager.GetBlockIndex(typeof(Mac10Block), true, false) || blockId == BlocksManager.GetBlockIndex(typeof(MinigunBlock), true, false) || blockId == BlocksManager.GetBlockIndex(typeof(SPAS12Block), true, false) || blockId == BlocksManager.GetBlockIndex(typeof(SWM500Block), true, false) || blockId == BlocksManager.GetBlockIndex(typeof(UziBlock), true, false);
+			return blockId == BlocksManager.GetBlockIndex(typeof(AKBlock), true, false) ||
+				blockId == BlocksManager.GetBlockIndex(typeof(G3Block), true, false) ||
+				blockId == BlocksManager.GetBlockIndex(typeof(Izh43Block), true, false) ||
+				blockId == BlocksManager.GetBlockIndex(typeof(M4Block), true, false) ||
+				blockId == BlocksManager.GetBlockIndex(typeof(Mac10Block), true, false) ||
+				blockId == BlocksManager.GetBlockIndex(typeof(MinigunBlock), true, false) ||
+				blockId == BlocksManager.GetBlockIndex(typeof(SPAS12Block), true, false) ||
+				blockId == BlocksManager.GetBlockIndex(typeof(SWM500Block), true, false) ||
+				blockId == BlocksManager.GetBlockIndex(typeof(UziBlock), true, false) ||
+				// Nuevas armas añadidas
+				blockId == BlocksManager.GetBlockIndex(typeof(AUGBlock), true, false) ||
+				blockId == BlocksManager.GetBlockIndex(typeof(P90Block), true, false) ||
+				blockId == BlocksManager.GetBlockIndex(typeof(SCARBlock), true, false) ||
+				blockId == BlocksManager.GetBlockIndex(typeof(RevolverBlock), true, false) ||
+				blockId == BlocksManager.GetBlockIndex(typeof(FamasBlock), true, false);
 		}
 		public bool IsReady(int slotValue)
 		{
@@ -749,6 +777,12 @@ namespace Game
 			if (blockId == BlocksManager.GetBlockIndex(typeof(SPAS12Block), true, false)) return SPAS12Block.GetBulletNum(data);
 			if (blockId == BlocksManager.GetBlockIndex(typeof(SWM500Block), true, false)) return SWM500Block.GetBulletNum(data);
 			if (blockId == BlocksManager.GetBlockIndex(typeof(UziBlock), true, false)) return UziBlock.GetBulletNum(data);
+			// Nuevas armas añadidas
+			if (blockId == BlocksManager.GetBlockIndex(typeof(AUGBlock), true, false)) return AUGBlock.GetBulletNum(data);
+			if (blockId == BlocksManager.GetBlockIndex(typeof(P90Block), true, false)) return P90Block.GetBulletNum(data);
+			if (blockId == BlocksManager.GetBlockIndex(typeof(SCARBlock), true, false)) return SCARBlock.GetBulletNum(data);
+			if (blockId == BlocksManager.GetBlockIndex(typeof(RevolverBlock), true, false)) return RevolverBlock.GetBulletNum(data);
+			if (blockId == BlocksManager.GetBlockIndex(typeof(FamasBlock), true, false)) return FamasBlock.GetBulletNum(data);
 			return 0;
 		}
 		private void ReloadFirearm(ComponentMiner componentMiner, int slotIndex, int slotValue)
@@ -765,6 +799,13 @@ namespace Game
 			else if (blockId == BlocksManager.GetBlockIndex(typeof(SPAS12Block), true, false)) maxCapacity = 8;
 			else if (blockId == BlocksManager.GetBlockIndex(typeof(SWM500Block), true, false)) maxCapacity = 5;
 			else if (blockId == BlocksManager.GetBlockIndex(typeof(UziBlock), true, false)) maxCapacity = 30;
+			// Nuevas armas añadidas
+			else if (blockId == BlocksManager.GetBlockIndex(typeof(AUGBlock), true, false)) maxCapacity = 30;
+			else if (blockId == BlocksManager.GetBlockIndex(typeof(P90Block), true, false)) maxCapacity = 50;
+			else if (blockId == BlocksManager.GetBlockIndex(typeof(SCARBlock), true, false)) maxCapacity = 30;
+			else if (blockId == BlocksManager.GetBlockIndex(typeof(RevolverBlock), true, false)) maxCapacity = 6;
+			else if (blockId == BlocksManager.GetBlockIndex(typeof(FamasBlock), true, false)) maxCapacity = 30;
+
 			if (maxCapacity > 0)
 			{
 				if (blockId == BlocksManager.GetBlockIndex(typeof(AKBlock), true, false)) data = AKBlock.SetBulletNum(maxCapacity);
@@ -776,6 +817,13 @@ namespace Game
 				else if (blockId == BlocksManager.GetBlockIndex(typeof(SPAS12Block), true, false)) data = SPAS12Block.SetBulletNum(maxCapacity);
 				else if (blockId == BlocksManager.GetBlockIndex(typeof(SWM500Block), true, false)) data = SWM500Block.SetBulletNum(maxCapacity);
 				else if (blockId == BlocksManager.GetBlockIndex(typeof(UziBlock), true, false)) data = UziBlock.SetBulletNum(maxCapacity);
+				// Nuevas armas añadidas
+				else if (blockId == BlocksManager.GetBlockIndex(typeof(AUGBlock), true, false)) data = AUGBlock.SetBulletNum(maxCapacity);
+				else if (blockId == BlocksManager.GetBlockIndex(typeof(P90Block), true, false)) data = P90Block.SetBulletNum(maxCapacity);
+				else if (blockId == BlocksManager.GetBlockIndex(typeof(SCARBlock), true, false)) data = SCARBlock.SetBulletNum(maxCapacity);
+				else if (blockId == BlocksManager.GetBlockIndex(typeof(RevolverBlock), true, false)) data = RevolverBlock.SetBulletNum(data, maxCapacity);
+				else if (blockId == BlocksManager.GetBlockIndex(typeof(FamasBlock), true, false)) data = FamasBlock.SetBulletNum(data, maxCapacity);
+
 				int value2 = Terrain.MakeBlockValue(blockId, 0, data);
 				componentMiner.Inventory.RemoveSlotItems(slotIndex, 1);
 				componentMiner.Inventory.AddSlotItems(slotIndex, value2, 1);
