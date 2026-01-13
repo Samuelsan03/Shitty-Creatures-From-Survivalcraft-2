@@ -37,7 +37,34 @@
   },
   "Database": {
     "DisplayName": {
+      "Bandit7": "Bandido 7",
+      "Bandit6": "Bandido 6",
+      "Bandit5": "Bandido 5",
+      "Bandit4": "Bandido 4",
+      "MachineGunInfectedTamed": "Infectado Ametrallador Aliado",
+      "MachineGunInfected": "Infectado Ametrallador",
+      "Bandit3": "Bandido 3",
+      "Bandit2": "Bandido 2",
+      "Bandit1": "Bandido 1",
       "LiderCalavericoSupremo": "Líder Calavérico Supremo",
+      "TankGhostTamed1": "Tank Fantasma Aliado",
+      "TankGhost2": "Tank Fantasma 2",
+      "TankGhost3": "Tank Fantasma 3",
+      "TankGhostTamed2": "Tank Fantasma Aliado 2",
+      "TankGhostTamed3": "Tank Fantasma Aliado 3",
+      "TankGhost1": "Tank Fantasma",
+      "GhostChargerTamed": "Charger Fantasma Aliado",
+      "GhostCharger": "Charger Fantasma",
+      "GhostBoomer1": "Boomer Fantasma 1",
+      "GhostBoomer2": "Boomer Fantasma 2",
+      "GhostBoomer3": "Boomer Fantasma 3",
+      "GhostBoomerTamed1": "Boomer Fantasma Aliado 1",
+      "GhostBoomerTamed2": "Boomer Fantasma Aliado 2",
+      "GhostBoomerTamed3": "Boomer Fantasma Aliado 3",
+      "PoisonousGhostTamed": "Fantasma Venenoso Aliado",
+      "PoisonousGhost": "Fantasma Venenoso",
+      "GhostFastTamed": "Fantasma Veloz Aliado",
+      "GhostFast": "Fantasma Veloz",
       "GhostNormalTamed": "Fantasma Aliado",
       "GhostNormal": "Fantasma",
       "Tank1": "Tank 1",
@@ -128,9 +155,16 @@
       "WalterZombieMamadisimo": "Walter Zombie Mamadísimo",
       "ZombieRepetidor": "Zombie Repetidor",
       "CamisasMorenas": "Camisas Morenas",
-      "RichardFiedler": "Richard"
+      "Richard": "Richard"
     },
     "Description": {
+      "MachineGunInfected": "¿Crees que al derrotar a los jefes finales como los Tanks normales y los Tanks fantasmales estarás libre de todo? Estás equivocado: este es el verdadero último jefe final. El Infectado Ametrallador es un infectado especial que, a diferencia de los demás, aprendió a manejar armas de fuego pesadas, en particular la Minigun. Al verte como presa se convierte en un peligro extremo, pues con su ametralladora en mano disparará sin descanso hasta acabar contigo. Forma parte del grupo de infectados, y enfrentarlo junto a su escuadrón es prácticamente un suicidio: si atacas a sus compañeros, no durarás nada. Es más resistente y fuerte que el infectado musculoso, y aparece en el día 95 durante la noche, cuando se supone que ya cuentas con todo tu arsenal, armaduras y guardianes preparados. El diseño de este jefe está inspirado en Hambone, del arcade CarnEvil (1998), ya que su piel, máscara, vestimenta y arma guardan un inquietante parecido, como si fueran hermanos gemelos con destinos distintos. Aun así, puede ser domesticado mediante el collar zombi, convirtiéndose en un guardián experto en armas de fuego. Bajo tu control, su Minigun será tu defensa más brutal… aunque siempre existe el riesgo de que su poder desmedido se vuelva contra ti.",
+      "GhostCharger": "El Charger Fantasma es una variante espectral del infectado Charger, conocido por su capacidad de embestir con gran fuerza. A diferencia del Charger común, este posee una resistencia superior y una habilidad de embestida aún más devastadora, capaz de derribar a múltiples enemigos con un solo ataque. Su naturaleza fantasmal le otorga una velocidad impresionante, permitiéndole cerrar distancias rápidamente y sorprender a sus víctimas. La invisibilidad parcial que lo rodea lo convierte en un enemigo impredecible, obligando al jugador a estar siempre alerta. Para enfrentarlo se requieren armaduras de máxima resistencia y armas de gran poder capaces de soportar sus ataques brutales. Al igual que otros infectados, puede ser domesticado mediante el collar zombi, transformándose en un guardián espectral. Sin embargo, controlar un aliado tan agresivo es un riesgo: su poder puede ser tu mayor ventaja… o la causa de tu perdición.",
+      "TankGhost1": "El Tank Fantasma es una variante espectral del infectado más temido. A diferencia del Tank común, este posee una fuerza aún más devastadora y una resistencia superior, capaz de destrozar armaduras y derribar a cualquier enemigo con un solo golpe. Su musculatura descomunal se combina con su naturaleza fantasmal, lo que lo hace más difícil de anticipar y más peligroso en combate. Su habilidad más aterradora es lanzar rocas fantasmales, proyectiles que atraviesan el aire con violencia y pueden decidir el enfrentamiento en un instante. La invisibilidad parcial que lo rodea lo convierte en un enemigo impredecible, obligando al jugador a estar siempre alerta. Para enfrentarlo se requieren armaduras de máxima resistencia y armas de gran poder capaces de soportar sus ataques brutales. Al igual que otros infectados, puede ser domesticado mediante el collar zombi, transformándose en un guardián espectral. Sin embargo, controlar un aliado tan destructivo es un riesgo: su poder puede ser tu mayor ventaja… o la causa de tu perdición.",
+      "GhostBoomer1": "El Boomer Fantasma es una criatura espectral de gran tamaño, cuya apariencia grotesca se oculta gracias a su invisibilidad, lo que lo hace difícil de detectar. Su mayor peligro radica en que, al ser eliminado, libera una explosión ectoplásmica capaz de destrozar todo lo que se encuentre cerca. Esto convierte cada enfrentamiento en un riesgo mortal: matarlo demasiado cerca puede acabar contigo y con tus aliados. Algunos relatos aseguran que, mediante el collar zombi, puede ser domesticado y convertirse en un guardián. Sin embargo, incluso bajo tu control, siempre existe el riesgo de que su explosión termine destruyendo a quienes lo rodean. Domarlo es una apuesta peligrosa, reservada para quienes aceptan vivir al filo del desastre.",
+      "PoisonousGhost": "El Fantasma Venenoso, al igual que el fantasma normal, comparte la misma naturaleza espectral, pero su habilidad principal es el veneno. Es capaz de infectar y debilitar a sus víctimas con cada ataque, causando un daño progresivo que se acumula con el tiempo. Su rasgo más peligroso sigue siendo la invisibilidad, lo que dificulta localizarlo en el entorno. La única manera de detectar su presencia y anticipar un ataque es a través de los sonidos que emite y la música de persecución que lo acompaña. Al igual que otros infectados, puede ser domesticado mediante el collar zombie, convirtiéndose en un guardián letal a tu servicio.",
+      "GhostFast": "El Fantasma Veloz es similar al Fantasma Normal, pero su habilidad principal es la velocidad. Corre más rápido que cualquier otra criatura similar, lo que lo convierte en un enemigo difícil de evadir. Su característica más peligrosa es la invisibilidad, que dificulta enormemente la detección de su ubicación. La única forma de percibirlo y anticipar sus ataques es a través de los sonidos que emite, especialmente la música de persecución que lo acompaña. Al igual que otros infectados, también puede ser domesticado mediante el collar zombi, convirtiéndose en tu guardián.",
+      "Bandit1": "Un bandido es un humano peligroso: nunca sabes con qué te encontrarás. Es un grave error subestimarlo pensando que podría ayudarte, ya que si te ve puede matarte sin dudar. Existen dos tipos: los que usan armas de fuego y los que portan armas cuerpo a cuerpo. Ambos son letales, pero si logras derrotarlos podrás quedarte con sus armas y usarlas como propias. Sin embargo, no todos son hostiles: algunos pueden ofrecerte un trato para convertirse en tus guardianes, y si aceptas, podrán protegerte.",
       "GhostNormal": "El Fantasma es un infectado especial que pertenece al grupo de los infectados. Su habilidad única es la opacidad: apenas puede distinguirse su silueta, lo que lo convierte en un cazador letal y casi invisible. Si intenta matarte o logra atraparte, será tu mayor peligro, pues rara vez sabrás dónde se encuentra. Al igual que los infectados normales y los musculosos, también puede usar armas cuerpo a cuerpo y de distancia, lo que lo hace aún más impredecible. Su invisibilidad lo convierte en el enemigo más peligroso cuando desconoces su ubicación, y la única manera de detectarlo es por los sonidos que emite o por la música de tensión que anuncia su presencia. El Fantasma aparece en el día 4 durante la noche, siempre acechando en las sombras. No debes confiarte: enfrentarlo significa decidir entre refugiarte para evitar una muerte segura, idear trampas ingeniosas como pinchos para atraparlo, o domesticarlo con el collar zombi y convertirlo en tu esclavo invisible. Sin embargo, un Fantasma domesticado es un arma de doble filo, pues su invisibilidad puede ser tu mayor ventaja o tu perdición si pierde el control y se vuelve contra ti. Solo los más astutos logran aprovecharlo sin caer en su propia trampa.",
       "Tank1": "El Tank es un infectado especial que supera en fuerza y resistencia a cualquier otro. Su musculatura descomunal le permite matar de un solo golpe, y lo más letal es su capacidad de lanzar rocas misteriosas: si una de ellas te alcanza, tu destino está sellado. Se le llama así porque, al igual que un tanque de guerra, posee una resistencia casi impenetrable y una fuerza devastadora. Aparece en el día 41, a cualquier hora, ya sea de día o de noche, y siempre en solitario, lo que lo convierte en un desafío único. Para enfrentarlo necesitarás armaduras resistentes y armas poderosas capaces de soportar sus ataques brutales. Al igual que otros infectados, su furia puede ser calmada mediante el collar zombi, lo que te permitirá domesticarlo y convertirlo en tu esclavo protector. ¿Podrás aprovechar las ventajas de tener un Tank bajo tu control? Recuerda que su poder es inmenso, pero también difícil de manejar: un aliado tan destructivo puede ser tu mayor arma… o tu perdición.",
       "Charger1": "El Charger es otro tipo de infectado, reconocido por su brazo descomunalmente grueso y poderoso en un costado, mientras que el otro permanece normal. Su ataque más letal consiste en embestir con una fuerza brutal, capaz no solo de matarte, sino de lanzarte con la violencia de un jugador de fútbol americano. Aparece en el día 19 durante la noche, siempre en pareja, lo que aumenta el peligro. Prepárate con buenas armas para enfrentarlos o consigue el collar zombi, pues la leyenda dice que con él podrás domesticarlos y convertirlos en tus guardianes.",
@@ -219,6 +253,30 @@
     }
   },
   "Blocks": {
+    "LavaLongspearBlock:0": {
+      "DisplayName": "Lanza Larga de Lava",
+      "Description": "La Lanza Larga de Lava es la cúspide absoluta de las armas cuerpo a cuerpo. Forjada con energía volcánica y materiales indestructibles, supera ampliamente a la de diamante en daño y durabilidad. Su filo ardiente no solo inflige heridas devastadoras, sino que también quema a los enemigos con cada impacto, convirtiéndola en un arma temida incluso por los jefes más poderosos. Con un alcance extendido y una resistencia prácticamente infinita, esta lanza es el símbolo máximo de poder y supervivencia. Solo los más preparados pueden blandirla con eficacia."
+    },
+    "DiamondLongspearBlock:0": {
+      "DisplayName": "Lanza Larga de Diamante",
+      "Description": "La Lanza Larga de Diamante es la culminación de la línea de lanzas, superando ampliamente a las de madera, piedra, cobre e hierro. Su punta de diamante le otorga un daño devastador y una durabilidad excepcional, capaz de resistir los combates más intensos sin perder eficacia. Además de su alcance extendido, esta arma combina potencia y resistencia, convirtiéndose en una herramienta definitiva para mantener a los enemigos a raya y dominar el campo de batalla. Es considerada una de las armas más letales y prestigiosas que un jugador puede obtener."
+    },
+    "IronLongspearBlock:0": {
+      "DisplayName": "Lanza Larga de Hierro",
+      "Description": "La Lanza Larga de Hierro es un arma mucho más avanzada que sus predecesoras de madera, piedra y cobre. Su punta forjada en hierro le otorga alto daño y una durabilidad considerable, convirtiéndola en una herramienta letal para combates prolongados. A diferencia de las versiones anteriores, esta lanza no solo ofrece un alcance extendido, sino también una resistencia capaz de soportar enfrentamientos intensos. Es una de las primeras armas que realmente puede considerarse de nivel intermedio, ideal para jugadores que buscan mayor poder ofensivo y fiabilidad en el campo de batalla."
+    },
+    "CopperLongspearBlock:0": {
+      "DisplayName": "Lanza Larga de Cobre",
+      "Description": "La Lanza Larga de Cobre representa un avance significativo respecto a las versiones de madera y piedra. Su punta metálica le otorga más daño y una durabilidad superior, convirtiéndola en un arma mucho más confiable para combates prolongados. Aunque sigue siendo relativamente básica frente a armas de hierro o acero, su alcance extendido y su resistencia hacen que sea una herramienta táctica ideal para mantener a los enemigos a raya. Es la primera lanza que realmente marca una mejora notable en tu arsenal."
+    },
+    "StoneLongspearBlock:0": {
+      "DisplayName": "Lanza Larga de Piedra",
+      "Description": "La Lanza Larga de Piedra es una evolución de la lanza de madera, más resistente y con un filo improvisado en su punta. A diferencia de la versión básica, esta arma inflige más daño y posee una durabilidad superior, lo que la convierte en una opción confiable para combates prolongados. Su mayor tamaño y alcance permiten mantener a los enemigos a distancia, ofreciendo una ventaja táctica en enfrentamientos cuerpo a cuerpo."
+    },
+    "WoodenLongspearBlock:0": {
+      "DisplayName": "Lanza Larga de Madera",
+      "Description": "La Lanza Larga de Madera es una variante más grande y extensa que la lanza de madera original. Aunque su daño es moderado y su durabilidad limitada, ofrece un alcance superior que permite mantener a los enemigos a mayor distancia. Es una opción básica pero táctica para quienes buscan defenderse en combate cuerpo a cuerpo con una herramienta sencilla y confiable."
+    },
     "CopperSharpHammerBlock:0": {
   "DisplayName": "Martillo de Cobre Afilado",
   "Description": "El Martillo Afilado de Cobre es un arma poderosa. A primera vista parece una simple herramienta de trabajo, pero en realidad su letalidad supera a la del machete de cobre. Aunque no es tan resistente como el machete, es más alto y mucho más mortal, capaz de asestar golpes devastadores que lo convierten en una de las armas de cobre más peligrosas."
@@ -395,7 +453,127 @@
     "RepeatArrow:5": {
       "DisplayName": "Virote de Veneno Grave Repetidor",
       "Description": "Virote fuertemente envenenado para ballestas repetidoras. Aplica un efecto de veneno más intenso y prolongado (100 segundos) con daño inicial bajo (4 de daño). El mecanismo de la repetidora permite aplicar veneno grave rápidamente a múltiples objetivos, debilitando grupos sin matarlos directamente."
-    }
+    },
+    "AKBlock:0": {
+    "DisplayName": "AK-47",
+    "Description": "Fusil de asalto legendario que dispara balas 7.62×39mm. Buena precisión, retroceso moderado. Usa munición AK47Bullet. ~350 disparos por minuto."
+  },
+  "AUGBlock:0": {
+    "DisplayName": "Steyr AUG",
+    "Description": "Fusil de asalto bullpup con bajo retroceso. Usa 5.56×45mm OTAN. Cicla automáticamente entre 6 tipos de balas diferentes. Mira óptica integrada."
+  },
+  "FamasBlock:0": {
+    "DisplayName": "FAMAS F1",
+    "Description": "Bullpup francés con alta cadencia de fuego (~667 RPM). Usa proyectiles NuevaBala4. Diseño compacto con buena controlabilidad."
+  },
+  "G3Block:0": {
+    "DisplayName": "FX05 Xiuhcoatl",
+    "Description": "Fusil de asalto mexicano (FX05 Xiuhcoatl) que dispara balas potentes. Usa proyectiles NuevaBala. Buena cadencia de fuego y precisión."
+  },
+  "Izh43Block:0": {
+    "DisplayName": "Escopeta IZH-43",
+    "Description": "Escopeta de dos cañones que dispara 8 perdigones por disparo. Devastadora a corta distancia. Capacidad de 2 cartuchos, usa Izh43Bullet."
+  },
+  "M4Block:0": {
+    "DisplayName": "Carabina M4",
+    "Description": "Carabina 5.56×45mm que dispara ráfagas de 3 balas. Usa proyectiles NuevaBala2. Cargador de 22 balas, excelente modularidad."
+  },
+  "Mac10Block:0": {
+    "DisplayName": "MAC-10",
+    "Description": "Pistola ametralladora compacta con cadencia de fuego extrema (~600 RPM). Usa proyectiles NuevaBala3. Retroceso intenso, cargador de 30 balas."
+  },
+  "MinigunBlock:0": {
+    "DisplayName": "Minigun",
+    "Description": "Ametralladora rotativa que dispara proyectiles NuevaBala6 a ~750 RPM. Capacidad de 100 balas, arma de supresión devastadora."
+  },
+  "P90Block:0": {
+    "DisplayName": "FN P90",
+    "Description": "Arma de defensa personal bullpup con 900 RPM de cadencia. Cicla entre 6 tipos de balas. Cargador de 50 balas, calibre 5.7×28mm."
+  },
+  "RevolverBlock:0": {
+    "DisplayName": "Revólver",
+    "Description": "Revólver clásico que dispara potentes tiros únicos. Usa proyectiles NuevaBala4. Tambor de 6 balas, alto poder de parada."
+  },
+  "SCARBlock:0": {
+    "DisplayName": "FN SCAR",
+    "Description": "Fusil de batalla modular con excelente precisión. Cicla entre 6 tipos de balas. 600 RPM, cargador de 30 balas."
+  },
+  "SPAS12Block:0": {
+    "DisplayName": "Escopeta de Combate SPAS-12",
+    "Description": "Escopeta de combate que dispara 8 perdigones por disparo. Capacidad de 8 cartuchos. Puede disparar en modo bombeo o semiautomático."
+  },
+  "SWM500Block:0": {
+    "DisplayName": "Desert Eagle",
+    "Description": "Pistola Desert Eagle calibre .50 con tremendo poder de parada. Disparo único, usa proyectiles NuevaBala4. Cargador de 5 balas."
+  },
+  "UziBlock:0": {
+    "DisplayName": "Uzi",
+    "Description": "Subfusil icónico con alta cadencia de fuego (~750 RPM). Usa proyectiles NuevaBala2. Cargador de 30 balas."
+  },
+    "SniperBlock:0": {
+    "DisplayName": "Fusil de Francotirador",
+    "Description": "Fusil de precisión de cerrojo para enfrentamientos a distancia extrema. Equipado con mira de alto aumento. Produce bajas de un solo disparo con puntería adecuada. Requiere posición estable y paciencia."
+  },
+    "AKBullet:0": {
+    "DisplayName": "Cargador AK 7.62×39mm",
+    "Description": "Cargador de 30 balas para rifle AK-47. Contiene munición 7.62×39mm."
+  },
+  "M4Bullet:0": {
+    "DisplayName": "Cargador STANAG 5.56×45mm",
+    "Description": "Cargador de 22 balas para carabina M4. Contiene munición 5.56×45mm OTAN."
+  },
+  "SPAS12BulletBlock:0": {
+    "DisplayName": "Cartuchos Calibre 12",
+    "Description": "Caja de 8 cartuchos calibre 12 para escopeta SPAS-12."
+  },
+  "Mac10Bullet:0": {
+    "DisplayName": "Cargador .45 ACP",
+    "Description": "Cargador de 30 balas para MAC-10. Contiene munición .45 ACP."
+  },
+  "UziBullet:0": {
+    "DisplayName": "Cargador Uzi 9×19mm",
+    "Description": "Cargador de 32 balas para subfusil Uzi. Contiene munición 9×19mm Parabellum."
+  },
+  "G3Bullet:0": {
+    "DisplayName": "Cargador FX05 5.56×45mm",
+    "Description": "Cargador de 30 balas para rifle FX05 Xiuhcoatl. Contiene munición 5.56×45mm OTAN."
+  },
+  "MinigunBullet:0": {
+    "DisplayName": "Caja Munición Minigun 7.62×51mm",
+    "Description": "Caja de munición de 100 balas para Minigun. Contiene cintas enlazadas 7.62×51mm OTAN."
+  },
+  "Izh43Bullet:0": {
+    "DisplayName": "Cartuchos Dobles Calibre 12",
+    "Description": "Juego de 2 cartuchos calibre 12 para escopeta IZH-43."
+  },
+  "SWM500Bullet:0": {
+    "DisplayName": "Cargador Desert Eagle .50 AE",
+    "Description": "Cargador de 7 balas para pistola Desert Eagle. Contiene munición .50 Action Express."
+  },
+  "SniperBullet:0": {
+    "DisplayName": "Munición Francotirador 7.62×51mm",
+    "Description": "Peine de 5 balas para fusil de francotirador. Contiene munición match-grade 7.62×51mm."
+  },
+  "AUGBullet:0": {
+    "DisplayName": "Cargador AUG 5.56×45mm",
+    "Description": "Cargador translúcido de 30 balas para Steyr AUG. Contiene munición 5.56×45mm OTAN."
+  },
+  "P90BulletBlock:0": {
+    "DisplayName": "Cargador P90 5.7×28mm",
+    "Description": "Cargador superior de 50 balas para FN P90. Contiene munición 5.7×28mm."
+  },
+  "SCARBulletBlock:0": {
+    "DisplayName": "Cargador SCAR 7.62×51mm",
+    "Description": "Cargador de 20 balas para FN SCAR-H. Contiene munición 7.62×51mm OTAN."
+  },
+  "RevolverBulletBlock:0": {
+    "DisplayName": "Munición Revólver .357 Magnum",
+    "Description": "Cargador rápido de 6 balas para revólver. Contiene munición .357 Magnum."
+  },
+  "FamasBulletBlock:0": {
+    "DisplayName": "Cargador FAMAS 5.56×45mm",
+    "Description": "Cargador de 25 balas para rifle FAMAS. Contiene munición 5.56×45mm OTAN."
+  }
   },
   "ContentWidgets": {
     "FlameThrowerWidget": {
@@ -411,9 +589,133 @@
       "InstructionsPull": "Tensa para cargar",
       "InstructionsInsert": "Inserta virotes",
       "InstructionsArrows": "Virotes: {0}/8"
-    }
+    },
+    "AKBlock:0": {
+    "DisplayName": "AK-47",
+    "Description": "Fusil de asalto legendario que dispara balas 7.62×39mm. Buena precisión, retroceso moderado. Usa munición AK47Bullet. ~350 disparos por minuto."
+  },
+  "AUGBlock:0": {
+    "DisplayName": "Steyr AUG",
+    "Description": "Fusil de asalto bullpup con bajo retroceso. Usa 5.56×45mm OTAN. Cicla automáticamente entre 6 tipos de balas diferentes. Mira óptica integrada."
+  },
+  "FamasBlock:0": {
+    "DisplayName": "FAMAS F1",
+    "Description": "Bullpup francés con alta cadencia de fuego (~667 RPM). Usa proyectiles NuevaBala4. Diseño compacto con buena controlabilidad."
+  },
+  "G3Block:0": {
+    "DisplayName": "FX05 Xiuhcoatl",
+    "Description": "Fusil de asalto mexicano (FX05 Xiuhcoatl) que dispara balas potentes. Usa proyectiles NuevaBala. Buena cadencia de fuego y precisión."
+  },
+  "Izh43Block:0": {
+    "DisplayName": "Escopeta IZH-43",
+    "Description": "Escopeta de dos cañones que dispara 8 perdigones por disparo. Devastadora a corta distancia. Capacidad de 2 cartuchos, usa Izh43Bullet."
+  },
+  "M4Block:0": {
+    "DisplayName": "Carabina M4",
+    "Description": "Carabina 5.56×45mm que dispara ráfagas de 3 balas. Usa proyectiles NuevaBala2. Cargador de 22 balas, excelente modularidad."
+  },
+  "Mac10Block:0": {
+    "DisplayName": "MAC-10",
+    "Description": "Pistola ametralladora compacta con cadencia de fuego extrema (~600 RPM). Usa proyectiles NuevaBala3. Retroceso intenso, cargador de 30 balas."
+  },
+  "MinigunBlock:0": {
+    "DisplayName": "Minigun",
+    "Description": "Ametralladora rotativa que dispara proyectiles NuevaBala6 a ~750 RPM. Capacidad de 100 balas, arma de supresión devastadora."
+  },
+  "P90Block:0": {
+    "DisplayName": "FN P90",
+    "Description": "Arma de defensa personal bullpup con 900 RPM de cadencia. Cicla entre 6 tipos de balas. Cargador de 50 balas, calibre 5.7×28mm."
+  },
+  "RevolverBlock:0": {
+    "DisplayName": "Revólver",
+    "Description": "Revólver clásico que dispara potentes tiros únicos. Usa proyectiles NuevaBala4. Tambor de 6 balas, alto poder de parada."
+  },
+  "SCARBlock:0": {
+    "DisplayName": "FN SCAR",
+    "Description": "Fusil de batalla modular con excelente precisión. Cicla entre 6 tipos de balas. 600 RPM, cargador de 30 balas."
+  },
+  "SPAS12Block:0": {
+    "DisplayName": "Escopeta de Combate SPAS-12",
+    "Description": "Escopeta de combate que dispara 8 perdigones por disparo. Capacidad de 8 cartuchos. Puede disparar en modo bombeo o semiautomático."
+  },
+  "SWM500Block:0": {
+    "DisplayName": "Desert Eagle",
+    "Description": "Pistola Desert Eagle calibre .50 con tremendo poder de parada. Disparo único, usa proyectiles NuevaBala4. Cargador de 5 balas."
+  },
+  "SniperBlock:0": {
+    "DisplayName": "Fusil de Francotirador",
+    "Description": "Fusil de precisión de cerrojo para enfrentamientos a distancia extrema. Equipado con mira de alto aumento. Produce bajas de un solo disparo con puntería adecuada. Requiere posición estable y paciencia."
+  },
+  "UziBlock:0": {
+    "DisplayName": "Uzi",
+    "Description": "Subfusil icónico con alta cadencia de fuego (~750 RPM). Usa proyectiles NuevaBala2. Cargador de 30 balas."
+  },
+  "AKBullet:0": {
+    "DisplayName": "Cargador AK 7.62×39mm",
+    "Description": "Cargador de 30 balas para rifle AK-47. Contiene munición 7.62×39mm."
+  },
+  "M4Bullet:0": {
+    "DisplayName": "Cargador STANAG 5.56×45mm",
+    "Description": "Cargador de 22 balas para carabina M4. Contiene munición 5.56×45mm OTAN."
+  },
+  "SPAS12BulletBlock:0": {
+    "DisplayName": "Cartuchos Calibre 12",
+    "Description": "Caja de 8 cartuchos calibre 12 para escopeta SPAS-12."
+  },
+  "Mac10Bullet:0": {
+    "DisplayName": "Cargador .45 ACP",
+    "Description": "Cargador de 30 balas para MAC-10. Contiene munición .45 ACP."
+  },
+  "UziBullet:0": {
+    "DisplayName": "Cargador Uzi 9×19mm",
+    "Description": "Cargador de 32 balas para subfusil Uzi. Contiene munición 9×19mm Parabellum."
+  },
+  "G3Bullet:0": {
+    "DisplayName": "Cargador FX05 5.56×45mm",
+    "Description": "Cargador de 30 balas para rifle FX05 Xiuhcoatl. Contiene munición 5.56×45mm OTAN."
+  },
+  "MinigunBullet:0": {
+    "DisplayName": "Caja Munición Minigun 7.62×51mm",
+    "Description": "Caja de munición de 100 balas para Minigun. Contiene cintas enlazadas 7.62×51mm OTAN."
+  },
+  "Izh43Bullet:0": {
+    "DisplayName": "Cartuchos Dobles Calibre 12",
+    "Description": "Juego de 2 cartuchos calibre 12 para escopeta IZH-43."
+  },
+  "SWM500Bullet:0": {
+    "DisplayName": "Cargador Desert Eagle .50 AE",
+    "Description": "Cargador de 7 balas para pistola Desert Eagle. Contiene munición .50 Action Express."
+  },
+  "SniperBullet:0": {
+    "DisplayName": "Munición Francotirador 7.62×51mm",
+    "Description": "Peine de 5 balas para fusil de francotirador. Contiene munición match-grade 7.62×51mm."
+  },
+  "AUGBullet:0": {
+    "DisplayName": "Cargador AUG 5.56×45mm",
+    "Description": "Cargador translúcido de 30 balas para Steyr AUG. Contiene munición 5.56×45mm OTAN."
+  },
+  "P90BulletBlock:0": {
+    "DisplayName": "Cargador P90 5.7×28mm",
+    "Description": "Cargador superior de 50 balas para FN P90. Contiene munición 5.7×28mm."
+  },
+  "SCARBulletBlock:0": {
+    "DisplayName": "Cargador SCAR 7.62×51mm",
+    "Description": "Cargador de 20 balas para FN SCAR-H. Contiene munición 7.62×51mm OTAN."
+  },
+  "RevolverBulletBlock:0": {
+    "DisplayName": "Munición Revólver .357 Magnum",
+    "Description": "Cargador rápido de 6 balas para revólver. Contiene munición .357 Magnum."
+  },
+  "FamasBulletBlock:0": {
+    "DisplayName": "Cargador FAMAS 5.56×45mm",
+    "Description": "Cargador de 25 balas para rifle FAMAS. Contiene munición 5.56×45mm OTAN."
+  }
   },
   "Messages": {
+    "CollarTamedMachineGunMessage": "¡Has domesticado a un Infectado Ametrallador!\n¡Su devastadora minigun ahora está bajo tu mando!\n¡Desata una tormenta de balas contra tus enemigos!",
+    "CollarTamedGhostBoomerMessage": "¡Has domesticado un Fantasma Boomer!\n¡Sus explosiones espectrales acecharán a tus enemigos!\n¡Un guardián explosivo fantasmal es ahora tuyo!",
+    "CollarTamedGhostChargerMessage": "¡Has domesticado un Fantasma Charger!\n¡Su fuerza fantasma empujará enemigos desde el más allá!\n¡Un bruto espectral está ahora bajo tu mando!",
+    "CollarTamedGhostTankMessage": "¡Has domesticado un Fantasma Tank!\n¡El terror espectral de los jefes es ahora tu esclavo fantasma!\n¡Su fuerza bruta fantasmal te protegerá desde las sombras!",
     "CollarTamedGhostMessage": "¡Has domesticado a un Fantasma! ¡Su invisibilidad ahora está en tus manos!",
     "AntiTankCriticalHit": "Impacto crítico de bala Anti-Tank",
     "TankChaseAlert": "¡ALERTA!\n ¡Apareció un Tank!\n ¡Refúgiate, busca buenas armas para matarlo o usa el collar zombie para calmar su rabia y convertirlo en aliado!",
