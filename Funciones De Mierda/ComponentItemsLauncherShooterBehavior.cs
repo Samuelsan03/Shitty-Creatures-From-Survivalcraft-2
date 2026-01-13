@@ -52,7 +52,7 @@ namespace Game
 		{
 			base.Load(valuesDictionary, idToEntityMap);
 
-			// Cargar parámetros (sin sonidos)
+			// Cargar parámetros (sin los parámetros de sonido)
 			MaxDistance = valuesDictionary.GetValue<float>("MaxDistance", 25f);
 			ReloadTime = valuesDictionary.GetValue<float>("ReloadTime", 0.55f);
 			AimTime = valuesDictionary.GetValue<float>("AimTime", 1f);
@@ -285,6 +285,14 @@ namespace Game
 			m_isReloading = false;
 			m_isCocking = false;
 			m_fireTime = m_subsystemTime.GameTime;
+
+			// Sonido de disparo (MANTENIDO)
+			if (m_subsystemAudio != null)
+			{
+				string fireSound = "Audio/Items/ItemLauncher/Item Cannon Fire";
+				m_subsystemAudio.PlaySound(fireSound, 0.7f, m_random.Float(-0.1f, 0.1f),
+					m_componentCreature.ComponentBody.Position, 15f, false);
+			}
 
 			// Disparar proyectil
 			ShootItem();
