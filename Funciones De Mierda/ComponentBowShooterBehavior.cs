@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Engine;
 using GameEntitySystem;
@@ -19,12 +19,9 @@ namespace Game
 		private SubsystemParticles m_subsystemParticles;
 
 		// Configuración
-		public float MinDistance = 5f;
-		public float MaxDistance = 25f;
+		public float MaxDistance = 25f; // SOLO distancia máxima
 		public float DrawTime = 1.2f;  // Más rápido
 		public float AimTime = 0.5f;
-		public string DrawSound = "Audio/BowDraw";
-		public string FireSound = "Audio/Bow";
 		public float FireSoundDistance = 15f;
 		public float Accuracy = 0.03f;
 		public float ArrowSpeed = 35f;
@@ -53,8 +50,6 @@ namespace Game
 		private int m_currentArrowTypeIndex = 0;
 		private float m_currentDraw = 0f;
 		private Random m_random = new Random();
-		private int m_arrowBlockIndex = 192;
-		private int m_bowBlockIndex = 191;
 		private bool m_initialized = false;
 
 		// UpdateOrder
@@ -65,13 +60,10 @@ namespace Game
 		{
 			base.Load(valuesDictionary, idToEntityMap);
 
-			// Cargar parámetros
-			MinDistance = valuesDictionary.GetValue<float>("MinDistance", 5f);
+			// Cargar parámetros - SOLO MaxDistance, no MinDistance
 			MaxDistance = valuesDictionary.GetValue<float>("MaxDistance", 25f);
 			DrawTime = valuesDictionary.GetValue<float>("DrawTime", 1.2f);
 			AimTime = valuesDictionary.GetValue<float>("AimTime", 0.5f);
-			DrawSound = valuesDictionary.GetValue<string>("DrawSound", "Audio/BowDraw");
-			FireSound = valuesDictionary.GetValue<string>("FireSound", "Audio/Bow");
 			FireSoundDistance = valuesDictionary.GetValue<float>("FireSoundDistance", 15f);
 			Accuracy = valuesDictionary.GetValue<float>("Accuracy", 0.03f);
 			ArrowSpeed = valuesDictionary.GetValue<float>("ArrowSpeed", 35f);
@@ -92,14 +84,14 @@ namespace Game
 		public override void OnEntityAdded()
 		{
 			base.OnEntityAdded();
-			
+
 			// Inicializar con flecha aleatoria
 			m_currentArrowTypeIndex = m_random.Int(0, AvailableArrowTypes.Length);
 			m_initialized = true;
-			
+
 			// Buscar arco
 			FindBow();
-			
+
 			// Mostrar flecha inicialmente si está configurado
 			if (ShowArrowWhenIdle && m_bowSlot >= 0)
 			{
@@ -130,8 +122,8 @@ namespace Game
 				m_componentChaseBehavior.Target.ComponentBody.Position
 			);
 
-			// Lógica de ataque
-			if (distance >= MinDistance && distance <= MaxDistance)
+			// Lógica de ataque - MODIFICADO: Solo verifica distancia máxima
+			if (distance <= MaxDistance)
 			{
 				if (!m_isAiming && !m_isDrawing && !m_isFiring)
 				{
@@ -180,7 +172,7 @@ namespace Game
 				if (m_subsystemTime.GameTime - m_fireTime >= 0.2) // Animación más corta
 				{
 					m_isFiring = false;
-					
+
 					// Quitar flecha después de disparar
 					ClearArrowFromBow();
 
@@ -203,18 +195,22 @@ namespace Game
 			for (int i = 0; i < m_componentInventory.SlotsCount; i++)
 			{
 				int slotValue = m_componentInventory.GetSlotValue(i);
-				if (slotValue != 0 && Terrain.ExtractContents(slotValue) == m_bowBlockIndex)
+				if (slotValue != 0)
 				{
-					m_bowSlot = i;
-					m_componentInventory.ActiveSlotIndex = i;
-					break;
+					Block block = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)];
+					if (block is BowBlock)
+					{
+						m_bowSlot = i;
+						m_componentInventory.ActiveSlotIndex = i;
+						break;
+					}
 				}
 			}
 		}
 
 		private void SetBowWithArrow(int drawValue)
 		{
-			if (m_bowSlot < 0) 
+			if (m_bowSlot < 0)
 			{
 				FindBow();
 				if (m_bowSlot < 0) return;
@@ -253,7 +249,7 @@ namespace Game
 				if (currentBowValue == 0) return;
 
 				int currentData = Terrain.ExtractData(currentBowValue);
-				
+
 				// Quitar flecha y resetear tensión
 				int newData = BowBlock.SetArrowType(currentData, null);
 				newData = BowBlock.SetDraw(newData, 0);
@@ -292,7 +288,7 @@ namespace Game
 
 				if (m_componentChaseBehavior.Target != null)
 				{
-					m_componentModel.LookAtOrder = new Vector3?(
+					m_componentModel.LookAtOrder = new Vector3? (
 						m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition
 					);
 				}
@@ -306,11 +302,9 @@ namespace Game
 			m_isFiring = false;
 			m_drawStartTime = m_subsystemTime.GameTime;
 
-			if (!string.IsNullOrEmpty(DrawSound))
-			{
-				m_subsystemAudio.PlaySound(DrawSound, 0.5f, m_random.Float(-0.1f, 0.1f),
-					m_componentCreature.ComponentBody.Position, 3f, false);
-			}
+			// Sonido de tensado del arco (hardcoded)
+			m_subsystemAudio.PlaySound("Audio/BowDraw", 0.5f, m_random.Float(-0.1f, 0.1f),
+				m_componentCreature.ComponentBody.Position, 3f, false);
 		}
 
 		private void ApplyDrawingAnimation(float dt)
@@ -345,7 +339,7 @@ namespace Game
 
 				if (m_componentChaseBehavior.Target != null)
 				{
-					m_componentModel.LookAtOrder = new Vector3?(
+					m_componentModel.LookAtOrder = new Vector3? (
 						m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition
 					);
 				}
@@ -361,11 +355,9 @@ namespace Game
 			// Disparar flecha
 			ShootArrow();
 
-			if (!string.IsNullOrEmpty(FireSound))
-			{
-				m_subsystemAudio.PlaySound(FireSound, 0.8f, m_random.Float(-0.1f, 0.1f),
-					m_componentCreature.ComponentBody.Position, FireSoundDistance, false);
-			}
+			// Sonido de disparo (hardcoded)
+			m_subsystemAudio.PlaySound("Audio/Bow", 0.8f, m_random.Float(-0.1f, 0.1f),
+				m_componentCreature.ComponentBody.Position, FireSoundDistance, false);
 		}
 
 		private void ApplyFiringAnimation(float dt)
@@ -373,12 +365,12 @@ namespace Game
 			if (m_componentModel != null)
 			{
 				float fireProgress = (float)((m_subsystemTime.GameTime - m_fireTime) / 0.2);
-				
+
 				if (fireProgress < 0.5f)
 				{
 					// Pequeño retroceso
 					float recoil = 0.02f * (1f - (fireProgress * 2f));
-					
+
 					m_componentModel.InHandItemOffsetOrder += new Vector3(recoil, 0f, 0f);
 					m_componentModel.InHandItemRotationOrder += new Vector3(recoil * 2f, 0f, 0f);
 				}
@@ -386,7 +378,7 @@ namespace Game
 				{
 					// Volver a posición normal gradualmente
 					float returnProgress = (fireProgress - 0.5f) / 0.5f;
-					
+
 					m_componentModel.AimHandAngleOrder = 0.2f * (1f - returnProgress);
 					m_componentModel.InHandItemOffsetOrder = new Vector3(
 						0.05f * (1f - returnProgress),
@@ -426,17 +418,17 @@ namespace Game
 			try
 			{
 				ArrowBlock.ArrowType arrowType = AvailableArrowTypes[m_currentArrowTypeIndex];
-				
+
 				// Posición de disparo simple
 				Vector3 firePosition = m_componentCreature.ComponentCreatureModel.EyePosition;
 				firePosition.Y -= 0.1f;
-				
+
 				Vector3 targetPosition = m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition;
 				Vector3 direction = Vector3.Normalize(targetPosition - firePosition);
 
 				// Aplicar precisión
 				float currentAccuracy = Accuracy * (1.5f - m_currentDraw);
-				
+
 				direction += new Vector3(
 					m_random.Float(-currentAccuracy, currentAccuracy),
 					m_random.Float(-currentAccuracy * 0.5f, currentAccuracy * 0.5f),
@@ -449,7 +441,7 @@ namespace Game
 				float currentSpeed = ArrowSpeed * speedMultiplier;
 
 				int arrowData = ArrowBlock.SetArrowType(0, arrowType);
-				int arrowValue = Terrain.MakeBlockValue(m_arrowBlockIndex, 0, arrowData);
+				int arrowValue = Terrain.MakeBlockValue(ArrowBlock.Index, 0, arrowData);
 
 				var projectile = m_subsystemProjectiles.FireProjectile(
 					arrowValue,

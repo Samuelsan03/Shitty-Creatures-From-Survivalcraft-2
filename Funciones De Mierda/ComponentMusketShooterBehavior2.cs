@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Engine;
 using GameEntitySystem;
 using TemplatesDatabase;
@@ -29,12 +29,7 @@ namespace Game
 		public float AimTime = 1f;
 		public float CockTime = 0.5f;
 		public float MeleeAttackTime = 0.8f;
-		public string FireSound = "Audio/MusketFire";
 		public float FireSoundDistance = 15f;
-		public string CockSound = "Audio/HammerCock";
-		public string ReloadSound = "Audio/Reload";
-		public string UncockSound = "Audio/HammerUncock";
-		public string MisfireSound = "Audio/MusketMisfire";
 		public float Accuracy = 0.02f;
 		public bool UseRecoil = true;
 		public float BulletSpeed = 120f;
@@ -68,12 +63,7 @@ namespace Game
 			AimTime = valuesDictionary.GetValue<float>("AimTime", 1f);
 			CockTime = valuesDictionary.GetValue<float>("CockTime", 0.5f);
 			MeleeAttackTime = valuesDictionary.GetValue<float>("MeleeAttackTime", 0.8f);
-			FireSound = valuesDictionary.GetValue<string>("FireSound", "Audio/MusketFire");
 			FireSoundDistance = valuesDictionary.GetValue<float>("FireSoundDistance", 15f);
-			CockSound = valuesDictionary.GetValue<string>("CockSound", "Audio/HammerCock");
-			ReloadSound = valuesDictionary.GetValue<string>("ReloadSound", "Audio/Reload");
-			UncockSound = valuesDictionary.GetValue<string>("UncockSound", "Audio/HammerUncock");
-			MisfireSound = valuesDictionary.GetValue<string>("MisfireSound", "Audio/MusketMisfire");
 			Accuracy = valuesDictionary.GetValue<float>("Accuracy", 0.02f);
 			UseRecoil = valuesDictionary.GetValue<bool>("UseRecoil", true);
 			BulletSpeed = valuesDictionary.GetValue<float>("BulletSpeed", 120f);
@@ -225,7 +215,7 @@ namespace Game
 				// Mirar al objetivo
 				if (m_componentChaseBehavior.Target != null)
 				{
-					m_componentModel.LookAtOrder = new Vector3?(
+					m_componentModel.LookAtOrder = new Vector3? (
 						m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition
 					);
 				}
@@ -345,11 +335,6 @@ namespace Game
 			return null;
 		}
 
-		// Los métodos restantes se mantienen igual que en el código original...
-		// (StartCocking, StartAiming, FindMusket, UpdateMusketHammerState, UpdateMusketLoadState, 
-		// UpdateMusketBulletType, ApplyCockingAnimation, ApplyAimingAnimation, Fire, 
-		// ApplyFiringAnimation, StartReloading, ApplyReloadingAnimation, ResetAnimations, ShootBullet)
-
 		private void StartCocking()
 		{
 			m_isCocking = true;
@@ -358,12 +343,9 @@ namespace Game
 			m_isReloading = false;
 			m_cockStartTime = m_subsystemTime.GameTime;
 
-			// Sonido de amartillar
-			if (!string.IsNullOrEmpty(CockSound))
-			{
-				m_subsystemAudio.PlaySound(CockSound, 1f, m_random.Float(-0.1f, 0.1f),
-					m_componentCreature.ComponentBody.Position, 3f, false);
-			}
+			// Sonido de amartillar (hardcoded)
+			m_subsystemAudio.PlaySound("Audio/HammerCock", 1f, m_random.Float(-0.1f, 0.1f),
+				m_componentCreature.ComponentBody.Position, 3f, false);
 		}
 
 		private void StartAiming()
@@ -413,15 +395,19 @@ namespace Game
 
 		private void FindMusket()
 		{
-			// Buscar mosquete por ID de bloque (212 es el ID del mosquete)
+			// Buscar mosquete por tipo de bloque
 			for (int i = 0; i < m_componentInventory.SlotsCount; i++)
 			{
 				int slotValue = m_componentInventory.GetSlotValue(i);
-				if (slotValue != 0 && Terrain.ExtractContents(slotValue) == 212)
+				if (slotValue != 0)
 				{
-					m_musketSlot = i;
-					m_componentInventory.ActiveSlotIndex = i;
-					break;
+					Block block = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)];
+					if (block is MusketBlock)
+					{
+						m_musketSlot = i;
+						m_componentInventory.ActiveSlotIndex = i;
+						break;
+					}
 				}
 			}
 		}
@@ -432,7 +418,7 @@ namespace Game
 			{
 				int slotValue = m_componentInventory.GetSlotValue(m_musketSlot);
 				int contents = Terrain.ExtractContents(slotValue);
-				if (contents == 212) // Mosquete
+				if (BlocksManager.Blocks[contents] is MusketBlock)
 				{
 					int data = Terrain.ExtractData(slotValue);
 					data = MusketBlock.SetHammerState(data, hammerState);
@@ -449,7 +435,7 @@ namespace Game
 			{
 				int slotValue = m_componentInventory.GetSlotValue(m_musketSlot);
 				int contents = Terrain.ExtractContents(slotValue);
-				if (contents == 212) // Mosquete
+				if (BlocksManager.Blocks[contents] is MusketBlock)
 				{
 					int data = Terrain.ExtractData(slotValue);
 					data = MusketBlock.SetLoadState(data, loadState);
@@ -466,7 +452,7 @@ namespace Game
 			{
 				int slotValue = m_componentInventory.GetSlotValue(m_musketSlot);
 				int contents = Terrain.ExtractContents(slotValue);
-				if (contents == 212) // Mosquete
+				if (BlocksManager.Blocks[contents] is MusketBlock)
 				{
 					int data = Terrain.ExtractData(slotValue);
 					data = MusketBlock.SetBulletType(data, bulletType);
@@ -496,7 +482,7 @@ namespace Game
 				// Mirar al objetivo
 				if (m_componentChaseBehavior.Target != null)
 				{
-					m_componentModel.LookAtOrder = new Vector3?(
+					m_componentModel.LookAtOrder = new Vector3? (
 						m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition
 					);
 				}
@@ -515,7 +501,7 @@ namespace Game
 				// Mirar al objetivo
 				if (m_componentChaseBehavior.Target != null)
 				{
-					m_componentModel.LookAtOrder = new Vector3?(
+					m_componentModel.LookAtOrder = new Vector3? (
 						m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition
 					);
 				}
@@ -546,30 +532,21 @@ namespace Game
 			// Si no está cargado, no disparar
 			if (loadState != MusketBlock.LoadState.Loaded)
 			{
-				// Sonido de fallo
-				if (!string.IsNullOrEmpty(MisfireSound))
-				{
-					m_subsystemAudio.PlaySound(MisfireSound, 1f, m_random.Float(-0.1f, 0.1f),
-						m_componentCreature.ComponentBody.Position, 3f, false);
-				}
+				// Sonido de fallo (hardcoded)
+				m_subsystemAudio.PlaySound("Audio/MusketMisfire", 1f, m_random.Float(-0.1f, 0.1f),
+					m_componentCreature.ComponentBody.Position, 3f, false);
 				m_isFiring = false;
 				StartReloading();
 				return;
 			}
 
-			// Sonido de disparo
-			if (!string.IsNullOrEmpty(FireSound))
-			{
-				m_subsystemAudio.PlaySound(FireSound, 1f, m_random.Float(-0.1f, 0.1f),
-					m_componentCreature.ComponentBody.Position, FireSoundDistance, false);
-			}
+			// Sonido de disparo (hardcoded)
+			m_subsystemAudio.PlaySound("Audio/MusketFire", 1f, m_random.Float(-0.1f, 0.1f),
+				m_componentCreature.ComponentBody.Position, FireSoundDistance, false);
 
-			// Sonido de liberación del martillo
-			if (!string.IsNullOrEmpty(UncockSound))
-			{
-				m_subsystemAudio.PlaySound(UncockSound, 1f, m_random.Float(-0.1f, 0.1f),
-					m_componentCreature.ComponentBody.Position, 3f, false);
-			}
+			// Sonido de liberación del martillo (hardcoded)
+			m_subsystemAudio.PlaySound("Audio/HammerUncock", 1f, m_random.Float(-0.1f, 0.1f),
+				m_componentCreature.ComponentBody.Position, 3f, false);
 
 			// Disparar bala real
 			ShootBullet();
@@ -618,12 +595,9 @@ namespace Game
 			m_isCocking = false;
 			m_animationStartTime = m_subsystemTime.GameTime;
 
-			// Sonido de recarga
-			if (!string.IsNullOrEmpty(ReloadSound))
-			{
-				m_subsystemAudio.PlaySound(ReloadSound, 1.5f, m_random.Float(-0.1f, 0.1f),
-					m_componentCreature.ComponentBody.Position, 5f, false);
-			}
+			// Sonido de recarga (hardcoded)
+			m_subsystemAudio.PlaySound("Audio/Reload", 1.5f, m_random.Float(-0.1f, 0.1f),
+				m_componentCreature.ComponentBody.Position, 5f, false);
 		}
 
 		private void ApplyReloadingAnimation(float dt)
@@ -689,7 +663,7 @@ namespace Game
 				);
 				direction = Vector3.Normalize(direction);
 
-				// Crear bala (dispara ilimitadamente sin consumir recursos)
+				// Crear bala usando BulletBlock
 				int bulletBlockIndex = BlocksManager.GetBlockIndex<BulletBlock>(false, false);
 				if (bulletBlockIndex > 0)
 				{

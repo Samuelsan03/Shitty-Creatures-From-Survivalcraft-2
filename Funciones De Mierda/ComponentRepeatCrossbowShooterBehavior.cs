@@ -25,9 +25,6 @@ namespace Game
 		public float AimTime = 0.3f;
 		public float TimeBetweenShots = 0.5f;  // Tiempo entre disparos
 		public float MaxInaccuracy = 0.04f;
-		public string DrawSound = "Audio/CrossbowDraw";
-		public string FireSound = "Audio/Bow";
-		public string ReleaseSound = "Audio/CrossbowBoing";
 		public float FireSoundDistance = 15f;
 		public bool UseRecoil = true;
 		public float BoltSpeed = 35f;
@@ -70,9 +67,6 @@ namespace Game
 			AimTime = valuesDictionary.GetValue<float>("AimTime", 0.3f);
 			TimeBetweenShots = valuesDictionary.GetValue<float>("TimeBetweenShots", 0.5f);
 			MaxInaccuracy = valuesDictionary.GetValue<float>("MaxInaccuracy", 0.04f);
-			DrawSound = valuesDictionary.GetValue<string>("DrawSound", "Audio/CrossbowDraw");
-			FireSound = valuesDictionary.GetValue<string>("FireSound", "Audio/Bow");
-			ReleaseSound = valuesDictionary.GetValue<string>("ReleaseSound", "Audio/CrossbowBoing");
 			FireSoundDistance = valuesDictionary.GetValue<float>("FireSoundDistance", 15f);
 			UseRecoil = valuesDictionary.GetValue<bool>("UseRecoil", true);
 			BoltSpeed = valuesDictionary.GetValue<float>("BoltSpeed", 35f);
@@ -286,7 +280,7 @@ namespace Game
 
 				if (m_componentChaseBehavior.Target != null)
 				{
-					m_componentModel.LookAtOrder = new Vector3?(
+					m_componentModel.LookAtOrder = new Vector3? (
 						m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition
 					);
 				}
@@ -301,11 +295,9 @@ namespace Game
 			m_isReloading = false;
 			m_drawStartTime = m_subsystemTime.GameTime;
 
-			if (!string.IsNullOrEmpty(DrawSound))
-			{
-				m_subsystemAudio.PlaySound(DrawSound, 0.5f, m_random.Float(-0.1f, 0.1f),
-					m_componentCreature.ComponentBody.Position, 3f, false);
-			}
+			// Sonido de tensado de ballesta repetidora
+			m_subsystemAudio.PlaySound("Audio/Crossbow Remake/Crossbow Loading Remake", 0.5f, m_random.Float(-0.1f, 0.1f),
+				m_componentCreature.ComponentBody.Position, 3f, false);
 		}
 
 		private void ApplyDrawingAnimation(float dt)
@@ -324,7 +316,7 @@ namespace Game
 
 				if (m_componentChaseBehavior.Target != null)
 				{
-					m_componentModel.LookAtOrder = new Vector3?(
+					m_componentModel.LookAtOrder = new Vector3? (
 						m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition
 					);
 				}
@@ -358,7 +350,7 @@ namespace Game
 
 				if (m_componentChaseBehavior.Target != null)
 				{
-					m_componentModel.LookAtOrder = new Vector3?(
+					m_componentModel.LookAtOrder = new Vector3? (
 						m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition
 					);
 				}
@@ -374,11 +366,9 @@ namespace Game
 			// Disparar flecha
 			ShootArrow();
 
-			if (!string.IsNullOrEmpty(FireSound))
-			{
-				m_subsystemAudio.PlaySound(FireSound, 1f, m_random.Float(-0.1f, 0.1f),
-					m_componentCreature.ComponentBody.Position, FireSoundDistance, false);
-			}
+			// Sonido de disparo de ballesta repetidora
+			m_subsystemAudio.PlaySound("Audio/Crossbow Remake/Crossbow Shoot", 1f, m_random.Float(-0.1f, 0.1f),
+				m_componentCreature.ComponentBody.Position, FireSoundDistance, false);
 
 			// Retroceso
 			if (UseRecoil && m_componentChaseBehavior.Target != null)
