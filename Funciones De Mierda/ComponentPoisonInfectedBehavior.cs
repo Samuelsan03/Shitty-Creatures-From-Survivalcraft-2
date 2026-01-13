@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Engine;
 using Game;
 using GameEntitySystem;
@@ -66,6 +66,8 @@ namespace Game
 			this.m_newChaseBehavior = base.Entity.FindComponent<ComponentNewChaseBehavior>();
 			this.m_chaseBehavior = base.Entity.FindComponent<ComponentChaseBehavior>();
 			this.m_poisonIntensity = valuesDictionary.GetValue<float>("PoisonIntensity");
+			this.m_infectProbability = valuesDictionary.GetValue<float>("InfectProbability", 1f); // 100% por defecto
+
 			this.m_stateMachine.AddState("Inactive", delegate
 			{
 				this.m_importanceLevel = 0f;
@@ -79,16 +81,25 @@ namespace Game
 					target = ((chaseBehavior != null) ? chaseBehavior.m_target : null);
 				}
 				this.m_target = target;
-				if (this.m_target != null && ((double)this.m_random.Float(0f, 1f) < 5.0 * (double)this.m_subsystemTime.GameTimeDelta || this.m_componentCreature.ComponentHealth.Health < 0.85f) && this.m_componentCreature.ComponentCreatureModel.IsAttackHitMoment)
+
+				if (this.m_target != null && this.m_componentCreature.ComponentCreatureModel.IsAttackHitMoment)
 				{
-					this.m_importanceLevel = 201f;
+					// Usar probabilidad de infección configurable
+					bool shouldInfect = (double)this.m_random.Float(0f, 1f) < (double)this.m_infectProbability;
+
+					if (shouldInfect)
+					{
+						this.m_importanceLevel = 201f;
+					}
 				}
+
 				if (!this.IsActive)
 				{
 					return;
 				}
 				this.m_stateMachine.TransitionTo("PoisonInfect");
 			}, null);
+
 			this.m_stateMachine.AddState("PoisonInfect", delegate
 			{
 				if (this.m_target == null)
@@ -148,5 +159,8 @@ namespace Game
 
 		// Token: 0x04000254 RID: 596
 		private ComponentCreature m_target;
+
+		// Token: 0x04000255 RID: 597
+		private float m_infectProbability = 1f; // 100% de probabilidad por defecto
 	}
 }
