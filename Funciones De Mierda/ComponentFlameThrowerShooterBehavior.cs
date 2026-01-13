@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Engine;
 using Game;
 using GameEntitySystem;
@@ -24,17 +24,13 @@ namespace Game
 		// Configuración
 		public float MaxDistance = 20f;
 		public float AimTime = 0.5f;
-		public float BurstTime = 2.0f;      // Cambiado de FireTime a BurstTime
-		public float CooldownTime = 1.0f;   // Cambiado de ReloadTime a CooldownTime
-		public string FireSound = "Audio/Flamethrower/Flamethrower Fire";
-		public string HammerSound = "Audio/Items/Hammer Cock Remake";
-		public float FireSoundDistance = 25f;
-		public float HammerSoundDistance = 20f; // Nuevo parámetro del XML
+		public float BurstTime = 2.0f;
+		public float CooldownTime = 1.0f;
 		public float Accuracy = 0.1f;
 		public bool UseRecoil = true;
 		public float FlameSpeed = 40f;
-		public int BurstCount = 15;         // Cambiado de ShotsPerBurst a BurstCount
-		public float SpreadAngle = 15f;     // Definido pero no implementado en código
+		public int BurstCount = 15;
+		public float SpreadAngle = 15f;
 		public float BurstInterval = 0.15f;
 		public bool CycleBulletTypes = true;
 
@@ -48,7 +44,9 @@ namespace Game
 		private int m_shotsFired = 0;
 		private Game.Random m_random = new Game.Random();
 		private int m_flameThrowerSlot = -1;
-		private int m_flameThrowerBlockIndex = 319;
+
+		// Obtener dinámicamente
+		private int m_flameThrowerBlockIndex = -1;
 
 		// Tipo de munición actual
 		private FlameBulletBlock.FlameBulletType m_currentBulletType = FlameBulletBlock.FlameBulletType.Flame;
@@ -61,19 +59,15 @@ namespace Game
 		{
 			base.Load(valuesDictionary, idToEntityMap);
 
-			// Cargar parámetros del XML
+			// Cargar parámetros del XML (sin los sonidos que vas a borrar)
 			MaxDistance = valuesDictionary.GetValue<float>("MaxDistance", 20f);
 			AimTime = valuesDictionary.GetValue<float>("AimTime", 0.5f);
-			BurstTime = valuesDictionary.GetValue<float>("BurstTime", 5.0f);      // Cambiado
-			CooldownTime = valuesDictionary.GetValue<float>("CooldownTime", 1.0f); // Cambiado
-			FireSound = valuesDictionary.GetValue<string>("FireSound", "Audio/Flamethrower/Flamethrower Fire");
-			HammerSound = valuesDictionary.GetValue<string>("HammerSound", "Audio/Items/Hammer Cock Remake");
-			FireSoundDistance = valuesDictionary.GetValue<float>("FireSoundDistance", 25f);
-			HammerSoundDistance = valuesDictionary.GetValue<float>("HammerSoundDistance", 20f); // Nuevo
+			BurstTime = valuesDictionary.GetValue<float>("BurstTime", 5.0f);
+			CooldownTime = valuesDictionary.GetValue<float>("CooldownTime", 1.0f);
 			Accuracy = valuesDictionary.GetValue<float>("Accuracy", 0.1f);
 			UseRecoil = valuesDictionary.GetValue<bool>("UseRecoil", true);
 			FlameSpeed = valuesDictionary.GetValue<float>("FlameSpeed", 40f);
-			BurstCount = valuesDictionary.GetValue<int>("BurstCount", 15);         // Cambiado
+			BurstCount = valuesDictionary.GetValue<int>("BurstCount", 15);
 			SpreadAngle = valuesDictionary.GetValue<float>("SpreadAngle", 15f);
 			CycleBulletTypes = valuesDictionary.GetValue<bool>("CycleBulletTypes", true);
 
@@ -84,7 +78,7 @@ namespace Game
 			}
 			else
 			{
-				BurstInterval = 5.0f; // Valor por defecto
+				BurstInterval = 5.0f;
 			}
 
 			// Inicializar componentes
@@ -99,6 +93,14 @@ namespace Game
 			m_subsystemParticles = base.Project.FindSubsystem<SubsystemParticles>(true);
 			m_subsystemTerrain = base.Project.FindSubsystem<SubsystemTerrain>(true);
 			m_subsystemNoise = base.Project.FindSubsystem<SubsystemNoise>(true);
+
+			// Obtener el índice del bloque FlameThrowerBlock dinámicamente
+			m_flameThrowerBlockIndex = BlocksManager.GetBlockIndex<FlameThrowerBlock>(false, false);
+
+			if (m_flameThrowerBlockIndex <= 0)
+			{
+				Log.Warning("ComponentFlameThrowerShooterBehavior: No se pudo obtener el índice del bloque FlameThrowerBlock.");
+			}
 
 			// Inicializar tipo de bala aleatorio
 			m_currentBulletType = m_random.Bool() ?
@@ -149,14 +151,14 @@ namespace Game
 			{
 				ApplyFiringAnimation(dt);
 
-				if (m_subsystemTime.GameTime >= m_nextShotTime && m_shotsFired < BurstCount) // Cambiado
+				if (m_subsystemTime.GameTime >= m_nextShotTime && m_shotsFired < BurstCount)
 				{
 					FireShot();
 					m_shotsFired++;
 					m_nextShotTime = m_subsystemTime.GameTime + BurstInterval;
 				}
 
-				if (m_subsystemTime.GameTime - m_fireStartTime >= BurstTime) // Cambiado
+				if (m_subsystemTime.GameTime - m_fireStartTime >= BurstTime)
 				{
 					m_isFiring = false;
 					StopFiring();
@@ -166,7 +168,7 @@ namespace Game
 			{
 				ApplyReloadingAnimation(dt);
 
-				if (m_subsystemTime.GameTime - m_animationStartTime >= CooldownTime) // Cambiado
+				if (m_subsystemTime.GameTime - m_animationStartTime >= CooldownTime)
 				{
 					m_isReloading = false;
 
@@ -184,14 +186,28 @@ namespace Game
 
 		private void FindFlameThrower()
 		{
+			m_flameThrowerSlot = -1;
+
+			// Verificar primero si el bloque FlameThrowerBlock está registrado
+			if (m_flameThrowerBlockIndex <= 0)
+			{
+				return; // Silenciosamente retornar si no está registrado
+			}
+
 			for (int i = 0; i < m_componentInventory.SlotsCount; i++)
 			{
 				int slotValue = m_componentInventory.GetSlotValue(i);
-				if (slotValue != 0 && Terrain.ExtractContents(slotValue) == m_flameThrowerBlockIndex)
+				if (slotValue != 0)
 				{
-					m_flameThrowerSlot = i;
-					m_componentInventory.ActiveSlotIndex = i;
-					break;
+					int blockIndex = Terrain.ExtractContents(slotValue);
+
+					// Verificar que es el bloque FlameThrowerBlock
+					if (blockIndex == m_flameThrowerBlockIndex)
+					{
+						m_flameThrowerSlot = i;
+						m_componentInventory.ActiveSlotIndex = i;
+						break;
+					}
 				}
 			}
 		}
@@ -201,20 +217,16 @@ namespace Game
 			FindFlameThrower();
 
 			if (m_flameThrowerSlot == -1)
+			{
+				// No hay lanzallamas, simplemente no hacer nada
 				return;
+			}
 
 			m_isAiming = true;
 			m_isFiring = false;
 			m_isReloading = false;
 			m_animationStartTime = m_subsystemTime.GameTime;
 			m_shotsFired = 0;
-
-			// Sonido de preparación
-			if (!string.IsNullOrEmpty(HammerSound))
-			{
-				m_subsystemAudio.PlaySound(HammerSound, 1f, m_random.Float(-0.1f, 0.1f),
-					m_componentCreature.ComponentBody.Position, HammerSoundDistance, false); // Usa HammerSoundDistance
-			}
 		}
 
 		private void ApplyAimingAnimation(float dt)
@@ -236,6 +248,12 @@ namespace Game
 
 		private void StartFiring()
 		{
+			// Verificar nuevamente que tenemos el lanzallamas
+			if (m_flameThrowerSlot == -1)
+			{
+				return; // Silenciosamente retornar
+			}
+
 			m_isAiming = false;
 			m_isFiring = true;
 			m_isReloading = false;
@@ -248,7 +266,7 @@ namespace Game
 		{
 			if (m_componentModel != null)
 			{
-				float fireProgress = (float)((m_subsystemTime.GameTime - m_fireStartTime) / BurstTime); // Cambiado
+				float fireProgress = (float)((m_subsystemTime.GameTime - m_fireStartTime) / BurstTime);
 				float vibration = (float)Math.Sin(fireProgress * 20f) * 0.02f;
 
 				m_componentModel.AimHandAngleOrder = 1.4f + vibration;
@@ -289,7 +307,7 @@ namespace Game
 		{
 			if (m_componentModel != null)
 			{
-				float reloadProgress = (float)((m_subsystemTime.GameTime - m_animationStartTime) / CooldownTime); // Cambiado
+				float reloadProgress = (float)((m_subsystemTime.GameTime - m_animationStartTime) / CooldownTime);
 
 				m_componentModel.AimHandAngleOrder = MathUtils.Lerp(1.0f, 0.5f, reloadProgress);
 				m_componentModel.InHandItemOffsetOrder = new Vector3(
@@ -325,6 +343,12 @@ namespace Game
 
 		private void FireShot()
 		{
+			// Verificar que tenemos el lanzallamas antes de disparar
+			if (m_flameThrowerSlot == -1)
+			{
+				return; // Silenciosamente retornar
+			}
+
 			if (m_componentChaseBehavior.Target == null)
 				return;
 
@@ -364,12 +388,9 @@ namespace Game
 
 					if (bulletType == FlameBulletBlock.FlameBulletType.Flame)
 					{
-						// Sonido de fuego
-						if (!string.IsNullOrEmpty(FireSound))
-						{
-							m_subsystemAudio.PlaySound(FireSound, 1f, m_random.Float(-0.1f, 0.1f),
-								m_componentCreature.ComponentBody.Position, FireSoundDistance, false);
-						}
+						// Sonido de fuego (dejar por si acaso hay sonido)
+						m_subsystemAudio.PlaySound("Audio/Flamethrower/Flamethrower Fire", 1f, m_random.Float(-0.1f, 0.1f),
+							m_componentCreature.ComponentBody.Position, 25f, false);
 
 						// Partículas de fuego
 						if (m_subsystemParticles != null && m_subsystemTerrain != null)
@@ -410,7 +431,7 @@ namespace Game
 			}
 			catch
 			{
-				// Ignorar errores
+				// Ignorar errores silenciosamente
 			}
 		}
 	}
