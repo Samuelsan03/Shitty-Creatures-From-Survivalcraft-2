@@ -37,6 +37,33 @@
   },
   "Database": {
     "DisplayName": {
+      "Bandit7": "Bandit 7",
+      "Bandit6": "Bandit 6",
+      "Bandit5": "Bandit 5",
+      "Bandit4": "Bandit 4",
+      "MachineGunInfectedTamed": "Machine Gun Infected Ally",
+      "MachineGunInfected": "Machine Gun Infected",
+      "Bandit3": "Bandit 3",
+      "Bandit2": "Bandit 2",
+      "Bandit1": "Bandit 1",
+      "TankGhost1": "Ghost Tank 1",
+      "TankGhost2": "Ghost Tank 2",
+      "TankGhost3": "Ghost Tank 3",
+      "TankGhostTamed1": "Ghost Tank Ally 1",
+      "TankGhostTamed2": "Ghost Tank Ally 2",
+      "TankGhostTamed3": "Ghost Tank Ally 3",
+      "GhostChargerTamed": "Ghost Charger Ally",
+      "GhostCharger": "Ghost Charger",
+      "BoomerTamedGhost1": "Ghost Boomer Ally",
+      "GhostBoomer1": "Ghost Boomer",
+      "GhostBoomer2": "Ghost Boomer 2",
+      "GhostBoomer3": "Ghost Boomer 3",
+      "GhostBoomerTamed2": "Ghost Boomer Ally 2",
+      "GhostBoomerTamed3": "Ghost Boomer Ally 3",
+      "PoisonousGhostTamed": "Ghost Poisonous Ally",
+      "PoisonousGhost": "Ghost Poisonous",
+      "GhostFastTamed": "Ghost Fast Ally",
+      "GhostFast": "Ghost Fast",
       "GhostNormalTamed": "Ghost Ally",
       "GhostNormal": "Ghost",
       "Tank1": "Tank 1",
@@ -131,6 +158,13 @@
       "Richard": "Richard"
     },
     "Description": {
+      "MachineGunInfected": "Do you think that defeating the final bosses such as the normal Tanks and the Ghost Tanks means you’re safe? Think again this is the true final boss. The Machine Gun Infected is a special type of infected who, unlike the others, has learned to wield heavy firearms, most notably the Minigun. Once he sees you as prey, he becomes an ultra-dangerous threat, unleashing relentless fire until you are dead. He is part of the infected group, and facing him alongside his squad is nearly suicidal: if you attack his allies, you won’t last long. Stronger and tougher than the muscular infected, he appears on Day 95 at night, when you are expected to have full gear, armor, and guardians armed to the teeth. His design is inspired by Hambone, the boss from the 1998 arcade game CarnEvil, as his skin, mask, clothing, and weapon bear a striking resemblance like twin brothers walking different paths. Yet he can be tamed with the zombie collar, becoming a guardian specialized in firearms. Under your command, his Minigun becomes your most devastating defense… though his overwhelming power may just as easily turn into your downfall.",
+      "GhostCharger": "The Ghost Charger is a spectral variant of the infected, specializing in charge attacks. Unlike the normal Charger, it not only retains its powerful impact but also possesses enhanced durability and partial invisibility, making its attacks harder to predict. Its charges are more devastating than those of a regular Charger: a single impact can knock down multiple targets and suppress them with greater force. The invisibility allows it to approach undetected, making every encounter fraught with sudden danger. Despite its fearsome nature, it can be tamed with the zombie collar, turning it into a spectral guardian. Yet controlling such an aggressive ally always carries risks: its immense power may become your greatest advantage… or your downfall.",
+      "TankGhost1": "The Ghost Tank is a spectral variant of the most feared infected. Unlike the normal Tank, it wields even greater strength and superior endurance, able to shatter armor and bring down enemies with a single strike. Its massive build combined with its ghostly nature makes it harder to anticipate and far deadlier in battle. Its most terrifying ability is hurling phantom boulders, projectiles that tear through the air with immense force and can decide the fight instantly. The partial invisibility surrounding it makes it unpredictable, forcing players to remain constantly alert. Like other infected, it can be tamed with the zombie collar, turning into a spectral guardian. Yet controlling such a destructive ally is a gamble: its immense power may become your greatest weapon… or your downfall.",
+      "GhostBoomer1": "The Ghost Boomer is a massive spectral creature, grotesque in form and concealed by its invisibility, making it hard to detect. Its greatest danger lies in the fact that upon death, it unleashes a spectral explosion that devastates everything nearby. This makes every encounter a deadly gamble—killing it too close can wipe out you and your allies. Legends claim that with the zombie collar, it can be tamed and turned into a guardian. Yet even under your control, the risk remains: its explosion may destroy everything around it. To tame it is to embrace danger, a choice only for those willing to gamble with destruction.",
+      "PoisonousGhost": "The Poisonous Ghost, similar to the regular ghost, shares the same spectral nature but possesses a toxic ability that makes it even more dangerous. Its most lethal trait is its poisonous touch: if it manages to catch you, it injects a deadly toxin that slowly drains your health over time. This makes it a formidable foe, as even escaping its grasp does not guarantee safety. The only way to detect its presence and anticipate an attack is by listening to the sounds it produces and, most importantly, the chase music that signals its approach. Like other infected, it can be tamed with the zombie collar, turning it into a guardian at your side.",
+      "GhostFast": "The Ghost Fast, much like the regular ghost, shares the same spectral nature but possesses speed as its defining ability. It is faster than even the swiftest infected, making it a formidable foe to evade. Its most dangerous trait is invisibility, which makes it extremely difficult to spot. The only way to detect its presence and anticipate an attack is by listening to the sounds it produces and, most importantly, the chase music that signals its approach. Like other infected, it can be tamed with the zombie collar, turning it into a guardian at your side.",
+      "Bandit1": "A bandit is a dangerous human you never know what you’ll run into. It’s a serious mistake to underestimate them or assume they might help you, because if they spot you, they can kill you instantly. There are two types: those armed with firearms and those wielding melee weapons. Both are deadly, but if you manage to defeat them, you can loot their weapons and use them as your own. However, not all are hostile: some may offer you a deal to become your guards, and if you accept, they can protect you.",
       "GhostNormal": "The Ghost is a special infected that belongs to the group of infected. Its unique ability is opacity: its silhouette is barely visible, making it a deadly and almost invisible hunter. If it tries to kill you or manages to catch you, it becomes your greatest danger, as you will rarely know where it is. Like normal and muscular infected, it can also wield melee and ranged weapons, which makes it even more unpredictable. Its invisibility makes it the most dangerous enemy when its location is unknown, and the only way to detect it is through the sounds it emits or the tense music that signals its presence. The Ghost appears on day 4 at night, always lurking in the shadows. Do not be deceived: facing it means choosing between seeking refuge to avoid certain death, devising clever traps such as spikes to catch it, or taming it with the zombie collar to turn it into your invisible slave. Yet a tamed Ghost is a double-edged weapon, for its invisibility may be your greatest advantage or your downfall if it slips from your control and turns against you. Only the most cunning survivors can harness it without falling into their own trap.",
       "Tank1": "The Tank is a special infected that surpasses all others in strength and endurance. Its massive build allows it to kill with a single blow, and its deadliest ability is hurling mysterious rocks if one strikes you, your fate is sealed. It is named “Tank” because, like a war machine, it possesses near-impenetrable resistance and devastating power. It appears on day 41, at any time, day or night, and always alone, making it a unique challenge. To face it, you’ll need strong armor and powerful weapons capable of withstanding its brutal attacks. Like other infected, its rage can be subdued with the zombie collar, allowing you to tame it and turn it into your protective slave. Can you truly harness the advantages of having a Tank under your command? Its immense power may become your greatest weapon… or your downfall.",
       "Charger1": "The Charger is another type of infected, distinguished by its massively thick and powerful arm on one side, while the other remains normal. Its deadliest attack is a brutal charge, capable not only of killing you but also of hurling you with the force of an American football player. It appears on day 19 at night, usually in pairs, making them even more dangerous. Arm yourself well to defeat them, or obtain the zombie collar, for legend says it can tame them and turn them into your guardians.",
@@ -219,6 +253,30 @@
     }
   },
   "Blocks": {
+      "LavaLongspearBlock:0": {
+      "DisplayName": "Lava Longspear",
+      "Description": "The Lava Long Spear stands as the ultimate melee weapon. Forged with volcanic energy and indestructible materials, it surpasses even the diamond spear in damage and durability. Its blazing edge not only delivers devastating strikes but also scorches enemies with every hit, making it a weapon feared even by the strongest bosses. With extended reach and near-infinite resilience, this spear represents the pinnacle of power and survival. Only the most prepared warriors can wield it effectively."
+    },
+    "DiamondLongspearBlock:0": {
+      "DisplayName": "Diamond Longspear",
+      "Description": "The Diamond Long Spear represents the pinnacle of the spear progression, far surpassing the wooden, stone, copper, and iron versions. Its diamond-tipped blade delivers devastating damage and exceptional durability, able to withstand the fiercest battles without losing effectiveness. Along with its extended reach, this weapon combines raw power and resilience, making it the ultimate tool for keeping enemies at bay and asserting dominance on the battlefield. It is regarded as one of the most lethal and prestigious weapons a player can acquire."
+    },
+    "IronLongspearBlock:0": {
+      "DisplayName": "Iron Longspear",
+      "Description": "The Iron Long Spear is a far more advanced weapon compared to its wooden, stone, and copper predecessors. Its iron-forged tip delivers high damage and significant durability, making it a lethal tool for extended combat. Unlike earlier versions, this spear not only provides extended reach but also the resilience needed to withstand intense battles. It is one of the first weapons that can truly be considered mid-tier, perfect for players seeking greater offensive power and reliability on the battlefield."
+    },
+    "CopperLongspearBlock:0": {
+      "DisplayName": "Copper Longspear",
+      "Description": "The Copper Long Spear marks a clear improvement over the wooden and stone versions. Its metal tip delivers greater damage and higher durability, making it a far more reliable weapon for extended battles. While still somewhat basic compared to iron or steel weapons, its extended reach and sturdiness provide a tactical edge, allowing you to keep enemies at bay. This is the first spear that truly represents a notable upgrade to your arsenal."
+    },
+    "StoneLongspearBlock:0": {
+      "DisplayName": "Stone Longspear",
+      "Description": "The Stone Long Spear is an improved version of the wooden spear, built to be sturdier and tipped with a crude stone edge. Unlike the basic variant, it deals greater damage and has better durability, making it a reliable choice for extended battles. Its larger size and extended reach allow you to keep enemies at bay, providing a tactical advantage in close combat."
+    },
+    "WoodenLongspearBlock:0": {
+      "DisplayName": "Wooden Longspear",
+      "Description": "The Wooden Long Spear is a larger and longer variant of the original wooden spear. While its damage is modest and its durability only average, its extended reach allows you to keep enemies at a safer distance. It remains a basic yet tactical choice for players seeking a simple and reliable melee weapon for defense."
+    },
     "CopperSharpHammerBlock:0": {
       "DisplayName": "Copper Sharp Hammer",
       "Description": "The Copper Sharp Hammer is a powerful weapon. At first glance it looks like a simple work tool, but in reality its lethality surpasses that of the copper machete. Although it is not as durable as the machete, it is taller and far deadlier, capable of delivering devastating blows that make it one of the most dangerous copper-based weapons."
@@ -392,6 +450,127 @@
       "DisplayName": "Serious Poison Repeating Bolt",
       "Description": "A heavily poisoned bolt for repeating crossbows. Delivers a stronger poison effect with higher poison duration (100 seconds) and very low initial damage (4 damage). The repeating crossbow mechanism lets you apply serious poison to multiple targets rapidly, weakening groups of enemies without killing them outright."
     },
+    "AKBlock:0": {
+    "DisplayName": "AK-47",
+    "Description": "Legendary assault rifle firing 7.62×39mm rounds. Good accuracy, moderate recoil. Uses AK47Bullet ammunition. Fires at ~350 RPM."
+  },
+  "AUGBlock:0": {
+    "DisplayName": "Steyr AUG",
+    "Description": "Bullpup assault rifle with low recoil. Uses 5.56×45mm NATO. Cycles through 6 different bullet types automatically. Integrated optical sight."
+  },
+  "FamasBlock:0": {
+    "DisplayName": "FAMAS F1",
+    "Description": "French bullpup with high rate of fire (~667 RPM). Uses NuevaBala4 projectiles. Compact design with good controllability."
+  },
+  "G3Block:0": {
+    "DisplayName": "FX05 Xiuhcoatl",
+    "Description": "Mexican assault rifle (FX05 Xiuhcoatl) firing powerful rounds. Uses NuevaBala projectiles. Good rate of fire and accuracy."
+  },
+  "Izh43Block:0": {
+    "DisplayName": "IZH-43 Shotgun",
+    "Description": "Double-barrel shotgun firing 8 pellets per shot. Devastating close-range. 2-round capacity, uses Izh43Bullet."
+  },
+  "M4Block:0": {
+    "DisplayName": "M4 Carbine",
+    "Description": "5.56×45mm carbine firing 3-round bursts. Uses NuevaBala2 projectiles. 22-round magazine, excellent modularity."
+  },
+  "Mac10Block:0": {
+    "DisplayName": "MAC-10",
+    "Description": "Compact machine pistol with extreme rate of fire (~600 RPM). Uses NuevaBala3 projectiles. Intense recoil, 30-round magazine."
+  },
+  "MinigunBlock:0": {
+    "DisplayName": "Minigun",
+    "Description": "Rotary machine gun firing NuevaBala6 projectiles at ~750 RPM. 100-round capacity, devastating suppression weapon."
+  },
+  "P90Block:0": {
+    "DisplayName": "FN P90",
+    "Description": "Bullpup PDW with 900 RPM rate of fire. Cycles through 6 bullet types. 50-round magazine, 5.7×28mm rounds."
+  },
+  "RevolverBlock:0": {
+    "DisplayName": "Revolver",
+    "Description": "Classic revolver firing powerful single shots. Uses NuevaBala4 projectiles. 6-round cylinder, high stopping power."
+  },
+  "SCARBlock:0": {
+    "DisplayName": "FN SCAR",
+    "Description": "Modular battle rifle with excellent accuracy. Cycles through 6 bullet types. 600 RPM, 30-round magazine."
+  },
+  "SniperBlock:0": {
+    "DisplayName": "Sniper Rifle",
+    "Description": "Bolt-action precision rifle for extreme long-range engagements. Equipped with high-magnification scope. Delivers single-shot kills with proper aim. Requires steady positioning and patience."
+  },
+  "SPAS12Block:0": {
+    "DisplayName": "SPAS-12 Combat Shotgun",
+    "Description": "Combat shotgun firing 8 pellets per shot. 8-round capacity. Can fire in pump or semi-auto modes."
+  },
+  "SWM500Block:0": {
+    "DisplayName": "Desert Eagle",
+    "Description": "Desert Eagle .50 caliber pistol with tremendous stopping power. Single-shot, uses NuevaBala4 projectiles. 5-round magazine."
+  },
+  "UziBlock:0": {
+    "DisplayName": "Uzi",
+    "Description": "Iconic submachine gun with high rate of fire (~750 RPM). Uses NuevaBala2 projectiles. 30-round magazine."
+  },
+  "AKBullet:0": {
+    "DisplayName": "7.62×39mm AK Magazine",
+    "Description": "30-round magazine for AK-47 rifle. Contains 7.62×39mm ammunition."
+  },
+  "M4Bullet:0": {
+    "DisplayName": "5.56×45mm STANAG Magazine",
+    "Description": "22-round magazine for M4 carbine. Contains 5.56×45mm NATO ammunition."
+  },
+  "SPAS12BulletBlock:0": {
+    "DisplayName": "12 Gauge Shells",
+    "Description": "8-round box of 12 gauge shells for SPAS-12 shotgun."
+  },
+  "Mac10Bullet:0": {
+    "DisplayName": ".45 ACP Magazine",
+    "Description": "30-round magazine for MAC-10. Contains .45 ACP ammunition."
+  },
+  "UziBullet:0": {
+    "DisplayName": "9×19mm Uzi Magazine",
+    "Description": "32-round magazine for Uzi submachine gun. Contains 9×19mm Parabellum rounds."
+  },
+  "G3Bullet:0": {
+    "DisplayName": "5.56×45mm FX05 Magazine",
+    "Description": "30-round magazine for FX05 Xiuhcoatl rifle. Contains 5.56×45mm NATO rounds."
+  },
+  "MinigunBullet:0": {
+    "DisplayName": "7.62×51mm Minigun Ammo Box",
+    "Description": "100-round ammunition box for Minigun. Contains linked 7.62×51mm NATO belts."
+  },
+  "Izh43Bullet:0": {
+    "DisplayName": "12 Gauge Double Shells",
+    "Description": "2-round set of 12 gauge shells for IZH-43 shotgun."
+  },
+  "SWM500Bullet:0": {
+    "DisplayName": ".50 AE Desert Eagle Magazine",
+    "Description": "7-round magazine for Desert Eagle pistol. Contains .50 Action Express rounds."
+  },
+  "SniperBullet:0": {
+    "DisplayName": "7.62×51mm Sniper Rounds",
+    "Description": "5-round stripper clip for sniper rifle. Contains 7.62×51mm match-grade ammunition."
+  },
+  "AUGBullet:0": {
+    "DisplayName": "5.56×45mm AUG Magazine",
+    "Description": "30-round translucent magazine for Steyr AUG. Contains 5.56×45mm NATO rounds."
+  },
+  "P90BulletBlock:0": {
+    "DisplayName": "5.7×28mm P90 Magazine",
+    "Description": "50-round top-mounted magazine for FN P90. Contains 5.7×28mm rounds."
+  },
+  "SCARBulletBlock:0": {
+    "DisplayName": "7.62×51mm SCAR Magazine",
+    "Description": "20-round magazine for FN SCAR-H. Contains 7.62×51mm NATO ammunition."
+  },
+  "RevolverBulletBlock:0": {
+    "DisplayName": ".357 Magnum Revolver Rounds",
+    "Description": "6-round speedloader for revolver. Contains .357 Magnum ammunition."
+  },
+  "FamasBulletBlock:0": {
+    "DisplayName": "5.56×45mm FAMAS Magazine",
+    "Description": "25-round magazine for FAMAS rifle. Contains 5.56×45mm NATO rounds."
+  }
+  },
       "ContentWidgets": {
     "FlameThrowerWidget": {
       "Title": "Flame Thrower",
@@ -409,6 +588,10 @@
     }
   },
   "Messages": {
+    "CollarTamedMachineGunMessage": "You have tamed a Machine Gun Infected!\nIts devastating minigun is now under your command!\nUnleash a hailstorm of bullets upon your enemies!",
+    "CollarTamedGhostBoomerMessage": "You have tamed a Ghost Boomer!\nIts spectral explosions will haunt your enemies!\nA ghostly explosive guardian is now yours!",
+    "CollarTamedGhostChargerMessage": "You have tamed a Ghost Charger!\nIts phantom force will push enemies from beyond!\nA spectral brute is now under your command!",
+    "CollarTamedGhostTankMessage": "You have tamed a Ghost Tank!\nThe spectral terror of bosses is now your phantom slave!\nIts ghostly brute force will guard you from the shadows!",
     "CollarTamedGhostMessage": "You have tamed a Ghost! Its invisibility is now in your hands!",
     "AntiTankCriticalHit": "Anti-Tank bullet critical hit",
     "TankChaseAlert": "ALERT!\n A Tank has appeared!\n Take refuge, find good weapons to kill it or use the zombie collar to calm its rage and turn it into an ally!",
@@ -427,5 +610,4 @@
     "ok": "OK",
     "cancel": "Cancel"
   }
-}
 }
