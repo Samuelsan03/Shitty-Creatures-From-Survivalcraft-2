@@ -19,12 +19,9 @@ namespace Game
 		private SubsystemNoise m_subsystemNoise;
 
 		// Configuración
-		public float MinDistance = 5f;
 		public float MaxDistance = 25f;
 		public float ReloadTime = 0.55f;
 		public float AimTime = 1f;
-		public string FireSound = "Audio/Items/ItemLauncher/Item Cannon Fire";
-		public float FireSoundDistance = 15f;
 		public float Accuracy = 0.05f;
 		public bool UseRecoil = true;
 		public float BulletSpeed = 60f;
@@ -55,13 +52,10 @@ namespace Game
 		{
 			base.Load(valuesDictionary, idToEntityMap);
 
-			// Cargar parámetros
-			MinDistance = valuesDictionary.GetValue<float>("MinDistance", 5f);
+			// Cargar parámetros (sin sonidos)
 			MaxDistance = valuesDictionary.GetValue<float>("MaxDistance", 25f);
 			ReloadTime = valuesDictionary.GetValue<float>("ReloadTime", 0.55f);
 			AimTime = valuesDictionary.GetValue<float>("AimTime", 1f);
-			FireSound = valuesDictionary.GetValue<string>("FireSound", "Audio/Items/ItemLauncher/Item Cannon Fire");
-			FireSoundDistance = valuesDictionary.GetValue<float>("FireSoundDistance", 15f);
 			Accuracy = valuesDictionary.GetValue<float>("Accuracy", 0.05f);
 			UseRecoil = valuesDictionary.GetValue<bool>("UseRecoil", true);
 			BulletSpeed = valuesDictionary.GetValue<float>("BulletSpeed", 60f);
@@ -99,14 +93,21 @@ namespace Game
 				return;
 			}
 
+			// Buscar ItemsLauncher en inventario
+			if (!HasItemsLauncher())
+			{
+				ResetAnimations();
+				return;
+			}
+
 			// Calcular distancia
 			float distance = Vector3.Distance(
 				m_componentCreature.ComponentBody.Position,
 				m_componentChaseBehavior.Target.ComponentBody.Position
 			);
 
-			// Lógica de ataque
-			if (distance >= MinDistance && distance <= MaxDistance)
+			// Lógica de ataque - MODIFICADO: Solo verifica distancia máxima como en ComponentMusketShooterBehavior
+			if (distance <= MaxDistance)
 			{
 				// Si no está haciendo nada, empezar a apuntar
 				if (!m_isAiming && !m_isFiring && !m_isReloading && !m_isCocking)
@@ -180,24 +181,48 @@ namespace Game
 			m_isCocking = false;
 			m_animationStartTime = m_subsystemTime.GameTime;
 
-			// Encontrar ItemsLauncher en inventario
-			FindItemsLauncher();
-				// Inicializar tiempo para primer disparo
-				m_nextFireTime = m_subsystemTime.GameTime + 0.1;
-			}
-		
+			// Encontrar ItemsLauncher en inventario y equiparlo
+			FindAndEquipItemsLauncher();
 
-		private void FindItemsLauncher()
+			// Inicializar tiempo para primer disparo
+			m_nextFireTime = m_subsystemTime.GameTime + 0.1;
+		}
+
+		private bool HasItemsLauncher()
 		{
-			// Buscar ItemsLauncher por ID de bloque (301 es el ID del ItemsLauncher)
+			// Buscar ItemsLauncher por nombre del bloque
 			for (int i = 0; i < m_componentInventory.SlotsCount; i++)
 			{
 				int slotValue = m_componentInventory.GetSlotValue(i);
-				if (slotValue != 0 && Terrain.ExtractContents(slotValue) == ItemsLauncherBlock.Index)
+				if (slotValue != 0)
 				{
-					m_itemsLauncherSlot = i;
-					m_componentInventory.ActiveSlotIndex = i;
-					break;
+					int blockIndex = Terrain.ExtractContents(slotValue);
+					Block block = BlocksManager.Blocks[blockIndex];
+					if (block.GetType().Name == "ItemsLauncherBlock")
+					{
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+
+		private void FindAndEquipItemsLauncher()
+		{
+			// Buscar ItemsLauncher por nombre del bloque
+			for (int i = 0; i < m_componentInventory.SlotsCount; i++)
+			{
+				int slotValue = m_componentInventory.GetSlotValue(i);
+				if (slotValue != 0)
+				{
+					int blockIndex = Terrain.ExtractContents(slotValue);
+					Block block = BlocksManager.Blocks[blockIndex];
+					if (block.GetType().Name == "ItemsLauncherBlock")
+					{
+						m_itemsLauncherSlot = i;
+						m_componentInventory.ActiveSlotIndex = i;
+						break;
+					}
 				}
 			}
 		}
@@ -248,18 +273,18 @@ namespace Game
 
 		private void Fire()
 		{
+			// Verificar si todavía tiene el ItemsLauncher
+			if (!HasItemsLauncher())
+			{
+				ResetAnimations();
+				return;
+			}
+
 			m_isAiming = false;
 			m_isFiring = true;
 			m_isReloading = false;
 			m_isCocking = false;
 			m_fireTime = m_subsystemTime.GameTime;
-
-			// Sonido de disparo
-			if (!string.IsNullOrEmpty(FireSound))
-			{
-				m_subsystemAudio.PlaySound(FireSound, 0.7f, m_random.Float(-0.1f, 0.1f),
-					m_componentCreature.ComponentBody.Position, FireSoundDistance, false);
-			}
 
 			// Disparar proyectil
 			ShootItem();
@@ -303,8 +328,6 @@ namespace Game
 			m_isReloading = true;
 			m_isCocking = false;
 			m_animationStartTime = m_subsystemTime.GameTime;
-
-			// NOTA: Se ha eliminado el sonido de recarga según la solicitud
 		}
 
 		private void ApplyReloadingAnimation(float dt)
