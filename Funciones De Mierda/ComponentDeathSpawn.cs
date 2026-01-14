@@ -28,38 +28,60 @@ namespace Game
 			this.m_componentHealth = base.Entity.FindComponent<ComponentHealth>(true);
 			this.m_componentSpawn = base.Entity.FindComponent<ComponentSpawn>(true);
 
-			// Cargar la lista de plantillas de entidades para spawnear al morir
+			// Cargar la lista de plantillas de entidades con probabilidades individuales
 			string spawnTemplatesValue = valuesDictionary.GetValue<string>("DeathSpawnTemplates", "");
 			if (!string.IsNullOrEmpty(spawnTemplatesValue))
 			{
-				string[] templates = spawnTemplatesValue.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-				foreach (string template in templates)
+				// Formato esperado: "NPC1:0.5;NPC2:0.3;NPC3:0.8"
+				string[] entries = spawnTemplatesValue.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+
+				foreach (string entry in entries)
 				{
-					string trimmedTemplate = template.Trim();
-					if (!string.IsNullOrEmpty(trimmedTemplate))
+					string trimmedEntry = entry.Trim();
+					if (!string.IsNullOrEmpty(trimmedEntry))
 					{
-						// Verificar que la plantilla existe
-						try
+						// Separar nombre de NPC y probabilidad
+						string[] parts = trimmedEntry.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
+
+						if (parts.Length >= 1)
 						{
-							DatabaseManager.FindEntityValuesDictionary(trimmedTemplate, true);
-							this.m_spawnTemplates.Add(trimmedTemplate);
-						}
-						catch
-						{
-							Log.Warning($"Plantilla de entidad no encontrada: {trimmedTemplate}");
+							string npcName = parts[0].Trim();
+							float probability = 1.0f; // Probabilidad por defecto
+
+							if (parts.Length >= 2)
+							{
+								if (!float.TryParse(parts[1].Trim(), out probability))
+								{
+									probability = 1.0f;
+									Log.Warning($"Probabilidad inválida para {npcName}, usando 1.0 por defecto");
+								}
+							}
+
+							// Verificar que la plantilla existe
+							try
+							{
+								DatabaseManager.FindEntityValuesDictionary(npcName, true);
+								this.m_spawnEntries.Add(new SpawnEntry
+								{
+									TemplateName = npcName,
+									Probability = probability
+								});
+							}
+							catch
+							{
+								Log.Warning($"Plantilla de entidad no encontrada: {npcName}");
+							}
 						}
 					}
 				}
 			}
 
-			// Cargar la probabilidad (0-1)
-			this.m_spawnProbability = valuesDictionary.GetValue<float>("DeathSpawnProbability", 1.0f);
+			// Cargar la probabilidad global (0-1)
+			this.m_globalSpawnProbability = valuesDictionary.GetValue<float>("DeathSpawnProbability", 1.0f);
 
 			// Suscribirse al evento de despawn (similar a ComponentShapeshifter)
 			ComponentSpawn componentSpawn = this.m_componentSpawn;
 			componentSpawn.Despawned = (Action<ComponentSpawn>)Delegate.Combine(componentSpawn.Despawned, new Action<ComponentSpawn>(this.OnDespawned));
-
-			// NO crear partículas aquí, solo cuando realmente vaya a morir
 		}
 
 		// Token: 0x06000C4A RID: 3146 RVA: 0x0004B874 File Offset: 0x00049A74
@@ -70,27 +92,33 @@ namespace Game
 			{
 				this.m_hasCheckedDeath = true;
 
-				// Verificar probabilidad de spawn al morir
-				if (this.m_spawnTemplates.Count > 0 && ComponentDeathSpawn.s_random.Float(0f, 1f) < this.m_spawnProbability)
+				// Verificar probabilidad global de spawn al morir
+				if (this.m_spawnEntries.Count > 0 && ComponentDeathSpawn.s_random.Float(0f, 1f) < this.m_globalSpawnProbability)
 				{
-					this.m_shouldSpawnOnDespawn = true;
-					this.m_spawnEntityTemplateName = this.m_spawnTemplates[ComponentDeathSpawn.s_random.Int(0, this.m_spawnTemplates.Count - 1)];
+					// Seleccionar un NPC basado en probabilidades individuales
+					SpawnEntry selectedEntry = SelectRandomNPC();
 
-					// Crear sistema de partículas SOLO cuando va a morir
-					if (this.m_particleSystem == null)
+					if (selectedEntry != null)
 					{
-						this.m_particleSystem = new NewShapeshiftParticleSystem();
-						this.m_subsystemParticles.AddParticleSystem(this.m_particleSystem, false);
-					}
+						this.m_shouldSpawnOnDespawn = true;
+						this.m_selectedSpawnEntry = selectedEntry;
 
-					// Configurar despawn con animación (como en ComponentShapeshifter)
-					this.m_componentSpawn.DespawnDuration = 3f; // Duración de la animación
-					this.m_componentSpawn.Despawn();
+						// Crear sistema de partículas SOLO cuando va a morir
+						if (this.m_particleSystem == null)
+						{
+							this.m_particleSystem = new NewShapeshiftParticleSystem();
+							this.m_subsystemParticles.AddParticleSystem(this.m_particleSystem, false);
+						}
 
-					// Reproducir sonido de spawn
-					if (this.m_subsystemAudio != null)
-					{
-						this.m_subsystemAudio.PlaySound("Audio/Shapeshift", 1f, 0f, this.m_componentBody.Position, 3f, true);
+						// Configurar despawn con animación (como en ComponentShapeshifter)
+						this.m_componentSpawn.DespawnDuration = 3f; // Duración de la animación
+						this.m_componentSpawn.Despawn();
+
+						// Reproducir sonido de spawn
+						if (this.m_subsystemAudio != null)
+						{
+							this.m_subsystemAudio.PlaySound("Audio/Shapeshift", 1f, 0f, this.m_componentBody.Position, 3f, true);
+						}
 					}
 				}
 			}
@@ -106,10 +134,10 @@ namespace Game
 		public virtual void OnDespawned(ComponentSpawn componentSpawn)
 		{
 			// Spawnear después de la animación de partículas (como ComponentShapeshifter)
-			if (this.m_shouldSpawnOnDespawn && !string.IsNullOrEmpty(this.m_spawnEntityTemplateName))
+			if (this.m_shouldSpawnOnDespawn && this.m_selectedSpawnEntry != null)
 			{
 				// Crear la nueva entidad
-				Entity entity = DatabaseManager.CreateEntity(base.Project, this.m_spawnEntityTemplateName, true);
+				Entity entity = DatabaseManager.CreateEntity(base.Project, this.m_selectedSpawnEntry.TemplateName, true);
 				ComponentBody componentBody = entity.FindComponent<ComponentBody>(true);
 
 				// Posicionar en la misma ubicación que la entidad muerta
@@ -135,7 +163,7 @@ namespace Game
 				base.Project.AddEntity(entity);
 
 				this.m_shouldSpawnOnDespawn = false;
-				this.m_spawnEntityTemplateName = null;
+				this.m_selectedSpawnEntry = null;
 			}
 
 			// Detener partículas (como en ComponentShapeshifter)
@@ -145,6 +173,43 @@ namespace Game
 				// Opcional: remover el sistema de partículas después de un tiempo
 				this.m_particleSystem = null;
 			}
+		}
+
+		// Token: 0x06000C4C RID: 3148 RVA: 0x0004BA00 File Offset: 0x00049C00
+		private SpawnEntry SelectRandomNPC()
+		{
+			if (this.m_spawnEntries.Count == 0)
+				return null;
+
+			// Calcular la suma total de probabilidades
+			float totalProbability = 0f;
+			foreach (var entry in this.m_spawnEntries)
+			{
+				totalProbability += entry.Probability;
+			}
+
+			// Si la suma es 0, usar probabilidades iguales
+			if (totalProbability <= 0f)
+			{
+				int index = ComponentDeathSpawn.s_random.Int(0, this.m_spawnEntries.Count - 1);
+				return this.m_spawnEntries[index];
+			}
+
+			// Selección basada en probabilidades ponderadas
+			float randomValue = ComponentDeathSpawn.s_random.Float(0f, totalProbability);
+			float cumulative = 0f;
+
+			foreach (var entry in this.m_spawnEntries)
+			{
+				cumulative += entry.Probability;
+				if (randomValue <= cumulative)
+				{
+					return entry;
+				}
+			}
+
+			// Fallback: último elemento
+			return this.m_spawnEntries[this.m_spawnEntries.Count - 1];
 		}
 
 		// Token: 0x04000733 RID: 1843
@@ -166,10 +231,10 @@ namespace Game
 		public ComponentSpawn m_componentSpawn;
 
 		// Token: 0x04000739 RID: 1849
-		public List<string> m_spawnTemplates = new List<string>();
+		public List<SpawnEntry> m_spawnEntries = new List<SpawnEntry>();
 
 		// Token: 0x0400073A RID: 1850
-		public float m_spawnProbability = 1.0f;
+		public float m_globalSpawnProbability = 1.0f;
 
 		// Token: 0x0400073B RID: 1851
 		public bool m_shouldSpawnOnDespawn;
@@ -178,12 +243,22 @@ namespace Game
 		public bool m_hasCheckedDeath;
 
 		// Token: 0x0400073D RID: 1853
-		public string m_spawnEntityTemplateName;
+		public SpawnEntry m_selectedSpawnEntry;
 
 		// Token: 0x0400073E RID: 1854
 		public NewShapeshiftParticleSystem m_particleSystem;
 
-		// Token: 0x04000740 RID: 1856
+		// Token: 0x0400073F RID: 1855
 		public static Random s_random = new Random();
+
+		// Token: 0x0200055D RID: 1373
+		public class SpawnEntry
+		{
+			// Token: 0x04001CA7 RID: 7335
+			public string TemplateName;
+
+			// Token: 0x04001CA8 RID: 7336
+			public float Probability;
+		}
 	}
 }
