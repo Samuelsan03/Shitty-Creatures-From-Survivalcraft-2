@@ -226,22 +226,6 @@
     "Brayan": "Brayan was born on January 12, 2000, in London, England. From a young age he dedicated himself to studying physics and biology, inspired by figures such as Charles Darwin and Isaac Newton. At the age of 25, he received a special voucher to travel to Alaska, United States, to further his studies of nature and frozen physics. He accepted, but during the journey an unexpected accident changed his life: the pilot fainted due to a natural cause, the plane lost control, and it crashed. Brayan survived thanks to the winds of nature, which carried him away from drowning and guided him to a mysterious island in the Pacific. From that moment, he began to survive using the knowledge he had acquired in his studies, applying physics and biology to endure the harsh environment. One day he met Tulio, who was impressed by Brayan’s survival methods and offered him the chance to join the group known as Alianza. This group was formed by people of good spirit, dedicated to protecting each other while collecting information about the unknown and mysterious islands. Brayan accepted, and from then on he became part of a family on the island, while keeping alive his hope of one day returning to England.",
     "Richard": "Richard is the twin brother of Ricardo. Unlike him, Richard was born in South Africa in 2004, during the post-apartheid era. When he turned 18, he began his life as an adventurer, driven by curiosity and a desire to explore the unknown. Later, he met Ricardo during a scientific journey in Mexico, and despite their different origins, they bonded deeply and became brothers in spirit. When Ricardo departed for the mysterious Pacific islands, Richard decided to undertake the same expedition, but with a unique difference: he designed and built a machine capable of traveling anywhere without the need for ships, boats, or conventional vehicles. His invention was a success, and he used it to embark on his journey, eventually arriving at the same destination as Ricardo. Upon reaching the island, Ricardo welcomed him as his true brother and introduced him to the companions he had met there. From that moment, Richard became part of the family and joined the group known as Alianza. His arrival brought new energy to the team, as his inventive mind and adventurous spirit complemented Ricardo’s resilience. Richard’s machine, though damaged during the voyage, became a symbol of hope for the group, showing that human ingenuity could rival even the mysteries of the islands. Together with Naomi, Paco, and the others, Richard contributed to the survival and exploration of the unknown land, strengthening the bonds of Alianza and keeping alive the dream of one day uncovering the secrets of the Pacific islands."
   },
-    "ContentWidgets": {
-      "FlameThrowerWidget": {
-        "Title": "Flame Thrower",
-        "Inventory": "Inventory",
-        "LoadAmmunition": "Load ammunition",
-        "SprayFire": "Prepare to spray fire {0}/15",
-        "SprayPoison": "Prepare to spray poison {0}/15"
-      },
-      "RepeatCrossbowWidget": {
-        "Title": "Repeating Crossbow",
-        "Inventory": "Inventory",
-        "InstructionsPull": "Pull back to load",
-        "InstructionsInsert": "Insert bolts",
-        "InstructionsArrows": "Bolts: {0}/8"
-      }
-    },
     "Messages": {
       "FirstPullCrossbow": "First pull back the repeat crossbow!",
       "FirstLoadArrow": "First load an bolt!",
