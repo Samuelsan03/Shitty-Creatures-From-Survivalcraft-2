@@ -226,22 +226,6 @@
     "Brayan": "Brayan nació el 12 de enero de 2000 en Londres, Inglaterra. Desde joven se dedicó a estudiar física y biología, inspirado por figuras como Charles Darwin e Isaac Newton. A la edad de 25 años, recibió un boleto especial para viajar a Alaska, Estados Unidos, para profundizar sus estudios de naturaleza y física congelada. Aceptó, pero durante el viaje un accidente inesperado cambió su vida: el piloto se desmayó debido a una causa natural, el avión perdió el control y se estrelló. Brayan sobrevivió gracias a los vientos de la naturaleza, que lo alejaron de ahogarse y lo guiaron a una misteriosa isla en el Pacífico. Desde ese momento, comenzó a sobrevivir usando el conocimiento que había adquirido en sus estudios, aplicando física y biología para soportar el duro ambiente. Un día conoció a Tulio, quien quedó impresionado por los métodos de supervivencia de Brayan y le ofreció la oportunidad de unirse al grupo conocido como Alianza. Este grupo estaba formado por personas de buen espíritu, dedicadas a protegerse mutuamente mientras recolectaban información sobre las desconocidas y misteriosas islas. Brayan aceptó, y desde entonces se convirtió en parte de una familia en la isla, manteniendo viva su esperanza de algún día regresar a Inglaterra.",
     "Richard": "Richard es el hermano gemelo de Ricardo. A diferencia de él, Richard nació en Sudáfrica en 2004, durante la era post-apartheid. Cuando cumplió 18 años, comenzó su vida como aventurero, impulsado por la curiosidad y el deseo de explorar lo desconocido. Más tarde, conoció a Ricardo durante un viaje científico en México, y a pesar de sus diferentes orígenes, se unieron profundamente y se convirtieron en hermanos en espíritu. Cuando Ricardo partió hacia las misteriosas islas del Pacífico, Richard decidió emprender la misma expedición, pero con una diferencia única: diseñó y construyó una máquina capaz de viajar a cualquier lugar sin la necesidad de barcos, botes o vehículos convencionales. Su invento fue un éxito, y lo usó para embarcarse en su viaje, llegando eventualmente al mismo destino que Ricardo. Al llegar a la isla, Ricardo lo recibió como su verdadero hermano y lo presentó a los compañeros que había conocido allí. Desde ese momento, Richard se convirtió en parte de la familia y se unió al grupo conocido como Alianza. Su llegada trajo nueva energía al equipo, ya que su mente inventiva y espíritu aventurero complementaron la resiliencia de Ricardo. La máquina de Richard, aunque dañada durante el viaje, se convirtió en un símbolo de esperanza para el grupo, mostrando que el ingenio humano podía rivalizar incluso con los misterios de las islas. Junto con Naomi, Paco y los demás, Richard contribuyó a la supervivencia y exploración de la tierra desconocida, fortaleciendo los lazos de Alianza y manteniendo vivo el sueño de algún día descubrir los secretos de las islas del Pacífico."
     },
-    "ContentWidgets": {
-      "FlameThrowerWidget": {
-        "Title": "Lanzallamas",
-        "Inventory": "Inventario",
-        "LoadAmmunition": "Carga una munición",
-        "SprayFire": "Prepárate para rociar fuego {0}/15",
-        "SprayPoison": "Prepárate para rociar veneno {0}/15"
-      },
-      "RepeatCrossbowWidget": {
-        "Title": "Ballesta Repetidora",
-        "Inventory": "Inventario",
-        "InstructionsPull": "Tensa para cargar",
-        "InstructionsInsert": "Inserta virotes",
-        "InstructionsArrows": "Virotes: {0}/8"
-      }
-    },
     "Messages": {
       "FirstPullCrossbow": "¡Primero tensa la ballesta repetidora!",
       "FirstLoadArrow": "¡Primero carga una virote!",
