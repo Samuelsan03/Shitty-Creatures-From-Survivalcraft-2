@@ -87,7 +87,7 @@
     <MemberComponentTemplate Name="HumanModel" Guid="543911dd-f329-4734-be90-b5b3334c6b54" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
         <Parameter Name="WalkLegsAngle" Guid="7afca53c-5a74-491b-b842-975aba7de6f1" Value="0.35" Type="float"/>
         <Parameter Name="ModelName" Guid="a9ffe22e-5ecd-4c16-a69d-d1fc5d64cda1" Value="Models/HumanMale" Type="string"/>
-        <Parameter Name="TextureOverride" Guid="321489fa-f36d-48b5-9724-d9e551032f89" Value="Textures/Bandidos/Soldado Type="string"/>
+        <Parameter Name="TextureOverride" Guid="321489fa-f36d-48b5-9724-d9e551032f89" Value="Textures/Bandidos/Soldado" Type="string"/>
         <Parameter Name="WalkAnimationSpeed" Guid="4dc11b36-45c4-450c-974c-1b83c9338baa" Value="0.8" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="HealthBarDisplay" Guid="40c3ff7d-e92c-4609-aabf-bf6e55204887" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
