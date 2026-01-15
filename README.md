@@ -17,8 +17,7 @@ Oh, and don't come crying about me stealing your code, because you secretly do t
 * Textures and models from other NPCS: stolen from other mods such as DayZ mod, Mutation mod, taken out on survivalcraft 2 discord servers in the skins channel
 * Original Textures: Samuelsan03 and Bugs Mcdickie
 * Audios: taken from pages such as YouTube, 101sounds, and others more dedicated to sound
-* Program used for the audio clips of the npcs: Audacity
-* Program of the original audios of Naomi and Paco: Loquendo and La Voz De Zueira
-* Program used for texture editing: IbisPaint and Pixel Art
+* Program used for the audio clips of the npcs: Audacity, Loquendo
+* Program used for texture editing: IbisPaint, Pixel Art and Photoshop
 * Code taken from the npcs: from the original game Survivalcraft 2
 * Mod Birth Date: 3-11-2025
