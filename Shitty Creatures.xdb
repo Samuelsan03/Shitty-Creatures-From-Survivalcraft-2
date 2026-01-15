@@ -1,5 +1,28 @@
 <ShittyCreatures xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://gitee.com/THPRC/survivalcraft-api/raw/SCAPI1.8/Survivalcraft/Content/Assets/Database.xsd">
 <Folder Name="Gameplay" Guid="d509e5e2-2c10-49f1-8223-85cd892c63b0">
+<ComponentTemplate Name="CreatureAI" Description="Inteligencia artificial para criaturas con soporte para armas y recarga automática" Guid="a703e514-0246-49c4-a58d-282a2e0737d1" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
+    <Parameter Name="Class" Guid="e43a2641-0995-446c-aa50-390e7c0e2c12" Value="Game.ComponentCreatureAI" Type="string" Description="Clase C# que implementa el componente"/>
+    <Parameter Name="CanUseInventory" Guid="ddb27b73-4aa7-4580-a5bd-684db3139696" Value="true" Type="bool" Description="Si la criatura puede usar armas del inventario"/>
+</ComponentTemplate>
+
+<ComponentTemplate Name="CreatureClothing" Description="Permite asignar prendas de ropa a criaturas." Guid="84f381c3-b55c-4a49-bdd0-0bef89bbc0e9" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
+			<Parameter Name="DropClothesProbability" Description="Probabilidad de que la criatura suelte los objetos de ropa cuando muere, 1 es 100%" Guid="354d89f0-e0cd-40f7-acd2-2ffbf1fcf87e" Value="1" Type="float"/>
+			<ParameterSet Name="Clothes" Description="Contains clothes worn by creature" Guid="7c750c43-e2bb-4a53-8116-328ac217e66e">
+				<Parameter Name="Legs" Description="List of legs clothes" Value="" Type="string"/>
+				<Parameter Name="Feet" Description="List of feet clothes" Value="" Type="string"/>
+				<Parameter Name="Torso" Description="List of torso clothes" Value="" Type="string"/>
+				<Parameter Name="Head" Description="List of head clothes" Value="" Type="string"/>
+			</ParameterSet>
+			<Parameter Name="RandomClothing" Guid="1faaf429-fcb3-4649-aae6-8cf5d651ffd2" Value="false" Type="bool"/>
+			<ParameterSet Name="RandomClothesList" Guid="794062ea-c035-481b-a544-2eb9c52ec8d3">
+				<Parameter Name="Legs" Value="" Type="string"/>
+				<Parameter Name="Feet" Value="" Type="string"/>
+				<Parameter Name="Torso" Value="" Type="string"/>
+				<Parameter Name="Head" Value="" Type="string"/>
+			</ParameterSet>
+			<Parameter Name="Class" Guid="0b319571-d38a-474b-ae6d-d84ec7c110ba" Value="Game.ComponentCreatureClothing" Type="string"/>
+		</ComponentTemplate>
+        
 <ComponentTemplate Name="DeathSpawner" Description="Genera NPCs aleatorios cuando la entidad muere" Guid="32905e25-1938-46fb-8659-a86ee79cfaa4" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
     <Parameter Name="Class" Guid="928c18a2-2cbb-49c5-bfdf-20634526aa0f" Value="Game.ComponentDeathSpawn" Type="string" Description="Clase C# que implementa el componente"/>
     <Parameter Name="DeathSpawnProbability" Guid="35fa8f0c-11f2-42f9-b502-76b013a527d8" Value="1.0" Type="float" Description="Probabilidad de que aparezcan NPCs al morir (0-1)"/>
@@ -280,10 +303,6 @@
     <Parameter Name="AimTime" Description="Tiempo de apuntado antes de comenzar a disparar" Guid="fff3a361-6506-4837-a432-1d1e41b5939c" Value="0.5" Type="float"/>
     <Parameter Name="BurstTime" Description="Duración de la ráfaga de llamas en segundos" Guid="d52172f1-c19c-4f9d-81a9-6c53a6cf15a7" Value="2.0" Type="float"/>
     <Parameter Name="CooldownTime" Description="Tiempo de enfriamiento entre ráfagas en segundos" Guid="42656985-a446-44d8-bf8f-c5896bda2b60" Value="1.0" Type="float"/>
-    <Parameter Name="FireSound" Description="Sonido de lanzallamas de fuego" Guid="fae46791-2894-435c-a0b4-ece53e05388a" Value="Audio/Flamethrower/Flamethrower Fire" Type="string"/>
-    <Parameter Name="HammerSound" Description="Sonido del martillo del lanzallamas" Guid="962ef714-dab5-4bbd-a6b1-7e976d27fc5a" Value="Audio/Items/Hammer Cock Remake" Type="string"/>
-    <Parameter Name="FireSoundDistance" Description="Distancia del sonido de lanzallamas" Guid="5c62f9e8-4988-47e5-b91b-84bbe0c1f25c" Value="25" Type="float"/>
-    <Parameter Name="HammerSoundDistance" Description="Distancia del sonido del martillo" Guid="7c13bb1e-4b25-4625-9479-a808eebf8f0b" Value="20" Type="float"/>
     <Parameter Name="Accuracy" Description="Precisión del disparo (menor = más preciso)" Guid="b171a609-bb53-4b89-84eb-725d6b8ca0c8" Value="0.1" Type="float"/>
     <Parameter Name="UseRecoil" Description="Aplicar retroceso físico al disparar" Guid="4ec72dcf-7df4-40ba-bfdf-557c0efb4cd5" Value="true" Type="bool"/>
     <Parameter Name="FlameSpeed" Description="Velocidad base de las llamas" Guid="24c33087-7809-429f-881c-6388b89fa1f8" Value="40" Type="float"/>
@@ -299,10 +318,6 @@
     <Parameter Name="AimTime" Description="Tiempo de apuntado antes de comenzar a tensar" Guid="6317aefb-5093-439e-9e48-82677d8b305b" Value="0.5" Type="float"/>
     <Parameter Name="TimeBetweenShots" Description="Tiempo entre disparos de flechas múltiples" Guid="00f885cd-9916-4a0e-8941-9d6147cdb9da" Value="1.0" Type="float"/>
     <Parameter Name="MaxInaccuracy" Description="Imprecisión máxima del disparo (menor = más preciso)" Guid="0a7f258c-47ab-4eb3-8ea9-c8db44e7e6db" Value="0.03" Type="float"/>
-    <Parameter Name="DrawSound" Description="Sonido de tensar la ballesta" Guid="69a896c9-c571-4194-a1b1-11c79fd7c5e2" Value="Audio/CrossbowDraw" Type="string"/>
-    <Parameter Name="FireSound" Description="Sonido de disparo de la ballesta" Guid="c9532372-4a66-453d-ac68-80a17c77a715" Value="Audio/Bow" Type="string"/>
-    <Parameter Name="ReleaseSound" Description="Sonido al destensar la ballesta" Guid="1c3d52be-ca95-4be0-8498-268973fa63a8" Value="Audio/CrossbowBoing" Type="string"/>
-    <Parameter Name="FireSoundDistance" Description="Distancia del sonido de disparo" Guid="7d551d4c-eb2f-42c4-9b12-2d00227f718a" Value="15" Type="float"/>
     <Parameter Name="UseRecoil" Description="Aplicar retroceso al disparar" Guid="c01e98f4-f8d2-4756-8f57-c00602b33f1e" Value="true" Type="bool"/>
     <Parameter Name="BoltSpeed" Description="Velocidad base de las flechas" Guid="340aa374-0e22-43cf-94b2-00b5fba46724" Value="40" Type="float"/>
     <Parameter Name="Class" Guid="c852e0cc-bb4b-434b-9dc1-0f1795bd7a49" Value="Game.ComponentRepeatCrossbowShooterBehavior" Type="string"/>
@@ -313,10 +328,6 @@
     <Parameter Name="MaxDistance" Description="Distancia máxima de disparo efectivo" Guid="d00af5da-9704-4ebf-bbd4-a5e55f32a2bc" Value="25" Type="float"/>
     <Parameter Name="DrawTime" Description="Tiempo para tensar completamente la ballesta en segundos" Guid="e1e3e770-4f64-4698-b207-af3cf61e1e7e" Value="1.5" Type="float"/>
     <Parameter Name="AimTime" Description="Tiempo de apuntado antes de comenzar a tensar" Guid="127e199b-c61a-43a4-9bd3-fb52bd1051f5" Value="0.5" Type="float"/>
-    <Parameter Name="DrawSound" Description="Sonido de tensar la ballesta" Guid="bae653a0-9cc3-4283-ab9e-a9706de54043" Value="Audio/CrossbowDraw" Type="string"/>
-    <Parameter Name="FireSound" Description="Sonido de disparo de la ballesta" Guid="3e9351dc-2014-4b7d-b435-ec26f28de248" Value="Audio/Bow" Type="string"/>
-    <Parameter Name="ReloadSound" Description="Sonido de recarga/carga del virote" Guid="b9d861f2-049a-48b4-b78a-df4d944669ce" Value="Audio/Reload" Type="string"/>
-    <Parameter Name="FireSoundDistance" Description="Distancia del sonido de disparo" Guid="d36ac619-480c-4c58-b470-1d63097ba418" Value="15" Type="float"/>
     <Parameter Name="Accuracy" Description="Precisión del disparo (menor = más preciso)" Guid="62ca364e-ac7b-468b-99ef-a8203042ed06" Value="0.02" Type="float"/>
     <Parameter Name="UseRecoil" Description="Aplicar retroceso al disparar" Guid="f58a5acc-5209-497d-86ad-93c08ca7d7dc" Value="true" Type="bool"/>
     <Parameter Name="ShowBoltWhenIdle" Description="Mostrar virote cuando está inactivo" Guid="5df45b96-bf93-4558-a558-7aea5da6b33a" Value="false" Type="bool"/>
@@ -330,10 +341,6 @@
     <Parameter Name="MaxDistance" Description="Distancia máxima de disparo efectivo" Guid="326ccc85-0f14-4967-8ee4-2300a82667a2" Value="25" Type="float"/>
     <Parameter Name="DrawTime" Description="Tiempo para tensar completamente el arco en segundos" Guid="f519747b-9801-4465-a28f-887468287bf9" Value="1.5" Type="float"/>
     <Parameter Name="AimTime" Description="Tiempo de apuntado antes de comenzar a tensar" Guid="bad1bc14-3cd9-4c58-9ecd-32dbcb8d8295" Value="0.8" Type="float"/>
-    <Parameter Name="DrawSound" Description="Sonido de tensar el arco" Guid="3367bcd7-cc61-4682-88b2-fcd09a1e406f" Value="Audio/BowDraw" Type="string"/>
-    <Parameter Name="FireSound" Description="Sonido de disparo del arco" Guid="b1ef7028-91a6-4919-88da-13c9687ad270" Value="Audio/Bow" Type="string"/>
-    <Parameter Name="ArrowSound" Description="Sonido de vuelo de flecha" Guid="8580a691-fd3b-42a1-bcf7-32939ecc5b27" Value="Audio/ArrowFlight" Type="string"/>
-    <Parameter Name="FireSoundDistance" Description="Distancia del sonido de disparo" Guid="3e61611c-c9b6-4bbc-80a6-e457bb299402" Value="15" Type="float"/>
     <Parameter Name="Accuracy" Description="Precisión del disparo (menor = más preciso)" Guid="c43eb388-a8ff-47b0-bf48-8d519ee9a929" Value="0.03" Type="float"/>
     <Parameter Name="UseRecoil" Description="Aplicar retroceso al disparar" Guid="35f6db09-32b8-4721-9b4b-e731c8f5bacd" Value="false" Type="bool"/>
     <Parameter Name="ShowArrowWhenIdle" Description="Mostrar flecha cuando está inactivo" Guid="025e4329-18a0-4f52-b108-66e86f7899e1" Value="true" Type="bool"/>
@@ -347,9 +354,6 @@
     <Parameter Name="MaxDistance" Description="Distancia máxima de disparo efectivo" Guid="50b6851e-048c-4a71-a1cf-8be528e6bd70" Value="25" Type="float"/>
     <Parameter Name="ReloadTime" Description="Tiempo de recarga en segundos" Guid="41c964ea-bc0a-406c-a895-bd7b60213a5d" Value="1.5" Type="float"/>
     <Parameter Name="AimTime" Description="Tiempo de apuntado antes de disparar" Guid="f72590e5-45e7-4f77-b440-ba2bddf1f2fb" Value="0.8" Type="float"/>
-    <Parameter Name="FireSound" Description="Sonido de disparo" Guid="2bf325b2-049a-4df3-834a-a7b7a13f125c" Value="Audio/Items/ItemLauncher/Item Cannon Fire" Type="string"/>
-    <Parameter Name="FireSoundDistance" Description="Distancia del sonido de disparo" Guid="3e27e308-ea12-4cc8-bc83-52e13d477abc" Value="15" Type="float"/>
-    <Parameter Name="CockSound" Description="Sonido de amartillado" Guid="8412a8cf-fc60-4eba-80cd-cbdde294750f" Value="Audio/HammerCock" Type="string"/>
     <Parameter Name="Accuracy" Description="Precisión del disparo (menor = más preciso)" Guid="226d5ae4-0b64-407a-845b-2a743a928888" Value="0.05" Type="float"/>
     <Parameter Name="UseRecoil" Description="Aplicar retroceso al disparar" Guid="5e11b0ad-c4d0-4d19-be04-303fdbc31660" Value="true" Type="bool"/>
     <Parameter Name="BulletSpeed" Description="Velocidad base del proyectil" Guid="31340e21-7084-43aa-b482-55b53b4515c2" Value="35" Type="float"/>
@@ -365,12 +369,6 @@
     <Parameter Name="ReloadTime" Description="Tiempo de recarga en segundos" Guid="a2a78ac6-3118-44a1-9062-bb607229118a" Value="2" Type="float"/>
     <Parameter Name="AimTime" Description="Tiempo de apuntado antes de disparar" Guid="5e60d9de-57c6-4ce2-a84e-cdb1239b1af6" Value="1" Type="float"/>
     <Parameter Name="CockTime" Description="Tiempo de amartillado" Guid="f9c65451-ed2a-4956-861e-7229de15402f" Value="0.5" Type="float"/>
-    <Parameter Name="FireSound" Description="Sonido de disparo" Guid="afa2f9e6-2afe-4f97-b995-34f8c89e9571" Value="Audio/MusketFire" Type="string"/>
-    <Parameter Name="FireSoundDistance" Description="Distancia del sonido de disparo" Guid="8e11507b-a246-4cfa-ac27-6aedcc6ace6c" Value="15" Type="float"/>
-    <Parameter Name="CockSound" Description="Sonido de amartillado" Guid="aec272ff-7be0-4efa-8727-6f5419e503f6" Value="Audio/HammerCock" Type="string"/>
-    <Parameter Name="ReloadSound" Description="Sonido de recarga" Guid="9b419082-e61d-420a-b0bb-68fa0b6d72f7" Value="Audio/Reload" Type="string"/>
-    <Parameter Name="UncockSound" Description="Sonido de liberación del martillo" Guid="32d07147-fe69-43e0-8099-578c33bb2545" Value="Audio/HammerUncock" Type="string"/>
-    <Parameter Name="MisfireSound" Description="Sonido de fallo de disparo" Guid="86856d61-a484-45ff-81dc-a604b1556a99" Value="Audio/MusketMisfire" Type="string"/>
     <Parameter Name="Accuracy" Description="Precisión del disparo (menor = más preciso)" Guid="43344e94-6169-4eb9-b5ba-2a9ee359732b" Value="0.02" Type="float"/>
     <Parameter Name="UseRecoil" Description="Aplicar retroceso al disparar" Guid="b0a6e3e2-ae9f-4550-a0da-558fab1b03e7" Value="true" Type="bool"/>
     <Parameter Name="BulletSpeed" Description="Velocidad de la bala" Guid="afd24068-ff98-4352-a770-54a1560bb8e7" Value="120" Type="float"/>
@@ -385,12 +383,6 @@
     <Parameter Name="AimTime" Description="Tiempo de apuntado antes de disparar" Guid="ad1b63cf-55c5-4593-876d-954d4646f602" Value="1" Type="float"/>
     <Parameter Name="CockTime" Description="Tiempo de amartillado" Guid="e646e8ba-5b8a-46b6-b1d8-5d4847a1bca9" Value="0.5" Type="float"/>
     <Parameter Name="MeleeAttackTime" Description="Tiempo entre ataques cuerpo a cuerpo" Guid="8159cc8a-1d5c-451d-bfd7-5ae2e4edd391" Value="0.8" Type="float"/>
-    <Parameter Name="FireSound" Description="Sonido de disparo" Guid="8301c0d2-d8d4-43c3-97dd-3faae72c74cb" Value="Audio/MusketFire" Type="string"/>
-    <Parameter Name="FireSoundDistance" Description="Distancia del sonido de disparo" Guid="65f3f641-c111-4607-9b67-382f2aa5edfa" Value="15" Type="float"/>
-    <Parameter Name="CockSound" Description="Sonido de amartillado" Guid="f92244dd-4ed3-4866-8eb2-0352c33ef4fc" Value="Audio/HammerCock" Type="string"/>
-    <Parameter Name="ReloadSound" Description="Sonido de recarga" Guid="44a3a5ea-f79d-446f-8e6f-52f7a8db9cc3" Value="Audio/Reload" Type="string"/>
-    <Parameter Name="UncockSound" Description="Sonido de liberación del martillo" Guid="38f27c8d-ed92-4cf3-a24f-5de6eeee8038" Value="Audio/HammerUncock" Type="string"/>
-    <Parameter Name="MisfireSound" Description="Sonido de fallo de disparo" Guid="7edd9d2f-c70d-4a4a-909c-c7956b58186b" Value="Audio/MusketMisfire" Type="string"/>
     <Parameter Name="Accuracy" Description="Precisión del disparo (menor = más preciso)" Guid="71fc1196-b143-4835-9abb-7504ea73ea07" Value="0.02" Type="float"/>
     <Parameter Name="UseRecoil" Description="Aplicar retroceso al disparar" Guid="fc414769-1ff0-41a5-88f4-4b5fff633524" Value="true" Type="bool"/>
     <Parameter Name="BulletSpeed" Description="Velocidad de la bala" Guid="d37514e7-406d-4824-9c8d-2c60f4be77ba" Value="120" Type="float"/>
@@ -486,11 +478,12 @@
             <Parameter Name="Class" Guid="195523d4-9a71-4be0-ad61-04613053c78d" Value="Game.ComponentInvShooterBehavior" Type="string"/>
         </ComponentTemplate>
 
-        <ComponentTemplate Name="PoisonInfectedBehavior" Description="Comportamiento de infección por veneno" Guid="2e6bc32f-4ed5-48c3-8af4-f6c8ab14b835">
-  <Parameter Name="Class" Guid="c7351e14-d169-4ef2-93d2-585efd535fc3" Value="Game.ComponentPoisonInfectBehavior" Type="string"/>
+        <ComponentTemplate Name="PoisonInfectedBehavior" Description="Comportamiento de infección por veneno" Guid="be2c0252-8847-40dc-ab78-db6c09df60e7">
+  <Parameter Name="Class" Guid="882ee14c-4b4d-426e-9e2f-831261910ed2" Value="Game.ComponentPoisonInfectBehavior" Type="string"/>
   <Parameter Name="IsOptional" Value="true" Type="bool"/>
   <Parameter Name="LoadOrder" Value="50" Type="int"/>
-  <Parameter Name="PoisonIntensity" Description="Intensidad del veneno (mayor = más tiempo de infección)" Guid="638c7b31-cdec-47ff-ae63-0e35a8481011" Value="400" Type="float"/>
+  <Parameter Name="PoisonIntensity" Description="Intensidad del veneno (mayor = más tiempo de infección)" Guid="ddbff8f8-c6c3-4c45-b801-43881241663f" Value="400" Type="float"/>
+  <Parameter Name="InfectProbability" Description="Probabilidad de que el ataque cause envenenamiento (0-1)" Guid="7c34d504-c34a-487a-8ca2-a115ca60e9d7" Value="1.0" Type="float"/>
 </ComponentTemplate>
 
 <ComponentTemplate Name="NewChaseBehavior" Description="Comportamiento de persecución que integra con el sistema de manadas" Guid="1efc342f-4e31-49b9-bbc1-f9285c613a25">
@@ -709,6 +702,12 @@
     <Folder Name="NPCS" Guid="6cc49cbb-cdd2-4479-9b40-fbadd9db3425">
 
         <EntityTemplate Name="Naomi" Guid="3d60e4a1-207a-44ce-9635-fa2997824b5c" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="CreatureAI" Guid="36f10cfd-c975-47f4-ad93-e5b8b6603a35">
+    <Parameter Name="Class" Value="Game.ComponentCreatureAI" Type="string" Guid="963590ca-e12c-45c1-ad16-1c5857e97326"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="2c69d1d3-19b2-4812-bd1f-7683f59bdd45"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="b8887331-7cc9-4b85-9b43-8eaa0aa49ad1"/>
+    <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="937d65f9-9159-4d63-bab8-033f5cfb3e99"/>
+</MemberComponentTemplate>
         <MemberComponentTemplate Name="DeathSpawner" Guid="d0c0c709-b8ec-45f4-a416-854ff1cfd1d4">
     <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="3e1f9afe-db7e-4c90-bcce-91c4ff57867c"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="0cf30114-b72f-48d6-a688-fb9f38e548e4"/>
@@ -1450,12 +1449,6 @@
     <Parameter Name="AimTime" Value="0.8" Type="float"/>
     <Parameter Name="CockTime" Value="0.5" Type="float"/>
     <Parameter Name="MeleeAttackTime" Value="0.8" Type="float"/>
-    <Parameter Name="FireSound" Value="Audio/MusketFire" Type="string"/>
-    <Parameter Name="FireSoundDistance" Value="20" Type="float"/>
-    <Parameter Name="CockSound" Value="Audio/HammerCock" Type="string"/>
-    <Parameter Name="ReloadSound" Value="Audio/Reload" Type="string"/>
-    <Parameter Name="UncockSound" Value="Audio/HammerUncock" Type="string"/>
-    <Parameter Name="MisfireSound" Value="Audio/MusketMisfire" Type="string"/>
     <Parameter Name="Accuracy" Value="0.015" Type="float"/>
     <Parameter Name="UseRecoil" Value="False" Type="bool"/>
     <Parameter Name="BulletSpeed" Value="140" Type="float"/>
@@ -1582,8 +1575,6 @@
     <Parameter Name="AimTime" Value="0.35" Type="float"/>
     <Parameter Name="BurstTime" Value="5" Type="float"/>
     <Parameter Name="CooldownTime" Value="1" Type="float"/>
-    <Parameter Name="FireSound" Value="Audio/Flamethrower/Flamethrower Fire" Type="string"/>
-    <Parameter Name="HammerSound" Value="Audio/Items/Hammer Cock Remake" Type="string"/>
     <Parameter Name="FireSoundDistance" Value="100" Type="float"/>
     <Parameter Name="HammerSoundDistance" Value="100" Type="float"/>
     <Parameter Name="Accuracy" Value="0.12" Type="float"/>
@@ -1997,12 +1988,6 @@
     <Parameter Name="AimTime" Value="0.8" Type="float"/>
     <Parameter Name="CockTime" Value="0.5" Type="float"/>
     <Parameter Name="MeleeAttackTime" Value="0.8" Type="float"/>
-    <Parameter Name="FireSound" Value="Audio/MusketFire" Type="string"/>
-    <Parameter Name="FireSoundDistance" Value="20" Type="float"/>
-    <Parameter Name="CockSound" Value="Audio/HammerCock" Type="string"/>
-    <Parameter Name="ReloadSound" Value="Audio/Reload" Type="string"/>
-    <Parameter Name="UncockSound" Value="Audio/HammerUncock" Type="string"/>
-    <Parameter Name="MisfireSound" Value="Audio/MusketMisfire" Type="string"/>
     <Parameter Name="Accuracy" Value="0.015" Type="float"/>
     <Parameter Name="UseRecoil" Value="False" Type="bool"/>
     <Parameter Name="BulletSpeed" Value="140" Type="float"/>
@@ -3214,10 +3199,6 @@
     <Parameter Name="MaxDistance" Value="25" Type="float"/>
     <Parameter Name="DrawTime" Value="0.5" Type="float"/>
     <Parameter Name="AimTime" Value="0.5" Type="float"/>
-    <Parameter Name="DrawSound" Value="Audio/CrossbowDraw" Type="string"/>
-    <Parameter Name="FireSound" Value="Audio/CrossbowBoing" Type="string"/>
-    <Parameter Name="ReloadSound" Value="Audio/Reload" Type="string"/>
-    <Parameter Name="FireSoundDistance" Value="15" Type="float"/>
     <Parameter Name="Accuracy" Value="0.02" Type="float"/>
     <Parameter Name="UseRecoil" Value="true" Type="bool"/>
     <Parameter Name="ShowBoltWhenIdle" Value="false" Type="bool"/>
@@ -3492,10 +3473,6 @@
     <Parameter Name="MaxDistance" Value="25" Type="float"/>
     <Parameter Name="DrawTime" Value="0.5" Type="float"/>
     <Parameter Name="AimTime" Value="0.8" Type="float"/>
-    <Parameter Name="DrawSound" Value="Audio/BowDraw" Type="string"/>
-    <Parameter Name="FireSound" Value="Audio/Bow" Type="string"/>
-    <Parameter Name="ArrowSound" Value="Audio/ArrowFlight" Type="string"/>
-    <Parameter Name="FireSoundDistance" Value="15" Type="float"/>
     <Parameter Name="Accuracy" Value="0.03" Type="float"/>
     <Parameter Name="UseRecoil" Value="false" Type="bool"/>
     <Parameter Name="ArrowSpeed" Value="40" Type="float"/>
@@ -3635,10 +3612,6 @@
     <Parameter Name="MaxDistance" Value="25" Type="float"/>
     <Parameter Name="DrawTime" Value="0.5" Type="float"/>
     <Parameter Name="AimTime" Value="0.8" Type="float"/>
-    <Parameter Name="DrawSound" Value="Audio/BowDraw" Type="string"/>
-    <Parameter Name="FireSound" Value="Audio/Bow" Type="string"/>
-    <Parameter Name="ArrowSound" Value="Audio/ArrowFlight" Type="string"/>
-    <Parameter Name="FireSoundDistance" Value="15" Type="float"/>
     <Parameter Name="Accuracy" Value="0.03" Type="float"/>
     <Parameter Name="UseRecoil" Value="false" Type="bool"/>
     <Parameter Name="ArrowSpeed" Value="40" Type="float"/>
@@ -3768,10 +3741,6 @@
     <Parameter Name="MaxDistance" Value="25" Type="float"/>
     <Parameter Name="DrawTime" Value="0.5" Type="float"/>
     <Parameter Name="AimTime" Value="0.5" Type="float"/>
-    <Parameter Name="DrawSound" Value="Audio/CrossbowDraw" Type="string"/>
-    <Parameter Name="FireSound" Value="Audio/CrossbowBoing" Type="string"/>
-    <Parameter Name="ReloadSound" Value="Audio/Reload" Type="string"/>
-    <Parameter Name="FireSoundDistance" Value="15" Type="float"/>
     <Parameter Name="Accuracy" Value="0.02" Type="float"/>
     <Parameter Name="UseRecoil" Value="true" Type="bool"/>
     <Parameter Name="ShowBoltWhenIdle" Value="false" Type="bool"/>
@@ -4323,12 +4292,9 @@
     </ParameterSet> 
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="ItemsLauncherShooterBehavior" Guid="b7c8d9e0-f1a2-4b3c-8d5e-6f7a8b9c0d1e" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
-    <Parameter Name="MinDistance" Guid="c1d2e3f4-g5h6-7890-bcde-f12345678901" Value="5" Type="float"/>
     <Parameter Name="MaxDistance" Guid="d2e3f4g5-h6i7-8901-cdef-234567890123" Value="30" Type="float"/>
     <Parameter Name="ReloadTime" Guid="e3f4g5h6-i7j8-9012-defg-345678901234" Value="1.2" Type="float"/>
     <Parameter Name="AimTime" Guid="f4g5h6i7-j8k9-0123-efgh-456789012345" Value="0.6" Type="float"/>
-    <Parameter Name="FireSound" Guid="g5h6i7j8-k9l0-1234-fghi-567890123456" Value="Audio/Items/ItemLauncher/Item Cannon Fire" Type="string"/>
-    <Parameter Name="FireSoundDistance" Guid="h6i7j8k9-l0m1-2345-ghij-678901234567" Value="20" Type="float"/>
     <Parameter Name="Accuracy" Guid="k9l0m1n2-o3p4-5678-jklm-901234567890" Value="0.04" Type="float"/>
     <Parameter Name="UseRecoil" Guid="l0m1n2o3-p4q5-6789-klmn-012345678901" Value="true" Type="bool"/>
     <Parameter Name="BulletSpeed" Guid="m1n2o3p4-q5r6-7890-lmno-123456789012" Value="35" Type="float"/>
@@ -4477,12 +4443,6 @@
     <Parameter Name="AimTime" Value="0.8" Type="float"/>
     <Parameter Name="CockTime" Value="0.5" Type="float"/>
     <Parameter Name="MeleeAttackTime" Value="0.8" Type="float"/>
-    <Parameter Name="FireSound" Value="Audio/MusketFire" Type="string"/>
-    <Parameter Name="FireSoundDistance" Value="20" Type="float"/>
-    <Parameter Name="CockSound" Value="Audio/HammerCock" Type="string"/>
-    <Parameter Name="ReloadSound" Value="Audio/Reload" Type="string"/>
-    <Parameter Name="UncockSound" Value="Audio/HammerUncock" Type="string"/>
-    <Parameter Name="MisfireSound" Value="Audio/MusketMisfire" Type="string"/>
     <Parameter Name="Accuracy" Value="0.015" Type="float"/>
     <Parameter Name="UseRecoil" Value="False" Type="bool"/>
     <Parameter Name="BulletSpeed" Value="140" Type="float"/>
@@ -4645,12 +4605,6 @@
     <Parameter Name="AimTime" Value="0.8" Type="float"/>
     <Parameter Name="CockTime" Value="0.5" Type="float"/>
     <Parameter Name="MeleeAttackTime" Value="0.8" Type="float"/>
-    <Parameter Name="FireSound" Value="Audio/MusketFire" Type="string"/>
-    <Parameter Name="FireSoundDistance" Value="20" Type="float"/>
-    <Parameter Name="CockSound" Value="Audio/HammerCock" Type="string"/>
-    <Parameter Name="ReloadSound" Value="Audio/Reload" Type="string"/>
-    <Parameter Name="UncockSound" Value="Audio/HammerUncock" Type="string"/>
-    <Parameter Name="MisfireSound" Value="Audio/MusketMisfire" Type="string"/>
     <Parameter Name="Accuracy" Value="0.015" Type="float"/>
     <Parameter Name="UseRecoil" Value="False" Type="bool"/>
     <Parameter Name="BulletSpeed" Value="140" Type="float"/>
@@ -4919,10 +4873,6 @@
     <Parameter Name="CooldownTime" Value="0.5" Type="float"/>
     <Parameter Name="TimeBetweenShots" Value="1.0" Type="float"/>
     <Parameter Name="MaxInaccuracy" Value="0.03" Type="float"/>
-    <Parameter Name="DrawSound" Value="Audio/Crossbow Remake/Crossbow Loading Remake" Type="string"/>
-    <Parameter Name="ReleaseSound" Value="Audio/Crossbow Remake/Crossbow Loading Remake" Type="string"/>
-    <Parameter Name="FireSound" Value="Audio/Crossbow Remake/Crossbow Shoot" Type="string"/>
-    <Parameter Name="FireSoundDistance" Value="15" Type="float"/>
     <Parameter Name="UseRecoil" Value="true" Type="bool"/>
     <Parameter Name="BoltSpeed" Value="40" Type="float"/>
     <Parameter Name="Class" Value="Game.ComponentRepeatCrossbowShooterBehavior" Type="string"/>
@@ -5502,9 +5452,6 @@
     <Parameter Name="CooldownTime" Value="0.5" Type="float"/>
     <Parameter Name="TimeBetweenShots" Value="1.0" Type="float"/>
     <Parameter Name="MaxInaccuracy" Value="0.03" Type="float"/>
-    <Parameter Name="DrawSound" Value="Audio/Crossbow Remake/Crossbow Loading Remake" Type="string"/>
-    <Parameter Name="FireSound" Value="Audio/Crossbow Remake/Crossbow Shoot" Type="string"/>
-    <Parameter Name="FireSoundDistance" Value="15" Type="float"/>
     <Parameter Name="UseRecoil" Value="true" Type="bool"/>
     <Parameter Name="BoltSpeed" Value="40" Type="float"/>
     <Parameter Name="Class" Value="Game.ComponentRepeatCrossbowShooterBehavior" Type="string"/>
