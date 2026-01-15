@@ -38,6 +38,19 @@ namespace Game
 			ArrowBlock.ArrowType.ExplosiveBolt
 		};
 
+		// Tipos de flechas para Repeat Crossbow
+		private RepeatArrowBlock.ArrowType[] m_repeatCrossbowArrowTypes = new RepeatArrowBlock.ArrowType[]
+		{
+			RepeatArrowBlock.ArrowType.CopperArrow,
+			RepeatArrowBlock.ArrowType.IronArrow,
+			RepeatArrowBlock.ArrowType.DiamondArrow,
+			RepeatArrowBlock.ArrowType.ExplosiveArrow,
+			RepeatArrowBlock.ArrowType.PoisonArrow,
+			RepeatArrowBlock.ArrowType.SeriousPoisonArrow
+		};
+
+		private int m_currentRepeatArrowTypeIndex = 0;
+
 		public bool CanUseInventory = false;
 
 		private bool m_isAiming = false;
@@ -60,6 +73,7 @@ namespace Game
 		private float m_currentDraw = 0f;
 		private ArrowBlock.ArrowType m_currentArrowType;
 		private ArrowBlock.ArrowType m_currentBoltType;
+		private RepeatArrowBlock.ArrowType m_currentRepeatArrowType;
 		private float m_currentTargetDistance = 0f;
 		private bool m_arrowVisible = false;
 		private bool m_hasArrowInBow = false;
@@ -77,6 +91,13 @@ namespace Game
 		private float m_flameCockTime = 0.5f;
 
 		private float m_explosiveBoltMinDistance = 15f;
+		private float m_explosiveRepeatArrowMinDistance = 15f; // Nueva distancia mínima para flechas explosivas
+
+		// Parámetros para Repeat Crossbow
+		private float m_repeatCrossbowDrawTime = 2.0f;
+		private float m_repeatCrossbowTimeBetweenShots = 0.5f;
+		private float m_repeatCrossbowMaxInaccuracy = 0.04f;
+		private float m_repeatCrossbowBoltSpeed = 35f;
 
 		public int UpdateOrder => 0;
 		public override float ImportanceLevel => 0.5f;
@@ -96,6 +117,10 @@ namespace Game
 			m_subsystemParticles = Project.FindSubsystem<SubsystemParticles>(true);
 			m_subsystemNoise = Project.FindSubsystem<SubsystemNoise>(true);
 			m_subsystemTerrain = Project.FindSubsystem<SubsystemTerrain>(true);
+
+			// Inicializar tipo de flecha aleatorio para Repeat Crossbow
+			m_currentRepeatArrowTypeIndex = m_random.Int(0, m_repeatCrossbowArrowTypes.Length - 1);
+			m_currentRepeatArrowType = m_repeatCrossbowArrowTypes[m_currentRepeatArrowTypeIndex];
 		}
 
 		public void Update(float dt)
@@ -114,7 +139,8 @@ namespace Game
 
 				m_currentTargetDistance = distance;
 
-				float maxDistance = (m_weaponType == 3) ? m_flameMaxDistance : m_maxDistance;
+				float maxDistance = (m_weaponType == 3) ? m_flameMaxDistance :
+								  (m_weaponType == 4) ? m_maxDistance : m_maxDistance;
 
 				if (distance <= maxDistance)
 				{
@@ -154,6 +180,25 @@ namespace Game
 			}
 
 			return availableBolts[m_random.Int(0, availableBolts.Count - 1)];
+		}
+
+		private RepeatArrowBlock.ArrowType SelectRepeatArrowTypeBasedOnDistance(float distance)
+		{
+			List<RepeatArrowBlock.ArrowType> availableArrows = new List<RepeatArrowBlock.ArrowType>(m_repeatCrossbowArrowTypes);
+
+			// Remover flechas explosivas si la distancia es menor que la distancia mínima
+			if (distance < m_explosiveRepeatArrowMinDistance)
+			{
+				availableArrows.Remove(RepeatArrowBlock.ArrowType.ExplosiveArrow);
+			}
+
+			// Asegurar que siempre haya al menos un tipo de flecha disponible
+			if (availableArrows.Count == 0)
+			{
+				availableArrows.Add(RepeatArrowBlock.ArrowType.IronArrow);
+			}
+
+			return availableArrows[m_random.Int(0, availableArrows.Count - 1)];
 		}
 
 		private void FindRangedWeapon()
@@ -197,6 +242,14 @@ namespace Game
 						StartAiming();
 						break;
 					}
+					else if (block is RepeatCrossbowBlock)
+					{
+						m_currentWeaponSlot = i;
+						m_weaponType = 4;
+						m_componentInventory.ActiveSlotIndex = i;
+						StartAiming();
+						break;
+					}
 				}
 			}
 		}
@@ -209,6 +262,7 @@ namespace Game
 				case 1: ProcessCrossbowBehavior(target, distance); break;
 				case 2: ProcessMusketBehavior(target); break;
 				case 3: ProcessFlameThrowerBehavior(target, distance); break;
+				case 4: ProcessRepeatCrossbowBehavior(target, distance); break;
 			}
 		}
 
@@ -1194,53 +1248,252 @@ namespace Game
 			}
 		}
 
-		private void FireFlameThrowerShot(ComponentCreature target)
+		private void ProcessRepeatCrossbowBehavior(ComponentCreature target, float distance)
 		{
-			if (target == null) return;
+			if (!m_isAiming && !m_isDrawing && !m_isFiring && !m_isReloading)
+			{
+				StartAiming();
+			}
+
+			if (m_isAiming)
+			{
+				ApplyRepeatCrossbowAimingAnimation(target);
+
+				if (m_subsystemTime.GameTime - m_animationStartTime >= m_aimTime)
+				{
+					m_isAiming = false;
+
+					// Usar distancia actual para seleccionar tipo de flecha apropiado
+					m_currentRepeatArrowType = SelectRepeatArrowTypeBasedOnDistance(distance);
+					StartRepeatCrossbowDrawing();
+				}
+			}
+			else if (m_isDrawing)
+			{
+				ApplyRepeatCrossbowDrawingAnimation(target);
+
+				m_currentDraw = MathUtils.Clamp((float)((m_subsystemTime.GameTime - m_drawStartTime) / m_repeatCrossbowDrawTime), 0f, 1f);
+
+				// Actualizar tensión visual (0-15)
+				UpdateRepeatCrossbowDraw((int)(m_currentDraw * 15f));
+
+				if (m_subsystemTime.GameTime - m_drawStartTime >= m_repeatCrossbowDrawTime)
+				{
+					// Tensado completo, cargar flecha
+					m_isDrawing = false;
+					LoadRepeatCrossbowArrow();
+				}
+			}
+			else if (m_isReloading)
+			{
+				ApplyRepeatCrossbowReloadingAnimation(target);
+
+				if (m_subsystemTime.GameTime - m_animationStartTime >= 0.2f)
+				{
+					m_isReloading = false;
+					FireRepeatCrossbow(target);
+				}
+			}
+			else if (m_isFiring)
+			{
+				ApplyRepeatCrossbowFiringAnimation();
+
+				if (m_subsystemTime.GameTime - m_fireTime >= 0.2f)
+				{
+					m_isFiring = false;
+
+					// Quitar flecha después de disparar
+					ClearArrowFromRepeatCrossbow();
+
+					// Cambiar tipo de flecha para el próximo disparo
+					// Usar distancia actual para seleccionar tipo de flecha apropiado
+					m_currentRepeatArrowType = SelectRepeatArrowTypeBasedOnDistance(distance);
+					m_currentRepeatArrowTypeIndex = Array.IndexOf(m_repeatCrossbowArrowTypes, m_currentRepeatArrowType);
+
+					// Pausa antes de recargar según TimeBetweenShots
+					if (m_subsystemTime.GameTime - m_fireTime >= m_repeatCrossbowTimeBetweenShots)
+					{
+						StartAiming();
+					}
+				}
+			}
+		}
+
+		private void UpdateRepeatCrossbowDraw(int draw)
+		{
+			if (m_currentWeaponSlot < 0) return;
 
 			try
 			{
-				Vector3 firePosition = m_componentCreature.ComponentCreatureModel.EyePosition;
-				firePosition.Y -= 0.1f;
+				int currentValue = m_componentInventory.GetSlotValue(m_currentWeaponSlot);
+				if (currentValue == 0) return;
 
-				Vector3 targetPosition = target.ComponentCreatureModel.EyePosition;
-				Vector3 direction = Vector3.Normalize(targetPosition - firePosition);
+				int currentData = Terrain.ExtractData(currentValue);
+				int newData = RepeatCrossbowBlock.SetDraw(currentData, MathUtils.Clamp(draw, 0, 15));
 
-				direction += new Vector3(
-					m_random.Float(-0.05f, 0.05f),
-					m_random.Float(-0.03f, 0.03f),
-					m_random.Float(-0.05f, 0.05f)
-				);
-				direction = Vector3.Normalize(direction);
+				int newValue = Terrain.ReplaceData(currentValue, newData);
+				m_componentInventory.RemoveSlotItems(m_currentWeaponSlot, 1);
+				m_componentInventory.AddSlotItems(m_currentWeaponSlot, newValue, 1);
+			}
+			catch { }
+		}
 
-				int bulletData = FlameBulletBlock.SetBulletType(0, m_currentFlameBulletType);
-				int bulletValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex<FlameBulletBlock>(), 0, bulletData);
+		private void UpdateRepeatCrossbowArrowType(RepeatArrowBlock.ArrowType? arrowType)
+		{
+			if (m_currentWeaponSlot < 0) return;
 
-				float speed = 35f;
+			try
+			{
+				int currentValue = m_componentInventory.GetSlotValue(m_currentWeaponSlot);
+				if (currentValue == 0) return;
 
-				m_subsystemProjectiles.FireProjectile(
-					bulletValue,
-					firePosition,
-					direction * speed,
-					Vector3.Zero,
-					m_componentCreature
-				);
+				int currentData = Terrain.ExtractData(currentValue);
 
-				if (m_currentFlameBulletType == FlameBulletBlock.FlameBulletType.Flame)
+				// Usar reflexión para llamar al método SetArrowType correctamente
+				var method = typeof(RepeatCrossbowBlock).GetMethod("SetArrowType");
+				int newData = (int)method.Invoke(null, new object[] { currentData, arrowType });
+
+				int newValue = Terrain.ReplaceData(currentValue, newData);
+				m_componentInventory.RemoveSlotItems(m_currentWeaponSlot, 1);
+				m_componentInventory.AddSlotItems(m_currentWeaponSlot, newValue, 1);
+			}
+			catch { }
+		}
+
+		private void ClearArrowFromRepeatCrossbow()
+		{
+			UpdateRepeatCrossbowDraw(0);
+			UpdateRepeatCrossbowArrowType(null);
+		}
+
+		private void StartRepeatCrossbowDrawing()
+		{
+			m_isDrawing = true;
+			m_drawStartTime = m_subsystemTime.GameTime;
+
+			m_subsystemAudio.PlaySound("Audio/Crossbow Remake/Crossbow Loading Remake", 0.5f,
+				m_random.Float(-0.1f, 0.1f), m_componentCreature.ComponentBody.Position, 3f, false);
+		}
+
+		private void LoadRepeatCrossbowArrow()
+		{
+			m_isDrawing = false;
+			m_isReloading = true;
+			m_animationStartTime = m_subsystemTime.GameTime;
+
+			// Cargar flecha en la ballesta (tensada completamente)
+			UpdateRepeatCrossbowDraw(15);
+			UpdateRepeatCrossbowArrowType(m_currentRepeatArrowType);
+		}
+
+		private void ApplyRepeatCrossbowAimingAnimation(ComponentCreature target)
+		{
+			if (m_componentModel != null)
+			{
+				m_componentModel.AimHandAngleOrder = 1.3f;
+				m_componentModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.1f, 0.07f);
+				m_componentModel.InHandItemRotationOrder = new Vector3(-1.55f, 0f, 0f);
+
+				if (target != null)
 				{
-					m_subsystemParticles.AddParticleSystem(new FlameSmokeParticleSystem(m_subsystemTerrain, firePosition + direction * 0.3f, direction), false);
+					m_componentModel.LookAtOrder = new Vector3?(target.ComponentCreatureModel.EyePosition);
+				}
+			}
+		}
+
+		private void ApplyRepeatCrossbowDrawingAnimation(ComponentCreature target)
+		{
+			if (m_componentModel != null)
+			{
+				float drawFactor = m_currentDraw;
+
+				m_componentModel.AimHandAngleOrder = 1.3f + drawFactor * 0.1f;
+				m_componentModel.InHandItemOffsetOrder = new Vector3(
+					-0.08f + (0.05f * drawFactor),
+					-0.1f,
+					0.07f - (0.03f * drawFactor)
+				);
+				m_componentModel.InHandItemRotationOrder = new Vector3(-1.55f, 0f, 0f);
+
+				if (target != null)
+				{
+					m_componentModel.LookAtOrder = new Vector3?(target.ComponentCreatureModel.EyePosition);
+				}
+			}
+		}
+
+		private void ApplyRepeatCrossbowReloadingAnimation(ComponentCreature target)
+		{
+			if (m_componentModel != null)
+			{
+				float reloadProgress = (float)((m_subsystemTime.GameTime - m_animationStartTime) / 0.2f);
+
+				m_componentModel.AimHandAngleOrder = 1.4f;
+				m_componentModel.InHandItemOffsetOrder = new Vector3(
+					-0.03f,
+					-0.1f - (0.05f * reloadProgress),
+					0.04f
+				);
+				m_componentModel.InHandItemRotationOrder = new Vector3(-1.55f, 0f, 0f);
+
+				if (target != null)
+				{
+					m_componentModel.LookAtOrder = new Vector3?(target.ComponentCreatureModel.EyePosition);
+				}
+			}
+		}
+
+		private void FireRepeatCrossbow(ComponentCreature target)
+		{
+			m_isReloading = false;
+			m_isFiring = true;
+			m_fireTime = m_subsystemTime.GameTime;
+
+			// Disparar flecha
+			ShootRepeatCrossbowArrow(target);
+
+			// Sonido de disparo de ballesta repetidora
+			m_subsystemAudio.PlaySound("Audio/Crossbow Remake/Crossbow Shoot", 1f,
+				m_random.Float(-0.1f, 0.1f), m_componentCreature.ComponentBody.Position, 15f, false);
+
+			// Retroceso
+			if (target != null)
+			{
+				Vector3 direction = Vector3.Normalize(
+					target.ComponentBody.Position - m_componentCreature.ComponentBody.Position
+				);
+				m_componentCreature.ComponentBody.ApplyImpulse(-direction * 1.0f);
+			}
+		}
+
+		private void ApplyRepeatCrossbowFiringAnimation()
+		{
+			if (m_componentModel != null)
+			{
+				float fireProgress = (float)((m_subsystemTime.GameTime - m_fireTime) / 0.2f);
+
+				if (fireProgress < 0.5f)
+				{
+					float recoil = 0.05f * (1f - (fireProgress * 2f));
+					m_componentModel.InHandItemOffsetOrder += new Vector3(recoil, 0f, 0f);
+					m_componentModel.InHandItemRotationOrder += new Vector3(recoil * 2f, 0f, 0f);
 				}
 				else
 				{
-					m_subsystemParticles.AddParticleSystem(new PoisonSmokeParticleSystem(m_subsystemTerrain, firePosition + direction * 0.3f, direction), false);
-				}
-
-				if (m_subsystemNoise != null)
-				{
-					m_subsystemNoise.MakeNoise(firePosition, 0.4f, 15f);
+					float returnProgress = (fireProgress - 0.5f) / 0.5f;
+					m_componentModel.AimHandAngleOrder = 1.4f * (1f - returnProgress);
+					m_componentModel.InHandItemOffsetOrder = new Vector3(
+						-0.03f * (1f - returnProgress),
+						-0.1f * (1f - returnProgress),
+						0.04f * (1f - returnProgress)
+					);
+					m_componentModel.InHandItemRotationOrder = new Vector3(
+						-1.55f * (1f - returnProgress),
+						0f,
+						0f
+					);
 				}
 			}
-			catch { }
 		}
 
 		private void StartAiming()
@@ -1321,6 +1574,12 @@ namespace Game
 					m_animationStartTime = m_subsystemTime.GameTime - 0.2f;
 				}
 			}
+			else if (m_weaponType == 4 && m_currentWeaponSlot >= 0)
+			{
+				// Mostrar ballesta repetidora sin tensar y sin flecha
+				UpdateRepeatCrossbowDraw(0);
+				UpdateRepeatCrossbowArrowType(null);
+			}
 		}
 
 		private void ResetWeaponState()
@@ -1340,18 +1599,25 @@ namespace Game
 			m_hasArrowInBow = false;
 			m_flameSwitchState = false;
 
-			if (m_currentWeaponSlot >= 0 && m_weaponType == 3)
+			if (m_currentWeaponSlot >= 0)
 			{
-				try
+				if (m_weaponType == 3)
 				{
-					int slotValue = m_componentInventory.GetSlotValue(m_currentWeaponSlot);
-					int data = Terrain.ExtractData(slotValue);
-					data = FlameThrowerBlock.SetSwitchState(data, false);
-					int newValue = Terrain.ReplaceData(slotValue, data);
-					m_componentInventory.RemoveSlotItems(m_currentWeaponSlot, 1);
-					m_componentInventory.AddSlotItems(m_currentWeaponSlot, newValue, 1);
+					try
+					{
+						int slotValue = m_componentInventory.GetSlotValue(m_currentWeaponSlot);
+						int data = Terrain.ExtractData(slotValue);
+						data = FlameThrowerBlock.SetSwitchState(data, false);
+						int newValue = Terrain.ReplaceData(slotValue, data);
+						m_componentInventory.RemoveSlotItems(m_currentWeaponSlot, 1);
+						m_componentInventory.AddSlotItems(m_currentWeaponSlot, newValue, 1);
+					}
+					catch { }
 				}
-				catch { }
+				else if (m_weaponType == 4)
+				{
+					ClearArrowFromRepeatCrossbow();
+				}
 			}
 
 			if (m_componentModel != null)
@@ -1487,6 +1753,141 @@ namespace Game
 				}
 			}
 			catch { }
+		}
+
+		private void FireFlameThrowerShot(ComponentCreature target)
+		{
+			if (target == null) return;
+
+			try
+			{
+				Vector3 firePosition = m_componentCreature.ComponentCreatureModel.EyePosition;
+				firePosition.Y -= 0.1f;
+
+				Vector3 targetPosition = target.ComponentCreatureModel.EyePosition;
+				Vector3 direction = Vector3.Normalize(targetPosition - firePosition);
+
+				direction += new Vector3(
+					m_random.Float(-0.05f, 0.05f),
+					m_random.Float(-0.03f, 0.03f),
+					m_random.Float(-0.05f, 0.05f)
+				);
+				direction = Vector3.Normalize(direction);
+
+				int bulletData = FlameBulletBlock.SetBulletType(0, m_currentFlameBulletType);
+				int bulletValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex<FlameBulletBlock>(), 0, bulletData);
+
+				float speed = 35f;
+
+				m_subsystemProjectiles.FireProjectile(
+					bulletValue,
+					firePosition,
+					direction * speed,
+					Vector3.Zero,
+					m_componentCreature
+				);
+
+				if (m_currentFlameBulletType == FlameBulletBlock.FlameBulletType.Flame)
+				{
+					m_subsystemParticles.AddParticleSystem(new FlameSmokeParticleSystem(m_subsystemTerrain, firePosition + direction * 0.3f, direction), false);
+				}
+				else
+				{
+					m_subsystemParticles.AddParticleSystem(new PoisonSmokeParticleSystem(m_subsystemTerrain, firePosition + direction * 0.3f, direction), false);
+				}
+
+				if (m_subsystemNoise != null)
+				{
+					m_subsystemNoise.MakeNoise(firePosition, 0.4f, 15f);
+				}
+			}
+			catch { }
+		}
+
+		private void ShootRepeatCrossbowArrow(ComponentCreature target)
+		{
+			if (target == null) return;
+
+			try
+			{
+				// Posición de disparo (desde los ojos del NPC)
+				Vector3 firePosition = m_componentCreature.ComponentCreatureModel.EyePosition;
+
+				// Posición objetivo (punto central del cuerpo)
+				Vector3 targetPosition = target.ComponentBody.Position;
+
+				// Ajustar para apuntar a un punto más central (pecho/abdomen) - MEJOR PRECISIÓN
+				targetPosition.Y += target.ComponentBody.BoxSize.Y * 0.5f; // Aumentado a 0.5f para mejor precisión
+
+				// Calcular dirección PRECISA
+				Vector3 direction = targetPosition - firePosition;
+				float distance = direction.Length();
+
+				// Normalizar dirección
+				if (distance > 0.001f)
+				{
+					direction /= distance;
+				}
+				else
+				{
+					direction = Vector3.UnitX;
+				}
+
+				// PRECISIÓN MEJORADA - IGUAL QUE EL SHOOTER:
+				// 1. Menor imprecisión base
+				float baseInaccuracy = m_repeatCrossbowMaxInaccuracy * 0.2f; // Reducido de 0.3f a 0.2f
+
+				// 2. Factor de distancia (más preciso a distancia media)
+				float distanceFactor = MathUtils.Clamp(distance / m_maxDistance, 0.1f, 1.0f);
+				float inaccuracy = baseInaccuracy * distanceFactor;
+
+				// 3. Aplicar MENOS imprecisión vertical que horizontal
+				direction += new Vector3(
+					m_random.Float(-inaccuracy, inaccuracy),
+					m_random.Float(-inaccuracy * 0.2f, inaccuracy * 0.2f), // Reducido de 0.3f a 0.2f
+					m_random.Float(-inaccuracy, inaccuracy)
+				);
+
+				// 4. Re-normalizar para mantener velocidad constante
+				direction = Vector3.Normalize(direction);
+
+				// 5. Velocidad constante (sin variación por tensión para NPC)
+				float speed = m_repeatCrossbowBoltSpeed * 1.2f; // Aumentado a 20% más rápido
+
+				// Crear flecha de RepeatArrowBlock
+				int arrowData = RepeatArrowBlock.SetArrowType(0, m_currentRepeatArrowType);
+				int arrowValue = Terrain.MakeBlockValue(RepeatArrowBlock.Index, 0, arrowData);
+
+				// Ajustar ligeramente la posición de inicio para mejor alineación
+				Vector3 adjustedFirePosition = firePosition + direction * 0.2f; // Reducido de 0.3f a 0.2f
+
+				var projectile = m_subsystemProjectiles.FireProjectile(
+					arrowValue,
+					adjustedFirePosition,
+					direction * speed,
+					Vector3.Zero,
+					m_componentCreature
+				);
+
+				// Configurar propiedades según el tipo de flecha
+				if (m_currentRepeatArrowType == RepeatArrowBlock.ArrowType.ExplosiveArrow && projectile != null)
+				{
+					projectile.IsIncendiary = false;
+					projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
+				}
+
+				// Ruido
+				if (m_subsystemNoise != null)
+				{
+					m_subsystemNoise.MakeNoise(firePosition, 0.5f, 20f);
+				}
+			}
+			catch (Exception)
+			{
+				// En caso de error, resetear al primer tipo de flecha
+				m_currentRepeatArrowTypeIndex = 0;
+				m_currentRepeatArrowType = m_repeatCrossbowArrowTypes[0];
+			}
 		}
 	}
 }
