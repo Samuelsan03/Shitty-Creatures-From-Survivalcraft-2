@@ -454,6 +454,38 @@
     "DisplayName": "FX05 Xiuhcoatl突击步枪",
     "Description": "墨西哥突击步枪（FX05 Xiuhcoatl），发射威力强大的弹药。使用NuevaBala弹头。射速和精度良好。"
   },
+  "NewG3Block:0": {
+      "DisplayName": "新型 G3 突击步枪",
+      "Description": "一款采用先进聚合物结构、精度提升的现代突击步枪。专为多样化战斗场景设计，兼具火力与操控性，适合中远距离交战。"
+    },
+    "NewG3Bullet:0": {
+      "DisplayName": "7.62×51 毫米北约弹匣",
+      "Description": "适用于 G3 步枪的 10 发 7.62×51 毫米北约弹药弹匣。提供可靠的穿透力与停止作用，有效对抗装甲目标。"
+    },
+    "MP5SSDBlock:0": {
+      "DisplayName": "MP5SD 冲锋枪",
+      "Description": "一款专为隐秘行动设计的消音冲锋枪。其内置消音器能减少枪口焰与噪音，适合潜行任务和近距离作战。"
+    },
+    "MP5SSDBulletBlock:0": {
+      "DisplayName": "9×19 毫米帕拉贝鲁姆弹匣",
+      "Description": "适用于 MP5SD 的 12 发亚音速 9×19 毫米帕拉贝鲁姆弹匣。专为安静高效的交战设计，不牺牲停止力。"
+    },
+    "MendozaBlock:0": {
+      "DisplayName": "门多萨步枪",
+      "Description": "一款以优异精度和可靠性著称的半自动步枪。适合需要在中远距离进行精准射击、无需全自动火力的射手。"
+    },
+    "MendozaBulletBlock:0": {
+      "DisplayName": ".308 温彻斯特弹药",
+      "Description": "8 发 .308 温彻斯特弹药，专为精准射击设计。具备高精度与穿透力，适用于狩猎与战术交火。"
+    },
+    "GrozaBlock:0": {
+      "DisplayName": "Groza 无托突击步枪",
+      "Description": "一款配备内置榴弹发射器系统的无托突击步枪。紧凑而强力，在中近距离作战中表现出极高的多功能性与火力。"
+    },
+    "GrozaBulletBlock:0": {
+      "DisplayName": "9×39 毫米亚音速弹药",
+      "Description": "适用于 Groza 步枪的 10 发特殊 9×39 毫米亚音速弹药。专为隐秘行动设计，噪音低且具备有效穿甲能力。"
+    },
   "Izh43Block:0": {
     "DisplayName": "IZH-43双管霰弹枪",
     "Description": "双管霰弹枪，每发射出8颗弹丸。近距离威力巨大。容量2发，使用Izh43Bullet。"
@@ -557,7 +589,23 @@
   "FamasBulletBlock:0": {
     "DisplayName": "5.56×45毫米FAMAS弹匣",
     "Description": "FAMAS步枪的25发弹匣。内含5.56×45毫米北约弹药。"
-  }
+  },
+  "AA12Block:0": {
+  "DisplayName": "AA-12自动霰弹枪",
+  "Description": "一种气体操作、弹匣供弹的自动霰弹枪，采用开膛待击设计。最初由马克斯韦尔·阿奇森于1972年设计，用于军事和执法应用，以300 RPM的射速发射12号霰弹，弹匣容量根据型号从8到20发不等。其无托式结构和改进的后坐力系统显著减少后坐感，即使使用威力强大的弹药也能实现可控的全自动射击。在这个模组中，它使用AA12子弹弹匣，每发霰弹射出8颗弹丸，在近距离至中距离具有毁灭性威力。"
+},
+"AA12BulletBlock:0": {
+  "DisplayName": "12号口径AA-12弹匣",
+  "Description": "AA-12霰弹枪的8发12号口径弹匣。每发霰弹包含8颗弹丸，射击时会扩散，在近距离对抗成群的敌人时特别有效。这种弹药是霰弹类型，专为AA-12的供弹系统设计。"
+},
+"M249Block:0": {
+      "DisplayName": "M249班用自动武器",
+      "Description": "M249班用自动武器（SAW）是一种弹链供弹的轻机枪，为步兵班提供持续自动火力。发射5.56×45mm NATO子弹，射速750-1000 RPM。拥有100发弹链容量，使用中间威力弹药以在自动射击时保持可控后坐力。需要M249弹药块进行重新装填。"
+    },
+    "M249BulletBlock:0": {
+      "DisplayName": "M249弹药",
+      "Description": "装有5.56×45mm NATO子弹的弹药箱，用于M249 SAW。每箱提供100发弹链供弹弹药。插入M249可将武器完全重新装填至最大容量。"
+    }
   },
   "ContentWidgets": {
     "FlameThrowerWidget": {
