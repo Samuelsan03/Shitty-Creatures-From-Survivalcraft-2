@@ -56,8 +56,6 @@ namespace Game
 			SpreadFactor = valuesDictionary.GetValue<float>("SpreadFactor", 0.05f);
 			ReloadChance = valuesDictionary.GetValue<float>("ReloadChance", 0.05f);
 			MinReloadInterval = valuesDictionary.GetValue<float>("MinReloadInterval", 5f);
-			SoundVolume = valuesDictionary.GetValue<float>("SoundVolume", 1f);
-			SoundRange = valuesDictionary.GetValue<float>("SoundRange", 10f);
 			UseRandomReloads = valuesDictionary.GetValue<bool>("UseRandomReloads", true);
 			TargetHeightOffset = valuesDictionary.GetValue<float>("TargetHeightOffset", 0.5f);
 			ReloadTime = valuesDictionary.GetValue<float>("ReloadTime", 1.0f);
@@ -119,7 +117,7 @@ namespace Game
 				FirearmConfigs[m4Index] = new FirearmConfig
 				{
 					BulletBlockType = typeof(NuevaBala2),
-					ShootSound = "Audio/Armas/M6 fuego",
+					ShootSound = "Audio/Armas/M4 fuego",
 					FireRate = 0.15,
 					BulletSpeed = 300f,
 					MaxShotsBeforeReload = 22,
@@ -242,7 +240,6 @@ namespace Game
 					IsSniper = true
 				};
 
-				// Nuevas armas agregadas
 				int augIndex = BlocksManager.GetBlockIndex(typeof(Game.AUGBlock), true, false);
 				FirearmConfigs[augIndex] = new FirearmConfig
 				{
@@ -310,6 +307,90 @@ namespace Game
 					ProjectilesPerShot = 1,
 					SpreadVector = new Vector3(0.012f, 0.012f, 0.04f),
 					NoiseRadius = 35f,
+					IsAutomatic = true
+				};
+
+				int aa12Index = BlocksManager.GetBlockIndex(typeof(Game.AA12Block), true, false);
+				FirearmConfigs[aa12Index] = new FirearmConfig
+				{
+					BulletBlockType = typeof(NuevaBala6),
+					ShootSound = "Audio/Armas/AA12 fuego",
+					FireRate = 0.2,
+					BulletSpeed = 350f,
+					MaxShotsBeforeReload = 20,
+					ProjectilesPerShot = 8,
+					SpreadVector = new Vector3(0.03f, 0.03f, 0.06f),
+					NoiseRadius = 45f,
+					IsAutomatic = true
+				};
+
+				int m249Index = BlocksManager.GetBlockIndex(typeof(Game.M249Block), true, false);
+				FirearmConfigs[m249Index] = new FirearmConfig
+				{
+					BulletBlockType = typeof(NuevaBala5),
+					ShootSound = "Audio/Armas/M249 fuego",
+					FireRate = 0.08,
+					BulletSpeed = 400f,
+					MaxShotsBeforeReload = 100,
+					ProjectilesPerShot = 1,
+					SpreadVector = new Vector3(0.01f, 0.01f, 0.01f),
+					NoiseRadius = 50f,
+					IsAutomatic = true
+				};
+
+				int newG3Index = BlocksManager.GetBlockIndex(typeof(Game.NewG3Block), true, false);
+				FirearmConfigs[newG3Index] = new FirearmConfig
+				{
+					BulletBlockType = typeof(NuevaBala3),
+					ShootSound = "Audio/Armas/G3 fuego",
+					FireRate = 0.12,
+					BulletSpeed = 290f,
+					MaxShotsBeforeReload = 30,
+					ProjectilesPerShot = 2,
+					SpreadVector = new Vector3(0.009f, 0.009f, 0.04f),
+					NoiseRadius = 40f,
+					IsAutomatic = true
+				};
+
+				int mp5ssdIndex = BlocksManager.GetBlockIndex(typeof(Game.MP5SSDBlock), true, false);
+				FirearmConfigs[mp5ssdIndex] = new FirearmConfig
+				{
+					BulletBlockType = typeof(NuevaBala3),
+					ShootSound = "Audio/Armas/MP5SSD fuego",
+					FireRate = 0.12,
+					BulletSpeed = 290f,
+					MaxShotsBeforeReload = 30,
+					ProjectilesPerShot = 2,
+					SpreadVector = new Vector3(0.009f, 0.009f, 0.04f),
+					NoiseRadius = 40f,
+					IsAutomatic = true
+				};
+
+				int mendozaIndex = BlocksManager.GetBlockIndex(typeof(Game.MendozaBlock), true, false);
+				FirearmConfigs[mendozaIndex] = new FirearmConfig
+				{
+					BulletBlockType = typeof(NuevaBala3),
+					ShootSound = "Audio/Armas/Mendoza fuego",
+					FireRate = 0.12,
+					BulletSpeed = 290f,
+					MaxShotsBeforeReload = 30,
+					ProjectilesPerShot = 2,
+					SpreadVector = new Vector3(0.009f, 0.009f, 0.04f),
+					NoiseRadius = 40f,
+					IsAutomatic = true
+				};
+
+				int grozaIndex = BlocksManager.GetBlockIndex(typeof(Game.GrozaBlock), true, false);
+				FirearmConfigs[grozaIndex] = new FirearmConfig
+				{
+					BulletBlockType = typeof(NuevaBala3),
+					ShootSound = "Audio/Armas/Groza fuego",
+					FireRate = 0.12,
+					BulletSpeed = 290f,
+					MaxShotsBeforeReload = 30,
+					ProjectilesPerShot = 2,
+					SpreadVector = new Vector3(0.009f, 0.009f, 0.04f),
+					NoiseRadius = 40f,
 					IsAutomatic = true
 				};
 			}
@@ -812,10 +893,6 @@ namespace Game
 							m_random.Float(0.5f, 1.5f),
 							m_random.Float(-0.3f, 0.3f)
 						);
-
-						// En lugar de usar GunFireParticleSystem para recarga, 
-						// simplemente omitimos las partículas de fuego durante la recarga
-						// Ya que solo se deben mostrar partículas de fuego al disparar
 					}
 				}
 				catch (Exception ex)
