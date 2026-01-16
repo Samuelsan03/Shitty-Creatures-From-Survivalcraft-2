@@ -279,12 +279,43 @@ namespace Game
 		{
 			if (this.m_target == null || !this.IsActive)
 				return;
+
 			bool hasRangedWeapon = this.HasActiveRangedWeaponComponent();
 			if (!hasRangedWeapon)
 			{
 				this.FindAimTool(this.m_componentMiner);
 				hasRangedWeapon = this.HasActiveRangedWeaponComponent();
 			}
+
+			// Modificación: Verificar específicamente si el lanzallamas necesita recarga
+			if (this.m_componentMiner != null && this.m_componentMiner.ActiveBlockValue != 0)
+			{
+				int blockId = Terrain.ExtractContents(this.m_componentMiner.ActiveBlockValue);
+				if (blockId == BlocksManager.GetBlockIndex(typeof(FlameThrowerBlock), true, false))
+				{
+					int data = Terrain.ExtractData(this.m_componentMiner.ActiveBlockValue);
+					int loadCount = FlameThrowerBlock.GetLoadCount(this.m_componentMiner.ActiveBlockValue);
+					FlameThrowerBlock.LoadState loadState = FlameThrowerBlock.GetLoadState(data);
+					FlameBulletBlock.FlameBulletType? bulletType = FlameThrowerBlock.GetBulletType(data);
+
+					// DETECCIÓN ESPECIAL: Si el lanzallamas está vacío o necesita inicialización
+					if ((loadState == FlameThrowerBlock.LoadState.Empty || loadCount <= 0) &&
+						!bulletType.HasValue)
+					{
+						// Esto indica que es la primera vez que la criatura usa este lanzallamas
+						// Forzar recarga con tipo aleatorio
+						this.FindAimTool(this.m_componentMiner);
+						hasRangedWeapon = this.HasActiveRangedWeaponComponent();
+					}
+					else if (loadState == FlameThrowerBlock.LoadState.Empty || loadCount <= 0)
+					{
+						// Solo recarga normal (mantiene tipo existente)
+						this.FindAimTool(this.m_componentMiner);
+						hasRangedWeapon = this.HasActiveRangedWeaponComponent();
+					}
+				}
+			}
+
 			if (hasRangedWeapon && this.m_target != null)
 			{
 				float distance = Vector3.Distance(this.m_componentCreature.ComponentBody.Position, this.m_target.ComponentBody.Position);
@@ -582,6 +613,27 @@ namespace Game
 			int num = Terrain.ExtractContents(activeBlockValue);
 			Block block = BlocksManager.Blocks[num];
 			bool isFirearm = this.IsFirearmActive();
+
+			// Modificación: Manejo especial para FlameThrowerBlock
+			if (block is FlameThrowerBlock)
+			{
+				int data = Terrain.ExtractData(activeBlockValue);
+				FlameThrowerBlock.LoadState loadState = FlameThrowerBlock.GetLoadState(data);
+				int loadCount = FlameThrowerBlock.GetLoadCount(activeBlockValue);
+				FlameBulletBlock.FlameBulletType? bulletType = FlameThrowerBlock.GetBulletType(data);
+
+				// Verificar si necesita inicialización (primera vez)
+				bool needsInitialization = (loadState == FlameThrowerBlock.LoadState.Empty || loadCount <= 0) &&
+										  !bulletType.HasValue;
+
+				if (needsInitialization || !this.IsReady(activeBlockValue))
+				{
+					// Si necesita inicialización o no está listo, recargar
+					this.HandleComplexAimTool(componentMiner, activeSlotIndex);
+				}
+				return true;
+			}
+
 			if (block.IsAimable_(activeBlockValue) || isFirearm)
 			{
 				if (!(block is FlameThrowerBlock))
@@ -591,24 +643,6 @@ namespace Game
 					{
 						this.HandleComplexAimTool(componentMiner, activeSlotIndex);
 					}
-					return true;
-				}
-				bool flag5 = this.IsReady(activeBlockValue);
-				if (flag5)
-				{
-					return true;
-				}
-			}
-			for (int i = 0; i < Math.Min(componentMiner.Inventory.SlotsCount, 10); i++)
-			{
-				if (i == activeSlotIndex) continue;
-				int slotValue = componentMiner.Inventory.GetSlotValue(i);
-				int num2 = Terrain.ExtractContents(slotValue);
-				Block block2 = BlocksManager.Blocks[num2];
-				bool flag6 = (block2.IsAimable_(slotValue) || this.IsFirearmBlock(slotValue)) && (!(block2 is FlameThrowerBlock) || this.IsReady(slotValue));
-				if (flag6)
-				{
-					componentMiner.Inventory.ActiveSlotIndex = i;
 					return true;
 				}
 			}
@@ -696,6 +730,52 @@ namespace Game
 			int data = Terrain.ExtractData(slotValue);
 			int num2 = Terrain.ExtractContents(slotValue);
 			Block block = BlocksManager.Blocks[num2];
+
+			// Modificación: Manejo especial para FlameThrowerBlock
+			if (block is FlameThrowerBlock)
+			{
+				// Obtener el tipo de bala actual y el estado de carga
+				FlameBulletBlock.FlameBulletType? currentType = FlameThrowerBlock.GetBulletType(data);
+				FlameThrowerBlock.LoadState loadState = FlameThrowerBlock.GetLoadState(data);
+				int loadCount = FlameThrowerBlock.GetLoadCount(slotValue);
+
+				// Determinar el tipo de bala
+				FlameBulletBlock.FlameBulletType bulletType;
+
+				// SOLO ASIGNAR NUEVO TIPO SI ESTÁ VACÍO Y NO TIENE TIPO DEFINIDO
+				if (currentType.HasValue)
+				{
+					// Si ya tiene un tipo, mantenerlo siempre
+					bulletType = currentType.Value;
+				}
+				else if (loadState == FlameThrowerBlock.LoadState.Empty || loadCount <= 0)
+				{
+					// Solo si está realmente vacío y sin tipo definido, asignar ALEATORIO (50/50)
+					bulletType = (this.m_random.Bool()) ?
+						FlameBulletBlock.FlameBulletType.Flame :
+						FlameBulletBlock.FlameBulletType.Poison;
+				}
+				else
+				{
+					// Si tiene carga pero no tiene tipo (caso raro), asignar aleatorio
+					bulletType = (this.m_random.Bool()) ?
+						FlameBulletBlock.FlameBulletType.Flame :
+						FlameBulletBlock.FlameBulletType.Poison;
+				}
+
+				// Establecer tipo de bala, estado cargado y carga completa (15)
+				data = FlameThrowerBlock.SetBulletType(data, bulletType);
+				data = FlameThrowerBlock.SetLoadState(data, FlameThrowerBlock.LoadState.Loaded);
+				int newValue = Terrain.ReplaceData(slotValue, data);
+				newValue = FlameThrowerBlock.SetLoadCount(newValue, 15);
+
+				// Actualizar el inventario
+				componentMiner.Inventory.RemoveSlotItems(slotIndex, 1);
+				componentMiner.Inventory.AddSlotItems(slotIndex, newValue, 1);
+
+				return;
+			}
+
 			if (this.IsFirearmBlock(slotValue))
 			{
 				int bulletNum = this.GetFirearmBulletNum(slotValue);
