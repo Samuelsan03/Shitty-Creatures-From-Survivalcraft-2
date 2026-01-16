@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Runtime.CompilerServices;
 using Engine;
 using GameEntitySystem;
@@ -239,6 +239,37 @@ namespace Game
 				hasRangedWeapon = this.HasActiveRangedWeaponComponent();
 			}
 
+			// *** MODIFICACIÓN PARA FLAMETHROWER ***
+			// Verificar específicamente si el lanzallamas necesita recarga
+			if (this.m_componentMiner != null && this.m_componentMiner.ActiveBlockValue != 0)
+			{
+				int blockId = Terrain.ExtractContents(this.m_componentMiner.ActiveBlockValue);
+				if (blockId == BlocksManager.GetBlockIndex(typeof(FlameThrowerBlock), true, false))
+				{
+					int data = Terrain.ExtractData(this.m_componentMiner.ActiveBlockValue);
+					int loadCount = FlameThrowerBlock.GetLoadCount(this.m_componentMiner.ActiveBlockValue);
+					FlameThrowerBlock.LoadState loadState = FlameThrowerBlock.GetLoadState(data);
+					FlameBulletBlock.FlameBulletType? bulletType = FlameThrowerBlock.GetBulletType(data);
+
+					// DETECCIÓN ESPECIAL: Si el lanzallamas está vacío o necesita inicialización
+					if ((loadState == FlameThrowerBlock.LoadState.Empty || loadCount <= 0) &&
+						!bulletType.HasValue)
+					{
+						// Esto indica que es la primera vez que la criatura usa este lanzallamas
+						// Forzar recarga con tipo aleatorio
+						this.FindAimTool(this.m_componentMiner);
+						hasRangedWeapon = this.HasActiveRangedWeaponComponent();
+					}
+					else if (loadState == FlameThrowerBlock.LoadState.Empty || loadCount <= 0)
+					{
+						// Solo recarga normal (mantiene tipo existente)
+						this.FindAimTool(this.m_componentMiner);
+						hasRangedWeapon = this.HasActiveRangedWeaponComponent();
+					}
+				}
+			}
+			// *** FIN DE MODIFICACIÓN ***
+
 			if (hasRangedWeapon && this.m_target != null)
 			{
 				float distance = Vector3.Distance(this.m_componentCreature.ComponentBody.Position, this.m_target.ComponentBody.Position);
@@ -346,7 +377,18 @@ namespace Game
 				   blockId == BlocksManager.GetBlockIndex(typeof(MinigunBlock), true, false) ||
 				   blockId == BlocksManager.GetBlockIndex(typeof(SPAS12Block), true, false) ||
 				   blockId == BlocksManager.GetBlockIndex(typeof(SWM500Block), true, false) ||
-				   blockId == BlocksManager.GetBlockIndex(typeof(UziBlock), true, false);
+				   blockId == BlocksManager.GetBlockIndex(typeof(UziBlock), true, false) ||
+				   blockId == BlocksManager.GetBlockIndex(typeof(AUGBlock), true, false) ||
+				   blockId == BlocksManager.GetBlockIndex(typeof(P90Block), true, false) ||
+				   blockId == BlocksManager.GetBlockIndex(typeof(SCARBlock), true, false) ||
+				   blockId == BlocksManager.GetBlockIndex(typeof(RevolverBlock), true, false) ||
+				   blockId == BlocksManager.GetBlockIndex(typeof(FamasBlock), true, false) ||
+				   blockId == BlocksManager.GetBlockIndex(typeof(AA12Block), true, false) ||
+		blockId == BlocksManager.GetBlockIndex(typeof(M249Block), true, false) ||
+		blockId == BlocksManager.GetBlockIndex(typeof(NewG3Block), true, false) ||
+		blockId == BlocksManager.GetBlockIndex(typeof(MP5SSDBlock), true, false) ||
+		blockId == BlocksManager.GetBlockIndex(typeof(MendozaBlock), true, false) ||
+		blockId == BlocksManager.GetBlockIndex(typeof(GrozaBlock), true, false);
 		}
 
 		// RESTAURADO: Método para verificar si un bloque es un arma de fuego
@@ -361,7 +403,18 @@ namespace Game
 				   blockId == BlocksManager.GetBlockIndex(typeof(MinigunBlock), true, false) ||
 				   blockId == BlocksManager.GetBlockIndex(typeof(SPAS12Block), true, false) ||
 				   blockId == BlocksManager.GetBlockIndex(typeof(SWM500Block), true, false) ||
-				   blockId == BlocksManager.GetBlockIndex(typeof(UziBlock), true, false);
+				   blockId == BlocksManager.GetBlockIndex(typeof(UziBlock), true, false) ||
+				   blockId == BlocksManager.GetBlockIndex(typeof(AUGBlock), true, false) ||
+				   blockId == BlocksManager.GetBlockIndex(typeof(P90Block), true, false) ||
+				   blockId == BlocksManager.GetBlockIndex(typeof(SCARBlock), true, false) ||
+				   blockId == BlocksManager.GetBlockIndex(typeof(RevolverBlock), true, false) ||
+				   blockId == BlocksManager.GetBlockIndex(typeof(FamasBlock), true, false) ||
+				blockId == BlocksManager.GetBlockIndex(typeof(AA12Block), true, false) ||
+		blockId == BlocksManager.GetBlockIndex(typeof(M249Block), true, false) ||
+		blockId == BlocksManager.GetBlockIndex(typeof(NewG3Block), true, false) ||
+		blockId == BlocksManager.GetBlockIndex(typeof(MP5SSDBlock), true, false) ||
+		blockId == BlocksManager.GetBlockIndex(typeof(MendozaBlock), true, false) ||
+		blockId == BlocksManager.GetBlockIndex(typeof(GrozaBlock), true, false);
 		}
 
 		// CORREGIDO: Método para verificar si hay un arma de distancia activa (incluye armas de fuego)
@@ -372,17 +425,17 @@ namespace Game
 				return true;
 
 			// Luego verificar otras armas de distancia
-			ComponentMusketShooterBehavior componentMusketShooterBehavior = base.Entity.FindComponent<ComponentMusketShooterBehavior>();
-			ComponentBowShooterBehavior componentBowShooterBehavior = base.Entity.FindComponent<ComponentBowShooterBehavior>();
-			ComponentCrossbowShooterBehavior componentCrossbowShooterBehavior = base.Entity.FindComponent<ComponentCrossbowShooterBehavior>();
-			ComponentFlameThrowerShooterBehavior componentFlameThrowerShooterBehavior = base.Entity.FindComponent<ComponentFlameThrowerShooterBehavior>();
-			ComponentItemsLauncherShooterBehavior componentItemsLauncherShooterBehavior = base.Entity.FindComponent<ComponentItemsLauncherShooterBehavior>();
+			ComponentMusketShooterBehavior musket = base.Entity.FindComponent<ComponentMusketShooterBehavior>();
+			ComponentBowShooterBehavior bow = base.Entity.FindComponent<ComponentBowShooterBehavior>();
+			ComponentCrossbowShooterBehavior crossbow = base.Entity.FindComponent<ComponentCrossbowShooterBehavior>();
+			ComponentFlameThrowerShooterBehavior flamethrower = base.Entity.FindComponent<ComponentFlameThrowerShooterBehavior>();
+			ComponentItemsLauncherShooterBehavior launcher = base.Entity.FindComponent<ComponentItemsLauncherShooterBehavior>();
 
-			return (componentMusketShooterBehavior != null && componentMusketShooterBehavior.IsActive && this.m_target != null) ||
-				   (componentBowShooterBehavior != null && componentBowShooterBehavior.IsActive && this.m_target != null) ||
-				   (componentCrossbowShooterBehavior != null && componentCrossbowShooterBehavior.IsActive && this.m_target != null) ||
-				   (componentFlameThrowerShooterBehavior != null && componentFlameThrowerShooterBehavior.IsActive && this.m_target != null) ||
-				   (componentItemsLauncherShooterBehavior != null && componentItemsLauncherShooterBehavior.IsActive && this.m_target != null);
+			return (musket != null && musket.IsActive && this.m_target != null) ||
+				   (bow != null && bow.IsActive && this.m_target != null) ||
+				   (crossbow != null && crossbow.IsActive && this.m_target != null) ||
+				   (flamethrower != null && flamethrower.IsActive && this.m_target != null) ||
+				   (launcher != null && launcher.IsActive && this.m_target != null);
 		}
 
 		// RESTAURADO: Método para obtener número de balas de un arma de fuego
@@ -399,6 +452,17 @@ namespace Game
 			if (blockId == BlocksManager.GetBlockIndex(typeof(SPAS12Block), true, false)) return SPAS12Block.GetBulletNum(data);
 			if (blockId == BlocksManager.GetBlockIndex(typeof(SWM500Block), true, false)) return SWM500Block.GetBulletNum(data);
 			if (blockId == BlocksManager.GetBlockIndex(typeof(UziBlock), true, false)) return UziBlock.GetBulletNum(data);
+			if (blockId == BlocksManager.GetBlockIndex(typeof(AUGBlock), true, false)) return AUGBlock.GetBulletNum(data);
+			if (blockId == BlocksManager.GetBlockIndex(typeof(P90Block), true, false)) return P90Block.GetBulletNum(data);
+			if (blockId == BlocksManager.GetBlockIndex(typeof(SCARBlock), true, false)) return SCARBlock.GetBulletNum(data);
+			if (blockId == BlocksManager.GetBlockIndex(typeof(RevolverBlock), true, false)) return RevolverBlock.GetBulletNum(data);
+			if (blockId == BlocksManager.GetBlockIndex(typeof(FamasBlock), true, false)) return FamasBlock.GetBulletNum(data);
+			if (blockId == BlocksManager.GetBlockIndex(typeof(AA12Block), true, false)) return AA12Block.GetBulletNum(data);
+			if (blockId == BlocksManager.GetBlockIndex(typeof(M249Block), true, false)) return M249Block.GetBulletNum(data);
+			if (blockId == BlocksManager.GetBlockIndex(typeof(NewG3Block), true, false)) return NewG3Block.GetBulletNum(data);
+			if (blockId == BlocksManager.GetBlockIndex(typeof(MP5SSDBlock), true, false)) return MP5SSDBlock.GetBulletNum(data);
+			if (blockId == BlocksManager.GetBlockIndex(typeof(MendozaBlock), true, false)) return MendozaBlock.GetBulletNum(data);
+			if (blockId == BlocksManager.GetBlockIndex(typeof(GrozaBlock), true, false)) return GrozaBlock.GetBulletNum(data);
 			return 0;
 		}
 
@@ -417,6 +481,12 @@ namespace Game
 			else if (blockId == BlocksManager.GetBlockIndex(typeof(SPAS12Block), true, false)) maxCapacity = 8;
 			else if (blockId == BlocksManager.GetBlockIndex(typeof(SWM500Block), true, false)) maxCapacity = 5;
 			else if (blockId == BlocksManager.GetBlockIndex(typeof(UziBlock), true, false)) maxCapacity = 30;
+			// Nuevas armas añadidas
+			else if (blockId == BlocksManager.GetBlockIndex(typeof(AUGBlock), true, false)) maxCapacity = 30;
+			else if (blockId == BlocksManager.GetBlockIndex(typeof(P90Block), true, false)) maxCapacity = 50;
+			else if (blockId == BlocksManager.GetBlockIndex(typeof(SCARBlock), true, false)) maxCapacity = 30;
+			else if (blockId == BlocksManager.GetBlockIndex(typeof(RevolverBlock), true, false)) maxCapacity = 6;
+			else if (blockId == BlocksManager.GetBlockIndex(typeof(FamasBlock), true, false)) maxCapacity = 30;
 
 			if (maxCapacity > 0)
 			{
@@ -429,6 +499,17 @@ namespace Game
 				else if (blockId == BlocksManager.GetBlockIndex(typeof(SPAS12Block), true, false)) data = SPAS12Block.SetBulletNum(maxCapacity);
 				else if (blockId == BlocksManager.GetBlockIndex(typeof(SWM500Block), true, false)) data = SWM500Block.SetBulletNum(maxCapacity);
 				else if (blockId == BlocksManager.GetBlockIndex(typeof(UziBlock), true, false)) data = UziBlock.SetBulletNum(maxCapacity);
+				else if (blockId == BlocksManager.GetBlockIndex(typeof(AUGBlock), true, false)) data = AUGBlock.SetBulletNum(maxCapacity);
+				else if (blockId == BlocksManager.GetBlockIndex(typeof(P90Block), true, false)) data = P90Block.SetBulletNum(maxCapacity);
+				else if (blockId == BlocksManager.GetBlockIndex(typeof(SCARBlock), true, false)) data = SCARBlock.SetBulletNum(maxCapacity);
+				else if (blockId == BlocksManager.GetBlockIndex(typeof(RevolverBlock), true, false)) data = RevolverBlock.SetBulletNum(data, maxCapacity);
+				else if (blockId == BlocksManager.GetBlockIndex(typeof(FamasBlock), true, false)) data = FamasBlock.SetBulletNum(data, maxCapacity);
+				else if (blockId == BlocksManager.GetBlockIndex(typeof(AA12Block), true, false)) data = AA12Block.SetBulletNum(data, maxCapacity);
+				else if (blockId == BlocksManager.GetBlockIndex(typeof(M249Block), true, false)) data = M249Block.SetBulletNum(data, maxCapacity);
+				else if (blockId == BlocksManager.GetBlockIndex(typeof(NewG3Block), true, false)) data = NewG3Block.SetBulletNum(maxCapacity);
+				else if (blockId == BlocksManager.GetBlockIndex(typeof(MP5SSDBlock), true, false)) data = MP5SSDBlock.SetBulletNum(maxCapacity);
+				else if (blockId == BlocksManager.GetBlockIndex(typeof(MendozaBlock), true, false)) data = MendozaBlock.SetBulletNum(maxCapacity);
+				else if (blockId == BlocksManager.GetBlockIndex(typeof(GrozaBlock), true, false)) data = GrozaBlock.SetBulletNum(maxCapacity);
 
 				int value2 = Terrain.MakeBlockValue(blockId, 0, data);
 				componentMiner.Inventory.RemoveSlotItems(slotIndex, 1);
@@ -535,18 +616,32 @@ namespace Game
 
 			if (block.IsAimable_(activeBlockValue) || isFirearm)
 			{
-				if (!(block is FlameThrowerBlock))
+				// *** MODIFICACIÓN PARA FLAMETHROWER ***
+				if (block is FlameThrowerBlock)
+				{
+					int data = Terrain.ExtractData(activeBlockValue);
+					FlameThrowerBlock.LoadState loadState = FlameThrowerBlock.GetLoadState(data);
+					int loadCount = FlameThrowerBlock.GetLoadCount(activeBlockValue);
+					FlameBulletBlock.FlameBulletType? bulletType = FlameThrowerBlock.GetBulletType(data);
+
+					// Verificar si necesita inicialización (primera vez)
+					bool needsInitialization = (loadState == FlameThrowerBlock.LoadState.Empty || loadCount <= 0) &&
+											  !bulletType.HasValue;
+
+					if (needsInitialization || !this.IsReady(activeBlockValue))
+					{
+						// Si necesita inicialización o no está listo, recargar
+						this.HandleComplexAimTool(componentMiner, activeSlotIndex);
+					}
+					return true;
+				}
+				else
 				{
 					bool flag4 = this.IsAimToolNeedToReady(componentMiner, activeSlotIndex);
 					if (flag4)
 					{
 						this.HandleComplexAimTool(componentMiner, activeSlotIndex);
 					}
-					return true;
-				}
-
-				if (this.IsReady(activeBlockValue))
-				{
 					return true;
 				}
 			}
@@ -574,12 +669,10 @@ namespace Game
 		public bool IsReady(int slotValue)
 		{
 			int data = Terrain.ExtractData(slotValue);
-			if (BlocksManager.Blocks[Terrain.ExtractContents(slotValue)] is FlameThrowerBlock)
-			{
-				return FlameThrowerBlock.GetLoadState(data) == FlameThrowerBlock.LoadState.Loaded &&
-					   FlameThrowerBlock.GetBulletType(data) != null;
-			}
-			return true;
+			// Modificación: Mismo comportamiento que NewChaseBehavior
+			return !(BlocksManager.Blocks[Terrain.ExtractContents(slotValue)] is FlameThrowerBlock) || 
+				   (FlameThrowerBlock.GetLoadState(data) == FlameThrowerBlock.LoadState.Loaded && 
+					FlameThrowerBlock.GetBulletType(data) != null);
 		}
 
 		// RESTAURADO: Método para verificar si una herramienta de puntería necesita prepararse (incluye armas de fuego)
@@ -591,6 +684,12 @@ namespace Game
 
 			// RESTAURADO: ItemsLauncher siempre está listo para criaturas
 			if (block is ItemsLauncherBlock) return false;
+
+			// *** MODIFICACIÓN PARA FLAMETHROWER ***
+			if (block is FlameThrowerBlock)
+			{
+				return !this.IsReady(slotValue);
+			}
 
 			if (!(block is BowBlock))
 			{
@@ -648,6 +747,52 @@ namespace Game
 			int data = Terrain.ExtractData(slotValue);
 			int num2 = Terrain.ExtractContents(slotValue);
 			Block block = BlocksManager.Blocks[num2];
+
+			// *** MODIFICACIÓN PARA FLAMETHROWER ***
+			// Manejo especial para FlameThrowerBlock
+			if (block is FlameThrowerBlock)
+			{
+				// Obtener el tipo de bala actual y el estado de carga
+				FlameBulletBlock.FlameBulletType? currentType = FlameThrowerBlock.GetBulletType(data);
+				FlameThrowerBlock.LoadState loadState = FlameThrowerBlock.GetLoadState(data);
+				int loadCount = FlameThrowerBlock.GetLoadCount(slotValue);
+
+				// Determinar el tipo de bala
+				FlameBulletBlock.FlameBulletType bulletType;
+
+				// SOLO ASIGNAR NUEVO TIPO SI ESTÁ VACÍO Y NO TIENE TIPO DEFINIDO
+				if (currentType.HasValue)
+				{
+					// Si ya tiene un tipo, mantenerlo siempre
+					bulletType = currentType.Value;
+				}
+				else if (loadState == FlameThrowerBlock.LoadState.Empty || loadCount <= 0)
+				{
+					// Solo si está realmente vacío y sin tipo definido, asignar ALEATORIO (50/50)
+					bulletType = (this.m_random.Bool()) ?
+						FlameBulletBlock.FlameBulletType.Flame :
+						FlameBulletBlock.FlameBulletType.Poison;
+				}
+				else
+				{
+					// Si tiene carga pero no tiene tipo (caso raro), asignar aleatorio
+					bulletType = (this.m_random.Bool()) ?
+						FlameBulletBlock.FlameBulletType.Flame :
+						FlameBulletBlock.FlameBulletType.Poison;
+				}
+
+				// Establecer tipo de bala, estado cargado y carga completa (15)
+				data = FlameThrowerBlock.SetBulletType(data, bulletType);
+				data = FlameThrowerBlock.SetLoadState(data, FlameThrowerBlock.LoadState.Loaded);
+				int newValue = Terrain.ReplaceData(slotValue, data);
+				newValue = FlameThrowerBlock.SetLoadCount(newValue, 15);
+
+				// Actualizar el inventario
+				componentMiner.Inventory.RemoveSlotItems(slotIndex, 1);
+				componentMiner.Inventory.AddSlotItems(slotIndex, newValue, 1);
+
+				return;
+			}
 
 			// RESTAURADO: Lógica para armas de fuego
 			if (this.IsFirearmBlock(slotValue))
@@ -982,9 +1127,9 @@ namespace Game
 								   CreatureCategory.Bird;
 
 			// CORRECCIÓN: Cargar probabilidades del XML en lugar de valores fijos
-			this.m_chaseNonPlayerProbability = valuesDictionary.GetValue<float>("ChaseNonPlayerProbability", 1.0f);
-			this.m_chaseWhenAttackedProbability = valuesDictionary.GetValue<float>("ChaseWhenAttackedProbability", 1.0f);
-			this.m_chaseOnTouchProbability = valuesDictionary.GetValue<float>("ChaseOnTouchProbability", 0.5f);
+			this.m_chaseNonPlayerProbability = valuesDictionary.GetValue<float>("ChaseNonPlayerProbability", 0);
+			this.m_chaseWhenAttackedProbability = valuesDictionary.GetValue<float>("ChaseWhenAttackedProbability", 0f);
+			this.m_chaseOnTouchProbability = valuesDictionary.GetValue<float>("ChaseOnTouchProbability", 0f);
 
 			// Obtener el nombre del rebaño zombi del ComponentHerdBehavior
 			ComponentZombieHerdBehavior herdBehavior = base.Entity.FindComponent<ComponentZombieHerdBehavior>();
