@@ -153,6 +153,7 @@ namespace Game
 		{
 			try
 			{
+				// Armas originales
 				int akIndex = BlocksManager.GetBlockIndex(typeof(AKBlock), true, false);
 				m_firearmConfigs[akIndex] = new FirearmConfig
 				{
@@ -388,6 +389,103 @@ namespace Game
 					ProjectilesPerShot = 1,
 					SpreadVector = new Vector3(0.012f, 0.012f, 0.04f),
 					NoiseRadius = 35f,
+					IsAutomatic = true,
+					IsSniper = false,
+					IsShotgun = false
+				};
+
+				// Nuevas armas añadidas
+				int aa12Index = BlocksManager.GetBlockIndex(typeof(AA12Block), true, false);
+				m_firearmConfigs[aa12Index] = new FirearmConfig
+				{
+					BulletBlockType = typeof(NuevaBala6),
+					ShootSound = "Audio/Armas/AA12 fuego",
+					FireRate = 0.2,
+					BulletSpeed = 350f,
+					MaxShotsBeforeReload = 20,
+					ProjectilesPerShot = 8,
+					SpreadVector = new Vector3(0.03f, 0.03f, 0.06f),
+					NoiseRadius = 45f,
+					IsAutomatic = true,
+					IsSniper = false,
+					IsShotgun = true
+				};
+
+				int m249Index = BlocksManager.GetBlockIndex(typeof(M249Block), true, false);
+				m_firearmConfigs[m249Index] = new FirearmConfig
+				{
+					BulletBlockType = typeof(NuevaBala5),
+					ShootSound = "Audio/Armas/M249 fuego",
+					FireRate = 0.08,
+					BulletSpeed = 400f,
+					MaxShotsBeforeReload = 100,
+					ProjectilesPerShot = 1,
+					SpreadVector = new Vector3(0.01f, 0.01f, 0.03f),
+					NoiseRadius = 50f,
+					IsAutomatic = true,
+					IsSniper = false,
+					IsShotgun = false
+				};
+
+				int newG3Index = BlocksManager.GetBlockIndex(typeof(NewG3Block), true, false);
+				m_firearmConfigs[newG3Index] = new FirearmConfig
+				{
+					BulletBlockType = typeof(NuevaBala3),
+					ShootSound = "Audio/Armas/G3 fuego",
+					FireRate = 0.12,
+					BulletSpeed = 290f,
+					MaxShotsBeforeReload = 30,
+					ProjectilesPerShot = 2,
+					SpreadVector = new Vector3(0.009f, 0.009f, 0.04f),
+					NoiseRadius = 40f,
+					IsAutomatic = true,
+					IsSniper = false,
+					IsShotgun = false
+				};
+
+				int mp5ssdIndex = BlocksManager.GetBlockIndex(typeof(MP5SSDBlock), true, false);
+				m_firearmConfigs[mp5ssdIndex] = new FirearmConfig
+				{
+					BulletBlockType = typeof(NuevaBala3),
+					ShootSound = "Audio/Armas/MP5SSD fuego",
+					FireRate = 0.12,
+					BulletSpeed = 290f,
+					MaxShotsBeforeReload = 30,
+					ProjectilesPerShot = 2,
+					SpreadVector = new Vector3(0.009f, 0.009f, 0.04f),
+					NoiseRadius = 40f,
+					IsAutomatic = true,
+					IsSniper = false,
+					IsShotgun = false
+				};
+
+				int mendozaIndex = BlocksManager.GetBlockIndex(typeof(MendozaBlock), true, false);
+				m_firearmConfigs[mendozaIndex] = new FirearmConfig
+				{
+					BulletBlockType = typeof(NuevaBala3),
+					ShootSound = "Audio/Armas/Mendoza fuego",
+					FireRate = 0.12,
+					BulletSpeed = 290f,
+					MaxShotsBeforeReload = 30,
+					ProjectilesPerShot = 2,
+					SpreadVector = new Vector3(0.009f, 0.009f, 0.04f),
+					NoiseRadius = 40f,
+					IsAutomatic = true,
+					IsSniper = false,
+					IsShotgun = false
+				};
+
+				int grozaIndex = BlocksManager.GetBlockIndex(typeof(GrozaBlock), true, false);
+				m_firearmConfigs[grozaIndex] = new FirearmConfig
+				{
+					BulletBlockType = typeof(NuevaBala3),
+					ShootSound = "Audio/Armas/Groza fuego",
+					FireRate = 0.12,
+					BulletSpeed = 290f,
+					MaxShotsBeforeReload = 30,
+					ProjectilesPerShot = 2,
+					SpreadVector = new Vector3(0.009f, 0.009f, 0.04f),
+					NoiseRadius = 40f,
 					IsAutomatic = true,
 					IsSniper = false,
 					IsShotgun = false
