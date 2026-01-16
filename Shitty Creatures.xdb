@@ -26,7 +26,7 @@
 <ComponentTemplate Name="DeathSpawner" Description="Genera NPCs aleatorios cuando la entidad muere" Guid="32905e25-1938-46fb-8659-a86ee79cfaa4" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
     <Parameter Name="Class" Guid="928c18a2-2cbb-49c5-bfdf-20634526aa0f" Value="Game.ComponentDeathSpawn" Type="string" Description="Clase C# que implementa el componente"/>
     <Parameter Name="DeathSpawnProbability" Guid="35fa8f0c-11f2-42f9-b502-76b013a527d8" Value="1.0" Type="float" Description="Probabilidad de que aparezcan NPCs al morir (0-1)"/>
-    <Parameter Name="DeathSpawnTemplates" Guid="09f1cc78-2451-4786-ae7f-64c9f6f6359f" Value="" Type="string" Description="Lista separada por comas de templates de NPCs que pueden aparecer al morir"/>
+    <Parameter Name="DeathSpawnTemplates" Guid="09f1cc78-2451-4786-ae7f-64c9f6f6359f" Value="" Type="string" Description="Lista separada por un punto y coma de templates de NPCs que pueden aparecer al morir"/>
 </ComponentTemplate>
 
 <ComponentTemplate Name="ComponentGhostHumanModel" Guid="9b72879f-bc51-4877-a7d2-c212d0e04656">
@@ -531,6 +531,36 @@
     </Folder>
 
 <ProjectTemplate Name="Project" Guid="85023bf8-1c90-4dd1-9442-e6c13691d078">
+<MemberSubsystemTemplate Name="GrozaBehavior" Guid="b41cc8e1-f01d-4d6a-9cc9-75202aa6ac2a">
+    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="9c5602cf-d081-4eea-9e27-c489894c8a16"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="a10426ff-2f62-4a31-9815-b5b035a94a8b"/>
+    <Parameter Name="Class" Value="Game.SubsystemGrozaBehavior" Type="string" Guid="6e48f992-1f3d-453b-97eb-cbbe6f333974"/>
+</MemberSubsystemTemplate>
+<MemberSubsystemTemplate Name="MendozaBehavior" Guid="a583fb3c-8c04-49f9-babb-18ffa95fa042">
+    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="4f8637de-9288-4b8b-b63a-8d3929fe2288"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="53e09634-8b89-474f-a9c3-32490709d1d4"/>
+    <Parameter Name="Class" Value="Game.SubsystemMendozaBehavior" Type="string" Guid="9c0f8aa8-b6c7-4d12-a72b-3f8c789a85e5"/>
+</MemberSubsystemTemplate>
+<MemberSubsystemTemplate Name="MP5SSDBehavior" Guid="66222ac5-1ee5-4e91-84d6-11454cee187f">
+    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="72ab3ac7-eebb-4293-9d8d-629e095fca33"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="a6d62961-0f48-406f-9c90-ebb50ce2305c"/>
+    <Parameter Name="Class" Value="Game.SubsystemMP5SSDBehavior" Type="string" Guid="655c171b-2f39-4259-b62f-fdc9133508e9"/>
+</MemberSubsystemTemplate>
+<MemberSubsystemTemplate Name="NewG3Behavior" Guid="4a34d5ca-fa05-4c7b-9873-66c097652c21">
+    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="30ea11a3-cc32-43e3-9d91-d9140ab93048"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="1401601d-fc09-498f-8007-e81506521910"/>
+    <Parameter Name="Class" Value="Game.SubsystemNewG3Behavior" Type="string" Guid="f8536698-7715-4cf1-b806-aa67c49b25a4"/>
+</MemberSubsystemTemplate>
+<MemberSubsystemTemplate Name="AA12Behavior" Guid="b76ab09d-7e52-4740-a5fe-117c4cd96ef4">
+    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="41dcaea8-7432-441d-bbc9-108e71dffdb3"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="fd66d3b3-d836-4e2b-9356-48a38222baa9"/>
+    <Parameter Name="Class" Value="Game.SubsystemAA12Behavior" Type="string" Guid="bd42705e-e758-4b49-9f09-7ab9e100302d"/>
+</MemberSubsystemTemplate>
+<MemberSubsystemTemplate Name="M249Behavior" Guid="327f41d4-193a-4900-af8a-826d841d774f">
+    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="9d93b8a8-b8c9-491d-b5dd-2831579f450b"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="6ab578a6-0037-4bd3-a52c-e14b6808f2bd"/>
+    <Parameter Name="Class" Value="Game.SubsystemM249Behavior" Type="string" Guid="127552cf-f2dd-4ee5-9be6-87493cbe574f"/>
+</MemberSubsystemTemplate>
 <MemberSubsystemTemplate Name="BanditsSpawn" Guid="cea6dfe3-467d-44b6-9f60-4b2af2e217d1">
     <Parameter Name="IsOptional" Value="false" Type="bool" Guid="16f12546-d08d-460e-972a-35e9ad5a22eb"/>
     <Parameter Name="LoadOrder" Value="60" Type="int" Guid="337c42d3-f4e4-4a53-9c49-153348584c6e"/>
