@@ -434,6 +434,50 @@
       "DisplayName": "Serious Poison Repeating Bolt",
       "Description": "A heavily poisoned bolt for repeating crossbows. Delivers a stronger poison effect with higher poison duration (100 seconds) and very low initial damage (4 damage). The repeating crossbow mechanism lets you apply serious poison to multiple targets rapidly, weakening groups of enemies without killing them outright."
     },
+    "AA12Block:0": {
+  "DisplayName": "Atchisson AA-12 Auto Shotgun",
+  "Description": "A gas-operated, magazine-fed automatic shotgun with an open-bolt design. Originally designed by Maxwell Atchisson in 1972 for military and law enforcement applications, it fires 12-gauge shotgun shells at a rate of 300 RPM with a magazine capacity of 8 to 20 rounds depending on the magazine. Its bullpup configuration and improved recoil system significantly reduce felt recoil, allowing controllable automatic fire even with powerful ammunition. In this mod, it uses AA12Bullet cartridges and fires 8 pellets per shell, being devastating at close to medium range."
+},
+"M249Block:0": {
+      "DisplayName": "M249 SAW",
+      "Description": "The M249 Squad Automatic Weapon (SAW) is a belt-fed light machine gun that provides sustained automatic fire for infantry squads. Fires 5.56×45mm NATO rounds at a rate of 750-1000 RPM. Has a 100-round belt capacity and uses intermediate cartridges for manageable recoil during automatic fire. Requires M249 ammunition blocks for reloading."
+    },
+    "NewG3Block:0": {
+      "DisplayName": "New G3 Assault Rifle",
+      "Description": "A modern assault rifle with advanced polymer construction and enhanced accuracy. Designed for versatile combat situations, it provides a balanced mix of firepower and handling, making it suitable for mid to long-range engagements."
+    },
+    "NewG3Bullet:0": {
+      "DisplayName": "7.62×51mm NATO Magazine",
+      "Description": "A 10-round magazine containing 7.62×51mm NATO ammunition for the G3 rifle. Provides reliable penetration and stopping power against armored targets."
+    },
+    "MP5SSDBlock:0": {
+      "DisplayName": "MP5SD Submachine Gun",
+      "Description": "A suppressed submachine gun designed for stealth operations. Its integrated suppressor reduces muzzle flash and noise, making it ideal for covert missions and close-quarters combat."
+    },
+    "MP5SSDBulletBlock:0": {
+      "DisplayName": "9×19mm Parabellum Magazine",
+      "Description": "A 12-round magazine with subsonic 9×19mm Parabellum rounds for the MP5SD. Optimized for quiet, effective engagements without sacrificing stopping power."
+    },
+    "MendozaBlock:0": {
+      "DisplayName": "Mendoza Rifle",
+      "Description": "A semi-automatic rifle renowned for its excellent accuracy and reliability. Ideal for marksmen who require precision at medium to long ranges without the need for full-auto fire."
+    },
+    "MendozaBulletBlock:0": {
+      "DisplayName": ".308 Winchester Rounds",
+      "Description": "8 rounds of .308 Winchester ammunition, designed for precision shooting. Offers high accuracy and penetration, suitable for hunting and tactical engagements."
+    },
+    "GrozaBlock:0": {
+      "DisplayName": "Groza Bullpup Assault Rifle",
+      "Description": "A bullpup assault rifle featuring an integrated grenade launcher system. Compact yet powerful, it excels in close to medium-range combat with high versatility and firepower."
+    },
+    "GrozaBulletBlock:0": {
+      "DisplayName": "9×39mm Subsonic Ammunition",
+      "Description": "10 rounds of special 9×39mm subsonic ammunition for the Groza rifle. Designed for stealth operations with reduced noise and effective armor penetration."
+    },
+    "M249BulletBlock:0": {
+      "DisplayName": "M249 Ammunition",
+      "Description": "Ammunition box containing 5.56×45mm NATO rounds for the M249 SAW. Each box provides 100 rounds of belt-fed ammunition. Insert into the M249 to fully reload the weapon to its maximum capacity."
+    },
     "AKBlock:0": {
     "DisplayName": "AK-47",
     "Description": "Legendary assault rifle firing 7.62×39mm rounds. Good accuracy, moderate recoil. Uses AK47Bullet ammunition. Fires at ~350 RPM."
@@ -494,6 +538,10 @@
     "DisplayName": "Uzi",
     "Description": "Iconic submachine gun with high rate of fire (~750 RPM). Uses NuevaBala2 projectiles. 30-round magazine."
   },
+"AA12BulletBlock:0": {
+  "DisplayName": "12-Gauge AA-12 Cartridge",
+  "Description": "8-round 12-gauge magazine for the AA-12 shotgun. Each shell contains 8 pellets that spread when fired, being especially effective against groups of enemies at close range. The ammunition is shotgun-type, specifically designed for the AA-12 feeding system."
+},
   "AKBullet:0": {
     "DisplayName": "7.62×39mm AK Magazine",
     "Description": "30-round magazine for AK-47 rifle. Contains 7.62×39mm ammunition."
