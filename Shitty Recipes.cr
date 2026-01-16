@@ -1,5 +1,35 @@
 <ShittyRecipes>
     <Recipes>
+    <Recipe Result="WoodenLongspearBlock" ResultCount="1" RequiredHeatLevel="0" a="planks" b="stick" c="woodenspear" Description="Improved and lengthened version of the original wooden spear">
+            " a "
+            "aca"
+            " b "
+            </Recipe>
+    <Recipe Result="StoneLongspearBlock" ResultCount="1" RequiredHeatLevel="0" a="cobblestone" b="stick" c="stonespear" Description="Improved and lengthened version of the original stone spear">
+            " a "
+            "aca"
+            " b "
+            </Recipe>
+    <Recipe Result="CopperLongspearBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="2" a="copperingot" b="stick" c="copperspear" Description="Improved and lengthened version of the original copper spear">
+            " a "
+            "aca"
+            " b "
+            </Recipe>
+    <Recipe Result="IronLongspearBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="3" a="ironingot" b="stick" c="ironspear" Description="Improved and lengthened version of the original iron spear">
+            " a "
+            "aca"
+            " b "
+            </Recipe>
+            <Recipe Result="DiamondLongspearBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="4" a="diamond" b="stick" c="diamondspear" Description="Improved and lengthened version of the original diamond spear">
+            " a "
+            "aca"
+            " b "
+            </Recipe>
+            <Recipe Result="LavaLongspearBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="magmabucket" b="stick" c="lavaspear" Description="Improved and lengthened version of the original lava spear">
+            " a "
+            "aca"
+            " b "
+            </Recipe>               
     <Recipe Result="ItemsLauncherBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="10" a="copperblock" b="musket" c="rod" Description="Make an object launcher by modifying a new musket.">
 			"bca"
 		</Recipe>
@@ -284,6 +314,214 @@
             "bab"
             " b "
 		</Recipe>
+        <Recipe Result="AKBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="3" a="planks" b="rod" c="ironblock" d="ironingot" Description="Reliable Russian assault rifle, perfect for beginners in automatic weapons">
+    "bca"
+    "bda"
+    " aa"
+</Recipe>
+<Recipe Result="AKBullet" ResultCount="8" RequiredHeatLevel="0" RequiredPlayerLevel="3" a="bullet" b="rod" c="sulphurchunk" d="gunpowder" Description="7.62×39mm ammunition for the AK-47">
+    " a "
+    "bcb"
+    " d "
+</Recipe>
+<Recipe Result="M4Block" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="4" a="ironblock" b="rod" c="wire" Description="American M4 carbine with better accuracy than AK-47">
+    "baa"
+    "bca"
+    "  a"
+</Recipe>
+<Recipe Result="M4Bullet" ResultCount="10" RequiredHeatLevel="0" RequiredPlayerLevel="4" a="rod" b="sulphurchunk" c="bullet" d="copperingot" Description="5.56×45mm NATO standard ammunition">
+    " c "
+    "aba"
+    " d "
+</Recipe>
+<Recipe Result="SPAS12Block" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="4" a="ironblock" b="rod" c="ironingot" d="planks" Description="Italian combat shotgun with pump-action and semi-auto modes">
+    "aaa"
+    "cba"
+    " dd"
+</Recipe>
+<Recipe Result="SPAS12BulletBlock" ResultCount="6" RequiredHeatLevel="0" RequiredPlayerLevel="4" a="bullet" b="rod" c="sulphurchunk" d="gunpowder" Description="12-gauge buckshot for devastating close-range damage">
+    "aa"
+    "bc"
+    "dd"
+</Recipe>
+<Recipe Result="Mac10Block" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="3" a="rod" b="ironingot" c="copperingot" Description="Compact .45 ACP machine pistol with high rate of fire">
+    "aab"
+    " ac"
+    "  b"
+</Recipe>
+<Recipe Result="Mac10Bullet" ResultCount="12" RequiredHeatLevel="0" RequiredPlayerLevel="3" a="ironingot" b="bullet" c="sulphurchunk" Description=".45 ACP rounds for the Mac-10">
+    "bb"
+    "ac"
+    "ac"
+</Recipe>
+<Recipe Result="UziBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="4" a="rod" b="ironingot" c="ironblock" Description="Israeli submachine gun with better stability than Mac-10">
+    " ab"
+    "acb"
+    "  b"
+</Recipe>
+<Recipe Result="UziBullet" ResultCount="15" RequiredHeatLevel="0" RequiredPlayerLevel="4" a="bullet" b="rod" c="sulphurchunk" Description="9×19mm Parabellum ammunition for Uzi">
+    "bb"
+    "ac"
+    "ac"
+</Recipe>
+<Recipe Result="G3Block" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="5" a="rod" b="ironblock" c="copperblock" d="semiconductorblock" Description="Mexican FX-05 Xiuhcoatl assault rifle, modern design with advanced polymer and electronics">
+    "aab"
+    "acd"
+    " bb"
+</Recipe>
+<Recipe Result="G3Bullet" ResultCount="10" RequiredHeatLevel="0" RequiredPlayerLevel="5" a="bullet" b="rod" c="sulphurchunk" d="copperingot" Description="5.56×45mm NATO rounds for the FX-05, manufactured with Mexican technology">
+    "bab"
+    "cdc"
+    "bab"
+</Recipe>
+<Recipe Result="MinigunBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="rod" b="ironblock" c="diamondblock" d="wire" Description="Gatling-style minigun with devastating firepower">
+    "acc"
+    "add"
+    " bb"
+</Recipe>
+<Recipe Result="MinigunBullet" ResultCount="20" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="rod" b="bullet" c="diamond" d="sulphurchunk" Description="7.62×51mm NATO rounds in high-capacity belts">
+    "aca"
+    "bdb"
+    "aca"
+</Recipe>
+<Recipe Result="Izh43Block" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="3" a="rod" b="ironblock" c="planks" d="ironingot" Description="Russian double-barreled shotgun for close combat">
+    "aac"
+    "abd"
+    " bb"
+</Recipe>
+<Recipe Result="Izh43Bullet" ResultCount="6" RequiredHeatLevel="0" RequiredPlayerLevel="3" a="rod" b="sulphurchunk" c="bullet" d="gunpowder" Description="12-gauge shells for double-barreled shotgun">
+    "abc"
+    "abd"
+</Recipe>
+<Recipe Result="SWM500Block" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="4" a="rod" b="ironingot" c="diamond" Description=".50 AE Desert Eagle hand cannon with massive stopping power">
+    "abb"
+    "a c"
+</Recipe>
+<Recipe Result="SWM500Bullet" ResultCount="5" RequiredHeatLevel="0" RequiredPlayerLevel="4" a="bullet" b="sulphurchunk" c="diamond" Description=".50 Action Express rounds for Desert Eagle">
+    "aa"
+    "bc"
+    "bc"
+</Recipe>
+        <Recipe Result="SniperBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="5" a="rod" b="ironblock" c="semiconductorblock" Description="High-precision rifle for extreme long-range engagements, requires advanced electronics">
+    "a b"
+    "a c"
+    " b "
+</Recipe>
+<Recipe Result="SniperBullet" ResultCount="4" RequiredHeatLevel="0" RequiredPlayerLevel="5" a="rod" b="sulphurchunk" c="bullet" d="diamond" Description="Armor-piercing sniper rounds with diamond tips">
+    " d "
+    "aba"
+    " c "
+</Recipe>
+<Recipe Result="AUGBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="4" a="rod" b="ironblock" c="wire" Description="Austrian bullpup assault rifle with integrated optics system">
+    "aa "
+    "abc"
+    "  c"
+</Recipe>
+<Recipe Result="AUGBullet" ResultCount="8" RequiredHeatLevel="0" RequiredPlayerLevel="4" a="rod" b="sulphurchunk" c="bullet" Description="5.56×45mm NATO standard ammunition">
+    "bcb"
+    "bcb"
+</Recipe>
+<Recipe Result="P90Block" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="4" a="rod" b="ironingot" c="copperingot" Description="FN P90 personal defense weapon with unique top-mounted magazine">
+    "  b"
+    "abc"
+    "ab "
+</Recipe>
+<Recipe Result="P90BulletBlock" ResultCount="15" RequiredHeatLevel="0" RequiredPlayerLevel="4" a="rod" b="sulphurchunk" c="bullet" Description="High-velocity 5.7×28mm ammunition">
+    "cbc"
+    "cbc"
+    "cbc"
+</Recipe>
+<Recipe Result="SCARBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="5" a="rod" b="ironblock" c="diamond" Description="SCAR-H battle rifle used by special forces worldwide">
+    "a b"
+    "a c"
+    " b "
+</Recipe>
+<Recipe Result="SCARBulletBlock" ResultCount="8" RequiredHeatLevel="0" RequiredPlayerLevel="5" a="rod" b="sulphurchunk" c="bullet" d="gunpowder" Description="High-powered 7.62×51mm NATO rounds">
+    "c c"
+    "dbd"
+    "c c"
+</Recipe>
+<Recipe Result="RevolverBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="3" a="rod" b="ironingot" c="copperingot" Description="Classic .357 Magnum revolver with excellent stopping power">
+    "abb"
+    "a c"
+    "  b"
+</Recipe>
+<Recipe Result="RevolverBulletBlock" ResultCount="6" RequiredHeatLevel="0" RequiredPlayerLevel="3" a="rod" b="sulphurchunk" c="bullet" Description=".357 Magnum rounds for reliable penetration">
+    "c c"
+    " b "
+    "c c"
+</Recipe>
+<Recipe Result="FamasBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="4" a="rod" b="ironblock" c="copperblock" Description="French FAMAS bullpup assault rifle known for high rate of fire">
+    " b "
+    "abc"
+    " a "
+</Recipe>
+<Recipe Result="FamasBulletBlock" ResultCount="12" RequiredHeatLevel="0" RequiredPlayerLevel="4" a="rod" b="sulphurchunk" c="bullet" Description="5.56×45mm NATO rounds optimized for bullpup design">
+    "cbc"
+    "cbc"
+    "cbc"
+</Recipe>
+<Recipe Result="AA12Block" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="4" a="ironblock" b="rod" c="planks" d="copperblock" Description="Fully automatic shotgun with devastating close-range power">
+    "abb"
+    "acd"
+    "  b"
+</Recipe>
+<Recipe Result="AA12BulletBlock" ResultCount="6" RequiredHeatLevel="0" RequiredPlayerLevel="4" a="bullet" b="sulphurchunk" c="gunpowder" Description="12-gauge shells for AA-12 shotgun">
+    "bab"
+    "c c"
+</Recipe>
+
+<Recipe Result="M249Block" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="5" a="ironblock" b="rod" c="diamond" d="wire" Description="Light machine gun with high-capacity belt-fed system">
+    "a b"
+    "acd"
+    " bb"
+</Recipe>
+<Recipe Result="M249BulletBlock" ResultCount="12" RequiredHeatLevel="0" RequiredPlayerLevel="5" a="bullet" b="rod" c="sulphurchunk" d="gunpowder" Description="5.56×45mm NATO rounds for M249 SAW">
+    "bab"
+    "cdc"
+</Recipe>
+
+<Recipe Result="NewG3Block" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="4" a="ironblock" b="rod" c="copperblock" d="semiconductorblock" Description="Modern assault rifle with advanced polymer construction">
+    "aab"
+    "acd"
+    " b "
+</Recipe>
+<Recipe Result="NewG3Bullet" ResultCount="10" RequiredHeatLevel="0" RequiredPlayerLevel="4" a="bullet" b="sulphurchunk" c="copperingot" Description="7.62×51mm NATO rounds for G3 rifle">
+    "bab"
+    "c c"
+</Recipe>
+
+<Recipe Result="MP5SSDBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="3" a="ironingot" b="rod" c="copperingot" d="planks" Description="Suppressed submachine gun for stealth operations">
+    "abc"
+    "abd"
+    "  b"
+</Recipe>
+<Recipe Result="MP5SSDBulletBlock" ResultCount="12" RequiredHeatLevel="0" RequiredPlayerLevel="3" a="bullet" b="sulphurchunk" c="gunpowder" Description="9×19mm Parabellum rounds with subsonic load">
+    "bcb"
+    "bcb"
+</Recipe>
+
+<Recipe Result="MendozaBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="4" a="ironblock" b="rod" c="diamond" d="copperblock" Description="Semi-automatic rifle with excellent accuracy">
+    "a b"
+    "acd"
+    "  b"
+</Recipe>
+<Recipe Result="MendozaBulletBlock" ResultCount="8" RequiredHeatLevel="0" RequiredPlayerLevel="4" a="bullet" b="sulphurchunk" c="diamond" Description=".308 Winchester rounds for precision shooting">
+    " b "
+    "aca"
+    " b "
+</Recipe>
+
+<Recipe Result="GrozaBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="5" a="ironblock" b="rod" c="semiconductorblock" d="diamondblock" Description="Bullpup assault rifle with integrated grenade launcher system">
+    "aab"
+    "acd"
+    " b "
+</Recipe>
+<Recipe Result="GrozaBulletBlock" ResultCount="10" RequiredHeatLevel="0" RequiredPlayerLevel="5" a="bullet" b="sulphurchunk" c="diamond" d="gunpowder" Description="9×39mm special subsonic ammunition">
+    "bab"
+    "cdc"
+    "bab"
+</Recipe>
         <Smelting>
         <Recipe Result="CopperSharpHammerBlock" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="3" a="coppermachete" b="ironhammer" Description="Use the old copper machete and iron hammer and turn him like a monster">
         "ab"
