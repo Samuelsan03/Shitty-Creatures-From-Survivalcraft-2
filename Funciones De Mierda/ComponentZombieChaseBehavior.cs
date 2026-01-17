@@ -1,818 +1,348 @@
 using System;
-using System.Runtime.CompilerServices;
 using Engine;
 using GameEntitySystem;
 using TemplatesDatabase;
 
 namespace Game
 {
-	public class ComponentZombieChaseBehavior : ComponentBehavior, IUpdateable
+	public class ComponentZombieChaseBehavior : ComponentChaseBehavior
 	{
-		public ComponentCreature Target
-		{
-			get
-			{
-				return this.m_target;
-			}
-		}
+		// Referencia al comportamiento de manada de zombis
+		private ComponentZombieHerdBehavior m_componentZombieHerdBehavior;
 
-		public UpdateOrder UpdateOrder
-		{
-			get
-			{
-				return UpdateOrder.Default;
-			}
-		}
-
-		public override float ImportanceLevel
-		{
-			get
-			{
-				return this.m_importanceLevel;
-			}
-		}
-
-		// Propiedades específicas para zombis
-		public bool AttacksAllCategories { get; set; } = true;
-		public bool AttacksSameHerd { get; set; } = false; // Los zombis NO atacan a su propia manada
-		public string ZombieHerdName { get; set; } = "Zombie";
-
-		public virtual void Attack(ComponentCreature componentCreature, float maxRange, float maxChaseTime, bool isPersistent, bool isRetaliation = false)
-		{
-			bool suppressed = this.Suppressed;
-			if (!suppressed)
-			{
-				// Verificar si es del mismo rebaño zombi
-				ComponentZombieHerdBehavior thisHerd = base.Entity.FindComponent<ComponentZombieHerdBehavior>();
-				if (thisHerd != null && !string.IsNullOrEmpty(thisHerd.HerdName))
-				{
-					ComponentZombieHerdBehavior targetHerd = componentCreature.Entity.FindComponent<ComponentZombieHerdBehavior>();
-					if (targetHerd != null && targetHerd.HerdName == thisHerd.HerdName)
-					{
-						if (!this.AttacksSameHerd)
-						{
-							return; // No atacar a miembros del mismo rebaño
-						}
-					}
-				}
-
-				// VERIFICACIÓN DE MODO DE JUEGO: Solo atacar en Survival, Challenging o Cruel (o si es retaliación)
-				bool isPlayer = componentCreature.Entity.FindComponent<ComponentPlayer>() != null;
-				if (isPlayer && !isRetaliation) // Solo aplicar restricción si NO es retaliación
-				{
-					GameMode currentGameMode = this.m_subsystemGameInfo.WorldSettings.GameMode;
-					if (currentGameMode == GameMode.Creative || currentGameMode == GameMode.Harmless)
-					{
-						return; // No atacar jugadores en Creative o Harmless (solo si no es retaliación)
-					}
-				}
-
-				this.m_target = componentCreature;
-				this.m_nextUpdateTime = 0.0;
-				this.m_range = maxRange;
-				this.m_chaseTime = maxChaseTime;
-				this.m_isPersistent = isPersistent;
-				this.m_importanceLevel = (isPersistent ? this.ImportanceLevelPersistent : this.ImportanceLevelNonPersistent);
-
-				// Asegurar que se active el comportamiento de persecución
-				this.IsActive = true;
-				this.m_stateMachine.TransitionTo("Chasing");
-
-				// Actualizar inmediatamente el estado de persecución
-				if (this.m_target != null && this.m_componentPathfinding != null)
-				{
-					this.m_componentPathfinding.Stop();
-					this.UpdateChasingStateImmediately();
-				}
-			}
-		}
-
-		// Método para actualizar persecución inmediata
-		private void UpdateChasingStateImmediately()
-		{
-			if (this.m_target == null || !this.IsActive)
-				return;
-			Vector3 targetPosition = this.m_target.ComponentBody.Position;
-			this.m_componentPathfinding.SetDestination(new Vector3?(targetPosition), 1f, 1.5f, 0, true, false, true, this.m_target.ComponentBody);
-			this.m_componentCreature.ComponentCreatureModel.LookAtOrder = new Vector3?(this.m_target.ComponentCreatureModel.EyePosition);
-		}
-
-		public virtual void StopAttack()
-		{
-			this.m_stateMachine.TransitionTo("LookingForTarget");
-			this.IsActive = false;
-			this.m_target = null;
-			this.m_nextUpdateTime = 0.0;
-			this.m_range = 0f;
-			this.m_chaseTime = 0f;
-			this.m_isPersistent = false;
-			this.m_importanceLevel = 0f;
-		}
-
-		public virtual void Update(float dt)
-		{
-			bool suppressed = this.Suppressed;
-			if (suppressed)
-			{
-				this.StopAttack();
-			}
-			this.m_autoChaseSuppressionTime -= dt;
-
-			bool flag = this.IsActive && this.m_target != null;
-			if (flag)
-			{
-				this.m_chaseTime -= dt;
-				this.m_componentCreature.ComponentCreatureModel.LookAtOrder = new Vector3?(this.m_target.ComponentCreatureModel.EyePosition);
-
-				// Lógica de ataque cuerpo a cuerpo
-				bool flag11 = this.IsTargetInAttackRange(this.m_target.ComponentBody);
-				if (flag11)
-				{
-					this.m_componentCreatureModel.AttackOrder = true;
-					this.FindHitTool(this.m_componentMiner);
-				}
-				bool isAttackHitMoment = this.m_componentCreatureModel.IsAttackHitMoment;
-				if (isAttackHitMoment)
-				{
-					Vector3 hitPoint;
-					ComponentBody hitBody2 = this.GetHitBody(this.m_target.ComponentBody, out hitPoint);
-					bool flag13 = hitBody2 != null;
-					if (flag13)
-					{
-						float x = this.m_isPersistent ? this.m_random.Float(8f, 10f) : 2f;
-						this.m_chaseTime = MathUtils.Max(this.m_chaseTime, x);
-						this.m_componentMiner.Hit(hitBody2, hitPoint, this.m_componentCreature.ComponentBody.Matrix.Forward);
-						this.m_componentCreature.ComponentCreatureSounds.PlayAttackSound();
-					}
-				}
-			}
-			bool flag14 = this.m_subsystemTime.GameTime >= this.m_nextUpdateTime;
-			if (flag14)
-			{
-				this.m_dt = this.m_random.Float(0.25f, 0.35f) + MathUtils.Min((float)(this.m_subsystemTime.GameTime - this.m_nextUpdateTime), 0.1f);
-				this.m_nextUpdateTime = this.m_subsystemTime.GameTime + (double)this.m_dt;
-				this.m_stateMachine.Update();
-			}
-		}
-
-		// Métodos auxiliares con implementaciones completas
-		public ComponentBody GetHitBody1(ComponentBody target, out float distance)
-		{
-			distance = 0f;
-			if (target == null || this.m_subsystemBodies == null)
-			{
-				return null;
-			}
-
-			Vector3 eyePosition = this.m_componentCreature.ComponentCreatureModel.EyePosition;
-			Vector3 v = Vector3.Normalize(target.BoundingBox.Center() - eyePosition);
-			BodyRaycastResult? bodyRaycastResult = this.m_subsystemBodies.Raycast(eyePosition, eyePosition + v * this.m_attackRange.Y, 0.35f,
-				(ComponentBody body, float dist) => body.Entity != base.Entity && !body.IsChildOfBody(this.m_componentCreature.ComponentBody) && !this.m_componentCreature.ComponentBody.IsChildOfBody(body));
-
-			TerrainRaycastResult? terrainRaycastResult = null;
-			if (this.m_componentMiner != null && this.m_componentMiner.m_subsystemTerrain != null)
-			{
-				terrainRaycastResult = this.m_componentMiner.m_subsystemTerrain.Raycast(eyePosition, eyePosition + v * this.m_attackRange.Y, true, true,
-					(int value, float dist) => BlocksManager.Blocks[Terrain.ExtractContents(value)].IsCollidable);
-			}
-
-			distance = ((bodyRaycastResult != null) ? bodyRaycastResult.GetValueOrDefault().Distance : float.PositiveInfinity);
-
-			if (this.m_componentMiner.Inventory != null && bodyRaycastResult != null)
-			{
-				if (terrainRaycastResult != null && (double)terrainRaycastResult.Value.Distance < (double)bodyRaycastResult.Value.Distance)
-				{
-					return null;
-				}
-
-				if (bodyRaycastResult.Value.ComponentBody == target ||
-					bodyRaycastResult.Value.ComponentBody.IsChildOfBody(target) ||
-					target.IsChildOfBody(bodyRaycastResult.Value.ComponentBody) ||
-					target.StandingOnBody == bodyRaycastResult.Value.ComponentBody)
-				{
-					return bodyRaycastResult.Value.ComponentBody;
-				}
-			}
-
-			return null;
-		}
-
-		private TerrainRaycastResult? PickTerrain(Vector3 position, Vector3 direction, float reach)
-		{
-			if (this.m_componentMiner == null || this.m_componentMiner.m_subsystemTerrain == null)
-			{
-				return null;
-			}
-
-			direction = Vector3.Normalize(direction);
-			Vector3 creaturePosition = this.m_componentMiner.ComponentCreature.ComponentCreatureModel.EyePosition;
-			Vector3 end = position + direction * reach;
-
-			return this.m_componentMiner.m_subsystemTerrain.Raycast(position, end, true, true,
-				(int value, float distance) => (double)Vector3.Distance(position + distance * direction, creaturePosition) <= (double)reach &&
-											   BlocksManager.Blocks[Terrain.ExtractContents(value)].IsCollidable);
-		}
-
-		private BodyRaycastResult? PickBody(Vector3 position, Vector3 direction, float reach)
-		{
-			if (this.m_subsystemBodies == null)
-			{
-				return null;
-			}
-
-			direction = Vector3.Normalize(direction);
-			Vector3 creaturePosition = this.m_componentMiner.ComponentCreature.ComponentCreatureModel.EyePosition;
-			Vector3 end = position + direction * reach;
-
-			return this.m_subsystemBodies.Raycast(position, end, 0.35f,
-				(ComponentBody body, float distance) => (double)Vector3.Distance(position + distance * direction, creaturePosition) <= (double)reach &&
-														body.Entity != this.Entity &&
-														!body.IsChildOfBody(this.m_componentMiner.ComponentCreature.ComponentBody) &&
-														!this.m_componentMiner.ComponentCreature.ComponentBody.IsChildOfBody(body));
-		}
-
-		public bool FindHitTool(ComponentMiner componentMiner)
-		{
-			int activeBlockValue = componentMiner.ActiveBlockValue;
-			if (componentMiner.Inventory == null)
-			{
-				return false;
-			}
-
-			if (BlocksManager.Blocks[Terrain.ExtractContents(activeBlockValue)].GetMeleePower(activeBlockValue) > 1f)
-			{
-				return true;
-			}
-
-			float num = 1f;
-			int activeSlotIndex = 0;
-			for (int i = 0; i < 6; i++)
-			{
-				int slotValue = componentMiner.Inventory.GetSlotValue(i);
-				float meleePower = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)].GetMeleePower(slotValue);
-				if (meleePower > num)
-				{
-					num = meleePower;
-					activeSlotIndex = i;
-				}
-			}
-
-			if (num > 1f)
-			{
-				componentMiner.Inventory.ActiveSlotIndex = activeSlotIndex;
-				return true;
-			}
-
-			return false;
-		}
-
-		public virtual bool IsTargetInAttackRange(ComponentBody target)
-		{
-			if (this.IsBodyInAttackRange(target))
-			{
-				return true;
-			}
-
-			BoundingBox boundingBox = this.m_componentCreature.ComponentBody.BoundingBox;
-			BoundingBox boundingBox2 = target.BoundingBox;
-			Vector3 v = 0.5f * (boundingBox.Min + boundingBox.Max);
-			Vector3 vector = 0.5f * (boundingBox2.Min + boundingBox2.Max) - v;
-			float num = vector.Length();
-			Vector3 v2 = vector / num;
-			float num2 = 0.5f * (boundingBox.Max.X - boundingBox.Min.X + boundingBox2.Max.X - boundingBox2.Min.X);
-			float num3 = 0.5f * (boundingBox.Max.Y - boundingBox.Min.Y + boundingBox2.Max.Y - boundingBox2.Min.Y);
-
-			if (MathF.Abs(vector.Y) < num3 * 0.99f)
-			{
-				if (num < num2 + 0.99f && Vector3.Dot(v2, this.m_componentCreature.ComponentBody.Matrix.Forward) > 0.25f)
-				{
-					return true;
-				}
-			}
-			else
-			{
-				if (num < num3 + 0.3f && MathF.Abs(Vector3.Dot(v2, Vector3.UnitY)) > 0.8f)
-				{
-					return true;
-				}
-			}
-
-			return ((target.ParentBody != null && this.IsTargetInAttackRange(target.ParentBody)) ||
-					(this.AllowAttackingStandingOnBody && target.StandingOnBody != null &&
-					 target.StandingOnBody.Position.Y < target.Position.Y && this.IsTargetInAttackRange(target.StandingOnBody)));
-		}
-
-		public virtual bool IsBodyInAttackRange(ComponentBody target)
-		{
-			BoundingBox boundingBox = this.m_componentCreature.ComponentBody.BoundingBox;
-			BoundingBox boundingBox2 = target.BoundingBox;
-			Vector3 v = 0.5f * (boundingBox.Min + boundingBox.Max);
-			Vector3 vector = 0.5f * (boundingBox2.Min + boundingBox2.Max) - v;
-			float num = vector.Length();
-			Vector3 v2 = vector / num;
-			float num2 = 0.5f * (boundingBox.Max.X - boundingBox.Min.X + boundingBox2.Max.X - boundingBox2.Min.X);
-			float num3 = 0.5f * (boundingBox.Max.Y - boundingBox.Min.Y + boundingBox2.Max.Y - boundingBox2.Min.Y);
-
-			if (MathF.Abs(vector.Y) < num3 * 0.99f)
-			{
-				if (num < num2 + 0.99f && Vector3.Dot(v2, this.m_componentCreature.ComponentBody.Matrix.Forward) > 0.25f)
-				{
-					return true;
-				}
-			}
-			else
-			{
-				if (num < num3 + 0.3f && MathF.Abs(Vector3.Dot(v2, Vector3.UnitY)) > 0.8f)
-				{
-					return true;
-				}
-			}
-
-			return false;
-		}
-
-		public virtual ComponentBody GetHitBody(ComponentBody target, out Vector3 hitPoint)
-		{
-			hitPoint = Vector3.Zero;
-			Vector3 vector = this.m_componentCreature.ComponentBody.BoundingBox.Center();
-			Vector3 v = target.BoundingBox.Center();
-			Ray3 ray = new Ray3(vector, Vector3.Normalize(v - vector));
-			BodyRaycastResult? bodyRaycastResult = this.m_componentMiner.Raycast<BodyRaycastResult>(ray, RaycastMode.Interaction, true, true, true, null);
-
-			if (bodyRaycastResult != null && bodyRaycastResult.Value.Distance < this.MaxAttackRange &&
-				(bodyRaycastResult.Value.ComponentBody == target ||
-				 bodyRaycastResult.Value.ComponentBody.IsChildOfBody(target) ||
-				 target.IsChildOfBody(bodyRaycastResult.Value.ComponentBody) ||
-				 (target.StandingOnBody == bodyRaycastResult.Value.ComponentBody && this.AllowAttackingStandingOnBody)))
-			{
-				hitPoint = bodyRaycastResult.Value.HitPoint();
-				return bodyRaycastResult.Value.ComponentBody;
-			}
-
-			return null;
-		}
-
-		public virtual ComponentCreature FindTarget()
-		{
-			Vector3 position = this.m_componentCreature.ComponentBody.Position;
-			ComponentCreature result = null;
-			float num = 0f;
-			this.m_componentBodies.Clear();
-			this.m_subsystemBodies.FindBodiesAroundPoint(new Vector2(position.X, position.Z), this.m_range, this.m_componentBodies);
-
-			for (int i = 0; i < this.m_componentBodies.Count; i++)
-			{
-				ComponentCreature componentCreature = this.m_componentBodies.Array[i].Entity.FindComponent<ComponentCreature>();
-				if (componentCreature != null)
-				{
-					// Verificar si no es del mismo rebaño zombi
-					bool canAttack = true;
-					ComponentZombieHerdBehavior thisHerd = base.Entity.FindComponent<ComponentZombieHerdBehavior>();
-					if (thisHerd != null && !string.IsNullOrEmpty(thisHerd.HerdName))
-					{
-						ComponentZombieHerdBehavior targetHerd = componentCreature.Entity.FindComponent<ComponentZombieHerdBehavior>();
-						if (targetHerd != null && targetHerd.HerdName == thisHerd.HerdName)
-						{
-							canAttack = this.AttacksSameHerd; // Solo atacar si AttacksSameHerd es true
-						}
-					}
-
-					// Verificar modo de juego para jugadores (ataques no provocados)
-					bool isPlayer = componentCreature.Entity.FindComponent<ComponentPlayer>() != null;
-					if (isPlayer)
-					{
-						GameMode currentGameMode = this.m_subsystemGameInfo.WorldSettings.GameMode;
-						if (currentGameMode == GameMode.Creative || currentGameMode == GameMode.Harmless)
-						{
-							canAttack = false; // No atacar jugadores en Creative o Harmless (solo ataques no provocados)
-						}
-					}
-
-					if (canAttack)
-					{
-						float num2 = this.ScoreTarget(componentCreature);
-						if (num2 > num)
-						{
-							num = num2;
-							result = componentCreature;
-						}
-					}
-				}
-			}
-			return result;
-		}
-
-		public virtual float ScoreTarget(ComponentCreature componentCreature)
-		{
-			float result = 0f;
-
-			// Los zombis atacan a todos (jugadores y criaturas) sin importar la categoría
-			bool isPlayer = componentCreature.Entity.FindComponent<ComponentPlayer>() != null;
-			bool canAttack = true;
-
-			// Verificar si es del mismo rebaño zombi
-			ComponentZombieHerdBehavior thisHerd = base.Entity.FindComponent<ComponentZombieHerdBehavior>();
-			if (thisHerd != null && !string.IsNullOrEmpty(thisHerd.HerdName))
-			{
-				ComponentZombieHerdBehavior targetHerd = componentCreature.Entity.FindComponent<ComponentZombieHerdBehavior>();
-				if (targetHerd != null && targetHerd.HerdName == thisHerd.HerdName)
-				{
-					canAttack = this.AttacksSameHerd; // Solo atacar si AttacksSameHerd es true
-				}
-			}
-
-			// Verificar modo de juego para jugadores (ataques no provocados)
-			if (isPlayer)
-			{
-				GameMode currentGameMode = this.m_subsystemGameInfo.WorldSettings.GameMode;
-				if (currentGameMode == GameMode.Creative || currentGameMode == GameMode.Harmless)
-				{
-					canAttack = false; // No atacar jugadores en Creative o Harmless (solo ataques no provocados)
-				}
-			}
-
-			bool flag6 = componentCreature != this.m_componentCreature &&
-						 canAttack &&
-						 componentCreature.Entity.IsAddedToProject &&
-						 componentCreature.ComponentHealth.Health > 0f;
-
-			if (flag6)
-			{
-				float num = Vector3.Distance(this.m_componentCreature.ComponentBody.Position, componentCreature.ComponentBody.Position);
-				if (num < this.m_range)
-				{
-					result = this.m_range - num;
-				}
-			}
-			return result;
-		}
+		// Parámetros específicos de zombis
+		private bool m_attacksSameHerd;
+		private bool m_attacksAllCategories;
+		private bool m_fleeFromSameHerd;
+		private float m_fleeDistance = 10f;
 
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
-			// Cargar subsistemas y componentes
-			this.m_subsystemGameInfo = base.Project.FindSubsystem<SubsystemGameInfo>(true);
-			this.m_subsystemPlayers = base.Project.FindSubsystem<SubsystemPlayers>(true);
-			this.m_subsystemSky = base.Project.FindSubsystem<SubsystemSky>(true);
-			this.m_subsystemBodies = base.Project.FindSubsystem<SubsystemBodies>(true);
-			this.m_subsystemTime = base.Project.FindSubsystem<SubsystemTime>(true);
-			this.m_subsystemNoise = base.Project.FindSubsystem<SubsystemNoise>(true);
-			this.m_subsystemCreatureSpawn = base.Project.FindSubsystem<SubsystemCreatureSpawn>(true);
+			// Llamar al método base primero para inicializar el comportamiento de persecución base
+			base.Load(valuesDictionary, idToEntityMap);
 
-			// Inicializar SubsystemAudio
-			this.m_subsystemAudio = base.Project.FindSubsystem<SubsystemAudio>();
+			// Obtener referencia al ComponentZombieHerdBehavior en la misma entidad
+			m_componentZombieHerdBehavior = base.Entity.FindComponent<ComponentZombieHerdBehavior>();
 
-			this.m_componentCreature = base.Entity.FindComponent<ComponentCreature>(true);
-			this.m_componentPathfinding = base.Entity.FindComponent<ComponentPathfinding>(true);
-			this.m_componentMiner = base.Entity.FindComponent<ComponentMiner>(true);
-			this.m_componentFeedBehavior = base.Entity.FindComponent<ComponentRandomFeedBehavior>();
-			this.m_componentCreatureModel = base.Entity.FindComponent<ComponentCreatureModel>(true);
-			this.m_componentFactors = base.Entity.FindComponent<ComponentFactors>(true);
-			this.m_componentBody = base.Entity.FindComponent<ComponentBody>(true);
+			// Cargar parámetros específicos de zombis
+			m_attacksSameHerd = valuesDictionary.GetValue<bool>("AttacksSameHerd", false);
+			m_attacksAllCategories = valuesDictionary.GetValue<bool>("AttacksAllCategories", true);
+			m_fleeFromSameHerd = valuesDictionary.GetValue<bool>("FleeFromSameHerd", true);
+			m_fleeDistance = valuesDictionary.GetValue<float>("FleeDistance", 10f);
 
-			// Configuración específica de zombis
-			this.m_attackRange = valuesDictionary.GetValue<Vector2>("AttackRange", new Vector2(2f, 15f));
-			this.m_dayChaseRange = valuesDictionary.GetValue<float>("DayChaseRange");
-			this.m_nightChaseRange = valuesDictionary.GetValue<float>("NightChaseRange");
-			this.m_dayChaseTime = valuesDictionary.GetValue<float>("DayChaseTime");
-			this.m_nightChaseTime = valuesDictionary.GetValue<float>("NightChaseTime");
-
-			// Los zombis atacan a todas las categorías por defecto
-			this.m_autoChaseMask = CreatureCategory.LandPredator | CreatureCategory.LandOther |
-								   CreatureCategory.WaterPredator | CreatureCategory.WaterOther |
-								   CreatureCategory.Bird;
-
-			// Cargar probabilidades del XML en lugar de valores fijos
-			this.m_chaseNonPlayerProbability = valuesDictionary.GetValue<float>("ChaseNonPlayerProbability", 0);
-			this.m_chaseWhenAttackedProbability = valuesDictionary.GetValue<float>("ChaseWhenAttackedProbability", 0f);
-			this.m_chaseOnTouchProbability = valuesDictionary.GetValue<float>("ChaseOnTouchProbability", 0f);
-
-			// Obtener el nombre del rebaño zombi del ComponentHerdBehavior
-			ComponentZombieHerdBehavior herdBehavior = base.Entity.FindComponent<ComponentZombieHerdBehavior>();
-			if (herdBehavior != null)
+			// Configurar para atacar a todas las categorías si está habilitado
+			if (m_attacksAllCategories)
 			{
-				this.ZombieHerdName = herdBehavior.HerdName;
+				// Combinar todas las categorías disponibles
+				m_autoChaseMask = CreatureCategory.LandPredator |
+								  CreatureCategory.LandOther |
+								  CreatureCategory.WaterPredator |
+								  CreatureCategory.WaterOther |
+								  CreatureCategory.Bird;
+				this.AttacksNonPlayerCreature = true;
+				this.AttacksPlayer = true;
 			}
 
-			// Configurar eventos y máquina de estados
-			this.SetupEventHooks();
-			this.SetupStateMachine();
+			// Sobrescribir el manejador de lesiones para añadir lógica específica de zombis
+			this.SetupZombieInjuryHandler();
+
+			// Añadir estado de huida para cuando es atacado por miembros de la misma manada
+			this.AddFleeState();
 		}
 
-		private void SetupEventHooks()
+		// Configurar el handler de lesiones específico para zombis
+		private void SetupZombieInjuryHandler()
 		{
-			ComponentBody componentBody = this.m_componentCreature.ComponentBody;
-			componentBody.CollidedWithBody = (Action<ComponentBody>)Delegate.Combine(componentBody.CollidedWithBody, new Action<ComponentBody>(delegate (ComponentBody body)
-			{
-				bool flag = this.m_target == null && this.m_autoChaseSuppressionTime <= 0f && this.m_random.Float(0f, 1f) < this.m_chaseOnTouchProbability;
-				if (flag)
-				{
-					ComponentCreature componentCreature = body.Entity.FindComponent<ComponentCreature>();
-					if (componentCreature != null)
-					{
-						bool flag3 = this.m_subsystemPlayers.IsPlayer(body.Entity);
-						bool flag4 = this.m_autoChaseMask > (CreatureCategory)0;
-
-						// Verificar si es del mismo rebaño
-						bool canAttack = true;
-						ComponentZombieHerdBehavior thisHerd = base.Entity.FindComponent<ComponentZombieHerdBehavior>();
-						if (thisHerd != null && !string.IsNullOrEmpty(thisHerd.HerdName))
-						{
-							ComponentZombieHerdBehavior targetHerd = componentCreature.Entity.FindComponent<ComponentZombieHerdBehavior>();
-							if (targetHerd != null && targetHerd.HerdName == thisHerd.HerdName)
-							{
-								canAttack = this.AttacksSameHerd;
-							}
-						}
-
-						// Verificar modo de juego para jugadores (contacto)
-						if (flag3)
-						{
-							GameMode currentGameMode = this.m_subsystemGameInfo.WorldSettings.GameMode;
-							// NO atacar por contacto en Creative/Harmless
-							if (currentGameMode == GameMode.Creative || currentGameMode == GameMode.Harmless)
-							{
-								canAttack = false;
-							}
-						}
-
-						bool flag7 = canAttack && ((this.AttacksPlayer && flag3 && this.m_subsystemGameInfo.WorldSettings.GameMode > GameMode.Harmless) ||
-												   (this.AttacksNonPlayerCreature && !flag3 && flag4));
-						if (flag7)
-						{
-							this.Attack(componentCreature, this.ChaseRangeOnTouch, this.ChaseTimeOnTouch, false);
-						}
-					}
-				}
-			}));
-
 			ComponentHealth componentHealth = this.m_componentCreature.ComponentHealth;
-			componentHealth.Injured = (Action<Injury>)Delegate.Combine(componentHealth.Injured, new Action<Injury>(delegate (Injury injury)
+
+			// Guardar el handler original
+			Action<Injury> originalHandler = componentHealth.Injured;
+
+			// Crear un nuevo handler que incluya la lógica de zombis
+			Action<Injury> zombieInjuryHandler = delegate (Injury injury)
 			{
-				bool flag = injury.Attacker == null || this.m_random.Float(0f, 1f) >= this.m_chaseWhenAttackedProbability;
-				if (!flag)
+				ComponentCreature attacker = injury.Attacker;
+
+				// Si el atacante es de la misma manada y no se permite atacar a la misma manada
+				if (attacker != null && !m_attacksSameHerd && IsSameHerd(attacker))
 				{
-					float maxRange = this.ChaseRangeOnAttacked ?? 30f;
-					float maxChaseTime = this.ChaseTimeOnAttacked ?? 60f;
-					bool isPersistent = this.ChasePersistentOnAttacked ?? true;
-
-					// Permitir retaliación incluso en Creative/Harmless
-					// NO verificar modo de juego para retaliación
-
-					// Verificar si el atacante es del mismo rebaño
-					bool canAttack = true;
-					ComponentZombieHerdBehavior thisHerd = base.Entity.FindComponent<ComponentZombieHerdBehavior>();
-					if (thisHerd != null && !string.IsNullOrEmpty(thisHerd.HerdName))
+					// No atacar a miembros de la misma manada
+					// En su lugar, llamar a otros zombis para ayuda si es atacado por algo externo
+					if (m_componentZombieHerdBehavior != null && m_componentZombieHerdBehavior.CallForHelpWhenAttacked)
 					{
-						ComponentZombieHerdBehavior attackerHerd = injury.Attacker.Entity.FindComponent<ComponentZombieHerdBehavior>();
-						if (attackerHerd != null && attackerHerd.HerdName == thisHerd.HerdName)
+						// Verificar si hay un agresor externo (no de la misma manada)
+						ComponentCreature externalAttacker = FindExternalAttacker(injury);
+						if (externalAttacker != null)
 						{
-							canAttack = this.AttacksSameHerd;
+							m_componentZombieHerdBehavior.CallZombiesForHelp(externalAttacker);
 						}
 					}
 
-					if (canAttack)
+					// Si está configurado para huir de miembros de la misma manada, activar el estado de huida
+					if (m_fleeFromSameHerd)
 					{
-						// Pasar true como isRetaliation para permitir ataque en Creative/Harmless
-						this.Attack(injury.Attacker, maxRange, maxChaseTime, isPersistent, true);
+						FleeFromTarget(attacker);
 					}
+
+					// No llamar al handler original para evitar perseguir a miembros de la misma manada
+					return;
 				}
-			}));
+
+				// Llamar al handler original si no es un miembro de la misma manada
+				if (originalHandler != null)
+				{
+					originalHandler(injury);
+				}
+			};
+
+			// Asignar el nuevo handler
+			componentHealth.Injured = zombieInjuryHandler;
 		}
 
-		private void SetupStateMachine()
+		// Método para encontrar un atacante externo (no de la misma manada)
+		private ComponentCreature FindExternalAttacker(Injury injury)
 		{
-			this.m_stateMachine.AddState("LookingForTarget", delegate
-			{
-				this.m_importanceLevel = 0f;
-				this.m_target = null;
-			}, delegate
-			{
-				if (this.IsActive)
-				{
-					this.m_stateMachine.TransitionTo("Chasing");
-				}
-				else
-				{
-					bool flag = !this.Suppressed && this.m_autoChaseSuppressionTime <= 0f &&
-							   (this.m_target == null || this.ScoreTarget(this.m_target) <= 0f) &&
-							   this.m_componentCreature.ComponentHealth.Health > this.MinHealthToAttackActively;
-					if (flag)
-					{
-						this.m_range = ((this.m_subsystemSky.SkyLightIntensity < 0.2f) ? this.m_nightChaseRange : this.m_dayChaseRange);
-						this.m_range *= this.m_componentFactors.GetOtherFactorResult("ChaseRange", false, false);
-						ComponentCreature componentCreature = this.FindTarget();
-						if (componentCreature != null)
-						{
-							this.m_targetInRangeTime += this.m_dt;
-						}
-						else
-						{
-							this.m_targetInRangeTime = 0f;
-						}
-						if (this.m_targetInRangeTime > this.TargetInRangeTimeToChase)
-						{
-							bool flag4 = this.m_subsystemSky.SkyLightIntensity >= 0.1f;
-							float maxRange = flag4 ? (this.m_dayChaseRange + 6f) : (this.m_nightChaseRange + 6f);
-							float maxChaseTime = flag4 ? (this.m_dayChaseTime * this.m_random.Float(0.75f, 1f)) :
-													   (this.m_nightChaseTime * this.m_random.Float(0.75f, 1f));
-							this.Attack(componentCreature, maxRange, maxChaseTime, !flag4);
-						}
-					}
-				}
-			}, null);
+			if (injury.Attacker == null) return null;
 
-			this.m_stateMachine.AddState("RandomMoving", delegate
+			// Si el atacante directo no es de la misma manada, es un atacante externo
+			if (!IsSameHerd(injury.Attacker))
 			{
-				this.m_componentPathfinding.SetDestination(new Vector3?(this.m_componentCreature.ComponentBody.Position + new Vector3(6f * this.m_random.Float(-1f, 1f), 0f, 6f * this.m_random.Float(-1f, 1f))), 1f, 1f, 0, false, true, false, null);
-			}, delegate
-			{
-				bool flag = !this.m_componentPathfinding.IsStuck || this.m_componentPathfinding.Destination == null;
-				if (flag)
-				{
-					this.m_stateMachine.TransitionTo("Chasing");
-				}
-				bool flag2 = !this.IsActive;
-				if (flag2)
-				{
-					this.m_stateMachine.TransitionTo("LookingForTarget");
-				}
-			}, delegate
-			{
-				this.m_componentPathfinding.Stop();
-			});
+				return injury.Attacker;
+			}
 
-			this.m_stateMachine.AddState("Chasing", delegate
-			{
-				this.m_subsystemNoise.MakeNoise(this.m_componentCreature.ComponentBody, 0.25f, 6f);
-				bool playIdleSoundWhenStartToChase = this.PlayIdleSoundWhenStartToChase;
-				if (playIdleSoundWhenStartToChase)
-				{
-					this.m_componentCreature.ComponentCreatureSounds.PlayIdleSound(false);
-				}
-				this.m_nextUpdateTime = 0.0;
-			}, delegate
-			{
-				bool flag = !this.IsActive;
-				if (flag)
-				{
-					this.m_stateMachine.TransitionTo("LookingForTarget");
-				}
-				else
-				{
-					bool flag2 = this.m_chaseTime <= 0f;
-					if (flag2)
-					{
-						this.m_autoChaseSuppressionTime = this.m_random.Float(10f, 60f);
-						this.m_importanceLevel = 0f;
-					}
-					else
-					{
-						bool flag3 = this.m_target == null;
-						if (flag3)
-						{
-							this.m_importanceLevel = 0f;
-						}
-						else
-						{
-							bool flag4 = this.m_target.ComponentHealth.Health <= 0f;
-							if (flag4)
-							{
-								bool flag5 = this.m_componentFeedBehavior != null;
-								if (flag5)
-								{
-									this.m_subsystemTime.QueueGameTimeDelayedExecution(this.m_subsystemTime.GameTime + (double)this.m_random.Float(1f, 3f), delegate
-									{
-										bool flag16 = this.m_target != null;
-										if (flag16)
-										{
-											this.m_componentFeedBehavior.Feed(this.m_target.ComponentBody.Position);
-										}
-									});
-								}
-								this.m_importanceLevel = 0f;
-							}
-							else
-							{
-								bool flag6 = !this.m_isPersistent && this.m_componentPathfinding.IsStuck;
-								if (flag6)
-								{
-									this.m_importanceLevel = 0f;
-								}
-								else
-								{
-									bool flag7 = this.m_isPersistent && this.m_componentPathfinding.IsStuck;
-									if (flag7)
-									{
-										this.m_stateMachine.TransitionTo("RandomMoving");
-									}
-									else
-									{
-										bool flag8 = this.ScoreTarget(this.m_target) <= 0f;
-										if (flag8)
-										{
-											this.m_targetUnsuitableTime += this.m_dt;
-										}
-										else
-										{
-											this.m_targetUnsuitableTime = 0f;
-										}
-										bool flag9 = this.m_targetUnsuitableTime > 3f;
-										if (flag9)
-										{
-											this.m_importanceLevel = 0f;
-										}
-										else
-										{
-											int maxPathfindingPositions = 0;
-											bool isPersistent = this.m_isPersistent;
-											if (isPersistent)
-											{
-												maxPathfindingPositions = ((this.m_subsystemTime.FixedTimeStep != null) ? 2000 : 500);
-											}
-											BoundingBox boundingBox = this.m_componentCreature.ComponentBody.BoundingBox;
-											BoundingBox boundingBox2 = this.m_target.ComponentBody.BoundingBox;
-											Vector3 v = 0.5f * (boundingBox.Min + boundingBox.Max);
-											Vector3 vector = 0.5f * (boundingBox2.Min + boundingBox2.Max);
-											float num = Vector3.Distance(v, vector);
-											float num2 = (num < 4f) ? 0.2f : 0f;
-
-											// Persecución normal - solo cuerpo a cuerpo para zombies
-											this.m_componentPathfinding.SetDestination(new Vector3?(vector + num2 * num * this.m_target.ComponentBody.Velocity), 1f, 1.5f, maxPathfindingPositions, true, false, true, this.m_target.ComponentBody);
-
-											bool flag15 = this.PlayAngrySoundWhenChasing && this.m_random.Float(0f, 1f) < 0.33f * this.m_dt;
-											if (flag15)
-											{
-												this.m_componentCreature.ComponentCreatureSounds.PlayAttackSound();
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}, null);
-
-			this.m_stateMachine.TransitionTo("LookingForTarget");
+			// Buscar otras fuentes de daño en la lesión
+			// (en algunos casos, la lesión puede tener múltiples fuentes)
+			return null;
 		}
 
-		// Campos
-		public SubsystemGameInfo m_subsystemGameInfo;
-		public SubsystemPlayers m_subsystemPlayers;
-		public SubsystemSky m_subsystemSky;
-		public SubsystemBodies m_subsystemBodies;
-		public SubsystemTime m_subsystemTime;
-		public SubsystemNoise m_subsystemNoise;
-		public SubsystemCreatureSpawn m_subsystemCreatureSpawn;
-		public ComponentCreature m_componentCreature;
-		public ComponentPathfinding m_componentPathfinding;
-		public ComponentMiner m_componentMiner;
-		public ComponentRandomFeedBehavior m_componentFeedBehavior;
-		public ComponentCreatureModel m_componentCreatureModel;
-		public ComponentFactors m_componentFactors;
-		public ComponentBody m_componentBody;
-		public DynamicArray<ComponentBody> m_componentBodies = new DynamicArray<ComponentBody>();
-		public Random m_random = new Random();
-		public StateMachine m_stateMachine = new StateMachine();
-		public float m_dayChaseRange;
-		public float m_nightChaseRange;
-		public float m_dayChaseTime;
-		public float m_nightChaseTime;
-		public float m_chaseNonPlayerProbability;
-		public float m_chaseWhenAttackedProbability;
-		public float m_chaseOnTouchProbability;
-		public CreatureCategory m_autoChaseMask;
-		public float m_importanceLevel;
-		public float m_targetUnsuitableTime;
-		public float m_targetInRangeTime;
-		public double m_nextUpdateTime;
-		public double m_nextPlayerCheckTime;
-		public double m_lastActionTime;
-		public ComponentCreature m_target;
-		public float m_dt;
-		public float m_range;
-		public float m_chaseTime;
-		public bool m_isPersistent;
-		public bool m_autoDismount = true;
-		public float m_autoChaseSuppressionTime;
-		private Vector2 m_attackRange = new Vector2(2f, 15f);
-		public float ImportanceLevelNonPersistent = 200f;
-		public float ImportanceLevelPersistent = 200f;
-		public float MaxAttackRange = 1.75f;
-		public bool AllowAttackingStandingOnBody = true;
-		public bool JumpWhenTargetStanding = true;
-		public bool AttacksPlayer = true;
-		public bool AttacksNonPlayerCreature = true;
-		public float ChaseRangeOnTouch = 7f;
-		public float ChaseTimeOnTouch = 7f;
-		public float? ChaseRangeOnAttacked;
-		public float? ChaseTimeOnAttacked;
-		public bool? ChasePersistentOnAttacked;
-		public float MinHealthToAttackActively = 0.4f;
-		public bool Suppressed;
-		public bool PlayIdleSoundWhenStartToChase = true;
-		public bool PlayAngrySoundWhenChasing = true;
-		public float TargetInRangeTimeToChase = 3f;
-		public SubsystemAudio m_subsystemAudio;
+		// Verificar si una criatura es de la misma manada
+		private bool IsSameHerd(ComponentCreature otherCreature)
+		{
+			if (otherCreature == null || m_componentZombieHerdBehavior == null)
+				return false;
+
+			return m_componentZombieHerdBehavior.IsSameZombieHerd(otherCreature);
+		}
+
+		// Método de ataque específico para zombis que incluye lógica de manada
+		public virtual void Attack(ComponentCreature target, float maxRange, float maxChaseTime, bool isPersistent, bool isRetaliation)
+		{
+			// Verificar si el objetivo es de la misma manada
+			if (!isRetaliation && !m_attacksSameHerd && IsSameHerd(target))
+			{
+				// No atacar a miembros de la misma manada
+				// En su lugar, coordinar un ataque grupal si hay un enemigo externo
+				if (m_componentZombieHerdBehavior != null)
+				{
+					// Buscar un enemigo cercano que no sea de la misma manada
+					ComponentCreature externalEnemy = FindExternalEnemyNearby(maxRange);
+					if (externalEnemy != null)
+					{
+						m_componentZombieHerdBehavior.CoordinateGroupAttack(externalEnemy);
+					}
+				}
+				return;
+			}
+
+			// Si es una represalia (llamado de ayuda), permitir atacar incluso en modos restrictivos
+			if (isRetaliation)
+			{
+				// Forzar el ataque incluso si normalmente no atacaría
+				this.Suppressed = false;
+			}
+
+			// Llamar al método base para el ataque normal
+			base.Attack(target, maxRange, maxChaseTime, isPersistent);
+
+			// Si este es un ataque inicial (no represalia) y hay comportamiento de manada,
+			// llamar a otros zombis para que ayuden
+			if (!isRetaliation && m_componentZombieHerdBehavior != null)
+			{
+				m_componentZombieHerdBehavior.CoordinateGroupAttack(target);
+			}
+		}
+
+		// Sobrescribir el método Attack base para usar la versión de zombis
+		public override void Attack(ComponentCreature target, float maxRange, float maxChaseTime, bool isPersistent)
+		{
+			this.Attack(target, maxRange, maxChaseTime, isPersistent, false);
+		}
+
+		// Buscar un enemigo externo cercano
+		private ComponentCreature FindExternalEnemyNearby(float range)
+		{
+			Vector3 position = this.m_componentCreature.ComponentBody.Position;
+			ComponentCreature bestTarget = null;
+			float bestScore = 0f;
+
+			this.m_componentBodies.Clear();
+			this.m_subsystemBodies.FindBodiesAroundPoint(new Vector2(position.X, position.Z), range, this.m_componentBodies);
+
+			for (int i = 0; i < this.m_componentBodies.Count; i++)
+			{
+				ComponentCreature creature = this.m_componentBodies.Array[i].Entity.FindComponent<ComponentCreature>();
+				if (creature != null && creature != this.m_componentCreature)
+				{
+					// Verificar que no sea de la misma manada
+					if (!IsSameHerd(creature))
+					{
+						float distance = Vector3.Distance(position, creature.ComponentBody.Position);
+						float score = range - distance; // Puntuación más alta para objetivos más cercanos
+
+						if (score > bestScore)
+						{
+							bestScore = score;
+							bestTarget = creature;
+						}
+					}
+				}
+			}
+
+			return bestTarget;
+		}
+
+		// Sobrescribir FindTarget para excluir miembros de la misma manada
+		public override ComponentCreature FindTarget()
+		{
+			// Si no se permite atacar a la misma manada, filtrar los objetivos
+			if (!m_attacksSameHerd)
+			{
+				Vector3 position = this.m_componentCreature.ComponentBody.Position;
+				ComponentCreature result = null;
+				float bestScore = 0f;
+
+				this.m_componentBodies.Clear();
+				this.m_subsystemBodies.FindBodiesAroundPoint(new Vector2(position.X, position.Z), this.m_range, this.m_componentBodies);
+
+				for (int i = 0; i < this.m_componentBodies.Count; i++)
+				{
+					ComponentCreature creature = this.m_componentBodies.Array[i].Entity.FindComponent<ComponentCreature>();
+					if (creature != null)
+					{
+						// Excluir miembros de la misma manada
+						if (IsSameHerd(creature))
+						{
+							continue;
+						}
+
+						float score = this.ScoreTarget(creature);
+						if (score > bestScore)
+						{
+							bestScore = score;
+							result = creature;
+						}
+					}
+				}
+
+				return result;
+			}
+
+			// Si se permite atacar a la misma manada, usar la implementación base
+			return base.FindTarget();
+		}
+
+		// Sobrescribir ScoreTarget para ajustar la puntuación basada en la manada
+		public override float ScoreTarget(ComponentCreature componentCreature)
+		{
+			// Si no se permite atacar a la misma manada y es un miembro de la misma, puntuación 0
+			if (!m_attacksSameHerd && IsSameHerd(componentCreature))
+			{
+				return 0f;
+			}
+
+			// Llamar a la implementación base
+			return base.ScoreTarget(componentCreature);
+		}
+
+		// Añadir estado de huida
+		private void AddFleeState()
+		{
+			this.m_stateMachine.AddState("Fleeing", delegate
+			{
+				// Iniciar la huida
+				this.m_importanceLevel = 150f; // Prioridad media-alta para huir
+				this.m_componentCreature.ComponentCreatureSounds.PlayPainSound();
+			}, delegate
+			{
+				// Actualizar estado de huida
+				if (this.m_target == null || this.m_componentCreature.ComponentHealth.Health <= 0f)
+				{
+					this.m_stateMachine.TransitionTo("LookingForTarget");
+					return;
+				}
+
+				// Calcular dirección de huida (opuesta al objetivo)
+				Vector3 fleeDirection = this.m_componentCreature.ComponentBody.Position - this.m_target.ComponentBody.Position;
+				if (fleeDirection.LengthSquared() > 0.01f)
+				{
+					fleeDirection = Vector3.Normalize(fleeDirection);
+					Vector3 destination = this.m_componentCreature.ComponentBody.Position + fleeDirection * m_fleeDistance;
+
+					// Establecer destino de huida
+					this.m_componentPathfinding.SetDestination(
+						new Vector3?(destination),
+						1f,
+						1.5f,
+						0,
+						false,
+						true,
+						false,
+						null
+					);
+				}
+
+				// Verificar si hemos huido lo suficiente
+				float distanceToTarget = Vector3.Distance(
+					this.m_componentCreature.ComponentBody.Position,
+					this.m_target.ComponentBody.Position
+				);
+
+				if (distanceToTarget > m_fleeDistance * 1.5f)
+				{
+					// Hemos huido lo suficiente, volver a buscar objetivos
+					this.m_stateMachine.TransitionTo("LookingForTarget");
+				}
+
+				// Reproducir sonidos de dolor ocasionalmente
+				if (this.m_random.Float(0f, 1f) < 0.05f * this.m_dt)
+				{
+					this.m_componentCreature.ComponentCreatureSounds.PlayPainSound();
+				}
+			}, delegate
+			{
+				// Limpiar al salir del estado
+				this.m_componentPathfinding.Stop();
+				this.m_importanceLevel = 0f;
+			});
+		}
+
+		// Método para activar la huida de un objetivo
+		private void FleeFromTarget(ComponentCreature target)
+		{
+			if (target == null || this.m_componentCreature.ComponentHealth.Health <= 0f)
+				return;
+
+			this.m_target = target;
+			this.m_stateMachine.TransitionTo("Fleeing");
+		}
+
+		// Sobrescribir Update para añadir lógica específica de zombis
+		public override void Update(float dt)
+		{
+			// Llamar al método base primero
+			base.Update(dt);
+
+			// Lógica adicional para zombis
+			// (puede añadirse comportamiento específico aquí si es necesario)
+		}
+
+		// Método para detener el ataque (sobrescrito para limpieza específica)
+		public override void StopAttack()
+		{
+			// Llamar al método base
+			base.StopAttack();
+
+			// Limpieza adicional si es necesaria
+		}
 	}
 }
