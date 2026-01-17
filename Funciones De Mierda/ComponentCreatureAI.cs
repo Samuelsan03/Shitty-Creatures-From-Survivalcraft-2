@@ -79,6 +79,8 @@ namespace Game
 		private bool m_isFirearmAiming = false;
 		private bool m_isFirearmFiring = false;
 		private bool m_isFirearmReloading = false;
+		private bool m_isThrowableAiming = false;
+		private bool m_isThrowableThrowing = false;
 		private double m_animationStartTime;
 		private double m_drawStartTime;
 		private double m_fireTime;
@@ -88,6 +90,7 @@ namespace Game
 		private double m_nextFlameSoundTime;
 		private double m_lastFirearmShotTime;
 		private double m_firearmReloadStartTime;
+		private double m_throwableThrowTime;
 
 		private int m_currentWeaponSlot = -1;
 		private int m_weaponType = -1;
@@ -115,6 +118,7 @@ namespace Game
 		private float m_firearmAimTime = 0.5f;
 		private float m_firearmReloadTime = 1.0f;
 		private float m_sniperAimTime = 1.0f;
+		private float m_throwableAimTime = 0.5f;
 
 		private float m_explosiveBoltMinDistance = 15f;
 		private float m_explosiveRepeatArrowMinDistance = 15f;
@@ -646,8 +650,41 @@ namespace Game
 						StartFirearmAiming();
 						break;
 					}
+					else if (IsThrowableBlock(block))
+					{
+						m_currentWeaponSlot = i;
+						m_weaponType = 6; // Usar tipo 6 para todos los objetos lanzables
+						m_componentInventory.ActiveSlotIndex = i;
+						StartThrowableAiming();
+						break;
+					}
 				}
 			}
+		}
+
+		// NUEVO MÉTODO: Verificar si un bloque es lanzable
+		private bool IsThrowableBlock(Block block)
+		{
+			// Verificar si es una lanza (SpearBlock)
+			if (block is SpearBlock)
+				return true;
+
+			// Verificar si tiene método GetProjectileSpeed (como en SubsystemThrowableBlockBehavior)
+			try
+			{
+				var method = block.GetType().GetMethod("GetProjectileSpeed");
+				if (method != null)
+					return true;
+			}
+			catch { }
+
+			// También verificar por tipos conocidos de objetos lanzables
+			// Puedes añadir más tipos aquí según tu mod
+			string blockTypeName = block.GetType().Name;
+			if (blockTypeName.Contains("Throwable") || blockTypeName.Contains("Projectile"))
+				return true;
+
+			return false;
 		}
 
 		private void ProcessWeaponBehavior(ComponentCreature target, float distance)
@@ -660,6 +697,167 @@ namespace Game
 				case 3: ProcessFlameThrowerBehavior(target, distance); break;
 				case 4: ProcessRepeatCrossbowBehavior(target, distance); break;
 				case 5: ProcessFirearmBehavior(target, distance); break;
+				case 6: ProcessThrowableBehavior(target, distance); break;
+			}
+		}
+
+		private void StartThrowableAiming()
+		{
+			m_isThrowableAiming = true;
+			m_isThrowableThrowing = false;
+			m_animationStartTime = m_subsystemTime.GameTime;
+		}
+
+		private void ProcessThrowableBehavior(ComponentCreature target, float distance)
+		{
+			if (!m_isThrowableAiming && !m_isThrowableThrowing)
+			{
+				StartThrowableAiming();
+			}
+
+			if (m_isThrowableAiming)
+			{
+				ApplyThrowableAimingAnimation(target);
+
+				if (m_subsystemTime.GameTime - m_animationStartTime >= m_throwableAimTime)
+				{
+					m_isThrowableAiming = false;
+					ThrowThrowableWeapon(target);
+				}
+			}
+			else if (m_isThrowableThrowing)
+			{
+				ApplyThrowableThrowingAnimation();
+
+				if (m_subsystemTime.GameTime - m_throwableThrowTime >= 0.3f)
+				{
+					m_isThrowableThrowing = false;
+					ResetWeaponState();
+				}
+				if (m_componentModel != null)
+				{
+					m_componentModel.AimHandAngleOrder = 0f;
+					m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
+					m_componentModel.InHandItemRotationOrder = Vector3.Zero;
+					m_componentModel.LookAtOrder = null;
+				}
+			}
+		}
+
+		private void ApplyThrowableAimingAnimation(ComponentCreature target)
+		{
+			if (m_componentModel != null)
+			{
+				// Aplicar ángulo de apuntado como en SubsystemThrowableBlockBehavior
+				m_componentModel.AimHandAngleOrder = 2f;
+
+				// Obtener información del bloque actual
+				if (m_currentWeaponSlot >= 0)
+				{
+					int slotValue = m_componentInventory.GetSlotValue(m_currentWeaponSlot);
+					Block block = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)];
+
+					// Para lanzas, aplicar offset especial
+					if (block is SpearBlock)
+					{
+						m_componentModel.InHandItemOffsetOrder = new Vector3(0f, -0.25f, 0f);
+						m_componentModel.InHandItemRotationOrder = new Vector3(3.14159f, 0f, 0f);
+					}
+					else
+					{
+						// Para otros objetos lanzables, usar offset genérico
+						m_componentModel.InHandItemOffsetOrder = new Vector3(0f, 0f, 0f);
+						m_componentModel.InHandItemRotationOrder = new Vector3(0f, 0f, 0f);
+					}
+				}
+
+				if (target != null)
+				{
+					m_componentModel.LookAtOrder = new Vector3?(target.ComponentCreatureModel.EyePosition);
+				}
+			}
+		}
+
+		private void ApplyThrowableThrowingAnimation()
+		{
+			if (m_componentModel != null)
+			{
+				float throwProgress = (float)((m_subsystemTime.GameTime - m_throwableThrowTime) / 0.3f);
+
+				m_componentModel.AimHandAngleOrder = 2f * (1f - throwProgress);
+				m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
+				m_componentModel.InHandItemRotationOrder = Vector3.Zero;
+			}
+		}
+
+		private void ThrowThrowableWeapon(ComponentCreature target)
+		{
+			if (target == null) return;
+
+			try
+			{
+				int slotValue = m_componentInventory.GetSlotValue(m_currentWeaponSlot);
+				if (slotValue == 0)
+				{
+					ResetWeaponState();
+					return;
+				}
+
+				m_isThrowableThrowing = true;
+				m_throwableThrowTime = m_subsystemTime.GameTime;
+
+				Block block = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)];
+
+				// Usar la misma lógica que SubsystemThrowableBlockBehavior
+				Vector3 throwPosition = m_componentCreature.ComponentCreatureModel.EyePosition +
+									   m_componentCreature.ComponentBody.Matrix.Right * 0.4f;
+
+				Vector3 targetPosition = target.ComponentCreatureModel.EyePosition;
+				Vector3 direction = Vector3.Normalize(targetPosition - throwPosition);
+
+				// Añadir imprecisión (similar al juego base)
+				direction += new Vector3(
+					m_random.Float(-0.05f, 0.05f),
+					m_random.Float(-0.03f, 0.03f),
+					m_random.Float(-0.05f, 0.05f)
+				);
+				direction = Vector3.Normalize(direction);
+
+				// Obtener la velocidad del proyectil desde el bloque
+				float speed = block.GetProjectileSpeed(slotValue);
+
+				// Si la velocidad es 0 o muy baja, usar una velocidad por defecto
+				if (speed < 10f)
+				{
+					speed = 25f; // Velocidad por defecto para objetos lanzables
+				}
+
+				// Aplicar variación aleatoria a la velocidad angular (como en SubsystemThrowableBlockBehavior)
+				Vector3 angularVelocity = new Vector3(
+					m_random.Float(5f, 10f),
+					m_random.Float(5f, 10f),
+					m_random.Float(5f, 10f)
+				);
+
+				// Lanzar el proyectil
+				if (m_subsystemProjectiles.FireProjectile(
+					slotValue,
+					throwPosition,
+					direction * speed,
+					angularVelocity,
+					m_componentCreature) != null)
+				{
+					// Reducir la cantidad en el inventario
+					m_componentInventory.RemoveSlotItems(m_currentWeaponSlot, 1);
+
+					// Sonido de lanzamiento (mismo que el juego base)
+					m_subsystemAudio.PlaySound("Audio/Throw", 0.25f, m_random.Float(-0.2f, 0.2f),
+						m_componentCreature.ComponentBody.Position, 2f, false);
+				}
+			}
+			catch (Exception)
+			{
+				ResetWeaponState();
 			}
 		}
 
@@ -2136,6 +2334,8 @@ namespace Game
 			m_isFirearmAiming = false;
 			m_isFirearmFiring = false;
 			m_isFirearmReloading = false;
+			m_isThrowableAiming = false;
+			m_isThrowableThrowing = false;
 			m_animationStartTime = m_subsystemTime.GameTime;
 			m_currentDraw = 0f;
 			m_arrowVisible = false;
@@ -2215,6 +2415,10 @@ namespace Game
 			{
 				StartFirearmAiming();
 			}
+			else if (m_weaponType == 6 && m_currentWeaponSlot >= 0)
+			{
+				StartThrowableAiming();
+			}
 		}
 
 		private void ResetWeaponState()
@@ -2229,6 +2433,8 @@ namespace Game
 			m_isFirearmAiming = false;
 			m_isFirearmFiring = false;
 			m_isFirearmReloading = false;
+			m_isThrowableAiming = false;
+			m_isThrowableThrowing = false;
 
 			m_currentDraw = 0f;
 			m_currentWeaponSlot = -1;
