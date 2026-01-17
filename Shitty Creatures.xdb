@@ -873,6 +873,12 @@
         </EntityTemplate>
 
         <EntityTemplate Name="Ricardo" Guid="b7f3e8a2-9c14-4d82-a5f3-8c2d6e9a1b47" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <MemberComponentTemplate Name="CreatureAI" Guid="362142e4-df60-466c-8607-95c64c55783b">
+    <Parameter Name="Class" Value="Game.ComponentCreatureAI" Type="string" Guid="5c361fd9-45b5-4a6e-a7c8-9d7e3282d6ea"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="689189aa-d833-4eb7-97b4-ec82731fc196"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="74c84ee2-83c6-487e-9bd9-b64f5bae8b44"/>
+    <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="642bcb59-27e1-434a-a9d8-7cba124fc295"/>
+</MemberComponentTemplate>
         <MemberComponentTemplate Name="DeathSpawner" Guid="2d7d81c0-7954-49e5-a25d-64f5b5f5c705">
     <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="754b3374-8e2f-4270-bcae-106d2427f8f9"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="2dc23171-6e1c-4ea5-b554-dc4f3379977f"/>
@@ -1008,6 +1014,12 @@
         </EntityTemplate>
         
         <EntityTemplate Name="Paco" Guid="a1b2c3d4-e5f6-4789-9012-3456789abcde" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <MemberComponentTemplate Name="CreatureAI" Guid="b57202dd-5973-4f44-9097-9d032864c3c1">
+    <Parameter Name="Class" Value="Game.ComponentCreatureAI" Type="string" Guid="bbaaf269-550f-4955-b097-1db6750d3baa"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="95d1b2c7-0e7f-4f30-8fb4-f435aaf9ab6a"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="f1d5150c-b19c-4f2a-80f6-d7b1586ce1b2"/>
+    <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="0d9d91d0-bfb6-4019-a943-68b4c46c2020"/>
+</MemberComponentTemplate>
         <MemberComponentTemplate Name="DeathSpawner" Guid="c70c08aa-e7ee-4308-babb-40d8d6de809d">
     <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="697744ad-8936-4cba-bc36-ab11ec83859b"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="554b4880-266a-4f56-8919-bc6d4f3df0f1"/>
@@ -1142,6 +1154,12 @@
 </EntityTemplate>
 
          <EntityTemplate Name="Barack" Guid="f8a9b0c1-d2e3-4456-9234-56789abcdef0" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+         <MemberComponentTemplate Name="CreatureAI" Guid="ea8297aa-4d15-4fbf-ab08-5bab27a9874b">
+    <Parameter Name="Class" Value="Game.ComponentCreatureAI" Type="string" Guid="41caa16a-87c0-4342-9947-0f83e1a9a534"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="477bad96-e4f4-4c25-8460-1cd5cbb8567c"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="0e7e2186-f2a1-463e-8993-0ff85cfe81b9"/>
+    <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="997f73de-e325-492f-9578-c898ee33ee5a"/>
+</MemberComponentTemplate>
          <MemberComponentTemplate Name="DeathSpawner" Guid="2136f8a1-ba37-4d00-b79b-3771b423ef47">
     <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="eba5af50-4f62-44bc-a2cb-256b8553ddf1"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="d69297f1-c78b-4c66-8c0f-797a6e7db352"/>
@@ -1276,6 +1294,12 @@
 </EntityTemplate>
 
 <EntityTemplate Name="ElMarihuanero" Guid="0d9b62e7-35da-4135-8a31-e53a316fbe25" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="CreatureAI" Guid="b163cf0f-8bc9-407f-b772-e12163b55ddc">
+    <Parameter Name="Class" Value="Game.ComponentCreatureAI" Type="string" Guid="07e6909c-46f1-480e-88fb-f9610a70dfb0"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="e132bb68-b6bd-47fb-8b7c-98b2f1e2a7b0"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="d67cd169-299d-4a47-b664-cf2d5f1dac75"/>
+    <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="2786cc28-7e1d-42cc-920b-e7f1a09c4b39"/>
+</MemberComponentTemplate>
 <MemberComponentTemplate Name="DeathSpawner" Guid="791fa28c-bac8-4b7f-8d0f-37cfcf2f8694">
     <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="2466ec52-61ba-4feb-a8aa-beeb3c79ef16"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="74442407-d7cd-4377-92b3-830a2bcc4697"/>
@@ -2587,6 +2611,12 @@
 </EntityTemplate>
 
 <EntityTemplate Name="Conker" Guid="8d959f25-edc7-4572-b545-4eba05869e45" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="CreatureAI" Guid="be41c7df-bdb1-42f9-be1a-9991947999c3">
+    <Parameter Name="Class" Value="Game.ComponentCreatureAI" Type="string" Guid="a882d3c2-4611-488a-8904-1de0b156f4f2"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="5478451d-e7f5-429a-9ea0-2d527fba5eb3"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="1108e851-aebe-4799-8368-b1b775d12497"/>
+    <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="04da864e-b996-49f6-84d6-fab7f426fdf0"/>
+</MemberComponentTemplate>
 <MemberComponentTemplate Name="DeathSpawner" Guid="a23cbf1c-832e-40fc-be92-63f7e00165a2">
     <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="b2d2f27a-952b-45b5-9301-206e1ad0adec"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="f840bac9-3dcb-43d3-9335-38955793128d"/>
@@ -2704,6 +2734,12 @@
 </EntityTemplate>
 
 <EntityTemplate Name="Beavis" Guid="e9d8d930-9dd1-49b8-8140-a35cc200be64" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="CreatureAI" Guid="4fd83f81-8ed9-4df9-81da-fa91641c455c">
+    <Parameter Name="Class" Value="Game.ComponentCreatureAI" Type="string" Guid="c978b94f-cdfb-4870-acbb-ba34cf6a2ca7"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="28bf0da7-417e-4b70-a036-8e638ffbe4c3"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="6514cdfc-ec7a-41b2-951a-a79c8b0d4a63"/>
+    <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="e8c3095f-a25c-4947-a911-056aa2e3d6bc"/>
+</MemberComponentTemplate>
 <MemberComponentTemplate Name="DeathSpawner" Guid="44b7dd9c-ebd8-4e72-a5fa-e08773b4c426">
     <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="a8b13b34-a4eb-4666-807a-edb207b1a2ef"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="8b34420c-6cbc-48a4-bd87-98ee9e24e92a"/>
@@ -2828,6 +2864,12 @@
 </EntityTemplate>
 
 <EntityTemplate Name="Butt-Head" Guid="09699a5a-89f9-4883-b77f-e8adf8f52473" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="CreatureAI" Guid="e27913c3-8ce0-4311-925b-c935a5d34027">
+    <Parameter Name="Class" Value="Game.ComponentCreatureAI" Type="string" Guid="583baeb5-a4b2-4587-bae3-711753c47109"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="84efd772-1150-44fe-98f9-7149016dc1fc"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="c6c4bf73-c659-4315-8ab5-7a8709306456"/>
+    <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="765250ed-4780-4cef-b38e-026826df494a"/>
+</MemberComponentTemplate>
 <MemberComponentTemplate Name="DeathSpawner" Guid="7b638360-6b55-4329-8bc6-84970eb4849e">
     <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="9ea418a3-020b-4508-9fd1-ae12f1e4fbb6"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="e2f48996-c116-4234-8fa5-d363c50783c1"/>
@@ -5165,6 +5207,12 @@
 </EntityTemplate>
 
 <EntityTemplate Name="Tulio" Guid="5ff2501e-8568-4f85-a1d7-cb30437148f1" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="CreatureAI" Guid="bcc18e90-8a3e-43af-98e0-093f0032a314">
+    <Parameter Name="Class" Value="Game.ComponentCreatureAI" Type="string" Guid="bc01c7f3-b7a1-49fd-9c0b-017cd6b4718a"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="8cf1c83d-53a4-4a60-9bb6-19a0738d54f5"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="afaa3370-0812-4ee1-b03e-57415e94e3f3"/>
+    <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="6b33eddb-f551-4ca2-a16a-e78bf9dbce30"/>
+</MemberComponentTemplate>
 <MemberComponentTemplate Name="DeathSpawner" Guid="0f3a375f-07d7-4012-a24e-b5d5909ff5e8">
     <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="ef25f2c5-3327-4bfc-a6ad-f157985dc1a3"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="1281f0b3-12e9-4280-85f6-3d47e9a0c82c"/>
@@ -5293,6 +5341,12 @@
 </EntityTemplate>
 
 <EntityTemplate Name="Brayan" Guid="ecfa50bc-836c-4103-a3f7-0249aa579ea2" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="CreatureAI" Guid="1f1124a6-7b23-4ca9-8692-e9f44e25facb">
+    <Parameter Name="Class" Value="Game.ComponentCreatureAI" Type="string" Guid="1d241769-0255-4332-b92f-36c8379ef377"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="dcc34744-1416-45e0-881f-b4a27dcd75ca"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="abf04e42-8198-47b9-952b-fdb93299c36e"/>
+    <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="77748fef-a211-4bf3-85bd-69e9d2d7e379"/>
+</MemberComponentTemplate>
 <MemberComponentTemplate Name="DeathSpawner" Guid="5389eed9-092f-47a7-abfe-f184ce9710d2">
     <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="fe0080b4-b088-4ddb-9a19-5e47d9e4ba38"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="c623512b-9ced-47a5-86de-ba1915f30f56"/>
@@ -5878,7 +5932,6 @@
                 <Parameter Name="EggTypeIndex" Guid="844bf608-9e24-4409-bef1-a7684bbb3274" Value="248" Type="int"/>
             </ParameterSet>
         </EntityTemplate>
-
         <EntityTemplate Name="PirataHostilComerciante" Guid="935cc7cb-6a0a-4fc6-a75b-2f6eba8344b9" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
         <MemberComponentTemplate Name="DeathSpawner" Guid="2f79c9ad-c279-4bc3-944e-a1f5a3b22809">
     <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="ac1e9ab3-53d1-4ae2-9ae3-d2d02203b141"/>
@@ -6041,6 +6094,12 @@
                 <Parameter Name="ChaseNonPlayerProbability" Guid="75e69bad-9c8f-4d86-a047-b3447400ba07" Value="1.0" Type="float"/>
                 <Parameter Name="NightChaseTime" Guid="b483a1e0-12ef-4b01-809e-005cce0df5cb" Value="0" Type="float"/>
             </MemberComponentTemplate>
+            <MemberComponentTemplate Name="CreatureAI" Guid="5989ef33-a8b9-445c-ace9-88e23069adc3">
+    <Parameter Name="Class" Value="Game.ComponentCreatureAI" Type="string" Guid="8c4e1a6e-45b7-450e-be86-77865270fde5"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="87f1b953-61f6-4b32-ab7b-3825e362ecc9"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="87f368c5-2cde-4767-b4ee-d3ee6737b3d3"/>
+    <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="07fb99a3-dd89-4164-8bae-3974a38c9eff"/>
+</MemberComponentTemplate>
             <ParameterSet Name="CreatureEggData" Guid="0c8e0500-07ea-4e87-9ab2-42bfcb05452e">
                 <Parameter Name="Color" Guid="c9961b01-f8ca-4cc8-9667-2bf344988473" Value="18,58,112" Type="Color"/>
                 <Parameter Name="TextureSlot" Guid="9294f7bc-ed65-4648-82fc-b985eeea5695" Value="8" Type="int"/>
@@ -6185,6 +6244,12 @@
                 <Parameter Name="ChaseNonPlayerProbability" Guid="997b32eb-8636-427b-8ee1-438b863f99e8" Value="1.0" Type="float"/>
                 <Parameter Name="NightChaseTime" Guid="6fc4311f-334f-4d26-b6f1-2cb26da1e9f7" Value="0" Type="float"/>
             </MemberComponentTemplate>
+            <MemberComponentTemplate Name="CreatureAI" Guid="46f52206-7edc-4459-810f-89d629399a96">
+    <Parameter Name="Class" Value="Game.ComponentCreatureAI" Type="string" Guid="10f36b57-8f16-4900-8c24-0a83296f7407"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="9297b41e-11cb-4170-ae08-b8817903b4f8"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="a4205be8-797b-4de6-a0d0-d31fa2fe5865"/>
+    <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="b02ffadf-d431-4482-ba83-da9be8acc269"/>
+</MemberComponentTemplate>
             <ParameterSet Name="CreatureEggData" Guid="4667798b-5e19-482f-80f5-d1adcab44741">
                 <Parameter Name="Color" Guid="3cdae10e-22c8-4ff4-ae4a-a04112836bd3" Value="18,58,112" Type="Color"/>
                 <Parameter Name="TextureSlot" Guid="4e2f92fd-f450-4bf6-b0da-0b6f62fbd1ca" Value="8" Type="int"/>
@@ -6331,6 +6396,12 @@
                 <Parameter Name="ChaseNonPlayerProbability" Guid="7bfda2fe-35d4-4e15-9ede-c9b3e25ad831" Value="0.03" Type="float"/>
                 <Parameter Name="NightChaseTime" Guid="33802a31-45a8-4baa-af84-49b3fa6a74bb" Value="15" Type="float"/>
             </MemberComponentTemplate>
+            <MemberComponentTemplate Name="CreatureAI" Guid="361d7185-2b06-4b7e-ab44-ef8d16ef3510">
+    <Parameter Name="Class" Value="Game.ComponentCreatureAI" Type="string" Guid="f2b8dd96-f434-414f-bd56-980a3fae667c"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="487ff1a4-1605-4805-9045-83f8ce587484"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="6655020e-26d4-4222-b5a5-583df7d4728f"/>
+    <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="a2a724b7-7970-491e-94a2-940df9306e16"/>
+</MemberComponentTemplate>
             <ParameterSet Name="CreatureEggData" Guid="310c1fca-7f1d-4cd3-8818-4335e328c1e3">
                 <Parameter Name="Color" Guid="1083f915-f9e1-4d2e-a94c-2b2535b95987" Value="28,78,142" Type="Color"/>
                 <Parameter Name="TextureSlot" Guid="a9f24df5-ed1d-4da1-bf0d-6ae63fab1bc4" Value="8" Type="int"/>
@@ -6364,6 +6435,12 @@
     <Parameter Name="HerdName" Guid="55733ce2-d91b-448b-9f33-7414aa22650c" Value="Pirate" Type="string"/>
     <Parameter Name="AutoNearbyCreaturesHelp" Guid="388471bf-e944-4426-a498-8e190a0b6759" Value="True" Type="bool"/>
     <Parameter Name="HerdingRange" Guid="33415f8e-9fa5-4da3-b02a-b5bc51253c1b" Value="50" Type="float"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureAI" Guid="d0959492-1b10-4ade-b2f8-01217018caee">
+    <Parameter Name="Class" Value="Game.ComponentCreatureAI" Type="string" Guid="d39f4ab1-bc09-4145-9c20-b1e216677500"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="f9e73e91-47c3-4c9e-adb1-669e5b572719"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="f0fc1091-db10-46da-928b-3d5e9bee9ae8"/>
+    <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="54c8dfa6-1fe2-45f4-b7fa-a1c7376425c8"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="NewChaseBehavior" Guid="ca7ac3cb-6a3c-422c-9a4b-4beeb7d019d0">
     <Parameter Name="Class" Value="Game.ComponentNewChaseBehavior" Type="string" Guid="14c048be-b176-46b1-bca8-85f136a6ab2d"/>
