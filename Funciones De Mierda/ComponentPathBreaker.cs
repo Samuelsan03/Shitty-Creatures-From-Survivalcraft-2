@@ -8,41 +8,15 @@ using TemplatesDatabase;
 
 namespace Game
 {
-	// Token: 0x0200002F RID: 47
 	public class ComponentPathBreaker : Component, IUpdateable
 	{
-		// Token: 0x1700002F RID: 47
-		// (get) Token: 0x06000158 RID: 344 RVA: 0x0000FC84 File Offset: 0x0000DE84
-		// (set) Token: 0x06000159 RID: 345 RVA: 0x0000FC8C File Offset: 0x0000DE8C
 		public float BreakProbability { get; set; }
-
-		// Token: 0x17000030 RID: 48
-		// (get) Token: 0x0600015A RID: 346 RVA: 0x0000FC95 File Offset: 0x0000DE95
-		// (set) Token: 0x0600015B RID: 347 RVA: 0x0000FC9D File Offset: 0x0000DE9D
 		public bool CanBreakBlocks { get; set; }
-
-		// Token: 0x17000031 RID: 49
-		// (get) Token: 0x0600015C RID: 348 RVA: 0x0000FCA6 File Offset: 0x0000DEA6
-		// (set) Token: 0x0600015D RID: 349 RVA: 0x0000FCAE File Offset: 0x0000DEAE
 		public ComponentPathBreaker.AnimationType CreatureAnimationType { get; set; }
-
-		// Token: 0x17000032 RID: 50
-		// (get) Token: 0x0600015E RID: 350 RVA: 0x0000FCB7 File Offset: 0x0000DEB7
-		// (set) Token: 0x0600015F RID: 351 RVA: 0x0000FCBF File Offset: 0x0000DEBF
 		public bool CanPlaceBlocks { get; set; }
-
-		// Token: 0x17000033 RID: 51
-		// (get) Token: 0x06000160 RID: 352 RVA: 0x0000FCC8 File Offset: 0x0000DEC8
-		// (set) Token: 0x06000161 RID: 353 RVA: 0x0000FCD0 File Offset: 0x0000DED0
 		public string SpecificBlocks { get; set; }
-
-		// Token: 0x17000034 RID: 52
-		// (get) Token: 0x06000162 RID: 354 RVA: 0x0000FCD9 File Offset: 0x0000DED9
-		// (set) Token: 0x06000163 RID: 355 RVA: 0x0000FCE1 File Offset: 0x0000DEE1
 		public bool UseFromInventory { get; set; }
 
-		// Token: 0x17000035 RID: 53
-		// (get) Token: 0x06000164 RID: 356 RVA: 0x0000FCEA File Offset: 0x0000DEEA
 		public UpdateOrder UpdateOrder
 		{
 			get
@@ -51,7 +25,6 @@ namespace Game
 			}
 		}
 
-		// Token: 0x06000165 RID: 357 RVA: 0x0000FCF0 File Offset: 0x0000DEF0
 		public override void Load(ValuesDictionary values, IdToEntityMap map)
 		{
 			this.m_subsystemTime = base.Project.FindSubsystem<SubsystemTime>(true);
@@ -63,6 +36,10 @@ namespace Game
 			this.m_componentInventory = base.Entity.FindComponent<ComponentInventory>();
 			this.m_componentLocomotion = base.Entity.FindComponent<ComponentLocomotion>(true);
 			this.m_componentCreatureModel = base.Entity.FindComponent<ComponentCreatureModel>(true);
+
+			// AÑADIDO: Obtener el ComponentHealth
+			this.m_componentHealth = base.Entity.FindComponent<ComponentHealth>();
+
 			this.SpecificBlocks = values.GetValue<string>("SpecificBlocks");
 			this.UseFromInventory = values.GetValue<bool>("UseFromInventory");
 			this.m_customSound = base.ValuesDictionary.GetValue<string>("CustomSound");
@@ -116,9 +93,15 @@ namespace Game
 			}
 		}
 
-		// Token: 0x06000166 RID: 358 RVA: 0x0000FF58 File Offset: 0x0000E158
 		public void Update(float dt)
 		{
+			// AÑADIDO: Verificar si el NPC está muerto (Health <= 0)
+			if (this.m_componentHealth != null && this.m_componentHealth.Health <= 0f)
+			{
+				this.m_blockToBreak = null;
+				return; // Salir del Update si está muerto
+			}
+
 			bool flag = (!this.CanBreakBlocks && !this.CanPlaceBlocks) || this.m_componentChaseBehavior.Target == null;
 			if (flag)
 			{
@@ -181,7 +164,6 @@ namespace Game
 			}
 		}
 
-		// Token: 0x06000167 RID: 359 RVA: 0x00010190 File Offset: 0x0000E390
 		private void PlaceBlock(Point3 point)
 		{
 			int blockToPlaceFromInventory = this.GetBlockToPlaceFromInventory();
@@ -194,7 +176,6 @@ namespace Game
 			}
 		}
 
-		// Token: 0x06000168 RID: 360 RVA: 0x000101F4 File Offset: 0x0000E3F4
 		private int GetBlockToPlaceFromInventory()
 		{
 			bool useFromInventory = this.UseFromInventory;
@@ -241,7 +222,6 @@ namespace Game
 			return result;
 		}
 
-		// Token: 0x06000169 RID: 361 RVA: 0x00010328 File Offset: 0x0000E528
 		private int FindSlotWithBlock(int blockContents)
 		{
 			bool flag = this.m_componentInventory == null;
@@ -265,7 +245,6 @@ namespace Game
 			return result;
 		}
 
-		// Token: 0x0600016A RID: 362 RVA: 0x00010388 File Offset: 0x0000E588
 		private void DestroyBlock(Point3 point)
 		{
 			int cellValue = this.m_subsystemTerrain.Terrain.GetCellValue(point.X, point.Y, point.Z);
@@ -287,7 +266,6 @@ namespace Game
 			}
 		}
 
-		// Token: 0x0600016B RID: 363 RVA: 0x00010450 File Offset: 0x0000E650
 		private ComponentPathBreaker.AnimationType DetectAnimationType()
 		{
 			bool flag = base.Entity.FindComponent<ComponentFourLeggedModel>() != null;
@@ -303,7 +281,6 @@ namespace Game
 			return result;
 		}
 
-		// Token: 0x0600016C RID: 364 RVA: 0x0001047C File Offset: 0x0000E67C
 		private void TriggerAttackAnimation()
 		{
 			bool flag = this.m_componentCreatureModel != null;
@@ -313,7 +290,6 @@ namespace Game
 			}
 		}
 
-		// Token: 0x0600016D RID: 365 RVA: 0x000104A8 File Offset: 0x0000E6A8
 		private bool IsBlockBreakable(int value)
 		{
 			int num = Terrain.ExtractContents(value);
@@ -332,13 +308,11 @@ namespace Game
 			return result;
 		}
 
-		// Token: 0x0600016E RID: 366 RVA: 0x00010514 File Offset: 0x0000E714
 		private Point3 GetMainFacingDirection()
 		{
 			return this.GetDirectionFromVector(this.m_componentBody.Matrix.Forward);
 		}
 
-		// Token: 0x0600016F RID: 367 RVA: 0x00010540 File Offset: 0x0000E740
 		private Point3 GetDirectionFromVector(Vector3 vector)
 		{
 			bool flag = Math.Abs(vector.X) > Math.Abs(vector.Z);
@@ -362,64 +336,32 @@ namespace Game
 			return result;
 		}
 
-		// Token: 0x0400017F RID: 383
 		private SubsystemTime m_subsystemTime;
-
-		// Token: 0x04000180 RID: 384
 		private SubsystemTerrain m_subsystemTerrain;
-
-		// Token: 0x04000181 RID: 385
 		private SubsystemAudio m_subsystemAudio;
-
-		// Token: 0x04000182 RID: 386
 		private ComponentChaseBehavior m_componentChaseBehavior;
-
-		// Token: 0x04000183 RID: 387
 		private ComponentPathfinding m_componentPathfinding;
-
-		// Token: 0x04000184 RID: 388
 		private ComponentBody m_componentBody;
-
-		// Token: 0x04000185 RID: 389
 		private ComponentInventory m_componentInventory;
-
-		// Token: 0x04000186 RID: 390
 		private ComponentLocomotion m_componentLocomotion;
-
-		// Token: 0x04000187 RID: 391
 		private ComponentCreatureModel m_componentCreatureModel;
 
-		// Token: 0x04000188 RID: 392
+		// AÑADIDO: Referencia al ComponentHealth
+		private ComponentHealth m_componentHealth;
+
 		private readonly bool m_isBreakingBlock;
-
-		// Token: 0x04000189 RID: 393
 		public string m_customSound;
-
-		// Token: 0x0400018A RID: 394
 		private List<int> m_specificBlockIds;
-
-		// Token: 0x0400018C RID: 396
 		private Random m_random = new Random();
-
-		// Token: 0x04000192 RID: 402
 		private double m_lastActionTime;
-
-		// Token: 0x04000193 RID: 403
 		private Point3? m_blockToBreak;
-
-		// Token: 0x04000194 RID: 404
 		private const float ActionCooldown = 0.5f;
 
-		// Token: 0x0200005C RID: 92
 		public enum AnimationType
 		{
-			// Token: 0x04000362 RID: 866
 			None,
-			// Token: 0x04000363 RID: 867
 			Humanoid,
-			// Token: 0x04000364 RID: 868
 			FourLegged,
-			// Token: 0x04000365 RID: 869
 			ComboModel
 		}
 	}
