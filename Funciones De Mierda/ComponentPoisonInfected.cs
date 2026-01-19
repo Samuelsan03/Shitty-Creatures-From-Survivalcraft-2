@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Engine;
 using Game;
 using GameEntitySystem;
@@ -29,7 +29,7 @@ namespace Game
 		public void StartInfect(float infectDuration)
 		{
 			this.m_InfectDuration = MathUtils.Max(infectDuration - this.PoisonResistance, 0f);
-			this.m_lastPukeTime = this.m_subsystemTime.GameTime; // Iniciar contador
+			this.m_lastPukeTime = this.m_subsystemTime.GameTime;
 		}
 
 		public void NauseaEffect()
@@ -38,7 +38,7 @@ namespace Game
 				return;
 
 			this.m_lastNauseaTime = new double?(this.m_subsystemTime.GameTime);
-			float injury = MathUtils.Min(0.1f, this.m_componentCreature.ComponentHealth.Health - 0.075f);
+			float injury = 0.1f; // Daño fijo de 0.1 por efecto de náuseas
 
 			if ((double)injury > 0.0)
 			{
@@ -52,7 +52,6 @@ namespace Game
 				});
 			}
 
-			// Crear sistema de partículas de vómito
 			if (this.m_pukeParticleSystem == null && this.m_componentCreature != null)
 			{
 				this.StartPuking();
@@ -64,13 +63,11 @@ namespace Game
 			if (this.m_componentCreature == null || this.m_componentCreature.ComponentBody == null)
 				return;
 
-			// Crear posición para el vómito (frente de la criatura)
 			Vector3 position = this.m_componentCreature.ComponentBody.Position;
 			Vector3 direction = this.m_componentCreature.ComponentBody.Matrix.Forward;
 
-			// Ajustar posición para que salga de la "boca"
-			position += new Vector3(0f, 1.5f, 0f); // Altura de la cabeza
-			position += direction * 0.3f; // Un poco hacia adelante
+			position += new Vector3(0f, 1.5f, 0f);
+			position += direction * 0.3f;
 
 			this.m_pukeParticleSystem = new PukeParticleSystem(this.m_subsystemTerrain);
 			this.m_pukeParticleSystem.Position = position;
@@ -83,17 +80,15 @@ namespace Game
 				this.m_componentCreature.ComponentCreatureSounds.PlayIdleSound(true);
 			}
 
-			this.m_lastPukeTime = this.m_subsystemTime.GameTime; // Actualizar tiempo del último vómito
+			this.m_lastPukeTime = this.m_subsystemTime.GameTime;
 		}
 
 		public void Update(float dt)
 		{
-			// VERIFICACIÓN DE SEGURIDAD
 			if (this.m_componentCreature == null || this.m_componentCreature.ComponentHealth == null)
 				return;
 
-			ComponentPlayer componentPlayer = base.Entity.FindComponent<ComponentPlayer>();
-			if (!this.m_subsystemGameInfo.WorldSettings.AreAdventureSurvivalMechanicsEnabled || componentPlayer != null)
+			if (!this.m_subsystemGameInfo.WorldSettings.AreAdventureSurvivalMechanicsEnabled)
 			{
 				this.m_InfectDuration = 0f;
 				return;
@@ -114,7 +109,6 @@ namespace Game
 			{
 				this.m_InfectDuration = MathUtils.Max(this.m_InfectDuration - dt, 0f);
 
-				// EFECTO DE NÁUSEA CADA 5-10 SEGUNDOS
 				if (componentHealth.Health > 0f && this.m_subsystemTime.PeriodicGameTimeEvent(3.0, -0.01))
 				{
 					double nauseaInterval = (double)((this.m_InfectDuration > 150f) ? 5 : 10);
@@ -124,7 +118,6 @@ namespace Game
 					}
 				}
 
-				// VÓMITO PERIÓDICO CADA 30 SEGUNDOS MIENTRAS ESTÉ INFECTADO
 				if (this.m_lastPukeTime == null || this.m_subsystemTime.GameTime - this.m_lastPukeTime.Value > 30.0)
 				{
 					if (this.m_pukeParticleSystem == null || this.m_pukeParticleSystem.IsStopped)
@@ -134,10 +127,8 @@ namespace Game
 				}
 			}
 
-			// ACTUALIZAR POSICIÓN DEL SISTEMA DE VÓMITO
 			if (this.m_pukeParticleSystem != null && !this.m_pukeParticleSystem.IsStopped)
 			{
-				// Actualizar posición del vómito para seguir a la criatura
 				if (componentBody != null)
 				{
 					Vector3 position = componentBody.Position;
@@ -150,24 +141,20 @@ namespace Game
 					this.m_pukeParticleSystem.Direction = direction;
 				}
 
-				// Código del vómito - efecto visual de inclinación
 				float num2 = (float)MathUtils.Remainder(this.m_subsystemTime.GameTime, 10000.0);
 				float f = SimplexNoise.Noise(2f * num2);
 				float x = MathUtils.DegToRad(MathUtils.Lerp(-35f, -60f, f)) - componentLocomotion.LookAngles.Y;
 				componentLocomotion.LookOrder = new Vector2(componentLocomotion.LookOrder.X, MathUtils.Clamp(x, -2f, 2f));
 
-				// Detener sistema de partículas si ha terminado
 				if (this.m_pukeParticleSystem.IsStopped)
 				{
 					this.m_pukeParticleSystem = null;
 				}
 			}
 
-			// REDUCCIÓN DE VELOCIDADES - CORREGIDO
 			float infectDuration = this.m_InfectDuration;
 			if (infectDuration <= 0f)
 			{
-				// CUANDO LA INFECCIÓN TERMINA: RESTAURAR VELOCIDADES NORMALES
 				componentLocomotion.WalkSpeed = this.oldWalkSpeed;
 				componentLocomotion.FlySpeed = this.oldFlySpeed;
 				componentLocomotion.SwimSpeed = this.oldSwimSpeed;
@@ -175,11 +162,8 @@ namespace Game
 			}
 			else if (infectDuration <= 150f)
 			{
-				// INFECCIÓN MODERADA: 40-60% de velocidad
-				// Cuando infectDuration es alto (inicio), velocidad baja (40%)
-				// Cuando infectDuration es bajo (final), velocidad sube (60%)
-				float progress = infectDuration / 150f; // De 1 a 0
-				float factor = MathUtils.Lerp(0.6f, 0.4f, progress); // De 60% a 40%
+				float progress = infectDuration / 150f;
+				float factor = MathUtils.Lerp(0.6f, 0.4f, progress);
 
 				componentLocomotion.WalkSpeed = factor * this.oldWalkSpeed;
 				componentLocomotion.FlySpeed = factor * this.oldFlySpeed;
@@ -188,9 +172,8 @@ namespace Game
 			}
 			else
 			{
-				// INFECCIÓN GRAVE: 20-40% de velocidad
 				float progress = MathUtils.Min((infectDuration - 150f) / 150f, 1f);
-				float factor = MathUtils.Lerp(0.4f, 0.2f, progress); // De 40% a 20%
+				float factor = MathUtils.Lerp(0.4f, 0.2f, progress);
 
 				componentLocomotion.WalkSpeed = factor * this.oldWalkSpeed;
 				componentLocomotion.FlySpeed = factor * this.oldFlySpeed;
@@ -198,7 +181,6 @@ namespace Game
 				componentLocomotion.JumpSpeed = factor * this.oldJumpSpeed;
 			}
 
-			// MOVIMIENTO DE TAMBALEO LEVE
 			if (this.IsJumpMove && this.m_InfectDuration > 0f)
 			{
 				if (this.m_subsystemTime.PeriodicGameTimeEvent(3.0, 0.0) &&
@@ -227,12 +209,10 @@ namespace Game
 			this.m_subsystemParticles = base.Project.FindSubsystem<SubsystemParticles>(true);
 			this.m_componentCreature = base.Entity.FindComponent<ComponentCreature>(true);
 
-			// Cargar parámetros básicos
 			this.IsJumpMove = valuesDictionary.GetValue<bool>("IsJumpMove", false);
 			this.m_InfectDuration = valuesDictionary.GetValue<float>("InfectDuration", 0f);
 			this.PoisonResistance = valuesDictionary.GetValue<float>("PoisonResistance", 0f);
 
-			// Guardar velocidades originales
 			if (this.m_componentCreature != null && this.m_componentCreature.ComponentLocomotion != null)
 			{
 				this.oldWalkSpeed = this.m_componentCreature.ComponentLocomotion.WalkSpeed;
