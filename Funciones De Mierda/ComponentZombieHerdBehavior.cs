@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Engine;
 using GameEntitySystem;
 using TemplatesDatabase;
@@ -44,7 +44,6 @@ namespace Game
 			this.m_autoNearbyCreaturesHelp = valuesDictionary.GetValue<bool>("AutoNearbyCreaturesHelp", true);
 
 			// Reemplazar el event handler de Injured para añadir lógica de zombis
-			// Primero necesitamos acceder al ComponentHealth y reemplazar el handler
 			this.SetupZombieInjuryHandler();
 
 			// Añadir estados adicionales para comportamiento específico de zombis
@@ -59,7 +58,17 @@ namespace Game
 			// Crear un nuevo handler que incluya la lógica de zombis
 			Action<Injury> zombieInjuryHandler = delegate (Injury injury)
 			{
-				// Llamar a otros zombis para ayudar cuando es atacado
+				// Verificar si el atacante es de la misma manada
+				if (injury.Attacker != null && this.IsSameZombieHerd(injury.Attacker))
+				{
+					// Si el atacante es de la misma manada, activar la huida
+					this.ActivateFleeState(injury.Attacker);
+					
+					// NO llamar a otros zombis cuando es atacado por un miembro de la misma manada
+					return;
+				}
+
+				// Solo llamar a otros zombis para ayudar cuando es atacado por un enemigo EXTERNO
 				if (this.CallForHelpWhenAttacked && injury.Attacker != null)
 				{
 					this.CallZombiesForHelp(injury.Attacker);
@@ -73,11 +82,63 @@ namespace Game
 			componentHealth.Injured = zombieInjuryHandler;
 		}
 
-		// Método específico para llamar a otros zombis
+		// Método para activar el estado de huida - REEMPLAZA la llamada a FleeFromTarget
+		private void ActivateFleeState(ComponentCreature attacker)
+		{
+			if (attacker == null || this.m_componentCreature.ComponentHealth.Health <= 0f)
+				return;
+
+			// Buscar el ComponentChaseBehavior en esta entidad
+			ComponentChaseBehavior chaseBehavior = this.m_componentCreature.Entity.FindComponent<ComponentChaseBehavior>();
+			
+			if (chaseBehavior != null)
+			{
+				// Usar reflexión para acceder al campo m_target si es necesario
+				// O simplemente activar un estado personalizado de huida
+				this.ActivateCustomFleeState(attacker);
+			}
+		}
+
+		// Método para activar estado de huida personalizado
+		private void ActivateCustomFleeState(ComponentCreature target)
+		{
+			// Aquí implementamos la lógica de huida directamente
+			// Simplemente nos alejamos del objetivo
+			Vector3 fleeDirection = this.m_componentCreature.ComponentBody.Position - target.ComponentBody.Position;
+			
+			if (fleeDirection.LengthSquared() > 0.01f)
+			{
+				fleeDirection = Vector3.Normalize(fleeDirection);
+				Vector3 destination = this.m_componentCreature.ComponentBody.Position + fleeDirection * 15f; // Huir 15 unidades
+				
+				this.m_componentPathfinding.SetDestination(
+					new Vector3?(destination),
+					1f,
+					1.5f,
+					0,
+					false,
+					true,
+					false,
+					null
+				);
+				
+				// Reproducir sonido de dolor
+				this.m_componentCreature.ComponentCreatureSounds.PlayPainSound();
+			}
+		}
+
+		// Método específico para llamar a otros zombis - MODIFICADO para evitar atacar a la misma manada
 		public void CallZombiesForHelp(ComponentCreature attacker)
 		{
 			if (attacker == null || string.IsNullOrEmpty(this.HerdName))
 				return;
+
+			// Verificar si el atacante es de la misma manada
+			if (this.IsSameZombieHerd(attacker))
+			{
+				// NO llamar ayuda si el atacante es de la misma manada
+				return;
+			}
 
 			// Llamar al método base para que maneje la lógica de mods y la lógica base
 			this.CallNearbyCreaturesHelp(attacker, this.HelpCallRange, this.HelpChaseTime, this.IsPersistentHelp);
@@ -94,7 +155,7 @@ namespace Game
 			}
 		}
 
-		// Método para llamar a zombis adicionales en un rango mayor
+		// Método para llamar a zombis adicionales en un rango mayor - MODIFICADO
 		private void CallAdditionalZombies(ComponentCreature attacker, float extendedRange)
 		{
 			if (attacker == null || string.IsNullOrEmpty(this.HerdName))
@@ -128,11 +189,22 @@ namespace Game
 
 					if (isSameHerd)
 					{
+						// Verificar que la criatura objetivo no sea de la misma manada que el atacante
+						if (this.IsSameZombieHerd(creature))
+						{
+							// Si es de la misma manada, NO llamar para atacar
+							continue;
+						}
+
 						ComponentZombieChaseBehavior chaseBehavior = creature.Entity.FindComponent<ComponentZombieChaseBehavior>();
 						if (chaseBehavior != null && chaseBehavior.Target == null)
 						{
 							// Usar isRetaliation=true para permitir ataque incluso en modos de juego restrictivos
-							chaseBehavior.Attack(attacker, this.HelpCallRange, this.HelpChaseTime, this.IsPersistentHelp, true);
+							// No podemos usar IsSameHerd aquí, así que verificamos directamente
+							if (!this.IsSameZombieHerd(attacker))
+							{
+								chaseBehavior.Attack(attacker, this.HelpCallRange, this.HelpChaseTime, this.IsPersistentHelp, true);
+							}
 						}
 					}
 				}
@@ -351,16 +423,30 @@ namespace Game
 			return false;
 		}
 
-		// Método para coordinación de ataques en grupo
+		// Método para coordinación de ataques en grupo - MODIFICADO para evitar atacar a la misma manada
 		public void CoordinateGroupAttack(ComponentCreature target)
 		{
 			if (target == null || string.IsNullOrEmpty(this.HerdName))
 				return;
 
+			// Verificar si el objetivo es de la misma manada
+			if (this.IsSameZombieHerd(target))
+			{
+				// NO coordinar ataques contra miembros de la misma manada
+				return;
+			}
+
 			var nearbyZombies = this.GetNearbyZombies(this.HelpCallRange);
 
 			foreach (var zombie in nearbyZombies)
 			{
+				// Verificar que el zombie no sea de la misma manada que el objetivo
+				if (this.IsSameZombieHerd(zombie))
+				{
+					// Si es de la misma manada, NO atacar
+					continue;
+				}
+
 				ComponentZombieChaseBehavior chaseBehavior = zombie.Entity.FindComponent<ComponentZombieChaseBehavior>();
 				if (chaseBehavior != null && chaseBehavior.Target == null)
 				{
@@ -371,6 +457,23 @@ namespace Game
 					}
 				}
 			}
+		}
+
+		// Método auxiliar para verificar si otra criatura es del mismo rebaño
+		private bool IsSameHerdAsCreature(ComponentCreature creature1, ComponentCreature creature2)
+		{
+			if (creature1 == null || creature2 == null)
+				return false;
+
+			ComponentZombieHerdBehavior herd1 = creature1.Entity.FindComponent<ComponentZombieHerdBehavior>();
+			ComponentZombieHerdBehavior herd2 = creature2.Entity.FindComponent<ComponentZombieHerdBehavior>();
+
+			if (herd1 != null && herd2 != null && !string.IsNullOrEmpty(herd1.HerdName) && !string.IsNullOrEmpty(herd2.HerdName))
+			{
+				return herd1.HerdName == herd2.HerdName;
+			}
+
+			return false;
 		}
 	}
 }
