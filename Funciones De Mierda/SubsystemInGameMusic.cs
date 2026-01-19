@@ -526,6 +526,14 @@ namespace Game
 			new SubsystemInGameMusic.TrackInfo("MenuMusic/Chrono Trigger Main Theme", 177f),
 			new SubsystemInGameMusic.TrackInfo("MenuMusic/Twill STAND UP Digimon Xros Wars Hunters", 177f),
 			new SubsystemInGameMusic.TrackInfo("MenuMusic/Sonar Pocket Never Give Up! Digimon Fusion", 177f),
+			new SubsystemInGameMusic.TrackInfo("MenuMusic/You Can Do Anything Sonic CD", 177f),
+			new SubsystemInGameMusic.TrackInfo("MenuMusic/Sonic Boom Closing Theme Sonic CD", 177f),
+			new SubsystemInGameMusic.TrackInfo("MenuMusic/Sonic Boom Sonic CD", 177f),
+			new SubsystemInGameMusic.TrackInfo("MenuMusic/Power Rangers The Movie Title Theme SNES", 177f),
+			new SubsystemInGameMusic.TrackInfo("MenuMusic/Mappy 1983 In Game Theme", 177f),
+			new SubsystemInGameMusic.TrackInfo("MenuMusic/Prince Of Persia (SNES) Staff Roll", 177f),
+			new SubsystemInGameMusic.TrackInfo("MenuMusic/Prince Of Persia (SNES) Recap", 177f),
+			new SubsystemInGameMusic.TrackInfo("MenuMusic/FIELD OF VIEW 渇いた叫び - 捨てられた物。", 177f),
 		};
 
 		private struct TrackInfo
