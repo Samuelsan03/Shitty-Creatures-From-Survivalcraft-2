@@ -37,7 +37,6 @@ namespace Game
 			this.m_componentLocomotion = base.Entity.FindComponent<ComponentLocomotion>(true);
 			this.m_componentCreatureModel = base.Entity.FindComponent<ComponentCreatureModel>(true);
 
-			// AÑADIDO: Obtener el ComponentHealth
 			this.m_componentHealth = base.Entity.FindComponent<ComponentHealth>();
 
 			this.SpecificBlocks = values.GetValue<string>("SpecificBlocks");
@@ -95,11 +94,10 @@ namespace Game
 
 		public void Update(float dt)
 		{
-			// AÑADIDO: Verificar si el NPC está muerto (Health <= 0)
 			if (this.m_componentHealth != null && this.m_componentHealth.Health <= 0f)
 			{
 				this.m_blockToBreak = null;
-				return; // Salir del Update si está muerto
+				return;
 			}
 
 			bool flag = (!this.CanBreakBlocks && !this.CanPlaceBlocks) || this.m_componentChaseBehavior.Target == null;
@@ -248,18 +246,19 @@ namespace Game
 		private void DestroyBlock(Point3 point)
 		{
 			int cellValue = this.m_subsystemTerrain.Terrain.GetCellValue(point.X, point.Y, point.Z);
-			int num = Terrain.ExtractContents(cellValue);
-			this.m_subsystemTerrain.DestroyCell(0, point.X, point.Y, point.Z, 0, true, false, null);
-			bool flag = !string.IsNullOrEmpty(this.m_customSound);
-			if (flag)
+
+			// CAMBIAR noDebris A false PARA GENERAR PARTÍCULAS Y DROPS
+			this.m_subsystemTerrain.DestroyCell(0, point.X, point.Y, point.Z, 0, false, false, null);
+
+			// SONIDO PERSONALIZADO O SONIDO DE IMPACTO
+			if (!string.IsNullOrEmpty(this.m_customSound))
 			{
 				this.m_subsystemAudio.PlaySound(this.m_customSound, 1f, 0f, new Vector3(point), 16f, true);
 			}
 			else
 			{
 				SubsystemSoundMaterials subsystemSoundMaterials = base.Project.FindSubsystem<SubsystemSoundMaterials>();
-				bool flag2 = subsystemSoundMaterials != null;
-				if (flag2)
+				if (subsystemSoundMaterials != null)
 				{
 					subsystemSoundMaterials.PlayImpactSound(cellValue, new Vector3(point), 1f);
 				}
@@ -346,7 +345,6 @@ namespace Game
 		private ComponentLocomotion m_componentLocomotion;
 		private ComponentCreatureModel m_componentCreatureModel;
 
-		// AÑADIDO: Referencia al ComponentHealth
 		private ComponentHealth m_componentHealth;
 
 		private readonly bool m_isBreakingBlock;
