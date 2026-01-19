@@ -61,7 +61,15 @@ namespace Game
                 "MenuMusic/Yahpp Sorceress Elise",
 				"MenuMusic/Chrono Trigger Main Theme",
 				"MenuMusic/Twill STAND UP Digimon Xros Wars Hunters",
-				"MenuMusic/Sonar Pocket Never Give Up! Digimon Fusion"
+				"MenuMusic/Sonar Pocket Never Give Up! Digimon Fusion",
+				"MenuMusic/Prince Of Persia (SNES) Recap",
+				"MenuMusic/Prince Of Persia (SNES) Staff Roll",
+				"MenuMusic/FIELD OF VIEW 渇いた叫び - 捨てられた物。",
+				"MenuMusic/Mappy 1983 In Game Theme",
+				"MenuMusic/Power Rangers The Movie Title Theme SNES",
+				"MenuMusic/Sonic Boom Closing Theme Sonic CD",
+				"MenuMusic/Sonic Boom Sonic CD",
+				"MenuMusic/You Can Do Anything Sonic CD",
 			};
 
 			// Usar Environment.TickCount como semilla simple
