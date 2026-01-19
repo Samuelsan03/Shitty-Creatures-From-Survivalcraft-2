@@ -2011,8 +2011,8 @@ namespace Game
 					this.SpawnCreatures(creatureType, "ElArquero", point, 2).Count)
 			});
 
-			// Spawn para Arqueroprisionero con 100% de probabilidad - DESDE DÍA 6, solo de noche
-			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("Arqueroprisionero", SpawnLocationType.Surface, true, false)
+			// Spawn para ArqueroPrisionero con 100% de probabilidad - DESDE DÍA 6, solo de noche
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("ArqueroPrisionero", SpawnLocationType.Surface, true, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
 				{
@@ -2055,11 +2055,11 @@ namespace Game
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "Arqueroprisionero", point, 2).Count)
+					this.SpawnCreatures(creatureType, "ArqueroPrisionero", point, 2).Count)
 			});
 
 			// Spawn para Arqueroprisionero Constant - DESDE DÍA 6, solo de noche
-			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("Arqueroprisionero Constant", SpawnLocationType.Surface, false, true)
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("ArqueroPrisionero Constant", SpawnLocationType.Surface, false, true)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
 				{
@@ -2102,7 +2102,7 @@ namespace Game
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "Arqueroprisionero", point, 2).Count)
+					this.SpawnCreatures(creatureType, "ArqueroPrisionero", point, 2).Count)
 			});
 
 			// Spawn para Conker con 100% de probabilidad - DESDE DÍA 7, solo de día
