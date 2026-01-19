@@ -308,7 +308,7 @@ namespace Game
 			}
 		}
 
-		// MÉTODO MEJORADO: DESTRUCCIÓN DE BLOQUES MÁS EFECTIVA
+		// MÉTODO MEJORADO: DESTRUCCIÓN DE BLOQUES MÁS EFECTIVA PERO RESPETANDO BLOQUES INDESTRUCTIBLES
 		public void DamageNearbyBlocks(Vector3 center)
 		{
 			if (m_subsystemTerrain == null || BlockDamageRadius <= 0) return;
@@ -320,7 +320,7 @@ namespace Game
 			int radius = (int)MathUtils.Ceiling(BlockDamageRadius);
 			float radiusSquared = BlockDamageRadius * BlockDamageRadius;
 
-			// DESTRUCCIÓN MÁS AGRESIVA
+			// DESTRUCCIÓN MÁS AGRESIVA PERO RESPETANDO BLOQUES INDESTRUCTIBLES
 			for (int dx = -radius; dx <= radius; dx++)
 			{
 				for (int dy = -radius; dy <= radius; dy++)
@@ -338,6 +338,19 @@ namespace Game
 							int cellValue = m_subsystemTerrain.Terrain.GetCellValue(x, y, z);
 							if (cellValue != 0)
 							{
+								// VERIFICAR SI EL BLOQUE ES DESTRUCTIBLE
+								// Obtener el tipo de bloque
+								int blockType = Terrain.ExtractContents(cellValue);
+								Block block = BlocksManager.Blocks[blockType];
+
+								// Verificar si el bloque puede ser destruido por explosiones
+								// BedrockBlock y otros bloques indestructibles tienen resistencia infinita
+								// Pasar el valor completo (cellValue) en lugar de solo el tipo
+								if (block.GetExplosionResilience(cellValue) >= float.MaxValue)
+								{
+									continue; // Saltar bloques indestructibles
+								}
+
 								float distance = MathUtils.Sqrt(distanceSquared);
 								float destructionChance = 1f - (distance / BlockDamageRadius);
 
@@ -350,6 +363,7 @@ namespace Game
 								else if (destructionChance > 0.2f)
 								{
 									// Dañar el bloque sin destruirlo completamente
+									// Solo cambiar el bloque si no es indestructible
 									m_subsystemTerrain.ChangeCell(x, y, z, 0, false);
 								}
 							}
