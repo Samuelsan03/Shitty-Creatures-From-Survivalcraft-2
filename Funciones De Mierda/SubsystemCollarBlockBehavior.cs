@@ -249,7 +249,7 @@ namespace Game
 							}
 
 							messageColor = new Color(102, 0, 153);
-							soundToPlay = "Audio/UI/Ghost Tamed Sound";
+							soundToPlay = "Audio/UI/Bosses FNAF 3";
 						}
 						else if (isTamedCharger)
 						{
@@ -326,11 +326,11 @@ namespace Game
 
 							if (!translationFound)
 							{
-								message = "You have tamed a Ghost! Its invisibility is now in your hands!";
+								message = "You have tamed a Ghost!\n Its invisibility is now in your hands!";
 							}
 
 							messageColor = new Color(128, 0, 128);
-							soundToPlay = "Audio/UI/Ghost Tamed Sound";
+							soundToPlay = "Audio/UI/Tada";
 						}
 						else
 						{
