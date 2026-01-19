@@ -112,7 +112,7 @@ namespace Game
 							ComponentPlayer componentPlayer2 = componentMiner.ComponentPlayer;
 							if (componentPlayer2 != null)
 							{
-								componentPlayer2.ComponentGui.DisplaySmallMessage("First pull back the crossbow!", Color.Orange, true, false);
+								componentPlayer2.ComponentGui.DisplaySmallMessage(LanguageControl.Get("Messages", "FirstPullCrossbow"), Color.Orange, true, false);
 							}
 						}
 						else if (arrowType2 == null)
@@ -120,7 +120,7 @@ namespace Game
 							ComponentPlayer componentPlayer3 = componentMiner.ComponentPlayer;
 							if (componentPlayer3 != null)
 							{
-								componentPlayer3.ComponentGui.DisplaySmallMessage("First load an arrow!", Color.Orange, true, false);
+								componentPlayer3.ComponentGui.DisplaySmallMessage(LanguageControl.Get("Messages", "FirstLoadArrow"), Color.Orange, true, false);
 							}
 						}
 						else
@@ -136,16 +136,15 @@ namespace Game
 							Projectile projectile = this.m_subsystemProjectiles.FireProjectile(value, vector, v5 * 40f, Vector3.Zero, componentMiner.ComponentCreature);
 							if (projectile != null)
 							{
-								if (loadCount == 0) // CORREGIDO: usar la variable local loadCount
+								if (RepeatCrossbowBlock.GetLoadCount(slotValue) == 0)
 								{
 									data = RepeatCrossbowBlock.SetArrowType(data, null);
 								}
 								else
 								{
-									slotValue = RepeatCrossbowBlock.SetLoadCount(slotValue, loadCount - 1); // CORREGIDO
-									data = Terrain.ExtractData(slotValue); // Actualizar data
+									RepeatCrossbowBlock.SetLoadCount(slotValue, RepeatCrossbowBlock.GetLoadCount(slotValue) - 1);
 								}
-								this.m_subsystemAudio.PlaySound("Audio/Bow", 1f, this.m_random.Float(-0.1f, 0.1f), componentMiner.ComponentCreature.ComponentCreatureModel.EyePosition, 3f, 0.05f);
+								this.m_subsystemAudio.PlaySound("Audio/Crossbow Remake/Crossbow Shoot", 1f, this.m_random.Float(-0.1f, 0.1f), componentMiner.ComponentCreature.ComponentCreatureModel.EyePosition, 3f, 0.05f);
 								if (componentMiner.ComponentPlayer == null)
 								{
 									projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
@@ -153,12 +152,12 @@ namespace Game
 							}
 						}
 						inventory.RemoveSlotItems(activeSlotIndex, 1);
-						int value2 = (loadCount > 1) ? Terrain.MakeBlockValue(num, 0, RepeatCrossbowBlock.SetDraw(data, 15)) : Terrain.MakeBlockValue(num, 0, RepeatCrossbowBlock.SetDraw(RepeatCrossbowBlock.SetArrowType(data, null), 0));
+						int value2 = (loadCount > 1) ? Terrain.MakeBlockValue(num, loadCount - 1, RepeatCrossbowBlock.SetDraw(data, 15)) : Terrain.MakeBlockValue(num, 0, RepeatCrossbowBlock.SetDraw(RepeatCrossbowBlock.SetArrowType(data, null), 0));
 						inventory.AddSlotItems(activeSlotIndex, value2, 1);
 						if (draw > 0)
 						{
 							componentMiner.DamageActiveTool(1);
-							this.m_subsystemAudio.PlaySound("Audio/CrossbowBoing", 1f, this.m_random.Float(-0.1f, 0.1f), componentMiner.ComponentCreature.ComponentCreatureModel.EyePosition, 3f, 0f);
+							this.m_subsystemAudio.PlaySound("Audio/Crossbow Remake/Crossbow Loading Remake", 1f, this.m_random.Float(-0.1f, 0.1f), componentMiner.ComponentCreature.ComponentCreatureModel.EyePosition, 3f, 0f);
 						}
 						this.m_aimStartTimes.Remove(componentMiner);
 						break;
@@ -187,9 +186,9 @@ namespace Game
 			RepeatArrowBlock.ArrowType? arrowType2 = RepeatCrossbowBlock.GetArrowType(data);
 			if (arrowType2 == null)
 			{
-				return 8 - loadCount; // CORREGIDO: máximo 8
+				return 8;
 			}
-			if (loadCount >= 8) // CORREGIDO: límite de 8
+			if (loadCount >= 8)
 			{
 				return 0;
 			}
@@ -197,7 +196,7 @@ namespace Game
 			{
 				return 0;
 			}
-			return 8 - loadCount; // CORREGIDO: máximo 8
+			return 8 - loadCount;
 		}
 
 		public override void ProcessInventoryItem(IInventory inventory, int slotIndex, int value, int count, int processCount, out int processedValue, out int processedCount)
@@ -206,23 +205,18 @@ namespace Game
 			int slotValue = inventory.GetSlotValue(slotIndex);
 			int data = Terrain.ExtractData(slotValue);
 			int loadCount = RepeatCrossbowBlock.GetLoadCount(slotValue);
-
-			// LIMITAR a máximo 8 flechas
-			int maxToAdd = 8 - loadCount;
-			if (processCount > maxToAdd)
-			{
-				processCount = maxToAdd;
-			}
-
 			processedCount = count - processCount;
+			if (loadCount != 0)
+			{
+				processCount += loadCount;
+			}
 			processedValue = value;
 			if (processedCount == 0)
 			{
 				processedValue = 0;
 			}
 			inventory.RemoveSlotItems(slotIndex, 1);
-			int value2 = Terrain.MakeBlockValue(RepeatCrossbowBlock.Index, 0, RepeatCrossbowBlock.SetArrowType(data, new RepeatArrowBlock.ArrowType?(arrowType)));
-			value2 = RepeatCrossbowBlock.SetLoadCount(value2, loadCount + processCount); // CORREGIDO: usar SetLoadCount
+			int value2 = Terrain.MakeBlockValue(RepeatCrossbowBlock.Index, processCount, RepeatCrossbowBlock.SetArrowType(data, new RepeatArrowBlock.ArrowType?(arrowType)));
 			inventory.AddSlotItems(slotIndex, value2, 1);
 		}
 
@@ -235,10 +229,15 @@ namespace Game
 		}
 
 		public SubsystemTime m_subsystemTime;
+
 		public SubsystemProjectiles m_subsystemProjectiles;
+
 		public SubsystemAudio m_subsystemAudio;
+
 		public Game.Random m_random = new Game.Random();
+
 		public Dictionary<ComponentMiner, double> m_aimStartTimes = new Dictionary<ComponentMiner, double>();
-		public const int MaxArrowCount = 8; // CONSTANTE CLARA
+
+		public const int MCount = 8;
 	}
 }

@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Reflection.Metadata;
 using System.Xml.Linq;
 using Engine;
 using Game;
+using TemplatesDatabase;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Game
 {
@@ -15,6 +18,13 @@ namespace Game
 			this.m_inventoryGrid = this.Children.Find<GridPanelWidget>("InventoryGrid", true);
 			this.m_inventorySlotWidget = this.Children.Find<InventorySlotWidget>("InventorySlot", true);
 			this.m_instructionsLabel = this.Children.Find<LabelWidget>("InstructionsLabel", true);
+			this.m_titleLabel = this.Children.Find<LabelWidget>("TitleLabel", true);
+			this.m_inventoryLabel = this.Children.Find<LabelWidget>("InventoryLabel", true);
+
+			// Set translated texts - ¡CORREGIDO! Usando GetContentWidgets
+			this.m_titleLabel.Text = LanguageControl.GetContentWidgets("RepeatCrossbowWidget", "Title");
+			this.m_inventoryLabel.Text = LanguageControl.GetContentWidgets("RepeatCrossbowWidget", "Inventory");
+
 			for (int i = 0; i < this.m_inventoryGrid.RowsCount; i++)
 			{
 				for (int j = 0; j < this.m_inventoryGrid.ColumnsCount; j++)
@@ -50,21 +60,18 @@ namespace Game
 				base.ParentWidget.Children.Remove(this);
 				return;
 			}
-
-			// TEXTO DIRECTO EN INGLÉS (sin usar LanguageControl)
 			if (draw < 15)
 			{
-				this.m_instructionsLabel.Text = "Pull back to load"; // Texto directo
+				this.m_instructionsLabel.Text = LanguageControl.GetContentWidgets("RepeatCrossbowWidget", "InstructionsPull");
 			}
 			else if (arrowType == null)
 			{
-				this.m_instructionsLabel.Text = "Insert arrows"; // Texto directo
+				this.m_instructionsLabel.Text = LanguageControl.GetContentWidgets("RepeatCrossbowWidget", "InstructionsInsert");
 			}
 			else
 			{
-				this.m_instructionsLabel.Text = "Arrows: " + RepeatCrossbowBlock.GetLoadCount(slotValue).ToString() + "/8"; // Texto directo
+				this.m_instructionsLabel.Text = string.Format(LanguageControl.GetContentWidgets("RepeatCrossbowWidget", "InstructionsArrows"), RepeatCrossbowBlock.GetLoadCount(slotValue).ToString());
 			}
-
 			if ((draw < 15 || arrowType == null) && base.Input.Tap != null && this.HitTestGlobal(base.Input.Tap.Value, null) == this.m_inventorySlotWidget)
 			{
 				InventorySlotWidget inventorySlotWidget = this.m_inventorySlotWidget;
@@ -127,12 +134,23 @@ namespace Game
 		}
 
 		public IInventory m_inventory;
+
 		public int m_slotIndex;
+
 		public float? m_dragStartOffset;
+
 		public GridPanelWidget m_inventoryGrid;
+
 		public InventorySlotWidget m_inventorySlotWidget;
+
 		public LabelWidget m_instructionsLabel;
+
+		public LabelWidget m_titleLabel;
+
+		public LabelWidget m_inventoryLabel;
+
 		public Game.Random m_random = new Game.Random();
-		// Eliminado: public static string fName = "RepeatCrossbowWidget";
+
+		public static string fName = "RepeatCrossbowWidget";
 	}
 }

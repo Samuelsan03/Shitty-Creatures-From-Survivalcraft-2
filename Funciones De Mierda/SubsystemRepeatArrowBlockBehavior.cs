@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Engine;
 using Game;
 using TemplatesDatabase;
@@ -11,131 +11,87 @@ namespace Game
 		{
 			get
 			{
-				return new int[]
-				{
-					RepeatArrowBlock.Index
-				};
+				return Array.Empty<int>();
 			}
 		}
 
 		public override void OnFiredAsProjectile(Projectile projectile)
 		{
-			if (RepeatArrowBlock.GetArrowType(Terrain.ExtractData(projectile.Value)) == RepeatArrowBlock.ArrowType.ExplosiveArrow)
+			if (RepeatArrowBlock.GetArrowType(Terrain.ExtractData(projectile.Value)) != RepeatArrowBlock.ArrowType.ExplosiveArrow)
 			{
-				this.m_subsystemProjectiles.AddTrail(projectile, Vector3.Zero, new SmokeTrailParticleSystem(20, 0.5f, float.MaxValue, Color.White));
-				projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
+				return;
 			}
+			this.m_subsystemProjectiles.AddTrail(projectile, Vector3.Zero, new SmokeTrailParticleSystem(20, 0.5f, float.MaxValue, Color.White));
+			projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
 		}
 
 		public override bool OnHitAsProjectile(CellFace? cellFace, ComponentBody componentBody, WorldItem worldItem)
 		{
 			RepeatArrowBlock.ArrowType arrowType = RepeatArrowBlock.GetArrowType(Terrain.ExtractData(worldItem.Value));
-
-			// Aplicar efectos de veneno si la flecha es de veneno
-			if (arrowType == RepeatArrowBlock.ArrowType.PoisonArrow || arrowType == RepeatArrowBlock.ArrowType.SeriousPoisonArrow)
+			float poisonDuration = 0f;
+			if (arrowType == RepeatArrowBlock.ArrowType.PoisonArrow)
 			{
-				// Obtener el objetivo
-				if (componentBody != null && componentBody.Entity != null)
+				poisonDuration = 150f;
+			}
+			else if (arrowType == RepeatArrowBlock.ArrowType.SeriousPoisonArrow)
+			{
+				poisonDuration = 300f;
+			}
+			if (poisonDuration > 0f)
+			{
+				ComponentPoisonInfected componentPoisonInfected = (componentBody != null) ? componentBody.Entity.FindComponent<ComponentPoisonInfected>() : null;
+				ComponentPlayer componentPlayer = ((componentBody != null) ? componentBody.Entity.FindComponent<ComponentCreature>() : null) as ComponentPlayer;
+				if (componentPlayer != null)
 				{
-					ComponentCreature targetCreature = componentBody.Entity.FindComponent<ComponentCreature>();
-
-					if (targetCreature != null)
+					if (!componentPlayer.ComponentSickness.IsSick)
 					{
-						// USAR LA MISMA DURACIÓN QUE FLAMEBULLET POISON: 300 segundos (5 minutos)
-						// Según el código de SubsystemFlameBulletBlockBehavior, usa 300f para Poison
-						float poisonDuration = (arrowType == RepeatArrowBlock.ArrowType.PoisonArrow) ? 100f : 400f;
-						// Nota: Ambas flechas de veneno ahora usan 300 segundos para igualar a FlameBullet Poison
-						// Si quieres mantener la diferencia, puedes usar: 300f para PoisonArrow y 450f para SeriousPoisonArrow
-
-						ComponentPoisonInfected componentPoisonInfected = targetCreature.Entity.FindComponent<ComponentPoisonInfected>();
-						ComponentPlayer componentPlayer = targetCreature as ComponentPlayer;
-
-						// Aplicar veneno a jugadores (MISMA LÓGICA QUE FLAMEBULLET)
-						if (componentPlayer != null)
-						{
-							// Verificar si el jugador está en modo creativo o si las mecánicas de supervivencia están deshabilitadas
-							SubsystemGameInfo subsystemGameInfo = base.Project.FindSubsystem<SubsystemGameInfo>();
-							if (subsystemGameInfo != null &&
-								(subsystemGameInfo.WorldSettings.GameMode == GameMode.Creative ||
-								!subsystemGameInfo.WorldSettings.AreAdventureSurvivalMechanicsEnabled))
-							{
-								return false; // No aplicar veneno en modo creativo
-							}
-
-							if (componentPlayer.ComponentSickness != null)
-							{
-								float resistance = (componentPoisonInfected != null) ? componentPoisonInfected.PoisonResistance : 0f;
-								float effectiveDuration = MathUtils.Max(0f, poisonDuration - resistance);
-
-								if (!componentPlayer.ComponentSickness.IsSick)
-								{
-									componentPlayer.ComponentSickness.StartSickness();
-									componentPlayer.ComponentSickness.m_sicknessDuration = effectiveDuration;
-								}
-								else
-								{
-									// Si ya está enfermo, sumar la duración (acumulativo como FlameBullet)
-									componentPlayer.ComponentSickness.m_sicknessDuration += effectiveDuration;
-								}
-							}
-						}
-						// Aplicar veneno a criaturas (MISMA LÓGICA QUE FLAMEBULLET)
-						else if (componentPoisonInfected != null)
-						{
-							float resistance = componentPoisonInfected.PoisonResistance;
-							float effectiveDuration = MathUtils.Max(0f, poisonDuration - resistance);
-
-							if (effectiveDuration > 0f)
-							{
-								componentPoisonInfected.StartInfect(effectiveDuration);
-							}
-						}
-
-						// APLICAR DAÑO INICIAL (igual que FlameBullet)
-						ComponentHealth componentHealth = targetCreature.Entity.FindComponent<ComponentHealth>();
-						Projectile projectile = worldItem as Projectile;
-						if (projectile != null && componentHealth != null)
-						{
-							// Usar el mismo daño que FlameBullet Poison: 0.4f / fireResilience
-							// Pero ajustado al daño base de las flechas (3f o 4f según m_weaponPowers)
-							float baseDamage = (arrowType == RepeatArrowBlock.ArrowType.PoisonArrow) ? 3f : 4f;
-							float adjustedDamage = baseDamage / componentHealth.FireResilience;
-
-							// Usar FireInjury como placeholder (igual que FlameBullet)
-							// O crear un PoisonInjury si existe
-							componentHealth.Injure(new FireInjury(adjustedDamage, projectile.Owner));
-						}
+						componentPlayer.ComponentSickness.StartSickness();
+						componentPlayer.ComponentSickness.m_sicknessDuration = Math.Max(0f, poisonDuration - (componentPoisonInfected != null ? componentPoisonInfected.PoisonResistance : 0f));
 					}
 				}
-
-				// Las flechas de veneno no se rompen
-				return false;
+				else if (componentPoisonInfected != null)
+				{
+					componentPoisonInfected.StartInfect(poisonDuration);
+				}
 			}
-
-			// Probabilidad de rotura para flechas normales
 			if (worldItem.Velocity.Length() > 10f)
 			{
 				float breakChance = 0f;
-
 				switch (arrowType)
 				{
 					case RepeatArrowBlock.ArrowType.CopperArrow:
-						breakChance = 0.20f;
+						breakChance = 0.15f;
 						break;
 					case RepeatArrowBlock.ArrowType.IronArrow:
-						breakChance = 0.10f;
+						breakChance = 0.075f;
 						break;
 					case RepeatArrowBlock.ArrowType.DiamondArrow:
 						breakChance = 0f;
 						break;
-					case RepeatArrowBlock.ArrowType.ExplosiveArrow:
-						breakChance = 0.08f;
+					case RepeatArrowBlock.ArrowType.PoisonArrow:
+						breakChance = 0.05f;
+						break;
+					case RepeatArrowBlock.ArrowType.SeriousPoisonArrow:
+						breakChance = 0.05f;
+						break;
+					default:
+						breakChance = 0.05f;
 						break;
 				}
-
 				if (this.m_random.Float(0f, 1f) < breakChance)
 				{
-					return true;
+					if (arrowType == RepeatArrowBlock.ArrowType.SeriousPoisonArrow)
+					{
+						worldItem.Value = Terrain.MakeBlockValue(RepeatArrowBlock.Index, 0, RepeatArrowBlock.SetArrowType(0, RepeatArrowBlock.ArrowType.PoisonArrow));
+					}
+					else if (arrowType == RepeatArrowBlock.ArrowType.PoisonArrow)
+					{
+						worldItem.Value = Terrain.MakeBlockValue(RepeatArrowBlock.Index, 0, RepeatArrowBlock.SetArrowType(0, RepeatArrowBlock.ArrowType.CopperArrow));
+					}
+					else if (arrowType != RepeatArrowBlock.ArrowType.ExplosiveArrow)
+					{
+						return true;
+					}
 				}
 			}
 			return false;
