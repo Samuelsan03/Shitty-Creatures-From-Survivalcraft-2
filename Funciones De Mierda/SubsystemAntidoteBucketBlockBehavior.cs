@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Engine;
 using GameEntitySystem;
 using TemplatesDatabase;
@@ -13,7 +13,7 @@ namespace Game
 
 		public override int[] HandledBlocks
 		{
-			get { return new int[] { 387 }; } // ID de AntidoteBucketBlock
+			get { return new int[] { AntidoteBucketBlock.Index }; } // Usar la constante Index de AntidoteBucketBlock
 		}
 
 		public override bool OnUse(Ray3 ray, ComponentMiner componentMiner)
