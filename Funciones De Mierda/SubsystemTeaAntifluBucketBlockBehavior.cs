@@ -30,13 +30,23 @@ namespace Game
 				return false;
 			}
 
+			bool hasFlu = HasFlu(componentPlayer);
+
+			// Solo procesar si el jugador tiene gripe
+			if (!hasFlu)
+			{
+				return false;
+			}
+
 			m_subsystemAudio.PlaySound("Audio/UI/drinking", 1f, 0f, 0f, 0f);
 
 			bool curedFlu = CureFlu(componentPlayer);
-			bool restoredHealth = RestoreHealth(componentPlayer);
 
 			if (curedFlu)
 			{
+				// Solo restaurar salud si se curó la gripe
+				RestoreHealth(componentPlayer);
+
 				// Intentar obtener el mensaje del sistema de idiomas
 				string fluMessage;
 				try
@@ -60,6 +70,14 @@ namespace Game
 			}
 
 			return true;
+		}
+
+		private bool HasFlu(ComponentPlayer player)
+		{
+			if (player == null) return false;
+
+			ComponentFlu flu = player.Entity.FindComponent<ComponentFlu>();
+			return flu != null && flu.HasFlu;
 		}
 
 		private bool CureFlu(ComponentPlayer player)
