@@ -30,7 +30,8 @@ namespace Game
 			this.m_subsystemTime = base.Project.FindSubsystem<SubsystemTime>(true);
 			this.m_subsystemTerrain = base.Project.FindSubsystem<SubsystemTerrain>(true);
 			this.m_subsystemAudio = base.Project.FindSubsystem<SubsystemAudio>(true);
-			this.m_componentChaseBehavior = base.Entity.FindComponent<ComponentChaseBehavior>(true);
+			this.m_componentChaseBehavior = base.Entity.FindComponent<ComponentChaseBehavior>();
+			this.m_componentZombieChaseBehavior = base.Entity.FindComponent<ComponentZombieChaseBehavior>();
 			this.m_componentPathfinding = base.Entity.FindComponent<ComponentPathfinding>(true);
 			this.m_componentBody = base.Entity.FindComponent<ComponentBody>(true);
 			this.m_componentInventory = base.Entity.FindComponent<ComponentInventory>();
@@ -100,7 +101,9 @@ namespace Game
 				return;
 			}
 
-			bool flag = (!this.CanBreakBlocks && !this.CanPlaceBlocks) || this.m_componentChaseBehavior.Target == null;
+			// MODIFICACIÓN: Verificar si hay cualquier objetivo de persecución
+			bool hasTarget = this.HasAnyTarget();
+			bool flag = (!this.CanBreakBlocks && !this.CanPlaceBlocks) || !hasTarget;
 			if (flag)
 			{
 				this.m_blockToBreak = null;
@@ -136,8 +139,13 @@ namespace Game
 							bool flag6 = point == Point3.Zero && this.m_componentPathfinding.IsStuck;
 							if (flag6)
 							{
-								Vector3 vector = Vector3.Normalize(this.m_componentChaseBehavior.Target.ComponentBody.Position - this.m_componentBody.Position);
-								point = this.GetDirectionFromVector(vector);
+								// MODIFICACIÓN: Usar la posición del objetivo activo
+								ComponentBody targetBody = this.GetActiveTargetBody();
+								if (targetBody != null)
+								{
+									Vector3 vector = Vector3.Normalize(targetBody.Position - this.m_componentBody.Position);
+									point = this.GetDirectionFromVector(vector);
+								}
 							}
 							Point3 point2 = p + point;
 							Point3 point3 = point2 + new Point3(0, 1, 0);
@@ -160,6 +168,30 @@ namespace Game
 					}
 				}
 			}
+		}
+
+		// NUEVO MÉTODO: Verificar si hay algún objetivo activo
+		private bool HasAnyTarget()
+		{
+			if (this.m_componentChaseBehavior != null && this.m_componentChaseBehavior.Target != null)
+				return true;
+			if (this.m_componentZombieChaseBehavior != null && this.m_componentZombieChaseBehavior.Target != null)
+				return true;
+
+			// Puedes agregar más comportamientos de persecución aquí si es necesario
+			return false;
+		}
+
+		// NUEVO MÉTODO: Obtener el cuerpo del objetivo activo
+		private ComponentBody GetActiveTargetBody()
+		{
+			if (this.m_componentChaseBehavior != null && this.m_componentChaseBehavior.Target != null)
+				return this.m_componentChaseBehavior.Target.ComponentBody;
+			if (this.m_componentZombieChaseBehavior != null && this.m_componentZombieChaseBehavior.Target != null)
+				return this.m_componentZombieChaseBehavior.Target.ComponentBody;
+
+			// Puedes agregar más comportamientos de persecución aquí si es necesario
+			return null;
 		}
 
 		private void PlaceBlock(Point3 point)
@@ -339,6 +371,7 @@ namespace Game
 		private SubsystemTerrain m_subsystemTerrain;
 		private SubsystemAudio m_subsystemAudio;
 		private ComponentChaseBehavior m_componentChaseBehavior;
+		private ComponentZombieChaseBehavior m_componentZombieChaseBehavior;
 		private ComponentPathfinding m_componentPathfinding;
 		private ComponentBody m_componentBody;
 		private ComponentInventory m_componentInventory;
