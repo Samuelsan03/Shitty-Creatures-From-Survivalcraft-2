@@ -30,14 +30,22 @@ namespace Game
 			this.m_subsystemTime = base.Project.FindSubsystem<SubsystemTime>(true);
 			this.m_subsystemTerrain = base.Project.FindSubsystem<SubsystemTerrain>(true);
 			this.m_subsystemAudio = base.Project.FindSubsystem<SubsystemAudio>(true);
+
+			// Referencias a todos los comportamientos de persecución (NO son obligatorios)
+			// Intentamos encontrar cada uno, pero pueden ser null
 			this.m_componentChaseBehavior = base.Entity.FindComponent<ComponentChaseBehavior>();
 			this.m_componentZombieChaseBehavior = base.Entity.FindComponent<ComponentZombieChaseBehavior>();
+			this.m_componentNewChaseBehavior = base.Entity.FindComponent<ComponentNewChaseBehavior>();
+			this.m_componentNewChaseBehavior2 = base.Entity.FindComponent<ComponentNewChaseBehavior2>();
+
+			// Estos componentes SÍ son obligatorios para el PathBreaker
 			this.m_componentPathfinding = base.Entity.FindComponent<ComponentPathfinding>(true);
 			this.m_componentBody = base.Entity.FindComponent<ComponentBody>(true);
-			this.m_componentInventory = base.Entity.FindComponent<ComponentInventory>();
 			this.m_componentLocomotion = base.Entity.FindComponent<ComponentLocomotion>(true);
 			this.m_componentCreatureModel = base.Entity.FindComponent<ComponentCreatureModel>(true);
 
+			// Estos componentes NO son obligatorios
+			this.m_componentInventory = base.Entity.FindComponent<ComponentInventory>();
 			this.m_componentHealth = base.Entity.FindComponent<ComponentHealth>();
 
 			this.SpecificBlocks = values.GetValue<string>("SpecificBlocks");
@@ -48,6 +56,7 @@ namespace Game
 			this.CreatureAnimationType = this.DetectAnimationType();
 			this.BreakProbability = values.GetValue<float>("BreakProbability");
 			this.m_specificBlockIds = new List<int>();
+
 			bool flag = !string.IsNullOrEmpty(this.SpecificBlocks);
 			if (flag)
 			{
@@ -68,6 +77,7 @@ namespace Game
 							}
 						}
 					}
+
 					foreach (string text in this.SpecificBlocks.Split(new char[]
 					{
 						','
@@ -95,15 +105,17 @@ namespace Game
 
 		public void Update(float dt)
 		{
+			// Verificar si la criatura está muerta (solo si existe ComponentHealth)
 			if (this.m_componentHealth != null && this.m_componentHealth.Health <= 0f)
 			{
 				this.m_blockToBreak = null;
 				return;
 			}
 
-			// MODIFICACIÓN: Verificar si hay cualquier objetivo de persecución
+			// Verificar si hay cualquier objetivo de persecución
 			bool hasTarget = this.HasAnyTarget();
 			bool flag = (!this.CanBreakBlocks && !this.CanPlaceBlocks) || !hasTarget;
+
 			if (flag)
 			{
 				this.m_blockToBreak = null;
@@ -139,7 +151,7 @@ namespace Game
 							bool flag6 = point == Point3.Zero && this.m_componentPathfinding.IsStuck;
 							if (flag6)
 							{
-								// MODIFICACIÓN: Usar la posición del objetivo activo
+								// Usar la posición del objetivo activo (si existe)
 								ComponentBody targetBody = this.GetActiveTargetBody();
 								if (targetBody != null)
 								{
@@ -147,8 +159,10 @@ namespace Game
 									point = this.GetDirectionFromVector(vector);
 								}
 							}
+
 							Point3 point2 = p + point;
 							Point3 point3 = point2 + new Point3(0, 1, 0);
+
 							int cellValue = this.m_subsystemTerrain.Terrain.GetCellValue(point3.X, point3.Y, point3.Z);
 							bool flag7 = this.IsBlockBreakable(cellValue);
 							if (flag7)
@@ -170,27 +184,47 @@ namespace Game
 			}
 		}
 
-		// NUEVO MÉTODO: Verificar si hay algún objetivo activo
+		// MÉTODO MEJORADO: Verificar si hay algún objetivo activo (maneja componentes null)
 		private bool HasAnyTarget()
 		{
+			// Comportamiento de persecución original (opcional)
 			if (this.m_componentChaseBehavior != null && this.m_componentChaseBehavior.Target != null)
 				return true;
+
+			// Comportamiento de persecución zombie (opcional)
 			if (this.m_componentZombieChaseBehavior != null && this.m_componentZombieChaseBehavior.Target != null)
 				return true;
 
-			// Puedes agregar más comportamientos de persecución aquí si es necesario
+			// Nuevo comportamiento de persecución (opcional)
+			if (this.m_componentNewChaseBehavior != null && this.m_componentNewChaseBehavior.Target != null)
+				return true;
+
+			// Nuevo comportamiento de persecución 2 (opcional)
+			if (this.m_componentNewChaseBehavior2 != null && this.m_componentNewChaseBehavior2.Target != null)
+				return true;
+
 			return false;
 		}
 
-		// NUEVO MÉTODO: Obtener el cuerpo del objetivo activo
+		// MÉTODO MEJORADO: Obtener el cuerpo del objetivo activo (maneja componentes null)
 		private ComponentBody GetActiveTargetBody()
 		{
+			// Comportamiento de persecución original (opcional)
 			if (this.m_componentChaseBehavior != null && this.m_componentChaseBehavior.Target != null)
 				return this.m_componentChaseBehavior.Target.ComponentBody;
+
+			// Comportamiento de persecución zombie (opcional)
 			if (this.m_componentZombieChaseBehavior != null && this.m_componentZombieChaseBehavior.Target != null)
 				return this.m_componentZombieChaseBehavior.Target.ComponentBody;
 
-			// Puedes agregar más comportamientos de persecución aquí si es necesario
+			// Nuevo comportamiento de persecución (opcional)
+			if (this.m_componentNewChaseBehavior != null && this.m_componentNewChaseBehavior.Target != null)
+				return this.m_componentNewChaseBehavior.Target.ComponentBody;
+
+			// Nuevo comportamiento de persecución 2 (opcional)
+			if (this.m_componentNewChaseBehavior2 != null && this.m_componentNewChaseBehavior2.Target != null)
+				return this.m_componentNewChaseBehavior2.Target.ComponentBody;
+
 			return null;
 		}
 
@@ -226,6 +260,7 @@ namespace Game
 						IEnumerable<int> specificBlockIds = this.m_specificBlockIds;
 						enumerable = specificBlockIds;
 					}
+
 					IEnumerable<int> source = enumerable;
 					foreach (int num in source.Distinct<int>())
 					{
@@ -367,17 +402,25 @@ namespace Game
 			return result;
 		}
 
+		// Campos
 		private SubsystemTime m_subsystemTime;
 		private SubsystemTerrain m_subsystemTerrain;
 		private SubsystemAudio m_subsystemAudio;
+
+		// Comportamientos de persecución (opcionales - pueden ser null)
 		private ComponentChaseBehavior m_componentChaseBehavior;
 		private ComponentZombieChaseBehavior m_componentZombieChaseBehavior;
+		private ComponentNewChaseBehavior m_componentNewChaseBehavior;
+		private ComponentNewChaseBehavior2 m_componentNewChaseBehavior2;
+
+		// Componentes obligatorios para PathBreaker
 		private ComponentPathfinding m_componentPathfinding;
 		private ComponentBody m_componentBody;
-		private ComponentInventory m_componentInventory;
 		private ComponentLocomotion m_componentLocomotion;
 		private ComponentCreatureModel m_componentCreatureModel;
 
+		// Componentes opcionales
+		private ComponentInventory m_componentInventory;
 		private ComponentHealth m_componentHealth;
 
 		private readonly bool m_isBreakingBlock;
