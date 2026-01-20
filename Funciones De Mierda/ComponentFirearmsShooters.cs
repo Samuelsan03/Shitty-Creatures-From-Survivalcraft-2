@@ -11,7 +11,7 @@ namespace Game
 	{
 		private static readonly Dictionary<int, FirearmConfig> FirearmConfigs = new Dictionary<int, FirearmConfig>();
 
-		public float MaxShootingDistance = 25f;
+		public float MaxShootingDistance = 100f;
 		public float SpreadFactor = 0.05f;
 		public float ReloadChance = 0.05f;
 		public float MinReloadInterval = 5f;
@@ -46,8 +46,6 @@ namespace Game
 		private int m_currentWeaponIndex = -1;
 		private int m_shotsSinceLastReload = 0;
 
-		private Texture2D m_reloadParticleTexture;
-
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
 			base.Load(valuesDictionary, idToEntityMap);
@@ -73,16 +71,6 @@ namespace Game
 			m_componentInventory = base.Entity.FindComponent<ComponentInventory>(true);
 			m_componentChaseBehavior = base.Entity.FindComponent<ComponentChaseBehavior>(true);
 			m_componentModel = base.Entity.FindComponent<ComponentCreatureModel>(true);
-
-			try
-			{
-				m_reloadParticleTexture = ContentManager.Get<Texture2D>("Textures/KillParticle", null);
-			}
-			catch (Exception ex)
-			{
-				Log.Warning($"No se pudo cargar la textura de partícula de recarga: {ex.Message}");
-				m_reloadParticleTexture = null;
-			}
 
 			if (FirearmConfigs.Count == 0)
 			{
@@ -418,6 +406,46 @@ namespace Game
 				{
 					m_isReloading = false;
 					m_shotsSinceLastReload = 0;
+
+					if (m_subsystemParticles != null && m_subsystemTerrain != null)
+					{
+						try
+						{
+							Vector3 basePosition = m_componentCreature.ComponentCreatureModel.EyePosition;
+
+							Vector3 readyPosition = basePosition + new Vector3(0f, 0.2f, 0f);
+
+							KillParticleSystem readyParticles = new KillParticleSystem(
+								m_subsystemTerrain,
+								readyPosition,
+								0.5f
+							);
+
+							m_subsystemParticles.AddParticleSystem(readyParticles, false);
+
+							for (int i = 0; i < 3; i++)
+							{
+								Vector3 offset = new Vector3(
+									m_random.Float(-0.2f, 0.2f),
+									m_random.Float(0.1f, 0.4f),
+									m_random.Float(-0.2f, 0.2f)
+								);
+
+								KillParticleSystem additionalParticles = new KillParticleSystem(
+									m_subsystemTerrain,
+									basePosition + offset,
+									0.5f
+								);
+
+								m_subsystemParticles.AddParticleSystem(additionalParticles, false);
+							}
+						}
+						catch (Exception ex)
+						{
+							Log.Warning($"Error mostrando partículas de balas listas: {ex.Message}");
+						}
+					}
+
 					m_subsystemAudio.PlaySound("Audio/Armas/reload", SoundVolume, 0f,
 						m_componentCreature.ComponentCreatureModel.EyePosition, SoundRange, true);
 				}
@@ -874,25 +902,35 @@ namespace Game
 			m_animationStartTime = m_subsystemTime.GameTime;
 			m_lastReloadTime = m_subsystemTime.GameTime;
 
-			if (m_subsystemParticles != null)
+			if (m_subsystemParticles != null && m_subsystemTerrain != null)
 			{
 				try
 				{
 					Vector3 basePosition = m_componentCreature.ComponentCreatureModel.EyePosition;
 
-					for (int i = 0; i < 5; i++)
+					KillParticleSystem reloadParticles = new KillParticleSystem(
+						m_subsystemTerrain,
+						basePosition,
+						0.5f
+					);
+
+					m_subsystemParticles.AddParticleSystem(reloadParticles, false);
+
+					for (int i = 0; i < 3; i++)
 					{
 						Vector3 offset = new Vector3(
-							m_random.Float(-0.3f, 0.3f),
-							m_random.Float(-0.1f, 0.3f),
-							m_random.Float(-0.3f, 0.3f)
+							m_random.Float(-0.2f, 0.2f),
+							m_random.Float(0.1f, 0.4f),
+							m_random.Float(-0.2f, 0.2f)
 						);
 
-						Vector3 velocity = new Vector3(
-							m_random.Float(-0.3f, 0.3f),
-							m_random.Float(0.5f, 1.5f),
-							m_random.Float(-0.3f, 0.3f)
+						KillParticleSystem additionalParticles = new KillParticleSystem(
+							m_subsystemTerrain,
+							basePosition + offset,
+							0.5f
 						);
+
+						m_subsystemParticles.AddParticleSystem(additionalParticles, false);
 					}
 				}
 				catch (Exception ex)
