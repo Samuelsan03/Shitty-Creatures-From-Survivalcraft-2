@@ -695,6 +695,7 @@ namespace Game
 			if (blockType == typeof(IncendiaryBombBlock)) return true;
 			if (blockType == typeof(PoisonBombBlock)) return true;
 			if (blockType == typeof(BrickBlock)) return true;
+			if (blockType == typeof(SnowballBlock)) return true;
 
 			return false;
 		}
