@@ -1,5 +1,22 @@
 <ShittyCreatures xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://gitee.com/THPRC/survivalcraft-api/raw/SCAPI1.8/Survivalcraft/Content/Assets/Database.xsd">
 <Folder Name="Gameplay" Guid="d509e5e2-2c10-49f1-8223-85cd892c63b0">
+<ComponentTemplate Name="ZombieAI2" Description="Inteligencia artificial avanzada para zombies con soporte para armas, recarga automática y animaciones" Guid="9d185bf8-92ec-4ea6-ad86-b8a99b650fd2" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
+    <Parameter Name="Class" Guid="86cba08c-bbc6-464a-85df-76bc2791ebef" Value="Game.ComponentZombieAI2" Type="string" Description="Clase C# que implementa el componente de IA para zombies"/>
+    <Parameter Name="CanUseInventory" Guid="fa80dc29-cf40-4617-af33-23ce40e094bf" Value="true" Type="bool" Description="Si el zombie puede usar armas del inventario"/>
+</ComponentTemplate>
+
+<ComponentTemplate Name="ZombieAI" Description="Inteligencia artificial avanzada para zombies con soporte para armas, recarga automática y animaciones" Guid="232cc5ce-0a90-44e5-974e-7be80889ee64" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
+    <Parameter Name="Class" Guid="ebda9f80-b85c-4775-99dd-cb3c190c42fa" Value="Game.ComponentZombieAI" Type="string" Description="Clase C# que implementa el componente de IA para zombies"/>
+    <Parameter Name="CanUseInventory" Guid="3f79a0af-0406-4f0d-adc9-eb46a60785bd" Value="true" Type="bool" Description="Si el zombie puede usar armas del inventario"/>
+</ComponentTemplate>
+
+<ComponentTemplate  Name="NewHumanModel" Description="Human model behavior and animation" Guid="8d0d8da1-6a63-434d-9b1d-5d12a2560ac3" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311"> 
+  <Parameter Name="WalkAnimationSpeed"  Description="Walking animation speed, in cycles per meter" Guid="d33b9594-1eaa-4a12-a458-ba9d000a73a4" Value="1" Type="float"/>
+  <Parameter Name="WalkLegsAngle" Description="Animation angle of legs, in radians" Guid="998716d4-9b48-4342-bcd6-447e7f2dc88a" Value="0.5" Type="float"/>
+  <Parameter Name="WalkBobHeight" Description="Height of bobbing when creature walks, in meters" Guid="78483973-f145-4041-b8bd-3f354d1569f7" Value="0.05" Type="float"/>
+  <Parameter Name="Class" Guid="596f5c74-b7d0-4390-837a-6b69d833ebac" Value="Game.ComponentNewHumanModel" Type="string"/>
+</ComponentTemplate>
+
 <ComponentTemplate Name="CreatureAI" Description="Inteligencia artificial para criaturas con soporte para armas y recarga automática" Guid="a703e514-0246-49c4-a58d-282a2e0737d1" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
     <Parameter Name="Class" Guid="e43a2641-0995-446c-aa50-390e7c0e2c12" Value="Game.ComponentCreatureAI" Type="string" Description="Clase C# que implementa el componente"/>
     <Parameter Name="CanUseInventory" Guid="ddb27b73-4aa7-4580-a5bd-684db3139696" Value="true" Type="bool" Description="Si la criatura puede usar armas del inventario"/>
@@ -97,6 +114,18 @@
     </Folder>
 
     <Folder Name="ProgramedInteligence" Guid="33dfd132-3c41-4dfa-a385-af3ba34ff86b">
+    <ComponentTemplate Name="NewChaseBehavior2" Description="Comportamiento que hace que una criatura persiga al intruso" Guid="156963c2-5088-4d40-b0fa-73a8f0f202b5" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+  <Parameter Name="Class" Guid="59578e6c-c3b9-451c-9472-f0626be12772" Value="Game.ComponentNewChaseBehavior2" Type="string"/>
+  <Parameter Name="ChaseWhenAttackedProbability" Description="Probabilidad de que la criatura persiga cuando es atacada" Guid="5e64f000-66c7-4950-b821-c67c7c101ec3" Value="1" Type="float"/>
+  <Parameter Name="NightChaseTime" Description="Tiempo de persecución cuando la criatura comienza a perseguir durante la noche, en segundos" Guid="a80cc983-aa50-421e-bbc9-bac0d5070f5f" Value="10" Type="float"/>
+  <Parameter Name="DayChaseRange" Description="Rango cuando la criatura comienza a perseguir durante el día" Guid="9ed3cebc-bec5-48c2-b52a-50588301adf9" Value="1.5" Type="float"/>
+  <Parameter Name="ChaseOnTouchProbability" Description="Probabilidad de que la criatura persiga si es tocada por una criatura en AutoChaseMask" Guid="658b58f4-d775-4964-b8b3-b4afb51a73e4" Value="1" Type="float"/>
+  <Parameter Name="DayChaseTime" Description="Tiempo de persecución cuando la criatura comienza a perseguir durante el día, en segundos" Guid="0bab483f-7602-4406-8952-7383d1e285b1" Value="10" Type="float"/>
+  <Parameter Name="NightChaseRange" Description="Rango cuando la criatura comienza a perseguir durante la noche" Guid="c2cad3d2-f471-4251-bd91-1e15bd37f3e4" Value="1.5" Type="float"/>
+  <Parameter Name="AutoChaseMask" Description="Categorías de criaturas a perseguir" Guid="b6f475a7-4ed9-40a3-b251-25416b58ed76" Value="LandOther, Bird" Type="Game.CreatureCategory"/>
+  <Parameter Name="ChaseNonPlayerProbability" Description="Probabilidad de que la criatura persiga un objetivo no-jugador cuando está en rango, de 0 a 1" Guid="8dedf1e9-5f38-4284-8ae6-0dfcc4530057" Value="0" Type="float"/>
+</ComponentTemplate>
+
     <ComponentTemplate Name="ComponentFirearmsShooters" Guid="927c0a46-b1e5-42a9-a6bb-0979acbc2518" Description="Componente que permite a NPCs usar armas de fuego automáticamente">
     <Parameter Name="Class" Value="Game.ComponentFirearmsShooters" Type="string" Guid="05ae6aa2-3bb6-4bee-875d-89f2c1851e45" Description="Nombre de la clase C# que implementa el comportamiento de disparo con armas de fuego"/>
     <Parameter Name="UpdateOrder" Value="1000" Type="int" Guid="69c93012-6088-405e-8a76-bf44e9d42fe1" Description="Orden de actualización del componente durante el ciclo del juego"/>
@@ -115,7 +144,7 @@
     <Parameter Name="Class" Value="Game.ComponentBanditHerdBehavior" Type="string" Guid="8682e727-23a6-4f51-be2c-c57d1d9ef7d5" Description="Nombre de la clase C# que implementa el comportamiento de manada para bandidos"/>
     <Parameter Name="UpdateOrder" Value="150" Type="int" Guid="b52346d1-5df9-49d4-977f-296f1f6071a0" Description="Orden de actualización del componente durante el ciclo del juego"/>
     <Parameter Name="LoadOrder" Value="100" Type="int" Guid="c5cab34a-2e3b-4fbb-a219-2358b08c8cc0" Description="Orden de carga del componente en la entidad"/>
-    <Parameter Name="HerdName" Value="bandits" Type="string" Guid="9bcbab52-8e8f-41ee-a2c4-0aadf228d010" Description="Nombre de la manada. 'player' para aliarse con jugadores, cualquier otro nombre para manada independiente"/>
+    <Parameter Name="HerdName" Value="bandits" Type="string" Guid="9bcbab52-8e8f-41ee-a2c4-0aadf228d010" Description="Nombre de la manada para bandidos"/>
     <Parameter Name="HerdingRange" Value="30" Type="float" Guid="b7ebb86a-d464-4835-995a-5a0771a81a0f" Description="Rango máximo para detectar y agruparse con otros miembros de la manada"/>
     <Parameter Name="AutoNearbyCreaturesHelp" Value="true" Type="bool" Guid="912c89b2-caeb-4303-8abb-996c5b0c2b5f" Description="Si es true, llama a otros miembros de la manada cuando es atacado"/>
 </ComponentTemplate>
@@ -150,20 +179,20 @@
     <Parameter Name="KnockbackChance" Value="0.3" Type="float" Description="Probabilidad (0-1) de que se aplique el retroceso en cada golpe."/>
 </ComponentTemplate>
 
-    <ComponentTemplate Name="ComponentZombieHerdBehavior" Guid="f544e4df-1bac-4041-b0a0-816d2e46b950">
-    <Parameter Name="Class" Value="Game.ComponentZombieHerdBehavior" Type="string" Guid="db9e9aaa-d573-4ad2-a815-ce00aa4a84be" Description="Componente de comportamiento de manada específico para zombis, extendiendo la funcionalidad de ComponentHerdBehavior."/>
-    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="968a2ba5-0614-4d76-bb4e-5f2d063a274f" Description="Si es opcional o requerido para el funcionamiento."/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="298fd870-4c58-42df-879c-51e7e3ca0a49" Description="Orden de carga del componente (antes de ComponentZombieChaseBehavior)."/>
+    <ComponentTemplate Name="ComponentZombieHerdBehavior" Guid="a470caf8-d3a0-461c-8064-3a668cce4e14">
+    <Parameter Name="Class" Value="Game.ComponentZombieHerdBehavior" Type="string" Guid="95e41117-dcbe-40e8-b2c7-7440ada53a93" Description="Componente de comportamiento de manada específico para zombis, extendiendo la funcionalidad de ComponentHerdBehavior."/>
+    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="8d63a4f4-d206-4b15-ae31-2519492a7f32" Description="Si es opcional o requerido para el funcionamiento."/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="0c22f3fd-9b3e-444e-aa6d-1d59f6f89ed4" Description="Orden de carga del componente (antes de ComponentZombieChaseBehavior)."/>
     <!-- Parámetros heredados de ComponentHerdBehavior -->
-    <Parameter Name="HerdName" Value="Zombie" Type="string" Guid="aff3a45b-b502-4b2b-97f1-88d1b81afaaa" Description="Nombre de la manada. Los zombis con el mismo nombre trabajan juntos y no se atacan entre sí."/>
-    <Parameter Name="HerdingRange" Value="40" Type="float" Guid="d58f9d1d-5fb1-4c31-b2ce-cf6e6f136cf6" Description="Rango máximo para detectar otros miembros de la manada (en bloques)."/>
-    <Parameter Name="AutoNearbyCreaturesHelp" Value="true" Type="bool" Guid="fd5fb3f6-827f-430b-a735-056022f60a33" Description="Si llama automáticamente a otros miembros de la manada cuando es atacado."/>
+    <Parameter Name="HerdName" Value="Zombie" Type="string" Guid="23c5124b-1f1c-4e24-a791-04706b0c4b8e" Description="Nombre de la manada. Los zombis con el mismo nombre trabajan juntos y NO SE ATACAN entre sí (ver lógica en SetupZombieInjuryHandler y CallZombiesForHelp)."/>
+    <Parameter Name="HerdingRange" Value="40" Type="float" Guid="c10eee0f-8aaa-447b-904e-b75a5de8d882" Description="Rango máximo para detectar otros miembros de la manada (en bloques). Valor por defecto mayor para zombis según código C#."/>
+    <Parameter Name="AutoNearbyCreaturesHelp" Value="true" Type="bool" Guid="1ef254a9-4c85-4228-8744-436f19c0f8b0" Description="Si llama automáticamente a otros miembros de la manada cuando es atacado."/>
     <!-- Parámetros específicos para zombis -->
-    <Parameter Name="CallForHelpWhenAttacked" Value="true" Type="bool" Guid="40e35ce1-e821-47dc-8753-7ac751b3ac54" Description="Si los zombis llaman a otros cuando son atacados."/>
-    <Parameter Name="HelpCallRange" Value="25" Type="float" Guid="165b0d1c-6588-464d-9acb-43bcd7b94dbe" Description="Rango para llamar a otros zombis en ayuda (en bloques)."/>
-    <Parameter Name="HelpChaseTime" Value="30" Type="float" Guid="e0f5cc82-a038-40b8-8cf3-eb18f9c87f64" Description="Tiempo que los zombis persiguen al atacante (en segundos)."/>
-    <Parameter Name="IsPersistentHelp" Value="false" Type="bool" Guid="f28c5b24-1f6b-4f73-aa39-c393e838d24f" Description="Si la persecución de ayuda es persistente (continúa hasta que el objetivo muere o se pierde)."/>
-    <Parameter Name="ZombieAggressiveGrouping" Value="false" Type="bool" Guid="f292bb6b-5372-4a2c-bc01-07829cf8bb38" Description="Si los zombis se agrupan agresivamente y deambulan cuando no están en combate."/>
+    <Parameter Name="CallForHelpWhenAttacked" Value="true" Type="bool" Guid="1ec744fb-b470-4837-8d05-a6cfdbc41c25" Description="Si los zombis llaman a otros cuando son atacados. La lógica en SetupZombieInjuryHandler verifica que el atacante NO sea de la misma manada."/>
+    <Parameter Name="HelpCallRange" Value="25" Type="float" Guid="744b2613-11e6-44b1-b3cd-2bd3a85e2139" Description="Rango para llamar a otros zombis en ayuda (en bloques)."/>
+    <Parameter Name="HelpChaseTime" Value="30" Type="float" Guid="c6600b71-66f4-415e-b0fc-e9dc376223ef" Description="Tiempo que los zombis persiguen al atacante (en segundos)."/>
+    <Parameter Name="IsPersistentHelp" Value="false" Type="bool" Guid="399f43dd-981d-4e28-9efe-3a40e0d755a8" Description="Si la persecución de ayuda es persistente (continúa hasta que el objetivo muere o se pierde)."/>
+    <Parameter Name="ZombieAggressiveGrouping" Value="false" Type="bool" Guid="e81372aa-d0d0-4831-950f-804ac5c9df10" Description="Si los zombis se agrupan agresivamente, deambulan cuando no están en combate y llaman ayuda en rango extendido (HelpCallRange × 1.5). Ver métodos CallAdditionalZombies y AddZombieSpecificStates."/>
 </ComponentTemplate>
 
     <ComponentTemplate Name="ComponentCharger" Guid="12ff342d-88d2-44a1-8bd0-92ffb738fa9f">
@@ -210,8 +239,6 @@
 
     <ComponentTemplate Name="BoomerExplosion" Guid="f0256105-afbc-4209-84cb-2fae41881524">
     <Parameter Name="Class" Value="Game.ComponentBoomerExplosion" Type="string" Guid="b2774fa3-d656-4fff-9ab9-dc7223da9c8b" Description="Componente que hace que la criatura explote al morir o cuando entidades se acercan."/>
-    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="3d0ab350-1df2-4d98-ba2a-f217e1e39141" Description="Si es opcional o requerido para el funcionamiento."/>
-    <Parameter Name="LoadOrder" Value="70" Type="int" Guid="4a3c4862-c310-4798-935a-c5595fb8cb47" Description="Orden de carga del componente."/>
     <Parameter Name="ActivationRange" Value="3" Type="float" Guid="439bfff8-9a15-4cc6-ac6a-4c7110282679" Description="Rango de activación (en bloques) para detectar entidades cercanas y explotar."/>
     <Parameter Name="UseStandardExplosion" Value="true" Type="bool" Guid="00173457-bd82-4572-a5bd-6013fb57fc03" Description="Usar el sistema de explosiones estándar del juego."/>
     <Parameter Name="UseCustomShockwave" Value="false" Type="bool" Guid="2c62034c-bc9c-4b8a-a668-90b70301c089" Description="Usar onda expansiva personalizada además de la explosión estándar."/>
@@ -225,70 +252,20 @@
     <Parameter Name="DestroyBlocks" Value="true" Type="bool" Guid="ab31c1c8-f5f4-406a-a635-cde1f4d4fbf6" Description="Si destruye bloques con la onda expansiva personalizada."/>
 </ComponentTemplate>
 
-    <ComponentTemplate Name="ComponentZombieChaseBehavior" Guid="2af27374-a20d-4049-9eb5-57e3d319fec2">
-    <Parameter Name="Class" Value="Game.ComponentZombieChaseBehavior" Type="string" Description="El nombre de la clase C# que implementa el comportamiento de persecución para zombis."/>
-    <Parameter Name="LoadOrder" Value="-1" Type="int" Description="Orden de carga para resolver dependencias con otros componentes."/>
-    <Parameter Name="IsOptional" Value="False" Type="bool" Description="Indica si la criatura puede existir sin este componente."/>
-    <Parameter Name="AttackMode" Value="Default" Type="string" Description="Modo de ataque: Default, OnlyHand, Ranged. AJUSTA: Define si el zombi usa armas de distancia o solo cuerpo a cuerpo."/>
-    <Parameter Name="AttackRange" Value="2,15" Type="Vector2" Description="Rango de ataque mínimo y máximo. AJUSTA: Distancia mínima y máxima para atacar."/>
-    <Parameter Name="DayChaseRange" Value="20" Type="float" Description="Distancia máxima de persecución durante el día. AJUSTA: Qué tan lejos puede detectar objetivos de día."/>
-    <Parameter Name="NightChaseRange" Value="30" Type="float" Description="Distancia máxima de persecución durante la noche. AJUSTA: Qué tan lejos puede detectar objetivos de noche."/>
-    <Parameter Name="DayChaseTime" Value="30" Type="float" Description="Tiempo máximo de persecución durante el día. AJUSTA: Cuánto tiempo persigue objetivos de día."/>
-    <Parameter Name="NightChaseTime" Value="60" Type="float" Description="Tiempo máximo de persecución durante la noche. AJUSTA: Cuánto tiempo persigue objetivos de noche."/>
-    <Parameter Name="AutoDismount" Value="True" Type="bool" Description="Si el zombi debe desmontar automáticamente cuando ataca. AJUSTA: Si baja de monturas al iniciar ataque."/>
-    <Parameter Name="JumpWhenTargetStanding" Value="True" Type="bool" Description="Si el zombi salta cuando el objetivo está encima. AJUSTA: Reacción al estar debajo del objetivo."/>
-    <Parameter Name="AllowAttackingStandingOnBody" Value="True" Type="bool" Description="Permite atacar a criaturas sobre las que está parado. AJUSTA: Atacar objetivos encima del zombi."/>
-    <Parameter Name="AttacksPlayer" Value="True" Type="bool" Description="Si el zombi ataca jugadores. AJUSTA: Agresión hacia jugadores."/>
-    <Parameter Name="AttacksNonPlayerCreature" Value="True" Type="bool" Description="Si el zombi ataca otras criaturas. AJUSTA: Agresión hacia NPCs."/>
-    <Parameter Name="AttacksSameHerd" Value="False" Type="bool" Description="Si ataca a miembros del mismo rebaño. AJUSTA: Friendly fire entre zombis."/>
-    <Parameter Name="AttacksAllCategories" Value="True" Type="bool" Description="Si ataca todas las categorías de criaturas. AJUSTA: Agresión universal."/>
-    <Parameter Name="ChaseNonPlayerProbability" Value="1.0" Type="float" Description="Probabilidad de perseguir criaturas no jugador. AJUSTA: Qué tan agresivo es con NPCs."/>
-    <Parameter Name="ChaseWhenAttackedProbability" Value="1.0" Type="float" Description="Probabilidad de contraatacar cuando es herido. AJUSTA: Reacción al daño."/>
-    <Parameter Name="ChaseOnTouchProbability" Value="0.5" Type="float" Description="Probabilidad de atacar al colisionar. AJUSTA: Agresión por contacto."/>
-    <Parameter Name="ChaseRangeOnTouch" Value="7" Type="float" Description="Rango de persecución al tocar. AJUSTA: Distancia de persecución por contacto."/>
-    <Parameter Name="ChaseTimeOnTouch" Value="7" Type="float" Description="Tiempo de persecución al tocar. AJUSTA: Duración de persecución por contacto."/>
-    <Parameter Name="ChaseRangeOnAttacked" Value="30" Type="float" Description="Rango de persecución cuando es atacado. AJUSTA: Distancia de contraataque."/>
-    <Parameter Name="ChaseTimeOnAttacked" Value="60" Type="float" Description="Tiempo de persecución cuando es atacado. AJUSTA: Duración de contraataque."/>
-    <Parameter Name="ChasePersistentOnAttacked" Value="True" Type="bool" Description="Si la persecución es persistente al ser atacado. AJUSTA: Persistencia de contraataque."/>
-    <Parameter Name="MinHealthToAttackActively" Value="0.4" Type="float" Description="Salud mínima para atacar activamente. AJUSTA: Salud necesaria para buscar objetivos."/>
-    <Parameter Name="TargetInRangeTimeToChase" Value="3" Type="float" Description="Tiempo que un objetivo debe estar en rango para iniciar persecución. AJUSTA: Demora para empezar a perseguir."/>
-    <Parameter Name="PlayIdleSoundWhenStartToChase" Value="True" Type="bool" Description="Reproduce sonido al empezar a perseguir. AJUSTA: Feedback auditivo de inicio de persecución."/>
-    <Parameter Name="PlayAngrySoundWhenChasing" Value="True" Type="bool" Description="Reproduce sonidos de ira durante la persecución. AJUSTA: Feedback auditivo durante persecución."/>
-    <Parameter Name="ImportanceLevelNonPersistent" Value="200" Type="float" Description="Nivel de importancia para persecuciones no persistentes. AJUSTA: Prioridad del comportamiento."/>
-    <Parameter Name="ImportanceLevelPersistent" Value="200" Type="float" Description="Nivel de importancia para persecuciones persistentes. AJUSTA: Prioridad del comportamiento persistente."/>
-    <Parameter Name="MaxAttackRange" Value="1.75" Type="float" Description="Rango máximo para ataques cuerpo a cuerpo. AJUSTA: Alcance de ataque físico."/>
-</ComponentTemplate>
-
-    <ComponentTemplate Name="UniversalRangedBehavior" Description="Comportamiento universal para armas de distancia con compatibilidad para todos los tipos de rebaño" Guid="8b19b162-8a89-4c37-9b1d-ea3f6140d918">
-    <Parameter Name="Class" Value="Game.ComponentUniversalRangedBehavior" Type="string" Guid="9a9e70c3-61c7-4624-9533-9c2abbe6b10d"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="1f570e32-6fd8-48e9-ab5e-2a3f94821808"/>
-    <Parameter Name="LoadOrder" Value="65" Type="int" Guid="1812725f-3f59-466a-82c3-618af1863b48"/>
-    <Parameter Name="DayChaseRange" Value="16" Type="float" Description="Rango de persecución durante el día" Guid="232dd992-0041-4060-be4e-a5a2f289c151"/>
-    <Parameter Name="NightChaseRange" Value="24" Type="float" Description="Rango de persecución durante la noche" Guid="4017decb-c7ef-4a09-b289-8ec8dd8753fb"/>
-    <Parameter Name="DayChaseTime" Value="30" Type="float" Description="Tiempo máximo de persecución durante el día" Guid="d862109f-39d2-4dde-b902-ff5600b9eb9a"/>
-    <Parameter Name="NightChaseTime" Value="60" Type="float" Description="Tiempo máximo de persecución durante la noche" Guid="84321bfe-791d-4d80-a2f6-2eac87d044a7"/>
-    <Parameter Name="ChaseNonPlayerProbability" Value="0.2" Type="float" Description="Probabilidad de perseguir criaturas no jugador" Guid="d01512db-304b-4c17-9332-7e3b2c60fec0"/>
-    <Parameter Name="ChaseWhenAttackedProbability" Value="0.8" Type="float" Description="Probabilidad de perseguir cuando es atacado" Guid="84229c35-e3c7-46cc-9a5b-b5c888a87a58"/>
-    <Parameter Name="ChaseOnTouchProbability" Value="0.5" Type="float" Description="Probabilidad de perseguir al tocar" Guid="a83bd05c-8ae4-4969-b309-6d7b4d2b6d3f"/>
-    <Parameter Name="AttackRange" Value="2,15" Type="Vector2" Description="Rango mínimo y máximo para ataque a distancia (X=mínimo, Y=máximo)" Guid="1f631beb-e535-4a0f-bc5a-3383e6901656"/>
-    <!-- Cambiado a string -->
-    <Parameter Name="AutoChaseMask" Value="" Type="string" Description="Máscara de categorías de criaturas para persecución automática. Valores: LandPredator, LandOther, WaterPredator, WaterOther, Bird. Ejemplo: LandPredator|WaterPredator" Guid="1e14b49c-10cf-4a92-9c00-b732ebf410bd"/>
-    <Parameter Name="AutoDismount" Value="true" Type="bool" Description="Desmontar automáticamente al atacar" Guid="9047c4d3-b1be-4a9c-a6e6-650b6da74c8b"/>
-    <Parameter Name="AllowAttackingStandingOnBody" Value="true" Type="bool" Description="Permitir atacar cuerpos sobre los que está parado" Guid="410e560b-28cf-478a-8bd2-9e073dc032b0"/>
-    <Parameter Name="JumpWhenTargetStanding" Value="true" Type="bool" Description="Saltar cuando el objetivo está parado encima" Guid="034961a3-98cd-4a7a-8cef-1d58599fc36e"/>
-    <Parameter Name="AttacksPlayer" Value="true" Type="bool" Description="Atacar a jugadores" Guid="bc6609e5-120c-4daa-9fac-5ff1fad113c6"/>
-    <Parameter Name="AttacksNonPlayerCreature" Value="true" Type="bool" Description="Atacar a criaturas no jugador" Guid="27108d36-9f54-43a0-89b7-d631c5344518"/>
-    <Parameter Name="ChaseRangeOnTouch" Value="7" Type="float" Description="Rango de persecución al tocar" Guid="1fe21876-65d6-41e8-9ae2-53597d8905cd"/>
-    <Parameter Name="ChaseTimeOnTouch" Value="7" Type="float" Description="Tiempo de persecución al tocar" Guid="de8ade0b-2259-4829-b1a8-33ed9ed404ea"/>
-    <Parameter Name="MinHealthToAttackActively" Value="0.4" Type="float" Description="Salud mínima para atacar activamente" Guid="256bd813-14d2-4682-85dc-62c19d83012d"/>
-    <Parameter Name="PlayIdleSoundWhenStartToChase" Value="true" Type="bool" Description="Reproducir sonido de inactividad al comenzar persecución" Guid="0c87361d-8007-4f7d-b2d0-ef96720c4f41"/>
-    <Parameter Name="PlayAngrySoundWhenChasing" Value="true" Type="bool" Description="Reproducir sonido de enojo mientras persigue" Guid="4afd9300-8622-4a76-9009-f4c0edf0c97c"/>
-    <Parameter Name="TargetInRangeTimeToChase" Value="3" Type="float" Description="Tiempo que el objetivo debe estar en rango para comenzar persecución" Guid="ae1348ec-32a0-442f-86c5-e7501f9ed83e"/>
-    <!-- Cambiados de float? a float con valores especiales -->
-    <Parameter Name="ChaseRangeOnAttacked" Value="-1" Type="float" Description="Rango de persecución cuando es atacado (-1 para usar valor por defecto)" Guid="2353032b-6e64-48a3-b4e6-530c6596071d"/>
-    <Parameter Name="ChaseTimeOnAttacked" Value="-1" Type="float" Description="Tiempo de persecución cuando es atacado (-1 para usar valor por defecto)" Guid="62658a75-5c41-414a-b77b-b91796cf0928"/>
-    <!-- Cambiado de bool? a string para permitir valores "true", "false", o "default" -->
-    <Parameter Name="ChasePersistentOnAttacked" Value="default" Type="string" Description="Persistencia de persecución cuando es atacado (true, false, o default)" Guid="2c3aef69-c183-412b-b46d-558a80bca880"/>
+<ComponentTemplate Name="ZombieChaseBehavior" Description="Comportamiento que hace que un zombi persiga objetivos con lógica de horda" Guid="e2d8acef-b3dc-4540-959d-3f069e44a28b">
+  <Parameter Name="Class" Guid="22a3d5d5-5d99-47d1-a2ca-4008f9d80c46" Value="Game.ComponentZombieChaseBehavior" Type="string"/>
+  <Parameter Name="ChaseWhenAttackedProbability" Description="Probabilidad de que el zombi persiga cuando es atacado" Guid="f305826c-f07d-4b65-a31c-822122aac8bc" Value="1" Type="float"/>
+  <Parameter Name="NightChaseTime" Description="Tiempo de persecución cuando el zombi comienza a perseguir durante la noche, en segundos" Guid="709ffe45-82ed-4821-99ef-9ca212137502" Value="30" Type="float"/>
+  <Parameter Name="DayChaseRange" Description="Distancia a la que el zombi comienza a perseguir durante el día" Guid="8ac8ae3d-b764-4565-8947-67d03f0ac0a1" Value="8" Type="float"/>
+  <Parameter Name="ChaseOnTouchProbability" Description="Probabilidad de que el zombi persiga si es tocado por una criatura con AutoChaseMask" Guid="d0b11e6a-22f7-45dc-ad46-b2dc7d4b5812" Value="1" Type="float"/>
+  <Parameter Name="DayChaseTime" Description="Tiempo de persecución cuando el zombi comienza a perseguir durante el día, en segundos" Guid="d7f14055-0e18-48c9-b4e7-c062c3e84a0c" Value="30" Type="float"/>
+  <Parameter Name="NightChaseRange" Description="Distancia a la que el zombi comienza a perseguir durante la noche" Guid="915d9c3e-e200-4758-a2b3-e2bc4f10c7b2" Value="12" Type="float"/>
+  <Parameter Name="AutoChaseMask" Description="Categorías de criaturas a perseguir" Guid="9e71f195-51f8-4f76-80e2-3c5ea4de5180" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
+  <Parameter Name="ChaseNonPlayerProbability" Description="Probabilidad de que el zombi persiga a un objetivo que no sea el jugador cuando está dentro del rango, de 0 a 1" Guid="eed291ef-21f2-4fe3-8c90-ad362b994ccc" Value="1" Type="float"/>
+  <Parameter Name="AttacksSameHerd" Description="Indica si el zombi ataca a miembros de su misma horda" Guid="04453362-772f-4f7a-91bb-e354be1948c0" Value="false" Type="bool"/>
+  <Parameter Name="AttacksAllCategories" Description="Indica si el zombi ataca a todas las categorías de criaturas" Guid="6c12c2b1-efaa-4559-a780-4140da2f1a15" Value="true" Type="bool"/>
+  <Parameter Name="FleeFromSameHerd" Description="Indica si el zombi huye de miembros de su misma horda" Guid="487279ac-17e6-4269-a71d-e85711369d35" Value="true" Type="bool"/>
+  <Parameter Name="FleeDistance" Description="Distancia a la que huye al escapar de miembros de su misma horda" Guid="83e74677-f8ce-495f-bb9c-4deee2d302aa" Value="10" Type="float"/>
 </ComponentTemplate>
 
     <ComponentTemplate Name="ComponentNewAutoInteract" Guid="0d193534-6d05-4939-bba8-4a8755d3b064" Description="Componente que permite a NPCs interactuar automáticamente con bloques como puertas y rejillas">
@@ -498,39 +475,18 @@
     <Parameter Name="ChaseWhenAttackedProbability" Value="0.8" Type="float" Description="Probabilidad de perseguir cuando es atacado" Guid="cd0d0555-7250-4aab-b08e-33660b28ad41"/>
     <Parameter Name="ChaseOnTouchProbability" Value="0.5" Type="float" Description="Probabilidad de perseguir al tocar" Guid="327bd121-f8eb-4269-bfc8-a1f154baf49c"/>
 </ComponentTemplate>
-
-<ComponentTemplate Name="NewHumanModel" Description="Modelo humano mejorado con animaciones avanzadas y comportamientos de movimiento" Guid="70e462af-f157-402d-95b6-7eadbc9e54c4">
-    <Parameter Name="Class" Value="Game.ComponentNewHumanModel" Type="string" Guid="7cb16a3c-0725-40bc-8fed-88b8f6dd2355"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="10a1064b-6edc-4366-817e-7d0f184e75aa"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int" Guid="de0830d0-d90d-426c-943a-affb7001460a"/>
-    <Parameter Name="WalkAnimationSpeed" Value="1.0" Type="float" Description="Velocidad base de la animación de caminar" Guid="54224058-dabc-4c60-9547-eabe132093f7"/>
-    <Parameter Name="WalkBobHeight" Value="0.1" Type="float" Description="Altura del movimiento de cabeceo al caminar" Guid="13447f07-a299-4a67-a122-32adf0e45cd8"/>
-    <Parameter Name="ClimbAnimationSpeed" Value="1.5" Type="float" Description="Velocidad de animación al escalar" Guid="f575a9c6-be4c-4e07-a352-6ef76364267d"/>
-    <Parameter Name="SneakTransitionSpeed" Value="2.0" Type="float" Description="Velocidad de transición al agacharse/levantarse" Guid="92fe23e7-2da8-4658-92f0-64c135cd9de2"/>
-    <Parameter Name="LieDownEyeSpeed" Value="1.0" Type="float" Description="Velocidad para bajar los ojos al acostarse" Guid="5b8ef52b-4eda-4c17-9810-9818c61d5fe5"/>
-    <Parameter Name="LieDownModelSpeed" Value="3.0" Type="float" Description="Velocidad para acostar el modelo completo" Guid="8a5a5609-13c7-4285-87ee-9bf2faf54c96"/>
-    <Parameter Name="VanLieDownEyeLimit" Value="0.2" Type="float" Description="Límite de inclinación ocular en camper van" Guid="da4403f5-b585-49f0-9a1c-df55c2173964"/>
-    <Parameter Name="VanLieDownModelLimit" Value="0.05" Type="float" Description="Límite de inclinación del modelo en camper van" Guid="d84f0bb8-51eb-41a7-852d-14d66287406e"/>
-    <Parameter Name="PunchTransitionSpeed" Value="4.0" Type="float" Description="Velocidad de transición del golpe" Guid="d8cfa6fc-f7da-432f-8451-8f74c9ff2a94"/>
-    <Parameter Name="PunchAnimationSpeed" Value="2.0" Type="float" Description="Velocidad de la animación de golpe" Guid="01163588-ef35-45ca-866e-0a778c250c00"/>
-    <Parameter Name="PunchHitMoment" Value="0.5" Type="float" Description="Momento en la animación donde conecta el golpe" Guid="5a01edf0-d5ef-4b8c-aab5-36d8636e51b6"/>
-    <Parameter Name="HeadingSmoothingFactor" Value="8.0" Type="float" Description="Factor de suavizado de rotación" Guid="d94382e5-e62d-474e-bf3e-7f948d41f383"/>
-    <Parameter Name="BobSmoothingFactor" Value="12.0" Type="float" Description="Factor de suavizado del cabeceo" Guid="032fcbe5-6a48-45ba-b4d1-9fe902a14113"/>
-    <Parameter Name="RandomLookUpdateProbability" Value="0.25" Type="float" Description="Probabilidad de actualizar mirada aleatoria" Guid="a95e428a-7347-4fc5-8917-6c078767dd86"/>
-    <Parameter Name="RandomLookDistance" Value="3.0,8.0" Type="Vector2" Description="Rango de distancia para mirada aleatoria (min,max)" Guid="eefc7ceb-1e15-405c-8555-589427166578"/>
-    <Parameter Name="FootstepNoiseRange" Value="8.0" Type="float" Description="Rango del ruido de pasos" Guid="06a0c9c7-7df5-48ec-9355-079bcf2f47a1"/>
-    <Parameter Name="FootstepNoisePower" Value="0.25" Type="float" Description="Intensidad del ruido de pasos" Guid="b5d91f4f-7888-4b66-9df5-6bda72624d4d"/>
-    <Parameter Name="RowingSoundVolume" Value="0.4,0.6" Type="Vector2" Description="Rango de volumen para sonido de remo (min,max)" Guid="f4fe25c9-0eb2-4680-8157-209796fbb57c"/>
-    <Parameter Name="RowingSoundPitch" Value="-0.3,0.2" Type="Vector2" Description="Rango de tono para sonido de remo (min,max)" Guid="801a8592-7657-48db-9589-fb68e7354bea"/>
-    <Parameter Name="RowingSoundRange" Value="3.0" Type="float" Description="Rango de audición del sonido de remo" Guid="0cb70cb3-0c88-48de-aa46-130dde0ebaa5"/>
-    <Parameter Name="HandItemTransitionSpeed" Value="10.0" Type="float" Description="Velocidad de transición de objetos en mano" Guid="578b2a87-f9c1-4019-81ea-e7df413a366e"/>
-    <Parameter Name="DeathAnimationSpeed" Value="3.0" Type="float" Description="Velocidad de la animación de muerte" Guid="b0c78fe4-e237-4839-9857-0429014b8290"/>
-    <Parameter Name="HeadShakeFrequency" Value="16.0" Type="float" Description="Frecuencia de sacudida de cabeza" Guid="ded30683-7c6f-4e91-8868-7d8b470c5f62"/>
-    <Parameter Name="HeadShakeIntensity" Value="1.0" Type="float" Description="Intensidad máxima de sacudida" Guid="9d9f4c92-74a4-43cb-a624-9d9b5d9f9a6d"/>
-</ComponentTemplate>
     </Folder>
 
 <ProjectTemplate Name="Project" Guid="85023bf8-1c90-4dd1-9442-e6c13691d078">
+<MemberSubsystemTemplate Name="SkyGreen" Guid="4ca0a8da-ad38-4027-add0-6ea744c7f81c">
+    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="8b597919-ab45-42ca-81fe-9aadc691de82"/>
+    <Parameter Name="LoadOrder" Value="100" Type="int" Guid="28a8ff11-ca3c-4885-9de5-f5eaa6a5dd7d"/>
+    <Parameter Name="Class" Value="Game.SubsystemGreenNightSky" Type="string" Guid="90f0ad79-4429-4488-a178-d4446fcd4bd9"/>
+    <Parameter Name="IsGreenNightActive" Value="false" Type="bool" Guid="5b05966a-7c83-45a8-bade-281047d4debe"/>
+  <Parameter Name="HasRolledTonight" Value="false" Type="bool" Guid="83204c22-7806-4719-ba27-baf04eb70408"/>
+  <Parameter Name="LastCheckedDay" Value="0.0" Type="double" Guid="79158993-a680-476e-bc23-6b23e36ac7c8"/>
+  <Parameter Name="DaysSinceLastGreenNight" Value="0" Type="int" Guid="1b1cbee7-d9e9-4079-b3ad-b5083e96d6ea"/>
+</MemberSubsystemTemplate>
 <MemberSubsystemTemplate Name="GrozaBehavior" Guid="b41cc8e1-f01d-4d6a-9cc9-75202aa6ac2a">
     <Parameter Name="IsOptional" Value="false" Type="bool" Guid="9c5602cf-d081-4eea-9e27-c489894c8a16"/>
     <Parameter Name="LoadOrder" Value="60" Type="int" Guid="a10426ff-2f62-4a31-9815-b5b035a94a8b"/>
@@ -585,7 +541,8 @@
     <Parameter Name="IsOptional" Value="false" Type="bool" Guid="cd259ca0-4ecd-476b-8e46-6b1618aa8319"/>
     <Parameter Name="LoadOrder" Value="60" Type="int" Guid="200090e6-6fe8-4461-8826-f4199268bfcc"/>
     <Parameter Name="Class" Value="Game.SubsystemP90Behavior" Type="string" Guid="b8875ada-c780-4321-9a91-ab24b26c2f59"/>
-</MemberSubsystemTemplate><MemberSubsystemTemplate Name="AUGBehavior" Guid="6ae53686-2f60-439f-a157-9f49b8322766">
+</MemberSubsystemTemplate>
+<MemberSubsystemTemplate Name="AUGBehavior" Guid="6ae53686-2f60-439f-a157-9f49b8322766">
     <Parameter Name="IsOptional" Value="false" Type="bool" Guid="73720825-b138-420e-867b-8652fe354cb6"/>
     <Parameter Name="LoadOrder" Value="60" Type="int" Guid="36957040-5c7f-4275-8b9e-377279227d05"/>
     <Parameter Name="Class" Value="Game.SubsystemAUGBehavior" Type="string" Guid="d2f393aa-8850-4d43-95f5-742e234d9444"/>
@@ -1616,7 +1573,7 @@
 <MemberComponentTemplate Name="Inventory" Guid="f1c0c8e7-ec5c-42d9-a12f-5cbd6ec1a8a4" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
     <ParameterSet Name="Slots">
         <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="319" Type="int"/> <!-- Lanzallamas -->
+            <Parameter Name="Contents" Value="323" Type="int"/> <!-- Lanzallamas -->
             <Parameter Name="Count" Value="1" Type="int"/>
         </ParameterSet>
     </ParameterSet>   
@@ -2285,7 +2242,7 @@
     <MemberComponentTemplate Name="Inventory" Guid="6257b4be-1cb8-4a41-82ee-6e03c70d8dd9" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
     <ParameterSet Name="Slots">
         <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="322" Type="int"/> <!-- Guadaña -->
+            <Parameter Name="Contents" Value="326" Type="int"/> <!-- Guadaña -->
             <Parameter Name="Count" Value="1" Type="int"/>
         </ParameterSet>
     </ParameterSet>
