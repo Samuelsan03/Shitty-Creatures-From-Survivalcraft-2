@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Engine;
 using Game;
@@ -82,12 +82,19 @@ namespace Game
 						componentMiner.ComponentCreature.ComponentCreatureModel.AimHandAngleOrder = 1.3f;
 						componentMiner.ComponentCreature.ComponentCreatureModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.1f, 0.07f);
 						componentMiner.ComponentCreature.ComponentCreatureModel.InHandItemRotationOrder = new Vector3(-1.55f, 0f, 0f);
+
+						// DETECCIÓN DE CUANDO LA BALLESTA SE TENSE COMPLETAMENTE
 						if (this.m_subsystemTime.PeriodicGameTimeEvent(0.10000000149011612, 0.0) && componentMiner.ComponentPlayer == null)
 						{
 							RepeatArrowBlock.ArrowType? arrowType = RepeatCrossbowBlock.GetArrowType(data);
 							if (draw != 15)
 							{
+								// LA BALLESTA ESTÁ SIENDO TENSADA - REPRODUCIR SONIDO DE CARGA
 								data = RepeatCrossbowBlock.SetDraw(data, 15);
+
+								// REPRODUCIR SONIDO DE CARGA DE BALLESTA REPETIDORA
+								this.m_subsystemAudio.PlaySound("Audio/Crossbow Remake/Crossbow Loading Remake", 0.5f,
+									this.m_random.Float(-0.1f, 0.1f), componentMiner.ComponentCreature.ComponentCreatureModel.EyePosition, 3f, false);
 							}
 							else if (arrowType == null)
 							{
@@ -157,7 +164,7 @@ namespace Game
 						if (draw > 0)
 						{
 							componentMiner.DamageActiveTool(1);
-							this.m_subsystemAudio.PlaySound("Audio/Crossbow Remake/Crossbow Loading Remake", 1f, this.m_random.Float(-0.1f, 0.1f), componentMiner.ComponentCreature.ComponentCreatureModel.EyePosition, 3f, 0f);
+							this.m_subsystemAudio.PlaySound("Audio/CrossbowBoing", 1f, this.m_random.Float(-0.1f, 0.1f), componentMiner.ComponentCreature.ComponentCreatureModel.EyePosition, 3f, 0f);
 						}
 						this.m_aimStartTimes.Remove(componentMiner);
 						break;
