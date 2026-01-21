@@ -120,16 +120,11 @@ namespace Game
 			ComponentPlayer targetPlayer = targetEntity.FindComponent<ComponentPlayer>();
 			if (targetPlayer != null)
 			{
-				if (curedPoison)
+				// Mostrar un solo mensaje combinado si se curó veneno O enfermedad
+				if (curedPoison || curedSickness)
 				{
-					string poisonMessage = LanguageControl.Get("Messages", "PoisonCured");
-					targetPlayer.ComponentGui.DisplaySmallMessage(poisonMessage, new Color(0, 255, 0), true, false);
-				}
-
-				if (curedSickness)
-				{
-					string sicknessMessage = LanguageControl.Get("Messages", "SicknessCured");
-					targetPlayer.ComponentGui.DisplaySmallMessage(sicknessMessage, new Color(0, 255, 0), true, false);
+					string curedMessage = LanguageControl.Get("Messages", "PoisonAndSicknessCured");
+					targetPlayer.ComponentGui.DisplaySmallMessage(curedMessage, new Color(0, 255, 0), true, false);
 				}
 			}
 			else if (!isTargetingPlayer)
