@@ -478,6 +478,16 @@
     </Folder>
 
 <ProjectTemplate Name="Project" Guid="85023bf8-1c90-4dd1-9442-e6c13691d078">
+<MemberSubsystemTemplate Name="TeaAntifluBucketBlockBehavior" Guid="fcde4991-516a-4bf6-9728-88093595a8cd">
+    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="e186bd10-5046-451f-98b7-fb1feeb7392d"/>
+    <Parameter Name="LoadOrder" Value="100" Type="int" Guid="5fb201a6-63d7-40d0-bc48-1f5b4dff0d21"/>
+    <Parameter Name="Class" Value="Game.SubsystemTeaAntifluBucketBlockBehavior" Type="string" Guid="98e07078-7dd8-4664-ba1a-f1d1b1e5150d"/>
+</MemberSubsystemTemplate>
+<MemberSubsystemTemplate Name="AntidoteBucketBlockBehavior" Guid="85ff52b9-3989-4ae9-9e23-24460e730b70">
+    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="12fc7d7c-a8f1-4263-b4ae-eaeb25b72b97"/>
+    <Parameter Name="LoadOrder" Value="100" Type="int" Guid="03b84f3b-dfe4-4a2d-b927-333eea92f53a"/>
+    <Parameter Name="Class" Value="Game.SubsystemAntidoteBucketBlockBehavior" Type="string" Guid="8681f7d6-0621-4e0f-ab68-75e050d965d3"/>
+</MemberSubsystemTemplate>
 <MemberSubsystemTemplate Name="SkyGreen" Guid="4ca0a8da-ad38-4027-add0-6ea744c7f81c">
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="8b597919-ab45-42ca-81fe-9aadc691de82"/>
     <Parameter Name="LoadOrder" Value="100" Type="int" Guid="28a8ff11-ca3c-4885-9de5-f5eaa6a5dd7d"/>
