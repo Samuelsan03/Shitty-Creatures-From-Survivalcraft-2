@@ -284,10 +284,6 @@
   "DisplayName": "Poison Bomb",
   "Description": "A green bomb that releases poisonous gas upon explosion. Perfect for poisoning areas and weakening enemies from a distance."
 },
-    "PoisonMacheteBlock:0": {
-  "DisplayName": "Poison Machete",
-  "Description": "A machete coated with a lethal toxin that poisons enemies upon striking them. Each attack has a chance to apply a debilitating poison effect that drains health over time. Perfect for prolonged encounters where you want to slowly wear down your opponents."
-},
     "BigStonePoisonChunk:0": {
       "DisplayName": "Poisonous Giant Rock",
       "Description": "A giant rock imbued with toxic properties. Upon impact, it releases a poisonous cloud that slowly weakens its victims. While the initial damage is moderate, the lingering poison effect can be deadly over time. Like the rare giant rock, it cannot be crafted and can only be obtained through special means."
@@ -647,3 +643,4 @@
     "cancel": "Cancel"
   }
 }
+
