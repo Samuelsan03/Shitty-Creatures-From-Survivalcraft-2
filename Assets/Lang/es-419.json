@@ -288,10 +288,6 @@
   "DisplayName": "Bomba Venenosa",
   "Description": "Una bomba verde que libera gas venenoso al explotar. Ideal para envenenar áreas y debilitar enemigos desde la distancia."
 },
-    "PoisonMacheteBlock:0": {
-  "DisplayName": "Machete Envenenado",
-  "Description": "Un machete recubierto con una toxina letal que envenena a los enemigos al golpearlos. Cada ataque tiene la probabilidad de aplicar un efecto de veneno debilitante que drena la salud con el tiempo. Perfecto para enfrentamientos prolongados donde desees desgastar lentamente a tus oponentes."
-},
     "BigStonePoisonChunk:0": {
       "DisplayName": "Roca Gigante Venenosa",
       "Description": "Una roca gigante impregnada de propiedades tóxicas. Al impactar, libera una nube venenosa que debilita lentamente a sus víctimas. Aunque el daño inicial es moderado, el efecto venenoso persistente puede ser letal con el tiempo. Al igual que la roca gigante rara, no se puede fabricar y solo se puede obtener por medios especiales."
@@ -651,3 +647,4 @@
     "cancel": "Cancelar"
   }
 }
+
