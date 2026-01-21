@@ -535,6 +535,12 @@
         <Recipe Result="LavaSharpHammerBlock" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="6" a="lavamachete" b="ironhammer" Description="Use the new lava machete and old iron hammer and turn him into a MEGA MONSTER">
         "ab"
         </Recipe>
+        <Recipe Result="AntidoteBucketBlock" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="3" a="teaantiflubucket" b="whiteflower" Description="Brew a powerful antidote by infusing medicinal white flowers into purified water. Cures poison and sickness.">
+    "ab"
+</Recipe>
+<Recipe Result="TeaAntifluBucketBlock" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="3" a="waterbucket" b="tallgrass" Description="Prepare soothing anti-flu tea by steeping purple flowers in hot water. Cures influenza and relieves symptoms.">
+    "ab"
+</Recipe>
         </Smelting>
     </Recipes>
 </ShittyRecipes>
