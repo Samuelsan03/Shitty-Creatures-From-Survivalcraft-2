@@ -148,7 +148,7 @@
 <MemberComponentTemplate Name="PathBreaker" Guid="429070c7-c68e-450f-92f8-fa3e869a28d5" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
 		<Parameter Name="CanBreakBlocks" Guid="6a2849a3-0b23-474e-b6f1-4e6d3458ccfa" Value="True" Type="bool"/>
 		<Parameter Name="SpecificBlocks" Guid="36145e7f-67ca-44d6-89ff-e11a6cc8271d" Value="" Type="string"/>
-		<Parameter Name="BreakProbability" Guid="42460859-8226-46d4-9179-d24be4e90220" Value="0.55" Type="float"/>
+		<Parameter Name="BreakProbability" Guid="42460859-8226-46d4-9179-d24be4e90220" Value="1.0" Type="float"/>
 	</MemberComponentTemplate>
             <MemberComponentTemplate Name="FeedBehavior" Guid="95ffe1f3-6c51-41cb-a6c5-4eca327b1098" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="abdff48b-31db-4e89-8cc0-5fdfbc5aac85" Value="False" Type="bool"/>
@@ -298,10 +298,10 @@
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="OnFire" Guid="9f8f8b22-b348-4c2a-b04f-002a0c67058a"/>
             <MemberComponentTemplate Name="WalkAroundBehavior" Guid="b37c70cc-9fd7-4cd3-941d-2c8bd3853256" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
-<MemberComponentTemplate Name="PathBreaker" Guid="125c4db5-aeaa-46b5-a5fb-d7e9d26dec70" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
-		<Parameter Name="CanBreakBlocks" Guid="06f092df-5311-4bfb-a6e0-c54ea002b138" Value="True" Type="bool"/>
-		<Parameter Name="SpecificBlocks" Guid="6ecd5422-b088-43e1-ae66-811c10f836e4" Value="" Type="string"/>
-		<Parameter Name="BreakProbability" Guid="0188f514-0bd6-4e34-b1ce-57b8ccc6301f" Value="0.55" Type="float"/>
+<MemberComponentTemplate Name="PathBreaker" Guid="488e9d0b-945e-4e99-b0df-8ceb8e53f05f" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
+		<Parameter Name="CanBreakBlocks" Guid="6a6bdd12-a198-4e91-82d2-e73f7cf7614d" Value="True" Type="bool"/>
+		<Parameter Name="SpecificBlocks" Guid="c8accc67-25ee-425c-b9a5-afe37eb732b9" Value="" Type="string"/>
+		<Parameter Name="BreakProbability" Guid="cce9ff38-624d-486c-bc01-fee13f1939a0" Value="1.0" Type="float"/>
 	</MemberComponentTemplate>
             <MemberComponentTemplate Name="FeedBehavior" Guid="9b93868a-e03d-43c7-8c35-fe273774be77" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="3cbf9c6e-606b-42a2-b70c-5b874ee91657" Value="False" Type="bool"/>
@@ -452,10 +452,10 @@
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="OnFire" Guid="987e118a-f76c-4fec-9755-b11bac49089e"/>
             <MemberComponentTemplate Name="WalkAroundBehavior" Guid="0be1ec30-14aa-45de-85aa-3b2891913a0a" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
-<MemberComponentTemplate Name="PathBreaker" Guid="400a1a12-c4c3-46da-ab85-f4bf81ff6a82" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
-		<Parameter Name="CanBreakBlocks" Guid="e26c50fa-cd66-424d-8235-c0b2cf7cbe2a" Value="True" Type="bool"/>
-		<Parameter Name="SpecificBlocks" Guid="c0ef12cd-c286-4c51-a877-1e22d5cbbcf3" Value="" Type="string"/>
-		<Parameter Name="BreakProbability" Guid="cbbb5cd0-612f-47a4-a932-4d7eebf0e88a" Value="0.55" Type="float"/>
+<MemberComponentTemplate Name="PathBreaker" Guid="4935576f-bc22-4b15-accd-6e1cd1c75f08" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
+		<Parameter Name="CanBreakBlocks" Guid="ba18f51a-97e5-4558-a5a5-c226dddb0aeb" Value="True" Type="bool"/>
+		<Parameter Name="SpecificBlocks" Guid="bcc99e51-47b6-4140-9390-4d248bdb3057" Value="" Type="string"/>
+		<Parameter Name="BreakProbability" Guid="de8b4b30-bfa8-4b83-b538-71fafcfc1075" Value="1.0" Type="float"/>
 	</MemberComponentTemplate>
             <MemberComponentTemplate Name="FeedBehavior" Guid="7bbd79bd-08f8-4f1d-ab9b-f14aff3337f6" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="522650fe-de81-4624-ae49-e6cfe403f032" Value="False" Type="bool"/>
@@ -604,10 +604,10 @@
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="OnFire" Guid="5e3e516d-2141-4472-a1ac-e6e7ddf53a55"/>
             <MemberComponentTemplate Name="WalkAroundBehavior" Guid="7a39ca21-0553-480d-8874-2501cce5abce" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
-<MemberComponentTemplate Name="PathBreaker" Guid="20a2d121-3694-4b43-9a64-3b7ec7d8360c" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
-		<Parameter Name="CanBreakBlocks" Guid="fc131631-fdaa-4b4a-9514-602485a30817" Value="True" Type="bool"/>
-		<Parameter Name="SpecificBlocks" Guid="23ec2430-1a59-4fe8-a9b2-9271e130eaeb" Value="" Type="string"/>
-		<Parameter Name="BreakProbability" Guid="32fe025c-32c5-4d8b-a1f1-472e155ccee8" Value="0.55" Type="float"/>
+<MemberComponentTemplate Name="PathBreaker" Guid="21fd94cb-88b7-4269-bdf2-8fb0a494c038" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
+		<Parameter Name="CanBreakBlocks" Guid="50f7c485-9105-4854-a4d3-31e8cef8b4d1" Value="True" Type="bool"/>
+		<Parameter Name="SpecificBlocks" Guid="23439043-d1ed-4810-aae3-ecc818f1605e" Value="" Type="string"/>
+		<Parameter Name="BreakProbability" Guid="838013da-4965-45e2-8aca-5724f45c9fab" Value="1.0" Type="float"/>
 	</MemberComponentTemplate>
             <MemberComponentTemplate Name="FeedBehavior" Guid="3725d6cd-3443-47fa-b2e2-e7a750fb9f37" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="cd8765e7-baf7-45df-9be5-0addec674a35" Value="False" Type="bool"/>
@@ -749,10 +749,10 @@
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="OnFire" Guid="15b5ac61-5300-4953-a603-1e67310dd51e"/>
             <MemberComponentTemplate Name="WalkAroundBehavior" Guid="b3312ecd-373b-4ff1-9c4e-9c07d95f00a5" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
-<MemberComponentTemplate Name="PathBreaker" Guid="0b570a6e-f13f-4b37-a2ff-bf4b1a3b75c6" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
-		<Parameter Name="CanBreakBlocks" Guid="d7d50ce3-0884-46f8-908f-195bc1823358" Value="True" Type="bool"/>
-		<Parameter Name="SpecificBlocks" Guid="d8f19b6c-ed59-4623-b379-2d85f5f905af" Value="" Type="string"/>
-		<Parameter Name="BreakProbability" Guid="146b7966-e23b-4bfd-a2b2-d2de1dbe43a6" Value="0.55" Type="float"/>
+<MemberComponentTemplate Name="PathBreaker" Guid="866c5cec-4feb-4dd9-b617-10813e7f25c7" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
+		<Parameter Name="CanBreakBlocks" Guid="b15251e5-9b02-4dd3-91f5-b8ae230db3ea" Value="True" Type="bool"/>
+		<Parameter Name="SpecificBlocks" Guid="69a43e59-2311-47e6-89ca-e7f9a1bac49a" Value="" Type="string"/>
+		<Parameter Name="BreakProbability" Guid="0294e556-2d87-4b74-abbb-ad1521ec1b03" Value="1.0" Type="float"/>
 	</MemberComponentTemplate>
             <MemberComponentTemplate Name="FeedBehavior" Guid="c9af843c-ac22-4085-8956-29a3bdb00200" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="649bb7f8-5228-407c-bc18-093f7f54f644" Value="False" Type="bool"/>
@@ -774,6 +774,11 @@
         </EntityTemplate>
 
         <EntityTemplate Name="InfectedFastTamed1" Guid="0117c65b-d60e-47de-8ffb-b110348c0efc" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <MemberComponentTemplate Name="PathBreaker" Guid="4fbcf7ba-42a3-484f-bc48-0a22d8e4e144" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
+		<Parameter Name="CanBreakBlocks" Guid="33537b8e-c811-41a9-b370-ed57e36ffabc" Value="True" Type="bool"/>
+		<Parameter Name="SpecificBlocks" Guid="352bfad2-1545-4160-bd7f-9c0543cbbe91" Value="" Type="string"/>
+		<Parameter Name="BreakProbability" Guid="c37cbe71-9caf-4f5f-9288-19cba1dbbdca" Value="1.0" Type="float"/>
+	</MemberComponentTemplate>
         <MemberComponentTemplate Name="DeathSpawner" Guid="05bcbcba-e372-4866-a2fc-7ddcd3c343e4">
     <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="c35cbaba-e77a-4131-8c47-627e609f1aa5"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="f8af47fd-e37f-4429-8d50-9a1303aa30f5"/>
@@ -1040,10 +1045,10 @@
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="OnFire" Guid="41eeedd8-4d31-437f-9d2d-1edfe2db777b"/>
             <MemberComponentTemplate Name="WalkAroundBehavior" Guid="24a03434-7e82-453d-9fa5-f21ba10e7936" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
-<MemberComponentTemplate Name="PathBreaker" Guid="106c827c-9e53-48db-b12c-d13142b48b20" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
-		<Parameter Name="CanBreakBlocks" Guid="58c86a78-9e5f-46c2-8fe4-7644c2a8a4aa" Value="True" Type="bool"/>
-		<Parameter Name="SpecificBlocks" Guid="0a969a47-9833-4c41-93f4-e76107591064" Value="" Type="string"/>
-		<Parameter Name="BreakProbability" Guid="52cbdad7-4104-4a0f-9ba4-9de093bf13c7" Value="0.55" Type="float"/>
+<MemberComponentTemplate Name="PathBreaker" Guid="dcb2da7c-e32d-49eb-b428-26af1b0a1666" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
+		<Parameter Name="CanBreakBlocks" Guid="ca2f0c85-3610-4c05-9ad8-679cdfb30643" Value="True" Type="bool"/>
+		<Parameter Name="SpecificBlocks" Guid="8db40b37-3d48-4936-990e-e08ab32a7755" Value="" Type="string"/>
+		<Parameter Name="BreakProbability" Guid="c6255a52-8b0e-4ddb-88a8-0f996389f91a" Value="1.0" Type="float"/>
 	</MemberComponentTemplate>
             <MemberComponentTemplate Name="FeedBehavior" Guid="e011f168-9a98-4358-afd6-fb57b65f992d" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="6e811fdb-f84b-4849-9389-1242b8b77375" Value="False" Type="bool"/>
@@ -1065,6 +1070,11 @@
         </EntityTemplate>
 
         <EntityTemplate Name="InfectedFastTamed2" Guid="9b8dd50d-52ad-4f80-8788-3a660b33ce26" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <MemberComponentTemplate Name="PathBreaker" Guid="0eaeba4e-d0c4-4867-8e25-828993e73afd" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
+		<Parameter Name="CanBreakBlocks" Guid="7f4d6deb-a52c-4480-bb59-5361c8cdc51d" Value="True" Type="bool"/>
+		<Parameter Name="SpecificBlocks" Guid="1a39e7a7-3a13-4616-a12b-35dc004b1f94" Value="" Type="string"/>
+		<Parameter Name="BreakProbability" Guid="1fd8adcc-3257-41eb-a76f-f6eb3885cbc7" Value="1.0" Type="float"/>
+	</MemberComponentTemplate>
         <MemberComponentTemplate Name="DeathSpawner" Guid="0557d605-a9ab-43d7-885c-233bfcb905ac">
     <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="c90ba67a-bcd4-4ca2-ae8a-9564fe7dec9d"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="3d152883-763b-4ba9-9b63-42ea7c07b7c6"/>
@@ -1340,10 +1350,10 @@
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="OnFire" Guid="b2f91eb7-7873-4211-a363-83d6aa3e28e0"/>
             <MemberComponentTemplate Name="WalkAroundBehavior" Guid="b0535799-6646-44c2-bb16-270d282894d5" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
-<MemberComponentTemplate Name="PathBreaker" Guid="6e2bf7dd-f260-4d9c-9104-6d767444b1e9" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
-		<Parameter Name="CanBreakBlocks" Guid="223367bd-9790-4257-ab81-e7ca88daf546" Value="True" Type="bool"/>
-		<Parameter Name="SpecificBlocks" Guid="b5e582ef-1610-4037-8f64-d598fd3a3462" Value="" Type="string"/>
-		<Parameter Name="BreakProbability" Guid="f81d3d9d-82a4-45c5-b901-786c1af4cd36" Value="0.55" Type="float"/>
+<MemberComponentTemplate Name="PathBreaker" Guid="8ce236f5-2d58-4461-b761-bd6bc93238ef" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
+		<Parameter Name="CanBreakBlocks" Guid="afcf359f-96ee-4dae-ad81-489bc8cecd10" Value="True" Type="bool"/>
+		<Parameter Name="SpecificBlocks" Guid="fb76effc-11ba-4d91-b12e-654a7f1e4b71" Value="" Type="string"/>
+		<Parameter Name="BreakProbability" Guid="7cb9159b-c838-41bb-a758-a40c7b30f9ef" Value="1.0" Type="float"/>
 	</MemberComponentTemplate>
             <MemberComponentTemplate Name="FeedBehavior" Guid="55ee8697-e3eb-43e0-9180-337986e0327a" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="8672629d-92a9-4882-bfbf-574c29abc8a9" Value="False" Type="bool"/>
@@ -1365,6 +1375,11 @@
         </EntityTemplate>
 
         <EntityTemplate Name="InfectedMuscleTamed1" Guid="030aa759-c8dd-4a46-bafa-1cc330478a4d" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <MemberComponentTemplate Name="PathBreaker" Guid="bf1cca68-edfc-4cab-8a67-1e6369ae5821" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
+		<Parameter Name="CanBreakBlocks" Guid="55dd291a-8d29-4b11-92de-540e84c2514f" Value="True" Type="bool"/>
+		<Parameter Name="SpecificBlocks" Guid="c0e8e611-99be-4ac5-aed2-6ebc7c21824b" Value="" Type="string"/>
+		<Parameter Name="BreakProbability" Guid="e97aa2b9-f6d4-4800-8ccc-3efcebb1a176" Value="1.0" Type="float"/>
+	</MemberComponentTemplate>
         <MemberComponentTemplate Name="DeathSpawner" Guid="34890adb-4b45-47a9-ae32-4509d1b0a922">
     <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="58ac2b73-f065-45e1-b945-f11ccc112574"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="16002c28-49c7-4a88-8b98-6efadb014e29"/>
@@ -1641,10 +1656,10 @@
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="OnFire" Guid="65073446-adef-49a6-a18d-21e713662118"/>
             <MemberComponentTemplate Name="WalkAroundBehavior" Guid="ddb984ce-cd2a-44b7-96e5-380807610a22" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
-<MemberComponentTemplate Name="PathBreaker" Guid="ba43e4d8-3e0c-4d1f-a238-e67adf38b3fa" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
-		<Parameter Name="CanBreakBlocks" Guid="d87cdf67-b06a-442a-9327-0e929bcffa31" Value="True" Type="bool"/>
-		<Parameter Name="SpecificBlocks" Guid="7cdfb334-bd3b-4d4e-980a-544ceac6ef00" Value="" Type="string"/>
-		<Parameter Name="BreakProbability" Guid="010bf85d-f140-4b72-8732-53b173a79a10" Value="0.55" Type="float"/>
+<MemberComponentTemplate Name="PathBreaker" Guid="8da76fd7-61e5-415c-baed-0c8a812214e7" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
+		<Parameter Name="CanBreakBlocks" Guid="c180a324-bd2c-40d1-9bc1-0c947f7cddf2" Value="True" Type="bool"/>
+		<Parameter Name="SpecificBlocks" Guid="4d450aad-ddfb-43e7-91db-486beb9d2bae" Value="" Type="string"/>
+		<Parameter Name="BreakProbability" Guid="3a5852b1-7dfe-435c-bad9-7ccb5c8246ea" Value="1.0" Type="float"/>
 	</MemberComponentTemplate>
             <MemberComponentTemplate Name="FeedBehavior" Guid="648b71ac-d39b-447a-9f45-da040b2ae68d" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="ca4e2855-8733-4920-8426-3eeb3159bd40" Value="False" Type="bool"/>
@@ -1666,6 +1681,11 @@
         </EntityTemplate>
 
         <EntityTemplate Name="InfectedMuscleTamed2" Guid="42a903ab-9c22-410b-9407-4cef9cb37741" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <MemberComponentTemplate Name="PathBreaker" Guid="c5c25c0d-ddfa-4956-9fe8-e891cdf85f97" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
+		<Parameter Name="CanBreakBlocks" Guid="cd903b9b-d46e-4ba7-a920-260f53f21483" Value="True" Type="bool"/>
+		<Parameter Name="SpecificBlocks" Guid="422cd2fa-365f-48c8-8ca7-a7268086afb1" Value="" Type="string"/>
+		<Parameter Name="BreakProbability" Guid="b87e477a-ffc9-4a89-bdd1-0bd12cae7eb6" Value="1.0" Type="float"/>
+	</MemberComponentTemplate>
         <MemberComponentTemplate Name="DeathSpawner" Guid="37cc4a1f-dfce-42cf-857e-609297c75d0a">
     <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="6a2a3a92-3e85-43a2-b2da-4dabd96104da"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="aa3d5d2a-5062-4533-8ae9-547040811e0d"/>
@@ -1806,6 +1826,11 @@
         </EntityTemplate>
 
         <EntityTemplate Name="PoisonousInfected1" Guid="c431a439-532b-4460-ac1e-df6fa2d783b1" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <MemberComponentTemplate Name="PathBreaker" Guid="c8d72d75-66a7-44dd-8cc2-e591f03dfed1" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
+		<Parameter Name="CanBreakBlocks" Guid="5af182a8-46ef-4d39-ac33-1eb2d130533a" Value="True" Type="bool"/>
+		<Parameter Name="SpecificBlocks" Guid="856dcfe6-bf99-448b-951a-54c01bf56430" Value="" Type="string"/>
+		<Parameter Name="BreakProbability" Guid="e6a01a4a-2bdd-4e42-b28b-52d7536c9b83" Value="1.0" Type="float"/>
+	</MemberComponentTemplate>
         <MemberComponentTemplate Name="DeathSpawner" Guid="c0b800fa-5914-4535-80a8-2c758f093613">
     <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="c5b32ef2-028b-4dda-b688-1d9c377bdbd8"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="f4421b49-0365-4175-ab2c-402ae81e2aec"/>
@@ -1955,6 +1980,11 @@
         </EntityTemplate>
 
         <EntityTemplate Name="PoisonousInfectedTamed1" Guid="6990ec17-91bf-4b4f-9fb7-470f88d63b09" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <MemberComponentTemplate Name="PathBreaker" Guid="cc48ce96-514b-4f72-a5aa-915b13c6849a" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
+		<Parameter Name="CanBreakBlocks" Guid="c0f9621c-9982-4ee0-bf91-d921549e7853" Value="True" Type="bool"/>
+		<Parameter Name="SpecificBlocks" Guid="a2ab671d-7b96-4699-a9e4-7088677ddf68" Value="" Type="string"/>
+		<Parameter Name="BreakProbability" Guid="9b5021c5-e491-402f-8790-633915f79fc3" Value="1.0" Type="float"/>
+	</MemberComponentTemplate>
         <MemberComponentTemplate Name="DeathSpawner" Guid="9abc214e-99f2-4a38-8ecd-1d364eb2c7eb">
     <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="5e6b432b-c92e-4239-9748-50023ff71a02"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="72b768bd-9169-49a1-91e5-f60f0d475da2"/>
@@ -2109,6 +2139,11 @@
         </EntityTemplate>
 
         <EntityTemplate Name="PoisonousInfected2" Guid="926580df-3c33-4d94-8e36-eb64ae703ab1" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <MemberComponentTemplate Name="PathBreaker" Guid="bef852a0-c8a1-47bb-ba06-70ee0ff7112e" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
+		<Parameter Name="CanBreakBlocks" Guid="f7cf7030-31d9-4130-aef6-8b7e95ebb100" Value="True" Type="bool"/>
+		<Parameter Name="SpecificBlocks" Guid="9133db78-fed0-44f7-b69a-03484541d14c" Value="" Type="string"/>
+		<Parameter Name="BreakProbability" Guid="668b4812-31cc-49c7-8d80-ca008c76cda3" Value="1.0" Type="float"/>
+	</MemberComponentTemplate>
         <MemberComponentTemplate Name="DeathSpawner" Guid="65c3c1f8-ddbc-47e3-8060-2eea49b8cd0e">
     <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="6af22cb1-cf60-46d5-97a6-036e62caf5ba"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="7bb7d7c4-bfa1-496f-89fd-d1c8fc175cbd"/>
@@ -2258,6 +2293,11 @@
         </EntityTemplate>
 
         <EntityTemplate Name="PoisonousInfectedTamed2" Guid="ce1a9422-a91e-48de-b251-98917cef397d" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <MemberComponentTemplate Name="PathBreaker" Guid="a1ae9738-fc93-46e8-81b9-75ed318d5a9f" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
+		<Parameter Name="CanBreakBlocks" Guid="fb895864-e35a-4c8c-ae15-8fff047ee64f" Value="True" Type="bool"/>
+		<Parameter Name="SpecificBlocks" Guid="82593ad0-f047-4ce6-84ec-4790c3cce474" Value="" Type="string"/>
+		<Parameter Name="BreakProbability" Guid="d3959a94-e333-40b1-a61f-eb9037b40d54" Value="1.0" Type="float"/>
+	</MemberComponentTemplate>
         <MemberComponentTemplate Name="DeathSpawner" Guid="6b200aa2-3424-4d16-bb1b-e075c7c482f4">
     <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="ffb98009-c2f1-4c81-88f5-8ef00e3279d4"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="9f673473-76ea-4645-adc5-3fff1f5294b1"/>
@@ -5788,6 +5828,11 @@
         </EntityTemplate>
 
         <EntityTemplate Name="GhostNormal" Guid="910b352e-99c2-4d4d-9415-6ebbfe7c4ea2" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <MemberComponentTemplate Name="PathBreaker" Guid="4fbcf7ba-42a3-484f-bc48-0a22d8e4e144" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
+		<Parameter Name="CanBreakBlocks" Guid="33537b8e-c811-41a9-b370-ed57e36ffabc" Value="True" Type="bool"/>
+		<Parameter Name="SpecificBlocks" Guid="352bfad2-1545-4160-bd7f-9c0543cbbe91" Value="" Type="string"/>
+		<Parameter Name="BreakProbability" Guid="c37cbe71-9caf-4f5f-9288-19cba1dbbdca" Value="1.0" Type="float"/>
+	</MemberComponentTemplate>
         <MemberComponentTemplate Name="ZombieAI2" Guid="2717075b-592c-45ee-b5e2-027d4f1083cf">
     <Parameter Name="Class" Value="Game.ComponentZombieAI2" Type="string" Guid="ff48a428-c4a7-4de0-8435-5fe2d4e1f8ad"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="a4c04857-efd2-456c-812e-1d5d9cc8ac77"/>
@@ -5961,6 +6006,11 @@
         </EntityTemplate>
 
         <EntityTemplate Name="GhostNormalTamed" Guid="9a265b40-a235-48a3-9585-1a67dbf2bb13" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <MemberComponentTemplate Name="PathBreaker" Guid="4fbcf7ba-42a3-484f-bc48-0a22d8e4e144" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
+		<Parameter Name="CanBreakBlocks" Guid="33537b8e-c811-41a9-b370-ed57e36ffabc" Value="True" Type="bool"/>
+		<Parameter Name="SpecificBlocks" Guid="352bfad2-1545-4160-bd7f-9c0543cbbe91" Value="" Type="string"/>
+		<Parameter Name="BreakProbability" Guid="c37cbe71-9caf-4f5f-9288-19cba1dbbdca" Value="1.0" Type="float"/>
+	</MemberComponentTemplate>
         <MemberComponentTemplate Name="SummonBehavior" Guid="a0b633dc-5a79-4d25-9db6-9238e25f1ce9">
               <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="9ff897fc-57ee-44dd-8eb9-19b2c045e974"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="f0fab102-e565-4296-8ec4-396fbcf61717"/>
@@ -6120,6 +6170,11 @@
         </EntityTemplate>
 
         <EntityTemplate Name="GhostFast" Guid="fdf8136a-4b3a-432d-bf2f-bbec4458b60e" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <MemberComponentTemplate Name="PathBreaker" Guid="ebef68f3-7c97-4356-b87f-22e825398149" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
+		<Parameter Name="CanBreakBlocks" Guid="4e3b6277-e956-4d8f-bdbf-77a6d4bb78e2" Value="True" Type="bool"/>
+		<Parameter Name="SpecificBlocks" Guid="86babfd3-dce9-474e-a6cc-5369c1093579" Value="" Type="string"/>
+		<Parameter Name="BreakProbability" Guid="1401b733-58b5-440b-ba7c-d08fb91c4629" Value="1.0" Type="float"/>
+	</MemberComponentTemplate>
         <MemberComponentTemplate Name="DeathSpawner" Guid="a32888cf-2f4f-4e03-af78-1d49887a403e">
     <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="73d81deb-fde5-4608-865a-05ea842866d9"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="8494ba05-eaeb-4c4d-be98-56b8595d2c0f"/>
@@ -6299,6 +6354,11 @@
         </EntityTemplate>
 
         <EntityTemplate Name="GhostFastTamed" Guid="92f68295-930a-435d-ab10-56df2c34d904" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <MemberComponentTemplate Name="PathBreaker" Guid="4fbcf7ba-42a3-484f-bc48-0a22d8e4e144" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
+		<Parameter Name="CanBreakBlocks" Guid="33537b8e-c811-41a9-b370-ed57e36ffabc" Value="True" Type="bool"/>
+		<Parameter Name="SpecificBlocks" Guid="352bfad2-1545-4160-bd7f-9c0543cbbe91" Value="" Type="string"/>
+		<Parameter Name="BreakProbability" Guid="c37cbe71-9caf-4f5f-9288-19cba1dbbdca" Value="1.0" Type="float"/>
+	</MemberComponentTemplate>
         <MemberComponentTemplate Name="DeathSpawner" Guid="1829f380-dd91-439b-8341-1c6d669a5254">
     <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="c826e726-e4a6-4cbe-ac8b-7b2de7493954"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="b86fd714-2972-4098-9c7d-b3fdfb0a041f"/>
@@ -9513,6 +9573,11 @@
                 <Parameter Name="ChaseNonPlayerProbability" Guid="2ee16b80-5f5d-4872-a300-bfff2c4eb91f" Value="0" Type="float"/>
                 <Parameter Name="NightChaseTime" Guid="9636d5f5-6bd9-41fc-8484-92d53a52fca3" Value="0" Type="float"/>
             </MemberComponentTemplate>
+            <MemberComponentTemplate Name="PathBreaker" Guid="6fe9c103-dce6-47b2-9a10-98e0ccb36278" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
+		<Parameter Name="CanBreakBlocks" Guid="3ef8dfe4-66ba-4036-99d7-627089077e4d" Value="True" Type="bool"/>
+		<Parameter Name="SpecificBlocks" Guid="5d139822-dbb8-423a-9e32-4ffc52538064" Value="" Type="string"/>
+		<Parameter Name="BreakProbability" Guid="74ae823d-bff1-41d9-91a7-e10d21c783fe" Value="1.0" Type="float"/>
+	</MemberComponentTemplate>
             <ParameterSet Name="CreatureEggData" Guid="3697a2bc-3ab4-4607-bf84-865d28ca6d76">
                 <Parameter Name="Color" Guid="6da19952-a6b0-4415-8ad8-25de75aa33ff" Value="174,123,58" Type="Color"/>
                 <Parameter Name="Scale" Guid="1835d3f8-d479-414d-86fe-6eb492b1e8aa" Value="7.0" Type="float"/>
@@ -9606,6 +9671,11 @@
         </ParameterSet>
     </ParameterSet>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="PathBreaker" Guid="3b4fe09c-7487-425f-959e-b9e7534f4c7f" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
+		<Parameter Name="CanBreakBlocks" Guid="fb4d76e3-480a-4b08-8fa2-6a85b0538ce0" Value="True" Type="bool"/>
+		<Parameter Name="SpecificBlocks" Guid="f6070b6b-1fe8-41d7-90b4-b9d9805988c2" Value="" Type="string"/>
+		<Parameter Name="BreakProbability" Guid="383c29c4-138d-49cd-bdd1-548f93eca19f" Value="1.0" Type="float"/>
+	</MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidFireBehavior" Guid="a91c53cf-1aca-4732-a2c0-e7ebcecd4e29" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
             <MemberComponentTemplate Name="Locomotion" Guid="aa8f250d-3ec2-447f-9cc5-500cbe73cc5b">
                 <Parameter Name="AccelerationFactor" Guid="86e18076-d2b6-4f44-a67d-713553a93a4d" Value="2.0" Type="float"/>
