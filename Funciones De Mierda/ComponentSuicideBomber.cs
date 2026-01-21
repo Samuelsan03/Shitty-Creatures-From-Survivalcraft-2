@@ -1,6 +1,7 @@
 using Engine;
 using GameEntitySystem;
 using TemplatesDatabase;
+using System.Collections.Generic;
 
 namespace Game
 {
@@ -37,8 +38,10 @@ namespace Game
 		public SubsystemTime m_subsystemTime;
 		public SubsystemBodies m_subsystemBodies;
 		public SubsystemTerrain m_subsystemTerrain;
+		public SubsystemPickables m_subsystemPickables; // Añadido para loot
 		public ComponentHealth m_componentHealth;
 		public ComponentBody m_componentBody;
+		public ComponentCreature m_componentCreature; // Añadido para obtener ComponentLoot
 
 		// ===== ESTADO INTERNO =====
 		public bool m_countdownActive = false;
@@ -80,9 +83,11 @@ namespace Game
 			m_subsystemTime = base.Project.FindSubsystem<SubsystemTime>(true);
 			m_subsystemBodies = base.Project.FindSubsystem<SubsystemBodies>(true);
 			m_subsystemTerrain = base.Project.FindSubsystem<SubsystemTerrain>(true);
+			m_subsystemPickables = base.Project.FindSubsystem<SubsystemPickables>(true); // Añadido
 
 			m_componentHealth = base.Entity.FindComponent<ComponentHealth>(true);
 			m_componentBody = base.Entity.FindComponent<ComponentBody>(true);
+			m_componentCreature = base.Entity.FindComponent<ComponentCreature>(true); // Añadido
 
 			if (m_componentHealth != null)
 			{
@@ -219,13 +224,71 @@ namespace Game
 				}
 			}
 
-			// 3. SONIDO DE EXPLOSIÓN - AJUSTADO AL RADIO
+			// 3. GENERAR LOOTS AL MORIR (COMO LOS LOOTS NORMALES)
+			GenerateLootsOnDeath();
+
+			// 4. SONIDO DE EXPLOSIÓN - AJUSTADO AL RADIO
 			if (m_subsystemAudio != null)
 			{
 				float explosionVolume = MathUtils.Clamp(ExplosionRadius / 20f, 1f, 4f);
 				float explosionRange = MathUtils.Clamp(ExplosionRadius * 3f, 30f, 200f);
 				m_subsystemAudio.PlaySound("Audio/Explosion De Mierda/Explosion Mejorada", explosionVolume, 0f,
 					position, explosionRange, 0f);
+			}
+		}
+
+		// NUEVO MÉTODO: GENERAR LOOTS AL MORIR
+		public void GenerateLootsOnDeath()
+		{
+			if (m_componentCreature == null || m_subsystemPickables == null) return;
+
+			// Buscar ComponentLoot en la entidad
+			ComponentLoot componentLoot = base.Entity.FindComponent<ComponentLoot>();
+			if (componentLoot != null && !componentLoot.m_lootDropped)
+			{
+				// Determinar si está en fuego
+				ComponentOnFire componentOnFire = base.Entity.FindComponent<ComponentOnFire>();
+				bool isOnFire = componentOnFire != null && componentOnFire.IsOnFire;
+
+				// Usar la lista de loot correspondiente (normal o en fuego)
+				List<ComponentLoot.Loot> lootList = isOnFire ? componentLoot.m_lootOnFireList : componentLoot.m_lootList;
+
+				List<BlockDropValue> blockDropValues = new List<BlockDropValue>();
+
+				// Generar los loots según probabilidades
+				foreach (ComponentLoot.Loot loot in lootList)
+				{
+					if (componentLoot.m_random.Float(0f, 1f) < loot.Probability)
+					{
+						int count = componentLoot.m_random.Int(loot.MinCount, loot.MaxCount);
+						for (int i = 0; i < count; i++)
+						{
+							blockDropValues.Add(new BlockDropValue
+							{
+								Value = loot.Value,
+								Count = 1
+							});
+						}
+					}
+				}
+
+				// Permitir a los mods modificar los loots
+				ModsManager.HookAction("DecideLoot", (ModLoader loader) =>
+				{
+					loader.DecideLoot(componentLoot, blockDropValues);
+					return false;
+				});
+
+				// Crear los pickables (loots) en la posición de la explosión
+				Vector3 position = m_componentBody.Position;
+				foreach (BlockDropValue blockDropValue in blockDropValues)
+				{
+					m_subsystemPickables.AddPickable(blockDropValue.Value, blockDropValue.Count,
+						position, null, null, base.Entity);
+				}
+
+				// Marcar como que ya soltó los loots
+				componentLoot.m_lootDropped = true;
 			}
 		}
 
