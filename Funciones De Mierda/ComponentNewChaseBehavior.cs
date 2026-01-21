@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Runtime.CompilerServices;
 using Engine;
 using GameEntitySystem;
@@ -407,7 +407,8 @@ namespace Game
 		        blockId == BlocksManager.GetBlockIndex(typeof(NewG3Block), true, false) ||
 		        blockId == BlocksManager.GetBlockIndex(typeof(MP5SSDBlock), true, false) ||
 		        blockId == BlocksManager.GetBlockIndex(typeof(MendozaBlock), true, false) ||
-		        blockId == BlocksManager.GetBlockIndex(typeof(GrozaBlock), true, false);
+		        blockId == BlocksManager.GetBlockIndex(typeof(GrozaBlock), true, false) ||
+				blockId == BlocksManager.GetBlockIndex(typeof(KABlock), true, false);
 		}
 		private bool HasActiveRangedWeaponComponent()
 		{
@@ -675,7 +676,8 @@ namespace Game
 		        blockId == BlocksManager.GetBlockIndex(typeof(NewG3Block), true, false) ||
 		        blockId == BlocksManager.GetBlockIndex(typeof(MP5SSDBlock), true, false) ||
 		        blockId == BlocksManager.GetBlockIndex(typeof(MendozaBlock), true, false) ||
-		        blockId == BlocksManager.GetBlockIndex(typeof(GrozaBlock), true, false);
+		        blockId == BlocksManager.GetBlockIndex(typeof(GrozaBlock), true, false) ||
+				blockId == BlocksManager.GetBlockIndex(typeof(KABlock), true, false);
 		}
 		public bool IsReady(int slotValue)
 		{
@@ -905,6 +907,7 @@ namespace Game
 			else if (blockId == BlocksManager.GetBlockIndex(typeof(MP5SSDBlock), true, false)) maxCapacity = 30;
 			else if (blockId == BlocksManager.GetBlockIndex(typeof(MendozaBlock), true, false)) maxCapacity = 30;
 			else if (blockId == BlocksManager.GetBlockIndex(typeof(GrozaBlock), true, false)) maxCapacity = 30;
+			else if (blockId == BlocksManager.GetBlockIndex(typeof(KABlock), true, false)) maxCapacity = 40;
 
 			if (maxCapacity > 0)
 			{
@@ -928,6 +931,7 @@ namespace Game
 				else if (blockId == BlocksManager.GetBlockIndex(typeof(MP5SSDBlock), true, false)) data = MP5SSDBlock.SetBulletNum(maxCapacity);
 				else if (blockId == BlocksManager.GetBlockIndex(typeof(MendozaBlock), true, false)) data = MendozaBlock.SetBulletNum(maxCapacity);
 				else if (blockId == BlocksManager.GetBlockIndex(typeof(GrozaBlock), true, false)) data = GrozaBlock.SetBulletNum(maxCapacity);
+				else if (blockId == BlocksManager.GetBlockIndex(typeof(KABlock), true, false)) data = KABlock.SetBulletNum(maxCapacity);
 
 				int value2 = Terrain.MakeBlockValue(blockId, 0, data);
 				componentMiner.Inventory.RemoveSlotItems(slotIndex, 1);

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Engine;
 using GameEntitySystem;
@@ -158,6 +158,22 @@ namespace Game
 			try
 			{
 				// Armas originales
+				int kaIndex = BlocksManager.GetBlockIndex(typeof(KABlock), true, false);
+				m_firearmConfigs[kaIndex] = new FirearmConfig
+				{
+					BulletBlockType = typeof(NuevaBala5), // Usa NuevaBala5 (negra) como en el subsystem
+					ShootSound = "Audio/Armas/KA fuego", // Mismo sonido que en el subsystem
+					FireRate = 0.1, // Más rápido que en el subsystem (0.1 vs 0.12)
+					BulletSpeed = 320f, // Mayor velocidad (320f vs 300f originalmente)
+					MaxShotsBeforeReload = 40, // Capacidad de 40 balas como en GetProcessInventoryItemCapacity
+					ProjectilesPerShot = 3, // 3 balas por ráfaga como en el código
+					SpreadVector = new Vector3(0.007f, 0.007f, 0.03f), // Menor dispersión que original
+					NoiseRadius = 35f, // Menor ruido (35f vs 40f originalmente)
+					IsAutomatic = true, // Es automático según el comportamiento
+					IsSniper = false,
+					IsShotgun = false
+				};
+
 				int akIndex = BlocksManager.GetBlockIndex(typeof(AKBlock), true, false);
 				m_firearmConfigs[akIndex] = new FirearmConfig
 				{

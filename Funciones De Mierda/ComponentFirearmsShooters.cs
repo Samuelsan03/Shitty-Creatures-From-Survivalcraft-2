@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Engine;
 using Engine.Graphics;
@@ -113,6 +113,20 @@ namespace Game
 					SpreadVector = new Vector3(0.008f, 0.008f, 0.04f),
 					NoiseRadius = 40f,
 					IsAutomatic = true
+				};
+
+				int kaIndex = BlocksManager.GetBlockIndex(typeof(Game.KABlock), true, false);
+				FirearmConfigs[kaIndex] = new FirearmConfig
+				{
+					BulletBlockType = typeof(NuevaBala5), // Usa NuevaBala5 (negra) como en el subsystem
+					ShootSound = "Audio/Armas/KA fuego", // Mismo sonido que en el subsystem
+					FireRate = 0.1, // Más rápido que en el subsystem (0.1 vs 0.12)
+					BulletSpeed = 320f, // Mayor velocidad (320f vs 300f originalmente)
+					MaxShotsBeforeReload = 40, // Capacidad de 40 balas como en GetProcessInventoryItemCapacity
+					ProjectilesPerShot = 3, // 3 balas por ráfaga como en el código
+					SpreadVector = new Vector3(0.007f, 0.007f, 0.03f), // Menor dispersión que original
+					NoiseRadius = 35f, // Menor ruido (35f vs 40f originalmente)
+					IsAutomatic = true // Es automático según el comportamiento
 				};
 
 				int mac10Index = BlocksManager.GetBlockIndex(typeof(Game.Mac10Block), true, false);
