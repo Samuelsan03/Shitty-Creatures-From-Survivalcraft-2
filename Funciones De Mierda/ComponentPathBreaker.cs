@@ -144,39 +144,92 @@ namespace Game
 					if (!flag4)
 					{
 						Point3 p = Terrain.ToCell(this.m_componentBody.Position);
-						Point3 point = this.GetMainFacingDirection();
-						bool flag5 = point == Point3.Zero && !this.m_componentPathfinding.IsStuck;
-						if (!flag5)
+
+						// Determinar si el objetivo está principalmente abajo
+						bool targetIsBelow = false;
+						ComponentBody targetBody = this.GetActiveTargetBody();
+						if (targetBody != null)
 						{
-							bool flag6 = point == Point3.Zero && this.m_componentPathfinding.IsStuck;
-							if (flag6)
+							Vector3 toTarget = targetBody.Position - this.m_componentBody.Position;
+							targetIsBelow = toTarget.Y < -1f && Math.Abs(toTarget.Y) > Math.Max(Math.Abs(toTarget.X), Math.Abs(toTarget.Z));
+						}
+
+						// Lista de direcciones a verificar, en orden de prioridad
+						List<Point3> directionsToCheck = new List<Point3>();
+
+						// Si el objetivo está abajo, incluir dirección hacia abajo
+						if (targetIsBelow && this.m_componentPathfinding.IsStuck)
+						{
+							directionsToCheck.Add(new Point3(0, -1, 0));  // Abajo
+						}
+
+						// Siempre verificar la dirección de movimiento actual
+						Point3 facingDirection = this.GetMainFacingDirection();
+						if (facingDirection != Point3.Zero)
+						{
+							directionsToCheck.Add(facingDirection);
+
+							// También verificar arriba de la dirección actual
+							directionsToCheck.Add(facingDirection + new Point3(0, 1, 0));
+						}
+
+						// Si está atascado, verificar todas las direcciones horizontales
+						if (this.m_componentPathfinding.IsStuck)
+						{
+							// Todas las direcciones horizontales
+							directionsToCheck.Add(new Point3(1, 0, 0));   // Este
+							directionsToCheck.Add(new Point3(-1, 0, 0));  // Oeste
+							directionsToCheck.Add(new Point3(0, 0, 1));   // Norte
+							directionsToCheck.Add(new Point3(0, 0, -1));  // Sur
+
+							// Arriba de cada dirección horizontal
+							directionsToCheck.Add(new Point3(1, 1, 0));   // Arriba-Este
+							directionsToCheck.Add(new Point3(-1, 1, 0));  // Arriba-Oeste
+							directionsToCheck.Add(new Point3(0, 1, 1));   // Arriba-Norte
+							directionsToCheck.Add(new Point3(0, 1, -1));  // Arriba-Sur
+
+							// También verificar directamente arriba
+							directionsToCheck.Add(new Point3(0, 1, 0));   // Arriba
+						}
+						else
+						{
+							// Si no está atascado, también verificar los lados
+							// Esto ayuda con obstáculos laterales
+							if (facingDirection.X != 0)
 							{
-								// Usar la posición del objetivo activo (si existe)
-								ComponentBody targetBody = this.GetActiveTargetBody();
-								if (targetBody != null)
-								{
-									Vector3 vector = Vector3.Normalize(targetBody.Position - this.m_componentBody.Position);
-									point = this.GetDirectionFromVector(vector);
-								}
+								// Si mira este/oeste, verificar norte/sur
+								directionsToCheck.Add(new Point3(0, 0, 1));   // Norte
+								directionsToCheck.Add(new Point3(0, 0, -1));  // Sur
+								directionsToCheck.Add(new Point3(0, 1, 1));   // Arriba-Norte
+								directionsToCheck.Add(new Point3(0, 1, -1));  // Arriba-Sur
+							}
+							else if (facingDirection.Z != 0)
+							{
+								// Si mira norte/sur, verificar este/oeste
+								directionsToCheck.Add(new Point3(1, 0, 0));   // Este
+								directionsToCheck.Add(new Point3(-1, 0, 0));  // Oeste
+								directionsToCheck.Add(new Point3(1, 1, 0));   // Arriba-Este
+								directionsToCheck.Add(new Point3(-1, 1, 0));  // Arriba-Oeste
 							}
 
-							Point3 point2 = p + point;
-							Point3 point3 = point2 + new Point3(0, 1, 0);
+							// Siempre verificar directamente arriba
+							directionsToCheck.Add(new Point3(0, 1, 0));   // Arriba
+						}
 
-							int cellValue = this.m_subsystemTerrain.Terrain.GetCellValue(point3.X, point3.Y, point3.Z);
-							bool flag7 = this.IsBlockBreakable(cellValue);
-							if (flag7)
+						// Eliminar duplicados y mantener orden
+						directionsToCheck = directionsToCheck.Distinct().ToList();
+
+						// Verificar bloques en todas las direcciones
+						foreach (Point3 direction in directionsToCheck)
+						{
+							Point3 pointToCheck = p + direction;
+
+							// Verificar el bloque en esta dirección
+							int cellValue = this.m_subsystemTerrain.Terrain.GetCellValue(pointToCheck.X, pointToCheck.Y, pointToCheck.Z);
+							if (this.IsBlockBreakable(cellValue))
 							{
-								this.m_blockToBreak = new Point3?(point3);
-							}
-							else
-							{
-								int cellValue2 = this.m_subsystemTerrain.Terrain.GetCellValue(point2.X, point2.Y, point2.Z);
-								bool flag8 = this.IsBlockBreakable(cellValue2);
-								if (flag8)
-								{
-									this.m_blockToBreak = new Point3?(point2);
-								}
+								this.m_blockToBreak = new Point3?(pointToCheck);
+								break;
 							}
 						}
 					}
