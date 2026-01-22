@@ -2597,6 +2597,10 @@
     <Parameter Name="ChaseNonPlayerProbability" Guid="aab9d01a-db18-4335-a04b-4b710774a140" Value="1" Type="float"/>
     <Parameter Name="NightChaseTime" Guid="144bf85f-8f20-4fe5-9d21-ec230549f097" Value="999" Type="float"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="Shapeshifter" Guid="55e628e5-0143-4116-9dc9-771675526d0c" InheritanceParent="92e52f46-5d88-4273-80d2-1b5bfb7fdee8">
+        <Parameter Name="NightEntityTemplateName" Guid="dfbb2736-a3a5-4493-921a-96fcac168a94" Value="LiderCalavericoSupremoAlfa" Type="string"/>
+        <Parameter Name="Probability" Guid="9d080e99-e647-44af-b489-cb26fe47ec6d" Value="1.0" Type="float"/>
+    </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="b9c0d1e2-f3a4-0345-0123-223456789012">
         <Parameter Name="Color" Guid="c0d1e2f3-a4b5-0456-1234-334567890123" Value="200,180,120" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="d1e2f3a4-b5c6-0567-2345-445678901234" Value="173" Type="int"/>
@@ -2685,12 +2689,16 @@
 		<Parameter Name="SpecificBlocks" Guid="98633cde-32e0-4795-b37f-d8357a846ee1" Value="" Type="string"/>
 		<Parameter Name="BreakProbability" Guid="ec41f113-cbeb-473c-bad8-707096cd9a15" Value="1.0" Type="float"/>
 	</MemberComponentTemplate>
-    <MemberComponentTemplate Name="HumanModel" Guid="e4f5a6b7-c8d9-8123-8901-101234567890" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
-        <Parameter Name="WalkLegsAngle" Guid="f5a6b7c8-d9e0-8234-9012-211345678901" Value="0.4" Type="float"/>
-        <Parameter Name="ModelName" Guid="a6b7c8d9-e0f1-8345-0123-321456789012" Value="Models/Tank superior" Type="string"/>
-        <Parameter Name="TextureOverride" Guid="b7c8d9e0-f1a2-8456-1234-431567890123" Value="Textures/Lider Calaverico Supremo" Type="string"/>
-        <Parameter Name="WalkAnimationSpeed" Guid="c8d9e0f1-a2b3-8567-2345-541678901234" Value="0.65" Type="float"/>
-    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="TankModel" Guid="0d8221cd-2c6e-4789-b497-d3a0b879be32" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
+    <Parameter Name="WalkLegsAngle" Guid="67808272-ba36-4655-a2c2-c7b2ecae1ad1" Value="0.6" Type="float"/>
+    <Parameter Name="ModelName" Guid="e5c4e5de-893e-4cca-ad13-bc30c19d4ff1" Value="Models/Tank superior" Type="string"/>
+    <Parameter Name="TextureOverride" Guid="ea267572-069b-4c01-a303-85ada0523692" Value="Textures/Lider Calaverico Supremo" Type="string"/>
+    <Parameter Name="WalkAnimationSpeed" Guid="9fab2472-9433-473f-b917-fd41168a25da" Value="1.0" Type="float"/>
+    <Parameter Name="WalkBobHeight" Guid="719240aa-ae33-44b5-bb2f-4a0f726d1742" Value="0.03" Type="float"/>
+    <Parameter Name="SmoothFactor" Guid="8ae498c9-26f5-404b-87f8-ba28e2ab716a" Value="0.18" Type="float"/>
+    <Parameter Name="AnimationResponsiveness" Guid="5ce11a41-394e-4537-bd9f-20a491170bcc" Value="12" Type="float"/>
+    <Parameter Name="Class" Guid="e60c9df2-defe-4a4e-9c4f-9dd2c48274f6" Value="Game.ComponentTankModel" Type="string"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="HealthBarDisplay" Guid="9250d44f-460f-4a0c-853b-109c3286c40c" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
         <Parameter Name="MaxDisplayDistance" Value="19" Type="float"/>
     </MemberComponentTemplate>
