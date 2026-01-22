@@ -60,12 +60,10 @@
     <Parameter Name="IsOptional" Value="false" Type="bool"/>
     <Parameter Name="LoadOrder" Value="100" Type="int"/>
     <Parameter Name="UpdateOrder" Value="1000" Type="int"/>
-    <Parameter Name="MaxShootingDistance" Value="25" Type="float"/>
+    <Parameter Name="MaxShootingDistance" Value="100" Type="float"/>
     <Parameter Name="SpreadFactor" Value="0.05" Type="float"/>
     <Parameter Name="ReloadChance" Value="0.05" Type="float"/>
     <Parameter Name="MinReloadInterval" Value="5" Type="float"/>
-    <Parameter Name="SoundVolume" Value="1.0" Type="float"/>
-    <Parameter Name="SoundRange" Value="10" Type="float"/>
     <Parameter Name="UseRandomReloads" Value="true" Type="bool"/>
     <Parameter Name="TargetHeightOffset" Value="0.5" Type="float"/>
 </MemberComponentTemplate>
@@ -84,12 +82,23 @@
     <MemberComponentTemplate Name="Miner" Guid="291acbbd-e37b-4e8e-8af6-87e0a1aad492" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="8d0c2705-d510-4d2a-819e-8459d30fba83" Value="2.8" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="HumanModel" Guid="543911dd-f329-4734-be90-b5b3334c6b54" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
-        <Parameter Name="WalkLegsAngle" Guid="7afca53c-5a74-491b-b842-975aba7de6f1" Value="0.35" Type="float"/>
-        <Parameter Name="ModelName" Guid="a9ffe22e-5ecd-4c16-a69d-d1fc5d64cda1" Value="Models/HumanMale" Type="string"/>
-        <Parameter Name="TextureOverride" Guid="321489fa-f36d-48b5-9724-d9e551032f89" Value="Textures/Bandidos/Soldado" Type="string"/>
-        <Parameter Name="WalkAnimationSpeed" Guid="4dc11b36-45c4-450c-974c-1b83c9338baa" Value="0.8" Type="float"/>
-    </MemberComponentTemplate>
+<MemberComponentTemplate Name="NewHumanModel" Guid="07adda44-13c6-4b64-8b99-6f83ab77a3fc" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
+    <Parameter Name="Class" Guid="31940f42-103f-4f9c-a42a-2b7992128bda" Value="Game.ComponentNewHumanModel" Type="string"/>
+    <Parameter Name="ModelName" Guid="acdea03a-46e5-4d5a-98fe-066f3a522678" Value="Models/HumanMale" Type="string"/>
+    <Parameter Name="TextureOverride" Guid="fff8e598-a4e7-4106-9f7b-1a763b56c72b" Value="Textures/Bandidos/Soldado" Type="string"/>
+    <Parameter Name="WalkAnimationSpeed" Guid="aaf44f0b-1346-4d4b-8f90-3f6d9f999601" Value="0.65" Type="float"/>
+    <Parameter Name="WalkBobHeight" Guid="5af6506e-4c5d-4c45-8170-2ceb0706a983" Value="0.045" Type="float"/>
+    <Parameter Name="WalkLegsAngle" Guid="c7b11521-cfbf-4dd1-9146-999f9b3ffa01" Value="0.35" Type="float"/>
+    <Parameter Name="SmoothFactor" Guid="2dc511e6-9d2d-4375-881e-10053209899c" Value="0.12" Type="float"/>
+    <Parameter Name="AnimationResponsiveness" Guid="ac3783d7-d4f4-4ce7-9e96-49b9dc389781" Value="15" Type="float"/>
+    <Parameter Name="AimSmoothFactor" Guid="27dc3d66-e49f-4d7e-8b5b-badb668c471f" Value="0.2" Type="float"/>
+    <Parameter Name="AimTransitionSpeed" Guid="898b72cc-f889-47d7-a8e5-bd25f98e62f3" Value="7" Type="float"/>
+    <Parameter Name="MovementAnimationPhase" Guid="19b5ed54-7749-42aa-85b6-edd5bccd0009" Value="0" Type="float"/>
+    <Parameter Name="DeathPhase" Guid="57ab966d-7501-4a0b-a628-20279bb23472" Value="0" Type="float"/>
+    <Parameter Name="Bob" Guid="82d05107-cfcf-452e-ba33-707eab62c3dd" Value="0" Type="float"/>
+    <Parameter Name="IsAttackHitMoment" Guid="d5cb7f69-28a0-44c1-9cdf-ddc72e5000dc" Value="false" Type="bool"/>
+    <Parameter Name="AttackOrder" Guid="f25bed4e-a8ef-4a42-86ce-631ff26e817d" Value="false" Type="bool"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="HealthBarDisplay" Guid="40c3ff7d-e92c-4609-aabf-bf6e55204887" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
         <Parameter Name="MaxDisplayDistance" Value="30" Type="float"/>
     </MemberComponentTemplate>
@@ -209,12 +218,10 @@
     <Parameter Name="IsOptional" Value="false" Type="bool"/>
     <Parameter Name="LoadOrder" Value="100" Type="int"/>
     <Parameter Name="UpdateOrder" Value="1000" Type="int"/>
-    <Parameter Name="MaxShootingDistance" Value="25" Type="float"/>
+    <Parameter Name="MaxShootingDistance" Value="100" Type="float"/>
     <Parameter Name="SpreadFactor" Value="0.05" Type="float"/>
     <Parameter Name="ReloadChance" Value="0.05" Type="float"/>
     <Parameter Name="MinReloadInterval" Value="5" Type="float"/>
-    <Parameter Name="SoundVolume" Value="1.0" Type="float"/>
-    <Parameter Name="SoundRange" Value="10" Type="float"/>
     <Parameter Name="UseRandomReloads" Value="true" Type="bool"/>
     <Parameter Name="TargetHeightOffset" Value="0.5" Type="float"/>
 </MemberComponentTemplate>
@@ -233,12 +240,23 @@
     <MemberComponentTemplate Name="Miner" Guid="435baa35-c3aa-4fde-8e6b-be73e3667da5" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="9823467c-9965-482e-9d5b-c66021daf2e4" Value="3" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="HumanModel" Guid="e92db1e2-f7c1-464f-913b-a1321af46f66" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
-        <Parameter Name="WalkLegsAngle" Guid="e8eb3626-4969-491e-83ef-96eed9d1b57d" Value="0.35" Type="float"/>
-        <Parameter Name="ModelName" Guid="f8830eb4-9dd8-43ce-a32f-236cd61cc091" Value="Models/HumanFemale" Type="string"/>
-        <Parameter Name="TextureOverride" Guid="566f5c26-a2cc-4b35-af14-d7cffc73736d" Value="Textures/Bandidos/Usurpadora" Type="string"/>
-        <Parameter Name="WalkAnimationSpeed" Guid="b1d5c873-ea50-4649-8d84-479033f91e5a" Value="0.8" Type="float"/>
-    </MemberComponentTemplate>
+<MemberComponentTemplate Name="NewHumanModel" Guid="6cc88ba1-c830-4ab5-8b36-05f85d09592e" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
+    <Parameter Name="Class" Guid="1d540b80-1292-4700-b3be-8736bcaa2f66" Value="Game.ComponentNewHumanModel" Type="string"/>
+    <Parameter Name="ModelName" Guid="c2e95479-3db6-46e4-a11a-5dd71e9899e3" Value="Models/HumanFemale" Type="string"/>
+    <Parameter Name="TextureOverride" Guid="d7543726-15b9-459d-9093-1015edafbf4d" Value="Textures/Bandidos/Usurpadora" Type="string"/>
+    <Parameter Name="WalkAnimationSpeed" Guid="c04f931e-027b-4962-b3ba-d9206865b1d8" Value="0.65" Type="float"/>
+    <Parameter Name="WalkBobHeight" Guid="c25bda68-76bf-46d6-922c-9a4aac902677" Value="0.045" Type="float"/>
+    <Parameter Name="WalkLegsAngle" Guid="2c6738ad-5c52-45d4-8143-d958fa15fb1b" Value="0.35" Type="float"/>
+    <Parameter Name="SmoothFactor" Guid="d7cef827-f3c0-48ee-9797-b9842ef27276" Value="0.12" Type="float"/>
+    <Parameter Name="AnimationResponsiveness" Guid="8c6c9417-a2a6-4504-a4d8-cdc79af73cc3" Value="15" Type="float"/>
+    <Parameter Name="AimSmoothFactor" Guid="9ed9fc72-e441-4717-b2c0-1c246d3eb02c" Value="0.2" Type="float"/>
+    <Parameter Name="AimTransitionSpeed" Guid="dbf2de03-a86d-42e6-a506-16e455d2ee44" Value="7" Type="float"/>
+    <Parameter Name="MovementAnimationPhase" Guid="47d89d8b-6368-4700-b0ab-84472ebbe784" Value="0" Type="float"/>
+    <Parameter Name="DeathPhase" Guid="b97da83d-f302-4c12-bac3-86b7f145eac2" Value="0" Type="float"/>
+    <Parameter Name="Bob" Guid="20777faf-0464-4a7d-a909-e461f363ba0b" Value="0" Type="float"/>
+    <Parameter Name="IsAttackHitMoment" Guid="2c72c4ea-a72f-4639-b6c2-6364ad0dcea6" Value="false" Type="bool"/>
+    <Parameter Name="AttackOrder" Guid="59316c24-8867-40a3-ac7d-d1a897ba172f" Value="false" Type="bool"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="HealthBarDisplay" Guid="d5502a9c-d092-4f4b-b3ec-7921bdd13ec1" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
         <Parameter Name="MaxDisplayDistance" Value="30" Type="float"/>
     </MemberComponentTemplate>
@@ -358,12 +376,10 @@
     <Parameter Name="IsOptional" Value="false" Type="bool"/>
     <Parameter Name="LoadOrder" Value="100" Type="int"/>
     <Parameter Name="UpdateOrder" Value="1000" Type="int"/>
-    <Parameter Name="MaxShootingDistance" Value="25" Type="float"/>
+    <Parameter Name="MaxShootingDistance" Value="100" Type="float"/>
     <Parameter Name="SpreadFactor" Value="0.05" Type="float"/>
     <Parameter Name="ReloadChance" Value="0.05" Type="float"/>
     <Parameter Name="MinReloadInterval" Value="5" Type="float"/>
-    <Parameter Name="SoundVolume" Value="1.0" Type="float"/>
-    <Parameter Name="SoundRange" Value="10" Type="float"/>
     <Parameter Name="UseRandomReloads" Value="true" Type="bool"/>
     <Parameter Name="TargetHeightOffset" Value="0.5" Type="float"/>
 </MemberComponentTemplate>
@@ -382,12 +398,23 @@
     <MemberComponentTemplate Name="Miner" Guid="e5d6ec40-e207-4cbd-9f85-e083d8b3dd1d" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="c8b96fa5-691f-4169-a411-d1fc99cbee9b" Value="3" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="HumanModel" Guid="cb96f696-98c5-4621-a52c-8e709a8e61f1" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
-        <Parameter Name="WalkLegsAngle" Guid="b1215131-66f7-4568-b92f-507b60e12830" Value="0.35" Type="float"/>
-        <Parameter Name="ModelName" Guid="409e3149-732c-4e09-be7a-bb19227dc6f0" Value="Models/HumanMale" Type="string"/>
-        <Parameter Name="TextureOverride" Guid="6721516b-6a98-4500-8426-42bd555c5add" Value="Textures/Bandidos/Viking" Type="string"/>
-        <Parameter Name="WalkAnimationSpeed" Guid="bf4abe66-e4aa-4c8d-ad8f-820bb65b7eff" Value="0.8" Type="float"/>
-    </MemberComponentTemplate>
+<MemberComponentTemplate Name="NewHumanModel" Guid="de2199c5-9083-4208-8067-7e6bc37999a7" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
+    <Parameter Name="Class" Guid="9f686581-e83f-4015-ae29-6154d4e7224a" Value="Game.ComponentNewHumanModel" Type="string"/>
+    <Parameter Name="ModelName" Guid="46809730-f04e-4d8c-b64f-189dabc6febd" Value="Models/HumanMale" Type="string"/>
+    <Parameter Name="TextureOverride" Guid="76cdc891-dd46-4391-9587-237b176dc811" Value="Textures/Bandidos/Viking" Type="string"/>
+    <Parameter Name="WalkAnimationSpeed" Guid="5a6fb081-be36-43ba-9522-5de94ffa5ea6" Value="0.65" Type="float"/>
+    <Parameter Name="WalkBobHeight" Guid="910b5ee9-4d6b-497d-9a1b-e6b3a7f71080" Value="0.045" Type="float"/>
+    <Parameter Name="WalkLegsAngle" Guid="dc70a9fa-ac15-4cf9-b680-9bde3add0787" Value="0.35" Type="float"/>
+    <Parameter Name="SmoothFactor" Guid="8b0b7d9b-459a-4491-bbf9-32e34a68bc77" Value="0.12" Type="float"/>
+    <Parameter Name="AnimationResponsiveness" Guid="2a1c2555-bddc-4194-8173-71d7cad7cd93" Value="15" Type="float"/>
+    <Parameter Name="AimSmoothFactor" Guid="630fb83a-5ea4-4e29-8558-af5215f07d35" Value="0.2" Type="float"/>
+    <Parameter Name="AimTransitionSpeed" Guid="39bce99a-1e88-4c7d-a74b-0ae904848b5c" Value="7" Type="float"/>
+    <Parameter Name="MovementAnimationPhase" Guid="56156f6c-b344-40e9-a556-ee9934854661" Value="0" Type="float"/>
+    <Parameter Name="DeathPhase" Guid="3ede9767-0033-4698-b9af-0837808d4786" Value="0" Type="float"/>
+    <Parameter Name="Bob" Guid="8b93c90a-98f2-49b7-983f-cf614142d340" Value="0" Type="float"/>
+    <Parameter Name="IsAttackHitMoment" Guid="e7dfe29e-5a4d-48ee-8668-8b87ef5d8b3e" Value="false" Type="bool"/>
+    <Parameter Name="AttackOrder" Guid="b7c9cc89-adff-4e49-8e95-5e88a43b71ad" Value="false" Type="bool"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="HealthBarDisplay" Guid="be17f21b-7bed-46c5-a3c0-6ff65b0b3c77" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
         <Parameter Name="MaxDisplayDistance" Value="30" Type="float"/>
     </MemberComponentTemplate>
@@ -507,12 +534,10 @@
     <Parameter Name="IsOptional" Value="false" Type="bool"/>
     <Parameter Name="LoadOrder" Value="100" Type="int"/>
     <Parameter Name="UpdateOrder" Value="1000" Type="int"/>
-    <Parameter Name="MaxShootingDistance" Value="25" Type="float"/>
+    <Parameter Name="MaxShootingDistance" Value="100" Type="float"/>
     <Parameter Name="SpreadFactor" Value="0.05" Type="float"/>
     <Parameter Name="ReloadChance" Value="0.05" Type="float"/>
     <Parameter Name="MinReloadInterval" Value="5" Type="float"/>
-    <Parameter Name="SoundVolume" Value="1.0" Type="float"/>
-    <Parameter Name="SoundRange" Value="10" Type="float"/>
     <Parameter Name="UseRandomReloads" Value="true" Type="bool"/>
     <Parameter Name="TargetHeightOffset" Value="0.5" Type="float"/>
 </MemberComponentTemplate>
@@ -531,12 +556,23 @@
     <MemberComponentTemplate Name="Miner" Guid="ec068a62-5d88-4655-b9b1-a095571ad6ea" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="8e33758f-362e-4346-aeea-78229989b3a5" Value="3" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="HumanModel" Guid="bc9b06c2-7207-446c-b2f7-d597ea9c3923" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
-        <Parameter Name="WalkLegsAngle" Guid="e4cfa934-e38f-40ad-b03f-3b9db9b63109" Value="0.35" Type="float"/>
-        <Parameter Name="ModelName" Guid="3dfab0f6-bb39-4a55-b788-9feac35e7488" Value="Models/HumanMale" Type="string"/>
-        <Parameter Name="TextureOverride" Guid="775d1dcc-da57-4488-9a5b-482e67d75244" Value="Textures/Bandidos/Walter Falso" Type="string"/>
-        <Parameter Name="WalkAnimationSpeed" Guid="b8abdad2-76e2-479f-82a2-a51e9abb67ae" Value="0.8" Type="float"/>
-    </MemberComponentTemplate>
+<MemberComponentTemplate Name="NewHumanModel" Guid="bb29eccf-1a48-4839-bd31-fc2c5c1eda58" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
+    <Parameter Name="Class" Guid="15433342-c96c-420d-9517-5e21895ed513" Value="Game.ComponentNewHumanModel" Type="string"/>
+    <Parameter Name="ModelName" Guid="b678da70-d75f-4877-9577-ac57fbb2a50c" Value="Models/HumanMale" Type="string"/>
+    <Parameter Name="TextureOverride" Guid="e3e07784-3e8e-45b8-8eaf-aa6876e0cb9a" Value="Textures/Bandidos/Walter Falso" Type="string"/>
+    <Parameter Name="WalkAnimationSpeed" Guid="060d3a14-affc-46d7-ba2b-91df8a91b041" Value="0.65" Type="float"/>
+    <Parameter Name="WalkBobHeight" Guid="1392d238-ff16-4573-bfc3-2461e5851432" Value="0.045" Type="float"/>
+    <Parameter Name="WalkLegsAngle" Guid="9186db92-89c5-493f-8b8e-d248da1a2e2b" Value="0.35" Type="float"/>
+    <Parameter Name="SmoothFactor" Guid="742b191c-9dc3-4a2f-a830-e7aa87e3bc22" Value="0.12" Type="float"/>
+    <Parameter Name="AnimationResponsiveness" Guid="9bfdf8f3-4b8e-4756-9ded-76d098972e01" Value="15" Type="float"/>
+    <Parameter Name="AimSmoothFactor" Guid="904df9a8-65a8-4264-bf8d-946fbdf25e0f" Value="0.2" Type="float"/>
+    <Parameter Name="AimTransitionSpeed" Guid="7950ad28-10b1-4f8b-b030-3d5672faf240" Value="7" Type="float"/>
+    <Parameter Name="MovementAnimationPhase" Guid="9cff0b71-7442-47cb-9706-257f6145396b" Value="0" Type="float"/>
+    <Parameter Name="DeathPhase" Guid="d83d0a70-5bf1-4b91-9cbf-c8816be07ec7" Value="0" Type="float"/>
+    <Parameter Name="Bob" Guid="531475ed-be2a-4cef-aebd-373cae72ea82" Value="0" Type="float"/>
+    <Parameter Name="IsAttackHitMoment" Guid="73f9fcd3-616c-4087-b2ca-0c7db4ab27fb" Value="false" Type="bool"/>
+    <Parameter Name="AttackOrder" Guid="1e52503f-db12-406c-a99e-a1de20b28fda" Value="false" Type="bool"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="HealthBarDisplay" Guid="7b3627eb-c86b-464c-b3ec-20a2dc1ca11b" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
         <Parameter Name="MaxDisplayDistance" Value="30" Type="float"/>
     </MemberComponentTemplate>
@@ -656,12 +692,10 @@
     <Parameter Name="IsOptional" Value="false" Type="bool"/>
     <Parameter Name="LoadOrder" Value="100" Type="int"/>
     <Parameter Name="UpdateOrder" Value="1000" Type="int"/>
-    <Parameter Name="MaxShootingDistance" Value="25" Type="float"/>
+    <Parameter Name="MaxShootingDistance" Value="100" Type="float"/>
     <Parameter Name="SpreadFactor" Value="0.05" Type="float"/>
     <Parameter Name="ReloadChance" Value="0.05" Type="float"/>
     <Parameter Name="MinReloadInterval" Value="5" Type="float"/>
-    <Parameter Name="SoundVolume" Value="1.0" Type="float"/>
-    <Parameter Name="SoundRange" Value="10" Type="float"/>
     <Parameter Name="UseRandomReloads" Value="true" Type="bool"/>
     <Parameter Name="TargetHeightOffset" Value="0.5" Type="float"/>
 </MemberComponentTemplate>
@@ -680,12 +714,23 @@
     <MemberComponentTemplate Name="Miner" Guid="da249bf2-aec2-4829-89d8-0717d3a06f21" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="63f8ba7a-724c-4b66-9f8c-b4ef4bc54da7" Value="3" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="HumanModel" Guid="0c573a41-3163-4aa9-aa70-4003ebcb463f" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
-        <Parameter Name="WalkLegsAngle" Guid="873c07be-25c5-423b-be9d-c1929a9b8489" Value="0.35" Type="float"/>
-        <Parameter Name="ModelName" Guid="2734adf2-d37d-44e8-94b3-54f43bd9edf0" Value="Models/HumanMale" Type="string"/>
-        <Parameter Name="TextureOverride" Guid="76e3c2de-fa16-493b-bde9-cf368347c635" Value="Textures/Bandidos/Willow" Type="string"/>
-        <Parameter Name="WalkAnimationSpeed" Guid="37c7d1cf-8ac8-4d53-9e9b-021a82abe116" Value="0.8" Type="float"/>
-    </MemberComponentTemplate>
+<MemberComponentTemplate Name="NewHumanModel" Guid="d9ee3a41-e9dd-4d47-9f43-79bc3e2c8c4f" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
+    <Parameter Name="Class" Guid="9d7c058b-fd37-4747-b266-2c5f9e3b55c0" Value="Game.ComponentNewHumanModel" Type="string"/>
+    <Parameter Name="ModelName" Guid="eb405086-8c0a-43e0-8a28-e4b7b12b0a8f" Value="Models/HumanFemale" Type="string"/>
+    <Parameter Name="TextureOverride" Guid="013c3569-7ea1-4559-bcf1-49175cb8f930" Value="Textures/Bandidos/Willow" Type="string"/>
+    <Parameter Name="WalkAnimationSpeed" Guid="a41aefda-a6a8-49a5-9590-5614de3a7044" Value="0.65" Type="float"/>
+    <Parameter Name="WalkBobHeight" Guid="4d6601ee-13f2-47e7-a3af-d1545ebf7915" Value="0.045" Type="float"/>
+    <Parameter Name="WalkLegsAngle" Guid="8ab2dede-3d50-480c-82ae-799659d068ac" Value="0.35" Type="float"/>
+    <Parameter Name="SmoothFactor" Guid="fa39684f-ea49-4cb0-bf8f-31f9fc9a2310" Value="0.12" Type="float"/>
+    <Parameter Name="AnimationResponsiveness" Guid="3cddafa0-7bf4-4fd7-9660-94c868abb550" Value="15" Type="float"/>
+    <Parameter Name="AimSmoothFactor" Guid="7bc4ef24-a371-4fe6-a5a7-99760ae4fd76" Value="0.2" Type="float"/>
+    <Parameter Name="AimTransitionSpeed" Guid="e70baf9a-9a72-44f4-91c9-60408e0859f1" Value="7" Type="float"/>
+    <Parameter Name="MovementAnimationPhase" Guid="b6bf13a0-8bd6-4c43-a916-8776bf8dd5e7" Value="0" Type="float"/>
+    <Parameter Name="DeathPhase" Guid="07a4bb73-2269-458b-a8ad-ae4084cb177d" Value="0" Type="float"/>
+    <Parameter Name="Bob" Guid="4d7760cb-eebd-4032-a40a-7b356ef02833" Value="0" Type="float"/>
+    <Parameter Name="IsAttackHitMoment" Guid="19d39d07-33b7-4be1-b65d-86f16861d247" Value="false" Type="bool"/>
+    <Parameter Name="AttackOrder" Guid="6ba54316-b430-4713-a7b5-0dc5b4fa3fd0" Value="false" Type="bool"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="HealthBarDisplay" Guid="4a07d8b1-adce-4f9d-87ed-77c242cd41cf" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
         <Parameter Name="MaxDisplayDistance" Value="30" Type="float"/>
     </MemberComponentTemplate>
@@ -805,12 +850,10 @@
     <Parameter Name="IsOptional" Value="false" Type="bool"/>
     <Parameter Name="LoadOrder" Value="100" Type="int"/>
     <Parameter Name="UpdateOrder" Value="1000" Type="int"/>
-    <Parameter Name="MaxShootingDistance" Value="25" Type="float"/>
+    <Parameter Name="MaxShootingDistance" Value="100" Type="float"/>
     <Parameter Name="SpreadFactor" Value="0.05" Type="float"/>
     <Parameter Name="ReloadChance" Value="0.05" Type="float"/>
     <Parameter Name="MinReloadInterval" Value="5" Type="float"/>
-    <Parameter Name="SoundVolume" Value="1.0" Type="float"/>
-    <Parameter Name="SoundRange" Value="10" Type="float"/>
     <Parameter Name="UseRandomReloads" Value="true" Type="bool"/>
     <Parameter Name="TargetHeightOffset" Value="0.5" Type="float"/>
 </MemberComponentTemplate>
@@ -829,12 +872,23 @@
     <MemberComponentTemplate Name="Miner" Guid="dfc1a160-4697-454d-b260-f8a4aa014c58" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="ea67daad-2054-4bc4-b8e0-bdafead6860a" Value="3" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="HumanModel" Guid="c7b5eb7b-51be-485f-b603-1a0b2cf11812" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
-        <Parameter Name="WalkLegsAngle" Guid="195de756-a159-4142-afc0-6c773fe923ab" Value="0.35" Type="float"/>
-        <Parameter Name="ModelName" Guid="b4378553-d576-49ab-9ee9-21cc15464208" Value="Models/HumanMale" Type="string"/>
-        <Parameter Name="TextureOverride" Guid="156a2030-77cf-436c-971e-d44aa1caf16b" Value="Textures/Bandidos/Joven Promedio" Type="string"/>
-        <Parameter Name="WalkAnimationSpeed" Guid="c664c418-e86d-4237-b612-d431280f3fc8" Value="0.8" Type="float"/>
-    </MemberComponentTemplate>
+<MemberComponentTemplate Name="NewHumanModel" Guid="e77c7b4d-1508-4e39-8084-3ed238f57534" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
+    <Parameter Name="Class" Guid="c2ed7666-9219-4143-8386-4b54890c194f" Value="Game.ComponentNewHumanModel" Type="string"/>
+    <Parameter Name="ModelName" Guid="0cb1f58d-4703-4161-96b1-d9bc343828ff" Value="Models/HumanMale" Type="string"/>
+    <Parameter Name="TextureOverride" Guid="f16a9da5-bdd8-4cd0-b679-7ef19e3fddd5" Value="Textures/Bandidos/Joven Promedio" Type="string"/>
+    <Parameter Name="WalkAnimationSpeed" Guid="783d7fe6-32ca-402b-8073-6a268982039a" Value="0.65" Type="float"/>
+    <Parameter Name="WalkBobHeight" Guid="8e2d5311-7ea7-4565-95ca-ef2d53d94588" Value="0.045" Type="float"/>
+    <Parameter Name="WalkLegsAngle" Guid="640838dc-9981-4e2f-826f-8e48515aae02" Value="0.35" Type="float"/>
+    <Parameter Name="SmoothFactor" Guid="ea30837c-dbe7-4a5e-8228-65225d53124c" Value="0.12" Type="float"/>
+    <Parameter Name="AnimationResponsiveness" Guid="2233dc90-c341-41a4-a057-9d7e0138e2d4" Value="15" Type="float"/>
+    <Parameter Name="AimSmoothFactor" Guid="683983e2-7ceb-4483-a1ec-a34cf521c1d5" Value="0.2" Type="float"/>
+    <Parameter Name="AimTransitionSpeed" Guid="e8355a21-c8f2-4e20-93b8-0c395da0c296" Value="7" Type="float"/>
+    <Parameter Name="MovementAnimationPhase" Guid="b3cf441f-b4db-4c45-8a9c-721bdbdb6e57" Value="0" Type="float"/>
+    <Parameter Name="DeathPhase" Guid="d6b90ffa-e487-4c32-8643-0b24bbd3697b" Value="0" Type="float"/>
+    <Parameter Name="Bob" Guid="148a7529-df6d-40cc-95f8-2f6929f135e9" Value="0" Type="float"/>
+    <Parameter Name="IsAttackHitMoment" Guid="8f806ab6-148c-40f2-8237-63fe58dbebfd" Value="false" Type="bool"/>
+    <Parameter Name="AttackOrder" Guid="f3da08dd-c1a3-4c72-aa41-3b1343848185" Value="false" Type="bool"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="HealthBarDisplay" Guid="bca9feef-778e-4aa3-b876-0eff992e396f" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
         <Parameter Name="MaxDisplayDistance" Value="30" Type="float"/>
     </MemberComponentTemplate>
@@ -909,8 +963,8 @@
     <Parameter Name="LoadOrder" Value="60" Type="int" Guid="8848b1c0-b30a-479f-892c-05295cf9b4c9"/>
               <Parameter Name="IsEnabled" Guid="d3ca37d4-bcf9-40e0-8672-dc5114a92342" Value="True" Type="bool"/>
             </MemberComponentTemplate>
-<MemberComponentTemplate Name="NewChaseBehavior" Guid="08e4522b-abd8-4fca-9fe5-7820a79059ac">
-    <Parameter Name="Class" Value="Game.ComponentNewChaseBehavior" Type="string" Guid="28b7e385-bba8-4b08-a72f-365202ff9ce6"/>
+<MemberComponentTemplate Name="NewChaseBehavior2" Guid="08e4522b-abd8-4fca-9fe5-7820a79059ac">
+    <Parameter Name="Class" Value="Game.ComponentNewChaseBehavior2" Type="string" Guid="28b7e385-bba8-4b08-a72f-365202ff9ce6"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="0b40beeb-dea6-411e-9430-736c9a8c3d0e"/>
     <Parameter Name="LoadOrder" Value="60" Type="int" Guid="d4ed9c27-c02b-4f08-bf7a-e3c135e68eb5"/>
     <Parameter Name="DayChaseRange" Value="16" Type="float" Guid="e5d9c202-0667-4abb-a009-d3698c381842"/>
@@ -994,12 +1048,23 @@
     <MemberComponentTemplate Name="Miner" Guid="f6593c47-f83c-4454-91da-9a2f4e9735b8" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="c05491ff-4c91-4fdf-8741-931a0b45580e" Value="3" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="HumanModel" Guid="7ef516b7-e880-4056-8e34-851ef3dd57bb" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
-        <Parameter Name="WalkLegsAngle" Guid="1ad8b4fc-360f-4a36-9de5-5442bd79ab07" Value="0.35" Type="float"/>
-        <Parameter Name="ModelName" Guid="3e674647-56f0-4868-b08c-b4095d1b6180" Value="Models/HumanFemale" Type="string"/>
-        <Parameter Name="TextureOverride" Guid="3a8401d6-9b42-485d-92c8-c04d8d4f6939" Value="Textures/Bandidos/Barbie" Type="string"/>
-        <Parameter Name="WalkAnimationSpeed" Guid="70996a35-2723-49a9-87f8-70c0cb0d3d27" Value="0.8" Type="float"/>
-    </MemberComponentTemplate>
+<MemberComponentTemplate Name="NewHumanModel" Guid="765f9831-42e7-4247-b5cb-16e50aeab1be" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
+    <Parameter Name="Class" Guid="66092781-e1c4-43cb-86c7-aee179e30078" Value="Game.ComponentNewHumanModel" Type="string"/>
+    <Parameter Name="ModelName" Guid="59a716b9-2a65-447c-8b48-463f97bda0ca" Value="Models/HumanFemale" Type="string"/>
+    <Parameter Name="TextureOverride" Guid="c7f1222e-c80d-4a65-988c-b0c23d6eaae3" Value="Textures/Bandidos/Barbie" Type="string"/>
+    <Parameter Name="WalkAnimationSpeed" Guid="e2059b48-94e9-4474-a8d0-cb198335bdc4" Value="0.65" Type="float"/>
+    <Parameter Name="WalkBobHeight" Guid="917db13c-6a99-441a-ac4c-8f9abe4ded3a" Value="0.045" Type="float"/>
+    <Parameter Name="WalkLegsAngle" Guid="5b11b8e9-e72b-410a-a676-18ee88d515df" Value="0.35" Type="float"/>
+    <Parameter Name="SmoothFactor" Guid="ebfabf64-8db6-4b2d-bf0d-cea475241893" Value="0.12" Type="float"/>
+    <Parameter Name="AnimationResponsiveness" Guid="97f99176-d43d-44c5-9f53-b57f84f218fc" Value="15" Type="float"/>
+    <Parameter Name="AimSmoothFactor" Guid="6ff122b1-cd3d-45bd-b012-6737aaeb42bd" Value="0.2" Type="float"/>
+    <Parameter Name="AimTransitionSpeed" Guid="3fa9f41e-84b7-48cc-ae45-7725aa455322" Value="7" Type="float"/>
+    <Parameter Name="MovementAnimationPhase" Guid="afc277ff-c9ac-488d-8c44-9b86e4dd6764" Value="0" Type="float"/>
+    <Parameter Name="DeathPhase" Guid="4d8ddf05-41df-4ff5-8e4b-f907b13be786" Value="0" Type="float"/>
+    <Parameter Name="Bob" Guid="167e5c97-30ca-4a0e-a9df-83b84b73a2a4" Value="0" Type="float"/>
+    <Parameter Name="IsAttackHitMoment" Guid="8fbcb79f-227b-4b19-9fe3-9e5d92d6d10a" Value="false" Type="bool"/>
+    <Parameter Name="AttackOrder" Guid="2e3cbf66-2106-40ec-a91b-91bceef5d99d" Value="false" Type="bool"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="HealthBarDisplay" Guid="52bd4daf-2cc2-41bd-abd1-d8801d6a2482" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
         <Parameter Name="MaxDisplayDistance" Value="30" Type="float"/>
     </MemberComponentTemplate>
