@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Engine;
 using Engine.Graphics;
 using GameEntitySystem;
@@ -8,9 +8,13 @@ namespace Game
 {
 	public class ComponentNewHumanModel : ComponentHumanModel
 	{
-		// Factores de suavizado
-		private float m_smoothFactor = 0.18f;
-		private float m_animationResponsiveness = 10f;
+		// Factores de suavizado mejorados
+		private float m_smoothFactor = 0.15f;
+		private float m_animationResponsiveness = 8f;
+
+		// Factores específicos para apuntar
+		private float m_aimSmoothFactor = 0.25f;
+		private float m_aimTransitionSpeed = 6f;
 
 		// Variables para tracking del estado anterior para interpolación
 		private Vector2 m_targetHeadAngles;
@@ -22,6 +26,11 @@ namespace Game
 		// Variables para suavizado de movimiento
 		private float m_smoothedMovementPhase;
 		private float m_smoothedBob;
+
+		// Variables para suavizado de apuntar
+		private float m_smoothedAimHandAngle;
+		private float m_aimIntensity;
+		private bool m_wasAiming;
 
 		// Tiempo para animaciones independientes
 		private float m_animationTime;
@@ -36,12 +45,24 @@ namespace Game
 
 			// Después de que base.Update haya calculado todo, aplicar suavizado
 			float smoothSpeed = MathUtils.Min(m_animationResponsiveness * dt, 0.9f);
+			float aimSmoothSpeed = MathUtils.Min(m_aimTransitionSpeed * dt, 0.95f);
 
 			// Suavizar la fase de movimiento
 			m_smoothedMovementPhase = MathUtils.Lerp(m_smoothedMovementPhase, base.MovementAnimationPhase, smoothSpeed * 1.5f);
 
 			// Suavizar el bob
 			m_smoothedBob = MathUtils.Lerp(m_smoothedBob, base.Bob, smoothSpeed * 2f);
+
+			// Suavizar el ángulo de apuntar con una curva más gradual
+			float targetAimAngle = base.m_aimHandAngle;
+			m_smoothedAimHandAngle = MathUtils.Lerp(m_smoothedAimHandAngle, targetAimAngle, aimSmoothSpeed);
+
+			// Calcular intensidad de apuntar con transición suave
+			bool isAiming = Math.Abs(targetAimAngle) > 0.001f;
+			float targetAimIntensity = isAiming ? 1f : 0f;
+			m_aimIntensity = MathUtils.Lerp(m_aimIntensity, targetAimIntensity, aimSmoothSpeed * 0.8f);
+
+			m_wasAiming = isAiming;
 
 			// Actualizar los ángulos base con suavizado
 			this.m_headAngles = Vector2.Lerp(this.m_headAngles, m_targetHeadAngles, smoothSpeed);
@@ -101,13 +122,13 @@ namespace Game
 
 				float num2 = (float)MathUtils.Remainder(0.75 * this.m_subsystemGameInfo.TotalElapsedGameTime + (double)(this.GetHashCode() & 65535), 10000.0);
 
-				// Calcular ángulos objetivo con menos ruido
-				float noiseScale = 0.12f; // Reducido para más suavidad
+				// Calcular ángulos objetivo con menos ruido y más suavidad
+				float noiseScale = 0.15f; // Reducido para más suavidad
 
 				float targetHeadX = MathUtils.Clamp(
 					MathUtils.Lerp(-noiseScale, noiseScale, SimplexNoise.Noise(1.02f * num2 - 100f)) +
 					this.m_componentCreature.ComponentLocomotion.LookAngles.X +
-					0.7f * this.m_componentCreature.ComponentLocomotion.LastTurnOrder.X +
+					0.6f * this.m_componentCreature.ComponentLocomotion.LastTurnOrder.X + // Reducido de 1f a 0.6f
 					this.m_headingOffset,
 					-MathUtils.DegToRad(80f), MathUtils.DegToRad(80f));
 
@@ -164,10 +185,10 @@ namespace Game
 				}
 				else if (m_smoothedMovementPhase != 0f)
 				{
-					// Animación de caminar suavizada
-					num4 = -0.5f * num;
-					num6 = 0.5f * num;
-					num3 = this.m_walkLegsAngle * num * 0.8f; // Reducido para menos brusquedad
+					// Animación de caminar suavizada con menor amplitud
+					num4 = -0.45f * num; // Reducido de -0.5f
+					num6 = 0.45f * num;  // Reducido de 0.5f
+					num3 = this.m_walkLegsAngle * num * 0.7f; // Reducido de 0.8f para aún menos brusquedad
 					x2 = 0f - num3;
 				}
 
@@ -179,9 +200,9 @@ namespace Game
 					num9 = ((this.m_componentMiner.ActiveBlockValue == 0) ? (1f * num10) : (0.3f + 1f * num10));
 				}
 
-				// Efecto de puñetazo
+				// Efecto de puñetazo - más suave
 				float num11 = (this.m_punchPhase != 0f) ?
-					((0f - MathUtils.DegToRad(90f)) * MathF.Sin(6.2831855f * MathUtils.Sigmoid(this.m_punchPhase, 4f))) : 0f;
+					((0f - MathUtils.DegToRad(90f)) * MathF.Sin(6.2831855f * MathUtils.Sigmoid(this.m_punchPhase, 3f))) : 0f; // Cambiado de 4f a 3f
 				float num12 = ((this.m_punchCounter & 1) == 0) ? num11 : 0f;
 				float num13 = ((this.m_punchCounter & 1) != 0) ? num11 : 0f;
 
@@ -206,27 +227,34 @@ namespace Game
 					}
 				}
 
-				// Efecto de apuntar
+				// Efecto de apuntar - MEJORADO con transición más suave
 				float num20 = 0f;
 				float num21 = 0f;
 				float num22 = 0f;
 				float num23 = 0f;
-				if (this.m_aimHandAngle != 0f)
+
+				// Usar intensidad suavizada para transiciones graduales
+				if (m_aimIntensity > 0.001f)
 				{
-					num20 = 1.5f;
-					num21 = -0.7f;
-					num22 = this.m_aimHandAngle * 1f;
+					// Aplicar curva de entrada/salida más suave usando funciones de easing
+					float easeInOut = m_aimIntensity * m_aimIntensity * (3f - 2f * m_aimIntensity);
+
+					num20 = 1.5f * easeInOut;
+					num21 = -0.7f * easeInOut;
+
+					// Suavizar también el ángulo de apuntar con la misma curva
+					num22 = m_smoothedAimHandAngle * easeInOut;
 					num23 = 0f;
 				}
 
 				float num24 = (float)((!this.m_componentCreature.ComponentLocomotion.IsCreativeFlyEnabled) ? 1 : 4);
 
 				// Calcular ángulos finales con ruido reducido
-				float handNoiseScale = 0.08f;
+				float handNoiseScale = 0.06f; // Reducido de 0.08f
 				num4 += MathUtils.Lerp(-handNoiseScale, handNoiseScale, SimplexNoise.Noise(num2)) + num12 + num14 + num20;
-				num5 += MathUtils.Lerp(0f, num24 * 0.12f, SimplexNoise.Noise(1.1f * num2 + 100f)) + num15 + num21;
+				num5 += MathUtils.Lerp(0f, num24 * 0.10f, SimplexNoise.Noise(1.1f * num2 + 100f)) + num15 + num21; // Reducido de 0.12f
 				num6 += num9 + MathUtils.Lerp(-handNoiseScale, handNoiseScale, SimplexNoise.Noise(0.9f * num2 + 200f)) + num13 + num16 + num22;
-				num7 += 0f - MathUtils.Lerp(0f, num24 * 0.12f, SimplexNoise.Noise(1.05f * num2 + 300f)) + num17 + num23;
+				num7 += 0f - MathUtils.Lerp(0f, num24 * 0.10f, SimplexNoise.Noise(1.05f * num2 + 300f)) + num17 + num23; // Reducido de 0.12f
 
 				// Establecer ángulos objetivo para interpolación
 				m_targetHandAngles1 = new Vector2(num4, num5);
@@ -234,11 +262,18 @@ namespace Game
 				m_targetLegAngles1 = new Vector2(num3, y2);
 				m_targetLegAngles2 = new Vector2(x2, y3);
 
-				// Aplicar factor de agacharse
-				if (this.m_componentCreature.ComponentBody.CrouchFactor == 1f)
+				// Aplicar factor de agacharse de forma más gradual
+				float crouchFactor = this.m_componentCreature.ComponentBody.CrouchFactor;
+				if (crouchFactor > 0.95f)
 				{
 					m_targetLegAngles1 *= 0.5f;
 					m_targetLegAngles2 *= 0.5f;
+				}
+				else if (crouchFactor > 0.5f)
+				{
+					float crouchScale = MathUtils.Lerp(1f, 0.5f, (crouchFactor - 0.5f) / 0.45f);
+					m_targetLegAngles1 *= crouchScale;
+					m_targetLegAngles2 *= crouchScale;
 				}
 
 				float f = MathUtils.Sigmoid(this.m_componentCreature.ComponentBody.CrouchFactor, 4f);
@@ -318,22 +353,31 @@ namespace Game
 			if (valuesDictionary.ContainsKey("AnimationResponsiveness"))
 				m_animationResponsiveness = valuesDictionary.GetValue<float>("AnimationResponsiveness");
 
+			if (valuesDictionary.ContainsKey("AimSmoothFactor"))
+				m_aimSmoothFactor = valuesDictionary.GetValue<float>("AimSmoothFactor");
+
+			if (valuesDictionary.ContainsKey("AimTransitionSpeed"))
+				m_aimTransitionSpeed = valuesDictionary.GetValue<float>("AimTransitionSpeed");
+
 			// Inicializar variables de suavizado
 			m_targetHeadAngles = Vector2.Zero;
 			m_targetHandAngles1 = Vector2.Zero;
 			m_targetHandAngles2 = Vector2.Zero;
 			m_targetLegAngles1 = Vector2.Zero;
 			m_targetLegAngles2 = Vector2.Zero;
+			m_smoothedAimHandAngle = 0f;
+			m_aimIntensity = 0f;
+			m_wasAiming = false;
 
 			m_smoothedMovementPhase = 0f;
 			m_smoothedBob = 0f;
 			m_animationTime = 0f;
 
-			// Ajustar parámetros para mayor fluidez
-			this.m_walkAnimationSpeed *= 1.1f;
-			this.m_walkBobHeight *= 0.9f;
+			// Ajustar parámetros para mayor fluidez - cambios más sutiles
+			this.m_walkAnimationSpeed *= 1.05f;    // Reducido de 1.1f
+			this.m_walkBobHeight *= 0.85f;         // Reducido de 0.9f
 
-			Log.Warning($"ComponentNewHumanModel cargado - Smooth: {m_smoothFactor}, Resp: {m_animationResponsiveness}");
+			Log.Warning($"ComponentNewHumanModel cargado - Smooth: {m_smoothFactor}, Resp: {m_animationResponsiveness}, AimSmooth: {m_aimSmoothFactor}");
 		}
 
 		// Métodos para ajustar parámetros dinámicamente
@@ -345,6 +389,12 @@ namespace Game
 		public void SetAnimationResponsiveness(float responsiveness)
 		{
 			m_animationResponsiveness = MathUtils.Clamp(responsiveness, 4f, 20f);
+		}
+
+		public void SetAimSmoothness(float smoothness)
+		{
+			m_aimSmoothFactor = MathUtils.Clamp(smoothness, 0.1f, 0.5f);
+			m_aimTransitionSpeed = MathUtils.Clamp(10f - (smoothness * 20f), 3f, 8f);
 		}
 	}
 }
