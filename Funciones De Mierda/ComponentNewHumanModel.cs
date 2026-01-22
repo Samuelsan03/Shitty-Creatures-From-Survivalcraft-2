@@ -9,8 +9,8 @@ namespace Game
 	public class ComponentNewHumanModel : ComponentHumanModel
 	{
 		// Factores de suavizado mejorados
-		private float m_smoothFactor = 0.15f;
-		private float m_animationResponsiveness = 8f;
+		protected float m_smoothFactor = 0.15f;
+		protected float m_animationResponsiveness = 8f;
 
 		// Factores específicos para apuntar
 		private float m_aimSmoothFactor = 0.25f;
@@ -28,12 +28,12 @@ namespace Game
 		private float m_smoothedBob;
 
 		// Variables para suavizado de apuntar
-		private float m_smoothedAimHandAngle;
-		private float m_aimIntensity;
+		protected float m_smoothedAimHandAngle;
+		protected float m_aimIntensity;
 		private bool m_wasAiming;
 
 		// Tiempo para animaciones independientes
-		private float m_animationTime;
+		protected float m_animationTime;
 
 		public override void Update(float dt)
 		{
