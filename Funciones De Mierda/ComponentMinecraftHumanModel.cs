@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Engine;
 using Engine.Graphics;
 using GameEntitySystem;
@@ -8,13 +8,13 @@ namespace Game
 {
 	public class ComponentMinecraftHumanModel : ComponentHumanModel
 	{
-		// Factores ajustados para estilo Minecraft
-		private float m_smoothFactor = 0.12f;
-		private float m_animationResponsiveness = 10f;
+		// Factores de suavizado - valores equilibrados
+		private float m_smoothFactor = 0.15f;
+		private float m_animationResponsiveness = 8f;
 
 		// Factores específicos para apuntar
-		private float m_aimSmoothFactor = 0.3f;
-		private float m_aimTransitionSpeed = 5f;
+		private float m_aimSmoothFactor = 0.25f;
+		private float m_aimTransitionSpeed = 6f;
 
 		// Variables para tracking del estado anterior para interpolación
 		private Vector2 m_targetHeadAngles;
@@ -50,10 +50,10 @@ namespace Game
 			// Suavizar la fase de movimiento
 			m_smoothedMovementPhase = MathUtils.Lerp(m_smoothedMovementPhase, base.MovementAnimationPhase, smoothSpeed * 1.5f);
 
-			// Suavizar el bob - reducido para estilo Minecraft
-			m_smoothedBob = MathUtils.Lerp(m_smoothedBob, base.Bob, smoothSpeed * 1.5f);
+			// Suavizar el bob - mantener igual que el original
+			m_smoothedBob = MathUtils.Lerp(m_smoothedBob, base.Bob, smoothSpeed * 2f);
 
-			// Suavizar el ángulo de apuntar
+			// Suavizar el ángulo de apuntar con una curva más gradual
 			float targetAimAngle = base.m_aimHandAngle;
 			m_smoothedAimHandAngle = MathUtils.Lerp(m_smoothedAimHandAngle, targetAimAngle, aimSmoothSpeed);
 
@@ -116,30 +116,30 @@ namespace Game
 				// Usar fase de movimiento suavizada
 				float num = MathF.Sin(6.2831855f * m_smoothedMovementPhase);
 
-				// Usar bob suavizado - reducido para Minecraft
-				position.Y += m_smoothedBob * 0.5f; // Reducido a la mitad
+				// Usar bob suavizado - VALORES NORMALES
+				position.Y += m_smoothedBob;
 				vector.X += this.m_headingOffset;
 
 				float num2 = (float)MathUtils.Remainder(0.75 * this.m_subsystemGameInfo.TotalElapsedGameTime + (double)(this.GetHashCode() & 65535), 10000.0);
 
-				// Calcular ángulos objetivo - límites más restringidos para estilo Minecraft
-				float noiseScale = 0.1f; // Reducido para estilo más rígido
+				// Calcular ángulos objetivo con menos ruido y más suavidad
+				float noiseScale = 0.15f; // Mantener igual
 
 				float targetHeadX = MathUtils.Clamp(
 					MathUtils.Lerp(-noiseScale, noiseScale, SimplexNoise.Noise(1.02f * num2 - 100f)) +
 					this.m_componentCreature.ComponentLocomotion.LookAngles.X +
-					0.4f * this.m_componentCreature.ComponentLocomotion.LastTurnOrder.X + // Más rígido
+					0.8f * this.m_componentCreature.ComponentLocomotion.LastTurnOrder.X + // VALOR NORMAL
 					this.m_headingOffset,
-					-MathUtils.DegToRad(60f), MathUtils.DegToRad(60f)); // Límites reducidos
+					-MathUtils.DegToRad(80f), MathUtils.DegToRad(80f)); // LÍMITES NORMALES
 
 				float targetHeadY = MathUtils.Clamp(
 					MathUtils.Lerp(-noiseScale, noiseScale, SimplexNoise.Noise(0.96f * num2 - 200f)) +
 					this.m_componentCreature.ComponentLocomotion.LookAngles.Y,
-					-MathUtils.DegToRad(30f), MathUtils.DegToRad(30f)); // Límites reducidos
+					-MathUtils.DegToRad(45f), MathUtils.DegToRad(45f)); // LÍMITES NORMALES
 
 				m_targetHeadAngles = new Vector2(targetHeadX, targetHeadY);
 
-				// Calcular ángulos de extremidades - ajustados para proporciones Minecraft
+				// Calcular ángulos de extremidades - VALORES NORMALES
 				float num3 = 0f;
 				float y2 = 0f;
 				float x2 = 0f;
@@ -155,54 +155,54 @@ namespace Game
 					{
 						position.Y -= 0.2f;
 						vector.X += 3.1415927f;
-						num4 = 0.3f; // Reducido
-						num6 = 0.3f; // Reducido
-						num5 = 0.15f;
-						num7 = -0.15f;
-						num3 = 0.8f; // Reducido
-						x2 = 0.8f; // Reducido
-						y2 = 0.15f;
-						y3 = -0.15f;
+						num4 = 0.4f; // NORMAL
+						num6 = 0.4f; // NORMAL
+						num5 = 0.2f; // NORMAL
+						num7 = -0.2f; // NORMAL
+						num3 = 1.1f; // NORMAL
+						x2 = 1.1f; // NORMAL
+						y2 = 0.2f; // NORMAL
+						y3 = -0.2f; // NORMAL
 					}
 					else
 					{
-						num4 = 0.35f; // Reducido
-						num6 = 0.35f; // Reducido
-						num5 = 0.1f; // Reducido
-						num7 = -0.1f; // Reducido
-						y2 = 0.4f; // Reducido
-						y3 = -0.4f; // Reducido
+						num4 = 0.5f; // NORMAL
+						num6 = 0.5f; // NORMAL
+						num5 = 0.15f; // NORMAL
+						num7 = -0.15f; // NORMAL
+						y2 = 0.55f; // NORMAL
+						y3 = -0.55f; // NORMAL
 					}
 				}
 				else if (this.m_componentCreature.ComponentLocomotion.IsCreativeFlyEnabled)
 				{
 					float num8 = (this.m_componentCreature.ComponentLocomotion.LastWalkOrder != null) ?
-						MathUtils.Min(0.02f * this.m_componentCreature.ComponentBody.Velocity.XZ.LengthSquared(), 0.4f) : 0f; // Reducido
-					num3 = -0.08f - num8; // Reducido
+						MathUtils.Min(0.03f * this.m_componentCreature.ComponentBody.Velocity.XZ.LengthSquared(), 0.5f) : 0f;
+					num3 = -0.1f - num8; // NORMAL
 					x2 = num3;
-					y2 = MathUtils.Lerp(0f, 0.2f, SimplexNoise.Noise(1.07f * num2 + 400f)); // Reducido
-					y3 = 0f - MathUtils.Lerp(0f, 0.2f, SimplexNoise.Noise(0.93f * num2 + 500f)); // Reducido
+					y2 = MathUtils.Lerp(0f, 0.25f, SimplexNoise.Noise(1.07f * num2 + 400f)); // NORMAL
+					y3 = 0f - MathUtils.Lerp(0f, 0.25f, SimplexNoise.Noise(0.93f * num2 + 500f)); // NORMAL
 				}
 				else if (m_smoothedMovementPhase != 0f)
 				{
-					// Animación de caminar - movimientos más angulares para estilo Minecraft
-					num4 = -0.3f * num; // Reducido significativamente
-					num6 = 0.3f * num;  // Reducido significativamente
-					num3 = this.m_walkLegsAngle * num * 0.5f; // Más rígido
+					// Animación de caminar suavizada con amplitud NORMAL
+					num4 = -0.45f * num; // NORMAL
+					num6 = 0.45f * num;  // NORMAL
+					num3 = this.m_walkLegsAngle * num * 0.8f; // NORMAL
 					x2 = 0f - num3;
 				}
 
-				// Efecto de minería - ajustado
+				// Efecto de minería
 				float num9 = 0f;
 				if (this.m_componentMiner != null)
 				{
 					float num10 = MathF.Sin(MathF.Sqrt(this.m_componentMiner.PokingPhase) * 3.1415927f);
-					num9 = ((this.m_componentMiner.ActiveBlockValue == 0) ? (0.7f * num10) : (0.2f + 0.7f * num10)); // Reducido
+					num9 = ((this.m_componentMiner.ActiveBlockValue == 0) ? (1f * num10) : (0.3f + 1f * num10)); // NORMAL
 				}
 
-				// Efecto de puñetazo - más angular
+				// Efecto de puñetazo - NORMAL
 				float num11 = (this.m_punchPhase != 0f) ?
-					((0f - MathUtils.DegToRad(70f)) * MathF.Sin(6.2831855f * MathUtils.Sigmoid(this.m_punchPhase, 2.5f))) : 0f; // Más rápido
+					((0f - MathUtils.DegToRad(90f)) * MathF.Sin(6.2831855f * MathUtils.Sigmoid(this.m_punchPhase, 4f))) : 0f; // NORMAL
 				float num12 = ((this.m_punchCounter & 1) == 0) ? num11 : 0f;
 				float num13 = ((this.m_punchCounter & 1) != 0) ? num11 : 0f;
 
@@ -213,8 +213,8 @@ namespace Game
 				float num17 = 0f;
 				if (this.m_rowLeft || this.m_rowRight)
 				{
-					float num18 = 0.5f * (float)Math.Sin(6.91150426864624 * this.m_subsystemTime.GameTime); // Reducido
-					float num19 = 0.15f + 0.15f * (float)Math.Cos(6.91150426864624 * (this.m_subsystemTime.GameTime + 0.5)); // Reducido
+					float num18 = 0.6f * (float)Math.Sin(6.91150426864624 * this.m_subsystemTime.GameTime); // NORMAL
+					float num19 = 0.2f + 0.2f * (float)Math.Cos(6.91150426864624 * (this.m_subsystemTime.GameTime + 0.5)); // NORMAL
 					if (this.m_rowLeft)
 					{
 						num14 = num18;
@@ -227,29 +227,34 @@ namespace Game
 					}
 				}
 
-				// Efecto de apuntar - ajustado para Minecraft
+				// Efecto de apuntar - NORMAL
 				float num20 = 0f;
 				float num21 = 0f;
 				float num22 = 0f;
 				float num23 = 0f;
 
+				// Usar intensidad suavizada para transiciones graduales
 				if (m_aimIntensity > 0.001f)
 				{
+					// Aplicar curva de entrada/salida más suave usando funciones de easing
 					float easeInOut = m_aimIntensity * m_aimIntensity * (3f - 2f * m_aimIntensity);
-					num20 = 1.2f * easeInOut; // Reducido
-					num21 = -0.5f * easeInOut; // Reducido
+
+					num20 = 1.5f * easeInOut; // NORMAL
+					num21 = -0.7f * easeInOut; // NORMAL
+
+					// Suavizar también el ángulo de apuntar con la misma curva
 					num22 = m_smoothedAimHandAngle * easeInOut;
 					num23 = 0f;
 				}
 
-				float num24 = (float)((!this.m_componentCreature.ComponentLocomotion.IsCreativeFlyEnabled) ? 1 : 3); // Reducido
+				float num24 = (float)((!this.m_componentCreature.ComponentLocomotion.IsCreativeFlyEnabled) ? 1 : 4); // NORMAL
 
-				// Calcular ángulos finales con menos ruido para estilo más limpio
-				float handNoiseScale = 0.04f; // Reducido
+				// Calcular ángulos finales con ruido normal
+				float handNoiseScale = 0.08f; // NORMAL
 				num4 += MathUtils.Lerp(-handNoiseScale, handNoiseScale, SimplexNoise.Noise(num2)) + num12 + num14 + num20;
-				num5 += MathUtils.Lerp(0f, num24 * 0.08f, SimplexNoise.Noise(1.1f * num2 + 100f)) + num15 + num21; // Reducido
+				num5 += MathUtils.Lerp(0f, num24 * 0.12f, SimplexNoise.Noise(1.1f * num2 + 100f)) + num15 + num21; // NORMAL
 				num6 += num9 + MathUtils.Lerp(-handNoiseScale, handNoiseScale, SimplexNoise.Noise(0.9f * num2 + 200f)) + num13 + num16 + num22;
-				num7 += 0f - MathUtils.Lerp(0f, num24 * 0.08f, SimplexNoise.Noise(1.05f * num2 + 300f)) + num17 + num23; // Reducido
+				num7 += 0f - MathUtils.Lerp(0f, num24 * 0.12f, SimplexNoise.Noise(1.05f * num2 + 300f)) + num17 + num23; // NORMAL
 
 				// Establecer ángulos objetivo para interpolación
 				m_targetHandAngles1 = new Vector2(num4, num5);
@@ -257,24 +262,24 @@ namespace Game
 				m_targetLegAngles1 = new Vector2(num3, y2);
 				m_targetLegAngles2 = new Vector2(x2, y3);
 
-				// Aplicar factor de agacharse
+				// Aplicar factor de agacharse de forma más gradual - NORMAL
 				float crouchFactor = this.m_componentCreature.ComponentBody.CrouchFactor;
 				if (crouchFactor > 0.95f)
 				{
-					m_targetLegAngles1 *= 0.4f; // Más pronunciado
-					m_targetLegAngles2 *= 0.4f; // Más pronunciado
+					m_targetLegAngles1 *= 0.5f;
+					m_targetLegAngles2 *= 0.5f;
 				}
 				else if (crouchFactor > 0.5f)
 				{
-					float crouchScale = MathUtils.Lerp(1f, 0.4f, (crouchFactor - 0.5f) / 0.45f);
+					float crouchScale = MathUtils.Lerp(1f, 0.5f, (crouchFactor - 0.5f) / 0.45f);
 					m_targetLegAngles1 *= crouchScale;
 					m_targetLegAngles2 *= crouchScale;
 				}
 
 				float f = MathUtils.Sigmoid(this.m_componentCreature.ComponentBody.CrouchFactor, 4f);
-				Vector3 position2 = new Vector3(position.X, position.Y - MathUtils.Lerp(0f, 0.5f, f), position.Z); // Reducido
-				Vector3 position3 = new Vector3(0f, MathUtils.Lerp(0f, 5f, f), MathUtils.Lerp(0f, 20f, f)); // Ajustado
-				Vector3 scale = new Vector3(1f, 1f, MathUtils.Lerp(1f, 0.6f, f)); // Menos compresión
+				Vector3 position2 = new Vector3(position.X, position.Y - MathUtils.Lerp(0f, 0.7f, f), position.Z); // NORMAL
+				Vector3 position3 = new Vector3(0f, MathUtils.Lerp(0f, 7f, f), MathUtils.Lerp(0f, 28f, f)); // NORMAL
+				Vector3 scale = new Vector3(1f, 1f, MathUtils.Lerp(1f, 0.5f, f)); // NORMAL
 
 				// Aplicar transformaciones usando los ángulos actuales (ya interpolados en Update)
 				this.SetBoneTransform(this.m_bodyBone.Index,
@@ -354,6 +359,9 @@ namespace Game
 			if (valuesDictionary.ContainsKey("AimTransitionSpeed"))
 				m_aimTransitionSpeed = valuesDictionary.GetValue<float>("AimTransitionSpeed");
 
+			if (valuesDictionary.ContainsKey("WalkBobHeight"))
+				this.m_walkBobHeight = valuesDictionary.GetValue<float>("WalkBobHeight");
+
 			// Inicializar variables de suavizado
 			m_targetHeadAngles = Vector2.Zero;
 			m_targetHandAngles1 = Vector2.Zero;
@@ -368,10 +376,8 @@ namespace Game
 			m_smoothedBob = 0f;
 			m_animationTime = 0f;
 
-			// Ajustar parámetros específicos para estilo Minecraft
-			this.m_walkAnimationSpeed *= 0.9f;    // Más lento para estilo más rígido
-			this.m_walkBobHeight *= 0.5f;         // Reducido significativamente
-			this.m_walkLegsAngle *= 0.7f;         // Movimiento de piernas reducido
+			// NO modificar parámetros de animación base - mantener igual que el original
+			// Solo usar los parámetros que vienen del XML
 
 			Log.Warning($"ComponentMinecraftHumanModel cargado - Smooth: {m_smoothFactor}, Resp: {m_animationResponsiveness}");
 		}
