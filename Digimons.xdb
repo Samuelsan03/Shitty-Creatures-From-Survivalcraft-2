@@ -1,5 +1,6 @@
 <Digimon>
 <Folder Name="Digimons" Guid="3ac2f75d-3314-4aeb-ac89-0e27a68208c7">
+
     <EntityTemplate Name="Veemon" Guid="27207048-7b75-409d-b98d-e400275b884c" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
 <MemberComponentTemplate Name="NewRunAwayBehavior" Guid="d967a44a-1ee7-4607-8a58-608fd13143fc">
     <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="e983ccb7-1c4c-4876-8c68-2f2875d5cb59"/>
@@ -107,12 +108,23 @@
     <MemberComponentTemplate Name="Miner" Guid="f57a04d0-aef1-488e-bb59-f9dbaa261677" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="de8b9e0b-d242-4f18-a121-388a689a6366" Value="20" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="HumanModel" Guid="25290629-b84c-4a5f-9697-a7325e8f59da" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
-        <Parameter Name="WalkLegsAngle" Guid="d4e12efa-d48f-40a0-88ee-bbd1600fe029" Value="0.25" Type="float"/>
-        <Parameter Name="ModelName" Guid="e069096d-34bd-4a52-ba67-beadbc338f3a" Value="Models/MC 1" Type="string"/>
-        <Parameter Name="TextureOverride" Guid="7e68186f-4743-4f16-b2a8-3724e701528b" Value="Textures/Veemon" Type="string"/>
-        <Parameter Name="WalkAnimationSpeed" Guid="4cd20293-2699-4341-aadb-e4672bf36439" Value="0.5" Type="float"/>
-    </MemberComponentTemplate>
+<MemberComponentTemplate Name="MinecraftHumanModel" Guid="32c6cea9-7502-4fc8-ad20-152a81c3319d" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
+    <Parameter Name="Class" Guid="5cda8cdc-22b8-4b2e-be1a-d05dba9c0b4d" Value="Game.ComponentMinecraftHumanModel" Type="string"/>
+    <Parameter Name="ModelName" Guid="128fc1b0-d6a0-4684-b0b2-79c9e769b32b" Value="Models/MC 1" Type="string"/>
+    <Parameter Name="TextureOverride" Guid="9d6830ee-f93a-46d4-9e83-c5cee458c3cf" Value="Textures/Veemon" Type="string"/>
+    <Parameter Name="WalkAnimationSpeed" Guid="347fec3a-3a05-463f-8ab4-343d84bed78f" Value="0.65" Type="float"/>
+    <Parameter Name="WalkBobHeight" Guid="70ba9a89-f209-461f-9584-39d1ac12ac15" Value="0.045" Type="float"/>
+    <Parameter Name="WalkLegsAngle" Guid="37384e1e-cd13-42ff-b07c-8783bda81345" Value="0.35" Type="float"/>
+    <Parameter Name="SmoothFactor" Guid="3773dacb-a60b-45ff-b5e6-5dd8cbd2dc5d" Value="0.12" Type="float"/>
+    <Parameter Name="AnimationResponsiveness" Guid="1a825889-57d7-4020-96a9-34ca886d0598" Value="15" Type="float"/>
+    <Parameter Name="AimSmoothFactor" Guid="ceea3057-e8f5-49c2-a060-e24011d3ebc8" Value="0.2" Type="float"/>
+    <Parameter Name="AimTransitionSpeed" Guid="412274ea-2d83-4f2d-ab9f-ed6fcd146d4b" Value="7" Type="float"/>
+    <Parameter Name="MovementAnimationPhase" Guid="ad1c3ba3-eda8-42cf-9f08-a072208943af" Value="0" Type="float"/>
+    <Parameter Name="DeathPhase" Guid="dc21e05c-424a-4cfa-8cbf-db8d598d0eba" Value="0" Type="float"/>
+    <Parameter Name="Bob" Guid="825c05e4-587b-4a6c-a8aa-a2c21c30b13f" Value="0" Type="float"/>
+    <Parameter Name="IsAttackHitMoment" Guid="4d37cdf6-9adc-4af2-ae5b-a8dea391bffa" Value="false" Type="bool"/>
+    <Parameter Name="AttackOrder" Guid="16714a31-2f2f-4974-987c-37ff2dd1faa8" Value="false" Type="bool"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="HealthBarDisplay" Guid="9ddea5df-80b5-4bda-a44f-51fb194b5eaf" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
         <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
     </MemberComponentTemplate>
@@ -260,12 +272,23 @@
     <MemberComponentTemplate Name="Miner" Guid="49e82d79-78bc-4e00-b5e3-35103403325c" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="5411571e-ef17-49b7-8c52-e14aaf1c0aa3" Value="28" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="HumanModel" Guid="bacddc5e-4db9-435c-a0c8-b57faa3a04e8" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
-        <Parameter Name="WalkLegsAngle" Guid="fec98a98-7738-4404-a2e4-9c68c5d32a2a" Value="0.25" Type="float"/>
-        <Parameter Name="ModelName" Guid="04a17858-38eb-4dfd-8d7d-2ccd3749032a" Value="Models/MC 1" Type="string"/>
-        <Parameter Name="TextureOverride" Guid="675f2719-3b30-48ef-80d8-0eb327764486" Value="Textures/Shoutmon" Type="string"/>
-        <Parameter Name="WalkAnimationSpeed" Guid="c4afa109-c79c-4d5b-9cfd-c8ad8435cd40" Value="0.5" Type="float"/>
-    </MemberComponentTemplate>
+<MemberComponentTemplate Name="MinecraftHumanModel" Guid="1783df39-9235-4da2-b77c-c7e86cd5a801" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
+    <Parameter Name="Class" Guid="6e8f2f2d-2011-4788-951b-57a922107b0d" Value="Game.ComponentMinecraftHumanModel" Type="string"/>
+    <Parameter Name="ModelName" Guid="dd1261ab-568c-4b26-b4c8-3c38be20e8d3" Value="Models/MC 1" Type="string"/>
+    <Parameter Name="TextureOverride" Guid="2252a4db-1083-479e-98eb-d771586a61eb" Value="Textures/Shoutmon" Type="string"/>
+    <Parameter Name="WalkAnimationSpeed" Guid="1dd942b3-38d6-41ab-a957-160ee40a6a0b" Value="0.65" Type="float"/>
+    <Parameter Name="WalkBobHeight" Guid="93d2912c-c720-450a-91b4-69052b331fc6" Value="0.045" Type="float"/>
+    <Parameter Name="WalkLegsAngle" Guid="a9a0333a-ec18-48ef-a9de-e9adbe8d027d" Value="0.35" Type="float"/>
+    <Parameter Name="SmoothFactor" Guid="06caa691-4c0e-4a0b-af21-627d00562d5c" Value="0.12" Type="float"/>
+    <Parameter Name="AnimationResponsiveness" Guid="0a8b70ed-538c-4326-a87e-fcbfda65d216" Value="15" Type="float"/>
+    <Parameter Name="AimSmoothFactor" Guid="b7f0c8bf-7e23-499c-a4cd-0a917601b868" Value="0.2" Type="float"/>
+    <Parameter Name="AimTransitionSpeed" Guid="637bd1b6-7da6-4789-aa3d-66ffc3ca10de" Value="7" Type="float"/>
+    <Parameter Name="MovementAnimationPhase" Guid="6523411b-b1b0-4d8d-820a-d7a99c1cbc9c" Value="0" Type="float"/>
+    <Parameter Name="DeathPhase" Guid="1cf33bb6-148e-43ee-884b-af4c1a3f18ed" Value="0" Type="float"/>
+    <Parameter Name="Bob" Guid="d6fafe09-d08d-4fdf-acdf-4b331aca3dc7" Value="0" Type="float"/>
+    <Parameter Name="IsAttackHitMoment" Guid="3d7194f3-a313-45c7-8aa3-abe0e7193227" Value="false" Type="bool"/>
+    <Parameter Name="AttackOrder" Guid="cab0a210-3780-4955-b624-9dae67b579b5" Value="false" Type="bool"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="Spawn" Guid="d30c0965-0e24-4a12-9143-323d21f9f600">
     <Parameter Name="AutoDespawn" Guid="b0654a7e-2b20-44a7-895c-edc6b12e17b4" Value="False" Type="bool"/>
 </MemberComponentTemplate>
@@ -404,12 +427,23 @@
     <MemberComponentTemplate Name="Miner" Guid="ff99b342-d5fe-487c-be19-d8068bca4458" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="04d9e397-1ab4-48f1-8ad3-a39fd3746de9" Value="25" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="HumanModel" Guid="640a93aa-4633-4812-a7e8-fd87530452ce" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
-        <Parameter Name="WalkLegsAngle" Guid="e0a7be1d-2516-40c2-91cb-7bad22076153" Value="0.25" Type="float"/>
-        <Parameter Name="ModelName" Guid="626b9296-34cd-49f4-8c25-7adba3e1c19c" Value="Models/MC 2" Type="string"/>
-        <Parameter Name="TextureOverride" Guid="84bbdccc-56ac-4943-beb6-32ae67e3492e" Value="Textures/Agumon" Type="string"/>
-        <Parameter Name="WalkAnimationSpeed" Guid="9d28c2a3-a28b-4609-aa09-f88a93fc00b1" Value="0.5" Type="float"/>
-    </MemberComponentTemplate>
+<MemberComponentTemplate Name="MinecraftHumanModel" Guid="b613fae4-da5a-47bc-a640-0525e701098f" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
+    <Parameter Name="Class" Guid="975894bf-8bc5-4084-94d0-3608387b3659" Value="Game.ComponentMinecraftHumanModel" Type="string"/>
+    <Parameter Name="ModelName" Guid="59bcdb99-e517-4338-935e-89e90493daa2" Value="Models/MC 1" Type="string"/>
+    <Parameter Name="TextureOverride" Guid="ad314aaf-1e63-4b87-919a-2fa86d1781d6" Value="Textures/Agumon" Type="string"/>
+    <Parameter Name="WalkAnimationSpeed" Guid="b826905e-ce7d-4840-96ab-9ede64c1123d" Value="0.65" Type="float"/>
+    <Parameter Name="WalkBobHeight" Guid="62918c06-0043-416a-9a79-d7d9f72b3379" Value="0.045" Type="float"/>
+    <Parameter Name="WalkLegsAngle" Guid="83c932f3-4415-46dd-ba20-3818054a37eb" Value="0.35" Type="float"/>
+    <Parameter Name="SmoothFactor" Guid="67c2d3f9-d773-4b8f-ac4c-2600fee88f25" Value="0.12" Type="float"/>
+    <Parameter Name="AnimationResponsiveness" Guid="fdf1eb67-0e2c-4f4f-9c55-a92deea4adda" Value="15" Type="float"/>
+    <Parameter Name="AimSmoothFactor" Guid="49956769-7628-44c3-8799-7b5e0665d3ff" Value="0.2" Type="float"/>
+    <Parameter Name="AimTransitionSpeed" Guid="649e8cd6-ba2d-40aa-87af-268e9c11fe37" Value="7" Type="float"/>
+    <Parameter Name="MovementAnimationPhase" Guid="34cd6039-448c-4ae3-8d1d-27c583293e17" Value="0" Type="float"/>
+    <Parameter Name="DeathPhase" Guid="0ccbf2d7-3348-4c18-adf3-cee5abd6731b" Value="0" Type="float"/>
+    <Parameter Name="Bob" Guid="73e53227-cce9-4c27-a068-2823aab626c0" Value="0" Type="float"/>
+    <Parameter Name="IsAttackHitMoment" Guid="3ed2e489-f216-45a1-971d-7caf1d17e6eb" Value="false" Type="bool"/>
+    <Parameter Name="AttackOrder" Guid="b7b634dd-597b-4bab-a0d0-1da56f2af107" Value="false" Type="bool"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="HealthBarDisplay" Guid="7ad843dc-9b25-40c7-81f0-af6c5cc82a8a" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
         <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
     </MemberComponentTemplate>
@@ -567,12 +601,23 @@
     <MemberComponentTemplate Name="Miner" Guid="f7bd13c2-81c9-4b86-9286-3dcc495e639f" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="45062ab1-6ea8-4c68-8b5e-efcd3fbc7b86" Value="25" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="HumanModel" Guid="ec4ddc3d-809c-479f-987f-b5d8dde77c18" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
-        <Parameter Name="WalkLegsAngle" Guid="a4a712bc-b54a-448f-b006-8ee6ebf6c87e" Value="0.25" Type="float"/>
-        <Parameter Name="ModelName" Guid="6305cdb7-d84e-4e19-8e06-6045f10cece0" Value="Models/MC 2" Type="string"/>
-        <Parameter Name="TextureOverride" Guid="dcd075c7-106f-45df-b6a5-e79fd87bf600" Value="Textures/Guilmon" Type="string"/>
-        <Parameter Name="WalkAnimationSpeed" Guid="8538cd7f-e119-4f01-b0fd-75f473b00eac" Value="0.5" Type="float"/>
-    </MemberComponentTemplate>
+<MemberComponentTemplate Name="MinecraftHumanModel" Guid="36fdac2f-334f-4596-8bb0-84732fb0ea7f" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
+    <Parameter Name="Class" Guid="8a8256a2-e126-49a4-ad21-9ec7b4378174" Value="Game.ComponentMinecraftHumanModel" Type="string"/>
+    <Parameter Name="ModelName" Guid="e3eebf25-67b4-4b34-8924-9370906cd7ec" Value="Models/MC 1" Type="string"/>
+    <Parameter Name="TextureOverride" Guid="fc61df3b-3416-4ce6-be50-1255b6685818" Value="Textures/Guilmon" Type="string"/>
+    <Parameter Name="WalkAnimationSpeed" Guid="870f1531-6d0e-45fb-9a3e-5d2c5c3f9391" Value="0.65" Type="float"/>
+    <Parameter Name="WalkBobHeight" Guid="4a7feffa-eec6-4698-82c5-ea313b9723e9" Value="0.045" Type="float"/>
+    <Parameter Name="WalkLegsAngle" Guid="c1a4ddf8-f915-4bdc-8e39-9c2a7e2f8817" Value="0.35" Type="float"/>
+    <Parameter Name="SmoothFactor" Guid="c2a30a42-ee3b-4ac1-9c02-552d94bd8350" Value="0.12" Type="float"/>
+    <Parameter Name="AnimationResponsiveness" Guid="8244a39e-c968-49d4-8d30-afb7f0f03b03" Value="15" Type="float"/>
+    <Parameter Name="AimSmoothFactor" Guid="cb77b6f6-ef4d-4012-82b2-5b5e326a256b" Value="0.2" Type="float"/>
+    <Parameter Name="AimTransitionSpeed" Guid="1db2cc89-9b10-4cd7-84a9-f7d32fb9e5ce" Value="7" Type="float"/>
+    <Parameter Name="MovementAnimationPhase" Guid="aa4a5fed-2e91-488b-a581-9c77ff65c0c6" Value="0" Type="float"/>
+    <Parameter Name="DeathPhase" Guid="a6d5d6af-6549-4638-873c-7d04e929a5f6" Value="0" Type="float"/>
+    <Parameter Name="Bob" Guid="194efdbe-b8ee-4981-9106-212d722be441" Value="0" Type="float"/>
+    <Parameter Name="IsAttackHitMoment" Guid="783eee6d-e702-48bd-b49f-ac4d1876e394" Value="false" Type="bool"/>
+    <Parameter Name="AttackOrder" Guid="8ce09b24-1610-4e1a-ab64-4ed283088170" Value="false" Type="bool"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="HealthBarDisplay" Guid="bcd77b66-b7d1-4891-8532-e2369310c371" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
         <Parameter Name="MaxDisplayDistance" Value="19" Type="float"/>
     </MemberComponentTemplate>
@@ -696,12 +741,23 @@
     <MemberComponentTemplate Name="Miner" Guid="7a9f0963-f7a2-425d-8763-0db31d56c257" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="1849cf02-7d3b-4004-af27-adaf103c47be" Value="28" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="HumanModel" Guid="764cedf0-40cc-47a4-b179-66d9cbe5172d" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
-        <Parameter Name="WalkLegsAngle" Guid="01b6f676-7dd4-45a1-a722-72be7575fe94" Value="0.25" Type="float"/>
-        <Parameter Name="ModelName" Guid="ff814998-f496-424d-962a-d99ca90e4b5b" Value="Models/MC 2" Type="string"/>
-        <Parameter Name="TextureOverride" Guid="e83e7acb-e261-4d56-9d01-7dd16d9e9f34" Value="Textures/Gumdramon" Type="string"/>
-        <Parameter Name="WalkAnimationSpeed" Guid="d4210e0f-4ae4-483b-b491-d4bb9b966d2d" Value="0.5" Type="float"/>
-    </MemberComponentTemplate>
+<MemberComponentTemplate Name="MinecraftHumanModel" Guid="4791a518-fc92-47a6-b86d-90e3e9580ac3" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
+    <Parameter Name="Class" Guid="714dde8b-4456-4a19-90ca-7279e02d537a" Value="Game.ComponentMinecraftHumanModel" Type="string"/>
+    <Parameter Name="ModelName" Guid="8a09587b-c89b-40d7-82b4-2052bd73d762" Value="Models/MC 2" Type="string"/>
+    <Parameter Name="TextureOverride" Guid="417c64b9-7f6a-4fee-8ba0-ce394b78aad7" Value="Textures/Gumdramon" Type="string"/>
+    <Parameter Name="WalkAnimationSpeed" Guid="be52282c-2416-4d3a-9499-9ce4e3b63419" Value="0.65" Type="float"/>
+    <Parameter Name="WalkBobHeight" Guid="0fabd27b-73ff-499f-b3be-49eaded4b7f1" Value="0.045" Type="float"/>
+    <Parameter Name="WalkLegsAngle" Guid="1d75d338-724b-4a4d-8f74-c4df4821b7c0" Value="0.35" Type="float"/>
+    <Parameter Name="SmoothFactor" Guid="42647346-8192-4f48-b731-3c79fa5622ae" Value="0.12" Type="float"/>
+    <Parameter Name="AnimationResponsiveness" Guid="a2946b71-b7c5-4f1d-a19f-37d722d11357" Value="15" Type="float"/>
+    <Parameter Name="AimSmoothFactor" Guid="ab75f94c-1c01-4d34-bda9-4906b48e930c" Value="0.2" Type="float"/>
+    <Parameter Name="AimTransitionSpeed" Guid="d1dd789d-da28-40af-b6a5-3f2ce3b643e5" Value="7" Type="float"/>
+    <Parameter Name="MovementAnimationPhase" Guid="c78e761e-0afc-4bbd-97fa-f3639333526d" Value="0" Type="float"/>
+    <Parameter Name="DeathPhase" Guid="5e1e56cf-3f83-4472-9451-6fc405b8ab52" Value="0" Type="float"/>
+    <Parameter Name="Bob" Guid="665d6222-ad81-4907-9632-cb66d8de8988" Value="0" Type="float"/>
+    <Parameter Name="IsAttackHitMoment" Guid="9225c4f2-867c-48b9-b796-61ac336008cb" Value="false" Type="bool"/>
+    <Parameter Name="AttackOrder" Guid="7ef45734-7c3c-4873-b959-303294f206c4" Value="false" Type="bool"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="HealthBarDisplay" Guid="7d4d64f7-0777-45c9-968b-0b0addca4d69" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
         <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
     </MemberComponentTemplate>
@@ -852,12 +908,23 @@
     <MemberComponentTemplate Name="Miner" Guid="a23d1e91-2701-43ba-b803-0d5514b46820" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="94b70c70-062a-47b9-b78c-7f0624fe805d" Value="32" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="HumanModel" Guid="3137b9e5-a388-4433-8bae-c541f9943e4e" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
-        <Parameter Name="WalkLegsAngle" Guid="bb2575c4-3c40-425c-a78e-722dde98cdc5" Value="0.25" Type="float"/>
-        <Parameter Name="ModelName" Guid="d84149d0-94ce-4aae-88ed-283e938a942c" Value="Models/MC 2" Type="string"/>
-        <Parameter Name="TextureOverride" Guid="72ca03c3-24f8-4096-82f5-0faa2979dd96" Value="Textures/BetelGammamon" Type="string"/>
-        <Parameter Name="WalkAnimationSpeed" Guid="e04a2f14-834c-4bff-b219-424f0b5f5596" Value="0.5" Type="float"/>
-    </MemberComponentTemplate>
+<MemberComponentTemplate Name="MinecraftHumanModel" Guid="c48d115d-0797-40a0-b7f8-ec451469213b" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
+    <Parameter Name="Class" Guid="2c51fbfc-9885-41b5-95e4-e05757f90db4" Value="Game.ComponentMinecraftHumanModel" Type="string"/>
+    <Parameter Name="ModelName" Guid="e519f11c-fc47-41d7-ba62-ee8dc5fc2995" Value="Models/MC 2" Type="string"/>
+    <Parameter Name="TextureOverride" Guid="14089671-711b-4767-9c09-88f8a886bef5" Value="Textures/BetelGammamon" Type="string"/>
+    <Parameter Name="WalkAnimationSpeed" Guid="30135e51-ca66-43f9-8f0c-c91fbdd8c5c0" Value="0.65" Type="float"/>
+    <Parameter Name="WalkBobHeight" Guid="35ec4d39-9896-44b9-8a2a-c939af36efa8" Value="0.045" Type="float"/>
+    <Parameter Name="WalkLegsAngle" Guid="8a8fa886-05bd-405a-9207-e1bf91abd084" Value="0.35" Type="float"/>
+    <Parameter Name="SmoothFactor" Guid="5186483f-794f-47da-a6c8-9d21f4de8d25" Value="0.12" Type="float"/>
+    <Parameter Name="AnimationResponsiveness" Guid="d20721bb-793d-41ac-9854-b50d8075f03c" Value="15" Type="float"/>
+    <Parameter Name="AimSmoothFactor" Guid="ee1e5358-e045-463a-82b4-d1c74c51d085" Value="0.2" Type="float"/>
+    <Parameter Name="AimTransitionSpeed" Guid="6a97292f-57bd-480b-ae2e-50ac6cda0fad" Value="7" Type="float"/>
+    <Parameter Name="MovementAnimationPhase" Guid="dfafdd2e-4b40-4cf3-b74c-12d823362c21" Value="0" Type="float"/>
+    <Parameter Name="DeathPhase" Guid="15c24417-4d47-47d5-b06a-3114ec241e7b" Value="0" Type="float"/>
+    <Parameter Name="Bob" Guid="1be12bbe-77d3-4d32-9d8d-816a38bd23c1" Value="0" Type="float"/>
+    <Parameter Name="IsAttackHitMoment" Guid="06a3d0d9-90aa-46ac-b245-2d51a50225aa" Value="false" Type="bool"/>
+    <Parameter Name="AttackOrder" Guid="83b8a3df-a19b-40af-a6a8-4a51555a5080" Value="false" Type="bool"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="HealthBarDisplay" Guid="61b4ba84-15c2-4597-9901-ef27e9371c3b" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
         <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
     </MemberComponentTemplate>
@@ -901,7 +968,7 @@
         <Parameter Name="TextureSlot" Guid="51ece2f8-7c09-4ba3-bd46-1b5fb9fec454" Value="189" Type="int"/>
         <Parameter Name="SwapUV" Guid="8a400181-16fe-4813-8f38-b37e5a62a36e" Value="True" Type="bool"/>
         <Parameter Name="DisplayName" Guid="adab8e46-5c85-4949-8856-9e8be62aa534" Value="[DisplayName:BetelGammamon]" Type="string"/>
-        <Parameter Name="EggTypeIndex" Guid="38943c12-c71b-45f3-9922-9c8df3743d92" Value="230" Type="int"/>
+        <Parameter Name="EggTypeIndex" Guid="38943c12-c71b-45f3-9922-9c8df3743d92" Value="7005" Type="int"/>
     </ParameterSet>
 </EntityTemplate>
 
@@ -1000,12 +1067,23 @@
     <MemberComponentTemplate Name="Miner" Guid="a9330744-f92d-48ab-9d2b-466e8331b0d4" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="1286cdbd-ed77-42ab-b49c-f3127557618e" Value="30" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="HumanModel" Guid="e7626629-26bf-42c7-aaeb-ee6bd9857cff" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
-        <Parameter Name="WalkLegsAngle" Guid="aa4f661c-9c4e-45cf-beb8-09e03b9a71c5" Value="0.25" Type="float"/>
-        <Parameter Name="ModelName" Guid="179075eb-cd21-4339-88c5-e9f56db8e603" Value="Models/MC 2" Type="string"/>
-        <Parameter Name="TextureOverride" Guid="9d350ce1-9092-4a30-951f-1cac5e2d0de7" Value="Textures/Gaomon" Type="string"/>
-        <Parameter Name="WalkAnimationSpeed" Guid="50478121-d32e-4c1c-aee1-6e3d91cd6719" Value="0.5" Type="float"/>
-    </MemberComponentTemplate>
+<MemberComponentTemplate Name="MinecraftHumanModel" Guid="1ac183f3-9cee-4778-8f58-2139517b893d" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
+    <Parameter Name="Class" Guid="d3fb6351-f854-4b94-8c0a-38bb2b60315c" Value="Game.ComponentMinecraftHumanModel" Type="string"/>
+    <Parameter Name="ModelName" Guid="30d385eb-8538-45d2-8852-7d200479e349" Value="Models/MC 2" Type="string"/>
+    <Parameter Name="TextureOverride" Guid="ddc7709a-aad8-433f-9443-446ca7c134da" Value="Textures/Gaomon" Type="string"/>
+    <Parameter Name="WalkAnimationSpeed" Guid="bd61386a-9ddc-415e-b697-1d5c6495fa37" Value="0.65" Type="float"/>
+    <Parameter Name="WalkBobHeight" Guid="f0c87008-ce6a-49fd-9816-04e5fe314efd" Value="0.045" Type="float"/>
+    <Parameter Name="WalkLegsAngle" Guid="2084fad2-dcc7-468a-876d-7d118a1d0e15" Value="0.35" Type="float"/>
+    <Parameter Name="SmoothFactor" Guid="d6a194b2-d2d1-4f1e-a796-e29665d1608e" Value="0.12" Type="float"/>
+    <Parameter Name="AnimationResponsiveness" Guid="a8949a0e-9989-4856-88f4-99bdd0f80e7a" Value="15" Type="float"/>
+    <Parameter Name="AimSmoothFactor" Guid="198aba09-f096-4100-bdaa-120fb976b30d" Value="0.2" Type="float"/>
+    <Parameter Name="AimTransitionSpeed" Guid="5e5c2bf7-c3d0-4e76-a31b-f87835376b99" Value="7" Type="float"/>
+    <Parameter Name="MovementAnimationPhase" Guid="2eeef6af-edbf-4bd0-a946-8ebc5e699015" Value="0" Type="float"/>
+    <Parameter Name="DeathPhase" Guid="fbc8ddd9-60a0-478c-a189-45c4854ad9e1" Value="0" Type="float"/>
+    <Parameter Name="Bob" Guid="48401cbc-59c4-4b64-842f-33027d9f4ad5" Value="0" Type="float"/>
+    <Parameter Name="IsAttackHitMoment" Guid="0adecb4c-1b0e-4ec4-aa5c-77d380d3028c" Value="false" Type="bool"/>
+    <Parameter Name="AttackOrder" Guid="27bbf837-140f-498c-a2a2-65cd8eba07e1" Value="false" Type="bool"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="2f43f80e-7c2f-4f2c-890a-4671ae334d3a">
         <Parameter Name="FireResilience" Guid="fe699a62-7d93-44f7-92ff-83a24d73b895" Value="155.5" Type="float"/>
 <Parameter Name="AttackResilience" Guid="b41ace02-f6ae-4f07-9f58-ea48d2f919ea" Value="295.35" Type="float"/>
@@ -1150,12 +1228,23 @@
     <MemberComponentTemplate Name="Miner" Guid="d9c64723-f135-40cb-97ad-13aecaf9e93f" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="5e29c826-922d-4a81-b4bb-7c458b795096" Value="25" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="HumanModel" Guid="3b8bab3c-a3f2-4acc-9f4d-3310c7d0ad96" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
-        <Parameter Name="WalkLegsAngle" Guid="57af8460-7ec9-4889-adc8-77822b672407" Value="0.25" Type="float"/>
-        <Parameter Name="ModelName" Guid="7edce850-1cd5-41f7-8c03-9cae8b738210" Value="Models/MC 2" Type="string"/>
-        <Parameter Name="TextureOverride" Guid="c34baeca-cd80-438f-909c-91413f26e435" Value="Textures/Impmon" Type="string"/>
-        <Parameter Name="WalkAnimationSpeed" Guid="8496a9b5-13b1-473e-9938-4ba67695dc3f" Value="0.5" Type="float"/>
-    </MemberComponentTemplate>
+<MemberComponentTemplate Name="MinecraftHumanModel" Guid="dd0c9e19-5f40-4a87-ac0f-832d2d38f6d5" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
+    <Parameter Name="Class" Guid="31e0788d-222d-436a-81a7-06e4ebcc4ea7" Value="Game.ComponentMinecraftHumanModel" Type="string"/>
+    <Parameter Name="ModelName" Guid="3f4bfbaa-ea09-4b49-a253-3871e19019dc" Value="Models/MC 2" Type="string"/>
+    <Parameter Name="TextureOverride" Guid="712e0a3f-e53d-4c6b-94f4-f1d5423f1f7e" Value="Textures/Impmon" Type="string"/>
+    <Parameter Name="WalkAnimationSpeed" Guid="e39e4ff3-d729-4e70-912e-ac71fd1fa54a" Value="0.65" Type="float"/>
+    <Parameter Name="WalkBobHeight" Guid="3403b1ba-c5f1-49ec-9d71-730462af223d" Value="0.045" Type="float"/>
+    <Parameter Name="WalkLegsAngle" Guid="41c6e6ee-437a-4a54-84d1-9724ba4361e7" Value="0.35" Type="float"/>
+    <Parameter Name="SmoothFactor" Guid="602d03f6-fb2c-44df-96f6-e6140cf30ff8" Value="0.12" Type="float"/>
+    <Parameter Name="AnimationResponsiveness" Guid="659d276e-eeac-445c-946a-92c5d0cbf646" Value="15" Type="float"/>
+    <Parameter Name="AimSmoothFactor" Guid="2de7715c-e435-4d9e-a121-7668d611a5de" Value="0.2" Type="float"/>
+    <Parameter Name="AimTransitionSpeed" Guid="40483b9d-9b5f-45c7-af93-31f96dece5c8" Value="7" Type="float"/>
+    <Parameter Name="MovementAnimationPhase" Guid="1fff75f6-6a70-497f-8c92-2ef3834f7b59" Value="0" Type="float"/>
+    <Parameter Name="DeathPhase" Guid="eb0e08f4-4092-4f54-89d0-1503c65a06ec" Value="0" Type="float"/>
+    <Parameter Name="Bob" Guid="61735df0-79bd-4f67-9fd5-c4a0d37ea246" Value="0" Type="float"/>
+    <Parameter Name="IsAttackHitMoment" Guid="e82f31e0-3e72-48b1-a54c-74ff10cd02fd" Value="false" Type="bool"/>
+    <Parameter Name="AttackOrder" Guid="48504635-4f34-4573-8f93-81e6bc4988b3" Value="false" Type="bool"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="16659630-0da2-4317-8b63-c6b9280397ef">
         <Parameter Name="FireResilience" Guid="7da30065-c798-47eb-875c-9d0c6311a9f9" Value="315.55" Type="float"/>
 <Parameter Name="AttackResilience" Guid="51e6a1ee-70c7-4ec9-b406-0b0e0c219817" Value="430.55" Type="float"/>
