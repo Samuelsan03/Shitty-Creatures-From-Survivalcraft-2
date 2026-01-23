@@ -9866,7 +9866,7 @@
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Creature" Guid="c147a6e9-5653-4307-89d2-63b2742b9179">
                 <Parameter Name="DisplayName" Guid="070010f7-be24-4346-bfd9-4ddc25ecd688" Value="[DisplayName:MachineGunInfectedTamed]" Type="string"/>
-                <Parameter Name="Category" Guid="be23a634-8ab1-49dd-9f94-cefdbffc6908" Value="LandPredator" Type="Game.CreatureCategory"/>
+                <Parameter Name="Category" Guid="be23a634-8ab1-49dd-9f94-cefdbffc6908" Value="LandOther" Type="Game.CreatureCategory"/>
                 <Parameter Name="ConstantSpawn" Guid="5f392ea2-9afd-4f79-86d4-df539d30c06e" Value="True" Type="bool"/>
                 <Parameter Name="KillVerbs" Guid="b7771ce7-bfe6-4aa3-9e90-b4c328c30b48" Value="shooted" Type="string"/>
             </MemberComponentTemplate>
