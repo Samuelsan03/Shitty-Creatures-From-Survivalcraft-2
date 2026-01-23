@@ -5437,19 +5437,6 @@
     <Parameter Name="AnimationResponsiveness" Guid="be53e8f2-bd90-482f-892a-89764ac3d55d" Value="12" Type="float"/>
     <Parameter Name="Class" Guid="68de61be-9e71-4e9b-a380-f25689b917fc" Value="Game.ComponentTankModel" Type="string"/>
 </MemberComponentTemplate>
-    <MemberComponentTemplate Name="ZombieHerdBehavior" Guid="4339d13a-607c-4789-b66e-198d60015f8c">
-    <Parameter Name="Class" Value="Game.ComponentZombieHerdBehavior" Type="string" Guid="c994c2a5-c3fe-47f6-b14d-537ade1df13b"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="e35507aa-2471-443f-a3d7-2add8eb62e08"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="699d10cb-dac0-4b18-98db-06336afe626d"/>
-    <Parameter Name="HerdName" Value="Zombie" Type="string" Guid="00186875-8561-4e2d-9c60-fb39dd36718e"/>
-    <Parameter Name="HerdingRange" Value="40" Type="float" Guid="70e60360-81b1-4cf1-82a0-1a3322674452"/>
-    <Parameter Name="AutoNearbyCreaturesHelp" Value="true" Type="bool" Guid="6f38369a-d85e-4615-94a0-3f9694687081"/>
-    <Parameter Name="CallForHelpWhenAttacked" Value="true" Type="bool" Guid="0c0b6e9f-c9b7-4a23-84c6-d33b7d0652bd"/>
-    <Parameter Name="HelpCallRange" Value="25" Type="float" Guid="3d5c1be4-6782-468d-b58d-8f06dd1845bf"/>
-    <Parameter Name="HelpChaseTime" Value="30" Type="float" Guid="c1cb802b-01ef-4648-923f-90188e333304"/>
-    <Parameter Name="IsPersistentHelp" Value="false" Type="bool" Guid="21986879-6e0b-4143-a5a1-7c8dd90d0680"/>
-    <Parameter Name="ZombieAggressiveGrouping" Value="false" Type="bool" Guid="21f4c5b2-96e4-4e66-aadd-406c956ad7c2"/>
-</MemberComponentTemplate>
 <MemberComponentTemplate Name="PathBreaker" Guid="333ccbb3-1dbc-41b9-9b60-a9094ed05ef7" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
 		<Parameter Name="CanBreakBlocks" Guid="d2c6f160-ea05-451b-b4fc-783edd2d1665" Value="True" Type="bool"/>
 		<Parameter Name="SpecificBlocks" Guid="2cf8ed7f-49a0-4b65-9001-3b57ed24c13f" Value="" Type="string"/>
@@ -5745,7 +5732,7 @@
     </ParameterSet>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="InvShooterBehavior" Guid="4d9ed7ca-50b9-487a-811b-866f7d90d08f" InheritanceParent="456e3558-0e7f-42c3-bc05-35eef7540900">
-    <Parameter Name="SpecialThrowableItem" Value="BigStoneFlameChunkBlock" Type="string"/>
+    <Parameter Name="SpecialThrowableItem" Value="BigStoneFlameChunkBlock" Type="string"/> <!-- Lanza rocas mortales de fuego -->
     <Parameter Name="DiscountFromInventory" Value="False" Type="bool"/>
     <Parameter Name="SelectRandomThrowableItems" Value="False" Type="bool"/>
     <Parameter Name="ThrowFromHead" Value="True" Type="bool"/>
@@ -6068,7 +6055,7 @@
     </ParameterSet>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="InvShooterBehavior" Guid="238c00da-2000-4553-ad9c-b20f21d3a66d" InheritanceParent="456e3558-0e7f-42c3-bc05-35eef7540900">
-    <Parameter Name="SpecialThrowableItem" Value="BigStonePoisonChunkBlock" Type="string"/>
+    <Parameter Name="SpecialThrowableItem" Value="BigStonePoisonChunkBlock" Type="string"/> <!-- Lanza rocas de veneno -->
     <Parameter Name="DiscountFromInventory" Value="False" Type="bool"/>
     <Parameter Name="SelectRandomThrowableItems" Value="False" Type="bool"/>
     <Parameter Name="ThrowFromHead" Value="True" Type="bool"/>
