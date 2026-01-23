@@ -29,6 +29,11 @@ namespace Game
 			this.m_subsystemTime = base.Project.FindSubsystem<SubsystemTime>(true);
 			this.m_componentChase = base.Entity.FindComponent<ComponentChaseBehavior>(true);
 			this.m_componentCreature = base.Entity.FindComponent<ComponentCreature>(true);
+
+			// Buscar los nuevos comportamientos de persecución (opcionales)
+			this.m_componentNewChase = base.Entity.FindComponent<ComponentNewChaseBehavior>();
+			this.m_componentNewChase2 = base.Entity.FindComponent<ComponentNewChaseBehavior2>();
+
 			string value = valuesDictionary.GetValue<string>("ChaseByCreatures", "");
 			string value2 = valuesDictionary.GetValue<string>("ChaseToCreatures", "");
 			bool flag = !string.IsNullOrEmpty(value);
@@ -51,7 +56,21 @@ namespace Game
 		// Token: 0x0600012A RID: 298 RVA: 0x0000D0BC File Offset: 0x0000B2BC
 		public void Update(float dt)
 		{
-			bool flag = this.m_subsystemTime.GameTime < this.m_nextCheckTime || this.m_componentChase.Suppressed || this.m_componentChase.Target != null;
+			// Verificar si hay algún objetivo activo en cualquiera de los comportamientos
+			bool hasActiveTarget = this.m_componentChase.Target != null;
+			if (this.m_componentNewChase != null && this.m_componentNewChase.Target != null)
+				hasActiveTarget = true;
+			if (this.m_componentNewChase2 != null && this.m_componentNewChase2.Target != null)
+				hasActiveTarget = true;
+
+			// Verificar si algún comportamiento está suprimido
+			bool isSuppressed = this.m_componentChase.Suppressed;
+			if (this.m_componentNewChase != null && this.m_componentNewChase.Suppressed)
+				isSuppressed = true;
+			if (this.m_componentNewChase2 != null && this.m_componentNewChase2.Suppressed)
+				isSuppressed = true;
+
+			bool flag = this.m_subsystemTime.GameTime < this.m_nextCheckTime || isSuppressed || hasActiveTarget;
 			if (!flag)
 			{
 				this.m_nextCheckTime = this.m_subsystemTime.GameTime + (double)this.m_checkInterval;
@@ -63,29 +82,94 @@ namespace Game
 						bool flag2 = this.m_random.Bool(this.m_chaseByCreatureProbability);
 						if (flag2)
 						{
-							ComponentChaseBehavior componentChaseBehavior = componentCreature.Entity.FindComponent<ComponentChaseBehavior>();
-							bool flag3 = componentChaseBehavior != null && componentChaseBehavior.Target == null && !componentChaseBehavior.Suppressed;
-							if (flag3)
-							{
-								componentChaseBehavior.Attack(this.m_componentCreature, componentChaseBehavior.ChaseRangeOnTouch, componentChaseBehavior.ChaseTimeOnTouch, false);
-							}
+							// Intentar hacer que la criatura nos persiga usando cualquiera de sus comportamientos
+							this.TryMakeCreatureChase(componentCreature);
 						}
 					}
 				}
 				foreach (string creatureType2 in this.m_chaseToCreatures)
 				{
-					List<ComponentCreature> list2 = this.FindCreaturesByType(creatureType2, this.m_componentChase.ChaseRangeOnTouch);
+					List<ComponentCreature> list2 = this.FindCreaturesByType(creatureType2, this.GetMaxChaseRange());
 					foreach (ComponentCreature componentCreature2 in list2)
 					{
 						bool flag4 = this.m_random.Bool(this.m_chaseToCreatureProbability);
 						if (flag4)
 						{
-							this.m_componentChase.Attack(componentCreature2, this.m_componentChase.ChaseRangeOnTouch, this.m_componentChase.ChaseTimeOnTouch, false);
+							// Intentar perseguir a la criatura usando cualquiera de nuestros comportamientos
+							this.TryChaseCreature(componentCreature2);
 							break;
 						}
 					}
 				}
 			}
+		}
+
+		// Método para intentar hacer que una criatura nos persiga
+		private void TryMakeCreatureChase(ComponentCreature chaser)
+		{
+			// Intentar con ComponentChaseBehavior (original) primero
+			ComponentChaseBehavior componentChaseBehavior = chaser.Entity.FindComponent<ComponentChaseBehavior>();
+			bool flag3 = componentChaseBehavior != null && componentChaseBehavior.Target == null && !componentChaseBehavior.Suppressed;
+			if (flag3)
+			{
+				componentChaseBehavior.Attack(this.m_componentCreature, componentChaseBehavior.ChaseRangeOnTouch, componentChaseBehavior.ChaseTimeOnTouch, false);
+				return;
+			}
+
+			// Intentar con ComponentNewChaseBehavior si existe
+			ComponentNewChaseBehavior componentNewChaseBehavior = chaser.Entity.FindComponent<ComponentNewChaseBehavior>();
+			if (componentNewChaseBehavior != null && componentNewChaseBehavior.Target == null && !componentNewChaseBehavior.Suppressed)
+			{
+				componentNewChaseBehavior.Attack(this.m_componentCreature, componentNewChaseBehavior.ChaseRangeOnTouch, componentNewChaseBehavior.ChaseTimeOnTouch, false);
+				return;
+			}
+
+			// Intentar con ComponentNewChaseBehavior2 si existe
+			ComponentNewChaseBehavior2 componentNewChaseBehavior2 = chaser.Entity.FindComponent<ComponentNewChaseBehavior2>();
+			if (componentNewChaseBehavior2 != null && componentNewChaseBehavior2.Target == null && !componentNewChaseBehavior2.Suppressed)
+			{
+				componentNewChaseBehavior2.Attack(this.m_componentCreature, componentNewChaseBehavior2.ChaseRangeOnTouch, componentNewChaseBehavior2.ChaseTimeOnTouch, false);
+				return;
+			}
+		}
+
+		// Método para intentar perseguir a una criatura
+		private void TryChaseCreature(ComponentCreature target)
+		{
+			// Intentar con ComponentChaseBehavior (original) primero
+			if (this.m_componentChase.Target == null && !this.m_componentChase.Suppressed)
+			{
+				this.m_componentChase.Attack(target, this.m_componentChase.ChaseRangeOnTouch, this.m_componentChase.ChaseTimeOnTouch, false);
+				return;
+			}
+
+			// Intentar con ComponentNewChaseBehavior si existe y está disponible
+			if (this.m_componentNewChase != null && this.m_componentNewChase.Target == null && !this.m_componentNewChase.Suppressed)
+			{
+				this.m_componentNewChase.Attack(target, this.m_componentNewChase.ChaseRangeOnTouch, this.m_componentNewChase.ChaseTimeOnTouch, false);
+				return;
+			}
+
+			// Intentar con ComponentNewChaseBehavior2 si existe y está disponible
+			if (this.m_componentNewChase2 != null && this.m_componentNewChase2.Target == null && !this.m_componentNewChase2.Suppressed)
+			{
+				this.m_componentNewChase2.Attack(target, this.m_componentNewChase2.ChaseRangeOnTouch, this.m_componentNewChase2.ChaseTimeOnTouch, false);
+				return;
+			}
+		}
+
+		// Obtener el rango máximo de persecución entre todos los comportamientos disponibles
+		private float GetMaxChaseRange()
+		{
+			float maxRange = this.m_componentChase.ChaseRangeOnTouch;
+
+			if (this.m_componentNewChase != null && this.m_componentNewChase.ChaseRangeOnTouch > maxRange)
+				maxRange = this.m_componentNewChase.ChaseRangeOnTouch;
+
+			if (this.m_componentNewChase2 != null && this.m_componentNewChase2.ChaseRangeOnTouch > maxRange)
+				maxRange = this.m_componentNewChase2.ChaseRangeOnTouch;
+
+			return maxRange;
 		}
 
 		// Token: 0x0600012B RID: 299 RVA: 0x0000D2F0 File Offset: 0x0000B4F0
@@ -139,5 +223,11 @@ namespace Game
 
 		// Token: 0x0400012E RID: 302
 		private double m_nextCheckTime;
+
+		// Token: 0x0400012F RID: 303
+		private ComponentNewChaseBehavior m_componentNewChase;
+
+		// Token: 0x04000130 RID: 304
+		private ComponentNewChaseBehavior2 m_componentNewChase2;
 	}
 }
