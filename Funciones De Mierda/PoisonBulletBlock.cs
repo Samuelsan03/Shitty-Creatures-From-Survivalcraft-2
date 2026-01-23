@@ -7,10 +7,16 @@ namespace Game
 {
 	public class PoisonBulletBlock : FlatBlock
 	{
-		public override void Initialize()
-		{
-			base.Initialize();
-		}
+		public const int Index = 207;
+
+		// Tamaño fijo para la bala venenosa (similar a MusketBall)
+		private const float Scale = 1f;
+
+		// Usar una textura existente (229 = MusketBall)
+		private const int TextureSlot = 229;
+
+		// Color venenoso (verde)
+		private static readonly Color PoisonColor = new Color(100, 200, 100, 255);
 
 		public override void GenerateTerrainVertices(BlockGeometryGenerator generator, TerrainGeometry geometry, int value, int x, int y, int z)
 		{
@@ -18,21 +24,11 @@ namespace Game
 
 		public override void DrawBlock(PrimitivesRenderer3D primitivesRenderer, int value, Color color, float size, ref Matrix matrix, DrawBlockEnvironmentData environmentData)
 		{
-			// Usar color verde venenoso
-			Color poisonColor = new Color(100, 200, 100, 255); // Verde venenoso
-			BlocksManager.DrawFlatOrImageExtrusionBlock(primitivesRenderer, value, size, ref matrix, null, poisonColor, false, environmentData);
-		}
+			// Aplicar escala fija
+			float scaledSize = size * Scale;
 
-		public override BlockDebrisParticleSystem CreateDebrisParticleSystem(SubsystemTerrain subsystemTerrain, Vector3 position, int value, float strength)
-		{
-			// Crear partículas verdes
-			Color poisonColor = new Color(100, 200, 100, 255);
-			return new BlockDebrisParticleSystem(subsystemTerrain, position, strength, 0.1f, poisonColor, TextureSlot);
-		}
-
-		public override IEnumerable<int> GetCreativeValues()
-		{
-			yield return Terrain.MakeBlockValue(this.BlockIndex, 0, 0);
+			// Usar directamente PoisonColor ignorando el color pasado como parámetro
+			BlocksManager.DrawFlatOrImageExtrusionBlock(primitivesRenderer, value, scaledSize, ref matrix, null, PoisonColor, false, environmentData);
 		}
 
 		public override string GetDisplayName(SubsystemTerrain subsystemTerrain, int value)
@@ -42,7 +38,7 @@ namespace Game
 			{
 				return displayName;
 			}
-			return "Poison Bullet"; // Valor por defecto en inglés
+			return "Poison Bullet";
 		}
 
 		public override string GetDescription(int value)
@@ -55,22 +51,27 @@ namespace Game
 			return "Similar to a musket round, but it cannot be used as musket ammunition and is not available for crafting.";
 		}
 
+		public override int GetFaceTextureSlot(int face, int value)
+		{
+			// Usar textura existente en lugar de 325
+			return TextureSlot;
+		}
+
 		public override float GetProjectilePower(int value)
 		{
-			return 0f; // Retornar 0 para que no funcione en mosquete
+			// Potencia de proyectil (ajusta según necesites)
+			return 80f; // Mismo que MusketBall
 		}
 
 		public override float GetExplosionPressure(int value)
 		{
-			return 0f;
+			return 0f; // Sin presión de explosión
 		}
 
-		public override int GetFaceTextureSlot(int face, int value)
+		public override IEnumerable<int> GetCreativeValues()
 		{
-			return TextureSlot;
+			// Devuelve lista vacía para ocultar en creativo
+			yield break;
 		}
-
-		public static int Index = 325;
-		public static int TextureSlot = 229; // Mismo slot que MusketBall
 	}
 }
