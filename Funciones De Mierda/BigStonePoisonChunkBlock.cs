@@ -6,7 +6,7 @@ namespace Game
 {
 	public class BigStonePoisonChunkBlock : ChunkBlock
 	{
-		// Textura personalizada para la piedra venenosa
+		// Textura personalizada
 		public Texture2D m_texture;
 
 		public BigStonePoisonChunkBlock() : base(
@@ -38,11 +38,10 @@ namespace Game
 			generator.GenerateMeshVertices(this, x, y, z, this.m_blockMesh, Color.White, null, geometry.GetGeometry(m_texture).SubsetOpaque);
 		}
 
-		// Sobrescribir CreateDebrisParticleSystem para usar partículas venenosas
+		// Sobrescribir CreateDebrisParticleSystem para usar la textura personalizada
 		public override BlockDebrisParticleSystem CreateDebrisParticleSystem(SubsystemTerrain subsystemTerrain, Vector3 position, int value, float strength)
 		{
-			// Partículas con color verde para indicar veneno
-			return new BlockDebrisParticleSystem(subsystemTerrain, position, strength, this.DestructionDebrisScale, new Color(50, 200, 50), 0, m_texture);
+			return new BlockDebrisParticleSystem(subsystemTerrain, position, strength, this.DestructionDebrisScale, Color.White, 0, m_texture);
 		}
 
 		// Método para obtener el nombre mostrado - usa LanguageControl
@@ -53,7 +52,7 @@ namespace Game
 			{
 				return displayName;
 			}
-			return "Poisonous Giant Rock";
+			return "Poison Giant Rock";
 		}
 
 		// Método para obtener la descripción
@@ -64,11 +63,10 @@ namespace Game
 			{
 				return description;
 			}
-			return "A giant rock imbued with toxic properties. Upon impact, it releases a poisonous cloud that slowly weakens its victims. While the initial damage is moderate, the lingering poison effect can be deadly over time.";
+			return "A giant rock imbued with toxic properties. Upon impact, it releases a poisonous cloud that slowly weakens its victims. While the initial damage is moderate, the lingering poison effect can be deadly over time. Like the rare giant rock, it cannot be crafted and can only be obtained through special means.";
 		}
 
-		// Índice del bloque (debe coincidir con el del CSV)
-		public static int Index = 326;
+		public static int Index = 326; // ID único para este bloque
 		private BlockMesh m_blockMesh;
 	}
 }
