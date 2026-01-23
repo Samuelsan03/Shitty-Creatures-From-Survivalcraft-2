@@ -275,7 +275,7 @@ namespace Game
 							}
 
 							messageColor = new Color(75, 0, 130);
-							soundToPlay = "Audio/UI/Ghost Tamed Sound";
+							soundToPlay = "Audio/UI/Bosses FNAF 3";
 						}
 						else if (isTamedTank || isTamedMachineGun)
 						{
@@ -290,6 +290,7 @@ namespace Game
 								}
 
 								messageColor = new Color(255, 140, 0); // Color naranja para Machine Gun
+								soundToPlay = "Audio/UI/Tank Tamed Sound";
 							}
 							else
 							{
@@ -317,7 +318,7 @@ namespace Game
 							}
 
 							messageColor = new Color(139, 0, 139);
-							soundToPlay = "Audio/UI/Ghost Tamed Sound";
+							soundToPlay = "Audio/UI/Tank Tamed Sound";
 						}
 						else if (isTamedGhost)
 						{
