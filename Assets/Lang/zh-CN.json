@@ -145,6 +145,8 @@
       "Gumdramon": "古姆德拉蒙",
       "Guilmon": "吉尔蒙",
       "BetelGammamon": "贝特尔伽玛蒙",
+      "Hawkmon": "霍克蒙",
+      "Gabumon": "加布蒙",
       "HeadcrabBloodyHuman": "海德克拉布 布拉迪 休曼",
       "Tulio": "图里奥",
       "Brayan": "布拉扬",
@@ -231,9 +233,9 @@
   },
   "Blocks": {
     "AntidoteBucketBlock:0": {
-      "DisplayName": "解毒药桶",
-      "Description": "一桶充满强力解毒剂的血清。当用于中毒或生病的生物时，能立即治愈疾病并恢复部分生命值。该血清经过特殊配制，能中和最强大的毒素和病原体。可用于自己或受毒药或疾病影响的NPC。"
-    },
+  "DisplayName": "解毒药桶",
+  "Description": "一个装有强效药用解毒剂的桶。可清除身体中的中毒和疾病状态，阻止其有害影响，并帮助身体迅速恢复。在治愈病症的同时，还会恢复失去的生命值。可用于自身或其他受感染的生物。"
+},
     "TeaAntifluBucketBlock:0": {
       "DisplayName": "抗流感茶桶",
       "Description": "一桶装满温热草药茶的桶，专门为对抗流感而酿造。这种舒缓的混合物能立即治愈流感，止住咳嗽和打喷嚏，清除昏迷效果并恢复生命值。芳香草药既提供药用特性，又带来舒适的温暖，帮助身体从病毒感染中恢复。"
@@ -311,9 +313,13 @@
       "Description": "火焰喷射器是一种燃烧性武器，设计用于喷射可控火焰。它由理查德·费德勒于1901年发明，并在1915年第一次世界大战期间由德国军队首次投入战斗。其工作原理是利用燃料箱（通常是浓稠的汽油或油）和压缩气体，通过带点火装置的喷嘴将燃烧的火流喷射出去。使用时，操作者必须装填火焰子弹作为弹药，然后扣动扳机，将火焰释放到敌方工事或士兵群体。它的优点是支持最多15发（15/15），在重新装填前为玩家提供持续火力。火焰子弹是辅助弹药：补充火焰喷射器的燃烧性弹丸，适合远程攻击并保持对敌人的压力。"
     },
     "FlameBullet:0": {
-      "DisplayName": "火焰子弹",
-      "Description": "火焰喷射器的标准火焰弹药。在撞击时产生火焰。"
-    },
+  "DisplayName": "燃烧弹投射物",
+  "Description": "用于喷火器的火焰投射物。命中时会点燃环境和生物，在高速下可能引发爆炸，并造成火焰伤害。"
+},
+"FlameBullet:1": {
+  "DisplayName": "毒气投射物",
+  "Description": "用于喷火器的化学投射物。释放有毒气体，使生物感染中毒或疾病，逐渐削弱目标并造成额外伤害。"
+},
     "RefrigeratorXiaomiBlock:0": {
       "DisplayName": "小米冰箱",
       "Description": "小米冰箱是一种家用电器，用于冷却和储存食物。它被定义为智能冰箱，能有效保存易腐食品。在模组中，它作为一个代表现代电器的物品，扩展了建筑选项。其主要用途是保存食物，无论生熟，都能延长保鲜时间，防止快速变质。注意：冰箱需要能源，如电池、杠杆或其他电源，否则无法工作。"
@@ -400,12 +406,7 @@
     },
     "ItemsLauncher:0": {
       "DisplayName": "物品发射器",
-      "Description": "可发射任意类型的方块或物品。尽管制作昂贵，但它是像滑膛枪一样的强大武器。请小心使用！",
-      "CRDescription:0": "通过改造一支新火枪来制作物品发射器。"
-    },
-    "FlameBullet:1": {
-      "DisplayName": "毒药子弹",
-      "Description": "火焰喷射器的有毒弹药。释放感染目标的毒性化学物质。"
+      "Description": "可发射任意类型的方块或物品。尽管制作昂贵，但它是像滑膛枪一样的强大武器。请小心使用！"
     },
     "RepeatCrossbow:0": {
       "DisplayName": "连发弩",
@@ -438,6 +439,18 @@
     "AKBlock:0": {
     "DisplayName": "AK-47突击步枪",
     "Description": "传奇突击步枪，发射7.62×39毫米弹药。精度良好，后坐力适中。使用AK47Bullet弹药。射速约350发/分钟。"
+  },
+  "KABlock:0": {
+    "DisplayName": "KA",
+    "Description": "发射5.56x45毫米子弹的先进突击步枪。与AK-47不同，KA提供更高的精度、极小的后坐力和40发弹匣。使用专为KA设计的弹药。"
+  },
+  "BaseballBatBlock:0": {
+    "DisplayName": "棒球棒",
+    "Description": "一种简单的近战武器，具有稳定的打击伤害。耐用、可靠，适合近距离战斗。"
+  },
+  "KABulletBlock:0": {
+    "DisplayName": "KA 5.56x45毫米弹药",
+    "Description": "专为KA步枪设计的5.56x45毫米弹药。与标准弹药相比，具有更高的枪口速度、更好的弹道性能和每弹匣40发子弹的容量。"
   },
   "AUGBlock:0": {
     "DisplayName": "斯泰尔AUG",
@@ -602,6 +615,54 @@
     "M249BulletBlock:0": {
       "DisplayName": "M249弹药",
       "Description": "装有5.56×45mm NATO子弹的弹药箱，用于M249 SAW。每箱提供100发弹链供弹弹药。插入M249可将武器完全重新装填至最大容量。"
+    },
+    "ClothingBlock:39": {
+      "DisplayName": "数码宝贝T恤",
+      "Description": "一件轻便的数码宝贝主题T恤。提供极少的防护，但象征着对数码世界的忠诚。适合日常穿着，并可染色以符合你的风格。"
+    },
+    "ClothingBlock:40": { 
+      "DisplayName": "熔岩护甲头盔",
+      "Description": "由熔融岩石锻造而成的头盔。提供强大的防护与保暖效果，保护头部免受攻击与寒冷侵袭。"
+    },
+    "ClothingBlock:41": {
+      "DisplayName": "熔岩护甲胸甲",
+      "Description": "注入火山能量的胸甲。提供持久的防御与隔热效果，在极端气候中保持躯干温暖。"
+    },
+    "ClothingBlock:42": {
+      "DisplayName": "熔岩护甲护腿",
+      "Description": "由火山岩锻造的护腿。以熔岩之力强化双腿，并在寒冷环境中提供保暖效果。"
+    },
+    "ClothingBlock:43": {
+      "DisplayName": "熔岩护甲靴",
+      "Description": "由硬化熔岩制成的靴子。提升耐力与速度，并在严寒条件下保持双脚温暖。"
+    },
+    "ClothingBlock:44": {
+      "DisplayName": "防弹头盔",
+      "Description": "厌倦了钻石护甲无法抵挡枪械吗？这款金属防弹头盔采用轻量化结构，在不影响机动性的情况下，为你提供对抗持枪NPC和强盗的可靠防护。"
+    },
+    "ClothingBlock:45": {
+      "DisplayName": "防弹胸甲",
+      "Description": "虽然由金属制成，但这件防弹胸甲采用轻量化设计，不会影响移动速度。当钻石护甲无法防弹时，这是最佳解决方案。"
+    },
+    "ClothingBlock:46": {
+      "DisplayName": "防弹护腿",
+      "Description": "这些金属防弹护腿在设计上非常轻便，能够抵御枪械冲击，同时保持良好的行动能力，弥补钻石护甲的缺陷。"
+    },
+    "ClothingBlock:47": {
+      "DisplayName": "防弹靴",
+      "Description": "轻量化金属防弹靴，在提供全面防护的同时不牺牲速度，是对抗持枪强盗的理想选择。"
+    },
+    "ClothingBlock:48": {
+      "DisplayName": "高速靴",
+      "Description": "灵感来源于 Survivalcraft 2 的经典速度。这些靴子让你高速移动，非常适合探索、逃生，或重温原版游戏的感觉。"
+    },
+    "ClothingBlock:49": {
+      "DisplayName": "超高速靴",
+      "Description": "将速度推向极限，纯正 Survivalcraft 2 风格。穿上它，你可以以夸张的速度穿越世界，适合娱乐、极限探索或纯粹的混乱。"
+    },
+    "ClothingBlock:50": {
+      "DisplayName": "普通牛仔裤",
+      "Description": "简单又舒适的裤子。没有特殊加成，但足以应付日常生存需求。"
     }
   },
   "ContentWidgets": {
