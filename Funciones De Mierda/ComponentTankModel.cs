@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Engine;
 using Engine.Graphics;
 using GameEntitySystem;
@@ -9,28 +9,28 @@ namespace Game
 	public class ComponentTankModel : ComponentHumanModel
 	{
 		// Factores de suavizado para movimientos de tanque
-		private float m_smoothFactor = 0.25f;
-		private float m_animationResponsiveness = 6f;
+		protected float m_smoothFactor = 0.25f;
+		protected float m_animationResponsiveness = 6f;
 
 		// Variables para tracking del estado anterior para interpolación
-		private Vector2 m_targetHeadAngles;
-		private Vector2 m_targetHandAngles1;
-		private Vector2 m_targetHandAngles2;
-		private Vector2 m_targetLegAngles1;
-		private Vector2 m_targetLegAngles2;
+		protected Vector2 m_targetHeadAngles;
+		protected Vector2 m_targetHandAngles1;
+		protected Vector2 m_targetHandAngles2;
+		protected Vector2 m_targetLegAngles1;
+		protected Vector2 m_targetLegAngles2;
 
 		// Variables para suavizado de movimiento
-		private float m_smoothedMovementPhase;
-		private float m_smoothedBob;
+		protected float m_smoothedMovementPhase;
+		protected float m_smoothedBob;
 
 		// Variables específicas de tanque
-		private float m_turretRotation;
-		private float m_cannonElevation;
-		private float m_trackMovement;
-		private float m_recoilPhase;
+		protected float m_turretRotation;
+		protected float m_cannonElevation;
+		protected float m_trackMovement;
+		protected float m_recoilPhase;
 
 		// Tiempo para animaciones independientes
-		private float m_animationTime;
+		protected float m_animationTime;
 
 		public override void Update(float dt)
 		{
@@ -362,9 +362,7 @@ namespace Game
 			// Ajustar parámetros para efecto de tanque
 			this.m_walkAnimationSpeed *= 0.8f; // Más lento, como tanque
 			this.m_walkBobHeight *= 0.3f; // Menos rebote
-
-			Log.Warning($"ComponentTankModel cargado - Smooth: {m_smoothFactor}, Resp: {m_animationResponsiveness}");
-		}
+}
 
 		// Métodos específicos de tanque
 		public void FireMainCannon()

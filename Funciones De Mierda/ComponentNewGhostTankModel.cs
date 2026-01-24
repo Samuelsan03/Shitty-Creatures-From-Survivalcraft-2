@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Engine;
 using Engine.Graphics;
 using GameEntitySystem;
@@ -64,8 +64,6 @@ namespace Game
 			// NOTA: NO ajustamos parámetros de animación aquí para mantener la misma fluidez
 			// que el ComponentTankModel. Los parámetros de suavizado y responsividad
 			// ya fueron cargados y ajustados por la clase base.
-
-			Log.Warning($"ComponentNewGhostTankModel cargado - Opacidad: {m_opacity}");
 		}
 
 		// Método para cambiar dinámicamente la opacidad

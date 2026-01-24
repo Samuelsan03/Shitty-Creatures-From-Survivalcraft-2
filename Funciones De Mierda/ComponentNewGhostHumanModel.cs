@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Engine;
 using Engine.Graphics;
 using GameEntitySystem;
@@ -57,8 +57,7 @@ namespace Game
 				SetAnimationResponsiveness(m_animationResponsiveness * 0.8f);
 			}
 
-			Log.Warning($"ComponentNewGhostHumanModel cargado - Opacidad: {m_opacity}, Smooth: {m_smoothFactor}, Resp: {m_animationResponsiveness}");
-		}
+			}
 
 		// Método para cambiar dinámicamente la opacidad
 		public void SetOpacity(float opacity)

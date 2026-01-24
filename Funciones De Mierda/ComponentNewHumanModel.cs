@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using Engine;
 using Engine.Graphics;
 using GameEntitySystem;
@@ -388,9 +388,7 @@ namespace Game
 			// Ajustar parámetros para mayor fluidez - cambios más sutiles
 			this.m_walkAnimationSpeed *= 1.02f;    // Reducido de 1.05f para menos aceleración
 			this.m_walkBobHeight *= 0.9f;         // Reducido de 0.85f para bob menos pronunciado
-
-			Log.Warning($"ComponentNewHumanModel cargado - Smooth: {m_smoothFactor}, Resp: {m_animationResponsiveness}, AimSmooth: {m_aimSmoothFactor}");
-		}
+}
 
 		// Métodos para ajustar parámetros dinámicamente
 		public void SetSmoothFactor(float factor)

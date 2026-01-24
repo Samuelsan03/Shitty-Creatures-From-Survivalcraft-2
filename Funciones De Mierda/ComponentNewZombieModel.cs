@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Engine;
 using Engine.Graphics;
 using GameEntitySystem;
@@ -8,9 +8,9 @@ namespace Game
 {
 	public class ComponentNewZombieModel : ComponentHumanModel
 	{
-		// Factores de suavizado (mismos que NewHumanModel)
-		private float m_smoothFactor = 0.18f;
-		private float m_animationResponsiveness = 10f;
+		// Factores de suavizado ajustados para mejor fluidez
+		private float m_smoothFactor = 0.22f; // Aumentado para más suavidad
+		private float m_animationResponsiveness = 8f; // Reducido para respuesta más suave
 
 		// Variables para tracking del estado anterior para interpolación
 		private Vector2 m_targetHeadAngles;
@@ -37,11 +37,11 @@ namespace Game
 			// Después de que base.Update haya calculado todo, aplicar suavizado
 			float smoothSpeed = MathUtils.Min(m_animationResponsiveness * dt, 0.9f);
 
-			// Suavizar la fase de movimiento
-			m_smoothedMovementPhase = MathUtils.Lerp(m_smoothedMovementPhase, base.MovementAnimationPhase, smoothSpeed * 1.5f);
+			// Suavizar la fase de movimiento (ajustado para mayor fluidez)
+			m_smoothedMovementPhase = MathUtils.Lerp(m_smoothedMovementPhase, base.MovementAnimationPhase, smoothSpeed * 1.2f);
 
-			// Suavizar el bob
-			m_smoothedBob = MathUtils.Lerp(m_smoothedBob, base.Bob, smoothSpeed * 2f);
+			// Suavizar el bob (ajustado para mayor fluidez)
+			m_smoothedBob = MathUtils.Lerp(m_smoothedBob, base.Bob, smoothSpeed * 1.5f);
 
 			// Actualizar los ángulos base con suavizado
 			this.m_headAngles = Vector2.Lerp(this.m_headAngles, m_targetHeadAngles, smoothSpeed);
@@ -102,12 +102,12 @@ namespace Game
 				float num2 = (float)MathUtils.Remainder(0.75 * this.m_subsystemGameInfo.TotalElapsedGameTime + (double)(this.GetHashCode() & 65535), 10000.0);
 
 				// Calcular ángulos objetivo con menos ruido
-				float noiseScale = 0.12f; // Reducido para más suavidad
+				float noiseScale = 0.08f; // Reducido para más suavidad
 
 				float targetHeadX = MathUtils.Clamp(
 					MathUtils.Lerp(-noiseScale, noiseScale, SimplexNoise.Noise(1.02f * num2 - 100f)) +
 					this.m_componentCreature.ComponentLocomotion.LookAngles.X +
-					0.7f * this.m_componentCreature.ComponentLocomotion.LastTurnOrder.X +
+					0.5f * this.m_componentCreature.ComponentLocomotion.LastTurnOrder.X + // Reducido para menos brusquedad
 					this.m_headingOffset,
 					-MathUtils.DegToRad(80f), MathUtils.DegToRad(80f));
 
@@ -164,11 +164,15 @@ namespace Game
 				}
 				else if (m_smoothedMovementPhase != 0f)
 				{
-					// Animación de caminar suavizada
-					num4 = -0.5f * num;
-					num6 = 0.5f * num;
-					num3 = this.m_walkLegsAngle * num * 0.8f; // Reducido para menos brusquedad
+					// Animación de caminar suavizada - ajustada para más fluidez
+					num4 = -0.35f * num; // Reducido de 0.5f para menos exageración
+					num6 = 0.35f * num;  // Reducido de 0.5f para menos exageración
+					num3 = this.m_walkLegsAngle * num * 0.6f; // Reducido para más fluidez
 					x2 = 0f - num3;
+
+					// Añadir un pequeño movimiento vertical para fluidez
+					y2 = 0.1f * num;
+					y3 = -0.1f * num;
 				}
 
 				// Efecto de minería
@@ -181,7 +185,7 @@ namespace Game
 
 				// Efecto de puñetazo
 				float num11 = (this.m_punchPhase != 0f) ?
-					((0f - MathUtils.DegToRad(90f)) * MathF.Sin(6.2831855f * MathUtils.Sigmoid(this.m_punchPhase, 4f))) : 0f;
+					((0f - MathUtils.DegToRad(90f)) * MathF.Sin(6.2831855f * MathUtils.Sigmoid(this.m_punchPhase, 3f))) : 0f; // Ajustado para más suavidad
 				float num12 = ((this.m_punchCounter & 1) == 0) ? num11 : 0f;
 				float num13 = ((this.m_punchCounter & 1) != 0) ? num11 : 0f;
 
@@ -222,11 +226,11 @@ namespace Game
 				float num24 = (float)((!this.m_componentCreature.ComponentLocomotion.IsCreativeFlyEnabled) ? 1 : 4);
 
 				// Calcular ángulos finales con ruido reducido
-				float handNoiseScale = 0.08f;
+				float handNoiseScale = 0.05f; // Reducido para más suavidad
 				num4 += MathUtils.Lerp(-handNoiseScale, handNoiseScale, SimplexNoise.Noise(num2)) + num12 + num14 + num20;
-				num5 += MathUtils.Lerp(0f, num24 * 0.12f, SimplexNoise.Noise(1.1f * num2 + 100f)) + num15 + num21;
+				num5 += MathUtils.Lerp(0f, num24 * 0.08f, SimplexNoise.Noise(1.1f * num2 + 100f)) + num15 + num21; // Reducido
 				num6 += num9 + MathUtils.Lerp(-handNoiseScale, handNoiseScale, SimplexNoise.Noise(0.9f * num2 + 200f)) + num13 + num16 + num22;
-				num7 += 0f - MathUtils.Lerp(0f, num24 * 0.12f, SimplexNoise.Noise(1.05f * num2 + 300f)) + num17 + num23;
+				num7 += 0f - MathUtils.Lerp(0f, num24 * 0.08f, SimplexNoise.Noise(1.05f * num2 + 300f)) + num17 + num23; // Reducido
 
 				// Establecer ángulos objetivo para interpolación
 				m_targetHandAngles1 = new Vector2(num4, num5);
@@ -329,22 +333,20 @@ namespace Game
 			m_smoothedBob = 0f;
 			m_animationTime = 0f;
 
-			// Ajustar parámetros para mayor fluidez
-			this.m_walkAnimationSpeed *= 1.1f;
-			this.m_walkBobHeight *= 0.9f;
-
-			Log.Warning($"ComponentNewZombieModel cargado - Smooth: {m_smoothFactor}, Resp: {m_animationResponsiveness}");
+			// Ajustar parámetros para mayor fluidez (valores reducidos para menos exageración)
+			this.m_walkAnimationSpeed *= 1.05f; // Reducido de 1.1f
+			this.m_walkBobHeight *= 0.95f; // Reducido de 0.9f
 		}
 
 		// Métodos para ajustar parámetros dinámicamente
 		public void SetSmoothFactor(float factor)
 		{
-			m_smoothFactor = MathUtils.Clamp(factor, 0.05f, 0.3f);
+			m_smoothFactor = MathUtils.Clamp(factor, 0.1f, 0.3f); // Ajustado rango mínimo
 		}
 
 		public void SetAnimationResponsiveness(float responsiveness)
 		{
-			m_animationResponsiveness = MathUtils.Clamp(responsiveness, 4f, 20f);
+			m_animationResponsiveness = MathUtils.Clamp(responsiveness, 5f, 15f); // Ajustado rango
 		}
 	}
 }
