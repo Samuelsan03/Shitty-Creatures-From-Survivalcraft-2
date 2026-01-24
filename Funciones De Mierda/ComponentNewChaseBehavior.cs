@@ -1054,7 +1054,8 @@ namespace Game
 			this.m_componentCreatureModel = base.Entity.FindComponent<ComponentCreatureModel>(true);
 			this.m_componentFactors = base.Entity.FindComponent<ComponentFactors>(true);
 			this.m_componentBody = base.Entity.FindComponent<ComponentBody>(true);
-			this.m_attackMode = valuesDictionary.GetValue<ComponentNewChaseBehavior.AttackMode>("AttackMode", ComponentNewChaseBehavior.AttackMode.Default);
+			string attackModeString = valuesDictionary.GetValue<string>("AttackMode", "Default");
+			this.m_attackMode = (ComponentNewChaseBehavior.AttackMode)Enum.Parse(typeof(ComponentNewChaseBehavior.AttackMode), attackModeString);
 			this.m_attackRange = valuesDictionary.GetValue<Vector2>("AttackRange", new Vector2(2f, 15f));
 			this.m_dayChaseRange = valuesDictionary.GetValue<float>("DayChaseRange");
 			this.m_nightChaseRange = valuesDictionary.GetValue<float>("NightChaseRange");
