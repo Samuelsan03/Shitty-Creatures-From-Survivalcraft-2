@@ -121,9 +121,6 @@ namespace Game
 				if (isInAttackRange)
 				{
 					this.m_componentCreatureModel.AttackOrder = true;
-
-					// Buscar la mejor herramienta de ataque cuerpo a cuerpo
-					this.FindBestMeleeTool(this.m_componentMiner);
 				}
 
 				// Momento de golpe
@@ -162,44 +159,6 @@ namespace Game
 			Vector3 targetPosition = this.m_target.ComponentBody.Position;
 			this.m_componentPathfinding.SetDestination(new Vector3?(targetPosition), 1f, 1.5f, 0, true, false, true, this.m_target.ComponentBody);
 			this.m_componentCreature.ComponentCreatureModel.LookAtOrder = new Vector3?(this.m_target.ComponentCreatureModel.EyePosition);
-		}
-
-		// Buscar la mejor herramienta de ataque cuerpo a cuerpo
-		private bool FindBestMeleeTool(ComponentMiner componentMiner)
-		{
-			int activeBlockValue = componentMiner.ActiveBlockValue;
-			bool hasInventory = componentMiner.Inventory != null;
-			if (!hasInventory) return false;
-
-			// Verificar si el arma actual es buena
-			bool currentWeaponGood = BlocksManager.Blocks[Terrain.ExtractContents(activeBlockValue)].GetMeleePower(activeBlockValue) > 1f;
-			if (currentWeaponGood) return true;
-
-			float bestPower = 1f;
-			int bestSlot = 0;
-
-			// Buscar en los primeros 6 slots (como el original)
-			for (int i = 0; i < 6; i++)
-			{
-				int slotValue = componentMiner.Inventory.GetSlotValue(i);
-				float meleePower = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)].GetMeleePower(slotValue);
-				bool isBetter = meleePower > bestPower;
-				if (isBetter)
-				{
-					bestPower = meleePower;
-					bestSlot = i;
-				}
-			}
-
-			// Cambiar al mejor arma encontrada
-			bool foundBetterWeapon = bestPower > 1f;
-			if (foundBetterWeapon)
-			{
-				componentMiner.Inventory.ActiveSlotIndex = bestSlot;
-				return true;
-			}
-
-			return false;
 		}
 
 		// Verificar defensa del jugador (si está en nuestra manada)
