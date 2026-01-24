@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 using Engine;
 using GameEntitySystem;
@@ -403,27 +403,16 @@ namespace Game
 				blockId == BlocksManager.GetBlockIndex(typeof(RevolverBlock), true, false) ||
 				blockId == BlocksManager.GetBlockIndex(typeof(FamasBlock), true, false) ||
 				blockId == BlocksManager.GetBlockIndex(typeof(AA12Block), true, false) ||
-		        blockId == BlocksManager.GetBlockIndex(typeof(M249Block), true, false) ||
-		        blockId == BlocksManager.GetBlockIndex(typeof(NewG3Block), true, false) ||
-		        blockId == BlocksManager.GetBlockIndex(typeof(MP5SSDBlock), true, false) ||
-		        blockId == BlocksManager.GetBlockIndex(typeof(MendozaBlock), true, false) ||
-		        blockId == BlocksManager.GetBlockIndex(typeof(GrozaBlock), true, false) ||
+				blockId == BlocksManager.GetBlockIndex(typeof(M249Block), true, false) ||
+				blockId == BlocksManager.GetBlockIndex(typeof(NewG3Block), true, false) ||
+				blockId == BlocksManager.GetBlockIndex(typeof(MP5SSDBlock), true, false) ||
+				blockId == BlocksManager.GetBlockIndex(typeof(MendozaBlock), true, false) ||
+				blockId == BlocksManager.GetBlockIndex(typeof(GrozaBlock), true, false) ||
 				blockId == BlocksManager.GetBlockIndex(typeof(KABlock), true, false);
 		}
 		private bool HasActiveRangedWeaponComponent()
 		{
 			if (this.m_target == null) return false;
-			if (this.IsFirearmActive()) return true;
-			ComponentMusketShooterBehavior musket = base.Entity.FindComponent<ComponentMusketShooterBehavior>();
-			if (musket != null && musket.IsActive) return true;
-			ComponentBowShooterBehavior bow = base.Entity.FindComponent<ComponentBowShooterBehavior>();
-			if (bow != null && bow.IsActive) return true;
-			ComponentCrossbowShooterBehavior crossbow = base.Entity.FindComponent<ComponentCrossbowShooterBehavior>();
-			if (crossbow != null && crossbow.IsActive) return true;
-			ComponentFlameThrowerShooterBehavior flamethrower = base.Entity.FindComponent<ComponentFlameThrowerShooterBehavior>();
-			if (flamethrower != null && flamethrower.IsActive) return true;
-			ComponentItemsLauncherShooterBehavior launcher = base.Entity.FindComponent<ComponentItemsLauncherShooterBehavior>();
-			if (launcher != null && launcher.IsActive) return true;
 			return this.IsFirearmActive();
 		}
 		public void RespondToCommandImmediately(ComponentCreature target)
@@ -601,9 +590,9 @@ namespace Game
 			else
 			{
 				direction = Vector3.Normalize(direction);
-				Vector3 creaturePosition = this.m_componentMiner.ComponentCreature.ComponentCreatureModel.EyePosition;
+				Vector3 creaturePosition = this.m_componentCreature.ComponentCreatureModel.EyePosition;
 				Vector3 end = position + direction * reach;
-				result = this.m_subsystemBodies.Raycast(position, end, 0.35f, (ComponentBody body, float distance) => (double)Vector3.Distance(position + distance * direction, creaturePosition) <= (double)reach && body.Entity != this.Entity && !body.IsChildOfBody(this.m_componentMiner.ComponentCreature.ComponentBody) && !this.m_componentMiner.ComponentCreature.ComponentBody.IsChildOfBody(body));
+				result = this.m_subsystemBodies.Raycast(position, end, 0.35f, (ComponentBody body, float distance) => (double)Vector3.Distance(position + distance * direction, creaturePosition) <= (double)reach && body.Entity != this.Entity && !body.IsChildOfBody(this.m_componentCreature.ComponentBody) && !this.m_componentCreature.ComponentBody.IsChildOfBody(body));
 			}
 			return result;
 		}
@@ -672,11 +661,11 @@ namespace Game
 				blockId == BlocksManager.GetBlockIndex(typeof(RevolverBlock), true, false) ||
 				blockId == BlocksManager.GetBlockIndex(typeof(FamasBlock), true, false) ||
 				blockId == BlocksManager.GetBlockIndex(typeof(AA12Block), true, false) ||
-		        blockId == BlocksManager.GetBlockIndex(typeof(M249Block), true, false) ||
-		        blockId == BlocksManager.GetBlockIndex(typeof(NewG3Block), true, false) ||
-		        blockId == BlocksManager.GetBlockIndex(typeof(MP5SSDBlock), true, false) ||
-		        blockId == BlocksManager.GetBlockIndex(typeof(MendozaBlock), true, false) ||
-		        blockId == BlocksManager.GetBlockIndex(typeof(GrozaBlock), true, false) ||
+				blockId == BlocksManager.GetBlockIndex(typeof(M249Block), true, false) ||
+				blockId == BlocksManager.GetBlockIndex(typeof(NewG3Block), true, false) ||
+				blockId == BlocksManager.GetBlockIndex(typeof(MP5SSDBlock), true, false) ||
+				blockId == BlocksManager.GetBlockIndex(typeof(MendozaBlock), true, false) ||
+				blockId == BlocksManager.GetBlockIndex(typeof(GrozaBlock), true, false) ||
 				blockId == BlocksManager.GetBlockIndex(typeof(KABlock), true, false);
 		}
 		public bool IsReady(int slotValue)
