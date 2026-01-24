@@ -145,6 +145,8 @@
       "Gumdramon": "Gumdramon",
       "Guilmon": "Guilmon",
       "BetelGammamon": "BetelGammamon",
+      "Hawkmon": "Hawkmon",
+      "Gabumon": "Gabumon",
       "HeadcrabBloodyHuman": "Headcrab Bloody Human",
       "Tulio": "Tulio",
       "Brayan": "Brayan",
@@ -231,9 +233,9 @@
 },
   "Blocks": {
     "AntidoteBucketBlock:0": {
-      "DisplayName": "Antidote Bucket",
-      "Description": "A bucket filled with warm herbal tea specially brewed to combat influenza. This soothing blend instantly cures the flu, stops coughing and sneezing, clears blackout effects, and restores health. The aromatic herbs provide both medicinal properties and a comforting warmth that helps the body recover from viral infections."
-    },
+  "DisplayName": "Antidote Bucket",
+  "Description": "A bucket containing a powerful medicinal antidote. It removes poison and disease effects from the body, stopping their harmful consequences and allowing immediate recovery. When a condition is cured, lost health is also restored. It can be used on yourself or on other infected creatures."
+},
     "TeaAntifluBucketBlock:0": {
       "DisplayName": "Antiflu Tea Bucket",
       "Description": "A bucket filled with a special antiflu serum made from herbal tea extracts. When used on a creature suffering from flu or cold symptoms, it quickly alleviates the illness and restores some health. The serum is designed to boost the immune system and fight off viral infections. Use it on yourself or on NPCs who are feeling under the weather."
@@ -388,21 +390,20 @@
     },
     "ItemsLauncher:0": {
       "DisplayName": "Items Launcher",
-      "Description": "Launches any type of block or object. Although expensive to craft, it's a powerful weapon like the musket. Be careful!",
-      "CRDescription:0": "Make an object launcher by modifying a new musket."
+      "Description": "Launches any type of block or object. Although expensive to craft, it's a powerful weapon like the musket. Be careful!"
     },
     "FlameThrower:0": {
       "DisplayName": "Flamethrower",
       "Description": "The flamethrower is an incendiary weapon designed to project controlled fire. It was invented by Richard Fiedler in 1901 and first used in combat by the German army in 1915 during World War I. It works by using a fuel tank (usually thickened gasoline or oil) and compressed gas to propel the burning stream through a nozzle with ignition. To use it, the operator must insert Flame Bullets as ammunition, then pull the trigger to unleash fire against enemy fortifications or groups of soldiers. The advantage is that it supports up to 15 rounds (15/15), giving the player sustained firepower before reloading. The Flame Bullet is the secondary ammunition: incendiary projectiles that complement the flamethrower, useful for ranged attacks and maintaining pressure on the enemy."
     },
     "FlameBullet:0": {
-      "DisplayName": "Flame Bullet",
-      "Description": "Standard flame ammunition for the flamethrower. Creates fire on impact."
-    },
-    "FlameBullet:1": {
-      "DisplayName": "Poison Bullet",
-      "Description": "Toxic ammunition for the flamethrower. Releases poisonous chemicals that infect targets."
-    },
+  "DisplayName": "Incendiary Projectile",
+  "Description": "Fire-based projectile for the flamethrower. On impact, it ignites terrain and creatures, may trigger explosions at high speed, and inflicts burn damage."
+},
+"FlameBullet:1": {
+  "DisplayName": "Poison Gas Projectile",
+  "Description": "Chemical projectile for the flamethrower. Releases toxic gas that infects creatures with poison or disease, weakening them over time and dealing additional damage."
+},
     "RepeatCrossbow:0": {
       "DisplayName": "Repeating Crossbow",
       "Description": "Enhanced version of the normal crossbow, designed for durability and sustained ranged attacks. Unlike the standard crossbow that fires a single bolt before reloading, the Repeat Crossbow features an 8-bolt magazine and progressive draw states, allowing continuous shots at distance. Compatible with multiple bolt types (Copper, Iron, Diamond, Explosive), each with distinct damage and effects. Automatic crossbow with 8-bolt magazine. Faster reload than normal crossbow but slightly less power."
@@ -475,9 +476,21 @@
       "DisplayName": "M249 Ammunition",
       "Description": "Ammunition box containing 5.56×45mm NATO rounds for the M249 SAW. Each box provides 100 rounds of belt-fed ammunition. Insert into the M249 to fully reload the weapon to its maximum capacity."
     },
+    "BaseballBatBlock:0": {
+  "DisplayName": "Baseball Bat",
+  "Description": "A simple melee weapon with solid impact damage. Reliable, durable, and effective at close range."
+    },
     "AKBlock:0": {
     "DisplayName": "AK-47",
     "Description": "Legendary assault rifle firing 7.62×39mm rounds. Good accuracy, moderate recoil. Uses AK47Bullet ammunition. Fires at ~350 RPM."
+  },
+  "KABlock:0": {
+    "DisplayName": "KA",
+    "Description": "Advanced assault rifle that fires 5.56x45mm rounds. Unlike the AK-47, the KA offers superior accuracy, minimal recoil, and a 40-round magazine. Uses ammunition specifically designed for the KA."
+  },
+  "KABulletBlock:0": {
+    "DisplayName": "KA 5.56x45mm Ammunition",
+    "Description": "5.56x45mm ammunition specifically designed for the KA rifle. Offers higher muzzle velocity, improved ballistics compared to standard ammunition, and a 40-round magazine capacity."
   },
   "AUGBlock:0": {
     "DisplayName": "Steyr AUG",
@@ -598,8 +611,56 @@
   "FamasBulletBlock:0": {
     "DisplayName": "5.56×45mm FAMAS Magazine",
     "Description": "25-round magazine for FAMAS rifle. Contains 5.56×45mm NATO rounds."
-  }
   },
+  "ClothingBlock:39": {
+    "DisplayName": "T-Shirt Digimon",
+    "Description": "A cool t-shirt featuring Digimon designs. Perfect for fans of the series who want to show off their love for these digital monsters."
+  },
+    "ClothingBlock:40": {
+      "DisplayName": "Lava Armor Helmet",
+      "Description": "A helmet forged from molten rock. Provides great protection and warmth, shielding the head from both attacks and cold."
+    },
+    "ClothingBlock:41": {
+      "DisplayName": "Lava Armor Chestplate",
+      "Description": "A chestplate imbued with volcanic energy. Offers durable defense and insulation, keeping the torso warm in extreme climates."
+    },
+    "ClothingBlock:42": {
+      "DisplayName": "Lava Armor Leggings",
+      "Description": "Leggings forged from volcanic stone. Reinforce the legs with the strength of lava and provide warmth against the cold."
+    },
+    "ClothingBlock:43": {
+      "DisplayName": "Lava Armor Boots",
+      "Description": "Boots crafted from hardened lava. Improve endurance and speed while keeping the feet warm in freezing conditions."
+    },
+    "ClothingBlock:44": {
+      "DisplayName": "Bulletproof Helmet",
+      "Description": "Tired of diamond armor failing against gunfire? This bulletproof metal helmet is built with lightweight materials, providing strong protection against armed NPCs and bandits without reducing mobility."
+    },
+    "ClothingBlock:45": {
+      "DisplayName": "Bulletproof Vest",
+      "Description": "Despite being made of metal, this bulletproof vest uses a lightweight structure that does not hinder movement. The ultimate solution when diamond armor fails against firearms."
+    },
+    "ClothingBlock:46": {
+      "DisplayName": "Bulletproof Leggings",
+      "Description": "Metal bulletproof leggings designed to be surprisingly lightweight. They withstand firearm impacts without slowing you down, solving the weakness of diamond armor against bullets."
+    },
+    "ClothingBlock:47": {
+      "DisplayName": "Bulletproof Boots",
+      "Description": "Lightweight metal bulletproof boots that offer full protection without sacrificing speed. They complete the ideal set for facing armed bandits."
+    },
+    "ClothingBlock:48": {
+      "DisplayName": "Speed Boots",
+      "Description": "Inspired by the classic speed of Survivalcraft 2. These boots let you move incredibly fast, perfect for exploration, escaping danger, or reliving the original gameplay feel."
+    },
+    "ClothingBlock:49": {
+      "DisplayName": "Super Speed Boots",
+      "Description": "Speed taken to the extreme, Survivalcraft 2 style. With these boots, you’ll cross the world at absurd speeds, ideal for fun, extreme exploration, or pure chaos."
+    },
+    "ClothingBlock:50": {
+      "DisplayName": "Normal Jeans",
+      "Description": "Simple and comfortable pants. They don’t offer special advantages, but they get the job done for everyday survival."
+    }
+},
       "ContentWidgets": {
     "FlameThrowerWidget": {
       "Title": "Flamethrower",
