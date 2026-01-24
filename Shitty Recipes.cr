@@ -522,6 +522,81 @@
     "cdc"
     "bab"
 </Recipe>
+<Recipe Result="KABlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="3" a="planks" b="rod" c="ironblock" d="wire" Description="Modernized variant of the AK-47 with improved sights and accessory rail for attachments">
+    "bca"
+    "bda"
+    " aa"
+</Recipe>
+<Recipe Result="KABulletBlock" ResultCount="8" RequiredHeatLevel="0" RequiredPlayerLevel="3" a="bullet" b="rod" c="sulphurchunk" d="copperingot" Description="7.62×39mm ammunition optimized for the KA rifle's improved chamber and barrel">
+    " a "
+    "bcb"
+    " d "
+</Recipe>
+<Recipe Result="BaseballBatBlock" ResultCount="1" RequiredHeatLevel="0" a="rod" b="planks" Description="Classic wooden baseball bat for self-defense and close combat">
+    " b "
+    " b "
+    " a "
+</Recipe>
+        <Recipe Result="ClothingBlock:39" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="0" a="canvas" b="string" Description="A light t‑shirt inspired by Digimon. Provides minimal protection but symbolizes loyalty to the Digital World. Comfortable for daily wear and can be dyed to match your style.">
+            "aba"
+            "aba"
+            " a "
+        </Recipe>
+        <Recipe Result="ClothingBlock:40" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="magmabucket" b="string" Description="A helmet forged from molten rock. Provides great protection and warmth, shielding the head from both attacks and cold.">
+            "aaa"
+            "a a"
+            " b "
+        </Recipe>
+        <Recipe Result="ClothingBlock:41" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="magmabucket" b="string" Description="A breastplate imbued with volcanic energy. Offers durable defense and insulation, keeping the torso warm in extreme climates.">
+            "a a"
+            "aaa"
+            "aba"
+        </Recipe>
+        <Recipe Result="ClothingBlock:42" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="magmabucket" b="string" Description="Greaves forged with volcanic stone. Reinforce the legs with the strength of lava and offer warmth against the cold.">
+            "aba"
+            "a a"
+            "a a"
+        </Recipe>
+        <Recipe Result="ClothingBlock:43" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="magmabucket" b="string" Description="Boots crafted from hardened lava. Enhance stamina and speed, keeping feet warm in freezing conditions.">
+            "a a"
+            "a a"
+            " b "
+        </Recipe>
+        <Recipe Result="ClothingBlock:44" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="3" a="ironingot" b="canvas" c="string" Description="Tired of diamond armor not working against gunfire? This metallic bulletproof helmet is made from lightweight materials, offering great protection against firearms used by NPCs and bandits without penalizing mobility.">
+            "aaa"
+            "a a"
+            "bcb"
+        </Recipe>
+        <Recipe Result="ClothingBlock:45" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="3" a="ironingot" b="canvas" c="string" Description="Although made of metal, this bulletproof breastplate uses a lightweight structure that doesn't reduce mobility. It's the ultimate solution for surviving shots from armed NPCs when diamond armor fails.">
+            "a a"
+            "aaa"
+            "bcb"
+        </Recipe>
+        <Recipe Result="ClothingBlock:46" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="3" a="ironingot" b="canvas" c="string" Description="Bulletproof metallic greaves designed to be surprisingly light. They resist firearm impacts without affecting movement, eliminating the problem of useless diamond armor against bullets.">
+            "aaa"
+            "a a"
+            "bcb"
+        </Recipe>
+        <Recipe Result="ClothingBlock:47" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="3" a="ironingot" b="canvas" c="string" Description="Lightweight metal bulletproof boots offering full protection without sacrificing speed. They complete the ideal set against armed bandits where diamond armor isn't enough.">
+            "a a"
+            "a a"
+            "bcb"
+        </Recipe>
+        <Recipe Result="ClothingBlock:48" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="2" a="canvas" b="string" c="feather" Description="Inspired by classic Survivalcraft 2 speed. These boots let you move at great speed, perfect for exploring, escaping, or simply feeling the freedom of running like in the original game.">
+            "c c"
+            "a a"
+            "b b"
+        </Recipe>
+        <Recipe Result="ClothingBlock:49" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="4" a="canvas" b="string" c="feather" d="diamond" Description="Speed taken to the extreme, Survivalcraft 2 style. With these boots you'll traverse the world at absurd speed, ideal for fun, extreme exploration, or pure chaos.">
+            "c c"
+            "ada"
+            "b b"
+        </Recipe>
+        <Recipe Result="ClothingBlock:50" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="0" a="canvas" b="string" Description="A simple and comfortable pair of pants. Doesn't offer major advantages, but serves its basic function for daily survival.">
+            "aaa"
+            "a a"
+            "b b"
+        </Recipe>
         <Smelting>
         <Recipe Result="CopperSharpHammerBlock" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="3" a="coppermachete" b="ironhammer" Description="Use the old copper machete and iron hammer and turn him like a monster">
         "ab"
