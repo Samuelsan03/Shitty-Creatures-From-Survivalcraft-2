@@ -8,13 +8,13 @@ namespace Game
 {
 	public class ComponentMinecraftHumanModel : ComponentHumanModel
 	{
-		// Factores de suavizado - valores equilibrados
-		private float m_smoothFactor = 0.15f;
-		private float m_animationResponsiveness = 8f;
+		// Factores de suavizado - valores ajustados para más fluidez
+		private float m_smoothFactor = 0.2f; // Aumentado para más suavidad
+		private float m_animationResponsiveness = 6f; // Reducido para transiciones más graduales
 
 		// Factores específicos para apuntar
-		private float m_aimSmoothFactor = 0.25f;
-		private float m_aimTransitionSpeed = 6f;
+		private float m_aimSmoothFactor = 0.3f; // Aumentado para transiciones más suaves
+		private float m_aimTransitionSpeed = 5f; // Reducido para cambios más graduales
 
 		// Variables para tracking del estado anterior para interpolación
 		private Vector2 m_targetHeadAngles;
@@ -44,32 +44,33 @@ namespace Game
 			base.Update(dt);
 
 			// Después de que base.Update haya calculado todo, aplicar suavizado
-			float smoothSpeed = MathUtils.Min(m_animationResponsiveness * dt, 0.9f);
-			float aimSmoothSpeed = MathUtils.Min(m_aimTransitionSpeed * dt, 0.95f);
+			float smoothSpeed = MathUtils.Min(m_animationResponsiveness * dt, 0.85f); // Reducido de 0.9 a 0.85
+			float aimSmoothSpeed = MathUtils.Min(m_aimTransitionSpeed * dt, 0.9f); // Reducido de 0.95 a 0.9
 
-			// Suavizar la fase de movimiento
-			m_smoothedMovementPhase = MathUtils.Lerp(m_smoothedMovementPhase, base.MovementAnimationPhase, smoothSpeed * 1.5f);
+			// Suavizar la fase de movimiento con más interpolación
+			m_smoothedMovementPhase = MathUtils.Lerp(m_smoothedMovementPhase, base.MovementAnimationPhase, smoothSpeed * 1.8f);
 
-			// Suavizar el bob - mantener igual que el original
-			m_smoothedBob = MathUtils.Lerp(m_smoothedBob, base.Bob, smoothSpeed * 2f);
+			// Suavizar el bob - con menos fuerza
+			m_smoothedBob = MathUtils.Lerp(m_smoothedBob, base.Bob, smoothSpeed * 1.5f);
 
 			// Suavizar el ángulo de apuntar con una curva más gradual
 			float targetAimAngle = base.m_aimHandAngle;
-			m_smoothedAimHandAngle = MathUtils.Lerp(m_smoothedAimHandAngle, targetAimAngle, aimSmoothSpeed);
+			m_smoothedAimHandAngle = MathUtils.Lerp(m_smoothedAimHandAngle, targetAimAngle, aimSmoothSpeed * 0.9f);
 
-			// Calcular intensidad de apuntar con transición suave
+			// Calcular intensidad de apuntar con transición más suave
 			bool isAiming = Math.Abs(targetAimAngle) > 0.001f;
 			float targetAimIntensity = isAiming ? 1f : 0f;
-			m_aimIntensity = MathUtils.Lerp(m_aimIntensity, targetAimIntensity, aimSmoothSpeed * 0.8f);
+			m_aimIntensity = MathUtils.Lerp(m_aimIntensity, targetAimIntensity, aimSmoothSpeed * 0.7f);
 
 			m_wasAiming = isAiming;
 
-			// Actualizar los ángulos base con suavizado
-			this.m_headAngles = Vector2.Lerp(this.m_headAngles, m_targetHeadAngles, smoothSpeed);
-			this.m_handAngles1 = Vector2.Lerp(this.m_handAngles1, m_targetHandAngles1, smoothSpeed);
-			this.m_handAngles2 = Vector2.Lerp(this.m_handAngles2, m_targetHandAngles2, smoothSpeed);
-			this.m_legAngles1 = Vector2.Lerp(this.m_legAngles1, m_targetLegAngles1, smoothSpeed);
-			this.m_legAngles2 = Vector2.Lerp(this.m_legAngles2, m_targetLegAngles2, smoothSpeed);
+			// Actualizar los ángulos base con suavizado más fuerte
+			float limbSmoothSpeed = smoothSpeed * 1.3f; // Factor adicional para extremidades
+			this.m_headAngles = Vector2.Lerp(this.m_headAngles, m_targetHeadAngles, limbSmoothSpeed);
+			this.m_handAngles1 = Vector2.Lerp(this.m_handAngles1, m_targetHandAngles1, limbSmoothSpeed);
+			this.m_handAngles2 = Vector2.Lerp(this.m_handAngles2, m_targetHandAngles2, limbSmoothSpeed);
+			this.m_legAngles1 = Vector2.Lerp(this.m_legAngles1, m_targetLegAngles1, limbSmoothSpeed);
+			this.m_legAngles2 = Vector2.Lerp(this.m_legAngles2, m_targetLegAngles2, limbSmoothSpeed);
 		}
 
 		public override void Animate()
@@ -113,33 +114,34 @@ namespace Game
 			{
 				ComponentMount componentMount = (this.m_componentRider != null) ? this.m_componentRider.Mount : null;
 
-				// Usar fase de movimiento suavizada
-				float num = MathF.Sin(6.2831855f * m_smoothedMovementPhase);
+				// Usar fase de movimiento suavizada con función más suave
+				float num = MathF.Sin(6.2831855f * m_smoothedMovementPhase) * 0.8f +
+						   MathF.Sin(12.566371f * m_smoothedMovementPhase) * 0.2f; // Ondas adicionales para fluidez
 
-				// Usar bob suavizado - VALORES NORMALES
-				position.Y += m_smoothedBob;
+				// Usar bob suavizado - VALORES REDUCIDOS
+				position.Y += m_smoothedBob * 0.9f; // Reducido un 10%
 				vector.X += this.m_headingOffset;
 
 				float num2 = (float)MathUtils.Remainder(0.75 * this.m_subsystemGameInfo.TotalElapsedGameTime + (double)(this.GetHashCode() & 65535), 10000.0);
 
-				// Calcular ángulos objetivo con menos ruido y más suavidad
-				float noiseScale = 0.15f; // Mantener igual
+				// Calcular ángulos objetivo con menos ruido
+				float noiseScale = 0.12f; // Reducido de 0.15
 
 				float targetHeadX = MathUtils.Clamp(
 					MathUtils.Lerp(-noiseScale, noiseScale, SimplexNoise.Noise(1.02f * num2 - 100f)) +
 					this.m_componentCreature.ComponentLocomotion.LookAngles.X +
-					0.8f * this.m_componentCreature.ComponentLocomotion.LastTurnOrder.X + // VALOR NORMAL
+					0.7f * this.m_componentCreature.ComponentLocomotion.LastTurnOrder.X + // Reducido de 0.8
 					this.m_headingOffset,
-					-MathUtils.DegToRad(80f), MathUtils.DegToRad(80f)); // LÍMITES NORMALES
+					-MathUtils.DegToRad(75f), MathUtils.DegToRad(75f)); // Límites reducidos
 
 				float targetHeadY = MathUtils.Clamp(
 					MathUtils.Lerp(-noiseScale, noiseScale, SimplexNoise.Noise(0.96f * num2 - 200f)) +
 					this.m_componentCreature.ComponentLocomotion.LookAngles.Y,
-					-MathUtils.DegToRad(45f), MathUtils.DegToRad(45f)); // LÍMITES NORMALES
+					-MathUtils.DegToRad(40f), MathUtils.DegToRad(40f)); // Límites reducidos
 
 				m_targetHeadAngles = new Vector2(targetHeadX, targetHeadY);
 
-				// Calcular ángulos de extremidades - VALORES NORMALES
+				// Calcular ángulos de extremidades - VALORES AJUSTADOS
 				float num3 = 0f;
 				float y2 = 0f;
 				float x2 = 0f;
@@ -153,42 +155,42 @@ namespace Game
 				{
 					if (componentMount.Entity.ValuesDictionary.DatabaseObject.Name == "Boat")
 					{
-						position.Y -= 0.2f;
+						position.Y -= 0.18f; // Reducido
 						vector.X += 3.1415927f;
-						num4 = 0.4f; // NORMAL
-						num6 = 0.4f; // NORMAL
-						num5 = 0.2f; // NORMAL
-						num7 = -0.2f; // NORMAL
-						num3 = 1.1f; // NORMAL
-						x2 = 1.1f; // NORMAL
-						y2 = 0.2f; // NORMAL
-						y3 = -0.2f; // NORMAL
+						num4 = 0.35f; // Reducido
+						num6 = 0.35f; // Reducido
+						num5 = 0.18f; // Reducido
+						num7 = -0.18f; // Reducido
+						num3 = 1.0f; // Reducido
+						x2 = 1.0f; // Reducido
+						y2 = 0.18f; // Reducido
+						y3 = -0.18f; // Reducido
 					}
 					else
 					{
-						num4 = 0.5f; // NORMAL
-						num6 = 0.5f; // NORMAL
-						num5 = 0.15f; // NORMAL
-						num7 = -0.15f; // NORMAL
-						y2 = 0.55f; // NORMAL
-						y3 = -0.55f; // NORMAL
+						num4 = 0.45f; // Reducido
+						num6 = 0.45f; // Reducido
+						num5 = 0.12f; // Reducido
+						num7 = -0.12f; // Reducido
+						y2 = 0.5f; // Reducido
+						y3 = -0.5f; // Reducido
 					}
 				}
 				else if (this.m_componentCreature.ComponentLocomotion.IsCreativeFlyEnabled)
 				{
 					float num8 = (this.m_componentCreature.ComponentLocomotion.LastWalkOrder != null) ?
-						MathUtils.Min(0.03f * this.m_componentCreature.ComponentBody.Velocity.XZ.LengthSquared(), 0.5f) : 0f;
-					num3 = -0.1f - num8; // NORMAL
+						MathUtils.Min(0.025f * this.m_componentCreature.ComponentBody.Velocity.XZ.LengthSquared(), 0.4f) : 0f; // Reducido
+					num3 = -0.08f - num8; // Reducido
 					x2 = num3;
-					y2 = MathUtils.Lerp(0f, 0.25f, SimplexNoise.Noise(1.07f * num2 + 400f)); // NORMAL
-					y3 = 0f - MathUtils.Lerp(0f, 0.25f, SimplexNoise.Noise(0.93f * num2 + 500f)); // NORMAL
+					y2 = MathUtils.Lerp(0f, 0.2f, SimplexNoise.Noise(1.07f * num2 + 400f)); // Reducido
+					y3 = 0f - MathUtils.Lerp(0f, 0.2f, SimplexNoise.Noise(0.93f * num2 + 500f)); // Reducido
 				}
 				else if (m_smoothedMovementPhase != 0f)
 				{
-					// Animación de caminar suavizada con amplitud NORMAL
-					num4 = -0.45f * num; // NORMAL
-					num6 = 0.45f * num;  // NORMAL
-					num3 = this.m_walkLegsAngle * num * 0.8f; // NORMAL
+					// Animación de caminar suavizada con amplitud REDUCIDA
+					num4 = -0.35f * num; // Reducido de 0.45
+					num6 = 0.35f * num;  // Reducido de 0.45
+					num3 = this.m_walkLegsAngle * num * 0.6f; // Reducido de 0.8
 					x2 = 0f - num3;
 				}
 
@@ -197,12 +199,12 @@ namespace Game
 				if (this.m_componentMiner != null)
 				{
 					float num10 = MathF.Sin(MathF.Sqrt(this.m_componentMiner.PokingPhase) * 3.1415927f);
-					num9 = ((this.m_componentMiner.ActiveBlockValue == 0) ? (1f * num10) : (0.3f + 1f * num10)); // NORMAL
+					num9 = ((this.m_componentMiner.ActiveBlockValue == 0) ? (0.9f * num10) : (0.25f + 0.9f * num10)); // Reducido
 				}
 
-				// Efecto de puñetazo - NORMAL
+				// Efecto de puñetazo - REDUCIDO
 				float num11 = (this.m_punchPhase != 0f) ?
-					((0f - MathUtils.DegToRad(90f)) * MathF.Sin(6.2831855f * MathUtils.Sigmoid(this.m_punchPhase, 4f))) : 0f; // NORMAL
+					((0f - MathUtils.DegToRad(75f)) * MathF.Sin(6.2831855f * MathUtils.Sigmoid(this.m_punchPhase, 3f))) : 0f; // Reducido
 				float num12 = ((this.m_punchCounter & 1) == 0) ? num11 : 0f;
 				float num13 = ((this.m_punchCounter & 1) != 0) ? num11 : 0f;
 
@@ -213,8 +215,8 @@ namespace Game
 				float num17 = 0f;
 				if (this.m_rowLeft || this.m_rowRight)
 				{
-					float num18 = 0.6f * (float)Math.Sin(6.91150426864624 * this.m_subsystemTime.GameTime); // NORMAL
-					float num19 = 0.2f + 0.2f * (float)Math.Cos(6.91150426864624 * (this.m_subsystemTime.GameTime + 0.5)); // NORMAL
+					float num18 = 0.5f * (float)Math.Sin(6.91150426864624 * this.m_subsystemTime.GameTime); // Reducido
+					float num19 = 0.18f + 0.18f * (float)Math.Cos(6.91150426864624 * (this.m_subsystemTime.GameTime + 0.5)); // Reducido
 					if (this.m_rowLeft)
 					{
 						num14 = num18;
@@ -227,7 +229,7 @@ namespace Game
 					}
 				}
 
-				// Efecto de apuntar - NORMAL
+				// Efecto de apuntar - REDUCIDO
 				float num20 = 0f;
 				float num21 = 0f;
 				float num22 = 0f;
@@ -236,25 +238,25 @@ namespace Game
 				// Usar intensidad suavizada para transiciones graduales
 				if (m_aimIntensity > 0.001f)
 				{
-					// Aplicar curva de entrada/salida más suave usando funciones de easing
+					// Aplicar curva de entrada/salida más suave
 					float easeInOut = m_aimIntensity * m_aimIntensity * (3f - 2f * m_aimIntensity);
 
-					num20 = 1.5f * easeInOut; // NORMAL
-					num21 = -0.7f * easeInOut; // NORMAL
+					num20 = 1.3f * easeInOut; // Reducido
+					num21 = -0.6f * easeInOut; // Reducido
 
-					// Suavizar también el ángulo de apuntar con la misma curva
+					// Suavizar también el ángulo de apuntar
 					num22 = m_smoothedAimHandAngle * easeInOut;
 					num23 = 0f;
 				}
 
-				float num24 = (float)((!this.m_componentCreature.ComponentLocomotion.IsCreativeFlyEnabled) ? 1 : 4); // NORMAL
+				float num24 = (float)((!this.m_componentCreature.ComponentLocomotion.IsCreativeFlyEnabled) ? 1 : 3); // Reducido
 
-				// Calcular ángulos finales con ruido normal
-				float handNoiseScale = 0.08f; // NORMAL
+				// Calcular ángulos finales con ruido reducido
+				float handNoiseScale = 0.06f; // Reducido
 				num4 += MathUtils.Lerp(-handNoiseScale, handNoiseScale, SimplexNoise.Noise(num2)) + num12 + num14 + num20;
-				num5 += MathUtils.Lerp(0f, num24 * 0.12f, SimplexNoise.Noise(1.1f * num2 + 100f)) + num15 + num21; // NORMAL
+				num5 += MathUtils.Lerp(0f, num24 * 0.1f, SimplexNoise.Noise(1.1f * num2 + 100f)) + num15 + num21; // Reducido
 				num6 += num9 + MathUtils.Lerp(-handNoiseScale, handNoiseScale, SimplexNoise.Noise(0.9f * num2 + 200f)) + num13 + num16 + num22;
-				num7 += 0f - MathUtils.Lerp(0f, num24 * 0.12f, SimplexNoise.Noise(1.05f * num2 + 300f)) + num17 + num23; // NORMAL
+				num7 += 0f - MathUtils.Lerp(0f, num24 * 0.1f, SimplexNoise.Noise(1.05f * num2 + 300f)) + num17 + num23; // Reducido
 
 				// Establecer ángulos objetivo para interpolación
 				m_targetHandAngles1 = new Vector2(num4, num5);
@@ -262,24 +264,24 @@ namespace Game
 				m_targetLegAngles1 = new Vector2(num3, y2);
 				m_targetLegAngles2 = new Vector2(x2, y3);
 
-				// Aplicar factor de agacharse de forma más gradual - NORMAL
+				// Aplicar factor de agacharse de forma más gradual
 				float crouchFactor = this.m_componentCreature.ComponentBody.CrouchFactor;
 				if (crouchFactor > 0.95f)
 				{
-					m_targetLegAngles1 *= 0.5f;
-					m_targetLegAngles2 *= 0.5f;
+					m_targetLegAngles1 *= 0.45f; // Reducido
+					m_targetLegAngles2 *= 0.45f; // Reducido
 				}
 				else if (crouchFactor > 0.5f)
 				{
-					float crouchScale = MathUtils.Lerp(1f, 0.5f, (crouchFactor - 0.5f) / 0.45f);
+					float crouchScale = MathUtils.Lerp(1f, 0.45f, (crouchFactor - 0.5f) / 0.45f); // Reducido
 					m_targetLegAngles1 *= crouchScale;
 					m_targetLegAngles2 *= crouchScale;
 				}
 
-				float f = MathUtils.Sigmoid(this.m_componentCreature.ComponentBody.CrouchFactor, 4f);
-				Vector3 position2 = new Vector3(position.X, position.Y - MathUtils.Lerp(0f, 0.7f, f), position.Z); // NORMAL
-				Vector3 position3 = new Vector3(0f, MathUtils.Lerp(0f, 7f, f), MathUtils.Lerp(0f, 28f, f)); // NORMAL
-				Vector3 scale = new Vector3(1f, 1f, MathUtils.Lerp(1f, 0.5f, f)); // NORMAL
+				float f = MathUtils.Sigmoid(this.m_componentCreature.ComponentBody.CrouchFactor, 3f); // Reducido
+				Vector3 position2 = new Vector3(position.X, position.Y - MathUtils.Lerp(0f, 0.6f, f), position.Z); // Reducido
+				Vector3 position3 = new Vector3(0f, MathUtils.Lerp(0f, 6f, f), MathUtils.Lerp(0f, 25f, f)); // Reducido
+				Vector3 scale = new Vector3(1f, 1f, MathUtils.Lerp(1f, 0.55f, f)); // Reducido
 
 				// Aplicar transformaciones usando los ángulos actuales (ya interpolados en Update)
 				this.SetBoneTransform(this.m_bodyBone.Index,
@@ -375,28 +377,23 @@ namespace Game
 			m_smoothedMovementPhase = 0f;
 			m_smoothedBob = 0f;
 			m_animationTime = 0f;
-
-			// NO modificar parámetros de animación base - mantener igual que el original
-			// Solo usar los parámetros que vienen del XML
-
-			Log.Warning($"ComponentMinecraftHumanModel cargado - Smooth: {m_smoothFactor}, Resp: {m_animationResponsiveness}");
 		}
 
 		// Métodos para ajustar parámetros dinámicamente
 		public void SetSmoothFactor(float factor)
 		{
-			m_smoothFactor = MathUtils.Clamp(factor, 0.05f, 0.3f);
+			m_smoothFactor = MathUtils.Clamp(factor, 0.1f, 0.3f); // Rango ajustado
 		}
 
 		public void SetAnimationResponsiveness(float responsiveness)
 		{
-			m_animationResponsiveness = MathUtils.Clamp(responsiveness, 4f, 20f);
+			m_animationResponsiveness = MathUtils.Clamp(responsiveness, 3f, 15f); // Rango ajustado
 		}
 
 		public void SetAimSmoothness(float smoothness)
 		{
-			m_aimSmoothFactor = MathUtils.Clamp(smoothness, 0.1f, 0.5f);
-			m_aimTransitionSpeed = MathUtils.Clamp(10f - (smoothness * 20f), 3f, 8f);
+			m_aimSmoothFactor = MathUtils.Clamp(smoothness, 0.15f, 0.4f); // Rango ajustado
+			m_aimTransitionSpeed = MathUtils.Clamp(8f - (smoothness * 15f), 4f, 7f); // Ajustado
 		}
 	}
 }
