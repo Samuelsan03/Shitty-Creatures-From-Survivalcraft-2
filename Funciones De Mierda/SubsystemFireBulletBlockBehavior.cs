@@ -39,19 +39,14 @@ namespace Game
 			}
 		}
 
-		// NEW METHOD: This was missing - it sets up the projectile when fired
+		// MODIFICADO: Se removieron los efectos de partículas de fuego al disparar
 		public override void OnFiredAsProjectile(Projectile projectile)
 		{
-			// Add fire trail effects like BigStoneFlameChunk
-			this.m_subsystemProjectiles.AddTrail(projectile, Vector3.Zero,
-				new SmokeTrailParticleSystem(35, 3f, float.MaxValue, new Color(255, 100, 0)));
-
-			// Second trail for more fire effect
-			this.m_subsystemProjectiles.AddTrail(projectile, new Vector3(0f, 0.1f, 0f),
-				new SmokeTrailParticleSystem(25, 2f, float.MaxValue, new Color(255, 150, 50)));
+			// Se eliminaron las líneas que agregaban efectos de partículas de fuego
+			// El proyectil ahora será visualmente normal
 
 			projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
-			projectile.IsIncendiary = true; // Make it incendiary
+			projectile.IsIncendiary = true; // Mantener propiedad incendiaria
 		}
 
 		public override void Load(ValuesDictionary valuesDictionary)
