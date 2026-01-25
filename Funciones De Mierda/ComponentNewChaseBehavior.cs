@@ -112,13 +112,17 @@ namespace Game
 				this.m_chaseTime -= dt;
 				this.m_componentCreature.ComponentCreatureModel.LookAtOrder = new Vector3?(this.m_target.ComponentCreatureModel.EyePosition);
 				float distance = Vector3.Distance(this.m_componentCreature.ComponentBody.Position, this.m_target.ComponentBody.Position);
+				// LÓGICA MEJORADA DE CAMBIO DE ARMAS
 				if (distance < 5f && this.m_target != null && this.IsActive)
 				{
+					// Si está muy cerca, cambiar inmediatamente a cuerpo a cuerpo
 					this.SwitchToMeleeModeImmediately();
+					m_isRangedMode = false;
 				}
-				else if (distance > 5f)
+				else if (distance > 5f && distance <= this.m_attackRange.Y)
 				{
-					this.FindAimTool(this.m_componentMiner);
+					// Si está a distancia media/lejana, cambiar a arma a distancia
+					SwitchToRangedModeImmediately();
 				}
 				float num = (this.m_subsystemGameInfo.WorldSettings.GameMode == GameMode.Creative) ? 2.5f : 3f;
 				bool flag2 = this.m_attackMode != ComponentNewChaseBehavior.AttackMode.OnlyHand;
@@ -383,6 +387,36 @@ namespace Game
 				}
 			}
 		}
+
+		// MÉTODO NUEVO: Cambio inmediato a modo a distancia
+		private void SwitchToRangedModeImmediately()
+		{
+			// Buscar y equipar mejor arma a distancia
+			if (FindAimTool(this.m_componentMiner))
+			{
+				// Si encontró arma a distancia, actualizar estado
+				m_isRangedMode = true;
+
+				// Asegurarse de que está listo para disparar
+				if (this.IsAimToolNeedToReady(this.m_componentMiner, this.m_componentMiner.Inventory.ActiveSlotIndex))
+				{
+					this.HandleComplexAimTool(this.m_componentMiner, this.m_componentMiner.Inventory.ActiveSlotIndex);
+				}
+			}
+			else
+			{
+				// Si no tiene arma a distancia, mantenerse en cuerpo a cuerpo pero mantener distancia
+				m_isRangedMode = false;
+				if (this.m_componentPathfinding != null && this.m_target != null)
+				{
+					Vector3 retreatDirection = Vector3.Normalize(
+						this.m_componentCreature.ComponentBody.Position - this.m_target.ComponentBody.Position
+					);
+					Vector3 retreatPosition = this.m_componentCreature.ComponentBody.Position + retreatDirection * 3f;
+					this.m_componentPathfinding.SetDestination(new Vector3?(retreatPosition), 1f, 1f, 0, false, true, false, null);
+				}
+			}
+		}
 		private bool IsFirearmActive()
 		{
 			if (this.m_componentMiner == null || this.m_componentMiner.ActiveBlockValue == 0)
@@ -598,49 +632,69 @@ namespace Game
 		}
 		public bool FindAimTool(ComponentMiner componentMiner)
 		{
-			bool flag = componentMiner.Inventory == null;
-			if (flag)
-			{
+			if (componentMiner.Inventory == null)
 				return false;
-			}
+
+			// Primero verificar si el arma actual es a distancia
 			int activeSlotIndex = componentMiner.Inventory.ActiveSlotIndex;
 			int activeBlockValue = componentMiner.ActiveBlockValue;
-			int num = Terrain.ExtractContents(activeBlockValue);
-			Block block = BlocksManager.Blocks[num];
-			bool isFirearm = this.IsFirearmActive();
+			int blockId = Terrain.ExtractContents(activeBlockValue);
+			Block block = BlocksManager.Blocks[blockId];
 
-			// Modificación: Manejo especial para FlameThrowerBlock
-			if (block is FlameThrowerBlock)
+			// Verificar si el bloque actual es un arma a distancia
+			if (block.IsAimable_(activeBlockValue) || this.IsFirearmBlock(activeBlockValue) || block is MusketBlock)
 			{
-				int data = Terrain.ExtractData(activeBlockValue);
-				FlameThrowerBlock.LoadState loadState = FlameThrowerBlock.GetLoadState(data);
-				int loadCount = FlameThrowerBlock.GetLoadCount(activeBlockValue);
-				FlameBulletBlock.FlameBulletType? bulletType = FlameThrowerBlock.GetBulletType(data);
-
-				// Verificar si necesita inicialización (primera vez)
-				bool needsInitialization = (loadState == FlameThrowerBlock.LoadState.Empty || loadCount <= 0) &&
-										  !bulletType.HasValue;
-
-				if (needsInitialization || !this.IsReady(activeBlockValue))
+				// Verificar si necesita recarga/preparación
+				if (this.IsAimToolNeedToReady(componentMiner, activeSlotIndex))
 				{
-					// Si necesita inicialización o no está listo, recargar
 					this.HandleComplexAimTool(componentMiner, activeSlotIndex);
 				}
 				return true;
 			}
 
-			if (block.IsAimable_(activeBlockValue) || isFirearm)
+			// Si no, buscar un arma a distancia en el inventario
+			float bestPriority = 0f;
+			int bestSlot = -1;
+
+			for (int i = 0; i < componentMiner.Inventory.SlotsCount; i++)
 			{
-				if (!(block is FlameThrowerBlock))
+				int slotValue = componentMiner.Inventory.GetSlotValue(i);
+				if (slotValue == 0) continue;
+
+				int slotBlockId = Terrain.ExtractContents(slotValue);
+				Block slotBlock = BlocksManager.Blocks[slotBlockId];
+
+				// Calcular prioridad: armas de fuego primero, luego otras armas a distancia
+				float priority = 0f;
+
+				if (this.IsFirearmBlock(slotValue))
+					priority = 100f; // Prioridad más alta para armas de fuego
+				else if (slotBlock is MusketBlock)
+					priority = 90f; // Prioridad alta para mosquetes
+				else if (slotBlock is BowBlock || slotBlock is CrossbowBlock || slotBlock is RepeatCrossbowBlock)
+					priority = 80f; // Prioridad para arcos/ballestas
+				else if (slotBlock.IsAimable_(slotValue))
+					priority = 70f; // Otras armas a distancia
+
+				if (priority > bestPriority)
 				{
-					bool flag4 = this.IsAimToolNeedToReady(componentMiner, activeSlotIndex);
-					if (flag4)
-					{
-						this.HandleComplexAimTool(componentMiner, activeSlotIndex);
-					}
-					return true;
+					bestPriority = priority;
+					bestSlot = i;
 				}
 			}
+
+			if (bestSlot >= 0)
+			{
+				componentMiner.Inventory.ActiveSlotIndex = bestSlot;
+
+				// Verificar si necesita recarga/preparación
+				if (this.IsAimToolNeedToReady(componentMiner, bestSlot))
+				{
+					this.HandleComplexAimTool(componentMiner, bestSlot);
+				}
+				return true;
+			}
+
 			return false;
 		}
 		private bool IsFirearmBlock(int blockValue)
@@ -1575,6 +1629,7 @@ namespace Game
 		public bool PlayIdleSoundWhenStartToChase = true;
 		public bool PlayAngrySoundWhenChasing = true;
 		public float TargetInRangeTimeToChase = 3f;
+		private bool m_isRangedMode = false;
 		public enum AttackMode
 		{
 			Default,
