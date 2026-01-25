@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Engine;
 using Engine.Graphics;
@@ -118,15 +118,15 @@ namespace Game
 				int kaIndex = BlocksManager.GetBlockIndex(typeof(Game.KABlock), true, false);
 				FirearmConfigs[kaIndex] = new FirearmConfig
 				{
-					BulletBlockType = typeof(NuevaBala5), // Usa NuevaBala5 (negra) como en el subsystem
-					ShootSound = "Audio/Armas/KA fuego", // Mismo sonido que en el subsystem
-					FireRate = 0.1, // Más rápido que en el subsystem (0.1 vs 0.12)
-					BulletSpeed = 320f, // Mayor velocidad (320f vs 300f originalmente)
-					MaxShotsBeforeReload = 40, // Capacidad de 40 balas como en GetProcessInventoryItemCapacity
-					ProjectilesPerShot = 3, // 3 balas por ráfaga como en el código
-					SpreadVector = new Vector3(0.007f, 0.007f, 0.03f), // Menor dispersión que original
-					NoiseRadius = 35f, // Menor ruido (35f vs 40f originalmente)
-					IsAutomatic = true // Es automático según el comportamiento
+					BulletBlockType = typeof(NuevaBala5),
+					ShootSound = "Audio/Armas/KA fuego",
+					FireRate = 0.1,
+					BulletSpeed = 320f,
+					MaxShotsBeforeReload = 40,
+					ProjectilesPerShot = 3,
+					SpreadVector = new Vector3(0.007f, 0.007f, 0.03f),
+					NoiseRadius = 35f,
+					IsAutomatic = true
 				};
 
 				int mac10Index = BlocksManager.GetBlockIndex(typeof(Game.Mac10Block), true, false);
@@ -418,9 +418,11 @@ namespace Game
 
 				if (currentTime - m_animationStartTime >= ReloadTime)
 				{
+					// Terminar recarga - resetear variables
 					m_isReloading = false;
 					m_shotsSinceLastReload = 0;
 
+					// Mostrar efectos de partículas cuando termina la recarga
 					if (m_subsystemParticles != null && m_subsystemTerrain != null)
 					{
 						try
@@ -460,8 +462,14 @@ namespace Game
 						}
 					}
 
+					// Sonido de recarga completa
 					m_subsystemAudio.PlaySound("Audio/Armas/reload", SoundVolume, 0f,
 						m_componentCreature.ComponentCreatureModel.EyePosition, SoundRange, true);
+
+					// IMPORTANTE: Forzar que vuelva a comenzar el proceso de apuntar
+					// Después de recargar, necesita apuntar de nuevo antes de disparar
+					m_isAiming = false;
+					m_lastShootTime = currentTime; // Resetear tiempo de disparo
 				}
 				return;
 			}
@@ -520,6 +528,7 @@ namespace Game
 			if (config == null)
 				return;
 
+			// Después de recargar, necesita apuntar de nuevo
 			if (config.IsSniper)
 			{
 				UpdateSniperWeapon(currentTime);
@@ -538,20 +547,32 @@ namespace Game
 		{
 			if (!m_isAiming)
 			{
-				m_isAiming = true;
+				// Solo comenzar a apuntar si no está recargando
+				if (!m_isReloading)
+				{
+					m_isAiming = true;
+					m_animationStartTime = currentTime; // Iniciar tiempo de apuntar
+				}
+				return;
 			}
 
+			// Aplicar animación de apuntar solo si ya está apuntando
 			ApplyAimingAnimation();
 
-			if (currentTime - m_lastShootTime >= GetCurrentFireRate())
+			// Verificar si ya ha apuntado suficiente tiempo
+			float aimTimeRequired = 0.3f; // Tiempo mínimo para apuntar antes de disparar
+			if (currentTime - m_animationStartTime >= aimTimeRequired)
 			{
-				Fire();
-				m_lastShootTime = currentTime;
-				m_shotsSinceLastReload++;
-
-				if (ShouldReload(currentTime))
+				if (currentTime - m_lastShootTime >= GetCurrentFireRate())
 				{
-					StartReloading();
+					Fire();
+					m_lastShootTime = currentTime;
+					m_shotsSinceLastReload++;
+
+					if (ShouldReload(currentTime))
+					{
+						StartReloading();
+					}
 				}
 			}
 		}
@@ -560,7 +581,11 @@ namespace Game
 		{
 			if (!m_isAiming)
 			{
-				StartAiming();
+				// Solo comenzar a apuntar si no está recargando
+				if (!m_isReloading)
+				{
+					StartAiming();
+				}
 				return;
 			}
 
@@ -585,6 +610,7 @@ namespace Game
 						StartReloading();
 					}
 
+					// Después de disparar, volver a necesitar apuntar
 					m_isAiming = false;
 				}
 			}
@@ -594,7 +620,11 @@ namespace Game
 		{
 			if (!m_isAiming)
 			{
-				StartAiming();
+				// Solo comenzar a apuntar si no está recargando
+				if (!m_isReloading)
+				{
+					StartAiming();
+				}
 				return;
 			}
 
@@ -613,6 +643,7 @@ namespace Game
 						StartReloading();
 					}
 
+					// Después de disparar, volver a necesitar apuntar
 					m_isAiming = false;
 				}
 			}
@@ -743,9 +774,14 @@ namespace Game
 					reloadProgress = (float)((m_subsystemTime.GameTime - m_animationStartTime) / (ReloadTime * 1.2f));
 				}
 
-				m_componentModel.AimHandAngleOrder = MathUtils.Lerp(1.0f, 0.5f, reloadProgress);
-				m_componentModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f - (0.1f * reloadProgress));
-				m_componentModel.InHandItemRotationOrder = new Vector3(-1.7f + (0.5f * reloadProgress), 0f, 0f);
+				// Durante toda la recarga: bajar completamente las manos (posición normal)
+				// De 1.4f (apuntando) a 0.0f (posición normal/descanso)
+				float targetAngle = MathUtils.Lerp(1.4f, 0.0f, reloadProgress);
+				float returnAngle = 0.0f; // Siempre 0 durante la recarga
+
+				m_componentModel.AimHandAngleOrder = returnAngle;
+				m_componentModel.InHandItemOffsetOrder = Vector3.Zero; // Offset cero = posición normal
+				m_componentModel.InHandItemRotationOrder = Vector3.Zero; // Rotación cero = posición normal
 				m_componentModel.LookAtOrder = null;
 			}
 		}
@@ -872,7 +908,6 @@ namespace Game
 				}
 
 				m_subsystemAudio.PlaySound(config.ShootSound, SoundVolume, pitchVariation, shootPosition, SoundRange, true);
-
 			}
 			catch (Exception ex)
 			{
@@ -910,12 +945,23 @@ namespace Game
 
 		private void StartReloading()
 		{
+			// Bajar las manos completamente
 			m_isAiming = false;
 			m_isFiring = false;
 			m_isReloading = true;
 			m_animationStartTime = m_subsystemTime.GameTime;
 			m_lastReloadTime = m_subsystemTime.GameTime;
 
+			// Forzar posición normal inmediatamente
+			if (m_componentModel != null)
+			{
+				m_componentModel.AimHandAngleOrder = 0f;
+				m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
+				m_componentModel.InHandItemRotationOrder = Vector3.Zero;
+				m_componentModel.LookAtOrder = null;
+			}
+
+			// Mantener efectos visuales y de sonido
 			if (m_subsystemParticles != null && m_subsystemTerrain != null)
 			{
 				try
@@ -953,6 +999,7 @@ namespace Game
 				}
 			}
 
+			// Sonido de recarga
 			m_subsystemAudio.PlaySound("Audio/Armas/reload", SoundVolume * 0.8f, 0f,
 				m_componentCreature.ComponentCreatureModel.EyePosition, SoundRange, true);
 		}
