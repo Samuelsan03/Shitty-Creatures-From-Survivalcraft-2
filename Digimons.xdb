@@ -690,7 +690,7 @@
     <Parameter Name="ChaseWhenAttackedProbability" Value="0.8" Type="float" Guid="a5fec55d-e838-4154-8da1-b8f6d9cc470c"/>
     <Parameter Name="ChaseOnTouchProbability" Value="0.5" Type="float" Guid="0df4b74d-f9e8-46c6-ba07-e7240a72f844"/>
     <Parameter Name="AutoChaseMask" Value="LandPredator" Type="string" Guid="552ecbb5-be16-4701-85f7-ffffabebed68"/>
-    <Parameter Name="AttackMode" Value="Default,Ranged" Type="string" Guid="c65fb791-4dc5-4660-a8cf-b36978fe477d"/>
+    <Parameter Name="AttackMode" Value="Default" Type="string" Guid="c65fb791-4dc5-4660-a8cf-b36978fe477d"/>
     <Parameter Name="AttackRange" Value="5,20" Type="Vector2" Guid="98e094ed-d5cd-411b-a3aa-1985d92438eb"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="NewHerdBehavior" Guid="3c7efc3d-8697-4f99-8847-22c4a8986198">
@@ -1012,7 +1012,7 @@
     <Parameter Name="ChaseWhenAttackedProbability" Value="0.8" Type="float" Guid="a690058b-c438-4c48-83be-b5bb8a2ff8ce"/>
     <Parameter Name="ChaseOnTouchProbability" Value="0.5" Type="float" Guid="00de1222-b7fe-4d8e-b2b7-35c31ae33650"/>
     <Parameter Name="AutoChaseMask" Value="LandPredator" Type="string" Guid="26a2cb2b-1095-40dd-998f-1cfdaae9f5ba"/>
-    <Parameter Name="AttackMode" Value="Default,Ranged" Type="string" Guid="7a1daaba-e61e-4456-be9f-274f8dc357e0"/>
+    <Parameter Name="AttackMode" Value="Default" Type="string" Guid="7a1daaba-e61e-4456-be9f-274f8dc357e0"/>
     <Parameter Name="AttackRange" Value="5,20" Type="Vector2" Guid="df743235-cbe3-4518-83cd-7879e9310296"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="NewHerdBehavior" Guid="6ecbb26d-22b4-438d-93bf-5040fd7ca841">
@@ -1324,7 +1324,7 @@
     <Parameter Name="ChaseWhenAttackedProbability" Value="0.8" Type="float" Guid="2ac20f0f-af5c-46d7-a157-578658f62499"/>
     <Parameter Name="ChaseOnTouchProbability" Value="0.5" Type="float" Guid="4584f2fd-46d4-47f5-95b7-392f4eefe4d4"/>
     <Parameter Name="AutoChaseMask" Value="LandPredator" Type="string" Guid="04071a6a-529a-448a-a10a-b86c6289d4c1"/>
-    <Parameter Name="AttackMode" Value="Default,Ranged" Type="string" Guid="4b7cfd95-a3ee-47df-82d1-82b6a13b1d24"/>
+    <Parameter Name="AttackMode" Value="Default" Type="string" Guid="4b7cfd95-a3ee-47df-82d1-82b6a13b1d24"/>
     <Parameter Name="AttackRange" Value="5,20" Type="Vector2" Guid="d79319dd-d389-4a30-a1b6-788f422f3bfc"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="NewHerdBehavior" Guid="cce85e36-cb3f-4469-acee-0275dd72ff5d">
@@ -1461,7 +1461,7 @@
     <Parameter Name="ChaseWhenAttackedProbability" Value="0.8" Type="float" Guid="d9585d2d-53d1-4e4a-8307-4e71eb61c2d1"/>
     <Parameter Name="ChaseOnTouchProbability" Value="0.5" Type="float" Guid="d4888e01-efcc-435e-a265-d59d3499e84b"/>
     <Parameter Name="AutoChaseMask" Value="LandPredator" Type="string" Guid="f4ac82e9-87c6-4e94-bafa-d3893810c642"/>
-    <Parameter Name="AttackMode" Value="Default,Ranged" Type="string" Guid="390f34fb-ddd0-4921-a189-0432e076a48a"/>
+    <Parameter Name="AttackMode" Value="Default" Type="string" Guid="390f34fb-ddd0-4921-a189-0432e076a48a"/>
     <Parameter Name="AttackRange" Value="5,20" Type="Vector2" Guid="ffd5604f-42cb-434c-8a39-65ca5fcbcb06"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="NewHerdBehavior" Guid="610a107f-fee3-46fc-bde5-925e2f6fdb70">
