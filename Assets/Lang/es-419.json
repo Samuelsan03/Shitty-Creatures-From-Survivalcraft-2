@@ -1,4 +1,12 @@
 {
+  "LargeFirstAidKit": {
+    "PlayerHealed": "¡Has restaurado completamente tu salud!",
+    "NPCHealedFormat": "¡La salud de {0} ha sido completamente restaurada!"
+  },
+  "MediumFirstAidKit": {
+    "PlayerHealed": "¡Has restaurado parcialmente tu salud!",
+    "NPCHealedFormat": "¡La salud de {0} ha sido parcialmente restaurada!"
+  },
   "EditTemperatureDialog": {
     "Settings": "Aire Acondicionado - Configuración",
     "Ok": "Aceptar",
@@ -37,6 +45,10 @@
   },
   "Database": {
     "DisplayName": {
+      "Bandit11": "Bandido 11",
+      "Bandit10": "Bandido 10",
+      "Bandit9": "Bandido 9",
+      "Bandit8": "Bandido 8",
       "Bandit7": "Bandido 7",
       "Bandit6": "Bandido 6",
       "Bandit5": "Bandido 5",
@@ -232,6 +244,14 @@
     }
   },
   "Blocks": {
+    "MediumFirstAidKitBlock:0": {
+    "DisplayName": "Botiquín Mediano",
+    "Description": "Un botiquín médico diseñado para tratar heridas restaurando una parte significativa de la salud. Cura al objetivo hasta aproximadamente la mitad de su salud máxima. Puede usarse tanto en uno mismo como en otras criaturas cercanas."
+  },
+  "LargeFirstAidKitBlock:0": {
+    "DisplayName": "Botiquín Grande",
+    "Description": "Un potente botiquín médico capaz de restaurar completamente la salud. Cura instantáneamente al objetivo hasta su salud máxima. Puede usarse tanto en uno mismo como en otras criaturas cercanas."
+  },
     "AntidoteBucketBlock:0": {
   "DisplayName": "Cubo de Antídoto",
   "Description": "Un cubo que contiene un potente antídoto medicinal. Elimina los efectos del veneno y las enfermedades del cuerpo, deteniendo sus consecuencias dañinas y ayudando a una recuperación inmediata. Al curar una afección, también restaura la salud perdida. Puede usarse tanto en uno mismo como en otras criaturas enfermas."
@@ -666,6 +686,10 @@
     }
 },
   "ContentWidgets": {
+    "CreatureInventoryWidget": {
+      "CreatureInventoryLabel": "Inventario de {0}",
+      "InventoryLabel": "Inventario"
+    },
     "FlameThrowerWidget": {
       "Title": "Lanzallamas",
       "Inventory": "Inventario",
