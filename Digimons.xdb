@@ -661,6 +661,11 @@
 </EntityTemplate>
 
 <EntityTemplate Name="Gumdramon" Guid="001bcd0a-686c-4552-9a14-2d7bda4efa32" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="CreatureInventory" Guid="52ce6ff4-dfe1-4e06-8e6c-972f38d91a5c" InheritanceParent="81a44c6a-c30a-4f53-8d64-0c30aabab8f9">
+  <Parameter Name="Class" Value="Game.ComponentCreatureInventory" Type="string"/>
+  <Parameter Name="SlotsCount" Value="16" Type="int"/>
+  <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
+</MemberComponentTemplate>
 <MemberComponentTemplate Name="NewRunAwayBehavior" Guid="387cb873-0661-4880-893d-70b62f2373fe">
     <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="cb2e3d4d-f071-43e9-ac25-29b21b81e6f1"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="4f50af98-5ab0-40eb-9264-3ed955c9db07"/>
@@ -980,6 +985,11 @@
 </EntityTemplate>
 
 <EntityTemplate Name="Gaomon" Guid="7f3b2886-cb9c-4645-af3c-feb3ca375c8a" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="CreatureInventory" Guid="262ec147-840e-44a8-afdb-76ee1e2a828e" InheritanceParent="81a44c6a-c30a-4f53-8d64-0c30aabab8f9">
+  <Parameter Name="Class" Value="Game.ComponentCreatureInventory" Type="string"/>
+  <Parameter Name="SlotsCount" Value="16" Type="int"/>
+  <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
+</MemberComponentTemplate>
 <MemberComponentTemplate Name="Inventory" Guid="2e4d6f83-73dc-4193-a775-6d8f94f6a96e" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890"/>
   <MemberComponentTemplate Name="NewCreatureCollect" Guid="fa21cc56-1cb8-456f-90bc-f4cc86664488" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
     <Parameter Name="PickFactors" Guid="b0fb09cc-fc9e-4186-b650-b32de37a373c" Value="Tools;1.0,Weapons;1.0" Type="string"/>
@@ -1300,6 +1310,11 @@
 </EntityTemplate>
 
 <EntityTemplate Name="Hawkmon" Guid="a82b51fa-6d6e-4c52-aed7-21761c95693f" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="CreatureInventory" Guid="13d4a1c4-6506-49ed-9468-67c2cb91d376" InheritanceParent="81a44c6a-c30a-4f53-8d64-0c30aabab8f9">
+  <Parameter Name="Class" Value="Game.ComponentCreatureInventory" Type="string"/>
+  <Parameter Name="SlotsCount" Value="16" Type="int"/>
+  <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
+</MemberComponentTemplate>
 <MemberComponentTemplate Name="NewRunAwayBehavior" Guid="9f9dd0db-9a29-4399-adc1-752c701d3f90">
     <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="ba355b2d-626a-4c15-82c8-ad078e3623ad"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="0d6cc59a-4944-4a30-8c57-a07e8f58e581"/>
@@ -1437,6 +1452,11 @@
 </EntityTemplate>
 
 <EntityTemplate Name="Gabumon" Guid="cb2815b4-b128-459f-9293-ce95e3f02e5c" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="CreatureInventory" Guid="1d1639d1-a73d-496a-acd1-f894d5336675" InheritanceParent="81a44c6a-c30a-4f53-8d64-0c30aabab8f9">
+  <Parameter Name="Class" Value="Game.ComponentCreatureInventory" Type="string"/>
+  <Parameter Name="SlotsCount" Value="16" Type="int"/>
+  <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
+</MemberComponentTemplate>
 <MemberComponentTemplate Name="NewRunAwayBehavior" Guid="7ec9cf3e-d814-4d76-99a7-9135d71e9bbe">
     <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="bf5269e5-b0f0-4040-9588-01985911dd7d"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="4d53cbd9-695e-48c5-bc91-8ab436833dbb"/>
