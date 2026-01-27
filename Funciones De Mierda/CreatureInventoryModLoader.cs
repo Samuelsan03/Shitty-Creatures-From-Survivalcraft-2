@@ -45,9 +45,13 @@ namespace Game
 			bool handled = false;
 			if (bodyRaycast.HasValue)
 			{
-				// SOLO incrementar la prioridad de interact
-				priorityInteract = Math.Max(priorityInteract, 2000);
-				handled = HandleCreatureInteraction(player, bodyRaycast.Value);
+				// VERIFICAR DISTANCIA ANTES DE PROCESAR (3 bloques máximo)
+				if (CheckInteractionDistance(player, bodyRaycast.Value))
+				{
+					// SOLO incrementar la prioridad de interact
+					priorityInteract = Math.Max(priorityInteract, 2000);
+					handled = HandleCreatureInteraction(player, bodyRaycast.Value);
+				}
 			}
 
 			if (handled)
@@ -59,6 +63,30 @@ namespace Game
 				}
 				playerOperated = true;
 				player.m_isAimBlocked = true;
+			}
+		}
+
+		private bool CheckInteractionDistance(ComponentPlayer player, BodyRaycastResult raycast)
+		{
+			try
+			{
+				// Calcular distancia entre el jugador y la criatura
+				Vector3 playerPosition = player.ComponentBody.Position;
+				Vector3 creaturePosition = raycast.ComponentBody.Position;
+
+				// Calcular distancia en bloques (1 bloque = 1 unidad en el juego)
+				float distance = Vector3.Distance(playerPosition, creaturePosition);
+
+				// Distancia máxima permitida: 3 bloques
+				const float MAX_INTERACTION_DISTANCE = 5f;
+
+				// Verificar si la distancia es válida
+				return distance <= MAX_INTERACTION_DISTANCE;
+			}
+			catch
+			{
+				// En caso de error, permitir la interacción para no romper la funcionalidad existente
+				return true;
 			}
 		}
 
