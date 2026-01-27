@@ -28,9 +28,25 @@ namespace Game
 			bool handled = false;
 			if (bodyRaycast.HasValue)
 			{
+				// VERIFICAR SI EL JUGADOR TIENE UN ITEM MÉDICO ACTIVO
+				int activeBlockValue = player.ComponentMiner.ActiveBlockValue;
+				int activeBlockIndex = Terrain.ExtractContents(activeBlockValue);
+				int mediumFirstAidKitIndex = BlocksManager.GetBlockIndex<MediumFirstAidKitBlock>();
+				int antidoteBucketIndex = BlocksManager.GetBlockIndex<AntidoteBucketBlock>();
+
+				// Si el jugador tiene un item médico activo, NO abrir el inventario
+				if (activeBlockIndex == mediumFirstAidKitIndex || activeBlockIndex == antidoteBucketIndex)
+				{
+					// Permitir que el item médico maneje la interacción
+					return;
+				}
+
+				// SOLO incrementar la prioridad de interact, NO establecerla a -2
 				priorityInteract = Math.Max(priorityInteract, 2000);
 				handled = HandleCreatureInteraction(player, bodyRaycast.Value);
-				priorityInteract = -2;
+
+				// NO establecer priorityInteract = -2 aquí
+				// Esto permitirá que otros comportamientos también se ejecuten
 			}
 
 			if (handled)
@@ -43,10 +59,8 @@ namespace Game
 				playerOperated = true;
 				player.m_isAimBlocked = true;
 			}
-			else
-			{
-				playerOperated = false;
-			}
+			// NO establecer playerOperated = false aquí
+			// Dejar que otros hooks/manejadores se ejecuten
 		}
 
 		private bool HandleCreatureInteraction(ComponentPlayer player, BodyRaycastResult raycast)
