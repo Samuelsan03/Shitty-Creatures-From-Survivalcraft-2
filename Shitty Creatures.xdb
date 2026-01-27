@@ -1,5 +1,11 @@
 <ShittyCreatures xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://gitee.com/THPRC/survivalcraft-api/raw/SCAPI1.8/Survivalcraft/Content/Assets/Database.xsd">
 <Folder Name="Gameplay" Guid="d509e5e2-2c10-49f1-8223-85cd892c63b0">
+<ComponentTemplate Name="CreatureInventory" Description="Inventario para criaturas que pueden almacenar y usar objetos" Guid="a347220c-b5cf-4eae-9215-4ed37426eec4" InheritanceParent="81a44c6a-c30a-4f53-8d64-0c30aabab8f9">
+  <Parameter Name="ActiveSlotIndex" Description="Índice del slot activo de la criatura" Guid="65e82739-c714-4418-90b0-adddb190350d" Value="0" Type="int"/>
+  <Parameter Name="SlotsCount" Description="Número de slots en el inventario de la criatura" Guid="8f9e0c14-943a-49ce-96a8-24b51582dfb5" Value="16" Type="int"/>
+  <Parameter Name="Class" Description="Clase que implementa el componente" Guid="9b0edb28-ea3c-4865-bd50-eb6660e47466" Value="Game.ComponentCreatureInventory" Type="string"/>
+</ComponentTemplate>
+
 <ComponentTemplate Name="NewGhostTankModel" Description="Modelo de tanque fantasma con transparencia y animaciones etéreas" Guid="5ccee3e3-ae8d-4793-a534-5b075b74429b" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
 	<Parameter Name="Class" Guid="fe3bc745-8817-42e6-89fe-7bff90756f69" Value="Game.ComponentNewGhostTankModel" Type="string"/>
 	<Parameter Name="Opacity" Description="Nivel de transparencia del tanque fantasma (0.1–1.0)" Guid="ca9ca19f-3be4-4b15-8772-a265eb44f002" Value="0.7" Type="float"/>
@@ -108,24 +114,6 @@
     <Parameter Name="Opacity" Value="0.5" Type="float" Description="Valor de opacidad del modelo fantasma (entre 0 y 1)."/>
 </ComponentTemplate>
 
-<ComponentTemplate Name="FlushInventory" Description="A flush bag that you can take items" Guid="b86f3409-2929-4d0a-b4ac-3d7b4ef9c404" InheritanceParent="81a44c6a-c30a-4f53-8d64-0c30aabab8f9">
-      <Parameter Name="SlotsCount" Description="Cantidad de casillas que contenera la criatura en su inventario." Guid="9eb2101f-4bff-4925-9f8d-ef95591c9342" Value="16" Type="int"/>
-      <Parameter Name="ValidBlocks" Description="IDs de objetos que se generaran automaticamente en funcion aleatoria. use comas , para agregar varios ej: 1,2,3." Guid="bfc29eee-4746-442d-aaf5-0f05227ce9c7" Value="" Type="string"/>
-      <Parameter Name="UpdateInterval" Description="Intervalo de tiempo en segundos (S) para generar objetos ej: 300 equivale a 5 minutos." Guid="abd1571b-04e6-4403-b185-8a5308b13b71" Value="300" Type="string"/>
-      <Parameter Name="Class" Guid="6f3316bd-a6fa-4bba-9f35-4b8d5a0234da" Value="Game.ComponentFlushInventory" Type="string"/>
-    </ComponentTemplate>
-
-<ComponentTemplate Name="ComponentTradeFlushInventory" Guid="f93edde4-899b-4994-b86f-23fdff7d2edd" Description="Componente de inventario para entidades comerciales que actualiza aleatoriamente sus slots de venta">
-    <Parameter Name="Class" Value="Game.ComponentTradeFlushInventory" Type="string" Guid="a742d95e-e6f4-453d-bee8-351f7efb1419" Description="Nombre de la clase C# que implementa el inventario comercial con actualización automática"/>
-    <Parameter Name="UpdateOrder" Value="202" Type="int" Guid="2e8723b7-0b25-486e-8322-c5a43122b3fb" Description="Orden de actualización del componente durante el ciclo del juego"/>
-    <Parameter Name="LoadOrder" Value="0" Type="int" Guid="5e9bce0b-8d26-4105-a1b0-871910d93a09" Description="Orden de carga del componente en la entidad"/>
-    <Parameter Name="SlotsCount" Value="10" Type="int" Guid="0fa87144-737d-49dd-874d-1123917e9ddf" Description="Número total de slots en el inventario (incluyendo slots de venta y resultado)"/>
-    <Parameter Name="Slots" Value="" Type="string" Guid="6f877037-6e90-482b-a202-8699c398a7a4" Description="Slots iniciales en formato 'NombreBloque:Valor:Cantidad:ÍndiceSlot,NombreBloque:Valor:Cantidad:ÍndiceSlot'"/>
-    <Parameter Name="UpdateInterval" Value="180" Type="string" Guid="0ba909f7-3f61-43e8-979a-62514f238ebd" Description="Intervalo en segundos entre actualizaciones del inventario (formato: segundos como string)"/>
-    <Parameter Name="ValidBlocks" Value="" Type="string" Guid="7758711e-4c8a-45ee-925e-9f8f1a97ec2d" Description="Lista de bloques válidos para comerciar en formato 'NombreBloque:Cantidad:Precio,NombreBloque:Cantidad:Precio'"/>
-    <Parameter Name="InitialRatio" Value="1.0" Type="float" Guid="987e5147-f8e9-4581-afef-99c4fa64ee61" Description="Ratio inicial de precio para los intercambios (entre 0.5 y 2.0)"/>
-</ComponentTemplate>
-
 <ComponentTemplate Name="RefrigeratorXiaomi" Description="Refrigerador Xiaomi con control eléctrico" Guid="064a3848-3864-4d94-b078-7e3d8fdc145c" InheritanceParent="81a44c6a-c30a-4f53-8d64-0c30aabab8f9">
             <Parameter Name="SlotsCount" Guid="a51950cf-39fb-4d50-ab30-b182ef9ece9a" Value="12" Type="int"/>
             <Parameter Name="Class" Guid="e5dee275-a048-4f66-9253-1a6df67b9596" Value="Game.ComponentRefrigeratorXiaomi" Type="string"/>
@@ -181,7 +169,7 @@
   <Parameter Name="ChaseNonPlayerProbability" Description="Probabilidad de que la criatura persiga un objetivo no-jugador cuando está en rango, de 0 a 1" Guid="8dedf1e9-5f38-4284-8ae6-0dfcc4530057" Value="0" Type="float"/>
 </ComponentTemplate>
 
-    <ComponentTemplate Name="ComponentFirearmsShooters" Guid="927c0a46-b1e5-42a9-a6bb-0979acbc2518" Description="Componente que permite a NPCs usar armas de fuego automáticamente">
+<ComponentTemplate Name="ComponentFirearmsShooters" Guid="927c0a46-b1e5-42a9-a6bb-0979acbc2518" Description="Componente que permite a NPCs usar armas de fuego automáticamente">
     <Parameter Name="Class" Value="Game.ComponentFirearmsShooters" Type="string" Guid="05ae6aa2-3bb6-4bee-875d-89f2c1851e45" Description="Nombre de la clase C# que implementa el comportamiento de disparo con armas de fuego"/>
     <Parameter Name="UpdateOrder" Value="1000" Type="int" Guid="69c93012-6088-405e-8a76-bf44e9d42fe1" Description="Orden de actualización del componente durante el ciclo del juego"/>
     <Parameter Name="LoadOrder" Value="100" Type="int" Guid="9b5d5c7d-fc82-429f-a0e3-019f87c2f604" Description="Orden de carga del componente en la entidad"/>
@@ -189,10 +177,14 @@
     <Parameter Name="SpreadFactor" Value="0.05" Type="float" Guid="0a3cbe52-a53a-48ef-bb11-1e51b2a6260a" Description="Factor de dispersión de los disparos (imprecisión). Mayor valor = menos preciso"/>
     <Parameter Name="ReloadChance" Value="0.05" Type="float" Guid="9a937410-1aa3-42c0-abfe-6acc39fd7320" Description="Probabilidad (0-1) de recargar después de cada disparo. 0.05 = 5% de chance"/>
     <Parameter Name="MinReloadInterval" Value="5" Type="float" Guid="9120d3e1-2f7c-47f0-9fee-ff0119236f26" Description="Segundos mínimos entre recargas"/>
-    <Parameter Name="SoundVolume" Value="1.0" Type="float" Guid="38a2da9f-257c-48ff-8e1a-11f5684c37af" Description="Volumen de los sonidos de disparo y recarga (0.0 a 1.0)"/>
-    <Parameter Name="SoundRange" Value="10" Type="float" Guid="d8f787cd-c0b5-4ce7-a8e4-5264f910b0e1" Description="Rango de audición de los sonidos de disparo (en metros)"/>
     <Parameter Name="UseRandomReloads" Value="true" Type="bool" Guid="786e20f7-df47-4c67-889b-8155bb125182" Description="Si es true, activa recargas aleatorias basadas en ReloadChance"/>
     <Parameter Name="TargetHeightOffset" Value="0.5" Type="float" Guid="1324e873-eb18-4495-909f-03011ea74cc0" Description="Ajuste vertical del apuntado (0 = cabeza, 0.5 = torso, 1.0 = pies)"/>
+    <Parameter Name="MeleeRange" Value="5" Type="float" Guid="87729eb8-c51a-4a1e-9d6a-ce643a4eb628" Description="Distancia a la que cambia a modo cuerpo a cuerpo (en metros)"/>
+    <Parameter Name="UseMeleeSwitch" Value="true" Type="bool" Guid="936285c1-4d66-4f30-ac95-0c3abe791525" Description="Activar/desactivar cambio automático a cuerpo a cuerpo cuando el objetivo está cerca"/>
+    <Parameter Name="MeleeAttackInterval" Value="0.8" Type="float" Guid="7072b92e-1bed-44ec-893a-5429ceff71f8" Description="Tiempo entre ataques cuerpo a cuerpo (en segundos)"/>
+    <Parameter Name="ReloadTime" Value="1.0" Type="float" Guid="f94332f8-dacb-4d13-b40f-afbd6b171d65" Description="Tiempo de recarga de armas de fuego (en segundos)"/>
+    <Parameter Name="PistolAimTime" Value="0.5" Type="float" Guid="c2358547-8d40-4f5d-8089-1e0c267b9656" Description="Tiempo de apuntado para armas no automáticas (en segundos)"/>
+    <Parameter Name="SniperAimTime" Value="1.0" Type="float" Guid="8b2b6f61-4ca1-43c3-ac39-b18a2c9dbfff" Description="Tiempo de apuntado para rifles de francotirador (en segundos)"/>
 </ComponentTemplate>
 
     <ComponentTemplate Name="ComponentBanditHerd" Guid="a511bc31-fbbf-47af-a2a8-4d51dad1d563" Description="Componente de manada para bandidos que permite agrupamiento y comportamiento colectivo">
@@ -6028,6 +6020,11 @@
         </EntityTemplate>
 
         <EntityTemplate Name="PirataNormalAliado" Guid="5113ebe2-e315-4a9b-939d-ed69319f26a8" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <MemberComponentTemplate Name="CreatureInventory" Guid="dc306c32-9cb3-4dbd-b363-f7a0a7155520" InheritanceParent="81a44c6a-c30a-4f53-8d64-0c30aabab8f9">
+  <Parameter Name="Class" Value="Game.ComponentCreatureInventory" Type="string"/>
+  <Parameter Name="SlotsCount" Value="16" Type="int"/>
+  <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
+</MemberComponentTemplate>
         <MemberComponentTemplate Name="DeathSpawner" Guid="f11cb648-0a30-42a9-91ba-f17a1987eaa4">
     <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="b3834755-7ca6-4f7b-8c64-508fc4c2c906"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="245bf25e-2cad-4394-8757-bf6ee874c303"/>
@@ -6188,7 +6185,12 @@
             </ParameterSet>
         </EntityTemplate>
 
-        <EntityTemplate Name="PirataEliteAliado" Guid="7f0552e6-61d8-4365-988d-94e5197212bd" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <EntityTemplate Name="PirataEliteAliado" Guid="7f0552e6-61d8-4365-988d-94e5197212bd" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">5
+        <MemberComponentTemplate Name="CreatureInventory" Guid="ed17324f-06dc-4245-8fb8-d67ca9539da3" InheritanceParent="81a44c6a-c30a-4f53-8d64-0c30aabab8f9">
+  <Parameter Name="Class" Value="Game.ComponentCreatureInventory" Type="string"/>
+  <Parameter Name="SlotsCount" Value="16" Type="int"/>
+  <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
+</MemberComponentTemplate>
         <MemberComponentTemplate Name="DeathSpawner" Guid="de9c14fe-ab2a-4da3-aa81-fb54207a5344">
     <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="58bb6bb2-e13f-4d7e-8260-2149e3c50825"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="ffdee80e-4d1a-456b-9451-41aa2133f27a"/>
@@ -6349,7 +6351,8 @@
                 <Parameter Name="EggTypeIndex" Guid="844bf608-9e24-4409-bef1-a7684bbb3274" Value="248" Type="int"/>
             </ParameterSet>
         </EntityTemplate>
-        <EntityTemplate Name="PirataHostilComerciante" Guid="935cc7cb-6a0a-4fc6-a75b-2f6eba8344b9" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+
+<EntityTemplate Name="PirataHostilComerciante" Guid="935cc7cb-6a0a-4fc6-a75b-2f6eba8344b9" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
         <MemberComponentTemplate Name="DeathSpawner" Guid="2f79c9ad-c279-4bc3-944e-a1f5a3b22809">
     <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="ac1e9ab3-53d1-4ae2-9ae3-d2d02203b141"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="7d6047c7-d151-4791-8e0c-4a40744b5fa6"/>
@@ -6363,15 +6366,6 @@
     <Parameter Name="LoadOrder" Value="55" Type="int" Guid="ef1111d6-8c78-4bdb-87bc-49580f9e3694"/>
     <Parameter Name="LowHealthToEscape" Value="0.5" Type="float" Guid="8bfc1ed6-4093-4c7f-8f05-d9d8918ae4da"/>
 </MemberComponentTemplate>
-        <MemberComponentTemplate Name="FlushInventory" Guid="e2f137ff-9ddf-498c-8760-8f03f0c12202">
-        <Parameter Name="Class" Value="Game.ComponentFlushInventory" Type="string" Guid="df76a389-962a-4870-80d3-cb981d0a3f41"/>
-        <Parameter Name="IsOptional" Value="true" Type="bool" Guid="943051f6-d45b-4020-a1dc-90b72e9da5e3"/>
-        <Parameter Name="LoadOrder" Value="50" Type="int" Guid="fab101e1-6611-47e6-ab13-2f0a30d0e1d1"/>
-        <Parameter Name="SlotsCount" Guid="5503428d-824e-408c-952a-96bc6079918d" Value="8" Type="int"/>
-        <Parameter Name="Slots" Value="IronIngotBlock" Type="string" Guid="b8159ae1-3b2b-4669-a186-54d515984d41"/>
-        <Parameter Name="ValidBlocks" Guid="adf0041f-4a50-4b29-b784-b07b3b5ff7f8" Value="19,174" Type="string"/>
-        <Parameter Name="UpdateInterval" Guid="1e7fac26-2869-46ba-8583-fa76d7c186f3" Value="120" Type="string"/>
-      </MemberComponentTemplate>
         <MemberComponentTemplate Name="CreatureSounds" Guid="167953db-ecb7-4b25-a201-ac313e703bb8">
                 <Parameter Name="PainSound" Guid="1eb07aec-e3ed-45e9-89de-9b484b64c948" Value="Audio/Creatures/PirataExtra/Pain" Type="string"/>
                 <Parameter Name="IdleSound" Guid="7aae93c4-068e-424e-9f31-b65fac221298" Value="Audio/Creatures/PirataExtra/Idie" Type="string"/>
@@ -6394,7 +6388,7 @@
     <Parameter Name="ChaseWhenAttackedProbability" Value="0.8" Type="float" Guid="c5436e09-ceeb-48d2-8186-5296a0700a1a"/>
     <Parameter Name="ChaseOnTouchProbability" Value="0.5" Type="float" Guid="bf688f11-f594-4e42-af46-3e7b9a019637"/>
     <Parameter Name="AutoChaseMask" Value="LandPredator" Type="string" Guid="fa4f1f60-40cb-4d9e-9431-5efb89125b7b"/>
-    <Parameter Name="AttackMode" Value="Default,Ranged" Type="string" Guid="845a381b-7fc9-48df-807c-a794e208f5de"/>
+    <Parameter Name="AttackMode" Value="Default" Type="string" Guid="845a381b-7fc9-48df-807c-a794e208f5de"/>
     <Parameter Name="AttackRange" Value="5,20" Type="Vector2" Guid="ba370662-7e2b-401f-bc9a-817bcfdbd649"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="04d51e7b-3047-4ed9-91d0-c7070e47ca77" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
@@ -6407,17 +6401,6 @@
                     <Parameter Name="Meat" Guid="3ed83417-8fdb-4712-9fb2-a5147fd1374a" Value="1" Type="float"/>
                 </ParameterSet>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentTradeFlushInventory" Guid="6bf27c8c-c94f-4007-b6fc-2bd5a789bd55">
-    <Parameter Name="Class" Value="Game.ComponentTradeFlushInventory" Type="string" Guid="ca42378f-41a8-496b-a18b-7af38820aa60"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="be079907-ff7b-42de-91c8-4210d841c615"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="b03762b9-67a3-4c47-b2a8-5cf6bfe09aa7"/>
-    <Parameter Name="UpdateOrder" Value="202" Type="int" Guid="6138f08f-deb6-4c95-9727-cb3eb0bb3ab7"/>
-    <Parameter Name="SlotsCount" Value="10" Type="int" Guid="2d47bad7-56b5-4c7d-b4c0-1ee4f5ce1929"/>
-    <Parameter Name="Slots" Value="IronIngotBlock" Type="string" Guid="27f25aa0-dba0-47ee-be4f-f3531b04aac8"/>
-    <Parameter Name="UpdateInterval" Value="180" Type="string" Guid="70f11d00-9292-4da5-a970-574ccf73fa52"/>
-    <Parameter Name="ValidBlocks" Value="IronIngotBlock:16:5" Type="string" Guid="352b9dc8-f176-4df0-97fa-f615a182cafc"/>
-    <Parameter Name="InitialRatio" Value="1.0" Type="float" Guid="c372a58a-7f98-4bdc-99c5-75cf939b05a9"/>
-</MemberComponentTemplate>
            <MemberComponentTemplate Name="Inventory" Guid="f756e2fb-a023-4d95-b5ab-1dc9705fb4bb" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="NewCreatureCollect" Guid="00dd9fd1-358d-49c6-8d4f-00f7e3b63438" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
@@ -6895,12 +6878,6 @@
     <Parameter Name="AutoNearbyCreaturesHelp" Guid="388471bf-e944-4426-a498-8e190a0b6759" Value="True" Type="bool"/>
     <Parameter Name="HerdingRange" Guid="33415f8e-9fa5-4da3-b02a-b5bc51253c1b" Value="50" Type="float"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="CreatureAI" Guid="d0959492-1b10-4ade-b2f8-01217018caee">
-    <Parameter Name="Class" Value="Game.ComponentCreatureAI" Type="string" Guid="d39f4ab1-bc09-4145-9c20-b1e216677500"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="f9e73e91-47c3-4c9e-adb1-669e5b572719"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="f0fc1091-db10-46da-928b-3d5e9bee9ae8"/>
-    <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="54c8dfa6-1fe2-45f4-b7fa-a1c7376425c8"/>
-</MemberComponentTemplate>
 <MemberComponentTemplate Name="NewChaseBehavior" Guid="726e4974-de93-48f8-962c-4ef6f72db797">
     <Parameter Name="Class" Value="Game.ComponentNewChaseBehavior" Type="string" Guid="2f9f306e-fcf0-4eb3-94cb-e5b0f4cd9d3f"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="6ec39853-257f-474b-87d7-a54ce422a9da"/>
@@ -6913,7 +6890,7 @@
     <Parameter Name="ChaseWhenAttackedProbability" Value="0.8" Type="float" Guid="6351f732-558f-429b-bee4-0aa515af1710"/>
     <Parameter Name="ChaseOnTouchProbability" Value="0.5" Type="float" Guid="6a0842a3-cb0f-46de-846c-8011f08810fd"/>
     <Parameter Name="AutoChaseMask" Value="LandPredator" Type="string" Guid="e9580cc2-1a6f-41ae-99d5-55b7b6f5ff3f"/>
-    <Parameter Name="AttackMode" Value="Default,Ranged" Type="string" Guid="34fe5fc9-85fd-46bb-8dc5-3a69eaeb8b43"/>
+    <Parameter Name="AttackMode" Value="Default" Type="string" Guid="34fe5fc9-85fd-46bb-8dc5-3a69eaeb8b43"/>
     <Parameter Name="AttackRange" Value="5,20" Type="Vector2" Guid="d6a88038-17bb-4aaf-ac6f-9462074ebeee"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="a47c3576-6732-472b-8be4-2955a92f0030" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
