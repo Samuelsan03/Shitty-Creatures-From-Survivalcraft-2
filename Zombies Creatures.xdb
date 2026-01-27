@@ -1470,7 +1470,7 @@
         </EntityTemplate>
 
         <EntityTemplate Name="InfectedMuscleTamed1" Guid="030aa759-c8dd-4a46-bafa-1cc330478a4d" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-        <MemberComponentTemplate Name="CreatureInventory" Guid="68ea907c-4010-4136-bfd3-771c8c0aa0df" InheritanceParent="81a44c6a-c30a-4f53-8d64-0c30aabab8f9">
+        <MemberComponentTemplate Name="CreatureInventory" Guid="c76316ec-9046-44ca-8f26-b40a73053306" InheritanceParent="81a44c6a-c30a-4f53-8d64-0c30aabab8f9">
   <Parameter Name="Class" Value="Game.ComponentCreatureInventory" Type="string"/>
   <Parameter Name="SlotsCount" Value="16" Type="int"/>
   <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
@@ -2043,6 +2043,7 @@
             <MemberComponentTemplate Name="Loot" Guid="b9d0c17e-247d-459b-a8df-25e72cb5b435">
                 <ParameterSet Name="Loot" Guid="f758b868-6f8b-4e40-8dc7-464b311974a9">
                     <Parameter Name="1" Guid="62218951-215a-4c4a-8129-d41843817161" Value="RottenMeatBlock;5;10;0.5" Type="string"/>
+                    <Parameter Name="2" Guid="11b6cfdb-0e86-43a2-ad9e-b6f68d0985be" Value="ToxinBlock;3;5;0.55" Type="string"/>
                 </ParameterSet>
                 <ParameterSet Name="LootOnFire" Guid="e1cbe6ac-2ed1-4596-b8a2-154db17d8216"/>
             </MemberComponentTemplate>
@@ -2194,11 +2195,12 @@
                 <Parameter Name="WalkSpeed" Guid="9f7ef9b8-8517-4aec-8df5-93118541ff22" Value="4.2" Type="float"/>
                 <Parameter Name="LadderSpeed" Guid="eb599883-f67a-4d50-8147-801d8429d13e" Value="0" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="Loot" Guid="b252301e-3836-4fbd-a424-45734939cf44">
-                <ParameterSet Name="Loot" Guid="823ad612-3142-4bce-be06-8476058fd359">
-                    <Parameter Name="1" Guid="f2781d29-bd4c-4cb1-92ad-61bd357e40c5" Value="RottenMeatBlock;5;10;0.5" Type="string"/>
+            <MemberComponentTemplate Name="Loot" Guid="ecb81517-f925-4e0f-8db2-3c79a55db274">
+                <ParameterSet Name="Loot" Guid="2cec5217-94ca-49dc-a98b-771d3db131d2">
+                    <Parameter Name="1" Guid="f818cdcb-c96f-4e7c-85f2-7314da0e5fcc" Value="RottenMeatBlock;5;10;0.5" Type="string"/>
+                    <Parameter Name="2" Guid="414ab75e-ae80-47a0-abab-bf1d0b67aea3" Value="ToxinBlock;3;5;0.55" Type="string"/>
                 </ParameterSet>
-                <ParameterSet Name="LootOnFire" Guid="f1d5e94a-9d03-46d1-a2b2-b2c1e8b75ca1"/>
+                <ParameterSet Name="LootOnFire" Guid="94d25c9c-2cf9-43d7-8a22-f4d3aa4870ac"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Body" Guid="8e3d2475-dd1c-4c02-9ba2-4bec8d4ca235">
                 <Parameter Name="Mass" Guid="cc251517-7521-4b98-9045-aed0fb231c54" Value="60" Type="float"/>
@@ -2375,11 +2377,12 @@
                 <Parameter Name="WalkSpeed" Guid="0c6a34de-b2a8-4dd7-bbb6-9b1fdf624d80" Value="4.2" Type="float"/>
                 <Parameter Name="LadderSpeed" Guid="47e1ea3e-7242-42e4-96d0-a857fe58e5ec" Value="0" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="Loot" Guid="80d1f0ac-80fc-4bfd-baba-00e1748d5f95">
-                <ParameterSet Name="Loot" Guid="104b2cdc-02ec-47da-a12b-d1cc9884d1c5">
-                    <Parameter Name="1" Guid="c8e06b12-4a86-45d3-a5d1-e18aae42bf1d" Value="RottenMeatBlock;5;10;0.5" Type="string"/>
+            <MemberComponentTemplate Name="Loot" Guid="918ab4d7-26bf-4c05-9093-e50bd46b9dbf">
+                <ParameterSet Name="Loot" Guid="48a6ab40-48f1-40f7-9d30-efd0bfe991c4">
+                    <Parameter Name="1" Guid="ac2431f1-4e96-41ae-991c-a2ffddcb7a4a" Value="RottenMeatBlock;5;10;0.5" Type="string"/>
+                    <Parameter Name="2" Guid="0aeca51d-9b9d-42ee-97d6-9dce2040101e" Value="ToxinBlock;3;5;0.55" Type="string"/>
                 </ParameterSet>
-                <ParameterSet Name="LootOnFire" Guid="a71bd337-dfb3-46d8-8a05-646509b35999"/>
+                <ParameterSet Name="LootOnFire" Guid="39201e16-77f3-41d8-ad67-a129c22dec44"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Body" Guid="f38c45f7-d249-4afd-8b46-4bbde4fc903f">
                 <Parameter Name="Mass" Guid="66b7b60f-b513-410b-a20c-cdcfb8ff1f8a" Value="60" Type="float"/>
@@ -2529,11 +2532,12 @@
                 <Parameter Name="WalkSpeed" Guid="09738256-a92b-43c3-8afb-57ff9fe1b852" Value="4.2" Type="float"/>
                 <Parameter Name="LadderSpeed" Guid="711536f1-295a-43b2-b98b-2ad413a22af5" Value="0" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="Loot" Guid="588cb481-f6c9-4134-abc5-9c73d61f7c3b">
-                <ParameterSet Name="Loot" Guid="61f20e30-e0b6-40ac-9b36-3e69f617f8f9">
-                    <Parameter Name="1" Guid="bc832c23-d1d1-4d39-8b6b-20b32c3b7087" Value="RottenMeatBlock;5;10;0.5" Type="string"/>
+            <MemberComponentTemplate Name="Loot" Guid="5163ef0b-15da-491a-bd62-e6f20627d042">
+                <ParameterSet Name="Loot" Guid="5f86d316-642e-4567-a582-af2324f5241a">
+                    <Parameter Name="1" Guid="364d00fd-a1d1-451d-93ef-aeb5a669a1b7" Value="RottenMeatBlock;5;10;0.5" Type="string"/>
+                    <Parameter Name="2" Guid="c34087ab-e24b-47f8-a6a8-18d44b9dfbe5" Value="ToxinBlock;3;5;0.55" Type="string"/>
                 </ParameterSet>
-                <ParameterSet Name="LootOnFire" Guid="905c68ba-a5b4-4750-8f4b-5f2172d86277"/>
+                <ParameterSet Name="LootOnFire" Guid="32a8721a-559a-476d-8f99-b97a764eeab5"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Body" Guid="74c65cce-3eb2-4c7f-8130-bca152bca241">
                 <Parameter Name="Mass" Guid="a88ee8c7-756e-4048-bcb3-525e8df31fd8" Value="60" Type="float"/>
@@ -2633,14 +2637,26 @@
             </MemberComponentTemplate>
         </EntityTemplate>
 
-        <EntityTemplate Name="InfectedFly1" Guid="fb860ae9-04c2-4c12-a721-3fe7157db639" InheritanceParent="0cb14482-b936-410e-9317-66d385d7d2fd">
-    <MemberComponentTemplate Name="BirdModel" Guid="51a29d8d-894b-456b-86ad-50dabf97600b">
-        <Parameter Name="ModelScale" Guid="58f6eb54-89f7-42f3-be05-f7fa16c55f2a" Value="3.5" Type="float"/>
-        <Parameter Name="FlyAnimationSpeed" Guid="c0e23deb-a1ba-4773-b25a-4f8410d7c349" Value="3" Type="float"/>
-        <Parameter Name="TextureOverride" Guid="3a49b799-d4fd-40f7-9627-152f29ba0663" Value="Textures/ZombiesDeMierda/ZombieFly1" Type="string"/>
-        <Parameter Name="WalkAnimationSpeed" Guid="1007493a-f600-4d7a-bd42-aac1a0eeb207" Value="1.5" Type="float"/>
-        <Parameter Name="ModelName" Guid="42cc0c58-bee5-418b-9797-ec8757c4335e" Value="Models/Zombies Modelos De Cagada/ZombieFly" Type="string"/>
-    </MemberComponentTemplate>
+        <EntityTemplate Name="InfectedFly1" Guid="fb860ae9-04c2-4c12-a721-3fe7157db639" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="NewBirdModel" Guid="44370c06-d877-4f6e-b59d-7804564fc1c2" InheritanceParent="0cf15b57-00ff-422e-bb97-9dab5354d83b">
+    <Parameter Name="BoundingSphereRadius" Guid="73ec84d0-1661-4911-98db-f44d2f935da3" Value="1" Type="float"/>
+    <Parameter Name="Class" Guid="8ee71e25-35db-4c38-b612-955d09d3cd4e" Value="Game.ComponentNewBirdModel" Type="string"/>
+    <Parameter Name="WalkAnimationSpeed" Guid="e847e457-bed4-447e-b758-ef45ff2f4e8e" Value="1.2" Type="float"/>
+    <Parameter Name="PeckAnimationSpeed" Guid="2455cb97-3009-40c4-896e-160ac0e632f8" Value="2.5" Type="float"/>
+    <Parameter Name="WalkBobHeight" Guid="9ba1f587-8ac9-4fff-9fd4-c2cc550ebb00" Value="0.05" Type="float"/>
+    <Parameter Name="WingFlapIntensity" Guid="8ad44222-d13a-4fbb-9e36-1283ea6d91d5" Value="0.8" Type="float"/>
+    <Parameter Name="GlideSmoothness" Guid="a24bb2ed-45b6-4d2a-8c3d-b3ac8d2815f4" Value="0.5" Type="float"/>
+    <Parameter Name="WingMovementVariation" Guid="83ff365b-326b-439e-ba67-33360b6b399b" Value="0.3" Type="float"/>
+    <Parameter Name="LegMovementNaturalness" Guid="f291e106-2a73-4b88-a957-645ce3156a26" Value="0.6" Type="float"/>
+    <Parameter Name="SmoothTransitionSpeed" Guid="44dbd91e-e826-4199-94a4-6c8ebf7a9ba7" Value="2.0" Type="float"/>
+    <Parameter Name="HeadFollowSpeed" Guid="d887a10e-74e3-422c-a69d-400e2d68b5b1" Value="0.7" Type="float"/>
+    <Parameter Name="FlapAcceleration" Guid="47fcbe79-ccb5-43f5-8f9b-d23b71eb026e" Value="1.0" Type="float"/>
+    <Parameter Name="RestPhase" Guid="0a0f1bc3-8c6f-4ca0-b053-d7bff55e7bdd" Value="0.85" Type="float"/>
+    <Parameter Name="ModelScale" Guid="3540ac23-5d50-4ecf-96fa-485c9e95ee47" Value="3.5" Type="float"/>
+    <Parameter Name="FlyAnimationSpeed" Guid="99239677-f557-4060-9c47-a2c238cc7127" Value="1.0" Type="float"/>
+    <Parameter Name="TextureOverride" Guid="c86139af-5139-4cc1-8fb9-7e0c0238f738" Value="Textures/ZombiesDeMierda/ZombieFly1" Type="string"/>
+    <Parameter Name="ModelName" Guid="b3d80bb6-3905-440b-95d8-ed0bdeb9d30f" Value="Models/Zombies Modelos De Cagada/ZombieFly" Type="string"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="Miner" Guid="c2bac00a-5e64-47f4-b8d6-5d8db65f2383" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="c6a4f226-4d7a-4987-8237-161b3084726d" Value="3" Type="float"/>
             </MemberComponentTemplate>
@@ -2936,12 +2952,13 @@
         <Parameter Name="FireResilience" Guid="5b970c04-3709-4627-b596-692e2de2761f" Value="10" Type="float"/>
         <Parameter Name="AttackResilience" Guid="f793582b-69c5-4ed0-a0a8-7c693b155604" Value="25" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="Loot" Guid="155fabe6-facb-46fc-b02a-d54ee4461491">
-        <ParameterSet Name="Loot" Guid="1fe45922-e48f-4827-9e9a-8028db07fc56">
-            <Parameter Name="1" Guid="944293b5-1d4d-404f-97bb-7305102e2d85" Value="RottenMeatBlock;5;10;0.5" Type="string"/>
-        </ParameterSet>
-        <ParameterSet Name="LootOnFire" Guid="06aa9612-afff-4f28-ae6d-1878d5f75766"/>
-    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Loot" Guid="6b0c5097-de9a-4024-9493-cd7d6f2c7f15">
+                <ParameterSet Name="Loot" Guid="04ccfabd-1a58-45ff-8433-1a83a844eebb">
+                    <Parameter Name="1" Guid="52f0af5d-b223-4df6-b272-d04b58cc65f5" Value="RottenMeatBlock;5;10;0.5" Type="string"/>
+                    <Parameter Name="2" Guid="4891b18f-a007-4ed9-812a-5ac0b22a3066" Value="ToxinBlock;3;5;0.55" Type="string"/>
+                </ParameterSet>
+                <ParameterSet Name="LootOnFire" Guid="90eef8a8-7012-41d4-b5da-99146c60e664"/>
+            </MemberComponentTemplate>
     <MemberComponentTemplate Name="CreatureSounds" Guid="afb259b5-df65-47f8-a49b-77e245016464">
         <Parameter Name="PainSound" Guid="81fdb936-557c-4b49-acdc-0add091ab638" Value="Audio/Creatures/Zombie 1/Pain" Type="string"/>
         <Parameter Name="IdleSound" Guid="e7bc9448-132e-451c-b350-0b2213740da1" Value="Audio/Creatures/Zombie 1/Idie" Type="string"/>
@@ -3067,12 +3084,13 @@
         <Parameter Name="FireResilience" Guid="bc4987e8-21b3-4891-93fd-d93b0e9a31f6" Value="10" Type="float"/>
         <Parameter Name="AttackResilience" Guid="4c2566be-1f6e-436c-b180-ae69cf132919" Value="25" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="Loot" Guid="fd7cd9e3-695d-4b09-85fa-0c9e86cdd7f6">
-        <ParameterSet Name="Loot" Guid="1fd39577-efb0-4a50-bcdd-c9df4360c38d">
-            <Parameter Name="1" Guid="8da7a3d8-c276-47bb-bd55-39bf46de2fe4" Value="RottenMeatBlock;5;10;0.5" Type="string"/>
-        </ParameterSet>
-        <ParameterSet Name="LootOnFire" Guid="caf9d024-4a4c-4456-a7a5-4be84bfdd3ec"/>
-    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Loot" Guid="423825d7-b77b-4b25-9de1-7151ad61170d">
+                <ParameterSet Name="Loot" Guid="a76921c8-75ea-446c-86d7-30aeeac26cf6">
+                    <Parameter Name="1" Guid="cd3500af-faf7-46ab-8ddc-ca9768249127" Value="RottenMeatBlock;5;10;0.5" Type="string"/>
+                    <Parameter Name="2" Guid="6ffe9e0a-fbe4-4b22-b60e-8c2a4b355849" Value="ToxinBlock;3;5;0.55" Type="string"/>
+                </ParameterSet>
+                <ParameterSet Name="LootOnFire" Guid="c269de82-9398-4515-b906-d0180b43cca3"/>
+            </MemberComponentTemplate>
     <MemberComponentTemplate Name="CreatureSounds" Guid="9235ec07-f143-4645-a012-f6d23d456dc5">
         <Parameter Name="PainSound" Guid="561203c8-10ba-496f-8ad9-bc15d3aba4f8" Value="Audio/Creatures/Zombie 1/Pain" Type="string"/>
         <Parameter Name="IdleSound" Guid="b7da3cfb-b2c3-4a83-8cb0-70f21373a094" Value="Audio/Creatures/Zombie 1/Idie" Type="string"/>
@@ -3566,12 +3584,13 @@
         <Parameter Name="FireResilience" Guid="3944e5a3-7752-4dec-82fb-bed5405bda88" Value="infinity" Type="float"/>
         <Parameter Name="AttackResilience" Guid="ccdce235-4854-401c-b934-d9741d725375" Value="999" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="Loot" Guid="c2e7958a-3f75-4687-aa18-52a167af8bb8">
-        <ParameterSet Name="Loot" Guid="190bcf16-6fbd-4a45-b4a7-d94803f91c23">
-            <Parameter Name="1" Guid="f18983cf-8bbc-4770-a770-de44f11884d1" Value="RottenMeatBlock;5;10;0.5" Type="string"/>
-        </ParameterSet>
-        <ParameterSet Name="LootOnFire" Guid="10ed6c78-733f-40f1-ac7a-916a2bf1b310"/>
-    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Loot" Guid="751ed92d-f268-474a-8dc2-295b1f648dc2">
+                <ParameterSet Name="Loot" Guid="8e990f88-5ac3-4a43-bff4-13cff9e5b010">
+                    <Parameter Name="1" Guid="bba4e9df-2d5c-417b-8103-d1ea4c9124fd" Value="RottenMeatBlock;5;10;0.5" Type="string"/>
+                    <Parameter Name="2" Guid="f8487ad8-9215-446c-9bdd-dfda654ae904" Value="ToxinBlock;3;5;0.55" Type="string"/>
+                </ParameterSet>
+                <ParameterSet Name="LootOnFire" Guid="7b8f2237-8111-451e-b3d2-09eb14865d45"/>
+            </MemberComponentTemplate>
     <MemberComponentTemplate Name="CreatureSounds" Guid="11b98bb5-8cac-4544-8c98-5bb94c1f05c0">
         <Parameter Name="PainSound" Guid="205db474-8504-4d44-a14f-76747b567ad2" Value="Audio/Creatures/Zombie 1/Pain" Type="string"/>
         <Parameter Name="IdleSound" Guid="e718d64d-0482-4200-966a-edb4c9422907" Value="Audio/Creatures/Zombie 1/Idie" Type="string"/>
@@ -4316,11 +4335,12 @@
                 <Parameter Name="WalkSpeed" Guid="7f9f2fbd-c18b-4700-8701-9b4d070c92ae" Value="3.0" Type="float"/>
                 <Parameter Name="LadderSpeed" Guid="ff54f5cf-8ec1-4ba5-83b7-34dfd415d31a" Value="3.0" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="Loot" Guid="85011fc1-e6d2-4d86-8d50-70e7552ae54f">
-                <ParameterSet Name="Loot" Guid="4f7b490a-3bec-44d1-adf9-4fbdfdab217b">
-                    <Parameter Name="1" Guid="da21efd0-97be-40ea-bdc1-468947c2ad99" Value="RottenMeatBlock;5;10;0.5" Type="string"/>
+            <MemberComponentTemplate Name="Loot" Guid="5dc8e0c5-60b3-4b68-b816-be39365c6fdf">
+                <ParameterSet Name="Loot" Guid="98aba4e0-c78d-4a82-8b19-caac60125323">
+                    <Parameter Name="1" Guid="8e415339-9b40-435e-98d8-d2190051717f" Value="RottenMeatBlock;5;10;0.5" Type="string"/>
+                    <Parameter Name="2" Guid="195cf66c-73b5-4d55-bc5b-600c6e8bd245" Value="ToxinBlock;3;5;0.55" Type="string"/>
                 </ParameterSet>
-                <ParameterSet Name="LootOnFire" Guid="394cc224-e77b-409a-9204-01a660bcdade"/>
+                <ParameterSet Name="LootOnFire" Guid="d701df72-9239-4ef3-a6fe-06d8d8727d70"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Body" Guid="1debcf00-f882-4f6a-92a0-006cfedb2140">
                 <Parameter Name="Mass" Guid="f1f48f26-7edc-4d8f-8b2e-a63cc7d49659" Value="999" Type="float"/>
@@ -4488,11 +4508,12 @@
                 <Parameter Name="WalkSpeed" Guid="8d6df480-ff70-4f67-adff-3d1eb92630d3" Value="3.0" Type="float"/>
                 <Parameter Name="LadderSpeed" Guid="97295683-7ab1-44f0-8aa1-75482e0be4eb" Value="3.0" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="Loot" Guid="08c0438e-5ecd-4516-9156-3d314e6fda9a">
-                <ParameterSet Name="Loot" Guid="9b725ddd-b701-460d-aea4-8181ff9b0e0b">
-                    <Parameter Name="1" Guid="a626e4a6-0aa7-402e-aaf5-e142f23ab31c" Value="RottenMeatBlock;5;10;0.5" Type="string"/>
+            <MemberComponentTemplate Name="Loot" Guid="517e671f-bbd4-44c2-80fb-9e6e43917e76">
+                <ParameterSet Name="Loot" Guid="78e2c4ac-841b-4559-ac95-acc57a12df39">
+                    <Parameter Name="1" Guid="73dbe764-eec9-42ab-bfb5-83a83f932860" Value="RottenMeatBlock;5;10;0.5" Type="string"/>
+                    <Parameter Name="2" Guid="142bae72-a63a-42df-82bd-eaf533533478" Value="ToxinBlock;3;5;0.55" Type="string"/>
                 </ParameterSet>
-                <ParameterSet Name="LootOnFire" Guid="4aa3b8bd-0070-4fe2-8498-37270f172341"/>
+                <ParameterSet Name="LootOnFire" Guid="ec68d7f8-d1fb-42a2-a8c9-6ee72d8039c0"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Body" Guid="22f636d5-1077-4cff-92ff-040f20d06de3">
                 <Parameter Name="Mass" Guid="f7f80bff-5f03-4051-99c3-b5319190590f" Value="999" Type="float"/>
@@ -5868,11 +5889,12 @@
     <Parameter Name="WalkSpeed" Guid="3e89be04-9a2b-4816-9b50-769c979feada" Value="3.5" Type="float"/> <!-- más lento que el Charger, pero constante -->
     <Parameter Name="LadderSpeed" Guid="7f4a27c6-6fd5-464a-8e27-aa382768cfc0" Value="4.0" Type="float"/> <!-- trepa con fuerza, aunque no rápido -->
 </MemberComponentTemplate>
-            <MemberComponentTemplate Name="Loot" Guid="10af44c2-2046-405e-a1ba-174a6e58772d">
-                <ParameterSet Name="Loot" Guid="7cafd95e-46a9-4906-a402-6c5acc8ea85a">
-                    <Parameter Name="1" Guid="b5e34d93-46ef-45b6-9636-d8073c85f066" Value="RottenMeatBlock;5;10;0.5" Type="string"/>
+            <MemberComponentTemplate Name="Loot" Guid="ff3cd7c7-2599-4607-a578-c723989ef41f">
+                <ParameterSet Name="Loot" Guid="98dc582a-77c6-47ea-a095-0d5ddb2f5eda">
+                    <Parameter Name="1" Guid="88fe23ce-c624-4087-8f00-2e8facca1d5c" Value="RottenMeatBlock;5;10;0.5" Type="string"/>
+                    <Parameter Name="2" Guid="7facfecc-bccf-462f-9f80-cdce5143e7c7" Value="ToxinBlock;3;5;0.55" Type="string"/>
                 </ParameterSet>
-                <ParameterSet Name="LootOnFire" Guid="e13ae4fc-c086-49e0-8b7d-2acb2cf2bed2"/>
+                <ParameterSet Name="LootOnFire" Guid="457d6283-f124-4225-8141-b678f29f5258"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Body" Guid="7848f052-46fb-4e8f-a264-36d07920bc8d">
                 <Parameter Name="Mass" Guid="cb14b003-9770-4062-a737-2265bded0f64" Value="999999999999" Type="float"/>
@@ -6047,11 +6069,12 @@
     <Parameter Name="WalkSpeed" Guid="7e4a1e2c-53e6-4f3e-a04d-49fef550f76a" Value="3.5" Type="float"/> <!-- más lento que el Charger, pero constante -->
     <Parameter Name="LadderSpeed" Guid="15ac5d62-97e9-4d9a-94d6-1dc40063b270" Value="4.0" Type="float"/> <!-- trepa con fuerza, aunque no rápido -->
 </MemberComponentTemplate>
-            <MemberComponentTemplate Name="Loot" Guid="7948b68c-cf77-4be3-ae25-0e02c24244a6">
-                <ParameterSet Name="Loot" Guid="37a6a5db-9220-4e22-af22-8c0fc63405af">
-                    <Parameter Name="1" Guid="c180f385-7ef5-4dc7-acac-c25c72802262" Value="RottenMeatBlock;5;10;0.5" Type="string"/>
+            <MemberComponentTemplate Name="Loot" Guid="fabf6257-9557-4740-9c12-52d6ff58ee12">
+                <ParameterSet Name="Loot" Guid="2a6fc587-c6b3-4e65-8a55-4c386e443a21">
+                    <Parameter Name="1" Guid="1e1795e6-296c-4df4-8b9a-a8e713a72900" Value="RottenMeatBlock;5;10;0.5" Type="string"/>
+                    <Parameter Name="2" Guid="a52d51e1-49a8-4065-a186-bd13f02dbea2" Value="ToxinBlock;3;5;0.55" Type="string"/>
                 </ParameterSet>
-                <ParameterSet Name="LootOnFire" Guid="a18e84ba-f316-41ff-b0fa-030c50e9d3e1"/>
+                <ParameterSet Name="LootOnFire" Guid="eb2f49fb-4160-4f08-9154-4dba9a80cc00"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Body" Guid="74c89984-9eee-4704-8cc8-2430ebb23cc7">
                 <Parameter Name="Mass" Guid="0572a91e-4db3-4883-8249-c176a869ffd6" Value="999999999999" Type="float"/>
@@ -6922,11 +6945,12 @@
                 <Parameter Name="WalkSpeed" Guid="ed3d1c1c-ad13-4371-815b-714fe400a75a" Value="4.5" Type="float"/>
                 <Parameter Name="LadderSpeed" Guid="3aa687fd-905e-4b69-9562-258b7886375f" Value="0" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="Loot" Guid="b1e1f476-14dd-41d4-9b21-034fc138a2cc">
-                <ParameterSet Name="Loot" Guid="a6508b92-7376-452f-9ff7-e75a3770a57e">
-                    <Parameter Name="1" Guid="d38c1454-fb93-417c-b6ca-582ed6b0f966" Value="RottenMeatBlock;5;10;0.5" Type="string"/>
+            <MemberComponentTemplate Name="Loot" Guid="7f489a65-c648-4ec9-8523-e0f6509ccd3a">
+                <ParameterSet Name="Loot" Guid="dea2ee54-6a75-4304-bf26-a806a97077c1">
+                    <Parameter Name="1" Guid="5782e9b9-e90c-4eb9-a32c-2ac10465bd33" Value="RottenMeatBlock;5;10;0.5" Type="string"/>
+                    <Parameter Name="2" Guid="8c5c4850-9e22-452b-8712-3c2f71425195" Value="ToxinBlock;3;5;0.55" Type="string"/>
                 </ParameterSet>
-                <ParameterSet Name="LootOnFire" Guid="ac4a9685-f807-47b2-b826-f8d7cc629011"/>
+                <ParameterSet Name="LootOnFire" Guid="cf41db80-e508-44dd-98fd-984e362114b8"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Body" Guid="d4614bc6-5359-468e-a294-9bee578993a9">
                 <Parameter Name="Mass" Guid="8ba683fc-8ffa-4052-82b5-58fccb7ef80a" Value="60" Type="float"/>
@@ -7118,11 +7142,12 @@
                 <Parameter Name="WalkSpeed" Guid="1bc92574-c42f-4424-9c9c-d1752b3a5f69" Value="4.5" Type="float"/>
                 <Parameter Name="LadderSpeed" Guid="a8951334-5e36-46c2-a8a2-ab267fce69d2" Value="0" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="Loot" Guid="fcf8b0d4-e104-4e9d-b8d4-aa20cc43322d">
-                <ParameterSet Name="Loot" Guid="aace3cd4-9333-46d3-b2a2-ebfa31f8ee58">
-                    <Parameter Name="1" Guid="d6afb197-ba89-482e-85eb-1537d8a9c67a" Value="RottenMeatBlock;5;10;0.5" Type="string"/>
+            <MemberComponentTemplate Name="Loot" Guid="7a3c175a-9b8e-482f-bd5a-f1800dc6aa6d">
+                <ParameterSet Name="Loot" Guid="362f18f3-e83a-42f6-9fcf-9704c4709904">
+                    <Parameter Name="1" Guid="914a6477-2893-4d87-8d69-563b18499b7c" Value="RottenMeatBlock;5;10;0.5" Type="string"/>
+                    <Parameter Name="2" Guid="7879dd67-366c-4c3b-8154-6c6a40b5db4a" Value="ToxinBlock;3;5;0.55" Type="string"/>
                 </ParameterSet>
-                <ParameterSet Name="LootOnFire" Guid="d0720e7d-691c-4f7d-a131-6d5164ffcdab"/>
+                <ParameterSet Name="LootOnFire" Guid="dcb95164-26d8-4f46-9cf3-c91868a44080"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Body" Guid="3ddf7b12-f42a-4299-a751-43526ca6f86e">
                 <Parameter Name="Mass" Guid="0ed376ae-347b-4688-959a-630941cf2b44" Value="60" Type="float"/>
@@ -9332,11 +9357,12 @@
     <Parameter Name="WalkSpeed" Guid="670585db-9774-409d-8076-84625e7329dd" Value="3.5" Type="float"/> <!-- más lento que el Charger, pero constante -->
     <Parameter Name="LadderSpeed" Guid="818bee0a-a64e-411e-8591-9430b258bbf2" Value="4.0" Type="float"/> <!-- trepa con fuerza, aunque no rápido -->
 </MemberComponentTemplate>
-            <MemberComponentTemplate Name="Loot" Guid="055d1c93-5100-434c-bfe0-a05ba1011e13">
-                <ParameterSet Name="Loot" Guid="22821ce3-4c98-4b86-bc01-39d9a6e051ce">
-                    <Parameter Name="1" Guid="098b1405-a1ec-416a-bf92-3f71b5fc84a8" Value="RottenMeatBlock;5;10;0.5" Type="string"/>
+            <MemberComponentTemplate Name="Loot" Guid="d29cb74f-8e65-464f-98e7-8b48ddcd34ed">
+                <ParameterSet Name="Loot" Guid="0c527bf0-376e-4fd5-b322-670b64f9aaf0">
+                    <Parameter Name="1" Guid="455789f6-a1d9-44da-8b56-dd4e8d76f650" Value="RottenMeatBlock;5;10;0.5" Type="string"/>
+                    <Parameter Name="2" Guid="ee333e75-0eed-4a01-b6d9-2aef1ece8c17" Value="ToxinBlock;3;5;0.55" Type="string"/>
                 </ParameterSet>
-                <ParameterSet Name="LootOnFire" Guid="0cb0d556-b7ac-4a67-b843-80635834185c"/>
+                <ParameterSet Name="LootOnFire" Guid="65f1e7b9-61e9-4f10-bccb-479197ee8104"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Body" Guid="0fc15803-3893-4dfc-97f0-dbc45755b9b4">
                 <Parameter Name="Mass" Guid="01e28988-7a9a-402c-9de5-54145b74c6c4" Value="999999999999" Type="float"/>
@@ -9512,11 +9538,12 @@
     <Parameter Name="WalkSpeed" Guid="ee5beb53-940e-46d9-af93-84d86461cd17" Value="3.5" Type="float"/> <!-- más lento que el Charger, pero constante -->
     <Parameter Name="LadderSpeed" Guid="5ceb123b-0ae3-4971-b8a0-297c8a5a92f3" Value="4.0" Type="float"/> <!-- trepa con fuerza, aunque no rápido -->
 </MemberComponentTemplate>
-            <MemberComponentTemplate Name="Loot" Guid="956a4609-4c5e-4412-8032-48ef674b08d6">
-                <ParameterSet Name="Loot" Guid="8c351b9b-965f-42ce-bbe6-cc0d8c0a899a">
-                    <Parameter Name="1" Guid="d77f9898-e996-4ee3-a6de-8fe9a1e6bbc0" Value="RottenMeatBlock;5;10;0.5" Type="string"/>
+            <MemberComponentTemplate Name="Loot" Guid="fe5959c8-7227-4b25-bea4-9e35c834b4cd">
+                <ParameterSet Name="Loot" Guid="43c1f177-8d2e-49a1-ad78-e39755512231">
+                    <Parameter Name="1" Guid="d769e007-487c-418e-9ad5-f49a3227756b" Value="RottenMeatBlock;5;10;0.5" Type="string"/>
+                    <Parameter Name="2" Guid="e8393838-7a49-438b-bf5a-fe8a52f75735" Value="ToxinBlock;3;5;0.55" Type="string"/>
                 </ParameterSet>
-                <ParameterSet Name="LootOnFire" Guid="fffd459d-b01e-4f6a-976f-39fb261e772d"/>
+                <ParameterSet Name="LootOnFire" Guid="ee62cf38-8aba-454c-a7e0-eabef6197cbb"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Body" Guid="0f7f0510-60a9-4fb9-a3b4-2ffd25f6a6b5">
                 <Parameter Name="Mass" Guid="28e7655f-424d-432e-a401-8fac18f2e017" Value="999999999999" Type="float"/>
