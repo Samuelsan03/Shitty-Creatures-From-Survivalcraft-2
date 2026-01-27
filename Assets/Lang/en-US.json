@@ -1,4 +1,12 @@
 {
+  "LargeFirstAidKit": {
+    "PlayerHealed": "You have completely restored your health!",
+    "NPCHealedFormat": "The health of {0} has been completely restored!"
+  },
+  "MediumFirstAidKit": {
+    "PlayerHealed": "¡You have partially restored your health!",
+    "NPCHealedFormat": "The health of {0} has been partially restored!"
+  },
   "EditTemperatureDialog": {
   "Settings": "Air Conditioner - Settings",
   "Ok": "OK",
@@ -37,6 +45,10 @@
   },
   "Database": {
     "DisplayName": {
+      "Bandit11": "Bandido 11",
+      "Bandit10": "Bandido 10",
+      "Bandit9": "Bandido 9",
+      "Bandit8": "Bandido 8",
       "Bandit7": "Bandit 7",
       "Bandit6": "Bandit 6",
       "Bandit5": "Bandit 5",
@@ -232,6 +244,14 @@
   }
 },
   "Blocks": {
+    "MediumFirstAidKitBlock:0": {
+    "DisplayName": "Medium First Aid Kit",
+    "Description": "A medical kit designed to treat injuries by restoring a significant portion of health. Heals the target up to about half of their maximum health. Can be used on yourself or on other nearby creatures."
+  },
+  "LargeFirstAidKitBlock:0": {
+    "DisplayName": "Large First Aid Kit",
+    "Description": "A powerful medical kit capable of fully restoring health. Instantly heals the target to maximum health. Can be used on yourself or on other nearby creatures."
+  },
     "AntidoteBucketBlock:0": {
   "DisplayName": "Antidote Bucket",
   "Description": "A bucket containing a powerful medicinal antidote. It removes poison and disease effects from the body, stopping their harmful consequences and allowing immediate recovery. When a condition is cured, lost health is also restored. It can be used on yourself or on other infected creatures."
@@ -662,6 +682,10 @@
     }
 },
       "ContentWidgets": {
+    "CreatureInventoryWidget": {
+      "CreatureInventoryLabel": "Inventory of {0}",
+      "InventoryLabel": "Inventory"
+    },
     "FlameThrowerWidget": {
       "Title": "Flamethrower",
       "Inventory": "Inventory",
