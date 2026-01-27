@@ -1,5 +1,22 @@
 <ShittyCreatures xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://gitee.com/THPRC/survivalcraft-api/raw/SCAPI1.8/Survivalcraft/Content/Assets/Database.xsd">
 <Folder Name="Gameplay" Guid="d509e5e2-2c10-49f1-8223-85cd892c63b0">
+<ComponentTemplate Name="NewBirdModel" Description="Comportamiento y animación del modelo de pájaro mejorado con movimientos fluidos y naturales" Guid="62446ba8-be14-4d30-aa58-c216bcae6811" InheritanceParent="0cf15b57-00ff-422e-bb97-9dab5354d83b">
+  <Parameter Name="BoundingSphereRadius" Guid="a8f61d12-80f6-4016-a7bf-470e730a84e3" Value="1" Type="float" Description="Radio de la esfera de colisión del modelo en metros"/>
+  <Parameter Name="Class" Guid="e9b34d23-be73-4c3e-8654-2c70a5fe0f81" Value="Game.ComponentNewBirdModel" Type="string" Description="Clase del componente de modelo para el pájaro con animaciones fluidas"/>
+  <Parameter Name="WalkAnimationSpeed" Guid="a5e25fee-9aee-4add-b363-2f509f8d3403" Value="1.2" Type="float" Description="Velocidad de animación al caminar en ciclos por metro. Controla la velocidad del movimiento de patas. Valor aumentado para caminata más natural."/>
+  <Parameter Name="FlyAnimationSpeed" Guid="b7287a6b-48a8-435d-a7c5-d6c07522aaec" Value="1.5" Type="float" Description="Velocidad base de animación de vuelo en ciclos por segundo. Controla la frecuencia del aleteo. Valor optimizado para vuelo dinámico y fluido."/>
+  <Parameter Name="PeckAnimationSpeed" Guid="8a3f1e60-8975-4563-a2dd-048dbae99fc2" Value="2.5" Type="float" Description="Velocidad de animación de picoteo en ciclos por segundo. Controla la rapidez de acciones de ataque y alimentación. Valor aumentado para respuestas más rápidas."/>
+  <Parameter Name="WalkBobHeight" Guid="58a18c84-0ab7-4727-8ddd-74a010772205" Value="0.05" Type="float" Description="Altura del balanceo al caminar en metros. Añade movimiento vertical natural durante la caminata. Valor optimizado para realismo."/>
+  <Parameter Name="WingFlapIntensity" Guid="b6adee1e-8b3a-4e15-885e-ed7d16739d7a" Value="1.0" Type="float" Description="Intensidad del aleteo de las alas (1.0 = normal). Controla la amplitud del movimiento. Valores más altos = aleteo más enérgico. Mejora la expresividad del vuelo."/>
+  <Parameter Name="GlideSmoothness" Guid="b792f041-a05b-4259-8274-2134b85ce151" Value="0.5" Type="float" Description="Suavidad del planeo (0.0 = brusco, 1.0 = suave). Controla la transición gradual al planear. Afecta directamente la fluidez visual del vuelo en descenso."/>
+  <Parameter Name="WingMovementVariation" Guid="b6004867-7564-4214-aa92-88ea70a25022" Value="0.3" Type="float" Description="Variación del movimiento de alas (0.0 = uniforme, 1.0 = variado). Añade oscilaciones secundarias para mayor naturalidad. Simula imperfecciones reales en el aleteo."/>
+  <Parameter Name="LegMovementNaturalness" Guid="cfb619c7-9e18-45d4-92e1-74a5da9b7b5b" Value="0.6" Type="float" Description="Naturalidad del movimiento de patas (0.0 = mecánico, 1.0 = orgánico). Controla la variación y ligera asimetría en el caminar para mayor realismo."/>
+  <Parameter Name="SmoothTransitionSpeed" Guid="14fef588-389c-4ced-82f4-af0778c40745" Value="4.0" Type="float" Description="Velocidad de transiciones suaves entre animaciones en unidades por segundo. Controla la rapidez de las interpolaciones. Valores más altos = transiciones más rápidas."/>
+  <Parameter Name="HeadFollowSpeed" Guid="9794c62f-245c-4d7c-9272-26fe5aaecd96" Value="0.7" Type="float" Description="Velocidad de seguimiento de cabeza (0.0 = lento, 1.0 = instantáneo). Controla qué tan rápido la cabeza sigue la dirección de mirada para mayor agilidad visual."/>
+  <Parameter Name="FlapAcceleration" Guid="5775aa3a-efef-4c27-a086-b96541363d13" Value="1.2" Type="float" Description="Aceleración del aleteo al iniciar vuelo (1.0 = normal). Mejora la respuesta inicial haciendo que el pájaro comience a aletear más rápidamente."/>
+  <Parameter Name="RestPhase" Guid="42bb4277-c0b2-4340-b51e-29493a9b2fb9" Value="0.85" Type="float" Description="Fase de reposo de las alas (0.0 = extendidas, 1.0 = plegadas). Define la posición natural de las alas cuando el pájaro no está volando."/>
+</ComponentTemplate>
+
 <ComponentTemplate Name="CreatureInventory" Description="Inventario para criaturas que pueden almacenar y usar objetos" Guid="a347220c-b5cf-4eae-9215-4ed37426eec4" InheritanceParent="81a44c6a-c30a-4f53-8d64-0c30aabab8f9">
   <Parameter Name="ActiveSlotIndex" Description="Índice del slot activo de la criatura" Guid="65e82739-c714-4418-90b0-adddb190350d" Value="0" Type="int"/>
   <Parameter Name="SlotsCount" Description="Número de slots en el inventario de la criatura" Guid="8f9e0c14-943a-49ce-96a8-24b51582dfb5" Value="16" Type="int"/>
@@ -528,10 +545,20 @@
     </Folder>
 
 <ProjectTemplate Name="Project" Guid="85023bf8-1c90-4dd1-9442-e6c13691d078">
-<MemberSubsystemTemplate Name="FireBulletBlockBehavior" Guid="7a0c5474-0a0c-4ccb-978a-64cfc721dea8">
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="8090cfe7-a36b-4dc8-a1b6-37389cb6cb7d"/>
-    <Parameter Name="LoadOrder" Value="100" Type="int" Guid="815f7cdc-de13-44d8-8fc0-5e70312111c5"/>
-    <Parameter Name="Class" Value="Game.SubsystemFireBulletBlockBehavior" Type="string" Guid="417ee477-1c28-4fb3-9181-e4c3b879a68d"/>
+<MemberSubsystemTemplate Name="LargeFirstAidKitBlockBehavior" Guid="93e5a438-1a89-40f3-9df0-42691678bd4e">
+    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="c87b3b22-94b6-4790-9ab1-019a97418b6b"/>
+    <Parameter Name="LoadOrder" Value="100" Type="int" Guid="5f051ad4-7222-4baf-8f23-9a9766524c23"/>
+    <Parameter Name="Class" Value="Game.SubsystemLargeFirstAidKitBlockBehavior" Type="string" Guid="42f4dcb2-472b-4385-a222-2e8a9d3e65d6"/>
+</MemberSubsystemTemplate>
+<MemberSubsystemTemplate Name="MediumFirstAidKitBlockBehavior" Guid="e2d5bffb-5e17-4905-bef1-663ae976111d">
+    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="4b4c88cd-1242-4fe0-963f-3b7eb20a8dca"/>
+    <Parameter Name="LoadOrder" Value="100" Type="int" Guid="149f7aff-cb91-476e-b75a-43cffd039e4f"/>
+    <Parameter Name="Class" Value="Game.SubsystemMediumFirstAidKitBlockBehavior" Type="string" Guid="ccacf9a8-0696-4347-abcf-b43eb46535f1"/>
+</MemberSubsystemTemplate>
+<MemberSubsystemTemplate Name="FireBulletBlockBehavior" Guid="60983db0-4933-45fd-8297-6071b1bc76af">
+    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="abe98a14-40e2-4fbe-aa31-7104ba634de9"/>
+    <Parameter Name="LoadOrder" Value="100" Type="int" Guid="79637918-2c40-4f58-aa89-d30a5cc9e000"/>
+    <Parameter Name="Class" Value="Game.SubsystemFireBulletBlockBehavior" Type="string" Guid="82af8d72-320a-47d9-8133-cbccffd1d941"/>
 </MemberSubsystemTemplate>
 <MemberSubsystemTemplate Name="AirConditionerBlockBehavior" Guid="2d3cb7a4-5c7b-4473-a52f-02b7a7b9e93f">
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="a888fdfb-df2d-4bf4-b569-f4832dfe6a91"/>
@@ -5388,6 +5415,11 @@
 </EntityTemplate>
 
 <EntityTemplate Name="Sparkster" Guid="f7e2a9c3-8d1b-4f5a-9b2c-6a3e7b1d4c0f" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="CreatureInventory" Guid="d6d1782d-dba1-4383-afd1-b5220375227f" InheritanceParent="81a44c6a-c30a-4f53-8d64-0c30aabab8f9">
+  <Parameter Name="Class" Value="Game.ComponentCreatureInventory" Type="string"/>
+  <Parameter Name="SlotsCount" Value="16" Type="int"/>
+  <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
+</MemberComponentTemplate>
 <MemberComponentTemplate Name="DeathSpawner" Guid="15d89127-8e67-416f-ba95-fcbdab445409">
     <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="b9e32dbd-a47d-4193-b2c4-9b8b8b7319ec"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="f5495a18-63e1-4d51-b622-6a3f8ff5f77c"/>
