@@ -1,4 +1,12 @@
 {
+  "LargeFirstAidKit": {
+    "PlayerHealed": "你已经完全恢复了健康！",
+    "NPCHealedFormat": "{0}的健康已经完全恢复！"
+  },
+  "MediumFirstAidKit": {
+    "PlayerHealed": "¡你已经部分恢复了你的健康！",
+    "NPCHealedFormat": "¡{0}的健康已部分恢复！"
+  },
   "EditTemperatureDialog": {
     "Settings": "空调 - 设置",
     "Ok": "确定",
@@ -37,6 +45,10 @@
   },
   "Database": {
     "DisplayName": {
+      "Bandit11": "强盗11",
+      "Bandit10": "强盗10",
+      "Bandit9": "强盗9",
+      "Bandit8": "强盗8",
       "Bandit7": "强盗7",
       "Bandit6": "强盗6",
       "Bandit5": "强盗5",
@@ -232,6 +244,14 @@
     }
   },
   "Blocks": {
+    "MediumFirstAidKitBlock:0": {
+    "DisplayName": "中型急救包",
+    "Description": "用于治疗伤势的医疗包，可恢复目标相当一部分生命值，大约恢复至生命值的一半。可用于自己或附近的其他生物。"
+  },
+  "LargeFirstAidKitBlock:0": {
+    "DisplayName": "大型急救包",
+    "Description": "一种强效医疗包，可将目标的生命值瞬间完全恢复至最大值。可用于自己或附近的其他生物。"
+  },
     "AntidoteBucketBlock:0": {
   "DisplayName": "解毒药桶",
   "Description": "一个装有强效药用解毒剂的桶。可清除身体中的中毒和疾病状态，阻止其有害影响，并帮助身体迅速恢复。在治愈病症的同时，还会恢复失去的生命值。可用于自身或其他受感染的生物。"
@@ -666,6 +686,10 @@
     }
   },
   "ContentWidgets": {
+    "CreatureInventoryWidget": {
+      "CreatureInventoryLabel": "{0}的库存",
+      "InventoryLabel": "库存"
+    },
     "FlameThrowerWidget": {
       "Title": "火焰喷射器",
       "Inventory": "库存",
