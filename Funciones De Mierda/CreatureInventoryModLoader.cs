@@ -25,10 +25,12 @@ namespace Game
 			int activeBlockValue = player.ComponentMiner.ActiveBlockValue;
 			int activeBlockIndex = Terrain.ExtractContents(activeBlockValue);
 			int mediumFirstAidKitIndex = BlocksManager.GetBlockIndex<MediumFirstAidKitBlock>();
+			int largeFirstAidKitIndex = BlocksManager.GetBlockIndex<LargeFirstAidKitBlock>(); // NUEVO
 			int antidoteBucketIndex = BlocksManager.GetBlockIndex<AntidoteBucketBlock>();
 
 			// Si el jugador tiene un botiquín o antidoto activo, NO procesar la interacción del inventario
 			if (activeBlockIndex == mediumFirstAidKitIndex ||
+				activeBlockIndex == largeFirstAidKitIndex || // NUEVO
 				activeBlockIndex == antidoteBucketIndex)
 			{
 				// Permitir que el item médico maneje la interacción completamente
