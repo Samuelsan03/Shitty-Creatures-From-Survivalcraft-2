@@ -2637,26 +2637,14 @@
             </MemberComponentTemplate>
         </EntityTemplate>
 
-        <EntityTemplate Name="InfectedFly1" Guid="fb860ae9-04c2-4c12-a721-3fe7157db639" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="NewBirdModel" Guid="44370c06-d877-4f6e-b59d-7804564fc1c2" InheritanceParent="0cf15b57-00ff-422e-bb97-9dab5354d83b">
-    <Parameter Name="BoundingSphereRadius" Guid="73ec84d0-1661-4911-98db-f44d2f935da3" Value="1" Type="float"/>
-    <Parameter Name="Class" Guid="8ee71e25-35db-4c38-b612-955d09d3cd4e" Value="Game.ComponentNewBirdModel" Type="string"/>
-    <Parameter Name="WalkAnimationSpeed" Guid="e847e457-bed4-447e-b758-ef45ff2f4e8e" Value="1.2" Type="float"/>
-    <Parameter Name="PeckAnimationSpeed" Guid="2455cb97-3009-40c4-896e-160ac0e632f8" Value="2.5" Type="float"/>
-    <Parameter Name="WalkBobHeight" Guid="9ba1f587-8ac9-4fff-9fd4-c2cc550ebb00" Value="0.05" Type="float"/>
-    <Parameter Name="WingFlapIntensity" Guid="8ad44222-d13a-4fbb-9e36-1283ea6d91d5" Value="0.8" Type="float"/>
-    <Parameter Name="GlideSmoothness" Guid="a24bb2ed-45b6-4d2a-8c3d-b3ac8d2815f4" Value="0.5" Type="float"/>
-    <Parameter Name="WingMovementVariation" Guid="83ff365b-326b-439e-ba67-33360b6b399b" Value="0.3" Type="float"/>
-    <Parameter Name="LegMovementNaturalness" Guid="f291e106-2a73-4b88-a957-645ce3156a26" Value="0.6" Type="float"/>
-    <Parameter Name="SmoothTransitionSpeed" Guid="44dbd91e-e826-4199-94a4-6c8ebf7a9ba7" Value="2.0" Type="float"/>
-    <Parameter Name="HeadFollowSpeed" Guid="d887a10e-74e3-422c-a69d-400e2d68b5b1" Value="0.7" Type="float"/>
-    <Parameter Name="FlapAcceleration" Guid="47fcbe79-ccb5-43f5-8f9b-d23b71eb026e" Value="1.0" Type="float"/>
-    <Parameter Name="RestPhase" Guid="0a0f1bc3-8c6f-4ca0-b053-d7bff55e7bdd" Value="0.85" Type="float"/>
-    <Parameter Name="ModelScale" Guid="3540ac23-5d50-4ecf-96fa-485c9e95ee47" Value="3.5" Type="float"/>
-    <Parameter Name="FlyAnimationSpeed" Guid="99239677-f557-4060-9c47-a2c238cc7127" Value="1.0" Type="float"/>
-    <Parameter Name="TextureOverride" Guid="c86139af-5139-4cc1-8fb9-7e0c0238f738" Value="Textures/ZombiesDeMierda/ZombieFly1" Type="string"/>
-    <Parameter Name="ModelName" Guid="b3d80bb6-3905-440b-95d8-ed0bdeb9d30f" Value="Models/Zombies Modelos De Cagada/ZombieFly" Type="string"/>
-</MemberComponentTemplate>
+        <EntityTemplate Name="InfectedFly1" Guid="fb860ae9-04c2-4c12-a721-3fe7157db639" InheritanceParent="0cb14482-b936-410e-9317-66d385d7d2fd">
+    <MemberComponentTemplate Name="BirdModel" Guid="51a29d8d-894b-456b-86ad-50dabf97600b">
+        <Parameter Name="ModelScale" Guid="58f6eb54-89f7-42f3-be05-f7fa16c55f2a" Value="3.5" Type="float"/>
+        <Parameter Name="FlyAnimationSpeed" Guid="c0e23deb-a1ba-4773-b25a-4f8410d7c349" Value="3" Type="float"/>
+        <Parameter Name="TextureOverride" Guid="3a49b799-d4fd-40f7-9627-152f29ba0663" Value="Textures/ZombiesDeMierda/ZombieFly1" Type="string"/>
+        <Parameter Name="WalkAnimationSpeed" Guid="1007493a-f600-4d7a-bd42-aac1a0eeb207" Value="1.5" Type="float"/>
+        <Parameter Name="ModelName" Guid="42cc0c58-bee5-418b-9797-ec8757c4335e" Value="Models/Zombies Modelos De Cagada/ZombieFly" Type="string"/>
+    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Miner" Guid="c2bac00a-5e64-47f4-b8d6-5d8db65f2383" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="c6a4f226-4d7a-4987-8237-161b3084726d" Value="3" Type="float"/>
             </MemberComponentTemplate>
