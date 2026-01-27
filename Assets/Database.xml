@@ -350,7 +350,7 @@
     <Parameter Name="PoisonResistance" Value="75" Type="float"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="AutoJump" Guid="1381f0b2-ac0e-4bf8-bbde-daba5f821303" InheritanceParent="ef94c9db-75b0-4e0f-9971-f575ac88661b">
-              <Parameter Name="AlwaysEnabled" Guid="972be2c3-b504-4858-b9d7-15ac5df07a07" Value="False" Type="bool"/>
+              <Parameter Name="AlwaysEnabled" Guid="972be2c3-b504-4858-b9d7-15ac5df07a07" Value="True" Type="bool"/>
               <Parameter Name="JumpStrength" Guid="f2c6063a-2eae-4de9-bb18-969c7d089aa1" Value="0.95" Type="float"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="FirstPersonModel" Guid="1448636f-e4c0-44ed-889d-1434ba9d858d" InheritanceParent="3d4a5ce2-b578-4d90-b365-ce5a3cc693f1">
