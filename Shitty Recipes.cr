@@ -234,51 +234,11 @@
             "aca"
             " b "
         </Recipe>
-        <Recipe Result="FlameBulletBlock:1" ResultCount="15" RequiredHeatLevel="0" a="flamebullet:0" b="sulphurchunk" c="rottenmeat" Description="Poisonous ammunition for the flamethrower. Infects targets on impact">
-            " b "
-            "cac"
-            " b "
-        </Recipe>
-        <Recipe Result="FlameBulletBlock:1" ResultCount="15" RequiredHeatLevel="0" a="flamebullet:0" b="sulphurchunk" c="rottenmilkbucket" Description="Poisonous ammunition for the flamethrower. Infects targets on impact">
-            " b "
-            "cac"
-            " b "
-        </Recipe>
-        <Recipe Result="FlameBulletBlock:1" ResultCount="15" RequiredHeatLevel="0" a="flamebullet:0" b="sulphurchunk" c="rottenpumpkin" Description="Poisonous ammunition for the flamethrower. Infects targets on impact">
-            " b "
-            "cac"
-            " b "
-        </Recipe>
-        <Recipe Result="FlameBulletBlock:1" ResultCount="15" RequiredHeatLevel="0" a="flamebullet:0" b="sulphurchunk" c="rottenfish" Description="Poisonous ammunition for the flamethrower. Infects targets on impact">
-            " b "
-            "cac"
-            " b "
-        </Recipe>
-        <Recipe Result="FlameBulletBlock:1" ResultCount="15" RequiredHeatLevel="0" a="flamebullet:0" b="sulphurchunk" c="rottenbird" Description="Poisonous ammunition for the flamethrower. Infects targets on impact">
-            " b "
-            "cac"
-            " b "
-        </Recipe>
-        <Recipe Result="FlameBulletBlock:1" ResultCount="15" RequiredHeatLevel="0" a="flamebullet:0" b="sulphurchunk" c="rottenegg" Description="Poisonous ammunition for the flamethrower. Infects targets on impact">
-            " b "
-            "cac"
-            " b "
-        </Recipe>
-        <Recipe Result="FlameBulletBlock:1" ResultCount="15" RequiredHeatLevel="0" a="flamebullet:0" b="sulphurchunk" c="rottenpumpkinsoupbucket" Description="Poisonous ammunition for the flamethrower. Infects targets on impact">
-            " b "
-            "cac"
-            " b "
-        </Recipe>
-        <Recipe Result="FlameBulletBlock:1" ResultCount="15" RequiredHeatLevel="0" a="flamebullet:0" b="sulphurchunk" c="rottendough" Description="Poisonous ammunition for the flamethrower. Infects targets on impact">
-            " b "
-            "cac"
-            " b "
-        </Recipe>
-        <Recipe Result="FlameBulletBlock:1" ResultCount="15" RequiredHeatLevel="0" a="flamebullet:0" b="sulphurchunk" c="rottenbread" Description="Poisonous ammunition for the flamethrower. Infects targets on impact">
-            " b "
-            "cac"
-            " b "
-        </Recipe>
+        <Recipe Result="FlameBulletBlock:1" ResultCount="15" RequiredHeatLevel="0" a="gunpowder" b="sulphurchunk" c="toxin" d="bullet" Description="Poisonous ammunition for the flamethrower. Infects targets on impact.">
+    " b "
+    "aca"
+    " d "
+</Recipe>
         <Recipe Result="TridentBlock:0" ResultCount="1" RequiredHeatLevel="0" a="ironblock" b="stick" Description="A historical weapon, a symbol of Poseidon and Neptune, that does so much damage?">
             " aa"
             " ba"
@@ -597,6 +557,16 @@
             "a a"
             "b b"
         </Recipe>
+        <Recipe Result="MediumFirstAidKitBlock" ResultCount="1" RequiredHeatLevel="0" a="canvas" b="string" c="whiteflower" Description="A basic medical kit that heals wounds up to 50% or 100% if above half health.">
+    "aba"
+    "cac"
+    "aba"
+</Recipe>
+<Recipe Result="LargeFirstAidKitBlock" ResultCount="1" RequiredHeatLevel="0" a="canvas" b="string" c="whiteflower" d="purpleflower" Description="An advanced medical kit that always heals to 100% regardless of current health.">
+    "aba"
+    "cdc"
+    "aba"
+</Recipe>
         <Smelting>
         <Recipe Result="CopperSharpHammerBlock" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="3" a="coppermachete" b="ironhammer" Description="Use the old copper machete and iron hammer and turn him like a monster">
         "ab"
