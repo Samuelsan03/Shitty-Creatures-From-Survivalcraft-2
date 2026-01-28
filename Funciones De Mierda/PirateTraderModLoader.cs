@@ -2,7 +2,6 @@ using Engine;
 using Game;
 using GameEntitySystem;
 using TemplatesDatabase;
-
 namespace Game
 {
 	public class PirateTraderModLoader : ModLoader
@@ -11,7 +10,6 @@ namespace Game
 		{
 			ModsManager.RegisterHook("OnPlayerInputInteract", this);
 		}
-
 		public override void OnPlayerInputInteract(ComponentPlayer player, ref bool playerOperated, ref double timeIntervalLastActionTime, ref int priorityUse, ref int priorityInteract, ref int priorityPlace)
 		{
 			int activeBlockValue = player.ComponentMiner.ActiveBlockValue;
@@ -36,7 +34,7 @@ namespace Game
 							var playerInventory = player.Entity.FindComponent<ComponentInventory>(true);
 							if (playerInventory != null)
 							{
-								var widget = new PirateTraderWidget(trader, playerInventory, raycast.Value.ComponentBody.Entity);
+								var widget = new PirateTraderWidget(trader, playerInventory, raycast.Value.ComponentBody.Entity, player);
 								widget.Size = new Vector2(614f, 382f);
 								widget.HorizontalAlignment = WidgetAlignment.Center;
 								widget.VerticalAlignment = WidgetAlignment.Center;
