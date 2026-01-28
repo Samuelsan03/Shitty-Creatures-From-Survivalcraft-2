@@ -127,6 +127,10 @@ namespace Game
 			if (health == null || health.Health >= 1f) // Solo cura si NO está al 100%
 				return false;
 
+			// Verificar si la entidad está muerta usando ComponentHealth.DeathTime
+			if (health.DeathTime.HasValue)
+				return false;
+
 			// Calcular curación según el nivel actual
 			float targetHealth;
 
@@ -223,6 +227,10 @@ namespace Game
 			// Verificar si el objetivo necesita curación
 			ComponentHealth health = targetEntity.FindComponent<ComponentHealth>();
 			if (health == null || health.Health >= 1f) // Solo cura si NO está al 100%
+				return false;
+
+			// Verificar si la entidad está muerta usando ComponentHealth.DeathTime
+			if (health.DeathTime.HasValue)
 				return false;
 
 			// Calcular curación según el nivel actual
