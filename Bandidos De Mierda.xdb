@@ -1013,16 +1013,16 @@
     <Parameter Name="ChaseOnTouchProbability" Value="0.5" Type="float" Guid="92d7a841-1daa-47f2-80c7-cf1779b40302"/>
     <Parameter Name="AutoChaseMask" Value="LandPredator" Type="string" Guid="28fdc186-40ad-46f1-9337-7ccb2e08d8eb"/>
 </MemberComponentTemplate>
-    <MemberComponentTemplate Name="NewHerdBehavior" Guid="4068abbc-278d-4e39-989f-2eeeb15375bc">
-        <Parameter Name="Class" Value="Game.ComponentNewHerdBehavior" Type="string" Guid="cc9412e2-76b5-45e3-b3e8-82040cf9cca6"/>
-        <Parameter Name="IsOptional" Value="true" Type="bool" Guid="0788095b-4ac6-4666-88dc-f714ead6d0e2"/>
-        <Parameter Name="LoadOrder" Value="50" Type="int" Guid="3983ad33-115a-4312-87e0-02f14ccb5e84"/>
-        <Parameter Name="HerdName" Value="player" Type="string" Guid="5836fe3a-19f1-4cf9-a1b0-25378b494967"/>
-        <Parameter Name="HerdingRange" Value="20" Type="float" Guid="26d4e821-5670-4da5-a5b6-b5851b58911a"/>
-        <Parameter Name="AutoNearbyCreaturesHelp" Value="true" Type="bool" Guid="546e1e00-daa9-4001-a22f-51b87039f57d"/>
-        <Parameter Name="HelpCallRange" Value="16" Type="float" Guid="c77d575b-868b-4f7c-b5d7-7e3cd4d4eafc"/>
-        <Parameter Name="MaxHelpChaseTime" Value="30" Type="float" Guid="4529a5e7-89fb-4cf0-baf7-0a35d79d6947"/>
-        <Parameter Name="AvoidAttackingSameHerd" Value="true" Type="bool" Guid="6cb502a7-a9d6-4924-9a3c-e847d3cb94fc"/>
+    <MemberComponentTemplate Name="NewHerdBehavior" Guid="7b91e351-597e-4209-90cc-1ef347063ef7">
+        <Parameter Name="Class" Value="Game.ComponentNewHerdBehavior" Type="string" Guid="16462ed1-3133-4774-a97a-c0e1d09abf40"/>
+        <Parameter Name="IsOptional" Value="true" Type="bool" Guid="fb1f40c7-d80e-4516-806f-a70edd7f06f0"/>
+        <Parameter Name="LoadOrder" Value="50" Type="int" Guid="c1fc0474-9c54-4629-a25b-8bcba5885af5"/>
+        <Parameter Name="HerdName" Value="player" Type="string" Guid="6ea1c028-574d-4088-ba71-506df9dceb0b"/>
+        <Parameter Name="HerdingRange" Value="80" Type="float" Guid="e21176e0-3068-4747-bc91-ffc53d8fb78e"/>
+        <Parameter Name="AutoNearbyCreaturesHelp" Value="true" Type="bool" Guid="317b40a6-e249-4b18-8b31-1a798b1f39e8"/>
+        <Parameter Name="HelpCallRange" Value="30" Type="float" Guid="b4ce915f-78fe-4416-b76f-9cb017027ec9"/>
+        <Parameter Name="MaxHelpChaseTime" Value="30" Type="float" Guid="e6e8b3dc-ff1d-4435-be87-abcfbfe930f5"/>
+        <Parameter Name="AvoidAttackingSameHerd" Value="true" Type="bool" Guid="303ab89d-52cb-4d59-947e-05b22641df73"/>
     </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewRunAwayBehavior" Guid="f4e8e259-dbe7-4540-9ed1-917999b26595">
     <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="d07df9b4-1a87-4c0a-82df-25e23c67c631"/>
@@ -1642,6 +1642,12 @@
 </EntityTemplate>
 
 <EntityTemplate Name="Bandit11" Guid="59f53032-4f8f-49a2-8984-3b267261b0e5" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="SummonBehavior" Guid="0664b3c6-0021-4b15-916e-aa82c0dd2ec8">
+              <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="e0bc6a0b-570f-4eae-a3fe-1a5eb676a876"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="81773051-727e-49bf-85ad-056161e65f83"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="8848b1c0-b30a-479f-892c-05295cf9b4c9"/>
+              <Parameter Name="IsEnabled" Guid="d3ca37d4-bcf9-40e0-8672-dc5114a92342" Value="True" Type="bool"/>
+            </MemberComponentTemplate>
     <MemberComponentTemplate Name="DeathSpawner" Guid="7ae63349-0511-4f7a-9f31-6debbfd17912">
     <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="f6930264-89ef-40f0-bba7-dfc81d8faa3d"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="7ac5ea1e-1b1b-4b5f-8528-31d288888eac"/>
@@ -1775,16 +1781,16 @@
     <Parameter Name="ChaseOnTouchProbability" Value="0.5" Type="float" Guid="c2761cbc-d1ce-4def-b9cb-2537fc1cf30e"/>
     <Parameter Name="AutoChaseMask" Value="LandPredator" Type="string" Guid="b25fa299-316c-4239-be32-7f5ade22b6b2"/>
 </MemberComponentTemplate>
-    <MemberComponentTemplate Name="NewHerdBehavior" Guid="1e548666-154b-4e59-be8d-9505729625bc">
-        <Parameter Name="Class" Value="Game.ComponentNewHerdBehavior" Type="string" Guid="f79dd188-4567-4cf9-889f-4bdfa6e9ae48"/>
-        <Parameter Name="IsOptional" Value="true" Type="bool" Guid="b2720cfd-86d3-4870-b86e-4f2b9119e4e8"/>
-        <Parameter Name="LoadOrder" Value="50" Type="int" Guid="237fd93e-a7ce-49bf-ac26-eeed82b155de"/>
-        <Parameter Name="HerdName" Value="player" Type="string" Guid="d5e94a84-976c-44f0-a0f8-0974afcc34e8"/>
-        <Parameter Name="HerdingRange" Value="20" Type="float" Guid="5130f383-1970-4c00-a685-b82bfb382521"/>
-        <Parameter Name="AutoNearbyCreaturesHelp" Value="true" Type="bool" Guid="1f84a534-5414-4735-9d9c-5d7e60dbeabc"/>
-        <Parameter Name="HelpCallRange" Value="16" Type="float" Guid="c419fe5e-f8c1-4936-a255-7f569fb055c0"/>
-        <Parameter Name="MaxHelpChaseTime" Value="30" Type="float" Guid="b2666e75-013d-406e-98c9-cdb9cb35655c"/>
-        <Parameter Name="AvoidAttackingSameHerd" Value="true" Type="bool" Guid="ba469b1e-db69-4120-9b75-041bb9ee8ce6"/>
+    <MemberComponentTemplate Name="NewHerdBehavior" Guid="70a2bc72-2e2e-4605-a3c2-613218f2bae8">
+        <Parameter Name="Class" Value="Game.ComponentNewHerdBehavior" Type="string" Guid="1a6a531c-ac9f-453f-a4d5-d8fb1b23f24f"/>
+        <Parameter Name="IsOptional" Value="true" Type="bool" Guid="2a0de487-f630-4502-98fa-74698ec00697"/>
+        <Parameter Name="LoadOrder" Value="50" Type="int" Guid="3a9bbdd2-6ce4-46a6-b3db-795245bde280"/>
+        <Parameter Name="HerdName" Value="player" Type="string" Guid="4da7d3a0-a0a9-44c4-a9a0-c2d2e9dc6e75"/>
+        <Parameter Name="HerdingRange" Value="85" Type="float" Guid="387995fe-a18b-4f14-97c4-c49d2203a0c0"/>
+        <Parameter Name="AutoNearbyCreaturesHelp" Value="true" Type="bool" Guid="d5fc2731-6683-4c86-8c21-b4ed470f1f92"/>
+        <Parameter Name="HelpCallRange" Value="80" Type="float" Guid="febcf5fe-9ad8-4e8f-b3da-6f1bfd068b30"/>
+        <Parameter Name="MaxHelpChaseTime" Value="30" Type="float" Guid="95716be3-3e73-445f-9bd0-daa913467943"/>
+        <Parameter Name="AvoidAttackingSameHerd" Value="true" Type="bool" Guid="86918f5d-9855-4f94-974b-52c694a84112"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="CreatureInventory" Guid="0425b634-df3a-4b6b-bcaa-c1a70d943963" InheritanceParent="81a44c6a-c30a-4f53-8d64-0c30aabab8f9">
   <Parameter Name="Class" Value="Game.ComponentCreatureInventory" Type="string"/>
