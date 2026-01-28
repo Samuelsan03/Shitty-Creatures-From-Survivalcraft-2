@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Engine;
 using GameEntitySystem;
 using TemplatesDatabase;
@@ -11,51 +11,48 @@ namespace Game
 		public List<int> TradePrices = new List<int>();
 		public List<bool> TradeItemsSold = new List<bool>();
 		public event System.Action TradeCompleted;
-
+		public event System.Action<string, Color> TradeMessage;
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
 			base.Load(valuesDictionary, idToEntityMap);
 			TradeItems.Add(Terrain.MakeBlockValue(BlocksManager.GetBlockIndex<FlameThrowerBlock>()));
 			TradePrices.Add(50);
 			TradeItemsSold.Add(false);
-
 			TradeItems.Add(Terrain.MakeBlockValue(BlocksManager.GetBlockIndex<MusketBlock>()));
 			TradePrices.Add(30);
 			TradeItemsSold.Add(false);
 		}
-
-		public bool TryBuyItem(ComponentInventory playerInventory, int itemIndex, IInventory coinInventory, out int purchasedItemValue)
+		public bool TryBuyItem(ComponentInventory playerInventory, int itemIndex, IInventory coinInventory, out int purchasedItemValue, ComponentPlayer player = null)
 		{
 			purchasedItemValue = 0;
-
 			if (itemIndex < 0 || itemIndex >= TradeItems.Count)
 				return false;
-
 			if (TradeItemsSold[itemIndex])
 				return false;
-
 			int price = TradePrices[itemIndex];
 			int coinIndex = BlocksManager.GetBlockIndex<NuclearCoinBlock>();
-
 			if (coinInventory == null || coinInventory.SlotsCount == 0)
+			{
+				TradeMessage?.Invoke("You don't have Nuclear Coins to buy this item.", Color.Red);
 				return false;
-
+			}
 			int coinValue = coinInventory.GetSlotValue(0);
 			if (Terrain.ExtractContents(coinValue) != coinIndex)
+			{
+				TradeMessage?.Invoke("You don't have Nuclear Coins to buy this item.", Color.Red);
 				return false;
-
+			}
 			int coinCount = coinInventory.GetSlotCount(0);
 			if (coinCount < price)
+			{
+				TradeMessage?.Invoke($"You don't have enough Nuclear Coins. You need {price} coins.", Color.Red);
 				return false;
-
+			}
 			coinInventory.RemoveSlotItems(0, price);
-
 			purchasedItemValue = TradeItems[itemIndex];
-
 			if (playerInventory != null)
 			{
 				int acquireSlotIndex = ComponentInventoryBase.FindAcquireSlotForItem(playerInventory, purchasedItemValue);
-
 				if (acquireSlotIndex >= 0)
 				{
 					playerInventory.AddSlotItems(acquireSlotIndex, purchasedItemValue, 1);
@@ -63,22 +60,19 @@ namespace Game
 				else
 				{
 					coinInventory.AddSlotItems(0, coinValue, price);
+					TradeMessage?.Invoke("Not enough space in your inventory.", Color.Red);
 					return false;
 				}
 			}
-
 			TradeItemsSold[itemIndex] = true;
-
 			TradeCompleted?.Invoke();
 			return true;
 		}
-
-		public bool TryBuyItem(ComponentInventory playerInventory, int itemIndex, IInventory coinInventory)
+		public bool TryBuyItem(ComponentInventory playerInventory, int itemIndex, IInventory coinInventory, ComponentPlayer player = null)
 		{
 			int purchasedItemValue;
-			return TryBuyItem(playerInventory, itemIndex, coinInventory, out purchasedItemValue);
+			return TryBuyItem(playerInventory, itemIndex, coinInventory, out purchasedItemValue, player);
 		}
-
 		public bool IsItemAvailable(int itemIndex)
 		{
 			if (itemIndex < 0 || itemIndex >= TradeItemsSold.Count)
