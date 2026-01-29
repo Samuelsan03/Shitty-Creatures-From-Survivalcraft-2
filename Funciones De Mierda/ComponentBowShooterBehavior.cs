@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Engine;
 using GameEntitySystem;
@@ -19,14 +19,14 @@ namespace Game
 		private SubsystemParticles m_subsystemParticles;
 
 		// Configuración
-		public float MaxDistance = 25f; // SOLO distancia máxima
-		public float DrawTime = 1.2f;  // Más rápido
+		public float MaxDistance = 25f;
+		public float DrawTime = 1.2f;
 		public float AimTime = 0.5f;
 		public float FireSoundDistance = 15f;
 		public float Accuracy = 0.03f;
 		public float ArrowSpeed = 35f;
 		public bool CycleArrowTypes = true;
-		public bool ShowArrowWhenIdle = true; // Mostrar flecha cuando está inactivo
+		public bool ShowArrowWhenIdle = true;
 
 		// Tipos de flechas a usar
 		public ArrowBlock.ArrowType[] AvailableArrowTypes = new ArrowBlock.ArrowType[]
@@ -60,7 +60,6 @@ namespace Game
 		{
 			base.Load(valuesDictionary, idToEntityMap);
 
-			// Cargar parámetros - SOLO MaxDistance, no MinDistance
 			MaxDistance = valuesDictionary.GetValue<float>("MaxDistance", 25f);
 			DrawTime = valuesDictionary.GetValue<float>("DrawTime", 1.2f);
 			AimTime = valuesDictionary.GetValue<float>("AimTime", 0.5f);
@@ -70,7 +69,6 @@ namespace Game
 			CycleArrowTypes = valuesDictionary.GetValue<bool>("CycleArrowTypes", true);
 			ShowArrowWhenIdle = valuesDictionary.GetValue<bool>("ShowArrowWhenIdle", true);
 
-			// Inicializar componentes
 			m_componentCreature = base.Entity.FindComponent<ComponentCreature>(true);
 			m_componentChaseBehavior = base.Entity.FindComponent<ComponentChaseBehavior>(true);
 			m_componentInventory = base.Entity.FindComponent<ComponentInventory>(true);
@@ -85,17 +83,23 @@ namespace Game
 		{
 			base.OnEntityAdded();
 
-			// Inicializar con flecha aleatoria
-			m_currentArrowTypeIndex = m_random.Int(0, AvailableArrowTypes.Length);
+			// FIX: Asegurar que el índice sea válido
+			if (AvailableArrowTypes.Length > 0)
+			{
+				m_currentArrowTypeIndex = m_random.Int(0, AvailableArrowTypes.Length);
+			}
+			else
+			{
+				m_currentArrowTypeIndex = 0;
+			}
+
 			m_initialized = true;
 
-			// Buscar arco
 			FindBow();
 
-			// Mostrar flecha inicialmente si está configurado
 			if (ShowArrowWhenIdle && m_bowSlot >= 0)
 			{
-				SetBowWithArrow(0); // Arco con flecha pero sin tensión
+				SetBowWithArrow(0);
 			}
 		}
 
@@ -104,11 +108,15 @@ namespace Game
 			if (!m_initialized || m_componentCreature.ComponentHealth.Health <= 0f)
 				return;
 
-			// Verificar objetivo
+			if (m_bowSlot < 0)
+			{
+				FindBow();
+				if (m_bowSlot < 0) return;
+			}
+
 			if (m_componentChaseBehavior.Target == null)
 			{
 				ResetAnimations();
-				// Mantener flecha visible si está configurado
 				if (ShowArrowWhenIdle && m_bowSlot >= 0)
 				{
 					SetBowWithArrow(0);
@@ -116,13 +124,11 @@ namespace Game
 				return;
 			}
 
-			// Calcular distancia
 			float distance = Vector3.Distance(
 				m_componentCreature.ComponentBody.Position,
 				m_componentChaseBehavior.Target.ComponentBody.Position
 			);
 
-			// Lógica de ataque - MODIFICADO: Solo verifica distancia máxima
 			if (distance <= MaxDistance)
 			{
 				if (!m_isAiming && !m_isDrawing && !m_isFiring)
@@ -140,7 +146,6 @@ namespace Game
 				return;
 			}
 
-			// Aplicar animaciones
 			if (m_isAiming)
 			{
 				ApplyAimingAnimation(dt);
@@ -157,7 +162,6 @@ namespace Game
 
 				m_currentDraw = MathUtils.Clamp((float)((m_subsystemTime.GameTime - m_drawStartTime) / DrawTime), 0f, 1f);
 
-				// Actualizar tensión visual
 				SetBowWithArrow((int)(m_currentDraw * 15f));
 
 				if (m_subsystemTime.GameTime - m_drawStartTime >= DrawTime)
@@ -169,11 +173,10 @@ namespace Game
 			{
 				ApplyFiringAnimation(dt);
 
-				if (m_subsystemTime.GameTime - m_fireTime >= 0.2) // Animación más corta
+				if (m_subsystemTime.GameTime - m_fireTime >= 0.2)
 				{
 					m_isFiring = false;
 
-					// Quitar flecha después de disparar
 					ClearArrowFromBow();
 
 					if (CycleArrowTypes && AvailableArrowTypes.Length > 1)
@@ -181,12 +184,31 @@ namespace Game
 						m_currentArrowTypeIndex = (m_currentArrowTypeIndex + 1) % AvailableArrowTypes.Length;
 					}
 
-					// Pausa antes de recargar
 					if (m_subsystemTime.GameTime - m_fireTime >= 0.8)
 					{
 						StartAiming();
 					}
 				}
+			}
+		}
+
+		private bool IsArrowVisibleOnBow()
+		{
+			if (m_bowSlot < 0) return false;
+
+			try
+			{
+				int currentBowValue = m_componentInventory.GetSlotValue(m_bowSlot);
+				if (currentBowValue == 0) return false;
+
+				int currentData = Terrain.ExtractData(currentBowValue);
+				ArrowBlock.ArrowType? currentArrowType = BowBlock.GetArrowType(currentData);
+
+				return currentArrowType.HasValue;
+			}
+			catch
+			{
+				return false;
 			}
 		}
 
@@ -222,16 +244,26 @@ namespace Game
 				if (currentBowValue == 0) return;
 
 				int currentData = Terrain.ExtractData(currentBowValue);
-				ArrowBlock.ArrowType arrowType = AvailableArrowTypes[m_currentArrowTypeIndex];
 
-				// Configurar arco con flecha y tensión
-				int newData = BowBlock.SetArrowType(currentData, new ArrowBlock.ArrowType?(arrowType));
-				newData = BowBlock.SetDraw(newData, MathUtils.Clamp(drawValue, 0, 15));
+				// FIX: Verificar que el índice sea válido
+				if (m_currentArrowTypeIndex >= 0 && m_currentArrowTypeIndex < AvailableArrowTypes.Length)
+				{
+					ArrowBlock.ArrowType arrowType = AvailableArrowTypes[m_currentArrowTypeIndex];
 
-				// Actualizar el arco en el inventario
-				int newBowValue = Terrain.ReplaceData(currentBowValue, newData);
-				m_componentInventory.RemoveSlotItems(m_bowSlot, 1);
-				m_componentInventory.AddSlotItems(m_bowSlot, newBowValue, 1);
+					ArrowBlock.ArrowType? currentArrowType = BowBlock.GetArrowType(currentData);
+					if (currentArrowType.HasValue && currentArrowType.Value == arrowType &&
+						BowBlock.GetDraw(currentData) == MathUtils.Clamp(drawValue, 0, 15))
+					{
+						return;
+					}
+
+					int newData = BowBlock.SetArrowType(currentData, new ArrowBlock.ArrowType?(arrowType));
+					newData = BowBlock.SetDraw(newData, MathUtils.Clamp(drawValue, 0, 15));
+
+					int newBowValue = Terrain.ReplaceData(currentBowValue, newData);
+					m_componentInventory.RemoveSlotItems(m_bowSlot, 1);
+					m_componentInventory.AddSlotItems(m_bowSlot, newBowValue, 1);
+				}
 			}
 			catch
 			{
@@ -250,7 +282,6 @@ namespace Game
 
 				int currentData = Terrain.ExtractData(currentBowValue);
 
-				// Quitar flecha y resetear tensión
 				int newData = BowBlock.SetArrowType(currentData, null);
 				newData = BowBlock.SetDraw(newData, 0);
 
@@ -272,7 +303,12 @@ namespace Game
 			m_animationStartTime = m_subsystemTime.GameTime;
 			m_currentDraw = 0f;
 
-			// Mostrar flecha en el arco (sin tensión)
+			if (m_bowSlot < 0)
+			{
+				FindBow();
+				if (m_bowSlot < 0) return;
+			}
+
 			SetBowWithArrow(0);
 		}
 
@@ -280,15 +316,25 @@ namespace Game
 		{
 			if (m_componentModel != null)
 			{
-				// ANIMACIÓN SIMPLE Y ESTABLE - ARCO EN POSICIÓN BAJA
-				// Valores muy pequeños para que no se salga
-				m_componentModel.AimHandAngleOrder = 0.2f;
-				m_componentModel.InHandItemOffsetOrder = new Vector3(0.05f, 0.05f, 0.05f);
-				m_componentModel.InHandItemRotationOrder = new Vector3(-0.05f, 0.3f, 0.05f);
+				// FIX: VALORES PARA ARCO CENTRADO - posición natural del arco
+				// La mano se levanta pero el arco queda centrado
+				m_componentModel.AimHandAngleOrder = 0.5f; // Mano levantada
+
+				// ARCO CENTRADO: Valores pequeños para que el arco quede en el medio
+				// X: pequeño offset horizontal (centrado)
+				// Y: altura adecuada (ni muy alto ni muy bajo)
+				// Z: profundidad (cerca del cuerpo)
+				m_componentModel.InHandItemOffsetOrder = new Vector3(0.02f, 0.12f, 0.08f);
+
+				// ROTACIÓN PARA ARCO RECTO:
+				// X: pequeña inclinación hacia adelante
+				// Y: orientación lateral (apuntando hacia adelante)
+				// Z: casi cero para que esté recto
+				m_componentModel.InHandItemRotationOrder = new Vector3(-0.05f, 0.25f, 0.01f);
 
 				if (m_componentChaseBehavior.Target != null)
 				{
-					m_componentModel.LookAtOrder = new Vector3? (
+					m_componentModel.LookAtOrder = new Vector3?(
 						m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition
 					);
 				}
@@ -302,7 +348,6 @@ namespace Game
 			m_isFiring = false;
 			m_drawStartTime = m_subsystemTime.GameTime;
 
-			// Sonido de tensado del arco (hardcoded)
 			m_subsystemAudio.PlaySound("Audio/BowDraw", 0.5f, m_random.Float(-0.1f, 0.1f),
 				m_componentCreature.ComponentBody.Position, 3f, false);
 		}
@@ -313,19 +358,19 @@ namespace Game
 			{
 				float drawFactor = m_currentDraw;
 
-				// ANIMACIÓN MUY SUAVE - MOVIMIENTO MÍNIMO
-				// Solo pequeños ajustes para mostrar el tensado
-				float horizontalOffset = 0.05f - (0.03f * drawFactor);
-				float verticalOffset = 0.05f + (0.02f * drawFactor);
-				float depthOffset = 0.05f - (0.02f * drawFactor);
+				// FIX: ANIMACIÓN CON ARCO CENTRADO durante el tensado
+				m_componentModel.AimHandAngleOrder = 0.5f + (0.4f * drawFactor);
 
-				// Rotaciones muy pequeñas
-				float pitchRotation = -0.05f - (0.1f * drawFactor);
-				float yawRotation = 0.3f - (0.05f * drawFactor);
-				float rollRotation = 0.05f - (0.02f * drawFactor);
+				// Durante el tensado, el arco se mueve ligeramente pero se mantiene centrado
+				float horizontalOffset = 0.02f - (0.01f * drawFactor); // Muy pequeño movimiento horizontal
+				float verticalOffset = 0.12f + (0.05f * drawFactor);   // Sube ligeramente
+				float depthOffset = 0.08f - (0.03f * drawFactor);      // Se acerca al cuerpo
 
-				// Cambios mínimos en el brazo
-				m_componentModel.AimHandAngleOrder = 0.2f + (0.3f * drawFactor);
+				// Rotaciones suaves para mantener el arco recto
+				float pitchRotation = -0.05f - (0.15f * drawFactor);   // Inclinación hacia atrás
+				float yawRotation = 0.25f - (0.08f * drawFactor);      // Gira hacia el centro
+				float rollRotation = 0.01f - (0.005f * drawFactor);    // Casi sin rotación en Z
+
 				m_componentModel.InHandItemOffsetOrder = new Vector3(
 					horizontalOffset,
 					verticalOffset,
@@ -339,7 +384,7 @@ namespace Game
 
 				if (m_componentChaseBehavior.Target != null)
 				{
-					m_componentModel.LookAtOrder = new Vector3? (
+					m_componentModel.LookAtOrder = new Vector3?(
 						m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition
 					);
 				}
@@ -352,10 +397,16 @@ namespace Game
 			m_isFiring = true;
 			m_fireTime = m_subsystemTime.GameTime;
 
-			// Disparar flecha
-			ShootArrow();
+			// FIX: Asegurar que se pueda disparar sin errores
+			try
+			{
+				ShootArrow();
+			}
+			catch (Exception ex)
+			{
+				Log.Error($"Error en Fire(): {ex.Message}");
+			}
 
-			// Sonido de disparo (hardcoded)
 			m_subsystemAudio.PlaySound("Audio/Bow", 0.8f, m_random.Float(-0.1f, 0.1f),
 				m_componentCreature.ComponentBody.Position, FireSoundDistance, false);
 		}
@@ -368,27 +419,26 @@ namespace Game
 
 				if (fireProgress < 0.5f)
 				{
-					// Pequeño retroceso
-					float recoil = 0.02f * (1f - (fireProgress * 2f));
+					float recoil = 0.01f * (1f - (fireProgress * 2f));
 
 					m_componentModel.InHandItemOffsetOrder += new Vector3(recoil, 0f, 0f);
-					m_componentModel.InHandItemRotationOrder += new Vector3(recoil * 2f, 0f, 0f);
+					m_componentModel.InHandItemRotationOrder += new Vector3(recoil * 1.5f, 0f, 0f);
 				}
 				else
 				{
-					// Volver a posición normal gradualmente
 					float returnProgress = (fireProgress - 0.5f) / 0.5f;
 
-					m_componentModel.AimHandAngleOrder = 0.2f * (1f - returnProgress);
+					// Volver a posición centrada
+					m_componentModel.AimHandAngleOrder = 0.5f * (1f - returnProgress);
 					m_componentModel.InHandItemOffsetOrder = new Vector3(
-						0.05f * (1f - returnProgress),
-						0.05f * (1f - returnProgress),
-						0.05f * (1f - returnProgress)
+						0.02f * (1f - returnProgress),
+						0.12f * (1f - returnProgress),
+						0.08f * (1f - returnProgress)
 					);
 					m_componentModel.InHandItemRotationOrder = new Vector3(
 						-0.05f * (1f - returnProgress),
-						0.3f * (1f - returnProgress),
-						0.05f * (1f - returnProgress)
+						0.25f * (1f - returnProgress),
+						0.01f * (1f - returnProgress)
 					);
 				}
 			}
@@ -417,16 +467,20 @@ namespace Game
 
 			try
 			{
+				// FIX: Verificar que el índice sea válido antes de usarlo
+				if (m_currentArrowTypeIndex < 0 || m_currentArrowTypeIndex >= AvailableArrowTypes.Length)
+				{
+					m_currentArrowTypeIndex = 0; // Resetear a un valor seguro
+				}
+
 				ArrowBlock.ArrowType arrowType = AvailableArrowTypes[m_currentArrowTypeIndex];
 
-				// Posición de disparo simple
 				Vector3 firePosition = m_componentCreature.ComponentCreatureModel.EyePosition;
 				firePosition.Y -= 0.1f;
 
 				Vector3 targetPosition = m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition;
 				Vector3 direction = Vector3.Normalize(targetPosition - firePosition);
 
-				// Aplicar precisión
 				float currentAccuracy = Accuracy * (1.5f - m_currentDraw);
 
 				direction += new Vector3(
@@ -436,7 +490,6 @@ namespace Game
 				);
 				direction = Vector3.Normalize(direction);
 
-				// Velocidad según tensión
 				float speedMultiplier = 0.5f + (m_currentDraw * 1.5f);
 				float currentSpeed = ArrowSpeed * speedMultiplier;
 
@@ -458,9 +511,9 @@ namespace Game
 					projectile.IsIncendiary = true;
 				}
 			}
-			catch
+			catch (Exception ex)
 			{
-				// Ignorar errores
+				Log.Error($"Error en ShootArrow(): {ex.Message}");
 			}
 		}
 	}
