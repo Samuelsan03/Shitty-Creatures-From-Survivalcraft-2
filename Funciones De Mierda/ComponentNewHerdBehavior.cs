@@ -10,6 +10,13 @@ namespace Game
 		// Propiedades públicas
 		public string HerdName { get; set; }
 
+		// Nueva propiedad pública para acceder al campo protegido
+		public bool AutoNearbyCreaturesHelp
+		{
+			get { return m_autoNearbyCreaturesHelp; }
+			set { m_autoNearbyCreaturesHelp = value; }
+		}
+
 		public UpdateOrder UpdateOrder
 		{
 			get
@@ -37,9 +44,9 @@ namespace Game
 			// Verificar si el objetivo es de la misma manada
 			ComponentNewHerdBehavior targetHerdBehavior = target.Entity.FindComponent<ComponentNewHerdBehavior>();
 			if (targetHerdBehavior != null && !string.IsNullOrEmpty(targetHerdBehavior.HerdName) &&
-				targetHerdBehavior.HerdName.Equals(this.HerdName, StringComparison.OrdinalIgnoreCase))
+				this.IsSameHerdOrGuardian(target))
 			{
-				// No llamar ayuda contra miembros de la misma manada
+				// No llamar ayuda contra miembros de la misma manada o guardianes
 				return;
 			}
 
@@ -52,9 +59,9 @@ namespace Game
 				{
 					ComponentNewHerdBehavior componentHerdBehavior = componentCreature.Entity.FindComponent<ComponentNewHerdBehavior>();
 
-					// Verificar que sea de la misma manada y tenga ayuda automática habilitada
+					// Verificar que sea de la misma manada o guardian y tenga ayuda automática habilitada
 					if (componentHerdBehavior != null && !string.IsNullOrEmpty(componentHerdBehavior.HerdName) &&
-						componentHerdBehavior.HerdName.Equals(this.HerdName, StringComparison.OrdinalIgnoreCase) &&
+						(this.IsSameHerdOrGuardian(componentCreature) || componentHerdBehavior.HerdName.Equals(this.HerdName, StringComparison.OrdinalIgnoreCase)) &&
 						(componentHerdBehavior.m_autoNearbyCreaturesHelp || forceResponse))
 					{
 						// Usar el ComponentChaseBehavior original
@@ -64,9 +71,9 @@ namespace Game
 							// Si es una respuesta forzada (target stick) o no tiene objetivo actual
 							if (forceResponse || componentChaseBehavior.Target == null)
 							{
-								// Verificar nuevamente que el objetivo no sea de la misma manada
+								// Verificar nuevamente que el objetivo no sea de la misma manada o guardian
 								if (targetHerdBehavior == null ||
-									!targetHerdBehavior.HerdName.Equals(componentHerdBehavior.HerdName, StringComparison.OrdinalIgnoreCase))
+									!this.IsSameHerdOrGuardian(target))
 								{
 									componentChaseBehavior.Attack(target, maxRange, maxChaseTime, isPersistent);
 								}
@@ -120,7 +127,7 @@ namespace Game
 				{
 					ComponentNewHerdBehavior componentHerdBehavior = componentCreature.Entity.FindComponent<ComponentNewHerdBehavior>();
 					if (componentHerdBehavior != null &&
-						componentHerdBehavior.HerdName.Equals(this.HerdName, StringComparison.OrdinalIgnoreCase))
+						(this.IsSameHerdOrGuardian(componentCreature) || componentHerdBehavior.HerdName.Equals(this.HerdName, StringComparison.OrdinalIgnoreCase)))
 					{
 						Vector3 creaturePosition = componentCreature.ComponentBody.Position;
 						if (Vector3.DistanceSquared(position, creaturePosition) < herdingRangeSquared)
@@ -138,6 +145,43 @@ namespace Game
 			}
 
 			return null;
+		}
+
+		// Método para verificar si una criatura es de la misma manada o es un guardian
+		public bool IsSameHerdOrGuardian(ComponentCreature otherCreature)
+		{
+			if (otherCreature == null || string.IsNullOrEmpty(this.HerdName))
+			{
+				return false;
+			}
+
+			ComponentNewHerdBehavior otherHerd = otherCreature.Entity.FindComponent<ComponentNewHerdBehavior>();
+			if (otherHerd == null || string.IsNullOrEmpty(otherHerd.HerdName))
+			{
+				return false;
+			}
+
+			// Verificar si son de la misma manada
+			if (this.HerdName.Equals(otherHerd.HerdName, StringComparison.OrdinalIgnoreCase))
+			{
+				return true;
+			}
+
+			// Verificar si esta manada es del jugador y la otra manada contiene "guardian"
+			if (this.HerdName.Equals("player", StringComparison.OrdinalIgnoreCase) &&
+				otherHerd.HerdName.ToLower().Contains("guardian"))
+			{
+				return true;
+			}
+
+			// Verificar si esta manada contiene "guardian" y la otra manada es del jugador
+			if (this.HerdName.ToLower().Contains("guardian") &&
+				otherHerd.HerdName.Equals("player", StringComparison.OrdinalIgnoreCase))
+			{
+				return true;
+			}
+
+			return false;
 		}
 
 		// Método para verificar si una criatura es de la misma manada
@@ -165,8 +209,8 @@ namespace Game
 				return true; // Por defecto, puede atacar
 			}
 
-			// Si el objetivo es de la misma manada, no atacar
-			if (this.IsSameHerd(target))
+			// Si el objetivo es de la misma manada o es un guardian aliado, no atacar
+			if (this.IsSameHerdOrGuardian(target))
 			{
 				return false;
 			}
@@ -178,6 +222,16 @@ namespace Game
 				if (targetPlayer != null)
 				{
 					return false; // No atacar al jugador
+				}
+			}
+
+			// Caso especial: si la manada contiene "guardian", no atacar al jugador
+			if (this.HerdName.ToLower().Contains("guardian"))
+			{
+				ComponentPlayer targetPlayer = target.Entity.FindComponent<ComponentPlayer>();
+				if (targetPlayer != null)
+				{
+					return false; // Los guardianes no atacan al jugador
 				}
 			}
 
@@ -369,8 +423,8 @@ namespace Game
 				return;
 			}
 
-			// Verificar que sea de la misma manada
-			if (!this.IsSameHerd(herdMemberInCombat))
+			// Verificar que sea de la misma manada o guardian
+			if (!this.IsSameHerdOrGuardian(herdMemberInCombat))
 			{
 				return;
 			}
@@ -394,7 +448,7 @@ namespace Game
 			{
 				ComponentCreature target = this.m_componentChase.Target;
 
-				// Verificar si el objetivo es de la misma manada
+				// Verificar si el objetivo es de la misma manada o guardian
 				if (!this.ShouldAttackCreature(target))
 				{
 					// Detener el ataque
@@ -409,18 +463,25 @@ namespace Game
 			return this.ShouldAttackCreature(target);
 		}
 
-		// Campos privados
-		private SubsystemCreatureSpawn m_subsystemCreatureSpawn;
-		private SubsystemTime m_subsystemTime;
-		private ComponentCreature m_componentCreature;
-		private ComponentPathfinding m_componentPathfinding;
-		private ComponentChaseBehavior m_componentChase;
-		private StateMachine m_stateMachine = new StateMachine();
-		private float m_dt;
-		private float m_importanceLevel;
-		private Random m_random = new Random();
-		private Vector2 m_look;
-		private float m_herdingRange;
-		private bool m_autoNearbyCreaturesHelp;
+		// Métodos adicionales para mejor acceso desde clases derivadas
+		protected ComponentChaseBehavior GetChaseBehavior() => m_componentChase;
+		protected ComponentCreature GetCreatureComponent() => m_componentCreature;
+		protected StateMachine GetStateMachine() => m_stateMachine;
+		protected float GetHerdingRange() => m_herdingRange;
+		protected void SetHerdingRange(float range) => m_herdingRange = range;
+
+		// Campos protegidos para acceso desde clases derivadas
+		protected SubsystemCreatureSpawn m_subsystemCreatureSpawn;
+		protected SubsystemTime m_subsystemTime;
+		protected ComponentCreature m_componentCreature;
+		protected ComponentPathfinding m_componentPathfinding;
+		protected ComponentChaseBehavior m_componentChase;
+		protected StateMachine m_stateMachine = new StateMachine();
+		protected float m_dt;
+		protected float m_importanceLevel;
+		protected Random m_random = new Random();
+		protected Vector2 m_look;
+		protected float m_herdingRange;
+		protected bool m_autoNearbyCreaturesHelp;
 	}
 }
