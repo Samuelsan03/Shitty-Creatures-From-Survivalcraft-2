@@ -141,7 +141,7 @@ namespace Game
 					// Condiciones de terreno
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f; // 70% de probabilidad desde día 28, cualquier hora
+						return 1.0f; // 70% de probabilidad desde día 28, cualquier hora
 					}
 					return 0f;
 				},
@@ -181,7 +181,7 @@ namespace Game
 					// Condiciones de terreno
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 30f; // 30% de probabilidad para spawn constante
+						return 0.5f; // 30% de probabilidad para spawn constante
 					}
 					return 0f;
 				},
@@ -221,7 +221,7 @@ namespace Game
 					// Condiciones de terreno
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f; // 75% de probabilidad desde día 34, cualquier hora
+						return 1.0f; // 75% de probabilidad desde día 34, cualquier hora
 					}
 					return 0f;
 				},
@@ -261,7 +261,7 @@ namespace Game
 					// Condiciones de terreno
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f; // 35% de probabilidad para spawn constante
+						return 0.5f; // 35% de probabilidad para spawn constante
 					}
 					return 0f;
 				},
@@ -301,7 +301,7 @@ namespace Game
 					// Condiciones de terreno
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f; // 80% de probabilidad desde día 40, cualquier hora
+						return 0.8f; // 80% de probabilidad desde día 40, cualquier hora
 					}
 					return 0f;
 				},
@@ -341,7 +341,7 @@ namespace Game
 					// Condiciones de terreno
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f; // 40% de probabilidad para spawn constante
+						return 1.0f; // 40% de probabilidad para spawn constante
 					}
 					return 0f;
 				},
@@ -384,7 +384,7 @@ namespace Game
 					// Condiciones de terreno
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f; // 65% de probabilidad cada noche desde día 29
+						return 0.65f; // 65% de probabilidad cada noche desde día 29
 					}
 					return 0f;
 				},
@@ -427,7 +427,7 @@ namespace Game
 					// Condiciones de terreno
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f; // 25% de probabilidad para spawn constante
+						return 0.5f; // 25% de probabilidad para spawn constante
 					}
 					return 0f;
 				},
@@ -470,7 +470,7 @@ namespace Game
 					// Condiciones de terreno
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f; // 70% de probabilidad cada noche desde día 30
+						return 1.0f; // 70% de probabilidad cada noche desde día 30
 					}
 					return 0f;
 				},
@@ -513,7 +513,7 @@ namespace Game
 					// Condiciones de terreno
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f; // 30% de probabilidad para spawn constante
+						return 0.5f; // 30% de probabilidad para spawn constante
 					}
 					return 0f;
 				},
@@ -553,7 +553,7 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("InfectedFly1", 
         // Condiciones de terreno
         if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
         {
-            return 100f; // 100% de probabilidad desde día 9, cualquier hora
+            return 1.0f; // 100% de probabilidad desde día 9, cualquier hora
         }
         return 0f;
     },
@@ -593,7 +593,7 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("InfectedFly1 Co
         // Condiciones de terreno
         if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
         {
-            return 100f; // 50% de probabilidad para spawn constante
+            return 0.5f; // 50% de probabilidad para spawn constante
         }
         return 0f;
     },
@@ -633,7 +633,7 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("InfectedFly2", 
         // Condiciones de terreno
         if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
         {
-            return 100f; // 100% de probabilidad desde día 9, cualquier hora
+            return 1.0f; // 100% de probabilidad desde día 9, cualquier hora
         }
         return 0f;
     },
@@ -673,7 +673,7 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("InfectedFly2 Co
         // Condiciones de terreno
         if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
         {
-            return 100f; // 50% de probabilidad para spawn constante
+            return 0.5f; // 50% de probabilidad para spawn constante
         }
         return 0f;
     },
@@ -713,7 +713,7 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("InfectedFly3", 
         // Condiciones de terreno
         if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
         {
-            return 100f; // 100% de probabilidad desde día 9, cualquier hora
+            return 1.0f; // 100% de probabilidad desde día 9, cualquier hora
         }
         return 0f;
     },
@@ -753,7 +753,7 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("InfectedFly3 Co
         // Condiciones de terreno
         if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
         {
-            return 100f; // 50% de probabilidad para spawn constante
+            return 0.5f; // 50% de probabilidad para spawn constante
         }
         return 0f;
     },
@@ -793,7 +793,7 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("FlyingInfectedB
         // Condiciones de terreno
         if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
         {
-            return 100f; // 100% de probabilidad desde día 31, cualquier hora
+            return 1.0f; // 100% de probabilidad desde día 31, cualquier hora
         }
         return 0f;
     },
@@ -833,7 +833,7 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("FlyingInfectedB
         // Condiciones de terreno
         if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
         {
-            return 100f; // 50% de probabilidad para spawn constante
+            return 0.5f; // 50% de probabilidad para spawn constante
         }
         return 0f;
     },
@@ -876,7 +876,7 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
         // Condiciones de terreno
         if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
         {
-            return 100f; // 100% de probabilidad cada noche desde día 6
+            return 1.0f; // 100% de probabilidad cada noche desde día 6
         }
         return 0f;
     },
@@ -919,7 +919,7 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
         // Condiciones de terreno
         if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
         {
-            return 100f; // 50% de probabilidad para spawn constante
+            return 0.5f; // 50% de probabilidad para spawn constante
         }
         return 0f;
     },
@@ -962,7 +962,7 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
         // Condiciones de terreno
         if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
         {
-            return 100f; // 100% de probabilidad cada noche desde día 6
+            return 1.0f; // 100% de probabilidad cada noche desde día 6
         }
         return 0f;
     },
@@ -1005,7 +1005,7 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
         // Condiciones de terreno
         if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
         {
-            return 100f; // 50% de probabilidad para spawn constante
+            return 0.5f; // 50% de probabilidad para spawn constante
         }
         return 0f;
     },
@@ -1045,7 +1045,7 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 					// Condiciones de terreno
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f; // 100% de probabilidad desde día 9, cualquier hora
+						return 1.0f; // 100% de probabilidad desde día 9, cualquier hora
 					}
 					return 0f;
 				},
@@ -1085,7 +1085,7 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 					// Condiciones de terreno
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f; // 50% de probabilidad para spawn constante
+						return 0.5f; // 50% de probabilidad para spawn constante
 					}
 					return 0f;
 				},
@@ -1125,7 +1125,7 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 					// Condiciones de terreno
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f; // 100% de probabilidad desde día 9, cualquier hora
+						return 1.0f; // 100% de probabilidad desde día 9, cualquier hora
 					}
 					return 0f;
 				},
@@ -1165,7 +1165,7 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 					// Condiciones de terreno
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f; // 50% de probabilidad para spawn constante
+						return 0.5f; // 50% de probabilidad para spawn constante
 					}
 					return 0f;
 				},
@@ -1205,7 +1205,7 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 					// Condiciones de terreno
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f; // 100% de probabilidad desde día 9, cualquier hora
+						return 1.0f; // 100% de probabilidad desde día 9, cualquier hora
 					}
 					return 0f;
 				},
@@ -1245,7 +1245,7 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 					// Condiciones de terreno
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f; // 50% de probabilidad para spawn constante
+						return 0.5f; // 50% de probabilidad para spawn constante
 					}
 					return 0f;
 				},
@@ -1285,7 +1285,7 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 					// Condiciones de terreno
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f; // 100% de probabilidad desde día 31, cualquier hora
+						return 1.0f; // 100% de probabilidad desde día 31, cualquier hora
 					}
 					return 0f;
 				},
@@ -1325,7 +1325,7 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 					// Condiciones de terreno
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f; // 50% de probabilidad para spawn constante
+						return 0.5f; // 50% de probabilidad para spawn constante
 					}
 					return 0f;
 				},
@@ -1368,7 +1368,7 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 					// Condiciones de terreno
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f; // 100% de probabilidad cada noche desde día 6
+						return 1.0f; // 100% de probabilidad cada noche desde día 6
 					}
 					return 0f;
 				},
@@ -1411,7 +1411,7 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 					// Condiciones de terreno
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f; // 50% de probabilidad para spawn constante
+						return 0.5f; // 50% de probabilidad para spawn constante
 					}
 					return 0f;
 				},
@@ -1454,7 +1454,7 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 					// Condiciones de terreno
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f; // 100% de probabilidad cada noche desde día 6
+						return 1.0f; // 100% de probabilidad cada noche desde día 6
 					}
 					return 0f;
 				},
@@ -1497,7 +1497,7 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 					// Condiciones de terreno
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f; // 50% de probabilidad para spawn constante
+						return 0.5f; // 50% de probabilidad para spawn constante
 					}
 					return 0f;
 				},
@@ -1505,17 +1505,12 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 					this.SpawnCreatures(creatureType, "PoisonousInfected2", point, 1).Count) // Individual
 			});
 
-			// InfectedMuscle1 - Aparece desde el día 9, solo de noche
-			this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("InfectedMuscle1", SpawnLocationType.Surface, false, false)
-			{
-				SpawnSuitabilityFunction = delegate (SubsystemZombiesSpawn.CreatureType creatureType, Point3 point)
-				{
-					// InfectedFast1 - Aparece desde el día 13, solo de noche
+					// InfectedFast1 - Aparece desde el día 2, solo de noche
 					this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("InfectedFast1", SpawnLocationType.Surface, false, false)
 					{
 						SpawnSuitabilityFunction = delegate (SubsystemZombiesSpawn.CreatureType creatureType, Point3 point)
 						{
-							// Condición de día: solo a partir del día 13
+							// Condición de día: solo a partir del día 2
 							SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
 							int currentDay = 0;
 							if (timeOfDay != null)
@@ -1523,8 +1518,8 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 								currentDay = (int)Math.Floor(timeOfDay.Day);
 							}
 
-							bool isDay13OrLater = currentDay >= 13;
-							if (!isDay13OrLater)
+							bool isDay2OrLater = currentDay >= 2;
+							if (!isDay2OrLater)
 								return 0f;
 
 							// Condición de noche
@@ -1545,7 +1540,7 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 							// Condiciones de terreno
 							if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 							{
-								return 100f; // 70% de probabilidad cada noche desde día 13
+								return 1.0f; // 50% de probabilidad cada noche desde día 2
 							}
 							return 0f;
 						},
@@ -1553,12 +1548,12 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 							this.SpawnCreatures(creatureType, "InfectedFast1", point, this.m_random.Int(1, 3)).Count)
 					});
 
-					// Versión constante (spawn continuo) de InfectedFast1 - también desde día 13
+					// Versión constante (spawn continuo) de InfectedFast1 - también desde día 2
 					this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("InfectedFast1 Constant", SpawnLocationType.Surface, false, true)
 					{
 						SpawnSuitabilityFunction = delegate (SubsystemZombiesSpawn.CreatureType creatureType, Point3 point)
 						{
-							// Condición de día: solo a partir del día 13
+							// Condición de día: solo a partir del día 2
 							SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
 							int currentDay = 0;
 							if (timeOfDay != null)
@@ -1566,8 +1561,8 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 								currentDay = (int)Math.Floor(timeOfDay.Day);
 							}
 
-							bool isDay13OrLater = currentDay >= 13;
-							if (!isDay13OrLater)
+							bool isDay2OrLater = currentDay >= 2;
+							if (!isDay2OrLater)
 								return 0f;
 
 							// Condición de noche
@@ -1588,7 +1583,7 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 							// Condiciones de terreno
 							if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 							{
-								return 100f; // 35% de probabilidad para spawn constante
+								return 0.25f; // 25% de probabilidad para spawn constante
 							}
 							return 0f;
 						},
@@ -1596,12 +1591,12 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 							this.SpawnCreatures(creatureType, "InfectedFast1", point, this.m_random.Int(1, 2)).Count)
 					});
 
-					// InfectedFast2 - Aparece desde el día 13, solo de noche (mismo día que Fast1)
+					// InfectedFast2 - Aparece desde el día 2, solo de noche (mismo día que Fast1)
 					this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("InfectedFast2", SpawnLocationType.Surface, false, false)
 					{
 						SpawnSuitabilityFunction = delegate (SubsystemZombiesSpawn.CreatureType creatureType, Point3 point)
 						{
-							// Condición de día: solo a partir del día 13
+							// Condición de día: solo a partir del día 2
 							SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
 							int currentDay = 0;
 							if (timeOfDay != null)
@@ -1609,8 +1604,8 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 								currentDay = (int)Math.Floor(timeOfDay.Day);
 							}
 
-							bool isDay13OrLater = currentDay >= 13;
-							if (!isDay13OrLater)
+							bool isDay2OrLater = currentDay >= 2;
+							if (!isDay2OrLater)
 								return 0f;
 
 							// Condición de noche
@@ -1631,7 +1626,7 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 							// Condiciones de terreno
 							if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 							{
-								return 65f; // 65% de probabilidad cada noche desde día 13
+								return 1.0f; // 40% de probabilidad cada noche desde día 2
 							}
 							return 0f;
 						},
@@ -1639,12 +1634,12 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 							this.SpawnCreatures(creatureType, "InfectedFast2", point, this.m_random.Int(1, 3)).Count)
 					});
 
-					// Versión constante (spawn continuo) de InfectedFast2 - también desde día 13
+					// Versión constante (spawn continuo) de InfectedFast2 - también desde día 2
 					this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("InfectedFast2 Constant", SpawnLocationType.Surface, false, true)
 					{
 						SpawnSuitabilityFunction = delegate (SubsystemZombiesSpawn.CreatureType creatureType, Point3 point)
 						{
-							// Condición de día: solo a partir del día 13
+							// Condición de día: solo a partir del día 2
 							SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
 							int currentDay = 0;
 							if (timeOfDay != null)
@@ -1652,8 +1647,8 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 								currentDay = (int)Math.Floor(timeOfDay.Day);
 							}
 
-							bool isDay13OrLater = currentDay >= 13;
-							if (!isDay13OrLater)
+							bool isDay2OrLater = currentDay >= 2;
+							if (!isDay2OrLater)
 								return 0f;
 
 							// Condición de noche
@@ -1674,7 +1669,7 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 							// Condiciones de terreno
 							if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 							{
-								return 30f; // 30% de probabilidad para spawn constante
+								return 0.5f; // 20% de probabilidad para spawn constante
 							}
 							return 0f;
 						},
@@ -1682,18 +1677,183 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 							this.SpawnCreatures(creatureType, "InfectedFast2", point, this.m_random.Int(1, 2)).Count)
 					});
 
-					// Condición de día: solo a partir del día 9
-					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
-					int currentDay = 0;
-					if (timeOfDay != null)
+					// InfectedMuscle1 - Aparece desde el día 5, solo de noche
+					this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("InfectedMuscle1", SpawnLocationType.Surface, false, false)
 					{
-						currentDay = (int)Math.Floor(timeOfDay.Day);
-					}
+						SpawnSuitabilityFunction = delegate (SubsystemZombiesSpawn.CreatureType creatureType, Point3 point)
+						{
+							// Condición de día: solo a partir del día 5
+							SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+							int currentDay = 0;
+							if (timeOfDay != null)
+							{
+								currentDay = (int)Math.Floor(timeOfDay.Day);
+							}
 
-					bool isDay9OrLater = currentDay >= 9;
-					if (!isDay9OrLater)
-						return 0f;
+							bool isDay5OrLater = currentDay >= 5;
+							if (!isDay5OrLater)
+								return 0f;
 
+							// Condición de noche
+							bool isNight = this.m_subsystemSky.SkyLightIntensity < 0.1f;
+							if (!isNight)
+								return 0f;
+
+							// Verificar que no esté en agua o lava
+							int blockAbove = Terrain.ExtractContents(this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z));
+							if (blockAbove == 18) // Agua o lava
+							{
+								return 0f;
+							}
+
+							// Verificar bloque debajo
+							int groundBlock = Terrain.ExtractContents(this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z));
+
+							// Condiciones de terreno
+							if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+							{
+								return 1.0f; // 50% de probabilidad cada noche desde día 5
+							}
+							return 0f;
+						},
+						SpawnFunction = ((SubsystemZombiesSpawn.CreatureType creatureType, Point3 point) =>
+							this.SpawnCreatures(creatureType, "InfectedMuscle1", point, this.m_random.Int(1, 2)).Count)
+					});
+
+					// Versión constante (spawn continuo) de InfectedMuscle1 - también desde día 5
+					this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("InfectedMuscle1 Constant", SpawnLocationType.Surface, false, true)
+					{
+						SpawnSuitabilityFunction = delegate (SubsystemZombiesSpawn.CreatureType creatureType, Point3 point)
+						{
+							// Condición de día: solo a partir del día 5
+							SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+							int currentDay = 0;
+							if (timeOfDay != null)
+							{
+								currentDay = (int)Math.Floor(timeOfDay.Day);
+							}
+
+							bool isDay5OrLater = currentDay >= 5;
+							if (!isDay5OrLater)
+								return 0f;
+
+							// Condición de noche
+							bool isNight = this.m_subsystemSky.SkyLightIntensity < 0.1f;
+							if (!isNight)
+								return 0f;
+
+							// Verificar que no esté en agua o lava
+							int blockAbove = Terrain.ExtractContents(this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z));
+							if (blockAbove == 18) // Agua o lava
+							{
+								return 0f;
+							}
+
+							// Verificar bloque debajo
+							int groundBlock = Terrain.ExtractContents(this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z));
+
+							// Condiciones de terreno
+							if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+							{
+								return 0.5f; // 25% de probabilidad para spawn constante
+							}
+							return 0f;
+						},
+						SpawnFunction = ((SubsystemZombiesSpawn.CreatureType creatureType, Point3 point) =>
+							this.SpawnCreatures(creatureType, "InfectedMuscle1", point, 1).Count)
+					});
+
+					// InfectedMuscle2 - Aparece desde el día 5, solo de noche
+					this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("InfectedMuscle2", SpawnLocationType.Surface, false, false)
+					{
+						SpawnSuitabilityFunction = delegate (SubsystemZombiesSpawn.CreatureType creatureType, Point3 point)
+						{
+							// Condición de día: solo a partir del día 5
+							SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+							int currentDay = 0;
+							if (timeOfDay != null)
+							{
+								currentDay = (int)Math.Floor(timeOfDay.Day);
+							}
+
+							bool isDay5OrLater = currentDay >= 5;
+							if (!isDay5OrLater)
+								return 0f;
+
+							// Condición de noche
+							bool isNight = this.m_subsystemSky.SkyLightIntensity < 0.1f;
+							if (!isNight)
+								return 0f;
+
+							// Verificar que no esté en agua o lava
+							int blockAbove = Terrain.ExtractContents(this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z));
+							if (blockAbove == 18) // Agua o lava
+							{
+								return 0f;
+							}
+
+							// Verificar bloque debajo
+							int groundBlock = Terrain.ExtractContents(this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z));
+
+							// Condiciones de terreno
+							if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+							{
+								return 1.0f; // 40% de probabilidad cada noche desde día 5
+							}
+							return 0f;
+						},
+						SpawnFunction = ((SubsystemZombiesSpawn.CreatureType creatureType, Point3 point) =>
+							this.SpawnCreatures(creatureType, "InfectedMuscle2", point, this.m_random.Int(1, 2)).Count)
+					});
+
+					// Versión constante (spawn continuo) de InfectedMuscle2 - también desde día 5
+					this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("InfectedMuscle2 Constant", SpawnLocationType.Surface, false, true)
+					{
+						SpawnSuitabilityFunction = delegate (SubsystemZombiesSpawn.CreatureType creatureType, Point3 point)
+						{
+							// Condición de día: solo a partir del día 5
+							SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+							int currentDay = 0;
+							if (timeOfDay != null)
+							{
+								currentDay = (int)Math.Floor(timeOfDay.Day);
+							}
+
+							bool isDay5OrLater = currentDay >= 5;
+							if (!isDay5OrLater)
+								return 0f;
+
+							// Condición de noche
+							bool isNight = this.m_subsystemSky.SkyLightIntensity < 0.1f;
+							if (!isNight)
+								return 0f;
+
+							// Verificar que no esté en agua o lava
+							int blockAbove = Terrain.ExtractContents(this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z));
+							if (blockAbove == 18) // Agua o lava
+							{
+								return 0f;
+							}
+
+							// Verificar bloque debajo
+							int groundBlock = Terrain.ExtractContents(this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z));
+
+							// Condiciones de terreno
+							if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+							{
+								return 0.5f; // 20% de probabilidad para spawn constante
+							}
+							return 0f;
+						},
+						SpawnFunction = ((SubsystemZombiesSpawn.CreatureType creatureType, Point3 point) =>
+							this.SpawnCreatures(creatureType, "InfectedMuscle2", point, 1).Count)
+					});
+
+					// InfectedNormal1 - Aparece desde el DÍA 1, SOLO DE NOCHE
+					this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("InfectedNormal1", SpawnLocationType.Surface, false, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemZombiesSpawn.CreatureType creatureType, Point3 point)
+				{
 					// Condición de noche
 					bool isNight = this.m_subsystemSky.SkyLightIntensity < 0.1f;
 					if (!isNight)
@@ -1709,182 +1869,27 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 					// Verificar bloque debajo
 					int groundBlock = Terrain.ExtractContents(this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z));
 
-					// Condiciones de terreno
+					// Condiciones de terreno (TIERRA, PIEDRA, HIERBA)
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f; // 75% de probabilidad cada noche desde día 9
+						// Probabilidad controlada al 50% durante noches
+						return 0.5f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemZombiesSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "InfectedMuscle1", point, this.m_random.Int(1, 2)).Count)
+					this.SpawnCreatures(creatureType, "InfectedNormal1", point, 1).Count) // Individual
 			});
 
-			// Versión constante (spawn continuo) de InfectedMuscle1 - también desde día 9
-			this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("InfectedMuscle1 Constant", SpawnLocationType.Surface, false, true)
-			{
-				SpawnSuitabilityFunction = delegate (SubsystemZombiesSpawn.CreatureType creatureType, Point3 point)
-				{
-					// Condición de día: solo a partir del día 9
-					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
-					int currentDay = 0;
-					if (timeOfDay != null)
-					{
-						currentDay = (int)Math.Floor(timeOfDay.Day);
-					}
-
-					bool isDay9OrLater = currentDay >= 9;
-					if (!isDay9OrLater)
-						return 0f;
-
-					// Condición de noche
-					bool isNight = this.m_subsystemSky.SkyLightIntensity < 0.1f;
-					if (!isNight)
-						return 0f;
-
-					// Verificar que no esté en agua o lava
-					int blockAbove = Terrain.ExtractContents(this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z));
-					if (blockAbove == 18) // Agua o lava
-					{
-						return 0f;
-					}
-
-					// Verificar bloque debajo
-					int groundBlock = Terrain.ExtractContents(this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z));
-
-					// Condiciones de terreno
-					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
-					{
-						return 100f; // 40% de probabilidad para spawn constante
-					}
-					return 0f;
-				},
-				SpawnFunction = ((SubsystemZombiesSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "InfectedMuscle1", point, 1).Count)
-			});
-
-			// InfectedMuscle2 - Aparece desde el día 10, solo de noche
-			this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("InfectedMuscle2", SpawnLocationType.Surface, false, false)
-			{
-				SpawnSuitabilityFunction = delegate (SubsystemZombiesSpawn.CreatureType creatureType, Point3 point)
-				{
-					// Condición de día: solo a partir del día 10
-					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
-					int currentDay = 0;
-					if (timeOfDay != null)
-					{
-						currentDay = (int)Math.Floor(timeOfDay.Day);
-					}
-
-					bool isDay10OrLater = currentDay >= 10;
-					if (!isDay10OrLater)
-						return 0f;
-
-					// Condición de noche
-					bool isNight = this.m_subsystemSky.SkyLightIntensity < 0.1f;
-					if (!isNight)
-						return 0f;
-
-					// Verificar que no esté en agua o lava
-					int blockAbove = Terrain.ExtractContents(this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z));
-					if (blockAbove == 18) // Agua o lava
-					{
-						return 0f;
-					}
-
-					// Verificar bloque debajo
-					int groundBlock = Terrain.ExtractContents(this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z));
-
-					// Condiciones de terreno
-					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
-					{
-						return 100f; // 80% de probabilidad cada noche desde día 10
-					}
-					return 0f;
-				},
-				SpawnFunction = ((SubsystemZombiesSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "InfectedMuscle2", point, this.m_random.Int(1, 2)).Count)
-			});
-
-			// Versión constante (spawn continuo) de InfectedMuscle2 - también desde día 10
-			this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("InfectedMuscle2 Constant", SpawnLocationType.Surface, false, true)
-			{
-				SpawnSuitabilityFunction = delegate (SubsystemZombiesSpawn.CreatureType creatureType, Point3 point)
-				{
-					// Condición de día: solo a partir del día 10
-					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
-					int currentDay = 0;
-					if (timeOfDay != null)
-					{
-						currentDay = (int)Math.Floor(timeOfDay.Day);
-					}
-
-					bool isDay10OrLater = currentDay >= 10;
-					if (!isDay10OrLater)
-						return 0f;
-
-					// Condición de noche
-					bool isNight = this.m_subsystemSky.SkyLightIntensity < 0.1f;
-					if (!isNight)
-						return 0f;
-
-					// Verificar que no esté en agua o lava
-					int blockAbove = Terrain.ExtractContents(this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z));
-					if (blockAbove == 18) // Agua o lava
-					{
-						return 0f;
-					}
-
-					// Verificar bloque debajo
-					int groundBlock = Terrain.ExtractContents(this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z));
-
-					// Condiciones de terreno
-					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
-					{
-						return 100f; // 45% de probabilidad para spawn constante
-					}
-					return 0f;
-				},
-				SpawnFunction = ((SubsystemZombiesSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "InfectedMuscle2", point, 1).Count)
-			});
-
-			// InfectedNormal1 - Aparece desde el DÍA 1, CUALQUIER HORA (día o noche)
-			this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("InfectedNormal1", SpawnLocationType.Surface, false, false)
-			{
-				SpawnSuitabilityFunction = delegate (SubsystemZombiesSpawn.CreatureType creatureType, Point3 point)
-				{
-					// NO necesitamos verificar el día - aparece desde el día 1
-					// NO necesitamos verificar si es día o noche - aparece en cualquier hora
-
-					// Verificar que no esté en agua o lava
-					int blockAbove = Terrain.ExtractContents(this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z));
-					if (blockAbove == 18) // Agua o lava
-					{
-						return 0f;
-					}
-
-					// Verificar bloque debajo
-					int groundBlock = Terrain.ExtractContents(this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z));
-
-					// Condiciones de terreno (TIERRA, PIEDRA, HIERBA) - igual que los otros
-					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
-					{
-						// Probabilidad alta ya que no hay restricciones de tiempo
-						return 100f;
-					}
-					return 0f;
-				},
-				SpawnFunction = ((SubsystemZombiesSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "InfectedNormal1", point, this.m_random.Int(1, 3)).Count)
-			});
-
-			// Versión constante (spawn continuo) - también desde día 1
+			// Versión constante (spawn continuo) - también desde día 1, solo de noche
 			this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("InfectedNormal1 Constant", SpawnLocationType.Surface, false, true)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemZombiesSpawn.CreatureType creatureType, Point3 point)
 				{
-					// NO hay restricciones de día o hora
+					// Condición de noche
+					bool isNight = this.m_subsystemSky.SkyLightIntensity < 0.1f;
+					if (!isNight)
+						return 0f;
 
 					// Verificar que no esté en agua o lava
 					int blockAbove = Terrain.ExtractContents(this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z));
@@ -1899,13 +1904,13 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 					// Condiciones de terreno
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						// Probabilidad moderada para spawn constante
-						return 100f;
+						// Probabilidad baja para spawn constante: 20%
+						return 0.2f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemZombiesSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "InfectedNormal1", point, this.m_random.Int(1, 2)).Count)
+					this.SpawnCreatures(creatureType, "InfectedNormal1", point, 1).Count) // Individual
 			});
 
 			// Tank1 - Aparece desde el día 41, CUALQUIER HORA (día o noche)
@@ -1940,7 +1945,7 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 					// Condiciones de terreno
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f; // 100% de probabilidad desde día 41, cualquier hora
+						return 1.0f; // 100% de probabilidad desde día 41, cualquier hora
 					}
 					return 0f;
 				},
@@ -1980,7 +1985,7 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 					// Condiciones de terreno
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f; // 50% de probabilidad para spawn constante
+						return 0.5f; // 50% de probabilidad para spawn constante
 					}
 					return 0f;
 				},
@@ -2020,7 +2025,7 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 					// Condiciones de terreno
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f; // 100% de probabilidad desde día 50, cualquier hora
+						return 1.0f; // 100% de probabilidad desde día 50, cualquier hora
 					}
 					return 0f;
 				},
@@ -2060,7 +2065,7 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 					// Condiciones de terreno
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f; // 55% de probabilidad para spawn constante
+						return 0.55f; // 55% de probabilidad para spawn constante
 					}
 					return 0f;
 				},
@@ -2100,7 +2105,7 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 					// Condiciones de terreno
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f; // 100% de probabilidad desde día 55, cualquier hora
+						return 1.0f; // 100% de probabilidad desde día 55, cualquier hora
 					}
 					return 0f;
 				},
@@ -2140,7 +2145,7 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 					// Condiciones de terreno
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f; // 60% de probabilidad para spawn constante
+						return 0.6f; // 60% de probabilidad para spawn constante
 					}
 					return 0f;
 				},
@@ -2153,9 +2158,6 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemZombiesSpawn.CreatureType creatureType, Point3 point)
 				{
-					// NO necesitamos verificar el día - aparece desde el día 1
-					// SOLO DE NOCHE (a diferencia de InfectedNormal1 que aparece a cualquier hora)
-
 					// Condición de noche
 					bool isNight = this.m_subsystemSky.SkyLightIntensity < 0.1f;
 					if (!isNight)
@@ -2174,13 +2176,13 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 					// Condiciones de terreno (TIERRA, PIEDRA, HIERBA)
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						// Probabilidad alta para que aparezca de noche desde el día 1
-						return 100f; // 70% de probabilidad cada noche desde día 1
+						// Probabilidad controlada al 50% durante noches
+						return 1.0f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemZombiesSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "InfectedNormal2", point, this.m_random.Int(1, 3)).Count)
+					this.SpawnCreatures(creatureType, "InfectedNormal2", point, 1).Count) // Individual
 			});
 
 			// Versión constante (spawn continuo) - también desde día 1, solo de noche
@@ -2206,13 +2208,13 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 					// Condiciones de terreno
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						// Probabilidad moderada para spawn constante de noche desde día 1
-						return 100f; // 30% de probabilidad para spawn constante
+						// Probabilidad baja para spawn constante: 20%
+						return 0.5f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemZombiesSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "InfectedNormal2", point, this.m_random.Int(1, 2)).Count)
+					this.SpawnCreatures(creatureType, "InfectedNormal2", point, 1).Count) // Individual
 			});
 
 			// GhostNormal - Aparece desde el día 4, solo de noche
@@ -2250,7 +2252,7 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 					// Condiciones de terreno
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f; // 100% de probabilidad cada noche desde día 4
+						return 1.0f; // 100% de probabilidad cada noche desde día 4
 					}
 					return 0f;
 				},
@@ -2293,13 +2295,14 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 					// Condiciones de terreno
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f; // 50% de probabilidad para spawn constante
+						return 0.5f; // 50% de probabilidad para spawn constante
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemZombiesSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "GhostNormal", point, 2).Count) // Siempre spawnear 2 en constante también
+					this.SpawnCreatures(creatureType, "GhostNormal", point, 1).Count) // Siempre spawnear 2 en constante también
 			});
+
 		}
 
 		// Token: 0x06000255 RID: 597 RVA: 0x0001E11C File Offset: 0x0001C31C
