@@ -99,6 +99,8 @@ namespace Game
 
 			if (ShowArrowWhenIdle && m_bowSlot >= 0)
 			{
+				// FIX: Equipar el arco inmediatamente al agregar la entidad
+				m_componentInventory.ActiveSlotIndex = m_bowSlot;
 				SetBowWithArrow(0);
 			}
 		}
@@ -119,6 +121,8 @@ namespace Game
 				ResetAnimations();
 				if (ShowArrowWhenIdle && m_bowSlot >= 0)
 				{
+					// FIX: Asegurar que el arco está equipado cuando está inactivo
+					m_componentInventory.ActiveSlotIndex = m_bowSlot;
 					SetBowWithArrow(0);
 				}
 				return;
@@ -245,29 +249,40 @@ namespace Game
 
 				int currentData = Terrain.ExtractData(currentBowValue);
 
-				// FIX: Verificar que el índice sea válido
-				if (m_currentArrowTypeIndex >= 0 && m_currentArrowTypeIndex < AvailableArrowTypes.Length)
+				// FIX: Usar siempre el primer tipo de flecha disponible para mayor compatibilidad
+				ArrowBlock.ArrowType arrowType = (AvailableArrowTypes.Length > 0) ?
+					AvailableArrowTypes[0] : ArrowBlock.ArrowType.WoodenArrow;
+
+				// Verificar si el arco ya tiene esta flecha y nivel de tensado
+				ArrowBlock.ArrowType? currentArrowType = BowBlock.GetArrowType(currentData);
+				int currentDraw = BowBlock.GetDraw(currentData);
+				int newDraw = MathUtils.Clamp(drawValue, 0, 15);
+
+				// Solo actualizar si es necesario (diferente tipo de flecha o nivel de tensado)
+				if (!currentArrowType.HasValue ||
+					currentArrowType.Value != arrowType ||
+					currentDraw != newDraw)
 				{
-					ArrowBlock.ArrowType arrowType = AvailableArrowTypes[m_currentArrowTypeIndex];
+					// Primero establecer el tipo de flecha
+					int newData = BowBlock.SetArrowType(currentData, arrowType);
 
-					ArrowBlock.ArrowType? currentArrowType = BowBlock.GetArrowType(currentData);
-					if (currentArrowType.HasValue && currentArrowType.Value == arrowType &&
-						BowBlock.GetDraw(currentData) == MathUtils.Clamp(drawValue, 0, 15))
-					{
-						return;
-					}
+					// Luego establecer el nivel de tensado
+					newData = BowBlock.SetDraw(newData, newDraw);
 
-					int newData = BowBlock.SetArrowType(currentData, new ArrowBlock.ArrowType?(arrowType));
-					newData = BowBlock.SetDraw(newData, MathUtils.Clamp(drawValue, 0, 15));
-
+					// Crear nuevo valor del bloque del arco
 					int newBowValue = Terrain.ReplaceData(currentBowValue, newData);
+
+					// Actualizar el slot del inventario
 					m_componentInventory.RemoveSlotItems(m_bowSlot, 1);
 					m_componentInventory.AddSlotItems(m_bowSlot, newBowValue, 1);
+
+					// FIX: Asegurar que el arco está en el slot activo para renderizado
+					m_componentInventory.ActiveSlotIndex = m_bowSlot;
 				}
 			}
-			catch
+			catch (Exception ex)
 			{
-				// Ignorar errores
+				Log.Error($"Error en SetBowWithArrow: {ex.Message}");
 			}
 		}
 
@@ -282,16 +297,26 @@ namespace Game
 
 				int currentData = Terrain.ExtractData(currentBowValue);
 
-				int newData = BowBlock.SetArrowType(currentData, null);
-				newData = BowBlock.SetDraw(newData, 0);
+				// Solo limpiar si realmente hay una flecha en el arco
+				if (BowBlock.GetArrowType(currentData).HasValue)
+				{
+					// Remover la flecha del arco
+					int newData = BowBlock.SetArrowType(currentData, null);
 
-				int newBowValue = Terrain.ReplaceData(currentBowValue, newData);
-				m_componentInventory.RemoveSlotItems(m_bowSlot, 1);
-				m_componentInventory.AddSlotItems(m_bowSlot, newBowValue, 1);
+					// Resetear el nivel de tensado a 0
+					newData = BowBlock.SetDraw(newData, 0);
+
+					// Crear nuevo valor del bloque
+					int newBowValue = Terrain.ReplaceData(currentBowValue, newData);
+
+					// Actualizar el inventario
+					m_componentInventory.RemoveSlotItems(m_bowSlot, 1);
+					m_componentInventory.AddSlotItems(m_bowSlot, newBowValue, 1);
+				}
 			}
-			catch
+			catch (Exception ex)
 			{
-				// Ignorar errores
+				Log.Error($"Error en ClearArrowFromBow: {ex.Message}");
 			}
 		}
 
@@ -303,12 +328,17 @@ namespace Game
 			m_animationStartTime = m_subsystemTime.GameTime;
 			m_currentDraw = 0f;
 
+			// FIX: Asegurar que tenemos un arco antes de empezar
 			if (m_bowSlot < 0)
 			{
 				FindBow();
 				if (m_bowSlot < 0) return;
 			}
 
+			// FIX: Equipar el arco inmediatamente
+			m_componentInventory.ActiveSlotIndex = m_bowSlot;
+
+			// FIX: Mostrar flecha inmediatamente al comenzar a apuntar
 			SetBowWithArrow(0);
 		}
 
