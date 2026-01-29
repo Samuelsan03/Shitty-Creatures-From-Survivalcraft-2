@@ -39,25 +39,40 @@ namespace Game
 					{
 						return; // No atacar a miembros de la misma manada
 					}
-
-					// Notificar a la manada sobre el ataque (llamar ayuda si está activado)
-					if (herdBehavior.AutoNearbyCreaturesHelp)
-					{
-						herdBehavior.CallNearbyCreaturesHelp(componentCreature, maxRange + 10f, maxChaseTime + 15f, isPersistent, true);
-					}
 				}
 				else
 				{
-					// Fallback al sistema de manada original
+					// AGREGADO: Lógica mejorada para manadas originales con guardianes
 					ComponentHerdBehavior oldHerdBehavior = base.Entity.FindComponent<ComponentHerdBehavior>();
 					if (oldHerdBehavior != null)
 					{
-						bool isSameHerd = !string.IsNullOrEmpty(oldHerdBehavior.HerdName) &&
-										 componentCreature.Entity.FindComponent<ComponentHerdBehavior>() != null &&
-										 componentCreature.Entity.FindComponent<ComponentHerdBehavior>().HerdName == oldHerdBehavior.HerdName;
-						if (isSameHerd)
+						ComponentHerdBehavior targetHerd = componentCreature.Entity.FindComponent<ComponentHerdBehavior>();
+						if (targetHerd != null && !string.IsNullOrEmpty(targetHerd.HerdName) && !string.IsNullOrEmpty(oldHerdBehavior.HerdName))
 						{
-							return; // No atacar a miembros de la misma manada
+							bool isSameHerd = targetHerd.HerdName == oldHerdBehavior.HerdName;
+
+							// Verificar relación player-guardian
+							bool isPlayerAlly = false;
+
+							if (oldHerdBehavior.HerdName.Equals("player", StringComparison.OrdinalIgnoreCase))
+							{
+								if (targetHerd.HerdName.ToLower().Contains("guardian"))
+								{
+									isPlayerAlly = true;
+								}
+							}
+							else if (oldHerdBehavior.HerdName.ToLower().Contains("guardian"))
+							{
+								if (targetHerd.HerdName.Equals("player", StringComparison.OrdinalIgnoreCase))
+								{
+									isPlayerAlly = true;
+								}
+							}
+
+							if (isSameHerd || isPlayerAlly)
+							{
+								return; // No atacar a aliados
+							}
 						}
 					}
 				}
@@ -169,17 +184,23 @@ namespace Game
 				ComponentNewHerdBehavior herdBehavior = base.Entity.FindComponent<ComponentNewHerdBehavior>();
 				ComponentHerdBehavior oldHerdBehavior = base.Entity.FindComponent<ComponentHerdBehavior>();
 
-				bool isPlayerHerd = false;
+				bool isPlayerAlly = false;
+
+				// AGREGADO: Verificar tanto manada "player" como guardianes
 				if (herdBehavior != null && !string.IsNullOrEmpty(herdBehavior.HerdName))
 				{
-					isPlayerHerd = herdBehavior.HerdName.Equals("player", StringComparison.OrdinalIgnoreCase);
+					string herdName = herdBehavior.HerdName;
+					isPlayerAlly = herdName.Equals("player", StringComparison.OrdinalIgnoreCase) ||
+								  herdName.ToLower().Contains("guardian");
 				}
 				else if (oldHerdBehavior != null && !string.IsNullOrEmpty(oldHerdBehavior.HerdName))
 				{
-					isPlayerHerd = oldHerdBehavior.HerdName.Equals("player", StringComparison.OrdinalIgnoreCase);
+					string herdName = oldHerdBehavior.HerdName;
+					isPlayerAlly = herdName.Equals("player", StringComparison.OrdinalIgnoreCase) ||
+								  herdName.ToLower().Contains("guardian");
 				}
 
-				if (!isPlayerHerd) return;
+				if (!isPlayerAlly) return;
 
 				bool timeToCheck = this.m_subsystemTime.GameTime >= this.m_nextPlayerCheckTime;
 				if (timeToCheck)
@@ -239,18 +260,23 @@ namespace Game
 
 						if (inRange)
 						{
-							// Verificar si no es de la misma manada
+							// AGREGADO: Verificación mejorada de aliados (incluye guardianes)
 							ComponentNewHerdBehavior creatureHerd = creature.Entity.FindComponent<ComponentNewHerdBehavior>();
 							ComponentHerdBehavior creatureOldHerd = creature.Entity.FindComponent<ComponentHerdBehavior>();
 
 							bool isPlayerAlly = false;
-							if (creatureHerd != null)
+
+							if (creatureHerd != null && !string.IsNullOrEmpty(creatureHerd.HerdName))
 							{
-								isPlayerAlly = creatureHerd.HerdName.Equals("player", StringComparison.OrdinalIgnoreCase);
+								string herdName = creatureHerd.HerdName;
+								isPlayerAlly = herdName.Equals("player", StringComparison.OrdinalIgnoreCase) ||
+											  herdName.ToLower().Contains("guardian");
 							}
-							else if (creatureOldHerd != null)
+							else if (creatureOldHerd != null && !string.IsNullOrEmpty(creatureOldHerd.HerdName))
 							{
-								isPlayerAlly = creatureOldHerd.HerdName.Equals("player", StringComparison.OrdinalIgnoreCase);
+								string herdName = creatureOldHerd.HerdName;
+								isPlayerAlly = herdName.Equals("player", StringComparison.OrdinalIgnoreCase) ||
+											  herdName.ToLower().Contains("guardian");
 							}
 
 							if (!isPlayerAlly)
@@ -674,10 +700,33 @@ namespace Game
 				if (oldHerd != null)
 				{
 					ComponentHerdBehavior targetHerd = componentCreature.Entity.FindComponent<ComponentHerdBehavior>();
-					if (targetHerd != null && !string.IsNullOrEmpty(targetHerd.HerdName) &&
-						targetHerd.HerdName == oldHerd.HerdName)
+					if (targetHerd != null && !string.IsNullOrEmpty(targetHerd.HerdName) && !string.IsNullOrEmpty(oldHerd.HerdName))
 					{
-						canAttack = false;
+						// AGREGADO: Lógica de guardianes para ComponentHerdBehavior original
+						bool isSameHerd = targetHerd.HerdName == oldHerd.HerdName;
+
+						// Verificar relación player-guardian
+						bool isPlayerAlly = false;
+
+						if (oldHerd.HerdName.Equals("player", StringComparison.OrdinalIgnoreCase))
+						{
+							if (targetHerd.HerdName.ToLower().Contains("guardian"))
+							{
+								isPlayerAlly = true;
+							}
+						}
+						else if (oldHerd.HerdName.ToLower().Contains("guardian"))
+						{
+							if (targetHerd.HerdName.Equals("player", StringComparison.OrdinalIgnoreCase))
+							{
+								isPlayerAlly = true;
+							}
+						}
+
+						if (isSameHerd || isPlayerAlly)
+						{
+							canAttack = false; // No atacar a aliados
+						}
 					}
 				}
 			}
