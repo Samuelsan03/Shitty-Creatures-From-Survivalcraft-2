@@ -135,7 +135,7 @@ namespace Game
 					// Condiciones flexibles para Naomi - SIN RESTRICCIÓN DE ALTURA, DÍAS, HORAS O ESTACIONES
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f; // 100% de probabilidad
+						return 1.0f; // 100% de probabilidad
 					}
 					return 0f;
 				},
@@ -168,7 +168,7 @@ namespace Game
 					// Condiciones flexibles para Naomi - SIN RESTRICCIÓN DE ALTURA, DÍAS, HORAS O ESTACIONES
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f; // 100% de probabilidad
+						return 0.5f; // 100% de probabilidad
 					}
 					return 0f;
 				},
@@ -200,7 +200,7 @@ namespace Game
 					// Condiciones flexibles para Brayan
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f; // 100% de probabilidad
+						return 1.0f; // 100% de probabilidad
 					}
 					return 0f;
 				},
@@ -232,7 +232,7 @@ namespace Game
 					// Condiciones flexibles para Brayan
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f; // 100% de probabilidad
+						return 0.5f; // 100% de probabilidad
 					}
 					return 0f;
 				},
@@ -264,7 +264,7 @@ namespace Game
 					// Condiciones flexibles para Tulio
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f; // 100% de probabilidad
+						return 1.0f; // 100% de probabilidad
 					}
 					return 0f;
 				},
@@ -296,7 +296,7 @@ namespace Game
 					// Condiciones flexibles para Tulio
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f; // 100% de probabilidad
+						return 0.5f; // 100% de probabilidad
 					}
 					return 0f;
 				},
@@ -328,7 +328,7 @@ namespace Game
 					// Condiciones flexibles para Ricardo
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f; // 100% de probabilidad
+						return 1.0f; // 100% de probabilidad
 					}
 					return 0f;
 				},
@@ -360,106 +360,12 @@ namespace Game
 					// Condiciones flexibles para Ricardo
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f; // 100% de probabilidad
+						return 0.5f; // 100% de probabilidad
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
 					this.SpawnCreatures(creatureType, "Ricardo", point, this.m_random.Int(1, 2)).Count)
-			});
-
-			// BetelGammamon - Solo en otoño e invierno, solo de día (versión normal) - 100% DE PROBABILIDAD
-			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("BetelGammamon", SpawnLocationType.Surface, true, false)
-			{
-				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
-				{
-					// Obtener la estación actual del sistema de estaciones
-					SubsystemSeasons subsystemSeasons = base.Project.FindSubsystem<SubsystemSeasons>(true);
-					Season currentSeason = subsystemSeasons.Season;
-
-					// Verificar que sea otoño o invierno
-					bool isAutumnOrWinter = (currentSeason == Season.Autumn || currentSeason == Season.Winter);
-					if (!isAutumnOrWinter)
-						return 0f;
-
-					// Verificar que sea de día (SkyLightIntensity alta = día)
-					bool isDay = this.m_subsystemSky.SkyLightIntensity > 0.5f;
-					if (!isDay)
-						return 0f;
-
-					// Otras condiciones de spawn...
-					float oceanDistance = this.m_subsystemTerrain.TerrainContentsGenerator.CalculateOceanShoreDistance((float)point.X, (float)point.Z);
-					int temperature = this.m_subsystemTerrain.Terrain.GetTemperature(point.X, point.Z);
-					int blockBelow = Terrain.ExtractContents(this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z));
-					int lightLevel = this.m_subsystemTerrain.Terrain.GetCellLightFast(point.X, point.Y + 1, point.Z);
-
-					// Verificar que no esté en agua o lava
-					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
-					int blockAtPoint = Terrain.ExtractContents(cellValue);
-
-					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
-					int blockHead = Terrain.ExtractContents(cellValueHead);
-
-					// Agua (18) o lava (92)
-					if (blockAtPoint == 18 || blockAtPoint == 92 || blockHead == 18 || blockHead == 92)
-					{
-						return 0f;
-					}
-
-					// Si todas las condiciones se cumplen, devolver 100f (100%) en lugar de 1f (1%)
-					// SIN RESTRICCIÓN DE ALTURA (se removió: point.Y < 100)
-					return (oceanDistance > 20f && temperature >= 8 && lightLevel >= 7 &&
-						(blockBelow == 8 || blockBelow == 2 || blockBelow == 3 || blockBelow == 7)) ? 100f : 0f;
-				},
-				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "BetelGammamon", point, this.m_random.Int(1, 2)).Count)
-			});
-
-			// BetelGammamon Constant - Solo en otoño e invierno, solo de día (versión constante) - 100% DE PROBABILIDAD
-			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("BetelGammamon Constant", SpawnLocationType.Surface, false, true)
-			{
-				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
-				{
-					// Obtener la estación actual del sistema de estaciones
-					SubsystemSeasons subsystemSeasons = base.Project.FindSubsystem<SubsystemSeasons>(true);
-					Season currentSeason = subsystemSeasons.Season;
-
-					// Verificar que sea otoño o invierno
-					bool isAutumnOrWinter = (currentSeason == Season.Autumn || currentSeason == Season.Winter);
-					if (!isAutumnOrWinter)
-						return 0f;
-
-					// Verificar que sea de día (SkyLightIntensity alta = día)
-					bool isDay = this.m_subsystemSky.SkyLightIntensity > 0.5f;
-					if (!isDay)
-						return 0f;
-
-					// Otras condiciones de spawn...
-					float oceanDistance = this.m_subsystemTerrain.TerrainContentsGenerator.CalculateOceanShoreDistance((float)point.X, (float)point.Z);
-					int temperature = this.m_subsystemTerrain.Terrain.GetTemperature(point.X, point.Z);
-					int blockBelow = Terrain.ExtractContents(this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z));
-					int lightLevel = this.m_subsystemTerrain.Terrain.GetCellLightFast(point.X, point.Y + 1, point.Z);
-
-					// Verificar que no esté en agua o lava
-					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
-					int blockAtPoint = Terrain.ExtractContents(cellValue);
-
-					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
-					int blockHead = Terrain.ExtractContents(cellValueHead);
-
-					// Agua (18) o lava (92)
-					if (blockAtPoint == 18 || blockAtPoint == 92 || blockHead == 18 || blockHead == 92)
-					{
-						return 0f;
-					}
-
-					// Si todas las condiciones se cumplen, devolver 100f (100%) en lugar de 1f (1%)
-					// SIN RESTRICCIÓN DE ALTURA (se removió: point.Y < 100)
-					return (oceanDistance > 20f && temperature >= 8 && lightLevel >= 7 &&
-						(blockBelow == 8 || blockBelow == 2 || blockBelow == 3 || blockBelow == 7 || blockBelow == 62)) ? 100f : 0f;
-				},
-				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "BetelGammamon", point, this.m_random.Int(1, 2)).Count)
 			});
 
 			// Spawn para LaMuerteX con 100% de probabilidad - DESDE DÍA 0, solo de noche
@@ -492,7 +398,7 @@ namespace Game
 					// Condiciones flexibles para LaMuerteX - SIN RESTRICCIÓN DE ALTURA O ESTACIONES, PERO SOLO DE NOCHE
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f; // 100% de probabilidad
+						return 1.0f; // 100% de probabilidad
 					}
 					return 0f;
 				},
@@ -529,7 +435,7 @@ namespace Game
 					// Condiciones flexibles para LaMuerteX - SIN RESTRICCIÓN DE ALTURA O ESTACIONES, PERO SOLO DE NOCHE
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f; // 100% de probabilidad
+						return 0.5f; // 100% de probabilidad
 					}
 					return 0f;
 				},
@@ -576,7 +482,7 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 1.0f;
 					}
 					return 0f;
 				},
@@ -623,7 +529,7 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 0.5f;
 					}
 					return 0f;
 				},
@@ -670,7 +576,7 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 1.0f;
 					}
 					return 0f;
 				},
@@ -717,7 +623,7 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 0.5f;
 					}
 					return 0f;
 				},
@@ -764,7 +670,7 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 1.0f;
 					}
 					return 0f;
 				},
@@ -811,12 +717,12 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 0.5f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "Veemon", point, 2).Count)
+					this.SpawnCreatures(creatureType, "Veemon", point, 1).Count)
 			});
 
 			// Spawn para Gaomon con 100% de probabilidad - DESDE DÍA 3, solo de día
@@ -858,7 +764,7 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 1.0f;
 					}
 					return 0f;
 				},
@@ -905,7 +811,7 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 0.5f;
 					}
 					return 0f;
 				},
@@ -952,7 +858,7 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 1.0f;
 					}
 					return 0f;
 				},
@@ -999,7 +905,7 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 0.5f;
 					}
 					return 0f;
 				},
@@ -1041,7 +947,7 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 1.0f;
 					}
 					return 0f;
 				},
@@ -1083,7 +989,7 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 0.5f;
 					}
 					return 0f;
 				},
@@ -1130,7 +1036,7 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 1.0f;
 					}
 					return 0f;
 				},
@@ -1177,7 +1083,7 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 0.5f;
 					}
 					return 0f;
 				},
@@ -1224,7 +1130,7 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 1.0f;
 					}
 					return 0f;
 				},
@@ -1271,7 +1177,7 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 0.5f;
 					}
 					return 0f;
 				},
@@ -1318,7 +1224,7 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 1.0f;
 					}
 					return 0f;
 				},
@@ -1365,12 +1271,128 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 0.5f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
 					this.SpawnCreatures(creatureType, "Shoutmon", point, 2).Count)
+			});
+
+			// Spawn para BetelGammamon con 100% de probabilidad - DESDE DÍA 0, solo de día, en otoño e invierno
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("BetelGammamon", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 0
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay0OrLater = currentDay >= 0;
+					if (!isDay0OrLater)
+						return 0f;
+
+					// Verificar que sea de día
+					bool isDay = this.m_subsystemSky.SkyLightIntensity > 0.5f;
+					if (!isDay)
+						return 0f;
+
+					// Verificar que sea otoño o invierno
+					SubsystemSeasons seasons = base.Project.FindSubsystem<SubsystemSeasons>(true);
+					if (seasons == null)
+						return 0f;
+
+					bool isAutumnOrWinter = (seasons.Season == Season.Autumn || seasons.Season == Season.Winter);
+					if (!isAutumnOrWinter)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					// Agua (18) o lava (92)
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					// Condiciones flexibles para BetelGammamon
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 1.0f; // 100% de probabilidad
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "BetelGammamon", point, 1).Count) // Individualmente
+			});
+
+			// Spawn para BetelGammamon Constant - DESDE DÍA 0, solo de día, en otoño e invierno
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("BetelGammamon Constant", SpawnLocationType.Surface, false, true)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 0
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay0OrLater = currentDay >= 0;
+					if (!isDay0OrLater)
+						return 0f;
+
+					// Verificar que sea de día
+					bool isDay = this.m_subsystemSky.SkyLightIntensity > 0.5f;
+					if (!isDay)
+						return 0f;
+
+					// Verificar que sea otoño o invierno
+					SubsystemSeasons seasons = base.Project.FindSubsystem<SubsystemSeasons>(true);
+					if (seasons == null)
+						return 0f;
+
+					bool isAutumnOrWinter = (seasons.Season == Season.Autumn || seasons.Season == Season.Winter);
+					if (!isAutumnOrWinter)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					// Agua (18) o lava (92)
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					// Condiciones flexibles para BetelGammamon
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 0.5f; // 50% de probabilidad
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "BetelGammamon", point, 1).Count) // Individualmente
 			});
 
 			// Spawn para Impmon con 100% de probabilidad - DESDE DÍA 5, solo de noche
@@ -1412,12 +1434,12 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 1.0f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "Impmon", point, 2).Count)
+					this.SpawnCreatures(creatureType, "Impmon", point, 1).Count)
 			});
 
 			// Spawn para Impmon Constant - DESDE DÍA 5, solo de noche
@@ -1459,12 +1481,12 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 0.5f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "Impmon", point, 2).Count)
+					this.SpawnCreatures(creatureType, "Impmon", point, 1).Count)
 			});
 
 			// Spawn para FumadorQuimico con 100% de probabilidad - DESDE DÍA 7, cualquier hora
@@ -1501,12 +1523,12 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 1.0f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "FumadorQuimico", point, 2).Count)
+					this.SpawnCreatures(creatureType, "FumadorQuimico", point, 1).Count)
 			});
 
 			// Spawn para FumadorQuimico Constant - DESDE DÍA 7, cualquier hora
@@ -1543,12 +1565,12 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 0.5f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "FumadorQuimico", point, 2).Count)
+					this.SpawnCreatures(creatureType, "FumadorQuimico", point, 1).Count)
 			});
 
 			// Spawn para LiderCalavericoSupremo con 100% de probabilidad - DESDE DÍA 8, solo de noche
@@ -1590,12 +1612,12 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 1.0f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "LiderCalavericoSupremo", point, 2).Count)
+					this.SpawnCreatures(creatureType, "LiderCalavericoSupremo", point, 1).Count)
 			});
 
 			// Spawn para LiderCalavericoSupremo Constant - DESDE DÍA 8, solo de noche
@@ -1637,12 +1659,12 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 0.5f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "LiderCalavericoSupremo", point, 2).Count)
+					this.SpawnCreatures(creatureType, "LiderCalavericoSupremo", point, 1).Count)
 			});
 
 			// Spawn para Guilmon con 100% de probabilidad - DESDE DÍA 10, solo de día
@@ -1684,12 +1706,12 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 1.0f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "Guilmon", point, 2).Count)
+					this.SpawnCreatures(creatureType, "Guilmon", point, 1).Count)
 			});
 
 			// Spawn para Guilmon Constant - DESDE DÍA 10, solo de día
@@ -1731,12 +1753,12 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 0.5f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "Guilmon", point, 2).Count)
+					this.SpawnCreatures(creatureType, "Guilmon", point, 1).Count)
 			});
 
 			// Spawn para Gumdramon con 100% de probabilidad - DESDE DÍA 10, solo de día
@@ -1778,12 +1800,12 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 1.0f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "Gumdramon", point, 2).Count)
+					this.SpawnCreatures(creatureType, "Gumdramon", point, 1).Count)
 			});
 
 			// Spawn para Gumdramon Constant - DESDE DÍA 10, solo de día
@@ -1825,12 +1847,12 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 0.5f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "Gumdramon", point, 2).Count)
+					this.SpawnCreatures(creatureType, "Gumdramon", point, 1).Count)
 			});
 
 			// Spawn para Sparkster con 100% de probabilidad - DESDE DÍA 2, cualquier hora (versión normal)
@@ -1867,12 +1889,12 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 1.0f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "Sparkster", point, 2).Count)
+					this.SpawnCreatures(creatureType, "Sparkster", point, 1).Count)
 			});
 
 			// Spawn para Sparkster Constant - DESDE DÍA 2, cualquier hora
@@ -1909,12 +1931,12 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 1.0f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "Sparkster", point, 2).Count)
+					this.SpawnCreatures(creatureType, "Sparkster", point, 1).Count)
 			});
 
 			// Spawn para ElArquero con 100% de probabilidad - DESDE DÍA 5, solo de noche
@@ -2003,12 +2025,12 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 0.5f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "ElArquero", point, 2).Count)
+					this.SpawnCreatures(creatureType, "ElArquero", point, 1).Count)
 			});
 
 			// Spawn para ArqueroPrisionero con 100% de probabilidad - DESDE DÍA 6, solo de noche
@@ -2050,7 +2072,7 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 1.0f;
 					}
 					return 0f;
 				},
@@ -2097,7 +2119,7 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 0.5f;
 					}
 					return 0f;
 				},
@@ -2144,7 +2166,7 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 1.0f;
 					}
 					return 0f;
 				},
@@ -2191,12 +2213,12 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 0.5f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "Conker", point, 2).Count)
+					this.SpawnCreatures(creatureType, "Conker", point, 1).Count)
 			});
 
 			// Spawn para ElBallestador con 100% de probabilidad - DESDE DÍA 10, solo de noche
@@ -2238,12 +2260,12 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 1.0f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "ElBallestador", point, 2).Count)
+					this.SpawnCreatures(creatureType, "ElBallestador", point, 1).Count)
 			});
 
 			// Spawn para ElBallestador Constant - DESDE DÍA 10, solo de noche
@@ -2285,12 +2307,12 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 0.5f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "ElBallestador", point, 2).Count)
+					this.SpawnCreatures(creatureType, "ElBallestador", point, 1).Count)
 			});
 
 			// Spawn para BallestadoraMusculosa con 100% de probabilidad - DESDE DÍA 11, solo de noche
@@ -2332,12 +2354,12 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 1.0f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "BallestadoraMusculosa", point, 2).Count)
+					this.SpawnCreatures(creatureType, "BallestadoraMusculosa", point, 1).Count)
 			});
 
 			// Spawn para BallestadoraMusculosa Constant - DESDE DÍA 11, solo de noche
@@ -2379,12 +2401,12 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 0.5f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "BallestadoraMusculosa", point, 2).Count)
+					this.SpawnCreatures(creatureType, "BallestadoraMusculosa", point, 1).Count)
 			});
 
 			// Spawn para Claudespeed con 100% de probabilidad - DESDE DÍA 12, solo de día
@@ -2426,7 +2448,7 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 1.0f;
 					}
 					return 0f;
 				},
@@ -2473,7 +2495,7 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 0.5f;
 					}
 					return 0f;
 				},
@@ -2520,7 +2542,7 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 1.0f;
 					}
 					return 0f;
 				},
@@ -2567,7 +2589,7 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 0.5f;
 					}
 					return 0f;
 				},
@@ -2609,7 +2631,7 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 1.0f;
 					}
 					return 0f;
 				},
@@ -2651,7 +2673,7 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 0.5f;
 					}
 					return 0f;
 				},
@@ -2698,7 +2720,7 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 1.0f;
 					}
 					return 0f;
 				},
@@ -2745,7 +2767,7 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 0.5f;
 					}
 					return 0f;
 				},
@@ -2792,7 +2814,7 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 1.0f;
 					}
 					return 0f;
 				},
@@ -2839,7 +2861,7 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 0.5f;
 					}
 					return 0f;
 				},
@@ -2890,7 +2912,7 @@ namespace Game
 					// 1. Si está en lava o sobre lava
 					if (groundBlock == 92 || currentBlock == 92)
 					{
-						return 100f;
+						return 1.0f;
 					}
 
 					// 2. Si está en tierra normal (como los otros NPCs)
@@ -2899,7 +2921,7 @@ namespace Game
 						// Verificar que no haya lava en el bloque de la cabeza
 						if (headBlock != 92)
 						{
-							return 100f;
+							return 1.0f;
 						}
 					}
 					return 0f;
@@ -2950,7 +2972,7 @@ namespace Game
 					// 1. Si está en lava o sobre lava
 					if (groundBlock == 92 || currentBlock == 92)
 					{
-						return 100f;
+						return 0.5f;
 					}
 
 					// 2. Si está en tierra normal (como los otros NPCs)
@@ -2959,7 +2981,7 @@ namespace Game
 						// Verificar que no haya lava en el bloque de la cabeza
 						if (headBlock != 92)
 						{
-							return 100f;
+							return 0.5f;
 						}
 					}
 					return 0f;
@@ -3003,7 +3025,7 @@ namespace Game
 
 					if (currentBlock == 18 && headBlock != 18 && headBlock2 != 18)
 					{
-						return 100f;
+						return 1.0f;
 					}
 					return 0f;
 				},
@@ -3045,7 +3067,7 @@ namespace Game
 
 					if (currentBlock == 18 && headBlock != 18 && headBlock2 != 18)
 					{
-						return 100f;
+						return 0.5f;
 					}
 					return 0f;
 				},
@@ -3092,12 +3114,12 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 1.0f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "ZombieRepetidor", point, 2).Count)
+					this.SpawnCreatures(creatureType, "ZombieRepetidor", point, 1).Count)
 			});
 
 			// Spawn para Zombierepetidor Constant - DESDE DÍA 21, solo de noche
@@ -3139,7 +3161,7 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 1.0f;
 					}
 					return 0f;
 				},
@@ -3186,7 +3208,7 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 1.0f;
 					}
 					return 0f;
 				},
@@ -3233,7 +3255,7 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 0.5f;
 					}
 					return 0f;
 				},
@@ -3280,7 +3302,7 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 1.0f;
 					}
 					return 0f;
 				},
@@ -3327,7 +3349,7 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 0.5f;
 					}
 					return 0f;
 				},
@@ -3369,7 +3391,7 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 1.0f;
 					}
 					return 0f;
 				},
@@ -3411,7 +3433,7 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 0.5f;
 					}
 					return 0f;
 				},
@@ -3453,12 +3475,12 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 1.0f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "AladinaCorrupta", point, 2).Count)
+					this.SpawnCreatures(creatureType, "AladinaCorrupta", point, 1).Count)
 			});
 
 			// Spawn para AladinaCorrupta Constant - DESDE DÍA 28, cualquier hora
@@ -3495,7 +3517,7 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 0.5f;
 					}
 					return 0f;
 				},
@@ -3542,7 +3564,7 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 1.0f;
 					}
 					return 0f;
 				},
@@ -3589,7 +3611,7 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 0.5f;
 					}
 					return 0f;
 				},
@@ -3656,13 +3678,13 @@ namespace Game
 					// Permitir spawn en arena (8) o tierra (2, 3, 7) cerca del agua
 					if (groundBlock == 8 || groundBlock == 2 || groundBlock == 3 || groundBlock == 7)
 					{
-						return 100f;
+						return 1.0f;
 					}
 
 					// También permitir spawn directamente en agua (18)
 					if (currentBlock == 18 || groundBlock == 18)
 					{
-						return 100f;
+						return 1.0f;
 					}
 					return 0f;
 				},
@@ -3725,12 +3747,12 @@ namespace Game
 
 					if (groundBlock == 8 || groundBlock == 2 || groundBlock == 3 || groundBlock == 7)
 					{
-						return 100f;
+						return 0.35f;
 					}
 
 					if (currentBlock == 18 || groundBlock == 18)
 					{
-						return 100f;
+						return 0.75f;
 					}
 					return 0f;
 				},
@@ -3793,17 +3815,17 @@ namespace Game
 
 					if (groundBlock == 8 || groundBlock == 2 || groundBlock == 3 || groundBlock == 7)
 					{
-						return 100f;
+						return 1.0f;
 					}
 
 					if (currentBlock == 18 || groundBlock == 18)
 					{
-						return 100f;
+						return 1.0f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "PirataNormalAliado", point, 2).Count)
+					this.SpawnCreatures(creatureType, "PirataNormalAliado", point, 1).Count)
 			});
 
 			// Spawn para PirataNormalAliado Constant - DESDE DÍA 4, solo de día, cerca del agua, solo en verano
@@ -3861,12 +3883,12 @@ namespace Game
 
 					if (groundBlock == 8 || groundBlock == 2 || groundBlock == 3 || groundBlock == 7)
 					{
-						return 100f;
+						return 0.5f;
 					}
 
 					if (currentBlock == 18 || groundBlock == 18)
 					{
-						return 100f;
+						return 0.5f;
 					}
 					return 0f;
 				},
@@ -3929,12 +3951,12 @@ namespace Game
 
 					if (groundBlock == 8 || groundBlock == 2 || groundBlock == 3 || groundBlock == 7)
 					{
-						return 100f;
+						return 1.0f;
 					}
 
 					if (currentBlock == 18 || groundBlock == 18)
 					{
-						return 100f;
+						return 1.0f;
 					}
 					return 0f;
 				},
@@ -3997,17 +4019,17 @@ namespace Game
 
 					if (groundBlock == 8 || groundBlock == 2 || groundBlock == 3 || groundBlock == 7)
 					{
-						return 100f;
+						return 0.4f;
 					}
 
 					if (currentBlock == 18 || groundBlock == 18)
 					{
-						return 100f;
+						return 0.4f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "PirataElite", point, 2).Count)
+					this.SpawnCreatures(creatureType, "PirataElite", point, 1).Count)
 			});
 
 			// Spawn para PirataEliteAliado con 100% de probabilidad - DESDE DÍA 5, solo de día, cerca del agua, solo en verano
@@ -4065,12 +4087,12 @@ namespace Game
 
 					if (groundBlock == 8 || groundBlock == 2 || groundBlock == 3 || groundBlock == 7)
 					{
-						return 100f;
+						return 1.0f;
 					}
 
 					if (currentBlock == 18 || groundBlock == 18)
 					{
-						return 100f;
+						return 1.0f;
 					}
 					return 0f;
 				},
@@ -4133,12 +4155,12 @@ namespace Game
 
 					if (groundBlock == 8 || groundBlock == 2 || groundBlock == 3 || groundBlock == 7)
 					{
-						return 100f;
+						return 0.5f;
 					}
 
 					if (currentBlock == 18 || groundBlock == 18)
 					{
-						return 100f;
+						return 0.5f;
 					}
 					return 0f;
 				},
@@ -4201,12 +4223,12 @@ namespace Game
 
 					if (groundBlock == 8 || groundBlock == 2 || groundBlock == 3 || groundBlock == 7)
 					{
-						return 100f;
+						return 1.0f;
 					}
 
 					if (currentBlock == 18 || groundBlock == 18)
 					{
-						return 100f;
+						return 1.0f;
 					}
 					return 0f;
 				},
@@ -4269,12 +4291,12 @@ namespace Game
 
 					if (groundBlock == 8 || groundBlock == 2 || groundBlock == 3 || groundBlock == 7)
 					{
-						return 100f;
+						return 0.5f;
 					}
 
 					if (currentBlock == 18 || groundBlock == 18)
 					{
-						return 100f;
+						return 0.5f;
 					}
 					return 0f;
 				},
@@ -4337,12 +4359,12 @@ namespace Game
 
 					if (groundBlock == 8 || groundBlock == 2 || groundBlock == 3 || groundBlock == 7)
 					{
-						return 100f;
+						return 1.0f;
 					}
 
 					if (currentBlock == 18 || groundBlock == 18)
 					{
-						return 100f;
+						return 1.0f;
 					}
 					return 0f;
 				},
@@ -4405,12 +4427,12 @@ namespace Game
 
 					if (groundBlock == 8 || groundBlock == 2 || groundBlock == 3 || groundBlock == 7)
 					{
-						return 100f;
+						return 0.5f;
 					}
 
 					if (currentBlock == 18 || groundBlock == 18)
 					{
-						return 100f;
+						return 0.5f;
 					}
 					return 0f;
 				},
@@ -4452,7 +4474,7 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 1.0f;
 					}
 					return 0f;
 				},
@@ -4494,7 +4516,7 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 100f;
+						return 1.0f;
 					}
 					return 0f;
 				},
@@ -4531,8 +4553,8 @@ namespace Game
 							break;
 						}
 						IEnumerable<SubsystemShittyCreaturesSpawn.CreatureType> source = from c in this.m_creatureTypes
-																				 where c.SpawnLocationType == spawnLocationType && c.RandomSpawn
-																				 select c;
+																						 where c.SpawnLocationType == spawnLocationType && c.RandomSpawn
+																						 select c;
 						IEnumerable<float> items = from c in source
 												   select c.SpawnSuitabilityFunction(c, spawnPoint.Value);
 						int randomWeightedItem = this.GetRandomWeightedItem(items);
@@ -4570,8 +4592,8 @@ namespace Game
 				if (flag2)
 				{
 					IEnumerable<SubsystemShittyCreaturesSpawn.CreatureType> source = from c in this.m_creatureTypes
-																			 where c.SpawnLocationType == spawnLocationType && c.ConstantSpawn == constantSpawn
-																			 select c;
+																					 where c.SpawnLocationType == spawnLocationType && c.ConstantSpawn == constantSpawn
+																					 select c;
 					IEnumerable<float> items = from c in source
 											   select c.SpawnSuitabilityFunction(c, spawnPoint.Value);
 					int randomWeightedItem = this.GetRandomWeightedItem(items);
