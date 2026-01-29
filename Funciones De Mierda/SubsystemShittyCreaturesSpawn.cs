@@ -403,7 +403,7 @@ namespace Game
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "LaMuerteX", point, this.m_random.Int(1, 2)).Count)
+					this.SpawnCreatures(creatureType, "LaMuerteX", point, this.m_random.Int(5)).Count)
 			});
 
 			// Spawn para LaMuerteX Constant - DESDE DÍA 0, solo de noche (versión constante)
