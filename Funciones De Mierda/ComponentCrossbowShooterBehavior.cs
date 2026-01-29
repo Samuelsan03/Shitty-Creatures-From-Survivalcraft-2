@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Engine;
 using GameEntitySystem;
@@ -16,6 +16,7 @@ namespace Game
 		private SubsystemProjectiles m_subsystemProjectiles;
 		private SubsystemAudio m_subsystemAudio;
 		private ComponentCreatureModel m_componentModel;
+		private ComponentNewHumanModel m_componentNewHumanModel; // Nueva referencia
 		private SubsystemParticles m_subsystemParticles;
 		private SubsystemNoise m_subsystemNoise;
 
@@ -53,6 +54,13 @@ namespace Game
 		private bool m_initialized = false;
 		private bool m_hasCycledForNextShot = false;
 
+		// Variables para suavizado de animaciones
+		private float m_smoothedAimHandAngle = 0f;
+		private Vector3 m_smoothedItemOffset = Vector3.Zero;
+		private Vector3 m_smoothedItemRotation = Vector3.Zero;
+		private float m_animationSmoothFactor = 0.18f; // Factor de suavizado igual que NewHumanModel
+		private float m_aimSmoothFactor = 0.3f; // Factor específico para apuntar
+
 		// UpdateOrder
 		public int UpdateOrder => 0;
 		public override float ImportanceLevel => 0.5f;
@@ -79,7 +87,21 @@ namespace Game
 			m_subsystemTime = base.Project.FindSubsystem<SubsystemTime>(true);
 			m_subsystemProjectiles = base.Project.FindSubsystem<SubsystemProjectiles>(true);
 			m_subsystemAudio = base.Project.FindSubsystem<SubsystemAudio>(true);
-			m_componentModel = base.Entity.FindComponent<ComponentCreatureModel>(true);
+
+			// Intentar primero obtener el ComponentNewHumanModel para mejor fluidez
+			m_componentNewHumanModel = base.Entity.FindComponent<ComponentNewHumanModel>(false);
+			if (m_componentNewHumanModel != null)
+			{
+				m_componentModel = m_componentNewHumanModel;
+				// Ajustar parámetros de suavizado del nuevo modelo
+				m_componentNewHumanModel.SetAimSmoothness(0.4f); // Valor óptimo para ballesta
+			}
+			else
+			{
+				// Fallback al modelo humano normal
+				m_componentModel = base.Entity.FindComponent<ComponentCreatureModel>(true);
+			}
+
 			m_subsystemParticles = base.Project.FindSubsystem<SubsystemParticles>(true);
 			m_subsystemNoise = base.Project.FindSubsystem<SubsystemNoise>(true);
 		}
@@ -95,6 +117,11 @@ namespace Game
 
 			// Buscar ballesta
 			FindCrossbow();
+
+			// Inicializar valores suavizados
+			m_smoothedAimHandAngle = 0f;
+			m_smoothedItemOffset = Vector3.Zero;
+			m_smoothedItemRotation = Vector3.Zero;
 
 			// Mostrar virote inicialmente si está configurado
 			if (ShowBoltWhenIdle && m_crossbowSlot >= 0)
@@ -144,7 +171,10 @@ namespace Game
 				return;
 			}
 
-			// Aplicar animaciones
+			// Aplicar suavizado de animaciones (igual que NewHumanModel)
+			ApplySmoothAnimations(dt);
+
+			// Lógica de estados
 			if (m_isAiming)
 			{
 				ApplyAimingAnimation(dt);
@@ -209,6 +239,46 @@ namespace Game
 						StartAiming();
 					}
 				}
+			}
+		}
+
+		// Nuevo método: Aplicar suavizado igual que NewHumanModel
+		private void ApplySmoothAnimations(float dt)
+		{
+			float smoothSpeed = MathUtils.Min(10f * dt, 0.85f); // Igual que NewHumanModel
+			float aimSmoothSpeed = MathUtils.Min(5f * dt, 0.9f); // Igual que NewHumanModel
+
+			// Si tenemos ComponentNewHumanModel, usar su sistema de suavizado interno
+			if (m_componentNewHumanModel != null)
+			{
+				// El modelo ya maneja el suavizado internamente
+				return;
+			}
+
+			// Suavizado manual para el modelo normal
+			if (m_componentModel != null)
+			{
+				// Suavizar el ángulo de apuntar
+				float targetAimAngle = m_componentModel.AimHandAngleOrder;
+				m_smoothedAimHandAngle = MathUtils.Lerp(m_smoothedAimHandAngle,
+					targetAimAngle, aimSmoothSpeed * 0.7f);
+
+				// Aplicar ángulo suavizado
+				m_componentModel.AimHandAngleOrder = m_smoothedAimHandAngle;
+
+				// Suavizar offset del ítem
+				Vector3 targetOffset = m_componentModel.InHandItemOffsetOrder;
+				m_smoothedItemOffset = Vector3.Lerp(m_smoothedItemOffset,
+					targetOffset, smoothSpeed);
+
+				// Suavizar rotación del ítem
+				Vector3 targetRotation = m_componentModel.InHandItemRotationOrder;
+				m_smoothedItemRotation = Vector3.Lerp(m_smoothedItemRotation,
+					targetRotation, smoothSpeed);
+
+				// Aplicar valores suavizados
+				m_componentModel.InHandItemOffsetOrder = m_smoothedItemOffset;
+				m_componentModel.InHandItemRotationOrder = m_smoothedItemRotation;
 			}
 		}
 
@@ -309,13 +379,28 @@ namespace Game
 			{
 				// ANIMACIÓN DE APUNTADO - VERTICAL COMO MOSQUETE
 				// La ballesta se sostiene verticalmente con brazo alto
-				m_componentModel.AimHandAngleOrder = 1.4f;
-				m_componentModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
-				m_componentModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
+				float targetAimAngle = 1.4f;
+				Vector3 targetOffset = new Vector3(-0.08f, -0.08f, 0.07f);
+				Vector3 targetRotation = new Vector3(-1.7f, 0f, 0f);
+
+				// Si no tenemos el nuevo modelo, aplicar valores directamente
+				if (m_componentNewHumanModel == null)
+				{
+					m_componentModel.AimHandAngleOrder = targetAimAngle;
+					m_componentModel.InHandItemOffsetOrder = targetOffset;
+					m_componentModel.InHandItemRotationOrder = targetRotation;
+				}
+				else
+				{
+					// El nuevo modelo maneja el suavizado internamente
+					m_componentModel.AimHandAngleOrder = targetAimAngle;
+					m_componentModel.InHandItemOffsetOrder = targetOffset;
+					m_componentModel.InHandItemRotationOrder = targetRotation;
+				}
 
 				if (m_componentChaseBehavior.Target != null)
 				{
-					m_componentModel.LookAtOrder = new Vector3? (
+					m_componentModel.LookAtOrder = new Vector3?(
 						m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition
 					);
 				}
@@ -342,17 +427,32 @@ namespace Game
 				float drawFactor = m_currentDraw;
 
 				// ANIMACIÓN DE TENSADO - MOVIMIENTO HACIA ATRÁS
-				m_componentModel.AimHandAngleOrder = 1.4f;
-				m_componentModel.InHandItemOffsetOrder = new Vector3(
+				float targetAimAngle = 1.4f;
+				Vector3 targetOffset = new Vector3(
 					-0.08f + (0.05f * drawFactor),
 					-0.08f,
 					0.07f - (0.03f * drawFactor)
 				);
-				m_componentModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
+				Vector3 targetRotation = new Vector3(-1.7f, 0f, 0f);
+
+				// Si no tenemos el nuevo modelo, aplicar valores directamente
+				if (m_componentNewHumanModel == null)
+				{
+					m_componentModel.AimHandAngleOrder = targetAimAngle;
+					m_componentModel.InHandItemOffsetOrder = targetOffset;
+					m_componentModel.InHandItemRotationOrder = targetRotation;
+				}
+				else
+				{
+					// El nuevo modelo maneja el suavizado internamente
+					m_componentModel.AimHandAngleOrder = targetAimAngle;
+					m_componentModel.InHandItemOffsetOrder = targetOffset;
+					m_componentModel.InHandItemRotationOrder = targetRotation;
+				}
 
 				if (m_componentChaseBehavior.Target != null)
 				{
-					m_componentModel.LookAtOrder = new Vector3? (
+					m_componentModel.LookAtOrder = new Vector3?(
 						m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition
 					);
 				}
@@ -380,17 +480,32 @@ namespace Game
 				// ANIMACIÓN DE CARGA - PEQUEÑO MOVIMIENTO HACIA ABAJO
 				float reloadProgress = (float)((m_subsystemTime.GameTime - m_animationStartTime) / 0.3f);
 
-				m_componentModel.AimHandAngleOrder = 1.4f;
-				m_componentModel.InHandItemOffsetOrder = new Vector3(
+				float targetAimAngle = 1.4f;
+				Vector3 targetOffset = new Vector3(
 					-0.08f,
 					-0.08f - (0.05f * reloadProgress),
 					0.07f
 				);
-				m_componentModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
+				Vector3 targetRotation = new Vector3(-1.7f, 0f, 0f);
+
+				// Si no tenemos el nuevo modelo, aplicar valores directamente
+				if (m_componentNewHumanModel == null)
+				{
+					m_componentModel.AimHandAngleOrder = targetAimAngle;
+					m_componentModel.InHandItemOffsetOrder = targetOffset;
+					m_componentModel.InHandItemRotationOrder = targetRotation;
+				}
+				else
+				{
+					// El nuevo modelo maneja el suavizado internamente
+					m_componentModel.AimHandAngleOrder = targetAimAngle;
+					m_componentModel.InHandItemOffsetOrder = targetOffset;
+					m_componentModel.InHandItemRotationOrder = targetRotation;
+				}
 
 				if (m_componentChaseBehavior.Target != null)
 				{
-					m_componentModel.LookAtOrder = new Vector3? (
+					m_componentModel.LookAtOrder = new Vector3?(
 						m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition
 					);
 				}
@@ -432,25 +547,56 @@ namespace Game
 					// Pequeño retroceso
 					float recoil = 0.05f * (1f - (fireProgress * 2f));
 
-					m_componentModel.InHandItemOffsetOrder += new Vector3(recoil, 0f, 0f);
-					m_componentModel.InHandItemRotationOrder += new Vector3(recoil * 2f, 0f, 0f);
+					Vector3 targetOffset = m_componentModel.InHandItemOffsetOrder + new Vector3(recoil, 0f, 0f);
+					Vector3 targetRotation = m_componentModel.InHandItemRotationOrder + new Vector3(recoil * 2f, 0f, 0f);
+					float targetAimAngle = 1.4f;
+
+					// Si no tenemos el nuevo modelo, aplicar valores directamente
+					if (m_componentNewHumanModel == null)
+					{
+						m_componentModel.AimHandAngleOrder = targetAimAngle;
+						m_componentModel.InHandItemOffsetOrder = targetOffset;
+						m_componentModel.InHandItemRotationOrder = targetRotation;
+					}
+					else
+					{
+						// El nuevo modelo maneja el suavizado internamente
+						m_componentModel.AimHandAngleOrder = targetAimAngle;
+						m_componentModel.InHandItemOffsetOrder = targetOffset;
+						m_componentModel.InHandItemRotationOrder = targetRotation;
+					}
 				}
 				else
 				{
 					// Volver a posición normal gradualmente
 					float returnProgress = (fireProgress - 0.5f) / 0.5f;
 
-					m_componentModel.AimHandAngleOrder = 1.4f * (1f - returnProgress);
-					m_componentModel.InHandItemOffsetOrder = new Vector3(
+					float targetAimAngle = 1.4f * (1f - returnProgress);
+					Vector3 targetOffset = new Vector3(
 						-0.08f * (1f - returnProgress),
 						-0.08f * (1f - returnProgress),
 						0.07f * (1f - returnProgress)
 					);
-					m_componentModel.InHandItemRotationOrder = new Vector3(
+					Vector3 targetRotation = new Vector3(
 						-1.7f * (1f - returnProgress),
 						0f,
 						0f
 					);
+
+					// Si no tenemos el nuevo modelo, aplicar valores directamente
+					if (m_componentNewHumanModel == null)
+					{
+						m_componentModel.AimHandAngleOrder = targetAimAngle;
+						m_componentModel.InHandItemOffsetOrder = targetOffset;
+						m_componentModel.InHandItemRotationOrder = targetRotation;
+					}
+					else
+					{
+						// El nuevo modelo maneja el suavizado internamente
+						m_componentModel.AimHandAngleOrder = targetAimAngle;
+						m_componentModel.InHandItemOffsetOrder = targetOffset;
+						m_componentModel.InHandItemRotationOrder = targetRotation;
+					}
 				}
 			}
 		}
@@ -463,6 +609,11 @@ namespace Game
 			m_isReloading = false;
 			m_currentDraw = 0f;
 			m_hasCycledForNextShot = false;
+
+			// Resetear valores suavizados
+			m_smoothedAimHandAngle = 0f;
+			m_smoothedItemOffset = Vector3.Zero;
+			m_smoothedItemRotation = Vector3.Zero;
 
 			if (m_componentModel != null)
 			{
