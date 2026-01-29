@@ -1081,7 +1081,7 @@
 <MemberComponentTemplate Name="NewZombieModel" Guid="f23bd78d-f187-4d76-ac6b-bf55ebfdc8c4" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
     <Parameter Name="Class" Guid="0ed4f51a-a2d6-475f-bf05-54d66f6fded6" Value="Game.ComponentNewZombieModel" Type="string"/>
     <Parameter Name="ModelName" Guid="e9e941fd-a9a0-448c-90db-53fd814a4127" Value="Models/Zombies Modelos De Cagada/ZombieNormal" Type="string"/>
-    <Parameter Name="TextureOverride" Guid="ef75b48f-3c39-4269-a5d2-12896c729f35" Value="Textures/ZombiesDeMierda/ZombieNormal2" Type="string"/>
+    <Parameter Name="TextureOverride" Guid="ef75b48f-3c39-4269-a5d2-12896c729f35" Value="Textures/ZombiesDeMierda/ZombieFaster2" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="e521090b-19bc-4dbc-9dc5-f8a26ce31c34" Value="0.65" Type="float"/>
     <Parameter Name="WalkBobHeight" Guid="f1ca8687-b0f3-4aea-8035-abfa519df269" Value="0.045" Type="float"/>
     <Parameter Name="WalkLegsAngle" Guid="bdc4bc29-7f16-4802-bfbd-7015b9bca058" Value="0.35" Type="float"/>
@@ -1237,7 +1237,7 @@
 <MemberComponentTemplate Name="NewZombieModel" Guid="f18f4b7f-90ff-444f-a0ea-b581eb2f3a3c" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
     <Parameter Name="Class" Guid="274324af-e36a-4748-996b-e06096d63427" Value="Game.ComponentNewZombieModel" Type="string"/>
     <Parameter Name="ModelName" Guid="812f83ac-be8c-46a5-95b5-52fd27ed39cd" Value="Models/Zombies Modelos De Cagada/ZombieNormal" Type="string"/>
-    <Parameter Name="TextureOverride" Guid="44f533d7-4536-4856-9b4d-257288c1de80" Value="Textures/ZombiesDeMierda/ZombieNormal2" Type="string"/>
+    <Parameter Name="TextureOverride" Guid="44f533d7-4536-4856-9b4d-257288c1de80" Value="Textures/ZombiesDeMierda/ZombieFaster2" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="f9f21934-fcfd-41f3-81a2-d375df31a777" Value="0.65" Type="float"/>
     <Parameter Name="WalkBobHeight" Guid="d4b3c829-9d54-4178-9b73-d89d24c113e9" Value="0.045" Type="float"/>
     <Parameter Name="WalkLegsAngle" Guid="cc1d3210-d39f-42fd-8a01-79c5928c7b26" Value="0.35" Type="float"/>
