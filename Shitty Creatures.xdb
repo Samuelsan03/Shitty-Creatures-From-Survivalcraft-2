@@ -874,7 +874,7 @@
     <Parameter Name="TextureOverride" Guid="b96b887e-339f-4fb8-abe3-89df35cbdf71" Value="Textures/Naomi" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="21953476-fdae-40ff-90f1-720479650054" Value="0.65" Type="float"/>
     <Parameter Name="WalkBobHeight" Guid="7c7585a1-c9fa-4f8f-b006-6defaad3d35a" Value="0.045" Type="float"/>
-    <Parameter Name="WalkLegsAngle" Guid="f533ead3-f5be-4c66-b0ba-64e3eb28d18d" Value="0.35" Type="float"/>
+    <Parameter Name="WalkLegsAngle" Guid="f533ead3-f5be-4c66-b0ba-64e3eb28d18d" Value="0.75" Type="float"/>
     <Parameter Name="SmoothFactor" Guid="b276ab17-5d80-4d45-84e6-7b3f1926c131" Value="0.12" Type="float"/>
     <Parameter Name="AnimationResponsiveness" Guid="d01e66da-5ff4-4b10-9a26-a67516cb7d82" Value="15" Type="float"/>
     <Parameter Name="AimSmoothFactor" Guid="4fc1c5ee-2cdd-4d0e-8cd1-039639c49229" Value="0.2" Type="float"/>
@@ -3779,7 +3779,7 @@
     </ParameterSet>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="BowShooterBehavior" Guid="1a7202f4-4fb5-437e-84ae-ba88167f3c5f" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
-    <Parameter Name="MaxDistance" Value="25" Type="float"/>
+    <Parameter Name="MaxDistance" Value="100" Type="float"/>
     <Parameter Name="DrawTime" Value="0.5" Type="float"/>
     <Parameter Name="AimTime" Value="0.8" Type="float"/>
     <Parameter Name="Accuracy" Value="0.03" Type="float"/>
@@ -3788,10 +3788,6 @@
     <Parameter Name="ShowArrowWhenIdle" Value="false" Type="bool"/>
     <Parameter Name="CycleArrowTypes" Value="true" Type="bool"/>
     <Parameter Name="Class" Value="Game.ComponentBowShooterBehavior" Type="string"/>
-</MemberComponentTemplate>
-<MemberComponentTemplate Name="NewCreatureCollect" Guid="051a3565-9a99-4dbb-bf3a-6ba3f5337dc7" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
-    <Parameter Name="PickFactors" Guid="74f25967-a5f9-4fc4-ba90-b84a75197bb3" Value="Tools;1.0,Weapons;1.0" Type="string"/>
-    <Parameter Name="Class" Value="Game.ComponentNewCreatureCollect" Type="string"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Loot" Guid="4bb110fe-f5f8-40a3-ad83-b25ee4e389ab">
         <ParameterSet Name="Loot" Guid="a11a74e9-6cdc-4b27-8e00-35da047fc2b2">
