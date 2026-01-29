@@ -162,14 +162,42 @@ namespace Game
 							}
 							else
 							{
+								// AGREGADO: Lógica mejorada para guardianes en manadas originales
 								ComponentHerdBehavior oldHerd = creature.Entity.FindComponent<ComponentHerdBehavior>();
 								ComponentHerdBehavior targetHerd = targetCreature.Entity.FindComponent<ComponentHerdBehavior>();
-								if (oldHerd != null && targetHerd != null && oldHerd.HerdName == targetHerd.HerdName)
+
+								if (oldHerd != null && targetHerd != null &&
+									!string.IsNullOrEmpty(oldHerd.HerdName) &&
+									!string.IsNullOrEmpty(targetHerd.HerdName))
 								{
-									continue;
+									bool isSameHerd = targetHerd.HerdName == oldHerd.HerdName;
+
+									// Verificar relación player-guardian
+									bool isPlayerAllyRelationship = false;
+
+									if (oldHerd.HerdName.Equals("player", StringComparison.OrdinalIgnoreCase))
+									{
+										if (targetHerd.HerdName.ToLower().Contains("guardian"))
+										{
+											isPlayerAllyRelationship = true;
+										}
+									}
+									else if (oldHerd.HerdName.ToLower().Contains("guardian"))
+									{
+										if (targetHerd.HerdName.Equals("player", StringComparison.OrdinalIgnoreCase))
+										{
+											isPlayerAllyRelationship = true;
+										}
+									}
+
+									if (isSameHerd || isPlayerAllyRelationship)
+									{
+										continue; // No atacar a aliados
+									}
 								}
 							}
 
+							// ORDENAR EL ATAQUE - Esta parte faltaba en tu código
 							ComponentNewChaseBehavior newChase = creature.Entity.FindComponent<ComponentNewChaseBehavior>();
 							ComponentNewChaseBehavior2 newChase2 = creature.Entity.FindComponent<ComponentNewChaseBehavior2>();
 							ComponentChaseBehavior oldChase = creature.Entity.FindComponent<ComponentChaseBehavior>();
@@ -188,9 +216,11 @@ namespace Game
 							}
 						}
 					}
+
+					return true; // Éxito - se encontró y se ordenó atacar
 				}
 
-				return foundTarget;
+				return false; // No se encontró objetivo válido
 			}
 			catch (Exception)
 			{
@@ -204,15 +234,21 @@ namespace Game
 				return false;
 
 			ComponentNewHerdBehavior newHerd = creature.Entity.FindComponent<ComponentNewHerdBehavior>();
-			if (newHerd != null)
+			if (newHerd != null && !string.IsNullOrEmpty(newHerd.HerdName))
 			{
-				return newHerd.HerdName.Equals("player", StringComparison.OrdinalIgnoreCase);
+				// AGREGADO: Incluir guardianes como aliados del jugador
+				string herdName = newHerd.HerdName;
+				return herdName.Equals("player", StringComparison.OrdinalIgnoreCase) ||
+					   herdName.ToLower().Contains("guardian");
 			}
 
 			ComponentHerdBehavior oldHerd = creature.Entity.FindComponent<ComponentHerdBehavior>();
-			if (oldHerd != null)
+			if (oldHerd != null && !string.IsNullOrEmpty(oldHerd.HerdName))
 			{
-				return oldHerd.HerdName.Equals("player", StringComparison.OrdinalIgnoreCase);
+				// AGREGADO: Incluir guardianes como aliados del jugador
+				string herdName = oldHerd.HerdName;
+				return herdName.Equals("player", StringComparison.OrdinalIgnoreCase) ||
+					   herdName.ToLower().Contains("guardian");
 			}
 
 			ComponentPlayer player = creature.Entity.FindComponent<ComponentPlayer>();
