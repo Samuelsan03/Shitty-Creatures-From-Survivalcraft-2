@@ -339,6 +339,13 @@
             </MemberComponentTemplate>
           </EntityTemplate>
           <EntityTemplate Name="Player" Guid="4be6c1c5-d65d-4537-8a8b-a391969e6dc2">
+          <MemberComponentTemplate Name="DeathSpawner" Guid="b018af52-20d3-40aa-a617-342814e09ddd">
+    <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="350d6df4-5a73-49a1-853f-cbf4e7d0a223"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="fed158b5-2ce0-4841-92c6-76e577d1aabb"/>
+    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="4c6d22ca-7c7a-456c-9953-f385024eaf50"/>
+    <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="a229bf56-fd68-4f7e-9325-fd231f3125ed"/>
+    <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1;InfectedNormal2" Type="string" Guid="6aa0ff67-4f1e-44d4-9dfe-cda76afc7147"/>
+</MemberComponentTemplate>
             <MemberComponentTemplate Name="DiggingCracks" Guid="041f105b-eed2-40ec-8f30-8c88d60d7f85" InheritanceParent="7ea6062c-28be-4e76-8765-39b7a1f5be9b"/>
             <MemberComponentTemplate Name="CraftingTable" Guid="0b234d05-36eb-4902-9571-6a884d707b85" InheritanceParent="48fdc8bb-8ca8-4d0f-af8d-25bfe9b56a19">
               <Parameter Name="SlotsCount" Guid="89328a33-979d-48a9-9b68-aac10a9404b2" Value="6" Type="int"/>
@@ -1965,7 +1972,7 @@
         <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
         <Parameter Name="IsOptional" Value="true" Type="bool"/>
         <Parameter Name="LoadOrder" Value="60" Type="int"/>
-        <Parameter Name="PoisonResistance" Value="0" Type="float"/> <!-- Resistencia al veneno -->
+        <Parameter Name="PoisonResistance" Value="55" Type="float"/> <!-- Resistencia al veneno -->
         <Parameter Name="IsJumpMove" Value="false" Type="bool"/> <!-- No tiene movimiento de salto con veneno -->
     </MemberComponentTemplate>
             <MemberComponentTemplate Name="Creature" Guid="0d24a011-7626-40c4-927a-84be91eaf94d">
