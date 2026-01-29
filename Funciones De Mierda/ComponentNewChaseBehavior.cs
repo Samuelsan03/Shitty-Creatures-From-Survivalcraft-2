@@ -49,25 +49,59 @@ namespace Game
 					ComponentHerdBehavior componentHerdBehavior = base.Entity.FindComponent<ComponentHerdBehavior>();
 					if (componentHerdBehavior != null)
 					{
-						bool isSameHerd = !string.IsNullOrEmpty(componentHerdBehavior.HerdName) && componentCreature.Entity.FindComponent<ComponentHerdBehavior>() != null && componentCreature.Entity.FindComponent<ComponentHerdBehavior>().HerdName == componentHerdBehavior.HerdName;
-						if (isSameHerd)
+						ComponentHerdBehavior targetHerd = componentCreature.Entity.FindComponent<ComponentHerdBehavior>();
+						if (targetHerd != null && !string.IsNullOrEmpty(targetHerd.HerdName) && !string.IsNullOrEmpty(componentHerdBehavior.HerdName))
 						{
-							return;
+							// AGREGADO: Lógica de guardianes para ComponentHerdBehavior
+							bool isSameHerd = targetHerd.HerdName == componentHerdBehavior.HerdName;
+
+							// Verificar si son aliados (player-guardian)
+							bool isPlayerAlly = false;
+							if (componentHerdBehavior.HerdName.Equals("player", StringComparison.OrdinalIgnoreCase))
+							{
+								if (targetHerd.HerdName.ToLower().Contains("guardian"))
+								{
+									isPlayerAlly = true;
+								}
+							}
+							else if (componentHerdBehavior.HerdName.ToLower().Contains("guardian"))
+							{
+								if (targetHerd.HerdName.Equals("player", StringComparison.OrdinalIgnoreCase))
+								{
+									isPlayerAlly = true;
+								}
+							}
+
+							if (isSameHerd || isPlayerAlly)
+							{
+								return; // No atacar aliados
+							}
+						}
+						else
+						{
+                            if (base.Entity.FindComponent<ComponentHerdBehavior>() != null)
+							{
+								bool isSameHerd = !string.IsNullOrEmpty(base.Entity.FindComponent<ComponentHerdBehavior>().HerdName) && componentCreature.Entity.FindComponent<ComponentHerdBehavior>() != null && componentCreature.Entity.FindComponent<ComponentHerdBehavior>().HerdName == base.Entity.FindComponent<ComponentHerdBehavior>().HerdName;
+								if (isSameHerd)
+								{
+									return;
+								}
+							}
+						}
+						this.m_target = componentCreature;
+						this.m_nextUpdateTime = 0.0;
+						this.m_range = maxRange;
+						this.m_chaseTime = maxChaseTime;
+						this.m_isPersistent = isPersistent;
+						this.m_importanceLevel = (isPersistent ? this.ImportanceLevelPersistent : this.ImportanceLevelNonPersistent);
+						this.IsActive = true;
+						this.m_stateMachine.TransitionTo("Chasing");
+						if (this.m_target != null && this.m_componentPathfinding != null)
+						{
+							this.m_componentPathfinding.Stop();
+							this.UpdateChasingStateImmediately();
 						}
 					}
-				}
-				this.m_target = componentCreature;
-				this.m_nextUpdateTime = 0.0;
-				this.m_range = maxRange;
-				this.m_chaseTime = maxChaseTime;
-				this.m_isPersistent = isPersistent;
-				this.m_importanceLevel = (isPersistent ? this.ImportanceLevelPersistent : this.ImportanceLevelNonPersistent);
-				this.IsActive = true;
-				this.m_stateMachine.TransitionTo("Chasing");
-				if (this.m_target != null && this.m_componentPathfinding != null)
-				{
-					this.m_componentPathfinding.Stop();
-					this.UpdateChasingStateImmediately();
 				}
 			}
 		}
@@ -302,18 +336,12 @@ namespace Game
 					FlameThrowerBlock.LoadState loadState = FlameThrowerBlock.GetLoadState(data);
 					FlameBulletBlock.FlameBulletType? bulletType = FlameThrowerBlock.GetBulletType(data);
 
-					// DETECCIÓN ESPECIAL: Si el lanzallamas está vacío o necesita inicialización
-					if ((loadState == FlameThrowerBlock.LoadState.Empty || loadCount <= 0) &&
+					// DETECCIÓN MEJORADA: Verificar si necesita recarga
+					if (loadState == FlameThrowerBlock.LoadState.Empty ||
+						loadCount <= 0 ||
 						!bulletType.HasValue)
 					{
-						// Esto indica que es la primera vez que la criatura usa este lanzallamas
-						// Forzar recarga con tipo aleatorio
-						this.FindAimTool(this.m_componentMiner);
-						hasRangedWeapon = this.HasActiveRangedWeaponComponent();
-					}
-					else if (loadState == FlameThrowerBlock.LoadState.Empty || loadCount <= 0)
-					{
-						// Solo recarga normal (mantiene tipo existente)
+						// Forzar recarga con tipo alternado
 						this.FindAimTool(this.m_componentMiner);
 						hasRangedWeapon = this.HasActiveRangedWeaponComponent();
 					}
@@ -447,7 +475,16 @@ namespace Game
 		private bool HasActiveRangedWeaponComponent()
 		{
 			if (this.m_target == null) return false;
-			return this.IsFirearmActive();
+
+			// MODIFICACIÓN: Incluir FlameThrowerBlock
+			if (this.m_componentMiner == null || this.m_componentMiner.ActiveBlockValue == 0)
+				return false;
+
+			int blockId = Terrain.ExtractContents(this.m_componentMiner.ActiveBlockValue);
+
+			// Verificar si es arma de fuego o lanzallamas
+			return this.IsFirearmActive() ||
+				   blockId == BlocksManager.GetBlockIndex(typeof(FlameThrowerBlock), true, false);
 		}
 		public void RespondToCommandImmediately(ComponentCreature target)
 		{
@@ -642,7 +679,7 @@ namespace Game
 			Block block = BlocksManager.Blocks[blockId];
 
 			// Verificar si el bloque actual es un arma a distancia
-			if (block.IsAimable_(activeBlockValue) || this.IsFirearmBlock(activeBlockValue) || block is MusketBlock)
+			if (block.IsAimable_(activeBlockValue) || this.IsFirearmBlock(activeBlockValue) || block is MusketBlock || block is FlameThrowerBlock)
 			{
 				// Verificar si necesita recarga/preparación
 				if (this.IsAimToolNeedToReady(componentMiner, activeSlotIndex))
@@ -732,6 +769,24 @@ namespace Game
 			int slotValue = componentMiner.Inventory.GetSlotValue(slotIndex);
 			int data = Terrain.ExtractData(slotValue);
 			Block block = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)];
+
+			// MODIFICACIÓN: Agregar verificación para FlameThrowerBlock
+			if (block is FlameThrowerBlock)
+			{
+				FlameThrowerBlock.LoadState loadState = FlameThrowerBlock.GetLoadState(data);
+				int loadCount = FlameThrowerBlock.GetLoadCount(slotValue);
+				FlameBulletBlock.FlameBulletType? bulletType = FlameThrowerBlock.GetBulletType(data);
+
+				// Necesita recarga si está vacío o no tiene tipo de bala definido
+				if (loadState == FlameThrowerBlock.LoadState.Empty ||
+					loadCount <= 0 ||
+					!bulletType.HasValue)
+				{
+					return true;
+				}
+				return false;
+			}
+
 			if (block is ItemsLauncherBlock) return false;
 			bool flag = !(block is BowBlock);
 			if (flag)
@@ -1019,16 +1074,23 @@ namespace Game
 			{
 				ComponentNewHerdBehavior componentNewHerdBehavior = base.Entity.FindComponent<ComponentNewHerdBehavior>();
 				ComponentHerdBehavior componentHerdBehavior = base.Entity.FindComponent<ComponentHerdBehavior>();
-				bool isPlayerHerd = false;
+				bool isPlayerAlly = false;
+
+				// AGREGADO: Verificar tanto manada "player" como guardianes
 				if (componentNewHerdBehavior != null && !string.IsNullOrEmpty(componentNewHerdBehavior.HerdName))
 				{
-					isPlayerHerd = componentNewHerdBehavior.HerdName.Equals("player", StringComparison.OrdinalIgnoreCase);
+					string herdName = componentNewHerdBehavior.HerdName;
+					isPlayerAlly = herdName.Equals("player", StringComparison.OrdinalIgnoreCase) ||
+								  herdName.ToLower().Contains("guardian");
 				}
 				else if (componentHerdBehavior != null && !string.IsNullOrEmpty(componentHerdBehavior.HerdName))
 				{
-					isPlayerHerd = componentHerdBehavior.HerdName.Equals("player", StringComparison.OrdinalIgnoreCase);
+					string herdName = componentHerdBehavior.HerdName;
+					isPlayerAlly = herdName.Equals("player", StringComparison.OrdinalIgnoreCase) ||
+								  herdName.ToLower().Contains("guardian");
 				}
-				if (!isPlayerHerd) return;
+
+				if (!isPlayerAlly) return;
 				bool flag3 = this.m_subsystemTime.GameTime < this.m_nextPlayerCheckTime;
 				if (!flag3)
 				{
@@ -1070,11 +1132,26 @@ namespace Game
 						{
 							ComponentNewHerdBehavior componentNewHerdBehavior = componentCreature.Entity.FindComponent<ComponentNewHerdBehavior>();
 							ComponentHerdBehavior componentHerdBehavior = componentCreature.Entity.FindComponent<ComponentHerdBehavior>();
-							bool isPlayerHerd = false;
-							if (componentNewHerdBehavior != null) isPlayerHerd = componentNewHerdBehavior.HerdName.Equals("player", StringComparison.OrdinalIgnoreCase);
-							else if (componentHerdBehavior != null) isPlayerHerd = componentHerdBehavior.HerdName.Equals("player", StringComparison.OrdinalIgnoreCase);
-							if (!isPlayerHerd)
+							bool isPlayerAlly = false;
+
+							// AGREGADO: Lógica mejorada para detectar aliados
+							if (componentNewHerdBehavior != null)
 							{
+								// Verificar si es de la manada "player" o contiene "guardian"
+								string herdName = componentNewHerdBehavior.HerdName;
+								isPlayerAlly = herdName.Equals("player", StringComparison.OrdinalIgnoreCase) ||
+											  herdName.ToLower().Contains("guardian");
+							}
+							else if (componentHerdBehavior != null)
+							{
+								string herdName = componentHerdBehavior.HerdName;
+								isPlayerAlly = herdName.Equals("player", StringComparison.OrdinalIgnoreCase) ||
+											  herdName.ToLower().Contains("guardian");
+							}
+
+							if (!isPlayerAlly)
+							{
+								// ... verificar si ataca al jugador (código existente)
 								ComponentChaseBehavior componentChaseBehavior = componentCreature.Entity.FindComponent<ComponentChaseBehavior>();
 								ComponentNewChaseBehavior componentNewChaseBehavior = componentCreature.Entity.FindComponent<ComponentNewChaseBehavior>();
 								bool isAttackingPlayer = false;
@@ -1447,6 +1524,7 @@ namespace Game
 			bool flag2 = componentCreature == this.Target || this.m_subsystemGameInfo.WorldSettings.GameMode > GameMode.Harmless;
 			bool flag3 = this.m_autoChaseMask > (CreatureCategory)0;
 			bool flag4 = componentCreature == this.Target || (flag3 && MathUtils.Remainder(0.004999999888241291 * this.m_subsystemTime.GameTime + (double)((float)(this.GetHashCode() % 1000) / 1000f) + (double)((float)(componentCreature.GetHashCode() % 1000) / 1000f), 1.0) < (double)this.m_chaseNonPlayerProbability);
+
 			ComponentNewHerdBehavior componentNewHerdBehavior = base.Entity.FindComponent<ComponentNewHerdBehavior>();
 			bool flag5 = true;
 			if (componentNewHerdBehavior != null)
@@ -1459,13 +1537,35 @@ namespace Game
 				if (componentHerdBehavior != null)
 				{
 					ComponentHerdBehavior targetHerd = componentCreature.Entity.FindComponent<ComponentHerdBehavior>();
-					if (targetHerd != null && !string.IsNullOrEmpty(targetHerd.HerdName) && targetHerd.HerdName == componentHerdBehavior.HerdName)
+					if (targetHerd != null && !string.IsNullOrEmpty(targetHerd.HerdName))
 					{
-						flag5 = false;
+						// AGREGADO: Lógica de guardianes para ComponentHerdBehavior original
+						bool isSameHerd = targetHerd.HerdName == componentHerdBehavior.HerdName;
+
+						// Si esta manada es "player" y la otra contiene "guardian", son aliados
+						if (!isSameHerd && componentHerdBehavior.HerdName.Equals("player", StringComparison.OrdinalIgnoreCase))
+						{
+							if (targetHerd.HerdName.ToLower().Contains("guardian"))
+							{
+								flag5 = false;
+							}
+						}
+						// Si esta manada contiene "guardian" y la otra es "player", son aliados
+						else if (!isSameHerd && componentHerdBehavior.HerdName.ToLower().Contains("guardian"))
+						{
+							if (targetHerd.HerdName.Equals("player", StringComparison.OrdinalIgnoreCase))
+							{
+								flag5 = false;
+							}
+						}
+						else if (isSameHerd)
+						{
+							flag5 = false;
+						}
 					}
 				}
 			}
-			bool flag6 = componentCreature != this.m_componentCreature && flag5 && ((!flag && flag4) || (flag && flag2)) && componentCreature.Entity.IsAddedToProject && componentCreature.ComponentHealth.Health > 0f;
+				bool flag6 = componentCreature != this.m_componentCreature && flag5 && ((!flag && flag4) || (flag && flag2)) && componentCreature.Entity.IsAddedToProject && componentCreature.ComponentHealth.Health > 0f;
 			if (flag6)
 			{
 				float num = Vector3.Distance(this.m_componentCreature.ComponentBody.Position, componentCreature.ComponentBody.Position);
@@ -1630,6 +1730,7 @@ namespace Game
 		public bool PlayAngrySoundWhenChasing = true;
 		public float TargetInRangeTimeToChase = 3f;
 		private bool m_isRangedMode = false;
+		private FlameBulletBlock.FlameBulletType? m_lastFlameBulletType = null;
 		public enum AttackMode
 		{
 			Default,
