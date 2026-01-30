@@ -1,4 +1,5 @@
 using System;
+using Engine.Graphics;
 using System.Runtime.CompilerServices;
 using Engine;
 using GameEntitySystem;
@@ -43,6 +44,20 @@ namespace Game
 					{
 						return;
 					}
+					// MOVER ESTA PARTE FUERA DEL ELSE - INICIAR ATAQUE AQUÍ TAMBIÉN
+					this.m_target = componentCreature;
+					this.m_nextUpdateTime = 0.0;
+					this.m_range = maxRange;
+					this.m_chaseTime = maxChaseTime;
+					this.m_isPersistent = isPersistent;
+					this.m_importanceLevel = (isPersistent ? this.ImportanceLevelPersistent : this.ImportanceLevelNonPersistent);
+					this.IsActive = true;
+					this.m_stateMachine.TransitionTo("Chasing");
+					if (this.m_target != null && this.m_componentPathfinding != null)
+					{
+						this.m_componentPathfinding.Stop();
+						this.UpdateChasingStateImmediately();
+					}
 				}
 				else
 				{
@@ -79,7 +94,7 @@ namespace Game
 						}
 						else
 						{
-                            if (base.Entity.FindComponent<ComponentHerdBehavior>() != null)
+							if (base.Entity.FindComponent<ComponentHerdBehavior>() != null)
 							{
 								bool isSameHerd = !string.IsNullOrEmpty(base.Entity.FindComponent<ComponentHerdBehavior>().HerdName) && componentCreature.Entity.FindComponent<ComponentHerdBehavior>() != null && componentCreature.Entity.FindComponent<ComponentHerdBehavior>().HerdName == base.Entity.FindComponent<ComponentHerdBehavior>().HerdName;
 								if (isSameHerd)
@@ -88,6 +103,7 @@ namespace Game
 								}
 							}
 						}
+						// MOVER ESTA PARTE FUERA DEL IF ANIDADO - INICIAR ATAQUE AQUÍ TAMBIÉN
 						this.m_target = componentCreature;
 						this.m_nextUpdateTime = 0.0;
 						this.m_range = maxRange;
@@ -140,13 +156,25 @@ namespace Game
 			{
 				this.UpdateRangedWeaponLogic(dt);
 			}
+			else
+			{
+				// Si NO tiene arma a distancia, verificar si necesita cambiar a cuerpo a cuerpo
+				float distance = Vector3.Distance(this.m_componentCreature.ComponentBody.Position, this.m_target.ComponentBody.Position);
+				if (distance < 5f && this.m_target != null && this.IsActive)
+				{
+					// Ya está en cuerpo a cuerpo, asegurarse de que usa el mejor arma cuerpo a cuerpo
+					this.SwitchToMeleeModeImmediately();
+					m_isRangedMode = false;
+				}
+			}
 			bool flag = this.IsActive && this.m_target != null;
 			if (flag)
 			{
 				this.m_chaseTime -= dt;
 				this.m_componentCreature.ComponentCreatureModel.LookAtOrder = new Vector3?(this.m_target.ComponentCreatureModel.EyePosition);
 				float distance = Vector3.Distance(this.m_componentCreature.ComponentBody.Position, this.m_target.ComponentBody.Position);
-				// LÓGICA MEJORADA DE CAMBIO DE ARMAS
+
+				// LÓGICA MEJORADA DE CAMBIO DE ARMAS - EJECUTAR SIEMPRE
 				if (distance < 5f && this.m_target != null && this.IsActive)
 				{
 					// Si está muy cerca, cambiar inmediatamente a cuerpo a cuerpo
@@ -184,7 +212,9 @@ namespace Game
 							}
 							else
 							{
-								if (!this.IsFirearmActive())
+								// Las armas de fuego serán manejadas por ComponentFirearmsShooters
+								// Solo detener el pathfinding si no es un arma a distancia
+								if (!this.HasActiveRangedWeaponComponent())
 								{
 									this.m_componentPathfinding.Destination = null;
 								}
@@ -297,9 +327,12 @@ namespace Game
 			int bestSlot = -1;
 			if (this.m_componentMiner.Inventory != null)
 			{
-				for (int i = 0; i < 6; i++)
+				// Buscar en TODOS los slots, no solo los primeros 6
+				for (int i = 0; i < this.m_componentMiner.Inventory.SlotsCount; i++)
 				{
 					int slotValue = this.m_componentMiner.Inventory.GetSlotValue(i);
+					if (slotValue == 0) continue; // Saltar slots vacíos
+
 					float meleePower = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)].GetMeleePower(slotValue);
 					if (meleePower > bestPower)
 					{
@@ -310,6 +343,8 @@ namespace Game
 				if (bestSlot >= 0)
 				{
 					this.m_componentMiner.Inventory.ActiveSlotIndex = bestSlot;
+					// Forzar ataque inmediato
+					this.m_componentCreatureModel.AttackOrder = true;
 				}
 			}
 		}
@@ -354,6 +389,7 @@ namespace Game
 				if (distance < 5f)
 				{
 					this.SwitchToMeleeModeImmediately();
+					m_isRangedMode = false; // Añadir esto para actualizar el estado
 					return;
 				}
 				if (distance >= this.m_attackRange.X && distance <= this.m_attackRange.Y)
@@ -370,10 +406,6 @@ namespace Game
 						float actionDelay = (this.m_subsystemGameInfo.WorldSettings.GameMode == GameMode.Creative) ? 2.5f : 3f;
 						if (this.m_subsystemTime.GameTime - this.m_lastActionTime > actionDelay)
 						{
-							if (this.IsFirearmActive())
-							{
-								this.CreateFirearmEffects(direction);
-							}
 							this.m_componentMiner.Aim(new Ray3(this.m_componentCreature.ComponentCreatureModel.EyePosition, direction), AimState.Completed);
 							this.m_lastActionTime = this.m_subsystemTime.GameTime;
 							this.m_chaseTime = Math.Max(this.m_chaseTime, this.m_isPersistent ? this.m_random.Float(8f, 10f) : 2f);
@@ -382,7 +414,9 @@ namespace Game
 						{
 							this.m_componentMiner.Aim(new Ray3(this.m_componentCreature.ComponentCreatureModel.EyePosition, direction), AimState.InProgress);
 						}
-						if (!this.IsFirearmActive())
+						// Las armas de fuego serán manejadas por ComponentFirearmsShooters
+						// Solo detener el pathfinding si no es un arma a distancia
+						if (!this.HasActiveRangedWeaponComponent())
 						{
 							this.m_componentPathfinding.Destination = null;
 						}
@@ -445,46 +479,24 @@ namespace Game
 				}
 			}
 		}
-		private bool IsFirearmActive()
-		{
-			if (this.m_componentMiner == null || this.m_componentMiner.ActiveBlockValue == 0)
-				return false;
-			int blockId = Terrain.ExtractContents(this.m_componentMiner.ActiveBlockValue);
-			return blockId == BlocksManager.GetBlockIndex(typeof(AKBlock), true, false) ||
-				blockId == BlocksManager.GetBlockIndex(typeof(G3Block), true, false) ||
-				blockId == BlocksManager.GetBlockIndex(typeof(Izh43Block), true, false) ||
-				blockId == BlocksManager.GetBlockIndex(typeof(M4Block), true, false) ||
-				blockId == BlocksManager.GetBlockIndex(typeof(Mac10Block), true, false) ||
-				blockId == BlocksManager.GetBlockIndex(typeof(MinigunBlock), true, false) ||
-				blockId == BlocksManager.GetBlockIndex(typeof(SPAS12Block), true, false) ||
-				blockId == BlocksManager.GetBlockIndex(typeof(SWM500Block), true, false) ||
-				blockId == BlocksManager.GetBlockIndex(typeof(UziBlock), true, false) ||
-				blockId == BlocksManager.GetBlockIndex(typeof(AUGBlock), true, false) ||
-				blockId == BlocksManager.GetBlockIndex(typeof(P90Block), true, false) ||
-				blockId == BlocksManager.GetBlockIndex(typeof(SCARBlock), true, false) ||
-				blockId == BlocksManager.GetBlockIndex(typeof(RevolverBlock), true, false) ||
-				blockId == BlocksManager.GetBlockIndex(typeof(FamasBlock), true, false) ||
-				blockId == BlocksManager.GetBlockIndex(typeof(AA12Block), true, false) ||
-				blockId == BlocksManager.GetBlockIndex(typeof(M249Block), true, false) ||
-				blockId == BlocksManager.GetBlockIndex(typeof(NewG3Block), true, false) ||
-				blockId == BlocksManager.GetBlockIndex(typeof(MP5SSDBlock), true, false) ||
-				blockId == BlocksManager.GetBlockIndex(typeof(MendozaBlock), true, false) ||
-				blockId == BlocksManager.GetBlockIndex(typeof(GrozaBlock), true, false) ||
-				blockId == BlocksManager.GetBlockIndex(typeof(KABlock), true, false);
-		}
 		private bool HasActiveRangedWeaponComponent()
 		{
 			if (this.m_target == null) return false;
 
-			// MODIFICACIÓN: Incluir FlameThrowerBlock
 			if (this.m_componentMiner == null || this.m_componentMiner.ActiveBlockValue == 0)
 				return false;
 
 			int blockId = Terrain.ExtractContents(this.m_componentMiner.ActiveBlockValue);
+			Block block = BlocksManager.Blocks[blockId];
 
-			// Verificar si es arma de fuego o lanzallamas
-			return this.IsFirearmActive() ||
-				   blockId == BlocksManager.GetBlockIndex(typeof(FlameThrowerBlock), true, false);
+			// Solo verificar armas a distancia que NO sean armas de fuego
+			// Las armas de fuego serán manejadas por ComponentFirearmsShooters
+			return block is BowBlock ||
+				   block is CrossbowBlock ||
+				   block is RepeatCrossbowBlock ||
+				   block is MusketBlock ||
+				   block is FlameThrowerBlock ||
+				   block.IsAimable_(this.m_componentMiner.ActiveBlockValue);
 		}
 		public void RespondToCommandImmediately(ComponentCreature target)
 		{
@@ -560,7 +572,9 @@ namespace Game
 						}
 						else
 						{
-							if (!this.IsFirearmActive())
+							// Las armas de fuego serán manejadas por ComponentFirearmsShooters
+							// Solo detener el pathfinding si no es un arma a distancia
+							if (!this.HasActiveRangedWeaponComponent())
 							{
 								this.m_componentPathfinding.Destination = null;
 							}
@@ -679,7 +693,7 @@ namespace Game
 			Block block = BlocksManager.Blocks[blockId];
 
 			// Verificar si el bloque actual es un arma a distancia
-			if (block.IsAimable_(activeBlockValue) || this.IsFirearmBlock(activeBlockValue) || block is MusketBlock || block is FlameThrowerBlock)
+			if (block.IsAimable_(activeBlockValue) || block is MusketBlock || block is FlameThrowerBlock)
 			{
 				// Verificar si necesita recarga/preparación
 				if (this.IsAimToolNeedToReady(componentMiner, activeSlotIndex))
@@ -701,17 +715,17 @@ namespace Game
 				int slotBlockId = Terrain.ExtractContents(slotValue);
 				Block slotBlock = BlocksManager.Blocks[slotBlockId];
 
-				// Calcular prioridad: armas de fuego primero, luego otras armas a distancia
+				// Calcular prioridad: mosquetes y lanzallamas primero, luego otras armas a distancia
 				float priority = 0f;
 
-				if (this.IsFirearmBlock(slotValue))
-					priority = 100f; // Prioridad más alta para armas de fuego
-				else if (slotBlock is MusketBlock)
-					priority = 90f; // Prioridad alta para mosquetes
+				if (slotBlock is MusketBlock)
+					priority = 90f;
+				else if (slotBlock is FlameThrowerBlock)
+					priority = 85f;
 				else if (slotBlock is BowBlock || slotBlock is CrossbowBlock || slotBlock is RepeatCrossbowBlock)
-					priority = 80f; // Prioridad para arcos/ballestas
+					priority = 80f;
 				else if (slotBlock.IsAimable_(slotValue))
-					priority = 70f; // Otras armas a distancia
+					priority = 70f;
 
 				if (priority > bestPriority)
 				{
@@ -733,31 +747,6 @@ namespace Game
 			}
 
 			return false;
-		}
-		private bool IsFirearmBlock(int blockValue)
-		{
-			int blockId = Terrain.ExtractContents(blockValue);
-			return blockId == BlocksManager.GetBlockIndex(typeof(AKBlock), true, false) ||
-				blockId == BlocksManager.GetBlockIndex(typeof(G3Block), true, false) ||
-				blockId == BlocksManager.GetBlockIndex(typeof(Izh43Block), true, false) ||
-				blockId == BlocksManager.GetBlockIndex(typeof(M4Block), true, false) ||
-				blockId == BlocksManager.GetBlockIndex(typeof(Mac10Block), true, false) ||
-				blockId == BlocksManager.GetBlockIndex(typeof(MinigunBlock), true, false) ||
-				blockId == BlocksManager.GetBlockIndex(typeof(SPAS12Block), true, false) ||
-				blockId == BlocksManager.GetBlockIndex(typeof(SWM500Block), true, false) ||
-				blockId == BlocksManager.GetBlockIndex(typeof(UziBlock), true, false) ||
-				blockId == BlocksManager.GetBlockIndex(typeof(AUGBlock), true, false) ||
-				blockId == BlocksManager.GetBlockIndex(typeof(P90Block), true, false) ||
-				blockId == BlocksManager.GetBlockIndex(typeof(SCARBlock), true, false) ||
-				blockId == BlocksManager.GetBlockIndex(typeof(RevolverBlock), true, false) ||
-				blockId == BlocksManager.GetBlockIndex(typeof(FamasBlock), true, false) ||
-				blockId == BlocksManager.GetBlockIndex(typeof(AA12Block), true, false) ||
-				blockId == BlocksManager.GetBlockIndex(typeof(M249Block), true, false) ||
-				blockId == BlocksManager.GetBlockIndex(typeof(NewG3Block), true, false) ||
-				blockId == BlocksManager.GetBlockIndex(typeof(MP5SSDBlock), true, false) ||
-				blockId == BlocksManager.GetBlockIndex(typeof(MendozaBlock), true, false) ||
-				blockId == BlocksManager.GetBlockIndex(typeof(GrozaBlock), true, false) ||
-				blockId == BlocksManager.GetBlockIndex(typeof(KABlock), true, false);
 		}
 		public bool IsReady(int slotValue)
 		{
@@ -800,16 +789,6 @@ namespace Game
 						bool flag4 = !(block is MusketBlock);
 						if (flag4)
 						{
-							if (this.IsFirearmBlock(slotValue))
-							{
-								int bulletNum = this.GetFirearmBulletNum(slotValue);
-								if (bulletNum <= 0)
-								{
-									this.ReloadFirearm(componentMiner, slotIndex, slotValue);
-									return true;
-								}
-								return false;
-							}
 							return false;
 						}
 						bool flag5 = MusketBlock.GetLoadState(data) == MusketBlock.LoadState.Loaded && MusketBlock.GetBulletType(data) != null;
@@ -886,15 +865,6 @@ namespace Game
 				return;
 			}
 
-			if (this.IsFirearmBlock(slotValue))
-			{
-				int bulletNum = this.GetFirearmBulletNum(slotValue);
-				if (bulletNum <= 0)
-				{
-					this.ReloadFirearm(componentMiner, slotIndex, slotValue);
-				}
-				return;
-			}
 			if (!(block is ItemsLauncherBlock))
 			{
 				if (!(block is BowBlock))
@@ -952,92 +922,6 @@ namespace Game
 				int value2 = Terrain.MakeBlockValue(num2, 0, data);
 				componentMiner.Inventory.RemoveSlotItems(slotIndex, 1);
 				componentMiner.Inventory.AddSlotItems(slotIndex, value2, 1);
-			}
-		}
-		private int GetFirearmBulletNum(int slotValue)
-		{
-			int blockId = Terrain.ExtractContents(slotValue);
-			int data = Terrain.ExtractData(slotValue);
-			if (blockId == BlocksManager.GetBlockIndex(typeof(AKBlock), true, false)) return AKBlock.GetBulletNum(data);
-			if (blockId == BlocksManager.GetBlockIndex(typeof(G3Block), true, false)) return G3Block.GetBulletNum(data);
-			if (blockId == BlocksManager.GetBlockIndex(typeof(Izh43Block), true, false)) return Izh43Block.GetBulletNum(data);
-			if (blockId == BlocksManager.GetBlockIndex(typeof(M4Block), true, false)) return M4Block.GetBulletNum(data);
-			if (blockId == BlocksManager.GetBlockIndex(typeof(Mac10Block), true, false)) return Mac10Block.GetBulletNum(data);
-			if (blockId == BlocksManager.GetBlockIndex(typeof(MinigunBlock), true, false)) return MinigunBlock.GetBulletNum(data);
-			if (blockId == BlocksManager.GetBlockIndex(typeof(SPAS12Block), true, false)) return SPAS12Block.GetBulletNum(data);
-			if (blockId == BlocksManager.GetBlockIndex(typeof(SWM500Block), true, false)) return SWM500Block.GetBulletNum(data);
-			if (blockId == BlocksManager.GetBlockIndex(typeof(UziBlock), true, false)) return UziBlock.GetBulletNum(data);
-			if (blockId == BlocksManager.GetBlockIndex(typeof(AUGBlock), true, false)) return AUGBlock.GetBulletNum(data);
-			if (blockId == BlocksManager.GetBlockIndex(typeof(P90Block), true, false)) return P90Block.GetBulletNum(data);
-			if (blockId == BlocksManager.GetBlockIndex(typeof(SCARBlock), true, false)) return SCARBlock.GetBulletNum(data);
-			if (blockId == BlocksManager.GetBlockIndex(typeof(RevolverBlock), true, false)) return RevolverBlock.GetBulletNum(data);
-			if (blockId == BlocksManager.GetBlockIndex(typeof(FamasBlock), true, false)) return FamasBlock.GetBulletNum(data);
-			if (blockId == BlocksManager.GetBlockIndex(typeof(AA12Block), true, false)) return AA12Block.GetBulletNum(data);
-			if (blockId == BlocksManager.GetBlockIndex(typeof(M249Block), true, false)) return M249Block.GetBulletNum(data);
-			if (blockId == BlocksManager.GetBlockIndex(typeof(NewG3Block), true, false)) return NewG3Block.GetBulletNum(data);
-			if (blockId == BlocksManager.GetBlockIndex(typeof(MP5SSDBlock), true, false)) return MP5SSDBlock.GetBulletNum(data);
-			if (blockId == BlocksManager.GetBlockIndex(typeof(MendozaBlock), true, false)) return MendozaBlock.GetBulletNum(data);
-			if (blockId == BlocksManager.GetBlockIndex(typeof(GrozaBlock), true, false)) return GrozaBlock.GetBulletNum(data);
-			return 0;
-		}
-		private void ReloadFirearm(ComponentMiner componentMiner, int slotIndex, int slotValue)
-		{
-			int blockId = Terrain.ExtractContents(slotValue);
-			int data = Terrain.ExtractData(slotValue);
-			int maxCapacity = 0;
-			if (blockId == BlocksManager.GetBlockIndex(typeof(AKBlock), true, false)) maxCapacity = 30;
-			else if (blockId == BlocksManager.GetBlockIndex(typeof(G3Block), true, false)) maxCapacity = 30;
-			else if (blockId == BlocksManager.GetBlockIndex(typeof(Izh43Block), true, false)) maxCapacity = 2;
-			else if (blockId == BlocksManager.GetBlockIndex(typeof(M4Block), true, false)) maxCapacity = 22;
-			else if (blockId == BlocksManager.GetBlockIndex(typeof(Mac10Block), true, false)) maxCapacity = 30;
-			else if (blockId == BlocksManager.GetBlockIndex(typeof(MinigunBlock), true, false)) maxCapacity = 100;
-			else if (blockId == BlocksManager.GetBlockIndex(typeof(SPAS12Block), true, false)) maxCapacity = 8;
-			else if (blockId == BlocksManager.GetBlockIndex(typeof(SWM500Block), true, false)) maxCapacity = 5;
-			else if (blockId == BlocksManager.GetBlockIndex(typeof(UziBlock), true, false)) maxCapacity = 30;
-			else if (blockId == BlocksManager.GetBlockIndex(typeof(AUGBlock), true, false)) maxCapacity = 30;
-			else if (blockId == BlocksManager.GetBlockIndex(typeof(P90Block), true, false)) maxCapacity = 50;
-			else if (blockId == BlocksManager.GetBlockIndex(typeof(SCARBlock), true, false)) maxCapacity = 30;
-			else if (blockId == BlocksManager.GetBlockIndex(typeof(RevolverBlock), true, false)) maxCapacity = 6;
-			else if (blockId == BlocksManager.GetBlockIndex(typeof(FamasBlock), true, false)) maxCapacity = 30;
-			else if (blockId == BlocksManager.GetBlockIndex(typeof(AA12Block), true, false)) maxCapacity = 20;
-			else if (blockId == BlocksManager.GetBlockIndex(typeof(M249Block), true, false)) maxCapacity = 100;
-			else if (blockId == BlocksManager.GetBlockIndex(typeof(NewG3Block), true, false)) maxCapacity = 30;
-			else if (blockId == BlocksManager.GetBlockIndex(typeof(MP5SSDBlock), true, false)) maxCapacity = 30;
-			else if (blockId == BlocksManager.GetBlockIndex(typeof(MendozaBlock), true, false)) maxCapacity = 30;
-			else if (blockId == BlocksManager.GetBlockIndex(typeof(GrozaBlock), true, false)) maxCapacity = 30;
-			else if (blockId == BlocksManager.GetBlockIndex(typeof(KABlock), true, false)) maxCapacity = 40;
-
-			if (maxCapacity > 0)
-			{
-				if (blockId == BlocksManager.GetBlockIndex(typeof(AKBlock), true, false)) data = AKBlock.SetBulletNum(maxCapacity);
-				else if (blockId == BlocksManager.GetBlockIndex(typeof(G3Block), true, false)) data = G3Block.SetBulletNum(maxCapacity);
-				else if (blockId == BlocksManager.GetBlockIndex(typeof(Izh43Block), true, false)) data = Izh43Block.SetBulletNum(maxCapacity);
-				else if (blockId == BlocksManager.GetBlockIndex(typeof(M4Block), true, false)) data = M4Block.SetBulletNum(maxCapacity);
-				else if (blockId == BlocksManager.GetBlockIndex(typeof(Mac10Block), true, false)) data = Mac10Block.SetBulletNum(maxCapacity);
-				else if (blockId == BlocksManager.GetBlockIndex(typeof(MinigunBlock), true, false)) data = MinigunBlock.SetBulletNum(maxCapacity);
-				else if (blockId == BlocksManager.GetBlockIndex(typeof(SPAS12Block), true, false)) data = SPAS12Block.SetBulletNum(maxCapacity);
-				else if (blockId == BlocksManager.GetBlockIndex(typeof(SWM500Block), true, false)) data = SWM500Block.SetBulletNum(maxCapacity);
-				else if (blockId == BlocksManager.GetBlockIndex(typeof(UziBlock), true, false)) data = UziBlock.SetBulletNum(maxCapacity);
-				else if (blockId == BlocksManager.GetBlockIndex(typeof(AUGBlock), true, false)) data = AUGBlock.SetBulletNum(maxCapacity);
-				else if (blockId == BlocksManager.GetBlockIndex(typeof(P90Block), true, false)) data = P90Block.SetBulletNum(maxCapacity);
-				else if (blockId == BlocksManager.GetBlockIndex(typeof(SCARBlock), true, false)) data = SCARBlock.SetBulletNum(maxCapacity);
-				else if (blockId == BlocksManager.GetBlockIndex(typeof(RevolverBlock), true, false)) data = RevolverBlock.SetBulletNum(data, maxCapacity);
-				else if (blockId == BlocksManager.GetBlockIndex(typeof(FamasBlock), true, false)) data = FamasBlock.SetBulletNum(data, maxCapacity);
-				else if (blockId == BlocksManager.GetBlockIndex(typeof(AA12Block), true, false)) data = AA12Block.SetBulletNum(data, maxCapacity);
-				else if (blockId == BlocksManager.GetBlockIndex(typeof(M249Block), true, false)) data = M249Block.SetBulletNum(data, maxCapacity);
-				else if (blockId == BlocksManager.GetBlockIndex(typeof(NewG3Block), true, false)) data = NewG3Block.SetBulletNum(maxCapacity);
-				else if (blockId == BlocksManager.GetBlockIndex(typeof(MP5SSDBlock), true, false)) data = MP5SSDBlock.SetBulletNum(maxCapacity);
-				else if (blockId == BlocksManager.GetBlockIndex(typeof(MendozaBlock), true, false)) data = MendozaBlock.SetBulletNum(maxCapacity);
-				else if (blockId == BlocksManager.GetBlockIndex(typeof(GrozaBlock), true, false)) data = GrozaBlock.SetBulletNum(maxCapacity);
-				else if (blockId == BlocksManager.GetBlockIndex(typeof(KABlock), true, false)) data = KABlock.SetBulletNum(maxCapacity);
-
-				int value2 = Terrain.MakeBlockValue(blockId, 0, data);
-				componentMiner.Inventory.RemoveSlotItems(slotIndex, 1);
-				componentMiner.Inventory.AddSlotItems(slotIndex, value2, 1);
-				if (this.m_subsystemAudio != null)
-				{
-					this.m_subsystemAudio.PlaySound("Audio/Armas/reload", 1f, this.m_random.Float(-0.1f, 0.1f), this.m_componentCreature.ComponentCreatureModel.EyePosition, 5f, true);
-				}
 			}
 		}
 		public bool FindHitTool(ComponentMiner componentMiner)
@@ -1433,7 +1317,9 @@ namespace Game
 													}
 													else
 													{
-														if (!this.IsFirearmActive())
+														// Las armas de fuego serán manejadas por ComponentFirearmsShooters
+														// Solo detener el pathfinding si no es un arma a distancia
+														if (!this.HasActiveRangedWeaponComponent())
 														{
 															this.m_componentPathfinding.Destination = null;
 														}
