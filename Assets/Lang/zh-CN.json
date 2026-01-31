@@ -244,6 +244,14 @@
     }
   },
   "Blocks": {
+    "NuclearCoinBlock:0": {
+    "DisplayName": "核硬币",
+    "Description": "在某种末日世界中锻造的货币。无法合成，但可以通过击杀怪物获得。可用于与皮拉塔 霍斯蒂尔 科梅尔西亚恩特交易，也可用于雇佣等其他用途，具体取决于玩家的需求。"
+  },
+    "ToxinBlock:0": {
+    "DisplayName": "毒素",
+    "Description": "一种极度有毒的材料，充满致命毒素。无法通过合成获得，主要作为战利品掉落自毒性生物，例如 感染者 普通 3、感染者 普通 4、爆浆者 3、飞行感染者 2、飞行感染者首领、Tank 3 和 Tank 幽灵 3。或者，它也可以在商店购买，或与 皮拉塔 霍斯蒂尔 科梅尔西亚恩特 进行交易."
+  },
     "MediumFirstAidKitBlock:0": {
     "DisplayName": "中型急救包",
     "Description": "用于治疗伤势的医疗包，可恢复目标相当一部分生命值，大约恢复至生命值的一半。可用于自己或附近的其他生物。"
@@ -706,6 +714,7 @@
     }
   },
   "Messages": {
+    "NeedAmmo": "需要 {0} 才能射击",
     "NPCCured": "NPC 的毒素和疾病已被清除！",
     "FluCured": "流感已治愈！",
     "PoisonAndSicknessCured": "恶心和疾病已治愈！",
