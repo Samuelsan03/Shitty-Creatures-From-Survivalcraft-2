@@ -11,6 +11,7 @@ namespace Game
 		// Componentes necesarios
 		private ComponentCreature m_componentCreature;
 		private ComponentChaseBehavior m_componentChaseBehavior;
+		private ComponentNewChaseBehavior2 m_componentNewChaseBehavior2;
 		private ComponentInventory m_componentInventory;
 		private SubsystemTime m_subsystemTime;
 		private SubsystemProjectiles m_subsystemProjectiles;
@@ -71,6 +72,7 @@ namespace Game
 
 			m_componentCreature = base.Entity.FindComponent<ComponentCreature>(true);
 			m_componentChaseBehavior = base.Entity.FindComponent<ComponentChaseBehavior>(true);
+			m_componentNewChaseBehavior2 = base.Entity.FindComponent<ComponentNewChaseBehavior2>();
 			m_componentInventory = base.Entity.FindComponent<ComponentInventory>(true);
 			m_subsystemTime = base.Project.FindSubsystem<SubsystemTime>(true);
 			m_subsystemProjectiles = base.Project.FindSubsystem<SubsystemProjectiles>(true);
@@ -105,6 +107,19 @@ namespace Game
 			}
 		}
 
+		private ComponentCreature GetChaseTarget()
+		{
+			// Priorizar ComponentNewChaseBehavior2 si está disponible
+			if (m_componentNewChaseBehavior2 != null && m_componentNewChaseBehavior2.Target != null)
+				return m_componentNewChaseBehavior2.Target;
+
+			// Fallback al ComponentChaseBehavior original
+			if (m_componentChaseBehavior != null && m_componentChaseBehavior.Target != null)
+				return m_componentChaseBehavior.Target;
+
+			return null;
+		}
+
 		public void Update(float dt)
 		{
 			if (!m_initialized || m_componentCreature.ComponentHealth.Health <= 0f)
@@ -116,7 +131,9 @@ namespace Game
 				if (m_bowSlot < 0) return;
 			}
 
-			if (m_componentChaseBehavior.Target == null)
+			ComponentCreature target = GetChaseTarget();
+
+			if (target == null)
 			{
 				ResetAnimations();
 				if (ShowArrowWhenIdle && m_bowSlot >= 0)
@@ -130,7 +147,7 @@ namespace Game
 
 			float distance = Vector3.Distance(
 				m_componentCreature.ComponentBody.Position,
-				m_componentChaseBehavior.Target.ComponentBody.Position
+				target.ComponentBody.Position
 			);
 
 			if (distance <= MaxDistance)
@@ -152,7 +169,7 @@ namespace Game
 
 			if (m_isAiming)
 			{
-				ApplyAimingAnimation(dt);
+				ApplyAimingAnimation(dt, target);
 
 				if (m_subsystemTime.GameTime - m_animationStartTime >= AimTime)
 				{
@@ -162,7 +179,7 @@ namespace Game
 			}
 			else if (m_isDrawing)
 			{
-				ApplyDrawingAnimation(dt);
+				ApplyDrawingAnimation(dt, target);
 
 				m_currentDraw = MathUtils.Clamp((float)((m_subsystemTime.GameTime - m_drawStartTime) / DrawTime), 0f, 1f);
 
@@ -170,7 +187,7 @@ namespace Game
 
 				if (m_subsystemTime.GameTime - m_drawStartTime >= DrawTime)
 				{
-					Fire();
+					Fire(target);
 				}
 			}
 			else if (m_isFiring)
@@ -342,7 +359,7 @@ namespace Game
 			SetBowWithArrow(0);
 		}
 
-		private void ApplyAimingAnimation(float dt)
+		private void ApplyAimingAnimation(float dt, ComponentCreature target)
 		{
 			if (m_componentModel != null)
 			{
@@ -362,10 +379,10 @@ namespace Game
 				// Z: casi cero para que esté recto
 				m_componentModel.InHandItemRotationOrder = new Vector3(-0.05f, 0.25f, 0.01f);
 
-				if (m_componentChaseBehavior.Target != null)
+				if (target != null)
 				{
 					m_componentModel.LookAtOrder = new Vector3?(
-						m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition
+						target.ComponentCreatureModel.EyePosition
 					);
 				}
 			}
@@ -382,7 +399,7 @@ namespace Game
 				m_componentCreature.ComponentBody.Position, 3f, false);
 		}
 
-		private void ApplyDrawingAnimation(float dt)
+		private void ApplyDrawingAnimation(float dt, ComponentCreature target)
 		{
 			if (m_componentModel != null)
 			{
@@ -412,16 +429,16 @@ namespace Game
 					rollRotation
 				);
 
-				if (m_componentChaseBehavior.Target != null)
+				if (target != null)
 				{
 					m_componentModel.LookAtOrder = new Vector3?(
-						m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition
+						target.ComponentCreatureModel.EyePosition
 					);
 				}
 			}
 		}
 
-		private void Fire()
+		private void Fire(ComponentCreature target)
 		{
 			m_isDrawing = false;
 			m_isFiring = true;
@@ -430,7 +447,7 @@ namespace Game
 			// FIX: Asegurar que se pueda disparar sin errores
 			try
 			{
-				ShootArrow();
+				ShootArrow(target);
 			}
 			catch (Exception ex)
 			{
@@ -490,9 +507,9 @@ namespace Game
 			}
 		}
 
-		private void ShootArrow()
+		private void ShootArrow(ComponentCreature target)
 		{
-			if (m_componentChaseBehavior.Target == null)
+			if (target == null)
 				return;
 
 			try
@@ -508,7 +525,7 @@ namespace Game
 				Vector3 firePosition = m_componentCreature.ComponentCreatureModel.EyePosition;
 				firePosition.Y -= 0.1f;
 
-				Vector3 targetPosition = m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition;
+				Vector3 targetPosition = target.ComponentCreatureModel.EyePosition;
 				Vector3 direction = Vector3.Normalize(targetPosition - firePosition);
 
 				float currentAccuracy = Accuracy * (1.5f - m_currentDraw);
@@ -534,11 +551,17 @@ namespace Game
 					m_componentCreature
 				);
 
-				if (arrowType == ArrowBlock.ArrowType.FireArrow && projectile != null)
+				// Configurar el proyectil para desaparecer después del impacto
+				if (projectile != null)
 				{
-					m_subsystemProjectiles.AddTrail(projectile, Vector3.Zero,
-						new SmokeTrailParticleSystem(15, 0.5f, float.MaxValue, Color.White));
-					projectile.IsIncendiary = true;
+					projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
+
+					if (arrowType == ArrowBlock.ArrowType.FireArrow)
+					{
+						m_subsystemProjectiles.AddTrail(projectile, Vector3.Zero,
+							new SmokeTrailParticleSystem(15, 0.5f, float.MaxValue, Color.White));
+						projectile.IsIncendiary = true;
+					}
 				}
 			}
 			catch (Exception ex)
