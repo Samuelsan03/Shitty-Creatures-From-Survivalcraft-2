@@ -244,6 +244,14 @@
     }
   },
   "Blocks": {
+    "NuclearCoinBlock:0": {
+      "DisplayName": "Moneda Nuclear",
+      "Description": "Moneda fabricada en un tipo de apocalipsis. No se puede craftear, pero se puede obtener matando mobs. Se usa para comerciar con el Pirata Hostil Comerciante y también en otros ámbitos como contratación y más cosas según la necesidad del jugador."
+    },
+    "ToxinBlock:0": {
+  "DisplayName": "Toxina",
+  "Description": "Un material extremadamente venenoso saturado de toxinas letales. No puede fabricarse mediante crafteo. Se obtiene principalmente como botín de criaturas venenosas como Infectado Venenoso 1, Infectado Venenoso 2, Boomer 3, Infectado Volador 2, Jefe Infectado Volador, Tank 3 y Tank Fantasma 3. Alternativamente, puede adquirirse comprándolo en la tienda o mediante comercio con el Pirata Hostil Comerciante."
+},
     "MediumFirstAidKitBlock:0": {
     "DisplayName": "Botiquín Mediano",
     "Description": "Un botiquín médico diseñado para tratar heridas restaurando una parte significativa de la salud. Cura al objetivo hasta aproximadamente la mitad de su salud máxima. Puede usarse tanto en uno mismo como en otras criaturas cercanas."
@@ -706,6 +714,7 @@
     }
   },
   "Messages": {
+    "NeedAmmo": "Necesita {0} para disparar.",
     "NPCCured": "¡El NPC ha sido curado de veneno y enfermedades!",
     "FluCured": "¡La gripa ha sido curada!",
     "PoisonAndSicknessCured": "¡Las náuseas y la enfermedad han sido curadas!",
