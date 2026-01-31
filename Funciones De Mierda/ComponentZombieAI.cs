@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Engine;
 using GameEntitySystem;
@@ -91,6 +91,9 @@ namespace Game
 		private double m_nextFlameSoundTime;
 		private double m_lastFirearmShotTime;
 		private double m_firearmReloadStartTime;
+		private bool m_isThrowableAiming = false;
+		private bool m_isThrowableThrowing = false;
+		private double m_throwableThrowTime;
 
 		private int m_currentWeaponSlot = -1;
 		private int m_weaponType = -1;
@@ -118,6 +121,7 @@ namespace Game
 		private float m_firearmAimTime = 0.5f;
 		private float m_firearmReloadTime = 1.0f;
 		private float m_sniperAimTime = 1.0f;
+		private float m_throwableAimTime = 0.5f;
 
 		private float m_explosiveBoltMinDistance = 15f;
 		private float m_explosiveRepeatArrowMinDistance = 15f;
@@ -516,6 +520,34 @@ namespace Game
 			}
 		}
 
+		private bool IsThrowableBlock(Block block)
+		{
+			if (block is SpearBlock)
+				return true;
+
+			if (block is LongspearBlock)
+				return true;
+
+			Type blockType = block.GetType();
+			if (blockType == typeof(StoneChunkBlock)) return true;
+			if (blockType == typeof(SulphurChunkBlock)) return true;
+			if (blockType == typeof(CoalChunkBlock)) return true;
+			if (blockType == typeof(DiamondChunkBlock)) return true;
+			if (blockType == typeof(GermaniumChunkBlock)) return true;
+			if (blockType == typeof(GermaniumOreChunkBlock)) return true;
+			if (blockType == typeof(IronOreChunkBlock)) return true;
+			if (blockType == typeof(MalachiteChunkBlock)) return true;
+			if (blockType == typeof(SaltpeterChunkBlock)) return true;
+			if (blockType == typeof(GunpowderBlock)) return true;
+			if (blockType == typeof(BombBlock)) return true;
+			if (blockType == typeof(IncendiaryBombBlock)) return true;
+			if (blockType == typeof(PoisonBombBlock)) return true;
+			if (blockType == typeof(BrickBlock)) return true;
+			if (blockType == typeof(SnowballBlock)) return true;
+
+			return false;
+		}
+
 		public void Update(float dt)
 		{
 			if (!CanUseInventory || m_componentCreature == null || m_componentCreature.ComponentHealth.Health <= 0f)
@@ -666,6 +698,14 @@ namespace Game
 						StartFirearmAiming();
 						break;
 					}
+					else if (IsThrowableBlock(block))
+					{
+						m_currentWeaponSlot = i;
+						m_weaponType = 6;
+						m_componentInventory.ActiveSlotIndex = i;
+						StartThrowableAiming();
+						break;
+					}
 				}
 			}
 		}
@@ -680,6 +720,155 @@ namespace Game
 				case 3: ProcessFlameThrowerBehavior(target, distance); break;
 				case 4: ProcessRepeatCrossbowBehavior(target, distance); break;
 				case 5: ProcessFirearmBehavior(target, distance); break;
+				case 6: ProcessThrowableBehavior(target, distance); break;
+			}
+		}
+
+		private void StartThrowableAiming()
+		{
+			m_isThrowableAiming = true;
+			m_isThrowableThrowing = false;
+			m_animationStartTime = m_subsystemTime.GameTime;
+		}
+
+		private void ProcessThrowableBehavior(ComponentCreature target, float distance)
+		{
+			if (!m_isThrowableAiming && !m_isThrowableThrowing)
+			{
+				StartThrowableAiming();
+			}
+
+			if (m_isThrowableAiming)
+			{
+				ApplyThrowableAimingAnimation(target);
+
+				if (m_subsystemTime.GameTime - m_animationStartTime >= m_throwableAimTime)
+				{
+					m_isThrowableAiming = false;
+					ThrowThrowableWeapon(target);
+				}
+			}
+			else if (m_isThrowableThrowing)
+			{
+				ApplyThrowableThrowingAnimation();
+
+				if (m_subsystemTime.GameTime - m_throwableThrowTime >= 0.3f)
+				{
+					m_isThrowableThrowing = false;
+					ResetWeaponState();
+				}
+				if (m_componentModel != null)
+				{
+					m_componentModel.AimHandAngleOrder = 0f;
+					m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
+					m_componentModel.InHandItemRotationOrder = Vector3.Zero;
+					m_componentModel.LookAtOrder = null;
+				}
+			}
+		}
+
+		private void ApplyThrowableAimingAnimation(ComponentCreature target)
+		{
+			if (m_componentModel != null)
+			{
+				m_componentModel.AimHandAngleOrder = 2f;
+
+				if (m_currentWeaponSlot >= 0)
+				{
+					int slotValue = m_componentInventory.GetSlotValue(m_currentWeaponSlot);
+					Block block = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)];
+
+					if (block is SpearBlock)
+					{
+						m_componentModel.InHandItemOffsetOrder = new Vector3(0f, -0.25f, 0f);
+						m_componentModel.InHandItemRotationOrder = new Vector3(3.14159f, 0f, 0f);
+					}
+					else
+					{
+						m_componentModel.InHandItemOffsetOrder = new Vector3(0f, 0f, 0f);
+						m_componentModel.InHandItemRotationOrder = new Vector3(0f, 0f, 0f);
+					}
+				}
+
+				if (target != null)
+				{
+					m_componentModel.LookAtOrder = new Vector3?(target.ComponentCreatureModel.EyePosition);
+				}
+			}
+		}
+
+		private void ApplyThrowableThrowingAnimation()
+		{
+			if (m_componentModel != null)
+			{
+				float throwProgress = (float)((m_subsystemTime.GameTime - m_throwableThrowTime) / 0.3f);
+
+				m_componentModel.AimHandAngleOrder = 2f * (1f - throwProgress);
+				m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
+				m_componentModel.InHandItemRotationOrder = Vector3.Zero;
+			}
+		}
+
+		private void ThrowThrowableWeapon(ComponentCreature target)
+		{
+			if (target == null) return;
+
+			try
+			{
+				int slotValue = m_componentInventory.GetSlotValue(m_currentWeaponSlot);
+				if (slotValue == 0)
+				{
+					ResetWeaponState();
+					return;
+				}
+
+				m_isThrowableThrowing = true;
+				m_throwableThrowTime = m_subsystemTime.GameTime;
+
+				Block block = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)];
+
+				Vector3 throwPosition = m_componentCreature.ComponentCreatureModel.EyePosition +
+									   m_componentCreature.ComponentBody.Matrix.Right * 0.4f;
+
+				Vector3 targetPosition = target.ComponentCreatureModel.EyePosition;
+				Vector3 direction = Vector3.Normalize(targetPosition - throwPosition);
+
+				direction += new Vector3(
+					m_random.Float(-0.05f, 0.05f),
+					m_random.Float(-0.03f, 0.03f),
+					m_random.Float(-0.05f, 0.05f)
+				);
+				direction = Vector3.Normalize(direction);
+
+				float speed = block.GetProjectileSpeed(slotValue);
+
+				if (speed < 10f)
+				{
+					speed = 25f;
+				}
+
+				Vector3 angularVelocity = new Vector3(
+					m_random.Float(5f, 10f),
+					m_random.Float(5f, 10f),
+					m_random.Float(5f, 10f)
+				);
+
+				if (m_subsystemProjectiles.FireProjectile(
+					slotValue,
+					throwPosition,
+					direction * speed,
+					angularVelocity,
+					m_componentCreature) != null)
+				{
+					m_componentInventory.RemoveSlotItems(m_currentWeaponSlot, 1);
+
+					m_subsystemAudio.PlaySound("Audio/Throw", 0.25f, m_random.Float(-0.2f, 0.2f),
+						m_componentCreature.ComponentBody.Position, 2f, false);
+				}
+			}
+			catch (Exception)
+			{
+				ResetWeaponState();
 			}
 		}
 
@@ -1359,7 +1548,7 @@ namespace Game
 			m_isAiming = false;
 			m_drawStartTime = m_subsystemTime.GameTime;
 			UpdateMusketHammerState(true);
-			m_subsystemAudio.PlaySound("Audio/HammerCock", 1f, m_random.Float(-0.1f, 0.1f),
+			m_subsystemAudio.PlaySound("Audio/HammerCock", 1.5f, m_random.Float(-0.1f, 0.1f),
 				m_componentCreature.ComponentBody.Position, 3f, false);
 
 			if (m_componentModel != null)
@@ -1996,6 +2185,8 @@ namespace Game
 			m_isFlameFiring = false;
 			m_isFlameCocking = false;
 			m_isFirearmAiming = false;
+			m_isThrowableAiming = false;
+			m_isThrowableThrowing = false;
 			m_isFirearmFiring = false;
 			m_isFirearmReloading = false;
 			m_animationStartTime = m_subsystemTime.GameTime;
@@ -2076,6 +2267,10 @@ namespace Game
 			else if (m_weaponType == 5 && m_currentWeaponSlot >= 0)
 			{
 				StartFirearmAiming();
+			}
+			else if (m_weaponType == 6 && m_currentWeaponSlot >= 0)
+			{
+				StartThrowableAiming();
 			}
 		}
 
