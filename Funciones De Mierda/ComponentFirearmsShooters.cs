@@ -183,7 +183,7 @@ namespace Game
 					ShootSound = "Audio/Armas/desert eagle fuego",
 					FireRate = 0.5,
 					BulletSpeed = 320f,
-					MaxShotsBeforeReload = 5,
+					MaxShotsBeforeReload = 8,
 					ProjectilesPerShot = 1,
 					SpreadVector = new Vector3(0.02f, 0.02f, 0.05f),
 					NoiseRadius = 40f,
