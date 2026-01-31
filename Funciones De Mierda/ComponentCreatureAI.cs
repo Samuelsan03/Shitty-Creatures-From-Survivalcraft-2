@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Engine;
 using GameEntitySystem;
@@ -161,15 +161,15 @@ namespace Game
 				int kaIndex = BlocksManager.GetBlockIndex(typeof(KABlock), true, false);
 				m_firearmConfigs[kaIndex] = new FirearmConfig
 				{
-					BulletBlockType = typeof(NuevaBala5), // Usa NuevaBala5 (negra) como en el subsystem
-					ShootSound = "Audio/Armas/KA fuego", // Mismo sonido que en el subsystem
-					FireRate = 0.1, // Más rápido que en el subsystem (0.1 vs 0.12)
-					BulletSpeed = 320f, // Mayor velocidad (320f vs 300f originalmente)
-					MaxShotsBeforeReload = 40, // Capacidad de 40 balas como en GetProcessInventoryItemCapacity
-					ProjectilesPerShot = 3, // 3 balas por ráfaga como en el código
-					SpreadVector = new Vector3(0.007f, 0.007f, 0.03f), // Menor dispersión que original
-					NoiseRadius = 35f, // Menor ruido (35f vs 40f originalmente)
-					IsAutomatic = true, // Es automático según el comportamiento
+					BulletBlockType = typeof(NuevaBala5),
+					ShootSound = "Audio/Armas/KA fuego",
+					FireRate = 0.1,
+					BulletSpeed = 320f,
+					MaxShotsBeforeReload = 40,
+					ProjectilesPerShot = 3,
+					SpreadVector = new Vector3(0.007f, 0.007f, 0.03f),
+					NoiseRadius = 35f,
+					IsAutomatic = true,
 					IsSniper = false,
 					IsShotgun = false
 				};
@@ -669,7 +669,7 @@ namespace Game
 					else if (IsThrowableBlock(block))
 					{
 						m_currentWeaponSlot = i;
-						m_weaponType = 6; // Usar tipo 6 para todos los objetos lanzables
+						m_weaponType = 6;
 						m_componentInventory.ActiveSlotIndex = i;
 						StartThrowableAiming();
 						break;
@@ -678,27 +678,30 @@ namespace Game
 			}
 		}
 
-		// NUEVO MÉTODO: Verificar si un bloque es lanzable
 		private bool IsThrowableBlock(Block block)
 		{
-			// Verificar si es una lanza (SpearBlock)
 			if (block is SpearBlock)
 				return true;
 
-			// Verificar si tiene método GetProjectileSpeed (como en SubsystemThrowableBlockBehavior)
-			try
-			{
-				var method = block.GetType().GetMethod("GetProjectileSpeed");
-				if (method != null)
-					return true;
-			}
-			catch { }
-
-			// También verificar por tipos conocidos de objetos lanzables
-			// Puedes añadir más tipos aquí según tu mod
-			string blockTypeName = block.GetType().Name;
-			if (blockTypeName.Contains("Throwable") || blockTypeName.Contains("Projectile"))
+			if (block is LongspearBlock)
 				return true;
+
+			Type blockType = block.GetType();
+			if (blockType == typeof(StoneChunkBlock)) return true;
+			if (blockType == typeof(SulphurChunkBlock)) return true;
+			if (blockType == typeof(CoalChunkBlock)) return true;
+			if (blockType == typeof(DiamondChunkBlock)) return true;
+			if (blockType == typeof(GermaniumChunkBlock)) return true;
+			if (blockType == typeof(GermaniumOreChunkBlock)) return true;
+			if (blockType == typeof(IronOreChunkBlock)) return true;
+			if (blockType == typeof(MalachiteChunkBlock)) return true;
+			if (blockType == typeof(SaltpeterChunkBlock)) return true;
+			if (blockType == typeof(GunpowderBlock)) return true;
+			if (blockType == typeof(BombBlock)) return true;
+			if (blockType == typeof(IncendiaryBombBlock)) return true;
+			if (blockType == typeof(PoisonBombBlock)) return true;
+			if (blockType == typeof(BrickBlock)) return true;
+			if (blockType == typeof(SnowballBlock)) return true;
 
 			return false;
 		}
@@ -764,16 +767,13 @@ namespace Game
 		{
 			if (m_componentModel != null)
 			{
-				// Aplicar ángulo de apuntado como en SubsystemThrowableBlockBehavior
 				m_componentModel.AimHandAngleOrder = 2f;
 
-				// Obtener información del bloque actual
 				if (m_currentWeaponSlot >= 0)
 				{
 					int slotValue = m_componentInventory.GetSlotValue(m_currentWeaponSlot);
 					Block block = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)];
 
-					// Para lanzas, aplicar offset especial
 					if (block is SpearBlock)
 					{
 						m_componentModel.InHandItemOffsetOrder = new Vector3(0f, -0.25f, 0f);
@@ -781,7 +781,6 @@ namespace Game
 					}
 					else
 					{
-						// Para otros objetos lanzables, usar offset genérico
 						m_componentModel.InHandItemOffsetOrder = new Vector3(0f, 0f, 0f);
 						m_componentModel.InHandItemRotationOrder = new Vector3(0f, 0f, 0f);
 					}
@@ -824,14 +823,12 @@ namespace Game
 
 				Block block = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)];
 
-				// Usar la misma lógica que SubsystemThrowableBlockBehavior
 				Vector3 throwPosition = m_componentCreature.ComponentCreatureModel.EyePosition +
 									   m_componentCreature.ComponentBody.Matrix.Right * 0.4f;
 
 				Vector3 targetPosition = target.ComponentCreatureModel.EyePosition;
 				Vector3 direction = Vector3.Normalize(targetPosition - throwPosition);
 
-				// Añadir imprecisión (similar al juego base)
 				direction += new Vector3(
 					m_random.Float(-0.05f, 0.05f),
 					m_random.Float(-0.03f, 0.03f),
@@ -839,23 +836,19 @@ namespace Game
 				);
 				direction = Vector3.Normalize(direction);
 
-				// Obtener la velocidad del proyectil desde el bloque
 				float speed = block.GetProjectileSpeed(slotValue);
 
-				// Si la velocidad es 0 o muy baja, usar una velocidad por defecto
 				if (speed < 10f)
 				{
-					speed = 25f; // Velocidad por defecto para objetos lanzables
+					speed = 25f;
 				}
 
-				// Aplicar variación aleatoria a la velocidad angular (como en SubsystemThrowableBlockBehavior)
 				Vector3 angularVelocity = new Vector3(
 					m_random.Float(5f, 10f),
 					m_random.Float(5f, 10f),
 					m_random.Float(5f, 10f)
 				);
 
-				// Lanzar el proyectil
 				if (m_subsystemProjectiles.FireProjectile(
 					slotValue,
 					throwPosition,
@@ -863,10 +856,8 @@ namespace Game
 					angularVelocity,
 					m_componentCreature) != null)
 				{
-					// Reducir la cantidad en el inventario
 					m_componentInventory.RemoveSlotItems(m_currentWeaponSlot, 1);
 
-					// Sonido de lanzamiento (mismo que el juego base)
 					m_subsystemAudio.PlaySound("Audio/Throw", 0.25f, m_random.Float(-0.2f, 0.2f),
 						m_componentCreature.ComponentBody.Position, 2f, false);
 				}
@@ -2518,13 +2509,20 @@ namespace Game
 				int arrowData = ArrowBlock.SetArrowType(0, m_currentArrowType);
 				int arrowValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex<ArrowBlock>(), 0, arrowData);
 
-				m_subsystemProjectiles.FireProjectile(
+				// CONFIGURAR PROYECTIL PARA DESAPARECER AL CAER
+				var projectile = m_subsystemProjectiles.FireProjectile(
 					arrowValue,
 					firePosition,
 					direction * currentSpeed,
 					Vector3.Zero,
 					m_componentCreature
 				);
+
+				// Configurar para desaparecer cuando se detenga
+				if (projectile != null)
+				{
+					projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
+				}
 			}
 			catch { }
 		}
@@ -2553,13 +2551,20 @@ namespace Game
 				int boltData = ArrowBlock.SetArrowType(0, m_currentBoltType);
 				int boltValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex<ArrowBlock>(), 0, boltData);
 
-				m_subsystemProjectiles.FireProjectile(
+				// CONFIGURAR PROYECTIL PARA DESAPARECER AL CAER
+				var projectile = m_subsystemProjectiles.FireProjectile(
 					boltValue,
 					firePosition,
 					direction * speed,
 					Vector3.Zero,
 					m_componentCreature
 				);
+
+				// Configurar para desaparecer cuando se detenga
+				if (projectile != null)
+				{
+					projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
+				}
 
 				if (m_subsystemNoise != null)
 				{
@@ -2718,10 +2723,15 @@ namespace Game
 					m_componentCreature
 				);
 
-				if (m_currentRepeatArrowType == RepeatArrowBlock.ArrowType.ExplosiveArrow && projectile != null)
+				if (projectile != null)
 				{
-					projectile.IsIncendiary = false;
+					// CONFIGURAR PARA DESAPARECER AL DETENERSE PARA TODOS LOS TIPOS
 					projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
+
+					if (m_currentRepeatArrowType == RepeatArrowBlock.ArrowType.ExplosiveArrow)
+					{
+						projectile.IsIncendiary = false;
+					}
 				}
 
 				if (m_subsystemNoise != null)
