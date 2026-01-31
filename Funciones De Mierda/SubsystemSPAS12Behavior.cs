@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Runtime.CompilerServices;
@@ -109,11 +109,11 @@ namespace Game
 								componentFirstPersonModel2.ItemOffsetOrder = Vector3.Zero;
 								componentFirstPersonModel2.ItemRotationOrder = Vector3.Zero;
 							}
+
 							ComponentPlayer componentPlayer2 = componentMiner.ComponentPlayer;
 							bool flag12 = componentPlayer2 != null;
 							if (flag12)
 							{
-								componentPlayer2.ComponentGui.DisplaySmallMessage("Recargue municion", Color.White, false, false);
 							}
 							break;
 						}
@@ -126,7 +126,8 @@ namespace Game
 							bool flag14 = flag13;
 							if (flag14)
 							{
-								int value = Terrain.MakeBlockValue(214, 0, 2);
+								// Usar NuevaBala en lugar de la bala de mosquete (214)
+								int value = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex(typeof(NuevaBala), true, false), 0, 2);
 								Vector3 vector = componentMiner.ComponentCreature.ComponentCreatureModel.EyePosition + componentMiner.ComponentCreature.ComponentBody.Matrix.Right * 0.3f - componentMiner.ComponentCreature.ComponentBody.Matrix.Up * 0.2f;
 								Vector3 vector2 = Vector3.Normalize(vector + aim.Direction * 10f - vector);
 								float num4 = this.m_random.Float(-1f * num, num);
@@ -149,6 +150,23 @@ namespace Game
 								this.m_subsystemParticles.AddParticleSystem(new GunFireParticleSystem(this.m_subsystemTerrain, vector + 0.3f * vector2, vector2), false);
 								this.m_subsystemNoise.MakeNoise(vector, 1f, 40f);
 								// La línea de retroceso ha sido eliminada
+							}
+							else
+							{
+								// Sonido de disparo sin balas
+								this.m_subsystemAudio.PlaySound("Audio/Armas/Empty fire", 1f,
+									this.m_random.Float(-0.1f, 0.1f),
+									componentMiner.ComponentCreature.ComponentCreatureModel.EyePosition, 3f, true);
+
+								// Mostrar mensaje de que necesita munición
+								ComponentPlayer componentPlayer2 = componentMiner.ComponentPlayer;
+								if (componentPlayer2 != null)
+								{
+									string bulletName = LanguageControl.Get("Blocks", "SPAS12BulletBlock:0", "DisplayName");
+									componentPlayer2.ComponentGui.DisplaySmallMessage(
+										LanguageControl.Get("Messages", "NeedAmmo").Replace("{0}", bulletName),
+										Color.White, true, false);
+								}
 							}
 							componentMiner.ComponentCreature.ComponentCreatureModel.InHandItemOffsetOrder = Vector3.Zero;
 							componentMiner.ComponentCreature.ComponentCreatureModel.InHandItemRotationOrder = Vector3.Zero;
@@ -196,6 +214,25 @@ namespace Game
 				processedCount = 0;
 				inventory.RemoveSlotItems(slotIndex, 1);
 				inventory.AddSlotItems(slotIndex, Terrain.MakeBlockValue(BlocksManager.GetBlockIndex(typeof(SPAS12Block), true, false), 0, SPAS12Block.SetBulletNum(8)), 1);
+
+				// Reproducir sonido de recarga
+				var subsystemPlayers = base.Project.FindSubsystem<SubsystemPlayers>(true);
+				if (subsystemPlayers != null && this.m_subsystemAudio != null)
+				{
+					// Buscar entre todos los jugadores cuál tiene este inventario
+					for (int i = 0; i < subsystemPlayers.ComponentPlayers.Count; i++)
+					{
+						var componentPlayer = subsystemPlayers.ComponentPlayers[i];
+						if (componentPlayer != null && componentPlayer.ComponentMiner != null &&
+							componentPlayer.ComponentMiner.Inventory == inventory)
+						{
+							Vector3 position = componentPlayer.ComponentCreatureModel.EyePosition;
+							this.m_subsystemAudio.PlaySound("Audio/Armas/reload", 1f,
+								this.m_random.Float(-0.1f, 0.1f), position, 5f, true);
+							break;
+						}
+					}
+				}
 			}
 		}
 
