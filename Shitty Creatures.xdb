@@ -602,9 +602,7 @@
     <Parameter Name="LoadOrder" Value="60" Type="int" Guid="6ab578a6-0037-4bd3-a52c-e14b6808f2bd"/>
     <Parameter Name="Class" Value="Game.SubsystemM249Behavior" Type="string" Guid="127552cf-f2dd-4ee5-9be6-87493cbe574f"/>
 </MemberSubsystemTemplate>
-<MemberSubsystemTemplate Name="BanditsSpawn" Guid="cea6dfe3-467d-44b6-9f60-4b2af2e217d1">
-    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="16f12546-d08d-460e-972a-35e9ad5a22eb"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="337c42d3-f4e4-4a53-9c49-153348584c6e"/>
+<MemberSubsystemTemplate Name="BanditsSpawn" Guid="cea6dfe3-467d-44b6-9f60-4b2af2e217d1" InheritanceParent="a3914c13-7801-46a6-b23a-9e2b36e9defb">
     <Parameter Name="Class" Value="Game.SubsystemBanditsSpawn" Type="string" Guid="f84ec32f-5f7e-435f-87c5-33e9c4554d2a"/>
 </MemberSubsystemTemplate>
 <MemberSubsystemTemplate Name="FamasBehavior" Guid="2f91a7a6-b782-418b-a4dd-042ceaf42d4f">
@@ -682,14 +680,10 @@
     <Parameter Name="LoadOrder" Value="60" Type="int" Guid="c38dbda4-d77e-439a-b0f1-afcd5beba510"/>
     <Parameter Name="Class" Value="Game.SubsystemAKBehavior" Type="string" Guid="84f8be5a-e285-4d3d-b822-93b6c850233f"/>
 </MemberSubsystemTemplate>
-<MemberSubsystemTemplate Name="ShittyCreaturesSpawn" Guid="6bf21fee-34d6-4509-a1d4-160a13c6991b">
-    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="9b536bae-4995-4982-b821-44241d526932"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="391ac2b9-9947-47fe-8014-fd2b0fe88c09"/>
+<MemberSubsystemTemplate Name="ShittyCreaturesSpawn" Guid="6bf21fee-34d6-4509-a1d4-160a13c6991b" InheritanceParent="a3914c13-7801-46a6-b23a-9e2b36e9defb">
     <Parameter Name="Class" Value="Game.SubsystemShittyCreaturesSpawn" Type="string" Guid="7327def9-66b6-4d0e-8dea-363a8a5d8799"/>
 </MemberSubsystemTemplate>
-<MemberSubsystemTemplate Name="ZombiesSpawn" Guid="77c4423c-cde8-4d42-886c-74b87a9d23fa">
-    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="9b817948-52de-4bdd-8069-2e698792877b"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="cc2a8c4c-67b8-4ee4-934f-3a118f7fc99f"/>
+<MemberSubsystemTemplate Name="ZombiesSpawn" Guid="77c4423c-cde8-4d42-886c-74b87a9d23fa" InheritanceParent="a3914c13-7801-46a6-b23a-9e2b36e9defb">
     <Parameter Name="Class" Value="Game.SubsystemZombiesSpawn" Type="string" Guid="d546f4a4-f7ef-488e-828d-763c780da925"/>
 </MemberSubsystemTemplate>
 <MemberSubsystemTemplate Name="GhostNormalChaseMusic" Guid="fe454a1e-89d4-4f2a-aa36-9200d7ba1570">
