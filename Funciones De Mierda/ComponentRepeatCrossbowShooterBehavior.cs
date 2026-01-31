@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Engine;
 using GameEntitySystem;
@@ -11,6 +11,7 @@ namespace Game
 		// Componentes necesarios
 		private ComponentCreature m_componentCreature;
 		private ComponentChaseBehavior m_componentChaseBehavior;
+		private ComponentNewChaseBehavior2 m_componentNewChaseBehavior2;
 		private ComponentInventory m_componentInventory;
 		private SubsystemTime m_subsystemTime;
 		private SubsystemProjectiles m_subsystemProjectiles;
@@ -74,6 +75,7 @@ namespace Game
 			// Inicializar componentes
 			m_componentCreature = base.Entity.FindComponent<ComponentCreature>(true);
 			m_componentChaseBehavior = base.Entity.FindComponent<ComponentChaseBehavior>(true);
+			m_componentNewChaseBehavior2 = base.Entity.FindComponent<ComponentNewChaseBehavior2>();
 			m_componentInventory = base.Entity.FindComponent<ComponentInventory>(true);
 			m_subsystemTime = base.Project.FindSubsystem<SubsystemTime>(true);
 			m_subsystemProjectiles = base.Project.FindSubsystem<SubsystemProjectiles>(true);
@@ -93,13 +95,28 @@ namespace Game
 			FindCrossbow();
 		}
 
+		private ComponentCreature GetChaseTarget()
+		{
+			// Priorizar ComponentNewChaseBehavior2 si está disponible
+			if (m_componentNewChaseBehavior2 != null && m_componentNewChaseBehavior2.Target != null)
+				return m_componentNewChaseBehavior2.Target;
+
+			// Fallback al ComponentChaseBehavior original
+			if (m_componentChaseBehavior != null && m_componentChaseBehavior.Target != null)
+				return m_componentChaseBehavior.Target;
+
+			return null;
+		}
+
 		public void Update(float dt)
 		{
 			if (m_componentCreature.ComponentHealth.Health <= 0f)
 				return;
 
-			// Verificar objetivo
-			if (m_componentChaseBehavior.Target == null)
+			// Verificar objetivo usando el nuevo método
+			ComponentCreature target = GetChaseTarget();
+
+			if (target == null)
 			{
 				ResetAnimations();
 				return;
@@ -115,7 +132,7 @@ namespace Game
 			// Calcular distancia
 			float distance = Vector3.Distance(
 				m_componentCreature.ComponentBody.Position,
-				m_componentChaseBehavior.Target.ComponentBody.Position
+				target.ComponentBody.Position
 			);
 
 			// Lógica de ataque - Solo verifica distancia máxima (sin mínima)
@@ -135,7 +152,7 @@ namespace Game
 			// Aplicar animaciones y lógica de estado
 			if (m_isAiming)
 			{
-				ApplyAimingAnimation(dt);
+				ApplyAimingAnimation(dt, target);
 
 				if (m_subsystemTime.GameTime - m_animationStartTime >= AimTime)
 				{
@@ -145,7 +162,7 @@ namespace Game
 			}
 			else if (m_isDrawing)
 			{
-				ApplyDrawingAnimation(dt);
+				ApplyDrawingAnimation(dt, target);
 
 				m_currentDraw = MathUtils.Clamp((float)((m_subsystemTime.GameTime - m_drawStartTime) / DrawTime), 0f, 1f);
 
@@ -161,13 +178,13 @@ namespace Game
 			}
 			else if (m_isReloading)
 			{
-				ApplyReloadingAnimation(dt);
+				ApplyReloadingAnimation(dt, target);
 
 				// Después de cargar la flecha, disparar inmediatamente
 				if (m_subsystemTime.GameTime - m_animationStartTime >= 0.2f)
 				{
 					m_isReloading = false;
-					Fire();
+					Fire(target);
 				}
 			}
 			else if (m_isFiring)
@@ -269,7 +286,7 @@ namespace Game
 			UpdateCrossbowArrowType(null);
 		}
 
-		private void ApplyAimingAnimation(float dt)
+		private void ApplyAimingAnimation(float dt, ComponentCreature target)
 		{
 			if (m_componentModel != null)
 			{
@@ -278,10 +295,10 @@ namespace Game
 				m_componentModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.1f, 0.07f);
 				m_componentModel.InHandItemRotationOrder = new Vector3(-1.55f, 0f, 0f);
 
-				if (m_componentChaseBehavior.Target != null)
+				if (target != null)
 				{
-					m_componentModel.LookAtOrder = new Vector3? (
-						m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition
+					m_componentModel.LookAtOrder = new Vector3?(
+						target.ComponentCreatureModel.EyePosition
 					);
 				}
 			}
@@ -300,7 +317,7 @@ namespace Game
 				m_componentCreature.ComponentBody.Position, 3f, false);
 		}
 
-		private void ApplyDrawingAnimation(float dt)
+		private void ApplyDrawingAnimation(float dt, ComponentCreature target)
 		{
 			if (m_componentModel != null)
 			{
@@ -314,10 +331,10 @@ namespace Game
 				);
 				m_componentModel.InHandItemRotationOrder = new Vector3(-1.55f, 0f, 0f);
 
-				if (m_componentChaseBehavior.Target != null)
+				if (target != null)
 				{
-					m_componentModel.LookAtOrder = new Vector3? (
-						m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition
+					m_componentModel.LookAtOrder = new Vector3?(
+						target.ComponentCreatureModel.EyePosition
 					);
 				}
 			}
@@ -334,7 +351,7 @@ namespace Game
 			UpdateCrossbowArrowType(m_availableArrowTypes[m_currentArrowTypeIndex]);
 		}
 
-		private void ApplyReloadingAnimation(float dt)
+		private void ApplyReloadingAnimation(float dt, ComponentCreature target)
 		{
 			if (m_componentModel != null)
 			{
@@ -348,33 +365,33 @@ namespace Game
 				);
 				m_componentModel.InHandItemRotationOrder = new Vector3(-1.55f, 0f, 0f);
 
-				if (m_componentChaseBehavior.Target != null)
+				if (target != null)
 				{
-					m_componentModel.LookAtOrder = new Vector3? (
-						m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition
+					m_componentModel.LookAtOrder = new Vector3?(
+						target.ComponentCreatureModel.EyePosition
 					);
 				}
 			}
 		}
 
-		private void Fire()
+		private void Fire(ComponentCreature target)
 		{
 			m_isReloading = false;
 			m_isFiring = true;
 			m_fireTime = m_subsystemTime.GameTime;
 
 			// Disparar flecha
-			ShootArrow();
+			ShootArrow(target);
 
 			// Sonido de disparo de ballesta repetidora
 			m_subsystemAudio.PlaySound("Audio/Crossbow Remake/Crossbow Shoot", 1f, m_random.Float(-0.1f, 0.1f),
 				m_componentCreature.ComponentBody.Position, FireSoundDistance, false);
 
 			// Retroceso
-			if (UseRecoil && m_componentChaseBehavior.Target != null)
+			if (UseRecoil && target != null)
 			{
 				Vector3 direction = Vector3.Normalize(
-					m_componentChaseBehavior.Target.ComponentBody.Position -
+					target.ComponentBody.Position -
 					m_componentCreature.ComponentBody.Position
 				);
 				m_componentCreature.ComponentBody.ApplyImpulse(-direction * 1.0f);
@@ -432,9 +449,9 @@ namespace Game
 			}
 		}
 
-		private void ShootArrow()
+		private void ShootArrow(ComponentCreature target)
 		{
-			if (m_componentChaseBehavior.Target == null)
+			if (target == null)
 				return;
 
 			try
@@ -446,10 +463,10 @@ namespace Game
 				Vector3 firePosition = m_componentCreature.ComponentCreatureModel.EyePosition;
 
 				// Posición objetivo (punto central del cuerpo)
-				Vector3 targetPosition = m_componentChaseBehavior.Target.ComponentBody.Position;
+				Vector3 targetPosition = target.ComponentBody.Position;
 
 				// Ajustar para apuntar a un punto más central (pecho/abdomen)
-				targetPosition.Y += m_componentChaseBehavior.Target.ComponentBody.BoxSize.Y * 0.4f;
+				targetPosition.Y += target.ComponentBody.BoxSize.Y * 0.4f;
 
 				// Calcular dirección PRECISA
 				Vector3 direction = targetPosition - firePosition;
@@ -501,13 +518,18 @@ namespace Game
 					m_componentCreature
 				);
 
-				// Configurar propiedades según el tipo de flecha
-				if (arrowType == RepeatArrowBlock.ArrowType.ExplosiveArrow && projectile != null)
+				// Configurar proyectil para desaparecer después del impacto
+				if (projectile != null)
 				{
-					projectile.IsIncendiary = false;
 					projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
+
+					// Configurar propiedades según el tipo de flecha
+					if (arrowType == RepeatArrowBlock.ArrowType.ExplosiveArrow)
+					{
+						projectile.IsIncendiary = false;
+					}
+					// Las flechas de veneno ya tienen su comportamiento especial en SubsystemRepeatArrowBlockBehavior
 				}
-				// Las flechas de veneno ya tienen su comportamiento especial en SubsystemRepeatArrowBlockBehavior
 
 				// Ruido
 				if (m_subsystemNoise != null)
