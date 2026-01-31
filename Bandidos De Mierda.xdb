@@ -1206,7 +1206,7 @@
         </ParameterSet>
     </ParameterSet>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ComponentFirearmsShooters" Guid="48eec248-2518-4907-85c0-6c08a6bb511f">
+<MemberComponentTemplate Name="ComponentFirearmsShooters" Guid="0770a2ea-48b0-4c48-844b-02bc33066790">
     <Parameter Name="Class" Value="Game.ComponentFirearmsShooters" Type="string"/>
     <Parameter Name="IsOptional" Value="false" Type="bool"/>
     <Parameter Name="LoadOrder" Value="100" Type="int"/>
@@ -1217,6 +1217,8 @@
     <Parameter Name="MinReloadInterval" Value="5" Type="float"/>
     <Parameter Name="UseRandomReloads" Value="true" Type="bool"/>
     <Parameter Name="TargetHeightOffset" Value="0.5" Type="float"/>
+    <Parameter Name="MeleeRange" Value="0" Type="float"/>
+    <Parameter Name="UseMeleeSwitch" Value="false" Type="bool"/>
     <Parameter Name="ReloadTime" Value="1.0" Type="float"/>
     <Parameter Name="PistolAimTime" Value="0.5" Type="float"/>
     <Parameter Name="SniperAimTime" Value="1.0" Type="float"/>
