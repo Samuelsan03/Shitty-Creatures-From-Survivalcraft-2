@@ -7,11 +7,8 @@ using TemplatesDatabase;
 
 namespace Game
 {
-	// Token: 0x02000037 RID: 55
 	public class SubsystemSniperBehavior : SubsystemBlockBehavior
 	{
-		// Token: 0x17000019 RID: 25
-		// (get) Token: 0x06000128 RID: 296 RVA: 0x0000DB0C File Offset: 0x0000BD0C
 		public override int[] HandledBlocks
 		{
 			get
@@ -23,7 +20,6 @@ namespace Game
 			}
 		}
 
-		// Token: 0x06000129 RID: 297 RVA: 0x0000DB38 File Offset: 0x0000BD38
 		public override void Load(ValuesDictionary valuesDictionary)
 		{
 			base.Load(valuesDictionary);
@@ -37,7 +33,6 @@ namespace Game
 			this.fire = true;
 		}
 
-		// Token: 0x0600012A RID: 298 RVA: 0x0000DBD4 File Offset: 0x0000BDD4
 		public override bool OnAim(Ray3 aim, ComponentMiner componentMiner, AimState state)
 		{
 			Vector3 position = aim.Position;
@@ -209,6 +204,14 @@ namespace Game
 												LanguageControl.Get("Messages", "NeedAmmo").Replace("{0}", bulletName),
 												Color.White, true, false);
 										}
+
+										// CORRECCIÓN: Restaurar la cámara a FppCamera cuando no hay balas
+										GameWidget gameWidget3 = componentMiner.ComponentPlayer.GameWidget;
+										bool flag16 = gameWidget3.ActiveCamera is IScalableCamera;
+										if (flag16)
+										{
+											gameWidget3.ActiveCamera = gameWidget3.FindCamera<FppCamera>(true);
+										}
 									}
 									componentMiner.ComponentCreature.ComponentCreatureModel.InHandItemOffsetOrder = Vector3.Zero;
 									componentMiner.ComponentCreature.ComponentCreatureModel.InHandItemRotationOrder = Vector3.Zero;
@@ -229,7 +232,6 @@ namespace Game
 			return false;
 		}
 
-		// Token: 0x0600012B RID: 299 RVA: 0x0000E414 File Offset: 0x0000C614
 		public override int GetProcessInventoryItemCapacity(IInventory inventory, int slotIndex, int value)
 		{
 			bool flag = value == BlocksManager.GetBlockIndex(typeof(SniperBullet), true, false) && SniperBlock.GetBulletNum(Terrain.ExtractData(inventory.GetSlotValue(slotIndex))) < 1;
@@ -246,7 +248,6 @@ namespace Game
 			return result;
 		}
 
-		// Token: 0x0600012C RID: 300 RVA: 0x0000E464 File Offset: 0x0000C664
 		public override void ProcessInventoryItem(IInventory inventory, int slotIndex, int value, int count, int processCount, out int processedValue, out int processedCount)
 		{
 			processedValue = value;
@@ -282,34 +283,24 @@ namespace Game
 			}
 		}
 
-		// Token: 0x040000FD RID: 253
 		public SubsystemTerrain m_subsystemTerrain;
 
-		// Token: 0x040000FE RID: 254
 		public SubsystemTime m_subsystemTime;
 
-		// Token: 0x040000FF RID: 255
 		public SubsystemProjectiles m_subsystemProjectiles;
 
-		// Token: 0x04000100 RID: 256
 		public SubsystemParticles m_subsystemParticles;
 
-		// Token: 0x04000101 RID: 257
 		public SubsystemAudio m_subsystemAudio;
 
-		// Token: 0x04000102 RID: 258
 		private SubsystemGameInfo m_subsystemGameInfo;
 
-		// Token: 0x04000103 RID: 259
 		public SubsystemNoise m_subsystemNoise;
 
-		// Token: 0x04000104 RID: 260
 		public Game.Random m_random = new Game.Random();
 
-		// Token: 0x04000105 RID: 261
 		public Dictionary<ComponentMiner, double> m_aimStartTimes = new Dictionary<ComponentMiner, double>();
 
-		// Token: 0x04000106 RID: 262
 		public bool fire;
 	}
 }
