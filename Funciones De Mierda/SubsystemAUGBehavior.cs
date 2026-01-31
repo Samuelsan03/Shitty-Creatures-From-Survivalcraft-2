@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Engine;
@@ -149,7 +149,20 @@ namespace Game
 										bool flag13 = !flag9 && this.m_subsystemTime.PeriodicGameTimeEvent(0.5, 0.0);
 										if (flag13)
 										{
-											this.m_subsystemAudio.PlaySound("Audio/WeaponDryFire", 0.7f, this.m_random.Float(-0.1f, 0.1f), componentMiner.ComponentCreature.ComponentCreatureModel.EyePosition, 3f, true);
+											// Sonido de disparo sin balas
+											this.m_subsystemAudio.PlaySound("Audio/Armas/Empty fire", 1f,
+												this.m_random.Float(-0.1f, 0.1f),
+												componentMiner.ComponentCreature.ComponentCreatureModel.EyePosition, 3f, true);
+
+											// Mostrar mensaje de que necesita munición
+											ComponentPlayer componentPlayer2 = componentMiner.ComponentPlayer;
+											if (componentPlayer2 != null)
+											{
+												string bulletName = LanguageControl.Get("Blocks", "AUGBullet:0", "DisplayName");
+												componentPlayer2.ComponentGui.DisplaySmallMessage(
+													LanguageControl.Get("Messages", "NeedAmmo").Replace("{0}", bulletName),
+													Color.White, true, false);
+											}
 										}
 									}
 									break;
@@ -238,23 +251,32 @@ namespace Game
 				processedCount = 0;
 				inventory.RemoveSlotItems(slotIndex, 1);
 				inventory.AddSlotItems(slotIndex, Terrain.MakeBlockValue(BlocksManager.GetBlockIndex(typeof(AUGBlock), true, false), 0, AUGBlock.SetBulletNum(30)), 1);
+
+				// Reproducir sonido de recarga
+				var subsystemPlayers = base.Project.FindSubsystem<SubsystemPlayers>(true);
+				if (subsystemPlayers != null && this.m_subsystemAudio != null)
+				{
+					// Buscar entre todos los jugadores cuál tiene este inventario
+					for (int i = 0; i < subsystemPlayers.ComponentPlayers.Count; i++)
+					{
+						var componentPlayer = subsystemPlayers.ComponentPlayers[i];
+						if (componentPlayer != null && componentPlayer.ComponentMiner != null &&
+							componentPlayer.ComponentMiner.Inventory == inventory)
+						{
+							Vector3 position = componentPlayer.ComponentCreatureModel.EyePosition;
+							this.m_subsystemAudio.PlaySound("Audio/Armas/reload", 1f,
+								this.m_random.Float(-0.1f, 0.1f), position, 5f, true);
+							break;
+						}
+					}
+				}
 			}
 		}
 
 		// Método para obtener el índice del bloque de bala actual
 		private int GetCurrentBulletIndex()
 		{
-			// Seleccionar bala basada en el índice actual (0-5)
-			switch (this.m_bulletIndex)
-			{
-				case 0: return BlocksManager.GetBlockIndex(typeof(NuevaBala), true, false);
-				case 1: return BlocksManager.GetBlockIndex(typeof(NuevaBala2), true, false);
-				case 2: return BlocksManager.GetBlockIndex(typeof(NuevaBala3), true, false);
-				case 3: return BlocksManager.GetBlockIndex(typeof(NuevaBala4), true, false);
-				case 4: return BlocksManager.GetBlockIndex(typeof(NuevaBala5), true, false);
-				case 5: return BlocksManager.GetBlockIndex(typeof(NuevaBala6), true, false);
-				default: return BlocksManager.GetBlockIndex(typeof(NuevaBala), true, false);
-			}
+			return BlocksManager.GetBlockIndex(typeof(NuevaBala4), true, false);
 		}
 
 		public SubsystemTerrain m_subsystemTerrain;
