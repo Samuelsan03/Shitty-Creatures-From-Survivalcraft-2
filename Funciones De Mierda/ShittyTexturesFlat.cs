@@ -95,20 +95,6 @@ namespace Game
 			showDebris = false;
 		}
 
-		// Token: 0x06000026 RID: 38 RVA: 0x000024F0 File Offset: 0x000006F0
-		public override int GetRotPeriod(int value)
-		{
-			// No se pudre
-			return 0;
-		}
-
-		// Token: 0x06000027 RID: 39 RVA: 0x000024F4 File Offset: 0x000006F4
-		public override float GetSicknessProbability(int value)
-		{
-			// No causa enfermedad
-			return 0f;
-		}
-
 		// Token: 0x06000028 RID: 40 RVA: 0x000024FC File Offset: 0x000006FC
 		public override int GetTextureSlotCount(int value)
 		{
