@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Engine.Graphics;
 using System.Runtime.CompilerServices;
 using Engine;
@@ -58,6 +58,13 @@ namespace Game
 					this.m_chaseTime = maxChaseTime;
 					this.m_isPersistent = isPersistent;
 					this.m_importanceLevel = (isPersistent ? this.ImportanceLevelPersistent : this.ImportanceLevelNonPersistent);
+					this.IsActive = true;
+					this.m_stateMachine.TransitionTo("Chasing");
+					if (this.m_target != null && this.m_componentPathfinding != null)
+					{
+						this.m_componentPathfinding.Stop();
+						this.UpdateChasingStateImmediately();
+					}
 				}
 				else
 				{
@@ -114,6 +121,13 @@ namespace Game
 						this.m_chaseTime = maxChaseTime;
 						this.m_isPersistent = isPersistent;
 						this.m_importanceLevel = (isPersistent ? this.ImportanceLevelPersistent : this.ImportanceLevelNonPersistent);
+						this.IsActive = true;
+						this.m_stateMachine.TransitionTo("Chasing");
+						if (this.m_target != null && this.m_componentPathfinding != null)
+						{
+							this.m_componentPathfinding.Stop();
+							this.UpdateChasingStateImmediately();
+						}
 					}
 				}
 			}
@@ -212,7 +226,7 @@ namespace Game
 			}
 			this.m_autoChaseSuppressionTime -= dt;
 			this.CheckDefendPlayer(dt);
-			
+
 			if (this.IsActive && this.m_target != null)
 			{
 				this.m_chaseTime -= dt;
@@ -281,7 +295,7 @@ namespace Game
 					}
 				}
 			}
-			
+
 			if (this.m_subsystemTime.GameTime >= this.m_nextUpdateTime)
 			{
 				this.m_dt = this.m_random.Float(0.25f, 0.35f) + MathUtils.Min((float)(this.m_subsystemTime.GameTime - this.m_nextUpdateTime), 0.1f);
@@ -289,7 +303,7 @@ namespace Game
 				this.m_stateMachine.Update();
 			}
 		}
-		
+
 		public ComponentBody GetHitBody1(ComponentBody target, out float distance)
 		{
 			Vector3 vector = this.m_componentCreature.ComponentBody.BoundingBox.Center();
@@ -310,7 +324,7 @@ namespace Game
 			}
 			return null;
 		}
-		
+
 		private TerrainRaycastResult? PickTerrain(Vector3 position, Vector3 direction, float reach)
 		{
 			direction = Vector3.Normalize(direction);
@@ -318,7 +332,7 @@ namespace Game
 			Vector3 end = position + direction * reach;
 			return this.m_componentMiner.m_subsystemTerrain.Raycast(position, end, true, true, (int value, float distance) => (double)Vector3.Distance(position + distance * direction, creaturePosition) <= (double)reach && BlocksManager.Blocks[Terrain.ExtractContents(value)].IsCollidable);
 		}
-		
+
 		private BodyRaycastResult? PickBody(Vector3 position, Vector3 direction, float reach)
 		{
 			direction = Vector3.Normalize(direction);
@@ -326,7 +340,7 @@ namespace Game
 			Vector3 end = position + direction * reach;
 			return this.m_subsystemBodies.Raycast(position, end, 0.35f, (ComponentBody body, float distance) => (double)Vector3.Distance(position + distance * direction, creaturePosition) <= (double)reach && body.Entity != this.Entity && !body.IsChildOfBody(this.m_componentMiner.ComponentCreature.ComponentBody) && !this.m_componentMiner.ComponentCreature.ComponentBody.IsChildOfBody(body));
 		}
-		
+
 		public bool FindAimTool(ComponentMiner componentMiner)
 		{
 			if (componentMiner.Inventory == null)
@@ -365,13 +379,13 @@ namespace Game
 			}
 			return false;
 		}
-		
+
 		public bool IsReady(int slotValue)
 		{
 			int data = Terrain.ExtractData(slotValue);
 			return !(BlocksManager.Blocks[Terrain.ExtractContents(slotValue)] is FlameThrowerBlock) || (FlameThrowerBlock.GetLoadState(data) == FlameThrowerBlock.LoadState.Loaded && FlameThrowerBlock.GetBulletType(data) != null);
 		}
-		
+
 		public bool IsAimToolNeedToReady(ComponentMiner componentMiner, int slotIndex)
 		{
 			int slotValue = componentMiner.Inventory.GetSlotValue(slotIndex);
@@ -408,7 +422,7 @@ namespace Game
 			}
 			return true;
 		}
-		
+
 		public void HandleComplexAimTool(ComponentMiner componentMiner, int slotIndex)
 		{
 			int slotValue = componentMiner.Inventory.GetSlotValue(slotIndex);
@@ -446,7 +460,7 @@ namespace Game
 			componentMiner.Inventory.RemoveSlotItems(slotIndex, 1);
 			componentMiner.Inventory.AddSlotItems(slotIndex, value2, 1);
 		}
-		
+
 		public bool FindHitTool(ComponentMiner componentMiner)
 		{
 			int activeBlockValue = componentMiner.ActiveBlockValue;
@@ -460,14 +474,26 @@ namespace Game
 			}
 			float num = 1f;
 			int activeSlotIndex = 0;
-			for (int i = 0; i < 6; i++)
+			// Verificar arma activa primero
+			int activeSlotValue = componentMiner.Inventory.GetSlotValue(componentMiner.Inventory.ActiveSlotIndex);
+			float activeMeleePower = BlocksManager.Blocks[Terrain.ExtractContents(activeSlotValue)].GetMeleePower(activeSlotValue);
+			if (activeMeleePower > 1f)
+			{
+				return true; // Ya tiene arma buena activa
+			}
+
+			// Buscar mejor arma
+			for (int i = 0; i < componentMiner.Inventory.SlotsCount; i++)
 			{
 				int slotValue = componentMiner.Inventory.GetSlotValue(i);
-				float meleePower = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)].GetMeleePower(slotValue);
-				if (meleePower > num)
+				if (slotValue != 0) // Solo slots no vacíos
 				{
-					num = meleePower;
-					activeSlotIndex = i;
+					float meleePower = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)].GetMeleePower(slotValue);
+					if (meleePower > num)
+					{
+						num = meleePower;
+						activeSlotIndex = i;
+					}
 				}
 			}
 			if (num > 1f)
@@ -477,7 +503,7 @@ namespace Game
 			}
 			return false;
 		}
-		
+
 		private void CheckDefendPlayer(float dt)
 		{
 			try
@@ -521,7 +547,7 @@ namespace Game
 			}
 			catch { }
 		}
-		
+
 		private ComponentCreature FindPlayerAttacker(ComponentPlayer player)
 		{
 			try
@@ -573,7 +599,7 @@ namespace Game
 			catch { }
 			return null;
 		}
-		
+
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
 			this.m_subsystemGameInfo = base.Project.FindSubsystem<SubsystemGameInfo>(true);
@@ -608,7 +634,7 @@ namespace Game
 			this.m_autoDismount = valuesDictionary.GetValue<bool>("AutoDismount", true);
 			this.m_nextPlayerCheckTime = 0.0;
 			this.m_lastActionTime = 0.0;
-			
+
 			ComponentBody componentBody = this.m_componentCreature.ComponentBody;
 			componentBody.CollidedWithBody = (Action<ComponentBody>)Delegate.Combine(componentBody.CollidedWithBody, new Action<ComponentBody>(delegate (ComponentBody body)
 			{
@@ -641,7 +667,7 @@ namespace Game
 					this.m_componentCreature.ComponentLocomotion.JumpOrder = 1f;
 				}
 			}));
-			
+
 			ComponentHealth componentHealth = this.m_componentCreature.ComponentHealth;
 			componentHealth.Injured = (Action<Injury>)Delegate.Combine(componentHealth.Injured, new Action<Injury>(delegate (Injury injury)
 			{
@@ -658,13 +684,83 @@ namespace Game
 					{
 						flag2 = componentNewHerdBehavior.CanAttackCreature(injury.Attacker);
 					}
+					else
+					{
+						ComponentHerdBehavior componentHerdBehavior = base.Entity.FindComponent<ComponentHerdBehavior>();
+						if (componentHerdBehavior != null && injury.Attacker != null)
+						{
+							ComponentHerdBehavior attackerHerd = injury.Attacker.Entity.FindComponent<ComponentHerdBehavior>();
+							if (attackerHerd != null && !string.IsNullOrEmpty(attackerHerd.HerdName))
+							{
+								bool isSameHerd = attackerHerd.HerdName == componentHerdBehavior.HerdName;
+								bool isPlayerAlly = false;
+
+								if (componentHerdBehavior.HerdName.Equals("player", StringComparison.OrdinalIgnoreCase))
+								{
+									if (attackerHerd.HerdName.ToLower().Contains("guardian"))
+									{
+										isPlayerAlly = true;
+									}
+								}
+								else if (componentHerdBehavior.HerdName.ToLower().Contains("guardian"))
+								{
+									if (attackerHerd.HerdName.Equals("player", StringComparison.OrdinalIgnoreCase))
+									{
+										isPlayerAlly = true;
+									}
+								}
+
+								if (isSameHerd || isPlayerAlly)
+								{
+									flag2 = false;
+								}
+							}
+						}
+					}
+					if (flag2)
+					{
+						this.Attack(injury.Attacker, maxRange, maxChaseTime, isPersistent);
+					}
+					else
+					{
+						ComponentHerdBehavior componentHerdBehavior = base.Entity.FindComponent<ComponentHerdBehavior>();
+						if (componentHerdBehavior != null && injury.Attacker != null)
+						{
+							ComponentHerdBehavior attackerHerd = injury.Attacker.Entity.FindComponent<ComponentHerdBehavior>();
+							if (attackerHerd != null && !string.IsNullOrEmpty(attackerHerd.HerdName))
+							{
+								bool isSameHerd = attackerHerd.HerdName == componentHerdBehavior.HerdName;
+								bool isPlayerAlly = false;
+
+								if (componentHerdBehavior.HerdName.Equals("player", StringComparison.OrdinalIgnoreCase))
+								{
+									if (attackerHerd.HerdName.ToLower().Contains("guardian"))
+									{
+										isPlayerAlly = true;
+									}
+								}
+								else if (componentHerdBehavior.HerdName.ToLower().Contains("guardian"))
+								{
+									if (attackerHerd.HerdName.Equals("player", StringComparison.OrdinalIgnoreCase))
+									{
+										isPlayerAlly = true;
+									}
+								}
+
+								if (isSameHerd || isPlayerAlly)
+								{
+									flag2 = false;
+								}
+							}
+						}
+					}
 					if (flag2)
 					{
 						this.Attack(injury.Attacker, maxRange, maxChaseTime, isPersistent);
 					}
 				}
 			}));
-			
+
 			this.m_stateMachine.AddState("LookingForTarget", delegate
 			{
 				this.m_importanceLevel = 0f;
@@ -703,7 +799,7 @@ namespace Game
 					}
 				}
 			}, null);
-			
+
 			this.m_stateMachine.AddState("RandomMoving", delegate
 			{
 				this.m_componentPathfinding.SetDestination(new Vector3?(this.m_componentCreature.ComponentBody.Position + new Vector3(6f * this.m_random.Float(-1f, 1f), 0f, 6f * this.m_random.Float(-1f, 1f))), 1f, 1f, 0, false, true, false, null);
@@ -723,7 +819,7 @@ namespace Game
 			{
 				this.m_componentPathfinding.Stop();
 			});
-			
+
 			this.m_stateMachine.AddState("Chasing", delegate
 			{
 				this.m_subsystemNoise.MakeNoise(this.m_componentCreature.ComponentBody, 0.25f, 6f);
@@ -851,10 +947,10 @@ namespace Game
 					}
 				}
 			}, null);
-			
+
 			this.m_stateMachine.TransitionTo("LookingForTarget");
 		}
-		
+
 		public virtual ComponentCreature FindTarget()
 		{
 			Vector3 position = this.m_componentCreature.ComponentBody.Position;
@@ -877,7 +973,7 @@ namespace Game
 			}
 			return result;
 		}
-		
+
 		public virtual float ScoreTarget(ComponentCreature componentCreature)
 		{
 			float result = 0f;
@@ -934,12 +1030,12 @@ namespace Game
 			}
 			return result;
 		}
-		
+
 		public virtual bool IsTargetInWater(ComponentBody target)
 		{
 			return target.ImmersionDepth > 0f || (target.ParentBody != null && this.IsTargetInWater(target.ParentBody)) || (target.StandingOnBody != null && target.StandingOnBody.Position.Y < target.Position.Y && this.IsTargetInWater(target.StandingOnBody));
 		}
-		
+
 		public virtual bool IsTargetInAttackRange(ComponentBody target)
 		{
 			if (this.IsBodyInAttackRange(target))
@@ -967,7 +1063,7 @@ namespace Game
 			}
 			return (target.ParentBody != null && this.IsTargetInAttackRange(target.ParentBody)) || (this.AllowAttackingStandingOnBody && target.StandingOnBody != null && target.StandingOnBody.Position.Y < target.Position.Y && this.IsTargetInAttackRange(target.StandingOnBody));
 		}
-		
+
 		public virtual bool IsBodyInAttackRange(ComponentBody target)
 		{
 			BoundingBox boundingBox = this.m_componentCreature.ComponentBody.BoundingBox;
@@ -991,7 +1087,7 @@ namespace Game
 			}
 			return false;
 		}
-		
+
 		public virtual ComponentBody GetHitBody(ComponentBody target, out Vector3 hitPoint)
 		{
 			Vector3 vector = this.m_componentCreature.ComponentBody.BoundingBox.Center();
@@ -1067,7 +1163,7 @@ namespace Game
 		public bool PlayIdleSoundWhenStartToChase = true;
 		public bool PlayAngrySoundWhenChasing = true;
 		public float TargetInRangeTimeToChase = 3f;
-		
+
 		public enum AttackMode
 		{
 			Default,
