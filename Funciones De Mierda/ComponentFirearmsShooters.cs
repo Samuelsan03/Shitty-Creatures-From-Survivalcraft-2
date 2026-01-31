@@ -40,6 +40,7 @@ namespace Game
 		private ComponentCreature m_componentCreature;
 		private ComponentInventory m_componentInventory;
 		private ComponentChaseBehavior m_componentChaseBehavior;
+		private ComponentNewChaseBehavior m_componentNewChaseBehavior;
 		private ComponentNewChaseBehavior2 m_componentNewChaseBehavior2;
 		private ComponentBanditChaseBehavior m_componentBanditChaseBehavior;
 		private ComponentZombieChaseBehavior m_componentZombieChaseBehavior;
@@ -59,6 +60,8 @@ namespace Game
 		{
 			if (m_componentChaseBehavior != null && m_componentChaseBehavior.Target != null)
 				return m_componentChaseBehavior.Target;
+			if (m_componentNewChaseBehavior != null && m_componentNewChaseBehavior.Target != null)
+				return m_componentNewChaseBehavior.Target;
 			if (m_componentNewChaseBehavior2 != null && m_componentNewChaseBehavior2.Target != null)
 				return m_componentNewChaseBehavior2.Target;
 			if (m_componentBanditChaseBehavior != null && m_componentBanditChaseBehavior.Target != null)
@@ -94,6 +97,7 @@ namespace Game
 			m_componentCreature = base.Entity.FindComponent<ComponentCreature>(true);
 			m_componentInventory = base.Entity.FindComponent<ComponentInventory>(true);
 			m_componentChaseBehavior = base.Entity.FindComponent<ComponentChaseBehavior>(false);
+			m_componentNewChaseBehavior = base.Entity.FindComponent<ComponentNewChaseBehavior>(false);
 			m_componentNewChaseBehavior2 = base.Entity.FindComponent<ComponentNewChaseBehavior2>(false);
 			m_componentBanditChaseBehavior = base.Entity.FindComponent<ComponentBanditChaseBehavior>(false);
 			m_componentZombieChaseBehavior = base.Entity.FindComponent<ComponentZombieChaseBehavior>(false);
@@ -119,7 +123,7 @@ namespace Game
 				int akIndex = BlocksManager.GetBlockIndex(typeof(Game.AKBlock), true, false);
 				FirearmConfigs[akIndex] = new FirearmConfig
 				{
-					BulletBlockType = typeof(NuevaBala),
+					BulletBlockType = typeof(NuevaBala2),
 					ShootSound = "Audio/Armas/ak 47 fuego",
 					FireRate = 0.17,
 					BulletSpeed = 280f,
