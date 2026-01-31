@@ -21,8 +21,7 @@ namespace Game
 		private ComponentMiner m_componentMiner;
 		private Random m_random = new Random();
 
-		// Nuevo campo añadido
-		public float AimHandAngleOrder = 0f; // Valor por defecto similar al segundo archivo
+		public float AimHandAngleOrder = 0f;
 
 		private class FirearmConfig
 		{
@@ -138,7 +137,7 @@ namespace Game
 		{
 			base.Load(valuesDictionary, idToEntityMap);
 			CanUseInventory = valuesDictionary.GetValue<bool>("CanUseInventory", false);
-			AimHandAngleOrder = valuesDictionary.GetValue<float>("AimHandAngleOrder", 0f); // Cargar desde ValuesDictionary
+			AimHandAngleOrder = valuesDictionary.GetValue<float>("AimHandAngleOrder", 0f);
 			m_componentCreature = Entity.FindComponent<ComponentCreature>(true);
 			m_componentZombieChaseBehavior = Entity.FindComponent<ComponentZombieChaseBehavior>();
 			m_componentInventory = Entity.FindComponent<ComponentInventory>(true);
@@ -161,19 +160,18 @@ namespace Game
 		{
 			try
 			{
-				// Armas originales
 				int kaIndex = BlocksManager.GetBlockIndex(typeof(KABlock), true, false);
 				m_firearmConfigs[kaIndex] = new FirearmConfig
 				{
-					BulletBlockType = typeof(NuevaBala5), // Usa NuevaBala5 (negra) como en el subsystem
-					ShootSound = "Audio/Armas/KA fuego", // Mismo sonido que en el subsystem
-					FireRate = 0.1, // Más rápido que en el subsystem (0.1 vs 0.12)
-					BulletSpeed = 320f, // Mayor velocidad (320f vs 300f originalmente)
-					MaxShotsBeforeReload = 40, // Capacidad de 40 balas como en GetProcessInventoryItemCapacity
-					ProjectilesPerShot = 3, // 3 balas por ráfaga como en el código
-					SpreadVector = new Vector3(0.007f, 0.007f, 0.03f), // Menor dispersión que original
-					NoiseRadius = 35f, // Menor ruido (35f vs 40f originalmente)
-					IsAutomatic = true, // Es automático según el comportamiento
+					BulletBlockType = typeof(NuevaBala5),
+					ShootSound = "Audio/Armas/KA fuego",
+					FireRate = 0.1,
+					BulletSpeed = 320f,
+					MaxShotsBeforeReload = 40,
+					ProjectilesPerShot = 3,
+					SpreadVector = new Vector3(0.007f, 0.007f, 0.03f),
+					NoiseRadius = 35f,
+					IsAutomatic = true,
 					IsSniper = false,
 					IsShotgun = false
 				};
@@ -418,7 +416,6 @@ namespace Game
 					IsShotgun = false
 				};
 
-				// Nuevas armas añadidas
 				int aa12Index = BlocksManager.GetBlockIndex(typeof(AA12Block), true, false);
 				m_firearmConfigs[aa12Index] = new FirearmConfig
 				{
@@ -880,6 +877,7 @@ namespace Game
 			m_animationStartTime = m_subsystemTime.GameTime;
 			m_shotsSinceLastReload = 0;
 			m_hasFirearmAimed = false;
+			m_lastFirearmShotTime = 0;
 		}
 
 		private void ProcessFirearmBehavior(ComponentCreature target, float distance)
@@ -897,20 +895,36 @@ namespace Game
 
 			FirearmConfig config = m_firearmConfigs[blockIndex];
 
-			if (m_shotsSinceLastReload >= config.MaxShotsBeforeReload)
-			{
-				StartFirearmReloading();
-				return;
-			}
-
 			if (m_isFirearmReloading)
 			{
-				ApplyFirearmReloadingAnimation(target);
+				ApplyFirearmReloadingAnimation();
 
 				if (m_subsystemTime.GameTime - m_firearmReloadStartTime >= m_firearmReloadTime)
 				{
 					m_isFirearmReloading = false;
 					m_shotsSinceLastReload = 0;
+
+					if (m_subsystemParticles != null && m_subsystemTerrain != null)
+					{
+						try
+						{
+							Vector3 basePosition = m_componentCreature.ComponentCreatureModel.EyePosition;
+							Vector3 readyPosition = basePosition + new Vector3(0f, 0.2f, 0f);
+							KillParticleSystem readyParticles = new KillParticleSystem(m_subsystemTerrain, readyPosition, 0.5f);
+							m_subsystemParticles.AddParticleSystem(readyParticles, false);
+							for (int i = 0; i < 3; i++)
+							{
+								Vector3 offset = new Vector3(m_random.Float(-0.2f, 0.2f), m_random.Float(0.1f, 0.4f), m_random.Float(-0.2f, 0.2f));
+								KillParticleSystem additionalParticles = new KillParticleSystem(m_subsystemTerrain, basePosition + offset, 0.5f);
+								m_subsystemParticles.AddParticleSystem(additionalParticles, false);
+							}
+						}
+						catch (Exception)
+						{
+						}
+					}
+
+					m_subsystemAudio.PlaySound("Audio/Armas/reload", 1f, 0f, m_componentCreature.ComponentCreatureModel.EyePosition, 10f, true);
 					m_isFirearmAiming = true;
 					m_animationStartTime = m_subsystemTime.GameTime;
 					m_hasFirearmAimed = false;
@@ -935,6 +949,13 @@ namespace Game
 				if (m_subsystemTime.GameTime - m_fireTime >= fireAnimationTime)
 				{
 					m_isFirearmFiring = false;
+
+					if (m_shotsSinceLastReload >= config.MaxShotsBeforeReload)
+					{
+						StartFirearmReloading();
+						return;
+					}
+
 					m_isFirearmAiming = true;
 					m_animationStartTime = m_subsystemTime.GameTime;
 				}
@@ -1018,7 +1039,7 @@ namespace Game
 			}
 		}
 
-		private void ApplyFirearmReloadingAnimation(ComponentCreature target)
+		private void ApplyFirearmReloadingAnimation()
 		{
 			if (m_componentModel != null)
 			{
@@ -1040,6 +1061,37 @@ namespace Game
 
 			m_subsystemAudio.PlaySound("Audio/Armas/reload", 0.8f, m_random.Float(-0.1f, 0.1f),
 				m_componentCreature.ComponentBody.Position, 5f, false);
+
+			if (m_subsystemParticles != null && m_subsystemTerrain != null)
+			{
+				try
+				{
+					Vector3 basePosition = m_componentCreature.ComponentCreatureModel.EyePosition;
+					KillParticleSystem reloadParticles = new KillParticleSystem(m_subsystemTerrain, basePosition, 0.5f);
+					m_subsystemParticles.AddParticleSystem(reloadParticles, false);
+					for (int i = 0; i < 3; i++)
+					{
+						Vector3 offset = new Vector3(
+							m_random.Float(-0.2f, 0.2f),
+							m_random.Float(0.1f, 0.4f),
+							m_random.Float(-0.2f, 0.2f)
+						);
+						KillParticleSystem additionalParticles = new KillParticleSystem(m_subsystemTerrain, basePosition + offset, 0.5f);
+						m_subsystemParticles.AddParticleSystem(additionalParticles, false);
+					}
+				}
+				catch (Exception)
+				{
+				}
+			}
+
+			if (m_componentModel != null)
+			{
+				m_componentModel.AimHandAngleOrder = AimHandAngleOrder;
+				m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
+				m_componentModel.InHandItemRotationOrder = Vector3.Zero;
+				m_componentModel.LookAtOrder = null;
+			}
 		}
 
 		private void FireFirearm(ComponentCreature target, FirearmConfig config)
@@ -2194,6 +2246,7 @@ namespace Game
 			m_arrowVisible = false;
 			m_hasArrowInBow = false;
 			m_hasFirearmAimed = false;
+			m_lastFirearmShotTime = 0;
 
 			if (m_weaponType == 0)
 			{
@@ -2286,6 +2339,8 @@ namespace Game
 			m_isFirearmAiming = false;
 			m_isFirearmFiring = false;
 			m_isFirearmReloading = false;
+			m_isThrowableAiming = false;
+			m_isThrowableThrowing = false;
 
 			m_currentDraw = 0f;
 			m_currentWeaponSlot = -1;
@@ -2296,6 +2351,7 @@ namespace Game
 			m_flameSwitchState = false;
 			m_shotsSinceLastReload = 0;
 			m_hasFirearmAimed = false;
+			m_lastFirearmShotTime = 0;
 
 			if (m_currentWeaponSlot >= 0)
 			{
@@ -2320,7 +2376,7 @@ namespace Game
 
 			if (m_componentModel != null)
 			{
-				m_componentModel.AimHandAngleOrder = AimHandAngleOrder; // Usar el valor base
+				m_componentModel.AimHandAngleOrder = AimHandAngleOrder;
 				m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
 				m_componentModel.InHandItemRotationOrder = Vector3.Zero;
 				m_componentModel.LookAtOrder = null;
