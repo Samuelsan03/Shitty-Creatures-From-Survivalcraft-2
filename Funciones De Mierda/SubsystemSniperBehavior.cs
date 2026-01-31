@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Runtime.CompilerServices;
@@ -186,9 +186,29 @@ namespace Game
 										componentMiner.Inventory.RemoveSlotItems(componentMiner.Inventory.ActiveSlotIndex, 1);
 										componentMiner.Inventory.AddSlotItems(componentMiner.Inventory.ActiveSlotIndex, Terrain.MakeBlockValue(BlocksManager.GetBlockIndex(typeof(SniperBlock), true, false), 0, SniperBlock.SetBulletNum(SniperBlock.GetBulletNum(Terrain.ExtractData(slotValue)) - 1)), 1);
 										this.m_subsystemAudio.PlaySound("Audio/Armas/Sniper fuego", 1.8f, this.m_random.Float(-0.05f, 0.05f), componentMiner.ComponentCreature.ComponentCreatureModel.EyePosition, 15f, true);
-										this.m_subsystemParticles.AddParticleSystem(new GunSmokeParticleSystem(this.m_subsystemTerrain, vector2 + 0.5f * vector3, vector3), false);
+
+										// Añadir partículas de fuego
+										this.m_subsystemParticles.AddParticleSystem(new GunFireParticleSystem(this.m_subsystemTerrain, vector2 + 0.4f * vector3, vector3), false);
+
 										this.m_subsystemNoise.MakeNoise(vector2, 1.5f, 80f);
 										componentMiner.ComponentCreature.ComponentCreatureModel.InHandItemRotationOrder = new Vector3(-2f, 0f, 0f);
+									}
+									else
+									{
+										// Sonido de disparo sin balas
+										this.m_subsystemAudio.PlaySound("Audio/Armas/Empty fire", 1f,
+											this.m_random.Float(-0.1f, 0.1f),
+											componentMiner.ComponentCreature.ComponentCreatureModel.EyePosition, 3f, true);
+
+										// Mostrar mensaje de que necesita munición
+										ComponentPlayer componentPlayer2 = componentMiner.ComponentPlayer;
+										if (componentPlayer2 != null)
+										{
+											string bulletName = LanguageControl.Get("Blocks", "SniperBullet:0", "DisplayName");
+											componentPlayer2.ComponentGui.DisplaySmallMessage(
+												LanguageControl.Get("Messages", "NeedAmmo").Replace("{0}", bulletName),
+												Color.White, true, false);
+										}
 									}
 									componentMiner.ComponentCreature.ComponentCreatureModel.InHandItemOffsetOrder = Vector3.Zero;
 									componentMiner.ComponentCreature.ComponentCreatureModel.InHandItemRotationOrder = Vector3.Zero;
@@ -240,6 +260,25 @@ namespace Game
 				processedCount = 0;
 				inventory.RemoveSlotItems(slotIndex, 1);
 				inventory.AddSlotItems(slotIndex, Terrain.MakeBlockValue(BlocksManager.GetBlockIndex(typeof(SniperBlock), true, false), 0, SniperBlock.SetBulletNum(1)), 1);
+
+				// Reproducir sonido de recarga
+				var subsystemPlayers = base.Project.FindSubsystem<SubsystemPlayers>(true);
+				if (subsystemPlayers != null && this.m_subsystemAudio != null)
+				{
+					// Buscar entre todos los jugadores cuál tiene este inventario
+					for (int i = 0; i < subsystemPlayers.ComponentPlayers.Count; i++)
+					{
+						var componentPlayer = subsystemPlayers.ComponentPlayers[i];
+						if (componentPlayer != null && componentPlayer.ComponentMiner != null &&
+							componentPlayer.ComponentMiner.Inventory == inventory)
+						{
+							Vector3 position = componentPlayer.ComponentCreatureModel.EyePosition;
+							this.m_subsystemAudio.PlaySound("Audio/Armas/reload", 1f,
+								this.m_random.Float(-0.1f, 0.1f), position, 5f, true);
+							break;
+						}
+					}
+				}
 			}
 		}
 
