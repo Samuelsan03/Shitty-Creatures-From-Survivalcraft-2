@@ -979,7 +979,7 @@
     </ParameterSet>
 </EntityTemplate>
 
-<EntityTemplate Name="Bandit7" Guid="af964c81-165d-4e57-8639-d2ffa9b949be" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<EntityTemplate Name="Bandit7" Guid="af964c81-165d-4e57-8639-d2ffa9b949be" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d"> <!-- Bandido guardian del jugador -->
 <MemberComponentTemplate Name="ChaseBehavior" Guid="54a8397e-5446-4bf4-9bdf-58a67dd4c6e1" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
                 <Parameter Name="AutoChaseMask" Guid="512b3f85-b127-4833-a3d3-1fb7d87b3028" Value="LandPredator" Type="Game.CreatureCategory"/>
                 <Parameter Name="DayChaseRange" Guid="2eccae0d-ddb1-47c9-926c-62dc2806762f" Value="0" Type="float"/>
@@ -1640,7 +1640,7 @@
     </ParameterSet>
 </EntityTemplate>
 
-<EntityTemplate Name="Bandit11" Guid="59f53032-4f8f-49a2-8984-3b267261b0e5" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<EntityTemplate Name="Bandit11" Guid="59f53032-4f8f-49a2-8984-3b267261b0e5" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d"> <!-- Bandido guardian del jugador -->
 <MemberComponentTemplate Name="SummonBehavior" Guid="e1aab0b5-4aa7-470e-864f-5c418ce68f40">
               <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="3ef8b19b-291b-45a5-87c6-ac772ac209a9"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="df4246cc-d9a0-4644-8f1e-a0f721462f56"/>
