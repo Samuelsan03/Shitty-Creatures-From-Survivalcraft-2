@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Engine;
 using GameEntitySystem;
@@ -106,7 +106,7 @@ namespace Game
 		private int m_shotsSinceLastReload = 0;
 		private bool m_hasFirearmAimed = false;
 
-		private float m_maxDistance = 25f;
+		private float m_maxDistance = 100f;
 		private float m_drawTime = 1.2f;
 		private float m_aimTime = 0.5f;
 		private float m_reloadTime = 0.8f;
@@ -123,7 +123,7 @@ namespace Game
 		private float m_explosiveBoltMinDistance = 15f;
 		private float m_explosiveRepeatArrowMinDistance = 15f;
 
-		private float m_repeatCrossbowDrawTime = 2.0f;
+		private float m_repeatCrossbowDrawTime = 0.5f;
 		private float m_repeatCrossbowTimeBetweenShots = 0.5f;
 		private float m_repeatCrossbowMaxInaccuracy = 0.04f;
 		private float m_repeatCrossbowBoltSpeed = 35f;
@@ -157,19 +157,18 @@ namespace Game
 		{
 			try
 			{
-				// Armas originales
 				int kaIndex = BlocksManager.GetBlockIndex(typeof(KABlock), true, false);
 				m_firearmConfigs[kaIndex] = new FirearmConfig
 				{
-					BulletBlockType = typeof(NuevaBala5), // Usa NuevaBala5 (negra) como en el subsystem
-					ShootSound = "Audio/Armas/KA fuego", // Mismo sonido que en el subsystem
-					FireRate = 0.1, // Más rápido que en el subsystem (0.1 vs 0.12)
-					BulletSpeed = 320f, // Mayor velocidad (320f vs 300f originalmente)
-					MaxShotsBeforeReload = 40, // Capacidad de 40 balas como en GetProcessInventoryItemCapacity
-					ProjectilesPerShot = 3, // 3 balas por ráfaga como en el código
-					SpreadVector = new Vector3(0.007f, 0.007f, 0.03f), // Menor dispersión que original
-					NoiseRadius = 35f, // Menor ruido (35f vs 40f originalmente)
-					IsAutomatic = true, // Es automático según el comportamiento
+					BulletBlockType = typeof(NuevaBala5),
+					ShootSound = "Audio/Armas/KA fuego",
+					FireRate = 0.1,
+					BulletSpeed = 320f,
+					MaxShotsBeforeReload = 40,
+					ProjectilesPerShot = 3,
+					SpreadVector = new Vector3(0.007f, 0.007f, 0.03f),
+					NoiseRadius = 35f,
+					IsAutomatic = true,
 					IsSniper = false,
 					IsShotgun = false
 				};
@@ -414,7 +413,6 @@ namespace Game
 					IsShotgun = false
 				};
 
-				// Nuevas armas añadidas
 				int aa12Index = BlocksManager.GetBlockIndex(typeof(AA12Block), true, false);
 				m_firearmConfigs[aa12Index] = new FirearmConfig
 				{
@@ -669,7 +667,7 @@ namespace Game
 					else if (IsThrowableBlock(block))
 					{
 						m_currentWeaponSlot = i;
-						m_weaponType = 6; // Usar tipo 6 para todos los objetos lanzables
+						m_weaponType = 6;
 						m_componentInventory.ActiveSlotIndex = i;
 						StartThrowableAiming();
 						break;
@@ -678,31 +676,21 @@ namespace Game
 			}
 		}
 
-		// NUEVO MÉTODO: Verificar si un bloque es lanzable
 		private bool IsThrowableBlock(Block block)
 		{
-			// LISTA BLANCA EXPLÍCITA de bloques que SÍ pueden ser lanzados
-			// Solo estos tipos exactos serán considerados lanzables
-
-			// 1. Lanzas base del juego
 			if (block is SpearBlock)
 				return true;
 
-			// 2. LongspearBlock (si existe en tu mod)
 			if (block is LongspearBlock)
 				return true;
 
-			// 3. Bloques específicos por tipo - AÑADE AQUÍ TUS BLOQUES LANZABLES
 			Type blockType = block.GetType();
 			if (blockType == typeof(StoneChunkBlock)) return true;
 			if (blockType == typeof(SulphurChunkBlock)) return true;
 			if (blockType == typeof(CoalChunkBlock)) return true;
-			if (blockType == typeof(StoneChunkBlock)) return true;
 			if (blockType == typeof(DiamondChunkBlock)) return true;
-			if (blockType == typeof(StoneChunkBlock)) return true;
 			if (blockType == typeof(GermaniumChunkBlock)) return true;
 			if (blockType == typeof(GermaniumOreChunkBlock)) return true;
-			if (blockType == typeof(StoneChunkBlock)) return true;
 			if (blockType == typeof(IronOreChunkBlock)) return true;
 			if (blockType == typeof(MalachiteChunkBlock)) return true;
 			if (blockType == typeof(SaltpeterChunkBlock)) return true;
@@ -777,16 +765,13 @@ namespace Game
 		{
 			if (m_componentModel != null)
 			{
-				// Aplicar ángulo de apuntado como en SubsystemThrowableBlockBehavior
 				m_componentModel.AimHandAngleOrder = 2f;
 
-				// Obtener información del bloque actual
 				if (m_currentWeaponSlot >= 0)
 				{
 					int slotValue = m_componentInventory.GetSlotValue(m_currentWeaponSlot);
 					Block block = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)];
 
-					// Para lanzas, aplicar offset especial
 					if (block is SpearBlock)
 					{
 						m_componentModel.InHandItemOffsetOrder = new Vector3(0f, -0.25f, 0f);
@@ -794,7 +779,6 @@ namespace Game
 					}
 					else
 					{
-						// Para otros objetos lanzables, usar offset genérico
 						m_componentModel.InHandItemOffsetOrder = new Vector3(0f, 0f, 0f);
 						m_componentModel.InHandItemRotationOrder = new Vector3(0f, 0f, 0f);
 					}
@@ -837,14 +821,12 @@ namespace Game
 
 				Block block = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)];
 
-				// Usar la misma lógica que SubsystemThrowableBlockBehavior
 				Vector3 throwPosition = m_componentCreature.ComponentCreatureModel.EyePosition +
 									   m_componentCreature.ComponentBody.Matrix.Right * 0.4f;
 
 				Vector3 targetPosition = target.ComponentCreatureModel.EyePosition;
 				Vector3 direction = Vector3.Normalize(targetPosition - throwPosition);
 
-				// Añadir imprecisión (similar al juego base)
 				direction += new Vector3(
 					m_random.Float(-0.05f, 0.05f),
 					m_random.Float(-0.03f, 0.03f),
@@ -852,23 +834,19 @@ namespace Game
 				);
 				direction = Vector3.Normalize(direction);
 
-				// Obtener la velocidad del proyectil desde el bloque
 				float speed = block.GetProjectileSpeed(slotValue);
 
-				// Si la velocidad es 0 o muy baja, usar una velocidad por defecto
 				if (speed < 10f)
 				{
-					speed = 25f; // Velocidad por defecto para objetos lanzables
+					speed = 25f;
 				}
 
-				// Aplicar variación aleatoria a la velocidad angular (como en SubsystemThrowableBlockBehavior)
 				Vector3 angularVelocity = new Vector3(
 					m_random.Float(5f, 10f),
 					m_random.Float(5f, 10f),
 					m_random.Float(5f, 10f)
 				);
 
-				// Lanzar el proyectil
 				if (m_subsystemProjectiles.FireProjectile(
 					slotValue,
 					throwPosition,
@@ -876,10 +854,8 @@ namespace Game
 					angularVelocity,
 					m_componentCreature) != null)
 				{
-					// Reducir la cantidad en el inventario
 					m_componentInventory.RemoveSlotItems(m_currentWeaponSlot, 1);
 
-					// Sonido de lanzamiento (mismo que el juego base)
 					m_subsystemAudio.PlaySound("Audio/Throw", 0.25f, m_random.Float(-0.2f, 0.2f),
 						m_componentCreature.ComponentBody.Position, 2f, false);
 				}
@@ -915,20 +891,37 @@ namespace Game
 
 			FirearmConfig config = m_firearmConfigs[blockIndex];
 
-			if (m_shotsSinceLastReload >= config.MaxShotsBeforeReload)
-			{
-				StartFirearmReloading();
-				return;
-			}
-
 			if (m_isFirearmReloading)
 			{
-				ApplyFirearmReloadingAnimation(target);
+				ApplyFirearmReloadingAnimation();
 
 				if (m_subsystemTime.GameTime - m_firearmReloadStartTime >= m_firearmReloadTime)
 				{
 					m_isFirearmReloading = false;
 					m_shotsSinceLastReload = 0;
+
+					if (m_subsystemParticles != null && m_subsystemTerrain != null)
+					{
+						try
+						{
+							Vector3 basePosition = m_componentCreature.ComponentCreatureModel.EyePosition;
+							Vector3 readyPosition = basePosition + new Vector3(0f, 0.2f, 0f);
+							KillParticleSystem readyParticles = new KillParticleSystem(m_subsystemTerrain, readyPosition, 0.5f);
+							m_subsystemParticles.AddParticleSystem(readyParticles, false);
+							for (int i = 0; i < 3; i++)
+							{
+								Vector3 offset = new Vector3(m_random.Float(-0.2f, 0.2f), m_random.Float(0.1f, 0.4f), m_random.Float(-0.2f, 0.2f));
+								KillParticleSystem additionalParticles = new KillParticleSystem(m_subsystemTerrain, basePosition + offset, 0.5f);
+								m_subsystemParticles.AddParticleSystem(additionalParticles, false);
+							}
+						}
+						catch (Exception)
+						{
+						}
+					}
+
+					m_subsystemAudio.PlaySound("Audio/Armas/reload", 1f, 0f, m_componentCreature.ComponentCreatureModel.EyePosition, 10f, true);
+					m_isFirearmAiming = false;
 					m_isFirearmAiming = true;
 					m_animationStartTime = m_subsystemTime.GameTime;
 					m_hasFirearmAimed = false;
@@ -956,6 +949,12 @@ namespace Game
 					m_isFirearmAiming = true;
 					m_animationStartTime = m_subsystemTime.GameTime;
 				}
+				return;
+			}
+
+			if (m_shotsSinceLastReload >= config.MaxShotsBeforeReload)
+			{
+				StartFirearmReloading();
 				return;
 			}
 
@@ -1034,15 +1033,13 @@ namespace Game
 			}
 		}
 
-		private void ApplyFirearmReloadingAnimation(ComponentCreature target)
+		private void ApplyFirearmReloadingAnimation()
 		{
 			if (m_componentModel != null)
 			{
-				float reloadProgress = (float)((m_subsystemTime.GameTime - m_firearmReloadStartTime) / m_firearmReloadTime);
-
-				m_componentModel.AimHandAngleOrder = MathUtils.Lerp(1.0f, 0.5f, reloadProgress);
-				m_componentModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f - (0.1f * reloadProgress));
-				m_componentModel.InHandItemRotationOrder = new Vector3(-1.7f + (0.5f * reloadProgress), 0f, 0f);
+				m_componentModel.AimHandAngleOrder = 0.0f;
+				m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
+				m_componentModel.InHandItemRotationOrder = Vector3.Zero;
 				m_componentModel.LookAtOrder = null;
 			}
 		}
@@ -1054,8 +1051,38 @@ namespace Game
 			m_isFirearmReloading = true;
 			m_firearmReloadStartTime = m_subsystemTime.GameTime;
 
-			m_subsystemAudio.PlaySound("Audio/Armas/reload", 0.8f, m_random.Float(-0.1f, 0.1f),
-				m_componentCreature.ComponentBody.Position, 5f, false);
+			if (m_componentModel != null)
+			{
+				m_componentModel.AimHandAngleOrder = 0f;
+				m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
+				m_componentModel.InHandItemRotationOrder = Vector3.Zero;
+				m_componentModel.LookAtOrder = null;
+			}
+
+			if (m_subsystemParticles != null && m_subsystemTerrain != null)
+			{
+				try
+				{
+					Vector3 basePosition = m_componentCreature.ComponentCreatureModel.EyePosition;
+					KillParticleSystem reloadParticles = new KillParticleSystem(m_subsystemTerrain, basePosition, 0.5f);
+					m_subsystemParticles.AddParticleSystem(reloadParticles, false);
+					for (int i = 0; i < 3; i++)
+					{
+						Vector3 offset = new Vector3(
+							m_random.Float(-0.2f, 0.2f),
+							m_random.Float(0.1f, 0.4f),
+							m_random.Float(-0.2f, 0.2f)
+						);
+						KillParticleSystem additionalParticles = new KillParticleSystem(m_subsystemTerrain, basePosition + offset, 0.5f);
+						m_subsystemParticles.AddParticleSystem(additionalParticles, false);
+					}
+				}
+				catch (Exception)
+				{
+				}
+			}
+
+			m_subsystemAudio.PlaySound("Audio/Armas/reload", 0.8f, 0f, m_componentCreature.ComponentCreatureModel.EyePosition, 10f, true);
 		}
 
 		private void FireFirearm(ComponentCreature target, FirearmConfig config)
@@ -2531,13 +2558,18 @@ namespace Game
 				int arrowData = ArrowBlock.SetArrowType(0, m_currentArrowType);
 				int arrowValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex<ArrowBlock>(), 0, arrowData);
 
-				m_subsystemProjectiles.FireProjectile(
+				var projectile = m_subsystemProjectiles.FireProjectile(
 					arrowValue,
 					firePosition,
 					direction * currentSpeed,
 					Vector3.Zero,
 					m_componentCreature
 				);
+
+				if (projectile != null)
+				{
+					projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
+				}
 			}
 			catch { }
 		}
@@ -2566,13 +2598,18 @@ namespace Game
 				int boltData = ArrowBlock.SetArrowType(0, m_currentBoltType);
 				int boltValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex<ArrowBlock>(), 0, boltData);
 
-				m_subsystemProjectiles.FireProjectile(
+				var projectile = m_subsystemProjectiles.FireProjectile(
 					boltValue,
 					firePosition,
 					direction * speed,
 					Vector3.Zero,
 					m_componentCreature
 				);
+
+				if (projectile != null)
+				{
+					projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
+				}
 
 				if (m_subsystemNoise != null)
 				{
@@ -2731,10 +2768,14 @@ namespace Game
 					m_componentCreature
 				);
 
-				if (m_currentRepeatArrowType == RepeatArrowBlock.ArrowType.ExplosiveArrow && projectile != null)
+				if (projectile != null)
 				{
-					projectile.IsIncendiary = false;
 					projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
+
+					if (m_currentRepeatArrowType == RepeatArrowBlock.ArrowType.ExplosiveArrow)
+					{
+						projectile.IsIncendiary = false;
+					}
 				}
 
 				if (m_subsystemNoise != null)
