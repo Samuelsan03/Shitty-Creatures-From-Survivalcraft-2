@@ -244,6 +244,14 @@
   }
 },
   "Blocks": {
+    "NuclearCoinBlock:0": {
+      "DisplayName": "Nuclear Coin",
+      "Description": "A coin forged in a post-apocalyptic world. It cannot be crafted, but can be obtained by killing mobs. Used to trade with the Pirata Hostil Comerciante and for other purposes such as hiring and more, depending on the player's needs."
+    },
+    "ToxinBlock:0": {
+      "DisplayName": "Toxin",
+      "Description": "An extremely poisonous material saturated with lethal toxins. It cannot be crafted and is mainly obtained as loot from venomous creatures such as Infected Normal 3, Infected Normal 4, Boomer 3, Flying Infected 2, Flying Infected Boss, Tank 3, and Tank Ghost 3. Alternatively, it can be purchased from shops or traded with Pirata Hostil Comerciante"
+    },
     "MediumFirstAidKitBlock:0": {
     "DisplayName": "Medium First Aid Kit",
     "Description": "A medical kit designed to treat injuries by restoring a significant portion of health. Heals the target up to about half of their maximum health. Can be used on yourself or on other nearby creatures."
@@ -702,6 +710,7 @@
     }
   },
   "Messages": {
+    "NeedAmmo": "Needs {0} to fire.",
     "NPCCured": "The NPC has been cured of poison and sickness!",
     "FluCured": "Flu has been cured!",
     "PoisonAndSicknessCured": "Nausea and sickness have been cured!",
