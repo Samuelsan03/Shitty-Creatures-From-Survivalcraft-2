@@ -710,7 +710,7 @@
     }
   },
   "Messages": {
-    "NeedAmmo": "Needs {0} to fire.",
+    "NeedAmmo": "Needs {0} to shoot.",
     "NPCCured": "The NPC has been cured of poison and sickness!",
     "FluCured": "Flu has been cured!",
     "PoisonAndSicknessCured": "Nausea and sickness have been cured!",
