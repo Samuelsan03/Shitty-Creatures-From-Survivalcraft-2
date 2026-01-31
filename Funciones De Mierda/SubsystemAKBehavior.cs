@@ -117,7 +117,7 @@ namespace Game
 										Vector3 vector5 = new Vector3(0.01f, 0.01f, 0.05f);
 										for (int i = 0; i < num5; i++)
 										{
-											int value = Terrain.MakeBlockValue(214, 0, 2);
+											int value = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex(typeof(NuevaBala2), true, false), 0, 2);
 											Vector3 v3 = this.m_random.Float(-vector5.X, vector5.X) * vector4 + this.m_random.Float(-vector5.Y, vector5.Y) * v2 + this.m_random.Float(-vector5.Z, vector5.Z) * vector3;
 											this.m_subsystemProjectiles.FireProjectile(value, vector2, 280f * (vector3 + v3), Vector3.Zero, componentMiner.ComponentCreature);
 										}
