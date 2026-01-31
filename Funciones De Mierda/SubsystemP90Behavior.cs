@@ -143,8 +143,7 @@ namespace Game
 										if (flag13)
 										{
 											// Sonido de disparo sin balas
-											this.m_subsystemAudio.PlaySound("Audio/Armas/Empty fire", 1f,
-												this.m_random.Float(-0.1f, 0.1f),
+											this.m_subsystemAudio.PlaySound("Audio/Armas/Empty fire", 1f, this.m_random.Float(-0.1f, 0.1f),
 												componentMiner.ComponentCreature.ComponentCreatureModel.EyePosition, 3f, true);
 
 											// Mostrar mensaje de que necesita munición
@@ -224,6 +223,25 @@ namespace Game
 				processedCount = 0;
 				inventory.RemoveSlotItems(slotIndex, 1);
 				inventory.AddSlotItems(slotIndex, Terrain.MakeBlockValue(BlocksManager.GetBlockIndex(typeof(P90Block), true, false), 0, P90Block.SetBulletNum(50)), 1);
+
+				// Reproducir sonido de recarga
+				var subsystemPlayers = base.Project.FindSubsystem<SubsystemPlayers>(true);
+				if (subsystemPlayers != null && this.m_subsystemAudio != null)
+				{
+					// Buscar entre todos los jugadores cuál tiene este inventario
+					for (int i = 0; i < subsystemPlayers.ComponentPlayers.Count; i++)
+					{
+						var componentPlayer = subsystemPlayers.ComponentPlayers[i];
+						if (componentPlayer != null && componentPlayer.ComponentMiner != null &&
+							componentPlayer.ComponentMiner.Inventory == inventory)
+						{
+							Vector3 position = componentPlayer.ComponentCreatureModel.EyePosition;
+							this.m_subsystemAudio.PlaySound("Audio/Armas/reload", 1f,
+								this.m_random.Float(-0.1f, 0.1f), position, 5f, true);
+							break;
+						}
+					}
+				}
 			}
 		}
 
