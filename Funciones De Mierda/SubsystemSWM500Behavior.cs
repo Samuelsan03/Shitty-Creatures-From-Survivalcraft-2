@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Runtime.CompilerServices;
@@ -7,11 +7,8 @@ using TemplatesDatabase;
 
 namespace Game
 {
-	// Token: 0x02000039 RID: 57
 	public class SubsystemSWM500Behavior : SubsystemBlockBehavior
 	{
-		// Token: 0x1700001B RID: 27
-		// (get) Token: 0x06000134 RID: 308 RVA: 0x0000EDC0 File Offset: 0x0000CFC0
 		public override int[] HandledBlocks
 		{
 			get
@@ -23,7 +20,6 @@ namespace Game
 			}
 		}
 
-		// Token: 0x06000135 RID: 309 RVA: 0x0000EDEC File Offset: 0x0000CFEC
 		public override void Load(ValuesDictionary valuesDictionary)
 		{
 			base.Load(valuesDictionary);
@@ -35,9 +31,9 @@ namespace Game
 			this.m_subsystemNoise = base.Project.FindSubsystem<SubsystemNoise>(true);
 			this.m_subsystemGameInfo = base.Project.FindSubsystem<SubsystemGameInfo>(true);
 			this.fire = true;
+			this.m_maxBullets = 8;
 		}
 
-		// Token: 0x06000136 RID: 310 RVA: 0x0000EE88 File Offset: 0x0000D088
 		public override bool OnAim(Ray3 aim, ComponentMiner componentMiner, AimState state)
 		{
 			string name = "Audio/Armas/desert eagle fuego";
@@ -147,13 +143,26 @@ namespace Game
 									componentPlayer3.ComponentGui.DisplaySmallMessage((bulletNum - 1).ToString(CultureInfo.InvariantCulture), Color.White, false, false);
 								}
 								componentMiner.Inventory.RemoveSlotItems(componentMiner.Inventory.ActiveSlotIndex, 1);
-								componentMiner.Inventory.AddSlotItems(componentMiner.Inventory.ActiveSlotIndex, Terrain.MakeBlockValue(BlocksManager.GetBlockIndex(typeof(SWM500Block), true, false), 0, SWM500Block.SetBulletNum(SWM500Block.GetBulletNum(Terrain.ExtractData(slotValue)) - 1)), 1);
+								componentMiner.Inventory.AddSlotItems(componentMiner.Inventory.ActiveSlotIndex, Terrain.MakeBlockValue(BlocksManager.GetBlockIndex(typeof(SWM500Block), true, false), 0, SWM500Block.SetBulletNum(bulletNum - 1)), 1);
 								Vector3.Normalize(componentMiner.ComponentPlayer.GameWidget.ActiveCamera.ViewDirection);
 								componentMiner.ComponentCreature.ComponentCreatureModel.InHandItemRotationOrder = new Vector3(-1.5f, 0f, 0f);
 								this.m_subsystemAudio.PlaySound(name, 1.5f, this.m_random.Float(-0.1f, 0.1f), componentMiner.ComponentCreature.ComponentCreatureModel.EyePosition, 10f, true);
-								this.m_subsystemParticles.AddParticleSystem(new GunSmokeParticleSystem(this.m_subsystemTerrain, vector + 0.3f * vector2, vector2), false);
 								this.m_subsystemParticles.AddParticleSystem(new GunFireParticleSystem(vector + 0.3f * vector2, vector2, 10f), false);
 								this.m_subsystemNoise.MakeNoise(vector, 1f, 40f);
+							}
+							else
+							{
+								this.m_subsystemAudio.PlaySound("Audio/Armas/Empty fire", 1f,
+									this.m_random.Float(-0.1f, 0.1f),
+									componentMiner.ComponentCreature.ComponentCreatureModel.EyePosition,
+									3f, true);
+								ComponentPlayer componentPlayer3 = componentMiner.ComponentPlayer;
+								if (componentPlayer3 != null)
+								{
+									string bulletName = LanguageControl.Get("Blocks", "RevolverBulletBlock:0", "DisplayName");
+									string message = LanguageControl.Get("Messages", "NeedAmmo").Replace("{0}", bulletName);
+									componentPlayer3.ComponentGui.DisplaySmallMessage(message, Color.White, true, false);
+								}
 							}
 							componentMiner.ComponentCreature.ComponentCreatureModel.InHandItemOffsetOrder = Vector3.Zero;
 							componentMiner.ComponentCreature.ComponentCreatureModel.InHandItemRotationOrder = Vector3.Zero;
@@ -172,10 +181,9 @@ namespace Game
 			return false;
 		}
 
-		// Token: 0x06000137 RID: 311 RVA: 0x0000F5E0 File Offset: 0x0000D7E0
 		public override int GetProcessInventoryItemCapacity(IInventory inventory, int slotIndex, int value)
 		{
-			bool flag = value == BlocksManager.GetBlockIndex(typeof(SWM500Bullet), true, false) && SWM500Block.GetBulletNum(Terrain.ExtractData(inventory.GetSlotValue(slotIndex))) < 5;
+			bool flag = value == BlocksManager.GetBlockIndex(typeof(SWM500Bullet), true, false) && SWM500Block.GetBulletNum(Terrain.ExtractData(inventory.GetSlotValue(slotIndex))) < 8;
 			bool flag2 = flag;
 			int result;
 			if (flag2)
@@ -189,51 +197,49 @@ namespace Game
 			return result;
 		}
 
-		// Token: 0x06000138 RID: 312 RVA: 0x0000F630 File Offset: 0x0000D830
 		public override void ProcessInventoryItem(IInventory inventory, int slotIndex, int value, int count, int processCount, out int processedValue, out int processedCount)
 		{
 			processedValue = value;
 			processedCount = count;
 			int bulletNum = SWM500Block.GetBulletNum(Terrain.ExtractData(inventory.GetSlotValue(slotIndex)));
-			bool flag = bulletNum < 5;
+			bool flag = bulletNum < 8;
 			bool flag2 = flag;
 			if (flag2)
 			{
 				processedValue = 0;
 				processedCount = 0;
 				inventory.RemoveSlotItems(slotIndex, 1);
-				inventory.AddSlotItems(slotIndex, Terrain.MakeBlockValue(BlocksManager.GetBlockIndex(typeof(SWM500Block), true, false), 0, SWM500Block.SetBulletNum(5)), 1);
+				// CAMBIO AQUÍ: En lugar de sumar 1, establecer a 8 (máximo)
+				inventory.AddSlotItems(slotIndex, Terrain.MakeBlockValue(BlocksManager.GetBlockIndex(typeof(SWM500Block), true, false), 0, SWM500Block.SetBulletNum(8)), 1);
+				var subsystemPlayers = base.Project.FindSubsystem<SubsystemPlayers>(true);
+				if (subsystemPlayers != null && this.m_subsystemAudio != null)
+				{
+					for (int i = 0; i < subsystemPlayers.ComponentPlayers.Count; i++)
+					{
+						var componentPlayer = subsystemPlayers.ComponentPlayers[i];
+						if (componentPlayer != null && componentPlayer.ComponentMiner != null &&
+							componentPlayer.ComponentMiner.Inventory == inventory)
+						{
+							Vector3 position = componentPlayer.ComponentCreatureModel.EyePosition;
+							this.m_subsystemAudio.PlaySound("Audio/Armas/reload", 1f,
+								this.m_random.Float(-0.1f, 0.1f), position, 5f, true);
+							break;
+						}
+					}
+				}
 			}
 		}
 
-		// Token: 0x04000111 RID: 273
 		public SubsystemTerrain m_subsystemTerrain;
-
-		// Token: 0x04000112 RID: 274
 		public SubsystemTime m_subsystemTime;
-
-		// Token: 0x04000113 RID: 275
 		public SubsystemProjectiles m_subsystemProjectiles;
-
-		// Token: 0x04000114 RID: 276
 		public SubsystemParticles m_subsystemParticles;
-
-		// Token: 0x04000115 RID: 277
 		public SubsystemAudio m_subsystemAudio;
-
-		// Token: 0x04000116 RID: 278
 		private SubsystemGameInfo m_subsystemGameInfo;
-
-		// Token: 0x04000117 RID: 279
+		private int m_maxBullets = 8;
 		public SubsystemNoise m_subsystemNoise;
-
-		// Token: 0x04000118 RID: 280
 		public Game.Random m_random = new Game.Random();
-
-		// Token: 0x04000119 RID: 281
 		public Dictionary<ComponentMiner, double> m_aimStartTimes = new Dictionary<ComponentMiner, double>();
-
-		// Token: 0x0400011A RID: 282
 		public bool fire;
 	}
 }
