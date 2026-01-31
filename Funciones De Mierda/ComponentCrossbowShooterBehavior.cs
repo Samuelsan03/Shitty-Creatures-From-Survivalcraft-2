@@ -11,6 +11,7 @@ namespace Game
 		// Componentes necesarios
 		private ComponentCreature m_componentCreature;
 		private ComponentChaseBehavior m_componentChaseBehavior;
+		private ComponentNewChaseBehavior2 m_componentNewChaseBehavior2;
 		private ComponentInventory m_componentInventory;
 		private SubsystemTime m_subsystemTime;
 		private SubsystemProjectiles m_subsystemProjectiles;
@@ -83,6 +84,7 @@ namespace Game
 			// Inicializar componentes
 			m_componentCreature = base.Entity.FindComponent<ComponentCreature>(true);
 			m_componentChaseBehavior = base.Entity.FindComponent<ComponentChaseBehavior>(true);
+			m_componentNewChaseBehavior2 = base.Entity.FindComponent<ComponentNewChaseBehavior2>();
 			m_componentInventory = base.Entity.FindComponent<ComponentInventory>(true);
 			m_subsystemTime = base.Project.FindSubsystem<SubsystemTime>(true);
 			m_subsystemProjectiles = base.Project.FindSubsystem<SubsystemProjectiles>(true);
@@ -130,13 +132,28 @@ namespace Game
 			}
 		}
 
+		private ComponentCreature GetChaseTarget()
+		{
+			// Priorizar ComponentNewChaseBehavior2 si está disponible
+			if (m_componentNewChaseBehavior2 != null && m_componentNewChaseBehavior2.Target != null)
+				return m_componentNewChaseBehavior2.Target;
+
+			// Fallback al ComponentChaseBehavior original
+			if (m_componentChaseBehavior != null && m_componentChaseBehavior.Target != null)
+				return m_componentChaseBehavior.Target;
+
+			return null;
+		}
+
 		public void Update(float dt)
 		{
 			if (!m_initialized || m_componentCreature.ComponentHealth.Health <= 0f)
 				return;
 
-			// Verificar objetivo
-			if (m_componentChaseBehavior.Target == null)
+			// Verificar objetivo usando el nuevo método
+			ComponentCreature target = GetChaseTarget();
+
+			if (target == null)
 			{
 				ResetAnimations();
 				// Mantener ballesta en estado idle
@@ -150,7 +167,7 @@ namespace Game
 			// Calcular distancia
 			float distance = Vector3.Distance(
 				m_componentCreature.ComponentBody.Position,
-				m_componentChaseBehavior.Target.ComponentBody.Position
+				target.ComponentBody.Position
 			);
 
 			// Lógica de ataque - Solo verifica distancia máxima
@@ -177,7 +194,7 @@ namespace Game
 			// Lógica de estados
 			if (m_isAiming)
 			{
-				ApplyAimingAnimation(dt);
+				ApplyAimingAnimation(dt, target);
 
 				if (m_subsystemTime.GameTime - m_animationStartTime >= AimTime)
 				{
@@ -187,7 +204,7 @@ namespace Game
 			}
 			else if (m_isDrawing)
 			{
-				ApplyDrawingAnimation(dt);
+				ApplyDrawingAnimation(dt, target);
 
 				m_currentDraw = MathUtils.Clamp((float)((m_subsystemTime.GameTime - m_drawStartTime) / DrawTime), 0f, 1f);
 
@@ -202,13 +219,13 @@ namespace Game
 			}
 			else if (m_isReloading)
 			{
-				ApplyReloadingAnimation(dt);
+				ApplyReloadingAnimation(dt, target);
 
 				// Después de cargar el virote, disparar inmediatamente
 				if (m_subsystemTime.GameTime - m_animationStartTime >= 0.3f)
 				{
 					m_isReloading = false;
-					Fire();
+					Fire(target);
 				}
 			}
 			else if (m_isFiring)
@@ -373,7 +390,7 @@ namespace Game
 			SetCrossbowWithBolt(0, false);
 		}
 
-		private void ApplyAimingAnimation(float dt)
+		private void ApplyAimingAnimation(float dt, ComponentCreature target)
 		{
 			if (m_componentModel != null)
 			{
@@ -398,10 +415,10 @@ namespace Game
 					m_componentModel.InHandItemRotationOrder = targetRotation;
 				}
 
-				if (m_componentChaseBehavior.Target != null)
+				if (target != null)
 				{
 					m_componentModel.LookAtOrder = new Vector3?(
-						m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition
+						target.ComponentCreatureModel.EyePosition
 					);
 				}
 			}
@@ -420,7 +437,7 @@ namespace Game
 				m_componentCreature.ComponentBody.Position, 3f, false);
 		}
 
-		private void ApplyDrawingAnimation(float dt)
+		private void ApplyDrawingAnimation(float dt, ComponentCreature target)
 		{
 			if (m_componentModel != null)
 			{
@@ -450,10 +467,10 @@ namespace Game
 					m_componentModel.InHandItemRotationOrder = targetRotation;
 				}
 
-				if (m_componentChaseBehavior.Target != null)
+				if (target != null)
 				{
 					m_componentModel.LookAtOrder = new Vector3?(
-						m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition
+						target.ComponentCreatureModel.EyePosition
 					);
 				}
 			}
@@ -473,7 +490,7 @@ namespace Game
 				m_componentCreature.ComponentBody.Position, 3f, false);
 		}
 
-		private void ApplyReloadingAnimation(float dt)
+		private void ApplyReloadingAnimation(float dt, ComponentCreature target)
 		{
 			if (m_componentModel != null)
 			{
@@ -503,33 +520,33 @@ namespace Game
 					m_componentModel.InHandItemRotationOrder = targetRotation;
 				}
 
-				if (m_componentChaseBehavior.Target != null)
+				if (target != null)
 				{
 					m_componentModel.LookAtOrder = new Vector3?(
-						m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition
+						target.ComponentCreatureModel.EyePosition
 					);
 				}
 			}
 		}
 
-		private void Fire()
+		private void Fire(ComponentCreature target)
 		{
 			m_isReloading = false;
 			m_isFiring = true;
 			m_fireTime = m_subsystemTime.GameTime;
 
 			// Disparar virote (usar el índice actual sin ciclar todavía)
-			ShootBolt();
+			ShootBolt(target);
 
 			// Sonido de disparo de ballesta
 			m_subsystemAudio.PlaySound("Audio/Bow", 0.8f, m_random.Float(-0.1f, 0.1f),
 				m_componentCreature.ComponentBody.Position, FireSoundDistance, false);
 
 			// Retroceso ligero
-			if (m_componentChaseBehavior.Target != null)
+			if (target != null)
 			{
 				Vector3 direction = Vector3.Normalize(
-					m_componentChaseBehavior.Target.ComponentBody.Position -
+					target.ComponentBody.Position -
 					m_componentCreature.ComponentBody.Position
 				);
 				m_componentCreature.ComponentBody.ApplyImpulse(-direction * 1.5f);
@@ -624,9 +641,9 @@ namespace Game
 			}
 		}
 
-		private void ShootBolt()
+		private void ShootBolt(ComponentCreature target)
 		{
-			if (m_componentChaseBehavior.Target == null)
+			if (target == null)
 				return;
 
 			try
@@ -651,7 +668,7 @@ namespace Game
 				Vector3 firePosition = m_componentCreature.ComponentCreatureModel.EyePosition;
 				firePosition.Y -= 0.1f;
 
-				Vector3 targetPosition = m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition;
+				Vector3 targetPosition = target.ComponentCreatureModel.EyePosition;
 				Vector3 direction = Vector3.Normalize(targetPosition - firePosition);
 
 				// Aplicar precisión
@@ -676,11 +693,17 @@ namespace Game
 					m_componentCreature
 				);
 
-				// Configurar propiedades según el tipo de virote
-				if (boltType == ArrowBlock.ArrowType.ExplosiveBolt && projectile != null)
+				// Configurar proyectil para desaparecer después del impacto
+				if (projectile != null)
 				{
-					projectile.IsIncendiary = false;
-					// Los virotes explosivos ya tienen presión de explosión definida en ArrowBlock
+					projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
+
+					// Configurar propiedades según el tipo de virote
+					if (boltType == ArrowBlock.ArrowType.ExplosiveBolt)
+					{
+						projectile.IsIncendiary = false;
+						// Los virotes explosivos ya tienen presión de explosión definida en ArrowBlock
+					}
 				}
 
 				// Ruido
