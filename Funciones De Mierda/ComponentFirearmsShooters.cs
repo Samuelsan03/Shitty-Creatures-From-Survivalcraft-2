@@ -306,7 +306,7 @@ namespace Game
 				int scarIndex = BlocksManager.GetBlockIndex(typeof(Game.SCARBlock), true, false);
 				FirearmConfigs[scarIndex] = new FirearmConfig
 				{
-					BulletBlockType = typeof(NuevaBala),
+					BulletBlockType = typeof(NuevaBala3),
 					ShootSound = "Audio/Armas/FN Scar fuego",
 					FireRate = 0.1,
 					BulletSpeed = 310f,
