@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Runtime.CompilerServices;
@@ -154,6 +154,23 @@ namespace Game
 								GunFireParticleSystem particleSystem = new GunFireParticleSystem(vector + 0.3f * vector2, vector2, 10f);
 								this.m_subsystemParticles.AddParticleSystem(particleSystem, false);
 							}
+							else
+							{
+								// Sonido de disparo sin balas
+								this.m_subsystemAudio.PlaySound("Audio/Armas/Empty fire", 1f,
+									this.m_random.Float(-0.1f, 0.1f),
+									componentMiner.ComponentCreature.ComponentCreatureModel.EyePosition, 3f, true);
+
+								// Mostrar mensaje de que necesita munición
+								ComponentPlayer componentPlayer4 = componentMiner.ComponentPlayer;
+								if (componentPlayer4 != null)
+								{
+									string bulletName = LanguageControl.Get("Blocks", "Izh43Bullet:0", "DisplayName");
+									componentPlayer4.ComponentGui.DisplaySmallMessage(
+										LanguageControl.Get("Messages", "NeedAmmo").Replace("{0}", bulletName),
+										Color.White, true, false);
+								}
+							}
 							componentMiner.ComponentCreature.ComponentCreatureModel.InHandItemOffsetOrder = Vector3.Zero;
 							componentMiner.ComponentCreature.ComponentCreatureModel.InHandItemRotationOrder = Vector3.Zero;
 							componentMiner.ComponentCreature.ComponentCreatureModel.AimHandAngleOrder = 0f;
@@ -202,6 +219,25 @@ namespace Game
 				processedCount = 0;
 				inventory.RemoveSlotItems(slotIndex, 1);
 				inventory.AddSlotItems(slotIndex, Terrain.MakeBlockValue(BlocksManager.GetBlockIndex(typeof(Izh43Block), true, false), 0, Izh43Block.SetBulletNum(2)), 1);
+
+				// Reproducir sonido de recarga
+				var subsystemPlayers = base.Project.FindSubsystem<SubsystemPlayers>(true);
+				if (subsystemPlayers != null && this.m_subsystemAudio != null)
+				{
+					// Buscar entre todos los jugadores cuál tiene este inventario
+					for (int i = 0; i < subsystemPlayers.ComponentPlayers.Count; i++)
+					{
+						var componentPlayer = subsystemPlayers.ComponentPlayers[i];
+						if (componentPlayer != null && componentPlayer.ComponentMiner != null &&
+							componentPlayer.ComponentMiner.Inventory == inventory)
+						{
+							Vector3 position = componentPlayer.ComponentCreatureModel.EyePosition;
+							this.m_subsystemAudio.PlaySound("Audio/Armas/reload", 1f,
+								this.m_random.Float(-0.1f, 0.1f), position, 5f, true);
+							break;
+						}
+					}
+				}
 			}
 		}
 
