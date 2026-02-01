@@ -292,7 +292,7 @@ namespace Game
 				int p90Index = BlocksManager.GetBlockIndex(typeof(Game.P90Block), true, false);
 				FirearmConfigs[p90Index] = new FirearmConfig
 				{
-					BulletBlockType = typeof(NuevaBala),
+					BulletBlockType = typeof(NuevaBala4),
 					ShootSound = "Audio/Armas/FN P90 fuego",
 					FireRate = 0.067,
 					BulletSpeed = 320f,
