@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Engine;
@@ -116,7 +116,7 @@ namespace Game
 											Vector3 v3 = this.m_random.Float(-vector5.X, vector5.X) * vector4 + this.m_random.Float(-vector5.Y, vector5.Y) * v2 + this.m_random.Float(-vector5.Z, vector5.Z) * vector3;
 											this.m_subsystemProjectiles.FireProjectile(value, vector2, 290f * (vector3 + v3), Vector3.Zero, componentMiner.ComponentCreature);
 										}
-										this.m_subsystemAudio.PlaySound("Audio/Armas/Groza fuego", 1f, this.m_random.Float(-0.1f, 0.1f), componentMiner.ComponentCreature.ComponentCreatureModel.EyePosition, 10f, true);
+										this.m_subsystemAudio.PlaySound("Audio/Armas/Mendoza fuego", 1f, this.m_random.Float(-0.1f, 0.1f), componentMiner.ComponentCreature.ComponentCreatureModel.EyePosition, 10f, true);
 										Vector3 vector6 = Vector3.Normalize(componentMiner.ComponentPlayer.GameWidget.ActiveCamera.ViewDirection);
 										this.m_subsystemParticles.AddParticleSystem(new GunFireParticleSystem(this.m_subsystemTerrain, vector2 + 1.3f * vector6, vector6), false);
 										this.m_subsystemNoise.MakeNoise(vector2, 1f, 40f);
@@ -139,7 +139,20 @@ namespace Game
 										bool flag13 = !flag9 && this.m_subsystemTime.PeriodicGameTimeEvent(0.5, 0.0);
 										if (flag13)
 										{
-											this.m_subsystemAudio.PlaySound("Audio/WeaponDryFire", 0.7f, this.m_random.Float(-0.1f, 0.1f), componentMiner.ComponentCreature.ComponentCreatureModel.EyePosition, 3f, true);
+											// Sonido de disparo sin balas
+											this.m_subsystemAudio.PlaySound("Audio/Armas/Empty fire", 1f,
+												this.m_random.Float(-0.1f, 0.1f),
+												componentMiner.ComponentCreature.ComponentCreatureModel.EyePosition, 3f, true);
+
+											// Mostrar mensaje de que necesita munición
+											ComponentPlayer componentPlayer2 = componentMiner.ComponentPlayer;
+											if (componentPlayer2 != null)
+											{
+												string bulletName = LanguageControl.Get("Blocks", "MendozaBulletBlock:0", "DisplayName");
+												componentPlayer2.ComponentGui.DisplaySmallMessage(
+													LanguageControl.Get("Messages", "NeedAmmo").Replace("{0}", bulletName),
+													Color.White, true, false);
+											}
 										}
 									}
 									break;
@@ -228,6 +241,25 @@ namespace Game
 				processedCount = 0;
 				inventory.RemoveSlotItems(slotIndex, 1);
 				inventory.AddSlotItems(slotIndex, Terrain.MakeBlockValue(BlocksManager.GetBlockIndex(typeof(MendozaBlock), true, false), 0, MendozaBlock.SetBulletNum(30)), 1);
+
+				// Reproducir sonido de recarga
+				var subsystemPlayers = base.Project.FindSubsystem<SubsystemPlayers>(true);
+				if (subsystemPlayers != null && this.m_subsystemAudio != null)
+				{
+					// Buscar entre todos los jugadores cuál tiene este inventario
+					for (int i = 0; i < subsystemPlayers.ComponentPlayers.Count; i++)
+					{
+						var componentPlayer = subsystemPlayers.ComponentPlayers[i];
+						if (componentPlayer != null && componentPlayer.ComponentMiner != null &&
+							componentPlayer.ComponentMiner.Inventory == inventory)
+						{
+							Vector3 position = componentPlayer.ComponentCreatureModel.EyePosition;
+							this.m_subsystemAudio.PlaySound("Audio/Armas/reload", 1f,
+								this.m_random.Float(-0.1f, 0.1f), position, 5f, true);
+							break;
+						}
+					}
+				}
 			}
 		}
 
