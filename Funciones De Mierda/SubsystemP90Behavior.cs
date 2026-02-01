@@ -247,7 +247,7 @@ namespace Game
 
 		private int GetCurrentBulletIndex()
 		{
-			return BlocksManager.GetBlockIndex(typeof(NuevaBala), true, false);
+			return BlocksManager.GetBlockIndex(typeof(NuevaBala4), true, false);
 		}
 
 		public SubsystemTerrain m_subsystemTerrain;
