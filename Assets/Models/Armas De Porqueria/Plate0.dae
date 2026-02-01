@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<COLLADA xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.4.1" xmlns="http://www.collada.org/2005/11/COLLADASchema">
+  <asset>
+    <contributor>
+      <author>Survivalcraft Moder</author>
+      <authoring_tool>Engine 0.0.0</authoring_tool>
+    </contributor>
+    <created>2021-04-06T14:45:00</created>
+    <modified>2021-04-06T14:45:00</modified>
+    <up_axis>Y_UP</up_axis>
+  </asset>
+  <library_images />
+  <library_effects />
+  <library_materials />
+  <library_geometries>
+    <geometry id="Plate-mesh" name="Plate">
+      <mesh>
+        <source id="Plate-mesh-positions">
+          <float_array id="Plate-mesh-positions-array" count="12">0.5 -0.4999999 0 -0.5 -0.4999999 0 -0.5 0.5000001 0 0.5 0.5000001 0</float_array>
+          <technique_common>
+            <accessor source="#Plate-mesh-positions-array" count="4" stride="3">
+              <param name="X" type="float" />
+              <param name="Y" type="float" />
+              <param name="Z" type="float" />
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="Plate-mesh-normals">
+          <float_array id="Plate-mesh-normals-array" count="3">0 0 1</float_array>
+          <technique_common>
+            <accessor source="#Plate-mesh-normals-array" count="1" stride="3">
+              <param name="X" type="float" />
+              <param name="Y" type="float" />
+              <param name="Z" type="float" />
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="Plate-mesh-map">
+          <float_array id="Plate-mesh-map-array" count="12">1 0 0 0 0 0.9999999 1 0 0 0.9999999 0.9999999 1</float_array>
+          <technique_common>
+            <accessor source="#Plate-mesh-map-array" count="6" stride="2">
+              <param name="S" type="float" />
+              <param name="T" type="float" />
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="Plate-mesh-vertices">
+          <input semantic="POSITION" source="#Plate-mesh-positions" />
+        </vertices>
+        <triangles count="2">
+          <input semantic="VERTEX" source="#Plate-mesh-vertices" offset="0" />
+          <input semantic="NORMAL" source="#Plate-mesh-normals" offset="1" />
+          <input semantic="TEXCOORD" source="#Plate-mesh-map" offset="2" />
+          <p>0 0 0 2 0 2 1 0 1 0 0 3 3 0 5 2 0 4</p>
+        </triangles>
+      </mesh>
+    </geometry>
+  </library_geometries>
+  <library_controllers />
+  <library_visual_scenes>
+    <visual_scene id="Scene" name="Scene">
+      <node id="Plate" name="Plate" type="NODE">
+        <matrix sid="transform">1 0 0 0 0 -1.62921E-07 1 0 0 -1 -1.62921E-07 0 0 0 0 1</matrix>
+        <instance_geometry url="#Plate-mesh" name="Plate" />
+      </node>
+    </visual_scene>
+  </library_visual_scenes>
+  <scene>
+    <instance_visual_scene url="#Scene" />
+  </scene>
+</COLLADA>
