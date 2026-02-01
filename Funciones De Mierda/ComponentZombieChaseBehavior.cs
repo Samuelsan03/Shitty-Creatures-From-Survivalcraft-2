@@ -9,12 +9,14 @@ namespace Game
 	{
 		// Referencia al comportamiento de manada de zombis
 		private ComponentZombieHerdBehavior m_componentZombieHerdBehavior;
+		private SubsystemGreenNightSky m_subsystemGreenNightSky;
 
 		// Parámetros específicos de zombis
 		private bool m_attacksSameHerd;
 		private bool m_attacksAllCategories;
 		private bool m_fleeFromSameHerd;
 		private float m_fleeDistance = 10f;
+		private bool m_forceAttackDuringGreenNight;
 
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
@@ -23,12 +25,16 @@ namespace Game
 
 			// Obtener referencia al ComponentZombieHerdBehavior en la misma entidad
 			m_componentZombieHerdBehavior = base.Entity.FindComponent<ComponentZombieHerdBehavior>();
+			
+			// Obtener referencia al SubsystemGreenNightSky
+			m_subsystemGreenNightSky = base.Project.FindSubsystem<SubsystemGreenNightSky>(true);
 
 			// Cargar parámetros específicos de zombis
 			m_attacksSameHerd = valuesDictionary.GetValue<bool>("AttacksSameHerd", false);
 			m_attacksAllCategories = valuesDictionary.GetValue<bool>("AttacksAllCategories", true);
 			m_fleeFromSameHerd = valuesDictionary.GetValue<bool>("FleeFromSameHerd", true);
 			m_fleeDistance = valuesDictionary.GetValue<float>("FleeDistance", 10f);
+			m_forceAttackDuringGreenNight = valuesDictionary.GetValue<bool>("ForceAttackDuringGreenNight", true);
 
 			// Configurar para atacar a todas las categorías si está habilitado
 			if (m_attacksAllCategories)
@@ -201,9 +207,39 @@ namespace Game
 			return bestTarget;
 		}
 
-		// Sobrescribir FindTarget para excluir miembros de la misma manada
+		// Sobrescribir FindTarget para excluir miembros de la misma manada y considerar Noche Verde
 		public override ComponentCreature FindTarget()
 		{
+			// Si es Noche Verde y está habilitado el ataque forzado, priorizar jugadores
+			if (m_forceAttackDuringGreenNight && m_subsystemGreenNightSky != null && m_subsystemGreenNightSky.IsGreenNightActive)
+			{
+				Vector3 position = this.m_componentCreature.ComponentBody.Position;
+				ComponentPlayer nearestPlayer = null;
+				float nearestDistance = float.MaxValue;
+
+				var players = base.Project.FindSubsystem<SubsystemPlayers>(true);
+				if (players != null)
+				{
+					foreach (ComponentPlayer player in players.ComponentPlayers)
+					{
+						if (player != null && player.ComponentHealth.Health > 0f)
+						{
+							float distance = Vector3.Distance(position, player.ComponentBody.Position);
+							if (distance <= this.m_range && distance < nearestDistance)
+							{
+								nearestDistance = distance;
+								nearestPlayer = player;
+							}
+						}
+					}
+				}
+
+				if (nearestPlayer != null)
+				{
+					return nearestPlayer; // ComponentPlayer hereda de ComponentCreature
+				}
+			}
+
 			// Si no se permite atacar a la misma manada, filtrar los objetivos
 			if (!m_attacksSameHerd)
 			{
@@ -333,7 +369,24 @@ namespace Game
 			base.Update(dt);
 
 			// Lógica adicional para zombis
-			// (puede añadirse comportamiento específico aquí si es necesario)
+			// Durante Noche Verde, forzar el ataque al jugador en cualquier modo
+			if (m_forceAttackDuringGreenNight && m_subsystemGreenNightSky != null && m_subsystemGreenNightSky.IsGreenNightActive)
+			{
+				// Forzar la persecución del jugador sin importar el modo de juego
+				this.AttacksPlayer = true;
+				this.Suppressed = false;
+				
+				// Asegurarse de que no esté en estado de huida durante Noche Verde
+				if (this.m_stateMachine.CurrentState == "Fleeing")
+				{
+					this.m_stateMachine.TransitionTo("LookingForTarget");
+				}
+			}
+			else if (m_subsystemGreenNightSky != null && !m_subsystemGreenNightSky.IsGreenNightActive)
+			{
+				// Restaurar comportamiento normal cuando termina la Noche Verde
+				this.AttacksPlayer = m_attacksAllCategories;
+			}
 		}
 
 		// Método para detener el ataque (sobrescrito para limpieza específica)
