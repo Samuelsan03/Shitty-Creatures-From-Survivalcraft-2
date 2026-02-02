@@ -55,22 +55,23 @@
     <Parameter Name="PoisonResistance" Value="-50" Type="float"/>
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="027cf861-13e1-485e-b328-696289894dbf">
+<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="280b6bf2-55db-4bd4-b885-d6c1e29de86f">
   <Parameter Name="IsOptional" Value="false" Type="bool"/>
   <Parameter Name="LoadOrder" Value="50" Type="int"/>
   <Parameter Name="Class" Value="Game.ComponentZombieChaseBehavior" Type="string"/>
-  <Parameter Name="DayChaseRange" Guid="5d4e5b09-6763-4b37-b1b6-3390368ca6c8" Value="999" Type="float"/>
-  <Parameter Name="NightChaseRange" Guid="c77c3b7e-7eac-4130-aaf9-0de321c07d07" Value="999" Type="float"/>
-  <Parameter Name="NightChaseTime" Guid="3a20cab8-78b0-429e-a9d5-432776abc644" Value="999" Type="float"/>
-  <Parameter Name="DayChaseTime" Guid="733b5b0f-24b0-445a-9d5f-b7bfa7c8b7c3" Value="999" Type="float"/>
-  <Parameter Name="ChaseWhenAttackedProbability" Guid="b74206f0-98fe-4812-8914-f1f93aa41c48" Value="1" Type="float"/>
-  <Parameter Name="ChaseOnTouchProbability" Guid="7ad2fc1a-8a95-43e2-8e6d-9b85269d5269" Value="1" Type="float"/>
-  <Parameter Name="AutoChaseMask" Guid="63723488-4fc0-4211-aa7d-1edc1d449154" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
-  <Parameter Name="ChaseNonPlayerProbability" Guid="540914ef-8c5e-4875-9b6a-c06d430a01ab" Value="1" Type="float"/>
-  <Parameter Name="AttacksSameHerd" Guid="13c4d757-8e9b-4b0f-a869-53ed143adae8" Value="false" Type="bool"/>
-  <Parameter Name="AttacksAllCategories" Guid="2c120c5c-a335-4e7d-9380-005dea0cd4dd" Value="true" Type="bool"/>
-  <Parameter Name="FleeFromSameHerd" Guid="5f92cb8a-55f7-43a9-9d3f-6cc521ed46de" Value="true" Type="bool"/>
-  <Parameter Name="FleeDistance" Guid="961b83ce-0cc0-4c65-9232-09b941bfe8c2" Value="10" Type="float"/>
+  <Parameter Name="DayChaseRange" Guid="ea1d3dd7-4c9d-47e2-b811-2804f052a22b" Value="999" Type="float"/>
+  <Parameter Name="NightChaseRange" Guid="f3683a44-f7a2-4452-b4b5-cddb4e038dbd" Value="999" Type="float"/>
+  <Parameter Name="NightChaseTime" Guid="3d906251-0ab6-43bd-abf8-78f9a1be14bb" Value="999" Type="float"/>
+  <Parameter Name="DayChaseTime" Guid="8b09af38-badf-41df-beb4-6ebdba39389d" Value="999" Type="float"/>
+  <Parameter Name="ChaseWhenAttackedProbability" Guid="7e120182-cecc-4b07-8807-e9416bc95395" Value="1" Type="float"/>
+  <Parameter Name="ChaseOnTouchProbability" Guid="b2338dc1-c5dc-47da-b688-0b9654a5fc19" Value="1" Type="float"/>
+  <Parameter Name="AutoChaseMask" Guid="6fb9fdbc-e1e1-458f-8ef5-5b90d7e6bb3c" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
+  <Parameter Name="ChaseNonPlayerProbability" Guid="1fa74078-c7f1-433d-9c88-fe4aefe19630" Value="1" Type="float"/>
+  <Parameter Name="AttacksSameHerd" Guid="cc5b70c2-9f8a-4a32-8d21-2b526d31b692" Value="false" Type="bool"/>
+  <Parameter Name="AttacksAllCategories" Guid="3c31d121-3ce1-4655-aeb2-16e93e5b66b1" Value="true" Type="bool"/>
+  <Parameter Name="FleeFromSameHerd" Guid="78826da4-ebc1-44af-b28b-59dc18706753" Value="true" Type="bool"/>
+  <Parameter Name="FleeDistance" Guid="925f282f-2448-4898-9372-3813355f450e" Value="10" Type="float"/>
+  <Parameter Name="ForceAttackDuringGreenNight" Guid="bb568d30-8f18-4d5b-b5b4-6c9f0d94f032" Value="true" Type="bool"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidFireBehavior" Guid="97138323-d93a-4d8c-bcc0-f9079b582fc7" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
             <MemberComponentTemplate Name="Locomotion" Guid="e33a7331-b0b6-4d74-9e0e-8ced5deae15a">
@@ -305,9 +306,9 @@
             <MemberComponentTemplate Name="HealthBarDisplay" Guid="40867f3a-c00e-4dd3-866c-f7b73b0a4e4c" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
         <Parameter Name="MaxDisplayDistance" Value="19" Type="float"/>
     </MemberComponentTemplate>
-            <MemberComponentTemplate Name="Health" Guid="9fb7d29c-7d23-4869-9bc4-188b43cae230">
-                <Parameter Name="FireResilience" Guid="3261e96d-441a-4673-b9cb-3d7103a7a4e9" Value="18" Type="float"/>
-        <Parameter Name="AttackResilience" Guid="a1cd4aac-9714-48ae-b50b-8f7ef320adc9" Value="55.5" Type="float"/>
+            <MemberComponentTemplate Name="Health" Guid="5ab23c45-1957-47a6-9091-de55401448a8">
+        <Parameter Name="FireResilience" Guid="c6fb16ce-6245-454a-86d2-310e4ae1d399" Value="10" Type="float"/>
+        <Parameter Name="AttackResilience" Guid="54333d0c-4f07-4a5e-992e-0a493ba08ba5" Value="55.5" Type="float"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="OnFire" Guid="9f8f8b22-b348-4c2a-b04f-002a0c67058a"/>
             <MemberComponentTemplate Name="WalkAroundBehavior" Guid="b37c70cc-9fd7-4cd3-941d-2c8bd3853256" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
@@ -382,22 +383,23 @@
     <Parameter Name="PoisonResistance" Value="-1" Type="float"/>
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="5ae78750-b7d8-46c7-b7ae-7b5a6d8f6448">
+<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="7fc4c4c4-662d-400b-b8d8-11cf4e06fc33">
   <Parameter Name="IsOptional" Value="false" Type="bool"/>
   <Parameter Name="LoadOrder" Value="50" Type="int"/>
   <Parameter Name="Class" Value="Game.ComponentZombieChaseBehavior" Type="string"/>
-  <Parameter Name="DayChaseRange" Guid="06f5e729-afd4-4b46-bb0b-10bbcaf0e7da" Value="999" Type="float"/>
-  <Parameter Name="NightChaseRange" Guid="c0c81c22-6142-492f-9bc3-89bce01f22c8" Value="999" Type="float"/>
-  <Parameter Name="NightChaseTime" Guid="fc289a74-8731-4af8-b667-6e9f649e2406" Value="999" Type="float"/>
-  <Parameter Name="DayChaseTime" Guid="ae48b97f-354f-4f6f-b3e4-1d2f993df469" Value="999" Type="float"/>
-  <Parameter Name="ChaseWhenAttackedProbability" Guid="abeeb338-4ada-47ea-8aa7-78081228e125" Value="1" Type="float"/>
-  <Parameter Name="ChaseOnTouchProbability" Guid="d53d362c-d383-4a1a-8138-41b6f5fdfbd6" Value="1" Type="float"/>
-  <Parameter Name="AutoChaseMask" Guid="ef977e9b-986d-4cf1-979b-1c5ce3678dba" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
-  <Parameter Name="ChaseNonPlayerProbability" Guid="149a6bda-7af3-4817-aa07-247ffca7938f" Value="1" Type="float"/>
-  <Parameter Name="AttacksSameHerd" Guid="e21fd553-2c23-4dc4-b0ad-a70ff771eafc" Value="false" Type="bool"/>
-  <Parameter Name="AttacksAllCategories" Guid="a7d0ae6b-9764-4979-96ea-f30fb5f6ae5c" Value="true" Type="bool"/>
-  <Parameter Name="FleeFromSameHerd" Guid="d7151e20-051b-4e35-bc0f-4830a71a9a91" Value="true" Type="bool"/>
-  <Parameter Name="FleeDistance" Guid="911574dc-ea69-4a2b-9670-602cbbe54ca7" Value="10" Type="float"/>
+  <Parameter Name="DayChaseRange" Guid="b5abea01-2ea0-4674-987b-f7c68a25d683" Value="999" Type="float"/>
+  <Parameter Name="NightChaseRange" Guid="95a99752-b848-4511-938a-eb6addb408ab" Value="999" Type="float"/>
+  <Parameter Name="NightChaseTime" Guid="fb9559f6-b788-4bb8-bbc9-4bca2d3e70fe" Value="999" Type="float"/>
+  <Parameter Name="DayChaseTime" Guid="15aff682-6061-496b-bd29-e498c98e78da" Value="999" Type="float"/>
+  <Parameter Name="ChaseWhenAttackedProbability" Guid="cbf1e529-c026-4a1d-9f17-22537e865c89" Value="1" Type="float"/>
+  <Parameter Name="ChaseOnTouchProbability" Guid="a5c54da9-70a7-4553-ad92-7a1625803384" Value="1" Type="float"/>
+  <Parameter Name="AutoChaseMask" Guid="afdbcdae-0ed4-47c4-8474-9fbe2d3bc22c" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
+  <Parameter Name="ChaseNonPlayerProbability" Guid="eb9583b4-e9e9-45a8-ae9e-a4af2e42a6d2" Value="1" Type="float"/>
+  <Parameter Name="AttacksSameHerd" Guid="795cc21e-f828-4302-a863-cec5051971aa" Value="false" Type="bool"/>
+  <Parameter Name="AttacksAllCategories" Guid="7b06067d-579e-460d-a09b-555b043b7e9a" Value="true" Type="bool"/>
+  <Parameter Name="FleeFromSameHerd" Guid="2c77b011-595d-4789-8574-6023b9219b0f" Value="true" Type="bool"/>
+  <Parameter Name="FleeDistance" Guid="675f1a92-5e5b-46c0-b577-44f2d1772821" Value="10" Type="float"/>
+  <Parameter Name="ForceAttackDuringGreenNight" Guid="ac9328b0-fe27-4a1f-a909-93c53e24f461" Value="true" Type="bool"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidFireBehavior" Guid="27ec9ba4-4a2b-471c-83dd-ad700dfa6fc7" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
             <MemberComponentTemplate Name="Locomotion" Guid="95e3a1ed-a158-45ae-9d33-b79f757396c4">
@@ -457,9 +459,9 @@
             <MemberComponentTemplate Name="HealthBarDisplay" Guid="4e51ea1d-b1f4-455b-8cbc-2efcf4263b47" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
         <Parameter Name="MaxDisplayDistance" Value="19" Type="float"/>
     </MemberComponentTemplate>
-            <MemberComponentTemplate Name="Health" Guid="692235d4-9865-40e7-b1a2-5e0984e002e5">
-                <Parameter Name="FireResilience" Guid="3613d83d-ed0c-42ed-856e-6194ab257c4f" Value="12" Type="float"/>
-        <Parameter Name="AttackResilience" Guid="9415a35b-3f5e-4857-a89e-620c152f7a27" Value="55.5" Type="float"/>
+            <MemberComponentTemplate Name="Health" Guid="9ae86e17-72fc-404f-abaf-f6b62f80dc0f">
+        <Parameter Name="FireResilience" Guid="3b07fe17-0186-448e-bdb2-cd0497eeee99" Value="10" Type="float"/>
+        <Parameter Name="AttackResilience" Guid="727b06d4-0ec9-4573-ac61-d6fc010a390c" Value="55.5" Type="float"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="ZombieHerdBehavior" Guid="8921f2aa-8651-4b2f-b9d5-a99202afc8bb">
     <Parameter Name="Class" Value="Game.ComponentZombieHerdBehavior" Type="string" Guid="4309bdaa-a8aa-4f4a-8ac3-3ec929ab9740"/>
@@ -638,9 +640,9 @@
             <MemberComponentTemplate Name="HealthBarDisplay" Guid="c7e11b5c-1ffc-45cd-b1b4-d02458212f37" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
         <Parameter Name="MaxDisplayDistance" Value="19" Type="float"/>
     </MemberComponentTemplate>
-            <MemberComponentTemplate Name="Health" Guid="8a126acb-2e13-4002-8a13-58eabad981f5">
-                <Parameter Name="FireResilience" Guid="47bc5e23-740f-4686-a8ce-ee6faf4ff668" Value="20" Type="float"/>
-        <Parameter Name="AttackResilience" Guid="9259901a-ad01-423a-99a8-fcd5294f7709" Value="23" Type="float"/>
+            <MemberComponentTemplate Name="Health" Guid="8d1ca193-680f-4f99-b8e6-1b2768a7357e">
+        <Parameter Name="FireResilience" Guid="18083fec-9f13-4eee-bf84-4934d79dbe30" Value="10" Type="float"/>
+        <Parameter Name="AttackResilience" Guid="eb32039e-a6e9-4ef8-9c03-b7a047fc8462" Value="55.5" Type="float"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="OnFire" Guid="5e3e516d-2141-4472-a1ac-e6e7ddf53a55"/>
             <MemberComponentTemplate Name="WalkAroundBehavior" Guid="7a39ca21-0553-480d-8874-2501cce5abce" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
@@ -701,22 +703,23 @@
     <Parameter Name="PoisonResistance" Value="-50" Type="float"/>
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="0b989b3c-885f-48be-b598-566c1d51ce6a">
+<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="0eddf7b8-0c17-4048-9b01-85ec50f842e8">
   <Parameter Name="IsOptional" Value="false" Type="bool"/>
   <Parameter Name="LoadOrder" Value="50" Type="int"/>
   <Parameter Name="Class" Value="Game.ComponentZombieChaseBehavior" Type="string"/>
-  <Parameter Name="DayChaseRange" Guid="658764e1-c21e-4e6c-ac75-cfa4403d2563" Value="999" Type="float"/>
-  <Parameter Name="NightChaseRange" Guid="7e9e23ca-1341-44f1-82d5-369e88e99890" Value="999" Type="float"/>
-  <Parameter Name="NightChaseTime" Guid="77c466a4-41b2-455a-b52e-7b7c555e9600" Value="999" Type="float"/>
-  <Parameter Name="DayChaseTime" Guid="67cc583e-1e02-44d8-bf9f-0271699a8e7f" Value="999" Type="float"/>
-  <Parameter Name="ChaseWhenAttackedProbability" Guid="1ff006c3-c082-4471-9e41-11fc139a1b9b" Value="1" Type="float"/>
-  <Parameter Name="ChaseOnTouchProbability" Guid="27e3cff4-810e-46d3-99aa-a6e4bfdaae4b" Value="1" Type="float"/>
-  <Parameter Name="AutoChaseMask" Guid="e8ab31df-312e-4eff-bd4b-172c7f7d46a5" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
-  <Parameter Name="ChaseNonPlayerProbability" Guid="1521db92-02da-4ce9-bf5e-3b18e32ae461" Value="1" Type="float"/>
-  <Parameter Name="AttacksSameHerd" Guid="ac1344c1-056c-4840-b0fa-845174c2cbd2" Value="false" Type="bool"/>
-  <Parameter Name="AttacksAllCategories" Guid="141a261d-9852-430b-87c7-99bcb85816c4" Value="true" Type="bool"/>
-  <Parameter Name="FleeFromSameHerd" Guid="6ceeba59-f575-4d56-b2e7-bf57f7cc6f6d" Value="true" Type="bool"/>
-  <Parameter Name="FleeDistance" Guid="217b8dc1-bbad-4208-b520-1d4ec2ced337" Value="10" Type="float"/>
+  <Parameter Name="DayChaseRange" Guid="8bd7a2cd-3648-4208-85ff-92ec58a137b3" Value="999" Type="float"/>
+  <Parameter Name="NightChaseRange" Guid="d9260a66-82db-4eb6-88af-9e8958a778e3" Value="999" Type="float"/>
+  <Parameter Name="NightChaseTime" Guid="c9a8c807-067d-4274-90c8-eb04446f0e45" Value="999" Type="float"/>
+  <Parameter Name="DayChaseTime" Guid="31ec1691-ce5f-4163-85e9-40a869e501ff" Value="999" Type="float"/>
+  <Parameter Name="ChaseWhenAttackedProbability" Guid="6dac59bb-4005-42a5-982d-6fe3ec656fec" Value="1" Type="float"/>
+  <Parameter Name="ChaseOnTouchProbability" Guid="9da55845-29b5-4d80-89f0-a5a15ce7e2a1" Value="1" Type="float"/>
+  <Parameter Name="AutoChaseMask" Guid="f9adcdc0-8af7-41d7-b3a1-fff3bc53600f" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
+  <Parameter Name="ChaseNonPlayerProbability" Guid="b746291c-339e-416e-92de-f66b307c374f" Value="1" Type="float"/>
+  <Parameter Name="AttacksSameHerd" Guid="54e84817-c074-4e2f-8f56-0a36b27d4b60" Value="false" Type="bool"/>
+  <Parameter Name="AttacksAllCategories" Guid="8f652ccb-d8bd-48d8-9341-56981444df81" Value="true" Type="bool"/>
+  <Parameter Name="FleeFromSameHerd" Guid="d8ff6408-25eb-4de8-8562-f30463ca314e" Value="true" Type="bool"/>
+  <Parameter Name="FleeDistance" Guid="1da2899d-fabf-4636-a00a-938b576a7a1c" Value="10" Type="float"/>
+  <Parameter Name="ForceAttackDuringGreenNight" Guid="c1998d2a-f2e0-4c0c-ab52-33d83563a42f" Value="true" Type="bool"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidFireBehavior" Guid="f2ac0687-0606-4924-a850-a5da806c25e9" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
             <MemberComponentTemplate Name="Loot" Guid="87271855-e8c8-429c-adee-21b67a00c69c">
@@ -1019,22 +1022,23 @@
     <Parameter Name="PoisonResistance" Value="-50" Type="float"/>
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="6808dba7-d0e1-4c3d-aecf-f6d4b69cbda0">
+<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="69e37185-feff-49a5-9aaf-1caddf688b83">
   <Parameter Name="IsOptional" Value="false" Type="bool"/>
   <Parameter Name="LoadOrder" Value="50" Type="int"/>
   <Parameter Name="Class" Value="Game.ComponentZombieChaseBehavior" Type="string"/>
-  <Parameter Name="DayChaseRange" Guid="bda778e9-ec02-4b5d-977a-3a7f224d0e7a" Value="999" Type="float"/>
-  <Parameter Name="NightChaseRange" Guid="deca1213-9411-4935-9afa-0565ba4f8c79" Value="999" Type="float"/>
-  <Parameter Name="NightChaseTime" Guid="ce726326-3b11-4ee8-8061-17a98b4b94a4" Value="999" Type="float"/>
-  <Parameter Name="DayChaseTime" Guid="97df89ce-7a3b-4663-b7e5-4f33257967a3" Value="999" Type="float"/>
-  <Parameter Name="ChaseWhenAttackedProbability" Guid="78528dc1-cbed-44d5-935a-cfe04b53a7e0" Value="1" Type="float"/>
-  <Parameter Name="ChaseOnTouchProbability" Guid="5df10ee7-677c-4a35-82c7-c8eb72bc823e" Value="1" Type="float"/>
-  <Parameter Name="AutoChaseMask" Guid="3203a5c9-228d-43c7-847e-29194736e3d5" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
-  <Parameter Name="ChaseNonPlayerProbability" Guid="c7d864fa-5490-4219-8eaa-eb7adbc43d93" Value="1" Type="float"/>
-  <Parameter Name="AttacksSameHerd" Guid="c597a3c6-ffa1-49e9-a4f6-0ccc5f71fe1c" Value="false" Type="bool"/>
-  <Parameter Name="AttacksAllCategories" Guid="28681b3a-e937-4e74-a574-a8269f8777d4" Value="true" Type="bool"/>
-  <Parameter Name="FleeFromSameHerd" Guid="7caf3d92-feeb-4e8a-a198-9dd68d712665" Value="true" Type="bool"/>
-  <Parameter Name="FleeDistance" Guid="e2c0348a-c38a-432d-8e08-8f3ea317a4f5" Value="10" Type="float"/>
+  <Parameter Name="DayChaseRange" Guid="dec177c2-ad37-42b4-8aa9-cdc78645288a" Value="999" Type="float"/>
+  <Parameter Name="NightChaseRange" Guid="bdf1dace-7e59-4a97-b53a-e4a1cb60ce7a" Value="999" Type="float"/>
+  <Parameter Name="NightChaseTime" Guid="0947de21-c13d-409e-bc2e-4f8ec4560e5d" Value="999" Type="float"/>
+  <Parameter Name="DayChaseTime" Guid="9774bb22-3138-402e-94a7-67cc41ec9b89" Value="999" Type="float"/>
+  <Parameter Name="ChaseWhenAttackedProbability" Guid="6548cb7d-ad9c-4507-a784-5fd4a4d1e07c" Value="1" Type="float"/>
+  <Parameter Name="ChaseOnTouchProbability" Guid="ad7a5d82-447f-4cb4-acc9-dc1f51060ffc" Value="1" Type="float"/>
+  <Parameter Name="AutoChaseMask" Guid="d055825e-14e9-4bd5-829f-e3bf1e5593b2" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
+  <Parameter Name="ChaseNonPlayerProbability" Guid="eac82386-29b5-4c0e-b431-04ac83bfb3af" Value="1" Type="float"/>
+  <Parameter Name="AttacksSameHerd" Guid="2d17765d-30c2-469a-ab4a-5372117ee130" Value="false" Type="bool"/>
+  <Parameter Name="AttacksAllCategories" Guid="20475646-050b-4d98-b1b6-f6799b072e4b" Value="true" Type="bool"/>
+  <Parameter Name="FleeFromSameHerd" Guid="a594d40c-4270-414d-9475-f3808759a3ee" Value="true" Type="bool"/>
+  <Parameter Name="FleeDistance" Guid="2d9c0118-47d6-43f4-ae70-ae799321fa0f" Value="10" Type="float"/>
+  <Parameter Name="ForceAttackDuringGreenNight" Guid="a9cdbde9-fbf3-4def-99d4-220ce38508fa" Value="true" Type="bool"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidFireBehavior" Guid="743985d4-f0c3-465f-8c3f-5d91dfa6bac7" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
             <MemberComponentTemplate Name="Loot" Guid="9dfd3814-8e77-4d7c-a3b3-782d7c4fdd5d">
@@ -1351,22 +1355,23 @@
     <Parameter Name="PoisonResistance" Value="-50" Type="float"/>
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="d7d5cb91-7ba3-494c-ae9f-52d72dae87cc">
+<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="e3698844-eb5f-44de-bb5b-1a526b8fc81b">
   <Parameter Name="IsOptional" Value="false" Type="bool"/>
   <Parameter Name="LoadOrder" Value="50" Type="int"/>
   <Parameter Name="Class" Value="Game.ComponentZombieChaseBehavior" Type="string"/>
-  <Parameter Name="DayChaseRange" Guid="c1d606c8-08b9-4138-8317-3b1b9002c053" Value="999" Type="float"/>
-  <Parameter Name="NightChaseRange" Guid="0d02e56c-9625-4618-a8d9-023b2cced482" Value="999" Type="float"/>
-  <Parameter Name="NightChaseTime" Guid="1578b5e9-5826-47cb-99b6-da656eb1ff9a" Value="999" Type="float"/>
-  <Parameter Name="DayChaseTime" Guid="f8db175b-4fd8-4497-b198-fb1c812c3968" Value="999" Type="float"/>
-  <Parameter Name="ChaseWhenAttackedProbability" Guid="6819c47b-d0aa-4020-94cf-b8bbb6b555ff" Value="1" Type="float"/>
-  <Parameter Name="ChaseOnTouchProbability" Guid="7ee72fd4-dfdc-4fdb-a71d-aa8b50829b85" Value="1" Type="float"/>
-  <Parameter Name="AutoChaseMask" Guid="7928683f-775f-4bdf-94e0-f98b0e8f846d" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
-  <Parameter Name="ChaseNonPlayerProbability" Guid="9e7a1ca5-78b5-4a3e-846f-76addd34c4de" Value="1" Type="float"/>
-  <Parameter Name="AttacksSameHerd" Guid="c6464167-30f4-4e17-b778-67e5d6826350" Value="false" Type="bool"/>
-  <Parameter Name="AttacksAllCategories" Guid="6909cda1-362e-41c1-8ef3-dcb585291747" Value="true" Type="bool"/>
-  <Parameter Name="FleeFromSameHerd" Guid="1d1055fe-670a-4110-91a7-8722d24af1c7" Value="true" Type="bool"/>
-  <Parameter Name="FleeDistance" Guid="5108e464-bf50-4f2f-a1c5-bce717e2962c" Value="10" Type="float"/>
+  <Parameter Name="DayChaseRange" Guid="04561a51-ecb1-4625-9ffb-67fdc7600c41" Value="999" Type="float"/>
+  <Parameter Name="NightChaseRange" Guid="525120f2-1964-4ba4-83b3-d68935621f01" Value="999" Type="float"/>
+  <Parameter Name="NightChaseTime" Guid="a785cf97-54d2-4ebb-9656-20ccfad61550" Value="999" Type="float"/>
+  <Parameter Name="DayChaseTime" Guid="f737dd80-3a3e-40b6-9e11-f1d0c7a1f1dd" Value="999" Type="float"/>
+  <Parameter Name="ChaseWhenAttackedProbability" Guid="edf50565-bc12-48b9-9d9a-3caf0a5774ee" Value="1" Type="float"/>
+  <Parameter Name="ChaseOnTouchProbability" Guid="5f0285f6-add7-468e-bd6a-7cda3cc4f829" Value="1" Type="float"/>
+  <Parameter Name="AutoChaseMask" Guid="dae8eb9e-d0bc-44f3-885f-856e89ad777a" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
+  <Parameter Name="ChaseNonPlayerProbability" Guid="53bfb5dc-d57b-4587-b201-30a55b2a0100" Value="1" Type="float"/>
+  <Parameter Name="AttacksSameHerd" Guid="a75585be-65f0-45bb-a285-98694bbe3fe6" Value="false" Type="bool"/>
+  <Parameter Name="AttacksAllCategories" Guid="53fc41f3-dfe1-47b2-abff-4ea231e7cc8f" Value="true" Type="bool"/>
+  <Parameter Name="FleeFromSameHerd" Guid="73a37e8b-981d-41c0-b59f-662930cd34f4" Value="true" Type="bool"/>
+  <Parameter Name="FleeDistance" Guid="696520db-e938-4d96-9e80-f3206cd6a5b6" Value="10" Type="float"/>
+  <Parameter Name="ForceAttackDuringGreenNight" Guid="ec45c144-2f35-4af3-9a3c-ce289cf25c9d" Value="true" Type="bool"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidFireBehavior" Guid="79151a1b-983c-4bd4-bd31-3669bd05b5ba" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
             <MemberComponentTemplate Name="Locomotion" Guid="c9162f2b-90a1-4100-a227-959cf61b0e2d">
@@ -1684,22 +1689,23 @@
     <Parameter Name="PoisonResistance" Value="-50" Type="float"/>
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="8d0822d3-ec8b-4073-aa7f-fcf762eed5f9">
+<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="ec7a4a18-97fe-4db1-809c-1ef9c8773785">
   <Parameter Name="IsOptional" Value="false" Type="bool"/>
   <Parameter Name="LoadOrder" Value="50" Type="int"/>
   <Parameter Name="Class" Value="Game.ComponentZombieChaseBehavior" Type="string"/>
-  <Parameter Name="DayChaseRange" Guid="8a0786cc-eceb-4be8-a9ca-fc7a6e5ef22b" Value="999" Type="float"/>
-  <Parameter Name="NightChaseRange" Guid="9a9909de-137e-4934-b431-11bc95c1a243" Value="999" Type="float"/>
-  <Parameter Name="NightChaseTime" Guid="e6902ebc-cca2-47cf-a52f-739cd4ffc2ff" Value="999" Type="float"/>
-  <Parameter Name="DayChaseTime" Guid="81c7774c-54b6-41a0-931f-c0fcd4d644c8" Value="999" Type="float"/>
-  <Parameter Name="ChaseWhenAttackedProbability" Guid="ba5feb2e-7ab2-4e04-ada0-b803a30c7498" Value="1" Type="float"/>
-  <Parameter Name="ChaseOnTouchProbability" Guid="f0b0599f-b86a-45b3-9fa9-5be22b23da76" Value="1" Type="float"/>
-  <Parameter Name="AutoChaseMask" Guid="3c58a74f-c864-4dc5-92a0-8219e54de58f" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
-  <Parameter Name="ChaseNonPlayerProbability" Guid="3c3f56fb-d23c-4419-9e88-2b121c84c464" Value="1" Type="float"/>
-  <Parameter Name="AttacksSameHerd" Guid="90a174be-32e2-4578-a7c9-7957bcf4c354" Value="false" Type="bool"/>
-  <Parameter Name="AttacksAllCategories" Guid="f8c83b53-c32b-4942-9195-b8a1055c6e89" Value="true" Type="bool"/>
-  <Parameter Name="FleeFromSameHerd" Guid="1bcb8108-dfe9-46b1-a665-a336cd38f228" Value="true" Type="bool"/>
-  <Parameter Name="FleeDistance" Guid="f7a35847-837b-4d1c-9db7-b42c5d3b6235" Value="10" Type="float"/>
+  <Parameter Name="DayChaseRange" Guid="50553ea2-d8f5-4440-913c-c5bb910fffbe" Value="999" Type="float"/>
+  <Parameter Name="NightChaseRange" Guid="0f5e3008-1503-403f-970f-c6e146154cce" Value="999" Type="float"/>
+  <Parameter Name="NightChaseTime" Guid="3f41bd19-961b-4800-9dcd-735414d0248e" Value="999" Type="float"/>
+  <Parameter Name="DayChaseTime" Guid="ae74bbcf-df3f-4362-a07a-cc263fdb50b0" Value="999" Type="float"/>
+  <Parameter Name="ChaseWhenAttackedProbability" Guid="30c4776b-450f-4d00-83e4-0cc173c116ff" Value="1" Type="float"/>
+  <Parameter Name="ChaseOnTouchProbability" Guid="612de65f-7577-4464-820d-b16f72885acc" Value="1" Type="float"/>
+  <Parameter Name="AutoChaseMask" Guid="e7f83622-f08e-4826-acce-5e9e85c083cd" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
+  <Parameter Name="ChaseNonPlayerProbability" Guid="8b1f242e-d5d4-4606-9bf5-04c5d3019c60" Value="1" Type="float"/>
+  <Parameter Name="AttacksSameHerd" Guid="025f1cc7-4a3d-4d71-8ef2-a168a939a209" Value="false" Type="bool"/>
+  <Parameter Name="AttacksAllCategories" Guid="7a69003d-df9d-43b2-abbe-4cc4b50f6103" Value="true" Type="bool"/>
+  <Parameter Name="FleeFromSameHerd" Guid="9d338116-965d-467c-ae00-6bc9b8a39c07" Value="true" Type="bool"/>
+  <Parameter Name="FleeDistance" Guid="affa4e97-5d78-40f7-aec6-644ea966e358" Value="10" Type="float"/>
+  <Parameter Name="ForceAttackDuringGreenNight" Guid="77f8e495-ac7b-4564-836a-fe6e16a917ee" Value="true" Type="bool"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidFireBehavior" Guid="6b9d6dfc-0dbf-460c-be52-136c81cf5ba3" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
             <MemberComponentTemplate Name="Locomotion" Guid="07a967a4-7970-4117-b249-39a075500c7b">
@@ -2015,22 +2021,23 @@
     <Parameter Name="PoisonResistance" Value="100" Type="float"/>
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="45e5c114-154e-48a6-ab28-5e76527e8653">
+<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="622429f9-630f-43c2-8c8e-8b4dd172848b">
   <Parameter Name="IsOptional" Value="false" Type="bool"/>
   <Parameter Name="LoadOrder" Value="50" Type="int"/>
   <Parameter Name="Class" Value="Game.ComponentZombieChaseBehavior" Type="string"/>
-  <Parameter Name="DayChaseRange" Guid="1e549c46-0b14-4ad8-a7ed-0c8e8e5692ec" Value="999" Type="float"/>
-  <Parameter Name="NightChaseRange" Guid="9c82f946-2266-4064-b122-c113df98356b" Value="999" Type="float"/>
-  <Parameter Name="NightChaseTime" Guid="508b88cf-a0f3-4782-9df6-5830d6c4c5e9" Value="999" Type="float"/>
-  <Parameter Name="DayChaseTime" Guid="56aa4836-f751-46c6-b661-19b8ec7536e8" Value="999" Type="float"/>
-  <Parameter Name="ChaseWhenAttackedProbability" Guid="cc455578-ada5-45bb-b9cd-52caa57fa125" Value="1" Type="float"/>
-  <Parameter Name="ChaseOnTouchProbability" Guid="f06f48fd-7819-4c02-b5d1-796560c0dec6" Value="1" Type="float"/>
-  <Parameter Name="AutoChaseMask" Guid="8d72db7e-b7ff-4b65-a06a-2bc08a671276" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
-  <Parameter Name="ChaseNonPlayerProbability" Guid="bb4d3371-bfda-4aaa-b7c9-1e05b3fd097e" Value="1" Type="float"/>
-  <Parameter Name="AttacksSameHerd" Guid="7e086dd1-26af-448e-9e86-d404db3a712c" Value="false" Type="bool"/>
-  <Parameter Name="AttacksAllCategories" Guid="77571b0c-820b-4c0e-9306-e2e9427cf9ec" Value="true" Type="bool"/>
-  <Parameter Name="FleeFromSameHerd" Guid="6db86a1b-8bab-439e-8657-acf6bd899a26" Value="true" Type="bool"/>
-  <Parameter Name="FleeDistance" Guid="1f280d46-f848-4f37-b77e-c6991b2956f7" Value="10" Type="float"/>
+  <Parameter Name="DayChaseRange" Guid="f41e50a9-8734-48bd-b19e-a6121b331be0" Value="999" Type="float"/>
+  <Parameter Name="NightChaseRange" Guid="d7fc9bfe-a097-4557-b7e5-f088ba6537c0" Value="999" Type="float"/>
+  <Parameter Name="NightChaseTime" Guid="6222c1a4-3f9d-4e96-96d9-060faf601162" Value="999" Type="float"/>
+  <Parameter Name="DayChaseTime" Guid="b9003428-4f4e-40f6-aa52-bbd5667c6931" Value="999" Type="float"/>
+  <Parameter Name="ChaseWhenAttackedProbability" Guid="1641185c-3811-4e2d-ad33-2f28fab82b6c" Value="1" Type="float"/>
+  <Parameter Name="ChaseOnTouchProbability" Guid="311ecd37-7a50-42d2-80ad-f3524b0cd372" Value="1" Type="float"/>
+  <Parameter Name="AutoChaseMask" Guid="b641e565-5831-4d20-b52a-bbdf464258eb" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
+  <Parameter Name="ChaseNonPlayerProbability" Guid="7af91ed4-4c5d-4bb2-8ed3-683534c026a1" Value="1" Type="float"/>
+  <Parameter Name="AttacksSameHerd" Guid="73121c9b-ae8a-44e9-b6ee-30714d34f930" Value="false" Type="bool"/>
+  <Parameter Name="AttacksAllCategories" Guid="82d648fb-0e30-43dc-b03e-f2f0fbe62746" Value="true" Type="bool"/>
+  <Parameter Name="FleeFromSameHerd" Guid="f2d5fed7-8fe8-4200-82be-2f18ae4cd5eb" Value="true" Type="bool"/>
+  <Parameter Name="FleeDistance" Guid="3c609d5c-37be-4023-98dc-0528ff8c1fcc" Value="10" Type="float"/>
+  <Parameter Name="ForceAttackDuringGreenNight" Guid="c18ad99e-a50e-4c9d-866d-3b10f878be06" Value="true" Type="bool"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidFireBehavior" Guid="f936dd56-3239-4535-bb47-6ed78898b9bd" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
             <MemberComponentTemplate Name="Locomotion" Guid="425e51ee-df2f-4a10-a58c-04df1ad3eb57">
@@ -2352,22 +2359,23 @@
     <Parameter Name="PoisonResistance" Value="100" Type="float"/>
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="95885305-46b0-4bdc-8916-36316e1f1bef">
+<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="761cb51d-5f03-4925-8ce9-550d56d2fae7">
   <Parameter Name="IsOptional" Value="false" Type="bool"/>
   <Parameter Name="LoadOrder" Value="50" Type="int"/>
   <Parameter Name="Class" Value="Game.ComponentZombieChaseBehavior" Type="string"/>
-  <Parameter Name="DayChaseRange" Guid="cebbc4d2-1134-4054-8791-6d02f21a6df0" Value="999" Type="float"/>
-  <Parameter Name="NightChaseRange" Guid="72703d7c-417a-40f6-807b-d2d7f253f94e" Value="999" Type="float"/>
-  <Parameter Name="NightChaseTime" Guid="3ee5b43e-beaa-4fce-ac80-58cfdd9c1ce0" Value="999" Type="float"/>
-  <Parameter Name="DayChaseTime" Guid="693ebd40-f480-4bd6-8d0f-80be19b7a647" Value="999" Type="float"/>
-  <Parameter Name="ChaseWhenAttackedProbability" Guid="3015a950-1d91-4f47-a91e-37985450838d" Value="1" Type="float"/>
-  <Parameter Name="ChaseOnTouchProbability" Guid="95d25a99-fcbe-41b2-bcfb-3eab9def2fc0" Value="1" Type="float"/>
-  <Parameter Name="AutoChaseMask" Guid="25d2398d-52d7-4a27-bd01-2df30bf19ec6" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
-  <Parameter Name="ChaseNonPlayerProbability" Guid="4d8de650-4b78-44a1-b73c-33fb7c70d105" Value="1" Type="float"/>
-  <Parameter Name="AttacksSameHerd" Guid="6ab42d62-c76c-4edb-94ff-0ff3c989dced" Value="false" Type="bool"/>
-  <Parameter Name="AttacksAllCategories" Guid="c5558945-2317-4734-a9d4-10354c7c85bb" Value="true" Type="bool"/>
-  <Parameter Name="FleeFromSameHerd" Guid="36909b20-1a32-435a-8ab6-1f236d3ab856" Value="true" Type="bool"/>
-  <Parameter Name="FleeDistance" Guid="128387e9-a23e-43e6-a490-19777ccceb00" Value="10" Type="float"/>
+  <Parameter Name="DayChaseRange" Guid="0864ffea-3672-4298-80f0-aa42f80e180b" Value="999" Type="float"/>
+  <Parameter Name="NightChaseRange" Guid="dcbeb26c-24f9-4669-af38-73a338d65c3c" Value="999" Type="float"/>
+  <Parameter Name="NightChaseTime" Guid="ed88a1b2-ea00-4d11-b565-69539e78be12" Value="999" Type="float"/>
+  <Parameter Name="DayChaseTime" Guid="d764cb45-8cbb-428f-9cf1-7b393b90acf9" Value="999" Type="float"/>
+  <Parameter Name="ChaseWhenAttackedProbability" Guid="cdd1a29f-0471-4128-b10d-76b01fb5d283" Value="1" Type="float"/>
+  <Parameter Name="ChaseOnTouchProbability" Guid="4d35e694-96d3-4b68-ba34-753eab819844" Value="1" Type="float"/>
+  <Parameter Name="AutoChaseMask" Guid="492c09b8-b984-4cc1-8fcd-339b46ed5f95" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
+  <Parameter Name="ChaseNonPlayerProbability" Guid="4f7ccc92-b986-442f-b3d6-a2af28deee89" Value="1" Type="float"/>
+  <Parameter Name="AttacksSameHerd" Guid="1dba1fd9-986b-45ee-8311-01564395811c" Value="false" Type="bool"/>
+  <Parameter Name="AttacksAllCategories" Guid="a6652372-59c3-456b-a988-42270cf02533" Value="true" Type="bool"/>
+  <Parameter Name="FleeFromSameHerd" Guid="6a5db2af-d17e-46d2-b662-66e5146b7845" Value="true" Type="bool"/>
+  <Parameter Name="FleeDistance" Guid="ee5e2f9c-fb92-426a-99e6-69d6f83faa76" Value="10" Type="float"/>
+  <Parameter Name="ForceAttackDuringGreenNight" Guid="ccdb6847-5d45-4b81-9706-91b8396a199b" Value="true" Type="bool"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidFireBehavior" Guid="3434f689-fa4f-486f-adba-29444b91e8cc" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
             <MemberComponentTemplate Name="Locomotion" Guid="8c421679-e5e0-416b-870a-0ab412a2aeb1">
@@ -2659,22 +2667,23 @@
         <Parameter Name="PoisonResistance" Value="80" Type="float"/>
         <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="ZombieChaseBehavior" Guid="05c23647-5842-40dc-b490-ba1bd1dad1d5">
+<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="138cae69-57b8-42f9-8137-602ec23762a7">
   <Parameter Name="IsOptional" Value="false" Type="bool"/>
   <Parameter Name="LoadOrder" Value="50" Type="int"/>
   <Parameter Name="Class" Value="Game.ComponentZombieChaseBehavior" Type="string"/>
-  <Parameter Name="DayChaseRange" Guid="83770243-3df9-4aac-8133-eabdfb2ee318" Value="999" Type="float"/>
-  <Parameter Name="NightChaseRange" Guid="20eba570-4453-405c-ab86-9c8e704cf442" Value="999" Type="float"/>
-  <Parameter Name="NightChaseTime" Guid="556c72a8-a6d1-4e39-80d0-02c189cd7cd1" Value="999" Type="float"/>
-  <Parameter Name="DayChaseTime" Guid="1103446c-d057-46cb-9897-6068c209f21e" Value="999" Type="float"/>
-  <Parameter Name="ChaseWhenAttackedProbability" Guid="490a80f6-ace3-47be-b43b-c059db1d9bb9" Value="1" Type="float"/>
-  <Parameter Name="ChaseOnTouchProbability" Guid="2fb09cf0-3315-4990-91e1-b581a40efd0d" Value="1" Type="float"/>
-  <Parameter Name="AutoChaseMask" Guid="e82954de-90da-4b5d-b0be-9ab2a2e8861a" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
-  <Parameter Name="ChaseNonPlayerProbability" Guid="cf594352-79d8-410f-ad05-682a5bfc9d8e" Value="1" Type="float"/>
-  <Parameter Name="AttacksSameHerd" Guid="0c6a99a3-3802-4503-8561-c0764418e450" Value="false" Type="bool"/>
-  <Parameter Name="AttacksAllCategories" Guid="f4c784a7-88e8-4342-93c3-ab492a4ead32" Value="true" Type="bool"/>
-  <Parameter Name="FleeFromSameHerd" Guid="030c1c98-5216-4678-9d8d-d226f3439918" Value="true" Type="bool"/>
-  <Parameter Name="FleeDistance" Guid="a976338c-83ca-4716-933b-bd3d5d0a8c36" Value="10" Type="float"/>
+  <Parameter Name="DayChaseRange" Guid="6378af27-5e1b-4e5e-a3d6-7e55ead1963e" Value="999" Type="float"/>
+  <Parameter Name="NightChaseRange" Guid="0bf675fb-5027-48ea-ad77-f1e45d5853f5" Value="999" Type="float"/>
+  <Parameter Name="NightChaseTime" Guid="bc6eaf7a-979c-491c-956b-6312c9333618" Value="999" Type="float"/>
+  <Parameter Name="DayChaseTime" Guid="461bd707-ae92-46f4-a4a5-396ce4241763" Value="999" Type="float"/>
+  <Parameter Name="ChaseWhenAttackedProbability" Guid="b58faeaf-632a-4108-b4e9-1ca620850bcf" Value="1" Type="float"/>
+  <Parameter Name="ChaseOnTouchProbability" Guid="9a2407a0-2acc-4252-802e-cea1d72737ce" Value="1" Type="float"/>
+  <Parameter Name="AutoChaseMask" Guid="dd91f177-d199-40eb-845e-fb33eb69ab7b" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
+  <Parameter Name="ChaseNonPlayerProbability" Guid="95efa5a3-923f-4181-8208-f6de7eb297bc" Value="1" Type="float"/>
+  <Parameter Name="AttacksSameHerd" Guid="8ed9dde8-cd58-4bd9-af3e-f3cc8aa3abd9" Value="false" Type="bool"/>
+  <Parameter Name="AttacksAllCategories" Guid="641cafe4-b5b7-4f51-b75f-857466ff7d65" Value="true" Type="bool"/>
+  <Parameter Name="FleeFromSameHerd" Guid="b103fe79-e911-4d46-9927-ababa7fd61de" Value="true" Type="bool"/>
+  <Parameter Name="FleeDistance" Guid="caa42c7d-99ef-4562-a232-6a5de6298a55" Value="10" Type="float"/>
+  <Parameter Name="ForceAttackDuringGreenNight" Guid="324db39c-4717-4318-93c6-7955e4af4feb" Value="true" Type="bool"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="ZombieHerdBehavior" Guid="220f0ee0-dd03-4003-a7ab-ad6045995073">
     <Parameter Name="Class" Value="Game.ComponentZombieHerdBehavior" Type="string" Guid="3bd5ac9e-a5dc-4ad2-ae7c-966dfb056138"/>
@@ -2889,22 +2898,23 @@
         <Parameter Name="PoisonResistance" Value="80" Type="float"/>
         <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="ZombieChaseBehavior" Guid="cda766a9-1181-4742-bdf6-0080411b9f4d">
+<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="1b62925d-d952-42e0-8781-51ad0112a40c">
   <Parameter Name="IsOptional" Value="false" Type="bool"/>
   <Parameter Name="LoadOrder" Value="50" Type="int"/>
   <Parameter Name="Class" Value="Game.ComponentZombieChaseBehavior" Type="string"/>
-  <Parameter Name="DayChaseRange" Guid="a6be7c00-a2ce-40d6-ae5f-5dbd5d22a2a3" Value="999" Type="float"/>
-  <Parameter Name="NightChaseRange" Guid="09e7b944-1359-4a9f-b339-138e83411cf9" Value="999" Type="float"/>
-  <Parameter Name="NightChaseTime" Guid="9a855a81-729f-4750-8577-f37f19930636" Value="999" Type="float"/>
-  <Parameter Name="DayChaseTime" Guid="f3c6c85e-0ede-44fe-aca2-5931d56aabb4" Value="999" Type="float"/>
-  <Parameter Name="ChaseWhenAttackedProbability" Guid="53d2f871-4128-4825-a75e-a8103ca8fc6e" Value="1" Type="float"/>
-  <Parameter Name="ChaseOnTouchProbability" Guid="d220d3de-9a6d-4a95-9f65-261d81aa6621" Value="1" Type="float"/>
-  <Parameter Name="AutoChaseMask" Guid="898f16cc-d882-44fd-bc86-c1de32503d91" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
-  <Parameter Name="ChaseNonPlayerProbability" Guid="63e0244c-b6ea-46d3-a5f2-3ba48047a3d5" Value="1" Type="float"/>
-  <Parameter Name="AttacksSameHerd" Guid="d87cfe5a-0d47-4d47-99d2-160c1c3900e9" Value="false" Type="bool"/>
-  <Parameter Name="AttacksAllCategories" Guid="05f09560-04e9-438f-9b62-268415cc2da5" Value="true" Type="bool"/>
-  <Parameter Name="FleeFromSameHerd" Guid="ea0d5cee-1586-4a69-8102-d9920ce5fa3e" Value="true" Type="bool"/>
-  <Parameter Name="FleeDistance" Guid="043672d5-b005-4a6c-90d1-f3557a54313f" Value="10" Type="float"/>
+  <Parameter Name="DayChaseRange" Guid="ac9be3e7-08ba-4543-b41b-a96150e3cd4e" Value="999" Type="float"/>
+  <Parameter Name="NightChaseRange" Guid="3555a93e-5e37-45ac-b7ba-92b15164e9e3" Value="999" Type="float"/>
+  <Parameter Name="NightChaseTime" Guid="3b98df66-b35b-447b-85e5-0da3b85e3bd6" Value="999" Type="float"/>
+  <Parameter Name="DayChaseTime" Guid="27943dbb-194a-4ea0-a269-16c7f51271bc" Value="999" Type="float"/>
+  <Parameter Name="ChaseWhenAttackedProbability" Guid="39ac6095-afb9-4248-a0fd-5c0e61e719a9" Value="1" Type="float"/>
+  <Parameter Name="ChaseOnTouchProbability" Guid="3cd37e5b-7ee5-4049-950c-b6f543e6f251" Value="1" Type="float"/>
+  <Parameter Name="AutoChaseMask" Guid="222674ff-e7d0-4e58-a874-796938b56be0" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
+  <Parameter Name="ChaseNonPlayerProbability" Guid="8a34cc26-0439-4272-8cbf-363237fad6dd" Value="1" Type="float"/>
+  <Parameter Name="AttacksSameHerd" Guid="025a2cd4-e3c3-4938-ab75-54c6442cd3ad" Value="false" Type="bool"/>
+  <Parameter Name="AttacksAllCategories" Guid="00b6f5f5-d4bd-4a10-ba12-0d8430c034da" Value="true" Type="bool"/>
+  <Parameter Name="FleeFromSameHerd" Guid="64a2e5fc-2724-46ed-8608-173307279ae8" Value="true" Type="bool"/>
+  <Parameter Name="FleeDistance" Guid="634ba837-ea87-4019-a1ad-fa7c45baab72" Value="10" Type="float"/>
+  <Parameter Name="ForceAttackDuringGreenNight" Guid="aa9f9966-db97-45ba-af1d-7c641a796259" Value="true" Type="bool"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="ZombieHerdBehavior" Guid="da38932b-070d-491a-b546-c4e0503793c4">
     <Parameter Name="Class" Value="Game.ComponentZombieHerdBehavior" Type="string" Guid="9cca15e9-177e-46f8-aa78-c41442681c26"/>
@@ -3139,22 +3149,23 @@
         <Parameter Name="PoisonResistance" Value="80" Type="float"/>
         <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="ZombieChaseBehavior" Guid="26599d6d-4aa7-4432-86a6-b51e7833b6ae">
+<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="6e8d65d1-5d0f-4862-abe1-259c032a0414">
   <Parameter Name="IsOptional" Value="false" Type="bool"/>
   <Parameter Name="LoadOrder" Value="50" Type="int"/>
   <Parameter Name="Class" Value="Game.ComponentZombieChaseBehavior" Type="string"/>
-  <Parameter Name="DayChaseRange" Guid="263bcca1-6b0b-40ea-9287-09385e806dce" Value="999" Type="float"/>
-  <Parameter Name="NightChaseRange" Guid="8e7cc608-05d1-4dea-a010-ac49f7f3dab6" Value="999" Type="float"/>
-  <Parameter Name="NightChaseTime" Guid="ca9d3d83-a27c-427a-9dec-aba17c363a88" Value="999" Type="float"/>
-  <Parameter Name="DayChaseTime" Guid="dbadf622-e466-49ff-80e2-5104c118622e" Value="999" Type="float"/>
-  <Parameter Name="ChaseWhenAttackedProbability" Guid="b6ec6923-0436-4c81-b8fe-5dcedfd0edd1" Value="1" Type="float"/>
-  <Parameter Name="ChaseOnTouchProbability" Guid="a6962704-b59b-463b-9d24-b1673d669819" Value="1" Type="float"/>
-  <Parameter Name="AutoChaseMask" Guid="ac1b09d7-fab7-48f8-9c9c-4eb2983f1075" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
-  <Parameter Name="ChaseNonPlayerProbability" Guid="5dfeaf3a-6ac3-4db1-a19b-7c799ebb699e" Value="1" Type="float"/>
-  <Parameter Name="AttacksSameHerd" Guid="5893332b-810e-4880-b422-c0430871f2a9" Value="false" Type="bool"/>
-  <Parameter Name="AttacksAllCategories" Guid="2c6f9dee-e07f-49b2-b0d5-255f7ca02c4b" Value="true" Type="bool"/>
-  <Parameter Name="FleeFromSameHerd" Guid="a1703a40-7a50-461a-ba87-4f38183462f1" Value="true" Type="bool"/>
-  <Parameter Name="FleeDistance" Guid="9b21c17e-0f39-42e6-937b-589e0f1bf708" Value="10" Type="float"/>
+  <Parameter Name="DayChaseRange" Guid="511f9ffa-339a-42b7-8416-0f36ed4baa71" Value="999" Type="float"/>
+  <Parameter Name="NightChaseRange" Guid="8df9f6df-dca3-464a-87d6-45ab27dd2a8c" Value="999" Type="float"/>
+  <Parameter Name="NightChaseTime" Guid="6c50d6f0-c1b5-47b8-94f7-4a49149f02b4" Value="999" Type="float"/>
+  <Parameter Name="DayChaseTime" Guid="ba5ec591-6ec6-4f63-a9c9-476ed4c4c618" Value="999" Type="float"/>
+  <Parameter Name="ChaseWhenAttackedProbability" Guid="21225117-5c93-4b3d-a104-c85752314083" Value="1" Type="float"/>
+  <Parameter Name="ChaseOnTouchProbability" Guid="c31aed7f-117d-4e40-8946-d48e87dae03f" Value="1" Type="float"/>
+  <Parameter Name="AutoChaseMask" Guid="55387b1e-efed-451e-b81d-44b19d6cd221" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
+  <Parameter Name="ChaseNonPlayerProbability" Guid="d99db185-7c62-45f0-abd7-2a73a2cb1fc4" Value="1" Type="float"/>
+  <Parameter Name="AttacksSameHerd" Guid="fc2a7ada-b872-4abb-a371-da30a3a3f077" Value="false" Type="bool"/>
+  <Parameter Name="AttacksAllCategories" Guid="a4133fb5-4b16-4fa9-a12d-2e16e0483361" Value="true" Type="bool"/>
+  <Parameter Name="FleeFromSameHerd" Guid="7da7459e-b359-45c2-bc23-7dc8df870114" Value="true" Type="bool"/>
+  <Parameter Name="FleeDistance" Guid="5bb31311-ecad-4a8b-93f2-4220a0ae20a5" Value="10" Type="float"/>
+  <Parameter Name="ForceAttackDuringGreenNight" Guid="80ef3eac-b0e9-4a5d-a5bb-1aafb2809cdd" Value="true" Type="bool"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="ZombieHerdBehavior" Guid="8c65f092-e5ad-425c-ba49-1a9c196f55e5">
     <Parameter Name="Class" Value="Game.ComponentZombieHerdBehavior" Type="string" Guid="1eca55a6-719d-46c7-bc6d-ed62f7507439"/>
@@ -3386,22 +3397,23 @@
         <Parameter Name="PoisonResistance" Value="999" Type="float"/>
         <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="ZombieChaseBehavior" Guid="0a8336ff-a0e4-492b-adc9-5c243012ad64">
+<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="1170591a-ed9f-465a-9214-ecfd252bd872">
   <Parameter Name="IsOptional" Value="false" Type="bool"/>
   <Parameter Name="LoadOrder" Value="50" Type="int"/>
   <Parameter Name="Class" Value="Game.ComponentZombieChaseBehavior" Type="string"/>
-  <Parameter Name="DayChaseRange" Guid="4b9204dd-11d7-4082-9519-d3e1f8727b20" Value="999" Type="float"/>
-  <Parameter Name="NightChaseRange" Guid="279d7e43-9af5-403a-89b3-5b4857904ad5" Value="999" Type="float"/>
-  <Parameter Name="NightChaseTime" Guid="04cc2ab3-6692-4fa4-b752-002bdf0d6340" Value="999" Type="float"/>
-  <Parameter Name="DayChaseTime" Guid="415e3786-d924-472a-aff1-dbae676f469f" Value="999" Type="float"/>
-  <Parameter Name="ChaseWhenAttackedProbability" Guid="33510c3d-d31e-41cd-8133-f7f9108493bc" Value="1" Type="float"/>
-  <Parameter Name="ChaseOnTouchProbability" Guid="71c8bf25-da7d-455a-9124-94e24335fb8a" Value="1" Type="float"/>
-  <Parameter Name="AutoChaseMask" Guid="4f13828d-679b-4fe5-8994-56f0dacae52c" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
-  <Parameter Name="ChaseNonPlayerProbability" Guid="fa7c2d83-7edb-49c9-a6f2-61c57ae704bb" Value="1" Type="float"/>
-  <Parameter Name="AttacksSameHerd" Guid="5d08490c-62b2-449b-8f5d-bcb9471a60dd" Value="false" Type="bool"/>
-  <Parameter Name="AttacksAllCategories" Guid="2ef5ec8e-d153-4f3a-93bf-4e4b312ae1b3" Value="true" Type="bool"/>
-  <Parameter Name="FleeFromSameHerd" Guid="b64106ac-15b1-462f-806c-1755e5903a7f" Value="true" Type="bool"/>
-  <Parameter Name="FleeDistance" Guid="f8f7dc20-d058-412b-9193-b0e4b4279e1b" Value="10" Type="float"/>
+  <Parameter Name="DayChaseRange" Guid="9df82fea-41ac-4669-9195-93cca5bacff2" Value="999" Type="float"/>
+  <Parameter Name="NightChaseRange" Guid="765c038d-8505-4bda-80db-f10dfaac1119" Value="999" Type="float"/>
+  <Parameter Name="NightChaseTime" Guid="73635fac-ca63-463f-9eff-9089043be0f0" Value="999" Type="float"/>
+  <Parameter Name="DayChaseTime" Guid="592ed35d-52ee-491e-be34-7c680e559ffc" Value="999" Type="float"/>
+  <Parameter Name="ChaseWhenAttackedProbability" Guid="af9a5758-49c8-4436-9973-e013501ecfb2" Value="1" Type="float"/>
+  <Parameter Name="ChaseOnTouchProbability" Guid="c859f39a-b822-47bf-915f-dd99130ecc78" Value="1" Type="float"/>
+  <Parameter Name="AutoChaseMask" Guid="0c959e18-21ca-4b92-8320-a5ce0cefe07e" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
+  <Parameter Name="ChaseNonPlayerProbability" Guid="5b215e79-cadc-4580-9892-af09ffe31d23" Value="1" Type="float"/>
+  <Parameter Name="AttacksSameHerd" Guid="94cd4df2-d034-4761-863f-2b1ee273db8c" Value="false" Type="bool"/>
+  <Parameter Name="AttacksAllCategories" Guid="c7cc2306-2b29-4040-89bc-ef88bf0e9988" Value="true" Type="bool"/>
+  <Parameter Name="FleeFromSameHerd" Guid="6bb449d5-e694-436c-90e9-75e497824bed" Value="true" Type="bool"/>
+  <Parameter Name="FleeDistance" Guid="98da4dd7-cce1-40b8-8b7a-2fa8dbd07f1b" Value="10" Type="float"/>
+  <Parameter Name="ForceAttackDuringGreenNight" Guid="1a42d7ec-8cbc-4709-9b9d-f6fcf07dee5a" Value="true" Type="bool"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="ZombieHerdBehavior" Guid="a40f151e-9b10-458d-92b6-5897f42814ed">
     <Parameter Name="Class" Value="Game.ComponentZombieHerdBehavior" Type="string" Guid="6454e7e3-ecff-4048-8b99-af3656972b26"/>
@@ -3649,22 +3661,23 @@
     <Parameter Name="PoisonResistance" Value="950" Type="float"/>
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="a6f9a78f-f8da-4631-a426-12307ecb5e09">
+<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="19d9fea7-d1a8-4651-b532-08becf7215d8">
   <Parameter Name="IsOptional" Value="false" Type="bool"/>
   <Parameter Name="LoadOrder" Value="50" Type="int"/>
   <Parameter Name="Class" Value="Game.ComponentZombieChaseBehavior" Type="string"/>
-  <Parameter Name="DayChaseRange" Guid="d7518990-243f-420a-b507-260f28b6bf41" Value="999" Type="float"/>
-  <Parameter Name="NightChaseRange" Guid="be24ebc0-638d-4642-88c2-fb9a5870ba8c" Value="999" Type="float"/>
-  <Parameter Name="NightChaseTime" Guid="c3567c34-66f6-4ccd-95a5-5a39a55d7af4" Value="999" Type="float"/>
-  <Parameter Name="DayChaseTime" Guid="4dcb8058-6663-4309-966c-eed849072d37" Value="999" Type="float"/>
-  <Parameter Name="ChaseWhenAttackedProbability" Guid="9ac74d57-0669-406a-be20-43725aa82f5e" Value="1" Type="float"/>
-  <Parameter Name="ChaseOnTouchProbability" Guid="b4b13ce2-fcd6-47e5-a2a8-10dc2e3521e3" Value="1" Type="float"/>
-  <Parameter Name="AutoChaseMask" Guid="d395b975-353d-4cae-afe2-519d32c5684e" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
-  <Parameter Name="ChaseNonPlayerProbability" Guid="38d98324-212a-4ed6-beac-deece31592c9" Value="1" Type="float"/>
-  <Parameter Name="AttacksSameHerd" Guid="c67842d7-6bf5-4094-8b7e-8cbcb21e4c53" Value="false" Type="bool"/>
-  <Parameter Name="AttacksAllCategories" Guid="046f79f8-3f9c-4810-a93c-48db55d66511" Value="true" Type="bool"/>
-  <Parameter Name="FleeFromSameHerd" Guid="39c1166e-9711-4ca9-a5de-b04ff864aa97" Value="true" Type="bool"/>
-  <Parameter Name="FleeDistance" Guid="cdfe2fb6-e10b-4de3-a7ef-43a9dc0d9db4" Value="10" Type="float"/>
+  <Parameter Name="DayChaseRange" Guid="80aff286-7e37-44dc-b72e-e4e3369ffdd7" Value="999" Type="float"/>
+  <Parameter Name="NightChaseRange" Guid="b73c4ac4-d5e6-4a69-9cfd-9f61f574a8c5" Value="999" Type="float"/>
+  <Parameter Name="NightChaseTime" Guid="1f06ec60-78f4-4f8f-952b-8f93b0c890a8" Value="999" Type="float"/>
+  <Parameter Name="DayChaseTime" Guid="4b5841f0-ef4e-44c4-85a2-49d01bcf2a85" Value="999" Type="float"/>
+  <Parameter Name="ChaseWhenAttackedProbability" Guid="72e5f473-0af4-4311-bc58-da2250fb9285" Value="1" Type="float"/>
+  <Parameter Name="ChaseOnTouchProbability" Guid="9d427f0a-4da7-47a0-a663-ea41c537d51d" Value="1" Type="float"/>
+  <Parameter Name="AutoChaseMask" Guid="21f2dd9b-75dd-41f8-9b90-260996b88bb4" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
+  <Parameter Name="ChaseNonPlayerProbability" Guid="f22f09c1-173f-4b9e-a2e8-f8857d9f7dc5" Value="1" Type="float"/>
+  <Parameter Name="AttacksSameHerd" Guid="ccb108e3-fdf5-4465-bc40-9d55aa08785a" Value="false" Type="bool"/>
+  <Parameter Name="AttacksAllCategories" Guid="bf8895a8-2990-4246-beeb-294265618e9c" Value="true" Type="bool"/>
+  <Parameter Name="FleeFromSameHerd" Guid="2a94fcec-0256-46a2-9457-b8bd1da1c59b" Value="true" Type="bool"/>
+  <Parameter Name="FleeDistance" Guid="6cc72fd1-5b24-4e39-9003-52a1d8f39f54" Value="10" Type="float"/>
+  <Parameter Name="ForceAttackDuringGreenNight" Guid="87739379-bd25-42ff-ab9a-31421b304a77" Value="true" Type="bool"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidFireBehavior" Guid="73bbf83b-98a6-4f22-837a-411db4acbabe" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
             <MemberComponentTemplate Name="Locomotion" Guid="95a2c825-56bc-4040-94af-dd687e9e2ffd">
@@ -3982,22 +3995,23 @@
     <Parameter Name="PoisonResistance" Value="950" Type="float"/>
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="43b74d03-0106-4dd5-90c0-6d967cf7a0c1">
+<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="8cd7efdd-4bd8-4b14-9c3b-87b2cc893d69">
   <Parameter Name="IsOptional" Value="false" Type="bool"/>
   <Parameter Name="LoadOrder" Value="50" Type="int"/>
   <Parameter Name="Class" Value="Game.ComponentZombieChaseBehavior" Type="string"/>
-  <Parameter Name="DayChaseRange" Guid="79e293db-2869-456b-a10b-58380bc8b361" Value="999" Type="float"/>
-  <Parameter Name="NightChaseRange" Guid="769a26f2-dff5-45e9-b5ad-e8ee4877935b" Value="999" Type="float"/>
-  <Parameter Name="NightChaseTime" Guid="7e2556d2-df0c-444e-b92b-ecdcb07af0fd" Value="999" Type="float"/>
-  <Parameter Name="DayChaseTime" Guid="2481efc9-6ebf-484b-b700-1a8b46e188f2" Value="999" Type="float"/>
-  <Parameter Name="ChaseWhenAttackedProbability" Guid="ca254cdf-35c1-4e01-a0e5-9e8b748b3155" Value="1" Type="float"/>
-  <Parameter Name="ChaseOnTouchProbability" Guid="1ded05dd-d2b8-4ada-acbf-7f68b2499b70" Value="1" Type="float"/>
-  <Parameter Name="AutoChaseMask" Guid="4ed2e917-b843-41e4-aa21-32b7c5aa31aa" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
-  <Parameter Name="ChaseNonPlayerProbability" Guid="c8ce2f24-314e-4a87-99ae-8502dabf70d3" Value="1" Type="float"/>
-  <Parameter Name="AttacksSameHerd" Guid="00ffd48c-2ff2-48b4-bf19-69067894eb41" Value="false" Type="bool"/>
-  <Parameter Name="AttacksAllCategories" Guid="d52f86b8-6190-4526-b7cc-69a6b243187d" Value="true" Type="bool"/>
-  <Parameter Name="FleeFromSameHerd" Guid="8f000558-e210-4e82-b0b8-fa4b8b81b102" Value="true" Type="bool"/>
-  <Parameter Name="FleeDistance" Guid="71efa991-6eb4-43d9-812d-7bb3cb230c4e" Value="10" Type="float"/>
+  <Parameter Name="DayChaseRange" Guid="45255733-b61c-4ef3-aea9-101cf211fc28" Value="999" Type="float"/>
+  <Parameter Name="NightChaseRange" Guid="41d0f1b7-6ec6-4376-9773-eb3f37f3f31e" Value="999" Type="float"/>
+  <Parameter Name="NightChaseTime" Guid="74e64d7b-1442-4b2f-ada9-2c5b9e6df93e" Value="999" Type="float"/>
+  <Parameter Name="DayChaseTime" Guid="ab91645a-6e8e-49a3-a73f-bd3f90134495" Value="999" Type="float"/>
+  <Parameter Name="ChaseWhenAttackedProbability" Guid="ce519a56-9d9c-4d74-91b9-e0b2a524f2fb" Value="1" Type="float"/>
+  <Parameter Name="ChaseOnTouchProbability" Guid="51f8a43c-ba34-4c53-b6be-e9125316e2a6" Value="1" Type="float"/>
+  <Parameter Name="AutoChaseMask" Guid="9c4d4c50-04cb-4dd2-9694-8c5987271b9c" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
+  <Parameter Name="ChaseNonPlayerProbability" Guid="cabbc9c3-f932-4012-b159-5a9569bf37e1" Value="1" Type="float"/>
+  <Parameter Name="AttacksSameHerd" Guid="a7fcc821-628c-4f99-8eea-b3cbfd88f6e3" Value="false" Type="bool"/>
+  <Parameter Name="AttacksAllCategories" Guid="f5f09ca9-245e-46da-90d6-20d5361ccb3f" Value="true" Type="bool"/>
+  <Parameter Name="FleeFromSameHerd" Guid="9481ce7e-bf6e-40c2-8e74-7f83a78d8ce0" Value="true" Type="bool"/>
+  <Parameter Name="FleeDistance" Guid="e0dbb723-f8f3-4da0-b4ca-465a8b2d2376" Value="10" Type="float"/>
+  <Parameter Name="ForceAttackDuringGreenNight" Guid="96875578-a90d-4142-b754-bedaa67e4476" Value="true" Type="bool"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidFireBehavior" Guid="432274be-962b-495b-994b-3cd8a5fa1b46" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
             <MemberComponentTemplate Name="Locomotion" Guid="0fb08051-5de8-4c32-bb8d-05babe50d17d">
@@ -4298,22 +4312,23 @@
     <Parameter Name="PoisonResistance" Value="950" Type="float"/>
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="ea04f710-6b7a-436a-984f-4c3c6cd72a91">
+<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="88db8043-f026-4834-8efd-0d746aa7503c">
   <Parameter Name="IsOptional" Value="false" Type="bool"/>
   <Parameter Name="LoadOrder" Value="50" Type="int"/>
   <Parameter Name="Class" Value="Game.ComponentZombieChaseBehavior" Type="string"/>
-  <Parameter Name="DayChaseRange" Guid="1344deeb-f804-4aa5-892c-71ff6f2f1d88" Value="999" Type="float"/>
-  <Parameter Name="NightChaseRange" Guid="c590833f-2cff-46e3-8880-684840438ce7" Value="999" Type="float"/>
-  <Parameter Name="NightChaseTime" Guid="4917b0d1-8006-421c-b494-57a6b5e8c5bf" Value="999" Type="float"/>
-  <Parameter Name="DayChaseTime" Guid="b97f0055-1b79-4ef8-bf75-d9b0179432d7" Value="999" Type="float"/>
-  <Parameter Name="ChaseWhenAttackedProbability" Guid="d0f9c612-89de-4846-acec-9af15734f988" Value="1" Type="float"/>
-  <Parameter Name="ChaseOnTouchProbability" Guid="00c611d5-6360-4322-8af8-8654cd310b56" Value="1" Type="float"/>
-  <Parameter Name="AutoChaseMask" Guid="a1488079-accf-47e2-b09e-b333375a9222" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
-  <Parameter Name="ChaseNonPlayerProbability" Guid="1c2c1a78-c9be-4ba0-b131-3c791dddae28" Value="1" Type="float"/>
-  <Parameter Name="AttacksSameHerd" Guid="fb668a5c-233a-4e48-9c92-33cd1635901a" Value="false" Type="bool"/>
-  <Parameter Name="AttacksAllCategories" Guid="4f58630c-3f07-426e-acdc-48469d1b141c" Value="true" Type="bool"/>
-  <Parameter Name="FleeFromSameHerd" Guid="181f70ca-077b-49b1-ba6f-b049a60e6e21" Value="true" Type="bool"/>
-  <Parameter Name="FleeDistance" Guid="9fcb20f9-f0af-4ce8-b524-dd26c0e00ac3" Value="10" Type="float"/>
+  <Parameter Name="DayChaseRange" Guid="8d692dc3-8965-446b-997e-f89292d36570" Value="999" Type="float"/>
+  <Parameter Name="NightChaseRange" Guid="05874358-2a19-4f3b-afd3-c914fd788079" Value="999" Type="float"/>
+  <Parameter Name="NightChaseTime" Guid="22a53265-c63a-427d-b8f3-e6fd4ee4c9e7" Value="999" Type="float"/>
+  <Parameter Name="DayChaseTime" Guid="4500f1ba-7cda-4e5f-b36a-a1d472ff7a75" Value="999" Type="float"/>
+  <Parameter Name="ChaseWhenAttackedProbability" Guid="243fa90c-fe52-41f2-9f40-c1f6edc1698d" Value="1" Type="float"/>
+  <Parameter Name="ChaseOnTouchProbability" Guid="32496039-2895-4751-b82e-2e86977077cc" Value="1" Type="float"/>
+  <Parameter Name="AutoChaseMask" Guid="31765036-7f71-407e-9c58-f11f863bd4cd" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
+  <Parameter Name="ChaseNonPlayerProbability" Guid="962f9129-83aa-4efb-8345-0c52f40861ad" Value="1" Type="float"/>
+  <Parameter Name="AttacksSameHerd" Guid="b6d66043-c574-453a-b094-58e915b28c09" Value="false" Type="bool"/>
+  <Parameter Name="AttacksAllCategories" Guid="61968e90-d1d4-4e83-a8a1-415b132b232e" Value="true" Type="bool"/>
+  <Parameter Name="FleeFromSameHerd" Guid="eb862e5b-f134-46fa-afd4-0cf645ee7801" Value="true" Type="bool"/>
+  <Parameter Name="FleeDistance" Guid="bbffd108-fbc6-4f86-a2a7-8cc2511068db" Value="10" Type="float"/>
+  <Parameter Name="ForceAttackDuringGreenNight" Guid="5b1cbc37-0408-48d7-94c9-29e9eafd0d8c" Value="true" Type="bool"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidFireBehavior" Guid="c7417e65-d6e7-4897-ad70-95be5d7402b4" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
             <MemberComponentTemplate Name="Locomotion" Guid="55680f00-8c62-4f13-bef3-0f294dfb650b">
@@ -4618,22 +4633,23 @@
     <Parameter Name="PoisonResistance" Value="550" Type="float"/>
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="def5a4cf-b522-48d5-b7fb-d0b45a6a45c4">
+<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="de8ffc42-1740-4c0b-97b8-48210a0e9378">
   <Parameter Name="IsOptional" Value="false" Type="bool"/>
   <Parameter Name="LoadOrder" Value="50" Type="int"/>
   <Parameter Name="Class" Value="Game.ComponentZombieChaseBehavior" Type="string"/>
-  <Parameter Name="DayChaseRange" Guid="d249f07a-ff83-463c-aeb5-7f9a8ecbfa13" Value="999" Type="float"/>
-  <Parameter Name="NightChaseRange" Guid="1d9bb035-0c2e-4610-bc15-0a8e31b6337c" Value="999" Type="float"/>
-  <Parameter Name="NightChaseTime" Guid="73ecba1f-394e-47f8-be50-8665573dfe2e" Value="999" Type="float"/>
-  <Parameter Name="DayChaseTime" Guid="b39d8616-5051-4e25-8775-e0cbaffb5831" Value="999" Type="float"/>
-  <Parameter Name="ChaseWhenAttackedProbability" Guid="d4f06798-6b48-4a61-8ff4-1401b1648804" Value="1" Type="float"/>
-  <Parameter Name="ChaseOnTouchProbability" Guid="a8df891c-f9f4-47fd-b252-56b970e3be7d" Value="1" Type="float"/>
-  <Parameter Name="AutoChaseMask" Guid="585ec2ba-5593-48d1-ab2e-bce0822e5b85" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
-  <Parameter Name="ChaseNonPlayerProbability" Guid="2d471834-3324-4ae2-989d-19555faad1ee" Value="1" Type="float"/>
-  <Parameter Name="AttacksSameHerd" Guid="24b790f7-67f0-4f02-891c-4288dacd1857" Value="false" Type="bool"/>
-  <Parameter Name="AttacksAllCategories" Guid="36d0cc17-ccbd-4aa0-a0f1-2cc1ccff8081" Value="true" Type="bool"/>
-  <Parameter Name="FleeFromSameHerd" Guid="e22f3250-dcf7-43ba-a84f-9541b9008a13" Value="true" Type="bool"/>
-  <Parameter Name="FleeDistance" Guid="99823a6d-8092-4197-9476-9b4f83f0ea9e" Value="10" Type="float"/>
+  <Parameter Name="DayChaseRange" Guid="3b23527b-ca66-426b-9b05-2ff1709fca2b" Value="999" Type="float"/>
+  <Parameter Name="NightChaseRange" Guid="cee143ae-e270-4ae7-8aed-862b19fe8fcf" Value="999" Type="float"/>
+  <Parameter Name="NightChaseTime" Guid="9d3255b4-e90d-4d28-8ac1-625b4ab95405" Value="999" Type="float"/>
+  <Parameter Name="DayChaseTime" Guid="0cfed4a9-308e-4219-9a8b-ddf982bf1068" Value="999" Type="float"/>
+  <Parameter Name="ChaseWhenAttackedProbability" Guid="ca42b293-0309-4e3a-9045-af7eb8a422d5" Value="1" Type="float"/>
+  <Parameter Name="ChaseOnTouchProbability" Guid="55a9db86-af40-4689-af48-28cc87872621" Value="1" Type="float"/>
+  <Parameter Name="AutoChaseMask" Guid="4985a92f-9cf2-4df7-9863-28a31df3714a" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
+  <Parameter Name="ChaseNonPlayerProbability" Guid="c6325bca-427f-4970-aeb9-f4190281f385" Value="1" Type="float"/>
+  <Parameter Name="AttacksSameHerd" Guid="51910959-94ed-4812-a508-e8f28f321e83" Value="false" Type="bool"/>
+  <Parameter Name="AttacksAllCategories" Guid="ec7b2735-3be9-47f7-b920-6a46959a336b" Value="true" Type="bool"/>
+  <Parameter Name="FleeFromSameHerd" Guid="f40b2313-8099-4502-9b84-1647bf6b8b32" Value="true" Type="bool"/>
+  <Parameter Name="FleeDistance" Guid="b17757d7-3ff5-4396-ba2e-4263150f8e00" Value="10" Type="float"/>
+  <Parameter Name="ForceAttackDuringGreenNight" Guid="54cdf4cd-1734-4aa0-aa61-980695b6f17f" Value="true" Type="bool"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidFireBehavior" Guid="ae43f9b6-1af1-4dec-af3c-e4fd16aa3087" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
             <MemberComponentTemplate Name="Locomotion" Guid="f2e745b0-0bb2-4e47-9e85-90c825ddae94">
@@ -4917,22 +4933,23 @@
     <Parameter Name="PoisonResistance" Value="550" Type="float"/>
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="c0ec75b2-6cdd-4475-b2bd-02332c943dca">
+<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="bc493e50-4c69-433c-8904-c35344eaf35b">
   <Parameter Name="IsOptional" Value="false" Type="bool"/>
   <Parameter Name="LoadOrder" Value="50" Type="int"/>
   <Parameter Name="Class" Value="Game.ComponentZombieChaseBehavior" Type="string"/>
-  <Parameter Name="DayChaseRange" Guid="a712f817-9a14-4cdf-9369-98e372df4c6b" Value="999" Type="float"/>
-  <Parameter Name="NightChaseRange" Guid="f43268e2-b6a6-4b52-80f5-930da864904d" Value="999" Type="float"/>
-  <Parameter Name="NightChaseTime" Guid="1657a6ef-7522-4b10-914f-dc8d36ab1ccb" Value="999" Type="float"/>
-  <Parameter Name="DayChaseTime" Guid="dbbbc154-4bec-4f19-88de-bb10bcaf9148" Value="999" Type="float"/>
-  <Parameter Name="ChaseWhenAttackedProbability" Guid="f6947f5b-c8e5-427c-b967-999215aa13b4" Value="1" Type="float"/>
-  <Parameter Name="ChaseOnTouchProbability" Guid="2ac5ea5a-0a59-480b-9343-05cdbd7c3903" Value="1" Type="float"/>
-  <Parameter Name="AutoChaseMask" Guid="5c709945-327c-4244-ad75-009996569610" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
-  <Parameter Name="ChaseNonPlayerProbability" Guid="47c2b0e2-97dd-46cd-a36b-fc32718e5d88" Value="1" Type="float"/>
-  <Parameter Name="AttacksSameHerd" Guid="67fb4e59-3b63-472b-8230-f94d5298eea0" Value="false" Type="bool"/>
-  <Parameter Name="AttacksAllCategories" Guid="f76368c3-51b0-48ef-bbe7-230fa8477ac8" Value="true" Type="bool"/>
-  <Parameter Name="FleeFromSameHerd" Guid="6129f659-2320-4819-b16c-436e08a126bb" Value="true" Type="bool"/>
-  <Parameter Name="FleeDistance" Guid="32674699-4fe0-4300-8750-ce0a0ab6561e" Value="10" Type="float"/>
+  <Parameter Name="DayChaseRange" Guid="3c07525a-895c-4908-918e-5247c2c0199c" Value="999" Type="float"/>
+  <Parameter Name="NightChaseRange" Guid="a6afd592-1f05-4e0d-b529-5dcfd092e1ab" Value="999" Type="float"/>
+  <Parameter Name="NightChaseTime" Guid="2982280c-5e76-4f36-8c48-e07defdfd8e9" Value="999" Type="float"/>
+  <Parameter Name="DayChaseTime" Guid="a571a1e0-d855-4930-967b-58ace4f2bf2c" Value="999" Type="float"/>
+  <Parameter Name="ChaseWhenAttackedProbability" Guid="35af35e5-6aad-4a28-b0fc-63828770508f" Value="1" Type="float"/>
+  <Parameter Name="ChaseOnTouchProbability" Guid="eb9b3742-4230-4931-83ad-70b5e6de3308" Value="1" Type="float"/>
+  <Parameter Name="AutoChaseMask" Guid="a97e3a43-03e2-4bd6-8771-549a6d767932" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
+  <Parameter Name="ChaseNonPlayerProbability" Guid="f7a314df-d601-44ae-a85a-1d10d99b5c12" Value="1" Type="float"/>
+  <Parameter Name="AttacksSameHerd" Guid="54c84b9e-458a-4f44-9dc3-a93a6c013e35" Value="false" Type="bool"/>
+  <Parameter Name="AttacksAllCategories" Guid="7ef6fe60-dbcf-48ba-999c-117fabffd613" Value="true" Type="bool"/>
+  <Parameter Name="FleeFromSameHerd" Guid="df917ecd-f9c0-448a-921f-971235edab0b" Value="true" Type="bool"/>
+  <Parameter Name="FleeDistance" Guid="b4a25c2f-ec8a-420f-a6e6-ede8a70a4880" Value="10" Type="float"/>
+  <Parameter Name="ForceAttackDuringGreenNight" Guid="f1ceed41-9935-40c2-be84-117bec553423" Value="true" Type="bool"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidFireBehavior" Guid="eed377b4-d43d-400d-be0d-f7dd04c2260f" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
             <MemberComponentTemplate Name="Locomotion" Guid="5b9448e3-5729-4afd-82b1-c638542ff798">
@@ -5212,22 +5229,23 @@
     <Parameter Name="PoisonResistance" Value="2000" Type="float"/>
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="c9b36351-a317-4787-a2da-a7a890f4b87d">
+<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="0fe24f72-e272-4885-8db1-a6058af33086">
   <Parameter Name="IsOptional" Value="false" Type="bool"/>
   <Parameter Name="LoadOrder" Value="50" Type="int"/>
   <Parameter Name="Class" Value="Game.ComponentZombieChaseBehavior" Type="string"/>
-  <Parameter Name="DayChaseRange" Guid="632974f4-b4f2-4d4f-b4ad-ce27ad8f689f" Value="999" Type="float"/>
-  <Parameter Name="NightChaseRange" Guid="c0f44b8d-3571-488b-9c4f-6a4950f585b1" Value="999" Type="float"/>
-  <Parameter Name="NightChaseTime" Guid="e7895937-c9bd-40da-a4ee-8e3e333d026c" Value="999" Type="float"/>
-  <Parameter Name="DayChaseTime" Guid="146ff1e4-ea97-485d-9dea-d6a180156c21" Value="999" Type="float"/>
-  <Parameter Name="ChaseWhenAttackedProbability" Guid="48b72d79-7e3f-412c-959a-2050bebc731d" Value="1" Type="float"/>
-  <Parameter Name="ChaseOnTouchProbability" Guid="19b10dc7-99b9-4243-a54e-d596692db9c0" Value="1" Type="float"/>
-  <Parameter Name="AutoChaseMask" Guid="56df9a43-e883-40fd-9b6d-8461e6cf980d" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
-  <Parameter Name="ChaseNonPlayerProbability" Guid="a003bfe8-5945-44ec-833b-0e4c8056cef3" Value="1" Type="float"/>
-  <Parameter Name="AttacksSameHerd" Guid="90dc126b-ed2d-4754-b5db-d4468cac1f5f" Value="false" Type="bool"/>
-  <Parameter Name="AttacksAllCategories" Guid="3b0af8d2-7e2a-4fc0-a5e9-7f2c1daf8e75" Value="true" Type="bool"/>
-  <Parameter Name="FleeFromSameHerd" Guid="9d238e38-6dec-415c-a008-b99fd4ab2a35" Value="true" Type="bool"/>
-  <Parameter Name="FleeDistance" Guid="c87e113e-4b9f-4351-910b-3f0bfbc26b65" Value="10" Type="float"/>
+  <Parameter Name="DayChaseRange" Guid="17b39625-bbbf-4c59-bfde-40db67e1bf69" Value="999" Type="float"/>
+  <Parameter Name="NightChaseRange" Guid="e7bfd8b5-9459-4fee-a852-2986ac6bfa09" Value="999" Type="float"/>
+  <Parameter Name="NightChaseTime" Guid="7fd38216-7abf-4fdc-b99d-799c0caaab70" Value="999" Type="float"/>
+  <Parameter Name="DayChaseTime" Guid="abdbf0ab-4e49-484e-bad4-14c810b8073d" Value="999" Type="float"/>
+  <Parameter Name="ChaseWhenAttackedProbability" Guid="b674655f-d96f-4962-bb2d-c4009bc83805" Value="1" Type="float"/>
+  <Parameter Name="ChaseOnTouchProbability" Guid="0ad2429a-f159-4ff0-8e58-9a17fa5c7c6b" Value="1" Type="float"/>
+  <Parameter Name="AutoChaseMask" Guid="2457e847-c84e-4cfa-aac4-1a84722c88d3" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
+  <Parameter Name="ChaseNonPlayerProbability" Guid="8d2e0d8c-a107-4e5a-b785-d30ef1e478b3" Value="1" Type="float"/>
+  <Parameter Name="AttacksSameHerd" Guid="3d5a3db5-c308-498a-8f62-0521e6f7fc4a" Value="false" Type="bool"/>
+  <Parameter Name="AttacksAllCategories" Guid="02f2902c-45f1-48cd-8041-1a8532faf2ac" Value="true" Type="bool"/>
+  <Parameter Name="FleeFromSameHerd" Guid="382d43cd-bb91-47e8-8740-5870b9a675b1" Value="true" Type="bool"/>
+  <Parameter Name="FleeDistance" Guid="dea6459a-07da-4200-9b88-9715205a4c3d" Value="10" Type="float"/>
+  <Parameter Name="ForceAttackDuringGreenNight" Guid="9e3f9c0f-ef2d-44d0-bf18-aa5563f6ef5a" Value="true" Type="bool"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidFireBehavior" Guid="8616e3bd-d035-4343-870a-aa7aabf578a2" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
             <MemberComponentTemplate Name="Locomotion" Guid="c8a7f6d2-9b3e-4f2a-8a1a-7f2d9e1a1234">
@@ -5494,22 +5512,23 @@
         </EntityTemplate>
 
         <EntityTemplate Name="Tank2" Guid="cf8080e0-1e58-4c25-a40c-c8191f90b491" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-        <MemberComponentTemplate Name="ZombieChaseBehavior" Guid="37d3e5b2-e47e-4e39-9638-58e5eccf6468">
+<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="42120721-3c68-43f5-b75c-e40a1194ade2">
   <Parameter Name="IsOptional" Value="false" Type="bool"/>
   <Parameter Name="LoadOrder" Value="50" Type="int"/>
   <Parameter Name="Class" Value="Game.ComponentZombieChaseBehavior" Type="string"/>
-  <Parameter Name="DayChaseRange" Guid="67c30c1b-92aa-4956-b0b6-8558bb62fb6b" Value="999" Type="float"/>
-  <Parameter Name="NightChaseRange" Guid="c8784133-2abd-4530-be58-fabf2837174d" Value="999" Type="float"/>
-  <Parameter Name="NightChaseTime" Guid="3489e31e-a360-4492-bfa2-8721fce87db0" Value="999" Type="float"/>
-  <Parameter Name="DayChaseTime" Guid="c0f558cf-08a6-4157-9d1a-f97d1a149e3b" Value="999" Type="float"/>
-  <Parameter Name="ChaseWhenAttackedProbability" Guid="866af2e4-ec73-4554-a2b2-1d7eb62ca7d3" Value="1" Type="float"/>
-  <Parameter Name="ChaseOnTouchProbability" Guid="ffcf4e30-0905-4535-b7d8-2f8522b0abf2" Value="1" Type="float"/>
-  <Parameter Name="AutoChaseMask" Guid="3a69f980-a5a0-4a76-a665-9e9c01cfc2cd" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
-  <Parameter Name="ChaseNonPlayerProbability" Guid="f5f29b20-54fc-479b-ba58-7b7bf09dbb8f" Value="1" Type="float"/>
-  <Parameter Name="AttacksSameHerd" Guid="615c9223-2943-4e67-86a7-35fdbcce7a83" Value="false" Type="bool"/>
-  <Parameter Name="AttacksAllCategories" Guid="631a1b10-4b7a-4756-98bd-e2042b587a5c" Value="true" Type="bool"/>
-  <Parameter Name="FleeFromSameHerd" Guid="9fed4ad2-fce6-4041-9c22-ec8fd9fb7c75" Value="true" Type="bool"/>
-  <Parameter Name="FleeDistance" Guid="8b28c69f-7b05-4812-a831-e68f3fdeee94" Value="10" Type="float"/>
+  <Parameter Name="DayChaseRange" Guid="e153e866-cc04-4b2c-b515-19bb5299d92b" Value="999" Type="float"/>
+  <Parameter Name="NightChaseRange" Guid="e0fd1eb6-5350-4db2-9af6-e0c884aabee6" Value="999" Type="float"/>
+  <Parameter Name="NightChaseTime" Guid="1e736304-2f2f-4d99-82af-20d16a807257" Value="999" Type="float"/>
+  <Parameter Name="DayChaseTime" Guid="62cf2164-746d-4c3b-90aa-f895c402b35f" Value="999" Type="float"/>
+  <Parameter Name="ChaseWhenAttackedProbability" Guid="8a845154-2a69-4f04-ac1a-5ae3026e7789" Value="1" Type="float"/>
+  <Parameter Name="ChaseOnTouchProbability" Guid="704ae7bb-7297-4a17-869a-a27e07cf8fd8" Value="1" Type="float"/>
+  <Parameter Name="AutoChaseMask" Guid="53f43cda-89af-4430-b4d1-1059229eb6c8" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
+  <Parameter Name="ChaseNonPlayerProbability" Guid="7ca634e9-a4d4-4bbd-86e5-7fbd9196c1c7" Value="1" Type="float"/>
+  <Parameter Name="AttacksSameHerd" Guid="43adf795-e9ab-4f6b-a41e-3658d3375f1b" Value="false" Type="bool"/>
+  <Parameter Name="AttacksAllCategories" Guid="a835e399-4241-439c-9ed2-f0a98201dfe5" Value="true" Type="bool"/>
+  <Parameter Name="FleeFromSameHerd" Guid="6e4bceb0-ef77-4bd8-b7f5-c44df17bcda7" Value="true" Type="bool"/>
+  <Parameter Name="FleeDistance" Guid="9ab663be-b42b-43b0-9aad-03bb0d94bc60" Value="10" Type="float"/>
+  <Parameter Name="ForceAttackDuringGreenNight" Guid="08fbc015-59ee-4f45-8a7c-5bb7ad3a406b" Value="true" Type="bool"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="ZombieHerdBehavior" Guid="b16fe43e-7c9b-4701-af22-0912721d754a">
     <Parameter Name="Class" Value="Game.ComponentZombieHerdBehavior" Type="string" Guid="a6b0a04f-d860-40c6-97ed-9dfa31ecdb85"/>
@@ -5852,22 +5871,23 @@
     <Parameter Name="PoisonResistance" Value="2000" Type="float"/>
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="571f4233-efa8-48a9-899a-57c1edab3fc5">
+<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="13055a9d-faa7-4b4a-a426-0d5a649a2e1c">
   <Parameter Name="IsOptional" Value="false" Type="bool"/>
   <Parameter Name="LoadOrder" Value="50" Type="int"/>
   <Parameter Name="Class" Value="Game.ComponentZombieChaseBehavior" Type="string"/>
-  <Parameter Name="DayChaseRange" Guid="f97401f3-75f7-4d65-87c6-c81cdccf6ddd" Value="999" Type="float"/>
-  <Parameter Name="NightChaseRange" Guid="924643d6-74d4-41a6-83f3-8b9423796313" Value="999" Type="float"/>
-  <Parameter Name="NightChaseTime" Guid="3f292a37-d20e-4dd7-a24b-33ccd6e1d198" Value="999" Type="float"/>
-  <Parameter Name="DayChaseTime" Guid="8a9f6192-b206-4b35-b347-fb3f5f9bd936" Value="999" Type="float"/>
-  <Parameter Name="ChaseWhenAttackedProbability" Guid="d4a1b51c-69cd-4c1f-ae3c-cf3c1d6e8220" Value="1" Type="float"/>
-  <Parameter Name="ChaseOnTouchProbability" Guid="e4bb44a3-b2d9-4b40-9afa-360a8452b257" Value="1" Type="float"/>
-  <Parameter Name="AutoChaseMask" Guid="1573d6d7-b4cb-4eee-bc6c-9c83eb1a2836" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
-  <Parameter Name="ChaseNonPlayerProbability" Guid="5fc83789-ebec-4a99-985d-7fe3dde337a5" Value="1" Type="float"/>
-  <Parameter Name="AttacksSameHerd" Guid="d284d367-8b55-4ba7-bfb5-8180463428c6" Value="false" Type="bool"/>
-  <Parameter Name="AttacksAllCategories" Guid="dcf73e7a-37b8-4996-b3a3-f1f79af6ccad" Value="true" Type="bool"/>
-  <Parameter Name="FleeFromSameHerd" Guid="d3ade6ff-f6dd-453f-b059-a8f378d330d4" Value="true" Type="bool"/>
-  <Parameter Name="FleeDistance" Guid="527d2ccf-510b-4ce7-9298-29a60f9f91df" Value="10" Type="float"/>
+  <Parameter Name="DayChaseRange" Guid="8d122c79-9be3-45cb-abc3-06ccb1ebadba" Value="999" Type="float"/>
+  <Parameter Name="NightChaseRange" Guid="1daeb8bb-2c36-4872-96cc-607fe43459d2" Value="999" Type="float"/>
+  <Parameter Name="NightChaseTime" Guid="17a999cc-0664-4a5f-9df1-cbb26d84fb40" Value="999" Type="float"/>
+  <Parameter Name="DayChaseTime" Guid="2d21f440-9ac5-4333-995a-2fc02c3d3dfa" Value="999" Type="float"/>
+  <Parameter Name="ChaseWhenAttackedProbability" Guid="d9587583-7774-4ee6-9b95-dc2e6bfad75d" Value="1" Type="float"/>
+  <Parameter Name="ChaseOnTouchProbability" Guid="d09cc74d-e964-4717-bac8-dee732611265" Value="1" Type="float"/>
+  <Parameter Name="AutoChaseMask" Guid="dd7d3a0c-2fb6-4585-b8e8-b532d4863b77" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
+  <Parameter Name="ChaseNonPlayerProbability" Guid="9e13ef13-8bfc-4b79-b6a3-0a7ed4ad022a" Value="1" Type="float"/>
+  <Parameter Name="AttacksSameHerd" Guid="667a6ed9-8804-4911-88c1-84987d22ffea" Value="false" Type="bool"/>
+  <Parameter Name="AttacksAllCategories" Guid="59f553da-f5ac-43da-91d4-481a7642fcbd" Value="true" Type="bool"/>
+  <Parameter Name="FleeFromSameHerd" Guid="c10754eb-4a5a-4039-a846-928366bc4982" Value="true" Type="bool"/>
+  <Parameter Name="FleeDistance" Guid="a1b8e258-0b7b-423c-8da3-f3c8921d42ab" Value="10" Type="float"/>
+  <Parameter Name="ForceAttackDuringGreenNight" Guid="a028f761-af37-410c-8922-641b5a2ace32" Value="true" Type="bool"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidFireBehavior" Guid="4118862d-554b-4376-8014-dc72fe32f5a8" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
             <MemberComponentTemplate Name="Locomotion" Guid="2a4ffc44-6d9c-4c95-8b61-26b8aca0894b">
@@ -6187,22 +6207,23 @@
     <Parameter Name="PoisonResistance" Value="-1" Type="float"/>
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="4286c818-b118-4590-9ced-a29d595901a2">
+<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="9d3112c9-17c4-45fb-bf81-da63445701ed">
   <Parameter Name="IsOptional" Value="false" Type="bool"/>
   <Parameter Name="LoadOrder" Value="50" Type="int"/>
   <Parameter Name="Class" Value="Game.ComponentZombieChaseBehavior" Type="string"/>
-  <Parameter Name="DayChaseRange" Guid="ff91ad6f-201f-4581-ae61-a3252b417719" Value="999" Type="float"/>
-  <Parameter Name="NightChaseRange" Guid="5f2a24f8-54d1-431a-bbf9-bcebea7ec06d" Value="999" Type="float"/>
-  <Parameter Name="NightChaseTime" Guid="93748da8-7ed3-4d6f-850a-2a7c4cbfe179" Value="999" Type="float"/>
-  <Parameter Name="DayChaseTime" Guid="49999d84-d68f-42bd-95c3-0732f677cc81" Value="999" Type="float"/>
-  <Parameter Name="ChaseWhenAttackedProbability" Guid="950f742a-e860-4a22-8cd5-b3eedd4942e1" Value="1" Type="float"/>
-  <Parameter Name="ChaseOnTouchProbability" Guid="b12cb08e-a013-4fe2-b989-a1b52c229e19" Value="1" Type="float"/>
-  <Parameter Name="AutoChaseMask" Guid="fbba86ff-d3fd-4019-886d-59b2b687da39" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
-  <Parameter Name="ChaseNonPlayerProbability" Guid="c7256c00-7759-4bd5-9fcf-f842d6bf42a2" Value="1" Type="float"/>
-  <Parameter Name="AttacksSameHerd" Guid="750eac42-3e5b-4225-a850-f74a491b5b54" Value="false" Type="bool"/>
-  <Parameter Name="AttacksAllCategories" Guid="19a6df67-0c78-4b28-b718-dcc506e6af80" Value="true" Type="bool"/>
-  <Parameter Name="FleeFromSameHerd" Guid="fa354cd7-d98f-4ffc-88ba-54af6a8b8804" Value="true" Type="bool"/>
-  <Parameter Name="FleeDistance" Guid="00eedcf4-98f0-42d1-841d-de489c7ed2aa" Value="10" Type="float"/>
+  <Parameter Name="DayChaseRange" Guid="c4f095f2-cd80-4bf3-a5d9-a754ee54796d" Value="999" Type="float"/>
+  <Parameter Name="NightChaseRange" Guid="a67ec661-20ec-443f-99f2-ccca90f0f0c9" Value="999" Type="float"/>
+  <Parameter Name="NightChaseTime" Guid="b7bd829e-31d3-4787-8b10-d9245db47854" Value="999" Type="float"/>
+  <Parameter Name="DayChaseTime" Guid="d794ac64-e867-4d60-a060-97fd7f83210f" Value="999" Type="float"/>
+  <Parameter Name="ChaseWhenAttackedProbability" Guid="4d695e7e-45b3-4594-b3f0-2f449f85c4ef" Value="1" Type="float"/>
+  <Parameter Name="ChaseOnTouchProbability" Guid="76c706f2-7f49-4637-8fe6-97d6e25de783" Value="1" Type="float"/>
+  <Parameter Name="AutoChaseMask" Guid="7668854f-0f2c-4288-b92d-6f085c8b89d2" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
+  <Parameter Name="ChaseNonPlayerProbability" Guid="6f590507-71d0-440b-9c4b-fea2bf77d74c" Value="1" Type="float"/>
+  <Parameter Name="AttacksSameHerd" Guid="6160c83c-d8e3-4c1c-98ae-0d4db3a17449" Value="false" Type="bool"/>
+  <Parameter Name="AttacksAllCategories" Guid="267be75f-7d3d-4808-99ae-b853012ecc40" Value="true" Type="bool"/>
+  <Parameter Name="FleeFromSameHerd" Guid="f88a317f-c041-4ac3-9d8b-432007b8210d" Value="true" Type="bool"/>
+  <Parameter Name="FleeDistance" Guid="ba7ea216-6047-4638-b597-2f08e0ea8c08" Value="10" Type="float"/>
+  <Parameter Name="ForceAttackDuringGreenNight" Guid="a9e06f85-a039-4255-b2a6-8d88dadf2b19" Value="true" Type="bool"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidFireBehavior" Guid="14de4815-1759-491b-a346-ef04f34dbf39" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
             <MemberComponentTemplate Name="Locomotion" Guid="9eb33af9-9d5b-4554-8484-f3138a293e09">
@@ -6541,22 +6562,23 @@
     <Parameter Name="PoisonResistance" Value="-1" Type="float"/>
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="512589f5-b037-42ba-8572-99855e9bc31d">
+<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="c9a3852a-4e18-40d4-8f16-6c351fb8a638">
   <Parameter Name="IsOptional" Value="false" Type="bool"/>
   <Parameter Name="LoadOrder" Value="50" Type="int"/>
   <Parameter Name="Class" Value="Game.ComponentZombieChaseBehavior" Type="string"/>
-  <Parameter Name="DayChaseRange" Guid="d816a18f-721b-4270-a352-2e409b7a65e7" Value="999" Type="float"/>
-  <Parameter Name="NightChaseRange" Guid="3f03b958-700d-4ab4-a1a3-242c6e38281d" Value="999" Type="float"/>
-  <Parameter Name="NightChaseTime" Guid="08263352-5e9b-4984-89b7-0d82e463e2f4" Value="999" Type="float"/>
-  <Parameter Name="DayChaseTime" Guid="72c1c6f1-eba2-4913-92a3-142b57d1c7e7" Value="999" Type="float"/>
-  <Parameter Name="ChaseWhenAttackedProbability" Guid="9029e1d1-3f49-4290-92a1-0114e40c4423" Value="1" Type="float"/>
-  <Parameter Name="ChaseOnTouchProbability" Guid="d4edf16d-80c0-469b-b5c7-e4b4569fb467" Value="1" Type="float"/>
-  <Parameter Name="AutoChaseMask" Guid="931f655a-edd3-4d1c-b5a4-2e63bc93e904" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
-  <Parameter Name="ChaseNonPlayerProbability" Guid="a6431ce9-27e5-4478-9af3-ac5a2964b47a" Value="1" Type="float"/>
-  <Parameter Name="AttacksSameHerd" Guid="6a336db0-8ce8-4e05-8b3b-2a32c7b0fb88" Value="false" Type="bool"/>
-  <Parameter Name="AttacksAllCategories" Guid="bb1c9daf-ee99-4d73-9d82-4900298f06c0" Value="true" Type="bool"/>
-  <Parameter Name="FleeFromSameHerd" Guid="9db5b569-df3c-47a3-bc91-33848c1fea41" Value="true" Type="bool"/>
-  <Parameter Name="FleeDistance" Guid="a661516c-a423-4551-b74b-b171a939a808" Value="10" Type="float"/>
+  <Parameter Name="DayChaseRange" Guid="db64ffe8-bca0-4fdd-a069-c6ca35d8092c" Value="999" Type="float"/>
+  <Parameter Name="NightChaseRange" Guid="2f9e851b-0259-4161-b852-2916f47b5e1c" Value="999" Type="float"/>
+  <Parameter Name="NightChaseTime" Guid="e5c84411-cfaa-41cb-863a-f872716d20d2" Value="999" Type="float"/>
+  <Parameter Name="DayChaseTime" Guid="2aabb25b-dcd4-4f17-ba36-1f349344e7da" Value="999" Type="float"/>
+  <Parameter Name="ChaseWhenAttackedProbability" Guid="6d7f4129-fc78-4dea-b9e8-b80ef2622f9b" Value="1" Type="float"/>
+  <Parameter Name="ChaseOnTouchProbability" Guid="3d0451e5-4a89-449b-b282-2c807adf2f6e" Value="1" Type="float"/>
+  <Parameter Name="AutoChaseMask" Guid="5ca27f7a-9746-42f2-8a01-1052e5ae9961" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
+  <Parameter Name="ChaseNonPlayerProbability" Guid="e720cea6-3f35-4962-ab83-d931a6efe120" Value="1" Type="float"/>
+  <Parameter Name="AttacksSameHerd" Guid="d25e6e97-edcd-4f02-90ae-7fcf87865369" Value="false" Type="bool"/>
+  <Parameter Name="AttacksAllCategories" Guid="afbb1aad-8af1-4f83-ab40-c2d2397aee81" Value="true" Type="bool"/>
+  <Parameter Name="FleeFromSameHerd" Guid="2643a978-829e-4c46-a352-3658587c5e30" Value="true" Type="bool"/>
+  <Parameter Name="FleeDistance" Guid="acd9a1bc-d606-4cd6-a11f-fbdf299510b5" Value="10" Type="float"/>
+  <Parameter Name="ForceAttackDuringGreenNight" Guid="b72e17fc-40b5-48e1-aeb4-5d251892f5d2" Value="true" Type="bool"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidFireBehavior" Guid="62434e0a-20ba-46db-8226-b0abd7f01923" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
             <MemberComponentTemplate Name="Locomotion" Guid="a30e2c27-9494-49fe-8cfe-c25e4d2406c8">
@@ -6912,22 +6934,23 @@
   <Parameter Name="PoisonIntensity" Value="800" Type="float"/>
   <Parameter Name="InfectProbability" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="037cef97-0a82-40b4-abed-430c9a131988">
+<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="7f9c3c08-40d8-4c5a-ab84-0776379f0467">
   <Parameter Name="IsOptional" Value="false" Type="bool"/>
   <Parameter Name="LoadOrder" Value="50" Type="int"/>
   <Parameter Name="Class" Value="Game.ComponentZombieChaseBehavior" Type="string"/>
-  <Parameter Name="DayChaseRange" Guid="d210c183-6f8d-4978-8c9a-00ebf1ad57e1" Value="999" Type="float"/>
-  <Parameter Name="NightChaseRange" Guid="9f7f56e6-147f-4e26-8149-401914b3e10c" Value="999" Type="float"/>
-  <Parameter Name="NightChaseTime" Guid="41ed7988-3c79-4179-8a4c-39d46019f237" Value="999" Type="float"/>
-  <Parameter Name="DayChaseTime" Guid="91885d9f-a0dc-4290-9c68-4ee02c3d5092" Value="999" Type="float"/>
-  <Parameter Name="ChaseWhenAttackedProbability" Guid="3216fe54-9474-4a9d-b5b3-3d45e23961d4" Value="1" Type="float"/>
-  <Parameter Name="ChaseOnTouchProbability" Guid="11a7bc7c-dd38-4e69-959e-59f986fcbba5" Value="1" Type="float"/>
-  <Parameter Name="AutoChaseMask" Guid="6489def1-0ce0-43dd-a633-5ea8ab5ea151" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
-  <Parameter Name="ChaseNonPlayerProbability" Guid="0b8f2159-d12c-46b2-9471-e7a64455c3b8" Value="1" Type="float"/>
-  <Parameter Name="AttacksSameHerd" Guid="feed94ea-3383-458b-9d4d-f0340d59b69f" Value="false" Type="bool"/>
-  <Parameter Name="AttacksAllCategories" Guid="1868fa33-2564-40e0-b47c-03db5abc5baa" Value="true" Type="bool"/>
-  <Parameter Name="FleeFromSameHerd" Guid="407c74e1-4419-4c6f-9a3b-7afa1b5e7761" Value="true" Type="bool"/>
-  <Parameter Name="FleeDistance" Guid="19161328-c5fe-44ce-a1a7-22c64b1c5624" Value="10" Type="float"/>
+  <Parameter Name="DayChaseRange" Guid="9a725073-e642-48cc-a4cf-3a70609a5d4b" Value="999" Type="float"/>
+  <Parameter Name="NightChaseRange" Guid="023e9c07-3259-4c44-a36f-0211cf3160de" Value="999" Type="float"/>
+  <Parameter Name="NightChaseTime" Guid="0f2b8ad0-428c-4c24-bea2-dceebebbd838" Value="999" Type="float"/>
+  <Parameter Name="DayChaseTime" Guid="e6406532-5299-4889-8f1c-5f024be33b3d" Value="999" Type="float"/>
+  <Parameter Name="ChaseWhenAttackedProbability" Guid="82078fc2-f87e-4ca5-929c-ac2d1dc12864" Value="1" Type="float"/>
+  <Parameter Name="ChaseOnTouchProbability" Guid="e6b8d310-fe73-45e4-8fef-00bbbca03898" Value="1" Type="float"/>
+  <Parameter Name="AutoChaseMask" Guid="69698839-109e-4366-9453-29103f54d385" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
+  <Parameter Name="ChaseNonPlayerProbability" Guid="6cd104b8-4cdd-4a32-b2a8-e8afdf509063" Value="1" Type="float"/>
+  <Parameter Name="AttacksSameHerd" Guid="b6e9c5e9-034a-4552-8e9c-1f7fa01c27e5" Value="false" Type="bool"/>
+  <Parameter Name="AttacksAllCategories" Guid="eeb2f785-4162-4855-8417-e0bd4b5320bd" Value="true" Type="bool"/>
+  <Parameter Name="FleeFromSameHerd" Guid="cf2b8a84-43d9-4bc6-b256-961bd338d602" Value="true" Type="bool"/>
+  <Parameter Name="FleeDistance" Guid="8dd71cfc-5188-463f-b3a4-4b4d9919556d" Value="10" Type="float"/>
+  <Parameter Name="ForceAttackDuringGreenNight" Guid="de6eb351-a68e-4a04-968b-c36c35b3b965" Value="true" Type="bool"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidFireBehavior" Guid="12899c53-3e78-40ba-83e3-9c35cf163a2d" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
             <MemberComponentTemplate Name="Locomotion" Guid="96515fdc-a2c8-4514-bf88-3b7913ea9323">
@@ -7269,22 +7292,23 @@
     <Parameter Name="PoisonResistance" Value="950" Type="float"/>
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="6d6ae527-5c63-4012-b797-25744b2fa13a">
+<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="c45f638f-d3b8-4f5f-9b7e-adc97c94db05">
   <Parameter Name="IsOptional" Value="false" Type="bool"/>
   <Parameter Name="LoadOrder" Value="50" Type="int"/>
   <Parameter Name="Class" Value="Game.ComponentZombieChaseBehavior" Type="string"/>
-  <Parameter Name="DayChaseRange" Guid="e83b97f0-ff0d-4ea1-a7ec-0155452c69ca" Value="999" Type="float"/>
-  <Parameter Name="NightChaseRange" Guid="9c587e3c-4e91-4c60-a630-2bf97231afa8" Value="999" Type="float"/>
-  <Parameter Name="NightChaseTime" Guid="64b2dd0f-b59a-499c-850f-e71469b1918c" Value="999" Type="float"/>
-  <Parameter Name="DayChaseTime" Guid="d926868e-2cb2-461e-bc46-031c6ea058b0" Value="999" Type="float"/>
-  <Parameter Name="ChaseWhenAttackedProbability" Guid="d8e66041-1005-48c4-9665-6b7041f8470e" Value="1" Type="float"/>
-  <Parameter Name="ChaseOnTouchProbability" Guid="785e9dcd-6b30-4a38-aa72-207aafdcd66d" Value="1" Type="float"/>
-  <Parameter Name="AutoChaseMask" Guid="38592581-54f2-4518-bea9-4c5350e5a69f" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
-  <Parameter Name="ChaseNonPlayerProbability" Guid="1a661c78-03b1-41a5-a929-47e073d3ef29" Value="1" Type="float"/>
-  <Parameter Name="AttacksSameHerd" Guid="b60a0d33-824c-442b-932f-d20607168c1d" Value="false" Type="bool"/>
-  <Parameter Name="AttacksAllCategories" Guid="9e5014b0-1fc7-4cba-8b41-867a020e788a" Value="true" Type="bool"/>
-  <Parameter Name="FleeFromSameHerd" Guid="c53b09eb-8a41-40fd-8002-9fcd372b8f8d" Value="true" Type="bool"/>
-  <Parameter Name="FleeDistance" Guid="b33bcdc0-e1fc-4d8b-89f9-8b50dfab9e35" Value="10" Type="float"/>
+  <Parameter Name="DayChaseRange" Guid="fe0d607b-2b25-41fe-b375-b89a63665d8e" Value="999" Type="float"/>
+  <Parameter Name="NightChaseRange" Guid="4695e96c-4277-4408-8f03-b58005f5d59c" Value="999" Type="float"/>
+  <Parameter Name="NightChaseTime" Guid="4c9c44d1-d3be-4e57-b8c5-6b5074e2c277" Value="999" Type="float"/>
+  <Parameter Name="DayChaseTime" Guid="f4e96ac7-863b-474f-87fc-bbe362028b33" Value="999" Type="float"/>
+  <Parameter Name="ChaseWhenAttackedProbability" Guid="6e61bf99-b945-4cc7-9ce2-2463f49542bf" Value="1" Type="float"/>
+  <Parameter Name="ChaseOnTouchProbability" Guid="710601ce-ea0a-4c41-a330-e92aadb74045" Value="1" Type="float"/>
+  <Parameter Name="AutoChaseMask" Guid="195d7244-a475-42c8-865f-6989df3ef301" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
+  <Parameter Name="ChaseNonPlayerProbability" Guid="522bb9ca-beb3-45ed-9148-cf89d093dab3" Value="1" Type="float"/>
+  <Parameter Name="AttacksSameHerd" Guid="88aaa4fc-b434-4a3f-82a0-23a428d63d2e" Value="false" Type="bool"/>
+  <Parameter Name="AttacksAllCategories" Guid="861d175d-4707-4284-95f6-4c03db15a8c7" Value="true" Type="bool"/>
+  <Parameter Name="FleeFromSameHerd" Guid="3f5ab662-3b51-410d-9401-c4395ceca5be" Value="true" Type="bool"/>
+  <Parameter Name="FleeDistance" Guid="ec1b27a5-2493-407f-8e0a-493ddfd79068" Value="10" Type="float"/>
+  <Parameter Name="ForceAttackDuringGreenNight" Guid="612d69a0-69f3-411d-9472-73ea5073ac8e" Value="true" Type="bool"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidFireBehavior" Guid="71889a7c-59d2-4418-bfc9-136a6acf57ca" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
             <MemberComponentTemplate Name="Locomotion" Guid="8d892986-85f8-49f4-bb25-d2da0848e73c">
@@ -7632,22 +7656,23 @@
     <Parameter Name="PoisonResistance" Value="950" Type="float"/>
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="57452e5e-850b-4360-9da6-de8c8379a47a">
+<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="0ec17708-0d64-444b-9430-5bfafcfac81c">
   <Parameter Name="IsOptional" Value="false" Type="bool"/>
   <Parameter Name="LoadOrder" Value="50" Type="int"/>
   <Parameter Name="Class" Value="Game.ComponentZombieChaseBehavior" Type="string"/>
-  <Parameter Name="DayChaseRange" Guid="3011b520-80bd-4fa3-ba00-1ea85dbad849" Value="999" Type="float"/>
-  <Parameter Name="NightChaseRange" Guid="5bc728ae-0487-4981-acf0-968a43b1c5bd" Value="999" Type="float"/>
-  <Parameter Name="NightChaseTime" Guid="ef025f46-a1a7-4cfe-a9bb-c36e0e485f54" Value="999" Type="float"/>
-  <Parameter Name="DayChaseTime" Guid="26020c53-e76c-48f6-93e5-50488498b917" Value="999" Type="float"/>
-  <Parameter Name="ChaseWhenAttackedProbability" Guid="196fb880-809f-4629-821d-6d77bb152b2f" Value="1" Type="float"/>
-  <Parameter Name="ChaseOnTouchProbability" Guid="a93b2dc5-e95a-4d03-9137-1d7dad26768d" Value="1" Type="float"/>
-  <Parameter Name="AutoChaseMask" Guid="2d00c35d-e373-4772-bb9b-6142c4f5b19c" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
-  <Parameter Name="ChaseNonPlayerProbability" Guid="a3202dfc-22ac-4164-99e0-3af4c6d182e2" Value="1" Type="float"/>
-  <Parameter Name="AttacksSameHerd" Guid="873636fa-5871-4ed8-aa32-d2613a921f3f" Value="false" Type="bool"/>
-  <Parameter Name="AttacksAllCategories" Guid="82e49c75-96b8-4654-9d1f-03e5f5276a0f" Value="true" Type="bool"/>
-  <Parameter Name="FleeFromSameHerd" Guid="ccb6c80a-39c2-461d-9d30-6373c684e028" Value="true" Type="bool"/>
-  <Parameter Name="FleeDistance" Guid="a75b860c-4f3b-4be3-9dcb-4029a8113288" Value="10" Type="float"/>
+  <Parameter Name="DayChaseRange" Guid="6170f706-dcf9-4877-98a6-3072f073e0a7" Value="999" Type="float"/>
+  <Parameter Name="NightChaseRange" Guid="2e18a186-737f-4839-99a5-13d36e83ca65" Value="999" Type="float"/>
+  <Parameter Name="NightChaseTime" Guid="4bd5bf1a-1319-4696-9198-99a56d8b7d18" Value="999" Type="float"/>
+  <Parameter Name="DayChaseTime" Guid="3dd39f25-248b-4e08-8e14-5f76ab82dd86" Value="999" Type="float"/>
+  <Parameter Name="ChaseWhenAttackedProbability" Guid="5003a1d1-e5d5-4fea-875e-3269ad2c1e46" Value="1" Type="float"/>
+  <Parameter Name="ChaseOnTouchProbability" Guid="77b5ac10-6cef-4b31-ae50-e53d122b7984" Value="1" Type="float"/>
+  <Parameter Name="AutoChaseMask" Guid="32f428fe-37f6-45b8-aafd-b831c30c55ea" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
+  <Parameter Name="ChaseNonPlayerProbability" Guid="78162de1-aa9c-4dbf-90b3-6a638c380d71" Value="1" Type="float"/>
+  <Parameter Name="AttacksSameHerd" Guid="f5f2d180-b7ff-485d-8e45-7d0e4aca554f" Value="false" Type="bool"/>
+  <Parameter Name="AttacksAllCategories" Guid="85ae58f6-3e59-4642-b1b7-6bc5db05ffdc" Value="true" Type="bool"/>
+  <Parameter Name="FleeFromSameHerd" Guid="36b086d1-73c0-4b43-ab19-87a37fbd1f4f" Value="true" Type="bool"/>
+  <Parameter Name="FleeDistance" Guid="4d3e7e60-5fb3-40f7-8d07-0d558065577b" Value="10" Type="float"/>
+  <Parameter Name="ForceAttackDuringGreenNight" Guid="8de1d2c9-2da6-4c9d-a9f5-2fadb4be2649" Value="true" Type="bool"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidFireBehavior" Guid="d74a2174-8c3c-4cf5-9664-7110202463ea" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
             <MemberComponentTemplate Name="Locomotion" Guid="9aa32490-35cd-4383-b4f0-80c8b969145a">
@@ -7991,22 +8016,23 @@
     <Parameter Name="PoisonResistance" Value="950" Type="float"/>
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="01b11bef-2b16-4f05-8ba7-f30d9ff65696">
+<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="3baca0dc-2142-4e7e-8d02-9894acc39dc5">
   <Parameter Name="IsOptional" Value="false" Type="bool"/>
   <Parameter Name="LoadOrder" Value="50" Type="int"/>
   <Parameter Name="Class" Value="Game.ComponentZombieChaseBehavior" Type="string"/>
-  <Parameter Name="DayChaseRange" Guid="32dde5b9-f4cb-4787-8c35-bfc076949885" Value="999" Type="float"/>
-  <Parameter Name="NightChaseRange" Guid="0caabf5d-54de-4f39-a076-4ec4cfd41c3c" Value="999" Type="float"/>
-  <Parameter Name="NightChaseTime" Guid="704a6a5d-e811-4dfa-93cc-91b2efdeaa01" Value="999" Type="float"/>
-  <Parameter Name="DayChaseTime" Guid="27c0a0e2-2596-4d92-97eb-c81b24784685" Value="999" Type="float"/>
-  <Parameter Name="ChaseWhenAttackedProbability" Guid="35851d1d-0c60-4ec2-8802-4e2d029db006" Value="1" Type="float"/>
-  <Parameter Name="ChaseOnTouchProbability" Guid="5b41fd46-98dd-4a29-9e6e-6441a8cb93f7" Value="1" Type="float"/>
-  <Parameter Name="AutoChaseMask" Guid="a03f60bc-9aa6-44db-b6cf-65aafb8d7b36" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
-  <Parameter Name="ChaseNonPlayerProbability" Guid="d735f95a-32e8-4cf6-bcca-b152f497a042" Value="1" Type="float"/>
-  <Parameter Name="AttacksSameHerd" Guid="2d974c76-2d71-4ba6-8197-ef2bb3d40b82" Value="false" Type="bool"/>
-  <Parameter Name="AttacksAllCategories" Guid="183cd378-0744-4829-a287-52f71740ecf0" Value="true" Type="bool"/>
-  <Parameter Name="FleeFromSameHerd" Guid="a3c26cec-b2cb-4114-90c8-e25f90d57eb2" Value="true" Type="bool"/>
-  <Parameter Name="FleeDistance" Guid="786d77db-068e-446c-aafc-6a69cc820929" Value="10" Type="float"/>
+  <Parameter Name="DayChaseRange" Guid="642daba1-d15c-45fa-a496-5a56b73e699a" Value="999" Type="float"/>
+  <Parameter Name="NightChaseRange" Guid="dd078aae-e974-42f7-9df2-e87022fd88fc" Value="999" Type="float"/>
+  <Parameter Name="NightChaseTime" Guid="fd669e31-1f74-438a-a1e5-526c5077eb10" Value="999" Type="float"/>
+  <Parameter Name="DayChaseTime" Guid="1c80190f-5318-403d-9548-f52f64dcde13" Value="999" Type="float"/>
+  <Parameter Name="ChaseWhenAttackedProbability" Guid="df855a25-ce02-45a8-81f7-08d01d4b29ac" Value="1" Type="float"/>
+  <Parameter Name="ChaseOnTouchProbability" Guid="f201457d-3cb6-4636-8d1b-7b2a9f5e5949" Value="1" Type="float"/>
+  <Parameter Name="AutoChaseMask" Guid="b05ed3a4-571c-43c1-b981-660708076b65" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
+  <Parameter Name="ChaseNonPlayerProbability" Guid="8382afaf-c469-4fae-a9bc-d18910f4f559" Value="1" Type="float"/>
+  <Parameter Name="AttacksSameHerd" Guid="99cbd75d-873d-4814-8c0c-a3e9c03e4af6" Value="false" Type="bool"/>
+  <Parameter Name="AttacksAllCategories" Guid="d9336749-b385-4d86-b60d-533a2408633b" Value="true" Type="bool"/>
+  <Parameter Name="FleeFromSameHerd" Guid="463725fe-c0dd-4505-b10b-1920ad1f3941" Value="true" Type="bool"/>
+  <Parameter Name="FleeDistance" Guid="cb31c75f-99d9-4e17-b0df-f2b1c76404b2" Value="10" Type="float"/>
+  <Parameter Name="ForceAttackDuringGreenNight" Guid="0d3bc334-4a29-4b46-95c0-acd01890b288" Value="true" Type="bool"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidFireBehavior" Guid="c749b16a-de3c-4fd5-89c2-958edbedae5c" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
             <MemberComponentTemplate Name="Locomotion" Guid="9e507ced-08e8-4c83-8b7a-aca8ccb8c515">
@@ -8339,22 +8365,23 @@
     <Parameter Name="PoisonResistance" Value="550" Type="float"/>
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="81edddfb-cb74-4dc3-9172-c4e1445b2862">
+<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="d65eda3c-49b4-4c7c-b495-c253ae029a98">
   <Parameter Name="IsOptional" Value="false" Type="bool"/>
   <Parameter Name="LoadOrder" Value="50" Type="int"/>
   <Parameter Name="Class" Value="Game.ComponentZombieChaseBehavior" Type="string"/>
-  <Parameter Name="DayChaseRange" Guid="5ee77063-0726-470d-ab40-c5530c9a8cd6" Value="999" Type="float"/>
-  <Parameter Name="NightChaseRange" Guid="ef9da5d5-2763-456e-a86a-14c2ddf04bb3" Value="999" Type="float"/>
-  <Parameter Name="NightChaseTime" Guid="1cdf6736-79ee-4e42-a3cd-ac96385b71d1" Value="999" Type="float"/>
-  <Parameter Name="DayChaseTime" Guid="4eb026c0-dfc8-4874-b06e-00ab2cebbf77" Value="999" Type="float"/>
-  <Parameter Name="ChaseWhenAttackedProbability" Guid="fe6ab100-748e-49ef-9021-ef15d547af07" Value="1" Type="float"/>
-  <Parameter Name="ChaseOnTouchProbability" Guid="9ed41664-8dfe-4e80-b1d4-c2d844de8e88" Value="1" Type="float"/>
-  <Parameter Name="AutoChaseMask" Guid="d6e096d9-920f-4703-bb9a-13f5f9123af4" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
-  <Parameter Name="ChaseNonPlayerProbability" Guid="7d3c0a53-61f5-4e7e-a295-ab662a8e6909" Value="1" Type="float"/>
-  <Parameter Name="AttacksSameHerd" Guid="50fe7b64-2682-4820-beda-3f850518ffbf" Value="false" Type="bool"/>
-  <Parameter Name="AttacksAllCategories" Guid="f1aca3a0-0cd0-45db-a402-4f5bd44b185e" Value="true" Type="bool"/>
-  <Parameter Name="FleeFromSameHerd" Guid="6e16a90e-6ed6-486b-8a2b-d185dda37741" Value="true" Type="bool"/>
-  <Parameter Name="FleeDistance" Guid="878cdaab-1463-4ac4-8208-c4f46a19384e" Value="10" Type="float"/>
+  <Parameter Name="DayChaseRange" Guid="758cba23-cda2-4e3c-9c9a-68f0407a46bb" Value="999" Type="float"/>
+  <Parameter Name="NightChaseRange" Guid="9ba9b6ab-2c4c-44f8-bfd1-da99cab613d7" Value="999" Type="float"/>
+  <Parameter Name="NightChaseTime" Guid="392ee9f5-3c5d-4e19-b52c-d2e763043684" Value="999" Type="float"/>
+  <Parameter Name="DayChaseTime" Guid="241415b4-11bb-472b-ac66-653847ba5adf" Value="999" Type="float"/>
+  <Parameter Name="ChaseWhenAttackedProbability" Guid="b8cf1398-f989-4a47-911f-c92d44276049" Value="1" Type="float"/>
+  <Parameter Name="ChaseOnTouchProbability" Guid="8843a318-aeb6-49ab-a400-e05615a8b90b" Value="1" Type="float"/>
+  <Parameter Name="AutoChaseMask" Guid="2eaccd61-f8dd-4d3a-a740-02c62035a660" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
+  <Parameter Name="ChaseNonPlayerProbability" Guid="d0b259b7-eb74-4af0-a6f6-a3463b3ab328" Value="1" Type="float"/>
+  <Parameter Name="AttacksSameHerd" Guid="b37781e8-219e-4675-8849-768af4e0302a" Value="false" Type="bool"/>
+  <Parameter Name="AttacksAllCategories" Guid="ecc349f0-27be-4a51-aa24-5dff686dfb52" Value="true" Type="bool"/>
+  <Parameter Name="FleeFromSameHerd" Guid="def8699c-b3e9-4461-9a74-8d78d0b873c5" Value="true" Type="bool"/>
+  <Parameter Name="FleeDistance" Guid="407a8dbe-7912-4cbe-8aab-cdffa3badc18" Value="10" Type="float"/>
+  <Parameter Name="ForceAttackDuringGreenNight" Guid="33ff4152-b4bc-4c3c-9643-dea7df41cca5" Value="true" Type="bool"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidFireBehavior" Guid="a2760161-1b55-434c-a0e6-a9c86d189f8b" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
             <MemberComponentTemplate Name="Locomotion" Guid="4ab86439-794f-44e5-ac75-99cb875c20c5">
@@ -8514,22 +8541,23 @@
     <Parameter Name="PoisonResistance" Value="550" Type="float"/>
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="91b4a581-31f9-496f-83f0-078bcf0a4820">
+<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="d8eada19-ef9b-49fe-9ce8-757ae71337ca">
   <Parameter Name="IsOptional" Value="false" Type="bool"/>
   <Parameter Name="LoadOrder" Value="50" Type="int"/>
   <Parameter Name="Class" Value="Game.ComponentZombieChaseBehavior" Type="string"/>
-  <Parameter Name="DayChaseRange" Guid="f4ea84a8-7bca-47a5-98eb-8f13057e7aca" Value="999" Type="float"/>
-  <Parameter Name="NightChaseRange" Guid="fcbf40c4-d638-4ed2-92be-fe99ed7787e6" Value="999" Type="float"/>
-  <Parameter Name="NightChaseTime" Guid="37a4fa87-17f9-4b93-bb5d-1ec7df88a5b6" Value="999" Type="float"/>
-  <Parameter Name="DayChaseTime" Guid="75d3eb52-b718-44e9-9b0e-c4bdf2357081" Value="999" Type="float"/>
-  <Parameter Name="ChaseWhenAttackedProbability" Guid="137999ae-b22b-4cc2-a8ee-5b4e45e55bc0" Value="1" Type="float"/>
-  <Parameter Name="ChaseOnTouchProbability" Guid="95973c66-f5df-4424-b595-57b4e20e7463" Value="1" Type="float"/>
-  <Parameter Name="AutoChaseMask" Guid="d8474d21-fe1a-42b8-8a26-bb6d2e596297" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
-  <Parameter Name="ChaseNonPlayerProbability" Guid="d9506957-ad6b-416e-a210-2185a4c0d5d2" Value="1" Type="float"/>
-  <Parameter Name="AttacksSameHerd" Guid="795b497c-2537-459d-b09a-ae9427cbf4a3" Value="false" Type="bool"/>
-  <Parameter Name="AttacksAllCategories" Guid="71659fcc-9349-4d2f-bfec-ad9db073a028" Value="true" Type="bool"/>
-  <Parameter Name="FleeFromSameHerd" Guid="7f891a3a-20b3-476c-be0d-0479601f14b7" Value="true" Type="bool"/>
-  <Parameter Name="FleeDistance" Guid="07f11e2f-e005-4d7a-9834-17220ec59e67" Value="10" Type="float"/>
+  <Parameter Name="DayChaseRange" Guid="44e97134-2145-4138-84d0-25a7d20d0a5e" Value="999" Type="float"/>
+  <Parameter Name="NightChaseRange" Guid="797706bb-f990-45da-80a1-7c5c980da83d" Value="999" Type="float"/>
+  <Parameter Name="NightChaseTime" Guid="22b20031-c66a-4143-ac2e-2bea0ba59890" Value="999" Type="float"/>
+  <Parameter Name="DayChaseTime" Guid="e87341b7-eae1-40df-9470-7bf8a1eaca4a" Value="999" Type="float"/>
+  <Parameter Name="ChaseWhenAttackedProbability" Guid="a5c57252-89db-4575-aab3-0ad94c8da2b7" Value="1" Type="float"/>
+  <Parameter Name="ChaseOnTouchProbability" Guid="8a64905d-aa0b-4400-ae5e-82ca152ab6ac" Value="1" Type="float"/>
+  <Parameter Name="AutoChaseMask" Guid="721e0a46-9261-43cf-b288-60a106fdb1b1" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
+  <Parameter Name="ChaseNonPlayerProbability" Guid="f892d06c-26ce-4c1f-9cf2-4ab31413a7b1" Value="1" Type="float"/>
+  <Parameter Name="AttacksSameHerd" Guid="dd43f132-f973-420b-8610-e0858ac46aa5" Value="false" Type="bool"/>
+  <Parameter Name="AttacksAllCategories" Guid="e3b9b3fd-cc34-497f-940b-56965ca555e6" Value="true" Type="bool"/>
+  <Parameter Name="FleeFromSameHerd" Guid="ad030c1f-4754-4437-8dcb-fbe8afb47842" Value="true" Type="bool"/>
+  <Parameter Name="FleeDistance" Guid="0f93fc40-6493-43e0-be13-9fd7ed491e1a" Value="10" Type="float"/>
+  <Parameter Name="ForceAttackDuringGreenNight" Guid="9cebee84-21e9-494f-b344-52171bdf57d1" Value="true" Type="bool"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidFireBehavior" Guid="e72e4bc1-4818-41dc-8109-ddd3585eddb2" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
             <MemberComponentTemplate Name="Locomotion" Guid="14a703c3-a108-4173-b44e-4f6939346137">
@@ -8676,22 +8704,23 @@
     <Parameter Name="PoisonResistance" Value="2000" Type="float"/>
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="c396ebd9-0f29-4e1d-8c8e-5b366dbd504e">
+<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="c5c61c93-4ea2-40ae-884e-6e90bbaa9a9a">
   <Parameter Name="IsOptional" Value="false" Type="bool"/>
   <Parameter Name="LoadOrder" Value="50" Type="int"/>
   <Parameter Name="Class" Value="Game.ComponentZombieChaseBehavior" Type="string"/>
-  <Parameter Name="DayChaseRange" Guid="e4807ebb-49a4-49cf-b44a-74a1ad5784b6" Value="999" Type="float"/>
-  <Parameter Name="NightChaseRange" Guid="5495282b-1977-4361-a10c-5a3c604d953b" Value="999" Type="float"/>
-  <Parameter Name="NightChaseTime" Guid="9eac146e-4008-46ae-92c8-28e8451823a6" Value="999" Type="float"/>
-  <Parameter Name="DayChaseTime" Guid="17294140-b318-4e15-8771-4829d1be03e7" Value="999" Type="float"/>
-  <Parameter Name="ChaseWhenAttackedProbability" Guid="8955708c-afa8-400c-a547-fa0d611ceda9" Value="1" Type="float"/>
-  <Parameter Name="ChaseOnTouchProbability" Guid="4d26dc4b-5800-4bed-b8d1-99909f1434a3" Value="1" Type="float"/>
-  <Parameter Name="AutoChaseMask" Guid="dba3e9e5-2dcf-4d79-82dd-95249591a3da" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
-  <Parameter Name="ChaseNonPlayerProbability" Guid="872590ca-ec59-4822-b923-a93139fb1d97" Value="1" Type="float"/>
-  <Parameter Name="AttacksSameHerd" Guid="c8c6bb67-0a5b-49bd-8215-cb641937656b" Value="false" Type="bool"/>
-  <Parameter Name="AttacksAllCategories" Guid="7bb6c24c-2a56-46f6-9ab9-8e58acc02d11" Value="true" Type="bool"/>
-  <Parameter Name="FleeFromSameHerd" Guid="63143abe-af58-4bf9-a697-1cd0c14a8ea8" Value="true" Type="bool"/>
-  <Parameter Name="FleeDistance" Guid="f47fae21-0012-4464-9ff7-8b7e62f7dbde" Value="10" Type="float"/>
+  <Parameter Name="DayChaseRange" Guid="1260147e-4845-44f2-b6c0-ceea97b52095" Value="999" Type="float"/>
+  <Parameter Name="NightChaseRange" Guid="40102447-a1f1-4ba6-82b7-ba27160a56f8" Value="999" Type="float"/>
+  <Parameter Name="NightChaseTime" Guid="7ef6625f-886e-45b5-b5d8-ce0f3705ba1c" Value="999" Type="float"/>
+  <Parameter Name="DayChaseTime" Guid="64f2af8d-9d77-474b-bee0-e6457d5c8f2c" Value="999" Type="float"/>
+  <Parameter Name="ChaseWhenAttackedProbability" Guid="9e3072ff-4123-4cfb-bcae-dd60ae391a59" Value="1" Type="float"/>
+  <Parameter Name="ChaseOnTouchProbability" Guid="17d584ec-506c-486f-8259-6df0dfd5986b" Value="1" Type="float"/>
+  <Parameter Name="AutoChaseMask" Guid="412e2b2d-4fcf-4273-87ad-510221730341" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
+  <Parameter Name="ChaseNonPlayerProbability" Guid="4d24ec98-9a4c-4971-b396-e1a9e525ae37" Value="1" Type="float"/>
+  <Parameter Name="AttacksSameHerd" Guid="97e68852-e329-4211-8298-cfbbc4c8d31e" Value="false" Type="bool"/>
+  <Parameter Name="AttacksAllCategories" Guid="afcff1cd-9bb3-4e08-a54e-3995e6fb719c" Value="true" Type="bool"/>
+  <Parameter Name="FleeFromSameHerd" Guid="5ef20557-bb2c-4719-8c0a-9bdc03326eff" Value="true" Type="bool"/>
+  <Parameter Name="FleeDistance" Guid="a4425671-4ab3-42bc-a6d0-4c3fc4074c11" Value="10" Type="float"/>
+  <Parameter Name="ForceAttackDuringGreenNight" Guid="277f7818-d126-4ff5-9da8-6736704d351b" Value="true" Type="bool"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidFireBehavior" Guid="973f25da-3766-4aae-a988-1b4ff47fe499" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
             <MemberComponentTemplate Name="Locomotion" Guid="dde2b2c1-0803-44f4-8a4e-71dfc4546d47">
@@ -9001,22 +9030,23 @@
     <Parameter Name="PoisonResistance" Value="2000" Type="float"/>
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="bbbe6020-3e05-4869-95f9-f32ce856c4e2">
+<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="8fd97650-e7c2-4b17-90dd-42d4e6f837a4">
   <Parameter Name="IsOptional" Value="false" Type="bool"/>
   <Parameter Name="LoadOrder" Value="50" Type="int"/>
   <Parameter Name="Class" Value="Game.ComponentZombieChaseBehavior" Type="string"/>
-  <Parameter Name="DayChaseRange" Guid="adbe15bf-db8b-4e86-8ecb-f4c4600c7a67" Value="999" Type="float"/>
-  <Parameter Name="NightChaseRange" Guid="869b6714-9290-4517-8b00-fa8bdc63607e" Value="999" Type="float"/>
-  <Parameter Name="NightChaseTime" Guid="6a82d073-46ad-4115-aa7d-098174973ba4" Value="999" Type="float"/>
-  <Parameter Name="DayChaseTime" Guid="785517bd-9f86-4c8e-bcfd-a0ca7c9d4573" Value="999" Type="float"/>
-  <Parameter Name="ChaseWhenAttackedProbability" Guid="c1b00c45-acfa-4afd-8312-778bca28c3f3" Value="1" Type="float"/>
-  <Parameter Name="ChaseOnTouchProbability" Guid="874127f4-6fe7-4d1f-a473-076809270877" Value="1" Type="float"/>
-  <Parameter Name="AutoChaseMask" Guid="cd0b952f-86de-41ae-bb27-ea8d391acdf6" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
-  <Parameter Name="ChaseNonPlayerProbability" Guid="f9f37ebf-f151-4c70-9565-4c3fb6423cfc" Value="1" Type="float"/>
-  <Parameter Name="AttacksSameHerd" Guid="defd311b-7cf9-4ba7-b6f6-54abee9359bb" Value="false" Type="bool"/>
-  <Parameter Name="AttacksAllCategories" Guid="e792d478-72b1-4458-9998-df493c8d9874" Value="true" Type="bool"/>
-  <Parameter Name="FleeFromSameHerd" Guid="4766cb65-db6f-42dd-92b2-c01c337fc68f" Value="true" Type="bool"/>
-  <Parameter Name="FleeDistance" Guid="9340cadf-2854-40c8-b92f-cb20e69ecb05" Value="10" Type="float"/>
+  <Parameter Name="DayChaseRange" Guid="d41043ae-a7a7-45c2-bed2-b48f165a8d8e" Value="999" Type="float"/>
+  <Parameter Name="NightChaseRange" Guid="62ff660a-f492-45a8-8c1c-770619d7c288" Value="999" Type="float"/>
+  <Parameter Name="NightChaseTime" Guid="6d0d1d10-22c1-4656-b10f-13f5eedcdbcc" Value="999" Type="float"/>
+  <Parameter Name="DayChaseTime" Guid="295fc992-2d00-4ccb-84f3-8870ca84e50e" Value="999" Type="float"/>
+  <Parameter Name="ChaseWhenAttackedProbability" Guid="51b9157d-51c1-4446-b6a4-0c22bd15d53b" Value="1" Type="float"/>
+  <Parameter Name="ChaseOnTouchProbability" Guid="68119256-7f2c-464b-9e86-63274005bef5" Value="1" Type="float"/>
+  <Parameter Name="AutoChaseMask" Guid="7ff326aa-1460-4040-a918-61cb3f338fa7" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
+  <Parameter Name="ChaseNonPlayerProbability" Guid="6d220142-6936-4dfc-8e5f-86991d47da9b" Value="1" Type="float"/>
+  <Parameter Name="AttacksSameHerd" Guid="98705e05-0b24-454b-a000-668185ad7a58" Value="false" Type="bool"/>
+  <Parameter Name="AttacksAllCategories" Guid="ca3dc211-f958-4e8d-8148-f63ac2e9cb2b" Value="true" Type="bool"/>
+  <Parameter Name="FleeFromSameHerd" Guid="b4b72c9d-520f-4542-8d7e-a176e0003803" Value="true" Type="bool"/>
+  <Parameter Name="FleeDistance" Guid="c5eec00e-e733-4937-b3e9-0ee08a4459e4" Value="10" Type="float"/>
+  <Parameter Name="ForceAttackDuringGreenNight" Guid="1acfe265-3493-4157-b42a-a73189f6ee9e" Value="true" Type="bool"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidFireBehavior" Guid="c4d03f81-79fe-433e-a6e3-7bcdc1736774" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
             <MemberComponentTemplate Name="Locomotion" Guid="6934498d-c5db-458a-9b13-e03784dfde30">
@@ -9326,22 +9356,23 @@
     <Parameter Name="PoisonResistance" Value="2000" Type="float"/>
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="9f84fe07-dca9-4360-889e-545378bb0b60">
+<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="3288137b-6846-47a1-bf73-cb814ee4d9cb">
   <Parameter Name="IsOptional" Value="false" Type="bool"/>
   <Parameter Name="LoadOrder" Value="50" Type="int"/>
   <Parameter Name="Class" Value="Game.ComponentZombieChaseBehavior" Type="string"/>
-  <Parameter Name="DayChaseRange" Guid="07e0029e-bff6-4c51-96ec-9e0f883fdad9" Value="999" Type="float"/>
-  <Parameter Name="NightChaseRange" Guid="6e8fd1cb-3b5c-4bff-94d5-42758d152360" Value="999" Type="float"/>
-  <Parameter Name="NightChaseTime" Guid="f314b857-07fc-4b1f-a2a2-a35d8ed20199" Value="999" Type="float"/>
-  <Parameter Name="DayChaseTime" Guid="53f3f9c5-13da-415b-b2e4-6aca09eabc1f" Value="999" Type="float"/>
-  <Parameter Name="ChaseWhenAttackedProbability" Guid="baf6ba3a-e932-4ba6-b188-38a358d24e9e" Value="1" Type="float"/>
-  <Parameter Name="ChaseOnTouchProbability" Guid="395cee5a-aafc-4745-9646-2f0d602b4bcb" Value="1" Type="float"/>
-  <Parameter Name="AutoChaseMask" Guid="8147f883-1c92-4e96-b965-312f72b2aa12" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
-  <Parameter Name="ChaseNonPlayerProbability" Guid="77a50e08-b34f-4d79-949c-437fca2ec4c3" Value="1" Type="float"/>
-  <Parameter Name="AttacksSameHerd" Guid="5dc64b7e-7fe0-4536-81e1-2d8cc19d4765" Value="false" Type="bool"/>
-  <Parameter Name="AttacksAllCategories" Guid="12372304-d63b-4b1d-9d7e-e54e23186dbe" Value="true" Type="bool"/>
-  <Parameter Name="FleeFromSameHerd" Guid="2f69b2c3-0de3-42d0-9a45-af39c26a2b0a" Value="true" Type="bool"/>
-  <Parameter Name="FleeDistance" Guid="5239d6b8-3bcc-4f14-8e9f-16b257e19870" Value="10" Type="float"/>
+  <Parameter Name="DayChaseRange" Guid="d28b5941-1b56-4d41-9ecf-9abcbb02a5a1" Value="999" Type="float"/>
+  <Parameter Name="NightChaseRange" Guid="679b1ce9-efea-49d1-953f-8bb6cd4aac05" Value="999" Type="float"/>
+  <Parameter Name="NightChaseTime" Guid="dffec3a5-3a36-4f5d-8f08-af9f29d35e0b" Value="999" Type="float"/>
+  <Parameter Name="DayChaseTime" Guid="3105aeb8-7bad-41c3-a2fd-15eba33083ce" Value="999" Type="float"/>
+  <Parameter Name="ChaseWhenAttackedProbability" Guid="8b55f7c6-6064-4317-9ce9-df40bc68d9e7" Value="1" Type="float"/>
+  <Parameter Name="ChaseOnTouchProbability" Guid="25756395-85c4-4f36-86d3-5b4a686cbbe8" Value="1" Type="float"/>
+  <Parameter Name="AutoChaseMask" Guid="9dde3650-f5e9-4ee2-ac8b-2b2f10fb652e" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
+  <Parameter Name="ChaseNonPlayerProbability" Guid="bcbe83b9-50ed-458a-8c6d-f86940fd24c0" Value="1" Type="float"/>
+  <Parameter Name="AttacksSameHerd" Guid="e903b23d-e245-4788-9cbe-21109c4fec65" Value="false" Type="bool"/>
+  <Parameter Name="AttacksAllCategories" Guid="d7d9227a-fcb4-4eac-8a83-1e7a031c2b8f" Value="true" Type="bool"/>
+  <Parameter Name="FleeFromSameHerd" Guid="d536b0ac-894c-4ca8-a5eb-d39142792431" Value="true" Type="bool"/>
+  <Parameter Name="FleeDistance" Guid="6ca85c35-9f1d-489b-b66a-b515bfebb273" Value="10" Type="float"/>
+  <Parameter Name="ForceAttackDuringGreenNight" Guid="352f59f4-2940-48cb-ab29-841a442ac3fd" Value="true" Type="bool"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidFireBehavior" Guid="1e8d2118-908e-4b71-b92d-1470d972713b" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
             <MemberComponentTemplate Name="Locomotion" Guid="4776ac01-ea6d-499c-8d60-7dc86fa33385">
@@ -9650,22 +9681,23 @@
     <Parameter Name="PoisonResistance" Value="1000" Type="float"/>
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="11a52a8f-0e6c-4003-88f3-1c0b36dcf07c">
+<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="6bdab4b2-c253-4bb7-b668-b04401e78280">
   <Parameter Name="IsOptional" Value="false" Type="bool"/>
   <Parameter Name="LoadOrder" Value="50" Type="int"/>
   <Parameter Name="Class" Value="Game.ComponentZombieChaseBehavior" Type="string"/>
-  <Parameter Name="DayChaseRange" Guid="c603af70-f6dc-4943-b85a-239e71c2ed24" Value="999" Type="float"/>
-  <Parameter Name="NightChaseRange" Guid="140e0b5e-ded1-4d6b-a88f-8ac61ce119c1" Value="999" Type="float"/>
-  <Parameter Name="NightChaseTime" Guid="d80b63aa-cf71-407f-b632-aeb2e135dad2" Value="999" Type="float"/>
-  <Parameter Name="DayChaseTime" Guid="3b29a1fc-233d-461c-8af1-60900932c9df" Value="999" Type="float"/>
-  <Parameter Name="ChaseWhenAttackedProbability" Guid="e28ae646-3c04-43c6-bd54-9c1d065897ab" Value="1" Type="float"/>
-  <Parameter Name="ChaseOnTouchProbability" Guid="0024db92-9727-4ffe-8f4d-fe2bd7a8f27f" Value="1" Type="float"/>
-  <Parameter Name="AutoChaseMask" Guid="fa530400-0f6e-4186-ab87-ba95575b0135" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
-  <Parameter Name="ChaseNonPlayerProbability" Guid="ee1cc223-ff00-4c8a-a291-35e177d5f247" Value="1" Type="float"/>
-  <Parameter Name="AttacksSameHerd" Guid="086360fe-9061-4497-aec5-91679b01f1fb" Value="false" Type="bool"/>
-  <Parameter Name="AttacksAllCategories" Guid="c8f22259-b4dd-428d-8cde-3978b3c59d40" Value="true" Type="bool"/>
-  <Parameter Name="FleeFromSameHerd" Guid="9904f011-8bc4-465d-bd21-2e2edfb31d9f" Value="true" Type="bool"/>
-  <Parameter Name="FleeDistance" Guid="95b39522-3e58-4e3e-8762-b6d59a33f8d8" Value="10" Type="float"/>
+  <Parameter Name="DayChaseRange" Guid="c075c97a-b67d-4313-82f6-d8f21d73d9da" Value="999" Type="float"/>
+  <Parameter Name="NightChaseRange" Guid="940e8ddc-cad3-41a8-9f71-91eb447aac2f" Value="999" Type="float"/>
+  <Parameter Name="NightChaseTime" Guid="817384f2-90ad-44f4-888a-b44469fa7d30" Value="999" Type="float"/>
+  <Parameter Name="DayChaseTime" Guid="9c5aafc9-a2c3-40b6-8d87-9a55e8bbfe00" Value="999" Type="float"/>
+  <Parameter Name="ChaseWhenAttackedProbability" Guid="2c0265e4-803a-411d-84c7-5b007f91a355" Value="1" Type="float"/>
+  <Parameter Name="ChaseOnTouchProbability" Guid="a8cfb6d1-4533-4b9e-9756-84fd39b8e8d0" Value="1" Type="float"/>
+  <Parameter Name="AutoChaseMask" Guid="23248006-b18c-4563-a1f2-86655baf97cd" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
+  <Parameter Name="ChaseNonPlayerProbability" Guid="4449a876-1640-4b4d-8c12-a7c57ed3834a" Value="1" Type="float"/>
+  <Parameter Name="AttacksSameHerd" Guid="412c2c34-c155-4111-b04b-bf6b61db6e77" Value="false" Type="bool"/>
+  <Parameter Name="AttacksAllCategories" Guid="37d00969-8465-48e0-95a7-4865c16f2924" Value="true" Type="bool"/>
+  <Parameter Name="FleeFromSameHerd" Guid="2fb6a5d7-89ba-4275-afab-6b37ba877579" Value="true" Type="bool"/>
+  <Parameter Name="FleeDistance" Guid="3d084a2c-7fb3-4413-b568-b564dc386082" Value="10" Type="float"/>
+  <Parameter Name="ForceAttackDuringGreenNight" Guid="9b975ce8-29de-40c0-a8f1-b62aff5c333d" Value="true" Type="bool"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="Inventory" Guid="77530c4a-d1b8-401e-8f55-49990df19a5f" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
     <ParameterSet Name="Slots">
