@@ -86,8 +86,12 @@ namespace Game
 			bool hasPoison = HasPoison(targetEntity);
 			bool hasSickness = HasSickness(targetEntity);
 
-			// Si no tiene ni veneno ni enfermedad, NO usar el antídoto
-			if (!hasPoison && !hasSickness)
+			// +++ AGREGADO: Verificar si el objetivo está muerto +++
+			ComponentHealth targetHealth = targetEntity.FindComponent<ComponentHealth>();
+			bool isDead = targetHealth != null && targetHealth.Health <= 0f;
+
+			// Si no tiene ni veneno ni enfermedad, O está muerto, NO usar el antídoto
+			if ((!hasPoison && !hasSickness) || isDead)
 			{
 				return false;
 			}
