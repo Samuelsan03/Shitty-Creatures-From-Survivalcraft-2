@@ -43,9 +43,10 @@ namespace Game
 				bool flag = string.IsNullOrWhiteSpace(text);
 				if (!flag)
 				{
-					int num;
-					bool flag2 = int.TryParse(text, out num);
-					if (flag2)
+					string itemName = text.Trim();
+
+					// Intenta primero parsear como número (índice de bloque)
+					if (int.TryParse(itemName, out int num))
 					{
 						bool flag3 = num > 0 && num < BlocksManager.Blocks.Length;
 						if (flag3)
@@ -55,12 +56,21 @@ namespace Game
 					}
 					else
 					{
-						Type type = Type.GetType("Game." + text);
-						Block block = BlocksManager.GetBlock(type, false, true);
-						bool flag4 = block != null;
-						if (flag4)
+						// Intenta obtener el bloque por su nombre original
+						Block block = BlocksManager.GetBlock(itemName, false);
+						if (block != null)
 						{
 							this.m_specificItemsSet.Add(block.BlockIndex);
+						}
+						else
+						{
+							// Si no se encuentra por nombre, intenta por nombre de tipo completo
+							Type type = Type.GetType("Game." + itemName);
+							block = BlocksManager.GetBlock(type, false, true);
+							if (block != null)
+							{
+								this.m_specificItemsSet.Add(block.BlockIndex);
+							}
 						}
 					}
 				}
@@ -88,11 +98,18 @@ namespace Game
 				m_handAnimationTimer = -1f;
 			}
 
+			// Actualizar temporizador de saciedad (similar al del mod)
+			if (m_satiation > 0f)
+			{
+				m_satiation = MathUtils.Max(m_satiation - 0.01f * dt, 0f);
+			}
+
 			bool flag = !this.Activate;
 			if (!flag)
 			{
 				foreach (Pickable pickable in this.subsystemPickables.Pickables)
 				{
+					// Verificar si el objeto es de un tipo que queremos recoger
 					int item = Terrain.ExtractContents(pickable.Value);
 					bool flag2 = this.m_specificItemsSet.Contains(item);
 					bool flag3 = this.m_specificItemsSet.Count > 0;
@@ -109,13 +126,24 @@ namespace Game
 							continue;
 						}
 					}
+
+					// Verificar condiciones para recoger
 					TerrainChunk chunkAtCell = this.subsystemTerrain.Terrain.GetChunkAtCell(Terrain.ToCell(pickable.Position.X), Terrain.ToCell(pickable.Position.Z));
-					bool flag6 = componentInventory != null && chunkAtCell != null && pickable.FlyToPosition == null && (double)this.componentCreature.ComponentHealth.Health > 0.0 && componentChaseBehavior.Target == null;
+					bool flag6 = componentInventory != null && chunkAtCell != null && pickable.FlyToPosition == null && (double)this.componentCreature.ComponentHealth.Health > 0.0;
+
+					// Verificar si no hay objetivo de persecución (similar al mod)
+					if (componentChaseBehavior != null && componentChaseBehavior.Target != null)
+					{
+						flag6 = false;
+					}
+
 					if (flag6)
 					{
 						Vector3 vector = this.componentCreature.ComponentBody.Position + new Vector3(0f, 0.8f, 0f);
 						float num = (vector - pickable.Position).LengthSquared();
 						float num2 = this.DetectionDistance * this.DetectionDistance;
+
+						// Si está dentro de la distancia de detección, moverse hacia el objeto
 						bool flag7 = num < num2;
 						if (flag7)
 						{
@@ -130,6 +158,8 @@ namespace Game
 								}
 							}
 						}
+
+						// Si está muy cerca, recoger el objeto
 						bool flag9 = (double)num < 4.0;
 						if (flag9)
 						{
@@ -139,10 +169,19 @@ namespace Game
 								bool flag10 = num4 >= 0;
 								if (flag10)
 								{
+									// Realizar el poke (similar al mod)
+									if (m_componentMiner != null)
+									{
+										m_componentMiner.Poke(false);
+									}
+
 									pickable.ToRemove = true;
 									pickable.FlyToPosition = new Vector3?(vector);
 									pickable.Count = ComponentInventoryBase.AcquireItems(componentInventory, pickable.Value, pickable.Count);
 									this.m_audio.PlaySound("Audio/PickableCollected", 1f, -0.4f, vector, 6f, false);
+
+									// Incrementar saciedad (similar al mod)
+									m_satiation += 1f;
 
 									// --- ACTIVAR ANIMACIÓN DE MANO ---
 									m_handAnimationTimer = 0.5f; // Duración de 0.5 segundos
@@ -155,7 +194,7 @@ namespace Game
 			}
 		}
 
-		// --- NUEVOS MÉTODOS PARA ANIMACIÓN DE MANO ---
+		// --- MÉTODOS PARA ANIMACIÓN DE MANO ---
 		private void ApplyHandAnimation(float liftAmount)
 		{
 			if (componentModel?.Model == null) return;
@@ -247,10 +286,13 @@ namespace Game
 		public SubsystemAudio m_audio;
 		private HashSet<int> m_specificItemsSet = new HashSet<int>();
 
-		// --- NUEVAS VARIABLES PARA ANIMACIÓN ---
+		// --- VARIABLES PARA ANIMACIÓN ---
 		private ComponentModel componentModel;
 		private float m_handAnimationTimer = -1f; // -1 = inactivo
 		private Matrix m_originalHandTransform = Matrix.Zero;
 		private Matrix m_originalForearmTransform = Matrix.Zero;
+
+		// --- NUEVA VARIABLE PARA CONTROL DE RECOGIDA ---
+		private float m_satiation = 0f; // Similar al sistema del mod
 	}
 }
