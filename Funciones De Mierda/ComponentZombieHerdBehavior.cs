@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Engine;
 using GameEntitySystem;
 using TemplatesDatabase;
@@ -63,7 +63,7 @@ namespace Game
 				{
 					// Si el atacante es de la misma manada, activar la huida
 					this.ActivateFleeState(injury.Attacker);
-					
+
 					// NO llamar a otros zombis cuando es atacado por un miembro de la misma manada
 					return;
 				}
@@ -90,7 +90,7 @@ namespace Game
 
 			// Buscar el ComponentChaseBehavior en esta entidad
 			ComponentChaseBehavior chaseBehavior = this.m_componentCreature.Entity.FindComponent<ComponentChaseBehavior>();
-			
+
 			if (chaseBehavior != null)
 			{
 				// Usar reflexión para acceder al campo m_target si es necesario
@@ -105,12 +105,12 @@ namespace Game
 			// Aquí implementamos la lógica de huida directamente
 			// Simplemente nos alejamos del objetivo
 			Vector3 fleeDirection = this.m_componentCreature.ComponentBody.Position - target.ComponentBody.Position;
-			
+
 			if (fleeDirection.LengthSquared() > 0.01f)
 			{
 				fleeDirection = Vector3.Normalize(fleeDirection);
 				Vector3 destination = this.m_componentCreature.ComponentBody.Position + fleeDirection * 15f; // Huir 15 unidades
-				
+
 				this.m_componentPathfinding.SetDestination(
 					new Vector3?(destination),
 					1f,
@@ -121,7 +121,7 @@ namespace Game
 					false,
 					null
 				);
-				
+
 				// Reproducir sonido de dolor
 				this.m_componentCreature.ComponentCreatureSounds.PlayPainSound();
 			}
@@ -199,12 +199,8 @@ namespace Game
 						ComponentZombieChaseBehavior chaseBehavior = creature.Entity.FindComponent<ComponentZombieChaseBehavior>();
 						if (chaseBehavior != null && chaseBehavior.Target == null)
 						{
-							// Usar isRetaliation=true para permitir ataque incluso en modos de juego restrictivos
-							// No podemos usar IsSameHerd aquí, así que verificamos directamente
-							if (!this.IsSameZombieHerd(attacker))
-							{
-								chaseBehavior.Attack(attacker, this.HelpCallRange, this.HelpChaseTime, this.IsPersistentHelp, true);
-							}
+							// CORRECCIÓN: Llamada con 4 argumentos en lugar de 5
+							chaseBehavior.Attack(attacker, this.HelpCallRange, this.HelpChaseTime, this.IsPersistentHelp);
 						}
 					}
 				}
@@ -453,7 +449,8 @@ namespace Game
 					// Distribuir los ataques para que no todos ataquen al mismo tiempo
 					if (this.m_random.Float(0f, 1f) < 0.7f) // 70% de probabilidad de unirse al ataque
 					{
-						chaseBehavior.Attack(target, this.HelpCallRange, this.HelpChaseTime, this.IsPersistentHelp, true);
+						// CORRECCIÓN: Llamada con 4 argumentos en lugar de 5
+						chaseBehavior.Attack(target, this.HelpCallRange, this.HelpChaseTime, this.IsPersistentHelp);
 					}
 				}
 			}
