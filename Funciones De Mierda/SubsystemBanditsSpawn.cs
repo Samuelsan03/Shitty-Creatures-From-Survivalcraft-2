@@ -168,7 +168,7 @@ namespace Game
 					// Condiciones MUY permisivas para que aparezca en cualquier lugar
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 0.2f; // 20% de probabilidad (0.2)
+						return 0.02f; // 20% de probabilidad (0.2)
 					}
 					return 0f;
 				},
@@ -235,7 +235,7 @@ namespace Game
 					// Condiciones MUY permisivas para que aparezca en cualquier lugar
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 0.1f; // 10% de probabilidad (0.1)
+						return 0.01f; // 10% de probabilidad (0.1)
 					}
 					return 0f;
 				},
@@ -335,7 +335,7 @@ namespace Game
 					// Condiciones permisivas para que aparezca en cualquier lugar
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 0.1f; // 10% de probabilidad (0.1)
+						return 0.01f; // 10% de probabilidad (0.1)
 					}
 					return 0f;
 				},
@@ -435,7 +435,7 @@ namespace Game
 					// Condiciones permisivas para que aparezca en cualquier lugar
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 0.1f; // 10% de probabilidad (0.1)
+						return 0.05f; // 10% de probabilidad (0.1)
 					}
 					return 0f;
 				},
@@ -587,7 +587,7 @@ namespace Game
 					// Condiciones permisivas para que aparezca en cualquier lugar
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 0.1f; // 10% de probabilidad (0.1)
+						return 0.01f; // 10% de probabilidad (0.1)
 					}
 					return 0f;
 				},
@@ -869,7 +869,7 @@ namespace Game
 					// Condiciones permisivas para que aparezca en cualquier lugar
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 0.1f; // 10% de probabilidad (0.1)
+						return 0.01f; // 10% de probabilidad (0.1)
 					}
 					return 0f;
 				},
@@ -969,7 +969,7 @@ namespace Game
 					// Condiciones MUY permisivas para que aparezca en cualquier lugar
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 0.45f; // 45% de probabilidad (0.45)
+						return 0.045f; // 45% de probabilidad (0.45)
 					}
 					return 0f;
 				},
