@@ -1,5 +1,11 @@
 <ShittyCreatures xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://gitee.com/THPRC/survivalcraft-api/raw/SCAPI1.8/Survivalcraft/Content/Assets/Database.xsd">
 <Folder Name="Gameplay" Guid="d509e5e2-2c10-49f1-8223-85cd892c63b0">
+<ComponentTemplate Name="NewSleep" Description="Maneja el sueño de la entidad de la criatura" Guid="37be83a8-aea0-4fff-a634-86d773c96065" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
+    <Parameter Name="SleepStartTime" Description="Tiempo cuando la criatura se fue a dormir, o 0 si no está durmiendo" Guid="94cbe565-84c4-4447-a937-bc061293943f" Value="0" Type="double"/>
+    <Parameter Name="Class" Guid="14fe77a9-541e-4f2a-a2e9-cdb99f31221d" Value="Game.ComponentNewSleep" Type="string"/>
+    <Parameter Name="AllowManualWakeUp" Description="Si se permite el despertar manual" Guid="a9b8191d-466c-4cb0-88de-da6021d50ce0" Value="False" Type="bool"/>
+</ComponentTemplate>
+
 <ComponentTemplate Name="CreatureInventory" Description="Inventario para criaturas que pueden almacenar y usar objetos" Guid="a347220c-b5cf-4eae-9215-4ed37426eec4" InheritanceParent="81a44c6a-c30a-4f53-8d64-0c30aabab8f9">
   <Parameter Name="ActiveSlotIndex" Description="Índice del slot activo de la criatura" Guid="65e82739-c714-4418-90b0-adddb190350d" Value="0" Type="int"/>
   <Parameter Name="SlotsCount" Description="Número de slots en el inventario de la criatura" Guid="8f9e0c14-943a-49ce-96a8-24b51582dfb5" Value="16" Type="int"/>
@@ -242,16 +248,6 @@
     <Parameter Name="ZombieAggressiveGrouping" Value="false" Type="bool" Guid="e81372aa-d0d0-4831-950f-804ac5c9df10" Description="Si los zombis se agrupan agresivamente, deambulan cuando no están en combate y llaman ayuda en rango extendido (HelpCallRange × 1.5). Ver métodos CallAdditionalZombies y AddZombieSpecificStates."/>
 </ComponentTemplate>
 
-    <ComponentTemplate Name="ComponentCharger" Guid="12ff342d-88d2-44a1-8bd0-92ffb738fa9f">
-    <Parameter Name="Class" Value="Game.ComponentCharger" Type="string" Guid="3ee863fa-8d1a-48dc-9f71-b7f895304df8" Description="Componente que permite a la criatura cargar contra objetivos cercanos, infligiendo daño y empujando lejos."/>
-    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="554e08bb-fe1c-4c4c-b595-69c488cf8e96" Description="Si es opcional o requerido para el funcionamiento."/>
-    <Parameter Name="LoadOrder" Value="70" Type="int" Guid="b9645529-2988-42e8-8977-e27f413d2924" Description="Orden de carga del componente."/>
-    <Parameter Name="AttackRange" Value="3" Type="float" Guid="c5d64cb9-774a-4281-9543-7ee1b50c6271" Description="Rango de detección para iniciar la carga."/>
-    <Parameter Name="AttackDamage" Value="10" Type="float" Guid="181f2e02-e20a-424d-92a2-b63d4545cd41" Description="Daño infligido al impactar con un objetivo."/>
-    <Parameter Name="PushForce" Value="20" Type="float" Guid="45112959-def7-441c-9ed9-8eb2140287b0" Description="Fuerza de empuje aplicada al objetivo."/>
-    <Parameter Name="AttackCooldown" Value="2" Type="float" Guid="072bf34e-9321-49f0-b83e-d7b5083fdc85" Description="Tiempo de espera entre cargas en segundos."/>
-</ComponentTemplate>
-
     <ComponentTemplate Name="BoomerPoisonExplosion" Guid="94c4aae0-adc3-405b-91b5-fbaa7ad0f7b8">
     <Parameter Name="Class" Value="Game.ComponentBoomerPoisonExplosion" Type="string" Guid="4f3220be-2395-4f37-aed5-a1d2fbd5f128" Description="Componente que hace que la criatura explote al morir liberando una nube venenosa."/>
     <Parameter Name="IsOptional" Value="false" Type="bool" Guid="1e4fd0e9-1501-4b1c-adf0-d352a6a6d0df" Description="Si es opcional o requerido para el funcionamiento."/>
@@ -299,20 +295,21 @@
     <Parameter Name="DestroyBlocks" Value="true" Type="bool" Guid="ab31c1c8-f5f4-406a-a635-cde1f4d4fbf6" Description="Si destruye bloques con la onda expansiva personalizada."/>
 </ComponentTemplate>
 
-<ComponentTemplate Name="ZombieChaseBehavior" Description="Comportamiento que hace que un zombi persiga objetivos con lógica de horda" Guid="e2d8acef-b3dc-4540-959d-3f069e44a28b">
-  <Parameter Name="Class" Guid="22a3d5d5-5d99-47d1-a2ca-4008f9d80c46" Value="Game.ComponentZombieChaseBehavior" Type="string"/>
-  <Parameter Name="ChaseWhenAttackedProbability" Description="Probabilidad de que el zombi persiga cuando es atacado" Guid="f305826c-f07d-4b65-a31c-822122aac8bc" Value="1" Type="float"/>
-  <Parameter Name="NightChaseTime" Description="Tiempo de persecución cuando el zombi comienza a perseguir durante la noche, en segundos" Guid="709ffe45-82ed-4821-99ef-9ca212137502" Value="30" Type="float"/>
-  <Parameter Name="DayChaseRange" Description="Distancia a la que el zombi comienza a perseguir durante el día" Guid="8ac8ae3d-b764-4565-8947-67d03f0ac0a1" Value="8" Type="float"/>
-  <Parameter Name="ChaseOnTouchProbability" Description="Probabilidad de que el zombi persiga si es tocado por una criatura con AutoChaseMask" Guid="d0b11e6a-22f7-45dc-ad46-b2dc7d4b5812" Value="1" Type="float"/>
-  <Parameter Name="DayChaseTime" Description="Tiempo de persecución cuando el zombi comienza a perseguir durante el día, en segundos" Guid="d7f14055-0e18-48c9-b4e7-c062c3e84a0c" Value="30" Type="float"/>
-  <Parameter Name="NightChaseRange" Description="Distancia a la que el zombi comienza a perseguir durante la noche" Guid="915d9c3e-e200-4758-a2b3-e2bc4f10c7b2" Value="12" Type="float"/>
-  <Parameter Name="AutoChaseMask" Description="Categorías de criaturas a perseguir" Guid="9e71f195-51f8-4f76-80e2-3c5ea4de5180" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
-  <Parameter Name="ChaseNonPlayerProbability" Description="Probabilidad de que el zombi persiga a un objetivo que no sea el jugador cuando está dentro del rango, de 0 a 1" Guid="eed291ef-21f2-4fe3-8c90-ad362b994ccc" Value="1" Type="float"/>
-  <Parameter Name="AttacksSameHerd" Description="Indica si el zombi ataca a miembros de su misma horda" Guid="04453362-772f-4f7a-91bb-e354be1948c0" Value="false" Type="bool"/>
-  <Parameter Name="AttacksAllCategories" Description="Indica si el zombi ataca a todas las categorías de criaturas" Guid="6c12c2b1-efaa-4559-a780-4140da2f1a15" Value="true" Type="bool"/>
-  <Parameter Name="FleeFromSameHerd" Description="Indica si el zombi huye de miembros de su misma horda" Guid="487279ac-17e6-4269-a71d-e85711369d35" Value="true" Type="bool"/>
-  <Parameter Name="FleeDistance" Description="Distancia a la que huye al escapar de miembros de su misma horda" Guid="83e74677-f8ce-495f-bb9c-4deee2d302aa" Value="10" Type="float"/>
+<ComponentTemplate Name="ZombieChaseBehavior" Description="Comportamiento que hace que un zombi persiga objetivos con lógica de horda" Guid="5674ee12-d71b-4c21-a1a0-ecf6b220be53">
+  <Parameter Name="Class" Guid="b714af9a-06fb-4768-a71e-4e58af8e8070" Value="Game.ComponentZombieChaseBehavior" Type="string"/>
+  <Parameter Name="ChaseWhenAttackedProbability" Description="Probabilidad de que el zombi persiga cuando es atacado" Guid="1099e9a7-620d-4bcf-af1f-9c252a3db40d" Value="1" Type="float"/>
+  <Parameter Name="NightChaseTime" Description="Tiempo de persecución cuando el zombi comienza a perseguir durante la noche, en segundos" Guid="0df0bdac-1b94-4076-9716-10ce4d2f6928" Value="30" Type="float"/>
+  <Parameter Name="DayChaseRange" Description="Distancia a la que el zombi comienza a perseguir durante el día" Guid="9aac2aa5-0724-4026-bb21-ead108a1777a" Value="8" Type="float"/>
+  <Parameter Name="ChaseOnTouchProbability" Description="Probabilidad de que el zombi persiga si es tocado por una criatura con AutoChaseMask" Guid="bff10234-1ed0-4248-a6d5-09b4cc2e4c94" Value="1" Type="float"/>
+  <Parameter Name="DayChaseTime" Description="Tiempo de persecución cuando el zombi comienza a perseguir durante el día, en segundos" Guid="b379d7b6-7b65-4645-b701-b200f3cdfdfe" Value="30" Type="float"/>
+  <Parameter Name="NightChaseRange" Description="Distancia a la que el zombi comienza a perseguir durante la noche" Guid="00d96ecf-e802-4b34-ab9f-1cf8cda6c789" Value="12" Type="float"/>
+  <Parameter Name="AutoChaseMask" Description="Categorías de criaturas a perseguir" Guid="a485912b-2075-4577-be8d-14770e299df1" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
+  <Parameter Name="ChaseNonPlayerProbability" Description="Probabilidad de que el zombi persiga a un objetivo que no sea el jugador cuando está dentro del rango, de 0 a 1" Guid="fedb68fd-8320-49d2-bcb5-80ace2825760" Value="1" Type="float"/>
+  <Parameter Name="AttacksSameHerd" Description="Indica si el zombi ataca a miembros de su misma horda" Guid="cbab6a47-7a6f-497a-83a5-3f1323585a11" Value="false" Type="bool"/>
+  <Parameter Name="AttacksAllCategories" Description="Indica si el zombi ataca a todas las categorías de criaturas" Guid="f1c29cc0-83e1-41c1-9567-8a2bf393d07d" Value="true" Type="bool"/>
+  <Parameter Name="FleeFromSameHerd" Description="Indica si el zombi huye de miembros de su misma horda" Guid="c1a80409-9a23-4eb4-8327-2de254421cda" Value="true" Type="bool"/>
+  <Parameter Name="FleeDistance" Description="Distancia a la que huye al escapar de miembros de su misma horda" Guid="4b3f1003-df82-47f8-ab9f-61034911e281" Value="10" Type="float"/>
+  <Parameter Name="ForceAttackDuringGreenNight" Description="Indica si el zombi ataca al jugador durante la Noche Verde sin importar el modo de juego" Guid="96e8d38b-7e1b-4ee1-9d8f-d48391dc19f4" Value="true" Type="bool"/>
 </ComponentTemplate>
 
     <ComponentTemplate Name="ComponentNewAutoInteract" Guid="0d193534-6d05-4939-bba8-4a8755d3b064" Description="Componente que permite a NPCs interactuar automáticamente con bloques como puertas y rejillas">
