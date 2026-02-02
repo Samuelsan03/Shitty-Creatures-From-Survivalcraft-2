@@ -175,6 +175,12 @@
         </EntityTemplate>
 
         <EntityTemplate Name="InfectedNormalTamed1" Guid="922c6e4a-ef62-456d-8167-0f8e40ef7c44" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <MemberComponentTemplate Name="SummonBehavior" Guid="197c9032-326b-4d61-9633-bd950f38553d">
+              <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="861dd1da-959e-4f3f-87f1-49ef8363a102"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="f85d69bc-ae81-42e4-848d-a8d02d383247"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="41e5974e-e2b7-4caf-a4e4-70f07ed3fc75"/>
+              <Parameter Name="IsEnabled" Guid="7dee6d83-74c7-4abd-b2c9-13a22e76c15a" Value="True" Type="bool"/>
+            </MemberComponentTemplate>
         <MemberComponentTemplate Name="NewChaseBehavior" Guid="7b361902-1a59-49df-8dcc-4ef8d4898d37">
     <Parameter Name="Class" Value="Game.ComponentNewChaseBehavior" Type="string" Guid="af3fd750-8eb2-4407-9a42-4dfe196c14a2"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="79e2ad26-322f-4a90-8ecc-89e147a5d6f5"/>
