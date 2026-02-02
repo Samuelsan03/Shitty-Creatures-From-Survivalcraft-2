@@ -146,7 +146,6 @@ namespace Game
 			if (this.Suppressed || target == null)
 				return;
 
-			// Verificar si puede atacar al objetivo
 			ComponentNewHerdBehavior componentNewHerdBehavior = base.Entity.FindComponent<ComponentNewHerdBehavior>();
 			ComponentHerdBehavior componentHerdBehavior = base.Entity.FindComponent<ComponentHerdBehavior>();
 
@@ -189,7 +188,6 @@ namespace Game
 			if (!canAttack)
 				return;
 
-			// Iniciar ataque inmediatamente
 			this.m_target = target;
 			this.m_nextUpdateTime = 0.0;
 			this.m_range = 20f;
@@ -199,7 +197,6 @@ namespace Game
 			this.IsActive = true;
 			this.m_stateMachine.TransitionTo("Chasing");
 
-			// Actualizar inmediatamente el estado de persecución
 			if (this.m_target != null && this.m_componentPathfinding != null)
 			{
 				this.m_componentPathfinding.Stop();
@@ -225,7 +222,25 @@ namespace Game
 				return;
 			}
 			this.m_autoChaseSuppressionTime -= dt;
-			this.CheckDefendPlayer(dt);
+
+			if (this.m_subsystemGreenNightSky != null && this.m_subsystemGreenNightSky.IsGreenNightActive)
+			{
+				if (this.Suppressed)
+				{
+					this.Suppressed = false;
+				}
+
+				if (this.IsActive && this.m_importanceLevel < 250f)
+				{
+					this.m_importanceLevel = 250f;
+				}
+
+				this.CheckHighAlertPlayerThreats(dt);
+			}
+			else
+			{
+				this.CheckDefendPlayer(dt);
+			}
 
 			if (this.IsActive && this.m_target != null)
 			{
@@ -474,19 +489,17 @@ namespace Game
 			}
 			float num = 1f;
 			int activeSlotIndex = 0;
-			// Verificar arma activa primero
 			int activeSlotValue = componentMiner.Inventory.GetSlotValue(componentMiner.Inventory.ActiveSlotIndex);
 			float activeMeleePower = BlocksManager.Blocks[Terrain.ExtractContents(activeSlotValue)].GetMeleePower(activeSlotValue);
 			if (activeMeleePower > 1f)
 			{
-				return true; // Ya tiene arma buena activa
+				return true;
 			}
 
-			// Buscar mejor arma
 			for (int i = 0; i < componentMiner.Inventory.SlotsCount; i++)
 			{
 				int slotValue = componentMiner.Inventory.GetSlotValue(i);
-				if (slotValue != 0) // Solo slots no vacíos
+				if (slotValue != 0)
 				{
 					float meleePower = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)].GetMeleePower(slotValue);
 					if (meleePower > num)
@@ -504,48 +517,149 @@ namespace Game
 			return false;
 		}
 
-		private void CheckDefendPlayer(float dt)
+		private void CheckHighAlertPlayerThreats(float dt)
 		{
 			try
 			{
-				ComponentNewHerdBehavior componentNewHerdBehavior = base.Entity.FindComponent<ComponentNewHerdBehavior>();
-				ComponentHerdBehavior componentHerdBehavior = base.Entity.FindComponent<ComponentHerdBehavior>();
-				bool isPlayerAlly = false;
+				if (!IsPlayerAlly())
+					return;
 
-				if (componentNewHerdBehavior != null && !string.IsNullOrEmpty(componentNewHerdBehavior.HerdName))
-				{
-					string herdName = componentNewHerdBehavior.HerdName;
-					isPlayerAlly = herdName.Equals("player", StringComparison.OrdinalIgnoreCase) ||
-								  herdName.ToLower().Contains("guardian");
-				}
-				else if (componentHerdBehavior != null && !string.IsNullOrEmpty(componentHerdBehavior.HerdName))
-				{
-					string herdName = componentHerdBehavior.HerdName;
-					isPlayerAlly = herdName.Equals("player", StringComparison.OrdinalIgnoreCase) ||
-								  herdName.ToLower().Contains("guardian");
-				}
+				if (this.m_subsystemTime.GameTime < this.m_nextHighAlertCheckTime)
+					return;
 
-				if (!isPlayerAlly) return;
-				bool flag3 = this.m_subsystemTime.GameTime < this.m_nextPlayerCheckTime;
-				if (!flag3)
+				this.m_nextHighAlertCheckTime = this.m_subsystemTime.GameTime + 0.1;
+
+				float highAlertRange = 40f;
+
+				foreach (ComponentPlayer componentPlayer in this.m_subsystemPlayers.ComponentPlayers)
 				{
-					this.m_nextPlayerCheckTime = this.m_subsystemTime.GameTime + 0.5;
-					foreach (ComponentPlayer componentPlayer in this.m_subsystemPlayers.ComponentPlayers)
+					if (componentPlayer.ComponentHealth.Health <= 0f)
+						continue;
+
+					ComponentCreature approachingZombie = FindApproachingZombie(componentPlayer, highAlertRange);
+
+					if (approachingZombie != null && (this.m_target == null || this.m_target != approachingZombie))
 					{
-						bool flag4 = componentPlayer.ComponentHealth.Health > 0f;
-						if (flag4)
+						this.Attack(approachingZombie, highAlertRange, 60f, true);
+
+						ComponentNewHerdBehavior herdBehavior = base.Entity.FindComponent<ComponentNewHerdBehavior>();
+						if (herdBehavior != null && herdBehavior.AutoNearbyCreaturesHelp)
 						{
-							ComponentCreature componentCreature = this.FindPlayerAttacker(componentPlayer);
-							bool flag5 = componentCreature != null && (this.m_target == null || this.m_target != componentCreature);
-							if (flag5)
-							{
-								this.Attack(componentCreature, 20f, 30f, false);
-							}
+							herdBehavior.CallNearbyCreaturesHelp(approachingZombie, highAlertRange, 60f, false, true);
 						}
+
+						return;
 					}
 				}
 			}
 			catch { }
+		}
+
+		private void CheckDefendPlayer(float dt)
+		{
+			try
+			{
+				if (!IsPlayerAlly())
+					return;
+
+				if (this.m_subsystemTime.GameTime < this.m_nextPlayerCheckTime)
+					return;
+
+				this.m_nextPlayerCheckTime = this.m_subsystemTime.GameTime + 0.5;
+
+				foreach (ComponentPlayer componentPlayer in this.m_subsystemPlayers.ComponentPlayers)
+				{
+					if (componentPlayer.ComponentHealth.Health <= 0f)
+						continue;
+
+					ComponentCreature componentCreature = this.FindPlayerAttacker(componentPlayer);
+					if (componentCreature != null && (this.m_target == null || this.m_target != componentCreature))
+					{
+						this.Attack(componentCreature, 20f, 30f, false);
+					}
+				}
+			}
+			catch { }
+		}
+
+		private ComponentCreature FindApproachingZombie(ComponentPlayer player, float range)
+		{
+			try
+			{
+				if (player == null || player.ComponentBody == null)
+					return null;
+
+				Vector3 playerPosition = player.ComponentBody.Position;
+				float rangeSquared = range * range;
+
+				ComponentCreature mostThreateningZombie = null;
+				float highestThreatScore = 0f;
+
+				foreach (ComponentCreature creature in this.m_subsystemCreatureSpawn.Creatures)
+				{
+					if (creature == null || creature.ComponentHealth == null || creature.ComponentHealth.Health <= 0f ||
+						creature == this.m_componentCreature || creature.ComponentBody == null)
+						continue;
+
+					if (!IsZombieOrInfected(creature))
+						continue;
+
+					float distanceSquared = Vector3.DistanceSquared(playerPosition, creature.ComponentBody.Position);
+					if (distanceSquared > rangeSquared)
+						continue;
+
+					float threatScore = CalculateZombieThreatScore(creature, player, distanceSquared);
+
+					if (threatScore > highestThreatScore)
+					{
+						highestThreatScore = threatScore;
+						mostThreateningZombie = creature;
+					}
+				}
+
+				return mostThreateningZombie;
+			}
+			catch { }
+
+			return null;
+		}
+
+		private float CalculateZombieThreatScore(ComponentCreature zombie, ComponentPlayer player, float distanceSquared)
+		{
+			float threatScore = 0f;
+
+			float distance = (float)Math.Sqrt(distanceSquared);
+			threatScore = 100f / (distance + 1f);
+
+			if (IsFacingPlayer(zombie, player))
+			{
+				threatScore += 50f;
+			}
+
+			if (IsMovingTowardPlayer(zombie, player))
+			{
+				threatScore += 70f;
+			}
+
+			if (distance < 10f)
+			{
+				threatScore += 100f;
+			}
+
+			ComponentChaseBehavior chase = zombie.Entity.FindComponent<ComponentChaseBehavior>();
+			ComponentNewChaseBehavior newChase = zombie.Entity.FindComponent<ComponentNewChaseBehavior>();
+			ComponentNewChaseBehavior2 newChase2 = zombie.Entity.FindComponent<ComponentNewChaseBehavior2>();
+			ComponentZombieChaseBehavior zombieChase = zombie.Entity.FindComponent<ComponentZombieChaseBehavior>();
+
+			if ((chase != null && chase.Target != null) ||
+				(newChase != null && newChase.Target != null) ||
+				(newChase2 != null && newChase2.Target != null) ||
+				(zombieChase != null && zombieChase.Target != null))
+			{
+				threatScore += 80f;
+			}
+
+			return threatScore;
 		}
 
 		private ComponentCreature FindPlayerAttacker(ComponentPlayer player)
@@ -600,6 +714,88 @@ namespace Game
 			return null;
 		}
 
+		private bool IsPlayerAlly()
+		{
+			ComponentNewHerdBehavior herdBehavior = base.Entity.FindComponent<ComponentNewHerdBehavior>();
+			ComponentHerdBehavior oldHerdBehavior = base.Entity.FindComponent<ComponentHerdBehavior>();
+
+			if (herdBehavior != null && !string.IsNullOrEmpty(herdBehavior.HerdName))
+			{
+				string herdName = herdBehavior.HerdName;
+				return herdName.Equals("player", StringComparison.OrdinalIgnoreCase) ||
+					   herdName.ToLower().Contains("guardian");
+			}
+			else if (oldHerdBehavior != null && !string.IsNullOrEmpty(oldHerdBehavior.HerdName))
+			{
+				string herdName = oldHerdBehavior.HerdName;
+				return herdName.Equals("player", StringComparison.OrdinalIgnoreCase) ||
+					   herdName.ToLower().Contains("guardian");
+			}
+
+			return false;
+		}
+
+		private bool IsFacingPlayer(ComponentCreature creature, ComponentPlayer player)
+		{
+			if (creature.ComponentBody == null || player.ComponentBody == null)
+				return false;
+
+			Vector3 toPlayer = player.ComponentBody.Position - creature.ComponentBody.Position;
+			if (toPlayer.LengthSquared() < 0.01f)
+				return false;
+
+			toPlayer = Vector3.Normalize(toPlayer);
+			Vector3 creatureForward = creature.ComponentBody.Matrix.Forward;
+
+			float dot = Vector3.Dot(creatureForward, toPlayer);
+			return dot > 0.7f;
+		}
+
+		private bool IsZombieOrInfected(ComponentCreature creature)
+		{
+			ComponentZombieHerdBehavior zombieHerd = creature.Entity.FindComponent<ComponentZombieHerdBehavior>();
+			ComponentZombieChaseBehavior zombieChase = creature.Entity.FindComponent<ComponentZombieChaseBehavior>();
+
+			if (zombieHerd == null && zombieChase == null)
+			{
+				ComponentChaseBehavior chase = creature.Entity.FindComponent<ComponentChaseBehavior>();
+				if (chase != null && chase.AttacksPlayer)
+				{
+					ComponentHerdBehavior herd = creature.Entity.FindComponent<ComponentHerdBehavior>();
+					if (herd != null)
+					{
+						string herdName = herd.HerdName.ToLower();
+						if (herdName.Contains("hostile") || herdName.Contains("enemy") || herdName.Contains("monster"))
+						{
+							return true;
+						}
+					}
+				}
+			}
+
+			return (zombieHerd != null || zombieChase != null);
+		}
+
+		private bool IsMovingTowardPlayer(ComponentCreature creature, ComponentPlayer player)
+		{
+			if (creature.ComponentBody == null || player.ComponentBody == null)
+				return false;
+
+			Vector3 toPlayer = player.ComponentBody.Position - creature.ComponentBody.Position;
+			if (toPlayer.LengthSquared() < 0.01f)
+				return false;
+
+			toPlayer = Vector3.Normalize(toPlayer);
+			Vector3 creatureVelocity = creature.ComponentBody.Velocity;
+
+			if (creatureVelocity.LengthSquared() < 0.1f)
+				return false;
+
+			creatureVelocity = Vector3.Normalize(creatureVelocity);
+			float dot = Vector3.Dot(creatureVelocity, toPlayer);
+			return dot > 0.5f;
+		}
+
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
 			this.m_subsystemGameInfo = base.Project.FindSubsystem<SubsystemGameInfo>(true);
@@ -612,6 +808,7 @@ namespace Game
 			this.m_subsystemAudio = base.Project.FindSubsystem<SubsystemAudio>(true);
 			this.m_subsystemParticles = base.Project.FindSubsystem<SubsystemParticles>(true);
 			this.m_subsystemTerrain = base.Project.FindSubsystem<SubsystemTerrain>(true);
+			this.m_subsystemGreenNightSky = base.Project.FindSubsystem<SubsystemGreenNightSky>(false);
 			this.m_componentCreature = base.Entity.FindComponent<ComponentCreature>(true);
 			this.m_componentPathfinding = base.Entity.FindComponent<ComponentPathfinding>(true);
 			this.m_componentMiner = base.Entity.FindComponent<ComponentMiner>(true);
@@ -633,6 +830,7 @@ namespace Game
 			this.m_chaseOnTouchProbability = valuesDictionary.GetValue<float>("ChaseOnTouchProbability");
 			this.m_autoDismount = valuesDictionary.GetValue<bool>("AutoDismount", true);
 			this.m_nextPlayerCheckTime = 0.0;
+			this.m_nextHighAlertCheckTime = 0.0;
 			this.m_lastActionTime = 0.0;
 
 			ComponentBody componentBody = this.m_componentCreature.ComponentBody;
@@ -1113,6 +1311,7 @@ namespace Game
 		public SubsystemAudio m_subsystemAudio;
 		public SubsystemParticles m_subsystemParticles;
 		public SubsystemTerrain m_subsystemTerrain;
+		public SubsystemGreenNightSky m_subsystemGreenNightSky;
 		public ComponentCreature m_componentCreature;
 		public ComponentPathfinding m_componentPathfinding;
 		public ComponentMiner m_componentMiner;
@@ -1136,6 +1335,7 @@ namespace Game
 		public float m_targetInRangeTime;
 		public double m_nextUpdateTime;
 		public double m_nextPlayerCheckTime;
+		public double m_nextHighAlertCheckTime;
 		public double m_lastActionTime;
 		public ComponentCreature m_target;
 		public float m_dt;
