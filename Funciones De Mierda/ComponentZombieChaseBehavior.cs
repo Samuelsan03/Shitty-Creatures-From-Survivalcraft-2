@@ -12,6 +12,8 @@ namespace Game
 		private SubsystemGreenNightSky m_subsystemGreenNightSky;
 		private Dictionary<ComponentCreature, float> m_lastAttackTimes = new Dictionary<ComponentCreature, float>();
 		private float m_retaliationMemoryDuration = 30f;
+		private ComponentCreature m_lastAttacker;
+		private float m_retaliationCooldown;
 
 		private bool m_attacksSameHerd;
 		private bool m_attacksAllCategories;
@@ -59,6 +61,17 @@ namespace Game
 				if (attacker != null)
 				{
 					m_lastAttackTimes[attacker] = m_retaliationMemoryDuration;
+					m_lastAttacker = attacker;
+
+					// Interrumpir ataque actual para responder inmediatamente
+					if (attacker != this.m_target && !IsSameHerd(attacker))
+					{
+						// Forzar cambio inmediato de objetivo
+						this.StopAttack();
+						this.Attack(attacker, 30f, 60f, true);
+						m_retaliationCooldown = 2f; // Prevenir cambio rápido
+						return;
+					}
 				}
 
 				if (attacker != null && !m_attacksSameHerd && IsSameHerd(attacker))
@@ -109,8 +122,11 @@ namespace Game
 			return m_componentZombieHerdBehavior.IsSameZombieHerd(otherCreature);
 		}
 
-		public virtual void Attack(ComponentCreature target, float maxRange, float maxChaseTime, bool isPersistent, bool isRetaliation)
+		public override void Attack(ComponentCreature target, float maxRange, float maxChaseTime, bool isPersistent)
 		{
+			// Verificar si estamos respondiendo a un ataque
+			bool isRetaliation = (m_lastAttacker != null && target == m_lastAttacker);
+
 			if (!isRetaliation && !m_attacksSameHerd && IsSameHerd(target))
 			{
 				if (m_componentZombieHerdBehavior != null)
@@ -124,9 +140,13 @@ namespace Game
 				return;
 			}
 
-			if (isRetaliation)
+			// Si es retaliación, forzar prioridad alta
+			if (isRetaliation && m_retaliationCooldown <= 0f)
 			{
 				this.Suppressed = false;
+				// Aumentar importancia para priorizar sobre otros estados
+				this.ImportanceLevelNonPersistent = 300f;
+				this.ImportanceLevelPersistent = 300f;
 
 				if (m_forceAttackDuringGreenNight && m_subsystemGreenNightSky != null &&
 					m_subsystemGreenNightSky.IsGreenNightActive &&
@@ -168,11 +188,6 @@ namespace Game
 			}
 		}
 
-		public override void Attack(ComponentCreature target, float maxRange, float maxChaseTime, bool isPersistent)
-		{
-			this.Attack(target, maxRange, maxChaseTime, isPersistent, false);
-		}
-
 		private ComponentCreature FindExternalEnemyNearby(float range)
 		{
 			Vector3 position = this.m_componentCreature.ComponentBody.Position;
@@ -206,6 +221,18 @@ namespace Game
 
 		public override ComponentCreature FindTarget()
 		{
+			// Durante el enfriamiento de retaliación, priorizar al último atacante
+			if (m_retaliationCooldown > 0f && m_lastAttacker != null && m_lastAttackTimes.ContainsKey(m_lastAttacker))
+			{
+				// Verificar que el último atacante siga siendo válido
+				if (m_lastAttacker.ComponentHealth.Health > 0f &&
+					!IsSameHerd(m_lastAttacker) &&
+					Vector3.Distance(m_componentCreature.ComponentBody.Position, m_lastAttacker.ComponentBody.Position) <= this.m_range * 2f)
+				{
+					return m_lastAttacker;
+				}
+			}
+
 			if (m_forceAttackDuringGreenNight && m_subsystemGreenNightSky != null && m_subsystemGreenNightSky.IsGreenNightActive)
 			{
 				Vector3 position = this.m_componentCreature.ComponentBody.Position;
@@ -311,6 +338,13 @@ namespace Game
 				return 0f;
 			}
 
+			// Priorizar fuertemente al último atacante
+			if (componentCreature == m_lastAttacker && m_lastAttackTimes.ContainsKey(componentCreature) &&
+				m_lastAttackTimes[componentCreature] > 0f)
+			{
+				return base.ScoreTarget(componentCreature) * 3.0f; // Triple puntuación
+			}
+
 			return base.ScoreTarget(componentCreature);
 		}
 
@@ -391,6 +425,13 @@ namespace Game
 		{
 			base.Update(dt);
 
+			// Actualizar cooldown de retaliación
+			if (m_retaliationCooldown > 0f)
+			{
+				m_retaliationCooldown -= dt;
+			}
+
+			// Actualizar tiempos de ataque
 			List<ComponentCreature> toRemove = new List<ComponentCreature>();
 			foreach (var kvp in m_lastAttackTimes)
 			{
@@ -398,6 +439,10 @@ namespace Game
 				if (m_lastAttackTimes[kvp.Key] <= 0f)
 				{
 					toRemove.Add(kvp.Key);
+					if (kvp.Key == m_lastAttacker)
+					{
+						m_lastAttacker = null;
+					}
 				}
 			}
 
@@ -411,14 +456,6 @@ namespace Game
 				this.AttacksPlayer = true;
 				this.Suppressed = false;
 
-				if (this.m_target != null)
-				{
-					ComponentPlayer playerComponent = this.m_target.Entity.FindComponent<ComponentPlayer>();
-					if (playerComponent == null)
-					{
-					}
-				}
-
 				if (this.m_stateMachine.CurrentState == "Fleeing")
 				{
 					this.m_stateMachine.TransitionTo("LookingForTarget");
@@ -427,6 +464,20 @@ namespace Game
 			else if (m_subsystemGreenNightSky != null && !m_subsystemGreenNightSky.IsGreenNightActive)
 			{
 				this.AttacksPlayer = m_attacksAllCategories;
+			}
+
+			// Forzar cambio de objetivo si hay un atacante reciente y no estamos en cooldown
+			if (m_lastAttacker != null && m_retaliationCooldown <= 0f &&
+				this.m_target != m_lastAttacker && !IsSameHerd(m_lastAttacker))
+			{
+				if (m_lastAttacker.ComponentHealth.Health > 0f &&
+					Vector3.Distance(m_componentCreature.ComponentBody.Position, m_lastAttacker.ComponentBody.Position) <= this.m_range * 1.5f)
+				{
+					// Cambiar inmediatamente al último atacante
+					this.StopAttack();
+					this.Attack(m_lastAttacker, 30f, 60f, true);
+					m_retaliationCooldown = 1f;
+				}
 			}
 		}
 
