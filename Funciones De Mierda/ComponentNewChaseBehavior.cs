@@ -1,7 +1,7 @@
 using System;
-using Engine.Graphics;
 using System.Runtime.CompilerServices;
 using Engine;
+using Engine.Graphics;
 using GameEntitySystem;
 using TemplatesDatabase;
 
@@ -30,6 +30,10 @@ namespace Game
 				return this.m_importanceLevel;
 			}
 		}
+
+		// AGREGADO: Campos para protección contra bandidos
+		private double m_nextBanditCheckTime = 0.0;
+
 		public virtual void Attack(ComponentCreature componentCreature, float maxRange, float maxChaseTime, bool isPersistent)
 		{
 			bool suppressed = this.Suppressed;
@@ -52,6 +56,22 @@ namespace Game
 							componentRider.StartDismounting();
 						}
 					}
+
+					// AGREGADO: Protección especial contra bandidos (siempre activa)
+					if (IsGuardianOrPlayerAlly() && IsBandit(componentCreature))
+					{
+						// Aumentar rango y tiempo contra bandidos
+						maxRange *= 1.3f;
+						maxChaseTime *= 1.5f;
+						isPersistent = true;
+
+						// Importancia alta contra bandidos
+						if (this.m_importanceLevel < 280f)
+						{
+							this.m_importanceLevel = 280f;
+						}
+					}
+
 					this.m_target = componentCreature;
 					this.m_nextUpdateTime = 0.0;
 					this.m_range = maxRange;
@@ -107,6 +127,22 @@ namespace Game
 								}
 							}
 						}
+
+						// AGREGADO: Protección especial contra bandidos (siempre activa)
+						if (IsGuardianOrPlayerAlly() && IsBandit(componentCreature))
+						{
+							// Aumentar rango y tiempo contra bandidos
+							maxRange *= 1.3f;
+							maxChaseTime *= 1.5f;
+							isPersistent = true;
+
+							// Importancia alta contra bandidos
+							if (this.m_importanceLevel < 280f)
+							{
+								this.m_importanceLevel = 280f;
+							}
+						}
+
 						if (this.m_autoDismount)
 						{
 							ComponentRider componentRider = base.Entity.FindComponent<ComponentRider>();
@@ -132,6 +168,7 @@ namespace Game
 				}
 			}
 		}
+
 		private void UpdateChasingStateImmediately()
 		{
 			if (this.m_target == null || !this.IsActive)
@@ -203,6 +240,137 @@ namespace Game
 				this.UpdateChasingStateImmediately();
 			}
 		}
+
+		// AGREGADO: Método para verificar si somos guardián o aliado del jugador
+		private bool IsGuardianOrPlayerAlly()
+		{
+			ComponentNewHerdBehavior herdBehavior = base.Entity.FindComponent<ComponentNewHerdBehavior>();
+			ComponentHerdBehavior oldHerdBehavior = base.Entity.FindComponent<ComponentHerdBehavior>();
+
+			if (herdBehavior != null && !string.IsNullOrEmpty(herdBehavior.HerdName))
+			{
+				string herdName = herdBehavior.HerdName;
+				return herdName.Equals("player", StringComparison.OrdinalIgnoreCase) ||
+					   herdName.ToLower().Contains("guardian");
+			}
+			else if (oldHerdBehavior != null && !string.IsNullOrEmpty(oldHerdBehavior.HerdName))
+			{
+				string herdName = oldHerdBehavior.HerdName;
+				return herdName.Equals("player", StringComparison.OrdinalIgnoreCase) ||
+					   herdName.ToLower().Contains("guardian");
+			}
+
+			return false;
+		}
+
+		// AGREGADO: Verificar si es bandido
+		private bool IsBandit(ComponentCreature creature)
+		{
+			if (creature == null) return false;
+
+			// Verificar manada nueva
+			ComponentNewHerdBehavior newHerd = creature.Entity.FindComponent<ComponentNewHerdBehavior>();
+			if (newHerd != null && !string.IsNullOrEmpty(newHerd.HerdName))
+			{
+				string herdName = newHerd.HerdName.ToLower();
+				if (herdName.Contains("bandit") || herdName.Contains("outlaw") || herdName.Contains("raider"))
+					return true;
+			}
+
+			// Verificar manada vieja
+			ComponentHerdBehavior oldHerd = creature.Entity.FindComponent<ComponentHerdBehavior>();
+			if (oldHerd != null && !string.IsNullOrEmpty(oldHerd.HerdName))
+			{
+				string herdName = oldHerd.HerdName.ToLower();
+				if (herdName.Contains("bandit") || herdName.Contains("outlaw") || herdName.Contains("raider"))
+					return true;
+			}
+
+			// Verificar componente específico de bandido
+			ComponentBanditHerdBehavior banditHerd = creature.Entity.FindComponent<ComponentBanditHerdBehavior>();
+			if (banditHerd != null)
+				return true;
+
+			ComponentBanditChaseBehavior banditChase = creature.Entity.FindComponent<ComponentBanditChaseBehavior>();
+			if (banditChase != null)
+				return true;
+
+			return false;
+		}
+
+		// AGREGADO: Chequear bandidos cercanos
+		private void CheckNearbyBandits(float dt)
+		{
+			try
+			{
+				// Solo si somos aliados del jugador
+				if (!IsGuardianOrPlayerAlly())
+					return;
+
+				// Chequear cada 1 segundo
+				bool timeToCheck = this.m_subsystemTime.GameTime >= this.m_nextBanditCheckTime;
+				if (timeToCheck)
+				{
+					this.m_nextBanditCheckTime = this.m_subsystemTime.GameTime + 1.0;
+
+					// Rango extendido para detectar bandidos
+					float banditDetectionRange = 25f;
+
+					// Buscar bandidos cercanos
+					ComponentCreature nearbyBandit = FindNearbyBandit(banditDetectionRange);
+
+					if (nearbyBandit != null && (this.m_target == null || this.m_target != nearbyBandit))
+					{
+						// Atacar bandido inmediatamente
+						this.Attack(nearbyBandit, banditDetectionRange, 40f, true);
+
+						// Llamar ayuda si es posible
+						ComponentNewHerdBehavior herdBehavior = base.Entity.FindComponent<ComponentNewHerdBehavior>();
+						if (herdBehavior != null && herdBehavior.AutoNearbyCreaturesHelp)
+						{
+							herdBehavior.CallNearbyCreaturesHelp(nearbyBandit, banditDetectionRange, 40f, false, true);
+						}
+					}
+				}
+			}
+			catch { }
+		}
+
+		// AGREGADO: Encontrar bandido cercano
+		private ComponentCreature FindNearbyBandit(float range)
+		{
+			try
+			{
+				Vector3 myPosition = this.m_componentCreature.ComponentBody.Position;
+				float rangeSquared = range * range;
+
+				foreach (ComponentCreature creature in this.m_subsystemCreatureSpawn.Creatures)
+				{
+					if (creature != null &&
+						creature.ComponentHealth != null &&
+						creature.ComponentHealth.Health > 0f &&
+						creature != this.m_componentCreature &&
+						creature.ComponentBody != null)
+					{
+						// Verificar si es bandido
+						if (!IsBandit(creature))
+							continue;
+
+						// Verificar distancia
+						float distanceSquared = Vector3.DistanceSquared(myPosition, creature.ComponentBody.Position);
+						if (distanceSquared > rangeSquared)
+							continue;
+
+						// Devolver el primer bandido encontrado
+						return creature;
+					}
+				}
+			}
+			catch { }
+
+			return null;
+		}
+
 		public virtual void StopAttack()
 		{
 			this.m_stateMachine.TransitionTo("LookingForTarget");
@@ -214,6 +382,7 @@ namespace Game
 			this.m_isPersistent = false;
 			this.m_importanceLevel = 0f;
 		}
+
 		public virtual void Update(float dt)
 		{
 			if (this.Suppressed)
@@ -222,6 +391,12 @@ namespace Game
 				return;
 			}
 			this.m_autoChaseSuppressionTime -= dt;
+
+			// AGREGADO: Chequear bandidos cercanos (siempre activo para guardianes/aliados)
+			if (IsGuardianOrPlayerAlly())
+			{
+				CheckNearbyBandits(dt);
+			}
 
 			if (this.m_subsystemGreenNightSky != null && this.m_subsystemGreenNightSky.IsGreenNightActive)
 			{
@@ -832,6 +1007,7 @@ namespace Game
 			this.m_nextPlayerCheckTime = 0.0;
 			this.m_nextHighAlertCheckTime = 0.0;
 			this.m_lastActionTime = 0.0;
+			this.m_nextBanditCheckTime = 0.0; // AGREGADO: Inicializar tiempo para chequeo de bandidos
 
 			ComponentBody componentBody = this.m_componentCreature.ComponentBody;
 			componentBody.CollidedWithBody = (Action<ComponentBody>)Delegate.Combine(componentBody.CollidedWithBody, new Action<ComponentBody>(delegate (ComponentBody body)
@@ -855,7 +1031,17 @@ namespace Game
 						bool flag7 = flag5 && ((this.AttacksPlayer && flag3 && this.m_subsystemGameInfo.WorldSettings.GameMode > GameMode.Harmless) || (this.AttacksNonPlayerCreature && !flag3 && flag4));
 						if (flag7)
 						{
-							this.Attack(componentCreature, this.ChaseRangeOnTouch, this.ChaseTimeOnTouch, false);
+							// AGREGADO: Mejorar ataque si es bandido
+							float chaseRange = this.ChaseRangeOnTouch;
+							float chaseTime = this.ChaseTimeOnTouch;
+
+							if (IsGuardianOrPlayerAlly() && IsBandit(componentCreature))
+							{
+								chaseRange *= 1.2f;
+								chaseTime *= 1.3f;
+							}
+
+							this.Attack(componentCreature, chaseRange, chaseTime, false);
 						}
 					}
 				}
@@ -875,6 +1061,15 @@ namespace Game
 					float maxRange = this.ChaseRangeOnAttacked ?? ((this.m_chaseWhenAttackedProbability >= 1f) ? 30f : 7f);
 					float maxChaseTime = this.ChaseTimeOnAttacked ?? ((this.m_chaseWhenAttackedProbability >= 1f) ? 60f : 7f);
 					bool isPersistent = this.ChasePersistentOnAttacked ?? (this.m_chaseWhenAttackedProbability >= 1f);
+
+					// AGREGADO: Mejorar respuesta si el atacante es bandido
+					if (IsGuardianOrPlayerAlly() && IsBandit(injury.Attacker))
+					{
+						maxRange *= 1.3f;
+						maxChaseTime *= 1.5f;
+						isPersistent = true;
+					}
+
 					ComponentNewHerdBehavior componentNewHerdBehavior = base.Entity.FindComponent<ComponentNewHerdBehavior>();
 					bool flag2 = true;
 					bool flag3 = componentNewHerdBehavior != null;
@@ -1226,6 +1421,13 @@ namespace Game
 					result = this.m_range - num;
 				}
 			}
+
+			// AGREGADO: Bonus extra si es bandido y somos aliados del jugador
+			if (IsGuardianOrPlayerAlly() && IsBandit(componentCreature) && flag6)
+			{
+				result *= 1.5f; // 50% más de score para bandidos
+			}
+
 			return result;
 		}
 
