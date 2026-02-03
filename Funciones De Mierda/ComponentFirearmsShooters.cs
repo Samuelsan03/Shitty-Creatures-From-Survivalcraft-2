@@ -553,6 +553,11 @@ namespace Game
 
 		private void UpdateAutomaticWeapon(double currentTime, ComponentCreature target)
 		{
+			if (target != null && IsTargetFriendly(target))
+			{
+				m_isAiming = false;
+				return;
+			}
 			if (!m_isAiming)
 			{
 				if (!m_isReloading)
@@ -568,12 +573,19 @@ namespace Game
 			{
 				if (currentTime - m_lastShootTime >= GetCurrentFireRate())
 				{
-					Fire(target);
-					m_lastShootTime = currentTime;
-					m_shotsSinceLastReload++;
-					if (ShouldReload(currentTime))
+					if (target != null && !IsTargetFriendly(target))
 					{
-						StartReloading();
+						Fire(target);
+						m_lastShootTime = currentTime;
+						m_shotsSinceLastReload++;
+						if (ShouldReload(currentTime))
+						{
+							StartReloading();
+						}
+					}
+					else
+					{
+						m_isAiming = false;
 					}
 				}
 			}
@@ -581,6 +593,11 @@ namespace Game
 
 		private void UpdatePistolWeapon(double currentTime, ComponentCreature target)
 		{
+			if (target != null && IsTargetFriendly(target))
+			{
+				m_isAiming = false;
+				return;
+			}
 			if (!m_isAiming)
 			{
 				if (!m_isReloading)
@@ -599,20 +616,91 @@ namespace Game
 			{
 				if (currentTime - m_lastShootTime >= GetCurrentFireRate())
 				{
-					Fire(target);
-					m_lastShootTime = currentTime;
-					m_shotsSinceLastReload++;
-					if (ShouldReload(currentTime))
+					if (target != null && !IsTargetFriendly(target))
 					{
-						StartReloading();
+						Fire(target);
+						m_lastShootTime = currentTime;
+						m_shotsSinceLastReload++;
+						if (ShouldReload(currentTime))
+						{
+							StartReloading();
+						}
 					}
 					m_isAiming = false;
 				}
 			}
 		}
 
+		private bool IsTargetFriendly(ComponentCreature target)
+		{
+			if (target == null || m_componentCreature == null)
+				return false;
+			if (target == m_componentCreature)
+				return true;
+			ComponentNewHerdBehavior ourNewHerd = Entity.FindComponent<ComponentNewHerdBehavior>();
+			ComponentHerdBehavior ourOldHerd = Entity.FindComponent<ComponentHerdBehavior>();
+			ComponentBanditHerdBehavior ourBanditHerd = Entity.FindComponent<ComponentBanditHerdBehavior>();
+			ComponentZombieHerdBehavior ourZombieHerd = Entity.FindComponent<ComponentZombieHerdBehavior>();
+			ComponentNewHerdBehavior targetNewHerd = target.Entity.FindComponent<ComponentNewHerdBehavior>();
+			ComponentHerdBehavior targetOldHerd = target.Entity.FindComponent<ComponentHerdBehavior>();
+			ComponentBanditHerdBehavior targetBanditHerd = target.Entity.FindComponent<ComponentBanditHerdBehavior>();
+			ComponentZombieHerdBehavior targetZombieHerd = target.Entity.FindComponent<ComponentZombieHerdBehavior>();
+			ComponentPlayer targetPlayer = target.Entity.FindComponent<ComponentPlayer>();
+			if (targetPlayer != null)
+			{
+				if (ourNewHerd != null)
+				{
+					return !ourNewHerd.CanAttackCreature(target);
+				}
+				else if (ourOldHerd != null)
+				{
+					string herdName = ourOldHerd.HerdName;
+					return herdName.Equals("player", StringComparison.OrdinalIgnoreCase) ||
+						   herdName.ToLower().Contains("guardian");
+				}
+				else if (ourBanditHerd != null || ourZombieHerd != null)
+				{
+					return false;
+				}
+			}
+			if (ourNewHerd != null && targetNewHerd != null)
+			{
+				return !ourNewHerd.CanAttackCreature(target);
+			}
+			else if (ourOldHerd != null && targetOldHerd != null)
+			{
+				return ourOldHerd.HerdName == targetOldHerd.HerdName;
+			}
+			else if (ourBanditHerd != null && targetBanditHerd != null)
+			{
+				return ourBanditHerd.HerdName == targetBanditHerd.HerdName;
+			}
+			else if (ourZombieHerd != null && targetZombieHerd != null)
+			{
+				return ourZombieHerd.HerdName == targetZombieHerd.HerdName;
+			}
+			if (ourNewHerd != null && targetOldHerd != null)
+			{
+				return !ourNewHerd.CanAttackCreature(target);
+			}
+			else if (ourOldHerd != null && targetNewHerd != null)
+			{
+				ComponentHerdBehavior tempHerd = target.Entity.FindComponent<ComponentHerdBehavior>();
+				if (tempHerd != null)
+				{
+					return ourOldHerd.HerdName == tempHerd.HerdName;
+				}
+			}
+			return false;
+		}
+
 		private void UpdateSniperWeapon(double currentTime, ComponentCreature target)
 		{
+			if (target != null && IsTargetFriendly(target))
+			{
+				m_isAiming = false;
+				return;
+			}
 			if (!m_isAiming)
 			{
 				if (!m_isReloading)
@@ -626,12 +714,15 @@ namespace Game
 			{
 				if (currentTime - m_lastShootTime >= GetCurrentFireRate())
 				{
-					Fire(target);
-					m_lastShootTime = currentTime;
-					m_shotsSinceLastReload++;
-					if (m_shotsSinceLastReload >= 1)
+					if (target != null && !IsTargetFriendly(target))
 					{
-						StartReloading();
+						Fire(target);
+						m_lastShootTime = currentTime;
+						m_shotsSinceLastReload++;
+						if (m_shotsSinceLastReload >= 1)
+						{
+							StartReloading();
+						}
 					}
 					m_isAiming = false;
 				}
@@ -787,6 +878,12 @@ namespace Game
 
 		private void Fire(ComponentCreature target)
 		{
+			if (target == null || IsTargetFriendly(target))
+			{
+				m_isFiring = true;
+				m_fireTime = m_subsystemTime.GameTime;
+				return;
+			}
 			m_isFiring = true;
 			m_fireTime = m_subsystemTime.GameTime;
 			if (m_currentWeaponIndex == -1)
