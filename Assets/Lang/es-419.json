@@ -1,4 +1,17 @@
 {
+  "ComponentSleep": {
+    "1": "No estás en terreno seco.",
+    "2": "Este bloque no es cómodo para dormir.",
+    "3": "No estás lo suficientemente cansado.",
+    "4": "Estás demasiado mojado.",
+    "5": "No tienes techo.",
+    "6": "Te despertaste porque te mojaste.",
+    "7": "Te despertaste manualmente.",
+    "8": "Presiona cualquier tecla para despertar.",
+    "9": "Esperando a que amanezca...",
+    "10": "Durmiendo",
+    "11": "¡No puedes dormir en luna verde!"
+},
   "LargeFirstAidKit": {
     "PlayerHealed": "¡Has restaurado completamente tu salud!",
     "NPCHealedFormat": "¡La salud de {0} ha sido completamente restaurada!"
@@ -714,6 +727,7 @@
     }
   },
   "Messages": {
+    "TooCloseToAim": "Demasiado cerca para apuntar.",
     "NeedAmmo": "Necesita {0} para disparar.",
     "NPCCured": "¡El NPC ha sido curado de veneno y enfermedades!",
     "FluCured": "¡La gripa ha sido curada!",
