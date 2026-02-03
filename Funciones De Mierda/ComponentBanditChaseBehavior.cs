@@ -67,13 +67,13 @@ namespace Game
 			{
 				// Actualizar estado de salud
 				m_isNearDeath = IsNearDeath();
-				
+
 				// Cuando están cerca de la muerte, aumentar la persistencia del ataque
 				if (m_isNearDeath)
 				{
 					m_attackPersistanceFactor = 2f; // Doble de persistencia
 				}
-				
+
 				ComponentCreature attacker = injury.Attacker;
 
 				// Verificar si el atacante es de la misma manada
@@ -120,13 +120,13 @@ namespace Game
 			{
 				// Actualizar estado de salud
 				m_isNearDeath = IsNearDeath();
-				
+
 				// Cuando están cerca de la muerte, aumentar la persistencia del ataque
 				if (m_isNearDeath)
 				{
 					m_attackPersistanceFactor = 2f;
 				}
-				
+
 				if (m_target == null && m_autoChaseSuppressionTime <= 0f && m_random.Float(0f, 1f) < m_chaseOnTouchProbability)
 				{
 					ComponentCreature componentCreature = body.Entity.FindComponent<ComponentCreature>();
@@ -175,13 +175,13 @@ namespace Game
 			// Actualizar estado de salud en cada frame
 			bool wasNearDeath = m_isNearDeath;
 			m_isNearDeath = IsNearDeath();
-			
+
 			// Si acabamos de entrar en estado de near-death, aumentar la persistencia
 			if (m_isNearDeath && !wasNearDeath)
 			{
 				m_attackPersistanceFactor = 2f;
 			}
-			
+
 			// Si recuperamos salud, restaurar factor normal
 			if (!m_isNearDeath && wasNearDeath)
 			{
@@ -190,10 +190,10 @@ namespace Game
 
 			// Llamar al Update base para mantener el comportamiento de persecución
 			base.Update(dt);
-			
+
 			// LOS BANDITOS CONTINÚAN SU COMPORTAMIENTO DE ATAQUE AUNQUE ESTÉN CERCA DE LA MUERTE
 			// No hay lógica de huida o detención cuando están a punto de morir
-			
+
 			// Si estamos cerca de la muerte y tenemos objetivo, asegurarnos de mantener el ataque
 			if (m_isNearDeath && m_target != null)
 			{
@@ -257,12 +257,12 @@ namespace Game
 			// Ajustar tiempos de persecución si estamos cerca de la muerte
 			float adjustedChaseTime = maxChaseTime;
 			bool adjustedPersistent = isPersistent;
-			
+
 			if (m_isNearDeath)
 			{
 				adjustedChaseTime *= m_attackPersistanceFactor; // Aumentar tiempo de persecución
 				adjustedPersistent = true; // Forzar persistencia
-				
+
 				// Aumentar también el rango de ataque cuando están cerca de la muerte (último esfuerzo)
 				maxRange *= 1.2f;
 			}
@@ -270,7 +270,7 @@ namespace Game
 			// LOS BANDITOS SIGUEN ATACANDO AUNQUE ESTÉN CERCA DE LA MUERTE
 			// Comportamiento normal con ajustes
 			base.Attack(componentCreature, maxRange, adjustedChaseTime, adjustedPersistent);
-			
+
 			// Asegurarse de que el ataque sea persistente incluso cuando estén cerca de la muerte
 			if (m_isNearDeath)
 			{
@@ -310,7 +310,7 @@ namespace Game
 					}
 				}
 			}
-			
+
 			// LOS BANDITOS SIGUEN BUSCANDO OBJETIVOS AUNQUE ESTÉN CERCA DE LA MUERTE
 			// Si estamos cerca de la muerte y no encontramos objetivo, buscar en un rango más amplio
 			if (m_isNearDeath && result == null && m_range < 40f)
@@ -343,10 +343,10 @@ namespace Game
 					}
 				}
 			}
-			
+
 			return result;
 		}
-		
+
 		// Método para detener el ataque (sobrescribir para evitar que se detenga cuando están cerca de la muerte)
 		public new void StopAttack()
 		{
