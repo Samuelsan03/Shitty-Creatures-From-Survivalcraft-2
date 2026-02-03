@@ -54,11 +54,13 @@ namespace Game
 						bool flag4 = this.m_subsystemTerrain.Raycast(position, position + vector * 1f, true, true, null) != null;
 						if (flag4)
 						{
-							ComponentPlayer componentPlayer = componentMiner.ComponentPlayer;
+							ComponentPlayer componentPlayer = componentMiner?.ComponentPlayer;
 							bool flag5 = componentPlayer != null;
 							if (flag5)
 							{
-								componentPlayer.ComponentGui.DisplaySmallMessage("Obstrucción - muy cerca para apuntar", Color.White, true, true);
+								// Usar LanguageControl para obtener el mensaje traducido
+								string message = LanguageControl.Get("Messages", "TooCloseToAim");
+								componentPlayer.ComponentGui.DisplaySmallMessage(message, Color.White, true, true);
 							}
 							return false;
 						}
