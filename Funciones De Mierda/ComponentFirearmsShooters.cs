@@ -443,6 +443,30 @@ namespace Game
 				ResetAnimations();
 				return;
 			}
+
+			// VERIFICACIÓN TEMPRANA CRÍTICA: Si somos bandidos, verificar que no estemos apuntando a otro bandido amigo
+			ComponentBanditHerdBehavior ourBanditHerd = Entity.FindComponent<ComponentBanditHerdBehavior>();
+			if (ourBanditHerd != null)
+			{
+                if (GetTarget() != null)
+				{
+					ComponentBanditHerdBehavior targetBanditHerd = GetTarget().Entity.FindComponent<ComponentBanditHerdBehavior>();
+					if (targetBanditHerd != null &&
+						string.Equals(ourBanditHerd.HerdName, targetBanditHerd.HerdName, StringComparison.OrdinalIgnoreCase))
+					{
+						// Objetivo es bandido de la misma manada - detener ataque inmediatamente
+						ResetAnimations();
+
+						// También detener el comportamiento de persecución si existe
+						if (m_componentBanditChaseBehavior != null && m_componentBanditChaseBehavior.Target == GetTarget())
+						{
+							m_componentBanditChaseBehavior.StopAttack();
+						}
+						return;
+					}
+				}
+			}
+
 			if (m_isReloading)
 			{
 				ApplyReloadingAnimation(dt);
@@ -637,15 +661,33 @@ namespace Game
 				return false;
 			if (target == m_componentCreature)
 				return true;
+
 			ComponentNewHerdBehavior ourNewHerd = Entity.FindComponent<ComponentNewHerdBehavior>();
 			ComponentHerdBehavior ourOldHerd = Entity.FindComponent<ComponentHerdBehavior>();
 			ComponentBanditHerdBehavior ourBanditHerd = Entity.FindComponent<ComponentBanditHerdBehavior>();
 			ComponentZombieHerdBehavior ourZombieHerd = Entity.FindComponent<ComponentZombieHerdBehavior>();
+
 			ComponentNewHerdBehavior targetNewHerd = target.Entity.FindComponent<ComponentNewHerdBehavior>();
 			ComponentHerdBehavior targetOldHerd = target.Entity.FindComponent<ComponentHerdBehavior>();
 			ComponentBanditHerdBehavior targetBanditHerd = target.Entity.FindComponent<ComponentBanditHerdBehavior>();
 			ComponentZombieHerdBehavior targetZombieHerd = target.Entity.FindComponent<ComponentZombieHerdBehavior>();
 			ComponentPlayer targetPlayer = target.Entity.FindComponent<ComponentPlayer>();
+
+			// VERIFICACIÓN CRÍTICA 1: Si ambos somos bandidos de la misma manada
+			if (ourBanditHerd != null && targetBanditHerd != null)
+			{
+				// Solo son amigos si son de la misma manada (nombre igual, insensible a mayúsculas/minúsculas)
+				return string.Equals(ourBanditHerd.HerdName, targetBanditHerd.HerdName, StringComparison.OrdinalIgnoreCase);
+			}
+
+			// VERIFICACIÓN CRÍTICA 2: Si somos bandidos y el objetivo también parece bandido
+			if ((ourBanditHerd != null && IsCreatureBandit(target)) ||
+				(targetBanditHerd != null && IsCreatureBandit(m_componentCreature)))
+			{
+				// Por defecto, asumimos que no son amigos para evitar disparos accidentales
+				return false;
+			}
+
 			if (targetPlayer != null)
 			{
 				if (ourNewHerd != null)
@@ -663,6 +705,7 @@ namespace Game
 					return false;
 				}
 			}
+
 			if (ourNewHerd != null && targetNewHerd != null)
 			{
 				return !ourNewHerd.CanAttackCreature(target);
@@ -671,14 +714,11 @@ namespace Game
 			{
 				return ourOldHerd.HerdName == targetOldHerd.HerdName;
 			}
-			else if (ourBanditHerd != null && targetBanditHerd != null)
-			{
-				return ourBanditHerd.HerdName == targetBanditHerd.HerdName;
-			}
 			else if (ourZombieHerd != null && targetZombieHerd != null)
 			{
 				return ourZombieHerd.HerdName == targetZombieHerd.HerdName;
 			}
+
 			if (ourNewHerd != null && targetOldHerd != null)
 			{
 				return !ourNewHerd.CanAttackCreature(target);
@@ -691,6 +731,33 @@ namespace Game
 					return ourOldHerd.HerdName == tempHerd.HerdName;
 				}
 			}
+
+			return false;
+		}
+
+		// Método auxiliar para identificar bandidos
+		private bool IsCreatureBandit(ComponentCreature creature)
+		{
+			if (creature == null) return false;
+
+			// 1. Verificar por componente de persecución de bandidos
+			ComponentBanditChaseBehavior banditChase = creature.Entity.FindComponent<ComponentBanditChaseBehavior>();
+			if (banditChase != null) return true;
+
+			// 2. Verificar por componente de manada de bandidos
+			ComponentBanditHerdBehavior banditHerd = creature.Entity.FindComponent<ComponentBanditHerdBehavior>();
+			if (banditHerd != null) return true;
+
+			// 3. Verificar por nombre de entidad (como respaldo)
+			string entityName = creature.Entity.GetType().Name.ToLower();
+			if (entityName.Contains("bandit") || entityName.Contains("bandido"))
+				return true;
+
+			// 4. Verificar por nombre de template (último recurso)
+			string templateName = creature.Entity.ValuesDictionary.DatabaseObject.Name.ToLower();
+			if (templateName.Contains("bandit") || templateName.Contains("bandido"))
+				return true;
+
 			return false;
 		}
 
