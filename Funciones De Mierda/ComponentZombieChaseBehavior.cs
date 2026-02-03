@@ -149,7 +149,7 @@ namespace Game
 				this.ImportanceLevelPersistent = 300f;
 
 				if (m_forceAttackDuringGreenNight && m_subsystemGreenNightSky != null &&
-					m_subsystemGreenNightSky.IsGreenNightActive &&
+					m_subsystemGreenNightSky.IsGreenNightActive() &&  // <-- CORREGIDO: añadir ()
 					target.Entity.FindComponent<ComponentPlayer>() == null)
 				{
 					Vector3 position = this.m_componentCreature.ComponentBody.Position;
@@ -233,7 +233,7 @@ namespace Game
 				}
 			}
 
-			if (m_forceAttackDuringGreenNight && m_subsystemGreenNightSky != null && m_subsystemGreenNightSky.IsGreenNightActive)
+			if (m_forceAttackDuringGreenNight && m_subsystemGreenNightSky != null && m_subsystemGreenNightSky.IsGreenNightActive())  // <-- CORREGIDO: añadir ()
 			{
 				Vector3 position = this.m_componentCreature.ComponentBody.Position;
 
@@ -451,7 +451,7 @@ namespace Game
 				m_lastAttackTimes.Remove(creature);
 			}
 
-			if (m_forceAttackDuringGreenNight && m_subsystemGreenNightSky != null && m_subsystemGreenNightSky.IsGreenNightActive)
+			if (m_forceAttackDuringGreenNight && m_subsystemGreenNightSky != null && m_subsystemGreenNightSky.IsGreenNightActive())  // <-- CORREGIDO: añadir ()
 			{
 				this.AttacksPlayer = true;
 				this.Suppressed = false;
@@ -461,7 +461,7 @@ namespace Game
 					this.m_stateMachine.TransitionTo("LookingForTarget");
 				}
 			}
-			else if (m_subsystemGreenNightSky != null && !m_subsystemGreenNightSky.IsGreenNightActive)
+			else if (m_subsystemGreenNightSky != null && !m_subsystemGreenNightSky.IsGreenNightActive())  // <-- CORREGIDO: añadir ()
 			{
 				this.AttacksPlayer = m_attacksAllCategories;
 			}
