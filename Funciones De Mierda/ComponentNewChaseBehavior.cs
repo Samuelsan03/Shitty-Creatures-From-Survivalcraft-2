@@ -398,7 +398,7 @@ namespace Game
 				CheckNearbyBandits(dt);
 			}
 
-			if (this.m_subsystemGreenNightSky != null && this.m_subsystemGreenNightSky.IsGreenNightActive)
+			if (this.m_subsystemGreenNightSky != null && this.m_subsystemGreenNightSky.IsGreenNightActive())
 			{
 				if (this.Suppressed)
 				{
