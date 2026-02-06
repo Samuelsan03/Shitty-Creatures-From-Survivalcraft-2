@@ -1,5 +1,4 @@
 <Zombie xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://gitee.com/THPRC/survivalcraft-api/raw/SCAPI1.8/Survivalcraft/Content/Assets/Database.xsd">
-<Folder Name="Zombies" Guid="070fbf51-8c89-4e3c-9142-e1495bddf918">
 
         <EntityTemplate Name="InfectedNormal1" Guid="e6afa31e-3845-4d07-9451-e3782e6a1889" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
         <MemberComponentTemplate Name="ZombieAI" Guid="835f7e1c-2d9c-40a1-9600-8a545db49ef0">
@@ -10017,5 +10016,4 @@
                 <Parameter Name="NightChaseTime" Guid="cd70a9e7-436e-4364-9dcc-d395369f78d9" Value="0" Type="float"/>
             </MemberComponentTemplate>
         </EntityTemplate>
-        </Folder>
         </Zombie>
