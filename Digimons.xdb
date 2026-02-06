@@ -1,5 +1,4 @@
 <Digimon>
-<Folder Name="Digimons" Guid="3ac2f75d-3314-4aeb-ac89-0e27a68208c7">
 
     <EntityTemplate Name="Veemon" Guid="27207048-7b75-409d-b98d-e400275b884c" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
 <MemberComponentTemplate Name="NewRunAwayBehavior" Guid="d967a44a-1ee7-4607-8a58-608fd13143fc">
@@ -429,7 +428,7 @@
     </MemberComponentTemplate>
 <MemberComponentTemplate Name="MinecraftHumanModel" Guid="b613fae4-da5a-47bc-a640-0525e701098f" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
     <Parameter Name="Class" Guid="975894bf-8bc5-4084-94d0-3608387b3659" Value="Game.ComponentMinecraftHumanModel" Type="string"/>
-    <Parameter Name="ModelName" Guid="59bcdb99-e517-4338-935e-89e90493daa2" Value="Models/MC 1" Type="string"/>
+    <Parameter Name="ModelName" Guid="59bcdb99-e517-4338-935e-89e90493daa2" Value="Models/MC 2" Type="string"/>
     <Parameter Name="TextureOverride" Guid="ad314aaf-1e63-4b87-919a-2fa86d1781d6" Value="Textures/Agumon" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="fb3c122c-d874-4176-a596-d9ce98fd0320" Value="0.65" Type="float"/>
     <Parameter Name="WalkBobHeight" Guid="51220987-9fed-4599-b568-064ff0ca7aea" Value="0.045" Type="float"/>
@@ -1592,5 +1591,4 @@
         <Parameter Name="EggTypeIndex" Guid="da558cb9-aa17-4903-9081-f1f41e535914" Value="7008" Type="int"/>
     </ParameterSet>
 </EntityTemplate>
-</Folder>
 </Digimon>
