@@ -1,5 +1,4 @@
 <BandidosDeMierda>
-<Folder Name="Bandidos De Mierda" Guid="71871010-fc08-4d70-982d-324d6a882571">
 
     <EntityTemplate Name="Bandit1" Guid="ec68ffdc-d006-4583-aac7-109738d19121" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
     <MemberComponentTemplate Name="DeathSpawner" Guid="3afb48fb-279d-40d9-9502-ff5cd4768b8d">
@@ -1811,5 +1810,4 @@
         <Parameter Name="EggTypeIndex" Guid="f82694f6-ddee-4444-a692-07da8c56c03b" Value="2012" Type="int"/>
     </ParameterSet>
 </EntityTemplate>
-</Folder>
 </BandidosDeMierda>
