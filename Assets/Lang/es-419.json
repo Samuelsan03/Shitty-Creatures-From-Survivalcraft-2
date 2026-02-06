@@ -1,17 +1,4 @@
 {
-  "ComponentSleep": {
-    "1": "No estás en terreno seco.",
-    "2": "Este bloque no es cómodo para dormir.",
-    "3": "No estás lo suficientemente cansado.",
-    "4": "Estás demasiado mojado.",
-    "5": "No tienes techo.",
-    "6": "Te despertaste porque te mojaste.",
-    "7": "Te despertaste manualmente.",
-    "8": "Presiona cualquier tecla para despertar.",
-    "9": "Esperando a que amanezca...",
-    "10": "Durmiendo",
-    "11": "¡No puedes dormir en luna verde!"
-},
   "LargeFirstAidKit": {
     "PlayerHealed": "¡Has restaurado completamente tu salud!",
     "NPCHealedFormat": "¡La salud de {0} ha sido completamente restaurada!"
@@ -278,9 +265,9 @@
   "Description": "Un cubo que contiene un potente antídoto medicinal. Elimina los efectos del veneno y las enfermedades del cuerpo, deteniendo sus consecuencias dañinas y ayudando a una recuperación inmediata. Al curar una afección, también restaura la salud perdida. Puede usarse tanto en uno mismo como en otras criaturas enfermas."
 },
     "TeaAntifluBucketBlock:0": {
-      "DisplayName": "Cubo de Té Antigripal",
-      "Description": "Un cubo lleno de un té especial antigripal. Al usarse sobre una criatura con síntomas de gripe o resfriado, alivia instantáneamente los síntomas y restaura parte de la salud. El té está formulado con ingredientes naturales conocidos por sus propiedades curativas. Úsalo en ti mismo o en NPCs que estén sufriendo de gripe o resfriado."
-    },
+  "DisplayName": "Cubo de Té Antigripal",
+  "Description": "Un cubo lleno de té medicinal. Al beberlo, cura la gripe y restaura completamente la salud."
+},
     "LavaLongspearBlock:0": {
       "DisplayName": "Lanza Larga de Lava",
       "Description": "La Lanza Larga de Lava es la cúspide absoluta de las armas cuerpo a cuerpo. Forjada con energía volcánica y materiales indestructibles, supera ampliamente a la de diamante en daño y durabilidad. Su filo ardiente no solo inflige heridas devastadoras, sino que también quema a los enemigos con cada impacto, convirtiéndola en un arma temida incluso por los jefes más poderosos. Con un alcance extendido y una resistencia prácticamente infinita, esta lanza es el símbolo máximo de poder y supervivencia. Solo los más preparados pueden blandirla con eficacia."
