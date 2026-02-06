@@ -1,17 +1,4 @@
 {
-  "ComponentSleep": {
-    "1": "You are not on dry land.",
-    "2": "This block is not comfortable to sleep on.",
-    "3": "You are not tired enough.",
-    "4": "You are too wet.",
-    "5": "You don't have a ceiling.",
-    "6": "You woke up because you got wet.",
-    "7": "You woke up manually.",
-    "8": "Press any key to wake up.",
-    "9": "Waiting for dawn...",
-    "10": "Sleeping",
-    "11": "You cannot sleep in green moon!"
-},
   "LargeFirstAidKit": {
     "PlayerHealed": "You have completely restored your health!",
     "NPCHealedFormat": "The health of {0} has been completely restored!"
