@@ -278,9 +278,9 @@
   "Description": "A bucket containing a powerful medicinal antidote. It removes poison and disease effects from the body, stopping their harmful consequences and allowing immediate recovery. When a condition is cured, lost health is also restored. It can be used on yourself or on other infected creatures."
 },
     "TeaAntifluBucketBlock:0": {
-      "DisplayName": "Antiflu Tea Bucket",
-      "Description": "A bucket filled with a special antiflu serum made from herbal tea extracts. When used on a creature suffering from flu or cold symptoms, it quickly alleviates the illness and restores some health. The serum is designed to boost the immune system and fight off viral infections. Use it on yourself or on NPCs who are feeling under the weather."
-    },
+  "DisplayName": "Anti-Flu Tea Bucket",
+  "Description": "A bucket filled with medicinal tea. Drinking it cures the flu and fully restores health."
+},
       "LavaLongspearBlock:0": {
       "DisplayName": "Lava Longspear",
       "Description": "The Lava Long Spear stands as the ultimate melee weapon. Forged with volcanic energy and indestructible materials, it surpasses even the diamond spear in damage and durability. Its blazing edge not only delivers devastating strikes but also scorches enemies with every hit, making it a weapon feared even by the strongest bosses. With extended reach and near-infinite resilience, this spear represents the pinnacle of power and survival. Only the most prepared warriors can wield it effectively."
