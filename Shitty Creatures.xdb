@@ -1,11 +1,5 @@
 <ShittyCreatures xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://gitee.com/THPRC/survivalcraft-api/raw/SCAPI1.8/Survivalcraft/Content/Assets/Database.xsd">
 <Folder Name="Gameplay" Guid="d509e5e2-2c10-49f1-8223-85cd892c63b0">
-<ComponentTemplate Name="NewSleep" Description="Maneja el sueño de la entidad de la criatura" Guid="37be83a8-aea0-4fff-a634-86d773c96065" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
-    <Parameter Name="SleepStartTime" Description="Tiempo cuando la criatura se fue a dormir, o 0 si no está durmiendo" Guid="94cbe565-84c4-4447-a937-bc061293943f" Value="0" Type="double"/>
-    <Parameter Name="Class" Guid="14fe77a9-541e-4f2a-a2e9-cdb99f31221d" Value="Game.ComponentNewSleep" Type="string"/>
-    <Parameter Name="AllowManualWakeUp" Description="Si se permite el despertar manual" Guid="a9b8191d-466c-4cb0-88de-da6021d50ce0" Value="False" Type="bool"/>
-</ComponentTemplate>
-
 <ComponentTemplate Name="CreatureInventory" Description="Inventario para criaturas que pueden almacenar y usar objetos" Guid="a347220c-b5cf-4eae-9215-4ed37426eec4" InheritanceParent="81a44c6a-c30a-4f53-8d64-0c30aabab8f9">
   <Parameter Name="ActiveSlotIndex" Description="Índice del slot activo de la criatura" Guid="65e82739-c714-4418-90b0-adddb190350d" Value="0" Type="int"/>
   <Parameter Name="SlotsCount" Description="Número de slots en el inventario de la criatura" Guid="8f9e0c14-943a-49ce-96a8-24b51582dfb5" Value="16" Type="int"/>
@@ -560,15 +554,6 @@
     <Parameter Name="LoadOrder" Value="100" Type="int" Guid="03b84f3b-dfe4-4a2d-b927-333eea92f53a"/>
     <Parameter Name="Class" Value="Game.SubsystemAntidoteBucketBlockBehavior" Type="string" Guid="8681f7d6-0621-4e0f-ab68-75e050d965d3"/>
 </MemberSubsystemTemplate>
-<MemberSubsystemTemplate Name="SkyGreen" Guid="4ca0a8da-ad38-4027-add0-6ea744c7f81c">
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="8b597919-ab45-42ca-81fe-9aadc691de82"/>
-    <Parameter Name="LoadOrder" Value="100" Type="int" Guid="28a8ff11-ca3c-4885-9de5-f5eaa6a5dd7d"/>
-    <Parameter Name="Class" Value="Game.SubsystemGreenNightSky" Type="string" Guid="90f0ad79-4429-4488-a178-d4446fcd4bd9"/>
-    <Parameter Name="IsGreenNightActive" Value="false" Type="bool" Guid="5b05966a-7c83-45a8-bade-281047d4debe"/>
-  <Parameter Name="HasRolledTonight" Value="false" Type="bool" Guid="83204c22-7806-4719-ba27-baf04eb70408"/>
-  <Parameter Name="LastCheckedDay" Value="0.0" Type="double" Guid="79158993-a680-476e-bc23-6b23e36ac7c8"/>
-  <Parameter Name="DaysSinceLastGreenNight" Value="0" Type="int" Guid="1b1cbee7-d9e9-4079-b3ad-b5083e96d6ea"/>
-</MemberSubsystemTemplate>
 <MemberSubsystemTemplate Name="GrozaBehavior" Guid="b41cc8e1-f01d-4d6a-9cc9-75202aa6ac2a">
     <Parameter Name="IsOptional" Value="false" Type="bool" Guid="9c5602cf-d081-4eea-9e27-c489894c8a16"/>
     <Parameter Name="LoadOrder" Value="60" Type="int" Guid="a10426ff-2f62-4a31-9815-b5b035a94a8b"/>
@@ -758,8 +743,6 @@
   <Parameter Name="LoadOrder" Value="-1" Type="int"/>
 </MemberSubsystemTemplate>
 </ProjectTemplate>
-
-    <Folder Name="NPCS" Guid="6cc49cbb-cdd2-4479-9b40-fbadd9db3425">
 
         <EntityTemplate Name="Naomi" Guid="3d60e4a1-207a-44ce-9635-fa2997824b5c" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
 <MemberComponentTemplate Name="CreatureAI" Guid="36f10cfd-c975-47f4-ad93-e5b8b6603a35">
@@ -7037,5 +7020,4 @@
                 <Parameter Name="EggTypeIndex" Guid="7be02bcd-b948-406b-a19a-02b9ba7c1f26" Value="252" Type="int"/>
             </ParameterSet>
         </EntityTemplate>
-        </Folder>
 </ShittyCreatures>
