@@ -45,6 +45,10 @@
   },
   "Database": {
     "DisplayName": {
+      "Bandit15": "强盗15",
+      "Bandit14": "强盗14",
+      "Bandit13": "强盗13",
+      "Bandit12": "强盗12",
       "Bandit11": "强盗11",
       "Bandit10": "强盗10",
       "Bandit9": "强盗9",
@@ -244,6 +248,14 @@
     }
   },
   "Blocks": {
+    "BK43Block:0": {
+  "DisplayName": "BK-43 双管霰弹枪",
+  "Description": "一把可靠的12号口径双管霰弹枪。可装填两发霰弹，在近距离战斗中拥有极强的杀伤力和宽广的弹丸散布。"
+},
+"BK43BulletBlock:0": {
+  "DisplayName": "12号口径霰弹",
+  "Description": "BK-43 使用的12号口径霰弹弹药。专为近距离战斗设计，具备强大的制止力和散射效果。"
+},
     "NuclearCoinBlock:0": {
     "DisplayName": "核硬币",
     "Description": "在某种末日世界中锻造的货币。无法合成，但可以通过击杀怪物获得。可用于与皮拉塔 霍斯蒂尔 科梅尔西亚恩特交易，也可用于雇佣等其他用途，具体取决于玩家的需求。"
