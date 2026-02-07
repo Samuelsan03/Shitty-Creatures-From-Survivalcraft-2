@@ -45,10 +45,14 @@
   },
   "Database": {
     "DisplayName": {
-      "Bandit11": "Bandido 11",
-      "Bandit10": "Bandido 10",
-      "Bandit9": "Bandido 9",
-      "Bandit8": "Bandido 8",
+      "Bandit15": "Bandit 15",
+      "Bandit14": "Bandit 14",
+      "Bandit13": "Bandit 13",
+      "Bandit12": "Bandit 12",
+      "Bandit11": "Bandit 11",
+      "Bandit10": "Bandit 10",
+      "Bandit9": "Bandit 9",
+      "Bandit8": "Bandit 8",
       "Bandit7": "Bandit 7",
       "Bandit6": "Bandit 6",
       "Bandit5": "Bandit 5",
@@ -512,6 +516,14 @@
     "DisplayName": "AK-47",
     "Description": "Legendary assault rifle firing 7.62×39mm rounds. Good accuracy, moderate recoil. Uses AK47Bullet ammunition. Fires at ~350 RPM."
   },
+  "BK43Block:0": {
+  "DisplayName": "BK-43 Double-Barrel Shotgun",
+  "Description": "A reliable double-barrel 12-gauge shotgun. Holds two shells and delivers devastating close-range fire with a wide pellet spread."
+},
+"BK43BulletBlock:0": {
+  "DisplayName": "12-Gauge Shotgun Shells",
+  "Description": "12-gauge shotgun ammunition for the BK-43. Designed for close-quarters combat with high stopping power and wide dispersion."
+},
   "KABlock:0": {
     "DisplayName": "KA",
     "Description": "Advanced assault rifle that fires 5.56x45mm rounds. Unlike the AK-47, the KA offers superior accuracy, minimal recoil, and a 40-round magazine. Uses ammunition specifically designed for the KA."
