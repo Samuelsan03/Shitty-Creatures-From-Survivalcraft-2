@@ -120,6 +120,19 @@ namespace Game
 		{
 			try
 			{
+				int bk43Index = BlocksManager.GetBlockIndex(typeof(Game.BK43Block), true, false);
+				FirearmConfigs[bk43Index] = new FirearmConfig
+				{
+					BulletBlockType = typeof(NuevaBala3),  // Mismo tipo de bala que usa el BK43
+					ShootSound = "Audio/Armas/bk 43",
+					FireRate = 1.5,  // Cooldown de 1.5 segundos como en SubsystemBK43Behavior
+					BulletSpeed = 280f,  // Velocidad ajustada para escopeta
+					MaxShotsBeforeReload = 2,  // Capacidad de 2 cartuchos
+					ProjectilesPerShot = 8,  // 8 perdigones como patrón de escopeta
+					SpreadVector = new Vector3(0.1f, 0.1f, 0.03f),  // Dispersión de escopeta
+					NoiseRadius = 50f,  // Ruido mayor por ser escopeta
+					IsAutomatic = false  // No automático, es de bombeo/acción simple
+				};
 				int akIndex = BlocksManager.GetBlockIndex(typeof(Game.AKBlock), true, false);
 				FirearmConfigs[akIndex] = new FirearmConfig
 				{
@@ -846,7 +859,8 @@ namespace Game
 					recoilFactor = (float)(1.8f - timeSinceFire * 3f);
 				}
 				else if (m_currentWeaponIndex == BlocksManager.GetBlockIndex(typeof(Game.Izh43Block), true, false) ||
-						m_currentWeaponIndex == BlocksManager.GetBlockIndex(typeof(Game.SPAS12Block), true, false))
+				m_currentWeaponIndex == BlocksManager.GetBlockIndex(typeof(Game.SPAS12Block), true, false) ||
+				m_currentWeaponIndex == BlocksManager.GetBlockIndex(typeof(Game.BK43Block), true, false))
 				{
 					recoilFactor = (float)(2.0f - timeSinceFire * 2.5f);
 				}
@@ -1095,7 +1109,8 @@ namespace Game
 		private bool IsCurrentWeaponShotgun()
 		{
 			if (m_currentWeaponIndex == BlocksManager.GetBlockIndex(typeof(Game.Izh43Block), true, false) ||
-				m_currentWeaponIndex == BlocksManager.GetBlockIndex(typeof(Game.SPAS12Block), true, false))
+				m_currentWeaponIndex == BlocksManager.GetBlockIndex(typeof(Game.SPAS12Block), true, false) ||
+				m_currentWeaponIndex == BlocksManager.GetBlockIndex(typeof(Game.BK43Block), true, false))
 			{
 				return true;
 			}
