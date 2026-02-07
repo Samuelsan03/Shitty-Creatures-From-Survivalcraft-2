@@ -106,7 +106,7 @@ namespace Game
 		private int m_shotsSinceLastReload = 0;
 		private bool m_hasFirearmAimed = false;
 
-		private float m_maxDistance = 25f;
+		private float m_maxDistance = 100f;
 		private float m_drawTime = 1.2f;
 		private float m_aimTime = 0.5f;
 		private float m_reloadTime = 0.8f;
@@ -123,7 +123,7 @@ namespace Game
 		private float m_explosiveBoltMinDistance = 15f;
 		private float m_explosiveRepeatArrowMinDistance = 15f;
 
-		private float m_repeatCrossbowDrawTime = 2.0f;
+		private float m_repeatCrossbowDrawTime = 0.5f;
 		private float m_repeatCrossbowTimeBetweenShots = 0.5f;
 		private float m_repeatCrossbowMaxInaccuracy = 0.04f;
 		private float m_repeatCrossbowBoltSpeed = 35f;
@@ -157,7 +157,6 @@ namespace Game
 		{
 			try
 			{
-				// Armas originales
 				int kaIndex = BlocksManager.GetBlockIndex(typeof(KABlock), true, false);
 				m_firearmConfigs[kaIndex] = new FirearmConfig
 				{
@@ -172,6 +171,20 @@ namespace Game
 					IsAutomatic = true,
 					IsSniper = false,
 					IsShotgun = false
+				};
+
+				int bk43Index = BlocksManager.GetBlockIndex(typeof(Game.BK43Block), true, false);
+				m_firearmConfigs[bk43Index] = new FirearmConfig
+				{
+					BulletBlockType = typeof(NuevaBala3),  // Mismo tipo de bala que usa el BK43
+					ShootSound = "Audio/Armas/bk 43",
+					FireRate = 1.5,  // Cooldown de 1.5 segundos como en SubsystemBK43Behavior
+					BulletSpeed = 280f,  // Velocidad ajustada para escopeta
+					MaxShotsBeforeReload = 2,  // Capacidad de 2 cartuchos
+					ProjectilesPerShot = 8,  // 8 perdigones como patrón de escopeta
+					SpreadVector = new Vector3(0.1f, 0.1f, 0.03f),  // Dispersión de escopeta
+					NoiseRadius = 50f,  // Ruido mayor por ser escopeta
+					IsAutomatic = false  // No automático, es de bombeo/acción simple
 				};
 
 				int akIndex = BlocksManager.GetBlockIndex(typeof(AKBlock), true, false);
@@ -414,7 +427,6 @@ namespace Game
 					IsShotgun = false
 				};
 
-				// Nuevas armas añadidas
 				int aa12Index = BlocksManager.GetBlockIndex(typeof(AA12Block), true, false);
 				m_firearmConfigs[aa12Index] = new FirearmConfig
 				{
@@ -893,20 +905,37 @@ namespace Game
 
 			FirearmConfig config = m_firearmConfigs[blockIndex];
 
-			if (m_shotsSinceLastReload >= config.MaxShotsBeforeReload)
-			{
-				StartFirearmReloading();
-				return;
-			}
-
 			if (m_isFirearmReloading)
 			{
-				ApplyFirearmReloadingAnimation(target);
+				ApplyFirearmReloadingAnimation();
 
 				if (m_subsystemTime.GameTime - m_firearmReloadStartTime >= m_firearmReloadTime)
 				{
 					m_isFirearmReloading = false;
 					m_shotsSinceLastReload = 0;
+
+					if (m_subsystemParticles != null && m_subsystemTerrain != null)
+					{
+						try
+						{
+							Vector3 basePosition = m_componentCreature.ComponentCreatureModel.EyePosition;
+							Vector3 readyPosition = basePosition + new Vector3(0f, 0.2f, 0f);
+							KillParticleSystem readyParticles = new KillParticleSystem(m_subsystemTerrain, readyPosition, 0.5f);
+							m_subsystemParticles.AddParticleSystem(readyParticles, false);
+							for (int i = 0; i < 3; i++)
+							{
+								Vector3 offset = new Vector3(m_random.Float(-0.2f, 0.2f), m_random.Float(0.1f, 0.4f), m_random.Float(-0.2f, 0.2f));
+								KillParticleSystem additionalParticles = new KillParticleSystem(m_subsystemTerrain, basePosition + offset, 0.5f);
+								m_subsystemParticles.AddParticleSystem(additionalParticles, false);
+							}
+						}
+						catch (Exception)
+						{
+						}
+					}
+
+					m_subsystemAudio.PlaySound("Audio/Armas/reload", 1f, 0f, m_componentCreature.ComponentCreatureModel.EyePosition, 10f, true);
+					m_isFirearmAiming = false;
 					m_isFirearmAiming = true;
 					m_animationStartTime = m_subsystemTime.GameTime;
 					m_hasFirearmAimed = false;
@@ -934,6 +963,12 @@ namespace Game
 					m_isFirearmAiming = true;
 					m_animationStartTime = m_subsystemTime.GameTime;
 				}
+				return;
+			}
+
+			if (m_shotsSinceLastReload >= config.MaxShotsBeforeReload)
+			{
+				StartFirearmReloading();
 				return;
 			}
 
@@ -1012,15 +1047,13 @@ namespace Game
 			}
 		}
 
-		private void ApplyFirearmReloadingAnimation(ComponentCreature target)
+		private void ApplyFirearmReloadingAnimation()
 		{
 			if (m_componentModel != null)
 			{
-				float reloadProgress = (float)((m_subsystemTime.GameTime - m_firearmReloadStartTime) / m_firearmReloadTime);
-
-				m_componentModel.AimHandAngleOrder = MathUtils.Lerp(1.0f, 0.5f, reloadProgress);
-				m_componentModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f - (0.1f * reloadProgress));
-				m_componentModel.InHandItemRotationOrder = new Vector3(-1.7f + (0.5f * reloadProgress), 0f, 0f);
+				m_componentModel.AimHandAngleOrder = 0.0f;
+				m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
+				m_componentModel.InHandItemRotationOrder = Vector3.Zero;
 				m_componentModel.LookAtOrder = null;
 			}
 		}
@@ -1032,8 +1065,38 @@ namespace Game
 			m_isFirearmReloading = true;
 			m_firearmReloadStartTime = m_subsystemTime.GameTime;
 
-			m_subsystemAudio.PlaySound("Audio/Armas/reload", 0.8f, m_random.Float(-0.1f, 0.1f),
-				m_componentCreature.ComponentBody.Position, 5f, false);
+			if (m_componentModel != null)
+			{
+				m_componentModel.AimHandAngleOrder = 0f;
+				m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
+				m_componentModel.InHandItemRotationOrder = Vector3.Zero;
+				m_componentModel.LookAtOrder = null;
+			}
+
+			if (m_subsystemParticles != null && m_subsystemTerrain != null)
+			{
+				try
+				{
+					Vector3 basePosition = m_componentCreature.ComponentCreatureModel.EyePosition;
+					KillParticleSystem reloadParticles = new KillParticleSystem(m_subsystemTerrain, basePosition, 0.5f);
+					m_subsystemParticles.AddParticleSystem(reloadParticles, false);
+					for (int i = 0; i < 3; i++)
+					{
+						Vector3 offset = new Vector3(
+							m_random.Float(-0.2f, 0.2f),
+							m_random.Float(0.1f, 0.4f),
+							m_random.Float(-0.2f, 0.2f)
+						);
+						KillParticleSystem additionalParticles = new KillParticleSystem(m_subsystemTerrain, basePosition + offset, 0.5f);
+						m_subsystemParticles.AddParticleSystem(additionalParticles, false);
+					}
+				}
+				catch (Exception)
+				{
+				}
+			}
+
+			m_subsystemAudio.PlaySound("Audio/Armas/reload", 0.8f, 0f, m_componentCreature.ComponentCreatureModel.EyePosition, 10f, true);
 		}
 
 		private void FireFirearm(ComponentCreature target, FirearmConfig config)
@@ -2509,7 +2572,6 @@ namespace Game
 				int arrowData = ArrowBlock.SetArrowType(0, m_currentArrowType);
 				int arrowValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex<ArrowBlock>(), 0, arrowData);
 
-				// CONFIGURAR PROYECTIL PARA DESAPARECER AL CAER
 				var projectile = m_subsystemProjectiles.FireProjectile(
 					arrowValue,
 					firePosition,
@@ -2518,7 +2580,6 @@ namespace Game
 					m_componentCreature
 				);
 
-				// Configurar para desaparecer cuando se detenga
 				if (projectile != null)
 				{
 					projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
@@ -2551,7 +2612,6 @@ namespace Game
 				int boltData = ArrowBlock.SetArrowType(0, m_currentBoltType);
 				int boltValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex<ArrowBlock>(), 0, boltData);
 
-				// CONFIGURAR PROYECTIL PARA DESAPARECER AL CAER
 				var projectile = m_subsystemProjectiles.FireProjectile(
 					boltValue,
 					firePosition,
@@ -2560,7 +2620,6 @@ namespace Game
 					m_componentCreature
 				);
 
-				// Configurar para desaparecer cuando se detenga
 				if (projectile != null)
 				{
 					projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
@@ -2725,7 +2784,6 @@ namespace Game
 
 				if (projectile != null)
 				{
-					// CONFIGURAR PARA DESAPARECER AL DETENERSE PARA TODOS LOS TIPOS
 					projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
 
 					if (m_currentRepeatArrowType == RepeatArrowBlock.ArrowType.ExplosiveArrow)
