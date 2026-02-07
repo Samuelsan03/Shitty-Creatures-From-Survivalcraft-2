@@ -2409,13 +2409,19 @@ namespace Game
 				int arrowData = ArrowBlock.SetArrowType(0, m_currentArrowType);
 				int arrowValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex<ArrowBlock>(), 0, arrowData);
 
-				m_subsystemProjectiles.FireProjectile(
+				var projectile = m_subsystemProjectiles.FireProjectile(
 					arrowValue,
 					firePosition,
 					direction * currentSpeed,
 					Vector3.Zero,
 					m_componentCreature
 				);
+
+				// Configurar para que desaparezca al detenerse
+				if (projectile != null)
+				{
+					projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
+				}
 			}
 			catch { }
 		}
@@ -2444,13 +2450,19 @@ namespace Game
 				int boltData = ArrowBlock.SetArrowType(0, m_currentBoltType);
 				int boltValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex<ArrowBlock>(), 0, boltData);
 
-				m_subsystemProjectiles.FireProjectile(
+				var projectile = m_subsystemProjectiles.FireProjectile(
 					boltValue,
 					firePosition,
 					direction * speed,
 					Vector3.Zero,
 					m_componentCreature
 				);
+
+				// Configurar para que desaparezca al detenerse
+				if (projectile != null)
+				{
+					projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
+				}
 
 				if (m_subsystemNoise != null)
 				{
@@ -2609,10 +2621,16 @@ namespace Game
 					m_componentCreature
 				);
 
-				if (m_currentRepeatArrowType == RepeatArrowBlock.ArrowType.ExplosiveArrow && projectile != null)
+				if (projectile != null)
 				{
-					projectile.IsIncendiary = false;
+					// Configurar para que desaparezca al detenerse (para todos los tipos de flechas)
 					projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
+
+					// Mantener la configuración específica para flechas explosivas
+					if (m_currentRepeatArrowType == RepeatArrowBlock.ArrowType.ExplosiveArrow)
+					{
+						projectile.IsIncendiary = false;
+					}
 				}
 
 				if (m_subsystemNoise != null)
