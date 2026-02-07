@@ -1142,23 +1142,19 @@ namespace Game
 
 		private void UpdateMeleeMode(float dt, ComponentCreature target)
 		{
+			// Solo buscar un arma cuerpo a cuerpo si no hay una equipada
 			if (!HasMeleeWeaponEquipped())
 			{
-				if (!FindMeleeWeapon())
-				{
-					if (m_componentPathfinding != null && target != null)
-					{
-						Vector3 retreatDirection = Vector3.Normalize(m_componentCreature.ComponentBody.Position - target.ComponentBody.Position);
-						Vector3 retreatPosition = m_componentCreature.ComponentBody.Position + retreatDirection * 3f;
-						m_componentPathfinding.SetDestination(new Vector3?(retreatPosition), 1f, 1f, 0, false, true, false, null);
-					}
-					return;
-				}
+				FindMeleeWeapon(); // Intenta encontrar una, pero no es obligatorio
 			}
+
+			// Asegurarse de que el modelo está mirando al objetivo
 			if (target != null && m_componentModel != null)
 			{
 				m_componentModel.LookAtOrder = new Vector3?(target.ComponentCreatureModel.EyePosition);
 			}
+
+			// Atacar independientemente de si tiene arma o no
 			double currentTime = m_subsystemTime.GameTime;
 			if (currentTime - m_lastMeleeAttackTime >= 0.8f)
 			{
@@ -1209,7 +1205,9 @@ namespace Game
 		{
 			if (m_componentMiner == null || target == null || m_componentModel == null)
 				return;
+
 			m_componentModel.AttackOrder = true;
+
 			if (m_componentModel.IsAttackHitMoment)
 			{
 				Vector3 hitPoint;
