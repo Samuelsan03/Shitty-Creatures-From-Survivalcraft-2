@@ -6,251 +6,272 @@ using TemplatesDatabase;
 
 namespace Game
 {
-	public class ComponentZombieChaseBehavior : ComponentChaseBehavior
+	public class ComponentZombieChaseBehavior : ComponentChaseBehavior, IUpdateable
 	{
-		private ComponentZombieHerdBehavior m_componentZombieHerdBehavior;
+		// Nuevos campos específicos para zombis
+		public bool AttacksSameHerd { get; set; } = false;
+		public bool AttacksAllCategories { get; set; } = true;
+		public bool FleeFromSameHerd { get; set; } = true;
+		public float FleeDistance { get; set; } = 10f;
+		public bool ForceAttackDuringGreenNight { get; set; } = true;
+
+		// Campos para rastrear miembros de la misma manada y Noche Verde
+		private ComponentZombieHerdBehavior m_zombieHerdBehavior;
 		private SubsystemGreenNightSky m_subsystemGreenNightSky;
-		private Dictionary<ComponentCreature, float> m_lastAttackTimes = new Dictionary<ComponentCreature, float>();
-		private float m_retaliationMemoryDuration = 30f;
-		private ComponentCreature m_lastAttacker;
-		private float m_retaliationCooldown;
+		private SubsystemTimeOfDay m_subsystemTimeOfDay;
+		private float m_greenNightAttackTimer;
 
-		private bool m_attacksSameHerd;
-		private bool m_attacksAllCategories;
-		private bool m_fleeFromSameHerd;
-		private float m_fleeDistance = 10f;
-		private bool m_forceAttackDuringGreenNight;
-
-		private bool m_isGreenNightActive;
-		private ComponentPlayer m_primaryGreenNightTarget;
-		private float m_greenNightTargetSwitchCooldown;
-		private float m_greenNightAggressionRange = 100f;
-		private SubsystemGameInfo m_subsystemGameInfo;
-		private SubsystemPlayers m_subsystemPlayers;
+		// Factores de mejora durante Noche Verde
+		private float m_greenNightRangeMultiplier = 2.0f; // Doble rango durante Noche Verde
+		private float m_greenNightSpeedMultiplier = 1.5f; // 50% más rápido durante Noche Verde
 
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
+			// Cargar primero el comportamiento base
 			base.Load(valuesDictionary, idToEntityMap);
 
-			m_componentZombieHerdBehavior = base.Entity.FindComponent<ComponentZombieHerdBehavior>();
-			m_subsystemGreenNightSky = base.Project.FindSubsystem<SubsystemGreenNightSky>(true);
-			m_subsystemGameInfo = base.Project.FindSubsystem<SubsystemGameInfo>(true);
-			m_subsystemPlayers = base.Project.FindSubsystem<SubsystemPlayers>(true);
+			// Cargar parámetros específicos de zombis
+			this.AttacksSameHerd = valuesDictionary.GetValue<bool>("AttacksSameHerd", false);
+			this.AttacksAllCategories = valuesDictionary.GetValue<bool>("AttacksAllCategories", true);
+			this.FleeFromSameHerd = valuesDictionary.GetValue<bool>("FleeFromSameHerd", true);
+			this.FleeDistance = valuesDictionary.GetValue<float>("FleeDistance", 10f);
+			this.ForceAttackDuringGreenNight = valuesDictionary.GetValue<bool>("ForceAttackDuringGreenNight", true);
 
-			m_attacksSameHerd = valuesDictionary.GetValue<bool>("AttacksSameHerd", false);
-			m_attacksAllCategories = valuesDictionary.GetValue<bool>("AttacksAllCategories", true);
-			m_fleeFromSameHerd = valuesDictionary.GetValue<bool>("FleeFromSameHerd", true);
-			m_fleeDistance = valuesDictionary.GetValue<float>("FleeDistance", 10f);
-			m_forceAttackDuringGreenNight = valuesDictionary.GetValue<bool>("ForceAttackDuringGreenNight", false);
+			// Obtener el componente de comportamiento de manada de zombis
+			this.m_zombieHerdBehavior = base.Entity.FindComponent<ComponentZombieHerdBehavior>();
 
-			if (m_attacksAllCategories)
-			{
-				m_autoChaseMask = CreatureCategory.LandPredator |
-								  CreatureCategory.LandOther |
-								  CreatureCategory.WaterPredator |
-								  CreatureCategory.WaterOther |
-								  CreatureCategory.Bird;
-				this.AttacksNonPlayerCreature = true;
-				this.AttacksPlayer = true;
-			}
+			// Obtener subsistemas necesarios
+			this.m_subsystemGreenNightSky = base.Project.FindSubsystem<SubsystemGreenNightSky>(false);
+			this.m_subsystemTimeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(false);
 
+			// NO DESACTIVAR AttacksPlayer aquí - eso previene que ataquen cuando son provocados
+			// Modificar el event handler de Injured para manejar la lógica de manada
 			this.SetupZombieInjuryHandler();
-			this.AddFleeState();
 		}
 
+		// Configurar el handler de lesiones específico para zombis
 		private void SetupZombieInjuryHandler()
 		{
 			ComponentHealth componentHealth = this.m_componentCreature.ComponentHealth;
+
+			// Guardar el handler original
 			Action<Injury> originalHandler = componentHealth.Injured;
 
+			// Crear un nuevo handler que incluya la lógica de zombis
 			Action<Injury> zombieInjuryHandler = delegate (Injury injury)
 			{
-				ComponentCreature attacker = injury.Attacker;
-
-				if (attacker != null)
+				// Primero, manejar la lógica de manada si existe
+				if (this.m_zombieHerdBehavior != null)
 				{
-					m_lastAttackTimes[attacker] = m_retaliationMemoryDuration;
-					m_lastAttacker = attacker;
+					ComponentCreature attacker = injury.Attacker;
 
-					// Si otro mob ataca durante Noche Verde, atacarlo DE VUELTA
-					if (attacker != this.m_target && !IsSameHerd(attacker))
+					// Verificar si el atacante es de la misma manada
+					if (attacker != null && this.m_zombieHerdBehavior.IsSameZombieHerd(attacker))
 					{
-						this.StopAttack();
-						this.Attack(attacker, 30f, 60f, true);
-						m_retaliationCooldown = 2f;
-						return;
-					}
-				}
-
-				if (attacker != null && !m_attacksSameHerd && IsSameHerd(attacker))
-				{
-					if (m_componentZombieHerdBehavior != null && m_componentZombieHerdBehavior.CallForHelpWhenAttacked)
-					{
-						ComponentCreature externalAttacker = FindExternalAttacker(injury);
-						if (externalAttacker != null)
+						if (this.FleeFromSameHerd)
 						{
-							m_componentZombieHerdBehavior.CallZombiesForHelp(externalAttacker);
+							// Activar huida de miembros de la misma manada
+							this.ActivateFleeFromSameHerd(attacker);
+						}
+
+						// Si no atacamos a la misma manada, no proceder con el ataque
+						if (!this.AttacksSameHerd)
+						{
+							// No llamar al handler original en este caso
+							return;
 						}
 					}
-
-					if (m_fleeFromSameHerd)
-					{
-						FleeFromTarget(attacker);
-					}
-
-					return;
 				}
 
+				// Llamar al handler original para mantener la funcionalidad base
 				if (originalHandler != null)
 				{
 					originalHandler(injury);
 				}
 			};
 
+			// Asignar el nuevo handler
 			componentHealth.Injured = zombieInjuryHandler;
 		}
 
-		private ComponentCreature FindExternalAttacker(Injury injury)
+		// Método para activar huida de miembros de la misma manada
+		private void ActivateFleeFromSameHerd(ComponentCreature attacker)
 		{
-			if (injury.Attacker == null) return null;
-
-			if (!IsSameHerd(injury.Attacker))
-			{
-				return injury.Attacker;
-			}
-
-			return null;
-		}
-
-		private bool IsSameHerd(ComponentCreature otherCreature)
-		{
-			if (otherCreature == null || m_componentZombieHerdBehavior == null)
-				return false;
-
-			return m_componentZombieHerdBehavior.IsSameZombieHerd(otherCreature);
-		}
-
-		private void GreenNightAttack(ComponentPlayer player)
-		{
-			if (player == null || player.ComponentHealth.Health <= 0f)
+			if (attacker == null || this.m_componentCreature.ComponentHealth.Health <= 0f)
 				return;
 
-			// ATACAR JUGADOR SIN IMPORTAR MODO DE JUEGO
-			this.Suppressed = false;
-			this.AttacksPlayer = true;
-			this.m_target = player;
-			this.m_range = m_greenNightAggressionRange;
-			this.m_chaseTime = 9999f;
-			this.m_isPersistent = true;
-			this.m_importanceLevel = 9999f;
+			// Calcular dirección de huida
+			Vector3 fleeDirection = this.m_componentCreature.ComponentBody.Position - attacker.ComponentBody.Position;
 
-			if (this.m_stateMachine.CurrentState != "Chasing")
+			if (fleeDirection.LengthSquared() > 0.01f)
 			{
-				this.m_stateMachine.TransitionTo("Chasing");
-			}
+				fleeDirection = Vector3.Normalize(fleeDirection);
+				Vector3 destination = this.m_componentCreature.ComponentBody.Position + fleeDirection * this.FleeDistance;
 
-			if (m_componentZombieHerdBehavior != null)
-			{
-				m_componentZombieHerdBehavior.CoordinateGroupAttack(player);
+				// Establecer destino para huir
+				this.m_componentPathfinding.SetDestination(
+					new Vector3?(destination),
+					1f,
+					1.5f,
+					0,
+					false,
+					true,
+					false,
+					null
+				);
 			}
 		}
 
-		public override void Attack(ComponentCreature target, float maxRange, float maxChaseTime, bool isPersistent)
-		{
-			// DURANTE NOCHE VERDE: Comportamiento especial
-			if (m_isGreenNightActive && m_forceAttackDuringGreenNight)
-			{
-				ComponentPlayer playerTarget = target.Entity.FindComponent<ComponentPlayer>();
-				if (playerTarget != null)
-				{
-					GreenNightAttack(playerTarget);
-					return;
-				}
-
-				// Si no es jugador, atacarlo normalmente
-				base.Attack(target, maxRange, maxChaseTime, isPersistent);
-				return;
-			}
-
-			// Comportamiento normal
-			base.Attack(target, maxRange, maxChaseTime, isPersistent);
-		}
-
-		private ComponentPlayer FindNearestPlayer(float range)
-		{
-			Vector3 position = this.m_componentCreature.ComponentBody.Position;
-			ComponentPlayer nearestPlayer = null;
-			float nearestDistance = float.MaxValue;
-
-			if (m_subsystemPlayers != null)
-			{
-				foreach (ComponentPlayer player in m_subsystemPlayers.ComponentPlayers)
-				{
-					if (player != null && player.ComponentHealth.Health > 0f)
-					{
-						float distance = Vector3.Distance(position, player.ComponentBody.Position);
-						if (distance <= range && distance < nearestDistance)
-						{
-							nearestDistance = distance;
-							nearestPlayer = player;
-						}
-					}
-				}
-			}
-
-			return nearestPlayer;
-		}
-
+		// Sobrescribir el método FindTarget para incluir lógica de zombis
 		public override ComponentCreature FindTarget()
 		{
-			// DURANTE NOCHE VERDE: BUSCAR JUGADORES PRIMERO
-			if (m_isGreenNightActive && m_forceAttackDuringGreenNight)
+			// Si ForceAttackDuringGreenNight está activado y es Noche Verde, buscar agresivamente al jugador
+			if (this.ForceAttackDuringGreenNight && this.IsGreenNight())
 			{
-				ComponentPlayer nearestPlayer = FindNearestPlayer(m_greenNightAggressionRange);
-				if (nearestPlayer != null && nearestPlayer.ComponentHealth.Health > 0f)
+				ComponentPlayer player = this.FindNearestPlayer();
+				if (player != null && player.ComponentHealth.Health > 0f)
 				{
-					return nearestPlayer;
+					// Verificar si el jugador está en rango (rango extendido durante Noche Verde)
+					float distance = Vector3.Distance(this.m_componentCreature.ComponentBody.Position,
+													 player.ComponentBody.Position);
+					float chaseRange = this.GetGreenNightChaseRange();
+
+					if (distance < chaseRange)
+					{
+						// ComponentPlayer hereda de ComponentCreature
+						return player;
+					}
 				}
 
-				// Si no hay jugadores, buscar otros objetivos normalmente
-				return base.FindTarget();
+				// Si no hay jugador cerca, buscar cualquier objetivo
+				return this.FindAnyTargetInExtendedRange();
 			}
 
-			// Comportamiento normal
+			// FUERA DE NOCHE VERDE: Usar el comportamiento base normal
+			// El método base ya maneja la lógica de ataque solo cuando es provocado
 			return base.FindTarget();
 		}
 
-		// ¡¡¡SOBREESCRIBIR COMPLETAMENTE ScoreTarget para Noche Verde!!!
-		public override float ScoreTarget(ComponentCreature componentCreature)
+		// Método para encontrar cualquier objetivo en rango extendido durante Noche Verde
+		private ComponentCreature FindAnyTargetInExtendedRange()
 		{
-			// DURANTE NOCHE VERDE: IGNORAR COMPLETAMENTE EL MODO DE JUEGO
-			if (m_isGreenNightActive && m_forceAttackDuringGreenNight)
+			Vector3 position = this.m_componentCreature.ComponentBody.Position;
+			ComponentCreature result = null;
+			float bestScore = 0f;
+
+			// Usar rango extendido durante Noche Verde
+			float extendedRange = this.GetGreenNightChaseRange();
+
+			this.m_componentBodies.Clear();
+			this.m_subsystemBodies.FindBodiesAroundPoint(new Vector2(position.X, position.Z), extendedRange, this.m_componentBodies);
+
+			for (int i = 0; i < this.m_componentBodies.Count; i++)
 			{
-				ComponentPlayer player = componentCreature.Entity.FindComponent<ComponentPlayer>();
-				if (player != null)
+				ComponentCreature creature = this.m_componentBodies.Array[i].Entity.FindComponent<ComponentCreature>();
+
+				if (creature != null && creature != this.m_componentCreature)
 				{
-					// ¡¡¡ATACAR JUGADORES EN CUALQUIER MODO!!!
-					float distance = Vector3.Distance(this.m_componentCreature.ComponentBody.Position, player.ComponentBody.Position);
-					if (distance <= m_greenNightAggressionRange)
+					// Aplicar lógica de manada si existe
+					if (this.m_zombieHerdBehavior != null)
 					{
-						// Puntaje MÁXIMO para jugadores durante Noche Verde
-						return 1000000f + (m_greenNightAggressionRange - distance);
+						// Verificar si el objetivo es de la misma manada
+						if (this.m_zombieHerdBehavior.IsSameZombieHerd(creature))
+						{
+							// Si no atacamos a la misma manada, saltar este objetivo
+							if (!this.AttacksSameHerd)
+							{
+								continue;
+							}
+						}
 					}
-					return 0f;
+
+					// Dar puntuación extra a los jugadores durante Noche Verde
+					float score = this.ScoreTargetForGreenNight(creature);
+					if (score > bestScore)
+					{
+						bestScore = score;
+						result = creature;
+					}
+				}
+			}
+
+			return result;
+		}
+
+		// Método para puntuar objetivos durante Noche Verde
+		private float ScoreTargetForGreenNight(ComponentCreature componentCreature)
+		{
+			// Verificar si es un objetivo válido
+			if (componentCreature != this.m_componentCreature &&
+				componentCreature.Entity.IsAddedToProject &&
+				componentCreature.ComponentHealth.Health > 0f)
+			{
+				// Aplicar lógica de manada si existe
+				if (this.m_zombieHerdBehavior != null)
+				{
+					// Verificar si el objetivo es de la misma manada
+					if (this.m_zombieHerdBehavior.IsSameZombieHerd(componentCreature))
+					{
+						// Si no atacamos a la misma manada, retornar 0
+						if (!this.AttacksSameHerd)
+						{
+							return 0f;
+						}
+					}
 				}
 
-				// Para otros mobs, usar lógica simplificada que no verifica GameMode
-				bool flag2 = this.m_componentCreature.Category != CreatureCategory.WaterPredator &&
-							this.m_componentCreature.Category != CreatureCategory.WaterOther;
-				bool flag4 = (componentCreature.Category & this.m_autoChaseMask) > (CreatureCategory)0;
+				// Calcular distancia
+				float distance = Vector3.Distance(this.m_componentCreature.ComponentBody.Position,
+												 componentCreature.ComponentBody.Position);
+				float extendedRange = this.GetGreenNightChaseRange();
 
-				if (componentCreature != this.m_componentCreature && flag4 &&
-					componentCreature.Entity.IsAddedToProject &&
-					componentCreature.ComponentHealth.Health > 0f &&
-					(flag2 || this.IsTargetInWater(componentCreature.ComponentBody)))
+				if (distance < extendedRange)
 				{
-					float distance = Vector3.Distance(this.m_componentCreature.ComponentBody.Position, componentCreature.ComponentBody.Position);
-					if (distance < this.m_range) // Usar el rango actual
+					// Puntuación base: inversamente proporcional a la distancia
+					float baseScore = extendedRange - distance;
+
+					// Bonus extra para jugadores durante Noche Verde
+					ComponentPlayer player = componentCreature as ComponentPlayer;
+					if (player != null)
+					{
+						baseScore *= 2.0f; // Doble puntuación para jugadores
+					}
+
+					return baseScore;
+				}
+			}
+			return 0f;
+		}
+
+		// Sobrescribir ScoreTarget para manejar AttacksAllCategories
+		public override float ScoreTarget(ComponentCreature componentCreature)
+		{
+			// Si AttacksAllCategories está activado, ignorar las categorías y puntuar por distancia
+			if (this.AttacksAllCategories)
+			{
+				// Verificar si es un objetivo válido
+				if (componentCreature != this.m_componentCreature &&
+					componentCreature.Entity.IsAddedToProject &&
+					componentCreature.ComponentHealth.Health > 0f)
+				{
+					// Aplicar lógica de manada si existe
+					if (this.m_zombieHerdBehavior != null)
+					{
+						// Verificar si el objetivo es de la misma manada
+						if (this.m_zombieHerdBehavior.IsSameZombieHerd(componentCreature))
+						{
+							// Si no atacamos a la misma manada, retornar 0
+							if (!this.AttacksSameHerd)
+							{
+								return 0f;
+							}
+						}
+					}
+
+					// Calcular puntuación basada en distancia
+					float distance = Vector3.Distance(this.m_componentCreature.ComponentBody.Position,
+													 componentCreature.ComponentBody.Position);
+					if (distance < this.m_range)
 					{
 						return this.m_range - distance;
 					}
@@ -258,196 +279,182 @@ namespace Game
 				return 0f;
 			}
 
-			// Fuera de Noche Verde: comportamiento normal (respetar GameMode)
+			// Si AttacksAllCategories no está activado, usar la lógica base
 			return base.ScoreTarget(componentCreature);
 		}
 
-		private void AddFleeState()
+		// Método para encontrar un objetivo alternativo (no de la misma manada)
+		private ComponentCreature FindAlternativeTarget(ComponentCreature excludedTarget)
 		{
-			this.m_stateMachine.AddState("Fleeing", delegate
+			Vector3 position = this.m_componentCreature.ComponentBody.Position;
+			ComponentCreature result = null;
+			float bestScore = 0f;
+
+			this.m_componentBodies.Clear();
+			this.m_subsystemBodies.FindBodiesAroundPoint(new Vector2(position.X, position.Z), this.m_range, this.m_componentBodies);
+
+			for (int i = 0; i < this.m_componentBodies.Count; i++)
 			{
-				this.m_importanceLevel = 150f;
-				this.m_componentCreature.ComponentCreatureSounds.PlayPainSound();
-			}, delegate
-			{
-				if (m_isGreenNightActive && m_forceAttackDuringGreenNight)
+				ComponentCreature creature = this.m_componentBodies.Array[i].Entity.FindComponent<ComponentCreature>();
+
+				if (creature != null && creature != excludedTarget)
 				{
-					this.m_stateMachine.TransitionTo("LookingForTarget");
-					return;
+					// Aplicar lógica de manada si existe
+					if (this.m_zombieHerdBehavior != null)
+					{
+						// Verificar si el objetivo es de la misma manada
+						if (this.m_zombieHerdBehavior.IsSameZombieHerd(creature))
+						{
+							// Si no atacamos a la misma manada, saltar este objetivo
+							if (!this.AttacksSameHerd)
+							{
+								continue;
+							}
+						}
+					}
+
+					float score = this.ScoreTarget(creature);
+					if (score > bestScore)
+					{
+						bestScore = score;
+						result = creature;
+					}
 				}
+			}
 
-				if (this.m_componentCreature.ComponentHealth.Health < 0.2f)
-				{
-					this.m_stateMachine.TransitionTo("LookingForTarget");
-					return;
-				}
-
-				if (this.m_target == null || this.m_componentCreature.ComponentHealth.Health <= 0f)
-				{
-					this.m_stateMachine.TransitionTo("LookingForTarget");
-					return;
-				}
-
-				Vector3 fleeDirection = this.m_componentCreature.ComponentBody.Position - this.m_target.ComponentBody.Position;
-				if (fleeDirection.LengthSquared() > 0.01f)
-				{
-					fleeDirection = Vector3.Normalize(fleeDirection);
-					Vector3 destination = this.m_componentCreature.ComponentBody.Position + fleeDirection * m_fleeDistance;
-
-					this.m_componentPathfinding.SetDestination(
-						new Vector3?(destination),
-						1f,
-						1.5f,
-						0,
-						false,
-						true,
-						false,
-						null
-					);
-				}
-
-				float distanceToTarget = Vector3.Distance(
-					this.m_componentCreature.ComponentBody.Position,
-					this.m_target.ComponentBody.Position
-				);
-
-				if (distanceToTarget > m_fleeDistance * 1.5f)
-				{
-					this.m_stateMachine.TransitionTo("LookingForTarget");
-				}
-
-				if (this.m_random.Float(0f, 1f) < 0.05f * this.m_dt)
-				{
-					this.m_componentCreature.ComponentCreatureSounds.PlayPainSound();
-				}
-			}, delegate
-			{
-				this.m_componentPathfinding.Stop();
-				this.m_importanceLevel = 0f;
-			});
+			return result;
 		}
 
-		private void FleeFromTarget(ComponentCreature target)
+		// Método para encontrar al jugador más cercano
+		private ComponentPlayer FindNearestPlayer()
 		{
-			if (m_isGreenNightActive && m_forceAttackDuringGreenNight)
+			ComponentPlayer nearestPlayer = null;
+			float nearestDistance = float.MaxValue;
+
+			foreach (ComponentPlayer player in this.m_subsystemPlayers.ComponentPlayers)
 			{
-				return;
+				if (player.ComponentHealth.Health > 0f)
+				{
+					float distance = Vector3.Distance(this.m_componentCreature.ComponentBody.Position,
+													 player.ComponentBody.Position);
+					if (distance < nearestDistance)
+					{
+						nearestDistance = distance;
+						nearestPlayer = player;
+					}
+				}
 			}
 
-			if (this.m_componentCreature.ComponentHealth.Health < 0.2f)
-			{
-				return;
-			}
-
-			if (target == null || this.m_componentCreature.ComponentHealth.Health <= 0f)
-				return;
-
-			this.m_target = target;
-			this.m_stateMachine.TransitionTo("Fleeing");
+			return nearestPlayer;
 		}
 
-		public override void Update(float dt)
+		// Método para verificar si es Noche Verde
+		private bool IsGreenNight()
 		{
-			bool wasGreenNightActive = m_isGreenNightActive;
-			m_isGreenNightActive = (m_subsystemGreenNightSky != null && m_subsystemGreenNightSky.IsGreenNightActive);
-
-			if (!wasGreenNightActive && m_isGreenNightActive && m_forceAttackDuringGreenNight)
+			// Usar el subsistema GreenNightSky para verificar
+			if (this.m_subsystemGreenNightSky != null)
 			{
-				m_primaryGreenNightTarget = null;
-				m_greenNightTargetSwitchCooldown = 0f;
+				return this.m_subsystemGreenNightSky.IsGreenNightActive;
+			}
 
-				this.Suppressed = false;
-				this.AttacksPlayer = true;
+			// Fallback: verificar si es de noche usando SkyLightIntensity
+			return this.m_subsystemSky.SkyLightIntensity < 0.2f;
+		}
 
-				// Buscar jugador inmediatamente al comenzar Noche Verde
-				ComponentPlayer nearestPlayer = FindNearestPlayer(m_greenNightAggressionRange);
-				if (nearestPlayer != null)
+		// Obtener rango de persecución durante Noche Verde
+		private float GetGreenNightChaseRange()
+		{
+			float baseRange = this.m_subsystemSky.SkyLightIntensity < 0.2f ?
+							this.m_nightChaseRange : this.m_dayChaseRange;
+
+			if (this.IsGreenNight() && this.ForceAttackDuringGreenNight)
+			{
+				return baseRange * this.m_greenNightRangeMultiplier;
+			}
+
+			return baseRange;
+		}
+
+		// Sobrescribir Update para añadir lógica de Noche Verde
+		public new void Update(float dt)
+		{
+			bool isGreenNight = this.IsGreenNight();
+
+			// Comportamiento agresivo durante Noche Verde
+			if (isGreenNight && this.ForceAttackDuringGreenNight)
+			{
+				this.m_greenNightAttackTimer += dt;
+
+				// Forzar ataque al jugador durante Noche Verde si no hay objetivo
+				if (this.m_greenNightAttackTimer > 2f && this.m_target == null)
 				{
-					m_primaryGreenNightTarget = nearestPlayer;
-					GreenNightAttack(nearestPlayer);
+					ComponentPlayer player = this.FindNearestPlayer();
+					if (player != null)
+					{
+						float distance = Vector3.Distance(this.m_componentCreature.ComponentBody.Position,
+														 player.ComponentBody.Position);
+						float chaseRange = this.GetGreenNightChaseRange();
+
+						if (distance < chaseRange)
+						{
+							// ComponentPlayer hereda de ComponentCreature
+							this.Attack(player, chaseRange, this.m_nightChaseTime * 2.0f, true);
+							this.m_greenNightAttackTimer = 0f;
+						}
+					}
+				}
+
+				// Aumentar velocidad de movimiento durante Noche Verde
+				if (this.m_componentPathfinding != null)
+				{
+					this.m_componentPathfinding.Speed = this.m_greenNightSpeedMultiplier;
+				}
+			}
+			else
+			{
+				this.m_greenNightAttackTimer = 0f;
+
+				// Velocidad normal fuera de Noche Verde
+				if (this.m_componentPathfinding != null)
+				{
+					this.m_componentPathfinding.Speed = 1.0f;
 				}
 			}
 
-			if (wasGreenNightActive && !m_isGreenNightActive)
-			{
-				m_primaryGreenNightTarget = null;
-				this.AttacksPlayer = m_attacksAllCategories;
-
-				// Si estaba persiguiendo, detener
-				if (this.m_target != null)
-				{
-					this.StopAttack();
-				}
-			}
-
+			// Llamar al Update base
 			base.Update(dt);
-
-			if (m_retaliationCooldown > 0f) m_retaliationCooldown -= dt;
-			if (m_greenNightTargetSwitchCooldown > 0f) m_greenNightTargetSwitchCooldown -= dt;
-
-			// Actualizar tiempos de ataque
-			List<ComponentCreature> toRemove = new List<ComponentCreature>();
-			foreach (var kvp in m_lastAttackTimes)
-			{
-				m_lastAttackTimes[kvp.Key] = kvp.Value - dt;
-				if (m_lastAttackTimes[kvp.Key] <= 0f)
-				{
-					toRemove.Add(kvp.Key);
-					if (kvp.Key == m_lastAttacker) m_lastAttacker = null;
-				}
-			}
-			foreach (var creature in toRemove) m_lastAttackTimes.Remove(creature);
-
-			if (m_isGreenNightActive && m_forceAttackDuringGreenNight)
-			{
-				this.AttacksPlayer = true;
-				this.Suppressed = false;
-
-				if (this.m_stateMachine.CurrentState == "Fleeing")
-				{
-					this.m_stateMachine.TransitionTo("LookingForTarget");
-				}
-
-				// Si está atacando a un no-jugador, verificar si hay jugadores cerca
-				if (this.m_target != null && this.m_target.Entity.FindComponent<ComponentPlayer>() == null)
-				{
-					if (m_greenNightTargetSwitchCooldown <= 0f)
-					{
-						ComponentPlayer nearestPlayer = FindNearestPlayer(50f);
-						if (nearestPlayer != null)
-						{
-							this.StopAttack();
-							GreenNightAttack(nearestPlayer);
-							m_greenNightTargetSwitchCooldown = 2f;
-						}
-					}
-				}
-				// Si no tiene objetivo, buscar jugador
-				else if (this.m_target == null)
-				{
-					if (m_greenNightTargetSwitchCooldown <= 0f)
-					{
-						ComponentPlayer nearestPlayer = FindNearestPlayer(m_greenNightAggressionRange);
-						if (nearestPlayer != null)
-						{
-							GreenNightAttack(nearestPlayer);
-							m_greenNightTargetSwitchCooldown = 2f;
-						}
-					}
-				}
-			}
 		}
 
-		public override void StopAttack()
+		// Sobrescribir Attack para incluir lógica de coordinación de manada y Noche Verde
+		public override void Attack(ComponentCreature componentCreature, float maxRange, float maxChaseTime, bool isPersistent)
 		{
-			if (m_isGreenNightActive && m_forceAttackDuringGreenNight && m_primaryGreenNightTarget != null)
+			// Verificar lógica de manada antes de atacar
+			if (componentCreature != null && this.m_zombieHerdBehavior != null)
 			{
-				this.m_target = null;
-				this.m_stateMachine.TransitionTo("LookingForTarget");
-				return;
+				// Verificar si el objetivo es de la misma manada
+				if (this.m_zombieHerdBehavior.IsSameZombieHerd(componentCreature))
+				{
+					// Si no atacamos a la misma manada, activar huida en lugar de ataque
+					if (!this.AttacksSameHerd && this.FleeFromSameHerd)
+					{
+						this.ActivateFleeFromSameHerd(componentCreature);
+						return;
+					}
+				}
+
+				// Coordinar ataque con otros miembros de la manada
+				this.m_zombieHerdBehavior.CoordinateGroupAttack(componentCreature);
 			}
 
-			base.StopAttack();
+			// Durante Noche Verde, aumentar la persistencia del ataque
+			if (this.IsGreenNight() && this.ForceAttackDuringGreenNight)
+			{
+				maxChaseTime *= 2.0f; // Doble tiempo de persecución
+				isPersistent = true; // Siempre persistente durante Noche Verde
+			}
+
+			// Llamar al método base
+			base.Attack(componentCreature, maxRange, maxChaseTime, isPersistent);
 		}
 	}
 }
