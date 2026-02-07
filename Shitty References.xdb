@@ -1,0 +1,751 @@
+<Mod>
+    <Folder Name="Gameplay" Guid="d509e5e2-2c10-49f1-8223-85cd892c63b0">
+<ComponentTemplate Name="CreatureInventory" Description="Inventario para criaturas que pueden almacenar y usar objetos" Guid="a347220c-b5cf-4eae-9215-4ed37426eec4" InheritanceParent="81a44c6a-c30a-4f53-8d64-0c30aabab8f9">
+  <Parameter Name="ActiveSlotIndex" Description="Índice del slot activo de la criatura" Guid="65e82739-c714-4418-90b0-adddb190350d" Value="0" Type="int"/>
+  <Parameter Name="SlotsCount" Description="Número de slots en el inventario de la criatura" Guid="8f9e0c14-943a-49ce-96a8-24b51582dfb5" Value="16" Type="int"/>
+  <Parameter Name="Class" Description="Clase que implementa el componente" Guid="9b0edb28-ea3c-4865-bd50-eb6660e47466" Value="Game.ComponentCreatureInventory" Type="string"/>
+</ComponentTemplate>
+
+<ComponentTemplate Name="NewGhostTankModel" Description="Modelo de tanque fantasma con transparencia y animaciones etéreas" Guid="5ccee3e3-ae8d-4793-a534-5b075b74429b" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
+	<Parameter Name="Class" Guid="fe3bc745-8817-42e6-89fe-7bff90756f69" Value="Game.ComponentNewGhostTankModel" Type="string"/>
+	<Parameter Name="Opacity" Description="Nivel de transparencia del tanque fantasma (0.1–1.0)" Guid="ca9ca19f-3be4-4b15-8772-a265eb44f002" Value="0.7" Type="float"/>
+	<Parameter Name="SmoothFactor" Description="Factor de suavizado para los movimientos fantasma (0.05–0.3)" Guid="f0813ad6-bb90-449f-9889-c3e5a8345050" Value="0.25" Type="float"/>
+	<Parameter Name="AnimationResponsiveness" Description="Nivel de respuesta de las animaciones fantasma (4–20)" Guid="c4206f59-5772-41d5-b11d-f18098c828b7" Value="6" Type="float"/>
+	<Parameter Name="WalkAnimationSpeed" Description="Velocidad de la animación de movimiento, en ciclos por metro" Guid="140f2c0f-7bac-4225-a80d-199b765eeb5f" Value="0.8" Type="float"/>
+	<Parameter Name="WalkLegsAngle" Description="Ángulo de animación de las patas, en radianes" Guid="2cb84128-061d-4a9a-972b-8a81d5eddcba" Value="0.4" Type="float"/>
+	<Parameter Name="WalkBobHeight" Description="Altura del balanceo al moverse el tanque, en metros" Guid="4ab2881f-57b7-4640-b05c-81b99965d38a" Value="0.015" Type="float"/>
+</ComponentTemplate>
+
+<ComponentTemplate Name="NewGhostHumanModel" Description="Modelo humano con animaciones fluidas y características de fantasma" Guid="24547bf5-a0ba-4f78-bd60-98520da7977b" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
+	<Parameter Name="WalkAnimationSpeed" Description="Velocidad de la animación de caminar, en ciclos por metro" Guid="1cebf7f1-f89b-452c-8424-622fd17a0d88" Value="1" Type="float"/>
+	<Parameter Name="WalkLegsAngle" Description="Ángulo de animación de las piernas, en radianes" Guid="99277fde-444b-4850-a0c6-2b0c6e69b737" Value="0.5" Type="float"/>
+	<Parameter Name="WalkBobHeight" Description="Altura del balanceo al caminar, en metros" Guid="593295b4-6f36-4e4a-af7e-7eb4e4225914" Value="0.05" Type="float"/>
+	<Parameter Name="SmoothFactor" Description="Factor de suavizado general para animaciones (0.05 a 0.3)" Guid="e83899dd-4b1c-4fc2-8ee6-4efabc706fdd" Value="0.15" Type="float"/>
+	<Parameter Name="AnimationResponsiveness" Description="Responsividad de las animaciones a cambios de movimiento (4 a 20)" Guid="ee6ae01f-5b67-4cbf-8a26-220d644a9ecf" Value="8" Type="float"/>
+	<Parameter Name="AimSmoothFactor" Description="Factor de suavizado al apuntar (0.1 a 0.5)" Guid="31c49892-ddc6-4522-b9e1-9b1320efb66f" Value="0.25" Type="float"/>
+	<Parameter Name="AimTransitionSpeed" Description="Velocidad de transición al apuntar (3 a 8)" Guid="e635c07d-1bff-49d1-b812-a314e6aab39d" Value="6" Type="float"/>
+	<Parameter Name="Opacity" Description="Opacidad del modelo fantasma (0.1 a 1.0)" Guid="9b9df6bd-5146-498e-a601-d3103fb16a29" Value="0.7" Type="float"/>
+	<Parameter Name="Class" Guid="2d5f1d6f-53cb-47c0-9283-628f1aac52d3" Value="Game.ComponentNewGhostHumanModel" Type="string"/>
+</ComponentTemplate>
+
+<ComponentTemplate Name="MinecraftHumanModel" Description="Modelo humano estilo Minecraft con animaciones ajustadas" Guid="ce3990d2-70bd-4c37-8969-65bb9500795b" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
+    <Parameter Name="WalkAnimationSpeed" Description="Velocidad de animación al caminar, en ciclos por metro" Guid="a11b1ba6-23ff-4e2c-b9fb-fa88d207cb29" Value="0.99" Type="float"/>
+    <Parameter Name="WalkLegsAngle" Description="Ángulo de animación de piernas, en radianes" Guid="92179790-1555-4390-9677-d759190a85ad" Value="0.35" Type="float"/>
+    <Parameter Name="WalkBobHeight" Description="Altura del movimiento vertical al caminar, en metros" Guid="ac70dca2-98d7-49fc-b921-9b313347bcf9" Value="0.0225" Type="float"/>
+    <Parameter Name="SmoothFactor" Description="Factor de suavizado para animaciones (0.05-0.3)" Guid="bb3710ef-c256-4eed-ab8f-f0bbd673e712" Value="0.12" Type="float"/>
+    <Parameter Name="AnimationResponsiveness" Description="Respuesta de animaciones (4-20, mayor = más rápida)" Guid="8c6aab4e-ac55-41d9-8a2f-e482d455ad1f" Value="10" Type="float"/>
+    <Parameter Name="AimSmoothFactor" Description="Factor de suavizado específico para apuntar (0.1-0.5)" Guid="a7d4e991-89c1-4951-b8f0-2e62415bbe3d" Value="0.3" Type="float"/>
+    <Parameter Name="AimTransitionSpeed" Description="Velocidad de transición para apuntar (3-8, menor = más lento)" Guid="d30b772d-2e5a-4aa0-a699-d7e8651c530b" Value="5" Type="float"/>
+    <Parameter Name="Class" Guid="7a12ecec-b29e-446e-84d5-dc2b41352f6d" Value="Game.ComponentMinecraftHumanModel" Type="string"/>
+</ComponentTemplate>
+
+<ComponentTemplate Name="TankModel" Description="Modelo de tanque con animaciones pesadas y lentas" Guid="e1af166d-9a00-48ac-9a2d-fab6786f4295" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
+    <Parameter Name="WalkAnimationSpeed" Description="Velocidad de animación al caminar (más lento para tanque)" Guid="f34e2a2e-0d5b-48b6-a225-5c3f366b7696" Value="0.4" Type="float"/>
+    <Parameter Name="WalkLegsAngle" Description="Ángulo de animación de piernas para tanque" Guid="1b2f6208-b318-4d0b-9ebc-ce0aa14858a5" Value="0.2" Type="float"/>
+    <Parameter Name="WalkBobHeight" Description="Altura del movimiento vertical para tanque" Guid="27fdbf3c-427d-42d0-bd00-a7657eda2c18" Value="0.02" Type="float"/>
+    <Parameter Name="SmoothFactor" Description="Factor de suavizado para animaciones de tanque" Guid="3eb4e2d6-85b5-4b70-b848-bd083d900f31" Value="0.18" Type="float"/>
+    <Parameter Name="AnimationResponsiveness" Description="Respuesta de animaciones para tanque (más lento)" Guid="ec1b7797-9916-45fd-a08e-03e587cb01c6" Value="12" Type="float"/>
+    <Parameter Name="Class" Guid="24de5585-c4d0-4d6b-8d9a-94a99de46538" Value="Game.ComponentTankModel" Type="string"/>
+</ComponentTemplate>
+
+<ComponentTemplate Name="NewZombieModel" Description="Modelo de zombie con animaciones mejoradas y fluidas" Guid="aac9f762-4b85-4cee-a9f1-39d9c11f106d" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
+    <Parameter Name="WalkAnimationSpeed" Description="Velocidad de animación al caminar, en ciclos por metro" Guid="36d88d69-1f9f-4f23-a80c-9665e4dccd8f" Value="1.0" Type="float"/>
+    <Parameter Name="WalkLegsAngle" Description="Ángulo de animación de piernas, en radianes" Guid="af12b163-80f4-423f-b8fd-f872c510c779" Value="0.5" Type="float"/>
+    <Parameter Name="WalkBobHeight" Description="Altura del movimiento vertical al caminar, en metros" Guid="34cfdc59-2dc4-4921-80b8-6879d39aacd9" Value="0.04" Type="float"/>
+    <Parameter Name="SmoothFactor" Description="Factor de suavizado para animaciones (0.05-0.3)" Guid="8175649b-ed62-48d4-9591-0d58520d614d" Value="0.18" Type="float"/>
+    <Parameter Name="AnimationResponsiveness" Description="Respuesta de animaciones (4-20, mayor = más rápida)" Guid="b36bba7f-71ef-47a6-975d-d8bcce48eade" Value="10" Type="float"/>
+    <Parameter Name="Class" Guid="4f3776df-b767-40b2-97d6-1edea8942a68" Value="Game.ComponentNewZombieModel" Type="string"/>
+</ComponentTemplate>
+
+<ComponentTemplate Name="ZombieAI2" Description="Inteligencia artificial avanzada para zombies con soporte para armas, recarga automática y animaciones" Guid="9d185bf8-92ec-4ea6-ad86-b8a99b650fd2" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
+    <Parameter Name="Class" Guid="86cba08c-bbc6-464a-85df-76bc2791ebef" Value="Game.ComponentZombieAI2" Type="string" Description="Clase C# que implementa el componente de IA para zombies"/>
+    <Parameter Name="CanUseInventory" Guid="fa80dc29-cf40-4617-af33-23ce40e094bf" Value="true" Type="bool" Description="Si el zombie puede usar armas del inventario"/>
+</ComponentTemplate>
+
+<ComponentTemplate Name="ZombieAI" Description="Inteligencia artificial avanzada para zombies con soporte para armas, recarga automática y animaciones" Guid="232cc5ce-0a90-44e5-974e-7be80889ee64" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
+    <Parameter Name="Class" Guid="ebda9f80-b85c-4775-99dd-cb3c190c42fa" Value="Game.ComponentZombieAI" Type="string" Description="Clase C# que implementa el componente de IA para zombies"/>
+    <Parameter Name="CanUseInventory" Guid="3f79a0af-0406-4f0d-adc9-eb46a60785bd" Value="true" Type="bool" Description="Si el zombie puede usar armas del inventario"/>
+</ComponentTemplate>
+
+<ComponentTemplate Name="NewHumanModel" Description="Modelo humano con animaciones mejoradas y fluidas" Guid="da33e501-1378-4644-8b5f-ef90863234a5" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
+    <Parameter Name="WalkAnimationSpeed" Description="Velocidad de animación al caminar, en ciclos por metro" Guid="c4a0e696-751b-4f02-8d5a-227c46cbd031" Value="1.1" Type="float"/>
+    <Parameter Name="WalkLegsAngle" Description="Ángulo de animación de piernas, en radianes" Guid="87e7375a-5bf3-4216-85c2-1fa67b7cbe98" Value="0.5" Type="float"/>
+    <Parameter Name="WalkBobHeight" Description="Altura del movimiento vertical al caminar, en metros" Guid="093a1729-42a1-45a4-9be3-d96ec6d1d06a" Value="0.045" Type="float"/>
+    <Parameter Name="SmoothFactor" Description="Factor de suavizado para animaciones (0.05-0.3)" Guid="15c3479f-9dae-4522-a2fc-ce0528de50d1" Value="0.15" Type="float"/>
+    <Parameter Name="AnimationResponsiveness" Description="Respuesta de animaciones (4-20, mayor = más rápida)" Guid="d5bffad0-01b1-4e38-be5a-e2a4b7f6c85d" Value="8" Type="float"/>
+    <Parameter Name="AimSmoothFactor" Description="Factor de suavizado específico para apuntar (0.1-0.5)" Guid="9de74454-475d-4820-bac6-e38c8d24a2f8" Value="0.25" Type="float"/>
+    <Parameter Name="AimTransitionSpeed" Description="Velocidad de transición para apuntar (3-8, menor = más lento)" Guid="607c17ad-8d6d-4551-99fb-f3bba5726ed4" Value="6" Type="float"/>
+    <Parameter Name="Class" Guid="4a840f5c-acee-468a-babd-f2d835620c2a" Value="Game.ComponentNewHumanModel" Type="string"/>
+</ComponentTemplate>
+
+<ComponentTemplate Name="CreatureAI" Description="Inteligencia artificial para criaturas con soporte para armas y recarga automática" Guid="a703e514-0246-49c4-a58d-282a2e0737d1" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
+    <Parameter Name="Class" Guid="e43a2641-0995-446c-aa50-390e7c0e2c12" Value="Game.ComponentCreatureAI" Type="string" Description="Clase C# que implementa el componente"/>
+    <Parameter Name="CanUseInventory" Guid="ddb27b73-4aa7-4580-a5bd-684db3139696" Value="true" Type="bool" Description="Si la criatura puede usar armas del inventario"/>
+</ComponentTemplate>
+
+<ComponentTemplate Name="CreatureClothing" Description="Permite asignar prendas de ropa a criaturas." Guid="84f381c3-b55c-4a49-bdd0-0bef89bbc0e9" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
+			<Parameter Name="DropClothesProbability" Description="Probabilidad de que la criatura suelte los objetos de ropa cuando muere, 1 es 100%" Guid="354d89f0-e0cd-40f7-acd2-2ffbf1fcf87e" Value="1" Type="float"/>
+			<ParameterSet Name="Clothes" Description="Contains clothes worn by creature" Guid="7c750c43-e2bb-4a53-8116-328ac217e66e">
+				<Parameter Name="Legs" Description="List of legs clothes" Value="" Type="string"/>
+				<Parameter Name="Feet" Description="List of feet clothes" Value="" Type="string"/>
+				<Parameter Name="Torso" Description="List of torso clothes" Value="" Type="string"/>
+				<Parameter Name="Head" Description="List of head clothes" Value="" Type="string"/>
+			</ParameterSet>
+			<Parameter Name="RandomClothing" Guid="1faaf429-fcb3-4649-aae6-8cf5d651ffd2" Value="false" Type="bool"/>
+			<ParameterSet Name="RandomClothesList" Guid="794062ea-c035-481b-a544-2eb9c52ec8d3">
+				<Parameter Name="Legs" Value="" Type="string"/>
+				<Parameter Name="Feet" Value="" Type="string"/>
+				<Parameter Name="Torso" Value="" Type="string"/>
+				<Parameter Name="Head" Value="" Type="string"/>
+			</ParameterSet>
+			<Parameter Name="Class" Guid="0b319571-d38a-474b-ae6d-d84ec7c110ba" Value="Game.ComponentCreatureClothing" Type="string"/>
+		</ComponentTemplate>
+        
+<ComponentTemplate Name="DeathSpawner" Description="Genera NPCs aleatorios cuando la entidad muere" Guid="32905e25-1938-46fb-8659-a86ee79cfaa4" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
+    <Parameter Name="Class" Guid="928c18a2-2cbb-49c5-bfdf-20634526aa0f" Value="Game.ComponentDeathSpawn" Type="string" Description="Clase C# que implementa el componente"/>
+    <Parameter Name="DeathSpawnProbability" Guid="35fa8f0c-11f2-42f9-b502-76b013a527d8" Value="1.0" Type="float" Description="Probabilidad de que aparezcan NPCs al morir (0-1)"/>
+    <Parameter Name="DeathSpawnTemplates" Guid="09f1cc78-2451-4786-ae7f-64c9f6f6359f" Value="" Type="string" Description="Lista separada por un punto y coma de templates de NPCs que pueden aparecer al morir"/>
+</ComponentTemplate>
+
+<ComponentTemplate Name="ComponentGhostHumanModel" Guid="9b72879f-bc51-4877-a7d2-c212d0e04656">
+    <Parameter Name="Class" Value="Game.ComponentGhostHumanModel" Type="string" Description="Componente especializado para modelos humanos fantasma con control de opacidad y modo de renderizado."/>
+    <Parameter Name="LoadOrder" Value="-1" Type="int" Guid="ff736e03-50ef-4b27-966d-7a0783adbdde" Description="Orden de carga para resolver dependencias con otros componentes."/>
+    <Parameter Name="IsOptional" Value="False" Type="bool" Description="Indica si la criatura puede existir sin este componente."/>
+    <Parameter Name="Opacity" Value="0.5" Type="float" Description="Valor de opacidad del modelo fantasma (entre 0 y 1)."/>
+</ComponentTemplate>
+
+<ComponentTemplate Name="RefrigeratorXiaomi" Description="Refrigerador Xiaomi con control eléctrico" Guid="064a3848-3864-4d94-b078-7e3d8fdc145c" InheritanceParent="81a44c6a-c30a-4f53-8d64-0c30aabab8f9">
+            <Parameter Name="SlotsCount" Guid="a51950cf-39fb-4d50-ab30-b182ef9ece9a" Value="12" Type="int"/>
+            <Parameter Name="Class" Guid="e5dee275-a048-4f66-9253-1a6df67b9596" Value="Game.ComponentRefrigeratorXiaomi" Type="string"/>
+        </ComponentTemplate>
+
+        <ComponentTemplate Name="HealthBarDisplay" Guid="cc577309-064e-4bd3-82ed-89be72213cc6" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
+            <Parameter Name="Class" Guid="63d41ee3-3ab0-4715-b666-693c08a49360" Value="Game.ComponentHealthBar" Type="string"/>
+            <Parameter Name="IsOptional" Guid="ef55b5cd-a52c-47ad-afa0-abd660047a5a" Value="True" Type="bool"/>
+        </ComponentTemplate>
+        
+        <ComponentTemplate Name="ComponentRandomChatter" Guid="a93baf1c-930f-47a8-a98a-f79fd0de910f">
+            <Parameter Name="Class" Value="Game.ComponentRandomChatter" Type="string" Description="El nombre de la clase C# que implementa la lógica."/>
+            <Parameter Name="LoadOrder" Value="-1" Type="int" Guid="4dd04a27-f015-4576-ad54-0eddc8afa940" Description="Orden de carga para resolver dependencias con otros componentes."/>
+            <Parameter Name="IsOptional" Value="False" Type="bool" Guid="6c443521-568b-4616-80ac-71fe4edc6cab" Description="Indica si la criatura puede existir sin este componente."/>
+            <Parameter Name="ActivationDistance" Value="5" Type="float" Description="Distancia (en bloques) a la que el jugador debe estar para que la criatura empiece a hablar. AJUSTA: Qué tan cerca debe estar el jugador para activar el diálogo."/>
+            <Parameter Name="DisplayDistance" Value="10" Type="float" Description="Distancia máxima a la que el texto es visible para el jugador. AJUSTA: Hasta qué distancia se puede ver el texto flotante."/>
+            <Parameter Name="MinInterval" Value="8" Type="float" Description="Tiempo mínimo en segundos que la criatura esperará para decir una nueva frase. AJUSTA: Frecuencia mínima entre diálogos."/>
+            <Parameter Name="MaxInterval" Value="30" Type="float" Description="Tiempo máximo en segundos que la criatura esperará para decir una nueva frase. AJUSTA: Frecuencia máxima entre diálogos."/>
+            <Parameter Name="RiseDuration" Value="2" Type="float" Description="Duración en segundos del ascenso del texto desde las rodillas hasta la cabeza. AJUSTA: Qué tan rápido sube el texto desde abajo hacia arriba."/>
+            <Parameter Name="FadeDuration" Value="0.5" Type="float" Description="Duración en segundos del desvanecimiento final cuando llega a la cabeza. AJUSTA: Qué tan rápido desaparece el texto al final."/>
+        </ComponentTemplate>
+        
+        <ComponentTemplate Name="ComponentRandomChatter2" Guid="40891058-39e7-4823-9f93-37a3b6d9dbb5">
+            <Parameter Name="Class" Value="Game.ComponentRandomChatter2" Type="string" Description="El nombre de la clase C# que implementa la lógica para NPCs hostiles."/>
+            <Parameter Name="LoadOrder" Value="-1" Type="int" Guid="5927fedf-417d-4bad-93cd-8b16e76b4d6f" Description="Orden de carga para resolver dependencias con otros componentes."/>
+            <Parameter Name="IsOptional" Value="False" Type="bool" Description="Indica si la criatura puede existir sin este componente."/>
+            <Parameter Name="ActivationDistance" Value="8" Type="float" Description="Distancia (en bloques) a la que el jugador debe estar para que la criatura hostil empiece a hablar. AJUSTA: Qué tan cerca debe estar el jugador para activar el diálogo hostil."/>
+            <Parameter Name="DisplayDistance" Value="12" Type="float" Description="Distancia máxima a la que el texto hostil es visible para el jugador. AJUSTA: Hasta qué distancia se puede ver el texto flotante hostil."/>
+            <Parameter Name="MinInterval" Value="5" Type="float" Description="Tiempo mínimo en segundos que la criatura hostil esperará para decir una nueva frase. AJUSTA: Frecuencia mínima entre diálogos hostiles."/>
+            <Parameter Name="MaxInterval" Value="20" Type="float" Description="Tiempo máximo en segundos que la criatura hostil esperará para decir una nueva frase. AJUSTA: Frecuencia máxima entre diálogos hostiles."/>
+            <Parameter Name="RiseDuration" Value="1.5" Type="float" Description="Duración en segundos del ascenso del texto hostil desde las rodillas hasta la cabeza. AJUSTA: Qué tan rápido sube el texto hostil desde abajo hacia arriba."/>
+            <Parameter Name="FadeDuration" Value="0.3" Type="float" Description="Duración en segundos del desvanecimiento final cuando llega a la cabeza. AJUSTA: Qué tan rápido desaparece el texto hostil al final."/>
+        </ComponentTemplate>
+
+        <ComponentTemplate Name="PoisonInfected" Description="Componente de criatura infectada por veneno" Guid="d5e7f9a1-b3c5-4d9f-1a3b-5c7d9f1a3b5c">
+  <Parameter Name="Class" Guid="e6f8a0b2-c4d6-4e0a-2b4c-6d8e0a2b4c6d" Value="Game.ComponentPoisonInfected" Type="string"/>
+  <Parameter Name="IsOptional" Value="true" Type="bool"/>
+  <Parameter Name="LoadOrder" Value="60" Type="int"/>
+  <Parameter Name="PoisonResistance" Description="Resistencia al veneno (reduce duración)" Guid="f7a9b1c3-d5e7-4f1b-3c5d-7e9f1b3c5d7e" Value="0" Type="float"/>
+</ComponentTemplate>
+    </Folder>
+
+    <Folder Name="ProgramedInteligence" Guid="33dfd132-3c41-4dfa-a385-af3ba34ff86b">
+    <ComponentTemplate Name="NewChaseBehavior2" Description="Comportamiento que hace que una criatura persiga al intruso" Guid="156963c2-5088-4d40-b0fa-73a8f0f202b5" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+  <Parameter Name="Class" Guid="59578e6c-c3b9-451c-9472-f0626be12772" Value="Game.ComponentNewChaseBehavior2" Type="string"/>
+  <Parameter Name="ChaseWhenAttackedProbability" Description="Probabilidad de que la criatura persiga cuando es atacada" Guid="5e64f000-66c7-4950-b821-c67c7c101ec3" Value="1" Type="float"/>
+  <Parameter Name="NightChaseTime" Description="Tiempo de persecución cuando la criatura comienza a perseguir durante la noche, en segundos" Guid="a80cc983-aa50-421e-bbc9-bac0d5070f5f" Value="10" Type="float"/>
+  <Parameter Name="DayChaseRange" Description="Rango cuando la criatura comienza a perseguir durante el día" Guid="9ed3cebc-bec5-48c2-b52a-50588301adf9" Value="1.5" Type="float"/>
+  <Parameter Name="ChaseOnTouchProbability" Description="Probabilidad de que la criatura persiga si es tocada por una criatura en AutoChaseMask" Guid="658b58f4-d775-4964-b8b3-b4afb51a73e4" Value="1" Type="float"/>
+  <Parameter Name="DayChaseTime" Description="Tiempo de persecución cuando la criatura comienza a perseguir durante el día, en segundos" Guid="0bab483f-7602-4406-8952-7383d1e285b1" Value="10" Type="float"/>
+  <Parameter Name="NightChaseRange" Description="Rango cuando la criatura comienza a perseguir durante la noche" Guid="c2cad3d2-f471-4251-bd91-1e15bd37f3e4" Value="1.5" Type="float"/>
+  <Parameter Name="AutoChaseMask" Description="Categorías de criaturas a perseguir" Guid="b6f475a7-4ed9-40a3-b251-25416b58ed76" Value="LandOther, Bird" Type="Game.CreatureCategory"/>
+  <Parameter Name="ChaseNonPlayerProbability" Description="Probabilidad de que la criatura persiga un objetivo no-jugador cuando está en rango, de 0 a 1" Guid="8dedf1e9-5f38-4284-8ae6-0dfcc4530057" Value="0" Type="float"/>
+</ComponentTemplate>
+
+<ComponentTemplate Name="ComponentFirearmsShooters" Guid="927c0a46-b1e5-42a9-a6bb-0979acbc2518" Description="Componente que permite a NPCs usar armas de fuego automáticamente">
+    <Parameter Name="Class" Value="Game.ComponentFirearmsShooters" Type="string" Guid="05ae6aa2-3bb6-4bee-875d-89f2c1851e45" Description="Nombre de la clase C# que implementa el comportamiento de disparo con armas de fuego"/>
+    <Parameter Name="UpdateOrder" Value="1000" Type="int" Guid="69c93012-6088-405e-8a76-bf44e9d42fe1" Description="Orden de actualización del componente durante el ciclo del juego"/>
+    <Parameter Name="LoadOrder" Value="100" Type="int" Guid="9b5d5c7d-fc82-429f-a0e3-019f87c2f604" Description="Orden de carga del componente en la entidad"/>
+    <Parameter Name="MaxShootingDistance" Value="25" Type="float" Guid="bc9ac8cb-9633-46b9-a119-d169a2e2edef" Description="Distancia máxima a la que el NPC disparará (en metros)"/>
+    <Parameter Name="SpreadFactor" Value="0.05" Type="float" Guid="0a3cbe52-a53a-48ef-bb11-1e51b2a6260a" Description="Factor de dispersión de los disparos (imprecisión). Mayor valor = menos preciso"/>
+    <Parameter Name="ReloadChance" Value="0.05" Type="float" Guid="9a937410-1aa3-42c0-abfe-6acc39fd7320" Description="Probabilidad (0-1) de recargar después de cada disparo. 0.05 = 5% de chance"/>
+    <Parameter Name="MinReloadInterval" Value="5" Type="float" Guid="9120d3e1-2f7c-47f0-9fee-ff0119236f26" Description="Segundos mínimos entre recargas"/>
+    <Parameter Name="UseRandomReloads" Value="true" Type="bool" Guid="786e20f7-df47-4c67-889b-8155bb125182" Description="Si es true, activa recargas aleatorias basadas en ReloadChance"/>
+    <Parameter Name="TargetHeightOffset" Value="0.5" Type="float" Guid="1324e873-eb18-4495-909f-03011ea74cc0" Description="Ajuste vertical del apuntado (0 = cabeza, 0.5 = torso, 1.0 = pies)"/>
+    <Parameter Name="MeleeRange" Value="5" Type="float" Guid="87729eb8-c51a-4a1e-9d6a-ce643a4eb628" Description="Distancia a la que cambia a modo cuerpo a cuerpo (en metros)"/>
+    <Parameter Name="UseMeleeSwitch" Value="true" Type="bool" Guid="936285c1-4d66-4f30-ac95-0c3abe791525" Description="Activar/desactivar cambio automático a cuerpo a cuerpo cuando el objetivo está cerca"/>
+    <Parameter Name="MeleeAttackInterval" Value="0.8" Type="float" Guid="7072b92e-1bed-44ec-893a-5429ceff71f8" Description="Tiempo entre ataques cuerpo a cuerpo (en segundos)"/>
+    <Parameter Name="ReloadTime" Value="1.0" Type="float" Guid="f94332f8-dacb-4d13-b40f-afbd6b171d65" Description="Tiempo de recarga de armas de fuego (en segundos)"/>
+    <Parameter Name="PistolAimTime" Value="0.5" Type="float" Guid="c2358547-8d40-4f5d-8089-1e0c267b9656" Description="Tiempo de apuntado para armas no automáticas (en segundos)"/>
+    <Parameter Name="SniperAimTime" Value="1.0" Type="float" Guid="8b2b6f61-4ca1-43c3-ac39-b18a2c9dbfff" Description="Tiempo de apuntado para rifles de francotirador (en segundos)"/>
+</ComponentTemplate>
+
+    <ComponentTemplate Name="ComponentBanditHerd" Guid="a511bc31-fbbf-47af-a2a8-4d51dad1d563" Description="Componente de manada para bandidos que permite agrupamiento y comportamiento colectivo">
+    <Parameter Name="Class" Value="Game.ComponentBanditHerdBehavior" Type="string" Guid="8682e727-23a6-4f51-be2c-c57d1d9ef7d5" Description="Nombre de la clase C# que implementa el comportamiento de manada para bandidos"/>
+    <Parameter Name="UpdateOrder" Value="150" Type="int" Guid="b52346d1-5df9-49d4-977f-296f1f6071a0" Description="Orden de actualización del componente durante el ciclo del juego"/>
+    <Parameter Name="LoadOrder" Value="100" Type="int" Guid="c5cab34a-2e3b-4fbb-a219-2358b08c8cc0" Description="Orden de carga del componente en la entidad"/>
+    <Parameter Name="HerdName" Value="bandits" Type="string" Guid="9bcbab52-8e8f-41ee-a2c4-0aadf228d010" Description="Nombre de la manada para bandidos"/>
+    <Parameter Name="HerdingRange" Value="30" Type="float" Guid="b7ebb86a-d464-4835-995a-5a0771a81a0f" Description="Rango máximo para detectar y agruparse con otros miembros de la manada"/>
+    <Parameter Name="AutoNearbyCreaturesHelp" Value="true" Type="bool" Guid="912c89b2-caeb-4303-8abb-996c5b0c2b5f" Description="Si es true, llama a otros miembros de la manada cuando es atacado"/>
+</ComponentTemplate>
+
+<ComponentTemplate Name="ComponentBanditChase" Guid="c0b1cbec-0706-41cf-8bf4-9fd5647deca5" Description="Componente de persecución mejorado para bandidos con ataques a todas las criaturas">
+    <Parameter Name="Class" Value="Game.ComponentBanditChaseBehavior" Type="string" Guid="69363cb9-5c35-4d52-bff8-180338945516" Description="Nombre de la clase C# que implementa el comportamiento de persecución para bandidos"/>
+    <Parameter Name="UpdateOrder" Value="100" Type="int" Guid="fd8bed30-b402-44be-a7f2-03c50676683f" Description="Orden de actualización del componente durante el ciclo del juego"/>
+    <Parameter Name="LoadOrder" Value="80" Type="int" Guid="619e8331-7675-458b-bf8d-516c1409440a" Description="Orden de carga del componente en la entidad"/>
+    <Parameter Name="DayChaseRange" Value="20" Type="float" Guid="34636b20-3970-4ce6-8e35-53a4af1d0ebb" Description="Rango de persecución durante el día (en unidades del juego)"/>
+    <Parameter Name="NightChaseRange" Value="25" Type="float" Guid="76a02203-da67-4dea-a716-b2c5a50c599b" Description="Rango de persecución durante la noche (en unidades del juego)"/>
+    <Parameter Name="DayChaseTime" Value="60" Type="float" Guid="11843324-ef21-43cb-a228-e8d33bd97528" Description="Tiempo máximo de persecución durante el día (en segundos)"/>
+    <Parameter Name="NightChaseTime" Value="90" Type="float" Guid="08607584-29cc-4e5e-a10c-99a72e9ad0dd" Description="Tiempo máximo de persecución durante la noche (en segundos)"/>
+    <Parameter Name="AutoChaseMask" Value="31" Type="int" Guid="4d1be3c7-d575-480e-9495-badfbb67068c" Description="Máscara de categorías de criaturas a perseguir (31 = todas las categorías)"/>
+    <Parameter Name="ChaseNonPlayerProbability" Value="1.0" Type="float" Guid="3393f764-c0a5-4470-ae9a-f5a16586de4c" Description="Probabilidad de perseguir criaturas no jugador (1.0 = siempre)"/>
+    <Parameter Name="ChaseWhenAttackedProbability" Value="1.0" Type="float" Guid="79b051bd-11bb-44c7-84e5-39d818a5e387" Description="Probabilidad de perseguir cuando es atacado (1.0 = siempre)"/>
+    <Parameter Name="ChaseOnTouchProbability" Value="0.8" Type="float" Guid="c26518eb-905f-4342-a016-d6d7b9cecda1" Description="Probabilidad de perseguir al tocar (0.8 = 80% de probabilidad)"/>
+    <Parameter Name="AttacksPlayer" Value="true" Type="bool" Guid="8113c60a-4f70-47cc-b8f7-abd920701ac5" Description="Si es true, ataca a jugadores (si HerdName no es 'player')"/>
+    <Parameter Name="AttacksNonPlayerCreature" Value="true" Type="bool" Guid="e1228f56-70f4-45d2-a51b-ed5a544fa99a" Description="Si es true, ataca a criaturas no jugador"/>
+    <Parameter Name="ChaseRangeOnTouch" Value="15" Type="float" Guid="bb08577e-368c-43fd-a1f2-6c1a25422e9c" Description="Rango de persecución al tocar (en unidades del juego)"/>
+    <Parameter Name="ChaseTimeOnTouch" Value="30" Type="float" Guid="ad947134-77b3-419b-ada9-23acb0060ea0" Description="Tiempo de persecución al tocar (en segundos)"/>
+    <Parameter Name="ChaseRangeOnAttacked" Value="30" Type="float" Guid="b5792393-2171-45dd-a739-955d782fde3f" Description="Rango de persecución cuando es atacado (en unidades del juego)"/>
+    <Parameter Name="ChaseTimeOnAttacked" Value="60" Type="float" Guid="ec86c422-3757-4edf-a814-b0740228ed52" Description="Tiempo de persecución cuando es atacado (en segundos)"/>
+    <Parameter Name="ChasePersistentOnAttacked" Value="true" Type="bool" Guid="71622f8b-28dc-4d7d-9aa8-af3e3d97017f" Description="Si es true, la persecución cuando es atacado es persistente"/>
+    <Parameter Name="ImportanceLevelPersistent" Value="300" Type="float" Guid="79a9991d-17fe-4622-ab39-e3844554e6a6" Description="Nivel de importancia para persecuciones persistentes"/>
+</ComponentTemplate>
+
+    <ComponentTemplate Name="ComponentKnockbackBehavior" Guid="ee103658-d57d-4c34-b922-3c3834a0588d">
+    <Parameter Name="Class" Value="Game.ComponentKnockbackBehavior" Type="string" Description="Componente que aplica fuerza de retroceso a objetivos al atacar."/>
+    <Parameter Name="IsOptional" Value="true" Type="bool" Description="Indica si el componente es opcional para la entidad."/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Description="Orden de carga para asegurar dependencias con ComponentCreatureModel y ComponentChaseBehavior."/>
+    <Parameter Name="KnockbackForce" Value="10" Type="float" Description="Fuerza de retroceso aplicada al objetivo al impactar."/>
+    <Parameter Name="KnockbackChance" Value="0.3" Type="float" Description="Probabilidad (0-1) de que se aplique el retroceso en cada golpe."/>
+</ComponentTemplate>
+
+    <ComponentTemplate Name="ComponentZombieHerdBehavior" Guid="a470caf8-d3a0-461c-8064-3a668cce4e14">
+    <Parameter Name="Class" Value="Game.ComponentZombieHerdBehavior" Type="string" Guid="95e41117-dcbe-40e8-b2c7-7440ada53a93" Description="Componente de comportamiento de manada específico para zombis, extendiendo la funcionalidad de ComponentHerdBehavior."/>
+    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="8d63a4f4-d206-4b15-ae31-2519492a7f32" Description="Si es opcional o requerido para el funcionamiento."/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="0c22f3fd-9b3e-444e-aa6d-1d59f6f89ed4" Description="Orden de carga del componente (antes de ComponentZombieChaseBehavior)."/>
+    <!-- Parámetros heredados de ComponentHerdBehavior -->
+    <Parameter Name="HerdName" Value="Zombie" Type="string" Guid="23c5124b-1f1c-4e24-a791-04706b0c4b8e" Description="Nombre de la manada. Los zombis con el mismo nombre trabajan juntos y NO SE ATACAN entre sí (ver lógica en SetupZombieInjuryHandler y CallZombiesForHelp)."/>
+    <Parameter Name="HerdingRange" Value="40" Type="float" Guid="c10eee0f-8aaa-447b-904e-b75a5de8d882" Description="Rango máximo para detectar otros miembros de la manada (en bloques). Valor por defecto mayor para zombis según código C#."/>
+    <Parameter Name="AutoNearbyCreaturesHelp" Value="true" Type="bool" Guid="1ef254a9-4c85-4228-8744-436f19c0f8b0" Description="Si llama automáticamente a otros miembros de la manada cuando es atacado."/>
+    <!-- Parámetros específicos para zombis -->
+    <Parameter Name="CallForHelpWhenAttacked" Value="true" Type="bool" Guid="1ec744fb-b470-4837-8d05-a6cfdbc41c25" Description="Si los zombis llaman a otros cuando son atacados. La lógica en SetupZombieInjuryHandler verifica que el atacante NO sea de la misma manada."/>
+    <Parameter Name="HelpCallRange" Value="25" Type="float" Guid="744b2613-11e6-44b1-b3cd-2bd3a85e2139" Description="Rango para llamar a otros zombis en ayuda (en bloques)."/>
+    <Parameter Name="HelpChaseTime" Value="30" Type="float" Guid="c6600b71-66f4-415e-b0fc-e9dc376223ef" Description="Tiempo que los zombis persiguen al atacante (en segundos)."/>
+    <Parameter Name="IsPersistentHelp" Value="false" Type="bool" Guid="399f43dd-981d-4e28-9efe-3a40e0d755a8" Description="Si la persecución de ayuda es persistente (continúa hasta que el objetivo muere o se pierde)."/>
+    <Parameter Name="ZombieAggressiveGrouping" Value="false" Type="bool" Guid="e81372aa-d0d0-4831-950f-804ac5c9df10" Description="Si los zombis se agrupan agresivamente, deambulan cuando no están en combate y llaman ayuda en rango extendido (HelpCallRange × 1.5). Ver métodos CallAdditionalZombies y AddZombieSpecificStates."/>
+</ComponentTemplate>
+
+    <ComponentTemplate Name="BoomerPoisonExplosion" Guid="94c4aae0-adc3-405b-91b5-fbaa7ad0f7b8">
+    <Parameter Name="Class" Value="Game.ComponentBoomerPoisonExplosion" Type="string" Guid="4f3220be-2395-4f37-aed5-a1d2fbd5f128" Description="Componente que hace que la criatura explote al morir liberando una nube venenosa."/>
+    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="1e4fd0e9-1501-4b1c-adf0-d352a6a6d0df" Description="Si es opcional o requerido para el funcionamiento."/>
+    <Parameter Name="LoadOrder" Value="70" Type="int" Guid="14535130-7fbd-41a1-8ca5-a8bf6e6d0c60" Description="Orden de carga del componente."/>
+    <Parameter Name="PoisonRadius" Value="8" Type="float" Guid="f88c8685-cffe-480b-8ec2-f5aaecd93073" Description="Radio del efecto de envenenamiento inicial."/>
+    <Parameter Name="PoisonIntensity" Value="200" Type="float" Guid="37d6effb-20c0-4b2d-b3ff-fe17d70a9da0" Description="Intensidad base del envenenamiento (duración)."/>
+    <Parameter Name="CloudDuration" Value="15" Type="float" Guid="6b83c1c5-c7c0-493f-8310-1a793299b9b8" Description="Duración de la nube venenosa en segundos."/>
+    <Parameter Name="CloudRadius" Value="6" Type="float" Guid="91db0405-b770-4fbd-9375-4fbe9de4af15" Description="Radio de la nube venenosa."/>
+    <Parameter Name="ParticleCount" Value="150" Type="int" Guid="78a85698-3e22-4f21-a450-648069996eb4" Description="Cantidad de partículas para la nube venenosa."/>
+    <Parameter Name="PlaySound" Value="true" Type="bool" Guid="afc40226-dfff-47e8-8ba5-d5894f14e403" Description="Reproducir sonido al explotar."/>
+    <Parameter Name="PreventExplosion" Value="false" Type="bool" Guid="b788d065-f269-43ea-b114-34069a7c5de2" Description="Prevenir la explosión venenosa (útil para debugging)."/>
+</ComponentTemplate>
+
+    <ComponentTemplate Name="BoomerExplosion2" Guid="e1fbd7f5-5086-4743-aa37-14daf2172d5f">
+    <Parameter Name="Class" Value="Game.ComponentBoomerExplosion2" Type="string" Guid="6980dd8a-f8b0-49d6-9cc2-61383a26612f" Description="Componente que hace que la criatura explote al morir de forma incendiaria."/>
+    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="3107346f-389f-44bd-bc43-e94b0bcc15c6" Description="Si es opcional o requerido para el funcionamiento."/>
+    <Parameter Name="LoadOrder" Value="70" Type="int" Guid="4b046db9-16a3-4bca-956a-39b344af641b" Description="Orden de carga del componente."/>
+    <Parameter Name="ActivationRange" Value="3" Type="float" Guid="166324a5-76e7-4c98-9b67-cdb61d9619cf" Description="Rango de activación (en bloques) para detectar entidades cercanas y explotar."/>
+    <Parameter Name="UseStandardExplosion" Value="true" Type="bool" Guid="15afb5c8-6602-4eec-8971-d089484403ea" Description="Usar el sistema de explosiones estándar del juego."/>
+    <Parameter Name="UseCustomShockwave" Value="false" Type="bool" Guid="60173f65-c6db-4ff1-9f1f-e1dab4f1746a" Description="Usar onda expansiva personalizada además de la explosión estándar."/>
+    <Parameter Name="ExplosionPressure" Value="80" Type="float" Guid="80d31c97-4ce2-4c00-be62-43b0ad24e5c1" Description="Presión de la explosión (afecta la fuerza)."/>
+    <Parameter Name="IsIncendiary" Value="true" Type="bool" Guid="0936b609-c3f2-410d-b768-895e43173f6c" Description="Si la explosión causa fuego (como bombas incendiarias). ¡TRUE por defecto en esta versión!"/>
+    <Parameter Name="ExplosionRadius" Value="10" Type="float" Guid="1cd22b6b-87af-4bda-9a67-34b42f2465fa" Description="Radio total de la explosión (visual + efectos)."/>
+    <Parameter Name="BlockDamageRadius" Value="8" Type="float" Guid="ab2e688f-55f8-435c-841f-95567241966d" Description="Radio de destrucción de bloques."/>
+    <Parameter Name="EntityDamageRadius" Value="10" Type="float" Guid="479bcd77-11b3-412c-b0fe-d990344e34b8" Description="Radio de daño a entidades."/>
+    <Parameter Name="ShockwaveDamage" Value="100" Type="float" Guid="17c36a00-b2e7-4ce1-8fa5-5cf345ee03a7" Description="Daño adicional de la onda expansiva personalizada."/>
+    <Parameter Name="ShockwaveForce" Value="50" Type="float" Guid="5501f04f-20f7-40c4-aed1-76626eebf96b" Description="Fuerza de empuje de la onda expansiva."/>
+    <Parameter Name="DestroyBlocks" Value="true" Type="bool" Guid="6afd7079-a298-4431-a127-aece208e4b9e" Description="Si destruye bloques con la onda expansiva personalizada."/>
+    <Parameter Name="FireSpreadChance" Value="0.4" Type="float" Guid="ef3ce5e4-20cd-4f93-beca-e16c5378b07c" Description="Probabilidad de propagar fuego (0-1). Más alto = más fuego se propaga."/>
+    <Parameter Name="FireDuration" Value="10" Type="float" Guid="ee27b419-b84e-4ea4-a2f5-a484bbc01a52" Description="Duración del fuego en segundos."/>
+</ComponentTemplate>
+
+    <ComponentTemplate Name="BoomerExplosion" Guid="f0256105-afbc-4209-84cb-2fae41881524">
+    <Parameter Name="Class" Value="Game.ComponentBoomerExplosion" Type="string" Guid="b2774fa3-d656-4fff-9ab9-dc7223da9c8b" Description="Componente que hace que la criatura explote al morir o cuando entidades se acercan."/>
+    <Parameter Name="ActivationRange" Value="3" Type="float" Guid="439bfff8-9a15-4cc6-ac6a-4c7110282679" Description="Rango de activación (en bloques) para detectar entidades cercanas y explotar."/>
+    <Parameter Name="UseStandardExplosion" Value="true" Type="bool" Guid="00173457-bd82-4572-a5bd-6013fb57fc03" Description="Usar el sistema de explosiones estándar del juego."/>
+    <Parameter Name="UseCustomShockwave" Value="false" Type="bool" Guid="2c62034c-bc9c-4b8a-a668-90b70301c089" Description="Usar onda expansiva personalizada además de la explosión estándar."/>
+    <Parameter Name="ExplosionPressure" Value="80" Type="float" Guid="8f402b9c-0838-4761-9fdb-9d1a0139eb4c" Description="Presión de la explosión (afecta la fuerza)."/>
+    <Parameter Name="IsIncendiary" Value="false" Type="bool" Guid="25320076-42e0-4287-ac4f-50cdc38f5032" Description="Si la explosión causa fuego (como bombas incendiarias)."/>
+    <Parameter Name="ExplosionRadius" Value="10" Type="float" Guid="c6c9666d-9f06-46ff-886f-47464dc7fb78" Description="Radio total de la explosión (visual + efectos)."/>
+    <Parameter Name="BlockDamageRadius" Value="8" Type="float" Guid="4df991c9-31f4-478b-a436-9b85be52de8a" Description="Radio de destrucción de bloques."/>
+    <Parameter Name="EntityDamageRadius" Value="10" Type="float" Guid="45b31126-c301-4f1f-a593-d1eb885c5cb1" Description="Radio de daño a entidades."/>
+    <Parameter Name="ShockwaveDamage" Value="100" Type="float" Guid="e3b66731-b0f3-4648-9a26-90461bfbeccc" Description="Daño adicional de la onda expansiva personalizada."/>
+    <Parameter Name="ShockwaveForce" Value="50" Type="float" Guid="0c1700b6-7727-4088-befa-6d0810c85d17" Description="Fuerza de empuje de la onda expansiva."/>
+    <Parameter Name="DestroyBlocks" Value="true" Type="bool" Guid="ab31c1c8-f5f4-406a-a635-cde1f4d4fbf6" Description="Si destruye bloques con la onda expansiva personalizada."/>
+</ComponentTemplate>
+
+<ComponentTemplate Name="ZombieChaseBehavior" Description="Comportamiento que hace que un zombi persiga objetivos con lógica de horda" Guid="5674ee12-d71b-4c21-a1a0-ecf6b220be53">
+  <Parameter Name="Class" Guid="b714af9a-06fb-4768-a71e-4e58af8e8070" Value="Game.ComponentZombieChaseBehavior" Type="string"/>
+  <Parameter Name="ChaseWhenAttackedProbability" Description="Probabilidad de que el zombi persiga cuando es atacado" Guid="1099e9a7-620d-4bcf-af1f-9c252a3db40d" Value="1" Type="float"/>
+  <Parameter Name="NightChaseTime" Description="Tiempo de persecución cuando el zombi comienza a perseguir durante la noche, en segundos" Guid="0df0bdac-1b94-4076-9716-10ce4d2f6928" Value="30" Type="float"/>
+  <Parameter Name="DayChaseRange" Description="Distancia a la que el zombi comienza a perseguir durante el día" Guid="9aac2aa5-0724-4026-bb21-ead108a1777a" Value="8" Type="float"/>
+  <Parameter Name="ChaseOnTouchProbability" Description="Probabilidad de que el zombi persiga si es tocado por una criatura con AutoChaseMask" Guid="bff10234-1ed0-4248-a6d5-09b4cc2e4c94" Value="1" Type="float"/>
+  <Parameter Name="DayChaseTime" Description="Tiempo de persecución cuando el zombi comienza a perseguir durante el día, en segundos" Guid="b379d7b6-7b65-4645-b701-b200f3cdfdfe" Value="30" Type="float"/>
+  <Parameter Name="NightChaseRange" Description="Distancia a la que el zombi comienza a perseguir durante la noche" Guid="00d96ecf-e802-4b34-ab9f-1cf8cda6c789" Value="12" Type="float"/>
+  <Parameter Name="AutoChaseMask" Description="Categorías de criaturas a perseguir" Guid="a485912b-2075-4577-be8d-14770e299df1" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
+  <Parameter Name="ChaseNonPlayerProbability" Description="Probabilidad de que el zombi persiga a un objetivo que no sea el jugador cuando está dentro del rango, de 0 a 1" Guid="fedb68fd-8320-49d2-bcb5-80ace2825760" Value="1" Type="float"/>
+  <Parameter Name="AttacksSameHerd" Description="Indica si el zombi ataca a miembros de su misma horda" Guid="cbab6a47-7a6f-497a-83a5-3f1323585a11" Value="false" Type="bool"/>
+  <Parameter Name="AttacksAllCategories" Description="Indica si el zombi ataca a todas las categorías de criaturas" Guid="f1c29cc0-83e1-41c1-9567-8a2bf393d07d" Value="true" Type="bool"/>
+  <Parameter Name="FleeFromSameHerd" Description="Indica si el zombi huye de miembros de su misma horda" Guid="c1a80409-9a23-4eb4-8327-2de254421cda" Value="true" Type="bool"/>
+  <Parameter Name="FleeDistance" Description="Distancia a la que huye al escapar de miembros de su misma horda" Guid="4b3f1003-df82-47f8-ab9f-61034911e281" Value="10" Type="float"/>
+  <Parameter Name="ForceAttackDuringGreenNight" Description="Indica si el zombi ataca al jugador durante la Noche Verde sin importar el modo de juego" Guid="96e8d38b-7e1b-4ee1-9d8f-d48391dc19f4" Value="true" Type="bool"/>
+</ComponentTemplate>
+
+    <ComponentTemplate Name="ComponentNewAutoInteract" Guid="0d193534-6d05-4939-bba8-4a8755d3b064" Description="Componente que permite a NPCs interactuar automáticamente con bloques como puertas y rejillas">
+    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string" Guid="26994834-9820-4811-88b0-1b84db2cc3c0"/>
+    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="e6e9eec5-321c-405e-b511-31c418415fe1"/>
+    <Parameter Name="LoadOrder" Value="50" Type="int" Description="Orden de carga"/>
+    <Parameter Name="AutoInteractRate" Value="0.1" Type="float" Description="Frecuencia de interacción automática (0-1)"/>
+</ComponentTemplate>
+
+<ComponentTemplate Name="FlameThrowerShooterBehavior" Description="Comportamiento para NPCs que usan lanzallamas con disparos ilimitados de fuego y veneno" Guid="b3bc9331-ad8a-4454-9a3a-fec7a52d85f2" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+    <Parameter Name="MaxDistance" Description="Distancia máxima de disparo efectivo" Guid="4346bf5f-3a19-40cd-9ed8-2fdebdeebea3" Value="20" Type="float"/>
+    <Parameter Name="AimTime" Description="Tiempo de apuntado antes de comenzar a disparar" Guid="fff3a361-6506-4837-a432-1d1e41b5939c" Value="0.5" Type="float"/>
+    <Parameter Name="BurstTime" Description="Duración de la ráfaga de llamas en segundos" Guid="d52172f1-c19c-4f9d-81a9-6c53a6cf15a7" Value="2.0" Type="float"/>
+    <Parameter Name="CooldownTime" Description="Tiempo de enfriamiento entre ráfagas en segundos" Guid="42656985-a446-44d8-bf8f-c5896bda2b60" Value="1.0" Type="float"/>
+    <Parameter Name="Accuracy" Description="Precisión del disparo (menor = más preciso)" Guid="b171a609-bb53-4b89-84eb-725d6b8ca0c8" Value="0.1" Type="float"/>
+    <Parameter Name="UseRecoil" Description="Aplicar retroceso físico al disparar" Guid="4ec72dcf-7df4-40ba-bfdf-557c0efb4cd5" Value="true" Type="bool"/>
+    <Parameter Name="FlameSpeed" Description="Velocidad base de las llamas" Guid="24c33087-7809-429f-881c-6388b89fa1f8" Value="40" Type="float"/>
+    <Parameter Name="BurstCount" Description="Número de proyectiles de fuego por ráfaga" Guid="b2f4cd6c-cb67-4407-a595-81db3ca1a076" Value="15" Type="int"/>
+    <Parameter Name="SpreadAngle" Description="Ángulo de dispersión de las llamas en grados" Guid="a967f7ff-f503-4e51-a6f0-565394f43fc9" Value="15" Type="float"/>
+    <Parameter Name="CycleBulletTypes" Description="Alternar entre balas de fuego y veneno automáticamente" Guid="33e58433-3d2e-49d3-83aa-d54544381ddb" Value="true" Type="bool"/>
+    <Parameter Name="Class" Guid="a7ada27d-d400-43ce-ba43-1e9f37cd848a" Value="Game.ComponentFlameThrowerShooterBehavior" Type="string"/>
+</ComponentTemplate>
+
+    <ComponentTemplate Name="RepeatCrossbowShooterBehavior" Description="Comportamiento para NPCs que usan ballestas repetidoras con disparos ilimitados y ráfagas múltiples" Guid="e40dd82e-a7a5-42de-83ee-8dc7d8cdf2f2" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+    <Parameter Name="MaxDistance" Description="Distancia máxima de disparo efectivo" Guid="9fa47466-a1bc-49a7-b965-85b21e08476d" Value="25" Type="float"/>
+    <Parameter Name="DrawTime" Description="Tiempo para tensar completamente la ballesta en segundos" Guid="ebe23e28-67f7-4fc4-bacf-bddf3fce892e" Value="2.5" Type="float"/>
+    <Parameter Name="AimTime" Description="Tiempo de apuntado antes de comenzar a tensar" Guid="6317aefb-5093-439e-9e48-82677d8b305b" Value="0.5" Type="float"/>
+    <Parameter Name="TimeBetweenShots" Description="Tiempo entre disparos de flechas múltiples" Guid="00f885cd-9916-4a0e-8941-9d6147cdb9da" Value="1.0" Type="float"/>
+    <Parameter Name="MaxInaccuracy" Description="Imprecisión máxima del disparo (menor = más preciso)" Guid="0a7f258c-47ab-4eb3-8ea9-c8db44e7e6db" Value="0.03" Type="float"/>
+    <Parameter Name="UseRecoil" Description="Aplicar retroceso al disparar" Guid="c01e98f4-f8d2-4756-8f57-c00602b33f1e" Value="true" Type="bool"/>
+    <Parameter Name="BoltSpeed" Description="Velocidad base de las flechas" Guid="340aa374-0e22-43cf-94b2-00b5fba46724" Value="40" Type="float"/>
+    <Parameter Name="Class" Guid="c852e0cc-bb4b-434b-9dc1-0f1795bd7a49" Value="Game.ComponentRepeatCrossbowShooterBehavior" Type="string"/>
+</ComponentTemplate>
+
+    <ComponentTemplate Name="CrossbowShooterBehavior" Description="Comportamiento para NPCs que usan ballestas con animaciones de tensado vertical y disparo cíclico de virotes" Guid="90581361-aa1f-4180-bc02-359795600942">
+    <Parameter Name="MinDistance" Description="Distancia mínima para comenzar a disparar" Guid="d77c5390-2907-4321-b859-2a8b8956c3cb" Value="5" Type="float"/>
+    <Parameter Name="MaxDistance" Description="Distancia máxima de disparo efectivo" Guid="d00af5da-9704-4ebf-bbd4-a5e55f32a2bc" Value="25" Type="float"/>
+    <Parameter Name="DrawTime" Description="Tiempo para tensar completamente la ballesta en segundos" Guid="e1e3e770-4f64-4698-b207-af3cf61e1e7e" Value="1.5" Type="float"/>
+    <Parameter Name="AimTime" Description="Tiempo de apuntado antes de comenzar a tensar" Guid="127e199b-c61a-43a4-9bd3-fb52bd1051f5" Value="0.5" Type="float"/>
+    <Parameter Name="Accuracy" Description="Precisión del disparo (menor = más preciso)" Guid="62ca364e-ac7b-468b-99ef-a8203042ed06" Value="0.02" Type="float"/>
+    <Parameter Name="UseRecoil" Description="Aplicar retroceso al disparar" Guid="f58a5acc-5209-497d-86ad-93c08ca7d7dc" Value="true" Type="bool"/>
+    <Parameter Name="ShowBoltWhenIdle" Description="Mostrar virote cuando está inactivo" Guid="5df45b96-bf93-4558-a558-7aea5da6b33a" Value="false" Type="bool"/>
+    <Parameter Name="BoltSpeed" Description="Velocidad base del virote" Guid="b48d1874-cac2-4aca-852c-294b1e6b248d" Value="45" Type="float"/>
+    <Parameter Name="CycleBoltTypes" Description="Ciclar entre diferentes tipos de virotes al disparar" Guid="b5c440f7-724a-4b4c-ad8d-d7fa5690fd9a" Value="true" Type="bool"/>
+    <Parameter Name="Class" Guid="ecccd78d-08f2-4eda-9a24-0c2025d52a54" Value="Game.ComponentCrossbowShooterBehavior" Type="string"/>
+</ComponentTemplate>
+
+    <ComponentTemplate Name="BowShooterBehavior" Description="Comportamiento para NPCs que usan arcos con animaciones de tensado y disparo cíclico de flechas" Guid="416961cf-2c1d-4611-a7a3-6c7197aba83e" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+    <Parameter Name="MinDistance" Description="Distancia mínima para comenzar a disparar" Guid="deb688a1-538a-4c78-9236-0060f0750427" Value="5" Type="float"/>
+    <Parameter Name="MaxDistance" Description="Distancia máxima de disparo efectivo" Guid="326ccc85-0f14-4967-8ee4-2300a82667a2" Value="25" Type="float"/>
+    <Parameter Name="DrawTime" Description="Tiempo para tensar completamente el arco en segundos" Guid="f519747b-9801-4465-a28f-887468287bf9" Value="1.5" Type="float"/>
+    <Parameter Name="AimTime" Description="Tiempo de apuntado antes de comenzar a tensar" Guid="bad1bc14-3cd9-4c58-9ecd-32dbcb8d8295" Value="0.8" Type="float"/>
+    <Parameter Name="Accuracy" Description="Precisión del disparo (menor = más preciso)" Guid="c43eb388-a8ff-47b0-bf48-8d519ee9a929" Value="0.03" Type="float"/>
+    <Parameter Name="UseRecoil" Description="Aplicar retroceso al disparar" Guid="35f6db09-32b8-4721-9b4b-e731c8f5bacd" Value="false" Type="bool"/>
+    <Parameter Name="ShowArrowWhenIdle" Description="Mostrar flecha cuando está inactivo" Guid="025e4329-18a0-4f52-b108-66e86f7899e1" Value="true" Type="bool"/>
+    <Parameter Name="ArrowSpeed" Description="Velocidad base de la flecha (afectada por tensión)" Guid="59e8e75d-8b04-42d5-8a11-1a57d571f7f3" Value="40" Type="float"/>
+    <Parameter Name="CycleArrowTypes" Description="Ciclar entre diferentes tipos de flechas al disparar" Guid="9ec4d7c7-7097-4e2b-9814-5af59099eacf" Value="true" Type="bool"/>
+    <Parameter Name="Class" Guid="a48fe137-0abb-4b57-b215-364d7e60f86d" Value="Game.ComponentBowShooterBehavior" Type="string"/>
+</ComponentTemplate>
+
+<ComponentTemplate Name="ItemsLauncherShooterBehavior" Description="Comportamiento para NPCs que usan ItemsLauncher (AutoCannon) con animaciones de apuntado y recarga" Guid="36981492-9288-4f1a-a0ae-46ef5f5b9b90" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+    <Parameter Name="MinDistance" Description="Distancia mínima para comenzar a disparar" Guid="3b2a3cd0-f4db-4196-be76-d1177d4d74d2" Value="5" Type="float"/>
+    <Parameter Name="MaxDistance" Description="Distancia máxima de disparo efectivo" Guid="50b6851e-048c-4a71-a1cf-8be528e6bd70" Value="25" Type="float"/>
+    <Parameter Name="ReloadTime" Description="Tiempo de recarga en segundos" Guid="41c964ea-bc0a-406c-a895-bd7b60213a5d" Value="1.5" Type="float"/>
+    <Parameter Name="AimTime" Description="Tiempo de apuntado antes de disparar" Guid="f72590e5-45e7-4f77-b440-ba2bddf1f2fb" Value="0.8" Type="float"/>
+    <Parameter Name="Accuracy" Description="Precisión del disparo (menor = más preciso)" Guid="226d5ae4-0b64-407a-845b-2a743a928888" Value="0.05" Type="float"/>
+    <Parameter Name="UseRecoil" Description="Aplicar retroceso al disparar" Guid="5e11b0ad-c4d0-4d19-be04-303fdbc31660" Value="true" Type="bool"/>
+    <Parameter Name="BulletSpeed" Description="Velocidad base del proyectil" Guid="31340e21-7084-43aa-b482-55b53b4515c2" Value="35" Type="float"/>
+    <Parameter Name="RequireCocking" Description="Requiere amartillar antes de disparar" Guid="87996b4f-614c-4901-8091-3136a041fea1" Value="true" Type="bool"/>
+    <Parameter Name="SpeedLevel" Description="Nivel de velocidad del ItemsLauncher (1-3)" Guid="dd1c1304-422c-45b0-83ca-dae957a25bb1" Value="2" Type="int"/>
+    <Parameter Name="RateLevel" Description="Nivel de cadencia del ItemsLauncher (1-15)" Guid="95432cd7-28fa-4106-a62c-ab8e93cad775" Value="2" Type="int"/>
+    <Parameter Name="SpreadLevel" Description="Nivel de dispersión del ItemsLauncher (1-3)" Guid="71552142-ade1-4673-b779-bb732c3fc7e2" Value="2" Type="int"/>
+    <Parameter Name="Class" Guid="293422c9-9c60-4d3f-b949-a8e6cc3b2d5a" Value="Game.ComponentItemsLauncherShooterBehavior" Type="string"/>
+</ComponentTemplate>
+
+<ComponentTemplate Name="MusketShooterBehavior" Description="Comportamiento especializado para NPCs que usan mosquetes con animaciones de apuntado, recarga y amartillado." Guid="68a0cf69-c292-490d-9ca9-9ddc9930effb" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+    <Parameter Name="MaxDistance" Description="Distancia máxima de disparo efectivo" Guid="fc2f30af-424f-4f3b-8a09-9cc18c546ebf" Value="25" Type="float"/>
+    <Parameter Name="ReloadTime" Description="Tiempo de recarga en segundos" Guid="a2a78ac6-3118-44a1-9062-bb607229118a" Value="2" Type="float"/>
+    <Parameter Name="AimTime" Description="Tiempo de apuntado antes de disparar" Guid="5e60d9de-57c6-4ce2-a84e-cdb1239b1af6" Value="1" Type="float"/>
+    <Parameter Name="CockTime" Description="Tiempo de amartillado" Guid="f9c65451-ed2a-4956-861e-7229de15402f" Value="0.5" Type="float"/>
+    <Parameter Name="Accuracy" Description="Precisión del disparo (menor = más preciso)" Guid="43344e94-6169-4eb9-b5ba-2a9ee359732b" Value="0.02" Type="float"/>
+    <Parameter Name="UseRecoil" Description="Aplicar retroceso al disparar" Guid="b0a6e3e2-ae9f-4550-a0da-558fab1b03e7" Value="true" Type="bool"/>
+    <Parameter Name="BulletSpeed" Description="Velocidad de la bala" Guid="afd24068-ff98-4352-a770-54a1560bb8e7" Value="120" Type="float"/>
+    <Parameter Name="RequireCocking" Description="Requiere amartillar antes de disparar" Guid="0fd229d9-7e4a-4b79-9bbc-05da8aeaf001" Value="true" Type="bool"/>
+    <Parameter Name="Class" Guid="ed17b4db-55ca-4d00-b26d-923adf011da7" Value="Game.ComponentMusketShooterBehavior" Type="string"/>
+</ComponentTemplate>
+
+    <ComponentTemplate Name="MusketShooterBehavior2" Description="Comportamiento especializado para NPCs que usan mosquetes con animaciones de apuntado, recarga y amartillado. Incluye cambio automático a armas cuerpo a cuerpo cuando el enemigo está cerca." Guid="32352458-619e-4c17-9392-eefb8dd0ede3" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+    <Parameter Name="MaxDistance" Description="Distancia máxima de disparo efectivo" Guid="428c9c59-0558-4b33-bbcd-b248453fcc25" Value="25" Type="float"/>
+    <Parameter Name="MeleeSwitchDistance" Description="Distancia a la que cambia a armas cuerpo a cuerpo" Guid="ede656da-1885-4863-890a-082d61aa51cb" Value="5" Type="float"/>
+    <Parameter Name="ReloadTime" Description="Tiempo de recarga en segundos" Guid="9a8e5af1-1358-41ab-9115-1963c3981c55" Value="0.55" Type="float"/>
+    <Parameter Name="AimTime" Description="Tiempo de apuntado antes de disparar" Guid="ad1b63cf-55c5-4593-876d-954d4646f602" Value="1" Type="float"/>
+    <Parameter Name="CockTime" Description="Tiempo de amartillado" Guid="e646e8ba-5b8a-46b6-b1d8-5d4847a1bca9" Value="0.5" Type="float"/>
+    <Parameter Name="MeleeAttackTime" Description="Tiempo entre ataques cuerpo a cuerpo" Guid="8159cc8a-1d5c-451d-bfd7-5ae2e4edd391" Value="0.8" Type="float"/>
+    <Parameter Name="Accuracy" Description="Precisión del disparo (menor = más preciso)" Guid="71fc1196-b143-4835-9abb-7504ea73ea07" Value="0.02" Type="float"/>
+    <Parameter Name="UseRecoil" Description="Aplicar retroceso al disparar" Guid="fc414769-1ff0-41a5-88f4-4b5fff633524" Value="true" Type="bool"/>
+    <Parameter Name="BulletSpeed" Description="Velocidad de la bala" Guid="d37514e7-406d-4824-9c8d-2c60f4be77ba" Value="120" Type="float"/>
+    <Parameter Name="RequireCocking" Description="Requiere amartillar antes de disparar" Guid="923a51f8-0302-4841-9329-c72be4c844de" Value="true" Type="bool"/>
+    <Parameter Name="Class" Guid="c1321f2f-5e52-4146-8b57-9b42276ef099" Value="Game.ComponentMusketShooterBehavior2" Type="string"/>
+</ComponentTemplate>
+
+        <ComponentTemplate Name="TargetedChaseBehavior" Description="Similar a ChaseBehavior con la diferencia de usar nombres de entidades en vez de categorias, trabaja en conjunto con ChaseBehavior" Guid="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+			<Parameter Name="ChaseToCreatures" Description="Esta criatura perseguira a las criaturas especificadas por sus nombres de entidad" Guid="bf00b70a-e7ae-4e7d-92d7-c983d3fa8e4a" Value="" Type="string"/>
+			<Parameter Name="ChaseByCreatures" Description="Esta criatura sera perseguida por las criaturas especificadas por sus nombres de entidad" Guid="9f84f102-0878-4201-8463-94010952b847" Value="" Type="string"/>
+			<Parameter Name="ChaseToCreatureProbability" Description="Probabilidad para que esta criatura persegua a las criaturas especificadas" Guid="2a163295-dc70-4d0c-970a-95641f1cba91" Value="0.5" Type="float"/>
+			<Parameter Name="ChaseByCreatureProbability" Description="Probabilidad para que esta criatura sea perseguida por las criaturas especificadas" Guid="b698e775-c34d-47cf-8840-83edfcca8ceb" Value="0.5" Type="float"/>
+			<Parameter Name="Class" Guid="45077340-7b89-42da-b8d3-18b0e44a6f34" Value="Game.ComponentCustomChaseBehavior" Type="string"/>
+		</ComponentTemplate>
+
+        <ComponentTemplate Name="ComponentSuicideBomber" Guid="bbeb4cf0-0c23-44e9-88f8-def2b79fa8f5">
+            <Parameter Name="Class" Value="Game.ComponentSuicideBomber" Type="string" Guid="a2caf84b-0d7f-4ebb-b061-aa182794b564"/>
+            <Parameter Name="IsOptional" Value="false" Type="bool" Guid="3f06ece9-5db6-40e4-beec-e0c9864791bd"/>
+            <Parameter Name="LoadOrder" Value="-1" Type="int" Description="Orden de carga del componente" Guid="8a226a0a-623d-40c3-9bc9-4a7978a59760"/>
+            <!-- Parámetros de activación -->
+            <Parameter Name="ActivationRange" Value="3" Type="float" Description="Rango de activación en bloques (ej: 3 = 3 bloques)" Guid="b3012068-99af-422c-9e6e-8fd9476cf9d1"/>
+            <Parameter Name="CountdownDuration" Value="1" Type="float" Description="Duración de la cuenta regresiva en segundos (0.1 = instantáneo)" Guid="489cda8f-659c-461b-b36f-21a94d8be431"/>
+            <Parameter Name="SparkSound" Value="Audio/Fuse" Type="string" Description="Sonido de chispa durante la cuenta regresiva" Guid="f1bdfab4-3c14-4335-9c79-d16cecbe5051"/>
+            <!-- TIPO DE EXPLOSIÓN (elige UNA opción) -->
+            <Parameter Name="UseStandardExplosion" Value="true" Type="bool" Description="Usar explosión estándar del juego (recomendado)" Guid="9d8c7b6a-5f4e-3d2c-1b0a-9876543210ab"/>
+            <Parameter Name="UseCustomShockwave" Value="false" Type="bool" Description="Usar onda expansiva personalizada (experimental)" Guid="8c7b6a5f-4e3d-2c1b-0a9f-8765432109ba"/>
+            <!-- EXPLOSIÓN ESTÁNDAR (solo si UseStandardExplosion=true) -->
+            <Parameter Name="ExplosionPressure" Value="80" Type="float" Description="Presión de la explosión (10=pequeña, 200=enorme)" Guid="5fb4f9c4-7745-4e40-9906-28e8869e4734"/>
+            <Parameter Name="IsIncendiary" Value="true" Type="bool" Description="Si la explosión es incendiaria (deja fuego)" Guid="cd13ac37-e65d-4f22-96d4-289f82a73d2a"/>
+            <!-- ONDA EXPANSIVA PERSONALIZADA (solo si UseCustomShockwave=true) -->
+            <Parameter Name="ExplosionRadius" Value="10" Type="float" Description="Radio visual máximo en bloques" Guid="61bbe09e-83ad-4664-9cd2-f8dd6b10ad15"/>
+            <Parameter Name="ShockwaveDamage" Value="0" Type="float" Description="Daño máximo en el centro (0-500)" Guid="889a3634-c5b4-446a-b3e9-6bfb477712f6"/>
+            <Parameter Name="ShockwaveForce" Value="0" Type="float" Description="Fuerza de empuje (0-200)" Guid="4ed5762e-75af-41b0-9027-807928dd3b3e"/>
+            <Parameter Name="DestroyBlocks" Value="true" Type="bool" Description="Si destruye bloques con la onda" Guid="b8e0ae63-ff31-4647-a33d-21c9ad0cd054"/>
+            <Parameter Name="BlockDamageRadius" Value="8" Type="float" Description="Radio de destrucción de bloques en bloques" Guid="e474ef3a-df7b-4a68-86bb-1dbdbf09f010"/>
+            <Parameter Name="EntityDamageRadius" Value="10" Type="float" Description="Radio de daño a entidades en bloques" Guid="2bcd22be-dd01-4922-be1b-6e9c5dd076d6"/>
+        </ComponentTemplate>
+
+        <ComponentTemplate Name="ComponentNewRunAwayBehavior" Guid="9c62f443-db92-4447-8f7d-3675393e75d1">
+    <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Description="El nombre de la clase C# que implementa la lógica de huida sin reacción a ruidos."/>
+    <Parameter Name="LoadOrder" Value="-1" Type="int" Guid="6e5afe28-5d96-4f24-8ac5-e61dce6f1a77" Description="Orden de carga para resolver dependencias con otros componentes."/>
+    <Parameter Name="IsOptional" Value="False" Type="bool" Guid="50d46447-b3c1-4a85-825f-c2eca2feaaee" Description="Indica si la criatura puede existir sin este componente."/>
+    <Parameter Name="LowHealthToEscape" Value="0.1" Type="float" Description="Porcentaje de salud (0-1) por debajo del cual la criatura intentará huir automáticamente. AJUSTA: Umbral de salud para activar la huida."/>
+    <Parameter Name="RunAwayDistance" Value="6" Type="float" Description="Distancia máxima (en bloques) a la que detectará al atacante para huir. AJUSTA: Qué tan lejos puede estar el atacante para que la criatura huya."/>
+    <Parameter Name="ForgetAttackerMinTime" Value="10" Type="float" Description="Tiempo mínimo en segundos para olvidar a un atacante. AJUSTA: Cuánto tiempo mínimo recuerda al enemigo después del último ataque."/>
+    <Parameter Name="ForgetAttackerMaxTime" Value="20" Type="float" Description="Tiempo máximo en segundos para olvidar a un atacante. AJUSTA: Cuánto tiempo máximo recuerda al enemigo después del último ataque."/>
+    <Parameter Name="EscapeImportanceLowHealth" Value="300" Type="float" Description="Nivel de importancia cuando la salud está por debajo de LowHealthToEscape. AJUSTA: Prioridad de la huida cuando la salud es crítica."/>
+    <Parameter Name="EscapeImportanceAttacked" Value="100" Type="float" Description="Nivel de importancia cuando es atacado pero tiene salud normal. AJUSTA: Prioridad de la huida cuando es atacado."/>
+    <Parameter Name="SearchRadius" Value="25" Type="float" Description="Radio de búsqueda (en bloques) para encontrar un lugar seguro. AJUSTA: Qué tan lejos buscará un lugar para huir."/>
+    <Parameter Name="SearchAttempts" Value="30" Type="int" Description="Número de intentos para encontrar un lugar seguro. AJUSTA: Cuántas posiciones diferentes evaluará para huir."/>
+    <Parameter Name="StayNearHerdDistance" Value="12" Type="float" Description="Distancia (en bloques) dentro de la cual no buscará el centro de la manada. AJUSTA: Qué tan cerca debe estar de la manada para no buscar su centro."/>
+    <Parameter Name="PreferWaterSafety" Value="true" Type="bool" Description="Indica si prefiere lugares con agua (bloque 18) para mayor seguridad. AJUSTA: Si busca refugio en el agua cuando huye."/>
+</ComponentTemplate>
+
+        <ComponentTemplate Name="PathBreaker" Guid="c1b4a3e9-6f0e-4b5d-8a7c-1f9d2e8a7b6c" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+            <Parameter Name="CanBreakBlocks" Description="La criatura puede romper bloques si el valor es true." Guid="4992bbe3-770e-4fe5-a977-40e8608428db" Value="False" Type="bool"/>
+            <Parameter Name="CanPlaceBlocks" Description="La criatura puede colocar bloques si el valor es true." Guid="635fe6d7-ac27-461b-b72d-bef51f5ade53" Value="False" Type="bool"/>
+            <Parameter Name="CustomSound" Description="Sonido personalizado para romper/colocar bloques." Guid="ebacbbb3-591b-4853-b838-591066b29dd7" Value="" Type="string"/>
+            <Parameter Name="SpecificBlocks" Description="Bloques específicos que la criatura puede romper/colocar." Guid="5545bf1b-3fd7-4951-9748-c20fa1e87cfc" Value="" Type="string"/>
+            <Parameter Name="UseFromInventory" Description="La criatura verifica si tiene bloques en su inventario para colocar si el valor es true, de lo contrario la criatura podrá colocar bloques infinitamente si el valor es false." Guid="549f2cff-8688-4b9f-849e-8f7f78a7f2a6" Value="False" Type="bool"/>
+            <Parameter Name="BreakProbability" Description="Probabilidad para que la criatura rompa un bloque en el momento, si el valor es 1, siempre romperá bloques todo el tiempo" Guid="55e537a2-04d1-4802-8448-026a4ce27681" Value="1" Type="float"/>
+            <Parameter Name="Class" Guid="14f8fc75-13bd-4731-a8aa-23143b498e93" Value="Game.ComponentPathBreaker" Type="string"/>
+        </ComponentTemplate>
+
+        <ComponentTemplate Name="CreatureCollect" Description="Permite a la criatura recoger objetos automáticamente" Guid="b0295147-0a80-4aed-9a1b-c784faf1297b" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
+            <Parameter Name="Activate" Description="Permitir a la criatura recoger objetos." Guid="67a07091-a837-4ef2-bebc-460fa669f18e" Value="true" Type="bool"/>
+            <Parameter Name="CanOpenInventory" Description="Permitir al jugador abrir el inventario de la criatura." Guid="8514719e-6dd5-4564-bca5-19ea18def146" Value="False" Type="bool"/>
+            <Parameter Name="DetectionDistance" Description="Rango de detección para que la criatura vaya a recoger el objeto." Guid="0c245cc2-ff24-43f2-ae1a-a47e6f1d6cf5" Value="10" Type="float"/>
+            <Parameter Name="IgnoreOrAcept" Description="" Guid="dde98736-8d81-4621-b5df-8a0460d2afc7" Value="True" Type="bool"/>
+            <Parameter Name="SpecificItems" Description="" Guid="c7791b3b-3ad4-42cd-b232-314b8ee6fb8d" Value="" Type="string"/>
+            <Parameter Name="Class" Guid="d3391f80-40c8-455f-b0b9-35f88b8527da" Value="Game.ComponentCreatureCollect" Type="string"/>
+        </ComponentTemplate>
+
+        <ComponentTemplate Name="NewCreatureCollect" Description="Permite a la criatura recoger objetos automáticamente" Guid="e3793c3b-587f-43dd-a1e6-d2a6b4a28520" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
+   <Parameter Name="PickFactors" Description="Factores de preferencia para categorías de objetos" Guid="90ec8dae-4e1b-4f39-acac-d83d92f674da" Value="" Type="string"/>
+    <Parameter Name="Class" Guid="98d12f97-948b-4e12-afb3-0f427c41ef28" Value="Game.ComponentNewCreatureCollect" Type="string"/>
+</ComponentTemplate>
+        
+        <ComponentTemplate Name="InvShooterBehavior" Description="Comportamiento que hace a una criatura arrojar objetos, es requerido Inventory para funcionar." Guid="456e3558-0e7f-42c3-bc05-35eef7540900" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+            <Parameter Name="DiscountFromInventory" Description="Descontar objetos del inventario por cada objeto arrojado, si es falso, la criatura podrá arrojar objetos indefinidamente." Guid="632b972c-db56-4348-a2ca-35f42a841aa0" Value="true" Type="bool"/>
+            <Parameter Name="SelectRandomThrowableItems" Description="La criatura selecciona objetos aleatoriamente que se puedan lanzar de su inventario si es true." Guid="b6486805-6109-4c6c-8a91-63e3f581c8e3" Value="false" Type="bool"/>
+            <Parameter Name="ThrowFromHead" Description="Los objetos salen arrojados de la cabeza de la criatura si el valor es true." Guid="e339df62-e1ab-42b5-8b6e-c7783d1eaeae" Value="false" Type="bool"/>
+            <Parameter Name="MinMaxRandomChargeTime" Description="Establece un intervalo de tiempo en segundos mínimo y máximo determinado para que la criatura esté a punto de arrojar el objeto en un momento aleatorio, deje una relación 1;1 para que no sea aleatorio, e.g 1;3" Guid="2d4d6577-42bb-48ca-912c-e896346e5c13" Value="1;3" Type="string"/>
+            <Parameter Name="MinMaxRandomWaitTime" Description="Tiempo de espera aleatorio mínimo y máximo en segundos aleatorio para que la criatura empiece por la fase de carga del proyectil, los valores se representan en Min;Max ejemplo: 1;16." Guid="5496abd5-dbe7-4e5e-a1db-19ba431e0500" Value="1;16" Type="string"/>
+            <Parameter Name="MinMaxDistance" Description="Distancia mínima y máxima para que la criatura arroje el objeto, los valores se representan de este modo Min;Max ejemplo: 2;16." Guid="b54e72f8-3cdb-425a-9eaf-d2ef7e76e616" Value="4;20" Type="string"/>
+            <Parameter Name="ThrowingSound" Description="Genera un sonido cuando la criatura arroje el objeto. ejemplo: Audio/Throw." Guid="e8e9bbd4-e535-4b7b-b4b1-d1c5002a0e1a" Value="Audio/Throw" Type="string"/>
+            <Parameter Name="ThrowingSoundDistance" Description="Rango de distancia para escuchar el sonido." Guid="5503c7a1-b473-4bbf-8338-be994e120c34" Value="10" Type="float"/>
+            <Parameter Name="SpecialThrowableItem" Description="Objetos que la criatura puede lanzar aunque no estén en su inventario y sin importar si IsAimable false. El valor debe ser el nombre de la clase del bloque o el ID, ejemplo: DirtBlock o 2." Guid="bb26976a-103a-4e5c-be43-d7b2b496ef9a" Value="" Type="string"/>
+            <Parameter Name="MeleeRange" Description="Rango de ataque cuerpo a cuerpo. Si el objetivo está más cerca de esta distancia, la criatura cambiará a combate melee." Guid="f3338091-4528-49a7-a802-d04bf0ac9ae2" Value="2.5" Type="float"/>
+            <Parameter Name="RangedWeaponEnabled" Description="Habilita sistema de armas a distancia" Guid="37540888-6ede-4deb-8b6f-ee76ca4cb474" Value="true" Type="bool"/>
+            <Parameter Name="AutoReload" Description="Recarga automática de armas" Guid="59210f95-a6ae-4da0-b91f-abfa5b2953cb" Value="true" Type="bool"/>
+            <Parameter Name="ExcludedThrowableItems" Description="Lista de items excluidos para lanzar, separados por punto y coma." Guid="040fde49-d7d1-4b67-9373-8f2a3b1b8009" Value="" Type="string"/>
+            <Parameter Name="Class" Guid="195523d4-9a71-4be0-ad61-04613053c78d" Value="Game.ComponentInvShooterBehavior" Type="string"/>
+        </ComponentTemplate>
+
+        <ComponentTemplate Name="PoisonInfectedBehavior" Description="Comportamiento de infección por veneno" Guid="be2c0252-8847-40dc-ab78-db6c09df60e7">
+  <Parameter Name="Class" Guid="882ee14c-4b4d-426e-9e2f-831261910ed2" Value="Game.ComponentPoisonInfectBehavior" Type="string"/>
+  <Parameter Name="IsOptional" Value="true" Type="bool"/>
+  <Parameter Name="LoadOrder" Value="50" Type="int"/>
+  <Parameter Name="PoisonIntensity" Description="Intensidad del veneno (mayor = más tiempo de infección)" Guid="ddbff8f8-c6c3-4c45-b801-43881241663f" Value="400" Type="float"/>
+  <Parameter Name="InfectProbability" Description="Probabilidad de que el ataque cause envenenamiento (0-1)" Guid="7c34d504-c34a-487a-8ca2-a115ca60e9d7" Value="1.0" Type="float"/>
+</ComponentTemplate>
+
+<ComponentTemplate Name="NewChaseBehavior" Description="Comportamiento de persecución que integra con el sistema de manadas" Guid="d18f7333-6f1a-4ef9-b232-7035859f9275">
+    <Parameter Name="Class" Value="Game.ComponentNewChaseBehavior" Type="string" Guid="656b2d3f-6471-48cc-aa89-3043dfa416f3"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="2a4e30dd-27e6-4da1-8bb1-910a9d75d344"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="7dc582bd-eb7c-4818-b87f-c59e71f5907e"/>
+    <Parameter Name="DayChaseRange" Value="16" Type="float" Description="Rango de persecución durante el día" Guid="0f39ab17-3480-4a6a-aca0-4ab3b5301e0e"/>
+    <Parameter Name="NightChaseRange" Value="24" Type="float" Description="Rango de persecución durante la noche" Guid="f02e0223-4297-487f-a939-8fc4e4a0008d"/>
+    <Parameter Name="DayChaseTime" Value="30" Type="float" Description="Tiempo máximo de persecución durante el día" Guid="b4fd274e-55fc-4251-9ff0-fd78f299b3d6"/>
+    <Parameter Name="NightChaseTime" Value="60" Type="float" Description="Tiempo máximo de persecución durante la noche" Guid="df58cf54-e22b-4952-8824-d53bc6ac5ef7"/>
+    <Parameter Name="ChaseNonPlayerProbability" Value="0.2" Type="float" Description="Probabilidad de perseguir criaturas no jugador" Guid="706aab6b-84d6-4f61-a936-fc5759b005a2"/>
+    <Parameter Name="ChaseWhenAttackedProbability" Value="0.8" Type="float" Description="Probabilidad de perseguir cuando es atacado" Guid="1580714d-9447-47b9-8119-2ce3dc577a39"/>
+    <Parameter Name="ChaseOnTouchProbability" Value="0.5" Type="float" Description="Probabilidad de perseguir al tocar" Guid="26017a64-22c7-4a15-9519-13b238ff7237"/>
+    <Parameter Name="AttackMode" Value="Default" Type="string" Guid="19e978b5-b116-4ec8-a748-7fef77beac35"/>
+    <Parameter Name="AttackRange" Value="2,15" Type="Vector2" Guid="7d6c994c-7bb3-40a8-a5d6-ff3b9b4e0e26"/>
+    <Parameter Name="AutoChaseMask" Value="LandOther" Type="string" Guid="35393c23-8c2c-466c-ac71-2a08f86b009b"/>
+</ComponentTemplate>
+    </Folder>
+
+    <ProjectTemplate Name="Project" Guid="85023bf8-1c90-4dd1-9442-e6c13691d078">
+<MemberSubsystemTemplate Name="LargeFirstAidKitBlockBehavior" Guid="93e5a438-1a89-40f3-9df0-42691678bd4e">
+    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="c87b3b22-94b6-4790-9ab1-019a97418b6b"/>
+    <Parameter Name="LoadOrder" Value="100" Type="int" Guid="5f051ad4-7222-4baf-8f23-9a9766524c23"/>
+    <Parameter Name="Class" Value="Game.SubsystemLargeFirstAidKitBlockBehavior" Type="string" Guid="42f4dcb2-472b-4385-a222-2e8a9d3e65d6"/>
+</MemberSubsystemTemplate>
+<MemberSubsystemTemplate Name="MediumFirstAidKitBlockBehavior" Guid="e2d5bffb-5e17-4905-bef1-663ae976111d">
+    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="4b4c88cd-1242-4fe0-963f-3b7eb20a8dca"/>
+    <Parameter Name="LoadOrder" Value="100" Type="int" Guid="149f7aff-cb91-476e-b75a-43cffd039e4f"/>
+    <Parameter Name="Class" Value="Game.SubsystemMediumFirstAidKitBlockBehavior" Type="string" Guid="ccacf9a8-0696-4347-abcf-b43eb46535f1"/>
+</MemberSubsystemTemplate>
+<MemberSubsystemTemplate Name="FireBulletBlockBehavior" Guid="60983db0-4933-45fd-8297-6071b1bc76af">
+    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="abe98a14-40e2-4fbe-aa31-7104ba634de9"/>
+    <Parameter Name="LoadOrder" Value="100" Type="int" Guid="79637918-2c40-4f58-aa89-d30a5cc9e000"/>
+    <Parameter Name="Class" Value="Game.SubsystemFireBulletBlockBehavior" Type="string" Guid="82af8d72-320a-47d9-8133-cbccffd1d941"/>
+</MemberSubsystemTemplate>
+<MemberSubsystemTemplate Name="AirConditionerBlockBehavior" Guid="2d3cb7a4-5c7b-4473-a52f-02b7a7b9e93f">
+    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="a888fdfb-df2d-4bf4-b569-f4832dfe6a91"/>
+    <Parameter Name="LoadOrder" Value="100" Type="int" Guid="5af5e62b-e469-4c2f-8d50-99c70477de97"/>
+    <Parameter Name="Class" Value="Game.SubsystemAirConditionerBlockBehavior" Type="string" Guid="e15ec911-499b-4f7b-9476-47978bd06bf7"/>
+</MemberSubsystemTemplate>
+<MemberSubsystemTemplate Name="KABehavior" Guid="3e59214e-62d5-480a-9cc6-73f361dfa3aa">
+    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="a08e37bd-580e-42a9-8466-8419167d81f1"/>
+    <Parameter Name="LoadOrder" Value="100" Type="int" Guid="40986bd0-05eb-4e44-b4b4-bcdc6a80bcaa"/>
+    <Parameter Name="Class" Value="Game.SubsystemKABehavior" Type="string" Guid="3b8963f0-463f-471f-b23b-ffc94556ab00"/>
+</MemberSubsystemTemplate>
+<MemberSubsystemTemplate Name="TeaAntifluBucketBlockBehavior" Guid="fcde4991-516a-4bf6-9728-88093595a8cd">
+    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="e186bd10-5046-451f-98b7-fb1feeb7392d"/>
+    <Parameter Name="LoadOrder" Value="100" Type="int" Guid="5fb201a6-63d7-40d0-bc48-1f5b4dff0d21"/>
+    <Parameter Name="Class" Value="Game.SubsystemTeaAntifluBucketBlockBehavior" Type="string" Guid="98e07078-7dd8-4664-ba1a-f1d1b1e5150d"/>
+</MemberSubsystemTemplate>
+<MemberSubsystemTemplate Name="AntidoteBucketBlockBehavior" Guid="85ff52b9-3989-4ae9-9e23-24460e730b70">
+    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="12fc7d7c-a8f1-4263-b4ae-eaeb25b72b97"/>
+    <Parameter Name="LoadOrder" Value="100" Type="int" Guid="03b84f3b-dfe4-4a2d-b927-333eea92f53a"/>
+    <Parameter Name="Class" Value="Game.SubsystemAntidoteBucketBlockBehavior" Type="string" Guid="8681f7d6-0621-4e0f-ab68-75e050d965d3"/>
+</MemberSubsystemTemplate>
+<MemberSubsystemTemplate Name="GrozaBehavior" Guid="b41cc8e1-f01d-4d6a-9cc9-75202aa6ac2a">
+    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="9c5602cf-d081-4eea-9e27-c489894c8a16"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="a10426ff-2f62-4a31-9815-b5b035a94a8b"/>
+    <Parameter Name="Class" Value="Game.SubsystemGrozaBehavior" Type="string" Guid="6e48f992-1f3d-453b-97eb-cbbe6f333974"/>
+</MemberSubsystemTemplate>
+<MemberSubsystemTemplate Name="MendozaBehavior" Guid="a583fb3c-8c04-49f9-babb-18ffa95fa042">
+    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="4f8637de-9288-4b8b-b63a-8d3929fe2288"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="53e09634-8b89-474f-a9c3-32490709d1d4"/>
+    <Parameter Name="Class" Value="Game.SubsystemMendozaBehavior" Type="string" Guid="9c0f8aa8-b6c7-4d12-a72b-3f8c789a85e5"/>
+</MemberSubsystemTemplate>
+<MemberSubsystemTemplate Name="MP5SSDBehavior" Guid="66222ac5-1ee5-4e91-84d6-11454cee187f">
+    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="72ab3ac7-eebb-4293-9d8d-629e095fca33"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="a6d62961-0f48-406f-9c90-ebb50ce2305c"/>
+    <Parameter Name="Class" Value="Game.SubsystemMP5SSDBehavior" Type="string" Guid="655c171b-2f39-4259-b62f-fdc9133508e9"/>
+</MemberSubsystemTemplate>
+<MemberSubsystemTemplate Name="NewG3Behavior" Guid="4a34d5ca-fa05-4c7b-9873-66c097652c21">
+    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="30ea11a3-cc32-43e3-9d91-d9140ab93048"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="1401601d-fc09-498f-8007-e81506521910"/>
+    <Parameter Name="Class" Value="Game.SubsystemNewG3Behavior" Type="string" Guid="f8536698-7715-4cf1-b806-aa67c49b25a4"/>
+</MemberSubsystemTemplate>
+<MemberSubsystemTemplate Name="AA12Behavior" Guid="b76ab09d-7e52-4740-a5fe-117c4cd96ef4">
+    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="41dcaea8-7432-441d-bbc9-108e71dffdb3"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="fd66d3b3-d836-4e2b-9356-48a38222baa9"/>
+    <Parameter Name="Class" Value="Game.SubsystemAA12Behavior" Type="string" Guid="bd42705e-e758-4b49-9f09-7ab9e100302d"/>
+</MemberSubsystemTemplate>
+<MemberSubsystemTemplate Name="M249Behavior" Guid="327f41d4-193a-4900-af8a-826d841d774f">
+    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="9d93b8a8-b8c9-491d-b5dd-2831579f450b"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="6ab578a6-0037-4bd3-a52c-e14b6808f2bd"/>
+    <Parameter Name="Class" Value="Game.SubsystemM249Behavior" Type="string" Guid="127552cf-f2dd-4ee5-9be6-87493cbe574f"/>
+</MemberSubsystemTemplate>
+<MemberSubsystemTemplate Name="BanditsSpawn" Guid="cea6dfe3-467d-44b6-9f60-4b2af2e217d1" InheritanceParent="a3914c13-7801-46a6-b23a-9e2b36e9defb">
+    <Parameter Name="Class" Value="Game.SubsystemBanditsSpawn" Type="string" Guid="f84ec32f-5f7e-435f-87c5-33e9c4554d2a"/>
+</MemberSubsystemTemplate>
+<MemberSubsystemTemplate Name="FamasBehavior" Guid="2f91a7a6-b782-418b-a4dd-042ceaf42d4f">
+    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="f2a78a8f-9728-41ae-9e05-e7e105428e4b"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="8f67b37e-3d7a-422d-98cf-78dddc736ba0"/>
+    <Parameter Name="Class" Value="Game.SubsystemFamasBehavior" Type="string" Guid="675d6a27-72a1-41b3-b53e-87892e093bcd"/>
+</MemberSubsystemTemplate>
+<MemberSubsystemTemplate Name="RevolverBehavior" Guid="9742de11-4b30-40f9-a302-3ebfc78e6219">
+    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="3f745a7b-fc4a-4274-93ce-c041b25a8331"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="8c093f38-d2e6-4348-88f9-c7185f3f3931"/>
+    <Parameter Name="Class" Value="Game.SubsystemRevolverBehavior" Type="string" Guid="cdef54eb-6efc-4c91-a3a8-63876105dcce"/>
+</MemberSubsystemTemplate>
+<MemberSubsystemTemplate Name="SCARBehavior" Guid="ace323b1-6211-4daf-b811-70bfb7c26e5d">
+    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="9d211787-8d5d-4bcd-8e33-e04894ea2a90"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="c3398a61-972b-43de-879b-3927db873314"/>
+    <Parameter Name="Class" Value="Game.SubsystemSCARBehavior" Type="string" Guid="ffc6b345-ba6f-4965-a4ff-5a94bcceaeec"/>
+</MemberSubsystemTemplate>
+<MemberSubsystemTemplate Name="P90Behavior" Guid="389a2e3e-baaf-4b4e-ac6a-325035d81a87">
+    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="cd259ca0-4ecd-476b-8e46-6b1618aa8319"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="200090e6-6fe8-4461-8826-f4199268bfcc"/>
+    <Parameter Name="Class" Value="Game.SubsystemP90Behavior" Type="string" Guid="b8875ada-c780-4321-9a91-ab24b26c2f59"/>
+</MemberSubsystemTemplate>
+<MemberSubsystemTemplate Name="AUGBehavior" Guid="6ae53686-2f60-439f-a157-9f49b8322766">
+    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="73720825-b138-420e-867b-8652fe354cb6"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="36957040-5c7f-4275-8b9e-377279227d05"/>
+    <Parameter Name="Class" Value="Game.SubsystemAUGBehavior" Type="string" Guid="d2f393aa-8850-4d43-95f5-742e234d9444"/>
+</MemberSubsystemTemplate>
+<MemberSubsystemTemplate Name="SniperBehavior" Guid="cffc7256-0469-4064-a0db-ffe6bb1451d8">
+    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="e184d432-d9ba-4e3b-b22d-4161ed9679d0"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="8207ec48-4077-47a3-960a-2ef4ad08722c"/>
+    <Parameter Name="Class" Value="Game.SubsystemSniperBehavior" Type="string" Guid="3d77b7e6-5846-4de9-9cbb-d158343fd9bd"/>
+</MemberSubsystemTemplate>
+<MemberSubsystemTemplate Name="G3Behavior" Guid="e091ef1a-6458-4b28-9532-56f3e8723bca">
+    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="c404b1a6-2886-4682-a489-e281dc7e5329"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="de5d844c-83c7-4a39-a772-480750553529"/>
+    <Parameter Name="Class" Value="Game.SubsystemG3Behavior" Type="string" Guid="13711768-d191-45d6-9b67-2e10920a95dc"/>
+</MemberSubsystemTemplate>
+<MemberSubsystemTemplate Name="SWM500Behavior" Guid="3b7f0f69-4a31-4d47-938c-b9f4aa2943b6">
+    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="29bee04f-ac72-4af6-aff3-0b2f1f0bd87a"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="1c90fea6-71e5-4d2d-89bc-2921ea360158"/>
+    <Parameter Name="Class" Value="Game.SubsystemSWM500Behavior" Type="string" Guid="3d92ff02-d783-4451-aeac-de4ac41360cd"/>
+</MemberSubsystemTemplate>
+<MemberSubsystemTemplate Name="Izh43Behavior" Guid="43c46ca8-33d6-48dd-992c-966031138b47">
+    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="6f2aefe6-ced5-405f-9f87-e609257b5eb1"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="bb92de7b-fe33-4d8b-822e-ad00cdc62cda"/>
+    <Parameter Name="Class" Value="Game.SubsystemIzh43Behavior" Type="string" Guid="8e6693cf-d726-4747-8b33-0b3b4c4acbe6"/>
+</MemberSubsystemTemplate>
+<MemberSubsystemTemplate Name="MinigunBehavior" Guid="ca136ca9-5484-42e2-b9ed-20dd95cf617f">
+    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="53fbef55-5ce6-4996-b1de-b52501f8445a"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="4ef7c927-08bc-4718-878a-805027f6411a"/>
+    <Parameter Name="Class" Value="Game.SubsystemMinigunBehavior" Type="string" Guid="a6e3fcd4-5274-4ff6-8f76-81eb295707f6"/>
+</MemberSubsystemTemplate>
+<MemberSubsystemTemplate Name="UziBehavior" Guid="2eb0cf40-ba09-45c3-b19e-7e30ad307002">
+    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="b1c563cc-afcc-471e-bcdd-afafff5e07a3"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="7bcfbccc-b407-4b03-8d42-85869ed91ab9"/>
+    <Parameter Name="Class" Value="Game.SubsystemUziBehavior" Type="string" Guid="c0726523-09eb-4ad6-8864-6c2cab82bb15"/>
+</MemberSubsystemTemplate>
+<MemberSubsystemTemplate Name="Mac10Behavior" Guid="e97d1824-63cf-485c-9287-116947e2b424">
+    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="e7fe8e27-44ce-4bdd-8209-03957c5682b3"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="2530492e-cbae-4a70-a746-a5b950b5b7bb"/>
+    <Parameter Name="Class" Value="Game.SubsystemMac10Behavior" Type="string" Guid="bbfaaa70-71c0-497d-afd6-df5d0aa97433"/>
+</MemberSubsystemTemplate>
+<MemberSubsystemTemplate Name="SPAS12Behavior" Guid="01cdd0f9-e8e9-4971-922b-233d0ace74a8">
+    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="2c9e2b29-64fd-4cba-a854-d2c11f2d89e0"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="c085a6c7-8be4-4f08-b98c-50c236e6b377"/>
+    <Parameter Name="Class" Value="Game.SubsystemSPAS12Behavior" Type="string" Guid="1adfbdd5-28a7-45b7-a572-feba2d0bfed0"/>
+</MemberSubsystemTemplate>
+<MemberSubsystemTemplate Name="M4Behavior" Guid="4ad2e37a-a206-4bf0-b8bb-0cec05e711db">
+    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="4eb06acb-7774-4ca6-8c5d-977f35c5fff4"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="2327ed6d-b637-4869-8a56-0143539a3e14"/>
+    <Parameter Name="Class" Value="Game.SubsystemM4Behavior" Type="string" Guid="bbf130d2-90d7-42ba-a1aa-135a2938f6c0"/>
+</MemberSubsystemTemplate>
+<MemberSubsystemTemplate Name="AKBehavior" Guid="71910c7c-1299-4c49-815a-01674d1b59bb">
+    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="41998ecf-4cda-447e-9dc5-b8fd06ebcfe0"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="c38dbda4-d77e-439a-b0f1-afcd5beba510"/>
+    <Parameter Name="Class" Value="Game.SubsystemAKBehavior" Type="string" Guid="84f8be5a-e285-4d3d-b822-93b6c850233f"/>
+</MemberSubsystemTemplate>
+<MemberSubsystemTemplate Name="ShittyCreaturesSpawn" Guid="6bf21fee-34d6-4509-a1d4-160a13c6991b" InheritanceParent="a3914c13-7801-46a6-b23a-9e2b36e9defb">
+    <Parameter Name="Class" Value="Game.SubsystemShittyCreaturesSpawn" Type="string" Guid="7327def9-66b6-4d0e-8dea-363a8a5d8799"/>
+</MemberSubsystemTemplate>
+<MemberSubsystemTemplate Name="ZombiesSpawn" Guid="77c4423c-cde8-4d42-886c-74b87a9d23fa" InheritanceParent="a3914c13-7801-46a6-b23a-9e2b36e9defb">
+    <Parameter Name="Class" Value="Game.SubsystemZombiesSpawn" Type="string" Guid="d546f4a4-f7ef-488e-828d-763c780da925"/>
+</MemberSubsystemTemplate>
+<MemberSubsystemTemplate Name="GhostNormalChaseMusic" Guid="fe454a1e-89d4-4f2a-aa36-9200d7ba1570">
+    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="25a03789-1da1-4b19-9068-b99e9c1abc51"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="b4bbf90f-132a-44f7-a059-6f4558002a1f"/>
+    <Parameter Name="Class" Value="Game.SubsystemGhostNormalChaseMusic" Type="string" Guid="a274b5c9-b092-4d27-8ae0-1c64167ac3e5"/>
+</MemberSubsystemTemplate>
+<MemberSubsystemTemplate Name="AntiTanksBulletBlockBehavior" Guid="dc7f2c73-54c5-4dbb-844a-a6a00a018589">
+<Parameter Name="IsOptional" Value="false" Type="bool" Guid="04ca7c03-a46d-494f-b8c7-1064ef240b48"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="04fae416-be40-4597-a540-b9133a43b6fb"/>
+        <Parameter Name="Class" Guid="9b826f1c-14c8-45de-bb01-eb46c3d6ee7f" Value="Game.SubsystemAntiTanksBulletBlockBehavior" Type="string"/>
+    </MemberSubsystemTemplate>
+<MemberSubsystemTemplate Name="TankChaseMusic" Guid="8f97faa0-ef7f-4455-9aaf-116e70e836be">
+<Parameter Name="IsOptional" Value="false" Type="bool" Guid="082db78a-d94f-4704-8862-bec5dcd77139"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="8fe63cde-5e98-433a-b375-7815a349dd6f"/>
+        <Parameter Name="Class" Guid="60986de6-5785-457d-8ddd-a0124ec558ba" Value="Game.SubsystemTankChaseMusic" Type="string"/>
+    </MemberSubsystemTemplate>
+<MemberSubsystemTemplate Name="TargetStickBlockBehavior" Guid="7b76d3e3-0a7b-4de2-9a1e-2e698212fe95">
+<Parameter Name="IsOptional" Value="false" Type="bool" Guid="e14de76f-e3cd-4e22-b4ab-c57d4f114ccf"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="ad9be30d-14a6-4eba-a7c8-1b0fd932e3d7"/>
+        <Parameter Name="Class" Guid="4d38ad37-b22f-4420-9dab-74e486fff741" Value="Game.SubsystemTargetStickBlockBehavior" Type="string"/>
+    </MemberSubsystemTemplate>
+<MemberSubsystemTemplate Name="PoisonBombBlockBehavior" Guid="ef079ad3-48f2-41bd-a9ee-592f529b36b8">
+<Parameter Name="IsOptional" Value="false" Type="bool" Guid="8f998ce8-74cf-43df-a91c-38a7d113b896"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="82d79df6-18ac-4cc5-90d3-37198eb35f0f"/>
+        <Parameter Name="Class" Guid="3f2a92e3-882f-412a-b416-19b7b287d520" Value="Game.SubsystemPoisonBombBlockBehavior" Type="string"/>
+    </MemberSubsystemTemplate>
+<MemberSubsystemTemplate Name="BigStonePoisonChunkBlockBehavior" Guid="bdb7755a-97a8-4527-9876-c507323471cc">
+<Parameter Name="IsOptional" Value="false" Type="bool" Guid="12df1582-c33f-4750-b8a1-afa2851c38f2"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="94024efc-7655-45de-9535-7237ee865d8a"/>
+        <Parameter Name="Class" Guid="ba4d2876-54dc-4507-bf5e-f8484b096a84" Value="Game.SubsystemBigStonePoisonChunkBlockBehavior" Type="string"/>
+    </MemberSubsystemTemplate>
+<MemberSubsystemTemplate Name="BigStoneFlameChunkBlockBehavior" Guid="be5c6275-eee2-44f1-9f8e-eacdea6b2225">
+<Parameter Name="IsOptional" Value="false" Type="bool" Guid="3fee25be-1d4d-4a74-811f-f73b29013e1e"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="db0b48ef-2478-4381-8149-47a76bc73759"/>
+        <Parameter Name="Class" Guid="2d2850e8-3e08-4184-8bf1-57cbbe2f1b57" Value="Game.SubsystemBigStoneFlameChunkBlockBehavior" Type="string"/>
+    </MemberSubsystemTemplate>
+<MemberSubsystemTemplate Name="PoisonExplosions" Guid="6602178c-624b-426d-870f-8b21cd6a8400">
+<Parameter Name="IsOptional" Value="false" Type="bool" Guid="87040f01-93d5-4cb2-a890-edb430b09c25"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="3f8f2490-cbc9-40ed-a983-02c654228961"/>
+        <Parameter Name="Class" Guid="1bd7c0bb-0b40-496e-91f6-c889b63f066b" Value="Game.SubsystemPoisonExplosions" Type="string"/>
+    </MemberSubsystemTemplate>
+<MemberSubsystemTemplate Name="PoisonBulletBlockBehavior" Guid="fc95d14d-87db-4f63-9dfc-e5624c8b033f" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+<Parameter Name="IsOptional" Value="false" Type="bool" Guid="ee980210-8105-486b-9fb0-db4018181e8a"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="a096b7fd-ff59-4a99-9cbf-72fcf53f0197"/>
+        <Parameter Name="Class" Guid="4a9520e6-1988-4a8a-8e2d-5b84303d2576" Value="Game.SubsystemPoisonBulletBlockBehavior" Type="string"/>
+    </MemberSubsystemTemplate>
+<MemberSubsystemTemplate Name="CollarBlockBehavior" Guid="de432b96-c29b-445c-bbde-660e3b5eaded" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+        <Parameter Name="Class" Guid="21eb6fcd-4350-4e1a-8484-69fed75144f0" Value="Game.SubsystemCollarBlockBehavior" Type="string"/>
+    </MemberSubsystemTemplate>
+    <MemberSubsystemTemplate Name="RefrigeratorXiaomiBlockBehavior" Guid="d1a72eee-bad4-461e-af34-aba1c3e4abc9" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+        <Parameter Name="Class" Guid="a184ea7f-480d-46e8-8bce-62c04a67562d" Value="Game.SubsystemRefrigeratorXiaomiBlockBehavior" Type="string"/>
+    </MemberSubsystemTemplate>
+<MemberSubsystemTemplate Name="ItemsLauncherBlockBehavior" Guid="addaadea-e865-4840-8d4b-682b5accdd20" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+        <Parameter Name="Class" Guid="f4147ab1-38b5-4fee-bccc-9c520b17874e" Value="Game.SubsystemItemsLauncherBlockBehavior" Type="string"/>
+    </MemberSubsystemTemplate>
+    <MemberSubsystemTemplate Name="RepeatCrossbowBlockBehavior" Guid="3d1d067f-3af8-42c5-a843-469089a86bfa" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+      <Parameter Name="Class" Guid="ecbac4c9-78af-4f01-a123-0200d3f8b26c" Value="Game.SubsystemRepeatCrossbowBlockBehavior" Type="string"/>
+    </MemberSubsystemTemplate>
+    <MemberSubsystemTemplate Name="RepeatArrowBlockBehavior" Guid="f3ddd459-db6c-4b00-99b0-97c09d0b6e25" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+      <Parameter Name="Class" Guid="027bdc14-e7ef-45bc-a111-9c4f56cd5b32" Value="Game.SubsystemRepeatArrowBlockBehavior" Type="string"/>
+    </MemberSubsystemTemplate>
+    <MemberSubsystemTemplate Name="FlameBulletBlockBehavior" Guid="7bfc6c9a-b7fe-4d57-9b84-093b11791670" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+      <Parameter Name="Class" Guid="2f8de66e-187d-45d7-aedf-990d14b61978" Value="Game.SubsystemFlameBulletBlockBehavior" Type="string"/>
+    </MemberSubsystemTemplate>
+    <MemberSubsystemTemplate Name="FlameThrowerBlockBehavior" Guid="542a26f8-f4ed-47f9-afb5-098d16d711c2" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+      <Parameter Name="Class" Guid="76328ace-b569-40d4-8cf8-414d685b8baa" Value="Game.SubsystemFlameThrowerBlockBehavior" Type="string"/>
+    </MemberSubsystemTemplate>
+    <MemberSubsystemTemplate Name="SkyGreen" Guid="04229cb1-e365-4649-a2de-c46ca7f2942a" InheritanceParent="a3914c13-7801-46a6-b23a-9e2b36e9defb">
+    <Parameter Name="Class" Value="Game.SubsystemGreenNightSky" Type="string" Guid="efab17c3-2282-48e0-9cbb-86fd4d754498"/>
+    <Parameter Name="IsGreenNightActive" Value="true" Type="bool" Guid="cef1c368-c512-402a-9e81-e0ddbe3dc2e6"/>
+    <Parameter Name="LastMoonPhase" Value="1" Type="int" Guid="2b489cb6-b4e0-4e9e-86d1-53b743a9b14a"/>
+</MemberSubsystemTemplate>
+    <MemberSubsystemTemplate Name="SubsystemInGameMusic" Description="Reproduccion músical durante el juego." Guid="f009f348-e373-4936-bf4d-fbe684c64cbd" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+        <Parameter Name="Class" Guid="12016d6d-2f3a-4c74-88a4-6dc50e5427fe" Value="Game.SubsystemInGameMusic" Type="string"/>
+    </MemberSubsystemTemplate>
+    <MemberSubsystemTemplate Name="PoisonSystem" Description="Sistema de veneno para criaturas" Guid="71b54344-233a-48d5-a71a-7b77d94550a4">
+  <Parameter Name="Class" Guid="a16b7806-06e2-4e13-a8dd-49ba594d3d06" Value="Game.SubsystemPoisonSystem" Type="string"/>
+  <Parameter Name="IsOptional" Value="true" Type="bool"/>
+  <Parameter Name="LoadOrder" Value="-1" Type="int"/>
+</MemberSubsystemTemplate>
+</ProjectTemplate>
+</Mod>
