@@ -264,11 +264,20 @@
             " b "
             " b "
 		</Recipe>
-  <Recipe Result="PoisonBombBlock" ResultCount="5" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="bomb" b="flamebullet:1" Description="Useful if you're surrounded and want to avoid being killed by explosives.">
-			" b "
-            "bab"
-            " b "
-		</Recipe>
+  <Recipe Result="PoisonBombBlock" ResultCount="5" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="bomb" b="toxin" Description="Toxic bomb that releases poisonous gas instead of explosive force.">
+    " b "
+    "bab"
+    " b "
+</Recipe>
+<Recipe Result="BK43Block" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="3" a="ironblock" b="rod" c="ironingot" d="planks" Description="Double-barreled shotgun for close combat">
+    "aab"
+    "acd"
+    " bb"
+</Recipe>
+<Recipe Result="BK43BulletBlock" ResultCount="6" RequiredHeatLevel="0" RequiredPlayerLevel="3" a="bullet" b="rod" c="sulphurchunk" d="gunpowder" Description="12-gauge shells for BK 43 shotgun">
+    "bab"
+    "cdc"
+</Recipe>
         <Recipe Result="AntiTanksBulletBlock" ResultCount="8" RequiredHeatLevel="0" RequiredPlayerLevel="3" a="bullet" b="rod" Description="Use it wisely if powerful heavy bosses have you surrounded and musket balls are ineffective">
 			" b "
             "bab"
