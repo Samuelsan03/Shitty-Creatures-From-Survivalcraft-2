@@ -519,24 +519,21 @@
     </Folder>
 
     <ProjectTemplate Name="Project" Guid="85023bf8-1c90-4dd1-9442-e6c13691d078">
-<MemberSubsystemTemplate Name="LargeFirstAidKitBlockBehavior" Guid="93e5a438-1a89-40f3-9df0-42691678bd4e">
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="c87b3b22-94b6-4790-9ab1-019a97418b6b"/>
-    <Parameter Name="LoadOrder" Value="100" Type="int" Guid="5f051ad4-7222-4baf-8f23-9a9766524c23"/>
-    <Parameter Name="Class" Value="Game.SubsystemLargeFirstAidKitBlockBehavior" Type="string" Guid="42f4dcb2-472b-4385-a222-2e8a9d3e65d6"/>
+<MemberSubsystemTemplate Name="BK43Behavior" Guid="93e5a438-1a89-40f3-9df0-42691678bd4e" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+    <Parameter Name="Class" Value="Game.SubsystemBK43Behavior" Type="string" Guid="42f4dcb2-472b-4385-a222-2e8a9d3e65d6"/>
 </MemberSubsystemTemplate>
-<MemberSubsystemTemplate Name="MediumFirstAidKitBlockBehavior" Guid="e2d5bffb-5e17-4905-bef1-663ae976111d">
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="4b4c88cd-1242-4fe0-963f-3b7eb20a8dca"/>
-    <Parameter Name="LoadOrder" Value="100" Type="int" Guid="149f7aff-cb91-476e-b75a-43cffd039e4f"/>
-    <Parameter Name="Class" Value="Game.SubsystemMediumFirstAidKitBlockBehavior" Type="string" Guid="ccacf9a8-0696-4347-abcf-b43eb46535f1"/>
+<MemberSubsystemTemplate Name="LargeFirstAidKitBlockBehavior" Guid="805f29c0-8511-4f04-bc74-e03e56cc8866" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+    <Parameter Name="Class" Value="Game.SubsystemLargeFirstAidKitBlockBehavior" Type="string" Guid="4ab4295c-fa3a-45df-86a9-b57e85f90a6b"/>
+</MemberSubsystemTemplate>
+<MemberSubsystemTemplate Name="MediumFirstAidKitBlockBehavior" Guid="2949f1c3-a7d6-4e37-b109-1e28d6027758" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+    <Parameter Name="Class" Value="Game.SubsystemMediumFirstAidKitBlockBehavior" Type="string" Guid="9dae5e67-b1b6-4360-8965-5f98b1d69e86"/>
 </MemberSubsystemTemplate>
 <MemberSubsystemTemplate Name="FireBulletBlockBehavior" Guid="60983db0-4933-45fd-8297-6071b1bc76af">
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="abe98a14-40e2-4fbe-aa31-7104ba634de9"/>
     <Parameter Name="LoadOrder" Value="100" Type="int" Guid="79637918-2c40-4f58-aa89-d30a5cc9e000"/>
     <Parameter Name="Class" Value="Game.SubsystemFireBulletBlockBehavior" Type="string" Guid="82af8d72-320a-47d9-8133-cbccffd1d941"/>
 </MemberSubsystemTemplate>
-<MemberSubsystemTemplate Name="AirConditionerBlockBehavior" Guid="2d3cb7a4-5c7b-4473-a52f-02b7a7b9e93f">
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="a888fdfb-df2d-4bf4-b569-f4832dfe6a91"/>
-    <Parameter Name="LoadOrder" Value="100" Type="int" Guid="5af5e62b-e469-4c2f-8d50-99c70477de97"/>
+<MemberSubsystemTemplate Name="AirConditionerBlockBehavior" Guid="2d3cb7a4-5c7b-4473-a52f-02b7a7b9e93f" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
     <Parameter Name="Class" Value="Game.SubsystemAirConditionerBlockBehavior" Type="string" Guid="e15ec911-499b-4f7b-9476-47978bd06bf7"/>
 </MemberSubsystemTemplate>
 <MemberSubsystemTemplate Name="KABehavior" Guid="3e59214e-62d5-480a-9cc6-73f361dfa3aa">
