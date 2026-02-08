@@ -518,11 +518,11 @@
   },
   "BK43Block:0": {
   "DisplayName": "BK-43 Double-Barrel Shotgun",
-  "Description": "A reliable double-barrel 12-gauge shotgun. Holds two shells and delivers devastating close-range fire with a wide pellet spread."
+  "Description": "A simple and reliable double-barrel shotgun. Holds two rounds and is highly effective at close range due to pellet spread."
 },
 "BK43BulletBlock:0": {
-  "DisplayName": "12-Gauge Shotgun Shells",
-  "Description": "12-gauge shotgun ammunition for the BK-43. Designed for close-quarters combat with high stopping power and wide dispersion."
+  "DisplayName": "BK-43 Shotgun Shells",
+  "Description": "Ammunition used by the BK-43. Effective at close range with strong stopping power and wide spread."
 },
   "KABlock:0": {
     "DisplayName": "KA",
