@@ -463,13 +463,11 @@
         </ComponentTemplate>
 
         <ComponentTemplate Name="CreatureCollect" Description="Permite a la criatura recoger objetos automáticamente" Guid="b0295147-0a80-4aed-9a1b-c784faf1297b" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
-            <Parameter Name="Activate" Description="Permitir a la criatura recoger objetos." Guid="67a07091-a837-4ef2-bebc-460fa669f18e" Value="true" Type="bool"/>
-            <Parameter Name="CanOpenInventory" Description="Permitir al jugador abrir el inventario de la criatura." Guid="8514719e-6dd5-4564-bca5-19ea18def146" Value="False" Type="bool"/>
-            <Parameter Name="DetectionDistance" Description="Rango de detección para que la criatura vaya a recoger el objeto." Guid="0c245cc2-ff24-43f2-ae1a-a47e6f1d6cf5" Value="10" Type="float"/>
-            <Parameter Name="IgnoreOrAcept" Description="" Guid="dde98736-8d81-4621-b5df-8a0460d2afc7" Value="True" Type="bool"/>
-            <Parameter Name="SpecificItems" Description="" Guid="c7791b3b-3ad4-42cd-b232-314b8ee6fb8d" Value="" Type="string"/>
-            <Parameter Name="Class" Guid="d3391f80-40c8-455f-b0b9-35f88b8527da" Value="Game.ComponentCreatureCollect" Type="string"/>
-        </ComponentTemplate>
+            <Parameter Name="Class" Guid="11b42020-d00c-4a7a-b1b8-9b334b724c35" Value="Game.ComponentCreatureCollect" Type="string"/>
+    <Parameter Name="CollectionRadius" Description="Radio para la recolección de objetos" Guid="31f14625-23e0-4b26-8a47-73f7287e1787" Value="5" Type="float"/>
+    <Parameter Name="CanCollect" Description="Indica si la recolección está habilitada" Guid="51ed4d4b-c0f1-484c-b29e-f0ea1591c06d" Value="true" Type="bool"/>
+    <Parameter Name="CollectableItems" Description="Lista de objetos a recolectar separados por comas (vacío para todos)" Guid="24d22da4-d7ed-449b-9e5d-a1c94690a82a" Value="" Type="string"/>
+</ComponentTemplate>
 
         <ComponentTemplate Name="NewCreatureCollect" Description="Permite a la criatura recoger objetos automáticamente" Guid="e3793c3b-587f-43dd-a1e6-d2a6b4a28520" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
    <Parameter Name="PickFactors" Description="Factores de preferencia para categorías de objetos" Guid="90ec8dae-4e1b-4f39-acac-d83d92f674da" Value="" Type="string"/>
