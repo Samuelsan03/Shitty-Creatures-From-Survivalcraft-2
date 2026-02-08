@@ -250,11 +250,11 @@
   "Blocks": {
     "BK43Block:0": {
   "DisplayName": "BK-43 双管霰弹枪",
-  "Description": "一把可靠的12号口径双管霰弹枪。可装填两发霰弹，在近距离战斗中拥有极强的杀伤力和宽广的弹丸散布。"
+  "Description": "一把结构简单且可靠的双管霰弹枪。可装填两发弹药，在近距离由于弹丸散布而非常有效。"
 },
 "BK43BulletBlock:0": {
-  "DisplayName": "12号口径霰弹",
-  "Description": "BK-43 使用的12号口径霰弹弹药。专为近距离战斗设计，具备强大的制止力和散射效果。"
+  "DisplayName": "BK-43 霰弹枪弹药",
+  "Description": "BK-43 使用的弹药。在近距离具有良好的制止力和较大的散布。"
 },
     "NuclearCoinBlock:0": {
     "DisplayName": "核硬币",
