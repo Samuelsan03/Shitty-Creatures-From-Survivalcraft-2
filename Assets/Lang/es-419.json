@@ -250,11 +250,11 @@
   "Blocks": {
     "BK43Block:0": {
   "DisplayName": "Escopeta de Doble Cañón BK-43",
-  "Description": "Escopeta de doble cañón calibre 12, simple y confiable. Tiene capacidad para dos cartuchos y es extremadamente letal a corta distancia gracias a su amplia dispersión de perdigones."
+  "Description": "Escopeta de doble cañón, simple y confiable. Tiene capacidad para dos cartuchos y es muy efectiva a corta distancia gracias a la dispersión de perdigones."
 },
 "BK43BulletBlock:0": {
-  "DisplayName": "Cartuchos de Escopeta Calibre 12",
-  "Description": "Munición de escopeta calibre 12 utilizada por la BK-43. Ideal para combates a corta distancia, con gran poder de detención y dispersión."
+  "DisplayName": "Cartuchos de Escopeta BK-43",
+  "Description": "Munición utilizada por la BK-43. Eficaz a corta distancia, con gran poder de detención y amplia dispersión."
 },
     "NuclearCoinBlock:0": {
       "DisplayName": "Moneda Nuclear",
