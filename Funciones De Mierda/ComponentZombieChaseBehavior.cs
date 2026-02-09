@@ -1,899 +1,532 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Engine;
 using GameEntitySystem;
 using TemplatesDatabase;
 
 namespace Game
 {
-	public class ComponentZombieChaseBehavior : ComponentBehavior, IUpdateable
+	// Token: 0x02000046 RID: 70
+	public class ComponentZombieChaseBehavior : ComponentChaseBehavior
 	{
-		// Propiedades públicas
-		public ComponentCreature Target
-		{
-			get { return m_target; }
-		}
-
-		public UpdateOrder UpdateOrder
-		{
-			get { return UpdateOrder.Default; }
-		}
-
-		public override float ImportanceLevel
-		{
-			get { return m_importanceLevel; }
-		}
-
-		public bool AttacksSameHerd { get; set; } = false;
-		public bool AttacksAllCategories { get; set; } = false; // CAMBIADO: false por defecto
-		public bool FleeFromSameHerd { get; set; } = true;
-		public float FleeDistance { get; set; } = 10f;
-		public bool ForceAttackDuringGreenNight { get; set; } = true;
-		public bool Suppressed { get; set; } = false;
-
-		// Campos privados
-		private SubsystemGameInfo m_subsystemGameInfo;
-		private SubsystemPlayers m_subsystemPlayers;
-		private SubsystemSky m_subsystemSky;
-		private SubsystemBodies m_subsystemBodies;
-		private SubsystemTime m_subsystemTime;
-		private SubsystemNoise m_subsystemNoise;
-		private ComponentCreature m_componentCreature;
-		private ComponentPathfinding m_componentPathfinding;
-		private ComponentMiner m_componentMiner;
-		private ComponentRandomFeedBehavior m_componentFeedBehavior;
-		private ComponentCreatureModel m_componentCreatureModel;
-		private ComponentFactors m_componentFactors;
-		private ComponentZombieHerdBehavior m_componentZombieHerdBehavior;
-		private DynamicArray<ComponentBody> m_componentBodies = new DynamicArray<ComponentBody>();
-		private Game.Random m_random = new Game.Random();
-		private StateMachine m_stateMachine = new StateMachine();
-
-		private float m_dayChaseRange;
-		private float m_nightChaseRange;
-		private float m_dayChaseTime;
-		private float m_nightChaseTime;
-		private float m_chaseNonPlayerProbability;
-		private float m_chaseWhenAttackedProbability;
-		private float m_chaseOnTouchProbability;
-		private CreatureCategory m_autoChaseMask;
-
-		private float m_importanceLevel;
-		private float m_targetUnsuitableTime;
-		private float m_targetInRangeTime;
-		private double m_nextUpdateTime;
-		private ComponentCreature m_target;
-		private float m_dt;
-		private float m_range;
-		private float m_chaseTime;
-		private bool m_isPersistent;
-		private float m_autoChaseSuppressionTime;
-
-		// Configuración
-		public float ImportanceLevelNonPersistent = 200f;
-		public float ImportanceLevelPersistent = 200f;
-		public float MaxAttackRange = 1.75f;
-		public bool AllowAttackingStandingOnBody = true;
-		public bool JumpWhenTargetStanding = true;
-		public bool AttacksPlayer = true;
-		public bool AttacksNonPlayerCreature = true;
-		public float ChaseRangeOnTouch = 7f;
-		public float ChaseTimeOnTouch = 7f;
-		public float? ChaseRangeOnAttacked;
-		public float? ChaseTimeOnAttacked;
-		public bool? ChasePersistentOnAttacked;
-		public float MinHealthToAttackActively = 0.4f;
-		public bool PlayIdleSoundWhenStartToChase = true;
-		public bool PlayAngrySoundWhenChasing = true;
-		public float TargetInRangeTimeToChase = 3f;
-
-		// Para Noche Verde
-		private bool m_lastGreenNightState = false;
-		private ComponentCreature m_greenNightTargetPlayer = null;
-
-		public virtual void Attack(ComponentCreature componentCreature, float maxRange, float maxChaseTime, bool isPersistent)
-		{
-			if (this.Suppressed)
-			{
-				return;
-			}
-
-			// Verificar si el objetivo es de la misma manada (si aplica)
-			if (!this.AttacksSameHerd && componentCreature != null && this.m_componentZombieHerdBehavior != null)
-			{
-				if (this.m_componentZombieHerdBehavior.IsSameZombieHerd(componentCreature))
-				{
-					// Si no ataca a la misma manada y el objetivo es de la misma manada, huir
-					if (this.FleeFromSameHerd)
-					{
-						this.FleeFromTarget(componentCreature);
-					}
-					return;
-				}
-			}
-
-			this.m_target = componentCreature;
-			this.m_nextUpdateTime = 0.0;
-			this.m_range = maxRange;
-			this.m_chaseTime = maxChaseTime;
-			this.m_isPersistent = isPersistent;
-			this.m_importanceLevel = (isPersistent ? this.ImportanceLevelPersistent : this.ImportanceLevelNonPersistent);
-
-			// Durante Noche Verde, asegurar que el ataque sea persistente y con mayor prioridad
-			if (SubsystemGreenNightSky.IsGreenNight() && this.ForceAttackDuringGreenNight)
-			{
-				this.m_isPersistent = true;
-				this.m_importanceLevel = 500f; // Prioridad muy alta
-				this.m_chaseTime = MathUtils.Max(this.m_chaseTime, 60f); // Mínimo 60 segundos
-
-				// Si es un jugador, guardarlo como objetivo de Noche Verde
-				if (componentCreature != null && componentCreature.Entity.FindComponent<ComponentPlayer>() != null)
-				{
-					m_greenNightTargetPlayer = componentCreature;
-				}
-			}
-
-			// NO usar hooks de ModsManager ya que ComponentZombieChaseBehavior no es ComponentChaseBehavior
-			// Los mods no tienen hooks específicos para esta clase
-		}
-
-		public virtual void StopAttack()
-		{
-			this.m_stateMachine.TransitionTo("LookingForTarget");
-			this.IsActive = false;
-			this.m_target = null;
-			this.m_nextUpdateTime = 0.0;
-			this.m_range = 0f;
-			this.m_chaseTime = 0f;
-			this.m_isPersistent = false;
-			this.m_importanceLevel = 0f;
-
-			// Limpiar objetivo de Noche Verde si estamos saliendo de ese estado
-			if (!SubsystemGreenNightSky.IsGreenNight())
-			{
-				m_greenNightTargetPlayer = null;
-			}
-		}
-
-		public virtual void Update(float dt)
-		{
-			// Verificar si estamos en Noche Verde
-			bool isGreenNight = SubsystemGreenNightSky.IsGreenNight();
-
-			// Si acaba de empezar la Noche Verde, resetear el objetivo
-			if (isGreenNight && !m_lastGreenNightState)
-			{
-				m_greenNightTargetPlayer = null;
-				this.m_autoChaseSuppressionTime = 0f; // Resetear supresión
-				Log.Information("Noche Verde detectada - Zombi buscará jugadores agresivamente");
-			}
-
-			// Si acaba de terminar la Noche Verde, limpiar el objetivo
-			if (!isGreenNight && m_lastGreenNightState)
-			{
-				m_greenNightTargetPlayer = null;
-				Log.Information("Noche Verde terminada - Zombi regresa a comportamiento normal");
-
-				// Detener cualquier ataque forzado
-				if (this.m_target != null && this.m_subsystemPlayers.IsPlayer(this.m_target.Entity))
-				{
-					this.StopAttack();
-				}
-			}
-
-			m_lastGreenNightState = isGreenNight;
-
-			if (this.Suppressed)
-			{
-				this.StopAttack();
-			}
-
-			this.m_autoChaseSuppressionTime -= dt;
-
-			if (this.IsActive && this.m_target != null)
-			{
-				this.m_chaseTime -= dt;
-				this.m_componentCreature.ComponentCreatureModel.LookAtOrder = new Vector3?(this.m_target.ComponentCreatureModel.EyePosition);
-
-				if (this.IsTargetInAttackRange(this.m_target.ComponentBody))
-				{
-					this.m_componentCreatureModel.AttackOrder = true;
-				}
-
-				if (this.m_componentCreatureModel.IsAttackHitMoment)
-				{
-					Vector3 hitPoint;
-					ComponentBody hitBody = this.GetHitBody(this.m_target.ComponentBody, out hitPoint);
-					if (hitBody != null)
-					{
-						float chaseTimeBefore = this.m_chaseTime;
-						float x = this.m_isPersistent ? this.m_random.Float(8f, 10f) : 2f;
-						this.m_chaseTime = MathUtils.Max(this.m_chaseTime, x);
-
-						bool bodyToHit = true;
-						bool playAttackSound = true;
-
-						// NO usar hooks ya que no existen para ComponentZombieChaseBehavior
-
-						if (bodyToHit)
-						{
-							this.m_componentMiner.Hit(hitBody, hitPoint, this.m_componentCreature.ComponentBody.Matrix.Forward);
-						}
-
-						if (playAttackSound)
-						{
-							this.m_componentCreature.ComponentCreatureSounds.PlayAttackSound();
-						}
-					}
-					else
-					{
-						// NO usar hooks ya que no existen para ComponentZombieChaseBehavior
-					}
-				}
-			}
-
-			if (this.m_subsystemTime.GameTime >= this.m_nextUpdateTime)
-			{
-				this.m_dt = this.m_random.Float(0.25f, 0.35f) + MathUtils.Min((float)(this.m_subsystemTime.GameTime - this.m_nextUpdateTime), 0.1f);
-				this.m_nextUpdateTime = this.m_subsystemTime.GameTime + (double)this.m_dt;
-				this.m_stateMachine.Update();
-			}
-		}
-
+		// Token: 0x06000449 RID: 1097 RVA: 0x0003C850 File Offset: 0x0003AA50
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
 			base.Load(valuesDictionary, idToEntityMap);
-
-			this.m_subsystemGameInfo = base.Project.FindSubsystem<SubsystemGameInfo>(true);
-			this.m_subsystemPlayers = base.Project.FindSubsystem<SubsystemPlayers>(true);
-			this.m_subsystemSky = base.Project.FindSubsystem<SubsystemSky>(true);
-			this.m_subsystemBodies = base.Project.FindSubsystem<SubsystemBodies>(true);
-			this.m_subsystemTime = base.Project.FindSubsystem<SubsystemTime>(true);
-			this.m_subsystemNoise = base.Project.FindSubsystem<SubsystemNoise>(true);
-			this.m_componentCreature = base.Entity.FindComponent<ComponentCreature>(true);
-			this.m_componentPathfinding = base.Entity.FindComponent<ComponentPathfinding>(true);
-			this.m_componentMiner = base.Entity.FindComponent<ComponentMiner>(true);
-			this.m_componentFeedBehavior = base.Entity.FindComponent<ComponentRandomFeedBehavior>();
-			this.m_componentCreatureModel = base.Entity.FindComponent<ComponentCreatureModel>(true);
-			this.m_componentFactors = base.Entity.FindComponent<ComponentFactors>(true);
 			this.m_componentZombieHerdBehavior = base.Entity.FindComponent<ComponentZombieHerdBehavior>();
-
-			// Cargar propiedades específicas de zombis
-			this.AttacksSameHerd = valuesDictionary.GetValue<bool>("AttacksSameHerd", false);
-			this.AttacksAllCategories = valuesDictionary.GetValue<bool>("AttacksAllCategories", false); // CAMBIADO: false por defecto
-			this.FleeFromSameHerd = valuesDictionary.GetValue<bool>("FleeFromSameHerd", true);
-			this.FleeDistance = valuesDictionary.GetValue<float>("FleeDistance", 10f);
-			this.ForceAttackDuringGreenNight = valuesDictionary.GetValue<bool>("ForceAttackDuringGreenNight", true);
-
-			this.m_dayChaseRange = valuesDictionary.GetValue<float>("DayChaseRange", 8f);
-			this.m_nightChaseRange = valuesDictionary.GetValue<float>("NightChaseRange", 12f);
-			this.m_dayChaseTime = valuesDictionary.GetValue<float>("DayChaseTime", 30f);
-			this.m_nightChaseTime = valuesDictionary.GetValue<float>("NightChaseTime", 30f);
-			this.m_autoChaseMask = valuesDictionary.GetValue<CreatureCategory>("AutoChaseMask", (CreatureCategory)0); // VACÍO por defecto
-			this.m_chaseNonPlayerProbability = valuesDictionary.GetValue<float>("ChaseNonPlayerProbability", 1f);
-			this.m_chaseWhenAttackedProbability = valuesDictionary.GetValue<float>("ChaseWhenAttackedProbability", 1f);
-			this.m_chaseOnTouchProbability = valuesDictionary.GetValue<float>("ChaseOnTouchProbability", 1f);
-
-			// Configurar para atacar todas las categorías si está habilitado
-			if (this.AttacksAllCategories)
+			this.m_subsystemGreenNightSky = base.Project.FindSubsystem<SubsystemGreenNightSky>(true);
+			this.m_attacksSameHerd = valuesDictionary.GetValue<bool>("AttacksSameHerd", false);
+			this.m_attacksAllCategories = valuesDictionary.GetValue<bool>("AttacksAllCategories", true);
+			this.m_fleeFromSameHerd = valuesDictionary.GetValue<bool>("FleeFromSameHerd", true);
+			this.m_fleeDistance = valuesDictionary.GetValue<float>("FleeDistance", 10f);
+			this.m_forceAttackDuringGreenNight = valuesDictionary.GetValue<bool>("ForceAttackDuringGreenNight", false);
+			bool attacksAllCategories = this.m_attacksAllCategories;
+			if (attacksAllCategories)
 			{
-				this.m_autoChaseMask = CreatureCategory.LandPredator | CreatureCategory.LandOther |
-									   CreatureCategory.WaterPredator | CreatureCategory.WaterOther |
-									   CreatureCategory.Bird;
+				this.m_autoChaseMask = (CreatureCategory.LandPredator | CreatureCategory.LandOther | CreatureCategory.WaterPredator | CreatureCategory.WaterOther | CreatureCategory.Bird);
+				this.AttacksNonPlayerCreature = true;
+				this.AttacksPlayer = true;
+			}
+			this.SetupZombieInjuryHandler();
+			this.AddFleeState();
+		}
+
+		// Token: 0x0600044A RID: 1098 RVA: 0x0003C918 File Offset: 0x0003AB18
+		private void SetupZombieInjuryHandler()
+		{
+			ComponentHealth componentHealth = this.m_componentCreature.ComponentHealth;
+			Action<Injury> originalHandler = componentHealth.Injured;
+			Action<Injury> injured = delegate (Injury injury)
+			{
+				ComponentCreature attacker = injury.Attacker;
+				bool flag = attacker != null;
+				if (flag)
+				{
+					this.m_lastAttackTimes[attacker] = this.m_retaliationMemoryDuration;
+					this.m_lastAttacker = attacker;
+					bool flag2 = attacker != this.m_target && !this.IsSameHerd(attacker);
+					if (flag2)
+					{
+						this.StopAttack();
+						this.Attack(attacker, 30f, 60f, true);
+						this.m_retaliationCooldown = 2f;
+						return;
+					}
+				}
+				bool flag3 = attacker != null && !this.m_attacksSameHerd && this.IsSameHerd(attacker);
+				if (flag3)
+				{
+					bool flag4 = this.m_componentZombieHerdBehavior != null && this.m_componentZombieHerdBehavior.CallForHelpWhenAttacked;
+					if (flag4)
+					{
+						ComponentCreature componentCreature = this.FindExternalAttacker(injury);
+						bool flag5 = componentCreature != null;
+						if (flag5)
+						{
+							this.m_componentZombieHerdBehavior.CallZombiesForHelp(componentCreature);
+						}
+					}
+					bool fleeFromSameHerd = this.m_fleeFromSameHerd;
+					if (fleeFromSameHerd)
+					{
+						this.FleeFromTarget(attacker);
+					}
+				}
+				else
+				{
+					bool flag6 = originalHandler != null;
+					if (flag6)
+					{
+						originalHandler(injury);
+					}
+				}
+			};
+			componentHealth.Injured = injured;
+		}
+
+		// Token: 0x0600044B RID: 1099 RVA: 0x0003C960 File Offset: 0x0003AB60
+		private ComponentCreature FindExternalAttacker(Injury injury)
+		{
+			bool flag = injury.Attacker == null;
+			ComponentCreature result;
+			if (flag)
+			{
+				result = null;
 			}
 			else
 			{
-				// Si no ataca todas las categorías, dejar el mask vacío
-				this.m_autoChaseMask = (CreatureCategory)0;
+				bool flag2 = !this.IsSameHerd(injury.Attacker);
+				if (flag2)
+				{
+					result = injury.Attacker;
+				}
+				else
+				{
+					result = null;
+				}
 			}
-
-			// Configurar handlers de eventos
-			this.SetupEventHandlers();
-
-			// Configurar la máquina de estados
-			this.SetupStateMachine();
-
-			this.m_stateMachine.TransitionTo("LookingForTarget");
-
-			Log.Information($"ComponentZombieChaseBehavior cargado. Atacar misma manada: {this.AttacksSameHerd}, Atacar todas categorías: {this.AttacksAllCategories}, AutoChaseMask: {this.m_autoChaseMask}");
+			return result;
 		}
 
-		private void SetupEventHandlers()
+		// Token: 0x0600044C RID: 1100 RVA: 0x0003C9A4 File Offset: 0x0003ABA4
+		private bool IsSameHerd(ComponentCreature otherCreature)
 		{
-			ComponentBody componentBody = this.m_componentCreature.ComponentBody;
-			componentBody.CollidedWithBody = (Action<ComponentBody>)Delegate.Combine(componentBody.CollidedWithBody, new Action<ComponentBody>(delegate (ComponentBody body)
-			{
-				if (this.m_target == null && this.m_autoChaseSuppressionTime <= 0f && this.m_random.Float(0f, 1f) < this.m_chaseOnTouchProbability)
-				{
-					ComponentCreature componentCreature = body.Entity.FindComponent<ComponentCreature>();
-					if (componentCreature != null)
-					{
-						bool isPlayer = this.m_subsystemPlayers.IsPlayer(body.Entity);
-						bool isInAutoChaseMask = (componentCreature.Category & this.m_autoChaseMask) > (CreatureCategory)0;
+			bool flag = otherCreature == null || this.m_componentZombieHerdBehavior == null;
+			return !flag && this.m_componentZombieHerdBehavior.IsSameZombieHerd(otherCreature);
+		}
 
-						// Verificar si es de la misma manada (si aplica)
-						if (!this.AttacksSameHerd && this.m_componentZombieHerdBehavior != null)
+		// Token: 0x0600044D RID: 1101 RVA: 0x0003C9DC File Offset: 0x0003ABDC
+		public override void Attack(ComponentCreature target, float maxRange, float maxChaseTime, bool isPersistent)
+		{
+			bool flag = this.m_lastAttacker != null && target == this.m_lastAttacker;
+			bool flag2 = !flag && !this.m_attacksSameHerd && this.IsSameHerd(target);
+			if (flag2)
+			{
+				bool flag3 = this.m_componentZombieHerdBehavior != null;
+				if (flag3)
+				{
+					ComponentCreature componentCreature = this.FindExternalEnemyNearby(maxRange);
+					bool flag4 = componentCreature != null;
+					if (flag4)
+					{
+						this.m_componentZombieHerdBehavior.CoordinateGroupAttack(componentCreature);
+					}
+				}
+			}
+			else
+			{
+				bool flag5 = flag && this.m_retaliationCooldown <= 0f;
+				if (flag5)
+				{
+					this.Suppressed = false;
+					this.ImportanceLevelNonPersistent = 300f;
+					this.ImportanceLevelPersistent = 300f;
+					bool flag6 = this.m_forceAttackDuringGreenNight && this.m_subsystemGreenNightSky != null && this.m_subsystemGreenNightSky.IsGreenNightActive && target.Entity.FindComponent<ComponentPlayer>() == null;
+					if (flag6)
+					{
+						Vector3 position = this.m_componentCreature.ComponentBody.Position;
+						ComponentPlayer componentPlayer = null;
+						float num = float.MaxValue;
+						SubsystemPlayers subsystemPlayers = base.Project.FindSubsystem<SubsystemPlayers>(true);
+						bool flag7 = subsystemPlayers != null;
+						if (flag7)
 						{
-							if (this.m_componentZombieHerdBehavior.IsSameZombieHerd(componentCreature))
+							foreach (ComponentPlayer componentPlayer2 in subsystemPlayers.ComponentPlayers)
 							{
-								// Si no ataca a la misma manada, huir
-								if (this.FleeFromSameHerd)
+								bool flag8 = componentPlayer2 != null && componentPlayer2.ComponentHealth.Health > 0f;
+								if (flag8)
 								{
-									this.FleeFromTarget(componentCreature);
+									float num2 = Vector3.Distance(position, componentPlayer2.ComponentBody.Position);
+									bool flag9 = num2 <= maxRange && num2 < num;
+									if (flag9)
+									{
+										num = num2;
+										componentPlayer = componentPlayer2;
+									}
 								}
-								return;
 							}
 						}
-
-						// SÓLO atacar jugadores si:
-						// 1. Es Noche Verde y ForceAttackDuringGreenNight está activo
-						// 2. El jugador atacó al zombi (se maneja en otro evento)
-						// 3. Configuración específica lo permite
-						bool greenNightCondition = SubsystemGreenNightSky.IsGreenNight() && this.ForceAttackDuringGreenNight;
-
-						if (this.AttacksPlayer && isPlayer && greenNightCondition)
+						bool flag10 = componentPlayer != null && num < maxRange * 0.5f;
+						if (flag10)
 						{
-							// SOLO durante Noche Verde atacar jugadores automáticamente
-							this.Attack(componentCreature, this.ChaseRangeOnTouch, this.ChaseTimeOnTouch, false);
-						}
-						else if (this.AttacksNonPlayerCreature && !isPlayer && isInAutoChaseMask)
-						{
-							// Para criaturas no-jugador, seguir la lógica normal
-							this.Attack(componentCreature, this.ChaseRangeOnTouch, this.ChaseTimeOnTouch, false);
+							target = componentPlayer;
 						}
 					}
 				}
-
-				if (this.m_target != null && this.JumpWhenTargetStanding && body == this.m_target.ComponentBody && body.StandingOnBody == this.m_componentCreature.ComponentBody)
+				base.Attack(target, maxRange, maxChaseTime, isPersistent);
+				bool flag11 = !flag && this.m_componentZombieHerdBehavior != null;
+				if (flag11)
 				{
-					this.m_componentCreature.ComponentLocomotion.JumpOrder = 1f;
+					this.m_componentZombieHerdBehavior.CoordinateGroupAttack(target);
 				}
-			}));
-
-			ComponentHealth componentHealth = this.m_componentCreature.ComponentHealth;
-			componentHealth.Injured = (Action<Injury>)Delegate.Combine(componentHealth.Injured, new Action<Injury>(delegate (Injury injury)
-			{
-				ComponentCreature attacker = injury.Attacker;
-				if (attacker != null)
-				{
-					// Verificar si el atacante es de la misma manada (si aplica)
-					if (!this.AttacksSameHerd && this.m_componentZombieHerdBehavior != null)
-					{
-						if (this.m_componentZombieHerdBehavior.IsSameZombieHerd(attacker))
-						{
-							// Si es de la misma manada y no atacamos a la misma manada, huir
-							if (this.FleeFromSameHerd)
-							{
-								this.FleeFromTarget(attacker);
-							}
-							return;
-						}
-					}
-
-					// Perseguir al atacante SIEMPRE (si no es de la misma manada)
-					if (this.m_random.Float(0f, 1f) < this.m_chaseWhenAttackedProbability)
-					{
-						bool flag = false;
-						float chaseRange, chaseTime;
-
-						if (this.m_chaseWhenAttackedProbability >= 1f)
-						{
-							chaseRange = 30f;
-							chaseTime = 60f;
-							flag = true;
-						}
-						else
-						{
-							chaseRange = 7f;
-							chaseTime = 7f;
-						}
-
-						chaseRange = this.ChaseRangeOnAttacked.GetValueOrDefault(chaseRange);
-						chaseTime = this.ChaseTimeOnAttacked.GetValueOrDefault(chaseTime);
-						flag = this.ChasePersistentOnAttacked.GetValueOrDefault(flag);
-
-						// Si es jugador y es Noche Verde, hacerlo persistente
-						bool isPlayer = this.m_subsystemPlayers.IsPlayer(attacker.Entity);
-						if (isPlayer && SubsystemGreenNightSky.IsGreenNight() && this.ForceAttackDuringGreenNight)
-						{
-							flag = true;
-							chaseTime = MathUtils.Max(chaseTime, 60f);
-						}
-
-						this.Attack(attacker, chaseRange, chaseTime, flag);
-					}
-				}
-			}));
+			}
 		}
 
-		private void SetupStateMachine()
+		// Token: 0x0600044E RID: 1102 RVA: 0x0003CBEC File Offset: 0x0003ADEC
+		private ComponentCreature FindExternalEnemyNearby(float range)
 		{
-			this.m_stateMachine.AddState("LookingForTarget", delegate
+			Vector3 position = this.m_componentCreature.ComponentBody.Position;
+			ComponentCreature result = null;
+			float num = 0f;
+			this.m_componentBodies.Clear();
+			this.m_subsystemBodies.FindBodiesAroundPoint(new Vector2(position.X, position.Z), range, this.m_componentBodies);
+			for (int i = 0; i < this.m_componentBodies.Count; i++)
 			{
-				this.m_importanceLevel = 0f;
-				this.m_target = null;
+				ComponentCreature componentCreature = this.m_componentBodies.Array[i].Entity.FindComponent<ComponentCreature>();
+				bool flag = componentCreature != null && componentCreature != this.m_componentCreature;
+				if (flag)
+				{
+					bool flag2 = !this.IsSameHerd(componentCreature);
+					if (flag2)
+					{
+						float num2 = Vector3.Distance(position, componentCreature.ComponentBody.Position);
+						float num3 = range - num2;
+						bool flag3 = num3 > num;
+						if (flag3)
+						{
+							num = num3;
+							result = componentCreature;
+						}
+					}
+				}
+			}
+			return result;
+		}
+
+		// Token: 0x0600044F RID: 1103 RVA: 0x0003CCE0 File Offset: 0x0003AEE0
+		public override ComponentCreature FindTarget()
+		{
+			bool flag = this.m_retaliationCooldown > 0f && this.m_lastAttacker != null && this.m_lastAttackTimes.ContainsKey(this.m_lastAttacker);
+			if (flag)
+			{
+				bool flag2 = this.m_lastAttacker.ComponentHealth.Health > 0f && !this.IsSameHerd(this.m_lastAttacker) && Vector3.Distance(this.m_componentCreature.ComponentBody.Position, this.m_lastAttacker.ComponentBody.Position) <= this.m_range * 2f;
+				if (flag2)
+				{
+					return this.m_lastAttacker;
+				}
+			}
+			bool flag3 = this.m_forceAttackDuringGreenNight && this.m_subsystemGreenNightSky != null && this.m_subsystemGreenNightSky.IsGreenNightActive;
+			ComponentCreature result;
+			if (flag3)
+			{
+				Vector3 position = this.m_componentCreature.ComponentBody.Position;
+				ComponentCreature componentCreature = null;
+				float num = 0f;
+				ComponentPlayer componentPlayer = null;
+				float num2 = float.MaxValue;
+				SubsystemPlayers subsystemPlayers = base.Project.FindSubsystem<SubsystemPlayers>(true);
+				bool flag4 = subsystemPlayers != null;
+				if (flag4)
+				{
+					foreach (ComponentPlayer componentPlayer2 in subsystemPlayers.ComponentPlayers)
+					{
+						bool flag5 = componentPlayer2 != null && componentPlayer2.ComponentHealth.Health > 0f;
+						if (flag5)
+						{
+							float num3 = Vector3.Distance(position, componentPlayer2.ComponentBody.Position);
+							bool flag6 = num3 <= this.m_range && num3 < num2;
+							if (flag6)
+							{
+								num2 = num3;
+								componentPlayer = componentPlayer2;
+							}
+						}
+					}
+				}
+				this.m_componentBodies.Clear();
+				this.m_subsystemBodies.FindBodiesAroundPoint(new Vector2(position.X, position.Z), this.m_range, this.m_componentBodies);
+				int i = 0;
+				while (i < this.m_componentBodies.Count)
+				{
+					ComponentCreature componentCreature2 = this.m_componentBodies.Array[i].Entity.FindComponent<ComponentCreature>();
+					bool flag7 = componentCreature2 != null && componentCreature2 != this.m_componentCreature;
+					if (flag7)
+					{
+						bool flag8 = !this.m_attacksSameHerd && this.IsSameHerd(componentCreature2);
+						if (!flag8)
+						{
+							float num4 = Vector3.Distance(position, componentCreature2.ComponentBody.Position);
+							float num5 = this.ScoreTarget(componentCreature2);
+							bool flag9 = componentCreature2.Entity.FindComponent<ComponentPlayer>() != null;
+							if (flag9)
+							{
+								num5 *= 1.5f;
+							}
+							bool flag10 = num5 > num;
+							if (flag10)
+							{
+								num = num5;
+								componentCreature = componentCreature2;
+							}
+						}
+					}
+				IL_286:
+					i++;
+					continue;
+					goto IL_286;
+				}
+				bool flag11 = componentPlayer != null && num2 <= this.m_range * 0.7f;
+				if (flag11)
+				{
+					result = componentPlayer;
+				}
+				else
+				{
+					result = componentCreature;
+				}
+			}
+			else
+			{
+				bool flag12 = !this.m_attacksSameHerd;
+				if (flag12)
+				{
+					Vector3 position2 = this.m_componentCreature.ComponentBody.Position;
+					ComponentCreature componentCreature3 = null;
+					float num6 = 0f;
+					this.m_componentBodies.Clear();
+					this.m_subsystemBodies.FindBodiesAroundPoint(new Vector2(position2.X, position2.Z), this.m_range, this.m_componentBodies);
+					int j = 0;
+					while (j < this.m_componentBodies.Count)
+					{
+						ComponentCreature componentCreature4 = this.m_componentBodies.Array[j].Entity.FindComponent<ComponentCreature>();
+						bool flag13 = componentCreature4 != null;
+						if (flag13)
+						{
+							bool flag14 = this.IsSameHerd(componentCreature4);
+							if (!flag14)
+							{
+								float num7 = this.ScoreTarget(componentCreature4);
+								bool flag15 = num7 > num6;
+								if (flag15)
+								{
+									num6 = num7;
+									componentCreature3 = componentCreature4;
+								}
+							}
+						}
+					IL_39A:
+						j++;
+						continue;
+						goto IL_39A;
+					}
+					result = componentCreature3;
+				}
+				else
+				{
+					result = base.FindTarget();
+				}
+			}
+			return result;
+		}
+
+		// Token: 0x06000450 RID: 1104 RVA: 0x0003D0C4 File Offset: 0x0003B2C4
+		public override float ScoreTarget(ComponentCreature componentCreature)
+		{
+			bool flag = !this.m_attacksSameHerd && this.IsSameHerd(componentCreature);
+			float result;
+			if (flag)
+			{
+				result = 0f;
+			}
+			else
+			{
+				bool flag2 = componentCreature == this.m_lastAttacker && this.m_lastAttackTimes.ContainsKey(componentCreature) && this.m_lastAttackTimes[componentCreature] > 0f;
+				if (flag2)
+				{
+					result = base.ScoreTarget(componentCreature) * 3f;
+				}
+				else
+				{
+					result = base.ScoreTarget(componentCreature);
+				}
+			}
+			return result;
+		}
+
+		// Token: 0x06000451 RID: 1105 RVA: 0x0003D13E File Offset: 0x0003B33E
+		private void AddFleeState()
+		{
+			this.m_stateMachine.AddState("Fleeing", delegate
+			{
+				this.m_importanceLevel = 150f;
+				this.m_componentCreature.ComponentCreatureSounds.PlayPainSound();
 			}, delegate
 			{
-				if (this.IsActive)
-				{
-					this.m_stateMachine.TransitionTo("Chasing");
-					return;
-				}
-
-				if (!this.Suppressed && this.m_autoChaseSuppressionTime <= 0f &&
-					(this.m_target == null || this.ScoreTarget(this.m_target) <= 0f) &&
-					this.m_componentCreature.ComponentHealth.Health > this.MinHealthToAttackActively)
-				{
-					// Determinar rango basado en hora del día o Noche Verde
-					if (SubsystemGreenNightSky.IsGreenNight() && this.ForceAttackDuringGreenNight)
-					{
-						// Durante Noche Verde, rangos aumentados SOLO para jugadores
-						this.m_range = this.m_nightChaseRange * 1.5f;
-						this.m_range *= 1.5f; // Bonus adicional
-					}
-					else
-					{
-						this.m_range = ((this.m_subsystemSky.SkyLightIntensity < 0.2f) ? this.m_nightChaseRange : this.m_dayChaseRange);
-					}
-
-					this.m_range *= this.m_componentFactors.GetOtherFactorResult("ChaseRange", false, false);
-
-					// Buscar objetivo
-					ComponentCreature componentCreature = this.FindTarget();
-
-					if (componentCreature != null)
-					{
-						this.m_targetInRangeTime += this.m_dt;
-					}
-					else
-					{
-						this.m_targetInRangeTime = 0f;
-					}
-
-					// SOLO atacar si:
-					// 1. Es Noche Verde y ForceAttackDuringGreenNight está activo
-					// 2. Es una criatura no-jugador que está en el AutoChaseMask
-					bool greenNightCondition = SubsystemGreenNightSky.IsGreenNight() && this.ForceAttackDuringGreenNight;
-					bool isPlayer = componentCreature != null && this.m_subsystemPlayers.IsPlayer(componentCreature.Entity);
-					bool shouldChase = false;
-
-					if (componentCreature != null)
-					{
-						if (isPlayer && greenNightCondition)
-						{
-							// Jugador durante Noche Verde
-							shouldChase = true;
-						}
-						else if (!isPlayer && (componentCreature.Category & this.m_autoChaseMask) > (CreatureCategory)0)
-						{
-							// Criatura no-jugador que está en el mask
-							shouldChase = true;
-						}
-					}
-
-					if (shouldChase && this.m_targetInRangeTime > this.TargetInRangeTimeToChase)
-					{
-						bool isDayTime = this.m_subsystemSky.SkyLightIntensity >= 0.1f;
-						float maxRange = isDayTime ? (this.m_dayChaseRange + 6f) : (this.m_nightChaseRange + 6f);
-						float maxChaseTime = isDayTime ? (this.m_dayChaseTime * this.m_random.Float(0.75f, 1f)) : (this.m_nightChaseTime * this.m_random.Float(0.75f, 1f));
-
-						// Durante Noche Verde, ataque persistente contra jugadores
-						if (greenNightCondition && isPlayer)
-						{
-							maxRange *= 1.5f;
-							maxChaseTime *= 2f;
-							this.Attack(componentCreature, maxRange, maxChaseTime, true);
-						}
-						else
-						{
-							this.Attack(componentCreature, maxRange, maxChaseTime, !isDayTime);
-						}
-					}
-				}
-			}, null);
-
-			this.m_stateMachine.AddState("RandomMoving", delegate
-			{
-				this.m_componentPathfinding.SetDestination(new Vector3?(this.m_componentCreature.ComponentBody.Position + new Vector3(6f * this.m_random.Float(-1f, 1f), 0f, 6f * this.m_random.Float(-1f, 1f))), 1f, 1f, 0, false, true, false, null);
-			}, delegate
-			{
-				if (this.m_componentPathfinding.IsStuck || this.m_componentPathfinding.Destination == null)
-				{
-					this.m_stateMachine.TransitionTo("Chasing");
-				}
-				if (!this.IsActive)
+				bool flag = this.m_componentCreature.ComponentHealth.Health < 0.2f;
+				if (flag)
 				{
 					this.m_stateMachine.TransitionTo("LookingForTarget");
+				}
+				else
+				{
+					bool flag2 = this.m_target == null || this.m_componentCreature.ComponentHealth.Health <= 0f;
+					if (flag2)
+					{
+						this.m_stateMachine.TransitionTo("LookingForTarget");
+					}
+					else
+					{
+						Vector3 v = this.m_componentCreature.ComponentBody.Position - this.m_target.ComponentBody.Position;
+						bool flag3 = v.LengthSquared() > 0.01f;
+						if (flag3)
+						{
+							v = Vector3.Normalize(v);
+							Vector3 value = this.m_componentCreature.ComponentBody.Position + v * this.m_fleeDistance;
+							this.m_componentPathfinding.SetDestination(new Vector3?(value), 1f, 1.5f, 0, false, true, false, null);
+						}
+						float num = Vector3.Distance(this.m_componentCreature.ComponentBody.Position, this.m_target.ComponentBody.Position);
+						bool flag4 = num > this.m_fleeDistance * 1.5f;
+						if (flag4)
+						{
+							this.m_stateMachine.TransitionTo("LookingForTarget");
+						}
+						bool flag5 = this.m_random.Float(0f, 1f) < 0.05f * this.m_dt;
+						if (flag5)
+						{
+							this.m_componentCreature.ComponentCreatureSounds.PlayPainSound();
+						}
+					}
 				}
 			}, delegate
 			{
 				this.m_componentPathfinding.Stop();
+				this.m_importanceLevel = 0f;
 			});
+		}
 
-			this.m_stateMachine.AddState("Chasing", delegate
+		// Token: 0x06000452 RID: 1106 RVA: 0x0003D178 File Offset: 0x0003B378
+		private void FleeFromTarget(ComponentCreature target)
+		{
+			bool flag = this.m_componentCreature.ComponentHealth.Health < 0.2f;
+			if (!flag)
 			{
-				this.m_subsystemNoise.MakeNoise(this.m_componentCreature.ComponentBody, 0.25f, 6f);
-				if (this.PlayIdleSoundWhenStartToChase)
+				bool flag2 = target == null || this.m_componentCreature.ComponentHealth.Health <= 0f;
+				if (!flag2)
 				{
-					this.m_componentCreature.ComponentCreatureSounds.PlayIdleSound(false);
+					this.m_target = target;
+					this.m_stateMachine.TransitionTo("Fleeing");
 				}
-				this.m_nextUpdateTime = 0.0;
-			}, delegate
+			}
+		}
+
+		// Token: 0x06000453 RID: 1107 RVA: 0x0003D1E4 File Offset: 0x0003B3E4
+		public override void Update(float dt)
+		{
+			base.Update(dt);
+			bool flag = this.m_retaliationCooldown > 0f;
+			if (flag)
 			{
-				if (!this.IsActive)
+				this.m_retaliationCooldown -= dt;
+			}
+			List<ComponentCreature> list = new List<ComponentCreature>();
+			foreach (KeyValuePair<ComponentCreature, float> keyValuePair in this.m_lastAttackTimes)
+			{
+				this.m_lastAttackTimes[keyValuePair.Key] = keyValuePair.Value - dt;
+				bool flag2 = this.m_lastAttackTimes[keyValuePair.Key] <= 0f;
+				if (flag2)
+				{
+					list.Add(keyValuePair.Key);
+					bool flag3 = keyValuePair.Key == this.m_lastAttacker;
+					if (flag3)
+					{
+						this.m_lastAttacker = null;
+					}
+				}
+			}
+			foreach (ComponentCreature key in list)
+			{
+				this.m_lastAttackTimes.Remove(key);
+			}
+			bool flag4 = this.m_forceAttackDuringGreenNight && this.m_subsystemGreenNightSky != null && this.m_subsystemGreenNightSky.IsGreenNightActive;
+			if (flag4)
+			{
+				this.AttacksPlayer = true;
+				this.Suppressed = false;
+				bool flag5 = this.m_stateMachine.CurrentState == "Fleeing";
+				if (flag5)
 				{
 					this.m_stateMachine.TransitionTo("LookingForTarget");
 				}
-				else if (this.m_chaseTime <= 0f)
+			}
+			else
+			{
+				bool flag6 = this.m_subsystemGreenNightSky != null && !this.m_subsystemGreenNightSky.IsGreenNightActive;
+				if (flag6)
 				{
-					this.m_autoChaseSuppressionTime = this.m_random.Float(10f, 60f);
-					this.m_importanceLevel = 0f;
+					this.AttacksPlayer = this.m_attacksAllCategories;
 				}
-				else if (this.m_target == null)
+			}
+			bool flag7 = this.m_lastAttacker != null && this.m_retaliationCooldown <= 0f && this.m_target != this.m_lastAttacker && !this.IsSameHerd(this.m_lastAttacker);
+			if (flag7)
+			{
+				bool flag8 = this.m_lastAttacker.ComponentHealth.Health > 0f && Vector3.Distance(this.m_componentCreature.ComponentBody.Position, this.m_lastAttacker.ComponentBody.Position) <= this.m_range * 1.5f;
+				if (flag8)
 				{
-					this.m_importanceLevel = 0f;
+					this.StopAttack();
+					this.Attack(this.m_lastAttacker, 30f, 60f, true);
+					this.m_retaliationCooldown = 1f;
 				}
-				else if (this.m_target.ComponentHealth.Health <= 0f)
-				{
-					if (this.m_componentFeedBehavior != null)
-					{
-						this.m_subsystemTime.QueueGameTimeDelayedExecution(this.m_subsystemTime.GameTime + (double)this.m_random.Float(1f, 3f), delegate
-						{
-							if (this.m_target != null)
-							{
-								this.m_componentFeedBehavior.Feed(this.m_target.ComponentBody.Position);
-							}
-						});
-					}
-					this.m_importanceLevel = 0f;
-
-					// Durante Noche Verde, buscar nuevo objetivo inmediatamente
-					if (SubsystemGreenNightSky.IsGreenNight() && this.ForceAttackDuringGreenNight)
-					{
-						this.m_stateMachine.TransitionTo("LookingForTarget");
-					}
-				}
-				else if (!this.m_isPersistent && this.m_componentPathfinding.IsStuck)
-				{
-					this.m_importanceLevel = 0f;
-				}
-				else if (this.m_isPersistent && this.m_componentPathfinding.IsStuck)
-				{
-					this.m_stateMachine.TransitionTo("RandomMoving");
-				}
-				else
-				{
-					if (this.ScoreTarget(this.m_target) <= 0f)
-					{
-						this.m_targetUnsuitableTime += this.m_dt;
-					}
-					else
-					{
-						this.m_targetUnsuitableTime = 0f;
-					}
-
-					if (this.m_targetUnsuitableTime > 3f)
-					{
-						this.m_importanceLevel = 0f;
-					}
-					else
-					{
-						int maxPathfindingPositions = 0;
-						if (this.m_isPersistent)
-						{
-							maxPathfindingPositions = ((this.m_subsystemTime.FixedTimeStep != null) ? 2000 : 500);
-						}
-
-						BoundingBox boundingBox = this.m_componentCreature.ComponentBody.BoundingBox;
-						BoundingBox boundingBox2 = this.m_target.ComponentBody.BoundingBox;
-						Vector3 v = 0.5f * (boundingBox.Min + boundingBox.Max);
-						Vector3 vector = 0.5f * (boundingBox2.Min + boundingBox2.Max);
-						float num = Vector3.Distance(v, vector);
-						float num2 = (num < 4f) ? 0.2f : 0f;
-
-						this.m_componentPathfinding.SetDestination(new Vector3?(vector + num2 * num * this.m_target.ComponentBody.Velocity),
-							1f, 1.5f, maxPathfindingPositions, true, false, true, this.m_target.ComponentBody);
-
-						if (this.PlayAngrySoundWhenChasing && this.m_random.Float(0f, 1f) < 0.33f * this.m_dt)
-						{
-							this.m_componentCreature.ComponentCreatureSounds.PlayAttackSound();
-						}
-					}
-				}
-			}, null);
+			}
 		}
 
-		private void FleeFromTarget(ComponentCreature target)
+		// Token: 0x06000454 RID: 1108 RVA: 0x0003D470 File Offset: 0x0003B670
+		public override void StopAttack()
 		{
-			if (target == null || this.m_componentCreature.ComponentHealth.Health <= 0f)
-				return;
-
-			Vector3 fleeDirection = this.m_componentCreature.ComponentBody.Position - target.ComponentBody.Position;
-
-			if (fleeDirection.LengthSquared() > 0.01f)
-			{
-				fleeDirection = Vector3.Normalize(fleeDirection);
-				Vector3 destination = this.m_componentCreature.ComponentBody.Position + fleeDirection * this.FleeDistance;
-
-				this.m_componentPathfinding.SetDestination(
-					new Vector3?(destination),
-					1f,
-					1.5f,
-					0,
-					false,
-					true,
-					false,
-					null
-				);
-
-				// Reproducir sonido de dolor/miedo
-				this.m_componentCreature.ComponentCreatureSounds.PlayPainSound();
-			}
+			base.StopAttack();
 		}
 
-		public virtual ComponentCreature FindTarget()
-		{
-			// Durante Noche Verde, priorizar jugadores
-			if (SubsystemGreenNightSky.IsGreenNight() && this.ForceAttackDuringGreenNight)
-			{
-				ComponentCreature playerTarget = this.FindPlayerTarget();
-				if (playerTarget != null)
-				{
-					m_greenNightTargetPlayer = playerTarget;
-					return playerTarget;
-				}
-			}
+		// Token: 0x04000485 RID: 1157
+		private ComponentZombieHerdBehavior m_componentZombieHerdBehavior;
 
-			// Si no es Noche Verde o no hay jugadores, buscar criaturas no-jugador
-			if (this.m_autoChaseMask != (CreatureCategory)0)
-			{
-				Vector3 position = this.m_componentCreature.ComponentBody.Position;
-				ComponentCreature result = null;
-				float bestScore = 0f;
+		// Token: 0x04000486 RID: 1158
+		private SubsystemGreenNightSky m_subsystemGreenNightSky;
 
-				this.m_componentBodies.Clear();
-				this.m_subsystemBodies.FindBodiesAroundPoint(new Vector2(position.X, position.Z), this.m_range, this.m_componentBodies);
+		// Token: 0x04000487 RID: 1159
+		private Dictionary<ComponentCreature, float> m_lastAttackTimes = new Dictionary<ComponentCreature, float>();
 
-				for (int i = 0; i < this.m_componentBodies.Count; i++)
-				{
-					ComponentCreature creature = this.m_componentBodies.Array[i].Entity.FindComponent<ComponentCreature>();
-					if (creature != null)
-					{
-						// Verificar si es de la misma manada (si aplica)
-						if (!this.AttacksSameHerd && creature != this.m_componentCreature &&
-							this.m_componentZombieHerdBehavior != null)
-						{
-							if (this.m_componentZombieHerdBehavior.IsSameZombieHerd(creature))
-							{
-								continue; // Saltar miembros de la misma manada
-							}
-						}
+		// Token: 0x04000488 RID: 1160
+		private float m_retaliationMemoryDuration = 30f;
 
-						// Solo considerar criaturas no-jugador que estén en el AutoChaseMask
-						bool isPlayer = this.m_subsystemPlayers.IsPlayer(creature.Entity);
-						if (!isPlayer && (creature.Category & this.m_autoChaseMask) > (CreatureCategory)0)
-						{
-							float score = this.ScoreTarget(creature);
-							if (score > bestScore)
-							{
-								bestScore = score;
-								result = creature;
-							}
-						}
-					}
-				}
+		// Token: 0x04000489 RID: 1161
+		private ComponentCreature m_lastAttacker;
 
-				return result;
-			}
+		// Token: 0x0400048A RID: 1162
+		private float m_retaliationCooldown;
 
-			return null;
-		}
+		// Token: 0x0400048B RID: 1163
+		private bool m_attacksSameHerd;
 
-		private ComponentCreature FindPlayerTarget()
-		{
-			// Buscar jugadores cercanos SOLO durante Noche Verde
-			if (!SubsystemGreenNightSky.IsGreenNight() || !this.ForceAttackDuringGreenNight)
-				return null;
+		// Token: 0x0400048C RID: 1164
+		private bool m_attacksAllCategories;
 
-			Vector3 position = this.m_componentCreature.ComponentBody.Position;
-			ComponentCreature bestPlayerTarget = null;
-			float bestScore = 0f;
+		// Token: 0x0400048D RID: 1165
+		private bool m_fleeFromSameHerd;
 
-			this.m_componentBodies.Clear();
-			this.m_subsystemBodies.FindBodiesAroundPoint(new Vector2(position.X, position.Z), this.m_range * 2f, this.m_componentBodies);
+		// Token: 0x0400048E RID: 1166
+		private float m_fleeDistance = 10f;
 
-			for (int i = 0; i < this.m_componentBodies.Count; i++)
-			{
-				ComponentPlayer player = this.m_componentBodies.Array[i].Entity.FindComponent<ComponentPlayer>();
-				if (player != null && player.ComponentHealth.Health > 0f)
-				{
-					float distance = Vector3.Distance(position, player.ComponentBody.Position);
-					float score = this.m_range * 2f - distance;
-
-					// Bonus si es el mismo jugador que antes
-					if (player == m_greenNightTargetPlayer)
-					{
-						score *= 1.5f;
-					}
-
-					// Bonus extra durante Noche Verde
-					if (SubsystemGreenNightSky.IsGreenNight() && this.ForceAttackDuringGreenNight)
-					{
-						score *= 2f;
-					}
-
-					if (score > bestScore)
-					{
-						bestScore = score;
-						bestPlayerTarget = player;
-					}
-				}
-			}
-
-			return bestPlayerTarget;
-		}
-
-		public virtual float ScoreTarget(ComponentCreature componentCreature)
-		{
-			float score = 0f;
-
-			if (componentCreature == null || componentCreature == this.m_componentCreature)
-				return 0f;
-
-			// Verificar si el objetivo es de la misma manada (si aplica)
-			if (!this.AttacksSameHerd && this.m_componentZombieHerdBehavior != null)
-			{
-				if (this.m_componentZombieHerdBehavior.IsSameZombieHerd(componentCreature))
-				{
-					return 0f; // No puntuar miembros de la misma manada
-				}
-			}
-
-			bool isPlayer = componentCreature.Entity.FindComponent<ComponentPlayer>() != null;
-			bool isNotWaterCreature = this.m_componentCreature.Category != CreatureCategory.WaterPredator &&
-									  this.m_componentCreature.Category != CreatureCategory.WaterOther;
-			bool isCurrentTarget = componentCreature == this.Target;
-			bool isInAutoChaseMask = (componentCreature.Category & this.m_autoChaseMask) > (CreatureCategory)0;
-
-			// Verificar si es Noche Verde
-			bool greenNightCondition = SubsystemGreenNightSky.IsGreenNight() && this.ForceAttackDuringGreenNight;
-
-			// Si es Noche Verde y es un jugador, dar máxima prioridad
-			if (greenNightCondition && isPlayer)
-			{
-				float distance = Vector3.Distance(this.m_componentCreature.ComponentBody.Position,
-					componentCreature.ComponentBody.Position);
-
-				if (distance < this.m_range * 2f)
-				{
-					score = (this.m_range * 2f - distance) * 3f; // Prioridad muy alta
-					return score; // Retornar inmediatamente
-				}
-			}
-
-			// Si NO es Noche Verde y es jugador, NO dar puntuación (a menos que sea el actual target)
-			if (!greenNightCondition && isPlayer && componentCreature != this.Target)
-			{
-				return 0f; // Jugadores normales no reciben puntuación fuera de Noche Verde
-			}
-
-			// Comportamiento para criaturas no-jugador
-			if (!isPlayer && isInAutoChaseMask)
-			{
-				bool shouldChaseNonPlayer = MathUtils.Remainder(0.004999999888241291 * this.m_subsystemTime.GameTime +
-					(double)((float)(this.GetHashCode() % 1000) / 1000f) +
-					(double)((float)(componentCreature.GetHashCode() % 1000) / 1000f), 1.0) <
-					(double)this.m_chaseNonPlayerProbability;
-
-				if (componentCreature.Entity.IsAddedToProject &&
-					componentCreature.ComponentHealth.Health > 0f &&
-					(isNotWaterCreature || this.IsTargetInWater(componentCreature.ComponentBody)))
-				{
-					float distance = Vector3.Distance(this.m_componentCreature.ComponentBody.Position,
-						componentCreature.ComponentBody.Position);
-
-					if (distance < this.m_range)
-					{
-						score = this.m_range - distance;
-
-						// Bonus si el objetivo es el que nos atacó
-						if (componentCreature == this.Target)
-						{
-							score *= 1.2f;
-						}
-					}
-				}
-			}
-
-			return score;
-		}
-
-		public virtual bool IsTargetInWater(ComponentBody target)
-		{
-			return target.ImmersionDepth > 0f ||
-				   (target.ParentBody != null && this.IsTargetInWater(target.ParentBody)) ||
-				   (target.StandingOnBody != null && target.StandingOnBody.Position.Y < target.Position.Y &&
-					this.IsTargetInWater(target.StandingOnBody));
-		}
-
-		public virtual bool IsTargetInAttackRange(ComponentBody target)
-		{
-			if (this.IsBodyInAttackRange(target))
-			{
-				return true;
-			}
-
-			BoundingBox boundingBox = this.m_componentCreature.ComponentBody.BoundingBox;
-			BoundingBox boundingBox2 = target.BoundingBox;
-			Vector3 v = 0.5f * (boundingBox.Min + boundingBox.Max);
-			Vector3 vector = 0.5f * (boundingBox2.Min + boundingBox2.Max) - v;
-			float num = vector.Length();
-			Vector3 v2 = vector / num;
-			float num2 = 0.5f * (boundingBox.Max.X - boundingBox.Min.X + boundingBox2.Max.X - boundingBox2.Min.X);
-			float num3 = 0.5f * (boundingBox.Max.Y - boundingBox.Min.Y + boundingBox2.Max.Y - boundingBox2.Min.Y);
-
-			if (MathF.Abs(vector.Y) < num3 * 0.99f)
-			{
-				if (num < num2 + 0.99f && Vector3.Dot(v2, this.m_componentCreature.ComponentBody.Matrix.Forward) > 0.25f)
-				{
-					return true;
-				}
-			}
-			else if (num < num3 + 0.3f && MathF.Abs(Vector3.Dot(v2, Vector3.UnitY)) > 0.8f)
-			{
-				return true;
-			}
-
-			return (target.ParentBody != null && this.IsTargetInAttackRange(target.ParentBody)) ||
-				   (this.AllowAttackingStandingOnBody && target.StandingOnBody != null &&
-					target.StandingOnBody.Position.Y < target.Position.Y && this.IsTargetInAttackRange(target.StandingOnBody));
-		}
-
-		public virtual bool IsBodyInAttackRange(ComponentBody target)
-		{
-			BoundingBox boundingBox = this.m_componentCreature.ComponentBody.BoundingBox;
-			BoundingBox boundingBox2 = target.BoundingBox;
-			Vector3 v = 0.5f * (boundingBox.Min + boundingBox.Max);
-			Vector3 vector = 0.5f * (boundingBox2.Min + boundingBox2.Max) - v;
-			float num = vector.Length();
-			Vector3 v2 = vector / num;
-			float num2 = 0.5f * (boundingBox.Max.X - boundingBox.Min.X + boundingBox2.Max.X - boundingBox2.Min.X);
-			float num3 = 0.5f * (boundingBox.Max.Y - boundingBox.Min.Y + boundingBox2.Max.Y - boundingBox2.Min.Y);
-
-			if (MathF.Abs(vector.Y) < num3 * 0.99f)
-			{
-				if (num < num2 + 0.99f && Vector3.Dot(v2, this.m_componentCreature.ComponentBody.Matrix.Forward) > 0.25f)
-				{
-					return true;
-				}
-			}
-			else if (num < num3 + 0.3f && MathF.Abs(Vector3.Dot(v2, Vector3.UnitY)) > 0.8f)
-			{
-				return true;
-			}
-
-			return false;
-		}
-
-		public virtual ComponentBody GetHitBody(ComponentBody target, out Vector3 hitPoint)
-		{
-			Vector3 vector = this.m_componentCreature.ComponentBody.BoundingBox.Center();
-			Vector3 v = target.BoundingBox.Center();
-			Ray3 ray = new Ray3(vector, Vector3.Normalize(v - vector));
-			BodyRaycastResult? bodyRaycastResult = this.m_componentMiner.Raycast<BodyRaycastResult>(ray, RaycastMode.Interaction, true, true, true, null);
-
-			if (bodyRaycastResult != null && bodyRaycastResult.Value.Distance < this.MaxAttackRange &&
-				(bodyRaycastResult.Value.ComponentBody == target ||
-				 bodyRaycastResult.Value.ComponentBody.IsChildOfBody(target) ||
-				 target.IsChildOfBody(bodyRaycastResult.Value.ComponentBody) ||
-				 (target.StandingOnBody == bodyRaycastResult.Value.ComponentBody && this.AllowAttackingStandingOnBody)))
-			{
-				hitPoint = bodyRaycastResult.Value.HitPoint();
-				return bodyRaycastResult.Value.ComponentBody;
-			}
-
-			hitPoint = default(Vector3);
-			return null;
-		}
+		// Token: 0x0400048F RID: 1167
+		private bool m_forceAttackDuringGreenNight;
 	}
 }
