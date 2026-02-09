@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Runtime.CompilerServices;
 using Engine;
 using Engine.Graphics;
@@ -398,7 +398,7 @@ namespace Game
 				CheckNearbyBandits(dt);
 			}
 
-			if (this.m_subsystemGreenNightSky != null && this.m_subsystemGreenNightSky.IsGreenNightActive())
+			if (this.m_subsystemGreenNightSky != null && this.m_subsystemGreenNightSky.IsGreenNightActive)
 			{
 				if (this.Suppressed)
 				{
@@ -633,18 +633,38 @@ namespace Game
 					}
 					else
 					{
-						RepeatArrowBlock.ArrowType value = this.m_random.Bool(0.8f) ? RepeatArrowBlock.ArrowType.ExplosiveArrow : RepeatArrowBlock.ArrowType.PoisonArrow;
-						data = CrossbowBlock.SetDraw(RepeatCrossbowBlock.SetArrowType(0, new RepeatArrowBlock.ArrowType?(value)), 15);
+						// MODIFICADO: Elegir aleatoriamente entre TODOS los tipos de flechas de repeat
+						Array repeatArrowTypes = Enum.GetValues(typeof(RepeatArrowBlock.ArrowType));
+						RepeatArrowBlock.ArrowType randomRepeatArrowType = (RepeatArrowBlock.ArrowType)repeatArrowTypes.GetValue(this.m_random.Int(0, repeatArrowTypes.Length));
+						data = CrossbowBlock.SetDraw(RepeatCrossbowBlock.SetArrowType(0, new RepeatArrowBlock.ArrowType?(randomRepeatArrowType)), 15);
 					}
 				}
 				else
 				{
-					data = CrossbowBlock.SetDraw(CrossbowBlock.SetArrowType(0, new ArrowBlock.ArrowType?(ArrowBlock.ArrowType.IronBolt)), 15);
+					// MODIFICADO: Elegir aleatoriamente entre virotes (bolts)
+					ArrowBlock.ArrowType[] crossbowBoltTypes = new ArrowBlock.ArrowType[]
+					{
+		ArrowBlock.ArrowType.IronBolt,
+		ArrowBlock.ArrowType.DiamondBolt,
+		ArrowBlock.ArrowType.ExplosiveBolt
+					};
+					ArrowBlock.ArrowType randomCrossbowBoltType = crossbowBoltTypes[this.m_random.Int(0, crossbowBoltTypes.Length)];
+					data = CrossbowBlock.SetDraw(CrossbowBlock.SetArrowType(0, new ArrowBlock.ArrowType?(randomCrossbowBoltType)), 15);
 				}
 			}
 			else
 			{
-				data = BowBlock.SetDraw(BowBlock.SetArrowType(0, new ArrowBlock.ArrowType?(ArrowBlock.ArrowType.StoneArrow)), 15);
+				// MODIFICADO: Elegir aleatoriamente entre flechas normales (no virote)
+				ArrowBlock.ArrowType[] bowArrowTypes = new ArrowBlock.ArrowType[]
+				{
+		ArrowBlock.ArrowType.WoodenArrow,
+		ArrowBlock.ArrowType.StoneArrow,
+		ArrowBlock.ArrowType.IronArrow,
+		ArrowBlock.ArrowType.DiamondArrow,
+		ArrowBlock.ArrowType.CopperArrow
+				};
+				ArrowBlock.ArrowType randomBowArrowType = bowArrowTypes[this.m_random.Int(0, bowArrowTypes.Length)];
+				data = BowBlock.SetDraw(BowBlock.SetArrowType(0, new ArrowBlock.ArrowType?(randomBowArrowType)), 15);
 			}
 			int value2 = Terrain.MakeBlockValue(num2, 0, data);
 			componentMiner.Inventory.RemoveSlotItems(slotIndex, 1);

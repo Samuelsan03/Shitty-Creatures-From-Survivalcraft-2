@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Engine;
 using GameEntitySystem;
@@ -560,12 +560,29 @@ namespace Game
 				}
 				else
 				{
+					// Reseteo completo del estado cuando el objetivo está fuera de rango
 					ResetWeaponState();
+					// Asegurarse de que el modelo deje de apuntar
+					if (m_componentModel != null)
+					{
+						m_componentModel.AimHandAngleOrder = 0f;
+						m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
+						m_componentModel.InHandItemRotationOrder = Vector3.Zero;
+						m_componentModel.LookAtOrder = null;
+					}
 				}
 			}
 			else
 			{
+				// Reseteo cuando no hay objetivo o está muerto
 				ResetWeaponState();
+				if (m_componentModel != null)
+				{
+					m_componentModel.AimHandAngleOrder = 0f;
+					m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
+					m_componentModel.InHandItemRotationOrder = Vector3.Zero;
+					m_componentModel.LookAtOrder = null;
+				}
 			}
 		}
 
@@ -2516,27 +2533,88 @@ namespace Game
 			m_shotsSinceLastReload = 0;
 			m_hasFirearmAimed = false;
 
-			if (m_currentWeaponSlot >= 0)
+			// Resetear el estado de todas las armas en la mano
+			if (m_componentInventory != null && m_componentInventory.ActiveSlotIndex >= 0)
 			{
-				if (m_weaponType == 3)
+				int slotValue = m_componentInventory.GetSlotValue(m_componentInventory.ActiveSlotIndex);
+				if (slotValue != 0)
 				{
-					try
+					Block block = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)];
+
+					// Resetear estado del arco
+					if (block is BowBlock)
 					{
-						int slotValue = m_componentInventory.GetSlotValue(m_currentWeaponSlot);
-						int data = Terrain.ExtractData(slotValue);
-						data = FlameThrowerBlock.SetSwitchState(data, false);
-						int newValue = Terrain.ReplaceData(slotValue, data);
-						m_componentInventory.RemoveSlotItems(m_currentWeaponSlot, 1);
-						m_componentInventory.AddSlotItems(m_currentWeaponSlot, newValue, 1);
+						try
+						{
+							int currentData = Terrain.ExtractData(slotValue);
+							int newData = BowBlock.SetArrowType(currentData, null);
+							newData = BowBlock.SetDraw(newData, 0);
+							int newBowValue = Terrain.ReplaceData(slotValue, newData);
+							m_componentInventory.RemoveSlotItems(m_componentInventory.ActiveSlotIndex, 1);
+							m_componentInventory.AddSlotItems(m_componentInventory.ActiveSlotIndex, newBowValue, 1);
+						}
+						catch { }
 					}
-					catch { }
-				}
-				else if (m_weaponType == 4)
-				{
-					ClearArrowFromRepeatCrossbow();
+					// Resetear estado de la ballesta
+					else if (block is CrossbowBlock)
+					{
+						try
+						{
+							int currentData = Terrain.ExtractData(slotValue);
+							int newData = CrossbowBlock.SetDraw(currentData, 0);
+							newData = CrossbowBlock.SetArrowType(newData, null);
+							int newCrossbowValue = Terrain.ReplaceData(slotValue, newData);
+							m_componentInventory.RemoveSlotItems(m_componentInventory.ActiveSlotIndex, 1);
+							m_componentInventory.AddSlotItems(m_componentInventory.ActiveSlotIndex, newCrossbowValue, 1);
+						}
+						catch { }
+					}
+					// Resetear estado del mosquete
+					else if (block is MusketBlock)
+					{
+						try
+						{
+							int currentData = Terrain.ExtractData(slotValue);
+							currentData = MusketBlock.SetHammerState(currentData, false);
+							currentData = MusketBlock.SetLoadState(currentData, MusketBlock.LoadState.Empty);
+							int newValue = Terrain.ReplaceData(slotValue, currentData);
+							m_componentInventory.RemoveSlotItems(m_componentInventory.ActiveSlotIndex, 1);
+							m_componentInventory.AddSlotItems(m_componentInventory.ActiveSlotIndex, newValue, 1);
+						}
+						catch { }
+					}
+					// Resetear estado del lanzallamas
+					else if (block is FlameThrowerBlock)
+					{
+						try
+						{
+							int currentData = Terrain.ExtractData(slotValue);
+							currentData = FlameThrowerBlock.SetSwitchState(currentData, false);
+							int newValue = Terrain.ReplaceData(slotValue, currentData);
+							m_componentInventory.RemoveSlotItems(m_componentInventory.ActiveSlotIndex, 1);
+							m_componentInventory.AddSlotItems(m_componentInventory.ActiveSlotIndex, newValue, 1);
+						}
+						catch { }
+					}
+					// Resetear estado de la ballesta repetitiva
+					else if (block is RepeatCrossbowBlock)
+					{
+						try
+						{
+							int currentData = Terrain.ExtractData(slotValue);
+							var method = typeof(RepeatCrossbowBlock).GetMethod("SetArrowType");
+							int newData = (int)method.Invoke(null, new object[] { currentData, null });
+							newData = RepeatCrossbowBlock.SetDraw(newData, 0);
+							int newValue = Terrain.ReplaceData(slotValue, newData);
+							m_componentInventory.RemoveSlotItems(m_componentInventory.ActiveSlotIndex, 1);
+							m_componentInventory.AddSlotItems(m_componentInventory.ActiveSlotIndex, newValue, 1);
+						}
+						catch { }
+					}
 				}
 			}
 
+			// Resetear animaciones del modelo
 			if (m_componentModel != null)
 			{
 				m_componentModel.AimHandAngleOrder = 0f;
