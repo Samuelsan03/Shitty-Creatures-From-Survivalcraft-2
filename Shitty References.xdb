@@ -464,8 +464,7 @@
 
         <ComponentTemplate Name="CreatureCollect" Description="Permite a la criatura recoger objetos automáticamente" Guid="b0295147-0a80-4aed-9a1b-c784faf1297b" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
             <Parameter Name="Class" Guid="11b42020-d00c-4a7a-b1b8-9b334b724c35" Value="Game.ComponentCreatureCollect" Type="string"/>
-    <Parameter Name="CollectionRadius" Description="Radio para la recolección de objetos" Guid="31f14625-23e0-4b26-8a47-73f7287e1787" Value="5" Type="float"/>
-    <Parameter Name="CanCollect" Description="Indica si la recolección está habilitada" Guid="51ed4d4b-c0f1-484c-b29e-f0ea1591c06d" Value="true" Type="bool"/>
+            <Parameter Name="CanCollect" Description="Indica si la recolección está habilitada" Guid="51ed4d4b-c0f1-484c-b29e-f0ea1591c06d" Value="true" Type="bool"/>
     <Parameter Name="CollectableItems" Description="Lista de objetos a recolectar separados por comas (vacío para todos)" Guid="24d22da4-d7ed-449b-9e5d-a1c94690a82a" Value="" Type="string"/>
 </ComponentTemplate>
 
