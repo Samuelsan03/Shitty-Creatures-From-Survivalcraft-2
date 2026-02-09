@@ -14,6 +14,11 @@ namespace Game
 		private bool m_isNearDeath;
 		private float m_attackPersistanceFactor = 1f; // Factor para hacer los ataques más persistentes
 
+		// Nuevas variables para manejar cambios de objetivo
+		private ComponentCreature m_lastAttacker;
+		private double m_lastAttackTime;
+		private float m_switchTargetCooldown = 0f;
+
 		// Método para verificar si esta manada es de bandidos
 		private bool IsBanditHerd()
 		{
@@ -60,6 +65,11 @@ namespace Game
 			// Hacer que los ataques sean persistentes por defecto
 			ImportanceLevelPersistent = 300f;
 
+			// Inicializar variables de seguimiento de atacantes
+			m_lastAttacker = null;
+			m_lastAttackTime = 0f;
+			m_switchTargetCooldown = 0f;
+
 			// Sobrescribir el evento Injured para considerar la manada y estado de salud
 			ComponentHealth componentHealth = m_componentCreature.ComponentHealth;
 			componentHealth.Injured = (Action<Injury>)Delegate.RemoveAll(componentHealth.Injured, componentHealth.Injured);
@@ -88,6 +98,13 @@ namespace Game
 					}
 				}
 
+				// Guardar referencia al último atacante
+				if (attacker != null)
+				{
+					m_lastAttacker = attacker;
+					m_lastAttackTime = m_subsystemTime.GameTime;
+				}
+
 				// Comportamiento normal para atacantes de otras manadas
 				// AUN CUANDO ESTÉ CERCA DE LA MUERTE, LOS BANDITOS SIGUEN ATACANDO
 				if (m_random.Float(0f, 1f) < m_chaseWhenAttackedProbability)
@@ -109,6 +126,8 @@ namespace Game
 					num = ChaseRangeOnAttacked.GetValueOrDefault(num);
 					num2 = ChaseTimeOnAttacked.GetValueOrDefault(num2);
 					flag = ChasePersistentOnAttacked.GetValueOrDefault(flag);
+
+					// Cambiar inmediatamente al atacante (incluso si ya tiene un objetivo)
 					Attack(attacker, num, num2, flag);
 				}
 			});
@@ -148,6 +167,13 @@ namespace Game
 						if ((AttacksPlayer && flag && m_subsystemGameInfo.WorldSettings.GameMode > GameMode.Harmless) ||
 							(AttacksNonPlayerCreature && !flag && flag2))
 						{
+							// Guardar como último atacante si es relevante
+							if (flag || flag2)
+							{
+								m_lastAttacker = componentCreature;
+								m_lastAttackTime = m_subsystemTime.GameTime;
+							}
+
 							// LOS BANDITOS SIGUEN ATACANDO AUNQUE ESTÉN CERCA DE LA MUERTE
 							float chaseTime = ChaseTimeOnTouch * m_attackPersistanceFactor;
 							Attack(componentCreature, ChaseRangeOnTouch, chaseTime, false);
@@ -188,6 +214,12 @@ namespace Game
 				m_attackPersistanceFactor = 1f;
 			}
 
+			// Reducir cooldown de cambio de objetivo
+			if (m_switchTargetCooldown > 0f)
+			{
+				m_switchTargetCooldown -= dt;
+			}
+
 			// Llamar al Update base para mantener el comportamiento de persecución
 			base.Update(dt);
 
@@ -203,6 +235,20 @@ namespace Game
 					m_importanceLevel = ImportanceLevelPersistent * m_attackPersistanceFactor;
 				}
 			}
+
+			// EVALUACIÓN CONSTANTE DE AMENAZAS: Buscar nuevos objetivos incluso si ya tenemos uno
+			if (m_target != null && m_switchTargetCooldown <= 0f)
+			{
+				ComponentCreature betterTarget = FindBetterTarget();
+				if (betterTarget != null && betterTarget != m_target)
+				{
+					// Cambiar a un objetivo mejor si encontramos uno
+					float chaseRange = m_subsystemSky.SkyLightIntensity < 0.2f ? m_nightChaseRange : m_dayChaseRange;
+					float chaseTime = m_subsystemSky.SkyLightIntensity < 0.2f ? m_nightChaseTime : m_dayChaseTime;
+					Attack(betterTarget, chaseRange, chaseTime, true);
+					m_switchTargetCooldown = 2.0f; // Cooldown para evitar cambios demasiado frecuentes
+				}
+			}
 		}
 
 		// Sobrescribir el método ScoreTarget para manejar la lógica de manada
@@ -210,8 +256,10 @@ namespace Game
 		{
 			float score = base.ScoreTarget(componentCreature);
 
+			if (score <= 0f) return 0f;
+
 			// Verificar si es de la misma manada (comparación insensible a mayúsculas/minúsculas)
-			if (m_componentBanditHerd != null && componentCreature != null && score > 0f)
+			if (m_componentBanditHerd != null && componentCreature != null)
 			{
 				ComponentBanditHerdBehavior targetHerd = componentCreature.Entity.FindComponent<ComponentBanditHerdBehavior>();
 				if (targetHerd != null && !string.IsNullOrEmpty(targetHerd.HerdName) &&
@@ -225,6 +273,33 @@ namespace Game
 			if (m_registeredLoader != null)
 			{
 				m_registeredLoader.ChaseBehaviorScoreTarget(this, componentCreature, ref score);
+			}
+
+			// PRIORIDAD 1: Si es el último que nos atacó, dar máxima prioridad
+			if (componentCreature == m_lastAttacker &&
+				(m_subsystemTime.GameTime - m_lastAttackTime) < 10.0) // Últimos 10 segundos
+			{
+				score *= 3.0f; // Triple de prioridad para quien nos ataca
+			}
+			// PRIORIDAD 2: Si está atacándonos actualmente (es el atacante más reciente)
+			else if (componentCreature == m_lastAttacker)
+			{
+				score *= 2.0f; // Doble de prioridad
+			}
+
+			// PRIORIDAD 3: Si el objetivo actual está muy lejos y hay otro más cercano
+			if (m_target != null && componentCreature != m_target)
+			{
+				float currentDistance = Vector3.Distance(m_componentCreature.ComponentBody.Position,
+														 m_target.ComponentBody.Position);
+				float newDistance = Vector3.Distance(m_componentCreature.ComponentBody.Position,
+													componentCreature.ComponentBody.Position);
+
+				// Si el nuevo objetivo está significativamente más cerca, favorecer el cambio
+				if (newDistance < currentDistance * 0.5f) // 50% más cerca
+				{
+					score *= 1.5f;
+				}
 			}
 
 			// Si estamos cerca de la muerte, aumentar ligeramente el score para mantener la agresividad
@@ -357,6 +432,48 @@ namespace Game
 			}
 			// Si estamos cerca de la muerte, ignorar la llamada para detener el ataque
 			// Esto hace que los bandidos sigan atacando hasta el final
+		}
+
+		// Nuevo método para encontrar un objetivo mejor que el actual
+		private ComponentCreature FindBetterTarget()
+		{
+			if (m_target == null) return null;
+
+			Vector3 position = m_componentCreature.ComponentBody.Position;
+			ComponentCreature bestTarget = m_target;
+			float bestScore = ScoreTarget(m_target);
+
+			float searchRange = m_range * 1.5f; // Buscar en un rango más amplio
+
+			m_componentBodies.Clear();
+			m_subsystemBodies.FindBodiesAroundPoint(new Vector2(position.X, position.Z), searchRange, m_componentBodies);
+
+			for (int i = 0; i < m_componentBodies.Count; i++)
+			{
+				ComponentCreature componentCreature = m_componentBodies.Array[i].Entity.FindComponent<ComponentCreature>();
+				if (componentCreature != null && componentCreature != m_target)
+				{
+					// Verificar si es de la misma manada
+					if (m_componentBanditHerd != null)
+					{
+						ComponentBanditHerdBehavior targetHerd = componentCreature.Entity.FindComponent<ComponentBanditHerdBehavior>();
+						if (targetHerd != null && !string.IsNullOrEmpty(targetHerd.HerdName) &&
+							string.Equals(targetHerd.HerdName, m_componentBanditHerd.HerdName, StringComparison.OrdinalIgnoreCase))
+						{
+							continue; // Saltar miembros de la misma manada
+						}
+					}
+
+					float score = ScoreTarget(componentCreature);
+					if (score > bestScore * 1.2f) // Solo cambiar si es significativamente mejor (20% mejor)
+					{
+						bestScore = score;
+						bestTarget = componentCreature;
+					}
+				}
+			}
+
+			return bestTarget != m_target ? bestTarget : null;
 		}
 	}
 }
