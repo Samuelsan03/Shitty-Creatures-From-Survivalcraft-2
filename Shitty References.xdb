@@ -289,7 +289,7 @@
     <Parameter Name="DestroyBlocks" Value="true" Type="bool" Guid="ab31c1c8-f5f4-406a-a635-cde1f4d4fbf6" Description="Si destruye bloques con la onda expansiva personalizada."/>
 </ComponentTemplate>
 
-<ComponentTemplate Name="ZombieChaseBehavior" Description="Comportamiento que hace que un zombi persiga objetivos con lógica de horda" Guid="5674ee12-d71b-4c21-a1a0-ecf6b220be53">
+<ComponentTemplate Name="ZombieChaseBehavior" Description="Comportamiento que hace que un zombi persiga objetivos con lógica de horda" Guid="5674ee12-d71b-4c21-a1a0-ecf6b220be53" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
   <Parameter Name="Class" Guid="b714af9a-06fb-4768-a71e-4e58af8e8070" Value="Game.ComponentZombieChaseBehavior" Type="string"/>
   <Parameter Name="ChaseWhenAttackedProbability" Description="Probabilidad de que el zombi persiga cuando es atacado" Guid="1099e9a7-620d-4bcf-af1f-9c252a3db40d" Value="1" Type="float"/>
   <Parameter Name="NightChaseTime" Description="Tiempo de persecución cuando el zombi comienza a perseguir durante la noche, en segundos" Guid="0df0bdac-1b94-4076-9716-10ce4d2f6928" Value="30" Type="float"/>
