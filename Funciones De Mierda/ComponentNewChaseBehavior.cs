@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 using Engine;
 using Engine.Graphics;
@@ -551,9 +551,19 @@ namespace Game
 					}
 					return true;
 				}
-				if (this.IsReady(activeBlockValue))
+				else
 				{
-					return true;
+					// Es un FlameThrowerBlock
+					if (this.IsReady(activeBlockValue))
+					{
+						return true;
+					}
+					else
+					{
+						// No está listo, recargarlo
+						this.HandleComplexAimTool(componentMiner, activeSlotIndex);
+						return true;
+					}
 				}
 			}
 			for (int i = 0; i < componentMiner.Inventory.SlotsCount; i++)
@@ -573,7 +583,15 @@ namespace Game
 		public bool IsReady(int slotValue)
 		{
 			int data = Terrain.ExtractData(slotValue);
-			return !(BlocksManager.Blocks[Terrain.ExtractContents(slotValue)] is FlameThrowerBlock) || (FlameThrowerBlock.GetLoadState(data) == FlameThrowerBlock.LoadState.Loaded && FlameThrowerBlock.GetBulletType(data) != null);
+			if (BlocksManager.Blocks[Terrain.ExtractContents(slotValue)] is FlameThrowerBlock)
+			{
+				// Verificar que esté cargado y tenga tipo de bala
+				return FlameThrowerBlock.GetLoadState(data) == FlameThrowerBlock.LoadState.Loaded &&
+					   FlameThrowerBlock.GetBulletType(data) != null;
+			}
+			return !(BlocksManager.Blocks[Terrain.ExtractContents(slotValue)] is FlameThrowerBlock) ||
+				   (FlameThrowerBlock.GetLoadState(data) == FlameThrowerBlock.LoadState.Loaded &&
+					FlameThrowerBlock.GetBulletType(data) != null);
 		}
 
 		public bool IsAimToolNeedToReady(ComponentMiner componentMiner, int slotIndex)
@@ -630,6 +648,29 @@ namespace Game
 						{
 							data = MusketBlock.SetLoadState(MusketBlock.SetBulletType(0, new BulletBlock.BulletType?(BulletBlock.BulletType.MusketBall)), MusketBlock.LoadState.Loaded);
 						}
+						else if (block is FlameThrowerBlock)
+						{
+							// Alternar entre fuego y veneno
+							if (this.m_lastFlameBulletType == FlameBulletBlock.FlameBulletType.Flame)
+								this.m_lastFlameBulletType = FlameBulletBlock.FlameBulletType.Poison;
+							else
+								this.m_lastFlameBulletType = FlameBulletBlock.FlameBulletType.Flame;
+
+							// Primero, establecer el tipo de bala y el estado de carga
+							int newData = 0;
+							newData = FlameThrowerBlock.SetBulletType(newData, this.m_lastFlameBulletType);
+							newData = FlameThrowerBlock.SetLoadState(newData, FlameThrowerBlock.LoadState.Loaded);
+							// El interruptor debe estar apagado (false) al recargar
+							newData = FlameThrowerBlock.SetSwitchState(newData, false);
+							// Crear el valor del bloque
+							int flameThrowerValue = Terrain.MakeBlockValue(num2, 0, newData);
+							// Establecer el conteo de carga a 15
+							flameThrowerValue = FlameThrowerBlock.SetLoadCount(flameThrowerValue, 15);
+
+							componentMiner.Inventory.RemoveSlotItems(slotIndex, 1);
+							componentMiner.Inventory.AddSlotItems(slotIndex, flameThrowerValue, 1);
+							return;
+						}
 					}
 					else
 					{
@@ -644,9 +685,9 @@ namespace Game
 					// MODIFICADO: Elegir aleatoriamente entre virotes (bolts)
 					ArrowBlock.ArrowType[] crossbowBoltTypes = new ArrowBlock.ArrowType[]
 					{
-		ArrowBlock.ArrowType.IronBolt,
-		ArrowBlock.ArrowType.DiamondBolt,
-		ArrowBlock.ArrowType.ExplosiveBolt
+				ArrowBlock.ArrowType.IronBolt,
+				ArrowBlock.ArrowType.DiamondBolt,
+				ArrowBlock.ArrowType.ExplosiveBolt
 					};
 					ArrowBlock.ArrowType randomCrossbowBoltType = crossbowBoltTypes[this.m_random.Int(0, crossbowBoltTypes.Length)];
 					data = CrossbowBlock.SetDraw(CrossbowBlock.SetArrowType(0, new ArrowBlock.ArrowType?(randomCrossbowBoltType)), 15);
@@ -657,18 +698,20 @@ namespace Game
 				// MODIFICADO: Elegir aleatoriamente entre flechas normales (no virote)
 				ArrowBlock.ArrowType[] bowArrowTypes = new ArrowBlock.ArrowType[]
 				{
-		ArrowBlock.ArrowType.WoodenArrow,
-		ArrowBlock.ArrowType.StoneArrow,
-		ArrowBlock.ArrowType.IronArrow,
-		ArrowBlock.ArrowType.DiamondArrow,
-		ArrowBlock.ArrowType.CopperArrow
+			ArrowBlock.ArrowType.WoodenArrow,
+			ArrowBlock.ArrowType.StoneArrow,
+			ArrowBlock.ArrowType.IronArrow,
+			ArrowBlock.ArrowType.DiamondArrow,
+			ArrowBlock.ArrowType.CopperArrow
 				};
 				ArrowBlock.ArrowType randomBowArrowType = bowArrowTypes[this.m_random.Int(0, bowArrowTypes.Length)];
 				data = BowBlock.SetDraw(BowBlock.SetArrowType(0, new ArrowBlock.ArrowType?(randomBowArrowType)), 15);
 			}
-			int value2 = Terrain.MakeBlockValue(num2, 0, data);
+
+			// Crear valor del bloque para armas que no son lanzallamas
+			int weaponValue = Terrain.MakeBlockValue(num2, 0, data);
 			componentMiner.Inventory.RemoveSlotItems(slotIndex, 1);
-			componentMiner.Inventory.AddSlotItems(slotIndex, value2, 1);
+			componentMiner.Inventory.AddSlotItems(slotIndex, weaponValue, 1);
 		}
 
 		public bool FindHitTool(ComponentMiner componentMiner)
@@ -1585,6 +1628,7 @@ namespace Game
 		public bool PlayIdleSoundWhenStartToChase = true;
 		public bool PlayAngrySoundWhenChasing = true;
 		public float TargetInRangeTimeToChase = 3f;
+		private FlameBulletBlock.FlameBulletType m_lastFlameBulletType = FlameBulletBlock.FlameBulletType.Flame;
 
 		public enum AttackMode
 		{
