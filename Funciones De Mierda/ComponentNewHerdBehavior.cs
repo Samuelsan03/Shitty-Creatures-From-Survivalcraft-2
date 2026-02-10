@@ -280,6 +280,9 @@ namespace Game
 			this.HerdName = valuesDictionary.GetValue<string>("HerdName", "");
 			this.m_herdingRange = valuesDictionary.GetValue<float>("HerdingRange", 20f);
 			this.m_autoNearbyCreaturesHelp = valuesDictionary.GetValue<bool>("AutoNearbyCreaturesHelp", true);
+			this.m_helpCallRange = valuesDictionary.GetValue<float>("HelpCallRange", 16f);
+			this.m_maxHelpChaseTime = valuesDictionary.GetValue<float>("MaxHelpChaseTime", 30f);
+			this.m_avoidAttackingSameHerd = valuesDictionary.GetValue<bool>("AvoidAttackingSameHerd", true);
 
 			// Configurar eventos
 			this.SetupEventHooks();
@@ -483,5 +486,8 @@ namespace Game
 		protected Vector2 m_look;
 		protected float m_herdingRange;
 		protected bool m_autoNearbyCreaturesHelp;
+		protected float m_helpCallRange;
+		protected float m_maxHelpChaseTime;
+		protected bool m_avoidAttackingSameHerd;
 	}
 }
