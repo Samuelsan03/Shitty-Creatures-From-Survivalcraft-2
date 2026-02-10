@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 using Engine;
 using GameEntitySystem;
 using TemplatesDatabase;
 
 namespace Game
 {
-	public class ComponentZombieHerdBehavior : ComponentHerdBehavior
+	public class ComponentZombieHerdBehavior : ComponentHerdBehavior, IUpdateable
 	{
 		// Propiedades específicas para zombis
 		public bool CallForHelpWhenAttacked { get; set; } = true;

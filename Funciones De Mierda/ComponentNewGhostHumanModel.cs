@@ -6,7 +6,7 @@ using TemplatesDatabase;
 
 namespace Game
 {
-	public class ComponentNewGhostHumanModel : ComponentNewHumanModel
+	public class ComponentNewGhostHumanModel : ComponentNewHumanModel, IUpdateable
 	{
 		// Variable para la opacidad del fantasma
 		public float m_opacity = 0.7f;

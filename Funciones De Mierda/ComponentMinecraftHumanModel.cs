@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Engine;
 using Engine.Graphics;
 using GameEntitySystem;
@@ -6,7 +6,7 @@ using TemplatesDatabase;
 
 namespace Game
 {
-	public class ComponentMinecraftHumanModel : ComponentHumanModel
+	public class ComponentMinecraftHumanModel : ComponentHumanModel, IUpdateable
 	{
 		// Factores de suavizado - valores ajustados para más fluidez
 		private float m_smoothFactor = 0.2f; // Aumentado para más suavidad

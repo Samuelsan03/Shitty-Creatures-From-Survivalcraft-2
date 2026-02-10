@@ -6,7 +6,7 @@ using TemplatesDatabase;
 
 namespace Game
 {
-	public class ComponentTankModel : ComponentHumanModel
+	public class ComponentTankModel : ComponentHumanModel, IUpdateable
 	{
 		// Factores de suavizado para movimientos de tanque
 		protected float m_smoothFactor = 0.25f;

@@ -6,7 +6,7 @@ using TemplatesDatabase;
 
 namespace Game
 {
-	public class ComponentNewHumanModel : ComponentHumanModel
+	public class ComponentNewHumanModel : ComponentHumanModel, IUpdateable
 	{
 		// Factores de suavizado mejorados - ajustados para mayor fluidez
 		protected float m_smoothFactor = 0.18f; // Incrementado de 0.15f para más suavidad
