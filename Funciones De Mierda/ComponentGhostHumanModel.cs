@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Runtime.CompilerServices;
 using GameEntitySystem;
 using TemplatesDatabase;
@@ -6,7 +6,7 @@ using TemplatesDatabase;
 namespace Game
 {
 	// Token: 0x0200002C RID: 44
-	public class ComponentGhostHumanModel : ComponentHumanModel
+	public class ComponentGhostHumanModel : ComponentHumanModel, IUpdateable
 	{
 		// Token: 0x06000147 RID: 327 RVA: 0x0000E1D8 File Offset: 0x0000C3D8
 		public override void Animate()
