@@ -1,13 +1,9 @@
 <Zombie xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://gitee.com/THPRC/survivalcraft-api/raw/SCAPI1.8/Survivalcraft/Content/Assets/Database.xsd">
 
         <EntityTemplate Name="InfectedNormal1" Guid="e6afa31e-3845-4d07-9451-e3782e6a1889" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-        <MemberComponentTemplate Name="ZombieAI" Guid="835f7e1c-2d9c-40a1-9600-8a545db49ef0">
-    <Parameter Name="Class" Value="Game.ComponentZombieAI" Type="string" Guid="93da86ec-67d9-4e4b-9567-ea42ff8c7ea8"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="f0c746d8-4439-40a9-9a94-5017ea2f0c9f"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="324b117e-0e75-4bd5-82d5-98e70df01e11"/>
-    <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="a077dbea-c113-4613-bc90-f16ec31f26ce"/>
-    <Parameter Name="AimHandAngleOrder" Value="0" Type="float" Guid="f781bf08-8279-4e9b-a800-97febca9d1fa"/>
-    <Parameter Name="DisableHandAnimations" Value="false" Type="bool" Guid="2951f2f3-8294-46d3-856d-ed3ad782501f"/>
+<MemberComponentTemplate Name="ZombieAI" Guid="11af39db-6e08-4e40-9e6b-9c2fe9545f36" InheritanceParent="9d185bf8-92ec-4ea6-ad86-b8a99b650fd2">
+    <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="221a62bb-bfc1-4f2c-9717-cbe3af74c00a"/>
+    <Parameter Name="AimHandAngleOrder" Value="0" Type="float" Guid="9fb380de-aae6-4a8a-aff1-7784dd6a5c6b"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="DeathSpawner" Guid="138a6678-67a1-4c47-9f19-3b6e4f5df27b">
     <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="e2bc4b01-db43-4742-b177-f58bdfa27bb9"/>
@@ -333,13 +329,9 @@
         </EntityTemplate>
 
         <EntityTemplate Name="InfectedNormal2" Guid="cfbb6a98-d6a1-42b8-a459-80c3e44b78c1" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-        <MemberComponentTemplate Name="ZombieAI" Guid="0159819a-681b-4db5-bf0c-80e2eb8478bb">
-    <Parameter Name="Class" Value="Game.ComponentZombieAI" Type="string" Guid="78fa7240-ddcf-4d29-99c0-07ac8869346b"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="35803976-9ece-4925-b63d-60aa4a8512b6"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="b2b26b8d-8094-4f5e-a1bc-52db407c138a"/>
-    <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="91f1d4e6-4429-43db-a348-a594df86fe82"/>
-    <Parameter Name="AimHandAngleOrder" Value="0" Type="float" Guid="fe6ff929-596b-436d-9a79-030b53eb600e"/>
-    <Parameter Name="DisableHandAnimations" Value="false" Type="bool" Guid="49c51e44-2d8d-4076-8fcd-b6c4e256971c"/>
+<MemberComponentTemplate Name="ZombieAI" Guid="aba5452f-e7f2-48d5-8f44-929577b3771e" InheritanceParent="9d185bf8-92ec-4ea6-ad86-b8a99b650fd2">
+    <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="da463ff3-9ea2-47a7-9dce-41890350c0ae"/>
+    <Parameter Name="AimHandAngleOrder" Value="0" Type="float" Guid="e5e19769-cba9-4c7a-bc45-7887f5ffd8ad"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="DeathSpawner" Guid="80840522-653e-4a79-99e5-04df5ca3af69">
     <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="addf409c-c856-4c2d-9e3f-24e4f51c7058"/>
@@ -1299,13 +1291,9 @@
         </EntityTemplate>
 
         <EntityTemplate Name="InfectedMuscle1" Guid="d11a472b-c681-43f2-a2a7-f779ceee8b5e" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-        <MemberComponentTemplate Name="ZombieAI" Guid="9e23a418-fc6b-4a63-9f68-1542b592d31b">
-    <Parameter Name="Class" Value="Game.ComponentZombieAI" Type="string" Guid="f5db4ddc-e4a3-45de-ac77-f7d17a394f92"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="509516e4-a96d-4648-ab12-d8f18785aaca"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="9412d614-0ae8-464e-972b-dfb2bfbdf462"/>
-    <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="94fcb96b-0897-4b27-80b5-f78c3bf8dce0"/>
-    <Parameter Name="AimHandAngleOrder" Value="0" Type="float" Guid="444b3d50-3a10-43eb-9b70-78d2942a40cb"/>
-    <Parameter Name="DisableHandAnimations" Value="false" Type="bool" Guid="c68f4a3a-ab18-45b7-ad1e-c037cfed5799"/>
+<MemberComponentTemplate Name="ZombieAI" Guid="49a3c2e1-9725-4dcb-aa71-7689e574d4cd" InheritanceParent="9d185bf8-92ec-4ea6-ad86-b8a99b650fd2">
+    <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="241d13af-f5fd-44be-a87b-2bd9af3f298d"/>
+    <Parameter Name="AimHandAngleOrder" Value="0" Type="float" Guid="63dc9f8b-e96a-41ae-9109-7aff6bc77950"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="DeathSpawner" Guid="82ab898c-c459-421d-84b5-387287cc0a65">
     <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="7c2e8068-f0f3-4b3d-b98c-bd3d073407f3"/>
@@ -1631,13 +1619,9 @@
         </EntityTemplate>
 
         <EntityTemplate Name="InfectedMuscle2" Guid="cf56e0f6-2c40-46fa-8f8a-4225a1a5be28" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-        <MemberComponentTemplate Name="ZombieAI" Guid="2183e244-cae5-4563-b977-6dcd90af9b22">
-    <Parameter Name="Class" Value="Game.ComponentZombieAI" Type="string" Guid="3854794b-f6a8-43c2-a2e8-b98b7e8e2334"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="001946ec-3591-4935-859e-3d094027538d"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="601632f1-c08f-493f-a6e5-81e08173904f"/>
-    <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="e6f80c56-c028-4f8d-8d5f-699f3a3928d4"/>
-    <Parameter Name="AimHandAngleOrder" Value="0" Type="float" Guid="fe5fefc0-190c-499a-b055-919c8c00a0c3"/>
-    <Parameter Name="DisableHandAnimations" Value="false" Type="bool" Guid="6478c924-a322-48e2-82df-a045bf95d1ba"/>
+<MemberComponentTemplate Name="ZombieAI" Guid="e3845daa-c175-4388-85ea-743bcb2a9561" InheritanceParent="9d185bf8-92ec-4ea6-ad86-b8a99b650fd2">
+    <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="f1da6828-9a58-47ea-a2be-b619d9b800e1"/>
+    <Parameter Name="AimHandAngleOrder" Value="0" Type="float" Guid="2727bfff-9bc3-4da2-b21f-c27e88360993"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="DeathSpawner" Guid="fd2a9264-11ce-4c4d-87df-8a3f24e2c0a8">
     <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="b706b27b-f321-4689-9a84-c3d578f8be0d"/>
@@ -5252,9 +5236,10 @@
         </ParameterSet>
     </ParameterSet>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="TankLauncherBehavior" Guid="b81d312e-d3f8-4a4a-a5dd-620f281274d5" InheritanceParent="456e3558-0e7f-42c3-bc05-35eef7540900">
+<MemberComponentTemplate Name="TankLauncherBehavior" Guid="41ad15df-a688-4659-9d87-dd5c15b97fbf" InheritanceParent="456e3558-0e7f-42c3-bc05-35eef7540900">
     <Parameter Name="MinMaxDistance" Value="5;100" Type="string"/>
     <Parameter Name="ThrowableItems" Value="BigStoneChunkBlock" Type="string"/>
+    <Parameter Name="UsesInventory" Value="true" Type="bool"/>
     <Parameter Name="ReloadTime" Value="0.5" Type="float"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="FindPlayerBehavior" Guid="3e0bfbc7-0cad-4dba-bc47-8548e071d6d4" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
@@ -6128,11 +6113,8 @@
 		<Parameter Name="SpecificBlocks" Guid="ea3ff525-bd0a-47bc-9836-57e3d724bf13" Value="" Type="string"/>
 		<Parameter Name="BreakProbability" Guid="8c3526fe-b85e-4384-85ce-3f14353133a0" Value="1.0" Type="float"/>
 	</MemberComponentTemplate>
-        <MemberComponentTemplate Name="ZombieAI2" Guid="2717075b-592c-45ee-b5e2-027d4f1083cf">
-    <Parameter Name="Class" Value="Game.ComponentZombieAI2" Type="string" Guid="ff48a428-c4a7-4de0-8435-5fe2d4e1f8ad"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="a4c04857-efd2-456c-812e-1d5d9cc8ac77"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="361dbee2-3f2a-4ce5-b62e-8ed195dd6fdb"/>
-    <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="cb906a46-afb2-43aa-a704-c9a678f76bc6"/>
+<MemberComponentTemplate Name="ZombieAI2" Guid="6c0d51e2-391a-49af-85c6-c1db89866b97" InheritanceParent="9d185bf8-92ec-4ea6-ad86-b8a99b650fd2">
+    <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="b9b7c375-40ac-4c8b-ada8-8b0df3b2f11f"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="NewRunAwayBehavior" Guid="c731ad31-f34c-40b2-bf30-f57c767bec14">
     <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="69a8ea91-3e1e-4e7c-b1a2-8cb515b2e48d"/>
