@@ -187,10 +187,8 @@
     <Parameter Name="SniperAimTime" Value="1.0" Type="float" Guid="8b2b6f61-4ca1-43c3-ac39-b18a2c9dbfff" Description="Tiempo de apuntado para rifles de francotirador (en segundos)"/>
 </ComponentTemplate>
 
-    <ComponentTemplate Name="ComponentBanditHerd" Guid="a511bc31-fbbf-47af-a2a8-4d51dad1d563" Description="Componente de manada para bandidos que permite agrupamiento y comportamiento colectivo">
+    <ComponentTemplate Name="ComponentBanditHerd" Guid="a511bc31-fbbf-47af-a2a8-4d51dad1d563" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3" Description="Componente de manada para bandidos que permite agrupamiento y comportamiento colectivo">
     <Parameter Name="Class" Value="Game.ComponentBanditHerdBehavior" Type="string" Guid="8682e727-23a6-4f51-be2c-c57d1d9ef7d5" Description="Nombre de la clase C# que implementa el comportamiento de manada para bandidos"/>
-    <Parameter Name="UpdateOrder" Value="150" Type="int" Guid="b52346d1-5df9-49d4-977f-296f1f6071a0" Description="Orden de actualización del componente durante el ciclo del juego"/>
-    <Parameter Name="LoadOrder" Value="100" Type="int" Guid="c5cab34a-2e3b-4fbb-a219-2358b08c8cc0" Description="Orden de carga del componente en la entidad"/>
     <Parameter Name="HerdName" Value="bandits" Type="string" Guid="9bcbab52-8e8f-41ee-a2c4-0aadf228d010" Description="Nombre de la manada para bandidos"/>
     <Parameter Name="HerdingRange" Value="30" Type="float" Guid="b7ebb86a-d464-4835-995a-5a0771a81a0f" Description="Rango máximo para detectar y agruparse con otros miembros de la manada"/>
     <Parameter Name="AutoNearbyCreaturesHelp" Value="true" Type="bool" Guid="912c89b2-caeb-4303-8abb-996c5b0c2b5f" Description="Si es true, llama a otros miembros de la manada cuando es atacado"/>
@@ -226,10 +224,8 @@
     <Parameter Name="KnockbackChance" Value="0.3" Type="float" Description="Probabilidad (0-1) de que se aplique el retroceso en cada golpe."/>
 </ComponentTemplate>
 
-    <ComponentTemplate Name="ComponentZombieHerdBehavior" Guid="a470caf8-d3a0-461c-8064-3a668cce4e14">
+    <ComponentTemplate Name="ComponentZombieHerdBehavior" Guid="a470caf8-d3a0-461c-8064-3a668cce4e14" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
     <Parameter Name="Class" Value="Game.ComponentZombieHerdBehavior" Type="string" Guid="95e41117-dcbe-40e8-b2c7-7440ada53a93" Description="Componente de comportamiento de manada específico para zombis, extendiendo la funcionalidad de ComponentHerdBehavior."/>
-    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="8d63a4f4-d206-4b15-ae31-2519492a7f32" Description="Si es opcional o requerido para el funcionamiento."/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="0c22f3fd-9b3e-444e-aa6d-1d59f6f89ed4" Description="Orden de carga del componente (antes de ComponentZombieChaseBehavior)."/>
     <!-- Parámetros heredados de ComponentHerdBehavior -->
     <Parameter Name="HerdName" Value="Zombie" Type="string" Guid="23c5124b-1f1c-4e24-a791-04706b0c4b8e" Description="Nombre de la manada. Los zombis con el mismo nombre trabajan juntos y NO SE ATACAN entre sí (ver lógica en SetupZombieInjuryHandler y CallZombiesForHelp)."/>
     <Parameter Name="HerdingRange" Value="40" Type="float" Guid="c10eee0f-8aaa-447b-904e-b75a5de8d882" Description="Rango máximo para detectar otros miembros de la manada (en bloques). Valor por defecto mayor para zombis según código C#."/>
@@ -517,6 +513,16 @@
     <Parameter Name="AttackMode" Value="Default" Type="string" Guid="19e978b5-b116-4ec8-a748-7fef77beac35"/>
     <Parameter Name="AttackRange" Value="2,15" Type="Vector2" Guid="7d6c994c-7bb3-40a8-a5d6-ff3b9b4e0e26"/>
     <Parameter Name="AutoChaseMask" Value="LandOther" Type="string" Guid="35393c23-8c2c-466c-ac71-2a08f86b009b"/>
+</ComponentTemplate>
+
+<ComponentTemplate Name="NewHerdBehavior" Description="Comportamiento de manada con cooperación, llamadas de ayuda y protección entre aliados" Guid="24c8a629-49be-4cb4-b829-78d5a5a14204" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+  <Parameter Name="Class" Type="string" Value="Game.ComponentNewHerdBehavior" Guid="f6593b48-8fa1-44a1-a29d-4b55b3b17829"/>
+  <Parameter Name="HerdName" Type="string" Value="KaalusGlitch" Guid="01a08d69-29a4-42c7-976a-4eec96396c02" Description="Identificador de manada. Mismo valor = aliados. 'player' coopera con nombres que contengan 'guardian'. 'guardian' coopera con 'player' y no ataca al jugador."/>
+  <Parameter Name="HerdingRange" Type="float" Value="32" Guid="5396040e-7ad3-47c6-b6b8-55d3c1cc8d8f" Description="Distancia máxima usada para buscar aliados al calcular el centro de la manada."/>
+  <Parameter Name="AutoNearbyCreaturesHelp" Type="bool" Value="True" Guid="b629709e-fe14-401c-9d95-9d493d26408a" Description="Si está activo, la criatura pide ayuda al ser atacada y responde a ataques contra aliados cercanos."/>
+  <Parameter Name="HelpCallRange" Type="float" Value="16" Guid="ea70d5f2-ee67-479c-a654-39ce7abfd8c8" Description="Radio máximo en el que otras criaturas pueden responder a una llamada de ayuda."/>
+  <Parameter Name="MaxHelpChaseTime" Type="float" Value="30" Guid="fb606508-b64c-48e5-b1b4-dbedbd8055b7" Description="Tiempo máximo que una criatura ayudará persiguiendo al objetivo."/>
+  <Parameter Name="AvoidAttackingSameHerd" Type="bool" Value="True" Guid="7dd6358a-b415-4f9b-8425-c390cda4f3c3" Description="Evita ataques contra miembros de la misma manada o aliados especiales."/>
 </ComponentTemplate>
     </Folder>
 
