@@ -46,7 +46,8 @@ namespace Game
 					this.m_lastAttackTimes[attacker] = this.m_retaliationMemoryDuration;
 					this.m_lastAttacker = attacker;
 
-					bool shouldAttackAttacker = !this.IsSameHerd(attacker) || this.m_attacksSameHerd;
+					// Always attack the one that just attacked us, regardless of herd settings
+					bool shouldAttackAttacker = true; // Modified: always retaliate
 
 					if (shouldAttackAttacker && attacker != this.m_target)
 					{
@@ -76,7 +77,8 @@ namespace Game
 						bool fleeFromSameHerd = this.m_fleeFromSameHerd;
 						if (fleeFromSameHerd)
 						{
-							this.FleeFromTarget(attacker);
+							// Fleeing disabled: zombies now always chase, even when attacked by same herd
+							// this.FleeFromTarget(attacker);   // <-- Removed to prevent fleeing
 						}
 					}
 					else
