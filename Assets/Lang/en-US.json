@@ -1,4 +1,7 @@
 {
+  "GreenNightSky": {
+    "GreenMoonBegins": "The Green Moon has begun!"
+  },
   "LargeFirstAidKit": {
     "PlayerHealed": "You have completely restored your health!",
     "NPCHealedFormat": "The health of {0} has been completely restored!"
@@ -727,7 +730,6 @@
     "NPCCured": "The NPC has been cured of poison and sickness!",
     "FluCured": "Flu has been cured!",
     "PoisonAndSicknessCured": "Nausea and sickness have been cured!",
-    "GreenMoonBegins": "The Green Moon has begun!",
     "CollarTamedMachineGunMessage": "You have tamed a Machine Gun Infected!\nIts devastating minigun is now under your command!\nUnleash a hailstorm of bullets upon your enemies!",
     "CollarTamedGhostBoomerMessage": "You have tamed a Ghost Boomer!\nIts spectral explosions will haunt your enemies!\nA ghostly explosive guardian is now yours!",
     "CollarTamedGhostChargerMessage": "You have tamed a Ghost Charger!\nIts phantom force will push enemies from beyond!\nA spectral brute is now under your command!",
