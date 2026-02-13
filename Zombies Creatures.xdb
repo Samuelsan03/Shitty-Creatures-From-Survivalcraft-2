@@ -5228,19 +5228,8 @@
             <MemberComponentTemplate Name="Spawn" Guid="dd871f81-b531-469f-90f2-38ee437df49a">
     <Parameter Name="AutoDespawn" Guid="d6496dde-107f-4934-910a-d3905054b17b" Value="False" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="Inventory" Guid="6610ba61-76c4-4f91-b660-dc11021dda0d" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
-    <ParameterSet Name="Slots">
-        <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="0" Type="int"/>
-            <Parameter Name="Count" Value="1" Type="int"/>
-        </ParameterSet>
-    </ParameterSet>
-</MemberComponentTemplate>
-<MemberComponentTemplate Name="TankLauncherBehavior" Guid="41ad15df-a688-4659-9d87-dd5c15b97fbf" InheritanceParent="456e3558-0e7f-42c3-bc05-35eef7540900">
-    <Parameter Name="MinMaxDistance" Value="5;100" Type="string"/>
-    <Parameter Name="ThrowableItems" Value="BigStoneChunkBlock" Type="string"/>
-    <Parameter Name="UsesInventory" Value="true" Type="bool"/>
-    <Parameter Name="ReloadTime" Value="0.5" Type="float"/>
+<MemberComponentTemplate Name="TankLauncherBehavior" Guid="290e2a39-0323-4f72-a553-26c699c8df91" InheritanceParent="4eddf75f-02f5-482c-9283-a8544a760f96">
+  <Parameter Name="ItemsToLaunch" Guid="fd0f85e3-8306-4daa-b1aa-c27a602e55bf" Value="BigStoneChunkBlock" Type="string"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="FindPlayerBehavior" Guid="3e0bfbc7-0cad-4dba-bc47-8548e071d6d4" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
             <MemberComponentTemplate Name="Miner" Guid="1cc8778a-95f0-49f1-8b70-a824da2b01f8" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
@@ -5411,14 +5400,8 @@
         </ParameterSet>
     </ParameterSet>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="InvShooterBehavior" Guid="f7d9b5ea-90ef-40e7-a5ac-bdcd125aa56c" InheritanceParent="456e3558-0e7f-42c3-bc05-35eef7540900">
-    <Parameter Name="SpecialThrowableItem" Value="BigStoneChunkBlock" Type="string"/>
-    <Parameter Name="DiscountFromInventory" Value="False" Type="bool"/>
-    <Parameter Name="SelectRandomThrowableItems" Value="False" Type="bool"/>
-    <Parameter Name="ThrowFromHead" Value="True" Type="bool"/>
-    <Parameter Name="MinMaxRandomChargeTime" Value="0.3;1.2" Type="string"/>
-    <Parameter Name="MinMaxRandomWaitTime" Value="0.3;0.7" Type="string"/>
-    <Parameter Name="MinMaxDistance" Value="3;100" Type="string"/>
+<MemberComponentTemplate Name="TankLauncherBehavior" Guid="5a766479-4b2c-4b3a-b733-e55e40887147" InheritanceParent="4eddf75f-02f5-482c-9283-a8544a760f96">
+  <Parameter Name="ItemsToLaunch" Guid="7f2022d5-e7e7-46d8-b802-d67fe5bc16dc" Value="BigStoneChunkBlock" Type="string"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="FindPlayerBehavior" Guid="b4bdeed8-48df-4899-8bb1-06401008cfb6" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
             <MemberComponentTemplate Name="Miner" Guid="009ab28d-12c0-40bb-9d04-47381a0f4cc6" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
@@ -5554,22 +5537,8 @@
             <MemberComponentTemplate Name="Spawn" Guid="4d1276b5-604b-45ec-a35f-0a254bbfbca2">
     <Parameter Name="AutoDespawn" Guid="10e9f44e-607d-4b1f-98f6-1430878016a4" Value="False" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="Inventory" Guid="f3595683-73cb-46a6-ba94-1e88cb1c333d" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
-    <ParameterSet Name="Slots">
-        <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="0" Type="int"/>
-            <Parameter Name="Count" Value="1" Type="int"/>
-        </ParameterSet>
-    </ParameterSet>
-</MemberComponentTemplate>
-<MemberComponentTemplate Name="InvShooterBehavior" Guid="c40b0002-f9b9-4d3c-a6a5-0b6ba4adbd4c" InheritanceParent="456e3558-0e7f-42c3-bc05-35eef7540900">
-    <Parameter Name="SpecialThrowableItem" Value="BigStoneFlameChunkBlock" Type="string"/>
-    <Parameter Name="DiscountFromInventory" Value="False" Type="bool"/>
-    <Parameter Name="SelectRandomThrowableItems" Value="False" Type="bool"/>
-    <Parameter Name="ThrowFromHead" Value="True" Type="bool"/>
-    <Parameter Name="MinMaxRandomChargeTime" Value="0.3;1.2" Type="string"/>
-    <Parameter Name="MinMaxRandomWaitTime" Value="0.3;0.7" Type="string"/>
-    <Parameter Name="MinMaxDistance" Value="10;100" Type="string"/>
+<MemberComponentTemplate Name="TankLauncherBehavior" Guid="562f9eb1-e81b-4d23-908b-a85366192a61" InheritanceParent="4eddf75f-02f5-482c-9283-a8544a760f96">
+  <Parameter Name="ItemsToLaunch" Guid="c6e7e28e-4591-4d6d-a00d-588a5ae35e2c" Value="BigStoneFlameChunkBlock" Type="string"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="FindPlayerBehavior" Guid="f5792533-7222-4ee2-8d6e-9cb41e29a500" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
             <MemberComponentTemplate Name="Miner" Guid="bd83c7c2-f2b0-4ef7-8cd1-2b58b9d1ef0c" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
@@ -5864,22 +5833,8 @@
             <MemberComponentTemplate Name="Spawn" Guid="d2de902e-ccde-4fcd-baed-16832e6e8967">
     <Parameter Name="AutoDespawn" Guid="bfcd9fc7-29e6-4049-81e0-b10f7d8335b4" Value="False" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="Inventory" Guid="7923ff68-6f4e-4570-b376-e79a9787b270" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
-    <ParameterSet Name="Slots">
-        <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="0" Type="int"/>
-            <Parameter Name="Count" Value="1" Type="int"/>
-        </ParameterSet>
-    </ParameterSet>
-</MemberComponentTemplate>
-<MemberComponentTemplate Name="InvShooterBehavior" Guid="a41aabd7-5941-47da-a792-cd7586aaa78e" InheritanceParent="456e3558-0e7f-42c3-bc05-35eef7540900">
-    <Parameter Name="SpecialThrowableItem" Value="BigStonePoisonChunkBlock" Type="string"/>
-    <Parameter Name="DiscountFromInventory" Value="False" Type="bool"/>
-    <Parameter Name="SelectRandomThrowableItems" Value="False" Type="bool"/>
-    <Parameter Name="ThrowFromHead" Value="True" Type="bool"/>
-    <Parameter Name="MinMaxRandomChargeTime" Value="0.3;1.2" Type="string"/>
-    <Parameter Name="MinMaxRandomWaitTime" Value="0.3;0.7" Type="string"/>
-    <Parameter Name="MinMaxDistance" Value="10;100" Type="string"/>
+<MemberComponentTemplate Name="TankLauncherBehavior" Guid="467990a1-8cc3-4140-82a3-a3573ca9af27" InheritanceParent="4eddf75f-02f5-482c-9283-a8544a760f96">
+  <Parameter Name="ItemsToLaunch" Guid="85d1299e-e408-41f6-86f8-856b45df9241" Value="BigStonePoisonChunkBlock" Type="string"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="FindPlayerBehavior" Guid="f4f564a1-911f-4d58-96d8-062eb3b562ce" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
             <MemberComponentTemplate Name="Miner" Guid="900bd86b-33c2-4284-87c5-460f00d90058" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
@@ -6043,22 +5998,8 @@
             <MemberComponentTemplate Name="Spawn" Guid="8f217dde-0a8c-47df-9a58-05d3efc90090">
     <Parameter Name="AutoDespawn" Guid="20c1b04a-5e50-4b98-b646-9f45d1758fc8" Value="False" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="Inventory" Guid="dc6d8411-b9fb-4a3b-aacf-9dc8b8092e40" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
-    <ParameterSet Name="Slots">
-        <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="0" Type="int"/>
-            <Parameter Name="Count" Value="1" Type="int"/>
-        </ParameterSet>
-    </ParameterSet>
-</MemberComponentTemplate>
-<MemberComponentTemplate Name="InvShooterBehavior" Guid="238c00da-2000-4553-ad9c-b20f21d3a66d" InheritanceParent="456e3558-0e7f-42c3-bc05-35eef7540900">
-    <Parameter Name="SpecialThrowableItem" Value="BigStonePoisonChunkBlock" Type="string"/> <!-- Lanza rocas de veneno -->
-    <Parameter Name="DiscountFromInventory" Value="False" Type="bool"/>
-    <Parameter Name="SelectRandomThrowableItems" Value="False" Type="bool"/>
-    <Parameter Name="ThrowFromHead" Value="True" Type="bool"/>
-    <Parameter Name="MinMaxRandomChargeTime" Value="0.3;1.2" Type="string"/>
-    <Parameter Name="MinMaxRandomWaitTime" Value="0.3;0.7" Type="string"/>
-    <Parameter Name="MinMaxDistance" Value="10;100" Type="string"/>
+<MemberComponentTemplate Name="TankLauncherBehavior" Guid="fe2bb1e1-a918-4ac5-b676-e567a7f09815" InheritanceParent="4eddf75f-02f5-482c-9283-a8544a760f96">
+  <Parameter Name="ItemsToLaunch" Guid="7f86dcdc-0671-499d-8f85-d5b67d127bc4" Value="BigStonePoisonChunkBlock" Type="string"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="FindPlayerBehavior" Guid="b22105c3-a48c-4dd2-a84e-b8222dff2737" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
             <MemberComponentTemplate Name="Miner" Guid="34f79053-af71-45b5-b400-58f49e71c1f4" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
@@ -8999,22 +8940,8 @@
             <MemberComponentTemplate Name="Spawn" Guid="089cbb3a-5943-4643-8b3b-dc135b06b876">
     <Parameter Name="AutoDespawn" Guid="b1e33174-ea84-4bd7-ac3d-6a02fd1aa274" Value="False" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="Inventory" Guid="896520bc-0fc3-4c0d-bf79-c9fbb272a029" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
-    <ParameterSet Name="Slots">
-        <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="0" Type="int"/>
-            <Parameter Name="Count" Value="1" Type="int"/>
-        </ParameterSet>
-    </ParameterSet>
-</MemberComponentTemplate>
-<MemberComponentTemplate Name="InvShooterBehavior" Guid="851adcdc-2ad5-450b-9764-03491a3ce2d9" InheritanceParent="456e3558-0e7f-42c3-bc05-35eef7540900">
-    <Parameter Name="SpecialThrowableItem" Value="BigStoneFlameChunkStone" Type="string"/> <!-- Roca gigante de fuego -->
-    <Parameter Name="DiscountFromInventory" Value="False" Type="bool"/>
-    <Parameter Name="SelectRandomThrowableItems" Value="False" Type="bool"/>
-    <Parameter Name="ThrowFromHead" Value="True" Type="bool"/>
-    <Parameter Name="MinMaxRandomChargeTime" Value="0.3;1.2" Type="string"/>
-    <Parameter Name="MinMaxRandomWaitTime" Value="0.3;0.7" Type="string"/>
-    <Parameter Name="MinMaxDistance" Value="3;100" Type="string"/>
+<MemberComponentTemplate Name="TankLauncherBehavior" Guid="6d84b457-005f-4b65-9a69-a00c33acf11d" InheritanceParent="4eddf75f-02f5-482c-9283-a8544a760f96">
+  <Parameter Name="ItemsToLaunch" Guid="a23e1afd-053a-4a77-8966-672abf163796" Value="BigStoneChunkBlock" Type="string"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="FindPlayerBehavior" Guid="58091548-9b32-4158-8367-86f859a09afc" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
             <MemberComponentTemplate Name="Miner" Guid="226c8e0e-a0e4-49b4-8bb0-e711dba65350" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
@@ -9332,14 +9259,8 @@
         </ParameterSet>
     </ParameterSet>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="InvShooterBehavior" Guid="23ca6cde-f4d3-4d1b-9841-e34c72c0c185" InheritanceParent="456e3558-0e7f-42c3-bc05-35eef7540900">
-    <Parameter Name="SpecialThrowableItem" Value="BigStonePoisonChunkBlock" Type="string"/> <!-- Roca gigante de veneno -->
-    <Parameter Name="DiscountFromInventory" Value="False" Type="bool"/>
-    <Parameter Name="SelectRandomThrowableItems" Value="False" Type="bool"/>
-    <Parameter Name="ThrowFromHead" Value="True" Type="bool"/>
-    <Parameter Name="MinMaxRandomChargeTime" Value="0.3;1.2" Type="string"/>
-    <Parameter Name="MinMaxRandomWaitTime" Value="0.3;0.7" Type="string"/>
-    <Parameter Name="MinMaxDistance" Value="3;100" Type="string"/>
+<MemberComponentTemplate Name="TankLauncherBehavior" Guid="eecf28f1-bf83-4ba7-a331-46639f96ec39" InheritanceParent="4eddf75f-02f5-482c-9283-a8544a760f96">
+  <Parameter Name="ItemsToLaunch" Guid="d23d7c98-10aa-4bf6-9c30-96a466fe6e85" Value="BigStonePoisonChunkBlock" Type="string"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="FindPlayerBehavior" Guid="d09e7a40-27b9-46f2-8780-5d36e0055c70" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
             <MemberComponentTemplate Name="Miner" Guid="832d4436-b6c4-41bd-8885-90cd6cbc08dc" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
@@ -9504,22 +9425,8 @@
             <MemberComponentTemplate Name="Spawn" Guid="f4397bbc-fe84-4f44-9cc8-27924e480338">
     <Parameter Name="AutoDespawn" Guid="86883d17-b727-4153-9ba3-071abe5956b2" Value="False" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="Inventory" Guid="bd783137-12f3-42d0-9eaa-8d2d65a50620" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
-    <ParameterSet Name="Slots">
-        <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="0" Type="int"/>
-            <Parameter Name="Count" Value="1" Type="int"/>
-        </ParameterSet>
-    </ParameterSet>
-</MemberComponentTemplate>
-<MemberComponentTemplate Name="InvShooterBehavior" Guid="9fd4d002-566b-4e1c-b401-caa4331f45b9" InheritanceParent="456e3558-0e7f-42c3-bc05-35eef7540900">
-    <Parameter Name="SpecialThrowableItem" Value="BigStonePoisonChunkBlock" Type="string"/> <!-- Roca gigante de veneno -->
-    <Parameter Name="DiscountFromInventory" Value="False" Type="bool"/>
-    <Parameter Name="SelectRandomThrowableItems" Value="False" Type="bool"/>
-    <Parameter Name="ThrowFromHead" Value="True" Type="bool"/>
-    <Parameter Name="MinMaxRandomChargeTime" Value="0.3;1.2" Type="string"/>
-    <Parameter Name="MinMaxRandomWaitTime" Value="0.3;0.7" Type="string"/>
-    <Parameter Name="MinMaxDistance" Value="3;100" Type="string"/>
+<MemberComponentTemplate Name="TankLauncherBehavior" Guid="d43cc2d2-fc44-4a75-95e9-7dc2244d1694" InheritanceParent="4eddf75f-02f5-482c-9283-a8544a760f96">
+  <Parameter Name="ItemsToLaunch" Guid="c9c48525-ded4-4291-900c-25d0975e9cb7" Value="BigStonePoisonChunkBlock" Type="string"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="FindPlayerBehavior" Guid="3eb09ce8-4f8d-48db-9e45-f530f6502072" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
             <MemberComponentTemplate Name="Miner" Guid="3d3e8aea-cc04-4f82-aeea-bb5a937ebd08" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
