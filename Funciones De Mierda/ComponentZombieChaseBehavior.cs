@@ -46,8 +46,8 @@ namespace Game
 					this.m_lastAttackTimes[attacker] = this.m_retaliationMemoryDuration;
 					this.m_lastAttacker = attacker;
 
-					// Always attack the one that just attacked us, regardless of herd settings
-					bool shouldAttackAttacker = true; // Modified: always retaliate
+					// SOLO atacar al agresor si no es del mismo rebaño o si ataca a miembros del mismo rebaño está permitido
+					bool shouldAttackAttacker = !this.IsSameHerd(attacker) || this.m_attacksSameHerd;
 
 					if (shouldAttackAttacker && attacker != this.m_target)
 					{
@@ -77,8 +77,7 @@ namespace Game
 						bool fleeFromSameHerd = this.m_fleeFromSameHerd;
 						if (fleeFromSameHerd)
 						{
-							// Fleeing disabled: zombies now always chase, even when attacked by same herd
-							// this.FleeFromTarget(attacker);   // <-- Removed to prevent fleeing
+							this.FleeFromTarget(attacker);
 						}
 					}
 					else
@@ -136,8 +135,10 @@ namespace Game
 		// Token: 0x0600044D RID: 1101 RVA: 0x0003C9DC File Offset: 0x0003ABDC
 		public override void Attack(ComponentCreature target, float maxRange, float maxChaseTime, bool isPersistent)
 		{
+			// Determinar si es una retaliación contra el último atacante
 			bool isRetaliating = this.m_lastAttacker != null && target == this.m_lastAttacker;
 
+			// Si el objetivo es del mismo rebaño y no estamos en modo retaliación, no atacar
 			bool isSameHerdTarget = !isRetaliating && !this.m_attacksSameHerd && this.IsSameHerd(target);
 
 			if (isSameHerdTarget)
@@ -155,6 +156,7 @@ namespace Game
 			}
 			else
 			{
+				// Siempre dar prioridad a las retaliaciones
 				if (isRetaliating && this.m_retaliationCooldown <= 0f)
 				{
 					this.Suppressed = false;
@@ -162,9 +164,10 @@ namespace Game
 					this.ImportanceLevelPersistent = 300f;
 				}
 
+				// Lógica de noche verde
 				bool isGreenNightForced = this.m_forceAttackDuringGreenNight && this.m_subsystemGreenNightSky != null && this.m_subsystemGreenNightSky.IsGreenNightActive;
 
-				if (!isRetaliating && isGreenNightForced && target.Entity.FindComponent<ComponentPlayer>() == null)
+				if (isRetaliating && isGreenNightForced && target.Entity.FindComponent<ComponentPlayer>() == null)
 				{
 					Vector3 position = this.m_componentCreature.ComponentBody.Position;
 					ComponentPlayer componentPlayer = null;
@@ -197,6 +200,7 @@ namespace Game
 
 				base.Attack(target, maxRange, maxChaseTime, isPersistent);
 
+				// Notificar al rebaño solo si no es una retaliación
 				bool flag11 = !isRetaliating && this.m_componentZombieHerdBehavior != null;
 				if (flag11)
 				{
@@ -239,6 +243,7 @@ namespace Game
 		// Token: 0x0600044F RID: 1103 RVA: 0x0003CCE0 File Offset: 0x0003AEE0
 		public override ComponentCreature FindTarget()
 		{
+			// PRIORIDAD 1: Retaliación - siempre enfocarse en el último atacante si está vivo y en rango
 			bool hasRecentAttacker = this.m_lastAttacker != null && this.m_lastAttackTimes.ContainsKey(this.m_lastAttacker);
 			if (hasRecentAttacker)
 			{
@@ -253,6 +258,7 @@ namespace Game
 				}
 			}
 
+			// PRIORIDAD 2: Noche verde - buscar jugadores
 			bool flag3 = this.m_forceAttackDuringGreenNight && this.m_subsystemGreenNightSky != null && this.m_subsystemGreenNightSky.IsGreenNightActive;
 			ComponentCreature result;
 			if (flag3)
@@ -325,6 +331,7 @@ namespace Game
 			}
 			else
 			{
+				// PRIORIDAD 3: Búsqueda normal excluyendo miembros del mismo rebaño
 				bool flag12 = !this.m_attacksSameHerd;
 				if (flag12)
 				{
@@ -370,6 +377,7 @@ namespace Game
 		// Token: 0x06000450 RID: 1104 RVA: 0x0003D0C4 File Offset: 0x0003B2C4
 		public override float ScoreTarget(ComponentCreature componentCreature)
 		{
+			// Excluir miembros del mismo rebaño si no está permitido atacarlos
 			bool flag = !this.m_attacksSameHerd && this.IsSameHerd(componentCreature);
 			float result;
 			if (flag)
@@ -378,10 +386,11 @@ namespace Game
 			}
 			else
 			{
+				// Bonus masivo para el último atacante (retaliación)
 				bool flag2 = componentCreature == this.m_lastAttacker && this.m_lastAttackTimes.ContainsKey(componentCreature) && this.m_lastAttackTimes[componentCreature] > 0f;
 				if (flag2)
 				{
-					result = base.ScoreTarget(componentCreature) * 5f;
+					result = base.ScoreTarget(componentCreature) * 5f; // Aumentado de 3x a 5x para dar prioridad absoluta
 				}
 				else
 				{
@@ -505,6 +514,7 @@ namespace Game
 				}
 			}
 
+			// Verificar si debemos cambiar al último atacante
 			bool shouldSwitchToAttacker = this.m_lastAttacker != null &&
 										 this.m_retaliationCooldown <= 0f &&
 										 this.m_target != this.m_lastAttacker &&
