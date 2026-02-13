@@ -8,7 +8,7 @@ using TemplatesDatabase;
 namespace Game
 {
 	// Token: 0x02000046 RID: 70
-	public class ComponentZombieChaseBehavior : ComponentChaseBehavior
+	public class ComponentZombieChaseBehavior : ComponentChaseBehavior, IUpdateable
 	{
 		// Token: 0x06000449 RID: 1097 RVA: 0x0003C850 File Offset: 0x0003AA50
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
@@ -45,38 +45,54 @@ namespace Game
 				{
 					this.m_lastAttackTimes[attacker] = this.m_retaliationMemoryDuration;
 					this.m_lastAttacker = attacker;
-					bool flag2 = attacker != this.m_target && !this.IsSameHerd(attacker);
-					if (flag2)
+
+					// SOLO atacar al agresor si no es del mismo rebaño o si ataca a miembros del mismo rebaño está permitido
+					bool shouldAttackAttacker = !this.IsSameHerd(attacker) || this.m_attacksSameHerd;
+
+					if (shouldAttackAttacker && attacker != this.m_target)
 					{
 						this.StopAttack();
 						this.Attack(attacker, 30f, 60f, true);
 						this.m_retaliationCooldown = 2f;
-						return;
 					}
-				}
-				bool flag3 = attacker != null && !this.m_attacksSameHerd && this.IsSameHerd(attacker);
-				if (flag3)
-				{
-					bool flag4 = this.m_componentZombieHerdBehavior != null && this.m_componentZombieHerdBehavior.CallForHelpWhenAttacked;
+
+					bool flag3 = !this.IsSameHerd(attacker) && this.m_componentZombieHerdBehavior != null && this.m_componentZombieHerdBehavior.CallForHelpWhenAttacked;
+					if (flag3)
+					{
+						this.m_componentZombieHerdBehavior.CallZombiesForHelp(attacker);
+					}
+					bool flag4 = attacker != null && !this.m_attacksSameHerd && this.IsSameHerd(attacker);
 					if (flag4)
 					{
-						ComponentCreature componentCreature = this.FindExternalAttacker(injury);
-						bool flag5 = componentCreature != null;
+						bool flag5 = this.m_componentZombieHerdBehavior != null && this.m_componentZombieHerdBehavior.CallForHelpWhenAttacked;
 						if (flag5)
 						{
-							this.m_componentZombieHerdBehavior.CallZombiesForHelp(componentCreature);
+							ComponentCreature componentCreature = this.FindExternalAttacker(injury);
+							bool flag6 = componentCreature != null;
+							if (flag6)
+							{
+								this.m_componentZombieHerdBehavior.CallZombiesForHelp(componentCreature);
+							}
+						}
+						bool fleeFromSameHerd = this.m_fleeFromSameHerd;
+						if (fleeFromSameHerd)
+						{
+							this.FleeFromTarget(attacker);
 						}
 					}
-					bool fleeFromSameHerd = this.m_fleeFromSameHerd;
-					if (fleeFromSameHerd)
+					else
 					{
-						this.FleeFromTarget(attacker);
+						bool flag7 = originalHandler != null;
+						if (flag7)
+						{
+							originalHandler(injury);
+						}
 					}
 				}
 				else
 				{
-					bool flag6 = originalHandler != null;
-					if (flag6)
+					bool flag8 = originalHandler != null;
+					if (flag8)
 					{
 						originalHandler(injury);
 					}
@@ -119,9 +135,13 @@ namespace Game
 		// Token: 0x0600044D RID: 1101 RVA: 0x0003C9DC File Offset: 0x0003ABDC
 		public override void Attack(ComponentCreature target, float maxRange, float maxChaseTime, bool isPersistent)
 		{
-			bool flag = this.m_lastAttacker != null && target == this.m_lastAttacker;
-			bool flag2 = !flag && !this.m_attacksSameHerd && this.IsSameHerd(target);
-			if (flag2)
+			// Determinar si es una retaliación contra el último atacante
+			bool isRetaliating = this.m_lastAttacker != null && target == this.m_lastAttacker;
+
+			// Si el objetivo es del mismo rebaño y no estamos en modo retaliación, no atacar
+			bool isSameHerdTarget = !isRetaliating && !this.m_attacksSameHerd && this.IsSameHerd(target);
+
+			if (isSameHerdTarget)
 			{
 				bool flag3 = this.m_componentZombieHerdBehavior != null;
 				if (flag3)
@@ -136,46 +156,52 @@ namespace Game
 			}
 			else
 			{
-				bool flag5 = flag && this.m_retaliationCooldown <= 0f;
-				if (flag5)
+				// Siempre dar prioridad a las retaliaciones
+				if (isRetaliating && this.m_retaliationCooldown <= 0f)
 				{
 					this.Suppressed = false;
 					this.ImportanceLevelNonPersistent = 300f;
 					this.ImportanceLevelPersistent = 300f;
-					bool flag6 = this.m_forceAttackDuringGreenNight && this.m_subsystemGreenNightSky != null && this.m_subsystemGreenNightSky.IsGreenNightActive && target.Entity.FindComponent<ComponentPlayer>() == null;
-					if (flag6)
+				}
+
+				// Lógica de noche verde
+				bool isGreenNightForced = this.m_forceAttackDuringGreenNight && this.m_subsystemGreenNightSky != null && this.m_subsystemGreenNightSky.IsGreenNightActive;
+
+				if (isRetaliating && isGreenNightForced && target.Entity.FindComponent<ComponentPlayer>() == null)
+				{
+					Vector3 position = this.m_componentCreature.ComponentBody.Position;
+					ComponentPlayer componentPlayer = null;
+					float num = float.MaxValue;
+					SubsystemPlayers subsystemPlayers = base.Project.FindSubsystem<SubsystemPlayers>(true);
+					bool flag7 = subsystemPlayers != null;
+					if (flag7)
 					{
-						Vector3 position = this.m_componentCreature.ComponentBody.Position;
-						ComponentPlayer componentPlayer = null;
-						float num = float.MaxValue;
-						SubsystemPlayers subsystemPlayers = base.Project.FindSubsystem<SubsystemPlayers>(true);
-						bool flag7 = subsystemPlayers != null;
-						if (flag7)
+						foreach (ComponentPlayer componentPlayer2 in subsystemPlayers.ComponentPlayers)
 						{
-							foreach (ComponentPlayer componentPlayer2 in subsystemPlayers.ComponentPlayers)
+							bool flag8 = componentPlayer2 != null && componentPlayer2.ComponentHealth.Health > 0f;
+							if (flag8)
 							{
-								bool flag8 = componentPlayer2 != null && componentPlayer2.ComponentHealth.Health > 0f;
-								if (flag8)
+								float num2 = Vector3.Distance(position, componentPlayer2.ComponentBody.Position);
+								bool flag9 = num2 <= maxRange && num2 < num;
+								if (flag9)
 								{
-									float num2 = Vector3.Distance(position, componentPlayer2.ComponentBody.Position);
-									bool flag9 = num2 <= maxRange && num2 < num;
-									if (flag9)
-									{
-										num = num2;
-										componentPlayer = componentPlayer2;
-									}
+									num = num2;
+									componentPlayer = componentPlayer2;
 								}
 							}
 						}
-						bool flag10 = componentPlayer != null && num < maxRange * 0.5f;
-						if (flag10)
-						{
-							target = componentPlayer;
-						}
+					}
+					bool flag10 = componentPlayer != null && num < maxRange * 0.5f;
+					if (flag10)
+					{
+						target = componentPlayer;
 					}
 				}
+
 				base.Attack(target, maxRange, maxChaseTime, isPersistent);
-				bool flag11 = !flag && this.m_componentZombieHerdBehavior != null;
+
+				// Notificar al rebaño solo si no es una retaliación
+				bool flag11 = !isRetaliating && this.m_componentZombieHerdBehavior != null;
 				if (flag11)
 				{
 					this.m_componentZombieHerdBehavior.CoordinateGroupAttack(target);
@@ -217,15 +243,22 @@ namespace Game
 		// Token: 0x0600044F RID: 1103 RVA: 0x0003CCE0 File Offset: 0x0003AEE0
 		public override ComponentCreature FindTarget()
 		{
-			bool flag = this.m_retaliationCooldown > 0f && this.m_lastAttacker != null && this.m_lastAttackTimes.ContainsKey(this.m_lastAttacker);
-			if (flag)
+			// PRIORIDAD 1: Retaliación - siempre enfocarse en el último atacante si está vivo y en rango
+			bool hasRecentAttacker = this.m_lastAttacker != null && this.m_lastAttackTimes.ContainsKey(this.m_lastAttacker);
+			if (hasRecentAttacker)
 			{
-				bool flag2 = this.m_lastAttacker.ComponentHealth.Health > 0f && !this.IsSameHerd(this.m_lastAttacker) && Vector3.Distance(this.m_componentCreature.ComponentBody.Position, this.m_lastAttacker.ComponentBody.Position) <= this.m_range * 2f;
-				if (flag2)
+				bool isAttackerAlive = this.m_lastAttacker.ComponentHealth.Health > 0f;
+				bool isAttackerValid = !this.IsSameHerd(this.m_lastAttacker) || this.m_attacksSameHerd;
+				float distanceToAttacker = Vector3.Distance(this.m_componentCreature.ComponentBody.Position, this.m_lastAttacker.ComponentBody.Position);
+				bool isAttackerInRange = distanceToAttacker <= this.m_range * 2f;
+
+				if (isAttackerAlive && isAttackerValid && isAttackerInRange)
 				{
 					return this.m_lastAttacker;
 				}
 			}
+
+			// PRIORIDAD 2: Noche verde - buscar jugadores
 			bool flag3 = this.m_forceAttackDuringGreenNight && this.m_subsystemGreenNightSky != null && this.m_subsystemGreenNightSky.IsGreenNightActive;
 			ComponentCreature result;
 			if (flag3)
@@ -298,6 +331,7 @@ namespace Game
 			}
 			else
 			{
+				// PRIORIDAD 3: Búsqueda normal excluyendo miembros del mismo rebaño
 				bool flag12 = !this.m_attacksSameHerd;
 				if (flag12)
 				{
@@ -343,6 +377,7 @@ namespace Game
 		// Token: 0x06000450 RID: 1104 RVA: 0x0003D0C4 File Offset: 0x0003B2C4
 		public override float ScoreTarget(ComponentCreature componentCreature)
 		{
+			// Excluir miembros del mismo rebaño si no está permitido atacarlos
 			bool flag = !this.m_attacksSameHerd && this.IsSameHerd(componentCreature);
 			float result;
 			if (flag)
@@ -351,10 +386,11 @@ namespace Game
 			}
 			else
 			{
+				// Bonus masivo para el último atacante (retaliación)
 				bool flag2 = componentCreature == this.m_lastAttacker && this.m_lastAttackTimes.ContainsKey(componentCreature) && this.m_lastAttackTimes[componentCreature] > 0f;
 				if (flag2)
 				{
-					result = base.ScoreTarget(componentCreature) * 3f;
+					result = base.ScoreTarget(componentCreature) * 5f; // Aumentado de 3x a 5x para dar prioridad absoluta
 				}
 				else
 				{
@@ -477,11 +513,20 @@ namespace Game
 					this.AttacksPlayer = this.m_attacksAllCategories;
 				}
 			}
-			bool flag7 = this.m_lastAttacker != null && this.m_retaliationCooldown <= 0f && this.m_target != this.m_lastAttacker && !this.IsSameHerd(this.m_lastAttacker);
-			if (flag7)
+
+			// Verificar si debemos cambiar al último atacante
+			bool shouldSwitchToAttacker = this.m_lastAttacker != null &&
+										 this.m_retaliationCooldown <= 0f &&
+										 this.m_target != this.m_lastAttacker &&
+										 (!this.IsSameHerd(this.m_lastAttacker) || this.m_attacksSameHerd);
+
+			if (shouldSwitchToAttacker)
 			{
-				bool flag8 = this.m_lastAttacker.ComponentHealth.Health > 0f && Vector3.Distance(this.m_componentCreature.ComponentBody.Position, this.m_lastAttacker.ComponentBody.Position) <= this.m_range * 1.5f;
-				if (flag8)
+				bool isAttackerAlive = this.m_lastAttacker.ComponentHealth.Health > 0f;
+				float distanceToAttacker = Vector3.Distance(this.m_componentCreature.ComponentBody.Position, this.m_lastAttacker.ComponentBody.Position);
+				bool isAttackerInRange = distanceToAttacker <= this.m_range * 1.5f;
+
+				if (isAttackerAlive && isAttackerInRange)
 				{
 					this.StopAttack();
 					this.Attack(this.m_lastAttacker, 30f, 60f, true);
