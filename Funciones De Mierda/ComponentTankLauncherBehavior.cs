@@ -24,7 +24,6 @@ namespace Game
 		public ComponentCreature m_componentCreature;
 		public ComponentTankModel m_componentTankModel;
 		public ComponentZombieChaseBehavior m_componentZombieChaseBehavior;
-		public ComponentChaseBehavior m_componentChaseBehavior;
 		public ComponentNewChaseBehavior m_componentNewChaseBehavior;
 		public ComponentNewChaseBehavior2 m_componentNewChaseBehavior2;
 		public SubsystemProjectiles m_subsystemProjectiles;
@@ -51,10 +50,11 @@ namespace Game
 			m_componentCreature = base.Entity.FindComponent<ComponentCreature>(true);
 			m_componentTankModel = base.Entity.FindComponent<ComponentTankModel>(true);
 
-			m_componentZombieChaseBehavior = base.Entity.FindComponent<ComponentZombieChaseBehavior>(true);
-			m_componentChaseBehavior = base.Entity.FindComponent<ComponentChaseBehavior>(true);
+			// TODOS los comportamientos de chase son OPCIONALES (false)
+			m_componentZombieChaseBehavior = base.Entity.FindComponent<ComponentZombieChaseBehavior>(false);
 			m_componentNewChaseBehavior = base.Entity.FindComponent<ComponentNewChaseBehavior>(false);
 			m_componentNewChaseBehavior2 = base.Entity.FindComponent<ComponentNewChaseBehavior2>(false);
+			// EXCLUIMOS ComponentChaseBehavior original
 
 			m_itemsToLaunch = valuesDictionary.GetValue<string>("ItemsToLaunch", "");
 
@@ -115,7 +115,6 @@ namespace Game
 					float num = MathUtils.Lerp(0f, 40f, MathUtils.Pow((float)m_ChargeTime / 2f, 0.5f));
 
 					// ¡¡¡FÓRMULA CRÍTICA!!! Exactamente como el código chino que funciona
-					// v3 * num + new Vector3(1f, m_random.Float(5f, 20f) * m_distance / num, 0f)
 					Vector3 velocity = v3 * num + new Vector3(0f, m_random.Float(5f, 20f) * m_distance / Math.Max(num, 0.1f), 0f);
 
 					// ¡¡¡IMPORTANTE!!! Para distancias largas, ajustar la componente Y
@@ -175,22 +174,19 @@ namespace Game
 
 		private ComponentCreature GetCurrentTarget()
 		{
-			// Verificar ComponentNewChaseBehavior2 primero (prioridad)
+			// Prioridad 1: ComponentNewChaseBehavior2
 			if (m_componentNewChaseBehavior2 != null && m_componentNewChaseBehavior2.Target != null)
 				return m_componentNewChaseBehavior2.Target;
 
-			// Luego ComponentNewChaseBehavior
+			// Prioridad 2: ComponentNewChaseBehavior
 			if (m_componentNewChaseBehavior != null && m_componentNewChaseBehavior.Target != null)
 				return m_componentNewChaseBehavior.Target;
 
-			// Luego ComponentZombieChaseBehavior
+			// Prioridad 3: ComponentZombieChaseBehavior
 			if (m_componentZombieChaseBehavior != null && m_componentZombieChaseBehavior.Target != null)
 				return m_componentZombieChaseBehavior.Target;
 
-			// Finalmente ComponentChaseBehavior original
-			if (m_componentChaseBehavior != null && m_componentChaseBehavior.Target != null)
-				return m_componentChaseBehavior.Target;
-
+			// EXCLUIMOS ComponentChaseBehavior original
 			return null;
 		}
 
@@ -256,23 +252,22 @@ namespace Game
 
 		public void SetAttackTarget(ComponentCreature target)
 		{
-			// Intentar con los nuevos comportamientos primero
+			// Prioridad 1: ComponentNewChaseBehavior2
 			if (m_componentNewChaseBehavior2 != null)
 			{
 				m_componentNewChaseBehavior2.Attack(target, 30f, 60f, true);
 			}
+			// Prioridad 2: ComponentNewChaseBehavior
 			else if (m_componentNewChaseBehavior != null)
 			{
 				m_componentNewChaseBehavior.Attack(target, 30f, 60f, true);
 			}
+			// Prioridad 3: ComponentZombieChaseBehavior
 			else if (m_componentZombieChaseBehavior != null)
 			{
 				m_componentZombieChaseBehavior.Attack(target, 30f, 60f, true);
 			}
-			else if (m_componentChaseBehavior != null)
-			{
-				m_componentChaseBehavior.Attack(target, 30f, 60f, true);
-			}
+			// EXCLUIMOS ComponentChaseBehavior original
 		}
 	}
 }
