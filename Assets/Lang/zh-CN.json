@@ -1,4 +1,7 @@
 {
+  "GreenNightSky": {
+    "GreenMoonBegins": "绿月开始了！"
+  },
   "LargeFirstAidKit": {
     "PlayerHealed": "你已经完全恢复了健康！",
     "NPCHealedFormat": "{0}的健康已经完全恢复！"
