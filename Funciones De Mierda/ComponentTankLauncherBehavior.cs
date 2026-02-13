@@ -25,6 +25,8 @@ namespace Game
 		public ComponentTankModel m_componentTankModel;
 		public ComponentZombieChaseBehavior m_componentZombieChaseBehavior;
 		public ComponentChaseBehavior m_componentChaseBehavior;
+		public ComponentNewChaseBehavior m_componentNewChaseBehavior;
+		public ComponentNewChaseBehavior2 m_componentNewChaseBehavior2;
 		public SubsystemProjectiles m_subsystemProjectiles;
 		public SubsystemTime m_subsystemTime;
 		public Random m_random = new Random();
@@ -51,6 +53,8 @@ namespace Game
 
 			m_componentZombieChaseBehavior = base.Entity.FindComponent<ComponentZombieChaseBehavior>(true);
 			m_componentChaseBehavior = base.Entity.FindComponent<ComponentChaseBehavior>(true);
+			m_componentNewChaseBehavior = base.Entity.FindComponent<ComponentNewChaseBehavior>(false);
+			m_componentNewChaseBehavior2 = base.Entity.FindComponent<ComponentNewChaseBehavior2>(false);
 
 			m_itemsToLaunch = valuesDictionary.GetValue<string>("ItemsToLaunch", "");
 
@@ -171,9 +175,19 @@ namespace Game
 
 		private ComponentCreature GetCurrentTarget()
 		{
+			// Verificar ComponentNewChaseBehavior2 primero (prioridad)
+			if (m_componentNewChaseBehavior2 != null && m_componentNewChaseBehavior2.Target != null)
+				return m_componentNewChaseBehavior2.Target;
+
+			// Luego ComponentNewChaseBehavior
+			if (m_componentNewChaseBehavior != null && m_componentNewChaseBehavior.Target != null)
+				return m_componentNewChaseBehavior.Target;
+
+			// Luego ComponentZombieChaseBehavior
 			if (m_componentZombieChaseBehavior != null && m_componentZombieChaseBehavior.Target != null)
 				return m_componentZombieChaseBehavior.Target;
 
+			// Finalmente ComponentChaseBehavior original
 			if (m_componentChaseBehavior != null && m_componentChaseBehavior.Target != null)
 				return m_componentChaseBehavior.Target;
 
@@ -242,7 +256,16 @@ namespace Game
 
 		public void SetAttackTarget(ComponentCreature target)
 		{
-			if (m_componentZombieChaseBehavior != null)
+			// Intentar con los nuevos comportamientos primero
+			if (m_componentNewChaseBehavior2 != null)
+			{
+				m_componentNewChaseBehavior2.Attack(target, 30f, 60f, true);
+			}
+			else if (m_componentNewChaseBehavior != null)
+			{
+				m_componentNewChaseBehavior.Attack(target, 30f, 60f, true);
+			}
+			else if (m_componentZombieChaseBehavior != null)
 			{
 				m_componentZombieChaseBehavior.Attack(target, 30f, 60f, true);
 			}
