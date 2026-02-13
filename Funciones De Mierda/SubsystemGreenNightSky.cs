@@ -1,189 +1,142 @@
 using System;
+using System.Runtime.CompilerServices;
 using Engine;
-using Engine.Graphics;
 using GameEntitySystem;
 using TemplatesDatabase;
 
 namespace Game
 {
-	public class SubsystemGreenNightSky : Subsystem, IDrawable, IUpdateable
+	// Token: 0x020000BA RID: 186
+	public class SubsystemGreenNightSky : Subsystem, IUpdateable
 	{
-		private bool m_isGreenNightActive;
-		private int m_lastMoonPhase = -1;
-		private bool m_hasNotifiedPlayers = false;
+		// Token: 0x17000093 RID: 147
+		// (get) Token: 0x06000745 RID: 1861 RVA: 0x00052BB8 File Offset: 0x00050DB8
+		// (set) Token: 0x06000746 RID: 1862 RVA: 0x00052BC0 File Offset: 0x00050DC0
+		public virtual bool IsGreenNightActive { get; set; }
 
-		public virtual bool IsGreenNightActive
+		// Token: 0x17000094 RID: 148
+		// (get) Token: 0x06000747 RID: 1863 RVA: 0x00052BC9 File Offset: 0x00050DC9
+		public UpdateOrder UpdateOrder
 		{
-			get { return m_isGreenNightActive; }
-			set
+			get
 			{
-				if (m_isGreenNightActive != value)
-				{
-					m_isGreenNightActive = value;
-					m_hasNotifiedPlayers = false; // Reset notification flag
-				}
+				return UpdateOrder.Default;
 			}
 		}
 
-		public int LastMoonPhase
-		{
-			get { return m_lastMoonPhase; }
-			set { m_lastMoonPhase = value; }
-		}
+		// Token: 0x17000095 RID: 149
+		// (get) Token: 0x06000748 RID: 1864 RVA: 0x00052BCC File Offset: 0x00050DCC
+		// (set) Token: 0x06000749 RID: 1865 RVA: 0x00052BD4 File Offset: 0x00050DD4
+		public bool HasRolledTonight { get; set; }
 
-		public UpdateOrder UpdateOrder => UpdateOrder.Default;
-		public int[] DrawOrders => new int[] { -100, 5, 105 };
+		// Token: 0x17000096 RID: 150
+		// (get) Token: 0x0600074A RID: 1866 RVA: 0x00052BDD File Offset: 0x00050DDD
+		// (set) Token: 0x0600074B RID: 1867 RVA: 0x00052BE5 File Offset: 0x00050DE5
+		public double LastCheckedDay { get; set; }
 
-		private SubsystemSky m_subsystemSky;
-		private SubsystemTimeOfDay m_subsystemTimeOfDay;
-		private SubsystemPlayers m_subsystemPlayers;
-		private Game.Random m_random = new Game.Random();
+		// Token: 0x17000097 RID: 151
+		// (get) Token: 0x0600074C RID: 1868 RVA: 0x00052BEE File Offset: 0x00050DEE
+		// (set) Token: 0x0600074D RID: 1869 RVA: 0x00052BF6 File Offset: 0x00050DF6
+		public int DaysSinceLastGreenNight { get; set; }
 
-		public override void Load(ValuesDictionary valuesDictionary)
-		{
-			base.Load(valuesDictionary);
+		// Token: 0x17000098 RID: 152
+		// (get) Token: 0x0600074E RID: 1870 RVA: 0x00052BFF File Offset: 0x00050DFF
+		// (set) Token: 0x0600074F RID: 1871 RVA: 0x00052C07 File Offset: 0x00050E07
+		public float GreenNightChance { get; set; } = 0.5f;
 
-			this.m_subsystemSky = base.Project.FindSubsystem<SubsystemSky>(true);
-			this.m_subsystemTimeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
-			this.m_subsystemPlayers = base.Project.FindSubsystem<SubsystemPlayers>(true);
+		// Token: 0x17000099 RID: 153
+		// (get) Token: 0x06000750 RID: 1872 RVA: 0x00052C10 File Offset: 0x00050E10
+		// (set) Token: 0x06000751 RID: 1873 RVA: 0x00052C17 File Offset: 0x00050E17
+		public static SubsystemGreenNightSky Instance { get; private set; }
 
-			this.m_isGreenNightActive = valuesDictionary.GetValue<bool>("IsGreenNightActive", false);
-			this.m_lastMoonPhase = valuesDictionary.GetValue<int>("LastMoonPhase", -1);
-		}
-
-		public override void Save(ValuesDictionary valuesDictionary)
-		{
-			base.Save(valuesDictionary);
-			valuesDictionary.SetValue<bool>("IsGreenNightActive", this.m_isGreenNightActive);
-			valuesDictionary.SetValue<int>("LastMoonPhase", this.m_lastMoonPhase);
-		}
-
+		// Token: 0x06000752 RID: 1874 RVA: 0x00052C1F File Offset: 0x00050E1F
 		public virtual void Update(float dt)
 		{
 			this.UpdateGreenNight();
 		}
 
-		private void UpdateGreenNight()
+		// Token: 0x06000753 RID: 1875 RVA: 0x00052C2C File Offset: 0x00050E2C
+		public virtual void UpdateGreenNight()
 		{
+			double day = this.m_subsystemTimeOfDay.Day;
 			float timeOfDay = this.m_subsystemTimeOfDay.TimeOfDay;
-
-			// Definir horas de noche (entre atardecer y amanecer)
-			bool isNightTime = false;
-			if (timeOfDay >= this.m_subsystemTimeOfDay.DuskStart && timeOfDay < 1.0f)
+			bool flag = Math.Floor(day) > Math.Floor(this.LastCheckedDay);
+			bool flag2 = flag;
+			if (flag2)
 			{
-				isNightTime = true;
+				this.LastCheckedDay = day;
+				int daysSinceLastGreenNight = this.DaysSinceLastGreenNight;
+				this.DaysSinceLastGreenNight = daysSinceLastGreenNight + 1;
 			}
-			else if (timeOfDay >= 0.0f && timeOfDay < this.m_subsystemTimeOfDay.DawnStart)
+			bool flag3 = IntervalUtils.IsBetween(timeOfDay, this.m_subsystemTimeOfDay.DuskStart, this.m_subsystemTimeOfDay.NightStart) || IntervalUtils.IsBetween(timeOfDay, this.m_subsystemTimeOfDay.NightStart, this.m_subsystemTimeOfDay.DawnStart);
+			bool flag4 = IntervalUtils.IsBetween(timeOfDay, this.m_subsystemTimeOfDay.DawnStart, this.m_subsystemTimeOfDay.DayStart) || IntervalUtils.IsBetween(timeOfDay, this.m_subsystemTimeOfDay.DayStart, this.m_subsystemTimeOfDay.DuskStart);
+			bool isGreenNightActive = this.IsGreenNightActive;
+			bool flag5 = !this.IsGreenNightActive && (this.m_subsystemSky.MoonPhase == 0 || this.m_subsystemSky.MoonPhase == 4);
+			if (flag5)
 			{
-				isNightTime = true;
-			}
-
-			int currentMoonPhase = this.m_subsystemSky.MoonPhase;
-
-			// Solo verificar cambio de fase lunar si no está activo
-			if (!this.m_isGreenNightActive && currentMoonPhase != this.m_lastMoonPhase)
-			{
-				this.m_lastMoonPhase = currentMoonPhase;
-
-				// Solo activar en luna llena (4) o nueva (0) durante la noche
-				if ((currentMoonPhase == 0 || currentMoonPhase == 4) && isNightTime)
+				bool flag6 = flag3 && !this.HasRolledTonight && this.DaysSinceLastGreenNight >= 1;
+				if (flag6)
 				{
-					// 50% de probabilidad
-					if (this.m_random.Float(0f, 1f) < 0.5f)
+					this.HasRolledTonight = true;
+					float num = Math.Min(1f, this.GreenNightChance * (float)this.DaysSinceLastGreenNight);
+					float num2 = this.m_random.Float(0f, 1f);
+					bool flag7 = num2 < num;
+					if (flag7)
 					{
-						this.m_isGreenNightActive = true;
-						m_hasNotifiedPlayers = false; // Reset flag when night starts
+						this.IsGreenNightActive = true;
+						this.DaysSinceLastGreenNight = 0;
+						SubsystemPlayers subsystemPlayers = base.Project.FindSubsystem<SubsystemPlayers>(true);
+						bool flag8 = subsystemPlayers != null;
+						if (flag8)
+						{
+							foreach (ComponentPlayer componentPlayer in subsystemPlayers.ComponentPlayers)
+							{
+								bool flag9 = ((componentPlayer != null) ? componentPlayer.ComponentGui : null) != null;
+								if (flag9)
+								{
+									componentPlayer.ComponentGui.DisplaySmallMessage(LanguageControl.Get("GreenNightSky", "GreenMoonBegins"), new Color(0, 255, 0), false, true);
+								}
+							}
+						}
 					}
 				}
 			}
-
-			// Notificar a los jugadores cuando comienza la Noche Verde
-			if (this.m_isGreenNightActive && !m_hasNotifiedPlayers)
+			bool flag10 = this.IsGreenNightActive && flag4;
+			if (flag10)
 			{
-				this.NotifyPlayers("GreenMoonBegins");
-				m_hasNotifiedPlayers = true;
+				this.IsGreenNightActive = false;
 			}
-
-			// Desactivar al amanecer
-			bool isDayTime = timeOfDay >= this.m_subsystemTimeOfDay.DawnStart &&
-							 timeOfDay < this.m_subsystemTimeOfDay.DuskStart;
-
-			if (this.m_isGreenNightActive && isDayTime)
+			bool flag11 = this.HasRolledTonight && flag4;
+			if (flag11)
 			{
-				this.m_isGreenNightActive = false;
+				this.HasRolledTonight = false;
+			}
+			bool flag12 = this.m_subsystemSky.ViewUnderWaterDepth > 0f || this.m_subsystemSky.ViewUnderMagmaDepth > 0f;
+			if (flag12)
+			{
+				this.IsGreenNightActive = false;
 			}
 		}
 
-		// Método público para que el ModLoader obtenga el color modificado
-		public Color GetModifiedSkyColor(Color originalColor, Vector3 direction, float timeOfDay, int temperature)
+		// Token: 0x06000754 RID: 1876 RVA: 0x00052EDC File Offset: 0x000510DC
+		public override void Load(ValuesDictionary valuesDictionary)
 		{
-			if (!this.m_isGreenNightActive)
-				return originalColor;
-
-			// Verificar si es de noche
-			bool isNightTime = false;
-			if (timeOfDay >= this.m_subsystemTimeOfDay.DuskStart && timeOfDay < 1.0f)
-			{
-				isNightTime = true;
-			}
-			else if (timeOfDay >= 0.0f && timeOfDay < this.m_subsystemTimeOfDay.DawnStart)
-			{
-				isNightTime = true;
-			}
-
-			if (!isNightTime)
-				return originalColor;
-
-			// Verificar fase lunar (ya debería ser 0 o 4, pero verificamos por si acaso)
-			int currentMoonPhase = this.m_subsystemSky.MoonPhase;
-			if (currentMoonPhase != 0 && currentMoonPhase != 4)
-				return originalColor;
-
-			// Color verde: 0,204,102
-			Color greenColor = new Color(0, 204, 102);
-
-			// Calcular intensidad basada en la oscuridad
-			float skyLightIntensity = this.m_subsystemSky.SkyLightIntensity;
-			float darknessFactor = 1.0f - skyLightIntensity;
-
-			// Solo aplicar cuando esté suficientemente oscuro
-			if (darknessFactor > 0.3f)
-			{
-				float intensity = MathUtils.Saturate((darknessFactor - 0.3f) * 2f);
-				return Color.Lerp(originalColor, greenColor, intensity * 0.7f);
-			}
-
-			return originalColor;
+			this.m_subsystemSky = base.Project.FindSubsystem<SubsystemSky>(true);
+			this.m_subsystemGameInfo = base.Project.FindSubsystem<SubsystemGameInfo>(true);
+			this.m_subsystemTimeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+			SubsystemGreenNightSky.Instance = this;
 		}
 
-		private void NotifyPlayers(string messageKey)
-		{
-			if (this.m_subsystemPlayers == null)
-				return;
+		// Token: 0x0400063F RID: 1599
+		public SubsystemSky m_subsystemSky;
 
-			foreach (ComponentPlayer player in this.m_subsystemPlayers.ComponentPlayers)
-			{
-				if (player != null && player.ComponentGui != null && player.PlayerData != null)
-				{
-					// Mensaje directo sin depender de LanguageControl
-					string message = "¡Ha comenzado la Luna Verde!";
+		// Token: 0x04000640 RID: 1600
+		public SubsystemGameInfo m_subsystemGameInfo;
 
-					player.ComponentGui.DisplaySmallMessage(
-						message,
-						Color.Green,
-						false,
-						true
-					);
+		// Token: 0x04000641 RID: 1601
+		public SubsystemTimeOfDay m_subsystemTimeOfDay;
 
-					// También mostrar en log para debugging
-					Log.Information($"Green Night notification sent to player: {message}");
-				}
-			}
-		}
-
-		public void Draw(Camera camera, int drawOrder)
-		{
-			// No necesitamos dibujar nada, solo modificar el color
-		}
+		// Token: 0x04000642 RID: 1602
+		private Random m_random = new Random();
 	}
 }
