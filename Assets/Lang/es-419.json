@@ -1,4 +1,7 @@
 {
+  "GreenNightSky": {
+    "GreenMoonBegins": "¡La Luna Verde ha comenzado!"
+  },
   "LargeFirstAidKit": {
     "PlayerHealed": "¡Has restaurado completamente tu salud!",
     "NPCHealedFormat": "¡La salud de {0} ha sido completamente restaurada!"
