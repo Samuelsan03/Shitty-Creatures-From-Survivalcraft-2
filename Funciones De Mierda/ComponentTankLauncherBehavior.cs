@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Engine;
 using GameEntitySystem;
 using TemplatesDatabase;
@@ -7,9 +8,10 @@ namespace Game
 {
 	public class ComponentTankLauncherBehavior : ComponentBehavior, IUpdateable
 	{
-		// Variable para el item a lanzar
+		// Variable para los items a lanzar (soporta múltiples items)
 		public string m_itemsToLaunch = "";
-		public int m_launchItemIndex = 0;
+		public List<int> m_launchItemIndices = new List<int>();
+		public int m_currentItemIndex = 0;
 
 		// Temporizador como el código chino
 		public double m_nextUpdateTime;
@@ -23,7 +25,9 @@ namespace Game
 		// Referencias a otros componentes
 		public ComponentCreature m_componentCreature;
 		public ComponentTankModel m_componentTankModel;
+		public ComponentNewGhostTankModel m_componentNewGhostTankModel;
 		public ComponentZombieChaseBehavior m_componentZombieChaseBehavior;
+		public ComponentChaseBehavior m_componentChaseBehavior;
 		public ComponentNewChaseBehavior m_componentNewChaseBehavior;
 		public ComponentNewChaseBehavior2 m_componentNewChaseBehavior2;
 		public SubsystemProjectiles m_subsystemProjectiles;
@@ -48,26 +52,86 @@ namespace Game
 			m_subsystemProjectiles = base.Project.FindSubsystem<SubsystemProjectiles>(true);
 
 			m_componentCreature = base.Entity.FindComponent<ComponentCreature>(true);
-			m_componentTankModel = base.Entity.FindComponent<ComponentTankModel>(true);
+			m_componentTankModel = base.Entity.FindComponent<ComponentTankModel>(false);
+			m_componentNewGhostTankModel = base.Entity.FindComponent<ComponentNewGhostTankModel>(false);
 
-			// TODOS los comportamientos de chase son OPCIONALES (false)
+			// TODOS los comportamientos de chase son OPCIONALES
 			m_componentZombieChaseBehavior = base.Entity.FindComponent<ComponentZombieChaseBehavior>(false);
+			m_componentChaseBehavior = base.Entity.FindComponent<ComponentChaseBehavior>(false);
 			m_componentNewChaseBehavior = base.Entity.FindComponent<ComponentNewChaseBehavior>(false);
 			m_componentNewChaseBehavior2 = base.Entity.FindComponent<ComponentNewChaseBehavior2>(false);
-			// EXCLUIMOS ComponentChaseBehavior original
 
+			// Cargar items a lanzar (soporta múltiples items separados por coma)
 			m_itemsToLaunch = valuesDictionary.GetValue<string>("ItemsToLaunch", "");
+			m_launchItemIndices.Clear();
 
 			if (!string.IsNullOrEmpty(m_itemsToLaunch))
 			{
-				if (int.TryParse(m_itemsToLaunch, out int index))
+				string[] items = m_itemsToLaunch.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+				foreach (string item in items)
 				{
-					m_launchItemIndex = index;
+					string trimmedItem = item.Trim();
+					if (string.IsNullOrEmpty(trimmedItem)) continue;
+
+					// Verificar si tiene formato "NombreBloque:Variante" (ejemplo: ArrowBlock:4)
+					if (trimmedItem.Contains(":"))
+					{
+						string[] parts = trimmedItem.Split(':');
+						string blockName = parts[0].Trim();
+						string variantStr = parts[1].Trim();
+
+						int blockIndex = BlocksManager.GetBlockIndex(blockName, false);
+						if (blockIndex >= 0)
+						{
+							// Intentar parsear la variante
+							if (int.TryParse(variantStr, out int variant))
+							{
+								// Crear valor de bloque con variante
+								int blockValue = Terrain.MakeBlockValue(blockIndex, 0, variant);
+								m_launchItemIndices.Add(blockValue);
+							}
+							else
+							{
+								// Si no se puede parsear, usar el bloque sin variante
+								m_launchItemIndices.Add(blockIndex);
+								Log.Warning("ComponentTankLauncherBehavior: Invalid variant format for '" + trimmedItem + "', using default variant");
+							}
+						}
+						else
+						{
+							Log.Warning("ComponentTankLauncherBehavior: Block '" + blockName + "' not found");
+						}
+					}
+					else
+					{
+						// Es solo el nombre del bloque sin variante
+						if (int.TryParse(trimmedItem, out int directIndex))
+						{
+							// Es un índice directo
+							m_launchItemIndices.Add(directIndex);
+						}
+						else
+						{
+							// Es un nombre de bloque
+							int blockIndex = BlocksManager.GetBlockIndex(trimmedItem, false);
+							if (blockIndex >= 0)
+							{
+								m_launchItemIndices.Add(blockIndex);
+							}
+							else
+							{
+								Log.Warning("ComponentTankLauncherBehavior: Item '" + trimmedItem + "' not found");
+							}
+						}
+					}
 				}
-				else
-				{
-					m_launchItemIndex = BlocksManager.GetBlockIndex(m_itemsToLaunch, false);
-				}
+			}
+
+			// Si no hay items válidos, usar valor por defecto
+			if (m_launchItemIndices.Count == 0)
+			{
+				m_launchItemIndices.Add(0);
+				Log.Warning("ComponentTankLauncherBehavior: No valid items found, using default");
 			}
 
 			IsActive = true;
@@ -101,36 +165,37 @@ namespace Game
 						m_launchAnimationTimer = 0f;
 					}
 
-					// ¡¡¡FÓRMULA EXACTA DEL CÓDIGO CHINO QUE SÍ FUNCIONA!!!
+					// CÁLCULO DE VELOCIDAD - COMBINACIÓN INVSHOOTER + DAYZMOD
 					Vector3 targetPos = target.ComponentBody.Position;
-					Vector3 v = targetPos - launchPosition;
+					Vector3 direction = targetPos - launchPosition;
+					m_distance = direction.Length();
 
-					// Calcular distancia
-					m_distance = v.Length();
+					// NORMALIZAR la dirección (crucial para apuntar)
+					Vector3 normalizedDirection = Vector3.Normalize(direction);
 
-					// Calcular dirección NORMALIZADA (esto es clave)
-					Vector3 v3 = Vector3.Normalize(v + m_random.Vector3((m_distance < 10f) ? 0f : 1f));
+					// CALCULAR VELOCIDAD BASE (como InvShooter)
+					float baseSpeed = 30f;
 
-					// Calcular velocidad como el código chino
-					float num = MathUtils.Lerp(0f, 40f, MathUtils.Pow((float)m_ChargeTime / 2f, 0.5f));
+					// Factor de distancia (como InvShooter)
+					float distanceFactor = MathUtils.Clamp(m_distance / 12f, 0.6f, 1.8f);
+					float speed = baseSpeed * distanceFactor;
 
-					// ¡¡¡FÓRMULA CRÍTICA!!! Exactamente como el código chino que funciona
-					Vector3 velocity = v3 * num + new Vector3(0f, m_random.Float(5f, 20f) * m_distance / Math.Max(num, 0.1f), 0f);
+					// ALTURA INICIAL (como InvShooter) - para compensar gravedad
+					float verticalBoost = MathUtils.Lerp(1f, 3f, m_distance / 25f);
 
-					// ¡¡¡IMPORTANTE!!! Para distancias largas, ajustar la componente Y
-					if (m_distance > 15f)
-					{
-						// Reducir el componente Y para distancias largas
-						float distanceFactor = MathUtils.Saturate((m_distance - 15f) / 30f);
-						velocity.Y *= MathUtils.Lerp(1f, 0.5f, distanceFactor);
-					}
+					// VELOCIDAD FINAL - dirección * velocidad + componente vertical
+					Vector3 velocity = normalizedDirection * speed + new Vector3(0f, verticalBoost, 0f);
+
+					// SELECCIONAR ITEM A LANZAR (rotación circular)
+					int itemToLaunch = m_launchItemIndices[m_currentItemIndex];
+					m_currentItemIndex = (m_currentItemIndex + 1) % m_launchItemIndices.Count;
 
 					// LANZAR EL PROYECTIL
 					m_subsystemProjectiles.FireProjectile(
-						m_launchItemIndex,
+						itemToLaunch,
 						launchPosition,
 						velocity,
-						Vector3.Zero,  // Sin rotación angular para que no gire
+						Vector3.Zero,
 						m_componentCreature
 					);
 
@@ -147,15 +212,8 @@ namespace Game
 					}
 				}
 
-				// TIEMPO DE RECARGA
-				m_ChargeTime = (double)m_random.Float(2f, 3f);
-
-				bool isClose = m_distance < 10f;
-				if (isClose)
-				{
-					m_ChargeTime *= 1.0;
-				}
-
+				// TIEMPO DE RECARGA FIJO 1.0 SEGUNDO
+				m_ChargeTime = 1.0;
 				m_nextUpdateTime = m_subsystemTime.GameTime + m_ChargeTime;
 			}
 
@@ -174,19 +232,22 @@ namespace Game
 
 		private ComponentCreature GetCurrentTarget()
 		{
-			// Prioridad 1: ComponentNewChaseBehavior2
+			// Prioridad: ComponentNewChaseBehavior2 (nuevo)
 			if (m_componentNewChaseBehavior2 != null && m_componentNewChaseBehavior2.Target != null)
 				return m_componentNewChaseBehavior2.Target;
 
-			// Prioridad 2: ComponentNewChaseBehavior
+			// Prioridad: ComponentNewChaseBehavior (nuevo)
 			if (m_componentNewChaseBehavior != null && m_componentNewChaseBehavior.Target != null)
 				return m_componentNewChaseBehavior.Target;
 
-			// Prioridad 3: ComponentZombieChaseBehavior
+			// Prioridad: ComponentZombieChaseBehavior (zombie)
 			if (m_componentZombieChaseBehavior != null && m_componentZombieChaseBehavior.Target != null)
 				return m_componentZombieChaseBehavior.Target;
 
-			// EXCLUIMOS ComponentChaseBehavior original
+			// Prioridad: ComponentChaseBehavior (original)
+			if (m_componentChaseBehavior != null && m_componentChaseBehavior.Target != null)
+				return m_componentChaseBehavior.Target;
+
 			return null;
 		}
 
@@ -220,20 +281,23 @@ namespace Game
 					+ m_componentCreature.ComponentBody.Matrix.Forward * 0.2f;
 
 				Vector3 targetPos = target.ComponentBody.Position;
-				Vector3 v = targetPos - launchPosition;
-				float distance = v.Length();
+				Vector3 direction = targetPos - launchPosition;
+				float distance = direction.Length();
 
-				// Usar fórmula simple para ForceLaunch
-				Vector3 direction = Vector3.Normalize(v);
-				float speed = 30f;
-				Vector3 velocity = direction * speed;
+				// MISMA FÓRMULA QUE UPDATE
+				Vector3 normalizedDirection = Vector3.Normalize(direction);
+				float baseSpeed = 30f;
+				float distanceFactor = MathUtils.Clamp(distance / 12f, 0.6f, 1.8f);
+				float speed = baseSpeed * distanceFactor;
+				float verticalBoost = MathUtils.Lerp(1f, 3f, distance / 25f);
+				Vector3 velocity = normalizedDirection * speed + new Vector3(0f, verticalBoost, 0f);
 
-				// Añadir componente vertical basado en distancia
-				float verticalBoost = MathUtils.Lerp(3f, 8f, MathUtils.Saturate(distance / 30f));
-				velocity.Y += verticalBoost;
+				// Seleccionar item (rotación circular)
+				int itemToLaunch = m_launchItemIndices[m_currentItemIndex];
+				m_currentItemIndex = (m_currentItemIndex + 1) % m_launchItemIndices.Count;
 
 				m_subsystemProjectiles.FireProjectile(
-					m_launchItemIndex,
+					itemToLaunch,
 					launchPosition,
 					velocity,
 					Vector3.Zero,
@@ -252,22 +316,23 @@ namespace Game
 
 		public void SetAttackTarget(ComponentCreature target)
 		{
-			// Prioridad 1: ComponentNewChaseBehavior2
+			// SIN LÍMITES DE DISTANCIA
 			if (m_componentNewChaseBehavior2 != null)
 			{
-				m_componentNewChaseBehavior2.Attack(target, 30f, 60f, true);
+				m_componentNewChaseBehavior2.Attack(target, 1000f, 1000f, true);
 			}
-			// Prioridad 2: ComponentNewChaseBehavior
 			else if (m_componentNewChaseBehavior != null)
 			{
-				m_componentNewChaseBehavior.Attack(target, 30f, 60f, true);
+				m_componentNewChaseBehavior.Attack(target, 1000f, 1000f, true);
 			}
-			// Prioridad 3: ComponentZombieChaseBehavior
 			else if (m_componentZombieChaseBehavior != null)
 			{
-				m_componentZombieChaseBehavior.Attack(target, 30f, 60f, true);
+				m_componentZombieChaseBehavior.Attack(target, 1000f, 1000f, true);
 			}
-			// EXCLUIMOS ComponentChaseBehavior original
+			else if (m_componentChaseBehavior != null)
+			{
+				m_componentChaseBehavior.Attack(target, 1000f, 1000f, true);
+			}
 		}
 	}
 }
