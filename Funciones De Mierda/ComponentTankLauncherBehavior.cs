@@ -1,392 +1,255 @@
-﻿using System;
-using System.Collections.Generic;
+using System;
 using Engine;
 using GameEntitySystem;
 using TemplatesDatabase;
 
 namespace Game
 {
-	public class ComponentTankLauncherBehavior : Component, IUpdateable
+	public class ComponentTankLauncherBehavior : ComponentBehavior, IUpdateable
 	{
-		// Propiedades configurables desde XML
-		private List<int> m_throwableItems = new List<int>();
-		private float m_minDistance = 5f;
-		private float m_maxDistance = 100f;
-		private float m_reloadTime = 0.5f;
-		private bool m_usesInventory = true;
+		// Variable para el item a lanzar
+		public string m_itemsToLaunch = "";
+		public int m_launchItemIndex = 0;
 
-		// Estado interno
-		private float m_reloadCountdown;
-		private float m_launchAnimationPhase;
-		private bool m_isLaunching;
-		private Vector3 m_targetPosition;
-		private int m_selectedItemIndex = 0;
-		private float m_attackCooldown;
-		private const float AttackInterval = 2f;
-		private Random m_random = new Random();
+		// Temporizador como el código chino
+		public double m_nextUpdateTime;
+		public double m_ChargeTime;
+		public float m_distance = 5f;
+
+		// Para animación de lanzamiento
+		public float m_launchAnimationTimer = 0f;
+		public bool m_isLaunching = false;
 
 		// Referencias a otros componentes
-		private ComponentTankModel m_tankModel;
-		private ComponentInventory m_inventory;
-		private ComponentCreature m_creature;
-		private ComponentZombieChaseBehavior m_ZombiechaseBehavior;
-		private SubsystemProjectiles m_subsystemProjectiles;
-		private SubsystemAudio m_subsystemAudio;
-		private SubsystemTime m_subsystemTime;
+		public ComponentCreature m_componentCreature;
+		public ComponentTankModel m_componentTankModel;
+		public ComponentZombieChaseBehavior m_componentZombieChaseBehavior;
+		public ComponentChaseBehavior m_componentChaseBehavior;
+		public SubsystemProjectiles m_subsystemProjectiles;
+		public SubsystemTime m_subsystemTime;
+		public Random m_random = new Random();
 
-		public UpdateOrder UpdateOrder => UpdateOrder.Default;
-
-		public bool CanLaunch => m_reloadCountdown <= 0f && !m_isLaunching;
-
-		public bool IsLaunching => m_isLaunching;
-
-		public float LaunchAnimationPhase => m_launchAnimationPhase;
-
-		private bool HasAmmo()
+		public override float ImportanceLevel
 		{
-			if (!m_usesInventory) return true; // Si no usa inventario, siempre puede lanzar
-
-			if (m_inventory == null) return true; // Si no tiene inventario, puede lanzar igual
-
-			// Si la lista de items lanzables está vacía, puede lanzar cualquier cosa
-			if (m_throwableItems.Count == 0) return true;
-
-			// Buscar cualquier item lanzable en el inventario
-			for (int i = 0; i < m_inventory.VisibleSlotsCount; i++)
-			{
-				int value = m_inventory.GetSlotValue(i);
-				if (value != 0)
-				{
-					int blockIndex = Terrain.ExtractContents(value);
-					if (m_throwableItems.Contains(blockIndex))
-					{
-						m_selectedItemIndex = i;
-						return true;
-					}
-				}
-			}
-
-			// Si no encuentra items específicos, puede lanzar con inventario vacío
-			return true;
+			get { return 0f; }
 		}
 
-		private int GetCurrentAmmoValue()
+		public UpdateOrder UpdateOrder
 		{
-			if (!m_usesInventory || m_inventory == null)
-			{
-				// Si no usa inventario o no tiene, usar el primer item de la lista o 0
-				return m_throwableItems.Count > 0 ? m_throwableItems[0] : 0;
-			}
-
-			// Intentar usar el item seleccionado
-			if (m_selectedItemIndex < m_inventory.VisibleSlotsCount)
-			{
-				int value = m_inventory.GetSlotValue(m_selectedItemIndex);
-				if (value != 0) return value;
-			}
-
-			// Buscar cualquier item en el inventario
-			for (int i = 0; i < m_inventory.VisibleSlotsCount; i++)
-			{
-				int value = m_inventory.GetSlotValue(i);
-				if (value != 0) return value;
-			}
-
-			// Inventario vacío o sin items específicos, usar 0 (puede lanzar "nada")
-			return 0;
-		}
-
-		private void ConsumeAmmo()
-		{
-			if (!m_usesInventory || m_inventory == null) return;
-
-			// Solo consumir si tiene el item específico
-			if (m_throwableItems.Count > 0)
-			{
-				int count = m_inventory.GetSlotCount(m_selectedItemIndex);
-				if (count > 0)
-				{
-					m_inventory.RemoveSlotItems(m_selectedItemIndex, 1);
-				}
-			}
-		}
-
-		private void LaunchAtTarget(Vector3 targetPosition)
-		{
-			if (!CanLaunch) return;
-
-			// Validar distancia
-			float distance = Vector3.Distance(m_creature.ComponentBody.Position, targetPosition);
-			if (distance < m_minDistance || distance > m_maxDistance)
-			{
-				return;
-			}
-
-			m_targetPosition = targetPosition;
-			m_isLaunching = true;
-			m_launchAnimationPhase = 0f;
-
-			// Activar animación en el modelo del tanque
-			if (m_tankModel != null)
-			{
-				// Levantar brazos para animación
-				m_tankModel.SetTurretRotation(MathUtils.DegToRad(30f));
-				m_tankModel.SetCannonElevation(MathUtils.DegToRad(20f));
-			}
-		}
-
-		private void ExecuteLaunch()
-		{
-			Matrix matrix = m_creature.ComponentBody.Matrix;
-			Vector3 position = m_creature.ComponentBody.Position +
-				Vector3.Transform(new Vector3(0f, 1.5f, 2f), matrix);
-
-			// Calcular dirección hacia el objetivo
-			Vector3 direction = Vector3.Normalize(m_targetPosition - position);
-
-			// Ajustar altura según distancia
-			float distance = Vector3.Distance(position, m_targetPosition);
-			float optimalAngle = 45f;
-			float force = MathUtils.Sqrt(distance * 9.8f / MathF.Sin(2 * MathUtils.DegToRad(optimalAngle)));
-			force = MathUtils.Clamp(force, distance * 0.3f, distance * 1.5f);
-
-			Vector3 velocity = direction * force;
-			velocity.Y += MathUtils.Sqrt(distance * 4.9f); // Componente vertical para trayectoria parabólica
-
-			// Usar Random del sistema o crear uno
-			Vector3 angularVelocity = new Vector3(
-				m_random.Float(-5f, 5f),
-				m_random.Float(-5f, 5f),
-				m_random.Float(-5f, 5f));
-
-			// Obtener el item a lanzar
-			int projectileValue = GetCurrentAmmoValue();
-
-			if (projectileValue != 0 || true) // SIEMPRE puede lanzar, incluso con valor 0
-			{
-				// Crear y lanzar el proyectil
-				Projectile projectile = m_subsystemProjectiles.FireProjectile(
-					projectileValue, position, velocity, angularVelocity, m_creature);
-
-				if (projectile != null)
-				{
-					projectile.Gravity = 9.8f;
-					projectile.IsIncendiary = false;
-					projectile.MinVelocityToAttack = 5f;
-					projectile.AttackPower = 10f;
-
-					// Efecto de retroceso
-					if (m_tankModel != null)
-					{
-						m_tankModel.FireMainCannon();
-					}
-
-					// Consumir munición solo si tiene
-					ConsumeAmmo();
-				}
-			}
-			else
-			{
-				// Lanzar un proyectil invisible o de efecto
-				Projectile projectile = m_subsystemProjectiles.FireProjectile(
-					0, position, velocity, angularVelocity, m_creature);
-
-				if (projectile != null)
-				{
-					projectile.Gravity = 9.8f;
-					projectile.IsIncendiary = false;
-					projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
-
-					if (m_tankModel != null)
-					{
-						m_tankModel.FireMainCannon();
-					}
-				}
-			}
-
-			// Iniciar recarga
-			m_reloadCountdown = m_reloadTime;
-			m_isLaunching = false;
-			m_attackCooldown = AttackInterval;
-
-			// Restaurar animación
-			if (m_tankModel != null)
-			{
-				m_tankModel.SetTurretRotation(0f);
-				m_tankModel.SetCannonElevation(MathUtils.DegToRad(15f));
-			}
+			get { return UpdateOrder.Default; }
 		}
 
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
 			base.Load(valuesDictionary, idToEntityMap);
 
-			// Cargar configuración desde XML
-			string throwableItemsStr = valuesDictionary.GetValue<string>("ThrowableItems", "");
-			if (!string.IsNullOrEmpty(throwableItemsStr))
-			{
-				string[] items = throwableItemsStr.Split(new char[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries);
+			m_subsystemTime = base.Project.FindSubsystem<SubsystemTime>(true);
+			m_subsystemProjectiles = base.Project.FindSubsystem<SubsystemProjectiles>(true);
 
-				foreach (string itemName in items)
+			m_componentCreature = base.Entity.FindComponent<ComponentCreature>(true);
+			m_componentTankModel = base.Entity.FindComponent<ComponentTankModel>(true);
+
+			m_componentZombieChaseBehavior = base.Entity.FindComponent<ComponentZombieChaseBehavior>(true);
+			m_componentChaseBehavior = base.Entity.FindComponent<ComponentChaseBehavior>(true);
+
+			m_itemsToLaunch = valuesDictionary.GetValue<string>("ItemsToLaunch", "");
+
+			if (!string.IsNullOrEmpty(m_itemsToLaunch))
+			{
+				if (int.TryParse(m_itemsToLaunch, out int index))
 				{
-					string trimmedName = itemName.Trim();
-					if (trimmedName == "0" || string.IsNullOrEmpty(trimmedName))
-					{
-						m_throwableItems.Add(0); // ACEPTA 0 (AirBlock)
-					}
-					else
-					{
-						int blockIndex = BlocksManager.GetBlockIndex(trimmedName, false);
-						if (blockIndex >= 0) // ACEPTA CUALQUIER ÍNDICE VÁLIDO
-						{
-							m_throwableItems.Add(blockIndex);
-						}
-						else
-						{
-							// Si no encuentra el bloque por nombre, agregar 0
-							m_throwableItems.Add(0);
-						}
-					}
+					m_launchItemIndex = index;
+				}
+				else
+				{
+					m_launchItemIndex = BlocksManager.GetBlockIndex(m_itemsToLaunch, false);
 				}
 			}
-			else
-			{
-				// Si no se especifican items, agregar 0 por defecto
-				m_throwableItems.Add(0);
-			}
 
-			string distanceRange = valuesDictionary.GetValue<string>("MinMaxDistance", "5;100");
-			string[] distances = distanceRange.Split(';');
-			if (distances.Length >= 2)
-			{
-				float.TryParse(distances[0], out m_minDistance);
-				float.TryParse(distances[1], out m_maxDistance);
-			}
-
-			m_reloadTime = valuesDictionary.GetValue<float>("ReloadTime", 0.5f);
-			m_usesInventory = valuesDictionary.GetValue<bool>("UsesInventory", true);
-
-			// Obtener referencias a otros componentes
-			m_creature = Entity.FindComponent<ComponentCreature>(true);
-			m_tankModel = Entity.FindComponent<ComponentTankModel>();
-			m_inventory = Entity.FindComponent<ComponentInventory>();
-			m_ZombiechaseBehavior = Entity.FindComponent<ComponentZombieChaseBehavior>();
-			m_subsystemProjectiles = Project.FindSubsystem<SubsystemProjectiles>(true);
-			m_subsystemAudio = Project.FindSubsystem<SubsystemAudio>(true);
-			m_subsystemTime = Project.FindSubsystem<SubsystemTime>(true);
-
-			// Inicializar estado
-			m_reloadCountdown = 0f;
-			m_launchAnimationPhase = 0f;
-			m_isLaunching = false;
-			m_attackCooldown = 0f;
-			m_random = new Random();
+			IsActive = true;
 		}
 
 		public void Update(float dt)
 		{
-			// Actualizar contador de recarga
-			if (m_reloadCountdown > 0f)
+			bool flag = m_subsystemTime.GameTime >= m_nextUpdateTime;
+			if (flag)
 			{
-				m_reloadCountdown -= dt;
-			}
+				m_distance = 10f;
 
-			// Actualizar cooldown de ataque
-			if (m_attackCooldown > 0f)
-			{
-				m_attackCooldown -= dt;
-			}
+				ComponentCreature target = GetCurrentTarget();
+				bool hasTarget = target != null && m_componentCreature.ComponentHealth.Health > 0f;
 
-			// Actualizar animación de lanzamiento
-			if (m_isLaunching)
-			{
-				m_launchAnimationPhase += dt * (1f / m_reloadTime) * 3f;
-
-				// Punto de lanzamiento a la mitad de la animación
-				if (m_launchAnimationPhase >= 0.5f && m_launchAnimationPhase - dt < 0.5f)
+				if (hasTarget)
 				{
-					ExecuteLaunch();
-				}
+					// POSICIÓN EXACTA DEL CÓDIGO CHINO
+					Vector3 launchPosition = m_componentCreature.ComponentCreatureModel.EyePosition
+						+ m_componentCreature.ComponentBody.Matrix.Right * 0.3f
+						- m_componentCreature.ComponentBody.Matrix.Up * 0.2f
+						+ m_componentCreature.ComponentBody.Matrix.Forward * 0.2f;
 
-				// Finalizar animación
-				if (m_launchAnimationPhase >= 1f)
-				{
-					m_launchAnimationPhase = 0f;
-					m_isLaunching = false;
-				}
-			}
-			else if (m_attackCooldown <= 0f && m_creature != null && m_ZombiechaseBehavior != null)
-			{
-				// Lanzar automáticamente cuando tenga un objetivo
-				ComponentCreature target = m_ZombiechaseBehavior.Target;
-				if (target != null && target.ComponentHealth.Health > 0f)
-				{
-					float distance = Vector3.Distance(m_creature.ComponentBody.Position, target.ComponentBody.Position);
-					if (distance >= m_minDistance && distance <= m_maxDistance)
+					// ANIMACIÓN DE MANOS EXACTA DEL CÓDIGO CHINO
+					var componentHumanModel = m_componentCreature.ComponentCreatureModel as ComponentHumanModel;
+					if (componentHumanModel != null)
 					{
-						LaunchAtTarget(target.ComponentBody.Position);
+						componentHumanModel.m_handAngles2 = new Vector2(4f, -5f);
+						componentHumanModel.m_handAngles1 = new Vector2(4f, 3f);
+						m_isLaunching = true;
+						m_launchAnimationTimer = 0f;
+					}
+
+					// ¡¡¡FÓRMULA EXACTA DEL CÓDIGO CHINO QUE SÍ FUNCIONA!!!
+					Vector3 targetPos = target.ComponentBody.Position;
+					Vector3 v = targetPos - launchPosition;
+
+					// Calcular distancia
+					m_distance = v.Length();
+
+					// Calcular dirección NORMALIZADA (esto es clave)
+					Vector3 v3 = Vector3.Normalize(v + m_random.Vector3((m_distance < 10f) ? 0f : 1f));
+
+					// Calcular velocidad como el código chino
+					float num = MathUtils.Lerp(0f, 40f, MathUtils.Pow((float)m_ChargeTime / 2f, 0.5f));
+
+					// ¡¡¡FÓRMULA CRÍTICA!!! Exactamente como el código chino que funciona
+					// v3 * num + new Vector3(1f, m_random.Float(5f, 20f) * m_distance / num, 0f)
+					Vector3 velocity = v3 * num + new Vector3(0f, m_random.Float(5f, 20f) * m_distance / Math.Max(num, 0.1f), 0f);
+
+					// ¡¡¡IMPORTANTE!!! Para distancias largas, ajustar la componente Y
+					if (m_distance > 15f)
+					{
+						// Reducir el componente Y para distancias largas
+						float distanceFactor = MathUtils.Saturate((m_distance - 15f) / 30f);
+						velocity.Y *= MathUtils.Lerp(1f, 0.5f, distanceFactor);
+					}
+
+					// LANZAR EL PROYECTIL
+					m_subsystemProjectiles.FireProjectile(
+						m_launchItemIndex,
+						launchPosition,
+						velocity,
+						Vector3.Zero,  // Sin rotación angular para que no gire
+						m_componentCreature
+					);
+
+					// Fin de animación
+					if (m_isLaunching)
+					{
+						m_launchAnimationTimer += dt;
+						if (m_launchAnimationTimer >= 0.5f)
+						{
+							ResetHandsAnimation();
+							m_isLaunching = false;
+							m_launchAnimationTimer = 0f;
+						}
 					}
 				}
+
+				// TIEMPO DE RECARGA
+				m_ChargeTime = (double)m_random.Float(2f, 3f);
+
+				bool isClose = m_distance < 10f;
+				if (isClose)
+				{
+					m_ChargeTime *= 1.0;
+				}
+
+				m_nextUpdateTime = m_subsystemTime.GameTime + m_ChargeTime;
 			}
-		}
 
-		// Método público para lanzamiento manual
-		public void LaunchAtPosition(Vector3 targetPosition)
-		{
-			LaunchAtTarget(targetPosition);
-		}
-
-		// Método para lanzamiento forzado
-		public void ForceLaunchAtPosition(Vector3 targetPosition)
-		{
-			m_reloadCountdown = 0f;
-			m_attackCooldown = 0f;
-			LaunchAtTarget(targetPosition);
-		}
-
-		// Métodos de configuración
-		public void AddThrowableItem(int blockIndex)
-		{
-			if (!m_throwableItems.Contains(blockIndex))
+			// Si está en animación, continuar
+			if (m_isLaunching)
 			{
-				m_throwableItems.Add(blockIndex);
+				m_launchAnimationTimer += dt;
+				if (m_launchAnimationTimer >= 0.5f)
+				{
+					ResetHandsAnimation();
+					m_isLaunching = false;
+					m_launchAnimationTimer = 0f;
+				}
 			}
 		}
 
-		public void RemoveThrowableItem(int blockIndex)
+		private ComponentCreature GetCurrentTarget()
 		{
-			m_throwableItems.Remove(blockIndex);
+			if (m_componentZombieChaseBehavior != null && m_componentZombieChaseBehavior.Target != null)
+				return m_componentZombieChaseBehavior.Target;
+
+			if (m_componentChaseBehavior != null && m_componentChaseBehavior.Target != null)
+				return m_componentChaseBehavior.Target;
+
+			return null;
 		}
 
-		public void ClearThrowableItems()
+		private void ResetHandsAnimation()
 		{
-			m_throwableItems.Clear();
+			var componentHumanModel = m_componentCreature.ComponentCreatureModel as ComponentHumanModel;
+			if (componentHumanModel != null)
+			{
+				componentHumanModel.m_handAngles2 = Vector2.Zero;
+				componentHumanModel.m_handAngles1 = Vector2.Zero;
+			}
 		}
 
-		public List<int> GetThrowableItems()
+		public void ForceLaunch()
 		{
-			return new List<int>(m_throwableItems);
+			ComponentCreature target = GetCurrentTarget();
+			if (!m_isLaunching && target != null)
+			{
+				var componentHumanModel = m_componentCreature.ComponentCreatureModel as ComponentHumanModel;
+				if (componentHumanModel != null)
+				{
+					componentHumanModel.m_handAngles2 = new Vector2(4f, -5f);
+					componentHumanModel.m_handAngles1 = new Vector2(4f, 3f);
+					m_isLaunching = true;
+					m_launchAnimationTimer = 0f;
+				}
+
+				Vector3 launchPosition = m_componentCreature.ComponentCreatureModel.EyePosition
+					+ m_componentCreature.ComponentBody.Matrix.Right * 0.3f
+					- m_componentCreature.ComponentBody.Matrix.Up * 0.2f
+					+ m_componentCreature.ComponentBody.Matrix.Forward * 0.2f;
+
+				Vector3 targetPos = target.ComponentBody.Position;
+				Vector3 v = targetPos - launchPosition;
+				float distance = v.Length();
+
+				// Usar fórmula simple para ForceLaunch
+				Vector3 direction = Vector3.Normalize(v);
+				float speed = 30f;
+				Vector3 velocity = direction * speed;
+
+				// Añadir componente vertical basado en distancia
+				float verticalBoost = MathUtils.Lerp(3f, 8f, MathUtils.Saturate(distance / 30f));
+				velocity.Y += verticalBoost;
+
+				m_subsystemProjectiles.FireProjectile(
+					m_launchItemIndex,
+					launchPosition,
+					velocity,
+					Vector3.Zero,
+					m_componentCreature
+				);
+			}
 		}
 
-		public void SetThrowableItems(List<int> items)
+		public bool CanLaunch()
 		{
-			m_throwableItems = new List<int>(items);
+			return !m_isLaunching &&
+				   m_componentCreature != null &&
+				   m_componentCreature.ComponentHealth.Health > 0f &&
+				   GetCurrentTarget() != null;
 		}
 
-		public void SetDistanceRange(float min, float max)
+		public void SetAttackTarget(ComponentCreature target)
 		{
-			m_minDistance = Math.Max(1f, min);
-			m_maxDistance = Math.Max(m_minDistance + 1f, max);
-		}
-
-		public void SetReloadTime(float reloadTime)
-		{
-			m_reloadTime = Math.Max(0.1f, reloadTime);
-		}
-
-		public void SetUsesInventory(bool usesInventory)
-		{
-			m_usesInventory = usesInventory;
+			if (m_componentZombieChaseBehavior != null)
+			{
+				m_componentZombieChaseBehavior.Attack(target, 30f, 60f, true);
+			}
+			else if (m_componentChaseBehavior != null)
+			{
+				m_componentChaseBehavior.Attack(target, 30f, 60f, true);
+			}
 		}
 	}
 }
