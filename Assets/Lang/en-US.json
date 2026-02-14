@@ -1,4 +1,19 @@
 {
+  "InGameMusic": {
+    "MusicEnabled": "Music enabled",
+    "MusicDisabled": "Music disabled",
+    "MusicToggleButton": "Music\n",
+    "MusicOn": "On",
+    "MusicOff": "Off",
+    "NowPlaying": "Now playing: ",
+    "UnknownTrack": "Unknown track",
+    "MusicTrack": "Music track",
+    "MusicFileNotFound": "Music file not found",
+    "MusicPlayError": "Error playing music"
+  },
+  "ItemsLauncher": {
+    "YouNeedAmmunition": "You need ammunition to fire the item launcher"
+  },
   "GreenNightSky": {
     "GreenMoonBegins": "The Green Moon has begun!"
   },
@@ -17,29 +32,6 @@
   "Off": "Off",
   "CoverageRadius": "Coverage radius"
   },
-  "MusicToggleButton": "Music\n",
-  "MusicOn": "ON",
-  "MusicOff": "OFF",
-  "MusicEnabled": "Music enabled",
-  "MusicDisabled": "Music disabled",
-  "NowPlaying": "You are listening to:",
-  "MusicFileNotFound": "Music file not found",
-  "MusicPlayError": "Error playing music",
-  "AutoCannonTitle": "Auto-Cannon",
-  "InventoryTitle": "Inventory",
-  "ProjectileSpeed": "Projectile Speed",
-  "ShotsPerSecond": "Shots Per Second",
-  "ProjectileSpread": "Projectile Spread",
-  "Fuel": "Fuel",
-  "Accept": "Accept",
-  "Cancel": "X",
-  "YouNeedAmmunition": "You need ammunition to fire the item launcher",
-  "UseAutoCannon": "Use Auto-Cannon",
-  "AutoCannonHelp": "Authors\nFire Dragon\nKike\n----------\nThis weapon uses the first slot of the hotbar or the first available slot with an object. To save any changes, you must press 'Accept', or 'X' to discard. The spread and velocity settings determine the direction and distance of the projectiles.\n\nTo use it, simply hold right click if you are on PC, or hold the screen if you are on a mobile device, and it will automatically fire the times per second you have configured. Useful for shooting spawn eggs and generating creatures in large quantities in a short time.\n\nYou can also have fun launching fireworks or any other object.\n\n\nShitty code stolen by Samuelsan03, so do whatever you want with this code xd",
-  "Poisoned": "Poisoned",
-  "DeathByBoomer": "Blown to pieces by a Boomer",
-  "DeathByBoomerFire": "Incinerated by a fiery Boomer explosion",
-  "HP": "HP",
   "RefrigeratorXiaomi": {
     "RefrigeratorLabel": "Refrigerator",
     "InventoryLabel": "Inventory",
@@ -705,6 +697,16 @@
     }
 },
       "ContentWidgets": {
+        "AutoCannonWidget": {
+    "Title": "Auto-Cannon",
+    "InventoryTitle": "Inventory",
+    "ProjectileSpeed": "Projectile Speed",
+    "ShotsPerSecond": "Shots Per Second",
+    "ProjectileSpread": "Projectile Spread",
+    "Fuel": "Fuel",
+    "HelpTitle": "Use Auto-Cannon",
+    "HelpText": "Authors\nFire Dragon\nKike\n----------\nThis weapon uses the first slot of the hotbar or the first available slot with an object. To save any changes, you must press 'Accept', or 'X' to discard. The spread and velocity settings determine the direction and distance of the projectiles.\n\nTo use it, simply hold right click if you are on PC, or hold the screen if you are on a mobile device, and it will automatically fire the times per second you have configured. Useful for shooting spawn eggs and generating creatures in large quantities in a short time.\n\nYou can also have fun launching fireworks or any other object.\n\n\nShitty code stolen by Samuelsan03, so do whatever you want with this code xd"
+  },
     "CreatureInventoryWidget": {
       "CreatureInventoryLabel": "Inventory of {0}",
       "InventoryLabel": "Inventory"
@@ -750,6 +752,6 @@
   },
   "Usual": {
     "ok": "OK",
-    "cancel": "Cancel"
+    "cancel": "X"
   }
 }
