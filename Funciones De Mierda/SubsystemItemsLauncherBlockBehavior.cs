@@ -6,7 +6,6 @@ using TemplatesDatabase;
 
 namespace Game
 {
-
 	public class SubsystemItemsLauncherBlockBehavior : SubsystemBlockBehavior
 	{
 		public override int[] HandledBlocks
@@ -15,7 +14,7 @@ namespace Game
 			{
 				return new int[]
 				{
-				ItemsLauncherBlock.Index
+					ItemsLauncherBlock.Index
 				};
 			}
 		}
@@ -197,12 +196,13 @@ namespace Game
 			}
 			else
 			{
-				// Mostrar mensaje cuando no hay munición - SIN SONIDO DE NOTIFICACIÓN
+				// Mostrar mensaje cuando no hay munición - USANDO LANGUAGECONTROL
 				ComponentPlayer componentPlayer = miner.ComponentPlayer;
 				if (componentPlayer != null)
 				{
-					// El último parámetro 'false' evita que se reproduzca el sonido de notificación
-					string message = LanguageControl.Get("YouNeedAmmunition", "You need ammunition to fire the item launcher");
+					// Buscar en "ItemsLauncher" -> "YouNeedAmmunition", con fallback al inglés
+					string message = LanguageControl.Get("ItemsLauncher", "YouNeedAmmunition",
+	"You need ammunition to fire the item launcher");
 					componentPlayer.ComponentGui.DisplaySmallMessage(message, Color.Orange, true, false);
 				}
 
@@ -226,35 +226,35 @@ namespace Game
 
 		private static readonly float[] m_speedValues = new float[]
 		{
-		10f,
-		35f,
-		60f
+			10f,
+			35f,
+			60f
 		};
 
 		private static readonly float[] m_rateValues = new float[]
 		{
-		1f,
-		2f,
-		3f,
-		4f,
-		5f,
-		6f,
-		7f,
-		8f,
-		9f,
-		10f,
-		11f,
-		12f,
-		13f,
-		14f,
-		15f
+			1f,
+			2f,
+			3f,
+			4f,
+			5f,
+			6f,
+			7f,
+			8f,
+			9f,
+			10f,
+			11f,
+			12f,
+			13f,
+			14f,
+			15f
 		};
 
 		private static readonly float[] m_spreadValues = new float[]
 		{
-		0.01f,
-		0.1f,
-		0.5f
+			0.01f,
+			0.1f,
+			0.5f
 		};
 
 		private Dictionary<ComponentMiner, double> m_nextFireTimes = new Dictionary<ComponentMiner, double>();
