@@ -1,35 +1,15 @@
 using System;
-using System.Globalization;
-using Engine;
+using Game;
 using GameEntitySystem;
 using TemplatesDatabase;
 
 namespace Game
 {
-	public class ComponentCreatureInventory : ComponentInventory
+	public class ComponentCreatureInventory : ComponentInventory, IUpdateable
 	{
-		// Evento para notificar cambios en el slot activo
+		public event Action InventoryChanged;
 		public event Action ActiveSlotChanged;
 
-		// Token: 0x06002400 RID: 9216 RVA: 0x0011D000 File Offset: 0x0011B200
-		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
-		{
-			base.Load(valuesDictionary, idToEntityMap);
-
-			// Cargar el slot activo específico para criatura
-			this.ActiveSlotIndex = valuesDictionary.GetValue<int>("CreatureActiveSlotIndex", 0);
-		}
-
-		// Token: 0x06002401 RID: 9217 RVA: 0x0011D024 File Offset: 0x0011B224
-		public override void Save(ValuesDictionary valuesDictionary, EntityToIdMap entityToIdMap)
-		{
-			base.Save(valuesDictionary, entityToIdMap);
-
-			// Guardar el slot activo específico para criatura
-			valuesDictionary.SetValue<int>("CreatureActiveSlotIndex", this.ActiveSlotIndex);
-		}
-
-		// Sobrescribir la propiedad ActiveSlotIndex para disparar el evento
 		private int m_activeSlotIndex;
 		public new int ActiveSlotIndex
 		{
@@ -39,10 +19,48 @@ namespace Game
 				if (m_activeSlotIndex != value)
 				{
 					m_activeSlotIndex = value;
-					base.ActiveSlotIndex = value; // Llamar a la implementación base
-					ActiveSlotChanged?.Invoke(); // Notificar el cambio
+					base.ActiveSlotIndex = value;
+					ActiveSlotChanged?.Invoke();
 				}
 			}
+		}
+
+		public UpdateOrder UpdateOrder => UpdateOrder.Default;
+
+		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
+		{
+			base.Load(valuesDictionary, idToEntityMap);
+			this.ActiveSlotIndex = valuesDictionary.GetValue<int>("CreatureActiveSlotIndex", 0);
+		}
+
+		public override void Save(ValuesDictionary valuesDictionary, EntityToIdMap entityToIdMap)
+		{
+			base.Save(valuesDictionary, entityToIdMap);
+			valuesDictionary.SetValue<int>("CreatureActiveSlotIndex", this.ActiveSlotIndex);
+		}
+
+		protected virtual void OnInventoryChanged()
+		{
+			InventoryChanged?.Invoke();
+		}
+
+		public override void AddSlotItems(int slotIndex, int value, int count)
+		{
+			base.AddSlotItems(slotIndex, value, count);
+			OnInventoryChanged();
+		}
+
+		public override int RemoveSlotItems(int slotIndex, int count)
+		{
+			int removed = base.RemoveSlotItems(slotIndex, count);
+			if (removed > 0)
+				OnInventoryChanged();
+			return removed;
+		}
+
+		public void Update(float dt)
+		{
+			// Necesario para IUpdateable, aunque no hagamos nada aquí
 		}
 	}
 }
