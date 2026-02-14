@@ -4646,8 +4646,7 @@
 </EntityTemplate>
 
 <EntityTemplate Name="Sparkster" Guid="f7e2a9c3-8d1b-4f5a-9b2c-6a3e7b1d4c0f" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="CreatureInventory" Guid="d6d1782d-dba1-4383-afd1-b5220375227f" InheritanceParent="81a44c6a-c30a-4f53-8d64-0c30aabab8f9">
-  <Parameter Name="Class" Value="Game.ComponentCreatureInventory" Type="string"/>
+<MemberComponentTemplate Name="CreatureInventory" Guid="d6d1782d-dba1-4383-afd1-b5220375227f" InheritanceParent="a347220c-b5cf-4eae-9215-4ed37426eec4">
   <Parameter Name="SlotsCount" Value="16" Type="int"/>
   <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
 </MemberComponentTemplate>
@@ -5288,8 +5287,7 @@
         </EntityTemplate>
 
         <EntityTemplate Name="PirataNormalAliado" Guid="5113ebe2-e315-4a9b-939d-ed69319f26a8" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-        <MemberComponentTemplate Name="CreatureInventory" Guid="dc306c32-9cb3-4dbd-b363-f7a0a7155520" InheritanceParent="81a44c6a-c30a-4f53-8d64-0c30aabab8f9">
-  <Parameter Name="Class" Value="Game.ComponentCreatureInventory" Type="string"/>
+<MemberComponentTemplate Name="CreatureInventory" Guid="dc306c32-9cb3-4dbd-b363-f7a0a7155520" InheritanceParent="a347220c-b5cf-4eae-9215-4ed37426eec4">
   <Parameter Name="SlotsCount" Value="16" Type="int"/>
   <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
 </MemberComponentTemplate>
@@ -5469,8 +5467,7 @@
     <Parameter Name="PistolAimTime" Value="0.5" Type="float"/>
     <Parameter Name="SniperAimTime" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
-        <MemberComponentTemplate Name="CreatureInventory" Guid="ed17324f-06dc-4245-8fb8-d67ca9539da3" InheritanceParent="81a44c6a-c30a-4f53-8d64-0c30aabab8f9">
-  <Parameter Name="Class" Value="Game.ComponentCreatureInventory" Type="string"/>
+        <MemberComponentTemplate Name="CreatureInventory" Guid="ed17324f-06dc-4245-8fb8-d67ca9539da3" InheritanceParent="a347220c-b5cf-4eae-9215-4ed37426eec4">
   <Parameter Name="SlotsCount" Value="16" Type="int"/>
   <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
 </MemberComponentTemplate>
