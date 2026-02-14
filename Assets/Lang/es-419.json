@@ -1,4 +1,7 @@
 {
+  "HealthBar": {
+    "HP": "PV"
+  },
   "InGameMusic": {
     "MusicEnabled": "Música activada",
     "MusicDisabled": "Música desactivada",
@@ -38,6 +41,9 @@
     "CoolingStatus": "Refrigerando...",
     "NoPowerStatus": "Sin energía"
   },
+  "Injury": {
+    "Poisoned": "Envenenado"
+   },
   "Database": {
     "DisplayName": {
       "Bandit15": "Bandido 15",
@@ -744,8 +750,6 @@
     "CollarTamedGhostMessage": "¡Has domesticado a un Fantasma!\n ¡Su invisibilidad ahora está en tus manos!",
     "AntiTankCriticalHit": "Impacto crítico de bala Anti-Tank",
     "TankChaseAlert": "¡ALERTA!\n ¡Apareció un Tank!\n ¡Refúgiate, busca buenas armas para matarlo o usa el collar zombie para calmar su rabia y convertirlo en aliado!",
-    "DeathByPoisonRock": "Envenenado por una roca gigante tóxica",
-    "DeathByFlamingRock": "Incinerado por una roca gigante en llamas",
     "CollarTamedChargerMessage": "¡Has domesticado un Charger!\n ¡Su fuerza bruta para empujar enemigos ahora será tu herramienta!\n ¡Úsalo bien y sabiamente!",
     "CollarTamedTankMessage": "¡Has domesticado al Tank!\n ¡El jefe de los jefes más temido es tu esclavo!\n Aprovecha su fuerza bruta como tu guardián!",
     "CollarTamedBoomerMessage": "¡Has domesticado a un Boomer!\nAhora puedes usarlo como un guardián explosivo esclavizado.\nÚsalo sabiamente en casos de emergencia.",
