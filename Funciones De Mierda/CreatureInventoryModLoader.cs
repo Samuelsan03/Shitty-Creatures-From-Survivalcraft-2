@@ -21,23 +21,19 @@ namespace Game
 			ref int priorityInteract,
 			ref int priorityPlace)
 		{
-			// PRIMERO VERIFICAR SI EL JUGADOR TIENE UN ITEM MÉDICO ACTIVO
 			int activeBlockValue = player.ComponentMiner.ActiveBlockValue;
 			int activeBlockIndex = Terrain.ExtractContents(activeBlockValue);
 			int mediumFirstAidKitIndex = BlocksManager.GetBlockIndex<MediumFirstAidKitBlock>();
-			int largeFirstAidKitIndex = BlocksManager.GetBlockIndex<LargeFirstAidKitBlock>(); // NUEVO
+			int largeFirstAidKitIndex = BlocksManager.GetBlockIndex<LargeFirstAidKitBlock>();
 			int antidoteBucketIndex = BlocksManager.GetBlockIndex<AntidoteBucketBlock>();
 
-			// Si el jugador tiene un botiquín o antidoto activo, NO procesar la interacción del inventario
 			if (activeBlockIndex == mediumFirstAidKitIndex ||
-				activeBlockIndex == largeFirstAidKitIndex || // NUEVO
+				activeBlockIndex == largeFirstAidKitIndex ||
 				activeBlockIndex == antidoteBucketIndex)
 			{
-				// Permitir que el item médico maneje la interacción completamente
 				return;
 			}
 
-			// Solo continuar si no hay item médico activo
 			PlayerInput input = player.ComponentInput.PlayerInput;
 			BodyRaycastResult? bodyRaycast =
 				player.ComponentMiner.Raycast<BodyRaycastResult>(input.Interact.Value, RaycastMode.Interaction);
@@ -45,10 +41,8 @@ namespace Game
 			bool handled = false;
 			if (bodyRaycast.HasValue)
 			{
-				// VERIFICAR DISTANCIA ANTES DE PROCESAR (3 bloques máximo)
 				if (CheckInteractionDistance(player, bodyRaycast.Value))
 				{
-					// SOLO incrementar la prioridad de interact
 					priorityInteract = Math.Max(priorityInteract, 2000);
 					handled = HandleCreatureInteraction(player, bodyRaycast.Value);
 				}
@@ -70,22 +64,14 @@ namespace Game
 		{
 			try
 			{
-				// Calcular distancia entre el jugador y la criatura
 				Vector3 playerPosition = player.ComponentBody.Position;
 				Vector3 creaturePosition = raycast.ComponentBody.Position;
-
-				// Calcular distancia en bloques (1 bloque = 1 unidad en el juego)
 				float distance = Vector3.Distance(playerPosition, creaturePosition);
-
-				// Distancia máxima permitida: 3 bloques
 				const float MAX_INTERACTION_DISTANCE = 5f;
-
-				// Verificar si la distancia es válida
 				return distance <= MAX_INTERACTION_DISTANCE;
 			}
 			catch
 			{
-				// En caso de error, permitir la interacción para no romper la funcionalidad existente
 				return true;
 			}
 		}
