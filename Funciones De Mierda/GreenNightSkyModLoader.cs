@@ -1,35 +1,45 @@
 using System;
-using System.Runtime.CompilerServices;
 using Engine;
 using GameEntitySystem;
 
 namespace Game
 {
-	// Token: 0x02000058 RID: 88
 	public class GreenNightSkyModLoader : ModLoader
 	{
-		// Token: 0x060004D6 RID: 1238 RVA: 0x000401C0 File Offset: 0x0003E3C0
+		private SubsystemGreenNightSky m_subsystemGreenNightSky;
+
+		public override void __ModInitialize()
+		{
+			// Registrar el hook para cambiar el color del cielo
+			ModsManager.RegisterHook("ChangeSkyColor", this);
+			// También puedes registrar otros hooks si son necesarios
+		}
+
+		public override void OnProjectLoaded(Project project)
+		{
+			// Obtener referencia al subsistema de noche verde (opcional, pero útil)
+			m_subsystemGreenNightSky = project.FindSubsystem<SubsystemGreenNightSky>(true);
+			// Si no existe, podrías crearlo y agregarlo al proyecto, pero normalmente ya debería estar en la base de datos.
+		}
+
 		public override Color ChangeSkyColor(Color oldColor, Vector3 direction, float timeOfDay, int temperature)
 		{
-			SubsystemGreenNightSky instance = SubsystemGreenNightSky.Instance;
-			bool flag = instance != null && instance.IsGreenNightActive;
-			if (flag)
+			// Usar la instancia estática o la referencia guardada
+			var instance = SubsystemGreenNightSky.Instance; // o m_subsystemGreenNightSky
+			if (instance != null && instance.IsGreenNightActive)
 			{
-				bool flag2 = instance.m_subsystemTimeOfDay != null;
-				if (flag2)
+				if (instance.m_subsystemTimeOfDay != null)
 				{
 					float duskStart = instance.m_subsystemTimeOfDay.DuskStart;
 					float dawnStart = instance.m_subsystemTimeOfDay.DawnStart;
-					bool flag3 = IntervalUtils.IsBetween(timeOfDay, duskStart, dawnStart);
-					if (flag3)
+					if (IntervalUtils.IsBetween(timeOfDay, duskStart, dawnStart))
 					{
-						bool flag4 = instance.m_subsystemSky != null && (instance.m_subsystemSky.MoonPhase == 0 || instance.m_subsystemSky.MoonPhase == 4);
-						if (flag4)
+						if (instance.m_subsystemSky != null && (instance.m_subsystemSky.MoonPhase == 0 || instance.m_subsystemSky.MoonPhase == 4))
 						{
-							Color c = new Color(0, 204, 102);
-							float num = 1f - instance.m_subsystemSky.SkyLightIntensity;
-							num = MathUtils.Saturate(num * 2f);
-							return Color.Lerp(oldColor, c, num);
+							Color greenColor = new Color(0, 50, 0);
+							float factor = 1f - instance.m_subsystemSky.SkyLightIntensity;
+							factor = MathUtils.Saturate(factor * 2f);
+							return Color.Lerp(oldColor, greenColor, factor);
 						}
 					}
 				}
@@ -37,15 +47,6 @@ namespace Game
 			return oldColor;
 		}
 
-		// Token: 0x060004D7 RID: 1239 RVA: 0x0004029C File Offset: 0x0003E49C
-		public override void SubsystemUpdate(SubsystemUpdate subsystemUpdate, float dt)
-		{
-			Project project = subsystemUpdate.Project;
-			SubsystemGreenNightSky subsystemGreenNightSky = (project != null) ? project.FindSubsystem<SubsystemGreenNightSky>() : null;
-			bool flag = subsystemGreenNightSky != null;
-			if (flag)
-			{
-			}
-		}
+		// El método SubsystemUpdate puede permanecer igual o eliminarse si no se usa
 	}
 }
