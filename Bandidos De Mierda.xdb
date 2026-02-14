@@ -362,7 +362,7 @@
 <MemberComponentTemplate Name="CreatureSounds" Guid="bf47e069-0da5-4eda-98e3-801de9a17ed1">
     <Parameter Name="PainSound" Guid="4a07f191-ff67-4062-b8b3-8566c3ca9b60" Value="Audio/Creatures/Bandits/Pain" Type="string"/>
     <Parameter Name="IdleSound" Guid="bc18fa09-e2c0-4c35-a6eb-5c5906b528b6" Value="Audio/Creatures/Bandits/Idie" Type="string"/>
-    <Parameter Name="AttackSound" Guid="86edc3df-fbc4-4dde-9375-0d460fb54ae5" Value="Audio/Creatures/Bandits/Idie" Type="string"/>
+    <Parameter Name="AttackSound" Guid="86edc3df-fbc4-4dde-9375-0d460fb54ae5" Value="Audio/Creatures/Bandits/Attack" Type="string"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidFireBehavior" Guid="a2cdb003-5daf-4817-9a3e-0153efa873ce" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
     <MemberComponentTemplate Name="Locomotion" Guid="808f43e0-e614-41e2-b067-2ebd1b530eca">
@@ -522,10 +522,10 @@
 <MemberComponentTemplate Name="Spawn" Guid="dd633c50-2fc7-401f-9046-28b79e306d25">
     <Parameter Name="AutoDespawn" Guid="b9e332b5-007c-45cb-9e2a-de889e45899d" Value="False" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="CreatureSounds" Guid="951c7ccc-405f-432f-81bc-fd856539b01a">
-    <Parameter Name="PainSound" Guid="1b3a2166-1921-41fa-9d47-68243b1071a8" Value="Audio/Creatures/Bandits/Pain" Type="string"/>
-    <Parameter Name="IdleSound" Guid="b5c9ad34-4034-4639-9b92-d6e80a0b618f" Value="Audio/Creatures/Bandits/Idie" Type="string"/>
-    <Parameter Name="AttackSound" Guid="c912c0c2-ebcd-4813-aa10-7ccc4ed4cf52" Value="Audio/Creatures/Bandits/Idie" Type="string"/>
+<MemberComponentTemplate Name="CreatureSounds" Guid="43cd25c3-0a2a-41f2-8429-61b025aaf03a">
+    <Parameter Name="PainSound" Guid="3ca0301f-2aa9-493c-b0f6-4b60d58add74" Value="Audio/Creatures/Bandits/Pain" Type="string"/>
+    <Parameter Name="IdleSound" Guid="c2b28641-5d81-46a6-beca-c033791afac0" Value="Audio/Creatures/Bandits/Idie" Type="string"/>
+    <Parameter Name="AttackSound" Guid="4647a536-996d-4cb4-8865-bbe9a1130575" Value="Audio/Creatures/Bandits/Attack" Type="string"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidFireBehavior" Guid="59e3170d-2c83-40f2-8251-ce97636e0c6a" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
     <MemberComponentTemplate Name="Locomotion" Guid="e13bf9a2-32eb-4a01-932f-282cef0ebafd">
@@ -848,10 +848,10 @@
 <MemberComponentTemplate Name="Spawn" Guid="4f243fa0-c78c-41ec-b85f-acc522c99cf3">
     <Parameter Name="AutoDespawn" Guid="e857ccd8-69c5-4537-8122-d4029a8a71d9" Value="False" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="CreatureSounds" Guid="b8106ec4-81a1-4662-b815-49f398fb28db">
-    <Parameter Name="PainSound" Guid="414770fe-6cb4-4c47-a8b0-72040b0a8825" Value="Audio/Creatures/Bandits/Pain" Type="string"/>
-    <Parameter Name="IdleSound" Guid="420e2697-d6e7-4d6b-beda-53a48c641cc8" Value="Audio/Creatures/Bandits/Idie" Type="string"/>
-    <Parameter Name="AttackSound" Guid="9efa4350-915e-45ef-b5a0-421d37f609ec" Value="Audio/Creatures/Bandits/Idie" Type="string"/>
+<MemberComponentTemplate Name="CreatureSounds" Guid="b0cd6a80-5815-436b-b186-dcd0b190f85a">
+    <Parameter Name="PainSound" Guid="ec11c855-3218-4755-8628-ae2d882b7af0" Value="Audio/Creatures/Bandits/Pain" Type="string"/>
+    <Parameter Name="IdleSound" Guid="b7bcdac6-c33b-4b6f-86dd-aa4c84c78500" Value="Audio/Creatures/Bandits/Idie" Type="string"/>
+    <Parameter Name="AttackSound" Guid="be2118aa-d664-42a6-9168-d4e66a3573bb" Value="Audio/Creatures/Bandits/Attack" Type="string"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidFireBehavior" Guid="b7d55b98-ab01-4585-9ba6-21461693c67a" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
     <MemberComponentTemplate Name="Locomotion" Guid="467bd890-280d-4027-8574-73aa0b3bd02b">
@@ -1181,10 +1181,10 @@
 <MemberComponentTemplate Name="Spawn" Guid="db8d07a5-78e3-466e-956c-8c762ba98bce">
     <Parameter Name="AutoDespawn" Guid="eb3d13bb-27cb-4673-ac29-b3563cb2d1b8" Value="False" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="CreatureSounds" Guid="6b525ae8-ea1f-42d8-99c8-514e743750a0">
-    <Parameter Name="PainSound" Guid="fedb49ff-26c6-4f23-bcd1-8979658eb418" Value="Audio/Creatures/Bandits/Pain" Type="string"/>
-    <Parameter Name="IdleSound" Guid="7d1865d7-bcb1-44a1-8fa9-20b6893ec65f" Value="Audio/Creatures/Bandits/Idie" Type="string"/>
-    <Parameter Name="AttackSound" Guid="8106838f-b2d3-4194-9089-f07049b7601f" Value="Audio/Creatures/Bandits/Idie" Type="string"/>
+<MemberComponentTemplate Name="CreatureSounds" Guid="1bfe878a-aa94-4f40-813c-7376afa9db3d">
+    <Parameter Name="PainSound" Guid="6c597419-18a2-4f39-81d5-faadc53593f5" Value="Audio/Creatures/Bandits/Pain" Type="string"/>
+    <Parameter Name="IdleSound" Guid="24be7257-eee1-41b7-b9f5-f01e1e08d028" Value="Audio/Creatures/Bandits/Idie" Type="string"/>
+    <Parameter Name="AttackSound" Guid="42343313-0948-43c1-bf49-865759c1ee9c" Value="Audio/Creatures/Bandits/Attack" Type="string"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidFireBehavior" Guid="9da7aa82-c7ec-4279-bce3-c05f7e87adf1" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
     <MemberComponentTemplate Name="Locomotion" Guid="ba9ae159-3f62-4788-87a8-339b9c8895de">
@@ -1506,10 +1506,10 @@
 <MemberComponentTemplate Name="Spawn" Guid="3537e2d9-82a3-4651-ab40-74469e7a9157">
     <Parameter Name="AutoDespawn" Guid="712df80b-054c-4822-b854-88bd59282ae6" Value="False" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="CreatureSounds" Guid="a8892826-b02d-4aef-a91f-2d3b961d9427">
-    <Parameter Name="PainSound" Guid="987a8753-fd75-45b5-904c-9099ef67ea1e" Value="Audio/Creatures/Bandits/Pain" Type="string"/>
-    <Parameter Name="IdleSound" Guid="30fbfe9c-8289-4fbe-a50d-325e107fc180" Value="Audio/Creatures/Bandits/Idie" Type="string"/>
-    <Parameter Name="AttackSound" Guid="cb1cd2b4-a279-44a8-b39f-5f2c38694131" Value="Audio/Creatures/Bandits/Idie" Type="string"/>
+<MemberComponentTemplate Name="CreatureSounds" Guid="5bc69592-5e40-4290-9273-8e2d32312867">
+    <Parameter Name="PainSound" Guid="bfc92cb9-2655-4cab-8af8-c3c3848b00ce" Value="Audio/Creatures/Bandits/Pain" Type="string"/>
+    <Parameter Name="IdleSound" Guid="27b2c4a6-8e9a-4877-8c4f-5253f9be0e78" Value="Audio/Creatures/Bandits/Idie" Type="string"/>
+    <Parameter Name="AttackSound" Guid="e4d6df17-d571-4c26-ba5b-c8d8185090f3" Value="Audio/Creatures/Bandits/Attack" Type="string"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidFireBehavior" Guid="87c2fe5c-d672-4e7b-8418-dc7130917a13" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
     <MemberComponentTemplate Name="Locomotion" Guid="2fd01342-273c-40c5-b765-12f244426b54">
@@ -1679,10 +1679,10 @@
 <MemberComponentTemplate Name="Spawn" Guid="b484a820-d7ef-4279-9274-2d75a0271ec1">
     <Parameter Name="AutoDespawn" Guid="b5d1bfa8-9861-4519-87b4-1738ae485766" Value="False" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="CreatureSounds" Guid="defe73fb-07ab-478d-8eb1-019c621f8504">
-    <Parameter Name="PainSound" Guid="fc2ec82e-c3c6-44b9-a779-d5b590cc5d18" Value="Audio/Creatures/Bandits/Pain" Type="string"/>
-    <Parameter Name="IdleSound" Guid="501c736c-71f1-441f-bbaf-37307384f8fd" Value="Audio/Creatures/Bandits/Idie" Type="string"/>
-    <Parameter Name="AttackSound" Guid="d435878c-eacf-4247-bc1d-244e73794cff" Value="Audio/Creatures/Bandits/Idie" Type="string"/>
+<MemberComponentTemplate Name="CreatureSounds" Guid="2f25efd5-bab3-4b8e-8bbb-62fb8841a13b">
+    <Parameter Name="PainSound" Guid="e645b5e9-fd18-4ae5-b4cd-1ab09fbb8dc8" Value="Audio/Creatures/Bandits/Pain" Type="string"/>
+    <Parameter Name="IdleSound" Guid="a64719a4-b1da-4c22-860c-89afaef9935d" Value="Audio/Creatures/Bandits/Idie" Type="string"/>
+    <Parameter Name="AttackSound" Guid="e53b3d5a-41eb-45d9-b2fb-789a699eb310" Value="Audio/Creatures/Bandits/Attack" Type="string"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidFireBehavior" Guid="4aa4f880-a6b3-4761-b972-ab0b056abfd8" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
     <MemberComponentTemplate Name="Locomotion" Guid="e43d4e47-dd9e-4486-80e8-1c6d25a00636">
@@ -1848,10 +1848,10 @@
 <MemberComponentTemplate Name="Spawn" Guid="9ff3ae1d-0e91-4ca2-b8ca-72bb38f630c3">
     <Parameter Name="AutoDespawn" Guid="b72a71cb-3a06-4ff8-a517-c6a1b364b915" Value="False" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="CreatureSounds" Guid="ea531e82-9186-46f3-82d4-fabf706d4bd6">
-    <Parameter Name="PainSound" Guid="d19b9e65-54c4-4681-a251-d149e56fc3ce" Value="Audio/Creatures/Bandits/Pain" Type="string"/>
-    <Parameter Name="IdleSound" Guid="c4a6d99b-2dc4-41b1-a433-1742b2ab863a" Value="Audio/Creatures/Bandits/Idie" Type="string"/>
-    <Parameter Name="AttackSound" Guid="f6c5c4c0-3283-42c8-9761-62eceebb6814" Value="Audio/Creatures/Bandits/Idie" Type="string"/>
+<MemberComponentTemplate Name="CreatureSounds" Guid="25c611ba-5e28-464a-8167-c42fdebbbb29">
+    <Parameter Name="PainSound" Guid="37de8d06-56b8-4e28-aafc-7b6c14e57513" Value="Audio/Creatures/Bandits/Pain" Type="string"/>
+    <Parameter Name="IdleSound" Guid="25d20d22-f37e-4260-a483-d540f556f28d" Value="Audio/Creatures/Bandits/Idie" Type="string"/>
+    <Parameter Name="AttackSound" Guid="b120a076-ce65-4c63-afbf-eefe92a32478" Value="Audio/Creatures/Bandits/Attack" Type="string"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidFireBehavior" Guid="68c72dee-7ac2-4c02-af07-283bea286ede" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
     <MemberComponentTemplate Name="Locomotion" Guid="05e36a39-e100-494c-851b-e6eb02de7383">
@@ -2007,10 +2007,10 @@
 <MemberComponentTemplate Name="Spawn" Guid="b22a09f6-8a3e-41d8-bb49-49208a1ea728">
     <Parameter Name="AutoDespawn" Guid="be96484c-fb7b-4631-87e2-219f7eac478e" Value="False" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="CreatureSounds" Guid="cef4050e-ec8c-47e1-9431-42b1c529b988">
-    <Parameter Name="PainSound" Guid="649d98e5-8c38-4f7f-abcf-c7e53658d113" Value="Audio/Creatures/Bandits/Pain" Type="string"/>
-    <Parameter Name="IdleSound" Guid="6ad9fc72-d543-4267-820c-d4fbfa8202c2" Value="Audio/Creatures/Bandits/Idie" Type="string"/>
-    <Parameter Name="AttackSound" Guid="e61d6e38-aade-491f-b226-76761459b41c" Value="Audio/Creatures/Bandits/Idie" Type="string"/>
+<MemberComponentTemplate Name="CreatureSounds" Guid="73c46ef1-0957-4c83-8bee-0b29e1c0451c">
+    <Parameter Name="PainSound" Guid="5cefeef0-b0a5-4ad7-9c8f-b39914c1d920" Value="Audio/Creatures/Bandits/Pain" Type="string"/>
+    <Parameter Name="IdleSound" Guid="6eb30b86-3a59-4bea-868f-88cc33c24d76" Value="Audio/Creatures/Bandits/Idie" Type="string"/>
+    <Parameter Name="AttackSound" Guid="382e9d4f-f203-4777-8cfc-8aecb7f935fa" Value="Audio/Creatures/Bandits/Attack" Type="string"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidFireBehavior" Guid="0c8873ae-a6b5-4c95-b48f-33620067976c" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
     <MemberComponentTemplate Name="Locomotion" Guid="e4f68127-7413-4c69-abce-4c4339d4087a">
@@ -2180,7 +2180,7 @@
 <MemberComponentTemplate Name="CreatureSounds" Guid="6a2feb93-7529-4615-9d57-a027783b237b">
     <Parameter Name="PainSound" Guid="70443f7f-3091-4a34-be18-e6b18d4fe5db" Value="Audio/Creatures/Mujeres/Pain" Type="string"/>
     <Parameter Name="IdleSound" Guid="dc03f576-3f60-4890-bbde-8565edfebb34" Value="Audio/Creatures/Mujeres/Idie" Type="string"/>
-    <Parameter Name="AttackSound" Guid="ced0db5a-3f82-40fd-b1c0-38bd538c5237" Value="Audio/Creatures/Mujeres/Idie" Type="string"/>
+    <Parameter Name="AttackSound" Guid="ced0db5a-3f82-40fd-b1c0-38bd538c5237" Value="Audio/Creatures/Mujeres/Attack" Type="string"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidFireBehavior" Guid="7f9dd06f-57b2-48e9-8984-28e1d1fb67b8" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
     <MemberComponentTemplate Name="Locomotion" Guid="f0d2cd86-a5ed-4f2a-9fc9-1034f6d475dc">
@@ -2350,7 +2350,7 @@
 <MemberComponentTemplate Name="CreatureSounds" Guid="95dd4d71-226a-49ca-bbe6-2d6dca50f55c">
     <Parameter Name="PainSound" Guid="24e0507e-eace-44f6-9fee-e2a92c8342da" Value="Audio/Creatures/Mujeres/Pain" Type="string"/>
     <Parameter Name="IdleSound" Guid="7be1a763-26c0-43ed-8c0d-871bf982c1a5" Value="Audio/Creatures/Mujeres/Idie" Type="string"/>
-    <Parameter Name="AttackSound" Guid="77abe667-de0e-47b2-b207-a18e3d372ab2" Value="Audio/Creatures/Mujeres/Idie" Type="string"/>
+    <Parameter Name="AttackSound" Guid="77abe667-de0e-47b2-b207-a18e3d372ab2" Value="Audio/Creatures/Mujeres/Attack" Type="string"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidFireBehavior" Guid="fa5351dd-454f-42b2-abf7-67182bdcfc3c" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
     <MemberComponentTemplate Name="Locomotion" Guid="2bd229f3-13f6-42e3-b74b-49e0165cae91">
