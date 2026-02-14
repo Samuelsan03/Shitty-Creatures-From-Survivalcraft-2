@@ -3,7 +3,7 @@
         <EntityTemplate Name="InfectedNormal1" Guid="e6afa31e-3845-4d07-9451-e3782e6a1889" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
 <MemberComponentTemplate Name="ZombieAI" Guid="11af39db-6e08-4e40-9e6b-9c2fe9545f36" InheritanceParent="9d185bf8-92ec-4ea6-ad86-b8a99b650fd2">
     <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="221a62bb-bfc1-4f2c-9717-cbe3af74c00a"/>
-    <Parameter Name="AimHandAngleOrder" Value="0" Type="float" Guid="9fb380de-aae6-4a8a-aff1-7784dd6a5c6b"/>
+    <Parameter Name="AimHandAngleOrder" Value="90" Type="float" Guid="9fb380de-aae6-4a8a-aff1-7784dd6a5c6b"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="DeathSpawner" Guid="138a6678-67a1-4c47-9f19-3b6e4f5df27b">
     <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="e2bc4b01-db43-4742-b177-f58bdfa27bb9"/>
@@ -267,8 +267,7 @@
                 <Parameter Name="ConstantSpawn" Guid="0f9f004c-6b83-425f-b53e-f867f7d53e82" Value="True" Type="bool"/>
                 <Parameter Name="KillVerbs" Guid="17184173-1dc9-4bd7-922a-aeaf24a078a5" Value="eaten,shot,killed by arrows,burned,poisoned with flamethrower" Type="string"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="CreatureInventory" Guid="4df39c70-a57b-47ab-985d-5975a7f892e6" InheritanceParent="81a44c6a-c30a-4f53-8d64-0c30aabab8f9">
-  <Parameter Name="Class" Value="Game.ComponentCreatureInventory" Type="string"/>
+            <MemberComponentTemplate Name="CreatureInventory" Guid="4df39c70-a57b-47ab-985d-5975a7f892e6" InheritanceParent="a347220c-b5cf-4eae-9215-4ed37426eec4">
   <Parameter Name="SlotsCount" Value="16" Type="int"/>
   <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
 </MemberComponentTemplate>
@@ -496,7 +495,7 @@
         </EntityTemplate>
 
         <EntityTemplate Name="InfectedNormalTamed2" Guid="cd91e7a4-2843-41a4-a15e-f5d834c6d6e1" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="CreatureInventory" Guid="68ea907c-4010-4136-bfd3-771c8c0aa0df" InheritanceParent="81a44c6a-c30a-4f53-8d64-0c30aabab8f9">
+<MemberComponentTemplate Name="CreatureInventory" Guid="68ea907c-4010-4136-bfd3-771c8c0aa0df" InheritanceParent="a347220c-b5cf-4eae-9215-4ed37426eec4">
   <Parameter Name="Class" Value="Game.ComponentCreatureInventory" Type="string"/>
   <Parameter Name="SlotsCount" Value="16" Type="int"/>
   <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
@@ -1458,7 +1457,7 @@
         </EntityTemplate>
 
         <EntityTemplate Name="InfectedMuscleTamed1" Guid="030aa759-c8dd-4a46-bafa-1cc330478a4d" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-        <MemberComponentTemplate Name="CreatureInventory" Guid="c76316ec-9046-44ca-8f26-b40a73053306" InheritanceParent="81a44c6a-c30a-4f53-8d64-0c30aabab8f9">
+        <MemberComponentTemplate Name="CreatureInventory" Guid="c76316ec-9046-44ca-8f26-b40a73053306" InheritanceParent="a347220c-b5cf-4eae-9215-4ed37426eec4">
   <Parameter Name="Class" Value="Game.ComponentCreatureInventory" Type="string"/>
   <Parameter Name="SlotsCount" Value="16" Type="int"/>
   <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
@@ -1786,7 +1785,7 @@
         </EntityTemplate>
 
         <EntityTemplate Name="InfectedMuscleTamed2" Guid="42a903ab-9c22-410b-9407-4cef9cb37741" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-        <MemberComponentTemplate Name="CreatureInventory" Guid="0081e8da-58c8-47c9-8ef9-707916eb6bf6" InheritanceParent="81a44c6a-c30a-4f53-8d64-0c30aabab8f9">
+        <MemberComponentTemplate Name="CreatureInventory" Guid="0081e8da-58c8-47c9-8ef9-707916eb6bf6" InheritanceParent="a347220c-b5cf-4eae-9215-4ed37426eec4">
   <Parameter Name="Class" Value="Game.ComponentCreatureInventory" Type="string"/>
   <Parameter Name="SlotsCount" Value="16" Type="int"/>
   <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
@@ -6225,7 +6224,7 @@
         </EntityTemplate>
 
         <EntityTemplate Name="GhostNormalTamed" Guid="9a265b40-a235-48a3-9585-1a67dbf2bb13" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-        <MemberComponentTemplate Name="CreatureInventory" Guid="0c688534-8f39-4dea-b5d9-30b1b0dbdbf1" InheritanceParent="81a44c6a-c30a-4f53-8d64-0c30aabab8f9">
+        <MemberComponentTemplate Name="CreatureInventory" Guid="0c688534-8f39-4dea-b5d9-30b1b0dbdbf1" InheritanceParent="a347220c-b5cf-4eae-9215-4ed37426eec4">
   <Parameter Name="Class" Value="Game.ComponentCreatureInventory" Type="string"/>
   <Parameter Name="SlotsCount" Value="16" Type="int"/>
   <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
@@ -6583,7 +6582,7 @@
         </EntityTemplate>
 
         <EntityTemplate Name="GhostFastTamed" Guid="92f68295-930a-435d-ab10-56df2c34d904" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-        <MemberComponentTemplate Name="CreatureInventory" Guid="c8c02035-ed91-42e7-b9aa-dc390f3e7063" InheritanceParent="81a44c6a-c30a-4f53-8d64-0c30aabab8f9">
+        <MemberComponentTemplate Name="CreatureInventory" Guid="c8c02035-ed91-42e7-b9aa-dc390f3e7063" InheritanceParent="a347220c-b5cf-4eae-9215-4ed37426eec4">
   <Parameter Name="Class" Value="Game.ComponentCreatureInventory" Type="string"/>
   <Parameter Name="SlotsCount" Value="16" Type="int"/>
   <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
@@ -9659,7 +9658,7 @@
         </EntityTemplate>
 
         <EntityTemplate Name="MachineGunInfectedTamed" Guid="0ced2f63-6233-4199-8463-2dfb4d458f02" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-        <MemberComponentTemplate Name="CreatureInventory" Guid="4d3fc876-9af4-4e5e-b1d6-b453b6cb2986" InheritanceParent="81a44c6a-c30a-4f53-8d64-0c30aabab8f9">
+        <MemberComponentTemplate Name="CreatureInventory" Guid="4d3fc876-9af4-4e5e-b1d6-b453b6cb2986" InheritanceParent="a347220c-b5cf-4eae-9215-4ed37426eec4">
   <Parameter Name="Class" Value="Game.ComponentCreatureInventory" Type="string"/>
   <Parameter Name="SlotsCount" Value="16" Type="int"/>
   <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
