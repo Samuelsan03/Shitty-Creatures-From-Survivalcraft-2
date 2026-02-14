@@ -1393,18 +1393,20 @@
         </ParameterSet>
      </ParameterSet> 
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="MusketShooterBehavior2" Guid="1ce18b67-d74d-4721-978c-89207111ea40">
+<MemberComponentTemplate Name="MusketShooterBehavior2" Guid="c9e90304-974a-48d1-b7c8-30156330183f">
     <Parameter Name="Class" Value="Game.ComponentMusketShooterBehavior2" Type="string"/>
     <Parameter Name="IsOptional" Value="False" Type="bool"/>
     <Parameter Name="LoadOrder" Value="-1" Type="int"/>
     <Parameter Name="MaxDistance" Value="30" Type="float"/>
     <Parameter Name="MeleeSwitchDistance" Value="5" Type="float"/>
+    <Parameter Name="MinAimDistance" Value="10" Type="float"/>
     <Parameter Name="ReloadTime" Value="1" Type="float"/>
     <Parameter Name="AimTime" Value="0.8" Type="float"/>
     <Parameter Name="CockTime" Value="0.5" Type="float"/>
     <Parameter Name="MeleeAttackTime" Value="0.8" Type="float"/>
+    <Parameter Name="FireSoundDistance" Value="20" Type="float"/>
     <Parameter Name="Accuracy" Value="0.015" Type="float"/>
-    <Parameter Name="UseRecoil" Value="False" Type="bool"/>
+    <Parameter Name="UseRecoil" Value="True" Type="bool"/>
     <Parameter Name="BulletSpeed" Value="140" Type="float"/>
     <Parameter Name="RequireCocking" Value="True" Type="bool"/>
 </MemberComponentTemplate>
@@ -4659,7 +4661,7 @@
 <MemberComponentTemplate Name="CreatureSounds" Guid="53d33183-852c-48b1-9c20-665c98fcd498">
     <Parameter Name="PainSound" Guid="5e34e974-f469-49c6-8dc6-51122c302b2f" Value="Audio/Creatures/Sparkster/Pain" Type="string"/>
     <Parameter Name="IdleSound" Guid="bd5f401a-f7f3-40d8-b566-b5995f80b7ce" Value="Audio/Creatures/Sparkster/Idie" Type="string"/>
-    <Parameter Name="AttackSound" Guid="65ed698e-2192-4504-abf0-1264f155b4da" Value="Audio/Creatures/Sparkster/Idie" Type="string"/>
+    <Parameter Name="AttackSound" Guid="65ed698e-2192-4504-abf0-1264f155b4da" Value="Audio/Creatures/Sparkster/Attack" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewRunAwayBehavior" Guid="825d731f-c79f-4b1b-8247-71e0e343b02d">
     <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="5e86fd5e-d5cc-4d73-a22a-eb7a066a8027"/>
