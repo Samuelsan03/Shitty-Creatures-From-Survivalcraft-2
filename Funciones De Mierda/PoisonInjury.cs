@@ -1,14 +1,18 @@
-﻿using System;
+using System;
 using Game;
 
 namespace Game
 {
-	// Token: 0x020000B2 RID: 178
 	public class PoisonInjury : Injury
 	{
-		// Token: 0x06000571 RID: 1393 RVA: 0x00022E56 File Offset: 0x00021056
-		public PoisonInjury(float amount, ComponentCreature attacker) : base(amount, attacker, false, "Poisoned")
+		public PoisonInjury(float amount, ComponentCreature attacker) : base(amount, attacker, false, GetPoisonedText())
 		{
+		}
+
+		private static string GetPoisonedText()
+		{
+			// CORREGIDO: Usar categoría "Injury" y clave "Poisoned"
+			return LanguageControl.Get("Injury", "Poisoned", "Poisoned");
 		}
 	}
 }
