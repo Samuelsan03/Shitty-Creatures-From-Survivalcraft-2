@@ -22,7 +22,7 @@ namespace Game
 			this.m_creature = base.Entity.FindComponent<ComponentCreature>(true);
 			this.m_health = base.Entity.FindComponent<ComponentHealth>(true);
 			this.m_body = base.Entity.FindComponent<ComponentBody>(true);
-			
+
 			// Cargar MaxDisplayDistance del ValuesDictionary si está configurado
 			this.MaxDisplayDistance = values.GetValue<float>("MaxDisplayDistance", 10f);
 		}
@@ -70,7 +70,7 @@ namespace Game
 			Color color = (healthPercent < 0.3f) ? Color.Red : ((healthPercent < 0.7f) ? Color.Yellow : Color.Green);
 
 			// MODIFICADO: Usar LanguageControl con categoría "ComponentHealthBar"
-			string hpText = LanguageControl.Get("ComponentHealthBar", "HP", "HP");
+			string hpText = LanguageControl.Get("HealthBar", "HP", "HP");
 			string text = this.m_creature.DisplayName + " " + displayedHealth.ToString("0") + " " + hpText;
 
 			BitmapFont bitmapFont = ContentManager.Get<BitmapFont>("Fonts/Pericles");
