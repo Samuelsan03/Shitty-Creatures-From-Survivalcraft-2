@@ -263,7 +263,7 @@ namespace Game
 			return false;
 		}
 
-		// AGREGADO: Verificar si es bandido
+		// AGREGADO: Verificar si es bandido (SOLO MANADA "BANDIT")
 		private bool IsBandit(ComponentCreature creature)
 		{
 			if (creature == null) return false;
@@ -272,8 +272,8 @@ namespace Game
 			ComponentNewHerdBehavior newHerd = creature.Entity.FindComponent<ComponentNewHerdBehavior>();
 			if (newHerd != null && !string.IsNullOrEmpty(newHerd.HerdName))
 			{
-				string herdName = newHerd.HerdName.ToLower();
-				if (herdName.Contains("bandit") || herdName.Contains("outlaw") || herdName.Contains("raider"))
+				string herdName = newHerd.HerdName;
+				if (herdName.Equals("bandit", StringComparison.OrdinalIgnoreCase))
 					return true;
 			}
 
@@ -281,19 +281,10 @@ namespace Game
 			ComponentHerdBehavior oldHerd = creature.Entity.FindComponent<ComponentHerdBehavior>();
 			if (oldHerd != null && !string.IsNullOrEmpty(oldHerd.HerdName))
 			{
-				string herdName = oldHerd.HerdName.ToLower();
-				if (herdName.Contains("bandit") || herdName.Contains("outlaw") || herdName.Contains("raider"))
+				string herdName = oldHerd.HerdName;
+				if (herdName.Equals("bandit", StringComparison.OrdinalIgnoreCase))
 					return true;
 			}
-
-			// Verificar componente específico de bandido
-			ComponentBanditHerdBehavior banditHerd = creature.Entity.FindComponent<ComponentBanditHerdBehavior>();
-			if (banditHerd != null)
-				return true;
-
-			ComponentBanditChaseBehavior banditChase = creature.Entity.FindComponent<ComponentBanditChaseBehavior>();
-			if (banditChase != null)
-				return true;
 
 			return false;
 		}
@@ -774,16 +765,16 @@ namespace Game
 					if (componentPlayer.ComponentHealth.Health <= 0f)
 						continue;
 
-					ComponentCreature approachingZombie = FindApproachingZombie(componentPlayer, highAlertRange);
+					ComponentCreature mostDangerousThreat = FindMostDangerousThreatForPlayer(componentPlayer, highAlertRange);
 
-					if (approachingZombie != null && (this.m_target == null || this.m_target != approachingZombie))
+					if (mostDangerousThreat != null && (this.m_target == null || this.m_target != mostDangerousThreat))
 					{
-						this.Attack(approachingZombie, highAlertRange, 60f, true);
+						this.Attack(mostDangerousThreat, highAlertRange, 60f, true);
 
 						ComponentNewHerdBehavior herdBehavior = base.Entity.FindComponent<ComponentNewHerdBehavior>();
 						if (herdBehavior != null && herdBehavior.AutoNearbyCreaturesHelp)
 						{
-							herdBehavior.CallNearbyCreaturesHelp(approachingZombie, highAlertRange, 60f, false, true);
+							herdBehavior.CallNearbyCreaturesHelp(mostDangerousThreat, highAlertRange, 60f, false, true);
 						}
 
 						return;
@@ -791,6 +782,111 @@ namespace Game
 				}
 			}
 			catch { }
+		}
+
+		private ComponentCreature FindMostDangerousThreatForPlayer(ComponentPlayer player, float range)
+		{
+			try
+			{
+				if (player == null || player.ComponentBody == null)
+					return null;
+
+				Vector3 playerPosition = player.ComponentBody.Position;
+				float rangeSquared = range * range;
+
+				ComponentCreature mostDangerous = null;
+				float highestThreatLevel = 0f;
+
+				foreach (ComponentCreature creature in this.m_subsystemCreatureSpawn.Creatures)
+				{
+					if (creature == null || creature.ComponentHealth == null || creature.ComponentHealth.Health <= 0f ||
+						creature == this.m_componentCreature || creature == player || creature.ComponentBody == null)
+						continue;
+
+					if (!IsCreatureThreat(creature, player))
+						continue;
+
+					float distanceSquared = Vector3.DistanceSquared(playerPosition, creature.ComponentBody.Position);
+					if (distanceSquared > rangeSquared)
+						continue;
+
+					float threatLevel = CalculateThreatLevel(creature, player, distanceSquared);
+
+					if (threatLevel > highestThreatLevel)
+					{
+						highestThreatLevel = threatLevel;
+						mostDangerous = creature;
+					}
+				}
+
+				return mostDangerous;
+			}
+			catch { }
+
+			return null;
+		}
+
+		private float CalculateThreatLevel(ComponentCreature creature, ComponentPlayer player, float distanceSquared)
+		{
+			float threatLevel = 0f;
+
+			float distance = (float)Math.Sqrt(distanceSquared);
+			threatLevel = 100f / (distance + 1f);
+
+			if (IsZombieOrInfected(creature))
+			{
+				threatLevel *= 1.5f;
+			}
+			else if (IsBandit(creature))
+			{
+				threatLevel *= 1.8f;
+			}
+			else
+			{
+				threatLevel *= 1.3f;
+			}
+
+			if (IsFacingPlayer(creature, player))
+			{
+				threatLevel += 50f;
+			}
+
+			if (IsMovingTowardPlayer(creature, player))
+			{
+				threatLevel += 70f;
+			}
+
+			if (distance < 10f)
+			{
+				threatLevel += 100f;
+			}
+
+			if (IsAttackingPlayer(creature, player))
+			{
+				threatLevel += 200f;
+			}
+
+			if (IsCreatureAggressive(creature))
+			{
+				threatLevel += 80f;
+			}
+
+			return threatLevel;
+		}
+
+		private bool IsCreatureAggressive(ComponentCreature creature)
+		{
+			ComponentChaseBehavior chase = creature.Entity.FindComponent<ComponentChaseBehavior>();
+			ComponentNewChaseBehavior newChase = creature.Entity.FindComponent<ComponentNewChaseBehavior>();
+			ComponentNewChaseBehavior2 newChase2 = creature.Entity.FindComponent<ComponentNewChaseBehavior2>();
+			ComponentZombieChaseBehavior zombieChase = creature.Entity.FindComponent<ComponentZombieChaseBehavior>();
+			ComponentBanditChaseBehavior banditChase = creature.Entity.FindComponent<ComponentBanditChaseBehavior>();
+
+			return (chase != null && chase.Target != null) ||
+				   (newChase != null && newChase.Target != null) ||
+				   (newChase2 != null && newChase2.Target != null) ||
+				   (zombieChase != null && zombieChase.Target != null) ||
+				   (banditChase != null && banditChase.Target != null);
 		}
 
 		private void CheckDefendPlayer(float dt)
@@ -818,86 +914,6 @@ namespace Game
 				}
 			}
 			catch { }
-		}
-
-		private ComponentCreature FindApproachingZombie(ComponentPlayer player, float range)
-		{
-			try
-			{
-				if (player == null || player.ComponentBody == null)
-					return null;
-
-				Vector3 playerPosition = player.ComponentBody.Position;
-				float rangeSquared = range * range;
-
-				ComponentCreature mostThreateningZombie = null;
-				float highestThreatScore = 0f;
-
-				foreach (ComponentCreature creature in this.m_subsystemCreatureSpawn.Creatures)
-				{
-					if (creature == null || creature.ComponentHealth == null || creature.ComponentHealth.Health <= 0f ||
-						creature == this.m_componentCreature || creature.ComponentBody == null)
-						continue;
-
-					if (!IsZombieOrInfected(creature))
-						continue;
-
-					float distanceSquared = Vector3.DistanceSquared(playerPosition, creature.ComponentBody.Position);
-					if (distanceSquared > rangeSquared)
-						continue;
-
-					float threatScore = CalculateZombieThreatScore(creature, player, distanceSquared);
-
-					if (threatScore > highestThreatScore)
-					{
-						highestThreatScore = threatScore;
-						mostThreateningZombie = creature;
-					}
-				}
-
-				return mostThreateningZombie;
-			}
-			catch { }
-
-			return null;
-		}
-
-		private float CalculateZombieThreatScore(ComponentCreature zombie, ComponentPlayer player, float distanceSquared)
-		{
-			float threatScore = 0f;
-
-			float distance = (float)Math.Sqrt(distanceSquared);
-			threatScore = 100f / (distance + 1f);
-
-			if (IsFacingPlayer(zombie, player))
-			{
-				threatScore += 50f;
-			}
-
-			if (IsMovingTowardPlayer(zombie, player))
-			{
-				threatScore += 70f;
-			}
-
-			if (distance < 10f)
-			{
-				threatScore += 100f;
-			}
-
-			ComponentChaseBehavior chase = zombie.Entity.FindComponent<ComponentChaseBehavior>();
-			ComponentNewChaseBehavior newChase = zombie.Entity.FindComponent<ComponentNewChaseBehavior>();
-			ComponentNewChaseBehavior2 newChase2 = zombie.Entity.FindComponent<ComponentNewChaseBehavior2>();
-			ComponentZombieChaseBehavior zombieChase = zombie.Entity.FindComponent<ComponentZombieChaseBehavior>();
-
-			if ((chase != null && chase.Target != null) ||
-				(newChase != null && newChase.Target != null) ||
-				(newChase2 != null && newChase2.Target != null) ||
-				(zombieChase != null && zombieChase.Target != null))
-			{
-				threatScore += 80f;
-			}
-
-			return threatScore;
 		}
 
 		private ComponentCreature FindPlayerAttacker(ComponentPlayer player)
@@ -971,6 +987,56 @@ namespace Game
 			}
 
 			return false;
+		}
+
+		private bool IsCreatureThreat(ComponentCreature creature, ComponentPlayer player)
+		{
+			ComponentNewHerdBehavior creatureHerd = creature.Entity.FindComponent<ComponentNewHerdBehavior>();
+			ComponentHerdBehavior creatureOldHerd = creature.Entity.FindComponent<ComponentHerdBehavior>();
+
+			bool isPlayerAlly = false;
+
+			if (creatureHerd != null && !string.IsNullOrEmpty(creatureHerd.HerdName))
+			{
+				string herdName = creatureHerd.HerdName;
+				isPlayerAlly = herdName.Equals("player", StringComparison.OrdinalIgnoreCase) ||
+							  herdName.ToLower().Contains("guardian");
+			}
+			else if (creatureOldHerd != null && !string.IsNullOrEmpty(creatureOldHerd.HerdName))
+			{
+				string herdName = creatureOldHerd.HerdName;
+				isPlayerAlly = herdName.Equals("player", StringComparison.OrdinalIgnoreCase) ||
+							  herdName.ToLower().Contains("guardian");
+			}
+
+			if (isPlayerAlly)
+				return false;
+
+			if (IsZombieOrInfected(creature))
+				return true;
+
+			if (IsBandit(creature))
+				return true;
+
+			if (IsAttackingPlayer(creature, player))
+				return true;
+
+			return false;
+		}
+
+		private bool IsAttackingPlayer(ComponentCreature creature, ComponentPlayer player)
+		{
+			ComponentChaseBehavior chase = creature.Entity.FindComponent<ComponentChaseBehavior>();
+			ComponentNewChaseBehavior newChase = creature.Entity.FindComponent<ComponentNewChaseBehavior>();
+			ComponentNewChaseBehavior2 newChase2 = creature.Entity.FindComponent<ComponentNewChaseBehavior2>();
+			ComponentZombieChaseBehavior zombieChase = creature.Entity.FindComponent<ComponentZombieChaseBehavior>();
+			ComponentBanditChaseBehavior banditChase = creature.Entity.FindComponent<ComponentBanditChaseBehavior>();
+
+			return (chase != null && chase.Target == player) ||
+				   (newChase != null && newChase.Target == player) ||
+				   (newChase2 != null && newChase2.Target == player) ||
+				   (zombieChase != null && zombieChase.Target == player) ||
+				   (banditChase != null && banditChase.Target == player);
 		}
 
 		private bool IsFacingPlayer(ComponentCreature creature, ComponentPlayer player)
