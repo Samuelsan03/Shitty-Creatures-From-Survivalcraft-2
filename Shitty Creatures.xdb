@@ -1116,22 +1116,8 @@
         </ParameterSet>
         <ParameterSet Name="LootOnFire" Guid="f4a5b6c7-d8e9-7012-789a-cdef01234567"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="Inventory" Guid="1f88ad54-b40a-4f9b-ac97-03def83d2ea6" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
-    <ParameterSet Name="Slots">
-        <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="0" Type="int"/>
-            <Parameter Name="Count" Value="1" Type="int"/>
-        </ParameterSet>
-    </ParameterSet>
-</MemberComponentTemplate>
-    <MemberComponentTemplate Name="InvShooterBehavior" Guid="4a2deec9-c519-4d67-a477-d1eb3a95eb6a" InheritanceParent="456e3558-0e7f-42c3-bc05-35eef7540900">
-    <Parameter Name="SpecialThrowableItem" Value="BigStoneChunkBlock" Type="string"/>
-    <Parameter Name="DiscountFromInventory" Value="False" Type="bool"/>
-    <Parameter Name="SelectRandomThrowableItems" Value="False" Type="bool"/>
-    <Parameter Name="ThrowFromHead" Value="True" Type="bool"/>
-    <Parameter Name="MinMaxRandomChargeTime" Value="0.8;1.2" Type="string"/>
-    <Parameter Name="MinMaxRandomWaitTime" Value="0.3;0.7" Type="string"/>
-    <Parameter Name="MinMaxDistance" Value="10;85.5" Type="string"/>
+<MemberComponentTemplate Name="TankLauncherBehavior" Guid="c128df69-0e6c-4459-98d4-324d9a51f1ce" InheritanceParent="4eddf75f-02f5-482c-9283-a8544a760f96">
+  <Parameter Name="ItemsToLaunch" Guid="3c2f8ca3-6252-4a9e-bc97-97bd8498a7f5" Value="BigStoneChunkBlock" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="PoisonInfected" Guid="3ef4a974-f840-48b4-8629-95aec2aa47a8">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
@@ -1903,22 +1889,8 @@
     <Parameter Name="LoadOrder" Value="55" Type="int" Guid="9f621453-40a9-4d72-95a7-e9e43ce23d39"/>
     <Parameter Name="LowHealthToEscape" Value="0.5" Type="float" Guid="dca870d9-f246-42e5-8886-209a3f8ef8e7"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="Inventory" Guid="1702b87a-621a-4dd4-ab20-4f7cb57ada13" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
-    <ParameterSet Name="Slots">
-        <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="0" Type="int"/>
-            <Parameter Name="Count" Value="1" Type="int"/>
-        </ParameterSet>
-    </ParameterSet>
-</MemberComponentTemplate>
-<MemberComponentTemplate Name="InvShooterBehavior" Guid="e906594e-7ea3-48b9-89d7-34e68175ea46" InheritanceParent="456e3558-0e7f-42c3-bc05-35eef7540900">
-    <Parameter Name="SpecialThrowableItem" Value="BigStoneChunkBlock" Type="string"/>
-    <Parameter Name="DiscountFromInventory" Value="False" Type="bool"/>
-    <Parameter Name="SelectRandomThrowableItems" Value="False" Type="bool"/>
-    <Parameter Name="ThrowFromHead" Value="True" Type="bool"/>
-    <Parameter Name="MinMaxRandomChargeTime" Value="0.8;1.2" Type="string"/>
-    <Parameter Name="MinMaxRandomWaitTime" Value="0.3;0.7" Type="string"/>
-    <Parameter Name="MinMaxDistance" Value="10;85.5" Type="string"/>
+<MemberComponentTemplate Name="TankLauncherBehavior" Guid="07a30819-4408-4f9c-90b9-f98c43aeab69" InheritanceParent="4eddf75f-02f5-482c-9283-a8544a760f96">
+  <Parameter Name="ItemsToLaunch" Guid="782ddcc9-a259-4a56-849a-1e5951f28e9b" Value="BigStoneChunkBlock" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="0eb9d606-2611-4033-a9f7-018af376675f" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
     <Parameter Name="ChaseToCreatures" Guid="10ed7f7d-f630-4c4a-819c-49b084166a4b" Value="Naomi, Ricardo, Paco, Barack, ElMarihuanero, ElMarihuaneroMamon, TommyVercetti, ClaudeSpeed, ArqueroPrisionero, BallestadoraMusculosa, CarlJohnson, BetelGammamon, Gaomon, Agumon, Veemon, Guilmon, WalterZombie, WalterZombieMamadisimo, FumadorQuimico, FumadorQuimicoBrawny, Conker, Beavis, Butt-Head, Shoutmon, Gumdramon, Bass_Sea, Seagull, Sparrow, Reindeer, Horse_White, Horse_White_Saddled, Horse_Chestnut, Horse_Chestnut_Saddled, Horse_Bay, Horse_Bay_Saddled, Horse_Palomino, Horse_Palomino_Saddled, Horse_Black, Horse_Black_Saddled, Camel, Camel_Saddled, Zebra, Wildboar, Bison, Bull_Brown, Bull_Black, Cow_Brown, Cow_Black, Bull_White, Duck, Pigeon, Raven, Giraffe, Moose, Donkey, Donkey_Saddled, Cassowary, Ostrich, Gnu, Werewolf, Ray_Yellow, Ray_Brown, Beluga,Hyena, Rhino, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite, Player" Type="string"/>
