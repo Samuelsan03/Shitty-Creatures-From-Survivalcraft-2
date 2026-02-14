@@ -61,7 +61,7 @@ namespace Game
 									isPlayerAlly = true;
 								}
 							}
-							else if (targetHerd.HerdName.ToLower().Contains("guardian"))
+							else if (oldHerdBehavior.HerdName.ToLower().Contains("guardian"))
 							{
 								if (targetHerd.HerdName.Equals("player", StringComparison.OrdinalIgnoreCase))
 								{
@@ -85,7 +85,7 @@ namespace Game
 				}
 
 				// Durante noche verde, ignorar algunas restricciones para zombies
-				if (m_subsystemGreenNightSky != null && m_subsystemGreenNightSky.IsGreenNightActive)
+				if (this.m_subsystemGreenNightSky != null && this.m_subsystemGreenNightSky.IsGreenNightActive)
 				{
 					// Si el objetivo es un zombie/infectado, priorizar ataque
 					if (IsZombieOrInfected(componentCreature))
@@ -156,7 +156,7 @@ namespace Game
 			this.m_autoChaseSuppressionTime -= dt;
 
 			// Lógica adicional para noche verde: alta guardia permanente
-			if (m_subsystemGreenNightSky != null && m_subsystemGreenNightSky.IsGreenNightActive)
+			if (this.m_subsystemGreenNightSky != null && this.m_subsystemGreenNightSky.IsGreenNightActive)
 			{
 				// Asegurarse de que no estamos suprimidos durante noche verde
 				if (this.Suppressed)
@@ -170,7 +170,7 @@ namespace Game
 					this.m_importanceLevel = 250f;
 				}
 
-				// AGREGADO: Durante noche verde, chequear amenazas más frecuentemente (GUARDIA EXTREMA)
+				// AGREGADO: Durante noche verde, chequear amenazas más frecuentemente (GUARDIA EXTREMA) - VERSIÓN MEJORADA
 				this.CheckHighAlertPlayerThreats(dt);
 			}
 			else
@@ -299,7 +299,7 @@ namespace Game
 			return null;
 		}
 
-		// AGREGADO SIMPLE: Verificar si es bandido
+		// AGREGADO SIMPLE: Verificar si es bandido (SOLO MANADA "BANDIT")
 		private bool IsBandit(ComponentCreature creature)
 		{
 			if (creature == null) return false;
@@ -308,8 +308,8 @@ namespace Game
 			ComponentNewHerdBehavior newHerd = creature.Entity.FindComponent<ComponentNewHerdBehavior>();
 			if (newHerd != null && !string.IsNullOrEmpty(newHerd.HerdName))
 			{
-				string herdName = newHerd.HerdName.ToLower();
-				if (herdName.Contains("bandit") || herdName.Contains("outlaw") || herdName.Contains("raider"))
+				string herdName = newHerd.HerdName;
+				if (herdName.Equals("bandit", StringComparison.OrdinalIgnoreCase))
 					return true;
 			}
 
@@ -317,19 +317,10 @@ namespace Game
 			ComponentHerdBehavior oldHerd = creature.Entity.FindComponent<ComponentHerdBehavior>();
 			if (oldHerd != null && !string.IsNullOrEmpty(oldHerd.HerdName))
 			{
-				string herdName = oldHerd.HerdName.ToLower();
-				if (herdName.Contains("bandit") || herdName.Contains("outlaw") || herdName.Contains("raider"))
+				string herdName = oldHerd.HerdName;
+				if (herdName.Equals("bandit", StringComparison.OrdinalIgnoreCase))
 					return true;
 			}
-
-			// Verificar componente específico de bandido
-			ComponentBanditHerdBehavior banditHerd = creature.Entity.FindComponent<ComponentBanditHerdBehavior>();
-			if (banditHerd != null)
-				return true;
-
-			ComponentBanditChaseBehavior banditChase = creature.Entity.FindComponent<ComponentBanditChaseBehavior>();
-			if (banditChase != null)
-				return true;
 
 			return false;
 		}
@@ -356,12 +347,12 @@ namespace Game
 			return false;
 		}
 
-		// AGREGADO: Sistema de alta guardia durante noche verde (GUARDIA EXTREMA)
+		// AGREGADO: Sistema de alta guardia durante noche verde (GUARDIA EXTREMA) - VERSIÓN MEJORADA
 		private void CheckHighAlertPlayerThreats(float dt)
 		{
 			try
 			{
-				// Verificar si somos aliados del jugador
+				// Solo si somos aliados del jugador
 				if (!IsGuardianOrPlayerAlly())
 					return;
 
@@ -378,19 +369,19 @@ namespace Game
 					{
 						if (player.ComponentHealth.Health > 0f)
 						{
-							// Buscar zombies/infectados que se acerquen al jugador
-							ComponentCreature approachingZombie = FindApproachingZombie(player, highAlertRange);
+							// Buscar la amenaza más peligrosa para este jugador (ya sea zombie, bandido, etc.)
+							ComponentCreature mostDangerousThreat = FindMostDangerousThreatForPlayer(player, highAlertRange);
 
-							if (approachingZombie != null && (this.m_target == null || this.m_target != approachingZombie))
+							if (mostDangerousThreat != null && (this.m_target == null || this.m_target != mostDangerousThreat))
 							{
 								// Atacar inmediatamente sin esperar a que ataque (GUARDIA EXTREMA)
-								this.Attack(approachingZombie, highAlertRange, 60f, true);
+								this.Attack(mostDangerousThreat, highAlertRange, 60f, true);
 
 								// Llamar a otros aliados para ayuda
 								ComponentNewHerdBehavior herdBehavior = base.Entity.FindComponent<ComponentNewHerdBehavior>();
 								if (herdBehavior != null && herdBehavior.AutoNearbyCreaturesHelp)
 								{
-									herdBehavior.CallNearbyCreaturesHelp(approachingZombie, highAlertRange, 60f, false, true);
+									herdBehavior.CallNearbyCreaturesHelp(mostDangerousThreat, highAlertRange, 60f, false, true);
 								}
 
 								return; // Atacar solo a una amenaza a la vez
@@ -402,8 +393,8 @@ namespace Game
 			catch { }
 		}
 
-		// AGREGADO: Encontrar zombies que se acerquen al jugador
-		private ComponentCreature FindApproachingZombie(ComponentPlayer player, float range)
+		// NUEVO: Encuentra la criatura más peligrosa cerca de un jugador (cualquier tipo)
+		private ComponentCreature FindMostDangerousThreatForPlayer(ComponentPlayer player, float range)
 		{
 			try
 			{
@@ -413,8 +404,8 @@ namespace Game
 				Vector3 playerPosition = player.ComponentBody.Position;
 				float rangeSquared = range * range;
 
-				ComponentCreature mostThreateningZombie = null;
-				float highestThreatScore = 0f;
+				ComponentCreature mostDangerous = null;
+				float highestThreatLevel = 0f;
 
 				foreach (ComponentCreature creature in this.m_subsystemCreatureSpawn.Creatures)
 				{
@@ -422,10 +413,11 @@ namespace Game
 						creature.ComponentHealth != null &&
 						creature.ComponentHealth.Health > 0f &&
 						creature != this.m_componentCreature &&
+						creature != player && // No consideramos al propio jugador
 						creature.ComponentBody != null)
 					{
-						// Verificar si es zombie/infectado
-						if (!IsZombieOrInfected(creature))
+						// Verificar si es una amenaza (usando la misma lógica que en FindImmediateThreat)
+						if (!IsCreatureThreat(creature, player))
 							continue;
 
 						// Verificar distancia
@@ -433,83 +425,95 @@ namespace Game
 						if (distanceSquared > rangeSquared)
 							continue;
 
-						// Calcular puntuación de amenaza
-						float threatScore = CalculateZombieThreatScore(creature, player, distanceSquared);
+						// Calcular nivel de amenaza (generalizado)
+						float threatLevel = CalculateThreatLevel(creature, player, distanceSquared);
 
-						if (threatScore > highestThreatScore)
+						if (threatLevel > highestThreatLevel)
 						{
-							highestThreatScore = threatScore;
-							mostThreateningZombie = creature;
+							highestThreatLevel = threatLevel;
+							mostDangerous = creature;
 						}
 					}
 				}
 
-				return mostThreateningZombie;
+				return mostDangerous;
 			}
 			catch { }
 
 			return null;
 		}
 
-		// AGREGADO: Calcular puntuación de amenaza de zombie
-		private float CalculateZombieThreatScore(ComponentCreature zombie, ComponentPlayer player, float distanceSquared)
+		// NUEVO: Calcula el nivel de amenaza de cualquier criatura hacia un jugador (generalización)
+		private float CalculateThreatLevel(ComponentCreature creature, ComponentPlayer player, float distanceSquared)
 		{
-			float threatScore = 0f;
+			float threatLevel = 0f;
 
 			// Base: inversamente proporcional a la distancia
 			float distance = (float)Math.Sqrt(distanceSquared);
-			threatScore = 100f / (distance + 1f);
+			threatLevel = 100f / (distance + 1f);
+
+			// Bonus según el tipo de criatura
+			if (IsZombieOrInfected(creature))
+			{
+				threatLevel *= 1.5f; // Zombies: +50%
+			}
+			else if (IsBandit(creature))
+			{
+				threatLevel *= 1.8f; // Bandidos: +80% (muy peligrosos)
+			}
+			else
+			{
+				// Otras criaturas hostiles (lobos, etc.) – factor moderado
+				threatLevel *= 1.3f;
+			}
 
 			// Bonus si está mirando hacia el jugador
-			if (IsFacingPlayer(zombie, player))
+			if (IsFacingPlayer(creature, player))
 			{
-				threatScore += 50f;
+				threatLevel += 50f;
 			}
 
 			// Bonus si se está moviendo hacia el jugador
-			if (IsMovingTowardPlayer(zombie, player))
+			if (IsMovingTowardPlayer(creature, player))
 			{
-				threatScore += 70f;
+				threatLevel += 70f;
 			}
 
 			// Bonus extra si está muy cerca
 			if (distance < 10f)
 			{
-				threatScore += 100f;
+				threatLevel += 100f;
 			}
 
-			// Verificar si ya está atacando a alguien (no necesariamente al jugador)
-			ComponentChaseBehavior chase = zombie.Entity.FindComponent<ComponentChaseBehavior>();
-			ComponentNewChaseBehavior newChase = zombie.Entity.FindComponent<ComponentNewChaseBehavior>();
-			ComponentNewChaseBehavior2 newChase2 = zombie.Entity.FindComponent<ComponentNewChaseBehavior2>();
-			ComponentZombieChaseBehavior zombieChase = zombie.Entity.FindComponent<ComponentZombieChaseBehavior>();
-
-			if ((chase != null && chase.Target != null) ||
-				(newChase != null && newChase.Target != null) ||
-				(newChase2 != null && newChase2.Target != null) ||
-				(zombieChase != null && zombieChase.Target != null))
+			// Bonus si ya está atacando al jugador (prioridad máxima)
+			if (IsAttackingPlayer(creature, player))
 			{
-				threatScore += 80f; // Ya es agresivo, más peligroso
+				threatLevel += 200f;
 			}
 
-			return threatScore;
+			// Bonus si está atacando a alguien (cualquier objetivo) – ya es agresivo
+			if (IsCreatureAggressive(creature))
+			{
+				threatLevel += 80f;
+			}
+
+			return threatLevel;
 		}
 
-		// AGREGADO: Verificar si está mirando hacia el jugador
-		private bool IsFacingPlayer(ComponentCreature creature, ComponentPlayer player)
+		// NUEVO: Verifica si una criatura está en modo agresivo (persiguiendo a alguien)
+		private bool IsCreatureAggressive(ComponentCreature creature)
 		{
-			if (creature.ComponentBody == null || player.ComponentBody == null)
-				return false;
+			ComponentChaseBehavior chase = creature.Entity.FindComponent<ComponentChaseBehavior>();
+			ComponentNewChaseBehavior newChase = creature.Entity.FindComponent<ComponentNewChaseBehavior>();
+			ComponentNewChaseBehavior2 newChase2 = creature.Entity.FindComponent<ComponentNewChaseBehavior2>();
+			ComponentZombieChaseBehavior zombieChase = creature.Entity.FindComponent<ComponentZombieChaseBehavior>();
+			ComponentBanditChaseBehavior banditChase = creature.Entity.FindComponent<ComponentBanditChaseBehavior>();
 
-			Vector3 toPlayer = player.ComponentBody.Position - creature.ComponentBody.Position;
-			if (toPlayer.LengthSquared() < 0.01f)
-				return false;
-
-			toPlayer = Vector3.Normalize(toPlayer);
-			Vector3 creatureForward = creature.ComponentBody.Matrix.Forward;
-
-			float dot = Vector3.Dot(creatureForward, toPlayer);
-			return dot > 0.7f; // Mirando hacia el jugador (45 grados o menos)
+			return (chase != null && chase.Target != null) ||
+				   (newChase != null && newChase.Target != null) ||
+				   (newChase2 != null && newChase2.Target != null) ||
+				   (zombieChase != null && zombieChase.Target != null) ||
+				   (banditChase != null && banditChase.Target != null);
 		}
 
 		// Método para verificar si es zombie/infectado
@@ -746,6 +750,23 @@ namespace Game
 				return true;
 
 			return false;
+		}
+
+		// Método para verificar si está mirando hacia el jugador
+		private bool IsFacingPlayer(ComponentCreature creature, ComponentPlayer player)
+		{
+			if (creature.ComponentBody == null || player.ComponentBody == null)
+				return false;
+
+			Vector3 toPlayer = player.ComponentBody.Position - creature.ComponentBody.Position;
+			if (toPlayer.LengthSquared() < 0.01f)
+				return false;
+
+			toPlayer = Vector3.Normalize(toPlayer);
+			Vector3 creatureForward = creature.ComponentBody.Matrix.Forward;
+
+			float dot = Vector3.Dot(creatureForward, toPlayer);
+			return dot > 0.7f; // Mirando hacia el jugador (45 grados o menos)
 		}
 
 		// Responder a comandos inmediatamente
@@ -1343,7 +1364,7 @@ namespace Game
 		public SubsystemTime m_subsystemTime;
 		public SubsystemNoise m_subsystemNoise;
 		public SubsystemCreatureSpawn m_subsystemCreatureSpawn;
-		public SubsystemGreenNightSky m_subsystemGreenNightSky; // Subsistema de noche verde
+		public SubsystemGreenNightSky m_subsystemGreenNightSky;
 		public ComponentCreature m_componentCreature;
 		public ComponentPathfinding m_componentPathfinding;
 		public ComponentMiner m_componentMiner;
@@ -1368,8 +1389,8 @@ namespace Game
 		public float m_targetInRangeTime;
 		public double m_nextUpdateTime;
 		public double m_nextPlayerCheckTime;
-		public double m_nextHighAlertCheckTime; // Para chequeo de alta alerta
-		public double m_nextBanditCheckTime; // AGREGADO SIMPLE: Para chequeo de bandidos
+		public double m_nextHighAlertCheckTime;
+		public double m_nextBanditCheckTime;
 		public ComponentCreature m_target;
 		public float m_dt;
 		public float m_range;
