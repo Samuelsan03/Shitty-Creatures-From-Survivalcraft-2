@@ -1,4 +1,4 @@
-<Mod>
+<Mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://gitee.com/THPRC/survivalcraft-api/raw/SCAPI1.8/Survivalcraft/Content/Assets/Database.xsd">
     <Folder Name="Gameplay" Guid="d509e5e2-2c10-49f1-8223-85cd892c63b0">
 <ComponentTemplate Name="CreatureInventory" Description="Inventario para criaturas que pueden almacenar y usar objetos" Guid="a347220c-b5cf-4eae-9215-4ed37426eec4" InheritanceParent="81a44c6a-c30a-4f53-8d64-0c30aabab8f9">
   <Parameter Name="ActiveSlotIndex" Description="Índice del slot activo de la criatura" Guid="65e82739-c714-4418-90b0-adddb190350d" Value="0" Type="int"/>
@@ -63,8 +63,9 @@
 </ComponentTemplate>
 
 <ComponentTemplate Name="ZombieAI" Description="Inteligencia artificial avanzada para zombies con soporte para armas, recarga automática y animaciones" Guid="dc91ba3e-c474-45c3-8d03-ca9a9996dc5f" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
-    <Parameter Name="Class" Guid="7f034217-2fb5-4da2-b6a2-c1ffec350ddb" Value="Game.ComponentZombieAI" Type="string" Description="Clase C# que implementa el componente de IA para zombies" IsOptional="true"/>
+    <Parameter Name="Class" Guid="7f034217-2fb5-4da2-b6a2-c1ffec350ddb" Value="Game.ComponentZombieAI" Type="string" Description="Clase C# que implementa el componente de IA para zombies"/>
     <Parameter Name="CanUseInventory" Guid="65316e97-6084-43e7-b97f-f1382258dded" Value="true" Type="bool" Description="Si el zombie puede usar armas del inventario"/>
+    <Parameter Name="AimHandAngleOrder" Guid="e7fe5453-3ba9-4139-a2b9-b534ee25ea9a" Value="90" Type="float" Description="Ángulo en grados que determina la orientación de la mano al apuntar el arma"/>
 </ComponentTemplate>
 
 <ComponentTemplate Name="NewHumanModel" Description="Modelo humano con animaciones mejoradas y fluidas" Guid="da33e501-1378-4644-8b5f-ef90863234a5" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
@@ -483,12 +484,9 @@
             <Parameter Name="Class" Guid="195523d4-9a71-4be0-ad61-04613053c78d" Value="Game.ComponentInvShooterBehavior" Type="string"/>
         </ComponentTemplate>
 
-       <ComponentTemplate Name="TankLauncherBehavior" Description="Comportamiento que hace a un tanque lanzar objetos desde su inventario." Guid="264749c8-640f-433f-b944-95b0ff3de2e9" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
-    <Parameter Name="MinMaxDistance" Description="Distancia mínima y máxima para que el tanque lance objetos, formato: Min;Max ejemplo: 5;20." Guid="91c5dc5d-4481-4685-a52f-8cd3095fd9e6" Value="5;20" Type="string"/>
-    <Parameter Name="ThrowableItems" Description="Lista de objetos que el tanque puede lanzar desde su inventario. Usar IDs numéricos o nombres de bloques separados por punto y coma. Ejemplo: 46;47;StoneBlock" Guid="c031b6b7-ba00-4e95-b177-bb075dd3c69f" Value="" Type="string"/>
-    <Parameter Name="UsesInventory" Description="Si el tanque usa el inventario para munición (true) o puede lanzar sin consumir items (false)." Guid="d47eb520-6a58-448e-a080-aff5d1de1e1e" Value="true" Type="bool"/>
-    <Parameter Name="ReloadTime" Description="Tiempo en segundos para volver a lanzar después de cada disparo." Guid="5d679191-8c2f-4b6f-b1e8-0645a5d8acc6" Value="3.0" Type="float"/>
-    <Parameter Name="Class" Guid="b463d517-1e7b-4bd8-b763-9a94cfe96410" Value="Game.ComponentTankLauncherBehavior" Type="string"/>
+<ComponentTemplate Name="TankLauncherBehavior" Guid="4eddf75f-02f5-482c-9283-a8544a760f96" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
+  <Parameter Name="Class" Guid="ccca63ab-008a-4a78-afca-3823728423b5" Value="Game.ComponentTankLauncherBehavior" Type="string"/>
+  <Parameter Name="ItemsToLaunch" Guid="6e84b901-041f-4413-84e7-9c9d929781c7" Value="" Type="string"/>
 </ComponentTemplate>
 
         <ComponentTemplate Name="PoisonInfectedBehavior" Description="Comportamiento de infección por veneno" Guid="be2c0252-8847-40dc-ab78-db6c09df60e7">
@@ -499,20 +497,19 @@
   <Parameter Name="InfectProbability" Description="Probabilidad de que el ataque cause envenenamiento (0-1)" Guid="7c34d504-c34a-487a-8ca2-a115ca60e9d7" Value="1.0" Type="float"/>
 </ComponentTemplate>
 
-<ComponentTemplate Name="NewChaseBehavior" Description="Comportamiento de persecución que integra con el sistema de manadas" Guid="d18f7333-6f1a-4ef9-b232-7035859f9275">
-    <Parameter Name="Class" Value="Game.ComponentNewChaseBehavior" Type="string" Guid="656b2d3f-6471-48cc-aa89-3043dfa416f3"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="2a4e30dd-27e6-4da1-8bb1-910a9d75d344"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="7dc582bd-eb7c-4818-b87f-c59e71f5907e"/>
-    <Parameter Name="DayChaseRange" Value="16" Type="float" Description="Rango de persecución durante el día" Guid="0f39ab17-3480-4a6a-aca0-4ab3b5301e0e"/>
-    <Parameter Name="NightChaseRange" Value="24" Type="float" Description="Rango de persecución durante la noche" Guid="f02e0223-4297-487f-a939-8fc4e4a0008d"/>
-    <Parameter Name="DayChaseTime" Value="30" Type="float" Description="Tiempo máximo de persecución durante el día" Guid="b4fd274e-55fc-4251-9ff0-fd78f299b3d6"/>
-    <Parameter Name="NightChaseTime" Value="60" Type="float" Description="Tiempo máximo de persecución durante la noche" Guid="df58cf54-e22b-4952-8824-d53bc6ac5ef7"/>
-    <Parameter Name="ChaseNonPlayerProbability" Value="0.2" Type="float" Description="Probabilidad de perseguir criaturas no jugador" Guid="706aab6b-84d6-4f61-a936-fc5759b005a2"/>
-    <Parameter Name="ChaseWhenAttackedProbability" Value="0.8" Type="float" Description="Probabilidad de perseguir cuando es atacado" Guid="1580714d-9447-47b9-8119-2ce3dc577a39"/>
-    <Parameter Name="ChaseOnTouchProbability" Value="0.5" Type="float" Description="Probabilidad de perseguir al tocar" Guid="26017a64-22c7-4a15-9519-13b238ff7237"/>
-    <Parameter Name="AttackMode" Value="Default" Type="string" Guid="19e978b5-b116-4ec8-a748-7fef77beac35"/>
-    <Parameter Name="AttackRange" Value="2,15" Type="Vector2" Guid="7d6c994c-7bb3-40a8-a5d6-ff3b9b4e0e26"/>
-    <Parameter Name="AutoChaseMask" Value="LandOther" Type="string" Guid="35393c23-8c2c-466c-ac71-2a08f86b009b"/>
+<ComponentTemplate Name="NewChaseBehavior" Description="Comportamiento avanzado de persecución con integración a manadas, defensa del jugador y detección prioritaria de amenazas (bandidos y criaturas hostiles)." Guid="ef7de64b-34ae-42cc-b51c-ebf3a0621558">
+  <Parameter Name="Class" Value="Game.ComponentNewChaseBehavior" Type="string" Guid="11fabd7a-d7fc-41b1-89b7-886747fb212a"/>
+  <Parameter Name="IsOptional" Value="true" Type="bool" Guid="e337134c-d81f-404e-bf88-5c25c8a01ab5"/>
+  <Parameter Name="LoadOrder" Value="60" Type="int" Guid="8b3012e5-3d60-40ff-bc79-df913f1edf77"/>
+  <Parameter Name="DayChaseRange" Value="16" Type="float" Description="Distancia base máxima a la que detecta y comienza a perseguir objetivos durante el día. Se modifica por factores internos y estado del entorno." Guid="87e5a27b-dfa9-40fe-ab4e-b9dd7152e9f9"/><Parameter Name="NightChaseRange" Value="24" Type="float" Description="Distancia base máxima de detección y persecución durante la noche. Generalmente mayor que de día." Guid="e5712619-f858-46ca-adf5-9d257e3e8344"/>
+  <Parameter Name="DayChaseTime" Value="30" Type="float" Description="Tiempo máximo que mantiene la persecución iniciada durante el día antes de desistir, salvo que sea persistente." Guid="cb23ed02-a3a6-48e9-876f-620f88c7b501"/>
+  <Parameter Name="NightChaseTime" Value="60" Type="float" Description="Tiempo máximo que mantiene la persecución durante la noche. Puede extenderse si el objetivo sigue siendo válido." Guid="6859ead6-45be-4b49-8f9a-ae2b4406fa27"/>
+  <Parameter Name="ChaseNonPlayerProbability" Value="0.2" Type="float" Description="Probabilidad de seleccionar criaturas que no sean jugador como objetivo automático cuando coinciden con la máscara AutoChaseMask." Guid="a3a26703-023f-46c3-9fa8-f82b5d27b2e9"/>
+  <Parameter Name="ChaseWhenAttackedProbability" Value="0.8" Type="float" Description="Probabilidad de iniciar persecución contra quien lo haya atacado. Si es 1, siempre responde; si es menor, depende de azar." Guid="9b57872f-be8c-4060-aec8-f44ddcabd9f2"/>
+  <Parameter Name="ChaseOnTouchProbability" Value="0.5" Type="float" Description="Probabilidad de iniciar persecución cuando colisiona físicamente con otra criatura válida." Guid="b3efe392-27b6-49a5-9ab2-1497eed265c7"/>
+  <Parameter Name="AttackMode" Value="Default" Type="string" Description="Modo de ataque: Default (cuerpo a cuerpo y distancia), OnlyHand (solo cuerpo a cuerpo), Ranged (prioriza armas a distancia)." Guid="7f765cbd-1b04-48bc-9d21-8b967ad7a33f"/>
+  <Parameter Name="AttackRange" Value="2,15" Type="Vector2" Description="Rango mínimo y máximo efectivo de ataque. El primero es distancia cercana; el segundo determina alcance máximo (especialmente para armas a distancia)." Guid="f57205aa-acfe-43ec-838c-3733b0de4bae"/>
+  <Parameter Name="AutoChaseMask" Value="LandOther" Type="string" Description="Máscara de categorías de criaturas que puede seleccionar automáticamente como objetivo cuando no son jugador." Guid="20c217ec-1d40-454b-b67c-6f7607a17d6f"/>
 </ComponentTemplate>
 
 <ComponentTemplate Name="NewHerdBehavior" Description="Comportamiento de manada con cooperación, llamadas de ayuda y protección entre aliados" Guid="24c8a629-49be-4cb4-b829-78d5a5a14204" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
@@ -739,10 +736,12 @@
     <MemberSubsystemTemplate Name="FlameThrowerBlockBehavior" Guid="542a26f8-f4ed-47f9-afb5-098d16d711c2" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
       <Parameter Name="Class" Guid="76328ace-b569-40d4-8cf8-414d685b8baa" Value="Game.SubsystemFlameThrowerBlockBehavior" Type="string"/>
     </MemberSubsystemTemplate>
-    <MemberSubsystemTemplate Name="SkyGreen" Guid="04229cb1-e365-4649-a2de-c46ca7f2942a" InheritanceParent="a3914c13-7801-46a6-b23a-9e2b36e9defb">
-    <Parameter Name="Class" Value="Game.SubsystemGreenNightSky" Type="string" Guid="efab17c3-2282-48e0-9cbb-86fd4d754498"/>
-    <Parameter Name="IsGreenNightActive" Value="true" Type="bool" Guid="cef1c368-c512-402a-9e81-e0ddbe3dc2e6"/>
-    <Parameter Name="LastMoonPhase" Value="1" Type="int" Guid="2b489cb6-b4e0-4e9e-86d1-53b743a9b14a"/>
+<MemberSubsystemTemplate Name="SkyGreen" Guid="280f1c5a-7c84-4149-9809-8a28b85bae1f" InheritanceParent="a3914c13-7801-46a6-b23a-9e2b36e9defb">
+    <Parameter Name="Class" Value="Game.SubsystemGreenNightSky" Type="string" Guid="52c94fa8-b6d9-4c23-8bed-d7b9f76fce19"/>
+    <Parameter Name="IsGreenNightActive" Value="false" Type="bool" Guid="98867be9-88bd-4027-9b4b-7c749a4a7e7a"/>
+    <Parameter Name="HasRolledTonight" Value="false" Type="bool" Guid="e88cdbbd-dcb7-4263-ab28-9ca046f8e07f"/>
+    <Parameter Name="LastCheckedDay" Value="0" Type="double" Guid="5b412878-76c4-4031-b90a-dceb01c4e203"/>
+    <Parameter Name="DaysSinceLastGreenNight" Value="0" Type="int" Guid="97154c9c-9b04-4464-9cd1-4cf799adc5eb"/>
 </MemberSubsystemTemplate>
     <MemberSubsystemTemplate Name="SubsystemInGameMusic" Description="Reproduccion músical durante el juego." Guid="f009f348-e373-4936-bf4d-fbe684c64cbd" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
         <Parameter Name="Class" Guid="12016d6d-2f3a-4c74-88a4-6dc50e5427fe" Value="Game.SubsystemInGameMusic" Type="string"/>
