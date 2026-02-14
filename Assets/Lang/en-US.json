@@ -1,4 +1,7 @@
 {
+  "HealthBar": {
+    "HP": "HP"
+  },
   "InGameMusic": {
     "MusicEnabled": "Music enabled",
     "MusicDisabled": "Music disabled",
@@ -37,6 +40,9 @@
     "InventoryLabel": "Inventory",
     "CoolingStatus": "Cooling...",
     "NoPowerStatus": "No Power"
+  },
+  "Injury": {
+    "Poisoned": "Poisoned"
   },
   "Database": {
     "DisplayName": {
@@ -739,8 +745,6 @@
     "CollarTamedGhostMessage": "You have tamed a Ghost!\n Its invisibility is now in your hands!",
     "AntiTankCriticalHit": "Anti-Tank bullet critical hit",
     "TankChaseAlert": "ALERT!\n A Tank has appeared!\n Take refuge, find good weapons to kill it or use the zombie collar to calm its rage and turn it into an ally!",
-    "DeathByPoisonRock": "Poisoned by toxic giant rock",
-    "DeathByFlamingRock": "Incinerated by a flaming giant rock",
     "CollarTamedTankMessage": "You have tamed the Tank!\n The most feared boss of bosses is now your slave!\n Take advantage of its brute force as your guardian!",
     "CollarTamedChargerMessage": "You have tamed a Charger!\n Its brute force to push enemies strongly will now be your tool!\n Use it well and wisely!",
     "CollarTamedBoomerMessage": "You have tamed a Boomer!\nNow you can use it as an explosive guardian slave.\nUse it wisely in emergency cases!",
