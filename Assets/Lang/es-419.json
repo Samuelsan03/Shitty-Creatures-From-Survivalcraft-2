@@ -1,4 +1,19 @@
 {
+  "InGameMusic": {
+    "MusicEnabled": "Música activada",
+    "MusicDisabled": "Música desactivada",
+    "MusicToggleButton": "Música\n",
+    "MusicOn": "Activada",
+    "MusicOff": "Desactivada",
+    "NowPlaying": "Estás escuchando: ",
+    "UnknownTrack": "Canción desconocida",
+    "MusicTrack": "Canción",
+    "MusicFileNotFound": "No se encontró el archivo de música",
+    "MusicPlayError": "Error al reproducir música"
+  },
+  "ItemsLauncher": {
+    "YouNeedAmmunition": "Necesitas munición para disparar el lanzador"
+  },
   "GreenNightSky": {
     "GreenMoonBegins": "¡La Luna Verde ha comenzado!"
   },
@@ -17,29 +32,6 @@
     "Off": "Apagado",
     "CoverageRadius": "Radio de Cobertura"
   },
-  "MusicToggleButton": "Música\n",
-  "MusicOn": "ACTIVADA",
-  "MusicOff": "DESACTIVADA",
-  "MusicEnabled": "Música activada",
-  "MusicDisabled": "Música desactivada",
-  "NowPlaying": "Estas escuchando:",
-  "MusicFileNotFound": "Archivo de música no encontrado",
-  "MusicPlayError": "Error al reproducir música",
-  "AutoCannonTitle": "Cañón Automático",
-  "InventoryTitle": "Inventario",
-  "ProjectileSpeed": "Velocidad del Proyectil",
-  "ShotsPerSecond": "Disparos Por Segundo",
-  "ProjectileSpread": "Dispersión del Proyectil",
-  "Fuel": "Combustible",
-  "Accept": "Aceptar",
-  "Cancel": "X",
-  "YouNeedAmmunition": "Necesitas munición para disparar el lanzador de objetos",
-  "UseAutoCannon": "Usar Cañón Automático",
-  "AutoCannonHelp": "Autores\nFire Dragon\nKike\n----------\nEsta arma usa el primer espacio de la barra rápida o el primer espacio disponible con un objeto. Para guardar los cambios, debes presionar 'Aceptar', o 'X' para descartar. Los ajustes de dispersión y velocidad determinan la dirección y distancia de los proyectiles.\n\nPara usarlo, simplemente mantén presionado clic derecho si estás en PC, o mantén presionada la pantalla si estás en dispositivo móvil, y disparará automáticamente las veces por segundo que hayas configurado. Útil para disparar huevos de spawn y generar criaturas en grandes cantidades en poco tiempo.\n\nTambién puedes divertirte lanzando fuegos artificiales o cualquier otro objeto.\n\n\nCódigo robado por Samuelsan03, así que haz lo que quieras con este código xd",
-  "Poisoned": "Envenenado",
-  "DeathByBoomer": "Volado a pedazos por un Boomer",
-  "DeathByBoomerFire": "Incinerado por una explosión ígnea de Boomer",
-  "HP": "PV",
   "RefrigeratorXiaomi": {
     "RefrigeratorLabel": "Refrigerador",
     "InventoryLabel": "Inventario",
@@ -709,6 +701,16 @@
     }
 },
   "ContentWidgets": {
+    "AutoCannonWidget": {
+    "Title": "Auto-Cañón",
+    "InventoryTitle": "Inventario",
+    "ProjectileSpeed": "Velocidad del Proyectil",
+    "ShotsPerSecond": "Disparos por Segundo",
+    "ProjectileSpread": "Dispersión del Proyectil",
+    "Fuel": "Combustible",
+    "HelpTitle": "Usar Auto-Cañón",
+    "HelpText": "Autores\nFire Dragon\nKike\n----------\nEsta arma usa la primera ranura de la barra rápida o la primera ranura disponible con un objeto. Para guardar cambios, presiona 'Aceptar', o 'X' para cancelar. La configuración de dispersión y velocidad determinan la dirección y distancia de los proyectiles.\n\nPara usarlo, simplemente mantén presionado el clic derecho en PC o toca la pantalla en dispositivos móviles, y disparará automáticamente las veces por segundo que hayas configurado. Útil para lanzar huevos de criaturas y generar seres en grandes cantidades en poco tiempo.\n\nTambién puedes divertirte lanzando fuegos artificiales o cualquier otro objeto.\n\n\nCódigo robado por Samuelsan03, así que haz lo que quieras con él xd"
+  },
     "CreatureInventoryWidget": {
       "CreatureInventoryLabel": "Inventario de {0}",
       "InventoryLabel": "Inventario"
@@ -755,6 +757,6 @@
   },
   "Usual": {
     "ok": "Aceptar",
-    "cancel": "Cancelar"
+    "cancel": "X"
   }
 }
