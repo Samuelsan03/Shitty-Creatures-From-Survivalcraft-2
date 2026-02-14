@@ -22,6 +22,9 @@ namespace Game
 			this.m_creature = base.Entity.FindComponent<ComponentCreature>(true);
 			this.m_health = base.Entity.FindComponent<ComponentHealth>(true);
 			this.m_body = base.Entity.FindComponent<ComponentBody>(true);
+			
+			// Cargar MaxDisplayDistance del ValuesDictionary si está configurado
+			this.MaxDisplayDistance = values.GetValue<float>("MaxDisplayDistance", 10f);
 		}
 
 		public void Draw(Camera camera, int drawOrder)
@@ -66,14 +69,14 @@ namespace Game
 
 			Color color = (healthPercent < 0.3f) ? Color.Red : ((healthPercent < 0.7f) ? Color.Yellow : Color.Green);
 
-			// Texto HP localizado
-			string hpText = GetLocalizedHPText();
+			// MODIFICADO: Usar LanguageControl con categoría "ComponentHealthBar"
+			string hpText = LanguageControl.Get("ComponentHealthBar", "HP", "HP");
 			string text = this.m_creature.DisplayName + " " + displayedHealth.ToString("0") + " " + hpText;
 
 			BitmapFont bitmapFont = ContentManager.Get<BitmapFont>("Fonts/Pericles");
 			FontBatch3D fontBatch3D = this.m_modelsRenderer.PrimitivesRenderer.FontBatch(bitmapFont, 1, DepthStencilState.DepthRead, RasterizerState.CullNoneScissor, BlendState.AlphaBlend, SamplerState.LinearClamp);
 
-			// Dibujar texto centrado usando TextAnchor.Center (igual que en tu código de referencia)
+			// Dibujar texto centrado usando TextAnchor.Center
 			fontBatch3D.QueueText(text, textViewPosition, horizontalOffset, verticalOffset, color, TextAnchor.Center);
 			fontBatch3D.Flush(camera.ViewProjectionMatrix, false);
 
@@ -104,11 +107,7 @@ namespace Game
 			flatBatch3D.Flush(camera.ViewProjectionMatrix, false);
 		}
 
-		private string GetLocalizedHPText()
-		{
-			string hpText = LanguageControl.Get("HP");
-			return string.IsNullOrEmpty(hpText) ? "HP" : hpText;
-		}
+		// ELIMINADO: Método GetLocalizedHPText personalizado - ahora usamos LanguageControl directamente
 
 		private SubsystemModelsRenderer m_modelsRenderer;
 		private ComponentCreature m_creature;
