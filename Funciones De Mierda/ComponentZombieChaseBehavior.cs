@@ -21,6 +21,18 @@ namespace Game
 			this.m_fleeFromSameHerd = valuesDictionary.GetValue<bool>("FleeFromSameHerd", true);
 			this.m_fleeDistance = valuesDictionary.GetValue<float>("FleeDistance", 10f);
 			this.m_forceAttackDuringGreenNight = valuesDictionary.GetValue<bool>("ForceAttackDuringGreenNight", false);
+
+			// Referencia al ComponentZombieRunAwayBehavior y su LowHealthToEscape
+			this.m_zombieRunAwayBehavior = base.Entity.FindComponent<ComponentZombieRunAwayBehavior>();
+			if (this.m_zombieRunAwayBehavior != null)
+			{
+				this.m_lowHealthToEscape = this.m_zombieRunAwayBehavior.LowHealthToEscape;
+			}
+			else
+			{
+				this.m_lowHealthToEscape = 0.2f; // Valor por defecto
+			}
+
 			bool attacksAllCategories = this.m_attacksAllCategories;
 			if (attacksAllCategories)
 			{
@@ -409,39 +421,37 @@ namespace Game
 				this.m_componentCreature.ComponentCreatureSounds.PlayPainSound();
 			}, delegate
 			{
-				bool flag = this.m_componentCreature.ComponentHealth.Health < 0.2f;
+				// Los zombis NO verifican salud baja para salir del estado de huida
+				// Solo dejan de huir cuando:
+				// 1. No hay objetivo
+				// 2. El objetivo está muerto
+				// 3. Han huido lo suficiente
+
+				bool flag = this.m_target == null || this.m_componentCreature.ComponentHealth.Health <= 0f;
 				if (flag)
 				{
 					this.m_stateMachine.TransitionTo("LookingForTarget");
 				}
 				else
 				{
-					bool flag2 = this.m_target == null || this.m_componentCreature.ComponentHealth.Health <= 0f;
-					if (flag2)
+					Vector3 v = this.m_componentCreature.ComponentBody.Position - this.m_target.ComponentBody.Position;
+					bool flag3 = v.LengthSquared() > 0.01f;
+					if (flag3)
+					{
+						v = Vector3.Normalize(v);
+						Vector3 value = this.m_componentCreature.ComponentBody.Position + v * this.m_fleeDistance;
+						this.m_componentPathfinding.SetDestination(new Vector3?(value), 1f, 1.5f, 0, false, true, false, null);
+					}
+					float num = Vector3.Distance(this.m_componentCreature.ComponentBody.Position, this.m_target.ComponentBody.Position);
+					bool flag4 = num > this.m_fleeDistance * 1.5f;
+					if (flag4)
 					{
 						this.m_stateMachine.TransitionTo("LookingForTarget");
 					}
-					else
+					bool flag5 = this.m_random.Float(0f, 1f) < 0.05f * this.m_dt;
+					if (flag5)
 					{
-						Vector3 v = this.m_componentCreature.ComponentBody.Position - this.m_target.ComponentBody.Position;
-						bool flag3 = v.LengthSquared() > 0.01f;
-						if (flag3)
-						{
-							v = Vector3.Normalize(v);
-							Vector3 value = this.m_componentCreature.ComponentBody.Position + v * this.m_fleeDistance;
-							this.m_componentPathfinding.SetDestination(new Vector3?(value), 1f, 1.5f, 0, false, true, false, null);
-						}
-						float num = Vector3.Distance(this.m_componentCreature.ComponentBody.Position, this.m_target.ComponentBody.Position);
-						bool flag4 = num > this.m_fleeDistance * 1.5f;
-						if (flag4)
-						{
-							this.m_stateMachine.TransitionTo("LookingForTarget");
-						}
-						bool flag5 = this.m_random.Float(0f, 1f) < 0.05f * this.m_dt;
-						if (flag5)
-						{
-							this.m_componentCreature.ComponentCreatureSounds.PlayPainSound();
-						}
+						this.m_componentCreature.ComponentCreatureSounds.PlayPainSound();
 					}
 				}
 			}, delegate
@@ -454,15 +464,14 @@ namespace Game
 		// Token: 0x06000452 RID: 1106 RVA: 0x0003D178 File Offset: 0x0003B378
 		private void FleeFromTarget(ComponentCreature target)
 		{
-			bool flag = this.m_componentCreature.ComponentHealth.Health < 0.2f;
+			// Los zombis huyen solo cuando son atacados por miembros de la misma manada,
+			// independientemente de su salud (no verificamos salud baja)
+
+			bool flag = target == null || this.m_componentCreature.ComponentHealth.Health <= 0f;
 			if (!flag)
 			{
-				bool flag2 = target == null || this.m_componentCreature.ComponentHealth.Health <= 0f;
-				if (!flag2)
-				{
-					this.m_target = target;
-					this.m_stateMachine.TransitionTo("Fleeing");
-				}
+				this.m_target = target;
+				this.m_stateMachine.TransitionTo("Fleeing");
 			}
 		}
 
@@ -573,5 +582,11 @@ namespace Game
 
 		// Token: 0x0400048F RID: 1167
 		private bool m_forceAttackDuringGreenNight;
+
+		// Token: 0x04000490 RID: 1168
+		private ComponentZombieRunAwayBehavior m_zombieRunAwayBehavior;
+
+		// Token: 0x04000491 RID: 1169
+		private float m_lowHealthToEscape;
 	}
 }
