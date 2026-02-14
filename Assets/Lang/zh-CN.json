@@ -1,4 +1,7 @@
 {
+  "HealthBar": {
+    "HP": "生命值"
+  },
   "InGameMusic": {
     "MusicEnabled": "音乐已开启",
     "MusicDisabled": "音乐已关闭",
@@ -38,6 +41,9 @@
     "CoolingStatus": "制冷中...",
     "NoPowerStatus": "无电源"
   },
+  "Injury": {
+    "Poisoned": "中毒"
+   },
   "Database": {
     "DisplayName": {
       "Bandit15": "强盗15",
