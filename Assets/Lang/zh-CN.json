@@ -1,4 +1,19 @@
 {
+  "InGameMusic": {
+    "MusicEnabled": "音乐已开启",
+    "MusicDisabled": "音乐已关闭",
+    "MusicToggleButton": "音乐",
+    "MusicOn": "开启",
+    "MusicOff": "关闭",
+    "NowPlaying": "正在播放：",
+    "UnknownTrack": "未知歌曲",
+    "MusicTrack": "音乐曲目",
+    "MusicFileNotFound": "未找到音乐文件",
+    "MusicPlayError": "播放音乐时出错"
+  },
+  "ItemsLauncher": {
+    "YouNeedAmmunition": "你需要弹药才能发射物品发射器"
+  },
   "GreenNightSky": {
     "GreenMoonBegins": "绿月开始了！"
   },
@@ -17,29 +32,6 @@
     "Off": "关闭",
     "CoverageRadius": "覆盖半径"
   },
-  "MusicToggleButton": "音乐",
-  "MusicOn": "开",
-  "MusicOff": "关",
-  "MusicEnabled": "音乐已启用",
-  "MusicDisabled": "音乐已禁用",
-  "NowPlaying": "您正在收听：",
-  "MusicFileNotFound": "音乐文件未找到",
-  "MusicPlayError": "播放音乐时出错",
-  "AutoCannonTitle": "自动加农炮",
-  "InventoryTitle": "库存",
-  "ProjectileSpeed": "弹丸速度",
-  "ShotsPerSecond": "每秒射击数",
-  "ProjectileSpread": "弹丸散布",
-  "Fuel": "燃料",
-  "Accept": "接受",
-  "Cancel": "X",
-  "YouNeedAmmunition": "你需要弹药来发射物品发射器",
-  "UseAutoCannon": "使用自动加农炮",
-  "AutoCannonHelp": "作者\nFire Dragon\nKike\n----------\n该武器使用快捷栏的第一个槽位或第一个有物品的可用槽位。要保存更改，必须按'接受'，或按'X'放弃。散布和速度设置决定了弹丸的方向和距离。\n\n要使用它，只需按住右键（PC）或按住屏幕（移动设备），它会自动以你配置的每秒次数开火。对于发射生成蛋并在短时间内大量生成生物非常有用。\n\n你也可以发射烟花或其他任何物品来娱乐。\n\n\nSamuelsan03盗用的糟糕代码，所以随你怎么用这个代码 xd",
-  "Poisoned": "中毒",
-  "DeathByBoomer": "被爆浆者炸成碎片",
-  "DeathByBoomerFire": "被爆浆者的烈焰爆炸焚烧成灰",
-  "HP": "生命值",
   "RefrigeratorXiaomi": {
     "RefrigeratorLabel": "冰箱",
     "InventoryLabel": "库存",
@@ -709,6 +701,16 @@
     }
   },
   "ContentWidgets": {
+    "AutoCannonWidget": {
+    "Title": "自动炮",
+    "InventoryTitle": "库存",
+    "ProjectileSpeed": "弹丸速度",
+    "ShotsPerSecond": "每秒发射次数",
+    "ProjectileSpread": "弹丸散布",
+    "Fuel": "燃料",
+    "HelpTitle": "使用自动炮",
+    "HelpText": "作者\nFire Dragon\nKike\n----------\n该武器使用快捷栏的第一个槽位或第一个有物品的槽位。要保存更改，请按“接受”，或按“X”取消。散布和速度设置决定弹丸的方向和距离。\n\n使用方法：在PC上按住右键，或在移动设备上按住屏幕，它会按你配置的每秒发射次数自动开火。可用于快速大量发射刷怪蛋生成生物。\n\n你也可以发射烟花或其他任何物品来娱乐。\n\n\n代码由Samuelsan03窃取，所以你可以随意使用此代码 xd"
+  },
     "CreatureInventoryWidget": {
       "CreatureInventoryLabel": "{0}的库存",
       "InventoryLabel": "库存"
@@ -755,6 +757,6 @@
   },
   "Usual": {
     "ok": "确定",
-    "cancel": "取消"
+    "cancel": "X"
   }
 }
