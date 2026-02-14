@@ -7,10 +7,7 @@
     <Parameter Name="LoadOrder" Value="60" Type="int" Guid="b8887331-7cc9-4b85-9b43-8eaa0aa49ad1"/>
     <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="937d65f9-9159-4d63-bab8-033f5cfb3e99"/>
 </MemberComponentTemplate>
-        <MemberComponentTemplate Name="DeathSpawner" Guid="d0c0c709-b8ec-45f4-a416-854ff1cfd1d4">
-    <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="3e1f9afe-db7e-4c90-bcce-91c4ff57867c"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="0cf30114-b72f-48d6-a688-fb9f38e548e4"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="8b9734c6-7da5-4958-af0c-f7dc1b993aa7"/>
+<MemberComponentTemplate Name="DeathSpawner" Guid="d0c0c709-b8ec-45f4-a416-854ff1cfd1d4" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="37f754fc-2e6f-48cd-8e63-be0450060931"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:1.0;InfectedNormal2:0.55" Type="string" Guid="7dc0beec-7ee6-48e5-89da-4993d7e026e0"/>
 </MemberComponentTemplate>
@@ -159,10 +156,7 @@
     <Parameter Name="LoadOrder" Value="60" Type="int" Guid="74c84ee2-83c6-487e-9bd9-b64f5bae8b44"/>
     <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="642bcb59-27e1-434a-a9d8-7cba124fc295"/>
 </MemberComponentTemplate>
-        <MemberComponentTemplate Name="DeathSpawner" Guid="2d7d81c0-7954-49e5-a25d-64f5b5f5c705">
-    <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="754b3374-8e2f-4270-bcae-106d2427f8f9"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="2dc23171-6e1c-4ea5-b554-dc4f3379977f"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="e0a256ed-2f16-4d91-9bc0-dc117052451d"/>
+        <MemberComponentTemplate Name="DeathSpawner" Guid="2d7d81c0-7954-49e5-a25d-64f5b5f5c705" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="3724ac1c-f246-4b3b-a33c-1017f329e8c7"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:1.0;InfectedNormal2:0.55" Type="string" Guid="9f709cf5-bfd7-4c74-89f9-0f8e5b4e6031"/>
 </MemberComponentTemplate>
@@ -311,10 +305,7 @@
     <Parameter Name="LoadOrder" Value="60" Type="int" Guid="f1d5150c-b19c-4f2a-80f6-d7b1586ce1b2"/>
     <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="0d9d91d0-bfb6-4019-a943-68b4c46c2020"/>
 </MemberComponentTemplate>
-        <MemberComponentTemplate Name="DeathSpawner" Guid="c70c08aa-e7ee-4308-babb-40d8d6de809d">
-    <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="697744ad-8936-4cba-bc36-ab11ec83859b"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="554b4880-266a-4f56-8919-bc6d4f3df0f1"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="023954a8-8a57-4321-97fb-f6607de9fafa"/>
+        <MemberComponentTemplate Name="DeathSpawner" Guid="c70c08aa-e7ee-4308-babb-40d8d6de809d" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="17d88b99-d31c-4a9f-9ee9-ae1602d568c3"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:1.0;InfectedNormal2:0.55" Type="string" Guid="b367a894-b231-4fd2-acc6-1c0a908d7d1f"/>
 </MemberComponentTemplate>
@@ -462,10 +453,7 @@
     <Parameter Name="LoadOrder" Value="60" Type="int" Guid="0e7e2186-f2a1-463e-8993-0ff85cfe81b9"/>
     <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="997f73de-e325-492f-9578-c898ee33ee5a"/>
 </MemberComponentTemplate>
-         <MemberComponentTemplate Name="DeathSpawner" Guid="2136f8a1-ba37-4d00-b79b-3771b423ef47">
-    <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="eba5af50-4f62-44bc-a2cb-256b8553ddf1"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="d69297f1-c78b-4c66-8c0f-797a6e7db352"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="5e255830-bb9f-4aea-a72f-1b9e41956177"/>
+         <MemberComponentTemplate Name="DeathSpawner" Guid="2136f8a1-ba37-4d00-b79b-3771b423ef47" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="3c3789ba-866a-4225-ba9c-643aa8ecfe9a"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:1.0;InfectedNormal2:0.55" Type="string" Guid="5339df01-564e-4e1e-aa48-1543152e94a1"/>
 </MemberComponentTemplate>
@@ -613,10 +601,7 @@
     <Parameter Name="LoadOrder" Value="60" Type="int" Guid="d67cd169-299d-4a47-b664-cf2d5f1dac75"/>
     <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="2786cc28-7e1d-42cc-920b-e7f1a09c4b39"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="DeathSpawner" Guid="791fa28c-bac8-4b7f-8d0f-37cfcf2f8694">
-    <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="2466ec52-61ba-4feb-a8aa-beeb3c79ef16"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="74442407-d7cd-4377-92b3-830a2bcc4697"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="ad996550-d057-42a9-9b07-b09186af6433"/>
+<MemberComponentTemplate Name="DeathSpawner" Guid="791fa28c-bac8-4b7f-8d0f-37cfcf2f8694" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="debbb341-7d17-4b51-aded-4a045249093e"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:1.0;InfectedNormal2:0.55" Type="string" Guid="535fd4a3-f903-496b-b072-e97a6fed18c4"/>
 </MemberComponentTemplate>
@@ -749,10 +734,7 @@
 </EntityTemplate>
 
 <EntityTemplate Name="ElMarihuaneroMamon" Guid="2c6c8cd6-acb6-433a-b5a4-2f5b5b4cd52c" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="DeathSpawner" Guid="c909ae5f-3f1b-4ad4-86be-0cfd7c6841fc">
-    <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="e115d6a3-8837-42c9-9a44-17bdebe5cf25"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="f1a68b25-d25f-4b64-ad2a-5477a0a76a9a"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="baa9df11-d0c7-433f-b422-b2669bcbd879"/>
+<MemberComponentTemplate Name="DeathSpawner" Guid="c909ae5f-3f1b-4ad4-86be-0cfd7c6841fc" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="9c628125-4f4d-445c-a694-808ed87f8720"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:1.0;InfectedNormal2:0.55" Type="string" Guid="d418ca52-f473-4942-951c-edcd85021aa3"/>
 </MemberComponentTemplate>
@@ -915,10 +897,7 @@
 </EntityTemplate>
 
 <EntityTemplate Name="FumadorQuimico" Guid="6054c1b3-834c-471d-af2f-dee55e898e51" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="DeathSpawner" Guid="5d4de4af-018e-4c45-88de-668ab63a5ef5">
-    <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="d64b265c-398d-4fe7-a601-b605d1159e74"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="16957031-76ee-44e8-a2b9-fd252e000d47"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="d36c49f8-09eb-4cbd-bdd8-86481dbf56c9"/>
+<MemberComponentTemplate Name="DeathSpawner" Guid="5d4de4af-018e-4c45-88de-668ab63a5ef5" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="8c76e973-3c5c-4adf-a123-98f51b0b69c2"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:1.0;InfectedNormal2:0.55" Type="string" Guid="2ae01a38-1e63-499b-aa98-3a06ee795a79"/>
 </MemberComponentTemplate>
@@ -1069,11 +1048,8 @@
 </EntityTemplate>
 
 <EntityTemplate Name="FumadorQuimicoBrawny" Guid="a1b2c3d4-e5f6-4789-9012-3456789abcff" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="DeathSpawner" Guid="82073d87-b6d5-4321-81e3-5dde0cd08ca0">
-    <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="bcbce686-1ce3-4914-a3d0-477f02d87014"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="4ffb8e25-736f-40ca-ad5b-33e84690283f"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="229537cf-00a1-4baa-a899-0520f955a2da"/>
-    <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="6d142f12-17da-4235-a04c-f0e72771451b"/>
+<MemberComponentTemplate Name="DeathSpawner" Guid="82073d87-b6d5-4321-81e3-5dde0cd08ca0" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
+    <Parameter Name="DeathSpawnProbability" Value="0.05" Type="float" Guid="6d142f12-17da-4235-a04c-f0e72771451b"/>
     <Parameter Name="DeathSpawnTemplates" Value="Tank1:0.5;Tank2:0.5;Tank3:0.5" Type="string" Guid="66ced963-56be-4d19-8803-8d9b2b4e3598"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewRunAwayBehavior" Guid="651e9d0b-a4af-43fa-ba35-2828148f7b0e">
@@ -1196,10 +1172,7 @@
 </EntityTemplate>
 
 <EntityTemplate Name="ClaudeSpeed" Guid="58c0c0b3-dbf7-49df-b394-64373fa05c04" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="DeathSpawner" Guid="16e49b97-0790-421c-bb8a-eeea72155404">
-    <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="d624b35f-96cd-4da1-bb31-c17dfe1f7e47"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="f79ebc61-735b-4757-9b09-ea04ab42e754"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="0c9b52eb-e587-470d-8868-fa808c4c7d1c"/>
+<MemberComponentTemplate Name="DeathSpawner" Guid="16e49b97-0790-421c-bb8a-eeea72155404" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="bb7327bb-552a-47e2-b5bd-45f49d03a5cc"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:1.0;InfectedNormal2:0.55" Type="string" Guid="631543e7-537c-4d95-9879-7d048610c2b7"/>
 </MemberComponentTemplate>
@@ -1324,10 +1297,7 @@
 </EntityTemplate>
 
 <EntityTemplate Name="TommyVercetti" Guid="a59b49a1-06c1-4741-855f-456996d42c30" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="DeathSpawner" Guid="2434b5de-d879-4286-986a-93aa943b4309">
-    <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="33269a5b-3b41-4193-a8ad-a6357908ebfa"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="639fec48-61d1-4926-96a6-18259a994696"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="df002cc7-30bf-4f05-be7e-d4967087fe5c"/>
+<MemberComponentTemplate Name="DeathSpawner" Guid="2434b5de-d879-4286-986a-93aa943b4309" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="37a1b36f-8c3f-48a5-b4b3-15bf34c7ff6c"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:1.0;InfectedNormal2:0.55" Type="string" Guid="476d3fe8-d895-433e-937a-5f53d2c43cde"/>
 </MemberComponentTemplate>
@@ -1613,10 +1583,7 @@
 </EntityTemplate>
 
 <EntityTemplate Name="ElSenorDeLasTumbasMoradas" Guid="a1b2c3d4-e5f6-4789-9012-3456789abc99" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="DeathSpawner" Guid="5e0fa82b-2cac-4feb-adbf-c39521ddb52d">
-    <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="d7abe096-8e97-488a-81c4-77128bd12c08"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="63c1bedf-cbe6-46b8-b741-b33463d0cc61"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="0faf72a2-3293-4680-be95-87b820e0bab6"/>
+<MemberComponentTemplate Name="DeathSpawner" Guid="5e0fa82b-2cac-4feb-adbf-c39521ddb52d" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="4c959984-5f7b-4462-b139-d44a5ec864a7"/>
     <Parameter Name="DeathSpawnTemplates" Value="LaMuerteX" Type="string" Guid="64d33b63-5d2f-45bc-9b0c-a8f458c62c74"/>
 </MemberComponentTemplate>
@@ -1750,10 +1717,7 @@
 </EntityTemplate>
 
 <EntityTemplate Name="LiderCalavericoSupremo" Guid="b2c3d4e5-f6a7-4789-9012-3456789abc88" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="DeathSpawner" Guid="cb1edbfa-8299-4814-a091-963d7c1f7df0">
-    <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="dbc08d39-e716-44f3-9ab2-a2d4b2e34bac"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="fad798b3-18b9-4897-a47a-63a9d4aa18d4"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="7176121f-4202-423d-a98a-ab37e78440ee"/>
+<MemberComponentTemplate Name="DeathSpawner" Guid="cb1edbfa-8299-4814-a091-963d7c1f7df0" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="52f9d757-507d-4f4f-b459-9f39c7c18893"/>
     <Parameter Name="DeathSpawnTemplates" Value="ElSenorDeLasTumbasMoradas:1.0" Type="string" Guid="0b1f8fb0-85f7-42ec-840e-4a1545dc6578"/>
 </MemberComponentTemplate>
@@ -1876,10 +1840,7 @@
 </EntityTemplate>
 
 <EntityTemplate Name="LiderCalavericoSupremoAlfa" Guid="c3d4e5f6-a7b8-4789-9012-3456789abc77" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="DeathSpawner" Guid="7447ad55-43ad-4b21-a313-a1835bcd62ce">
-    <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="7c9a7276-344a-4ca3-99ac-30a548165d29"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="8bfa58a1-f182-4f1e-b3e7-0b63b9ef60b2"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="c0b7aa57-f4c6-4ad7-932c-13ef069ac469"/>
+<MemberComponentTemplate Name="DeathSpawner" Guid="7447ad55-43ad-4b21-a313-a1835bcd62ce" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="59ef8c4d-efa5-4985-bc49-7d6e0c883808"/>
     <Parameter Name="DeathSpawnTemplates" Value="ElSenorDeLasTumbasMoradas:1.0" Type="string" Guid="60410b35-b9e2-4c88-b181-8d20a737396b"/>
 </MemberComponentTemplate>
@@ -2004,10 +1965,7 @@
     <Parameter Name="LoadOrder" Value="60" Type="int" Guid="1108e851-aebe-4799-8368-b1b775d12497"/>
     <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="04da864e-b996-49f6-84d6-fab7f426fdf0"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="DeathSpawner" Guid="a23cbf1c-832e-40fc-be92-63f7e00165a2">
-    <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="b2d2f27a-952b-45b5-9301-206e1ad0adec"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="f840bac9-3dcb-43d3-9335-38955793128d"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="7a22dea3-f06b-456e-88b7-e1bc16e60728"/>
+<MemberComponentTemplate Name="DeathSpawner" Guid="a23cbf1c-832e-40fc-be92-63f7e00165a2" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="6eff83e7-d719-41e9-8860-0d04ec09e196"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:1.0;InfectedNormal2:0.55" Type="string" Guid="d1aae452-2c60-4eea-b67a-32f03cd3309d"/>
 </MemberComponentTemplate>
@@ -2138,10 +2096,7 @@
     <Parameter Name="LoadOrder" Value="60" Type="int" Guid="6514cdfc-ec7a-41b2-951a-a79c8b0d4a63"/>
     <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="e8c3095f-a25c-4947-a911-056aa2e3d6bc"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="DeathSpawner" Guid="44b7dd9c-ebd8-4e72-a5fa-e08773b4c426">
-    <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="a8b13b34-a4eb-4666-807a-edb207b1a2ef"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="8b34420c-6cbc-48a4-bd87-98ee9e24e92a"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="3bdfa469-d5ae-4971-8f7a-18b96ff64717"/>
+<MemberComponentTemplate Name="DeathSpawner" Guid="44b7dd9c-ebd8-4e72-a5fa-e08773b4c426" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="0ad87e6b-3e28-4c4b-ab13-bc0afb311677"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:1.0;InfectedNormal2:0.55" Type="string" Guid="080bbe34-9cb7-42a5-8c1f-d12997bf23de"/>
 </MemberComponentTemplate>
@@ -2279,10 +2234,7 @@
     <Parameter Name="LoadOrder" Value="60" Type="int" Guid="c6c4bf73-c659-4315-8ab5-7a8709306456"/>
     <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="765250ed-4780-4cef-b38e-026826df494a"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="DeathSpawner" Guid="7b638360-6b55-4329-8bc6-84970eb4849e">
-    <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="9ea418a3-020b-4508-9fd1-ae12f1e4fbb6"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="e2f48996-c116-4234-8fa5-d363c50783c1"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="e88d7465-3cbf-4523-a354-394a03e17f9b"/>
+<MemberComponentTemplate Name="DeathSpawner" Guid="7b638360-6b55-4329-8bc6-84970eb4849e" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="00362270-563f-4197-b5e5-c51e266a3b9d"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:1.0;InfectedNormal2:0.55" Type="string" Guid="85681fc9-e429-430e-adf3-2773046a7674"/>
 </MemberComponentTemplate>
@@ -2647,12 +2599,9 @@
 </EntityTemplate>
 
 <EntityTemplate Name="ElBallestador" Guid="53f8c5d9-4ebd-4ddf-a970-de6c03997166" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="DeathSpawner" Guid="90c34bfd-33e2-42c0-8f64-9b5764aa85da">
-    <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="4569c7e6-ab8f-4919-b01d-bb7e136927e5"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="d278bcbd-67cd-4d25-856b-17dbdacd1a8b"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="708370c0-540b-4968-a276-958975339ff1"/>
+<MemberComponentTemplate Name="DeathSpawner" Guid="90c34bfd-33e2-42c0-8f64-9b5764aa85da" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="d741a3a9-7143-453f-929a-77e55d03299f"/>
-    <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:1.0;InfectedNormal2:0.55" Type="string" Guid="32f30409-5ff5-4b73-8dc0-bcc878f67c4a"/>
+    <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:0.55;InfectedNormal2:0.55" Type="string" Guid="32f30409-5ff5-4b73-8dc0-bcc878f67c4a"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewRunAwayBehavior" Guid="5244b83d-8749-468e-af5c-487804a313ba">
     <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="739de64a-e295-4d6b-ae4f-10d993e0f30a"/>
@@ -2809,12 +2758,9 @@
 </EntityTemplate>
 
 <EntityTemplate Name="HeadcrabBloodyHuman" Guid="c7d8e9f0-a1b2-4789-9012-3456789abcde" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="DeathSpawner" Guid="456cef72-558e-4026-b9d7-5d17906b14f4">
-    <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="e9cb8b9e-4186-4140-a331-6b952dc19262"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="e021b20b-df1b-4c31-9e9c-67de6e9c27c1"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="451d48ce-cf5f-4b11-b076-644907b2f250"/>
+<MemberComponentTemplate Name="DeathSpawner" Guid="456cef72-558e-4026-b9d7-5d17906b14f4" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="33c9a7cd-513b-40b6-a294-8271e5f46f33"/>
-    <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:1.0;InfectedNormal2:0.55;InfectedMuscle1;InfectedMuscle2" Type="string" Guid="d7b5c833-c910-4841-8ff7-1bdd5e3837ad"/>
+    <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:0.55;InfectedNormal2:0.55;InfectedMuscle1:0.01;InfectedMuscle2:0.01" Type="string" Guid="d7b5c833-c910-4841-8ff7-1bdd5e3837ad"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewRunAwayBehavior" Guid="3f042260-9662-4af5-8103-fee84e5c728a">
     <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="23a64ef2-e56d-4d98-a48d-8f1567121419"/>
@@ -2937,10 +2883,7 @@
 </EntityTemplate>
 
 <EntityTemplate Name="ElArquero" Guid="ab8ad3f1-8232-4b2c-9007-4a7c54d8134f" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="DeathSpawner" Guid="2d8812df-f244-4789-83ce-8a95382b99ff">
-    <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="2e09f7a9-19b4-4d0f-a48f-faefd986237d"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="0a7147dc-77e7-4af6-94d8-20375ef31d4c"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="9f3b989e-bd02-4711-a9ee-4a234fd76b57"/>
+<MemberComponentTemplate Name="DeathSpawner" Guid="2d8812df-f244-4789-83ce-8a95382b99ff" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="7c0fb27b-3d34-4477-85ea-df9cb4490d06"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:1.0;InfectedNormal2:0.55" Type="string" Guid="dea6eca6-9ca1-4305-bb5e-3093c70070f7"/>
 </MemberComponentTemplate>
@@ -3100,10 +3043,7 @@
 </EntityTemplate>
 
 <EntityTemplate Name="ArqueroPrisionero" Guid="e8831650-83a1-4ba7-b796-1149dfa88eae" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="DeathSpawner" Guid="af9c0981-b5ee-428c-9c2a-7e277563fdff">
-    <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="4d0cf72a-a719-4056-af5e-022d8c29ad04"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="955b27fa-8819-4ac8-a6f8-546db7df30ab"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="4f562647-a508-4271-a84e-cc5350345ac7"/>
+<MemberComponentTemplate Name="DeathSpawner" Guid="af9c0981-b5ee-428c-9c2a-7e277563fdff" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="4b0bd34f-e69d-445a-8dcc-ecfbf76304ee"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:1.0;InfectedNormal2:0.55" Type="string" Guid="536ac971-bdc4-40ab-ba99-73ed60d486aa"/>
 </MemberComponentTemplate>
@@ -3246,12 +3186,9 @@
 </EntityTemplate>
 
 <EntityTemplate Name="BallestadoraMusculosa" Guid="95999472-71b3-4a92-9d6a-da99378b3d2c" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="DeathSpawner" Guid="798ce2c6-2950-4a58-9f93-2c460a73f135">
-    <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="22f93301-7837-44cb-8b0f-cbbe25805fe5"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="aadf4b27-a8a0-466c-a793-e39241aad852"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="9eeada40-b51a-4f9c-99f7-5991f1e8221b"/>
+<MemberComponentTemplate Name="DeathSpawner" Guid="798ce2c6-2950-4a58-9f93-2c460a73f135" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="252185b4-7929-4d67-bea6-2ee733b3f849"/>
-    <Parameter Name="DeathSpawnTemplates" Value="InfectedMuscle1:0.5;InfectedMuscle2:0.35" Type="string" Guid="a7aa1b9d-1a1b-4bfa-a058-4508da60ba6e"/>
+    <Parameter Name="DeathSpawnTemplates" Value="InfectedMuscle1:0.5;InfectedMuscle2:0.5" Type="string" Guid="a7aa1b9d-1a1b-4bfa-a058-4508da60ba6e"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="ed3a9f66-6522-40ba-8a8e-5ae9a2a74b23">
     <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
@@ -3406,12 +3343,9 @@
     <Parameter Name="LoadOrder" Value="60" Type="int" Guid="7a11efea-5b55-4520-b874-528ddff399e0"/>
     <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="c2bef756-36cc-4bc7-b6f3-99e9c1a8c700"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="DeathSpawner" Guid="8313cc1a-dcab-4c81-89ec-bfcac8c2835b">
-    <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="9b7b3669-bd92-4a0e-8f6c-41013bd52747"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="2274c026-3f09-43e8-b74c-15a9239e3768"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="e62b1201-32d8-43b0-9afd-d0bd0133f168"/>
+<MemberComponentTemplate Name="DeathSpawner" Guid="8313cc1a-dcab-4c81-89ec-bfcac8c2835b" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="3d4cd10e-e025-4b8c-9532-0ddeadfdb8cf"/>
-    <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:1.0;InfectedNormal2:0.55" Type="string" Guid="d5499bab-fc17-4259-855f-c1347d9f2e49"/>
+    <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:0.55;InfectedNormal2:0.55" Type="string" Guid="d5499bab-fc17-4259-855f-c1347d9f2e49"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewRunAwayBehavior" Guid="9a69dc7c-27ed-4257-998c-c342d8b3cbc0">
     <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="750a9566-3f3a-47cd-985a-1fa22b94115e"/>
@@ -3549,10 +3483,7 @@
 </EntityTemplate>
 
 <EntityTemplate Name="WalterZombieMamadisimo" Guid="2d1632cb-7be2-4556-948c-3d02b8780686" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="DeathSpawner" Guid="2f6ab1f6-3877-4feb-9004-27b994e2f57d">
-    <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="f395b422-656e-41e6-8ee3-fa52c472e0cb"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="98163c23-048a-437d-9c2a-74807216d820"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="41db7d23-c8a8-41f9-8ff0-31116855d7ce"/>
+<MemberComponentTemplate Name="DeathSpawner" Guid="2f6ab1f6-3877-4feb-9004-27b994e2f57d" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="6cc5effc-4893-4b97-a1e8-46a9f672b35f"/>
     <Parameter Name="DeathSpawnTemplates" Value="Tank1:0.1;Tank2:0.75;Tank3:0.5" Type="string" Guid="9ef6796c-0a1e-4c26-ab0a-2edbdbc599cc"/>
 </MemberComponentTemplate>
@@ -3593,22 +3524,8 @@
         </ParameterSet>
         <ParameterSet Name="LootOnFire" Guid="b382c53a-8ed0-4176-848f-9fd885b559ce"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="Inventory" Guid="57226e3e-bc4d-450f-a780-0aa02d696d02" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
-    <ParameterSet Name="Slots">
-        <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="0" Type="int"/>
-            <Parameter Name="Count" Value="1" Type="int"/>
-        </ParameterSet>
-    </ParameterSet>
-</MemberComponentTemplate>
-    <MemberComponentTemplate Name="InvShooterBehavior" Guid="dc8726a4-a3a7-42df-8496-e6cadd04177f" InheritanceParent="456e3558-0e7f-42c3-bc05-35eef7540900">
-    <Parameter Name="SpecialThrowableItem" Value="SmallGunpowderKegBlock" Type="string"/>
-    <Parameter Name="DiscountFromInventory" Value="False" Type="bool"/>
-    <Parameter Name="SelectRandomThrowableItems" Value="False" Type="bool"/>
-    <Parameter Name="ThrowFromHead" Value="True" Type="bool"/>
-    <Parameter Name="MinMaxRandomChargeTime" Value="0.8;1.2" Type="string"/>
-    <Parameter Name="MinMaxRandomWaitTime" Value="0.3;0.7" Type="string"/>
-    <Parameter Name="MinMaxDistance" Value="15;50" Type="string"/>
+<MemberComponentTemplate Name="TankLauncherBehavior" Guid="fcd769e1-e322-4e04-acdb-69553e451a60" InheritanceParent="4eddf75f-02f5-482c-9283-a8544a760f96">
+  <Parameter Name="ItemsToLaunch" Guid="edbe7c36-00b4-481c-842e-6cc8722583e8" Value="MediumGunpowderKegBlock" Type="string"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="c3ebdfd8-e704-4da5-a525-36c8b4a7847a">
         <Parameter Name="Mass" Guid="5d721d1a-0dd6-460a-afc6-5664c8cb9fe7" Value="1000000000" Type="float"/>
@@ -3839,10 +3756,7 @@
     </EntityTemplate>
 
 <EntityTemplate Name="CarlJohnson" Guid="1e9bf665-6998-478e-ba9d-3f850d0dbb7b" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="DeathSpawner" Guid="4f49aa15-c10a-466a-a004-c3edb03ff0c1">
-    <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="eca1f1a5-1ea8-4a43-b1e2-97c4bda9b8a9"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="aeffcd68-0f1a-4e48-b7e7-b039a32245ac"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="e4852ef6-e4f2-48a9-8705-b41fe41e5d50"/>
+<MemberComponentTemplate Name="DeathSpawner" Guid="4f49aa15-c10a-466a-a004-c3edb03ff0c1" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="fa4a9065-2fc7-485f-ba25-e2d667c9c14c"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:1.0;InfectedNormal2:0.55" Type="string" Guid="6f5ec227-0f5d-459c-b5f9-a785917b820d"/>
 </MemberComponentTemplate>
@@ -3981,12 +3895,9 @@
 </EntityTemplate>
 
 <EntityTemplate Name="ElGuerrillero" Guid="5424f3d9-6e79-4eb9-a1a4-03ccd52d5286" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="DeathSpawner" Guid="38914a57-f32d-4ddf-878d-c9a3778233a6">
-    <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="fc1103fd-b3fa-441f-8b48-a6dcd3834b51"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="374fcd01-3e90-4144-bbf2-e5ed44924b7b"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="9e92f442-7b57-49d2-bcde-87b8a5427634"/>
+<MemberComponentTemplate Name="DeathSpawner" Guid="38914a57-f32d-4ddf-878d-c9a3778233a6" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="6b5f4143-a2d8-4f8a-87f4-3c34f167f1ea"/>
-    <Parameter Name="DeathSpawnTemplates" Value="ElGuerrilleroTenebroso:1.0;InfectedNormal1:0.35;InfectedNormal2:0.3" Type="string" Guid="cd7f3126-862c-4c89-afc8-20ee88cd6ba4"/>
+    <Parameter Name="DeathSpawnTemplates" Value="ElGuerrilleroTenebroso:0.2;InfectedNormal1:0.35;InfectedNormal2:0.3" Type="string" Guid="cd7f3126-862c-4c89-afc8-20ee88cd6ba4"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewRunAwayBehavior" Guid="d0e67c88-6578-4df0-89b9-3bdee22c0405">
     <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="7809588d-a446-44a6-b5f3-ddcdcc9bee93"/>
@@ -4149,12 +4060,9 @@
 </EntityTemplate>
 
 <EntityTemplate Name="ElGuerrilleroTenebroso" Guid="d076df21-0ee8-4a9e-a85a-0953b32a77b9" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="DeathSpawner" Guid="95565a55-0d5b-404b-8642-67426636b928">
-    <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="e0c68b37-ba0e-45e6-85d6-23e780be2642"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="a6f3b6b3-d30f-4b71-be71-d9759850396d"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="c98cd3b4-a48f-440f-8923-368e6f5915b0"/>
+<MemberComponentTemplate Name="DeathSpawner" Guid="95565a55-0d5b-404b-8642-67426636b928" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="0e810bfb-46f8-43e5-90e1-55ee5cdaa903"/>
-    <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:1.0;InfectedNormal2:0.55" Type="string" Guid="31ea4cbd-ac8c-4d02-8233-dc9837455baa"/>
+    <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:0.55;InfectedNormal2:0.55" Type="string" Guid="31ea4cbd-ac8c-4d02-8233-dc9837455baa"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewRunAwayBehavior" Guid="101f1e13-b76e-449a-9739-c5105759f634">
     <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="b80e0bf2-2231-417c-a7a1-fbe0d646d6bc"/>
@@ -4318,12 +4226,9 @@
 </EntityTemplate>
 
 <EntityTemplate Name="CamisasMorenas" Guid="c7d8e9f0-a1b2-4789-9012-3456789abcfa" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="DeathSpawner" Guid="00bea21c-17c7-4c07-918f-8a059ee564e9">
-    <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="b861d663-6207-446f-a4af-44ae69c8656e"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="81c9d9d2-ec59-43f6-99e6-a7f97e74e188"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="75246ba3-3d91-40ba-8bfb-5c290d1e8e78"/>
+<MemberComponentTemplate Name="DeathSpawner" Guid="00bea21c-17c7-4c07-918f-8a059ee564e9" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="8089926e-2fd0-4fb7-9773-1501e581b1d7"/>
-    <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:1.0;InfectedNormal2:1.0" Type="string" Guid="ed58208f-4fb9-4e56-99f7-f8a28dd8f5ed"/>
+    <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:0.5;InfectedNormal2:0.5" Type="string" Guid="ed58208f-4fb9-4e56-99f7-f8a28dd8f5ed"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewRunAwayBehavior" Guid="f118b1f9-8821-4c15-abaf-7f405cb74720">
     <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="0094b70f-d119-4e08-8c72-acaa56f7d22f"/>
@@ -4461,12 +4366,9 @@
 </EntityTemplate>
 
 <EntityTemplate Name="ZombieRepetidor" Guid="da9a1c74-142c-4b2c-b61f-5c8ccef9f658" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="DeathSpawner" Guid="5428e715-201c-4ed7-8cf7-47b985649255">
-    <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="ad2b212a-3e87-4900-a2d1-95164959ee2f"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="d7ab5f01-2a3e-46b1-be8e-9dffe2210127"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="183121f5-b9ac-43db-920b-c16cb4ba5652"/>
+<MemberComponentTemplate Name="DeathSpawner" Guid="5428e715-201c-4ed7-8cf7-47b985649255" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="1a61c0d0-6aba-4151-9abe-906fa2f75680"/>
-    <Parameter Name="DeathSpawnTemplates" Value="Boomer1:0.4;Boomer2:0.4;Boomer3:0.4;GhostBoomer1:0.05;GhostBoomer2:0.05;GhostBoomer3:0.05" Type="string" Guid="c6b5e8ce-b84d-4838-a0d8-248db06ba490"/>
+    <Parameter Name="DeathSpawnTemplates" Value="Boomer1:0.04;Boomer2:0.04;Boomer3:0.04;GhostBoomer1:0.05;GhostBoomer2:0.05;GhostBoomer3:0.05" Type="string" Guid="c6b5e8ce-b84d-4838-a0d8-248db06ba490"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewRunAwayBehavior" Guid="ed6ac016-6fb5-4861-9b14-7de195d8589c">
     <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="c9474eb1-a4e9-45e3-8bff-fd22acf65072"/>
@@ -4622,12 +4524,9 @@
   <Parameter Name="SlotsCount" Value="16" Type="int"/>
   <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="DeathSpawner" Guid="15d89127-8e67-416f-ba95-fcbdab445409">
-    <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="b9e32dbd-a47d-4193-b2c4-9b8b8b7319ec"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="f5495a18-63e1-4d51-b622-6a3f8ff5f77c"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="81bb2154-7c1c-4ad5-87de-08a50dd76d09"/>
+<MemberComponentTemplate Name="DeathSpawner" Guid="15d89127-8e67-416f-ba95-fcbdab445409" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="93a784db-00eb-4a41-8971-317c7b184b2c"/>
-    <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:1.0;InfectedNormal2:1.0" Type="string" Guid="e2f52e1b-a441-47c6-8e8c-3cd8e967844a"/>
+    <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:0.5;InfectedNormal2:0.5" Type="string" Guid="e2f52e1b-a441-47c6-8e8c-3cd8e967844a"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureSounds" Guid="53d33183-852c-48b1-9c20-665c98fcd498">
     <Parameter Name="PainSound" Guid="5e34e974-f469-49c6-8dc6-51122c302b2f" Value="Audio/Creatures/Sparkster/Pain" Type="string"/>
@@ -4805,12 +4704,9 @@
     <Parameter Name="LoadOrder" Value="60" Type="int" Guid="afaa3370-0812-4ee1-b03e-57415e94e3f3"/>
     <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="6b33eddb-f551-4ca2-a16a-e78bf9dbce30"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="DeathSpawner" Guid="0f3a375f-07d7-4012-a24e-b5d5909ff5e8">
-    <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="ef25f2c5-3327-4bfc-a6ad-f157985dc1a3"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="1281f0b3-12e9-4280-85f6-3d47e9a0c82c"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="0317a308-65f8-4567-99ed-bb306152e9ae"/>
+<MemberComponentTemplate Name="DeathSpawner" Guid="0f3a375f-07d7-4012-a24e-b5d5909ff5e8" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="b0d30780-ff66-4416-a20a-4e4828bf03e5"/>
-    <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:1.0;InfectedNormal2:1.0" Type="string" Guid="f78194af-fe62-4046-9537-f29b9e9206d2"/>
+    <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:0.5;InfectedNormal2:0.5" Type="string" Guid="f78194af-fe62-4046-9537-f29b9e9206d2"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewRunAwayBehavior" Guid="e04dd67b-a954-4052-af22-daa6d2b023d2">
     <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="103e09d2-ef38-4256-8461-cd1c092af25b"/>
@@ -4950,12 +4846,9 @@
     <Parameter Name="LoadOrder" Value="60" Type="int" Guid="abf04e42-8198-47b9-952b-fdb93299c36e"/>
     <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="77748fef-a211-4bf3-85bd-69e9d2d7e379"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="DeathSpawner" Guid="5389eed9-092f-47a7-abfe-f184ce9710d2">
-    <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="fe0080b4-b088-4ddb-9a19-5e47d9e4ba38"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="c623512b-9ced-47a5-86de-ba1915f30f56"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="ff81b721-e9c6-4d53-80a9-3c2a49334d68"/>
+<MemberComponentTemplate Name="DeathSpawner" Guid="5389eed9-092f-47a7-abfe-f184ce9710d2" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="b8aa60af-7c87-48d0-bc61-ffec79a56a84"/>
-    <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:1.0;InfectedNormal2:1.0" Type="string" Guid="1429efff-b2f9-45b3-9196-e1bd7faf5fe8"/>
+    <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:0.5;InfectedNormal2:0.5" Type="string" Guid="1429efff-b2f9-45b3-9196-e1bd7faf5fe8"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="HealthBarDisplay" Guid="ca0b77b2-a1a8-4406-a7e6-5437bd42a661" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
         <Parameter Name="MaxDisplayDistance" Value="19" Type="float"/>
@@ -5095,12 +4988,9 @@
 </EntityTemplate>
 
 <EntityTemplate Name="Richard" Guid="2454e93e-9dfc-4388-ac02-e777deb8ab51" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="DeathSpawner" Guid="c79d12e0-2375-4b5e-9046-dcb7299999d5">
-    <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="ec54b82e-f0f6-45be-9a8d-42a37a6da993"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="4de2a6e1-8bad-42dc-ae5d-58b6f2608306"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="07305d27-632b-48b8-8809-f96967686321"/>
+<MemberComponentTemplate Name="DeathSpawner" Guid="c79d12e0-2375-4b5e-9046-dcb7299999d5" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="450978bb-c71b-4055-80e8-a447b290f142"/>
-    <Parameter Name="DeathSpawnTemplates" Value="ZombieRepetidor:0.3;InfectedNormal1:1.0;InfectedNormal2:1.0" Type="string" Guid="065774a5-856b-44b4-9984-b1e8e7fc0e40"/>
+    <Parameter Name="DeathSpawnTemplates" Value="ZombieRepetidor:0.03;InfectedNormal1:0.6;InfectedNormal2:0.6" Type="string" Guid="065774a5-856b-44b4-9984-b1e8e7fc0e40"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewRunAwayBehavior" Guid="3a322601-da4e-4ed8-898c-7c078fc52155">
     <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="73e9ca7c-0983-45c1-b32b-2c362be14b01"/>
@@ -5260,12 +5150,9 @@
   <Parameter Name="SlotsCount" Value="16" Type="int"/>
   <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
 </MemberComponentTemplate>
-        <MemberComponentTemplate Name="DeathSpawner" Guid="f11cb648-0a30-42a9-91ba-f17a1987eaa4">
-    <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="b3834755-7ca6-4f7b-8c64-508fc4c2c906"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="245bf25e-2cad-4394-8757-bf6ee874c303"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="156bad51-4759-4718-9e18-e7464410c674"/>
+        <MemberComponentTemplate Name="DeathSpawner" Guid="f11cb648-0a30-42a9-91ba-f17a1987eaa4" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="497288b8-85ff-4181-8ab4-c5f5f83f4f6c"/>
-    <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:1.0;InfectedNormal2:1.0" Type="string" Guid="bdde762c-10ff-45e8-9a66-8640121977bc"/>
+    <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:0.5;InfectedNormal2:0.5" Type="string" Guid="bdde762c-10ff-45e8-9a66-8640121977bc"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="NewRunAwayBehavior" Guid="6ac122be-32ba-46d2-b929-5ef7aa26a8af">
     <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="dbbdf334-2f51-4761-b6a3-f48656ec88ac"/>
@@ -5437,12 +5324,9 @@
   <Parameter Name="SlotsCount" Value="16" Type="int"/>
   <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
 </MemberComponentTemplate>
-        <MemberComponentTemplate Name="DeathSpawner" Guid="de9c14fe-ab2a-4da3-aa81-fb54207a5344">
-    <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="58bb6bb2-e13f-4d7e-8260-2149e3c50825"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="ffdee80e-4d1a-456b-9451-41aa2133f27a"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="f1ab1867-576a-490f-b37d-30bfd9afb61b"/>
+        <MemberComponentTemplate Name="DeathSpawner" Guid="de9c14fe-ab2a-4da3-aa81-fb54207a5344" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="ef5aab35-5c25-4046-9a26-76f7fc4d625b"/>
-    <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:1.0;InfectedNormal2:1.0" Type="string" Guid="6913b26a-c98e-47e0-bb6a-f4e831616dca"/>
+    <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:0.5;InfectedNormal2:0.5" Type="string" Guid="6913b26a-c98e-47e0-bb6a-f4e831616dca"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="NewRunAwayBehavior" Guid="6614a0d2-5dab-4130-bccb-68ffe6469081">
     <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="7297870f-0a00-46cf-8bea-8c851fc47e0f"/>
@@ -5596,12 +5480,9 @@
         </EntityTemplate>
 
 <EntityTemplate Name="PirataHostilComerciante" Guid="935cc7cb-6a0a-4fc6-a75b-2f6eba8344b9" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-        <MemberComponentTemplate Name="DeathSpawner" Guid="2f79c9ad-c279-4bc3-944e-a1f5a3b22809">
-    <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="ac1e9ab3-53d1-4ae2-9ae3-d2d02203b141"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="7d6047c7-d151-4791-8e0c-4a40744b5fa6"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="e062accf-d6c1-43e3-a2b8-7260731d9ac6"/>
+        <MemberComponentTemplate Name="DeathSpawner" Guid="2f79c9ad-c279-4bc3-944e-a1f5a3b22809" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="21f97a58-4c84-455e-84e9-acebc7b7c31d"/>
-    <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:1.0;InfectedNormal2:1.0" Type="string" Guid="4eab6625-a3ca-4194-9d21-746c6352a4ae"/>
+    <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:0.5;InfectedNormal2:0.5" Type="string" Guid="4eab6625-a3ca-4194-9d21-746c6352a4ae"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="NewRunAwayBehavior" Guid="7bcd4c26-c83f-48a2-b8fa-b596a9510694">
     <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="b2433151-3f7a-47c4-a286-3ed0736afc96"/>
@@ -5765,12 +5646,9 @@
     <Parameter Name="LoadOrder" Value="60" Type="int" Guid="9ea2043f-5b54-427e-8efe-039df83c8a60"/>
     <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="0b959b9c-eeaf-4f45-9872-46c62c14e3f5"/>
 </MemberComponentTemplate>
-        <MemberComponentTemplate Name="DeathSpawner" Guid="fd533561-30c9-464f-8f2d-4dc3e37b8ed9">
-    <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="e8f88408-7c89-45ca-8a44-52443badd5e5"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="d8c2cb18-24b1-473b-be73-8947b4ab2920"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="c2ea0a94-0cbe-443a-b8b1-e3955991ec6b"/>
+        <MemberComponentTemplate Name="DeathSpawner" Guid="fd533561-30c9-464f-8f2d-4dc3e37b8ed9" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="a1c81b2b-18b8-41da-a565-40177ae4ce59"/>
-    <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:1.0;InfectedNormal2:1.0" Type="string" Guid="c1d47cd5-0b42-454e-b104-416c36fa56d4"/>
+    <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:0.5;InfectedNormal2:0.5" Type="string" Guid="c1d47cd5-0b42-454e-b104-416c36fa56d4"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="NewRunAwayBehavior" Guid="f732570e-4e9b-44c6-923e-df3c8fc4f8c8">
     <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="55081ed6-c504-4b17-bd1a-9213ea787d78"/>
@@ -5920,12 +5798,9 @@
         </EntityTemplate>
         
         <EntityTemplate Name="PirataElite" Guid="2dee3363-a464-4912-972a-9c650e1a2eef" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-        <MemberComponentTemplate Name="DeathSpawner" Guid="6da53dfd-e3a1-43ee-8034-4f7472895fe6">
-    <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="e48813dd-00e2-41d3-a6b0-f73be9d5a354"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="773ba72a-f242-4745-a38c-23efa75e2c4f"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="88cdce6c-820e-472a-932c-3c0eeb43325b"/>
+        <MemberComponentTemplate Name="DeathSpawner" Guid="6da53dfd-e3a1-43ee-8034-4f7472895fe6" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="0796ff65-52db-4b5e-9210-6ed1db3012e1"/>
-    <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:1.0;InfectedNormal2:1.0" Type="string" Guid="24206c44-f389-4217-9f2d-7e8619313b00"/>
+    <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:0.5;InfectedNormal2:0.5" Type="string" Guid="24206c44-f389-4217-9f2d-7e8619313b00"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="NewRunAwayBehavior" Guid="981d6a43-b873-4b56-8199-199a4a66673a">
     <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="991fbb56-6b66-412a-90ca-cadf6cfc2a08"/>
@@ -6083,12 +5958,9 @@
         </EntityTemplate>
 
         <EntityTemplate Name="PirataNormal" Guid="7cee3d07-d000-4317-a091-743d46160809" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-        <MemberComponentTemplate Name="DeathSpawner" Guid="8323ea6b-916a-4dd4-ad84-de9c9cb1e99c">
-    <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="ed8dfa0e-7041-4b3d-a7dc-ef5ce920db8a"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="f76d6148-4b18-4151-b5bd-11299cc14875"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="0a301f5d-7f9c-4059-98bf-94f9403f9da5"/>
+        <MemberComponentTemplate Name="DeathSpawner" Guid="8323ea6b-916a-4dd4-ad84-de9c9cb1e99c" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="1d27bccb-8eb0-4fe4-adff-c2822618bd71"/>
-    <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:1.0;InfectedNormal2:1.0" Type="string" Guid="a2cdcd4b-f36c-4970-9513-0d8a6a2edf77"/>
+    <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:0.5;InfectedNormal2:0.5" Type="string" Guid="a2cdcd4b-f36c-4970-9513-0d8a6a2edf77"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="NewRunAwayBehavior" Guid="cb0fa756-cf3c-4559-af2c-2726b691da55">
     <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="4c0b8597-9a13-474e-b030-80bcacd0edca"/>
