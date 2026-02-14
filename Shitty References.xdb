@@ -497,11 +497,10 @@
   <Parameter Name="InfectProbability" Description="Probabilidad de que el ataque cause envenenamiento (0-1)" Guid="7c34d504-c34a-487a-8ca2-a115ca60e9d7" Value="1.0" Type="float"/>
 </ComponentTemplate>
 
-<ComponentTemplate Name="NewChaseBehavior" Description="Comportamiento avanzado de persecución con integración a manadas, defensa del jugador y detección prioritaria de amenazas (bandidos y criaturas hostiles)." Guid="ef7de64b-34ae-42cc-b51c-ebf3a0621558">
+<ComponentTemplate Name="NewChaseBehavior" Description="Comportamiento avanzado de persecución con integración a manadas, defensa del jugador y detección prioritaria de amenazas (bandidos y criaturas hostiles)." Guid="ef7de64b-34ae-42cc-b51c-ebf3a0621558" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
   <Parameter Name="Class" Value="Game.ComponentNewChaseBehavior" Type="string" Guid="11fabd7a-d7fc-41b1-89b7-886747fb212a"/>
-  <Parameter Name="IsOptional" Value="true" Type="bool" Guid="e337134c-d81f-404e-bf88-5c25c8a01ab5"/>
-  <Parameter Name="LoadOrder" Value="60" Type="int" Guid="8b3012e5-3d60-40ff-bc79-df913f1edf77"/>
-  <Parameter Name="DayChaseRange" Value="16" Type="float" Description="Distancia base máxima a la que detecta y comienza a perseguir objetivos durante el día. Se modifica por factores internos y estado del entorno." Guid="87e5a27b-dfa9-40fe-ab4e-b9dd7152e9f9"/><Parameter Name="NightChaseRange" Value="24" Type="float" Description="Distancia base máxima de detección y persecución durante la noche. Generalmente mayor que de día." Guid="e5712619-f858-46ca-adf5-9d257e3e8344"/>
+  <Parameter Name="DayChaseRange" Value="16" Type="float" Description="Distancia base máxima a la que detecta y comienza a perseguir objetivos durante el día. Se modifica por factores internos y estado del entorno." Guid="87e5a27b-dfa9-40fe-ab4e-b9dd7152e9f9"/>
+  <Parameter Name="NightChaseRange" Value="24" Type="float" Description="Distancia base máxima de detección y persecución durante la noche. Generalmente mayor que de día." Guid="e5712619-f858-46ca-adf5-9d257e3e8344"/>
   <Parameter Name="DayChaseTime" Value="30" Type="float" Description="Tiempo máximo que mantiene la persecución iniciada durante el día antes de desistir, salvo que sea persistente." Guid="cb23ed02-a3a6-48e9-876f-620f88c7b501"/>
   <Parameter Name="NightChaseTime" Value="60" Type="float" Description="Tiempo máximo que mantiene la persecución durante la noche. Puede extenderse si el objetivo sigue siendo válido." Guid="6859ead6-45be-4b49-8f9a-ae2b4406fa27"/>
   <Parameter Name="ChaseNonPlayerProbability" Value="0.2" Type="float" Description="Probabilidad de seleccionar criaturas que no sean jugador como objetivo automático cuando coinciden con la máscara AutoChaseMask." Guid="a3a26703-023f-46c3-9fa8-f82b5d27b2e9"/>
