@@ -49,7 +49,7 @@
     <MemberComponentTemplate Name="Inventory" Guid="c7ff22be-b261-4ea9-a88c-64ae043a6ed5" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
     <ParameterSet Name="Slots">
         <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="358" Type="int"/> <!-- Tiene puesto su desert eagle-->
+            <Parameter Name="Contents" Value="359" Type="int"/> <!-- Tiene puesto su desert eagle-->
             <Parameter Name="Count" Value="1" Type="int"/>
         </ParameterSet>
     </ParameterSet>
@@ -375,7 +375,7 @@
     <MemberComponentTemplate Name="Inventory" Guid="c8177148-4404-4815-9070-e3f898d649df" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
     <ParameterSet Name="Slots">
         <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="338" Type="int"/> <!-- Tiene puesto su AK 47-->
+            <Parameter Name="Contents" Value="339" Type="int"/> <!-- Tiene puesto su AK 47-->
             <Parameter Name="Count" Value="1" Type="int"/>
         </ParameterSet>
     </ParameterSet>
@@ -538,7 +538,7 @@
     <MemberComponentTemplate Name="Inventory" Guid="8e20ad8c-448b-4cc4-ba5c-be345b936e2c" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
     <ParameterSet Name="Slots">
         <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="364" Type="int"/> <!-- Tiene puesto su AUG-->
+            <Parameter Name="Contents" Value="365" Type="int"/> <!-- Tiene puesto su AUG-->
             <Parameter Name="Count" Value="1" Type="int"/>
         </ParameterSet>
     </ParameterSet>
@@ -688,7 +688,7 @@
 <MemberComponentTemplate Name="CreatureSounds" Guid="9354c947-e8b8-4b2d-baa7-25c900f1d47a">
     <Parameter Name="PainSound" Guid="a1e18d5b-7e76-4bbd-aada-1f7e42753cdb" Value="Audio/Creatures/Mujeres/Pain" Type="string"/>
     <Parameter Name="IdleSound" Guid="2108eafb-e22c-4c59-b39b-e75dc410db19" Value="Audio/Creatures/Mujeres/Idie" Type="string"/>
-    <Parameter Name="AttackSound" Guid="fe8f94ad-348a-43cc-87f7-426ed6cb52f3" Value="Audio/Creatures/Mujeres/Idie" Type="string"/>
+    <Parameter Name="AttackSound" Guid="fe8f94ad-348a-43cc-87f7-426ed6cb52f3" Value="Audio/Creatures/Mujeres/Attack" Type="string"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidFireBehavior" Guid="b9761599-bc85-4b33-a95a-0b87df30a25b" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
     <MemberComponentTemplate Name="Locomotion" Guid="dc329eb9-edb1-40f6-a9b1-7d86e1fec1b7">
@@ -701,7 +701,7 @@
     <MemberComponentTemplate Name="Inventory" Guid="9cf1b1de-24c0-4035-a8dc-a501ad3b1a77" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
     <ParameterSet Name="Slots">
         <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="374" Type="int"/> <!-- Tiene puesto su Revolver-->
+            <Parameter Name="Contents" Value="375" Type="int"/> <!-- Tiene puesto su Revolver-->
             <Parameter Name="Count" Value="1" Type="int"/>
         </ParameterSet>
     </ParameterSet>
@@ -864,7 +864,7 @@
     <MemberComponentTemplate Name="Inventory" Guid="fdfddd8c-151b-4741-a515-cb36840652a2" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
     <ParameterSet Name="Slots">
         <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="356" Type="int"/> <!-- Tiene puesto su Izh-->
+            <Parameter Name="Contents" Value="357" Type="int"/> <!-- Tiene puesto su Izh-->
             <Parameter Name="Count" Value="1" Type="int"/>
         </ParameterSet>
     </ParameterSet>
@@ -980,12 +980,12 @@
 
 <EntityTemplate Name="Bandit7" Guid="af964c81-165d-4e57-8639-d2ffa9b949be" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d"> <!-- Bandido guardian del jugador -->
 <MemberComponentTemplate Name="ChaseBehavior" Guid="54a8397e-5446-4bf4-9bdf-58a67dd4c6e1" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
-                <Parameter Name="AutoChaseMask" Guid="512b3f85-b127-4833-a3d3-1fb7d87b3028" Value="LandPredator" Type="Game.CreatureCategory"/>
-                <Parameter Name="DayChaseRange" Guid="2eccae0d-ddb1-47c9-926c-62dc2806762f" Value="0" Type="float"/>
-                <Parameter Name="NightChaseRange" Guid="816ab8e6-32ef-4b09-88c5-4a8a694418c3" Value="0" Type="float"/>
-                <Parameter Name="ChaseNonPlayerProbability" Guid="b6a88781-8be6-404f-be93-5cf200e7d45d" Value="0" Type="float"/>
-                <Parameter Name="NightChaseTime" Guid="741e055d-fdf9-4b6b-966f-ee7992837594" Value="0" Type="float"/>
-    </MemberComponentTemplate>
+    <Parameter Name="AutoChaseMask" Guid="512b3f85-b127-4833-a3d3-1fb7d87b3028" Value="LandPredator" Type="Game.CreatureCategory"/>
+    <Parameter Name="DayChaseRange" Guid="2eccae0d-ddb1-47c9-926c-62dc2806762f" Value="0" Type="float"/>
+    <Parameter Name="NightChaseRange" Guid="816ab8e6-32ef-4b09-88c5-4a8a694418c3" Value="0" Type="float"/>
+    <Parameter Name="ChaseNonPlayerProbability" Guid="b6a88781-8be6-404f-be93-5cf200e7d45d" Value="0" Type="float"/>
+    <Parameter Name="NightChaseTime" Guid="741e055d-fdf9-4b6b-966f-ee7992837594" Value="0" Type="float"/>
+</MemberComponentTemplate>
 <MemberComponentTemplate Name="DeathSpawner" Guid="2e8d492a-05a7-4bbc-95b1-5ff5e1401910">
     <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="f5d8ce68-c918-441f-8d57-b082668e8109"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="349de368-e760-4890-bb67-4718da5bd39d"/>
@@ -1048,7 +1048,7 @@
 <MemberComponentTemplate Name="CreatureSounds" Guid="f121f8a0-e854-4a4d-b851-ec7af04a5428">
     <Parameter Name="PainSound" Guid="9b5b59df-51e2-4ce7-9597-37a3d7d87b48" Value="Audio/Creatures/Mujeres/Pain" Type="string"/>
     <Parameter Name="IdleSound" Guid="a1dba837-b5cb-4587-b8c8-06e0e857038e" Value="Audio/Creatures/Mujeres/Idie" Type="string"/>
-    <Parameter Name="AttackSound" Guid="1eef3a15-0df7-4c59-916c-e41d4b0bcd74" Value="Audio/Creatures/Mujeres/Idie" Type="string"/>
+    <Parameter Name="AttackSound" Guid="1eef3a15-0df7-4c59-916c-e41d4b0bcd74" Value="Audio/Creatures/Mujeres/Attack" Type="string"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidFireBehavior" Guid="9a6f7e3c-8f0d-43db-ae32-9a14679dbd36" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
     <MemberComponentTemplate Name="Locomotion" Guid="51ca23f1-5f73-4fff-912d-4e0996dc8d3f">
@@ -1197,7 +1197,7 @@
     <MemberComponentTemplate Name="Inventory" Guid="a0b1e1c8-4d9a-48f1-a03b-e9d83b08dfd4" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
     <ParameterSet Name="Slots">
         <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="367" Type="int"/> <!-- Tiene puesto su FN P90-->
+            <Parameter Name="Contents" Value="369" Type="int"/> <!-- Tiene puesto su FN P90-->
             <Parameter Name="Count" Value="1" Type="int"/>
         </ParameterSet>
     </ParameterSet>
@@ -1360,7 +1360,7 @@
     <MemberComponentTemplate Name="Inventory" Guid="cbba0c4e-1359-47bd-afff-127ebb25c37c" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
     <ParameterSet Name="Slots">
         <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="348" Type="int"/> <!-- Tiene puesto su Mac 10-->
+            <Parameter Name="Contents" Value="349" Type="int"/> <!-- Tiene puesto su Mac 10-->
             <Parameter Name="Count" Value="1" Type="int"/>
         </ParameterSet>
     </ParameterSet>
@@ -1522,7 +1522,7 @@
     <MemberComponentTemplate Name="Inventory" Guid="b6f0640a-6e50-4773-9e0b-3ce3abffb7ed" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
     <ParameterSet Name="Slots">
         <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="350" Type="int"/> <!-- Tiene puesto su Uzi-->
+            <Parameter Name="Contents" Value="351" Type="int"/> <!-- Tiene puesto su Uzi-->
             <Parameter Name="Count" Value="1" Type="int"/>
         </ParameterSet>
     </ParameterSet>
@@ -2193,7 +2193,7 @@
 <MemberComponentTemplate Name="Inventory" Guid="a5e9b2d8-0cc9-4ecb-8f67-a8499e3aec82" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
     <ParameterSet Name="Slots">
         <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="387" Type="int"/> <!-- Tiene puesto su Mendoza-->
+            <Parameter Name="Contents" Value="388" Type="int"/> <!-- Tiene puesto su Mendoza-->
             <Parameter Name="Count" Value="1" Type="int"/>
         </ParameterSet>
     </ParameterSet>
