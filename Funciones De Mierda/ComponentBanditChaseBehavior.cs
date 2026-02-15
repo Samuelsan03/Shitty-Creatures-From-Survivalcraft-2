@@ -10,6 +10,7 @@ namespace Game
 		public new UpdateOrder UpdateOrder => UpdateOrder.Default;
 
 		private ComponentBanditHerdBehavior m_componentBanditHerd;
+		private ComponentBanditRunAwayBehavior m_componentBanditRunAway; // REFERENCIA AÑADIDA
 		private ModLoader m_registeredLoader;
 		private bool m_isNearDeath;
 		private float m_attackPersistanceFactor = 1f;
@@ -38,6 +39,7 @@ namespace Game
 			base.Load(valuesDictionary, idToEntityMap);
 
 			m_componentBanditHerd = Entity.FindComponent<ComponentBanditHerdBehavior>();
+			m_componentBanditRunAway = Entity.FindComponent<ComponentBanditRunAwayBehavior>(); // REFERENCIA AÑADIDA
 			m_componentMiner = Entity.FindComponent<ComponentMiner>();
 
 			m_autoChaseMask = CreatureCategory.LandPredator | CreatureCategory.LandOther |
