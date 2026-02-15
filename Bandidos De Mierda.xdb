@@ -1,4 +1,4 @@
-<BandidosDeMierda>
+<BandidosDeMierda xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://gitee.com/THPRC/survivalcraft-api/raw/SCAPI1.8/Survivalcraft/Content/Assets/Database.xsd">
 
     <EntityTemplate Name="Bandit1" Guid="ec68ffdc-d006-4583-aac7-109738d19121" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
     <MemberComponentTemplate Name="BanditRunAwayBehavior" Guid="51ec403f-1081-4285-84b4-dcb469d09bd1" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
