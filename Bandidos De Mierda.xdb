@@ -1,18 +1,14 @@
 <BandidosDeMierda>
 
     <EntityTemplate Name="Bandit1" Guid="ec68ffdc-d006-4583-aac7-109738d19121" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+    <MemberComponentTemplate Name="BanditRunAwayBehavior" Guid="51ec403f-1081-4285-84b4-dcb469d09bd1" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="ca90b631-cf08-4ac1-a03e-f2fee10586c6" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
     <MemberComponentTemplate Name="DeathSpawner" Guid="3afb48fb-279d-40d9-9502-ff5cd4768b8d">
     <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="e2a9b33c-d59e-4b6e-928e-139ee7422eb4"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="b2c3cabd-f736-4b1f-bfd8-dd73a4e17867"/>
     <Parameter Name="LoadOrder" Value="55" Type="int" Guid="7758d4a5-7485-46e4-a87c-d4be3314211c"/>
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="dc4bd13b-99d1-47c5-9dfe-e280924c44d5"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1;InfectedNormal2" Type="string" Guid="6d17b67d-113c-4b15-92ef-0e27966035b8"/>
-</MemberComponentTemplate>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="fd11900d-2c3b-4398-a7eb-1260a438d216">
-    <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="3781e71f-f2e6-4b8c-9d50-b1f2aaaa7570"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="b169df69-3e2d-4839-a86b-fc4d396ed674"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="42b3e551-68f2-46e0-8c20-7e63c04c50ef"/>
-    <Parameter Name="LowHealthToEscape" Value="0.1" Type="float" Guid="c4834d08-ffd4-4fe9-9c10-0901db401066"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="04c75577-9c07-4a18-a1ab-5ff2f17c47b3">
     <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
@@ -171,12 +167,8 @@
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="a680c1f9-7d5b-42fc-9ac6-9a98cf6e0e24"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1;InfectedNormal2" Type="string" Guid="e0ce2870-ab72-4b4c-84f4-a7271b0ba235"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="27d2f5c9-7c93-427f-b44f-700949900200">
-    <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="52ff9c92-c3ab-4cde-8e4b-0b6db8c05ddd"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="d51b6b70-1b10-4a97-8438-12eca99a5dd7"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="2d78c136-b69d-4d23-a008-98db5cb2f620"/>
-    <Parameter Name="LowHealthToEscape" Value="0.1" Type="float" Guid="5e9dbedd-140b-4945-a2e5-b274e5de2788"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="BanditRunAwayBehavior" Guid="777e7e24-6efc-4005-8708-0e7033549198" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="d788a3c4-098e-4f85-8c14-a5619dcd19cb" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
 <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="480d3d72-9365-469e-9182-ee1dcc21a9ca">
     <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
     <Parameter Name="IsOptional" Value="false" Type="bool"/>
@@ -334,12 +326,8 @@
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="d0e37788-6990-407a-91cb-5d6f8e0ff3e8"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1;InfectedNormal2" Type="string" Guid="6fccd317-6497-4b10-8f31-23df08dadae3"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="095dff6b-5a50-4f2a-ad43-234addcce32a">
-    <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="95203609-fe16-4079-863f-adb258c42dc7"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="20d7714b-d2bb-440e-b18f-79a4b83080ee"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="2b1f69e4-da7c-4be4-98ee-04ec63342043"/>
-    <Parameter Name="LowHealthToEscape" Value="0.1" Type="float" Guid="7eebca30-45ab-47b3-a0e7-8f486c0cd10d"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="BanditRunAwayBehavior" Guid="8469ade4-2f31-4211-8495-2d9a553b287a" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="fb730b38-2531-4cd0-b37c-d7a5d6e9d9a6" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
 <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="99ea442c-fdfe-4f43-a1a6-dbd5e7561ca7">
     <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
     <Parameter Name="IsOptional" Value="false" Type="bool"/>
@@ -497,12 +485,8 @@
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="ecb0a0c0-84b9-40c0-b1f6-83a9838a63dc"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1;InfectedNormal2" Type="string" Guid="3d12d0a8-7724-4cef-80bf-b7bbf8e75310"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="f26b25a0-ef11-4253-9837-18f7dba23e15">
-    <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="62b9b09e-bd6c-4a14-ae2d-827fc8d9d940"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="9edc0efc-81a2-41ac-bc55-4349006e0cee"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="abb6c7fb-0c81-47df-9c48-fa21e592d3a3"/>
-    <Parameter Name="LowHealthToEscape" Value="0.1" Type="float" Guid="6186b125-e7ea-4898-be3b-935afda52cc8"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="BanditRunAwayBehavior" Guid="df01ace7-f0c9-479f-a0a1-128f12eaf16a" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="8c0410e7-7474-4752-8148-ee334cb26c7c" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
 <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="2962cb9a-a90b-4880-b840-8d0f4a57775e">
     <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
     <Parameter Name="IsOptional" Value="false" Type="bool"/>
@@ -660,12 +644,8 @@
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="c87e3611-dbf1-4c2e-836d-b3a126878f2f"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1;InfectedNormal2" Type="string" Guid="3bce7b01-dd4b-487b-9e05-8231a2066356"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="09db6886-8d8f-4a69-89e2-c658982bda29">
-    <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="a08add95-990c-4e1f-b1fa-71762298810a"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="1d5f65de-ea08-487c-82ae-f54720ac3101"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="435bd169-7c73-4a84-a8d0-2521973023b3"/>
-    <Parameter Name="LowHealthToEscape" Value="0.1" Type="float" Guid="8ed5751e-c9f2-4a89-b5d7-3cd2e6ba841a"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="BanditRunAwayBehavior" Guid="7f366fc4-c97c-4062-8a58-f2e6f6b9509b" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="02ca1076-7840-40c4-b654-ca2c0a75998c" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
 <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="ba6f7ec4-408c-4dd9-9278-b7b879d917d8">
     <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
     <Parameter Name="IsOptional" Value="false" Type="bool"/>
@@ -823,12 +803,8 @@
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="82e91cd9-9098-4fd4-a3c2-30fe079ff6a2"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1;InfectedNormal2" Type="string" Guid="0f0df2c7-ae05-4dbd-a3b8-bc103ad09ae3"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="1b31d4c1-dda2-4785-8bef-8fcaec74a28b">
-    <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="afd4c851-9355-479b-80ef-e21217571185"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="0477b28b-2b1e-44cc-85a6-94a05f4160a9"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="d7d8b1a6-efc1-49e1-a1e3-c186b92743e1"/>
-    <Parameter Name="LowHealthToEscape" Value="0.1" Type="float" Guid="ba0240b2-2ac7-455e-a061-c189cb33a6fc"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="BanditRunAwayBehavior" Guid="cb6f1f54-22fb-46e8-b413-22d4c96d34e6" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="6be22db7-2741-49b4-b1b7-a18a7da0e061" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
 <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="4284aecd-7338-4a78-b973-893032915b60">
     <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
     <Parameter Name="IsOptional" Value="false" Type="bool"/>
@@ -1101,10 +1077,7 @@
     <MemberComponentTemplate Name="FeedBehavior" Guid="cbc54b0a-4580-45ff-b285-5056c7731d67" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
         <Parameter Name="AutoFeed" Guid="9f10bf67-c0ae-4397-b08b-4d6885f0ed07" Value="False" Type="bool"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="NewChaseBehavior2" Guid="1cd154dd-316a-4faf-b009-de41caf2dd0a">
-    <Parameter Name="Class" Value="Game.ComponentNewChaseBehavior2" Type="string" Guid="197563e4-ee00-4797-b89b-d31ec01d4cdb"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="bc6090fe-be1e-420d-926f-c0a44fdefa2c"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="8c5e88ab-b9ff-465d-9733-d64d1a0e4cbc"/>
+<MemberComponentTemplate Name="NewChaseBehavior2" Guid="1cd154dd-316a-4faf-b009-de41caf2dd0a" InheritanceParent="156963c2-5088-4d40-b0fa-73a8f0f202b5">
     <Parameter Name="DayChaseRange" Value="16" Type="float" Guid="c5fe3142-37d2-4d59-adce-72ad3e79024a"/>
     <Parameter Name="NightChaseRange" Value="24" Type="float" Guid="74c9156f-22bd-408d-b103-4c222e73aafc"/>
     <Parameter Name="DayChaseTime" Value="30" Type="float" Guid="9d63e817-5b62-4e9d-9e84-81b483efcc0c"/>
@@ -1150,12 +1123,8 @@
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="f79c671d-f57a-4c35-8cac-2ee398fef629"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1;InfectedNormal2" Type="string" Guid="c41bc5d9-6976-4712-9b3f-5404fc8f80ee"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="1c9c3d0f-d692-4bf4-8ddc-5af37a89e9ce">
-    <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="ed3fe87d-bfc1-464c-bc62-d4ee3ad8fbd3"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="9a47dc51-c929-474f-890a-afb6fc64d125"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="92d88393-2f57-4a79-9f69-1bdcfa05cc50"/>
-    <Parameter Name="LowHealthToEscape" Value="0.1" Type="float" Guid="47ccf7f6-a6ef-4ed5-ac82-03d8fee981b3"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="BanditRunAwayBehavior" Guid="0b718af3-f358-4043-af93-9e73a48ee29a" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="9c6fd0c9-18a6-452d-ab4d-777ba17d3277" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
 <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="61df739e-bc0c-4cd3-91d6-f5229799c698">
     <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
     <Parameter Name="IsOptional" Value="false" Type="bool"/>
@@ -1313,12 +1282,8 @@
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="845d4515-cb2b-430e-9255-8101c585b0bd"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1;InfectedNormal2" Type="string" Guid="c898defb-7693-4177-b99b-6030cb185ab3"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="7d06c63f-7608-45c1-b1b0-d663010ba80c">
-    <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="c528fc29-825e-4709-8080-1d7356203014"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="7b48bb3d-bacc-438b-87ff-3608c2a0a440"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="da2ad79e-9922-4271-bc4f-bff67f40f531"/>
-    <Parameter Name="LowHealthToEscape" Value="0.1" Type="float" Guid="1c3ccdac-4998-49aa-9ee8-74bd4f432cd6"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="BanditRunAwayBehavior" Guid="04be7f62-3fc3-4f3e-851e-af06f912301c" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="c38d5e2b-c447-4586-b73f-e6825f563435" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
 <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="c8a42867-a90c-4c37-9c03-46cd54fda7f0">
     <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
     <Parameter Name="IsOptional" Value="false" Type="bool"/>
@@ -1475,12 +1440,8 @@
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="a20d0003-9ad4-439d-bacd-a07edb703b12"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1;InfectedNormal2" Type="string" Guid="9dfc7869-c4fb-4d33-a9bf-dbc795e356d5"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="d9b79070-b371-41d4-9434-f01ed7d005c5">
-    <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="b4b38514-b470-4d83-b700-da318b022fc8"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="ef00d1bf-ba6b-4437-8b5f-a67de3c55b7b"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="a45240af-e267-4003-a519-d6ebbb5ba80b"/>
-    <Parameter Name="LowHealthToEscape" Value="0.1" Type="float" Guid="cf9bc777-0444-4710-9a2e-3d4c434dd8d2"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="BanditRunAwayBehavior" Guid="977b3393-aed2-4acf-b6c7-6e077f938bcb" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="462c0bd4-6f5d-4490-a1ff-287e7d7f4ab6" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
 <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="15ba8bed-b58b-4917-8d9f-781bb2e8de50">
     <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
     <Parameter Name="IsOptional" Value="false" Type="bool"/>
@@ -1757,10 +1718,7 @@
     <MemberComponentTemplate Name="FeedBehavior" Guid="75ff5733-9fc4-44e3-a59e-524f40578912" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
         <Parameter Name="AutoFeed" Guid="c04eb8bd-728f-4bdf-8ac2-8751aea43c03" Value="False" Type="bool"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="NewChaseBehavior2" Guid="467e13ef-2c3e-486d-bbb1-0239d836065d">
-    <Parameter Name="Class" Value="Game.ComponentNewChaseBehavior2" Type="string" Guid="e93cc71d-d8d9-4c2c-891d-1cfb17d6c837"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="2d3d4718-3836-43bd-a3dd-94a20c12cc9e"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="5b8b1bb3-2d90-4cc5-8a81-b755785cb34f"/>
+<MemberComponentTemplate Name="NewChaseBehavior2" Guid="467e13ef-2c3e-486d-bbb1-0239d836065d" InheritanceParent="156963c2-5088-4d40-b0fa-73a8f0f202b5">
     <Parameter Name="DayChaseRange" Value="16" Type="float" Guid="b40da2c9-326d-45bf-9c91-936c858a5e95"/>
     <Parameter Name="NightChaseRange" Value="24" Type="float" Guid="188d8ec9-cb86-4a4d-be36-f00ed186bf49"/>
     <Parameter Name="DayChaseTime" Value="30" Type="float" Guid="aa996cd6-a839-4621-8a75-10ca4d032793"/>
@@ -1925,10 +1883,7 @@
     <MemberComponentTemplate Name="FeedBehavior" Guid="e386f7de-6ba5-47bf-9120-2e9564dfbdae" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
         <Parameter Name="AutoFeed" Guid="15c7211e-b87b-4821-8a24-c1a82344488e" Value="False" Type="bool"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="NewChaseBehavior2" Guid="64a9c791-4ea8-47f5-b2da-21e1094bc1dc">
-    <Parameter Name="Class" Value="Game.ComponentNewChaseBehavior2" Type="string" Guid="faccc46f-e3d3-4773-89aa-74a272f778b1"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="1fd1677d-b39d-4326-a205-77a40f30ed2c"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="dca8a394-1425-4544-8420-07e7d96337ef"/>
+<MemberComponentTemplate Name="NewChaseBehavior2" Guid="64a9c791-4ea8-47f5-b2da-21e1094bc1dc" InheritanceParent="156963c2-5088-4d40-b0fa-73a8f0f202b5">
     <Parameter Name="DayChaseRange" Value="16" Type="float" Guid="6723a38c-4794-4f4a-8dc8-150144d679e4"/>
     <Parameter Name="NightChaseRange" Value="24" Type="float" Guid="3950e8ec-23d8-4bbe-92de-607c5920349c"/>
     <Parameter Name="DayChaseTime" Value="30" Type="float" Guid="7cd32e3f-b086-4e84-9615-cd42fd4a9a89"/>
@@ -1974,12 +1929,8 @@
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="fb620094-0dbb-4e35-800a-ba03362c8f34"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1;InfectedNormal2" Type="string" Guid="a576cfda-7ca7-483b-b0fa-3922bac73725"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="04dac3f9-4eed-451b-925f-81d8f3f86711">
-    <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="eb262ea9-4fe2-4df8-9a93-d7d34f3e2dda"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="85a131c0-482a-46df-b31c-e141a10d11d3"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="6263eff7-02b0-461b-bb34-b8255cbc35be"/>
-    <Parameter Name="LowHealthToEscape" Value="0.1" Type="float" Guid="e9d2bf53-8366-42e4-a87e-79b0dfb20989"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="BanditRunAwayBehavior" Guid="65542d01-0e15-4d55-bc46-298e86b96c3b" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="76f8aafa-9734-4221-877a-c5c684135307" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
 <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="e586685b-1c5a-48e5-b7be-fccb8ad34c67">
     <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
     <Parameter Name="IsOptional" Value="false" Type="bool"/>
@@ -2144,12 +2095,8 @@
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="7bb2eec6-5c94-43af-ac8d-2b5b2fce5c57"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1;InfectedNormal2" Type="string" Guid="d43ebad1-b576-459a-9f90-39e506efdb25"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="e2dd54d7-c5b8-49bb-ad77-19f9768a864d">
-    <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="ea66bb07-fc15-4cfc-b294-a6d2331c0b87"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="2040440a-e111-4845-8f1d-1493818e1e59"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="e09588e8-f997-4bba-8800-119c3d71b192"/>
-    <Parameter Name="LowHealthToEscape" Value="0.1" Type="float" Guid="f2368a52-ff19-47d0-a103-cf1462c54e7b"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="BanditRunAwayBehavior" Guid="d29e017e-137d-4411-a400-d9489792d0cf" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="762bc059-ab9d-4928-b670-8c9077d82a3a" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
 <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="367893d2-3a15-4646-9276-fa14c6900c8a">
     <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
     <Parameter Name="IsOptional" Value="false" Type="bool"/>
@@ -2314,12 +2261,8 @@
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="f4baca47-fdc4-4b86-b130-7c526feeebe7"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1;InfectedNormal2" Type="string" Guid="77ab5595-5e69-499e-9703-5da985a6b89d"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="fff68e6b-afb2-49eb-a95b-19a3bb0a879c">
-    <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="618a80a2-4d99-4693-a3d7-792053f356de"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="e9b34c3d-2044-4673-8e43-93df5610cb99"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="4e20b8ce-5798-4546-8f7c-64e4c525ebe3"/>
-    <Parameter Name="LowHealthToEscape" Value="0.1" Type="float" Guid="23191cb4-1896-4707-8f6f-1247e3134a26"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="BanditRunAwayBehavior" Guid="73705e4a-6647-4225-968f-c8359d7c6b8a" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="63c10b09-0dfc-4049-bd6c-00531c292f4f" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
 <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="4c028ee5-ce3e-42e6-9164-f2a30e582814">
     <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
     <Parameter Name="IsOptional" Value="false" Type="bool"/>
