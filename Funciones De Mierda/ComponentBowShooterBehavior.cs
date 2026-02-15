@@ -11,7 +11,6 @@ namespace Game
 		// Componentes necesarios
 		private ComponentCreature m_componentCreature;
 		private ComponentChaseBehavior m_componentChaseBehavior;
-		private ComponentNewChaseBehavior2 m_componentNewChaseBehavior2;
 		private ComponentInventory m_componentInventory;
 		private SubsystemTime m_subsystemTime;
 		private SubsystemProjectiles m_subsystemProjectiles;
@@ -72,7 +71,6 @@ namespace Game
 
 			m_componentCreature = base.Entity.FindComponent<ComponentCreature>(true);
 			m_componentChaseBehavior = base.Entity.FindComponent<ComponentChaseBehavior>(true);
-			m_componentNewChaseBehavior2 = base.Entity.FindComponent<ComponentNewChaseBehavior2>();
 			m_componentInventory = base.Entity.FindComponent<ComponentInventory>(true);
 			m_subsystemTime = base.Project.FindSubsystem<SubsystemTime>(true);
 			m_subsystemProjectiles = base.Project.FindSubsystem<SubsystemProjectiles>(true);
@@ -109,9 +107,6 @@ namespace Game
 
 		private ComponentCreature GetChaseTarget()
 		{
-			// Priorizar ComponentNewChaseBehavior2 si está disponible
-			if (m_componentNewChaseBehavior2 != null && m_componentNewChaseBehavior2.Target != null)
-				return m_componentNewChaseBehavior2.Target;
 
 			// Fallback al ComponentChaseBehavior original
 			if (m_componentChaseBehavior != null && m_componentChaseBehavior.Target != null)
