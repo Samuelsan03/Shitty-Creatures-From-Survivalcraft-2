@@ -32,7 +32,6 @@ namespace Game
 			this.m_subsystemAudio = base.Project.FindSubsystem<SubsystemAudio>(true);
 
 			// Referencias a todos los comportamientos de persecución (NO son obligatorios)
-			// Intentamos encontrar cada uno, pero pueden ser null
 			this.m_componentChaseBehavior = base.Entity.FindComponent<ComponentChaseBehavior>();
 			this.m_componentZombieChaseBehavior = base.Entity.FindComponent<ComponentZombieChaseBehavior>();
 			this.m_componentNewChaseBehavior = base.Entity.FindComponent<ComponentNewChaseBehavior>();
@@ -366,6 +365,12 @@ namespace Game
 		private void DestroyBlock(Point3 point)
 		{
 			int cellValue = this.m_subsystemTerrain.Terrain.GetCellValue(point.X, point.Y, point.Z);
+			int num = Terrain.ExtractContents(cellValue);
+			Block block = BlocksManager.Blocks[num];
+
+			// Seguridad extra: no destruir bloques indestructibles (como bedrock)
+			if (block.GetExplosionResilience(cellValue) >= float.MaxValue)
+				return;
 
 			// CAMBIAR noDebris A false PARA GENERAR PARTÍCULAS Y DROPS
 			this.m_subsystemTerrain.DestroyCell(0, point.X, point.Y, point.Z, 0, false, false, null);
@@ -409,22 +414,26 @@ namespace Game
 			}
 		}
 
+		// ===== MÉTODO CLAVE: VERIFICA SI UN BLOQUE PUEDE SER ROTO =====
 		private bool IsBlockBreakable(int value)
 		{
 			int num = Terrain.ExtractContents(value);
-			bool flag = num == 0;
-			bool result;
-			if (flag)
-			{
-				result = false;
-			}
-			else
-			{
-				Block block = BlocksManager.Blocks[num];
-				bool flag2 = this.m_specificBlockIds.Count == 0 || this.m_specificBlockIds.Contains(num);
-				result = (block.IsCollidable_(value) && block.DigResilience >= 0f && flag2);
-			}
-			return result;
+			if (num == 0)
+				return false;
+
+			Block block = BlocksManager.Blocks[num];
+
+			// --- NUEVA COMPROBACIÓN: bloques indestructibles (como bedrock) ---
+			// GetExplosionResilience devuelve float.MaxValue para bloques que no pueden ser destruidos por explosiones.
+			// Usamos el mismo criterio para el pathbreaker.
+			if (block.GetExplosionResilience(value) >= float.MaxValue)
+				return false;
+
+			// Verificar si está en la lista específica (si se definió)
+			bool specificOk = this.m_specificBlockIds.Count == 0 || this.m_specificBlockIds.Contains(num);
+
+			// Condiciones originales: colisionable, resiliencia de excavación >= 0 (no negativo) y cumple specificOk
+			return block.IsCollidable_(value) && block.DigResilience >= 0f && specificOk;
 		}
 
 		private Point3 GetMainFacingDirection()
