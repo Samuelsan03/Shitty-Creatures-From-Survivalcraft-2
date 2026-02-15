@@ -149,6 +149,11 @@
             <Parameter Name="FadeDuration" Value="0.3" Type="float" Description="Duración en segundos del desvanecimiento final cuando llega a la cabeza. AJUSTA: Qué tan rápido desaparece el texto hostil al final."/>
         </ComponentTemplate>
 
+<ComponentTemplate Name="ZombieRunAwayBehavior" Description="Comportamiento de huida para zombis - NO HACE NADA, los zombis nunca huyen por salud baja" Guid="4cb713ec-4ae6-472b-b102-2d629200fe10" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+    <Parameter Name="Class" Guid="50f8c4b0-0c84-43c9-a106-f7bf4dbfac96" Value="Game.ComponentZombieRunAwayBehavior" Type="string"/>
+    <Parameter Name="LowHealthToEscape" Description="Salud baja para huir (NO SE USA, los zombis nunca huyen)" Guid="83e2db36-bd3c-48b3-a7ae-b3ae0f2ac841" Value="0.0" Type="float"/>
+</ComponentTemplate>
+
         <ComponentTemplate Name="PoisonInfected" Description="Componente de criatura infectada por veneno" Guid="d5e7f9a1-b3c5-4d9f-1a3b-5c7d9f1a3b5c">
   <Parameter Name="Class" Guid="e6f8a0b2-c4d6-4e0a-2b4c-6d8e0a2b4c6d" Value="Game.ComponentPoisonInfected" Type="string"/>
   <Parameter Name="IsOptional" Value="true" Type="bool"/>
@@ -158,7 +163,12 @@
     </Folder>
 
     <Folder Name="ProgramedInteligence" Guid="33dfd132-3c41-4dfa-a385-af3ba34ff86b">
-    <ComponentTemplate Name="NewChaseBehavior2" Description="Comportamiento que hace que una criatura persiga al intruso" Guid="156963c2-5088-4d40-b0fa-73a8f0f202b5" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+    <ComponentTemplate Name="BanditRunAwayBehavior" Description="Comportamiento de huida para bandidos - NUNCA HUYEN, siguen atacando" Guid="991f0b69-1749-4390-b17c-b135569988f4" InheritanceParent="b138cc15-930c-4805-8cfc-b91bfa7f767a">
+    <Parameter Name="Class" Guid="cd3ed525-0bcc-4aca-9967-b8e167fdbfb0" Value="Game.ComponentBanditRunAwayBehavior" Type="string"/>
+    <Parameter Name="LowHealthToEscape" Description="Salud baja para huir (NO SE USA, bandidos nunca huyen)" Guid="c2261c2b-7e18-4e25-a469-b3871b7f2f9f" Value="0.0" Type="float"/>
+</ComponentTemplate>
+
+    <ComponentTemplate Name="NewChaseBehavior2" Description="Comportamiento que hace que una criatura persiga al intruso" Guid="156963c2-5088-4d40-b0fa-73a8f0f202b5" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
   <Parameter Name="Class" Guid="59578e6c-c3b9-451c-9472-f0626be12772" Value="Game.ComponentNewChaseBehavior2" Type="string"/>
   <Parameter Name="ChaseWhenAttackedProbability" Description="Probabilidad de que la criatura persiga cuando es atacada" Guid="5e64f000-66c7-4950-b821-c67c7c101ec3" Value="1" Type="float"/>
   <Parameter Name="NightChaseTime" Description="Tiempo de persecución cuando la criatura comienza a perseguir durante la noche, en segundos" Guid="a80cc983-aa50-421e-bbc9-bac0d5070f5f" Value="10" Type="float"/>
