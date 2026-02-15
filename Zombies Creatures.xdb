@@ -7067,7 +7067,7 @@
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="FeedBehavior" Guid="c5ec35ce-4122-4f44-a032-dc393296e152" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="634f2d99-93b2-4198-9d4f-2495b980c2f9" Value="False" Type="bool"/>
-            </MemberComponentTempglate>
+            </MemberComponentTemplate>
             <ParameterSet Name="CreatureEggData" Guid="01242baf-b086-495e-9e30-81ebe3c30441">
                 <Parameter Name="Color" Guid="827a969c-d7fd-4d78-94e4-9477e3b73c40" Value="255,255,255" Type="Color"/>
                 <Parameter Name="TextureSlot" Guid="2ddbdf71-2654-4123-82e3-e9a4fdba2dc0" Value="183" Type="int"/>
