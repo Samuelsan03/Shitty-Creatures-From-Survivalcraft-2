@@ -440,20 +440,9 @@
             <Parameter Name="EntityDamageRadius" Value="10" Type="float" Description="Radio de daño a entidades en bloques" Guid="2bcd22be-dd01-4922-be1b-6e9c5dd076d6"/>
         </ComponentTemplate>
 
-        <ComponentTemplate Name="ComponentNewRunAwayBehavior" Guid="9c62f443-db92-4447-8f7d-3675393e75d1">
-    <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Description="El nombre de la clase C# que implementa la lógica de huida sin reacción a ruidos."/>
-    <Parameter Name="LoadOrder" Value="-1" Type="int" Guid="6e5afe28-5d96-4f24-8ac5-e61dce6f1a77" Description="Orden de carga para resolver dependencias con otros componentes."/>
-    <Parameter Name="IsOptional" Value="False" Type="bool" Guid="50d46447-b3c1-4a85-825f-c2eca2feaaee" Description="Indica si la criatura puede existir sin este componente."/>
-    <Parameter Name="LowHealthToEscape" Value="0.1" Type="float" Description="Porcentaje de salud (0-1) por debajo del cual la criatura intentará huir automáticamente. AJUSTA: Umbral de salud para activar la huida."/>
-    <Parameter Name="RunAwayDistance" Value="6" Type="float" Description="Distancia máxima (en bloques) a la que detectará al atacante para huir. AJUSTA: Qué tan lejos puede estar el atacante para que la criatura huya."/>
-    <Parameter Name="ForgetAttackerMinTime" Value="10" Type="float" Description="Tiempo mínimo en segundos para olvidar a un atacante. AJUSTA: Cuánto tiempo mínimo recuerda al enemigo después del último ataque."/>
-    <Parameter Name="ForgetAttackerMaxTime" Value="20" Type="float" Description="Tiempo máximo en segundos para olvidar a un atacante. AJUSTA: Cuánto tiempo máximo recuerda al enemigo después del último ataque."/>
-    <Parameter Name="EscapeImportanceLowHealth" Value="300" Type="float" Description="Nivel de importancia cuando la salud está por debajo de LowHealthToEscape. AJUSTA: Prioridad de la huida cuando la salud es crítica."/>
-    <Parameter Name="EscapeImportanceAttacked" Value="100" Type="float" Description="Nivel de importancia cuando es atacado pero tiene salud normal. AJUSTA: Prioridad de la huida cuando es atacado."/>
-    <Parameter Name="SearchRadius" Value="25" Type="float" Description="Radio de búsqueda (en bloques) para encontrar un lugar seguro. AJUSTA: Qué tan lejos buscará un lugar para huir."/>
-    <Parameter Name="SearchAttempts" Value="30" Type="int" Description="Número de intentos para encontrar un lugar seguro. AJUSTA: Cuántas posiciones diferentes evaluará para huir."/>
-    <Parameter Name="StayNearHerdDistance" Value="12" Type="float" Description="Distancia (en bloques) dentro de la cual no buscará el centro de la manada. AJUSTA: Qué tan cerca debe estar de la manada para no buscar su centro."/>
-    <Parameter Name="PreferWaterSafety" Value="true" Type="bool" Description="Indica si prefiere lugares con agua (bloque 18) para mayor seguridad. AJUSTA: Si busca refugio en el agua cuando huye."/>
+<ComponentTemplate Name="NewRunAwayBehavior" Description="Comportamiento que hace que la criatura huya solo cuando su salud es crítica (ignora ruidos)" Guid="0a320e99-fd38-4e3f-a5cf-d3e789235213" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+  <Parameter Name="Class" Guid="4e835c1a-1d3a-4723-9c7f-d234ab17c516" Value="Game.ComponentNewRunAwayBehavior" Type="string"/>
+  <Parameter Name="LowHealthToEscape" Description="Umbral de salud por debajo del cual la criatura empieza a huir (ej: 0.33 = 33% de vida)" Guid="3c0b1b0f-5e3c-464a-aa85-a1f013711f3e" Value="0.33" Type="float"/>
 </ComponentTemplate>
 
         <ComponentTemplate Name="PathBreaker" Guid="c1b4a3e9-6f0e-4b5d-8a7c-1f9d2e8a7b6c" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
