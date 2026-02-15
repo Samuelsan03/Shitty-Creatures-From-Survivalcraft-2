@@ -16,12 +16,8 @@
               <Parameter Name="GlowingEyesColor" Guid="653c872e-bcff-47d2-8137-d2895e525ee1" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="d274bba9-2dcb-4687-a31c-c2892afcea41" Value="0.06,0.2,0.1" Type="Vector3"/>
             </MemberComponentTemplate>
-        <MemberComponentTemplate Name="NewRunAwayBehavior" Guid="9ec4e052-1217-43f9-9049-adc3a82c7338">
-    <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="1b1d6185-7597-4ec8-bbba-bf7d8dc44e87"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="9eff51cb-f781-4aaf-b7f8-505577652140"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="f4fe2a9b-250f-4b65-8457-1c17b7ef77fb"/>
-    <Parameter Name="LowHealthToEscape" Value="0.1" Type="float" Guid="7e852370-f0cc-4abc-b5ae-42ab3cb6c65b"/>
-</MemberComponentTemplate>
+        <MemberComponentTemplate Name="ZombieRunAwayBehavior" Guid="5d370ae5-e003-4608-947f-0cc0c12dda26" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
+        <MemberComponentTemplate Name="RunAwayBehavior" Guid="0becbe88-dba6-4760-9319-6cb403e859a6" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="5a9a6b35-9495-4936-bdcc-e494255de6e3" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
                 <Parameter Name="DayRange" Guid="50f26d51-2a4b-40c1-a26e-746f57053541" Value="0" Type="float"/>
                 <Parameter Name="NightRange" Guid="4e30da61-60d9-4c1b-a2d7-943b6ce459ba" Value="0" Type="float"/>
@@ -343,12 +339,8 @@
               <Parameter Name="GlowingEyesColor" Guid="27c5c151-abbd-463b-96be-e5510d540a25" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="f8c0c5ac-fedb-47c0-9218-ed31aadb9d6a" Value="0.06,0.2,0.1" Type="Vector3"/>
             </MemberComponentTemplate>
-        <MemberComponentTemplate Name="NewRunAwayBehavior" Guid="56d39964-ea63-4714-a7a9-f44c30b002f7">
-    <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="fab6448b-8f8a-48f1-963a-0a12357ebb49"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="9e4580a1-b9de-42cf-ba81-142e89a87f53"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="09f6cb8f-cca6-4275-b635-347e260fe0d6"/>
-    <Parameter Name="LowHealthToEscape" Value="0.1" Type="float" Guid="b1b50cd0-4f8d-4c02-8f17-bc88f747e1a7"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="ZombieRunAwayBehavior" Guid="8c3c8c64-627b-4dff-8bc6-783178007474" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
+        <MemberComponentTemplate Name="RunAwayBehavior" Guid="f8923cbf-ba99-476f-bf28-8a40f14aa107" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="06bd12aa-d183-4dc9-be73-3d69940f94e3" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
                 <Parameter Name="DayRange" Guid="aa79e071-bb51-4dff-83e8-741124eadec4" Value="0" Type="float"/>
                 <Parameter Name="NightRange" Guid="069cd0f3-4d81-4080-a114-2e2bb6af8c33" Value="0" Type="float"/>
@@ -477,13 +469,6 @@
 	</MemberComponentTemplate>
             <MemberComponentTemplate Name="FeedBehavior" Guid="7bbd79bd-08f8-4f1d-ab9b-f14aff3337f6" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="522650fe-de81-4624-ae49-e6cfe403f032" Value="False" Type="bool"/>
-            </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ChaseBehavior" Guid="bc016d7c-5ab2-48ee-ba49-55fae2dafbc4" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
-                <Parameter Name="AutoChaseMask" Guid="bd934d4f-5218-49fe-9213-93b032bc96bd" Value="WaterPredator,Bird" Type="Game.CreatureCategory"/>
-                <Parameter Name="DayChaseRange" Guid="222116fd-f5f1-4c74-b24d-9d8c114fd161" Value="0" Type="float"/>
-                <Parameter Name="NightChaseRange" Guid="7a45d4cd-f120-475d-945c-5a28c73eb459" Value="0" Type="float"/>
-                <Parameter Name="ChaseNonPlayerProbability" Guid="b5a083f0-ab06-4e61-bec4-173b78604479" Value="0" Type="float"/>
-                <Parameter Name="NightChaseTime" Guid="c42a8c14-5f7f-491d-9e99-ef1f3e5e8b44" Value="0" Type="float"/>
             </MemberComponentTemplate>
             <ParameterSet Name="CreatureEggData" Guid="f8db8809-3df7-4819-a64a-6fa12818fbd4">
                 <Parameter Name="Color" Guid="a7db3b90-ca9b-4d66-aa3f-f17e9b2d8705" Value="86,139,25" Type="Color"/>
@@ -667,12 +652,8 @@
               <Parameter Name="GlowingEyesColor" Guid="952f03b0-aaa8-4b12-8e52-e47a8dcb0f5b" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="a08ec5a3-9366-4efc-a5de-64e7acc23946" Value="0.06,0.2,0.1" Type="Vector3"/>
             </MemberComponentTemplate>
-        <MemberComponentTemplate Name="NewRunAwayBehavior" Guid="8c8aa8d3-044d-428b-91e1-89b081ce912e">
-    <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="03074a46-8291-4b19-9270-2fcef81a759c"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="fe0d3200-9e4b-4a00-87eb-69a5a344b3a6"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="d4ae6e52-9ee9-4a8a-9056-d426a6cf5416"/>
-    <Parameter Name="LowHealthToEscape" Value="0.1" Type="float" Guid="4963e57d-ba27-4599-b19b-a6a9524e4560"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="ZombieRunAwayBehavior" Guid="55fa6e40-39b8-48f2-86b5-30cc704fee10" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
+        <MemberComponentTemplate Name="RunAwayBehavior" Guid="2a243a7d-334e-4a7c-ba8e-fa19fadfa8e0" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="31dc202e-8878-4b20-8b1b-57ee5359997b" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
                 <Parameter Name="DayRange" Guid="a7e6625d-b5a6-4eeb-a0d2-000d589e070e" Value="0" Type="float"/>
                 <Parameter Name="NightRange" Guid="574767ec-2962-493a-8a11-4a06c46ca1a5" Value="0" Type="float"/>
@@ -800,13 +781,6 @@
 	</MemberComponentTemplate>
             <MemberComponentTemplate Name="FeedBehavior" Guid="c9af843c-ac22-4085-8956-29a3bdb00200" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="649bb7f8-5228-407c-bc18-093f7f54f644" Value="False" Type="bool"/>
-            </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ChaseBehavior" Guid="1f1ad0ce-10de-4b8c-9696-f91023dad891" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
-                <Parameter Name="AutoChaseMask" Guid="95ad5a7e-0741-490e-b15e-89c2eccaa72a" Value="LandOther,WaterPredator,Bird" Type="Game.CreatureCategory"/>
-                <Parameter Name="DayChaseRange" Guid="0280d707-6eeb-4984-8bd1-d5aa2c5bded2" Value="0" Type="float"/>
-                <Parameter Name="NightChaseRange" Guid="1d879fb0-3a3a-41fe-bd77-e95a43d35046" Value="0" Type="float"/>
-                <Parameter Name="ChaseNonPlayerProbability" Guid="71aa608b-28cd-4484-b2d1-08c7a4f3f9d1" Value="0" Type="float"/>
-                <Parameter Name="NightChaseTime" Guid="9d480bd3-077f-4c76-a731-60f640427f8e" Value="0" Type="float"/>
             </MemberComponentTemplate>
             <ParameterSet Name="CreatureEggData" Guid="0332a337-d884-4c43-bee0-13bb78a59363">
                 <Parameter Name="Color" Guid="d2dbb716-da44-494b-8b0d-df1f629f72b0" Value="86,139,25" Type="Color"/>
@@ -984,12 +958,8 @@
               <Parameter Name="GlowingEyesColor" Guid="8e1530e5-0b64-4339-89eb-dcfc4698c86e" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="3dacaf9a-1ed6-40fa-9379-46c3ecd2467b" Value="0.06,0.2,0.1" Type="Vector3"/>
             </MemberComponentTemplate>
-        <MemberComponentTemplate Name="NewRunAwayBehavior" Guid="824dec5e-7dbb-4796-8004-15ed4b1a25c5">
-    <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="728901fc-178f-425f-943f-741f34e115fb"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="44df6125-f74f-48f7-b837-6b6a8dd04690"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="85b176c5-88e8-4f9e-9e5e-115766edd7c0"/>
-    <Parameter Name="LowHealthToEscape" Value="0.1" Type="float" Guid="6303abff-99c1-4abb-a001-6ee6dbd4f124"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="ZombieRunAwayBehavior" Guid="dc82de75-5168-4f12-b050-a526857efdc8" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
+        <MemberComponentTemplate Name="RunAwayBehavior" Guid="2fffd37c-65f7-4452-af19-e357422dfd8e" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="d445f2d6-b0ee-49c8-9218-2aeeb8066474" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
                 <Parameter Name="DayRange" Guid="5b06da61-ffe1-41d1-b869-db79568a16d8" Value="0" Type="float"/>
                 <Parameter Name="NightRange" Guid="b6c1c7c6-4031-4e55-a5c6-d8343ebca07b" Value="0" Type="float"/>
@@ -1117,13 +1087,6 @@
 	</MemberComponentTemplate>
             <MemberComponentTemplate Name="FeedBehavior" Guid="e011f168-9a98-4358-afd6-fb57b65f992d" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="6e811fdb-f84b-4849-9389-1242b8b77375" Value="False" Type="bool"/>
-            </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ChaseBehavior" Guid="ff917f48-ce43-4f4c-842a-58c1de53204d" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
-                <Parameter Name="AutoChaseMask" Guid="049d87a8-2675-40af-9bfe-8fa25ad39904" Value="LandOther,WaterPredator,Bird" Type="Game.CreatureCategory"/>
-                <Parameter Name="DayChaseRange" Guid="e0d425a4-3035-456d-bb5e-4f1588bf5374" Value="0" Type="float"/>
-                <Parameter Name="NightChaseRange" Guid="2a562eab-3bc1-4ec5-a1b6-762b5bc2cc9f" Value="0" Type="float"/>
-                <Parameter Name="ChaseNonPlayerProbability" Guid="b61ba259-3230-47d9-9bb8-c1eb18904436" Value="0" Type="float"/>
-                <Parameter Name="NightChaseTime" Guid="676a0751-4c65-4d5f-b455-3d977cc2488d" Value="0" Type="float"/>
             </MemberComponentTemplate>
             <ParameterSet Name="CreatureEggData" Guid="7d9a8cbc-559f-492a-adb4-3634b2f8b31c">
                 <Parameter Name="Color" Guid="e64f5331-7836-42de-af5c-d2e50bc302a2" Value="86,139,25" Type="Color"/>
@@ -1305,12 +1268,8 @@
               <Parameter Name="GlowingEyesColor" Guid="f41c22f9-a761-435e-a441-72212dbd28f9" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="4f0562f7-ee6e-4aae-a2fb-fc5b91f49135" Value="0.06,0.2,0.1" Type="Vector3"/>
             </MemberComponentTemplate>
-        <MemberComponentTemplate Name="NewRunAwayBehavior" Guid="73adfc66-036f-40c3-8e39-85cb1d45d21f">
-    <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="5dea171a-c80c-45dc-918f-3e1e6461526d"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="3fda5a21-8c94-4cd5-9c79-58afb17afb78"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="72aeffb6-6261-45b7-adbf-667ab1419517"/>
-    <Parameter Name="LowHealthToEscape" Value="0.1" Type="float" Guid="da684b12-3fff-421d-816a-7d23f877b36d"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="ZombieRunAwayBehavior" Guid="bd3c93ca-bf36-4d09-9fb6-cdcdc6cef994" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
+        <MemberComponentTemplate Name="RunAwayBehavior" Guid="5ba15e18-313f-4d09-8165-f5b7fc299c66" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="6b594a74-efdc-44e0-98b4-d18d00aaae7a" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
                 <Parameter Name="DayRange" Guid="5edb4a89-9aa8-42a9-8d4d-ff8208569db3" Value="0" Type="float"/>
                 <Parameter Name="NightRange" Guid="550ab527-bbee-4daa-8f27-ccc17a8d9568" Value="0" Type="float"/>
@@ -1439,13 +1398,6 @@
 	</MemberComponentTemplate>
             <MemberComponentTemplate Name="FeedBehavior" Guid="55ee8697-e3eb-43e0-9180-337986e0327a" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="8672629d-92a9-4882-bfbf-574c29abc8a9" Value="False" Type="bool"/>
-            </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ChaseBehavior" Guid="8bb5e7d5-9477-4a43-9a16-18dfc91c2318" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
-                <Parameter Name="AutoChaseMask" Guid="a5e6c2f1-ee60-4a4a-9685-6e68d1b260a8" Value="LandOther,WaterPredator,Bird" Type="Game.CreatureCategory"/>
-                <Parameter Name="DayChaseRange" Guid="a609c772-7058-4295-b4a6-fca32349439c" Value="0" Type="float"/>
-                <Parameter Name="NightChaseRange" Guid="33588cbe-f8c5-48ea-bc34-73a550ce82c6" Value="0" Type="float"/>
-                <Parameter Name="ChaseNonPlayerProbability" Guid="5e2a428b-12ea-439a-a66c-7207b04e7115" Value="0" Type="float"/>
-                <Parameter Name="NightChaseTime" Guid="c58004d7-56b6-42c0-8432-1b3692526f96" Value="0" Type="float"/>
             </MemberComponentTemplate>
             <ParameterSet Name="CreatureEggData" Guid="44e59185-21ce-4fd0-be2e-c451800743f0">
                 <Parameter Name="Color" Guid="f35ee19b-7a5a-4aea-b1f9-73b4bbd0cff3" Value="86,139,25" Type="Color"/>
@@ -1633,12 +1585,8 @@
               <Parameter Name="GlowingEyesColor" Guid="bd1c64b9-683e-491f-a91d-50f961ac8fea" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="cc26e806-709c-4401-ad9e-b4419129413d" Value="0.06,0.2,0.1" Type="Vector3"/>
             </MemberComponentTemplate>
-        <MemberComponentTemplate Name="NewRunAwayBehavior" Guid="46046f2b-d840-4449-a2bc-ca085999f2b2">
-    <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="ff3d9826-be3e-43d1-b35e-c9eff415fae4"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="a6fc8804-74f7-4d2b-afc5-9ea1b0891d71"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="f5e00933-4812-40af-aebc-6af552fb4f2d"/>
-    <Parameter Name="LowHealthToEscape" Value="0.1" Type="float" Guid="7c34934c-36d6-444f-b0de-2e45cd96ebb9"/>
-</MemberComponentTemplate>
+        <MemberComponentTemplate Name="ZombieRunAwayBehavior" Guid="b6032641-5321-4dcc-93d7-03c85c1e6383" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
+        <MemberComponentTemplate Name="RunAwayBehavior" Guid="aba73f64-7a96-49f4-8d97-89b1d24bdadf" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="1b8c0842-daef-44d6-8350-30a28c2d360f" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
                 <Parameter Name="DayRange" Guid="f7172f99-155e-4ba7-8e06-9f9185478718" Value="0" Type="float"/>
                 <Parameter Name="NightRange" Guid="29af958e-979e-4da2-9aa3-82de0ef281d9" Value="0" Type="float"/>
@@ -1767,13 +1715,6 @@
 	</MemberComponentTemplate>
             <MemberComponentTemplate Name="FeedBehavior" Guid="648b71ac-d39b-447a-9f45-da040b2ae68d" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="ca4e2855-8733-4920-8426-3eeb3159bd40" Value="False" Type="bool"/>
-            </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ChaseBehavior" Guid="83869ebe-3381-4d21-b971-2dec53997a91" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
-                <Parameter Name="AutoChaseMask" Guid="6a8c677e-db47-4d45-b3ee-106ab6810fe9" Value="LandOther,WaterPredator,Bird" Type="Game.CreatureCategory"/>
-                <Parameter Name="DayChaseRange" Guid="73986a24-6818-471c-b1fa-6950d8180531" Value="0" Type="float"/>
-                <Parameter Name="NightChaseRange" Guid="979c7562-a3c5-4ce9-8315-aa84da9fbefe" Value="0" Type="float"/>
-                <Parameter Name="ChaseNonPlayerProbability" Guid="c49e46ca-2bf7-43e7-af6e-a6c978e339c9" Value="0" Type="float"/>
-                <Parameter Name="NightChaseTime" Guid="0fe6861e-5d71-4a05-9af9-007ae8256b0a" Value="0" Type="float"/>
             </MemberComponentTemplate>
             <ParameterSet Name="CreatureEggData" Guid="b5ddc418-b2c0-4182-a0bc-6e9ba293ba3d">
                 <Parameter Name="Color" Guid="75fe517c-f086-430d-8468-a0d0a5609bc7" Value="86,139,25" Type="Color"/>
@@ -2093,13 +2034,6 @@
             <MemberComponentTemplate Name="WalkAroundBehavior" Guid="6f3325bc-6625-4384-a80a-2b3d7aab73c2" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
             <MemberComponentTemplate Name="FeedBehavior" Guid="2dbeee1c-a334-4156-a56c-a17d16f7011d" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="8b63af34-0417-4d2f-9e24-795278d8744f" Value="False" Type="bool"/>
-            </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ChaseBehavior" Guid="4b88230d-cb76-4ea7-91a7-c95fe0d2372a" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
-                <Parameter Name="AutoChaseMask" Guid="86fa46b3-743f-41ff-ab42-0949fc9c7733" Value="LandOther,WaterPredator,Bird" Type="Game.CreatureCategory"/>
-                <Parameter Name="DayChaseRange" Guid="f9cdc997-8ad1-424c-b3dd-a3e0fc5035a9" Value="0" Type="float"/>
-                <Parameter Name="NightChaseRange" Guid="87871151-402a-4363-88fd-bb347cc5ad03" Value="0" Type="float"/>
-                <Parameter Name="ChaseNonPlayerProbability" Guid="56e003f3-2301-492f-b88c-a646c087a468" Value="0" Type="float"/>
-                <Parameter Name="NightChaseTime" Guid="3c04ca43-cc13-47b4-9e29-3d0c105fe9a8" Value="0" Type="float"/>
             </MemberComponentTemplate>
             <ParameterSet Name="CreatureEggData" Guid="a86e1ac0-8ca0-4260-a921-ea43e14a68a8">
                 <Parameter Name="Color" Guid="a8518c7b-cf9f-4b7d-8a63-e2c6cd02b422" Value="86,139,25" Type="Color"/>
@@ -2430,13 +2364,6 @@
             <MemberComponentTemplate Name="FeedBehavior" Guid="49065972-1db4-4471-8760-c9429dc4e04a" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="4a8cd08e-4141-430b-9dc7-5bd60e4bc133" Value="False" Type="bool"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ChaseBehavior" Guid="bde24492-0b82-4f7e-af77-e8622c448f07" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
-                <Parameter Name="AutoChaseMask" Guid="9ea64878-1437-4185-a2c8-135d15dd6828" Value="LandOther,WaterPredator,Bird" Type="Game.CreatureCategory"/>
-                <Parameter Name="DayChaseRange" Guid="c0a72429-ad08-42cc-8f2a-6f301279632b" Value="0" Type="float"/>
-                <Parameter Name="NightChaseRange" Guid="53a5185e-ee1a-4b45-b78b-f7d2d7ee6907" Value="0" Type="float"/>
-                <Parameter Name="ChaseNonPlayerProbability" Guid="a1c61d8e-4c1f-45fa-8def-dc9a60429597" Value="0" Type="float"/>
-                <Parameter Name="NightChaseTime" Guid="b63fb2b9-a7cb-4288-b03c-e20715dded2c" Value="0" Type="float"/>
-            </MemberComponentTemplate>
             <ParameterSet Name="CreatureEggData" Guid="6d365481-73e0-4e35-9588-f3a143e75b11">
                 <Parameter Name="Color" Guid="8067dd07-9ddc-48ad-bdc4-22632b3b0db9" Value="86,139,25" Type="Color"/>
                 <Parameter Name="TextureSlot" Guid="4c16b871-3651-4206-800f-9f2dfbb70802" Value="7" Type="int"/>
@@ -2618,6 +2545,8 @@
         </EntityTemplate>
 
         <EntityTemplate Name="InfectedFly1" Guid="fb860ae9-04c2-4c12-a721-3fe7157db639" InheritanceParent="0cb14482-b936-410e-9317-66d385d7d2fd">
+        <MemberComponentTemplate Name="ZombieRunAwayBehavior" Guid="475ffe78-79d5-4327-9af0-d2881846ed97" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
+        <MemberComponentTemplate Name="RunAwayBehavior" Guid="8e2f0206-5e8f-4846-877c-b4fe6f147472" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
     <MemberComponentTemplate Name="BirdModel" Guid="51a29d8d-894b-456b-86ad-50dabf97600b">
         <Parameter Name="ModelScale" Guid="58f6eb54-89f7-42f3-be05-f7fa16c55f2a" Value="3.5" Type="float"/>
         <Parameter Name="FlyAnimationSpeed" Guid="c0e23deb-a1ba-4773-b25a-4f8410d7c349" Value="3" Type="float"/>
@@ -2707,13 +2636,6 @@
     <MemberComponentTemplate Name="Spawn" Guid="442202ba-e848-41ab-8fa6-0bf39e7055a7">
         <Parameter Name="AutoDespawn" Guid="c6a4ab4c-a253-4d28-b93f-12e7d165b8e1" Value="False" Type="bool"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="ChaseBehavior" Guid="85dfaa35-3b2f-4ab5-99b7-f60723937ebb" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
-                <Parameter Name="AutoChaseMask" Guid="53fed710-4e57-4656-9075-6995d5035666" Value="LandOther,WaterPredator,Bird" Type="Game.CreatureCategory"/>
-                <Parameter Name="DayChaseRange" Guid="435f1e5c-94b0-4df1-badb-c39d0fe22dfd" Value="0" Type="float"/>
-                <Parameter Name="NightChaseRange" Guid="f9d1351f-e276-45d3-a24d-bc94f49ffd68" Value="0" Type="float"/>
-                <Parameter Name="ChaseNonPlayerProbability" Guid="743b0ea5-573a-45c6-96df-10e8fc638d51" Value="0" Type="float"/>
-                <Parameter Name="NightChaseTime" Guid="0c73ce78-d715-4758-80c9-548a51c88461" Value="0" Type="float"/>
-            </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="6cd3c67c-4f66-4ef9-960b-08310e7a8fb7">
         <Parameter Name="Color" Guid="949f61bd-74d2-4a45-b993-9af42facad99" Value="86,139,25" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="b39da8e4-bda3-4261-abc7-98d96fd9974e" Value="7" Type="int"/>
@@ -2823,6 +2745,8 @@
 </EntityTemplate>
 
 <EntityTemplate Name="InfectedFly2" Guid="e1fed65e-13fb-4b05-94c9-4c5b0010e2d1" InheritanceParent="0cb14482-b936-410e-9317-66d385d7d2fd">
+<MemberComponentTemplate Name="ZombieRunAwayBehavior" Guid="cfa56cae-632a-457a-bce0-0a4b275024bb" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
+        <MemberComponentTemplate Name="RunAwayBehavior" Guid="e8e7cb4d-09b2-408b-adff-9bb31731bd5a" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
 <MemberComponentTemplate Name="Inventory" Guid="88736368-9599-4ed3-9b36-fd7bdda02e10" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
         <ParameterSet Name="Slots">
             <ParameterSet Name="Slot0">
@@ -2937,13 +2861,6 @@
     <MemberComponentTemplate Name="Spawn" Guid="a7cb34c4-c7ac-456a-b8a9-b80f5588873b">
         <Parameter Name="AutoDespawn" Guid="68d3ee73-99d2-4f6c-8657-fe2e9c02a394" Value="False" Type="bool"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="ChaseBehavior" Guid="50f4c5fa-82dc-49d0-9eb6-712a73d41fed" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
-                <Parameter Name="AutoChaseMask" Guid="2458faf6-a2b0-4244-b803-41c64e4b775f" Value="LandOther,WaterPredator,Bird" Type="Game.CreatureCategory"/>
-                <Parameter Name="DayChaseRange" Guid="dc8d943b-4751-4a75-bc2f-8307de9775b0" Value="0" Type="float"/>
-                <Parameter Name="NightChaseRange" Guid="4f9dd99f-8561-467f-b71e-6f1c9abbf6e1" Value="0" Type="float"/>
-                <Parameter Name="ChaseNonPlayerProbability" Guid="5eb229e5-0a70-4758-9f94-3f56fbdf856d" Value="0" Type="float"/>
-                <Parameter Name="NightChaseTime" Guid="5c103bbb-27fd-4e9a-a10c-778c3b170fac" Value="0" Type="float"/>
-            </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="e2da4a8e-fbb5-4e35-9a60-388ab66e266a">
         <Parameter Name="Color" Guid="bd84d573-d487-40d7-9a80-c9b913db3eb5" Value="86,139,25" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="3014aca0-cdd8-44cd-9ef2-532e6dc6cd15" Value="7" Type="int"/>
@@ -3079,6 +2996,8 @@
 </EntityTemplate>
 
 <EntityTemplate Name="InfectedFly3" Guid="3592cbed-fb5e-4365-adf8-507037de0a3a" InheritanceParent="0cb14482-b936-410e-9317-66d385d7d2fd">
+<MemberComponentTemplate Name="ZombieRunAwayBehavior" Guid="12da5513-6e19-4219-8bed-c4515d19e6cd" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
+        <MemberComponentTemplate Name="RunAwayBehavior" Guid="db8206db-a73f-4ce1-9362-7d381a67beb7" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
 <MemberComponentTemplate Name="Inventory" Guid="f3430937-d0c5-4682-89d5-9a2410e08218" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
         <ParameterSet Name="Slots">
             <ParameterSet Name="Slot0">
@@ -3185,13 +3104,6 @@
     <MemberComponentTemplate Name="Spawn" Guid="0a4c47c8-f562-45e0-b040-6e97a22b24f8">
         <Parameter Name="AutoDespawn" Guid="343f9405-a175-4d90-9801-6b571cf76029" Value="False" Type="bool"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="ChaseBehavior" Guid="165978a8-8233-43f6-aa75-340910fd57ea" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
-                <Parameter Name="AutoChaseMask" Guid="f05dee1a-41e0-4d12-b6e4-c668cc7b430e" Value="LandOther,WaterPredator,Bird" Type="Game.CreatureCategory"/>
-                <Parameter Name="DayChaseRange" Guid="341d76f2-992c-4517-ab5b-a63020fd3e5c" Value="0" Type="float"/>
-                <Parameter Name="NightChaseRange" Guid="8813a9f7-c204-4829-b0f9-58d70515d2c1" Value="0" Type="float"/>
-                <Parameter Name="ChaseNonPlayerProbability" Guid="44e91495-2dde-4999-aa50-87071b93ebe6" Value="0" Type="float"/>
-                <Parameter Name="NightChaseTime" Guid="dd9cfd96-1cf6-4350-9463-1a674273daf0" Value="0" Type="float"/>
-            </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="c52aac85-a3fa-4948-b29d-48b6c1709c1b">
         <Parameter Name="Color" Guid="622be13f-e4fe-4c2b-b18e-6527e000c3f0" Value="86,139,25" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="80fb6313-8c7f-47a4-87f7-fc757189c64b" Value="7" Type="int"/>
@@ -3318,6 +3230,8 @@
 </EntityTemplate>
 
 <EntityTemplate Name="FlyingInfectedBoss" Guid="d73bb1db-bab9-4e99-a634-be27df70796a" InheritanceParent="0cb14482-b936-410e-9317-66d385d7d2fd">
+<MemberComponentTemplate Name="ZombieRunAwayBehavior" Guid="2674aa8b-9d5b-4415-bc14-e3e1597c9f27" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
+        <MemberComponentTemplate Name="RunAwayBehavior" Guid="ee4724bd-2092-4b67-8202-012fa6324090" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
 <MemberComponentTemplate Name="Inventory" Guid="5afbab3c-eff3-4e83-9069-964b5639c0a5" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
         <ParameterSet Name="Slots">
             <ParameterSet Name="Slot0">
@@ -3433,13 +3347,6 @@
     <MemberComponentTemplate Name="Spawn" Guid="de0e421a-d6a8-4549-ac6b-e08152736d01">
         <Parameter Name="AutoDespawn" Guid="e4e4df19-a642-4674-9d8a-ca8e52e345bf" Value="False" Type="bool"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="ChaseBehavior" Guid="7317b774-2d2b-4eca-ac32-0b82518b2286" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
-                <Parameter Name="AutoChaseMask" Guid="5a864172-2b57-4cf9-abd7-ce0d64938ea8" Value="LandOther,WaterPredator,Bird" Type="Game.CreatureCategory"/>
-                <Parameter Name="DayChaseRange" Guid="0185dbc9-c819-43ea-a47a-97580710710d" Value="0" Type="float"/>
-                <Parameter Name="NightChaseRange" Guid="d785022d-9a7d-42d6-b0ae-0762a55fdf7d" Value="0" Type="float"/>
-                <Parameter Name="ChaseNonPlayerProbability" Guid="ce059356-d251-4760-ac89-5794f9c5d23b" Value="0" Type="float"/>
-                <Parameter Name="NightChaseTime" Guid="ab8d7c83-be99-495d-99be-ff9e0d04f30d" Value="0" Type="float"/>
-            </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="4f8d5454-a186-43f3-997a-62c824bc1424">
         <Parameter Name="Color" Guid="5bbce1c0-0b2e-4e41-9e16-224f96c9a861" Value="86,139,25" Type="Color"/>
         <Parameter Name="Scale" Guid="180e8491-019f-4e54-95c8-75a4eece720f" Value="3.85" Type="float"/>
@@ -3597,12 +3504,8 @@
               <Parameter Name="GlowingEyesColor" Guid="e281f42f-191d-429f-b545-bebce2c3ac03" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="abd2e5a0-3853-44d9-9561-188985ae23ab" Value="0.06,0.2,0.1" Type="Vector3"/>
             </MemberComponentTemplate>
-        <MemberComponentTemplate Name="NewRunAwayBehavior" Guid="555d01a5-a976-49e3-809d-dc2d5078e027">
-    <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="ba0c2554-82f3-4fa0-bfba-83ec28d355f1"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="1e75fa96-51f5-43e2-bd5c-c6a5e42c25c7"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="318a4e52-b351-44e1-a9b6-b9932006556f"/>
-    <Parameter Name="LowHealthToEscape" Value="0.1" Type="float" Guid="59031922-6d39-4071-9f46-3c9a5583ae3e"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="ZombieRunAwayBehavior" Guid="aa7e2a90-cdb5-4a05-b43b-8452164b07fd" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
+        <MemberComponentTemplate Name="RunAwayBehavior" Guid="4c1f9669-aed5-4b8e-a9c8-39f08c0367b5" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="8459aa9a-235e-4e1b-936c-dd97a8168dd6" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
                 <Parameter Name="DayRange" Guid="baed39ca-c317-4732-a8c6-7d646564336e" Value="0" Type="float"/>
                 <Parameter Name="NightRange" Guid="9ed0f5c1-021d-4443-8337-5599597734f8" Value="0" Type="float"/>
@@ -3721,13 +3624,6 @@
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="FeedBehavior" Guid="8f816f17-f703-4982-ad4c-85dcbed8245e" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="2b2cb0e4-83c3-4f3b-a892-5568a692da9a" Value="False" Type="bool"/>
-            </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ChaseBehavior" Guid="c06761f1-ce15-419e-94fe-078ec712171a" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
-                <Parameter Name="AutoChaseMask" Guid="74e314c8-654d-4974-a07b-91dea9990219" Value="LandOther,WaterPredator,Bird" Type="Game.CreatureCategory"/>
-                <Parameter Name="DayChaseRange" Guid="068be439-f717-4516-bb90-aba052a0756b" Value="0" Type="float"/>
-                <Parameter Name="NightChaseRange" Guid="64d7369c-8eae-449a-9e5e-dacd3ae37a28" Value="0" Type="float"/>
-                <Parameter Name="ChaseNonPlayerProbability" Guid="491aab38-91f6-4063-9d0c-569558ed75f6" Value="0" Type="float"/>
-                <Parameter Name="NightChaseTime" Guid="5e94416a-84e6-4e8d-8d93-81d91cebbd45" Value="0" Type="float"/>
             </MemberComponentTemplate>
             <ParameterSet Name="CreatureEggData" Guid="74104668-0ab0-41a5-a8a1-f0e9bec30422">
                 <Parameter Name="Color" Guid="4fa8a229-fbfd-49f8-8851-2e8e40e5a0f8" Value="255,0,255" Type="Color"/>
@@ -3929,12 +3825,8 @@
               <Parameter Name="GlowingEyesColor" Guid="aa6a2a3c-fb1a-47bc-8546-556d6cf43add" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="adf96ab3-5da8-4e30-b244-0a314b6e5093" Value="0.06,0.2,0.1" Type="Vector3"/>
             </MemberComponentTemplate>
-        <MemberComponentTemplate Name="NewRunAwayBehavior" Guid="7479f6e8-28d4-4443-86ad-a42c2c036863">
-    <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="72ba7799-149d-40c6-8e9d-45f8ca835dfc"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="e07ccef9-efc9-4fa6-8b1b-b0728c88022b"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="e24c3204-0a17-437f-b0f5-58bfcd57d979"/>
-    <Parameter Name="LowHealthToEscape" Value="0.1" Type="float" Guid="9c3678ef-43c4-4730-b908-9624242401a2"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="ZombieRunAwayBehavior" Guid="b47b3769-780f-47a5-881b-f676b0785d6d" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
+        <MemberComponentTemplate Name="RunAwayBehavior" Guid="bafb636a-750f-4ae1-b412-783c0b7c559a" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="158671e3-de8c-41ef-bda7-ea440797a411" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
                 <Parameter Name="DayRange" Guid="50ef965f-4c0f-4f24-bfd3-7b7c9dd59c6d" Value="0" Type="float"/>
                 <Parameter Name="NightRange" Guid="7e2ae595-b7b4-43d1-ac0c-826c0a442e47" Value="0" Type="float"/>
@@ -4053,13 +3945,6 @@
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="FeedBehavior" Guid="f87b90f4-3f4e-479c-9420-2d913132168e" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="bd702a61-bde9-4eef-af52-077e018a02d2" Value="False" Type="bool"/>
-            </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ChaseBehavior" Guid="ec8c47e3-bf45-49d0-8622-19fcfafe647b" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
-                <Parameter Name="AutoChaseMask" Guid="b9140249-dc81-41dc-8320-d21e0112d9f0" Value="LandOther,WaterPredator,Bird" Type="Game.CreatureCategory"/>
-                <Parameter Name="DayChaseRange" Guid="817742f0-28e8-4a91-8222-937cb995a7fd" Value="0" Type="float"/>
-                <Parameter Name="NightChaseRange" Guid="160baec2-2e76-469f-b4dd-8957071a172a" Value="0" Type="float"/>
-                <Parameter Name="ChaseNonPlayerProbability" Guid="071301cc-15fe-41e2-8197-9e3986a5d1f0" Value="0" Type="float"/>
-                <Parameter Name="NightChaseTime" Guid="0db7f30e-3457-40c3-aafd-0dea77f66b8d" Value="0" Type="float"/>
             </MemberComponentTemplate>
             <ParameterSet Name="CreatureEggData" Guid="119b1f97-78d6-4b27-8f75-5bb296891b79">
                 <Parameter Name="Color" Guid="138e00e3-3e92-45a5-aa84-974b486c5cb0" Value="255,0,255" Type="Color"/>
@@ -4244,12 +4129,8 @@
               <Parameter Name="GlowingEyesColor" Guid="0b7cb1f1-6533-4cd2-9ae6-8e78722ca2d2" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="8e4cd59c-91f0-4e69-a694-efbbbf92aca3" Value="0.06,0.2,0.1" Type="Vector3"/>
             </MemberComponentTemplate>
-        <MemberComponentTemplate Name="NewRunAwayBehavior" Guid="c4538c04-2522-4ea9-88c4-c760064f7a9c">
-    <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="597577c6-1af2-4d56-ade8-471c7f467b2c"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="7bd5e068-cbe8-4338-97f2-d5d764449d34"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="490e0a27-f1ca-40ce-af66-8519eb31f1af"/>
-    <Parameter Name="LowHealthToEscape" Value="0.1" Type="float" Guid="57bed53f-2d52-438a-9d25-1c04371d8ed2"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="ZombieRunAwayBehavior" Guid="a91809bc-4e73-4b58-bc8f-1c90097fb6d6" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
+        <MemberComponentTemplate Name="RunAwayBehavior" Guid="dd820678-1069-4f17-af7a-98bd78c46a07" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="f80d5351-035c-4a4c-80fe-fcc0809f939b" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
                 <Parameter Name="DayRange" Guid="72c600ee-bb12-4e76-b012-f5dcd5fa7861" Value="0" Type="float"/>
                 <Parameter Name="NightRange" Guid="3de68710-d441-40a9-9e4d-eb643bbc7b23" Value="0" Type="float"/>
@@ -4369,13 +4250,6 @@
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="FeedBehavior" Guid="11408094-9d3f-4856-b87b-067c88b4991a" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="c9a0cd06-a251-4a0f-90a2-ffcb62ec8627" Value="False" Type="bool"/>
-            </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ChaseBehavior" Guid="3bccc931-2cbf-4cbe-98b0-509a6cd6b188" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
-                <Parameter Name="AutoChaseMask" Guid="74beb25b-0c03-47f5-855f-bf9d9946953c" Value="LandOther,WaterPredator,Bird" Type="Game.CreatureCategory"/>
-                <Parameter Name="DayChaseRange" Guid="8b3acf2b-f859-4ee8-93a5-6ce183b749fd" Value="0" Type="float"/>
-                <Parameter Name="NightChaseRange" Guid="6a33c9df-3068-4cc7-bcb1-d8cc1a5ba6ed" Value="0" Type="float"/>
-                <Parameter Name="ChaseNonPlayerProbability" Guid="75a514a4-1413-44ee-b6cd-4f39aa55d0e6" Value="0" Type="float"/>
-                <Parameter Name="NightChaseTime" Guid="2c96a802-62b8-4cac-b7f1-946e0a963b2a" Value="0" Type="float"/>
             </MemberComponentTemplate>
             <ParameterSet Name="CreatureEggData" Guid="43af22ad-f8f9-41b1-9811-1012577c656e">
                 <Parameter Name="Color" Guid="2926e170-06cf-4745-a6d8-d1546d00f58b" Value="255,0,255" Type="Color"/>
@@ -4563,12 +4437,8 @@
               <Parameter Name="GlowingEyesColor" Guid="3f3fdfca-6856-4143-a3f5-db413147c874" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="f1a6c603-3eb6-4b12-8dd5-b087e647dbd9" Value="0.06,0.2,0.1" Type="Vector3"/>
             </MemberComponentTemplate>
-        <MemberComponentTemplate Name="NewRunAwayBehavior" Guid="2148f0d6-47ea-4878-a0b5-a177561ac516">
-    <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="0ffb3dcf-5ac1-4fc3-8ac2-108dc7448ae9"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="4b3bcf42-340a-4514-9a4d-2c1a464b8056"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="e083ef7a-4614-41db-8518-6ed7e3c1a0db"/>
-    <Parameter Name="LowHealthToEscape" Value="0.1" Type="float" Guid="2cbd6ad1-30ea-4034-ba02-f15ac033c10b"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="ZombieRunAwayBehavior" Guid="9157d95e-f742-4891-b3a5-2daf4b562c67" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
+        <MemberComponentTemplate Name="RunAwayBehavior" Guid="0e0ec4bc-e27b-4aff-89e8-ba4a382b79ff" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="49ec1c8f-3e39-4384-89ab-c1b9892e4bf0" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
                 <Parameter Name="DayRange" Guid="16d19951-8e3c-449b-bdaf-3666c950f31f" Value="0" Type="float"/>
                 <Parameter Name="NightRange" Guid="40e6cf02-3b6e-4272-b42b-2f6e91a5917a" Value="0" Type="float"/>
@@ -4686,13 +4556,6 @@
             <MemberComponentTemplate Name="WalkAroundBehavior" Guid="3eaafdf9-caf5-4148-8897-4118ff0793f2" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
             <MemberComponentTemplate Name="FeedBehavior" Guid="66956c3a-3ff7-44bd-ae0a-97292bc05f04" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="03c2c4ee-0ba4-4e95-983d-11627d4276d0" Value="False" Type="bool"/>
-            </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ChaseBehavior" Guid="7f29c682-2aa7-46a9-81be-3008e8de3a3a" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
-                <Parameter Name="AutoChaseMask" Guid="afb86671-ea69-4195-a012-a333ca6b762a" Value="LandOther,WaterPredator,Bird" Type="Game.CreatureCategory"/>
-                <Parameter Name="DayChaseRange" Guid="72b9ff84-e55a-47e8-bd2b-85778cb6d824" Value="0" Type="float"/>
-                <Parameter Name="NightChaseRange" Guid="77a916c1-3ecb-4605-b7d8-f528bb393c66" Value="0" Type="float"/>
-                <Parameter Name="ChaseNonPlayerProbability" Guid="efbe78ee-a2c4-4cb5-bc2b-f23079987a13" Value="0" Type="float"/>
-                <Parameter Name="NightChaseTime" Guid="bb4bc96c-555a-4c57-87f9-39c11cd2ea5c" Value="0" Type="float"/>
             </MemberComponentTemplate>
             <ParameterSet Name="CreatureEggData" Guid="b362e106-e869-49a5-a859-3f330a9992ad">
                 <Parameter Name="Color" Guid="b0166c39-4663-440d-9874-544600292cba" Value="0,0,206" Type="Color"/>
@@ -4861,12 +4724,8 @@
               <Parameter Name="GlowingEyesColor" Guid="3cabbf0e-8bb0-43bf-a399-4c35d473ba01" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="47a7384f-deba-4943-9ac0-09a051e3a2c7" Value="0.06,0.2,0.1" Type="Vector3"/>
             </MemberComponentTemplate>
-        <MemberComponentTemplate Name="NewRunAwayBehavior" Guid="0ca08d95-443d-431b-900a-becd16b0a92e">
-    <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="49030251-d094-4a40-acd2-ae945c342e5f"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="64ec0089-7f96-4e68-9671-790055c41a5b"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="2e13f6f3-3ef0-461f-9759-e61c1dc2764d"/>
-    <Parameter Name="LowHealthToEscape" Value="0.1" Type="float" Guid="54761d9d-bc0f-4e13-a7e5-fc48c06c16e2"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="ZombieRunAwayBehavior" Guid="2cc8ddb1-2395-43cb-a222-8d2baf9fa38f" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
+        <MemberComponentTemplate Name="RunAwayBehavior" Guid="f339c21e-2b9e-46df-a1a5-8616ea90543c" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="44f963d4-6ecd-4f30-a287-b3c398ca10ae" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
                 <Parameter Name="DayRange" Guid="84950d1c-5f8d-4d22-8fb9-785d9a1d4e28" Value="0" Type="float"/>
                 <Parameter Name="NightRange" Guid="2e6c13c8-7465-4d0d-b237-1ef0ae8988ad" Value="0" Type="float"/>
@@ -4984,13 +4843,6 @@
             <MemberComponentTemplate Name="WalkAroundBehavior" Guid="7aa640e2-fa40-4e9a-8171-a4ab6f5f1f11" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
             <MemberComponentTemplate Name="FeedBehavior" Guid="0ec957fb-3440-4d31-bf6d-d41c4654aa72" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="24a671ff-4202-499f-bfdc-2114bbfc5e65" Value="False" Type="bool"/>
-            </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ChaseBehavior" Guid="6b5a05ba-84c3-43e4-9d58-7f0d3d6de4dc" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
-                <Parameter Name="AutoChaseMask" Guid="4d5cec05-26f4-41ae-82f7-c9177adbccd0" Value="LandOther,WaterPredator,Bird" Type="Game.CreatureCategory"/>
-                <Parameter Name="DayChaseRange" Guid="4eec3f98-e0b5-44b3-8788-c9b78a4418c1" Value="0" Type="float"/>
-                <Parameter Name="NightChaseRange" Guid="14a7244b-738b-460e-8f60-e7e764ae6ceb" Value="0" Type="float"/>
-                <Parameter Name="ChaseNonPlayerProbability" Guid="10ddd5f2-7653-496b-b4c5-f0e3efcd7b9b" Value="0" Type="float"/>
-                <Parameter Name="NightChaseTime" Guid="579b563a-03ef-4f8f-ab01-f72aefb337d0" Value="0" Type="float"/>
             </MemberComponentTemplate>
             <ParameterSet Name="CreatureEggData" Guid="7afef490-c7ff-4d37-98b6-657a369c0098">
                 <Parameter Name="Color" Guid="5d3069e8-f295-4e93-8d9e-faf9ba669aee" Value="0,0,206" Type="Color"/>
@@ -5155,12 +5007,8 @@
               <Parameter Name="GlowingEyesColor" Guid="01856724-6b35-4301-a098-e12f63d89d1e" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="aeb162d7-7e66-4d7e-946f-80102328e72c" Value="0.06,0.2,0.1" Type="Vector3"/>
             </MemberComponentTemplate>
-        <MemberComponentTemplate Name="NewRunAwayBehavior" Guid="4bda5714-4047-4988-a988-cd734f33e89f">
-    <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="319443e0-52a7-45f1-a10d-0301f738483e"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="61532d28-6dd9-4a28-afed-52c4c9f45349"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="69d77a4e-d050-48f4-be46-86ad8b395b78"/>
-    <Parameter Name="LowHealthToEscape" Value="0.1" Type="float" Guid="649abd37-2083-49ad-8a53-99fe9ed5059a"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="ZombieRunAwayBehavior" Guid="79e56380-5142-4454-aa28-1b29f3338264" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
+        <MemberComponentTemplate Name="RunAwayBehavior" Guid="f2e68733-30fd-4789-a750-f0f811702c46" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="9fec1a58-7b76-453e-9fc8-6a59e67cbbe2" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
                 <Parameter Name="DayRange" Guid="58a04afc-b1cf-4d9f-b1d1-d1f87274e060" Value="0" Type="float"/>
                 <Parameter Name="NightRange" Guid="110aa06e-48d3-4824-a6d8-2169133e63fd" Value="0" Type="float"/>
@@ -5280,13 +5128,6 @@
             <MemberComponentTemplate Name="WalkAroundBehavior" Guid="d4589111-cf39-4fb9-8e9d-1ba468810470" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
             <MemberComponentTemplate Name="FeedBehavior" Guid="7e405224-4a82-44cf-9dc2-d42900d3bbd7" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="44b9f27e-da02-40c7-a944-1c7b8bdb1ccd" Value="False" Type="bool"/>
-            </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ChaseBehavior" Guid="71d12a76-9313-451c-8b56-63f032f985e7" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
-                <Parameter Name="AutoChaseMask" Guid="d727e139-ca28-4431-b2e4-74de8b5232f6" Value="LandOther,WaterPredator,Bird" Type="Game.CreatureCategory"/>
-                <Parameter Name="DayChaseRange" Guid="4308d456-e86d-4e30-aae2-bd6c3e75631e" Value="0" Type="float"/>
-                <Parameter Name="NightChaseRange" Guid="c972622e-9689-4f73-858e-567f1980fac3" Value="0" Type="float"/>
-                <Parameter Name="ChaseNonPlayerProbability" Guid="a2d86c20-e901-4bb3-8928-251d31e103b4" Value="0" Type="float"/>
-                <Parameter Name="NightChaseTime" Guid="7d9b0014-1b12-42d6-8ec3-9c95c4e07751" Value="0" Type="float"/>
             </MemberComponentTemplate>
             <ParameterSet Name="CreatureEggData" Guid="2b5934c6-d03d-44c5-89e2-ee7166a19d7e">
                 <Parameter Name="Color" Guid="3cd776ea-298b-48fd-9a18-893acf5b657f" Value="153,0,0" Type="Color"/>
@@ -5480,12 +5321,8 @@
               <Parameter Name="GlowingEyesColor" Guid="55af8d4b-381f-444c-ae3f-09832591bf48" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="bc8e3498-1433-46dc-a772-19945283e645" Value="0.06,0.2,0.1" Type="Vector3"/>
             </MemberComponentTemplate>
-        <MemberComponentTemplate Name="NewRunAwayBehavior" Guid="6d427453-a6e9-45be-ab48-8546a5a65fea">
-    <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="85b57d34-f155-42cb-ab1c-24161ecff6da"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="c3edc694-e184-467e-9250-170cde98abd4"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="2647f0a1-e09b-4093-9179-709bbd80ec51"/>
-    <Parameter Name="LowHealthToEscape" Value="0.1" Type="float" Guid="156d17bd-0719-41ef-9eae-8843947f7fb9"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="ZombieRunAwayBehavior" Guid="22362e67-9c9d-422a-9b60-47ead7878baa" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
+        <MemberComponentTemplate Name="RunAwayBehavior" Guid="6d68b231-9f22-4692-9fba-aca1db01fa3d" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="fda06415-4cea-47a2-9c98-9590061bd763" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
                 <Parameter Name="DayRange" Guid="f829d88d-8c75-4df5-a602-8928b0c556e2" Value="0" Type="float"/>
                 <Parameter Name="NightRange" Guid="be504d82-ae1c-4059-9e3e-3c46f07eb271" Value="0" Type="float"/>
@@ -5576,13 +5413,6 @@
             <MemberComponentTemplate Name="WalkAroundBehavior" Guid="fb47a3ba-164d-45a0-b64e-c67faee83b01" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
             <MemberComponentTemplate Name="FeedBehavior" Guid="37717321-5dcb-4504-9b6a-2083ccd4ff61" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="6a8920f2-392f-43e9-9ac0-f0ddf2aedbbb" Value="False" Type="bool"/>
-            </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ChaseBehavior" Guid="6ab65766-3a40-4f65-94cb-42778f282217" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
-                <Parameter Name="AutoChaseMask" Guid="d61bcd8a-4618-4455-a09c-be4094d6dba6" Value="LandOther,WaterPredator,Bird" Type="Game.CreatureCategory"/>
-                <Parameter Name="DayChaseRange" Guid="07d34737-df19-4259-9ebc-d795f3fac2a8" Value="0" Type="float"/>
-                <Parameter Name="NightChaseRange" Guid="ccd51561-04ae-48b3-b61b-4dd369405462" Value="0" Type="float"/>
-                <Parameter Name="ChaseNonPlayerProbability" Guid="e355ef1c-eedc-48ec-80ae-59e92abcb608" Value="0" Type="float"/>
-                <Parameter Name="NightChaseTime" Guid="ac68484b-25a1-49c2-9f21-1eac197401ea" Value="0" Type="float"/>
             </MemberComponentTemplate>
             <ParameterSet Name="CreatureEggData" Guid="cf94597e-ebbf-45fe-bc59-c55930f13c33">
                 <Parameter Name="Color" Guid="dd145a73-550f-461d-9688-55168468cefc" Value="153,0,0" Type="Color"/>
@@ -5759,12 +5589,8 @@
               <Parameter Name="GlowingEyesColor" Guid="cc85b12e-2638-4864-9b9f-bcc8978504e8" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="79c1f11d-61e9-45e2-8471-bb8772088176" Value="0.06,0.2,0.1" Type="Vector3"/>
             </MemberComponentTemplate>
-        <MemberComponentTemplate Name="NewRunAwayBehavior" Guid="a93b79a8-4606-4cb6-83a8-ebdfb41d057b">
-    <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="61cdc6d7-b955-4717-acaa-6155afe02d14"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="0819e84e-dffd-4180-a078-ba5cabf77487"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="c0a0ba4e-a4e0-47f0-8888-a720cafd4531"/>
-    <Parameter Name="LowHealthToEscape" Value="0.1" Type="float" Guid="e4362c90-ee37-4947-b3f5-22aeb97e0e25"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="ZombieRunAwayBehavior" Guid="c4047e30-ac2c-4bd0-b80e-962bfd9a4474" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
+        <MemberComponentTemplate Name="RunAwayBehavior" Guid="9a1e86b6-d93e-4a06-866f-40dd6463e1f4" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="c32ea3eb-5c23-41c7-a653-9edb576cc20b" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
                 <Parameter Name="DayRange" Guid="63876ac5-6172-4205-a8b6-08d23ec4eebf" Value="0" Type="float"/>
                 <Parameter Name="NightRange" Guid="fb638368-61c9-4722-9491-38abc5bdc72b" Value="0" Type="float"/>
@@ -5885,13 +5711,6 @@
             <MemberComponentTemplate Name="WalkAroundBehavior" Guid="44ccbce7-80a2-49b0-9482-1ce6da2f9d45" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
             <MemberComponentTemplate Name="FeedBehavior" Guid="86cc4d6d-9bb5-41ce-bacb-20f39f7dd826" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="5554d38a-054c-4ae9-8a9d-bc24c2812c85" Value="False" Type="bool"/>
-            </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ChaseBehavior" Guid="932f345e-be46-451c-8b03-7366b3052f18" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
-                <Parameter Name="AutoChaseMask" Guid="eac6dba0-6c93-4e0e-8a6f-e920b17d9886" Value="LandOther,WaterPredator,Bird" Type="Game.CreatureCategory"/>
-                <Parameter Name="DayChaseRange" Guid="da1012a4-c453-4196-ac39-b362fa3d3c69" Value="0" Type="float"/>
-                <Parameter Name="NightChaseRange" Guid="322f7b8c-ba46-4685-9bf2-fae6d89737b7" Value="0" Type="float"/>
-                <Parameter Name="ChaseNonPlayerProbability" Guid="adf14b27-9a06-4ff4-9807-f87e96ac729b" Value="0" Type="float"/>
-                <Parameter Name="NightChaseTime" Guid="35ca6c35-0150-4136-b551-cf4604afb8a8" Value="0" Type="float"/>
             </MemberComponentTemplate>
             <ParameterSet Name="CreatureEggData" Guid="a29790b8-82c5-4086-98b3-e107aa512a70">
                 <Parameter Name="Color" Guid="a4ea04b3-3154-4118-ad00-9b8a1f6d2153" Value="153,0,0" Type="Color"/>
@@ -6056,12 +5875,8 @@
 <MemberComponentTemplate Name="ZombieAI2" Guid="6c0d51e2-391a-49af-85c6-c1db89866b97" InheritanceParent="9d185bf8-92ec-4ea6-ad86-b8a99b650fd2">
     <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="b9b7c375-40ac-4c8b-ada8-8b0df3b2f11f"/>
 </MemberComponentTemplate>
-        <MemberComponentTemplate Name="NewRunAwayBehavior" Guid="c731ad31-f34c-40b2-bf30-f57c767bec14">
-    <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="69a8ea91-3e1e-4e7c-b1a2-8cb515b2e48d"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="13efab60-04e2-4bc8-b7c2-33b990ed27f3"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="44656e16-15ad-4a43-820c-fc0f75eb83e8"/>
-    <Parameter Name="LowHealthToEscape" Value="0.1" Type="float" Guid="a6779b21-395d-4e3b-a7e8-db45661094b7"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="ZombieRunAwayBehavior" Guid="4ca011ca-bb86-4259-85f2-cb6dd42d47c9" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
+        <MemberComponentTemplate Name="RunAwayBehavior" Guid="e31b8649-1bf3-4f53-af87-9bde66030460" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="bb6d9609-3b39-4a19-aa4c-050d19e9a810" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
                 <Parameter Name="DayRange" Guid="c6f6f2eb-f7a8-48fe-90f8-5f338bbe445f" Value="0" Type="float"/>
                 <Parameter Name="NightRange" Guid="cf061fe4-5349-4910-a4b5-6623bccdd511" Value="0" Type="float"/>
@@ -6206,13 +6021,6 @@
             <MemberComponentTemplate Name="WalkAroundBehavior" Guid="db2c7097-1345-479b-99b0-6b1397836614" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
             <MemberComponentTemplate Name="FeedBehavior" Guid="a5d0059c-1e4d-4fa8-9175-fa457d61c7bd" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="93a5e0e7-b510-4540-92fa-e9a95f46ad5e" Value="False" Type="bool"/>
-            </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ChaseBehavior" Guid="c121d154-8400-47e9-be82-ba4d1979d8fd" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
-                <Parameter Name="AutoChaseMask" Guid="1c1c8a59-bc9c-48d5-b845-5fe3ba5f7f29" Value="LandOther,WaterPredator,Bird" Type="Game.CreatureCategory"/>
-                <Parameter Name="DayChaseRange" Guid="f8caa412-84d0-453b-8bd4-b0f726fa7110" Value="0" Type="float"/>
-                <Parameter Name="NightChaseRange" Guid="f821c089-6662-48d2-9c11-a893610818e1" Value="0" Type="float"/>
-                <Parameter Name="ChaseNonPlayerProbability" Guid="58dad6d6-a883-4871-8ceb-f58d6e63c597" Value="0" Type="float"/>
-                <Parameter Name="NightChaseTime" Guid="58ff15b8-8376-423b-b55e-3d0c1ec32849" Value="0" Type="float"/>
             </MemberComponentTemplate>
             <ParameterSet Name="CreatureEggData" Guid="50d1ce02-f669-4853-9eba-03e668c6202c">
                 <Parameter Name="Color" Guid="63ab9cf2-206a-4127-925c-1b1147ff0c95" Value="255,255,255" Type="Color"/>
