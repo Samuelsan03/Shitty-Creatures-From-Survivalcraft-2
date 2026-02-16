@@ -27,8 +27,8 @@ namespace Game
 			base.Load(valuesDictionary, idToEntityMap);
 			this.m_subsystemBodies = base.Project.FindSubsystem<SubsystemBodies>(true);
 			this.m_subsystemTime = base.Project.FindSubsystem<SubsystemTime>(true);
-			this.m_componentChase = base.Entity.FindComponent<ComponentChaseBehavior>(true);
-			this.m_componentCreature = base.Entity.FindComponent<ComponentCreature>(true);
+			this.m_componentChase = base.Entity.FindComponent<ComponentChaseBehavior>(false);
+			this.m_componentCreature = base.Entity.FindComponent<ComponentCreature>();
 
 			// Buscar los nuevos comportamientos de persecución (opcionales)
 			this.m_componentNewChase = base.Entity.FindComponent<ComponentNewChaseBehavior>();
