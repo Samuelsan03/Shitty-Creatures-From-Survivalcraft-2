@@ -18,7 +18,8 @@
     "YouNeedAmmunition": "Necesitas munición para disparar el lanzador"
   },
   "GreenNightSky": {
-    "GreenMoonBegins": "¡La Luna Verde ha comenzado!"
+    "GreenMoonBegins": "¡La Noche Verde ha comenzado!",
+    "GreenMoonEnds": "¡La Noche Verde ha terminado!"
   },
   "LargeFirstAidKit": {
     "PlayerHealed": "¡Has restaurado completamente tu salud!",
@@ -451,31 +452,31 @@
 },
     "RepeatCrossbow:0": {
       "DisplayName": "Ballesta Repetidora",
-      "Description": "Versión mejorada de la ballesta normal, diseñada para durabilidad y ataques a distancia sostenidos. A diferencia de la ballesta estándar que dispara un solo virote antes de recargar, la Ballesta Repetidora cuenta con un cargador de 8 virotes y estados de tensado progresivo, permitiendo disparos continuos a distancia. Compatible con múltiples tipos de virotes (Cobre, Hierro, Diamante, Explosivo), cada uno con daño y efectos distintos. Ballesta automática con cargador de 8 virotes. Recarga más rápida que la ballesta normal pero con un poco menos de potencia."
+      "Description": "Versión avanzada de la ballesta estándar, optimizada para fuego sostenido a distancia. A diferencia de la ballesta normal que dispara un solo virote antes de recargar, la Ballesta Repetidora incorpora un cargador interno de 8 virotes y un sistema de tensado progresivo que permite disparos continuos. Tiene menor daño por disparo que la ballesta normal, pero mayor cadencia y recarga más rápida. Compatible con virotes especiales: Cobre, Hierro, Diamante, Explosivo y Venenoso."
     },
     "RepeatArrow:0": {
       "DisplayName": "Virote de Cobre Repetidor",
-      "Description": "Virote especializado para ballestas repetidoras, fabricado en cobre. Ofrece penetración moderada y mayor precisión que los virotes normales de Survivalcraft 2. Diseñado para fuego rápido, proporciona mejor estabilidad durante secuencias de disparo continuo."
+      "Description": "Virote ligero para ballestas repetidoras, fabricado en cobre. Ofrece daño moderado y alta estabilidad durante disparos rápidos. Optimizado para mantener precisión en fuego automático prolongado."
     },
     "RepeatArrow:1": {
       "DisplayName": "Virote de Hierro Repetidor",
-      "Description": "Virote con punta de hierro diseñado para ballestas repetidoras. Presenta daño superior y mejor penetración de armadura frente a los virotes de hierro estándar, manteniendo la precisión durante ráfagas rápidas. El mecanismo de la repetidora permite disparar más rápido que las ballestas estándar."
+      "Description": "Virote de hierro reforzado para ballestas repetidoras. Inflige mayor daño y mejor penetración que los virotes de hierro normales, manteniendo buena precisión durante ráfagas continuas."
     },
     "RepeatArrow:2": {
       "DisplayName": "Virote de Diamante Repetidor",
-      "Description": "Virote de alta gama con punta de diamante para ballestas repetidoras avanzadas. Destaca por su excepcional capacidad de perforación de armadura y alto daño. A diferencia de los virotes de diamante estándar, está optimizado para el mecanismo de disparo de la repetidora, ofreciendo daño alto sostenido en fuego automático."
+      "Description": "Virote de alto nivel con punta de diamante, diseñado para ballestas repetidoras avanzadas. Presenta altísima penetración de armadura y daño elevado sostenido. Optimizado para ráfagas rápidas."
     },
     "RepeatArrow:3": {
       "DisplayName": "Virote Explosivo Repetidor",
-      "Description": "Virote con punta explosiva diseñado para ballestas repetidoras. Crea una pequeña explosión al impacto con fuerza de presión de 90. Aunque los virotes explosivos normales tienen daño individual mayor, estos permiten explosiones en ráfagas rápidas, ideales para negación de área y control de multitudes."
+      "Description": "Virote explosivo para ballestas repetidoras. Genera pequeñas explosiones al impactar. Aunque su daño individual es menor que el virote explosivo estándar, permite explosiones en ráfaga, ideal para control de áreas y grupos."
     },
     "RepeatArrow:4": {
       "DisplayName": "Virote Venenoso Repetidor",
-      "Description": "Virote recubierto de veneno para ballestas repetidoras. Inflige daño por veneno con el tiempo con impacto inicial muy bajo (3 de daño) y aplica efecto de veneno durante 30 segundos. Diseñado para debilitar enemigos progresivamente en lugar de eliminarlos al instante, útil para capturar o ralentizar objetivos."
+      "Description": "Virote con veneno de baja letalidad. Inflige poco daño inicial pero aplica efecto de veneno durante 30 segundos. Ideal para debilitar enemigos sin matarlos rápidamente."
     },
     "RepeatArrow:5": {
       "DisplayName": "Virote de Veneno Grave Repetidor",
-      "Description": "Virote fuertemente envenenado para ballestas repetidoras. Aplica un efecto de veneno más intenso y prolongado (100 segundos) con daño inicial bajo (4 de daño). El mecanismo de la repetidora permite aplicar veneno grave rápidamente a múltiples objetivos, debilitando grupos sin matarlos directamente."
+      "Description": "Virote altamente tóxico para ballestas repetidoras. Aplica un efecto de veneno severo durante 100 segundos. Pensado para debilitar grupos completos mediante aplicación rápida de estados negativos."
     },
     "M249Block:0": {
       "DisplayName": "M249 SAW",
