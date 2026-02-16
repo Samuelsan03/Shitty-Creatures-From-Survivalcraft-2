@@ -5047,13 +5047,18 @@
   <Parameter Name="FleeDistance" Guid="6100337e-4690-4aa4-bac6-caaba11d30d0" Value="10" Type="float"/>
   <Parameter Name="ForceAttackDuringGreenNight" Guid="1104f1ed-540c-4a66-8dd8-667a024d7e75" Value="true" Type="bool"/>
 </MemberComponentTemplate>
-            <MemberComponentTemplate Name="AvoidFireBehavior" Guid="8616e3bd-d035-4343-870a-aa7aabf578a2" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
-            <MemberComponentTemplate Name="Locomotion" Guid="c8a7f6d2-9b3e-4f2a-8a1a-7f2d9e1a1234">
-    <Parameter Name="AccelerationFactor" Guid="1a2b3c4d-5e6f-7890-abcd-ef1234567890" Value="6.0" Type="float"/> <!-- aceleración brutal para simular su fuerza -->
-    <Parameter Name="FlySpeed" Guid="2b3c4d5e-6f7a-890b-cdef-1234567890ab" Value="0" Type="float"/>
-    <Parameter Name="TurnSpeed" Guid="3c4d5e6f-7a89-0bcd-ef12-34567890abcd" Value="1.5" Type="float"/> <!-- giro muy lento, el Tank es torpe -->
-    <Parameter Name="WalkSpeed" Guid="4d5e6f7a-890b-cdef-1234-567890abcde1" Value="3.5" Type="float"/> <!-- más lento que el Charger, pero constante -->
-    <Parameter Name="LadderSpeed" Guid="5e6f7a89-0bcd-ef12-3456-7890abcdef12" Value="4.0" Type="float"/> <!-- trepa con fuerza, aunque no rápido -->
+<MemberComponentTemplate Name="AutoJump" Guid="b2cb7751-2130-4df5-b4c1-21c6440da661">
+  <Parameter Name="JumpStrength" Guid="72f30740-c41e-4890-ac81-45f9ab4f34c9" Value="1" Type="float" />
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="AvoidFireBehavior" Guid="8616e3bd-d035-4343-870a-aa7aabf578a2" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
+<MemberComponentTemplate Name="Locomotion" Guid="c8a7f6d2-9b3e-4f2a-8a1a-7f2d9e1a1234">
+    <Parameter Name="LadderSpeed" Guid="d8f48287-ea35-4022-a3df-1ea1c5061654" Value="0" Type="float" />
+    <Parameter Name="WalkSpeedWhenTurning" Guid="d8f6cf8d-597d-416b-bbe3-a337b6d224ce" Value="1.2" Type="float" />
+    <Parameter Name="InAirWalkFactor" Guid="4f88aedc-863a-4660-bb67-400ff5ea74ce" Value="1" Type="float" />
+    <Parameter Name="WalkSpeed" Guid="bdd19297-8e61-4881-ac72-171def222bc5" Value="5.2" Type="float" />
+    <Parameter Name="FlySpeed" Guid="753f1d29-2869-4c7e-8512-0270dcf2001c" Value="0" Type="float" />
+    <Parameter Name="TurnSpeed" Guid="83fd05e9-2f5f-4a5f-a01c-42c533e22c81" Value="10" Type="float" />
+    <Parameter Name="JumpSpeed" Guid="5915ea2e-3888-4d54-bfb7-306a41916c2c" Value="6.5" Type="float" />
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="Loot" Guid="773fb3a8-a115-49f0-9500-e813271c9784">
                 <ParameterSet Name="Loot" Guid="452d30fa-7e0e-41ca-8f82-b8b06025268b">
@@ -5089,12 +5094,12 @@
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="TankModel" Guid="b7dc3bac-40b6-48b1-a4b1-31a7c7de5e62" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="WalkLegsAngle" Guid="b4e02ef5-2977-438d-b872-fcbafdb047b3" Value="0.65" Type="float"/>
+    <Parameter Name="WalkLegsAngle" Guid="b4e02ef5-2977-438d-b872-fcbafdb047b3" Value="0.95" Type="float"/>
     <Parameter Name="ModelName" Guid="f3094d2c-f206-475d-9396-97cbaff35833" Value="Models/Tank" Type="string"/>
     <Parameter Name="TextureOverride" Guid="0a3809a5-5758-4f2b-99f0-9f53fab8f387" Value="Textures/ZombiesDeMierda/Tank 1" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="8eaabaab-f89c-4124-b2dd-0f71e26386fb" Value="0.65" Type="float"/>
-    <Parameter Name="WalkBobHeight" Guid="5f0fa5f9-b35b-4e29-9d1d-a8fff650fdf5" Value="0.010" Type="float"/>
-    <Parameter Name="SmoothFactor" Guid="a5f763eb-d702-4e83-8d15-bc1484195856" Value="0.018" Type="float"/>
+    <Parameter Name="WalkBobHeight" Guid="5f0fa5f9-b35b-4e29-9d1d-a8fff650fdf5" Value="0.045" Type="float"/>
+    <Parameter Name="SmoothFactor" Guid="a5f763eb-d702-4e83-8d15-bc1484195856" Value="0.001" Type="float"/>
     <Parameter Name="AnimationResponsiveness" Guid="7bdbabc3-ed7a-4f28-8b24-a462093bbfc9" Value="12" Type="float"/>
     <Parameter Name="Class" Guid="33985b50-3b79-46bf-85b7-5dcd39e46acc" Value="Game.ComponentTankModel" Type="string"/>
 </MemberComponentTemplate>
@@ -5206,12 +5211,17 @@
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidFireBehavior" Guid="1d2a04f5-03a2-4991-af4c-d53bacc459df" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
-            <MemberComponentTemplate Name="Locomotion" Guid="883ed970-8acf-408b-9981-846bcfb79fa0">
-    <Parameter Name="AccelerationFactor" Guid="026d14fc-8558-4aed-90c8-ec165e808c74" Value="6.0" Type="float"/> <!-- aceleración brutal para simular su fuerza -->
-    <Parameter Name="FlySpeed" Guid="1bcc3182-ae3b-4ba6-bcfc-0ccb3fe847c3" Value="0" Type="float"/>
-    <Parameter Name="TurnSpeed" Guid="6080850a-d04d-4f79-8b4c-3f8de8c305bc" Value="1.5" Type="float"/> <!-- giro muy lento, el Tank es torpe -->
-    <Parameter Name="WalkSpeed" Guid="e1deabc1-c199-4163-8406-e5b8c55f8985" Value="3.5" Type="float"/> <!-- más lento que el Charger, pero constante -->
-    <Parameter Name="LadderSpeed" Guid="3e9b9043-0ed8-44f9-b6ab-2cf314ccbde6" Value="4.0" Type="float"/> <!-- trepa con fuerza, aunque no rápido -->
+<MemberComponentTemplate Name="AutoJump" Guid="273b7d90-8a65-40cd-9e0c-132963bfe352">
+              <Parameter Name="JumpStrength" Guid="8e5905be-1e54-4a66-8e35-744848dcd535" Value="1" Type="float" />
+            </MemberComponentTemplate>
+<MemberComponentTemplate Name="Locomotion" Guid="ddddd2d4-62fc-48da-8ae7-75e573260db7">
+    <Parameter Name="LadderSpeed" Guid="09447e27-c24f-458b-9c8a-0f839e09c35c" Value="0" Type="float" />
+    <Parameter Name="WalkSpeedWhenTurning" Guid="daf90de5-2121-455f-be2e-e6b3e2041822" Value="1.2" Type="float" />
+    <Parameter Name="InAirWalkFactor" Guid="f64ad026-1aa6-4984-958a-eecfcc81e729" Value="1" Type="float" />
+    <Parameter Name="WalkSpeed" Guid="3cb36df4-8149-4a96-87cb-b6c145d6952c" Value="5.2" Type="float" />
+    <Parameter Name="FlySpeed" Guid="962f3a58-934e-4e88-b47c-00d4dbd99480" Value="0" Type="float" />
+    <Parameter Name="TurnSpeed" Guid="9050ea41-28d1-41d2-87e4-bee6dffa13a0" Value="10" Type="float" />
+    <Parameter Name="JumpSpeed" Guid="a2f0e4b5-6b2d-4a96-a006-f8b92429dd91" Value="6.5" Type="float" />
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="Loot" Guid="a6dd9c04-c1db-4ac4-a099-177e6ea7c6c0">
                 <ParameterSet Name="Loot" Guid="15ce4f9d-20b2-4fad-adb1-fa190ce0cad4">
@@ -5247,15 +5257,15 @@
             <MemberComponentTemplate Name="Miner" Guid="009ab28d-12c0-40bb-9d04-47381a0f4cc6" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="953789fe-483e-4789-90ff-680fc4cd6c47" Value="30.5" Type="float"/>
             </MemberComponentTemplate>
-<MemberComponentTemplate Name="TankModel" Guid="46fcdeb5-3b32-4a79-aded-f329977a2e01" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="WalkLegsAngle" Guid="abc8b4b5-c33a-4867-acb1-4326cface4d0" Value="0.6" Type="float"/>
-    <Parameter Name="ModelName" Guid="641ff8f3-16f2-4d88-ae68-edf49f55c7bd" Value="Models/Tank" Type="string"/>
-    <Parameter Name="TextureOverride" Guid="0caeaef9-c4e2-4f4b-bd74-d0f3c80925e1" Value="Textures/ZombiesDeMierda/Tank 1" Type="string"/>
-    <Parameter Name="WalkAnimationSpeed" Guid="7e8841d2-8a43-4a48-83e6-160689bf6cc1" Value="1.0" Type="float"/>
-    <Parameter Name="WalkBobHeight" Guid="261c7371-e0f8-44ce-93c5-33e22c6a1d6f" Value="0.03" Type="float"/>
-    <Parameter Name="SmoothFactor" Guid="15bb0c51-e4c2-4158-b596-09a24535e735" Value="0.18" Type="float"/>
-    <Parameter Name="AnimationResponsiveness" Guid="be53e8f2-bd90-482f-892a-89764ac3d55d" Value="12" Type="float"/>
-    <Parameter Name="Class" Guid="68de61be-9e71-4e9b-a380-f25689b917fc" Value="Game.ComponentTankModel" Type="string"/>
+<MemberComponentTemplate Name="TankModel" Guid="205887c3-3183-468e-9de7-c9db463554b4" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
+    <Parameter Name="WalkLegsAngle" Guid="f526364f-8a1e-4eab-8f26-e997a97ccf25" Value="0.95" Type="float"/>
+    <Parameter Name="ModelName" Guid="a1018e59-92d0-477c-b04b-1b84825a3893" Value="Models/Tank" Type="string"/>
+    <Parameter Name="TextureOverride" Guid="e5f0d34a-0009-4467-a1bf-af482d76ae6d" Value="Textures/ZombiesDeMierda/Tank 1" Type="string"/>
+    <Parameter Name="WalkAnimationSpeed" Guid="73d93ef1-f6c2-482d-b820-d95883e49968" Value="0.65" Type="float"/>
+    <Parameter Name="WalkBobHeight" Guid="4003d59e-3cb1-4020-9fa3-97ba59c26439" Value="0.045" Type="float"/>
+    <Parameter Name="SmoothFactor" Guid="fa978449-42e0-4902-9a77-f64fadff561c" Value="0.001" Type="float"/>
+    <Parameter Name="AnimationResponsiveness" Guid="7464f3b7-e365-4e1b-8afa-3a1dc7d4a204" Value="12" Type="float"/>
+    <Parameter Name="Class" Guid="8f08bbbb-6713-4013-a9c8-5b69572dba20" Value="Game.ComponentTankModel" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="PathBreaker" Guid="333ccbb3-1dbc-41b9-9b60-a9094ed05ef7" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
 		<Parameter Name="CanBreakBlocks" Guid="d2c6f160-ea05-451b-b4fc-783edd2d1665" Value="True" Type="bool"/>
@@ -5346,12 +5356,17 @@
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidFireBehavior" Guid="9677b720-ef9b-4260-b534-97a167e08dfa" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
-            <MemberComponentTemplate Name="Locomotion" Guid="50204dad-51a9-4570-9703-b1f441db9d88">
-    <Parameter Name="AccelerationFactor" Guid="47b1adb2-ed58-44ea-a264-14f3b3d90ef6" Value="6.0" Type="float"/> <!-- aceleración brutal para simular su fuerza -->
-    <Parameter Name="FlySpeed" Guid="306e11c7-a52a-46bf-8203-9cefbbc9cb7f" Value="0" Type="float"/>
-    <Parameter Name="TurnSpeed" Guid="5c53e23c-d9e8-4f19-991b-c75948907155" Value="1.5" Type="float"/> <!-- giro muy lento, el Tank es torpe -->
-    <Parameter Name="WalkSpeed" Guid="ae32fcf9-ebd0-4ad7-ab03-7ffeada84e17" Value="3.5" Type="float"/> <!-- más lento que el Charger, pero constante -->
-    <Parameter Name="LadderSpeed" Guid="67186cb3-a463-4556-8dac-d211f1342cc3" Value="4.0" Type="float"/> <!-- trepa con fuerza, aunque no rápido -->
+<MemberComponentTemplate Name="AutoJump" Guid="61f92c29-57be-4a82-9b8b-96f4563a38da">
+              <Parameter Name="JumpStrength" Guid="9fa715b5-6dd1-41d7-8028-aba29a3bb1fc" Value="1" Type="float" />
+            </MemberComponentTemplate>
+<MemberComponentTemplate Name="Locomotion" Guid="4314b0e7-dd48-4de8-9794-5fb4815196b1">
+    <Parameter Name="LadderSpeed" Guid="f82ce678-3def-4432-8af9-21d610c13670" Value="0" Type="float" />
+    <Parameter Name="WalkSpeedWhenTurning" Guid="83f4274b-747b-457c-85ea-f1593fd8ba0e" Value="1.2" Type="float" />
+    <Parameter Name="InAirWalkFactor" Guid="279899c5-8b22-45a6-b4a8-f94845b5b1db" Value="1" Type="float" />
+    <Parameter Name="WalkSpeed" Guid="684ff97b-f88b-4ad3-8fe9-8548224661d5" Value="5.2" Type="float" />
+    <Parameter Name="FlySpeed" Guid="9eb82d21-3aa0-47ba-8523-921aaf7f1812" Value="0" Type="float" />
+    <Parameter Name="TurnSpeed" Guid="0077a701-37ff-4946-b1c8-56e3d8f52432" Value="10" Type="float" />
+    <Parameter Name="JumpSpeed" Guid="898f8551-9c34-430d-a665-305c3a94a96b" Value="6.5" Type="float" />
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="Loot" Guid="229bd6ee-6c64-4ab8-b04b-e0ead720719f">
                 <ParameterSet Name="Loot" Guid="46152301-3a15-4a7e-930a-a0429e4caa83">
@@ -5491,12 +5506,17 @@
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidFireBehavior" Guid="6412322b-d8de-4c77-96cf-9c4e081c8122" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
-            <MemberComponentTemplate Name="Locomotion" Guid="6853d6ac-4e2f-4e8f-8eab-7307e8cb90e8">
-    <Parameter Name="AccelerationFactor" Guid="468a631c-de1f-43f3-9b90-936dac13b26e" Value="6.0" Type="float"/> <!-- aceleración brutal para simular su fuerza -->
-    <Parameter Name="FlySpeed" Guid="18a55391-a9ba-4cbc-992c-3baaf0438c9b" Value="0" Type="float"/>
-    <Parameter Name="TurnSpeed" Guid="96545153-b8cd-429e-8e4e-dbaecdf7c103" Value="1.5" Type="float"/> <!-- giro muy lento, el Tank es torpe -->
-    <Parameter Name="WalkSpeed" Guid="4c0bbccb-8210-40ed-822c-206492a2e59b" Value="3.5" Type="float"/> <!-- más lento que el Charger, pero constante -->
-    <Parameter Name="LadderSpeed" Guid="db3ac235-1786-49a2-af49-0e0d39c616b0" Value="4.0" Type="float"/> <!-- trepa con fuerza, aunque no rápido -->
+<MemberComponentTemplate Name="AutoJump" Guid="acbeae1e-e680-4b7b-aac5-6dea371a204b">
+              <Parameter Name="JumpStrength" Guid="d30c8b19-148c-495a-85dd-376f6badaefb" Value="1" Type="float" />
+            </MemberComponentTemplate>
+<MemberComponentTemplate Name="Locomotion" Guid="d7815434-b1c3-4f03-8318-f72ada7484bf">
+    <Parameter Name="LadderSpeed" Guid="3d2be9c0-d85b-4d90-82cc-29c8f4fbfa0a" Value="0" Type="float" />
+    <Parameter Name="WalkSpeedWhenTurning" Guid="b53aa65c-2a31-4fe1-843d-35242455f70e" Value="1.2" Type="float" />
+    <Parameter Name="InAirWalkFactor" Guid="cf1c3338-0d1c-4a93-8242-a0162e099987" Value="1" Type="float" />
+    <Parameter Name="WalkSpeed" Guid="c4c6b93d-cbad-4d12-b18f-26d20f305c6f" Value="5.2" Type="float" />
+    <Parameter Name="FlySpeed" Guid="82f961d3-bcf2-46d5-9d88-9e636ba4395e" Value="0" Type="float" />
+    <Parameter Name="TurnSpeed" Guid="d1593084-f140-42f3-9f6a-08dcf3c0ff08" Value="10" Type="float" />
+    <Parameter Name="JumpSpeed" Guid="e22e3ef8-0f66-4aba-99d7-e3d8a076b945" Value="6.5" Type="float" />
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="Loot" Guid="2ba89eae-7a01-4f40-9a6b-d6eabcee0e11">
                 <ParameterSet Name="Loot" Guid="4bffe944-dcb8-4b82-8181-247cf386293c">
@@ -5630,12 +5650,17 @@
   <Parameter Name="ForceAttackDuringGreenNight" Guid="4df18272-5c0b-403e-abf1-a721da2d8101" Value="true" Type="bool"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidFireBehavior" Guid="4118862d-554b-4376-8014-dc72fe32f5a8" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
-            <MemberComponentTemplate Name="Locomotion" Guid="2a4ffc44-6d9c-4c95-8b61-26b8aca0894b">
-    <Parameter Name="AccelerationFactor" Guid="6a9d072a-b47b-4668-83d2-8f96649cd737" Value="6.0" Type="float"/> <!-- aceleración brutal para simular su fuerza -->
-    <Parameter Name="FlySpeed" Guid="cc10bd31-c30a-4ad7-ab27-1d2f1a4d5d99" Value="0" Type="float"/>
-    <Parameter Name="TurnSpeed" Guid="e5884dcb-029b-4f86-9c97-fb87ca2d140d" Value="1.5" Type="float"/> <!-- giro muy lento, el Tank es torpe -->
-    <Parameter Name="WalkSpeed" Guid="3e89be04-9a2b-4816-9b50-769c979feada" Value="3.5" Type="float"/> <!-- más lento que el Charger, pero constante -->
-    <Parameter Name="LadderSpeed" Guid="7f4a27c6-6fd5-464a-8e27-aa382768cfc0" Value="4.0" Type="float"/> <!-- trepa con fuerza, aunque no rápido -->
+<MemberComponentTemplate Name="AutoJump" Guid="151d9613-47ac-4bbb-9d07-cbfed9704fd5">
+              <Parameter Name="JumpStrength" Guid="8ebec186-c215-4784-80b5-a30d6bf413cb" Value="1" Type="float" />
+            </MemberComponentTemplate>
+<MemberComponentTemplate Name="Locomotion" Guid="f75f6a2d-1acd-406b-9aa6-d7dc3aab4bfd">
+    <Parameter Name="LadderSpeed" Guid="cc27a135-a125-4579-8f56-cbfe33cff715" Value="0" Type="float" />
+    <Parameter Name="WalkSpeedWhenTurning" Guid="dd594825-a344-44b9-b0f7-fce00fbefe6f" Value="1.2" Type="float" />
+    <Parameter Name="InAirWalkFactor" Guid="5e081df6-d02b-44aa-a9ad-ae3bfc285e31" Value="1" Type="float" />
+    <Parameter Name="WalkSpeed" Guid="4c3a4fda-a2ed-4262-baac-1a92ba45f7e9" Value="5.2" Type="float" />
+    <Parameter Name="FlySpeed" Guid="bd7bff78-7364-4ca6-bf3b-b05da947ed27" Value="0" Type="float" />
+    <Parameter Name="TurnSpeed" Guid="b367ae12-4928-41bc-917b-b99021dded3f" Value="10" Type="float" />
+    <Parameter Name="JumpSpeed" Guid="64155bc3-39f2-4995-b119-cb3e32276712" Value="6.5" Type="float" />
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="Loot" Guid="ff3cd7c7-2599-4607-a578-c723989ef41f">
                 <ParameterSet Name="Loot" Guid="98dc582a-77c6-47ea-a095-0d5ddb2f5eda">
@@ -8325,12 +8350,17 @@
   <Parameter Name="ForceAttackDuringGreenNight" Guid="f19e3468-9d15-483b-be94-52eafe6d4410" Value="true" Type="bool"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidFireBehavior" Guid="973f25da-3766-4aae-a988-1b4ff47fe499" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
-            <MemberComponentTemplate Name="Locomotion" Guid="dde2b2c1-0803-44f4-8a4e-71dfc4546d47">
-    <Parameter Name="AccelerationFactor" Guid="f01fe218-6ba1-4e6f-ad15-3087ff71b2bf" Value="6.0" Type="float"/> <!-- aceleración brutal para simular su fuerza -->
-    <Parameter Name="FlySpeed" Guid="b2e893e2-eb13-4ab8-ad69-fa53b58366ea" Value="0" Type="float"/>
-    <Parameter Name="TurnSpeed" Guid="e8e5b207-87ed-4496-871d-0bddc2a52fc2" Value="1.5" Type="float"/> <!-- giro muy lento, el Tank es torpe -->
-    <Parameter Name="WalkSpeed" Guid="169f7f9b-e2c1-4f16-a239-136024f575ce" Value="3.5" Type="float"/> <!-- más lento que el Charger, pero constante -->
-    <Parameter Name="LadderSpeed" Guid="e1a94697-3369-413b-887e-d04eb033d9c7" Value="4.0" Type="float"/> <!-- trepa con fuerza, aunque no rápido -->
+<MemberComponentTemplate Name="AutoJump" Guid="e7a066a0-0bd9-4ee9-a832-19f8e142d6c3">
+              <Parameter Name="JumpStrength" Guid="676caae4-120f-4644-9ed4-c427321720fc" Value="1" Type="float" />
+            </MemberComponentTemplate>
+<MemberComponentTemplate Name="Locomotion" Guid="cc5aa3e2-53a0-49b5-b4ff-353ec54cce01">
+    <Parameter Name="LadderSpeed" Guid="260f4c2b-8e75-4c30-9cd7-0bdc10de3172" Value="0" Type="float" />
+    <Parameter Name="WalkSpeedWhenTurning" Guid="5d273d6a-910e-436d-93f2-f2555aebeafb" Value="1.2" Type="float" />
+    <Parameter Name="InAirWalkFactor" Guid="f3c5baa2-0277-4814-918c-3d2de161f198" Value="1" Type="float" />
+    <Parameter Name="WalkSpeed" Guid="a375bd23-3408-4762-b3fa-8ce8b23d1373" Value="5.2" Type="float" />
+    <Parameter Name="FlySpeed" Guid="c0575d06-5552-4a04-9243-c8ef82e29efa" Value="0" Type="float" />
+    <Parameter Name="TurnSpeed" Guid="672dfbd2-e08b-47a6-aa20-c7346c75d7d1" Value="10" Type="float" />
+    <Parameter Name="JumpSpeed" Guid="bd9028d7-7227-4c51-810d-a5e1c3987cc6" Value="6.5" Type="float" />
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="Loot" Guid="072f290a-fa39-47d0-8375-f1a56acf0f2c">
                 <ParameterSet Name="Loot" Guid="59f89f6a-5d51-42f9-b89d-5b8ba052a310">
@@ -8484,12 +8514,17 @@
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidFireBehavior" Guid="8e118247-2c48-4a12-918e-dfca9861f811" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
-            <MemberComponentTemplate Name="Locomotion" Guid="065c1bd9-4f80-456e-bbf5-cc6f2b17e2d0">
-    <Parameter Name="AccelerationFactor" Guid="0eafd533-79bb-4c45-b78d-00708a4560d0" Value="6.0" Type="float"/> <!-- aceleración brutal para simular su fuerza -->
-    <Parameter Name="FlySpeed" Guid="ad933071-ac64-47e0-b88d-4c5a52616dfa" Value="0" Type="float"/>
-    <Parameter Name="TurnSpeed" Guid="5844a7c1-e537-4b02-90fd-614870934d80" Value="1.5" Type="float"/> <!-- giro muy lento, el Tank es torpe -->
-    <Parameter Name="WalkSpeed" Guid="c1251ff7-4c19-4273-adb7-cdac101e096e" Value="3.5" Type="float"/> <!-- más lento que el Charger, pero constante -->
-    <Parameter Name="LadderSpeed" Guid="15a08597-83fe-4d4a-9f1b-7ca2bbd7a90d" Value="4.0" Type="float"/> <!-- trepa con fuerza, aunque no rápido -->
+<MemberComponentTemplate Name="AutoJump" Guid="877971eb-5234-4a87-a819-d22e9ab91b8b">
+              <Parameter Name="JumpStrength" Guid="26e54577-dc3e-4f93-aeff-0ca005a1ca0b" Value="1" Type="float" />
+            </MemberComponentTemplate>
+<MemberComponentTemplate Name="Locomotion" Guid="61870370-3ab7-435c-af5a-555d75f67663">
+    <Parameter Name="LadderSpeed" Guid="a9f03f07-a6be-46ec-9c65-125d141515fd" Value="0" Type="float" />
+    <Parameter Name="WalkSpeedWhenTurning" Guid="7982f882-1c7b-4a32-8a7f-c0d73e949d23" Value="1.2" Type="float" />
+    <Parameter Name="InAirWalkFactor" Guid="b352066d-7b65-4b15-853a-2daedab5e984" Value="1" Type="float" />
+    <Parameter Name="WalkSpeed" Guid="2657f74a-a5e7-42c7-9e75-a37705d3da5d" Value="5.2" Type="float" />
+    <Parameter Name="FlySpeed" Guid="07084689-bdd8-4f45-98c3-fb6065d3539f" Value="0" Type="float" />
+    <Parameter Name="TurnSpeed" Guid="ac2f58f1-0b52-4dc0-b435-22f9864a2607" Value="10" Type="float" />
+    <Parameter Name="JumpSpeed" Guid="d361cf46-0469-47c9-ac75-856bbc4999d5" Value="6.5" Type="float" />
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="Loot" Guid="2e5e1462-2f7e-48bd-87a4-2ffcb4daf89e">
                 <ParameterSet Name="Loot" Guid="a2845b80-dc87-406c-b878-7d3db4a138db">
@@ -8624,12 +8659,17 @@
   <Parameter Name="ForceAttackDuringGreenNight" Guid="133947fe-9fab-4a96-b3ef-1e4b272a67ac" Value="true" Type="bool"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidFireBehavior" Guid="c4d03f81-79fe-433e-a6e3-7bcdc1736774" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
-            <MemberComponentTemplate Name="Locomotion" Guid="6934498d-c5db-458a-9b13-e03784dfde30">
-    <Parameter Name="AccelerationFactor" Guid="f256a631-9e5a-4d9d-9f08-2565fcdb7ff0" Value="6.0" Type="float"/> <!-- aceleración brutal para simular su fuerza -->
-    <Parameter Name="FlySpeed" Guid="9755c07e-1157-4b00-ab77-89bad17886be" Value="0" Type="float"/>
-    <Parameter Name="TurnSpeed" Guid="11d7bdeb-6c3c-4e37-9971-4db46da52a15" Value="1.5" Type="float"/> <!-- giro muy lento, el Tank es torpe -->
-    <Parameter Name="WalkSpeed" Guid="a3db71f7-e910-4367-8cf3-7590f1ccdf62" Value="3.5" Type="float"/> <!-- más lento que el Charger, pero constante -->
-    <Parameter Name="LadderSpeed" Guid="a3f3cd03-60e6-44a0-90fd-9f8f3499bd62" Value="4.0" Type="float"/> <!-- trepa con fuerza, aunque no rápido -->
+<MemberComponentTemplate Name="AutoJump" Guid="6480f6c5-94f9-4b77-977a-c77b894c2204">
+              <Parameter Name="JumpStrength" Guid="4fd77aeb-ff3e-49e7-ad12-7548574d9571" Value="1" Type="float" />
+            </MemberComponentTemplate>
+<MemberComponentTemplate Name="Locomotion" Guid="5e008d29-1446-4d7b-bd5a-16d086fdcaf9">
+    <Parameter Name="LadderSpeed" Guid="71b2264d-f21a-4017-88e8-8d8fee7686bb" Value="0" Type="float" />
+    <Parameter Name="WalkSpeedWhenTurning" Guid="18295bfb-3de9-4b14-bf79-84f731b7524d" Value="1.2" Type="float" />
+    <Parameter Name="InAirWalkFactor" Guid="7a83ade1-4286-4bcd-9664-1cc3706606c8" Value="1" Type="float" />
+    <Parameter Name="WalkSpeed" Guid="34bf4d38-1fb1-416f-97a6-cc77d428736e" Value="5.2" Type="float" />
+    <Parameter Name="FlySpeed" Guid="9c9b1a4a-bb69-489a-be36-cea5df04685f" Value="0" Type="float" />
+    <Parameter Name="TurnSpeed" Guid="e6140be8-2d39-4d20-9b27-52abf5307f86" Value="10" Type="float" />
+    <Parameter Name="JumpSpeed" Guid="5b3a04bb-e1f0-4c28-bc72-a4b9201aa119" Value="6.5" Type="float" />
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="Loot" Guid="9a256671-1594-4e69-980e-fb3f86643818">
                 <ParameterSet Name="Loot" Guid="237a3e58-e7b2-4a89-b98b-bbd0519abb20">
@@ -8783,12 +8823,17 @@
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidFireBehavior" Guid="18c1d152-ff0a-4716-846b-a21316cfc06f" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
-            <MemberComponentTemplate Name="Locomotion" Guid="8fb285d2-de2f-4abf-861e-986e09091f8d">
-    <Parameter Name="AccelerationFactor" Guid="f9c53909-0fc3-4fc9-82b9-360f2889b92c" Value="6.0" Type="float"/> <!-- aceleración brutal para simular su fuerza -->
-    <Parameter Name="FlySpeed" Guid="b61fc3de-bdbc-417a-a096-4120e1dfe950" Value="0" Type="float"/>
-    <Parameter Name="TurnSpeed" Guid="277106d3-5cd6-4933-a676-2b80a5234d43" Value="1.5" Type="float"/> <!-- giro muy lento, el Tank es torpe -->
-    <Parameter Name="WalkSpeed" Guid="c680f029-2846-46cb-af46-8e6d52c62b67" Value="3.5" Type="float"/> <!-- más lento que el Charger, pero constante -->
-    <Parameter Name="LadderSpeed" Guid="f9271370-1421-42df-af5b-9ce77327e6d0" Value="4.0" Type="float"/> <!-- trepa con fuerza, aunque no rápido -->
+<MemberComponentTemplate Name="AutoJump" Guid="e0d5833f-f47e-4531-8193-5acfa6dd324a">
+              <Parameter Name="JumpStrength" Guid="c7d384c2-a5dd-4ca5-991a-99fcf0d86802" Value="1" Type="float" />
+            </MemberComponentTemplate>
+<MemberComponentTemplate Name="Locomotion" Guid="718067c5-7051-4987-9250-4b6388c84306">
+    <Parameter Name="LadderSpeed" Guid="9b51bd4e-c29b-438e-a3c8-202bfb67e429" Value="0" Type="float" />
+    <Parameter Name="WalkSpeedWhenTurning" Guid="616b0929-b5a1-49ee-aea2-e3d02e13c811" Value="1.2" Type="float" />
+    <Parameter Name="InAirWalkFactor" Guid="72c72e22-f400-4690-8d58-25ea7c073284" Value="1" Type="float" />
+    <Parameter Name="WalkSpeed" Guid="000e2059-02b0-4278-b13a-77c47173c9a8" Value="5.2" Type="float" />
+    <Parameter Name="FlySpeed" Guid="879a8742-c169-48c6-8cfa-50f8d73c042b" Value="0" Type="float" />
+    <Parameter Name="TurnSpeed" Guid="e5b0cab4-e8ba-42db-8e05-90174070205d" Value="10" Type="float" />
+    <Parameter Name="JumpSpeed" Guid="b7c0036a-89a0-44a1-9e42-a74964305b08" Value="6.5" Type="float" />
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="Loot" Guid="b1d81b23-7c56-4402-8a26-2f420cadadd9">
                 <ParameterSet Name="Loot" Guid="14a8aa77-d504-4616-96d4-067dc2e5edaa">
@@ -8923,12 +8968,17 @@
   <Parameter Name="ForceAttackDuringGreenNight" Guid="5a7f3845-621d-4373-9a2a-4d517fda9a03" Value="true" Type="bool"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidFireBehavior" Guid="1e8d2118-908e-4b71-b92d-1470d972713b" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
-            <MemberComponentTemplate Name="Locomotion" Guid="4776ac01-ea6d-499c-8d60-7dc86fa33385">
-    <Parameter Name="AccelerationFactor" Guid="103584a2-5f2d-4e22-a89f-644cb8f76fc5" Value="6.0" Type="float"/> <!-- aceleración brutal para simular su fuerza -->
-    <Parameter Name="FlySpeed" Guid="36b1b323-71df-4e29-9ce4-58f16b1b3cb2" Value="0" Type="float"/>
-    <Parameter Name="TurnSpeed" Guid="747530d0-f4c1-44ac-a86a-cd740dcbf1fd" Value="1.5" Type="float"/> <!-- giro muy lento, el Tank es torpe -->
-    <Parameter Name="WalkSpeed" Guid="670585db-9774-409d-8076-84625e7329dd" Value="3.5" Type="float"/> <!-- más lento que el Charger, pero constante -->
-    <Parameter Name="LadderSpeed" Guid="818bee0a-a64e-411e-8591-9430b258bbf2" Value="4.0" Type="float"/> <!-- trepa con fuerza, aunque no rápido -->
+<MemberComponentTemplate Name="AutoJump" Guid="990320f6-e03f-4e3e-98d2-375300836846">
+              <Parameter Name="JumpStrength" Guid="56432fa8-64cd-4c19-a4fd-be1ea0ec6dba" Value="1" Type="float" />
+            </MemberComponentTemplate>
+<MemberComponentTemplate Name="Locomotion" Guid="641ae26c-ec03-4a43-a5f7-c5a4569a600a">
+    <Parameter Name="LadderSpeed" Guid="bf4c2ecd-e5ab-4d5d-ae14-4ee193a57de1" Value="0" Type="float" />
+    <Parameter Name="WalkSpeedWhenTurning" Guid="88f32499-713d-492a-afb4-9f38b75269f7" Value="1.2" Type="float" />
+    <Parameter Name="InAirWalkFactor" Guid="269fe969-d732-4758-a40d-7c50ab244074" Value="1" Type="float" />
+    <Parameter Name="WalkSpeed" Guid="f16e0b18-839a-45a7-ae27-de17a45982d4" Value="5.2" Type="float" />
+    <Parameter Name="FlySpeed" Guid="06651c67-8361-4921-8f13-41ed46a465f6" Value="0" Type="float" />
+    <Parameter Name="TurnSpeed" Guid="fe9ce82c-c002-4a55-956b-209cccbeb35e" Value="10" Type="float" />
+    <Parameter Name="JumpSpeed" Guid="8cdf1053-c6d0-4172-af17-eff8c47e7daa" Value="6.5" Type="float" />
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="Loot" Guid="d29cb74f-8e65-464f-98e7-8b48ddcd34ed">
                 <ParameterSet Name="Loot" Guid="0c527bf0-376e-4fd5-b322-670b64f9aaf0">
@@ -9083,12 +9133,17 @@
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidFireBehavior" Guid="ee8ee67f-ef82-4d09-88f3-39754bded435" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
-            <MemberComponentTemplate Name="Locomotion" Guid="59cb6847-e3ae-4d32-b499-089d03d08969">
-    <Parameter Name="AccelerationFactor" Guid="a62b3f85-d3e5-42a5-aebb-2b21cfd303de" Value="6.0" Type="float"/> <!-- aceleración brutal para simular su fuerza -->
-    <Parameter Name="FlySpeed" Guid="1434d48f-7874-4f0e-9c3f-9e8467858ab4" Value="0" Type="float"/>
-    <Parameter Name="TurnSpeed" Guid="23ad684e-d2d4-434d-a9d1-0fcd57047038" Value="1.5" Type="float"/> <!-- giro muy lento, el Tank es torpe -->
-    <Parameter Name="WalkSpeed" Guid="ee5beb53-940e-46d9-af93-84d86461cd17" Value="3.5" Type="float"/> <!-- más lento que el Charger, pero constante -->
-    <Parameter Name="LadderSpeed" Guid="5ceb123b-0ae3-4971-b8a0-297c8a5a92f3" Value="4.0" Type="float"/> <!-- trepa con fuerza, aunque no rápido -->
+<MemberComponentTemplate Name="AutoJump" Guid="6ff38527-4252-4eb6-a155-d963d15998d3">
+              <Parameter Name="JumpStrength" Guid="6cc5edc2-3a7f-4319-991e-2097fd4a4e9f" Value="1" Type="float" />
+            </MemberComponentTemplate>
+<MemberComponentTemplate Name="Locomotion" Guid="fd99ae47-4b3a-4c1a-b90d-d5e2562e91a5">
+    <Parameter Name="LadderSpeed" Guid="000e9ea6-795d-42be-afe9-048de03488bb" Value="0" Type="float" />
+    <Parameter Name="WalkSpeedWhenTurning" Guid="4519e6bc-2fd3-4f0e-8657-6096bb453803" Value="1.2" Type="float" />
+    <Parameter Name="InAirWalkFactor" Guid="68397c16-cf8d-4753-a137-49f76504a562" Value="1" Type="float" />
+    <Parameter Name="WalkSpeed" Guid="7552fc12-58e7-4a2d-bc55-5d0b2dacf648" Value="5.2" Type="float" />
+    <Parameter Name="FlySpeed" Guid="b0a106e8-0efe-4b7a-98ce-cfd16d00c873" Value="0" Type="float" />
+    <Parameter Name="TurnSpeed" Guid="fa04fa72-40dd-482b-9650-e76de27593bc" Value="10" Type="float" />
+    <Parameter Name="JumpSpeed" Guid="25a99ca3-feb0-481f-8901-b0a6fe91fbc9" Value="6.5" Type="float" />
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="Loot" Guid="fe5959c8-7227-4b25-bea4-9e35c834b4cd">
                 <ParameterSet Name="Loot" Guid="43c1f177-8d2e-49a1-ad78-e39755512231">
