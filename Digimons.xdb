@@ -71,14 +71,14 @@
         </ParameterSet>
     </ParameterSet>
 </MemberComponentTemplate>
-			<MemberComponentTemplate Name="InvShooterBehavior" Guid="34fdeb1a-8ef5-45af-adac-2c4c11ed30d0" InheritanceParent="456e3558-0e7f-42c3-bc05-35eef7540900">
-    <Parameter Name="SpecialThrowableItem" Guid="4cdf6271-edd9-4921-b82e-a99121b79b0f" Value="ArrowBlock:4" Type="string"/>
-    <Parameter Name="DiscountFromInventory" Guid="c0c3a68e-0e37-4163-9a60-8e6cdea7e2ef" Value="True" Type="bool"/>
-    <Parameter Name="SelectRandomThrowableItems" Guid="b60603a9-ef1b-49e6-a71a-dc59d9a69f5d" Value="False" Type="bool"/>
-    <Parameter Name="ThrowFromHead" Guid="dc666c2f-3b00-42b7-aeec-b4bffd63d7c7" Value="True" Type="bool"/>
-    <Parameter Name="MinMaxRandomChargeTime" Guid="327711b1-a813-491e-9563-4a4bf87ba8a3" Value="1;1" Type="string"/>
-    <Parameter Name="MinMaxRandomWaitTime" Guid="9a654ec6-211a-4aca-bdc9-197d63f5ef4a" Value="0.5;0.8" Type="string"/>
-    <Parameter Name="MinMaxDistance" Guid="e2bfd5f6-24ef-4d0c-a874-750a0e529afa" Value="2;25" Type="string"/>
+MemberComponentTemplate Name="InvShooterBehavior" Guid="485eb753-0db3-4e86-86da-6b040d253cf1" InheritanceParent="456e3558-0e7f-42c3-bc05-35eef7540900">
+    <Parameter Name="SpecialThrowableItem" Guid="ba0cd99b-d5d9-46f4-8771-bd504cc420cd" Value="ArrowBlock:4" Type="string"/>
+    <Parameter Name="DiscountFromInventory" Guid="a5e9ae34-2a46-4d15-9500-4931da38f755" Value="True" Type="bool"/>
+    <Parameter Name="SelectRandomThrowableItems" Guid="a2dcfadb-0907-4deb-9b56-c92a9146972e" Value="False" Type="bool"/>
+    <Parameter Name="ThrowFromHead" Guid="a9742836-e03f-480e-8869-81b60068e5ba" Value="True" Type="bool"/>
+    <Parameter Name="MinMaxRandomChargeTime" Guid="684e1d7b-e1de-4543-93a4-ac548ea785e0" Value="0.7;1.0" Type="string"/>
+    <Parameter Name="MinMaxRandomWaitTime" Guid="486e34eb-69e3-4faf-b150-8602d1a727c7" Value="0.3;0.6" Type="string"/>
+    <Parameter Name="MinMaxDistance" Guid="7a251a63-7442-4ca4-8aa9-e5d0eb641b3f" Value="3;30" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="Spawn" Guid="bf57e634-5748-44c0-b1bb-05728824d4ed">
     <Parameter Name="AutoDespawn" Guid="f97872b2-677e-455b-906d-40f67ae84241" Value="False" Type="bool"/>
@@ -143,13 +143,6 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="FeedBehavior" Guid="3b06f3c6-cc95-4387-86b1-21ffc97e8bad" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
         <Parameter Name="AutoFeed" Guid="3b8015de-9145-4d00-9188-d9f931593c2e" Value="False" Type="bool"/>
-    </MemberComponentTemplate>
-    <MemberComponentTemplate Name="ChaseBehavior" Guid="1a9c2e7f-f9d1-4933-aec4-082f8ed85c0e" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
-        <Parameter Name="AutoChaseMask" Guid="c1b60894-b54d-488a-bf07-5a41c359e02d" Value="LandPredator" Type="Game.CreatureCategory"/>
-        <Parameter Name="DayChaseRange" Guid="5e633aa2-9310-44f9-90cd-00c17bdaf7fb" Value="0" Type="float"/>
-        <Parameter Name="NightChaseRange" Guid="2a37e650-bea1-470c-b387-fef3fef31862" Value="0" Type="float"/>
-        <Parameter Name="ChaseNonPlayerProbability" Guid="0e4b7955-b7a0-4d27-8c81-a7af52606b6f" Value="0" Type="float"/>
-        <Parameter Name="NightChaseTime" Guid="1ea31ead-25e6-47d0-ba5d-8df7545751e5" Value="0" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="5f0f0b7f-88af-4d8e-8e2a-7f757524e12f" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
     <Parameter Name="ChaseToCreatures" Guid="32ba78d4-46a0-49ab-b693-678b27058b4d" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
