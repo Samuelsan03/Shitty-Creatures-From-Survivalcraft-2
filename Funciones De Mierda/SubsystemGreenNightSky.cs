@@ -43,14 +43,21 @@ namespace Game
 				this.DaysSinceLastGreenNight++;
 			}
 
-			bool flag3 = IntervalUtils.IsBetween(timeOfDay, this.m_subsystemTimeOfDay.DuskStart, this.m_subsystemTimeOfDay.NightStart) ||
-						IntervalUtils.IsBetween(timeOfDay, this.m_subsystemTimeOfDay.NightStart, this.m_subsystemTimeOfDay.DawnStart);
-			bool flag4 = IntervalUtils.IsBetween(timeOfDay, this.m_subsystemTimeOfDay.DawnStart, this.m_subsystemTimeOfDay.DayStart) ||
-						IntervalUtils.IsBetween(timeOfDay, this.m_subsystemTimeOfDay.DayStart, this.m_subsystemTimeOfDay.DuskStart);
+			// Momento central del atardecer (Middusk)
+			float middusk = this.m_subsystemTimeOfDay.Middusk;
+			float duskTolerance = 0.005f; // Pequeña tolerancia para detectar el momento exacto
 
+			// Momento central del amanecer (Middawn)
+			float middawn = this.m_subsystemTimeOfDay.Middawn;
+			float dawnTolerance = 0.005f;
+
+			bool isStartMoment = Math.Abs(timeOfDay - middusk) < duskTolerance;
+			bool isEndMoment = Math.Abs(timeOfDay - middawn) < dawnTolerance;
+
+			// Activar SOLO en el momento exacto del Middusk (cuando sol y luna están alineados)
 			if (!this.IsGreenNightActive && (this.m_subsystemSky.MoonPhase == 0 || this.m_subsystemSky.MoonPhase == 4))
 			{
-				if (flag3 && !this.HasRolledTonight && this.DaysSinceLastGreenNight >= 1)
+				if (isStartMoment && !this.HasRolledTonight && this.DaysSinceLastGreenNight >= 1)
 				{
 					this.HasRolledTonight = true;
 					float num = Math.Min(1f, this.GreenNightChance * (float)this.DaysSinceLastGreenNight);
@@ -61,6 +68,7 @@ namespace Game
 						this.IsGreenNightActive = true;
 						this.DaysSinceLastGreenNight = 0;
 
+						// Mensaje de inicio en el momento exacto
 						SubsystemPlayers subsystemPlayers = base.Project.FindSubsystem<SubsystemPlayers>(true);
 						if (subsystemPlayers != null)
 						{
@@ -70,7 +78,7 @@ namespace Game
 								{
 									componentPlayer.ComponentGui.DisplaySmallMessage(
 										LanguageControl.Get("GreenNightSky", "GreenMoonBegins"),
-										new Color(0, 255, 0), false, true);
+										new Color(5, 154, 0), false, true);
 								}
 							}
 						}
@@ -78,12 +86,28 @@ namespace Game
 				}
 			}
 
-			if (this.IsGreenNightActive && flag4)
+			// Desactivar en el momento exacto del Middawn
+			if (this.IsGreenNightActive && isEndMoment)
 			{
 				this.IsGreenNightActive = false;
+
+				// Mensaje de fin en el momento exacto
+				SubsystemPlayers subsystemPlayers = base.Project.FindSubsystem<SubsystemPlayers>(true);
+				if (subsystemPlayers != null)
+				{
+					foreach (ComponentPlayer componentPlayer in subsystemPlayers.ComponentPlayers)
+					{
+						if (componentPlayer?.ComponentGui != null)
+						{
+							componentPlayer.ComponentGui.DisplaySmallMessage(
+								LanguageControl.Get("GreenNightSky", "GreenMoonEnds"),
+								new Color(5, 154, 0), false, true);
+						}
+					}
+				}
 			}
 
-			if (this.HasRolledTonight && flag4)
+			if (this.HasRolledTonight && isEndMoment)
 			{
 				this.HasRolledTonight = false;
 			}
