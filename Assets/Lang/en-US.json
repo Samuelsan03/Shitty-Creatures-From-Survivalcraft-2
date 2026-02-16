@@ -18,7 +18,8 @@
     "YouNeedAmmunition": "You need ammunition to fire the item launcher"
   },
   "GreenNightSky": {
-    "GreenMoonBegins": "The Green Moon has begun!"
+    "GreenMoonBegins": "The Green Night has begun!",
+    "GreenMoonEnds": "The Green Night has ended."
   },
   "LargeFirstAidKit": {
     "PlayerHealed": "You have completely restored your health!",
@@ -439,31 +440,31 @@
 },
     "RepeatCrossbow:0": {
       "DisplayName": "Repeating Crossbow",
-      "Description": "Enhanced version of the normal crossbow, designed for durability and sustained ranged attacks. Unlike the standard crossbow that fires a single bolt before reloading, the Repeat Crossbow features an 8-bolt magazine and progressive draw states, allowing continuous shots at distance. Compatible with multiple bolt types (Copper, Iron, Diamond, Explosive), each with distinct damage and effects. Automatic crossbow with 8-bolt magazine. Faster reload than normal crossbow but slightly less power."
+      "Description": "An advanced version of the standard crossbow, optimized for sustained ranged fire. Unlike the normal crossbow which fires a single bolt before reloading, the Repeating Crossbow features an internal 8-bolt magazine and progressive tension system allowing continuous fire. It deals slightly less damage per shot than the normal crossbow but has a higher fire rate and faster reload. Compatible with special bolts: Copper, Iron, Diamond, Explosive, and Poison."
     },
     "RepeatArrow:0": {
-      "DisplayName": "Copper Repeating Bolt",
-      "Description": "A specialized bolt for repeating crossbows. Made from copper, this bolt has moderate penetration power and is more accurate than regular Survivalcraft 2 bolts. Designed specifically for rapid-fire crossbows, it offers better stability during continuous firing."
+      "DisplayName": "Repeating Copper Bolt",
+      "Description": "Lightweight bolt for repeating crossbows, made of copper. Provides moderate damage and high stability during rapid firing. Optimized to maintain accuracy in sustained automatic fire."
     },
     "RepeatArrow:1": {
-      "DisplayName": "Iron Repeating Bolt",
-      "Description": "An iron-tipped bolt engineered for repeating crossbows. With superior damage and armor penetration compared to regular iron bolts, this projectile maintains accuracy during rapid-fire sequences. The repeating crossbow mechanism allows faster shooting than standard crossbows."
+      "DisplayName": "Repeating Iron Bolt",
+      "Description": "Reinforced iron bolt for repeating crossbows. Deals higher damage and better armor penetration than standard iron bolts while maintaining accuracy in sustained bursts."
     },
     "RepeatArrow:2": {
-      "DisplayName": "Diamond Repeating Bolt",
-      "Description": "A high-end diamond-tipped bolt for advanced repeating crossbows. Features exceptional armor-piercing capability and damage output. Unlike standard diamond bolts, these are optimized for the repeating crossbow's unique firing mechanism, providing sustained high-damage output in automatic fire."
+      "DisplayName": "Repeating Diamond Bolt",
+      "Description": "High-tier bolt with a diamond tip designed for advanced repeating crossbows. Offers exceptional armor penetration and high sustained damage. Optimized for rapid burst firing."
     },
     "RepeatArrow:3": {
-      "DisplayName": "Explosive Repeating Bolt",
-      "Description": "An explosive-tipped bolt designed for repeating crossbows. Creates a small explosion on impact with 90 pressure force. While regular explosive bolts have a higher individual damage, these allow for rapid explosive shots, making them ideal for area denial and crowd control."
+      "DisplayName": "Repeating Explosive Bolt",
+      "Description": "Explosive bolt for repeating crossbows. Creates small explosions on impact. While individual damage is lower than standard explosive bolts, it allows rapid explosive bursts, ideal for crowd control and area denial."
     },
     "RepeatArrow:4": {
-      "DisplayName": "Poison Repeating Bolt",
-      "Description": "A poison-coated bolt for repeating crossbows. Inflicts poison damage over time on targets with very low initial impact (3 damage). Causes poison effect for 30 seconds. Designed to weaken enemies over time rather than kill instantly, making them ideal for capturing or slowing down targets."
+      "DisplayName": "Repeating Poison Bolt",
+      "Description": "Low-lethality poison bolt. Deals low initial damage but applies poison for 30 seconds. Ideal for weakening enemies without killing them instantly."
     },
     "RepeatArrow:5": {
-      "DisplayName": "Serious Poison Repeating Bolt",
-      "Description": "A heavily poisoned bolt for repeating crossbows. Delivers a stronger poison effect with higher poison duration (100 seconds) and very low initial damage (4 damage). The repeating crossbow mechanism lets you apply serious poison to multiple targets rapidly, weakening groups of enemies without killing them outright."
+      "DisplayName": "Repeating Severe Poison Bolt",
+      "Description": "Highly toxic bolt for repeating crossbows. Applies a severe poison effect for 100 seconds. Designed to weaken entire groups through rapid status application."
     },
     "AA12Block:0": {
   "DisplayName": "Atchisson AA-12 Auto Shotgun",
