@@ -205,7 +205,7 @@
     <Parameter Name="AutoNearbyCreaturesHelp" Value="true" Type="bool" Guid="912c89b2-caeb-4303-8abb-996c5b0c2b5f" Description="Si es true, llama a otros miembros de la manada cuando es atacado"/>
 </ComponentTemplate>
 
-<ComponentTemplate Name="ComponentBanditChase" Guid="c0b1cbec-0706-41cf-8bf4-9fd5647deca5" Description="Componente de persecución mejorado para bandidos con ataques a todas las criaturas">
+<ComponentTemplate Name="ComponentBanditChase" Guid="c0b1cbec-0706-41cf-8bf4-9fd5647deca5" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3" Description="Componente de persecución mejorado para bandidos con ataques a todas las criaturas">
     <Parameter Name="Class" Value="Game.ComponentBanditChaseBehavior" Type="string" Guid="69363cb9-5c35-4d52-bff8-180338945516" Description="Nombre de la clase C# que implementa el comportamiento de persecución para bandidos"/>
     <Parameter Name="UpdateOrder" Value="100" Type="int" Guid="fd8bed30-b402-44be-a7f2-03c50676683f" Description="Orden de actualización del componente durante el ciclo del juego"/>
     <Parameter Name="LoadOrder" Value="80" Type="int" Guid="619e8331-7675-458b-bf8d-516c1409440a" Description="Orden de carga del componente en la entidad"/>
@@ -420,25 +420,12 @@
 			<Parameter Name="Class" Guid="45077340-7b89-42da-b8d3-18b0e44a6f34" Value="Game.ComponentCustomChaseBehavior" Type="string"/>
 		</ComponentTemplate>
 
-        <ComponentTemplate Name="ComponentSuicideBomber" Guid="bbeb4cf0-0c23-44e9-88f8-def2b79fa8f5">
-            <Parameter Name="Class" Value="Game.ComponentSuicideBomber" Type="string" Guid="a2caf84b-0d7f-4ebb-b061-aa182794b564"/>
-            <Parameter Name="ActivationRange" Value="3" Type="float" Description="Rango de activación en bloques (ej: 3 = 3 bloques)" Guid="b3012068-99af-422c-9e6e-8fd9476cf9d1"/>
-            <Parameter Name="CountdownDuration" Value="1" Type="float" Description="Duración de la cuenta regresiva en segundos (0.1 = instantáneo)" Guid="489cda8f-659c-461b-b36f-21a94d8be431"/>
-            <Parameter Name="SparkSound" Value="Audio/Fuse" Type="string" Description="Sonido de chispa durante la cuenta regresiva" Guid="f1bdfab4-3c14-4335-9c79-d16cecbe5051"/>
-            <!-- TIPO DE EXPLOSIÓN (elige UNA opción) -->
-            <Parameter Name="UseStandardExplosion" Value="true" Type="bool" Description="Usar explosión estándar del juego (recomendado)" Guid="9d8c7b6a-5f4e-3d2c-1b0a-9876543210ab"/>
-            <Parameter Name="UseCustomShockwave" Value="false" Type="bool" Description="Usar onda expansiva personalizada (experimental)" Guid="8c7b6a5f-4e3d-2c1b-0a9f-8765432109ba"/>
-            <!-- EXPLOSIÓN ESTÁNDAR (solo si UseStandardExplosion=true) -->
-            <Parameter Name="ExplosionPressure" Value="80" Type="float" Description="Presión de la explosión (10=pequeña, 200=enorme)" Guid="5fb4f9c4-7745-4e40-9906-28e8869e4734"/>
-            <Parameter Name="IsIncendiary" Value="true" Type="bool" Description="Si la explosión es incendiaria (deja fuego)" Guid="cd13ac37-e65d-4f22-96d4-289f82a73d2a"/>
-            <!-- ONDA EXPANSIVA PERSONALIZADA (solo si UseCustomShockwave=true) -->
-            <Parameter Name="ExplosionRadius" Value="10" Type="float" Description="Radio visual máximo en bloques" Guid="61bbe09e-83ad-4664-9cd2-f8dd6b10ad15"/>
-            <Parameter Name="ShockwaveDamage" Value="0" Type="float" Description="Daño máximo en el centro (0-500)" Guid="889a3634-c5b4-446a-b3e9-6bfb477712f6"/>
-            <Parameter Name="ShockwaveForce" Value="0" Type="float" Description="Fuerza de empuje (0-200)" Guid="4ed5762e-75af-41b0-9027-807928dd3b3e"/>
-            <Parameter Name="DestroyBlocks" Value="true" Type="bool" Description="Si destruye bloques con la onda" Guid="b8e0ae63-ff31-4647-a33d-21c9ad0cd054"/>
-            <Parameter Name="BlockDamageRadius" Value="8" Type="float" Description="Radio de destrucción de bloques en bloques" Guid="e474ef3a-df7b-4a68-86bb-1dbdbf09f010"/>
-            <Parameter Name="EntityDamageRadius" Value="10" Type="float" Description="Radio de daño a entidades en bloques" Guid="2bcd22be-dd01-4922-be1b-6e9c5dd076d6"/>
-        </ComponentTemplate>
+<ComponentTemplate Name="SuicideBomber" Description="Componente que hace que la criatura explote tras morir con una cuenta regresiva" Guid="4767e3da-848f-491e-973c-d4804a4f7622" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+  <Parameter Name="Class" Guid="ea643525-81d6-45a6-b773-fef631fd43cc" Value="Game.ComponentSuicideBomber" Type="string" Description="Clase C# que implementa la lógica del comportamiento suicida"/>
+  <Parameter Name="ExplosionPressure" Guid="8b593b46-071b-4881-82d8-b084ff2dc6ef" Value="100" Type="float" Description="Presión de la explosión generada al finalizar la cuenta regresiva"/>
+  <Parameter Name="IsIncendiary" Guid="0b15ad00-f362-4dba-b2a4-b0fcc03d56dc" Value="false" Type="bool" Description="Indica si la explosión provoca fuego además del daño normal"/>
+  <Parameter Name="CountdownTime" Guid="22931f71-10ac-4382-892f-9748b3ba2f4a" Value="3" Type="float" Description="Tiempo en segundos desde que la criatura muere hasta que explota"/>
+</ComponentTemplate>
 
 <ComponentTemplate Name="NewRunAwayBehavior" Description="Comportamiento que hace que la criatura huya solo cuando su salud es crítica (ignora ruidos)" Guid="0a320e99-fd38-4e3f-a5cf-d3e789235213" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
   <Parameter Name="Class" Guid="4e835c1a-1d3a-4723-9c7f-d234ab17c516" Value="Game.ComponentNewRunAwayBehavior" Type="string"/>
