@@ -48,7 +48,11 @@ namespace Game
 		private void SetupZombieInjuryHandler()
 		{
 			ComponentHealth componentHealth = this.m_componentCreature.ComponentHealth;
-			componentHealth.Injured = delegate (Injury injury)
+			// Guardar el manejador original (el de ComponentChaseBehavior)
+			Action<Injury> originalHandler = componentHealth.Injured;
+
+			// Crear el nuevo manejador que combina el original y la lógica zombi
+			componentHealth.Injured = (Action<Injury>)Delegate.Combine(originalHandler, new Action<Injury>(delegate (Injury injury)
 			{
 				ComponentCreature attacker = injury.Attacker;
 				bool flag = attacker != null;
@@ -92,7 +96,7 @@ namespace Game
 						}
 					}
 				}
-			};
+			}));
 		}
 
 		// Token: 0x0600044B RID: 1099 RVA: 0x0003C960 File Offset: 0x0003AB60
