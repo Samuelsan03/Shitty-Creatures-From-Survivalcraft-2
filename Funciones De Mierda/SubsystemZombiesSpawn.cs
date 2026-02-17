@@ -34,6 +34,9 @@ namespace Game
 		// Token: 0x06000250 RID: 592 RVA: 0x0001CF60 File Offset: 0x0001B160
 		public void Update(float dt)
 		{
+			// Actualizar estado de noche verde
+			this.m_isGreenNightActive = (this.m_subsystemGreenNightSky != null && this.m_subsystemGreenNightSky.IsGreenNightActive);
+
 			bool flag = this.m_subsystemGameInfo.WorldSettings.EnvironmentBehaviorMode > EnvironmentBehaviorMode.Living;
 			if (!flag)
 			{
@@ -41,9 +44,10 @@ namespace Game
 				if (flag2)
 				{
 					this.m_newSpawnChunks.RandomShuffle((int max) => this.m_random.Int(0, max - 1));
+					int maxAttemptsNew = this.m_isGreenNightActive ? 20 : 10;  // ← MODIFICADO
 					foreach (SpawnChunk chunk in this.m_newSpawnChunks)
 					{
-						this.SpawnChunkCreatures(chunk, 10, false);
+						this.SpawnChunkCreatures(chunk, maxAttemptsNew, false);
 					}
 					this.m_newSpawnChunks.Clear();
 				}
@@ -51,13 +55,15 @@ namespace Game
 				if (flag3)
 				{
 					this.m_spawnChunks.RandomShuffle((int max) => this.m_random.Int(0, max - 1));
+					int maxAttemptsConst = this.m_isGreenNightActive ? 8 : 2;  // ← MODIFICADO
 					foreach (SpawnChunk chunk2 in this.m_spawnChunks)
 					{
-						this.SpawnChunkCreatures(chunk2, 2, true);
+						this.SpawnChunkCreatures(chunk2, maxAttemptsConst, true);
 					}
 					this.m_spawnChunks.Clear();
 				}
-				bool flag4 = this.m_subsystemTime.PeriodicGameTimeEvent(60.0, 2.0);
+				double period = this.m_isGreenNightActive ? 15.0 : 60.0;  // ← MODIFICADO
+				bool flag4 = this.m_subsystemTime.PeriodicGameTimeEvent(period, 2.0);
 				if (flag4)
 				{
 					this.SpawnRandomCreature();
@@ -68,6 +74,7 @@ namespace Game
 		// Token: 0x06000251 RID: 593 RVA: 0x0001D0C4 File Offset: 0x0001B2C4
 		public override void Load(ValuesDictionary valuesDictionary)
 		{
+			this.m_subsystemGreenNightSky = base.Project.FindSubsystem<SubsystemGreenNightSky>(true);
 			this.m_subsystemGameInfo = base.Project.FindSubsystem<SubsystemGameInfo>(true);
 			this.m_subsystemSpawn = base.Project.FindSubsystem<SubsystemSpawn>(true);
 			this.m_subsystemTerrain = base.Project.FindSubsystem<SubsystemTerrain>(true);
@@ -1849,70 +1856,6 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 							this.SpawnCreatures(creatureType, "InfectedMuscle2", point, 1).Count)
 					});
 
-					// InfectedNormal1 - Aparece desde el DÍA 1, SOLO DE NOCHE
-					this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("InfectedNormal1", SpawnLocationType.Surface, false, false)
-			{
-				SpawnSuitabilityFunction = delegate (SubsystemZombiesSpawn.CreatureType creatureType, Point3 point)
-				{
-					// Condición de noche
-					bool isNight = this.m_subsystemSky.SkyLightIntensity < 0.1f;
-					if (!isNight)
-						return 0f;
-
-					// Verificar que no esté en agua o lava
-					int blockAbove = Terrain.ExtractContents(this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z));
-					if (blockAbove == 18) // Agua o lava
-					{
-						return 0f;
-					}
-
-					// Verificar bloque debajo
-					int groundBlock = Terrain.ExtractContents(this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z));
-
-					// Condiciones de terreno (TIERRA, PIEDRA, HIERBA)
-					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
-					{
-						// Probabilidad controlada al 50% durante noches
-						return 0.5f;
-					}
-					return 0f;
-				},
-				SpawnFunction = ((SubsystemZombiesSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "InfectedNormal1", point, 1).Count) // Individual
-			});
-
-			// Versión constante (spawn continuo) - también desde día 1, solo de noche
-			this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("InfectedNormal1 Constant", SpawnLocationType.Surface, false, true)
-			{
-				SpawnSuitabilityFunction = delegate (SubsystemZombiesSpawn.CreatureType creatureType, Point3 point)
-				{
-					// Condición de noche
-					bool isNight = this.m_subsystemSky.SkyLightIntensity < 0.1f;
-					if (!isNight)
-						return 0f;
-
-					// Verificar que no esté en agua o lava
-					int blockAbove = Terrain.ExtractContents(this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z));
-					if (blockAbove == 18) // Agua o lava
-					{
-						return 0f;
-					}
-
-					// Verificar bloque debajo
-					int groundBlock = Terrain.ExtractContents(this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z));
-
-					// Condiciones de terreno
-					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
-					{
-						// Probabilidad baja para spawn constante: 20%
-						return 0.2f;
-					}
-					return 0f;
-				},
-				SpawnFunction = ((SubsystemZombiesSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "InfectedNormal1", point, 1).Count) // Individual
-			});
-
 			// Tank1 - Aparece desde el día 41, CUALQUIER HORA (día o noche)
 			this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("Tank1", SpawnLocationType.Surface, false, false)
 			{
@@ -2153,15 +2096,25 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 					this.SpawnCreatures(creatureType, "Tank3", point, 1).Count)
 			});
 
-			// InfectedNormal2 - Aparece desde el DÍA 1, SOLO DE NOCHE
-			this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("InfectedNormal2", SpawnLocationType.Surface, false, false)
+			// InfectedNormal1 - Aparece desde el DÍA 1, SOLO DE NOCHE (y durante noche verde)
+			this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("InfectedNormal1", SpawnLocationType.Surface, false, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemZombiesSpawn.CreatureType creatureType, Point3 point)
 				{
-					// Condición de noche
-					bool isNight = this.m_subsystemSky.SkyLightIntensity < 0.1f;
-					if (!isNight)
-						return 0f;
+					// Acceder al estado de noche verde (necesitas tener acceso al subsistema)
+					bool isGreenNight = false;
+					SubsystemGreenNightSky greenNightSys = base.Project.FindSubsystem<SubsystemGreenNightSky>(false);
+					if (greenNightSys != null)
+						isGreenNight = greenNightSys.IsGreenNightActive;
+
+					// Durante noche verde, pueden spawnear a cualquier hora (día o noche)
+					if (!isGreenNight)
+					{
+						// Si NO es noche verde, solo spawnear de noche
+						bool isNight = this.m_subsystemSky.SkyLightIntensity < 0.1f;
+						if (!isNight)
+							return 0f;
+					}
 
 					// Verificar que no esté en agua o lava
 					int blockAbove = Terrain.ExtractContents(this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z));
@@ -2176,24 +2129,38 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 					// Condiciones de terreno (TIERRA, PIEDRA, HIERBA)
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						// Probabilidad controlada al 50% durante noches
-						return 1.0f;
+						// Durante noche verde: probabilidad MUY ALTA (100%)
+						// Durante noche normal: 50%
+						if (isGreenNight)
+							return 1.0f; // 100% durante noche verde (oleadas)
+						else
+							return 0.005f; // 50% durante noches normales
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemZombiesSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "InfectedNormal2", point, 1).Count) // Individual
+					this.SpawnCreatures(creatureType, "InfectedNormal1", point, 1).Count) // Individual
 			});
 
-			// Versión constante (spawn continuo) - también desde día 1, solo de noche
-			this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("InfectedNormal2 Constant", SpawnLocationType.Surface, false, true)
+			// Versión constante (spawn continuo) - también desde día 1, solo de noche (y durante noche verde)
+			this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("InfectedNormal1 Constant", SpawnLocationType.Surface, false, true)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemZombiesSpawn.CreatureType creatureType, Point3 point)
 				{
-					// Condición de noche
-					bool isNight = this.m_subsystemSky.SkyLightIntensity < 0.1f;
-					if (!isNight)
-						return 0f;
+					// Acceder al estado de noche verde
+					bool isGreenNight = false;
+					SubsystemGreenNightSky greenNightSys = base.Project.FindSubsystem<SubsystemGreenNightSky>(false);
+					if (greenNightSys != null)
+						isGreenNight = greenNightSys.IsGreenNightActive;
+
+					// Durante noche verde, pueden spawnear a cualquier hora
+					if (!isGreenNight)
+					{
+						// Si NO es noche verde, solo spawnear de noche
+						bool isNight = this.m_subsystemSky.SkyLightIntensity < 0.1f;
+						if (!isNight)
+							return 0f;
+					}
 
 					// Verificar que no esté en agua o lava
 					int blockAbove = Terrain.ExtractContents(this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z));
@@ -2208,8 +2175,104 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 					// Condiciones de terreno
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						// Probabilidad baja para spawn constante: 20%
-						return 0.5f;
+						// Durante noche verde: probabilidad ALTA (80%)
+						// Durante noche normal: 20%
+						if (isGreenNight)
+							return 0.8f; // 80% durante noche verde (oleadas constantes)
+						else
+							return 0.002f; // 20% durante noches normales
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemZombiesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "InfectedNormal1", point, 1).Count) // Individual
+			});
+
+			// InfectedNormal2 - Aparece desde el DÍA 1, SOLO DE NOCHE (y durante noche verde)
+			this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("InfectedNormal2", SpawnLocationType.Surface, false, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemZombiesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Acceder al estado de noche verde
+					bool isGreenNight = false;
+					SubsystemGreenNightSky greenNightSys = base.Project.FindSubsystem<SubsystemGreenNightSky>(false);
+					if (greenNightSys != null)
+						isGreenNight = greenNightSys.IsGreenNightActive;
+
+					// Durante noche verde, pueden spawnear a cualquier hora
+					if (!isGreenNight)
+					{
+						// Si NO es noche verde, solo spawnear de noche
+						bool isNight = this.m_subsystemSky.SkyLightIntensity < 0.1f;
+						if (!isNight)
+							return 0f;
+					}
+
+					// Verificar que no esté en agua o lava
+					int blockAbove = Terrain.ExtractContents(this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z));
+					if (blockAbove == 18) // Agua o lava
+					{
+						return 0f;
+					}
+
+					// Verificar bloque debajo
+					int groundBlock = Terrain.ExtractContents(this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z));
+
+					// Condiciones de terreno (TIERRA, PIEDRA, HIERBA)
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						// Durante noche verde: probabilidad MUY ALTA (100%)
+						// Durante noche normal: 100% (original)
+						if (isGreenNight)
+							return 1.0f; // 100% durante noche verde (oleadas)
+						else
+							return 0.001f; // 100% durante noches normales (mantenido del original)
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemZombiesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "InfectedNormal2", point, 1).Count) // Individual
+			});
+
+			// Versión constante (spawn continuo) - también desde día 1, solo de noche (y durante noche verde)
+			this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("InfectedNormal2 Constant", SpawnLocationType.Surface, false, true)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemZombiesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Acceder al estado de noche verde
+					bool isGreenNight = false;
+					SubsystemGreenNightSky greenNightSys = base.Project.FindSubsystem<SubsystemGreenNightSky>(false);
+					if (greenNightSys != null)
+						isGreenNight = greenNightSys.IsGreenNightActive;
+
+					// Durante noche verde, pueden spawnear a cualquier hora
+					if (!isGreenNight)
+					{
+						// Si NO es noche verde, solo spawnear de noche
+						bool isNight = this.m_subsystemSky.SkyLightIntensity < 0.1f;
+						if (!isNight)
+							return 0f;
+					}
+
+					// Verificar que no esté en agua o lava
+					int blockAbove = Terrain.ExtractContents(this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z));
+					if (blockAbove == 18) // Agua o lava
+					{
+						return 0f;
+					}
+
+					// Verificar bloque debajo
+					int groundBlock = Terrain.ExtractContents(this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z));
+
+					// Condiciones de terreno
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						// Durante noche verde: probabilidad ALTA (90%)
+						// Durante noche normal: 50%
+						if (isGreenNight)
+							return 0.9f; // 90% durante noche verde (oleadas constantes)
+						else
+							return 0.005f; // 50% durante noches normales
 					}
 					return 0f;
 				},
@@ -2308,14 +2371,20 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 		// Token: 0x06000255 RID: 597 RVA: 0x0001E11C File Offset: 0x0001C31C
 		private void SpawnRandomCreature()
 		{
-			bool flag = this.CountCreatures(false) >= 24;
+			// Límites dinámicos según noche verde
+			int totalLimit = this.m_isGreenNightActive ? 48 : 24;          // ← MODIFICADO
+			int areaLimit = this.m_isGreenNightActive ? 6 : 3;            // ← MODIFICADO
+			float areaRadius = this.m_isGreenNightActive ? 30f : 16f;     // ← MODIFICADO
+			float viewRadius = this.m_isGreenNightActive ? 80f : 60f;     // ← MODIFICADO
+
+			bool flag = this.CountCreatures(false) >= totalLimit;
 			if (!flag)
 			{
 				foreach (GameWidget gameWidget in this.m_subsystemViews.GameWidgets)
 				{
 					int num = 48;
 					Vector2 v = new Vector2(gameWidget.ActiveCamera.ViewPosition.X, gameWidget.ActiveCamera.ViewPosition.Z);
-					bool flag2 = this.CountCreaturesInArea(v - new Vector2(60f), v + new Vector2(60f), false) >= num;
+					bool flag2 = this.CountCreaturesInArea(v - new Vector2(viewRadius), v + new Vector2(viewRadius), false) >= num;
 					if (flag2)
 					{
 						break;
@@ -2325,9 +2394,9 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 					bool flag3 = spawnPoint != null;
 					if (flag3)
 					{
-						Vector2 c3 = new Vector2((float)spawnPoint.Value.X, (float)spawnPoint.Value.Z) - new Vector2(16f);
-						Vector2 c2 = new Vector2((float)spawnPoint.Value.X, (float)spawnPoint.Value.Z) + new Vector2(16f);
-						bool flag4 = this.CountCreaturesInArea(c3, c2, false) >= 3;
+						Vector2 c3 = new Vector2((float)spawnPoint.Value.X, (float)spawnPoint.Value.Z) - new Vector2(areaRadius);
+						Vector2 c2 = new Vector2((float)spawnPoint.Value.X, (float)spawnPoint.Value.Z) + new Vector2(areaRadius);
+						bool flag4 = this.CountCreaturesInArea(c3, c2, false) >= areaLimit;
 						if (flag4)
 						{
 							break;
@@ -2352,13 +2421,24 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 		// Token: 0x06000256 RID: 598 RVA: 0x0001E34C File Offset: 0x0001C54C
 		private void SpawnChunkCreatures(SpawnChunk chunk, int maxAttempts, bool constantSpawn)
 		{
-			int num = constantSpawn ? 18 : 24;
-			int num2 = constantSpawn ? 4 : 3;
-			float v = (float)(constantSpawn ? 42 : 16);
+			// Límites dinámicos según noche verde
+			int num = constantSpawn
+				? (m_isGreenNightActive ? 36 : 18)    // ← MODIFICADO: Límite total para constantSpawn
+				: (m_isGreenNightActive ? 48 : 24);   // ← MODIFICADO: Límite total para randomSpawn
+
+			int num2 = constantSpawn
+				? (m_isGreenNightActive ? 8 : 4)      // ← MODIFICADO: Límite por área para constantSpawn
+				: (m_isGreenNightActive ? 6 : 3);     // ← MODIFICADO: Límite por área para randomSpawn
+
+			float v = constantSpawn
+				? (m_isGreenNightActive ? 60f : 42f)  // ← MODIFICADO: Radio para constantSpawn
+				: (m_isGreenNightActive ? 30f : 16f); // ← MODIFICADO: Radio para randomSpawn
+
 			int num3 = this.CountCreatures(constantSpawn);
 			Vector2 c3 = new Vector2((float)(chunk.Point.X * 16), (float)(chunk.Point.Y * 16)) - new Vector2(v);
 			Vector2 c2 = new Vector2((float)((chunk.Point.X + 1) * 16), (float)((chunk.Point.Y + 1) * 16)) + new Vector2(v);
 			int num4 = this.CountCreaturesInArea(c3, c2, constantSpawn);
+
 			for (int i = 0; i < maxAttempts; i++)
 			{
 				bool flag = num3 >= num || num4 >= num2;
@@ -2366,6 +2446,7 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 				{
 					break;
 				}
+
 				SpawnLocationType spawnLocationType = this.GetRandomSpawnLocationType();
 				Point3? spawnPoint = this.GetRandomChunkSpawnPoint(chunk, spawnLocationType);
 				bool flag2 = spawnPoint != null;
@@ -2673,43 +2754,20 @@ this.m_creatureTypes.Add(new SubsystemZombiesSpawn.CreatureType("PoisonousInfect
 			return SubsystemZombiesSpawn.m_spawnLocations[this.m_random.Int(0, SubsystemZombiesSpawn.m_spawnLocations.Length - 1)];
 		}
 
-		// Token: 0x040002F5 RID: 757
 		private SubsystemGameInfo m_subsystemGameInfo;
-
-		// Token: 0x040002F6 RID: 758
 		private SubsystemSpawn m_subsystemSpawn;
-
-		// Token: 0x040002F7 RID: 759
 		private SubsystemTerrain m_subsystemTerrain;
-
-		// Token: 0x040002F8 RID: 760
 		private SubsystemTime m_subsystemTime;
-
-		// Token: 0x040002F9 RID: 761
 		private SubsystemSky m_subsystemSky;
-
-		// Token: 0x040002FA RID: 762
 		private SubsystemBodies m_subsystemBodies;
-
-		// Token: 0x040002FB RID: 763
 		private SubsystemGameWidgets m_subsystemViews;
-
-		// Token: 0x040002FC RID: 764
+		private SubsystemGreenNightSky m_subsystemGreenNightSky;  // ← AÑADIDO
+		private bool m_isGreenNightActive;  // ← AÑADIDO (SIN this. delante)
 		private Random m_random = new Random();
-
-		// Token: 0x040002FD RID: 765
 		private List<SubsystemZombiesSpawn.CreatureType> m_creatureTypes = new List<SubsystemZombiesSpawn.CreatureType>();
-
-		// Token: 0x040002FE RID: 766
 		private Dictionary<ComponentCreature, bool> m_creatures = new Dictionary<ComponentCreature, bool>();
-
-		// Token: 0x040002FF RID: 767
 		private DynamicArray<ComponentBody> m_componentBodies = new DynamicArray<ComponentBody>();
-
-		// Token: 0x04000300 RID: 768
 		private List<SpawnChunk> m_newSpawnChunks = new List<SpawnChunk>();
-
-		// Token: 0x04000301 RID: 769
 		private List<SpawnChunk> m_spawnChunks = new List<SpawnChunk>();
 
 		// Token: 0x04000302 RID: 770
