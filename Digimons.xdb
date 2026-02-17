@@ -42,7 +42,7 @@
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="f932b384-0199-422e-8f46-5176123b3310" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
         <Parameter Name="DayRange" Guid="adc269c8-c896-4b19-8f8a-6d1f0e987de8" Value="0" Type="float"/>
-        <Parameter Name="NightRange" Guid="bcea5d70-effc-4103-8383-8f0ec47c0225" Value="5" Type="float"/>
+        <Parameter Name="NightRange" Guid="bcea5d70-effc-4103-8383-8f0ec47c0225" Value="0" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="EatPickableBehavior" Guid="bedefd19-152d-4ef2-ae1a-6a128e57e857">
         <ParameterSet Name="FoodFactors" Guid="ef08b490-8b89-4b9f-96fd-e45d091c7bbb">
@@ -1152,8 +1152,8 @@ MemberComponentTemplate Name="InvShooterBehavior" Guid="485eb753-0db3-4e86-86da-
         <Parameter Name="AvoidAttackingSameHerd" Value="true" Type="bool" Guid="a291a95b-487e-4978-9837-f8479bd3ed07"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="dd491463-2b74-4e40-9825-6bbd01c9e80d" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
-        <Parameter Name="DayRange" Guid="451c5759-8091-4094-9c9b-6f7688b5845d" Value="3" Type="float"/>
-        <Parameter Name="NightRange" Guid="34e04e78-8756-4f2a-8066-2fc6c14dc858" Value="7" Type="float"/>
+        <Parameter Name="DayRange" Guid="451c5759-8091-4094-9c9b-6f7688b5845d" Value="0" Type="float"/>
+        <Parameter Name="NightRange" Guid="34e04e78-8756-4f2a-8066-2fc6c14dc858" Value="0" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="EatPickableBehavior" Guid="fcc0728b-b0a9-4a9a-85dd-fbe80d7dc92c">
         <ParameterSet Name="FoodFactors" Guid="bcb618e1-331f-49c2-a166-2f4231c47b7d">
