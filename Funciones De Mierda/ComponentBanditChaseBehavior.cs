@@ -66,12 +66,20 @@ namespace Game
 			m_switchTargetCooldown = 0f;
 			m_lastShotSoundTime = 0f;
 
+			// Guardar los manejadores originales (establecidos por ComponentChaseBehavior.Load)
 			ComponentHealth componentHealth = m_componentCreature.ComponentHealth;
-			componentHealth.Injured = (Action<Injury>)Delegate.RemoveAll(componentHealth.Injured, componentHealth.Injured);
-			componentHealth.Injured = new Action<Injury>(delegate (Injury injury)
-			{
-				m_isNearDeath = IsNearDeath();
+			Action<Injury> originalInjured = componentHealth.Injured;
 
+			ComponentBody componentBody = m_componentCreature.ComponentBody;
+			Action<ComponentBody> originalCollided = componentBody.CollidedWithBody;
+
+			// Nuevo manejador de Injured: invoca al original y luego nuestra lógica personalizada
+			componentHealth.Injured = delegate (Injury injury)
+			{
+				// Invocar primero el manejador original (puede iniciar un ataque)
+				originalInjured?.Invoke(injury);
+
+				m_isNearDeath = IsNearDeath();
 				if (m_isNearDeath)
 				{
 					m_attackPersistanceFactor = 2f;
@@ -79,14 +87,14 @@ namespace Game
 
 				ComponentCreature attacker = injury.Attacker;
 
-				// Si el atacante es de la misma manada, ignorar completamente
+				// Si el atacante es de la misma manada, ignorar completamente (solo registramos si queremos? Mejor no)
 				if (attacker != null && m_componentBanditHerd != null)
 				{
 					ComponentBanditHerdBehavior attackerHerd = attacker.Entity.FindComponent<ComponentBanditHerdBehavior>();
 					if (attackerHerd != null && !string.IsNullOrEmpty(attackerHerd.HerdName) &&
 						string.Equals(attackerHerd.HerdName, m_componentBanditHerd.HerdName, StringComparison.OrdinalIgnoreCase))
 					{
-						return;
+						return; // No hacer nada más, ni siquiera recordar al atacante
 					}
 				}
 
@@ -96,8 +104,15 @@ namespace Game
 					m_lastAttackTime = m_subsystemTime.GameTime;
 				}
 
-				if (m_random.Float(0f, 1f) < m_chaseWhenAttackedProbability)
+				// Si el manejador original NO inició un ataque (m_target sigue siendo el mismo o nulo),
+				// entonces nosotros podemos atacar con nuestra lógica personalizada.
+				bool originalDidAttack = (m_target != null && m_target == attacker); // Simplificación: si el target cambió al atacante
+																					 // Mejor: comprobar si después del original, m_target no es nulo y es el atacante (o cualquier objetivo)
+																					 // Pero para evitar complejidad, asumimos que si el original atacó, ya se encargó.
+																					 // Nosotros atacamos solo si el original no estableció ningún target (m_target == null)
+				if (m_target == null && attacker != null)
 				{
+					// Aplicar nuestra lógica de ataque (similar a la original pero con factores propios)
 					bool flag = false;
 					float num;
 					float num2;
@@ -118,19 +133,22 @@ namespace Game
 
 					Attack(attacker, num, num2, flag);
 				}
-			});
+			};
 
-			ComponentBody componentBody = m_componentCreature.ComponentBody;
-			componentBody.CollidedWithBody = (Action<ComponentBody>)Delegate.RemoveAll(componentBody.CollidedWithBody, componentBody.CollidedWithBody);
-			componentBody.CollidedWithBody = new Action<ComponentBody>(delegate (ComponentBody body)
+			// Nuevo manejador de CollidedWithBody: invoca al original y luego nuestra lógica
+			componentBody.CollidedWithBody = delegate (ComponentBody body)
 			{
-				m_isNearDeath = IsNearDeath();
+				// Invocar primero el original
+				originalCollided?.Invoke(body);
 
+				m_isNearDeath = IsNearDeath();
 				if (m_isNearDeath)
 				{
 					m_attackPersistanceFactor = 2f;
 				}
 
+				// Nuestra lógica solo se ejecuta si el original no inició un ataque (m_target sigue siendo el que era)
+				// y se cumplen las condiciones.
 				if (m_target == null && m_autoChaseSuppressionTime <= 0f && m_random.Float(0f, 1f) < m_chaseOnTouchProbability)
 				{
 					ComponentCreature componentCreature = body.Entity.FindComponent<ComponentCreature>();
@@ -163,12 +181,14 @@ namespace Game
 						}
 					}
 				}
+
+				// La parte del salto la ejecutamos siempre (el original también la tenía, pero nosotros la repetimos)
 				if (m_target != null && JumpWhenTargetStanding && body == m_target.ComponentBody &&
 					body.StandingOnBody == m_componentCreature.ComponentBody)
 				{
 					m_componentCreature.ComponentLocomotion.JumpOrder = 1f;
 				}
-			});
+			};
 
 			m_registeredLoader = null;
 			ModsManager.HookAction("ChaseBehaviorScoreTarget", delegate (ModLoader loader)
