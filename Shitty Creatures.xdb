@@ -799,10 +799,7 @@
         </ParameterSet>
     </ParameterSet>      
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="MusketShooterBehavior2" Guid="1cf95492-6805-4393-9628-d5d0cb67ae90">
-    <Parameter Name="Class" Value="Game.ComponentMusketShooterBehavior2" Type="string"/>
-    <Parameter Name="IsOptional" Value="False" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
+<MemberComponentTemplate Name="MusketShooterBehavior2" Guid="1cf95492-6805-4393-9628-d5d0cb67ae90" InheritanceParent="32352458-619e-4c17-9392-eefb8dd0ede3">
     <Parameter Name="MaxDistance" Value="30" Type="float"/>
     <Parameter Name="MeleeSwitchDistance" Value="5" Type="float"/>
     <Parameter Name="ReloadTime" Value="1" Type="float"/>
@@ -1349,20 +1346,15 @@
         </ParameterSet>
      </ParameterSet> 
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="MusketShooterBehavior2" Guid="c9e90304-974a-48d1-b7c8-30156330183f">
-    <Parameter Name="Class" Value="Game.ComponentMusketShooterBehavior2" Type="string"/>
-    <Parameter Name="IsOptional" Value="False" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
+<MemberComponentTemplate Name="MusketShooterBehavior2" Guid="c9e90304-974a-48d1-b7c8-30156330183f" InheritanceParent="32352458-619e-4c17-9392-eefb8dd0ede3">
     <Parameter Name="MaxDistance" Value="30" Type="float"/>
     <Parameter Name="MeleeSwitchDistance" Value="5" Type="float"/>
-    <Parameter Name="MinAimDistance" Value="10" Type="float"/>
     <Parameter Name="ReloadTime" Value="1" Type="float"/>
     <Parameter Name="AimTime" Value="0.8" Type="float"/>
     <Parameter Name="CockTime" Value="0.5" Type="float"/>
     <Parameter Name="MeleeAttackTime" Value="0.8" Type="float"/>
-    <Parameter Name="FireSoundDistance" Value="20" Type="float"/>
     <Parameter Name="Accuracy" Value="0.015" Type="float"/>
-    <Parameter Name="UseRecoil" Value="True" Type="bool"/>
+    <Parameter Name="UseRecoil" Value="False" Type="bool"/>
     <Parameter Name="BulletSpeed" Value="140" Type="float"/>
     <Parameter Name="RequireCocking" Value="True" Type="bool"/>
 </MemberComponentTemplate>
@@ -2644,7 +2636,7 @@
         </ParameterSet>
     </ParameterSet>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="CrossbowShooterBehavior" Guid="dc355fe3-21d1-4950-919f-78fd29bfefef" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+<MemberComponentTemplate Name="CrossbowShooterBehavior" Guid="dc355fe3-21d1-4950-919f-78fd29bfefef" InheritanceParent="416961cf-2c1d-4611-a7a3-6c7197aba83e">
     <Parameter Name="MaxDistance" Value="100" Type="float"/>
     <Parameter Name="DrawTime" Value="0.3" Type="float"/>
     <Parameter Name="AimTime" Value="0.3" Type="float"/>
@@ -2653,7 +2645,6 @@
     <Parameter Name="ShowBoltWhenIdle" Value="false" Type="bool"/>
     <Parameter Name="BoltSpeed" Value="45" Type="float"/>
     <Parameter Name="CycleBoltTypes" Value="true" Type="bool"/>
-    <Parameter Name="Class" Value="Game.ComponentCrossbowShooterBehavior" Type="string"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Loot" Guid="81c253ce-396d-4632-8a25-e873ac46c7e5">
         <ParameterSet Name="Loot" Guid="bf4643b1-6c8f-4cd0-8ec4-93c5bd51fd0c">
@@ -2934,7 +2925,7 @@
         </ParameterSet>
     </ParameterSet>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="BowShooterBehavior" Guid="1a7202f4-4fb5-437e-84ae-ba88167f3c5f" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+<MemberComponentTemplate Name="BowShooterBehavior" Guid="1a7202f4-4fb5-437e-84ae-ba88167f3c5f" InheritanceParent="416961cf-2c1d-4611-a7a3-6c7197aba83e">
     <Parameter Name="MaxDistance" Value="100" Type="float"/>
     <Parameter Name="DrawTime" Value="0.3" Type="float"/>
     <Parameter Name="AimTime" Value="0.8" Type="float"/>
@@ -2943,7 +2934,6 @@
     <Parameter Name="ArrowSpeed" Value="40" Type="float"/>
     <Parameter Name="ShowArrowWhenIdle" Value="false" Type="bool"/>
     <Parameter Name="CycleArrowTypes" Value="true" Type="bool"/>
-    <Parameter Name="Class" Value="Game.ComponentBowShooterBehavior" Type="string"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Loot" Guid="4bb110fe-f5f8-40a3-ad83-b25ee4e389ab">
         <ParameterSet Name="Loot" Guid="a11a74e9-6cdc-4b27-8e00-35da047fc2b2">
@@ -3016,22 +3006,11 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="ChaseBehavior" Guid="4d0aba9e-99b3-4169-9f11-a58047dd20e9" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
     <Parameter Name="AutoChaseMask" Guid="d9db80f6-0842-4f1b-837a-8fd205d87080" Value="LandPredator, LandOther, WaterPredator, WaterOther" Type="Game.CreatureCategory"/>
-    <Parameter Name="DayChaseRange" Guid="71269a94-43be-4ec0-8886-f47af5c3d8f5" Value="0" Type="float"/>
-    <Parameter Name="DayChaseTime" Guid="90011a21-95b2-4ebc-a6ed-dd2d8c073377" Value="0" Type="float"/>
-    <Parameter Name="NightChaseRange" Guid="1ed9b359-ed05-4d39-8491-03186f4a3e2f" Value="0" Type="float"/>
+    <Parameter Name="DayChaseRange" Guid="71269a94-43be-4ec0-8886-f47af5c3d8f5" Value="999" Type="float"/>
+    <Parameter Name="DayChaseTime" Guid="90011a21-95b2-4ebc-a6ed-dd2d8c073377" Value="999" Type="float"/>
+    <Parameter Name="NightChaseRange" Guid="1ed9b359-ed05-4d39-8491-03186f4a3e2f" Value="999" Type="float"/>
     <Parameter Name="ChaseNonPlayerProbability" Guid="b7eb544d-de43-428d-8261-9540de259b21" Value="0" Type="float"/>
-    <Parameter Name="NightChaseTime" Guid="d48583b0-eeb8-43a3-a993-3ef4860ccc05" Value="0" Type="float"/>
-</MemberComponentTemplate>
-<MemberComponentTemplate Name="NewChaseBehavior2" Guid="29dbaff9-1c1a-4db2-b148-5c2e8a7b8bfb" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
-    <Parameter Name="Class" Value="Game.ComponentNewChaseBehavior2" Type="string" Guid="02f86b44-e13a-42b2-bc91-67da3f0e3c68"/>
-    <Parameter Name="DayChaseRange" Value="999" Type="float" Guid="a63bc2f8-c66b-4eb4-9d50-327634bc5b49"/>
-    <Parameter Name="NightChaseRange" Value="999" Type="float" Guid="a5364970-69d3-485a-8fd3-5de17e8e7a58"/>
-    <Parameter Name="DayChaseTime" Value="999" Type="float" Guid="22ef86fa-91fa-4d26-8fcb-615d88d46973"/>
-    <Parameter Name="NightChaseTime" Value="999" Type="float" Guid="b445da20-6e15-45e4-af0d-e1ea2dea0bc5"/>
-    <Parameter Name="ChaseNonPlayerProbability" Value="0" Type="float" Guid="c39a074b-5c60-4de3-b902-aa2e904fe603"/>
-    <Parameter Name="ChaseWhenAttackedProbability" Value="1.0" Type="float" Guid="656ccc8c-7dad-405b-82e7-b83ad786a53d"/>
-    <Parameter Name="ChaseOnTouchProbability" Value="0.5" Type="float" Guid="f6bf1c82-3820-45db-9f13-879c186206ea"/>
-    <Parameter Name="AutoChaseMask" Value="LandPredator, LandOther, WaterPredator, WaterOther" Type="Game.CreatureCategory" Guid="3289efea-bd34-4f1f-bc74-79254743eddf"/>
+    <Parameter Name="NightChaseTime" Guid="d48583b0-eeb8-43a3-a993-3ef4860ccc05" Value="999" Type="float"/>
 </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="7530ee35-8622-4ebe-a572-3da9813c1f4c">
         <Parameter Name="Color" Guid="f3b903e6-2f48-4e7a-aaa7-b865f79a2ca5" Value="239,184,16" Type="Color"/>
@@ -3088,7 +3067,7 @@
         </ParameterSet>
     </ParameterSet>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="BowShooterBehavior" Guid="b34e35aa-cddb-41eb-98fa-37bd0c6f8e09" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+<MemberComponentTemplate Name="BowShooterBehavior" Guid="b34e35aa-cddb-41eb-98fa-37bd0c6f8e09" InheritanceParent="416961cf-2c1d-4611-a7a3-6c7197aba83e">
     <Parameter Name="MaxDistance" Value="100" Type="float"/>
     <Parameter Name="DrawTime" Value="0.3" Type="float"/>
     <Parameter Name="AimTime" Value="0.3" Type="float"/>
@@ -3097,7 +3076,6 @@
     <Parameter Name="ArrowSpeed" Value="40" Type="float"/>
     <Parameter Name="ShowArrowWhenIdle" Value="false" Type="bool"/>
     <Parameter Name="CycleArrowTypes" Value="true" Type="bool"/>
-    <Parameter Name="Class" Value="Game.ComponentBowShooterBehavior" Type="string"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Loot" Guid="17f5367a-ccff-4cbd-801a-573906bcbfe3">
         <ParameterSet Name="Loot" Guid="de790e87-d30b-45ee-ac50-8a5fce82a94f">
@@ -3225,7 +3203,7 @@
         </ParameterSet>
     </ParameterSet>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="CrossbowShooterBehavior" Guid="180dadf6-724f-4e55-b5d4-f6e562b6b5c7" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+<MemberComponentTemplate Name="CrossbowShooterBehavior" Guid="180dadf6-724f-4e55-b5d4-f6e562b6b5c7" InheritanceParent="416961cf-2c1d-4611-a7a3-6c7197aba83e">
     <Parameter Name="MaxDistance" Value="25" Type="float"/>
     <Parameter Name="DrawTime" Value="0.3" Type="float"/>
     <Parameter Name="AimTime" Value="0.3" Type="float"/>
@@ -3234,7 +3212,6 @@
     <Parameter Name="ShowBoltWhenIdle" Value="false" Type="bool"/>
     <Parameter Name="BoltSpeed" Value="45" Type="float"/>
     <Parameter Name="CycleBoltTypes" Value="true" Type="bool"/>
-    <Parameter Name="Class" Value="Game.ComponentCrossbowShooterBehavior" Type="string"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Loot" Guid="5e427b60-7196-4a0a-aed7-7e265da4ca33">
         <ParameterSet Name="Loot" Guid="15484f62-5b8e-4702-8c44-19a54f258190">
@@ -3337,6 +3314,8 @@
 </EntityTemplate>
 
 <EntityTemplate Name="WalterZombie" Guid="5288697e-9260-479d-b3f8-6bda303ee665" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="Inventory" Guid="f124876c-4952-4a71-ac46-365f83f7c31e" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
+</MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureAI" Guid="3fa3e23c-d27e-4e5f-8bac-526a02ca237c">
     <Parameter Name="Class" Value="Game.ComponentCreatureAI" Type="string" Guid="caf9d7a7-2419-4c79-b57e-61065b9c0230"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="f6425786-cd07-41e5-92c4-392ccbb83de8"/>
@@ -3655,20 +3634,10 @@
             </ParameterSet>
         </ParameterSet>
     </MemberComponentTemplate>
-<MemberComponentTemplate Name="ComponentSuicideBomber" Guid="f1e2d3c4-b5a6-4789-90ab-cdef01234567">
-    <Parameter Name="Class" Value="Game.ComponentSuicideBomber" Type="string"/>
-    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
-    <Parameter Name="IsOptional" Value="False" Type="bool"/>
-    <Parameter Name="ExplosionRadius" Value="5" Type="float"/>
-    <Parameter Name="BlockDamageRadius" Value="5" Type="float"/>
-    <Parameter Name="EntityDamageRadius" Value="5" Type="float"/>
-    <Parameter Name="ExplosionPressure" Value="40" Type="float"/>
-    <Parameter Name="IsIncendiary" Value="false" Type="bool"/>
-    <Parameter Name="UseStandardExplosion" Value="true" Type="bool"/>
-    <Parameter Name="UseCustomShockwave" Value="true" Type="bool"/>
-    <Parameter Name="ShockwaveDamage" Value="100" Type="float"/>
-    <Parameter Name="ShockwaveForce" Value="50" Type="float"/>
-    <Parameter Name="DestroyBlocks" Value="true" Type="bool"/>
+<MemberComponentTemplate Name="SuicideBomber" Guid="afb656c4-7558-4d4e-ae51-1b2127dce771" InheritanceParent="4767e3da-848f-491e-973c-d4804a4f7622">
+  <Parameter Name="ExplosionPressure" Value="100" Type="float"/>
+  <Parameter Name="IsIncendiary" Value="false" Type="bool"/>
+  <Parameter Name="CountdownTime" Value="3" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="Body" Guid="e9f0a1b2-c3d4-6789-4567-89abcdef0123">
         <Parameter Name="Mass" Guid="f0a1b2c3-d4e5-6890-5678-9abcdef01234" Value="58" Type="float"/>
@@ -3950,10 +3919,7 @@
         </ParameterSet>
      </ParameterSet> 
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="MusketShooterBehavior2" Guid="5d204218-be7c-4346-b39a-f61dcec3638b">
-    <Parameter Name="Class" Value="Game.ComponentMusketShooterBehavior2" Type="string"/>
-    <Parameter Name="IsOptional" Value="False" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
+<MemberComponentTemplate Name="MusketShooterBehavior2" Guid="5d204218-be7c-4346-b39a-f61dcec3638b" InheritanceParent="32352458-619e-4c17-9392-eefb8dd0ede3">
     <Parameter Name="MaxDistance" Value="30" Type="float"/>
     <Parameter Name="MeleeSwitchDistance" Value="5" Type="float"/>
     <Parameter Name="ReloadTime" Value="1" Type="float"/>
@@ -4120,10 +4086,7 @@
         </ParameterSet>
      </ParameterSet> 
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="MusketShooterBehavior2" Guid="35d05fed-9717-4e7a-b12a-a882ec400b0f">
-    <Parameter Name="Class" Value="Game.ComponentMusketShooterBehavior2" Type="string"/>
-    <Parameter Name="IsOptional" Value="False" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
+<MemberComponentTemplate Name="MusketShooterBehavior2" Guid="35d05fed-9717-4e7a-b12a-a882ec400b0f" InheritanceParent="32352458-619e-4c17-9392-eefb8dd0ede3">
     <Parameter Name="MaxDistance" Value="30" Type="float"/>
     <Parameter Name="MeleeSwitchDistance" Value="5" Type="float"/>
     <Parameter Name="ReloadTime" Value="1" Type="float"/>
@@ -4405,18 +4368,15 @@
             </ParameterSet>
         </ParameterSet>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="RepeatCrossbowShooterBehavior" Guid="13db5ca4-3b92-4cb5-b4b1-c07943116e62">
-    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
-    <Parameter Name="IsOptional" Value="False" Type="bool"/>
+    <MemberComponentTemplate Name="RepeatCrossbowShooterBehavior" Guid="13db5ca4-3b92-4cb5-b4b1-c07943116e62" InheritanceParent="e40dd82e-a7a5-42de-83ee-8dc7d8cdf2f2">
     <Parameter Name="MaxDistance" Value="50" Type="float"/>
-    <Parameter Name="DrawTime" Value="0.5" Type="float"/>
+    <Parameter Name="DrawTime" Value="0.3" Type="float"/>
     <Parameter Name="AimTime" Value="0.5" Type="float"/>
     <Parameter Name="CooldownTime" Value="0.5" Type="float"/>
     <Parameter Name="TimeBetweenShots" Value="1.0" Type="float"/>
     <Parameter Name="MaxInaccuracy" Value="0.03" Type="float"/>
     <Parameter Name="UseRecoil" Value="true" Type="bool"/>
     <Parameter Name="BoltSpeed" Value="40" Type="float"/>
-    <Parameter Name="Class" Value="Game.ComponentRepeatCrossbowShooterBehavior" Type="string"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidFireBehavior" Guid="2d9409a2-11db-47fa-a987-501d3dbfc18c" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
     <MemberComponentTemplate Name="Locomotion" Guid="326a3597-7997-4114-9d13-435addc0b967">
@@ -5031,9 +4991,7 @@
             </ParameterSet>
         </ParameterSet>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="RepeatCrossbowShooterBehavior" Guid="52fb86b1-57cd-4a25-b9ce-7b4c14ae8d8c">
-    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
-    <Parameter Name="IsOptional" Value="False" Type="bool"/>
+    <MemberComponentTemplate Name="RepeatCrossbowShooterBehavior" Guid="52fb86b1-57cd-4a25-b9ce-7b4c14ae8d8c" InheritanceParent="e40dd82e-a7a5-42de-83ee-8dc7d8cdf2f2">
     <Parameter Name="MaxDistance" Value="50" Type="float"/>
     <Parameter Name="DrawTime" Value="0.5" Type="float"/>
     <Parameter Name="AimTime" Value="0.5" Type="float"/>
@@ -5042,7 +5000,6 @@
     <Parameter Name="MaxInaccuracy" Value="0.03" Type="float"/>
     <Parameter Name="UseRecoil" Value="true" Type="bool"/>
     <Parameter Name="BoltSpeed" Value="40" Type="float"/>
-    <Parameter Name="Class" Value="Game.ComponentRepeatCrossbowShooterBehavior" Type="string"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidFireBehavior" Guid="660f0fa3-11d8-47fc-b0a0-8cec8821b149" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
             <MemberComponentTemplate Name="Locomotion" Guid="5c8393f8-a9dc-43c3-a2f5-a53e5fa8da5e">
