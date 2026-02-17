@@ -48,8 +48,7 @@ namespace Game
 		private void SetupZombieInjuryHandler()
 		{
 			ComponentHealth componentHealth = this.m_componentCreature.ComponentHealth;
-			Action<Injury> originalHandler = componentHealth.Injured;
-			Action<Injury> injured = delegate (Injury injury)
+			componentHealth.Injured = delegate (Injury injury)
 			{
 				ComponentCreature attacker = injury.Attacker;
 				bool flag = attacker != null;
@@ -92,25 +91,8 @@ namespace Game
 							this.FleeFromTarget(attacker);
 						}
 					}
-					else
-					{
-						bool flag7 = originalHandler != null;
-						if (flag7)
-						{
-							originalHandler(injury);
-						}
-					}
-				}
-				else
-				{
-					bool flag8 = originalHandler != null;
-					if (flag8)
-					{
-						originalHandler(injury);
-					}
 				}
 			};
-			componentHealth.Injured = injured;
 		}
 
 		// Token: 0x0600044B RID: 1099 RVA: 0x0003C960 File Offset: 0x0003AB60
