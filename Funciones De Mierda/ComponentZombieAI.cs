@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Engine;
 using GameEntitySystem;
@@ -108,9 +108,9 @@ namespace Game
 		private int m_shotsSinceLastReload = 0;
 		private bool m_hasFirearmAimed = false;
 
-		private float m_maxDistance = 25f;
-		private float m_drawTime = 1.2f;
-		private float m_aimTime = 0.5f;
+		private float m_maxDistance = 100f;
+		private float m_drawTime = 0.3f;
+		private float m_aimTime = 0.3f;
 		private float m_reloadTime = 0.8f;
 		private float m_cockTime = 0.5f;
 		private float m_flameShotInterval = 0.3f;
@@ -120,12 +120,12 @@ namespace Game
 		private float m_firearmAimTime = 0.5f;
 		private float m_firearmReloadTime = 1.0f;
 		private float m_sniperAimTime = 1.0f;
-		private float m_throwableAimTime = 0.5f;
+		private float m_throwableAimTime = 0.3f;
 
 		private float m_explosiveBoltMinDistance = 15f;
 		private float m_explosiveRepeatArrowMinDistance = 15f;
 
-		private float m_repeatCrossbowDrawTime = 2.0f;
+		private float m_repeatCrossbowDrawTime = 0.3f;
 		private float m_repeatCrossbowTimeBetweenShots = 0.5f;
 		private float m_repeatCrossbowMaxInaccuracy = 0.04f;
 		private float m_repeatCrossbowBoltSpeed = 35f;
