@@ -40,17 +40,37 @@ namespace Game
 		private Dictionary<ComponentCreature, bool> m_creatures = new Dictionary<ComponentCreature, bool>();
 		private DynamicArray<ComponentBody> m_componentBodies = new DynamicArray<ComponentBody>();
 
-		private static int m_totalLimit = 40;
+		private static int m_totalLimit = 80;
 
 		// Sistema de olas
 		private List<WaveData> m_waves = new List<WaveData>();
 		private int m_currentWaveIndex = 0;
+		private bool m_wavesLoaded = false;
 
-		// Control de spawn continuo durante la noche verde
+		// Control de spawn
 		private Dictionary<string, int> m_currentWaveSpawns = new Dictionary<string, int>();
 		private Dictionary<string, int> m_originalWaveSpawns = new Dictionary<string, int>();
 		private bool m_isGreenNightActive = false;
 		private double m_lastMoonDayForWave = 0;
+		private bool m_waveAdvancedThisNight = false;
+		private bool m_firstNightCompleted = false;
+
+		// Lista completa de zombies
+		private HashSet<string> m_allZombieTypes = new HashSet<string>
+		{
+			"InfectedNormal1", "InfectedNormal2", "InfectedFast1", "InfectedFast2",
+			"InfectedMuscle1", "InfectedMuscle2",
+			"PoisonousInfected1", "PoisonousInfected2",
+			"InfectedFly1", "InfectedFly2", "InfectedFly3",
+			"Boomer1", "Boomer2", "Boomer3",
+			"Charger1", "Charger2",
+			"Tank1", "Tank2", "Tank3",
+			"GhostNormal", "GhostFast", "PoisonousGhost",
+			"GhostBoomer1", "GhostBoomer2", "GhostBoomer3",
+			"GhostCharger",
+			"TankGhost1", "TankGhost2", "TankGhost3",
+			"MachineGunInfected", "FlyingInfectedBoss"
+		};
 
 		public class WaveData
 		{
@@ -61,76 +81,96 @@ namespace Game
 
 		public virtual void Update(float dt)
 		{
-			// Detectar si la noche verde está activa
+			// Asegurar que las olas estén cargadas
+			if (!m_wavesLoaded)
+			{
+				LoadWaves();
+				m_wavesLoaded = true;
+
+				// Cargar la ola actual (el índice ya fue restaurado en Load)
+				LoadCurrentWave();
+
+				Log.Information($"=== SISTEMA INICIADO - OLA {m_currentWaveIndex + 1} ===");
+			}
+
+			// Detectar noche verde
 			bool greenNightActive = (m_subsystemGreenNightSky != null && m_subsystemGreenNightSky.IsGreenNightActive);
 
-			// Si cambia el estado de la noche verde
 			if (greenNightActive != m_isGreenNightActive)
 			{
 				m_isGreenNightActive = greenNightActive;
 
 				if (m_isGreenNightActive)
 				{
-					// Comenzó la noche verde - verificar si debemos avanzar de ola
-					int moonPhase = this.m_subsystemSky.MoonPhase;
-					double currentDay = Math.Floor(this.m_subsystemTimeOfDay.Day);
+					// NOCHE VERDE COMIENZA
+					Log.Information($"=== NOCHE VERDE INICIADA ===");
+					Log.Information($"Ola actual: {m_currentWaveIndex + 1} de {m_waves.Count}");
 
-					// Detectar cambio de día para avanzar ola (solo en luna nueva)
-					if (currentDay > this.m_lastMoonDayForWave)
-					{
-						this.m_lastMoonDayForWave = currentDay;
-
-						if (moonPhase == 4 && m_currentWaveIndex < m_waves.Count - 1)
-						{
-							m_currentWaveIndex++;
-							Log.Information($"=== NOCHE VERDE: AVANZANDO A OLA {m_currentWaveIndex + 1} ===");
-						}
-					}
-
-					// Cargar la ola actual para spawnear durante toda la noche
+					m_waveAdvancedThisNight = false;
 					LoadCurrentWave();
-					Log.Information($"=== NOCHE VERDE INICIADA - OLA {m_currentWaveIndex + 1} ACTIVADA ===");
-					Log.Information($"Total de zombies por ciclo: {m_currentWaveSpawns.Values.Sum()}");
 				}
 				else
 				{
-					// Terminó la noche verde
-					Log.Information($"=== NOCHE VERDE TERMINADA - OLA {m_currentWaveIndex + 1} PAUSADA ===");
+					// NOCHE VERDE TERMINA
+					Log.Information($"=== NOCHE VERDE TERMINADA - OLA {m_currentWaveIndex + 1} COMPLETADA ===");
+
+					m_firstNightCompleted = true;
+
+					// Avanzar a la siguiente ola
+					AdvanceToNextWave();
 				}
 			}
 
-			// Solo spawnear durante noche verde y en las fases correctas
+			// Spawnear durante noche verde
 			if (m_isGreenNightActive && this.m_subsystemGameInfo.WorldSettings.EnvironmentBehaviorMode == EnvironmentBehaviorMode.Living)
 			{
-				int moonPhase = this.m_subsystemSky.MoonPhase;
-
-				// Solo spawnear en luna llena (0) o luna nueva (4)
-				if (moonPhase == 0 || moonPhase == 4)
+				if (this.m_subsystemTime.PeriodicGameTimeEvent(2.0, 0.0))
 				{
-					// Spawnear cada 2 segundos
-					if (this.m_subsystemTime.PeriodicGameTimeEvent(2.0, 0.0))
-					{
-						SpawnZombiesFromWave();
-					}
+					SpawnZombiesFromWave();
 				}
+			}
+		}
+
+		private void AdvanceToNextWave()
+		{
+			if (m_currentWaveIndex < m_waves.Count - 1)
+			{
+				m_currentWaveIndex++;
+				Log.Information($"=== AVANZANDO A OLA {m_currentWaveIndex + 1} ===");
+				LoadCurrentWave();
+				// El progreso se guardará automáticamente en el próximo guardado de mundo (método Save)
+			}
+			else
+			{
+				Log.Information($"=== YA EN LA ÚLTIMA OLA ({m_currentWaveIndex + 1}) ===");
 			}
 		}
 
 		private void LoadCurrentWave()
 		{
-			if (m_waves.Count == 0 || m_currentWaveIndex >= m_waves.Count) return;
+			if (m_waves.Count == 0)
+			{
+				Log.Error("No hay olas cargadas");
+				return;
+			}
+
+			if (m_currentWaveIndex >= m_waves.Count)
+			{
+				m_currentWaveIndex = m_waves.Count - 1;
+			}
 
 			WaveData currentWave = m_waves[m_currentWaveIndex];
 
-			// Guardar los spawns originales
 			m_originalWaveSpawns.Clear();
 			foreach (var spawn in currentWave.Spawns)
 			{
 				m_originalWaveSpawns[spawn.Key] = spawn.Value;
 			}
 
-			// Inicializar los spawns actuales
 			ResetCurrentWaveSpawns();
+
+			Log.Information($"=== OLA {m_currentWaveIndex + 1} CARGADA ===");
+			Log.Information($"Total zombies por ciclo: {m_currentWaveSpawns.Values.Sum()}");
 		}
 
 		private void ResetCurrentWaveSpawns()
@@ -147,49 +187,38 @@ namespace Game
 			if (m_currentWaveSpawns.Count == 0) return;
 
 			int currentCount = CountZombies();
-			if (currentCount >= m_totalLimit)
-			{
-				// Si llegamos al límite, no spawnear más
-				return;
-			}
+			if (currentCount >= m_totalLimit) return;
 
-			// Verificar si ya no quedan zombies en el ciclo actual
 			if (m_currentWaveSpawns.Values.Sum() == 0)
 			{
-				// Resetear el ciclo - vuelven a aparecer todos los del TXT
 				ResetCurrentWaveSpawns();
 				Log.Information($"=== CICLO COMPLETADO - RESETEANDO OLA {m_currentWaveIndex + 1} ===");
-				Log.Information($"Volverán a aparecer: {m_currentWaveSpawns.Values.Sum()} zombies");
 			}
 
-			// Obtener lista de templates que aún tienen zombies por spawnear
 			var availableTemplates = m_currentWaveSpawns.Where(kv => kv.Value > 0).ToList();
 			if (availableTemplates.Count == 0) return;
 
-			// Elegir un template aleatorio
-			var selected = availableTemplates[this.m_random.Int(0, availableTemplates.Count - 1)];
-			string templateName = selected.Key;
-
-			// Spawnear para cada jugador
-			foreach (GameWidget gameWidget in this.m_subsystemViews.GameWidgets)
+			for (int attempt = 0; attempt < 3; attempt++)
 			{
-				Point3? spawnPoint = this.GetRandomSpawnPoint(gameWidget.ActiveCamera, SpawnLocationType.Surface);
-				if (spawnPoint.HasValue)
+				var selected = availableTemplates[this.m_random.Int(0, availableTemplates.Count - 1)];
+				string templateName = selected.Key;
+
+				foreach (GameWidget gameWidget in this.m_subsystemViews.GameWidgets)
 				{
-					Vector3 position = new Vector3(
-						spawnPoint.Value.X + 0.5f,
-						spawnPoint.Value.Y + 1.1f,
-						spawnPoint.Value.Z + 0.5f);
-
-					Entity entity = this.SpawnZombie(templateName, position);
-					if (entity != null)
+					Point3? spawnPoint = this.GetRandomSpawnPoint(gameWidget.ActiveCamera, SpawnLocationType.Surface);
+					if (spawnPoint.HasValue)
 					{
-						// Reducir el contador de este tipo
-						m_currentWaveSpawns[templateName]--;
+						Vector3 position = new Vector3(
+							spawnPoint.Value.X + 0.5f,
+							spawnPoint.Value.Y + 1.1f,
+							spawnPoint.Value.Z + 0.5f);
 
-						int remainingInCycle = m_currentWaveSpawns.Values.Sum();
-						Log.Information($"Spawneado: {templateName} (quedan {remainingInCycle} en este ciclo)");
-						break;
+						Entity entity = this.SpawnZombie(templateName, position);
+						if (entity != null)
+						{
+							m_currentWaveSpawns[templateName]--;
+							return;
+						}
 					}
 				}
 			}
@@ -209,8 +238,28 @@ namespace Game
 
 			this.m_lastMoonDayForWave = Math.Floor(this.m_subsystemTimeOfDay.Day);
 			this.m_isGreenNightActive = false;
+			this.m_wavesLoaded = false;
 
-			LoadWaves();
+			// Cargar el índice de ola guardado (si existe)
+			if (valuesDictionary.ContainsKey("WaveIndex"))
+			{
+				m_currentWaveIndex = valuesDictionary.GetValue<int>("WaveIndex");
+				m_firstNightCompleted = valuesDictionary.GetValue<bool>("FirstNightCompleted");
+			}
+			else
+			{
+				m_currentWaveIndex = 0;
+				m_firstNightCompleted = false;
+			}
+
+			// Asegurar que el índice no exceda el número de olas (las olas se cargarán después en Update)
+		}
+
+		public override void Save(ValuesDictionary valuesDictionary)
+		{
+			// Guardar el progreso actual
+			valuesDictionary.SetValue("WaveIndex", m_currentWaveIndex);
+			valuesDictionary.SetValue("FirstNightCompleted", m_firstNightCompleted);
 		}
 
 		private void LoadWaves()
@@ -221,22 +270,13 @@ namespace Game
 			{
 				if (!Directory.Exists("Waves"))
 				{
-					Log.Warning("No existe carpeta 'Waves'. Creando...");
 					Directory.CreateDirectory("Waves");
-					CreateExampleWaveFiles();
-					return;
 				}
+
+				CreateAllWaveFiles();
 
 				string[] files = Directory.GetFiles("Waves", "*.txt");
 
-				if (files.Length == 0)
-				{
-					Log.Warning("No hay archivos TXT. Creando ejemplos...");
-					CreateExampleWaveFiles();
-					files = Directory.GetFiles("Waves", "*.txt");
-				}
-
-				// Ordenar por número
 				var sortedFiles = files.OrderBy(f =>
 				{
 					string fileName = Path.GetFileNameWithoutExtension(f);
@@ -274,35 +314,42 @@ namespace Game
 					if (wave.Spawns.Count > 0)
 					{
 						m_waves.Add(wave);
-						int total = wave.Spawns.Values.Sum();
-						Log.Information($"Cargada {fileName}: {total} zombies por ciclo");
-
-						foreach (var spawn in wave.Spawns)
-						{
-							Log.Information($"  - {spawn.Key}: {spawn.Value}");
-						}
+						Log.Information($"Cargada {fileName}: {wave.Spawns.Count} tipos");
 					}
 				}
 
 				Log.Information($"Total olas cargadas: {m_waves.Count}");
 
-				if (m_waves.Count > 0)
+				if (m_waves.Count == 0)
 				{
-					m_currentWaveIndex = 0;
-					Log.Information($"Ola inicial: 1");
+					CreateEmergencyWaves();
 				}
 			}
 			catch (Exception e)
 			{
 				Log.Error($"Error cargando olas: {e.Message}");
+				CreateEmergencyWaves();
 			}
 		}
 
-		private void CreateExampleWaveFiles()
+		private void CreateEmergencyWaves()
+		{
+			m_waves.Clear();
+
+			WaveData wave1 = new WaveData { Name = "Ola 1", FilePath = "emergency1" };
+			wave1.Spawns["InfectedNormal1"] = 20;
+			wave1.Spawns["InfectedNormal2"] = 20;
+			wave1.Spawns["InfectedFly1"] = 2;
+			m_waves.Add(wave1);
+
+			Log.Information("Creadas olas de emergencia");
+		}
+
+		private void CreateAllWaveFiles()
 		{
 			try
 			{
-				// Ola 1: exactamente como tu 1.txt
+				// OLA 1
 				string path1 = Path.Combine("Waves", "1.txt");
 				if (!File.Exists(path1))
 				{
@@ -312,10 +359,9 @@ namespace Game
 						"InfectedNormal2;20",
 						"InfectedFly1;2"
 					});
-					Log.Information("Creado 1.txt: 20 Normal1, 20 Normal2, 2 Fly1");
 				}
 
-				// Ola 2: exactamente como tu 2.txt
+				// OLA 2
 				string path2 = Path.Combine("Waves", "2.txt");
 				if (!File.Exists(path2))
 				{
@@ -327,12 +373,489 @@ namespace Game
 						"InfectedFast2;15",
 						"InfectedFly1;2"
 					});
-					Log.Information("Creado 2.txt: 20 Normal1, 20 Normal2, 15 Fast1, 15 Fast2, 2 Fly1");
+				}
+
+				// OLA 3
+				string path3 = Path.Combine("Waves", "3.txt");
+				if (!File.Exists(path3))
+				{
+					File.WriteAllLines(path3, new string[]
+					{
+						"InfectedNormal1;20",
+						"InfectedNormal2;20",
+						"InfectedFast1;15",
+						"InfectedFast2;15",
+						"InfectedMuscle1;25",
+						"InfectedMuscle2;25",
+						"InfectedFly1;2"
+					});
+				}
+
+				// OLA 4
+				string path4 = Path.Combine("Waves", "4.txt");
+				if (!File.Exists(path4))
+				{
+					File.WriteAllLines(path4, new string[]
+					{
+						"InfectedNormal1;20",
+						"InfectedNormal2;20",
+						"InfectedFast1;15",
+						"InfectedFast2;15",
+						"InfectedMuscle1;25",
+						"InfectedMuscle2;25",
+						"PoisonousInfected1;10",
+						"PoisonousInfected2;10",
+						"InfectedFly1;2"
+					});
+				}
+
+				// OLA 5
+				string path5 = Path.Combine("Waves", "5.txt");
+				if (!File.Exists(path5))
+				{
+					File.WriteAllLines(path5, new string[]
+					{
+						"InfectedNormal1;20",
+						"InfectedNormal2;20",
+						"InfectedFast1;15",
+						"InfectedFast2;15",
+						"InfectedMuscle1;25",
+						"InfectedMuscle2;25",
+						"PoisonousInfected1;10",
+						"PoisonousInfected2;10",
+						"InfectedFly1;2",
+						"InfectedFly2;3",
+						"Boomer1;5"
+					});
+				}
+
+				// OLA 6
+				string path6 = Path.Combine("Waves", "6.txt");
+				if (!File.Exists(path6))
+				{
+					File.WriteAllLines(path6, new string[]
+					{
+						"InfectedNormal1;20",
+						"InfectedNormal2;20",
+						"InfectedFast1;15",
+						"InfectedFast2;15",
+						"InfectedMuscle1;25",
+						"InfectedMuscle2;25",
+						"PoisonousInfected1;10",
+						"PoisonousInfected2;10",
+						"InfectedFly1;2",
+						"InfectedFly2;3",
+						"Boomer1;5",
+						"Boomer2;5"
+					});
+				}
+
+				// OLA 7
+				string path7 = Path.Combine("Waves", "7.txt");
+				if (!File.Exists(path7))
+				{
+					File.WriteAllLines(path7, new string[]
+					{
+						"InfectedNormal1;20",
+						"InfectedNormal2;20",
+						"InfectedFast1;15",
+						"InfectedFast2;15",
+						"InfectedMuscle1;25",
+						"InfectedMuscle2;25",
+						"PoisonousInfected1;10",
+						"PoisonousInfected2;10",
+						"InfectedFly1;2",
+						"InfectedFly2;3",
+						"InfectedFly3;1",
+						"Boomer1;5",
+						"Boomer2;5",
+						"Boomer3;5"
+					});
+				}
+
+				// OLA 8
+				string path8 = Path.Combine("Waves", "8.txt");
+				if (!File.Exists(path8))
+				{
+					File.WriteAllLines(path8, new string[]
+					{
+						"InfectedNormal1;20",
+						"InfectedNormal2;20",
+						"InfectedFast1;15",
+						"InfectedFast2;15",
+						"InfectedMuscle1;25",
+						"InfectedMuscle2;25",
+						"PoisonousInfected1;10",
+						"PoisonousInfected2;10",
+						"PoisonousGhost;5",
+						"InfectedFly1;2",
+						"InfectedFly2;3",
+						"InfectedFly3;1",
+						"Boomer1;5",
+						"Boomer2;5",
+						"Boomer3;5",
+						"Charger1;3"
+					});
+				}
+
+				// OLA 9
+				string path9 = Path.Combine("Waves", "9.txt");
+				if (!File.Exists(path9))
+				{
+					File.WriteAllLines(path9, new string[]
+					{
+						"InfectedNormal1;20",
+						"InfectedNormal2;20",
+						"InfectedFast1;15",
+						"InfectedFast2;15",
+						"GhostFast;5",
+						"InfectedMuscle1;25",
+						"InfectedMuscle2;25",
+						"PoisonousInfected1;10",
+						"PoisonousInfected2;10",
+						"PoisonousGhost;5",
+						"InfectedFly1;2",
+						"InfectedFly2;3",
+						"InfectedFly3;1",
+						"Boomer1;5",
+						"Boomer2;5",
+						"Boomer3;5",
+						"Charger2;3"
+					});
+				}
+
+				// OLA 10
+				string path10 = Path.Combine("Waves", "10.txt");
+				if (!File.Exists(path10))
+				{
+					File.WriteAllLines(path10, new string[]
+					{
+						"InfectedNormal1;20",
+						"InfectedNormal2;20",
+						"GhostNormal;10",
+						"InfectedFast1;15",
+						"InfectedFast2;15",
+						"GhostFast;5",
+						"InfectedMuscle1;25",
+						"InfectedMuscle2;25",
+						"PoisonousInfected1;10",
+						"PoisonousInfected2;10",
+						"PoisonousGhost;5",
+						"InfectedFly1;2",
+						"InfectedFly2;3",
+						"InfectedFly3;1",
+						"Boomer1;5",
+						"Boomer2;5",
+						"Boomer3;5",
+						"GhostBoomer1;3",
+						"Charger1;3",
+						"Charger2;3"
+					});
+				}
+
+				// OLA 11
+				string path11 = Path.Combine("Waves", "11.txt");
+				if (!File.Exists(path11))
+				{
+					File.WriteAllLines(path11, new string[]
+					{
+						"InfectedNormal1;20",
+						"InfectedNormal2;20",
+						"GhostNormal;10",
+						"InfectedFast1;15",
+						"InfectedFast2;15",
+						"GhostFast;5",
+						"InfectedMuscle1;25",
+						"InfectedMuscle2;25",
+						"PoisonousInfected1;10",
+						"PoisonousInfected2;10",
+						"PoisonousGhost;5",
+						"InfectedFly1;2",
+						"InfectedFly2;3",
+						"InfectedFly3;1",
+						"Boomer1;5",
+						"Boomer2;5",
+						"Boomer3;5",
+						"GhostBoomer1;3",
+						"GhostBoomer2;3",
+						"Charger1;3",
+						"Charger2;3",
+						"Tank1;2"
+					});
+				}
+
+				// OLA 12
+				string path12 = Path.Combine("Waves", "12.txt");
+				if (!File.Exists(path12))
+				{
+					File.WriteAllLines(path12, new string[]
+					{
+						"InfectedNormal1;20",
+						"InfectedNormal2;20",
+						"GhostNormal;10",
+						"InfectedFast1;15",
+						"InfectedFast2;15",
+						"GhostFast;5",
+						"InfectedMuscle1;25",
+						"InfectedMuscle2;25",
+						"PoisonousInfected1;10",
+						"PoisonousInfected2;10",
+						"PoisonousGhost;5",
+						"InfectedFly1;2",
+						"InfectedFly2;3",
+						"InfectedFly3;1",
+						"Boomer1;5",
+						"Boomer2;5",
+						"Boomer3;5",
+						"GhostBoomer1;3",
+						"GhostBoomer2;3",
+						"GhostBoomer3;3",
+						"Charger1;3",
+						"Charger2;3",
+						"TankGhost1;2"
+					});
+				}
+
+				// OLA 13
+				string path13 = Path.Combine("Waves", "13.txt");
+				if (!File.Exists(path13))
+				{
+					File.WriteAllLines(path13, new string[]
+					{
+						"InfectedNormal1;20",
+						"InfectedNormal2;20",
+						"GhostNormal;10",
+						"InfectedFast1;15",
+						"InfectedFast2;15",
+						"GhostFast;5",
+						"InfectedMuscle1;25",
+						"InfectedMuscle2;25",
+						"PoisonousInfected1;10",
+						"PoisonousInfected2;10",
+						"PoisonousGhost;5",
+						"InfectedFly1;2",
+						"InfectedFly2;3",
+						"InfectedFly3;1",
+						"Boomer1;5",
+						"Boomer2;5",
+						"Boomer3;5",
+						"GhostBoomer1;3",
+						"GhostBoomer2;3",
+						"GhostBoomer3;3",
+						"GhostCharger;2",
+						"Charger1;3",
+						"Charger2;3",
+						"Tank2;2"
+					});
+				}
+
+				// OLA 14
+				string path14 = Path.Combine("Waves", "14.txt");
+				if (!File.Exists(path14))
+				{
+					File.WriteAllLines(path14, new string[]
+					{
+						"InfectedNormal1;20",
+						"InfectedNormal2;20",
+						"GhostNormal;10",
+						"InfectedFast1;15",
+						"InfectedFast2;15",
+						"GhostFast;5",
+						"InfectedMuscle1;25",
+						"InfectedMuscle2;25",
+						"PoisonousInfected1;10",
+						"PoisonousInfected2;10",
+						"PoisonousGhost;5",
+						"InfectedFly1;2",
+						"InfectedFly2;3",
+						"InfectedFly3;1",
+						"Boomer1;5",
+						"Boomer2;5",
+						"Boomer3;5",
+						"GhostBoomer1;3",
+						"GhostBoomer2;3",
+						"GhostBoomer3;3",
+						"GhostCharger;2",
+						"Charger1;3",
+						"Charger2;3",
+						"Tank3;2"
+					});
+				}
+
+				// OLA 15
+				string path15 = Path.Combine("Waves", "15.txt");
+				if (!File.Exists(path15))
+				{
+					File.WriteAllLines(path15, new string[]
+					{
+						"InfectedNormal1;20",
+						"InfectedNormal2;20",
+						"GhostNormal;10",
+						"InfectedFast1;15",
+						"InfectedFast2;15",
+						"GhostFast;5",
+						"InfectedMuscle1;25",
+						"InfectedMuscle2;25",
+						"PoisonousInfected1;10",
+						"PoisonousInfected2;10",
+						"PoisonousGhost;5",
+						"InfectedFly1;2",
+						"InfectedFly2;3",
+						"InfectedFly3;1",
+						"Boomer1;5",
+						"Boomer2;5",
+						"Boomer3;5",
+						"GhostBoomer1;3",
+						"GhostBoomer2;3",
+						"GhostBoomer3;3",
+						"GhostCharger;2",
+						"Charger1;3",
+						"Charger2;3",
+						"TankGhost3;2"
+					});
+				}
+
+				// OLA 16
+				string path16 = Path.Combine("Waves", "16.txt");
+				if (!File.Exists(path16))
+				{
+					File.WriteAllLines(path16, new string[]
+					{
+						"InfectedNormal1;20",
+						"InfectedNormal2;20",
+						"GhostNormal;10",
+						"InfectedFast1;15",
+						"InfectedFast2;15",
+						"GhostFast;5",
+						"InfectedMuscle1;25",
+						"InfectedMuscle2;25",
+						"PoisonousInfected1;10",
+						"PoisonousInfected2;10",
+						"PoisonousGhost;5",
+						"InfectedFly1;2",
+						"InfectedFly2;3",
+						"InfectedFly3;1",
+						"Boomer1;5",
+						"Boomer2;5",
+						"Boomer3;5",
+						"GhostBoomer1;3",
+						"GhostBoomer2;3",
+						"GhostBoomer3;3",
+						"GhostCharger;2",
+						"Charger1;3",
+						"Charger2;3",
+						"FlyingInfectedBoss;1"
+					});
+				}
+
+				// OLA 17
+				string path17 = Path.Combine("Waves", "17.txt");
+				if (!File.Exists(path17))
+				{
+					File.WriteAllLines(path17, new string[]
+					{
+						"InfectedNormal1;20",
+						"InfectedNormal2;20",
+						"GhostNormal;10",
+						"InfectedFast1;15",
+						"InfectedFast2;15",
+						"GhostFast;5",
+						"InfectedMuscle1;25",
+						"InfectedMuscle2;25",
+						"PoisonousInfected1;10",
+						"PoisonousInfected2;10",
+						"PoisonousGhost;5",
+						"InfectedFly1;2",
+						"InfectedFly2;3",
+						"InfectedFly3;2",
+						"Boomer1;5",
+						"Boomer2;5",
+						"Boomer3;5",
+						"GhostBoomer1;3",
+						"GhostBoomer2;3",
+						"GhostBoomer3;3",
+						"GhostCharger;2",
+						"Charger1;3",
+						"Charger2;3"
+					});
+				}
+
+				// OLA 18
+				string path18 = Path.Combine("Waves", "18.txt");
+				if (!File.Exists(path18))
+				{
+					File.WriteAllLines(path18, new string[]
+					{
+						"InfectedNormal1;20",
+						"InfectedNormal2;20",
+						"GhostNormal;10",
+						"InfectedFast1;15",
+						"InfectedFast2;15",
+						"GhostFast;5",
+						"InfectedMuscle1;25",
+						"InfectedMuscle2;25",
+						"PoisonousInfected1;10",
+						"PoisonousInfected2;10",
+						"PoisonousGhost;5",
+						"InfectedFly1;2",
+						"InfectedFly2;3",
+						"InfectedFly3;1",
+						"Boomer1;5",
+						"Boomer2;5",
+						"Boomer3;5",
+						"GhostBoomer1;3",
+						"GhostBoomer2;3",
+						"GhostBoomer3;3",
+						"GhostCharger;2",
+						"Charger1;3",
+						"Charger2;3",
+						"MachineGunInfected;1"
+					});
+				}
+
+				// OLA 19 (FINAL)
+				string path19 = Path.Combine("Waves", "19.txt");
+				if (!File.Exists(path19))
+				{
+					File.WriteAllLines(path19, new string[]
+					{
+						"InfectedNormal1;25",
+						"InfectedNormal2;25",
+						"GhostNormal;15",
+						"InfectedFast1;20",
+						"InfectedFast2;20",
+						"GhostFast;10",
+						"InfectedMuscle1;30",
+						"InfectedMuscle2;30",
+						"PoisonousInfected1;15",
+						"PoisonousInfected2;15",
+						"PoisonousGhost;10",
+						"InfectedFly1;4",
+						"InfectedFly2;5",
+						"InfectedFly3;3",
+						"Boomer1;8",
+						"Boomer2;8",
+						"Boomer3;8",
+						"GhostBoomer1;5",
+						"GhostBoomer2;5",
+						"GhostBoomer3;5",
+						"Charger1;5",
+						"Charger2;5",
+						"GhostCharger;3",
+						"Tank1;2",
+						"Tank2;2",
+						"Tank3;2",
+						"TankGhost1;2",
+						"TankGhost2;2",
+						"TankGhost3;2",
+						"MachineGunInfected;2",
+						"FlyingInfectedBoss;1"
+					});
 				}
 			}
 			catch (Exception e)
 			{
-				Log.Error($"Error creando ejemplos: {e.Message}");
+				Log.Error($"Error creando archivos: {e.Message}");
 			}
 		}
 
@@ -341,11 +864,9 @@ namespace Game
 			foreach (ComponentCreature key in entity.FindComponents<ComponentCreature>())
 			{
 				string name = entity.ValuesDictionary.DatabaseObject.Name;
-				if (name == "InfectedNormal1" || name == "InfectedNormal2" ||
-					name == "InfectedFast1" || name == "InfectedFast2" ||
-					name == "InfectedFly1")
+				if (m_allZombieTypes.Contains(name))
 				{
-					this.m_creatures.Add(key, true);
+					this.m_creatures.TryAdd(key, true);
 				}
 			}
 		}
@@ -355,9 +876,7 @@ namespace Game
 			foreach (ComponentCreature key in entity.FindComponents<ComponentCreature>())
 			{
 				string name = entity.ValuesDictionary.DatabaseObject.Name;
-				if (name == "InfectedNormal1" || name == "InfectedNormal2" ||
-					name == "InfectedFast1" || name == "InfectedFast2" ||
-					name == "InfectedFly1")
+				if (m_allZombieTypes.Contains(name))
 				{
 					this.m_creatures.Remove(key);
 				}
@@ -467,9 +986,7 @@ namespace Game
 			foreach (ComponentBody body in this.m_subsystemBodies.Bodies)
 			{
 				string name = body.Entity.ValuesDictionary.DatabaseObject.Name;
-				if (name == "InfectedNormal1" || name == "InfectedNormal2" ||
-					name == "InfectedFast1" || name == "InfectedFast2" ||
-					name == "InfectedFly1")
+				if (m_allZombieTypes.Contains(name))
 				{
 					num++;
 				}
