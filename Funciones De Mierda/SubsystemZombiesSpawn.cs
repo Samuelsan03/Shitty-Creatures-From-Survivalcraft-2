@@ -33,6 +33,7 @@ namespace Game
 		private SubsystemBodies m_subsystemBodies;
 		private SubsystemGameWidgets m_subsystemViews;
 		private SubsystemGreenNightSky m_subsystemGreenNightSky;
+		private SubsystemTimeOfDay m_subsystemTimeOfDay;
 
 		private Random m_random = new Random();
 		private List<ZombieType> m_zombieTypes = new List<ZombieType>();
@@ -41,9 +42,12 @@ namespace Game
 		private List<SpawnChunk> m_newSpawnChunks = new List<SpawnChunk>();
 		private List<SpawnChunk> m_spawnChunks = new List<SpawnChunk>();
 
-		private static int m_totalLimit = 30;
-		private static int m_areaLimit = 5;
+		private static int m_totalLimit = 40;
+		private static int m_areaLimit = 8;
 		private static int m_areaRadius = 16;
+
+		private double m_lastMoonDay;
+		private bool m_hasSpawnedFastsThisMoon;
 
 		public virtual void Update(float dt)
 		{
@@ -76,6 +80,66 @@ namespace Game
 				{
 					this.SpawnRandomZombie();
 				}
+
+				// Spawn de normales siempre durante noche verde
+				if (this.m_subsystemTime.PeriodicGameTimeEvent(6.0, 0.0))
+				{
+					this.SpawnNormalWave();
+				}
+
+				// Spawn de fasts solo en luna llena (0) o luna nueva (4)
+				if (this.m_subsystemSky.MoonPhase == 0 || this.m_subsystemSky.MoonPhase == 4)
+				{
+					double currentDay = Math.Floor(this.m_subsystemTimeOfDay.Day);
+
+					if (currentDay > this.m_lastMoonDay)
+					{
+						this.m_lastMoonDay = currentDay;
+						this.m_hasSpawnedFastsThisMoon = false;
+					}
+
+					if (!this.m_hasSpawnedFastsThisMoon && this.m_subsystemTime.PeriodicGameTimeEvent(8.0, 2.0))
+					{
+						this.SpawnFastWave();
+						this.m_hasSpawnedFastsThisMoon = true;
+					}
+				}
+			}
+		}
+
+		private void SpawnNormalWave()
+		{
+			if (this.CountZombies() >= SubsystemZombiesSpawn.m_totalLimit) return;
+
+			foreach (GameWidget gameWidget in this.m_subsystemViews.GameWidgets)
+			{
+				for (int i = 0; i < 2; i++)
+				{
+					Point3? spawnPoint = this.GetRandomSpawnPoint(gameWidget.ActiveCamera, SpawnLocationType.Surface);
+					if (spawnPoint.HasValue)
+					{
+						string template = this.m_random.Bool(0.5f) ? "InfectedNormal1" : "InfectedNormal2";
+						this.SpawnZombie(template, new Vector3(spawnPoint.Value.X + 0.5f, spawnPoint.Value.Y + 1.1f, spawnPoint.Value.Z + 0.5f));
+					}
+				}
+			}
+		}
+
+		private void SpawnFastWave()
+		{
+			if (this.CountZombies() >= SubsystemZombiesSpawn.m_totalLimit) return;
+
+			foreach (GameWidget gameWidget in this.m_subsystemViews.GameWidgets)
+			{
+				for (int i = 0; i < 3; i++)
+				{
+					Point3? spawnPoint = this.GetRandomSpawnPoint(gameWidget.ActiveCamera, SpawnLocationType.Surface);
+					if (spawnPoint.HasValue)
+					{
+						string template = this.m_random.Bool(0.5f) ? "InfectedFast1" : "InfectedFast2";
+						this.SpawnZombie(template, new Vector3(spawnPoint.Value.X + 0.5f, spawnPoint.Value.Y + 1.1f, spawnPoint.Value.Z + 0.5f));
+					}
+				}
 			}
 		}
 
@@ -89,6 +153,10 @@ namespace Game
 			this.m_subsystemBodies = base.Project.FindSubsystem<SubsystemBodies>(true);
 			this.m_subsystemViews = base.Project.FindSubsystem<SubsystemGameWidgets>(true);
 			this.m_subsystemGreenNightSky = base.Project.FindSubsystem<SubsystemGreenNightSky>(true);
+			this.m_subsystemTimeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+
+			this.m_lastMoonDay = Math.Floor(this.m_subsystemTimeOfDay.Day);
+			this.m_hasSpawnedFastsThisMoon = false;
 
 			this.InitializeZombieTypes();
 
@@ -108,7 +176,8 @@ namespace Game
 			foreach (ComponentCreature key in entity.FindComponents<ComponentCreature>())
 			{
 				string name = entity.ValuesDictionary.DatabaseObject.Name;
-				if (name == "InfectedNormal1" || name == "InfectedNormal2")
+				if (name == "InfectedNormal1" || name == "InfectedNormal2" ||
+					name == "InfectedFast1" || name == "InfectedFast2")
 				{
 					this.m_creatures.Add(key, true);
 				}
@@ -120,7 +189,8 @@ namespace Game
 			foreach (ComponentCreature key in entity.FindComponents<ComponentCreature>())
 			{
 				string name = entity.ValuesDictionary.DatabaseObject.Name;
-				if (name == "InfectedNormal1" || name == "InfectedNormal2")
+				if (name == "InfectedNormal1" || name == "InfectedNormal2" ||
+					name == "InfectedFast1" || name == "InfectedFast2")
 				{
 					this.m_creatures.Remove(key);
 				}
@@ -173,6 +243,52 @@ namespace Game
 					return 2f;
 				},
 				SpawnFunction = ((ZombieType zombieType, Point3 point) => this.SpawnZombies(zombieType, "InfectedNormal2", point, 1).Count)
+			});
+
+			this.m_zombieTypes.Add(new ZombieType("InfectedFast1", SpawnLocationType.Surface, true, true)
+			{
+				SpawnSuitabilityFunction = delegate (ZombieType _, Point3 point)
+				{
+					float num = this.m_subsystemTerrain.TerrainContentsGenerator.CalculateOceanShoreDistance((float)point.X, (float)point.Z);
+					int num2 = Terrain.ExtractContents(this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z));
+					int topHeight = this.m_subsystemTerrain.Terrain.GetTopHeight(point.X, point.Z);
+
+					if (num <= 10f || point.Y < topHeight)
+					{
+						return 0f;
+					}
+
+					if (num2 != 8 && num2 != 2 && num2 != 3 && num2 != 7)
+					{
+						return 0f;
+					}
+
+					return 2f;
+				},
+				SpawnFunction = ((ZombieType zombieType, Point3 point) => this.SpawnZombies(zombieType, "InfectedFast1", point, 1).Count)
+			});
+
+			this.m_zombieTypes.Add(new ZombieType("InfectedFast2", SpawnLocationType.Surface, true, true)
+			{
+				SpawnSuitabilityFunction = delegate (ZombieType _, Point3 point)
+				{
+					float num = this.m_subsystemTerrain.TerrainContentsGenerator.CalculateOceanShoreDistance((float)point.X, (float)point.Z);
+					int num2 = Terrain.ExtractContents(this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z));
+					int topHeight = this.m_subsystemTerrain.Terrain.GetTopHeight(point.X, point.Z);
+
+					if (num <= 10f || point.Y < topHeight)
+					{
+						return 0f;
+					}
+
+					if (num2 != 8 && num2 != 2 && num2 != 3 && num2 != 7)
+					{
+						return 0f;
+					}
+
+					return 2f;
+				},
+				SpawnFunction = ((ZombieType zombieType, Point3 point) => this.SpawnZombies(zombieType, "InfectedFast2", point, 1).Count)
 			});
 		}
 
@@ -433,7 +549,8 @@ namespace Game
 			foreach (ComponentBody body in this.m_subsystemBodies.Bodies)
 			{
 				string name = body.Entity.ValuesDictionary.DatabaseObject.Name;
-				if (name == "InfectedNormal1" || name == "InfectedNormal2")
+				if (name == "InfectedNormal1" || name == "InfectedNormal2" ||
+					name == "InfectedFast1" || name == "InfectedFast2")
 				{
 					num++;
 				}
@@ -451,7 +568,8 @@ namespace Game
 			{
 				ComponentBody componentBody = this.m_componentBodies.Array[i];
 				string name = componentBody.Entity.ValuesDictionary.DatabaseObject.Name;
-				if (name == "InfectedNormal1" || name == "InfectedNormal2")
+				if (name == "InfectedNormal1" || name == "InfectedNormal2" ||
+					name == "InfectedFast1" || name == "InfectedFast2")
 				{
 					Vector3 position = componentBody.Position;
 					if (position.X >= c1.X && position.X <= c2.X && position.Z >= c1.Y && position.Z <= c2.Y)
