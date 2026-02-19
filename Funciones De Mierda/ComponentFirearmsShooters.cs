@@ -461,7 +461,7 @@ namespace Game
 			ComponentBanditHerdBehavior ourBanditHerd = Entity.FindComponent<ComponentBanditHerdBehavior>();
 			if (ourBanditHerd != null)
 			{
-                if (GetTarget() != null)
+				if (GetTarget() != null)
 				{
 					ComponentBanditHerdBehavior targetBanditHerd = GetTarget().Entity.FindComponent<ComponentBanditHerdBehavior>();
 					if (targetBanditHerd != null &&
@@ -610,7 +610,8 @@ namespace Game
 			{
 				if (currentTime - m_lastShootTime >= GetCurrentFireRate())
 				{
-					if (target != null && !IsTargetFriendly(target))
+					// x NUEVA COMPROBACIÓN: Verificar si el objetivo está vivo antes de disparar
+					if (target != null && !IsTargetFriendly(target) && target.ComponentHealth.Health > 0f)
 					{
 						Fire(target);
 						m_lastShootTime = currentTime;
@@ -653,7 +654,8 @@ namespace Game
 			{
 				if (currentTime - m_lastShootTime >= GetCurrentFireRate())
 				{
-					if (target != null && !IsTargetFriendly(target))
+					// x NUEVA COMPROBACIÓN: Verificar si el objetivo está vivo antes de disparar
+					if (target != null && !IsTargetFriendly(target) && target.ComponentHealth.Health > 0f)
 					{
 						Fire(target);
 						m_lastShootTime = currentTime;
@@ -970,7 +972,8 @@ namespace Game
 			if (m_currentWeaponIndex == -1)
 				return;
 			FirearmConfig config = GetCurrentConfig();
-			if (config == null || target == null)
+			// x NUEVA COMPROBACIÓN: Verificar si el objetivo está vivo antes de disparar
+			if (config == null || target == null || target.ComponentHealth.Health <= 0f)
 				return;
 			try
 			{
