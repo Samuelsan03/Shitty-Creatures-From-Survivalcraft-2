@@ -1,0 +1,3 @@
+InfectedNormal1;20
+InfectedNormal2;20
+InfectedFly1;2
