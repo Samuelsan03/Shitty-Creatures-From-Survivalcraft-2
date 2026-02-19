@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Engine;
 using GameEntitySystem;
@@ -36,108 +37,159 @@ namespace Game
 		private SubsystemTimeOfDay m_subsystemTimeOfDay;
 
 		private Random m_random = new Random();
-		private List<ZombieType> m_zombieTypes = new List<ZombieType>();
 		private Dictionary<ComponentCreature, bool> m_creatures = new Dictionary<ComponentCreature, bool>();
 		private DynamicArray<ComponentBody> m_componentBodies = new DynamicArray<ComponentBody>();
-		private List<SpawnChunk> m_newSpawnChunks = new List<SpawnChunk>();
-		private List<SpawnChunk> m_spawnChunks = new List<SpawnChunk>();
 
 		private static int m_totalLimit = 40;
-		private static int m_areaLimit = 8;
-		private static int m_areaRadius = 16;
 
-		private double m_lastMoonDay;
-		private bool m_hasSpawnedFastsThisMoon;
+		// Sistema de olas
+		private List<WaveData> m_waves = new List<WaveData>();
+		private int m_currentWaveIndex = 0;
+
+		// Control de spawn continuo durante la noche verde
+		private Dictionary<string, int> m_currentWaveSpawns = new Dictionary<string, int>();
+		private Dictionary<string, int> m_originalWaveSpawns = new Dictionary<string, int>();
+		private bool m_isGreenNightActive = false;
+		private double m_lastMoonDayForWave = 0;
+
+		public class WaveData
+		{
+			public string Name { get; set; }
+			public string FilePath { get; set; }
+			public Dictionary<string, int> Spawns { get; set; } = new Dictionary<string, int>();
+		}
 
 		public virtual void Update(float dt)
 		{
-			if (m_subsystemGreenNightSky == null || !m_subsystemGreenNightSky.IsGreenNightActive)
-				return;
+			// Detectar si la noche verde está activa
+			bool greenNightActive = (m_subsystemGreenNightSky != null && m_subsystemGreenNightSky.IsGreenNightActive);
 
-			if (this.m_subsystemGameInfo.WorldSettings.EnvironmentBehaviorMode == EnvironmentBehaviorMode.Living)
+			// Si cambia el estado de la noche verde
+			if (greenNightActive != m_isGreenNightActive)
 			{
-				if (this.m_newSpawnChunks.Count > 0)
-				{
-					this.m_newSpawnChunks.RandomShuffle((int max) => this.m_random.Int(0, max - 1));
-					foreach (SpawnChunk chunk in this.m_newSpawnChunks)
-					{
-						this.SpawnChunkZombies(chunk, 10, true);
-					}
-					this.m_newSpawnChunks.Clear();
-				}
-				if (this.m_spawnChunks.Count > 0)
-				{
-					this.m_spawnChunks.RandomShuffle((int max) => this.m_random.Int(0, max - 1));
-					foreach (SpawnChunk chunk2 in this.m_spawnChunks)
-					{
-						this.SpawnChunkZombies(chunk2, 2, true);
-					}
-					this.m_spawnChunks.Clear();
-				}
+				m_isGreenNightActive = greenNightActive;
 
-				float num = 60f;
-				if (this.m_subsystemTime.PeriodicGameTimeEvent((double)num, 0.0))
+				if (m_isGreenNightActive)
 				{
-					this.SpawnRandomZombie();
-				}
-
-				// Spawn de normales siempre durante noche verde
-				if (this.m_subsystemTime.PeriodicGameTimeEvent(6.0, 0.0))
-				{
-					this.SpawnNormalWave();
-				}
-
-				// Spawn de fasts solo en luna llena (0) o luna nueva (4)
-				if (this.m_subsystemSky.MoonPhase == 0 || this.m_subsystemSky.MoonPhase == 4)
-				{
+					// Comenzó la noche verde - verificar si debemos avanzar de ola
+					int moonPhase = this.m_subsystemSky.MoonPhase;
 					double currentDay = Math.Floor(this.m_subsystemTimeOfDay.Day);
 
-					if (currentDay > this.m_lastMoonDay)
+					// Detectar cambio de día para avanzar ola (solo en luna nueva)
+					if (currentDay > this.m_lastMoonDayForWave)
 					{
-						this.m_lastMoonDay = currentDay;
-						this.m_hasSpawnedFastsThisMoon = false;
+						this.m_lastMoonDayForWave = currentDay;
+
+						if (moonPhase == 4 && m_currentWaveIndex < m_waves.Count - 1)
+						{
+							m_currentWaveIndex++;
+							Log.Information($"=== NOCHE VERDE: AVANZANDO A OLA {m_currentWaveIndex + 1} ===");
+						}
 					}
 
-					if (!this.m_hasSpawnedFastsThisMoon && this.m_subsystemTime.PeriodicGameTimeEvent(8.0, 2.0))
+					// Cargar la ola actual para spawnear durante toda la noche
+					LoadCurrentWave();
+					Log.Information($"=== NOCHE VERDE INICIADA - OLA {m_currentWaveIndex + 1} ACTIVADA ===");
+					Log.Information($"Total de zombies por ciclo: {m_currentWaveSpawns.Values.Sum()}");
+				}
+				else
+				{
+					// Terminó la noche verde
+					Log.Information($"=== NOCHE VERDE TERMINADA - OLA {m_currentWaveIndex + 1} PAUSADA ===");
+				}
+			}
+
+			// Solo spawnear durante noche verde y en las fases correctas
+			if (m_isGreenNightActive && this.m_subsystemGameInfo.WorldSettings.EnvironmentBehaviorMode == EnvironmentBehaviorMode.Living)
+			{
+				int moonPhase = this.m_subsystemSky.MoonPhase;
+
+				// Solo spawnear en luna llena (0) o luna nueva (4)
+				if (moonPhase == 0 || moonPhase == 4)
+				{
+					// Spawnear cada 2 segundos
+					if (this.m_subsystemTime.PeriodicGameTimeEvent(2.0, 0.0))
 					{
-						this.SpawnFastWave();
-						this.m_hasSpawnedFastsThisMoon = true;
+						SpawnZombiesFromWave();
 					}
 				}
 			}
 		}
 
-		private void SpawnNormalWave()
+		private void LoadCurrentWave()
 		{
-			if (this.CountZombies() >= SubsystemZombiesSpawn.m_totalLimit) return;
+			if (m_waves.Count == 0 || m_currentWaveIndex >= m_waves.Count) return;
 
-			foreach (GameWidget gameWidget in this.m_subsystemViews.GameWidgets)
+			WaveData currentWave = m_waves[m_currentWaveIndex];
+
+			// Guardar los spawns originales
+			m_originalWaveSpawns.Clear();
+			foreach (var spawn in currentWave.Spawns)
 			{
-				for (int i = 0; i < 2; i++)
-				{
-					Point3? spawnPoint = this.GetRandomSpawnPoint(gameWidget.ActiveCamera, SpawnLocationType.Surface);
-					if (spawnPoint.HasValue)
-					{
-						string template = this.m_random.Bool(0.5f) ? "InfectedNormal1" : "InfectedNormal2";
-						this.SpawnZombie(template, new Vector3(spawnPoint.Value.X + 0.5f, spawnPoint.Value.Y + 1.1f, spawnPoint.Value.Z + 0.5f));
-					}
-				}
+				m_originalWaveSpawns[spawn.Key] = spawn.Value;
+			}
+
+			// Inicializar los spawns actuales
+			ResetCurrentWaveSpawns();
+		}
+
+		private void ResetCurrentWaveSpawns()
+		{
+			m_currentWaveSpawns.Clear();
+			foreach (var spawn in m_originalWaveSpawns)
+			{
+				m_currentWaveSpawns[spawn.Key] = spawn.Value;
 			}
 		}
 
-		private void SpawnFastWave()
+		private void SpawnZombiesFromWave()
 		{
-			if (this.CountZombies() >= SubsystemZombiesSpawn.m_totalLimit) return;
+			if (m_currentWaveSpawns.Count == 0) return;
 
+			int currentCount = CountZombies();
+			if (currentCount >= m_totalLimit)
+			{
+				// Si llegamos al límite, no spawnear más
+				return;
+			}
+
+			// Verificar si ya no quedan zombies en el ciclo actual
+			if (m_currentWaveSpawns.Values.Sum() == 0)
+			{
+				// Resetear el ciclo - vuelven a aparecer todos los del TXT
+				ResetCurrentWaveSpawns();
+				Log.Information($"=== CICLO COMPLETADO - RESETEANDO OLA {m_currentWaveIndex + 1} ===");
+				Log.Information($"Volverán a aparecer: {m_currentWaveSpawns.Values.Sum()} zombies");
+			}
+
+			// Obtener lista de templates que aún tienen zombies por spawnear
+			var availableTemplates = m_currentWaveSpawns.Where(kv => kv.Value > 0).ToList();
+			if (availableTemplates.Count == 0) return;
+
+			// Elegir un template aleatorio
+			var selected = availableTemplates[this.m_random.Int(0, availableTemplates.Count - 1)];
+			string templateName = selected.Key;
+
+			// Spawnear para cada jugador
 			foreach (GameWidget gameWidget in this.m_subsystemViews.GameWidgets)
 			{
-				for (int i = 0; i < 3; i++)
+				Point3? spawnPoint = this.GetRandomSpawnPoint(gameWidget.ActiveCamera, SpawnLocationType.Surface);
+				if (spawnPoint.HasValue)
 				{
-					Point3? spawnPoint = this.GetRandomSpawnPoint(gameWidget.ActiveCamera, SpawnLocationType.Surface);
-					if (spawnPoint.HasValue)
+					Vector3 position = new Vector3(
+						spawnPoint.Value.X + 0.5f,
+						spawnPoint.Value.Y + 1.1f,
+						spawnPoint.Value.Z + 0.5f);
+
+					Entity entity = this.SpawnZombie(templateName, position);
+					if (entity != null)
 					{
-						string template = this.m_random.Bool(0.5f) ? "InfectedFast1" : "InfectedFast2";
-						this.SpawnZombie(template, new Vector3(spawnPoint.Value.X + 0.5f, spawnPoint.Value.Y + 1.1f, spawnPoint.Value.Z + 0.5f));
+						// Reducir el contador de este tipo
+						m_currentWaveSpawns[templateName]--;
+
+						int remainingInCycle = m_currentWaveSpawns.Values.Sum();
+						Log.Information($"Spawneado: {templateName} (quedan {remainingInCycle} en este ciclo)");
+						break;
 					}
 				}
 			}
@@ -155,20 +207,133 @@ namespace Game
 			this.m_subsystemGreenNightSky = base.Project.FindSubsystem<SubsystemGreenNightSky>(true);
 			this.m_subsystemTimeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
 
-			this.m_lastMoonDay = Math.Floor(this.m_subsystemTimeOfDay.Day);
-			this.m_hasSpawnedFastsThisMoon = false;
+			this.m_lastMoonDayForWave = Math.Floor(this.m_subsystemTimeOfDay.Day);
+			this.m_isGreenNightActive = false;
 
-			this.InitializeZombieTypes();
+			LoadWaves();
+		}
 
-			SubsystemSpawn subsystemSpawn = this.m_subsystemSpawn;
-			subsystemSpawn.SpawningChunk = (Action<SpawnChunk>)Delegate.Combine(subsystemSpawn.SpawningChunk, new Action<SpawnChunk>(delegate (SpawnChunk chunk)
+		private void LoadWaves()
+		{
+			m_waves.Clear();
+
+			try
 			{
-				this.m_spawnChunks.Add(chunk);
-				if (!chunk.IsSpawned)
+				if (!Directory.Exists("Waves"))
 				{
-					this.m_newSpawnChunks.Add(chunk);
+					Log.Warning("No existe carpeta 'Waves'. Creando...");
+					Directory.CreateDirectory("Waves");
+					CreateExampleWaveFiles();
+					return;
 				}
-			}));
+
+				string[] files = Directory.GetFiles("Waves", "*.txt");
+
+				if (files.Length == 0)
+				{
+					Log.Warning("No hay archivos TXT. Creando ejemplos...");
+					CreateExampleWaveFiles();
+					files = Directory.GetFiles("Waves", "*.txt");
+				}
+
+				// Ordenar por número
+				var sortedFiles = files.OrderBy(f =>
+				{
+					string fileName = Path.GetFileNameWithoutExtension(f);
+					if (int.TryParse(fileName, out int number))
+						return number;
+					return int.MaxValue;
+				});
+
+				foreach (string file in sortedFiles)
+				{
+					string fileName = Path.GetFileName(file);
+					string[] lines = File.ReadAllLines(file);
+
+					WaveData wave = new WaveData
+					{
+						Name = $"Ola {Path.GetFileNameWithoutExtension(file)}",
+						FilePath = file
+					};
+
+					foreach (string line in lines)
+					{
+						if (string.IsNullOrWhiteSpace(line)) continue;
+
+						string[] parts = line.Split(';');
+						if (parts.Length == 2)
+						{
+							string template = parts[0].Trim();
+							if (int.TryParse(parts[1].Trim(), out int count))
+							{
+								wave.Spawns[template] = count;
+							}
+						}
+					}
+
+					if (wave.Spawns.Count > 0)
+					{
+						m_waves.Add(wave);
+						int total = wave.Spawns.Values.Sum();
+						Log.Information($"Cargada {fileName}: {total} zombies por ciclo");
+
+						foreach (var spawn in wave.Spawns)
+						{
+							Log.Information($"  - {spawn.Key}: {spawn.Value}");
+						}
+					}
+				}
+
+				Log.Information($"Total olas cargadas: {m_waves.Count}");
+
+				if (m_waves.Count > 0)
+				{
+					m_currentWaveIndex = 0;
+					Log.Information($"Ola inicial: 1");
+				}
+			}
+			catch (Exception e)
+			{
+				Log.Error($"Error cargando olas: {e.Message}");
+			}
+		}
+
+		private void CreateExampleWaveFiles()
+		{
+			try
+			{
+				// Ola 1: exactamente como tu 1.txt
+				string path1 = Path.Combine("Waves", "1.txt");
+				if (!File.Exists(path1))
+				{
+					File.WriteAllLines(path1, new string[]
+					{
+						"InfectedNormal1;20",
+						"InfectedNormal2;20",
+						"InfectedFly1;2"
+					});
+					Log.Information("Creado 1.txt: 20 Normal1, 20 Normal2, 2 Fly1");
+				}
+
+				// Ola 2: exactamente como tu 2.txt
+				string path2 = Path.Combine("Waves", "2.txt");
+				if (!File.Exists(path2))
+				{
+					File.WriteAllLines(path2, new string[]
+					{
+						"InfectedNormal1;20",
+						"InfectedNormal2;20",
+						"InfectedFast1;15",
+						"InfectedFast2;15",
+						"InfectedFly1;2"
+					});
+					Log.Information("Creado 2.txt: 20 Normal1, 20 Normal2, 15 Fast1, 15 Fast2, 2 Fly1");
+				}
+			}
+			catch (Exception e)
+			{
+				Log.Error($"Error creando ejemplos: {e.Message}");
+			}
 		}
 
 		public override void OnEntityAdded(Entity entity)
@@ -177,7 +342,8 @@ namespace Game
 			{
 				string name = entity.ValuesDictionary.DatabaseObject.Name;
 				if (name == "InfectedNormal1" || name == "InfectedNormal2" ||
-					name == "InfectedFast1" || name == "InfectedFast2")
+					name == "InfectedFast1" || name == "InfectedFast2" ||
+					name == "InfectedFly1")
 				{
 					this.m_creatures.Add(key, true);
 				}
@@ -190,254 +356,29 @@ namespace Game
 			{
 				string name = entity.ValuesDictionary.DatabaseObject.Name;
 				if (name == "InfectedNormal1" || name == "InfectedNormal2" ||
-					name == "InfectedFast1" || name == "InfectedFast2")
+					name == "InfectedFast1" || name == "InfectedFast2" ||
+					name == "InfectedFly1")
 				{
 					this.m_creatures.Remove(key);
 				}
 			}
 		}
 
-		public virtual void InitializeZombieTypes()
-		{
-			this.m_zombieTypes.Add(new ZombieType("InfectedNormal1", SpawnLocationType.Surface, true, true)
-			{
-				SpawnSuitabilityFunction = delegate (ZombieType _, Point3 point)
-				{
-					float num = this.m_subsystemTerrain.TerrainContentsGenerator.CalculateOceanShoreDistance((float)point.X, (float)point.Z);
-					int num2 = Terrain.ExtractContents(this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z));
-					int topHeight = this.m_subsystemTerrain.Terrain.GetTopHeight(point.X, point.Z);
-
-					if (num <= 10f || point.Y < topHeight)
-					{
-						return 0f;
-					}
-
-					if (num2 != 8 && num2 != 2 && num2 != 3 && num2 != 7)
-					{
-						return 0f;
-					}
-
-					return 2f;
-				},
-				SpawnFunction = ((ZombieType zombieType, Point3 point) => this.SpawnZombies(zombieType, "InfectedNormal1", point, 1).Count)
-			});
-
-			this.m_zombieTypes.Add(new ZombieType("InfectedNormal2", SpawnLocationType.Surface, true, true)
-			{
-				SpawnSuitabilityFunction = delegate (ZombieType _, Point3 point)
-				{
-					float num = this.m_subsystemTerrain.TerrainContentsGenerator.CalculateOceanShoreDistance((float)point.X, (float)point.Z);
-					int num2 = Terrain.ExtractContents(this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z));
-					int topHeight = this.m_subsystemTerrain.Terrain.GetTopHeight(point.X, point.Z);
-
-					if (num <= 10f || point.Y < topHeight)
-					{
-						return 0f;
-					}
-
-					if (num2 != 8 && num2 != 2 && num2 != 3 && num2 != 7)
-					{
-						return 0f;
-					}
-
-					return 2f;
-				},
-				SpawnFunction = ((ZombieType zombieType, Point3 point) => this.SpawnZombies(zombieType, "InfectedNormal2", point, 1).Count)
-			});
-
-			this.m_zombieTypes.Add(new ZombieType("InfectedFast1", SpawnLocationType.Surface, true, true)
-			{
-				SpawnSuitabilityFunction = delegate (ZombieType _, Point3 point)
-				{
-					float num = this.m_subsystemTerrain.TerrainContentsGenerator.CalculateOceanShoreDistance((float)point.X, (float)point.Z);
-					int num2 = Terrain.ExtractContents(this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z));
-					int topHeight = this.m_subsystemTerrain.Terrain.GetTopHeight(point.X, point.Z);
-
-					if (num <= 10f || point.Y < topHeight)
-					{
-						return 0f;
-					}
-
-					if (num2 != 8 && num2 != 2 && num2 != 3 && num2 != 7)
-					{
-						return 0f;
-					}
-
-					return 2f;
-				},
-				SpawnFunction = ((ZombieType zombieType, Point3 point) => this.SpawnZombies(zombieType, "InfectedFast1", point, 1).Count)
-			});
-
-			this.m_zombieTypes.Add(new ZombieType("InfectedFast2", SpawnLocationType.Surface, true, true)
-			{
-				SpawnSuitabilityFunction = delegate (ZombieType _, Point3 point)
-				{
-					float num = this.m_subsystemTerrain.TerrainContentsGenerator.CalculateOceanShoreDistance((float)point.X, (float)point.Z);
-					int num2 = Terrain.ExtractContents(this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z));
-					int topHeight = this.m_subsystemTerrain.Terrain.GetTopHeight(point.X, point.Z);
-
-					if (num <= 10f || point.Y < topHeight)
-					{
-						return 0f;
-					}
-
-					if (num2 != 8 && num2 != 2 && num2 != 3 && num2 != 7)
-					{
-						return 0f;
-					}
-
-					return 2f;
-				},
-				SpawnFunction = ((ZombieType zombieType, Point3 point) => this.SpawnZombies(zombieType, "InfectedFast2", point, 1).Count)
-			});
-		}
-
-		public virtual void SpawnRandomZombie()
-		{
-			if (this.CountZombies() < SubsystemZombiesSpawn.m_totalLimit)
-			{
-				foreach (GameWidget gameWidget in this.m_subsystemViews.GameWidgets)
-				{
-					int num = 8;
-					Vector2 v = new Vector2(gameWidget.ActiveCamera.ViewPosition.X, gameWidget.ActiveCamera.ViewPosition.Z);
-					if (this.CountZombiesInArea(v - new Vector2(68f), v + new Vector2(68f)) >= num)
-					{
-						break;
-					}
-
-					Point3? spawnPoint = this.GetRandomSpawnPoint(gameWidget.ActiveCamera, SpawnLocationType.Surface);
-					if (spawnPoint != null)
-					{
-						Vector2 c3 = new Vector2((float)spawnPoint.Value.X, (float)spawnPoint.Value.Z) - new Vector2(16f);
-						Vector2 c2 = new Vector2((float)spawnPoint.Value.X, (float)spawnPoint.Value.Z) + new Vector2(16f);
-						if (this.CountZombiesInArea(c3, c2) >= 3)
-						{
-							break;
-						}
-
-						IEnumerable<ZombieType> enumerable = from c in this.m_zombieTypes
-															 where c.SpawnLocationType == SpawnLocationType.Surface && c.RandomSpawn
-															 select c;
-
-						IEnumerable<ZombieType> source = (enumerable as ZombieType[]) ?? enumerable.ToArray<ZombieType>();
-						IEnumerable<float> items = from c in source
-												   select this.CalculateSpawnSuitability(c, spawnPoint.Value);
-
-						int randomWeightedItem = this.GetRandomWeightedItem(items);
-						if (randomWeightedItem >= 0)
-						{
-							ZombieType zombieType = source.ElementAt(randomWeightedItem);
-							zombieType.SpawnFunction(zombieType, spawnPoint.Value);
-						}
-					}
-				}
-			}
-		}
-
-		public virtual void SpawnChunkZombies(SpawnChunk chunk, int maxAttempts, bool constantSpawn)
-		{
-			int num = SubsystemZombiesSpawn.m_totalLimit;
-			int num2 = SubsystemZombiesSpawn.m_areaLimit;
-			float v = (float)SubsystemZombiesSpawn.m_areaRadius;
-
-			int num3 = this.CountZombies();
-			Vector2 c3 = new Vector2((float)(chunk.Point.X * 16), (float)(chunk.Point.Y * 16)) - new Vector2(v);
-			Vector2 c2 = new Vector2((float)((chunk.Point.X + 1) * 16), (float)((chunk.Point.Y + 1) * 16)) + new Vector2(v);
-			int num4 = this.CountZombiesInArea(c3, c2);
-
-			for (int i = 0; i < maxAttempts; i++)
-			{
-				if (num3 >= num || num4 >= num2)
-				{
-					break;
-				}
-
-				Point3? spawnPoint = this.GetRandomChunkSpawnPoint(chunk, SpawnLocationType.Surface);
-				if (spawnPoint != null)
-				{
-					IEnumerable<ZombieType> enumerable = from c in this.m_zombieTypes
-														 where c.SpawnLocationType == SpawnLocationType.Surface && c.ConstantSpawn == constantSpawn
-														 select c;
-
-					IEnumerable<ZombieType> source = (enumerable as ZombieType[]) ?? enumerable.ToArray<ZombieType>();
-					IEnumerable<float> items = from c in source
-											   select this.CalculateSpawnSuitability(c, spawnPoint.Value);
-
-					int randomWeightedItem = this.GetRandomWeightedItem(items);
-					if (randomWeightedItem >= 0)
-					{
-						ZombieType zombieType = source.ElementAt(randomWeightedItem);
-						int num5 = zombieType.SpawnFunction(zombieType, spawnPoint.Value);
-						num3 += num5;
-						num4 += num5;
-					}
-				}
-			}
-		}
-
-		public virtual List<Entity> SpawnZombies(ZombieType zombieType, string templateName, Point3 point, int count)
-		{
-			List<Entity> list = new List<Entity>();
-			int num = 0;
-			while (count > 0 && num < 50)
-			{
-				Point3 spawnPoint = point;
-				if (num > 0)
-				{
-					spawnPoint.X += this.m_random.Int(-8, 8);
-					spawnPoint.Y += this.m_random.Int(-4, 8);
-					spawnPoint.Z += this.m_random.Int(-8, 8);
-				}
-
-				Point3? point2 = this.ProcessSpawnPoint(spawnPoint, SpawnLocationType.Surface);
-				if (point2 != null && this.CalculateSpawnSuitability(zombieType, point2.Value) > 0f)
-				{
-					Vector3 position = new Vector3((float)point2.Value.X + this.m_random.Float(0.4f, 0.6f), (float)point2.Value.Y + 1.1f, (float)point2.Value.Z + this.m_random.Float(0.4f, 0.6f));
-					Entity entity = this.SpawnZombie(templateName, position);
-					if (entity != null)
-					{
-						list.Add(entity);
-						count--;
-					}
-				}
-				num++;
-			}
-			return list;
-		}
-
 		public virtual Entity SpawnZombie(string templateName, Vector3 position)
 		{
-			Entity result;
 			try
 			{
 				Entity entity = DatabaseManager.CreateEntity(base.Project, templateName, true);
 				entity.FindComponent<ComponentBody>(true).Position = position;
 				entity.FindComponent<ComponentBody>(true).Rotation = Quaternion.CreateFromAxisAngle(Vector3.UnitY, this.m_random.Float(0f, 6.2831855f));
 				base.Project.AddEntity(entity);
-				result = entity;
+				return entity;
 			}
-			catch (Exception value)
+			catch (Exception e)
 			{
-				Log.Error("Unable to spawn zombie with template \"" + templateName + "\". Reason: " + value.ToString());
-				result = null;
+				Log.Error($"Error spawneando {templateName}: {e.Message}");
+				return null;
 			}
-			return result;
-		}
-
-		public virtual Point3? GetRandomChunkSpawnPoint(SpawnChunk chunk, SpawnLocationType spawnLocationType)
-		{
-			for (int i = 0; i < 5; i++)
-			{
-				int x = 16 * chunk.Point.X + this.m_random.Int(0, 15);
-				int y = this.m_random.Int(10, 246);
-				int z = 16 * chunk.Point.Y + this.m_random.Int(0, 15);
-				Point3? result = this.ProcessSpawnPoint(new Point3(x, y, z), spawnLocationType);
-				if (result != null)
-				{
-					return result;
-				}
-			}
-			return null;
 		}
 
 		public virtual Point3? GetRandomSpawnPoint(Camera camera, SpawnLocationType spawnLocationType)
@@ -516,31 +457,8 @@ namespace Game
 							   !block3.IsCollidable_(cellValueFast3) && !(block3 is WaterBlock);
 					}
 				default:
-					throw new InvalidOperationException("Unknown spawn location type.");
+					return false;
 			}
-		}
-
-		public virtual float CalculateSpawnSuitability(ZombieType zombieType, Point3 spawnPoint)
-		{
-			float num = zombieType.SpawnSuitabilityFunction(zombieType, spawnPoint);
-			if (this.CountZombies(zombieType) > 15)
-			{
-				num *= 0.25f;
-			}
-			return num;
-		}
-
-		public virtual int CountZombies(ZombieType zombieType)
-		{
-			int num = 0;
-			foreach (ComponentBody body in this.m_subsystemBodies.Bodies)
-			{
-				if (body.Entity.ValuesDictionary.DatabaseObject.Name == zombieType.Name)
-				{
-					num++;
-				}
-			}
-			return num;
 		}
 
 		public virtual int CountZombies()
@@ -550,76 +468,13 @@ namespace Game
 			{
 				string name = body.Entity.ValuesDictionary.DatabaseObject.Name;
 				if (name == "InfectedNormal1" || name == "InfectedNormal2" ||
-					name == "InfectedFast1" || name == "InfectedFast2")
+					name == "InfectedFast1" || name == "InfectedFast2" ||
+					name == "InfectedFly1")
 				{
 					num++;
 				}
 			}
 			return num;
-		}
-
-		public virtual int CountZombiesInArea(Vector2 c1, Vector2 c2)
-		{
-			int num = 0;
-			this.m_componentBodies.Clear();
-			this.m_subsystemBodies.FindBodiesInArea(c1, c2, this.m_componentBodies);
-
-			for (int i = 0; i < this.m_componentBodies.Count; i++)
-			{
-				ComponentBody componentBody = this.m_componentBodies.Array[i];
-				string name = componentBody.Entity.ValuesDictionary.DatabaseObject.Name;
-				if (name == "InfectedNormal1" || name == "InfectedNormal2" ||
-					name == "InfectedFast1" || name == "InfectedFast2")
-				{
-					Vector3 position = componentBody.Position;
-					if (position.X >= c1.X && position.X <= c2.X && position.Z >= c1.Y && position.Z <= c2.Y)
-					{
-						num++;
-					}
-				}
-			}
-			return num;
-		}
-
-		public virtual int GetRandomWeightedItem(IEnumerable<float> items)
-		{
-			float[] array = (items as float[]) ?? items.ToArray<float>();
-			float max = MathUtils.Max(array.Sum(), 1f);
-			float num = this.m_random.Float(0f, max);
-			int num2 = 0;
-			foreach (float num3 in array)
-			{
-				if (num < num3)
-				{
-					return num2;
-				}
-				num -= num3;
-				num2++;
-			}
-			return -1;
-		}
-
-		public class ZombieType
-		{
-			public ZombieType(string name, SpawnLocationType spawnLocationType, bool randomSpawn, bool constantSpawn)
-			{
-				this.Name = name;
-				this.SpawnLocationType = spawnLocationType;
-				this.RandomSpawn = randomSpawn;
-				this.ConstantSpawn = constantSpawn;
-			}
-
-			public override string ToString()
-			{
-				return this.Name;
-			}
-
-			public string Name;
-			public SpawnLocationType SpawnLocationType;
-			public bool RandomSpawn;
-			public bool ConstantSpawn;
-			public Func<ZombieType, Point3, float> SpawnSuitabilityFunction;
-			public Func<ZombieType, Point3, int> SpawnFunction;
 		}
 	}
 }
