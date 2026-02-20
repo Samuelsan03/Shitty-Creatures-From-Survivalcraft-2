@@ -87,7 +87,7 @@ namespace Game
 				LoadWaves();
 				m_wavesLoaded = true;
 
-				// Cargar la ola actual (el índice ya fue restaurado en Load)
+				// Cargar la ola actual
 				LoadCurrentWave();
 
 				Log.Information($"=== SISTEMA INICIADO - OLA {m_currentWaveIndex + 1} ===");
@@ -106,7 +106,10 @@ namespace Game
 					Log.Information($"=== NOCHE VERDE INICIADA ===");
 					Log.Information($"Ola actual: {m_currentWaveIndex + 1} de {m_waves.Count}");
 
+					// Resetear flag de avance para esta noche
 					m_waveAdvancedThisNight = false;
+
+					// Cargar la ola actual (por si acaso)
 					LoadCurrentWave();
 				}
 				else
@@ -114,35 +117,27 @@ namespace Game
 					// NOCHE VERDE TERMINA
 					Log.Information($"=== NOCHE VERDE TERMINADA - OLA {m_currentWaveIndex + 1} COMPLETADA ===");
 
+					// Marcar que ya pasó la primera noche
 					m_firstNightCompleted = true;
 
 					// Avanzar a la siguiente ola
-					AdvanceToNextWave();
+					if (m_currentWaveIndex < m_waves.Count - 1)
+					{
+						m_currentWaveIndex++;
+						Log.Information($"=== AVANZANDO A OLA {m_currentWaveIndex + 1} ===");
+						LoadCurrentWave();
+					}
 				}
 			}
 
 			// Spawnear durante noche verde
 			if (m_isGreenNightActive && this.m_subsystemGameInfo.WorldSettings.EnvironmentBehaviorMode == EnvironmentBehaviorMode.Living)
 			{
+				// Spawnear cada 2 segundos
 				if (this.m_subsystemTime.PeriodicGameTimeEvent(2.0, 0.0))
 				{
 					SpawnZombiesFromWave();
 				}
-			}
-		}
-
-		private void AdvanceToNextWave()
-		{
-			if (m_currentWaveIndex < m_waves.Count - 1)
-			{
-				m_currentWaveIndex++;
-				Log.Information($"=== AVANZANDO A OLA {m_currentWaveIndex + 1} ===");
-				LoadCurrentWave();
-				// El progreso se guardará automáticamente en el próximo guardado de mundo (método Save)
-			}
-			else
-			{
-				Log.Information($"=== YA EN LA ÚLTIMA OLA ({m_currentWaveIndex + 1}) ===");
 			}
 		}
 
@@ -154,6 +149,7 @@ namespace Game
 				return;
 			}
 
+			// Asegurar que el índice sea válido
 			if (m_currentWaveIndex >= m_waves.Count)
 			{
 				m_currentWaveIndex = m_waves.Count - 1;
@@ -239,27 +235,25 @@ namespace Game
 			this.m_lastMoonDayForWave = Math.Floor(this.m_subsystemTimeOfDay.Day);
 			this.m_isGreenNightActive = false;
 			this.m_wavesLoaded = false;
-
-			// Cargar el índice de ola guardado (si existe)
-			if (valuesDictionary.ContainsKey("WaveIndex"))
-			{
-				m_currentWaveIndex = valuesDictionary.GetValue<int>("WaveIndex");
-				m_firstNightCompleted = valuesDictionary.GetValue<bool>("FirstNightCompleted");
-			}
-			else
-			{
-				m_currentWaveIndex = 0;
-				m_firstNightCompleted = false;
-			}
-
-			// Asegurar que el índice no exceda el número de olas (las olas se cargarán después en Update)
+			this.m_firstNightCompleted = false;
+			this.m_currentWaveIndex = 0; // SIEMPRE empezar en 0
 		}
 
-		public override void Save(ValuesDictionary valuesDictionary)
+		private string GetWavesPath()
 		{
-			// Guardar el progreso actual
-			valuesDictionary.SetValue("WaveIndex", m_currentWaveIndex);
-			valuesDictionary.SetValue("FirstNightCompleted", m_firstNightCompleted);
+			try
+			{
+				// En Android usar la ruta de la app, en PC usar la carpeta local
+				string basePath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+				if (!string.IsNullOrEmpty(basePath))
+				{
+					return Path.Combine(basePath, "Waves");
+				}
+			}
+			catch { }
+
+			// Fallback a carpeta local
+			return "Waves";
 		}
 
 		private void LoadWaves()
@@ -268,14 +262,16 @@ namespace Game
 
 			try
 			{
-				if (!Directory.Exists("Waves"))
+				string wavesPath = GetWavesPath();
+
+				if (!Directory.Exists(wavesPath))
 				{
-					Directory.CreateDirectory("Waves");
+					Directory.CreateDirectory(wavesPath);
 				}
 
-				CreateAllWaveFiles();
+				CreateAllWaveFiles(wavesPath);
 
-				string[] files = Directory.GetFiles("Waves", "*.txt");
+				string[] files = Directory.GetFiles(wavesPath, "*.txt");
 
 				var sortedFiles = files.OrderBy(f =>
 				{
@@ -322,17 +318,17 @@ namespace Game
 
 				if (m_waves.Count == 0)
 				{
-					CreateEmergencyWaves();
+					CreateEmergencyWaves(wavesPath);
 				}
 			}
 			catch (Exception e)
 			{
 				Log.Error($"Error cargando olas: {e.Message}");
-				CreateEmergencyWaves();
+				CreateEmergencyWaves("Waves");
 			}
 		}
 
-		private void CreateEmergencyWaves()
+		private void CreateEmergencyWaves(string wavesPath)
 		{
 			m_waves.Clear();
 
@@ -345,12 +341,12 @@ namespace Game
 			Log.Information("Creadas olas de emergencia");
 		}
 
-		private void CreateAllWaveFiles()
+		private void CreateAllWaveFiles(string wavesPath)
 		{
 			try
 			{
 				// OLA 1
-				string path1 = Path.Combine("Waves", "1.txt");
+				string path1 = Path.Combine(wavesPath, "1.txt");
 				if (!File.Exists(path1))
 				{
 					File.WriteAllLines(path1, new string[]
@@ -362,7 +358,7 @@ namespace Game
 				}
 
 				// OLA 2
-				string path2 = Path.Combine("Waves", "2.txt");
+				string path2 = Path.Combine(wavesPath, "2.txt");
 				if (!File.Exists(path2))
 				{
 					File.WriteAllLines(path2, new string[]
@@ -376,7 +372,7 @@ namespace Game
 				}
 
 				// OLA 3
-				string path3 = Path.Combine("Waves", "3.txt");
+				string path3 = Path.Combine(wavesPath, "3.txt");
 				if (!File.Exists(path3))
 				{
 					File.WriteAllLines(path3, new string[]
@@ -392,7 +388,7 @@ namespace Game
 				}
 
 				// OLA 4
-				string path4 = Path.Combine("Waves", "4.txt");
+				string path4 = Path.Combine(wavesPath, "4.txt");
 				if (!File.Exists(path4))
 				{
 					File.WriteAllLines(path4, new string[]
@@ -410,7 +406,7 @@ namespace Game
 				}
 
 				// OLA 5
-				string path5 = Path.Combine("Waves", "5.txt");
+				string path5 = Path.Combine(wavesPath, "5.txt");
 				if (!File.Exists(path5))
 				{
 					File.WriteAllLines(path5, new string[]
@@ -430,7 +426,7 @@ namespace Game
 				}
 
 				// OLA 6
-				string path6 = Path.Combine("Waves", "6.txt");
+				string path6 = Path.Combine(wavesPath, "6.txt");
 				if (!File.Exists(path6))
 				{
 					File.WriteAllLines(path6, new string[]
@@ -451,7 +447,7 @@ namespace Game
 				}
 
 				// OLA 7
-				string path7 = Path.Combine("Waves", "7.txt");
+				string path7 = Path.Combine(wavesPath, "7.txt");
 				if (!File.Exists(path7))
 				{
 					File.WriteAllLines(path7, new string[]
@@ -474,7 +470,7 @@ namespace Game
 				}
 
 				// OLA 8
-				string path8 = Path.Combine("Waves", "8.txt");
+				string path8 = Path.Combine(wavesPath, "8.txt");
 				if (!File.Exists(path8))
 				{
 					File.WriteAllLines(path8, new string[]
@@ -499,7 +495,7 @@ namespace Game
 				}
 
 				// OLA 9
-				string path9 = Path.Combine("Waves", "9.txt");
+				string path9 = Path.Combine(wavesPath, "9.txt");
 				if (!File.Exists(path9))
 				{
 					File.WriteAllLines(path9, new string[]
@@ -525,7 +521,7 @@ namespace Game
 				}
 
 				// OLA 10
-				string path10 = Path.Combine("Waves", "10.txt");
+				string path10 = Path.Combine(wavesPath, "10.txt");
 				if (!File.Exists(path10))
 				{
 					File.WriteAllLines(path10, new string[]
@@ -554,7 +550,7 @@ namespace Game
 				}
 
 				// OLA 11
-				string path11 = Path.Combine("Waves", "11.txt");
+				string path11 = Path.Combine(wavesPath, "11.txt");
 				if (!File.Exists(path11))
 				{
 					File.WriteAllLines(path11, new string[]
@@ -585,7 +581,7 @@ namespace Game
 				}
 
 				// OLA 12
-				string path12 = Path.Combine("Waves", "12.txt");
+				string path12 = Path.Combine(wavesPath, "12.txt");
 				if (!File.Exists(path12))
 				{
 					File.WriteAllLines(path12, new string[]
@@ -617,7 +613,7 @@ namespace Game
 				}
 
 				// OLA 13
-				string path13 = Path.Combine("Waves", "13.txt");
+				string path13 = Path.Combine(wavesPath, "13.txt");
 				if (!File.Exists(path13))
 				{
 					File.WriteAllLines(path13, new string[]
@@ -650,7 +646,7 @@ namespace Game
 				}
 
 				// OLA 14
-				string path14 = Path.Combine("Waves", "14.txt");
+				string path14 = Path.Combine(wavesPath, "14.txt");
 				if (!File.Exists(path14))
 				{
 					File.WriteAllLines(path14, new string[]
@@ -683,7 +679,7 @@ namespace Game
 				}
 
 				// OLA 15
-				string path15 = Path.Combine("Waves", "15.txt");
+				string path15 = Path.Combine(wavesPath, "15.txt");
 				if (!File.Exists(path15))
 				{
 					File.WriteAllLines(path15, new string[]
@@ -716,7 +712,7 @@ namespace Game
 				}
 
 				// OLA 16
-				string path16 = Path.Combine("Waves", "16.txt");
+				string path16 = Path.Combine(wavesPath, "16.txt");
 				if (!File.Exists(path16))
 				{
 					File.WriteAllLines(path16, new string[]
@@ -749,7 +745,7 @@ namespace Game
 				}
 
 				// OLA 17
-				string path17 = Path.Combine("Waves", "17.txt");
+				string path17 = Path.Combine(wavesPath, "17.txt");
 				if (!File.Exists(path17))
 				{
 					File.WriteAllLines(path17, new string[]
@@ -781,7 +777,7 @@ namespace Game
 				}
 
 				// OLA 18
-				string path18 = Path.Combine("Waves", "18.txt");
+				string path18 = Path.Combine(wavesPath, "18.txt");
 				if (!File.Exists(path18))
 				{
 					File.WriteAllLines(path18, new string[]
@@ -814,7 +810,7 @@ namespace Game
 				}
 
 				// OLA 19 (FINAL)
-				string path19 = Path.Combine("Waves", "19.txt");
+				string path19 = Path.Combine(wavesPath, "19.txt");
 				if (!File.Exists(path19))
 				{
 					File.WriteAllLines(path19, new string[]
