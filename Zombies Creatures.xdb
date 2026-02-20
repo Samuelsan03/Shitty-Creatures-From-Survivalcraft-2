@@ -5094,13 +5094,13 @@
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="TankModel" Guid="b7dc3bac-40b6-48b1-a4b1-31a7c7de5e62" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="WalkLegsAngle" Guid="b4e02ef5-2977-438d-b872-fcbafdb047b3" Value="0.95" Type="float"/>
     <Parameter Name="ModelName" Guid="f3094d2c-f206-475d-9396-97cbaff35833" Value="Models/Tank" Type="string"/>
     <Parameter Name="TextureOverride" Guid="0a3809a5-5758-4f2b-99f0-9f53fab8f387" Value="Textures/ZombiesDeMierda/Tank 1" Type="string"/>
-    <Parameter Name="WalkAnimationSpeed" Guid="8eaabaab-f89c-4124-b2dd-0f71e26386fb" Value="0.65" Type="float"/>
-    <Parameter Name="WalkBobHeight" Guid="5f0fa5f9-b35b-4e29-9d1d-a8fff650fdf5" Value="0.045" Type="float"/>
-    <Parameter Name="SmoothFactor" Guid="a5f763eb-d702-4e83-8d15-bc1484195856" Value="0.001" Type="float"/>
-    <Parameter Name="AnimationResponsiveness" Guid="7bdbabc3-ed7a-4f28-8b24-a462093bbfc9" Value="12" Type="float"/>
+    <Parameter Name="WalkLegsAngle" Guid="374f5831-646a-4c18-8e99-f096d1e3d500" Value="0.95" Type="float"/>
+    <Parameter Name="WalkAnimationSpeed" Guid="f5028bf3-9141-46ac-a0b9-26db28615225" Value="0.65" Type="float"/>
+    <Parameter Name="WalkBobHeight" Guid="c84ceb41-1d5d-4f1e-a803-b4ea363e7309" Value="0.045" Type="float"/>
+    <Parameter Name="SmoothFactor" Guid="3218fabe-943a-48dc-9517-e3c4c1ac202a" Value="0.001" Type="float"/>
+    <Parameter Name="AnimationResponsiveness" Guid="e86517a2-066e-453f-8579-ec54db28c591" Value="12" Type="float"/>
     <Parameter Name="Class" Guid="33985b50-3b79-46bf-85b7-5dcd39e46acc" Value="Game.ComponentTankModel" Type="string"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="ZombieHerdBehavior" Guid="00956b85-1d18-42dd-8a07-5758e6899a5f">
@@ -5258,13 +5258,13 @@
                 <Parameter Name="AttackPower" Guid="953789fe-483e-4789-90ff-680fc4cd6c47" Value="30.5" Type="float"/>
             </MemberComponentTemplate>
 <MemberComponentTemplate Name="TankModel" Guid="205887c3-3183-468e-9de7-c9db463554b4" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="WalkLegsAngle" Guid="f526364f-8a1e-4eab-8f26-e997a97ccf25" Value="0.95" Type="float"/>
     <Parameter Name="ModelName" Guid="a1018e59-92d0-477c-b04b-1b84825a3893" Value="Models/Tank" Type="string"/>
     <Parameter Name="TextureOverride" Guid="e5f0d34a-0009-4467-a1bf-af482d76ae6d" Value="Textures/ZombiesDeMierda/Tank 1" Type="string"/>
-    <Parameter Name="WalkAnimationSpeed" Guid="73d93ef1-f6c2-482d-b820-d95883e49968" Value="0.65" Type="float"/>
-    <Parameter Name="WalkBobHeight" Guid="4003d59e-3cb1-4020-9fa3-97ba59c26439" Value="0.045" Type="float"/>
-    <Parameter Name="SmoothFactor" Guid="fa978449-42e0-4902-9a77-f64fadff561c" Value="0.001" Type="float"/>
-    <Parameter Name="AnimationResponsiveness" Guid="7464f3b7-e365-4e1b-8afa-3a1dc7d4a204" Value="12" Type="float"/>
+    <Parameter Name="WalkLegsAngle" Guid="01b13729-864d-4a6c-8d52-8004357b3fbc" Value="0.95" Type="float"/>
+    <Parameter Name="WalkAnimationSpeed" Guid="d99beaf4-d1ab-41c6-8569-e268d7fa2114" Value="0.65" Type="float"/>
+    <Parameter Name="WalkBobHeight" Guid="ce94db95-0def-4e26-935e-03a6f4d67977" Value="0.045" Type="float"/>
+    <Parameter Name="SmoothFactor" Guid="3b41813e-a8fc-45f5-9bf4-c3c479a2f6d0" Value="0.001" Type="float"/>
+    <Parameter Name="AnimationResponsiveness" Guid="5f3f6dee-cbbf-45a0-ab93-b8bec35ff4ee" Value="12" Type="float"/>
     <Parameter Name="Class" Guid="8f08bbbb-6713-4013-a9c8-5b69572dba20" Value="Game.ComponentTankModel" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="PathBreaker" Guid="333ccbb3-1dbc-41b9-9b60-a9094ed05ef7" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
@@ -5402,13 +5402,13 @@
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="TankModel" Guid="70f191b9-a8a5-40b7-8fb6-7bd22a1fc3dc" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="WalkLegsAngle" Guid="1eff833d-6528-4ebd-ac4e-ac34e02926ce" Value="0.6" Type="float"/>
     <Parameter Name="ModelName" Guid="b7380e61-9362-4246-a612-53248b0be472" Value="Models/Tank superior" Type="string"/>
     <Parameter Name="TextureOverride" Guid="bbd65887-ada2-4715-94a4-4097b9267926" Value="Textures/ZombiesDeMierda/Tank 2" Type="string"/>
-    <Parameter Name="WalkAnimationSpeed" Guid="46edcb04-f6e5-46db-8d59-717d90da9c1f" Value="1.0" Type="float"/>
-    <Parameter Name="WalkBobHeight" Guid="c2619e94-e88e-4dba-b229-5296e7d1f42e" Value="0.03" Type="float"/>
-    <Parameter Name="SmoothFactor" Guid="14917d7a-916f-45eb-85f4-6773c1578bc0" Value="0.18" Type="float"/>
-    <Parameter Name="AnimationResponsiveness" Guid="1e5134dd-8408-4997-80d7-3afd6787175a" Value="12" Type="float"/>
+    <Parameter Name="WalkLegsAngle" Guid="5ee13f90-3838-4312-bdb8-25faf7217dcc" Value="0.95" Type="float"/>
+    <Parameter Name="WalkAnimationSpeed" Guid="0040c2f3-ea63-43ba-9e76-778b60354638" Value="0.65" Type="float"/>
+    <Parameter Name="WalkBobHeight" Guid="538f786e-d475-4f5a-b051-e932cebd1386" Value="0.045" Type="float"/>
+    <Parameter Name="SmoothFactor" Guid="a5f54abb-1d54-4b5b-a553-af746cbdd1d7" Value="0.001" Type="float"/>
+    <Parameter Name="AnimationResponsiveness" Guid="59dc0f40-3d58-4a1c-b32c-32627e95cfa4" Value="12" Type="float"/>
     <Parameter Name="Class" Guid="973ecdbb-5e16-4d8d-9fac-1ecfbda4c6a6" Value="Game.ComponentTankModel" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="PathBreaker" Guid="1f3919fe-ebca-4415-ac75-98d6b9cff9b4" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
@@ -5565,13 +5565,13 @@
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="TankModel" Guid="2d614d96-4d79-4605-9438-555f5e4443e1" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="WalkLegsAngle" Guid="a830a278-165f-48ae-8ebb-4acf603906ea" Value="0.6" Type="float"/>
     <Parameter Name="ModelName" Guid="3e3267d5-1d08-4c8f-b483-895a0e82db09" Value="Models/Tank superior" Type="string"/>
     <Parameter Name="TextureOverride" Guid="4452f931-aa1c-4a44-861f-61fb5337b400" Value="Textures/ZombiesDeMierda/Tank 2" Type="string"/>
-    <Parameter Name="WalkAnimationSpeed" Guid="2653f359-c39c-4fcd-8ac7-6e59b5a5ea51" Value="1.0" Type="float"/>
-    <Parameter Name="WalkBobHeight" Guid="4885925e-9f3a-47a3-aaca-63ae942156a2" Value="0.03" Type="float"/>
-    <Parameter Name="SmoothFactor" Guid="36a9cd6e-81dd-4f8e-a640-1302e878787b" Value="0.18" Type="float"/>
-    <Parameter Name="AnimationResponsiveness" Guid="6a480e35-dce9-45fe-ac1d-46e66274f125" Value="12" Type="float"/>
+    <Parameter Name="WalkLegsAngle" Guid="f6a0c184-455e-4f1c-8aa0-b292bc4c8bdf" Value="0.95" Type="float"/>
+    <Parameter Name="WalkAnimationSpeed" Guid="b93d75c6-3c71-47d2-a072-bf6be4e92328" Value="0.65" Type="float"/>
+    <Parameter Name="WalkBobHeight" Guid="0060bc6c-5f46-4a49-ac77-21de9790b7b5" Value="0.045" Type="float"/>
+    <Parameter Name="SmoothFactor" Guid="924a3977-0190-4ba7-aaee-c0686672ccb3" Value="0.001" Type="float"/>
+    <Parameter Name="AnimationResponsiveness" Guid="afb150b6-22bd-4d29-be49-1b4d0a046bda" Value="12" Type="float"/>
     <Parameter Name="Class" Guid="0f29749b-b39d-4503-9d0e-6e640f4b61b5" Value="Game.ComponentTankModel" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="PathBreaker" Guid="89d7c43c-969a-41aa-9ded-67dbfc24a7cc" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
@@ -5697,13 +5697,13 @@
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="TankModel" Guid="7c93b40c-43ee-4f9c-8745-20cf642f7613" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="WalkLegsAngle" Guid="e6a01df0-0b69-48b4-a84f-32207423c9c2" Value="0.6" Type="float"/>
     <Parameter Name="ModelName" Guid="38b86743-e8e6-4411-a2ae-53e051d8a5f8" Value="Models/Tank De Mierda" Type="string"/>
     <Parameter Name="TextureOverride" Guid="958c1040-dc80-47d4-b1d4-bbc7e0af742d" Value="Textures/ZombiesDeMierda/Tank 3" Type="string"/>
-    <Parameter Name="WalkAnimationSpeed" Guid="67963aed-badb-4be2-ab6c-bfb732d38468" Value="1.0" Type="float"/>
-    <Parameter Name="WalkBobHeight" Guid="fc15b6e6-0684-4f75-b39b-c020899c70d7" Value="0.03" Type="float"/>
-    <Parameter Name="SmoothFactor" Guid="496006f3-727a-4342-ba03-7df7093043df" Value="0.18" Type="float"/>
-    <Parameter Name="AnimationResponsiveness" Guid="6e1f47ea-bb77-4d29-addd-7ea24904512d" Value="12" Type="float"/>
+    <Parameter Name="WalkLegsAngle" Guid="79c067b7-69bf-41ed-97cc-be1ba034a536" Value="0.95" Type="float"/>
+    <Parameter Name="WalkAnimationSpeed" Guid="3abd8900-4490-4c4c-8a8e-5c606d149460" Value="0.65" Type="float"/>
+    <Parameter Name="WalkBobHeight" Guid="d71b9ab4-c5a1-4b28-9141-33397b0dc0ad" Value="0.045" Type="float"/>
+    <Parameter Name="SmoothFactor" Guid="b56a98f8-416e-4ea1-b601-fae2e2f21d96" Value="0.001" Type="float"/>
+    <Parameter Name="AnimationResponsiveness" Guid="a13ae3fa-76c6-4769-a3f0-72ffc00be384" Value="12" Type="float"/>
     <Parameter Name="Class" Guid="7fcad8ad-6628-4689-9655-74170f3ae989" Value="Game.ComponentTankModel" Type="string"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="ZombieHerdBehavior" Guid="52b1ce8d-5bdb-45f2-ad02-d8689a04eb9e">
@@ -5855,13 +5855,13 @@
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="TankModel" Guid="1c4cfa27-fb6b-4715-9e16-0ce3800691a4" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="WalkLegsAngle" Guid="1b18f61d-9a0c-4bae-8f68-d9f4cd2b0319" Value="0.6" Type="float"/>
     <Parameter Name="ModelName" Guid="227491bf-979c-48d0-a43b-c9d09e94ac8a" Value="Models/Tank De Mierda" Type="string"/>
     <Parameter Name="TextureOverride" Guid="8593b991-1246-4fad-863b-51d7eb2e7d2e" Value="Textures/ZombiesDeMierda/Tank 3" Type="string"/>
-    <Parameter Name="WalkAnimationSpeed" Guid="046ca4c5-9a06-4cfe-aa96-824e68eae405" Value="1.0" Type="float"/>
-    <Parameter Name="WalkBobHeight" Guid="c4529c70-c72d-4940-9f80-88795597d63f" Value="0.03" Type="float"/>
-    <Parameter Name="SmoothFactor" Guid="83b2ea08-6e9f-4fb4-9027-5d09e267f666" Value="0.18" Type="float"/>
-    <Parameter Name="AnimationResponsiveness" Guid="806692a1-9a11-4d3a-8e4a-35b313209ca2" Value="12" Type="float"/>
+    <Parameter Name="WalkLegsAngle" Guid="8346ba1b-05e6-4c16-aab7-8b9961f348f8" Value="0.95" Type="float"/>
+    <Parameter Name="WalkAnimationSpeed" Guid="47e7fd34-6361-4023-ab1e-cf30ee1c4f06" Value="0.65" Type="float"/>
+    <Parameter Name="WalkBobHeight" Guid="6f36c59a-30bc-4a00-b460-5c97e9826e75" Value="0.045" Type="float"/>
+    <Parameter Name="SmoothFactor" Guid="a4d6448b-06ee-4d6f-97b5-c75f3abfec29" Value="0.001" Type="float"/>
+    <Parameter Name="AnimationResponsiveness" Guid="d3f86418-1747-462f-95c6-bc57bcb96a20" Value="12" Type="float"/>
     <Parameter Name="Class" Guid="e125a2a4-2422-4712-b5d8-2551dfe35b70" Value="Game.ComponentTankModel" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="PathBreaker" Guid="7ac0840f-d8b5-473e-bf11-1662aa15300d" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
@@ -8393,11 +8393,11 @@
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewGhostTankModel" Guid="dd7a29a5-1648-40b1-8c53-0fadf55b77d7" InheritanceParent="5ccee3e3-ae8d-4793-a534-5b075b74429b">
     <Parameter Name="Opacity" Guid="f07f5cd6-d611-4960-8f2f-2fb6b639fa23" Value="0.05" Type="float"/>
-    <Parameter Name="SmoothFactor" Guid="d32912c0-1ff7-4ce0-8950-833747583de8" Value="0.18" Type="float"/>
-    <Parameter Name="AnimationResponsiveness" Guid="671caca5-38bc-4190-bd36-e14a638ac4bf" Value="12" Type="float"/>
-    <Parameter Name="WalkAnimationSpeed" Guid="413fe6e3-7709-4025-b971-4e42e5600c82" Value="1.0" Type="float"/>
-    <Parameter Name="WalkLegsAngle" Guid="ec541e0e-49f6-4584-8df7-2e2937677e64" Value="0.6" Type="float"/>
-    <Parameter Name="WalkBobHeight" Guid="56b3c8d7-cdaf-4acd-8c3d-23a6bc36e272" Value="0.03" Type="float"/>
+    <Parameter Name="WalkLegsAngle" Guid="5683574f-35c6-49e5-b10e-758924b0ea32" Value="0.95" Type="float"/>
+    <Parameter Name="WalkAnimationSpeed" Guid="3aacfc84-dda0-45a3-8aac-1be4a248bdbb" Value="0.65" Type="float"/>
+    <Parameter Name="WalkBobHeight" Guid="bfeee7d3-56da-457d-97a6-212f1f9cf4a8" Value="0.045" Type="float"/>
+    <Parameter Name="SmoothFactor" Guid="682ea214-40c4-4a70-89e9-c1ac680aae77" Value="0.001" Type="float"/>
+    <Parameter Name="AnimationResponsiveness" Guid="2f679ec1-144c-471f-8d6f-e23c9c3f5f99" Value="12" Type="float"/>
     <Parameter Name="ModelName" Guid="39a3c51b-923c-4af7-8cbb-ea51daf9f009" Value="Models/Tank" Type="string"/>
     <Parameter Name="TextureOverride" Guid="05343952-ca38-4f09-8d4d-9c50aec373be" Value="Textures/ZombiesDeMierda/Ghost" Type="string"/>
     <Parameter Name="Class" Guid="bb9711d2-b75f-4804-a69b-11e9bc7e6433" Value="Game.ComponentNewGhostTankModel" Type="string"/>
@@ -8570,11 +8570,11 @@
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewGhostTankModel" Guid="118c7990-bcaf-4758-9893-5429c3fa36df" InheritanceParent="5ccee3e3-ae8d-4793-a534-5b075b74429b">
     <Parameter Name="Opacity" Guid="5942251d-e885-4d0f-b4a2-a30578801faf" Value="0.05" Type="float"/>
-    <Parameter Name="SmoothFactor" Guid="6fbbdb84-a161-4fc9-85ce-e1a5c0dddb6b" Value="0.18" Type="float"/>
-    <Parameter Name="AnimationResponsiveness" Guid="98bd64ad-0be2-4c6e-8181-f4193124e1a7" Value="12" Type="float"/>
-    <Parameter Name="WalkAnimationSpeed" Guid="3f7eacd3-c07a-48a9-aac3-1d689ffb585e" Value="1.0" Type="float"/>
-    <Parameter Name="WalkLegsAngle" Guid="d22aaa08-a4ee-4dd2-b7d6-662160572fb4" Value="0.6" Type="float"/>
-    <Parameter Name="WalkBobHeight" Guid="ce5f15bd-5c2c-47e8-85bf-fbfced02f134" Value="0.03" Type="float"/>
+    <Parameter Name="WalkLegsAngle" Guid="c73c292c-2880-4a20-ad8d-ff46770edd00" Value="0.95" Type="float"/>
+    <Parameter Name="WalkAnimationSpeed" Guid="ad3f61c3-840a-4e6e-988f-2987f8f9ba5d" Value="0.65" Type="float"/>
+    <Parameter Name="WalkBobHeight" Guid="01d87b42-4021-4077-87ef-6320bf004e43" Value="0.045" Type="float"/>
+    <Parameter Name="SmoothFactor" Guid="41fb242e-7fe2-4b3d-b3ca-130b00119d9b" Value="0.001" Type="float"/>
+    <Parameter Name="AnimationResponsiveness" Guid="364c9155-aa62-4cde-ba92-b19f165c5e9a" Value="12" Type="float"/>
     <Parameter Name="ModelName" Guid="66d68bea-49cc-494b-9088-5afa7706a07b" Value="Models/Tank" Type="string"/>
     <Parameter Name="TextureOverride" Guid="c56cfae9-c8e3-4f78-ac17-532f00875706" Value="Textures/ZombiesDeMierda/Ghost" Type="string"/>
     <Parameter Name="Class" Guid="95649cbe-e8b1-4d8d-a68d-14ac20dd7b95" Value="Game.ComponentNewGhostTankModel" Type="string"/>
@@ -8702,11 +8702,11 @@
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewGhostTankModel" Guid="d347c81a-8639-485b-9ad5-36c2e1b4e250" InheritanceParent="5ccee3e3-ae8d-4793-a534-5b075b74429b">
     <Parameter Name="Opacity" Guid="40384018-c31e-419a-a32d-7da10e428b68" Value="0.05" Type="float"/>
-    <Parameter Name="SmoothFactor" Guid="33d35941-3238-4ef6-9de0-6e9cdb978899" Value="0.18" Type="float"/>
-    <Parameter Name="AnimationResponsiveness" Guid="f29a1e86-01bb-44d6-9416-18cf1da56bf1" Value="12" Type="float"/>
-    <Parameter Name="WalkAnimationSpeed" Guid="25cee171-32bd-48cb-86bb-fabe584eb7d2" Value="1.0" Type="float"/>
-    <Parameter Name="WalkLegsAngle" Guid="99ad37c2-a232-4626-a5c9-ca782166885d" Value="0.6" Type="float"/>
-    <Parameter Name="WalkBobHeight" Guid="90113dd8-a77b-4393-a9db-a231c654d9e3" Value="0.03" Type="float"/>
+    <Parameter Name="WalkLegsAngle" Guid="ccf55752-a98d-457c-b292-4c61bd9973b6" Value="0.95" Type="float"/>
+    <Parameter Name="WalkAnimationSpeed" Guid="9351c0ec-0582-4f74-9285-aa466c591ecb" Value="0.65" Type="float"/>
+    <Parameter Name="WalkBobHeight" Guid="402d7612-0aa2-4e6e-bc1b-18797b0d8917" Value="0.045" Type="float"/>
+    <Parameter Name="SmoothFactor" Guid="5d1bbcb2-d8c6-4f97-820d-f5d46a250137" Value="0.001" Type="float"/>
+    <Parameter Name="AnimationResponsiveness" Guid="302167ac-01ee-431c-93d0-c33bec5acd6d" Value="12" Type="float"/>
     <Parameter Name="ModelName" Guid="b43528dd-70f5-4c6d-84c1-05d18ff6efbf" Value="Models/Tank superior" Type="string"/>
     <Parameter Name="TextureOverride" Guid="25a53b2d-c8ff-4f9a-9513-ae7478c332c5" Value="Textures/ZombiesDeMierda/Tank Fire Ghost" Type="string"/>
     <Parameter Name="Class" Guid="d458f1cd-0060-4533-8ea3-3a21a93747e5" Value="Game.ComponentNewGhostTankModel" Type="string"/>
@@ -8879,11 +8879,11 @@
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewGhostTankModel" Guid="c5fe2209-e650-4f62-b0f4-d5805f10a005" InheritanceParent="5ccee3e3-ae8d-4793-a534-5b075b74429b">
     <Parameter Name="Opacity" Guid="70bd1ffb-c487-47ac-8110-fde13a75c912" Value="0.05" Type="float"/>
-    <Parameter Name="SmoothFactor" Guid="267e4d6e-d9a0-462b-a553-987b3549bc2c" Value="0.18" Type="float"/>
-    <Parameter Name="AnimationResponsiveness" Guid="bacfc39c-950b-49f8-89bb-e270762f2d88" Value="12" Type="float"/>
-    <Parameter Name="WalkAnimationSpeed" Guid="bbe4cce4-6442-4ec3-af52-ef4b31379d2a" Value="1.0" Type="float"/>
-    <Parameter Name="WalkLegsAngle" Guid="e5c981b5-1c28-4f7b-97ac-46bcdf6f3552" Value="0.6" Type="float"/>
-    <Parameter Name="WalkBobHeight" Guid="8a908b3b-a1f1-4945-ab98-299e0cee4802" Value="0.03" Type="float"/>
+    <Parameter Name="WalkLegsAngle" Guid="0a1c9f08-e413-4e90-8824-317a30200ea7" Value="0.95" Type="float"/>
+    <Parameter Name="WalkAnimationSpeed" Guid="c8606725-a034-46eb-87f5-e207ca143bff" Value="0.65" Type="float"/>
+    <Parameter Name="WalkBobHeight" Guid="20f8cb67-ffec-48dd-b92a-32f834f4f99c" Value="0.045" Type="float"/>
+    <Parameter Name="SmoothFactor" Guid="9a94e4a4-cf8e-4c11-a29e-0fe47353f41c" Value="0.001" Type="float"/>
+    <Parameter Name="AnimationResponsiveness" Guid="634b04eb-e03c-4689-bbf0-359979f17d02" Value="12" Type="float"/>
     <Parameter Name="ModelName" Guid="a8fc7156-3adb-46b6-8a52-85e9b7273611" Value="Models/Tank superior" Type="string"/>
     <Parameter Name="TextureOverride" Guid="ff521809-f716-44ea-b44b-dd2f80bdc8c8" Value="Textures/ZombiesDeMierda/Tank Fire Ghost" Type="string"/>
     <Parameter Name="Class" Guid="ecffc274-2b9c-402c-9988-0e8529c9ecec" Value="Game.ComponentNewGhostTankModel" Type="string"/>
@@ -9012,11 +9012,11 @@
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewGhostTankModel" Guid="52e437f4-61b1-4db0-afdf-e418e3165105" InheritanceParent="5ccee3e3-ae8d-4793-a534-5b075b74429b">
     <Parameter Name="Opacity" Guid="ba1d4be5-80a4-4341-96bb-04a6f52df7d8" Value="0.05" Type="float"/>
-    <Parameter Name="SmoothFactor" Guid="3a9b599c-d58e-4237-a8d8-a92bcd6f19f1" Value="0.18" Type="float"/>
-    <Parameter Name="AnimationResponsiveness" Guid="ad249e16-fac2-49b4-a2bc-9f44b02654de" Value="12" Type="float"/>
-    <Parameter Name="WalkAnimationSpeed" Guid="3c829f79-a008-4389-9eaa-f3d463f320b1" Value="1.0" Type="float"/>
-    <Parameter Name="WalkLegsAngle" Guid="161b3a48-8d6f-4ff0-b0e8-9f938742ba85" Value="0.6" Type="float"/>
-    <Parameter Name="WalkBobHeight" Guid="27d9229d-bc4b-4bbb-896b-3b97da989de1" Value="0.03" Type="float"/>
+    <Parameter Name="WalkLegsAngle" Guid="34853a7b-3917-457d-8225-d0784aa420c6" Value="0.95" Type="float"/>
+    <Parameter Name="WalkAnimationSpeed" Guid="14b009d0-f2a3-4272-9029-ff0a1f269042" Value="0.65" Type="float"/>
+    <Parameter Name="WalkBobHeight" Guid="9e4e2405-bfc7-4299-902d-b0828275a288" Value="0.045" Type="float"/>
+    <Parameter Name="SmoothFactor" Guid="946f1506-b8cc-4cd2-8b18-ff560788e8af" Value="0.001" Type="float"/>
+    <Parameter Name="AnimationResponsiveness" Guid="cbff1976-fd4c-4a5b-a3b4-c719f729eb8c" Value="12" Type="float"/>
     <Parameter Name="ModelName" Guid="66ca3e3b-fd4d-4c7e-b51d-983f1b82108a" Value="Models/Tank De Mierda" Type="string"/>
     <Parameter Name="TextureOverride" Guid="f9d4647d-bd41-42a0-a488-e84f38446762" Value="Textures/ZombiesDeMierda/Poisonous Ghost" Type="string"/>
     <Parameter Name="Class" Guid="4c4958f3-b6c0-4bc3-9053-699022a3c7d1" Value="Game.ComponentNewGhostTankModel" Type="string"/>
@@ -9176,11 +9176,11 @@
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewGhostTankModel" Guid="54ee57d9-7297-47b3-b9b2-10884cdae557" InheritanceParent="5ccee3e3-ae8d-4793-a534-5b075b74429b">
     <Parameter Name="Opacity" Guid="227ea540-5042-42c4-8687-3a5f499b4ba3" Value="0.05" Type="float"/>
-    <Parameter Name="SmoothFactor" Guid="bf080f1f-1821-4f7f-b229-470b1e7cc728" Value="0.18" Type="float"/>
-    <Parameter Name="AnimationResponsiveness" Guid="e666fd2e-acb3-47b9-98d6-581cffebc168" Value="12" Type="float"/>
-    <Parameter Name="WalkAnimationSpeed" Guid="ee878282-b5a6-48a6-9574-56b5744c7110" Value="1.0" Type="float"/>
-    <Parameter Name="WalkLegsAngle" Guid="1873491b-7113-49f2-9dcd-554b8c33d060" Value="0.6" Type="float"/>
-    <Parameter Name="WalkBobHeight" Guid="8cb10645-eb83-4e0f-8b20-edf5e67a4dd0" Value="0.03" Type="float"/>
+    <Parameter Name="WalkLegsAngle" Guid="fd044b7e-c7be-4d3b-b943-ca65521b25a3" Value="0.95" Type="float"/>
+    <Parameter Name="WalkAnimationSpeed" Guid="5ed3d517-dfcc-485a-b72e-033c0f051f37" Value="0.65" Type="float"/>
+    <Parameter Name="WalkBobHeight" Guid="6e6dfd15-e7ae-45eb-9a9d-86957115873e" Value="0.045" Type="float"/>
+    <Parameter Name="SmoothFactor" Guid="67050b02-4e51-468e-9f48-996ba8dc4413" Value="0.001" Type="float"/>
+    <Parameter Name="AnimationResponsiveness" Guid="81cc3fe9-c148-42e5-9ac4-ca4e96af33eb" Value="12" Type="float"/>
     <Parameter Name="ModelName" Guid="dcfd2504-4b22-4a76-b32a-0368dca5205e" Value="Models/Tank De Mierda" Type="string"/>
     <Parameter Name="TextureOverride" Guid="ec6a8b0f-187d-48f3-846c-23d440f55770" Value="Textures/ZombiesDeMierda/Poisonous Ghost" Type="string"/>
     <Parameter Name="Class" Guid="a8316435-5b4d-4203-b560-1dce26db7d37" Value="Game.ComponentNewGhostTankModel" Type="string"/>
