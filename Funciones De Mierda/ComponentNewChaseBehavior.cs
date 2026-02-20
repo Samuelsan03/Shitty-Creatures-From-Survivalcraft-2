@@ -194,6 +194,45 @@ namespace Game
 			return false;
 		}
 
+		// Responder a comandos inmediatamente
+		public void RespondToCommandImmediately(ComponentCreature target)
+		{
+			if (this.Suppressed || target == null)
+				return;
+
+			// Verificar si podemos atacar según reglas de manada
+			if (m_componentNewHerd != null)
+			{
+				if (!m_componentNewHerd.CanAttackCreature(target))
+					return;
+			}
+			else
+			{
+				// Si no hay manada nueva, verificar con el sistema de alianzas
+				if (IsAlly(target))
+					return;
+			}
+
+			this.m_target = target;
+			this.m_nextUpdateTime = 0.0;
+			this.m_range = 20f;
+			this.m_chaseTime = 30f;
+			this.m_isPersistent = false;
+			this.m_importanceLevel = this.ImportanceLevelNonPersistent;
+			this.IsActive = true;
+			this.m_stateMachine.TransitionTo("Chasing");
+
+			// Iniciar movimiento inmediato
+			if (this.m_target != null && this.m_componentPathfinding != null)
+			{
+				this.m_componentPathfinding.Stop();
+				Vector3 targetPosition = this.m_target.ComponentBody.Position;
+				this.m_componentPathfinding.SetDestination(targetPosition, 1f, 1.5f, 0, true, false, true, this.m_target.ComponentBody);
+				this.m_componentCreature.ComponentCreatureModel.LookAtOrder = this.m_target.ComponentCreatureModel.EyePosition;
+			}
+		}
+
+
 		// Determina si otra criatura es aliada de ESTA criatura
 		private bool IsAlly(ComponentCreature other)
 		{
@@ -1238,9 +1277,32 @@ namespace Game
 			}
 			else
 			{
-				// Si no hay manada nueva, verificar con la antigua
+				// Si no hay manada nueva, verificar con el sistema de alianzas
 				if (IsAlly(componentCreature))
 					return;
+			}
+
+			// Durante noche verde, comportamiento especial
+			if (this.m_subsystemGreenNightSky != null && this.m_subsystemGreenNightSky.IsGreenNightActive)
+			{
+				if (IsZombieOrInfected(componentCreature))
+				{
+					maxChaseTime *= 1.5f;
+					isPersistent = true;
+				}
+			}
+
+			// Protección especial contra bandidos
+			if (IsGuardianOrPlayerAlly() && IsBandit(componentCreature))
+			{
+				maxRange *= 1.3f;
+				maxChaseTime *= 1.5f;
+				isPersistent = true;
+
+				if (m_importanceLevel < 280f)
+				{
+					m_importanceLevel = 280f;
+				}
 			}
 
 			if (m_isNearDeath)
