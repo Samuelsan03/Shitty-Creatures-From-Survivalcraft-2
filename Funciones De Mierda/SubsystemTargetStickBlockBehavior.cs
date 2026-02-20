@@ -151,8 +151,8 @@ namespace Game
 							if (!IsPlayerAlly(creature))
 								continue;
 
+							// Verificar si puede atacar al objetivo (usando NewHerd)
 							ComponentNewHerdBehavior herdBehavior = creature.Entity.FindComponent<ComponentNewHerdBehavior>();
-
 							if (herdBehavior != null)
 							{
 								if (!herdBehavior.CanAttackCreature(targetCreature))
@@ -162,57 +162,43 @@ namespace Game
 							}
 							else
 							{
-								// AGREGADO: Lógica mejorada para guardianes en manadas originales
-								ComponentHerdBehavior oldHerd = creature.Entity.FindComponent<ComponentHerdBehavior>();
-								ComponentHerdBehavior targetHerd = targetCreature.Entity.FindComponent<ComponentHerdBehavior>();
-
-								if (oldHerd != null && targetHerd != null &&
-									!string.IsNullOrEmpty(oldHerd.HerdName) &&
-									!string.IsNullOrEmpty(targetHerd.HerdName))
+								// Verificar manualmente si es aliado (para criaturas sin NewHerd)
+								if (IsCreatureAlly(creature, targetCreature))
 								{
-									bool isSameHerd = targetHerd.HerdName == oldHerd.HerdName;
-
-									// Verificar relación player-guardian
-									bool isPlayerAllyRelationship = false;
-
-									if (oldHerd.HerdName.Equals("player", StringComparison.OrdinalIgnoreCase))
-									{
-										if (targetHerd.HerdName.ToLower().Contains("guardian"))
-										{
-											isPlayerAllyRelationship = true;
-										}
-									}
-									else if (oldHerd.HerdName.ToLower().Contains("guardian"))
-									{
-										if (targetHerd.HerdName.Equals("player", StringComparison.OrdinalIgnoreCase))
-										{
-											isPlayerAllyRelationship = true;
-										}
-									}
-
-									if (isSameHerd || isPlayerAllyRelationship)
-									{
-										continue; // No atacar a aliados
-									}
+									continue;
 								}
 							}
 
-							// ORDENAR EL ATAQUE - Esta parte faltaba en tu código
+							// ORDENAR EL ATAQUE - Incluye todos los tipos de chase behavior
 							ComponentNewChaseBehavior newChase = creature.Entity.FindComponent<ComponentNewChaseBehavior>();
 							ComponentNewChaseBehavior2 newChase2 = creature.Entity.FindComponent<ComponentNewChaseBehavior2>();
 							ComponentChaseBehavior oldChase = creature.Entity.FindComponent<ComponentChaseBehavior>();
+							ComponentZombieChaseBehavior zombieChase = creature.Entity.FindComponent<ComponentZombieChaseBehavior>();
+							ComponentBanditChaseBehavior banditChase = creature.Entity.FindComponent<ComponentBanditChaseBehavior>();
 
 							if (newChase != null && !newChase.Suppressed)
 							{
-								newChase.RespondToCommandImmediately(targetCreature);
+								// ComponentNewChaseBehavior tiene Attack (heredado de ComponentChaseBehavior)
+								newChase.Attack(targetCreature, commandRange, maxChaseTime, true);
 							}
 							else if (newChase2 != null)
 							{
-								newChase2.RespondToCommandImmediately(targetCreature);
+								// ComponentNewChaseBehavior2 tiene su propio método Attack
+								newChase2.Attack(targetCreature, commandRange, maxChaseTime, true);
 							}
 							else if (oldChase != null)
 							{
-								oldChase.Attack(targetCreature, commandRange, maxChaseTime, false);
+								oldChase.Attack(targetCreature, commandRange, maxChaseTime, true);
+							}
+							else if (zombieChase != null)
+							{
+								// ComponentZombieChaseBehavior hereda de ComponentChaseBehavior
+								zombieChase.Attack(targetCreature, commandRange, maxChaseTime, true);
+							}
+							else if (banditChase != null)
+							{
+								// ComponentBanditChaseBehavior hereda de ComponentChaseBehavior
+								banditChase.Attack(targetCreature, commandRange, maxChaseTime, true);
 							}
 						}
 					}
@@ -233,26 +219,37 @@ namespace Game
 			if (creature == null)
 				return false;
 
+			// Verificar NewHerdBehavior
 			ComponentNewHerdBehavior newHerd = creature.Entity.FindComponent<ComponentNewHerdBehavior>();
 			if (newHerd != null && !string.IsNullOrEmpty(newHerd.HerdName))
 			{
-				// AGREGADO: Incluir guardianes como aliados del jugador
-				string herdName = newHerd.HerdName;
-				return herdName.Equals("player", StringComparison.OrdinalIgnoreCase) ||
-					   herdName.ToLower().Contains("guardian");
+				string herdName = newHerd.HerdName.ToLower();
+				return herdName == "player" || herdName.Contains("guardian");
 			}
 
-			ComponentHerdBehavior oldHerd = creature.Entity.FindComponent<ComponentHerdBehavior>();
-			if (oldHerd != null && !string.IsNullOrEmpty(oldHerd.HerdName))
-			{
-				// AGREGADO: Incluir guardianes como aliados del jugador
-				string herdName = oldHerd.HerdName;
-				return herdName.Equals("player", StringComparison.OrdinalIgnoreCase) ||
-					   herdName.ToLower().Contains("guardian");
-			}
-
+			// Verificar ComponentPlayer directamente
 			ComponentPlayer player = creature.Entity.FindComponent<ComponentPlayer>();
-			return player != null;
+			if (player != null)
+				return true;
+
+			return false;
+		}
+
+		private bool IsCreatureAlly(ComponentCreature creature, ComponentCreature target)
+		{
+			if (creature == null || target == null)
+				return false;
+
+			// Verificar NewHerd en ambos
+			ComponentNewHerdBehavior creatureHerd = creature.Entity.FindComponent<ComponentNewHerdBehavior>();
+			ComponentNewHerdBehavior targetHerd = target.Entity.FindComponent<ComponentNewHerdBehavior>();
+
+			if (creatureHerd != null && targetHerd != null)
+			{
+				return creatureHerd.IsSameHerdOrGuardian(target);
+			}
+
+			return false;
 		}
 	}
 }
