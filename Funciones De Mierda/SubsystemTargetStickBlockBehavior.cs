@@ -1,250 +1,301 @@
-// SubsystemTargetStickBlockBehavior.cs (SIN MENSAJES)
 using System;
+using System.Runtime.CompilerServices;
 using Engine;
-using GameEntitySystem;
-using TemplatesDatabase;
-using System.Collections.Generic;
 
 namespace Game
 {
+	// Token: 0x020000DF RID: 223
 	public class SubsystemTargetStickBlockBehavior : SubsystemBlockBehavior
 	{
-		private SubsystemAudio m_subsystemAudio;
-		private SubsystemCreatureSpawn m_subsystemCreatureSpawn;
-		private SubsystemPlayers m_subsystemPlayers;
-		private SubsystemTime m_subsystemTime;
-
+		// Token: 0x170000CA RID: 202
+		// (get) Token: 0x06000941 RID: 2369 RVA: 0x0007219C File Offset: 0x0007039C
 		public override int[] HandledBlocks
 		{
-			get { return new int[] { BlocksManager.GetBlockIndex(typeof(TargetStickBlock), true, false) }; }
+			get
+			{
+				return new int[]
+				{
+					BlocksManager.GetBlockIndex(typeof(TargetStickBlock), true, false)
+				};
+			}
 		}
 
-		public override void Load(ValuesDictionary valuesDictionary)
-		{
-			base.Load(valuesDictionary);
-			m_subsystemAudio = Project.FindSubsystem<SubsystemAudio>(true);
-			m_subsystemCreatureSpawn = Project.FindSubsystem<SubsystemCreatureSpawn>(true);
-			m_subsystemPlayers = Project.FindSubsystem<SubsystemPlayers>(true);
-			m_subsystemTime = Project.FindSubsystem<SubsystemTime>(true);
-		}
-
+		// Token: 0x06000942 RID: 2370 RVA: 0x000721C8 File Offset: 0x000703C8
 		public override bool OnUse(Ray3 ray, ComponentMiner componentMiner)
 		{
+			bool result;
 			try
 			{
-				ComponentPlayer componentPlayer = componentMiner?.ComponentPlayer;
-				if (componentPlayer == null)
+				ComponentPlayer componentPlayer = (componentMiner != null) ? componentMiner.ComponentPlayer : null;
+				bool flag = componentPlayer == null;
+				if (flag)
 				{
-					return false;
-				}
-
-				int activeBlockValue = componentMiner.ActiveBlockValue;
-				if (activeBlockValue == 0)
-				{
-					return false;
-				}
-
-				int activeBlockId = Terrain.ExtractContents(activeBlockValue);
-				int targetStickBlockId = BlocksManager.GetBlockIndex(typeof(TargetStickBlock), true, false);
-
-				if (activeBlockId != targetStickBlockId)
-				{
-					return false;
-				}
-
-				if (m_subsystemAudio == null)
-				{
-					m_subsystemAudio = componentMiner.Project.FindSubsystem<SubsystemAudio>(true);
-				}
-
-				if (m_subsystemCreatureSpawn == null)
-				{
-					m_subsystemCreatureSpawn = componentMiner.Project.FindSubsystem<SubsystemCreatureSpawn>(true);
-				}
-
-				if (m_subsystemPlayers == null)
-				{
-					m_subsystemPlayers = componentMiner.Project.FindSubsystem<SubsystemPlayers>(true);
-				}
-
-				if (m_subsystemAudio == null || m_subsystemCreatureSpawn == null)
-				{
-					return false;
-				}
-
-				ComponentCreatureModel creatureModel = componentMiner.ComponentCreature.ComponentCreatureModel;
-				if (creatureModel == null)
-				{
-					return false;
-				}
-
-				Vector3 eyePosition = creatureModel.EyePosition;
-				Vector3 lookDirection = ray.Direction;
-
-				ComponentCreature targetCreature = null;
-				Vector3? targetPosition = null;
-
-				BodyRaycastResult? bodyRaycastResult = componentMiner.Raycast<BodyRaycastResult>(
-					ray,
-					RaycastMode.Interaction,
-					true, true, true
-				);
-
-				bool foundTarget = false;
-
-				if (bodyRaycastResult != null && bodyRaycastResult.Value.ComponentBody != null)
-				{
-					ComponentBody targetBody = bodyRaycastResult.Value.ComponentBody;
-					targetCreature = targetBody.Entity.FindComponent<ComponentCreature>();
-
-					if (targetCreature != null && !IsPlayerAlly(targetCreature))
-					{
-						targetPosition = bodyRaycastResult.Value.HitPoint();
-						foundTarget = true;
-					}
-				}
-
-				if (!foundTarget)
-				{
-					float maxDistance = 20f;
-					float maxAngle = 45f;
-					ComponentCreature bestTarget = null;
-					float bestScore = 0f;
-
-					foreach (ComponentCreature creature in m_subsystemCreatureSpawn.Creatures)
-					{
-						if (creature == null || creature == componentMiner.ComponentCreature)
-							continue;
-
-						if (IsPlayerAlly(creature))
-							continue;
-
-						float distance = Vector3.Distance(creature.ComponentBody.Position, eyePosition);
-						if (distance > maxDistance)
-							continue;
-
-						Vector3 toCreature = Vector3.Normalize(creature.ComponentBody.Position - eyePosition);
-						float angle = MathUtils.Acos(Vector3.Dot(lookDirection, toCreature)) * 180f / MathUtils.PI;
-
-						if (angle > maxAngle)
-							continue;
-
-						float score = (maxDistance - distance) * (maxAngle - angle) * 100f;
-
-						if (score > bestScore)
-						{
-							bestScore = score;
-							bestTarget = creature;
-						}
-					}
-
-					if (bestTarget != null)
-					{
-						targetCreature = bestTarget;
-						targetPosition = bestTarget.ComponentBody.Position;
-						foundTarget = true;
-					}
-				}
-
-				if (foundTarget && targetCreature != null)
-				{
-					m_subsystemAudio.PlaySound("Audio/UI/Attack", 1f, 0f, 0f, 0f);
-
-					Vector3 commanderPosition = componentMiner.ComponentCreature.ComponentBody.Position;
-					float commandRange = 40f;
-					float maxChaseTime = 60f;
-					int alliesCommanded = 0;
-
-					DynamicArray<ComponentBody> bodies = new DynamicArray<ComponentBody>();
-					SubsystemBodies subsystemBodies = Project.FindSubsystem<SubsystemBodies>(true);
-					subsystemBodies.FindBodiesAroundPoint(new Vector2(commanderPosition.X, commanderPosition.Z), commandRange, bodies);
-
-					for (int i = 0; i < bodies.Count; i++)
-					{
-						ComponentCreature creature = bodies.Array[i].Entity.FindComponent<ComponentCreature>();
-						if (creature == null || creature == componentMiner.ComponentCreature || creature == targetCreature)
-							continue;
-
-						if (!IsPlayerAlly(creature))
-							continue;
-
-						if (!CanAttackTarget(creature, targetCreature))
-							continue;
-
-						ComponentNewChaseBehavior newChase = creature.Entity.FindComponent<ComponentNewChaseBehavior>();
-						if (newChase != null)
-						{
-							newChase.Attack(targetCreature, commandRange, maxChaseTime, true);
-							alliesCommanded++;
-						}
-						else
-						{
-							ComponentChaseBehavior oldChase = creature.Entity.FindComponent<ComponentChaseBehavior>();
-							if (oldChase != null)
-							{
-								oldChase.Attack(targetCreature, commandRange, maxChaseTime, true);
-								alliesCommanded++;
-							}
-						}
-					}
-
-					// SIN MENSAJES EN PANTALLA
-
-					return true;
+					result = false;
 				}
 				else
 				{
-					m_subsystemAudio.PlaySound("Audio/UI/ButtonCancel", 1f, 0f, 0f, 0f);
-					return false;
+					int activeBlockValue = componentMiner.ActiveBlockValue;
+					bool flag2 = activeBlockValue == 0;
+					if (flag2)
+					{
+						result = false;
+					}
+					else
+					{
+						int num = Terrain.ExtractContents(activeBlockValue);
+						int blockIndex = BlocksManager.GetBlockIndex(typeof(TargetStickBlock), true, false);
+						bool flag3 = num != blockIndex;
+						if (flag3)
+						{
+							result = false;
+						}
+						else
+						{
+							bool flag4 = this.m_subsystemAudio == null;
+							if (flag4)
+							{
+								this.m_subsystemAudio = componentMiner.Project.FindSubsystem<SubsystemAudio>(true);
+							}
+							bool flag5 = this.m_subsystemCreatureSpawn == null;
+							if (flag5)
+							{
+								this.m_subsystemCreatureSpawn = componentMiner.Project.FindSubsystem<SubsystemCreatureSpawn>(true);
+							}
+							bool flag6 = this.m_subsystemAudio == null;
+							if (flag6)
+							{
+								result = false;
+							}
+							else
+							{
+								ComponentCreatureModel componentCreatureModel = componentMiner.ComponentCreature.ComponentCreatureModel;
+								bool flag7 = componentCreatureModel == null;
+								if (flag7)
+								{
+									result = false;
+								}
+								else
+								{
+									Vector3 eyePosition = componentCreatureModel.EyePosition;
+									Vector3 direction = ray.Direction;
+									ComponentCreature componentCreature = null;
+									Vector3? vector = null;
+									BodyRaycastResult? bodyRaycastResult = componentMiner.Raycast<BodyRaycastResult>(ray, RaycastMode.Interaction, true, true, true, null);
+									bool flag8 = false;
+									bool flag9 = bodyRaycastResult != null && bodyRaycastResult.Value.ComponentBody != null;
+									if (flag9)
+									{
+										ComponentBody componentBody = bodyRaycastResult.Value.ComponentBody;
+										componentCreature = componentBody.Entity.FindComponent<ComponentCreature>();
+										bool flag10 = componentCreature != null && !this.IsPlayerAlly(componentCreature);
+										if (flag10)
+										{
+											vector = new Vector3?(bodyRaycastResult.Value.HitPoint());
+											flag8 = true;
+										}
+									}
+									bool flag11 = !flag8 && this.m_subsystemCreatureSpawn != null;
+									if (flag11)
+									{
+										float num2 = 6f;
+										float num3 = 100f;
+										ComponentCreature componentCreature2 = null;
+										float num4 = 0f;
+										foreach (ComponentCreature componentCreature3 in this.m_subsystemCreatureSpawn.Creatures)
+										{
+											bool flag12 = componentCreature3 == null || componentCreature3 == componentMiner.ComponentCreature;
+											if (!flag12)
+											{
+												bool flag13 = this.IsPlayerAlly(componentCreature3);
+												if (!flag13)
+												{
+													float num5 = Vector3.Distance(componentCreature3.ComponentBody.Position, eyePosition);
+													bool flag14 = num5 > num2;
+													if (!flag14)
+													{
+														Vector3 v = Vector3.Normalize(componentCreature3.ComponentBody.Position - eyePosition);
+														float num6 = MathUtils.Acos(Vector3.Dot(direction, v)) * 180f / 3.1415927f;
+														bool flag15 = num6 > num3;
+														if (!flag15)
+														{
+															float num7 = (num2 - num5) * (num3 - num6);
+															bool flag16 = num7 > num4;
+															if (flag16)
+															{
+																num4 = num7;
+																componentCreature2 = componentCreature3;
+															}
+														}
+													}
+												}
+											}
+										}
+										bool flag17 = componentCreature2 != null;
+										if (flag17)
+										{
+											componentCreature = componentCreature2;
+											vector = new Vector3?(componentCreature2.ComponentBody.Position);
+											flag8 = true;
+										}
+									}
+									bool flag18 = flag8 && componentCreature != null;
+									if (flag18)
+									{
+										this.m_subsystemAudio.PlaySound("Audio/UI/Attack", 1f, 0f, 0f, 0f);
+										bool flag19 = this.m_subsystemCreatureSpawn != null;
+										if (flag19)
+										{
+											Vector3 position = componentMiner.ComponentCreature.ComponentBody.Position;
+											float num8 = 30f;
+											float maxChaseTime = 45f;
+											foreach (ComponentCreature componentCreature4 in this.m_subsystemCreatureSpawn.Creatures)
+											{
+												bool flag20 = componentCreature4 == null || componentCreature4 == componentMiner.ComponentCreature || componentCreature4 == componentCreature;
+												if (!flag20)
+												{
+													float num9 = Vector3.Distance(componentCreature4.ComponentBody.Position, position);
+													bool flag21 = num9 > num8;
+													if (!flag21)
+													{
+														bool flag22 = !this.IsPlayerAlly(componentCreature4);
+														if (!flag22)
+														{
+															ComponentNewHerdBehavior componentNewHerdBehavior = componentCreature4.Entity.FindComponent<ComponentNewHerdBehavior>();
+															bool flag23 = componentNewHerdBehavior != null;
+															if (flag23)
+															{
+																bool flag24 = !componentNewHerdBehavior.CanAttackCreature(componentCreature);
+																if (flag24)
+																{
+																	continue;
+																}
+															}
+															else
+															{
+																ComponentHerdBehavior componentHerdBehavior = componentCreature4.Entity.FindComponent<ComponentHerdBehavior>();
+																ComponentHerdBehavior componentHerdBehavior2 = componentCreature.Entity.FindComponent<ComponentHerdBehavior>();
+																bool flag25 = componentHerdBehavior != null && componentHerdBehavior2 != null && !string.IsNullOrEmpty(componentHerdBehavior.HerdName) && !string.IsNullOrEmpty(componentHerdBehavior2.HerdName);
+																if (flag25)
+																{
+																	bool flag26 = componentHerdBehavior2.HerdName == componentHerdBehavior.HerdName;
+																	bool flag27 = false;
+																	bool flag28 = componentHerdBehavior.HerdName.Equals("player", StringComparison.OrdinalIgnoreCase);
+																	if (flag28)
+																	{
+																		bool flag29 = componentHerdBehavior2.HerdName.ToLower().Contains("guardian");
+																		if (flag29)
+																		{
+																			flag27 = true;
+																		}
+																	}
+																	else
+																	{
+																		bool flag30 = componentHerdBehavior.HerdName.ToLower().Contains("guardian");
+																		if (flag30)
+																		{
+																			bool flag31 = componentHerdBehavior2.HerdName.Equals("player", StringComparison.OrdinalIgnoreCase);
+																			if (flag31)
+																			{
+																				flag27 = true;
+																			}
+																		}
+																	}
+																	bool flag32 = flag26 || flag27;
+																	if (flag32)
+																	{
+																		continue;
+																	}
+																}
+															}
+															ComponentNewChaseBehavior componentNewChaseBehavior = componentCreature4.Entity.FindComponent<ComponentNewChaseBehavior>();
+															ComponentNewChaseBehavior2 componentNewChaseBehavior2 = componentCreature4.Entity.FindComponent<ComponentNewChaseBehavior2>();
+															ComponentChaseBehavior componentChaseBehavior = componentCreature4.Entity.FindComponent<ComponentChaseBehavior>();
+															bool flag33 = componentNewChaseBehavior != null && !componentNewChaseBehavior.Suppressed;
+															if (flag33)
+															{
+																componentNewChaseBehavior.RespondToCommandImmediately(componentCreature);
+															}
+															else
+															{
+																bool flag34 = componentNewChaseBehavior2 != null;
+																if (flag34)
+																{
+																	componentNewChaseBehavior2.RespondToCommandImmediately(componentCreature);
+																}
+																else
+																{
+																	bool flag35 = componentChaseBehavior != null;
+																	if (flag35)
+																	{
+																		componentChaseBehavior.Attack(componentCreature, num8, maxChaseTime, false);
+																	}
+																}
+															}
+														}
+													}
+												}
+											}
+										}
+										result = true;
+									}
+									else
+									{
+										result = false;
+									}
+								}
+							}
+						}
+					}
 				}
 			}
-			catch (Exception ex)
+			catch (Exception)
 			{
-				Log.Error($"Error en TargetStickBlockBehavior: {ex.Message}");
-				return false;
+				result = false;
 			}
+			return result;
 		}
 
-		private bool CanAttackTarget(ComponentCreature attacker, ComponentCreature target)
-		{
-			if (attacker == null || target == null)
-				return false;
-
-			ComponentNewHerdBehavior herdBehavior = attacker.Entity.FindComponent<ComponentNewHerdBehavior>();
-			if (herdBehavior != null)
-			{
-				return herdBehavior.CanAttackCreature(target);
-			}
-
-			ComponentNewHerdBehavior targetHerd = target.Entity.FindComponent<ComponentNewHerdBehavior>();
-			if (targetHerd != null && !string.IsNullOrEmpty(targetHerd.HerdName))
-			{
-				string herdName = targetHerd.HerdName.ToLower();
-				if (herdName == "player" || herdName.Contains("guardian"))
-					return false;
-			}
-
-			return !IsPlayerAlly(target);
-		}
-
+		// Token: 0x06000943 RID: 2371 RVA: 0x000727D8 File Offset: 0x000709D8
 		private bool IsPlayerAlly(ComponentCreature creature)
 		{
-			if (creature == null)
-				return false;
-
-			ComponentNewHerdBehavior newHerd = creature.Entity.FindComponent<ComponentNewHerdBehavior>();
-			if (newHerd != null && !string.IsNullOrEmpty(newHerd.HerdName))
+			bool flag = creature == null;
+			bool result;
+			if (flag)
 			{
-				string herdName = newHerd.HerdName.ToLower();
-				if (herdName == "player" || herdName.Contains("guardian"))
-					return true;
+				result = false;
 			}
-
-			ComponentPlayer player = creature.Entity.FindComponent<ComponentPlayer>();
-			if (player != null)
-				return true;
-
-			return false;
+			else
+			{
+				ComponentNewHerdBehavior componentNewHerdBehavior = creature.Entity.FindComponent<ComponentNewHerdBehavior>();
+				bool flag2 = componentNewHerdBehavior != null && !string.IsNullOrEmpty(componentNewHerdBehavior.HerdName);
+				if (flag2)
+				{
+					string herdName = componentNewHerdBehavior.HerdName;
+					result = (herdName.Equals("player", StringComparison.OrdinalIgnoreCase) || herdName.ToLower().Contains("guardian"));
+				}
+				else
+				{
+					ComponentHerdBehavior componentHerdBehavior = creature.Entity.FindComponent<ComponentHerdBehavior>();
+					bool flag3 = componentHerdBehavior != null && !string.IsNullOrEmpty(componentHerdBehavior.HerdName);
+					if (flag3)
+					{
+						string herdName2 = componentHerdBehavior.HerdName;
+						result = (herdName2.Equals("player", StringComparison.OrdinalIgnoreCase) || herdName2.ToLower().Contains("guardian"));
+					}
+					else
+					{
+						ComponentPlayer componentPlayer = creature.Entity.FindComponent<ComponentPlayer>();
+						result = (componentPlayer != null);
+					}
+				}
+			}
+			return result;
 		}
+
+		// Token: 0x0400077B RID: 1915
+		private SubsystemAudio m_subsystemAudio;
+
+		// Token: 0x0400077C RID: 1916
+		private SubsystemCreatureSpawn m_subsystemCreatureSpawn;
 	}
 }
