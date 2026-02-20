@@ -1,3 +1,4 @@
+// SubsystemTargetStickBlockBehavior.cs (SIN MENSAJES)
 using System;
 using Engine;
 using GameEntitySystem;
@@ -10,10 +11,21 @@ namespace Game
 	{
 		private SubsystemAudio m_subsystemAudio;
 		private SubsystemCreatureSpawn m_subsystemCreatureSpawn;
+		private SubsystemPlayers m_subsystemPlayers;
+		private SubsystemTime m_subsystemTime;
 
 		public override int[] HandledBlocks
 		{
 			get { return new int[] { BlocksManager.GetBlockIndex(typeof(TargetStickBlock), true, false) }; }
+		}
+
+		public override void Load(ValuesDictionary valuesDictionary)
+		{
+			base.Load(valuesDictionary);
+			m_subsystemAudio = Project.FindSubsystem<SubsystemAudio>(true);
+			m_subsystemCreatureSpawn = Project.FindSubsystem<SubsystemCreatureSpawn>(true);
+			m_subsystemPlayers = Project.FindSubsystem<SubsystemPlayers>(true);
+			m_subsystemTime = Project.FindSubsystem<SubsystemTime>(true);
 		}
 
 		public override bool OnUse(Ray3 ray, ComponentMiner componentMiner)
@@ -50,7 +62,12 @@ namespace Game
 					m_subsystemCreatureSpawn = componentMiner.Project.FindSubsystem<SubsystemCreatureSpawn>(true);
 				}
 
-				if (m_subsystemAudio == null)
+				if (m_subsystemPlayers == null)
+				{
+					m_subsystemPlayers = componentMiner.Project.FindSubsystem<SubsystemPlayers>(true);
+				}
+
+				if (m_subsystemAudio == null || m_subsystemCreatureSpawn == null)
 				{
 					return false;
 				}
@@ -87,10 +104,10 @@ namespace Game
 					}
 				}
 
-				if (!foundTarget && m_subsystemCreatureSpawn != null)
+				if (!foundTarget)
 				{
-					float maxDistance = 6f;
-					float maxAngle = 100f;
+					float maxDistance = 20f;
+					float maxAngle = 45f;
 					ComponentCreature bestTarget = null;
 					float bestScore = 0f;
 
@@ -112,7 +129,7 @@ namespace Game
 						if (angle > maxAngle)
 							continue;
 
-						float score = (maxDistance - distance) * (maxAngle - angle);
+						float score = (maxDistance - distance) * (maxAngle - angle) * 100f;
 
 						if (score > bestScore)
 						{
@@ -133,85 +150,81 @@ namespace Game
 				{
 					m_subsystemAudio.PlaySound("Audio/UI/Attack", 1f, 0f, 0f, 0f);
 
-					if (m_subsystemCreatureSpawn != null)
+					Vector3 commanderPosition = componentMiner.ComponentCreature.ComponentBody.Position;
+					float commandRange = 40f;
+					float maxChaseTime = 60f;
+					int alliesCommanded = 0;
+
+					DynamicArray<ComponentBody> bodies = new DynamicArray<ComponentBody>();
+					SubsystemBodies subsystemBodies = Project.FindSubsystem<SubsystemBodies>(true);
+					subsystemBodies.FindBodiesAroundPoint(new Vector2(commanderPosition.X, commanderPosition.Z), commandRange, bodies);
+
+					for (int i = 0; i < bodies.Count; i++)
 					{
-						Vector3 commanderPosition = componentMiner.ComponentCreature.ComponentBody.Position;
-						float commandRange = 30f;
-						float maxChaseTime = 45f;
+						ComponentCreature creature = bodies.Array[i].Entity.FindComponent<ComponentCreature>();
+						if (creature == null || creature == componentMiner.ComponentCreature || creature == targetCreature)
+							continue;
 
-						foreach (ComponentCreature creature in m_subsystemCreatureSpawn.Creatures)
+						if (!IsPlayerAlly(creature))
+							continue;
+
+						if (!CanAttackTarget(creature, targetCreature))
+							continue;
+
+						ComponentNewChaseBehavior newChase = creature.Entity.FindComponent<ComponentNewChaseBehavior>();
+						if (newChase != null)
 						{
-							if (creature == null || creature == componentMiner.ComponentCreature || creature == targetCreature)
-								continue;
-
-							float distance = Vector3.Distance(creature.ComponentBody.Position, commanderPosition);
-							if (distance > commandRange)
-								continue;
-
-							if (!IsPlayerAlly(creature))
-								continue;
-
-							// Verificar si puede atacar al objetivo (usando NewHerd)
-							ComponentNewHerdBehavior herdBehavior = creature.Entity.FindComponent<ComponentNewHerdBehavior>();
-							if (herdBehavior != null)
-							{
-								if (!herdBehavior.CanAttackCreature(targetCreature))
-								{
-									continue;
-								}
-							}
-							else
-							{
-								// Verificar manualmente si es aliado (para criaturas sin NewHerd)
-								if (IsCreatureAlly(creature, targetCreature))
-								{
-									continue;
-								}
-							}
-
-							// ORDENAR EL ATAQUE - Incluye todos los tipos de chase behavior
-							ComponentNewChaseBehavior newChase = creature.Entity.FindComponent<ComponentNewChaseBehavior>();
-							ComponentNewChaseBehavior2 newChase2 = creature.Entity.FindComponent<ComponentNewChaseBehavior2>();
+							newChase.Attack(targetCreature, commandRange, maxChaseTime, true);
+							alliesCommanded++;
+						}
+						else
+						{
 							ComponentChaseBehavior oldChase = creature.Entity.FindComponent<ComponentChaseBehavior>();
-							ComponentZombieChaseBehavior zombieChase = creature.Entity.FindComponent<ComponentZombieChaseBehavior>();
-							ComponentBanditChaseBehavior banditChase = creature.Entity.FindComponent<ComponentBanditChaseBehavior>();
-
-							if (newChase != null && !newChase.Suppressed)
-							{
-								// ComponentNewChaseBehavior tiene Attack (heredado de ComponentChaseBehavior)
-								newChase.Attack(targetCreature, commandRange, maxChaseTime, true);
-							}
-							else if (newChase2 != null)
-							{
-								// ComponentNewChaseBehavior2 tiene su propio método Attack
-								newChase2.Attack(targetCreature, commandRange, maxChaseTime, true);
-							}
-							else if (oldChase != null)
+							if (oldChase != null)
 							{
 								oldChase.Attack(targetCreature, commandRange, maxChaseTime, true);
-							}
-							else if (zombieChase != null)
-							{
-								// ComponentZombieChaseBehavior hereda de ComponentChaseBehavior
-								zombieChase.Attack(targetCreature, commandRange, maxChaseTime, true);
-							}
-							else if (banditChase != null)
-							{
-								// ComponentBanditChaseBehavior hereda de ComponentChaseBehavior
-								banditChase.Attack(targetCreature, commandRange, maxChaseTime, true);
+								alliesCommanded++;
 							}
 						}
 					}
 
-					return true; // Éxito - se encontró y se ordenó atacar
-				}
+					// SIN MENSAJES EN PANTALLA
 
-				return false; // No se encontró objetivo válido
+					return true;
+				}
+				else
+				{
+					m_subsystemAudio.PlaySound("Audio/UI/ButtonCancel", 1f, 0f, 0f, 0f);
+					return false;
+				}
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
+				Log.Error($"Error en TargetStickBlockBehavior: {ex.Message}");
 				return false;
 			}
+		}
+
+		private bool CanAttackTarget(ComponentCreature attacker, ComponentCreature target)
+		{
+			if (attacker == null || target == null)
+				return false;
+
+			ComponentNewHerdBehavior herdBehavior = attacker.Entity.FindComponent<ComponentNewHerdBehavior>();
+			if (herdBehavior != null)
+			{
+				return herdBehavior.CanAttackCreature(target);
+			}
+
+			ComponentNewHerdBehavior targetHerd = target.Entity.FindComponent<ComponentNewHerdBehavior>();
+			if (targetHerd != null && !string.IsNullOrEmpty(targetHerd.HerdName))
+			{
+				string herdName = targetHerd.HerdName.ToLower();
+				if (herdName == "player" || herdName.Contains("guardian"))
+					return false;
+			}
+
+			return !IsPlayerAlly(target);
 		}
 
 		private bool IsPlayerAlly(ComponentCreature creature)
@@ -219,35 +232,17 @@ namespace Game
 			if (creature == null)
 				return false;
 
-			// Verificar NewHerdBehavior
 			ComponentNewHerdBehavior newHerd = creature.Entity.FindComponent<ComponentNewHerdBehavior>();
 			if (newHerd != null && !string.IsNullOrEmpty(newHerd.HerdName))
 			{
 				string herdName = newHerd.HerdName.ToLower();
-				return herdName == "player" || herdName.Contains("guardian");
+				if (herdName == "player" || herdName.Contains("guardian"))
+					return true;
 			}
 
-			// Verificar ComponentPlayer directamente
 			ComponentPlayer player = creature.Entity.FindComponent<ComponentPlayer>();
 			if (player != null)
 				return true;
-
-			return false;
-		}
-
-		private bool IsCreatureAlly(ComponentCreature creature, ComponentCreature target)
-		{
-			if (creature == null || target == null)
-				return false;
-
-			// Verificar NewHerd en ambos
-			ComponentNewHerdBehavior creatureHerd = creature.Entity.FindComponent<ComponentNewHerdBehavior>();
-			ComponentNewHerdBehavior targetHerd = target.Entity.FindComponent<ComponentNewHerdBehavior>();
-
-			if (creatureHerd != null && targetHerd != null)
-			{
-				return creatureHerd.IsSameHerdOrGuardian(target);
-			}
 
 			return false;
 		}
