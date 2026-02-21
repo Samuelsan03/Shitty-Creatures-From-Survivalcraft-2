@@ -3433,21 +3433,19 @@
 </EntityTemplate>
 
 <EntityTemplate Name="Boomer1" Guid="39ca6ee2-fa65-4c2d-8239-ae60d3ec241c" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="BoomerExplosion" Guid="a2cf376f-6eef-43b1-8d95-53ebdfee8307">
-    <Parameter Name="Class" Value="Game.ComponentBoomerExplosion" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="70" Type="int"/>
-    <Parameter Name="ActivationRange" Value="3" Type="float"/>
-    <Parameter Name="UseStandardExplosion" Value="true" Type="bool"/>
-    <Parameter Name="UseCustomShockwave" Value="false" Type="bool"/>
-    <Parameter Name="ExplosionPressure" Value="80" Type="float"/>
-    <Parameter Name="IsIncendiary" Value="false" Type="bool"/>
-    <Parameter Name="ExplosionRadius" Value="10" Type="float"/>
-    <Parameter Name="BlockDamageRadius" Value="8" Type="float"/>
-    <Parameter Name="EntityDamageRadius" Value="10" Type="float"/>
-    <Parameter Name="ShockwaveDamage" Value="100" Type="float"/>
-    <Parameter Name="ShockwaveForce" Value="50" Type="float"/>
-    <Parameter Name="DestroyBlocks" Value="true" Type="bool"/>
+<MemberComponentTemplate Name="BoomerExplosion" Guid="ee8c0c6a-f32f-40af-84a7-c3df6882ad33" InheritanceParent="bf245bcc-8786-4839-9528-87f3f7ff4833">
+  <Parameter Name="ActivationRange" Value="3" Type="float"/>
+  <Parameter Name="UseStandardExplosion" Value="true" Type="bool"/>
+  <Parameter Name="UseCustomShockwave" Value="false" Type="bool"/>
+  <Parameter Name="ExplosionPressure" Value="80" Type="float"/>
+  <Parameter Name="IsIncendiary" Value="false" Type="bool"/>
+  <Parameter Name="ExplosionRadius" Value="10" Type="float"/>
+  <Parameter Name="BlockDamageRadius" Value="8" Type="float"/>
+  <Parameter Name="EntityDamageRadius" Value="10" Type="float"/>
+  <Parameter Name="ShockwaveDamage" Value="100" Type="float"/>
+  <Parameter Name="ShockwaveForce" Value="50" Type="float"/>
+  <Parameter Name="DestroyBlocks" Value="true" Type="bool"/>
+  <Parameter Name="PreventExplosion" Value="false" Type="bool"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="GlowingEyes" Guid="539d8369-6cfb-42c0-a64e-b70a40d07e4e" InheritanceParent="bb8701d3-3a4f-44f7-8a1f-3a455533f632">
               <Parameter Name="GlowingEyesColor" Guid="e281f42f-191d-429f-b545-bebce2c3ac03" Value="0,255,0" Type="Color"/>
@@ -3581,6 +3579,20 @@
         </EntityTemplate>
 
         <EntityTemplate Name="BoomerTamed1" Guid="2421a4f0-5681-4b41-8e0b-79dd235e7332" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="BoomerExplosion" Guid="12c2fb9d-0447-4491-816e-55db6be8abb7" InheritanceParent="bf245bcc-8786-4839-9528-87f3f7ff4833">
+  <Parameter Name="ActivationRange" Value="3" Type="float"/>
+  <Parameter Name="UseStandardExplosion" Value="true" Type="bool"/>
+  <Parameter Name="UseCustomShockwave" Value="false" Type="bool"/>
+  <Parameter Name="ExplosionPressure" Value="80" Type="float"/>
+  <Parameter Name="IsIncendiary" Value="false" Type="bool"/>
+  <Parameter Name="ExplosionRadius" Value="10" Type="float"/>
+  <Parameter Name="BlockDamageRadius" Value="8" Type="float"/>
+  <Parameter Name="EntityDamageRadius" Value="10" Type="float"/>
+  <Parameter Name="ShockwaveDamage" Value="100" Type="float"/>
+  <Parameter Name="ShockwaveForce" Value="50" Type="float"/>
+  <Parameter Name="DestroyBlocks" Value="true" Type="bool"/>
+  <Parameter Name="PreventExplosion" Value="false" Type="bool"/>
+</MemberComponentTemplate>
         <MemberComponentTemplate Name="SummonBehavior" Guid="b3600731-9c19-4c79-a5fd-661edd5a3909">
               <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="12007928-d108-44b1-a050-cc1ea9edc75c"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="3e898a7d-5067-4073-a757-c53a3c964b55"/>
@@ -3611,22 +3623,6 @@
         <Parameter Name="MaxHelpChaseTime" Value="30" Type="float" Guid="c9e8fedd-b6ef-452f-9de7-190634576d31"/>
         <Parameter Name="AvoidAttackingSameHerd" Value="true" Type="bool" Guid="36c17fbc-3e12-4dff-bcd2-e3d5a4b0c298"/>
     </MemberComponentTemplate>
-<MemberComponentTemplate Name="BoomerExplosion" Guid="7be8b739-6537-4108-b9c1-2eea01863113">
-    <Parameter Name="Class" Value="Game.ComponentBoomerExplosion" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="70" Type="int"/>
-    <Parameter Name="ActivationRange" Value="3" Type="float"/>
-    <Parameter Name="UseStandardExplosion" Value="true" Type="bool"/>
-    <Parameter Name="UseCustomShockwave" Value="false" Type="bool"/>
-    <Parameter Name="ExplosionPressure" Value="80" Type="float"/>
-    <Parameter Name="IsIncendiary" Value="false" Type="bool"/>
-    <Parameter Name="ExplosionRadius" Value="10" Type="float"/>
-    <Parameter Name="BlockDamageRadius" Value="8" Type="float"/>
-    <Parameter Name="EntityDamageRadius" Value="10" Type="float"/>
-    <Parameter Name="ShockwaveDamage" Value="100" Type="float"/>
-    <Parameter Name="ShockwaveForce" Value="50" Type="float"/>
-    <Parameter Name="DestroyBlocks" Value="true" Type="bool"/>
-</MemberComponentTemplate>
         <MemberComponentTemplate Name="GlowingEyes" Guid="2aa310a3-21e5-4444-b7f6-cc3bd444d6ce" InheritanceParent="bb8701d3-3a4f-44f7-8a1f-3a455533f632">
               <Parameter Name="GlowingEyesColor" Guid="ba5e41c8-bd71-43e8-b45f-45a56c09ccfb" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="236a1d6c-59e4-42e9-8b4b-23d1669b4c7e" Value="0.06,0.2,0.1" Type="Vector3"/>
@@ -3746,23 +3742,21 @@
         </EntityTemplate>
 
         <EntityTemplate Name="Boomer2" Guid="0287aaeb-ea3f-46e3-9643-1b0821860c0a" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="BoomerExplosion2" Guid="4f29f6b6-2a8d-48d1-8c66-d2ae496c0aa8">
-    <Parameter Name="Class" Value="Game.ComponentBoomerExplosion2" Type="string"/> <!-- Explota al morir de forma incendiaria -->
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="70" Type="int"/>
-    <Parameter Name="ActivationRange" Value="3" Type="float"/>
-    <Parameter Name="UseStandardExplosion" Value="true" Type="bool"/>
-    <Parameter Name="UseCustomShockwave" Value="false" Type="bool"/>
-    <Parameter Name="ExplosionPressure" Value="80" Type="float"/>
-    <Parameter Name="IsIncendiary" Value="true" Type="bool"/>
-    <Parameter Name="ExplosionRadius" Value="10" Type="float"/>
-    <Parameter Name="BlockDamageRadius" Value="8" Type="float"/>
-    <Parameter Name="EntityDamageRadius" Value="10" Type="float"/>
-    <Parameter Name="ShockwaveDamage" Value="100" Type="float"/>
-    <Parameter Name="ShockwaveForce" Value="50" Type="float"/>
-    <Parameter Name="DestroyBlocks" Value="true" Type="bool"/>
-    <Parameter Name="FireSpreadChance" Value="0.4" Type="float"/>
-    <Parameter Name="FireDuration" Value="10" Type="float"/>
+<MemberComponentTemplate Name="BoomerFireExplosion" Guid="df57628f-5c2d-4fb4-b7f4-ee828bb5ffc7" InheritanceParent="aeba3d06-e20a-4a04-bd51-ae8d5b2d03c0">
+  <Parameter Name="ActivationRange" Value="3" Type="float"/>
+  <Parameter Name="UseStandardExplosion" Value="true" Type="bool"/>
+  <Parameter Name="UseCustomShockwave" Value="false" Type="bool"/>
+  <Parameter Name="ExplosionPressure" Value="80" Type="float"/>
+  <Parameter Name="IsIncendiary" Value="true" Type="bool"/>
+  <Parameter Name="ExplosionRadius" Value="10" Type="float"/>
+  <Parameter Name="BlockDamageRadius" Value="8" Type="float"/>
+  <Parameter Name="EntityDamageRadius" Value="10" Type="float"/>
+  <Parameter Name="ShockwaveDamage" Value="100" Type="float"/>
+  <Parameter Name="ShockwaveForce" Value="50" Type="float"/>
+  <Parameter Name="DestroyBlocks" Value="true" Type="bool"/>
+  <Parameter Name="FireSpreadChance" Value="0.4" Type="float"/>
+  <Parameter Name="FireDuration" Value="10" Type="float"/>
+  <Parameter Name="PreventExplosion" Value="false" Type="bool"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="GlowingEyes" Guid="df9513d0-d458-4cc8-a61a-5bfe6d793e27" InheritanceParent="bb8701d3-3a4f-44f7-8a1f-3a455533f632">
               <Parameter Name="GlowingEyesColor" Guid="aa6a2a3c-fb1a-47bc-8546-556d6cf43add" Value="0,255,0" Type="Color"/>
@@ -3896,23 +3890,21 @@
         </EntityTemplate>
 
         <EntityTemplate Name="BoomerTamed2" Guid="80d3bd4c-3f09-43ac-ae4d-9ec634b66b2a" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="BoomerExplosion2" Guid="89c3e143-347a-43e2-a5ed-6e9b3b352ca5">
-    <Parameter Name="Class" Value="Game.ComponentBoomerExplosion2" Type="string"/> <!-- Explota al morir de forma incendiaria -->
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="70" Type="int"/>
-    <Parameter Name="ActivationRange" Value="3" Type="float"/>
-    <Parameter Name="UseStandardExplosion" Value="true" Type="bool"/>
-    <Parameter Name="UseCustomShockwave" Value="false" Type="bool"/>
-    <Parameter Name="ExplosionPressure" Value="80" Type="float"/>
-    <Parameter Name="IsIncendiary" Value="true" Type="bool"/>
-    <Parameter Name="ExplosionRadius" Value="10" Type="float"/>
-    <Parameter Name="BlockDamageRadius" Value="8" Type="float"/>
-    <Parameter Name="EntityDamageRadius" Value="10" Type="float"/>
-    <Parameter Name="ShockwaveDamage" Value="100" Type="float"/>
-    <Parameter Name="ShockwaveForce" Value="50" Type="float"/>
-    <Parameter Name="DestroyBlocks" Value="true" Type="bool"/>
-    <Parameter Name="FireSpreadChance" Value="0.4" Type="float"/>
-    <Parameter Name="FireDuration" Value="10" Type="float"/>
+<MemberComponentTemplate Name="BoomerFireExplosion" Guid="22538a71-109d-497e-87e9-60079a883994" InheritanceParent="aeba3d06-e20a-4a04-bd51-ae8d5b2d03c0">
+  <Parameter Name="ActivationRange" Value="3" Type="float"/>
+  <Parameter Name="UseStandardExplosion" Value="true" Type="bool"/>
+  <Parameter Name="UseCustomShockwave" Value="false" Type="bool"/>
+  <Parameter Name="ExplosionPressure" Value="80" Type="float"/>
+  <Parameter Name="IsIncendiary" Value="true" Type="bool"/>
+  <Parameter Name="ExplosionRadius" Value="10" Type="float"/>
+  <Parameter Name="BlockDamageRadius" Value="8" Type="float"/>
+  <Parameter Name="EntityDamageRadius" Value="10" Type="float"/>
+  <Parameter Name="ShockwaveDamage" Value="100" Type="float"/>
+  <Parameter Name="ShockwaveForce" Value="50" Type="float"/>
+  <Parameter Name="DestroyBlocks" Value="true" Type="bool"/>
+  <Parameter Name="FireSpreadChance" Value="0.4" Type="float"/>
+  <Parameter Name="FireDuration" Value="10" Type="float"/>
+  <Parameter Name="PreventExplosion" Value="false" Type="bool"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="SummonBehavior" Guid="f15fbb7a-20f8-4964-9193-e239ab500ced">
               <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="72e5fc57-645e-449d-ab4a-b4f0c163e210"/>
@@ -4050,17 +4042,13 @@
         </EntityTemplate>
 
         <EntityTemplate Name="Boomer3" Guid="2f46410e-3472-4aaf-a898-9ce5614de7cd" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="BoomerPoisonExplosion" Guid="6ff09b6e-13e6-44eb-a786-8e139a512552"> <!-- Al morir libera nubes de veneno con sus efectos -->
-    <Parameter Name="Class" Value="Game.ComponentBoomerPoisonExplosion" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="71" Type="int"/>
-    <Parameter Name="PoisonRadius" Value="8" Type="float"/>
-    <Parameter Name="PoisonIntensity" Value="200" Type="float"/>
-    <Parameter Name="CloudDuration" Value="15" Type="float"/>
-    <Parameter Name="CloudRadius" Value="6" Type="float"/>
-    <Parameter Name="ParticleCount" Value="150" Type="int"/>
-    <Parameter Name="PlaySound" Value="true" Type="bool"/>
-    <Parameter Name="PreventExplosion" Value="false" Type="bool"/>
+<MemberComponentTemplate Name="BoomerPoisonExplosion" Guid="a5e47301-ba89-41ad-a8d1-727004fc1a3f" InheritanceParent="b1966e3c-5e1f-4483-acc9-90f88c0e0748">
+  <Parameter Name="PoisonRadius" Value="15" Type="float"/>
+  <Parameter Name="PoisonIntensity" Value="300" Type="float"/>
+  <Parameter Name="CloudDuration" Value="4" Type="float"/>
+  <Parameter Name="CloudRadius" Value="12" Type="float"/>
+  <Parameter Name="ExplosionPressure" Value="40" Type="float"/>
+  <Parameter Name="PreventExplosion" Value="false" Type="bool"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="GlowingEyes" Guid="282c7dde-abf4-4faf-a4c2-d823b9d13632" InheritanceParent="bb8701d3-3a4f-44f7-8a1f-3a455533f632">
               <Parameter Name="GlowingEyesColor" Guid="0b7cb1f1-6533-4cd2-9ae6-8e78722ca2d2" Value="0,255,0" Type="Color"/>
@@ -4195,6 +4183,14 @@
         </EntityTemplate>
 
         <EntityTemplate Name="BoomerTamed3" Guid="819d2c53-dd93-4275-a098-ba88aa415a2b" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="BoomerPoisonExplosion" Guid="95b1c91d-f8a2-471e-b70a-c452ead39ef1" InheritanceParent="b1966e3c-5e1f-4483-acc9-90f88c0e0748">
+  <Parameter Name="PoisonRadius" Value="15" Type="float"/>
+  <Parameter Name="PoisonIntensity" Value="300" Type="float"/>
+  <Parameter Name="CloudDuration" Value="4" Type="float"/>
+  <Parameter Name="CloudRadius" Value="12" Type="float"/>
+  <Parameter Name="ExplosionPressure" Value="40" Type="float"/>
+  <Parameter Name="PreventExplosion" Value="false" Type="bool"/>
+</MemberComponentTemplate>
         <MemberComponentTemplate Name="SummonBehavior" Guid="8eae594a-f160-4973-8d86-4e3d76c5e3a4">
               <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="485ca708-1512-4193-8dea-cb83160f2842"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="25627386-9e41-471c-9537-f4471c849527"/>
@@ -4225,18 +4221,6 @@
         <Parameter Name="MaxHelpChaseTime" Value="30" Type="float" Guid="655a0ffa-70d5-46bb-8c46-f0f0b8a3c6d7"/>
         <Parameter Name="AvoidAttackingSameHerd" Value="true" Type="bool" Guid="d9aaf752-3ec0-4bd1-ac1a-e3b24db64944"/>
     </MemberComponentTemplate>
-<MemberComponentTemplate Name="BoomerPoisonExplosion" Guid="162fb718-c5c8-4dcc-a425-610acefc4da3">
-    <Parameter Name="Class" Value="Game.ComponentBoomerPoisonExplosion" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="71" Type="int"/>
-    <Parameter Name="PoisonRadius" Value="8" Type="float"/>
-    <Parameter Name="PoisonIntensity" Value="200" Type="float"/>
-    <Parameter Name="CloudDuration" Value="15" Type="float"/>
-    <Parameter Name="CloudRadius" Value="6" Type="float"/>
-    <Parameter Name="ParticleCount" Value="150" Type="int"/>
-    <Parameter Name="PlaySound" Value="true" Type="bool"/>
-    <Parameter Name="PreventExplosion" Value="false" Type="bool"/>
-</MemberComponentTemplate>
         <MemberComponentTemplate Name="GlowingEyes" Guid="acc308db-5ec2-4933-b1da-17a7c7b0c6b3" InheritanceParent="bb8701d3-3a4f-44f7-8a1f-3a455533f632">
               <Parameter Name="GlowingEyesColor" Guid="a3ec4d72-895f-4895-9fbc-718fec492a79" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="f3c90528-f935-419a-9a42-5ea9dfcb1570" Value="0.06,0.2,0.1" Type="Vector3"/>
@@ -6812,21 +6796,19 @@
         </EntityTemplate>
 
         <EntityTemplate Name="GhostBoomer1" Guid="9dd09943-34b1-47df-af62-a9f41d63f1c9" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="BoomerExplosion" Guid="95ee9bb6-4bfe-45b2-b6b5-0160a2c5ae58">
-    <Parameter Name="Class" Value="Game.ComponentBoomerExplosion" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="70" Type="int"/>
-    <Parameter Name="ActivationRange" Value="3" Type="float"/>
-    <Parameter Name="UseStandardExplosion" Value="true" Type="bool"/>
-    <Parameter Name="UseCustomShockwave" Value="false" Type="bool"/>
-    <Parameter Name="ExplosionPressure" Value="80" Type="float"/>
-    <Parameter Name="IsIncendiary" Value="false" Type="bool"/>
-    <Parameter Name="ExplosionRadius" Value="10" Type="float"/>
-    <Parameter Name="BlockDamageRadius" Value="8" Type="float"/>
-    <Parameter Name="EntityDamageRadius" Value="10" Type="float"/>
-    <Parameter Name="ShockwaveDamage" Value="100" Type="float"/>
-    <Parameter Name="ShockwaveForce" Value="50" Type="float"/>
-    <Parameter Name="DestroyBlocks" Value="true" Type="bool"/>
+<MemberComponentTemplate Name="BoomerExplosion" Guid="f1529411-7d11-4d53-b178-13f6a92ce84e" InheritanceParent="bf245bcc-8786-4839-9528-87f3f7ff4833">
+  <Parameter Name="ActivationRange" Value="3" Type="float"/>
+  <Parameter Name="UseStandardExplosion" Value="true" Type="bool"/>
+  <Parameter Name="UseCustomShockwave" Value="false" Type="bool"/>
+  <Parameter Name="ExplosionPressure" Value="80" Type="float"/>
+  <Parameter Name="IsIncendiary" Value="false" Type="bool"/>
+  <Parameter Name="ExplosionRadius" Value="10" Type="float"/>
+  <Parameter Name="BlockDamageRadius" Value="8" Type="float"/>
+  <Parameter Name="EntityDamageRadius" Value="10" Type="float"/>
+  <Parameter Name="ShockwaveDamage" Value="100" Type="float"/>
+  <Parameter Name="ShockwaveForce" Value="50" Type="float"/>
+  <Parameter Name="DestroyBlocks" Value="true" Type="bool"/>
+  <Parameter Name="PreventExplosion" Value="false" Type="bool"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="GlowingEyes" Guid="4a8f0047-b71b-42f3-8ad4-021eea787bed" InheritanceParent="bb8701d3-3a4f-44f7-8a1f-3a455533f632">
               <Parameter Name="GlowingEyesColor" Guid="8e4105cb-1ff2-474b-aff4-7442526bbdd8" Value="0,255,0" Type="Color"/>
@@ -6982,6 +6964,20 @@
         </EntityTemplate>
 
         <EntityTemplate Name="GhostBoomerTamed1" Guid="8f3428de-e5d7-4932-82ae-496734bae8b6" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="BoomerExplosion" Guid="e10eadd4-ebf2-4fba-890d-d04ead4ab84e" InheritanceParent="bf245bcc-8786-4839-9528-87f3f7ff4833">
+  <Parameter Name="ActivationRange" Value="3" Type="float"/>
+  <Parameter Name="UseStandardExplosion" Value="true" Type="bool"/>
+  <Parameter Name="UseCustomShockwave" Value="false" Type="bool"/>
+  <Parameter Name="ExplosionPressure" Value="80" Type="float"/>
+  <Parameter Name="IsIncendiary" Value="false" Type="bool"/>
+  <Parameter Name="ExplosionRadius" Value="10" Type="float"/>
+  <Parameter Name="BlockDamageRadius" Value="8" Type="float"/>
+  <Parameter Name="EntityDamageRadius" Value="10" Type="float"/>
+  <Parameter Name="ShockwaveDamage" Value="100" Type="float"/>
+  <Parameter Name="ShockwaveForce" Value="50" Type="float"/>
+  <Parameter Name="DestroyBlocks" Value="true" Type="bool"/>
+  <Parameter Name="PreventExplosion" Value="false" Type="bool"/>
+</MemberComponentTemplate>
         <MemberComponentTemplate Name="SummonBehavior" Guid="2c0e38a5-7743-47ad-8165-ae9d9a70b67b">
               <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="06d6534b-b7e4-48e6-98ef-cdddc011727c"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="46cc730e-5e2b-45ca-80e2-3bbcf1426929"/>
@@ -7012,22 +7008,6 @@
         <Parameter Name="MaxHelpChaseTime" Value="30" Type="float" Guid="9393dc88-00da-4c49-9260-2286bed57fb6"/>
         <Parameter Name="AvoidAttackingSameHerd" Value="true" Type="bool" Guid="a048b725-404b-4994-9438-5015b83ef8fa"/>
     </MemberComponentTemplate>
-<MemberComponentTemplate Name="BoomerExplosion" Guid="9dd87730-b86c-4e7f-ba5d-93f42fd1b317">
-    <Parameter Name="Class" Value="Game.ComponentBoomerExplosion" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="70" Type="int"/>
-    <Parameter Name="ActivationRange" Value="3" Type="float"/>
-    <Parameter Name="UseStandardExplosion" Value="true" Type="bool"/>
-    <Parameter Name="UseCustomShockwave" Value="false" Type="bool"/>
-    <Parameter Name="ExplosionPressure" Value="80" Type="float"/>
-    <Parameter Name="IsIncendiary" Value="false" Type="bool"/>
-    <Parameter Name="ExplosionRadius" Value="10" Type="float"/>
-    <Parameter Name="BlockDamageRadius" Value="8" Type="float"/>
-    <Parameter Name="EntityDamageRadius" Value="10" Type="float"/>
-    <Parameter Name="ShockwaveDamage" Value="100" Type="float"/>
-    <Parameter Name="ShockwaveForce" Value="50" Type="float"/>
-    <Parameter Name="DestroyBlocks" Value="true" Type="bool"/>
-</MemberComponentTemplate>
         <MemberComponentTemplate Name="GlowingEyes" Guid="5b29425f-83ba-4e16-949c-14ef7ca644b3" InheritanceParent="bb8701d3-3a4f-44f7-8a1f-3a455533f632">
               <Parameter Name="GlowingEyesColor" Guid="15d1708b-ca57-4dd4-b954-7afd8ae466f5" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="f7258562-cd92-41c5-b5c6-7e3221f5ba29" Value="0.06,0.2,0.1" Type="Vector3"/>
@@ -7155,23 +7135,21 @@
         </EntityTemplate>
 
         <EntityTemplate Name="GhostBoomer2" Guid="d7b28fd5-e14c-40e1-bbb7-1b7151d3903b" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="BoomerExplosion2" Guid="e54d93c1-241b-4f11-8dbb-46606030f578">
-    <Parameter Name="Class" Value="Game.ComponentBoomerExplosion2" Type="string"/> <!-- Explota al morir de forma incendiaria -->
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="70" Type="int"/>
-    <Parameter Name="ActivationRange" Value="3" Type="float"/>
-    <Parameter Name="UseStandardExplosion" Value="true" Type="bool"/>
-    <Parameter Name="UseCustomShockwave" Value="false" Type="bool"/>
-    <Parameter Name="ExplosionPressure" Value="80" Type="float"/>
-    <Parameter Name="IsIncendiary" Value="true" Type="bool"/>
-    <Parameter Name="ExplosionRadius" Value="10" Type="float"/>
-    <Parameter Name="BlockDamageRadius" Value="8" Type="float"/>
-    <Parameter Name="EntityDamageRadius" Value="10" Type="float"/>
-    <Parameter Name="ShockwaveDamage" Value="100" Type="float"/>
-    <Parameter Name="ShockwaveForce" Value="50" Type="float"/>
-    <Parameter Name="DestroyBlocks" Value="true" Type="bool"/>
-    <Parameter Name="FireSpreadChance" Value="0.4" Type="float"/>
-    <Parameter Name="FireDuration" Value="10" Type="float"/>
+<MemberComponentTemplate Name="BoomerFireExplosion" Guid="7877db50-cd03-4819-bb29-73ac1812b8b3" InheritanceParent="aeba3d06-e20a-4a04-bd51-ae8d5b2d03c0">
+  <Parameter Name="ActivationRange" Value="3" Type="float"/>
+  <Parameter Name="UseStandardExplosion" Value="true" Type="bool"/>
+  <Parameter Name="UseCustomShockwave" Value="false" Type="bool"/>
+  <Parameter Name="ExplosionPressure" Value="80" Type="float"/>
+  <Parameter Name="IsIncendiary" Value="true" Type="bool"/>
+  <Parameter Name="ExplosionRadius" Value="10" Type="float"/>
+  <Parameter Name="BlockDamageRadius" Value="8" Type="float"/>
+  <Parameter Name="EntityDamageRadius" Value="10" Type="float"/>
+  <Parameter Name="ShockwaveDamage" Value="100" Type="float"/>
+  <Parameter Name="ShockwaveForce" Value="50" Type="float"/>
+  <Parameter Name="DestroyBlocks" Value="true" Type="bool"/>
+  <Parameter Name="FireSpreadChance" Value="0.4" Type="float"/>
+  <Parameter Name="FireDuration" Value="10" Type="float"/>
+  <Parameter Name="PreventExplosion" Value="false" Type="bool"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="GlowingEyes" Guid="d45a774f-337b-4b18-8d37-e23ffbcb7946" InheritanceParent="bb8701d3-3a4f-44f7-8a1f-3a455533f632">
               <Parameter Name="GlowingEyesColor" Guid="645be89c-d1bc-44fe-a7f8-90ace040f621" Value="0,255,0" Type="Color"/>
@@ -7327,6 +7305,22 @@
         </EntityTemplate>
 
         <EntityTemplate Name="GhostBoomerTamed2" Guid="40c6d952-7308-412b-953a-03a70fc910b9" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="BoomerFireExplosion" Guid="13ee2cfa-671f-4ca2-a1a9-c27a42b10731" InheritanceParent="aeba3d06-e20a-4a04-bd51-ae8d5b2d03c0">
+  <Parameter Name="ActivationRange" Value="3" Type="float"/>
+  <Parameter Name="UseStandardExplosion" Value="true" Type="bool"/>
+  <Parameter Name="UseCustomShockwave" Value="false" Type="bool"/>
+  <Parameter Name="ExplosionPressure" Value="80" Type="float"/>
+  <Parameter Name="IsIncendiary" Value="true" Type="bool"/>
+  <Parameter Name="ExplosionRadius" Value="10" Type="float"/>
+  <Parameter Name="BlockDamageRadius" Value="8" Type="float"/>
+  <Parameter Name="EntityDamageRadius" Value="10" Type="float"/>
+  <Parameter Name="ShockwaveDamage" Value="100" Type="float"/>
+  <Parameter Name="ShockwaveForce" Value="50" Type="float"/>
+  <Parameter Name="DestroyBlocks" Value="true" Type="bool"/>
+  <Parameter Name="FireSpreadChance" Value="0.4" Type="float"/>
+  <Parameter Name="FireDuration" Value="10" Type="float"/>
+  <Parameter Name="PreventExplosion" Value="false" Type="bool"/>
+</MemberComponentTemplate>
         <MemberComponentTemplate Name="SummonBehavior" Guid="a1641514-8807-49d9-b185-50b1c5e71ddc">
               <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="8c4319f3-f673-48ab-a36f-7fedc5aa1dd0"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="4bfe479b-1c49-4a16-b9da-279e14081648"/>
@@ -7357,24 +7351,6 @@
         <Parameter Name="MaxHelpChaseTime" Value="30" Type="float" Guid="a5c330df-5997-4ca1-9f7e-b5884a889738"/>
         <Parameter Name="AvoidAttackingSameHerd" Value="true" Type="bool" Guid="386f79ea-d503-4eaf-9c86-2e3509499bd3"/>
     </MemberComponentTemplate>
-<MemberComponentTemplate Name="BoomerExplosion2" Guid="88a81e09-43d9-4041-a6df-924ec2130c52">
-    <Parameter Name="Class" Value="Game.ComponentBoomerExplosion2" Type="string"/> <!-- Explota al morir de forma incendiaria -->
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="70" Type="int"/>
-    <Parameter Name="ActivationRange" Value="3" Type="float"/>
-    <Parameter Name="UseStandardExplosion" Value="true" Type="bool"/>
-    <Parameter Name="UseCustomShockwave" Value="false" Type="bool"/>
-    <Parameter Name="ExplosionPressure" Value="80" Type="float"/>
-    <Parameter Name="IsIncendiary" Value="true" Type="bool"/>
-    <Parameter Name="ExplosionRadius" Value="10" Type="float"/>
-    <Parameter Name="BlockDamageRadius" Value="8" Type="float"/>
-    <Parameter Name="EntityDamageRadius" Value="10" Type="float"/>
-    <Parameter Name="ShockwaveDamage" Value="100" Type="float"/>
-    <Parameter Name="ShockwaveForce" Value="50" Type="float"/>
-    <Parameter Name="DestroyBlocks" Value="true" Type="bool"/>
-    <Parameter Name="FireSpreadChance" Value="0.4" Type="float"/>
-    <Parameter Name="FireDuration" Value="10" Type="float"/>
-</MemberComponentTemplate>
         <MemberComponentTemplate Name="GlowingEyes" Guid="81709572-f898-49c2-a039-3fce8dbd0e5c" InheritanceParent="bb8701d3-3a4f-44f7-8a1f-3a455533f632">
               <Parameter Name="GlowingEyesColor" Guid="e3e6f3fb-6caf-4ea9-b9da-a52e1cd1df0b" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="0ef6b4f3-7cfa-41a6-9846-803d3639ccca" Value="0.06,0.2,0.1" Type="Vector3"/>
@@ -7502,17 +7478,13 @@
         </EntityTemplate>
 
         <EntityTemplate Name="GhostBoomer3" Guid="90ef2302-e35c-4885-98ac-709db5a17fcf" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="BoomerPoisonExplosion" Guid="2786b3e9-f685-43e5-9508-fd9473f7564a"> <!-- Al morir libera nubes de veneno con sus efectos -->
-    <Parameter Name="Class" Value="Game.ComponentBoomerPoisonExplosion" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="71" Type="int"/>
-    <Parameter Name="PoisonRadius" Value="8" Type="float"/>
-    <Parameter Name="PoisonIntensity" Value="200" Type="float"/>
-    <Parameter Name="CloudDuration" Value="15" Type="float"/>
-    <Parameter Name="CloudRadius" Value="6" Type="float"/>
-    <Parameter Name="ParticleCount" Value="150" Type="int"/>
-    <Parameter Name="PlaySound" Value="true" Type="bool"/>
-    <Parameter Name="PreventExplosion" Value="false" Type="bool"/>
+<MemberComponentTemplate Name="BoomerPoisonExplosion" Guid="05467507-246d-42e5-a028-be4d1b0247cc" InheritanceParent="b1966e3c-5e1f-4483-acc9-90f88c0e0748">
+  <Parameter Name="PoisonRadius" Value="15" Type="float"/>
+  <Parameter Name="PoisonIntensity" Value="300" Type="float"/>
+  <Parameter Name="CloudDuration" Value="4" Type="float"/>
+  <Parameter Name="CloudRadius" Value="12" Type="float"/>
+  <Parameter Name="ExplosionPressure" Value="40" Type="float"/>
+  <Parameter Name="PreventExplosion" Value="false" Type="bool"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="GlowingEyes" Guid="c3ef6ed6-2166-4430-a0e8-c8bf1ff524aa" InheritanceParent="bb8701d3-3a4f-44f7-8a1f-3a455533f632">
               <Parameter Name="GlowingEyesColor" Guid="ef7d9750-0896-4281-9cc6-ee3453328c15" Value="0,255,0" Type="Color"/>
@@ -7668,6 +7640,14 @@
         </EntityTemplate>
 
         <EntityTemplate Name="GhostBoomerTamed3" Guid="4c7d49e4-ba7f-4229-9055-c779f4c99650" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="BoomerPoisonExplosion" Guid="baadb202-3b0d-4de8-b139-b77e6032a27c" InheritanceParent="b1966e3c-5e1f-4483-acc9-90f88c0e0748">
+  <Parameter Name="PoisonRadius" Value="15" Type="float"/>
+  <Parameter Name="PoisonIntensity" Value="300" Type="float"/>
+  <Parameter Name="CloudDuration" Value="4" Type="float"/>
+  <Parameter Name="CloudRadius" Value="12" Type="float"/>
+  <Parameter Name="ExplosionPressure" Value="40" Type="float"/>
+  <Parameter Name="PreventExplosion" Value="false" Type="bool"/>
+</MemberComponentTemplate>
         <MemberComponentTemplate Name="SummonBehavior" Guid="8339c27e-c210-4571-81b1-ca78b37474d8">
               <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="509350c5-2d5c-4866-8a36-0636c531b217"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="592f74cb-bbe7-41c2-811a-50d7be327278"/>
@@ -7698,18 +7678,6 @@
         <Parameter Name="MaxHelpChaseTime" Value="30" Type="float" Guid="fb3b6ecc-ab86-4e9a-9af4-ff86a3fd46d3"/>
         <Parameter Name="AvoidAttackingSameHerd" Value="true" Type="bool" Guid="c610f96d-0c5b-48d8-842c-8d41f331fa9b"/>
     </MemberComponentTemplate>
-<MemberComponentTemplate Name="BoomerPoisonExplosion" Guid="4a14d157-31b2-4b79-8305-03f2d55e575a"> <!-- Al morir libera nubes de veneno con sus efectos -->
-    <Parameter Name="Class" Value="Game.ComponentBoomerPoisonExplosion" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="71" Type="int"/>
-    <Parameter Name="PoisonRadius" Value="8" Type="float"/>
-    <Parameter Name="PoisonIntensity" Value="200" Type="float"/>
-    <Parameter Name="CloudDuration" Value="15" Type="float"/>
-    <Parameter Name="CloudRadius" Value="6" Type="float"/>
-    <Parameter Name="ParticleCount" Value="150" Type="int"/>
-    <Parameter Name="PlaySound" Value="true" Type="bool"/>
-    <Parameter Name="PreventExplosion" Value="false" Type="bool"/>
-</MemberComponentTemplate>
         <MemberComponentTemplate Name="GlowingEyes" Guid="78e163b8-f21e-47ac-9c19-9e65a1ac43fe" InheritanceParent="bb8701d3-3a4f-44f7-8a1f-3a455533f632">
               <Parameter Name="GlowingEyesColor" Guid="abacbbec-77f1-441b-bc75-0a875c0e20f0" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="5809e34e-267b-40d9-bdd3-eeb7475cdca3" Value="0.06,0.2,0.1" Type="Vector3"/>
