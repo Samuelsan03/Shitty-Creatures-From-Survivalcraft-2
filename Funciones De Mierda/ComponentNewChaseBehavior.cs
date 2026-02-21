@@ -450,7 +450,7 @@ namespace Game
 				{
 					if (!this.FindAimTool(this.m_componentMiner) && this.m_componentMiner.Inventory != null)
 					{
-						// x NUEVA LÓGICA: Buscar un FlameThrower y prepararlo si es necesario
+						// Buscar un FlameThrower y prepararlo si es necesario
 						for (int i = 0; i < this.m_componentMiner.Inventory.SlotsCount; i++)
 						{
 							int slotValue = this.m_componentMiner.Inventory.GetSlotValue(i);
@@ -459,7 +459,6 @@ namespace Game
 								Block block = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)];
 								if (block.IsAimable_(slotValue) && block.GetCategory(slotValue) != "Terrain")
 								{
-									// x NUEVA COMPROBACIÓN: Si es un FlameThrower, prepararlo
 									if (block is FlameThrowerBlock)
 									{
 										this.HandleComplexAimTool(this.m_componentMiner, i);
@@ -476,7 +475,7 @@ namespace Game
 			}
 			else
 			{
-				// x NUEVA LÓGICA: Si no hay un objetivo, intentar recargar el FlameThrower
+				// Si no hay objetivo, intentar recargar el FlameThrower
 				if (this.m_target == null && this.m_componentMiner.Inventory != null)
 				{
 					int activeSlotIndex = this.m_componentMiner.Inventory.ActiveSlotIndex;
@@ -505,49 +504,47 @@ namespace Game
 				float num2;
 				ComponentBody hitBody = this.GetHitBody1(this.m_target.ComponentBody, out num2);
 
-				if (this.m_attackMode != AttackMode.OnlyHand && this.FindAimTool(this.m_componentMiner))
+				// Decidir si usar ataque a distancia o cuerpo a cuerpo
+				bool useRanged = this.m_attackMode != AttackMode.OnlyHand && this.FindAimTool(this.m_componentMiner) && hitBody != null && num2 > this.m_attackRange.X;
+
+				if (useRanged)
 				{
 					Vector3 vector = Vector3.Normalize(this.m_target.ComponentCreatureModel.EyePosition - this.m_componentCreature.ComponentCreatureModel.EyePosition);
-					if (hitBody != null)
+					this.m_chaseTime = Math.Max(this.m_chaseTime, this.m_isPersistent ? this.m_random.Float(8f, 10f) : 2f);
+
+					if (num2 >= this.m_attackRange.X && num2 <= this.m_attackRange.Y)
 					{
-						float num3 = this.m_isPersistent ? this.m_random.Float(8f, 10f) : 2f;
-						this.m_chaseTime = Math.Max(this.m_chaseTime, num3);
-
-						if (num2 >= this.m_attackRange.X && num2 <= this.m_attackRange.Y)
+						bool flag12 = Vector3.Dot(this.m_componentBody.Matrix.Forward, vector) > 0.9f;
+						if (!flag12)
 						{
-							bool flag12 = Vector3.Dot(this.m_componentBody.Matrix.Forward, vector) > 0.9f;
-							if (!flag12)
-							{
-								this.m_componentPathfinding.SetDestination(new Vector3?(this.m_target.ComponentCreatureModel.EyePosition), 1f, 1f, 0, false, true, false, null);
-							}
-							else
-							{
-								this.m_componentPathfinding.Destination = null;
-								this.UpdateRangedCombatPositioning(dt);
-							}
-
-							string category = BlocksManager.Blocks[Terrain.ExtractContents(this.m_componentMiner.ActiveBlockValue)].GetCategory(this.m_componentMiner.ActiveBlockValue);
-							if (this.m_subsystemTime.GameTime - this.m_lastActionTime > num)
-							{
-								if (this.m_componentMiner.Use(new Ray3(this.m_componentCreature.ComponentCreatureModel.EyePosition, vector)))
-								{
-									this.m_lastActionTime = this.m_subsystemTime.GameTime;
-								}
-								else if (flag12 && category != "Terrain")
-								{
-									this.m_componentMiner.Aim(new Ray3(this.m_componentCreature.ComponentCreatureModel.EyePosition, vector), AimState.Completed);
-									this.m_lastActionTime = this.m_subsystemTime.GameTime;
-								}
-							}
-							else if (flag12 && category != "Terrain")
-							{
-								this.m_componentMiner.Aim(new Ray3(this.m_componentCreature.ComponentCreatureModel.EyePosition, vector), AimState.InProgress);
-							}
+							this.m_componentPathfinding.SetDestination(new Vector3?(this.m_target.ComponentCreatureModel.EyePosition), 1f, 1f, 0, false, true, false, null);
 						}
 						else
 						{
-							this.UpdateRangedCombatPositioning(dt);
+							this.m_componentPathfinding.Destination = null; // Se queda quieto para disparar
 						}
+
+						string category = BlocksManager.Blocks[Terrain.ExtractContents(this.m_componentMiner.ActiveBlockValue)].GetCategory(this.m_componentMiner.ActiveBlockValue);
+						if (this.m_subsystemTime.GameTime - this.m_lastActionTime > num)
+						{
+							if (this.m_componentMiner.Use(new Ray3(this.m_componentCreature.ComponentCreatureModel.EyePosition, vector)))
+							{
+								this.m_lastActionTime = this.m_subsystemTime.GameTime;
+							}
+							else if (flag12 && category != "Terrain")
+							{
+								this.m_componentMiner.Aim(new Ray3(this.m_componentCreature.ComponentCreatureModel.EyePosition, vector), AimState.Completed);
+								this.m_lastActionTime = this.m_subsystemTime.GameTime;
+							}
+						}
+						else if (flag12 && category != "Terrain")
+						{
+							this.m_componentMiner.Aim(new Ray3(this.m_componentCreature.ComponentCreatureModel.EyePosition, vector), AimState.InProgress);
+						}
+					}
+					else
+					{
+						this.UpdateRangedCombatPositioning(dt);
 					}
 				}
 				else
@@ -659,9 +656,18 @@ namespace Game
 
 			if (block.IsAimable_(activeBlockValue) && block.GetCategory(activeBlockValue) != "Terrain")
 			{
-				// x NUEVA COMPROBACIÓN: Verificar si el FlameThrower está listo para disparar
-				if (!(block is FlameThrowerBlock) || this.IsReady(activeBlockValue))
+				if (block is FlameThrowerBlock)
 				{
+					if (this.IsReady(activeBlockValue))
+						return true;
+				}
+				else
+				{
+					// Asegurar que el arma esté lista (cargada/armada)
+					if (this.IsAimToolNeedToReady(componentMiner, componentMiner.Inventory.ActiveSlotIndex))
+					{
+						this.HandleComplexAimTool(componentMiner, componentMiner.Inventory.ActiveSlotIndex);
+					}
 					return true;
 				}
 			}
@@ -675,9 +681,18 @@ namespace Game
 				Block block2 = BlocksManager.Blocks[num2];
 				if (block2.IsAimable_(slotValue) && block2.GetCategory(slotValue) != "Terrain")
 				{
-					// x NUEVA COMPROBACIÓN: Verificar si el FlameThrower está listo para disparar
-					if (block2 is FlameThrowerBlock && !this.IsReady(slotValue)) continue;
-
+					if (block2 is FlameThrowerBlock)
+					{
+						if (!this.IsReady(slotValue)) continue;
+					}
+					else
+					{
+						// Preparar si es necesario
+						if (this.IsAimToolNeedToReady(componentMiner, i))
+						{
+							this.HandleComplexAimTool(componentMiner, i);
+						}
+					}
 					componentMiner.Inventory.ActiveSlotIndex = i;
 					return true;
 				}
@@ -746,9 +761,9 @@ namespace Game
 			{
 				ArrowBlock.ArrowType[] arrowTypes = new ArrowBlock.ArrowType[]
 				{
-					ArrowBlock.ArrowType.WoodenArrow,
-					ArrowBlock.ArrowType.StoneArrow,
-					ArrowBlock.ArrowType.IronArrow
+					ArrowBlock.ArrowType.DiamondBolt,
+					ArrowBlock.ArrowType.IronBolt,
+					ArrowBlock.ArrowType.ExplosiveBolt
 				};
 				ArrowBlock.ArrowType value3 = arrowTypes[this.m_random.Int(0, arrowTypes.Length)];
 				data = CrossbowBlock.SetDraw(CrossbowBlock.SetArrowType(0, new ArrowBlock.ArrowType?(value3)), 15);
@@ -765,7 +780,7 @@ namespace Game
 			}
 			else if (block is FlameThrowerBlock)
 			{
-				// x NUEVA LÓGICA: Alternar entre Fuego y Veneno
+				// Alternar entre Fuego y Veneno
 				this.m_lastFlameBulletType = (this.m_lastFlameBulletType == FlameBulletBlock.FlameBulletType.Flame) ?
 					FlameBulletBlock.FlameBulletType.Poison : FlameBulletBlock.FlameBulletType.Flame;
 				int data2 = 0;
@@ -1607,7 +1622,6 @@ namespace Game
 		private double m_nextBanditCheckTime = 0.0;
 		private DynamicArray<BanditMemory> m_banditMemory = new DynamicArray<BanditMemory>();
 		private double m_lastActionTime;
-		// x NUEVA VARIABLE: Almacena el último tipo de bala usado
 		private FlameBulletBlock.FlameBulletType m_lastFlameBulletType = FlameBulletBlock.FlameBulletType.Flame;
 		public SubsystemGameInfo m_subsystemGameInfo;
 		public SubsystemPlayers m_subsystemPlayers;
