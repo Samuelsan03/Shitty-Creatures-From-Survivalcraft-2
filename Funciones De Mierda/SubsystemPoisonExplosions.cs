@@ -118,18 +118,18 @@ namespace Game
 		// Token: 0x06001CD8 RID: 7384 RVA: 0x000DE594 File Offset: 0x000DC794
 		public void ApplyPoisonEffect(Vector3 center, float pressure, float poisonIntensity)
 		{
-			// Sacudir cuerpos cercanos
-			foreach (ComponentBody componentBody in this.m_subsystemBodies.Bodies)
-			{
-				float distance = Vector3.Distance(componentBody.Position, center);
-				if (distance < 10f)
-				{
-					// Aplicar pequeño impulso
-					Vector3 direction = Vector3.Normalize(componentBody.Position - center);
-					float force = MathUtils.Max(0f, 1f - distance / 10f) * pressure * 0.5f;
-					componentBody.ApplyImpulse(direction * force);
-				}
-			}
+			// x ELIMINADO: Sacudir cuerpos cercanos
+			// foreach (ComponentBody componentBody in this.m_subsystemBodies.Bodies)
+			// {
+			// 	float distance = Vector3.Distance(componentBody.Position, center);
+			// 	if (distance < 10f)
+			// 	{
+			// 		// Aplicar pequeño impulso
+			// 		Vector3 direction = Vector3.Normalize(componentBody.Position - center);
+			// 		float force = MathUtils.Max(0f, 1f - distance / 10f) * pressure * 0.5f;
+			// 		componentBody.ApplyImpulse(direction * force);
+			// 	}
+			// }
 		}
 
 		// Token: 0x06001CD9 RID: 7385 RVA: 0x000DE62C File Offset: 0x000DC82C
