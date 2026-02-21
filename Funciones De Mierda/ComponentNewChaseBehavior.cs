@@ -765,6 +765,7 @@ namespace Game
 			}
 			else if (block is FlameThrowerBlock)
 			{
+				// x NUEVA LÓGICA: Alternar entre Fuego y Veneno
 				this.m_lastFlameBulletType = (this.m_lastFlameBulletType == FlameBulletBlock.FlameBulletType.Flame) ?
 					FlameBulletBlock.FlameBulletType.Poison : FlameBulletBlock.FlameBulletType.Flame;
 				int data2 = 0;
@@ -1606,6 +1607,7 @@ namespace Game
 		private double m_nextBanditCheckTime = 0.0;
 		private DynamicArray<BanditMemory> m_banditMemory = new DynamicArray<BanditMemory>();
 		private double m_lastActionTime;
+		// x NUEVA VARIABLE: Almacena el último tipo de bala usado
 		private FlameBulletBlock.FlameBulletType m_lastFlameBulletType = FlameBulletBlock.FlameBulletType.Flame;
 		public SubsystemGameInfo m_subsystemGameInfo;
 		public SubsystemPlayers m_subsystemPlayers;
