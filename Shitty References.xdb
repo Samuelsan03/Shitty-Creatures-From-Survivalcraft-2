@@ -249,7 +249,7 @@
     <Parameter Name="ZombieAggressiveGrouping" Value="false" Type="bool" Guid="e81372aa-d0d0-4831-950f-804ac5c9df10" Description="Si los zombis se agrupan agresivamente, deambulan cuando no están en combate y llaman ayuda en rango extendido (HelpCallRange × 1.5). Ver métodos CallAdditionalZombies y AddZombieSpecificStates."/>
 </ComponentTemplate>
 
-    <ComponentTemplate Name="BoomerPoisonExplosion" Guid="94c4aae0-adc3-405b-91b5-fbaa7ad0f7b8">
+    <ComponentTemplate Name="BoomerPoisonExplosion" Guid="94c4aae0-adc3-405b-91b5-fbaa7ad0f7b8" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
     <Parameter Name="Class" Value="Game.ComponentBoomerPoisonExplosion" Type="string" Guid="4f3220be-2395-4f37-aed5-a1d2fbd5f128" Description="Componente que hace que la criatura explote al morir liberando una nube venenosa."/>
     <Parameter Name="IsOptional" Value="false" Type="bool" Guid="1e4fd0e9-1501-4b1c-adf0-d352a6a6d0df" Description="Si es opcional o requerido para el funcionamiento."/>
     <Parameter Name="LoadOrder" Value="70" Type="int" Guid="14535130-7fbd-41a1-8ca5-a8bf6e6d0c60" Description="Orden de carga del componente."/>
@@ -258,11 +258,10 @@
     <Parameter Name="CloudDuration" Value="15" Type="float" Guid="6b83c1c5-c7c0-493f-8310-1a793299b9b8" Description="Duración de la nube venenosa en segundos."/>
     <Parameter Name="CloudRadius" Value="6" Type="float" Guid="91db0405-b770-4fbd-9375-4fbe9de4af15" Description="Radio de la nube venenosa."/>
     <Parameter Name="ParticleCount" Value="150" Type="int" Guid="78a85698-3e22-4f21-a450-648069996eb4" Description="Cantidad de partículas para la nube venenosa."/>
-    <Parameter Name="PlaySound" Value="true" Type="bool" Guid="afc40226-dfff-47e8-8ba5-d5894f14e403" Description="Reproducir sonido al explotar."/>
     <Parameter Name="PreventExplosion" Value="false" Type="bool" Guid="b788d065-f269-43ea-b114-34069a7c5de2" Description="Prevenir la explosión venenosa (útil para debugging)."/>
 </ComponentTemplate>
 
-    <ComponentTemplate Name="BoomerExplosion2" Guid="e1fbd7f5-5086-4743-aa37-14daf2172d5f">
+    <ComponentTemplate Name="BoomerExplosion2" Guid="e1fbd7f5-5086-4743-aa37-14daf2172d5f" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
     <Parameter Name="Class" Value="Game.ComponentBoomerExplosion2" Type="string" Guid="6980dd8a-f8b0-49d6-9cc2-61383a26612f" Description="Componente que hace que la criatura explote al morir de forma incendiaria."/>
     <Parameter Name="IsOptional" Value="false" Type="bool" Guid="3107346f-389f-44bd-bc43-e94b0bcc15c6" Description="Si es opcional o requerido para el funcionamiento."/>
     <Parameter Name="LoadOrder" Value="70" Type="int" Guid="4b046db9-16a3-4bca-956a-39b344af641b" Description="Orden de carga del componente."/>
@@ -281,7 +280,7 @@
     <Parameter Name="FireDuration" Value="10" Type="float" Guid="ee27b419-b84e-4ea4-a2f5-a484bbc01a52" Description="Duración del fuego en segundos."/>
 </ComponentTemplate>
 
-    <ComponentTemplate Name="BoomerExplosion" Guid="f0256105-afbc-4209-84cb-2fae41881524">
+    <ComponentTemplate Name="BoomerExplosion" Guid="f0256105-afbc-4209-84cb-2fae41881524" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
     <Parameter Name="Class" Value="Game.ComponentBoomerExplosion" Type="string" Guid="b2774fa3-d656-4fff-9ab9-dc7223da9c8b" Description="Componente que hace que la criatura explote al morir o cuando entidades se acercan."/>
     <Parameter Name="ActivationRange" Value="3" Type="float" Guid="439bfff8-9a15-4cc6-ac6a-4c7110282679" Description="Rango de activación (en bloques) para detectar entidades cercanas y explotar."/>
     <Parameter Name="UseStandardExplosion" Value="true" Type="bool" Guid="00173457-bd82-4572-a5bd-6013fb57fc03" Description="Usar el sistema de explosiones estándar del juego."/>
