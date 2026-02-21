@@ -9763,6 +9763,11 @@
 </EntityTemplate>
 
 <EntityTemplate Name="InfectedWerewolf" Guid="b8e8bb18-0391-417c-acf9-65033e7bff01" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="PathBreaker" Guid="bedc93ac-b9cb-4c2d-b42f-d72dd983ddc0" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
+		<Parameter Name="CanBreakBlocks" Guid="1caf0b21-ab15-43ca-88c4-dba5b27d2b65" Value="True" Type="bool"/>
+		<Parameter Name="SpecificBlocks" Guid="fd26e07b-8a3b-47a4-bca8-a096ea27153c" Value="" Type="string"/>
+		<Parameter Name="BreakProbability" Guid="96ca4190-38f7-4e34-8489-78818e3527da" Value="1.0" Type="float"/>
+	</MemberComponentTemplate>
 <MemberComponentTemplate Name="ZombieRunAwayBehavior" Guid="4a8bf949-75ca-4f8b-8926-b9aa7df4c5f4" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
         <MemberComponentTemplate Name="RunAwayBehavior" Guid="4795351a-2612-4af4-af7b-aec84b765684" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
     <MemberComponentTemplate Name="Creature" Guid="139bcab1-c088-43b2-af41-1194904e4f49">
@@ -9903,6 +9908,11 @@
 </EntityTemplate>
 
 <EntityTemplate Name="InfectedWerewolfTamed" Guid="6401c4d7-b05a-4f94-bc15-89c79a387ec3" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="PathBreaker" Guid="cbb53e7d-7e2a-40dc-b73a-2fef3ce62402" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
+		<Parameter Name="CanBreakBlocks" Guid="d787396f-0f2e-4b3f-800f-a0ce7e496574" Value="True" Type="bool"/>
+		<Parameter Name="SpecificBlocks" Guid="abb8c23c-cf14-4e52-abfb-ac2f994eda19" Value="" Type="string"/>
+		<Parameter Name="BreakProbability" Guid="748f0189-acac-47ba-a116-cc238a88b337" Value="1.0" Type="float"/>
+	</MemberComponentTemplate>
 <MemberComponentTemplate Name="SummonBehavior" Guid="d2394dd9-253a-4563-9b26-6f3c64f6704d">
               <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="a89aa490-80a9-4471-bf7c-6c19f14a3c75"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="2ab927ac-ee87-4b31-a194-943a0bbb7895"/>
