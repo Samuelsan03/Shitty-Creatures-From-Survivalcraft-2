@@ -150,7 +150,7 @@ namespace Game
 		{
 			base.Load(valuesDictionary, idToEntityMap);
 			CanUseInventory = valuesDictionary.GetValue<bool>("CanUseInventory", false);
-			AimHandAngleOrder = valuesDictionary.GetValue<float>("AimHandAngleOrder", 0f);
+			AimHandAngleOrder = valuesDictionary.GetValue<float>("AimHandAngleOrder");
 			m_componentCreature = Entity.FindComponent<ComponentCreature>(true);
 			m_componentZombieChaseBehavior = Entity.FindComponent<ComponentZombieChaseBehavior>();
 			m_componentInventory = Entity.FindComponent<ComponentInventory>(true);
@@ -1069,7 +1069,8 @@ namespace Game
 		{
 			if (m_componentModel != null)
 			{
-				m_componentModel.AimHandAngleOrder = 2f;
+				// Solo para lanzables permitimos un ángulo mayor
+				m_componentModel.AimHandAngleOrder = 2f; // Esto está bien porque es específico para lanzar
 
 				if (m_currentWeaponSlot >= 0)
 				{
@@ -1299,30 +1300,24 @@ namespace Game
 		{
 			if (m_componentModel != null)
 			{
-				float baseAimAngle = AimHandAngleOrder;
+				// SOLO usar AimHandAngleOrder + un pequeño offset si es necesario
+				m_componentModel.AimHandAngleOrder = AimHandAngleOrder + ((AimHandAngleOrder != 0f) ? 0.1f : 0f);
 
+				// El resto de offsets y rotaciones para el arma
 				if (config.IsSniper)
 				{
-					m_componentModel.AimHandAngleOrder = baseAimAngle;
 					m_componentModel.InHandItemOffsetOrder = new Vector3(-0.1f, -0.06f, 0.08f);
 					m_componentModel.InHandItemRotationOrder = new Vector3(-1.5f, 0f, 0f);
 				}
 				else
 				{
-					m_componentModel.AimHandAngleOrder = baseAimAngle;
 					m_componentModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
 					m_componentModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
 				}
 
 				if (target != null)
 				{
-					Vector3 lookAtPosition = target.ComponentCreatureModel.EyePosition;
-					if (config.IsSniper)
-					{
-						lookAtPosition = target.ComponentBody.Position;
-						lookAtPosition.Y += 0.5f;
-					}
-					m_componentModel.LookAtOrder = new Vector3?(lookAtPosition);
+					m_componentModel.LookAtOrder = new Vector3?(target.ComponentCreatureModel.EyePosition);
 				}
 			}
 		}
@@ -1331,10 +1326,8 @@ namespace Game
 		{
 			if (m_componentModel != null)
 			{
-				float timeSinceFire = (float)(m_subsystemTime.GameTime - m_fireTime);
-				float recoilFactor = MathUtils.Max(1.5f - timeSinceFire * 8f, 1.0f);
-
-				m_componentModel.AimHandAngleOrder = AimHandAngleOrder;
+				m_componentModel.AimHandAngleOrder = AimHandAngleOrder + ((AimHandAngleOrder != 0f) ? 0.1f : 0f);
+				// Mantener las mismas rotaciones que en aiming
 				m_componentModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
 				m_componentModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
 			}
@@ -1605,7 +1598,7 @@ namespace Game
 		{
 			if (m_componentModel != null)
 			{
-				m_componentModel.AimHandAngleOrder = AimHandAngleOrder;
+				m_componentModel.AimHandAngleOrder = AimHandAngleOrder + ((AimHandAngleOrder != 0f) ? 0.1f : 0f);
 				m_componentModel.InHandItemOffsetOrder = new Vector3(0.05f, 0.05f, 0.05f);
 				m_componentModel.InHandItemRotationOrder = new Vector3(-0.05f, 0.3f, 0.05f);
 
@@ -1764,7 +1757,7 @@ namespace Game
 		{
 			if (m_componentModel != null)
 			{
-				m_componentModel.AimHandAngleOrder = AimHandAngleOrder;
+				m_componentModel.AimHandAngleOrder = AimHandAngleOrder + ((AimHandAngleOrder != 0f) ? 0.1f : 0f);
 				m_componentModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
 				m_componentModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
 
@@ -1975,7 +1968,7 @@ namespace Game
 		{
 			if (m_componentModel != null)
 			{
-				m_componentModel.AimHandAngleOrder = AimHandAngleOrder;
+				m_componentModel.AimHandAngleOrder = AimHandAngleOrder + ((AimHandAngleOrder != 0f) ? 0.1f : 0f);
 				m_componentModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
 				m_componentModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
 
@@ -2287,7 +2280,7 @@ namespace Game
 		{
 			if (m_componentModel != null)
 			{
-				m_componentModel.AimHandAngleOrder = AimHandAngleOrder;
+				m_componentModel.AimHandAngleOrder = AimHandAngleOrder + ((AimHandAngleOrder != 0f) ? 0.1f : 0f);
 				m_componentModel.InHandItemOffsetOrder = new Vector3(-0.07f, -0.06f, 0.06f);
 				m_componentModel.InHandItemRotationOrder = new Vector3(-1.5f, 0f, 0f);
 
@@ -2457,7 +2450,7 @@ namespace Game
 		{
 			if (m_componentModel != null)
 			{
-				m_componentModel.AimHandAngleOrder = AimHandAngleOrder;
+				m_componentModel.AimHandAngleOrder = AimHandAngleOrder + ((AimHandAngleOrder != 0f) ? 0.1f : 0f);
 				m_componentModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.1f, 0.07f);
 				m_componentModel.InHandItemRotationOrder = new Vector3(-1.55f, 0f, 0f);
 
