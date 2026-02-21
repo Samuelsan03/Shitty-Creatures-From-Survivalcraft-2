@@ -10,10 +10,7 @@
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="dc4bd13b-99d1-47c5-9dfe-e280924c44d5"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1;InfectedNormal2" Type="string" Guid="6d17b67d-113c-4b15-92ef-0e27966035b8"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="04c75577-9c07-4a18-a1ab-5ff2f17c47b3">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="a480b57a-d8c4-45d0-9971-fc2ad341edc7" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="4af736a0-7b96-4d58-8f50-158f887f0b89" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
@@ -157,10 +154,7 @@
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="BanditRunAwayBehavior" Guid="777e7e24-6efc-4005-8708-0e7033549198" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
 <MemberComponentTemplate Name="RunAwayBehavior" Guid="d788a3c4-098e-4f85-8c14-a5619dcd19cb" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
-<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="480d3d72-9365-469e-9182-ee1dcc21a9ca">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="b9f15d17-6dca-4a25-ae37-cd7d3b7c89e2" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="b39ad590-2682-46c7-9353-6f70ea4f7b83" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
@@ -304,10 +298,7 @@
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="BanditRunAwayBehavior" Guid="8469ade4-2f31-4211-8495-2d9a553b287a" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
 <MemberComponentTemplate Name="RunAwayBehavior" Guid="fb730b38-2531-4cd0-b37c-d7a5d6e9d9a6" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
-<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="99ea442c-fdfe-4f43-a1a6-dbd5e7561ca7">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="d2183f44-fd48-4882-bdb6-2f475e425a05" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="13e5734c-69c8-47ff-8982-1c0a03c357bb" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
@@ -451,10 +442,7 @@
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="BanditRunAwayBehavior" Guid="df01ace7-f0c9-479f-a0a1-128f12eaf16a" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
 <MemberComponentTemplate Name="RunAwayBehavior" Guid="8c0410e7-7474-4752-8148-ee334cb26c7c" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
-<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="2962cb9a-a90b-4880-b840-8d0f4a57775e">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="8f0ea958-bcd9-4cce-b2f5-5df1f77c89fd" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="e49ee371-69b3-485e-81c2-44b929ee8c5b" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
@@ -598,10 +586,7 @@
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="BanditRunAwayBehavior" Guid="7f366fc4-c97c-4062-8a58-f2e6f6b9509b" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
 <MemberComponentTemplate Name="RunAwayBehavior" Guid="02ca1076-7840-40c4-b654-ca2c0a75998c" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
-<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="ba6f7ec4-408c-4dd9-9278-b7b879d917d8">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="193559e3-e097-47af-928b-7cfd515e7796" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="13fa36b3-2091-4235-82b8-705752fae9f2" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
@@ -745,10 +730,7 @@
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="BanditRunAwayBehavior" Guid="cb6f1f54-22fb-46e8-b413-22d4c96d34e6" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
 <MemberComponentTemplate Name="RunAwayBehavior" Guid="6be22db7-2741-49b4-b1b7-a18a7da0e061" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
-<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="4284aecd-7338-4a78-b973-893032915b60">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="a993288b-71d7-4b4a-a431-e0a5b00c22de" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="b21e0035-0e75-4f5f-b13a-e13af9194bf5" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
@@ -902,10 +884,7 @@
     <Parameter Name="LoadOrder" Value="55" Type="int" Guid="179a10c9-7762-45c8-bfc3-e5f3fd075e93"/>
     <Parameter Name="LowHealthToEscape" Value="0.1" Type="float" Guid="85534753-77f8-4478-a5b2-6f61d918b736"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="f3644f89-487e-4d6b-99db-192123135700">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="26049dce-6f9d-4858-8803-3b3496e8cc40" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="0d3d85d1-8e3b-487c-809d-f9d646d5bb72" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
@@ -1049,10 +1028,7 @@
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="BanditRunAwayBehavior" Guid="0b718af3-f358-4043-af93-9e73a48ee29a" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
 <MemberComponentTemplate Name="RunAwayBehavior" Guid="9c6fd0c9-18a6-452d-ab4d-777ba17d3277" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
-<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="61df739e-bc0c-4cd3-91d6-f5229799c698">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="1922f0b9-6fee-4c9b-816a-cd257a4773b1" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="0036ae0e-a760-465f-9fbe-f94ac291a889" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
@@ -1196,10 +1172,7 @@
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="BanditRunAwayBehavior" Guid="04be7f62-3fc3-4f3e-851e-af06f912301c" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
 <MemberComponentTemplate Name="RunAwayBehavior" Guid="c38d5e2b-c447-4586-b73f-e6825f563435" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
-<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="c8a42867-a90c-4c37-9c03-46cd54fda7f0">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="648c638f-6662-4b1d-ab55-b83db3b5c71f" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="766ee888-0a7e-4d2c-aa96-3132c63b9198" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
@@ -1342,10 +1315,7 @@
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="BanditRunAwayBehavior" Guid="977b3393-aed2-4acf-b6c7-6e077f938bcb" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
 <MemberComponentTemplate Name="RunAwayBehavior" Guid="462c0bd4-6f5d-4490-a1ff-287e7d7f4ab6" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
-<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="15ba8bed-b58b-4917-8d9f-781bb2e8de50">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="45bc145d-3ced-4982-8094-7d0951e69558" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="4e5d88dc-51f8-422d-a485-f3dfa2389dd4" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
@@ -1503,10 +1473,7 @@
     <Parameter Name="LoadOrder" Value="55" Type="int" Guid="4a757bb3-a635-4b7e-86e6-5fab3fad6229"/>
     <Parameter Name="LowHealthToEscape" Value="0.1" Type="float" Guid="e019a845-8d66-4f51-b229-6646b41c9576"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="50c50015-be58-4805-9913-ce3f22b1735a">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="8cba412c-668f-4504-9417-47222cfca45d" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="611c12e8-fd73-4658-92ae-b16d1fc54fc7" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
@@ -1664,10 +1631,7 @@
     <Parameter Name="LoadOrder" Value="55" Type="int" Guid="7a63a6fe-77e9-49d5-99d2-181256afbc2e"/>
     <Parameter Name="LowHealthToEscape" Value="0.1" Type="float" Guid="ca4157d4-7bca-43e5-80ca-0c0783e63b9f"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="c1b4244f-0c0c-4725-b5e4-575b3bc313a6">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="49dcee52-492b-478f-b34b-7c1ed8b4cc4e" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="d3cf8175-9ee3-499a-b4bb-4b89e797c8cb" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
@@ -1811,10 +1775,7 @@
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="BanditRunAwayBehavior" Guid="65542d01-0e15-4d55-bc46-298e86b96c3b" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
 <MemberComponentTemplate Name="RunAwayBehavior" Guid="76f8aafa-9734-4221-877a-c5c684135307" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
-<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="e586685b-1c5a-48e5-b7be-fccb8ad34c67">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="8952cd8c-850c-452c-a17c-43475974c903" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="8ef6795b-2241-4c34-9ae7-22f085121373" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
@@ -1965,10 +1926,7 @@
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="BanditRunAwayBehavior" Guid="d29e017e-137d-4411-a400-d9489792d0cf" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
 <MemberComponentTemplate Name="RunAwayBehavior" Guid="762bc059-ab9d-4928-b670-8c9077d82a3a" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
-<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="367893d2-3a15-4646-9276-fa14c6900c8a">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="191dc464-e59b-4344-a034-21ac028fc668" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="e93a935b-c409-4040-8d52-e9ce0527d6eb" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
@@ -2119,10 +2077,7 @@
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="BanditRunAwayBehavior" Guid="73705e4a-6647-4225-968f-c8359d7c6b8a" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
 <MemberComponentTemplate Name="RunAwayBehavior" Guid="63c10b09-0dfc-4049-bd6c-00531c292f4f" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
-<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="4c028ee5-ce3e-42e6-9164-f2a30e582814">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="da8d9c7e-feaf-4080-b03d-1b31b9405b86" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="99cfc40e-830b-462f-b965-1bc947bb4a9c" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
