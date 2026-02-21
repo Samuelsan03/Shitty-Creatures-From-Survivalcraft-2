@@ -10,10 +10,10 @@ namespace Game
 	public class ComponentBoomerPoisonExplosion : Component, IUpdateable
 	{
 		// ===== CONFIGURACIÓN =====
-		public float PoisonRadius = 8f;
-		public float PoisonIntensity = 200f;
-		public float CloudDuration = 4.0f; // CAMBIADO A 4 SEGUNDOS
-		public float CloudRadius = 6f;
+		public float PoisonRadius = 15f;  // Cambiado de 8f a 15f
+		public float PoisonIntensity = 300f;  // Cambiado de 200f a 300f
+		public float CloudDuration = 20.0f;  // Cambiado de 4.0f a 20.0f
+		public float CloudRadius = 12f;  // Cambiado de 6f a 12f
 		public float ExplosionPressure = 40f;
 
 		// ===== NUEVA VARIABLE PARA PREVENIR EXPLOSIÓN =====
@@ -323,7 +323,8 @@ namespace Game
 				Vector3 offset = body.Position - center;
 				float distanceSquared = offset.LengthSquared();
 
-				if (distanceSquared <= poisonRadiusSquared)
+				// x NUEVA COMPROBACIÓN: Verificar si la entidad está dentro del área de la nube
+				if (distanceSquared <= poisonRadiusSquared && IsEntityInsideCloud(body.Position, center, CloudRadius))
 				{
 					float distance = MathUtils.Sqrt(distanceSquared);
 					float intensityMultiplier = 1f - (distance / PoisonRadius);
@@ -348,6 +349,13 @@ namespace Game
 					}
 				}
 			}
+		}
+
+		private bool IsEntityInsideCloud(Vector3 entityPosition, Vector3 cloudCenter, float cloudRadius)
+		{
+			// Comprueba si la entidad está dentro del radio de la nube
+			float distanceSquared = Vector3.DistanceSquared(entityPosition, cloudCenter);
+			return distanceSquared <= (cloudRadius * cloudRadius);
 		}
 
 		public override void OnEntityRemoved()
