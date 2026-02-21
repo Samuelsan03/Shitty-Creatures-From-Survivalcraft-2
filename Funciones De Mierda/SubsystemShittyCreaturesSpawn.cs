@@ -670,7 +670,7 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 1.0f;
+						return 0.5f;
 					}
 					return 0f;
 				},
@@ -764,7 +764,7 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 1.0f;
+						return 0.5f;
 					}
 					return 0f;
 				},
@@ -858,7 +858,7 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 1.0f;
+						return 0.5f;
 					}
 					return 0f;
 				},
@@ -1489,6 +1489,235 @@ namespace Game
 					this.SpawnCreatures(creatureType, "Impmon", point, 1).Count)
 			});
 
+			// Spawn para Hawkmon con 100% de probabilidad - DESDE DÍA 1, solo de día, en primavera
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("Hawkmon", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 1
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay1OrLater = currentDay >= 1;
+					if (!isDay1OrLater)
+						return 0f;
+
+					// Verificar que sea de día
+					bool isDay = this.m_subsystemSky.SkyLightIntensity > 0.5f;
+					if (!isDay)
+						return 0f;
+
+					// Verificar que sea primavera
+					SubsystemSeasons seasons = base.Project.FindSubsystem<SubsystemSeasons>(true);
+					if (seasons == null)
+						return 0f;
+
+					bool isSpring = (seasons.Season == Season.Spring);
+					if (!isSpring)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					// Agua (18) o lava (92)
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					// Verificar el bloque del suelo
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					// Prefiere áreas elevadas para un Digimon volador (Y > 70) y tierra/arena/vegetación
+					if ((groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8) && point.Y > 70)
+					{
+						return 1.0f; // 100% de probabilidad
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "Hawkmon", point, 1).Count) // Individualmente
+			});
+
+			// Spawn para Hawkmon Constant - DESDE DÍA 1, solo de día, en primavera
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("Hawkmon Constant", SpawnLocationType.Surface, false, true)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 1
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay1OrLater = currentDay >= 1;
+					if (!isDay1OrLater)
+						return 0f;
+
+					// Verificar que sea de día
+					bool isDay = this.m_subsystemSky.SkyLightIntensity > 0.5f;
+					if (!isDay)
+						return 0f;
+
+					// Verificar que sea primavera
+					SubsystemSeasons seasons = base.Project.FindSubsystem<SubsystemSeasons>(true);
+					if (seasons == null)
+						return 0f;
+
+					bool isSpring = (seasons.Season == Season.Spring);
+					if (!isSpring)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if ((groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8) && point.Y > 70)
+					{
+						return 0.5f; // 50% de probabilidad
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "Hawkmon", point, 1).Count) // Individualmente
+			});
+
+			// Spawn para Gabumon con 100% de probabilidad - DESDE DÍA 2, solo de noche, en invierno
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("Gabumon", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 2
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay2OrLater = currentDay >= 2;
+					if (!isDay2OrLater)
+						return 0f;
+
+					// Verificar que sea de noche (prefiere la oscuridad)
+					bool isNight = this.m_subsystemSky.SkyLightIntensity < 0.3f;
+					if (!isNight)
+						return 0f;
+
+					// Verificar que sea invierno
+					SubsystemSeasons seasons = base.Project.FindSubsystem<SubsystemSeasons>(true);
+					if (seasons == null)
+						return 0f;
+
+					bool isWinter = (seasons.Season == Season.Winter);
+					if (!isWinter)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					// Verificar el bloque del suelo - prefiere nieve (bloque 62) o tierra fría
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					// Bloque de nieve (62) o tierra/arena en zonas frías
+					if (groundBlock == 62 || groundBlock == 2 || groundBlock == 3)
+					{
+						return 1.0f; // 100% de probabilidad
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "Gabumon", point, 1).Count) // Individualmente
+			});
+
+			// Spawn para Gabumon Constant - DESDE DÍA 2, solo de noche, en invierno
+			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("Gabumon Constant", SpawnLocationType.Surface, false, true)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point)
+				{
+					// Condición de día: solo a partir del día 2
+					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+					int currentDay = 0;
+					if (timeOfDay != null)
+					{
+						currentDay = (int)Math.Floor(timeOfDay.Day);
+					}
+
+					bool isDay2OrLater = currentDay >= 2;
+					if (!isDay2OrLater)
+						return 0f;
+
+					// Verificar que sea de noche
+					bool isNight = this.m_subsystemSky.SkyLightIntensity < 0.3f;
+					if (!isNight)
+						return 0f;
+
+					// Verificar que sea invierno
+					SubsystemSeasons seasons = base.Project.FindSubsystem<SubsystemSeasons>(true);
+					if (seasons == null)
+						return 0f;
+
+					bool isWinter = (seasons.Season == Season.Winter);
+					if (!isWinter)
+						return 0f;
+
+					// Verificar que no esté en agua o lava
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+
+					if (groundBlock == 62 || groundBlock == 2 || groundBlock == 3)
+					{
+						return 0.5f; // 50% de probabilidad
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemShittyCreaturesSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "Gabumon", point, 1).Count) // Individualmente
+			});
+
 			// Spawn para FumadorQuimico con 100% de probabilidad - DESDE DÍA 7, cualquier hora
 			this.m_creatureTypes.Add(new SubsystemShittyCreaturesSpawn.CreatureType("FumadorQuimico", SpawnLocationType.Surface, true, false)
 			{
@@ -1889,7 +2118,7 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 1.0f;
+						return 0.5f;
 					}
 					return 0f;
 				},
@@ -1931,7 +2160,7 @@ namespace Game
 
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 1.0f;
+						return 0.5f;
 					}
 					return 0f;
 				},
