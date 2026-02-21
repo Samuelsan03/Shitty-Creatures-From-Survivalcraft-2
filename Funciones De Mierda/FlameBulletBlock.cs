@@ -50,16 +50,6 @@ namespace Game
 			yield return Terrain.MakeBlockValue(this.BlockIndex, 0, FlameBulletBlock.SetBulletType(0, FlameBulletBlock.FlameBulletType.Poison));
 		}
 
-		public override string GetDisplayName(SubsystemTerrain subsystemTerrain, int value)
-		{
-			return LanguageControl.GetBlock("FlameBullet:" + (int)FlameBulletBlock.GetBulletType(Terrain.ExtractData(value)), "DisplayName");
-		}
-
-		public override string GetDescription(int value)
-		{
-			return LanguageControl.GetBlock("FlameBullet:" + (int)FlameBulletBlock.GetBulletType(Terrain.ExtractData(value)), "Description");
-		}
-
 		public override float GetProjectilePower(int value)
 		{
 			return 0f;

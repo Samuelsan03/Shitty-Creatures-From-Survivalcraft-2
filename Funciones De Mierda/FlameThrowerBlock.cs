@@ -5,10 +5,10 @@ using Game;
 
 namespace Game
 {
-	// Token: 0x02000075 RID: 117
+	// Token: 0x0200008A RID: 138
 	public class FlameThrowerBlock : Block
 	{
-		// Token: 0x06000352 RID: 850 RVA: 0x0000CC64 File Offset: 0x0000AE64
+		// Token: 0x060003C4 RID: 964 RVA: 0x0000E260 File Offset: 0x0000C460
 		public override void Initialize()
 		{
 			this.m_texture1 = ContentManager.Get<Texture2D>("Textures/FlameThrower");
@@ -24,12 +24,12 @@ namespace Game
 			base.Initialize();
 		}
 
-		// Token: 0x06000353 RID: 851 RVA: 0x0000CDA1 File Offset: 0x0000AFA1
+		// Token: 0x060003C5 RID: 965 RVA: 0x0000E39D File Offset: 0x0000C59D
 		public override void GenerateTerrainVertices(BlockGeometryGenerator generator, TerrainGeometry geometry, int value, int x, int y, int z)
 		{
 		}
 
-		// Token: 0x06000354 RID: 852 RVA: 0x0000CDA4 File Offset: 0x0000AFA4
+		// Token: 0x060003C6 RID: 966 RVA: 0x0000E3A0 File Offset: 0x0000C5A0
 		public override void DrawBlock(PrimitivesRenderer3D primitivesRenderer, int value, Color color, float size, ref Matrix matrix, DrawBlockEnvironmentData environmentData)
 		{
 			if (FlameThrowerBlock.GetSwitchState(Terrain.ExtractData(value)))
@@ -40,13 +40,13 @@ namespace Game
 			BlocksManager.DrawMeshBlock(primitivesRenderer, this.m_standaloneBlockMeshUnloaded, this.m_texture1, color, 2f * size, ref matrix, environmentData);
 		}
 
-		// Token: 0x06000355 RID: 853 RVA: 0x0000CDFD File Offset: 0x0000AFFD
+		// Token: 0x060003C7 RID: 967 RVA: 0x0000E3F9 File Offset: 0x0000C5F9
 		public override BlockDebrisParticleSystem CreateDebrisParticleSystem(SubsystemTerrain subsystemTerrain, Vector3 position, int value, float strength)
 		{
 			return new BlockDebrisParticleSystem(subsystemTerrain, position, strength, this.DestructionDebrisScale, Color.White, this.GetFaceTextureSlot(0, value), this.m_texture1);
 		}
 
-		// Token: 0x06000356 RID: 854 RVA: 0x0000CE24 File Offset: 0x0000B024
+		// Token: 0x060003C8 RID: 968 RVA: 0x0000E420 File Offset: 0x0000C620
 		public override bool IsSwapAnimationNeeded(int oldValue, int newValue)
 		{
 			if (Terrain.ExtractContents(oldValue) != this.BlockIndex)
@@ -57,13 +57,13 @@ namespace Game
 			return FlameThrowerBlock.SetSwitchState(Terrain.ExtractData(newValue), true) != FlameThrowerBlock.SetSwitchState(data, true);
 		}
 
-		// Token: 0x06000357 RID: 855 RVA: 0x0000CE60 File Offset: 0x0000B060
+		// Token: 0x060003C9 RID: 969 RVA: 0x0000E45C File Offset: 0x0000C65C
 		public override int GetDamage(int value)
 		{
 			return Terrain.ExtractData(value) >> 8 & 255;
 		}
 
-		// Token: 0x06000358 RID: 856 RVA: 0x0000CE70 File Offset: 0x0000B070
+		// Token: 0x060003CA RID: 970 RVA: 0x0000E46C File Offset: 0x0000C66C
 		public override int SetDamage(int value, int damage)
 		{
 			int num = Terrain.ExtractData(value);
@@ -72,31 +72,30 @@ namespace Game
 			return Terrain.ReplaceData(value, num);
 		}
 
-		// Token: 0x06000359 RID: 857 RVA: 0x0000CEA4 File Offset: 0x0000B0A4
+		// Token: 0x060003CB RID: 971 RVA: 0x0000E4A0 File Offset: 0x0000C6A0
 		public static FlameThrowerBlock.LoadState GetLoadState(int data)
 		{
 			return (FlameThrowerBlock.LoadState)(data & 3);
 		}
 
-		// Token: 0x0600035A RID: 858 RVA: 0x0000CEA9 File Offset: 0x0000B0A9
+		// Token: 0x060003CC RID: 972 RVA: 0x0000E4A5 File Offset: 0x0000C6A5
 		public static int SetLoadState(int data, FlameThrowerBlock.LoadState loadState)
 		{
 			return (data & -4) | (int)(loadState & FlameThrowerBlock.LoadState.Loaded);
 		}
 
-		// Token: 0x0600035B RID: 859 RVA: 0x0000CEB3 File Offset: 0x0000B0B3
+		// Token: 0x060003CD RID: 973 RVA: 0x0000E4AF File Offset: 0x0000C6AF
 		public static bool GetSwitchState(int data)
 		{
 			return (data & 4) != 0;
 		}
 
-		// Token: 0x0600035C RID: 860 RVA: 0x0000CEBB File Offset: 0x0000B0BB
 		public static int SetSwitchState(int data, bool state)
 		{
-			return (data & -5) | (state ? 4 : 0);
+			return (data & ~4) | (state ? 4 : 0);
 		}
 
-		// Token: 0x0600035D RID: 861 RVA: 0x0000CEC8 File Offset: 0x0000B0C8
+		// Token: 0x060003CF RID: 975 RVA: 0x0000E4C4 File Offset: 0x0000C6C4
 		public static FlameBulletBlock.FlameBulletType? GetBulletType(int data)
 		{
 			int num = data >> 4 & 15;
@@ -107,43 +106,43 @@ namespace Game
 			return null;
 		}
 
-		// Token: 0x0600035E RID: 862 RVA: 0x0000CEF4 File Offset: 0x0000B0F4
+		// Token: 0x060003D0 RID: 976 RVA: 0x0000E4F0 File Offset: 0x0000C6F0
 		public static int SetBulletType(int data, FlameBulletBlock.FlameBulletType? type)
 		{
 			int num = (int)((type != null) ? (type.Value + 1) : FlameBulletBlock.FlameBulletType.Flame);
 			return (data & -241) | (num & 15) << 4;
 		}
 
-		// Token: 0x0600035F RID: 863 RVA: 0x0000CF25 File Offset: 0x0000B125
+		// Token: 0x060003D1 RID: 977 RVA: 0x0000E521 File Offset: 0x0000C721
 		public static int GetLoadCount(int value)
 		{
 			return (value & 15360) >> 10;
 		}
 
-		// Token: 0x06000360 RID: 864 RVA: 0x0000CF31 File Offset: 0x0000B131
+		// Token: 0x060003D2 RID: 978 RVA: 0x0000E52D File Offset: 0x0000C72D
 		public static int SetLoadCount(int value, int count)
 		{
 			return value ^ ((value ^ count << 10) & 15360);
 		}
 
-		// Token: 0x0400010A RID: 266
-		public static int Index = 738;
+		// Token: 0x04000150 RID: 336
+		public static int Index = 319;
 
-		// Token: 0x0400010B RID: 267
+		// Token: 0x04000151 RID: 337
 		public BlockMesh m_standaloneBlockMeshUnloaded;
 
-		// Token: 0x0400010C RID: 268
+		// Token: 0x04000152 RID: 338
 		public BlockMesh m_standaloneBlockMeshLoaded;
 
-		// Token: 0x0400010D RID: 269
+		// Token: 0x04000153 RID: 339
 		public Texture2D m_texture1;
 
-		// Token: 0x02000126 RID: 294
+		// Token: 0x0200014C RID: 332
 		public enum LoadState
 		{
-			// Token: 0x040004EE RID: 1262
+			// Token: 0x0400064B RID: 1611
 			Empty,
-			// Token: 0x040004EF RID: 1263
+			// Token: 0x0400064C RID: 1612
 			Loaded
 		}
 	}
