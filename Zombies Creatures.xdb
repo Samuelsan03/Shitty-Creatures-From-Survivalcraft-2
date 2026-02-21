@@ -9681,6 +9681,12 @@
 </EntityTemplate>
 
 <EntityTemplate Name="InfectedWolfTamed" Guid="2fd8e1d0-a74a-4644-a373-564349fbdec7" InheritanceParent="49a9845c-3810-4092-ba53-df213d10d563">
+MemberComponentTemplate Name="SummonBehavior" Guid="f2a97e15-76d0-4bb7-808b-1019ae7f9179">
+              <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="9449583d-9e2b-4390-970d-b150a320d16e"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="46fb9969-d7ed-437f-9932-a0d18dad33d1"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="0ae1993d-307d-4890-9511-a89056a7e6e4"/>
+              <Parameter Name="IsEnabled" Guid="d3d130cd-ee61-4dc2-9767-b1dee1f5e931" Value="True" Type="bool"/>
+            </MemberComponentTemplate>
     <MemberComponentTemplate Name="DeathSpawner" Guid="103aef3e-ca2d-43e1-bb1b-52084235a0fc" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
         <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="4ab7366f-d7a7-4c54-9225-b3802e0a69a2"/>
         <Parameter Name="DeathSpawnTemplates" Value="InfectedWolf" Type="string" Guid="ac086620-0f47-4a3e-b776-ae621de60e20"/>
