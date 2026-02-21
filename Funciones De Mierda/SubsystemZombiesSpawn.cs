@@ -948,7 +948,30 @@ namespace Game
 						int cellValueFast2 = this.m_subsystemTerrain.Terrain.GetCellValueFast(x, y, z);
 						int cellValueFast3 = this.m_subsystemTerrain.Terrain.GetCellValueFast(x, y + 1, z);
 
-						Block block = BlocksManager.Blocks[Terrain.ExtractContents(cellValueFast)];
+						int blockBelowId = Terrain.ExtractContents(cellValueFast);
+						Block blockBelow = BlocksManager.Blocks[blockBelowId];
+
+						// --- EXCLUIR BLOQUES POR NOMBRE USANDO nameof() ---
+						HashSet<string> forbiddenBlockNames = new HashSet<string>
+				{
+					nameof(BedrockBlock),
+					nameof(IronBlock),
+					nameof(CopperBlock),
+					nameof(DiamondBlock),
+					nameof(BrickBlock),
+					nameof(MalachiteBlock),
+					nameof(WaterBlock),
+					nameof(MagmaBlock)
+				};
+
+						// Comprobar si el bloque inferior está prohibido por nombre
+						string blockName = blockBelow.GetType().Name;
+						if (forbiddenBlockNames.Contains(blockName))
+						{
+							return false;
+						}
+
+						Block block = blockBelow;
 						Block block2 = BlocksManager.Blocks[Terrain.ExtractContents(cellValueFast2)];
 						Block block3 = BlocksManager.Blocks[Terrain.ExtractContents(cellValueFast3)];
 
