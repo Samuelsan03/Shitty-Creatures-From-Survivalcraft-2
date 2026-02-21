@@ -750,6 +750,8 @@
     "FluCured": "¡La gripa ha sido curada!",
     "PoisonAndSicknessCured": "¡Las náuseas y la enfermedad han sido curadas!",
     "GreenMoonBegins": "¡La Luna Verde ha comenzado!",
+    "CollarTamedInfectedWolfMessage": "¡Has domesticado a un lobo infectado! Ahora luchará por ti.",
+    "CollarTamedInfectedWerewolfMessage": "¡Has domesticado a un hombre lobo infectado! Su fuerza salvaje ahora está bajo tu mando.",
     "CollarTamedMachineGunMessage": "¡Has domesticado a un Infectado Ametrallador!\n¡Su devastadora minigun ahora está bajo tu mando!\n¡Desata una tormenta de balas contra tus enemigos!",
     "CollarTamedGhostBoomerMessage": "¡Has domesticado un Fantasma Boomer!\n¡Sus explosiones espectrales acecharán a tus enemigos!\n¡Un guardián explosivo fantasmal es ahora tuyo!",
     "CollarTamedGhostChargerMessage": "¡Has domesticado un Fantasma Charger!\n¡Su fuerza fantasma empujará enemigos desde el más allá!\n¡Un bruto espectral está ahora bajo tu mando!",
