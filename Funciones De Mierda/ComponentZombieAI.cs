@@ -19,6 +19,8 @@ namespace Game
 		private SubsystemNoise m_subsystemNoise;
 		private SubsystemTerrain m_subsystemTerrain;
 		private ComponentMiner m_componentMiner;
+		private ComponentPathfinding m_componentPathfinding; // AÑADIR ESTA LÍNEA
+		private SubsystemBodies m_subsystemBodies; // AÑADIR junto a los otros subsystems
 		private Random m_random = new Random();
 
 		public float AimHandAngleOrder = 0f;
@@ -120,7 +122,9 @@ namespace Game
 		private float m_firearmAimTime = 0.5f;
 		private float m_firearmReloadTime = 1.0f;
 		private float m_sniperAimTime = 1.0f;
-		private float m_throwableAimTime = 1.0f;
+		private float m_throwableAimTime = 3.0f;
+		private float m_throwableMinRange = 3f;
+		private float m_throwableMaxRange = 15.5f;
 
 		private float m_explosiveBoltMinDistance = 15f;
 		private float m_explosiveRepeatArrowMinDistance = 15f;
@@ -143,12 +147,14 @@ namespace Game
 			m_componentInventory = Entity.FindComponent<ComponentInventory>(true);
 			m_componentMiner = Entity.FindComponent<ComponentMiner>(true);
 			m_componentModel = Entity.FindComponent<ComponentCreatureModel>();
+			m_componentPathfinding = Entity.FindComponent<ComponentPathfinding>(true);
 			m_subsystemTime = Project.FindSubsystem<SubsystemTime>(true);
 			m_subsystemProjectiles = Project.FindSubsystem<SubsystemProjectiles>(true);
 			m_subsystemAudio = Project.FindSubsystem<SubsystemAudio>(true);
 			m_subsystemParticles = Project.FindSubsystem<SubsystemParticles>(true);
 			m_subsystemNoise = Project.FindSubsystem<SubsystemNoise>(true);
 			m_subsystemTerrain = Project.FindSubsystem<SubsystemTerrain>(true);
+			m_subsystemBodies = Project.FindSubsystem<SubsystemBodies>(true); // AÑADIR
 
 			m_currentRepeatArrowTypeIndex = m_random.Int(0, m_repeatCrossbowArrowTypes.Length - 1);
 			m_currentRepeatArrowType = m_repeatCrossbowArrowTypes[m_currentRepeatArrowTypeIndex];
@@ -179,15 +185,15 @@ namespace Game
 				int bk43Index = BlocksManager.GetBlockIndex(typeof(Game.BK43Block), true, false);
 				m_firearmConfigs[bk43Index] = new FirearmConfig
 				{
-					BulletBlockType = typeof(NuevaBala3),  // Mismo tipo de bala que usa el BK43
+					BulletBlockType = typeof(NuevaBala3),
 					ShootSound = "Audio/Armas/bk 43",
-					FireRate = 1.5,  // Cooldown de 1.5 segundos como en SubsystemBK43Behavior
-					BulletSpeed = 280f,  // Velocidad ajustada para escopeta
-					MaxShotsBeforeReload = 2,  // Capacidad de 2 cartuchos
-					ProjectilesPerShot = 8,  // 8 perdigones como patrón de escopeta
-					SpreadVector = new Vector3(0.1f, 0.1f, 0.03f),  // Dispersión de escopeta
-					NoiseRadius = 50f,  // Ruido mayor por ser escopeta
-					IsAutomatic = false  // No automático, es de bombeo/acción simple
+					FireRate = 1.5,
+					BulletSpeed = 280f,
+					MaxShotsBeforeReload = 2,
+					ProjectilesPerShot = 8,
+					SpreadVector = new Vector3(0.1f, 0.1f, 0.03f),
+					NoiseRadius = 50f,
+					IsAutomatic = false
 				};
 
 				int akIndex = BlocksManager.GetBlockIndex(typeof(AKBlock), true, false);
@@ -531,6 +537,37 @@ namespace Game
 			}
 		}
 
+		private bool HasClearLineOfSight(ComponentCreature target)
+		{
+			if (target == null || target.ComponentBody == null) return false;
+
+			Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
+			Vector3 targetPos = target.ComponentCreatureModel.EyePosition;
+			Vector3 direction = targetPos - eyePos;
+			float distance = direction.Length();
+
+			if (distance < 0.1f) return true;
+
+			direction = Vector3.Normalize(direction);
+
+			// Raycast contra el terreno (bloques sólidos)
+			TerrainRaycastResult? terrainHit = m_subsystemTerrain.Raycast(
+				eyePos,
+				targetPos,
+				false,
+				true,
+				(int value, float d) => BlocksManager.Blocks[Terrain.ExtractContents(value)].IsCollidable
+			);
+
+			// Si hay un bloque sólido entre medias, no hay línea de visión
+			if (terrainHit != null && terrainHit.Value.Distance < distance - 0.5f)
+			{
+				return false;
+			}
+
+			return true;
+		}
+
 		private bool IsThrowableBlock(Block block)
 		{
 			if (block is SpearBlock)
@@ -591,28 +628,31 @@ namespace Game
 				}
 				else
 				{
-					// Reseteo completo del estado cuando el objetivo está fuera de rango
-					ResetWeaponState();
-					// Asegurarse de que el modelo deje de girar el arma
-					if (m_componentModel != null)
+					// Si el arma es lanzable, no reseteamos el slot, solo limpiamos animaciones
+					if (m_weaponType == 6)
 					{
-						m_componentModel.AimHandAngleOrder = AimHandAngleOrder;
-						m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
-						m_componentModel.InHandItemRotationOrder = Vector3.Zero;
-						m_componentModel.LookAtOrder = null;
+						// Cancelar cualquier estado de lanzamiento pero mantener el arma
+						m_isThrowableAiming = false;
+						m_isThrowableThrowing = false;
+						if (m_componentModel != null)
+						{
+							m_componentModel.AimHandAngleOrder = AimHandAngleOrder;
+							m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
+							m_componentModel.InHandItemRotationOrder = Vector3.Zero;
+							m_componentModel.LookAtOrder = null;
+						}
 					}
-				}
-			}
-			else
-			{
-				// Reseteo cuando no hay objetivo o está muerto
-				ResetWeaponState();
-				if (m_componentModel != null)
-				{
-					m_componentModel.AimHandAngleOrder = AimHandAngleOrder;
-					m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
-					m_componentModel.InHandItemRotationOrder = Vector3.Zero;
-					m_componentModel.LookAtOrder = null;
+					else
+					{
+						ResetWeaponState();
+						if (m_componentModel != null)
+						{
+							m_componentModel.AimHandAngleOrder = AimHandAngleOrder;
+							m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
+							m_componentModel.InHandItemRotationOrder = Vector3.Zero;
+							m_componentModel.LookAtOrder = null;
+						}
+					}
 				}
 			}
 		}
@@ -632,6 +672,7 @@ namespace Game
 					}
 				}
 			}
+			if (m_weaponType == 6) return m_throwableMaxRange;
 			return m_maxDistance;
 		}
 
@@ -761,6 +802,54 @@ namespace Game
 
 		private void ProcessThrowableBehavior(ComponentCreature target, float distance)
 		{
+			if (target == null) return;
+
+			// Verificar línea de visión
+			bool hasLineOfSight = HasClearLineOfSight(target);
+
+			// Si NO hay línea de visión, NO detenerse - dejar que la persecución mueva al zombie
+			if (!hasLineOfSight)
+			{
+				// Cancelar cualquier estado de lanzamiento en progreso
+				m_isThrowableAiming = false;
+				m_isThrowableThrowing = false;
+				// Resetear el modelo
+				if (m_componentModel != null)
+				{
+					m_componentModel.AimHandAngleOrder = AimHandAngleOrder;
+					m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
+					m_componentModel.InHandItemRotationOrder = Vector3.Zero;
+					m_componentModel.LookAtOrder = null;
+				}
+				// IMPORTANTE: NO detener el movimiento
+				return;
+			}
+
+			// Verificar rango: si está fuera de la distancia óptima, cancelar lanzamiento
+			if (distance < m_throwableMinRange || distance > m_throwableMaxRange)
+			{
+				// Cancelar cualquier estado de lanzamiento en progreso
+				m_isThrowableAiming = false;
+				m_isThrowableThrowing = false;
+				// Resetear el modelo
+				if (m_componentModel != null)
+				{
+					m_componentModel.AimHandAngleOrder = AimHandAngleOrder;
+					m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
+					m_componentModel.InHandItemRotationOrder = Vector3.Zero;
+					m_componentModel.LookAtOrder = null;
+				}
+				// IMPORTANTE: NO detener el movimiento
+				return;
+			}
+
+			// SOLO cuando hay línea de visión Y estamos en rango: detener el movimiento para lanzar
+			if (m_componentPathfinding != null)
+			{
+				m_componentPathfinding.Destination = null;
+			}
+
+			// Resto de la lógica de lanzamiento igual...
 			if (!m_isThrowableAiming && !m_isThrowableThrowing)
 			{
 				StartThrowableAiming();
@@ -783,7 +872,16 @@ namespace Game
 				if (m_subsystemTime.GameTime - m_throwableThrowTime >= 0.3f)
 				{
 					m_isThrowableThrowing = false;
-					ResetWeaponState();
+
+					int slotValue = m_componentInventory.GetSlotValue(m_currentWeaponSlot);
+					if (slotValue != 0)
+					{
+						StartThrowableAiming();
+					}
+					else
+					{
+						ResetWeaponState();
+					}
 				}
 				if (m_componentModel != null)
 				{
