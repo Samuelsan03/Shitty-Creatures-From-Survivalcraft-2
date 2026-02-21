@@ -119,20 +119,12 @@
     <MemberComponentTemplate Name="FeedBehavior" Guid="ef378f42-f202-4024-8b4c-b3d842235ed5" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
         <Parameter Name="AutoFeed" Guid="68a5ed4c-0850-4429-8904-f2007ba64d9e" Value="False" Type="bool"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="BanditHerdBehavior" Guid="76e74392-7445-4f02-99f4-77165aad0d6b">
-    <Parameter Name="Class" Value="Game.ComponentBanditHerdBehavior" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="100" Type="int"/>
-    <Parameter Name="UpdateOrder" Value="150" Type="int"/>
+<MemberComponentTemplate Name="BanditHerdBehavior" Guid="76e74392-7445-4f02-99f4-77165aad0d6b" InheritanceParent="a511bc31-fbbf-47af-a2a8-4d51dad1d563">
     <Parameter Name="HerdName" Value="bandits" Type="string"/>
     <Parameter Name="HerdingRange" Value="30" Type="float"/>
     <Parameter Name="AutoNearbyCreaturesHelp" Value="true" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="BanditChaseBehavior" Guid="9be7fc8f-ba92-4327-9da4-ed41834bc53a">
-    <Parameter Name="Class" Value="Game.ComponentBanditChaseBehavior" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="80" Type="int"/>
-    <Parameter Name="UpdateOrder" Value="100" Type="int"/>
+<MemberComponentTemplate Name="BanditChaseBehavior" Guid="9be7fc8f-ba92-4327-9da4-ed41834bc53a" InheritanceParent="c0b1cbec-0706-41cf-8bf4-9fd5647deca5">
     <Parameter Name="DayChaseRange" Value="999" Type="float"/>
     <Parameter Name="NightChaseRange" Value="999" Type="float"/>
     <Parameter Name="DayChaseTime" Value="999" Type="float"/>
@@ -278,20 +270,12 @@
     <MemberComponentTemplate Name="FeedBehavior" Guid="cc45d99c-fdce-4474-937d-3a8bf5c543a8" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
         <Parameter Name="AutoFeed" Guid="e37e7410-584f-4ace-b226-88e637ec665e" Value="False" Type="bool"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="BanditHerdBehavior" Guid="932d4e3b-728f-4e0d-8364-071699018ee7">
-    <Parameter Name="Class" Value="Game.ComponentBanditHerdBehavior" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="100" Type="int"/>
-    <Parameter Name="UpdateOrder" Value="150" Type="int"/>
+    <MemberComponentTemplate Name="BanditHerdBehavior" Guid="932d4e3b-728f-4e0d-8364-071699018ee7" InheritanceParent="a511bc31-fbbf-47af-a2a8-4d51dad1d563">
     <Parameter Name="HerdName" Value="bandits" Type="string"/>
     <Parameter Name="HerdingRange" Value="30" Type="float"/>
     <Parameter Name="AutoNearbyCreaturesHelp" Value="true" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="BanditChaseBehavior" Guid="f8695310-dee4-4462-a5ec-f03f201671a6">
-    <Parameter Name="Class" Value="Game.ComponentBanditChaseBehavior" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="80" Type="int"/>
-    <Parameter Name="UpdateOrder" Value="100" Type="int"/>
+<MemberComponentTemplate Name="BanditChaseBehavior" Guid="f8695310-dee4-4462-a5ec-f03f201671a6" InheritanceParent="c0b1cbec-0706-41cf-8bf4-9fd5647deca5">
     <Parameter Name="DayChaseRange" Value="999" Type="float"/>
     <Parameter Name="NightChaseRange" Value="999" Type="float"/>
     <Parameter Name="DayChaseTime" Value="999" Type="float"/>
@@ -437,20 +421,12 @@
     <MemberComponentTemplate Name="FeedBehavior" Guid="0c19caf7-ad97-44a1-a9c9-6dcd031f4cd7" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
         <Parameter Name="AutoFeed" Guid="c8e783eb-d392-437e-8c45-a85203915644" Value="False" Type="bool"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="BanditHerdBehavior" Guid="e87d50bf-1b70-4034-8a3a-40b66c7091f8">
-    <Parameter Name="Class" Value="Game.ComponentBanditHerdBehavior" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="100" Type="int"/>
-    <Parameter Name="UpdateOrder" Value="150" Type="int"/>
+<MemberComponentTemplate Name="BanditHerdBehavior" Guid="e87d50bf-1b70-4034-8a3a-40b66c7091f8" InheritanceParent="a511bc31-fbbf-47af-a2a8-4d51dad1d563">
     <Parameter Name="HerdName" Value="bandits" Type="string"/>
     <Parameter Name="HerdingRange" Value="30" Type="float"/>
     <Parameter Name="AutoNearbyCreaturesHelp" Value="true" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="BanditChaseBehavior" Guid="86b67be7-1af9-404d-949a-e497536524bb">
-    <Parameter Name="Class" Value="Game.ComponentBanditChaseBehavior" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="80" Type="int"/>
-    <Parameter Name="UpdateOrder" Value="100" Type="int"/>
+<MemberComponentTemplate Name="BanditChaseBehavior" Guid="86b67be7-1af9-404d-949a-e497536524bb" InheritanceParent="c0b1cbec-0706-41cf-8bf4-9fd5647deca5">
     <Parameter Name="DayChaseRange" Value="999" Type="float"/>
     <Parameter Name="NightChaseRange" Value="999" Type="float"/>
     <Parameter Name="DayChaseTime" Value="999" Type="float"/>
@@ -522,7 +498,7 @@
     <MemberComponentTemplate Name="Inventory" Guid="8e20ad8c-448b-4cc4-ba5c-be345b936e2c" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
     <ParameterSet Name="Slots">
         <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="365" Type="int"/> <!-- Tiene puesto su AUG-->
+            <Parameter Name="Contents" Value="364" Type="int"/> <!-- Tiene puesto su AUG-->
             <Parameter Name="Count" Value="1" Type="int"/>
         </ParameterSet>
     </ParameterSet>
@@ -596,20 +572,12 @@
     <MemberComponentTemplate Name="FeedBehavior" Guid="6fb3a247-8cea-4ef4-9a87-5f082705cbe9" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
         <Parameter Name="AutoFeed" Guid="d5cd54dc-c7ea-423c-9b1d-eeb65ab94d72" Value="False" Type="bool"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="BanditHerdBehavior" Guid="5a0dfc45-0449-4d00-b51b-beea258b4d8e">
-    <Parameter Name="Class" Value="Game.ComponentBanditHerdBehavior" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="100" Type="int"/>
-    <Parameter Name="UpdateOrder" Value="150" Type="int"/>
+    <MemberComponentTemplate Name="BanditHerdBehavior" Guid="5a0dfc45-0449-4d00-b51b-beea258b4d8e" InheritanceParent="a511bc31-fbbf-47af-a2a8-4d51dad1d563">
     <Parameter Name="HerdName" Value="bandits" Type="string"/>
     <Parameter Name="HerdingRange" Value="30" Type="float"/>
     <Parameter Name="AutoNearbyCreaturesHelp" Value="true" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="BanditChaseBehavior" Guid="c683d53c-fd68-4ac6-9321-a0c9a9e6ba07">
-    <Parameter Name="Class" Value="Game.ComponentBanditChaseBehavior" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="80" Type="int"/>
-    <Parameter Name="UpdateOrder" Value="100" Type="int"/>
+<MemberComponentTemplate Name="BanditChaseBehavior" Guid="c683d53c-fd68-4ac6-9321-a0c9a9e6ba07" InheritanceParent="c0b1cbec-0706-41cf-8bf4-9fd5647deca5">
     <Parameter Name="DayChaseRange" Value="999" Type="float"/>
     <Parameter Name="NightChaseRange" Value="999" Type="float"/>
     <Parameter Name="DayChaseTime" Value="999" Type="float"/>
@@ -755,20 +723,12 @@
     <MemberComponentTemplate Name="FeedBehavior" Guid="d18f0958-1fdb-4178-b3b0-6fbb05f86a27" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
         <Parameter Name="AutoFeed" Guid="c8ce9387-8086-4da3-a005-7bee35d5719d" Value="False" Type="bool"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="BanditHerdBehavior" Guid="2c8dc8e4-0aff-47f1-96d9-cb221c47d968">
-    <Parameter Name="Class" Value="Game.ComponentBanditHerdBehavior" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="100" Type="int"/>
-    <Parameter Name="UpdateOrder" Value="150" Type="int"/>
+    <MemberComponentTemplate Name="BanditHerdBehavior" Guid="2c8dc8e4-0aff-47f1-96d9-cb221c47d968" InheritanceParent="a511bc31-fbbf-47af-a2a8-4d51dad1d563">
     <Parameter Name="HerdName" Value="bandits" Type="string"/>
     <Parameter Name="HerdingRange" Value="30" Type="float"/>
     <Parameter Name="AutoNearbyCreaturesHelp" Value="true" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="BanditChaseBehavior" Guid="466a8c9e-79a9-492c-ba77-6d555aaf49b4">
-    <Parameter Name="Class" Value="Game.ComponentBanditChaseBehavior" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="80" Type="int"/>
-    <Parameter Name="UpdateOrder" Value="100" Type="int"/>
+<MemberComponentTemplate Name="BanditChaseBehavior" Guid="466a8c9e-79a9-492c-ba77-6d555aaf49b4" InheritanceParent="c0b1cbec-0706-41cf-8bf4-9fd5647deca5">
     <Parameter Name="DayChaseRange" Value="999" Type="float"/>
     <Parameter Name="NightChaseRange" Value="999" Type="float"/>
     <Parameter Name="DayChaseTime" Value="999" Type="float"/>
@@ -914,20 +874,12 @@
     <MemberComponentTemplate Name="FeedBehavior" Guid="4b9c8fca-820b-4d3e-a9ef-4cde012ae482" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
         <Parameter Name="AutoFeed" Guid="8f434308-7413-45dd-8507-431ee2767c0e" Value="False" Type="bool"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="BanditHerdBehavior" Guid="fe7a3e45-8872-4938-adb3-ed55a0fda396">
-    <Parameter Name="Class" Value="Game.ComponentBanditHerdBehavior" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="100" Type="int"/>
-    <Parameter Name="UpdateOrder" Value="150" Type="int"/>
+    <MemberComponentTemplate Name="BanditHerdBehavior" Guid="fe7a3e45-8872-4938-adb3-ed55a0fda396" InheritanceParent="a511bc31-fbbf-47af-a2a8-4d51dad1d563">
     <Parameter Name="HerdName" Value="bandits" Type="string"/>
     <Parameter Name="HerdingRange" Value="30" Type="float"/>
     <Parameter Name="AutoNearbyCreaturesHelp" Value="true" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="BanditChaseBehavior" Guid="d280f968-4267-445b-b4b9-fba28a97d7af">
-    <Parameter Name="Class" Value="Game.ComponentBanditChaseBehavior" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="80" Type="int"/>
-    <Parameter Name="UpdateOrder" Value="100" Type="int"/>
+<MemberComponentTemplate Name="BanditChaseBehavior" Guid="d280f968-4267-445b-b4b9-fba28a97d7af" InheritanceParent="c0b1cbec-0706-41cf-8bf4-9fd5647deca5">
     <Parameter Name="DayChaseRange" Value="999" Type="float"/>
     <Parameter Name="NightChaseRange" Value="999" Type="float"/>
     <Parameter Name="DayChaseTime" Value="999" Type="float"/>
@@ -1234,20 +1186,12 @@
     <MemberComponentTemplate Name="FeedBehavior" Guid="bf2d4817-563d-4b9f-b2ce-7f607e67cb42" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
         <Parameter Name="AutoFeed" Guid="f40230ea-9ba5-4026-bccb-e61cc9f5e709" Value="False" Type="bool"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="BanditHerdBehavior" Guid="daeabf68-1ecc-44d6-8f4a-ceaab8ef5c53">
-    <Parameter Name="Class" Value="Game.ComponentBanditHerdBehavior" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="100" Type="int"/>
-    <Parameter Name="UpdateOrder" Value="150" Type="int"/>
+    <MemberComponentTemplate Name="BanditHerdBehavior" Guid="daeabf68-1ecc-44d6-8f4a-ceaab8ef5c53" InheritanceParent="a511bc31-fbbf-47af-a2a8-4d51dad1d563">
     <Parameter Name="HerdName" Value="bandits" Type="string"/>
     <Parameter Name="HerdingRange" Value="30" Type="float"/>
     <Parameter Name="AutoNearbyCreaturesHelp" Value="true" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="BanditChaseBehavior" Guid="911efc0b-c0b6-48fd-b625-297f8135c265">
-    <Parameter Name="Class" Value="Game.ComponentBanditChaseBehavior" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="80" Type="int"/>
-    <Parameter Name="UpdateOrder" Value="100" Type="int"/>
+<MemberComponentTemplate Name="BanditChaseBehavior" Guid="911efc0b-c0b6-48fd-b625-297f8135c265" InheritanceParent="c0b1cbec-0706-41cf-8bf4-9fd5647deca5">
     <Parameter Name="DayChaseRange" Value="999" Type="float"/>
     <Parameter Name="NightChaseRange" Value="999" Type="float"/>
     <Parameter Name="DayChaseTime" Value="999" Type="float"/>
@@ -1392,20 +1336,12 @@
     <MemberComponentTemplate Name="FeedBehavior" Guid="81000fcd-1f89-4d15-9231-918c155c6f47" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
         <Parameter Name="AutoFeed" Guid="7da4a978-c50d-461a-9bf5-71b09810a753" Value="False" Type="bool"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="BanditHerdBehavior" Guid="b7e29450-e207-4bad-a0ea-c890a6996f23">
-    <Parameter Name="Class" Value="Game.ComponentBanditHerdBehavior" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="100" Type="int"/>
-    <Parameter Name="UpdateOrder" Value="150" Type="int"/>
+    <MemberComponentTemplate Name="BanditHerdBehavior" Guid="b7e29450-e207-4bad-a0ea-c890a6996f23" InheritanceParent="a511bc31-fbbf-47af-a2a8-4d51dad1d563">
     <Parameter Name="HerdName" Value="bandits" Type="string"/>
     <Parameter Name="HerdingRange" Value="30" Type="float"/>
     <Parameter Name="AutoNearbyCreaturesHelp" Value="true" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="BanditChaseBehavior" Guid="2c3a4b9d-49dd-4f2d-8cec-c4a8d829cc9b">
-    <Parameter Name="Class" Value="Game.ComponentBanditChaseBehavior" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="80" Type="int"/>
-    <Parameter Name="UpdateOrder" Value="100" Type="int"/>
+<MemberComponentTemplate Name="BanditChaseBehavior" Guid="2c3a4b9d-49dd-4f2d-8cec-c4a8d829cc9b" InheritanceParent="c0b1cbec-0706-41cf-8bf4-9fd5647deca5">
     <Parameter Name="DayChaseRange" Value="999" Type="float"/>
     <Parameter Name="NightChaseRange" Value="999" Type="float"/>
     <Parameter Name="DayChaseTime" Value="999" Type="float"/>
@@ -1551,20 +1487,12 @@
     <MemberComponentTemplate Name="FeedBehavior" Guid="260e63fa-eef0-4d90-9c61-6acb0751c5c1" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
         <Parameter Name="AutoFeed" Guid="3b0e7598-a95a-4341-8d29-b7a28f1d5732" Value="False" Type="bool"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="BanditHerdBehavior" Guid="0922f5df-05c5-4917-b06c-0e48541e0343">
-    <Parameter Name="Class" Value="Game.ComponentBanditHerdBehavior" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="100" Type="int"/>
-    <Parameter Name="UpdateOrder" Value="150" Type="int"/>
+    <MemberComponentTemplate Name="BanditHerdBehavior" Guid="0922f5df-05c5-4917-b06c-0e48541e0343" InheritanceParent="a511bc31-fbbf-47af-a2a8-4d51dad1d563">
     <Parameter Name="HerdName" Value="bandits" Type="string"/>
     <Parameter Name="HerdingRange" Value="30" Type="float"/>
     <Parameter Name="AutoNearbyCreaturesHelp" Value="true" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="BanditChaseBehavior" Guid="c8010d13-597a-46cc-bc38-756bb4c2e702">
-    <Parameter Name="Class" Value="Game.ComponentBanditChaseBehavior" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="80" Type="int"/>
-    <Parameter Name="UpdateOrder" Value="100" Type="int"/>
+<MemberComponentTemplate Name="BanditChaseBehavior" Guid="c8010d13-597a-46cc-bc38-756bb4c2e702" InheritanceParent="c0b1cbec-0706-41cf-8bf4-9fd5647deca5">
     <Parameter Name="DayChaseRange" Value="999" Type="float"/>
     <Parameter Name="NightChaseRange" Value="999" Type="float"/>
     <Parameter Name="DayChaseTime" Value="999" Type="float"/>
@@ -1966,7 +1894,7 @@
 <MemberComponentTemplate Name="Inventory" Guid="5c1d4b1b-dc08-4426-bd96-12d2bd30647a" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
     <ParameterSet Name="Slots">
         <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="372" Type="int"/> <!-- Tiene puesto su SCAR-->
+            <Parameter Name="Contents" Value="373" Type="int"/> <!-- Tiene puesto su SCAR-->
             <Parameter Name="Count" Value="1" Type="int"/>
         </ParameterSet>
     </ParameterSet>
@@ -2035,20 +1963,12 @@
     <Parameter Name="PoisonResistance" Value="100" Type="float"/>
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="BanditHerdBehavior" Guid="c89a38c8-fe03-4de5-be03-9ad1c891c7e1">
-    <Parameter Name="Class" Value="Game.ComponentBanditHerdBehavior" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="100" Type="int"/>
-    <Parameter Name="UpdateOrder" Value="150" Type="int"/>
+<MemberComponentTemplate Name="BanditHerdBehavior" Guid="c89a38c8-fe03-4de5-be03-9ad1c891c7e1" InheritanceParent="a511bc31-fbbf-47af-a2a8-4d51dad1d563">
     <Parameter Name="HerdName" Value="bandits" Type="string"/>
     <Parameter Name="HerdingRange" Value="30" Type="float"/>
     <Parameter Name="AutoNearbyCreaturesHelp" Value="true" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="BanditChaseBehavior" Guid="b2c6bdaa-6faa-4066-ad27-90641fa12d65">
-    <Parameter Name="Class" Value="Game.ComponentBanditChaseBehavior" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="80" Type="int"/>
-    <Parameter Name="UpdateOrder" Value="100" Type="int"/>
+<MemberComponentTemplate Name="BanditChaseBehavior" Guid="b2c6bdaa-6faa-4066-ad27-90641fa12d65" InheritanceParent="c0b1cbec-0706-41cf-8bf4-9fd5647deca5">
     <Parameter Name="DayChaseRange" Value="999" Type="float"/>
     <Parameter Name="NightChaseRange" Value="999" Type="float"/>
     <Parameter Name="DayChaseTime" Value="999" Type="float"/>
@@ -2201,20 +2121,12 @@
     <Parameter Name="PoisonResistance" Value="100" Type="float"/>
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="BanditHerdBehavior" Guid="0270fed6-b495-4163-bbe3-3c0de72225a8">
-    <Parameter Name="Class" Value="Game.ComponentBanditHerdBehavior" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="100" Type="int"/>
-    <Parameter Name="UpdateOrder" Value="150" Type="int"/>
+<MemberComponentTemplate Name="BanditHerdBehavior" Guid="0270fed6-b495-4163-bbe3-3c0de72225a8" InheritanceParent="a511bc31-fbbf-47af-a2a8-4d51dad1d563">
     <Parameter Name="HerdName" Value="bandits" Type="string"/>
     <Parameter Name="HerdingRange" Value="30" Type="float"/>
     <Parameter Name="AutoNearbyCreaturesHelp" Value="true" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="BanditChaseBehavior" Guid="7b9df3e5-acb0-48d5-b39b-22851a7d5b73">
-    <Parameter Name="Class" Value="Game.ComponentBanditChaseBehavior" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="80" Type="int"/>
-    <Parameter Name="UpdateOrder" Value="100" Type="int"/>
+<MemberComponentTemplate Name="BanditChaseBehavior" Guid="7b9df3e5-acb0-48d5-b39b-22851a7d5b73" InheritanceParent="c0b1cbec-0706-41cf-8bf4-9fd5647deca5">
     <Parameter Name="DayChaseRange" Value="999" Type="float"/>
     <Parameter Name="NightChaseRange" Value="999" Type="float"/>
     <Parameter Name="DayChaseTime" Value="999" Type="float"/>
@@ -2367,20 +2279,12 @@
     <Parameter Name="PoisonResistance" Value="100" Type="float"/>
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="BanditHerdBehavior" Guid="3aadbf82-32ea-4b5e-90bf-06dd690abd39">
-    <Parameter Name="Class" Value="Game.ComponentBanditHerdBehavior" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="100" Type="int"/>
-    <Parameter Name="UpdateOrder" Value="150" Type="int"/>
+<MemberComponentTemplate Name="BanditHerdBehavior" Guid="3aadbf82-32ea-4b5e-90bf-06dd690abd39" InheritanceParent="a511bc31-fbbf-47af-a2a8-4d51dad1d563">
     <Parameter Name="HerdName" Value="bandits" Type="string"/>
     <Parameter Name="HerdingRange" Value="30" Type="float"/>
     <Parameter Name="AutoNearbyCreaturesHelp" Value="true" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="BanditChaseBehavior" Guid="c2d49d5d-db67-4bc1-a631-38436b1db8b2">
-    <Parameter Name="Class" Value="Game.ComponentBanditChaseBehavior" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="80" Type="int"/>
-    <Parameter Name="UpdateOrder" Value="100" Type="int"/>
+<MemberComponentTemplate Name="BanditChaseBehavior" Guid="c2d49d5d-db67-4bc1-a631-38436b1db8b2" InheritanceParent="c0b1cbec-0706-41cf-8bf4-9fd5647deca5">
     <Parameter Name="DayChaseRange" Value="999" Type="float"/>
     <Parameter Name="NightChaseRange" Value="999" Type="float"/>
     <Parameter Name="DayChaseTime" Value="999" Type="float"/>
