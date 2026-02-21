@@ -107,8 +107,8 @@ namespace Game
 		private bool m_hasFirearmAimed = false;
 
 		private float m_maxDistance = 100f;
-		private float m_drawTime = 0.3f;
-		private float m_aimTime = 0.3f;
+		private float m_drawTime = 0.5f;
+		private float m_aimTime = 0.5f;
 		private float m_reloadTime = 0.8f;
 		private float m_cockTime = 0.5f;
 		private float m_flameShotInterval = 0.3f;
