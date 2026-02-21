@@ -109,8 +109,8 @@ namespace Game
 		private bool m_hasFirearmAimed = false;
 
 		private float m_maxDistance = 100f;
-		private float m_drawTime = 0.3f;
-		private float m_aimTime = 0.3f;
+		private float m_drawTime = 0.5f;
+		private float m_aimTime = 0.5f;
 		private float m_reloadTime = 0.8f;
 		private float m_cockTime = 0.5f;
 		private float m_flameShotInterval = 0.3f;
@@ -125,7 +125,7 @@ namespace Game
 		private float m_explosiveBoltMinDistance = 15f;
 		private float m_explosiveRepeatArrowMinDistance = 15f;
 
-		private float m_repeatCrossbowDrawTime = 0.3f;
+		private float m_repeatCrossbowDrawTime = 0.85f;
 		private float m_repeatCrossbowTimeBetweenShots = 0.5f;
 		private float m_repeatCrossbowMaxInaccuracy = 0.04f;
 		private float m_repeatCrossbowBoltSpeed = 35f;
