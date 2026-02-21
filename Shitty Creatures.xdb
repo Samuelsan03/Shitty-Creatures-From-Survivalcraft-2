@@ -3682,7 +3682,7 @@
         </ParameterSet>
     </ParameterSet> 
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ItemsLauncherShooterBehavior" Guid="b7c8d9e0-f1a2-4b3c-8d5e-6f7a8b9c0d1e" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+<MemberComponentTemplate Name="ItemsLauncherShooterBehavior" Guid="b7c8d9e0-f1a2-4b3c-8d5e-6f7a8b9c0d1e" InheritanceParent="36981492-9288-4f1a-a0ae-46ef5f5b9b90">
     <Parameter Name="MaxDistance" Guid="d2e3f4g5-h6i7-8901-cdef-234567890123" Value="100" Type="float"/>
     <Parameter Name="ReloadTime" Guid="e3f4g5h6-i7j8-9012-defg-345678901234" Value="1.2" Type="float"/>
     <Parameter Name="AimTime" Guid="f4g5h6i7-j8k9-0123-efgh-456789012345" Value="0.6" Type="float"/>
@@ -3693,7 +3693,6 @@
     <Parameter Name="SpeedLevel" Guid="o3p4q5r6-s7t8-9012-nopq-345678901234" Value="3" Type="int"/>
     <Parameter Name="RateLevel" Guid="p4q5r6s7-t8u9-0123-opqr-456789012345" Value="3" Type="int"/>
     <Parameter Name="SpreadLevel" Guid="q5r6s7t8-u9v0-1234-pqrs-567890123456" Value="1" Type="int"/>
-    <Parameter Name="Class" Guid="r6s7t8u9-v0w1-2345-qrst-678901234567" Value="Game.ComponentItemsLauncherShooterBehavior" Type="string"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="HealthBarDisplay" Guid="f3a4b5c6-d7e8-9012-3456-789abcdef012" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
         <Parameter Name="MaxDisplayDistance" Value="19" Type="float"/>
