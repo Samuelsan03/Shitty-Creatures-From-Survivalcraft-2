@@ -180,7 +180,7 @@
   <Parameter Name="ChaseNonPlayerProbability" Description="Probabilidad de que la criatura persiga un objetivo no-jugador cuando está en rango, de 0 a 1" Guid="8dedf1e9-5f38-4284-8ae6-0dfcc4530057" Value="0" Type="float"/>
 </ComponentTemplate>
 
-<ComponentTemplate Name="ComponentFirearmsShooters" Guid="927c0a46-b1e5-42a9-a6bb-0979acbc2518" Description="Componente que permite a NPCs usar armas de fuego automáticamente">
+<ComponentTemplate Name="FirearmsShooters" Guid="927c0a46-b1e5-42a9-a6bb-0979acbc2518" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234" Description="Componente que permite a NPCs usar armas de fuego automáticamente">
     <Parameter Name="Class" Value="Game.ComponentFirearmsShooters" Type="string" Guid="05ae6aa2-3bb6-4bee-875d-89f2c1851e45" Description="Nombre de la clase C# que implementa el comportamiento de disparo con armas de fuego"/>
     <Parameter Name="UpdateOrder" Value="1000" Type="int" Guid="69c93012-6088-405e-8a76-bf44e9d42fe1" Description="Orden de actualización del componente durante el ciclo del juego"/>
     <Parameter Name="LoadOrder" Value="100" Type="int" Guid="9b5d5c7d-fc82-429f-a0e3-019f87c2f604" Description="Orden de carga del componente en la entidad"/>
