@@ -2,4 +2,6 @@ InfectedNormal1;20
 InfectedNormal2;20
 InfectedFast1;15
 InfectedFast2;15
+InfectedMuscle1;25
+InfectedMuscle2;25
 InfectedFly1;2

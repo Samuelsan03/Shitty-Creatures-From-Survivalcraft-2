@@ -6,12 +6,10 @@ InfectedMuscle1;25
 InfectedMuscle2;25
 PoisonousInfected1;10
 PoisonousInfected2;10
-PoisonousGhost;5
 InfectedFly1;2
 InfectedFly2;3
 InfectedFly3;1
 Boomer1;5
 Boomer2;5
 Boomer3;5
-Charger1;3
-InfectedWolf;5
+InfectedWolf;4

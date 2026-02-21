@@ -1,7 +1,9 @@
 InfectedNormal1;20
 InfectedNormal2;20
+GhostNormal;10
 InfectedFast1;15
 InfectedFast2;15
+GhostFast;5
 InfectedMuscle1;25
 InfectedMuscle2;25
 PoisonousInfected1;10
@@ -13,5 +15,11 @@ InfectedFly3;1
 Boomer1;5
 Boomer2;5
 Boomer3;5
+GhostBoomer1;3
+GhostBoomer2;3
+GhostBoomer3;3
 Charger1;3
-InfectedWolf;5
+Charger2;3
+TankGhost1;2
+InfectedWolf;9
+InfectedWerewolf;2
