@@ -118,7 +118,7 @@ namespace Game
 		private float m_firearmAimTime = 0.5f;
 		private float m_firearmReloadTime = 1.0f;
 		private float m_sniperAimTime = 1.0f;
-		private float m_throwableAimTime = 0.3f;
+		private float m_throwableAimTime = 1.0f;
 
 		private float m_explosiveBoltMinDistance = 15f;
 		private float m_explosiveRepeatArrowMinDistance = 15f;
