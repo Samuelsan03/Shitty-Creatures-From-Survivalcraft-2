@@ -50,11 +50,7 @@
         </ParameterSet>
     </ParameterSet>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ComponentFirearmsShooters" Guid="994eb977-da75-46d8-8a15-3c79763dc692">
-    <Parameter Name="Class" Value="Game.ComponentFirearmsShooters" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="100" Type="int"/>
-    <Parameter Name="UpdateOrder" Value="1000" Type="int"/>
+<MemberComponentTemplate Name="FirearmsShooters" Guid="994eb977-da75-46d8-8a15-3c79763dc692" InheritanceParent="927c0a46-b1e5-42a9-a6bb-0979acbc2518">
     <Parameter Name="MaxShootingDistance" Value="100" Type="float"/>
     <Parameter Name="SpreadFactor" Value="0.05" Type="float"/>
     <Parameter Name="ReloadChance" Value="0.05" Type="float"/>
@@ -201,11 +197,7 @@
         </ParameterSet>
     </ParameterSet>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ComponentFirearmsShooters" Guid="821a6dc6-1ccf-4974-a17c-1facd59558dc">
-    <Parameter Name="Class" Value="Game.ComponentFirearmsShooters" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="100" Type="int"/>
-    <Parameter Name="UpdateOrder" Value="1000" Type="int"/>
+<MemberComponentTemplate Name="FirearmsShooters" Guid="821a6dc6-1ccf-4974-a17c-1facd59558dc" InheritanceParent="927c0a46-b1e5-42a9-a6bb-0979acbc2518">
     <Parameter Name="MaxShootingDistance" Value="100" Type="float"/>
     <Parameter Name="SpreadFactor" Value="0.05" Type="float"/>
     <Parameter Name="ReloadChance" Value="0.05" Type="float"/>
@@ -352,11 +344,7 @@
         </ParameterSet>
     </ParameterSet>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ComponentFirearmsShooters" Guid="5419bef2-8aef-4d1d-b683-7df381b18f8a">
-    <Parameter Name="Class" Value="Game.ComponentFirearmsShooters" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="100" Type="int"/>
-    <Parameter Name="UpdateOrder" Value="1000" Type="int"/>
+<MemberComponentTemplate Name="FirearmsShooters" Guid="5419bef2-8aef-4d1d-b683-7df381b18f8a" InheritanceParent="927c0a46-b1e5-42a9-a6bb-0979acbc2518">
     <Parameter Name="MaxShootingDistance" Value="100" Type="float"/>
     <Parameter Name="SpreadFactor" Value="0.05" Type="float"/>
     <Parameter Name="ReloadChance" Value="0.05" Type="float"/>
@@ -503,11 +491,7 @@
         </ParameterSet>
     </ParameterSet>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ComponentFirearmsShooters" Guid="d42749ac-dbea-43c6-899e-41e9662496b1">
-    <Parameter Name="Class" Value="Game.ComponentFirearmsShooters" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="100" Type="int"/>
-    <Parameter Name="UpdateOrder" Value="1000" Type="int"/>
+<MemberComponentTemplate Name="FirearmsShooters" Guid="d42749ac-dbea-43c6-899e-41e9662496b1" InheritanceParent="927c0a46-b1e5-42a9-a6bb-0979acbc2518">
     <Parameter Name="MaxShootingDistance" Value="100" Type="float"/>
     <Parameter Name="SpreadFactor" Value="0.05" Type="float"/>
     <Parameter Name="ReloadChance" Value="0.05" Type="float"/>
@@ -654,11 +638,7 @@
         </ParameterSet>
     </ParameterSet>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ComponentFirearmsShooters" Guid="064d123e-3c7b-4151-9f7a-cb2dc3825c1d">
-    <Parameter Name="Class" Value="Game.ComponentFirearmsShooters" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="100" Type="int"/>
-    <Parameter Name="UpdateOrder" Value="1000" Type="int"/>
+<MemberComponentTemplate Name="FirearmsShooters" Guid="064d123e-3c7b-4151-9f7a-cb2dc3825c1d" InheritanceParent="927c0a46-b1e5-42a9-a6bb-0979acbc2518">
     <Parameter Name="MaxShootingDistance" Value="100" Type="float"/>
     <Parameter Name="SpreadFactor" Value="0.05" Type="float"/>
     <Parameter Name="ReloadChance" Value="0.05" Type="float"/>
@@ -805,11 +785,7 @@
         </ParameterSet>
     </ParameterSet>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ComponentFirearmsShooters" Guid="b5cca5b8-0b54-44bf-92c5-c8785d7193a0">
-    <Parameter Name="Class" Value="Game.ComponentFirearmsShooters" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="100" Type="int"/>
-    <Parameter Name="UpdateOrder" Value="1000" Type="int"/>
+<MemberComponentTemplate Name="FirearmsShooters" Guid="b5cca5b8-0b54-44bf-92c5-c8785d7193a0" InheritanceParent="927c0a46-b1e5-42a9-a6bb-0979acbc2518">
     <Parameter Name="MaxShootingDistance" Value="100" Type="float"/>
     <Parameter Name="SpreadFactor" Value="0.05" Type="float"/>
     <Parameter Name="ReloadChance" Value="0.05" Type="float"/>
@@ -960,11 +936,7 @@
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Inventory" Guid="abeeb6dc-6a6b-4c1c-8d5e-79072383fc57" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ComponentFirearmsShooters" Guid="cea90e34-da26-4ea9-ac55-3230294b3036">
-    <Parameter Name="Class" Value="Game.ComponentFirearmsShooters" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="100" Type="int"/>
-    <Parameter Name="UpdateOrder" Value="1000" Type="int"/>
+<MemberComponentTemplate Name="FirearmsShooters" Guid="cea90e34-da26-4ea9-ac55-3230294b3036" InheritanceParent="927c0a46-b1e5-42a9-a6bb-0979acbc2518">
     <Parameter Name="MaxShootingDistance" Value="100" Type="float"/>
     <Parameter Name="SpreadFactor" Value="0.05" Type="float"/>
     <Parameter Name="ReloadChance" Value="0.05" Type="float"/>
@@ -1117,11 +1089,7 @@
         </ParameterSet>
     </ParameterSet>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ComponentFirearmsShooters" Guid="0770a2ea-48b0-4c48-844b-02bc33066790">
-    <Parameter Name="Class" Value="Game.ComponentFirearmsShooters" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="100" Type="int"/>
-    <Parameter Name="UpdateOrder" Value="1000" Type="int"/>
+<MemberComponentTemplate Name="FirearmsShooters" Guid="0770a2ea-48b0-4c48-844b-02bc33066790" InheritanceParent="927c0a46-b1e5-42a9-a6bb-0979acbc2518">
     <Parameter Name="MaxShootingDistance" Value="100" Type="float"/>
     <Parameter Name="SpreadFactor" Value="0.05" Type="float"/>
     <Parameter Name="ReloadChance" Value="0.05" Type="float"/>
@@ -1268,11 +1236,7 @@
         </ParameterSet>
     </ParameterSet>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ComponentFirearmsShooters" Guid="0691972a-b83d-465c-bab0-e7908a1b27ba">
-    <Parameter Name="Class" Value="Game.ComponentFirearmsShooters" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="100" Type="int"/>
-    <Parameter Name="UpdateOrder" Value="1000" Type="int"/>
+<MemberComponentTemplate Name="FirearmsShooters" Guid="0691972a-b83d-465c-bab0-e7908a1b27ba" InheritanceParent="927c0a46-b1e5-42a9-a6bb-0979acbc2518">
     <Parameter Name="MaxShootingDistance" Value="100" Type="float"/>
     <Parameter Name="SpreadFactor" Value="0.05" Type="float"/>
     <Parameter Name="ReloadChance" Value="0.05" Type="float"/>
@@ -1418,11 +1382,7 @@
         </ParameterSet>
     </ParameterSet>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ComponentFirearmsShooters" Guid="f693b251-b8fb-4c05-a358-89d6646ab8f8">
-    <Parameter Name="Class" Value="Game.ComponentFirearmsShooters" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="100" Type="int"/>
-    <Parameter Name="UpdateOrder" Value="1000" Type="int"/>
+<MemberComponentTemplate Name="FirearmsShooters" Guid="f693b251-b8fb-4c05-a358-89d6646ab8f8" InheritanceParent="927c0a46-b1e5-42a9-a6bb-0979acbc2518">
     <Parameter Name="MaxShootingDistance" Value="100" Type="float"/>
     <Parameter Name="SpreadFactor" Value="0.05" Type="float"/>
     <Parameter Name="ReloadChance" Value="0.05" Type="float"/>
@@ -1577,11 +1537,7 @@
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Inventory" Guid="4be46f40-59c6-4d02-a2b2-b7a1ba2f6c7a" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ComponentFirearmsShooters" Guid="e9654592-3a38-4840-b511-6ded2a590035">
-    <Parameter Name="Class" Value="Game.ComponentFirearmsShooters" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="100" Type="int"/>
-    <Parameter Name="UpdateOrder" Value="1000" Type="int"/>
+<MemberComponentTemplate Name="FirearmsShooters" Guid="e9654592-3a38-4840-b511-6ded2a590035" InheritanceParent="927c0a46-b1e5-42a9-a6bb-0979acbc2518">
     <Parameter Name="MaxShootingDistance" Value="100" Type="float"/>
     <Parameter Name="SpreadFactor" Value="0.05" Type="float"/>
     <Parameter Name="ReloadChance" Value="0.05" Type="float"/>
@@ -1742,11 +1698,7 @@
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Inventory" Guid="43cc61d6-0e40-4a37-83f0-cf0fcfd2f410" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ComponentFirearmsShooters" Guid="b8bff964-0ffb-4ca8-89de-e8d233dcba1f">
-    <Parameter Name="Class" Value="Game.ComponentFirearmsShooters" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="100" Type="int"/>
-    <Parameter Name="UpdateOrder" Value="1000" Type="int"/>
+<MemberComponentTemplate Name="FirearmsShooters" Guid="b8bff964-0ffb-4ca8-89de-e8d233dcba1f" InheritanceParent="927c0a46-b1e5-42a9-a6bb-0979acbc2518">
     <Parameter Name="MaxShootingDistance" Value="100" Type="float"/>
     <Parameter Name="SpreadFactor" Value="0.05" Type="float"/>
     <Parameter Name="ReloadChance" Value="0.05" Type="float"/>
@@ -1899,11 +1851,7 @@
         </ParameterSet>
     </ParameterSet>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ComponentFirearmsShooters" Guid="3fa7b48f-b0c7-4ff0-88da-a0e452912448">
-    <Parameter Name="Class" Value="Game.ComponentFirearmsShooters" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="100" Type="int"/>
-    <Parameter Name="UpdateOrder" Value="1000" Type="int"/>
+<MemberComponentTemplate Name="FirearmsShooters" Guid="3fa7b48f-b0c7-4ff0-88da-a0e452912448" InheritanceParent="927c0a46-b1e5-42a9-a6bb-0979acbc2518">
     <Parameter Name="MaxShootingDistance" Value="100" Type="float"/>
     <Parameter Name="SpreadFactor" Value="0.05" Type="float"/>
     <Parameter Name="ReloadChance" Value="0.05" Type="float"/>
@@ -2057,11 +2005,7 @@
         </ParameterSet>
     </ParameterSet>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ComponentFirearmsShooters" Guid="ea7f1a86-948b-4647-8efe-28eab00a1bc1">
-    <Parameter Name="Class" Value="Game.ComponentFirearmsShooters" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="100" Type="int"/>
-    <Parameter Name="UpdateOrder" Value="1000" Type="int"/>
+<MemberComponentTemplate Name="FirearmsShooters" Guid="ea7f1a86-948b-4647-8efe-28eab00a1bc1" InheritanceParent="927c0a46-b1e5-42a9-a6bb-0979acbc2518">
     <Parameter Name="MaxShootingDistance" Value="100" Type="float"/>
     <Parameter Name="SpreadFactor" Value="0.05" Type="float"/>
     <Parameter Name="ReloadChance" Value="0.05" Type="float"/>
@@ -2215,11 +2159,7 @@
         </ParameterSet>
     </ParameterSet>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ComponentFirearmsShooters" Guid="93a13c4b-f187-4021-9d20-6bd751942179">
-    <Parameter Name="Class" Value="Game.ComponentFirearmsShooters" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="100" Type="int"/>
-    <Parameter Name="UpdateOrder" Value="1000" Type="int"/>
+<MemberComponentTemplate Name="FirearmsShooters" Guid="93a13c4b-f187-4021-9d20-6bd751942179" InheritanceParent="927c0a46-b1e5-42a9-a6bb-0979acbc2518">
     <Parameter Name="MaxShootingDistance" Value="100" Type="float"/>
     <Parameter Name="SpreadFactor" Value="0.05" Type="float"/>
     <Parameter Name="ReloadChance" Value="0.05" Type="float"/>
