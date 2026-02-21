@@ -42,12 +42,10 @@ namespace Game
 
 		private static int m_totalLimit = 80;
 
-		// Sistema de olas
 		private List<WaveData> m_waves = new List<WaveData>();
 		private int m_currentWaveIndex = 0;
 		private bool m_wavesLoaded = false;
 
-		// Control de spawn
 		private Dictionary<string, int> m_currentWaveSpawns = new Dictionary<string, int>();
 		private Dictionary<string, int> m_originalWaveSpawns = new Dictionary<string, int>();
 		private bool m_isGreenNightActive = false;
@@ -55,7 +53,6 @@ namespace Game
 		private bool m_waveAdvancedThisNight = false;
 		private bool m_firstNightCompleted = false;
 
-		// Lista completa de zombies
 		private HashSet<string> m_allZombieTypes = new HashSet<string>
 		{
 			"InfectedNormal1", "InfectedNormal2", "InfectedFast1", "InfectedFast2",
@@ -69,7 +66,8 @@ namespace Game
 			"GhostBoomer1", "GhostBoomer2", "GhostBoomer3",
 			"GhostCharger",
 			"TankGhost1", "TankGhost2", "TankGhost3",
-			"MachineGunInfected", "FlyingInfectedBoss"
+			"MachineGunInfected", "FlyingInfectedBoss",
+			"InfectedWolf", "InfectedWerewolf"
 		};
 
 		public class WaveData
@@ -81,19 +79,14 @@ namespace Game
 
 		public virtual void Update(float dt)
 		{
-			// Asegurar que las olas estén cargadas
 			if (!m_wavesLoaded)
 			{
 				LoadWaves();
 				m_wavesLoaded = true;
-
-				// Cargar la ola actual
 				LoadCurrentWave();
-
 				Log.Information($"=== SISTEMA INICIADO - OLA {m_currentWaveIndex + 1} ===");
 			}
 
-			// Detectar noche verde
 			bool greenNightActive = (m_subsystemGreenNightSky != null && m_subsystemGreenNightSky.IsGreenNightActive);
 
 			if (greenNightActive != m_isGreenNightActive)
@@ -102,25 +95,16 @@ namespace Game
 
 				if (m_isGreenNightActive)
 				{
-					// NOCHE VERDE COMIENZA
 					Log.Information($"=== NOCHE VERDE INICIADA ===");
 					Log.Information($"Ola actual: {m_currentWaveIndex + 1} de {m_waves.Count}");
-
-					// Resetear flag de avance para esta noche
 					m_waveAdvancedThisNight = false;
-
-					// Cargar la ola actual (por si acaso)
 					LoadCurrentWave();
 				}
 				else
 				{
-					// NOCHE VERDE TERMINA
 					Log.Information($"=== NOCHE VERDE TERMINADA - OLA {m_currentWaveIndex + 1} COMPLETADA ===");
-
-					// Marcar que ya pasó la primera noche
 					m_firstNightCompleted = true;
 
-					// Avanzar a la siguiente ola
 					if (m_currentWaveIndex < m_waves.Count - 1)
 					{
 						m_currentWaveIndex++;
@@ -130,10 +114,8 @@ namespace Game
 				}
 			}
 
-			// Spawnear durante noche verde
 			if (m_isGreenNightActive && this.m_subsystemGameInfo.WorldSettings.EnvironmentBehaviorMode == EnvironmentBehaviorMode.Living)
 			{
-				// Spawnear cada 2 segundos
 				if (this.m_subsystemTime.PeriodicGameTimeEvent(2.0, 0.0))
 				{
 					SpawnZombiesFromWave();
@@ -149,7 +131,6 @@ namespace Game
 				return;
 			}
 
-			// Asegurar que el índice sea válido
 			if (m_currentWaveIndex >= m_waves.Count)
 			{
 				m_currentWaveIndex = m_waves.Count - 1;
@@ -236,14 +217,13 @@ namespace Game
 			this.m_isGreenNightActive = false;
 			this.m_wavesLoaded = false;
 			this.m_firstNightCompleted = false;
-			this.m_currentWaveIndex = 0; // SIEMPRE empezar en 0
+			this.m_currentWaveIndex = 0;
 		}
 
 		private string GetWavesPath()
 		{
 			try
 			{
-				// En Android usar la ruta de la app, en PC usar la carpeta local
 				string basePath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
 				if (!string.IsNullOrEmpty(basePath))
 				{
@@ -252,7 +232,6 @@ namespace Game
 			}
 			catch { }
 
-			// Fallback a carpeta local
 			return "Waves";
 		}
 
@@ -345,7 +324,6 @@ namespace Game
 		{
 			try
 			{
-				// OLA 1
 				string path1 = Path.Combine(wavesPath, "1.txt");
 				if (!File.Exists(path1))
 				{
@@ -357,7 +335,6 @@ namespace Game
 					});
 				}
 
-				// OLA 2
 				string path2 = Path.Combine(wavesPath, "2.txt");
 				if (!File.Exists(path2))
 				{
@@ -371,7 +348,6 @@ namespace Game
 					});
 				}
 
-				// OLA 3
 				string path3 = Path.Combine(wavesPath, "3.txt");
 				if (!File.Exists(path3))
 				{
@@ -387,7 +363,6 @@ namespace Game
 					});
 				}
 
-				// OLA 4
 				string path4 = Path.Combine(wavesPath, "4.txt");
 				if (!File.Exists(path4))
 				{
@@ -405,7 +380,6 @@ namespace Game
 					});
 				}
 
-				// OLA 5
 				string path5 = Path.Combine(wavesPath, "5.txt");
 				if (!File.Exists(path5))
 				{
@@ -421,11 +395,11 @@ namespace Game
 						"PoisonousInfected2;10",
 						"InfectedFly1;2",
 						"InfectedFly2;3",
-						"Boomer1;5"
+						"Boomer1;5",
+						"InfectedWolf;2"
 					});
 				}
 
-				// OLA 6
 				string path6 = Path.Combine(wavesPath, "6.txt");
 				if (!File.Exists(path6))
 				{
@@ -442,11 +416,11 @@ namespace Game
 						"InfectedFly1;2",
 						"InfectedFly2;3",
 						"Boomer1;5",
-						"Boomer2;5"
+						"Boomer2;5",
+						"InfectedWolf;3"
 					});
 				}
 
-				// OLA 7
 				string path7 = Path.Combine(wavesPath, "7.txt");
 				if (!File.Exists(path7))
 				{
@@ -465,11 +439,11 @@ namespace Game
 						"InfectedFly3;1",
 						"Boomer1;5",
 						"Boomer2;5",
-						"Boomer3;5"
+						"Boomer3;5",
+						"InfectedWolf;4"
 					});
 				}
 
-				// OLA 8
 				string path8 = Path.Combine(wavesPath, "8.txt");
 				if (!File.Exists(path8))
 				{
@@ -490,11 +464,11 @@ namespace Game
 						"Boomer1;5",
 						"Boomer2;5",
 						"Boomer3;5",
-						"Charger1;3"
+						"Charger1;3",
+						"InfectedWolf;5"
 					});
 				}
 
-				// OLA 9
 				string path9 = Path.Combine(wavesPath, "9.txt");
 				if (!File.Exists(path9))
 				{
@@ -516,11 +490,11 @@ namespace Game
 						"Boomer1;5",
 						"Boomer2;5",
 						"Boomer3;5",
-						"Charger2;3"
+						"Charger2;3",
+						"InfectedWolf;6"
 					});
 				}
 
-				// OLA 10
 				string path10 = Path.Combine(wavesPath, "10.txt");
 				if (!File.Exists(path10))
 				{
@@ -545,11 +519,12 @@ namespace Game
 						"Boomer3;5",
 						"GhostBoomer1;3",
 						"Charger1;3",
-						"Charger2;3"
+						"Charger2;3",
+						"InfectedWolf;7",
+						"InfectedWerewolf;1"
 					});
 				}
 
-				// OLA 11
 				string path11 = Path.Combine(wavesPath, "11.txt");
 				if (!File.Exists(path11))
 				{
@@ -576,11 +551,12 @@ namespace Game
 						"GhostBoomer2;3",
 						"Charger1;3",
 						"Charger2;3",
-						"Tank1;2"
+						"Tank1;2",
+						"InfectedWolf;8",
+						"InfectedWerewolf;2"
 					});
 				}
 
-				// OLA 12
 				string path12 = Path.Combine(wavesPath, "12.txt");
 				if (!File.Exists(path12))
 				{
@@ -608,11 +584,12 @@ namespace Game
 						"GhostBoomer3;3",
 						"Charger1;3",
 						"Charger2;3",
-						"TankGhost1;2"
+						"TankGhost1;2",
+						"InfectedWolf;9",
+						"InfectedWerewolf;2"
 					});
 				}
 
-				// OLA 13
 				string path13 = Path.Combine(wavesPath, "13.txt");
 				if (!File.Exists(path13))
 				{
@@ -641,11 +618,12 @@ namespace Game
 						"GhostCharger;2",
 						"Charger1;3",
 						"Charger2;3",
-						"Tank2;2"
+						"Tank2;2",
+						"InfectedWolf;10",
+						"InfectedWerewolf;3"
 					});
 				}
 
-				// OLA 14
 				string path14 = Path.Combine(wavesPath, "14.txt");
 				if (!File.Exists(path14))
 				{
@@ -674,11 +652,12 @@ namespace Game
 						"GhostCharger;2",
 						"Charger1;3",
 						"Charger2;3",
-						"Tank3;2"
+						"Tank3;2",
+						"InfectedWolf;10",
+						"InfectedWerewolf;3"
 					});
 				}
 
-				// OLA 15
 				string path15 = Path.Combine(wavesPath, "15.txt");
 				if (!File.Exists(path15))
 				{
@@ -707,11 +686,12 @@ namespace Game
 						"GhostCharger;2",
 						"Charger1;3",
 						"Charger2;3",
-						"TankGhost3;2"
+						"TankGhost3;2",
+						"InfectedWolf;12",
+						"InfectedWerewolf;4"
 					});
 				}
 
-				// OLA 16
 				string path16 = Path.Combine(wavesPath, "16.txt");
 				if (!File.Exists(path16))
 				{
@@ -740,11 +720,12 @@ namespace Game
 						"GhostCharger;2",
 						"Charger1;3",
 						"Charger2;3",
-						"FlyingInfectedBoss;1"
+						"FlyingInfectedBoss;1",
+						"InfectedWolf;12",
+						"InfectedWerewolf;4"
 					});
 				}
 
-				// OLA 17
 				string path17 = Path.Combine(wavesPath, "17.txt");
 				if (!File.Exists(path17))
 				{
@@ -772,11 +753,12 @@ namespace Game
 						"GhostBoomer3;3",
 						"GhostCharger;2",
 						"Charger1;3",
-						"Charger2;3"
+						"Charger2;3",
+						"InfectedWolf;15",
+						"InfectedWerewolf;5"
 					});
 				}
 
-				// OLA 18
 				string path18 = Path.Combine(wavesPath, "18.txt");
 				if (!File.Exists(path18))
 				{
@@ -805,11 +787,12 @@ namespace Game
 						"GhostCharger;2",
 						"Charger1;3",
 						"Charger2;3",
-						"MachineGunInfected;1"
+						"MachineGunInfected;1",
+						"InfectedWolf;15",
+						"InfectedWerewolf;5"
 					});
 				}
 
-				// OLA 19 (FINAL)
 				string path19 = Path.Combine(wavesPath, "19.txt");
 				if (!File.Exists(path19))
 				{
@@ -845,7 +828,9 @@ namespace Game
 						"TankGhost2;2",
 						"TankGhost3;2",
 						"MachineGunInfected;2",
-						"FlyingInfectedBoss;1"
+						"FlyingInfectedBoss;1",
+						"InfectedWolf;20",
+						"InfectedWerewolf;10"
 					});
 				}
 			}
