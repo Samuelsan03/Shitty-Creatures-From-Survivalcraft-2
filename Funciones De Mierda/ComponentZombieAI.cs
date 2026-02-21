@@ -96,6 +96,15 @@ namespace Game
 		private bool m_isThrowableThrowing = false;
 		private double m_throwableThrowTime;
 
+		// AÑADIDO: variables para ataque cuerpo a cuerpo
+		private bool m_isMeleeAttacking = false;
+		private double m_nextMeleeAttackTime = 0.0;
+		private float m_meleeAttackInterval = 0.5f;
+
+		// AÑADIDO: distancias para cambio de arma
+		private float m_meleeSwitchDistance = 3f;   // Si está a menos de 3, cambia a melee
+		private float m_rangedSwitchDistance = 5f;  // Si está a más de 5, cambia a distancia
+
 		private int m_currentWeaponSlot = -1;
 		private int m_weaponType = -1;
 		private float m_currentDraw = 0f;
@@ -122,7 +131,7 @@ namespace Game
 		private float m_firearmAimTime = 0.5f;
 		private float m_firearmReloadTime = 1.0f;
 		private float m_sniperAimTime = 1.0f;
-		private float m_throwableAimTime = 3.0f;
+		private float m_throwableAimTime = 1.55f;
 		private float m_throwableMinRange = 3f;
 		private float m_throwableMaxRange = 15.5f;
 
@@ -612,16 +621,66 @@ namespace Game
 
 				m_currentTargetDistance = distance;
 
+				// AÑADIDO: Lógica de cambio de arma según distancia
+				if (distance <= m_meleeSwitchDistance)
+				{
+					// Modo cuerpo a cuerpo - distancia corta
+					if (m_weaponType != 7) // Si no estamos ya en modo melee con un arma melee real
+					{
+						// Buscar arma cuerpo a cuerpo real
+						int meleeSlot = FindMeleeWeapon();
+						if (meleeSlot != -1)
+						{
+							// Hay arma melee, equiparla y cambiar a modo melee
+							m_currentWeaponSlot = meleeSlot;
+							m_weaponType = 7;
+							m_componentInventory.ActiveSlotIndex = meleeSlot;
+							ResetWeaponState();
+							m_isMeleeAttacking = false;
+						}
+						else
+						{
+							// No hay arma melee, usaremos el arma actual para golpear cuerpo a cuerpo
+							// Pero NO cambiamos el tipo de arma - sigue siendo distancia
+							// Solo nos aseguramos de que NO esté en modo melee falso
+							if (m_weaponType == 7)
+							{
+								// Si por alguna razón está en modo melee sin arma melee, restaurar
+								m_weaponType = -1;
+								FindRangedWeapon();
+							}
+							// El arma actual (tipo 0-6) se usará para golpear en ProcessWeaponBehavior
+						}
+					}
+				}
+				else if (distance >= m_rangedSwitchDistance)
+				{
+					// Modo distancia
+					if (m_weaponType != 7) // Ya estamos en modo distancia, no hacer nada
+					{
+						// Si estamos en melee, buscar arma a distancia
+						if (m_weaponType == 7 || m_currentWeaponSlot == -1)
+						{
+							FindRangedWeapon(); // Esto ya actualiza m_weaponType
+						}
+					}
+				}
+				else
+				{
+					// Entre 3 y 5: mantener el arma actual (histéresis)
+				}
+
+				// Procesar el comportamiento según el tipo de arma actual
 				float maxDistance = GetWeaponMaxDistance();
 
-				if (distance <= maxDistance)
+				if (distance <= maxDistance || m_weaponType == 7) // Para melee siempre atacamos si estamos en rango melee
 				{
-					if (m_currentWeaponSlot == -1)
+					if (m_currentWeaponSlot == -1 && m_weaponType != 7)
 					{
 						FindRangedWeapon();
 					}
 
-					if (m_currentWeaponSlot != -1)
+					if (m_currentWeaponSlot != -1 || m_weaponType == 7)
 					{
 						ProcessWeaponBehavior(target, distance);
 					}
@@ -631,23 +690,22 @@ namespace Game
 					// Si el arma es lanzable, no reseteamos el slot, solo limpiamos animaciones
 					if (m_weaponType == 6)
 					{
-						// Cancelar cualquier estado de lanzamiento pero mantener el arma
 						m_isThrowableAiming = false;
 						m_isThrowableThrowing = false;
 						if (m_componentModel != null)
 						{
-							m_componentModel.AimHandAngleOrder = AimHandAngleOrder;
+							m_componentModel.AimHandAngleOrder = 0f;
 							m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
 							m_componentModel.InHandItemRotationOrder = Vector3.Zero;
 							m_componentModel.LookAtOrder = null;
 						}
 					}
-					else
+					else if (m_weaponType != 7) // No resetear si es melee
 					{
 						ResetWeaponState();
 						if (m_componentModel != null)
 						{
-							m_componentModel.AimHandAngleOrder = AimHandAngleOrder;
+							m_componentModel.AimHandAngleOrder = 0f;
 							m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
 							m_componentModel.InHandItemRotationOrder = Vector3.Zero;
 							m_componentModel.LookAtOrder = null;
@@ -655,6 +713,41 @@ namespace Game
 					}
 				}
 			}
+			else
+			{
+				ResetWeaponState();
+				if (m_componentModel != null)
+				{
+					m_componentModel.AimHandAngleOrder = 0f;
+					m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
+					m_componentModel.InHandItemRotationOrder = Vector3.Zero;
+					m_componentModel.LookAtOrder = null;
+				}
+			}
+		}
+
+		// AÑADIDO: Busca un arma cuerpo a cuerpo en el inventario
+		private int FindMeleeWeapon()
+		{
+			for (int i = 0; i < m_componentInventory.SlotsCount; i++)
+			{
+				int slotValue = m_componentInventory.GetSlotValue(i);
+				if (slotValue != 0)
+				{
+					Block block = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)];
+
+					// Consideramos arma cuerpo a cuerpo cualquier bloque que NO sea de distancia
+					bool isRanged = (block is BowBlock || block is CrossbowBlock || block is MusketBlock ||
+									block is FlameThrowerBlock || block is RepeatCrossbowBlock ||
+									IsThrowableBlock(block) || m_firearmConfigs.ContainsKey(BlocksManager.GetBlockIndex(block.GetType(), true, false)));
+
+					if (!isRanged)
+					{
+						return i;
+					}
+				}
+			}
+			return -1;
 		}
 
 		private float GetWeaponMaxDistance()
@@ -779,8 +872,47 @@ namespace Game
 			}
 		}
 
+		// AÑADIDO: Golpear cuerpo a cuerpo con arma a distancia
+		private void ProcessRangedWeaponAsMelee(ComponentCreature target, float distance)
+		{
+			if (target == null) return;
+
+			// Si estamos demasiado lejos para atacar cuerpo a cuerpo
+			if (distance > 4f) return;
+
+			// Detener el movimiento para atacar
+			if (m_componentPathfinding != null)
+				m_componentPathfinding.Destination = null;
+
+			// Mirar al objetivo
+			if (m_componentModel != null)
+				m_componentModel.LookAtOrder = new Vector3?(target.ComponentCreatureModel.EyePosition);
+
+			// Atacar con el intervalo definido
+			if (m_subsystemTime.GameTime >= m_nextMeleeAttackTime)
+			{
+				if (m_componentMiner != null)
+				{
+					ComponentBody targetBody = target.ComponentBody;
+					Vector3 hitPoint = targetBody.Position;
+					Vector3 hitDirection = Vector3.Normalize(targetBody.Position - m_componentCreature.ComponentBody.Position);
+
+					m_componentMiner.Hit(targetBody, hitPoint, hitDirection);
+
+					m_nextMeleeAttackTime = m_subsystemTime.GameTime + m_meleeAttackInterval;
+				}
+			}
+		}
+
 		private void ProcessWeaponBehavior(ComponentCreature target, float distance)
 		{
+			// Si estamos en distancia corta y el arma es de distancia, usar ataque cuerpo a cuerpo con ella
+			if (distance <= m_meleeSwitchDistance && m_weaponType >= 0 && m_weaponType <= 6)
+			{
+				ProcessRangedWeaponAsMelee(target, distance);
+				return;
+			}
+
 			switch (m_weaponType)
 			{
 				case 0: ProcessBowBehavior(target); break;
@@ -790,6 +922,46 @@ namespace Game
 				case 4: ProcessRepeatCrossbowBehavior(target, distance); break;
 				case 5: ProcessFirearmBehavior(target, distance); break;
 				case 6: ProcessThrowableBehavior(target, distance); break;
+				case 7: ProcessMeleeBehavior(target, distance); break;
+			}
+		}
+
+		// AÑADIDO: Comportamiento de ataque cuerpo a cuerpo
+		private void ProcessMeleeBehavior(ComponentCreature target, float distance)
+		{
+			if (target == null) return;
+
+			// Si estamos demasiado lejos para atacar cuerpo a cuerpo, no hacer nada (la persecución nos acercará)
+			if (distance > 4f) return;
+
+			// Detener el movimiento para atacar
+			if (m_componentPathfinding != null)
+			{
+				m_componentPathfinding.Destination = null;
+			}
+
+			// Mirar al objetivo
+			if (m_componentModel != null && target != null)
+			{
+				m_componentModel.LookAtOrder = new Vector3?(target.ComponentCreatureModel.EyePosition);
+			}
+
+			// Atacar con el intervalo definido
+			if (m_subsystemTime.GameTime >= m_nextMeleeAttackTime)
+			{
+				// Usar ComponentMiner para golpear (ataque cuerpo a cuerpo)
+				if (m_componentMiner != null)
+				{
+					// CORREGIDO: Pasar los tres parámetros requeridos
+					ComponentBody targetBody = target.ComponentBody;
+					Vector3 hitPoint = targetBody.Position; // Punto de impacto (puedes usar alguna parte del cuerpo si existe)
+					Vector3 hitDirection = Vector3.Normalize(targetBody.Position - m_componentCreature.ComponentBody.Position);
+
+					// ¡FALTABA ESTA LÍNEA!
+					m_componentMiner.Hit(targetBody, hitPoint, hitDirection);
+
+					m_nextMeleeAttackTime = m_subsystemTime.GameTime + m_meleeAttackInterval;
+				}
 			}
 		}
 
