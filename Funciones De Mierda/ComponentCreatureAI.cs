@@ -1048,7 +1048,8 @@ namespace Game
 					{
 						try
 						{
-							Vector3 basePosition = m_componentCreature.ComponentCreatureModel.EyePosition;
+							// Usar posición del cuerpo para mayor seguridad
+							Vector3 basePosition = m_componentCreature.ComponentBody.Position + new Vector3(0f, 1f, 0f);
 							Vector3 readyPosition = basePosition + new Vector3(0f, 0.2f, 0f);
 							KillParticleSystem readyParticles = new KillParticleSystem(m_subsystemTerrain, readyPosition, 0.5f);
 							m_subsystemParticles.AddParticleSystem(readyParticles, false);
@@ -1059,13 +1060,14 @@ namespace Game
 								m_subsystemParticles.AddParticleSystem(additionalParticles, false);
 							}
 						}
-						catch (Exception)
+						catch (Exception ex)
 						{
+							Log.Error($"Error al crear partículas de fin de recarga: {ex.Message}");
 						}
 					}
 
 					m_subsystemAudio.PlaySound("Audio/Armas/reload", 1f, 0f, m_componentCreature.ComponentCreatureModel.EyePosition, 10f, true);
-					m_isFirearmAiming = false;
+					// CORREGIDO: eliminar doble asignación, solo establecer a true
 					m_isFirearmAiming = true;
 					m_animationStartTime = m_subsystemTime.GameTime;
 					m_hasFirearmAimed = false;
@@ -1207,7 +1209,8 @@ namespace Game
 			{
 				try
 				{
-					Vector3 basePosition = m_componentCreature.ComponentCreatureModel.EyePosition;
+					// Usar posición del cuerpo para mayor seguridad
+					Vector3 basePosition = m_componentCreature.ComponentBody.Position + new Vector3(0f, 1f, 0f); // altura media
 					KillParticleSystem reloadParticles = new KillParticleSystem(m_subsystemTerrain, basePosition, 0.5f);
 					m_subsystemParticles.AddParticleSystem(reloadParticles, false);
 					for (int i = 0; i < 3; i++)
@@ -1221,8 +1224,9 @@ namespace Game
 						m_subsystemParticles.AddParticleSystem(additionalParticles, false);
 					}
 				}
-				catch (Exception)
+				catch (Exception ex)
 				{
+					Log.Error($"Error al crear partículas de inicio de recarga: {ex.Message}");
 				}
 			}
 
