@@ -94,6 +94,19 @@ namespace Game
 		private double m_firearmReloadStartTime;
 		private double m_throwableThrowTime;
 
+		// DESPUÉS (añadir junto a las otras variables bool/double)
+		private bool m_isItemsLauncherAiming = false;
+		private bool m_isItemsLauncherFiring = false;
+		private double m_itemsLauncherLastFireTime;
+		private float m_itemsLauncherFireInterval = 0.5f;     // Se calculará según RateLevel
+		private float m_itemsLauncherSpeed = 35f;            // Se calculará según SpeedLevel
+		private float m_itemsLauncherSpread = 0.1f;          // Se calculará según SpreadLevel
+		private float m_itemsLauncherReloadTime = 1.2f;     // ← NUEVO (valor del XML)
+		private float m_itemsLauncherMaxShots = 0f;         // ← NUEVO (se calculará según algo, o fijo)
+		private int m_itemsLauncherShotsFired = 0;          // ← NUEVO
+		private bool m_isItemsLauncherReloading = false;    // ← NUEVO
+		private double m_itemsLauncherReloadStartTime;      // ← NUEVO
+
 		private int m_currentWeaponSlot = -1;
 		private int m_weaponType = -1;
 		private float m_currentDraw = 0f;
@@ -716,6 +729,31 @@ namespace Game
 						StartFirearmAiming();
 						break;
 					}
+					// DESPUÉS (añadir un nuevo else if antes del cierre del bucle)
+					else if (block is ItemsLauncherBlock)
+					{
+						m_currentWeaponSlot = i;
+						m_weaponType = 7;                          // Nuevo tipo para ItemsLauncher
+						m_componentInventory.ActiveSlotIndex = i;
+						// Leer niveles del bloque y calcular parámetros
+						int data = Terrain.ExtractData(slotValue);
+						int speedLevel = ItemsLauncherBlock.GetSpeedLevel(data);
+						int rateLevel = ItemsLauncherBlock.GetRateLevel(data);
+						int spreadLevel = ItemsLauncherBlock.GetSpreadLevel(data);
+						// Valores por defecto si el nivel es 0
+						if (speedLevel == 0) speedLevel = 2;
+						if (rateLevel == 0) rateLevel = 2;
+						if (spreadLevel == 0) spreadLevel = 2;
+						// Asignar según tablas (igual que en SubsystemItemsLauncherBlockBehavior)
+						float[] speedValues = { 10f, 35f, 60f };
+						float[] rateValues = { 1f, 2f, 3f, 4f, 5f, 6f, 7f, 8f, 9f, 10f, 11f, 12f, 13f, 14f, 15f };
+						float[] spreadValues = { 0.01f, 0.1f, 0.5f };
+						m_itemsLauncherSpeed = speedValues[speedLevel - 1];
+						m_itemsLauncherFireInterval = 1f / rateValues[rateLevel - 1];  // convertir disparos/segundo a intervalo
+						m_itemsLauncherSpread = spreadValues[spreadLevel - 1];
+						StartItemsLauncherAiming();
+						break;
+					}
 					else if (IsThrowableBlock(block))
 					{
 						m_currentWeaponSlot = i;
@@ -726,6 +764,47 @@ namespace Game
 					}
 				}
 			}
+		}
+
+		private void StartItemsLauncherReloading()
+		{
+			m_isItemsLauncherAiming = false;
+			m_isItemsLauncherFiring = false;
+			m_isItemsLauncherReloading = true;
+			m_itemsLauncherReloadStartTime = m_subsystemTime.GameTime;
+
+			// Animación de recarga
+			if (m_componentModel != null)
+			{
+				m_componentModel.AimHandAngleOrder = 0f;
+				m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
+				m_componentModel.InHandItemRotationOrder = Vector3.Zero;
+				m_componentModel.LookAtOrder = null;
+			}
+		}
+
+		private void ApplyItemsLauncherReloadingAnimation()
+		{
+			if (m_componentModel != null)
+			{
+				float reloadProgress = (float)((m_subsystemTime.GameTime - m_itemsLauncherReloadStartTime) / m_itemsLauncherReloadTime);
+
+				// Animación simple de recarga (bajar el arma)
+				m_componentModel.AimHandAngleOrder = MathUtils.Lerp(0f, 1.4f, reloadProgress);
+				m_componentModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
+				m_componentModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
+			}
+		}
+
+		// NUEVO MÉTODO (insertar junto a los otros Start...)
+		private void StartItemsLauncherAiming()
+		{
+			m_isItemsLauncherAiming = true;
+			m_isItemsLauncherFiring = false;
+			m_isItemsLauncherReloading = false;  // ← NUEVO
+			m_animationStartTime = m_subsystemTime.GameTime;
+			m_itemsLauncherLastFireTime = 0;
+			m_itemsLauncherShotsFired = 0;       // ← NUEVO
 		}
 
 		private bool HasClearLineOfSight(ComponentCreature target)
@@ -798,7 +877,150 @@ namespace Game
 				case 4: ProcessRepeatCrossbowBehavior(target, distance); break;
 				case 5: ProcessFirearmBehavior(target, distance); break;
 				case 6: ProcessThrowableBehavior(target, distance); break;
+				case 7: ProcessItemsLauncherBehavior(target, distance); break;
 			}
+		}
+
+		private void ProcessItemsLauncherBehavior(ComponentCreature target, float distance)
+		{
+			if (target == null) return;
+
+			if (!HasClearLineOfSight(target))
+			{
+				m_isItemsLauncherAiming = false;
+				m_isItemsLauncherFiring = false;
+				if (m_componentModel != null)
+				{
+					m_componentModel.AimHandAngleOrder = 0f;
+					m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
+					m_componentModel.InHandItemRotationOrder = Vector3.Zero;
+					m_componentModel.LookAtOrder = null;
+				}
+				return;
+			}
+
+			if (distance > m_maxDistance)
+			{
+				m_isItemsLauncherAiming = false;
+				m_isItemsLauncherFiring = false;
+				return;
+			}
+
+			if (!m_isItemsLauncherAiming && !m_isItemsLauncherFiring)
+			{
+				StartItemsLauncherAiming();
+			}
+
+			if (m_isItemsLauncherAiming)
+			{
+				if (m_componentModel != null)
+				{
+					m_componentModel.AimHandAngleOrder = 1.4f;
+					m_componentModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
+					m_componentModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
+					m_componentModel.LookAtOrder = new Vector3?(target.ComponentCreatureModel.EyePosition);
+				}
+
+				if (m_subsystemTime.GameTime - m_animationStartTime >= m_aimTime)
+				{
+					m_isItemsLauncherAiming = false;
+					m_isItemsLauncherFiring = true;
+					m_itemsLauncherLastFireTime = m_subsystemTime.GameTime;
+				}
+			}
+			else if (m_isItemsLauncherFiring)
+			{
+				if (m_componentModel != null)
+				{
+					m_componentModel.AimHandAngleOrder = 1.4f;
+					m_componentModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
+					m_componentModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
+					m_componentModel.LookAtOrder = new Vector3?(target.ComponentCreatureModel.EyePosition);
+				}
+
+				else if (m_isItemsLauncherReloading)
+				{
+					ApplyItemsLauncherReloadingAnimation();
+
+					if (m_subsystemTime.GameTime - m_itemsLauncherReloadStartTime >= m_itemsLauncherReloadTime)
+					{
+						m_isItemsLauncherReloading = false;
+						m_itemsLauncherShotsFired = 0;
+						m_isItemsLauncherAiming = true;
+						m_animationStartTime = m_subsystemTime.GameTime;
+					}
+				}
+
+				if (m_subsystemTime.GameTime - m_itemsLauncherLastFireTime >= m_itemsLauncherFireInterval)
+				{
+					FireItemsLauncher(target);
+					m_itemsLauncherLastFireTime = m_subsystemTime.GameTime;
+				}
+
+				if (m_itemsLauncherShotsFired >= 10)
+				{
+					m_isItemsLauncherFiring = false;
+					StartItemsLauncherReloading();
+				}
+			}
+		}
+
+		// NUEVO MÉTODO (insertar después del anterior)
+		private void FireItemsLauncher(ComponentCreature target)
+		{
+			if (target == null) return;
+
+			try
+			{
+				// Si está recargando, no disparar
+				if (m_isItemsLauncherReloading) return;
+
+				Vector3 firePosition = m_componentCreature.ComponentCreatureModel.EyePosition;
+				Vector3 targetPosition = target.ComponentCreatureModel.EyePosition;
+				Vector3 direction = Vector3.Normalize(targetPosition - firePosition);
+
+				direction += new Vector3(
+					m_random.Float(-m_itemsLauncherSpread, m_itemsLauncherSpread),
+					m_random.Float(-m_itemsLauncherSpread * 0.5f, m_itemsLauncherSpread * 0.5f),
+					m_random.Float(-m_itemsLauncherSpread, m_itemsLauncherSpread)
+				);
+				direction = Vector3.Normalize(direction);
+
+				int bulletBlockIndex = BlocksManager.GetBlockIndex<BulletBlock>();
+				if (bulletBlockIndex > 0)
+				{
+					int bulletData = BulletBlock.SetBulletType(0, BulletBlock.BulletType.MusketBall);
+					int bulletValue = Terrain.MakeBlockValue(bulletBlockIndex, 0, bulletData);
+
+					m_subsystemProjectiles.FireProjectile(
+						bulletValue,
+						firePosition,
+						direction * m_itemsLauncherSpeed,
+						Vector3.Zero,
+						m_componentCreature
+					);
+
+					// Contar disparo
+					m_itemsLauncherShotsFired++;
+
+					// Partículas y sonidos...
+					if (m_subsystemParticles != null && m_subsystemTerrain != null)
+					{
+						Vector3 smokePos = firePosition + direction * 0.3f;
+						m_subsystemParticles.AddParticleSystem(
+							new GunSmokeParticleSystem(m_subsystemTerrain, smokePos, direction),
+							false
+						);
+					}
+
+					m_subsystemAudio.PlaySound("Audio/Items/ItemLauncher/Item Cannon Fire", 0.7f,
+						m_random.Float(-0.1f, 0.1f), m_componentCreature.ComponentBody.Position, 15f, false);
+
+					if (m_subsystemNoise != null)
+						m_subsystemNoise.MakeNoise(firePosition, 0.8f, 30f);
+				}
+			}
+			catch { }
 		}
 
 		private void StartThrowableAiming()
@@ -2627,6 +2849,8 @@ namespace Game
 
 		private void ResetWeaponState()
 		{
+			m_isItemsLauncherReloading = false;
+			m_itemsLauncherShotsFired = 0;
 			m_isAiming = false;
 			m_isDrawing = false;
 			m_isFiring = false;
