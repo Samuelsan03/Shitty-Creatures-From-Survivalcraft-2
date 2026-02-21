@@ -94,10 +94,7 @@
             <MemberComponentTemplate Name="Miner" Guid="4aa81497-ec3e-4120-84ec-d2946e7735b9" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="9223828b-792e-4e9a-af1d-ab8856e2bc46" Value="3" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="7d5683a1-c185-4248-904f-b2f7e82ec947">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="3ac6c1ff-3fe7-4379-8f95-93f2bb0c4288" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewZombieModel" Guid="7e3c46ac-1b00-4061-855a-1a26059b73c8" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
@@ -274,10 +271,7 @@
             <MemberComponentTemplate Name="Miner" Guid="af5a6dcf-a9e5-4dcc-9af3-86318135833a" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="f1f3bfe5-e5ae-4751-91ee-cf09e0100076" Value="3" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="182932c1-fde3-487b-a39d-904d335a707a">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="500bda0b-4de3-4da1-aa12-f0cb2534e44d" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewZombieModel" Guid="0718940c-7808-4149-b17d-73204f6a8162" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
@@ -417,10 +411,7 @@
             <MemberComponentTemplate Name="Miner" Guid="179a5903-711a-480c-8905-50390e1d5b9f" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="1be1b827-9965-440a-9922-f1e1dedf9ce6" Value="3.35" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="3f18e7f9-9807-4742-82a7-3965a954db7b">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="59be6567-cb23-4220-9e4b-26de9592f274" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewZombieModel" Guid="a2e986f7-fdae-4806-bb67-cb6cd71ed0c7" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
@@ -590,10 +581,7 @@
             <MemberComponentTemplate Name="Miner" Guid="beb121dd-822e-4fa9-8eb8-064aa85cea25" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="7b80afcb-9dc9-4e99-9e67-a7237cd25c6d" Value="3.7" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="0e20ae8b-f1b6-4438-a580-4527b0f4fc9a">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="b62dbb6c-b109-457c-a9f8-f6884d64c66f" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewZombieModel" Guid="983b9281-3b57-4a81-bc4d-048fbf1c94c3" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
@@ -727,10 +715,7 @@
             <MemberComponentTemplate Name="Miner" Guid="67bf17e9-dd2e-4a68-a6f1-197ca077c6ef" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="781fd430-2941-40cd-8a5d-14e86fa6a62a" Value="4" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="e0552efb-dd72-4794-a4d6-0584edaac250">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="20e0c15c-ec0d-465b-aff8-9a4d251def50" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewZombieModel" Guid="324876e6-61c1-4a86-a9fd-e4110e32d0e6" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
@@ -876,10 +861,7 @@
             <MemberComponentTemplate Name="Miner" Guid="629e4b89-418f-4ce4-ae3c-ad1dc1a687c7" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="e6d366ef-3815-4a79-b195-9494feb5c8e4" Value="4" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="88f065d3-6e1c-4ac0-8842-591df336db3a">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="890fb902-a5f9-4346-8603-d422d0717475" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewZombieModel" Guid="3043fdb0-dc73-465b-8db0-a438f12a8ee5" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
@@ -1033,10 +1015,7 @@
             <MemberComponentTemplate Name="Miner" Guid="59a57a1c-f2b7-4f42-a1c8-83fe48bd5a04" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="985804a7-24b1-49d7-94fa-5a4f42d2b205" Value="4" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="660b5803-1b7e-4e32-8042-22fa7c468e44">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="bbabca0c-e499-4da7-8fff-4293bc6af626" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewZombieModel" Guid="f23bd78d-f187-4d76-ac6b-bf55ebfdc8c4" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
@@ -1182,10 +1161,7 @@
             <MemberComponentTemplate Name="Miner" Guid="fcf14890-99e7-40ea-bb3d-b158e9f52dd1" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="0fcb9852-87d6-4e04-853e-37c679cb8ad1" Value="4" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="26da5490-3cd0-4718-be81-75fbfa742692">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="f848ee9f-2c78-4661-b107-c930e35b8751" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewZombieModel" Guid="f18f4b7f-90ff-444f-a0ea-b581eb2f3a3c" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
@@ -1345,10 +1321,7 @@
             <MemberComponentTemplate Name="Miner" Guid="6d3f683a-f326-4b23-899e-767211dd0f45" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="bdb42951-04ba-4058-81bb-da9db113ccf2" Value="13.5" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="e457ea7e-29da-440f-a00e-f0b80ebd8b53">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="16ff8140-99d5-487c-a36b-d9d137eaa0c1" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewZombieModel" Guid="7ed787fd-a192-47ca-bfa2-379241b7018a" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
@@ -1523,10 +1496,7 @@
             <MemberComponentTemplate Name="Miner" Guid="32ba4a0c-1f24-4993-b01f-017515cf964b" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="bf0f8aa7-2b94-4145-a1b5-78c764baf3d4" Value="15.5" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="26a01480-0378-4757-8123-d439eec4311f">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="201dd8a2-0f44-4422-9b1e-8315b364f92d" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewZombieModel" Guid="29ce87ea-a11c-4c63-a75f-3c0242e5ce9d" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
@@ -1661,10 +1631,7 @@
             <MemberComponentTemplate Name="Miner" Guid="b052195b-dec9-45c8-a7fb-3d4551466ebd" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="ff1d07e8-b871-4a7c-8c71-eafb59cc1a09" Value="13.5" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="9d481693-a5d7-42e8-97c7-884473c70f7f">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="610be15f-335d-40e3-861f-ba6761278776" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewZombieModel" Guid="977b36b3-8264-49fa-94bd-e923350cbcd2" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
@@ -1833,10 +1800,7 @@
             <MemberComponentTemplate Name="Miner" Guid="bebdd92f-1760-4041-9e42-ad31113aeaf3" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="79f4e58d-371c-48a5-962b-e13f23922d78" Value="15.5" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="9e04b746-ab9a-4bf2-8ed4-5f27cd73127e">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="c5ed6c1e-c500-432d-9cd5-ed6cb204b654" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewZombieModel" Guid="a722f15c-46f3-4ff0-8de4-49e493a36c61" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
@@ -1984,10 +1948,7 @@
             <MemberComponentTemplate Name="Miner" Guid="f61b1d80-5de2-4eee-aa2f-7b11054e9ea5" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="e74b5f1a-713f-40c8-83e3-f0ee67254334" Value="3.5" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="8e54d559-b7aa-49d8-9f2c-7ba29f968725">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="3d70a1ce-0071-450a-af76-d3d14b708f06" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewZombieModel" Guid="ceaa2199-93b6-4de7-a7bb-b909a8e5d36d" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
@@ -2131,10 +2092,7 @@
             <MemberComponentTemplate Name="Miner" Guid="ee0a53f3-23b3-4e17-9458-d40690d34670" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="42a3cc76-d71f-45c1-8174-3a2177776bbc" Value="3.5" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="267d7a62-2d56-4df6-882b-6b6f1d83a340">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="e4016811-97b3-42f7-94fc-9b4dfd85875b" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewZombieModel" Guid="e67c12a1-cd72-4863-a0a9-ab339ba57bb2" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
@@ -2313,10 +2271,7 @@
             <MemberComponentTemplate Name="Miner" Guid="2d6c500e-b1e8-4b0c-b1dd-1836f4d77979" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="962f8366-88a7-4338-8dcd-2befe1f6e6b0" Value="4.5" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="d0f193c3-e5e5-4c2f-bfa9-41aa47c51194">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="200b5efc-d529-4afc-aec4-e8f0d03320fe" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewZombieModel" Guid="f4ef2782-7fa2-4995-8852-49c8ca698d8c" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
@@ -2460,10 +2415,7 @@
             <MemberComponentTemplate Name="Miner" Guid="c863ed25-60d6-4e81-b57a-fc4d8ca36ae0" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="482c484f-7718-4b07-a6ef-f1a68136a810" Value="3.5" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="422f16e8-b4a7-4931-845d-4b7efb83b62d">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="303af906-bb6c-4dc3-b0c7-e15b335198c1" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewZombieModel" Guid="41a3ed05-0137-4688-85d6-95a86f2be8a9" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
@@ -3573,10 +3525,7 @@
             <MemberComponentTemplate Name="Miner" Guid="853e834e-5cb9-4a5d-a726-e56e316d44a8" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="729e9960-fe50-4c45-902a-20aefa032ef1" Value="3.8" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="dddb2602-5b31-419c-af17-59988caf8258">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="78d736aa-ea80-4f34-8068-2519fb68b117" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewZombieModel" Guid="eddf798e-8a20-4ff7-91b0-ea3c50d1cba7" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
@@ -3741,10 +3690,7 @@
             <MemberComponentTemplate Name="Miner" Guid="53f66835-a22b-45a0-bce5-88cadc47016b" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="7b7d2032-b321-4454-9604-6df5f0419c39" Value="3.8" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="77a2435d-1c4b-4ae4-8810-123dba872564">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="1b9dde1d-cdf4-43b3-9dce-005ace0f8ee9" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewZombieModel" Guid="dcb2754f-7b1b-4cf4-92d2-d7abd82cee97" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
@@ -3894,10 +3840,7 @@
             <MemberComponentTemplate Name="Miner" Guid="419534ec-1a1c-4473-91f2-febc118124ba" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="730dbb14-9d9b-42e6-afeb-a257314a00bc" Value="3.8" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="f5f7a85a-c08f-44e0-a8df-e43c6379b948">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="8ae8a759-8f29-40a7-be1e-736f1cc944fa" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewZombieModel" Guid="2e62efe2-3a2f-4860-b3f2-49f2251a25e4" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
@@ -4064,10 +4007,7 @@
             <MemberComponentTemplate Name="Miner" Guid="97b1e33f-a69c-4b28-922f-38302c417677" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="81156952-1f5e-484f-ba9d-88a675c218f9" Value="3.8" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="f3c53c77-8046-45af-ad72-074fb04730d8">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="59d5ef35-b1fc-4ebd-997e-47ae6cb274d1" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewZombieModel" Guid="e0e0ec00-4e9b-4214-902e-7d3368176266" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
@@ -4199,10 +4139,7 @@
             <MemberComponentTemplate Name="Miner" Guid="6f82262b-a262-4ead-a4b8-f3603470921f" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="e34df3b5-a036-4c44-8451-8ae82cc0dc83" Value="3.8" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="03f4a39a-e9eb-414e-9bc8-f763fbf7bc17">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="0a972300-517b-4f5d-be2e-a00cdd4f2b07" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewZombieModel" Guid="d7efb369-23a4-47c7-bfc7-574219f576eb" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
@@ -4364,10 +4301,7 @@
             <MemberComponentTemplate Name="Miner" Guid="0eb3b2ba-b540-4a74-83b0-f5b98f7b5ac5" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="8392e0e6-f3fc-42f0-bb29-5617257a7bf8" Value="3.8" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="28d28547-12d5-438c-9652-ffa6bd958b63">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="422aafca-ff3e-47e4-bcca-89be1e3ea31f" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewZombieModel" Guid="7438a14d-8ea4-4e14-92db-840c544b49b9" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
@@ -4506,10 +4440,7 @@
             <MemberComponentTemplate Name="Miner" Guid="567addb7-aa47-4332-873e-62b6f8583819" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="640dfe6e-4221-4524-b76a-07ef73a56033" Value="8.0" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="824fc998-6888-4303-8fec-df4674a7c19b">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="22d815ba-0339-45e2-a336-56333f3c8d3f" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewZombieModel" Guid="ef477a50-a95e-4a3f-93b0-489b1c7543b8" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
@@ -4665,10 +4596,7 @@
             <MemberComponentTemplate Name="Miner" Guid="afde48d8-0742-44b1-a27e-9fe555b4b6f7" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="feebbacd-0d9b-4b57-9b96-6a3e3c973e2d" Value="8.0" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="ec91472e-3a24-481b-885c-601d3d84a55e">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="cac8c978-b2da-4901-b33d-1edacb618f91" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewZombieModel" Guid="5fa455b3-84de-41f0-8043-ade44bd1ea2d" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
@@ -4793,10 +4721,7 @@
             <MemberComponentTemplate Name="Miner" Guid="c3badf04-b89f-438b-8719-dfb1f177da8a" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="346ae41a-0987-4000-99c5-62ef0ff815e2" Value="8.0" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="a72c7260-f95b-4066-b1cd-fc42c790761b">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="0e90656c-8d34-4250-8212-cf56681d7682" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewZombieModel" Guid="c4fed1fe-0b4f-4357-8853-acac94dbd87b" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
@@ -4952,10 +4877,7 @@
             <MemberComponentTemplate Name="Miner" Guid="b1c56163-7b10-4da9-85f0-40e0f3231928" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="0f986f95-2607-4374-8cab-9d37af7313b7" Value="8.0" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="4c1011f0-95f2-436f-b044-4368a4894f00">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="b4ba68a5-1943-4546-9856-ab2e5fe2de71" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewZombieModel" Guid="c4ce280c-52e9-4356-81e5-ad3ca2c5f631" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
@@ -5084,10 +5006,7 @@
             <MemberComponentTemplate Name="Miner" Guid="1cc8778a-95f0-49f1-8b70-a824da2b01f8" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="80712194-32e1-4772-b165-ba035e3676ec" Value="30.5" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="18ca26bc-f224-44a7-922b-10c934fa7898">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="58febf9e-5d21-4f65-a2e0-c74df963a381" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="TankModel" Guid="b7dc3bac-40b6-48b1-a4b1-31a7c7de5e62" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
@@ -5392,10 +5311,7 @@
             <MemberComponentTemplate Name="Miner" Guid="bd83c7c2-f2b0-4ef7-8cd1-2b58b9d1ef0c" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="021c3fb7-4131-4657-8295-ead23dbf9026" Value="55.5" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="96b93fb6-c7ae-4115-841f-4f1390f8f412">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="513dbfcc-d9c5-41f1-b891-c43ee4c18978" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="TankModel" Guid="70f191b9-a8a5-40b7-8fb6-7bd22a1fc3dc" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
@@ -5555,10 +5471,7 @@
             <MemberComponentTemplate Name="Miner" Guid="b2f4efaa-c56f-4da7-a1b3-04f61223147c" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="b6ce9aa0-67df-4544-b7ac-fe7de6d9b3a0" Value="55.5" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="434b8e2d-24c7-458e-95e3-29df87312688">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="541725c5-9603-4750-8970-6bedeaa8ffc4" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="TankModel" Guid="2d614d96-4d79-4605-9438-555f5e4443e1" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
@@ -5687,10 +5600,7 @@
             <MemberComponentTemplate Name="Miner" Guid="900bd86b-33c2-4284-87c5-460f00d90058" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="1fe3bb10-e680-4b3a-9078-aa35004452ff" Value="100" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="ec8d0379-1156-4c46-b62b-d0e2bade197b">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="12b7cb6b-4037-45e8-b85f-05740aa1a7e5" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="TankModel" Guid="7c93b40c-43ee-4f9c-8745-20cf642f7613" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
@@ -5845,10 +5755,7 @@
             <MemberComponentTemplate Name="Miner" Guid="34f79053-af71-45b5-b400-58f49e71c1f4" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="9bc46e3f-f654-41fc-b498-3a92b06a2b73" Value="100" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="3ace7e12-3294-49da-b960-a7c23f9b393b">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="c30503f7-4cac-4049-a9d2-663bf2cf847d" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="TankModel" Guid="1c4cfa27-fb6b-4715-9e16-0ce3800691a4" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
@@ -5975,10 +5882,7 @@
             <MemberComponentTemplate Name="Miner" Guid="4425251c-043e-4c33-846d-d47d04d29b9d" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="a535e51e-dad8-4e11-bdbf-65fc5c80e57e" Value="5.5" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="a81ecdbc-cac8-41ef-adc3-7ce2dba200ad">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="6491696a-8325-43ab-a243-176a5c5d433d" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewGhostHumanModel" Guid="78c4b987-ee04-4d3d-9698-2f6ddaf9836a" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
@@ -6159,10 +6063,7 @@
             <MemberComponentTemplate Name="Miner" Guid="8d37026d-638d-431d-abea-0d004832b6e4" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="3aea18a6-86df-4851-9795-80e883b33f34" Value="5.5" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="b56c0ec8-5185-46c6-8788-00691f2e682b">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="18202b5f-17dd-417f-95cc-4968f038fd98" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewGhostHumanModel" Guid="6c0a2618-825a-432c-b218-bc001c0b3eaa" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
@@ -6319,10 +6220,7 @@
             <MemberComponentTemplate Name="Miner" Guid="f5afee39-ac25-4968-ac07-6c4a9e46c428" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="2a138ae5-9425-483f-8b36-7464cf0acb1a" Value="5.5" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="50cc0efa-95ea-4a99-8f60-82374875b9c6">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="90f10271-9cbd-411d-8415-2ca5d600ff23" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewGhostHumanModel" Guid="91865132-48a4-4f7d-8b88-022bab83ee2e" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
@@ -6511,10 +6409,7 @@
             <MemberComponentTemplate Name="Miner" Guid="d9e6aa5a-8bc6-49b7-ace1-37f3316efac3" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="4a081ecf-6b46-4200-90ef-0908c42a0fc4" Value="5.5" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="58ed37df-fc6b-42ab-9ef7-a6afaeea54d9">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="ba103f2f-30f0-4907-be6f-cd779dca6ae9" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewGhostHumanModel" Guid="5b8f9692-661d-4cb9-af36-34937e9e75f0" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
@@ -6671,10 +6566,7 @@
             <MemberComponentTemplate Name="Miner" Guid="c51a5e5e-ddd1-458c-996d-eb7c519641de" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="c65b63fe-b26c-4b95-9d13-291d95a1bd94" Value="5.5" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="5a690e58-dd48-401b-81d6-1c73271eb4e5">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="eb690240-777a-485e-a2a8-313c4bb33aa6" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewGhostHumanModel" Guid="39bb6e87-69b6-4cea-945c-799836b632c7" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
@@ -6860,10 +6752,7 @@
             <MemberComponentTemplate Name="Miner" Guid="76960074-b8ba-4f35-ab29-6063e6983dcd" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="08e32ca8-b97c-440e-af00-bc4414f53d38" Value="5.5" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="d7554dfa-e630-4df0-ac3f-36bfd2958e44">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="9e89ad42-4f75-4509-9634-7d3a8973cb3b" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewGhostHumanModel" Guid="c144943d-bb60-4508-9e9a-4202cc29391f" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
@@ -7015,10 +6904,7 @@
             <MemberComponentTemplate Name="Miner" Guid="c05c46ca-1e81-419c-bcc6-54a9c2fbb8a4" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="400967f6-ad16-4b80-80db-38998a8c72bc" Value="5.5" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="91394dc0-0455-4c4d-a187-774ba400a90e">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="37969645-6dfa-4075-a80a-d24ad5473714" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewGhostHumanModel" Guid="677d6420-4e75-4ca0-b0b6-af24ab140c1f" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
@@ -7205,10 +7091,7 @@
             <MemberComponentTemplate Name="Miner" Guid="60ef1308-7038-48e7-bff6-5feff474ee7f" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="54300dfa-e48a-4feb-971a-969b443fb65e" Value="5.5" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="a2cb861b-590d-451e-a4a1-e988d5b19c5d">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="c7ec6977-4d9f-4248-a8e7-a9f45ba4ea5b" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewGhostHumanModel" Guid="9bd72eec-197c-4d25-9702-3a2d33218e41" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
@@ -7366,10 +7249,7 @@
             <MemberComponentTemplate Name="Miner" Guid="905f0c64-b829-4301-a760-80dea0077f9b" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="fdc5910a-2bf3-4614-8bfb-b93f9ad7e1d8" Value="5.5" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="9c51bd19-aebe-4f8c-8a29-f348c2164710">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="be9c981d-eb81-4dac-840f-5d4e27e0506f" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewGhostHumanModel" Guid="34b861b9-ec89-47a2-bc29-7e5fa592b2af" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
@@ -7558,10 +7438,7 @@
             <MemberComponentTemplate Name="Miner" Guid="6982e22a-9c02-434f-ba0d-4fed41c02776" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="1699e416-8d56-436c-a5c5-aaebfc1c9af4" Value="5.5" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="91f28705-98da-4f7d-bfb4-a1c56cd99f51">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="8f4b6dad-fc45-426e-b1ec-1bd2771d7f07" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewGhostHumanModel" Guid="2b12036f-748a-4fef-8c25-a6029fea79e2" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
@@ -7713,10 +7590,7 @@
             <MemberComponentTemplate Name="Miner" Guid="cb326bf6-3bc2-4f3e-99a1-0135692a3352" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="d18fe3b3-65e4-475d-9a0a-c6790ca639e8" Value="5.5" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="066adb10-b646-41a4-9fdc-51d78275d891">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="97ea9f25-1da3-41cd-8086-6a3431c3a099" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewGhostHumanModel" Guid="ebf9f384-52a3-4d1f-bff3-f9d84a49129a" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
@@ -7899,10 +7773,7 @@
             <MemberComponentTemplate Name="Miner" Guid="7d2b8a4c-79ac-4236-a279-289faa051dbe" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="5f6ab301-a333-4805-8cdd-cf7bd7a0fa60" Value="5.5" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="b3bb944b-a30c-4552-9efe-2776f6db6ef8">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="88ff799e-521a-4929-ba68-5a2dc7aa9de1" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewGhostHumanModel" Guid="7023c9b5-c83d-4b45-8ca4-734b4856ea72" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
@@ -8049,10 +7920,7 @@
             <MemberComponentTemplate Name="Miner" Guid="5dede523-322f-44bd-b9fe-906f8651fe35" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="f8eeb56e-956a-4419-9642-472ed1789b5e" Value="8.0" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="ed45adbd-8700-4308-9c83-42fcf9672484">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="e6a9adaf-6445-4cf3-98d2-41b4860b9b51" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewGhostHumanModel" Guid="ffc106b6-4bef-4228-8a29-f4d495c9eea1" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
@@ -8215,10 +8083,7 @@
             <MemberComponentTemplate Name="Miner" Guid="5a1c5c75-2a2b-47e2-b4c6-92d5e15fa331" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="7d29160c-d1ad-4a6d-921a-88d0ac8eac89" Value="8.0" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="d9ea5303-5cb1-47c1-9016-e3791f828362">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="f140a374-a3bf-4259-8032-432994ea3cf5" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewGhostHumanModel" Guid="0ec3edcc-b688-4cf3-b9b5-f7c43593558c" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
@@ -8381,10 +8246,7 @@
             <MemberComponentTemplate Name="Miner" Guid="d2ac9bfa-c439-4be1-b8fc-dc9d1fbb6d27" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="0c79a8c7-aac2-4b48-83a3-73909ce1d103" Value="45.5" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="14d4393f-b1f9-480d-820f-41ccbf939080">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="46b3f15d-d251-4dd6-b35b-92f66d34247e" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewGhostTankModel" Guid="dd7a29a5-1648-40b1-8c53-0fadf55b77d7" InheritanceParent="5ccee3e3-ae8d-4793-a534-5b075b74429b">
@@ -8558,10 +8420,7 @@
             <MemberComponentTemplate Name="Miner" Guid="4bc795f0-7982-430b-8a3b-44b8513eac53" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="65a6b14b-4d08-444b-9cbb-41f10781b972" Value="45.5" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="aa279cb4-f9af-4ed6-8d94-a1f8ea3f0e02">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="3aa894ba-d169-4870-bb60-a79ee9ca95bc" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewGhostTankModel" Guid="118c7990-bcaf-4758-9893-5429c3fa36df" InheritanceParent="5ccee3e3-ae8d-4793-a534-5b075b74429b">
@@ -8690,10 +8549,7 @@
             <MemberComponentTemplate Name="Miner" Guid="226c8e0e-a0e4-49b4-8bb0-e711dba65350" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="9d9dbd40-3f3c-4a1e-a112-cb3af1aabdbb" Value="85" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="f3c2ba58-771c-4328-b530-b3be028c6aeb">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="a313951c-27bc-4a45-a39b-f968fb630186" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewGhostTankModel" Guid="d347c81a-8639-485b-9ad5-36c2e1b4e250" InheritanceParent="5ccee3e3-ae8d-4793-a534-5b075b74429b">
@@ -8867,10 +8723,7 @@
             <MemberComponentTemplate Name="Miner" Guid="90163016-0ba9-43ce-a799-2a57ec29222b" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="90e21e2b-9e0e-43cd-ab4a-aadbe2df1d4d" Value="85" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="8df8193b-fe19-4700-9270-3957c7c6e449">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="fcf38881-d7b9-4142-ba30-2ee9599ac2ff" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewGhostTankModel" Guid="c5fe2209-e650-4f62-b0f4-d5805f10a005" InheritanceParent="5ccee3e3-ae8d-4793-a534-5b075b74429b">
@@ -9000,10 +8853,7 @@
             <MemberComponentTemplate Name="Miner" Guid="832d4436-b6c4-41bd-8885-90cd6cbc08dc" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="6e567f7f-5660-43fb-a2f8-95676f163f7c" Value="255" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="dfbe18fd-0df2-4ce3-babd-30ab687b76f0">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="53637713-646d-4329-acb0-6620af7eef5a" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewGhostTankModel" Guid="52e437f4-61b1-4db0-afdf-e418e3165105" InheritanceParent="5ccee3e3-ae8d-4793-a534-5b075b74429b">
@@ -9164,10 +9014,7 @@
             <MemberComponentTemplate Name="Miner" Guid="3d3e8aea-cc04-4f82-aeea-bb5a937ebd08" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="a7642bf9-a2d7-417b-8ac6-b42baca01620" Value="255" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="18a80907-f8e5-4405-8585-a616d520b8f4">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="c24d5a24-f635-46fe-9339-b9ae13058203" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewGhostTankModel" Guid="54ee57d9-7297-47b3-b9b2-10884cdae557" InheritanceParent="5ccee3e3-ae8d-4793-a534-5b075b74429b">
@@ -9304,10 +9151,7 @@
             <MemberComponentTemplate Name="Miner" Guid="b0cb533a-04c2-49a4-861b-f6d70e1a63cd" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="6f1c4820-a03c-4de4-ae1f-65b1b5da08cf" Value="5.0" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="27ed792e-ea9d-4edf-8c8c-9b5243055d8d">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="d250372e-915d-4620-8227-74d21405bacc" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewZombieModel" Guid="aef7c3f3-69d7-4a8d-a10a-4b86739506b5" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
@@ -9498,10 +9342,7 @@
             <MemberComponentTemplate Name="Miner" Guid="5f1950da-1ae1-4d3c-b745-0c1994cec68b" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="55b4364d-82e1-43b6-88b4-a873543f9fd0" Value="5.0" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="66e5f304-e4a4-41e4-a8e5-cb07fed0fc9a">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="00ad43ca-27a4-4caf-a0b6-f0707edbe906" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewZombieModel" Guid="9f6bf705-ee68-46e1-960a-c3f39d8bbf9b" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
