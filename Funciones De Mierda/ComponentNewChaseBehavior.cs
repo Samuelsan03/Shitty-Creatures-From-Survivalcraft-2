@@ -450,6 +450,7 @@ namespace Game
 				{
 					if (!this.FindAimTool(this.m_componentMiner) && this.m_componentMiner.Inventory != null)
 					{
+						// x NUEVA LÓGICA: Buscar un FlameThrower y prepararlo si es necesario
 						for (int i = 0; i < this.m_componentMiner.Inventory.SlotsCount; i++)
 						{
 							int slotValue = this.m_componentMiner.Inventory.GetSlotValue(i);
@@ -458,6 +459,12 @@ namespace Game
 								Block block = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)];
 								if (block.IsAimable_(slotValue) && block.GetCategory(slotValue) != "Terrain")
 								{
+									// x NUEVA COMPROBACIÓN: Si es un FlameThrower, prepararlo
+									if (block is FlameThrowerBlock)
+									{
+										this.HandleComplexAimTool(this.m_componentMiner, i);
+										break;
+									}
 									this.m_componentMiner.Inventory.ActiveSlotIndex = i;
 									break;
 								}
@@ -469,6 +476,23 @@ namespace Game
 			}
 			else
 			{
+				// x NUEVA LÓGICA: Si no hay un objetivo, intentar recargar el FlameThrower
+				if (this.m_target == null && this.m_componentMiner.Inventory != null)
+				{
+					int activeSlotIndex = this.m_componentMiner.Inventory.ActiveSlotIndex;
+					if (activeSlotIndex >= 0 && activeSlotIndex < this.m_componentMiner.Inventory.SlotsCount)
+					{
+						int slotValue = this.m_componentMiner.Inventory.GetSlotValue(activeSlotIndex);
+						if (slotValue != 0)
+						{
+							Block block = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)];
+							if (block is FlameThrowerBlock && !this.IsReady(slotValue))
+							{
+								this.HandleComplexAimTool(this.m_componentMiner, activeSlotIndex);
+							}
+						}
+					}
+				}
 				this.CheckDefendPlayer(dt);
 			}
 
@@ -635,6 +659,7 @@ namespace Game
 
 			if (block.IsAimable_(activeBlockValue) && block.GetCategory(activeBlockValue) != "Terrain")
 			{
+				// x NUEVA COMPROBACIÓN: Verificar si el FlameThrower está listo para disparar
 				if (!(block is FlameThrowerBlock) || this.IsReady(activeBlockValue))
 				{
 					return true;
@@ -650,6 +675,7 @@ namespace Game
 				Block block2 = BlocksManager.Blocks[num2];
 				if (block2.IsAimable_(slotValue) && block2.GetCategory(slotValue) != "Terrain")
 				{
+					// x NUEVA COMPROBACIÓN: Verificar si el FlameThrower está listo para disparar
 					if (block2 is FlameThrowerBlock && !this.IsReady(slotValue)) continue;
 
 					componentMiner.Inventory.ActiveSlotIndex = i;
