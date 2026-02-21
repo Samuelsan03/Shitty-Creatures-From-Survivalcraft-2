@@ -3764,13 +3764,13 @@
     <MemberComponentTemplate Name="Inventory" Guid="c1d2e3f4-a5b6-6678-3456-89abcdef0125" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
     <ParameterSet Name="Slots">
         <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="304" Type="int"/> <!-- Cañon De Objetos -->
+            <Parameter Name="Contents" Value="309" Type="int"/> <!-- Cañon De Objetos -->
             <Parameter Name="Count" Value="1" Type="int"/>
         </ParameterSet>
     </ParameterSet> 
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="ItemsLauncherShooterBehavior" Guid="b7c8d9e0-f1a2-4b3c-8d5e-6f7a8b9c0d1e" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
-    <Parameter Name="MaxDistance" Guid="d2e3f4g5-h6i7-8901-cdef-234567890123" Value="30" Type="float"/>
+    <Parameter Name="MaxDistance" Guid="d2e3f4g5-h6i7-8901-cdef-234567890123" Value="100" Type="float"/>
     <Parameter Name="ReloadTime" Guid="e3f4g5h6-i7j8-9012-defg-345678901234" Value="1.2" Type="float"/>
     <Parameter Name="AimTime" Guid="f4g5h6i7-j8k9-0123-efgh-456789012345" Value="0.6" Type="float"/>
     <Parameter Name="Accuracy" Guid="k9l0m1n2-o3p4-5678-jklm-901234567890" Value="0.04" Type="float"/>
@@ -4519,10 +4519,7 @@
     <Parameter Name="AutoChaseMask" Value="LandPredator" Type="Game.CreatureCategory" Guid="e0e19669-9c44-47f5-a3e8-c11935b4c2b2"/>
     <Parameter Name="AttackRange" Value="5,20" Type="Vector2" Guid="a816cff0-0ffd-44e7-9db7-587dbb25e787"/>
 </MemberComponentTemplate>
-    <MemberComponentTemplate Name="NewHerdBehavior" Guid="bfa4a491-70a5-433d-a240-39ae31531b79">
-        <Parameter Name="Class" Value="Game.ComponentNewHerdBehavior" Type="string" Guid="cdc71886-80c1-411b-8277-f5a8529c79a7"/>
-        <Parameter Name="IsOptional" Value="true" Type="bool" Guid="5a37b30b-4890-4b17-8878-78e518a079ce"/>
-        <Parameter Name="LoadOrder" Value="50" Type="int" Guid="99740708-af5a-437e-8ff9-7e1d7f3fe316"/>
+    <MemberComponentTemplate Name="NewHerdBehavior" Guid="bfa4a491-70a5-433d-a240-39ae31531b79" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
         <Parameter Name="HerdName" Value="player" Type="string" Guid="168ea41d-2610-48d7-9b93-59cbc28b3bd8"/>
         <Parameter Name="HerdingRange" Value="20" Type="float" Guid="7ad3d7c2-2f0f-45a0-bfac-af8df04455ff"/>
         <Parameter Name="AutoNearbyCreaturesHelp" Value="true" Type="bool" Guid="b5dcee71-1270-4ed4-86b2-9b5e0d39e71f"/>
@@ -5138,10 +5135,7 @@
     <Parameter Name="AutoChaseMask" Value="LandPredator" Type="Game.CreatureCategory" Guid="a56b7872-0816-4c66-8e3c-0065e47c22f2"/>
     <Parameter Name="AttackRange" Value="5,20" Type="Vector2" Guid="8391a698-2b7a-4013-a624-cfb315c006b1"/>
 </MemberComponentTemplate>
-        <MemberComponentTemplate Name="NewHerdBehavior" Guid="741ef8ec-15e1-419b-b685-04124969b525">
-        <Parameter Name="Class" Value="Game.ComponentNewHerdBehavior" Type="string" Guid="dc915d88-04ca-4019-836e-f4c339b65aaf"/>
-        <Parameter Name="IsOptional" Value="true" Type="bool" Guid="4190a35d-2164-4d35-bb80-a54c1aa4748e"/>
-        <Parameter Name="LoadOrder" Value="50" Type="int" Guid="043c4b6f-4e84-44c8-a0a3-9e74cd60f705"/>
+        <MemberComponentTemplate Name="NewHerdBehavior" Guid="741ef8ec-15e1-419b-b685-04124969b525" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
         <Parameter Name="HerdName" Value="player" Type="string" Guid="e00ded5c-9f37-4e34-a2a3-6d11e06ecc44"/>
         <Parameter Name="HerdingRange" Value="80" Type="float" Guid="e84afea4-a337-4443-9273-b7c7498d1876"/>
         <Parameter Name="AutoNearbyCreaturesHelp" Value="true" Type="bool" Guid="e590bea6-9601-4672-956e-2d74e4d407c6"/>
@@ -5300,10 +5294,7 @@
     <Parameter Name="LoadOrder" Value="60" Type="int" Guid="2bd952fc-9087-4b04-9e1e-c1d31d974c6e"/>
               <Parameter Name="IsEnabled" Guid="0d3fa2a1-7f37-401e-85ba-d8c7f6257dae" Value="True" Type="bool"/>
             </MemberComponentTemplate>
-        <MemberComponentTemplate Name="NewHerdBehavior" Guid="8269ee4e-59e1-436b-81c6-fd92206b5ba6">
-        <Parameter Name="Class" Value="Game.ComponentNewHerdBehavior" Type="string" Guid="7de5c2bb-ca36-4585-801d-595c7e000e22"/>
-        <Parameter Name="IsOptional" Value="true" Type="bool" Guid="1c852b23-1cd4-4532-8c79-fc8b397241b8"/>
-        <Parameter Name="LoadOrder" Value="50" Type="int" Guid="bef30f6d-a244-404b-9237-0e78ad69ee29"/>
+        <MemberComponentTemplate Name="NewHerdBehavior" Guid="8269ee4e-59e1-436b-81c6-fd92206b5ba6" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
         <Parameter Name="HerdName" Value="player" Type="string" Guid="f784203c-e146-4648-a277-6aa9fc854fc1"/>
         <Parameter Name="HerdingRange" Value="80" Type="float" Guid="2a846c41-f8ec-4cdd-a040-e3b01b71c2f9"/>
         <Parameter Name="AutoNearbyCreaturesHelp" Value="true" Type="bool" Guid="e48fe99c-217f-4239-a3b2-2367d052e8fb"/>
