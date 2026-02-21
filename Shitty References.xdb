@@ -1,5 +1,49 @@
 <Mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://gitee.com/THPRC/survivalcraft-api/raw/SCAPI1.8/Survivalcraft/Content/Assets/Database.xsd">
     <Folder Name="Gameplay" Guid="d509e5e2-2c10-49f1-8223-85cd892c63b0">
+<ComponentTemplate Name="BoomerExplosion" Description="Comportamiento que hace que el Boomer explote al morir, con configuración de daño, radio y efectos incendiarios." Guid="bf245bcc-8786-4839-9528-87f3f7ff4833" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+    <Parameter Name="Class" Guid="a3967efb-2f42-48c0-af6d-d2d133469681" Value="Game.ComponentBoomerExplosion" Type="string"/>
+    <Parameter Name="ActivationRange" Description="Distancia a la que el Boomer detecta al jugador para activarse (actualmente no se usa, la explosión es solo por muerte)" Guid="ffb2f590-7aaa-4195-9892-8558be629e76" Value="3" Type="float"/>
+    <Parameter Name="UseStandardExplosion" Description="Indica si se debe usar la explosión estándar del juego (con presión)" Guid="1caef662-17e4-4aa5-be7b-064c196b4514" Value="true" Type="bool"/>
+    <Parameter Name="UseCustomShockwave" Description="Indica si se debe usar la onda expansiva personalizada (daño y empuje a entidades)" Guid="d95f1324-bcbd-4b27-bba3-a588b2681a6f" Value="false" Type="bool"/>
+    <Parameter Name="ExplosionPressure" Description="Presión de la explosión estándar. Afecta el daño a bloques y entidades." Guid="2a413648-c81e-42cf-9802-cf10daca4fef" Value="80" Type="float"/>
+    <Parameter Name="IsIncendiary" Description="Determina si la explosión prende fuego a los bloques circundantes." Guid="812d187b-fc8d-4f2a-81c6-ad1d0a153291" Value="false" Type="bool"/>
+    <Parameter Name="ExplosionRadius" Description="Radio total de la explosión. Afecta el alcance de las explosiones secundarias escaladas." Guid="0de2cf52-1dae-40cf-9bb4-56f4c4ea1239" Value="10" Type="float"/>
+    <Parameter Name="BlockDamageRadius" Description="Radio en el que se dañan o destruyen los bloques por la onda personalizada." Guid="c7bff956-433d-4a85-90e4-5d6c664678f1" Value="8" Type="float"/>
+    <Parameter Name="EntityDamageRadius" Description="Radio en el que las entidades reciben daño por la onda personalizada." Guid="87f94ade-17f5-4902-8a8a-ffc590799d60" Value="10" Type="float"/>
+    <Parameter Name="ShockwaveDamage" Description="Cantidad de daño base que causa la onda expansiva personalizada a las entidades." Guid="830909b9-1ee9-44f5-9c9f-d620f95c6961" Value="100" Type="float"/>
+    <Parameter Name="ShockwaveForce" Description="Fuerza de empuje de la onda expansiva personalizada sobre las entidades." Guid="fba7b351-8b23-4d28-8c30-d8bdf1a9a1c5" Value="50" Type="float"/>
+    <Parameter Name="DestroyBlocks" Description="Si la onda personalizada debe destruir bloques (requiere UseCustomShockwave=true)." Guid="e9abf1f6-38d4-4f05-a9b2-6fda78fab3f7" Value="true" Type="bool"/>
+    <Parameter Name="PreventExplosion" Description="Si es true, evita que el Boomer explote al morir. Útil para depuración o estados especiales." Guid="743b92f5-2f46-4bb6-bb8e-1b24c5c7f210" Value="false" Type="bool"/>
+</ComponentTemplate>
+
+<ComponentTemplate Name="BoomerFireExplosion" Description="Comportamiento para un Boomer incendiario. Explota al morir, causa daño y propaga fuego." Guid="aeba3d06-e20a-4a04-bd51-ae8d5b2d03c0" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+    <Parameter Name="Class" Guid="a51dc7a0-3313-4d63-843f-bd667c5e3137" Value="Game.ComponentBoomerExplosion2" Type="string"/>
+    <Parameter Name="ActivationRange" Description="Distancia de activación (no usado, la explosión es por muerte)" Guid="4c5ded94-60d4-421f-96c2-677461c03c67" Value="3" Type="float"/>
+    <Parameter Name="UseStandardExplosion" Description="Usar la explosión estándar del juego." Guid="4bebf7b4-2e57-4d82-b543-039bb4147aca" Value="true" Type="bool"/>
+    <Parameter Name="UseCustomShockwave" Description="Usar onda expansiva personalizada." Guid="4a39c103-eaf8-4c0f-92a9-ffbd091a2d01" Value="false" Type="bool"/>
+    <Parameter Name="ExplosionPressure" Description="Presión de la explosión." Guid="4ff5b265-bfa7-417d-beec-790bbb53a002" Value="80" Type="float"/>
+    <Parameter Name="IsIncendiary" Description="Si la explosión es incendiaria. Por defecto es true." Guid="6df9da3e-82f3-4246-b5af-994e1530dd9c" Value="true" Type="bool"/>
+    <Parameter Name="ExplosionRadius" Description="Radio de la explosión." Guid="d94dae61-0788-45ac-8f41-79b02d8e71b5" Value="10" Type="float"/>
+    <Parameter Name="BlockDamageRadius" Description="Radio de daño a bloques." Guid="74060485-9b97-47ba-b47c-ab3066081669" Value="8" Type="float"/>
+    <Parameter Name="EntityDamageRadius" Description="Radio de daño a entidades." Guid="bbe2d5f8-eaa5-46a5-b660-333e8e30ecc7" Value="10" Type="float"/>
+    <Parameter Name="ShockwaveDamage" Description="Daño base de la onda." Guid="7dec45d4-eff2-4c3a-a5b5-90a48ec4ee12" Value="100" Type="float"/>
+    <Parameter Name="ShockwaveForce" Description="Fuerza de empuje." Guid="e69308a2-660c-4da5-91b3-8cee27de9615" Value="50" Type="float"/>
+    <Parameter Name="DestroyBlocks" Description="Destruir bloques." Guid="4496ef05-0025-4a25-93d9-feb83ad36c36" Value="true" Type="bool"/>
+    <Parameter Name="FireSpreadChance" Description="Probabilidad (0-1) de que un bloque cercano se incendie." Guid="90a2f76c-b813-48ec-9d73-ccf7961dcd19" Value="0.4" Type="float"/>
+    <Parameter Name="FireDuration" Description="Duración del fuego en segundos." Guid="19059953-365b-4f83-8c02-4b732766e974" Value="10" Type="float"/>
+    <Parameter Name="PreventExplosion" Description="Prevenir la explosión." Guid="10347c1f-141a-45e2-8c3c-4b787eb34ca2" Value="false" Type="bool"/>
+</ComponentTemplate>
+
+<ComponentTemplate Name="BoomerPoisonExplosion" Description="Comportamiento para un Boomer de veneno. Al morir, libera una nube tóxica que infecta a las criaturas." Guid="b1966e3c-5e1f-4483-acc9-90f88c0e0748" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+    <Parameter Name="Class" Guid="619845df-80f9-4577-ba25-eb670f46e3dd" Value="Game.ComponentBoomerPoisonExplosion" Type="string"/>
+    <Parameter Name="PoisonRadius" Description="Radio máximo en el que la nube de veneno puede infectar a las entidades." Guid="f1684bba-406f-46b1-970a-a49271f83d04" Value="15" Type="float"/>
+    <Parameter Name="PoisonIntensity" Description="Intensidad de la infección (duración/gravedad del efecto de veneno)." Guid="78a93819-fb3c-4a5b-b526-51d994012328" Value="300" Type="float"/>
+    <Parameter Name="CloudDuration" Description="Duración de la nube de veneno en segundos." Guid="cc78dadd-65bf-4999-920c-493ebfdfd3de" Value="4" Type="float"/>
+    <Parameter Name="CloudRadius" Description="Radio visual y de efecto inicial de la nube de veneno." Guid="0fda2ac8-c667-4db1-9463-360ef51112d9" Value="12" Type="float"/>
+    <Parameter Name="ExplosionPressure" Description="Presión de la explosión, que genera un empuje a las entidades sin dañar bloques." Guid="6f8e90cc-eb9b-4e72-bbff-8d54222c0aa8" Value="40" Type="float"/>
+    <Parameter Name="PreventExplosion" Description="Prevenir la explosión de veneno." Guid="c18781d2-2e1a-44a5-b934-e0c8e9c0ecd8" Value="false" Type="bool"/>
+</ComponentTemplate>
+
 <ComponentTemplate Name="CreatureInventory" Description="Inventario para criaturas que pueden almacenar y usar objetos" Guid="a347220c-b5cf-4eae-9215-4ed37426eec4" InheritanceParent="81a44c6a-c30a-4f53-8d64-0c30aabab8f9">
   <Parameter Name="ActiveSlotIndex" Description="Índice del slot activo de la criatura" Guid="65e82739-c714-4418-90b0-adddb190350d" Value="0" Type="int"/>
   <Parameter Name="SlotsCount" Description="Número de slots en el inventario de la criatura" Guid="8f9e0c14-943a-49ce-96a8-24b51582dfb5" Value="16" Type="int"/>
@@ -247,52 +291,6 @@
     <Parameter Name="HelpChaseTime" Value="30" Type="float" Guid="c6600b71-66f4-415e-b0fc-e9dc376223ef" Description="Tiempo que los zombis persiguen al atacante (en segundos)."/>
     <Parameter Name="IsPersistentHelp" Value="false" Type="bool" Guid="399f43dd-981d-4e28-9efe-3a40e0d755a8" Description="Si la persecución de ayuda es persistente (continúa hasta que el objetivo muere o se pierde)."/>
     <Parameter Name="ZombieAggressiveGrouping" Value="false" Type="bool" Guid="e81372aa-d0d0-4831-950f-804ac5c9df10" Description="Si los zombis se agrupan agresivamente, deambulan cuando no están en combate y llaman ayuda en rango extendido (HelpCallRange × 1.5). Ver métodos CallAdditionalZombies y AddZombieSpecificStates."/>
-</ComponentTemplate>
-
-    <ComponentTemplate Name="BoomerPoisonExplosion" Guid="94c4aae0-adc3-405b-91b5-fbaa7ad0f7b8" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
-    <Parameter Name="Class" Value="Game.ComponentBoomerPoisonExplosion" Type="string" Guid="4f3220be-2395-4f37-aed5-a1d2fbd5f128" Description="Componente que hace que la criatura explote al morir liberando una nube venenosa."/>
-    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="1e4fd0e9-1501-4b1c-adf0-d352a6a6d0df" Description="Si es opcional o requerido para el funcionamiento."/>
-    <Parameter Name="LoadOrder" Value="70" Type="int" Guid="14535130-7fbd-41a1-8ca5-a8bf6e6d0c60" Description="Orden de carga del componente."/>
-    <Parameter Name="PoisonRadius" Value="8" Type="float" Guid="f88c8685-cffe-480b-8ec2-f5aaecd93073" Description="Radio del efecto de envenenamiento inicial."/>
-    <Parameter Name="PoisonIntensity" Value="200" Type="float" Guid="37d6effb-20c0-4b2d-b3ff-fe17d70a9da0" Description="Intensidad base del envenenamiento (duración)."/>
-    <Parameter Name="CloudDuration" Value="15" Type="float" Guid="6b83c1c5-c7c0-493f-8310-1a793299b9b8" Description="Duración de la nube venenosa en segundos."/>
-    <Parameter Name="CloudRadius" Value="6" Type="float" Guid="91db0405-b770-4fbd-9375-4fbe9de4af15" Description="Radio de la nube venenosa."/>
-    <Parameter Name="ParticleCount" Value="150" Type="int" Guid="78a85698-3e22-4f21-a450-648069996eb4" Description="Cantidad de partículas para la nube venenosa."/>
-    <Parameter Name="PreventExplosion" Value="false" Type="bool" Guid="b788d065-f269-43ea-b114-34069a7c5de2" Description="Prevenir la explosión venenosa (útil para debugging)."/>
-</ComponentTemplate>
-
-    <ComponentTemplate Name="BoomerExplosion2" Guid="e1fbd7f5-5086-4743-aa37-14daf2172d5f" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
-    <Parameter Name="Class" Value="Game.ComponentBoomerExplosion2" Type="string" Guid="6980dd8a-f8b0-49d6-9cc2-61383a26612f" Description="Componente que hace que la criatura explote al morir de forma incendiaria."/>
-    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="3107346f-389f-44bd-bc43-e94b0bcc15c6" Description="Si es opcional o requerido para el funcionamiento."/>
-    <Parameter Name="LoadOrder" Value="70" Type="int" Guid="4b046db9-16a3-4bca-956a-39b344af641b" Description="Orden de carga del componente."/>
-    <Parameter Name="ActivationRange" Value="3" Type="float" Guid="166324a5-76e7-4c98-9b67-cdb61d9619cf" Description="Rango de activación (en bloques) para detectar entidades cercanas y explotar."/>
-    <Parameter Name="UseStandardExplosion" Value="true" Type="bool" Guid="15afb5c8-6602-4eec-8971-d089484403ea" Description="Usar el sistema de explosiones estándar del juego."/>
-    <Parameter Name="UseCustomShockwave" Value="false" Type="bool" Guid="60173f65-c6db-4ff1-9f1f-e1dab4f1746a" Description="Usar onda expansiva personalizada además de la explosión estándar."/>
-    <Parameter Name="ExplosionPressure" Value="80" Type="float" Guid="80d31c97-4ce2-4c00-be62-43b0ad24e5c1" Description="Presión de la explosión (afecta la fuerza)."/>
-    <Parameter Name="IsIncendiary" Value="true" Type="bool" Guid="0936b609-c3f2-410d-b768-895e43173f6c" Description="Si la explosión causa fuego (como bombas incendiarias). ¡TRUE por defecto en esta versión!"/>
-    <Parameter Name="ExplosionRadius" Value="10" Type="float" Guid="1cd22b6b-87af-4bda-9a67-34b42f2465fa" Description="Radio total de la explosión (visual + efectos)."/>
-    <Parameter Name="BlockDamageRadius" Value="8" Type="float" Guid="ab2e688f-55f8-435c-841f-95567241966d" Description="Radio de destrucción de bloques."/>
-    <Parameter Name="EntityDamageRadius" Value="10" Type="float" Guid="479bcd77-11b3-412c-b0fe-d990344e34b8" Description="Radio de daño a entidades."/>
-    <Parameter Name="ShockwaveDamage" Value="100" Type="float" Guid="17c36a00-b2e7-4ce1-8fa5-5cf345ee03a7" Description="Daño adicional de la onda expansiva personalizada."/>
-    <Parameter Name="ShockwaveForce" Value="50" Type="float" Guid="5501f04f-20f7-40c4-aed1-76626eebf96b" Description="Fuerza de empuje de la onda expansiva."/>
-    <Parameter Name="DestroyBlocks" Value="true" Type="bool" Guid="6afd7079-a298-4431-a127-aece208e4b9e" Description="Si destruye bloques con la onda expansiva personalizada."/>
-    <Parameter Name="FireSpreadChance" Value="0.4" Type="float" Guid="ef3ce5e4-20cd-4f93-beca-e16c5378b07c" Description="Probabilidad de propagar fuego (0-1). Más alto = más fuego se propaga."/>
-    <Parameter Name="FireDuration" Value="10" Type="float" Guid="ee27b419-b84e-4ea4-a2f5-a484bbc01a52" Description="Duración del fuego en segundos."/>
-</ComponentTemplate>
-
-    <ComponentTemplate Name="BoomerExplosion" Guid="f0256105-afbc-4209-84cb-2fae41881524" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
-    <Parameter Name="Class" Value="Game.ComponentBoomerExplosion" Type="string" Guid="b2774fa3-d656-4fff-9ab9-dc7223da9c8b" Description="Componente que hace que la criatura explote al morir o cuando entidades se acercan."/>
-    <Parameter Name="ActivationRange" Value="3" Type="float" Guid="439bfff8-9a15-4cc6-ac6a-4c7110282679" Description="Rango de activación (en bloques) para detectar entidades cercanas y explotar."/>
-    <Parameter Name="UseStandardExplosion" Value="true" Type="bool" Guid="00173457-bd82-4572-a5bd-6013fb57fc03" Description="Usar el sistema de explosiones estándar del juego."/>
-    <Parameter Name="UseCustomShockwave" Value="false" Type="bool" Guid="2c62034c-bc9c-4b8a-a668-90b70301c089" Description="Usar onda expansiva personalizada además de la explosión estándar."/>
-    <Parameter Name="ExplosionPressure" Value="80" Type="float" Guid="8f402b9c-0838-4761-9fdb-9d1a0139eb4c" Description="Presión de la explosión (afecta la fuerza)."/>
-    <Parameter Name="IsIncendiary" Value="false" Type="bool" Guid="25320076-42e0-4287-ac4f-50cdc38f5032" Description="Si la explosión causa fuego (como bombas incendiarias)."/>
-    <Parameter Name="ExplosionRadius" Value="10" Type="float" Guid="c6c9666d-9f06-46ff-886f-47464dc7fb78" Description="Radio total de la explosión (visual + efectos)."/>
-    <Parameter Name="BlockDamageRadius" Value="8" Type="float" Guid="4df991c9-31f4-478b-a436-9b85be52de8a" Description="Radio de destrucción de bloques."/>
-    <Parameter Name="EntityDamageRadius" Value="10" Type="float" Guid="45b31126-c301-4f1f-a593-d1eb885c5cb1" Description="Radio de daño a entidades."/>
-    <Parameter Name="ShockwaveDamage" Value="100" Type="float" Guid="e3b66731-b0f3-4648-9a26-90461bfbeccc" Description="Daño adicional de la onda expansiva personalizada."/>
-    <Parameter Name="ShockwaveForce" Value="50" Type="float" Guid="0c1700b6-7727-4088-befa-6d0810c85d17" Description="Fuerza de empuje de la onda expansiva."/>
-    <Parameter Name="DestroyBlocks" Value="true" Type="bool" Guid="ab31c1c8-f5f4-406a-a635-cde1f4d4fbf6" Description="Si destruye bloques con la onda expansiva personalizada."/>
 </ComponentTemplate>
 
 <ComponentTemplate Name="ZombieChaseBehavior" Description="Comportamiento que hace que un zombi persiga objetivos con lógica de horda" Guid="5674ee12-d71b-4c21-a1a0-ecf6b220be53" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
