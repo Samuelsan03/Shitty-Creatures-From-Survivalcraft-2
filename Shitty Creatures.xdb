@@ -89,10 +89,7 @@
             <MemberComponentTemplate Name="Miner" Guid="446abee6-7ef5-4ddd-9075-248b7da759aa" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="bb34c589-5102-4e76-225c-deca29dcdd6b" Value="2" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="c11cc6e7-51f7-4e0b-89e5-dc6b2efffb9d">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="c11cc6e7-51f7-4e0b-89e5-dc6b2efffb9d" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewHumanModel" Guid="2c44bbd7-4295-4095-8bad-89a3e537dcaf" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
@@ -166,10 +163,7 @@
     <Parameter Name="LoadOrder" Value="55" Type="int" Guid="1aecc6dd-37a1-450c-b9ff-c3eeaedd9a5d"/>
     <Parameter Name="LowHealthToEscape" Value="0.1" Type="float" Guid="f9107b38-a0a4-474c-b6bc-2f820731e22e"/>
 </MemberComponentTemplate>
-        <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="34e0104a-6cfb-4c4c-b65b-d2e3a3b3cbb4">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="f0dbfe57-ed64-4533-b197-15caef915a2e" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="c4a2d3e1-f8b2-4c65-93a7-d5e6f7a8b9c0" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
@@ -315,10 +309,7 @@
     <Parameter Name="LoadOrder" Value="55" Type="int" Guid="e1d4a11b-7070-4612-97ed-a37b18e2172a"/>
     <Parameter Name="LowHealthToEscape" Value="0.1" Type="float" Guid="41cb1cff-1d49-4506-b8f4-66342fcc7394"/>
 </MemberComponentTemplate>
-        <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="bac18658-fe51-4473-91e8-e37a73c5db44">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="2393d82f-dcc4-4d4e-817c-7e5bc18397c4" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="b2c3d4e5-f6a7-4890-9123-456789abcdef" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
@@ -457,10 +448,7 @@
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="3c3789ba-866a-4225-ba9c-643aa8ecfe9a"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:1.0;InfectedNormal2:0.55" Type="string" Guid="5339df01-564e-4e1e-aa48-1543152e94a1"/>
 </MemberComponentTemplate>
-         <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="8f4ea672-e894-4c25-b5ee-420563ab2f85">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="49b36183-225b-4fbb-8e69-4af1970dbb26" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="a9b0c1d2-e3f4-4567-9345-6789abcdef01" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
@@ -611,10 +599,7 @@
     <Parameter Name="LoadOrder" Value="55" Type="int" Guid="c8d13874-3b12-4590-a70a-75b14f9b0c73"/>
     <Parameter Name="LowHealthToEscape" Value="0.1" Type="float" Guid="4819ae71-49fc-4af1-964c-01be72b4bd7f"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="5203726e-758d-4918-bf93-10d8e4108891">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="b9356b15-6ae5-4d89-a703-8beb0528f752" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="b97afdb3-b551-467b-b044-4989ddc430aa" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
@@ -744,10 +729,7 @@
     <Parameter Name="LoadOrder" Value="55" Type="int" Guid="d30b65e0-fc30-4e0c-92bb-f3fb768ca008"/>
     <Parameter Name="LowHealthToEscape" Value="0.1" Type="float" Guid="12cdbdc6-8cfe-4a04-9111-c29a148f2244"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="c6242a04-a7e9-440f-b9a2-3467b9012e12">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="61822d01-00b1-4f94-9c81-bd807a9d95a1" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="1d930f8b-056c-4eff-862d-6b1256418e72" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
@@ -904,10 +886,7 @@
     <Parameter Name="LoadOrder" Value="55" Type="int" Guid="0eaf4b77-2ec6-499e-8ef4-6eb888f50bac"/>
     <Parameter Name="LowHealthToEscape" Value="0.1" Type="float" Guid="f55268e6-5c72-4385-944b-c2d8b2ea1a25"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="65c91319-a946-4c11-a725-6b9088879f84">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="af42ef2d-7536-4db4-9079-1eab33af7554" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="1319f21c-d651-466f-b9f6-3c475e7b86f7" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
@@ -1173,10 +1152,7 @@
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="bb7327bb-552a-47e2-b5bd-45f49d03a5cc"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:1.0;InfectedNormal2:0.55" Type="string" Guid="631543e7-537c-4d95-9879-7d048610c2b7"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="e07fb355-4dc1-4be2-93e0-f641057addc7">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="68365d7b-9ade-4a50-a07e-bd943837ed61" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="c308e6f5-f947-46e3-bc5c-65e48c1609e9" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
@@ -1491,10 +1467,7 @@
         <Parameter Name="Mass" Guid="a8b9c0d1-e2f3-7234-9abc-ef0123456782" Value="75" Type="float"/>
         <Parameter Name="BoxSize" Guid="b9c0d1e2-f3a4-7345-abcd-f01234567893" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="24bd8545-3196-47f9-9da1-df44234c3934">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="0c1b9e88-a3cd-407b-a2b4-be18b3749896" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="c0d1e2f3-a4b5-7456-bcde-0123456789a5">
@@ -1585,10 +1558,7 @@
     <Parameter Name="LoadOrder" Value="55" Type="int" Guid="66d23b14-295b-4fe8-b806-b603316b03f2"/>
     <Parameter Name="LowHealthToEscape" Value="0.5" Type="float" Guid="0d4117a9-1fc9-43bb-9ee9-74c58f7e4074"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="30320352-952a-401f-b9bb-ccc24cb90072">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="88c389ef-edcc-4887-8d68-6233c1a19fe7" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="530c1090-9270-4d55-83f1-660c826e1cfd" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
@@ -1967,10 +1937,7 @@
     <Parameter Name="LoadOrder" Value="55" Type="int" Guid="a787f6d3-c3fa-4839-9629-d2f78641cad3"/>
     <Parameter Name="LowHealthToEscape" Value="0.5" Type="float" Guid="67523dd5-dedc-419d-9d4d-a9a85f5e70ca"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="5638a324-bd04-44b0-9e9a-e04613bba61b">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="b7c0cb8e-04e2-4648-a2c4-2486a992093f" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureSounds" Guid="672489ab-0fea-4c98-850a-2e91e2a2f6d2">
@@ -2204,10 +2171,7 @@
         <Parameter Name="ChaseNonPlayerProbability" Guid="3ed57f2d-e3f0-4603-9610-a007a04bb454" Value="0.1" Type="float"/>
         <Parameter Name="NightChaseTime" Guid="bb82bd9c-77e1-450f-9e40-11ca47a5ffdb" Value="15" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="70853e39-01df-4888-ab14-7398f90894a5">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="4773e4a3-9fa9-40d5-b9d0-97200d6fd37e" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="29c68a36-1a56-4e6b-946b-651244dcbbb5">
@@ -2236,10 +2200,7 @@
     <Parameter Name="LoadOrder" Value="55" Type="int" Guid="26a38a6d-5d47-4c5b-8c26-e26bee463eb8"/>
     <Parameter Name="LowHealthToEscape" Value="0.5" Type="float" Guid="ae838623-0870-4d04-98fe-79822c5faa57"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="522166f9-f59e-45de-bb5f-4441c32e30d6">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="34ec00fc-4d12-4c51-90cc-acba3c5efdf8" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureSounds" Guid="21850bcf-39f1-4f32-a2a6-018c789c50fd">
@@ -2733,10 +2694,7 @@
     <Parameter Name="ChaseNonPlayerProbability" Guid="632ec04b-2836-4e54-a97c-6cf32812d743" Value="1" Type="float"/>
     <Parameter Name="NightChaseTime" Guid="57dedee1-ed73-480b-96f1-ccf56f860e9a" Value="999" Type="float"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="c0cd22fc-913a-431a-a955-578a8290b9f0">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="daf42c2b-6c06-4b70-9bbf-e10b9f604e0e" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="47f859ec-1a09-484b-9b8b-67983a0ac421">
@@ -2759,10 +2717,7 @@
     <Parameter Name="LoadOrder" Value="55" Type="int" Guid="b5f8f8f8-a2fb-4781-87df-3561066e5e23"/>
     <Parameter Name="LowHealthToEscape" Value="0.5" Type="float" Guid="4bc3bf1c-8db5-4d4f-b667-70228295640d"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="80580eaa-c83a-4511-a8f7-c8f2f7102454">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="247a8c64-a969-49dc-aa63-07f3a91b11dd" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="d8e9f0a1-b2c3-4890-9123-456789abcdef" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
@@ -2884,10 +2839,7 @@
     <Parameter Name="LoadOrder" Value="55" Type="int" Guid="05613a99-3846-48e7-af5e-f0b8563d453b"/>
     <Parameter Name="LowHealthToEscape" Value="0.5" Type="float" Guid="d9170b20-0b15-4f5a-9b6b-74f2362bbdfe"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="984418f6-f340-4912-972d-0f6f65877fda">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="be6301f0-9bc4-4009-96d3-1a214a9a7ab1" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="6594a4b2-1504-4db9-b010-bac63ccb9a85" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
@@ -3032,10 +2984,7 @@
     <Parameter Name="LoadOrder" Value="55" Type="int" Guid="ee3eead0-85f9-45a3-b543-8e580a45bec2"/>
     <Parameter Name="LowHealthToEscape" Value="0.5" Type="float" Guid="6d8364e0-e59e-4a39-8ae4-b76875621ddf"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="1353a96f-2dc9-4bf7-88be-9d07e7ecf045">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="0b86c6ef-f5c7-4d9f-8769-5ce559dd384f" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="021403dd-2d64-4689-87b3-06e2643d7616" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
@@ -3168,10 +3117,7 @@
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="252185b4-7929-4d67-bea6-2ee733b3f849"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedMuscle1:0.5;InfectedMuscle2:0.5" Type="string" Guid="a7aa1b9d-1a1b-4bfa-a058-4508da60ba6e"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="ed3a9f66-6522-40ba-8a8e-5ae9a2a74b23">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="db009aa6-632e-4c74-b289-53afc3679b96" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="d2ee0399-6e0b-4cdb-a1a1-a82ea3ccabd8" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
@@ -3332,10 +3278,7 @@
     <Parameter Name="LoadOrder" Value="55" Type="int" Guid="23f8e5a5-4081-457e-a7c0-b86906f00cd3"/>
     <Parameter Name="LowHealthToEscape" Value="0.5" Type="float" Guid="626edb27-7bb7-4a44-b685-82d231d7bad0"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="301a4f52-7201-459a-8985-f2fe41af9882">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="40838817-8460-40c1-a8ec-6bcdb8a8d5ff" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="dcabd3ea-2c9f-48e0-bf0f-7388af2cdc97" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
@@ -3590,10 +3533,7 @@
     <Parameter Name="LoadOrder" Value="55" Type="int" Guid="d191788c-3b87-429f-b5f7-147429537317"/>
     <Parameter Name="LowHealthToEscape" Value="0.5" Type="float" Guid="df4203cc-9dae-4887-a947-d97c88ac46a3"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="f15f2293-ddea-48ec-a8a4-52664d31beb2">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="d950a5c9-d63c-4f5d-bd86-12614f84162d" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="360aec2d-1167-4297-915d-e6225ef1c369" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
@@ -3874,10 +3814,7 @@
     <Parameter Name="LoadOrder" Value="55" Type="int" Guid="1df9c2b8-76a8-4790-a65e-e8e54a236302"/>
     <Parameter Name="LowHealthToEscape" Value="0.5" Type="float" Guid="672a7cd2-ca32-45fa-aeab-0ff3d63215ec"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="ae0f3323-a07c-4e97-bca4-80b02ae4bcc5">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="c8c6d4ce-8877-4851-a163-7e041bce31ad" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="4f9f69ca-88f7-4783-a686-8f72ea072829" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
@@ -4036,10 +3973,7 @@
     <Parameter Name="LoadOrder" Value="55" Type="int" Guid="9711ff16-0b7c-4ea4-85d3-ca142a3cf13b"/>
     <Parameter Name="LowHealthToEscape" Value="0.5" Type="float" Guid="2ff601a2-1df4-4677-b3a2-086a95e8e96b"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="d435c23d-48fb-4b49-b949-f9212cab2f2d">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="ca37e79e-94d4-4a96-8923-0f26e49ffdb4" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="44f153ee-2e0d-4ec3-b376-8e08cf698a37" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
@@ -4199,10 +4133,7 @@
     <Parameter Name="LoadOrder" Value="55" Type="int" Guid="845e8f2a-9943-4302-869b-0d13de61b96f"/>
     <Parameter Name="LowHealthToEscape" Value="0.5" Type="float" Guid="77c5de98-9c13-40bb-bd13-1aeb4e10bfbb"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="dcda323a-b8d0-452e-8631-04ab82c594a5">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="dc6d9a2e-7725-47f9-a12d-42209b1a4b7a" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="d8e9f0a1-b2c3-4890-9123-456789abcdfb" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
@@ -4339,10 +4270,7 @@
     <Parameter Name="LoadOrder" Value="55" Type="int" Guid="be752695-dacb-4e44-a0d8-1ecd775f4f01"/>
     <Parameter Name="LowHealthToEscape" Value="0.5" Type="float" Guid="0f2014d2-31fe-47d4-8406-8ca3c48e0dd1"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="5c1519de-3306-4cc6-a817-46bd601da227">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="9f37fb5f-92da-416a-afa8-1a8bf1f4fe66" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="0e162231-badf-4572-8ff2-ed1cb3e5e42b" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
@@ -4527,10 +4455,7 @@
         <Parameter Name="MaxHelpChaseTime" Value="30" Type="float" Guid="6e586759-6c41-48ff-9f3f-2b839a214edc"/>
         <Parameter Name="AvoidAttackingSameHerd" Value="true" Type="bool" Guid="cca8f4d7-ad72-483f-af70-29e16c799084"/>
     </MemberComponentTemplate>
-<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="604b3a9b-559e-4d3d-a2ae-7ce21cd33380">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="c930fac6-812e-4c7d-b566-2195b9e1a355" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
   <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="a5b6c7d8-e9f1-4a2b-8c3d-5f6e7a9b1c2d" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
@@ -4670,10 +4595,7 @@
     <Parameter Name="LoadOrder" Value="55" Type="int" Guid="3c609e73-674c-4f1f-96c3-a4d82db19ab0"/>
     <Parameter Name="LowHealthToEscape" Value="0.5" Type="float" Guid="bdd3d334-1b5b-49ea-8beb-fd5889538165"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="5ff57fcb-7beb-4f20-959d-b2e65cad1568">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="70fb09ab-5c6d-4905-a0cd-63dc7bded0ea" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="49149c53-56ce-4163-bf87-95773986851f" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
@@ -4826,10 +4748,7 @@
     <Parameter Name="LoadOrder" Value="55" Type="int" Guid="a7404b76-51fa-404b-a357-93098dffe8f9"/>
     <Parameter Name="LowHealthToEscape" Value="0.5" Type="float" Guid="c3f19048-3e1c-4075-91c2-92589e8afbe8"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="50508180-4eb4-4424-8531-79d6e89d5364">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="ffe7b0b6-7301-4136-9bc7-07d2c0164888" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="e1b6d904-4e9c-40f9-810e-2996c8bb6fa5" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
@@ -4954,10 +4873,7 @@
     <Parameter Name="LoadOrder" Value="55" Type="int" Guid="9abc416e-7f1c-42ee-86bc-9c2800d90824"/>
     <Parameter Name="LowHealthToEscape" Value="0.5" Type="float" Guid="d2911e33-e4bd-4371-bf15-2577f5e595d8"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="3f19d950-fa57-465f-983a-425e07d667f8">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="e632c797-0fa2-4b84-a472-121e3c1a8ab0" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="c10fc862-092d-4056-b2c4-005b882ebba0" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
@@ -5196,10 +5112,7 @@
             <MemberComponentTemplate Name="Miner" Guid="ccb84f2f-3bf6-45a3-9472-6fd396a94a57" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="ccd74ee7-65f9-44f5-905c-cccb77a22a71" Value="4" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="8e26b7e3-9239-4824-bec5-c1ffb59d1013">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="51cb2c44-42a3-474d-ae90-9517d1fbc8a4" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewHumanModel" Guid="0a4d58dc-a7bc-4fab-9f2b-4a4b3d489fde" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
@@ -5360,10 +5273,7 @@
             <MemberComponentTemplate Name="Miner" Guid="68117a03-ded8-48d9-9cc6-5617f7154358" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="c85dae1c-8fb5-4a73-a94b-c976301e1a51" Value="6.5" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="f78e0f3a-2504-479d-bf65-97f27c464d55">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="283ac675-c37f-40b5-8cb5-107db6db370e" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewHumanModel" Guid="2b0cacd6-286f-4134-8e1e-6a40b938f75e" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
@@ -5520,10 +5430,7 @@
             <MemberComponentTemplate Name="Miner" Guid="15c88ded-ceba-4626-a390-df3f4d5d286a" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="c5c7c0da-32b5-4d25-87e4-defa7ecca35f" Value="10" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="bcc46e81-8b75-4b97-bc8a-0bdce1cfadc2">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="b5b7687d-aded-43c8-a1e2-d13679007aec" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewHumanModel" Guid="8d6ee77d-1c97-46df-b869-e7db9b45aa75" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
@@ -5677,10 +5584,7 @@
             <MemberComponentTemplate Name="Miner" Guid="b6fcca4b-ca3e-4ef4-8dd9-397bec622ebd" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="8480db62-b5be-4652-b07c-2c0350d2e14d" Value="15.5" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="fd20b5bb-4311-4980-9413-53f3c464e1b4">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="2a994d28-52d5-4c3a-be63-308ec536b8a5" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewHumanModel" Guid="b4ee57c5-28b3-4c7c-86c4-c0136db9a1c7" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
@@ -5830,10 +5734,7 @@
             <MemberComponentTemplate Name="Miner" Guid="802f0e25-0910-497f-8e4a-cd1b9e412fbe" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="c5cb2a31-78c4-449d-97f7-6f3194f0b7cc" Value="6.5" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="0897b340-c3ba-4094-8deb-5f92a8dd9901">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="b4d8340f-8b63-4fb7-8bf6-9851b194c3b8" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewHumanModel" Guid="d6f6b119-27a5-4341-b516-785a9cd5a658" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
@@ -5978,10 +5879,7 @@
             <MemberComponentTemplate Name="Miner" Guid="adad3eb5-7c2f-46e3-879a-e2fa8f7986a0" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="9c7f716a-6542-443e-b112-a57611b0f217" Value="7" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="ba42200b-b4c7-4c37-8bb4-891608c7dd28">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="e4627de6-6e06-4533-b75b-32234d71c4db" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewHumanModel" Guid="3c4f963b-5836-46d2-8861-d38329eabfe0" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
