@@ -812,10 +812,10 @@ namespace Game
 		{
 			if (target == null) return;
 
-			// Verificar rango y línea de visión
+			// Verificar línea de visión
 			bool hasLineOfSight = HasClearLineOfSight(target);
 
-			// Si no hay línea de visión, no lanzar - dejar que la persecución se mueva
+			// Si NO hay línea de visión, NO detenerse - dejar que la persecución mueva al zombie
 			if (!hasLineOfSight)
 			{
 				// Cancelar cualquier estado de lanzamiento en progreso
@@ -824,10 +824,13 @@ namespace Game
 				// Resetear el modelo
 				if (m_componentModel != null)
 				{
+					m_componentModel.AimHandAngleOrder = 0f;
 					m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
 					m_componentModel.InHandItemRotationOrder = Vector3.Zero;
 					m_componentModel.LookAtOrder = null;
 				}
+				// IMPORTANTE: NO detener el movimiento (NO tocar m_componentPathfinding.Destination)
+				// La IA de persecución (ComponentChaseBehavior) se encargará de mover al zombie
 				return;
 			}
 
@@ -840,14 +843,16 @@ namespace Game
 				// Resetear el modelo
 				if (m_componentModel != null)
 				{
+					m_componentModel.AimHandAngleOrder = 0f;
 					m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
 					m_componentModel.InHandItemRotationOrder = Vector3.Zero;
 					m_componentModel.LookAtOrder = null;
 				}
+				// IMPORTANTE: NO detener el movimiento - la persecución lo acercará/alejará
 				return;
 			}
 
-			// Dentro del rango óptimo y con línea de visión: detener el movimiento para lanzar
+			// SOLO cuando hay línea de visión Y estamos en rango: detener el movimiento para lanzar
 			if (m_componentPathfinding != null)
 			{
 				m_componentPathfinding.Destination = null;
@@ -890,7 +895,6 @@ namespace Game
 						ResetWeaponState();
 					}
 				}
-				// Mantener la limpieza del modelo
 				if (m_componentModel != null)
 				{
 					m_componentModel.AimHandAngleOrder = 0f;
