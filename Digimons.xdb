@@ -31,10 +31,7 @@
         <Parameter Name="MaxHelpChaseTime" Value="30" Type="float" Guid="7a2c184a-b31d-4b4b-88f1-939915db7990"/>
         <Parameter Name="AvoidAttackingSameHerd" Value="true" Type="bool" Guid="dedf0d08-4ec1-4b7b-8f96-9f4ff28b2c0a"/>
     </MemberComponentTemplate>
-<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="9ebadf6d-3274-4ece-bdca-001120d85ac8">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="4cd1788f-a135-4b6c-9d0c-e8c0e2692359" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="f932b384-0199-422e-8f46-5176123b3310" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
@@ -185,10 +182,7 @@
         <Parameter Name="MaxHelpChaseTime" Value="30" Type="float" Guid="ed099d5d-aff7-48b1-8cef-2a775d561b70"/>
         <Parameter Name="AvoidAttackingSameHerd" Value="true" Type="bool" Guid="4723d70f-f9c3-454c-b24f-a6ddcacd27f7"/>
     </MemberComponentTemplate>
-<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="8e1c931f-2ed1-4ebf-a25b-8d44f472a44a">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="ac3dbd5b-936a-484c-836f-6f715aa38497" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="96e8abe2-3c50-44a0-8761-28f9e22a3c8f" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
@@ -438,10 +432,7 @@
     <Parameter Name="ChaseToCreatures" Guid="75d60863-085b-42e5-8cce-a68dcb2b8d09" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
     <Parameter Name="ChaseToCreatureProbability" Guid="ebd03d7c-16b6-46ca-829f-0aa5f252dad2" Value="999999999" Type="float"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="29eb12a4-e1b9-47af-9a0e-e2b78fa24f2d">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="0afea148-9cc9-4c10-98b2-22b7741bf53b" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewRunAwayBehavior" Guid="b41be5d3-6aac-4657-a3f0-7c0c176f7da8">
@@ -592,10 +583,7 @@
     <Parameter Name="ChaseToCreatures" Guid="7986ad5c-f4a7-4371-a86b-e3b4cfb382ca" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
     <Parameter Name="ChaseToCreatureProbability" Guid="3e437545-1e03-42f6-a161-fa2a0fcce949" Value="999999999" Type="float"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="b7ba48d9-4dc5-41eb-a289-372d48893bc9">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="b745ee15-4de0-46fa-8291-ccc7d5afbde7" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="12518712-1610-4d52-a09a-956e49d5e824">
@@ -648,10 +636,7 @@
         <Parameter Name="MaxHelpChaseTime" Value="30" Type="float" Guid="cb7b88fe-0fb8-4b56-b3c5-353ed6345be6"/>
         <Parameter Name="AvoidAttackingSameHerd" Value="true" Type="bool" Guid="e68f522e-8d15-4c04-8fdb-38ce7dc67993"/>
     </MemberComponentTemplate>
-<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="27696516-ee72-4fbd-a0de-292074426948">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="c980687d-15ac-4a42-b4b4-844d24154485" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="ee0e0241-e296-4479-a98c-a6a68be582ce" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
@@ -779,10 +764,7 @@
         <Parameter Name="MaxHelpChaseTime" Value="30" Type="float" Guid="ba947a9e-3193-4e7d-b66e-06c71df83fa0"/>
         <Parameter Name="AvoidAttackingSameHerd" Value="true" Type="bool" Guid="56044475-4a67-4935-b664-e660ebeeaf0a"/>
     </MemberComponentTemplate>
-<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="ff0e9f21-441b-4f18-8cd9-887f785e0097">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="3cc5766c-0b5e-4a34-87c0-a7f94a7491f1" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="32a2bac6-4aac-4f99-b0d9-bdee4a798ece" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
@@ -948,10 +930,7 @@
         <Parameter Name="MaxHelpChaseTime" Value="30" Type="float" Guid="87d427c0-c336-4dee-bbdd-f89e8a5eca3b"/>
         <Parameter Name="AvoidAttackingSameHerd" Value="true" Type="bool" Guid="24cbf7ac-2b6e-44ba-b4f9-aa48a1f18727"/>
     </MemberComponentTemplate>
-<MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="0729cb6b-17e6-45b8-a3da-25ad1831734a">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="dbcbd8c7-00a2-4971-8c1e-e1721a3c5d36" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="42a78c06-d69b-44f8-9e34-23819a025cd3" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
