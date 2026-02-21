@@ -8,6 +8,8 @@ namespace Game
 {
 	public class ComponentCreatureAI : ComponentBehavior, IUpdateable
 	{
+		private ComponentPathfinding m_componentPathfinding;
+		private SubsystemBodies m_subsystemBodies; // AÑADIR junto a los otros subsystems
 		private ComponentCreature m_componentCreature;
 		private ComponentChaseBehavior m_componentChaseBehavior;
 		private ComponentInventory m_componentInventory;
@@ -119,6 +121,8 @@ namespace Game
 		private float m_firearmReloadTime = 1.0f;
 		private float m_sniperAimTime = 1.0f;
 		private float m_throwableAimTime = 1.0f;
+		private float m_throwableMinRange = 3f;      // AÑADIR
+		private float m_throwableMaxRange = 20f;     // AÑADIR
 
 		private float m_explosiveBoltMinDistance = 15f;
 		private float m_explosiveRepeatArrowMinDistance = 15f;
@@ -146,6 +150,8 @@ namespace Game
 			m_subsystemParticles = Project.FindSubsystem<SubsystemParticles>(true);
 			m_subsystemNoise = Project.FindSubsystem<SubsystemNoise>(true);
 			m_subsystemTerrain = Project.FindSubsystem<SubsystemTerrain>(true);
+			m_componentPathfinding = Entity.FindComponent<ComponentPathfinding>(true); // AÑADIR
+			m_subsystemBodies = Project.FindSubsystem<SubsystemBodies>(true); // AÑADIR
 
 			m_currentRepeatArrowTypeIndex = m_random.Int(0, m_repeatCrossbowArrowTypes.Length - 1);
 			m_currentRepeatArrowType = m_repeatCrossbowArrowTypes[m_currentRepeatArrowTypeIndex];
@@ -560,21 +566,35 @@ namespace Game
 				}
 				else
 				{
-					// Reseteo completo del estado cuando el objetivo está fuera de rango
-					ResetWeaponState();
-					// Asegurarse de que el modelo deje de apuntar
-					if (m_componentModel != null)
+					// Si el arma es lanzable, no reseteamos el slot, solo limpiamos animaciones
+					if (m_weaponType == 6)
 					{
-						m_componentModel.AimHandAngleOrder = 0f;
-						m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
-						m_componentModel.InHandItemRotationOrder = Vector3.Zero;
-						m_componentModel.LookAtOrder = null;
+						// Cancelar cualquier estado de lanzamiento pero mantener el arma
+						m_isThrowableAiming = false;
+						m_isThrowableThrowing = false;
+						if (m_componentModel != null)
+						{
+							m_componentModel.AimHandAngleOrder = 0f;
+							m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
+							m_componentModel.InHandItemRotationOrder = Vector3.Zero;
+							m_componentModel.LookAtOrder = null;
+						}
+					}
+					else
+					{
+						ResetWeaponState();
+						if (m_componentModel != null)
+						{
+							m_componentModel.AimHandAngleOrder = 0f;
+							m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
+							m_componentModel.InHandItemRotationOrder = Vector3.Zero;
+							m_componentModel.LookAtOrder = null;
+						}
 					}
 				}
 			}
 			else
 			{
-				// Reseteo cuando no hay objetivo o está muerto
 				ResetWeaponState();
 				if (m_componentModel != null)
 				{
@@ -601,6 +621,7 @@ namespace Game
 					}
 				}
 			}
+			if (m_weaponType == 6) return m_throwableMaxRange; // AÑADIR
 			return m_maxDistance;
 		}
 
@@ -707,6 +728,37 @@ namespace Game
 			}
 		}
 
+		private bool HasClearLineOfSight(ComponentCreature target)
+		{
+			if (target == null || target.ComponentBody == null) return false;
+
+			Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
+			Vector3 targetPos = target.ComponentCreatureModel.EyePosition;
+			Vector3 direction = targetPos - eyePos;
+			float distance = direction.Length();
+
+			if (distance < 0.1f) return true;
+
+			direction = Vector3.Normalize(direction);
+
+			// Raycast contra el terreno (bloques sólidos)
+			TerrainRaycastResult? terrainHit = m_subsystemTerrain.Raycast(
+				eyePos,
+				targetPos,
+				false,
+				true,
+				(int value, float d) => BlocksManager.Blocks[Terrain.ExtractContents(value)].IsCollidable
+			);
+
+			// Si hay un bloque sólido entre medias, no hay línea de visión
+			if (terrainHit != null && terrainHit.Value.Distance < distance - 0.5f)
+			{
+				return false;
+			}
+
+			return true;
+		}
+
 		private bool IsThrowableBlock(Block block)
 		{
 			if (block is SpearBlock)
@@ -758,6 +810,50 @@ namespace Game
 
 		private void ProcessThrowableBehavior(ComponentCreature target, float distance)
 		{
+			if (target == null) return;
+
+			// Verificar rango y línea de visión
+			bool hasLineOfSight = HasClearLineOfSight(target);
+
+			// Si no hay línea de visión, no lanzar - dejar que la persecución se mueva
+			if (!hasLineOfSight)
+			{
+				// Cancelar cualquier estado de lanzamiento en progreso
+				m_isThrowableAiming = false;
+				m_isThrowableThrowing = false;
+				// Resetear el modelo
+				if (m_componentModel != null)
+				{
+					m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
+					m_componentModel.InHandItemRotationOrder = Vector3.Zero;
+					m_componentModel.LookAtOrder = null;
+				}
+				return;
+			}
+
+			// Verificar rango: si está fuera de la distancia óptima, cancelar lanzamiento
+			if (distance < m_throwableMinRange || distance > m_throwableMaxRange)
+			{
+				// Cancelar cualquier estado de lanzamiento en progreso
+				m_isThrowableAiming = false;
+				m_isThrowableThrowing = false;
+				// Resetear el modelo
+				if (m_componentModel != null)
+				{
+					m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
+					m_componentModel.InHandItemRotationOrder = Vector3.Zero;
+					m_componentModel.LookAtOrder = null;
+				}
+				return;
+			}
+
+			// Dentro del rango óptimo y con línea de visión: detener el movimiento para lanzar
+			if (m_componentPathfinding != null)
+			{
+				m_componentPathfinding.Destination = null;
+			}
+
+			// Lógica de lanzamiento existente...
 			if (!m_isThrowableAiming && !m_isThrowableThrowing)
 			{
 				StartThrowableAiming();
@@ -780,8 +876,21 @@ namespace Game
 				if (m_subsystemTime.GameTime - m_throwableThrowTime >= 0.3f)
 				{
 					m_isThrowableThrowing = false;
-					ResetWeaponState();
+
+					// Después de lanzar, comprobar si aún quedan objetos en el slot
+					int slotValue = m_componentInventory.GetSlotValue(m_currentWeaponSlot);
+					if (slotValue != 0)
+					{
+						// Aún hay objetos, reiniciar puntería
+						StartThrowableAiming();
+					}
+					else
+					{
+						// Se acabaron los objetos, buscar otra arma
+						ResetWeaponState();
+					}
 				}
+				// Mantener la limpieza del modelo
 				if (m_componentModel != null)
 				{
 					m_componentModel.AimHandAngleOrder = 0f;
