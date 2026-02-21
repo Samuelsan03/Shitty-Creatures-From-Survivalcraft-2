@@ -9809,7 +9809,7 @@
         <Parameter Name="HowlSoundName" Guid="d4d035a8-764b-45ca-8f65-b5660f945510" Value="Audio/Creatures/Infected Wolf/Howl" Type="string" />
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="16c1f3a1-08ae-4950-9ec8-8ebb3d9bb123">
-        <Parameter Name="AttackResilience" Guid="55582ac2-b72f-4844-8b87-edc31cadf287" Value="60" Type="float" />
+        <Parameter Name="AttackResilience" Guid="55582ac2-b72f-4844-8b87-edc31cadf287" Value="100" Type="float" />
         <Parameter Name="FallResilience" Guid="587c1bfc-035a-4f7d-abcb-4f553a17470a" Value="20" Type="float" />
         <Parameter Name="FireResilience" Guid="d605b931-020d-4ad1-a1b3-e02b5bbf1331" Value="40" Type="float" />
     </MemberComponentTemplate>
@@ -9831,7 +9831,7 @@
     <Parameter Name="AttackOrder" Guid="12b9f632-fd81-4911-8a42-5999333b9791" Value="false" Type="bool"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Miner" Guid="cca934eb-63a0-47ec-bfe3-b1cc22db89b5" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
-        <Parameter Name="AttackPower" Guid="558b6e53-ce4d-4224-b94f-d79d40e46055" Value="4.5" Type="float" />
+        <Parameter Name="AttackPower" Guid="558b6e53-ce4d-4224-b94f-d79d40e46055" Value="7.5" Type="float" />
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="AutoJump" Guid="6d11d060-067d-4707-95bb-d97203252417">
         <Parameter Name="JumpStrength" Guid="1617012e-7328-4f35-a74f-c0fc79ca8c3b" Value="0.7" Type="float" />
@@ -9978,7 +9978,7 @@
         <Parameter Name="HowlSoundName" Guid="f204834e-e66c-4009-99f4-dedc76dc8558" Value="Audio/Creatures/Infected Wolf/Howl" Type="string" />
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="4bddc4d7-a40f-42b3-802f-67316aba4244">
-        <Parameter Name="AttackResilience" Guid="d291756e-19c4-4961-a800-d5899e8f623b" Value="60" Type="float" />
+        <Parameter Name="AttackResilience" Guid="d291756e-19c4-4961-a800-d5899e8f623b" Value="100" Type="float" />
         <Parameter Name="FallResilience" Guid="56c11b6e-598f-454a-a4c1-a55f46bed186" Value="20" Type="float" />
         <Parameter Name="FireResilience" Guid="3acf545d-a66d-4e1e-8641-78cfcadefac0" Value="40" Type="float" />
     </MemberComponentTemplate>
@@ -10000,7 +10000,7 @@
     <Parameter Name="AttackOrder" Guid="87c0f6d0-3b08-498a-a0b8-e768911bb6c1" Value="false" Type="bool"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Miner" Guid="59a83d64-48dd-437a-ae56-36e7fc07475d" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
-        <Parameter Name="AttackPower" Guid="9208368b-52c0-4baf-a5e7-d414bdaba637" Value="4.5" Type="float" />
+        <Parameter Name="AttackPower" Guid="9208368b-52c0-4baf-a5e7-d414bdaba637" Value="7.5" Type="float" />
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="AutoJump" Guid="9d9f068f-e228-4f9f-a096-2875aa798ccb">
         <Parameter Name="JumpStrength" Guid="7775a37a-0bb4-4330-ae13-1fdb0b3f65ee" Value="0.7" Type="float" />
