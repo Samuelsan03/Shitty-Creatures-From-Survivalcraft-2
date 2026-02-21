@@ -120,7 +120,7 @@ namespace Game
 		private float m_firearmAimTime = 0.5f;
 		private float m_firearmReloadTime = 1.0f;
 		private float m_sniperAimTime = 1.0f;
-		private float m_throwableAimTime = 3.0f;
+		private float m_throwableAimTime = 1.55f;
 		private float m_throwableMinRange = 3f;      // AÑADIR
 		private float m_throwableMaxRange = 15.5f;     // AÑADIR
 
