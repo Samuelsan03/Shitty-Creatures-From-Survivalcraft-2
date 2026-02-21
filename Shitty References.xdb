@@ -313,10 +313,8 @@
   <Parameter Name="ForceAttackDuringGreenNight" Description="Indica si el zombi ataca al jugador durante la Noche Verde sin importar el modo de juego" Guid="96e8d38b-7e1b-4ee1-9d8f-d48391dc19f4" Value="true" Type="bool"/>
 </ComponentTemplate>
 
-    <ComponentTemplate Name="ComponentNewAutoInteract" Guid="0d193534-6d05-4939-bba8-4a8755d3b064" Description="Componente que permite a NPCs interactuar automáticamente con bloques como puertas y rejillas">
+<ComponentTemplate Name="NewAutoInteract" Guid="0d193534-6d05-4939-bba8-4a8755d3b064" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234" Description="Componente que permite a NPCs interactuar automáticamente con bloques como puertas y rejillas">
     <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string" Guid="26994834-9820-4811-88b0-1b84db2cc3c0"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="e6e9eec5-321c-405e-b511-31c418415fe1"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int" Description="Orden de carga"/>
     <Parameter Name="AutoInteractRate" Value="0.1" Type="float" Description="Frecuencia de interacción automática (0-1)"/>
 </ComponentTemplate>
 
