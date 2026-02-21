@@ -481,7 +481,6 @@
 
         <EntityTemplate Name="InfectedNormalTamed2" Guid="cd91e7a4-2843-41a4-a15e-f5d834c6d6e1" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
 <MemberComponentTemplate Name="CreatureInventory" Guid="68ea907c-4010-4136-bfd3-771c8c0aa0df" InheritanceParent="a347220c-b5cf-4eae-9215-4ed37426eec4">
-  <Parameter Name="Class" Value="Game.ComponentCreatureInventory" Type="string"/>
   <Parameter Name="SlotsCount" Value="16" Type="int"/>
   <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
 </MemberComponentTemplate>
@@ -1410,7 +1409,6 @@
 
         <EntityTemplate Name="InfectedMuscleTamed1" Guid="030aa759-c8dd-4a46-bafa-1cc330478a4d" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
         <MemberComponentTemplate Name="CreatureInventory" Guid="c76316ec-9046-44ca-8f26-b40a73053306" InheritanceParent="a347220c-b5cf-4eae-9215-4ed37426eec4">
-  <Parameter Name="Class" Value="Game.ComponentCreatureInventory" Type="string"/>
   <Parameter Name="SlotsCount" Value="16" Type="int"/>
   <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
 </MemberComponentTemplate>
@@ -1727,7 +1725,6 @@
 
         <EntityTemplate Name="InfectedMuscleTamed2" Guid="42a903ab-9c22-410b-9407-4cef9cb37741" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
         <MemberComponentTemplate Name="CreatureInventory" Guid="0081e8da-58c8-47c9-8ef9-707916eb6bf6" InheritanceParent="a347220c-b5cf-4eae-9215-4ed37426eec4">
-  <Parameter Name="Class" Value="Game.ComponentCreatureInventory" Type="string"/>
   <Parameter Name="SlotsCount" Value="16" Type="int"/>
   <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
 </MemberComponentTemplate>
@@ -6403,7 +6400,6 @@
 
         <EntityTemplate Name="GhostFastTamed" Guid="92f68295-930a-435d-ab10-56df2c34d904" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
         <MemberComponentTemplate Name="CreatureInventory" Guid="c8c02035-ed91-42e7-b9aa-dc390f3e7063" InheritanceParent="a347220c-b5cf-4eae-9215-4ed37426eec4">
-  <Parameter Name="Class" Value="Game.ComponentCreatureInventory" Type="string"/>
   <Parameter Name="SlotsCount" Value="16" Type="int"/>
   <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
 </MemberComponentTemplate>
@@ -9265,11 +9261,7 @@
         </ParameterSet>
     </ParameterSet>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ComponentFirearmsShooters" Guid="a935d956-933c-4cf3-91e8-21fc54504ac3">
-    <Parameter Name="Class" Value="Game.ComponentFirearmsShooters" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="100" Type="int"/>
-    <Parameter Name="UpdateOrder" Value="1000" Type="int"/>
+<MemberComponentTemplate Name="FirearmsShooters" Guid="a935d956-933c-4cf3-91e8-21fc54504ac3" InheritanceParent="927c0a46-b1e5-42a9-a6bb-0979acbc2518">
     <Parameter Name="MaxShootingDistance" Value="100" Type="float"/>
     <Parameter Name="SpreadFactor" Value="0.05" Type="float"/>
     <Parameter Name="ReloadChance" Value="0.05" Type="float"/>
@@ -9385,15 +9377,10 @@
 
         <EntityTemplate Name="MachineGunInfectedTamed" Guid="0ced2f63-6233-4199-8463-2dfb4d458f02" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
         <MemberComponentTemplate Name="CreatureInventory" Guid="4d3fc876-9af4-4e5e-b1d6-b453b6cb2986" InheritanceParent="a347220c-b5cf-4eae-9215-4ed37426eec4">
-  <Parameter Name="Class" Value="Game.ComponentCreatureInventory" Type="string"/>
   <Parameter Name="SlotsCount" Value="16" Type="int"/>
   <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ComponentFirearmsShooters" Guid="bf3a67c5-5c55-4736-a430-66dc2a293343">
-    <Parameter Name="Class" Value="Game.ComponentFirearmsShooters" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="100" Type="int"/>
-    <Parameter Name="UpdateOrder" Value="1000" Type="int"/>
+<MemberComponentTemplate Name="FirearmsShooters" Guid="bf3a67c5-5c55-4736-a430-66dc2a293343" InheritanceParent="927c0a46-b1e5-42a9-a6bb-0979acbc2518">
     <Parameter Name="MaxShootingDistance" Value="100" Type="float"/>
     <Parameter Name="SpreadFactor" Value="0.05" Type="float"/>
     <Parameter Name="ReloadChance" Value="0.05" Type="float"/>
