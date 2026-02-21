@@ -2022,11 +2022,8 @@
     <Parameter Name="PickFactors" Guid="41ec1d68-d8d9-4677-93d1-81e70c4e500c" Value="Tools;1.0,Weapons;1.0" Type="string"/>
     <Parameter Name="Class" Value="Game.ComponentNewCreatureCollect" Type="string"/>
 </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentNewAutoInteract" Guid="105cb977-d3e2-470f-bcdc-2769865ebc49">
-    <Parameter Name="Class" Value="Game.ComponentNewAutoInteract" Type="string"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="50" Type="int"/>
-    <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="8ecad2a6-68c5-47c2-af07-009f80627788" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
+    <Parameter Name="AutoInteractRate" Value="0.5" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="ChaseBehavior" Guid="3d381fc7-eada-4542-a43a-48bf63d1e6ad" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
               <Parameter Name="AutoChaseMask" Guid="02026fd3-b717-49a2-b38d-cae7eb70ba45" Value="LandOther,WaterOther" Type="Game.CreatureCategory"/>
