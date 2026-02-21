@@ -9681,7 +9681,7 @@
 </EntityTemplate>
 
 <EntityTemplate Name="InfectedWolfTamed" Guid="2fd8e1d0-a74a-4644-a373-564349fbdec7" InheritanceParent="49a9845c-3810-4092-ba53-df213d10d563">
-MemberComponentTemplate Name="SummonBehavior" Guid="f2a97e15-76d0-4bb7-808b-1019ae7f9179">
+<MemberComponentTemplate Name="SummonBehavior" Guid="f2a97e15-76d0-4bb7-808b-1019ae7f9179">
               <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="9449583d-9e2b-4390-970d-b150a320d16e"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="46fb9969-d7ed-437f-9932-a0d18dad33d1"/>
     <Parameter Name="LoadOrder" Value="60" Type="int" Guid="0ae1993d-307d-4890-9511-a89056a7e6e4"/>
