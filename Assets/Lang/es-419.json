@@ -274,19 +274,23 @@
 },
     "MediumFirstAidKitBlock:0": {
     "DisplayName": "Botiquín Mediano",
-    "Description": "Un botiquín médico diseñado para tratar heridas restaurando una parte significativa de la salud. Cura al objetivo hasta aproximadamente la mitad de su salud máxima. Puede usarse tanto en uno mismo como en otras criaturas cercanas."
+    "Description": "Un botiquín médico diseñado para tratar heridas restaurando una parte significativa de la salud. Cura al objetivo hasta aproximadamente la mitad de su salud máxima. Puede usarse tanto en uno mismo como en otras criaturas cercanas.",
+    "CRDescription:0": "Un kit médico básico que cura heridas hasta un 50% o un 100% si la salud está por encima de la mitad."
   },
   "LargeFirstAidKitBlock:0": {
     "DisplayName": "Botiquín Grande",
-    "Description": "Un potente botiquín médico capaz de restaurar completamente la salud. Cura instantáneamente al objetivo hasta su salud máxima. Puede usarse tanto en uno mismo como en otras criaturas cercanas."
+    "Description": "Un potente botiquín médico capaz de restaurar completamente la salud. Cura instantáneamente al objetivo hasta su salud máxima. Puede usarse tanto en uno mismo como en otras criaturas cercanas.",
+    "CRDescription:0": "Un kit médico avanzado que siempre cura al 100%, independientemente de la salud actual."
   },
     "AntidoteBucketBlock:0": {
   "DisplayName": "Cubo de Antídoto",
-  "Description": "Un cubo que contiene un potente antídoto medicinal. Elimina los efectos del veneno y las enfermedades del cuerpo, deteniendo sus consecuencias dañinas y ayudando a una recuperación inmediata. Al curar una afección, también restaura la salud perdida. Puede usarse tanto en uno mismo como en otras criaturas enfermas."
+  "Description": "Un cubo que contiene un potente antídoto medicinal. Elimina los efectos del veneno y las enfermedades del cuerpo, deteniendo sus consecuencias dañinas y ayudando a una recuperación inmediata. Al curar una afección, también restaura la salud perdida. Puede usarse tanto en uno mismo como en otras criaturas enfermas.",
+  "CRDescription:0": "Prepara un antídoto potente infusionando flores blancas medicinales en agua purificada. Cura el veneno y la enfermedad."
 },
     "TeaAntifluBucketBlock:0": {
   "DisplayName": "Cubo de Té Antigripal",
-  "Description": "Un cubo lleno de té medicinal. Al beberlo, cura la gripe y restaura completamente la salud."
+  "Description": "Un cubo lleno de té medicinal. Al beberlo, cura la gripe y restaura completamente la salud.",
+  "CRDescription:0": "Prepara un té antigripal calmante combinando un cubo de agua con hierba alta y calentándolo. Cura la gripe y alivia los síntomas."
 },
     "LavaLongspearBlock:0": {
       "DisplayName": "Lanza Larga de Lava",
@@ -314,19 +318,23 @@
     },
     "CopperSharpHammerBlock:0": {
   "DisplayName": "Martillo de Cobre Afilado",
-  "Description": "El Martillo Afilado de Cobre es un arma poderosa. A primera vista parece una simple herramienta de trabajo, pero en realidad su letalidad supera a la del machete de cobre. Aunque no es tan resistente como el machete, es más alto y mucho más mortal, capaz de asestar golpes devastadores que lo convierten en una de las armas de cobre más peligrosas."
+  "Description": "El Martillo Afilado de Cobre es un arma poderosa. A primera vista parece una simple herramienta de trabajo, pero en realidad su letalidad supera a la del machete de cobre. Aunque no es tan resistente como el machete, es más alto y mucho más mortal, capaz de asestar golpes devastadores que lo convierten en una de las armas de cobre más peligrosas.",
+  "CRDescription:0": "Usa el viejo machete de cobre y el martillo de hierro y conviértelo como un monstruo."
 },
 "IronSharpHammerBlock:0": {
   "DisplayName": "Martillo de Hierro Afilado",
-  "Description": "El Martillo Afilado de Hierro es similar al machete de hierro, pero resulta un poco más letal y también más duradero. Aunque comparte el mismo diseño brutal, su resistencia mejorada y su golpe más afilado lo convierten en una opción superior para quienes buscan un arma que combine solidez con una letalidad eficaz."
+  "Description": "El Martillo Afilado de Hierro es similar al machete de hierro, pero resulta un poco más letal y también más duradero. Aunque comparte el mismo diseño brutal, su resistencia mejorada y su golpe más afilado lo convierten en una opción superior para quienes buscan un arma que combine solidez con una letalidad eficaz.",
+  "CRDescription:0": "Usa el machete de hierro y el martillo de cobre y conviértelo en un monstruo mortal."
 },
 "DiamondSharpHammerBlock:0": {
   "DisplayName": "Martillo de Diamante Afilado",
-  "Description": "El Martillo Afilado de Diamante es similar al machete de diamante, pero mucho más letal y duradero. Su resistencia incomparable y su poder devastador lo convierten en un arma excepcional, capaz de soportar combates prolongados mientras asesta golpes mortales. Tal vez su mayor utilidad sea enfrentarse a jefes, donde su fuerza y durabilidad pueden cambiar el curso de la batalla."
+  "Description": "El Martillo Afilado de Diamante es similar al machete de diamante, pero mucho más letal y duradero. Su resistencia incomparable y su poder devastador lo convierten en un arma excepcional, capaz de soportar combates prolongados mientras asesta golpes mortales. Tal vez su mayor utilidad sea enfrentarse a jefes, donde su fuerza y durabilidad pueden cambiar el curso de la batalla.",
+  "CRDescription:0": "Usa el machete de diamante y el martillo de hierro y conviértelo en un monstruo mortal."
 },
 "LavaSharpHammerBlock:0": {
   "DisplayName": "Martillo de Lava Afilado",
-  "Description": "El Martillo Afilado de Lava es similar al machete de lava, pero mucho más letal y duradero. Su núcleo ardiente y su filo incandescente lo convierten en un arma de pura destrucción, capaz de resistir los combates más feroces mientras asesta golpes catastróficos. No es simplemente más fuerte que el machete: es una auténtica herramienta infernal de guerra. Este martillo es 100% extremadamente útil para matar jefes, un arma que irradia peligro y promesa. El jugador sentirá su potencial ardiente, sabiendo que, llegado el momento, puede ser la fuerza decisiva que transforme batallas imposibles en victorias."
+  "Description": "El Martillo Afilado de Lava es similar al machete de lava, pero mucho más letal y duradero. Su núcleo ardiente y su filo incandescente lo convierten en un arma de pura destrucción, capaz de resistir los combates más feroces mientras asesta golpes catastróficos. No es simplemente más fuerte que el machete: es una auténtica herramienta infernal de guerra. Este martillo es 100% extremadamente útil para matar jefes, un arma que irradia peligro y promesa. El jugador sentirá su potencial ardiente, sabiendo que, llegado el momento, puede ser la fuerza decisiva que transforme batallas imposibles en victorias.",
+  "CRDescription:0": "Usa el nuevo machete de lava y el viejo martillo de hierro y conviértelo en un MEGA MONSTRUO."
 },
     "AntiTanksBulletBlock:0": {
     "DisplayName": "Bala Anti-Tanks",
@@ -334,11 +342,13 @@
 },
     "TargetStickBlock:0": {
   "DisplayName": "Vara de Señalización",
-  "Description": "Una vara especializada utilizada para comandar criaturas aliadas. Al apuntar a un enemigo, indica a todas las criaturas aliadas del jugador cercanas que concentren sus ataques en el objetivo. Útil para coordinar ataques y administrar tu ejército de criaturas en batalla."
+  "Description": "Una vara especializada utilizada para comandar criaturas aliadas. Al apuntar a un enemigo, indica a todas las criaturas aliadas del jugador cercanas que concentren sus ataques en el objetivo. Útil para coordinar ataques y administrar tu ejército de criaturas en batalla.",
+  "CRDescription:0": "Útil para seleccionar un objetivo de ataque y hacer que tus criaturas aliadas se concentren en el enemigo elegido."
 },
     "PoisonBombBlock:0": {
   "DisplayName": "Bomba Venenosa",
-  "Description": "Una bomba verde que libera gas venenoso al explotar. Ideal para envenenar áreas y debilitar enemigos desde la distancia."
+  "Description": "Una bomba verde que libera gas venenoso al explotar. Ideal para envenenar áreas y debilitar enemigos desde la distancia.",
+  "CRDescription:0": "Bomba tóxica que libera gas venenoso en lugar de fuerza explosiva."
 },
     "BigStonePoisonChunk:0": {
       "DisplayName": "Roca Gigante Venenosa",
@@ -354,15 +364,18 @@
 },
     "CollarBlock:0": {
   "DisplayName": "Collar Zombie",
-  "Description": "Un collar especial que se puede fabricar y es esencial para domesticar zombies hostiles. Una vez colocado en un zombie, pacifica a la criatura y permite domesticarla como un compañero leal. El collar también proporciona protección contra otros ataques de zombies y puede encantarse para obtener efectos adicionales. Extremadamente útil para jugadores que buscan construir un ejército de no muertos o asegurar su base con guardianes zombis."
+  "Description": "Un collar especial que se puede fabricar y es esencial para domesticar zombies hostiles. Una vez colocado en un zombie, pacifica a la criatura y permite domesticarla como un compañero leal. El collar también proporciona protección contra otros ataques de zombies y puede encantarse para obtener efectos adicionales. Extremadamente útil para jugadores que buscan construir un ejército de no muertos o asegurar su base con guardianes zombis.",
+  "CRDescription:0": "Úsalo sabiamente para esclavizar a los infectados."
 },
     "RefrigeratorXiaomiBlock:0": {
       "DisplayName": "Refrigerador Xiaomi",
-      "Description": "Un refrigerador Xiaomi es un electrodoméstico diseñado para enfriar y almacenar alimentos. Se define como un refrigerador inteligente que proporciona una conservación eficiente de productos perecederos. En el mod es útil como un objeto que representa un electrodoméstico moderno y amplía las opciones de construcción. Su utilidad principal es preservar alimentos si estás cansado de que se echen a perder rápidamente, tanto crudos como cocinados, dando más tiempo de durabilidad. Nota: el refrigerador requiere energía como una batería, palanca u otra fuente eléctrica, de lo contrario no funcionará."
+      "Description": "Un refrigerador Xiaomi es un electrodoméstico diseñado para enfriar y almacenar alimentos. Se define como un refrigerador inteligente que proporciona una conservación eficiente de productos perecederos. En el mod es útil como un objeto que representa un electrodoméstico moderno y amplía las opciones de construcción. Su utilidad principal es preservar alimentos si estás cansado de que se echen a perder rápidamente, tanto crudos como cocinados, dando más tiempo de durabilidad. Nota: el refrigerador requiere energía como una batería, palanca u otra fuente eléctrica, de lo contrario no funcionará.",
+      "CRDescription:0": "Útil para almacenar alimentos crudos o cocidos si estás cansado de que se echen a perder rápidamente."
     },
     "AirConditionerBlock:0": {
       "DisplayName": "Aire Acondicionado",
-      "Description": "Un dispositivo de climatización que ajusta la temperatura ambiental. Configurable mediante interfaz, puede enfriar agua y derretir hielo en un radio ajustable."
+      "Description": "Un dispositivo de climatización que ajusta la temperatura ambiental. Configurable mediante interfaz, puede enfriar agua y derretir hielo en un radio ajustable.",
+      "CRDescription:0": "Para controlar la temperatura en tu hermoso hogar."
     },
     "BigStoneChunk:0": {
   "DisplayName": "Roca Gigante Rara",
@@ -370,7 +383,8 @@
     },
     "TridentBlock:0": {
   "DisplayName": "Tridente",
-  "Description": "Una legendaria lanza de tres puntas históricamente asociada con deidades marinas como Poseidón en la mitología griega, simbolizando el dominio sobre los océanos. En la antigüedad, era tanto un símbolo divino como un arma formidable usada por guerreros y dioses del mar. Forjado con materiales raros encontrados en las fosas oceánicas más profundas, este Tridente canaliza el poder de las mareas. Aunque puede fabricarse usando recursos extremadamente caros que incluyen bloques de hierro y cristales marinos encantados, el método más directo para obtenerlo es derrotando a Hombre Agua en batalla. Úsalo para imponer respeto tanto en tierra como en mar."
+  "Description": "Una legendaria lanza de tres puntas históricamente asociada con deidades marinas como Poseidón en la mitología griega, simbolizando el dominio sobre los océanos. En la antigüedad, era tanto un símbolo divino como un arma formidable usada por guerreros y dioses del mar. Forjado con materiales raros encontrados en las fosas oceánicas más profundas, este Tridente canaliza el poder de las mareas. Aunque puede fabricarse usando recursos extremadamente caros que incluyen bloques de hierro y cristales marinos encantados, el método más directo para obtenerlo es derrotando a Hombre Agua en batalla. Úsalo para imponer respeto tanto en tierra como en mar.",
+      "CRDescription:0": "Un arma histórica, un símbolo de Poseidón y Neptuno, que hace tanto daño?"
     },
     "ScyteBlock:0": {
   "DisplayName": "Guadaña",
@@ -412,77 +426,95 @@
       "DisplayName": "Pico de Piedra",
       "Description": "¿Cómo podría olvidar los viejos tiempos, hermano? :\")"
     },
-    "LavaSpear:0": {
+    "LavaSpearBlock:0": {
       "DisplayName": "Lanza de Lava",
-      "Description": "Forjada en magma - quema todo a su paso"
+      "Description": "Forjada en magma - quema todo a su paso",
+      "CRDescription:0": "Forjado en magma - quema cualquier cosa."
     },
-    "LavaMachete:0": {
+    "LavaMacheteBlock:0": {
       "DisplayName": "Machete de Lava",
-      "Description": "Filo fundido que desmembra con precisión ardiente"
+      "Description": "Filo fundido que desmembra con precisión ardiente",
+      "CRDescription:0": "Hoja fundida que desmiembra con precisión ardiente."
     },
-    "LavaPickaxe:0": {
+    "LavaPickaxeBlock:0": {
       "DisplayName": "Pico de Lava",
-      "Description": "Excava minerales con poder volcánico"
+      "Description": "Excava minerales con poder volcánico",
+      "CRDescription:0": "Extrae minerales con poder fundido."
     },
-    "LavaShovel:0": {
+    "LavaShovelBlock:0": {
       "DisplayName": "Pala de Lava",
-      "Description": "Cava en la tierra como si fuera mantequilla - mantequilla caliente"
+      "Description": "Cava en la tierra como si fuera mantequilla - mantequilla caliente",
+      "CRDescription:0": "Cava la tierra como si fuera mantequilla - mantequilla caliente."
     },
-    "LavaHammer:0": {
+    "LavaHammerBlock:0": {
       "DisplayName": "Martillo de Lava",
-      "Description": "Aplasta rocas con fuerza volcánica"
+      "Description": "Aplasta rocas con fuerza volcánica",
+      "CRDescription:0": "Aplasta rocas con fuerza volcánica."
     },
-    "LavaAxe:0": {
+    "LavaAxeBlock:0": {
       "DisplayName": "Hacha de Lava",
-      "Description": "Corta madera con furia ardiente"
+      "Description": "Corta madera con furia ardiente",
+      "CRDescription:0": "Corta la madera con furia ardiente."
     },
-    "LavaRake:0": {
+    "LavaRakeBlock:0": {
       "DisplayName": "Rastrillo de Lava",
-      "Description": "Labra el suelo con eficiencia volcánica"
+      "Description": "Labra el suelo con eficiencia volcánica",
+      "CRDescription:0": "Labra el suelo con eficiencia volcánica."
     },
-    "ItemsLauncher:0": {
+    "ItemsLauncherBlock:0": {
       "DisplayName": "Lanzador de Objetos",
-      "Description": "Lanza cualquier tipo de bloque u objeto. Aunque es costoso de fabricar, es un arma poderosa como el mosquete. ¡Ten cuidado!"
+      "Description": "Lanza cualquier tipo de bloque u objeto. Aunque es costoso de fabricar, es un arma poderosa como el mosquete. ¡Ten cuidado!",
+      "CRDescription:0": "Lanza cualquier bloque u objeto. Cuidado, es tan poderoso como el mosquete."
     },
-    "FlameThrower:0": {
+    "FlameThrowerBlock:0": {
       "DisplayName": "Lanzallamas",
-      "Description": "El lanzallamas es un arma incendiaria diseñada para proyectar fuego controlado. Fue inventado por Richard Fiedler en 1901 y utilizado por primera vez en combate por el ejército alemán en 1915 durante la Primera Guerra Mundial. Funciona mediante un tanque de combustible (generalmente gasolina espesa o aceite) y gas comprimido que impulsa la corriente ardiente a través de una boquilla con ignición. Para usarlo, el operador debe insertar Balas de Fuego como munición y luego accionar el gatillo para desatar fuego contra fortificaciones enemigas o grupos de soldados. Lo bueno es que admite hasta 15 disparos (15/15), otorgando al jugador potencia de fuego sostenida antes de recargar. La Bala de Fuego es la munición secundaria: proyectiles incendiarios que complementan el lanzallamas, útiles para ataques a distancia y mantener presión sobre el enemigo."
+      "Description": "El lanzallamas es un arma incendiaria diseñada para proyectar fuego controlado. Fue inventado por Richard Fiedler en 1901 y utilizado por primera vez en combate por el ejército alemán en 1915 durante la Primera Guerra Mundial. Funciona mediante un tanque de combustible (generalmente gasolina espesa o aceite) y gas comprimido que impulsa la corriente ardiente a través de una boquilla con ignición. Para usarlo, el operador debe insertar Balas de Fuego como munición y luego accionar el gatillo para desatar fuego contra fortificaciones enemigas o grupos de soldados. Lo bueno es que admite hasta 15 disparos (15/15), otorgando al jugador potencia de fuego sostenida antes de recargar. La Bala de Fuego es la munición secundaria: proyectiles incendiarios que complementan el lanzallamas, útiles para ataques a distancia y mantener presión sobre el enemigo.",
+      "CRDescription:0": "Mosquete mejorado con tanque de combustible y sistema de ignición. Utiliza proyectiles incendiarios o proyectiles de gas venenoso."
     },
-    "FlameBullet:0": {
+    "FlameBulletBlock:0": {
   "DisplayName": "Proyectil Incendiario",
-  "Description": "Proyectil de fuego para el lanzallamas. Al impactar, prende fuego al entorno y a las criaturas, pudiendo causar explosiones a alta velocidad e infligir daño por quemaduras."
+  "Description": "Proyectil de fuego para el lanzallamas. Al impactar, prende fuego al entorno y a las criaturas, pudiendo causar explosiones a alta velocidad e infligir daño por quemaduras.",
+  "CRDescription:0": "Munición incendiaria para lanzallamas. Quema al impactar."
 },
-"FlameBullet:1": {
+"FlameBulletBlock:1": {
   "DisplayName": "Proyectil de Gas Venenoso",
-  "Description": "Proyectil químico para el lanzallamas. Libera un gas tóxico que infecta a las criaturas con veneno o enfermedad, debilitándolas con el tiempo y causando daño adicional."
+  "Description": "Proyectil químico para el lanzallamas. Libera un gas tóxico que infecta a las criaturas con veneno o enfermedad, debilitándolas con el tiempo y causando daño adicional.",
+  "CRDescription:1": "Munición venenosa para el lanzallamas. Infecta a los objetivos al impactar."
 },
-    "RepeatCrossbow:0": {
+    "RepeatCrossbowBlock:0": {
       "DisplayName": "Ballesta Repetidora",
-      "Description": "Versión avanzada de la ballesta estándar, optimizada para fuego sostenido a distancia. A diferencia de la ballesta normal que dispara un solo virote antes de recargar, la Ballesta Repetidora incorpora un cargador interno de 8 virotes y un sistema de tensado progresivo que permite disparos continuos. Tiene menor daño por disparo que la ballesta normal, pero mayor cadencia y recarga más rápida. Compatible con virotes especiales: Cobre, Hierro, Diamante, Explosivo y Venenoso."
+      "Description": "Versión avanzada de la ballesta estándar, optimizada para fuego sostenido a distancia. A diferencia de la ballesta normal que dispara un solo virote antes de recargar, la Ballesta Repetidora incorpora un cargador interno de 8 virotes y un sistema de tensado progresivo que permite disparos continuos. Tiene menor daño por disparo que la ballesta normal, pero mayor cadencia y recarga más rápida. Compatible con virotes especiales: Cobre, Hierro, Diamante, Explosivo y Venenoso.",
+      "CRDescription:0": "Ballesta mejorada con cargador de 8 virotes. Dispara continuamente sin recargar después de cada disparo."
     },
-    "RepeatArrow:0": {
+    "RepeatArrowBlock:0": {
       "DisplayName": "Virote de Cobre Repetidor",
-      "Description": "Virote ligero para ballestas repetidoras, fabricado en cobre. Ofrece daño moderado y alta estabilidad durante disparos rápidos. Optimizado para mantener precisión en fuego automático prolongado."
+      "Description": "Virote ligero para ballestas repetidoras, fabricado en cobre. Ofrece daño moderado y alta estabilidad durante disparos rápidos. Optimizado para mantener precisión en fuego automático prolongado.",
+      "CRDescription:0": "Virote de cobre para ballesta repetidora. Daño moderado, alta estabilidad en ráfagas."
     },
-    "RepeatArrow:1": {
+    "RepeatArrowBlock:1": {
       "DisplayName": "Virote de Hierro Repetidor",
-      "Description": "Virote de hierro reforzado para ballestas repetidoras. Inflige mayor daño y mejor penetración que los virotes de hierro normales, manteniendo buena precisión durante ráfagas continuas."
+      "Description": "Virote de hierro reforzado para ballestas repetidoras. Inflige mayor daño y mejor penetración que los virotes de hierro normales, manteniendo buena precisión durante ráfagas continuas.",
+      "CRDescription:1": "Virote de hierro reforzado para ballesta repetidora. Mayor daño y penetración que los virotes de hierro normales."
     },
-    "RepeatArrow:2": {
+    "RepeatArrowBlock:2": {
       "DisplayName": "Virote de Diamante Repetidor",
-      "Description": "Virote de alto nivel con punta de diamante, diseñado para ballestas repetidoras avanzadas. Presenta altísima penetración de armadura y daño elevado sostenido. Optimizado para ráfagas rápidas."
+      "Description": "Virote de alto nivel con punta de diamante, diseñado para ballestas repetidoras avanzadas. Presenta altísima penetración de armadura y daño elevado sostenido. Optimizado para ráfagas rápidas.",
+      "CRDescription:2": "Virote de diamante para ballesta repetidora. Penetración de armadura excepcional y daño elevado en ráfagas."
     },
-    "RepeatArrow:3": {
+    "RepeatArrowBlock:3": {
       "DisplayName": "Virote Explosivo Repetidor",
-      "Description": "Virote explosivo para ballestas repetidoras. Genera pequeñas explosiones al impactar. Aunque su daño individual es menor que el virote explosivo estándar, permite explosiones en ráfaga, ideal para control de áreas y grupos."
+      "Description": "Virote explosivo para ballestas repetidoras. Genera pequeñas explosiones al impactar. Aunque su daño individual es menor que el virote explosivo estándar, permite explosiones en ráfaga, ideal para control de áreas y grupos.",
+      "CRDescription:3": "Virote explosivo para ballesta repetidora. Causa pequeñas explosiones al impactar, ideal para control de áreas."
     },
-    "RepeatArrow:4": {
+    "RepeatArrowBlock:4": {
       "DisplayName": "Virote Venenoso Repetidor",
-      "Description": "Virote con veneno de baja letalidad. Inflige poco daño inicial pero aplica efecto de veneno durante 30 segundos. Ideal para debilitar enemigos sin matarlos rápidamente."
+      "Description": "Virote con veneno de baja letalidad. Inflige poco daño inicial pero aplica efecto de veneno durante 30 segundos. Ideal para debilitar enemigos sin matarlos rápidamente.",
+      "CRDescription:4": "Virote venenoso para ballesta repetidora. Aplica veneno durante 30 segundos."
     },
-    "RepeatArrow:5": {
+    "RepeatArrowBlock:5": {
       "DisplayName": "Virote de Veneno Grave Repetidor",
-      "Description": "Virote altamente tóxico para ballestas repetidoras. Aplica un efecto de veneno severo durante 100 segundos. Pensado para debilitar grupos completos mediante aplicación rápida de estados negativos."
+      "Description": "Virote altamente tóxico para ballestas repetidoras. Aplica un efecto de veneno severo durante 100 segundos. Pensado para debilitar grupos completos mediante aplicación rápida de estados negativos.",
+      "CRDescription:5": "Virote de veneno grave para ballesta repetidora. Aplica veneno severo durante 100 segundos."
     },
     "M249Block:0": {
       "DisplayName": "M249 SAW",
