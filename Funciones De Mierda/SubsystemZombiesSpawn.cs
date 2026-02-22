@@ -53,6 +53,13 @@ namespace Game
 		private bool m_waveAdvancedThisNight = false;
 		private bool m_firstNightCompleted = false;
 
+		private HashSet<string> m_bossZombieTypes = new HashSet<string>
+		{
+			"Tank1", "Tank2", "Tank3",
+			"TankGhost1", "TankGhost2", "TankGhost3",
+			"MachineGunInfected", "FlyingInfectedBoss"
+		};
+
 		private HashSet<string> m_allZombieTypes = new HashSet<string>
 		{
 			"InfectedNormal1", "InfectedNormal2", "InfectedFast1", "InfectedFast2",
@@ -162,7 +169,16 @@ namespace Game
 				ResetCurrentWaveSpawns();
 			}
 
-			var availableTemplates = m_currentWaveSpawns.Where(kv => kv.Value > 0).ToList();
+			var regularTemplates = m_currentWaveSpawns
+				.Where(kv => kv.Value > 0 && !m_bossZombieTypes.Contains(kv.Key))
+				.ToList();
+
+			var bossTemplates = m_currentWaveSpawns
+				.Where(kv => kv.Value > 0 && m_bossZombieTypes.Contains(kv.Key))
+				.ToList();
+
+			var availableTemplates = bossTemplates.Count > 0 && regularTemplates.Count == 0 ? bossTemplates : regularTemplates;
+
 			if (availableTemplates.Count == 0) return;
 
 			for (int attempt = 0; attempt < 3; attempt++)
@@ -186,10 +202,6 @@ namespace Game
 							m_currentWaveSpawns[templateName]--;
 							return;
 						}
-						else
-						{
-							Log.Error($"No se pudo spawnear: {templateName}");
-						}
 					}
 				}
 			}
@@ -211,7 +223,16 @@ namespace Game
 			this.m_isGreenNightActive = false;
 			this.m_wavesLoaded = false;
 			this.m_firstNightCompleted = false;
-			this.m_currentWaveIndex = 0;
+
+			if (valuesDictionary.ContainsKey("CurrentWaveIndex"))
+			{
+				this.m_currentWaveIndex = valuesDictionary.GetValue<int>("CurrentWaveIndex");
+			}
+		}
+
+		public override void Save(ValuesDictionary valuesDictionary)
+		{
+			valuesDictionary.SetValue("CurrentWaveIndex", m_currentWaveIndex);
 		}
 
 		private string GetWavesPath()
@@ -256,7 +277,6 @@ namespace Game
 
 				foreach (string file in sortedFiles)
 				{
-					string fileName = Path.GetFileName(file);
 					string[] lines = File.ReadAllLines(file);
 
 					WaveData wave = new WaveData
@@ -949,7 +969,13 @@ namespace Game
 							nameof(BrickBlock),
 							nameof(MalachiteBlock),
 							nameof(WaterBlock),
-							nameof(MagmaBlock)
+							nameof(MagmaBlock),
+							nameof(GraniteBlock),
+							nameof(BasaltBlock),
+							nameof(BasaltFenceBlock),
+							nameof(BasaltSlabBlock),
+							nameof(BasaltStairsBlock),
+							nameof(LimestoneBlock)
 						};
 
 						string blockName = blockBelow.GetType().Name;
@@ -969,7 +995,7 @@ namespace Game
 				default:
 					return false;
 			}
-		} 
+		}
 
 		public virtual int CountZombies()
 		{
