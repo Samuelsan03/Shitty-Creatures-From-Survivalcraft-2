@@ -84,7 +84,6 @@ namespace Game
 				LoadWaves();
 				m_wavesLoaded = true;
 				LoadCurrentWave();
-				Log.Information($"=== SISTEMA INICIADO - OLA {m_currentWaveIndex + 1} ===");
 			}
 
 			bool greenNightActive = (m_subsystemGreenNightSky != null && m_subsystemGreenNightSky.IsGreenNightActive);
@@ -95,20 +94,16 @@ namespace Game
 
 				if (m_isGreenNightActive)
 				{
-					Log.Information($"=== NOCHE VERDE INICIADA ===");
-					Log.Information($"Ola actual: {m_currentWaveIndex + 1} de {m_waves.Count}");
 					m_waveAdvancedThisNight = false;
 					LoadCurrentWave();
 				}
 				else
 				{
-					Log.Information($"=== NOCHE VERDE TERMINADA - OLA {m_currentWaveIndex + 1} COMPLETADA ===");
 					m_firstNightCompleted = true;
 
 					if (m_currentWaveIndex < m_waves.Count - 1)
 					{
 						m_currentWaveIndex++;
-						Log.Information($"=== AVANZANDO A OLA {m_currentWaveIndex + 1} ===");
 						LoadCurrentWave();
 					}
 				}
@@ -127,7 +122,6 @@ namespace Game
 		{
 			if (m_waves.Count == 0)
 			{
-				Log.Error("No hay olas cargadas");
 				return;
 			}
 
@@ -145,9 +139,6 @@ namespace Game
 			}
 
 			ResetCurrentWaveSpawns();
-
-			Log.Information($"=== OLA {m_currentWaveIndex + 1} CARGADA ===");
-			Log.Information($"Total zombies por ciclo: {m_currentWaveSpawns.Values.Sum()}");
 		}
 
 		private void ResetCurrentWaveSpawns()
@@ -169,7 +160,6 @@ namespace Game
 			if (m_currentWaveSpawns.Values.Sum() == 0)
 			{
 				ResetCurrentWaveSpawns();
-				Log.Information($"=== CICLO COMPLETADO - RESETEANDO OLA {m_currentWaveIndex + 1} ===");
 			}
 
 			var availableTemplates = m_currentWaveSpawns.Where(kv => kv.Value > 0).ToList();
@@ -195,6 +185,10 @@ namespace Game
 						{
 							m_currentWaveSpawns[templateName]--;
 							return;
+						}
+						else
+						{
+							Log.Error($"No se pudo spawnear: {templateName}");
 						}
 					}
 				}
@@ -289,11 +283,8 @@ namespace Game
 					if (wave.Spawns.Count > 0)
 					{
 						m_waves.Add(wave);
-						Log.Information($"Cargada {fileName}: {wave.Spawns.Count} tipos");
 					}
 				}
-
-				Log.Information($"Total olas cargadas: {m_waves.Count}");
 
 				if (m_waves.Count == 0)
 				{
@@ -316,8 +307,6 @@ namespace Game
 			wave1.Spawns["InfectedNormal2"] = 20;
 			wave1.Spawns["InfectedFly1"] = 2;
 			m_waves.Add(wave1);
-
-			Log.Information("Creadas olas de emergencia");
 		}
 
 		private void CreateAllWaveFiles(string wavesPath)
@@ -951,20 +940,18 @@ namespace Game
 						int blockBelowId = Terrain.ExtractContents(cellValueFast);
 						Block blockBelow = BlocksManager.Blocks[blockBelowId];
 
-						// --- EXCLUIR BLOQUES POR NOMBRE USANDO nameof() ---
 						HashSet<string> forbiddenBlockNames = new HashSet<string>
-				{
-					nameof(BedrockBlock),
-					nameof(IronBlock),
-					nameof(CopperBlock),
-					nameof(DiamondBlock),
-					nameof(BrickBlock),
-					nameof(MalachiteBlock),
-					nameof(WaterBlock),
-					nameof(MagmaBlock)
-				};
+						{
+							nameof(BedrockBlock),
+							nameof(IronBlock),
+							nameof(CopperBlock),
+							nameof(DiamondBlock),
+							nameof(BrickBlock),
+							nameof(MalachiteBlock),
+							nameof(WaterBlock),
+							nameof(MagmaBlock)
+						};
 
-						// Comprobar si el bloque inferior está prohibido por nombre
 						string blockName = blockBelow.GetType().Name;
 						if (forbiddenBlockNames.Contains(blockName))
 						{
@@ -982,7 +969,7 @@ namespace Game
 				default:
 					return false;
 			}
-		}
+		} 
 
 		public virtual int CountZombies()
 		{
