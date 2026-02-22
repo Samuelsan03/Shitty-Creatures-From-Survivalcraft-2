@@ -44,7 +44,7 @@ namespace Game
 					string npcName = parts[0].Trim();
 					float probability = 1.0f;
 
-					if (parts.Length >= 2)
+					if (parts.Length >= 2 && !string.IsNullOrEmpty(parts[1]))
 					{
 						string probStr = parts[1].Trim();
 						float.TryParse(probStr, NumberStyles.Float, CultureInfo.InvariantCulture, out probability);
@@ -76,27 +76,34 @@ namespace Game
 			{
 				m_hasCheckedDeath = true;
 
-				if (m_spawnEntries.Count > 0 && s_random.Float(0f, 1f) < m_globalSpawnProbability)
+				if (m_spawnEntries.Count > 0)
 				{
+					// CORRECCIÓN: Primero seleccionar el NPC basado en sus probabilidades relativas
 					SpawnEntry selectedEntry = SelectRandomNPC();
 
 					if (selectedEntry != null)
 					{
-						m_shouldSpawnOnDespawn = true;
-						m_selectedSpawnEntry = selectedEntry;
+						// CORRECCIÓN: Luego aplicar la probabilidad global multiplicada por la individual
+						float finalProbability = m_globalSpawnProbability * selectedEntry.Probability;
 
-						if (m_particleSystem == null)
+						if (s_random.Float(0f, 1f) < finalProbability)
 						{
-							m_particleSystem = new NewShapeshiftParticleSystem();
-							m_subsystemParticles.AddParticleSystem(m_particleSystem, false);
-						}
+							m_shouldSpawnOnDespawn = true;
+							m_selectedSpawnEntry = selectedEntry;
 
-						m_componentSpawn.DespawnDuration = 3f;
-						m_componentSpawn.Despawn();
+							if (m_particleSystem == null)
+							{
+								m_particleSystem = new NewShapeshiftParticleSystem();
+								m_subsystemParticles.AddParticleSystem(m_particleSystem, false);
+							}
 
-						if (m_subsystemAudio != null)
-						{
-							m_subsystemAudio.PlaySound("Audio/Shapeshift", 1f, 0f, m_componentBody.Position, 3f, true);
+							m_componentSpawn.DespawnDuration = 3f;
+							m_componentSpawn.Despawn();
+
+							if (m_subsystemAudio != null)
+							{
+								m_subsystemAudio.PlaySound("Audio/Shapeshift", 1f, 0f, m_componentBody.Position, 3f, true);
+							}
 						}
 					}
 				}
@@ -148,6 +155,10 @@ namespace Game
 		{
 			if (m_spawnEntries.Count == 0)
 				return null;
+
+			// Si solo hay un NPC, devolverlo directamente
+			if (m_spawnEntries.Count == 1)
+				return m_spawnEntries[0];
 
 			float totalProbability = 0f;
 			foreach (var entry in m_spawnEntries)
