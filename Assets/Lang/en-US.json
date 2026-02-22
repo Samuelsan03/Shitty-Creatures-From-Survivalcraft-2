@@ -521,63 +521,78 @@
     },
     "AA12Block:0": {
   "DisplayName": "Atchisson AA-12 Auto Shotgun",
-  "Description": "A gas-operated, magazine-fed automatic shotgun with an open-bolt design. Originally designed by Maxwell Atchisson in 1972 for military and law enforcement applications, it fires 12-gauge shotgun shells at a rate of 300 RPM with a magazine capacity of 8 to 20 rounds depending on the magazine. Its bullpup configuration and improved recoil system significantly reduce felt recoil, allowing controllable automatic fire even with powerful ammunition. In this mod, it uses AA12Bullet cartridges and fires 8 pellets per shell, being devastating at close to medium range."
+  "Description": "A gas-operated, magazine-fed automatic shotgun with an open-bolt design. Originally designed by Maxwell Atchisson in 1972 for military and law enforcement applications, it fires 12-gauge shotgun shells at a rate of 300 RPM with a magazine capacity of 8 to 20 rounds depending on the magazine. Its bullpup configuration and improved recoil system significantly reduce felt recoil, allowing controllable automatic fire even with powerful ammunition. In this mod, it uses AA12Bullet cartridges and fires 8 pellets per shell, being devastating at close to medium range.",
+  "CRDescription:0": "Fully automatic shotgun with low recoil. Fires 12-gauge shells with multiple pellets for devastating close-range damage."
 },
 "M249Block:0": {
       "DisplayName": "M249 SAW",
-      "Description": "The M249 Squad Automatic Weapon (SAW) is a belt-fed light machine gun that provides sustained automatic fire for infantry squads. Fires 5.56×45mm NATO rounds at a rate of 750-1000 RPM. Has a 100-round belt capacity and uses intermediate cartridges for manageable recoil during automatic fire. Requires M249 ammunition blocks for reloading."
+      "Description": "The M249 Squad Automatic Weapon (SAW) is a belt-fed light machine gun that provides sustained automatic fire for infantry squads. Fires 5.56×45mm NATO rounds at a rate of 750-1000 RPM. Has a 100-round belt capacity and uses intermediate cartridges for manageable recoil during automatic fire. Requires M249 ammunition blocks for reloading.",
+      "CRDescription:0": "Belt-fed light machine gun for sustained automatic fire. Uses 5.56×45mm NATO rounds with manageable recoil."
     },
     "NewG3Block:0": {
       "DisplayName": "New G3 Assault Rifle",
-      "Description": "A modern assault rifle with advanced polymer construction and enhanced accuracy. Designed for versatile combat situations, it provides a balanced mix of firepower and handling, making it suitable for mid to long-range engagements."
+      "Description": "A modern assault rifle with advanced polymer construction and enhanced accuracy. Designed for versatile combat situations, it provides a balanced mix of firepower and handling, making it suitable for mid to long-range engagements.",
+      "CRDescription:0": "Modern assault rifle with improved accuracy and handling for versatile combat."
     },
     "NewG3Bullet:0": {
       "DisplayName": "7.62×51mm NATO Magazine",
-      "Description": "A 10-round magazine containing 7.62×51mm NATO ammunition for the G3 rifle. Provides reliable penetration and stopping power against armored targets."
+      "Description": "A 10-round magazine containing 7.62×51mm NATO ammunition for the G3 rifle. Provides reliable penetration and stopping power against armored targets.",
+      "CRDescription:0": "High-caliber ammo for the G3 rifle, ideal for penetrating armor and engaging targets at medium to long range."
     },
     "MP5SSDBlock:0": {
       "DisplayName": "MP5SD Submachine Gun",
-      "Description": "A suppressed submachine gun designed for stealth operations. Its integrated suppressor reduces muzzle flash and noise, making it ideal for covert missions and close-quarters combat."
+      "Description": "A suppressed submachine gun designed for stealth operations. Its integrated suppressor reduces muzzle flash and noise, making it ideal for covert missions and close-quarters combat.",
+      "CRDescription:0": "Suppressed submachine gun for stealth and close-quarters combat."
     },
     "MP5SSDBulletBlock:0": {
       "DisplayName": "9×19mm Parabellum Magazine",
-      "Description": "A 12-round magazine with subsonic 9×19mm Parabellum rounds for the MP5SD. Optimized for quiet, effective engagements without sacrificing stopping power."
+      "Description": "A 12-round magazine with subsonic 9×19mm Parabellum rounds for the MP5SD. Optimized for quiet, effective engagements without sacrificing stopping power.",
+      "CRDescription:0": "Subsonic ammo for MP5SD, ideal for stealth and close-quarters combat."
     },
     "MendozaBlock:0": {
       "DisplayName": "Mendoza Rifle",
-      "Description": "A semi-automatic rifle renowned for its excellent accuracy and reliability. Ideal for marksmen who require precision at medium to long ranges without the need for full-auto fire."
+      "Description": "A semi-automatic rifle renowned for its excellent accuracy and reliability. Ideal for marksmen who require precision at medium to long ranges without the need for full-auto fire.",
+      "CRDescription:0": "High-precision semi-automatic rifle for medium to long-range engagements."
     },
     "MendozaBulletBlock:0": {
       "DisplayName": ".308 Winchester Rounds",
-      "Description": "8 rounds of .308 Winchester ammunition, designed for precision shooting. Offers high accuracy and penetration, suitable for hunting and tactical engagements."
+      "Description": "8 rounds of .308 Winchester ammunition, designed for precision shooting. Offers high accuracy and penetration, suitable for hunting and tactical engagements.",
+      "CRDescription:0": "Precision ammunition for the Mendoza rifle, ideal for medium to long-range engagements."
     },
     "GrozaBlock:0": {
       "DisplayName": "Groza Bullpup Assault Rifle",
-      "Description": "A bullpup assault rifle featuring an integrated grenade launcher system. Compact yet powerful, it excels in close to medium-range combat with high versatility and firepower."
+      "Description": "A bullpup assault rifle featuring an integrated grenade launcher system. Compact yet powerful, it excels in close to medium-range combat with high versatility and firepower.",
+        "CRDescription:0": "Compact bullpup assault rifle with integrated grenade launcher for versatile combat."
     },
     "GrozaBulletBlock:0": {
       "DisplayName": "9×39mm Subsonic Ammunition",
-      "Description": "10 rounds of special 9×39mm subsonic ammunition for the Groza rifle. Designed for stealth operations with reduced noise and effective armor penetration."
+      "Description": "10 rounds of special 9×39mm subsonic ammunition for the Groza rifle. Designed for stealth operations with reduced noise and effective armor penetration.",
+      "CRDescription:0": "Special subsonic ammo for the Groza, ideal for stealth and close-quarters combat."
     },
     "M249BulletBlock:0": {
       "DisplayName": "M249 Ammunition",
-      "Description": "Ammunition box containing 5.56×45mm NATO rounds for the M249 SAW. Each box provides 100 rounds of belt-fed ammunition. Insert into the M249 to fully reload the weapon to its maximum capacity."
+      "Description": "Ammunition box containing 5.56×45mm NATO rounds for the M249 SAW. Each box provides 100 rounds of belt-fed ammunition. Insert into the M249 to fully reload the weapon to its maximum capacity.",
+      "CRDescription:0": "100 rounds of 5.56×45mm NATO ammunition for the M249 SAW. Provides sustained firepower for extended engagements."
     },
     "BaseballBatBlock:0": {
   "DisplayName": "Baseball Bat",
-  "Description": "A simple melee weapon with solid impact damage. Reliable, durable, and effective at close range."
+  "Description": "A simple melee weapon with solid impact damage. Reliable, durable, and effective at close range.",
+  "CRDescription:0": "A classic blunt weapon, perfect for bashing enemies at close range."
     },
     "AKBlock:0": {
     "DisplayName": "AK-47",
-    "Description": "Legendary assault rifle firing 7.62×39mm rounds. Good accuracy, moderate recoil. Uses AK47Bullet ammunition. Fires at ~350 RPM."
+    "Description": "Legendary assault rifle firing 7.62×39mm rounds. Good accuracy, moderate recoil. Uses AK47Bullet ammunition. Fires at ~350 RPM.",
+    "CRDescription:0": "Reliable Russian assault rifle, perfect for beginners in automatic weapons"
   },
   "BK43Block:0": {
   "DisplayName": "BK-43 Double-Barrel Shotgun",
-  "Description": "A simple and reliable double-barrel shotgun. Holds two rounds and is highly effective at close range due to pellet spread."
+  "Description": "A simple and reliable double-barrel shotgun. Holds two rounds and is highly effective at close range due to pellet spread.",
+  "CRDescription:0": "Double-barreled shotgun for close combat"
 },
 "BK43BulletBlock:0": {
   "DisplayName": "BK-43 Shotgun Shells",
-  "Description": "Ammunition used by the BK-43. Effective at close range with strong stopping power and wide spread."
+  "Description": "Ammunition used by the BK-43. Effective at close range with strong stopping power and wide spread.",
+  "CRDescription:0": "12-gauge shells for BK 43 shotgun"
 },
   "KABlock:0": {
     "DisplayName": "KA",
@@ -589,123 +604,153 @@
   },
   "AUGBlock:0": {
     "DisplayName": "Steyr AUG",
-    "Description": "Bullpup assault rifle with low recoil. Uses 5.56×45mm NATO. Cycles through 6 different bullet types automatically. Integrated optical sight."
+    "Description": "Bullpup assault rifle with low recoil. Uses 5.56×45mm NATO. Cycles through 6 different bullet types automatically. Integrated optical sight.",
+    "CRDescription:0": "Austrian bullpup assault rifle with low recoil and integrated sight"
   },
   "FamasBlock:0": {
     "DisplayName": "FAMAS F1",
-    "Description": "French bullpup with high rate of fire (~667 RPM). Uses NuevaBala4 projectiles. Compact design with good controllability."
+    "Description": "French bullpup with high rate of fire (~667 RPM). Uses NuevaBala4 projectiles. Compact design with good controllability.",
+    "CRDescription:0": "French bullpup assault rifle with high rate of fire and compact design"
   },
   "G3Block:0": {
     "DisplayName": "FX05 Xiuhcoatl",
-    "Description": "Mexican assault rifle (FX05 Xiuhcoatl) firing powerful rounds. Uses NuevaBala projectiles. Good rate of fire and accuracy."
+    "Description": "Mexican assault rifle (FX05 Xiuhcoatl) firing powerful rounds. Uses NuevaBala projectiles. Good rate of fire and accuracy.",
+    "CRDescription:0": "Mexican assault rifle with good accuracy and power"
   },
   "Izh43Block:0": {
     "DisplayName": "IZH-43 Shotgun",
-    "Description": "Double-barrel shotgun firing 8 pellets per shot. Devastating close-range. 2-round capacity, uses Izh43Bullet."
+    "Description": "Double-barrel shotgun firing 8 pellets per shot. Devastating close-range. 2-round capacity, uses Izh43Bullet.",
+    "CRDescription:0": "Russian double-barreled shotgun with high damage at close range"
   },
   "M4Block:0": {
     "DisplayName": "M4 Carbine",
-    "Description": "5.56×45mm carbine firing 3-round bursts. Uses NuevaBala2 projectiles. 22-round magazine, excellent modularity."
+    "Description": "5.56×45mm carbine firing 3-round bursts. Uses NuevaBala2 projectiles. 22-round magazine, excellent modularity.",
+    "CRDescription:0": "American M4 carbine with better accuracy than AK-47"
   },
   "Mac10Block:0": {
     "DisplayName": "MAC-10",
-    "Description": "Compact machine pistol with extreme rate of fire (~600 RPM). Uses NuevaBala3 projectiles. Intense recoil, 30-round magazine."
+    "Description": "Compact machine pistol with extreme rate of fire (~600 RPM). Uses NuevaBala3 projectiles. Intense recoil, 30-round magazine.",
+    "CRDescription:0": "Compact .45 ACP machine pistol with high rate of fire"
   },
   "MinigunBlock:0": {
     "DisplayName": "Minigun",
-    "Description": "Rotary machine gun firing NuevaBala6 projectiles at ~750 RPM. 100-round capacity, devastating suppression weapon."
+    "Description": "Rotary machine gun firing NuevaBala6 projectiles at ~750 RPM. 100-round capacity, devastating suppression weapon.",
+    "CRDescription:0": "Gatling-style minigun with devastating firepower"
   },
   "P90Block:0": {
     "DisplayName": "FN P90",
-    "Description": "Bullpup PDW with 900 RPM rate of fire. Cycles through 6 bullet types. 50-round magazine, 5.7×28mm rounds."
+    "Description": "Bullpup PDW with 900 RPM rate of fire. Cycles through 6 bullet types. 50-round magazine, 5.7×28mm rounds.",
+    "CRDescription:0": "Compact bullpup PDW with high rate of fire and large magazine"
   },
   "RevolverBlock:0": {
     "DisplayName": "Revolver",
-    "Description": "Classic revolver firing powerful single shots. Uses NuevaBala4 projectiles. 6-round cylinder, high stopping power."
+    "Description": "Classic revolver firing powerful single shots. Uses NuevaBala4 projectiles. 6-round cylinder, high stopping power.",
+    "CRDescription:0": "Classic .357 Magnum revolver with excellent stopping power"
   },
   "SCARBlock:0": {
     "DisplayName": "FN SCAR",
-    "Description": "Modular battle rifle with excellent accuracy. Cycles through 6 bullet types. 600 RPM, 30-round magazine."
+    "Description": "Modular battle rifle with excellent accuracy. Cycles through 6 bullet types. 600 RPM, 30-round magazine.",
+    "CRDescription:0": "Versatile battle rifle with excellent accuracy and modular design"
   },
   "SniperBlock:0": {
     "DisplayName": "Sniper Rifle",
-    "Description": "Bolt-action precision rifle for extreme long-range engagements. Equipped with high-magnification scope. Delivers single-shot kills with proper aim. Requires steady positioning and patience."
+    "Description": "Bolt-action precision rifle for extreme long-range engagements. Equipped with high-magnification scope. Delivers single-shot kills with proper aim. Requires steady positioning and patience.",
+    "CRDescription:0": "High-powered bolt-action sniper rifle with scope for long-range precision"
   },
   "SPAS12Block:0": {
     "DisplayName": "SPAS-12 Combat Shotgun",
-    "Description": "Combat shotgun firing 8 pellets per shot. 8-round capacity. Can fire in pump or semi-auto modes."
+    "Description": "Combat shotgun firing 8 pellets per shot. 8-round capacity. Can fire in pump or semi-auto modes.",
+    "CRDescription:0": "Italian combat shotgun with pump-action and semi-auto modes"
   },
   "SWM500Block:0": {
     "DisplayName": "Desert Eagle",
-    "Description": "Desert Eagle .50 caliber pistol with tremendous stopping power. Single-shot, uses NuevaBala4 projectiles. 5-round magazine."
+    "Description": "Desert Eagle .50 caliber pistol with tremendous stopping power. Single-shot, uses NuevaBala4 projectiles. 5-round magazine.",
+    "CRDescription:0": ".50 AE Desert Eagle hand cannon with massive stopping power"
   },
   "UziBlock:0": {
     "DisplayName": "Uzi",
-    "Description": "Iconic submachine gun with high rate of fire (~750 RPM). Uses NuevaBala2 projectiles. 30-round magazine."
+    "Description": "Iconic submachine gun with high rate of fire (~750 RPM). Uses NuevaBala2 projectiles. 30-round magazine.",
+    "CRDescription:0": "Israeli submachine gun with better stability than Mac-10"
   },
 "AA12BulletBlock:0": {
   "DisplayName": "12-Gauge AA-12 Cartridge",
-  "Description": "8-round 12-gauge magazine for the AA-12 shotgun. Each shell contains 8 pellets that spread when fired, being especially effective against groups of enemies at close range. The ammunition is shotgun-type, specifically designed for the AA-12 feeding system."
+  "Description": "8-round 12-gauge magazine for the AA-12 shotgun. Each shell contains 8 pellets that spread when fired, being especially effective against groups of enemies at close range. The ammunition is shotgun-type, specifically designed for the AA-12 feeding system.",
+  "CRDescription:0": "12-gauge shells for the AA-12 shotgun, containing 8 pellets each for devastating close-range damage."
 },
   "AKBullet:0": {
     "DisplayName": "7.62×39mm AK Magazine",
-    "Description": "30-round magazine for AK-47 rifle. Contains 7.62×39mm ammunition."
+    "Description": "30-round magazine for AK-47 rifle. Contains 7.62×39mm ammunition.",
+    "CRDescription:0": "7.62×39mm ammunition for the AK-47"
   },
   "M4Bullet:0": {
     "DisplayName": "5.56×45mm STANAG Magazine",
-    "Description": "22-round magazine for M4 carbine. Contains 5.56×45mm NATO ammunition."
+    "Description": "22-round magazine for M4 carbine. Contains 5.56×45mm NATO ammunition.",
+    "CRDescription:0": "5.56×45mm NATO standard ammunition"
   },
   "SPAS12BulletBlock:0": {
-    "DisplayName": "12 Gauge Shells",
-    "Description": "8-round box of 12 gauge shells for SPAS-12 shotgun."
+    "DisplayName": "SPAS-12 12 Gauge Shells",
+    "Description": "8-round box of 12 gauge shells specifically for the SPAS-12 shotgun.",
+    "CRDescription:0": "Craft a box of 8, 12-gauge shells specifically for the SPAS-12."
   },
   "Mac10Bullet:0": {
     "DisplayName": ".45 ACP Magazine",
-    "Description": "30-round magazine for MAC-10. Contains .45 ACP ammunition."
+    "Description": "30-round magazine for MAC-10. Contains .45 ACP ammunition.",
+    "CRDescription:0": ".45 ACP ammunition for the MAC-10 machine pistol"
   },
   "UziBullet:0": {
     "DisplayName": "9×19mm Uzi Magazine",
-    "Description": "32-round magazine for Uzi submachine gun. Contains 9×19mm Parabellum rounds."
+    "Description": "32-round magazine for Uzi submachine gun. Contains 9×19mm Parabellum rounds.",
+    "CRDescription:0": "9×19mm Parabellum ammunition for the Uzi submachine gun"
   },
   "G3Bullet:0": {
     "DisplayName": "5.56×45mm FX05 Magazine",
-    "Description": "30-round magazine for FX05 Xiuhcoatl rifle. Contains 5.56×45mm NATO rounds."
+    "Description": "30-round magazine for FX05 Xiuhcoatl rifle. Contains 5.56×45mm NATO rounds.",
+    "CRDescription:0": "5.56×45mm NATO ammunition for the FX05 Xiuhcoatl assault rifle"
   },
   "MinigunBullet:0": {
     "DisplayName": "7.62×51mm Minigun Ammo Box",
-    "Description": "100-round ammunition box for Minigun. Contains linked 7.62×51mm NATO belts."
+    "Description": "100-round ammunition box for Minigun. Contains linked 7.62×51mm NATO belts.",
+    "CRDescription:0": "100 rounds of 7.62×51mm NATO ammunition for the Minigun"
   },
   "Izh43Bullet:0": {
-    "DisplayName": "12 Gauge Double Shells",
-    "Description": "2-round set of 12 gauge shells for IZH-43 shotgun."
+    "DisplayName": "IZH-43 12 Gauge Double Shells",
+    "Description": "2-round set of 12 gauge double shells specifically for the IZH-43 shotgun.",
+    "CRDescription:0": "Craft a set of 2, 12-gauge double shells specifically for the IZH-43."
   },
   "SWM500Bullet:0": {
     "DisplayName": ".50 AE Desert Eagle Magazine",
-    "Description": "7-round magazine for Desert Eagle pistol. Contains .50 Action Express rounds."
+    "Description": "7-round magazine for Desert Eagle pistol. Contains .50 Action Express rounds.",
+    "CRDescription:0": ".50 Action Express ammunition for the Desert Eagle pistol"
   },
   "SniperBullet:0": {
     "DisplayName": "7.62×51mm Sniper Rounds",
-    "Description": "5-round stripper clip for sniper rifle. Contains 7.62×51mm match-grade ammunition."
+    "Description": "5-round stripper clip for sniper rifle. Contains 7.62×51mm match-grade ammunition.",
+    "CRDescription:0": "5 rounds of 7.62×51mm match-grade ammunition for the sniper rifle"
   },
   "AUGBullet:0": {
     "DisplayName": "5.56×45mm AUG Magazine",
-    "Description": "30-round translucent magazine for Steyr AUG. Contains 5.56×45mm NATO rounds."
+    "Description": "30-round translucent magazine for Steyr AUG. Contains 5.56×45mm NATO rounds.",
+    "CRDescription:0": "5.56×45mm NATO ammunition for the Steyr AUG assault rifle"
   },
   "P90BulletBlock:0": {
     "DisplayName": "5.7×28mm P90 Magazine",
-    "Description": "50-round top-mounted magazine for FN P90. Contains 5.7×28mm rounds."
+    "Description": "50-round top-mounted magazine for FN P90. Contains 5.7×28mm rounds.",
+    "CRDescription:0": "5.7×28mm ammunition for the FN P90 PDW"
   },
   "SCARBulletBlock:0": {
     "DisplayName": "7.62×51mm SCAR Magazine",
-    "Description": "20-round magazine for FN SCAR-H. Contains 7.62×51mm NATO ammunition."
+    "Description": "20-round magazine for FN SCAR-H. Contains 7.62×51mm NATO ammunition.",
+    "CRDescription:0": "7.62×51mm NATO ammunition for the FN SCAR battle rifle"
   },
   "RevolverBulletBlock:0": {
     "DisplayName": ".357 Magnum Revolver Rounds",
-    "Description": "6-round speedloader for revolver. Contains .357 Magnum ammunition."
+    "Description": "6-round speedloader for revolver. Contains .357 Magnum ammunition.",
+    "CRDescription:0": ".357 Magnum rounds for reliable penetration"
   },
   "FamasBulletBlock:0": {
     "DisplayName": "5.56×45mm FAMAS Magazine",
-    "Description": "25-round magazine for FAMAS rifle. Contains 5.56×45mm NATO rounds."
+    "Description": "25-round magazine for FAMAS rifle. Contains 5.56×45mm NATO rounds.",
+    "CRDescription:0": "5.56×45mm NATO rounds optimized for bullpup design"
   },
   "ClothingBlock:39": {
     "DisplayName": "T-Shirt Digimon",
