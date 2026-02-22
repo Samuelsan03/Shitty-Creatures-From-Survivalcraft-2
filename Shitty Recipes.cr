@@ -30,7 +30,7 @@
             "aca"
             " b "
             </Recipe>               
-    <Recipe Result="ItemsLauncherBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="10" a="copperblock" b="musket" c="rod" Description="Make an object launcher by modifying a new musket.">
+    <Recipe Result="ItemsLauncherBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="10" a="copperblock" b="musket" c="rod" Description="[0]">
 			"bca"
 		</Recipe>
         <Recipe Result="WoodMacheteBlock" ResultCount="1" RequiredHeatLevel="0" a="stick" b="woodenslab" Description="Classic tool from version 2.0">
@@ -119,127 +119,57 @@
             "a"
             "a"
         </Recipe>
-        <Recipe Result="RepeatCrossbowBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="rod" b="string" c="ironingot" d="planks" Description="Automatic crossbow with 8-arrow magazine - complex mechanical design">
+        <Recipe Result="RepeatCrossbowBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="rod" b="string" c="ironingot" d="planks" Description="[0]">
     " a "
     "aba"
     "dcd"
 </Recipe>
-<Recipe Result="RepeatArrowBlock:0" ResultCount="8" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="arrow:5" b="copperingot" c="feather" Description="Copper bolts - optimized for repeating mechanism">
+<Recipe Result="RepeatArrowBlock:0" ResultCount="8" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="arrow:5" b="copperingot" c="feather" Description="[0]">
     " b "
     " a "
     " c "
 </Recipe>
-<Recipe Result="RepeatArrowBlock:1" ResultCount="8" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="repeatarrow:0" b="ironingot" c="feather" Description="Iron bolts - armor piercing for repeat fire">
+<Recipe Result="RepeatArrowBlock:1" ResultCount="8" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="repeatarrow:0" b="ironingot" c="feather" Description="[1]">
     " b "
     " a "
     " c "
 </Recipe>
-<Recipe Result="RepeatArrowBlock:2" ResultCount="8" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="repeatarrow:1" b="diamond" c="feather" Description="Diamond bolts - premium ammunition">
+<Recipe Result="RepeatArrowBlock:2" ResultCount="8" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="repeatarrow:1" b="diamond" c="feather" Description="[2]">
     " b "
     " a "
     " c "
 </Recipe>
-<Recipe Result="RepeatArrowBlock:3" ResultCount="8" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="repeatarrow:1" b="gunpowder" c="feather" Description="Explosive bolts - devastating area damage">
+<Recipe Result="RepeatArrowBlock:3" ResultCount="8" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="repeatarrow:1" b="gunpowder" c="feather" Description="[3]">
     " b "
     " a "
     " c "
 </Recipe>
-<Recipe Result="RepeatArrowBlock:4" ResultCount="8" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="repeatarrow:1" b="rottenbird" c="feather" Description="Normal poison crossbow bolt for the Crossbow Repeater, easily crafted">
+<Recipe Result="RepeatArrowBlock:4" ResultCount="8" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="repeatarrow:1" b="toxin" c="feather" Description="[4]">
     " b "
     " a "
     " c "
 </Recipe>
-<Recipe Result="RepeatArrowBlock:4" ResultCount="8" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="repeatarrow:1" b="rottenmeat" c="feather" Description="Normal poison crossbow bolt for the Crossbow Repeater, easily crafted">
+<Recipe Result="RepeatArrowBlock:5" ResultCount="8" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="repeatarrow:4" b="toxin" c="feather" Description="[5]">
     " b "
     " a "
     " c "
 </Recipe>
-<Recipe Result="RepeatArrowBlock:4" ResultCount="8" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="repeatarrow:1" b="rottenfish" c="feather" Description="Normal poison crossbow bolt for the Crossbow Repeater, easily crafted">
-    " b "
-    " a "
-    " c "
-</Recipe>
-<Recipe Result="RepeatArrowBlock:4" ResultCount="8" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="repeatarrow:1" b="rottenpumpkin" c="feather" Description="Normal poison crossbow bolt for the Crossbow Repeater, easily crafted">
-    " b "
-    " a "
-    " c "
-</Recipe>
-<Recipe Result="RepeatArrowBlock:4" ResultCount="8" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="repeatarrow:1" b="rottenpumpkinsoupbucket" c="feather" Description="Normal poison crossbow bolt for the Crossbow Repeater, easily crafted">
-    " b "
-    " a "
-    " c "
-</Recipe>
-<Recipe Result="RepeatArrowBlock:4" ResultCount="8" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="repeatarrow:1" b="rottenbread" c="feather" Description="Normal poison crossbow bolt for the Crossbow Repeater, easily crafted">
-    " b "
-    " a "
-    " c "
-</Recipe>
-<Recipe Result="RepeatArrowBlock:4" ResultCount="8" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="repeatarrow:1" b="rottendough" c="feather" Description="Normal poison crossbow bolt for the Crossbow Repeater, easily crafted">
-    " b "
-    " a "
-    " c "
-</Recipe>
-<Recipe Result="RepeatArrowBlock:4" ResultCount="8" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="repeatarrow:1" b="rottenegg" c="feather" Description="Normal poison crossbow bolt for the Crossbow Repeater, easily crafted">
-    " b "
-    " a "
-    " c "
-</Recipe>
-<Recipe Result="RepeatArrowBlock:5" ResultCount="8" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="repeatarrow:4" b="rottenbird" c="feather" Description="Much more poisonous than normal and almost easy to obtain, or so it seems?">
-    " b "
-    " a "
-    " c "
-</Recipe>
-<Recipe Result="RepeatArrowBlock:5" ResultCount="8" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="repeatarrow:4" b="rottenmeat" c="feather" Description="Much more poisonous than normal and almost easy to obtain, or so it seems?">
-    " b "
-    " a "
-    " c "
-</Recipe>
-<Recipe Result="RepeatArrowBlock:5" ResultCount="8" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="repeatarrow:4" b="rottenfish" c="feather" Description="Much more poisonous than normal and almost easy to obtain, or so it seems?">
-    " b "
-    " a "
-    " c "
-</Recipe>
-<Recipe Result="RepeatArrowBlock:5" ResultCount="8" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="repeatarrow:4" b="rottenpumpkin" c="feather" Description="Much more poisonous than normal and almost easy to obtain, or so it seems?">
-    " b "
-    " a "
-    " c "
-</Recipe>
-<Recipe Result="RepeatArrowBlock:5" ResultCount="8" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="repeatarrow:4" b="rottenpumpkinsoupbucket" c="feather" Description="Much more poisonous than normal and almost easy to obtain, or so it seems?">
-    " b "
-    " a "
-    " c "
-</Recipe>
-<Recipe Result="RepeatArrowBlock:5" ResultCount="8" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="repeatarrow:4" b="rottenbread" c="feather" Description="Much more poisonous than normal and almost easy to obtain, or so it seems?">
-    " b "
-    " a "
-    " c "
-</Recipe>
-<Recipe Result="RepeatArrowBlock:5" ResultCount="8" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="repeatarrow:4" b="rottendough" c="feather" Description="Much more poisonous than normal and almost easy to obtain, or so it seems?">
-    " b "
-    " a "
-    " c "
-</Recipe>
-<Recipe Result="RepeatArrowBlock:5" ResultCount="8" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="repeatarrow:4" b="rottenegg" c="feather" Description="Much more poisonous than normal and almost easy to obtain, or so it seems?">
-    " b "
-    " a "
-    " c "
-</Recipe>
-<Recipe Result="FlameThrowerBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="5" a="musket" b="ironingot" c="string" d="sulphurchunk" Description="Upgraded musket with fuel tank and ignition system. Uses Flame Bullets.">
+<Recipe Result="FlameThrowerBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="5" a="musket" b="ironingot" c="string" d="sulphurchunk" Description="[0]">
             " b "
             "dad"
             " c "
         </Recipe>
-        <Recipe Result="FlameBulletBlock:0" ResultCount="15" RequiredHeatLevel="0" a="gunpowder" b="sulphurchunk" c="bullet" Description="Incendiary ammo for flamethrower. Burns on impact.">
+        <Recipe Result="FlameBulletBlock:0" ResultCount="15" RequiredHeatLevel="0" a="gunpowder" b="sulphurchunk" c="bullet" Description="[0]">
             " b "
             "aca"
             " b "
         </Recipe>
-        <Recipe Result="FlameBulletBlock:1" ResultCount="15" RequiredHeatLevel="0" a="gunpowder" b="sulphurchunk" c="toxin" d="bullet" Description="Poisonous ammunition for the flamethrower. Infects targets on impact.">
+        <Recipe Result="FlameBulletBlock:1" ResultCount="15" RequiredHeatLevel="0" a="gunpowder" b="sulphurchunk" c="toxin" d="bullet" Description="[1]">
     " b "
     "aca"
     " d "
 </Recipe>
-        <Recipe Result="TridentBlock:0" ResultCount="1" RequiredHeatLevel="0" a="ironblock" b="stick" Description="A historical weapon, a symbol of Poseidon and Neptune, that does so much damage?">
+        <Recipe Result="TridentBlock:0" ResultCount="1" RequiredHeatLevel="0" a="ironblock" b="stick" Description="[0]">
             " aa"
             " ba"
             "b  "
@@ -254,17 +184,17 @@
             "bcb"
             "aba"
 		</Recipe>
-        <Recipe Result="CollarBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="0" a="saddle" b="rod" c="string" Description="Use it wisely to enslave the infected">
+        <Recipe Result="CollarBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="0" a="saddle" b="rod" c="string" Description="[0]">
 			"bcb"
             " a "
             "bcb"
 		</Recipe>
-        <Recipe Result="TargetStickBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="0" a="saddle" b="stick" Description="Useful for selecting the target to attack so that your slaves attack the selected target.">
+        <Recipe Result="TargetStickBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="0" a="saddle" b="stick" Description="[0]">
 			"bab"
             " b "
             " b "
 		</Recipe>
-  <Recipe Result="PoisonBombBlock" ResultCount="5" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="bomb" b="toxin" Description="Toxic bomb that releases poisonous gas instead of explosive force.">
+  <Recipe Result="PoisonBombBlock" ResultCount="5" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="bomb" b="toxin" Description="[0]">
     " b "
     "bab"
     " b "
