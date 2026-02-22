@@ -496,33 +496,33 @@
             "a a"
             "b b"
         </Recipe>
-        <Recipe Result="MediumFirstAidKitBlock" ResultCount="1" RequiredHeatLevel="0" a="canvas" b="string" c="whiteflower" Description="A basic medical kit that heals wounds up to 50% or 100% if above half health.">
+        <Recipe Result="MediumFirstAidKitBlock" ResultCount="1" RequiredHeatLevel="0" a="canvas" b="string" c="whiteflower" Description="[0]">
     "aba"
     "cac"
     "aba"
 </Recipe>
-<Recipe Result="LargeFirstAidKitBlock" ResultCount="1" RequiredHeatLevel="0" a="canvas" b="string" c="whiteflower" d="purpleflower" Description="An advanced medical kit that always heals to 100% regardless of current health.">
+<Recipe Result="LargeFirstAidKitBlock" ResultCount="1" RequiredHeatLevel="0" a="canvas" b="string" c="whiteflower" d="purpleflower" Description="[0]">
     "aba"
     "cdc"
     "aba"
 </Recipe>
         <Smelting>
-        <Recipe Result="CopperSharpHammerBlock" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="3" a="coppermachete" b="ironhammer" Description="Use the old copper machete and iron hammer and turn him like a monster">
+        <Recipe Result="CopperSharpHammerBlock" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="3" a="coppermachete" b="ironhammer" Description="[0]">
         "ab"
         </Recipe>
-        <Recipe Result="IronSharpHammerBlock" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="3" a="ironmachete" b="ironhammer" Description="Use the old iron machete and iron hammer and turn him like a monster">
+        <Recipe Result="IronSharpHammerBlock" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="3" a="ironmachete" b="ironhammer" Description="[0]">
         "ab"
         </Recipe>
-        <Recipe Result="DiamondSharpHammerBlock" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="4" a="diamondmachete" b="ironhammer" Description="Use the old iron machete and iron hammer and turn him into a deadly monster">
+        <Recipe Result="DiamondSharpHammerBlock" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="4" a="diamondmachete" b="ironhammer" Description="[0]">
         "ab"
         </Recipe>
-        <Recipe Result="LavaSharpHammerBlock" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="6" a="lavamachete" b="ironhammer" Description="Use the new lava machete and old iron hammer and turn him into a MEGA MONSTER">
+        <Recipe Result="LavaSharpHammerBlock" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="6" a="lavamachete" b="ironhammer" Description="[0]">
         "ab"
         </Recipe>
-        <Recipe Result="AntidoteBucketBlock" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="3" a="teaantiflubucket" b="whiteflower" Description="Brew a powerful antidote by infusing medicinal white flowers into purified water. Cures poison and sickness.">
+        <Recipe Result="AntidoteBucketBlock" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="3" a="teaantiflubucket" b="whiteflower" Description="[0]">
     "ab"
 </Recipe>
-<Recipe Result="TeaAntifluBucketBlock" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="3" a="waterbucket" b="tallgrass" Description="Prepare soothing anti-flu tea by steeping purple flowers in hot water. Cures influenza and relieves symptoms.">
+<Recipe Result="TeaAntifluBucketBlock" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="3" a="waterbucket" b="tallgrass" Description="[0]">
     "ab"
 </Recipe>
         </Smelting>
