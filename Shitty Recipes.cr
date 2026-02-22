@@ -84,37 +84,37 @@
             "a"
         </Recipe>
         <!-- Lava Tools require level 6 -->
-        <Recipe Result="LavaSpearBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="stick" b="magmabucket" Description="Forged in magma - burns through anything">
+        <Recipe Result="LavaSpearBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="stick" b="magmabucket" Description="[0]">
             " b "
             "bab"
             " a "
         </Recipe>
-        <Recipe Result="LavaMacheteBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="stick" b="magmabucket" Description="Molten blade that dismembers with burning precision">
+        <Recipe Result="LavaMacheteBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="stick" b="magmabucket" Description="[0]">
             "b"
             "b"
             "a"
         </Recipe>
-        <Recipe Result="LavaAxeBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="stick" b="magmabucket" Description="Chops wood with burning fury">
+        <Recipe Result="LavaAxeBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="stick" b="magmabucket" Description="[0]">
             "bb"
             "ba"
             " a"
         </Recipe>
-        <Recipe Result="LavaPickaxeBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="stick" b="magmabucket" Description="Mines ores with molten power">
+        <Recipe Result="LavaPickaxeBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="stick" b="magmabucket" Description="[0]">
             "bbb"
             " a "
             " a "
         </Recipe>
-        <Recipe Result="LavaHammerBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="stick" b="magmabucket" Description="Smashes rocks with volcanic force">
+        <Recipe Result="LavaHammerBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="stick" b="magmabucket" Description="[0]">
             "bbb"
             "bab"
             " a "
         </Recipe>
-        <Recipe Result="LavaRakeBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="stick" b="magmabucket" Description="Tills soil with volcanic efficiency">
+        <Recipe Result="LavaRakeBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="stick" b="magmabucket" Description="[0]">
             "b b"
             " a "
             " a "
         </Recipe>
-        <Recipe Result="LavaShovelBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="stick" b="magmabucket" Description="Digs through earth like it's butter - hot butter">
+        <Recipe Result="LavaShovelBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="stick" b="magmabucket" Description="[0]">
             "b"
             "a"
             "a"
@@ -174,12 +174,12 @@
             " ba"
             "b  "
         </Recipe>
-        <Recipe Result="RefrigeratorXiaomiBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="0" a="ironblock" b="battery" Description="Useful for storing raw or cooked food if you're tired of it spoiling quickly.">
+        <Recipe Result="RefrigeratorXiaomiBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="0" a="ironblock" b="battery" Description="[0]">
 			"aaa"
             "aba"
             "aaa"
 		</Recipe>
-        <Recipe Result="AirConditionerBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="0" a="ironblock" b="copperblock" c="battery" Description="To control the temperature in your beautiful home">
+        <Recipe Result="AirConditionerBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="0" a="ironblock" b="copperblock" c="battery" Description="[0]">
 			"aba"
             "bcb"
             "aba"
