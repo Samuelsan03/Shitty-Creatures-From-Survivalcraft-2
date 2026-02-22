@@ -286,27 +286,33 @@
 },
       "LavaLongspearBlock:0": {
       "DisplayName": "Lava Longspear",
-      "Description": "The Lava Long Spear stands as the ultimate melee weapon. Forged with volcanic energy and indestructible materials, it surpasses even the diamond spear in damage and durability. Its blazing edge not only delivers devastating strikes but also scorches enemies with every hit, making it a weapon feared even by the strongest bosses. With extended reach and near-infinite resilience, this spear represents the pinnacle of power and survival. Only the most prepared warriors can wield it effectively."
+      "Description": "The Lava Long Spear stands as the ultimate melee weapon. Forged with volcanic energy and indestructible materials, it surpasses even the diamond spear in damage and durability. Its blazing edge not only delivers devastating strikes but also scorches enemies with every hit, making it a weapon feared even by the strongest bosses. With extended reach and near-infinite resilience, this spear represents the pinnacle of power and survival. Only the most prepared warriors can wield it effectively.",
+      "CRDescription:0": "Improved and lengthened version of the original lava spear"
     },
     "DiamondLongspearBlock:0": {
       "DisplayName": "Diamond Longspear",
-      "Description": "The Diamond Long Spear represents the pinnacle of the spear progression, far surpassing the wooden, stone, copper, and iron versions. Its diamond-tipped blade delivers devastating damage and exceptional durability, able to withstand the fiercest battles without losing effectiveness. Along with its extended reach, this weapon combines raw power and resilience, making it the ultimate tool for keeping enemies at bay and asserting dominance on the battlefield. It is regarded as one of the most lethal and prestigious weapons a player can acquire."
+      "Description": "The Diamond Long Spear represents the pinnacle of the spear progression, far surpassing the wooden, stone, copper, and iron versions. Its diamond-tipped blade delivers devastating damage and exceptional durability, able to withstand the fiercest battles without losing effectiveness. Along with its extended reach, this weapon combines raw power and resilience, making it the ultimate tool for keeping enemies at bay and asserting dominance on the battlefield. It is regarded as one of the most lethal and prestigious weapons a player can acquire.",
+      "CRDescription:0": "Improved and lengthened version of the original diamond spear"
     },
     "IronLongspearBlock:0": {
       "DisplayName": "Iron Longspear",
-      "Description": "The Iron Long Spear is a far more advanced weapon compared to its wooden, stone, and copper predecessors. Its iron-forged tip delivers high damage and significant durability, making it a lethal tool for extended combat. Unlike earlier versions, this spear not only provides extended reach but also the resilience needed to withstand intense battles. It is one of the first weapons that can truly be considered mid-tier, perfect for players seeking greater offensive power and reliability on the battlefield."
+      "Description": "The Iron Long Spear is a far more advanced weapon compared to its wooden, stone, and copper predecessors. Its iron-forged tip delivers high damage and significant durability, making it a lethal tool for extended combat. Unlike earlier versions, this spear not only provides extended reach but also the resilience needed to withstand intense battles. It is one of the first weapons that can truly be considered mid-tier, perfect for players seeking greater offensive power and reliability on the battlefield.",
+      "CRDescription:0": "Improved and lengthened version of the original iron spear"
     },
     "CopperLongspearBlock:0": {
       "DisplayName": "Copper Longspear",
-      "Description": "The Copper Long Spear marks a clear improvement over the wooden and stone versions. Its metal tip delivers greater damage and higher durability, making it a far more reliable weapon for extended battles. While still somewhat basic compared to iron or steel weapons, its extended reach and sturdiness provide a tactical edge, allowing you to keep enemies at bay. This is the first spear that truly represents a notable upgrade to your arsenal."
+      "Description": "The Copper Long Spear marks a clear improvement over the wooden and stone versions. Its metal tip delivers greater damage and higher durability, making it a far more reliable weapon for extended battles. While still somewhat basic compared to iron or steel weapons, its extended reach and sturdiness provide a tactical edge, allowing you to keep enemies at bay. This is the first spear that truly represents a notable upgrade to your arsenal.",
+      "CRDescription:0": "Improved and lengthened version of the original copper spear"
     },
     "StoneLongspearBlock:0": {
       "DisplayName": "Stone Longspear",
-      "Description": "The Stone Long Spear is an improved version of the wooden spear, built to be sturdier and tipped with a crude stone edge. Unlike the basic variant, it deals greater damage and has better durability, making it a reliable choice for extended battles. Its larger size and extended reach allow you to keep enemies at bay, providing a tactical advantage in close combat."
+      "Description": "The Stone Long Spear is an improved version of the wooden spear, built to be sturdier and tipped with a crude stone edge. Unlike the basic variant, it deals greater damage and has better durability, making it a reliable choice for extended battles. Its larger size and extended reach allow you to keep enemies at bay, providing a tactical advantage in close combat.",
+      "CRDescription:0": "Improved and lengthened version of the original stone spear"
     },
     "WoodenLongspearBlock:0": {
       "DisplayName": "Wooden Longspear",
-      "Description": "The Wooden Long Spear is a larger and longer variant of the original wooden spear. While its damage is modest and its durability only average, its extended reach allows you to keep enemies at a safer distance. It remains a basic yet tactical choice for players seeking a simple and reliable melee weapon for defense."
+      "Description": "The Wooden Long Spear is a larger and longer variant of the original wooden spear. While its damage is modest and its durability only average, its extended reach allows you to keep enemies at a safer distance. It remains a basic yet tactical choice for players seeking a simple and reliable melee weapon for defense.",
+      "CRDescription:0": "Improved and lengthened version of the original wooden spear"
     },
     "CopperSharpHammerBlock:0": {
       "DisplayName": "Copper Sharp Hammer",
@@ -380,39 +386,48 @@
     },  
   "WoodAxeBlock:0": {
       "DisplayName": "Wood Axe",
-      "Description": "Back to basics - like the old days"
+      "Description": "Back to basics - like the old days",
+      "CRDescription:0": "Back to basics - like the old days"
     },
     "WoodMacheteBlock:0": {
       "DisplayName": "Wood Machete",
-      "Description": "Classic tool from version 2.0"
+      "Description": "Classic tool from version 2.0",
+      "CRDescription:0": "Classic tool from version 2.0"
     },
     "WoodPickaxeBlock:0": {
       "DisplayName": "Wood Pickaxe",
-      "Description": "Nostalgic mining - pre-2.1 era"
+      "Description": "Nostalgic mining - pre-2.1 era",
+      "CRDescription:0": "Nostalgic mining - pre-2.1 era"
     },
     "WoodShovelBlock:0": {
       "DisplayName": "Wood Shovel",
-      "Description": "Simple digging - back when life was easier"
+      "Description": "Simple digging - back when life was easier",
+      "CRDescription:0": "Simple digging - back when life was easier"
     },
     "StoneShovelBlock:0": {
       "DisplayName": "Stone Shovel",
-      "Description": "Stone age technology revived"
+      "Description": "Stone age technology revived",
+      "CRDescription:0": "Stone age technology revived"
     },
     "StoneAxeOriginalBlock:0": {
       "DisplayName": "Stone Axe (Original)",
-      "Description": "Primitive but effective - pre-2.2"
+      "Description": "Primitive but effective - pre-2.2",
+      "CRDescription:0": "Primitive but effective - pre-2.2"
     },
     "StoneMacheteBlock:0": {
       "DisplayName": "Stone Machete",
-      "Description": "Back when stone could cut - version 2.0 memories"
+      "Description": "Back when stone could cut - version 2.0 memories",
+      "CRDescription:0": "Back when stone could cut - version 2.0 memories"
     },
     "StoneRakeBlock:0": {
       "DisplayName": "Stone Rake",
-      "Description": "Ancient farming tool - back to roots"
+      "Description": "Ancient farming tool - back to roots",
+      "CRDescription:0": "Ancient farming tool - back to roots"
     },
     "StonePickaxeBlock:0": {
       "DisplayName": "Stone Pickaxe",
-      "Description": "How could I forget the old days, bro? :\")"
+      "Description": "How could I forget the old days, bro? :\")",
+      "CRDescription:0": "How could I forget the old days, bro? :\")"
     },
     "LavaSpearBlock:0": {
       "DisplayName": "Lava Spear",
@@ -694,52 +709,69 @@
   },
   "ClothingBlock:39": {
     "DisplayName": "T-Shirt Digimon",
-    "Description": "A cool t-shirt featuring Digimon designs. Perfect for fans of the series who want to show off their love for these digital monsters."
+    "Description": "A cool t-shirt featuring Digimon designs. Perfect for fans of the series who want to show off their love for these digital monsters.",
+    "CRDescription:0": "A cool t-shirt featuring Digimon designs. Perfect for fans of the series who want to show off their love for these digital monsters."
   },
     "ClothingBlock:40": {
       "DisplayName": "Lava Armor Helmet",
-      "Description": "A helmet forged from molten rock. Provides great protection and warmth, shielding the head from both attacks and cold."
+      "Description": "A helmet forged from molten rock. Provides great protection and warmth, shielding the head from both attacks and cold.",
+      "CRDescription:0": "A helmet forged from molten rock. Provides great protection and warmth, shielding the head from both attacks and cold."
     },
     "ClothingBlock:41": {
       "DisplayName": "Lava Armor Chestplate",
-      "Description": "A chestplate imbued with volcanic energy. Offers durable defense and insulation, keeping the torso warm in extreme climates."
+      "Description": "A chestplate imbued with volcanic energy. Offers durable defense and insulation, keeping the torso warm in extreme climates.",
+      "CRDescription:0": "A chestplate imbued with volcanic energy. Offers durable defense and insulation, keeping the torso warm in extreme climates."
     },
     "ClothingBlock:42": {
       "DisplayName": "Lava Armor Leggings",
-      "Description": "Leggings forged from volcanic stone. Reinforce the legs with the strength of lava and provide warmth against the cold."
+      "Description": "Leggings forged from volcanic stone. Reinforce the legs with the strength of lava and provide warmth against the cold.",
+      "CRDescription:0": "Leggings forged from volcanic stone. Reinforce the legs with the strength of lava and provide warmth against the cold."
     },
     "ClothingBlock:43": {
       "DisplayName": "Lava Armor Boots",
-      "Description": "Boots crafted from hardened lava. Improve endurance and speed while keeping the feet warm in freezing conditions."
+      "Description": "Boots crafted from hardened lava. Improve endurance and speed while keeping the feet warm in freezing conditions.",
+      "CRDescription:0": "Boots crafted from hardened lava. Improve endurance and speed while keeping the feet warm in freezing conditions."
     },
     "ClothingBlock:44": {
       "DisplayName": "Bulletproof Helmet",
-      "Description": "Tired of diamond armor failing against gunfire? This bulletproof metal helmet is built with lightweight materials, providing strong protection against armed NPCs and bandits without reducing mobility."
+      "Description": "Tired of diamond armor failing against gunfire? This bulletproof metal helmet is built with lightweight materials, providing strong protection against armed NPCs and bandits without reducing mobility.",
+      "CRDescription:0": "Tired of diamond armor failing against gunfire? This bulletproof metal helmet is built with lightweight materials, providing strong protection against armed NPCs and bandits without reducing mobility."
     },
     "ClothingBlock:45": {
       "DisplayName": "Bulletproof Vest",
-      "Description": "Despite being made of metal, this bulletproof vest uses a lightweight structure that does not hinder movement. The ultimate solution when diamond armor fails against firearms."
+      "Description": "Despite being made of metal, this bulletproof vest uses a lightweight structure that does not hinder movement. The ultimate solution when diamond armor fails against firearms.",
+      "CRDescription:0": "Despite being made of metal, this bulletproof vest uses a lightweight structure that does not hinder movement. The ultimate solution when diamond armor fails against firearms."
     },
     "ClothingBlock:46": {
       "DisplayName": "Bulletproof Leggings",
-      "Description": "Metal bulletproof leggings designed to be surprisingly lightweight. They withstand firearm impacts without slowing you down, solving the weakness of diamond armor against bullets."
+      "Description": "Metal bulletproof leggings designed to be surprisingly lightweight. They withstand firearm impacts without slowing you down, solving the weakness of diamond armor against bullets.",
+      "CRDescription:0": "Metal bulletproof leggings designed to be surprisingly lightweight. They withstand firearm impacts without slowing you down, solving the weakness of diamond armor against bullets."
     },
     "ClothingBlock:47": {
       "DisplayName": "Bulletproof Boots",
-      "Description": "Lightweight metal bulletproof boots that offer full protection without sacrificing speed. They complete the ideal set for facing armed bandits."
+      "Description": "Lightweight metal bulletproof boots that offer full protection without sacrificing speed. They complete the ideal set for facing armed bandits.",
+      "CRDescription:0": "Lightweight metal bulletproof boots that offer full protection without sacrificing speed. They complete the ideal set for facing armed bandits."
     },
     "ClothingBlock:48": {
       "DisplayName": "Speed Boots",
-      "Description": "Inspired by the classic speed of Survivalcraft 2. These boots let you move incredibly fast, perfect for exploration, escaping danger, or reliving the original gameplay feel."
+      "Description": "Inspired by the classic speed of Survivalcraft 2. These boots let you move incredibly fast, perfect for exploration, escaping danger, or reliving the original gameplay feel.",
+      "CRDescription:0": "Inspired by the classic speed of Survivalcraft 2. These boots let you move incredibly fast, perfect for exploration, escaping danger, or reliving the original gameplay feel."
     },
     "ClothingBlock:49": {
       "DisplayName": "Super Speed Boots",
-      "Description": "Speed taken to the extreme, Survivalcraft 2 style. With these boots, you’ll cross the world at absurd speeds, ideal for fun, extreme exploration, or pure chaos."
+      "Description": "Speed taken to the extreme, Survivalcraft 2 style. With these boots, you’ll cross the world at absurd speeds, ideal for fun, extreme exploration, or pure chaos.",
+      "CRDescription:0": "Speed taken to the extreme, Survivalcraft 2 style. With these boots, you’ll cross the world at absurd speeds, ideal for fun, extreme exploration, or pure chaos."
     },
     "ClothingBlock:50": {
       "DisplayName": "Normal Jeans",
-      "Description": "Simple and comfortable pants. They don’t offer special advantages, but they get the job done for everyday survival."
-    }
+      "Description": "Simple and comfortable pants. They don’t offer special advantages, but they get the job done for everyday survival.",
+      "CRDescription:0": "Simple and comfortable pants. They don’t offer special advantages, but they get the job done for everyday survival."
+    },
+    "AntiTanksBulletBlock:0": {
+    "DisplayName": "Anti-Tanks Bullet",
+    "Description": "A special ammunition that will help us later. Use it wisely and only in emergencies if musket or shotgun bullets are ineffective in applying the necessary damage.",
+    "CRDescription:0": "Use it wisely if powerful heavy bosses have you surrounded and musket balls are ineffective."
+}
 },
       "ContentWidgets": {
         "AutoCannonWidget": {
