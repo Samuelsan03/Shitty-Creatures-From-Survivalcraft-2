@@ -266,19 +266,23 @@
     },
     "MediumFirstAidKitBlock:0": {
     "DisplayName": "Medium First Aid Kit",
-    "Description": "A medical kit designed to treat injuries by restoring a significant portion of health. Heals the target up to about half of their maximum health. Can be used on yourself or on other nearby creatures."
+    "Description": "A medical kit designed to treat injuries by restoring a significant portion of health. Heals the target up to about half of their maximum health. Can be used on yourself or on other nearby creatures.",
+    "CRDescription:0": "A basic medical kit that heals wounds up to 50% or 100% if above half health."
   },
   "LargeFirstAidKitBlock:0": {
     "DisplayName": "Large First Aid Kit",
-    "Description": "A powerful medical kit capable of fully restoring health. Instantly heals the target to maximum health. Can be used on yourself or on other nearby creatures."
+    "Description": "A powerful medical kit capable of fully restoring health. Instantly heals the target to maximum health. Can be used on yourself or on other nearby creatures.",
+    "CRDDescription:0": "An advanced medical kit that always heals to 100% regardless of current health."
   },
     "AntidoteBucketBlock:0": {
   "DisplayName": "Antidote Bucket",
-  "Description": "A bucket containing a powerful medicinal antidote. It removes poison and disease effects from the body, stopping their harmful consequences and allowing immediate recovery. When a condition is cured, lost health is also restored. It can be used on yourself or on other infected creatures."
+  "Description": "A bucket containing a powerful medicinal antidote. It removes poison and disease effects from the body, stopping their harmful consequences and allowing immediate recovery. When a condition is cured, lost health is also restored. It can be used on yourself or on other infected creatures.",
+  "CRDescription:0": "Brew a powerful antidote by infusing medicinal white flowers into purified water. Cures poison and sickness."
 },
     "TeaAntifluBucketBlock:0": {
   "DisplayName": "Anti-Flu Tea Bucket",
-  "Description": "A bucket filled with medicinal tea. Drinking it cures the flu and fully restores health."
+  "Description": "A bucket filled with medicinal tea. Drinking it cures the flu and fully restores health.",
+  "CRDescription:0": "Brew soothing anti-flu tea by combining a bucket of water with tall grass and heating it. Cures influenza and relieves symptoms."
 },
       "LavaLongspearBlock:0": {
       "DisplayName": "Lava Longspear",
@@ -306,27 +310,33 @@
     },
     "CopperSharpHammerBlock:0": {
       "DisplayName": "Copper Sharp Hammer",
-      "Description": "The Copper Sharp Hammer is a powerful weapon. At first glance it looks like a simple work tool, but in reality its lethality surpasses that of the copper machete. Although it is not as durable as the machete, it is taller and far deadlier, capable of delivering devastating blows that make it one of the most dangerous copper-based weapons."
+      "Description": "The Copper Sharp Hammer is a powerful weapon. At first glance it looks like a simple work tool, but in reality its lethality surpasses that of the copper machete. Although it is not as durable as the machete, it is taller and far deadlier, capable of delivering devastating blows that make it one of the most dangerous copper-based weapons.",
+      "CRDescription:0": "Use the old copper machete and iron hammer and turn him like a monster"
     },
     "IronSharpHammerBlock:0": {
       "DisplayName": "Iron Sharp Hammer",
-      "Description": "The Iron Sharp Hammer is similar to the iron machete, but slightly more lethal and a bit more durable. While it shares the same brutal design, its enhanced endurance and sharper impact make it a superior choice for those seeking a weapon that balances resilience with deadly efficiency."
+      "Description": "The Iron Sharp Hammer is similar to the iron machete, but slightly more lethal and a bit more durable. While it shares the same brutal design, its enhanced endurance and sharper impact make it a superior choice for those seeking a weapon that balances resilience with deadly efficiency.",
+      "CRDescription:0": "Use the old iron machete and iron hammer and turn him like a monster"
     },
     "DiamondSharpHammerBlock:0": {
       "DisplayName": "Diamond Sharp Hammer",
-      "Description": "The Diamond Sharp Hammer is similar to the diamond machete, but far more lethal and durable. Its unmatched resilience and devastating power make it an exceptional weapon, capable of enduring prolonged battles while delivering fatal strikes. Perhaps its greatest value lies in confronting bosses, where its strength and durability can turn the tide of combat."
+      "Description": "The Diamond Sharp Hammer is similar to the diamond machete, but far more lethal and durable. Its unmatched resilience and devastating power make it an exceptional weapon, capable of enduring prolonged battles while delivering fatal strikes. Perhaps its greatest value lies in confronting bosses, where its strength and durability can turn the tide of combat.",
+      "CRDescription:0": "Use the diamond machete and iron hammer and turn him into a deadly monster."
     },
     "LavaSharpHammerBlock:0": {
       "DisplayName": "Lava Sharp Hammer",
-      "Description": "The Lava Sharp Hammer is similar to the lava machete, but far more lethal and durable. Its blazing core and molten edge make it a weapon of pure destruction, capable of enduring the fiercest battles while delivering catastrophic strikes. It is not just stronger than the machete—it is a true infernal tool of war. This hammer is 100% extremely useful for slaying bosses, a weapon that radiates danger and promise. Players will feel its fiery potential, knowing that when the time comes, it may be the decisive force that turns impossible fights into victories."
+      "Description": "The Lava Sharp Hammer is similar to the lava machete, but far more lethal and durable. Its blazing core and molten edge make it a weapon of pure destruction, capable of enduring the fiercest battles while delivering catastrophic strikes. It is not just stronger than the machete—it is a true infernal tool of war. This hammer is 100% extremely useful for slaying bosses, a weapon that radiates danger and promise. Players will feel its fiery potential, knowing that when the time comes, it may be the decisive force that turns impossible fights into victories.",
+      "CRDescription:0": "Use the new lava machete and old iron hammer and turn him into a MEGA MONSTER"
     },
     "TargetStickBlock:0": {
   "DisplayName": "Targeting Stick",
-  "Description": "A specialized stick used to command allied creatures. When pointed at an enemy, it signals all nearby player-allied creatures to focus their attacks on the target. Useful for coordinating attacks and managing your creature army in battle."
+  "Description": "A specialized stick used to command allied creatures. When pointed at an enemy, it signals all nearby player-allied creatures to focus their attacks on the target. Useful for coordinating attacks and managing your creature army in battle.",
+  "CRDescription:0": "Useful for selecting an attack target so your allied creatures focus on the chosen enemy."
 },
     "PoisonBombBlock:0": {
   "DisplayName": "Poison Bomb",
-  "Description": "A green bomb that releases poisonous gas upon explosion. Perfect for poisoning areas and weakening enemies from a distance."
+  "Description": "A green bomb that releases poisonous gas upon explosion. Perfect for poisoning areas and weakening enemies from a distance.",
+  "CRDescription:0": "Toxic bomb that releases poisonous gas instead of explosive force."
 },
     "BigStonePoisonChunk:0": {
       "DisplayName": "Poisonous Giant Rock",
@@ -342,15 +352,18 @@
     },
     "CollarBlock:0": {
   "DisplayName": "Zombie Collar",
-  "Description": "A special collar that can be crafted and is essential for taming hostile zombies. Once placed on a zombie, it pacifies the creature and allows it to be domesticated as a loyal companion. The collar also provides protection against other zombie attacks and can be enchanted for additional effects. Extremely useful for players looking to build an undead army or secure their base with zombie guardians."
+  "Description": "A special collar that can be crafted and is essential for taming hostile zombies. Once placed on a zombie, it pacifies the creature and allows it to be domesticated as a loyal companion. The collar also provides protection against other zombie attacks and can be enchanted for additional effects. Extremely useful for players looking to build an undead army or secure their base with zombie guardians.",
+  "CRDescription:0": "Use it wisely to enslave the infected"
     },
     "RefrigeratorXiaomiBlock:0": {
       "DisplayName": "Xiaomi Refrigerator",
-      "Description": "A Xiaomi refrigerator is a household appliance designed for cooling and storing food. It is defined as a smart refrigerator that provides efficient preservation of perishable goods. In the mod it is useful as an object that represents a modern appliance and expands building options. Its main utility is to preserve food if you are tired of it spoiling quickly, both raw and cooked, giving more durability time. Note: the refrigerator requires energy such as a battery, lever, or another electrical source, otherwise it will not work."
+      "Description": "A Xiaomi refrigerator is a household appliance designed for cooling and storing food. It is defined as a smart refrigerator that provides efficient preservation of perishable goods. In the mod it is useful as an object that represents a modern appliance and expands building options. Its main utility is to preserve food if you are tired of it spoiling quickly, both raw and cooked, giving more durability time. Note: the refrigerator requires energy such as a battery, lever, or another electrical source, otherwise it will not work.",
+      "CRDescription:0": "Useful for storing raw or cooked food if you're tired of it spoiling quickly."
     },
     "AirConditionerBlock:0": {
       "DisplayName": "Air Conditioner",
-      "Description": "A climate control device that adjusts ambient temperature. Configurable via interface, can cool water and melt ice within an adjustable radius."
+      "Description": "A climate control device that adjusts ambient temperature. Configurable via interface, can cool water and melt ice within an adjustable radius.",
+      "CRDescription:0": "To control the temperature in your beautiful home"
     },
     "BigStoneChunk:0": {
   "DisplayName": "Rare Giant Rock",
@@ -358,7 +371,8 @@
     },
     "TridentBlock:0": {
   "DisplayName": "Trident",
-  "Description": "A legendary three-pronged spear historically associated with sea deities like Poseidon in Greek mythology, symbolizing dominion over the oceans. In ancient times, it was both a divine symbol and a formidable weapon used by warriors and sea gods alike. Forged from rare materials found in the deepest ocean trenches, this Trident channels the power of the tides. While it can be crafted using extremely expensive resources including iron blocks and enchanted marine crystals, the more direct method to obtain it is by defeating Hombre Agua in battle. Wield it to command respect on both land and sea."
+  "Description": "A legendary three-pronged spear historically associated with sea deities like Poseidon in Greek mythology, symbolizing dominion over the oceans. In ancient times, it was both a divine symbol and a formidable weapon used by warriors and sea gods alike. Forged from rare materials found in the deepest ocean trenches, this Trident channels the power of the tides. While it can be crafted using extremely expensive resources including iron blocks and enchanted marine crystals, the more direct method to obtain it is by defeating Hombre Agua in battle. Wield it to command respect on both land and sea.",
+  "CRDescription:0": "A historical weapon, a symbol of Poseidon and Neptune, that does so much damage?"
     },  
   "ScyteBlock:0": {
   "DisplayName": "Scythe",
@@ -400,77 +414,95 @@
       "DisplayName": "Stone Pickaxe",
       "Description": "How could I forget the old days, bro? :\")"
     },
-    "LavaSpear:0": {
+    "LavaSpearBlock:0": {
       "DisplayName": "Lava Spear",
-      "Description": "Forged in magma - burns through anything"
+      "Description": "Forged in magma - burns through anything",
+      "CRDescription:0": "Forged in magma - burns through anything"
     },
-    "LavaMachete:0": {
+    "LavaMacheteBlock:0": {
       "DisplayName": "Lava Machete",
-      "Description": "Molten blade that dismembers with burning precision"
+      "Description": "Molten blade that dismembers with burning precision",
+      "CRDescription:0": "Molten blade that dismembers with burning precision"
     },
-    "LavaPickaxe:0": {
+    "LavaPickaxeBlock:0": {
       "DisplayName": "Lava Pickaxe",
-      "Description": "Mines ores with molten power"
+      "Description": "Mines ores with molten power",
+      "CRDescription:0": "Mines ores with molten power"
     },
-    "LavaShovel:0": {
+    "LavaShovelBlock:0": {
       "DisplayName": "Lava Shovel",
-      "Description": "Digs through earth like it's butter - hot butter"
+      "Description": "Digs through earth like it's butter - hot butter",
+      "CRDescription:0": "Digs through earth like it's butter - hot butter"
     },
-    "LavaHammer:0": {
+    "LavaHammerBlock:0": {
       "DisplayName": "Lava Hammer",
-      "Description": "Smashes rocks with volcanic force"
+      "Description": "Smashes rocks with volcanic force",
+      "CRDescription:0": "Smashes rocks with volcanic force"
     },
-    "LavaAxe:0": {
+    "LavaAxeBlock:0": {
       "DisplayName": "Lava Axe",
-      "Description": "Chops wood with burning fury"
+      "Description": "Chops wood with burning fury",
+      "CRDescription:0": "Chops wood with burning fury."
     },
-    "LavaRake:0": {
+    "LavaRakeBlock:0": {
       "DisplayName": "Lava Rake",
-      "Description": "Tills soil with volcanic efficiency"
+      "Description": "Tills soil with volcanic efficiency",
+      "CRDescription:0": "Tills soil with volcanic efficiency"
     },
-    "ItemsLauncher:0": {
+    "ItemsLauncherBlock:0": {
       "DisplayName": "Items Launcher",
-      "Description": "Launches any type of block or object. Although expensive to craft, it's a powerful weapon like the musket. Be careful!"
+      "Description": "Launches any type of block or object. Although expensive to craft, it's a powerful weapon like the musket. Be careful!",
+      "CRDescription:0": "Launches any block or item. Expensive but powerful, similar to the musket."
     },
-    "FlameThrower:0": {
+    "FlameThrowerBlock:0": {
       "DisplayName": "Flamethrower",
-      "Description": "The flamethrower is an incendiary weapon designed to project controlled fire. It was invented by Richard Fiedler in 1901 and first used in combat by the German army in 1915 during World War I. It works by using a fuel tank (usually thickened gasoline or oil) and compressed gas to propel the burning stream through a nozzle with ignition. To use it, the operator must insert Flame Bullets as ammunition, then pull the trigger to unleash fire against enemy fortifications or groups of soldiers. The advantage is that it supports up to 15 rounds (15/15), giving the player sustained firepower before reloading. The Flame Bullet is the secondary ammunition: incendiary projectiles that complement the flamethrower, useful for ranged attacks and maintaining pressure on the enemy."
+      "Description": "The flamethrower is an incendiary weapon designed to project controlled fire. It was invented by Richard Fiedler in 1901 and first used in combat by the German army in 1915 during World War I. It works by using a fuel tank (usually thickened gasoline or oil) and compressed gas to propel the burning stream through a nozzle with ignition. To use it, the operator must insert Flame Bullets as ammunition, then pull the trigger to unleash fire against enemy fortifications or groups of soldiers. The advantage is that it supports up to 15 rounds (15/15), giving the player sustained firepower before reloading. The Flame Bullet is the secondary ammunition: incendiary projectiles that complement the flamethrower, useful for ranged attacks and maintaining pressure on the enemy.",
+      "CRDescription:0": "Improved musket with fuel tank and ignition system. Uses incendiary projectile or poison gas projectiles."
     },
-    "FlameBullet:0": {
+    "FlameBulletBlock:0": {
   "DisplayName": "Incendiary Projectile",
-  "Description": "Fire-based projectile for the flamethrower. On impact, it ignites terrain and creatures, may trigger explosions at high speed, and inflicts burn damage."
+  "Description": "Fire-based projectile for the flamethrower. On impact, it ignites terrain and creatures, may trigger explosions at high speed, and inflicts burn damage.",
+  "CRDescription:0": "Incendiary ammo for flamethrower. Burns on impact."
 },
-"FlameBullet:1": {
+"FlameBulletBlock:1": {
   "DisplayName": "Poison Gas Projectile",
-  "Description": "Chemical projectile for the flamethrower. Releases toxic gas that infects creatures with poison or disease, weakening them over time and dealing additional damage."
+  "Description": "Chemical projectile for the flamethrower. Releases toxic gas that infects creatures with poison or disease, weakening them over time and dealing additional damage.",
+  "CRDescription:1": "Poisonous ammunition for the flamethrower. Infects targets on impact."
 },
-    "RepeatCrossbow:0": {
+    "RepeatCrossbowBlock:0": {
       "DisplayName": "Repeating Crossbow",
-      "Description": "An advanced version of the standard crossbow, optimized for sustained ranged fire. Unlike the normal crossbow which fires a single bolt before reloading, the Repeating Crossbow features an internal 8-bolt magazine and progressive tension system allowing continuous fire. It deals slightly less damage per shot than the normal crossbow but has a higher fire rate and faster reload. Compatible with special bolts: Copper, Iron, Diamond, Explosive, and Poison."
+      "Description": "An advanced version of the standard crossbow, optimized for sustained ranged fire. Unlike the normal crossbow which fires a single bolt before reloading, the Repeating Crossbow features an internal 8-bolt magazine and progressive tension system allowing continuous fire. It deals slightly less damage per shot than the normal crossbow but has a higher fire rate and faster reload. Compatible with special bolts: Copper, Iron, Diamond, Explosive, and Poison.",
+      "CRDescription:0": "Automatic crossbow with 8-arrow magazine - complex mechanical design"
     },
-    "RepeatArrow:0": {
+    "RepeatArrowBlock:0": {
       "DisplayName": "Repeating Copper Bolt",
-      "Description": "Lightweight bolt for repeating crossbows, made of copper. Provides moderate damage and high stability during rapid firing. Optimized to maintain accuracy in sustained automatic fire."
+      "Description": "Lightweight bolt for repeating crossbows, made of copper. Provides moderate damage and high stability during rapid firing. Optimized to maintain accuracy in sustained automatic fire.",
+      "CRDescription:0": "Copper bolt for repeating crossbows. Moderate damage and high stability."
     },
-    "RepeatArrow:1": {
+    "RepeatArrowBlock:1": {
       "DisplayName": "Repeating Iron Bolt",
-      "Description": "Reinforced iron bolt for repeating crossbows. Deals higher damage and better armor penetration than standard iron bolts while maintaining accuracy in sustained bursts."
+      "Description": "Reinforced iron bolt for repeating crossbows. Deals higher damage and better armor penetration than standard iron bolts while maintaining accuracy in sustained bursts.",
+      "CRDescription:1": "Iron bolt for repeating crossbows. Higher damage and better armor penetration."
     },
-    "RepeatArrow:2": {
+    "RepeatArrowBlock:2": {
       "DisplayName": "Repeating Diamond Bolt",
-      "Description": "High-tier bolt with a diamond tip designed for advanced repeating crossbows. Offers exceptional armor penetration and high sustained damage. Optimized for rapid burst firing."
+      "Description": "High-tier bolt with a diamond tip designed for advanced repeating crossbows. Offers exceptional armor penetration and high sustained damage. Optimized for rapid burst firing.",
+      "CRDescription:2": "Diamond bolt for repeating crossbows. Exceptional armor penetration and high sustained damage."
     },
-    "RepeatArrow:3": {
+    "RepeatArrowBlock:3": {
       "DisplayName": "Repeating Explosive Bolt",
-      "Description": "Explosive bolt for repeating crossbows. Creates small explosions on impact. While individual damage is lower than standard explosive bolts, it allows rapid explosive bursts, ideal for crowd control and area denial."
+      "Description": "Explosive bolt for repeating crossbows. Creates small explosions on impact. While individual damage is lower than standard explosive bolts, it allows rapid explosive bursts, ideal for crowd control and area denial.",
+      "CRDescription:3": "Explosive bolt for repeating crossbows. Rapid explosive bursts for crowd control."
     },
-    "RepeatArrow:4": {
+    "RepeatArrowBlock:4": {
       "DisplayName": "Repeating Poison Bolt",
-      "Description": "Low-lethality poison bolt. Deals low initial damage but applies poison for 30 seconds. Ideal for weakening enemies without killing them instantly."
+      "Description": "Low-lethality poison bolt. Deals low initial damage but applies poison for 30 seconds. Ideal for weakening enemies without killing them instantly.",
+      "CRDescription:4": "Poisonous bolt for repeating crossbows. Low damage but applies poison effect."
     },
-    "RepeatArrow:5": {
+    "RepeatArrowBlock:5": {
       "DisplayName": "Repeating Severe Poison Bolt",
-      "Description": "Highly toxic bolt for repeating crossbows. Applies a severe poison effect for 100 seconds. Designed to weaken entire groups through rapid status application."
+      "Description": "Highly toxic bolt for repeating crossbows. Applies a severe poison effect for 100 seconds. Designed to weaken entire groups through rapid status application.",
+      "CRDescription:5": "Highly poisonous bolt for repeating crossbows. Applies severe poison effect."
     },
     "AA12Block:0": {
   "DisplayName": "Atchisson AA-12 Auto Shotgun",
