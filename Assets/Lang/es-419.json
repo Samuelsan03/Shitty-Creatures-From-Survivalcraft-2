@@ -294,27 +294,33 @@
 },
     "LavaLongspearBlock:0": {
       "DisplayName": "Lanza Larga de Lava",
-      "Description": "La Lanza Larga de Lava es la cúspide absoluta de las armas cuerpo a cuerpo. Forjada con energía volcánica y materiales indestructibles, supera ampliamente a la de diamante en daño y durabilidad. Su filo ardiente no solo inflige heridas devastadoras, sino que también quema a los enemigos con cada impacto, convirtiéndola en un arma temida incluso por los jefes más poderosos. Con un alcance extendido y una resistencia prácticamente infinita, esta lanza es el símbolo máximo de poder y supervivencia. Solo los más preparados pueden blandirla con eficacia."
+      "Description": "La Lanza Larga de Lava es la cúspide absoluta de las armas cuerpo a cuerpo. Forjada con energía volcánica y materiales indestructibles, supera ampliamente a la de diamante en daño y durabilidad. Su filo ardiente no solo inflige heridas devastadoras, sino que también quema a los enemigos con cada impacto, convirtiéndola en un arma temida incluso por los jefes más poderosos. Con un alcance extendido y una resistencia prácticamente infinita, esta lanza es el símbolo máximo de poder y supervivencia. Solo los más preparados pueden blandirla con eficacia.",
+      "CRDescription:0": "Versión mejorada y alargada de la lanza de lava original."
     },
     "DiamondLongspearBlock:0": {
       "DisplayName": "Lanza Larga de Diamante",
-      "Description": "La Lanza Larga de Diamante es la culminación de la línea de lanzas, superando ampliamente a las de madera, piedra, cobre e hierro. Su punta de diamante le otorga un daño devastador y una durabilidad excepcional, capaz de resistir los combates más intensos sin perder eficacia. Además de su alcance extendido, esta arma combina potencia y resistencia, convirtiéndose en una herramienta definitiva para mantener a los enemigos a raya y dominar el campo de batalla. Es considerada una de las armas más letales y prestigiosas que un jugador puede obtener."
+      "Description": "La Lanza Larga de Diamante es la culminación de la línea de lanzas, superando ampliamente a las de madera, piedra, cobre e hierro. Su punta de diamante le otorga un daño devastador y una durabilidad excepcional, capaz de resistir los combates más intensos sin perder eficacia. Además de su alcance extendido, esta arma combina potencia y resistencia, convirtiéndose en una herramienta definitiva para mantener a los enemigos a raya y dominar el campo de batalla. Es considerada una de las armas más letales y prestigiosas que un jugador puede obtener.",
+      "CRDescription:0": "Versión mejorada y alargada de la lanza de diamante original."
     },
     "IronLongspearBlock:0": {
       "DisplayName": "Lanza Larga de Hierro",
-      "Description": "La Lanza Larga de Hierro es un arma mucho más avanzada que sus predecesoras de madera, piedra y cobre. Su punta forjada en hierro le otorga alto daño y una durabilidad considerable, convirtiéndola en una herramienta letal para combates prolongados. A diferencia de las versiones anteriores, esta lanza no solo ofrece un alcance extendido, sino también una resistencia capaz de soportar enfrentamientos intensos. Es una de las primeras armas que realmente puede considerarse de nivel intermedio, ideal para jugadores que buscan mayor poder ofensivo y fiabilidad en el campo de batalla."
+      "Description": "La Lanza Larga de Hierro es un arma mucho más avanzada que sus predecesoras de madera, piedra y cobre. Su punta forjada en hierro le otorga alto daño y una durabilidad considerable, convirtiéndola en una herramienta letal para combates prolongados. A diferencia de las versiones anteriores, esta lanza no solo ofrece un alcance extendido, sino también una resistencia capaz de soportar enfrentamientos intensos. Es una de las primeras armas que realmente puede considerarse de nivel intermedio, ideal para jugadores que buscan mayor poder ofensivo y fiabilidad en el campo de batalla.",
+      "CRDescription:0": "Versión mejorada y alargada de la lanza de hierro original."
     },
     "CopperLongspearBlock:0": {
       "DisplayName": "Lanza Larga de Cobre",
-      "Description": "La Lanza Larga de Cobre representa un avance significativo respecto a las versiones de madera y piedra. Su punta metálica le otorga más daño y una durabilidad superior, convirtiéndola en un arma mucho más confiable para combates prolongados. Aunque sigue siendo relativamente básica frente a armas de hierro o acero, su alcance extendido y su resistencia hacen que sea una herramienta táctica ideal para mantener a los enemigos a raya. Es la primera lanza que realmente marca una mejora notable en tu arsenal."
+      "Description": "La Lanza Larga de Cobre representa un avance significativo respecto a las versiones de madera y piedra. Su punta metálica le otorga más daño y una durabilidad superior, convirtiéndola en un arma mucho más confiable para combates prolongados. Aunque sigue siendo relativamente básica frente a armas de hierro o acero, su alcance extendido y su resistencia hacen que sea una herramienta táctica ideal para mantener a los enemigos a raya. Es la primera lanza que realmente marca una mejora notable en tu arsenal.",
+      "CRDescription:0": "Versión mejorada y alargada de la lanza de cobre original."
     },
     "StoneLongspearBlock:0": {
       "DisplayName": "Lanza Larga de Piedra",
-      "Description": "La Lanza Larga de Piedra es una evolución de la lanza de madera, más resistente y con un filo improvisado en su punta. A diferencia de la versión básica, esta arma inflige más daño y posee una durabilidad superior, lo que la convierte en una opción confiable para combates prolongados. Su mayor tamaño y alcance permiten mantener a los enemigos a distancia, ofreciendo una ventaja táctica en enfrentamientos cuerpo a cuerpo."
+      "Description": "La Lanza Larga de Piedra es una evolución de la lanza de madera, más resistente y con un filo improvisado en su punta. A diferencia de la versión básica, esta arma inflige más daño y posee una durabilidad superior, lo que la convierte en una opción confiable para combates prolongados. Su mayor tamaño y alcance permiten mantener a los enemigos a distancia, ofreciendo una ventaja táctica en enfrentamientos cuerpo a cuerpo.",
+      "CRDescription:0": "Versión mejorada y alargada de la lanza de piedra original."
     },
     "WoodenLongspearBlock:0": {
       "DisplayName": "Lanza Larga de Madera",
-      "Description": "La Lanza Larga de Madera es una variante más grande y extensa que la lanza de madera original. Aunque su daño es moderado y su durabilidad limitada, ofrece un alcance superior que permite mantener a los enemigos a mayor distancia. Es una opción básica pero táctica para quienes buscan defenderse en combate cuerpo a cuerpo con una herramienta sencilla y confiable."
+      "Description": "La Lanza Larga de Madera es una variante más grande y extensa que la lanza de madera original. Aunque su daño es moderado y su durabilidad limitada, ofrece un alcance superior que permite mantener a los enemigos a mayor distancia. Es una opción básica pero táctica para quienes buscan defenderse en combate cuerpo a cuerpo con una herramienta sencilla y confiable.",
+        "CRDescription:0": "Versión mejorada y alargada de la lanza de madera original."
     },
     "CopperSharpHammerBlock:0": {
   "DisplayName": "Martillo de Cobre Afilado",
@@ -338,7 +344,8 @@
 },
     "AntiTanksBulletBlock:0": {
     "DisplayName": "Bala Anti-Tanks",
-    "Description": "Una munición especial que nos ayudará más tarde. Úsala sabiamente y solo en casos de emergencia si la bala de mosquete o perdigón no funciona para aplicar el daño necesario."
+    "Description": "Una munición especial que nos ayudará más tarde. Úsala sabiamente y solo en casos de emergencia si la bala de mosquete o perdigón no funciona para aplicar el daño necesario.",
+    "CRDescription:0": "Úsalo sabiamente si jefes pesados y poderosos te tienen rodeado y las balas de mosquete son ineficaces."
 },
     "TargetStickBlock:0": {
   "DisplayName": "Vara de Señalización",
@@ -392,39 +399,48 @@
     },
     "WoodAxeBlock:0": {
       "DisplayName": "Hacha de Madera",
-      "Description": "Volviendo a lo básico - como en los viejos tiempos"
+      "Description": "Volviendo a lo básico - como en los viejos tiempos",
+      "CRDescription:0": "Volviendo a lo básico - como en los viejos tiempos."
     },
     "WoodMacheteBlock:0": {
       "DisplayName": "Machete de Madera",
-      "Description": "Herramienta clásica de la versión 2.0"
+      "Description": "Herramienta clásica de la versión 2.0",
+      "CRDescription:0": "Herramienta clásica de la versión 2.0."
     },
     "WoodPickaxeBlock:0": {
       "DisplayName": "Pico de Madera",
-      "Description": "Minería nostálgica - era previa a 2.1"
+      "Description": "Minería nostálgica - era previa a 2.1",
+      "CRDescription:0": "Minería nostálgica - era previa a 2.1."
     },
     "WoodShovelBlock:0": {
       "DisplayName": "Pala de Madera",
-      "Description": "Excavación simple - cuando la vida era más fácil"
+      "Description": "Excavación simple - cuando la vida era más fácil",
+      "CRDescription:0": "Excavación simple - cuando la vida era más fácil."
     },
     "StoneShovelBlock:0": {
       "DisplayName": "Pala de Piedra",
-      "Description": "Tecnología de la Edad de Piedra revivida"
+      "Description": "Tecnología de la Edad de Piedra revivida",
+      "CRDescription:0": "Tecnología de la Edad de Piedra revivida."
     },
     "StoneAxeOriginalBlock:0": {
       "DisplayName": "Hacha de Piedra (Original)",
-      "Description": "Primitiva pero efectiva - previa a 2.2"
+      "Description": "Primitiva pero efectiva - previa a 2.2",
+      "CRDescription:0": "Primitiva pero efectiva - previa a 2.2."
     },
     "StoneMacheteBlock:0": {
       "DisplayName": "Machete de Piedra",
-      "Description": "Cuando la piedra podía cortar - recuerdos de la versión 2.0"
+      "Description": "Cuando la piedra podía cortar - recuerdos de la versión 2.0",
+      "CRDescription:0": "Cuando la piedra podía cortar - recuerdos de la versión 2.0."
     },
     "StoneRakeBlock:0": {
       "DisplayName": "Rastrillo de Piedra",
-      "Description": "Herramienta agrícola antigua - volver a las raíces"
+      "Description": "Herramienta agrícola antigua - volver a las raíces",
+      "CRDescription:0": "Herramienta agrícola antigua - volver a las raíces."
     },
     "StonePickaxeBlock:0": {
       "DisplayName": "Pico de Piedra",
-      "Description": "¿Cómo podría olvidar los viejos tiempos, hermano? :\")"
+      "Description": "¿Cómo podría olvidar los viejos tiempos, hermano? :\")",
+      "CRDescription:0": "¿Cómo podría olvidar los viejos tiempos, hermano? :\")"
     },
     "LavaSpearBlock:0": {
       "DisplayName": "Lanza de Lava",
@@ -698,51 +714,63 @@
   },
   "ClothingBlock:39": {
     "DisplayName": "Camiseta Digimon",
-    "Description": "Una camiseta ligera inspirada en Digimon. Brinda protección mínima pero simboliza la lealtad al Mundo Digital. Cómoda para uso diario y puede teñirse para adaptarse a tu estilo."
+    "Description": "Una camiseta ligera inspirada en Digimon. Brinda protección mínima pero simboliza la lealtad al Mundo Digital. Cómoda para uso diario y puede teñirse para adaptarse a tu estilo.",
+      "CRDescription:0": "Una camiseta ligera inspirada en Digimon. Brinda protección mínima pero simboliza la lealtad al Mundo Digital. Cómoda para uso diario y puede teñirse para adaptarse a tu estilo."
   },
   "ClothingBlock:40": {
     "DisplayName": "Casco de Armadura de Lava",
-    "Description": "Un casco forjado con roca fundida. Brinda gran protección y abrigo, protegiendo la cabeza tanto de ataques como del frío."
+    "Description": "Un casco forjado con roca fundida. Brinda gran protección y abrigo, protegiendo la cabeza tanto de ataques como del frío.",
+    "CRDescription:0": "Un casco forjado con roca fundida. Brinda gran protección y abrigo, protegiendo la cabeza tanto de ataques como del frío."
   },
   "ClothingBlock:41": {
     "DisplayName": "Peto de Armadura de Lava",
-    "Description": "Un peto imbuido con energía volcánica. Ofrece defensa duradera y aislamiento, manteniendo el torso abrigado en climas extremos."
+    "Description": "Un peto imbuido con energía volcánica. Ofrece defensa duradera y aislamiento, manteniendo el torso abrigado en climas extremos.",
+    "CRDescription:0": "Un peto imbuido con energía volcánica. Ofrece defensa duradera y aislamiento, manteniendo el torso abrigado en climas extremos."
   },
   "ClothingBlock:42": {
     "DisplayName": "Grebas de Armadura de Lava",
-    "Description": "Grebas forjadas con piedra volcánica. Refuerzan las piernas con la fuerza de la lava y ofrecen abrigo contra el frío."
+    "Description": "Grebas forjadas con piedra volcánica. Refuerzan las piernas con la fuerza de la lava y ofrecen abrigo contra el frío.",
+    "CRDescription:0": "Grebas forjadas con piedra volcánica. Refuerzan las piernas con la fuerza de la lava y ofrecen abrigo contra el frío."
   },
   "ClothingBlock:43": {
     "DisplayName": "Botas de Armadura de Lava",
-    "Description": "Botas elaboradas con lava endurecida. Mejoran la resistencia y la velocidad, manteniendo los pies abrigados en condiciones heladas."
+    "Description": "Botas elaboradas con lava endurecida. Mejoran la resistencia y la velocidad, manteniendo los pies abrigados en condiciones heladas.",
+    "CRDescription:0": "Botas elaboradas con lava endurecida. Mejoran la resistencia y la velocidad, manteniendo los pies abrigados en condiciones heladas."
   },
   "ClothingBlock:44": {
       "DisplayName": "Casco Antibalas",
-      "Description": "¿Cansado de que la armadura de diamante no sirva contra disparos? Este casco metálico antibalas está fabricado con materiales livianos, ofreciendo gran protección contra armas de fuego usadas por NPCs y bandidos sin penalizar la movilidad."
+      "Description": "¿Cansado de que la armadura de diamante no sirva contra disparos? Este casco metálico antibalas está fabricado con materiales livianos, ofreciendo gran protección contra armas de fuego usadas por NPCs y bandidos sin penalizar la movilidad.",
+      "CRDescription:0": "¿Cansado de que la armadura de diamante no sirva contra disparos? Este casco metálico antibalas está fabricado con materiales livianos, ofreciendo gran protección contra armas de fuego usadas por NPCs y bandidos sin penalizar la movilidad."
     },
     "ClothingBlock:45": {
       "DisplayName": "Peto Antibalas",
-      "Description": "Aunque está hecho de metal, este peto antibalas utiliza una estructura liviana que no reduce la movilidad. Es la solución definitiva para sobrevivir a disparos de NPCs armados cuando la armadura de diamante falla."
+      "Description": "Aunque está hecho de metal, este peto antibalas utiliza una estructura liviana que no reduce la movilidad. Es la solución definitiva para sobrevivir a disparos de NPCs armados cuando la armadura de diamante falla.",
+      "CRDescription:0": "Aunque está hecho de metal, este peto antibalas utiliza una estructura liviana que no reduce la movilidad. Es la solución definitiva para sobrevivir a disparos de NPCs armados cuando la armadura de diamante falla."
     },
     "ClothingBlock:46": {
       "DisplayName": "Pantalones Antibalas",
-      "Description": "Grebas metálicas antibalas diseñadas para ser sorprendentemente livianas. Resisten impactos de armas de fuego sin afectar el movimiento, eliminando el problema de una armadura de diamante inútil contra balas."
+      "Description": "Grebas metálicas antibalas diseñadas para ser sorprendentemente livianas. Resisten impactos de armas de fuego sin afectar el movimiento, eliminando el problema de una armadura de diamante inútil contra balas.",
+      "CRDescription:0": "Grebas metálicas antibalas diseñadas para ser sorprendentemente livianas. Resisten impactos de armas de fuego sin afectar el movimiento, eliminando el problema de una armadura de diamante inútil contra balas."
     },
     "ClothingBlock:47": {
       "DisplayName": "Botas Antibalas",
-      "Description": "Botas antibalas de metal liviano que ofrecen protección total sin sacrificar velocidad. Completan el set ideal contra bandidos armados, donde la armadura de diamante no es suficiente."
+      "Description": "Botas antibalas de metal liviano que ofrecen protección total sin sacrificar velocidad. Completan el set ideal contra bandidos armados, donde la armadura de diamante no es suficiente.",
+      "CRDescription:0": "Botas antibalas de metal liviano que ofrecen protección total sin sacrificar velocidad. Completan el set ideal contra bandidos armados, donde la armadura de diamante no es suficiente."
     },
     "ClothingBlock:48": {
       "DisplayName": "Botas Veloces",
-      "Description": "Inspiradas en la velocidad clásica de Survivalcraft 2. Estas botas te permiten moverte a gran velocidad, perfectas para explorar, escapar o simplemente sentir la libertad de correr como en el juego original."
+      "Description": "Inspiradas en la velocidad clásica de Survivalcraft 2. Estas botas te permiten moverte a gran velocidad, perfectas para explorar, escapar o simplemente sentir la libertad de correr como en el juego original.",
+      "CRDescription:0": "Inspiradas en la velocidad clásica de Survivalcraft 2. Estas botas te permiten moverte a gran velocidad, perfectas para explorar, escapar o simplemente sentir la libertad de correr como en el juego original."
     },
     "ClothingBlock:49": {
       "DisplayName": "Botas Súper Veloces",
-      "Description": "La velocidad llevada al extremo, al estilo Survivalcraft 2. Con estas botas recorrerás el mundo a una rapidez absurda, ideales para diversión, exploración extrema o puro caos."
+      "Description": "La velocidad llevada al extremo, al estilo Survivalcraft 2. Con estas botas recorrerás el mundo a una rapidez absurda, ideales para diversión, exploración extrema o puro caos.",
+      "CRDescription:0": "La velocidad llevada al extremo, al estilo Survivalcraft 2. Con estas botas recorrerás el mundo a una rapidez absurda, ideales para diversión, exploración extrema o puro caos."
     },
     "ClothingBlock:50": {
       "DisplayName": "Jean Normal",
-      "Description": "Un pantalón simple y cómodo. No ofrece grandes ventajas, pero cumple su función básica para la supervivencia diaria."
+      "Description": "Un pantalón simple y cómodo. No ofrece grandes ventajas, pero cumple su función básica para la supervivencia diaria.",
+      "CRDescription:0": "Un pantalón simple y cómodo. No ofrece grandes ventajas, pero cumple su función básica para la supervivencia diaria."
     }
 },
   "ContentWidgets": {
