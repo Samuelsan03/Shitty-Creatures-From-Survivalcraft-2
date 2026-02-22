@@ -1,31 +1,31 @@
 <ShittyRecipes>
     <Recipes>
-    <Recipe Result="WoodenLongspearBlock" ResultCount="1" RequiredHeatLevel="0" a="planks" b="stick" c="woodenspear" Description="Improved and lengthened version of the original wooden spear">
+    <Recipe Result="WoodenLongspearBlock" ResultCount="1" RequiredHeatLevel="0" a="planks" b="stick" c="woodenspear" Description="[0]">
             " a "
             "aca"
             " b "
             </Recipe>
-    <Recipe Result="StoneLongspearBlock" ResultCount="1" RequiredHeatLevel="0" a="cobblestone" b="stick" c="stonespear" Description="Improved and lengthened version of the original stone spear">
+    <Recipe Result="StoneLongspearBlock" ResultCount="1" RequiredHeatLevel="0" a="cobblestone" b="stick" c="stonespear" Description="[0]">
             " a "
             "aca"
             " b "
             </Recipe>
-    <Recipe Result="CopperLongspearBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="2" a="copperingot" b="stick" c="copperspear" Description="Improved and lengthened version of the original copper spear">
+    <Recipe Result="CopperLongspearBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="2" a="copperingot" b="stick" c="copperspear" Description="[0]">
             " a "
             "aca"
             " b "
             </Recipe>
-    <Recipe Result="IronLongspearBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="3" a="ironingot" b="stick" c="ironspear" Description="Improved and lengthened version of the original iron spear">
+    <Recipe Result="IronLongspearBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="3" a="ironingot" b="stick" c="ironspear" Description="[0]">
             " a "
             "aca"
             " b "
             </Recipe>
-            <Recipe Result="DiamondLongspearBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="4" a="diamond" b="stick" c="diamondspear" Description="Improved and lengthened version of the original diamond spear">
+            <Recipe Result="DiamondLongspearBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="4" a="diamond" b="stick" c="diamondspear" Description="[0]">
             " a "
             "aca"
             " b "
             </Recipe>
-            <Recipe Result="LavaLongspearBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="magmabucket" b="stick" c="lavaspear" Description="Improved and lengthened version of the original lava spear">
+            <Recipe Result="LavaLongspearBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="magmabucket" b="stick" c="lavaspear" Description="[0]">
             " a "
             "aca"
             " b "
@@ -33,52 +33,52 @@
     <Recipe Result="ItemsLauncherBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="10" a="copperblock" b="musket" c="rod" Description="[0]">
 			"bca"
 		</Recipe>
-        <Recipe Result="WoodMacheteBlock" ResultCount="1" RequiredHeatLevel="0" a="stick" b="woodenslab" Description="Classic tool from version 2.0">
+        <Recipe Result="WoodMacheteBlock" ResultCount="1" RequiredHeatLevel="0" a="stick" b="woodenslab" Description="[0]">
             "b"
             "b"
             "a"
         </Recipe>
-        <Recipe Result="WoodAxeBlock" ResultCount="1" RequiredHeatLevel="0" a="stick" b="planks" Description="Back to basics - like the old days">
+        <Recipe Result="WoodAxeBlock" ResultCount="1" RequiredHeatLevel="0" a="stick" b="planks" Description="[0]">
             "bb"
             "ba"
             " a"
         </Recipe>
-        <Recipe Result="WoodPickaxeBlock" ResultCount="1" RequiredHeatLevel="0" a="stick" b="planks" Description="Nostalgic mining - pre-2.1 era">
+        <Recipe Result="WoodPickaxeBlock" ResultCount="1" RequiredHeatLevel="0" a="stick" b="planks" Description="[0]">
             "bbb"
             " a "
             " a "
         </Recipe>
-        <Recipe Result="WoodShovelBlock" ResultCount="1" RequiredHeatLevel="0" a="stick" b="planks" Description="Simple digging - back when life was easier">
+        <Recipe Result="WoodShovelBlock" ResultCount="1" RequiredHeatLevel="0" a="stick" b="planks" Description="[0]">
             "b"
             "a"
             "a"
         </Recipe>
-        <Recipe Result="StonePickaxeBlock" ResultCount="1" RequiredHeatLevel="0" a="stick" b="cobblestone" Description="How could I forget the old days, bro?">
+        <Recipe Result="StonePickaxeBlock" ResultCount="1" RequiredHeatLevel="0" a="stick" b="cobblestone" Description="[0]">
             "bbb"
             " a "
             " a "
         </Recipe>
-        <Recipe Result="StoneAxeOriginalBlock" ResultCount="1" RequiredHeatLevel="0" a="stick" b="cobblestoneslab" Description="Primitive but effective - pre-2.2">
+        <Recipe Result="StoneAxeOriginalBlock" ResultCount="1" RequiredHeatLevel="0" a="stick" b="cobblestoneslab" Description="[0]">
             "bb"
             "ba"
             " a"
         </Recipe>
-        <Recipe Result="StoneMacheteBlock" ResultCount="1" RequiredHeatLevel="0" a="stick" b="cobblestoneslab" Description="Back when stone could cut - version 2.0 memories">
+        <Recipe Result="StoneMacheteBlock" ResultCount="1" RequiredHeatLevel="0" a="stick" b="cobblestoneslab" Description="[0]">
             "b"
             "b"
             "a"
         </Recipe>
-        <Recipe Result="StonePickaxeBlock" ResultCount="1" RequiredHeatLevel="0" a="stick" b="cobblestoneslab" Description="How could I forget the old days, bro?">
+        <Recipe Result="StonePickaxeBlock" ResultCount="1" RequiredHeatLevel="0" a="stick" b="cobblestoneslab" Description="[0]">
             "bbb"
             " a "
             " a "
         </Recipe>
-        <Recipe Result="StoneRakeBlock" ResultCount="1" RequiredHeatLevel="0" a="stick" b="cobblestone" Description="Ancient farming tool - back to roots">
+        <Recipe Result="StoneRakeBlock" ResultCount="1" RequiredHeatLevel="0" a="stick" b="cobblestone" Description="[0]">
             "b b"
             " a "
             " a "
         </Recipe>
-        <Recipe Result="StoneShovelBlock" ResultCount="1" RequiredHeatLevel="0" a="stick" b="cobblestoneslab" Description="Stone age technology revived">
+        <Recipe Result="StoneShovelBlock" ResultCount="1" RequiredHeatLevel="0" a="stick" b="cobblestoneslab" Description="[0]">
             "b"
             "a"
             "a"
@@ -208,7 +208,7 @@
     "bab"
     "cdc"
 </Recipe>
-        <Recipe Result="AntiTanksBulletBlock" ResultCount="8" RequiredHeatLevel="0" RequiredPlayerLevel="3" a="bullet" b="rod" Description="Use it wisely if powerful heavy bosses have you surrounded and musket balls are ineffective">
+        <Recipe Result="AntiTanksBulletBlock" ResultCount="8" RequiredHeatLevel="0" RequiredPlayerLevel="3" a="bullet" b="rod" Description="[0]">
 			" b "
             "bab"
             " b "
@@ -436,62 +436,62 @@
     " b "
     " a "
 </Recipe>
-        <Recipe Result="ClothingBlock:39" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="0" a="canvas" b="string" Description="A light t‑shirt inspired by Digimon. Provides minimal protection but symbolizes loyalty to the Digital World. Comfortable for daily wear and can be dyed to match your style.">
+        <Recipe Result="ClothingBlock:39" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="0" a="canvas" b="string" Description="[0]">
             "aba"
             "aba"
             " a "
         </Recipe>
-        <Recipe Result="ClothingBlock:40" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="magmabucket" b="string" Description="A helmet forged from molten rock. Provides great protection and warmth, shielding the head from both attacks and cold.">
+        <Recipe Result="ClothingBlock:40" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="magmabucket" b="string" Description="[0]">
             "aaa"
             "a a"
             " b "
         </Recipe>
-        <Recipe Result="ClothingBlock:41" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="magmabucket" b="string" Description="A breastplate imbued with volcanic energy. Offers durable defense and insulation, keeping the torso warm in extreme climates.">
+        <Recipe Result="ClothingBlock:41" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="magmabucket" b="string" Description="[0]">
             "a a"
             "aaa"
             "aba"
         </Recipe>
-        <Recipe Result="ClothingBlock:42" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="magmabucket" b="string" Description="Greaves forged with volcanic stone. Reinforce the legs with the strength of lava and offer warmth against the cold.">
+        <Recipe Result="ClothingBlock:42" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="magmabucket" b="string" Description="[0]">
             "aba"
             "a a"
             "a a"
         </Recipe>
-        <Recipe Result="ClothingBlock:43" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="magmabucket" b="string" Description="Boots crafted from hardened lava. Enhance stamina and speed, keeping feet warm in freezing conditions.">
+        <Recipe Result="ClothingBlock:43" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="magmabucket" b="string" Description="[0]">
             "a a"
             "a a"
             " b "
         </Recipe>
-        <Recipe Result="ClothingBlock:44" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="3" a="ironingot" b="canvas" c="string" Description="Tired of diamond armor not working against gunfire? This metallic bulletproof helmet is made from lightweight materials, offering great protection against firearms used by NPCs and bandits without penalizing mobility.">
+        <Recipe Result="ClothingBlock:44" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="3" a="ironingot" b="canvas" c="string" Description="[0]">
             "aaa"
             "a a"
             "bcb"
         </Recipe>
-        <Recipe Result="ClothingBlock:45" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="3" a="ironingot" b="canvas" c="string" Description="Although made of metal, this bulletproof breastplate uses a lightweight structure that doesn't reduce mobility. It's the ultimate solution for surviving shots from armed NPCs when diamond armor fails.">
+        <Recipe Result="ClothingBlock:45" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="3" a="ironingot" b="canvas" c="string" Description="[0]">
             "a a"
             "aaa"
             "bcb"
         </Recipe>
-        <Recipe Result="ClothingBlock:46" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="3" a="ironingot" b="canvas" c="string" Description="Bulletproof metallic greaves designed to be surprisingly light. They resist firearm impacts without affecting movement, eliminating the problem of useless diamond armor against bullets.">
+        <Recipe Result="ClothingBlock:46" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="3" a="ironingot" b="canvas" c="string" Description="[0]">
             "aaa"
             "a a"
             "bcb"
         </Recipe>
-        <Recipe Result="ClothingBlock:47" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="3" a="ironingot" b="canvas" c="string" Description="Lightweight metal bulletproof boots offering full protection without sacrificing speed. They complete the ideal set against armed bandits where diamond armor isn't enough.">
+        <Recipe Result="ClothingBlock:47" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="3" a="ironingot" b="canvas" c="string" Description="[0]">
             "a a"
             "a a"
             "bcb"
         </Recipe>
-        <Recipe Result="ClothingBlock:48" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="2" a="canvas" b="string" c="feather" Description="Inspired by classic Survivalcraft 2 speed. These boots let you move at great speed, perfect for exploring, escaping, or simply feeling the freedom of running like in the original game.">
+        <Recipe Result="ClothingBlock:48" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="2" a="canvas" b="string" c="feather" Description="[0]">
             "c c"
             "a a"
             "b b"
         </Recipe>
-        <Recipe Result="ClothingBlock:49" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="4" a="canvas" b="string" c="feather" d="diamond" Description="Speed taken to the extreme, Survivalcraft 2 style. With these boots you'll traverse the world at absurd speed, ideal for fun, extreme exploration, or pure chaos.">
+        <Recipe Result="ClothingBlock:49" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="4" a="canvas" b="string" c="feather" d="diamond" Description="[0]">
             "c c"
             "ada"
             "b b"
         </Recipe>
-        <Recipe Result="ClothingBlock:50" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="0" a="canvas" b="string" Description="A simple and comfortable pair of pants. Doesn't offer major advantages, but serves its basic function for daily survival.">
+        <Recipe Result="ClothingBlock:50" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="0" a="canvas" b="string" Description="[0]">
             "aaa"
             "a a"
             "b b"
