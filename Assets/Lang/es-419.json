@@ -258,11 +258,13 @@
   "Blocks": {
     "BK43Block:0": {
   "DisplayName": "Escopeta de Doble Cañón BK-43",
-  "Description": "Escopeta de doble cañón, simple y confiable. Tiene capacidad para dos cartuchos y es muy efectiva a corta distancia gracias a la dispersión de perdigones."
+  "Description": "Escopeta de doble cañón, simple y confiable. Tiene capacidad para dos cartuchos y es muy efectiva a corta distancia gracias a la dispersión de perdigones.",
+  "CRDescription:0": "Escopeta de dos cañones para combate cercano."
 },
 "BK43BulletBlock:0": {
   "DisplayName": "Cartuchos de Escopeta BK-43",
-  "Description": "Munición utilizada por la BK-43. Eficaz a corta distancia, con gran poder de detención y amplia dispersión."
+  "Description": "Munición utilizada por la BK-43. Eficaz a corta distancia, con gran poder de detención y amplia dispersión.",
+  "CRDescription:0": "Cartuchos de calibre 12 para la escopeta BK 43."
 },
     "NuclearCoinBlock:0": {
       "DisplayName": "Moneda Nuclear",
@@ -534,183 +536,228 @@
     },
     "M249Block:0": {
       "DisplayName": "M249 SAW",
-      "Description": "El M249 Squad Automatic Weapon (SAW) es una ametralladora ligera alimentada por cinta que proporciona fuego automático sostenido para escuadrones de infantería. Dispara munición 5.56×45mm OTAN a una cadencia de 750-1000 RPM. Tiene una capacidad de 100 balas en cinta y utiliza cartuchos intermedios para un retroceso manejable durante el fuego automático. Requiere bloques de munición M249 para recargar."
+      "Description": "El M249 Squad Automatic Weapon (SAW) es una ametralladora ligera alimentada por cinta que proporciona fuego automático sostenido para escuadrones de infantería. Dispara munición 5.56×45mm OTAN a una cadencia de 750-1000 RPM. Tiene una capacidad de 100 balas en cinta y utiliza cartuchos intermedios para un retroceso manejable durante el fuego automático. Requiere bloques de munición M249 para recargar.",
+      "CRDescription:0": "Ametralladora ligera de fuego automático con alta cadencia y capacidad de munición en cinta."
     },
     "M249BulletBlock:0": {
       "DisplayName": "Munición M249",
-      "Description": "Caja de munición que contiene balas 5.56×45mm OTAN para el M249 SAW. Cada caja proporciona 100 balas de munición en cinta. Insértala en el M249 para recargar completamente el arma a su capacidad máxima."
+      "Description": "Caja de munición que contiene balas 5.56×45mm OTAN para el M249 SAW. Cada caja proporciona 100 balas de munición en cinta. Insértala en el M249 para recargar completamente el arma a su capacidad máxima.",
+      "CRDescription:0": "Caja de munición para M249 SAW. Contiene 100 balas 5.56×45mm OTAN."
     },
     "AKBlock:0": {
     "DisplayName": "AK-47",
-    "Description": "Fusil de asalto legendario que dispara balas 7.62×39mm. Buena precisión, retroceso moderado. Usa munición AK47Bullet. ~350 disparos por minuto."
+    "Description": "Fusil de asalto legendario que dispara balas 7.62×39mm. Buena precisión, retroceso moderado. Usa munición AK47Bullet. ~350 disparos por minuto.",
+    "CRDescription:0": "Rifle de asalto ruso confiable, perfecto para principiantes en armas automáticas."
   },
   "AA12Block:0": {
   "DisplayName": "Escopeta Atchisson AA-12",
-  "Description": "Una escopeta de asalto automática de acción por retroceso de gases con sistema de recámara abierta y alimentada por cargador. Diseñada originalmente por Maxwell Atchisson en 1972 para aplicaciones militares y policiales, dispara cartuchos de calibre 12 (12 gauge) con una cadencia de fuego de 300 RPM y capacidad de 8 a 20 cartuchos dependiendo del cargador. Su diseño de tipo bullpup y sistema de retroceso mejorado reduce significativamente la sensación de retroceso, permitiendo disparos automáticos controlables incluso con munición potente. En este mod, utiliza cartuchos AA12Bullet y dispara 8 perdigones por cartucho, siendo devastadora a corta y media distancia."
+  "Description": "Una escopeta de asalto automática de acción por retroceso de gases con sistema de recámara abierta y alimentada por cargador. Diseñada originalmente por Maxwell Atchisson en 1972 para aplicaciones militares y policiales, dispara cartuchos de calibre 12 (12 gauge) con una cadencia de fuego de 300 RPM y capacidad de 8 a 20 cartuchos dependiendo del cargador. Su diseño de tipo bullpup y sistema de retroceso mejorado reduce significativamente la sensación de retroceso, permitiendo disparos automáticos controlables incluso con munición potente. En este mod, utiliza cartuchos AA12Bullet y dispara 8 perdigones por cartucho, siendo devastadora a corta y media distancia.",
+  "CRDescription:0": "Escopeta de asalto automática con bajo retroceso, ideal para combate a corta distancia."
 },
 "NewG3Block:0": {
       "DisplayName": "Nuevo Fusil de Asalto G3",
-      "Description": "Un fusil de asalto moderno con construcción de polímero avanzado y precisión mejorada. Diseñado para situaciones de combate versátiles, ofrece un equilibrio entre potencia de fuego y manejo, ideal para enfrentamientos a media y larga distancia."
+      "Description": "Un fusil de asalto moderno con construcción de polímero avanzado y precisión mejorada. Diseñado para situaciones de combate versátiles, ofrece un equilibrio entre potencia de fuego y manejo, ideal para enfrentamientos a media y larga distancia.",
+      "CRDescription:0": "Fusil de asalto moderno con buen equilibrio entre potencia y precisión, ideal para enfrentamientos a media y larga distancia."
     },
     "NewG3Bullet:0": {
       "DisplayName": "Cargador 7.62×51 mm OTAN",
-      "Description": "Un cargador de 10 balas con munición 7.62×51 mm OTAN para el fusil G3. Ofrece penetración fiable y poder de detención contra objetivos blindados."
+      "Description": "Un cargador de 10 balas con munición 7.62×51 mm OTAN para el fusil G3. Ofrece penetración fiable y poder de detención contra objetivos blindados.",
+      "CRDescription:0": "Munición estándar para el fusil G3, adecuada para enfrentamientos a media y larga distancia."
     },
     "MP5SSDBlock:0": {
       "DisplayName": "Subfusil MP5SD",
-      "Description": "Un subfusil silenciado diseñado para operaciones furtivas. Su silenciador integrado reduce el destello y el ruido del disparo, ideal para misiones encubiertas y combate a corta distancia."
+      "Description": "Un subfusil silenciado diseñado para operaciones furtivas. Su silenciador integrado reduce el destello y el ruido del disparo, ideal para misiones encubiertas y combate a corta distancia.",
+      "CRDescription:0": "Subfusil silenciado para operaciones encubiertas y combate a corta distancia."
     },
     "MP5SSDBulletBlock:0": {
       "DisplayName": "Cargador 9×19 mm Parabellum",
-      "Description": "Un cargador de 12 balas con munición subsónica 9×19 mm Parabellum para el MP5SD. Optimizado para enfrentamientos silenciosos y efectivos sin sacrificar poder de detención."
+      "Description": "Un cargador de 12 balas con munición subsónica 9×19 mm Parabellum para el MP5SD. Optimizado para enfrentamientos silenciosos y efectivos sin sacrificar poder de detención.",
+      "CRDescription:0": "Munición subsónica para MP5SD, ideal para operaciones encubiertas."
     },
     "MendozaBlock:0": {
       "DisplayName": "Fusil Mendoza",
-      "Description": "Un fusil semiautomático reconocido por su excelente precisión y fiabilidad. Ideal para tiradores que requieren puntería a distancias medias y largas sin necesidad de fuego automático."
+      "Description": "Un fusil semiautomático reconocido por su excelente precisión y fiabilidad. Ideal para tiradores que requieren puntería a distancias medias y largas sin necesidad de fuego automático.",
+      "CRDescription:0": "Fusil semiautomático con excelente precisión, ideal para tiradores a distancia."
     },
     "MendozaBulletBlock:0": {
       "DisplayName": "Munición .308 Winchester",
-      "Description": "8 balas de munición .308 Winchester, diseñadas para tiro de precisión. Ofrece alta precisión y penetración, adecuada para caza y enfrentamientos tácticos."
+      "Description": "8 balas de munición .308 Winchester, diseñadas para tiro de precisión. Ofrece alta precisión y penetración, adecuada para caza y enfrentamientos tácticos.",
+      "CRDescription:0": "Munición de precisión para el fusil Mendoza, ideal para caza y tiro a larga distancia."
     },
     "GrozaBlock:0": {
       "DisplayName": "Fusil Bullpup Groza",
-      "Description": "Un fusil de asalto bullpup con sistema integrado de lanzagranadas. Compacto pero potente, destaca en combate a corta y media distancia con alta versatilidad y poder de fuego."
+      "Description": "Un fusil de asalto bullpup con sistema integrado de lanzagranadas. Compacto pero potente, destaca en combate a corta y media distancia con alta versatilidad y poder de fuego.",
+      "CRDescription:0": "Fusil de asalto bullpup con lanzagranadas integrado, ideal para combate versátil."
     },
     "GrozaBulletBlock:0": {
       "DisplayName": "Munición Subsónica 9×39 mm",
-      "Description": "10 balas de munición especial subsónica 9×39 mm para el fusil Groza. Diseñada para operaciones furtivas con ruido reducido y penetración efectiva de blindaje."
+      "Description": "10 balas de munición especial subsónica 9×39 mm para el fusil Groza. Diseñada para operaciones furtivas con ruido reducido y penetración efectiva de blindaje.",
+      "CRDescription:0": "Munición subsónica para fusil Groza, ideal para operaciones encubiertas."
     },
 "AA12BulletBlock:0": {
   "DisplayName": "Cartucho Calibre 12 AA-12",
-  "Description": "Cargador de 8 cartuchos calibre 12 para la escopeta AA-12. Cada cartucho contiene 8 perdigones que se dispersan al disparar, siendo especialmente efectivos contra grupos de enemigos a corta distancia. La munición es de tipo escopeta, diseñada específicamente para el sistema de alimentación del AA-12."
+  "Description": "Cargador de 8 cartuchos calibre 12 para la escopeta AA-12. Cada cartucho contiene 8 perdigones que se dispersan al disparar, siendo especialmente efectivos contra grupos de enemigos a corta distancia. La munición es de tipo escopeta, diseñada específicamente para el sistema de alimentación del AA-12.",
+  "CRDescription:0": "Cartucho de escopeta calibre 12 para AA-12, con 8 perdigones por disparo."
 },
   "AUGBlock:0": {
     "DisplayName": "Steyr AUG",
-    "Description": "Fusil de asalto bullpup con bajo retroceso. Usa 5.56×45mm OTAN. Cicla automáticamente entre 6 tipos de balas diferentes. Mira óptica integrada."
+    "Description": "Fusil de asalto bullpup con bajo retroceso. Usa 5.56×45mm OTAN. Cicla automáticamente entre 6 tipos de balas diferentes. Mira óptica integrada.",
+    "CRDescription:0": "Rifle de asalto bullpup austriaco con sistema de óptica integrado."
   },
   "FamasBlock:0": {
     "DisplayName": "FAMAS F1",
-    "Description": "Bullpup francés con alta cadencia de fuego (~667 RPM). Usa proyectiles NuevaBala4. Diseño compacto con buena controlabilidad."
+    "Description": "Bullpup francés con alta cadencia de fuego (~667 RPM). Usa proyectiles NuevaBala4. Diseño compacto con buena controlabilidad.",
+    "CRDescription:0": "Rifle de asalto francés con alta cadencia de fuego y diseño bullpup."
   },
   "G3Block:0": {
     "DisplayName": "FX05 Xiuhcoatl",
-    "Description": "Fusil de asalto mexicano (FX05 Xiuhcoatl) que dispara balas potentes. Usa proyectiles NuevaBala. Buena cadencia de fuego y precisión."
+    "Description": "Fusil de asalto mexicano (FX05 Xiuhcoatl) que dispara balas potentes. Usa proyectiles NuevaBala. Buena cadencia de fuego y precisión.",
+    "CRDescription:0": "Fusil de asalto mexicano con buen equilibrio entre potencia y precisión."
   },
   "Izh43Block:0": {
     "DisplayName": "Escopeta IZH-43",
-    "Description": "Escopeta de dos cañones que dispara 8 perdigones por disparo. Devastadora a corta distancia. Capacidad de 2 cartuchos, usa Izh43Bullet."
+    "Description": "Escopeta de dos cañones que dispara 8 perdigones por disparo. Devastadora a corta distancia. Capacidad de 2 cartuchos, usa Izh43Bullet.",
+    "CRDescription:0": "Escopeta de dos cañones rusa, perfecta para el combate a corta distancia."
   },
   "M4Block:0": {
     "DisplayName": "Carabina M4",
-    "Description": "Carabina 5.56×45mm que dispara ráfagas de 3 balas. Usa proyectiles NuevaBala2. Cargador de 22 balas, excelente modularidad."
+    "Description": "Carabina 5.56×45mm que dispara ráfagas de 3 balas. Usa proyectiles NuevaBala2. Cargador de 22 balas, excelente modularidad.",
+    "CRDescription:0": "Carabina americana M4 con mejor precisión que el AK-47."
   },
   "Mac10Block:0": {
     "DisplayName": "MAC-10",
-    "Description": "Pistola ametralladora compacta con cadencia de fuego extrema (~600 RPM). Usa proyectiles NuevaBala3. Retroceso intenso, cargador de 30 balas."
+    "Description": "Pistola ametralladora compacta con cadencia de fuego extrema (~600 RPM). Usa proyectiles NuevaBala3. Retroceso intenso, cargador de 30 balas.",
+    "CRDescription:0": "Subfusil compacto .45 ACP con alta cadencia de fuego."
   },
   "MinigunBlock:0": {
     "DisplayName": "Minigun",
-    "Description": "Ametralladora rotativa que dispara proyectiles NuevaBala6 a ~750 RPM. Capacidad de 100 balas, arma de supresión devastadora."
+    "Description": "Ametralladora rotativa que dispara proyectiles NuevaBala6 a ~750 RPM. Capacidad de 100 balas, arma de supresión devastadora.",
+    "CRDescription:0": "Minigun estilo Gatling con potencia de fuego devastadora."
   },
   "P90Block:0": {
     "DisplayName": "FN P90",
-    "Description": "Arma de defensa personal bullpup con 900 RPM de cadencia. Cicla entre 6 tipos de balas. Cargador de 50 balas, calibre 5.7×28mm."
+    "Description": "Arma de defensa personal bullpup con 900 RPM de cadencia. Cicla entre 6 tipos de balas. Cargador de 50 balas, calibre 5.7×28mm.",
+    "CRDescription:0": "Subfusil compacto con cargador de 50 balas y alta cadencia de fuego."
   },
   "RevolverBlock:0": {
     "DisplayName": "Revólver",
-    "Description": "Revólver clásico que dispara potentes tiros únicos. Usa proyectiles NuevaBala4. Tambor de 6 balas, alto poder de parada."
+    "Description": "Revólver clásico que dispara potentes tiros únicos. Usa proyectiles NuevaBala4. Tambor de 6 balas, alto poder de parada.",
+    "CRDescription:0": "Revólver clásico .357 Magnum con excelente poder de detención."
   },
   "SCARBlock:0": {
     "DisplayName": "FN SCAR",
-    "Description": "Fusil de batalla modular con excelente precisión. Cicla entre 6 tipos de balas. 600 RPM, cargador de 30 balas."
+    "Description": "Fusil de batalla modular con excelente precisión. Cicla entre 6 tipos de balas. 600 RPM, cargador de 30 balas.",
+    "CRDescription:0": "Fusil de batalla modular con excelente precisión y versatilidad." 
   },
   "SPAS12Block:0": {
     "DisplayName": "Escopeta de Combate SPAS-12",
-    "Description": "Escopeta de combate que dispara 8 perdigones por disparo. Capacidad de 8 cartuchos. Puede disparar en modo bombeo o semiautomático."
+    "Description": "Escopeta de combate que dispara 8 perdigones por disparo. Capacidad de 8 cartuchos. Puede disparar en modo bombeo o semiautomático.",
+    "CRDescription:0": "Escopeta de combate italiana con modos de acción de bombeo y semiautomático."
   },
   "SWM500Block:0": {
     "DisplayName": "Desert Eagle",
-    "Description": "Pistola Desert Eagle calibre .50 con tremendo poder de parada. Disparo único, usa proyectiles NuevaBala4. Cargador de 5 balas."
+    "Description": "Pistola Desert Eagle calibre .50 con tremendo poder de parada. Disparo único, usa proyectiles NuevaBala4. Cargador de 5 balas.",
+    "CRDescription:0": "Cañón de mano Desert Eagle .50 AE con enorme poder de detención."
   },
   "UziBlock:0": {
     "DisplayName": "Uzi",
-    "Description": "Subfusil icónico con alta cadencia de fuego (~750 RPM). Usa proyectiles NuevaBala2. Cargador de 30 balas."
+    "Description": "Subfusil icónico con alta cadencia de fuego (~750 RPM). Usa proyectiles NuevaBala2. Cargador de 30 balas.",
+    "CRDescription:0": "Subfusil israelí con mejor estabilidad que la Mac-10."
   },
   "BaseballBatBlock:0": {
     "DisplayName": "Bate de Béisbol",
-    "Description": "Un arma cuerpo a cuerpo sencilla con buen daño por impacto. Confiable, resistente y efectiva a corta distancia."
+    "Description": "Un arma cuerpo a cuerpo sencilla con buen daño por impacto. Confiable, resistente y efectiva a corta distancia.",
+    "CRDescription:0": "Un arma cuerpo a cuerpo sencilla pero efectiva a corta distancia."
   },
     "SniperBlock:0": {
     "DisplayName": "Fusil de Francotirador",
-    "Description": "Fusil de precisión de cerrojo para enfrentamientos a distancia extrema. Equipado con mira de alto aumento. Produce bajas de un solo disparo con puntería adecuada. Requiere posición estable y paciencia."
+    "Description": "Fusil de precisión de cerrojo para enfrentamientos a distancia extrema. Equipado con mira de alto aumento. Produce bajas de un solo disparo con puntería adecuada. Requiere posición estable y paciencia.",
+    "CRDescription:0": "Fusil de francotirador de cerrojo con mira de alto aumento para bajas de un solo disparo a distancia."
   },
     "AKBullet:0": {
     "DisplayName": "Cargador AK 7.62×39mm",
-    "Description": "Cargador de 30 balas para rifle AK-47. Contiene munición 7.62×39mm."
+    "Description": "Cargador de 30 balas para rifle AK-47. Contiene munición 7.62×39mm.",
+    "CRDescription:0": "Munición de 7.62×39 mm para el AK-47."
   },
   "KABlock:0": {
     "DisplayName": "KA",
-    "Description": "Fusil de asalto avanzado que dispara munición 5.56x45mm. A diferencia del AK-47, el KA ofrece mayor precisión, menor retroceso y un cargador de 40 balas. Utiliza munición especialmente diseñada para el KA."
+    "Description": "Fusil de asalto avanzado que dispara munición 5.56x45mm. A diferencia del AK-47, el KA ofrece mayor precisión, menor retroceso y un cargador de 40 balas. Utiliza munición especialmente diseñada para el KA.",
+    "CRDescription:0": "Fusil de asalto avanzado con mejor precisión y menor retroceso que el AK-47."
   },
   "KABulletBlock:0": {
     "DisplayName": "Munición KA 5.56x45mm",
-    "Description": "Munición 5.56x45mm diseñada específicamente para el rifle KA. Ofrece mayor velocidad de salida, mejor balística que la munición estándar y una capacidad de 40 balas por cargador."
+    "Description": "Munición 5.56x45mm diseñada específicamente para el rifle KA. Ofrece mayor velocidad de salida, mejor balística que la munición estándar y una capacidad de 40 balas por cargador.",
+    "CRDescription:0": "Munición 5.56x45mm de alto rendimiento para el rifle KA."
   },
   "M4Bullet:0": {
     "DisplayName": "Cargador STANAG 5.56×45mm",
-    "Description": "Cargador de 22 balas para carabina M4. Contiene munición 5.56×45mm OTAN."
+    "Description": "Cargador de 22 balas para carabina M4. Contiene munición 5.56×45mm OTAN.",
+    "CRDescription:0": "Munición estándar de la OTAN de 5.56×45 mm."
   },
   "SPAS12BulletBlock:0": {
-    "DisplayName": "Cartuchos Calibre 12",
-    "Description": "Caja de 8 cartuchos calibre 12 para escopeta SPAS-12."
+    "DisplayName": "Cartuchos de calibre 12 para SPAS-12",
+    "Description": "Caja de 8 cartuchos de calibre 12 específicos para la escopeta SPAS-12.",
+    "CRDescription:0": "Crea una caja de 8 cartuchos de calibre 12 específicamente para la SPAS-12."
   },
   "Mac10Bullet:0": {
     "DisplayName": "Cargador .45 ACP",
-    "Description": "Cargador de 30 balas para MAC-10. Contiene munición .45 ACP."
+    "Description": "Cargador de 30 balas para MAC-10. Contiene munición .45 ACP.",
+    "CRDescription:0": "Munición .45 ACP para el MAC-10."
   },
   "UziBullet:0": {
     "DisplayName": "Cargador Uzi 9×19mm",
-    "Description": "Cargador de 32 balas para subfusil Uzi. Contiene munición 9×19mm Parabellum."
+    "Description": "Cargador de 32 balas para subfusil Uzi. Contiene munición 9×19mm Parabellum.",
+    "CRDescription:0": "Munición 9×19 mm para el Uzi."
   },
   "G3Bullet:0": {
     "DisplayName": "Cargador FX05 5.56×45mm",
-    "Description": "Cargador de 30 balas para rifle FX05 Xiuhcoatl. Contiene munición 5.56×45mm OTAN."
+    "Description": "Cargador de 30 balas para rifle FX05 Xiuhcoatl. Contiene munición 5.56×45mm OTAN.",
+    "CRDescription:0": "Munición 5.56×45 mm para el FX05 Xiuhcoatl."
   },
   "MinigunBullet:0": {
     "DisplayName": "Caja Munición Minigun 7.62×51mm",
-    "Description": "Caja de munición de 100 balas para Minigun. Contiene cintas enlazadas 7.62×51mm OTAN."
+    "Description": "Caja de munición de 100 balas para Minigun. Contiene cintas enlazadas 7.62×51mm OTAN.",
+    "CRDescription:0": "Caja de munición de 100 balas 7.62×51 mm para Minigun."
   },
   "Izh43Bullet:0": {
-    "DisplayName": "Cartuchos Dobles Calibre 12",
-    "Description": "Juego de 2 cartuchos calibre 12 para escopeta IZH-43."
+    "DisplayName": "Cartuchos dobles de calibre 12 para IZH-43",
+    "Description": "Conjunto de 2 cartuchos dobles de calibre 12 específicos para la escopeta IZH-43.",
+    "CRDescription:0": "Crea un conjunto de 2 cartuchos dobles de calibre 12 específicamente para la IZH-43."
   },
   "SWM500Bullet:0": {
     "DisplayName": "Cargador Desert Eagle .50 AE",
-    "Description": "Cargador de 7 balas para pistola Desert Eagle. Contiene munición .50 Action Express."
+    "Description": "Cargador de 7 balas para pistola Desert Eagle. Contiene munición .50 Action Express.",
+    "CRDescription:0": "Munición .50 AE para el Desert Eagle."
   },
   "SniperBullet:0": {
     "DisplayName": "Munición Francotirador 7.62×51mm",
-    "Description": "Peine de 5 balas para fusil de francotirador. Contiene munición match-grade 7.62×51mm."
+    "Description": "Peine de 5 balas para fusil de francotirador. Contiene munición match-grade 7.62×51mm.",
+    "CRDescription:0": "Munición de alta precisión 7.62×51 mm para fusil de francotirador."
   },
   "AUGBullet:0": {
     "DisplayName": "Cargador AUG 5.56×45mm",
-    "Description": "Cargador translúcido de 30 balas para Steyr AUG. Contiene munición 5.56×45mm OTAN."
+    "Description": "Cargador translúcido de 30 balas para Steyr AUG. Contiene munición 5.56×45mm OTAN.",
+    "CRDescription:0": "Munición de 5.56×45 mm para el Steyr AUG."
   },
   "P90BulletBlock:0": {
     "DisplayName": "Cargador P90 5.7×28mm",
-    "Description": "Cargador superior de 50 balas para FN P90. Contiene munición 5.7×28mm."
+    "Description": "Cargador superior de 50 balas para FN P90. Contiene munición 5.7×28mm.",
+    "CRDescription:0": "Munición de 5.7×28 mm para el FN P90."
   },
   "SCARBulletBlock:0": {
     "DisplayName": "Cargador SCAR 7.62×51mm",
-    "Description": "Cargador de 20 balas para FN SCAR-H. Contiene munición 7.62×51mm OTAN."
+    "Description": "Cargador de 20 balas para FN SCAR-H. Contiene munición 7.62×51mm OTAN.",
+    "CRDescription:0": "Munición de 7.62×51 mm para el FN SCAR-H."
   },
   "RevolverBulletBlock:0": {
     "DisplayName": "Munición Revólver .357 Magnum",
-    "Description": "Cargador rápido de 6 balas para revólver. Contiene munición .357 Magnum."
+    "Description": "Cargador rápido de 6 balas para revólver. Contiene munición .357 Magnum.",
+    "CRDescription:0": "Balas .357 Magnum para una penetración fiable."
   },
   "FamasBulletBlock:0": {
     "DisplayName": "Cargador FAMAS 5.56×45mm",
-    "Description": "Cargador de 25 balas para rifle FAMAS. Contiene munición 5.56×45mm OTAN."
+    "Description": "Cargador de 25 balas para rifle FAMAS. Contiene munición 5.56×45mm OTAN.",
+    "CRDescription:0": "Balas de la OTAN de 5.56×45 mm optimizadas para diseño bullpup."
   },
   "ClothingBlock:39": {
     "DisplayName": "Camiseta Digimon",
