@@ -462,7 +462,7 @@
             " b "
         </Recipe>
         <Recipe Result="ClothingBlock:44" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="3" a="ironingot" b="canvas" c="string" Description="[0]">
-            "aaa"
+            " a "
             "a a"
             "bcb"
         </Recipe>
