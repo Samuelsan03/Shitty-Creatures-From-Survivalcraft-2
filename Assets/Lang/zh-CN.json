@@ -258,11 +258,13 @@
   "Blocks": {
     "BK43Block:0": {
   "DisplayName": "BK-43 双管霰弹枪",
-  "Description": "一把结构简单且可靠的双管霰弹枪。可装填两发弹药，在近距离由于弹丸散布而非常有效。"
+  "Description": "一把结构简单且可靠的双管霰弹枪。可装填两发弹药，在近距离由于弹丸散布而非常有效。",
+  "CRDescription:0": "用于近距离战斗的双管猎枪。"
 },
 "BK43BulletBlock:0": {
   "DisplayName": "BK-43 霰弹枪弹药",
-  "Description": "BK-43 使用的弹药。在近距离具有良好的制止力和较大的散布。"
+  "Description": "BK-43 使用的弹药。在近距离具有良好的制止力和较大的散布。",
+  "CRDescription:0": "用于 BK 43 猎枪的 12 号口径弹壳。"
 },
     "NuclearCoinBlock:0": {
     "DisplayName": "核硬币",
@@ -534,183 +536,228 @@
     },
     "AKBlock:0": {
     "DisplayName": "AK-47突击步枪",
-    "Description": "传奇突击步枪，发射7.62×39毫米弹药。精度良好，后坐力适中。使用AK47Bullet弹药。射速约350发/分钟。"
+    "Description": "传奇突击步枪，发射7.62×39毫米弹药。精度良好，后坐力适中。使用AK47Bullet弹药。射速约350发/分钟。",
+    "CRDescription:0": "可靠的俄罗斯突击步枪，非常适合自动武器的初学者。"
   },
   "KABlock:0": {
     "DisplayName": "KA",
-    "Description": "发射5.56x45毫米子弹的先进突击步枪。与AK-47不同，KA提供更高的精度、极小的后坐力和40发弹匣。使用专为KA设计的弹药。"
+    "Description": "发射5.56x45毫米子弹的先进突击步枪。与AK-47不同，KA提供更高的精度、极小的后坐力和40发弹匣。使用专为KA设计的弹药。",
+    "CRDescription:0": "现代突击步枪，提供更高精度和更小后坐力。"
   },
   "BaseballBatBlock:0": {
     "DisplayName": "棒球棒",
-    "Description": "一种简单的近战武器，具有稳定的打击伤害。耐用、可靠，适合近距离战斗。"
+    "Description": "一种简单的近战武器，具有稳定的打击伤害。耐用、可靠，适合近距离战斗。",
+    "CRDescription:0": "一种简单的近战武器，适合近距离战斗。"
   },
   "KABulletBlock:0": {
     "DisplayName": "KA 5.56x45毫米弹药",
-    "Description": "专为KA步枪设计的5.56x45毫米弹药。与标准弹药相比，具有更高的枪口速度、更好的弹道性能和每弹匣40发子弹的容量。"
+    "Description": "专为KA步枪设计的5.56x45毫米弹药。与标准弹药相比，具有更高的枪口速度、更好的弹道性能和每弹匣40发子弹的容量。",
+    "CRDescription:0": "KA步枪专用弹药，具有更高的枪口速度和弹道性能。"
   },
   "AUGBlock:0": {
     "DisplayName": "斯泰尔AUG",
-    "Description": "无托式突击步枪，后坐力低。使用5.56×45毫米北约弹药。自动循环使用6种不同类型的子弹。集成光学瞄准镜。"
+    "Description": "无托式突击步枪，后坐力低。使用5.56×45毫米北约弹药。自动循环使用6种不同类型的子弹。集成光学瞄准镜。",
+    "CRDescription:0": "奥地利无托突击步枪，带有集成光学系统。"
   },
   "FamasBlock:0": {
     "DisplayName": "FAMAS F1突击步枪",
-    "Description": "法国无托式步枪，射速高（约667发/分钟）。使用NuevaBala4弹头。紧凑设计，可控性好。"
+    "Description": "法国无托式步枪，射速高（约667发/分钟）。使用NuevaBala4弹头。紧凑设计，可控性好。",
+    "CRDescription:0": "法国无托突击步枪，射速高，适合近距离战斗。"
   },
   "G3Block:0": {
     "DisplayName": "FX05 Xiuhcoatl突击步枪",
-    "Description": "墨西哥突击步枪（FX05 Xiuhcoatl），发射威力强大的弹药。使用NuevaBala弹头。射速和精度良好。"
+    "Description": "墨西哥突击步枪（FX05 Xiuhcoatl），发射威力强大的弹药。使用NuevaBala弹头。射速和精度良好。",
+    "CRDescription:0": "墨西哥 FX05 Xiuhcoatl 突击步枪，发射威力强大的弹药。"
   },
   "NewG3Block:0": {
       "DisplayName": "新型 G3 突击步枪",
-      "Description": "一款采用先进聚合物结构、精度提升的现代突击步枪。专为多样化战斗场景设计，兼具火力与操控性，适合中远距离交战。"
+      "Description": "一款采用先进聚合物结构、精度提升的现代突击步枪。专为多样化战斗场景设计，兼具火力与操控性，适合中远距离交战。",
+      "CRDescription:0": "现代化的 G3 突击步枪，采用先进材料和设计，提升了性能和可靠性。"
     },
     "NewG3Bullet:0": {
       "DisplayName": "7.62×51 毫米北约弹匣",
-      "Description": "适用于 G3 步枪的 10 发 7.62×51 毫米北约弹药弹匣。提供可靠的穿透力与停止作用，有效对抗装甲目标。"
+      "Description": "适用于 G3 步枪的 10 发 7.62×51 毫米北约弹药弹匣。提供可靠的穿透力与停止作用，有效对抗装甲目标。",
+      "CRDescription:0": "G3 步枪专用弹药，提供可靠的穿透力和停止作用。"
     },
     "MP5SSDBlock:0": {
       "DisplayName": "MP5SD 冲锋枪",
-      "Description": "一款专为隐秘行动设计的消音冲锋枪。其内置消音器能减少枪口焰与噪音，适合潜行任务和近距离作战。"
+      "Description": "一款专为隐秘行动设计的消音冲锋枪。其内置消音器能减少枪口焰与噪音，适合潜行任务和近距离作战。",
+      "CRDescription:0": "消音版本的 MP5 冲锋枪，适合隐秘行动。"
     },
     "MP5SSDBulletBlock:0": {
       "DisplayName": "9×19 毫米帕拉贝鲁姆弹匣",
-      "Description": "适用于 MP5SD 的 12 发亚音速 9×19 毫米帕拉贝鲁姆弹匣。专为安静高效的交战设计，不牺牲停止力。"
+      "Description": "适用于 MP5SD 的 12 发亚音速 9×19 毫米帕拉贝鲁姆弹匣。专为安静高效的交战设计，不牺牲停止力。",
+      "CRDescription:0": "MP5SD 冲锋枪专用弹药，提供安静高效的交战性能。"
     },
     "MendozaBlock:0": {
       "DisplayName": "门多萨步枪",
-      "Description": "一款以优异精度和可靠性著称的半自动步枪。适合需要在中远距离进行精准射击、无需全自动火力的射手。"
+      "Description": "一款以优异精度和可靠性著称的半自动步枪。适合需要在中远距离进行精准射击、无需全自动火力的射手。",
+      "CRDescription:0": "以优异精度和可靠性著称的半自动步枪，适合中远距离射击。"
     },
     "MendozaBulletBlock:0": {
       "DisplayName": ".308 温彻斯特弹药",
-      "Description": "8 发 .308 温彻斯特弹药，专为精准射击设计。具备高精度与穿透力，适用于狩猎与战术交火。"
+      "Description": "8 发 .308 温彻斯特弹药，专为精准射击设计。具备高精度与穿透力，适用于狩猎与战术交火。",
+      "CRDescription:0": "门多萨步枪专用弹药，提供高精度和穿透力。"
     },
     "GrozaBlock:0": {
       "DisplayName": "Groza 无托突击步枪",
-      "Description": "一款配备内置榴弹发射器系统的无托突击步枪。紧凑而强力，在中近距离作战中表现出极高的多功能性与火力。"
+      "Description": "一款配备内置榴弹发射器系统的无托突击步枪。紧凑而强力，在中近距离作战中表现出极高的多功能性与火力。",
+      "CRDescription:0": "配备内置榴弹发射器系统的无托突击步枪，适合中近距离作战。"
     },
     "GrozaBulletBlock:0": {
       "DisplayName": "9×39 毫米亚音速弹药",
-      "Description": "适用于 Groza 步枪的 10 发特殊 9×39 毫米亚音速弹药。专为隐秘行动设计，噪音低且具备有效穿甲能力。"
+      "Description": "适用于 Groza 步枪的 10 发特殊 9×39 毫米亚音速弹药。专为隐秘行动设计，噪音低且具备有效穿甲能力。",
+      "CRDescription:0": "Groza 步枪专用弹药，提供隐秘行动所需的低噪音和穿甲能力。"
     },
   "Izh43Block:0": {
     "DisplayName": "IZH-43双管霰弹枪",
-    "Description": "双管霰弹枪，每发射出8颗弹丸。近距离威力巨大。容量2发，使用Izh43Bullet。"
+    "Description": "双管霰弹枪，每发射出8颗弹丸。近距离威力巨大。容量2发，使用Izh43Bullet。",
+    "CRDescription:0": "俄罗斯双管霰弹枪，近距离威力巨大。"
   },
   "M4Block:0": {
     "DisplayName": "M4卡宾枪",
-    "Description": "5.56×45毫米卡宾枪，3发点射。使用NuevaBala2弹头。22发弹匣，模块化程度高。"
+    "Description": "5.56×45毫米卡宾枪，3发点射。使用NuevaBala2弹头。22发弹匣，模块化程度高。",
+    "CRDescription:0": "美国 M4 卡宾枪，比 AK-47 更精确。"
   },
   "Mac10Block:0": {
     "DisplayName": "MAC-10冲锋手枪",
-    "Description": "紧凑型冲锋手枪，射速极高（约600发/分钟）。使用NuevaBala3弹头。后坐力强，30发弹匣。"
+    "Description": "紧凑型冲锋手枪，射速极高（约600发/分钟）。使用NuevaBala3弹头。后坐力强，30发弹匣。",
+    "CRDescription:0": "紧凑型 .45 ACP 冲锋手枪，射速高。"
   },
   "MinigunBlock:0": {
     "DisplayName": "加特林机枪",
-    "Description": "旋转机枪，以约750发/分钟速度发射NuevaBala6弹头。100发容量，毁灭性压制武器。"
+    "Description": "旋转机枪，以约750发/分钟速度发射NuevaBala6弹头。100发容量，毁灭性压制武器。",
+    "CRDescription:0": "加特林式迷你枪，具有毁灭性的火力。"
   },
   "SniperBlock:0": {
     "DisplayName": "狙击步枪",
-    "Description": "栓动式精密步枪，用于超远距离交战。配备高倍率瞄准镜。正确瞄准时可一击毙命。需要稳定的姿势和耐心。"
+    "Description": "栓动式精密步枪，用于超远距离交战。配备高倍率瞄准镜。正确瞄准时可一击毙命。需要稳定的姿势和耐心。",
+    "CRDescription:0": "高精度狙击步枪，适合远距离一击必杀。"
   },
   "P90Block:0": {
     "DisplayName": "FN P90个人防卫武器",
-    "Description": "无托式个人防卫武器，射速900发/分钟。循环使用6种子弹类型。50发弹匣，5.7×28毫米口径。"
+    "Description": "无托式个人防卫武器，射速900发/分钟。循环使用6种子弹类型。50发弹匣，5.7×28毫米口径。",
+    "CRDescription:0": "紧凑型冲锋枪，配有50发弹匣，射速高。"
   },
   "RevolverBlock:0": {
     "DisplayName": "转轮手枪",
-    "Description": "经典转轮手枪，发射威力强大的单发子弹。使用NuevaBala4弹头。6发弹巢，停止作用强。"
+    "Description": "经典转轮手枪，发射威力强大的单发子弹。使用NuevaBala4弹头。6发弹巢，停止作用强。",
+    "CRDescription:0": "经典的 .357 Magnum 左轮手枪，具有出色的制止力。"
   },
   "SCARBlock:0": {
     "DisplayName": "FN SCAR战斗步枪",
-    "Description": "模块化战斗步枪，精度出色。循环使用6种子弹类型。600发/分钟，30发弹匣。"
+    "Description": "模块化战斗步枪，精度出色。循环使用6种子弹类型。600发/分钟，30发弹匣。",
+    "CRDescription:0": "模块化战斗步枪，适合多种战斗场景。"
   },
   "SPAS12Block:0": {
     "DisplayName": "SPAS-12战斗霰弹枪",
-    "Description": "战斗霰弹枪，每发射出8颗弹丸。8发容量。可在泵动或半自动模式下射击。"
+    "Description": "战斗霰弹枪，每发射出8颗弹丸。8发容量。可在泵动或半自动模式下射击。",
+    "CRDescription:0": "具有泵动和半自动模式的意大利战斗霰弹枪。"
   },
   "SWM500Block:0": {
     "DisplayName": "沙漠之鹰手枪",
-    "Description": "沙漠之鹰.50口径手枪，停止作用惊人。单发射击，使用NuevaBala4弹头。5发弹匣。"
+    "Description": "沙漠之鹰.50口径手枪，停止作用惊人。单发射击，使用NuevaBala4弹头。5发弹匣。",
+    "CRDescription:0": ".50 AE 沙漠之鹰手炮，具有巨大的制止力。"
   },
   "UziBlock:0": {
     "DisplayName": "乌兹冲锋枪",
-    "Description": "标志性冲锋枪，射速高（约750发/分钟）。使用NuevaBala2弹头。30发弹匣。"
+    "Description": "标志性冲锋枪，射速高（约750发/分钟）。使用NuevaBala2弹头。30发弹匣。",
+    "CRDescription:0": "以色列冲锋枪，比 Mac-10 更稳定。"
   },
   "AKBullet:0": {
     "DisplayName": "7.62×39毫米AK弹匣",
-    "Description": "AK-47步枪的30发弹匣。内含7.62×39毫米弹药。"
+    "Description": "AK-47步枪的30发弹匣。内含7.62×39毫米弹药。",
+    "CRDescription:0": "AK-47 的 7.62×39 毫米弹药。"
   },
   "M4Bullet:0": {
     "DisplayName": "5.56×45毫米STANAG弹匣",
-    "Description": "M4卡宾枪的22发弹匣。内含5.56×45毫米北约弹药。"
+    "Description": "M4卡宾枪的22发弹匣。内含5.56×45毫米北约弹药。",
+    "CRDescription:0": "5.56×45 毫米北约标准弹药。"
   },
   "SPAS12BulletBlock:0": {
-    "DisplayName": "12号霰弹",
-    "Description": "SPAS-12霰弹枪的8发12号霰弹盒。"
+    "DisplayName": "SPAS-12 12号口径弹药",
+    "Description": "一盒8发，专门用于 SPAS-12 霰弹枪的 12 号口径弹药。",
+    "CRDescription:0": "制作一盒 8 发，专门用于 SPAS-12 的 12 号口径弹药。"
   },
   "Mac10Bullet:0": {
     "DisplayName": ".45 ACP弹匣",
-    "Description": "MAC-10的30发弹匣。内含.45 ACP弹药。"
+    "Description": "MAC-10的30发弹匣。内含.45 ACP弹药。",
+    "CRDescription:0": "MAC-10 的 .45 ACP 弹药。"
   },
   "UziBullet:0": {
     "DisplayName": "9×19毫米乌兹弹匣",
-    "Description": "乌兹冲锋枪的32发弹匣。内含9×19毫米巴拉贝鲁姆弹药。"
+    "Description": "乌兹冲锋枪的32发弹匣。内含9×19毫米巴拉贝鲁姆弹药。",
+    "CRDescription:0": "乌兹的 9×19 毫米巴拉贝鲁姆弹药。"
   },
   "G3Bullet:0": {
     "DisplayName": "5.56×45毫米FX05弹匣",
-    "Description": "FX05 Xiuhcoatl步枪的30发弹匣。内含5.56×45毫米北约弹药。"
+    "Description": "FX05 Xiuhcoatl步枪的30发弹匣。内含5.56×45毫米北约弹药。",
+    "CRDescription:0": "FX05 Xiuhcoatl 的 5.56×45 毫米北约弹药。"
   },
   "MinigunBullet:0": {
     "DisplayName": "7.62×51毫米加特林弹药箱",
-    "Description": "加特林机枪的100发弹药箱。内含链接式7.62×51毫米北约弹链。"
+    "Description": "加特林机枪的100发弹药箱。内含链接式7.62×51毫米北约弹链。",
+    "CRDescription:0": "加特林机枪的 7.62×51 毫米北约弹药。"
   },
   "Izh43Bullet:0": {
-    "DisplayName": "12号双管霰弹",
-    "Description": "IZH-43霰弹枪的2发12号霰弹套装。"
+    "DisplayName": "IZH-43 12号口径双弹",
+    "Description": "一套 2 发，专门用于 IZH-43 霰弹枪的 12 号口径双弹。",
+    "CRDescription:0": "制作一套 2 发，专门用于 IZH-43 的 12 号口径双弹。"
   },
   "SWM500Bullet:0": {
     "DisplayName": ".50 AE沙漠之鹰弹匣",
-    "Description": "沙漠之鹰手枪的7发弹匣。内含.50 Action Express弹药。"
+    "Description": "沙漠之鹰手枪的7发弹匣。内含.50 Action Express弹药。",
+    "CRDescription:0": "沙漠之鹰的 .50 AE 弹药。"
   },
   "SniperBullet:0": {
     "DisplayName": "7.62×51毫米狙击弹药",
-    "Description": "狙击步枪的5发桥夹。内含比赛级7.62×51毫米弹药。"
+    "Description": "狙击步枪的5发桥夹。内含比赛级7.62×51毫米弹药。",
+    "CRDescription:0": "狙击步枪的 7.62×51 毫米比赛级弹药。"
   },
   "AUGBullet:0": {
     "DisplayName": "5.56×45毫米AUG弹匣",
-    "Description": "斯泰尔AUG的30发透明弹匣。内含5.56×45毫米北约弹药。"
+    "Description": "斯泰尔AUG的30发透明弹匣。内含5.56×45毫米北约弹药。",
+    "CRDescription:0": "斯泰尔AUG 的 5.56×45 毫米北约弹药。"
   },
   "P90BulletBlock:0": {
     "DisplayName": "5.7×28毫米P90弹匣",
-    "Description": "FN P90的50发顶部弹匣。内含5.7×28毫米弹药。"
+    "Description": "FN P90的50发顶部弹匣。内含5.7×28毫米弹药。",
+    "CRDescription:0": "FN P90 的 5.7×28 毫米弹药。"
   },
   "SCARBulletBlock:0": {
     "DisplayName": "7.62×51毫米SCAR弹匣",
-    "Description": "FN SCAR-H的20发弹匣。内含7.62×51毫米北约弹药。"
+    "Description": "FN SCAR-H的20发弹匣。内含7.62×51毫米北约弹药。",
+    "CRDescription:0": "FN SCAR-H 的 7.62×51 毫米北约弹药。"
   },
   "RevolverBulletBlock:0": {
     "DisplayName": ".357马格南转轮手枪弹药",
-    "Description": "转轮手枪的6发快速装弹器。内含.357马格南弹药。"
+    "Description": "转轮手枪的6发快速装弹器。内含.357马格南弹药。",
+    "CRDescription:0": "用于可靠穿透的 .357 Magnum 弹药。"
   },
   "FamasBulletBlock:0": {
     "DisplayName": "5.56×45毫米FAMAS弹匣",
-    "Description": "FAMAS步枪的25发弹匣。内含5.56×45毫米北约弹药。"
+    "Description": "FAMAS步枪的25发弹匣。内含5.56×45毫米北约弹药。",
+    "CRDescription:0": "5.56×45 毫米北约弹药，针对无托设计进行了优化。"
   },
   "AA12Block:0": {
   "DisplayName": "AA-12自动霰弹枪",
-  "Description": "一种气体操作、弹匣供弹的自动霰弹枪，采用开膛待击设计。最初由马克斯韦尔·阿奇森于1972年设计，用于军事和执法应用，以300 RPM的射速发射12号霰弹，弹匣容量根据型号从8到20发不等。其无托式结构和改进的后坐力系统显著减少后坐感，即使使用威力强大的弹药也能实现可控的全自动射击。在这个模组中，它使用AA12子弹弹匣，每发霰弹射出8颗弹丸，在近距离至中距离具有毁灭性威力。"
+  "Description": "一种气体操作、弹匣供弹的自动霰弹枪，采用开膛待击设计。最初由马克斯韦尔·阿奇森于1972年设计，用于军事和执法应用，以300 RPM的射速发射12号霰弹，弹匣容量根据型号从8到20发不等。其无托式结构和改进的后坐力系统显著减少后坐感，即使使用威力强大的弹药也能实现可控的全自动射击。在这个模组中，它使用AA12子弹弹匣，每发霰弹射出8颗弹丸，在近距离至中距离具有毁灭性威力。",
+  "CRDescription:0": "一种自动霰弹枪，射速快，后坐力小，适合近距离战斗。"
 },
 "AA12BulletBlock:0": {
   "DisplayName": "12号口径AA-12弹匣",
-  "Description": "AA-12霰弹枪的8发12号口径弹匣。每发霰弹包含8颗弹丸，射击时会扩散，在近距离对抗成群的敌人时特别有效。这种弹药是霰弹类型，专为AA-12的供弹系统设计。"
+  "Description": "AA-12霰弹枪的8发12号口径弹匣。每发霰弹包含8颗弹丸，射击时会扩散，在近距离对抗成群的敌人时特别有效。这种弹药是霰弹类型，专为AA-12的供弹系统设计。",
+  "CRDescription:0": "AA-12 的 12 号口径弹药，每发霰弹包含 8 颗弹丸。"
 },
 "M249Block:0": {
       "DisplayName": "M249班用自动武器",
-      "Description": "M249班用自动武器（SAW）是一种弹链供弹的轻机枪，为步兵班提供持续自动火力。发射5.56×45mm NATO子弹，射速750-1000 RPM。拥有100发弹链容量，使用中间威力弹药以在自动射击时保持可控后坐力。需要M249弹药块进行重新装填。"
+      "Description": "M249班用自动武器（SAW）是一种弹链供弹的轻机枪，为步兵班提供持续自动火力。发射5.56×45mm NATO子弹，射速750-1000 RPM。拥有100发弹链容量，使用中间威力弹药以在自动射击时保持可控后坐力。需要M249弹药块进行重新装填。",
+      "CRDescription:0": "M249 SAW 是一种轻机枪，提供持续自动火力，使用 5.56×45mm NATO 弹药。"
     },
     "M249BulletBlock:0": {
       "DisplayName": "M249弹药",
-      "Description": "装有5.56×45mm NATO子弹的弹药箱，用于M249 SAW。每箱提供100发弹链供弹弹药。插入M249可将武器完全重新装填至最大容量。"
+      "Description": "装有5.56×45mm NATO子弹的弹药箱，用于M249 SAW。每箱提供100发弹链供弹弹药。插入M249可将武器完全重新装填至最大容量。",
+      "CRDescription:0": "M249 SAW 的 5.56×45mm NATO 弹药，提供 100 发弹链供弹。"
     },
     "ClothingBlock:39": {
       "DisplayName": "数码宝贝T恤",
