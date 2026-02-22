@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Engine;
 using Engine.Graphics;
@@ -35,26 +35,6 @@ namespace Game
 		public override IEnumerable<int> GetCreativeValues()
 		{
 			yield return Terrain.MakeBlockValue(this.BlockIndex, 0, 0);
-		}
-
-		public override string GetDisplayName(SubsystemTerrain subsystemTerrain, int value)
-		{
-			string displayName;
-			if (LanguageControl.TryGetBlock("AntiTanksBulletBlock:0", "DisplayName", out displayName))
-			{
-				return displayName;
-			}
-			return "Anti-Tanks Bullet"; // Valor por defecto en inglés
-		}
-
-		public override string GetDescription(int value)
-		{
-			string description;
-			if (LanguageControl.TryGetBlock("AntiTanksBulletBlock:0", "Description", out description))
-			{
-				return description;
-			}
-			return "Special ammunition that will help us later. Use it wisely and only in emergencies if the musket bullet or buckshot doesn't work to apply the necessary damage.";
 		}
 
 		public override float GetProjectilePower(int value)

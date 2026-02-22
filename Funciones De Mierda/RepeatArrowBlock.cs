@@ -98,7 +98,7 @@ namespace Game
 			{
 				return string.Empty;
 			}
-			return LanguageControl.GetBlock("RepeatArrow:" + arrowType.ToString(), "DisplayName");
+			return LanguageControl.GetBlock("RepeatArrowBlock:" + arrowType.ToString(), "DisplayName");
 		}
 
 		public override string GetDescription(int value)
@@ -108,7 +108,7 @@ namespace Game
 			{
 				return string.Empty;
 			}
-			return LanguageControl.GetBlock("RepeatArrow:" + arrowType.ToString(), "Description");
+			return LanguageControl.GetBlock("RepeatArrowBlock:" + arrowType.ToString(), "Description");
 		}
 
 		public static RepeatArrowBlock.ArrowType GetArrowType(int data)

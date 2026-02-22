@@ -128,18 +128,6 @@ namespace Game
 			return value ^ ((value ^ count << 10) & 15360);
 		}
 
-		// Token: 0x060003ED RID: 1005 RVA: 0x0000EF42 File Offset: 0x0000D142
-		public override string GetDisplayName(SubsystemTerrain subsystemTerrain, int value)
-		{
-			return LanguageControl.GetBlock("RepeatCrossbow:0", "DisplayName");
-		}
-
-		// Token: 0x060003EE RID: 1006 RVA: 0x0000EF4F File Offset: 0x0000D14F
-		public override string GetDescription(int value)
-		{
-			return LanguageControl.GetBlock("RepeatCrossbow:0", "Description");
-		}
-
 		// Token: 0x04000161 RID: 353
 		public static int Index = 302;
 
