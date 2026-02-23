@@ -301,6 +301,7 @@ namespace Game
 			m_isFiring = false;
 			m_isReloading = true;
 			m_animationStartTime = m_subsystemTime.GameTime;
+			m_shotsFired = 0; // <-- AÑADIDO: Reiniciar contador de disparos
 		}
 
 		private void ApplyReloadingAnimation(float dt)
@@ -351,6 +352,22 @@ namespace Game
 
 			if (m_componentChaseBehavior.Target == null)
 				return;
+
+			// --- NUEVA VERIFICACIÓN DE INMERSIÓN (AGUA) ---
+			float immersion = m_componentCreature.ComponentBody.ImmersionFactor;
+			if (immersion > 0.4f)
+			{
+				// Sonido de fallo por agua
+				m_subsystemAudio.PlaySound("Audio/MusketMisfire", 1f, m_random.Float(-0.1f, 0.1f),
+					m_componentCreature.ComponentBody.Position, 3f, false);
+
+				// Detener el disparo y pasar a recarga
+				m_isFiring = false;
+				m_shotsFired = BurstCount; // Forzar fin de burst
+				StartReloading();
+				return;
+			}
+			// --- FIN DE LA NUEVA VERIFICACIÓN ---
 
 			try
 			{
