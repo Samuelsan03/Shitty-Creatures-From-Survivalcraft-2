@@ -338,7 +338,7 @@
     <Parameter Name="Class" Guid="c852e0cc-bb4b-434b-9dc1-0f1795bd7a49" Value="Game.ComponentRepeatCrossbowShooterBehavior" Type="string"/>
 </ComponentTemplate>
 
-    <ComponentTemplate Name="CrossbowShooterBehavior" Description="Comportamiento para NPCs que usan ballestas con animaciones de tensado vertical y disparo cíclico de virotes" Guid="90581361-aa1f-4180-bc02-359795600942">
+    <ComponentTemplate Name="CrossbowShooterBehavior" Description="Comportamiento para NPCs que usan ballestas con animaciones de tensado vertical y disparo cíclico de virotes" Guid="90581361-aa1f-4180-bc02-359795600942" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
     <Parameter Name="MinDistance" Description="Distancia mínima para comenzar a disparar" Guid="d77c5390-2907-4321-b859-2a8b8956c3cb" Value="5" Type="float"/>
     <Parameter Name="MaxDistance" Description="Distancia máxima de disparo efectivo" Guid="d00af5da-9704-4ebf-bbd4-a5e55f32a2bc" Value="25" Type="float"/>
     <Parameter Name="DrawTime" Description="Tiempo para tensar completamente la ballesta en segundos" Guid="e1e3e770-4f64-4698-b207-af3cf61e1e7e" Value="1.5" Type="float"/>
