@@ -120,7 +120,7 @@ namespace Game
 		{
 			try
 			{
-				int bk43Index = BlocksManager.GetBlockIndex(typeof(Game.BK43Block), true, false);
+				int bk43Index = BlocksManager.GetBlockIndex(typeof(BK43Block), true, false);
 				FirearmConfigs[bk43Index] = new FirearmConfig
 				{
 					BulletBlockType = typeof(NuevaBala3),  // Mismo tipo de bala que usa el BK43
@@ -133,7 +133,7 @@ namespace Game
 					NoiseRadius = 50f,  // Ruido mayor por ser escopeta
 					IsAutomatic = false  // No automático, es de bombeo/acción simple
 				};
-				int akIndex = BlocksManager.GetBlockIndex(typeof(Game.AKBlock), true, false);
+				int akIndex = BlocksManager.GetBlockIndex(typeof(AKBlock), true, false);
 				FirearmConfigs[akIndex] = new FirearmConfig
 				{
 					BulletBlockType = typeof(NuevaBala2),
@@ -147,7 +147,7 @@ namespace Game
 					IsAutomatic = true
 				};
 
-				int m4Index = BlocksManager.GetBlockIndex(typeof(Game.M4Block), true, false);
+				int m4Index = BlocksManager.GetBlockIndex(typeof(M4Block), true, false);
 				FirearmConfigs[m4Index] = new FirearmConfig
 				{
 					BulletBlockType = typeof(NuevaBala2),
@@ -161,7 +161,7 @@ namespace Game
 					IsAutomatic = true
 				};
 
-				int kaIndex = BlocksManager.GetBlockIndex(typeof(Game.KABlock), true, false);
+				int kaIndex = BlocksManager.GetBlockIndex(typeof(KABlock), true, false);
 				FirearmConfigs[kaIndex] = new FirearmConfig
 				{
 					BulletBlockType = typeof(NuevaBala5),
@@ -175,7 +175,7 @@ namespace Game
 					IsAutomatic = true
 				};
 
-				int mac10Index = BlocksManager.GetBlockIndex(typeof(Game.Mac10Block), true, false);
+				int mac10Index = BlocksManager.GetBlockIndex(typeof(Mac10Block), true, false);
 				FirearmConfigs[mac10Index] = new FirearmConfig
 				{
 					BulletBlockType = typeof(NuevaBala3),
@@ -189,7 +189,7 @@ namespace Game
 					IsAutomatic = true
 				};
 
-				int swm500Index = BlocksManager.GetBlockIndex(typeof(Game.SWM500Block), true, false);
+				int swm500Index = BlocksManager.GetBlockIndex(typeof(SWM500Block), true, false);
 				FirearmConfigs[swm500Index] = new FirearmConfig
 				{
 					BulletBlockType = typeof(NuevaBala4),
@@ -203,7 +203,7 @@ namespace Game
 					IsAutomatic = false
 				};
 
-				int g3Index = BlocksManager.GetBlockIndex(typeof(Game.G3Block), true, false);
+				int g3Index = BlocksManager.GetBlockIndex(typeof(G3Block), true, false);
 				FirearmConfigs[g3Index] = new FirearmConfig
 				{
 					BulletBlockType = typeof(NuevaBala),
@@ -217,7 +217,7 @@ namespace Game
 					IsAutomatic = true
 				};
 
-				int izh43Index = BlocksManager.GetBlockIndex(typeof(Game.Izh43Block), true, false);
+				int izh43Index = BlocksManager.GetBlockIndex(typeof(Izh43Block), true, false);
 				FirearmConfigs[izh43Index] = new FirearmConfig
 				{
 					BulletBlockType = typeof(NuevaBala),
@@ -231,7 +231,7 @@ namespace Game
 					IsAutomatic = false
 				};
 
-				int minigunIndex = BlocksManager.GetBlockIndex(typeof(Game.MinigunBlock), true, false);
+				int minigunIndex = BlocksManager.GetBlockIndex(typeof(MinigunBlock), true, false);
 				FirearmConfigs[minigunIndex] = new FirearmConfig
 				{
 					BulletBlockType = typeof(NuevaBala6),
@@ -245,7 +245,7 @@ namespace Game
 					IsAutomatic = true
 				};
 
-				int spas12Index = BlocksManager.GetBlockIndex(typeof(Game.SPAS12Block), true, false);
+				int spas12Index = BlocksManager.GetBlockIndex(typeof(SPAS12Block), true, false);
 				FirearmConfigs[spas12Index] = new FirearmConfig
 				{
 					BulletBlockType = typeof(NuevaBala),
@@ -259,7 +259,7 @@ namespace Game
 					IsAutomatic = false
 				};
 
-				int uziIndex = BlocksManager.GetBlockIndex(typeof(Game.UziBlock), true, false);
+				int uziIndex = BlocksManager.GetBlockIndex(typeof(UziBlock), true, false);
 				FirearmConfigs[uziIndex] = new FirearmConfig
 				{
 					BulletBlockType = typeof(NuevaBala2),
@@ -273,7 +273,7 @@ namespace Game
 					IsAutomatic = true
 				};
 
-				int sniperIndex = BlocksManager.GetBlockIndex(typeof(Game.SniperBlock), true, false);
+				int sniperIndex = BlocksManager.GetBlockIndex(typeof(SniperBlock), true, false);
 				FirearmConfigs[sniperIndex] = new FirearmConfig
 				{
 					BulletBlockType = typeof(NuevaBala6),
@@ -288,7 +288,7 @@ namespace Game
 					IsSniper = true
 				};
 
-				int augIndex = BlocksManager.GetBlockIndex(typeof(Game.AUGBlock), true, false);
+				int augIndex = BlocksManager.GetBlockIndex(typeof(AUGBlock), true, false);
 				FirearmConfigs[augIndex] = new FirearmConfig
 				{
 					BulletBlockType = typeof(NuevaBala),
@@ -302,7 +302,7 @@ namespace Game
 					IsAutomatic = true
 				};
 
-				int p90Index = BlocksManager.GetBlockIndex(typeof(Game.P90Block), true, false);
+				int p90Index = BlocksManager.GetBlockIndex(typeof(P90Block), true, false);
 				FirearmConfigs[p90Index] = new FirearmConfig
 				{
 					BulletBlockType = typeof(NuevaBala4),
@@ -316,7 +316,7 @@ namespace Game
 					IsAutomatic = true
 				};
 
-				int scarIndex = BlocksManager.GetBlockIndex(typeof(Game.SCARBlock), true, false);
+				int scarIndex = BlocksManager.GetBlockIndex(typeof(SCARBlock), true, false);
 				FirearmConfigs[scarIndex] = new FirearmConfig
 				{
 					BulletBlockType = typeof(NuevaBala3),
@@ -330,7 +330,7 @@ namespace Game
 					IsAutomatic = true
 				};
 
-				int revolverIndex = BlocksManager.GetBlockIndex(typeof(Game.RevolverBlock), true, false);
+				int revolverIndex = BlocksManager.GetBlockIndex(typeof(RevolverBlock), true, false);
 				FirearmConfigs[revolverIndex] = new FirearmConfig
 				{
 					BulletBlockType = typeof(NuevaBala4),
@@ -344,7 +344,7 @@ namespace Game
 					IsAutomatic = false
 				};
 
-				int famasIndex = BlocksManager.GetBlockIndex(typeof(Game.FamasBlock), true, false);
+				int famasIndex = BlocksManager.GetBlockIndex(typeof(FamasBlock), true, false);
 				FirearmConfigs[famasIndex] = new FirearmConfig
 				{
 					BulletBlockType = typeof(NuevaBala4),
@@ -358,7 +358,7 @@ namespace Game
 					IsAutomatic = true
 				};
 
-				int aa12Index = BlocksManager.GetBlockIndex(typeof(Game.AA12Block), true, false);
+				int aa12Index = BlocksManager.GetBlockIndex(typeof(AA12Block), true, false);
 				FirearmConfigs[aa12Index] = new FirearmConfig
 				{
 					BulletBlockType = typeof(NuevaBala6),
@@ -372,7 +372,7 @@ namespace Game
 					IsAutomatic = true
 				};
 
-				int m249Index = BlocksManager.GetBlockIndex(typeof(Game.M249Block), true, false);
+				int m249Index = BlocksManager.GetBlockIndex(typeof(M249Block), true, false);
 				FirearmConfigs[m249Index] = new FirearmConfig
 				{
 					BulletBlockType = typeof(NuevaBala5),
@@ -386,7 +386,7 @@ namespace Game
 					IsAutomatic = true
 				};
 
-				int newG3Index = BlocksManager.GetBlockIndex(typeof(Game.NewG3Block), true, false);
+				int newG3Index = BlocksManager.GetBlockIndex(typeof(NewG3Block), true, false);
 				FirearmConfigs[newG3Index] = new FirearmConfig
 				{
 					BulletBlockType = typeof(NuevaBala3),
@@ -400,7 +400,7 @@ namespace Game
 					IsAutomatic = true
 				};
 
-				int mp5ssdIndex = BlocksManager.GetBlockIndex(typeof(Game.MP5SSDBlock), true, false);
+				int mp5ssdIndex = BlocksManager.GetBlockIndex(typeof(MP5SSDBlock), true, false);
 				FirearmConfigs[mp5ssdIndex] = new FirearmConfig
 				{
 					BulletBlockType = typeof(NuevaBala3),
@@ -414,7 +414,7 @@ namespace Game
 					IsAutomatic = true
 				};
 
-				int mendozaIndex = BlocksManager.GetBlockIndex(typeof(Game.MendozaBlock), true, false);
+				int mendozaIndex = BlocksManager.GetBlockIndex(typeof(MendozaBlock), true, false);
 				FirearmConfigs[mendozaIndex] = new FirearmConfig
 				{
 					BulletBlockType = typeof(NuevaBala3),
@@ -428,7 +428,7 @@ namespace Game
 					IsAutomatic = true
 				};
 
-				int grozaIndex = BlocksManager.GetBlockIndex(typeof(Game.GrozaBlock), true, false);
+				int grozaIndex = BlocksManager.GetBlockIndex(typeof(GrozaBlock), true, false);
 				FirearmConfigs[grozaIndex] = new FirearmConfig
 				{
 					BulletBlockType = typeof(NuevaBala3),
