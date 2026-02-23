@@ -107,6 +107,20 @@ namespace Game
 				}
 			}
 
+			// --- CORRECCIÓN MEJORADA ---
+			// Verificamos si la noche verde está activa en un momento que NO debería estarlo
+			// Consideramos que si ya pasó el amanecer (tiempo > DawnEnd) y sigue activa, algo anda mal
+			// Pero respetamos la transición gradual durante el amanecer
+			if (this.IsGreenNightActive && timeOfDay > this.m_subsystemTimeOfDay.DawnStart + 0.1f)
+			{
+				// Verificamos también la fase lunar - si cambió a una fase no permitida, desactivamos
+				if (this.m_subsystemSky.MoonPhase != 0 && this.m_subsystemSky.MoonPhase != 4)
+				{
+					this.IsGreenNightActive = false;
+				}
+			}
+			// --- FIN DE CORRECCIÓN ---
+
 			if (this.HasRolledTonight && isEndMoment)
 			{
 				this.HasRolledTonight = false;
