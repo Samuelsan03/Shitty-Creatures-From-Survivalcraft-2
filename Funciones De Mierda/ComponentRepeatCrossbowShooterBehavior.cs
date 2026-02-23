@@ -364,40 +364,36 @@ namespace Game
 		// Selecciona el tipo de flecha basado en la distancia
 		private RepeatArrowBlock.ArrowType? SelectArrowTypeForDistance(float distance)
 		{
-			// Distancia mínima para usar explosivos
 			const float explosiveMinDistance = 20f;
 
 			if (distance >= explosiveMinDistance)
 			{
-				// Intentar usar explosivo si está disponible
+				// A larga distancia: usar TODOS los tipos disponibles (incluyendo explosivos)
+				if (m_availableArrowTypes.Length > 0)
+				{
+					int index = m_random.Int(0, m_availableArrowTypes.Length - 1);
+					return m_availableArrowTypes[index];
+				}
+			}
+			else
+			{
+				// A corta distancia: solo tipos no explosivos (por seguridad)
+				var nonExplosiveTypes = new List<RepeatArrowBlock.ArrowType>();
 				foreach (var arrowType in m_availableArrowTypes)
 				{
-					if (arrowType == RepeatArrowBlock.ArrowType.ExplosiveArrow)
-						return arrowType;
+					if (arrowType != RepeatArrowBlock.ArrowType.ExplosiveArrow)
+						nonExplosiveTypes.Add(arrowType);
 				}
-				// Si no hay explosivo, usar cualquier otro
+
+				if (nonExplosiveTypes.Count > 0)
+				{
+					int index = m_random.Int(0, nonExplosiveTypes.Count - 1);
+					return nonExplosiveTypes[index];
+				}
 			}
 
-			// Distancia corta: usar solo flechas no explosivas
-			var nonExplosiveTypes = new List<RepeatArrowBlock.ArrowType>();
-			foreach (var arrowType in m_availableArrowTypes)
-			{
-				if (arrowType != RepeatArrowBlock.ArrowType.ExplosiveArrow)
-					nonExplosiveTypes.Add(arrowType);
-			}
-
-			if (nonExplosiveTypes.Count > 0)
-			{
-				// Elegir aleatoriamente entre las no explosivas
-				int index = m_random.Int(0, nonExplosiveTypes.Count - 1);
-				return nonExplosiveTypes[index];
-			}
-
-			// Si no hay ningún tipo no explosivo, devolver el primero disponible (aunque sea explosivo)
-			if (m_availableArrowTypes.Length > 0)
-				return m_availableArrowTypes[0];
-
-			return null;
+			// Si no hay tipos disponibles o solo hay explosivos a corta distancia, usar el primero
+			return m_availableArrowTypes.Length > 0 ? m_availableArrowTypes[0] : (RepeatArrowBlock.ArrowType?)null;
 		}
 
 		private RepeatArrowBlock.ArrowType? GetFirstNonExplosiveArrowType()
