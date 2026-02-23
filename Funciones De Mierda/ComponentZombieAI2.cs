@@ -135,7 +135,7 @@ namespace Game
 
 		private float m_maxDistance = 100f;
 		private float m_drawTime = 0.5f;
-		private float m_aimTime = 0.5f;
+		private float m_aimTime = 0.55f;
 		private float m_reloadTime = 0.8f;
 		private float m_cockTime = 0.5f;
 		private float m_flameShotInterval = 0.3f;
@@ -146,7 +146,7 @@ namespace Game
 		private float m_firearmReloadTime = 1.0f;
 		private float m_sniperAimTime = 1.0f;
 		private float m_throwableAimTime = 1.55f;
-		private float m_throwableMinRange = 3f;      // AÑADIR
+		private float m_throwableMinRange = 5f;      // AÑADIR
 		private float m_throwableMaxRange = 15.5f;     // AÑADIR
 
 		private float m_explosiveBoltMinDistance = 15f;
@@ -581,9 +581,33 @@ namespace Game
 				{
 					if (!m_isMelee)
 					{
-						EnterMeleeMode();
+						if (!EnterMeleeMode())
+						{
+							m_isMelee = false;
+						}
 					}
-					UpdateMeleeMode(target);
+
+					if (m_isMelee)
+					{
+						UpdateMeleeMode(target);
+					}
+					else
+					{
+						float maxDistance = GetWeaponMaxDistance();
+						if (distance <= maxDistance)
+						{
+							if (m_currentWeaponSlot == -1)
+							{
+								FindRangedWeapon();
+							}
+
+							if (m_currentWeaponSlot != -1)
+							{
+								ProcessWeaponBehavior(target, distance);
+								ProcessRangedWeaponAsMelee(target, distance);
+							}
+						}
+					}
 				}
 				else
 				{
@@ -592,85 +616,65 @@ namespace Game
 						ExitMeleeMode();
 					}
 
-					float maxDistance = GetWeaponMaxDistance();
-
-					if (distance <= maxDistance)
+					// Siempre intentar usar el arma a distancia
+					if (m_currentWeaponSlot == -1)
 					{
-						if (m_currentWeaponSlot == -1)
-						{
-							FindRangedWeapon();
-						}
+						FindRangedWeapon();
+					}
 
-						if (m_currentWeaponSlot != -1)
-						{
-							ProcessWeaponBehavior(target, distance);
-						}
+					if (m_currentWeaponSlot != -1)
+					{
+						ProcessWeaponBehavior(target, distance);
 					}
 					else
 					{
-						if (m_weaponType == 6)
+						ResetWeaponState();
+						if (m_componentModel != null)
 						{
-							m_isThrowableAiming = false;
-							m_isThrowableThrowing = false;
-							if (m_componentModel != null)
-							{
-								m_componentModel.AimHandAngleOrder = 0f;
-								m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
-								m_componentModel.InHandItemRotationOrder = Vector3.Zero;
-								m_componentModel.LookAtOrder = null;
-							}
-						}
-						else
-						{
-							ResetWeaponState();
-							if (m_componentModel != null)
-							{
-								m_componentModel.AimHandAngleOrder = 0f;
-								m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
-								m_componentModel.InHandItemRotationOrder = Vector3.Zero;
-								m_componentModel.LookAtOrder = null;
-							}
+							m_componentModel.AimHandAngleOrder = 0f;
+							m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
+							m_componentModel.InHandItemRotationOrder = Vector3.Zero;
+							m_componentModel.LookAtOrder = null;
 						}
 					}
-				}
-			}
-			else
-			{
-				ResetWeaponState();
-				if (m_componentModel != null)
-				{
-					m_componentModel.AimHandAngleOrder = 0f;
-					m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
-					m_componentModel.InHandItemRotationOrder = Vector3.Zero;
-					m_componentModel.LookAtOrder = null;
 				}
 			}
 		}
 
 		// AÑADIDO: Entrar en modo cuerpo a cuerpo (exactamente como en ComponentCreatureAI)
-		private void EnterMeleeMode()
+		private bool EnterMeleeMode()
 		{
-			m_isMelee = true;
-			m_isAiming = false;
-			m_isDrawing = false;
-			m_isFiring = false;
-			m_isReloading = false;
-			m_isCocking = false;
-			m_isFlameFiring = false;
-			m_isFlameCocking = false;
-			m_isFirearmAiming = false;
-			m_isFirearmFiring = false;
-			m_isFirearmReloading = false;
-			m_isThrowableAiming = false;
-			m_isThrowableThrowing = false;
-
-			if (m_componentModel != null)
+			int bestSlot = FindBestMeleeWeaponSlot();
+			if (bestSlot >= 0)
 			{
-				m_componentModel.AimHandAngleOrder = 0f;
-				m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
-				m_componentModel.InHandItemRotationOrder = Vector3.Zero;
+				m_componentInventory.ActiveSlotIndex = bestSlot;
+
+				m_isAiming = false;
+				m_isDrawing = false;
+				m_isFiring = false;
+				m_isReloading = false;
+				m_isCocking = false;
+				m_isFlameFiring = false;
+				m_isFlameCocking = false;
+				m_isFirearmAiming = false;
+				m_isFirearmFiring = false;
+				m_isFirearmReloading = false;
+				m_isThrowableAiming = false;
+				m_isThrowableThrowing = false;
+
+				if (m_componentModel != null)
+				{
+					m_componentModel.AimHandAngleOrder = 0f;
+					m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
+					m_componentModel.InHandItemRotationOrder = Vector3.Zero;
+				}
+
+				m_isMelee = true;
+				return true;
 			}
-			FindMeleeWeapon();
+
+			m_isMelee = false;
+			return false;
 		}
 
 		// AÑADIDO: Salir del modo cuerpo a cuerpo (exactamente como en ComponentCreatureAI)
@@ -1015,8 +1019,9 @@ namespace Game
 
 		private void ProcessWeaponBehavior(ComponentCreature target, float distance)
 		{
-			// Si estamos en distancia corta y el arma es de distancia, usar ataque cuerpo a cuerpo con ella
-			if (distance <= m_meleeSwitchDistance && m_weaponType >= 0 && m_weaponType <= 6)
+			// SOLO usar ataque cuerpo a cuerpo con arma a distancia si ESTAMOS EN MODO MELEE
+			// y tenemos un arma a distancia equipada (porque no encontramos arma melee)
+			if (m_isMelee && distance <= m_meleeSwitchDistance && m_weaponType >= 0 && m_weaponType <= 6)
 			{
 				ProcessRangedWeaponAsMelee(target, distance);
 				return;
@@ -1182,18 +1187,13 @@ namespace Game
 		{
 			if (target == null) return;
 
-			// Si estamos demasiado lejos para atacar cuerpo a cuerpo
 			if (distance > 4f) return;
 
-			// Detener el movimiento para atacar
-			if (m_componentPathfinding != null)
-				m_componentPathfinding.Destination = null;
+			// ELIMINADO: m_componentPathfinding.Destination = null;
 
-			// Mirar al objetivo
 			if (m_componentModel != null)
 				m_componentModel.LookAtOrder = new Vector3?(target.ComponentCreatureModel.EyePosition);
 
-			// Atacar con el intervalo definido
 			if (m_subsystemTime.GameTime >= m_nextMeleeAttackTime)
 			{
 				if (m_componentMiner != null)
@@ -1203,7 +1203,6 @@ namespace Game
 					Vector3 hitDirection = Vector3.Normalize(targetBody.Position - m_componentCreature.ComponentBody.Position);
 
 					m_componentMiner.Hit(targetBody, hitPoint, hitDirection);
-
 					m_nextMeleeAttackTime = m_subsystemTime.GameTime + m_meleeAttackInterval;
 				}
 			}
@@ -3487,6 +3486,28 @@ namespace Game
 			catch { }
 		}
 
+		private int FindBestMeleeWeaponSlot()
+		{
+			if (m_componentInventory == null)
+				return -1;
+
+			float bestPower = 1f;
+			int bestSlot = -1;
+			for (int i = 0; i < m_componentInventory.SlotsCount; i++)
+			{
+				int slotValue = m_componentInventory.GetSlotValue(i);
+				if (slotValue != 0)
+				{
+					float power = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)].GetMeleePower(slotValue);
+					if (power > bestPower)
+					{
+						bestPower = power;
+						bestSlot = i;
+					}
+				}
+			}
+			return bestSlot;
+		}
 		private void ShootRepeatCrossbowArrow(ComponentCreature target)
 		{
 			if (target == null) return;
