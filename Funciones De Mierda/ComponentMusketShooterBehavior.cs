@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Engine;
 using GameEntitySystem;
 using TemplatesDatabase;
@@ -526,11 +526,31 @@ namespace Game
 				return;
 			}
 
+			// --- NUEVA VERIFICACIÓN DE INMERSIÓN (AGUA) ---
+			float immersion = m_componentCreature.ComponentBody.ImmersionFactor;
+			if (immersion > 0.4f)
+			{
+				// Sonido de fallo por agua
+				m_subsystemAudio.PlaySound("Audio/MusketMisfire", 1f, m_random.Float(-0.1f, 0.1f),
+					m_componentCreature.ComponentBody.Position, 3f, false);
+
+				// Vaciar el mosquete (igual que después de un disparo normal)
+				UpdateMusketLoadState(MusketBlock.LoadState.Empty);
+				UpdateMusketHammerState(false);
+				UpdateMusketBulletType(BulletBlock.BulletType.MusketBall);
+
+				// Saltar la animación de disparo e ir directamente a recargar
+				m_isFiring = false;
+				StartReloading();
+				return;
+			}
+			// --- FIN DE LA NUEVA VERIFICACIÓN ---
+
 			// Sonido de disparo (hardcoded)
 			m_subsystemAudio.PlaySound("Audio/MusketFire", 1f, m_random.Float(-0.1f, 0.1f),
 				m_componentCreature.ComponentBody.Position, FireSoundDistance, false);
 
-			// Sonido de liberación del martillo (hardcoded)
+			// Sonido de liberación del martillo
 			m_subsystemAudio.PlaySound("Audio/HammerUncock", 1f, m_random.Float(-0.1f, 0.1f),
 				m_componentCreature.ComponentBody.Position, 3f, false);
 
