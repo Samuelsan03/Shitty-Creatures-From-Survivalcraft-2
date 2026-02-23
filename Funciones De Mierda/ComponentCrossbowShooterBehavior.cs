@@ -16,20 +16,19 @@ namespace Game
 		private SubsystemProjectiles m_subsystemProjectiles;
 		private SubsystemAudio m_subsystemAudio;
 		private ComponentCreatureModel m_componentModel;
-		private ComponentNewHumanModel m_componentNewHumanModel; // Nueva referencia
+		private ComponentNewHumanModel m_componentNewHumanModel;
 		private SubsystemParticles m_subsystemParticles;
 		private SubsystemNoise m_subsystemNoise;
 
 		// Configuración
 		public float MaxDistance = 25f;
-		public float DrawTime = 1.5f;  // Tiempo para tensar la ballesta
+		public float DrawTime = 1.5f;
 		public float AimTime = 0.5f;
-		public float ReloadTime = 0.8f; // Tiempo para recargar después de disparar
+		public float ReloadTime = 0.8f;
 		public float FireSoundDistance = 15f;
 		public float Accuracy = 0.02f;
 		public float BoltSpeed = 45f;
-		public bool CycleBoltTypes = true;
-		public bool ShowBoltWhenIdle = false;
+		public float MinExplosiveDistance = 20f; // Distancia mínima segura para virotes explosivos
 
 		// Tipos de virotes a usar (solo los compatibles con ballesta)
 		public ArrowBlock.ArrowType[] AvailableBoltTypes = new ArrowBlock.ArrowType[]
@@ -58,8 +57,8 @@ namespace Game
 		private float m_smoothedAimHandAngle = 0f;
 		private Vector3 m_smoothedItemOffset = Vector3.Zero;
 		private Vector3 m_smoothedItemRotation = Vector3.Zero;
-		private float m_animationSmoothFactor = 0.18f; // Factor de suavizado igual que NewHumanModel
-		private float m_aimSmoothFactor = 0.3f; // Factor específico para apuntar
+		private float m_animationSmoothFactor = 0.18f;
+		private float m_aimSmoothFactor = 0.3f;
 
 		// UpdateOrder
 		public int UpdateOrder => 0;
@@ -77,8 +76,7 @@ namespace Game
 			FireSoundDistance = valuesDictionary.GetValue<float>("FireSoundDistance", 15f);
 			Accuracy = valuesDictionary.GetValue<float>("Accuracy", 0.02f);
 			BoltSpeed = valuesDictionary.GetValue<float>("BoltSpeed", 45f);
-			CycleBoltTypes = valuesDictionary.GetValue<bool>("CycleBoltTypes", true);
-			ShowBoltWhenIdle = valuesDictionary.GetValue<bool>("ShowBoltWhenIdle", false);
+			MinExplosiveDistance = valuesDictionary.GetValue<float>("MinExplosiveDistance", 20f);
 
 			// Inicializar componentes
 			m_componentCreature = base.Entity.FindComponent<ComponentCreature>(true);
@@ -94,7 +92,7 @@ namespace Game
 			{
 				m_componentModel = m_componentNewHumanModel;
 				// Ajustar parámetros de suavizado del nuevo modelo
-				m_componentNewHumanModel.SetAimSmoothness(0.4f); // Valor óptimo para ballesta
+				m_componentNewHumanModel.SetAimSmoothness(0.4f);
 			}
 			else
 			{
@@ -110,8 +108,8 @@ namespace Game
 		{
 			base.OnEntityAdded();
 
-			// Inicializar con virote aleatorio
-			m_currentBoltTypeIndex = m_random.Int(0, AvailableBoltTypes.Length);
+			// Inicializar con virote aleatorio (no explosivo por seguridad)
+			m_currentBoltTypeIndex = GetRandomNonExplosiveBoltIndex();
 			m_initialized = true;
 			m_hasCycledForNextShot = false;
 
@@ -123,21 +121,72 @@ namespace Game
 			m_smoothedItemOffset = Vector3.Zero;
 			m_smoothedItemRotation = Vector3.Zero;
 
-			// Mostrar virote inicialmente si está configurado
-			if (ShowBoltWhenIdle && m_crossbowSlot >= 0)
+			// Ballesta sin virote inicialmente
+			if (m_crossbowSlot >= 0)
 			{
-				SetCrossbowWithBolt(0, false); // Ballesta sin tensar, sin virote
+				SetCrossbowWithBolt(0, false);
 			}
 		}
 
 		private ComponentCreature GetChaseTarget()
 		{
-
 			// Fallback al ComponentChaseBehavior original
 			if (m_componentChaseBehavior != null && m_componentChaseBehavior.Target != null)
 				return m_componentChaseBehavior.Target;
 
 			return null;
+		}
+
+		private int GetRandomNonExplosiveBoltIndex()
+		{
+			// Si solo hay un tipo o es el único disponible, retornar 0
+			if (AvailableBoltTypes.Length <= 1)
+				return 0;
+
+			// Crear lista de índices no explosivos
+			List<int> nonExplosiveIndices = new List<int>();
+			for (int i = 0; i < AvailableBoltTypes.Length; i++)
+			{
+				if (AvailableBoltTypes[i] != ArrowBlock.ArrowType.ExplosiveBolt)
+				{
+					nonExplosiveIndices.Add(i);
+				}
+			}
+
+			// Si hay índices no explosivos, elegir uno aleatorio
+			if (nonExplosiveIndices.Count > 0)
+			{
+				return nonExplosiveIndices[m_random.Int(0, nonExplosiveIndices.Count - 1)];
+			}
+
+			// Si todos son explosivos (no debería pasar), retornar 0
+			return 0;
+		}
+
+		private int GetSafeBoltIndexForDistance(float distance)
+		{
+			int currentIndex = m_currentBoltTypeIndex;
+
+			// Verificar si el tipo actual es explosivo y la distancia es peligrosa
+			if (currentIndex >= 0 && currentIndex < AvailableBoltTypes.Length)
+			{
+				if (AvailableBoltTypes[currentIndex] == ArrowBlock.ArrowType.ExplosiveBolt && distance < MinExplosiveDistance)
+				{
+					// Buscar un tipo no explosivo para esta distancia
+					for (int i = 0; i < AvailableBoltTypes.Length; i++)
+					{
+						if (AvailableBoltTypes[i] != ArrowBlock.ArrowType.ExplosiveBolt)
+						{
+							return i; // Retornar el primer no explosivo encontrado
+						}
+					}
+					// Si todos son explosivos, usar el actual (no hay alternativa segura)
+					return currentIndex;
+				}
+			}
+
+			// Si no es explosivo o la distancia es segura, usar el índice actual
+			return currentIndex;
 		}
 
 		public void Update(float dt)
@@ -151,8 +200,8 @@ namespace Game
 			if (target == null)
 			{
 				ResetAnimations();
-				// Mantener ballesta en estado idle
-				if (ShowBoltWhenIdle && m_crossbowSlot >= 0)
+				// Mantener ballesta sin virote
+				if (m_crossbowSlot >= 0)
 				{
 					SetCrossbowWithBolt(0, false);
 				}
@@ -165,6 +214,14 @@ namespace Game
 				target.ComponentBody.Position
 			);
 
+			// Verificar si debemos cambiar a un tipo de virote seguro según la distancia
+			int safeBoltIndex = GetSafeBoltIndexForDistance(distance);
+			if (safeBoltIndex != m_currentBoltTypeIndex)
+			{
+				m_currentBoltTypeIndex = safeBoltIndex;
+				m_hasCycledForNextShot = false; // Resetear el flag de ciclado
+			}
+
 			// Lógica de ataque - Solo verifica distancia máxima
 			if (distance <= MaxDistance)
 			{
@@ -176,14 +233,14 @@ namespace Game
 			else
 			{
 				ResetAnimations();
-				if (ShowBoltWhenIdle && m_crossbowSlot >= 0)
+				if (m_crossbowSlot >= 0)
 				{
 					SetCrossbowWithBolt(0, false);
 				}
 				return;
 			}
 
-			// Aplicar suavizado de animaciones (igual que NewHumanModel)
+			// Aplicar suavizado de animaciones
 			ApplySmoothAnimations(dt);
 
 			// Lógica de estados
@@ -234,15 +291,40 @@ namespace Game
 					// Quitar virote después de disparar
 					ClearBoltFromCrossbow();
 
-					// IMPORTANTE: Ciclar para el próximo disparo aquí
-					if (CycleBoltTypes && AvailableBoltTypes.Length > 1)
+					// Ciclar para el próximo disparo
+					if (AvailableBoltTypes.Length > 1)
 					{
-						m_currentBoltTypeIndex = (m_currentBoltTypeIndex + 1) % AvailableBoltTypes.Length;
+						// Intentar avanzar al siguiente tipo, pero verificar seguridad
+						int nextIndex = (m_currentBoltTypeIndex + 1) % AvailableBoltTypes.Length;
+
+						// Si el siguiente es explosivo y la distancia actual es peligrosa, buscar alternativas
+						if (AvailableBoltTypes[nextIndex] == ArrowBlock.ArrowType.ExplosiveBolt && distance < MinExplosiveDistance)
+						{
+							// Buscar el siguiente tipo no explosivo
+							bool found = false;
+							for (int i = 1; i <= AvailableBoltTypes.Length; i++)
+							{
+								int candidateIndex = (m_currentBoltTypeIndex + i) % AvailableBoltTypes.Length;
+								if (AvailableBoltTypes[candidateIndex] != ArrowBlock.ArrowType.ExplosiveBolt)
+								{
+									m_currentBoltTypeIndex = candidateIndex;
+									found = true;
+									break;
+								}
+							}
+							if (!found)
+							{
+								// Si todos son explosivos, usar el siguiente (no hay alternativa)
+								m_currentBoltTypeIndex = nextIndex;
+							}
+						}
+						else
+						{
+							// Seguro para usar el siguiente tipo
+							m_currentBoltTypeIndex = nextIndex;
+						}
+
 						m_hasCycledForNextShot = true;
-					}
-					else if (!CycleBoltTypes && AvailableBoltTypes.Length > 0)
-					{
-						m_currentBoltTypeIndex = 0;
 					}
 
 					// Pausa antes de recargar
@@ -254,11 +336,11 @@ namespace Game
 			}
 		}
 
-		// Nuevo método: Aplicar suavizado igual que NewHumanModel
+		// Aplicar suavizado igual que NewHumanModel
 		private void ApplySmoothAnimations(float dt)
 		{
-			float smoothSpeed = MathUtils.Min(10f * dt, 0.85f); // Igual que NewHumanModel
-			float aimSmoothSpeed = MathUtils.Min(5f * dt, 0.9f); // Igual que NewHumanModel
+			float smoothSpeed = MathUtils.Min(10f * dt, 0.85f);
+			float aimSmoothSpeed = MathUtils.Min(5f * dt, 0.9f);
 
 			// Si tenemos ComponentNewHumanModel, usar su sistema de suavizado interno
 			if (m_componentNewHumanModel != null)
@@ -331,11 +413,10 @@ namespace Game
 				ArrowBlock.ArrowType? boltType = null;
 				if (hasBolt && AvailableBoltTypes.Length > 0)
 				{
-					// IMPORTANTE: Usar el índice actual para este disparo
 					int indexToUse = m_currentBoltTypeIndex;
 
 					// Si ya ciclamos para el próximo disparo, usar el índice anterior
-					if (m_hasCycledForNextShot && CycleBoltTypes && AvailableBoltTypes.Length > 1)
+					if (m_hasCycledForNextShot && AvailableBoltTypes.Length > 1)
 					{
 						indexToUse = (m_currentBoltTypeIndex - 1 + AvailableBoltTypes.Length) % AvailableBoltTypes.Length;
 					}
@@ -379,7 +460,7 @@ namespace Game
 			m_isReloading = false;
 			m_animationStartTime = m_subsystemTime.GameTime;
 			m_currentDraw = 0f;
-			m_hasCycledForNextShot = false; // Resetear el flag de ciclado
+			m_hasCycledForNextShot = false;
 
 			// Mostrar ballesta sin virote
 			SetCrossbowWithBolt(0, false);
@@ -390,25 +471,13 @@ namespace Game
 			if (m_componentModel != null)
 			{
 				// ANIMACIÓN DE APUNTADO - VERTICAL COMO MOSQUETE
-				// La ballesta se sostiene verticalmente con brazo alto
 				float targetAimAngle = 1.4f;
 				Vector3 targetOffset = new Vector3(-0.08f, -0.08f, 0.07f);
 				Vector3 targetRotation = new Vector3(-1.7f, 0f, 0f);
 
-				// Si no tenemos el nuevo modelo, aplicar valores directamente
-				if (m_componentNewHumanModel == null)
-				{
-					m_componentModel.AimHandAngleOrder = targetAimAngle;
-					m_componentModel.InHandItemOffsetOrder = targetOffset;
-					m_componentModel.InHandItemRotationOrder = targetRotation;
-				}
-				else
-				{
-					// El nuevo modelo maneja el suavizado internamente
-					m_componentModel.AimHandAngleOrder = targetAimAngle;
-					m_componentModel.InHandItemOffsetOrder = targetOffset;
-					m_componentModel.InHandItemRotationOrder = targetRotation;
-				}
+				m_componentModel.AimHandAngleOrder = targetAimAngle;
+				m_componentModel.InHandItemOffsetOrder = targetOffset;
+				m_componentModel.InHandItemRotationOrder = targetRotation;
 
 				if (target != null)
 				{
@@ -447,20 +516,9 @@ namespace Game
 				);
 				Vector3 targetRotation = new Vector3(-1.7f, 0f, 0f);
 
-				// Si no tenemos el nuevo modelo, aplicar valores directamente
-				if (m_componentNewHumanModel == null)
-				{
-					m_componentModel.AimHandAngleOrder = targetAimAngle;
-					m_componentModel.InHandItemOffsetOrder = targetOffset;
-					m_componentModel.InHandItemRotationOrder = targetRotation;
-				}
-				else
-				{
-					// El nuevo modelo maneja el suavizado internamente
-					m_componentModel.AimHandAngleOrder = targetAimAngle;
-					m_componentModel.InHandItemOffsetOrder = targetOffset;
-					m_componentModel.InHandItemRotationOrder = targetRotation;
-				}
+				m_componentModel.AimHandAngleOrder = targetAimAngle;
+				m_componentModel.InHandItemOffsetOrder = targetOffset;
+				m_componentModel.InHandItemRotationOrder = targetRotation;
 
 				if (target != null)
 				{
@@ -500,20 +558,9 @@ namespace Game
 				);
 				Vector3 targetRotation = new Vector3(-1.7f, 0f, 0f);
 
-				// Si no tenemos el nuevo modelo, aplicar valores directamente
-				if (m_componentNewHumanModel == null)
-				{
-					m_componentModel.AimHandAngleOrder = targetAimAngle;
-					m_componentModel.InHandItemOffsetOrder = targetOffset;
-					m_componentModel.InHandItemRotationOrder = targetRotation;
-				}
-				else
-				{
-					// El nuevo modelo maneja el suavizado internamente
-					m_componentModel.AimHandAngleOrder = targetAimAngle;
-					m_componentModel.InHandItemOffsetOrder = targetOffset;
-					m_componentModel.InHandItemRotationOrder = targetRotation;
-				}
+				m_componentModel.AimHandAngleOrder = targetAimAngle;
+				m_componentModel.InHandItemOffsetOrder = targetOffset;
+				m_componentModel.InHandItemRotationOrder = targetRotation;
 
 				if (target != null)
 				{
@@ -530,7 +577,7 @@ namespace Game
 			m_isFiring = true;
 			m_fireTime = m_subsystemTime.GameTime;
 
-			// Disparar virote (usar el índice actual sin ciclar todavía)
+			// Disparar virote
 			ShootBolt(target);
 
 			// Sonido de disparo de ballesta
@@ -563,20 +610,9 @@ namespace Game
 					Vector3 targetRotation = m_componentModel.InHandItemRotationOrder + new Vector3(recoil * 2f, 0f, 0f);
 					float targetAimAngle = 1.4f;
 
-					// Si no tenemos el nuevo modelo, aplicar valores directamente
-					if (m_componentNewHumanModel == null)
-					{
-						m_componentModel.AimHandAngleOrder = targetAimAngle;
-						m_componentModel.InHandItemOffsetOrder = targetOffset;
-						m_componentModel.InHandItemRotationOrder = targetRotation;
-					}
-					else
-					{
-						// El nuevo modelo maneja el suavizado internamente
-						m_componentModel.AimHandAngleOrder = targetAimAngle;
-						m_componentModel.InHandItemOffsetOrder = targetOffset;
-						m_componentModel.InHandItemRotationOrder = targetRotation;
-					}
+					m_componentModel.AimHandAngleOrder = targetAimAngle;
+					m_componentModel.InHandItemOffsetOrder = targetOffset;
+					m_componentModel.InHandItemRotationOrder = targetRotation;
 				}
 				else
 				{
@@ -595,20 +631,9 @@ namespace Game
 						0f
 					);
 
-					// Si no tenemos el nuevo modelo, aplicar valores directamente
-					if (m_componentNewHumanModel == null)
-					{
-						m_componentModel.AimHandAngleOrder = targetAimAngle;
-						m_componentModel.InHandItemOffsetOrder = targetOffset;
-						m_componentModel.InHandItemRotationOrder = targetRotation;
-					}
-					else
-					{
-						// El nuevo modelo maneja el suavizado internamente
-						m_componentModel.AimHandAngleOrder = targetAimAngle;
-						m_componentModel.InHandItemOffsetOrder = targetOffset;
-						m_componentModel.InHandItemRotationOrder = targetRotation;
-					}
+					m_componentModel.AimHandAngleOrder = targetAimAngle;
+					m_componentModel.InHandItemOffsetOrder = targetOffset;
+					m_componentModel.InHandItemRotationOrder = targetRotation;
 				}
 			}
 		}
@@ -643,16 +668,45 @@ namespace Game
 
 			try
 			{
-				// IMPORTANTE: Usar el índice actual sin ciclar todavía
+				// Obtener distancia actual para verificar seguridad
+				float currentDistance = Vector3.Distance(
+					m_componentCreature.ComponentBody.Position,
+					target.ComponentBody.Position
+				);
+
 				int indexToUse = m_currentBoltTypeIndex;
 
 				// Si ya ciclamos para el próximo disparo, usar el índice anterior
-				if (m_hasCycledForNextShot && CycleBoltTypes && AvailableBoltTypes.Length > 1)
+				if (m_hasCycledForNextShot && AvailableBoltTypes.Length > 1)
 				{
 					indexToUse = (m_currentBoltTypeIndex - 1 + AvailableBoltTypes.Length) % AvailableBoltTypes.Length;
 				}
 
-				if (indexToUse < 0 || indexToUse >= AvailableBoltTypes.Length)
+				// Verificación de seguridad adicional antes de disparar
+				if (indexToUse >= 0 && indexToUse < AvailableBoltTypes.Length)
+				{
+					if (AvailableBoltTypes[indexToUse] == ArrowBlock.ArrowType.ExplosiveBolt && currentDistance < MinExplosiveDistance)
+					{
+						// Distancia peligrosa para explosivo, buscar alternativa
+						bool foundSafe = false;
+						for (int i = 0; i < AvailableBoltTypes.Length; i++)
+						{
+							if (AvailableBoltTypes[i] != ArrowBlock.ArrowType.ExplosiveBolt)
+							{
+								indexToUse = i;
+								foundSafe = true;
+								break;
+							}
+						}
+
+						if (!foundSafe)
+						{
+							// Si todos son explosivos, no disparar (evitar suicidio)
+							return;
+						}
+					}
+				}
+				else
 				{
 					indexToUse = 0;
 				}
@@ -674,7 +728,7 @@ namespace Game
 				);
 				direction = Vector3.Normalize(direction);
 
-				// Velocidad del virote (más rápido que flechas normales)
+				// Velocidad del virote
 				float speed = BoltSpeed * (0.8f + (m_currentDraw * 0.4f));
 
 				int boltData = ArrowBlock.SetArrowType(0, boltType);
@@ -697,7 +751,6 @@ namespace Game
 					if (boltType == ArrowBlock.ArrowType.ExplosiveBolt)
 					{
 						projectile.IsIncendiary = false;
-						// Los virotes explosivos ya tienen presión de explosión definida en ArrowBlock
 					}
 				}
 
