@@ -323,7 +323,6 @@
     <Parameter Name="FlameSpeed" Description="Velocidad base de las llamas" Guid="24c33087-7809-429f-881c-6388b89fa1f8" Value="40" Type="float"/>
     <Parameter Name="BurstCount" Description="Número de proyectiles de fuego por ráfaga" Guid="b2f4cd6c-cb67-4407-a595-81db3ca1a076" Value="15" Type="int"/>
     <Parameter Name="SpreadAngle" Description="Ángulo de dispersión de las llamas en grados" Guid="a967f7ff-f503-4e51-a6f0-565394f43fc9" Value="15" Type="float"/>
-    <Parameter Name="CycleBulletTypes" Description="Alternar entre balas de fuego y veneno automáticamente" Guid="33e58433-3d2e-49d3-83aa-d54544381ddb" Value="true" Type="bool"/>
     <Parameter Name="Class" Guid="a7ada27d-d400-43ce-ba43-1e9f37cd848a" Value="Game.ComponentFlameThrowerShooterBehavior" Type="string"/>
 </ComponentTemplate>
 
