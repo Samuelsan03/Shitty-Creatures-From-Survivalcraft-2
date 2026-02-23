@@ -41,7 +41,7 @@ namespace Game
 		private float m_currentDraw = 0f;
 		private bool m_hasCrossbow = false;
 
-		// Tipos de flechas disponibles - AHORA INCLUYEN TODAS LAS FLECHAS
+		// Tipos de flechas disponibles
 		private RepeatArrowBlock.ArrowType[] m_availableArrowTypes = new RepeatArrowBlock.ArrowType[]
 		{
 			RepeatArrowBlock.ArrowType.CopperArrow,
@@ -52,7 +52,8 @@ namespace Game
 			RepeatArrowBlock.ArrowType.SeriousPoisonArrow
 		};
 
-		private int m_currentArrowTypeIndex = 0;
+		// Tipo de flecha seleccionado para el próximo disparo (basado en distancia)
+		private RepeatArrowBlock.ArrowType? m_nextArrowType = null;
 
 		public int UpdateOrder => 0;
 		public override float ImportanceLevel => 0.5f;
@@ -85,9 +86,6 @@ namespace Game
 		public override void OnEntityAdded()
 		{
 			base.OnEntityAdded();
-
-			// Elegir tipo de flecha aleatorio inicial
-			m_currentArrowTypeIndex = m_random.Int(0, m_availableArrowTypes.Length);
 
 			// Buscar ballesta repetidora
 			FindCrossbow();
@@ -167,7 +165,7 @@ namespace Game
 				{
 					// Tensado completo, cargar flecha
 					m_isDrawing = false;
-					LoadArrow();
+					LoadArrow(target);
 				}
 			}
 			else if (m_isReloading)
@@ -191,9 +189,6 @@ namespace Game
 
 					// Quitar flecha después de disparar
 					ClearArrowFromCrossbow();
-
-					// Cambiar tipo de flecha para el próximo disparo (ciclo a través de todas)
-					m_currentArrowTypeIndex = (m_currentArrowTypeIndex + 1) % m_availableArrowTypes.Length;
 
 					// Pausa antes de recargar según TimeBetweenShots del XML
 					if (m_subsystemTime.GameTime - m_fireTime >= TimeBetweenShots)
@@ -274,6 +269,7 @@ namespace Game
 			m_isReloading = false;
 			m_animationStartTime = m_subsystemTime.GameTime;
 			m_currentDraw = 0f;
+			m_nextArrowType = null; // Limpiar el tipo seleccionado
 
 			// Mostrar ballesta sin tensar y sin flecha
 			UpdateCrossbowDraw(0);
@@ -334,15 +330,84 @@ namespace Game
 			}
 		}
 
-		private void LoadArrow()
+		private void LoadArrow(ComponentCreature target)
 		{
+			// Determinar el tipo de flecha según la distancia actual
+			if (target != null)
+			{
+				float distance = Vector3.Distance(
+					m_componentCreature.ComponentBody.Position,
+					target.ComponentBody.Position
+				);
+
+				// Elegir el tipo apropiado
+				m_nextArrowType = SelectArrowTypeForDistance(distance);
+			}
+			else
+			{
+				// Si no hay objetivo, usar un tipo por defecto (el primero no explosivo)
+				m_nextArrowType = GetFirstNonExplosiveArrowType();
+			}
+
 			m_isDrawing = false;
 			m_isReloading = true;
 			m_animationStartTime = m_subsystemTime.GameTime;
 
 			// Cargar flecha en la ballesta (tensada completamente)
 			UpdateCrossbowDraw(15);
-			UpdateCrossbowArrowType(m_availableArrowTypes[m_currentArrowTypeIndex]);
+			if (m_nextArrowType.HasValue)
+			{
+				UpdateCrossbowArrowType(m_nextArrowType.Value);
+			}
+		}
+
+		// Selecciona el tipo de flecha basado en la distancia
+		private RepeatArrowBlock.ArrowType? SelectArrowTypeForDistance(float distance)
+		{
+			// Distancia mínima para usar explosivos
+			const float explosiveMinDistance = 20f;
+
+			if (distance >= explosiveMinDistance)
+			{
+				// Intentar usar explosivo si está disponible
+				foreach (var arrowType in m_availableArrowTypes)
+				{
+					if (arrowType == RepeatArrowBlock.ArrowType.ExplosiveArrow)
+						return arrowType;
+				}
+				// Si no hay explosivo, usar cualquier otro
+			}
+
+			// Distancia corta: usar solo flechas no explosivas
+			var nonExplosiveTypes = new List<RepeatArrowBlock.ArrowType>();
+			foreach (var arrowType in m_availableArrowTypes)
+			{
+				if (arrowType != RepeatArrowBlock.ArrowType.ExplosiveArrow)
+					nonExplosiveTypes.Add(arrowType);
+			}
+
+			if (nonExplosiveTypes.Count > 0)
+			{
+				// Elegir aleatoriamente entre las no explosivas
+				int index = m_random.Int(0, nonExplosiveTypes.Count - 1);
+				return nonExplosiveTypes[index];
+			}
+
+			// Si no hay ningún tipo no explosivo, devolver el primero disponible (aunque sea explosivo)
+			if (m_availableArrowTypes.Length > 0)
+				return m_availableArrowTypes[0];
+
+			return null;
+		}
+
+		private RepeatArrowBlock.ArrowType? GetFirstNonExplosiveArrowType()
+		{
+			foreach (var arrowType in m_availableArrowTypes)
+			{
+				if (arrowType != RepeatArrowBlock.ArrowType.ExplosiveArrow)
+					return arrowType;
+			}
+			return m_availableArrowTypes.Length > 0 ? m_availableArrowTypes[0] : (RepeatArrowBlock.ArrowType?)null;
 		}
 
 		private void ApplyReloadingAnimation(float dt, ComponentCreature target)
@@ -390,6 +455,9 @@ namespace Game
 				);
 				m_componentCreature.ComponentBody.ApplyImpulse(-direction * 1.0f);
 			}
+
+			// Limpiar el tipo seleccionado para el próximo disparo
+			m_nextArrowType = null;
 		}
 
 		private void ApplyFiringAnimation(float dt)
@@ -433,6 +501,7 @@ namespace Game
 			m_isFiring = false;
 			m_isReloading = false;
 			m_currentDraw = 0f;
+			m_nextArrowType = null;
 
 			if (m_componentModel != null)
 			{
@@ -450,8 +519,35 @@ namespace Game
 
 			try
 			{
-				// Obtener tipo de flecha actual
-				RepeatArrowBlock.ArrowType arrowType = m_availableArrowTypes[m_currentArrowTypeIndex];
+				// Usar el tipo seleccionado previamente (en LoadArrow)
+				RepeatArrowBlock.ArrowType? arrowType = m_nextArrowType;
+				if (arrowType == null)
+				{
+					// Por si acaso, elegir uno ahora (no debería ocurrir)
+					float currentDistance = Vector3.Distance(
+						m_componentCreature.ComponentBody.Position,
+						target.ComponentBody.Position
+					);
+					arrowType = SelectArrowTypeForDistance(currentDistance);
+				}
+
+				if (arrowType == null)
+				{
+					// No hay tipos disponibles
+					return;
+				}
+
+				// Si por algún motivo el tipo es explosivo y la distancia es menor a 20, cambiamos a uno no explosivo
+				float distanceToTarget = Vector3.Distance(
+					m_componentCreature.ComponentBody.Position,
+					target.ComponentBody.Position
+				);
+				if (arrowType == RepeatArrowBlock.ArrowType.ExplosiveArrow && distanceToTarget < 20f)
+				{
+					var nonExplosive = GetFirstNonExplosiveArrowType();
+					if (nonExplosive != null)
+						arrowType = nonExplosive;
+				}
 
 				// Posición de disparo (desde los ojos del NPC)
 				Vector3 firePosition = m_componentCreature.ComponentCreatureModel.EyePosition;
@@ -464,12 +560,12 @@ namespace Game
 
 				// Calcular dirección PRECISA
 				Vector3 direction = targetPosition - firePosition;
-				float distance = direction.Length();
+				float flightDistance = direction.Length();
 
 				// Normalizar dirección
-				if (distance > 0.001f)
+				if (flightDistance > 0.001f)
 				{
-					direction /= distance;
+					direction /= flightDistance;
 				}
 				else
 				{
@@ -481,7 +577,7 @@ namespace Game
 				float baseInaccuracy = MaxInaccuracy * 0.3f;
 
 				// 2. Factor de distancia (más preciso a distancia media)
-				float distanceFactor = MathUtils.Clamp(distance / MaxDistance, 0.1f, 1.0f);
+				float distanceFactor = MathUtils.Clamp(flightDistance / MaxDistance, 0.1f, 1.0f);
 				float inaccuracy = baseInaccuracy * distanceFactor;
 
 				// 3. Aplicar menos imprecisión vertical que horizontal
@@ -498,7 +594,7 @@ namespace Game
 				float speed = BoltSpeed * 1.1f; // 10% más rápido que el valor base
 
 				// Crear flecha de RepeatArrowBlock
-				int arrowData = RepeatArrowBlock.SetArrowType(0, arrowType);
+				int arrowData = RepeatArrowBlock.SetArrowType(0, arrowType.Value);
 				int arrowValue = Terrain.MakeBlockValue(RepeatArrowBlock.Index, 0, arrowData);
 
 				// Ajustar ligeramente la posición de inicio para mejor alineación
@@ -533,8 +629,7 @@ namespace Game
 			}
 			catch (Exception ex)
 			{
-				// En caso de error, resetear al primer tipo de flecha
-				m_currentArrowTypeIndex = 0;
+				// Silenciar error
 			}
 		}
 	}
