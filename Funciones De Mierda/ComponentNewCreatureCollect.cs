@@ -416,6 +416,62 @@ namespace Game
 							weaponValue = Terrain.MakeBlockValue(LavaSpearBlock.Index);
 						}
 					}
+
+					// Después de los spears normales, agregar los longspears
+					else if (weaponTypeChance < 0.75f) // Nuevo rango para longspears (ocupando parte del espacio de spears o ampliando)
+					{
+						float longspearRoll = this.m_random.Float(0f, 1f);
+						if (longspearRoll < 0.1667f) // 16.67% - WoodenLongspear
+						{
+							weaponValue = Terrain.MakeBlockValue(WoodenLongspearBlock.Index);
+						}
+						else if (longspearRoll < 0.3333f) // 16.67% - StoneLongspear
+						{
+							weaponValue = Terrain.MakeBlockValue(StoneLongspearBlock.Index);
+						}
+						else if (longspearRoll < 0.50f) // 16.67% - CopperLongspear
+						{
+							weaponValue = Terrain.MakeBlockValue(CopperLongspearBlock.Index);
+						}
+						else if (longspearRoll < 0.6667f) // 16.67% - IronLongspear
+						{
+							weaponValue = Terrain.MakeBlockValue(IronLongspearBlock.Index);
+						}
+						else if (longspearRoll < 0.8333f) // 16.67% - DiamondLongspear
+						{
+							weaponValue = Terrain.MakeBlockValue(DiamondLongspearBlock.Index);
+						}
+						else // 16.67% - LavaLongspear
+						{
+							weaponValue = Terrain.MakeBlockValue(LavaLongspearBlock.Index);
+						}
+					}
+
+					// Después de las armas tradicionales o en otra sección, agregar bombas (20% de probabilidad adicional)
+					if (randomChance < 0.70f) // 20% probabilidad de obtener bombas
+					{
+						float bombTypeChance = this.m_random.Float(0f, 1f);
+						int bombValue = 0;
+
+						if (bombTypeChance < 0.3333f) // 33.33% - Bomba normal
+						{
+							bombValue = Terrain.MakeBlockValue(BombBlock.Index);
+						}
+						else if (bombTypeChance < 0.6666f) // 33.33% - Bomba incendiaria
+						{
+							bombValue = Terrain.MakeBlockValue(IncendiaryBombBlock.Index);
+						}
+						else // 33.33% - Bomba venenosa
+						{
+							bombValue = Terrain.MakeBlockValue(PoisonBombBlock.Index);
+						}
+
+						if (bombValue != 0)
+						{
+							// Agregar 8 bombas en el slot 1 (o el slot que prefieras)
+							inventory.AddSlotItems(1, bombValue, 8);
+						}
+					}
 					else // 3/3 - Axes
 					{
 						float axeRoll = this.m_random.Float(0f, 1f);
