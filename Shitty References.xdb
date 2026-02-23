@@ -271,10 +271,8 @@
     <Parameter Name="ImportanceLevelPersistent" Value="300" Type="float" Guid="79a9991d-17fe-4622-ab39-e3844554e6a6" Description="Nivel de importancia para persecuciones persistentes"/>
 </ComponentTemplate>
 
-    <ComponentTemplate Name="ComponentKnockbackBehavior" Guid="ee103658-d57d-4c34-b922-3c3834a0588d">
+<ComponentTemplate Name="KnockbackBehavior" Guid="2a14152c-58b2-4964-98cb-01eab7072838" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
     <Parameter Name="Class" Value="Game.ComponentKnockbackBehavior" Type="string" Description="Componente que aplica fuerza de retroceso a objetivos al atacar."/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Description="Indica si el componente es opcional para la entidad."/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Description="Orden de carga para asegurar dependencias con ComponentCreatureModel y ComponentChaseBehavior."/>
     <Parameter Name="KnockbackForce" Value="10" Type="float" Description="Fuerza de retroceso aplicada al objetivo al impactar."/>
     <Parameter Name="KnockbackChance" Value="0.3" Type="float" Description="Probabilidad (0-1) de que se aplique el retroceso en cada golpe."/>
 </ComponentTemplate>
