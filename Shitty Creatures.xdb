@@ -891,15 +891,12 @@
 <MemberComponentTemplate Name="Inventory" Guid="f1c0c8e7-ec5c-42d9-a12f-5cbd6ec1a8a4" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
     <ParameterSet Name="Slots">
         <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="328" Type="int"/> <!-- Lanzallamas -->
+            <Parameter Name="Contents" Value="327" Type="int"/> <!-- Lanzallamas -->
             <Parameter Name="Count" Value="1" Type="int"/>
         </ParameterSet>
     </ParameterSet>   
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="FlameThrowerShooterBehavior" Guid="4d8a136c-0050-400c-9784-82d98ed218ff">
-    <Parameter Name="LoadOrder" Value="0" Type="int"/>
-    <Parameter Name="IsOptional" Value="false" Type="bool"/>
-    <Parameter Name="Class" Value="Game.ComponentFlameThrowerShooterBehavior" Type="string"/>
+<MemberComponentTemplate Name="FlameThrowerShooterBehavior" Guid="4d8a136c-0050-400c-9784-82d98ed218ff" InheritanceParent="b3bc9331-ad8a-4454-9a3a-fec7a52d85f2">
     <Parameter Name="MaxDistance" Value="55" Type="float"/>
     <Parameter Name="AimTime" Value="0.35" Type="float"/>
     <Parameter Name="BurstTime" Value="5" Type="float"/>
@@ -911,7 +908,6 @@
     <Parameter Name="FlameSpeed" Value="35" Type="float"/>
     <Parameter Name="BurstCount" Value="12" Type="int"/>
     <Parameter Name="SpreadAngle" Value="15" Type="float"/>
-    <Parameter Name="CycleBulletTypes" Value="true" Type="bool"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="CreatureSounds" Guid="af01f5d9-3b84-4fb2-a842-e823f9521d4e">
         <Parameter Name="PainSound" Guid="759694c1-e8c1-4773-9f65-105764c01895" Value="Audio/Creatures/FumadorQuimico/Pain" Type="string"/>
