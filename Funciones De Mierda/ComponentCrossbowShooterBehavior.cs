@@ -446,40 +446,36 @@ namespace Game
 		// Selecciona el tipo de virote basado en la distancia
 		private ArrowBlock.ArrowType? SelectBoltTypeForDistance(float distance)
 		{
-			// Distancia mínima para usar explosivos
 			const float explosiveMinDistance = 20f;
 
 			if (distance >= explosiveMinDistance)
 			{
-				// Intentar usar explosivo si está disponible
+				// A larga distancia: usar TODOS los tipos disponibles (incluyendo explosivos)
+				if (AvailableBoltTypes.Length > 0)
+				{
+					int index = m_random.Int(0, AvailableBoltTypes.Length - 1);
+					return AvailableBoltTypes[index];
+				}
+			}
+			else
+			{
+				// A corta distancia: solo tipos no explosivos (por seguridad)
+				var nonExplosiveTypes = new List<ArrowBlock.ArrowType>();
 				foreach (var boltType in AvailableBoltTypes)
 				{
-					if (boltType == ArrowBlock.ArrowType.ExplosiveBolt)
-						return boltType;
+					if (boltType != ArrowBlock.ArrowType.ExplosiveBolt)
+						nonExplosiveTypes.Add(boltType);
 				}
-				// Si no hay explosivo, usar cualquier otro
+
+				if (nonExplosiveTypes.Count > 0)
+				{
+					int index = m_random.Int(0, nonExplosiveTypes.Count - 1);
+					return nonExplosiveTypes[index];
+				}
 			}
 
-			// Distancia corta: usar solo virotes no explosivos
-			var nonExplosiveTypes = new List<ArrowBlock.ArrowType>();
-			foreach (var boltType in AvailableBoltTypes)
-			{
-				if (boltType != ArrowBlock.ArrowType.ExplosiveBolt)
-					nonExplosiveTypes.Add(boltType);
-			}
-
-			if (nonExplosiveTypes.Count > 0)
-			{
-				// Elegir aleatoriamente entre los no explosivos
-				int index = m_random.Int(0, nonExplosiveTypes.Count - 1);
-				return nonExplosiveTypes[index];
-			}
-
-			// Si no hay ningún tipo no explosivo, devolver el primero disponible (aunque sea explosivo)
-			if (AvailableBoltTypes.Length > 0)
-				return AvailableBoltTypes[0];
-
-			return null;
+			// Si no hay tipos disponibles o solo hay explosivos a corta distancia, usar el primero
+			return AvailableBoltTypes.Length > 0 ? AvailableBoltTypes[0] : (ArrowBlock.ArrowType?)null;
 		}
 
 		private ArrowBlock.ArrowType? GetFirstNonExplosiveBoltType()
