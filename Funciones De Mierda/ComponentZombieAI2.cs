@@ -1282,25 +1282,42 @@ namespace Game
 		{
 			if (m_componentModel != null)
 			{
-				m_componentModel.AimHandAngleOrder = 2f;
+				// Brazo elevado casi por completo (toque el cielo)
+				m_componentModel.AimHandAngleOrder = 3f;
 
 				if (m_currentWeaponSlot >= 0)
 				{
 					int slotValue = m_componentInventory.GetSlotValue(m_currentWeaponSlot);
 					Block block = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)];
 
-					if (block is SpearBlock)
+					// Ajustes específicos por tipo de objeto lanzable
+					if (block is SpearBlock || block is LongspearBlock)
 					{
-						m_componentModel.InHandItemOffsetOrder = new Vector3(0f, -0.25f, 0f);
-						m_componentModel.InHandItemRotationOrder = new Vector3(3.14159f, 0f, 0f);
+						// Lanza: rotada para que apunte hacia atrás, ligeramente elevada
+						m_componentModel.InHandItemOffsetOrder = new Vector3(0.05f, -0.2f, 0.1f);
+						m_componentModel.InHandItemRotationOrder = new Vector3(3.14159f, 0.3f, 0f);
+					}
+					else if (block is BombBlock || block is IncendiaryBombBlock || block is PoisonBombBlock)
+					{
+						// Bombas: sostenidas sobre la cabeza, ligeramente inclinadas
+						m_componentModel.InHandItemOffsetOrder = new Vector3(0.1f, -0.1f, 0.2f);
+						m_componentModel.InHandItemRotationOrder = new Vector3(0.2f, 0.5f, 0.1f);
+					}
+					else if (block is SnowballBlock)
+					{
+						// Bola de nieve: cerca de la mano, rotación natural
+						m_componentModel.InHandItemOffsetOrder = new Vector3(0.1f, -0.15f, 0.15f);
+						m_componentModel.InHandItemRotationOrder = new Vector3(0.1f, 0.2f, 0f);
 					}
 					else
 					{
-						m_componentModel.InHandItemOffsetOrder = new Vector3(0f, 0f, 0f);
-						m_componentModel.InHandItemRotationOrder = new Vector3(0f, 0f, 0f);
+						// Otros objetos (fragmentos, etc.): posición genérica elevada
+						m_componentModel.InHandItemOffsetOrder = new Vector3(0.08f, -0.12f, 0.12f);
+						m_componentModel.InHandItemRotationOrder = new Vector3(0.15f, 0.3f, 0f);
 					}
 				}
 
+				// La cabeza sigue al objetivo (la otra mano queda como apuntador de forma natural en el modelo)
 				if (target != null)
 				{
 					m_componentModel.LookAtOrder = new Vector3?(target.ComponentCreatureModel.EyePosition);
@@ -2105,6 +2122,9 @@ namespace Game
 				StartAiming();
 			}
 
+			// Verificar inmersión en agua
+			bool isInWater = (m_componentCreature.ComponentBody.ImmersionFactor > 0.4f);
+
 			if (m_isCocking)
 			{
 				float cockProgress = (float)((m_subsystemTime.GameTime - m_drawStartTime) / m_cockTime);
@@ -2143,7 +2163,52 @@ namespace Game
 
 				if (m_subsystemTime.GameTime - m_animationStartTime >= m_aimTime)
 				{
-					FireMusket(target);
+					// [CORREGIDO] Intentar disparar - SIEMPRE se completa el disparo, pero con efecto diferente
+					m_isAiming = false;
+					m_isFiring = true;
+					m_fireTime = m_subsystemTime.GameTime;
+
+					// Sonido de martillo (siempre suena)
+					m_subsystemAudio.PlaySound("Audio/HammerUncock", 1f, m_random.Float(-0.1f, 0.1f),
+						m_componentCreature.ComponentBody.Position, 3f, false);
+
+					if (isInWater)
+					{
+						// [CORREGIDO] Igual que SubsystemMusketBlockBehavior: fallo bajo el agua
+						// Programar sonido de fallo en lugar del disparo normal
+						m_subsystemTime.QueueGameTimeDelayedExecution(m_subsystemTime.GameTime + 0.05, delegate
+						{
+							m_subsystemAudio.PlaySound("Audio/MusketMisfire", 1f, m_random.Float(-0.1f, 0.1f),
+								m_componentCreature.ComponentBody.Position, 15f, false);
+						});
+
+						// NO disparar proyectil
+					}
+					else
+					{
+						// Disparo normal (programado con delay como en el original)
+						m_subsystemTime.QueueGameTimeDelayedExecution(m_subsystemTime.GameTime + 0.05, delegate
+						{
+							m_subsystemAudio.PlaySound("Audio/MusketFire", 1f, m_random.Float(-0.1f, 0.1f),
+								m_componentCreature.ComponentBody.Position, 15f, false);
+						});
+
+						// Disparar la bala
+						ShootMusketBullet(target);
+					}
+
+					// [CORREGIDO] SIEMPRE se descarga el arma (como en el original)
+					UpdateMusketHammerState(false);
+					UpdateMusketLoadState(MusketBlock.LoadState.Empty);
+
+					// Aplicar retroceso (solo si no está en agua? El original aplica siempre)
+					if (target != null)
+					{
+						Vector3 direction = Vector3.Normalize(
+							target.ComponentBody.Position - m_componentCreature.ComponentBody.Position
+						);
+						m_componentCreature.ComponentBody.ApplyImpulse(-direction * 3f);
+					}
 				}
 			}
 			else if (m_isFiring)
@@ -2351,6 +2416,9 @@ namespace Game
 				StartAiming();
 			}
 
+			// Verificar inmersión en agua
+			bool isInWater = (m_componentCreature.ComponentBody.ImmersionFactor > 0.4f);
+
 			int currentSlotValue = m_componentInventory.GetSlotValue(m_currentWeaponSlot);
 			int currentData = Terrain.ExtractData(currentSlotValue);
 			FlameThrowerBlock.LoadState currentLoadState = FlameThrowerBlock.GetLoadState(currentData);
@@ -2380,7 +2448,16 @@ namespace Game
 					m_subsystemAudio.PlaySound("Audio/Items/Hammer Cock Remake", 1f, m_random.Float(-0.1f, 0.1f),
 						m_componentCreature.ComponentBody.Position, 3f, false);
 
-					StartFlameThrowerFiring();
+					// [CORREGIDO] Después de amartillar, verificar agua antes de disparar
+					if (isInWater)
+					{
+						// Si está en agua, fallo inmediato sin entrar en m_isFlameFiring
+						HandleFlameThrowerMisfire(target, currentSlotValue, currentLoadCount, currentData);
+					}
+					else
+					{
+						StartFlameThrowerFiring();
+					}
 				}
 			}
 			else if (m_isAiming)
@@ -2396,7 +2473,19 @@ namespace Game
 				}
 				else if (aimProgress >= 0.3f && currentSwitchState && currentLoadState == FlameThrowerBlock.LoadState.Loaded && currentLoadCount > 0)
 				{
-					StartFlameThrowerFiring();
+					m_isAiming = false;
+
+					// [CORREGIDO] Verificar agua ANTES de decidir si disparar
+					if (isInWater)
+					{
+						// FALLASO BAJO EL AGUA - NO entrar en m_isFlameFiring
+						HandleFlameThrowerMisfire(target, currentSlotValue, currentLoadCount, currentData);
+					}
+					else
+					{
+						// Disparo normal
+						StartFlameThrowerFiring();
+					}
 				}
 				else if (currentLoadState != FlameThrowerBlock.LoadState.Loaded || currentLoadCount <= 0)
 				{
@@ -2406,49 +2495,52 @@ namespace Game
 			}
 			else if (m_isFlameFiring)
 			{
-				ApplyFlameThrowerFiringAnimation(target);
-
-				if (currentLoadCount <= 0 || currentLoadState != FlameThrowerBlock.LoadState.Loaded)
+				// [CORREGIDO] Este estado SOLO se alcanza si NO está en agua
+				// Por seguridad, verificar de nuevo
+				if (isInWater)
 				{
-					StopFlameThrowerFiring();
-					StartFlameThrowerReloading();
+					// Si por algún motivo llegó aquí estando en agua, salir inmediatamente
+					m_isFlameFiring = false;
+					HandleFlameThrowerMisfire(target, currentSlotValue, currentLoadCount, currentData);
 					return;
 				}
 
-				if (m_subsystemTime.GameTime >= m_nextFlameShotTime)
-				{
-					FireFlameThrowerShot(target);
-					m_nextFlameShotTime = m_subsystemTime.GameTime + m_flameShotInterval;
+				ApplyFlameThrowerFiringAnimation(target);
 
-					if (currentLoadCount > 1)
+				// Disparar UNA vez
+				FireFlameThrowerShot(target);
+
+				// Consumir munición
+				if (currentLoadCount > 1)
+				{
+					int newValue = FlameThrowerBlock.SetLoadCount(currentSlotValue, currentLoadCount - 1);
+					m_componentInventory.RemoveSlotItems(m_currentWeaponSlot, 1);
+					m_componentInventory.AddSlotItems(m_currentWeaponSlot, newValue, 1);
+				}
+				else
+				{
+					currentData = FlameThrowerBlock.SetLoadState(currentData, FlameThrowerBlock.LoadState.Empty);
+					currentData = FlameThrowerBlock.SetBulletType(currentData, null);
+					int newValue = Terrain.ReplaceData(currentSlotValue, currentData);
+					newValue = FlameThrowerBlock.SetLoadCount(newValue, 0);
+					m_componentInventory.RemoveSlotItems(m_currentWeaponSlot, 1);
+					m_componentInventory.AddSlotItems(m_currentWeaponSlot, newValue, 1);
+				}
+
+				// Terminar el disparo y volver a apuntar
+				m_isFlameFiring = false;
+
+				// Animación de disparo (dura 0.2s)
+				m_fireTime = m_subsystemTime.GameTime;
+
+				// Programar vuelta a apuntar
+				m_subsystemTime.QueueGameTimeDelayedExecution(m_subsystemTime.GameTime + 0.2, delegate
+				{
+					if (m_currentWeaponSlot != -1 && m_weaponType == 3)
 					{
-						int newValue = FlameThrowerBlock.SetLoadCount(currentSlotValue, currentLoadCount - 1);
-						m_componentInventory.RemoveSlotItems(m_currentWeaponSlot, 1);
-						m_componentInventory.AddSlotItems(m_currentWeaponSlot, newValue, 1);
+						StartAiming();
 					}
-					else
-					{
-						currentData = FlameThrowerBlock.SetLoadState(currentData, FlameThrowerBlock.LoadState.Empty);
-						currentData = FlameThrowerBlock.SetBulletType(currentData, null);
-						int newValue = Terrain.ReplaceData(currentSlotValue, currentData);
-						newValue = FlameThrowerBlock.SetLoadCount(newValue, 0);
-						m_componentInventory.RemoveSlotItems(m_currentWeaponSlot, 1);
-						m_componentInventory.AddSlotItems(m_currentWeaponSlot, newValue, 1);
-					}
-				}
-
-				if (m_subsystemTime.GameTime >= m_nextFlameSoundTime)
-				{
-					PlayFlameThrowerSound();
-					m_nextFlameSoundTime = m_subsystemTime.GameTime + m_flameSoundInterval;
-				}
-
-				if (m_subsystemTime.GameTime - m_flameStartTime >= 3.0)
-				{
-					StopFlameThrowerFiring();
-					m_animationStartTime = m_subsystemTime.GameTime;
-					m_isAiming = true;
-				}
+				});
 			}
 			else if (m_isReloading)
 			{
@@ -2480,6 +2572,34 @@ namespace Game
 					m_animationStartTime = m_subsystemTime.GameTime;
 				}
 			}
+		}
+
+		// [NUEVO] Método auxiliar para manejar el fallo bajo el agua
+		private void HandleFlameThrowerMisfire(ComponentCreature target, int slotValue, int loadCount, int data)
+		{
+			// Reproducir sonido de fallo
+			m_subsystemAudio.PlaySound("Audio/MusketMisfire", 1f, m_random.Float(-0.1f, 0.1f),
+				m_componentCreature.ComponentCreatureModel.EyePosition, 8f, true);
+
+			// [CORREGIDO] En el original, bajo agua SÍ se consume munición (como en SubsystemFlameThrowerBlockBehavior.OnAim)
+			if (loadCount > 1)
+			{
+				int newValue = FlameThrowerBlock.SetLoadCount(slotValue, loadCount - 1);
+				m_componentInventory.RemoveSlotItems(m_currentWeaponSlot, 1);
+				m_componentInventory.AddSlotItems(m_currentWeaponSlot, newValue, 1);
+			}
+			else
+			{
+				data = FlameThrowerBlock.SetLoadState(data, FlameThrowerBlock.LoadState.Empty);
+				data = FlameThrowerBlock.SetBulletType(data, null);
+				int newValue = Terrain.ReplaceData(slotValue, data);
+				newValue = FlameThrowerBlock.SetLoadCount(newValue, 0);
+				m_componentInventory.RemoveSlotItems(m_currentWeaponSlot, 1);
+				m_componentInventory.AddSlotItems(m_currentWeaponSlot, newValue, 1);
+			}
+
+			// Volver a apuntar después del fallo
+			StartAiming();
 		}
 
 		private void PlayFlameThrowerSound()
