@@ -32,7 +32,6 @@ namespace Game
 		public int BurstCount = 15;
 		public float SpreadAngle = 15f;
 		public float BurstInterval = 0.15f;
-		public bool CycleBulletTypes = true;
 
 		// Estado
 		private bool m_isAiming = false;
@@ -59,7 +58,7 @@ namespace Game
 		{
 			base.Load(valuesDictionary, idToEntityMap);
 
-			// Cargar parámetros del XML (sin los sonidos que vas a borrar)
+			// Cargar parámetros del XML (sin CycleBulletTypes)
 			MaxDistance = valuesDictionary.GetValue<float>("MaxDistance", 20f);
 			AimTime = valuesDictionary.GetValue<float>("AimTime", 0.5f);
 			BurstTime = valuesDictionary.GetValue<float>("BurstTime", 5.0f);
@@ -69,7 +68,6 @@ namespace Game
 			FlameSpeed = valuesDictionary.GetValue<float>("FlameSpeed", 40f);
 			BurstCount = valuesDictionary.GetValue<int>("BurstCount", 15);
 			SpreadAngle = valuesDictionary.GetValue<float>("SpreadAngle", 15f);
-			CycleBulletTypes = valuesDictionary.GetValue<bool>("CycleBulletTypes", true);
 
 			// Calcular BurstInterval automáticamente basado en BurstTime y BurstCount
 			if (BurstCount > 0 && BurstTime > 0)
@@ -102,7 +100,7 @@ namespace Game
 				Log.Warning("ComponentFlameThrowerShooterBehavior: No se pudo obtener el índice del bloque FlameThrowerBlock.");
 			}
 
-			// Inicializar tipo de bala aleatorio
+			// Inicializar tipo de bala aleatorio (se mantiene la variación)
 			m_currentBulletType = m_random.Bool() ?
 				FlameBulletBlock.FlameBulletType.Flame :
 				FlameBulletBlock.FlameBulletType.Poison;
@@ -158,7 +156,7 @@ namespace Game
 					m_nextShotTime = m_subsystemTime.GameTime + BurstInterval;
 				}
 
-				if (m_subsystemTime.GameTime - m_fireStartTime >= BurstTime)
+				if (m_subsystemTime.GameTime - m_fireStartTime >= BurstTime || m_shotsFired >= BurstCount)
 				{
 					m_isFiring = false;
 					StopFiring();
@@ -172,12 +170,8 @@ namespace Game
 				{
 					m_isReloading = false;
 
-					if (CycleBulletTypes)
-					{
-						m_currentBulletType = (m_currentBulletType == FlameBulletBlock.FlameBulletType.Flame) ?
-							FlameBulletBlock.FlameBulletType.Poison :
-							FlameBulletBlock.FlameBulletType.Flame;
-					}
+					// Se ELIMINA el CycleBulletTypes - ya no se cambia el tipo aquí
+					// El tipo de bala se mantiene constante (el inicializado en Load)
 
 					StartAiming();
 				}
@@ -301,7 +295,7 @@ namespace Game
 			m_isFiring = false;
 			m_isReloading = true;
 			m_animationStartTime = m_subsystemTime.GameTime;
-			m_shotsFired = 0; // <-- AÑADIDO: Reiniciar contador de disparos
+			m_shotsFired = 0;
 		}
 
 		private void ApplyReloadingAnimation(float dt)
@@ -353,7 +347,7 @@ namespace Game
 			if (m_componentChaseBehavior.Target == null)
 				return;
 
-			// --- NUEVA VERIFICACIÓN DE INMERSIÓN (AGUA) ---
+			// Verificación de inmersión (agua)
 			float immersion = m_componentCreature.ComponentBody.ImmersionFactor;
 			if (immersion > 0.4f)
 			{
@@ -367,7 +361,6 @@ namespace Game
 				StartReloading();
 				return;
 			}
-			// --- FIN DE LA NUEVA VERIFICACIÓN ---
 
 			try
 			{
@@ -387,6 +380,7 @@ namespace Game
 				int bulletBlockIndex = BlocksManager.GetBlockIndex<FlameBulletBlock>(false, false);
 				if (bulletBlockIndex > 0)
 				{
+					// Se mantiene el tipo de bala actual (inicializado aleatoriamente en Load)
 					FlameBulletBlock.FlameBulletType bulletType = m_currentBulletType;
 
 					int bulletData = FlameBulletBlock.SetBulletType(0, bulletType);
@@ -405,7 +399,7 @@ namespace Game
 
 					if (bulletType == FlameBulletBlock.FlameBulletType.Flame)
 					{
-						// Sonido de fuego (dejar por si acaso hay sonido)
+						// Sonido de fuego
 						m_subsystemAudio.PlaySound("Audio/Flamethrower/Flamethrower Fire", 1f, m_random.Float(-0.1f, 0.1f),
 							m_componentCreature.ComponentBody.Position, 25f, false);
 
