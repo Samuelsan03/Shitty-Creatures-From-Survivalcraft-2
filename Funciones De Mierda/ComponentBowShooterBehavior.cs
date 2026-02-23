@@ -25,11 +25,9 @@ namespace Game
 		public float FireSoundDistance = 15f;
 		public float Accuracy = 0.03f;
 		public float ArrowSpeed = 35f;
-		public bool CycleArrowTypes = true;
-		public bool ShowArrowWhenIdle = true;
 
-		// Tipos de flechas a usar
-		public ArrowBlock.ArrowType[] AvailableArrowTypes = new ArrowBlock.ArrowType[]
+		// Tipos de flechas a usar (fijo - solo usaremos el primero)
+		private ArrowBlock.ArrowType[] m_availableArrowTypes = new ArrowBlock.ArrowType[]
 		{
 			ArrowBlock.ArrowType.WoodenArrow,
 			ArrowBlock.ArrowType.StoneArrow,
@@ -47,10 +45,12 @@ namespace Game
 		private double m_drawStartTime;
 		private double m_fireTime;
 		private int m_bowSlot = -1;
-		private int m_currentArrowTypeIndex = 0;
 		private float m_currentDraw = 0f;
 		private Random m_random = new Random();
 		private bool m_initialized = false;
+
+		// Tipo de flecha fijo (usamos WoodenArrow como predeterminado para simplificar)
+		private ArrowBlock.ArrowType m_fixedArrowType = ArrowBlock.ArrowType.WoodenArrow;
 
 		// UpdateOrder
 		public int UpdateOrder => 0;
@@ -66,8 +66,6 @@ namespace Game
 			FireSoundDistance = valuesDictionary.GetValue<float>("FireSoundDistance", 15f);
 			Accuracy = valuesDictionary.GetValue<float>("Accuracy", 0.03f);
 			ArrowSpeed = valuesDictionary.GetValue<float>("ArrowSpeed", 35f);
-			CycleArrowTypes = valuesDictionary.GetValue<bool>("CycleArrowTypes", true);
-			ShowArrowWhenIdle = valuesDictionary.GetValue<bool>("ShowArrowWhenIdle", true);
 
 			m_componentCreature = base.Entity.FindComponent<ComponentCreature>(true);
 			m_componentChaseBehavior = base.Entity.FindComponent<ComponentChaseBehavior>(true);
@@ -83,31 +81,20 @@ namespace Game
 		{
 			base.OnEntityAdded();
 
-			// FIX: Asegurar que el índice sea válido
-			if (AvailableArrowTypes.Length > 0)
-			{
-				m_currentArrowTypeIndex = m_random.Int(0, AvailableArrowTypes.Length);
-			}
-			else
-			{
-				m_currentArrowTypeIndex = 0;
-			}
-
 			m_initialized = true;
 
 			FindBow();
 
-			if (ShowArrowWhenIdle && m_bowSlot >= 0)
+			// NO mostrar flecha al inicio - arco vacío
+			if (m_bowSlot >= 0)
 			{
-				// FIX: Equipar el arco inmediatamente al agregar la entidad
 				m_componentInventory.ActiveSlotIndex = m_bowSlot;
-				SetBowWithArrow(0);
+				ClearArrowFromBow(); // Asegurar que el arco empiece vacío
 			}
 		}
 
 		private ComponentCreature GetChaseTarget()
 		{
-
 			// Fallback al ComponentChaseBehavior original
 			if (m_componentChaseBehavior != null && m_componentChaseBehavior.Target != null)
 				return m_componentChaseBehavior.Target;
@@ -131,11 +118,11 @@ namespace Game
 			if (target == null)
 			{
 				ResetAnimations();
-				if (ShowArrowWhenIdle && m_bowSlot >= 0)
+				if (m_bowSlot >= 0)
 				{
-					// FIX: Asegurar que el arco está equipado cuando está inactivo
+					// Mantener arco equipado pero SIN flecha visible cuando está inactivo
 					m_componentInventory.ActiveSlotIndex = m_bowSlot;
-					SetBowWithArrow(0);
+					ClearArrowFromBow();
 				}
 				return;
 			}
@@ -155,9 +142,9 @@ namespace Game
 			else
 			{
 				ResetAnimations();
-				if (ShowArrowWhenIdle && m_bowSlot >= 0)
+				if (m_bowSlot >= 0)
 				{
-					SetBowWithArrow(0);
+					ClearArrowFromBow(); // Arco vacío cuando está fuera de rango
 				}
 				return;
 			}
@@ -195,36 +182,11 @@ namespace Game
 
 					ClearArrowFromBow();
 
-					if (CycleArrowTypes && AvailableArrowTypes.Length > 1)
-					{
-						m_currentArrowTypeIndex = (m_currentArrowTypeIndex + 1) % AvailableArrowTypes.Length;
-					}
-
 					if (m_subsystemTime.GameTime - m_fireTime >= 0.8)
 					{
 						StartAiming();
 					}
 				}
-			}
-		}
-
-		private bool IsArrowVisibleOnBow()
-		{
-			if (m_bowSlot < 0) return false;
-
-			try
-			{
-				int currentBowValue = m_componentInventory.GetSlotValue(m_bowSlot);
-				if (currentBowValue == 0) return false;
-
-				int currentData = Terrain.ExtractData(currentBowValue);
-				ArrowBlock.ArrowType? currentArrowType = BowBlock.GetArrowType(currentData);
-
-				return currentArrowType.HasValue;
-			}
-			catch
-			{
-				return false;
 			}
 		}
 
@@ -261,9 +223,8 @@ namespace Game
 
 				int currentData = Terrain.ExtractData(currentBowValue);
 
-				// FIX: Usar siempre el primer tipo de flecha disponible para mayor compatibilidad
-				ArrowBlock.ArrowType arrowType = (AvailableArrowTypes.Length > 0) ?
-					AvailableArrowTypes[0] : ArrowBlock.ArrowType.WoodenArrow;
+				// Usar siempre el mismo tipo de flecha (WoodenArrow por defecto)
+				ArrowBlock.ArrowType arrowType = m_fixedArrowType;
 
 				// Verificar si el arco ya tiene esta flecha y nivel de tensado
 				ArrowBlock.ArrowType? currentArrowType = BowBlock.GetArrowType(currentData);
@@ -288,7 +249,7 @@ namespace Game
 					m_componentInventory.RemoveSlotItems(m_bowSlot, 1);
 					m_componentInventory.AddSlotItems(m_bowSlot, newBowValue, 1);
 
-					// FIX: Asegurar que el arco está en el slot activo para renderizado
+					// Asegurar que el arco está en el slot activo para renderizado
 					m_componentInventory.ActiveSlotIndex = m_bowSlot;
 				}
 			}
@@ -340,17 +301,17 @@ namespace Game
 			m_animationStartTime = m_subsystemTime.GameTime;
 			m_currentDraw = 0f;
 
-			// FIX: Asegurar que tenemos un arco antes de empezar
+			// Asegurar que tenemos un arco antes de empezar
 			if (m_bowSlot < 0)
 			{
 				FindBow();
 				if (m_bowSlot < 0) return;
 			}
 
-			// FIX: Equipar el arco inmediatamente
+			// Equipar el arco inmediatamente
 			m_componentInventory.ActiveSlotIndex = m_bowSlot;
 
-			// FIX: Mostrar flecha inmediatamente al comenzar a apuntar
+			// Mostrar flecha inmediatamente al comenzar a apuntar
 			SetBowWithArrow(0);
 		}
 
@@ -358,20 +319,13 @@ namespace Game
 		{
 			if (m_componentModel != null)
 			{
-				// FIX: VALORES PARA ARCO CENTRADO - posición natural del arco
-				// La mano se levanta pero el arco queda centrado
+				// VALORES PARA ARCO CENTRADO - posición natural del arco
 				m_componentModel.AimHandAngleOrder = 0.5f; // Mano levantada
 
-				// ARCO CENTRADO: Valores pequeños para que el arco quede en el medio
-				// X: pequeño offset horizontal (centrado)
-				// Y: altura adecuada (ni muy alto ni muy bajo)
-				// Z: profundidad (cerca del cuerpo)
+				// ARCO CENTRADO
 				m_componentModel.InHandItemOffsetOrder = new Vector3(0.02f, 0.12f, 0.08f);
 
-				// ROTACIÓN PARA ARCO RECTO:
-				// X: pequeña inclinación hacia adelante
-				// Y: orientación lateral (apuntando hacia adelante)
-				// Z: casi cero para que esté recto
+				// ROTACIÓN PARA ARCO RECTO
 				m_componentModel.InHandItemRotationOrder = new Vector3(-0.05f, 0.25f, 0.01f);
 
 				if (target != null)
@@ -400,18 +354,16 @@ namespace Game
 			{
 				float drawFactor = m_currentDraw;
 
-				// FIX: ANIMACIÓN CON ARCO CENTRADO durante el tensado
+				// ANIMACIÓN CON ARCO CENTRADO durante el tensado
 				m_componentModel.AimHandAngleOrder = 0.5f + (0.4f * drawFactor);
 
-				// Durante el tensado, el arco se mueve ligeramente pero se mantiene centrado
-				float horizontalOffset = 0.02f - (0.01f * drawFactor); // Muy pequeño movimiento horizontal
-				float verticalOffset = 0.12f + (0.05f * drawFactor);   // Sube ligeramente
-				float depthOffset = 0.08f - (0.03f * drawFactor);      // Se acerca al cuerpo
+				float horizontalOffset = 0.02f - (0.01f * drawFactor);
+				float verticalOffset = 0.12f + (0.05f * drawFactor);
+				float depthOffset = 0.08f - (0.03f * drawFactor);
 
-				// Rotaciones suaves para mantener el arco recto
-				float pitchRotation = -0.05f - (0.15f * drawFactor);   // Inclinación hacia atrás
-				float yawRotation = 0.25f - (0.08f * drawFactor);      // Gira hacia el centro
-				float rollRotation = 0.01f - (0.005f * drawFactor);    // Casi sin rotación en Z
+				float pitchRotation = -0.05f - (0.15f * drawFactor);
+				float yawRotation = 0.25f - (0.08f * drawFactor);
+				float rollRotation = 0.01f - (0.005f * drawFactor);
 
 				m_componentModel.InHandItemOffsetOrder = new Vector3(
 					horizontalOffset,
@@ -439,7 +391,6 @@ namespace Game
 			m_isFiring = true;
 			m_fireTime = m_subsystemTime.GameTime;
 
-			// FIX: Asegurar que se pueda disparar sin errores
 			try
 			{
 				ShootArrow(target);
@@ -509,13 +460,8 @@ namespace Game
 
 			try
 			{
-				// FIX: Verificar que el índice sea válido antes de usarlo
-				if (m_currentArrowTypeIndex < 0 || m_currentArrowTypeIndex >= AvailableArrowTypes.Length)
-				{
-					m_currentArrowTypeIndex = 0; // Resetear a un valor seguro
-				}
-
-				ArrowBlock.ArrowType arrowType = AvailableArrowTypes[m_currentArrowTypeIndex];
+				// Usar siempre el tipo de flecha fijo (WoodenArrow)
+				ArrowBlock.ArrowType arrowType = m_fixedArrowType;
 
 				Vector3 firePosition = m_componentCreature.ComponentCreatureModel.EyePosition;
 				firePosition.Y -= 0.1f;
@@ -551,6 +497,7 @@ namespace Game
 				{
 					projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
 
+					// Solo las flechas de fuego tienen efecto especial
 					if (arrowType == ArrowBlock.ArrowType.FireArrow)
 					{
 						m_subsystemProjectiles.AddTrail(projectile, Vector3.Zero,
