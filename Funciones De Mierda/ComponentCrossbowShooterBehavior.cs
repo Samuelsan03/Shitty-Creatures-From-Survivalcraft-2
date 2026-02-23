@@ -28,7 +28,6 @@ namespace Game
 		public float FireSoundDistance = 15f;
 		public float Accuracy = 0.02f;
 		public float BoltSpeed = 45f;
-		public float MinExplosiveDistance = 20f; // Distancia mínima segura para virotes explosivos
 
 		// Tipos de virotes a usar (solo los compatibles con ballesta)
 		public ArrowBlock.ArrowType[] AvailableBoltTypes = new ArrowBlock.ArrowType[]
@@ -47,11 +46,12 @@ namespace Game
 		private double m_drawStartTime;
 		private double m_fireTime;
 		private int m_crossbowSlot = -1;
-		private int m_currentBoltTypeIndex = 0;
 		private float m_currentDraw = 0f;
 		private Random m_random = new Random();
 		private bool m_initialized = false;
-		private bool m_hasCycledForNextShot = false;
+
+		// Tipo de virote seleccionado para el próximo disparo (basado en distancia)
+		private ArrowBlock.ArrowType? m_nextBoltType = null;
 
 		// Variables para suavizado de animaciones
 		private float m_smoothedAimHandAngle = 0f;
@@ -76,7 +76,6 @@ namespace Game
 			FireSoundDistance = valuesDictionary.GetValue<float>("FireSoundDistance", 15f);
 			Accuracy = valuesDictionary.GetValue<float>("Accuracy", 0.02f);
 			BoltSpeed = valuesDictionary.GetValue<float>("BoltSpeed", 45f);
-			MinExplosiveDistance = valuesDictionary.GetValue<float>("MinExplosiveDistance", 20f);
 
 			// Inicializar componentes
 			m_componentCreature = base.Entity.FindComponent<ComponentCreature>(true);
@@ -108,10 +107,7 @@ namespace Game
 		{
 			base.OnEntityAdded();
 
-			// Inicializar con virote aleatorio (no explosivo por seguridad)
-			m_currentBoltTypeIndex = GetRandomNonExplosiveBoltIndex();
 			m_initialized = true;
-			m_hasCycledForNextShot = false;
 
 			// Buscar ballesta
 			FindCrossbow();
@@ -137,70 +133,17 @@ namespace Game
 			return null;
 		}
 
-		private int GetRandomNonExplosiveBoltIndex()
-		{
-			// Si solo hay un tipo o es el único disponible, retornar 0
-			if (AvailableBoltTypes.Length <= 1)
-				return 0;
-
-			// Crear lista de índices no explosivos
-			List<int> nonExplosiveIndices = new List<int>();
-			for (int i = 0; i < AvailableBoltTypes.Length; i++)
-			{
-				if (AvailableBoltTypes[i] != ArrowBlock.ArrowType.ExplosiveBolt)
-				{
-					nonExplosiveIndices.Add(i);
-				}
-			}
-
-			// Si hay índices no explosivos, elegir uno aleatorio
-			if (nonExplosiveIndices.Count > 0)
-			{
-				return nonExplosiveIndices[m_random.Int(0, nonExplosiveIndices.Count - 1)];
-			}
-
-			// Si todos son explosivos (no debería pasar), retornar 0
-			return 0;
-		}
-
-		private int GetSafeBoltIndexForDistance(float distance)
-		{
-			int currentIndex = m_currentBoltTypeIndex;
-
-			// Verificar si el tipo actual es explosivo y la distancia es peligrosa
-			if (currentIndex >= 0 && currentIndex < AvailableBoltTypes.Length)
-			{
-				if (AvailableBoltTypes[currentIndex] == ArrowBlock.ArrowType.ExplosiveBolt && distance < MinExplosiveDistance)
-				{
-					// Buscar un tipo no explosivo para esta distancia
-					for (int i = 0; i < AvailableBoltTypes.Length; i++)
-					{
-						if (AvailableBoltTypes[i] != ArrowBlock.ArrowType.ExplosiveBolt)
-						{
-							return i; // Retornar el primer no explosivo encontrado
-						}
-					}
-					// Si todos son explosivos, usar el actual (no hay alternativa segura)
-					return currentIndex;
-				}
-			}
-
-			// Si no es explosivo o la distancia es segura, usar el índice actual
-			return currentIndex;
-		}
-
 		public void Update(float dt)
 		{
 			if (!m_initialized || m_componentCreature.ComponentHealth.Health <= 0f)
 				return;
 
-			// Verificar objetivo usando el nuevo método
+			// Verificar objetivo
 			ComponentCreature target = GetChaseTarget();
 
 			if (target == null)
 			{
 				ResetAnimations();
-				// Mantener ballesta sin virote
 				if (m_crossbowSlot >= 0)
 				{
 					SetCrossbowWithBolt(0, false);
@@ -213,14 +156,6 @@ namespace Game
 				m_componentCreature.ComponentBody.Position,
 				target.ComponentBody.Position
 			);
-
-			// Verificar si debemos cambiar a un tipo de virote seguro según la distancia
-			int safeBoltIndex = GetSafeBoltIndexForDistance(distance);
-			if (safeBoltIndex != m_currentBoltTypeIndex)
-			{
-				m_currentBoltTypeIndex = safeBoltIndex;
-				m_hasCycledForNextShot = false; // Resetear el flag de ciclado
-			}
 
 			// Lógica de ataque - Solo verifica distancia máxima
 			if (distance <= MaxDistance)
@@ -266,7 +201,7 @@ namespace Game
 				if (m_subsystemTime.GameTime - m_drawStartTime >= DrawTime)
 				{
 					// Tensado completo, cargar virote
-					LoadBolt();
+					LoadBolt(target);
 				}
 			}
 			else if (m_isReloading)
@@ -290,42 +225,6 @@ namespace Game
 
 					// Quitar virote después de disparar
 					ClearBoltFromCrossbow();
-
-					// Ciclar para el próximo disparo
-					if (AvailableBoltTypes.Length > 1)
-					{
-						// Intentar avanzar al siguiente tipo, pero verificar seguridad
-						int nextIndex = (m_currentBoltTypeIndex + 1) % AvailableBoltTypes.Length;
-
-						// Si el siguiente es explosivo y la distancia actual es peligrosa, buscar alternativas
-						if (AvailableBoltTypes[nextIndex] == ArrowBlock.ArrowType.ExplosiveBolt && distance < MinExplosiveDistance)
-						{
-							// Buscar el siguiente tipo no explosivo
-							bool found = false;
-							for (int i = 1; i <= AvailableBoltTypes.Length; i++)
-							{
-								int candidateIndex = (m_currentBoltTypeIndex + i) % AvailableBoltTypes.Length;
-								if (AvailableBoltTypes[candidateIndex] != ArrowBlock.ArrowType.ExplosiveBolt)
-								{
-									m_currentBoltTypeIndex = candidateIndex;
-									found = true;
-									break;
-								}
-							}
-							if (!found)
-							{
-								// Si todos son explosivos, usar el siguiente (no hay alternativa)
-								m_currentBoltTypeIndex = nextIndex;
-							}
-						}
-						else
-						{
-							// Seguro para usar el siguiente tipo
-							m_currentBoltTypeIndex = nextIndex;
-						}
-
-						m_hasCycledForNextShot = true;
-					}
 
 					// Pausa antes de recargar
 					if (m_subsystemTime.GameTime - m_fireTime >= 0.8f)
@@ -409,27 +308,11 @@ namespace Game
 
 				int currentData = Terrain.ExtractData(currentCrossbowValue);
 
-				// Asegurarnos de que el índice está dentro del rango
 				ArrowBlock.ArrowType? boltType = null;
-				if (hasBolt && AvailableBoltTypes.Length > 0)
+				if (hasBolt)
 				{
-					int indexToUse = m_currentBoltTypeIndex;
-
-					// Si ya ciclamos para el próximo disparo, usar el índice anterior
-					if (m_hasCycledForNextShot && AvailableBoltTypes.Length > 1)
-					{
-						indexToUse = (m_currentBoltTypeIndex - 1 + AvailableBoltTypes.Length) % AvailableBoltTypes.Length;
-					}
-
-					if (indexToUse >= 0 && indexToUse < AvailableBoltTypes.Length)
-					{
-						boltType = AvailableBoltTypes[indexToUse];
-					}
-					else
-					{
-						indexToUse = 0;
-						boltType = AvailableBoltTypes[0];
-					}
+					// Usar el tipo previamente seleccionado para este disparo
+					boltType = m_nextBoltType;
 				}
 
 				// Configurar ballesta con tensión y virote
@@ -460,7 +343,7 @@ namespace Game
 			m_isReloading = false;
 			m_animationStartTime = m_subsystemTime.GameTime;
 			m_currentDraw = 0f;
-			m_hasCycledForNextShot = false;
+			m_nextBoltType = null; // Limpiar el tipo seleccionado
 
 			// Mostrar ballesta sin virote
 			SetCrossbowWithBolt(0, false);
@@ -529,8 +412,25 @@ namespace Game
 			}
 		}
 
-		private void LoadBolt()
+		private void LoadBolt(ComponentCreature target)
 		{
+			// Determinar el tipo de virote según la distancia actual
+			if (target != null)
+			{
+				float distance = Vector3.Distance(
+					m_componentCreature.ComponentBody.Position,
+					target.ComponentBody.Position
+				);
+
+				// Elegir el tipo apropiado
+				m_nextBoltType = SelectBoltTypeForDistance(distance);
+			}
+			else
+			{
+				// Si no hay objetivo, usar un tipo por defecto (el primero no explosivo)
+				m_nextBoltType = GetFirstNonExplosiveBoltType();
+			}
+
 			m_isDrawing = false;
 			m_isReloading = true;
 			m_animationStartTime = m_subsystemTime.GameTime;
@@ -541,6 +441,55 @@ namespace Game
 			// Sonido de recarga
 			m_subsystemAudio.PlaySound("Audio/Reload", 1f, m_random.Float(-0.1f, 0.1f),
 				m_componentCreature.ComponentBody.Position, 3f, false);
+		}
+
+		// Selecciona el tipo de virote basado en la distancia
+		private ArrowBlock.ArrowType? SelectBoltTypeForDistance(float distance)
+		{
+			// Distancia mínima para usar explosivos
+			const float explosiveMinDistance = 20f;
+
+			if (distance >= explosiveMinDistance)
+			{
+				// Intentar usar explosivo si está disponible
+				foreach (var boltType in AvailableBoltTypes)
+				{
+					if (boltType == ArrowBlock.ArrowType.ExplosiveBolt)
+						return boltType;
+				}
+				// Si no hay explosivo, usar cualquier otro
+			}
+
+			// Distancia corta: usar solo virotes no explosivos
+			var nonExplosiveTypes = new List<ArrowBlock.ArrowType>();
+			foreach (var boltType in AvailableBoltTypes)
+			{
+				if (boltType != ArrowBlock.ArrowType.ExplosiveBolt)
+					nonExplosiveTypes.Add(boltType);
+			}
+
+			if (nonExplosiveTypes.Count > 0)
+			{
+				// Elegir aleatoriamente entre los no explosivos
+				int index = m_random.Int(0, nonExplosiveTypes.Count - 1);
+				return nonExplosiveTypes[index];
+			}
+
+			// Si no hay ningún tipo no explosivo, devolver el primero disponible (aunque sea explosivo)
+			if (AvailableBoltTypes.Length > 0)
+				return AvailableBoltTypes[0];
+
+			return null;
+		}
+
+		private ArrowBlock.ArrowType? GetFirstNonExplosiveBoltType()
+		{
+			foreach (var boltType in AvailableBoltTypes)
+			{
+				if (boltType != ArrowBlock.ArrowType.ExplosiveBolt)
+					return boltType;
+			}
+			return AvailableBoltTypes.Length > 0 ? AvailableBoltTypes[0] : (ArrowBlock.ArrowType?)null;
 		}
 
 		private void ApplyReloadingAnimation(float dt, ComponentCreature target)
@@ -593,6 +542,9 @@ namespace Game
 				);
 				m_componentCreature.ComponentBody.ApplyImpulse(-direction * 1.5f);
 			}
+
+			// Limpiar el tipo seleccionado para el próximo disparo
+			m_nextBoltType = null;
 		}
 
 		private void ApplyFiringAnimation(float dt)
@@ -645,7 +597,7 @@ namespace Game
 			m_isFiring = false;
 			m_isReloading = false;
 			m_currentDraw = 0f;
-			m_hasCycledForNextShot = false;
+			m_nextBoltType = null;
 
 			// Resetear valores suavizados
 			m_smoothedAimHandAngle = 0f;
@@ -668,59 +620,42 @@ namespace Game
 
 			try
 			{
-				// Obtener distancia actual para verificar seguridad
+				// Usar el tipo seleccionado previamente (en LoadBolt)
+				ArrowBlock.ArrowType? boltType = m_nextBoltType;
+				if (boltType == null)
+				{
+					// Por si acaso, elegir uno ahora (no debería ocurrir)
+					float distance = Vector3.Distance(
+						m_componentCreature.ComponentBody.Position,
+						target.ComponentBody.Position
+					);
+					boltType = SelectBoltTypeForDistance(distance);
+				}
+
+				if (boltType == null)
+				{
+					// No hay tipos disponibles
+					return;
+				}
+
+				// Si por algún motivo el tipo es explosivo y la distancia es menor a 20, cambiamos a uno no explosivo
 				float currentDistance = Vector3.Distance(
 					m_componentCreature.ComponentBody.Position,
 					target.ComponentBody.Position
 				);
-
-				int indexToUse = m_currentBoltTypeIndex;
-
-				// Si ya ciclamos para el próximo disparo, usar el índice anterior
-				if (m_hasCycledForNextShot && AvailableBoltTypes.Length > 1)
+				if (boltType == ArrowBlock.ArrowType.ExplosiveBolt && currentDistance < 20f)
 				{
-					indexToUse = (m_currentBoltTypeIndex - 1 + AvailableBoltTypes.Length) % AvailableBoltTypes.Length;
+					var nonExplosive = GetFirstNonExplosiveBoltType();
+					if (nonExplosive != null)
+						boltType = nonExplosive;
 				}
 
-				// Verificación de seguridad adicional antes de disparar
-				if (indexToUse >= 0 && indexToUse < AvailableBoltTypes.Length)
-				{
-					if (AvailableBoltTypes[indexToUse] == ArrowBlock.ArrowType.ExplosiveBolt && currentDistance < MinExplosiveDistance)
-					{
-						// Distancia peligrosa para explosivo, buscar alternativa
-						bool foundSafe = false;
-						for (int i = 0; i < AvailableBoltTypes.Length; i++)
-						{
-							if (AvailableBoltTypes[i] != ArrowBlock.ArrowType.ExplosiveBolt)
-							{
-								indexToUse = i;
-								foundSafe = true;
-								break;
-							}
-						}
-
-						if (!foundSafe)
-						{
-							// Si todos son explosivos, no disparar (evitar suicidio)
-							return;
-						}
-					}
-				}
-				else
-				{
-					indexToUse = 0;
-				}
-
-				ArrowBlock.ArrowType boltType = AvailableBoltTypes[indexToUse];
-
-				// Posición de disparo
 				Vector3 firePosition = m_componentCreature.ComponentCreatureModel.EyePosition;
 				firePosition.Y -= 0.1f;
 
 				Vector3 targetPosition = target.ComponentCreatureModel.EyePosition;
 				Vector3 direction = Vector3.Normalize(targetPosition - firePosition);
 
-				// Aplicar precisión
 				direction += new Vector3(
 					m_random.Float(-Accuracy, Accuracy),
 					m_random.Float(-Accuracy * 0.5f, Accuracy * 0.5f),
@@ -728,10 +663,9 @@ namespace Game
 				);
 				direction = Vector3.Normalize(direction);
 
-				// Velocidad del virote
 				float speed = BoltSpeed * (0.8f + (m_currentDraw * 0.4f));
 
-				int boltData = ArrowBlock.SetArrowType(0, boltType);
+				int boltData = ArrowBlock.SetArrowType(0, boltType.Value);
 				int boltValue = Terrain.MakeBlockValue(ArrowBlock.Index, 0, boltData);
 
 				var projectile = m_subsystemProjectiles.FireProjectile(
@@ -742,19 +676,16 @@ namespace Game
 					m_componentCreature
 				);
 
-				// Configurar proyectil para desaparecer después del impacto
 				if (projectile != null)
 				{
 					projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
 
-					// Configurar propiedades según el tipo de virote
 					if (boltType == ArrowBlock.ArrowType.ExplosiveBolt)
 					{
 						projectile.IsIncendiary = false;
 					}
 				}
 
-				// Ruido
 				if (m_subsystemNoise != null)
 				{
 					m_subsystemNoise.MakeNoise(firePosition, 0.5f, 20f);
@@ -762,8 +693,7 @@ namespace Game
 			}
 			catch (Exception ex)
 			{
-				m_currentBoltTypeIndex = 0;
-				m_hasCycledForNextShot = false;
+				// Log.Error($"Error en ShootBolt: {ex.Message}");
 			}
 		}
 	}
