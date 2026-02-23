@@ -1570,7 +1570,7 @@
     <MemberComponentTemplate Name="Inventory" Guid="6257b4be-1cb8-4a41-82ee-6e03c70d8dd9" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
     <ParameterSet Name="Slots">
         <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="332" Type="int"/> <!-- Guadaña -->
+            <Parameter Name="Contents" Value="331" Type="int"/> <!-- Guadaña -->
             <Parameter Name="Count" Value="1" Type="int"/>
         </ParameterSet>
     </ParameterSet>
@@ -2573,15 +2573,13 @@
         </ParameterSet>
     </ParameterSet>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="CrossbowShooterBehavior" Guid="dc355fe3-21d1-4950-919f-78fd29bfefef" InheritanceParent="416961cf-2c1d-4611-a7a3-6c7197aba83e">
+<MemberComponentTemplate Name="CrossbowShooterBehavior" Guid="dc355fe3-21d1-4950-919f-78fd29bfefef" InheritanceParent="90581361-aa1f-4180-bc02-359795600942">
     <Parameter Name="MaxDistance" Value="100" Type="float"/>
     <Parameter Name="DrawTime" Value="0.3" Type="float"/>
-    <Parameter Name="AimTime" Value="0.3" Type="float"/>
+    <Parameter Name="AimTime" Value="0.55" Type="float"/>
     <Parameter Name="Accuracy" Value="0.02" Type="float"/>
     <Parameter Name="UseRecoil" Value="true" Type="bool"/>
-    <Parameter Name="ShowBoltWhenIdle" Value="false" Type="bool"/>
     <Parameter Name="BoltSpeed" Value="45" Type="float"/>
-    <Parameter Name="CycleBoltTypes" Value="true" Type="bool"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Loot" Guid="81c253ce-396d-4632-8a25-e873ac46c7e5">
         <ParameterSet Name="Loot" Guid="bf4643b1-6c8f-4cd0-8ec4-93c5bd51fd0c">
@@ -2856,12 +2854,10 @@
 <MemberComponentTemplate Name="BowShooterBehavior" Guid="1a7202f4-4fb5-437e-84ae-ba88167f3c5f" InheritanceParent="416961cf-2c1d-4611-a7a3-6c7197aba83e">
     <Parameter Name="MaxDistance" Value="100" Type="float"/>
     <Parameter Name="DrawTime" Value="0.3" Type="float"/>
-    <Parameter Name="AimTime" Value="0.8" Type="float"/>
+    <Parameter Name="AimTime" Value="0.55" Type="float"/>
     <Parameter Name="Accuracy" Value="0.03" Type="float"/>
     <Parameter Name="UseRecoil" Value="false" Type="bool"/>
     <Parameter Name="ArrowSpeed" Value="40" Type="float"/>
-    <Parameter Name="ShowArrowWhenIdle" Value="false" Type="bool"/>
-    <Parameter Name="CycleArrowTypes" Value="true" Type="bool"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Loot" Guid="4bb110fe-f5f8-40a3-ad83-b25ee4e389ab">
         <ParameterSet Name="Loot" Guid="a11a74e9-6cdc-4b27-8e00-35da047fc2b2">
@@ -2995,12 +2991,10 @@
 <MemberComponentTemplate Name="BowShooterBehavior" Guid="b34e35aa-cddb-41eb-98fa-37bd0c6f8e09" InheritanceParent="416961cf-2c1d-4611-a7a3-6c7197aba83e">
     <Parameter Name="MaxDistance" Value="100" Type="float"/>
     <Parameter Name="DrawTime" Value="0.3" Type="float"/>
-    <Parameter Name="AimTime" Value="0.3" Type="float"/>
+    <Parameter Name="AimTime" Value="0.55" Type="float"/>
     <Parameter Name="Accuracy" Value="0.03" Type="float"/>
     <Parameter Name="UseRecoil" Value="false" Type="bool"/>
     <Parameter Name="ArrowSpeed" Value="40" Type="float"/>
-    <Parameter Name="ShowArrowWhenIdle" Value="false" Type="bool"/>
-    <Parameter Name="CycleArrowTypes" Value="true" Type="bool"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Loot" Guid="17f5367a-ccff-4cbd-801a-573906bcbfe3">
         <ParameterSet Name="Loot" Guid="de790e87-d30b-45ee-ac50-8a5fce82a94f">
@@ -3125,15 +3119,13 @@
         </ParameterSet>
     </ParameterSet>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="CrossbowShooterBehavior" Guid="180dadf6-724f-4e55-b5d4-f6e562b6b5c7" InheritanceParent="416961cf-2c1d-4611-a7a3-6c7197aba83e">
+<MemberComponentTemplate Name="CrossbowShooterBehavior" Guid="180dadf6-724f-4e55-b5d4-f6e562b6b5c7" InheritanceParent="90581361-aa1f-4180-bc02-359795600942">
     <Parameter Name="MaxDistance" Value="100" Type="float"/>
     <Parameter Name="DrawTime" Value="0.3" Type="float"/>
-    <Parameter Name="AimTime" Value="0.3" Type="float"/>
+    <Parameter Name="AimTime" Value="0.55" Type="float"/>
     <Parameter Name="Accuracy" Value="0.02" Type="float"/>
     <Parameter Name="UseRecoil" Value="true" Type="bool"/>
-    <Parameter Name="ShowBoltWhenIdle" Value="false" Type="bool"/>
     <Parameter Name="BoltSpeed" Value="45" Type="float"/>
-    <Parameter Name="CycleBoltTypes" Value="true" Type="bool"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Loot" Guid="5e427b60-7196-4a0a-aed7-7e265da4ca33">
         <ParameterSet Name="Loot" Guid="15484f62-5b8e-4702-8c44-19a54f258190">
@@ -3677,7 +3669,7 @@
     <MemberComponentTemplate Name="Inventory" Guid="c1d2e3f4-a5b6-6678-3456-89abcdef0125" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
     <ParameterSet Name="Slots">
         <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="309" Type="int"/> <!-- Cañon De Objetos -->
+            <Parameter Name="Contents" Value="363" Type="int"/> <!-- Cañon De Objetos -->
             <Parameter Name="Count" Value="1" Type="int"/>
         </ParameterSet>
     </ParameterSet> 
@@ -4263,7 +4255,7 @@
     <MemberComponentTemplate Name="Inventory" Guid="80f33ca3-3fe9-4134-b9a4-a1b48c804a9f" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
         <ParameterSet Name="Slots">
             <ParameterSet Name="Slot0">
-                <Parameter Name="Contents" Value="311" Type="int"/>
+                <Parameter Name="Contents" Value="310" Type="int"/>
                 <Parameter Name="Count" Value="1" Type="int"/>
             </ParameterSet>
         </ParameterSet>
@@ -4271,12 +4263,12 @@
     <MemberComponentTemplate Name="RepeatCrossbowShooterBehavior" Guid="13db5ca4-3b92-4cb5-b4b1-c07943116e62" InheritanceParent="e40dd82e-a7a5-42de-83ee-8dc7d8cdf2f2">
     <Parameter Name="MaxDistance" Value="100" Type="float"/>
     <Parameter Name="DrawTime" Value="0.3" Type="float"/>
-    <Parameter Name="AimTime" Value="0.3" Type="float"/>
+    <Parameter Name="AimTime" Value="0.55" Type="float"/>
     <Parameter Name="CooldownTime" Value="0.5" Type="float"/>
     <Parameter Name="TimeBetweenShots" Value="1.0" Type="float"/>
     <Parameter Name="MaxInaccuracy" Value="0.03" Type="float"/>
     <Parameter Name="UseRecoil" Value="true" Type="bool"/>
-    <Parameter Name="BoltSpeed" Value="40" Type="float"/>
+    <Parameter Name="BoltSpeed" Value="45" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidFireBehavior" Guid="2d9409a2-11db-47fa-a987-501d3dbfc18c" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
     <MemberComponentTemplate Name="Locomotion" Guid="326a3597-7997-4114-9d13-435addc0b967">
@@ -4864,7 +4856,7 @@
             <MemberComponentTemplate Name="Inventory" Guid="df1f32f4-80a2-43d3-a430-362d68f42e37" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
         <ParameterSet Name="Slots">
             <ParameterSet Name="Slot0">
-                <Parameter Name="Contents" Value="311" Type="int"/>
+                <Parameter Name="Contents" Value="310" Type="int"/>
                 <Parameter Name="Count" Value="1" Type="int"/>
             </ParameterSet>
         </ParameterSet>
@@ -4872,12 +4864,12 @@
     <MemberComponentTemplate Name="RepeatCrossbowShooterBehavior" Guid="52fb86b1-57cd-4a25-b9ce-7b4c14ae8d8c" InheritanceParent="e40dd82e-a7a5-42de-83ee-8dc7d8cdf2f2">
     <Parameter Name="MaxDistance" Value="100" Type="float"/>
     <Parameter Name="DrawTime" Value="0.3" Type="float"/>
-    <Parameter Name="AimTime" Value="0.3" Type="float"/>
+    <Parameter Name="AimTime" Value="0.55" Type="float"/>
     <Parameter Name="CooldownTime" Value="0.5" Type="float"/>
     <Parameter Name="TimeBetweenShots" Value="1.0" Type="float"/>
     <Parameter Name="MaxInaccuracy" Value="0.03" Type="float"/>
     <Parameter Name="UseRecoil" Value="true" Type="bool"/>
-    <Parameter Name="BoltSpeed" Value="40" Type="float"/>
+    <Parameter Name="BoltSpeed" Value="45" Type="float"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidFireBehavior" Guid="660f0fa3-11d8-47fc-b0a0-8cec8821b149" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
             <MemberComponentTemplate Name="Locomotion" Guid="5c8393f8-a9dc-43c3-a2f5-a53e5fa8da5e">
