@@ -327,7 +327,7 @@
     <Parameter Name="Class" Guid="a7ada27d-d400-43ce-ba43-1e9f37cd848a" Value="Game.ComponentFlameThrowerShooterBehavior" Type="string"/>
 </ComponentTemplate>
 
-    <ComponentTemplate Name="RepeatCrossbowShooterBehavior" Description="Comportamiento para NPCs que usan ballestas repetidoras con disparos ilimitados y ráfagas múltiples" Guid="e40dd82e-a7a5-42de-83ee-8dc7d8cdf2f2" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+<ComponentTemplate Name="RepeatCrossbowShooterBehavior" Description="Comportamiento para NPCs que usan ballestas repetidoras con disparos ilimitados y ráfagas múltiples" Guid="e40dd82e-a7a5-42de-83ee-8dc7d8cdf2f2" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
     <Parameter Name="MaxDistance" Description="Distancia máxima de disparo efectivo" Guid="9fa47466-a1bc-49a7-b965-85b21e08476d" Value="25" Type="float"/>
     <Parameter Name="DrawTime" Description="Tiempo para tensar completamente la ballesta en segundos" Guid="ebe23e28-67f7-4fc4-bacf-bddf3fce892e" Value="2.5" Type="float"/>
     <Parameter Name="AimTime" Description="Tiempo de apuntado antes de comenzar a tensar" Guid="6317aefb-5093-439e-9e48-82677d8b305b" Value="0.5" Type="float"/>
@@ -338,29 +338,23 @@
     <Parameter Name="Class" Guid="c852e0cc-bb4b-434b-9dc1-0f1795bd7a49" Value="Game.ComponentRepeatCrossbowShooterBehavior" Type="string"/>
 </ComponentTemplate>
 
-    <ComponentTemplate Name="CrossbowShooterBehavior" Description="Comportamiento para NPCs que usan ballestas con animaciones de tensado vertical y disparo cíclico de virotes" Guid="90581361-aa1f-4180-bc02-359795600942" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
-    <Parameter Name="MinDistance" Description="Distancia mínima para comenzar a disparar" Guid="d77c5390-2907-4321-b859-2a8b8956c3cb" Value="5" Type="float"/>
+<ComponentTemplate Name="CrossbowShooterBehavior" Description="Comportamiento para NPCs que usan ballestas con animaciones de tensado vertical y disparo cíclico de virotes" Guid="90581361-aa1f-4180-bc02-359795600942" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
     <Parameter Name="MaxDistance" Description="Distancia máxima de disparo efectivo" Guid="d00af5da-9704-4ebf-bbd4-a5e55f32a2bc" Value="25" Type="float"/>
     <Parameter Name="DrawTime" Description="Tiempo para tensar completamente la ballesta en segundos" Guid="e1e3e770-4f64-4698-b207-af3cf61e1e7e" Value="1.5" Type="float"/>
     <Parameter Name="AimTime" Description="Tiempo de apuntado antes de comenzar a tensar" Guid="127e199b-c61a-43a4-9bd3-fb52bd1051f5" Value="0.5" Type="float"/>
     <Parameter Name="Accuracy" Description="Precisión del disparo (menor = más preciso)" Guid="62ca364e-ac7b-468b-99ef-a8203042ed06" Value="0.02" Type="float"/>
     <Parameter Name="UseRecoil" Description="Aplicar retroceso al disparar" Guid="f58a5acc-5209-497d-86ad-93c08ca7d7dc" Value="true" Type="bool"/>
-    <Parameter Name="ShowBoltWhenIdle" Description="Mostrar virote cuando está inactivo" Guid="5df45b96-bf93-4558-a558-7aea5da6b33a" Value="false" Type="bool"/>
     <Parameter Name="BoltSpeed" Description="Velocidad base del virote" Guid="b48d1874-cac2-4aca-852c-294b1e6b248d" Value="45" Type="float"/>
-    <Parameter Name="CycleBoltTypes" Description="Ciclar entre diferentes tipos de virotes al disparar" Guid="b5c440f7-724a-4b4c-ad8d-d7fa5690fd9a" Value="true" Type="bool"/>
     <Parameter Name="Class" Guid="ecccd78d-08f2-4eda-9a24-0c2025d52a54" Value="Game.ComponentCrossbowShooterBehavior" Type="string"/>
 </ComponentTemplate>
 
     <ComponentTemplate Name="BowShooterBehavior" Description="Comportamiento para NPCs que usan arcos con animaciones de tensado y disparo cíclico de flechas" Guid="416961cf-2c1d-4611-a7a3-6c7197aba83e" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
-    <Parameter Name="MinDistance" Description="Distancia mínima para comenzar a disparar" Guid="deb688a1-538a-4c78-9236-0060f0750427" Value="5" Type="float"/>
     <Parameter Name="MaxDistance" Description="Distancia máxima de disparo efectivo" Guid="326ccc85-0f14-4967-8ee4-2300a82667a2" Value="25" Type="float"/>
     <Parameter Name="DrawTime" Description="Tiempo para tensar completamente el arco en segundos" Guid="f519747b-9801-4465-a28f-887468287bf9" Value="1.5" Type="float"/>
     <Parameter Name="AimTime" Description="Tiempo de apuntado antes de comenzar a tensar" Guid="bad1bc14-3cd9-4c58-9ecd-32dbcb8d8295" Value="0.8" Type="float"/>
     <Parameter Name="Accuracy" Description="Precisión del disparo (menor = más preciso)" Guid="c43eb388-a8ff-47b0-bf48-8d519ee9a929" Value="0.03" Type="float"/>
     <Parameter Name="UseRecoil" Description="Aplicar retroceso al disparar" Guid="35f6db09-32b8-4721-9b4b-e731c8f5bacd" Value="false" Type="bool"/>
-    <Parameter Name="ShowArrowWhenIdle" Description="Mostrar flecha cuando está inactivo" Guid="025e4329-18a0-4f52-b108-66e86f7899e1" Value="true" Type="bool"/>
     <Parameter Name="ArrowSpeed" Description="Velocidad base de la flecha (afectada por tensión)" Guid="59e8e75d-8b04-42d5-8a11-1a57d571f7f3" Value="40" Type="float"/>
-    <Parameter Name="CycleArrowTypes" Description="Ciclar entre diferentes tipos de flechas al disparar" Guid="9ec4d7c7-7097-4e2b-9814-5af59099eacf" Value="true" Type="bool"/>
     <Parameter Name="Class" Guid="a48fe137-0abb-4b57-b215-364d7e60f86d" Value="Game.ComponentBowShooterBehavior" Type="string"/>
 </ComponentTemplate>
 
