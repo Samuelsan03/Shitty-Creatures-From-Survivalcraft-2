@@ -121,6 +121,9 @@ namespace Game
 		private int m_shotsSinceLastReload = 0;
 		private bool m_hasFirearmAimed = false;
 
+		private bool m_isMelee = false;
+		private double m_lastMeleeAttackTime = 0.0;
+
 		private float m_maxDistance = 100f;
 		private float m_drawTime = 0.5f;
 		private float m_aimTime = 0.5f;
@@ -563,45 +566,61 @@ namespace Game
 
 				m_currentTargetDistance = distance;
 
-				float maxDistance = GetWeaponMaxDistance();
+				const float MeleeRange = 5f;
 
-				if (distance <= maxDistance)
+				if (distance <= MeleeRange)
 				{
-					if (m_currentWeaponSlot == -1)
+					if (!m_isMelee)
 					{
-						FindRangedWeapon();
+						EnterMeleeMode();
 					}
-
-					if (m_currentWeaponSlot != -1)
-					{
-						ProcessWeaponBehavior(target, distance);
-					}
+					UpdateMeleeMode(target);
 				}
 				else
 				{
-					// Si el arma es lanzable, no reseteamos el slot, solo limpiamos animaciones
-					if (m_weaponType == 6)
+					if (m_isMelee)
 					{
-						// Cancelar cualquier estado de lanzamiento pero mantener el arma
-						m_isThrowableAiming = false;
-						m_isThrowableThrowing = false;
-						if (m_componentModel != null)
+						ExitMeleeMode();
+					}
+
+					float maxDistance = GetWeaponMaxDistance();
+
+					if (distance <= maxDistance)
+					{
+						if (m_currentWeaponSlot == -1)
 						{
-							m_componentModel.AimHandAngleOrder = 0f;
-							m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
-							m_componentModel.InHandItemRotationOrder = Vector3.Zero;
-							m_componentModel.LookAtOrder = null;
+							FindRangedWeapon();
+						}
+
+						if (m_currentWeaponSlot != -1)
+						{
+							ProcessWeaponBehavior(target, distance);
 						}
 					}
 					else
 					{
-						ResetWeaponState();
-						if (m_componentModel != null)
+						if (m_weaponType == 6)
 						{
-							m_componentModel.AimHandAngleOrder = 0f;
-							m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
-							m_componentModel.InHandItemRotationOrder = Vector3.Zero;
-							m_componentModel.LookAtOrder = null;
+							m_isThrowableAiming = false;
+							m_isThrowableThrowing = false;
+							if (m_componentModel != null)
+							{
+								m_componentModel.AimHandAngleOrder = 0f;
+								m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
+								m_componentModel.InHandItemRotationOrder = Vector3.Zero;
+								m_componentModel.LookAtOrder = null;
+							}
+						}
+						else
+						{
+							ResetWeaponState();
+							if (m_componentModel != null)
+							{
+								m_componentModel.AimHandAngleOrder = 0f;
+								m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
+								m_componentModel.InHandItemRotationOrder = Vector3.Zero;
+								m_componentModel.LookAtOrder = null;
+							}
 						}
 					}
 				}
@@ -616,6 +635,125 @@ namespace Game
 					m_componentModel.InHandItemRotationOrder = Vector3.Zero;
 					m_componentModel.LookAtOrder = null;
 				}
+			}
+		}
+
+		private void EnterMeleeMode()
+		{
+			m_isMelee = true;
+			// Limpia estados de apuntado sin perder el slot del arma a distancia
+			m_isAiming = false;
+			m_isDrawing = false;
+			m_isFiring = false;
+			m_isReloading = false;
+			m_isCocking = false;
+			m_isFlameFiring = false;
+			m_isFlameCocking = false;
+			m_isFirearmAiming = false;
+			m_isFirearmFiring = false;
+			m_isFirearmReloading = false;
+			m_isThrowableAiming = false;
+			m_isThrowableThrowing = false;
+
+			if (m_componentModel != null)
+			{
+				m_componentModel.AimHandAngleOrder = 0f;
+				m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
+				m_componentModel.InHandItemRotationOrder = Vector3.Zero;
+				// No se resetea LookAtOrder, se actualizará en UpdateMeleeMode
+			}
+
+			// Equipa el mejor arma cuerpo a cuerpo disponible
+			FindMeleeWeapon();
+		}
+
+		private void ExitMeleeMode()
+		{
+			m_isMelee = false;
+			// Fuerza a re‑buscar un arma a distancia en el próximo ciclo
+			m_currentWeaponSlot = -1;
+			m_weaponType = -1;
+			m_lastMeleeAttackTime = 0.0;
+		}
+
+		private void UpdateMeleeMode(ComponentCreature target)
+		{
+			if (target == null || m_componentModel == null || m_componentMiner == null)
+				return;
+
+			// Mirar al objetivo
+			m_componentModel.LookAtOrder = new Vector3?(target.ComponentCreatureModel.EyePosition);
+
+			const double MeleeAttackInterval = 0.8;
+			double currentTime = m_subsystemTime.GameTime;
+			if (currentTime - m_lastMeleeAttackTime >= MeleeAttackInterval)
+			{
+				AttackMelee(target);
+				m_lastMeleeAttackTime = currentTime;
+			}
+		}
+
+		private void AttackMelee(ComponentCreature target)
+		{
+			if (m_componentMiner == null || target == null || m_componentModel == null)
+				return;
+
+			m_componentModel.AttackOrder = true;
+
+			if (m_componentModel.IsAttackHitMoment)
+			{
+				Vector3 hitPoint;
+				ComponentBody hitBody = GetHitBody(target.ComponentBody, out hitPoint);
+				if (hitBody != null)
+				{
+					m_componentMiner.Hit(hitBody, hitPoint, m_componentCreature.ComponentBody.Matrix.Forward);
+					m_componentCreature.ComponentCreatureSounds.PlayAttackSound();
+				}
+			}
+		}
+
+		private ComponentBody GetHitBody(ComponentBody target, out Vector3 hitPoint)
+		{
+			Vector3 start = m_componentCreature.ComponentBody.BoundingBox.Center();
+			Vector3 end = target.BoundingBox.Center();
+			Ray3 ray = new Ray3(start, Vector3.Normalize(end - start));
+			BodyRaycastResult? result = m_componentMiner.Raycast<BodyRaycastResult>(ray, RaycastMode.Interaction, true, true, true, null);
+			if (result != null && result.Value.Distance < 1.75f &&
+				(result.Value.ComponentBody == target ||
+				 result.Value.ComponentBody.IsChildOfBody(target) ||
+				 target.IsChildOfBody(result.Value.ComponentBody) ||
+				 target.StandingOnBody == result.Value.ComponentBody))
+			{
+				hitPoint = result.Value.HitPoint();
+				return result.Value.ComponentBody;
+			}
+			hitPoint = default(Vector3);
+			return null;
+		}
+
+		private void FindMeleeWeapon()
+		{
+			if (m_componentInventory == null)
+				return;
+
+			float bestPower = 1f;
+			int bestSlot = -1;
+			for (int i = 0; i < m_componentInventory.SlotsCount; i++)
+			{
+				int slotValue = m_componentInventory.GetSlotValue(i);
+				if (slotValue != 0)
+				{
+					float power = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)].GetMeleePower(slotValue);
+					if (power > bestPower)
+					{
+						bestPower = power;
+						bestSlot = i;
+					}
+				}
+			}
+			if (bestSlot >= 0)
+			{
+				m_componentInventory.ActiveSlotIndex = bestSlot;
 			}
 		}
 
