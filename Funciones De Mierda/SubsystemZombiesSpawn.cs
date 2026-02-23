@@ -35,6 +35,7 @@ namespace Game
 		private SubsystemGameWidgets m_subsystemViews;
 		private SubsystemGreenNightSky m_subsystemGreenNightSky;
 		private SubsystemTimeOfDay m_subsystemTimeOfDay;
+		private SubsystemPlayers m_subsystemPlayers;
 
 		private Random m_random = new Random();
 		private Dictionary<ComponentCreature, bool> m_creatures = new Dictionary<ComponentCreature, bool>();
@@ -52,6 +53,11 @@ namespace Game
 		private double m_lastMoonDayForWave = 0;
 		private bool m_waveAdvancedThisNight = false;
 		private bool m_firstNightCompleted = false;
+
+		// Para controlar si ya mostramos el mensaje de jefes en esta ola
+		private bool m_bossMessageShownForCurrentWave = false;
+		// Para controlar si ya mostramos el mensaje de ola final
+		private bool m_finalWaveMessageShown = false;
 
 		private HashSet<string> m_bossZombieTypes = new HashSet<string>
 		{
@@ -102,6 +108,7 @@ namespace Game
 				if (m_isGreenNightActive)
 				{
 					m_waveAdvancedThisNight = false;
+					m_bossMessageShownForCurrentWave = false; // Reiniciamos el flag al empezar nueva noche
 					LoadCurrentWave();
 				}
 				else
@@ -112,6 +119,7 @@ namespace Game
 					{
 						m_currentWaveIndex++;
 						LoadCurrentWave();
+						m_bossMessageShownForCurrentWave = false; // Reiniciamos para la nueva ola
 					}
 				}
 			}
@@ -146,6 +154,21 @@ namespace Game
 			}
 
 			ResetCurrentWaveSpawns();
+
+			// Mensaje para la ola final (ola 19, índice 18)
+			if (m_currentWaveIndex == 18 && !m_finalWaveMessageShown && m_subsystemPlayers != null)
+			{
+				m_finalWaveMessageShown = true;
+				foreach (ComponentPlayer componentPlayer in m_subsystemPlayers.ComponentPlayers)
+				{
+					if (componentPlayer?.ComponentGui != null)
+					{
+						componentPlayer.ComponentGui.DisplaySmallMessage(
+							LanguageControl.Get("ZombiesSpawn", "FinalWave"),
+							new Color(180, 0, 0), false, true);
+					}
+				}
+			}
 		}
 
 		private void ResetCurrentWaveSpawns()
@@ -164,9 +187,10 @@ namespace Game
 			int currentCount = CountZombies();
 			if (currentCount >= m_totalLimit) return;
 
+			// Si ya no quedan criaturas por generar en esta ola, no hacemos nada
 			if (m_currentWaveSpawns.Values.Sum() == 0)
 			{
-				ResetCurrentWaveSpawns();
+				return;
 			}
 
 			var regularTemplates = m_currentWaveSpawns
@@ -177,7 +201,23 @@ namespace Game
 				.Where(kv => kv.Value > 0 && m_bossZombieTypes.Contains(kv.Key))
 				.ToList();
 
-			var availableTemplates = bossTemplates.Count > 0 && regularTemplates.Count == 0 ? bossTemplates : regularTemplates;
+			// Si hay jefes pendientes y ya no quedan normales, mostramos mensaje una sola vez
+			if (bossTemplates.Count > 0 && regularTemplates.Count == 0 && !m_bossMessageShownForCurrentWave && m_subsystemPlayers != null)
+			{
+				m_bossMessageShownForCurrentWave = true;
+				foreach (ComponentPlayer componentPlayer in m_subsystemPlayers.ComponentPlayers)
+				{
+					if (componentPlayer?.ComponentGui != null)
+					{
+						componentPlayer.ComponentGui.DisplaySmallMessage(
+							LanguageControl.Get("ZombiesSpawn", "BossesAppear"),
+							new Color(139, 0, 0), false, true); // Rojo oscuro
+					}
+				}
+			}
+
+			// Primero generamos normales, cuando se acaben generamos jefes
+			var availableTemplates = regularTemplates.Count > 0 ? regularTemplates : bossTemplates;
 
 			if (availableTemplates.Count == 0) return;
 
@@ -218,21 +258,29 @@ namespace Game
 			this.m_subsystemViews = base.Project.FindSubsystem<SubsystemGameWidgets>(true);
 			this.m_subsystemGreenNightSky = base.Project.FindSubsystem<SubsystemGreenNightSky>(true);
 			this.m_subsystemTimeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
+			this.m_subsystemPlayers = base.Project.FindSubsystem<SubsystemPlayers>(true);
 
 			this.m_lastMoonDayForWave = Math.Floor(this.m_subsystemTimeOfDay.Day);
 			this.m_isGreenNightActive = false;
 			this.m_wavesLoaded = false;
 			this.m_firstNightCompleted = false;
+			this.m_bossMessageShownForCurrentWave = false;
+			this.m_finalWaveMessageShown = false;
 
 			if (valuesDictionary.ContainsKey("CurrentWaveIndex"))
 			{
 				this.m_currentWaveIndex = valuesDictionary.GetValue<int>("CurrentWaveIndex");
+			}
+			if (valuesDictionary.ContainsKey("FinalWaveMessageShown"))
+			{
+				this.m_finalWaveMessageShown = valuesDictionary.GetValue<bool>("FinalWaveMessageShown");
 			}
 		}
 
 		public override void Save(ValuesDictionary valuesDictionary)
 		{
 			valuesDictionary.SetValue("CurrentWaveIndex", m_currentWaveIndex);
+			valuesDictionary.SetValue("FinalWaveMessageShown", m_finalWaveMessageShown);
 		}
 
 		private string GetWavesPath()
