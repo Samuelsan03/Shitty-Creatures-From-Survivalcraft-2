@@ -572,9 +572,41 @@ namespace Game
 				{
 					if (!m_isMelee)
 					{
-						EnterMeleeMode();
+						if (!EnterMeleeMode())
+						{
+							m_isMelee = false;
+						}
 					}
-					UpdateMeleeMode(target);
+
+					if (m_isMelee)
+					{
+						UpdateMeleeMode(target);
+					}
+					else
+					{
+						float maxDistance = GetWeaponMaxDistance();
+						if (distance <= maxDistance)
+						{
+							if (m_currentWeaponSlot == -1)
+							{
+								FindRangedWeapon();
+							}
+
+							if (m_currentWeaponSlot != -1)
+							{
+								ProcessWeaponBehavior(target, distance);
+
+								// Golpear con el arma a distancia
+								const double MeleeAttackInterval = 0.8;
+								double currentTime = m_subsystemTime.GameTime;
+								if (currentTime - m_lastMeleeAttackTime >= MeleeAttackInterval)
+								{
+									AttackMelee(target);
+									m_lastMeleeAttackTime = currentTime;
+								}
+							}
+						}
+					}
 				}
 				else
 				{
@@ -583,88 +615,65 @@ namespace Game
 						ExitMeleeMode();
 					}
 
-					float maxDistance = GetWeaponMaxDistance();
-
-					if (distance <= maxDistance)
+					// Siempre intentar usar el arma a distancia, sin límite de distancia
+					if (m_currentWeaponSlot == -1)
 					{
-						if (m_currentWeaponSlot == -1)
-						{
-							FindRangedWeapon();
-						}
+						FindRangedWeapon();
+					}
 
-						if (m_currentWeaponSlot != -1)
-						{
-							ProcessWeaponBehavior(target, distance);
-						}
+					if (m_currentWeaponSlot != -1)
+					{
+						ProcessWeaponBehavior(target, distance);
 					}
 					else
 					{
-						if (m_weaponType == 6)
+						// No hay arma a distancia, resetear
+						ResetWeaponState();
+						if (m_componentModel != null)
 						{
-							m_isThrowableAiming = false;
-							m_isThrowableThrowing = false;
-							if (m_componentModel != null)
-							{
-								m_componentModel.AimHandAngleOrder = 0f;
-								m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
-								m_componentModel.InHandItemRotationOrder = Vector3.Zero;
-								m_componentModel.LookAtOrder = null;
-							}
-						}
-						else
-						{
-							ResetWeaponState();
-							if (m_componentModel != null)
-							{
-								m_componentModel.AimHandAngleOrder = 0f;
-								m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
-								m_componentModel.InHandItemRotationOrder = Vector3.Zero;
-								m_componentModel.LookAtOrder = null;
-							}
+							m_componentModel.AimHandAngleOrder = 0f;
+							m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
+							m_componentModel.InHandItemRotationOrder = Vector3.Zero;
+							m_componentModel.LookAtOrder = null;
 						}
 					}
 				}
 			}
-			else
+		}
+
+		private bool EnterMeleeMode()
+		{
+			int bestSlot = FindBestMeleeWeaponSlot();
+			if (bestSlot >= 0)
 			{
-				ResetWeaponState();
+				m_componentInventory.ActiveSlotIndex = bestSlot;
+
+				m_isAiming = false;
+				m_isDrawing = false;
+				m_isFiring = false;
+				m_isReloading = false;
+				m_isCocking = false;
+				m_isFlameFiring = false;
+				m_isFlameCocking = false;
+				m_isFirearmAiming = false;
+				m_isFirearmFiring = false;
+				m_isFirearmReloading = false;
+				m_isThrowableAiming = false;
+				m_isThrowableThrowing = false;
+
 				if (m_componentModel != null)
 				{
 					m_componentModel.AimHandAngleOrder = 0f;
 					m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
 					m_componentModel.InHandItemRotationOrder = Vector3.Zero;
-					m_componentModel.LookAtOrder = null;
 				}
-			}
-		}
 
-		private void EnterMeleeMode()
-		{
-			m_isMelee = true;
-			// Limpia estados de apuntado sin perder el slot del arma a distancia
-			m_isAiming = false;
-			m_isDrawing = false;
-			m_isFiring = false;
-			m_isReloading = false;
-			m_isCocking = false;
-			m_isFlameFiring = false;
-			m_isFlameCocking = false;
-			m_isFirearmAiming = false;
-			m_isFirearmFiring = false;
-			m_isFirearmReloading = false;
-			m_isThrowableAiming = false;
-			m_isThrowableThrowing = false;
-
-			if (m_componentModel != null)
-			{
-				m_componentModel.AimHandAngleOrder = 0f;
-				m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
-				m_componentModel.InHandItemRotationOrder = Vector3.Zero;
-				// No se resetea LookAtOrder, se actualizará en UpdateMeleeMode
+				m_isMelee = true;
+				return true;
 			}
 
-			// Equipa el mejor arma cuerpo a cuerpo disponible
-			FindMeleeWeapon();
+			m_isMelee = false;
+			return false;
 		}
 
 		private void ExitMeleeMode()
@@ -3357,6 +3366,29 @@ namespace Game
 				}
 			}
 			catch { }
+		}
+
+		private int FindBestMeleeWeaponSlot()
+		{
+			if (m_componentInventory == null)
+				return -1;
+
+			float bestPower = 1f;
+			int bestSlot = -1;
+			for (int i = 0; i < m_componentInventory.SlotsCount; i++)
+			{
+				int slotValue = m_componentInventory.GetSlotValue(i);
+				if (slotValue != 0)
+				{
+					float power = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)].GetMeleePower(slotValue);
+					if (power > bestPower)
+					{
+						bestPower = power;
+						bestSlot = i;
+					}
+				}
+			}
+			return bestSlot;
 		}
 
 		private void FireFlameThrowerShot(ComponentCreature target)
