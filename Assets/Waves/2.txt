@@ -1,5 +1,5 @@
-InfectedNormal1;20
-InfectedNormal2;20
-InfectedFast1;15
-InfectedFast2;15
-InfectedFly1;2
+InfectedNormal1;30
+InfectedNormal2;30
+InfectedFast1;25
+InfectedFast2;25
+InfectedFly1;6
