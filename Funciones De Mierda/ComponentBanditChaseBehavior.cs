@@ -21,143 +21,201 @@ namespace Game
 		private float m_lastShotSoundTime;
 		private System.Reflection.FieldInfo m_minerHasDigOrderField;
 
-		// Duración de la memoria del último atacante (30 segundos, como los zombis)
+		// Duración de la memoria del último atacante (30 segundos)
 		private const float AttackerMemoryDuration = 30f;
 
-		private bool IsBanditHerd()
-		{
-			return m_componentBanditHerd != null &&
-				   !string.IsNullOrEmpty(m_componentBanditHerd.HerdName) &&
-				   string.Equals(m_componentBanditHerd.HerdName, "bandit", StringComparison.OrdinalIgnoreCase);
-		}
+		// Umbral de salud para considerar "cerca de la muerte" (20%)
+		private const float NearDeathThreshold = 0.2f;
 
 		private bool IsNearDeath()
 		{
 			if (m_componentCreature?.ComponentHealth == null) return false;
-			return m_componentCreature.ComponentHealth.Health <= 0.2f;
+			return m_componentCreature.ComponentHealth.Health <= NearDeathThreshold;
+		}
+
+		// Método para desactivar el comportamiento de huida cuando está cerca de la muerte
+		private void DisableRunAwayBehavior()
+		{
+			if (m_componentBanditRunAway != null)
+			{
+				// Acceder al campo m_importanceLevel mediante reflexión ya que es privado
+				var field = typeof(ComponentRunAwayBehavior).GetField("m_importanceLevel",
+					System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+				if (field != null)
+				{
+					field.SetValue(m_componentBanditRunAway, 0f);
+				}
+
+				// También podemos anular cualquier delegado de Injured que cause huida
+				if (m_componentCreature?.ComponentHealth != null)
+				{
+					// No eliminamos completamente, pero aseguramos que nuestra lógica prevalezca
+					// El ComponentBanditRunAwayBehavior ya debería tener su propio Injured anulado
+				}
+			}
+		}
+
+		// Método para verificar y mantener desactivado el comportamiento de huida
+		private void EnsureRunAwayIsDisabled()
+		{
+			if (m_isNearDeath && m_componentBanditRunAway != null)
+			{
+				var field = typeof(ComponentRunAwayBehavior).GetField("m_importanceLevel",
+					System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+				if (field != null)
+				{
+					float currentImportance = (float)field.GetValue(m_componentBanditRunAway);
+					if (currentImportance > 0f)
+					{
+						field.SetValue(m_componentBanditRunAway, 0f);
+					}
+				}
+			}
 		}
 
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
 			base.Load(valuesDictionary, idToEntityMap);
 
+			// Obtener referencias a los componentes necesarios
 			m_componentBanditHerd = Entity.FindComponent<ComponentBanditHerdBehavior>();
 			m_componentBanditRunAway = Entity.FindComponent<ComponentBanditRunAwayBehavior>();
 			m_componentMiner = Entity.FindComponent<ComponentMiner>();
 
+			// Configurar máscara de persecución
 			m_autoChaseMask = CreatureCategory.LandPredator | CreatureCategory.LandOther |
 							  CreatureCategory.WaterPredator | CreatureCategory.WaterOther |
 							  CreatureCategory.Bird;
 
+			// Configurar comportamiento de ataque
 			AttacksPlayer = true;
 			AttacksNonPlayerCreature = true;
 
+			// Ajustar rangos y tiempos de persecución
 			m_dayChaseRange = Math.Max(m_dayChaseRange, 20f);
 			m_nightChaseRange = Math.Max(m_nightChaseRange, 25f);
-
 			m_dayChaseTime = Math.Max(m_dayChaseTime, 60f);
 			m_nightChaseTime = Math.Max(m_nightChaseTime, 90f);
-
 			m_chaseWhenAttackedProbability = 1f;
 			ImportanceLevelPersistent = 300f;
 
+			// Inicializar variables
 			m_lastAttacker = null;
 			m_lastAttackTime = 0f;
 			m_switchTargetCooldown = 0f;
 			m_lastShotSoundTime = 0f;
 
-			// Guardar los manejadores originales (establecidos por ComponentChaseBehavior.Load)
+			// Guardar manejadores originales
 			ComponentHealth componentHealth = m_componentCreature.ComponentHealth;
 			Action<Injury> originalInjured = componentHealth.Injured;
 
 			ComponentBody componentBody = m_componentCreature.ComponentBody;
 			Action<ComponentBody> originalCollided = componentBody.CollidedWithBody;
 
-			// Nuevo manejador de Injured: invoca al original y luego nuestra lógica personalizada
+			// NUEVO MANEJADOR DE INJURED - CON INTEGRACIÓN DE BANDITRUNAWAY
 			componentHealth.Injured = delegate (Injury injury)
 			{
-				// Invocar primero el manejador original (puede iniciar un ataque)
+				// Ejecutar manejador original
 				originalInjured?.Invoke(injury);
 
+				// Actualizar estado de salud
+				bool wasNearDeath = m_isNearDeath;
 				m_isNearDeath = IsNearDeath();
-				if (m_isNearDeath)
+
+				// Si está cerca de la muerte, aumentar persistencia de ataque Y DESACTIVAR HUIDA
+				if (m_isNearDeath && !wasNearDeath)
 				{
 					m_attackPersistanceFactor = 2f;
+					DisableRunAwayBehavior(); // ¡DESACTIVAR COMPORTAMIENTO DE HUIDA!
+				}
+				else if (!m_isNearDeath && wasNearDeath)
+				{
+					m_attackPersistanceFactor = 1f;
+					// Cuando ya no está cerca de la muerte, el comportamiento de huida
+					// se maneja normalmente por ComponentBanditRunAwayBehavior (que ya está configurado para NO huir)
 				}
 
 				ComponentCreature attacker = injury.Attacker;
 
-				// Si el atacante es de la misma manada, ignorar completamente (solo registramos si queremos? Mejor no)
+				// Ignorar ataques de miembros de la misma manada
 				if (attacker != null && m_componentBanditHerd != null)
 				{
 					ComponentBanditHerdBehavior attackerHerd = attacker.Entity.FindComponent<ComponentBanditHerdBehavior>();
 					if (attackerHerd != null && !string.IsNullOrEmpty(attackerHerd.HerdName) &&
 						string.Equals(attackerHerd.HerdName, m_componentBanditHerd.HerdName, StringComparison.OrdinalIgnoreCase))
 					{
-						return; // No hacer nada más, ni siquiera recordar al atacante
+						return; // Ignorar completamente
 					}
 				}
 
+				// Recordar al atacante
 				if (attacker != null)
 				{
 					m_lastAttacker = attacker;
 					m_lastAttackTime = m_subsystemTime.GameTime;
 				}
 
-				// Si el manejador original NO inició un ataque (m_target sigue siendo el mismo o nulo),
-				// entonces nosotros podemos atacar con nuestra lógica personalizada.
-				bool originalDidAttack = (m_target != null && m_target == attacker); // Simplificación: si el target cambió al atacante
-																					 // Mejor: comprobar si después del original, m_target no es nulo y es el atacante (o cualquier objetivo)
-																					 // Pero para evitar complejidad, asumimos que si el original atacó, ya se encargó.
-																					 // Nosotros atacamos solo si el original no estableció ningún target (m_target == null)
+				// Si no hay objetivo actual y hay atacante, contraatacar
 				if (m_target == null && attacker != null)
 				{
-					// Aplicar nuestra lógica de ataque (similar a la original pero con factores propios)
-					bool flag = false;
-					float num;
-					float num2;
+					bool isPersistent = false;
+					float range, chaseTime;
+
 					if (m_chaseWhenAttackedProbability >= 1f)
 					{
-						num = 30f;
-						num2 = 60f * m_attackPersistanceFactor;
-						flag = true;
+						range = 30f;
+						chaseTime = 60f * m_attackPersistanceFactor;
+						isPersistent = true;
 					}
 					else
 					{
-						num = 7f;
-						num2 = 7f * m_attackPersistanceFactor;
+						range = 7f;
+						chaseTime = 7f * m_attackPersistanceFactor;
 					}
-					num = ChaseRangeOnAttacked.GetValueOrDefault(num);
-					num2 = ChaseTimeOnAttacked.GetValueOrDefault(num2);
-					flag = ChasePersistentOnAttacked.GetValueOrDefault(flag);
 
-					Attack(attacker, num, num2, flag);
+					range = ChaseRangeOnAttacked.GetValueOrDefault(range);
+					chaseTime = ChaseTimeOnAttacked.GetValueOrDefault(chaseTime);
+					isPersistent = ChasePersistentOnAttacked.GetValueOrDefault(isPersistent);
+
+					Attack(attacker, range, chaseTime, isPersistent);
 				}
+
+				// Verificar que la huida sigue desactivada si está near death
+				EnsureRunAwayIsDisabled();
 			};
 
-			// Nuevo manejador de CollidedWithBody: invoca al original y luego nuestra lógica
+			// NUEVO MANEJADOR DE COLLISION - CON INTEGRACIÓN DE BANDITRUNAWAY
 			componentBody.CollidedWithBody = delegate (ComponentBody body)
 			{
-				// Invocar primero el original
+				// Ejecutar manejador original
 				originalCollided?.Invoke(body);
 
+				// Actualizar estado de salud
+				bool wasNearDeath = m_isNearDeath;
 				m_isNearDeath = IsNearDeath();
-				if (m_isNearDeath)
+
+				// Si está cerca de la muerte, aumentar persistencia de ataque Y DESACTIVAR HUIDA
+				if (m_isNearDeath && !wasNearDeath)
 				{
 					m_attackPersistanceFactor = 2f;
+					DisableRunAwayBehavior(); // ¡DESACTIVAR COMPORTAMIENTO DE HUIDA!
+				}
+				else if (!m_isNearDeath && wasNearDeath)
+				{
+					m_attackPersistanceFactor = 1f;
 				}
 
-				// Nuestra lógica solo se ejecuta si el original no inició un ataque (m_target sigue siendo el que era)
-				// y se cumplen las condiciones.
-				if (m_target == null && m_autoChaseSuppressionTime <= 0f && m_random.Float(0f, 1f) < m_chaseOnTouchProbability)
+				// Solo procesar si no hay objetivo y no está suprimido
+				if (m_target == null && m_autoChaseSuppressionTime <= 0f &&
+					m_random.Float(0f, 1f) < m_chaseOnTouchProbability)
 				{
-					ComponentCreature componentCreature = body.Entity.FindComponent<ComponentCreature>();
-					if (componentCreature != null)
+					ComponentCreature creature = body.Entity.FindComponent<ComponentCreature>();
+					if (creature != null)
 					{
 						// Excluir miembros de la misma manada
 						if (m_componentBanditHerd != null)
 						{
-							ComponentBanditHerdBehavior targetHerd = componentCreature.Entity.FindComponent<ComponentBanditHerdBehavior>();
+							ComponentBanditHerdBehavior targetHerd = creature.Entity.FindComponent<ComponentBanditHerdBehavior>();
 							if (targetHerd != null && !string.IsNullOrEmpty(targetHerd.HerdName) &&
 								string.Equals(targetHerd.HerdName, m_componentBanditHerd.HerdName, StringComparison.OrdinalIgnoreCase))
 							{
@@ -165,31 +223,35 @@ namespace Game
 							}
 						}
 
-						bool flag = m_subsystemPlayers.IsPlayer(body.Entity);
-						bool flag2 = (componentCreature.Category & m_autoChaseMask) > (CreatureCategory)0;
-						if ((AttacksPlayer && flag && m_subsystemGameInfo.WorldSettings.GameMode > GameMode.Harmless) ||
-							(AttacksNonPlayerCreature && !flag && flag2))
-						{
-							if (flag || flag2)
-							{
-								m_lastAttacker = componentCreature;
-								m_lastAttackTime = m_subsystemTime.GameTime;
-							}
+						bool isPlayer = m_subsystemPlayers.IsPlayer(body.Entity);
+						bool isValidTarget = (creature.Category & m_autoChaseMask) > (CreatureCategory)0;
 
+						if ((AttacksPlayer && isPlayer && m_subsystemGameInfo.WorldSettings.GameMode > GameMode.Harmless) ||
+							(AttacksNonPlayerCreature && !isPlayer && isValidTarget))
+						{
+							// Recordar al objetivo
+							m_lastAttacker = creature;
+							m_lastAttackTime = m_subsystemTime.GameTime;
+
+							// Iniciar ataque
 							float chaseTime = ChaseTimeOnTouch * m_attackPersistanceFactor;
-							Attack(componentCreature, ChaseRangeOnTouch, chaseTime, false);
+							Attack(creature, ChaseRangeOnTouch, chaseTime, false);
 						}
 					}
 				}
 
-				// La parte del salto la ejecutamos siempre (el original también la tenía, pero nosotros la repetimos)
+				// Comportamiento de salto si el objetivo está encima
 				if (m_target != null && JumpWhenTargetStanding && body == m_target.ComponentBody &&
 					body.StandingOnBody == m_componentCreature.ComponentBody)
 				{
 					m_componentCreature.ComponentLocomotion.JumpOrder = 1f;
 				}
+
+				// Verificar que la huida sigue desactivada si está near death
+				EnsureRunAwayIsDisabled();
 			};
 
+			// Registrar hook para mods
 			m_registeredLoader = null;
 			ModsManager.HookAction("ChaseBehaviorScoreTarget", delegate (ModLoader loader)
 			{
@@ -197,64 +259,78 @@ namespace Game
 				return false;
 			});
 
+			// Obtener campo privado de ComponentMiner para detección de disparo
 			m_minerHasDigOrderField = typeof(ComponentMiner).GetField("m_hasDigOrder",
 				System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 		}
 
 		public new void Update(float dt)
 		{
+			// Actualizar estado de salud
 			bool wasNearDeath = m_isNearDeath;
 			m_isNearDeath = IsNearDeath();
 
+			// Ajustar factor de persistencia según salud Y MANEJAR COMPORTAMIENTO DE HUIDA
 			if (m_isNearDeath && !wasNearDeath)
 			{
 				m_attackPersistanceFactor = 2f;
+				DisableRunAwayBehavior(); // ¡DESACTIVAR COMPORTAMIENTO DE HUIDA!
 			}
 			else if (!m_isNearDeath && wasNearDeath)
 			{
 				m_attackPersistanceFactor = 1f;
+				// Cuando sale de near death, el comportamiento de huida se restablece
+				// pero como ComponentBanditRunAwayBehavior ya está configurado para NO huir,
+				// no necesitamos hacer nada especial
 			}
 
+			// Actualizar cooldown de cambio de objetivo
 			if (m_switchTargetCooldown > 0f)
 			{
 				m_switchTargetCooldown -= dt;
 			}
 
+			// Llamar al Update base
 			base.Update(dt);
 
-			// --- MEJORA: Cambiar inmediatamente al último atacante si es mejor objetivo ---
+			// CAMBIAR AL ÚLTIMO ATACANTE SI ES MEJOR OBJETIVO
 			if (m_lastAttacker != null && m_switchTargetCooldown <= 0f)
 			{
 				float timeSinceLastAttack = (float)(m_subsystemTime.GameTime - m_lastAttackTime);
 				if (timeSinceLastAttack <= AttackerMemoryDuration)
 				{
 					bool isAttackerAlive = m_lastAttacker.ComponentHealth.Health > 0f;
-					float distanceToAttacker = Vector3.Distance(m_componentCreature.ComponentBody.Position, m_lastAttacker.ComponentBody.Position);
-					float currentRange = m_subsystemSky.SkyLightIntensity < 0.2f ? m_nightChaseRange : m_dayChaseRange;
+					float distanceToAttacker = Vector3.Distance(
+						m_componentCreature.ComponentBody.Position,
+						m_lastAttacker.ComponentBody.Position);
+					float currentRange = m_subsystemSky.SkyLightIntensity < 0.2f ?
+						m_nightChaseRange : m_dayChaseRange;
 
 					if (isAttackerAlive && distanceToAttacker <= currentRange * 1.2f)
 					{
-						// Si el objetivo actual no es el último atacante, cambiar
 						if (m_target != m_lastAttacker)
 						{
-							float chaseTime = m_subsystemSky.SkyLightIntensity < 0.2f ? m_nightChaseTime : m_dayChaseTime;
-							Attack(m_lastAttacker, currentRange, chaseTime * m_attackPersistanceFactor, true);
+							float chaseTime = m_subsystemSky.SkyLightIntensity < 0.2f ?
+								m_nightChaseTime : m_dayChaseTime;
+							Attack(m_lastAttacker, currentRange,
+								chaseTime * m_attackPersistanceFactor, true);
 							m_switchTargetCooldown = 2f;
 						}
 					}
 				}
 				else
 				{
-					// Si se acabó la memoria, olvidar al atacante
 					m_lastAttacker = null;
 				}
 			}
 
+			// Reproducir sonido de ataque
 			if (m_componentCreature.ComponentCreatureModel.IsAttackHitMoment)
 			{
 				m_componentCreature.ComponentCreatureSounds.PlayAttackSound();
 			}
 
+			// Manejar sonido de disparo para bandidos con arco
 			if (m_componentMiner != null)
 			{
 				if (m_lastShotSoundTime <= 0f)
@@ -278,6 +354,7 @@ namespace Game
 				}
 			}
 
+			// Aumentar importancia si está cerca de la muerte y tiene objetivo
 			if (m_isNearDeath && m_target != null)
 			{
 				if (m_importanceLevel < ImportanceLevelPersistent * m_attackPersistanceFactor)
@@ -286,17 +363,24 @@ namespace Game
 				}
 			}
 
+			// BUSCAR MEJOR OBJETIVO
 			if (m_target != null && m_switchTargetCooldown <= 0f)
 			{
 				ComponentCreature betterTarget = FindBetterTarget();
 				if (betterTarget != null && betterTarget != m_target)
 				{
-					float chaseRange = m_subsystemSky.SkyLightIntensity < 0.2f ? m_nightChaseRange : m_dayChaseRange;
-					float chaseTime = m_subsystemSky.SkyLightIntensity < 0.2f ? m_nightChaseTime : m_dayChaseTime;
-					Attack(betterTarget, chaseRange, chaseTime * m_attackPersistanceFactor, true);
+					float chaseRange = m_subsystemSky.SkyLightIntensity < 0.2f ?
+						m_nightChaseRange : m_dayChaseRange;
+					float chaseTime = m_subsystemSky.SkyLightIntensity < 0.2f ?
+						m_nightChaseTime : m_dayChaseTime;
+					Attack(betterTarget, chaseRange,
+						chaseTime * m_attackPersistanceFactor, true);
 					m_switchTargetCooldown = 2f;
 				}
 			}
+
+			// VERIFICACIÓN CONTINUA: Asegurar que la huida está desactivada si está near death
+			EnsureRunAwayIsDisabled();
 		}
 
 		public override float ScoreTarget(ComponentCreature componentCreature)
@@ -312,33 +396,39 @@ namespace Game
 				}
 			}
 
+			// Obtener puntuación base
 			float score = base.ScoreTarget(componentCreature);
 			if (score <= 0f) return 0f;
 
+			// Hook para mods
 			if (m_registeredLoader != null)
 			{
 				m_registeredLoader.ChaseBehaviorScoreTarget(this, componentCreature, ref score);
 			}
 
-			// Multiplicador masivo si es el último atacante y aún está en memoria
+			// BONUS POR SER EL ÚLTIMO ATACANTE
 			if (componentCreature == m_lastAttacker)
 			{
 				float timeSinceLastAttack = (float)(m_subsystemTime.GameTime - m_lastAttackTime);
 				if (timeSinceLastAttack <= AttackerMemoryDuration)
 				{
-					score *= 5f; // Prioridad absoluta
+					score *= 5f; // Prioridad máxima
 				}
 				else if (timeSinceLastAttack <= AttackerMemoryDuration * 2)
 				{
-					score *= 2f; // Prioridad media mientras se olvida
+					score *= 2f; // Prioridad media
 				}
 			}
 
-			// Bonus si el nuevo objetivo está mucho más cerca que el actual
+			// BONUS POR CERCANÍA (si está mucho más cerca que el objetivo actual)
 			if (m_target != null && componentCreature != m_target)
 			{
-				float currentDistance = Vector3.Distance(m_componentCreature.ComponentBody.Position, m_target.ComponentBody.Position);
-				float newDistance = Vector3.Distance(m_componentCreature.ComponentBody.Position, componentCreature.ComponentBody.Position);
+				float currentDistance = Vector3.Distance(
+					m_componentCreature.ComponentBody.Position,
+					m_target.ComponentBody.Position);
+				float newDistance = Vector3.Distance(
+					m_componentCreature.ComponentBody.Position,
+					componentCreature.ComponentBody.Position);
 
 				if (newDistance < currentDistance * 0.5f)
 				{
@@ -346,7 +436,7 @@ namespace Game
 				}
 			}
 
-			// Bonus por estar al borde de la muerte (más agresivo)
+			// BONUS POR ESTAR CERCA DE LA MUERTE (más agresivo)
 			if (m_isNearDeath && score > 0f)
 			{
 				score *= 1.5f;
@@ -355,7 +445,8 @@ namespace Game
 			return score;
 		}
 
-		public override void Attack(ComponentCreature componentCreature, float maxRange, float maxChaseTime, bool isPersistent)
+		public override void Attack(ComponentCreature componentCreature, float maxRange,
+			float maxChaseTime, bool isPersistent)
 		{
 			if (Suppressed || componentCreature == null)
 			{
@@ -373,21 +464,28 @@ namespace Game
 				}
 			}
 
+			// AJUSTAR PARÁMETROS SEGÚN SALUD
 			float adjustedChaseTime = maxChaseTime;
 			bool adjustedPersistent = isPersistent;
 
 			if (m_isNearDeath)
 			{
 				adjustedChaseTime *= m_attackPersistanceFactor;
-				adjustedPersistent = true;
-				maxRange *= 1.2f;
+				adjustedPersistent = true; // Persistencia forzada
+				maxRange *= 1.2f; // Mayor rango
+
+				// Al atacar estando near death, aseguramos que la huida está desactivada
+				EnsureRunAwayIsDisabled();
 			}
 
+			// Llamar al método base
 			base.Attack(componentCreature, maxRange, adjustedChaseTime, adjustedPersistent);
 
+			// Aumentar importancia si está cerca de la muerte
 			if (m_isNearDeath)
 			{
-				m_importanceLevel = Math.Max(m_importanceLevel, ImportanceLevelPersistent * m_attackPersistanceFactor);
+				m_importanceLevel = Math.Max(m_importanceLevel,
+					ImportanceLevelPersistent * m_attackPersistanceFactor);
 			}
 		}
 
@@ -395,19 +493,22 @@ namespace Game
 		{
 			Vector3 position = m_componentCreature.ComponentBody.Position;
 			ComponentCreature result = null;
-			float num = 0f;
+			float bestScore = 0f;
+
+			// Búsqueda en rango normal
 			m_componentBodies.Clear();
-			m_subsystemBodies.FindBodiesAroundPoint(new Vector2(position.X, position.Z), m_range, m_componentBodies);
+			m_subsystemBodies.FindBodiesAroundPoint(
+				new Vector2(position.X, position.Z), m_range, m_componentBodies);
 
 			for (int i = 0; i < m_componentBodies.Count; i++)
 			{
-				ComponentCreature componentCreature = m_componentBodies.Array[i].Entity.FindComponent<ComponentCreature>();
-				if (componentCreature != null)
+				ComponentCreature creature = m_componentBodies.Array[i].Entity.FindComponent<ComponentCreature>();
+				if (creature != null)
 				{
 					// Excluir miembros de la misma manada
 					if (m_componentBanditHerd != null)
 					{
-						ComponentBanditHerdBehavior targetHerd = componentCreature.Entity.FindComponent<ComponentBanditHerdBehavior>();
+						ComponentBanditHerdBehavior targetHerd = creature.Entity.FindComponent<ComponentBanditHerdBehavior>();
 						if (targetHerd != null && !string.IsNullOrEmpty(targetHerd.HerdName) &&
 							string.Equals(targetHerd.HerdName, m_componentBanditHerd.HerdName, StringComparison.OrdinalIgnoreCase))
 						{
@@ -415,30 +516,31 @@ namespace Game
 						}
 					}
 
-					float num2 = ScoreTarget(componentCreature);
-					if (num2 > num)
+					float score = ScoreTarget(creature);
+					if (score > bestScore)
 					{
-						num = num2;
-						result = componentCreature;
+						bestScore = score;
+						result = creature;
 					}
 				}
 			}
 
-			// Si está cerca de la muerte y no hay objetivo, buscar en un rango mayor
+			// Si está cerca de la muerte y no hay objetivo, buscar en rango extendido
 			if (m_isNearDeath && result == null && m_range < 40f)
 			{
 				float extendedRange = 40f;
 				m_componentBodies.Clear();
-				m_subsystemBodies.FindBodiesAroundPoint(new Vector2(position.X, position.Z), extendedRange, m_componentBodies);
+				m_subsystemBodies.FindBodiesAroundPoint(
+					new Vector2(position.X, position.Z), extendedRange, m_componentBodies);
 
 				for (int i = 0; i < m_componentBodies.Count; i++)
 				{
-					ComponentCreature componentCreature = m_componentBodies.Array[i].Entity.FindComponent<ComponentCreature>();
-					if (componentCreature != null)
+					ComponentCreature creature = m_componentBodies.Array[i].Entity.FindComponent<ComponentCreature>();
+					if (creature != null)
 					{
 						if (m_componentBanditHerd != null)
 						{
-							ComponentBanditHerdBehavior targetHerd = componentCreature.Entity.FindComponent<ComponentBanditHerdBehavior>();
+							ComponentBanditHerdBehavior targetHerd = creature.Entity.FindComponent<ComponentBanditHerdBehavior>();
 							if (targetHerd != null && !string.IsNullOrEmpty(targetHerd.HerdName) &&
 								string.Equals(targetHerd.HerdName, m_componentBanditHerd.HerdName, StringComparison.OrdinalIgnoreCase))
 							{
@@ -446,26 +548,33 @@ namespace Game
 							}
 						}
 
-						float num2 = ScoreTarget(componentCreature);
-						if (num2 > num)
+						float score = ScoreTarget(creature);
+						if (score > bestScore)
 						{
-							num = num2;
-							result = componentCreature;
+							bestScore = score;
+							result = creature;
 						}
 					}
 				}
 			}
+
+			// Verificar que la huida está desactivada si está near death
+			EnsureRunAwayIsDisabled();
 
 			return result;
 		}
 
 		public new void StopAttack()
 		{
-			// Solo detener el ataque si no está cerca de la muerte
+			// SOLO DETENER EL ATAQUE SI NO ESTÁ CERCA DE LA MUERTE
 			if (!m_isNearDeath)
 			{
 				base.StopAttack();
 			}
+			// Si está cerca de la muerte, NUNCA detiene el ataque
+
+			// Verificar que la huida está desactivada si está near death
+			EnsureRunAwayIsDisabled();
 		}
 
 		private ComponentCreature FindBetterTarget()
@@ -479,16 +588,18 @@ namespace Game
 			float searchRange = m_range * 1.5f;
 
 			m_componentBodies.Clear();
-			m_subsystemBodies.FindBodiesAroundPoint(new Vector2(position.X, position.Z), searchRange, m_componentBodies);
+			m_subsystemBodies.FindBodiesAroundPoint(
+				new Vector2(position.X, position.Z), searchRange, m_componentBodies);
 
 			for (int i = 0; i < m_componentBodies.Count; i++)
 			{
-				ComponentCreature componentCreature = m_componentBodies.Array[i].Entity.FindComponent<ComponentCreature>();
-				if (componentCreature != null && componentCreature != m_target)
+				ComponentCreature creature = m_componentBodies.Array[i].Entity.FindComponent<ComponentCreature>();
+				if (creature != null && creature != m_target)
 				{
+					// Excluir miembros de la misma manada
 					if (m_componentBanditHerd != null)
 					{
-						ComponentBanditHerdBehavior targetHerd = componentCreature.Entity.FindComponent<ComponentBanditHerdBehavior>();
+						ComponentBanditHerdBehavior targetHerd = creature.Entity.FindComponent<ComponentBanditHerdBehavior>();
 						if (targetHerd != null && !string.IsNullOrEmpty(targetHerd.HerdName) &&
 							string.Equals(targetHerd.HerdName, m_componentBanditHerd.HerdName, StringComparison.OrdinalIgnoreCase))
 						{
@@ -496,11 +607,11 @@ namespace Game
 						}
 					}
 
-					float score = ScoreTarget(componentCreature);
-					if (score > bestScore * 1.2f)
+					float score = ScoreTarget(creature);
+					if (score > bestScore * 1.2f) // 20% mejor para cambiar
 					{
 						bestScore = score;
-						bestTarget = componentCreature;
+						bestTarget = creature;
 					}
 				}
 			}
