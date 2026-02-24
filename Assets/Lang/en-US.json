@@ -1,4 +1,13 @@
 {
+  "ZombiesSpawn": {
+  "FinalWave": "Final Wave has begun!",
+  "BossesAppear": "The bosses are coming...",
+  "BossTank": "A Tank has appeared!",
+  "BossGhostTank": "A Ghost Tank has appeared!",
+  "BossMachineGun": "Machine Gun Infected has appeared!",
+  "BossFlying": "Flying Infected Boss has appeared!",
+  "BossGeneric": "A powerful boss has appeared!"
+},
   "HealthBar": {
     "HP": "HP"
   },
