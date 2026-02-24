@@ -1,4 +1,13 @@
 {
+  "GreenNightDialog": {
+    "Title": "Green Night Configuration",
+    "ToggleExplanation": "Enabling Green Night will cause infected hordes to appear during the night. Disabling it will return the world to normal progression without the Green Night event and infected hordes.",
+    "EnabledNotification": "Green Night activated! Infected hordes will now attack you at night.",
+    "DisabledNotification": "Green Night deactivated. The world will now progress normally.",
+    "CheckboxText": "Enable Green Night",
+    "OkButton": "Accept",
+    "CancelButton": "Cancel"
+  },
   "ZombiesSpawn": {
   "FinalWave": "Final Wave has begun!",
   "BossesAppear": "The bosses are coming...",
@@ -27,6 +36,9 @@
     "YouNeedAmmunition": "You need ammunition to fire the item launcher"
   },
   "GreenNightSky": {
+    
+    "EnabledNotification": "Green Night activated! Infected hordes will now attack you at night.",
+    "DisabledNotification": "Green Night deactivated. The world will now progress normally.",
     "GreenMoonBegins": "The Green Night has begun!",
     "GreenMoonEnds": "The Green Night has ended."
   },
