@@ -21,10 +21,8 @@ namespace Game
 		public override Color ChangeSkyColor(Color oldColor, Vector3 direction, float timeOfDay, int temperature)
 		{
 			var instance = SubsystemGreenNightSky.Instance;
-			if (instance != null && instance.IsGreenNightActive)
+			if (instance != null && instance.IsGreenNightActive && instance.GreenNightEnabled)
 			{
-				// El efecto verde se aplica mientras esté activo
-				// (desde Middusk hasta Middawn)
 				Color greenColor = new Color(0, 50, 0);
 				float factor = 1f - instance.m_subsystemSky.SkyLightIntensity;
 				factor = MathUtils.Saturate(factor * 2f);
