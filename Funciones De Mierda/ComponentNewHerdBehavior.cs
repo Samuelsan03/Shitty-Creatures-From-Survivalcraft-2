@@ -7,487 +7,326 @@ namespace Game
 {
 	public class ComponentNewHerdBehavior : ComponentBehavior, IUpdateable
 	{
-		// Propiedades públicas
-		public string HerdName { get; set; }
+		// ===== PROPIEDADES PÚBLICAS =====
+		public string HerdName { get; set; }  // ÚNICA propiedad editable
 
-		// Nueva propiedad pública para acceder al campo protegido
-		public bool AutoNearbyCreaturesHelp
-		{
-			get { return m_autoNearbyCreaturesHelp; }
-			set { m_autoNearbyCreaturesHelp = value; }
-		}
+		public UpdateOrder UpdateOrder => UpdateOrder.Default;
+		public override float ImportanceLevel => m_importanceLevel;
 
-		public UpdateOrder UpdateOrder
-		{
-			get
-			{
-				return UpdateOrder.Default;
-			}
-		}
+		// Propiedades de solo lectura
+		public bool AutoNearbyCreaturesHelp => true;  // Fijo
+		public float HerdingRange => 20f;             // Fijo
+		public float HelpCallRange => 16f;             // Fijo
+		public float MaxHelpChaseTime => 30f;          // Fijo
 
-		public override float ImportanceLevel
-		{
-			get
-			{
-				return this.m_importanceLevel;
-			}
-		}
-
-		// Método mejorado para llamar ayuda de criaturas cercanas
+		// ===== MÉTODOS PÚBLICOS =====
 		public void CallNearbyCreaturesHelp(ComponentCreature target, float maxRange, float maxChaseTime, bool isPersistent, bool forceResponse = false)
 		{
-			if (target == null)
-			{
-				return;
-			}
+			if (target == null) return;
 
-			// Verificar si el objetivo es de la misma manada
 			ComponentNewHerdBehavior targetHerdBehavior = target.Entity.FindComponent<ComponentNewHerdBehavior>();
-			if (targetHerdBehavior != null && !string.IsNullOrEmpty(targetHerdBehavior.HerdName) &&
-				this.IsSameHerdOrGuardian(target))
+
+			if (targetHerdBehavior != null && !string.IsNullOrEmpty(targetHerdBehavior.HerdName)
+				&& IsSameHerdOrGuardian(target))
 			{
-				// No llamar ayuda contra miembros de la misma manada o guardianes
 				return;
 			}
 
 			Vector3 position = target.ComponentBody.Position;
 			float rangeSquared = maxRange * maxRange;
 
-			foreach (ComponentCreature componentCreature in this.m_subsystemCreatureSpawn.Creatures)
+			foreach (ComponentCreature creature in m_subsystemCreatureSpawn.Creatures)
 			{
-				if (Vector3.DistanceSquared(position, componentCreature.ComponentBody.Position) < rangeSquared)
-				{
-					ComponentNewHerdBehavior componentHerdBehavior = componentCreature.Entity.FindComponent<ComponentNewHerdBehavior>();
+				if (Vector3.DistanceSquared(position, creature.ComponentBody.Position) > rangeSquared)
+					continue;
 
-					// Verificar que sea de la misma manada o guardian y tenga ayuda automática habilitada
-					if (componentHerdBehavior != null && !string.IsNullOrEmpty(componentHerdBehavior.HerdName) &&
-						(this.IsSameHerdOrGuardian(componentCreature) || componentHerdBehavior.HerdName.Equals(this.HerdName, StringComparison.OrdinalIgnoreCase)) &&
-						(componentHerdBehavior.m_autoNearbyCreaturesHelp || forceResponse))
+				ComponentNewHerdBehavior herdBehavior = creature.Entity.FindComponent<ComponentNewHerdBehavior>();
+
+				if (herdBehavior != null && !string.IsNullOrEmpty(herdBehavior.HerdName) &&
+					(IsSameHerdOrGuardian(creature) || herdBehavior.HerdName.Equals(HerdName, StringComparison.OrdinalIgnoreCase)) &&
+					(true || forceResponse)) // AutoNearbyCreaturesHelp siempre true
+				{
+					ComponentChaseBehavior chaseBehavior = creature.Entity.FindComponent<ComponentChaseBehavior>();
+
+					if (chaseBehavior != null && (forceResponse || chaseBehavior.Target == null))
 					{
-						// Usar el ComponentChaseBehavior original
-						ComponentChaseBehavior componentChaseBehavior = componentCreature.Entity.FindComponent<ComponentChaseBehavior>();
-						if (componentChaseBehavior != null)
+						ComponentNewHerdBehavior targetHerd = target.Entity.FindComponent<ComponentNewHerdBehavior>();
+						if (targetHerd == null || !IsSameHerdOrGuardian(target))
 						{
-							// Si es una respuesta forzada (target stick) o no tiene objetivo actual
-							if (forceResponse || componentChaseBehavior.Target == null)
-							{
-								// Verificar nuevamente que el objetivo no sea de la misma manada o guardian
-								if (targetHerdBehavior == null ||
-									!this.IsSameHerdOrGuardian(target))
-								{
-									componentChaseBehavior.Attack(target, maxRange, maxChaseTime, isPersistent);
-								}
-							}
+							chaseBehavior.Attack(target, maxRange, maxChaseTime, isPersistent);
 						}
 					}
 				}
 			}
 		}
 
-		// Método para respuesta inmediata desde Target Stick
 		public void RespondToCommandImmediately(ComponentCreature target, float maxRange, float maxChaseTime, bool isPersistent)
 		{
-			if (target == null || !this.m_autoNearbyCreaturesHelp)
-			{
+			if (target == null || !CanAttackCreature(target))
 				return;
-			}
 
-			// Verificar si puede atacar al objetivo
-			if (!this.CanAttackCreature(target))
-			{
-				return;
-			}
-
-			// Atacar inmediatamente
-			if (this.m_componentChase != null)
-			{
-				this.m_componentChase.Attack(target, maxRange, maxChaseTime, isPersistent);
-			}
-
-			// También llamar a otras criaturas cercanas (respuesta en cadena rápida)
-			this.CallNearbyCreaturesHelp(target, 15f, 30f, false, true);
+			m_componentChase?.Attack(target, maxRange, maxChaseTime, isPersistent);
+			CallNearbyCreaturesHelp(target, 15f, 30f, false, true);
 		}
 
-		// Método para encontrar el centro de la manada
 		public Vector3? FindHerdCenter()
 		{
-			if (string.IsNullOrEmpty(this.HerdName))
-			{
+			if (string.IsNullOrEmpty(HerdName))
 				return null;
-			}
 
-			Vector3 position = this.m_componentCreature.ComponentBody.Position;
-			int count = 0;
+			Vector3 position = m_componentCreature.ComponentBody.Position;
 			Vector3 center = Vector3.Zero;
-			float herdingRangeSquared = this.m_herdingRange * this.m_herdingRange;
+			int count = 0;
+			float herdingRangeSquared = 20f * 20f; // Fijo
 
-			foreach (ComponentCreature componentCreature in this.m_subsystemCreatureSpawn.Creatures)
+			foreach (ComponentCreature creature in m_subsystemCreatureSpawn.Creatures)
 			{
-				if (componentCreature.ComponentHealth.Health > 0f)
+				if (creature.ComponentHealth.Health <= 0f)
+					continue;
+
+				ComponentNewHerdBehavior herdBehavior = creature.Entity.FindComponent<ComponentNewHerdBehavior>();
+
+				if (herdBehavior != null &&
+					(IsSameHerdOrGuardian(creature) || herdBehavior.HerdName.Equals(HerdName, StringComparison.OrdinalIgnoreCase)))
 				{
-					ComponentNewHerdBehavior componentHerdBehavior = componentCreature.Entity.FindComponent<ComponentNewHerdBehavior>();
-					if (componentHerdBehavior != null &&
-						(this.IsSameHerdOrGuardian(componentCreature) || componentHerdBehavior.HerdName.Equals(this.HerdName, StringComparison.OrdinalIgnoreCase)))
+					if (Vector3.DistanceSquared(position, creature.ComponentBody.Position) <= herdingRangeSquared)
 					{
-						Vector3 creaturePosition = componentCreature.ComponentBody.Position;
-						if (Vector3.DistanceSquared(position, creaturePosition) < herdingRangeSquared)
-						{
-							center += creaturePosition;
-							count++;
-						}
+						center += creature.ComponentBody.Position;
+						count++;
 					}
 				}
 			}
 
-			if (count > 0)
-			{
-				return center / (float)count;
-			}
-
-			return null;
+			return count > 0 ? center / count : (Vector3?)null;
 		}
 
-		// Método para verificar si una criatura es de la misma manada o es un guardian
 		public bool IsSameHerdOrGuardian(ComponentCreature otherCreature)
 		{
-			if (otherCreature == null || string.IsNullOrEmpty(this.HerdName))
-			{
+			if (otherCreature == null || string.IsNullOrEmpty(HerdName))
 				return false;
-			}
 
 			ComponentNewHerdBehavior otherHerd = otherCreature.Entity.FindComponent<ComponentNewHerdBehavior>();
 			if (otherHerd == null || string.IsNullOrEmpty(otherHerd.HerdName))
-			{
 				return false;
-			}
 
-			// Verificar si son de la misma manada
-			if (this.HerdName.Equals(otherHerd.HerdName, StringComparison.OrdinalIgnoreCase))
-			{
+			if (HerdName.Equals(otherHerd.HerdName, StringComparison.OrdinalIgnoreCase))
 				return true;
-			}
 
-			// Verificar si esta manada es del jugador y la otra manada contiene "guardian"
-			if (this.HerdName.Equals("player", StringComparison.OrdinalIgnoreCase) &&
-				otherHerd.HerdName.ToLower().Contains("guardian"))
-			{
-				return true;
-			}
+			bool isPlayer = HerdName.Equals("player", StringComparison.OrdinalIgnoreCase);
+			bool isGuardian = HerdName.ToLower().Contains("guardian");
+			bool otherIsPlayer = otherHerd.HerdName.Equals("player", StringComparison.OrdinalIgnoreCase);
+			bool otherIsGuardian = otherHerd.HerdName.ToLower().Contains("guardian");
 
-			// Verificar si esta manada contiene "guardian" y la otra manada es del jugador
-			if (this.HerdName.ToLower().Contains("guardian") &&
-				otherHerd.HerdName.Equals("player", StringComparison.OrdinalIgnoreCase))
-			{
-				return true;
-			}
-
-			return false;
+			return (isPlayer && otherIsGuardian) || (isGuardian && otherIsPlayer);
 		}
 
-		// Método para verificar si una criatura es de la misma manada
 		public bool IsSameHerd(ComponentCreature otherCreature)
 		{
-			if (otherCreature == null || string.IsNullOrEmpty(this.HerdName))
-			{
+			if (otherCreature == null || string.IsNullOrEmpty(HerdName))
 				return false;
-			}
 
 			ComponentNewHerdBehavior otherHerd = otherCreature.Entity.FindComponent<ComponentNewHerdBehavior>();
-			if (otherHerd == null || string.IsNullOrEmpty(otherHerd.HerdName))
-			{
-				return false;
-			}
 
-			return this.HerdName.Equals(otherHerd.HerdName, StringComparison.OrdinalIgnoreCase);
+			return otherHerd != null &&
+				   !string.IsNullOrEmpty(otherHerd.HerdName) &&
+				   HerdName.Equals(otherHerd.HerdName, StringComparison.OrdinalIgnoreCase);
 		}
 
-		// Método para verificar si debe atacar a una criatura
 		public bool ShouldAttackCreature(ComponentCreature target)
 		{
-			if (target == null || string.IsNullOrEmpty(this.HerdName))
-			{
-				return true; // Por defecto, puede atacar
-			}
+			if (target == null || string.IsNullOrEmpty(HerdName))
+				return true;
 
-			// Si el objetivo es de la misma manada o es un guardian aliado, no atacar
-			if (this.IsSameHerdOrGuardian(target))
-			{
+			if (IsSameHerdOrGuardian(target))
 				return false;
+
+			if (HerdName.Equals("player", StringComparison.OrdinalIgnoreCase))
+			{
+				if (target.Entity.FindComponent<ComponentPlayer>() != null)
+					return false;
 			}
 
-			// Caso especial: si la manada es "player", no atacar al jugador
-			if (this.HerdName.Equals("player", StringComparison.OrdinalIgnoreCase))
+			if (HerdName.ToLower().Contains("guardian"))
 			{
-				ComponentPlayer targetPlayer = target.Entity.FindComponent<ComponentPlayer>();
-				if (targetPlayer != null)
-				{
-					return false; // No atacar al jugador
-				}
-			}
-
-			// Caso especial: si la manada contiene "guardian", no atacar al jugador
-			if (this.HerdName.ToLower().Contains("guardian"))
-			{
-				ComponentPlayer targetPlayer = target.Entity.FindComponent<ComponentPlayer>();
-				if (targetPlayer != null)
-				{
-					return false; // Los guardianes no atacan al jugador
-				}
+				if (target.Entity.FindComponent<ComponentPlayer>() != null)
+					return false;
 			}
 
 			return true;
 		}
 
-		// Actualización del comportamiento
+		public bool CanAttackCreature(ComponentCreature target) => ShouldAttackCreature(target);
+
+		public void HelpHerdMember(ComponentCreature herdMemberInCombat)
+		{
+			if (herdMemberInCombat == null || !IsSameHerdOrGuardian(herdMemberInCombat))
+				return;
+
+			ComponentChaseBehavior memberChase = herdMemberInCombat.Entity.FindComponent<ComponentChaseBehavior>();
+
+			if (memberChase?.Target != null && ShouldAttackCreature(memberChase.Target))
+			{
+				m_componentChase?.Attack(memberChase.Target, 20f, 30f, false);
+			}
+		}
+
+		public void PreventFriendlyFire()
+		{
+			if (m_componentChase?.Target != null && !ShouldAttackCreature(m_componentChase.Target))
+			{
+				m_componentChase.StopAttack();
+			}
+		}
+
+		// ===== IMPLEMENTACIÓN DE IUpdateable =====
 		public virtual void Update(float dt)
 		{
-			if (string.IsNullOrEmpty(this.m_stateMachine.CurrentState) || !this.IsActive)
-			{
-				this.m_stateMachine.TransitionTo("Inactive");
-			}
+			if (string.IsNullOrEmpty(m_stateMachine.CurrentState) || !IsActive)
+				m_stateMachine.TransitionTo("Inactive");
 
-			this.m_dt = dt;
-			this.m_stateMachine.Update();
-
-			// Verificar si el objetivo actual del chase behavior es de la misma manada
-			this.CheckChaseBehaviorTarget();
+			m_dt = dt;
+			m_stateMachine.Update();
+			CheckChaseBehaviorTarget();
 		}
 
-		// Verificar el objetivo del ComponentChaseBehavior
+		// ===== MÉTODOS PRIVADOS =====
 		private void CheckChaseBehaviorTarget()
 		{
-			if (this.m_componentChase != null && this.m_componentChase.Target != null)
+			if (m_componentChase?.Target != null && !ShouldAttackCreature(m_componentChase.Target))
 			{
-				if (!this.ShouldAttackCreature(this.m_componentChase.Target))
-				{
-					// Detener el ataque si el objetivo es de la misma manada
-					this.m_componentChase.StopAttack();
-				}
+				m_componentChase.StopAttack();
 			}
 		}
 
-		// Cargar configuración
-		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
-		{
-			this.m_subsystemTime = base.Project.FindSubsystem<SubsystemTime>(true);
-			this.m_subsystemCreatureSpawn = base.Project.FindSubsystem<SubsystemCreatureSpawn>(true);
-			this.m_componentCreature = base.Entity.FindComponent<ComponentCreature>(true);
-			this.m_componentPathfinding = base.Entity.FindComponent<ComponentPathfinding>(true);
-
-			// Obtener el ComponentChaseBehavior
-			this.m_componentChase = base.Entity.FindComponent<ComponentChaseBehavior>();
-
-			this.HerdName = valuesDictionary.GetValue<string>("HerdName", "");
-			this.m_herdingRange = valuesDictionary.GetValue<float>("HerdingRange", 20f);
-			this.m_autoNearbyCreaturesHelp = valuesDictionary.GetValue<bool>("AutoNearbyCreaturesHelp", true);
-			this.m_helpCallRange = valuesDictionary.GetValue<float>("HelpCallRange", 16f);
-			this.m_maxHelpChaseTime = valuesDictionary.GetValue<float>("MaxHelpChaseTime", 30f);
-			this.m_avoidAttackingSameHerd = valuesDictionary.GetValue<bool>("AvoidAttackingSameHerd", true);
-
-			// Configurar eventos
-			this.SetupEventHooks();
-
-			// Configurar máquina de estados
-			this.SetupStateMachine();
-		}
-
-		// Configurar hooks de eventos
-		private void SetupEventHooks()
-		{
-			// Configurar el evento de lesión para llamar ayuda
-			ComponentHealth componentHealth = this.m_componentCreature.ComponentHealth;
-			componentHealth.Injured = (Action<Injury>)Delegate.Combine(componentHealth.Injured, new Action<Injury>(this.OnInjured));
-		}
-
-		// Evento cuando la criatura es herida
 		private void OnInjured(Injury injury)
 		{
 			ComponentCreature attacker = injury.Attacker;
-			if (attacker != null && this.m_autoNearbyCreaturesHelp)
+			if (attacker != null && ShouldAttackCreature(attacker))
 			{
-				// Solo llamar ayuda si el atacante no es de la misma manada
-				if (this.ShouldAttackCreature(attacker))
-				{
-					this.CallNearbyCreaturesHelp(attacker, 20f, 30f, false, true);
-				}
+				CallNearbyCreaturesHelp(attacker, 20f, 30f, false, true);
 			}
 		}
 
-		// Configurar la máquina de estados
+		private float CalculateImportanceLevel(float distanceToCenter)
+		{
+			if (distanceToCenter > 20f) return 250f;
+			if (distanceToCenter > 16f) return 50f;
+			if (distanceToCenter > 12f) return 3f;
+			if (distanceToCenter > 10f) return 1f;
+			return 0f;
+		}
+
+		// ===== CONFIGURACIÓN DE ESTADOS =====
 		private void SetupStateMachine()
 		{
-			this.m_stateMachine.AddState("Inactive", null, delegate
+			m_stateMachine.AddState("Inactive", null, () =>
 			{
-				// Verificar periódicamente si necesita unirse a la manada
-				if (this.m_subsystemTime.PeriodicGameTimeEvent(1.0, (double)(1f * ((float)(this.GetHashCode() % 256) / 256f))))
+				if (m_subsystemTime.PeriodicGameTimeEvent(1.0, (GetHashCode() % 256) / 256.0))
 				{
-					Vector3? herdCenter = this.FindHerdCenter();
-					if (herdCenter != null && !string.IsNullOrEmpty(this.HerdName))
+					Vector3? herdCenter = FindHerdCenter();
+					if (herdCenter != null && !string.IsNullOrEmpty(HerdName))
 					{
-						float distanceToCenter = Vector3.Distance(herdCenter.Value, this.m_componentCreature.ComponentBody.Position);
-
-						// Calcular importancia basada en la distancia al centro de la manada
-						this.m_importanceLevel = this.CalculateImportanceLevel(distanceToCenter);
+						float distance = Vector3.Distance(herdCenter.Value, m_componentCreature.ComponentBody.Position);
+						m_importanceLevel = CalculateImportanceLevel(distance);
 					}
 				}
 
-				if (this.IsActive)
-				{
-					this.m_stateMachine.TransitionTo("Herd");
-				}
+				if (IsActive)
+					m_stateMachine.TransitionTo("Herd");
 			}, null);
 
-			this.m_stateMachine.AddState("Stuck", delegate
+			m_stateMachine.AddState("Stuck", () =>
 			{
-				this.m_stateMachine.TransitionTo("Herd");
-				if (this.m_random.Bool(0.5f))
+				m_stateMachine.TransitionTo("Herd");
+				if (m_random.Bool(0.5f))
 				{
-					this.m_componentCreature.ComponentCreatureSounds.PlayIdleSound(false);
-					this.m_importanceLevel = 0f;
+					m_componentCreature.ComponentCreatureSounds.PlayIdleSound(false);
+					m_importanceLevel = 0f;
 				}
 			}, null, null);
 
-			this.m_stateMachine.AddState("Herd", delegate
+			m_stateMachine.AddState("Herd", () =>
 			{
-				Vector3? herdCenter = this.FindHerdCenter();
-				if (herdCenter != null && !string.IsNullOrEmpty(this.HerdName))
+				Vector3? herdCenter = FindHerdCenter();
+				if (herdCenter != null && !string.IsNullOrEmpty(HerdName))
 				{
-					float distanceToCenter = Vector3.Distance(this.m_componentCreature.ComponentBody.Position, herdCenter.Value);
+					float distance = Vector3.Distance(m_componentCreature.ComponentBody.Position, herdCenter.Value);
 
-					// Si está demasiado lejos del centro de la manada, moverse hacia él
-					if (distanceToCenter > 6f)
+					if (distance > 6f)
 					{
-						float speed = (this.m_importanceLevel > 10f) ? this.m_random.Float(0.9f, 1f) : this.m_random.Float(0.25f, 0.35f);
-						int maxPathfindingPositions = (this.m_importanceLevel > 200f) ? 100 : 0;
-						this.m_componentPathfinding.SetDestination(new Vector3?(herdCenter.Value), speed, 7f, maxPathfindingPositions, false, true, false, null);
+						float speed = (m_importanceLevel > 10f) ? m_random.Float(0.9f, 1f) : m_random.Float(0.25f, 0.35f);
+						int maxPathfinding = (m_importanceLevel > 200f) ? 100 : 0;
+						m_componentPathfinding.SetDestination(herdCenter, speed, 7f, maxPathfinding, false, true, false, null);
 						return;
 					}
 				}
-				this.m_importanceLevel = 0f;
-			}, delegate
+				m_importanceLevel = 0f;
+			}, () =>
 			{
-				// Control de mirada aleatoria
-				this.m_componentCreature.ComponentLocomotion.LookOrder = this.m_look - this.m_componentCreature.ComponentLocomotion.LookAngles;
+				m_componentCreature.ComponentLocomotion.LookOrder = m_look - m_componentCreature.ComponentLocomotion.LookAngles;
 
-				if (this.m_componentPathfinding.IsStuck)
-				{
-					this.m_stateMachine.TransitionTo("Stuck");
-				}
+				if (m_componentPathfinding.IsStuck)
+					m_stateMachine.TransitionTo("Stuck");
 
-				if (this.m_componentPathfinding.Destination == null)
-				{
-					this.m_importanceLevel = 0f;
-				}
+				if (m_componentPathfinding.Destination == null)
+					m_importanceLevel = 0f;
 
-				// Sonidos aleatorios
-				if (this.m_random.Float(0f, 1f) < 0.05f * this.m_dt)
-				{
-					this.m_componentCreature.ComponentCreatureSounds.PlayIdleSound(false);
-				}
+				if (m_random.Float(0f, 1f) < 0.05f * m_dt)
+					m_componentCreature.ComponentCreatureSounds.PlayIdleSound(false);
 
-				// Movimiento aleatorio de cabeza
-				if (this.m_random.Float(0f, 1f) < 1.5f * this.m_dt)
+				if (m_random.Float(0f, 1f) < 1.5f * m_dt)
 				{
-					this.m_look = new Vector2(MathUtils.DegToRad(45f) * this.m_random.Float(-1f, 1f), MathUtils.DegToRad(10f) * this.m_random.Float(-1f, 1f));
+					m_look = new Vector2(
+						MathUtils.DegToRad(45f) * m_random.Float(-1f, 1f),
+						MathUtils.DegToRad(10f) * m_random.Float(-1f, 1f)
+					);
 				}
 			}, null);
 		}
 
-		// Calcular nivel de importancia basado en la distancia
-		private float CalculateImportanceLevel(float distanceToCenter)
+		// ===== LOAD - SOLO LEE HerdName =====
+		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
-			float importance = 0f;
+			// Subsistemas
+			m_subsystemTime = Project.FindSubsystem<SubsystemTime>(true);
+			m_subsystemCreatureSpawn = Project.FindSubsystem<SubsystemCreatureSpawn>(true);
 
-			if (distanceToCenter > 10f)
-			{
-				importance = 1f;
-			}
-			if (distanceToCenter > 12f)
-			{
-				importance = 3f;
-			}
-			if (distanceToCenter > 16f)
-			{
-				importance = 50f;
-			}
-			if (distanceToCenter > 20f)
-			{
-				importance = 250f;
-			}
+			// Componentes
+			m_componentCreature = Entity.FindComponent<ComponentCreature>(true);
+			m_componentPathfinding = Entity.FindComponent<ComponentPathfinding>(true);
+			m_componentChase = Entity.FindComponent<ComponentChaseBehavior>();
 
-			return importance;
+			// SOLO LEER HERDNAME - NADA MÁS
+			HerdName = valuesDictionary.GetValue<string>("HerdName", "");
+
+			// Evento de daño
+			m_componentCreature.ComponentHealth.Injured += OnInjured;
+
+			// Inicializar máquina de estados
+			SetupStateMachine();
 		}
 
-		// Método para ayudar a otra criatura de la misma manada
-		public void HelpHerdMember(ComponentCreature herdMemberInCombat)
+		// ===== SAVE - SOLO GUARDA HerdName =====
+		public override void Save(ValuesDictionary valuesDictionary, EntityToIdMap entityToIdMap)
 		{
-			if (herdMemberInCombat == null || !this.m_autoNearbyCreaturesHelp)
+			// SOLO GUARDAR HERDNAME - NADA MÁS
+			if (!string.IsNullOrEmpty(HerdName))
 			{
-				return;
-			}
-
-			// Verificar que sea de la misma manada o guardian
-			if (!this.IsSameHerdOrGuardian(herdMemberInCombat))
-			{
-				return;
-			}
-
-			// Buscar el objetivo del miembro de la manada que está en combate
-			ComponentChaseBehavior herdMemberChase = herdMemberInCombat.Entity.FindComponent<ComponentChaseBehavior>();
-			if (herdMemberChase != null && herdMemberChase.Target != null)
-			{
-				// Atacar al mismo objetivo que el miembro de la manada
-				if (this.ShouldAttackCreature(herdMemberChase.Target))
-				{
-					this.m_componentChase?.Attack(herdMemberChase.Target, 20f, 30f, false);
-				}
+				valuesDictionary.SetValue("HerdName", HerdName);
 			}
 		}
 
-		// Método para prevenir ataques entre miembros de la misma manada
-		public void PreventFriendlyFire()
-		{
-			if (this.m_componentChase != null && this.m_componentChase.Target != null)
-			{
-				ComponentCreature target = this.m_componentChase.Target;
-
-				// Verificar si el objetivo es de la misma manada o guardian
-				if (!this.ShouldAttackCreature(target))
-				{
-					// Detener el ataque
-					this.m_componentChase.StopAttack();
-				}
-			}
-		}
-
-		// Método público para verificar si puede atacar (usado por otros componentes)
-		public bool CanAttackCreature(ComponentCreature target)
-		{
-			return this.ShouldAttackCreature(target);
-		}
-
-		// Métodos adicionales para mejor acceso desde clases derivadas
-		protected ComponentChaseBehavior GetChaseBehavior() => m_componentChase;
-		protected ComponentCreature GetCreatureComponent() => m_componentCreature;
-		protected StateMachine GetStateMachine() => m_stateMachine;
-		protected float GetHerdingRange() => m_herdingRange;
-		protected void SetHerdingRange(float range) => m_herdingRange = range;
-
-		// Campos protegidos para acceso desde clases derivadas
+		// ===== CAMPOS =====
 		protected SubsystemCreatureSpawn m_subsystemCreatureSpawn;
 		protected SubsystemTime m_subsystemTime;
 		protected ComponentCreature m_componentCreature;
 		protected ComponentPathfinding m_componentPathfinding;
 		protected ComponentChaseBehavior m_componentChase;
 		protected StateMachine m_stateMachine = new StateMachine();
+
 		protected float m_dt;
 		protected float m_importanceLevel;
 		protected Random m_random = new Random();
 		protected Vector2 m_look;
-		protected float m_herdingRange;
-		protected bool m_autoNearbyCreaturesHelp;
-		protected float m_helpCallRange;
-		protected float m_maxHelpChaseTime;
-		protected bool m_avoidAttackingSameHerd;
 	}
 }
