@@ -1,4 +1,13 @@
 {
+  "GreenNightDialog": {
+    "Title": "绿夜配置",
+    "ToggleExplanation": "启用绿夜将在夜间导致受感染的部落出现。禁用它将使世界恢复正常进程，而不会发生绿夜事件和受感染的部落。",
+    "EnabledNotification": "绿夜已激活！受感染的部落现在将在夜间攻击你。",
+    "DisabledNotification": "绿夜已停用。世界现在将正常进行。",
+    "CheckboxText": "启用绿夜",
+    "OkButton": "确定",
+    "CancelButton": "取消"
+  },
   "ZombiesSpawn": {
   "FinalWave": "最终波次开始了！",
   "BossesAppear": "首领即将出现……",
