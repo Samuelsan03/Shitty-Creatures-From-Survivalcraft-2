@@ -1,4 +1,13 @@
 {
+  "ZombiesSpawn": {
+  "FinalWave": "¡La ola final ha comenzado!",
+  "BossesAppear": "Los jefes están llegando...",
+  "BossTank": "¡Ha aparecido un Tank!",
+  "BossGhostTank": "¡Ha aparecido un Tank Fantasma!",
+  "BossMachineGun": "¡Ha aparecido Infectado Ametrallador!",
+  "BossFlying": "¡Ha aparecido Jefe Infectado Volador!",
+  "BossGeneric": "¡Ha aparecido un jefe poderoso!"
+},
   "HealthBar": {
     "HP": "PV"
   },
