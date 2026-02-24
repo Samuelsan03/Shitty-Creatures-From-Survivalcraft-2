@@ -207,7 +207,7 @@ namespace Game
 					IsShotgun = false
 				};
 
-				int bk43Index = BlocksManager.GetBlockIndex(typeof(Game.BK43Block), true, false);
+				int bk43Index = BlocksManager.GetBlockIndex(typeof(BK43Block), true, false);
 				m_firearmConfigs[bk43Index] = new FirearmConfig
 				{
 					BulletBlockType = typeof(NuevaBala3),
@@ -617,6 +617,18 @@ namespace Game
 			if (blockType == typeof(PoisonBombBlock)) return true;
 			if (blockType == typeof(BrickBlock)) return true;
 			if (blockType == typeof(SnowballBlock)) return true;
+			if (blockType == typeof(EggBlock)) return true;
+			if (blockType == typeof(CopperSpearBlock)) return true;
+			if (blockType == typeof(DiamondSpearBlock)) return true;
+			if (blockType == typeof(IronSpearBlock)) return true;
+			if (blockType == typeof(WoodenSpearBlock)) return true;
+			if (blockType == typeof(WoodenLongspearBlock)) return true;
+			if (blockType == typeof(StoneSpearBlock)) return true;
+			if (blockType == typeof(StoneLongspearBlock)) return true;
+			if (blockType == typeof(IronLongspearBlock)) return true;
+			if (blockType == typeof(LavaLongspearBlock)) return true;
+			if (blockType == typeof(LavaSpearBlock)) return true;
+			if (blockType == typeof(DiamondLongspearBlock)) return true;
 
 			return false;
 		}
