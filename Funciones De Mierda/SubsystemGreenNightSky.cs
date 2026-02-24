@@ -8,6 +8,7 @@ namespace Game
 	public class SubsystemGreenNightSky : Subsystem, IUpdateable
 	{
 		public virtual bool IsGreenNightActive { get; set; }
+		public virtual bool GreenNightEnabled { get; set; } = true;
 
 		public UpdateOrder UpdateOrder
 		{
@@ -28,6 +29,7 @@ namespace Game
 
 		public virtual void Update(float dt)
 		{
+			if (!GreenNightEnabled) return;
 			this.UpdateGreenNight();
 		}
 
@@ -43,18 +45,14 @@ namespace Game
 				this.DaysSinceLastGreenNight++;
 			}
 
-			// Momento central del atardecer (Middusk)
 			float middusk = this.m_subsystemTimeOfDay.Middusk;
-			float duskTolerance = 0.005f; // Pequeña tolerancia para detectar el momento exacto
-
-			// Momento central del amanecer (Middawn)
+			float duskTolerance = 0.005f;
 			float middawn = this.m_subsystemTimeOfDay.Middawn;
 			float dawnTolerance = 0.005f;
 
 			bool isStartMoment = Math.Abs(timeOfDay - middusk) < duskTolerance;
 			bool isEndMoment = Math.Abs(timeOfDay - middawn) < dawnTolerance;
 
-			// Activar SOLO en el momento exacto del Middusk (cuando sol y luna están alineados)
 			if (!this.IsGreenNightActive && (this.m_subsystemSky.MoonPhase == 0 || this.m_subsystemSky.MoonPhase == 4))
 			{
 				if (isStartMoment && !this.HasRolledTonight && this.DaysSinceLastGreenNight >= 1)
@@ -68,7 +66,6 @@ namespace Game
 						this.IsGreenNightActive = true;
 						this.DaysSinceLastGreenNight = 0;
 
-						// Mensaje de inicio en el momento exacto
 						SubsystemPlayers subsystemPlayers = base.Project.FindSubsystem<SubsystemPlayers>(true);
 						if (subsystemPlayers != null)
 						{
@@ -86,12 +83,10 @@ namespace Game
 				}
 			}
 
-			// Desactivar en el momento exacto del Middawn
 			if (this.IsGreenNightActive && isEndMoment)
 			{
 				this.IsGreenNightActive = false;
 
-				// Mensaje de fin en el momento exacto
 				SubsystemPlayers subsystemPlayers = base.Project.FindSubsystem<SubsystemPlayers>(true);
 				if (subsystemPlayers != null)
 				{
@@ -107,19 +102,13 @@ namespace Game
 				}
 			}
 
-			// --- CORRECCIÓN MEJORADA ---
-			// Verificamos si la noche verde está activa en un momento que NO debería estarlo
-			// Consideramos que si ya pasó el amanecer (tiempo > DawnEnd) y sigue activa, algo anda mal
-			// Pero respetamos la transición gradual durante el amanecer
 			if (this.IsGreenNightActive && timeOfDay > this.m_subsystemTimeOfDay.DawnStart + 0.1f)
 			{
-				// Verificamos también la fase lunar - si cambió a una fase no permitida, desactivamos
 				if (this.m_subsystemSky.MoonPhase != 0 && this.m_subsystemSky.MoonPhase != 4)
 				{
 					this.IsGreenNightActive = false;
 				}
 			}
-			// --- FIN DE CORRECCIÓN ---
 
 			if (this.HasRolledTonight && isEndMoment)
 			{
@@ -133,22 +122,22 @@ namespace Game
 			this.m_subsystemGameInfo = base.Project.FindSubsystem<SubsystemGameInfo>(true);
 			this.m_subsystemTimeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
 
-			// Cargar los valores guardados del mundo
 			this.IsGreenNightActive = valuesDictionary.GetValue<bool>("IsGreenNightActive");
 			this.HasRolledTonight = valuesDictionary.GetValue<bool>("HasRolledTonight");
 			this.LastCheckedDay = valuesDictionary.GetValue<double>("LastCheckedDay");
 			this.DaysSinceLastGreenNight = valuesDictionary.GetValue<int>("DaysSinceLastGreenNight");
+			this.GreenNightEnabled = valuesDictionary.GetValue<bool>("GreenNightEnabled", true);
 
 			SubsystemGreenNightSky.Instance = this;
 		}
 
 		public override void Save(ValuesDictionary valuesDictionary)
 		{
-			// Guardar los valores actuales
 			valuesDictionary.SetValue<bool>("IsGreenNightActive", this.IsGreenNightActive);
 			valuesDictionary.SetValue<bool>("HasRolledTonight", this.HasRolledTonight);
 			valuesDictionary.SetValue<double>("LastCheckedDay", this.LastCheckedDay);
 			valuesDictionary.SetValue<int>("DaysSinceLastGreenNight", this.DaysSinceLastGreenNight);
+			valuesDictionary.SetValue<bool>("GreenNightEnabled", this.GreenNightEnabled);
 		}
 	}
 }
