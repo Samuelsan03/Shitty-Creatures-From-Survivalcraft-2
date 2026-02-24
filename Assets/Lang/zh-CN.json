@@ -5,7 +5,7 @@
     "EnabledNotification": "绿夜已激活！受感染的部落现在将在夜间攻击你。",
     "DisabledNotification": "绿夜已停用。世界现在将正常进行。",
     "CheckboxText": "启用绿夜",
-    "OkButton": "确定",
+    "OkButton": "接受",
     "CancelButton": "取消"
   },
   "ZombiesSpawn": {
