@@ -12,7 +12,11 @@ namespace Game
 			"Textures/Wallpapers/Digimon Fusion Wallpaper",
 			"Textures/Wallpapers/Tai and Wargreymon",
 			"Textures/Wallpapers/GTA SA wallpaper",
-			"Textures/Wallpapers/Wallpaper digimon 1"
+			"Textures/Wallpapers/Wallpaper digimon 1",
+			"Textures/Wallpapers/sparkster rocket",
+			"Textures/Wallpapers/left 4 dead",
+			"Textures/Wallpapers/digimon frontier",
+			"Textures/Wallpapers/multi digimon"
 		};
 
 		public Texture2D Texture { get; set; }
