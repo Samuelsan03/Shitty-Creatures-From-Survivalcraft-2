@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Engine;
 using Game;
@@ -416,9 +416,7 @@ namespace Game
 							weaponValue = Terrain.MakeBlockValue(LavaSpearBlock.Index);
 						}
 					}
-
-					// Después de los spears normales, agregar los longspears
-					else if (weaponTypeChance < 0.75f) // Nuevo rango para longspears (ocupando parte del espacio de spears o ampliando)
+					else if (weaponTypeChance < 0.75f) // Longspears (nuevo)
 					{
 						float longspearRoll = this.m_random.Float(0f, 1f);
 						if (longspearRoll < 0.1667f) // 16.67% - WoodenLongspear
@@ -444,32 +442,6 @@ namespace Game
 						else // 16.67% - LavaLongspear
 						{
 							weaponValue = Terrain.MakeBlockValue(LavaLongspearBlock.Index);
-						}
-					}
-
-					// Después de las armas tradicionales o en otra sección, agregar bombas (20% de probabilidad adicional)
-					if (randomChance < 0.70f) // 20% probabilidad de obtener bombas
-					{
-						float bombTypeChance = this.m_random.Float(0f, 1f);
-						int bombValue = 0;
-
-						if (bombTypeChance < 0.3333f) // 33.33% - Bomba normal
-						{
-							bombValue = Terrain.MakeBlockValue(BombBlock.Index);
-						}
-						else if (bombTypeChance < 0.6666f) // 33.33% - Bomba incendiaria
-						{
-							bombValue = Terrain.MakeBlockValue(IncendiaryBombBlock.Index);
-						}
-						else // 33.33% - Bomba venenosa
-						{
-							bombValue = Terrain.MakeBlockValue(PoisonBombBlock.Index);
-						}
-
-						if (bombValue != 0)
-						{
-							// Agregar 8 bombas en el slot 1 (o el slot que prefieras)
-							inventory.AddSlotItems(1, bombValue, 8);
 						}
 					}
 					else // 3/3 - Axes
@@ -499,6 +471,32 @@ namespace Game
 						{
 							weaponValue = Terrain.MakeBlockValue(LavaAxeBlock.Index);
 						}
+					}
+				}
+
+				// Agregar bombas (20% probabilidad adicional)
+				if (randomChance < 0.70f) // 20% probabilidad de obtener bombas
+				{
+					float bombTypeChance = this.m_random.Float(0f, 1f);
+					int bombValue = 0;
+
+					if (bombTypeChance < 0.3333f) // 33.33% - Bomba normal
+					{
+						bombValue = Terrain.MakeBlockValue(BombBlock.Index);
+					}
+					else if (bombTypeChance < 0.6666f) // 33.33% - Bomba incendiaria
+					{
+						bombValue = Terrain.MakeBlockValue(IncendiaryBombBlock.Index);
+					}
+					else // 33.33% - Bomba venenosa
+					{
+						bombValue = Terrain.MakeBlockValue(PoisonBombBlock.Index);
+					}
+
+					if (bombValue != 0)
+					{
+						// Agregar 8 bombas en el slot 1 (o el slot que prefieras)
+						inventory.AddSlotItems(1, bombValue, 8);
 					}
 				}
 
