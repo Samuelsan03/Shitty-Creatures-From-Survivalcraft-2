@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Engine;
 using GameEntitySystem;
 using TemplatesDatabase;
@@ -20,7 +20,7 @@ namespace Game
 		public int DaysSinceLastGreenNight { get; set; }
 		public float GreenNightChance { get; set; } = 0.5f;
 
-		public static SubsystemGreenNightSky Instance { get; private set; }
+		public static SubsystemGreenNightSky Instance { get; set; } // <-- SOLO CAMBIAR ESTO: eliminar "private set"
 
 		public SubsystemSky m_subsystemSky;
 		public SubsystemGameInfo m_subsystemGameInfo;
