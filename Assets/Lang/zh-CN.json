@@ -1,4 +1,13 @@
 {
+  "ZombiesSpawn": {
+  "FinalWave": "最终波次开始了！",
+  "BossesAppear": "首领即将出现……",
+  "BossTank": "Tank 出现了！",
+  "BossGhostTank": "幽灵 Tank 出现了！",
+  "BossMachineGun": "机枪感染者出现了！",
+  "BossFlying": "飞行感染者首领出现了！",
+  "BossGeneric": "一个强大的首领出现了！"
+},
   "HealthBar": {
     "HP": "生命值"
   },
