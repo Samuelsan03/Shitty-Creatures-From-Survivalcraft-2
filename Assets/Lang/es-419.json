@@ -1,4 +1,13 @@
 {
+  "GreenNightDialog": {
+    "Title": "Configuración de Noche Verde",
+    "ToggleExplanation": "Si activas el evento de Noche Verde, aparecerán hordas de infectados durante la noche. Si lo desactivas, el mundo volverá a la progresión normal sin el evento de Noche Verde ni las hordas de infectados.",
+    "EnabledNotification": "¡Noche Verde activada! Las hordas de infectados ahora te atacarán por la noche.",
+    "DisabledNotification": "Noche Verde desactivada. El mundo ahora progresará normalmente.",
+    "CheckboxText": "Activar Noche Verde",
+    "OkButton": "Aceptar",
+    "CancelButton": "Cancelar"
+  },
   "ZombiesSpawn": {
   "FinalWave": "¡La ola final ha comenzado!",
   "BossesAppear": "Los jefes están llegando...",
