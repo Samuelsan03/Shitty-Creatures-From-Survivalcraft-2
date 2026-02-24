@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Engine;
 using Game;
@@ -474,8 +474,13 @@ namespace Game
 					}
 				}
 
+				if (weaponValue != 0)
+				{
+					inventory.AddSlotItems(0, weaponValue, 1);
+				}
+
 				// Agregar bombas (20% probabilidad adicional)
-				if (randomChance < 0.70f) // 20% probabilidad de obtener bombas
+				if (randomChance < 0.20f) // 20% probabilidad de obtener bombas
 				{
 					float bombTypeChance = this.m_random.Float(0f, 1f);
 					int bombValue = 0;
@@ -495,14 +500,45 @@ namespace Game
 
 					if (bombValue != 0)
 					{
-						// Agregar 8 bombas en el slot 1 (o el slot que prefieras)
-						inventory.AddSlotItems(1, bombValue, 8);
-					}
-				}
+						// Buscar un slot adecuado para las bombas
+						int bombSlot = -1;
 
-				if (weaponValue != 0)
-				{
-					inventory.AddSlotItems(0, weaponValue, 1);
+						// Primero verificar si ya hay bombas del mismo tipo en algún slot
+						for (int i = 0; i < inventory.SlotsCount; i++)
+						{
+							int slotValue = inventory.GetSlotValue(i);
+							if (slotValue == bombValue && inventory.GetSlotCount(i) < inventory.GetSlotCapacity(i, bombValue))
+							{
+								bombSlot = i;
+								break;
+							}
+						}
+
+						// Si no encontró un slot con bombas del mismo tipo, buscar un slot vacío
+						if (bombSlot == -1)
+						{
+							for (int i = 0; i < inventory.SlotsCount; i++)
+							{
+								if (inventory.GetSlotCount(i) == 0)
+								{
+									bombSlot = i;
+									break;
+								}
+							}
+						}
+
+						// Si encontró un slot válido, agregar las bombas
+						if (bombSlot != -1)
+						{
+							inventory.AddSlotItems(bombSlot, bombValue, 8);
+						}
+						else
+						{
+							// Si no hay espacio, intentar soltar las bombas o simplemente no agregarlas
+							// Opcionalmente podrías registrar que no hay espacio
+							Console.WriteLine("No hay espacio en el inventario para las bombas");
+						}
+					}
 				}
 			}
 		}
