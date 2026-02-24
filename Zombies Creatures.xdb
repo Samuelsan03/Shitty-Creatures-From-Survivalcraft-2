@@ -9329,7 +9329,6 @@
         <ParameterSet Name="Loot" Guid="3d1f8791-7b7a-4ad9-aae0-2c7ee4759efe">
             <Parameter Name="1" Value="RottenMeatBlock;1;3" Type="string" Guid="ea5ed7ce-124d-4792-aa0c-68ad829dfa97"/>
             <Parameter Name="2" Value="LeatherBlock;1;2;0.7" Type="string" Guid="fa70cd3f-2dcd-409a-9b56-de8f044a0225"/>
-            <Parameter Name="3" Value="BoneBlock;1;3;0.5" Type="string" Guid="8c7ea385-3f3f-4c8d-a300-17abba4f1861"/>
         </ParameterSet>
         <ParameterSet Name="LootOnFire" Guid="5eafa654-e790-4e0d-98d6-803de8959c4f"/>
     </MemberComponentTemplate>
@@ -9387,7 +9386,6 @@
     <Parameter Name="ZombieAggressiveGrouping" Value="false" Type="bool" Guid="a40a7024-818a-4063-b9b6-dc2ed197a3b9"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="ZombieChaseBehavior" Guid="915e04d6-112d-45dc-a587-b9dce604c6d7" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
-  <Parameter Name="Class" Value="Game.ComponentZombieChaseBehavior" Type="string"/>
   <Parameter Name="DayChaseRange" Guid="a5fa89bb-25db-410f-99e1-12c880131a0c" Value="999" Type="float"/>
   <Parameter Name="NightChaseRange" Guid="80a5f7f9-75e7-4049-9b57-cbf5208b3a2a" Value="999" Type="float"/>
   <Parameter Name="NightChaseTime" Guid="93f9b792-1dcf-45e6-ad4e-9034e32f4dfd" Value="999" Type="float"/>
@@ -9475,7 +9473,6 @@
         <ParameterSet Name="Loot" Guid="6d70aefc-7cc0-4f55-a74a-beb299ef3508">
             <Parameter Name="1" Value="RottenMeatBlock;1;3" Type="string" Guid="767fef78-9970-41cf-a72d-a8d2c91defdd"/>
             <Parameter Name="2" Value="LeatherBlock;1;2;0.7" Type="string" Guid="97d42cda-c3ae-4c6a-b092-77e45a9ac566"/>
-            <Parameter Name="3" Value="BoneBlock;1;3;0.5" Type="string" Guid="881817d7-8624-4f64-bf98-dbf00b569146"/>
         </ParameterSet>
         <ParameterSet Name="LootOnFire" Guid="da39f76d-00c3-444f-a03e-69e58350bcb9"/>
     </MemberComponentTemplate>
@@ -9550,7 +9547,6 @@
         <ParameterSet Name="Loot" Guid="8c35df4c-dd78-490e-ae3a-f805822ca979">
             <Parameter Name="1" Guid="5c623606-1ce2-457e-bdf3-7be76fe0f2ee" Value="RottenMeatBlock;1;3" Type="string" />
             <Parameter Name="2" Guid="014fab3e-2c04-427f-8eb0-8cbbd8097274" Value="LeatherBlock;1;2;0.7" Type="string" />
-            <Parameter Name="3" Guid="df352141-0c0d-4674-adaa-ebd88ff0228d" Value="BoneBlock;1;3;0.5" Type="string" />
         </ParameterSet>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="StareBehavior" Guid="539165ea-8512-4b06-9042-783ed9d49c56">
@@ -9703,7 +9699,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="4648ffa6-ed55-48c5-b8ab-8698b54059cc">
         <Parameter Name="Category" Guid="c45cf8c5-5ae7-4d5e-b4b6-bc3ba031b531" Value="LandOther" Type="Game.CreatureCategory" />
-        <Parameter Name="DisplayName" Guid="480352fe-435e-406b-8045-5bfc1d7d22cf" Value="[DisplayName:InfectedWerewolf]" Type="string" />
+        <Parameter Name="DisplayName" Guid="480352fe-435e-406b-8045-5bfc1d7d22cf" Value="[DisplayName:InfectedWerewolfTamed]" Type="string" />
         <Parameter Name="ConstantSpawn" Guid="dcc58353-e3b8-4324-a941-7c65d4b033d1" Value="True" Type="bool" />
         <Parameter Name="KillVerbs" Guid="ccdbe72b-96ad-4824-a83f-b010bef1932a" Value="massacred" Type="string" />
     </MemberComponentTemplate>
@@ -9719,7 +9715,6 @@
         <ParameterSet Name="Loot" Guid="24b9e0e5-5d4b-42a7-be64-a101675a7840">
             <Parameter Name="1" Guid="5e1c3907-7b8e-43de-b544-0a337795a6ef" Value="RottenMeatBlock;1;3" Type="string" />
             <Parameter Name="2" Guid="6220c51f-e6a2-46b1-9e2b-75b2644f580a" Value="LeatherBlock;1;2;0.7" Type="string" />
-            <Parameter Name="3" Guid="9be49384-684a-4726-9fc8-56c69cacef78" Value="BoneBlock;1;3;0.5" Type="string" />
         </ParameterSet>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="StareBehavior" Guid="62364b93-f403-477e-a5f7-3443d8a0ea3a">
