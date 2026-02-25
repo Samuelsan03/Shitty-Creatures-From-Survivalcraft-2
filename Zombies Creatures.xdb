@@ -9297,7 +9297,7 @@
             </MemberComponentTemplate>
         </EntityTemplate>
 
-        <EntityTemplate Name="InfectedWolf" Guid="5bbc19e3-f2bd-4cba-9a99-da65db3c863b" InheritanceParent="49a9845c-3810-4092-ba53-df213d10d563">
+    <EntityTemplate Name="InfectedWolf" Guid="5bbc19e3-f2bd-4cba-9a99-da65db3c863b" InheritanceParent="49a9845c-3810-4092-ba53-df213d10d563">
         <MemberComponentTemplate Name="ZombieRunAwayBehavior" Guid="60f6c597-1c82-4fb0-aa8b-22af6cb9bc33" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
         <MemberComponentTemplate Name="RunAwayBehavior" Guid="d6091aec-eed5-4456-b797-f07a3b88a9a2" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="f85745c2-112e-462a-b22d-a544982602af" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
@@ -9316,6 +9316,7 @@
     <MemberComponentTemplate Name="CreatureSounds" Guid="c4c3b840-7146-47cf-aa56-d267c273636c">
         <Parameter Name="PainSound" Value="Audio/Creatures/Infected Wolf/Pain" Type="string" Guid="766950dd-34cb-4e95-a76f-6a4eafb1126f"/>
         <Parameter Name="AttackSound" Value="Audio/Creatures/Infected Wolf/Attack" Type="string" Guid="15679127-59f8-4f45-8a62-472d74dc2d32"/>
+        <Parameter Name="IdleSound" Value="Audio/Creatures/Infected Wolf/Attack" Type="string" Guid="708d3665-0156-4187-8d98-c5734d35bfee"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidFireBehavior" Guid="8fe00b6c-c1de-4bd6-b63e-ab05ac98b2e4" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
     <MemberComponentTemplate Name="Locomotion" Guid="41e30919-5bcd-48f8-8647-e772f96ea0ce">
@@ -9348,7 +9349,6 @@
         <Parameter Name="AttackPower" Value="3.5" Type="float" Guid="e8c6fbd8-eb07-4dbc-a869-f733aeb42f93"/>
     </MemberComponentTemplate>
 <MemberComponentTemplate Name="FourLeggedModel" Guid="5aee9f79-edc8-4a65-8165-feceae7eb970" InheritanceParent="76d24f74-5f25-4d30-92ef-658c1a4d66c8">
-        <Parameter Name="Class" Value="Game.ComponentFourLeggedModel" Type="string" Guid="92be58d6-c710-4c06-91a2-45a2c4d84551"/>
         <Parameter Name="ModelName" Value="Models/Wolf" Type="string" Guid="befc98db-f8a4-43ed-a006-2fd8544695ba"/>
         <Parameter Name="TextureOverride" Value="Textures/ZombiesDeMierda/Lobo infectado" Type="string" Guid="1e7d00f6-6e96-4466-9ad8-6f9073945caf"/>
         <Parameter Name="WalkAnimationSpeed" Value="0.8" Type="float" Guid="b1d8d544-fb5e-4629-a611-908a48c71c71"/>
@@ -9386,6 +9386,7 @@
     <Parameter Name="ZombieAggressiveGrouping" Value="false" Type="bool" Guid="a40a7024-818a-4063-b9b6-dc2ed197a3b9"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="ZombieChaseBehavior" Guid="915e04d6-112d-45dc-a587-b9dce604c6d7" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
+    <Parameter Name="Class" Value="Game.ComponentZombieChaseBehavior" Type="string"/>
   <Parameter Name="DayChaseRange" Guid="a5fa89bb-25db-410f-99e1-12c880131a0c" Value="999" Type="float"/>
   <Parameter Name="NightChaseRange" Guid="80a5f7f9-75e7-4049-9b57-cbf5208b3a2a" Value="999" Type="float"/>
   <Parameter Name="NightChaseTime" Guid="93f9b792-1dcf-45e6-ad4e-9034e32f4dfd" Value="999" Type="float"/>
@@ -9421,12 +9422,9 @@
     <Parameter Name="ChaseNonPlayerProbability" Value="0.2" Type="float" Guid="d9bf4c04-5245-43cf-8c09-81be8ee95b00"/>
     <Parameter Name="ChaseWhenAttackedProbability" Value="0.8" Type="float" Guid="91d4b969-2188-404c-b91c-82e86c7693c5"/>
     <Parameter Name="ChaseOnTouchProbability" Value="0.5" Type="float" Guid="4ab9fc9c-44b1-4ec5-bb3d-b5d3bd50c1cb"/>
-    <Parameter Name="AutoChaseMask" Value="LandPredator" Type="string" Guid="9c4d35c1-c9cb-4aba-b29c-60ed67bbc2c2"/>
+    <Parameter Name="AutoChaseMask" Value="LandPredator" Type="Game.CreatureCategory" Guid="9c4d35c1-c9cb-4aba-b29c-60ed67bbc2c2"/>
 </MemberComponentTemplate>
-    <MemberComponentTemplate Name="NewHerdBehavior" Guid="d07a6fd3-f670-44e7-a48f-c987d9c87eb0">
-        <Parameter Name="Class" Value="Game.ComponentNewHerdBehavior" Type="string" Guid="e3d22a0b-8c16-44eb-bc48-8572fbc26e23"/>
-        <Parameter Name="IsOptional" Value="true" Type="bool" Guid="bb814a08-3421-4e56-b69a-747480c63257"/>
-        <Parameter Name="LoadOrder" Value="50" Type="int" Guid="5e346e1e-b596-4d24-8498-495e8ad24434"/>
+    <MemberComponentTemplate Name="NewHerdBehavior" Guid="d07a6fd3-f670-44e7-a48f-c987d9c87eb0" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
         <Parameter Name="HerdName" Value="player" Type="string" Guid="38d9c6c8-a90d-4554-8618-b50327dbb845"/>
         <Parameter Name="HerdingRange" Value="20" Type="float" Guid="89e5d3df-5975-4bef-ad46-be0e90d3ebf9"/>
         <Parameter Name="AutoNearbyCreaturesHelp" Value="true" Type="bool" Guid="08de28e8-264a-47e0-82b3-a43bb2cdb531"/>
@@ -9460,6 +9458,7 @@
     <MemberComponentTemplate Name="CreatureSounds" Guid="a103f44c-7e2b-41de-9fec-45c1b8714910">
         <Parameter Name="PainSound" Value="Audio/Creatures/Infected Wolf/Pain" Type="string" Guid="48692dff-6099-4a73-bebe-5d1dd1a621e3"/> 
         <Parameter Name="AttackSound" Value="Audio/Creatures/Infected Wolf/Attack" Type="string" Guid="d98815cf-4d69-4d77-931a-fdfd72794ee9"/>
+        <Parameter Name="IdleSound" Value="Audio/Creatures/Infected Wolf/Attack" Type="string" Guid="53a9bfa3-803a-42ec-8ec9-b4bec1a3f907"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidFireBehavior" Guid="bf405074-4887-4e09-a16f-3488e70ce87e" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
     <MemberComponentTemplate Name="Locomotion" Guid="0b66ab74-cefa-48f0-b060-310452406b27">
@@ -9686,10 +9685,7 @@
     <Parameter Name="ChaseOnTouchProbability" Value="0.5" Type="float" Guid="52c89edc-603a-4261-b4ee-37be2e4be9c9"/>
     <Parameter Name="AutoChaseMask" Value="LandPredator" Type="string" Guid="560916de-7fc9-44b8-9a8e-5fb7dc562aed"/>
 </MemberComponentTemplate>
-    <MemberComponentTemplate Name="NewHerdBehavior" Guid="f93e9702-9990-4140-b176-4e2ae888f99e">
-        <Parameter Name="Class" Value="Game.ComponentNewHerdBehavior" Type="string" Guid="10506aa7-63f1-40e1-996b-03fd47b0db6d"/>
-        <Parameter Name="IsOptional" Value="true" Type="bool" Guid="d9024291-d67b-4946-9599-57f3b47be87d"/>
-        <Parameter Name="LoadOrder" Value="50" Type="int" Guid="e901ecfc-a52d-4f14-8354-e999cdbd48f6"/>
+    <MemberComponentTemplate Name="NewHerdBehavior" Guid="f93e9702-9990-4140-b176-4e2ae888f99e" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
         <Parameter Name="HerdName" Value="player" Type="string" Guid="6b487e63-4324-4d92-a115-10de5e2764c7"/>
         <Parameter Name="HerdingRange" Value="20" Type="float" Guid="bf4eef24-4f33-46f6-aca9-b1be9f594bdb"/>
         <Parameter Name="AutoNearbyCreaturesHelp" Value="true" Type="bool" Guid="8802dce3-3526-4b5b-9351-fd76d85b9554"/>
@@ -9753,7 +9749,7 @@
         <Parameter Name="AttackPower" Guid="9208368b-52c0-4baf-a5e7-d414bdaba637" Value="7.5" Type="float" />
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="AutoJump" Guid="9d9f068f-e228-4f9f-a096-2875aa798ccb">
-        <Parameter Name="JumpStrength" Guid="7775a37a-0bb4-4330-ae13-1fdb0b3f65ee" Value="0.7" Type="float" />
+        <Parameter Name="JumpStrength" Guid="7775a37a-0bb4-4330-ae13-1fdb0b3f65ee" Value="1.0" Type="float" />
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Locomotion" Guid="a40baa2c-d8be-4511-b376-876e6b41a7f8">
         <Parameter Name="WalkSpeedWhenTurning" Guid="8f3fe6bd-0735-4969-86ad-6e2e8aef031b" Value="0" Type="float" />
