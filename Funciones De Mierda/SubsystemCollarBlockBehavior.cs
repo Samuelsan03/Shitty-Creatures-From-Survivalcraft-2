@@ -92,12 +92,14 @@ namespace Game
 				{"TankGhost1", "TankGhostTamed1" },
 				{"TankGhost2", "TankGhostTamed2" },
 				{"TankGhost3", "TankGhostTamed3" },
-				{"MachineGunInfected", "MachineGunInfectedTamed" }
+				{"MachineGunInfected", "MachineGunInfectedTamed" },
+				{"InfectedWolf", "InfectedWolfTamed"},
+				{"InfectedWerewolf", "InfectedWerewolfTamed"},
+				{"InfectedHyena", "InfectedHyenaTamed" }
 			};
 
 			if (tameableCreatures.ContainsKey(currentEntityName))
 			{
-				// Verificar si es un Boomer (incluyendo Ghost Boomers)
 				bool isBoomer = currentEntityName.StartsWith("Boomer") || currentEntityName.StartsWith("GhostBoomer");
 				bool isGhostBoomer = currentEntityName.StartsWith("GhostBoomer");
 
@@ -130,7 +132,6 @@ namespace Game
 					}
 				}
 
-				// Obtener el ComponentNewCreatureCollect de la entidad original ANTES de eliminarla
 				ComponentNewCreatureCollect originalCollectComponent = entity.FindComponent<ComponentNewCreatureCollect>();
 				if (originalCollectComponent != null)
 				{
@@ -162,7 +163,6 @@ namespace Game
 				componentBody.Velocity = bodyRaycastResult.Value.ComponentBody.Velocity;
 				entity2.FindComponent<ComponentSpawn>(true).SpawnDuration = 0f;
 
-				// Obtener el ComponentNewCreatureCollect de la nueva entidad
 				ComponentNewCreatureCollect newCollectComponent = entity2.FindComponent<ComponentNewCreatureCollect>();
 				if (newCollectComponent != null)
 				{
@@ -173,7 +173,6 @@ namespace Game
 					Console.WriteLine($"ComponentNewCreatureCollect NO encontrado en la nueva entidad");
 				}
 
-				// Copiar el inventario de la entidad original a la nueva
 				if (originalCollectComponent != null && newCollectComponent != null)
 				{
 					Console.WriteLine("Copiando inventario de la entidad original a la nueva entidad domesticada...");
@@ -184,7 +183,6 @@ namespace Game
 					Console.WriteLine("No se pudo copiar el inventario - uno de los componentes es null");
 				}
 
-				// Remover la entidad original y agregar la nueva
 				base.Project.RemoveEntity(entity, true);
 				base.Project.AddEntity(entity2);
 
@@ -202,6 +200,9 @@ namespace Game
 					entityTemplateName == "GhostFastTamed" ||
 					entityTemplateName == "PoisonousGhostTamed";
 				bool isAnyGhost = isTamedGhost || isTamedGhostBoomer || isTamedGhostCharger || isTamedGhostTank;
+				bool isTamedWolf = entityTemplateName == "InfectedWolfTamed";
+				bool isTamedWerewolf = entityTemplateName == "InfectedWerewolfTamed";
+				bool isTamedHyena = entityTemplateName == "InfectedHyenaTamed";
 
 				ComponentPlayer componentPlayer = FindPlayerWithMiner(componentMiner);
 				if (componentPlayer != null)
@@ -289,7 +290,7 @@ namespace Game
 									message = "You have tamed a Machine Gun Infected!\nIts devastating minigun is now under your command!\nUnleash a hailstorm of bullets upon your enemies!";
 								}
 
-								messageColor = new Color(255, 140, 0); // Color naranja para Machine Gun
+								messageColor = new Color(255, 140, 0);
 								soundToPlay = "Audio/UI/Tank Tamed Sound";
 							}
 							else
@@ -303,9 +304,8 @@ namespace Game
 								}
 
 								messageColor = new Color(153, 0, 0);
+								soundToPlay = "Audio/UI/Tank Tamed Sound";
 							}
-
-							soundToPlay = "Audio/UI/Tank Tamed Sound";
 						}
 						else if (isTamedGhostTank)
 						{
@@ -331,6 +331,45 @@ namespace Game
 							}
 
 							messageColor = new Color(128, 0, 128);
+							soundToPlay = "Audio/UI/Tada";
+						}
+						else if (isTamedWolf)
+						{
+							bool translationFound;
+							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedInfectedWolfMessage");
+
+							if (!translationFound)
+							{
+								message = "You have tamed an infected wolf! It will now fight for you.";
+							}
+
+							messageColor = new Color(0, 255, 128);
+							soundToPlay = "Audio/UI/Tada";
+						}
+						else if (isTamedWerewolf)
+						{
+							bool translationFound;
+							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedInfectedWerewolfMessage");
+
+							if (!translationFound)
+							{
+								message = "You have tamed an infected werewolf! Its savage strength is now yours to command.";
+							}
+
+							messageColor = new Color(0, 255, 128);
+							soundToPlay = "Audio/UI/Tada";
+						}
+						else if (isTamedHyena) // AÑADIR ESTE BLOQUE
+						{
+							bool translationFound;
+							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedInfectedHyenaMessage");
+
+							if (!translationFound)
+							{
+								message = "You have tamed an infected hyena! Its pack instincts will protect you.";
+							}
+
+							messageColor = new Color(255, 215, 0); // Color dorado/amarillo
 							soundToPlay = "Audio/UI/Tada";
 						}
 						else
@@ -425,6 +464,21 @@ namespace Game
 						{
 							defaultMessage = "You have tamed a Ghost! Its spectral powers are now in your hands!";
 							defaultColor = new Color(128, 0, 128);
+						}
+						else if (isTamedWolf)
+						{
+							defaultMessage = "You have tamed an infected wolf! It will now fight for you.";
+							defaultColor = new Color(0, 255, 128);
+						}
+						else if (isTamedWerewolf)
+						{
+							defaultMessage = "You have tamed an infected werewolf! Its savage strength is now yours to command.";
+							defaultColor = new Color(0, 255, 128);
+						}
+						else if (isTamedHyena) // AÑADIR ESTE BLOQUE
+						{
+							defaultMessage = "You have tamed an infected hyena! Its pack instincts will protect you.";
+							defaultColor = new Color(255, 215, 0);
 						}
 						else
 						{
