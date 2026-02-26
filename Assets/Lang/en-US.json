@@ -80,6 +80,12 @@
       "Bandit6": "Bandit 6",
       "Bandit5": "Bandit 5",
       "Bandit4": "Bandit 4",
+      "InfectedWildboar": "Infected Wild Boar",
+      "InfectedWildboarTamed": "Infected Wild Boar Ally",
+      "InfectedBearTamed": "Infected Bear Ally",
+      "InfectedBear": "Infected Bear",
+      "InfectedHyena": "Infected Hyena",
+      "InfectedHyenaTamed": "Infected Hyena Ally",
       "InfectedWerewolfTamed": "Infected Werewolf Ally",
       "InfectedWerewolf": "Infected Werewolf",
       "InfectedWolfTamed": "Infected Wolf Ally",
@@ -203,6 +209,9 @@
       "Richard": "Richard"
     },
     "Description": {
+      "InfectedWildboar": "The Infected Boar, like other animals, emerges when a boar is killed by an infected creature, resulting in an enhanced version of its former self. This creature is another mini-boss, possessing a moderate level of difficulty. Its unique ability is a powerful shoving attack; upon striking, it will forcefully push both players and other creatures, much like the Charger, but it only utilizes this ability 50% of the time. During the Green Night, the Infected Boar becomes even more relentless, pursuing players to the death. However, all is not lost. The Infected Boar can be tamed using a Zombie Collar, turning it into a loyal companion ready to do your bidding.",
+      "InfectedBear": "The Infected Bear is a terrifying result of an infected creature killing a bear, transforming it into a more dangerous variant (the type of bear, black or brown, doesn't affect the outcome). This creature is considered a mini-boss due to its moderate threat level; it's more dangerous than common infected but not as challenging as full-fledged bosses. The Infected Bear is capable of leaping and running faster than its original counterparts. Its devastating attacks can send you to an early grave in just a few strikes. However, if you manage to equip it with a Zombie Collar, the Infected Bear becomes your loyal protector, a formidable enslaved ally. The situation escalates dramatically during the Green Night event, as these Infected Bears become relentlessly aggressive, hunting you down until either you or they are dead. Ensure you have ample firepower and protection to either eliminate or dominate these monstrous creatures.",
+      "InfectedHyena": "The Infected Hyena is born when a normal hyena dies at the claws of the infected plague. Death is not its end, but a violent rebirth. The transformation is swift and grotesque, twisting its corpse into a far stronger, faster, and deadlier predator than it ever was in life. It now belongs to the infected faction, roaming alongside the horde with relentless hunger and unnatural aggression. However, when Green Night falls, everything becomes far worse. Its senses sharpen, its speed increases, and its hostility becomes absolute. During Green Night, it will relentlessly hunt the player, tracking, chasing, and pursuing them without rest or mercy until they are dead. It does not retreat. It does not tire. Its distorted laughter echoes through the darkness while its glowing eyes burn like omens of inevitable doom. Yet not all hope is lost. Legend says that if one manages to place the Zombie Collar upon the beast and successfully tame it, the Infected Hyena will abandon its hostility and become a bound guardian — a savage yet loyal protector that will defend its master against any threat, no matter the danger.",
       "InfectedWerewolf": "The Infected Werewolf is the result of an infected creature’s bite upon a human or a werewolf. The transformation is immediate, creating a more powerful, faster, and far more dangerous version than the original werewolf. It belongs to the infected faction, joins hordes, and may appear in massive waves during special events. Its strength is overwhelming, its endurance superior, and its ferocity unstoppable. Its glowing eyes radiate an unnatural light that signals impending destruction. However, legend claims that if you give it the Zombie Collar, it will cease being hostile toward you and will protect you anywhere, becoming a relentless guardian against any threat.",
       "InfectedWolf": "The Infected Wolf is created when an infected creature bites a common gray wolf. The result is an enhanced, stronger, and fully hostile version of the original wolf, now part of the infected faction. It is tougher, more aggressive, and relentless in pursuit. It can join infected packs and even appear in devastating waves during the Green Night. Its instincts drive it to hunt without mercy, attacking players and other creatures alike. Yet legend says that if you offer it the Zombie Collar, the Infected Wolf will acknowledge you as its master and become your eternal guardian, fighting by your side and protecting you even in the darkest nights.",
       "MachineGunInfected": "Do you think that defeating the final bosses such as the normal Tanks and the Ghost Tanks means you’re safe? Think again this is the true final boss. The Machine Gun Infected is a special type of infected who, unlike the others, has learned to wield heavy firearms, most notably the Minigun. Once he sees you as prey, he becomes an ultra-dangerous threat, unleashing relentless fire until you are dead. He is part of the infected group, and facing him alongside his squad is nearly suicidal: if you attack his allies, you won’t last long. Stronger and tougher than the muscular infected, he appears on Day 95 at night, when you are expected to have full gear, armor, and guardians armed to the teeth. His design is inspired by Hambone, the boss from the 1998 arcade game CarnEvil, as his skin, mask, clothing, and weapon bear a striking resemblance like twin brothers walking different paths. Yet he can be tamed with the zombie collar, becoming a guardian specialized in firearms. Under your command, his Minigun becomes your most devastating defense… though his overwhelming power may just as easily turn into your downfall.",
@@ -277,6 +286,11 @@
   }
 },
   "Blocks": {
+    "RemoteControlBlock:0": {
+  "DisplayName": "Remote Control",
+  "Description": "A remote control device. Use it to toggle the Green Night phenomenon.",
+  "CRDescription:0": "Toggles the Green Night."
+},
     "NuclearCoinBlock:0": {
       "DisplayName": "Nuclear Coin",
       "Description": "A coin forged in a post-apocalyptic world. It cannot be crafted, but can be obtained by killing mobs. Used to trade with the Pirata Hostil Comerciante and for other purposes such as hiring and more, depending on the player's needs."
@@ -875,6 +889,8 @@
     "NPCCured": "The NPC has been cured of poison and sickness!",
     "FluCured": "Flu has been cured!",
     "PoisonAndSicknessCured": "Nausea and sickness have been cured!",
+    "CollarTamedInfectedBearMessage": "You have tamed an Infected Bear! Its brute strength will protect you.",
+    "CollarTamedInfectedHyenaMessage": "You have tamed an infected hyena! Its pack instincts will protect you.",
     "CollarTamedInfectedWolfMessage": "You have tamed an infected wolf! It will now fight for you.",
     "CollarTamedInfectedWerewolfMessage": "You have tamed an infected werewolf! Its savage strength is now yours to command.",
     "CollarTamedMachineGunMessage": "You have tamed a Machine Gun Infected!\nIts devastating minigun is now under your command!\nUnleash a hailstorm of bullets upon your enemies!",
