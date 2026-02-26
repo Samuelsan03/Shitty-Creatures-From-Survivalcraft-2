@@ -77,6 +77,12 @@
       "Bandit6": "Bandido 6",
       "Bandit5": "Bandido 5",
       "Bandit4": "Bandido 4",
+      "InfectedWildboar": "Jabalí Infectado",
+      "InfectedWildboarTamed": "Jabalí Infectado Aliado",
+      "InfectedBearTamed": "Oso Infectado Aliado",
+      "InfectedBear": "Oso Infectado",
+      "InfectedHyena": "Hiena Infectada",
+      "InfectedHyenaTamed": "Hiena Infectada Aliada",
       "InfectedWerewolfTamed": "Hombre Lobo Infectado Aliado",
       "InfectedWerewolf": "Hombre Lobo Infectado",
       "InfectedWolfTamed": "Lobo Infectado Aliado",
@@ -200,6 +206,9 @@
       "Richard": "Richard"
     },
     "Description": {
+      "InfectedWildboar": "El Jabalí Infectado, al igual que otros animales, surge cuando un jabalí es asesinado por una criatura infectada, lo que resulta en una versión mejorada de sí mismo. Esta criatura es otro mini-jefe, que posee un nivel de dificultad moderado. Su habilidad única es un poderoso ataque de empuje; al golpear, empujará con fuerza tanto a los jugadores como a otras criaturas, de manera similar al Charger, pero solo utiliza esta habilidad el 50% de las veces. Durante la Noche Verde, el Jabalí Infectado se vuelve aún más implacable, persiguiendo a los jugadores hasta la muerte. Sin embargo, no todo está perdido. El Jabalí Infectado puede ser domesticado usando un Collar Zombie, convirtiéndolo en un compañero leal listo para hacer tu voluntad.",
+      "InfectedBear": "El Oso Infectado es el resultado aterrador de cuando una criatura infectada mata a un oso, transformándolo en una variante más peligrosa (el tipo de oso, ya sea negro o pardo, no afecta el resultado). Esta criatura se considera un mini-jefe debido a su nivel de amenaza moderado; es más peligroso que los infectados comunes, pero no tan desafiante como los jefes completos. El Oso Infectado es capaz de saltar y correr más rápido que sus contrapartes originales. Sus devastadores ataques pueden enviarte a una tumba prematura con solo unos pocos golpes. Sin embargo, si logras equiparlo con un Collar Zombie, el Oso Infectado se convierte en tu leal protector, un aliado esclavizado formidable. La situación se intensifica dramáticamente durante el evento de Noche Verde, ya que estos Osos Infectados se vuelven implacablemente agresivos, persiguiéndote hasta que tú o ellos estén muertos. Asegúrate de tener suficiente potencia de fuego y protección para eliminar o dominar a estas monstruosas criaturas.",
+      "InfectedHyena": "La Hiena Infectada nace cuando una hiena común muere a causa de la plaga de los infectados. La muerte no es su final, sino un renacimiento violento. La transformación es rápida y grotesca, deformando su cuerpo hasta convertirla en un depredador mucho más fuerte, veloz y letal que en vida. Ahora forma parte de la facción de los infectados, vagando junto a la horda con un hambre insaciable y una agresividad antinatural. Sin embargo, cuando llega la temida Noche Verde, todo se vuelve aún más oscuro y peligroso. Sus sentidos se agudizan, su velocidad aumenta y su hostilidad se intensifica hasta niveles extremos. Durante la Noche Verde, perseguirá activamente al jugador sin descanso, acechándolo, siguiéndolo y acosándolo hasta darle muerte. No se cansa. No se detiene. Su risa distorsionada resuena en la oscuridad mientras sus ojos brillantes anuncian un destino inevitable. No obstante, la esperanza aún existe. La leyenda cuenta que si alguien logra colocarle el Collar Zombie y domesticarla, la Hiena Infectada abandonará su furia y se convertirá en un guardián esclavo y leal, dispuesto a proteger a su amo frente a cualquier amenaza, sin importar el riesgo.",
       "InfectedWerewolf": "El Hombre Lobo Infectado es el producto de la mordida de un infectado sobre un humano o un hombre lobo. La transformación ocurre de inmediato, dando origen a una versión más poderosa, más rápida y mucho más peligrosa que el hombre lobo original. Pertenece al grupo de infectados, participa en manadas y puede aparecer en olas masivas durante eventos especiales. Su fuerza es descomunal, su resistencia superior y su ferocidad imparable. Sus ojos brillan con un resplandor antinatural, anunciando destrucción. No obstante, la leyenda afirma que si le entregas el Collar Zombie, dejará de ser hostil contigo y te protegerá en cualquier lugar, convirtiéndose en un guardián implacable contra cualquier amenaza.",
       "InfectedWolf": "El Lobo Infectado es el resultado de la mordida de un infectado sobre un lobo gris común. El resultado es una versión mejorada, más fuerte y completamente hostil del lobo original, ahora perteneciente al grupo de los infectados. Es más resistente, más agresivo y no huye con facilidad. Puede unirse a manadas de infectados y aparecer en devastadoras olas durante la noche verde. Su instinto es cazar sin descanso, atacando no solo jugadores, sino también otras criaturas. Sin embargo, una antigua leyenda cuenta que si le entregas el Collar Zombie, el Lobo Infectado reconocerá tu dominio y se convertirá en tu guardián eterno, luchando a tu lado y protegiéndote incluso en las noches más oscuras.",
       "MachineGunInfected": "¿Crees que al derrotar a los jefes finales como los Tanks normales y los Tanks fantasmales estarás libre de todo? Estás equivocado: este es el verdadero último jefe final. El Infectado Ametrallador es un infectado especial que, a diferencia de los demás, aprendió a manejar armas de fuego pesadas, en particular la Minigun. Al verte como presa se convierte en un peligro extremo, pues con su ametralladora en mano disparará sin descanso hasta acabar contigo. Forma parte del grupo de infectados, y enfrentarlo junto a su escuadrón es prácticamente un suicidio: si atacas a sus compañeros, no durarás nada. Es más resistente y fuerte que el infectado musculoso, y aparece en el día 95 durante la noche, cuando se supone que ya cuentas con todo tu arsenal, armaduras y guardianes preparados. El diseño de este jefe está inspirado en Hambone, del arcade CarnEvil (1998), ya que su piel, máscara, vestimenta y arma guardan un inquietante parecido, como si fueran hermanos gemelos con destinos distintos. Aun así, puede ser domesticado mediante el collar zombi, convirtiéndose en un guardián experto en armas de fuego. Bajo tu control, su Minigun será tu defensa más brutal… aunque siempre existe el riesgo de que su poder desmedido se vuelva contra ti.",
@@ -274,6 +283,11 @@
     }
   },
   "Blocks": {
+    "RemoteControlBlock:0": {
+  "DisplayName": "Control Remoto",
+  "Description": "Un dispositivo de control a distancia. Úsalo para alternar el fenómeno de la Noche Verde.",
+  "CRDescription:0": "Alterna la Noche Verde."
+},
     "BK43Block:0": {
   "DisplayName": "Escopeta de Doble Cañón BK-43",
   "Description": "Escopeta de doble cañón, simple y confiable. Tiene capacidad para dos cartuchos y es muy efectiva a corta distancia gracias a la dispersión de perdigones.",
@@ -875,6 +889,8 @@
     "FluCured": "¡La gripa ha sido curada!",
     "PoisonAndSicknessCured": "¡Las náuseas y la enfermedad han sido curadas!",
     "GreenMoonBegins": "¡La Luna Verde ha comenzado!",
+    "CollarTamedInfectedBearMessage": "¡Has domesticado a un Oso Infectado! Su fuerza bruta te protegerá.",
+    "CollarTamedInfectedHyenaMessage": "¡Has domesticado una hiena infectada! Sus instintos de manada te protegerán.",
     "CollarTamedInfectedWolfMessage": "¡Has domesticado a un lobo infectado! Ahora luchará por ti.",
     "CollarTamedInfectedWerewolfMessage": "¡Has domesticado a un hombre lobo infectado! Su fuerza salvaje ahora está bajo tu mando.",
     "CollarTamedMachineGunMessage": "¡Has domesticado a un Infectado Ametrallador!\n¡Su devastadora minigun ahora está bajo tu mando!\n¡Desata una tormenta de balas contra tus enemigos!",
