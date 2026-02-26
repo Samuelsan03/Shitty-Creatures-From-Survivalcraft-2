@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Engine;
 using GameEntitySystem;
 using TemplatesDatabase;
@@ -8,7 +8,26 @@ namespace Game
 	public class SubsystemGreenNightSky : Subsystem, IUpdateable
 	{
 		public virtual bool IsGreenNightActive { get; set; }
-		public virtual bool GreenNightEnabled { get; set; } = true;
+		private bool m_greenNightEnabled = true;
+		public virtual bool GreenNightEnabled
+		{
+			get { return m_greenNightEnabled; }
+			set
+			{
+				if (m_greenNightEnabled != value)
+				{
+					m_greenNightEnabled = value;
+					if (m_greenNightEnabled)
+					{
+						IsGreenNightActive = true;
+					}
+					else
+					{
+						IsGreenNightActive = false;
+					}
+				}
+			}
+		}
 
 		public UpdateOrder UpdateOrder
 		{
