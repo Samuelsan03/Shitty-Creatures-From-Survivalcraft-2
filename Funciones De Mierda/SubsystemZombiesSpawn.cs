@@ -54,10 +54,9 @@ namespace Game
 		private bool m_waveAdvancedThisNight = false;
 		private bool m_firstNightCompleted = false;
 
-		// Para controlar si ya mostramos el mensaje de jefes en esta ola
-		private bool m_bossMessageShownForCurrentWave = false;
-		// Para controlar si ya mostramos el mensaje de ola final
-		private bool m_finalWaveMessageShown = false;
+		// Control de fase de jefes
+		private bool m_bossPhaseActive = false;
+		private float m_bossPhaseStartTime = 0f;
 
 		private HashSet<string> m_bossZombieTypes = new HashSet<string>
 		{
@@ -108,29 +107,129 @@ namespace Game
 				if (m_isGreenNightActive)
 				{
 					m_waveAdvancedThisNight = false;
-					m_bossMessageShownForCurrentWave = false; // Reiniciamos el flag al empezar nueva noche
+					m_bossPhaseActive = false;
 					LoadCurrentWave();
 				}
 				else
 				{
 					m_firstNightCompleted = true;
+					m_bossPhaseActive = false;
 
 					if (m_currentWaveIndex < m_waves.Count - 1)
 					{
 						m_currentWaveIndex++;
 						LoadCurrentWave();
-						m_bossMessageShownForCurrentWave = false; // Reiniciamos para la nueva ola
 					}
 				}
 			}
 
 			if (m_isGreenNightActive && this.m_subsystemGameInfo.WorldSettings.EnvironmentBehaviorMode == EnvironmentBehaviorMode.Living)
 			{
+				// Verificar si hay jefes en esta oleada
+				bool hasBossesInWave = m_currentWaveSpawns.Keys.Any(key => m_bossZombieTypes.Contains(key));
+
+				if (hasBossesInWave)
+				{
+					// Solo verificar activación de fase de jefes si hay jefes en la oleada
+					CheckBossPhaseActivation();
+					UpdateBossPhase();
+				}
+
 				if (this.m_subsystemTime.PeriodicGameTimeEvent(2.0, 0.0))
 				{
 					SpawnZombiesFromWave();
 				}
 			}
+		}
+
+		private void CheckBossPhaseActivation()
+		{
+			if (m_currentWaveSpawns.Count == 0) return;
+
+			float timeOfDay = m_subsystemTimeOfDay.TimeOfDay;
+			float nightProgress = GetNightProgress(timeOfDay);
+
+			// Verificar si hay jefes pendientes
+			var bossTemplates = m_currentWaveSpawns
+				.Where(kv => kv.Value > 0 && m_bossZombieTypes.Contains(kv.Key))
+				.ToList();
+
+			// Solo activar si hay jefes por generar y estamos a medianoche
+			if (!m_bossPhaseActive && bossTemplates.Count > 0 && nightProgress >= 0.45f && nightProgress <= 0.55f)
+			{
+				ActivateBossPhase();
+			}
+		}
+
+		private float GetNightProgress(float timeOfDay)
+		{
+			float nightStart = m_subsystemTimeOfDay.NightStart;
+			float dawnStart = m_subsystemTimeOfDay.DawnStart;
+
+			if (timeOfDay < nightStart)
+				return 0f;
+			if (timeOfDay > dawnStart)
+				return 1f;
+
+			return (timeOfDay - nightStart) / (dawnStart - nightStart);
+		}
+
+		private void ActivateBossPhase()
+		{
+			m_bossPhaseActive = true;
+			m_bossPhaseStartTime = m_subsystemTimeOfDay.TimeOfDay;
+
+			if (m_subsystemPlayers != null)
+			{
+				foreach (ComponentPlayer componentPlayer in m_subsystemPlayers.ComponentPlayers)
+				{
+					if (componentPlayer?.ComponentGui != null)
+					{
+						componentPlayer.ComponentGui.DisplaySmallMessage(
+							LanguageControl.Get("ZombiesSpawn", "BossesAppear"),
+							new Color(139, 0, 0), false, true);
+					}
+				}
+			}
+		}
+
+		private void UpdateBossPhase()
+		{
+			if (!m_bossPhaseActive)
+				return;
+
+			bool anyBossSpawnsLeft = false;
+			foreach (var kv in m_currentWaveSpawns)
+			{
+				if (m_bossZombieTypes.Contains(kv.Key) && kv.Value > 0)
+				{
+					anyBossSpawnsLeft = true;
+					break;
+				}
+			}
+
+			if (!anyBossSpawnsLeft)
+			{
+				int aliveBosses = CountAliveBosses();
+				if (aliveBosses == 0)
+				{
+					m_bossPhaseActive = false;
+				}
+			}
+		}
+
+		private int CountAliveBosses()
+		{
+			int count = 0;
+			foreach (var creature in m_creatures.Keys)
+			{
+				string name = creature.Entity.ValuesDictionary.DatabaseObject.Name;
+				if (m_bossZombieTypes.Contains(name))
+				{
+					count++;
+				}
+			}
+			return count;
 		}
 
 		private void LoadCurrentWave()
@@ -155,10 +254,9 @@ namespace Game
 
 			ResetCurrentWaveSpawns();
 
-			// Mensaje para la ola final (ola 19, índice 18)
-			if (m_currentWaveIndex == 18 && !m_finalWaveMessageShown && m_subsystemPlayers != null)
+			// Mensaje para la ola final (ola 19, índice 18) solo si es de noche verde
+			if (m_currentWaveIndex == 18 && m_subsystemPlayers != null && m_isGreenNightActive)
 			{
-				m_finalWaveMessageShown = true;
 				foreach (ComponentPlayer componentPlayer in m_subsystemPlayers.ComponentPlayers)
 				{
 					if (componentPlayer?.ComponentGui != null)
@@ -187,7 +285,6 @@ namespace Game
 			int currentCount = CountZombies();
 			if (currentCount >= m_totalLimit) return;
 
-			// Si ya no quedan criaturas por generar en esta ola, no hacemos nada
 			if (m_currentWaveSpawns.Values.Sum() == 0)
 			{
 				return;
@@ -201,23 +298,16 @@ namespace Game
 				.Where(kv => kv.Value > 0 && m_bossZombieTypes.Contains(kv.Key))
 				.ToList();
 
-			// Si hay jefes pendientes y ya no quedan normales, mostramos mensaje una sola vez
-			if (bossTemplates.Count > 0 && regularTemplates.Count == 0 && !m_bossMessageShownForCurrentWave && m_subsystemPlayers != null)
-			{
-				m_bossMessageShownForCurrentWave = true;
-				foreach (ComponentPlayer componentPlayer in m_subsystemPlayers.ComponentPlayers)
-				{
-					if (componentPlayer?.ComponentGui != null)
-					{
-						componentPlayer.ComponentGui.DisplaySmallMessage(
-							LanguageControl.Get("ZombiesSpawn", "BossesAppear"),
-							new Color(139, 0, 0), false, true); // Rojo oscuro
-					}
-				}
-			}
+			List<KeyValuePair<string, int>> availableTemplates;
 
-			// Primero generamos normales, cuando se acaben generamos jefes
-			var availableTemplates = regularTemplates.Count > 0 ? regularTemplates : bossTemplates;
+			if (m_bossPhaseActive)
+			{
+				availableTemplates = bossTemplates;
+			}
+			else
+			{
+				availableTemplates = regularTemplates;
+			}
 
 			if (availableTemplates.Count == 0) return;
 
@@ -240,10 +330,45 @@ namespace Game
 						if (entity != null)
 						{
 							m_currentWaveSpawns[templateName]--;
+
+							if (m_bossZombieTypes.Contains(templateName) && m_subsystemPlayers != null)
+							{
+								string bossKey = GetBossMessageKey(templateName);
+								foreach (ComponentPlayer componentPlayer in m_subsystemPlayers.ComponentPlayers)
+								{
+									if (componentPlayer?.ComponentGui != null)
+									{
+										componentPlayer.ComponentGui.DisplaySmallMessage(
+											LanguageControl.Get("ZombiesSpawn", bossKey),
+											new Color(180, 0, 0), false, true);
+									}
+								}
+							}
+
 							return;
 						}
 					}
 				}
+			}
+		}
+
+		private string GetBossMessageKey(string templateName)
+		{
+			if (templateName.StartsWith("Tank"))
+			{
+				if (templateName.Contains("Ghost"))
+					return "BossGhostTank";
+				return "BossTank";
+			}
+
+			switch (templateName)
+			{
+				case "MachineGunInfected":
+					return "BossMachineGun";
+				case "FlyingInfectedBoss":
+					return "BossFlying";
+				default:
+					return "BossGeneric";
 			}
 		}
 
@@ -264,37 +389,37 @@ namespace Game
 			this.m_isGreenNightActive = false;
 			this.m_wavesLoaded = false;
 			this.m_firstNightCompleted = false;
-			this.m_bossMessageShownForCurrentWave = false;
-			this.m_finalWaveMessageShown = false;
+			this.m_bossPhaseActive = false;
 
 			if (valuesDictionary.ContainsKey("CurrentWaveIndex"))
 			{
 				this.m_currentWaveIndex = valuesDictionary.GetValue<int>("CurrentWaveIndex");
-			}
-			if (valuesDictionary.ContainsKey("FinalWaveMessageShown"))
-			{
-				this.m_finalWaveMessageShown = valuesDictionary.GetValue<bool>("FinalWaveMessageShown");
 			}
 		}
 
 		public override void Save(ValuesDictionary valuesDictionary)
 		{
 			valuesDictionary.SetValue("CurrentWaveIndex", m_currentWaveIndex);
-			valuesDictionary.SetValue("FinalWaveMessageShown", m_finalWaveMessageShown);
 		}
 
 		private string GetWavesPath()
 		{
 			try
 			{
-				string basePath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-				if (!string.IsNullOrEmpty(basePath))
+				// Intentar obtener la ruta del assembly
+				string assemblyLocation = System.Reflection.Assembly.GetExecutingAssembly().Location;
+				if (!string.IsNullOrEmpty(assemblyLocation))
 				{
-					return Path.Combine(basePath, "Waves");
+					string modPath = Path.GetDirectoryName(assemblyLocation);
+					if (!string.IsNullOrEmpty(modPath))
+					{
+						return Path.Combine(modPath, "Waves");
+					}
 				}
 			}
 			catch { }
 
+			// Fallback: usar la ruta relativa "Waves" en el directorio del juego
 			return "Waves";
 		}
 
