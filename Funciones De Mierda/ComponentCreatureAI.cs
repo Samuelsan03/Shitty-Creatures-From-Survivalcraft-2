@@ -93,6 +93,9 @@ namespace Game
 		private double m_lastFirearmShotTime;
 		private double m_firearmReloadStartTime;
 		private double m_throwableThrowTime;
+		// AÑADIR: Variable para controlar ataques melee
+		private double m_nextMeleeAttackTime = 0.0;
+		private float m_meleeAttackInterval = 0.5f;
 
 		// DESPUÉS (añadir junto a las otras variables bool/double)
 		private bool m_isItemsLauncherAiming = false;
@@ -821,6 +824,61 @@ namespace Game
 
 		private void FindRangedWeapon()
 		{
+			// PRIMERO: Buscar objetos lanzables (tipo 6)
+			for (int i = 0; i < m_componentInventory.SlotsCount; i++)
+			{
+				int slotValue = m_componentInventory.GetSlotValue(i);
+				if (slotValue != 0)
+				{
+					Block block = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)];
+					if (IsThrowableBlock(block))
+					{
+						m_currentWeaponSlot = i;
+						m_weaponType = 6;
+						m_componentInventory.ActiveSlotIndex = i;
+						StartThrowableAiming();
+						return; // SALIR inmediatamente - PRIORIDAD MÁXIMA
+					}
+				}
+			}
+
+			// SEGUNDO: Buscar lanzador de objetos (tipo 7) si no hay lanzables
+			for (int i = 0; i < m_componentInventory.SlotsCount; i++)
+			{
+				int slotValue = m_componentInventory.GetSlotValue(i);
+				if (slotValue != 0)
+				{
+					Block block = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)];
+					if (block is ItemsLauncherBlock)
+					{
+						m_currentWeaponSlot = i;
+						m_weaponType = 7;
+						m_componentInventory.ActiveSlotIndex = i;
+						StartItemsLauncherAiming();
+						return;
+					}
+				}
+			}
+
+			// TERCERO: Buscar armas de fuego (tipo 5) si no hay lanzables ni lanzadores
+			for (int i = 0; i < m_componentInventory.SlotsCount; i++)
+			{
+				int slotValue = m_componentInventory.GetSlotValue(i);
+				if (slotValue != 0)
+				{
+					Block block = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)];
+					if (m_firearmConfigs.ContainsKey(BlocksManager.GetBlockIndex(block.GetType(), true, false)))
+					{
+						m_currentWeaponSlot = i;
+						m_weaponType = 5;
+						m_componentInventory.ActiveSlotIndex = i;
+						StartFirearmAiming();
+						return;
+					}
+				}
+			}
+
+			// CUARTO: Buscar otras armas a distancia (arcos, ballestas, etc.)
 			for (int i = 0; i < m_componentInventory.SlotsCount; i++)
 			{
 				int slotValue = m_componentInventory.GetSlotValue(i);
@@ -834,7 +892,7 @@ namespace Game
 						m_weaponType = 0;
 						m_componentInventory.ActiveSlotIndex = i;
 						StartAiming();
-						break;
+						return;
 					}
 					else if (block is CrossbowBlock)
 					{
@@ -842,7 +900,7 @@ namespace Game
 						m_weaponType = 1;
 						m_componentInventory.ActiveSlotIndex = i;
 						StartAiming();
-						break;
+						return;
 					}
 					else if (block is MusketBlock)
 					{
@@ -850,7 +908,7 @@ namespace Game
 						m_weaponType = 2;
 						m_componentInventory.ActiveSlotIndex = i;
 						StartAiming();
-						break;
+						return;
 					}
 					else if (block is FlameThrowerBlock)
 					{
@@ -858,7 +916,7 @@ namespace Game
 						m_weaponType = 3;
 						m_componentInventory.ActiveSlotIndex = i;
 						StartAiming();
-						break;
+						return;
 					}
 					else if (block is RepeatCrossbowBlock)
 					{
@@ -866,49 +924,35 @@ namespace Game
 						m_weaponType = 4;
 						m_componentInventory.ActiveSlotIndex = i;
 						StartAiming();
-						break;
+						return;
 					}
-					else if (m_firearmConfigs.ContainsKey(BlocksManager.GetBlockIndex(block.GetType(), true, false)))
-					{
-						m_currentWeaponSlot = i;
-						m_weaponType = 5;
-						m_componentInventory.ActiveSlotIndex = i;
-						StartFirearmAiming();
-						break;
-					}
-					// DESPUÉS (añadir un nuevo else if antes del cierre del bucle)
-					else if (block is ItemsLauncherBlock)
-					{
-						m_currentWeaponSlot = i;
-						m_weaponType = 7;                          // Nuevo tipo para ItemsLauncher
-						m_componentInventory.ActiveSlotIndex = i;
-						// Leer niveles del bloque y calcular parámetros
-						int data = Terrain.ExtractData(slotValue);
-						int speedLevel = ItemsLauncherBlock.GetSpeedLevel(data);
-						int rateLevel = ItemsLauncherBlock.GetRateLevel(data);
-						int spreadLevel = ItemsLauncherBlock.GetSpreadLevel(data);
-						// Valores por defecto si el nivel es 0
-						if (speedLevel == 0) speedLevel = 2;
-						if (rateLevel == 0) rateLevel = 2;
-						if (spreadLevel == 0) spreadLevel = 2;
-						// Asignar según tablas (igual que en SubsystemItemsLauncherBlockBehavior)
-						float[] speedValues = { 10f, 35f, 60f };
-						float[] rateValues = { 1f, 2f, 3f, 4f, 5f, 6f, 7f, 8f, 9f, 10f, 11f, 12f, 13f, 14f, 15f };
-						float[] spreadValues = { 0.01f, 0.1f, 0.5f };
-						m_itemsLauncherSpeed = speedValues[speedLevel - 1];
-						m_itemsLauncherFireInterval = 1f / rateValues[rateLevel - 1];  // convertir disparos/segundo a intervalo
-						m_itemsLauncherSpread = spreadValues[spreadLevel - 1];
-						StartItemsLauncherAiming();
-						break;
-					}
-					else if (IsThrowableBlock(block))
-					{
-						m_currentWeaponSlot = i;
-						m_weaponType = 6;
-						m_componentInventory.ActiveSlotIndex = i;
-						StartThrowableAiming();
-						break;
-					}
+				}
+			}
+		}
+
+		private void ProcessRangedWeaponAsMelee(ComponentCreature target, float distance)
+		{
+			if (target == null) return;
+			if (distance > 4f) return;
+
+			// NUNCA usar lanzables (tipo 6) como melee
+			if (m_weaponType == 6) return;
+
+			// ELIMINADO: m_componentPathfinding.Destination = null;
+
+			if (m_componentModel != null)
+				m_componentModel.LookAtOrder = new Vector3?(target.ComponentCreatureModel.EyePosition);
+
+			if (m_subsystemTime.GameTime >= m_nextMeleeAttackTime)
+			{
+				if (m_componentMiner != null)
+				{
+					ComponentBody targetBody = target.ComponentBody;
+					Vector3 hitPoint = targetBody.Position;
+					Vector3 hitDirection = Vector3.Normalize(targetBody.Position - m_componentCreature.ComponentBody.Position);
+
+					m_componentMiner.Hit(targetBody, hitPoint, hitDirection);
+					m_nextMeleeAttackTime = m_subsystemTime.GameTime + m_meleeAttackInterval;
 				}
 			}
 		}
@@ -1187,6 +1231,12 @@ namespace Game
 			m_isThrowableAiming = true;
 			m_isThrowableThrowing = false;
 			m_animationStartTime = m_subsystemTime.GameTime;
+
+			// IMPORTANTE: Resetear estos valores para que la interpolación funcione correctamente
+			if (m_componentModel != null)
+			{
+				// No reseteamos aquí, dejamos que ApplyThrowableAimingAnimation los establezca
+			}
 		}
 
 		private void ProcessThrowableBehavior(ComponentCreature target, float distance)
@@ -1290,7 +1340,7 @@ namespace Game
 		{
 			if (m_componentModel != null)
 			{
-				// Brazo elevado casi por completo (toque el cielo)
+				// VALOR DIRECTO: 3f - Brazo extendido hacia adelante como el jugador
 				m_componentModel.AimHandAngleOrder = 3f;
 
 				if (m_currentWeaponSlot >= 0)
@@ -1298,34 +1348,29 @@ namespace Game
 					int slotValue = m_componentInventory.GetSlotValue(m_currentWeaponSlot);
 					Block block = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)];
 
-					// Ajustes específicos por tipo de objeto lanzable
+					// Valores CORRECTOS con Y negativo para que el objeto esté en la mano
 					if (block is SpearBlock || block is LongspearBlock)
 					{
-						// Lanza: rotada para que apunte hacia atrás, ligeramente elevada
-						m_componentModel.InHandItemOffsetOrder = new Vector3(0.05f, -0.2f, 0.1f);
+						m_componentModel.InHandItemOffsetOrder = new Vector3(0.05f, -0.1f, 0.1f);
 						m_componentModel.InHandItemRotationOrder = new Vector3(3.14159f, 0.3f, 0f);
 					}
 					else if (block is BombBlock || block is IncendiaryBombBlock || block is PoisonBombBlock)
 					{
-						// Bombas: sostenidas sobre la cabeza, ligeramente inclinadas
 						m_componentModel.InHandItemOffsetOrder = new Vector3(0.1f, -0.1f, 0.2f);
 						m_componentModel.InHandItemRotationOrder = new Vector3(0.2f, 0.5f, 0.1f);
 					}
 					else if (block is SnowballBlock)
 					{
-						// Bola de nieve: cerca de la mano, rotación natural
-						m_componentModel.InHandItemOffsetOrder = new Vector3(0.1f, -0.15f, 0.15f);
+						m_componentModel.InHandItemOffsetOrder = new Vector3(0.1f, -0.1f, 0.15f);
 						m_componentModel.InHandItemRotationOrder = new Vector3(0.1f, 0.2f, 0f);
 					}
 					else
 					{
-						// Otros objetos (fragmentos, etc.): posición genérica elevada
-						m_componentModel.InHandItemOffsetOrder = new Vector3(0.08f, -0.12f, 0.12f);
+						m_componentModel.InHandItemOffsetOrder = new Vector3(0.08f, -0.1f, 0.12f);
 						m_componentModel.InHandItemRotationOrder = new Vector3(0.15f, 0.3f, 0f);
 					}
 				}
 
-				// La cabeza sigue al objetivo (la otra mano queda como apuntador de forma natural en el modelo)
 				if (target != null)
 				{
 					m_componentModel.LookAtOrder = new Vector3?(target.ComponentCreatureModel.EyePosition);
@@ -1339,9 +1384,22 @@ namespace Game
 			{
 				float throwProgress = (float)((m_subsystemTime.GameTime - m_throwableThrowTime) / 0.3f);
 
-				m_componentModel.AimHandAngleOrder = 2f * (1f - throwProgress);
-				m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
-				m_componentModel.InHandItemRotationOrder = Vector3.Zero;
+				// CreatureAI: valor directo 4f
+				// ZombieAI2: podemos usar el mismo valor directo ya que está en otra clase
+				m_componentModel.AimHandAngleOrder = 4f * (1f - throwProgress);
+
+				// Los offsets vuelven a cero gradualmente
+				m_componentModel.InHandItemOffsetOrder = Vector3.Lerp(
+					new Vector3(0.08f, -0.1f, 0.12f),
+					Vector3.Zero,
+					throwProgress
+				);
+
+				m_componentModel.InHandItemRotationOrder = Vector3.Lerp(
+					new Vector3(0.15f, 0.3f, 0f),
+					Vector3.Zero,
+					throwProgress
+				);
 			}
 		}
 
@@ -1363,30 +1421,37 @@ namespace Game
 
 				Block block = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)];
 
+				// Posición de lanzamiento desde la mano - ORIGINAL RESTAURADA
 				Vector3 throwPosition = m_componentCreature.ComponentCreatureModel.EyePosition +
-									   m_componentCreature.ComponentBody.Matrix.Right * 0.4f;
+									   m_componentCreature.ComponentBody.Matrix.Right * 0.3f +
+									   m_componentCreature.ComponentBody.Matrix.Up * 0.1f +
+									   m_componentCreature.ComponentBody.Matrix.Forward * 0.2f; // Pequeño offset frontal
 
 				Vector3 targetPosition = target.ComponentCreatureModel.EyePosition;
 				Vector3 direction = Vector3.Normalize(targetPosition - throwPosition);
 
+				// CORRECCIÓN: Asegurar que no apunte al suelo
+				if (target.ComponentBody.Position.Y > m_componentCreature.ComponentBody.Position.Y && direction.Y < 0.1f)
+				{
+					direction.Y = 0.2f;
+					direction = Vector3.Normalize(direction);
+				}
+
+				// Spread normal para lanzables
 				direction += new Vector3(
-					m_random.Float(-0.05f, 0.05f),
-					m_random.Float(-0.03f, 0.03f),
-					m_random.Float(-0.05f, 0.05f)
+					m_random.Float(-0.02f, 0.02f),
+					m_random.Float(-0.015f, 0.015f),
+					m_random.Float(-0.02f, 0.02f)
 				);
 				direction = Vector3.Normalize(direction);
 
 				float speed = block.GetProjectileSpeed(slotValue);
-
-				if (speed < 10f)
-				{
-					speed = 25f;
-				}
+				if (speed < 15f) speed = 22f; // Velocidad aumentada para trayectoria más recta
 
 				Vector3 angularVelocity = new Vector3(
-					m_random.Float(5f, 10f),
-					m_random.Float(5f, 10f),
-					m_random.Float(5f, 10f)
+					m_random.Float(8f, 12f),
+					m_random.Float(8f, 12f),
+					m_random.Float(8f, 12f)
 				);
 
 				if (m_subsystemProjectiles.FireProjectile(
@@ -1397,9 +1462,8 @@ namespace Game
 					m_componentCreature) != null)
 				{
 					m_componentInventory.RemoveSlotItems(m_currentWeaponSlot, 1);
-
-					m_subsystemAudio.PlaySound("Audio/Throw", 0.25f, m_random.Float(-0.2f, 0.2f),
-						m_componentCreature.ComponentBody.Position, 2f, false);
+					m_subsystemAudio.PlaySound("Audio/Throw", 0.3f, m_random.Float(-0.15f, 0.15f),
+						m_componentCreature.ComponentBody.Position, 3f, false);
 				}
 			}
 			catch (Exception)
@@ -3251,21 +3315,29 @@ namespace Game
 			try
 			{
 				Vector3 firePosition = m_componentCreature.ComponentCreatureModel.EyePosition;
-				firePosition.Y -= 0.1f;
+				firePosition += m_componentCreature.ComponentBody.Matrix.Forward * 0.5f; // Disparar desde frente
+				firePosition.Y -= 0.05f; // Reducido de 0.1f
 
 				Vector3 targetPosition = target.ComponentCreatureModel.EyePosition;
 				Vector3 direction = Vector3.Normalize(targetPosition - firePosition);
 
-				float currentAccuracy = 0.03f * (1.5f - m_currentDraw);
+				// CORRECCIÓN: Asegurar que direction.Y sea positivo cuando el objetivo está más alto
+				if (target.ComponentBody.Position.Y > m_componentCreature.ComponentBody.Position.Y && direction.Y < 0.1f)
+				{
+					direction.Y = 0.15f;
+					direction = Vector3.Normalize(direction);
+				}
+
+				float currentAccuracy = 0.025f * (1.5f - m_currentDraw); // Ligeramente reducida
 				direction += new Vector3(
 					m_random.Float(-currentAccuracy, currentAccuracy),
-					m_random.Float(-currentAccuracy * 0.5f, currentAccuracy * 0.5f),
+					m_random.Float(-currentAccuracy * 0.3f, currentAccuracy * 0.3f), // Menos spread vertical
 					m_random.Float(-currentAccuracy, currentAccuracy)
 				);
 				direction = Vector3.Normalize(direction);
 
 				float speedMultiplier = 0.5f + (m_currentDraw * 1.5f);
-				float currentSpeed = 35f * speedMultiplier;
+				float currentSpeed = 38f * speedMultiplier; // Ligeramente más rápida
 
 				int arrowData = ArrowBlock.SetArrowType(0, m_currentArrowType);
 				int arrowValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex<ArrowBlock>(), 0, arrowData);
@@ -3293,19 +3365,30 @@ namespace Game
 			try
 			{
 				Vector3 firePosition = m_componentCreature.ComponentCreatureModel.EyePosition;
-				firePosition.Y -= 0.1f;
+				firePosition += m_componentCreature.ComponentBody.Matrix.Forward * 0.4f; // Disparar desde frente
 
 				Vector3 targetPosition = target.ComponentCreatureModel.EyePosition;
 				Vector3 direction = Vector3.Normalize(targetPosition - firePosition);
 
+				// Ballesta es más precisa que arco
+				float verticalSpread = 0.005f;
+				float horizontalSpread = 0.01f;
+
 				direction += new Vector3(
-					m_random.Float(-0.02f, 0.02f),
-					m_random.Float(-0.01f, 0.01f),
-					m_random.Float(-0.02f, 0.02f)
+					m_random.Float(-horizontalSpread, horizontalSpread),
+					m_random.Float(-verticalSpread, verticalSpread),
+					m_random.Float(-horizontalSpread, horizontalSpread)
 				);
 				direction = Vector3.Normalize(direction);
 
-				float speed = 45f * (0.8f + (m_currentDraw * 0.4f));
+				// Corrección para evitar disparos al suelo
+				if (direction.Y < -0.05f)
+				{
+					direction.Y = 0.05f;
+					direction = Vector3.Normalize(direction);
+				}
+
+				float speed = 55f * (0.9f + (m_currentDraw * 0.3f)); // Más velocidad
 
 				int boltData = ArrowBlock.SetArrowType(0, m_currentBoltType);
 				int boltValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex<ArrowBlock>(), 0, boltData);
@@ -3325,7 +3408,7 @@ namespace Game
 
 				if (m_subsystemNoise != null)
 				{
-					m_subsystemNoise.MakeNoise(firePosition, 0.5f, 20f);
+					m_subsystemNoise.MakeNoise(firePosition, 0.5f, 25f);
 				}
 			}
 			catch { }
@@ -3459,9 +3542,10 @@ namespace Game
 			try
 			{
 				Vector3 firePosition = m_componentCreature.ComponentCreatureModel.EyePosition;
+				firePosition += m_componentCreature.ComponentBody.Matrix.Forward * 0.45f; // Disparar desde frente
+				firePosition.Y -= 0.02f; // Casi nada
 
-				Vector3 targetPosition = target.ComponentBody.Position;
-				targetPosition.Y += target.ComponentBody.BoxSize.Y * 0.5f;
+				Vector3 targetPosition = target.ComponentCreatureModel.EyePosition;
 
 				Vector3 direction = targetPosition - firePosition;
 				float distance = direction.Length();
@@ -3475,25 +3559,32 @@ namespace Game
 					direction = Vector3.UnitX;
 				}
 
-				float baseInaccuracy = m_repeatCrossbowMaxInaccuracy * 0.2f;
+				// CORRECCIÓN: Ajuste fino para no disparar al suelo
+				if (direction.Y < 0f && target.ComponentBody.Position.Y > m_componentCreature.ComponentBody.Position.Y)
+				{
+					direction.Y = 0.12f;
+					direction = Vector3.Normalize(direction);
+				}
 
-				float distanceFactor = MathUtils.Clamp(distance / m_maxDistance, 0.1f, 1.0f);
+				float baseInaccuracy = 0.01f;
+
+				float distanceFactor = MathUtils.Clamp(distance / m_maxDistance, 0.2f, 0.7f);
 				float inaccuracy = baseInaccuracy * distanceFactor;
 
 				direction += new Vector3(
 					m_random.Float(-inaccuracy, inaccuracy),
-					m_random.Float(-inaccuracy * 0.2f, inaccuracy * 0.2f),
+					m_random.Float(-inaccuracy * 0.2f, inaccuracy * 0.2f), // Poca vertical
 					m_random.Float(-inaccuracy, inaccuracy)
 				);
 
 				direction = Vector3.Normalize(direction);
 
-				float speed = m_repeatCrossbowBoltSpeed * 1.2f;
+				float speed = 38f;
 
 				int arrowData = RepeatArrowBlock.SetArrowType(0, m_currentRepeatArrowType);
 				int arrowValue = Terrain.MakeBlockValue(RepeatArrowBlock.Index, 0, arrowData);
 
-				Vector3 adjustedFirePosition = firePosition + direction * 0.2f;
+				Vector3 adjustedFirePosition = firePosition + direction * 0.3f;
 
 				var projectile = m_subsystemProjectiles.FireProjectile(
 					arrowValue,
@@ -3515,7 +3606,7 @@ namespace Game
 
 				if (m_subsystemNoise != null)
 				{
-					m_subsystemNoise.MakeNoise(firePosition, 0.5f, 20f);
+					m_subsystemNoise.MakeNoise(firePosition, 0.5f, 25f);
 				}
 			}
 			catch (Exception)
