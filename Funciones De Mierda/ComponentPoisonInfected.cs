@@ -88,6 +88,18 @@ namespace Game
 			if (this.m_componentCreature == null || this.m_componentCreature.ComponentHealth == null)
 				return;
 
+			// Verificar si la entidad está muerta
+			if (this.m_componentCreature.ComponentHealth.Health <= 0f)
+			{
+				// Detener el sistema de partículas de vómito si está activo
+				if (this.m_pukeParticleSystem != null && !this.m_pukeParticleSystem.IsStopped)
+				{
+					this.m_pukeParticleSystem.IsStopped = true;
+					this.m_pukeParticleSystem = null;
+				}
+				return; // Salir del método Update para no seguir procesando el vómito en una entidad muerta
+			}
+
 			if (!this.m_subsystemGameInfo.WorldSettings.AreAdventureSurvivalMechanicsEnabled)
 			{
 				this.m_InfectDuration = 0f;
