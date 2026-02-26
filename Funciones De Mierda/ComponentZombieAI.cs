@@ -100,7 +100,7 @@ namespace Game
 		private bool m_isItemsLauncherAiming = false;
 		private bool m_isItemsLauncherFiring = false;
 		private double m_itemsLauncherLastFireTime;
-		private float m_itemsLauncherFireInterval = 0.5f;
+		private float m_itemsLauncherFireInterval = 1.2f;
 		private float m_itemsLauncherSpeed = 35f;
 		private float m_itemsLauncherSpread = 0.1f;
 		private float m_itemsLauncherReloadTime = 1.2f;     // ← NUEVO (valor del XML)
@@ -1221,38 +1221,44 @@ namespace Game
 
 			try
 			{
-				// Si está recargando, no disparar
 				if (m_isItemsLauncherReloading) return;
 
+				// Posición de disparo como el musket (desde el ojo)
 				Vector3 firePosition = m_componentCreature.ComponentCreatureModel.EyePosition;
+
+				// Calcular dirección exacta hacia el objetivo (como el musket)
 				Vector3 targetPosition = target.ComponentCreatureModel.EyePosition;
 				Vector3 direction = Vector3.Normalize(targetPosition - firePosition);
 
-				direction += new Vector3(
-					m_random.Float(-m_itemsLauncherSpread, m_itemsLauncherSpread),
-					m_random.Float(-m_itemsLauncherSpread * 0.5f, m_itemsLauncherSpread * 0.5f),
-					m_random.Float(-m_itemsLauncherSpread, m_itemsLauncherSpread)
-				);
-				direction = Vector3.Normalize(direction);
+				// Velocidad fija como el musket (sin depender del ítem)
+				float speed = 120f; // Misma velocidad que la bala del mosquete
 
+				// Usar el mismo proyectil que el mosquete (bala recta)
 				int bulletBlockIndex = BlocksManager.GetBlockIndex<BulletBlock>();
 				if (bulletBlockIndex > 0)
 				{
 					int bulletData = BulletBlock.SetBulletType(0, BulletBlock.BulletType.MusketBall);
 					int bulletValue = Terrain.MakeBlockValue(bulletBlockIndex, 0, bulletData);
 
-					m_subsystemProjectiles.FireProjectile(
+					// Disparar con velocidad constante y sin gravedad artificial
+					Projectile projectile = m_subsystemProjectiles.FireProjectile(
 						bulletValue,
 						firePosition,
-						direction * m_itemsLauncherSpeed,
-						Vector3.Zero,
+						direction * speed,  // Velocidad constante
+						Vector3.Zero,        // Sin rotación
 						m_componentCreature
 					);
 
-					// Contar disparo
+					if (projectile != null)
+					{
+						// Asegurar que el proyectil no sea afectado por configuraciones del ítem
+						projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
+						projectile.IsIncendiary = false;
+					}
+
 					m_itemsLauncherShotsFired++;
 
-					// Partículas y sonidos...
+					// Efectos visuales (como el musket)
 					if (m_subsystemParticles != null && m_subsystemTerrain != null)
 					{
 						Vector3 smokePos = firePosition + direction * 0.3f;
@@ -1262,9 +1268,11 @@ namespace Game
 						);
 					}
 
-					m_subsystemAudio.PlaySound("Audio/Items/ItemLauncher/Item Cannon Fire", 0.7f,
+					// Sonido
+					m_subsystemAudio.PlaySound("Audio/Items/ItemLauncher/Item Cannon Fire", 1f,
 						m_random.Float(-0.1f, 0.1f), m_componentCreature.ComponentBody.Position, 15f, false);
 
+					// Ruido
 					if (m_subsystemNoise != null)
 						m_subsystemNoise.MakeNoise(firePosition, 0.8f, 30f);
 				}
