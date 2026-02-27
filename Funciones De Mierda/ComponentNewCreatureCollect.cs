@@ -313,7 +313,7 @@ namespace Game
 			float randomChance = this.m_random.Float(0f, 1f);
 			string name = base.Entity.ValuesDictionary.DatabaseObject.Name;
 
-			if (name == "InfectedNormal1" || name == "InfectedNormal2" || name == "InfectedMuscle1" || name == "InfectedMuscle2" || name == "Werewolf" || name == "CapitanPirata" || name == "PirataNormal" || name == "PirataElite" || name == "PirataHostilComerciante" || name == "GhostNormal")
+			if (name == "InfectedNormal1" || name == "InfectedNormal2" || name == "InfectedMuscle1" || name == "InfectedMuscle2" || name == "Werewolf" || name == "CapitanPirata" || name == "PirataNormal" || name == "PirataElite" || name == "PirataHostilComerciante" || name == "GhostNormal" || name == "GhostFast" || name == "Boomer1" || name == "Boomer2" || name == "Boomer3" || name == "GhostBoomer1" || name == "GhostBoomer2" || name == "GhostBoomer3")
 			{
 				int weaponValue = 0;
 
