@@ -10,22 +10,7 @@ namespace Game
 {
 	public class SubsystemZombiesSpawn : Subsystem, IUpdateable
 	{
-		public Dictionary<ComponentCreature, bool>.KeyCollection Creatures
-		{
-			get
-			{
-				return this.m_creatures.Keys;
-			}
-		}
-
-		public UpdateOrder UpdateOrder
-		{
-			get
-			{
-				return UpdateOrder.Default;
-			}
-		}
-
+		// Subsistemas necesarios
 		private SubsystemGameInfo m_subsystemGameInfo;
 		private SubsystemSpawn m_subsystemSpawn;
 		private SubsystemTerrain m_subsystemTerrain;
@@ -37,27 +22,19 @@ namespace Game
 		private SubsystemTimeOfDay m_subsystemTimeOfDay;
 		private SubsystemPlayers m_subsystemPlayers;
 
+		// Datos de las olas
+		private Dictionary<int, List<ZombieSpawnEntry>> m_waves = new Dictionary<int, List<ZombieSpawnEntry>>();
+
+		// Estado actual
+		private int m_currentWaveIndex = 1;
+		private int m_maxWaveIndex = 19;
+
+		// Control de spawn
+		private double m_nextSpawnTime;
+		private float m_spawnInterval = 2f;
 		private Random m_random = new Random();
-		private Dictionary<ComponentCreature, bool> m_creatures = new Dictionary<ComponentCreature, bool>();
-		private DynamicArray<ComponentBody> m_componentBodies = new DynamicArray<ComponentBody>();
 
-		private static int m_totalLimit = 80;
-
-		private List<WaveData> m_waves = new List<WaveData>();
-		private int m_currentWaveIndex = 0;
-		private bool m_wavesLoaded = false;
-
-		private Dictionary<string, int> m_currentWaveSpawns = new Dictionary<string, int>();
-		private Dictionary<string, int> m_originalWaveSpawns = new Dictionary<string, int>();
-		private bool m_isGreenNightActive = false;
-		private double m_lastMoonDayForWave = 0;
-		private bool m_waveAdvancedThisNight = false;
-		private bool m_firstNightCompleted = false;
-
-		// Control de fase de jefes
-		private bool m_bossPhaseActive = false;
-		private float m_bossPhaseStartTime = 0f;
-
+		// Control de jefes
 		private HashSet<string> m_bossZombieTypes = new HashSet<string>
 		{
 			"Tank1", "Tank2", "Tank3",
@@ -65,1159 +42,846 @@ namespace Game
 			"MachineGunInfected", "FlyingInfectedBoss"
 		};
 
-		private HashSet<string> m_allZombieTypes = new HashSet<string>
+		private List<string> m_pendingBosses = new List<string>();
+		private List<Entity> m_activeBosses = new List<Entity>();
+		private bool m_bossPhaseActive;
+		private double m_lastMidnightCheck;
+
+		// Control de fases lunares
+		private int m_nextWavePhase = 0;
+		private bool m_advancedThisNight;
+
+		// Bloques prohibidos
+		private HashSet<string> m_forbiddenBlockNames = new HashSet<string>
 		{
-			"InfectedNormal1", "InfectedNormal2", "InfectedFast1", "InfectedFast2",
-			"InfectedMuscle1", "InfectedMuscle2",
-			"PoisonousInfected1", "PoisonousInfected2",
-			"InfectedFly1", "InfectedFly2", "InfectedFly3",
-			"Boomer1", "Boomer2", "Boomer3",
-			"Charger1", "Charger2",
-			"Tank1", "Tank2", "Tank3",
-			"GhostNormal", "GhostFast", "PoisonousGhost",
-			"GhostBoomer1", "GhostBoomer2", "GhostBoomer3",
-			"GhostCharger",
-			"TankGhost1", "TankGhost2", "TankGhost3",
-			"MachineGunInfected", "FlyingInfectedBoss",
-			"InfectedWolf", "InfectedWerewolf"
+			nameof(BedrockBlock),
+			nameof(IronBlock),
+			nameof(CopperBlock),
+			nameof(DiamondBlock),
+			nameof(BrickBlock),
+			nameof(MalachiteBlock),
+			nameof(WaterBlock),
+			nameof(MagmaBlock),
+			nameof(GraniteBlock),
+			nameof(BasaltBlock),
+			nameof(BasaltFenceBlock),
+			nameof(BasaltSlabBlock),
+			nameof(BasaltStairsBlock),
+			nameof(LimestoneBlock)
 		};
 
-		public class WaveData
-		{
-			public string Name { get; set; }
-			public string FilePath { get; set; }
-			public Dictionary<string, int> Spawns { get; set; } = new Dictionary<string, int>();
-		}
-
-		public virtual void Update(float dt)
-		{
-			if (!m_wavesLoaded)
-			{
-				LoadWaves();
-				m_wavesLoaded = true;
-				LoadCurrentWave();
-			}
-
-			bool greenNightActive = (m_subsystemGreenNightSky != null && m_subsystemGreenNightSky.IsGreenNightActive);
-
-			if (greenNightActive != m_isGreenNightActive)
-			{
-				m_isGreenNightActive = greenNightActive;
-
-				if (m_isGreenNightActive)
-				{
-					m_waveAdvancedThisNight = false;
-					m_bossPhaseActive = false;
-					LoadCurrentWave();
-				}
-				else
-				{
-					m_firstNightCompleted = true;
-					m_bossPhaseActive = false;
-
-					if (m_currentWaveIndex < m_waves.Count - 1)
-					{
-						m_currentWaveIndex++;
-						LoadCurrentWave();
-					}
-				}
-			}
-
-			if (m_isGreenNightActive && this.m_subsystemGameInfo.WorldSettings.EnvironmentBehaviorMode == EnvironmentBehaviorMode.Living)
-			{
-				// Verificar si hay jefes en esta oleada
-				bool hasBossesInWave = m_currentWaveSpawns.Keys.Any(key => m_bossZombieTypes.Contains(key));
-
-				if (hasBossesInWave)
-				{
-					// Solo verificar activación de fase de jefes si hay jefes en la oleada
-					CheckBossPhaseActivation();
-					UpdateBossPhase();
-				}
-
-				if (this.m_subsystemTime.PeriodicGameTimeEvent(2.0, 0.0))
-				{
-					SpawnZombiesFromWave();
-				}
-			}
-		}
-
-		private void CheckBossPhaseActivation()
-		{
-			if (m_currentWaveSpawns.Count == 0) return;
-
-			float timeOfDay = m_subsystemTimeOfDay.TimeOfDay;
-			float nightProgress = GetNightProgress(timeOfDay);
-
-			// Verificar si hay jefes pendientes
-			var bossTemplates = m_currentWaveSpawns
-				.Where(kv => kv.Value > 0 && m_bossZombieTypes.Contains(kv.Key))
-				.ToList();
-
-			// Solo activar si hay jefes por generar y estamos a medianoche
-			if (!m_bossPhaseActive && bossTemplates.Count > 0 && nightProgress >= 0.45f && nightProgress <= 0.55f)
-			{
-				ActivateBossPhase();
-			}
-		}
-
-		private float GetNightProgress(float timeOfDay)
-		{
-			float nightStart = m_subsystemTimeOfDay.NightStart;
-			float dawnStart = m_subsystemTimeOfDay.DawnStart;
-
-			if (timeOfDay < nightStart)
-				return 0f;
-			if (timeOfDay > dawnStart)
-				return 1f;
-
-			return (timeOfDay - nightStart) / (dawnStart - nightStart);
-		}
-
-		private void ActivateBossPhase()
-		{
-			m_bossPhaseActive = true;
-			m_bossPhaseStartTime = m_subsystemTimeOfDay.TimeOfDay;
-
-			if (m_subsystemPlayers != null)
-			{
-				foreach (ComponentPlayer componentPlayer in m_subsystemPlayers.ComponentPlayers)
-				{
-					if (componentPlayer?.ComponentGui != null)
-					{
-						componentPlayer.ComponentGui.DisplaySmallMessage(
-							LanguageControl.Get("ZombiesSpawn", "BossesAppear"),
-							new Color(139, 0, 0), false, true);
-					}
-				}
-			}
-		}
-
-		private void UpdateBossPhase()
-		{
-			if (!m_bossPhaseActive)
-				return;
-
-			bool anyBossSpawnsLeft = false;
-			foreach (var kv in m_currentWaveSpawns)
-			{
-				if (m_bossZombieTypes.Contains(kv.Key) && kv.Value > 0)
-				{
-					anyBossSpawnsLeft = true;
-					break;
-				}
-			}
-
-			if (!anyBossSpawnsLeft)
-			{
-				int aliveBosses = CountAliveBosses();
-				if (aliveBosses == 0)
-				{
-					m_bossPhaseActive = false;
-				}
-			}
-		}
-
-		private int CountAliveBosses()
-		{
-			int count = 0;
-			foreach (var creature in m_creatures.Keys)
-			{
-				string name = creature.Entity.ValuesDictionary.DatabaseObject.Name;
-				if (m_bossZombieTypes.Contains(name))
-				{
-					count++;
-				}
-			}
-			return count;
-		}
-
-		private void LoadCurrentWave()
-		{
-			if (m_waves.Count == 0)
-			{
-				return;
-			}
-
-			if (m_currentWaveIndex >= m_waves.Count)
-			{
-				m_currentWaveIndex = m_waves.Count - 1;
-			}
-
-			WaveData currentWave = m_waves[m_currentWaveIndex];
-
-			m_originalWaveSpawns.Clear();
-			foreach (var spawn in currentWave.Spawns)
-			{
-				m_originalWaveSpawns[spawn.Key] = spawn.Value;
-			}
-
-			ResetCurrentWaveSpawns();
-
-			// Mensaje para la ola final (ola 19, índice 18) solo si es de noche verde
-			if (m_currentWaveIndex == 18 && m_subsystemPlayers != null && m_isGreenNightActive)
-			{
-				foreach (ComponentPlayer componentPlayer in m_subsystemPlayers.ComponentPlayers)
-				{
-					if (componentPlayer?.ComponentGui != null)
-					{
-						componentPlayer.ComponentGui.DisplaySmallMessage(
-							LanguageControl.Get("ZombiesSpawn", "FinalWave"),
-							new Color(180, 0, 0), false, true);
-					}
-				}
-			}
-		}
-
-		private void ResetCurrentWaveSpawns()
-		{
-			m_currentWaveSpawns.Clear();
-			foreach (var spawn in m_originalWaveSpawns)
-			{
-				m_currentWaveSpawns[spawn.Key] = spawn.Value;
-			}
-		}
-
-		private void SpawnZombiesFromWave()
-		{
-			if (m_currentWaveSpawns.Count == 0) return;
-
-			int currentCount = CountZombies();
-			if (currentCount >= m_totalLimit) return;
-
-			if (m_currentWaveSpawns.Values.Sum() == 0)
-			{
-				return;
-			}
-
-			var regularTemplates = m_currentWaveSpawns
-				.Where(kv => kv.Value > 0 && !m_bossZombieTypes.Contains(kv.Key))
-				.ToList();
-
-			var bossTemplates = m_currentWaveSpawns
-				.Where(kv => kv.Value > 0 && m_bossZombieTypes.Contains(kv.Key))
-				.ToList();
-
-			List<KeyValuePair<string, int>> availableTemplates;
-
-			if (m_bossPhaseActive)
-			{
-				availableTemplates = bossTemplates;
-			}
-			else
-			{
-				availableTemplates = regularTemplates;
-			}
-
-			if (availableTemplates.Count == 0) return;
-
-			for (int attempt = 0; attempt < 3; attempt++)
-			{
-				var selected = availableTemplates[this.m_random.Int(0, availableTemplates.Count - 1)];
-				string templateName = selected.Key;
-
-				foreach (GameWidget gameWidget in this.m_subsystemViews.GameWidgets)
-				{
-					Point3? spawnPoint = this.GetRandomSpawnPoint(gameWidget.ActiveCamera, SpawnLocationType.Surface);
-					if (spawnPoint.HasValue)
-					{
-						Vector3 position = new Vector3(
-							spawnPoint.Value.X + 0.5f,
-							spawnPoint.Value.Y + 1.1f,
-							spawnPoint.Value.Z + 0.5f);
-
-						Entity entity = this.SpawnZombie(templateName, position);
-						if (entity != null)
-						{
-							m_currentWaveSpawns[templateName]--;
-
-							if (m_bossZombieTypes.Contains(templateName) && m_subsystemPlayers != null)
-							{
-								string bossKey = GetBossMessageKey(templateName);
-								foreach (ComponentPlayer componentPlayer in m_subsystemPlayers.ComponentPlayers)
-								{
-									if (componentPlayer?.ComponentGui != null)
-									{
-										componentPlayer.ComponentGui.DisplaySmallMessage(
-											LanguageControl.Get("ZombiesSpawn", bossKey),
-											new Color(180, 0, 0), false, true);
-									}
-								}
-							}
-
-							return;
-						}
-					}
-				}
-			}
-		}
-
-		private string GetBossMessageKey(string templateName)
-		{
-			if (templateName.StartsWith("Tank"))
-			{
-				if (templateName.Contains("Ghost"))
-					return "BossGhostTank";
-				return "BossTank";
-			}
-
-			switch (templateName)
-			{
-				case "MachineGunInfected":
-					return "BossMachineGun";
-				case "FlyingInfectedBoss":
-					return "BossFlying";
-				default:
-					return "BossGeneric";
-			}
-		}
+		public UpdateOrder UpdateOrder => UpdateOrder.Default;
 
 		public override void Load(ValuesDictionary valuesDictionary)
 		{
-			this.m_subsystemGameInfo = base.Project.FindSubsystem<SubsystemGameInfo>(true);
-			this.m_subsystemSpawn = base.Project.FindSubsystem<SubsystemSpawn>(true);
-			this.m_subsystemTerrain = base.Project.FindSubsystem<SubsystemTerrain>(true);
-			this.m_subsystemTime = base.Project.FindSubsystem<SubsystemTime>(true);
-			this.m_subsystemSky = base.Project.FindSubsystem<SubsystemSky>(true);
-			this.m_subsystemBodies = base.Project.FindSubsystem<SubsystemBodies>(true);
-			this.m_subsystemViews = base.Project.FindSubsystem<SubsystemGameWidgets>(true);
-			this.m_subsystemGreenNightSky = base.Project.FindSubsystem<SubsystemGreenNightSky>(true);
-			this.m_subsystemTimeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
-			this.m_subsystemPlayers = base.Project.FindSubsystem<SubsystemPlayers>(true);
+			// Obtener subsistemas
+			m_subsystemGameInfo = Project.FindSubsystem<SubsystemGameInfo>(true);
+			m_subsystemSpawn = Project.FindSubsystem<SubsystemSpawn>(true);
+			m_subsystemTerrain = Project.FindSubsystem<SubsystemTerrain>(true);
+			m_subsystemTime = Project.FindSubsystem<SubsystemTime>(true);
+			m_subsystemSky = Project.FindSubsystem<SubsystemSky>(true);
+			m_subsystemBodies = Project.FindSubsystem<SubsystemBodies>(true);
+			m_subsystemViews = Project.FindSubsystem<SubsystemGameWidgets>(true);
+			m_subsystemGreenNightSky = Project.FindSubsystem<SubsystemGreenNightSky>(true);
+			m_subsystemTimeOfDay = Project.FindSubsystem<SubsystemTimeOfDay>(true);
+			m_subsystemPlayers = Project.FindSubsystem<SubsystemPlayers>(true);
 
-			this.m_lastMoonDayForWave = Math.Floor(this.m_subsystemTimeOfDay.Day);
-			this.m_isGreenNightActive = false;
-			this.m_wavesLoaded = false;
-			this.m_firstNightCompleted = false;
-			this.m_bossPhaseActive = false;
+			// Cargar las olas usando ContentManager como las texturas
+			LoadWaves();
 
-			if (valuesDictionary.ContainsKey("CurrentWaveIndex"))
-			{
-				this.m_currentWaveIndex = valuesDictionary.GetValue<int>("CurrentWaveIndex");
-			}
+			// Cargar estado guardado
+			m_currentWaveIndex = valuesDictionary.GetValue<int>("CurrentWaveIndex", 1);
+			m_nextWavePhase = valuesDictionary.GetValue<int>("NextWavePhase", 0);
+
+			if (m_currentWaveIndex < 1) m_currentWaveIndex = 1;
+			if (m_currentWaveIndex > m_maxWaveIndex) m_currentWaveIndex = m_maxWaveIndex;
 		}
 
 		public override void Save(ValuesDictionary valuesDictionary)
 		{
 			valuesDictionary.SetValue("CurrentWaveIndex", m_currentWaveIndex);
+			valuesDictionary.SetValue("NextWavePhase", m_nextWavePhase);
 		}
 
-		private string GetWavesPath()
+		public void Update(float dt)
 		{
-			try
+			if (!m_subsystemGreenNightSky.GreenNightEnabled || !m_subsystemGreenNightSky.IsGreenNightActive)
+				return;
+
+			double now = m_subsystemTime.GameTime;
+
+			if (!m_advancedThisNight && IsDusk())
 			{
-				// Obtener la ruta del assembly del mod
-				string assemblyLocation = System.Reflection.Assembly.GetExecutingAssembly().Location;
-				if (!string.IsNullOrEmpty(assemblyLocation))
+				int currentPhase = m_subsystemSky.MoonPhase;
+				if (currentPhase == m_nextWavePhase)
 				{
-					string modPath = Path.GetDirectoryName(assemblyLocation);
-					if (!string.IsNullOrEmpty(modPath))
+					if (m_currentWaveIndex < m_maxWaveIndex)
 					{
-						return Path.Combine(modPath, "Waves");
+						m_currentWaveIndex++;
+						m_nextWavePhase = (m_nextWavePhase == 0) ? 4 : 0;
 					}
+					m_advancedThisNight = true;
 				}
 			}
-			catch { }
 
-			// Último recurso: carpeta "Waves" en el directorio actual del juego
-			return "Waves";
+			if (IsDawn())
+				m_advancedThisNight = false;
+
+			if (!m_bossPhaseActive && IsMidnight() && now - m_lastMidnightCheck > 10.0)
+			{
+				m_lastMidnightCheck = now;
+				StartBossPhaseForCurrentWave();
+			}
+
+			if (m_bossPhaseActive)
+			{
+				for (int i = m_activeBosses.Count - 1; i >= 0; i--)
+				{
+					Entity e = m_activeBosses[i];
+					if (!e.IsAddedToProject)
+					{
+						m_activeBosses.RemoveAt(i);
+						continue;
+					}
+
+					ComponentHealth health = e.FindComponent<ComponentHealth>();
+					if (health == null || health.Health <= 0f)
+						m_activeBosses.RemoveAt(i);
+				}
+
+				if (m_activeBosses.Count == 0 && m_pendingBosses.Count > 0)
+					SpawnNextBoss();
+				else if (m_activeBosses.Count == 0 && m_pendingBosses.Count == 0)
+					m_bossPhaseActive = false;
+
+				return;
+			}
+
+			if (now >= m_nextSpawnTime)
+			{
+				m_nextSpawnTime = now + m_spawnInterval;
+				SpawnZombie();
+			}
 		}
 
 		private void LoadWaves()
 		{
-			m_waves.Clear();
-
 			try
 			{
-				string wavesPath = GetWavesPath();
+				bool anyWaveLoaded = false;
 
-				if (!Directory.Exists(wavesPath))
+				for (int i = 1; i <= m_maxWaveIndex; i++)
 				{
-					Directory.CreateDirectory(wavesPath);
-				}
-
-				CreateAllWaveFiles(wavesPath);
-
-				// Leer todos los archivos de la carpeta (sin filtrar por extensión)
-				string[] files = Directory.GetFiles(wavesPath);
-
-				var sortedFiles = files.OrderBy(f =>
-				{
-					string fileName = Path.GetFileNameWithoutExtension(f);
-					if (int.TryParse(fileName, out int number))
-						return number;
-					return int.MaxValue;
-				});
-
-				foreach (string file in sortedFiles)
-				{
-					string[] lines = File.ReadAllLines(file);
-
-					WaveData wave = new WaveData
+					try
 					{
-						Name = $"Ola {Path.GetFileNameWithoutExtension(file)}",
-						FilePath = file
-					};
+						// Usar ContentManager.Get<string> para obtener el contenido del archivo como string
+						// Esto busca en la carpeta "Waves" igual que busca texturas en "Textures"
+						string content = ContentManager.Get<string>($"Waves/{i}.txt");
 
-					foreach (string line in lines)
-					{
-						if (string.IsNullOrWhiteSpace(line)) continue;
-
-						string[] parts = line.Split(';');
-						if (parts.Length == 2)
+						if (!string.IsNullOrEmpty(content))
 						{
-							string template = parts[0].Trim();
-							if (int.TryParse(parts[1].Trim(), out int count))
+							string[] lines = content.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+							List<ZombieSpawnEntry> entries = new List<ZombieSpawnEntry>();
+
+							foreach (string line in lines)
 							{
-								wave.Spawns[template] = count;
+								if (string.IsNullOrWhiteSpace(line)) continue;
+
+								string[] parts = line.Trim().Split(';');
+								if (parts.Length == 2)
+								{
+									string type = parts[0].Trim();
+									if (int.TryParse(parts[1].Trim(), out int weight))
+									{
+										entries.Add(new ZombieSpawnEntry { Type = type, Weight = weight });
+									}
+								}
+							}
+
+							if (entries.Count > 0)
+							{
+								m_waves[i] = entries;
+								anyWaveLoaded = true;
+								Log.Information($"Ola {i} cargada correctamente");
 							}
 						}
 					}
-
-					if (wave.Spawns.Count > 0)
+					catch
 					{
-						m_waves.Add(wave);
+						// Si no encuentra el archivo, simplemente continuamos
 					}
 				}
 
-				if (m_waves.Count == 0)
+				if (!anyWaveLoaded)
 				{
-					CreateEmergencyWaves(wavesPath);
+					Log.Warning("No se encontraron archivos de olas. Usando olas por defecto.");
+					LoadDefaultWaves();
 				}
 			}
-			catch (Exception e)
+			catch (Exception ex)
 			{
-				Log.Error($"Error cargando olas: {e.Message}");
-				CreateEmergencyWaves(GetWavesPath());
+				Log.Error($"Error cargando olas: {ex.Message}");
+				LoadDefaultWaves();
 			}
 		}
 
-		private void CreateEmergencyWaves(string wavesPath)
+		private void LoadDefaultWaves()
 		{
-			m_waves.Clear();
+			Log.Information("Cargando olas por defecto...");
 
-			WaveData wave1 = new WaveData { Name = "Ola 1", FilePath = Path.Combine(wavesPath, "1") };
-			wave1.Spawns["InfectedNormal1"] = 20;
-			wave1.Spawns["InfectedNormal2"] = 20;
-			wave1.Spawns["InfectedFly1"] = 2;
-			m_waves.Add(wave1);
+			m_waves[1] = ParseWaveData(new string[]
+			{
+				"InfectedNormal1;30",
+				"InfectedNormal2;30",
+				"InfectedFly1;6"
+			});
 
-			// Opcional: guardar el archivo de emergencia
+			m_waves[2] = ParseWaveData(new string[]
+			{
+				"InfectedNormal1;30",
+				"InfectedNormal2;30",
+				"InfectedFast1;25",
+				"InfectedFast2;25",
+				"InfectedFly1;6"
+			});
+
+			m_waves[3] = ParseWaveData(new string[]
+			{
+				"InfectedNormal1;30",
+				"InfectedNormal2;30",
+				"InfectedFast1;25",
+				"InfectedFast2;25",
+				"InfectedMuscle1;35",
+				"InfectedMuscle2;35",
+				"InfectedFly1;6"
+			});
+
+			m_waves[4] = ParseWaveData(new string[]
+			{
+				"InfectedNormal1;30",
+				"InfectedNormal2;30",
+				"InfectedFast1;25",
+				"InfectedFast2;25",
+				"InfectedMuscle1;35",
+				"InfectedMuscle2;35",
+				"PoisonousInfected1;20",
+				"PoisonousInfected2;20",
+				"InfectedFly1;6"
+			});
+
+			m_waves[5] = ParseWaveData(new string[]
+			{
+				"InfectedNormal1;30",
+				"InfectedNormal2;30",
+				"InfectedFast1;25",
+				"InfectedFast2;25",
+				"InfectedMuscle1;35",
+				"InfectedMuscle2;35",
+				"PoisonousInfected1;20",
+				"PoisonousInfected2;20",
+				"InfectedFly1;6",
+				"InfectedFly2;8",
+				"Boomer1;10",
+				"InfectedWolf;15"
+			});
+
+			m_waves[6] = ParseWaveData(new string[]
+			{
+				"InfectedNormal1;30",
+				"InfectedNormal2;30",
+				"InfectedFast1;25",
+				"InfectedFast2;25",
+				"InfectedMuscle1;35",
+				"InfectedMuscle2;35",
+				"PoisonousInfected1;20",
+				"PoisonousInfected2;20",
+				"InfectedFly1;6",
+				"InfectedFly2;8",
+				"Boomer1;10",
+				"Boomer2;10",
+				"InfectedWolf;18"
+			});
+
+			m_waves[7] = ParseWaveData(new string[]
+			{
+				"InfectedNormal1;30",
+				"InfectedNormal2;30",
+				"InfectedFast1;25",
+				"InfectedFast2;25",
+				"InfectedMuscle1;35",
+				"InfectedMuscle2;35",
+				"PoisonousInfected1;20",
+				"PoisonousInfected2;20",
+				"InfectedFly1;6",
+				"InfectedFly2;8",
+				"InfectedFly3;5",
+				"Boomer1;10",
+				"Boomer2;10",
+				"Boomer3;10",
+				"InfectedWolf;20"
+			});
+
+			m_waves[8] = ParseWaveData(new string[]
+			{
+				"InfectedNormal1;30",
+				"InfectedNormal2;30",
+				"InfectedFast1;25",
+				"InfectedFast2;25",
+				"InfectedMuscle1;35",
+				"InfectedMuscle2;35",
+				"PoisonousInfected1;20",
+				"PoisonousInfected2;20",
+				"PoisonousGhost;12",
+				"InfectedFly1;6",
+				"InfectedFly2;8",
+				"InfectedFly3;5",
+				"Boomer1;10",
+				"Boomer2;10",
+				"Boomer3;10",
+				"Charger1;6",
+				"InfectedWolf;25"
+			});
+
+			m_waves[9] = ParseWaveData(new string[]
+			{
+				"InfectedNormal1;30",
+				"InfectedNormal2;30",
+				"InfectedFast1;25",
+				"InfectedFast2;25",
+				"GhostFast;12",
+				"InfectedMuscle1;35",
+				"InfectedMuscle2;35",
+				"PoisonousInfected1;20",
+				"PoisonousInfected2;20",
+				"PoisonousGhost;12",
+				"InfectedFly1;6",
+				"InfectedFly2;8",
+				"InfectedFly3;5",
+				"Boomer1;10",
+				"Boomer2;10",
+				"Boomer3;10",
+				"Charger2;6",
+				"InfectedWolf;25"
+			});
+
+			m_waves[10] = ParseWaveData(new string[]
+			{
+				"InfectedNormal1;30",
+				"InfectedNormal2;30",
+				"GhostNormal;18",
+				"InfectedFast1;25",
+				"InfectedFast2;25",
+				"GhostFast;12",
+				"InfectedMuscle1;35",
+				"InfectedMuscle2;35",
+				"PoisonousInfected1;20",
+				"PoisonousInfected2;20",
+				"PoisonousGhost;12",
+				"InfectedFly1;6",
+				"InfectedFly2;8",
+				"InfectedFly3;5",
+				"Boomer1;10",
+				"Boomer2;10",
+				"Boomer3;10",
+				"GhostBoomer1;6",
+				"Charger1;6",
+				"Charger2;6",
+				"InfectedWolf;25",
+				"InfectedWerewolf;12"
+			});
+
+			m_waves[11] = ParseWaveData(new string[]
+			{
+				"InfectedNormal1;30",
+				"InfectedNormal2;30",
+				"GhostNormal;18",
+				"InfectedFast1;25",
+				"InfectedFast2;25",
+				"GhostFast;12",
+				"InfectedMuscle1;35",
+				"InfectedMuscle2;35",
+				"PoisonousInfected1;20",
+				"PoisonousInfected2;20",
+				"PoisonousGhost;12",
+				"InfectedFly1;6",
+				"InfectedFly2;8",
+				"InfectedFly3;5",
+				"Boomer1;10",
+				"Boomer2;10",
+				"Boomer3;10",
+				"GhostBoomer1;6",
+				"GhostBoomer2;6",
+				"Charger1;6",
+				"Charger2;6",
+				"Tank1;1",
+				"InfectedWolf;25",
+				"InfectedWerewolf;12"
+			});
+
+			m_waves[12] = ParseWaveData(new string[]
+			{
+				"InfectedNormal1;30",
+				"InfectedNormal2;30",
+				"GhostNormal;18",
+				"InfectedFast1;25",
+				"InfectedFast2;25",
+				"GhostFast;12",
+				"InfectedMuscle1;35",
+				"InfectedMuscle2;35",
+				"PoisonousInfected1;20",
+				"PoisonousInfected2;20",
+				"PoisonousGhost;12",
+				"InfectedFly1;6",
+				"InfectedFly2;8",
+				"InfectedFly3;5",
+				"Boomer1;10",
+				"Boomer2;10",
+				"Boomer3;10",
+				"GhostBoomer1;6",
+				"GhostBoomer2;6",
+				"GhostBoomer3;6",
+				"Charger1;6",
+				"Charger2;6",
+				"TankGhost1;1",
+				"InfectedWolf;25",
+				"InfectedWerewolf;12"
+			});
+
+			m_waves[13] = ParseWaveData(new string[]
+			{
+				"InfectedNormal1;30",
+				"InfectedNormal2;30",
+				"GhostNormal;18",
+				"InfectedFast1;25",
+				"InfectedFast2;25",
+				"GhostFast;12",
+				"InfectedMuscle1;35",
+				"InfectedMuscle2;35",
+				"PoisonousInfected1;20",
+				"PoisonousInfected2;20",
+				"PoisonousGhost;12",
+				"InfectedFly1;6",
+				"InfectedFly2;8",
+				"InfectedFly3;5",
+				"Boomer1;10",
+				"Boomer2;10",
+				"Boomer3;10",
+				"GhostBoomer1;6",
+				"GhostBoomer2;6",
+				"GhostBoomer3;6",
+				"GhostCharger;4",
+				"Charger1;6",
+				"Charger2;6",
+				"Tank2;1",
+				"InfectedWolf;25",
+				"InfectedWerewolf;12"
+			});
+
+			m_waves[14] = ParseWaveData(new string[]
+			{
+				"InfectedNormal1;30",
+				"InfectedNormal2;30",
+				"GhostNormal;18",
+				"InfectedFast1;25",
+				"InfectedFast2;25",
+				"GhostFast;12",
+				"InfectedMuscle1;35",
+				"InfectedMuscle2;35",
+				"PoisonousInfected1;20",
+				"PoisonousInfected2;20",
+				"PoisonousGhost;12",
+				"InfectedFly1;6",
+				"InfectedFly2;8",
+				"InfectedFly3;5",
+				"Boomer1;10",
+				"Boomer2;10",
+				"Boomer3;10",
+				"GhostBoomer1;6",
+				"GhostBoomer2;6",
+				"GhostBoomer3;6",
+				"GhostCharger;4",
+				"Charger1;6",
+				"Charger2;6",
+				"Tank3;1",
+				"InfectedWolf;25",
+				"InfectedWerewolf;12"
+			});
+
+			m_waves[15] = ParseWaveData(new string[]
+			{
+				"InfectedNormal1;30",
+				"InfectedNormal2;30",
+				"GhostNormal;18",
+				"InfectedFast1;25",
+				"InfectedFast2;25",
+				"GhostFast;12",
+				"InfectedMuscle1;35",
+				"InfectedMuscle2;35",
+				"PoisonousInfected1;20",
+				"PoisonousInfected2;20",
+				"PoisonousGhost;12",
+				"InfectedFly1;6",
+				"InfectedFly2;8",
+				"InfectedFly3;5",
+				"Boomer1;10",
+				"Boomer2;10",
+				"Boomer3;10",
+				"GhostBoomer1;6",
+				"GhostBoomer2;6",
+				"GhostBoomer3;6",
+				"GhostCharger;4",
+				"Charger1;6",
+				"Charger2;6",
+				"TankGhost3;1",
+				"InfectedWolf;25",
+				"InfectedWerewolf;12"
+			});
+
+			m_waves[16] = ParseWaveData(new string[]
+			{
+				"InfectedNormal1;30",
+				"InfectedNormal2;30",
+				"GhostNormal;18",
+				"InfectedFast1;25",
+				"InfectedFast2;25",
+				"GhostFast;12",
+				"InfectedMuscle1;35",
+				"InfectedMuscle2;35",
+				"PoisonousInfected1;20",
+				"PoisonousInfected2;20",
+				"PoisonousGhost;12",
+				"InfectedFly1;6",
+				"InfectedFly2;8",
+				"InfectedFly3;5",
+				"Boomer1;10",
+				"Boomer2;10",
+				"Boomer3;10",
+				"GhostBoomer1;6",
+				"GhostBoomer2;6",
+				"GhostBoomer3;6",
+				"GhostCharger;4",
+				"Charger1;6",
+				"Charger2;6",
+				"FlyingInfectedBoss;1",
+				"InfectedWolf;25",
+				"InfectedWerewolf;12"
+			});
+
+			m_waves[17] = ParseWaveData(new string[]
+			{
+				"InfectedNormal1;35",
+				"InfectedNormal2;35",
+				"GhostNormal;20",
+				"InfectedFast1;30",
+				"InfectedFast2;30",
+				"GhostFast;15",
+				"InfectedMuscle1;40",
+				"InfectedMuscle2;40",
+				"PoisonousInfected1;25",
+				"PoisonousInfected2;25",
+				"PoisonousGhost;15",
+				"InfectedFly1;8",
+				"InfectedFly2;10",
+				"InfectedFly3;7",
+				"Boomer1;12",
+				"Boomer2;12",
+				"Boomer3;12",
+				"GhostBoomer1;8",
+				"GhostBoomer2;8",
+				"GhostBoomer3;8",
+				"GhostCharger;6",
+				"Charger1;8",
+				"Charger2;8",
+				"InfectedWolf;30",
+				"InfectedWerewolf;15"
+			});
+
+			m_waves[18] = ParseWaveData(new string[]
+			{
+				"InfectedNormal1;35",
+				"InfectedNormal2;35",
+				"GhostNormal;20",
+				"InfectedFast1;30",
+				"InfectedFast2;30",
+				"GhostFast;15",
+				"InfectedMuscle1;40",
+				"InfectedMuscle2;40",
+				"PoisonousInfected1;25",
+				"PoisonousInfected2;25",
+				"PoisonousGhost;15",
+				"InfectedFly1;8",
+				"InfectedFly2;10",
+				"InfectedFly3;6",
+				"Boomer1;12",
+				"Boomer2;12",
+				"Boomer3;12",
+				"GhostBoomer1;8",
+				"GhostBoomer2;8",
+				"GhostBoomer3;8",
+				"GhostCharger;6",
+				"Charger1;8",
+				"Charger2;8",
+				"MachineGunInfected;1",
+				"InfectedWolf;30",
+				"InfectedWerewolf;15"
+			});
+
+			m_waves[19] = ParseWaveData(new string[]
+			{
+				"InfectedNormal1;40",
+				"InfectedNormal2;40",
+				"GhostNormal;25",
+				"InfectedFast1;35",
+				"InfectedFast2;35",
+				"GhostFast;20",
+				"InfectedMuscle1;45",
+				"InfectedMuscle2;45",
+				"PoisonousInfected1;30",
+				"PoisonousInfected2;30",
+				"PoisonousGhost;20",
+				"InfectedFly1;10",
+				"InfectedFly2;12",
+				"InfectedFly3;8",
+				"Boomer1;15",
+				"Boomer2;15",
+				"Boomer3;15",
+				"GhostBoomer1;10",
+				"GhostBoomer2;10",
+				"GhostBoomer3;10",
+				"Charger1;12",
+				"Charger2;12",
+				"GhostCharger;8",
+				"Tank1;1",
+				"Tank2;1",
+				"Tank3;1",
+				"TankGhost1;1",
+				"TankGhost2;1",
+				"TankGhost3;1",
+				"MachineGunInfected;1",
+				"FlyingInfectedBoss;1",
+				"InfectedWolf;35",
+				"InfectedWerewolf;20"
+			});
+		}
+
+		private List<ZombieSpawnEntry> ParseWaveData(string[] lines)
+		{
+			var entries = new List<ZombieSpawnEntry>();
+
+			foreach (string line in lines)
+			{
+				string trimmed = line.Trim();
+				if (string.IsNullOrEmpty(trimmed)) continue;
+
+				string[] parts = trimmed.Split(';');
+				if (parts.Length == 2)
+				{
+					string type = parts[0].Trim();
+					if (int.TryParse(parts[1].Trim(), out int weight))
+					{
+						entries.Add(new ZombieSpawnEntry { Type = type, Weight = weight });
+					}
+				}
+			}
+
+			return entries;
+		}
+
+		private bool IsDusk()
+		{
+			float time = m_subsystemTimeOfDay.TimeOfDay;
+			return Math.Abs(time - 0.5f) < 0.01f;
+		}
+
+		private bool IsDawn()
+		{
+			float time = m_subsystemTimeOfDay.TimeOfDay;
+			return Math.Abs(time) < 0.01f || Math.Abs(time - 1f) < 0.01f;
+		}
+
+		private bool IsMidnight()
+		{
+			float time = m_subsystemTimeOfDay.TimeOfDay;
+			return Math.Abs(time - 0.75f) < 0.01f;
+		}
+
+		private void StartBossPhaseForCurrentWave()
+		{
+			if (!m_waves.TryGetValue(m_currentWaveIndex, out List<ZombieSpawnEntry> entries))
+				return;
+
+			var bossTypes = entries.Where(e => m_bossZombieTypes.Contains(e.Type)).Select(e => e.Type).ToList();
+			if (bossTypes.Count == 0)
+				return;
+
+			m_pendingBosses = new List<string>(bossTypes);
+			m_bossPhaseActive = true;
+			m_activeBosses.Clear();
+
+			if (m_currentWaveIndex == 19)
+			{
+				ShowMessageToAllPlayers(LanguageControl.Get("ZombiesSpawn", "FinalWave"), new Color(255, 0, 0));
+			}
+			else if (bossTypes.Count == 1)
+			{
+				string bossType = bossTypes[0];
+				string messageKey = GetBossMessageKey(bossType);
+				ShowMessageToAllPlayers(LanguageControl.Get("ZombiesSpawn", messageKey), new Color(255, 0, 0));
+			}
+			else
+			{
+				ShowMessageToAllPlayers(LanguageControl.Get("ZombiesSpawn", "BossesAppear"), new Color(255, 0, 0));
+			}
+
+			SpawnNextBoss();
+		}
+
+		private string GetBossMessageKey(string bossType)
+		{
+			if (bossType.StartsWith("Tank") && !bossType.Contains("Ghost"))
+				return "BossTank";
+			if (bossType.StartsWith("TankGhost"))
+				return "BossGhostTank";
+			if (bossType == "MachineGunInfected")
+				return "BossMachineGun";
+			if (bossType == "FlyingInfectedBoss")
+				return "BossFlying";
+			return "BossGeneric";
+		}
+
+		private void SpawnNextBoss()
+		{
+			if (m_pendingBosses.Count == 0) return;
+
+			string bossType = m_pendingBosses[0];
+			m_pendingBosses.RemoveAt(0);
+
+			Vector3? spawnPos = FindSpawnPositionNearPlayers(bossType);
+			if (spawnPos == null)
+				return;
+
+			Entity entity = SpawnEntity(bossType, spawnPos.Value);
+			if (entity != null)
+				m_activeBosses.Add(entity);
+		}
+
+		private void SpawnZombie()
+		{
+			if (!m_waves.TryGetValue(m_currentWaveIndex, out List<ZombieSpawnEntry> entries))
+				return;
+
+			var regularEntries = entries.Where(e => !m_bossZombieTypes.Contains(e.Type)).ToList();
+			if (regularEntries.Count == 0)
+				return;
+
+			int totalWeight = regularEntries.Sum(e => e.Weight);
+			int r = m_random.Int(0, totalWeight - 1);
+			string selectedType = null;
+
+			foreach (var e in regularEntries)
+			{
+				if (r < e.Weight)
+				{
+					selectedType = e.Type;
+					break;
+				}
+				r -= e.Weight;
+			}
+
+			if (selectedType == null) return;
+
+			Vector3? spawnPos = FindSpawnPositionNearPlayers(selectedType);
+			if (spawnPos == null) return;
+
+			SpawnEntity(selectedType, spawnPos.Value);
+		}
+
+		private Vector3? FindSpawnPositionNearPlayers(string zombieType)
+		{
+			// Solo considerar realmente voladores a los que tienen "Fly" o "Flying" en el nombre
+			bool isFlying = zombieType.Contains("Fly") || zombieType.Contains("Flying");
+
+			foreach (ComponentPlayer player in m_subsystemPlayers.ComponentPlayers)
+			{
+				Vector3 playerPos = player.ComponentBody.Position;
+
+				for (int attempts = 0; attempts < 10; attempts++)
+				{
+					float angle = m_random.Float(0, 2 * MathF.PI);
+					float distance = m_random.Float(20f, 30f);
+
+					float dx = MathF.Cos(angle) * distance;
+					float dz = MathF.Sin(angle) * distance;
+
+					int x = Terrain.ToCell(playerPos.X + dx);
+					int z = Terrain.ToCell(playerPos.Z + dz);
+					int y;
+
+					if (isFlying)
+					{
+						int groundY = m_subsystemTerrain.Terrain.GetTopHeight(x, z);
+						y = groundY + m_random.Int(5, 15);
+					}
+					else
+					{
+						y = m_subsystemTerrain.Terrain.GetTopHeight(x, z) + 1;
+
+						int belowValue = m_subsystemTerrain.Terrain.GetCellValue(x, y - 1, z);
+						int belowContents = Terrain.ExtractContents(belowValue);
+						Block belowBlock = BlocksManager.Blocks[belowContents];
+
+						if (belowBlock == null || belowBlock.IsTransparent_(belowValue) ||
+							m_forbiddenBlockNames.Contains(belowBlock.GetType().Name))
+							continue;
+					}
+
+					int cellValue = m_subsystemTerrain.Terrain.GetCellValue(x, y, z);
+					int cellContents = Terrain.ExtractContents(cellValue);
+					Block cellBlock = BlocksManager.Blocks[cellContents];
+
+					if (cellBlock != null && !cellBlock.IsTransparent_(cellValue) && cellBlock.IsCollidable_(cellValue))
+						continue;
+
+					return new Vector3(x + 0.5f, y, z + 0.5f);
+				}
+			}
+
+			return null;
+		}
+
+		private Entity SpawnEntity(string templateName, Vector3 position)
+		{
 			try
 			{
-				string path = Path.Combine(wavesPath, "1");
-				if (!File.Exists(path))
-				{
-					File.WriteAllLines(path, new string[]
-					{
-						"InfectedNormal1;20",
-						"InfectedNormal2;20",
-						"InfectedFly1;2"
-					});
-				}
-			}
-			catch { }
-		}
+				ValuesDictionary values = DatabaseManager.FindEntityValuesDictionary(templateName, true);
+				Entity entity = Project.CreateEntity(values);
 
-		private void CreateAllWaveFiles(string wavesPath)
-		{
-			try
-			{
-				// Ola 1
-				string path1 = Path.Combine(wavesPath, "1");
-				if (!File.Exists(path1))
-				{
-					File.WriteAllLines(path1, new string[]
-					{
-						"InfectedNormal1;30",
-						"InfectedNormal2;30",
-						"InfectedFly1;6"
-					});
-				}
+				ComponentBody body = entity.FindComponent<ComponentBody>(true);
+				body.Position = position;
+				body.Rotation = Quaternion.CreateFromAxisAngle(Vector3.UnitY, m_random.Float(0f, 2 * MathF.PI));
 
-				// Ola 2
-				string path2 = Path.Combine(wavesPath, "2");
-				if (!File.Exists(path2))
-				{
-					File.WriteAllLines(path2, new string[]
-					{
-						"InfectedNormal1;30",
-						"InfectedNormal2;30",
-						"InfectedFast1;25",
-						"InfectedFast2;25",
-						"InfectedFly1;6"
-					});
-				}
-
-				// Ola 3
-				string path3 = Path.Combine(wavesPath, "3");
-				if (!File.Exists(path3))
-				{
-					File.WriteAllLines(path3, new string[]
-					{
-						"InfectedNormal1;30",
-						"InfectedNormal2;30",
-						"InfectedFast1;25",
-						"InfectedFast2;25",
-						"InfectedMuscle1;35",
-						"InfectedMuscle2;35",
-						"InfectedFly1;6"
-					});
-				}
-
-				// Ola 4
-				string path4 = Path.Combine(wavesPath, "4");
-				if (!File.Exists(path4))
-				{
-					File.WriteAllLines(path4, new string[]
-					{
-						"InfectedNormal1;30",
-						"InfectedNormal2;30",
-						"InfectedFast1;25",
-						"InfectedFast2;25",
-						"InfectedMuscle1;35",
-						"InfectedMuscle2;35",
-						"PoisonousInfected1;20",
-						"PoisonousInfected2;20",
-						"InfectedFly1;6"
-					});
-				}
-
-				// Ola 5
-				string path5 = Path.Combine(wavesPath, "5");
-				if (!File.Exists(path5))
-				{
-					File.WriteAllLines(path5, new string[]
-					{
-						"InfectedNormal1;30",
-						"InfectedNormal2;30",
-						"InfectedFast1;25",
-						"InfectedFast2;25",
-						"InfectedMuscle1;35",
-						"InfectedMuscle2;35",
-						"PoisonousInfected1;20",
-						"PoisonousInfected2;20",
-						"InfectedFly1;6",
-						"InfectedFly2;8",
-						"Boomer1;10",
-						"InfectedWolf;15"
-					});
-				}
-
-				// Ola 6
-				string path6 = Path.Combine(wavesPath, "6");
-				if (!File.Exists(path6))
-				{
-					File.WriteAllLines(path6, new string[]
-					{
-						"InfectedNormal1;30",
-						"InfectedNormal2;30",
-						"InfectedFast1;25",
-						"InfectedFast2;25",
-						"InfectedMuscle1;35",
-						"InfectedMuscle2;35",
-						"PoisonousInfected1;20",
-						"PoisonousInfected2;20",
-						"InfectedFly1;6",
-						"InfectedFly2;8",
-						"Boomer1;10",
-						"Boomer2;10",
-						"InfectedWolf;18"
-					});
-				}
-
-				// Ola 7
-				string path7 = Path.Combine(wavesPath, "7");
-				if (!File.Exists(path7))
-				{
-					File.WriteAllLines(path7, new string[]
-					{
-						"InfectedNormal1;30",
-						"InfectedNormal2;30",
-						"InfectedFast1;25",
-						"InfectedFast2;25",
-						"InfectedMuscle1;35",
-						"InfectedMuscle2;35",
-						"PoisonousInfected1;20",
-						"PoisonousInfected2;20",
-						"InfectedFly1;6",
-						"InfectedFly2;8",
-						"InfectedFly3;5",
-						"Boomer1;10",
-						"Boomer2;10",
-						"Boomer3;10",
-						"InfectedWolf;20"
-					});
-				}
-
-				// Ola 8
-				string path8 = Path.Combine(wavesPath, "8");
-				if (!File.Exists(path8))
-				{
-					File.WriteAllLines(path8, new string[]
-					{
-						"InfectedNormal1;30",
-						"InfectedNormal2;30",
-						"InfectedFast1;25",
-						"InfectedFast2;25",
-						"InfectedMuscle1;35",
-						"InfectedMuscle2;35",
-						"PoisonousInfected1;20",
-						"PoisonousInfected2;20",
-						"PoisonousGhost;12",
-						"InfectedFly1;6",
-						"InfectedFly2;8",
-						"InfectedFly3;5",
-						"Boomer1;10",
-						"Boomer2;10",
-						"Boomer3;10",
-						"Charger1;6",
-						"InfectedWolf;25"
-					});
-				}
-
-				// Ola 9
-				string path9 = Path.Combine(wavesPath, "9");
-				if (!File.Exists(path9))
-				{
-					File.WriteAllLines(path9, new string[]
-					{
-						"InfectedNormal1;30",
-						"InfectedNormal2;30",
-						"InfectedFast1;25",
-						"InfectedFast2;25",
-						"GhostFast;12",
-						"InfectedMuscle1;35",
-						"InfectedMuscle2;35",
-						"PoisonousInfected1;20",
-						"PoisonousInfected2;20",
-						"PoisonousGhost;12",
-						"InfectedFly1;6",
-						"InfectedFly2;8",
-						"InfectedFly3;5",
-						"Boomer1;10",
-						"Boomer2;10",
-						"Boomer3;10",
-						"Charger2;6",
-						"InfectedWolf;25"
-					});
-				}
-
-				// Ola 10
-				string path10 = Path.Combine(wavesPath, "10");
-				if (!File.Exists(path10))
-				{
-					File.WriteAllLines(path10, new string[]
-					{
-						"InfectedNormal1;30",
-						"InfectedNormal2;30",
-						"GhostNormal;18",
-						"InfectedFast1;25",
-						"InfectedFast2;25",
-						"GhostFast;12",
-						"InfectedMuscle1;35",
-						"InfectedMuscle2;35",
-						"PoisonousInfected1;20",
-						"PoisonousInfected2;20",
-						"PoisonousGhost;12",
-						"InfectedFly1;6",
-						"InfectedFly2;8",
-						"InfectedFly3;5",
-						"Boomer1;10",
-						"Boomer2;10",
-						"Boomer3;10",
-						"GhostBoomer1;6",
-						"Charger1;6",
-						"Charger2;6",
-						"InfectedWolf;25",
-						"InfectedWerewolf;12"
-					});
-				}
-
-				// Ola 11
-				string path11 = Path.Combine(wavesPath, "11");
-				if (!File.Exists(path11))
-				{
-					File.WriteAllLines(path11, new string[]
-					{
-						"InfectedNormal1;30",
-						"InfectedNormal2;30",
-						"GhostNormal;18",
-						"InfectedFast1;25",
-						"InfectedFast2;25",
-						"GhostFast;12",
-						"InfectedMuscle1;35",
-						"InfectedMuscle2;35",
-						"PoisonousInfected1;20",
-						"PoisonousInfected2;20",
-						"PoisonousGhost;12",
-						"InfectedFly1;6",
-						"InfectedFly2;8",
-						"InfectedFly3;5",
-						"Boomer1;10",
-						"Boomer2;10",
-						"Boomer3;10",
-						"GhostBoomer1;6",
-						"GhostBoomer2;6",
-						"Charger1;6",
-						"Charger2;6",
-						"Tank1;1",
-						"InfectedWolf;25",
-						"InfectedWerewolf;12"
-					});
-				}
-
-				// Ola 12
-				string path12 = Path.Combine(wavesPath, "12");
-				if (!File.Exists(path12))
-				{
-					File.WriteAllLines(path12, new string[]
-					{
-						"InfectedNormal1;30",
-						"InfectedNormal2;30",
-						"GhostNormal;18",
-						"InfectedFast1;25",
-						"InfectedFast2;25",
-						"GhostFast;12",
-						"InfectedMuscle1;35",
-						"InfectedMuscle2;35",
-						"PoisonousInfected1;20",
-						"PoisonousInfected2;20",
-						"PoisonousGhost;12",
-						"InfectedFly1;6",
-						"InfectedFly2;8",
-						"InfectedFly3;5",
-						"Boomer1;10",
-						"Boomer2;10",
-						"Boomer3;10",
-						"GhostBoomer1;6",
-						"GhostBoomer2;6",
-						"GhostBoomer3;6",
-						"Charger1;6",
-						"Charger2;6",
-						"TankGhost1;1",
-						"InfectedWolf;25",
-						"InfectedWerewolf;12"
-					});
-				}
-
-				// Ola 13
-				string path13 = Path.Combine(wavesPath, "13");
-				if (!File.Exists(path13))
-				{
-					File.WriteAllLines(path13, new string[]
-					{
-						"InfectedNormal1;30",
-						"InfectedNormal2;30",
-						"GhostNormal;18",
-						"InfectedFast1;25",
-						"InfectedFast2;25",
-						"GhostFast;12",
-						"InfectedMuscle1;35",
-						"InfectedMuscle2;35",
-						"PoisonousInfected1;20",
-						"PoisonousInfected2;20",
-						"PoisonousGhost;12",
-						"InfectedFly1;6",
-						"InfectedFly2;8",
-						"InfectedFly3;5",
-						"Boomer1;10",
-						"Boomer2;10",
-						"Boomer3;10",
-						"GhostBoomer1;6",
-						"GhostBoomer2;6",
-						"GhostBoomer3;6",
-						"GhostCharger;4",
-						"Charger1;6",
-						"Charger2;6",
-						"Tank2;1",
-						"InfectedWolf;25",
-						"InfectedWerewolf;12"
-					});
-				}
-
-				// Ola 14
-				string path14 = Path.Combine(wavesPath, "14");
-				if (!File.Exists(path14))
-				{
-					File.WriteAllLines(path14, new string[]
-					{
-						"InfectedNormal1;30",
-						"InfectedNormal2;30",
-						"GhostNormal;18",
-						"InfectedFast1;25",
-						"InfectedFast2;25",
-						"GhostFast;12",
-						"InfectedMuscle1;35",
-						"InfectedMuscle2;35",
-						"PoisonousInfected1;20",
-						"PoisonousInfected2;20",
-						"PoisonousGhost;12",
-						"InfectedFly1;6",
-						"InfectedFly2;8",
-						"InfectedFly3;5",
-						"Boomer1;10",
-						"Boomer2;10",
-						"Boomer3;10",
-						"GhostBoomer1;6",
-						"GhostBoomer2;6",
-						"GhostBoomer3;6",
-						"GhostCharger;4",
-						"Charger1;6",
-						"Charger2;6",
-						"Tank3;1",
-						"InfectedWolf;25",
-						"InfectedWerewolf;12"
-					});
-				}
-
-				// Ola 15
-				string path15 = Path.Combine(wavesPath, "15");
-				if (!File.Exists(path15))
-				{
-					File.WriteAllLines(path15, new string[]
-					{
-						"InfectedNormal1;30",
-						"InfectedNormal2;30",
-						"GhostNormal;18",
-						"InfectedFast1;25",
-						"InfectedFast2;25",
-						"GhostFast;12",
-						"InfectedMuscle1;35",
-						"InfectedMuscle2;35",
-						"PoisonousInfected1;20",
-						"PoisonousInfected2;20",
-						"PoisonousGhost;12",
-						"InfectedFly1;6",
-						"InfectedFly2;8",
-						"InfectedFly3;5",
-						"Boomer1;10",
-						"Boomer2;10",
-						"Boomer3;10",
-						"GhostBoomer1;6",
-						"GhostBoomer2;6",
-						"GhostBoomer3;6",
-						"GhostCharger;4",
-						"Charger1;6",
-						"Charger2;6",
-						"TankGhost3;1",
-						"InfectedWolf;25",
-						"InfectedWerewolf;12"
-					});
-				}
-
-				// Ola 16
-				string path16 = Path.Combine(wavesPath, "16");
-				if (!File.Exists(path16))
-				{
-					File.WriteAllLines(path16, new string[]
-					{
-						"InfectedNormal1;30",
-						"InfectedNormal2;30",
-						"GhostNormal;18",
-						"InfectedFast1;25",
-						"InfectedFast2;25",
-						"GhostFast;12",
-						"InfectedMuscle1;35",
-						"InfectedMuscle2;35",
-						"PoisonousInfected1;20",
-						"PoisonousInfected2;20",
-						"PoisonousGhost;12",
-						"InfectedFly1;6",
-						"InfectedFly2;8",
-						"InfectedFly3;5",
-						"Boomer1;10",
-						"Boomer2;10",
-						"Boomer3;10",
-						"GhostBoomer1;6",
-						"GhostBoomer2;6",
-						"GhostBoomer3;6",
-						"GhostCharger;4",
-						"Charger1;6",
-						"Charger2;6",
-						"FlyingInfectedBoss;1",
-						"InfectedWolf;25",
-						"InfectedWerewolf;12"
-					});
-				}
-
-				// Ola 17
-				string path17 = Path.Combine(wavesPath, "17");
-				if (!File.Exists(path17))
-				{
-					File.WriteAllLines(path17, new string[]
-					{
-						"InfectedNormal1;35",
-						"InfectedNormal2;35",
-						"GhostNormal;20",
-						"InfectedFast1;30",
-						"InfectedFast2;30",
-						"GhostFast;15",
-						"InfectedMuscle1;40",
-						"InfectedMuscle2;40",
-						"PoisonousInfected1;25",
-						"PoisonousInfected2;25",
-						"PoisonousGhost;15",
-						"InfectedFly1;8",
-						"InfectedFly2;10",
-						"InfectedFly3;7",
-						"Boomer1;12",
-						"Boomer2;12",
-						"Boomer3;12",
-						"GhostBoomer1;8",
-						"GhostBoomer2;8",
-						"GhostBoomer3;8",
-						"GhostCharger;6",
-						"Charger1;8",
-						"Charger2;8",
-						"InfectedWolf;30",
-						"InfectedWerewolf;15"
-					});
-				}
-
-				// Ola 18
-				string path18 = Path.Combine(wavesPath, "18");
-				if (!File.Exists(path18))
-				{
-					File.WriteAllLines(path18, new string[]
-					{
-						"InfectedNormal1;35",
-						"InfectedNormal2;35",
-						"GhostNormal;20",
-						"InfectedFast1;30",
-						"InfectedFast2;30",
-						"GhostFast;15",
-						"InfectedMuscle1;40",
-						"InfectedMuscle2;40",
-						"PoisonousInfected1;25",
-						"PoisonousInfected2;25",
-						"PoisonousGhost;15",
-						"InfectedFly1;8",
-						"InfectedFly2;10",
-						"InfectedFly3;6",
-						"Boomer1;12",
-						"Boomer2;12",
-						"Boomer3;12",
-						"GhostBoomer1;8",
-						"GhostBoomer2;8",
-						"GhostBoomer3;8",
-						"GhostCharger;6",
-						"Charger1;8",
-						"Charger2;8",
-						"MachineGunInfected;1",
-						"InfectedWolf;30",
-						"InfectedWerewolf;15"
-					});
-				}
-
-				// Ola 19
-				string path19 = Path.Combine(wavesPath, "19");
-				if (!File.Exists(path19))
-				{
-					File.WriteAllLines(path19, new string[]
-					{
-						"InfectedNormal1;40",
-						"InfectedNormal2;40",
-						"GhostNormal;25",
-						"InfectedFast1;35",
-						"InfectedFast2;35",
-						"GhostFast;20",
-						"InfectedMuscle1;45",
-						"InfectedMuscle2;45",
-						"PoisonousInfected1;30",
-						"PoisonousInfected2;30",
-						"PoisonousGhost;20",
-						"InfectedFly1;10",
-						"InfectedFly2;12",
-						"InfectedFly3;8",
-						"Boomer1;15",
-						"Boomer2;15",
-						"Boomer3;15",
-						"GhostBoomer1;10",
-						"GhostBoomer2;10",
-						"GhostBoomer3;10",
-						"Charger1;12",
-						"Charger2;12",
-						"GhostCharger;8",
-						"Tank1;1",
-						"Tank2;1",
-						"Tank3;1",
-						"TankGhost1;1",
-						"TankGhost2;1",
-						"TankGhost3;1",
-						"MachineGunInfected;1",
-						"FlyingInfectedBoss;1",
-						"InfectedWolf;35",
-						"InfectedWerewolf;20"
-					});
-				}
-			}
-			catch (Exception e)
-			{
-				Log.Error($"Error creando archivos: {e.Message}");
-			}
-		}
-
-		public override void OnEntityAdded(Entity entity)
-		{
-			foreach (ComponentCreature key in entity.FindComponents<ComponentCreature>())
-			{
-				string name = entity.ValuesDictionary.DatabaseObject.Name;
-				if (m_allZombieTypes.Contains(name))
-				{
-					this.m_creatures.TryAdd(key, true);
-				}
-			}
-		}
-
-		public override void OnEntityRemoved(Entity entity)
-		{
-			foreach (ComponentCreature key in entity.FindComponents<ComponentCreature>())
-			{
-				string name = entity.ValuesDictionary.DatabaseObject.Name;
-				if (m_allZombieTypes.Contains(name))
-				{
-					this.m_creatures.Remove(key);
-				}
-			}
-		}
-
-		public virtual Entity SpawnZombie(string templateName, Vector3 position)
-		{
-			try
-			{
-				Entity entity = DatabaseManager.CreateEntity(base.Project, templateName, true);
-				entity.FindComponent<ComponentBody>(true).Position = position;
-				entity.FindComponent<ComponentBody>(true).Rotation = Quaternion.CreateFromAxisAngle(Vector3.UnitY, this.m_random.Float(0f, 6.2831855f));
-				base.Project.AddEntity(entity);
+				Project.AddEntity(entity);
 				return entity;
 			}
-			catch (Exception e)
+			catch (Exception ex)
 			{
-				Log.Error($"Error spawneando {templateName}: {e.Message}");
+				Log.Error($"Error al spawnear {templateName}: {ex.Message}");
 				return null;
 			}
 		}
 
-		public virtual Point3? GetRandomSpawnPoint(Camera camera, SpawnLocationType spawnLocationType)
+		private void ShowMessageToAllPlayers(string message, Color color)
 		{
-			for (int i = 0; i < 10; i++)
+			foreach (ComponentPlayer player in m_subsystemPlayers.ComponentPlayers)
 			{
-				int x = Terrain.ToCell(camera.ViewPosition.X) + this.m_random.Sign() * this.m_random.Int(24, 48);
-				int y = Math.Clamp(Terrain.ToCell(camera.ViewPosition.Y) + this.m_random.Int(-30, 30), 2, 254);
-				int z = Terrain.ToCell(camera.ViewPosition.Z) + this.m_random.Sign() * this.m_random.Int(24, 48);
-				Point3? result = this.ProcessSpawnPoint(new Point3(x, y, z), spawnLocationType);
-				if (result != null)
-				{
-					return result;
-				}
-			}
-			return null;
-		}
-
-		public virtual Point3? ProcessSpawnPoint(Point3 spawnPoint, SpawnLocationType spawnLocationType)
-		{
-			int x = spawnPoint.X;
-			int num = Math.Clamp(spawnPoint.Y, 1, 254);
-			int z = spawnPoint.Z;
-
-			TerrainChunk chunkAtCell = this.m_subsystemTerrain.Terrain.GetChunkAtCell(x, z);
-			if (chunkAtCell != null && chunkAtCell.State > TerrainChunkState.InvalidPropagatedLight)
-			{
-				for (int i = 0; i < 30; i++)
-				{
-					Point3 point = new Point3(x, num + i, z);
-					if (this.TestSpawnPoint(point, spawnLocationType))
-					{
-						return new Point3?(point);
-					}
-					Point3 point2 = new Point3(x, num - i, z);
-					if (this.TestSpawnPoint(point2, spawnLocationType))
-					{
-						return new Point3?(point2);
-					}
-				}
-			}
-			return null;
-		}
-
-		public virtual bool TestSpawnPoint(Point3 spawnPoint, SpawnLocationType spawnLocationType)
-		{
-			int x = spawnPoint.X;
-			int y = spawnPoint.Y;
-			int z = spawnPoint.Z;
-
-			if (y <= 3 || y >= 253)
-			{
-				return false;
-			}
-
-			switch (spawnLocationType)
-			{
-				case SpawnLocationType.Surface:
-					{
-						int cellLightFast = this.m_subsystemTerrain.Terrain.GetCellLightFast(x, y, z);
-						if (this.m_subsystemSky.SkyLightValue - cellLightFast > 3)
-						{
-							return false;
-						}
-
-						int cellValueFast = this.m_subsystemTerrain.Terrain.GetCellValueFast(x, y - 1, z);
-						int cellValueFast2 = this.m_subsystemTerrain.Terrain.GetCellValueFast(x, y, z);
-						int cellValueFast3 = this.m_subsystemTerrain.Terrain.GetCellValueFast(x, y + 1, z);
-
-						int blockBelowId = Terrain.ExtractContents(cellValueFast);
-						Block blockBelow = BlocksManager.Blocks[blockBelowId];
-
-						HashSet<string> forbiddenBlockNames = new HashSet<string>
-						{
-							nameof(BedrockBlock),
-							nameof(IronBlock),
-							nameof(CopperBlock),
-							nameof(DiamondBlock),
-							nameof(BrickBlock),
-							nameof(MalachiteBlock),
-							nameof(WaterBlock),
-							nameof(MagmaBlock),
-							nameof(GraniteBlock),
-							nameof(BasaltBlock),
-							nameof(BasaltFenceBlock),
-							nameof(BasaltSlabBlock),
-							nameof(BasaltStairsBlock),
-							nameof(LimestoneBlock)
-						};
-
-						string blockName = blockBelow.GetType().Name;
-						if (forbiddenBlockNames.Contains(blockName))
-						{
-							return false;
-						}
-
-						Block block = blockBelow;
-						Block block2 = BlocksManager.Blocks[Terrain.ExtractContents(cellValueFast2)];
-						Block block3 = BlocksManager.Blocks[Terrain.ExtractContents(cellValueFast3)];
-
-						return (block.IsCollidable_(cellValueFast) || block is WaterBlock) &&
-							   !block2.IsCollidable_(cellValueFast2) && !(block2 is WaterBlock) &&
-							   !block3.IsCollidable_(cellValueFast3) && !(block3 is WaterBlock);
-					}
-				default:
-					return false;
+				player.ComponentGui.DisplaySmallMessage(message, color, false, true);
 			}
 		}
 
-		public virtual int CountZombies()
+		private class ZombieSpawnEntry
 		{
-			int num = 0;
-			foreach (ComponentBody body in this.m_subsystemBodies.Bodies)
-			{
-				string name = body.Entity.ValuesDictionary.DatabaseObject.Name;
-				if (m_allZombieTypes.Contains(name))
-				{
-					num++;
-				}
-			}
-			return num;
+			public string Type;
+			public int Weight;
 		}
 	}
 }
