@@ -406,7 +406,7 @@ namespace Game
 		{
 			try
 			{
-				// Intentar obtener la ruta del assembly
+				// Obtener la ruta del assembly del mod
 				string assemblyLocation = System.Reflection.Assembly.GetExecutingAssembly().Location;
 				if (!string.IsNullOrEmpty(assemblyLocation))
 				{
@@ -419,18 +419,7 @@ namespace Game
 			}
 			catch { }
 
-			// Fallback: usar una carpeta escribible en el almacenamiento personal
-			try
-			{
-				string personalPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-				if (!string.IsNullOrEmpty(personalPath))
-				{
-					return Path.Combine(personalPath, "Waves");
-				}
-			}
-			catch { }
-
-			// Último recurso: carpeta "Waves" en el directorio actual (puede fallar en Android)
+			// Último recurso: carpeta "Waves" en el directorio actual del juego
 			return "Waves";
 		}
 
