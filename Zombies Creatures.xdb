@@ -10431,7 +10431,7 @@
         <Parameter Name="DisplayName" Guid="f9612cb5-90bf-4af2-a4fd-4d059cce9b95" Value="[DisplayName:PredatoryChameleon]" Type="string"/>
         <Parameter Name="Category" Guid="ee31aba2-621c-4d17-9903-90ba48ccf79e" Value="LandPredator" Type="Game.CreatureCategory"/>
         <Parameter Name="ConstantSpawn" Guid="ec9fa56f-459c-4be8-b433-4ba245066c9f" Value="True" Type="bool"/>
-        <Parameter Name="Description" Guid="fb264e66-af72-4b4f-8585-e7de25241c63" Value="[DisplayName:PredatoryChameleon]" Type="string"/>
+        <Parameter Name="Description" Guid="fb264e66-af72-4b4f-8585-e7de25241c63" Value="[Description:PredatoryChameleon]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="8c610d2f-3df9-42f2-8dcc-a82609717e2e" Value="massacred" Type="string"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="abdc8d2d-c520-4f82-adba-85468bc26f0a" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
@@ -10509,7 +10509,7 @@
         <Parameter Name="Color" Guid="d15a36fe-bdb0-4704-bbde-87670fb51867" Value="42,121,71" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="d5486a91-c3ad-41f4-9b64-02825b869297" Value="109" Type="int"/>
         <Parameter Name="SwapUV" Guid="fa6e5e83-995a-49c3-9aae-6cf5cda70309" Value="False" Type="bool"/>
-        <Parameter Name="DisplayName" Guid="12b70506-5b10-4e0f-8583-1b264619723d" Value="[DisplayName:PredatoryChamaleon]" Type="string"/>
+        <Parameter Name="DisplayName" Guid="12b70506-5b10-4e0f-8583-1b264619723d" Value="[DisplayName:PredatoryChameleon]" Type="string"/>
         <Parameter Name="EggTypeIndex" Guid="35ac1210-8067-4c32-9c6e-5dfc997e2cbe" Value="1040" Type="int"/>
     </ParameterSet>
 </EntityTemplate>
