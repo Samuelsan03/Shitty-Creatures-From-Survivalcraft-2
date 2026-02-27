@@ -419,7 +419,18 @@ namespace Game
 			}
 			catch { }
 
-			// Fallback: usar la ruta relativa "Waves" en el directorio del juego
+			// Fallback: usar una carpeta escribible en el almacenamiento personal
+			try
+			{
+				string personalPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+				if (!string.IsNullOrEmpty(personalPath))
+				{
+					return Path.Combine(personalPath, "Waves");
+				}
+			}
+			catch { }
+
+			// Último recurso: carpeta "Waves" en el directorio actual (puede fallar en Android)
 			return "Waves";
 		}
 
@@ -438,7 +449,8 @@ namespace Game
 
 				CreateAllWaveFiles(wavesPath);
 
-				string[] files = Directory.GetFiles(wavesPath, "*.txt");
+				// Leer todos los archivos de la carpeta (sin filtrar por extensión)
+				string[] files = Directory.GetFiles(wavesPath);
 
 				var sortedFiles = files.OrderBy(f =>
 				{
@@ -487,7 +499,7 @@ namespace Game
 			catch (Exception e)
 			{
 				Log.Error($"Error cargando olas: {e.Message}");
-				CreateEmergencyWaves("Waves");
+				CreateEmergencyWaves(GetWavesPath());
 			}
 		}
 
@@ -495,18 +507,35 @@ namespace Game
 		{
 			m_waves.Clear();
 
-			WaveData wave1 = new WaveData { Name = "Ola 1", FilePath = "emergency1" };
+			WaveData wave1 = new WaveData { Name = "Ola 1", FilePath = Path.Combine(wavesPath, "1") };
 			wave1.Spawns["InfectedNormal1"] = 20;
 			wave1.Spawns["InfectedNormal2"] = 20;
 			wave1.Spawns["InfectedFly1"] = 2;
 			m_waves.Add(wave1);
+
+			// Opcional: guardar el archivo de emergencia
+			try
+			{
+				string path = Path.Combine(wavesPath, "1");
+				if (!File.Exists(path))
+				{
+					File.WriteAllLines(path, new string[]
+					{
+						"InfectedNormal1;20",
+						"InfectedNormal2;20",
+						"InfectedFly1;2"
+					});
+				}
+			}
+			catch { }
 		}
 
 		private void CreateAllWaveFiles(string wavesPath)
 		{
 			try
 			{
-				string path1 = Path.Combine(wavesPath, "1.txt");
+				// Ola 1
+				string path1 = Path.Combine(wavesPath, "1");
 				if (!File.Exists(path1))
 				{
 					File.WriteAllLines(path1, new string[]
@@ -517,7 +546,8 @@ namespace Game
 					});
 				}
 
-				string path2 = Path.Combine(wavesPath, "2.txt");
+				// Ola 2
+				string path2 = Path.Combine(wavesPath, "2");
 				if (!File.Exists(path2))
 				{
 					File.WriteAllLines(path2, new string[]
@@ -530,7 +560,8 @@ namespace Game
 					});
 				}
 
-				string path3 = Path.Combine(wavesPath, "3.txt");
+				// Ola 3
+				string path3 = Path.Combine(wavesPath, "3");
 				if (!File.Exists(path3))
 				{
 					File.WriteAllLines(path3, new string[]
@@ -545,7 +576,8 @@ namespace Game
 					});
 				}
 
-				string path4 = Path.Combine(wavesPath, "4.txt");
+				// Ola 4
+				string path4 = Path.Combine(wavesPath, "4");
 				if (!File.Exists(path4))
 				{
 					File.WriteAllLines(path4, new string[]
@@ -562,7 +594,8 @@ namespace Game
 					});
 				}
 
-				string path5 = Path.Combine(wavesPath, "5.txt");
+				// Ola 5
+				string path5 = Path.Combine(wavesPath, "5");
 				if (!File.Exists(path5))
 				{
 					File.WriteAllLines(path5, new string[]
@@ -582,7 +615,8 @@ namespace Game
 					});
 				}
 
-				string path6 = Path.Combine(wavesPath, "6.txt");
+				// Ola 6
+				string path6 = Path.Combine(wavesPath, "6");
 				if (!File.Exists(path6))
 				{
 					File.WriteAllLines(path6, new string[]
@@ -603,7 +637,8 @@ namespace Game
 					});
 				}
 
-				string path7 = Path.Combine(wavesPath, "7.txt");
+				// Ola 7
+				string path7 = Path.Combine(wavesPath, "7");
 				if (!File.Exists(path7))
 				{
 					File.WriteAllLines(path7, new string[]
@@ -626,7 +661,8 @@ namespace Game
 					});
 				}
 
-				string path8 = Path.Combine(wavesPath, "8.txt");
+				// Ola 8
+				string path8 = Path.Combine(wavesPath, "8");
 				if (!File.Exists(path8))
 				{
 					File.WriteAllLines(path8, new string[]
@@ -651,7 +687,8 @@ namespace Game
 					});
 				}
 
-				string path9 = Path.Combine(wavesPath, "9.txt");
+				// Ola 9
+				string path9 = Path.Combine(wavesPath, "9");
 				if (!File.Exists(path9))
 				{
 					File.WriteAllLines(path9, new string[]
@@ -677,7 +714,8 @@ namespace Game
 					});
 				}
 
-				string path10 = Path.Combine(wavesPath, "10.txt");
+				// Ola 10
+				string path10 = Path.Combine(wavesPath, "10");
 				if (!File.Exists(path10))
 				{
 					File.WriteAllLines(path10, new string[]
@@ -707,7 +745,8 @@ namespace Game
 					});
 				}
 
-				string path11 = Path.Combine(wavesPath, "11.txt");
+				// Ola 11
+				string path11 = Path.Combine(wavesPath, "11");
 				if (!File.Exists(path11))
 				{
 					File.WriteAllLines(path11, new string[]
@@ -739,7 +778,8 @@ namespace Game
 					});
 				}
 
-				string path12 = Path.Combine(wavesPath, "12.txt");
+				// Ola 12
+				string path12 = Path.Combine(wavesPath, "12");
 				if (!File.Exists(path12))
 				{
 					File.WriteAllLines(path12, new string[]
@@ -772,7 +812,8 @@ namespace Game
 					});
 				}
 
-				string path13 = Path.Combine(wavesPath, "13.txt");
+				// Ola 13
+				string path13 = Path.Combine(wavesPath, "13");
 				if (!File.Exists(path13))
 				{
 					File.WriteAllLines(path13, new string[]
@@ -806,7 +847,8 @@ namespace Game
 					});
 				}
 
-				string path14 = Path.Combine(wavesPath, "14.txt");
+				// Ola 14
+				string path14 = Path.Combine(wavesPath, "14");
 				if (!File.Exists(path14))
 				{
 					File.WriteAllLines(path14, new string[]
@@ -840,7 +882,8 @@ namespace Game
 					});
 				}
 
-				string path15 = Path.Combine(wavesPath, "15.txt");
+				// Ola 15
+				string path15 = Path.Combine(wavesPath, "15");
 				if (!File.Exists(path15))
 				{
 					File.WriteAllLines(path15, new string[]
@@ -874,7 +917,8 @@ namespace Game
 					});
 				}
 
-				string path16 = Path.Combine(wavesPath, "16.txt");
+				// Ola 16
+				string path16 = Path.Combine(wavesPath, "16");
 				if (!File.Exists(path16))
 				{
 					File.WriteAllLines(path16, new string[]
@@ -908,7 +952,8 @@ namespace Game
 					});
 				}
 
-				string path17 = Path.Combine(wavesPath, "17.txt");
+				// Ola 17
+				string path17 = Path.Combine(wavesPath, "17");
 				if (!File.Exists(path17))
 				{
 					File.WriteAllLines(path17, new string[]
@@ -941,7 +986,8 @@ namespace Game
 					});
 				}
 
-				string path18 = Path.Combine(wavesPath, "18.txt");
+				// Ola 18
+				string path18 = Path.Combine(wavesPath, "18");
 				if (!File.Exists(path18))
 				{
 					File.WriteAllLines(path18, new string[]
@@ -975,7 +1021,8 @@ namespace Game
 					});
 				}
 
-				string path19 = Path.Combine(wavesPath, "19.txt");
+				// Ola 19
+				string path19 = Path.Combine(wavesPath, "19");
 				if (!File.Exists(path19))
 				{
 					File.WriteAllLines(path19, new string[]
