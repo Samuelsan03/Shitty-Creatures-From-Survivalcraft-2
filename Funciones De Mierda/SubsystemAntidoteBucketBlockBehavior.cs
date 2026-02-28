@@ -127,14 +127,14 @@ namespace Game
 				// Mostrar un solo mensaje combinado si se curó veneno O enfermedad
 				if (curedPoison || curedSickness)
 				{
-					string curedMessage = LanguageControl.Get("Messages", "PoisonAndSicknessCured");
+					string curedMessage = LanguageControl.Get("AntidoteBucket", "PoisonAndSicknessCured");
 					targetPlayer.ComponentGui.DisplaySmallMessage(curedMessage, new Color(0, 255, 0), true, false);
 				}
 			}
 			else if (!isTargetingPlayer)
 			{
 				// Si curó a un NPC (no al jugador), mostrar un mensaje al jugador
-				string npcCuredMessage = LanguageControl.Get("Messages", "NPCCured");
+				string npcCuredMessage = LanguageControl.Get("AntidoteBucket", "NPCCured");
 				componentPlayer.ComponentGui.DisplaySmallMessage(npcCuredMessage, new Color(0, 255, 0), true, false);
 			}
 
