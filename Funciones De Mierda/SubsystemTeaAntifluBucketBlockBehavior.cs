@@ -47,17 +47,8 @@ namespace Game
 				// Solo restaurar salud si se curó la gripe
 				RestoreHealth(componentPlayer);
 
-				// Intentar obtener el mensaje del sistema de idiomas
-				string fluMessage;
-				try
-				{
-					fluMessage = LanguageControl.Get("Messages", "FluCured");
-				}
-				catch
-				{
-					// Si falla, usar mensaje por defecto en inglés
-					fluMessage = "Flu has been cured!";
-				}
+				// Usar la nueva estructura de mensajes independiente
+				string fluMessage = LanguageControl.Get("AntifluBucket", "FluCured");
 				componentPlayer.ComponentGui.DisplaySmallMessage(fluMessage, new Color(102, 178, 255), true, false);
 			}
 
