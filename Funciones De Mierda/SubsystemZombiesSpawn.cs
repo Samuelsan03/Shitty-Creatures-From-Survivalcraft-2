@@ -70,6 +70,9 @@ namespace Game
 			nameof(LimestoneBlock)
 		};
 
+		// Lista de tipos de criaturas para spawn normal (como en SubsystemCreatureSpawn)
+		private List<CreatureType> m_creatureTypes = new List<CreatureType>();
+
 		public UpdateOrder UpdateOrder => UpdateOrder.Default;
 
 		public override void Load(ValuesDictionary valuesDictionary)
@@ -86,8 +89,11 @@ namespace Game
 			m_subsystemTimeOfDay = Project.FindSubsystem<SubsystemTimeOfDay>(true);
 			m_subsystemPlayers = Project.FindSubsystem<SubsystemPlayers>(true);
 
-			// Cargar las olas usando ContentManager como las texturas
+			// Cargar las olas
 			LoadWaves();
+
+			// Inicializar tipos de criaturas para spawn normal
+			InitializeCreatureTypes();
 
 			// Cargar estado guardado
 			m_currentWaveIndex = valuesDictionary.GetValue<int>("CurrentWaveIndex", 1);
@@ -105,37 +111,39 @@ namespace Game
 
 		public void Update(float dt)
 		{
+			// Primero, spawn normal de criaturas (solo HumanoidSkeleton por ahora)
+			SpawnNormalCreatures();
+
+			// Solo activar durante noche verde
 			if (!m_subsystemGreenNightSky.GreenNightEnabled || !m_subsystemGreenNightSky.IsGreenNightActive)
 				return;
+
+			// Verificar si es de noche
+			float timeOfDay = m_subsystemTimeOfDay.TimeOfDay;
+			bool isNight = timeOfDay > 0.5f || timeOfDay < 0.01f;
+			if (!isNight) return;
 
 			double now = m_subsystemTime.GameTime;
 			int currentPhase = m_subsystemSky.MoonPhase;
 
-			// Avanzar de ola cuando cambia la fase lunar (durante la noche verde)
-			if (!m_advancedThisNight && m_subsystemGreenNightSky.IsGreenNightActive)
+			// Avanzar de ola cuando cambia la fase lunar
+			if (!m_advancedThisNight)
 			{
-				// Solo verificar cuando es de noche (entre dusk y dawn)
-				float time = m_subsystemTimeOfDay.TimeOfDay;
-				if (time > 0.5f || time < 0.01f) // Es de noche
+				if (currentPhase == m_nextWavePhase)
 				{
-					// Si la fase lunar actual es la que esperamos (0 o 4)
-					if (currentPhase == m_nextWavePhase)
+					if (m_currentWaveIndex < m_maxWaveIndex)
 					{
-						if (m_currentWaveIndex < m_maxWaveIndex)
-						{
-							m_currentWaveIndex++;
-							// Alternar entre luna llena (0) y luna nueva (4)
-							m_nextWavePhase = (m_nextWavePhase == 0) ? 4 : 0;
-						}
-						m_advancedThisNight = true;
+						m_currentWaveIndex++;
+						m_nextWavePhase = (m_nextWavePhase == 0) ? 4 : 0;
 					}
+					m_advancedThisNight = true;
 				}
 			}
 
-			// Resetear el flag al amanecer
 			if (IsDawn())
 				m_advancedThisNight = false;
 
+			// Fase de jefes
 			if (!m_bossPhaseActive && IsMidnight() && now - m_lastMidnightCheck > 10.0)
 			{
 				m_lastMidnightCheck = now;
@@ -166,11 +174,238 @@ namespace Game
 				return;
 			}
 
+			// Spawn normal de oleada (solo noche verde)
 			if (now >= m_nextSpawnTime)
 			{
 				m_nextSpawnTime = now + m_spawnInterval;
 				SpawnZombie();
 			}
+		}
+
+		private void InitializeCreatureTypes()
+		{
+			// Agregar HumanoidSkeleton como criatura constante que aparece de noche
+			m_creatureTypes.Add(new CreatureType("Constant HumanoidSkeleton", SpawnLocationType.Surface, false, true)
+			{
+				SpawnSuitabilityFunction = delegate (CreatureType _, Point3 point)
+				{
+					// Solo aparece de noche (sky light bajo)
+					if (m_subsystemSky.SkyLightIntensity < 0.1f)
+					{
+						// Verificar que el bloque de abajo sea sólido
+						int blockBelow = Terrain.ExtractContents(m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z));
+						int cellLight = m_subsystemTerrain.Terrain.GetCellLightFast(point.X, point.Y + 1, point.Z);
+
+						// Condiciones similares a las criaturas constantes
+						if (point.Y < 100 && cellLight <= 7 && (blockBelow == 2 || blockBelow == 3 || blockBelow == 7 || blockBelow == 8))
+						{
+							return 1f; // Probabilidad de spawn
+						}
+					}
+					return 0f;
+				},
+				SpawnFunction = (CreatureType creatureType, Point3 point) => SpawnCreatures(creatureType, "HumanoidSkeleton", point, 1).Count
+			});
+		}
+
+		private void SpawnNormalCreatures()
+		{
+			// Límites similares a SubsystemCreatureSpawn
+			int totalLimit = 6; // m_totalLimitConstant
+			int areaLimit = 4;  // m_areaLimitConstant
+			float areaRadius = 42f; // m_areaRadiusConstant
+
+			int totalCount = CountCreatures(false);
+			if (totalCount >= totalLimit)
+				return;
+
+			foreach (ComponentPlayer player in m_subsystemPlayers.ComponentPlayers)
+			{
+				Vector3 playerPos = player.ComponentBody.Position;
+				Vector2 c1 = new Vector2(playerPos.X - areaRadius, playerPos.Z - areaRadius);
+				Vector2 c2 = new Vector2(playerPos.X + areaRadius, playerPos.Z + areaRadius);
+				int areaCount = CountCreaturesInArea(c1, c2, false);
+				if (areaCount >= areaLimit)
+					continue;
+
+				// Obtener punto de spawn aleatorio
+				Point3? spawnPoint = GetRandomSpawnPoint(player, SpawnLocationType.Surface);
+				if (spawnPoint != null)
+				{
+					// Buscar criaturas adecuadas para este punto
+					var suitableCreatures = m_creatureTypes.Where(c => c.SpawnLocationType == SpawnLocationType.Surface && c.ConstantSpawn == false).ToList();
+
+					foreach (var creatureType in suitableCreatures)
+					{
+						float suitability = CalculateSpawnSuitability(creatureType, spawnPoint.Value);
+						if (suitability > 0f && m_random.Float(0f, 1f) < suitability * 0.1f)
+						{
+							creatureType.SpawnFunction(creatureType, spawnPoint.Value);
+							break;
+						}
+					}
+				}
+			}
+		}
+
+		private Point3? GetRandomSpawnPoint(ComponentPlayer player, SpawnLocationType spawnLocationType)
+		{
+			for (int i = 0; i < 10; i++)
+			{
+				int x = Terrain.ToCell(player.ComponentBody.Position.X) + (m_random.Sign() * m_random.Int(24, 48));
+				int y = Math.Clamp(Terrain.ToCell(player.ComponentBody.Position.Y) + m_random.Int(-30, 30), 2, 254);
+				int z = Terrain.ToCell(player.ComponentBody.Position.Z) + (m_random.Sign() * m_random.Int(24, 48));
+
+				Point3? result = ProcessSpawnPoint(new Point3(x, y, z), spawnLocationType);
+				if (result != null)
+					return result;
+			}
+			return null;
+		}
+
+		private Point3? ProcessSpawnPoint(Point3 spawnPoint, SpawnLocationType spawnLocationType)
+		{
+			int x = spawnPoint.X;
+			int num = Math.Clamp(spawnPoint.Y, 1, 254);
+			int z = spawnPoint.Z;
+
+			TerrainChunk chunkAtCell = m_subsystemTerrain.Terrain.GetChunkAtCell(x, z);
+			if (chunkAtCell != null && chunkAtCell.State > TerrainChunkState.InvalidPropagatedLight)
+			{
+				for (int i = 0; i < 30; i++)
+				{
+					Point3 point = new Point3(x, num + i, z);
+					if (TestSpawnPoint(point, spawnLocationType))
+						return point;
+
+					Point3 point2 = new Point3(x, num - i, z);
+					if (TestSpawnPoint(point2, spawnLocationType))
+						return point2;
+				}
+			}
+			return null;
+		}
+
+		private bool TestSpawnPoint(Point3 spawnPoint, SpawnLocationType spawnLocationType)
+		{
+			int x = spawnPoint.X;
+			int y = spawnPoint.Y;
+			int z = spawnPoint.Z;
+
+			if (y <= 3 || y >= 253)
+				return false;
+
+			if (spawnLocationType == SpawnLocationType.Surface)
+			{
+				int cellLight = m_subsystemTerrain.Terrain.GetCellLightFast(x, y, z);
+				if (m_subsystemSky.SkyLightValue - cellLight > 3)
+					return false;
+
+				int belowValue = m_subsystemTerrain.Terrain.GetCellValueFast(x, y - 1, z);
+				int currentValue = m_subsystemTerrain.Terrain.GetCellValueFast(x, y, z);
+				int aboveValue = m_subsystemTerrain.Terrain.GetCellValueFast(x, y + 1, z);
+
+				Block belowBlock = BlocksManager.Blocks[Terrain.ExtractContents(belowValue)];
+				Block currentBlock = BlocksManager.Blocks[Terrain.ExtractContents(currentValue)];
+				Block aboveBlock = BlocksManager.Blocks[Terrain.ExtractContents(aboveValue)];
+
+				return (belowBlock.IsCollidable_(belowValue) || belowBlock is WaterBlock) &&
+					   !currentBlock.IsCollidable_(currentValue) && !(currentBlock is WaterBlock) &&
+					   !aboveBlock.IsCollidable_(aboveValue) && !(aboveBlock is WaterBlock);
+			}
+
+			return false;
+		}
+
+		private float CalculateSpawnSuitability(CreatureType creatureType, Point3 spawnPoint)
+		{
+			float suitability = creatureType.SpawnSuitabilityFunction(creatureType, spawnPoint);
+
+			// Reducir si hay demasiados de este tipo
+			if (CountCreaturesByType(creatureType.Name) > 8)
+				suitability *= 0.25f;
+
+			return suitability;
+		}
+
+		private int CountCreaturesByType(string creatureName)
+		{
+			int count = 0;
+			foreach (ComponentBody body in m_subsystemBodies.Bodies)
+			{
+				if (body.Entity.ValuesDictionary.DatabaseObject.Name == creatureName)
+					count++;
+			}
+			return count;
+		}
+
+		private int CountCreatures(bool constantSpawn)
+		{
+			int count = 0;
+			foreach (ComponentBody body in m_subsystemBodies.Bodies)
+			{
+				ComponentCreature creature = body.Entity.FindComponent<ComponentCreature>();
+				if (creature != null && creature.ConstantSpawn == constantSpawn)
+					count++;
+			}
+			return count;
+		}
+
+		private int CountCreaturesInArea(Vector2 c1, Vector2 c2, bool constantSpawn)
+		{
+			int count = 0;
+			foreach (ComponentBody body in m_subsystemBodies.Bodies)
+			{
+				ComponentCreature creature = body.Entity.FindComponent<ComponentCreature>();
+				if (creature != null && creature.ConstantSpawn == constantSpawn)
+				{
+					Vector3 pos = body.Position;
+					if (pos.X >= c1.X && pos.X <= c2.X && pos.Z >= c1.Y && pos.Z <= c2.Y)
+						count++;
+				}
+			}
+			return count;
+		}
+
+		private List<Entity> SpawnCreatures(CreatureType creatureType, string templateName, Point3 point, int count)
+		{
+			List<Entity> spawned = new List<Entity>();
+			int attempts = 0;
+
+			while (count > 0 && attempts < 50)
+			{
+				Point3 spawnPoint = point;
+				if (attempts > 0)
+				{
+					spawnPoint.X += m_random.Int(-8, 8);
+					spawnPoint.Y += m_random.Int(-4, 8);
+					spawnPoint.Z += m_random.Int(-8, 8);
+				}
+
+				Point3? validPoint = ProcessSpawnPoint(spawnPoint, creatureType.SpawnLocationType);
+				if (validPoint != null && CalculateSpawnSuitability(creatureType, validPoint.Value) > 0f)
+				{
+					Vector3 position = new Vector3(
+						validPoint.Value.X + m_random.Float(0.4f, 0.6f),
+						validPoint.Value.Y + 1.1f,
+						validPoint.Value.Z + m_random.Float(0.4f, 0.6f)
+					);
+
+					Entity entity = SpawnEntity(templateName, position);
+					if (entity != null)
+					{
+						ComponentCreature creature = entity.FindComponent<ComponentCreature>();
+						if (creature != null)
+							creature.ConstantSpawn = creatureType.ConstantSpawn;
+
+						spawned.Add(entity);
+						count--;
+					}
+				}
+				attempts++;
+			}
+
+			return spawned;
 		}
 
 		private void LoadWaves()
@@ -183,8 +418,6 @@ namespace Game
 				{
 					try
 					{
-						// Usar ContentManager.Get<string> para obtener el archivo como string
-						// Esto busca en la carpeta "Waves" automáticamente
 						string content = ContentManager.Get<string>($"Waves/{i}");
 
 						if (!string.IsNullOrEmpty(content))
@@ -211,13 +444,11 @@ namespace Game
 							{
 								m_waves[i] = entries;
 								anyWaveLoaded = true;
-								Log.Information($"Ola {i} cargada correctamente");
 							}
 						}
 					}
 					catch
 					{
-						// Si no encuentra el archivo, simplemente continuamos
 					}
 				}
 
@@ -236,17 +467,21 @@ namespace Game
 
 		private void LoadDefaultWaves()
 		{
-			Log.Information("Cargando olas por defecto...");
+			Log.Warning("Cargando olas por defecto - los archivos TXT no fueron encontrados");
 
 			m_waves[1] = ParseWaveData(new string[]
 			{
+				"HumanoidSkeleton;40",
+				"InfectedBird;35",
 				"InfectedNormal1;30",
 				"InfectedNormal2;30",
-				"InfectedFly1;6"
+				"InfectedFly1;4"
 			});
 
 			m_waves[2] = ParseWaveData(new string[]
 			{
+				"HumanoidSkeleton;40",
+				"InfectedBird;35",
 				"InfectedNormal1;30",
 				"InfectedNormal2;30",
 				"InfectedFast1;25",
@@ -256,6 +491,8 @@ namespace Game
 
 			m_waves[3] = ParseWaveData(new string[]
 			{
+				"HumanoidSkeleton;35",
+				"InfectedBird;30",
 				"InfectedNormal1;30",
 				"InfectedNormal2;30",
 				"InfectedFast1;25",
@@ -267,6 +504,8 @@ namespace Game
 
 			m_waves[4] = ParseWaveData(new string[]
 			{
+				"HumanoidSkeleton;35",
+				"InfectedBird;30",
 				"InfectedNormal1;30",
 				"InfectedNormal2;30",
 				"InfectedFast1;25",
@@ -280,6 +519,8 @@ namespace Game
 
 			m_waves[5] = ParseWaveData(new string[]
 			{
+				"HumanoidSkeleton;30",
+				"InfectedBird;25",
 				"InfectedNormal1;30",
 				"InfectedNormal2;30",
 				"InfectedFast1;25",
@@ -291,11 +532,13 @@ namespace Game
 				"InfectedFly1;6",
 				"InfectedFly2;8",
 				"Boomer1;10",
-				"InfectedWolf;15"
+				"InfectedHyena;20"
 			});
 
 			m_waves[6] = ParseWaveData(new string[]
 			{
+				"HumanoidSkeleton;30",
+				"InfectedBird;25",
 				"InfectedNormal1;30",
 				"InfectedNormal2;30",
 				"InfectedFast1;25",
@@ -308,11 +551,14 @@ namespace Game
 				"InfectedFly2;8",
 				"Boomer1;10",
 				"Boomer2;10",
-				"InfectedWolf;18"
+				"InfectedHyena;22",
+				"PredatoryChameleon;5"
 			});
 
 			m_waves[7] = ParseWaveData(new string[]
 			{
+				"HumanoidSkeleton;30",
+				"InfectedBird;25",
 				"InfectedNormal1;30",
 				"InfectedNormal2;30",
 				"InfectedFast1;25",
@@ -327,11 +573,14 @@ namespace Game
 				"Boomer1;10",
 				"Boomer2;10",
 				"Boomer3;10",
-				"InfectedWolf;20"
+				"InfectedHyena;25",
+				"PredatoryChameleon;7"
 			});
 
 			m_waves[8] = ParseWaveData(new string[]
 			{
+				"HumanoidSkeleton;30",
+				"InfectedBird;25",
 				"InfectedNormal1;30",
 				"InfectedNormal2;30",
 				"InfectedFast1;25",
@@ -348,11 +597,14 @@ namespace Game
 				"Boomer2;10",
 				"Boomer3;10",
 				"Charger1;6",
-				"InfectedWolf;25"
+				"InfectedHyena;28",
+				"PredatoryChameleon;8"
 			});
 
 			m_waves[9] = ParseWaveData(new string[]
 			{
+				"HumanoidSkeleton;30",
+				"InfectedBird;25",
 				"InfectedNormal1;30",
 				"InfectedNormal2;30",
 				"InfectedFast1;25",
@@ -370,11 +622,14 @@ namespace Game
 				"Boomer2;10",
 				"Boomer3;10",
 				"Charger2;6",
-				"InfectedWolf;25"
+				"InfectedHyena;30",
+				"PredatoryChameleon;10"
 			});
 
 			m_waves[10] = ParseWaveData(new string[]
 			{
+				"HumanoidSkeleton;25",
+				"InfectedBird;20",
 				"InfectedNormal1;30",
 				"InfectedNormal2;30",
 				"GhostNormal;18",
@@ -395,12 +650,15 @@ namespace Game
 				"GhostBoomer1;6",
 				"Charger1;6",
 				"Charger2;6",
-				"InfectedWolf;25",
-				"InfectedWerewolf;12"
+				"InfectedHyena;30",
+				"InfectedWildboar;12",
+				"PredatoryChameleon;12"
 			});
 
 			m_waves[11] = ParseWaveData(new string[]
 			{
+				"HumanoidSkeleton;25",
+				"InfectedBird;20",
 				"InfectedNormal1;30",
 				"InfectedNormal2;30",
 				"GhostNormal;18",
@@ -423,12 +681,16 @@ namespace Game
 				"Charger1;6",
 				"Charger2;6",
 				"Tank1;1",
-				"InfectedWolf;25",
-				"InfectedWerewolf;12"
+				"InfectedHyena;30",
+				"InfectedWildboar;15",
+				"InfectedBear;8",
+				"PredatoryChameleon;15"
 			});
 
 			m_waves[12] = ParseWaveData(new string[]
 			{
+				"HumanoidSkeleton;25",
+				"InfectedBird;20",
 				"InfectedNormal1;30",
 				"InfectedNormal2;30",
 				"GhostNormal;18",
@@ -452,12 +714,16 @@ namespace Game
 				"Charger1;6",
 				"Charger2;6",
 				"TankGhost1;1",
-				"InfectedWolf;25",
-				"InfectedWerewolf;12"
+				"InfectedHyena;30",
+				"InfectedWildboar;15",
+				"InfectedBear;10",
+				"PredatoryChameleon;18"
 			});
 
 			m_waves[13] = ParseWaveData(new string[]
 			{
+				"HumanoidSkeleton;25",
+				"InfectedBird;20",
 				"InfectedNormal1;30",
 				"InfectedNormal2;30",
 				"GhostNormal;18",
@@ -482,12 +748,16 @@ namespace Game
 				"Charger1;6",
 				"Charger2;6",
 				"Tank2;1",
-				"InfectedWolf;25",
-				"InfectedWerewolf;12"
+				"InfectedHyena;30",
+				"InfectedWildboar;15",
+				"InfectedBear;12",
+				"PredatoryChameleon;20"
 			});
 
 			m_waves[14] = ParseWaveData(new string[]
 			{
+				"HumanoidSkeleton;25",
+				"InfectedBird;20",
 				"InfectedNormal1;30",
 				"InfectedNormal2;30",
 				"GhostNormal;18",
@@ -512,12 +782,16 @@ namespace Game
 				"Charger1;6",
 				"Charger2;6",
 				"Tank3;1",
-				"InfectedWolf;25",
-				"InfectedWerewolf;12"
+				"InfectedHyena;30",
+				"InfectedWildboar;15",
+				"InfectedBear;15",
+				"PredatoryChameleon;22"
 			});
 
 			m_waves[15] = ParseWaveData(new string[]
 			{
+				"HumanoidSkeleton;20",
+				"InfectedBird;15",
 				"InfectedNormal1;30",
 				"InfectedNormal2;30",
 				"GhostNormal;18",
@@ -542,12 +816,16 @@ namespace Game
 				"Charger1;6",
 				"Charger2;6",
 				"TankGhost3;1",
-				"InfectedWolf;25",
-				"InfectedWerewolf;12"
+				"InfectedHyena;30",
+				"InfectedWildboar;15",
+				"InfectedBear;18",
+				"PredatoryChameleon;25"
 			});
 
 			m_waves[16] = ParseWaveData(new string[]
 			{
+				"HumanoidSkeleton;20",
+				"InfectedBird;15",
 				"InfectedNormal1;30",
 				"InfectedNormal2;30",
 				"GhostNormal;18",
@@ -572,12 +850,16 @@ namespace Game
 				"Charger1;6",
 				"Charger2;6",
 				"FlyingInfectedBoss;1",
-				"InfectedWolf;25",
-				"InfectedWerewolf;12"
+				"InfectedHyena;30",
+				"InfectedWildboar;15",
+				"InfectedBear;20",
+				"PredatoryChameleon;28"
 			});
 
 			m_waves[17] = ParseWaveData(new string[]
 			{
+				"HumanoidSkeleton;20",
+				"InfectedBird;15",
 				"InfectedNormal1;35",
 				"InfectedNormal2;35",
 				"GhostNormal;20",
@@ -601,12 +883,16 @@ namespace Game
 				"GhostCharger;6",
 				"Charger1;8",
 				"Charger2;8",
-				"InfectedWolf;30",
-				"InfectedWerewolf;15"
+				"InfectedHyena;35",
+				"InfectedWildboar;18",
+				"InfectedBear;22",
+				"PredatoryChameleon;30"
 			});
 
 			m_waves[18] = ParseWaveData(new string[]
 			{
+				"HumanoidSkeleton;20",
+				"InfectedBird;15",
 				"InfectedNormal1;35",
 				"InfectedNormal2;35",
 				"GhostNormal;20",
@@ -631,12 +917,16 @@ namespace Game
 				"Charger1;8",
 				"Charger2;8",
 				"MachineGunInfected;1",
-				"InfectedWolf;30",
-				"InfectedWerewolf;15"
+				"InfectedHyena;35",
+				"InfectedWildboar;18",
+				"InfectedBear;25",
+				"PredatoryChameleon;32"
 			});
 
 			m_waves[19] = ParseWaveData(new string[]
 			{
+				"HumanoidSkeleton;15",
+				"InfectedBird;10",
 				"InfectedNormal1;40",
 				"InfectedNormal2;40",
 				"GhostNormal;25",
@@ -668,8 +958,10 @@ namespace Game
 				"TankGhost3;1",
 				"MachineGunInfected;1",
 				"FlyingInfectedBoss;1",
-				"InfectedWolf;35",
-				"InfectedWerewolf;20"
+				"InfectedHyena;40",
+				"InfectedWildboar;20",
+				"InfectedBear;28",
+				"PredatoryChameleon;35"
 			});
 		}
 
@@ -779,6 +1071,7 @@ namespace Game
 			if (!m_waves.TryGetValue(m_currentWaveIndex, out List<ZombieSpawnEntry> entries))
 				return;
 
+			// Excluir jefes (se manejan aparte)
 			var regularEntries = entries.Where(e => !m_bossZombieTypes.Contains(e.Type)).ToList();
 			if (regularEntries.Count == 0)
 				return;
@@ -807,8 +1100,7 @@ namespace Game
 
 		private Vector3? FindSpawnPositionNearPlayers(string zombieType)
 		{
-			// Solo considerar realmente voladores a los que tienen "Fly" o "Flying" en el nombre
-			bool isFlying = zombieType.Contains("Fly") || zombieType.Contains("Flying");
+			bool isFlying = zombieType.Contains("Fly") || zombieType.Contains("Flying") || zombieType.Contains("Bird");
 
 			foreach (ComponentPlayer player in m_subsystemPlayers.ComponentPlayers)
 			{
@@ -891,6 +1183,30 @@ namespace Game
 		{
 			public string Type;
 			public int Weight;
+		}
+
+		// Clase CreatureType copiada de SubsystemCreatureSpawn
+		private class CreatureType
+		{
+			public string Name;
+			public SpawnLocationType SpawnLocationType;
+			public bool RandomSpawn;
+			public bool ConstantSpawn;
+			public Func<CreatureType, Point3, float> SpawnSuitabilityFunction;
+			public Func<CreatureType, Point3, int> SpawnFunction;
+
+			public CreatureType(string name, SpawnLocationType spawnLocationType, bool randomSpawn, bool constantSpawn)
+			{
+				Name = name;
+				SpawnLocationType = spawnLocationType;
+				RandomSpawn = randomSpawn;
+				ConstantSpawn = constantSpawn;
+			}
+
+			public override string ToString()
+			{
+				return Name;
+			}
 		}
 	}
 }
