@@ -1727,11 +1727,11 @@ namespace Game
 		{
 			if (m_componentModel != null)
 			{
-				float reloadProgress = (float)((m_subsystemTime.GameTime - m_firearmReloadStartTime) / m_firearmReloadTime);
-
+				// Se restablece la pose por defecto (brazos abajo) durante la recarga,
+				// tal como ocurre en el código original de ZA cuando no se está apuntando.
 				m_componentModel.AimHandAngleOrder = AimHandAngleOrder;
-				m_componentModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
-				m_componentModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
+				m_componentModel.InHandItemOffsetOrder = Vector3.Zero;   // ← sin offset
+				m_componentModel.InHandItemRotationOrder = Vector3.Zero; // ← sin rotación extra
 				m_componentModel.LookAtOrder = null;
 			}
 		}
