@@ -95,7 +95,13 @@ namespace Game
 				{"MachineGunInfected", "MachineGunInfectedTamed" },
 				{"InfectedWolf", "InfectedWolfTamed"},
 				{"InfectedWerewolf", "InfectedWerewolfTamed"},
-				{"InfectedHyena", "InfectedHyenaTamed" }
+				{"InfectedHyena", "InfectedHyenaTamed" },
+				{"InfectedBear", "InfectedBearTamed" },
+				// Nuevos NPCs añadidos
+				{"HumanoidSkeleton", "HumanoidSkeletonTamed"},
+				{"PredatoryChameleon", "PredatoryChameleonTamed"},
+				{"InfectedBird", "InfectedBirdTamed"},
+				{"InfectedWildboar", "InfectedWildboarTamed"}
 			};
 
 			if (tameableCreatures.ContainsKey(currentEntityName))
@@ -203,6 +209,12 @@ namespace Game
 				bool isTamedWolf = entityTemplateName == "InfectedWolfTamed";
 				bool isTamedWerewolf = entityTemplateName == "InfectedWerewolfTamed";
 				bool isTamedHyena = entityTemplateName == "InfectedHyenaTamed";
+				bool isTamedBear = entityTemplateName == "InfectedBearTamed";
+				// Nuevos NPCs booleanos
+				bool isTamedHumanoidSkeleton = entityTemplateName == "HumanoidSkeletonTamed";
+				bool isTamedPredatoryChameleon = entityTemplateName == "PredatoryChameleonTamed";
+				bool isTamedInfectedBird = entityTemplateName == "InfectedBirdTamed";
+				bool isTamedInfectedWildboar = entityTemplateName == "InfectedWildboarTamed";
 
 				ComponentPlayer componentPlayer = FindPlayerWithMiner(componentMiner);
 				if (componentPlayer != null)
@@ -359,7 +371,7 @@ namespace Game
 							messageColor = new Color(0, 255, 128);
 							soundToPlay = "Audio/UI/Tada";
 						}
-						else if (isTamedHyena) // AÑADIR ESTE BLOQUE
+						else if (isTamedHyena)
 						{
 							bool translationFound;
 							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedInfectedHyenaMessage");
@@ -369,7 +381,73 @@ namespace Game
 								message = "You have tamed an infected hyena! Its pack instincts will protect you.";
 							}
 
-							messageColor = new Color(255, 215, 0); // Color dorado/amarillo
+							messageColor = new Color(255, 215, 0);
+							soundToPlay = "Audio/UI/Tada";
+						}
+						else if (isTamedBear)
+						{
+							bool translationFound;
+							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedInfectedBearMessage");
+
+							if (!translationFound)
+							{
+								message = "You have tamed an Infected Bear! Its brute strength will protect you.";
+							}
+
+							messageColor = new Color(131, 0, 0);
+							soundToPlay = "Audio/UI/Tada";
+						}
+						// Nuevos NPCs mensajes
+						else if (isTamedHumanoidSkeleton)
+						{
+							bool translationFound;
+							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedHumanoidSkeletonMessage");
+
+							if (!translationFound)
+							{
+								message = "You have tamed a Humanoid Skeleton! Its bony bow will now fight for you!";
+							}
+
+							messageColor = new Color(200, 200, 200);
+							soundToPlay = "Audio/UI/Tada";
+						}
+						else if (isTamedPredatoryChameleon)
+						{
+							bool translationFound;
+							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedPredatoryChameleonMessage");
+
+							if (!translationFound)
+							{
+								message = "You have tamed a Predatory Chameleon! Its lethal hunting instincts are now yours to command!";
+							}
+
+							messageColor = new Color(50, 205, 50);
+							soundToPlay = "Audio/UI/Tada";
+						}
+						else if (isTamedInfectedBird)
+						{
+							bool translationFound;
+							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedInfectedBirdMessage");
+
+							if (!translationFound)
+							{
+								message = "You have tamed an Infected Bird! Your loyal flying guardian will watch the skies!";
+							}
+
+							messageColor = new Color(135, 206, 235);
+							soundToPlay = "Audio/UI/Tada";
+						}
+						else if (isTamedInfectedWildboar)
+						{
+							bool translationFound;
+							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedInfectedWildboarMessage");
+
+							if (!translationFound)
+							{
+								message = "You have tamed an Infected Wildboar! Its powerful shoves will push your enemies away!";
+							}
+
+							messageColor = new Color(139, 69, 19);
 							soundToPlay = "Audio/UI/Tada";
 						}
 						else
@@ -475,10 +553,36 @@ namespace Game
 							defaultMessage = "You have tamed an infected werewolf! Its savage strength is now yours to command.";
 							defaultColor = new Color(0, 255, 128);
 						}
-						else if (isTamedHyena) // AÑADIR ESTE BLOQUE
+						else if (isTamedHyena)
 						{
 							defaultMessage = "You have tamed an infected hyena! Its pack instincts will protect you.";
 							defaultColor = new Color(255, 215, 0);
+						}
+						else if (isTamedBear)
+						{
+							defaultMessage = "You have tamed an Infected Bear! Its brute strength will protect you.";
+							defaultColor = new Color(131, 0, 0);
+						}
+						// Nuevos NPCs mensajes por defecto
+						else if (isTamedHumanoidSkeleton)
+						{
+							defaultMessage = "You have tamed a Humanoid Skeleton! Its bony bow will now fight for you!";
+							defaultColor = new Color(200, 200, 200);
+						}
+						else if (isTamedPredatoryChameleon)
+						{
+							defaultMessage = "You have tamed a Predatory Chameleon! Its lethal hunting instincts are now yours to command!";
+							defaultColor = new Color(50, 205, 50);
+						}
+						else if (isTamedInfectedBird)
+						{
+							defaultMessage = "You have tamed an Infected Bird! Your loyal flying guardian will watch the skies!";
+							defaultColor = new Color(135, 206, 235);
+						}
+						else if (isTamedInfectedWildboar)
+						{
+							defaultMessage = "You have tamed an Infected Wildboar! Its powerful shoves will push your enemies away!";
+							defaultColor = new Color(139, 69, 19);
 						}
 						else
 						{
