@@ -10265,6 +10265,7 @@
             <MemberComponentTemplate Name="Creature" Guid="eaf82cf6-f2bf-4204-a26c-ec4c659257f6">
               <Parameter Name="Description" Guid="afcd246f-7dbe-4471-a6f4-08425adcf9de" Value="[Description:InfectedWildboar]" Type="string" />
               <Parameter Name="Category" Guid="32e9aafa-65b1-4453-adf3-cca36982b10e" Value="LandPredator" Type="Game.CreatureCategory" />
+              <Parameter Name="ConstantSpawn" Guid="6b7572d0-2cce-4656-bfb3-260f8690747b" Value="True" Type="bool"/>
               <Parameter Name="KillVerbs" Guid="46d88199-57f8-46cf-8838-a9e6d29385b8" Value="mauled" Type="string" />
               <Parameter Name="DisplayName" Guid="1e6ac3ca-8468-435c-855a-125ec5d5b16d" Value="[DisplayName:InfectedWildboar]" Type="string" />
             </MemberComponentTemplate>
@@ -10360,6 +10361,96 @@
             </ParameterSet>
           </EntityTemplate>
 
+          <EntityTemplate Name="InfectedWildboarTamed" Guid="c8787c56-c7ca-4fac-988d-45e81ddef109" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+          <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="eb1905ca-e25d-4fbe-89de-c14ee34b8ffa" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
+        <Parameter Name="DayRange" Guid="a19f9665-af05-4625-a672-ad5b0f89d68a" Value="0" Type="float" />
+        <Parameter Name="NightRange" Guid="74f41f43-a4f8-4b44-9006-80d621044939" Value="0" Type="float" />
+    </MemberComponentTemplate>
+          <MemberComponentTemplate Name="HealthBarDisplay" Guid="8bb073be-da10-4527-9749-02bd0506e11a" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+    </MemberComponentTemplate>
+            <MemberComponentTemplate Name="OnFire" Guid="b8d646a6-0b11-4d6c-8193-01463ccd6e97" />
+            <MemberComponentTemplate Name="Health" Guid="72fedde5-2169-4245-bbe3-bf5b6adb66d9">
+              <Parameter Name="AttackResilience" Guid="443a92b4-7972-4ffa-8a57-4d5ce313f7b9" Value="230" Type="float" />
+              <Parameter Name="FireResilience" Guid="0533ce7d-9232-4c33-94f7-db379ef94484" Value="100" Type="float" />
+            </MemberComponentTemplate>
+            <MemberComponentTemplate Name="Creature" Guid="532c3fec-32bd-4f1f-9b93-976676dd2045">
+              <Parameter Name="DisplayName" Guid="cc94571d-af53-49c6-8adc-8f2b260d8905" Value="[DisplayName:InfectedWildboarTamed]" Type="string" />
+              <Parameter Name="Category" Guid="a7690bb8-21ed-491b-b6d4-f51250ca28cc" Value="LandOther" Type="Game.CreatureCategory" />
+              <Parameter Name="KillVerbs" Guid="afc7b647-1922-46cc-b810-d4958566fc8c" Value="mauled" Type="string" />
+            </MemberComponentTemplate>
+            <MemberComponentTemplate Name="FeedBehavior" Guid="e36d8744-aac1-4840-a916-1b42e07c0655" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad" />
+            <MemberComponentTemplate Name="Loot" Guid="fc5e3d37-d358-4d90-87a5-ec57693426c4">
+              <ParameterSet Name="LootOnFire" Guid="520cf7b2-bcb0-4d41-b0fd-a7720aba726b">
+                <Parameter Name="1" Guid="118fd337-20d8-4a34-9044-5d596ab16424" Value="CookedMeatBlock;1;2" Type="string" />
+              </ParameterSet>
+              <ParameterSet Name="Loot" Guid="f227716f-baa8-40ce-a3b0-98e7f2b91df2">
+                <Parameter Name="1" Guid="581e9a02-ee5c-4f02-af1d-e01f12805c89" Value="RawMeatBlock;1;2" Type="string" />
+              </ParameterSet>
+            </MemberComponentTemplate>
+            <MemberComponentTemplate Name="Miner" Guid="648973d2-f624-499d-8794-255ea1fb8ca1" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
+              <Parameter Name="AttackPower" Guid="2d30adbd-76d4-45aa-95fe-1e20760e3aba" Value="8.5" Type="float" />
+            </MemberComponentTemplate>
+            <MemberComponentTemplate Name="Locomotion" Guid="b4cf0c5c-689c-4053-920a-ce96ab4024d7">
+              <Parameter Name="TurnSpeed" Guid="364dd978-433b-4cc6-a59e-2380825002e2" Value="6" Type="float" />
+              <Parameter Name="WalkSpeed" Guid="0e17dfb6-8c05-498d-865e-5fa8e5d08ff6" Value="4.5" Type="float" />
+              <Parameter Name="FlySpeed" Guid="2520dd91-79d0-4a57-815c-4d99c147fa1f" Value="0" Type="float" />
+              <Parameter Name="LadderSpeed" Guid="e7d63d3a-6627-413a-aee8-5fbe2c7fd786" Value="0" Type="float" />
+            </MemberComponentTemplate>
+            <MemberComponentTemplate Name="FourLeggedModel" Guid="56d9823d-d1e9-42cb-99e5-2b44833ec565" InheritanceParent="76d24f74-5f25-4d30-92ef-658c1a4d66c8">
+              <Parameter Name="ModelScale" Guid="b9b655f9-01bb-4d39-b392-8a0af1888c82" Value="2.5" Type="float"/>
+              <Parameter Name="MoveLegWhenFeeding" Guid="1a15bc37-4958-4a3b-ad69-59bb22ecc9fb" Value="True" Type="bool" />
+              <Parameter Name="WalkFrontLegsAngle" Guid="3a74957c-3bb1-4778-9394-2f9d8477739e" Value="0.65" Type="float" />
+              <Parameter Name="TextureOverride" Guid="d78c4477-2b14-41b6-8380-1d158bc9b04f" Value="Textures/ZombiesDeMierda/jabali infectado" Type="string" />
+              <Parameter Name="WalkAnimationSpeed" Guid="34b0f2d0-f44c-49b5-b3f3-a561b2a09b0b" Value="0.8" Type="float" />
+              <Parameter Name="WalkHindLegsAngle" Guid="aaf43810-d5b8-4c84-86f0-fb71a0d38ca4" Value="0.5" Type="float" />
+              <Parameter Name="ModelName" Guid="b53ae98d-2e7a-4ef5-a0f9-8cdc6f8f8127" Value="Models/Wildboar" Type="string" />
+              <Parameter Name="UseCanterSound" Guid="d2b054b8-3399-4e75-9e80-7553c5fa3742" Value="False" Type="bool" />
+              <Parameter Name="CanterLegsAngleFactor" Guid="2de4da8f-e392-4467-a8a9-fdb9eaf94d01" Value="1.5" Type="float" />
+              <Parameter Name="CanTrot" Guid="3965701b-a3bb-4f26-92fb-3456bc88c8b7" Value="True" Type="bool" />
+            </MemberComponentTemplate>
+    <MemberComponentTemplate Name="PoisonInfected" Guid="4937cc71-6258-4db2-9418-1d772c12a01e" InheritanceParent="d5e7f9a1-b3c5-4d9f-1a3b-5c7d9f1a3b5c">
+    <Parameter Name="PoisonResistance" Value="60" Type="float"/>
+</MemberComponentTemplate>
+            <MemberComponentTemplate Name="CreatureSounds" Guid="1c4ed516-2af6-458c-9a63-1e292dcde007">
+              <Parameter Name="AttackSound" Guid="25ffd901-9d78-4df0-b0a9-f150669009c8" Value="Audio/Creatures/WildboarIdle" Type="string" />
+              <Parameter Name="IdleSound" Guid="9ce24e22-32dd-4868-bcd0-43d4aebcc0ef" Value="Audio/Creatures/WildboarIdle" Type="string" />
+              <Parameter Name="PainSound" Guid="e5f90ab3-8890-40bd-a2cb-0ce1dd1a750c" Value="Audio/Creatures/WildboarPain" Type="string" />
+            </MemberComponentTemplate>
+            <MemberComponentTemplate Name="Body" Guid="db469f53-fb65-43db-9e67-608e96219f93">
+              <Parameter Name="BoxSize" Guid="d41f36cf-e187-49d2-88fa-5c3298deb4d3" Value="0.8,0.85,0.8" Type="Vector3" />
+              <Parameter Name="Mass" Guid="c4d4360d-0ef4-4273-954c-889c672bf4f8" Value="290" Type="float" />
+            </MemberComponentTemplate>
+            <MemberComponentTemplate Name="EatPickableBehavior" Guid="bc574668-6833-4c7f-81fc-bad618e2b161">
+              <ParameterSet Name="FoodFactors" Guid="f1259352-42ab-44b5-a514-dec76b056a0f">
+                <Parameter Name="Fruit" Guid="3c4706af-ac81-4e9f-b893-e1b62823e406" Value="1" Type="float" />
+                <Parameter Name="Meat" Guid="a9824152-42d3-4108-9bf7-2e29c6cc71e1" Value="1" Type="float" />
+              </ParameterSet>
+            </MemberComponentTemplate>
+            <MemberComponentTemplate Name="KnockbackBehavior" Guid="4adf4a77-bd0c-4ea4-a768-4f5ad10cc53e" InheritanceParent="2a14152c-58b2-4964-98cb-01eab7072838">
+    <Parameter Name="KnockbackForce" Value="999" Type="float"/>
+    <Parameter Name="KnockbackChance" Value="0.5" Type="float"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="NewChaseBehavior" Guid="bb93a4b3-2b22-4710-bece-cbce33a42932" InheritanceParent="ef7de64b-34ae-42cc-b51c-ebf3a0621558">
+    <Parameter Name="DayChaseRange" Value="16" Type="float" Guid="2ab7e81b-af05-4c4f-b3bf-f7be1e0e1ffe"/>
+    <Parameter Name="NightChaseRange" Value="24" Type="float" Guid="df7d88b4-56c5-4c3d-8884-7b4c56ae8263"/>
+    <Parameter Name="DayChaseTime" Value="30" Type="float" Guid="f7b911ae-93cb-41f0-8554-22cca86b0a70"/>
+    <Parameter Name="NightChaseTime" Value="60" Type="float" Guid="c4cb3f9e-1667-4c0f-bfe1-0ee4bfb51191"/>
+    <Parameter Name="ChaseNonPlayerProbability" Value="0.2" Type="float" Guid="098a2cbc-49a0-442d-b86b-395fb874ac04"/>
+    <Parameter Name="ChaseWhenAttackedProbability" Value="0.8" Type="float" Guid="3f850e57-43f1-4edb-b374-f33a1036b93e"/>
+    <Parameter Name="ChaseOnTouchProbability" Value="0.5" Type="float" Guid="8e5cba96-9ac3-4595-af1b-25713669a42a"/>
+    <Parameter Name="AutoChaseMask" Value="LandPredator" Type="Game.CreatureCategory" Guid="aa9963ff-513c-4dfd-8bb9-cbfc3d7114dd"/>
+    <Parameter Name="AttackRange" Value="5,20" Type="Vector2" Guid="7de40ca7-8317-4637-843e-b43d8afcc58c"/>
+</MemberComponentTemplate>
+    <MemberComponentTemplate Name="NewHerdBehavior" Guid="bac70bce-8a83-4c10-9e47-6de56f081f9b" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
+        <Parameter Name="HerdName" Value="player" Type="string" Guid="384dbe4f-d7b3-4f63-8800-856221dac561"/>
+        <Parameter Name="HerdingRange" Value="20" Type="float" Guid="acb8846f-973a-4461-b722-d537c5880eba"/>
+        <Parameter Name="AutoNearbyCreaturesHelp" Value="true" Type="bool" Guid="41a3771c-5638-4ef8-95cd-760e1d529668"/>
+        <Parameter Name="HelpCallRange" Value="16" Type="float" Guid="7154e1db-6f87-459a-9136-cca72a11e966"/>
+        <Parameter Name="MaxHelpChaseTime" Value="30" Type="float" Guid="798d117e-3b9c-43e9-a72e-a71e28137a3b"/>
+        <Parameter Name="AvoidAttackingSameHerd" Value="true" Type="bool" Guid="aefd689e-9d97-4c6f-be22-beeaa7ee35d2"/>
+    </MemberComponentTemplate>
+          </EntityTemplate>
+
           <EntityTemplate Name="InfectedBird" Guid="75c31350-7d7a-46a6-a055-1e2a524b8103" InheritanceParent="0cb14482-b936-410e-9317-66d385d7d2fd">
           <MemberComponentTemplate Name="ZombieHerdBehavior" Guid="fcc0c738-1ead-4a24-bda0-1a8ffdc83a26">
         <Parameter Name="Class" Guid="8e75e0dd-33c6-494b-9ed2-b0bac05bde05" Value="Game.ComponentZombieHerdBehavior" Type="string" />
@@ -10415,6 +10506,8 @@
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Creature" Guid="e61e6369-c4be-4d4d-93c3-85e115807871">
               <Parameter Name="DisplayName" Guid="0c27b432-b3e7-4468-acbf-01007391ef65" Value="[DisplayName:InfectedBird]" Type="string" />
+              <Parameter Name="Category" Guid="00e3145c-4d62-4220-95bf-4c26e765a26e" Value="LandPredator" Type="Game.CreatureCategory"/>
+                <Parameter Name="ConstantSpawn" Guid="1c68ffd7-9ac8-4a53-b243-34d8258bafbf" Value="True" Type="bool"/>
               <Parameter Name="Description" Guid="b27a87ed-fd4e-4550-9bd8-076f058daf48" Value="[Description:InfectedBird]" Type="string" />
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="ZombieRunAwayBehavior" Guid="560aa3c0-ce38-4736-8b48-c01da966468f" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
@@ -10450,6 +10543,78 @@
             </ParameterSet>
             </EntityTemplate>
 
+            <EntityTemplate Name="InfectedBirdTamed" Guid="cddd54bc-d23a-4490-9ff5-0ce9d3499d52" InheritanceParent="0cb14482-b936-410e-9317-66d385d7d2fd">
+    <MemberComponentTemplate Name="PoisonInfected" Guid="a07233cf-9dfb-40be-8276-54ecf47c034f" InheritanceParent="d5e7f9a1-b3c5-4d9f-1a3b-5c7d9f1a3b5c">
+    <Parameter Name="PoisonResistance" Value="5" Type="float"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="HealthBarDisplay" Guid="dd60b83d-73bc-4da9-bc7b-ff9fd3f59b3f" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+    </MemberComponentTemplate>
+            <MemberComponentTemplate Name="CreatureSounds" Guid="fe19a058-a977-4a3f-962e-83f439223737">
+              <Parameter Name="PainSound" Guid="1cdc9e6e-33df-4280-83fe-9e5764dd9596" Value="Audio/Creatures/Seagull" Type="string" />
+              <Parameter Name="IdleSound" Guid="fd2e3b62-64b6-40dd-8213-db653507721c" Value="Audio/Creatures/Seagull" Type="string" />
+              <Parameter Name="IdleSoundMinDistance" Guid="f9079416-f65f-4c57-90a6-f36bf4924f53" Value="3.5" Type="float" />
+            </MemberComponentTemplate>
+            <MemberComponentTemplate Name="Locomotion" Guid="43d08384-e6da-46ce-b2b7-a23db79920f1">
+              <Parameter Name="FlySpeed" Guid="5d09b5d2-1237-4566-8fc0-21cd581e7638" Value="8" Type="float" />
+              <Parameter Name="WalkSpeed" Guid="bdea37e8-efab-45b3-abcf-ed47a68ab11d" Value="2.5" Type="float" />
+            </MemberComponentTemplate>
+            <MemberComponentTemplate Name="Body" Guid="44d66179-813e-4aca-9d7e-dfc595fc7f2f">
+              <Parameter Name="Mass" Guid="aefa8f8c-870f-4e01-8ae3-eb959e4bd94d" Value="2" Type="float" />
+              <Parameter Name="Density" Guid="586c922b-5088-4aa0-8c28-2a72269e0036" Value="0.6" Type="float" />
+              <Parameter Name="BoxSize" Guid="39e264c9-16d3-4de3-be53-e8f067af0795" Value="0.6,0.6,0.6" Type="Vector3" />
+            </MemberComponentTemplate>
+            <MemberComponentTemplate Name="Health" Guid="d4277a1f-24db-477d-8894-cb278baf97ea">
+              <Parameter Name="FireResilience" Guid="60f5dacd-b253-4de7-b163-7b655b5d46b9" Value="20" Type="float"/>
+              <Parameter Name="AttackResilience" Guid="ae254c9f-66c7-4f61-8cbc-5845e9e5df24" Value="10" Type="float"/>
+            </MemberComponentTemplate>
+            <MemberComponentTemplate Name="Creature" Guid="2ebdb37c-faa7-4632-9152-b1d4cb9e7d37">
+              <Parameter Name="DisplayName" Guid="e991e305-bc67-4394-a04e-34a6dfbc4a70" Value="[DisplayName:InfectedBirdTamed]" Type="string" />
+              <Parameter Name="Category" Guid="2c525f6c-cdd6-411c-9ff2-74d5df2f8359" Value="LandOther" Type="Game.CreatureCategory"/>
+            </MemberComponentTemplate>
+            <MemberComponentTemplate Name="Miner" Guid="be78751d-a1e5-426d-95bf-8d6425dffbad" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
+              <Parameter Name="AttackPower" Guid="beb5f1c2-791a-43d3-a8ad-33a29c0846a1" Value="2.5" Type="float" />
+            </MemberComponentTemplate>
+            <MemberComponentTemplate Name="OnFire" Guid="f35a2b06-6ca4-40c5-a502-791c84163fee" />
+            <MemberComponentTemplate Name="Loot" Guid="e8cac7cd-b970-49c0-a8cd-18aafa951d6b">
+              <ParameterSet Name="LootOnFire" Guid="184df3a7-aebb-44cb-aa5c-5c8b64863167">
+                <Parameter Name="1" Guid="69c8d978-e035-4343-aa7d-1c8acdab9c64" Value="CookedBirdBlock;1;1" Type="string" />
+              </ParameterSet>
+              <ParameterSet Name="Loot" Guid="d085a0c1-736e-4312-b28e-de56e8029fe5">
+                <Parameter Name="1" Guid="d0cb5a93-cb87-417d-99f2-4e4bf75183db" Value="RawBirdBlock;1;1" Type="string" />
+                <Parameter Name="2" Guid="fa133ce9-d259-4422-aed5-dc0dac85d5f4" Value="FeatherBlock;1;1" Type="string" />
+              </ParameterSet>
+            </MemberComponentTemplate>
+            <MemberComponentTemplate Name="BirdModel" Guid="b44bccba-5700-4ad8-897d-a91b23eb1089">
+              <Parameter Name="WalkAnimationSpeed" Guid="a740b91a-f070-4050-8e2d-c9f270e0e6ef" Value="1.5" Type="float" />
+              <Parameter Name="ModelName" Guid="f8b45310-8f2b-410f-9f88-7ea4bd907cde" Value="Models/Seagull" Type="string" />
+              <Parameter Name="FlyAnimationSpeed" Guid="038813e6-091d-4a87-b2ab-68e5f96944e8" Value="3" Type="float" />
+              <Parameter Name="TextureOverride" Guid="8730be0c-9e3a-4067-8879-594358da6887" Value="Textures/ZombiesDeMierda/pajaro infectado" Type="string" />
+            </MemberComponentTemplate>
+            <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="05c3bedf-129f-4518-bd35-91b206f2b92d" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
+        <Parameter Name="DayRange" Guid="129fe066-663b-499f-a230-34fcb5a65a08" Value="0" Type="float" />
+        <Parameter Name="NightRange" Guid="b0cb7a6b-c8ae-4ea4-a472-e0cb8a034bcc" Value="0" Type="float" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="NewChaseBehavior" Guid="66c2c14c-2dca-4313-8778-15abb6989560" InheritanceParent="ef7de64b-34ae-42cc-b51c-ebf3a0621558">
+    <Parameter Name="DayChaseRange" Value="16" Type="float" Guid="34ed2d1e-ae3e-41fb-94d7-55918c64b40f"/>
+    <Parameter Name="NightChaseRange" Value="24" Type="float" Guid="c6feaae0-581e-49ca-b8fe-85905c887ea8"/>
+    <Parameter Name="DayChaseTime" Value="30" Type="float" Guid="9abf7e68-a4b7-4b17-b13e-89e2c2a6faaf"/>
+    <Parameter Name="NightChaseTime" Value="60" Type="float" Guid="9bfe93b0-dc6a-4b6d-8e6f-f15aabd204ba"/>
+    <Parameter Name="ChaseNonPlayerProbability" Value="0.2" Type="float" Guid="db4c73fd-5247-42cf-a264-7400ecc05fe4"/>
+    <Parameter Name="ChaseWhenAttackedProbability" Value="0.8" Type="float" Guid="8eea6e37-d066-4585-83bf-0ed5cc8a00ce"/>
+    <Parameter Name="ChaseOnTouchProbability" Value="0.5" Type="float" Guid="e79992b1-7578-425f-b0c0-e6f67cdb7fb3"/>
+    <Parameter Name="AutoChaseMask" Value="LandPredator" Type="Game.CreatureCategory" Guid="c353d582-eed9-4c2c-9e5c-981a1f637603"/>
+    <Parameter Name="AttackRange" Value="5,20" Type="Vector2" Guid="59fe85ad-3f3a-4db6-b68a-552e37b71dca"/>
+</MemberComponentTemplate>
+    <MemberComponentTemplate Name="NewHerdBehavior" Guid="33bea13f-fa6d-41a4-a193-11d771db1c6a" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
+        <Parameter Name="HerdName" Value="player" Type="string" Guid="0cc445e6-56dc-4674-b8eb-2c31ceb04a73"/>
+        <Parameter Name="HerdingRange" Value="20" Type="float" Guid="096cb8a3-29a5-49a3-bfeb-4b8ef2d55093"/>
+        <Parameter Name="AutoNearbyCreaturesHelp" Value="true" Type="bool" Guid="cb13ccaa-5144-4b77-8fe3-8181e0c03129"/>
+        <Parameter Name="HelpCallRange" Value="16" Type="float" Guid="1b3ec3a0-4628-4541-8cb4-a8dbd3bf4157"/>
+        <Parameter Name="MaxHelpChaseTime" Value="30" Type="float" Guid="65af9207-27af-40a8-87e6-30244dc48403"/>
+        <Parameter Name="AvoidAttackingSameHerd" Value="true" Type="bool" Guid="d69cad3e-79c8-4fda-a060-d62613d46026"/>
+    </MemberComponentTemplate>
+            </EntityTemplate>
+
             <EntityTemplate Name="PredatoryChameleon" Guid="45425282-74fd-49a3-a0f6-a8f8ecfd8771" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
             <MemberComponentTemplate Name="ZombieRunAwayBehavior" Guid="f39e47c3-66b3-41d6-bfe8-bebd9d4037b6" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
         <MemberComponentTemplate Name="RunAwayBehavior" Guid="c4e55472-51ea-434a-bc78-30519cbe0006" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
@@ -10467,16 +10632,16 @@
         </ParameterSet>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="AvoidFireBehavior" Guid="7c83bfed-e2c3-4d46-993c-652a5567d969" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
-<MemberComponentTemplate Name="Locomotion" Guid="70abff23-696a-4793-ba20-d6d71f789249">
-    <Parameter Name="WalkSpeedWhenTurning" Guid="1a29e59d-1f45-4edd-81fb-819d049813a6" Value="0" Type="float"/>
-    <Parameter Name="InAirWalkFactor" Guid="7a780df0-9f1f-40cb-b30c-1944d4c617c1" Value="1" Type="float"/>
-    <Parameter Name="JumpSpeed" Guid="97dd41d5-e5eb-4db3-ba70-7ecd356125fc" Value="6.5" Type="float"/>
-    <Parameter Name="AccelerationFactor" Guid="8b57e024-6566-4628-b56b-4f34e92f5d10" Value="3.2" Type="float"/>
-    <Parameter Name="FlySpeed" Guid="3c0a9e3e-7ed0-4c14-adc9-22aedd931435" Value="0" Type="float"/>
-    <Parameter Name="TurnSpeed" Guid="dadf694d-6c2c-4dd9-bc99-6f399396b820" Value="14.0" Type="float"/>
-    <Parameter Name="WalkSpeed" Guid="69b1486c-df4f-44bd-a4fe-dba0a7c61fe7" Value="6.2" Type="float"/>
-    <Parameter Name="LadderSpeed" Guid="85a221b4-e2f9-4ce6-bc95-dd7c96b8bb8e" Value="2.5" Type="float"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="Locomotion" Guid="7f35bf1b-231f-4c6b-876a-e3f2f110841e">
+              <Parameter Name="WalkSpeedWhenTurning" Guid="90384a97-7705-4e1f-8aaf-8d4a42d07d07" Value="0" Type="float"/>
+              <Parameter Name="LadderSpeed" Guid="951ea4b7-2ae7-4444-80e9-02cb4f0d8899" Value="0" Type="float"/>
+              <Parameter Name="InAirWalkFactor" Guid="9b22970e-5e39-4b24-8acf-c1e68e1a6d4b" Value="1" Type="float"/>
+              <Parameter Name="WalkSpeed" Guid="7f8cf647-2858-48d0-983a-df4ab0adf688" Value="4.7" Type="float"/>
+              <Parameter Name="FlySpeed" Guid="5ae8b592-ac54-4435-82bd-3455aa267f64" Value="0" Type="float"/>
+              <Parameter Name="TurnSpeed" Guid="b469827c-a297-4abb-8a2e-ff566e228639" Value="8" Type="float"/>
+              <Parameter Name="JumpSpeed" Guid="87dbaac1-08b8-44d5-bde1-b3b0c39062ae" Value="7" Type="float"/>
+              <Parameter Name="AccelerationFactor" Guid="12078740-a6ee-4c86-8509-e5478a1f8f5c" Value="1.2" Type="float"/>
+            </MemberComponentTemplate>
 <MemberComponentTemplate Name="AutoJump" Guid="db05460d-a562-40c2-9f2b-e34a4ab07546">
               <Parameter Name="JumpStrength" Guid="0a35c8a7-b0cd-462a-b76e-645c062c502e" Value="0.65" Type="float"/>
             </MemberComponentTemplate>
@@ -10571,6 +10736,108 @@
         <Parameter Name="DisplayName" Guid="12b70506-5b10-4e0f-8583-1b264619723d" Value="[DisplayName:PredatoryChameleon]" Type="string"/>
         <Parameter Name="EggTypeIndex" Guid="35ac1210-8067-4c32-9c6e-5dfc997e2cbe" Value="1040" Type="int"/>
     </ParameterSet>
+</EntityTemplate>
+
+<EntityTemplate Name="PredatoryChameleonTamed" Guid="09fcb5bf-1456-4b1c-bc10-6460fe19d048" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="NewChaseBehavior" Guid="93bffe3d-3fa1-484a-afd5-fdca936884ea" InheritanceParent="ef7de64b-34ae-42cc-b51c-ebf3a0621558">
+    <Parameter Name="DayChaseRange" Value="16" Type="float" Guid="b7f3bd77-ee3c-4f5f-aa3c-3128764b2c97"/>
+    <Parameter Name="NightChaseRange" Value="24" Type="float" Guid="bed40702-9a08-4d08-b34b-c4042dde9e0e"/>
+    <Parameter Name="DayChaseTime" Value="30" Type="float" Guid="0f3bb6e5-7289-4010-a464-988f93c7da31"/>
+    <Parameter Name="NightChaseTime" Value="60" Type="float" Guid="08829864-3634-493f-92ec-d6798645c02a"/>
+    <Parameter Name="ChaseNonPlayerProbability" Value="0.2" Type="float" Guid="7e298eb3-aca8-41af-a875-0a4dbacb855d"/>
+    <Parameter Name="ChaseWhenAttackedProbability" Value="0.8" Type="float" Guid="9374e405-00a4-45f8-ab6a-bd9db9ee4160"/>
+    <Parameter Name="ChaseOnTouchProbability" Value="0.5" Type="float" Guid="f0816791-541d-451e-87f5-54e126a488f4"/>
+    <Parameter Name="AutoChaseMask" Value="LandPredator" Type="Game.CreatureCategory" Guid="e115765e-6859-46a0-a227-ff19894659b6"/>
+    <Parameter Name="AttackRange" Value="5,20" Type="Vector2" Guid="1cf98bb9-3df1-41f4-999e-5e90f70f7d22"/>
+</MemberComponentTemplate>
+    <MemberComponentTemplate Name="NewHerdBehavior" Guid="08c2ae23-74ff-44ad-9ace-a00c5d0be31b" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
+        <Parameter Name="HerdName" Value="player" Type="string" Guid="d021fcc5-18a3-4b9f-8478-66cb53a8bb08"/>
+        <Parameter Name="HerdingRange" Value="20" Type="float" Guid="1bf31c43-cbc8-4709-8531-a6a31ac4046a"/>
+        <Parameter Name="AutoNearbyCreaturesHelp" Value="true" Type="bool" Guid="55e5739e-a6cb-410f-9fb2-049f451ab932"/>
+        <Parameter Name="HelpCallRange" Value="16" Type="float" Guid="99b889ae-2421-4952-bd97-2407b9af8e25"/>
+        <Parameter Name="MaxHelpChaseTime" Value="30" Type="float" Guid="5cadb907-21b0-4a31-8329-f1730ae2cfc5"/>
+        <Parameter Name="AvoidAttackingSameHerd" Value="true" Type="bool" Guid="7e05da59-4d27-4536-aad0-cf87e5785e7e"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="5673e0d0-8b15-4e68-9606-e3b628bda913" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
+        <Parameter Name="DayRange" Guid="9afff0cd-d2ba-402a-ae2c-fafb94dacffa" Value="0" Type="float"/>
+        <Parameter Name="NightRange" Guid="e56d5331-7d3e-4660-b07a-154631fcf14c" Value="0" Type="float"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Spawn" Guid="bdf9dd1f-b9b0-4b35-9302-af9fde2edcfb">
+    <Parameter Name="AutoDespawn" Guid="a1150e1b-40af-49b6-96c0-125b10fdfd0e" Value="False" Type="bool"/>
+</MemberComponentTemplate>
+    <MemberComponentTemplate Name="EatPickableBehavior" Guid="0729dc65-f323-480a-a713-bc090e8af2ed">
+        <ParameterSet Name="FoodFactors" Guid="1fe3d967-6a07-4ceb-90ee-92edf21b06ba">
+            <Parameter Name="Bread" Guid="673d8ae0-fa90-4567-9a67-a64400f47628" Value="0.8" Type="float"/>
+            <Parameter Name="Meat" Guid="8352b8e1-f19c-4e4c-9064-f494bbb0021f" Value="1.2" Type="float"/>
+        </ParameterSet>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="AvoidFireBehavior" Guid="d2d9f18f-25ff-4caf-9283-a6a352a07150" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
+<MemberComponentTemplate Name="Locomotion" Guid="66344c22-03a8-4b95-a19d-3037ad124e19">
+              <Parameter Name="WalkSpeedWhenTurning" Guid="af713c7a-4b80-4c33-aa4f-7ea6084b5394" Value="0" Type="float"/>
+              <Parameter Name="LadderSpeed" Guid="8cd03cb6-870d-4383-b148-99575aa8be84" Value="0" Type="float"/>
+              <Parameter Name="InAirWalkFactor" Guid="cc02a316-c423-42f1-9d6a-4a38c3e35aea" Value="1" Type="float"/>
+              <Parameter Name="WalkSpeed" Guid="afce5c67-076a-4dfa-987e-39a723f1845d" Value="4.7" Type="float"/>
+              <Parameter Name="FlySpeed" Guid="5f6b6f4b-69f5-4018-a30f-0fe833e98c04" Value="0" Type="float"/>
+              <Parameter Name="TurnSpeed" Guid="9e0ad3be-df0a-4527-a3d9-5a847c1ff3e9" Value="8" Type="float"/>
+              <Parameter Name="JumpSpeed" Guid="822efae1-2539-4463-838e-b1fc4f16c8d8" Value="7" Type="float"/>
+              <Parameter Name="AccelerationFactor" Guid="ec123fd5-caa8-4646-b00f-5756125f8b9d" Value="1.2" Type="float"/>
+            </MemberComponentTemplate>
+<MemberComponentTemplate Name="AutoJump" Guid="95fdd2a9-50bb-450d-be8c-973f8448c567">
+              <Parameter Name="JumpStrength" Guid="b1ebc926-4fa8-4737-9728-1b3d1e65456c" Value="0.65" Type="float"/>
+            </MemberComponentTemplate>
+    <MemberComponentTemplate Name="HealthBarDisplay" Guid="9c5c2297-2b85-402a-8e17-1af922db2642" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Body" Guid="7467b6d6-1a22-4d6c-837d-c4c49351f57a">
+        <Parameter Name="Mass" Guid="bfc2fd77-c5a4-4697-af22-502f11c2392d" Value="485" Type="float"/>
+        <Parameter Name="BoxSize" Guid="ec7acf6b-4d19-4298-9bc2-0649470ac9af" Value="0.8,1.8,0.8" Type="Vector3"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Creature" Guid="8bb093b4-fb2b-4941-8452-3beb2334138f">
+        <Parameter Name="DisplayName" Guid="d3671ae4-a4cf-4e22-97a0-f516fcd8dbef" Value="[DisplayName:PredatoryChameleonTamed]" Type="string"/>
+        <Parameter Name="Category" Guid="770576c4-0bcc-4555-a6a5-c7fa7f000c5f" Value="LandOther" Type="Game.CreatureCategory"/>
+        <Parameter Name="KillVerbs" Guid="6cd1dffe-0a4b-4fce-b69d-dc1570c740d0" Value="massacred" Type="string"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="FindPlayerBehavior" Guid="1a6600f2-d718-48ee-a2a5-da5d46a12e03" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
+    <MemberComponentTemplate Name="Miner" Guid="43bacfb9-3257-4a7f-b1f1-62a8b04afd60" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
+        <Parameter Name="AttackPower" Guid="48ad9dbe-ffbb-487a-aee5-a3a5fadbe78f" Value="9.0" Type="float"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="NewHumanModel" Guid="66455dad-4c29-491a-8d38-cd935c65a3bc" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
+    <Parameter Name="Class" Guid="16ddf76b-8424-4a3a-8e7c-6b0ab6f4886e" Value="Game.ComponentNewHumanModel" Type="string"/>
+    <Parameter Name="ModelName" Guid="b689a97e-4dd7-49de-b3cf-8aab08d0699d" Value="Models/Zombies Modelos De Cagada/depredador" Type="string"/>
+    <Parameter Name="TextureOverride" Guid="8ee855b9-198f-49c2-a0e5-15982b2e56d9" Value="Textures/ZombiesDeMierda/camaleon depredador" Type="string"/>
+    <Parameter Name="WalkAnimationSpeed" Guid="f635430e-a8d7-445e-8589-ac3918104e6f" Value="0.65" Type="float"/>
+    <Parameter Name="WalkBobHeight" Guid="620b3ec9-8b26-49f8-a1a1-7c1b5a6ddf69" Value="0.045" Type="float"/>
+    <Parameter Name="WalkLegsAngle" Guid="cce273a6-3237-41c3-8cd2-4cb66b7fe270" Value="0.75" Type="float"/>
+    <Parameter Name="SmoothFactor" Guid="cb3dfc2a-e228-4f47-9cfa-480733c6dac7" Value="0.12" Type="float"/>
+    <Parameter Name="AnimationResponsiveness" Guid="7798a014-f9b2-4e14-b3cb-e615ae78ea79" Value="15" Type="float"/>
+    <Parameter Name="AimSmoothFactor" Guid="9b7797cb-3dda-497a-b6ac-c05fa4ca48f4" Value="0.2" Type="float"/>
+    <Parameter Name="AimTransitionSpeed" Guid="530b3936-d8a6-44c3-8ead-368da8cc9c85" Value="7" Type="float"/>
+    <Parameter Name="MovementAnimationPhase" Guid="6bf4470b-f76a-482e-9d29-b2473e7ad5e9" Value="0" Type="float"/>
+    <Parameter Name="DeathPhase" Guid="21c6cb4c-d04d-42e4-bda8-9fdaa1501e20" Value="0" Type="float"/>
+    <Parameter Name="Bob" Guid="e1c09f06-eb61-4b25-b8e8-ad1198fe5cd7" Value="0" Type="float"/>
+    <Parameter Name="IsAttackHitMoment" Guid="e6cac597-f1e8-46ef-bf03-a0830c64e44c" Value="false" Type="bool"/>
+    <Parameter Name="AttackOrder" Guid="bc3ae2a4-9ff1-45f7-8b67-89fae7b8b03b" Value="false" Type="bool"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="Health" Guid="03ed018b-2d7e-425e-91f5-fc8f41af766e">
+    <Parameter Name="AttackResilience" Guid="a1d0477c-e144-446a-b344-7b32e209f4ed" Value="185" Type="float"/>
+    <Parameter Name="FireResilience" Guid="ef7b4e59-6bc2-4e3d-82ad-0f10df6a8150" Value="20" Type="float"/>
+    <Parameter Name="ExplosionResilience" Guid="fefb1ca5-6ac4-4fc2-b78b-7645bc2a7e3b" Value="25" Type="float"/>
+</MemberComponentTemplate>
+    <MemberComponentTemplate Name="PoisonInfected" Guid="01df2245-ce8e-427c-a2fb-a2d5ee858465" InheritanceParent="d5e7f9a1-b3c5-4d9f-1a3b-5c7d9f1a3b5c">
+    <Parameter Name="PoisonResistance" Value="55" Type="float"/>
+</MemberComponentTemplate>
+    <MemberComponentTemplate Name="OnFire" Guid="3a5e812d-e74a-4592-adf0-901b03008eae"/>
+    <MemberComponentTemplate Name="WalkAroundBehavior" Guid="cdea216c-bb7a-4028-9f5c-41d706b44005" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
+    <MemberComponentTemplate Name="FeedBehavior" Guid="856913c7-2651-4f7e-9911-86b63814e532" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
+        <Parameter Name="AutoFeed" Guid="d1bb1386-7a81-48fa-8b70-87d34d221e7e" Value="False" Type="bool"/>
+    </MemberComponentTemplate>
+<MemberComponentTemplate Name="PathBreaker" Guid="2b29c050-aade-42b5-872c-05df11c54f76" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
+		<Parameter Name="CanBreakBlocks" Guid="88de7999-0b81-43b4-a193-128cd1daf018" Value="True" Type="bool"/>
+		<Parameter Name="SpecificBlocks" Guid="88c08f67-5466-461c-a7af-20835948ce9e" Value="GlassBlock, FramedGlassBlock, WindowBlock" Type="string"/>
+		<Parameter Name="BreakProbability" Guid="7dbb964d-7d67-4dee-a33f-125986496b58" Value="1.0" Type="float"/>
+	</MemberComponentTemplate>
+    <MemberComponentTemplate Name="NewAutoInteract" Guid="e6253d0a-49df-44f8-af0e-51d44a16a50b" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
+    <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
+</MemberComponentTemplate>
 </EntityTemplate>
 
 <EntityTemplate Name="HumanoidSkeleton" Guid="081f3f56-3aa0-4917-bf08-79f7f7ea0be9" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
@@ -10691,5 +10958,106 @@
         <Parameter Name="DisplayName" Guid="f38297a3-a0b1-4617-b0f3-99c2503f7f9d" Value="[DisplayName:HumanoidSkeleton]" Type="string"/>
         <Parameter Name="EggTypeIndex" Guid="3337859b-b713-4d26-8ffa-032aaac8855d" Value="1041" Type="int"/>
     </ParameterSet>
+</EntityTemplate>
+
+<EntityTemplate Name="HumanoidSkeletonTamed" Guid="b26c59e6-6180-46f7-ade3-ea72c45d4ca9" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="CreatureInventory" Guid="02286148-d3f8-453b-b46b-cc2c035cd86a" InheritanceParent="a347220c-b5cf-4eae-9215-4ed37426eec4">
+  <Parameter Name="SlotsCount" Value="16" Type="int"/>
+  <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="NewChaseBehavior" Guid="9be58fa7-3f69-4e43-99c6-a4f19d6647cd" InheritanceParent="ef7de64b-34ae-42cc-b51c-ebf3a0621558">
+    <Parameter Name="DayChaseRange" Value="16" Type="float" Guid="d7d55786-0a2e-48b8-930b-d7d8327f16a2"/>
+    <Parameter Name="NightChaseRange" Value="24" Type="float" Guid="097cd61d-3364-4d1b-87f5-b4757922c436"/>
+    <Parameter Name="DayChaseTime" Value="30" Type="float" Guid="37d7a58b-23eb-473b-9e62-17318a1efd21"/>
+    <Parameter Name="NightChaseTime" Value="60" Type="float" Guid="c6fc5f5a-039e-41bd-afcb-9f5808743946"/>
+    <Parameter Name="ChaseNonPlayerProbability" Value="0.2" Type="float" Guid="dc441a40-69c8-44d3-b7ad-f9ece428299a"/>
+    <Parameter Name="ChaseWhenAttackedProbability" Value="0.8" Type="float" Guid="1ee583f6-18fb-4f91-8cf3-6d57f7cc4058"/>
+    <Parameter Name="ChaseOnTouchProbability" Value="0.5" Type="float" Guid="04412c02-b44e-4ada-af04-d644e7dcf3ac"/>
+    <Parameter Name="AutoChaseMask" Value="LandPredator" Type="Game.CreatureCategory" Guid="2c0f4fda-cd1c-4f73-ae6c-9593ff1ab01f"/>
+    <Parameter Name="AttackRange" Value="5,20" Type="Vector2" Guid="23b494fd-1a37-4cae-a4ee-19daad17540a"/>
+</MemberComponentTemplate>
+    <MemberComponentTemplate Name="NewHerdBehavior" Guid="da4b293a-5852-4fe3-8f21-9268005a42c4" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
+        <Parameter Name="HerdName" Value="player" Type="string" Guid="7520525f-38ad-489d-baba-29d0ef5b1d03"/>
+        <Parameter Name="HerdingRange" Value="20" Type="float" Guid="21618880-2944-4390-8cbe-48a35fc8b332"/>
+        <Parameter Name="AutoNearbyCreaturesHelp" Value="true" Type="bool" Guid="c47e8e23-6864-4122-9ba5-8ec80e5d5360"/>
+        <Parameter Name="HelpCallRange" Value="16" Type="float" Guid="e000f911-2788-4e70-acd9-46b6c8437d68"/>
+        <Parameter Name="MaxHelpChaseTime" Value="30" Type="float" Guid="aa732edc-67ce-4176-892c-0165923622f1"/>
+        <Parameter Name="AvoidAttackingSameHerd" Value="true" Type="bool" Guid="d08a2fe2-3459-4914-94c2-71d6304ee5b6"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="66c3c7ae-feef-4c86-af5c-6b2d06c67ad0" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
+        <Parameter Name="DayRange" Guid="5d640b61-6e88-4a8d-a7b3-9c000f098d4a" Value="0" Type="float"/>
+        <Parameter Name="NightRange" Guid="75c5ebb2-c6e6-4b97-a3a4-57897107e339" Value="0" Type="float"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Spawn" Guid="90fd73ae-4da9-4d56-a633-07f535dee62f">
+    <Parameter Name="AutoDespawn" Guid="28d3ed13-7eb2-4c16-9317-7bf36b9b8e3a" Value="False" Type="bool"/>
+</MemberComponentTemplate>
+    <MemberComponentTemplate Name="EatPickableBehavior" Guid="a8bf16f5-290d-4fc1-a026-4bef648b4b4b">
+        <ParameterSet Name="FoodFactors" Guid="961e0caa-d61e-4fc8-9745-75d09f1e71ec">
+            <Parameter Name="Meat" Guid="1427a218-60ac-40e7-a634-a7698ae38aba" Value="1" Type="float"/>
+        </ParameterSet>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="AvoidFireBehavior" Guid="a59ce83b-2ce8-4d9a-94af-bdb569aff9e1" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
+<MemberComponentTemplate Name="Locomotion" Guid="868c3dee-7563-4992-8e82-6c17c903f75b">
+                <Parameter Name="AccelerationFactor" Guid="74722313-fc07-408d-969a-2421787d0323" Value="1.2" Type="float"/>
+                <Parameter Name="FlySpeed" Guid="1bf3bd1d-7242-4698-80eb-08e8ed8e4e47" Value="0" Type="float"/>
+                <Parameter Name="TurnSpeed" Guid="1f206818-19c4-4d9a-9344-4236c4e7301f" Value="4" Type="float"/>
+                <Parameter Name="WalkSpeed" Guid="a380503d-df7c-4634-b510-1ff43c972866" Value="4.2" Type="float"/>
+                <Parameter Name="LadderSpeed" Guid="f2001d24-eb64-490c-b93c-6fa7d2e7d1b2" Value="0" Type="float"/>
+            </MemberComponentTemplate>
+    <MemberComponentTemplate Name="HealthBarDisplay" Guid="5914fae6-7614-4553-aab4-d8a8417a788b" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Body" Guid="1ca70494-024e-4ac0-a9db-8541b99f636a">
+        <Parameter Name="Mass" Guid="a6fa7157-943b-4014-a070-ae2128e74747" Value="235" Type="float"/>
+        <Parameter Name="BoxSize" Guid="a4af8f8a-9dbc-4f39-a7e4-7c14a440e790" Value="0.8,1.8,0.8" Type="Vector3"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Creature" Guid="8cda7177-a4d8-48af-b772-60f22709d727">
+        <Parameter Name="DisplayName" Guid="c0b6b782-11bf-4f1e-a0f0-e399ff94a751" Value="[DisplayName:HumanoidSkeletonTamed]" Type="string"/>
+        <Parameter Name="Category" Guid="e8b52263-f883-410b-9801-1b16a585c448" Value="LandOther" Type="Game.CreatureCategory"/>
+        <Parameter Name="ConstantSpawn" Guid="9fa47529-0caf-4a08-9e7b-490527841f6a" Value="True" Type="bool"/>
+        <Parameter Name="KillVerbs" Guid="8747724d-dc65-4ffc-a5c1-407c2469fe7f" Value="massacred" Type="string"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="FindPlayerBehavior" Guid="8c6b24fe-74d9-4cdf-90c2-5360d3678265" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
+    <MemberComponentTemplate Name="Miner" Guid="fa41763f-f50f-4b22-ad23-9daff7e0151f" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
+        <Parameter Name="AttackPower" Guid="7e0aa924-c522-4071-b483-c433620b8644" Value="12.0" Type="float"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="NewHumanModel" Guid="4fd34e20-fc48-424c-bf2a-5f1f105bfa52" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
+    <Parameter Name="Class" Guid="822e7c0a-9097-49b6-89c7-8af4115ca16f" Value="Game.ComponentNewHumanModel" Type="string"/>
+    <Parameter Name="ModelName" Guid="512ebf39-cb92-49dc-80af-ebb603c5c95e" Value="Models/Zombies Modelos De Cagada/Human_skeleton" Type="string"/>
+    <Parameter Name="TextureOverride" Guid="9441e7f6-06aa-49a1-8ed8-cfa4255f4c2f" Value="Textures/ZombiesDeMierda/Skull" Type="string"/>
+    <Parameter Name="WalkAnimationSpeed" Guid="5f9de9a1-ce65-48bd-8cdd-aa3139a93efb" Value="0.65" Type="float"/>
+    <Parameter Name="WalkBobHeight" Guid="4419d69c-77e9-4e7c-9c98-d68d7fe78643" Value="0.045" Type="float"/>
+    <Parameter Name="WalkLegsAngle" Guid="6520c656-d0e9-4d85-9bf4-822acd2eaa04" Value="0.75" Type="float"/>
+    <Parameter Name="SmoothFactor" Guid="a1d568b8-d925-4c78-b4c7-ea3a5c6d3744" Value="0.12" Type="float"/>
+    <Parameter Name="AnimationResponsiveness" Guid="fc15ac91-4caa-40da-932e-4993cc0e981e" Value="15" Type="float"/>
+    <Parameter Name="AimSmoothFactor" Guid="cb6d88e2-e1e1-4df6-a858-78851c0486d2" Value="0.2" Type="float"/>
+    <Parameter Name="AimTransitionSpeed" Guid="227c38c8-0904-4d9d-8786-5d7fb059bf57" Value="7" Type="float"/>
+    <Parameter Name="MovementAnimationPhase" Guid="a7e23d7b-79d1-4689-813d-e3e2267c4780" Value="0" Type="float"/>
+    <Parameter Name="DeathPhase" Guid="88191416-1644-4f92-bb59-2d33bed8ffc5" Value="0" Type="float"/>
+    <Parameter Name="Bob" Guid="dd542478-d859-4874-8217-8f9606f0a54a" Value="0" Type="float"/>
+    <Parameter Name="IsAttackHitMoment" Guid="f34040ea-fedd-42bc-aaf1-2acc7582b60a" Value="false" Type="bool"/>
+    <Parameter Name="AttackOrder" Guid="e24eae2a-6da0-455d-99b4-93303a009f58" Value="false" Type="bool"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="Health" Guid="35586e47-8189-4142-8668-746ac4b2b95b">
+    <Parameter Name="AttackResilience" Guid="eef990e0-4266-4dce-8c4f-ff3243500c02" Value="70" Type="float"/>
+    <Parameter Name="FireResilience" Guid="87f166b6-ceb1-4036-aef0-25c35768f76a" Value="20" Type="float"/>
+    <Parameter Name="ExplosionResilience" Guid="39d4698e-d9f1-4aeb-8325-3d915928a517" Value="25" Type="float"/>
+</MemberComponentTemplate>
+    <MemberComponentTemplate Name="PoisonInfected" Guid="7506c630-93a9-4d37-b11d-6ab3d11d49bd" InheritanceParent="d5e7f9a1-b3c5-4d9f-1a3b-5c7d9f1a3b5c">
+    <Parameter Name="PoisonResistance" Value="55" Type="float"/>
+</MemberComponentTemplate>
+    <MemberComponentTemplate Name="OnFire" Guid="7d138d3e-82aa-4eb0-bf83-a2b2cf8f0f72"/>
+    <MemberComponentTemplate Name="WalkAroundBehavior" Guid="a3b69d7d-de85-4b02-ac2f-ba6c978adf3d" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
+    <MemberComponentTemplate Name="FeedBehavior" Guid="cdb5c9ac-a85c-4b8b-9400-dfd4d7133b30" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
+        <Parameter Name="AutoFeed" Guid="19e41d1a-5f75-4546-9edb-805eef45bb82" Value="False" Type="bool"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Inventory" Guid="8cc00121-f4c5-4fce-b067-287e7ecf808b" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
+            </MemberComponentTemplate>
+            <MemberComponentTemplate Name="NewCreatureCollect" Guid="e5e8bab8-6775-4b0f-9d4a-3b5446094bd8" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+    <Parameter Name="PickFactors" Guid="6bc6da1f-de63-4acb-a979-a9604d6cca29" Value="Tools;1.0,Weapons;1.0" Type="string"/>
+    <Parameter Name="Class" Value="Game.ComponentNewCreatureCollect" Type="string"/>
+</MemberComponentTemplate>
+    <MemberComponentTemplate Name="NewAutoInteract" Guid="69cd1d43-5b4b-4e82-b8d6-c61c4e6c57e6" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
+    <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
+</MemberComponentTemplate>
 </EntityTemplate>
         </Zombie>
