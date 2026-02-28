@@ -109,21 +109,30 @@ namespace Game
 				return;
 
 			double now = m_subsystemTime.GameTime;
+			int currentPhase = m_subsystemSky.MoonPhase;
 
-			if (!m_advancedThisNight && IsDusk())
+			// Avanzar de ola cuando cambia la fase lunar (durante la noche verde)
+			if (!m_advancedThisNight && m_subsystemGreenNightSky.IsGreenNightActive)
 			{
-				int currentPhase = m_subsystemSky.MoonPhase;
-				if (currentPhase == m_nextWavePhase)
+				// Solo verificar cuando es de noche (entre dusk y dawn)
+				float time = m_subsystemTimeOfDay.TimeOfDay;
+				if (time > 0.5f || time < 0.01f) // Es de noche
 				{
-					if (m_currentWaveIndex < m_maxWaveIndex)
+					// Si la fase lunar actual es la que esperamos (0 o 4)
+					if (currentPhase == m_nextWavePhase)
 					{
-						m_currentWaveIndex++;
-						m_nextWavePhase = (m_nextWavePhase == 0) ? 4 : 0;
+						if (m_currentWaveIndex < m_maxWaveIndex)
+						{
+							m_currentWaveIndex++;
+							// Alternar entre luna llena (0) y luna nueva (4)
+							m_nextWavePhase = (m_nextWavePhase == 0) ? 4 : 0;
+						}
+						m_advancedThisNight = true;
 					}
-					m_advancedThisNight = true;
 				}
 			}
 
+			// Resetear el flag al amanecer
 			if (IsDawn())
 				m_advancedThisNight = false;
 
@@ -174,9 +183,9 @@ namespace Game
 				{
 					try
 					{
-						// Usar ContentManager.Get<string> para obtener el contenido del archivo como string
-						// Esto busca en la carpeta "Waves" igual que busca texturas en "Textures"
-						string content = ContentManager.Get<string>($"Waves/{i}.txt");
+						// Usar ContentManager.Get<string> para obtener el archivo como string
+						// Esto busca en la carpeta "Waves" automáticamente
+						string content = ContentManager.Get<string>($"Waves/{i}");
 
 						if (!string.IsNullOrEmpty(content))
 						{
