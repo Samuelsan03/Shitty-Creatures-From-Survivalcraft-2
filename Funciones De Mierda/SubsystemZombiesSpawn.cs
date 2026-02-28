@@ -56,6 +56,13 @@ namespace Game
 			"InfectedBear", "InfectedWildboar"
 		};
 
+		// Voladores (spawnean en aire)
+		private static readonly HashSet<string> FlyingTemplates = new HashSet<string>
+		{
+			"InfectedFly1", "InfectedFly2", "InfectedFly3",
+			"FlyingInfectedBoss", "InfectedBird"
+		};
+
 		// Bloques prohibidos para spawnear
 		private HashSet<string> m_forbiddenBlockNames = new HashSet<string>
 		{
@@ -340,8 +347,28 @@ namespace Game
 			if (totalCreatures >= MaxGlobalCreatures)
 				return;
 
-			// Obtener punto de spawn válido (evitando bloques prohibidos)
-			Vector3 spawnPos = GetValidSpawnPoint();
+			// Obtener punto de spawn según el tipo de criatura
+			var entry = GetRandomWeightedEntry(m_currentWaveEntries);
+			if (entry == null)
+				return;
+
+			// Si es un jefe y ya estamos en batalla de jefes, no spawnear otro jefe aquí
+			if (BossTemplates.Contains(entry.TemplateName) && m_bossBattleActive)
+				return;
+
+			Vector3 spawnPos;
+
+			// Si es volador, spawnear en el aire
+			if (FlyingTemplates.Contains(entry.TemplateName))
+			{
+				spawnPos = GetRandomFlyingSpawnPoint();
+			}
+			else
+			{
+				// Si no es volador, spawnear en superficie con bloques prohibidos
+				spawnPos = GetValidSpawnPoint();
+			}
+
 			if (spawnPos == Vector3.Zero)
 				return;
 
@@ -350,15 +377,6 @@ namespace Game
 			Vector2 areaMax = new Vector2(spawnPos.X + 16, spawnPos.Z + 16);
 			int nearby = m_subsystemCreatureSpawn.CountCreaturesInArea(areaMin, areaMax, false);
 			if (nearby >= MaxCreaturesPerArea)
-				return;
-
-			// Seleccionar criatura aleatoria ponderada
-			var entry = GetRandomWeightedEntry(m_currentWaveEntries);
-			if (entry == null)
-				return;
-
-			// Si es un jefe y ya estamos en batalla de jefes, no spawnear otro jefe aquí
-			if (BossTemplates.Contains(entry.TemplateName) && m_bossBattleActive)
 				return;
 
 			// Spawnear la criatura
@@ -400,6 +418,31 @@ namespace Game
 			return Vector3.Zero;
 		}
 
+		private Vector3 GetRandomFlyingSpawnPoint()
+		{
+			foreach (var player in m_subsystemPlayers.ComponentPlayers)
+			{
+				var camera = player.GameWidget.ActiveCamera;
+				for (int i = 0; i < 10; i++)
+				{
+					var point = m_subsystemCreatureSpawn.GetRandomSpawnPoint(camera, SpawnLocationType.Surface);
+					if (point.HasValue)
+					{
+						// Para voladores, spawnear a altura variable entre 10 y 30 bloques sobre el suelo
+						int groundY = point.Value.Y;
+						int airY = groundY + m_random.Int(10, 30);
+
+						// Verificar que la posición en el aire esté dentro del mundo
+						if (airY >= 1 && airY <= 255)
+						{
+							return new Vector3(point.Value.X + 0.5f, airY, point.Value.Z + 0.5f);
+						}
+					}
+				}
+			}
+			return Vector3.Zero;
+		}
+
 		private Vector3 GetRandomSpawnPointAroundPlayers(bool forceSurface = false)
 		{
 			foreach (var player in m_subsystemPlayers.ComponentPlayers)
@@ -407,7 +450,7 @@ namespace Game
 				var camera = player.GameWidget.ActiveCamera;
 				for (int i = 0; i < 5; i++)
 				{
-					var point = m_subsystemCreatureSpawn.GetRandomSpawnPoint(camera, forceSurface ? SpawnLocationType.Surface : SpawnLocationType.Surface);
+					var point = m_subsystemCreatureSpawn.GetRandomSpawnPoint(camera, SpawnLocationType.Surface);
 					if (point.HasValue)
 					{
 						return new Vector3(point.Value.X + 0.5f, point.Value.Y, point.Value.Z + 0.5f);
