@@ -158,17 +158,10 @@ namespace Game
 			{
 				m_currentWave = nextWave;
 				SetCurrentWave(m_currentWave);
-				SendMessageToAllPlayers("ZombiesSpawn", "WaveAdvanced", new Color(0, 255, 0));
-				Log.Information($"ZombiesSpawn: Advanced to wave {m_currentWave}");
 			}
 			else if (m_currentWave == 19)
 			{
 				SendMessageToAllPlayers("ZombiesSpawn", "FinalWave", new Color(255, 0, 0));
-				Log.Information("ZombiesSpawn: Already at max wave 19");
-			}
-			else
-			{
-				Log.Warning($"ZombiesSpawn: Could not advance to wave {nextWave} - not found in waves dictionary");
 			}
 		}
 
@@ -199,7 +192,6 @@ namespace Game
 						if (entries.Count > 0)
 						{
 							m_waves[i] = entries;
-							Log.Information($"ZombiesSpawn: Loaded wave {i} with {entries.Count} entries");
 						}
 					}
 				}
@@ -211,7 +203,6 @@ namespace Game
 
 			if (m_waves.Count == 0)
 			{
-				Log.Warning("ZombiesSpawn: No wave resources found, loading default waves");
 				LoadDefaultWaves();
 			}
 		}
@@ -267,13 +258,11 @@ namespace Game
 			{
 				m_currentWaveEntries = entries;
 				m_currentWave = wave;
-				Log.Information($"ZombiesSpawn: Now using wave {wave} with {entries.Count} enemy types");
 			}
 			else
 			{
 				m_currentWaveEntries = m_waves.ContainsKey(1) ? m_waves[1] : new List<WaveEntry>();
 				m_currentWave = 1;
-				Log.Warning($"ZombiesSpawn: Wave {wave} not found, defaulting to wave 1");
 			}
 		}
 
