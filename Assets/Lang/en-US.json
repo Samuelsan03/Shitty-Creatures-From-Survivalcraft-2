@@ -1,4 +1,11 @@
 {
+  "AntidoteBucket": {
+    "NPCCured": "The NPC has been cured of poison and sickness!",
+    "PoisonAndSicknessCured": "Nausea and sickness have been cured!"
+  },
+  "AntifluBucket": {
+    "FluCured": "Flu has been cured!"
+  },
   "GreenNightDialog": {
     "Title": "Green Night Configuration",
     "ToggleExplanation": "Enabling Green Night will cause infected hordes to appear during the night. Disabling it will return the world to normal progression without the Green Night event and infected hordes.",
@@ -36,9 +43,6 @@
     "YouNeedAmmunition": "You need ammunition to fire the item launcher"
   },
   "GreenNightSky": {
-    
-    "EnabledNotification": "Green Night activated! Infected hordes will now attack you at night.",
-    "DisabledNotification": "Green Night deactivated. The world will now progress normally.",
     "GreenMoonBegins": "The Green Night has begun!",
     "GreenMoonEnds": "The Green Night has ended."
   },
@@ -80,6 +84,8 @@
       "Bandit6": "Bandit 6",
       "Bandit5": "Bandit 5",
       "Bandit4": "Bandit 4",
+      "HumanoidSkeleton": "Humanoid Skeleton",
+      "HumanoidSkeletonTamed": "Humanoid Skeleton Ally",
       "PredatoryChameleon": "Predatory Chameleon",
       "PredatoryChameleonTamed": "Predatory Chameleon Ally",
       "InfectedBird": "Infected Bird",
@@ -213,6 +219,7 @@
       "Richard": "Richard"
     },
     "Description": {
+      "HumanoidSkeleton": "The Humanoid Skeleton is a very special infected (though not a special infected as you might think). Who does it remind you of when you see it at night? Ah, of course, it brings to mind the skeletons from Minecraft! And guess what? It's also part of the horde of the Infected. However, just like in Minecraft, it can fire a bow, or, depending on the probability, it will change its items. Although you might associate them only with bows, they can also use other ranged and firearms. It's the only infected that appears during the normal night, but the Green Night makes it even more dangerous, as it will hunt you to death. Nevertheless, you can enslave it using the Zombie Collar to make the bony human your guardian.",
       "PredatoryChameleon": "The Predator Chameleon is a unique special infected (note: it is neither a mini-boss nor a boss like other special infected). It emerges when a chameleon, a predator, and a human are exposed to the infection, resulting in a creature that has adapted the appearance of a predator, also bearing human-like features from the mutation, while retaining reptilian characteristics. Although it cannot camouflage itself for hunting, its danger lies in its speed and its deadly attacks, which are far from simple. It can run quickly to catch its victims. Unlike other infected that destroy all blocks, the Predator Chameleon can manipulate doors, making it dangerous to seek refuge, as it can open them. It can also break glass, making any glass-based shelters or defenses vulnerable, as it is the only infected capable of destroying this specific block. During the Green Night, it becomes even more aggressive, relentlessly hunting the player until death. However, its deadly hunting instincts can be calmed by using a Zombie Collar, transforming the infected reptile into your loyal guardian, maintaining its lethal hunting drive.",
       "InfectedBird": "The Infected Bird is created when any flying bird (regardless of whether it's a seagull, duck, crow, sparrow, or pigeon) is killed by an infected creature, resulting in an enhanced, more dangerous version. It will often be found alongside other infected, hunting for prey. While it retains the appearance of a bird, it is significantly stronger and more aggressive. During the Green Night, it becomes an absolute nightmare, relentlessly hunting the player until death. However, unlike other infected, the Infected Bird is relatively weak, and its attacks are not as deadly. It can be tamed using a Zombie Collar, making it a loyal flying guardian.",
       "InfectedWildboar": "The Infected Boar, like other animals, emerges when a boar is killed by an infected creature, resulting in an enhanced version of its former self. This creature is another mini-boss, possessing a moderate level of difficulty. Its unique ability is a powerful shoving attack; upon striking, it will forcefully push both players and other creatures, much like the Charger, but it only utilizes this ability 50% of the time. During the Green Night, the Infected Boar becomes even more relentless, pursuing players to the death. However, all is not lost. The Infected Boar can be tamed using a Zombie Collar, turning it into a loyal companion ready to do your bidding.",
@@ -892,9 +899,10 @@
   "Messages": {
     "TooCloseToAim": "Too close to aim.",
     "NeedAmmo": "Needs {0} to shoot.",
-    "NPCCured": "The NPC has been cured of poison and sickness!",
-    "FluCured": "Flu has been cured!",
-    "PoisonAndSicknessCured": "Nausea and sickness have been cured!",
+    "CollarTamedHumanoidSkeletonMessage": "You have tamed a Humanoid Skeleton! Its bony bow will now fight for you!",
+    "CollarTamedPredatoryChameleonMessage": "You have tamed a Predatory Chameleon! Its lethal hunting instincts are now yours to command!",
+    "CollarTamedInfectedBirdMessage": "You have tamed an Infected Bird! Your loyal flying guardian will watch the skies!",
+    "CollarTamedInfectedWildboarMessage": "You have tamed an Infected Wildboar! Its powerful shoves will push your enemies away!",
     "CollarTamedInfectedBearMessage": "You have tamed an Infected Bear! Its brute strength will protect you.",
     "CollarTamedInfectedHyenaMessage": "You have tamed an infected hyena! Its pack instincts will protect you.",
     "CollarTamedInfectedWolfMessage": "You have tamed an infected wolf! It will now fight for you.",
