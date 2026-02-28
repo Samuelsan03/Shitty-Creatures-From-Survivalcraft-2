@@ -1,3 +1,5 @@
+HumanoidSkeleton;30
+InfectedBird;25
 InfectedNormal1;30
 InfectedNormal2;30
 InfectedFast1;25
@@ -12,4 +14,5 @@ InfectedFly3;5
 Boomer1;10
 Boomer2;10
 Boomer3;10
-InfectedWolf;20
+InfectedHyena;25
+PredatoryChameleon;7

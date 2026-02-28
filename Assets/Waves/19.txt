@@ -1,3 +1,5 @@
+HumanoidSkeleton;15
+InfectedBird;10
 InfectedNormal1;40
 InfectedNormal2;40
 GhostNormal;25
@@ -29,5 +31,7 @@ TankGhost2;1
 TankGhost3;1
 MachineGunInfected;1
 FlyingInfectedBoss;1
-InfectedWolf;35
-InfectedWerewolf;20
+InfectedHyena;40
+InfectedWildboar;20
+InfectedBear;28
+PredatoryChameleon;35
