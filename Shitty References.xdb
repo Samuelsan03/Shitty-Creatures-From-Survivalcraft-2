@@ -1,5 +1,35 @@
 <Mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://gitee.com/THPRC/survivalcraft-api/raw/SCAPI1.8/Survivalcraft/Content/Assets/Database.xsd">
     <Folder Name="Gameplay" Guid="d509e5e2-2c10-49f1-8223-85cd892c63b0">
+
+<ComponentTemplate Name="NewSteedBehavior" Description="Versión mejorada de SteedBehavior SIN restricción de silla de montar. Controla el comportamiento de montura: movimientos, velocidad, giros y búsqueda de jinetes. Se habilita/deshabilita con el parámetro IsEnabled." Guid="03268b67-f4e7-49dd-99f4-2b0301e3b2c1" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+    <Parameter Name="IsEnabled" Description="Habilita o deshabilita este comportamiento. A diferencia del original, NO depende de que el nombre de la entidad termine en '_Saddled'." Guid="1363e234-f948-4e5d-b24a-8824ae6bd707" Value="True" Type="bool"/>
+    <Parameter Name="Class" Guid="d6954ee2-466c-4f88-9a01-e2b2e77e9255" Value="Game.ComponentNewSteedBehavior" Type="string"/>
+</ComponentTemplate>
+
+<ComponentTemplate Name="NewDumpRiderBehavior" Description="Versión mejorada de DumpRiderBehavior SIN restricción de silla de montar. Controla cuándo la criatura intenta tirar al jinete (comportamiento salvaje, carrera ciega, estupor). Por defecto deshabilitado (IsEnabled=false) para evitar que las criaturas tiren al jinete." Guid="deb33f45-0de2-4ceb-8e1e-f2bcf0fb177e" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+    <Parameter Name="IsEnabled" Description="Habilita o deshabilita este comportamiento. A diferencia del original, NO depende de que el nombre de la entidad termine en '_Saddled'. Se recomienda False para criaturas domadas." Guid="2ffef809-14ea-4114-94fc-360a0904b4f3" Value="False" Type="bool"/>
+    <Parameter Name="Class" Guid="720f1e33-592b-498e-a759-a76d13b231ec" Value="Game.ComponentNewDumpRiderBehavior" Type="string"/>
+</ComponentTemplate>
+
+<ComponentTemplate Name="NewStubbornSteedBehavior" Description="Versión mejorada de StubbornSteedBehavior SIN restricción de silla de montar. Controla la terquedad de la montura: se niega a moverse cuando tiene hambre. Ahora configurable con probabilidad y habilitación independiente del nombre de la entidad." Guid="e131e1ac-1866-41b4-9795-2f8bd5f87112" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+    <Parameter Name="IsEnabled" Description="Habilita o deshabilita este comportamiento. A diferencia del original, NO depende de que el nombre de la entidad termine en '_Saddled'." Guid="c8acd931-6cbb-4e91-93e8-22a8f3b9e487" Value="True" Type="bool"/>
+    <Parameter Name="StubbornProbability" Description="Probabilidad (0-1) de que la criatura se vuelva terca cuando tiene hambre. Por defecto 0.5 (50%)." Guid="cbeb2cde-1d97-4625-84c5-06cd686cb2b0" Value="0.5" Type="float"/>
+    <Parameter Name="StubbornEndTime" Description="Tiempo (en segundos de juego) hasta que termina la terquedad. Se guarda automáticamente." Guid="6a6357e1-b5a3-43c2-9880-a4a08451295c" Value="0" Type="double"/>
+    <Parameter Name="Class" Guid="7d564db9-f444-4616-bb29-bacc6e2203a2" Value="Game.ComponentNewStubbornSteedBehavior" Type="string"/>
+</ComponentTemplate>
+
+<ComponentTemplate Name="NewMount" Description="Versión mejorada de Mount que trabaja con ComponentNewRider. Maneja los puntos de montaje/desmontaje." Guid="ba0e138c-fe06-4b83-a405-503e03843493" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+    <Parameter Name="DismountOffset" Description="Offset de la posición de desmontaje respecto al punto de montura (eje X se refleja en ambos lados)" Guid="34c3f58a-fb79-4785-98bf-a768cd15ccb2" Value="0,0,0" Type="Vector3"/>
+    <Parameter Name="MountOffset" Description="Offset del punto de montaje" Guid="bf6c8df0-f2f3-4de4-accb-a2482e531c04" Value="0,0,0" Type="Vector3"/>
+    <Parameter Name="MountAllowToStartRange" Description="Distancia máxima para permitir comenzar a montar" Guid="409586d1-8e4b-49cc-b443-9be2be27e0c8" Value="2.5" Type="float"/>
+    <Parameter Name="Class" Guid="71c28373-2eb3-4eab-bbad-a1419779ed28" Value="Game.ComponentNewMount" Type="string"/>
+</ComponentTemplate>
+
+<ComponentTemplate Name="NewRider" Description="Versión mejorada de Rider que trabaja con ComponentNewMount. Permite montar criaturas domesticadas." Guid="abb28eb0-a4a0-4ab4-ac3d-2ba3a42dc88b" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+    <Parameter Name="RiderOffset" Description="Desplazamiento local de la posición del jinete respecto al punto de montura" Guid="64fa6130-a33a-423b-8579-b5b6cde60208" Value="0,-0.71,0" Type="Vector3"/>
+    <Parameter Name="Class" Guid="d5880224-096d-4a58-982c-86756e12670f" Value="Game.ComponentNewRider" Type="string"/>
+</ComponentTemplate>
+
 <ComponentTemplate Name="BoomerExplosion" Description="Comportamiento que hace que el Boomer explote al morir, con configuración de daño, radio y efectos incendiarios." Guid="bf245bcc-8786-4839-9528-87f3f7ff4833" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
     <Parameter Name="Class" Guid="a3967efb-2f42-48c0-af6d-d2d133469681" Value="Game.ComponentBoomerExplosion" Type="string"/>
     <Parameter Name="ActivationRange" Description="Distancia a la que el Boomer detecta al jugador para activarse (actualmente no se usa, la explosión es solo por muerte)" Guid="ffb2f590-7aaa-4195-9892-8558be629e76" Value="3" Type="float"/>
@@ -198,10 +228,8 @@
     <Parameter Name="LowHealthToEscape" Description="Salud baja para huir (NO SE USA, los zombis nunca huyen)" Guid="83e2db36-bd3c-48b3-a7ae-b3ae0f2ac841" Value="0.0" Type="float"/>
 </ComponentTemplate>
 
-        <ComponentTemplate Name="PoisonInfected" Description="Componente de criatura infectada por veneno" Guid="d5e7f9a1-b3c5-4d9f-1a3b-5c7d9f1a3b5c">
+        <ComponentTemplate Name="PoisonInfected" Description="Componente de criatura infectada por veneno" Guid="d5e7f9a1-b3c5-4d9f-1a3b-5c7d9f1a3b5c" InheritanceParent="a753aca6-3dcb-4667-a655-70f4bfd875f6">
   <Parameter Name="Class" Guid="e6f8a0b2-c4d6-4e0a-2b4c-6d8e0a2b4c6d" Value="Game.ComponentPoisonInfected" Type="string"/>
-  <Parameter Name="IsOptional" Value="true" Type="bool"/>
-  <Parameter Name="LoadOrder" Value="60" Type="int"/>
   <Parameter Name="PoisonResistance" Description="Resistencia al veneno (reduce duración)" Guid="f7a9b1c3-d5e7-4f1b-3c5d-7e9f1b3c5d7e" Value="0" Type="float"/>
 </ComponentTemplate>
     </Folder>
@@ -277,35 +305,25 @@
     <Parameter Name="KnockbackChance" Value="0.3" Type="float" Description="Probabilidad (0-1) de que se aplique el retroceso en cada golpe."/>
 </ComponentTemplate>
 
-    <ComponentTemplate Name="ComponentZombieHerdBehavior" Guid="a470caf8-d3a0-461c-8064-3a668cce4e14" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
-    <Parameter Name="Class" Value="Game.ComponentZombieHerdBehavior" Type="string" Guid="95e41117-dcbe-40e8-b2c7-7440ada53a93" Description="Componente de comportamiento de manada específico para zombis, extendiendo la funcionalidad de ComponentHerdBehavior."/>
-    <!-- Parámetros heredados de ComponentHerdBehavior -->
-    <Parameter Name="HerdName" Value="Zombie" Type="string" Guid="23c5124b-1f1c-4e24-a791-04706b0c4b8e" Description="Nombre de la manada. Los zombis con el mismo nombre trabajan juntos y NO SE ATACAN entre sí (ver lógica en SetupZombieInjuryHandler y CallZombiesForHelp)."/>
-    <Parameter Name="HerdingRange" Value="40" Type="float" Guid="c10eee0f-8aaa-447b-904e-b75a5de8d882" Description="Rango máximo para detectar otros miembros de la manada (en bloques). Valor por defecto mayor para zombis según código C#."/>
-    <Parameter Name="AutoNearbyCreaturesHelp" Value="true" Type="bool" Guid="1ef254a9-4c85-4228-8744-436f19c0f8b0" Description="Si llama automáticamente a otros miembros de la manada cuando es atacado."/>
-    <!-- Parámetros específicos para zombis -->
-    <Parameter Name="CallForHelpWhenAttacked" Value="true" Type="bool" Guid="1ec744fb-b470-4837-8d05-a6cfdbc41c25" Description="Si los zombis llaman a otros cuando son atacados. La lógica en SetupZombieInjuryHandler verifica que el atacante NO sea de la misma manada."/>
-    <Parameter Name="HelpCallRange" Value="25" Type="float" Guid="744b2613-11e6-44b1-b3cd-2bd3a85e2139" Description="Rango para llamar a otros zombis en ayuda (en bloques)."/>
-    <Parameter Name="HelpChaseTime" Value="30" Type="float" Guid="c6600b71-66f4-415e-b0fc-e9dc376223ef" Description="Tiempo que los zombis persiguen al atacante (en segundos)."/>
-    <Parameter Name="IsPersistentHelp" Value="false" Type="bool" Guid="399f43dd-981d-4e28-9efe-3a40e0d755a8" Description="Si la persecución de ayuda es persistente (continúa hasta que el objetivo muere o se pierde)."/>
-    <Parameter Name="ZombieAggressiveGrouping" Value="false" Type="bool" Guid="e81372aa-d0d0-4831-950f-804ac5c9df10" Description="Si los zombis se agrupan agresivamente, deambulan cuando no están en combate y llaman ayuda en rango extendido (HelpCallRange × 1.5). Ver métodos CallAdditionalZombies y AddZombieSpecificStates."/>
+<ComponentTemplate Name="ZombieHerdBehavior" Description="Comportamiento de manada especializado para zombis. Permite coordinación avanzada de ataques, llamadas de ayuda inteligentes, agrupamiento agresivo opcional, y lógica especial para evitar conflictos internos." Guid="384dbb1e-8baf-4880-9e86-db1ef0b51169" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+  <Parameter Name="Class" Guid="032d3df1-890c-41cd-8c2a-a73a68906936" Value="Game.ComponentZombieHerdBehavior" Type="string"/>
+  <Parameter Name="HerdName" Description="Nombre identificador de la manada zombi. Las criaturas con el mismo nombre se considerarán parte del mismo grupo." Guid="ac893ef1-7d7b-4d53-b989-8496abaeec48" Value="Zombie" Type="string"/>
+  <Parameter Name="CallForHelpWhenAttacked" Description="Determina si el zombi llamará a otros miembros de la misma manada cuando sea atacado por un enemigo externo." Guid="fb4dac70-e765-4e73-bcd3-97480e5f2dda" Value="true" Type="bool"/>
+  <Parameter Name="HelpCallRange" Description="Distancia máxima en la que otros zombis pueden escuchar el llamado de ayuda y unirse al ataque." Guid="ca7449d9-27d9-4fcf-a263-0d72261baf4d" Value="25" Type="float"/>
+  <Parameter Name="HelpChaseTime" Description="Tiempo máximo en segundos durante el cual los zombis ayudarán persiguiendo al objetivo." Guid="7c455a06-7ac2-4f7e-ad47-8009210d3520" Value="30" Type="float"/>
+  <Parameter Name="IsPersistentHelp" Description="Define si la ayuda es persistente. Si está activado, los zombis no abandonarán fácilmente la persecución." Guid="54dcde1d-b9ae-4c44-8b3f-a075542c8a1d" Value="false" Type="bool"/>
+  <Parameter Name="ZombieAggressiveGrouping" Description="Permite comportamiento de agrupamiento agresivo. Los zombis deambulan más, coordinan ataques ampliados, y reaccionan con mayor intensidad." Guid="566fce20-d5ba-4aba-a3b6-c642e9cbed47" Value="false" Type="bool"/>
+  <Parameter Name="HerdingRange" Description="Rango máximo utilizado para calcular el centro de la manada y mantener cohesión entre zombis." Guid="6898f15e-13d4-46ad-8e91-af685f0ed817" Value="40" Type="float"/>
+  <Parameter Name="AutoNearbyCreaturesHelp" Description="Indica si se usa la lógica automática base para que criaturas cercanas ayuden, además del sistema personalizado de zombis." Guid="df490040-8e49-4e64-b397-c6fd485ee04b" Value="true" Type="bool"/>
 </ComponentTemplate>
 
-<ComponentTemplate Name="ZombieChaseBehavior" Description="Comportamiento que hace que un zombi persiga objetivos con lógica de horda" Guid="5674ee12-d71b-4c21-a1a0-ecf6b220be53" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
-  <Parameter Name="Class" Guid="b714af9a-06fb-4768-a71e-4e58af8e8070" Value="Game.ComponentZombieChaseBehavior" Type="string"/>
-  <Parameter Name="ChaseWhenAttackedProbability" Description="Probabilidad de que el zombi persiga cuando es atacado" Guid="1099e9a7-620d-4bcf-af1f-9c252a3db40d" Value="1" Type="float"/>
-  <Parameter Name="NightChaseTime" Description="Tiempo de persecución cuando el zombi comienza a perseguir durante la noche, en segundos" Guid="0df0bdac-1b94-4076-9716-10ce4d2f6928" Value="30" Type="float"/>
-  <Parameter Name="DayChaseRange" Description="Distancia a la que el zombi comienza a perseguir durante el día" Guid="9aac2aa5-0724-4026-bb21-ead108a1777a" Value="8" Type="float"/>
-  <Parameter Name="ChaseOnTouchProbability" Description="Probabilidad de que el zombi persiga si es tocado por una criatura con AutoChaseMask" Guid="bff10234-1ed0-4248-a6d5-09b4cc2e4c94" Value="1" Type="float"/>
-  <Parameter Name="DayChaseTime" Description="Tiempo de persecución cuando el zombi comienza a perseguir durante el día, en segundos" Guid="b379d7b6-7b65-4645-b701-b200f3cdfdfe" Value="30" Type="float"/>
-  <Parameter Name="NightChaseRange" Description="Distancia a la que el zombi comienza a perseguir durante la noche" Guid="00d96ecf-e802-4b34-ab9f-1cf8cda6c789" Value="12" Type="float"/>
-  <Parameter Name="AutoChaseMask" Description="Categorías de criaturas a perseguir" Guid="a485912b-2075-4577-be8d-14770e299df1" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
-  <Parameter Name="ChaseNonPlayerProbability" Description="Probabilidad de que el zombi persiga a un objetivo que no sea el jugador cuando está dentro del rango, de 0 a 1" Guid="fedb68fd-8320-49d2-bcb5-80ace2825760" Value="1" Type="float"/>
-  <Parameter Name="AttacksSameHerd" Description="Indica si el zombi ataca a miembros de su misma horda" Guid="cbab6a47-7a6f-497a-83a5-3f1323585a11" Value="false" Type="bool"/>
-  <Parameter Name="AttacksAllCategories" Description="Indica si el zombi ataca a todas las categorías de criaturas" Guid="f1c29cc0-83e1-41c1-9567-8a2bf393d07d" Value="true" Type="bool"/>
-  <Parameter Name="FleeFromSameHerd" Description="Indica si el zombi huye de miembros de su misma horda" Guid="c1a80409-9a23-4eb4-8327-2de254421cda" Value="true" Type="bool"/>
-  <Parameter Name="FleeDistance" Description="Distancia a la que huye al escapar de miembros de su misma horda" Guid="4b3f1003-df82-47f8-ab9f-61034911e281" Value="10" Type="float"/>
-  <Parameter Name="ForceAttackDuringGreenNight" Description="Indica si el zombi ataca al jugador durante la Noche Verde sin importar el modo de juego" Guid="96e8d38b-7e1b-4ee1-9d8f-d48391dc19f4" Value="true" Type="bool"/>
+<ComponentTemplate Name="ZombieChaseBehavior" Description="Comportamiento avanzado de persecución para zombis. Permite retaliación inteligente contra el último atacante, coordinación con la manada, huida estratégica ante conflictos internos, y agresividad forzada durante la Noche Verde." Guid="1a05e72e-fd6b-4eb3-b72b-59e530c4c7b9" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
+  <Parameter Name="Class" Guid="29dc27cf-cf34-44f4-a9c4-48ac4cdf90b3" Value="Game.ComponentZombieChaseBehavior" Type="string"/>
+  <Parameter Name="AttacksSameHerd" Description="Permite que el zombi ataque a miembros de su misma manada. Si está desactivado, los ignorará como objetivos normales, aunque podrá retaliar si es atacado." Guid="9dcbbba0-2ec1-4b7e-80c2-87bd8a778eb6" Value="false" Type="bool"/>
+  <Parameter Name="AttacksAllCategories" Description="Define si el zombi puede atacar todas las categorías de criaturas. Incluye depredadores terrestres, criaturas acuáticas, aves, y jugadores." Guid="9a85d9e3-9082-4990-a468-80a967657d84" Value="true" Type="bool"/>
+  <Parameter Name="FleeFromSameHerd" Description="Indica si el zombi debe huir cuando es atacado por un miembro de su misma manada. No depende del nivel de salud." Guid="2f04e645-4411-4d58-a3bc-6423586842e1" Value="true" Type="bool"/>
+  <Parameter Name="FleeDistance" Description="Distancia mínima que el zombi intentará mantener cuando entra en estado de huida. Se mide en bloques." Guid="e9284f30-1492-4480-96ac-9878891dac20" Value="10" Type="float"/>
+  <Parameter Name="ForceAttackDuringGreenNight" Description="Si está activado, el zombi forzará comportamiento agresivo contra jugadores durante la Noche Verde. Al terminar la Noche Verde, volverá inmediatamente a su comportamiento normal." Guid="9389f01b-5184-4d5d-a1c9-a04df8409f83" Value="false" Type="bool"/>
 </ComponentTemplate>
 
 <ComponentTemplate Name="NewAutoInteract" Guid="0d193534-6d05-4939-bba8-4a8755d3b064" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234" Description="Componente que permite a NPCs interactuar automáticamente con bloques como puertas y rejillas">
@@ -394,6 +412,7 @@
     <Parameter Name="Accuracy" Description="Precisión del disparo (menor = más preciso)" Guid="71fc1196-b143-4835-9abb-7504ea73ea07" Value="0.02" Type="float"/>
     <Parameter Name="UseRecoil" Description="Aplicar retroceso al disparar" Guid="fc414769-1ff0-41a5-88f4-4b5fff633524" Value="true" Type="bool"/>
     <Parameter Name="BulletSpeed" Description="Velocidad de la bala" Guid="d37514e7-406d-4824-9c8d-2c60f4be77ba" Value="120" Type="float"/>
+    <Parameter Name="OptimalRangeTolerance" Description="Tolerancia para la distancia óptima de disparo (cuánto puede desviarse antes de moverse)" Guid="fe6debf7-3afc-4b8a-9a81-f9701b755354" Value="1.5" Type="float"/>
     <Parameter Name="RequireCocking" Description="Requiere amartillar antes de disparar" Guid="923a51f8-0302-4841-9329-c72be4c844de" Value="true" Type="bool"/>
     <Parameter Name="Class" Guid="c1321f2f-5e52-4146-8b57-9b42276ef099" Value="Game.ComponentMusketShooterBehavior2" Type="string"/>
 </ComponentTemplate>
@@ -461,10 +480,8 @@
   <Parameter Name="ItemsToLaunch" Guid="6e84b901-041f-4413-84e7-9c9d929781c7" Value="" Type="string"/>
 </ComponentTemplate>
 
-        <ComponentTemplate Name="PoisonInfectedBehavior" Description="Comportamiento de infección por veneno" Guid="be2c0252-8847-40dc-ab78-db6c09df60e7">
+<ComponentTemplate Name="PoisonInfectedBehavior" Description="Comportamiento de infección por veneno" Guid="be2c0252-8847-40dc-ab78-db6c09df60e7" InheritanceParent="a753aca6-3dcb-4667-a655-70f4bfd875f6">
   <Parameter Name="Class" Guid="882ee14c-4b4d-426e-9e2f-831261910ed2" Value="Game.ComponentPoisonInfectBehavior" Type="string"/>
-  <Parameter Name="IsOptional" Value="true" Type="bool"/>
-  <Parameter Name="LoadOrder" Value="50" Type="int"/>
   <Parameter Name="PoisonIntensity" Description="Intensidad del veneno (mayor = más tiempo de infección)" Guid="ddbff8f8-c6c3-4c45-b801-43881241663f" Value="400" Type="float"/>
   <Parameter Name="InfectProbability" Description="Probabilidad de que el ataque cause envenenamiento (0-1)" Guid="7c34d504-c34a-487a-8ca2-a115ca60e9d7" Value="1.0" Type="float"/>
 </ComponentTemplate>
@@ -495,6 +512,9 @@
     </Folder>
 
     <ProjectTemplate Name="Project" Guid="85023bf8-1c90-4dd1-9442-e6c13691d078">
+<MemberSubsystemTemplate Name="RemoteControlBlockBehavior" Guid="a5bfc6df-2c59-41a4-8ba0-baaf91e96e13" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+    <Parameter Name="Class" Value="Game.SubsystemRemoteControlBlockBehavior" Type="string" Guid="de5b662a-53fc-4d16-a19f-4cd02e649a20"/>
+</MemberSubsystemTemplate>
 <MemberSubsystemTemplate Name="BK43Behavior" Guid="93e5a438-1a89-40f3-9df0-42691678bd4e" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
     <Parameter Name="Class" Value="Game.SubsystemBK43Behavior" Type="string" Guid="42f4dcb2-472b-4385-a222-2e8a9d3e65d6"/>
 </MemberSubsystemTemplate>
@@ -641,9 +661,7 @@
 <MemberSubsystemTemplate Name="ZombiesSpawn" Guid="77c4423c-cde8-4d42-886c-74b87a9d23fa" InheritanceParent="a3914c13-7801-46a6-b23a-9e2b36e9defb">
     <Parameter Name="Class" Value="Game.SubsystemZombiesSpawn" Type="string" Guid="d546f4a4-f7ef-488e-828d-763c780da925"/>
 </MemberSubsystemTemplate>
-<MemberSubsystemTemplate Name="GhostNormalChaseMusic" Guid="fe454a1e-89d4-4f2a-aa36-9200d7ba1570">
-    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="25a03789-1da1-4b19-9068-b99e9c1abc51"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="b4bbf90f-132a-44f7-a059-6f4558002a1f"/>
+<MemberSubsystemTemplate Name="GhostNormalChaseMusic" Guid="fe454a1e-89d4-4f2a-aa36-9200d7ba1570" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
     <Parameter Name="Class" Value="Game.SubsystemGhostNormalChaseMusic" Type="string" Guid="a274b5c9-b092-4d27-8ae0-1c64167ac3e5"/>
 </MemberSubsystemTemplate>
 <MemberSubsystemTemplate Name="AntiTanksBulletBlockBehavior" Guid="dc7f2c73-54c5-4dbb-844a-a6a00a018589">
@@ -651,9 +669,7 @@
     <Parameter Name="LoadOrder" Value="60" Type="int" Guid="04fae416-be40-4597-a540-b9133a43b6fb"/>
         <Parameter Name="Class" Guid="9b826f1c-14c8-45de-bb01-eb46c3d6ee7f" Value="Game.SubsystemAntiTanksBulletBlockBehavior" Type="string"/>
     </MemberSubsystemTemplate>
-<MemberSubsystemTemplate Name="TankChaseMusic" Guid="8f97faa0-ef7f-4455-9aaf-116e70e836be">
-<Parameter Name="IsOptional" Value="false" Type="bool" Guid="082db78a-d94f-4704-8862-bec5dcd77139"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="8fe63cde-5e98-433a-b375-7815a349dd6f"/>
+<MemberSubsystemTemplate Name="TankChaseMusic" Guid="8f97faa0-ef7f-4455-9aaf-116e70e836be" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
         <Parameter Name="Class" Guid="60986de6-5785-457d-8ddd-a0124ec558ba" Value="Game.SubsystemTankChaseMusic" Type="string"/>
     </MemberSubsystemTemplate>
 <MemberSubsystemTemplate Name="TargetStickBlockBehavior" Guid="7b76d3e3-0a7b-4de2-9a1e-2e698212fe95">
