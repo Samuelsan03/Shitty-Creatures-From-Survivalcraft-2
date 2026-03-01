@@ -11,6 +11,7 @@ namespace Game
 		// Lista de pistas de música disponibles
 		private static readonly string[] musicTracks = new string[]
 		{
+			"MenuMusic/Dragon Quest NES Title Theme",
 			"MenuMusic/Digimon 02 Target Wada Kouji",
 			"MenuMusic/Touhou 2 Mimas Theme Complete Darkness",
 			"MenuMusic/Touhou 2 Eastern Wind",
