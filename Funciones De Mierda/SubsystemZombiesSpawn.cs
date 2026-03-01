@@ -121,7 +121,7 @@ namespace Game
 				return;
 
 			float timeOfDay = m_subsystemTimeOfDay.TimeOfDay;
-			bool isMidnight = Math.Abs(timeOfDay - 0.5f) < 0.005f;
+			bool isMidnight = Math.Abs(timeOfDay - 0.75f) < 0.01f;
 
 			if (!m_hasSpawnedBossThisNight && isMidnight && !m_bossBattleActive)
 			{
@@ -158,10 +158,10 @@ namespace Game
 			{
 				m_currentWave = nextWave;
 				SetCurrentWave(m_currentWave);
-			}
-			else if (m_currentWave == 19)
-			{
-				SendMessageToAllPlayers("ZombiesSpawn", "FinalWave", new Color(255, 0, 0));
+				if (m_currentWave == 19)
+				{
+					SendMessageToAllPlayers("ZombiesSpawn", "FinalWave", new Color(255, 0, 0));
+				}
 			}
 		}
 
@@ -370,11 +370,7 @@ namespace Game
 
 			// Spawnear la criatura
 			m_subsystemCreatureSpawn.SpawnCreature(entry.TemplateName, spawnPos, false);
-
-			// Mensaje para minijefes
-			if (MiniBossTemplates.Contains(entry.TemplateName))
 			{
-				SendMessageToAllPlayers("ZombiesSpawn", "MiniBossAppear", new Color(255, 100, 0));
 			}
 		}
 
