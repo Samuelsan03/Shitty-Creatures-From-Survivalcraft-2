@@ -1,12 +1,8 @@
 <Digimon xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://gitee.com/THPRC/survivalcraft-api/raw/SCAPI1.8/Survivalcraft/Content/Assets/Database.xsd">
 
     <EntityTemplate Name="Veemon" Guid="27207048-7b75-409d-b98d-e400275b884c" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="d967a44a-1ee7-4607-8a58-608fd13143fc">
-    <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="e983ccb7-1c4c-4876-8c68-2f2875d5cb59"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="a37d6834-49c5-4aa5-91b2-d3460bb43ec0"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="c36dd329-6835-4292-ae85-2abc00175883"/>
-    <Parameter Name="LowHealthToEscape" Value="0.5" Type="float" Guid="77241f31-69b0-4e5e-b849-e43ca6aff5dc"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="dc1c730d-cc68-4fe6-bcc0-d5e5b193c4dd" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
+<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="57264419-ce8c-43ef-9dff-3fdda8f9f075" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
 <MemberComponentTemplate Name="SummonBehavior" Guid="037f84b8-d239-48ab-a72f-0a82680bef83">
               <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="c85f5db0-902f-4142-8aeb-b04c3f15f347"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="c954c4f9-a685-4708-8798-55557fcb04f1"/>
@@ -152,12 +148,8 @@
 </EntityTemplate>
 
 <EntityTemplate Name="Shoutmon" Guid="82b317b7-89f9-408d-a722-578a8b61ace9" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="15cb3f1a-ae50-4374-b7e8-3c5d77f717cf">
-    <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="b182b3bd-89e5-40a2-b5e3-434f42fafc59"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="7c52c6eb-45d7-41f8-8298-fde514c2ce8b"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="87c17aa1-dc1c-4e7f-b11c-f50b7e664f34"/>
-    <Parameter Name="LowHealthToEscape" Value="0.5" Type="float" Guid="0b9ca008-5079-4490-8242-1dd63d811298"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="0347b234-bb2a-4994-ac33-8cfb20919964" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
+<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="e217a3d1-24f9-4f1e-8496-3d96c5cb584d" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
 <MemberComponentTemplate Name="SummonBehavior" Guid="d2e40db4-0fe1-4f33-a095-dd1eba8b3c60">
               <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="8f9dcc47-4f37-4512-8caf-7e63baabdfbb"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="34431239-ed45-4410-8aa5-81b48fd456ba"/>
@@ -435,12 +427,8 @@
 <MemberComponentTemplate Name="NewAutoInteract" Guid="0afea148-9cc9-4c10-98b2-22b7741bf53b" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="b41be5d3-6aac-4657-a3f0-7c0c176f7da8">
-    <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="9da7e4e6-4305-4848-a4dd-f32b98f2c79b"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="550887b2-0af0-48cd-802f-4265d4b10f83"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="8fd2a10b-4b41-4609-883e-82df45039421"/>
-    <Parameter Name="LowHealthToEscape" Value="0.5" Type="float" Guid="37f27768-4cb3-49af-844c-25800c736292"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="9220f62a-7215-41ba-b3d1-a963bd1027c9" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
+<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="f1fd9f39-2e27-45a7-b8d3-cb912d8c4d06" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
     <ParameterSet Name="CreatureEggData" Guid="d80ce8a8-5a44-47f4-900f-dcbd920f737a">
         <Parameter Name="Color" Guid="a3c9fb4e-f9cf-47d3-bea3-e04ba20760ed" Value="229,190,1" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="d94614dc-eeba-4a09-8926-f8611449c700" Value="189" Type="int"/>
@@ -451,12 +439,8 @@
 </EntityTemplate>
 
 <EntityTemplate Name="Guilmon" Guid="625d700d-313e-4d8d-aa6a-356ebaa046c8" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="1132a767-686d-464f-bd91-9fa87712ff9e">
-    <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="db18f045-a65a-4de9-ba5e-0334cd038184"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="a5ec1f8a-93c3-4591-aeac-8a1d178786fa"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="fcd688e4-3c46-49a2-9081-81b2c28f8f4f"/>
-    <Parameter Name="LowHealthToEscape" Value="0.5" Type="float" Guid="115bb21d-3a45-469e-b7cf-904c77691fda"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="bc032367-94c7-45a9-a4c9-67ae10b1b1c1" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
+<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="210a5e05-c0f9-4e8f-a62f-9d2d3ae2bce6" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
 <MemberComponentTemplate Name="SummonBehavior" Guid="d9970a03-23b5-4c36-b93a-09409e295d6e">
               <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="b1985275-2870-4dd5-9d6f-332d28c85ad3"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="d5c8f680-f99a-478c-97d0-a896b04c8765"/>
@@ -600,12 +584,8 @@
   <Parameter Name="SlotsCount" Value="16" Type="int"/>
   <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="387cb873-0661-4880-893d-70b62f2373fe">
-    <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="cb2e3d4d-f071-43e9-ac25-29b21b81e6f1"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="4f50af98-5ab0-40eb-9264-3ed955c9db07"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="d7a51622-0ab2-4495-97d9-faeb3aa98ef4"/>
-    <Parameter Name="LowHealthToEscape" Value="0.5" Type="float" Guid="05f8cfe4-4bd5-4e06-9533-9620418ec27b"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="4ce2c844-d6ae-4799-8906-6a5e521f413a" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
+<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="f43befe7-3f92-4efa-a188-f7df0a298c21" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
 <MemberComponentTemplate Name="SummonBehavior" Guid="2c891180-9243-42a5-9dad-723f05d7abb5">
               <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="c94b6741-50bb-496c-a875-397dd23b6490"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="baddb94c-0f0f-4bc3-97a9-af846d2adb81"/>
@@ -734,12 +714,8 @@
 </EntityTemplate>
 
 <EntityTemplate Name="BetelGammamon" Guid="3a98e44b-5f2d-4bbb-8ddd-67bebe84e5be" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d"> <!-- Aparecera solo en otoño e invierno de dia-->
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="3bd8521c-7ffd-4cfd-8af6-9bb30c3d0700">
-    <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="92120bd6-73f1-40f7-95f2-210d4e1cc3d2"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="93cdd511-97b8-4bfc-a97b-bd8365b56929"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="f91edc23-e5e2-4d5d-a881-bc383f157d47"/>
-    <Parameter Name="LowHealthToEscape" Value="0.5" Type="float" Guid="207e1863-2823-48dd-bad7-fe08341fe148"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="93d84001-188f-4df5-958e-ffd23f2505c7" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
+<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="698ded95-fe7f-4293-8c61-8b93c88dfe59" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
 <MemberComponentTemplate Name="SummonBehavior" Guid="b2e4d483-7ba2-40a2-8073-08a2c72699f9">
               <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="9b241f67-50d7-4cef-9d8c-0899a1601948"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="b2c6d1b7-b496-4cdf-8d92-eb96183099a4"/>
@@ -898,12 +874,8 @@
 <MemberComponentTemplate Name="HealthBarDisplay" Guid="e8857afe-163c-4585-aafa-f4e0ba35e2c2" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
         <Parameter Name="MaxDisplayDistance" Value="19" Type="float"/>
     </MemberComponentTemplate>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="417d9a7d-efa1-47ff-8bc2-33e529b6cf3b">
-    <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="218ff29e-3da9-44d7-a44f-af895a1ed548"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="7e779c4f-117b-4192-a5d3-ec005ca493f1"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="c050369d-e43e-4b0b-bbe1-6f421691a28c"/>
-    <Parameter Name="LowHealthToEscape" Value="0.5" Type="float" Guid="5dd847ac-97e6-4847-8517-d74d4e3915cc"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="6dc07532-4aa3-4c24-a25a-282ef8b7625e" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
+<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="6c57d3d3-984d-4591-b9d7-142ffaaadcfb" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
 <MemberComponentTemplate Name="SummonBehavior" Guid="fadf89ef-9c58-4c9b-a439-e801a7c78d7d">
               <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="e80c6d62-511e-4cb8-ad67-252a05977709"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="a489a366-6da8-45fb-b9f4-3ec54a0dc215"/>
@@ -1033,12 +1005,11 @@
 </EntityTemplate>
 
 <EntityTemplate Name="Impmon" Guid="553f7956-032c-4d09-ae7c-c95dbef465cf" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="f8d276a6-14b9-496e-987f-97347c5aa1b4">
-    <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="a2b70816-36e5-4872-9915-0b3cfc5df51c"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="641fd1f3-316e-45bc-8ddd-2f23d20dcdd8"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="06270b97-4512-4930-aa1d-708b24619087"/>
-    <Parameter Name="LowHealthToEscape" Value="0.5" Type="float" Guid="250b09c4-0052-447d-9598-38ad163cbb06"/>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="65de7611-ece9-4af2-abd0-3485389f0cba" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
+    <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="54a265c8-cb26-4b83-bf8c-a9c7c67dab56" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
+<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="c5b2ff98-4ae2-463f-941d-cd9a1c8e1f99" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
 <MemberComponentTemplate Name="SummonBehavior" Guid="e157c64d-b2f9-4f09-a8a1-ca2a634b206e">
               <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="de85d651-71fb-4210-9163-02702f414ae5"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="ebb7812b-ce29-457e-b10c-8eff1b40a93a"/>
@@ -1181,16 +1152,15 @@
 </EntityTemplate>
 
 <EntityTemplate Name="Hawkmon" Guid="a82b51fa-6d6e-4c52-aed7-21761c95693f" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="NewAutoInteract" Guid="0a93e2b4-56cc-4523-8021-2715b5abe8c1" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
+    <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
+</MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureInventory" Guid="13d4a1c4-6506-49ed-9468-67c2cb91d376" InheritanceParent="a347220c-b5cf-4eae-9215-4ed37426eec4">
   <Parameter Name="SlotsCount" Value="16" Type="int"/>
   <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="9f9dd0db-9a29-4399-adc1-752c701d3f90">
-    <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="ba355b2d-626a-4c15-82c8-ad078e3623ad"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="0d6cc59a-4944-4a30-8c57-a07e8f58e581"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="ca7deb70-f841-459f-9911-e0b3c26a1660"/>
-    <Parameter Name="LowHealthToEscape" Value="0.1" Type="float" Guid="5101d77f-2b30-404a-add6-587dde75ff2e"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="ba580ffa-c1a6-4bfb-b421-7c41635a4636" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
+<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="54d72b05-1802-4bd0-831d-5c12823e111a" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
 <MemberComponentTemplate Name="SummonBehavior" Guid="9362aa2e-f63c-426c-a0b3-5872db3c0dcf">
               <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="27897a1a-3435-4587-a3e2-87df27ae6224"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="ab8c4d77-4da0-400f-9582-a67fffcaf541"/>
@@ -1308,15 +1278,11 @@
 </EntityTemplate>
 
 <EntityTemplate Name="Gabumon" Guid="cb2815b4-b128-459f-9293-ce95e3f02e5c" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="9c6188cf-ba84-4858-bb30-104c43a2b21b" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
+<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="d0fb2519-fbb0-4fae-9838-8b4ebc318cef" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
 <MemberComponentTemplate Name="CreatureInventory" Guid="1d1639d1-a73d-496a-acd1-f894d5336675" InheritanceParent="a347220c-b5cf-4eae-9215-4ed37426eec4">
   <Parameter Name="SlotsCount" Value="16" Type="int"/>
   <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
-</MemberComponentTemplate>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="7ec9cf3e-d814-4d76-99a7-9135d71e9bbe">
-    <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="bf5269e5-b0f0-4040-9588-01985911dd7d"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="4d53cbd9-695e-48c5-bc91-8ab436833dbb"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="88afc2a2-ceca-479d-bb4c-3a1ad4e46cc8"/>
-    <Parameter Name="LowHealthToEscape" Value="0.1" Type="float" Guid="446bd0f9-be38-4515-915e-c0ea717e1c47"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="SummonBehavior" Guid="21c9b70d-f607-4fc0-9f1d-097d7adcf99d">
               <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="9b962bfe-8e2c-4555-ad8a-2e8037275196"/>
@@ -1424,6 +1390,9 @@
     <MemberComponentTemplate Name="TargetedChaseBehavior" Guid="dfe1b1e4-1656-4908-99f9-e80b6269e4cd" InheritanceParent="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a">
     <Parameter Name="ChaseToCreatures" Guid="528da8b1-3275-47dc-9834-2189dd9da56a" Value="Werewolf, HeadcrabBloodyHuman, HombreAgua, HombreLava, AladinaCorrupta, Hyena, LiderCalavericoSupremo, LiderCalavericoSupremoAlfa, ElSenorDeLasTumbasMoradas, ElArquero, ElBallestador, ElGuerrillero, CamisasMorenas, Rhino, LaMuerteX, Orca, Wolf_Gray, Coyote, Lion, Tiger, Tiger_White, Piranha, Barracuda, Leopard, Jaguar, Bear_Black, Bear_Brown, Bear_Polar, Shark_Bull, Shark_GreatWhite" Type="string"/>
     <Parameter Name="ChaseToCreatureProbability" Guid="892cba3b-9971-4180-954f-31a17ab41196" Value="1.0" Type="float"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="NewAutoInteract" Guid="41a2dcc2-a9bf-45b4-a414-dc7493d501b4" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
+    <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="eec2bd51-1687-4074-97c1-d37fd15317b8">
         <Parameter Name="Color" Guid="33483a93-e20b-4377-969a-7d339cea5ed4" Value="255,215,0" Type="Color"/>
