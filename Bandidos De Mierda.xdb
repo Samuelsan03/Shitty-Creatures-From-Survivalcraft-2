@@ -1002,13 +1002,6 @@
   <Parameter Name="SlotsCount" Value="16" Type="int"/>
   <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
 </MemberComponentTemplate>
-    <MemberComponentTemplate Name="ChaseBehavior" Guid="2d93f280-272d-4502-ae43-d72e3a0daf52" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
-                <Parameter Name="AutoChaseMask" Guid="cc9e9738-9d64-477a-bcd2-a38359ed8eb8" Value="LandPredator" Type="Game.CreatureCategory"/>
-                <Parameter Name="DayChaseRange" Guid="56d4bfc5-2ec2-4f9a-b77e-e2c9d4c93837" Value="0" Type="float"/>
-                <Parameter Name="NightChaseRange" Guid="77c59849-dc7d-4e7b-8305-a460f986429e" Value="0" Type="float"/>
-                <Parameter Name="ChaseNonPlayerProbability" Guid="2638ac9f-80c9-422f-8228-9f8fabfd6c33" Value="0" Type="float"/>
-                <Parameter Name="NightChaseTime" Guid="d9eb90fb-82fa-450b-9813-3431c9b10a68" Value="0" Type="float"/>
-    </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="7384e8b9-2c18-48c7-a674-e7feef1b21de">
         <Parameter Name="Color" Guid="93948618-1146-4312-b7a8-81c9e6f415d9" Value="176,115,115" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="803c66f2-fab5-4f36-9f0a-b3802085010a" Value="170" Type="int"/>
@@ -1591,13 +1584,6 @@
   <Parameter Name="SlotsCount" Value="16" Type="int"/>
   <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
 </MemberComponentTemplate>
-    <MemberComponentTemplate Name="ChaseBehavior" Guid="197abd80-2ea9-42f6-b0b2-396b69a7f64d" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
-                <Parameter Name="AutoChaseMask" Guid="c45980f1-f6c7-4d2c-811e-f99db60c020d" Value="LandPredator" Type="Game.CreatureCategory"/>
-                <Parameter Name="DayChaseRange" Guid="89bf5c3b-b650-4322-87f5-515959b28e91" Value="0" Type="float"/>
-                <Parameter Name="NightChaseRange" Guid="1adbc25d-83a5-49e6-a62a-c3a18c575355" Value="0" Type="float"/>
-                <Parameter Name="ChaseNonPlayerProbability" Guid="30cc323b-6424-46be-8f0e-69b0a08e65f9" Value="0" Type="float"/>
-                <Parameter Name="NightChaseTime" Guid="900a7137-f4e7-480d-a6ce-4299f73ebab5" Value="0" Type="float"/>
-    </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="d8ec3947-b921-4929-9501-056a6762c888">
         <Parameter Name="Color" Guid="6560b311-57be-4006-adb1-65e294df34f4" Value="176,115,115" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="d9041304-789b-4c93-a9c6-a9147bcc7b98" Value="170" Type="int"/>
@@ -1749,13 +1735,6 @@
   <Parameter Name="SlotsCount" Value="16" Type="int"/>
   <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
 </MemberComponentTemplate>
-    <MemberComponentTemplate Name="ChaseBehavior" Guid="930b1c99-848a-4dd7-85ad-214299dcbb4a" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
-                <Parameter Name="AutoChaseMask" Guid="c14dfa4b-e105-4921-a0e3-e84f919a362b" Value="LandPredator" Type="Game.CreatureCategory"/>
-                <Parameter Name="DayChaseRange" Guid="d225545a-a425-443c-8378-c02127ee7ec2" Value="0" Type="float"/>
-                <Parameter Name="NightChaseRange" Guid="280e93cd-8730-4945-ab9b-79c1976cb6bf" Value="0" Type="float"/>
-                <Parameter Name="ChaseNonPlayerProbability" Guid="9b4cfb27-5f81-4b86-9dcc-0e48fe2cef4a" Value="0" Type="float"/>
-                <Parameter Name="NightChaseTime" Guid="2f93e312-5877-43a5-a0af-36d901358314" Value="0" Type="float"/>
-    </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="c65430fe-53cd-4bc6-b03d-c88fc6965681">
         <Parameter Name="Color" Guid="54764388-f484-44aa-acb2-f997086cbb07" Value="176,115,115" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="e3208582-1a96-45e7-a235-b6c9a36e1b5d" Value="170" Type="int"/>
@@ -1899,13 +1878,6 @@
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="43cb7c60-11f1-4312-a50b-e087466f1b2c" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
     <MemberComponentTemplate Name="FeedBehavior" Guid="53820370-4a5a-4bab-a0e4-ea05094ab507" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
         <Parameter Name="AutoFeed" Guid="a8a3e0d8-b8be-4245-8e02-4a5aa298af86" Value="False" Type="bool"/>
-    </MemberComponentTemplate>
-    <MemberComponentTemplate Name="ChaseBehavior" Guid="54c7e247-b67a-4426-8ff1-f6488bc23e5e" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
-                <Parameter Name="AutoChaseMask" Guid="32e609b0-11af-4be7-b24b-3580127ebbf2" Value="LandPredator" Type="Game.CreatureCategory"/>
-                <Parameter Name="DayChaseRange" Guid="2e92bda1-2454-42c3-af84-de5bb3c6c459" Value="0" Type="float"/>
-                <Parameter Name="NightChaseRange" Guid="491255c3-5626-4466-857b-ce4d519ec9f5" Value="0" Type="float"/>
-                <Parameter Name="ChaseNonPlayerProbability" Guid="e4e457c4-201c-49bc-8d1b-bff5426a84ea" Value="0" Type="float"/>
-                <Parameter Name="NightChaseTime" Guid="a8cac827-9353-4a6b-a12c-26a181e9f60c" Value="0" Type="float"/>
     </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="1de5255c-9106-43ab-a584-3688187b58ae">
         <Parameter Name="Color" Guid="44789cb9-6437-4b89-91a7-9ba31ed0d5cc" Value="176,115,115" Type="Color"/>
@@ -2051,13 +2023,6 @@
     <MemberComponentTemplate Name="FeedBehavior" Guid="b201a62e-0faa-4fe1-b0a3-8468e28b32e3" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
         <Parameter Name="AutoFeed" Guid="b53a9f75-93ed-4717-a05c-c2a311b2ef6d" Value="False" Type="bool"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="ChaseBehavior" Guid="0a876858-9a4c-4195-aded-41bde995fb08" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
-                <Parameter Name="AutoChaseMask" Guid="c835ee16-de08-4ea3-8321-31c85bc33972" Value="LandPredator" Type="Game.CreatureCategory"/>
-                <Parameter Name="DayChaseRange" Guid="834f6a92-1aa7-4f44-8693-e6d43556e970" Value="0" Type="float"/>
-                <Parameter Name="NightChaseRange" Guid="50e3156b-0ffe-4d3e-9200-66776935081b" Value="0" Type="float"/>
-                <Parameter Name="ChaseNonPlayerProbability" Guid="fa35f5ef-d2e9-4a66-a8c3-6175aefcf34b" Value="0" Type="float"/>
-                <Parameter Name="NightChaseTime" Guid="c69b6f3a-8931-4941-a67b-80af49484a27" Value="0" Type="float"/>
-    </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="371888b8-f722-48f5-958c-5983d7c64058">
         <Parameter Name="Color" Guid="c11c9b22-0758-42fd-b008-fedc9c594b66" Value="176,115,115" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="f38311d5-3646-46f8-b937-78be432a63d3" Value="170" Type="int"/>
@@ -2201,13 +2166,6 @@
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="471cb201-bfdf-444a-91c1-ae2795ff09e4" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
     <MemberComponentTemplate Name="FeedBehavior" Guid="f099bf30-7318-4b3f-a2f3-78bf6c24c9d2" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
         <Parameter Name="AutoFeed" Guid="a9b06554-5484-4cd5-8a75-36e7202588f0" Value="False" Type="bool"/>
-    </MemberComponentTemplate>
-    <MemberComponentTemplate Name="ChaseBehavior" Guid="f15116f4-e838-4660-8f38-d72901970058" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
-                <Parameter Name="AutoChaseMask" Guid="41406b9f-490c-4cb4-8f69-5d72419bd335" Value="LandPredator" Type="Game.CreatureCategory"/>
-                <Parameter Name="DayChaseRange" Guid="476aeb64-595d-49a9-aada-f33736b3145c" Value="0" Type="float"/>
-                <Parameter Name="NightChaseRange" Guid="78748010-74dc-4fd9-b00c-8271b023da27" Value="0" Type="float"/>
-                <Parameter Name="ChaseNonPlayerProbability" Guid="b6e5e1e9-2f98-49db-a801-c1fe95a5501a" Value="0" Type="float"/>
-                <Parameter Name="NightChaseTime" Guid="a923b137-8613-4157-9ecb-ca7ee946f8f6" Value="0" Type="float"/>
     </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="e5d7b958-d321-4a99-a378-6a3c9df2018a">
         <Parameter Name="Color" Guid="07c91907-d420-4e9b-a809-0033164a1b51" Value="176,115,115" Type="Color"/>
