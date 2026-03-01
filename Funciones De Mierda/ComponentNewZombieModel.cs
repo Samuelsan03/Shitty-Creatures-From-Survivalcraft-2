@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Engine;
 using Engine.Graphics;
 using GameEntitySystem;
@@ -164,15 +164,14 @@ namespace Game
 				}
 				else if (m_smoothedMovementPhase != 0f)
 				{
-					// Animación de caminar suavizada - ajustada para más fluidez
-					num4 = -0.35f * num; // Reducido de 0.5f para menos exageración
-					num6 = 0.35f * num;  // Reducido de 0.5f para menos exageración
-					num3 = this.m_walkLegsAngle * num * 0.6f; // Reducido para más fluidez
-					x2 = 0f - num3;
-
-					// Añadir un pequeño movimiento vertical para fluidez
-					y2 = 0.1f * num;
-					y3 = -0.1f * num;
+					// Animación de caminar suavizada - sin movimiento lateral en las piernas
+					num4 = -0.35f * num;               // brazo derecho
+					num6 = 0.35f * num;                 // brazo izquierdo
+					num3 = this.m_walkLegsAngle * num * 0.6f;  // pierna derecha
+					x2 = 0f - num3;                     // pierna izquierda
+														// Eliminamos y2 e y3 para evitar rotación lateral
+					y2 = 0f;
+					y3 = 0f;
 				}
 
 				// Efecto de minería
@@ -217,10 +216,13 @@ namespace Game
 				float num23 = 0f;
 				if (this.m_aimHandAngle != 0f)
 				{
-					num20 = 1.5f;
-					num21 = -0.7f;
-					num22 = this.m_aimHandAngle * 1f;
-					num23 = 0f;
+					// La mano derecha se eleva según el ángulo de apuntado (escalado para un rango adecuado)
+					num20 = this.m_aimHandAngle * 1.2f;
+					// Pequeña rotación lateral para naturalidad
+					num21 = -0.1f;
+					// La mano izquierda también se eleva, pero ligeramente menos (puede ajustarse)
+					num22 = this.m_aimHandAngle * 0.8f;
+					num23 = 0.1f;
 				}
 
 				float num24 = (float)((!this.m_componentCreature.ComponentLocomotion.IsCreativeFlyEnabled) ? 1 : 4);
@@ -342,6 +344,12 @@ namespace Game
 		public void SetSmoothFactor(float factor)
 		{
 			m_smoothFactor = MathUtils.Clamp(factor, 0.1f, 0.3f); // Ajustado rango mínimo
+		}
+
+		// Añadir esta propiedad pública para recibir el ángulo de apuntado
+		public float AimHandAngleOrder
+		{
+			set { m_aimHandAngle = value; }
 		}
 
 		public void SetAnimationResponsiveness(float responsiveness)
