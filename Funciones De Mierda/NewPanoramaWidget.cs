@@ -33,9 +33,13 @@ namespace Game
 		}
 		public TransitionState State = TransitionState.Showing;
 
+		// Usar el Random del juego en lugar de System.Random
+		private static Random random = new Random();
+
 		public NewPanoramaWidget()
 		{
-			CurrentTextureIndex = 0;
+			// Elegir un índice aleatorio al inicio usando el método Int(int bound) de la clase Random del juego
+			CurrentTextureIndex = random.Int(TexturePaths.Count);
 			LoadTexture(CurrentTextureIndex);
 			FadeAlpha = 0f;
 			DisplayTime = 0f;
@@ -84,7 +88,7 @@ namespace Game
 			float scaleX = base.ActualSize.X / (float)Texture.Width;
 			float scaleY = base.ActualSize.Y / (float)Texture.Height;
 			float scale = Math.Max(scaleX, scaleY);
-			
+
 			// Calcular tamaño y posición centrada
 			Vector2 size = new Vector2((float)Texture.Width * scale, (float)Texture.Height * scale);
 			Vector2 offset = new Vector2((base.ActualSize.X - size.X) / 2f, (base.ActualSize.Y - size.Y) / 2f);
