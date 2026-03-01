@@ -111,10 +111,10 @@ namespace Game
 
 		public void Update(float dt)
 		{
-			// Manejar los botones de música para cada jugador
+			// Manejar botones de música para cada jugador
 			HandleMusicButtons();
 
-			// Manejar la visualización del nombre de la canción con delay
+			// Mostrar nombre de la canción con retraso
 			if (m_pendingTrackName != "" && m_subsystemTime != null &&
 				m_subsystemTime.GameTime >= m_nextTrackNameDisplayTime)
 			{
@@ -122,38 +122,38 @@ namespace Game
 				m_pendingTrackName = "";
 			}
 
-			// Solo reproducir música si está activada
+			// Si la música está desactivada, detener cualquier reproducción
 			if (!m_musicEnabled)
 			{
-				// Si la música está desactivada pero se está reproduciendo, detenerla
-				if (m_isPlaying && m_currentMusic != null && m_currentMusic.State > SoundState.Stopped)
+				if (m_currentMusic != null && m_currentMusic.State == SoundState.Playing)
 				{
 					StopCurrentMusic();
 				}
 				return;
 			}
 
-			// Verificar si la música actual terminó
-			if (m_isPlaying && m_currentMusic != null && m_currentMusic.State == SoundState.Stopped)
+			// Si es hora de la siguiente canción, reproducir una nueva
+			if (m_subsystemTime.GameTime >= m_nextMusicTime)
 			{
-				m_isPlaying = false;
-				m_currentMusic = null;
-				// Programar la siguiente canción inmediatamente
-				m_nextMusicTime = m_subsystemTime.GameTime;
-			}
+				// Detener la música actual si aún está sonando (por si acaso)
+				if (m_currentMusic != null && m_currentMusic.State == SoundState.Playing)
+				{
+					StopCurrentMusic();
+				}
 
-			// Lógica original de programación y reproducción
-			bool flag = m_nextMusicTime == 0.0;
-			if (flag)
-			{
-				ScheduleNextMusic();
-			}
-
-			bool flag2 = m_subsystemTime.GameTime >= m_nextMusicTime && !m_isPlaying;
-			if (flag2)
-			{
+				// Reproducir una nueva pista aleatoria
 				PlayRandomMusic();
-				ScheduleNextMusic();
+
+				// Programar la siguiente según la duración de la canción que acaba de empezar
+				if (m_currentMusic != null)
+				{
+					m_nextMusicTime = m_subsystemTime.GameTime + m_musicDuration;
+				}
+				else
+				{
+					// Si falló la reproducción, reintentar en 1 segundo
+					m_nextMusicTime = m_subsystemTime.GameTime + 1.0;
+				}
 			}
 		}
 
@@ -452,7 +452,6 @@ namespace Game
 		{
 			m_subsystemTime = base.Project.FindSubsystem<SubsystemTime>(true);
 			m_subsystemPlayers = base.Project.FindSubsystem<SubsystemPlayers>(true);
-
 			m_valuesDictionary = valuesDictionary;
 			m_musicEnabled = valuesDictionary.GetValue<bool>("MusicEnabled", false);
 
@@ -465,7 +464,7 @@ namespace Game
 
 			if (m_musicEnabled)
 			{
-				m_nextMusicTime = m_subsystemTime.GameTime + 1.0;
+				m_nextMusicTime = m_subsystemTime.GameTime + 1.0; // Pequeño retraso inicial
 				Log.Information("Music enabled on load, will start playing soon");
 			}
 			else
