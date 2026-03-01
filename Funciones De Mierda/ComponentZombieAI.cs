@@ -1022,15 +1022,13 @@ namespace Game
 			m_isItemsLauncherReloading = true;
 			m_itemsLauncherReloadStartTime = m_subsystemTime.GameTime;
 
-			// Animación de recarga
 			if (m_componentModel != null)
 			{
-				m_componentModel.AimHandAngleOrder = 0f;
+				m_componentModel.AimHandAngleOrder = 0f; // ← brazos abajo
 				m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
 				m_componentModel.InHandItemRotationOrder = Vector3.Zero;
 				m_componentModel.LookAtOrder = null;
 			}
-
 		}
 
 		private void ApplyItemsLauncherReloadingAnimation()
@@ -1038,11 +1036,11 @@ namespace Game
 			if (m_componentModel != null)
 			{
 				float reloadProgress = (float)((m_subsystemTime.GameTime - m_itemsLauncherReloadStartTime) / m_itemsLauncherReloadTime);
-
-				// Animación simple de recarga (bajar el arma)
-				m_componentModel.AimHandAngleOrder = MathUtils.Lerp(0f, 1.4f, reloadProgress);
+				m_componentModel.AimHandAngleOrder = 0f; // brazos abajo
+														 // Rotación del arma: varía en X para simular que gira
+				float rotX = MathUtils.Lerp(-1.7f, -2.2f, reloadProgress);
+				m_componentModel.InHandItemRotationOrder = new Vector3(rotX, 0f, 0f);
 				m_componentModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
-				m_componentModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
 			}
 		}
 
@@ -1116,6 +1114,7 @@ namespace Game
 			{
 				m_isItemsLauncherAiming = false;
 				m_isItemsLauncherFiring = false;
+				m_isItemsLauncherReloading = false;
 				if (m_componentModel != null)
 				{
 					m_componentModel.AimHandAngleOrder = 0f;
@@ -1130,14 +1129,32 @@ namespace Game
 			{
 				m_isItemsLauncherAiming = false;
 				m_isItemsLauncherFiring = false;
+				m_isItemsLauncherReloading = false;
 				return;
 			}
 
+			// --- ESTADO DE RECARGA (prioritario) ---
+			if (m_isItemsLauncherReloading)
+			{
+				ApplyItemsLauncherReloadingAnimation();
+
+				if (m_subsystemTime.GameTime - m_itemsLauncherReloadStartTime >= m_itemsLauncherReloadTime)
+				{
+					m_isItemsLauncherReloading = false;
+					m_itemsLauncherShotsFired = 0;
+					m_isItemsLauncherAiming = true;
+					m_animationStartTime = m_subsystemTime.GameTime;
+				}
+				return;
+			}
+
+			// --- INICIAR AIMING SI ES NECESARIO ---
 			if (!m_isItemsLauncherAiming && !m_isItemsLauncherFiring)
 			{
 				StartItemsLauncherAiming();
 			}
 
+			// --- ESTADO DE AIMING ---
 			if (m_isItemsLauncherAiming)
 			{
 				if (m_componentModel != null)
@@ -1155,39 +1172,30 @@ namespace Game
 					m_itemsLauncherLastFireTime = m_subsystemTime.GameTime;
 				}
 			}
+			// --- ESTADO DE DISPARO ---
 			else if (m_isItemsLauncherFiring)
 			{
 				if (m_componentModel != null)
 				{
-					m_componentModel.AimHandAngleOrder = 1.4f;
+					m_componentModel.AimHandAngleOrder = 0f; // brazos abajo
 					m_componentModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
 					m_componentModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
 					m_componentModel.LookAtOrder = new Vector3?(target.ComponentCreatureModel.EyePosition);
 				}
 
-				else if (m_isItemsLauncherReloading)
-				{
-					ApplyItemsLauncherReloadingAnimation();
-
-					if (m_subsystemTime.GameTime - m_itemsLauncherReloadStartTime >= m_itemsLauncherReloadTime)
-					{
-						m_isItemsLauncherReloading = false;
-						m_itemsLauncherShotsFired = 0;
-						m_isItemsLauncherAiming = true;
-						m_animationStartTime = m_subsystemTime.GameTime;
-					}
-				}
-
+				// Disparar si ha pasado el intervalo
 				if (m_subsystemTime.GameTime - m_itemsLauncherLastFireTime >= m_itemsLauncherFireInterval)
 				{
 					FireItemsLauncher(target);
 					m_itemsLauncherLastFireTime = m_subsystemTime.GameTime;
 				}
 
+				// Comprobar si hay que recargar
 				if (m_itemsLauncherShotsFired >= 10)
 				{
 					m_isItemsLauncherFiring = false;
 					StartItemsLauncherReloading();
+					// No continuar, ya pasaremos al estado de recarga en el próximo frame
 				}
 			}
 		}
@@ -1727,11 +1735,9 @@ namespace Game
 		{
 			if (m_componentModel != null)
 			{
-				// Se restablece la pose por defecto (brazos abajo) durante la recarga,
-				// tal como ocurre en el código original de ZA cuando no se está apuntando.
-				m_componentModel.AimHandAngleOrder = AimHandAngleOrder;
-				m_componentModel.InHandItemOffsetOrder = Vector3.Zero;   // ← sin offset
-				m_componentModel.InHandItemRotationOrder = Vector3.Zero; // ← sin rotación extra
+				m_componentModel.AimHandAngleOrder = 0f;  // ← brazos abajo
+				m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
+				m_componentModel.InHandItemRotationOrder = Vector3.Zero;
 				m_componentModel.LookAtOrder = null;
 			}
 		}
@@ -2177,14 +2183,10 @@ namespace Game
 		{
 			if (m_componentModel != null)
 			{
-				m_componentModel.AimHandAngleOrder = AimHandAngleOrder;
+				m_componentModel.AimHandAngleOrder = 0f; // ← brazos abajo
 				m_componentModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
 				m_componentModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
-
-				if (target != null)
-				{
-					m_componentModel.LookAtOrder = new Vector3?(target.ComponentCreatureModel.EyePosition);
-				}
+				if (target != null) m_componentModel.LookAtOrder = new Vector3?(target.ComponentCreatureModel.EyePosition);
 			}
 		}
 
@@ -2471,7 +2473,7 @@ namespace Game
 		{
 			if (m_componentModel != null)
 			{
-				m_componentModel.AimHandAngleOrder = AimHandAngleOrder;
+				m_componentModel.AimHandAngleOrder = 0f; // ← brazos abajo
 				m_componentModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
 				m_componentModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
 				m_componentModel.LookAtOrder = null;
@@ -2813,7 +2815,7 @@ namespace Game
 		{
 			if (m_componentModel != null)
 			{
-				m_componentModel.AimHandAngleOrder = AimHandAngleOrder;
+				m_componentModel.AimHandAngleOrder = 0f; // ← brazos abajo
 				m_componentModel.InHandItemOffsetOrder = new Vector3(-0.07f, -0.06f, 0.06f);
 				m_componentModel.InHandItemRotationOrder = new Vector3(-1.5f, 0f, 0f);
 				m_componentModel.LookAtOrder = null;
