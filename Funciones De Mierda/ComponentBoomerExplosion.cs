@@ -92,18 +92,8 @@ namespace Game
 		public override void Save(ValuesDictionary valuesDictionary, EntityToIdMap entityToIdMap)
 		{
 			base.Save(valuesDictionary, entityToIdMap);
-
-			valuesDictionary.SetValue("ActivationRange", ActivationRange);
-			valuesDictionary.SetValue("UseStandardExplosion", UseStandardExplosion);
-			valuesDictionary.SetValue("UseCustomShockwave", UseCustomShockwave);
-			valuesDictionary.SetValue("ExplosionPressure", ExplosionPressure);
-			valuesDictionary.SetValue("IsIncendiary", IsIncendiary);
-			valuesDictionary.SetValue("ExplosionRadius", ExplosionRadius);
-			valuesDictionary.SetValue("BlockDamageRadius", BlockDamageRadius);
-			valuesDictionary.SetValue("EntityDamageRadius", EntityDamageRadius);
-			valuesDictionary.SetValue("ShockwaveDamage", ShockwaveDamage);
-			valuesDictionary.SetValue("ShockwaveForce", ShockwaveForce);
-			valuesDictionary.SetValue("DestroyBlocks", DestroyBlocks);
+			// NO guardar ningún valor en el diccionario
+			// Los valores se cargarán desde la plantilla pero no se persistirán
 		}
 
 		public void Update(float dt)
