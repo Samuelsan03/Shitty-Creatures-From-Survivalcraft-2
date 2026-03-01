@@ -13,7 +13,7 @@ namespace Game
 		// Campos existentes del original
 		public SubsystemTime m_subsystemTime;
 		public Random m_random = new Random();
-		private double m_nextMusicTime = 0.0;
+		private double m_nextMusicTime = 1.0;
 		private double m_musicDuration = 0.0;
 		public SubsystemPlayers m_subsystemPlayers;
 		private readonly Queue<int> m_recentTracks = new Queue<int>(2);
@@ -35,6 +35,7 @@ namespace Game
 		// Lista de canciones con duraciones en segundos
 		private readonly SubsystemInGameMusic.TrackInfo[] m_tracks = new SubsystemInGameMusic.TrackInfo[]
 		{
+			new SubsystemInGameMusic.TrackInfo("MenuMusic/Dragon Quest NES Title Theme", 180f),
 			new SubsystemInGameMusic.TrackInfo("MenuMusic/Digimon 02 Target Wada Kouji", 268f),
 			new SubsystemInGameMusic.TrackInfo("MenuMusic/Nichijou Koigokoro Wa Dangan Mo Yawarakakusuru", 82f),
 			new SubsystemInGameMusic.TrackInfo("MenuMusic/Touhou 2 Mimas Theme Complete Darkness", 236f),
@@ -464,7 +465,7 @@ namespace Game
 
 			if (m_musicEnabled)
 			{
-				m_nextMusicTime = m_subsystemTime.GameTime + 2.0;
+				m_nextMusicTime = m_subsystemTime.GameTime + 1.0;
 				Log.Information("Music enabled on load, will start playing soon");
 			}
 			else
