@@ -47,7 +47,7 @@
 </ComponentTemplate>
 
 <ComponentTemplate Name="BoomerFireExplosion" Description="Comportamiento para un Boomer incendiario. Explota al morir, causa daño y propaga fuego." Guid="aeba3d06-e20a-4a04-bd51-ae8d5b2d03c0" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
-    <Parameter Name="Class" Guid="a51dc7a0-3313-4d63-843f-bd667c5e3137" Value="Game.ComponentBoomerExplosion2" Type="string"/>
+    <Parameter Name="Class" Guid="a51dc7a0-3313-4d63-843f-bd667c5e3137" Value="Game.ComponentBoomerFireExplosion" Type="string"/>
     <Parameter Name="ActivationRange" Description="Distancia de activación (no usado, la explosión es por muerte)" Guid="4c5ded94-60d4-421f-96c2-677461c03c67" Value="3" Type="float"/>
     <Parameter Name="UseStandardExplosion" Description="Usar la explosión estándar del juego." Guid="4bebf7b4-2e57-4d82-b543-039bb4147aca" Value="true" Type="bool"/>
     <Parameter Name="UseCustomShockwave" Description="Usar onda expansiva personalizada." Guid="4a39c103-eaf8-4c0f-92a9-ffbd091a2d01" Value="false" Type="bool"/>
