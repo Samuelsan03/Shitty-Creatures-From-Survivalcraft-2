@@ -189,22 +189,38 @@ namespace Game
 				}
 			}
 
-			if (canFly && m_componentCreature.ComponentBody.StandingOnValue == null && immersionDepth < 0.3f)
+			if (canFly && immersionDepth < 0.3f)
 			{
-				// MODO VUELO ESTABLE
-				m_componentLocomotion.WalkOrder = new Vector2?(new Vector2(m_speed * TurnOrder, m_speed));
+				// MODO VUELO MEJORADO - FUNCIONA INCLUSO CUANDO ESTÁ QUIETO
+
+				// Calcular dirección de movimiento horizontal (si hay input)
+				if (Math.Abs(m_speed) > 0.01f)
+				{
+					// Si hay movimiento horizontal, aplicar walk order
+					m_componentLocomotion.WalkOrder = new Vector2?(new Vector2(m_speed * TurnOrder, m_speed));
+				}
+				else
+				{
+					// Si está quieto, no aplicar movimiento horizontal
+					m_componentLocomotion.WalkOrder = null;
+				}
+
 				m_componentLocomotion.IsCreativeFlyEnabled = true; // Desactiva gravedad y resistencia
 
+				// SIEMPRE procesar input vertical, independientemente de si hay movimiento horizontal
 				if (Math.Abs(verticalInput) > 0.01f)
 				{
 					// Aplicar velocidad vertical según input
-					m_componentLocomotion.FlyOrder = new Vector3(0f, verticalInput * m_speed, 0f);
+					// Usamos una velocidad base de 4 para que el ascenso/descenso sea notable incluso sin velocidad horizontal
+					float verticalSpeed = verticalInput * (m_speed > 0.1f ? m_speed : 4f);
+					m_componentLocomotion.FlyOrder = new Vector3(0f, verticalSpeed, 0f);
 				}
 				else
 				{
 					// Sin input vertical: mantener altitud actual (velocidad vertical = 0)
 					m_componentLocomotion.FlyOrder = Vector3.Zero;
-					// Forzar velocidad vertical a cero para eliminar inercia
+
+					// Opcional: estabilizar altitud forzando velocidad vertical a cero
 					Vector3 vel = m_componentCreature.ComponentBody.Velocity;
 					if (Math.Abs(vel.Y) > 0.01f)
 					{
