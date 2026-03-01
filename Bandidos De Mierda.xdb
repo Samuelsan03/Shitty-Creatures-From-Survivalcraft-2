@@ -186,7 +186,7 @@
     <MemberComponentTemplate Name="Inventory" Guid="416816e5-f69f-4fd3-816b-bd085731f70f" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
     <ParameterSet Name="Slots">
         <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="343" Type="int"/> <!-- Tiene puesto su M4-->
+            <Parameter Name="Contents" Value="342" Type="int"/> <!-- Tiene puesto su M4-->
             <Parameter Name="Count" Value="1" Type="int"/>
         </ParameterSet>
     </ParameterSet>
@@ -330,7 +330,7 @@
     <MemberComponentTemplate Name="Inventory" Guid="c8177148-4404-4815-9070-e3f898d649df" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
     <ParameterSet Name="Slots">
         <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="339" Type="int"/> <!-- Tiene puesto su AK 47-->
+            <Parameter Name="Contents" Value="338" Type="int"/> <!-- Tiene puesto su AK 47-->
             <Parameter Name="Count" Value="1" Type="int"/>
         </ParameterSet>
     </ParameterSet>
@@ -618,7 +618,7 @@
     <MemberComponentTemplate Name="Inventory" Guid="9cf1b1de-24c0-4035-a8dc-a501ad3b1a77" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
     <ParameterSet Name="Slots">
         <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="375" Type="int"/> <!-- Tiene puesto su Revolver-->
+            <Parameter Name="Contents" Value="373" Type="int"/> <!-- Tiene puesto su Revolver-->
             <Parameter Name="Count" Value="1" Type="int"/>
         </ParameterSet>
     </ParameterSet>
@@ -988,7 +988,7 @@
     <Parameter Name="ChaseNonPlayerProbability" Value="0.2" Type="float" Guid="1aac7764-9455-42d6-88e4-36cdc69b3cd2"/>
     <Parameter Name="ChaseWhenAttackedProbability" Value="0.8" Type="float" Guid="45bc2b94-df62-40c4-827a-035226daa024"/>
     <Parameter Name="ChaseOnTouchProbability" Value="0.5" Type="float" Guid="12aeed80-9567-40d0-9348-3aa42383a165"/>
-    <Parameter Name="AutoChaseMask" Value="LandPredator" Type="string" Guid="27f791cc-7da9-459e-a9bb-66fcffa00cf9"/>
+    <Parameter Name="AutoChaseMask" Value="LandPredator" Type="Game.CreatureCategory" Guid="27f791cc-7da9-459e-a9bb-66fcffa00cf9"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewHerdBehavior" Guid="5db253d0-38e6-448a-be4a-c4089b33f9be" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
   <Parameter Name="HerdName" Type="string" Value="guardian" Guid="96fd5ef2-cab4-4edd-901c-c8514038c471"/>
@@ -1060,7 +1060,7 @@
     <MemberComponentTemplate Name="Inventory" Guid="a0b1e1c8-4d9a-48f1-a03b-e9d83b08dfd4" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
     <ParameterSet Name="Slots">
         <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="369" Type="int"/> <!-- Tiene puesto su FN P90-->
+            <Parameter Name="Contents" Value="368" Type="int"/> <!-- Tiene puesto su FN P90-->
             <Parameter Name="Count" Value="1" Type="int"/>
         </ParameterSet>
     </ParameterSet>
@@ -1204,7 +1204,7 @@
     <MemberComponentTemplate Name="Inventory" Guid="cbba0c4e-1359-47bd-afff-127ebb25c37c" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
     <ParameterSet Name="Slots">
         <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="349" Type="int"/> <!-- Tiene puesto su Mac 10-->
+            <Parameter Name="Contents" Value="347" Type="int"/> <!-- Tiene puesto su Mac 10-->
             <Parameter Name="Count" Value="1" Type="int"/>
         </ParameterSet>
     </ParameterSet>
@@ -1347,7 +1347,7 @@
     <MemberComponentTemplate Name="Inventory" Guid="b6f0640a-6e50-4773-9e0b-3ce3abffb7ed" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
     <ParameterSet Name="Slots">
         <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="351" Type="int"/> <!-- Tiene puesto su Uzi-->
+            <Parameter Name="Contents" Value="350" Type="int"/> <!-- Tiene puesto su Uzi-->
             <Parameter Name="Count" Value="1" Type="int"/>
         </ParameterSet>
     </ParameterSet>
@@ -1577,7 +1577,7 @@
     <Parameter Name="ChaseNonPlayerProbability" Value="0.2" Type="float" Guid="847b1571-d459-4b3d-bf97-a5879822f5a6"/>
     <Parameter Name="ChaseWhenAttackedProbability" Value="0.8" Type="float" Guid="c0911dea-633b-4aba-83c9-09fec457cf07"/>
     <Parameter Name="ChaseOnTouchProbability" Value="0.5" Type="float" Guid="c2761cbc-d1ce-4def-b9cb-2537fc1cf30e"/>
-    <Parameter Name="AutoChaseMask" Value="LandPredator" Type="string" Guid="b25fa299-316c-4239-be32-7f5ade22b6b2"/>
+    <Parameter Name="AutoChaseMask" Value="LandPredator" Type="Game.CreatureCategory" Guid="b25fa299-316c-4239-be32-7f5ade22b6b2"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewHerdBehavior" Guid="11e04c7f-c373-479e-b19c-a512a35584de" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
   <Parameter Name="HerdName" Type="string" Value="guardian" Guid="8baf53f0-44ef-4150-90dc-c75bf2be1d56"/>
@@ -1735,7 +1735,7 @@
     <Parameter Name="ChaseNonPlayerProbability" Value="0.2" Type="float" Guid="53266461-9ad4-49b5-acc6-e0211eea01a8"/>
     <Parameter Name="ChaseWhenAttackedProbability" Value="0.8" Type="float" Guid="3807c355-a500-4aaa-8281-95ef4e25747a"/>
     <Parameter Name="ChaseOnTouchProbability" Value="0.5" Type="float" Guid="769d98ce-a62e-490a-a572-f9a257b8b5d2"/>
-    <Parameter Name="AutoChaseMask" Value="LandPredator" Type="string" Guid="8bcafc28-cedd-43d1-85e0-5fb608f78e2c"/>
+    <Parameter Name="AutoChaseMask" Value="LandPredator" Type="Game.CreatureCategory" Guid="8bcafc28-cedd-43d1-85e0-5fb608f78e2c"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewHerdBehavior" Guid="5335723a-82e0-44b3-96a2-0cd8ea9dd1b0" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
   <Parameter Name="HerdName" Type="string" Value="guardian" Guid="e284d5ad-826e-452d-83b0-314179be2176"/>
@@ -1807,7 +1807,7 @@
 <MemberComponentTemplate Name="Inventory" Guid="5c1d4b1b-dc08-4426-bd96-12d2bd30647a" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
     <ParameterSet Name="Slots">
         <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="373" Type="int"/> <!-- Tiene puesto su SCAR-->
+            <Parameter Name="Contents" Value="371" Type="int"/> <!-- Tiene puesto su SCAR-->
             <Parameter Name="Count" Value="1" Type="int"/>
         </ParameterSet>
     </ParameterSet>
@@ -2109,7 +2109,7 @@
 <MemberComponentTemplate Name="Inventory" Guid="8243b42e-acce-4613-b3f2-459e15ba4f5b" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
     <ParameterSet Name="Slots">
         <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="399" Type="int"/> <!-- Tiene puesto su BK 43-->
+            <Parameter Name="Contents" Value="398" Type="int"/> <!-- Tiene puesto su BK 43-->
             <Parameter Name="Count" Value="1" Type="int"/>
         </ParameterSet>
     </ParameterSet>
