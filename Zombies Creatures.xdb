@@ -2546,12 +2546,31 @@
 </EntityTemplate>
 
 <EntityTemplate Name="InfectedFlyTamed1" Guid="d56fcb71-d0e3-4f82-9760-ee66fa62f953" InheritanceParent="0cb14482-b936-410e-9317-66d385d7d2fd">
+<MemberComponentTemplate Name="NewMount" Guid="af97dcb4-303e-499c-81c4-39b26d7bcfc4" InheritanceParent="ba0e138c-fe06-4b83-a405-503e03843493">
+        <Parameter Name="DismountOffset" Guid="a2d7e939-3d8b-404d-84d2-4defc2747c25" Value="1.5,0.3,0" Type="Vector3" />
+        <Parameter Name="MountOffset" Guid="fbb5319e-01fa-4326-85a0-c4d1fc5855ab" Value="0.0, 1.0, 0.0" Type="Vector3" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="NewSteedBehavior" Guid="7302d55e-2fe4-4b62-ae02-6ceeec6faf00" InheritanceParent="03268b67-f4e7-49dd-99f4-2b0301e3b2c1">
+        <Parameter Name="IsEnabled" Guid="1f21a700-5566-4c75-af30-dc4bb22f4505" Value="True" Type="bool"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="NewDumpRiderBehavior" Guid="be911c27-1842-41ad-a973-5d361910eb28" InheritanceParent="deb33f45-0de2-4ceb-8e1e-f2bcf0fb177e">
+        <Parameter Name="IsEnabled" Guid="36b28026-6a62-4638-843d-6d046ff8d2e7" Value="False" Type="bool"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="NewStubbornSteedBehavior" Guid="f5d3a884-1337-4e30-acf7-237e7307f130" InheritanceParent="e131e1ac-1866-41b4-9795-2f8bd5f87112">
+        <Parameter Name="IsEnabled" Guid="99e71ede-de15-47b9-a278-c0c2761e66f4" Value="True" Type="bool"/>
+        <Parameter Name="StubbornProbability" Guid="36bf95e1-acc8-49d9-97fa-8c64fd24a964" Value="0.3" Type="float"/>
+        <Parameter Name="StubbornEndTime" Guid="8858964b-d6a2-4bcc-b29b-5bd8ecf3a916" Value="0" Type="double"/>
+    </MemberComponentTemplate>
     <MemberComponentTemplate Name="BirdModel" Guid="04fbb36e-13a1-4d2b-b50a-570125235612">
         <Parameter Name="ModelScale" Guid="3b78d48c-a95d-4c1d-b5b4-bd5725f08a1d" Value="3.5" Type="float"/>
         <Parameter Name="FlyAnimationSpeed" Guid="c129b8dd-d9cc-497a-9f34-a408bc5ae64b" Value="3" Type="float"/>
         <Parameter Name="TextureOverride" Guid="81360c21-c191-4d68-aef8-00fe0b8fde13" Value="Textures/ZombiesDeMierda/ZombieFly1" Type="string"/>
         <Parameter Name="WalkAnimationSpeed" Guid="acd5c0e0-1285-4cce-8e48-aa5be556bb74" Value="1.5" Type="float"/>
         <Parameter Name="ModelName" Guid="696a1420-e55f-42e4-a204-570f8115e0c0" Value="Models/Zombies Modelos De Cagada/ZombieFly" Type="string"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="789bb995-f2d0-4585-8321-5f74f5529325" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
+        <Parameter Name="DayRange" Guid="943bfffe-acaa-4ede-85c9-0a03332fe31e" Value="0" Type="float"/>
+        <Parameter Name="NightRange" Guid="bf0d7e21-bc4a-4d3c-9bf3-74f7afa23537" Value="0" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Miner" Guid="a1bd193d-19c8-4199-96d6-b74407fa10aa" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="1082c448-4734-40c7-bea2-af5c0c5e5d96" Value="3" Type="float"/>
@@ -2623,13 +2642,6 @@
     <MemberComponentTemplate Name="Spawn" Guid="99d7d39e-56f8-4e52-b482-b2b0f7e2ac8f">
         <Parameter Name="AutoDespawn" Guid="ff576976-dc9d-4afa-9b2a-88af70ac6012" Value="False" Type="bool"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="ChaseBehavior" Guid="55d37a30-3129-4d62-a681-5afe04ec1c8b" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
-                <Parameter Name="AutoChaseMask" Guid="2b8cecf8-917e-4dc4-a4cf-59f5ac36c818" Value="LandOther,WaterPredator,Bird" Type="Game.CreatureCategory"/>
-                <Parameter Name="DayChaseRange" Guid="5271b345-426f-4471-b156-838336188e2d" Value="0" Type="float"/>
-                <Parameter Name="NightChaseRange" Guid="23bbb602-b3c9-4459-8665-515193d5a98b" Value="0" Type="float"/>
-                <Parameter Name="ChaseNonPlayerProbability" Guid="64c7854f-36c9-4c50-a9f6-1b1d2d603f70" Value="0" Type="float"/>
-                <Parameter Name="NightChaseTime" Guid="7edba302-1422-40c9-84f3-04099de021f1" Value="0" Type="float"/>
-            </MemberComponentTemplate>
             <MemberComponentTemplate Name="SummonBehavior" Guid="4dd2ee70-6bb3-4a64-9d88-c8901ea8e780">
               <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="c749edb5-26c2-496f-a40e-cd975c116404"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="e3521ad4-8b8f-4d71-b5c2-7dcd1385dfd7"/>
@@ -3240,6 +3252,21 @@
 </EntityTemplate>
 
 <EntityTemplate Name="FlyingInfectedBossTamed" Guid="9c02bd72-5d77-4aee-b250-550c3e2eb3ee" InheritanceParent="0cb14482-b936-410e-9317-66d385d7d2fd">
+<MemberComponentTemplate Name="NewMount" Guid="284c3a55-23b2-479a-bff5-d696e769b346" InheritanceParent="ba0e138c-fe06-4b83-a405-503e03843493">
+        <Parameter Name="DismountOffset" Guid="b2fe1977-fc0c-477c-aeea-09b0c00bc079" Value="1.5,0.3,0" Type="Vector3" />
+        <Parameter Name="MountOffset" Guid="ec9acc23-f8d9-4e90-b526-2469aa8c28e1" Value="0.15, 2.0, 0.0" Type="Vector3" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="NewSteedBehavior" Guid="ed7217d4-16a1-4a96-9e07-849231f1e708" InheritanceParent="03268b67-f4e7-49dd-99f4-2b0301e3b2c1">
+        <Parameter Name="IsEnabled" Guid="3c841217-cc49-4226-b5ef-c1fd1646a862" Value="True" Type="bool"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="NewDumpRiderBehavior" Guid="93a5ae44-622d-4877-bda3-db8f17df0197" InheritanceParent="deb33f45-0de2-4ceb-8e1e-f2bcf0fb177e">
+        <Parameter Name="IsEnabled" Guid="dbc2529d-c547-4a08-9608-377b177736c9" Value="False" Type="bool"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="NewStubbornSteedBehavior" Guid="5af035e2-fc08-41f4-bd85-22bb0e5ba720" InheritanceParent="e131e1ac-1866-41b4-9795-2f8bd5f87112">
+        <Parameter Name="IsEnabled" Guid="a6a06f43-1039-41ba-b146-95517103a360" Value="True" Type="bool"/>
+        <Parameter Name="StubbornProbability" Guid="8ce32e2c-ce1e-4b8f-a5b3-9cb72110378e" Value="0.3" Type="float"/>
+        <Parameter Name="StubbornEndTime" Guid="7b54ed15-948d-488c-8dd8-517c3e2e9833" Value="0" Type="double"/>
+    </MemberComponentTemplate>
 <MemberComponentTemplate Name="SummonBehavior" Guid="e36ef8fd-bed1-4a0f-8567-415873b9f749">
               <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="4c80e3c0-bcf1-46d9-b213-fbf079e800c4"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="74a5ffc5-8f64-4d79-a6ea-ef32feb79b79"/>
