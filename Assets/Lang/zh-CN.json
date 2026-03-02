@@ -1,4 +1,8 @@
 {
+  "ChaseMusic": {
+    "GhostButton": "追逐音乐 - 幽灵：{0}",
+    "TankButton": "追逐音乐 - Tanks：{0}"
+  },
   "AntidoteBucket": {
     "NPCCured": "NPC 的毒素和疾病已被清除！",
     "PoisonAndSicknessCured": "恶心和疾病已治愈！"
@@ -16,6 +20,7 @@
     "CancelButton": "取消"
   },
   "ZombiesSpawn": {
+  "WaveMessage": "你在第 {0} 波！",
   "FinalWave": "最终波次开始了！",
   "BossesAppear": "首领即将出现……",
   "BossTank": "Tank 出现了！",
