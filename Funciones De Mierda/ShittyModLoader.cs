@@ -15,6 +15,29 @@ namespace ShittyMod
 
 		public override void OnMainMenuScreenCreated(MainMenuScreen mainMenuScreen, StackPanelWidget leftBottomBar, StackPanelWidget rightBottomBar)
 		{
+			// --- AÑADIR ETIQUETA DE VERSIÓN DEL MOD EN EL MENÚ PRINCIPAL ---
+			// Buscar el contenedor "TopArea" y la etiqueta "Version" que ya existen
+			StackPanelWidget topArea = mainMenuScreen.Children.Find<StackPanelWidget>("TopArea", true);
+			LabelWidget versionLabel = mainMenuScreen.Children.Find<LabelWidget>("Version", true);
+
+			if (topArea != null && versionLabel != null)
+			{
+				// Crear una nueva etiqueta para mostrar la versión del mod
+				LabelWidget modVersionLabel = new LabelWidget
+				{
+					Name = "ShittyCreaturesVersion",
+					FontScale = 0.6f,                     // Mismo tamaño que la versión del juego
+					HorizontalAlignment = WidgetAlignment.Center,
+					Color = new Color(64, 192, 64),       // Color verde similar al del juego
+					DropShadow = true,
+					Text = "Shitty Creatures v1.0.6"       // Texto con el nombre y versión del mod
+				};
+
+				// Insertar la nueva etiqueta justo antes de la versión del juego
+				topArea.Children.InsertBefore(versionLabel, modVersionLabel);
+			}
+			// ----------------------------------------------------------------
+
 			// Verificar si el botón ya existe para no duplicarlo
 			BevelledButtonWidget existing = rightBottomBar.Children.Find<BevelledButtonWidget>("ShittyButton", false);
 			if (existing != null) return;
@@ -53,10 +76,6 @@ namespace ShittyMod
 			BevelledButtonWidget shittyButton = mainMenu.Children.Find<BevelledButtonWidget>("ShittyButton", false);
 			if (shittyButton != null && shittyButton.IsClicked)
 			{
-				// Cambia esto:
-				// DialogsManager.ShowDialog(null, new MessageDialog("Shitty Button", "¡Has hecho clic en el botón basura!", "OK", null, null));
-
-				// Por esto:
 				DialogsManager.ShowDialog(null, new ShittyCreaturesLogDialog());
 			}
 		}
