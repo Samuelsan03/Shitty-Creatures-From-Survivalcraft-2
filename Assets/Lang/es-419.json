@@ -1,4 +1,10 @@
 {
+  "ShittyCreatures": {
+    "ScreenTitle": "Ajustes de Shitty Creatures",
+    "SettingsButton": "Ajustes de Shitty Creatures",
+    "GhostDescription": "Activar/desactivar la música cuando los fantasmas te persiguen",
+    "TankDescription": "Activar/desactivar la música cuando los Tanks te persiguen"
+  },
   "ChaseMusic": {
     "GhostButton": "Música de Persecución\n - Fantasmas: {0}",
     "TankButton": "Música de Persecución\n - Tanks: {0}"
