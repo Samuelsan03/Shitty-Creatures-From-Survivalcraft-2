@@ -8774,7 +8774,7 @@
     <Parameter Name="LoadOrder" Value="60" Type="int" Guid="c953d3ce-64c4-41e8-a039-870b68638002"/>
               <Parameter Name="IsEnabled" Guid="97671d05-2efe-4cc6-a54f-35ea4da437cc" Value="True" Type="bool"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="NewChaseBehavior2" Guid="39cd7f41-3997-476a-a67b-8a8d6c7e5330" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
+            <MemberComponentTemplate Name="NewChaseBehavior2" Guid="39cd7f41-3997-476a-a67b-8a8d6c7e5330" InheritanceParent="156963c2-5088-4d40-b0fa-73a8f0f202b5">
     <Parameter Name="DayChaseRange" Value="16" Type="float" Guid="5c5d6597-ae75-4bc6-a5c3-3be7493e0e1b"/>
     <Parameter Name="NightChaseRange" Value="24" Type="float" Guid="6bc22857-f4e2-4b05-bad7-97e31e8bb367"/>
     <Parameter Name="DayChaseTime" Value="30" Type="float" Guid="9706ebd9-e503-46d5-88cc-b3d902b4f60c"/>
