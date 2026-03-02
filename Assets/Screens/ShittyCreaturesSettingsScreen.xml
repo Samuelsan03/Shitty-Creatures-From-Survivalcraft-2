@@ -1,0 +1,15 @@
+<Screen xmlns="runtime-namespace:Game">
+  <PanoramaWidget/>
+  <StackPanelWidget Direction="Horizontal">
+    <CanvasWidget Style="{Widgets/TopBarContents}">
+      <LabelWidget Name="TopBar.Label" Text=""/>
+    </CanvasWidget>
+    <CanvasWidget Margin="10, 20">
+      <RectangleWidget FillColor="0, 0, 0, 192" OutlineColor="128, 128, 128, 128"/>
+      <ScrollPanelWidget Direction="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3, 3">
+        <StackPanelWidget Direction="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Name="Content">
+        </StackPanelWidget>
+      </ScrollPanelWidget>
+    </CanvasWidget>
+  </StackPanelWidget>
+</Screen>
