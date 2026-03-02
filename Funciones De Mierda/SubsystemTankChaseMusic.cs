@@ -13,7 +13,7 @@ namespace Game
 
 		private const string MUSIC_PATH = "MenuMusic/ChaseTheme/Tank Theme";
 		private const string ALERT_SOUND_PATH = "Audio/UI/Tank Warning Sound";
-		private const float MUSIC_DURATION = 52.0f; // 00:52 segundos exactos
+		private const float MUSIC_DURATION = 52.0f;
 		private const float CHECK_INTERVAL = 0.1f;
 		private const float DETECTION_RADIUS = 20f;
 
@@ -26,6 +26,7 @@ namespace Game
 		private float m_timeSinceLastCheck = 0f;
 		private float m_timeSinceMusicStarted = 0f;
 		private bool m_musicPlaying = false;
+		private bool m_wasMusicEnabled = true;
 
 		private SubsystemTime m_subsystemTime;
 		private SubsystemPlayers m_subsystemPlayers;
@@ -36,9 +37,7 @@ namespace Game
 		#region Properties
 
 		public UpdateOrder UpdateOrder => UpdateOrder.Default;
-
 		public bool IsChaseActive => m_isChaseActive;
-
 		public bool IsMusicPlaying => m_musicPlaying;
 
 		#endregion
@@ -51,6 +50,7 @@ namespace Game
 			m_subsystemTime = Project.FindSubsystem<SubsystemTime>(true);
 			m_subsystemPlayers = Project.FindSubsystem<SubsystemPlayers>(true);
 			m_subsystemAudio = Project.FindSubsystem<SubsystemAudio>(true);
+			m_wasMusicEnabled = ChaseMusicConfig.TankMusicEnabled;
 		}
 
 		#endregion
@@ -59,18 +59,25 @@ namespace Game
 
 		public void Update(float dt)
 		{
+			// Verificar si la configuración cambió mientras la música sonaba
+			if (m_wasMusicEnabled != ChaseMusicConfig.TankMusicEnabled)
+			{
+				m_wasMusicEnabled = ChaseMusicConfig.TankMusicEnabled;
+				if (!ChaseMusicConfig.TankMusicEnabled && m_musicPlaying)
+				{
+					StopChaseMusicImmediately();
+					m_alertShown = false;
+				}
+			}
+
 			m_timeSinceLastCheck += dt;
 
-			// Si la música está sonando, actualizar el timer
 			if (m_musicPlaying)
 			{
 				m_timeSinceMusicStarted += dt;
 
-				// Verificar si la música está por terminar (98% de la duración)
-				// Para música de 52s, verificar a los 50.96s (98%)
 				if (m_timeSinceMusicStarted >= MUSIC_DURATION * 0.98f)
 				{
-					// Reiniciar la música desde el principio SIN FADE
 					RestartMusicImmediately();
 				}
 			}
@@ -82,18 +89,21 @@ namespace Game
 				bool wasChaseActive = m_isChaseActive;
 				m_isChaseActive = CheckForActiveTanks();
 
-				// Cambio de estado
 				if (wasChaseActive != m_isChaseActive)
 				{
 					if (m_isChaseActive)
 					{
 						StartChaseMusicImmediately();
-						PlayAlertSound();
 
-						if (!m_alertShown)
+						// Solo mostrar alertas si la música está habilitada
+						if (ChaseMusicConfig.TankMusicEnabled)
 						{
-							ShowAlertMessage();
-							m_alertShown = true;
+							PlayAlertSound();
+							if (!m_alertShown)
+							{
+								ShowAlertMessage();
+								m_alertShown = true;
+							}
 						}
 					}
 					else
@@ -104,8 +114,7 @@ namespace Game
 				}
 			}
 
-			// Verificación de seguridad
-			if (m_isChaseActive && !m_musicPlaying)
+			if (m_isChaseActive && !m_musicPlaying && ChaseMusicConfig.TankMusicEnabled)
 			{
 				StartChaseMusicImmediately();
 			}
@@ -130,7 +139,8 @@ namespace Game
 				{
 					string entityName = entity.ValuesDictionary.DatabaseObject.Name;
 
-					if (entityName != "Tank1" && entityName != "Tank2" && entityName != "Tank3")
+					if (entityName != "Tank1" && entityName != "Tank2" && entityName != "Tank3" &&
+						entityName != "TankGhost1" && entityName != "TankGhost2" && entityName != "TankGhost3")
 						continue;
 
 					ComponentHealth health = entity.FindComponent<ComponentHealth>();
@@ -190,13 +200,19 @@ namespace Game
 
 		#endregion
 
-		#region Music Control - SIN FADE
+		#region Music Control
 
 		private void StartChaseMusicImmediately()
 		{
+			// NUEVO: Verificar si la música está habilitada
+			if (!ChaseMusicConfig.TankMusicEnabled)
+			{
+				Log.Debug("[TankMusic] Música desactivada por configuración");
+				return;
+			}
+
 			try
 			{
-				// Detener cualquier música previa SIN FADE
 				if (MusicManager.m_sound != null)
 				{
 					MusicManager.m_sound.Stop();
@@ -204,40 +220,35 @@ namespace Game
 					MusicManager.m_sound = null;
 				}
 
-				// Limpiar fade sound si existe
 				if (MusicManager.m_fadeSound != null)
 				{
 					MusicManager.m_fadeSound.Dispose();
 					MusicManager.m_fadeSound = null;
 				}
 
-				// Obtener y reproducir música SIN FADE
 				var streamingSource = ContentManager.Get<StreamingSource>(MUSIC_PATH);
 				if (streamingSource == null)
 				{
-					Log.Warning($"Music not found: {MUSIC_PATH}");
+					Log.Warning($"[TankMusic] Música no encontrada: {MUSIC_PATH}");
 					return;
 				}
 
 				var duplicateSource = streamingSource.Duplicate();
-
-				// Crear sonido con volumen COMPLETO desde el inicio (1f)
 				var sound = new StreamingSound(duplicateSource, 1f, 1f, 0f, false, true, 1f);
 
-				// Asignar directamente al MusicManager
 				MusicManager.m_sound = sound;
-				MusicManager.m_currentMix = MusicManager.Mix.Other; // Evitar que el MusicManager interfiera
-				MusicManager.m_fadeStartTime = 0.0; // Desactivar fade
+				MusicManager.m_currentMix = MusicManager.Mix.Other;
+				MusicManager.m_fadeStartTime = 0.0;
 
 				sound.Play();
 				m_musicPlaying = true;
 				m_timeSinceMusicStarted = 0f;
 
-				Log.Debug($"Tank chase music started IMMEDIATELY (no fade)");
+				Log.Debug("[TankMusic] Música de persecución iniciada");
 			}
 			catch (System.Exception ex)
 			{
-				Log.Error($"Error starting tank chase music: {ex.Message}");
+				Log.Error($"[TankMusic] Error al iniciar música: {ex.Message}");
 				m_musicPlaying = false;
 			}
 		}
@@ -247,18 +258,21 @@ namespace Game
 			if (!m_isChaseActive || !m_musicPlaying)
 				return;
 
+			// Verificar configuración antes de reiniciar
+			if (!ChaseMusicConfig.TankMusicEnabled)
+			{
+				StopChaseMusicImmediately();
+				return;
+			}
+
 			try
 			{
-				Log.Debug($"Restarting tank music at {m_timeSinceMusicStarted:F2}s");
-
-				// Usar el mismo método para reinicio - SIN FADE
+				Log.Debug($"[TankMusic] Reiniciando música a los {m_timeSinceMusicStarted:F2}s");
 				StartChaseMusicImmediately();
-
-				Log.Debug($"Tank chase music restarted IMMEDIATELY");
 			}
 			catch (System.Exception ex)
 			{
-				Log.Error($"Error restarting tank chase music: {ex.Message}");
+				Log.Error($"[TankMusic] Error al reiniciar música: {ex.Message}");
 				m_musicPlaying = false;
 			}
 		}
@@ -269,7 +283,6 @@ namespace Game
 			{
 				try
 				{
-					// Detener inmediatamente SIN FADE
 					if (MusicManager.m_sound != null)
 					{
 						MusicManager.m_sound.Stop();
@@ -277,7 +290,6 @@ namespace Game
 						MusicManager.m_sound = null;
 					}
 
-					// Limpiar fade sound
 					if (MusicManager.m_fadeSound != null)
 					{
 						MusicManager.m_fadeSound.Dispose();
@@ -286,13 +298,12 @@ namespace Game
 
 					m_musicPlaying = false;
 					m_timeSinceMusicStarted = 0f;
-					m_alertShown = false;
 
-					Log.Debug("Tank chase music stopped IMMEDIATELY (no fade)");
+					Log.Debug("[TankMusic] Música de persecución detenida");
 				}
 				catch (System.Exception ex)
 				{
-					Log.Error($"Error stopping tank chase music: {ex.Message}");
+					Log.Error($"[TankMusic] Error al detener música: {ex.Message}");
 				}
 			}
 		}
@@ -303,7 +314,7 @@ namespace Game
 
 		private void PlayAlertSound()
 		{
-			if (m_subsystemAudio == null) return;
+			if (m_subsystemAudio == null || !ChaseMusicConfig.TankMusicEnabled) return;
 
 			try
 			{
@@ -317,7 +328,7 @@ namespace Game
 
 		private void ShowAlertMessage()
 		{
-			if (m_subsystemPlayers == null) return;
+			if (m_subsystemPlayers == null || !ChaseMusicConfig.TankMusicEnabled) return;
 
 			var componentPlayers = m_subsystemPlayers.ComponentPlayers;
 			if (componentPlayers.Count == 0) return;
@@ -329,7 +340,7 @@ namespace Game
 
 			if (!translationFound)
 			{
-				message = "ALERT!\n A Tank has appeared!\n Take refuge, find good weapons to kill it or use the zombie collar to calm its rage and turn it into an ally!";
+				message = "⚠️ ALERTA!\n¡Ha aparecido un Tanque!\nRefúgiate, busca buenas armas o usa el collar zombie para calmarlo y convertirlo en aliado!";
 			}
 
 			foreach (ComponentPlayer componentPlayer in componentPlayers)
@@ -347,11 +358,14 @@ namespace Game
 
 		public void ForcePlayChaseMusic()
 		{
-			m_isChaseActive = true;
-			m_alertShown = false;
-			StartChaseMusicImmediately();
-			PlayAlertSound();
-			ShowAlertMessage();
+			if (ChaseMusicConfig.TankMusicEnabled)
+			{
+				m_isChaseActive = true;
+				m_alertShown = false;
+				StartChaseMusicImmediately();
+				PlayAlertSound();
+				ShowAlertMessage();
+			}
 		}
 
 		public void ForceStopChaseMusic()
