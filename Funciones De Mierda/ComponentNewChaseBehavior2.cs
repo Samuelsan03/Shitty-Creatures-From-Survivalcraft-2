@@ -1091,12 +1091,12 @@ namespace Game
 											BoundingBox ourBox = this.m_componentCreature.ComponentBody.BoundingBox;
 											BoundingBox targetBox = this.m_target.ComponentBody.BoundingBox;
 											Vector3 ourCenter = 0.5f * (ourBox.Min + ourBox.Max);
-											Vector3 targetCenter = 0.5f * (targetBox.Min + targetBox.Max) - ourCenter;
-											float distance = Vector3.Distance(ourCenter, targetCenter);
+											Vector3 targetWorldCenter = 0.5f * (targetBox.Min + targetBox.Max);  // ✅ ABSOLUTO
+											float distance = Vector3.Distance(ourCenter, targetWorldCenter);
 											float prediction = (distance < 4f) ? 0.2f : 0f;
 
 											this.m_componentPathfinding.SetDestination(
-												new Vector3?(targetCenter + prediction * distance * this.m_target.ComponentBody.Velocity),
+												new Vector3?(targetWorldCenter + prediction * distance * this.m_target.ComponentBody.Velocity),
 												1f, 1.5f, maxPathfindingPositions, true, false, true, this.m_target.ComponentBody);
 
 											bool playAngrySound = this.PlayAngrySoundWhenChasing && this.m_random.Float(0f, 1f) < 0.33f * this.m_dt;
