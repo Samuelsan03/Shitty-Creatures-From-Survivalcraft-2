@@ -1,4 +1,10 @@
 {
+  "ShittyCreatures": {
+    "ScreenTitle": "Shitty Creatures Settings",
+    "SettingsButton": "Shitty Creatures Settings",
+    "GhostDescription": "Enable/disable music when ghosts chase you",
+    "TankDescription": "Enable/disable music when tanks chase you"
+  },
   "ChaseMusic": {
     "GhostButton": "Chase Music\n - Ghosts: {0}",
     "TankButton": "Chase Music\n - Tanks: {0}"
