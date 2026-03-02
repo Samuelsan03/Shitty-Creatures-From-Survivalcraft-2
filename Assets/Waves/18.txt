@@ -28,3 +28,5 @@ InfectedHyena;35
 InfectedWildboar;18
 InfectedBear;25
 PredatoryChameleon;32
+InfectedWolf;35
+InfectedWerewolf;16

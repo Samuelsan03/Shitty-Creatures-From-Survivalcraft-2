@@ -23,3 +23,5 @@ Charger2;6
 InfectedHyena;30
 InfectedWildboar;12
 PredatoryChameleon;12
+InfectedWolf;15
+InfectedWerewolf;6

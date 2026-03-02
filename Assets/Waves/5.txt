@@ -12,3 +12,4 @@ InfectedFly1;6
 InfectedFly2;8
 Boomer1;10
 InfectedHyena;20
+InfectedWolf;5

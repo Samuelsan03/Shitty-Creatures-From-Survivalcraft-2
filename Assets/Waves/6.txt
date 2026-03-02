@@ -14,3 +14,5 @@ Boomer1;10
 Boomer2;10
 InfectedHyena;22
 PredatoryChameleon;5
+InfectedWolf;7
+InfectedWerewolf;2

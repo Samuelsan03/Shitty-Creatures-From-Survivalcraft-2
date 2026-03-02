@@ -18,3 +18,5 @@ Boomer3;10
 Charger1;6
 InfectedHyena;28
 PredatoryChameleon;8
+InfectedWolf;10
+InfectedWerewolf;4
