@@ -160,7 +160,7 @@ namespace Game
 			string message = string.Format(LanguageControl.Get("ZombiesSpawn", "WaveMessage"), m_currentWave);
 			foreach (var player in m_subsystemPlayers.ComponentPlayers)
 			{
-				player.ComponentGui.DisplaySmallMessage(message, new Color(255, 255, 0), false, true);
+				player.ComponentGui.DisplayLargeMessage(message, "", 3f, 0f);
 			}
 		}
 
