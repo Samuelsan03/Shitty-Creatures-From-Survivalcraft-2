@@ -1,4 +1,18 @@
 {
+  "ShittyCreaturesAbout": {
+    "AboutButton": "Acerca del Mod",
+    "Title": "Acerca de Shitty Creatures MOD:",
+    "Description": "Este mod nació originalmente en octubre de 2025 cuando el creador probó su mod para explorar el mundo del modding. No fue hasta el 3 de noviembre que lo retomó, dando origen a lo que conocemos hoy.\n\nEste mod, más que ser una mierda y humor, te permite joder con criaturas en tu camino, pelear con ellos o buscar aliados. Oh espera, los infectados serán tus peores enemigos, así que puedes domesticarlos para tenerlos como guardias en medio de un mundo caótico y extraño. Personajes basados en la imaginación del creador así como en populares, especialmente de animes, series y otros. Siéntete libre de jugarlo y robar mis códigos y texturas si quieres aprender como yo.",
+    "CreatorTitle": "Creador del mod:",
+    "CreatorName": "Samuelsan03 (programador, diseñador de texturas y más)",
+    "SocialTitle": "Redes sociales:",
+    "YoutubeLabel": "YouTube: ",
+    "TwitterLabel": "Twitter: ",
+    "DiscordLabel": "Discord: ",
+    "BiliBiliLabel": "BiliBili: ",
+    "ModPageLabel": "Página del mod: ",
+    "FinalMessage": "Si tienes problemas, bugs o sugerencias, no dudes en contactar al autor en su Discord."
+  },
   "ShittyCreaturesLog": {
     "Title": "Registro de Shitty Creatures",
     "Version1_0_5": "1.0.5",
