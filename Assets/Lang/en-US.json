@@ -1,4 +1,18 @@
 {
+  "ShittyCreaturesAbout": {
+    "AboutButton": "About The Mod",
+    "Title": "About Shitty Creatures MOD:",
+    "Description": "This mod was originally born in October 2025 when the creator tested his mod to explore the world of modding. It wasn't until November 3rd that he resumed it, giving birth to what we know today.\n\nThis mod, more than being shitty and humorous, lets you mess with creatures on your path, fight them or seek allies. Oh wait, the infected will be your worst enemies, so you can tame them to have them as guards in the middle of a strange chaotic world. Characters based on the creator's imagination as well as popular ones, especially from anime, series and others. Feel free to play it and steal my codes and textures if you want to learn like I did.",
+    "CreatorTitle": "Mod Creator:",
+    "CreatorName": "Samuelsan03 (programmer, texture designer and more)",
+    "SocialTitle": "Social Media:",
+    "YoutubeLabel": "YouTube: ",
+    "TwitterLabel": "Twitter: ",
+    "DiscordLabel": "Discord: ",
+    "BiliBiliLabel": "BiliBili: ",
+    "ModPageLabel": "Mod page: ",
+    "FinalMessage": "If you have problems, bugs or suggestions, feel free to contact the author on his Discord."
+  },
   "ShittyCreaturesLog": {
     "Title": "Shitty Creatures Log",
     "Version1_0_5": "1.0.5",
