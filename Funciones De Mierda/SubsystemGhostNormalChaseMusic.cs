@@ -12,7 +12,7 @@ namespace Game
 		#region Constants
 
 		private const string MUSIC_PATH = "MenuMusic/ChaseTheme/Hotel Insanity Chase Theme";
-		private const float MUSIC_DURATION = 32.0f; // 00:32 segundos exactos
+		private const float MUSIC_DURATION = 32.0f;
 		private const float CHECK_INTERVAL = 0.1f;
 		private const float DETECTION_RADIUS = 20f;
 
@@ -24,6 +24,7 @@ namespace Game
 		private float m_timeSinceLastCheck = 0f;
 		private float m_timeSinceMusicStarted = 0f;
 		private bool m_musicPlaying = false;
+		private bool m_wasMusicEnabled = true;
 
 		private SubsystemTime m_subsystemTime;
 		private SubsystemPlayers m_subsystemPlayers;
@@ -33,9 +34,7 @@ namespace Game
 		#region Properties
 
 		public UpdateOrder UpdateOrder => UpdateOrder.Default;
-
 		public bool IsChaseActive => m_isChaseActive;
-
 		public bool IsMusicPlaying => m_musicPlaying;
 
 		#endregion
@@ -47,6 +46,7 @@ namespace Game
 			base.Load(valuesDictionary);
 			m_subsystemTime = Project.FindSubsystem<SubsystemTime>(true);
 			m_subsystemPlayers = Project.FindSubsystem<SubsystemPlayers>(true);
+			m_wasMusicEnabled = ChaseMusicConfig.GhostMusicEnabled;
 		}
 
 		#endregion
@@ -55,18 +55,24 @@ namespace Game
 
 		public void Update(float dt)
 		{
+			// Verificar si la configuración cambió mientras la música sonaba
+			if (m_wasMusicEnabled != ChaseMusicConfig.GhostMusicEnabled)
+			{
+				m_wasMusicEnabled = ChaseMusicConfig.GhostMusicEnabled;
+				if (!ChaseMusicConfig.GhostMusicEnabled && m_musicPlaying)
+				{
+					StopChaseMusicImmediately();
+				}
+			}
+
 			m_timeSinceLastCheck += dt;
 
-			// Si la música está sonando, actualizar el timer
 			if (m_musicPlaying)
 			{
 				m_timeSinceMusicStarted += dt;
 
-				// Verificar si la música está por terminar (98% de la duración)
-				// Para música de 32s, verificar a los 31.36s (98%)
 				if (m_timeSinceMusicStarted >= MUSIC_DURATION * 0.98f)
 				{
-					// Reiniciar la música desde el principio SIN FADE
 					RestartMusicImmediately();
 				}
 			}
@@ -78,7 +84,6 @@ namespace Game
 				bool wasChaseActive = m_isChaseActive;
 				m_isChaseActive = CheckForActiveGhosts();
 
-				// Cambio de estado
 				if (wasChaseActive != m_isChaseActive)
 				{
 					if (m_isChaseActive)
@@ -92,8 +97,7 @@ namespace Game
 				}
 			}
 
-			// Verificación de seguridad
-			if (m_isChaseActive && !m_musicPlaying)
+			if (m_isChaseActive && !m_musicPlaying && ChaseMusicConfig.GhostMusicEnabled)
 			{
 				StartChaseMusicImmediately();
 			}
@@ -118,7 +122,9 @@ namespace Game
 				{
 					string entityName = entity.ValuesDictionary.DatabaseObject.Name;
 
-					if (entityName != "GhostNormal" && entityName != "GhostFast" && entityName !="PoisonousGhost" && entityName != "GhostCharger" && entityName != "GhostBoomer1" && entityName != "GhostBoomer2" && entityName != "GhostBoomer2" && entityName != "GhostBoomer3")
+					if (entityName != "GhostNormal" && entityName != "GhostFast" && entityName != "PoisonousGhost" &&
+						entityName != "GhostCharger" && entityName != "GhostBoomer1" && entityName != "GhostBoomer2" &&
+						entityName != "GhostBoomer3")
 						continue;
 
 					ComponentHealth health = entity.FindComponent<ComponentHealth>();
@@ -178,13 +184,19 @@ namespace Game
 
 		#endregion
 
-		#region Music Control - SIN FADE
+		#region Music Control
 
 		private void StartChaseMusicImmediately()
 		{
+			// NUEVO: Verificar si la música está habilitada
+			if (!ChaseMusicConfig.GhostMusicEnabled)
+			{
+				Log.Debug("[GhostMusic] Música desactivada por configuración");
+				return;
+			}
+
 			try
 			{
-				// Detener cualquier música previa SIN FADE
 				if (MusicManager.m_sound != null)
 				{
 					MusicManager.m_sound.Stop();
@@ -192,40 +204,35 @@ namespace Game
 					MusicManager.m_sound = null;
 				}
 
-				// Limpiar fade sound si existe
 				if (MusicManager.m_fadeSound != null)
 				{
 					MusicManager.m_fadeSound.Dispose();
 					MusicManager.m_fadeSound = null;
 				}
 
-				// Obtener y reproducir música SIN FADE
 				var streamingSource = ContentManager.Get<StreamingSource>(MUSIC_PATH);
 				if (streamingSource == null)
 				{
-					Log.Warning($"Music not found: {MUSIC_PATH}");
+					Log.Warning($"[GhostMusic] Música no encontrada: {MUSIC_PATH}");
 					return;
 				}
 
 				var duplicateSource = streamingSource.Duplicate();
-
-				// Crear sonido con volumen COMPLETO desde el inicio (1f)
 				var sound = new StreamingSound(duplicateSource, 1f, 1f, 0f, false, true, 1f);
 
-				// Asignar directamente al MusicManager
 				MusicManager.m_sound = sound;
-				MusicManager.m_currentMix = MusicManager.Mix.Other; // Evitar que el MusicManager interfiera
-				MusicManager.m_fadeStartTime = 0.0; // Desactivar fade
+				MusicManager.m_currentMix = MusicManager.Mix.Other;
+				MusicManager.m_fadeStartTime = 0.0;
 
 				sound.Play();
 				m_musicPlaying = true;
 				m_timeSinceMusicStarted = 0f;
 
-				Log.Debug($"Ghost chase music started IMMEDIATELY (no fade)");
+				Log.Debug("[GhostMusic] Música de persecución iniciada");
 			}
 			catch (System.Exception ex)
 			{
-				Log.Error($"Error starting ghost chase music: {ex.Message}");
+				Log.Error($"[GhostMusic] Error al iniciar música: {ex.Message}");
 				m_musicPlaying = false;
 			}
 		}
@@ -235,18 +242,21 @@ namespace Game
 			if (!m_isChaseActive || !m_musicPlaying)
 				return;
 
+			// Verificar configuración antes de reiniciar
+			if (!ChaseMusicConfig.GhostMusicEnabled)
+			{
+				StopChaseMusicImmediately();
+				return;
+			}
+
 			try
 			{
-				Log.Debug($"Restarting ghost music at {m_timeSinceMusicStarted:F2}s");
-
-				// Usar el mismo método para reinicio - SIN FADE
+				Log.Debug($"[GhostMusic] Reiniciando música a los {m_timeSinceMusicStarted:F2}s");
 				StartChaseMusicImmediately();
-
-				Log.Debug($"Ghost chase music restarted IMMEDIATELY");
 			}
 			catch (System.Exception ex)
 			{
-				Log.Error($"Error restarting ghost chase music: {ex.Message}");
+				Log.Error($"[GhostMusic] Error al reiniciar música: {ex.Message}");
 				m_musicPlaying = false;
 			}
 		}
@@ -257,7 +267,6 @@ namespace Game
 			{
 				try
 				{
-					// Detener inmediatamente SIN FADE
 					if (MusicManager.m_sound != null)
 					{
 						MusicManager.m_sound.Stop();
@@ -265,7 +274,6 @@ namespace Game
 						MusicManager.m_sound = null;
 					}
 
-					// Limpiar fade sound
 					if (MusicManager.m_fadeSound != null)
 					{
 						MusicManager.m_fadeSound.Dispose();
@@ -275,11 +283,11 @@ namespace Game
 					m_musicPlaying = false;
 					m_timeSinceMusicStarted = 0f;
 
-					Log.Debug("Ghost chase music stopped IMMEDIATELY (no fade)");
+					Log.Debug("[GhostMusic] Música de persecución detenida");
 				}
 				catch (System.Exception ex)
 				{
-					Log.Error($"Error stopping ghost chase music: {ex.Message}");
+					Log.Error($"[GhostMusic] Error al detener música: {ex.Message}");
 				}
 			}
 		}
@@ -290,8 +298,11 @@ namespace Game
 
 		public void ForcePlayChaseMusic()
 		{
-			m_isChaseActive = true;
-			StartChaseMusicImmediately();
+			if (ChaseMusicConfig.GhostMusicEnabled)
+			{
+				m_isChaseActive = true;
+				StartChaseMusicImmediately();
+			}
 		}
 
 		public void ForceStopChaseMusic()
