@@ -157,7 +157,12 @@ namespace Game
 
 		private void SendWaveMessage()
 		{
-			string message = string.Format(LanguageControl.Get("ZombiesSpawn", "WaveMessage"), m_currentWave);
+			string message;
+			if (m_currentWave == 19)
+				message = LanguageControl.Get("ZombiesSpawn", "FinalWave");
+			else
+				message = string.Format(LanguageControl.Get("ZombiesSpawn", "WaveMessage"), m_currentWave);
+
 			foreach (var player in m_subsystemPlayers.ComponentPlayers)
 			{
 				player.ComponentGui.DisplayLargeMessage(message, "", 3f, 0f);
@@ -176,10 +181,7 @@ namespace Game
 			{
 				m_currentWave = nextWave;
 				SetCurrentWave(m_currentWave);
-				if (m_currentWave == 19)
-				{
-					SendMessageToAllPlayers("ZombiesSpawn", "FinalWave", new Color(255, 0, 0));
-				}
+				// El mensaje de oleada final ahora se envía en SendWaveMessage, al comenzar la noche
 			}
 		}
 
