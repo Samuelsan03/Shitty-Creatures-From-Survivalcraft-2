@@ -1,4 +1,8 @@
 {
+  "ChaseMusic": {
+    "GhostButton": "Chase Music\n - Ghosts: {0}",
+    "TankButton": "Chase Music\n - Tanks: {0}"
+  },
   "AntidoteBucket": {
     "NPCCured": "The NPC has been cured of poison and sickness!",
     "PoisonAndSicknessCured": "Nausea and sickness have been cured!"
@@ -16,6 +20,7 @@
     "CancelButton": "Cancel"
   },
   "ZombiesSpawn": {
+  "WaveMessage": "You are in wave {0}!",
   "FinalWave": "Final Wave has begun!",
   "BossesAppear": "The bosses are coming...",
   "BossTank": "A Tank has appeared!",
