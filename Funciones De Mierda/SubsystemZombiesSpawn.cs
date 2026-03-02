@@ -121,7 +121,8 @@ namespace Game
 				return;
 
 			float timeOfDay = m_subsystemTimeOfDay.TimeOfDay;
-			bool isMidnight = Math.Abs(timeOfDay - 0.75f) < 0.01f;
+			float midnight = (m_subsystemTimeOfDay.Middusk + m_subsystemTimeOfDay.Middawn) / 2f;
+			bool isMidnight = Math.Abs(timeOfDay - midnight) < 0.01f;
 
 			if (!m_hasSpawnedBossThisNight && isMidnight && !m_bossBattleActive)
 			{
@@ -365,7 +366,8 @@ namespace Game
 			if (entry == null)
 				return;
 
-			if (BossTemplates.Contains(entry.TemplateName) && m_bossBattleActive)
+			// Los jefes solo deben aparecer mediante el sistema de batalla de jefes, no en spawn normal
+			if (BossTemplates.Contains(entry.TemplateName))
 				return;
 
 			Vector3 spawnPos;
