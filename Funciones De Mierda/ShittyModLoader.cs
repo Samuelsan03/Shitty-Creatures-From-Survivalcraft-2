@@ -3,7 +3,7 @@ using Engine;
 using Engine.Graphics;
 using Game;
 
-namespace ShittyMod
+namespace Game
 {
 	public class ShittyModLoader : ModLoader
 	{
