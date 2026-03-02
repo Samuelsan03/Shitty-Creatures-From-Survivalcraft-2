@@ -1,4 +1,18 @@
 {
+  "ShittyCreaturesAbout": {
+    "AboutButton": "关于模组",
+    "Title": "关于 Shitty Creatures MOD：",
+    "Description": "这个模组最初诞生于2025年10月，当时创作者测试他的模组以探索模组世界。直到11月3日他才重新开始，创造出了我们今天所知道的模组。\n\n这个模组，除了垃圾和幽默之外，还让你可以在路上与生物混战，与他们战斗或寻找盟友。哦等等，感染者将是你最坏的敌人，所以你可以驯服他们，让他们在一个奇怪的混乱世界中充当守卫。角色基于创作者的想象力以及流行角色，尤其是动漫、系列和其他作品。随意玩它并窃取我的代码和纹理，如果你想像我一样学习。",
+    "CreatorTitle": "模组创作者：",
+    "CreatorName": "Samuelsan03（程序员、纹理设计师等）",
+    "SocialTitle": "社交媒体：",
+    "YoutubeLabel": "YouTube：",
+    "TwitterLabel": "Twitter：",
+    "DiscordLabel": "Discord：",
+    "BiliBiliLabel": "哔哩哔哩：",
+    "ModPageLabel": "模组页面：",
+    "FinalMessage": "如果你有问题、错误或建议，请随时在 Discord 上联系作者。"
+  },
   "ShittyCreaturesLog": {
     "Title": "Shitty Creatures 更新日志",
     "Version1_0_5": "1.0.5",
