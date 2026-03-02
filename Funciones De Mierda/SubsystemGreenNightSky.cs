@@ -17,14 +17,11 @@ namespace Game
 				if (m_greenNightEnabled != value)
 				{
 					m_greenNightEnabled = value;
-					if (m_greenNightEnabled)
+					if (!m_greenNightEnabled)
 					{
-						IsGreenNightActive = true;
+						IsGreenNightActive = false;   // Al desactivar, apagar inmediatamente
 					}
-					else
-					{
-						IsGreenNightActive = false;
-					}
+					// Al activar, NO forzar IsGreenNightActive = true; el Update lo manejará
 				}
 			}
 		}
