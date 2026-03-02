@@ -93,17 +93,14 @@ namespace Game
 				{
 					if (m_isChaseActive)
 					{
-						StartChaseMusicImmediately();
+						StartChaseMusicImmediately();  // Internamente respeta TankMusicEnabled
 
-						// Solo mostrar alertas si la música está habilitada
-						if (ChaseMusicConfig.TankMusicEnabled)
+						// Alertas SIEMPRE se muestran, independientemente de la música
+						PlayAlertSound();
+						if (!m_alertShown)
 						{
-							PlayAlertSound();
-							if (!m_alertShown)
-							{
-								ShowAlertMessage();
-								m_alertShown = true;
-							}
+							ShowAlertMessage();
+							m_alertShown = true;
 						}
 					}
 					else
@@ -139,38 +136,36 @@ namespace Game
 				{
 					string entityName = entity.ValuesDictionary.DatabaseObject.Name;
 
+					// Verificar si es un tanque (vivo o fantasma)
 					if (entityName != "Tank1" && entityName != "Tank2" && entityName != "Tank3" &&
 						entityName != "TankGhost1" && entityName != "TankGhost2" && entityName != "TankGhost3")
 						continue;
 
+					// Verificar si está vivo
 					ComponentHealth health = entity.FindComponent<ComponentHealth>();
 					if (health != null && health.Health <= 0f)
 						continue;
 
-					ComponentZombieChaseBehavior chaseBehavior = entity.FindComponent<ComponentZombieChaseBehavior>();
-					if (chaseBehavior != null && chaseBehavior.IsActive)
-					{
-						return true;
-					}
-
+					// Obtener su cuerpo para verificar distancia
 					ComponentBody tankBody = entity.FindComponent<ComponentBody>();
-					if (tankBody != null)
+					if (tankBody == null)
+						continue;
+
+					// Verificar distancia con cada jugador activo
+					foreach (ComponentPlayer player in activePlayers)
 					{
-						foreach (ComponentPlayer player in activePlayers)
+						ComponentBody playerBody = player.Entity.FindComponent<ComponentBody>();
+						if (playerBody != null)
 						{
-							ComponentBody playerBody = player.Entity.FindComponent<ComponentBody>();
-							if (playerBody != null)
+							float distance = Vector3.Distance(tankBody.Position, playerBody.Position);
+							if (distance < DETECTION_RADIUS)
 							{
-								float distance = (tankBody.Position - playerBody.Position).Length();
-								if (distance < DETECTION_RADIUS)
-								{
-									return true;
-								}
+								return true; // Tanque cerca detectado
 							}
 						}
 					}
 				}
-				catch (System.Exception)
+				catch (Exception)
 				{
 					// Ignorar errores
 				}
@@ -314,7 +309,7 @@ namespace Game
 
 		private void PlayAlertSound()
 		{
-			if (m_subsystemAudio == null || !ChaseMusicConfig.TankMusicEnabled) return;
+			if (m_subsystemAudio == null) return;  // Solo verificamos que el subsistema exista
 
 			try
 			{
@@ -328,7 +323,7 @@ namespace Game
 
 		private void ShowAlertMessage()
 		{
-			if (m_subsystemPlayers == null || !ChaseMusicConfig.TankMusicEnabled) return;
+			if (m_subsystemPlayers == null) return;  // Solo verificamos que exista el subsistema
 
 			var componentPlayers = m_subsystemPlayers.ComponentPlayers;
 			if (componentPlayers.Count == 0) return;
@@ -340,7 +335,7 @@ namespace Game
 
 			if (!translationFound)
 			{
-				message = "⚠️ ALERTA!\n¡Ha aparecido un Tanque!\nRefúgiate, busca buenas armas o usa el collar zombie para calmarlo y convertirlo en aliado!";
+				message = "ALERT!\n A Tank has appeared!\n Take refuge, find good weapons to kill it or use the zombie collar to calm its rage and turn it into an ally!";
 			}
 
 			foreach (ComponentPlayer componentPlayer in componentPlayers)
