@@ -110,6 +110,14 @@ namespace Game
 			m_stateMachine.TransitionTo("Inactive");
 		}
 
+		public void CalibrateCameraFlightControl()
+		{
+			// Esto podría llamarse desde un menú de opciones
+			// Mientras más pequeño el divisor, más sensible
+			// Valores típicos: 30-45 para control suave, 20-30 para control rápido
+			float cameraSensitivity = 35f; // Ajustable en runtime
+		}
+
 		public virtual ComponentRider FindNearbyRider(float range)
 		{
 			m_bodies.Clear();
@@ -188,6 +196,32 @@ namespace Game
 					verticalInput = rider.ComponentInput.PlayerInput.Move.Y;
 				}
 			}
+
+			// ===== NUEVO: Detección de plataforma móvil y control por inclinación de cabeza =====
+#if ANDROID || IOS
+float cameraPitchInput = 0f;
+if (canFly && m_componentNewMount?.Rider != null)
+{
+    ComponentPlayer rider = m_componentNewMount.Rider.Entity.FindComponent<ComponentPlayer>();
+    if (rider?.ComponentInput != null)
+    {
+        // Usar Look.Y que representa la inclinación vertical de la cámara (cabeza)
+        // En móvil, esto se controla deslizando verticalmente o con giroscopio
+        float rawPitch = rider.ComponentInput.PlayerInput.Look.Y;
+        
+        // Mapear el pitch a control vertical (-45° a +45° = -1 a 1)
+        cameraPitchInput = Math.Clamp(rawPitch / 45f, -1f, 1f);
+        
+        // Zona muerta para evitar deriva
+        if (Math.Abs(cameraPitchInput) < 0.15f)
+            cameraPitchInput = 0f;
+        
+        // En móvil, el control por inclinación REEMPLAZA al de teclado
+        // para que funcione como en modo creativo (mirar arriba = subir, mirar abajo = bajar)
+        verticalInput = cameraPitchInput;
+    }
+}
+#endif
 
 			if (canFly && immersionDepth < 0.3f)
 			{
