@@ -158,12 +158,12 @@ namespace Game
 		private void SendWaveMessage()
 		{
 			string message;
-			int maxWave = m_waves.Keys.Max();  // Obtener la última oleada (28)
+			int maxWave = m_waves.Keys.Max();  // Obtiene la última oleada (28)
 
 			if (m_currentWave == maxWave)
-				message = LanguageControl.Get("ZombiesSpawn", "FinalWave");
+				message = LanguageControl.Get("ZombiesSpawn", "FinalWave");  // "¡OLEADA FINAL!"
 			else
-				message = string.Format(LanguageControl.Get("ZombiesSpawn", "WaveMessage"), m_currentWave);
+				message = string.Format(LanguageControl.Get("ZombiesSpawn", "WaveMessage"), m_currentWave);  // "Oleada X"
 
 			foreach (var player in m_subsystemPlayers.ComponentPlayers)
 			{
@@ -386,7 +386,7 @@ namespace Game
 				m_bossQueue.Enqueue(boss);
 
 			m_bossBattleActive = true;
-			SendMessageToAllPlayers("ZombiesSpawn", "BossesAppear", new Color(255, 0, 0));
+			// ELIMINADO: SendMessageToAllPlayers("ZombiesSpawn", "BossesAppear", new Color(255, 0, 0));
 			SpawnNextBoss();
 		}
 
