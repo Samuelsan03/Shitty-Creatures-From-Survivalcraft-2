@@ -9732,6 +9732,21 @@
           </EntityTemplate>
 
           <EntityTemplate Name="InfectedBearTamed" Guid="d52a910f-4a71-47d7-882b-e5702d97ebaa" InheritanceParent="437e6af3-ea9f-4f3c-8b96-d81de6223831">
+<MemberComponentTemplate Name="NewMount" Guid="ddebe577-c384-4e28-8dd6-34c258d3b02f" InheritanceParent="ba0e138c-fe06-4b83-a405-503e03843493">
+        <Parameter Name="DismountOffset" Guid="9c795654-9c42-43f8-ac57-a1b9798415be" Value="1.5,0.3,0" Type="Vector3"/>
+        <Parameter Name="MountOffset" Guid="3f706b44-5d23-4063-90ce-a971b56fb169" Value="0.0, 1.75, 0.0" Type="Vector3"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="NewSteedBehavior" Guid="91bb6ae1-5a02-40b8-b4bc-3b5d9cd1130c" InheritanceParent="03268b67-f4e7-49dd-99f4-2b0301e3b2c1">
+        <Parameter Name="IsEnabled" Guid="c2a591e7-e13a-42f4-9959-44eacc4e1fa3" Value="True" Type="bool"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="NewDumpRiderBehavior" Guid="5a35cf82-b8aa-4e84-aa8a-95e3a3179206" InheritanceParent="deb33f45-0de2-4ceb-8e1e-f2bcf0fb177e">
+        <Parameter Name="IsEnabled" Guid="690016a5-c321-48b7-8df0-0b6e8dbf2d92" Value="False" Type="bool"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="NewStubbornSteedBehavior" Guid="23fd21c5-e755-41e2-ba42-b392a1bba94b" InheritanceParent="e131e1ac-1866-41b4-9795-2f8bd5f87112">
+        <Parameter Name="IsEnabled" Guid="0b3ef814-40b3-4730-86f5-d62bba37a630" Value="True" Type="bool"/>
+        <Parameter Name="StubbornProbability" Guid="df6bf110-5ef3-4ff6-88ad-f9d959a58757" Value="0.3" Type="float"/>
+        <Parameter Name="StubbornEndTime" Guid="a198c658-7b37-4983-9ec0-2e38b0133ed3" Value="0" Type="double"/>
+    </MemberComponentTemplate>
           <MemberComponentTemplate Name="RunAwayBehavior" Guid="a54c0ea8-ba4d-4760-97bb-58158d43faf1" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
 <MemberComponentTemplate Name="NewRunAwayBehavior" Guid="df78fa3e-9a0d-496b-b14a-1ebd5736ce94" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
           <MemberComponentTemplate Name="AutoJump" Guid="c89499c4-adad-461c-9e85-b1bd011ae535">
