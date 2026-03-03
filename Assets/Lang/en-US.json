@@ -79,7 +79,6 @@
   "ZombiesSpawn": {
   "WaveMessage": "You are in wave {0}!",
   "FinalWave": "Final Wave has begun!",
-  "BossesAppear": "The bosses are coming...",
   "BossTank": "A Tank has appeared!",
   "BossGhostTank": "A Ghost Tank has appeared!",
   "BossMachineGun": "Machine Gun Infected has appeared!",
