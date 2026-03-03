@@ -23,9 +23,9 @@ namespace Game
 				LabelWidget modVersionLabel = new LabelWidget
 				{
 					Name = "ShittyCreaturesVersion",
-					FontScale = 0.6f,
+					FontScale = 0.75f,
 					HorizontalAlignment = WidgetAlignment.Center,
-					Color = new Color(64, 192, 64),
+					Color = new Color(215, 0, 0),
 					DropShadow = true,
 					Text = "Shitty Creatures v1.0.6"
 				};
