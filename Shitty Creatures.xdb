@@ -8,6 +8,12 @@
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="37f754fc-2e6f-48cd-8e63-be0450060931"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:1.0;InfectedNormal2:0.55" Type="string" Guid="7dc0beec-7ee6-48e5-89da-4993d7e026e0"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="FluInfected" Guid="a388d368-44f3-44fd-b63c-d003d6e4c51f" InheritanceParent="e80f6273-61bc-4a4d-9197-41e5fdf24ae2">
+    <Parameter Name="FluResistance" Value="-50" Type="float"/>
+    <Parameter Name="IsJumpMove" Value="true" Type="bool"/>
+    <Parameter Name="CoughSound" Value="Audio/Creatures/FemaleCough/FemaleCough1" Type="string"/>
+    <Parameter Name="SneezeSound" Value="Audio/Creatures/FemaleSneeze/FemaleSneeze1" Type="string"/>
+</MemberComponentTemplate>
 <MemberComponentTemplate Name="RunAwayBehavior" Guid="5d1143a9-cf88-4d6e-91e7-53958c2552a1" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
 <MemberComponentTemplate Name="NewRunAwayBehavior" Guid="5ab031f0-a075-4985-9281-8d84f734aaf3" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="246b53a1-570e-4506-96c4-8f71e80ff243" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
