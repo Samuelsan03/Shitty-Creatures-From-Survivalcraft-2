@@ -79,7 +79,6 @@
   "ZombiesSpawn": {
   "WaveMessage": "¡Estás en la ola {0}!",
   "FinalWave": "¡La ola final ha comenzado!",
-  "BossesAppear": "Los jefes están llegando...",
   "BossTank": "¡Ha aparecido un Tank!",
   "BossGhostTank": "¡Ha aparecido un Tank Fantasma!",
   "BossMachineGun": "¡Ha aparecido Infectado Ametrallador!",
