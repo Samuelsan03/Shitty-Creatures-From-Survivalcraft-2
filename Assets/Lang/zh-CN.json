@@ -79,7 +79,6 @@
   "ZombiesSpawn": {
   "WaveMessage": "你在第 {0} 波！",
   "FinalWave": "最终波次开始了！",
-  "BossesAppear": "首领即将出现……",
   "BossTank": "Tank 出现了！",
   "BossGhostTank": "幽灵 Tank 出现了！",
   "BossMachineGun": "机枪感染者出现了！",
