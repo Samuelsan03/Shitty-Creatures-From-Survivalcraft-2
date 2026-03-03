@@ -7,6 +7,9 @@ namespace Game
 {
 	public class SubsystemGreenNightSky : Subsystem, IUpdateable
 	{
+		// Evento para notificar el fin natural de la noche
+		public event Action NaturalNightEnded;
+
 		public virtual bool IsGreenNightActive { get; set; }
 		private bool m_greenNightEnabled = true;
 		public virtual bool GreenNightEnabled
@@ -19,9 +22,24 @@ namespace Game
 					m_greenNightEnabled = value;
 					if (!m_greenNightEnabled)
 					{
-						IsGreenNightActive = false;   // Al desactivar, apagar inmediatamente
+						IsGreenNightActive = false;
 					}
-					// Al activar, NO forzar IsGreenNightActive = true; el Update lo manejará
+					else
+					{
+						// Al activar, si es de noche y la luna es adecuada, comenzar inmediatamente
+						if (m_subsystemTimeOfDay != null && m_subsystemSky != null)
+						{
+							float timeOfDay = m_subsystemTimeOfDay.TimeOfDay;
+							// Es de noche si la hora es posterior al anochecer (DuskStart) o anterior al amanecer (DawnStart)
+							bool isNight = timeOfDay >= m_subsystemTimeOfDay.DuskStart || timeOfDay < m_subsystemTimeOfDay.DawnStart;
+							if (isNight && (m_subsystemSky.MoonPhase == 0 || m_subsystemSky.MoonPhase == 4))
+							{
+								IsGreenNightActive = true;
+								HasRolledTonight = true;      // Evita que se intente activar de nuevo al anochecer
+								DaysSinceLastGreenNight = 0;  // Reinicia el contador de días
+							}
+						}
+					}
 				}
 			}
 		}
@@ -102,6 +120,9 @@ namespace Game
 			if (this.IsGreenNightActive && isEndMoment)
 			{
 				this.IsGreenNightActive = false;
+
+				// Disparar el evento de fin natural
+				NaturalNightEnded?.Invoke();
 
 				SubsystemPlayers subsystemPlayers = base.Project.FindSubsystem<SubsystemPlayers>(true);
 				if (subsystemPlayers != null)
