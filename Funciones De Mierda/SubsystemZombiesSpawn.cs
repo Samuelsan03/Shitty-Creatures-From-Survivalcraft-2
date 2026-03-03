@@ -47,7 +47,7 @@ namespace Game
 		private static readonly HashSet<string> BossTemplates = new HashSet<string>
 		{
 			"Tank1", "Tank2", "Tank3",
-			"GhostTank1", "GhostTank2", "GhostTank3",
+			"TankGhost1", "TankGhost2", "TankGhost3",
 			"MachineGunInfected", "FlyingInfectedBoss"
 		};
 
