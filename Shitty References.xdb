@@ -1,6 +1,20 @@
 <Mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://gitee.com/THPRC/survivalcraft-api/raw/SCAPI1.8/Survivalcraft/Content/Assets/Database.xsd">
 
     <Folder Name="Gameplay" Guid="d509e5e2-2c10-49f1-8223-85cd892c63b0">
+    <ComponentTemplate Name="FluInfected" Description="Maneja la infección de gripe en criaturas" Guid="e80f6273-61bc-4a4d-9197-41e5fdf24ae2" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
+    <Parameter Name="Class" Guid="4db588d1-5f5c-451a-b782-86ecb796499c" Value="Game.ComponentFluInfected" Type="string"/>
+    <Parameter Name="FluDuration" Description="Duración restante de la gripe, en segundos" Guid="d4a1d9f5-8997-4e4f-a355-e564edd66dac" Value="0" Type="float"/>
+    <Parameter Name="FluResistance" Description="Resistencia a la gripe (reduce la duración efectiva)" Guid="8d08c56d-f6a5-49b6-ab48-e3a03d54aca4" Value="0" Type="float"/>
+    <Parameter Name="IsJumpMove" Description="Indica si la criatura se tambalea al moverse" Guid="447e6207-c8c4-4f41-82f9-b84f414a9cd3" Value="false" Type="bool"/>
+    <Parameter Name="CoughSound" Description="Ruta del sonido de tos" Guid="d7f931fe-39c1-4104-b65a-2ddbd90c34c8" Value="Audio/Creatures/MaleCough" Type="string"/>
+    <Parameter Name="SneezeSound" Description="Ruta del sonido de estornudo" Guid="5e4ab63b-095f-44b3-87fe-834c6640ab5d" Value="Audio/Creatures/MaleSneeze" Type="string"/>
+</ComponentTemplate>
+
+<ComponentTemplate Name="FluInfectBehavior" Description="Comportamiento para contagiar la gripe a otras criaturas" Guid="15fa30cc-931d-46c3-9192-b918da672635" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
+    <Parameter Name="Class" Guid="c94e30a8-4025-40e8-a8f2-c55190bd3605" Value="Game.ComponentFluInfectBehavior" Type="string"/>
+    <Parameter Name="FluIntensity" Description="Intensidad/duración de la gripe al contagiar, en segundos" Guid="37753ad8-a68c-40d8-b973-5577d4812e82" Value="900" Type="float"/>
+    <Parameter Name="InfectProbability" Description="Probabilidad de contagiar al atacar (0-1)" Guid="f48ea7f2-fca6-4317-8b0d-a354c7533a46" Value="1" Type="float"/>
+</ComponentTemplate>
 
 <ComponentTemplate Name="NewSteedBehavior" Description="Versión mejorada de SteedBehavior SIN restricción de silla de montar. Controla el comportamiento de montura: movimientos, velocidad, giros y búsqueda de jinetes. Se habilita/deshabilita con el parámetro IsEnabled." Guid="03268b67-f4e7-49dd-99f4-2b0301e3b2c1" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
     <Parameter Name="IsEnabled" Description="Habilita o deshabilita este comportamiento. A diferencia del original, NO depende de que el nombre de la entidad termine en '_Saddled'." Guid="1363e234-f948-4e5d-b24a-8824ae6bd707" Value="True" Type="bool"/>
