@@ -1,4 +1,5 @@
 <Mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://gitee.com/THPRC/survivalcraft-api/raw/SCAPI1.8/Survivalcraft/Content/Assets/Database.xsd">
+
     <Folder Name="Gameplay" Guid="d509e5e2-2c10-49f1-8223-85cd892c63b0">
 
 <ComponentTemplate Name="NewSteedBehavior" Description="Versión mejorada de SteedBehavior SIN restricción de silla de montar. Controla el comportamiento de montura: movimientos, velocidad, giros y búsqueda de jinetes. Se habilita/deshabilita con el parámetro IsEnabled." Guid="03268b67-f4e7-49dd-99f4-2b0301e3b2c1" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
@@ -146,10 +147,10 @@
     <Parameter Name="WalkAnimationSpeed" Description="Velocidad de animación al caminar, en ciclos por metro" Guid="c4a0e696-751b-4f02-8d5a-227c46cbd031" Value="1.1" Type="float"/>
     <Parameter Name="WalkLegsAngle" Description="Ángulo de animación de piernas, en radianes" Guid="87e7375a-5bf3-4216-85c2-1fa67b7cbe98" Value="0.5" Type="float"/>
     <Parameter Name="WalkBobHeight" Description="Altura del movimiento vertical al caminar, en metros" Guid="093a1729-42a1-45a4-9be3-d96ec6d1d06a" Value="0.045" Type="float"/>
-    <Parameter Name="SmoothFactor" Description="Factor de suavizado para animaciones (0.05-0.3)" Guid="15c3479f-9dae-4522-a2fc-ce0528de50d1" Value="0.15" Type="float"/>
-    <Parameter Name="AnimationResponsiveness" Description="Respuesta de animaciones (4-20, mayor = más rápida)" Guid="d5bffad0-01b1-4e38-be5a-e2a4b7f6c85d" Value="8" Type="float"/>
-    <Parameter Name="AimSmoothFactor" Description="Factor de suavizado específico para apuntar (0.1-0.5)" Guid="9de74454-475d-4820-bac6-e38c8d24a2f8" Value="0.25" Type="float"/>
-    <Parameter Name="AimTransitionSpeed" Description="Velocidad de transición para apuntar (3-8, menor = más lento)" Guid="607c17ad-8d6d-4551-99fb-f3bba5726ed4" Value="6" Type="float"/>
+    <Parameter Name="SmoothFactor" Description="Factor de suavizado para animaciones (0.05-0.3)" Guid="15c3479f-9dae-4522-a2fc-ce0528de50d1" Value="0.18" Type="float"/>
+    <Parameter Name="AnimationResponsiveness" Description="Respuesta de animaciones (4-20, mayor = más rápida)" Guid="d5bffad0-01b1-4e38-be5a-e2a4b7f6c85d" Value="10" Type="float"/>
+    <Parameter Name="AimSmoothFactor" Description="Factor de suavizado específico para apuntar (0.1-0.5)" Guid="9de74454-475d-4820-bac6-e38c8d24a2f8" Value="0.3" Type="float"/>
+    <Parameter Name="AimTransitionSpeed" Description="Velocidad de transición para apuntar (3-8, menor = más lento)" Guid="607c17ad-8d6d-4551-99fb-f3bba5726ed4" Value="5" Type="float"/>
     <Parameter Name="Class" Guid="4a840f5c-acee-468a-babd-f2d835620c2a" Value="Game.ComponentNewHumanModel" Type="string"/>
 </ComponentTemplate>
 
@@ -199,10 +200,8 @@
             <Parameter Name="IsOptional" Guid="ef55b5cd-a52c-47ad-afa0-abd660047a5a" Value="True" Type="bool"/>
         </ComponentTemplate>
         
-        <ComponentTemplate Name="ComponentRandomChatter" Guid="a93baf1c-930f-47a8-a98a-f79fd0de910f">
+        <ComponentTemplate Name="RandomChatter" Guid="a93baf1c-930f-47a8-a98a-f79fd0de910f" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
             <Parameter Name="Class" Value="Game.ComponentRandomChatter" Type="string" Description="El nombre de la clase C# que implementa la lógica."/>
-            <Parameter Name="LoadOrder" Value="-1" Type="int" Guid="4dd04a27-f015-4576-ad54-0eddc8afa940" Description="Orden de carga para resolver dependencias con otros componentes."/>
-            <Parameter Name="IsOptional" Value="False" Type="bool" Guid="6c443521-568b-4616-80ac-71fe4edc6cab" Description="Indica si la criatura puede existir sin este componente."/>
             <Parameter Name="ActivationDistance" Value="5" Type="float" Description="Distancia (en bloques) a la que el jugador debe estar para que la criatura empiece a hablar. AJUSTA: Qué tan cerca debe estar el jugador para activar el diálogo."/>
             <Parameter Name="DisplayDistance" Value="10" Type="float" Description="Distancia máxima a la que el texto es visible para el jugador. AJUSTA: Hasta qué distancia se puede ver el texto flotante."/>
             <Parameter Name="MinInterval" Value="8" Type="float" Description="Tiempo mínimo en segundos que la criatura esperará para decir una nueva frase. AJUSTA: Frecuencia mínima entre diálogos."/>
@@ -211,10 +210,8 @@
             <Parameter Name="FadeDuration" Value="0.5" Type="float" Description="Duración en segundos del desvanecimiento final cuando llega a la cabeza. AJUSTA: Qué tan rápido desaparece el texto al final."/>
         </ComponentTemplate>
         
-        <ComponentTemplate Name="ComponentRandomChatter2" Guid="40891058-39e7-4823-9f93-37a3b6d9dbb5">
+        <ComponentTemplate Name="RandomChatter2" Guid="40891058-39e7-4823-9f93-37a3b6d9dbb5" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
             <Parameter Name="Class" Value="Game.ComponentRandomChatter2" Type="string" Description="El nombre de la clase C# que implementa la lógica para NPCs hostiles."/>
-            <Parameter Name="LoadOrder" Value="-1" Type="int" Guid="5927fedf-417d-4bad-93cd-8b16e76b4d6f" Description="Orden de carga para resolver dependencias con otros componentes."/>
-            <Parameter Name="IsOptional" Value="False" Type="bool" Description="Indica si la criatura puede existir sin este componente."/>
             <Parameter Name="ActivationDistance" Value="8" Type="float" Description="Distancia (en bloques) a la que el jugador debe estar para que la criatura hostil empiece a hablar. AJUSTA: Qué tan cerca debe estar el jugador para activar el diálogo hostil."/>
             <Parameter Name="DisplayDistance" Value="12" Type="float" Description="Distancia máxima a la que el texto hostil es visible para el jugador. AJUSTA: Hasta qué distancia se puede ver el texto flotante hostil."/>
             <Parameter Name="MinInterval" Value="5" Type="float" Description="Tiempo mínimo en segundos que la criatura hostil esperará para decir una nueva frase. AJUSTA: Frecuencia mínima entre diálogos hostiles."/>
@@ -317,7 +314,7 @@
   <Parameter Name="AutoNearbyCreaturesHelp" Description="Indica si se usa la lógica automática base para que criaturas cercanas ayuden, además del sistema personalizado de zombis." Guid="df490040-8e49-4e64-b397-c6fd485ee04b" Value="true" Type="bool"/>
 </ComponentTemplate>
 
-<ComponentTemplate Name="ZombieChaseBehavior" Description="Comportamiento avanzado de persecución para zombis. Permite retaliación inteligente contra el último atacante, coordinación con la manada, huida estratégica ante conflictos internos, y agresividad forzada durante la Noche Verde." Guid="1a05e72e-fd6b-4eb3-b72b-59e530c4c7b9" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
+<ComponentTemplate Name="ZombieChaseBehavior" Description="Comportamiento avanzado de persecución para zombis. Permite retaliación inteligente contra el último atacante, coordinación con la manada, huida estratégica ante conflictos internos, y agresividad forzada durante la Noche Verde." Guid="1a05e72e-fd6b-4eb3-b72b-59e530c4c7b9" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
   <Parameter Name="Class" Guid="29dc27cf-cf34-44f4-a9c4-48ac4cdf90b3" Value="Game.ComponentZombieChaseBehavior" Type="string"/>
   <Parameter Name="AttacksSameHerd" Description="Permite que el zombi ataque a miembros de su misma manada. Si está desactivado, los ignorará como objetivos normales, aunque podrá retaliar si es atacado." Guid="9dcbbba0-2ec1-4b7e-80c2-87bd8a778eb6" Value="false" Type="bool"/>
   <Parameter Name="AttacksAllCategories" Description="Define si el zombi puede atacar todas las categorías de criaturas. Incluye depredadores terrestres, criaturas acuáticas, aves, y jugadores." Guid="9a85d9e3-9082-4990-a468-80a967657d84" Value="true" Type="bool"/>
