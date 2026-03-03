@@ -1,5 +1,5 @@
-HumanoidSkeleton;35
-InfectedBird;30
+HumanoidSkeleton;40
+InfectedBird;35
 InfectedNormal1;30
 InfectedNormal2;30
 InfectedFast1;25

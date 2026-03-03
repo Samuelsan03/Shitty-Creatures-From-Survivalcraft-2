@@ -1,5 +1,5 @@
-HumanoidSkeleton;20
-InfectedBird;15
+HumanoidSkeleton;40
+InfectedBird;35
 InfectedNormal1;30
 InfectedNormal2;30
 GhostNormal;18
@@ -23,7 +23,6 @@ GhostBoomer3;6
 GhostCharger;4
 Charger1;6
 Charger2;6
-TankGhost3;1
 InfectedHyena;30
 InfectedWildboar;15
 InfectedBear;18
