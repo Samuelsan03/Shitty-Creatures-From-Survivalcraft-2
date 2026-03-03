@@ -87,6 +87,12 @@ namespace Game
 		public override void Load(ValuesDictionary valuesDictionary)
 		{
 			m_subsystemGreenNightSky = Project.FindSubsystem<SubsystemGreenNightSky>(true);
+			// Suscribirse al evento de fin natural de la noche
+			if (m_subsystemGreenNightSky != null)
+			{
+				m_subsystemGreenNightSky.NaturalNightEnded += OnNaturalNightEnded;
+			}
+
 			m_subsystemCreatureSpawn = Project.FindSubsystem<SubsystemCreatureSpawn>(true);
 			m_subsystemTimeOfDay = Project.FindSubsystem<SubsystemTimeOfDay>(true);
 			m_subsystemGameInfo = Project.FindSubsystem<SubsystemGameInfo>(true);
@@ -102,6 +108,12 @@ namespace Game
 			m_wasGreenNightActive = m_subsystemGreenNightSky.IsGreenNightActive;
 		}
 
+		// Nuevo método manejador del evento
+		private void OnNaturalNightEnded()
+		{
+			AdvanceToNextWave();
+		}
+
 		public override void Save(ValuesDictionary valuesDictionary)
 		{
 			valuesDictionary.SetValue("CurrentWave", m_currentWave);
@@ -111,11 +123,7 @@ namespace Game
 		{
 			bool isGreenNightActive = m_subsystemGreenNightSky.IsGreenNightActive;
 
-			if (m_wasGreenNightActive && !isGreenNightActive)
-			{
-				AdvanceToNextWave();
-			}
-			else if (!m_wasGreenNightActive && isGreenNightActive)
+			if (!m_wasGreenNightActive && isGreenNightActive)
 			{
 				// Noche verde acaba de comenzar → mostrar ola actual
 				SendWaveMessage();
