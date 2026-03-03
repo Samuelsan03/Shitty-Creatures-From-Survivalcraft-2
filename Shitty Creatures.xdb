@@ -63,10 +63,7 @@
             <MemberComponentTemplate Name="Spawn" Guid="8632862e-2627-43da-bcec-d2b8462dbec8">
     <Parameter Name="AutoDespawn" Guid="af0fc3e6-f719-4225-9f36-cb6d925363cf" Value="False" Type="bool"/>
 </MemberComponentTemplate>
-           <MemberComponentTemplate Name="ComponentRandomChatter" Guid="56e00cfe-824a-4c2b-a455-53e6127ac52c">
-    <Parameter Name="Class" Value="Game.ComponentRandomChatter" Type="string"/>
-    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
-    <Parameter Name="IsOptional" Value="False" Type="bool"/>
+           <MemberComponentTemplate Name="RandomChatter" Guid="56e00cfe-824a-4c2b-a455-53e6127ac52c" InheritanceParent="a93baf1c-930f-47a8-a98a-f79fd0de910f">
     <Parameter Name="ActivationDistance" Value="5" Type="float"/>
     <Parameter Name="DisplayDistance" Value="10" Type="float"/>
     <Parameter Name="MinInterval" Value="3" Type="float"/>
@@ -208,10 +205,7 @@
                 <Parameter Name="Description" Guid="c9d0e1f2-a3b4-4i56-9j78-e9f0a1b2c3d4" Value="[Description:Ricardo]" Type="string"/>
                 <Parameter Name="KillVerbs" Guid="d0e1f2a3-b4c5-4j67-9k89-f0a1b2c3d4e5" Value="Quartered" Type="string"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentRandomChatter" Guid="4736ee89-4570-4ce7-8c66-39b987a94c76">
-    <Parameter Name="Class" Value="Game.ComponentRandomChatter" Type="string"/>
-    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
-    <Parameter Name="IsOptional" Value="False" Type="bool"/>
+            <MemberComponentTemplate Name="RandomChatter" Guid="4736ee89-4570-4ce7-8c66-39b987a94c76" InheritanceParent="a93baf1c-930f-47a8-a98a-f79fd0de910f">
     <Parameter Name="ActivationDistance" Value="5" Type="float"/>
     <Parameter Name="DisplayDistance" Value="10" Type="float"/>
     <Parameter Name="MinInterval" Value="3" Type="float"/>
@@ -347,10 +341,7 @@
         <Parameter Name="KillVerbs" Guid="d8e9f0a1-b2c3-7456-bcde-f0123456789a" Value="Pecked" Type="string"/>
         <Parameter Name="ConstantSpawn" Guid="facfeda6-3f52-4eec-8d96-c1b446e643fe" Value="True" Type="bool"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="ComponentRandomChatter" Guid="91d9a8ec-276f-4dec-8591-965f594eae9b">
-    <Parameter Name="Class" Value="Game.ComponentRandomChatter" Type="string"/>
-    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
-    <Parameter Name="IsOptional" Value="False" Type="bool"/>
+    <MemberComponentTemplate Name="RandomChatter" Guid="91d9a8ec-276f-4dec-8591-965f594eae9b" InheritanceParent="a93baf1c-930f-47a8-a98a-f79fd0de910f">
     <Parameter Name="ActivationDistance" Value="5" Type="float"/>
     <Parameter Name="DisplayDistance" Value="10" Type="float"/>
     <Parameter Name="MinInterval" Value="3" Type="float"/>
@@ -483,10 +474,7 @@
         <Parameter Name="Description" Guid="b4c5d6e7-f8a9-7012-7890-f0123456789a" Value="[Description:Barack]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="c5d6e7f8-a9b0-7123-8901-0123456789ab" Value="Negotiated" Type="string"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="ComponentRandomChatter" Guid="210780ff-1756-470a-a0b8-2168da58fb71">
-    <Parameter Name="Class" Value="Game.ComponentRandomChatter" Type="string"/>
-    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
-    <Parameter Name="IsOptional" Value="False" Type="bool"/>
+    <MemberComponentTemplate Name="RandomChatter" Guid="210780ff-1756-470a-a0b8-2168da58fb71" InheritanceParent="a93baf1c-930f-47a8-a98a-f79fd0de910f">
     <Parameter Name="ActivationDistance" Value="5" Type="float"/>
     <Parameter Name="DisplayDistance" Value="10" Type="float"/>
     <Parameter Name="MinInterval" Value="3" Type="float"/>
@@ -615,10 +603,7 @@
         <Parameter Name="Description" Guid="cedc98b7-5e9a-47dc-af72-fe4542a5e4da" Value="[Description:ElMarihuanero]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="e86ffc5f-0e5a-438b-b14f-7dc83a9ea82e" Value="He put the weed up your ass" Type="string"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="ComponentRandomChatter" Guid="1adf0a5d-39b2-4b5b-806e-f2e6ef5c9d88">
-    <Parameter Name="Class" Value="Game.ComponentRandomChatter" Type="string"/>
-    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
-    <Parameter Name="IsOptional" Value="False" Type="bool"/>
+    <MemberComponentTemplate Name="RandomChatter" Guid="1adf0a5d-39b2-4b5b-806e-f2e6ef5c9d88" InheritanceParent="a93baf1c-930f-47a8-a98a-f79fd0de910f">
     <Parameter Name="ActivationDistance" Value="5" Type="float"/>
     <Parameter Name="DisplayDistance" Value="10" Type="float"/>
     <Parameter Name="MinInterval" Value="3" Type="float"/>
@@ -767,10 +752,7 @@
         <Parameter Name="Description" Guid="954d9f04-d47b-4033-843f-03757c3b2fbd" Value="[Description:ElMarihuaneroMamon]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="dd068946-0f2d-42f6-baa5-d59bc07290ce" Value="Shot drugged" Type="string"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="ComponentRandomChatter" Guid="6f0c56e3-849c-436d-9ba4-0b1e81007552">
-    <Parameter Name="Class" Value="Game.ComponentRandomChatter" Type="string"/>
-    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
-    <Parameter Name="IsOptional" Value="False" Type="bool"/>
+    <MemberComponentTemplate Name="RandomChatter" Guid="6f0c56e3-849c-436d-9ba4-0b1e81007552" InheritanceParent="a93baf1c-930f-47a8-a98a-f79fd0de910f">
     <Parameter Name="ActivationDistance" Value="5" Type="float"/>
     <Parameter Name="DisplayDistance" Value="10" Type="float"/>
     <Parameter Name="MinInterval" Value="1" Type="float"/>
@@ -1138,10 +1120,7 @@
         <Parameter Name="Description" Guid="d1e2f3a4-b5c6-7789-ef01-3456789abcd6" Value="[Description:ClaudeSpeed]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="e2f3a4b5-c6d7-7890-f012-456789abcde7" Value="Outran" Type="string"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="ComponentRandomChatter" Guid="1eac9f2d-2b62-4fca-9295-858ee66f75e5">
-    <Parameter Name="Class" Value="Game.ComponentRandomChatter" Type="string"/>
-    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
-    <Parameter Name="IsOptional" Value="False" Type="bool"/>
+    <MemberComponentTemplate Name="RandomChatter" Guid="1eac9f2d-2b62-4fca-9295-858ee66f75e5" InheritanceParent="a93baf1c-930f-47a8-a98a-f79fd0de910f">
     <Parameter Name="ActivationDistance" Value="5" Type="float"/>
     <Parameter Name="DisplayDistance" Value="10" Type="float"/>
     <Parameter Name="MinInterval" Value="3" Type="float"/>
@@ -1288,10 +1267,7 @@
         <Parameter Name="Description" Guid="5a6297d1-3d1e-48a7-a522-ba03f0d1452d" Value="[Description:TommyVercetti]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="10b26c1d-50f4-451f-960f-6eccb071ddd0" Value="Eliminated" Type="string"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="ComponentRandomChatter" Guid="19c93dc5-1cc4-4ebc-955b-d5c459b6e129">
-    <Parameter Name="Class" Value="Game.ComponentRandomChatter" Type="string"/>
-    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
-    <Parameter Name="IsOptional" Value="False" Type="bool"/>
+    <MemberComponentTemplate Name="RandomChatter" Guid="19c93dc5-1cc4-4ebc-955b-d5c459b6e129" InheritanceParent="a93baf1c-930f-47a8-a98a-f79fd0de910f">
     <Parameter Name="ActivationDistance" Value="5" Type="float"/>
     <Parameter Name="DisplayDistance" Value="10" Type="float"/>
     <Parameter Name="MinInterval" Value="3" Type="float"/>
@@ -1410,10 +1386,7 @@
         <Parameter Name="KillVerbs" Guid="a4b5c6d7-e8f9-7890-f012-456789abcde9" Value="Annihilated" Type="string"/>
         <Parameter Name="ConstantSpawn" Guid="0dbcd5c6-7ccd-466a-b92f-5c0dca33d39e" Value="True" Type="bool"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="ComponentRandomChatter" Guid="8a17bf8c-e4a7-4e2d-8de5-5646aa56a747">
-    <Parameter Name="Class" Value="Game.ComponentRandomChatter" Type="string"/>
-    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
-    <Parameter Name="IsOptional" Value="False" Type="bool"/>
+    <MemberComponentTemplate Name="RandomChatter" Guid="8a17bf8c-e4a7-4e2d-8de5-5646aa56a747" InheritanceParent="a93baf1c-930f-47a8-a98a-f79fd0de910f">
     <Parameter Name="ActivationDistance" Value="8" Type="float"/>
     <Parameter Name="DisplayDistance" Value="12" Type="float"/>
     <Parameter Name="MinInterval" Value="5" Type="float"/>
@@ -1533,10 +1506,7 @@
     <MemberComponentTemplate Name="Spawn" Guid="e369fa16-daf7-4131-baf0-6161ba2202cd">
     <Parameter Name="AutoDespawn" Guid="438af5d9-c575-4d50-9eaf-40ea11194411" Value="False" Type="bool"/>
 </MemberComponentTemplate>
-    <MemberComponentTemplate Name="ComponentRandomChatter2" Guid="e9e0742a-bb2d-437a-9e86-66159cd0b984">
-    <Parameter Name="Class" Value="Game.ComponentRandomChatter2" Type="string"/>
-    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
-    <Parameter Name="IsOptional" Value="False" Type="bool"/>
+    <MemberComponentTemplate Name="RandomChatter2" Guid="e9e0742a-bb2d-437a-9e86-66159cd0b984" InheritanceParent="40891058-39e7-4823-9f93-37a3b6d9dbb5">
     <Parameter Name="ActivationDistance" Value="8" Type="float"/>
     <Parameter Name="DisplayDistance" Value="12" Type="float"/>
     <Parameter Name="MinInterval" Value="5" Type="float"/>
@@ -1656,10 +1626,7 @@
     <MemberComponentTemplate Name="Spawn" Guid="1fc6bce3-d7c0-4afe-834e-3fce8a40cc7e">
     <Parameter Name="AutoDespawn" Guid="5cc7abc3-90f3-43e2-9bd2-18fc5a742a45" Value="False" Type="bool"/>
 </MemberComponentTemplate>
-    <MemberComponentTemplate Name="ComponentRandomChatter2" Guid="90e76740-f3d8-4db9-94c0-17b4f8914511">
-    <Parameter Name="Class" Value="Game.ComponentRandomChatter2" Type="string"/>
-    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
-    <Parameter Name="IsOptional" Value="False" Type="bool"/>
+<MemberComponentTemplate Name="RandomChatter2" Guid="f17b8472-ed3c-44b1-bf18-a2da395e4bd8" InheritanceParent="40891058-39e7-4823-9f93-37a3b6d9dbb5">
     <Parameter Name="ActivationDistance" Value="8" Type="float"/>
     <Parameter Name="DisplayDistance" Value="12" Type="float"/>
     <Parameter Name="MinInterval" Value="5" Type="float"/>
@@ -2510,10 +2477,7 @@
         <Parameter Name="Description" Guid="59a9b248-9e3c-4986-a524-cc42162a646c" Value="[Description:ElBallestador]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="b7337a01-ab16-4208-ade1-7ee7d5882412" Value="Shot with arrows" Type="string"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="ComponentRandomChatter2" Guid="ff015f5b-ef26-422d-b29e-d92fd15042a1">
-    <Parameter Name="Class" Value="Game.ComponentRandomChatter2" Type="string"/>
-    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
-    <Parameter Name="IsOptional" Value="False" Type="bool"/>
+<MemberComponentTemplate Name="RandomChatter2" Guid="1590c031-a9ad-4c6a-8981-d377fbc0339a" InheritanceParent="40891058-39e7-4823-9f93-37a3b6d9dbb5">
     <Parameter Name="ActivationDistance" Value="8" Type="float"/>
     <Parameter Name="DisplayDistance" Value="12" Type="float"/>
     <Parameter Name="MinInterval" Value="5" Type="float"/>
@@ -2783,10 +2747,7 @@
         <Parameter Name="Description" Guid="a82cd753-b101-46bb-bbab-cc2c75bfef07" Value="[Description:ElArquero]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="7ce38653-070e-46db-934e-86457828cfe8" Value="Shot with arrows" Type="string"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="ComponentRandomChatter2" Guid="e0981784-9d2a-4d53-af3f-cd8101c87374">
-    <Parameter Name="Class" Value="Game.ComponentRandomChatter2" Type="string"/>
-    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
-    <Parameter Name="IsOptional" Value="False" Type="bool"/>
+<MemberComponentTemplate Name="RandomChatter2" Guid="affb4d68-bd1c-44a0-bcc8-b2cd04f500ca" InheritanceParent="40891058-39e7-4823-9f93-37a3b6d9dbb5">
     <Parameter Name="ActivationDistance" Value="8" Type="float"/>
     <Parameter Name="DisplayDistance" Value="12" Type="float"/>
     <Parameter Name="MinInterval" Value="5" Type="float"/>
@@ -2913,15 +2874,12 @@
         <Parameter Name="Description" Guid="1bad7bdc-f43d-4a20-9390-83392199b486" Value="[Description:ArqueroPrisionero]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="1054cce7-47a3-48fc-b102-0be025ff0145" Value="Hunted with arrows" Type="string"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="ComponentRandomChatter" Guid="d708b362-e0a7-4e5b-b060-d27b93f40ba2">
-    <Parameter Name="Class" Value="Game.ComponentRandomChatter" Type="string"/>
-    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
-    <Parameter Name="IsOptional" Value="False" Type="bool"/>
-    <Parameter Name="ActivationDistance" Value="5" Type="float"/>
-    <Parameter Name="DisplayDistance" Value="10" Type="float"/>
-    <Parameter Name="MinInterval" Value="3" Type="float"/>
-    <Parameter Name="MaxInterval" Value="30" Type="float"/>
-    <Parameter Name="RiseDuration" Value="0.5" Type="float"/>
+<MemberComponentTemplate Name="RandomChatter" Guid="e628dda2-f007-4bc7-9c6c-7e38c33c2dbc" InheritanceParent="a93baf1c-930f-47a8-a98a-f79fd0de910f">
+    <Parameter Name="ActivationDistance" Value="8" Type="float"/>
+    <Parameter Name="DisplayDistance" Value="12" Type="float"/>
+    <Parameter Name="MinInterval" Value="5" Type="float"/>
+    <Parameter Name="MaxInterval" Value="20" Type="float"/>
+    <Parameter Name="RiseDuration" Value="1.5" Type="float"/>
     <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="d49516b6-0991-4ae0-9b53-01e5da652a47" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
@@ -3043,15 +3001,12 @@
         <Parameter Name="Description" Guid="e7f8a9b0-c1d2-7678-3456-123456789abc" Value="[Description:BallestadoraMusculosa]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="d516d9ca-cb34-4508-a1de-45e41c9deeb4" Value="Shot with arrows" Type="string"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="ComponentRandomChatter" Guid="a785de85-1933-476c-92e4-a7d5a49e18c6">
-    <Parameter Name="Class" Value="Game.ComponentRandomChatter" Type="string"/>
-    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
-    <Parameter Name="IsOptional" Value="False" Type="bool"/>
-    <Parameter Name="ActivationDistance" Value="5" Type="float"/>
-    <Parameter Name="DisplayDistance" Value="10" Type="float"/>
-    <Parameter Name="MinInterval" Value="3" Type="float"/>
-    <Parameter Name="MaxInterval" Value="30" Type="float"/>
-    <Parameter Name="RiseDuration" Value="0.5" Type="float"/>
+<MemberComponentTemplate Name="RandomChatter" Guid="7fb12d64-65aa-4d63-933a-4a3729df453f" InheritanceParent="a93baf1c-930f-47a8-a98a-f79fd0de910f">
+    <Parameter Name="ActivationDistance" Value="8" Type="float"/>
+    <Parameter Name="DisplayDistance" Value="12" Type="float"/>
+    <Parameter Name="MinInterval" Value="5" Type="float"/>
+    <Parameter Name="MaxInterval" Value="20" Type="float"/>
+    <Parameter Name="RiseDuration" Value="1.5" Type="float"/>
     <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="dae23531-9ea2-481b-bf77-e9cea7be0d0a" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
@@ -3181,15 +3136,12 @@
         <Parameter Name="Description" Guid="9da16f92-3c03-400c-bf22-d8550f9fcf30" Value="[Description:WalterZombie]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="dc09bd32-722f-4e8c-bab2-72c19e6afe75" Value="Eaten" Type="string"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="ComponentRandomChatter" Guid="7314d658-b2e8-49be-ab27-c13dafa586b9">
-    <Parameter Name="Class" Value="Game.ComponentRandomChatter" Type="string"/>
-    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
-    <Parameter Name="IsOptional" Value="False" Type="bool"/>
-    <Parameter Name="ActivationDistance" Value="5" Type="float"/>
-    <Parameter Name="DisplayDistance" Value="10" Type="float"/>
-    <Parameter Name="MinInterval" Value="3" Type="float"/>
-    <Parameter Name="MaxInterval" Value="30" Type="float"/>
-    <Parameter Name="RiseDuration" Value="0.5" Type="float"/>
+<MemberComponentTemplate Name="RandomChatter" Guid="83be6e5d-08ff-4d73-9e71-10100cd45034" InheritanceParent="a93baf1c-930f-47a8-a98a-f79fd0de910f">
+    <Parameter Name="ActivationDistance" Value="8" Type="float"/>
+    <Parameter Name="DisplayDistance" Value="12" Type="float"/>
+    <Parameter Name="MinInterval" Value="5" Type="float"/>
+    <Parameter Name="MaxInterval" Value="20" Type="float"/>
+    <Parameter Name="RiseDuration" Value="1.5" Type="float"/>
     <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="de13a336-a0c2-418f-a400-ee599be26e1d" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
@@ -3439,10 +3391,7 @@
         <Parameter Name="Description" Guid="f6a7b8c9-d0e1-7345-abcd-ef0123456789" Value="[Description:AladinaCorrupta]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="a7b8c9d0-e1f2-7456-bcde-f0123456789a" Value="beaten" Type="string"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="ComponentRandomChatter2" Guid="05461b92-5a29-4ba1-8d2a-3cbe2ab37b40">
-    <Parameter Name="Class" Value="Game.ComponentRandomChatter2" Type="string"/>
-    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
-    <Parameter Name="IsOptional" Value="False" Type="bool"/>
+<MemberComponentTemplate Name="RandomChatter2" Guid="3114daf6-0708-4be1-b0a4-35021b586ed7" InheritanceParent="40891058-39e7-4823-9f93-37a3b6d9dbb5">
     <Parameter Name="ActivationDistance" Value="8" Type="float"/>
     <Parameter Name="DisplayDistance" Value="12" Type="float"/>
     <Parameter Name="MinInterval" Value="5" Type="float"/>
@@ -3573,15 +3522,12 @@
         <Parameter Name="Mass" Guid="f2a3b4c5-d6e7-7123-8901-cdef01234567" Value="85" Type="float"/>
         <Parameter Name="BoxSize" Guid="a3b4c5d6-e7f8-7234-9012-def012345678" Value="0.8,1.8,0.8" Type="Vector3"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="ComponentRandomChatter" Guid="e79f5758-7de6-45f7-adee-73b5189fb566">
-    <Parameter Name="Class" Value="Game.ComponentRandomChatter" Type="string"/>
-    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
-    <Parameter Name="IsOptional" Value="False" Type="bool"/>
-    <Parameter Name="ActivationDistance" Value="5" Type="float"/>
-    <Parameter Name="DisplayDistance" Value="10" Type="float"/>
-    <Parameter Name="MinInterval" Value="3" Type="float"/>
-    <Parameter Name="MaxInterval" Value="30" Type="float"/>
-    <Parameter Name="RiseDuration" Value="0.5" Type="float"/>
+<MemberComponentTemplate Name="RandomChatter" Guid="dcbc7f4e-7665-4d02-b4ba-ff94b498e646" InheritanceParent="a93baf1c-930f-47a8-a98a-f79fd0de910f">
+    <Parameter Name="ActivationDistance" Value="8" Type="float"/>
+    <Parameter Name="DisplayDistance" Value="12" Type="float"/>
+    <Parameter Name="MinInterval" Value="5" Type="float"/>
+    <Parameter Name="MaxInterval" Value="20" Type="float"/>
+    <Parameter Name="RiseDuration" Value="1.5" Type="float"/>
     <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Creature" Guid="b4c5d6e7-f8a9-7345-0123-ef0123456789">
@@ -3725,15 +3671,12 @@
                 <Parameter Name="Description" Guid="af14ffb2-c189-40a5-adfc-6d9fe634b122" Value="[Description:ElGuerrillero]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="297871a8-61fc-4376-a2dc-882348a4af4f" Value="fusiled" Type="string"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="ComponentRandomChatter2" Guid="9f4adb52-3ee9-4ad8-be6f-8e3c48899b39">
-    <Parameter Name="Class" Value="Game.ComponentRandomChatter2" Type="string"/>
-    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
-    <Parameter Name="IsOptional" Value="False" Type="bool"/>
-    <Parameter Name="ActivationDistance" Value="5" Type="float"/>
-    <Parameter Name="DisplayDistance" Value="10" Type="float"/>
-    <Parameter Name="MinInterval" Value="3" Type="float"/>
-    <Parameter Name="MaxInterval" Value="30" Type="float"/>
-    <Parameter Name="RiseDuration" Value="0.5" Type="float"/>
+<MemberComponentTemplate Name="RandomChatter2" Guid="20d6a84c-db2c-4366-99ff-46bcb2325555" InheritanceParent="40891058-39e7-4823-9f93-37a3b6d9dbb5">
+    <Parameter Name="ActivationDistance" Value="8" Type="float"/>
+    <Parameter Name="DisplayDistance" Value="12" Type="float"/>
+    <Parameter Name="MinInterval" Value="5" Type="float"/>
+    <Parameter Name="MaxInterval" Value="20" Type="float"/>
+    <Parameter Name="RiseDuration" Value="1.5" Type="float"/>
     <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="c3b678ae-4154-4165-a673-01fad2b62f5b" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
@@ -3885,15 +3828,12 @@
         <Parameter Name="Description" Guid="1d666495-02d9-483c-bc77-2f828d919c1f" Value="[Description:ElGuerrilleroTenebroso]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="2bb9a103-ca17-4a55-9d05-04a4b1157b4d" Value="fusiled" Type="string"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="ComponentRandomChatter2" Guid="1a8910f7-5149-4fa9-8212-bb7e2e91caa7">
-    <Parameter Name="Class" Value="Game.ComponentRandomChatter2" Type="string"/>
-    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
-    <Parameter Name="IsOptional" Value="False" Type="bool"/>
-    <Parameter Name="ActivationDistance" Value="5" Type="float"/>
-    <Parameter Name="DisplayDistance" Value="10" Type="float"/>
-    <Parameter Name="MinInterval" Value="1" Type="float"/>
-    <Parameter Name="MaxInterval" Value="30" Type="float"/>
-    <Parameter Name="RiseDuration" Value="0.5" Type="float"/>
+<MemberComponentTemplate Name="RandomChatter2" Guid="fb06ce12-27e2-46ac-adb7-ad597f374c43" InheritanceParent="40891058-39e7-4823-9f93-37a3b6d9dbb5">
+    <Parameter Name="ActivationDistance" Value="8" Type="float"/>
+    <Parameter Name="DisplayDistance" Value="12" Type="float"/>
+    <Parameter Name="MinInterval" Value="5" Type="float"/>
+    <Parameter Name="MaxInterval" Value="20" Type="float"/>
+    <Parameter Name="RiseDuration" Value="1.5" Type="float"/>
     <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="c14e135a-f7b5-4f1a-88e2-4080465a0eba" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
@@ -4014,15 +3954,12 @@
         <Parameter Name="Description" Guid="e2f3a4b5-c6d7-7789-ef01-3456789abcd7" Value="[Description:CamisasMorenas]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="f3a4b5c6-d7e8-7890-f012-456789abcde8" Value="torn to shreds" Type="string"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="ComponentRandomChatter2" Guid="b8e3a758-80ae-4b4a-a3f6-df135ec2f18f">
-    <Parameter Name="Class" Value="Game.ComponentRandomChatter2" Type="string"/>
-    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
-    <Parameter Name="IsOptional" Value="False" Type="bool"/>
-    <Parameter Name="ActivationDistance" Value="5" Type="float"/>
-    <Parameter Name="DisplayDistance" Value="10" Type="float"/>
-    <Parameter Name="MinInterval" Value="3" Type="float"/>
-    <Parameter Name="MaxInterval" Value="30" Type="float"/>
-    <Parameter Name="RiseDuration" Value="0.5" Type="float"/>
+<MemberComponentTemplate Name="RandomChatter2" Guid="e4835493-73ab-448e-a6db-e08473f87ec7" InheritanceParent="40891058-39e7-4823-9f93-37a3b6d9dbb5">
+    <Parameter Name="ActivationDistance" Value="8" Type="float"/>
+    <Parameter Name="DisplayDistance" Value="12" Type="float"/>
+    <Parameter Name="MinInterval" Value="5" Type="float"/>
+    <Parameter Name="MaxInterval" Value="20" Type="float"/>
+    <Parameter Name="RiseDuration" Value="1.5" Type="float"/>
     <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="a4b5c6d7-e8f9-7901-0123-56789abcdef9" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
@@ -4162,17 +4099,14 @@
     <MemberComponentTemplate Name="Spawn" Guid="9c361b96-e4c1-4f56-8e58-28dc03159318">
         <Parameter Name="AutoDespawn" Guid="5ffcb004-1236-4c81-bb10-58e49da77531" Value="False" Type="bool"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="ComponentRandomChatter2" Guid="ff3a778e-5367-4ecd-83aa-060822e946cd">
-        <Parameter Name="Class" Value="Game.ComponentRandomChatter2" Type="string"/>
-        <Parameter Name="LoadOrder" Value="-1" Type="int"/>
-        <Parameter Name="IsOptional" Value="False" Type="bool"/>
-        <Parameter Name="ActivationDistance" Value="5" Type="float"/>
-        <Parameter Name="DisplayDistance" Value="10" Type="float"/>
-        <Parameter Name="MinInterval" Value="3" Type="float"/>
-        <Parameter Name="MaxInterval" Value="30" Type="float"/>
-        <Parameter Name="RiseDuration" Value="0.5" Type="float"/>
-        <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
-    </MemberComponentTemplate>
+<MemberComponentTemplate Name="RandomChatter2" Guid="87e70b5d-f471-4e43-8b3d-774c96c9b0c7" InheritanceParent="40891058-39e7-4823-9f93-37a3b6d9dbb5">
+    <Parameter Name="ActivationDistance" Value="8" Type="float"/>
+    <Parameter Name="DisplayDistance" Value="12" Type="float"/>
+    <Parameter Name="MinInterval" Value="5" Type="float"/>
+    <Parameter Name="MaxInterval" Value="20" Type="float"/>
+    <Parameter Name="RiseDuration" Value="1.5" Type="float"/>
+    <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="ba520229-b06a-4b09-949e-4217be90a7c3" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="c1a2e28a-4292-4229-acce-7373a0c256a0" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="bb34c589-5102-4e76-a25c-deca29dcdd6b" Value="3" Type="float"/>
@@ -4331,17 +4265,14 @@
   <MemberComponentTemplate Name="Spawn" Guid="f135611a-4950-4afb-acd7-feb01cef3c68">
     <Parameter Name="AutoDespawn" Guid="a5f45d1b-2fc8-4f8e-abb9-2f44d396a39b" Value="False" Type="bool"/>
   </MemberComponentTemplate>
-  <MemberComponentTemplate Name="ComponentRandomChatter" Guid="51725a14-40a0-4ebf-8d42-8d7b0f6f7200">
-    <Parameter Name="Class" Value="Game.ComponentRandomChatter" Type="string"/>
-    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
-    <Parameter Name="IsOptional" Value="False" Type="bool"/>
-    <Parameter Name="ActivationDistance" Value="5" Type="float"/>
-    <Parameter Name="DisplayDistance" Value="10" Type="float"/>
-    <Parameter Name="MinInterval" Value="3" Type="float"/>
-    <Parameter Name="MaxInterval" Value="30" Type="float"/>
-    <Parameter Name="RiseDuration" Value="0.5" Type="float"/>
+<MemberComponentTemplate Name="RandomChatter" Guid="b8c9ea67-e0ad-48e3-b192-e2b035565f0e" InheritanceParent="a93baf1c-930f-47a8-a98a-f79fd0de910f">
+    <Parameter Name="ActivationDistance" Value="8" Type="float"/>
+    <Parameter Name="DisplayDistance" Value="12" Type="float"/>
+    <Parameter Name="MinInterval" Value="5" Type="float"/>
+    <Parameter Name="MaxInterval" Value="20" Type="float"/>
+    <Parameter Name="RiseDuration" Value="1.5" Type="float"/>
     <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
-  </MemberComponentTemplate>
+</MemberComponentTemplate>
   <MemberComponentTemplate Name="FindPlayerBehavior" Guid="7da8c34c-dbc2-48cd-8083-7eaaf8e533af" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
   <MemberComponentTemplate Name="Miner" Guid="36b76dd2-ba89-4a1b-8172-898ff9272dd3" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
     <Parameter Name="AttackPower" Guid="db06c6c8-e973-448a-a5eb-f4e6fe517256" Value="15" Type="float"/>
@@ -4469,15 +4400,12 @@
         <Parameter Name="Description" Guid="adda200c-cc69-456b-8965-d0cd3687d226" Value="[Description:Tulio]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="cd45666c-3037-4a88-a642-1f0890b8e0d2" Value="lynched,asphyxiated" Type="string"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="ComponentRandomChatter" Guid="d8960571-25e2-4a35-8907-d126197a569f">
-    <Parameter Name="Class" Value="Game.ComponentRandomChatter" Type="string"/>
-    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
-    <Parameter Name="IsOptional" Value="False" Type="bool"/>
-    <Parameter Name="ActivationDistance" Value="5" Type="float"/>
-    <Parameter Name="DisplayDistance" Value="10" Type="float"/>
-    <Parameter Name="MinInterval" Value="3" Type="float"/>
-    <Parameter Name="MaxInterval" Value="30" Type="float"/>
-    <Parameter Name="RiseDuration" Value="0.5" Type="float"/>
+<MemberComponentTemplate Name="RandomChatter" Guid="03bd350c-564e-4d90-8dd4-b5d2f34c6a6d" InheritanceParent="a93baf1c-930f-47a8-a98a-f79fd0de910f">
+    <Parameter Name="ActivationDistance" Value="8" Type="float"/>
+    <Parameter Name="DisplayDistance" Value="12" Type="float"/>
+    <Parameter Name="MinInterval" Value="5" Type="float"/>
+    <Parameter Name="MaxInterval" Value="20" Type="float"/>
+    <Parameter Name="RiseDuration" Value="1.5" Type="float"/>
     <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="950cbca8-ca49-4c25-94e8-ce79640b1e4c" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
@@ -4614,15 +4542,12 @@
         <Parameter Name="Description" Guid="613ec9d6-aa8c-40cc-8975-5531c7084993" Value="[Description:Brayan]" Type="string"/>
         <Parameter Name="KillVerbs" Guid="db5d91f1-9ed2-4a85-9d20-9a8fa1fcc934" Value="bitched,broken arm,broken skull" Type="string"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="ComponentRandomChatter" Guid="4a9873e9-5a02-4c6a-a979-b9444be2b55b">
-    <Parameter Name="Class" Value="Game.ComponentRandomChatter" Type="string"/>
-    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
-    <Parameter Name="IsOptional" Value="False" Type="bool"/>
-    <Parameter Name="ActivationDistance" Value="5" Type="float"/>
-    <Parameter Name="DisplayDistance" Value="10" Type="float"/>
-    <Parameter Name="MinInterval" Value="3" Type="float"/>
-    <Parameter Name="MaxInterval" Value="30" Type="float"/>
-    <Parameter Name="RiseDuration" Value="0.5" Type="float"/>
+<MemberComponentTemplate Name="RandomChatter" Guid="a0b22eed-df29-454f-b954-b530800c11d9" InheritanceParent="a93baf1c-930f-47a8-a98a-f79fd0de910f">
+    <Parameter Name="ActivationDistance" Value="8" Type="float"/>
+    <Parameter Name="DisplayDistance" Value="12" Type="float"/>
+    <Parameter Name="MinInterval" Value="5" Type="float"/>
+    <Parameter Name="MaxInterval" Value="20" Type="float"/>
+    <Parameter Name="RiseDuration" Value="1.5" Type="float"/>
     <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="f1216d73-866f-410b-9c41-17ad15184515" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
@@ -4747,15 +4672,12 @@
                 <Parameter Name="Description" Guid="732f9735-e455-4a2c-b04e-2ae5c5a93132" Value="[Description:Richard]" Type="string"/>
                 <Parameter Name="KillVerbs" Guid="fd9e5488-58e9-4b2b-b2c2-e211982cb8e6" Value="lynched" Type="string"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="ComponentRandomChatter" Guid="2b10dd74-d101-47ef-b10c-131159033f7b">
-    <Parameter Name="Class" Value="Game.ComponentRandomChatter" Type="string"/>
-    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
-    <Parameter Name="IsOptional" Value="False" Type="bool"/>
-    <Parameter Name="ActivationDistance" Value="5" Type="float"/>
-    <Parameter Name="DisplayDistance" Value="10" Type="float"/>
-    <Parameter Name="MinInterval" Value="3" Type="float"/>
-    <Parameter Name="MaxInterval" Value="30" Type="float"/>
-    <Parameter Name="RiseDuration" Value="0.5" Type="float"/>
+<MemberComponentTemplate Name="RandomChatter" Guid="42e6fbab-2022-491a-a922-ce0e7a4cacd6" InheritanceParent="a93baf1c-930f-47a8-a98a-f79fd0de910f">
+    <Parameter Name="ActivationDistance" Value="8" Type="float"/>
+    <Parameter Name="DisplayDistance" Value="12" Type="float"/>
+    <Parameter Name="MinInterval" Value="5" Type="float"/>
+    <Parameter Name="MaxInterval" Value="20" Type="float"/>
+    <Parameter Name="RiseDuration" Value="1.5" Type="float"/>
     <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="FindPlayerBehavior" Guid="f458df98-a9f4-4341-9487-0bfc7d7ff172" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
@@ -5186,15 +5108,12 @@
             <MemberComponentTemplate Name="Spawn" Guid="a10a1e28-226e-4239-97f3-e36001e733a8">
     <Parameter Name="AutoDespawn" Guid="96adca7b-0959-45b8-96eb-09641f76cb6e" Value="False" Type="bool"/>
 </MemberComponentTemplate>
-           <MemberComponentTemplate Name="ComponentRandomChatter" Guid="a56b3dbd-a5d4-4f39-99e7-4c2475e4f3fd">
-    <Parameter Name="Class" Value="Game.ComponentRandomChatter" Type="string"/>
-    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
-    <Parameter Name="IsOptional" Value="False" Type="bool"/>
-    <Parameter Name="ActivationDistance" Value="5" Type="float"/>
-    <Parameter Name="DisplayDistance" Value="10" Type="float"/>
-    <Parameter Name="MinInterval" Value="3" Type="float"/>
-    <Parameter Name="MaxInterval" Value="30" Type="float"/>
-    <Parameter Name="RiseDuration" Value="0.5" Type="float"/>
+<MemberComponentTemplate Name="RandomChatter" Guid="20f18742-4272-449f-b937-00d609e0d250" InheritanceParent="a93baf1c-930f-47a8-a98a-f79fd0de910f">
+    <Parameter Name="ActivationDistance" Value="8" Type="float"/>
+    <Parameter Name="DisplayDistance" Value="12" Type="float"/>
+    <Parameter Name="MinInterval" Value="5" Type="float"/>
+    <Parameter Name="MaxInterval" Value="20" Type="float"/>
+    <Parameter Name="RiseDuration" Value="1.5" Type="float"/>
     <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="FindPlayerBehavior" Guid="1a638a0c-c6f1-43bd-a217-4e91c380d24b" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
@@ -5209,18 +5128,18 @@
     <Parameter Name="ModelScale" Guid="5e0e9f22-f7fe-4907-ac69-7a1707286a68" Value="1.6" Type="float"/>
     <Parameter Name="ModelName" Guid="b55c6b10-82e7-4a1c-9fe2-72f1134a0daa" Value="Models/HumanMale" Type="string"/>
     <Parameter Name="TextureOverride" Guid="c07c1328-8ab1-4b54-beab-ee87751202df" Value="Textures/Pirate_Captain_Businessman" Type="string"/>
-    <Parameter Name="WalkAnimationSpeed" Guid="98e06a98-3f14-456e-91c6-4cb167fac402" Value="0.65" Type="float"/>
-    <Parameter Name="WalkBobHeight" Guid="b1b86c91-9a88-4080-8731-83eb1d904f0d" Value="0.045" Type="float"/>
-    <Parameter Name="WalkLegsAngle" Guid="9e8ab6de-09c3-4bc4-ba25-eebfa7def70a" Value="0.35" Type="float"/>
-    <Parameter Name="SmoothFactor" Guid="5d21e1d4-b123-4cf5-849b-79a259073cdc" Value="0.12" Type="float"/>
-    <Parameter Name="AnimationResponsiveness" Guid="d556a5b6-ae7c-4fb2-9aa5-3b296cae7182" Value="15" Type="float"/>
-    <Parameter Name="AimSmoothFactor" Guid="0d1051a7-7fe8-4f72-bff5-000e6cab09d9" Value="0.2" Type="float"/>
-    <Parameter Name="AimTransitionSpeed" Guid="454e7e69-2fe1-4d41-bf09-2def3e164e6d" Value="7" Type="float"/>
-    <Parameter Name="MovementAnimationPhase" Guid="6f28af41-7e77-4da0-bada-258f7810d370" Value="0" Type="float"/>
-    <Parameter Name="DeathPhase" Guid="97573fe7-c826-4bfb-827f-82fe3d87fb95" Value="0" Type="float"/>
-    <Parameter Name="Bob" Guid="a03d93f7-1e7f-487b-9ca7-720184d72db4" Value="0" Type="float"/>
-    <Parameter Name="IsAttackHitMoment" Guid="f69c79dd-b1e6-499a-a5dd-d8d90102b66a" Value="false" Type="bool"/>
-    <Parameter Name="AttackOrder" Guid="e37935f7-2430-428d-bdf4-c253e5600ad6" Value="false" Type="bool"/>
+    <Parameter Name="WalkAnimationSpeed" Guid="41353d0e-6350-4dc4-a747-ccab90ccf7c7" Value="0.65" Type="float"/>
+    <Parameter Name="WalkBobHeight" Guid="5450fb12-b43d-4a31-9c81-8cb4b5f69059" Value="0.045" Type="float"/>
+    <Parameter Name="WalkLegsAngle" Guid="213f8f4f-28c7-4b91-97eb-ca6e4443a11c" Value="0.75" Type="float"/>
+    <Parameter Name="SmoothFactor" Guid="ef0afbb0-d632-40b9-84b8-e68dc2160cd8" Value="0.12" Type="float"/>
+    <Parameter Name="AnimationResponsiveness" Guid="3d60bf4a-8f07-4ec1-b6dd-a7326c33cda9" Value="15" Type="float"/>
+    <Parameter Name="AimSmoothFactor" Guid="39b8c31c-ae3c-48ee-a25e-4e119e7d7fb0" Value="0.2" Type="float"/>
+    <Parameter Name="AimTransitionSpeed" Guid="28188c6a-5810-47be-90ba-00bc1b035f28" Value="7" Type="float"/>
+    <Parameter Name="MovementAnimationPhase" Guid="4c142d5f-fd3f-486e-8bbc-cd74f417a236" Value="0" Type="float"/>
+    <Parameter Name="DeathPhase" Guid="fbde9335-bb2b-4d73-b10c-7bb2f0b9ba5d" Value="0" Type="float"/>
+    <Parameter Name="Bob" Guid="cb29fafc-7169-49b4-9d18-0ba1a3020baf" Value="0" Type="float"/>
+    <Parameter Name="IsAttackHitMoment" Guid="3bd2ccbc-302c-4705-b04f-26412f8844b0" Value="false" Type="bool"/>
+    <Parameter Name="AttackOrder" Guid="074f47b3-c1de-44e0-914b-970db31e9c68" Value="false" Type="bool"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="HealthBarDisplay" Guid="0baeb39c-a559-44fd-a98e-d0fc7540bf36" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
         <Parameter Name="MaxDisplayDistance" Value="19" Type="float"/>
@@ -5479,15 +5398,12 @@
             <MemberComponentTemplate Name="Spawn" Guid="c9be37bb-21b3-485c-8100-fa6554d62a39">
     <Parameter Name="AutoDespawn" Guid="17625ed5-622d-427d-82fb-8187ea297bd2" Value="False" Type="bool"/>
 </MemberComponentTemplate>
-           <MemberComponentTemplate Name="ComponentRandomChatter" Guid="6fe41fc6-4743-4545-b301-88b1ff05bde6">
-    <Parameter Name="Class" Value="Game.ComponentRandomChatter" Type="string"/>
-    <Parameter Name="LoadOrder" Value="-1" Type="int"/>
-    <Parameter Name="IsOptional" Value="False" Type="bool"/>
-    <Parameter Name="ActivationDistance" Value="5" Type="float"/>
-    <Parameter Name="DisplayDistance" Value="10" Type="float"/>
-    <Parameter Name="MinInterval" Value="3" Type="float"/>
-    <Parameter Name="MaxInterval" Value="30" Type="float"/>
-    <Parameter Name="RiseDuration" Value="0.5" Type="float"/>
+<MemberComponentTemplate Name="RandomChatter" Guid="cfada442-a12c-47fd-9e82-7e77d1314716" InheritanceParent="a93baf1c-930f-47a8-a98a-f79fd0de910f">
+    <Parameter Name="ActivationDistance" Value="8" Type="float"/>
+    <Parameter Name="DisplayDistance" Value="12" Type="float"/>
+    <Parameter Name="MinInterval" Value="5" Type="float"/>
+    <Parameter Name="MaxInterval" Value="20" Type="float"/>
+    <Parameter Name="RiseDuration" Value="1.5" Type="float"/>
     <Parameter Name="FadeDuration" Value="0.3" Type="float"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="FindPlayerBehavior" Guid="084e4ddb-95fe-4f83-a033-b8e565341ca0" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
