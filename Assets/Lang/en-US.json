@@ -15,12 +15,24 @@
   },
   "ShittyCreaturesLog": {
     "Title": "Shitty Creatures Log",
+    "Version1_0_6": "1.0.6",
     "Version1_0_5": "1.0.5",
     "Version1_0_4": "1.0.4",
     "Version1_0_3": "1.0.3",
     "Version1_0_2": "1.0.2",
     "Version1_0_1": "1.0.1",
     "Version1_0_0": "1.0.0",
+    "Line1_0_6_1": "• New event added in the mod: Green Night and its hordes of infected",
+    "Line1_0_6_2": "• New creatures were added: new infected, 2 Digimon, and bandits (4 of the bandits are unique and can ally with the player and protect them).",
+    "Line1_0_6_3": "• New firearms added",
+    "Line1_0_6_4": "• Now you can manage the inventory of allied npcs and place any object inside there",
+    "Line1_0_6_5": "• 2 new buttons were added to manage the configuration of the npcs chase music to activate and deactivate their music if you want them to be heard or not in your world, now they will be in the configuration button and there will be a button called 'Shitty Creatures settings' and when you click it the 2 buttons will appear along with their saved changes when you exit the game",
+    "Line1_0_6_6": "• New clothes added",
+    "Line1_0_6_7": "• Now the enslaved infected Flying Infected 1, Flying Infected Boss, Infected Bear can now be ridden, so enjoy the journey in the air and on the ground with them",
+    "Line1_0_6_8": "• Added healing methods: Antidote Bucket (cures poison) and the added healing mechanism for creatures with poison and Anti-Flu Bucket (cures the flu) and health healing kits with its creature healing mechanism (the medium one partially heals health and the large one completely heals health)",
+    "Line1_0_6_9": "• The artificial intelligence of normal and infected creatures has been improved, they will no longer use the new chase to control ranged weapons and others, they will now be able to use any ranged and firearm weapons, throwable objects and the management of switching from weapon to melee",
+    "Line1_0_6_10": "• The translations were corrected and improved to sound more fluid and understandable.",
+    "Line1_0_6_11": "• Digimon without powers, such as Gaomon, Gumdramon, Hawkmon, and Gabumon, will now be able to wield ranged and melee weapons.",
     "Line1_0_5_1": "• Added new weapons: Flamethrower, Scythe, Trident, Repeating Crossbow, Poison Bomb, Item Cannon",
     "Line1_0_5_2": "• Added new NPCs: Digimon, Alliance members, Muerte members, Pirates, Infected (zombies)",
     "Line1_0_5_3": "• Added music system (background music, chase music for enemies)",
@@ -65,7 +77,8 @@
     "PoisonAndSicknessCured": "Nausea and sickness have been cured!"
   },
   "AntifluBucket": {
-    "FluCured": "Flu has been cured!"
+    "FluCured": "Flu has been cured!",
+    "FluNPCCured": "The NPC's flu has been cured!"
   },
   "GreenNightDialog": {
     "Title": "Green Night Configuration",
@@ -145,6 +158,8 @@
       "Bandit6": "Bandit 6",
       "Bandit5": "Bandit 5",
       "Bandit4": "Bandit 4",
+      "InfectedFreezer": "Infected Freezer",
+      "InfectedFreezerTamed": "Infected Freezer Ally",
       "HumanoidSkeleton": "Humanoid Skeleton",
       "HumanoidSkeletonTamed": "Humanoid Skeleton Ally",
       "PredatoryChameleon": "Predatory Chameleon",
@@ -280,6 +295,7 @@
       "Richard": "Richard"
     },
     "Description": {
+      "InfectedFreezer": "The Freezing Infected is another rare special infected. It is not a boss or mini-boss, but its appearance seems to come from frozen lands. It shares similarities with other normal infected, but its special ability is throwing freezing snowballs. Be very careful—if it hits you, you could suffer from freezing, and in the worst case, catch a cold! Another one will attack you, and upon hitting its weak point, it will start giving you cold effects. The last one will vomit ice, infecting creatures with the flu as well. However, using a Zombie Collar will give you advantages, providing you with freezing protection. It only appears in waves of other infected, always during winter or in frozen areas.",
       "HumanoidSkeleton": "The Humanoid Skeleton is a very special infected (though not a special infected as you might think). Who does it remind you of when you see it at night? Ah, of course, it brings to mind the skeletons from Minecraft! And guess what? It's also part of the horde of the Infected. However, just like in Minecraft, it can fire a bow, or, depending on the probability, it will change its items. Although you might associate them only with bows, they can also use other ranged and firearms. It's the only infected that appears during the normal night, but the Green Night makes it even more dangerous, as it will hunt you to death. Nevertheless, you can enslave it using the Zombie Collar to make the bony human your guardian.",
       "PredatoryChameleon": "The Predator Chameleon is a unique special infected (note: it is neither a mini-boss nor a boss like other special infected). It emerges when a chameleon, a predator, and a human are exposed to the infection, resulting in a creature that has adapted the appearance of a predator, also bearing human-like features from the mutation, while retaining reptilian characteristics. Although it cannot camouflage itself for hunting, its danger lies in its speed and its deadly attacks, which are far from simple. It can run quickly to catch its victims. Unlike other infected that destroy all blocks, the Predator Chameleon can manipulate doors, making it dangerous to seek refuge, as it can open them. It can also break glass, making any glass-based shelters or defenses vulnerable, as it is the only infected capable of destroying this specific block. During the Green Night, it becomes even more aggressive, relentlessly hunting the player until death. However, its deadly hunting instincts can be calmed by using a Zombie Collar, transforming the infected reptile into your loyal guardian, maintaining its lethal hunting drive.",
       "InfectedBird": "The Infected Bird is created when any flying bird (regardless of whether it's a seagull, duck, crow, sparrow, or pigeon) is killed by an infected creature, resulting in an enhanced, more dangerous version. It will often be found alongside other infected, hunting for prey. While it retains the appearance of a bird, it is significantly stronger and more aggressive. During the Green Night, it becomes an absolute nightmare, relentlessly hunting the player until death. However, unlike other infected, the Infected Bird is relatively weak, and its attacks are not as deadly. It can be tamed using a Zombie Collar, making it a loyal flying guardian.",
