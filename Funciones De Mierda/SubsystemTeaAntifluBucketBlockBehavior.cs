@@ -10,6 +10,7 @@ namespace Game
 		public SubsystemAudio m_subsystemAudio;
 		public SubsystemGameInfo m_subsystemGameInfo;
 		public SubsystemPlayers m_subsystemPlayers;
+		public SubsystemBodies m_subsystemBodies;
 
 		public override int[] HandledBlocks
 		{
@@ -18,40 +19,85 @@ namespace Game
 
 		public override bool OnUse(Ray3 ray, ComponentMiner componentMiner)
 		{
-			if (m_subsystemGameInfo.WorldSettings.GameMode == GameMode.Creative ||
-				!m_subsystemGameInfo.WorldSettings.AreAdventureSurvivalMechanicsEnabled)
-			{
-				return false;
-			}
-
 			ComponentPlayer componentPlayer = componentMiner?.ComponentPlayer;
 			if (componentPlayer == null)
-			{
 				return false;
+
+			// Realizar raycast para detectar entidades cercanas (NPCs)
+			Entity targetEntity = null;
+			ComponentBody hitBody = null;
+			float? hitDistance = null;
+
+			var componentBodies = new DynamicArray<ComponentBody>();
+			Vector2 center = new Vector2(componentPlayer.ComponentBody.Position.X, componentPlayer.ComponentBody.Position.Z);
+			float searchRadius = 6f;
+			m_subsystemBodies.FindBodiesAroundPoint(center, searchRadius, componentBodies);
+
+			Vector3 rayStart = componentPlayer.ComponentBody.Position + new Vector3(0f, 1.5f, 0f); // Altura de ojos
+			Vector3 rayDirection = ray.Direction;
+			float maxDistance = 6f;
+
+			foreach (ComponentBody body in componentBodies)
+			{
+				if (body.Entity == componentPlayer.Entity) continue;
+
+				float? distance = RayBoxIntersection(rayStart, rayDirection, body.BoundingBox);
+				if (distance.HasValue && distance.Value < maxDistance &&
+					(!hitDistance.HasValue || distance.Value < hitDistance.Value))
+				{
+					hitBody = body;
+					hitDistance = distance.Value;
+				}
 			}
 
-			bool hasFlu = HasFlu(componentPlayer);
+			if (hitBody != null)
+			{
+				targetEntity = hitBody.Entity;
+			}
 
-			// Solo procesar si el jugador tiene gripe
+			bool isTargetingPlayer = (targetEntity == null || targetEntity == componentPlayer.Entity);
+			if (isTargetingPlayer)
+			{
+				targetEntity = componentPlayer.Entity;
+
+				// Solo se puede curar al jugador en modos de supervivencia
+				if (m_subsystemGameInfo.WorldSettings.GameMode == GameMode.Creative ||
+					!m_subsystemGameInfo.WorldSettings.AreAdventureSurvivalMechanicsEnabled)
+				{
+					return false;
+				}
+			}
+
+			// Verificar si el objetivo tiene gripe
+			bool hasFlu = HasFlu(targetEntity);
 			if (!hasFlu)
-			{
 				return false;
-			}
 
+			// Reproducir sonido de beber
 			m_subsystemAudio.PlaySound("Audio/UI/drinking", 1f, 0f, 0f, 0f);
 
-			bool curedFlu = CureFlu(componentPlayer);
-
-			if (curedFlu)
+			// Curar la gripe y restaurar salud
+			bool cured = CureFlu(targetEntity);
+			bool healthRestored = false;
+			if (cured)
 			{
-				// Solo restaurar salud si se curó la gripe
-				RestoreHealth(componentPlayer);
-
-				// Usar la nueva estructura de mensajes independiente
-				string fluMessage = LanguageControl.Get("AntifluBucket", "FluCured");
-				componentPlayer.ComponentGui.DisplaySmallMessage(fluMessage, new Color(102, 178, 255), true, false);
+				healthRestored = RestoreHealth(targetEntity);
 			}
 
+			// Mostrar mensajes según el objetivo
+			ComponentPlayer targetPlayer = targetEntity.FindComponent<ComponentPlayer>();
+			if (targetPlayer != null)
+			{
+				string message = LanguageControl.Get("AntifluBucket", "FluCured");
+				targetPlayer.ComponentGui.DisplaySmallMessage(message, new Color(102, 178, 255), true, false);
+			}
+			else if (!isTargetingPlayer)
+			{
+				string npcMessage = LanguageControl.Get("AntifluBucket", "FluNPCCured");
+				componentPlayer.ComponentGui.DisplaySmallMessage(npcMessage, new Color(102, 178, 255), true, false);
+			}
+
+			// Reemplazar el cubo de antigripe por un cubo vacío
 			IInventory inventory = componentMiner.Inventory;
 			if (inventory != null)
 			{
@@ -63,45 +109,98 @@ namespace Game
 			return true;
 		}
 
-		private bool HasFlu(ComponentPlayer player)
+		private float? RayBoxIntersection(Vector3 rayOrigin, Vector3 rayDirection, BoundingBox box)
 		{
-			if (player == null) return false;
+			Vector3 dirFrac = new Vector3(
+				1.0f / (rayDirection.X != 0 ? rayDirection.X : float.Epsilon),
+				1.0f / (rayDirection.Y != 0 ? rayDirection.Y : float.Epsilon),
+				1.0f / (rayDirection.Z != 0 ? rayDirection.Z : float.Epsilon)
+			);
 
-			ComponentFlu flu = player.Entity.FindComponent<ComponentFlu>();
-			return flu != null && flu.HasFlu;
+			float t1 = (box.Min.X - rayOrigin.X) * dirFrac.X;
+			float t2 = (box.Max.X - rayOrigin.X) * dirFrac.X;
+			float t3 = (box.Min.Y - rayOrigin.Y) * dirFrac.Y;
+			float t4 = (box.Max.Y - rayOrigin.Y) * dirFrac.Y;
+			float t5 = (box.Min.Z - rayOrigin.Z) * dirFrac.Z;
+			float t6 = (box.Max.Z - rayOrigin.Z) * dirFrac.Z;
+
+			float tmin = MathUtils.Max(MathUtils.Min(t1, t2), MathUtils.Min(t3, t4), MathUtils.Min(t5, t6));
+			float tmax = MathUtils.Min(MathUtils.Max(t1, t2), MathUtils.Max(t3, t4), MathUtils.Max(t5, t6));
+
+			if (tmax < 0 || tmin > tmax)
+				return null;
+
+			return (tmin < 0) ? tmax : tmin;
 		}
 
-		private bool CureFlu(ComponentPlayer player)
+		private bool HasFlu(Entity entity)
 		{
-			if (player == null) return false;
+			if (entity == null) return false;
 
-			ComponentFlu flu = player.Entity.FindComponent<ComponentFlu>();
-			if (flu != null && flu.HasFlu)
-			{
-				// Resetear todos los parámetros de la gripa
-				flu.m_fluDuration = 0f;
-				flu.m_fluOnset = 0f;
-				flu.m_coughDuration = 0f;
-				flu.m_sneezeDuration = 0f;
-				flu.m_blackoutDuration = 0f;
-				flu.m_blackoutFactor = 0f;
-
-				// Limpiar blackout de la pantalla
-				player.ComponentScreenOverlays.BlackoutFactor = MathUtils.Max(0f, player.ComponentScreenOverlays.BlackoutFactor);
+			// Jugador: ComponentFlu
+			var playerFlu = entity.FindComponent<ComponentFlu>();
+			if (playerFlu != null && playerFlu.HasFlu)
 				return true;
-			}
+
+			// Criatura: ComponentFluInfected
+			var creatureFlu = entity.FindComponent<ComponentFluInfected>();
+			if (creatureFlu != null && creatureFlu.IsInfected)
+				return true;
+
 			return false;
 		}
 
-		private bool RestoreHealth(ComponentPlayer player)
+		private bool CureFlu(Entity entity)
 		{
-			if (player == null) return false;
+			if (entity == null) return false;
 
-			ComponentHealth health = player.Entity.FindComponent<ComponentHealth>();
+			// Intentar curar al jugador (ComponentFlu)
+			var playerFlu = entity.FindComponent<ComponentFlu>();
+			if (playerFlu != null && playerFlu.HasFlu)
+			{
+				// Usar reflexión para acceder a los campos privados
+				var type = typeof(ComponentFlu);
+				var fieldDuration = type.GetField("m_fluDuration", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+				var fieldOnset = type.GetField("m_fluOnset", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+				var fieldCough = type.GetField("m_coughDuration", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+				var fieldSneeze = type.GetField("m_sneezeDuration", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+				var fieldBlackout = type.GetField("m_blackoutDuration", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+				var fieldBlackoutFactor = type.GetField("m_blackoutFactor", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+
+				fieldDuration?.SetValue(playerFlu, 0f);
+				fieldOnset?.SetValue(playerFlu, 0f);
+				fieldCough?.SetValue(playerFlu, 0f);
+				fieldSneeze?.SetValue(playerFlu, 0f);
+				fieldBlackout?.SetValue(playerFlu, 0f);
+				fieldBlackoutFactor?.SetValue(playerFlu, 0f);
+
+				var player = entity.FindComponent<ComponentPlayer>();
+				if (player != null)
+				{
+					player.ComponentScreenOverlays.BlackoutFactor = 0f;
+				}
+				return true;
+			}
+
+			// Intentar curar a una criatura (ComponentFluInfected)
+			var creatureFlu = entity.FindComponent<ComponentFluInfected>();
+			if (creatureFlu != null && creatureFlu.IsInfected)
+			{
+				// Podemos llamar a StartFlu(0) para resetear la duración
+				creatureFlu.StartFlu(0f);
+				return true;
+			}
+
+			return false;
+		}
+
+		private bool RestoreHealth(Entity entity)
+		{
+			var health = entity.FindComponent<ComponentHealth>();
 			if (health != null && health.Health < 1f)
 			{
-				float missingHealth = 1f - health.Health;
-				health.Heal(missingHealth);
+				float missing = 1f - health.Health;
+				health.Heal(missing);
 				return true;
 			}
 			return false;
@@ -113,6 +212,7 @@ namespace Game
 			m_subsystemAudio = Project.FindSubsystem<SubsystemAudio>(true);
 			m_subsystemGameInfo = Project.FindSubsystem<SubsystemGameInfo>(true);
 			m_subsystemPlayers = Project.FindSubsystem<SubsystemPlayers>(true);
+			m_subsystemBodies = Project.FindSubsystem<SubsystemBodies>(true);
 		}
 
 		public override void Save(ValuesDictionary valuesDictionary)
