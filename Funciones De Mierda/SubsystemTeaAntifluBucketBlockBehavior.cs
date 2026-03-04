@@ -186,8 +186,20 @@ namespace Game
 			var creatureFlu = entity.FindComponent<ComponentFluInfected>();
 			if (creatureFlu != null && creatureFlu.IsInfected)
 			{
-				// Podemos llamar a StartFlu(0) para resetear la duración
-				creatureFlu.StartFlu(0f);
+				// Acceder al campo privado m_fluDuration y ponerlo a 0 directamente
+				var field = typeof(ComponentFluInfected).GetField("m_fluDuration",
+					System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+				field?.SetValue(creatureFlu, 0f);
+
+				// Detener efectos residuales (opcional pero recomendado)
+				var coughField = typeof(ComponentFluInfected).GetField("m_coughDuration",
+					System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+				coughField?.SetValue(creatureFlu, 0f);
+
+				var sneezeField = typeof(ComponentFluInfected).GetField("m_sneezeDuration",
+					System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+				sneezeField?.SetValue(creatureFlu, 0f);
+
 				return true;
 			}
 
