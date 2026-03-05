@@ -9,6 +9,7 @@ namespace Game
 	{
 		private BevelledButtonWidget m_ghostButton;
 		private BevelledButtonWidget m_tankButton;
+		private BevelledButtonWidget m_spawnButton; // Nuevo botón
 		private StackPanelWidget m_contentPanel;
 		private LabelWidget m_titleLabel;
 
@@ -17,7 +18,6 @@ namespace Game
 			XElement node = ContentManager.Get<XElement>("Screens/ShittyCreaturesSettingsScreen");
 			this.LoadContents(this, node);
 
-			// Obtener y establecer el título traducido
 			m_titleLabel = this.Children.Find<LabelWidget>("TopBar.Label", true);
 			m_titleLabel.Text = LanguageControl.Get(new string[] { "ShittyCreatures", "ScreenTitle" });
 
@@ -26,6 +26,7 @@ namespace Game
 			m_contentPanel.HorizontalAlignment = WidgetAlignment.Near;
 			m_contentPanel.Margin = new Vector2(20f, 10f);
 
+			// Botón Ghost
 			m_ghostButton = new BevelledButtonWidget
 			{
 				Text = GetGhostButtonText(),
@@ -36,6 +37,7 @@ namespace Game
 				HorizontalAlignment = WidgetAlignment.Far
 			};
 
+			// Botón Tank
 			m_tankButton = new BevelledButtonWidget
 			{
 				Text = GetTankButtonText(),
@@ -46,8 +48,21 @@ namespace Game
 				HorizontalAlignment = WidgetAlignment.Far
 			};
 
+			// Nuevo botón Spawn (verde claro)
+			m_spawnButton = new BevelledButtonWidget
+			{
+				Text = GetSpawnButtonText(),
+				Size = new Vector2(310f, 60f),
+				BevelColor = Color.LightGreen,
+				CenterColor = Color.LightGreen,
+				Name = "DeathSpawnButton",
+				HorizontalAlignment = WidgetAlignment.Far
+			};
+
+			// Crear filas
 			CreateOptionRow("ShittyCreatures", "GhostDescription", m_ghostButton);
 			CreateOptionRow("ShittyCreatures", "TankDescription", m_tankButton);
+			CreateOptionRow("ShittyCreatures", "SpawnDescription", m_spawnButton); // Nueva fila
 		}
 
 		private void CreateOptionRow(string category, string descriptionKey, BevelledButtonWidget button)
@@ -87,6 +102,14 @@ namespace Game
 			return string.Format(template, onOff);
 		}
 
+		// Nuevo método para el botón de spawn
+		private string GetSpawnButtonText()
+		{
+			string onOff = ShittyCreaturesSettingsManager.DeathSpawnEnabled ? LanguageControl.On : LanguageControl.Off;
+			string template = LanguageControl.Get(new string[] { "ShittyCreatures", "SpawnButton" });
+			return string.Format(template, onOff);
+		}
+
 		public override void Update()
 		{
 			if (base.Input.Back || base.Input.Cancel || this.Children.Find<ButtonWidget>("TopBar.Back", true).IsClicked)
@@ -106,6 +129,13 @@ namespace Game
 			{
 				ShittyCreaturesSettingsManager.TankMusicEnabled = !ShittyCreaturesSettingsManager.TankMusicEnabled;
 				m_tankButton.Text = GetTankButtonText();
+			}
+
+			// Nuevo: manejar clic en botón de spawn
+			if (m_spawnButton.IsClicked)
+			{
+				ShittyCreaturesSettingsManager.DeathSpawnEnabled = !ShittyCreaturesSettingsManager.DeathSpawnEnabled;
+				m_spawnButton.Text = GetSpawnButtonText();
 			}
 		}
 	}
