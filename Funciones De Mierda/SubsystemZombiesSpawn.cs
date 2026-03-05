@@ -31,8 +31,8 @@ namespace Game
 		// Control de spawn
 		private float m_spawnTimer;
 		private float m_spawnInterval = 2f;
-		private const int MaxCreaturesPerArea = 80;
-		private const int MaxGlobalCreatures = 100;
+		private const int MaxCreaturesPerArea = 150;  // Aumentado de 80
+		private const int MaxGlobalCreatures = 200;   // Aumentado de 100
 
 		// Estado de jefes
 		private bool m_bossBattleActive;
@@ -42,6 +42,7 @@ namespace Game
 
 		// Control de avance de oleada
 		private bool m_wasGreenNightActive;
+		private bool m_isAdvancingWave = false;  // NUEVO: bandera anti-doble-avance
 
 		// Listas estáticas de templates
 		private static readonly HashSet<string> BossTemplates = new HashSet<string>
@@ -181,6 +182,10 @@ namespace Game
 
 		private void AdvanceToNextWave()
 		{
+			// NUEVO: prevenir doble avance
+			if (m_isAdvancingWave) return;
+			m_isAdvancingWave = true;
+
 			m_hasSpawnedBossThisNight = false;
 			m_bossBattleActive = false;
 			m_bossQueue.Clear();
@@ -193,6 +198,8 @@ namespace Game
 				m_currentWave = nextWave;
 				SetCurrentWave(m_currentWave);
 			}
+
+			m_isAdvancingWave = false;
 		}
 
 		private Vector3 GetBossSpawnPoint()
@@ -361,17 +368,23 @@ namespace Game
 			}
 		}
 
+		// Método SetCurrentWave MODIFICADO (ajusta intervalo según oleada)
 		private void SetCurrentWave(int wave)
 		{
 			if (m_waves.TryGetValue(wave, out var entries))
 			{
 				m_currentWaveEntries = entries;
 				m_currentWave = wave;
+
+				// NUEVO: Ajustar intervalo según la oleada (más frecuente en oleadas altas)
+				// Oleada 1: 2.0s, Oleada 28: 0.6s
+				m_spawnInterval = Math.Max(0.6f, 2.0f - (wave * 0.05f));
 			}
 			else
 			{
 				m_currentWaveEntries = m_waves.ContainsKey(1) ? m_waves[1] : new List<WaveEntry>();
 				m_currentWave = 1;
+				m_spawnInterval = 2.0f; // Valor por defecto
 			}
 		}
 
@@ -407,19 +420,13 @@ namespace Game
 			}
 
 			string bossTemplate = m_bossQueue.Dequeue();
-			Vector3 spawnPos = GetRandomSpawnPointAroundPlayers(true);
+			// CORRECCIÓN: Usar el método que valida bloques prohibidos
+			Vector3 spawnPos = GetBossSpawnPoint();
 
-			// Intentar varias veces si no se encuentra punto
-			int attempts = 0;
-			while (spawnPos == Vector3.Zero && attempts < 3)
-			{
-				spawnPos = GetRandomSpawnPointAroundPlayers(true);
-				attempts++;
-			}
-
+			// Si no se encontró punto, se reintenta (GetBossSpawnPoint ya hace varios intentos internamente)
 			if (spawnPos == Vector3.Zero)
 			{
-				// Si falla, spawnear cerca del primer jugador
+				// Fallback: spawnear cerca del primer jugador (como medida de emergencia)
 				var player = m_subsystemPlayers.ComponentPlayers.FirstOrDefault();
 				if (player != null)
 				{
@@ -428,7 +435,6 @@ namespace Game
 				}
 				else
 				{
-					// Si no hay jugadores, reintentar
 					m_bossQueue.Enqueue(bossTemplate);
 					return;
 				}
