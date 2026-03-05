@@ -170,13 +170,22 @@ namespace Game
 			int maxWave = m_waves.Keys.Max();  // Obtiene la última oleada (28)
 
 			if (m_currentWave == maxWave)
-				message = LanguageControl.Get("ZombiesSpawn", "FinalWave");  // "¡OLEADA FINAL!"
-			else
-				message = string.Format(LanguageControl.Get("ZombiesSpawn", "WaveMessage"), m_currentWave);  // "Oleada X"
-
-			foreach (var player in m_subsystemPlayers.ComponentPlayers)
 			{
-				player.ComponentGui.DisplayLargeMessage(message, "", 3f, 0f);
+				message = LanguageControl.Get("ZombiesSpawn", "FinalWave");  // "¡OLEADA FINAL!"
+																			 // Mostrar como mensaje pequeño
+				foreach (var player in m_subsystemPlayers.ComponentPlayers)
+				{
+					player.ComponentGui.DisplaySmallMessage(message, Color.White, false, true);
+				}
+			}
+			else
+			{
+				message = string.Format(LanguageControl.Get("ZombiesSpawn", "WaveMessage"), m_currentWave);  // "Oleada X"
+																											 // Mostrar como mensaje grande
+				foreach (var player in m_subsystemPlayers.ComponentPlayers)
+				{
+					player.ComponentGui.DisplayLargeMessage(message, "", 3f, 0f);
+				}
 			}
 		}
 
@@ -420,18 +429,53 @@ namespace Game
 			}
 
 			string bossTemplate = m_bossQueue.Dequeue();
-			// CORRECCIÓN: Usar el método que valida bloques prohibidos
-			Vector3 spawnPos = GetBossSpawnPoint();
+			Vector3 spawnPos = Vector3.Zero;
 
-			// Si no se encontró punto, se reintenta (GetBossSpawnPoint ya hace varios intentos internamente)
+			// Intentar obtener un punto de spawn válido varias veces
+			for (int attempt = 0; attempt < 3; attempt++)
+			{
+				spawnPos = GetBossSpawnPoint();
+				if (spawnPos != Vector3.Zero)
+					break;
+			}
+
+			// Si aún no se encontró, usar un método alternativo con más intentos y distancia variable
 			if (spawnPos == Vector3.Zero)
 			{
-				// Fallback: spawnear cerca del primer jugador (como medida de emergencia)
+				spawnPos = GetAlternativeBossSpawnPoint();
+			}
+
+			if (spawnPos == Vector3.Zero)
+			{
+				// Último recurso: spawnear algo más lejos pero aún verificando bloque
 				var player = m_subsystemPlayers.ComponentPlayers.FirstOrDefault();
 				if (player != null)
 				{
-					Vector3 playerPos = player.ComponentBody.Position;
-					spawnPos = new Vector3(playerPos.X + m_random.Float(-10, 10), playerPos.Y + 2, playerPos.Z + m_random.Float(-10, 10));
+					for (int i = 0; i < 10; i++)
+					{
+						float angle = m_random.Float(0, 2 * MathUtils.PI);
+						float distance = m_random.Float(20, 30); // un poco más cerca pero aún algo lejos
+						int x = (int)(player.ComponentBody.Position.X + MathF.Cos(angle) * distance);
+						int z = (int)(player.ComponentBody.Position.Z + MathF.Sin(angle) * distance);
+						int y = m_subsystemTerrain.Terrain.GetTopHeight(x, z);
+						if (y > 0 && y < 255)
+						{
+							int cellValue = m_subsystemTerrain.Terrain.GetCellValue(x, y - 1, z);
+							int contents = Terrain.ExtractContents(cellValue);
+							Block block = BlocksManager.Blocks[contents];
+							string blockName = block.GetType().Name;
+							if (!m_forbiddenBlockNames.Contains(blockName) && block.IsCollidable)
+							{
+								spawnPos = new Vector3(x + 0.5f, y, z + 0.5f);
+								break;
+							}
+						}
+					}
+					if (spawnPos == Vector3.Zero)
+					{
+						// Si todo falla, spawnear en la posición del jugador (muy cerca)
+						spawnPos = player.ComponentBody.Position + new Vector3(0, 2, 0);
+					}
 				}
 				else
 				{
@@ -450,6 +494,36 @@ namespace Game
 			{
 				AdvanceBossBattle();
 			}
+		}
+
+		// Nuevo método alternativo para buscar punto de spawn de jefe
+		private Vector3 GetAlternativeBossSpawnPoint()
+		{
+			// Similar a GetBossSpawnPoint pero con más intentos y distancias variables
+			foreach (var player in m_subsystemPlayers.ComponentPlayers)
+			{
+				Vector3 playerPos = player.ComponentBody.Position;
+				for (int i = 0; i < 50; i++) // más intentos
+				{
+					float angle = m_random.Float(0, 2 * MathUtils.PI);
+					float distance = m_random.Float(30, 80); // rango más amplio
+					int x = (int)(playerPos.X + MathF.Cos(angle) * distance);
+					int z = (int)(playerPos.Z + MathF.Sin(angle) * distance);
+					int y = m_subsystemTerrain.Terrain.GetTopHeight(x, z);
+					if (y > 0 && y < 255)
+					{
+						int cellValue = m_subsystemTerrain.Terrain.GetCellValue(x, y - 1, z);
+						int contents = Terrain.ExtractContents(cellValue);
+						Block block = BlocksManager.Blocks[contents];
+						string blockName = block.GetType().Name;
+						if (!m_forbiddenBlockNames.Contains(blockName) && block.IsCollidable)
+						{
+							return new Vector3(x + 0.5f, y, z + 0.5f);
+						}
+					}
+				}
+			}
+			return Vector3.Zero;
 		}
 
 		private void AdvanceBossBattle()
@@ -512,7 +586,8 @@ namespace Game
 			foreach (var player in m_subsystemPlayers.ComponentPlayers)
 			{
 				var camera = player.GameWidget.ActiveCamera;
-				for (int i = 0; i < 20; i++)
+				// Aumentamos intentos para dar más oportunidad
+				for (int i = 0; i < 30; i++)
 				{
 					var point = m_subsystemCreatureSpawn.GetRandomSpawnPoint(camera, SpawnLocationType.Surface);
 					if (point.HasValue)
@@ -526,34 +601,15 @@ namespace Game
 						Block block = BlocksManager.Blocks[contents];
 
 						string blockName = block.GetType().Name;
+						// Solo se acepta si el bloque NO está en la lista de prohibidos
 						if (!m_forbiddenBlockNames.Contains(blockName))
 						{
 							return new Vector3(point.Value.X + 0.5f, point.Value.Y, point.Value.Z + 0.5f);
 						}
 					}
 				}
-
-				// Si no se encontró con bloque permitido, intentar aceptar cualquier bloque sólido
-				for (int i = 0; i < 10; i++)
-				{
-					var point = m_subsystemCreatureSpawn.GetRandomSpawnPoint(camera, SpawnLocationType.Surface);
-					if (point.HasValue)
-					{
-						int x = point.Value.X;
-						int y = point.Value.Y - 1;
-						int z = point.Value.Z;
-
-						int cellValue = m_subsystemTerrain.Terrain.GetCellValue(x, y, z);
-						int contents = Terrain.ExtractContents(cellValue);
-						Block block = BlocksManager.Blocks[contents];
-
-						if (!(block is WaterBlock) && !(block is MagmaBlock))
-						{
-							return new Vector3(point.Value.X + 0.5f, point.Value.Y, point.Value.Z + 0.5f);
-						}
-					}
-				}
 			}
+			// Si no se encontró ningún punto válido, retornar cero
 			return Vector3.Zero;
 		}
 
