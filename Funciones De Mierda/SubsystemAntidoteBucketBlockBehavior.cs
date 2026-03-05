@@ -211,25 +211,31 @@ namespace Game
 			ComponentPoisonInfected poison = entity.FindComponent<ComponentPoisonInfected>();
 			if (poison != null && poison.IsInfected)
 			{
-				System.Reflection.MethodInfo method = typeof(ComponentPoisonInfected).GetMethod("StartInfect",
-					System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
-
-				if (method != null)
+				// Detener el sistema de partículas de vómito (campo privado, requiere reflexión)
+				var pukeSystemField = typeof(ComponentPoisonInfected).GetField("m_pukeParticleSystem",
+					System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+				var pukeSystem = pukeSystemField?.GetValue(poison) as PukeParticleSystem;
+				if (pukeSystem != null && !pukeSystem.IsStopped)
 				{
-					method.Invoke(poison, new object[] { 0f });
-				}
-				else
-				{
-					System.Reflection.FieldInfo infectField = typeof(ComponentPoisonInfected).GetField("m_InfectDuration",
-						System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-
-					if (infectField != null)
-					{
-						infectField.SetValue(poison, 0f);
-					}
+					pukeSystem.IsStopped = true;
+					pukeSystemField.SetValue(poison, null);
 				}
 
+				// Forzar la duración de infección a 0 (campo público, acceso directo)
+				poison.m_InfectDuration = 0f;
+
+				// Reiniciar temporizadores internos para evitar que el NPC vuelva a vomitar
+				var nauseaField = typeof(ComponentPoisonInfected).GetField("m_lastNauseaTime",
+					System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+				nauseaField?.SetValue(poison, null);
+
+				var pukeTimeField = typeof(ComponentPoisonInfected).GetField("m_lastPukeTime",
+					System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+				pukeTimeField?.SetValue(poison, null);
+
+				// Restablecer resistencia (opcional)
 				poison.PoisonResistance = MathUtils.Max(poison.PoisonResistance, 50f);
+
 				return true;
 			}
 			return false;
