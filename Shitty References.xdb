@@ -523,6 +523,9 @@
     </Folder>
 
     <ProjectTemplate Name="Project" Guid="85023bf8-1c90-4dd1-9442-e6c13691d078">
+<MemberSubsystemTemplate Name="FreezingSnowballBlockBehavior" Guid="063d71db-2091-48d6-bf9c-433bc8561f09" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+    <Parameter Name="Class" Value="Game.SubsystemFreezingSnowballBlockBehavior" Type="string" Guid="597f6024-60fe-4b4a-aea2-8add2149f3b8"/>
+</MemberSubsystemTemplate>
 <MemberSubsystemTemplate Name="RemoteControlBlockBehavior" Guid="a5bfc6df-2c59-41a4-8ba0-baaf91e96e13" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
     <Parameter Name="Class" Value="Game.SubsystemRemoteControlBlockBehavior" Type="string" Guid="de5b662a-53fc-4d16-a19f-4cd02e649a20"/>
 </MemberSubsystemTemplate>
