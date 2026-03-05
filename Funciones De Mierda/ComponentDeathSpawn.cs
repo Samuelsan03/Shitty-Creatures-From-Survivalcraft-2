@@ -72,20 +72,18 @@ namespace Game
 
 		public virtual void Update(float dt)
 		{
+			// Dentro del método Update, donde se verifica la muerte
 			if (m_componentHealth.Health <= 0f && !m_hasCheckedDeath)
 			{
 				m_hasCheckedDeath = true;
 
-				if (m_spawnEntries.Count > 0)
+				// Solo intentar spawnear si la opción está habilitada
+				if (ShittyCreaturesSettingsManager.DeathSpawnEnabled && m_spawnEntries.Count > 0)
 				{
-					// CORRECCIÓN: Primero seleccionar el NPC basado en sus probabilidades relativas
 					SpawnEntry selectedEntry = SelectRandomNPC();
-
 					if (selectedEntry != null)
 					{
-						// CORRECCIÓN: Luego aplicar la probabilidad global multiplicada por la individual
 						float finalProbability = m_globalSpawnProbability * selectedEntry.Probability;
-
 						if (s_random.Float(0f, 1f) < finalProbability)
 						{
 							m_shouldSpawnOnDespawn = true;
