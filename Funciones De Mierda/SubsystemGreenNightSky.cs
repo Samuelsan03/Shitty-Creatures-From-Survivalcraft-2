@@ -52,7 +52,7 @@ namespace Game
 		public bool HasRolledTonight { get; set; }
 		public double LastCheckedDay { get; set; }
 		public int DaysSinceLastGreenNight { get; set; }
-		public float GreenNightChance { get; set; } = 0.5f;
+		public float GreenNightChance { get; set; } = 1f;  // CAMBIADO: siempre 1 para que ocurra cada luna llena/nueva
 
 		public static SubsystemGreenNightSky Instance { get; set; }
 
@@ -89,28 +89,24 @@ namespace Game
 
 			if (!this.IsGreenNightActive && (this.m_subsystemSky.MoonPhase == 0 || this.m_subsystemSky.MoonPhase == 4))
 			{
-				if (isStartMoment && !this.HasRolledTonight && this.DaysSinceLastGreenNight >= 1)
+				// MODIFICADO: Eliminada la condición DaysSinceLastGreenNight >= 1
+				if (isStartMoment && !this.HasRolledTonight)
 				{
 					this.HasRolledTonight = true;
-					float num = Math.Min(1f, this.GreenNightChance * (float)this.DaysSinceLastGreenNight);
-					float num2 = this.m_random.Float(0f, 1f);
+					// Siempre activar (probabilidad 1)
+					this.IsGreenNightActive = true;
+					this.DaysSinceLastGreenNight = 0;
 
-					if (num2 < num)
+					SubsystemPlayers subsystemPlayers = base.Project.FindSubsystem<SubsystemPlayers>(true);
+					if (subsystemPlayers != null)
 					{
-						this.IsGreenNightActive = true;
-						this.DaysSinceLastGreenNight = 0;
-
-						SubsystemPlayers subsystemPlayers = base.Project.FindSubsystem<SubsystemPlayers>(true);
-						if (subsystemPlayers != null)
+						foreach (ComponentPlayer componentPlayer in subsystemPlayers.ComponentPlayers)
 						{
-							foreach (ComponentPlayer componentPlayer in subsystemPlayers.ComponentPlayers)
+							if (componentPlayer?.ComponentGui != null)
 							{
-								if (componentPlayer?.ComponentGui != null)
-								{
-									componentPlayer.ComponentGui.DisplaySmallMessage(
-										LanguageControl.Get("GreenNightSky", "GreenMoonBegins"),
-										new Color(5, 154, 0), false, true);
-								}
+								componentPlayer.ComponentGui.DisplaySmallMessage(
+									LanguageControl.Get("GreenNightSky", "GreenMoonBegins"),
+									new Color(5, 154, 0), false, true);
 							}
 						}
 					}
