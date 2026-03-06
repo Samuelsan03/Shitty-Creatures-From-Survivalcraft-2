@@ -1,127 +1,81 @@
 using System;
-using System.Collections.Generic;
 using System.Xml.Linq;
 using Engine;
-using GameEntitySystem;
 
 namespace Game
 {
 	public class CreatureInventoryWidget : CanvasWidget
 	{
-		private IInventory m_creatureInventory;
-		private List<InventorySlotWidget> m_creatureSlots = new List<InventorySlotWidget>();
+		private ComponentCreatureInventory m_creatureInventory;
 		private GridPanelWidget m_creatureGrid;
-		private LabelWidget m_creatureInventoryLabel;
-		private LabelWidget m_inventoryLabel;
-		private Entity m_creatureEntity;
-		private ComponentCreature m_creatureComponent;
+		private GridPanelWidget m_inventoryGrid;
 
-		public CreatureInventoryWidget(IInventory creatureInventory, IInventory playerInventory, Entity creatureEntity)
+		public CreatureInventoryWidget(IInventory playerInventory, ComponentCreatureInventory creatureInventory)
 		{
 			m_creatureInventory = creatureInventory;
-			m_creatureEntity = creatureEntity;
-			m_creatureComponent = creatureEntity.FindComponent<ComponentCreature>();
-
 			XElement node = ContentManager.Get<XElement>("Widgets/CreatureInventoryWidget");
-			this.LoadContents(this, node);
+			LoadContents(this, node);
 
-			m_creatureGrid = this.Children.Find<GridPanelWidget>("CreatureGrid", true);
-			GridPanelWidget inventoryGrid = this.Children.Find<GridPanelWidget>("InventoryGrid", true);
-			m_creatureInventoryLabel = this.Children.Find<LabelWidget>("CreatureInventoryLabel", true);
-			m_inventoryLabel = this.Children.Find<LabelWidget>("InventoryLabel", true);
+			m_creatureGrid = Children.Find<GridPanelWidget>("CreatureGrid", true);
+			m_inventoryGrid = Children.Find<GridPanelWidget>("InventoryGrid", true);
 
-			UpdateLabels();
+			// Configurar etiquetas con LanguageControl - Usando la estructura ContentWidgets
+			LabelWidget creatureLabel = Children.Find<LabelWidget>("CreatureInventoryLabel", true);
+			LabelWidget inventoryLabel = Children.Find<LabelWidget>("InventoryLabel", true);
 
-			for (int i = 0; i < 16; i++)
+			// Usar la ruta completa dentro de ContentWidgets
+			creatureLabel.Text = LanguageControl.GetContentWidgets("CreatureInventoryWidget", "CreatureInventoryLabel");
+			inventoryLabel.Text = LanguageControl.GetContentWidgets("CreatureInventoryWidget", "InventoryLabel");
+
+			// Fallback por si no encuentra la traducción
+			if (string.IsNullOrEmpty(creatureLabel.Text) || creatureLabel.Text.Contains("CreatureInventoryWidget"))
+				creatureLabel.Text = "Creature Inventory";
+
+			if (string.IsNullOrEmpty(inventoryLabel.Text) || inventoryLabel.Text.Contains("CreatureInventoryWidget"))
+				inventoryLabel.Text = "Inventory";
+
+			int creatureSlots = creatureInventory.SlotsCount; // Debe ser 16 según Load
+
+			// Ajustar cuadrícula de la criatura (4 columnas fijas)
+			int columns = 4;
+			int rows = (creatureSlots + columns - 1) / columns;
+			m_creatureGrid.RowsCount = rows;
+			m_creatureGrid.ColumnsCount = columns;
+
+			int slotIndex = 0;
+			for (int row = 0; row < rows; row++)
 			{
-				InventorySlotWidget slot = new InventorySlotWidget();
-				slot.AssignInventorySlot(creatureInventory, i);
-				m_creatureSlots.Add(slot);
-				m_creatureGrid.Children.Add(slot);
-				m_creatureGrid.SetWidgetCell(slot, new Point2(i % 4, i / 4));
+				for (int col = 0; col < columns; col++)
+				{
+					if (slotIndex >= creatureSlots) break;
+					InventorySlotWidget slot = new InventorySlotWidget();
+					slot.AssignInventorySlot(creatureInventory, slotIndex);
+					m_creatureGrid.Children.Add(slot);
+					m_creatureGrid.SetWidgetCell(slot, new Point2(col, row));
+					slotIndex++;
+				}
 			}
 
-			for (int i = 0; i < 16; i++)
+			// Inventario del jugador (slots desde el índice 10, 4x4 = 16 slots)
+			int playerStartSlot = 10;
+			for (int row = 0; row < 4; row++)
 			{
-				InventorySlotWidget slot = new InventorySlotWidget();
-				slot.AssignInventorySlot(playerInventory, 10 + i);
-				inventoryGrid.Children.Add(slot);
-				inventoryGrid.SetWidgetCell(slot, new Point2(i % 4, i / 4));
-			}
-
-			ComponentCreatureInventory creatureInv = creatureInventory as ComponentCreatureInventory;
-			if (creatureInv != null)
-			{
-				creatureInv.ActiveSlotChanged += OnCreatureActiveSlotChanged;
-				creatureInv.InventoryChanged += OnCreatureInventoryChanged;
-			}
-		}
-
-		private void UpdateLabels()
-		{
-			if (m_creatureInventoryLabel != null)
-			{
-				string creatureName = GetEntityName();
-				string formatText = LanguageControl.GetContentWidgets("CreatureInventoryWidget", "CreatureInventoryLabel");
-				if (formatText.StartsWith("ContentWidgets:"))
-					formatText = "Inventory of {0}";
-				m_creatureInventoryLabel.Text = string.Format(formatText, creatureName);
-			}
-
-			if (m_inventoryLabel != null)
-			{
-				string inventoryText = LanguageControl.GetContentWidgets("CreatureInventoryWidget", "InventoryLabel");
-				if (inventoryText.StartsWith("ContentWidgets:"))
-					inventoryText = "Inventory";
-				m_inventoryLabel.Text = inventoryText;
-			}
-		}
-
-		private string GetEntityName()
-		{
-			if (m_creatureComponent != null && !string.IsNullOrEmpty(m_creatureComponent.DisplayName))
-				return m_creatureComponent.DisplayName;
-
-			var componentName = m_creatureEntity.FindComponent<ComponentName>();
-			if (componentName != null && !string.IsNullOrEmpty(componentName.Name))
-				return componentName.Name;
-
-			return "Creature";
-		}
-
-		private void OnCreatureActiveSlotChanged()
-		{
-			RefreshCreatureSlots();
-		}
-
-		private void OnCreatureInventoryChanged()
-		{
-			RefreshCreatureSlots();
-		}
-
-		private void RefreshCreatureSlots()
-		{
-			foreach (var slot in m_creatureSlots)
-			{
-				slot.Update();
+				for (int col = 0; col < 4; col++)
+				{
+					int idx = playerStartSlot + row * 4 + col;
+					if (idx >= playerInventory.SlotsCount) break;
+					InventorySlotWidget slot = new InventorySlotWidget();
+					slot.AssignInventorySlot(playerInventory, idx);
+					m_inventoryGrid.Children.Add(slot);
+					m_inventoryGrid.SetWidgetCell(slot, new Point2(col, row));
+				}
 			}
 		}
 
 		public override void Update()
 		{
-			base.Update();
-			RefreshCreatureSlots();
-		}
-
-		public override void Dispose()
-		{
-			ComponentCreatureInventory creatureInv = m_creatureInventory as ComponentCreatureInventory;
-			if (creatureInv != null)
-			{
-				creatureInv.ActiveSlotChanged -= OnCreatureActiveSlotChanged;
-				creatureInv.InventoryChanged -= OnCreatureInventoryChanged;
-			}
-			base.Dispose();
+			if (!m_creatureInventory.IsAddedToProject)
+				ParentWidget.Children.Remove(this);
 		}
 	}
 }
