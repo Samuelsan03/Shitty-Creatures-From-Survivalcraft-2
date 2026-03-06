@@ -7,24 +7,57 @@ namespace Game
 {
 	public class ComponentCreatureInventory : ComponentInventory
 	{
+		private int m_activeSlotIndex;
+
+		public override int ActiveSlotIndex
+		{
+			get { return m_activeSlotIndex; }
+			set { m_activeSlotIndex = Math.Clamp(value, 0, Math.Max(0, SlotsCount - 1)); }
+		}
+
+		// Anular VisibleSlotsCount para que devuelva todos los slots
+		public override int VisibleSlotsCount
+		{
+			get { return SlotsCount; }
+			set { /* Ignorar */ }
+		}
+
+		// Anular GetSlotCapacity para eliminar la restricción de slots no visibles
+		public override int GetSlotCapacity(int slotIndex, int value)
+		{
+			if (slotIndex < 0 || slotIndex >= SlotsCount)
+				return 0;
+			return BlocksManager.Blocks[Terrain.ExtractContents(value)].GetMaxStacking(value);
+		}
+
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
-			// Asegurar que ActiveSlotIndex existe
+			// Establecer SlotsCount
+			int slotsCount = 16;
+			if (valuesDictionary.ContainsKey("SlotsCount"))
+				slotsCount = valuesDictionary.GetValue<int>("SlotsCount");
+			else
+				valuesDictionary.SetValue<int>("SlotsCount", slotsCount);
+
+			// Asegurar ActiveSlotIndex
 			if (!valuesDictionary.ContainsKey("ActiveSlotIndex"))
 				valuesDictionary.SetValue<int>("ActiveSlotIndex", 0);
 
-			// Forzar SlotsCount a 16 si no se especifica en XDB
-			if (!valuesDictionary.ContainsKey("SlotsCount"))
-				valuesDictionary.SetValue<int>("SlotsCount", 16);
+			// Asegurar Slots
+			if (!valuesDictionary.ContainsKey("Slots"))
+			{
+				var slotsDict = new ValuesDictionary();
+				valuesDictionary.SetValue<ValuesDictionary>("Slots", slotsDict);
+			}
 
 			base.Load(valuesDictionary, idToEntityMap);
 
-			// Todas las ranuras son visibles
-			VisibleSlotsCount = SlotsCount;
+			m_activeSlotIndex = valuesDictionary.GetValue<int>("ActiveSlotIndex");
 		}
 
 		public override void Save(ValuesDictionary valuesDictionary, EntityToIdMap entityToIdMap)
 		{
+			valuesDictionary.SetValue<int>("ActiveSlotIndex", m_activeSlotIndex);
 			base.Save(valuesDictionary, entityToIdMap);
 		}
 
