@@ -51,7 +51,7 @@ namespace Game
 					var slotWidget = new InventorySlotWidget();
 					slotWidget.AssignInventorySlot(trader, slotIndex++);
 					slotWidget.Size = new Vector2(68, 68);
-					slotWidget.ProcessingOnly = !isCreative; // En creativo, editable; en supervivencia, solo lectura
+					slotWidget.ProcessingOnly = !isCreative;
 					m_traderGrid.Children.Add(slotWidget);
 					m_traderGrid.SetWidgetCell(slotWidget, new Point2(col, row));
 				}
@@ -77,6 +77,10 @@ namespace Game
 				ParentWidget.Children.Remove(this);
 				return;
 			}
+
+			// Actualizar la bandera de arrastre en el trader
+			var dragHost = m_player.GameWidget?.Children.Find<DragHostWidget>(false);
+			m_trader.IsDragInProgress = (dragHost != null && dragHost.IsDragInProgress);
 
 			if (Input.Click != null)
 			{
