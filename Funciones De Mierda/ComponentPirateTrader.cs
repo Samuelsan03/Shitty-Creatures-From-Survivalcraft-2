@@ -15,6 +15,9 @@ namespace Game
 		private int m_modificationLock = 0;
 		private int m_selectedSlotIndex = -1;
 
+		// Bandera para detectar si hay un arrastre en curso (actualizada desde el widget)
+		public bool IsDragInProgress { get; set; }
+
 		public override int SlotsCount => 9;
 
 		public override int ActiveSlotIndex
@@ -59,8 +62,8 @@ namespace Game
 		{
 			bool isCreative = (m_subsystemGameInfo.WorldSettings.GameMode == GameMode.Creative);
 
-			// En modo creativo, si se intenta añadir 1 a un slot vacío, asumimos que es un arrastre y ponemos la capacidad máxima
-			if (isCreative && count == 1 && GetSlotCount(slotIndex) == 0)
+			// En modo creativo, si se intenta añadir 1 a un slot vacío y hay un arrastre en curso, se pone la capacidad máxima
+			if (isCreative && count == 1 && GetSlotCount(slotIndex) == 0 && IsDragInProgress)
 			{
 				int capacity = GetSlotCapacity(slotIndex, value);
 				if (capacity > 1)
