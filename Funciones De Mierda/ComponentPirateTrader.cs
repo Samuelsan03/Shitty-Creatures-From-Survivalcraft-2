@@ -12,16 +12,11 @@ namespace Game
 		private SubsystemPickables m_subsystemPickables;
 		private SubsystemGameInfo m_subsystemGameInfo;
 
-		// Control de modificaciones permitidas (solo para slots de venta)
 		private int m_modificationLock = 0;
-
-		// Almacena el slot seleccionado para el resaltado visual
 		private int m_selectedSlotIndex = -1;
 
-		public override int SlotsCount => 9; // Slot 8 es para monedas
+		public override int SlotsCount => 9;
 
-		// Anular ActiveSlotIndex para que realmente guarde el índice seleccionado,
-		// pero solo permitir valores entre 0 y 7 (slots de venta)
 		public override int ActiveSlotIndex
 		{
 			get { return m_selectedSlotIndex; }
@@ -29,11 +24,9 @@ namespace Game
 			{
 				if (value >= 0 && value < 8)
 					m_selectedSlotIndex = value;
-				// Si se intenta establecer a 8 o cualquier otro, se ignora
 			}
 		}
 
-		// Métodos para permitir modificaciones internas
 		public void BeginModification() { m_modificationLock++; }
 		public void EndModification() { m_modificationLock--; }
 
@@ -62,13 +55,20 @@ namespace Game
 			}
 		}
 
-		// Solo se permite modificar slot 8, si hay bloqueo interno, o si el mundo es creativo
 		public override void AddSlotItems(int slotIndex, int value, int count)
 		{
 			bool isCreative = (m_subsystemGameInfo.WorldSettings.GameMode == GameMode.Creative);
+
+			// En modo creativo, si se intenta añadir 1 a un slot vacío, asumimos que es un arrastre y ponemos la capacidad máxima
+			if (isCreative && count == 1 && GetSlotCount(slotIndex) == 0)
+			{
+				int capacity = GetSlotCapacity(slotIndex, value);
+				if (capacity > 1)
+					count = capacity; // Poner 100.000 en lugar de 1
+			}
+
 			if (slotIndex == 8 || m_modificationLock > 0 || isCreative)
 				base.AddSlotItems(slotIndex, value, count);
-			// Si no, no hace nada (el item no se añade)
 		}
 
 		public override int RemoveSlotItems(int slotIndex, int count)
@@ -76,7 +76,7 @@ namespace Game
 			bool isCreative = (m_subsystemGameInfo.WorldSettings.GameMode == GameMode.Creative);
 			if (slotIndex == 8 || m_modificationLock > 0 || isCreative)
 				return base.RemoveSlotItems(slotIndex, count);
-			return 0; // No se quita nada
+			return 0;
 		}
 
 		public override int GetSlotCapacity(int slotIndex, int value)
@@ -85,28 +85,23 @@ namespace Game
 
 			if (slotIndex == 8)
 			{
-				// Solo nuclearcoin
 				int coinIndex = BlocksManager.GetBlockIndex(typeof(NuclearCoinBlock).Name, true);
 				if (Terrain.ExtractContents(value) != coinIndex)
 					return 0;
-
-				// Capacidad fija de 100.000 para monedas, ignorando el stacking original
 				return 100000;
 			}
-			else // slots 0-7
+			else
 			{
-				// En modo creativo, se permite modificar siempre
 				if (isCreative)
 				{
 					int baseCapacity = base.GetSlotCapacity(slotIndex, value);
 					if (baseCapacity <= 1)
-						return baseCapacity; // items no apilables (ej. herramientas) mantienen su límite
-					return 100000; // items apilables pueden acumular hasta 100.000
+						return baseCapacity;
+					return 100000;
 				}
 
-				// En modo no creativo, solo si hay bloqueo interno (durante compra)
 				if (m_modificationLock == 0)
-					return 0; // No se permite meter items a menos que estemos en compra
+					return 0;
 
 				int baseCapacity2 = base.GetSlotCapacity(slotIndex, value);
 				if (baseCapacity2 <= 1)
@@ -174,7 +169,6 @@ namespace Game
 				return false;
 			}
 
-			// Verificar espacio en inventario del jugador
 			int itemsToAdd = count;
 			int tmpValue = value;
 			while (itemsToAdd > 0)
@@ -189,13 +183,10 @@ namespace Game
 				itemsToAdd--;
 			}
 
-			// --- Bloqueamos modificaciones para permitir cambios internos ---
 			BeginModification();
 
-			// Remover monedas
 			RemoveSlotItems(8, totalPrice);
 
-			// Entregar items al jugador (esto no necesita bloqueo porque es otro inventory)
 			itemsToAdd = count;
 			while (itemsToAdd-- > 0)
 			{
@@ -203,11 +194,9 @@ namespace Game
 				buyer.ComponentMiner.Inventory.AddSlotItems(slot, value, 1);
 			}
 
-			// Remover item del trader
 			RemoveSlotItems(slotIndex, count);
 
 			EndModification();
-			// --- Fin del bloqueo ---
 
 			buyer.ComponentGui.DisplaySmallMessage("Purchase successful!", Color.Green, false, false);
 			m_subsystemAudio.PlaySound("Audio/UI/money", 1f, 0f, 0f, 0f);
