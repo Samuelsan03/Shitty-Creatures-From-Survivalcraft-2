@@ -154,26 +154,19 @@ namespace Game
 		{
 			if (entity == null) return false;
 
-			// Intentar curar al jugador (ComponentFlu)
+			// Curar al jugador (ComponentFlu)
 			var playerFlu = entity.FindComponent<ComponentFlu>();
 			if (playerFlu != null && playerFlu.HasFlu)
 			{
-				// Usar reflexión para acceder a los campos privados
-				var type = typeof(ComponentFlu);
-				var fieldDuration = type.GetField("m_fluDuration", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-				var fieldOnset = type.GetField("m_fluOnset", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-				var fieldCough = type.GetField("m_coughDuration", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-				var fieldSneeze = type.GetField("m_sneezeDuration", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-				var fieldBlackout = type.GetField("m_blackoutDuration", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-				var fieldBlackoutFactor = type.GetField("m_blackoutFactor", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+				// Los campos son públicos, asignamos directamente
+				playerFlu.m_fluDuration = 0f;
+				playerFlu.m_fluOnset = 0f;
+				playerFlu.m_coughDuration = 0f;
+				playerFlu.m_sneezeDuration = 0f;
+				playerFlu.m_blackoutDuration = 0f;
+				playerFlu.m_blackoutFactor = 0f;
 
-				fieldDuration?.SetValue(playerFlu, 0f);
-				fieldOnset?.SetValue(playerFlu, 0f);
-				fieldCough?.SetValue(playerFlu, 0f);
-				fieldSneeze?.SetValue(playerFlu, 0f);
-				fieldBlackout?.SetValue(playerFlu, 0f);
-				fieldBlackoutFactor?.SetValue(playerFlu, 0f);
-
+				// Restablecer el efecto de pantalla
 				var player = entity.FindComponent<ComponentPlayer>();
 				if (player != null)
 				{
@@ -182,24 +175,15 @@ namespace Game
 				return true;
 			}
 
-			// Intentar curar a una criatura (ComponentFluInfected)
+			// Curar a una criatura (ComponentFluInfected)
 			var creatureFlu = entity.FindComponent<ComponentFluInfected>();
 			if (creatureFlu != null && creatureFlu.IsInfected)
 			{
-				// Acceder al campo privado m_fluDuration y ponerlo a 0 directamente
-				var field = typeof(ComponentFluInfected).GetField("m_fluDuration",
-					System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-				field?.SetValue(creatureFlu, 0f);
+				// Campo público
+				creatureFlu.m_fluDuration = 0f;
 
-				// Detener efectos residuales (opcional pero recomendado)
-				var coughField = typeof(ComponentFluInfected).GetField("m_coughDuration",
-					System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-				coughField?.SetValue(creatureFlu, 0f);
-
-				var sneezeField = typeof(ComponentFluInfected).GetField("m_sneezeDuration",
-					System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-				sneezeField?.SetValue(creatureFlu, 0f);
-
+				// Opcional: detener tos inmediatamente (campo privado, pero se puede dejar que la actualización lo haga)
+				// Si quieres forzar el fin de la tos, necesitarías reflexión para m_isCoughing, pero no es obligatorio.
 				return true;
 			}
 
