@@ -11,6 +11,7 @@ namespace Game
 		private ComponentPlayer m_player;
 		private SubsystemTerrain m_subsystemTerrain;
 		private SubsystemAudio m_subsystemAudio;
+		private SubsystemGameInfo m_subsystemGameInfo;
 
 		private GridPanelWidget m_traderGrid;
 		private GridPanelWidget m_inventoryGrid;
@@ -25,6 +26,7 @@ namespace Game
 			m_player = player;
 			m_subsystemTerrain = player.Project.FindSubsystem<SubsystemTerrain>(true);
 			m_subsystemAudio = player.Project.FindSubsystem<SubsystemAudio>(true);
+			m_subsystemGameInfo = player.Project.FindSubsystem<SubsystemGameInfo>(true);
 
 			XElement node = ContentManager.Get<XElement>("Widgets/PirateTradeWidget");
 			LoadContents(this, node);
@@ -35,12 +37,11 @@ namespace Game
 			m_infoLabel = Children.Find<LabelWidget>("InfoLabel", true);
 			m_coinSlot = Children.Find<InventorySlotWidget>("CoinSlot", true);
 
-			// Asignar slot de monedas (índice 8)
 			m_coinSlot.AssignInventorySlot(trader, 8);
-			// Ocultar cualquier posible rectángulo de selección en el slot de monedas
 			m_coinSlot.HideHighlightRectangle = true;
 
-			// Llenar grid del trader (slots 0-7)
+			bool isCreative = (m_subsystemGameInfo.WorldSettings.GameMode == GameMode.Creative);
+
 			int slotIndex = 0;
 			for (int row = 0; row < m_traderGrid.RowsCount; row++)
 			{
@@ -50,14 +51,12 @@ namespace Game
 					var slotWidget = new InventorySlotWidget();
 					slotWidget.AssignInventorySlot(trader, slotIndex++);
 					slotWidget.Size = new Vector2(68, 68);
-					// Impide que el jugador pueda arrastrar desde estos slots
-					slotWidget.ProcessingOnly = true;
+					slotWidget.ProcessingOnly = !isCreative; // En creativo, editable; en supervivencia, solo lectura
 					m_traderGrid.Children.Add(slotWidget);
 					m_traderGrid.SetWidgetCell(slotWidget, new Point2(col, row));
 				}
 			}
 
-			// Llenar grid del inventario del jugador (slots 10+)
 			int invSlot = 10;
 			for (int row = 0; row < m_inventoryGrid.RowsCount; row++)
 			{
@@ -79,14 +78,12 @@ namespace Game
 				return;
 			}
 
-			// Detectar clic en los slots del trader (simplificado: usar los slots directamente)
 			if (Input.Click != null)
 			{
 				var hit = HitTestGlobal(Input.Click.Value.Start);
 				if (hit is InventorySlotWidget slotWidget && slotWidget.m_inventory == m_trader && slotWidget.m_slotIndex < 8)
 				{
 					m_selectedSlot = slotWidget.m_slotIndex;
-					// Marcar visualmente el slot seleccionado
 					m_trader.ActiveSlotIndex = m_selectedSlot;
 					UpdateInfoLabel();
 				}
