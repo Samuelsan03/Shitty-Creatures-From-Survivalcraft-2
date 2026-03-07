@@ -1,12 +1,17 @@
 <CanvasWidget xmlns="runtime-namespace:Game" Size="614, 422">
   <BevelledRectangleWidget Size="614, 422" BevelSize="3" />
-  <LabelWidget CanvasWidget.Position="12, 14" Text="Pirate Trader" Color="255,255,255,192"/>
-  <LabelWidget CanvasWidget.Position="306, 14" Text="Inventory" Color="255,255,255,192"/>
+  <LabelWidget CanvasWidget.Position="12, 14" Name="PirateTraderTitle" Text="Pirate Trader" Color="255,255,255,192"/>
+  <LabelWidget CanvasWidget.Position="306, 14" Name="InventoryTitle" Text="Inventory" Color="255,255,255,192"/>
   <GridPanelWidget CanvasWidget.Position="12, 52" Name="TraderGrid" ColumnsCount="4" RowsCount="2"/>
   <GridPanelWidget CanvasWidget.Position="306, 52" Name="InventoryGrid" ColumnsCount="4" RowsCount="4"/>
   
-  <!-- Slot de monedas (índice 8 del trader) -->
-  <InventorySlotWidget CanvasWidget.Position="12, 200" Name="CoinSlot" Size="68, 68" />
+  <!-- Slot de monedas con texto indicativo superpuesto -->
+  <CanvasWidget CanvasWidget.Position="12, 200" Size="68, 68">
+    <InventorySlotWidget Name="CoinSlot" Size="68, 68" />
+    <LabelWidget Name="CoinSlotHint" Text="[PirateTraderWidget,CoinSlotHint]" 
+                 Color="128,128,128,255" FontScale="0.7" Size="68,68"
+                 HorizontalAlignment="Center" VerticalAlignment="Center" />
+  </CanvasWidget>
   
   <CanvasWidget CanvasWidget.Position="90, 240" Size="288, 140">
     <StackPanelWidget Direction="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
