@@ -5049,6 +5049,8 @@
 <MemberComponentTemplate Name="PirateTrader" Guid="04912fbb-5828-4e0b-9b24-b1925d742bd9" InheritanceParent="7753c16f-a467-4624-be61-3a048cb51cf0">
     <Parameter Name="SlotsCount" Value="8" Type="int"/>
     <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
+    <Parameter Name="TradeItems" Value="MusketBlock:0.3:100:1,RepeatCrossbowBlock:0.3:200:1,ToxinBlock:0.2:50:40,RepeatArrowBlock:0:0.5:150:40,RepeatArrowBlock:0.5:55:40:0,RepeatArrowBlock:0.5:55:40:1,RepeatArrowBlock:0.5:55:40:2,RepeatArrowBlock:0.05:90:40:3,RepeatArrowBlock:0.35:155:40:4,RepeatArrowBlock:0.25:195:40:5,EggBlock:0.1:25:5:PirataNormalAliado,EggBlock:0.1:25:5:PirataEliteAliado,BulletBlock:0.1:200:40:0,BulletBlock:0.5:80:40:1,BulletBlock:0.5:35:40:2,FreezingSnowballBlock:0.08:20:40,FlameThrowerBlock:0.5:350:1,FlameBulletBlock:0.5:100:40:0,FlameBulletBlock:0.5:100:40:1" Type="string"/>
+    <Parameter Name="RestockInterval" Value="300" Type="double"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="SummonBehavior" Guid="2796593a-7356-4bbb-9613-ef07f4c3adf0" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
         <Parameter Name="IsEnabled" Guid="335e8a70-5d7c-4aff-b7aa-d7a618ea82dd" Value="True" Type="bool"/>
