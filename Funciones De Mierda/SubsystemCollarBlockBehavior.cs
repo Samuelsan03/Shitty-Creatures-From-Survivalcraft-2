@@ -99,7 +99,8 @@ namespace Game
 				{"HumanoidSkeleton", "HumanoidSkeletonTamed"},
 				{"PredatoryChameleon", "PredatoryChameleonTamed"},
 				{"InfectedBird", "InfectedBirdTamed"},
-				{"InfectedWildboar", "InfectedWildboarTamed"}
+				{"InfectedWildboar", "InfectedWildboarTamed"},
+				{"InfectedFreezer", "InfectedFreezerTamed" }
 			};
 
 			if (tameableCreatures.ContainsKey(currentEntityName))
@@ -169,6 +170,7 @@ namespace Game
 				bool isTamedPredatoryChameleon = entityTemplateName == "PredatoryChameleonTamed";
 				bool isTamedInfectedBird = entityTemplateName == "InfectedBirdTamed";
 				bool isTamedInfectedWildboar = entityTemplateName == "InfectedWildboarTamed";
+				bool isTamedInfectedFreezer = entityTemplateName == "InfectedFreezerTamed";
 
 				ComponentPlayer componentPlayer = FindPlayerWithMiner(componentMiner);
 				if (componentPlayer != null)
@@ -335,6 +337,15 @@ namespace Game
 							messageColor = new Color(139, 69, 19);
 							soundToPlay = "Audio/UI/Tada";
 						}
+						else if (isTamedInfectedFreezer)
+						{
+							bool translationFound;
+							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedInfectedFreezerMessage");
+							if (!translationFound)
+								message = "You have tamed a Freezing Infected! Its icy snowballs will slow and freeze your enemies!";
+							messageColor = new Color(0, 191, 255); // color azul claro para hielo
+							soundToPlay = "Audio/UI/Tada"; // sonido de confirmación
+						}
 						else
 						{
 							bool translationFound;
@@ -458,6 +469,12 @@ namespace Game
 							defaultMessage = "You have tamed an Infected Wildboar! Its powerful shoves will push your enemies away!";
 							defaultColor = new Color(139, 69, 19);
 						}
+						else if (isTamedInfectedFreezer)
+						{
+							defaultMessage = "You have tamed a Infected Freezer! Its icy snowballs will slow and freeze your enemies!";
+							defaultColor = new Color(0, 191, 255);
+						}
+		
 						else
 						{
 							defaultMessage = "You have tamed a hostile Infected! Now it will be your guardian!";
