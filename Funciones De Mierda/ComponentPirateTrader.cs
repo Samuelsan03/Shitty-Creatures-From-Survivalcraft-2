@@ -147,7 +147,9 @@ namespace Game
 			int count = GetSlotCount(slotIndex);
 			if (value == 0 || count <= 0)
 			{
-				buyer.ComponentGui.DisplaySmallMessage("This item is no longer available.", Color.Red, true, true);
+				buyer.ComponentGui.DisplaySmallMessage(
+					LanguageControl.GetContentWidgets("PirateTraderWidget", "ItemNoLongerAvailable"),
+					Color.Red, true, true);
 				m_subsystemAudio.PlaySound("Audio/UI/warning", 1f, 0f, 0f, 0f);
 				return false;
 			}
@@ -155,7 +157,9 @@ namespace Game
 			int pricePerItem = GetPrice(slotIndex);
 			if (pricePerItem <= 0)
 			{
-				buyer.ComponentGui.DisplaySmallMessage("This item cannot be bought.", Color.Red, true, true);
+				buyer.ComponentGui.DisplaySmallMessage(
+					LanguageControl.GetContentWidgets("PirateTraderWidget", "ItemCannotBeBought"),
+					Color.Red, true, true);
 				m_subsystemAudio.PlaySound("Audio/UI/warning", 1f, 0f, 0f, 0f);
 				return false;
 			}
@@ -167,7 +171,12 @@ namespace Game
 			int coinSlotCount = GetSlotCount(8);
 			if (Terrain.ExtractContents(coinSlotValue) != coinIndex || coinSlotCount < totalPrice)
 			{
-				buyer.ComponentGui.DisplaySmallMessage($"Need {totalPrice} nuclear coins in payment slot. Have: {coinSlotCount}", Color.Red, true, true);
+				Block block = BlocksManager.Blocks[Terrain.ExtractContents(value)];
+				string itemName = block.GetDisplayName(m_subsystemTerrain, value);
+				string msg = string.Format(
+					LanguageControl.GetContentWidgets("PirateTraderWidget", "InsufficientCoins"),
+					totalPrice, itemName, count, pricePerItem);
+				buyer.ComponentGui.DisplaySmallMessage(msg, Color.Red, true, true);
 				m_subsystemAudio.PlaySound("Audio/UI/warning", 1f, 0f, 0f, 0f);
 				return false;
 			}
@@ -179,7 +188,9 @@ namespace Game
 				int slot = ComponentInventoryBase.FindAcquireSlotForItem(buyer.ComponentMiner.Inventory, tmpValue);
 				if (slot < 0)
 				{
-					buyer.ComponentGui.DisplaySmallMessage("Not enough space in inventory.", Color.Red, true, true);
+					buyer.ComponentGui.DisplaySmallMessage(
+						LanguageControl.GetContentWidgets("PirateTraderWidget", "NotEnoughSpace"),
+						Color.Red, true, true);
 					m_subsystemAudio.PlaySound("Audio/UI/warning", 1f, 0f, 0f, 0f);
 					return false;
 				}
@@ -201,7 +212,9 @@ namespace Game
 
 			EndModification();
 
-			buyer.ComponentGui.DisplaySmallMessage("Purchase successful!", Color.Green, false, false);
+			buyer.ComponentGui.DisplaySmallMessage(
+				LanguageControl.GetContentWidgets("PirateTraderWidget", "PurchaseSuccessful"),
+				Color.Green, false, false);
 			m_subsystemAudio.PlaySound("Audio/UI/money", 1f, 0f, 0f, 0f);
 			return true;
 		}
