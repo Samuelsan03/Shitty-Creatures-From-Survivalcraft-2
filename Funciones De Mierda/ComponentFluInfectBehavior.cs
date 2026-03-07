@@ -1,7 +1,3 @@
-// ========================================================
-// ComponentFluInfectBehavior.cs
-// ========================================================
-
 using System;
 using Engine;
 using Game;
@@ -23,10 +19,6 @@ namespace Game
 			m_stateMachine.Update();
 		}
 
-		/// <summary>
-		/// Intenta infectar al objetivo.
-		/// </summary>
-		/// <returns>True si la infección se inició correctamente o ya estaba infectado.</returns>
 		private bool StartInfect(ComponentCreature target)
 		{
 			if (target == null)
@@ -51,20 +43,16 @@ namespace Game
 		{
 			m_subsystemTime = Project.FindSubsystem<SubsystemTime>(true);
 			m_componentCreature = Entity.FindComponent<ComponentCreature>(true);
-
-			// Usamos únicamente el ComponentChaseBehavior original
 			m_chaseBehavior = Entity.FindComponent<ComponentChaseBehavior>();
 
 			m_fluIntensity = valuesDictionary.GetValue<float>("FluIntensity");
 			m_infectProbability = valuesDictionary.GetValue<float>("InfectProbability", 1f);
 
-			// Estado inactivo: espera a que la criatura ataque
 			m_stateMachine.AddState("Inactive", delegate
 			{
 				m_importanceLevel = 0f;
 			}, delegate
 			{
-				// Obtener el objetivo actual de ComponentChaseBehavior
 				if (m_chaseBehavior != null)
 				{
 					m_target = m_chaseBehavior.m_target;
@@ -72,10 +60,9 @@ namespace Game
 
 				if (m_target != null && m_componentCreature.ComponentCreatureModel.IsAttackHitMoment)
 				{
-					// Lanzar la probabilidad de infección
 					if (m_random.Float(0f, 1f) < m_infectProbability)
 					{
-						m_importanceLevel = 201f; // Prioridad alta
+						m_importanceLevel = 201f;
 					}
 				}
 
@@ -83,7 +70,6 @@ namespace Game
 					m_stateMachine.TransitionTo("FluInfect");
 			}, null);
 
-			// Estado de infección: mira al objetivo e intenta infectar
 			m_stateMachine.AddState("FluInfect", delegate
 			{
 				if (m_target == null)
@@ -94,15 +80,13 @@ namespace Game
 			{
 				if (StartInfect(m_target))
 				{
-					// Después de infectar, la criatura huye (opcional)
 					var runAway = m_componentCreature.Entity.FindComponent<ComponentRunAwayBehavior>();
 					runAway?.RunAwayFrom(m_target.ComponentBody);
-
 					m_stateMachine.TransitionTo("Inactive");
 				}
 				else if (IsActive && m_target != null)
 				{
-					// Permanece en este estado (el ataque puede continuar)
+					// permanece
 				}
 				else
 				{
@@ -113,18 +97,16 @@ namespace Game
 			m_stateMachine.TransitionTo("Inactive");
 		}
 
-		// Subsistemas y componentes
 		private SubsystemTime m_subsystemTime;
 		private ComponentCreature m_componentCreature;
-		private ComponentChaseBehavior m_chaseBehavior; // Único comportamiento de persecución usado
+		private ComponentChaseBehavior m_chaseBehavior;
 
 		private readonly StateMachine m_stateMachine = new StateMachine();
 		private readonly Game.Random m_random = new Game.Random();
 		private float m_importanceLevel;
 		private ComponentCreature m_target;
 
-		// Parámetros configurables desde la plantilla de entidad
-		public float m_fluIntensity;           // Duración de la gripe que se aplicará
-		private float m_infectProbability = 1f; // Probabilidad de infección por ataque (0-1)
+		public float m_fluIntensity;
+		private float m_infectProbability = 1f;
 	}
 }
