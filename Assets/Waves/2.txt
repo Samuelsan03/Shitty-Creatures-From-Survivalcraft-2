@@ -5,3 +5,4 @@ InfectedNormal2;30
 InfectedFast1;25
 InfectedFast2;25
 InfectedFly1;6
+InfectedFreezer;30

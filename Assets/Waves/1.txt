@@ -3,3 +3,4 @@ InfectedBird;35
 InfectedNormal1;30
 InfectedNormal2;30
 InfectedFly1;4
+InfectedFreezer;30

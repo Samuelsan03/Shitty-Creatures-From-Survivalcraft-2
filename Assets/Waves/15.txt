@@ -29,3 +29,4 @@ InfectedBear;18
 PredatoryChameleon;25
 InfectedWolf;28
 InfectedWerewolf;12
+InfectedFreezer;30

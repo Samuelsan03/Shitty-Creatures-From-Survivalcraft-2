@@ -29,3 +29,4 @@ PredatoryChameleon;18
 InfectedWolf;20
 InfectedWerewolf;8
 FlyingInfectedBoss;1
+InfectedFreezer;30

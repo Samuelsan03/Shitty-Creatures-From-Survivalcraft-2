@@ -9,3 +9,4 @@ InfectedMuscle2;35
 PoisonousInfected1;20
 PoisonousInfected2;20
 InfectedFly1;6
+InfectedFreezer;30

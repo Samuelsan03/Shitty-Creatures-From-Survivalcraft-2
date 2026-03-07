@@ -20,3 +20,4 @@ InfectedHyena;28
 PredatoryChameleon;8
 InfectedWolf;10
 InfectedWerewolf;4
+InfectedFreezer;30

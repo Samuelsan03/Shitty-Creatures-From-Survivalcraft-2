@@ -7,3 +7,4 @@ InfectedFast2;25
 InfectedMuscle1;35
 InfectedMuscle2;35
 InfectedFly1;6
+InfectedFreezer;30

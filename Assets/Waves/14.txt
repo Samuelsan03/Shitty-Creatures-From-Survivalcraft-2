@@ -30,3 +30,4 @@ PredatoryChameleon;22
 InfectedWolf;25
 InfectedWerewolf;10
 Tank1;1
+InfectedFreezer;30
