@@ -532,6 +532,7 @@ namespace Game
 						{
 							inventory.AddSlotItems(bombSlot, bombValue, 8);
 						}
+
 						else
 						{
 							// Si no hay espacio, intentar soltar las bombas o simplemente no agregarlas
@@ -540,6 +541,150 @@ namespace Game
 						}
 					}
 				}
+			}
+			// Ahora la lógica para HumanoidSkeleton (después de las otras entidades)
+			else if (name == "HumanoidSkeleton")
+			{
+				// PRIMER SLOT - Armas cuerpo a cuerpo (siempre)
+				float firstSlotMeleeChance = this.m_random.Float(0f, 1f);
+				int firstSlotValue = 0;
+
+				// 50% Clubs, 50% Machetes para el primer slot
+				if (firstSlotMeleeChance < 0.5f) // Clubs
+				{
+					float clubRoll = this.m_random.Float(0f, 1f);
+					if (clubRoll < 0.5f) // 50% - WoodenClub
+						firstSlotValue = Terrain.MakeBlockValue(WoodenClubBlock.Index);
+					else // 50% - StoneClub
+						firstSlotValue = Terrain.MakeBlockValue(StoneClubBlock.Index);
+				}
+				else // Machetes
+				{
+					float macheteRoll = this.m_random.Float(0f, 1f);
+					if (macheteRoll < 0.1667f)
+						firstSlotValue = Terrain.MakeBlockValue(WoodMacheteBlock.Index);
+					else if (macheteRoll < 0.3333f)
+						firstSlotValue = Terrain.MakeBlockValue(StoneMacheteBlock.Index);
+					else if (macheteRoll < 0.5f)
+						firstSlotValue = Terrain.MakeBlockValue(CopperMacheteBlock.Index);
+					else if (macheteRoll < 0.6667f)
+						firstSlotValue = Terrain.MakeBlockValue(IronMacheteBlock.Index);
+					else if (macheteRoll < 0.8333f)
+						firstSlotValue = Terrain.MakeBlockValue(DiamondMacheteBlock.Index);
+					else
+						firstSlotValue = Terrain.MakeBlockValue(LavaMacheteBlock.Index);
+				}
+
+				if (firstSlotValue != 0)
+				{
+					inventory.AddSlotItems(0, firstSlotValue, 1);
+				}
+
+				// SEGUNDO SLOT - Armas a distancia (siempre)
+				float secondSlotRangedChance = this.m_random.Float(0f, 1f);
+				int secondSlotValue = 0;
+
+				if (secondSlotRangedChance < 0.5f) // 50% - Arco
+				{
+					secondSlotValue = Terrain.MakeBlockValue(BowBlock.Index);
+				}
+				else if (secondSlotRangedChance < 0.8f) // 30% - Otras armas a distancia
+				{
+					float rangedChance = this.m_random.Float(0f, 1f);
+					if (rangedChance < 0.25f)
+						secondSlotValue = Terrain.MakeBlockValue(MusketBlock.Index);
+					else if (rangedChance < 0.5f)
+						secondSlotValue = Terrain.MakeBlockValue(CrossbowBlock.Index);
+					else if (rangedChance < 0.75f)
+						secondSlotValue = Terrain.MakeBlockValue(RepeatCrossbowBlock.Index);
+					else if (rangedChance < 0.9f)
+						secondSlotValue = Terrain.MakeBlockValue(ItemsLauncherBlock.Index);
+					else
+					{
+						secondSlotValue = FlameThrowerBlock.SetLoadCount(
+							Terrain.MakeBlockValue(FlameThrowerBlock.Index, 0,
+								FlameThrowerBlock.SetBulletType(
+									FlameThrowerBlock.SetLoadState(0, FlameThrowerBlock.LoadState.Loaded),
+									new FlameBulletBlock.FlameBulletType?(this.m_random.Bool(0.5f) ?
+										FlameBulletBlock.FlameBulletType.Flame :
+										FlameBulletBlock.FlameBulletType.Poison)
+								)
+							),
+							8
+						);
+					}
+				}
+				else // 20% - Ballesta (Crossbow) por defecto si no entra en las otras
+				{
+					secondSlotValue = Terrain.MakeBlockValue(CrossbowBlock.Index);
+				}
+
+				if (secondSlotValue != 0)
+				{
+					inventory.AddSlotItems(1, secondSlotValue, 1);
+				}
+
+				// TERCER SLOT - Objetos lanzables (60% probabilidad) o vacío (40%)
+				float thirdSlotChance = this.m_random.Float(0f, 1f);
+
+				if (thirdSlotChance < 0.6f) // 60% de probabilidad de tener objeto lanzable
+				{
+					int thirdSlotValue = 0;
+					float throwableType = this.m_random.Float(0f, 1f);
+
+					if (throwableType < 0.4f) // 40% - Spears
+					{
+						float spearRoll = this.m_random.Float(0f, 1f);
+						if (spearRoll < 0.1667f)
+							thirdSlotValue = Terrain.MakeBlockValue(WoodenSpearBlock.Index);
+						else if (spearRoll < 0.3333f)
+							thirdSlotValue = Terrain.MakeBlockValue(StoneSpearBlock.Index);
+						else if (spearRoll < 0.5f)
+							thirdSlotValue = Terrain.MakeBlockValue(CopperSpearBlock.Index);
+						else if (spearRoll < 0.6667f)
+							thirdSlotValue = Terrain.MakeBlockValue(IronSpearBlock.Index);
+						else if (spearRoll < 0.8333f)
+							thirdSlotValue = Terrain.MakeBlockValue(DiamondSpearBlock.Index);
+						else
+							thirdSlotValue = Terrain.MakeBlockValue(LavaSpearBlock.Index);
+
+						inventory.AddSlotItems(2, thirdSlotValue, 1);
+					}
+					else if (throwableType < 0.7f) // 30% - Longspears
+					{
+						float longspearRoll = this.m_random.Float(0f, 1f);
+						if (longspearRoll < 0.1667f)
+							thirdSlotValue = Terrain.MakeBlockValue(WoodenLongspearBlock.Index);
+						else if (longspearRoll < 0.3333f)
+							thirdSlotValue = Terrain.MakeBlockValue(StoneLongspearBlock.Index);
+						else if (longspearRoll < 0.5f)
+							thirdSlotValue = Terrain.MakeBlockValue(CopperLongspearBlock.Index);
+						else if (longspearRoll < 0.6667f)
+							thirdSlotValue = Terrain.MakeBlockValue(IronLongspearBlock.Index);
+						else if (longspearRoll < 0.8333f)
+							thirdSlotValue = Terrain.MakeBlockValue(DiamondLongspearBlock.Index);
+						else
+							thirdSlotValue = Terrain.MakeBlockValue(LavaLongspearBlock.Index);
+
+						inventory.AddSlotItems(2, thirdSlotValue, 1);
+					}
+					else // 30% - Bombas (cantidad 5-8)
+					{
+						float bombTypeChance = this.m_random.Float(0f, 1f);
+						int bombValue = 0;
+
+						if (bombTypeChance < 0.3333f)
+							bombValue = Terrain.MakeBlockValue(BombBlock.Index);
+						else if (bombTypeChance < 0.6666f)
+							bombValue = Terrain.MakeBlockValue(IncendiaryBombBlock.Index);
+						else
+							bombValue = Terrain.MakeBlockValue(PoisonBombBlock.Index);
+
+						int bombCount = this.m_random.Int(5, 8);
+						inventory.AddSlotItems(2, bombValue, bombCount);
+					}
+				}
+				// 40% restante: el tercer slot queda vacío
 			}
 		}
 
