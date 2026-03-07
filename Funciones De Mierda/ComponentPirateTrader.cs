@@ -190,6 +190,20 @@ namespace Game
 				return 8;
 		}
 
+		public override void DropAllItems(Vector3 position)
+		{
+			// Soltar solo las monedas del slot 8
+			int coinValue = GetSlotValue(8);
+			int coinCount = GetSlotCount(8);
+			if (coinValue != 0 && coinCount > 0)
+			{
+				SubsystemPickables subsystemPickables = Project.FindSubsystem<SubsystemPickables>(true);
+				subsystemPickables.AddPickable(coinValue, coinCount, position, null, null, Entity);
+				RemoveSlotItems(8, coinCount);
+			}
+			// Los items de venta no se sueltan
+		}
+
 		private void Restock()
 		{
 			if (m_tradeItems == null || m_tradeItems.Count == 0) return;
