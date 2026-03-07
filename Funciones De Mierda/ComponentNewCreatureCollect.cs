@@ -686,6 +686,150 @@ namespace Game
 				}
 				// 40% restante: el tercer slot queda vacío
 			}
+			else if (name == "InfectedFreezer")
+			{
+				// Primer slot: siempre Bola de Nieve Congelante con cantidad variable
+				int snowballValue = Terrain.MakeBlockValue(FreezingSnowballBlock.Index);
+				float snowballChance = m_random.Float(0f, 1f);
+				int snowballCount;
+
+				// Probabilidad baja (10%) de tener 40, media (40%) de tener 5, resto (50%) 1
+				if (snowballChance < 0.1f)
+					snowballCount = 40;
+				else if (snowballChance < 0.5f) // 0.1 + 0.4 = 0.5
+					snowballCount = 5;
+				else
+					snowballCount = 1;
+
+				inventory.AddSlotItems(0, snowballValue, snowballCount);
+
+				// Segundo slot: arma cuerpo a cuerpo (machetes, clubs, hachas) con probabilidad 70%
+				if (m_random.Float(0f, 1f) < 0.7f)
+				{
+					int weaponValue = 0;
+					float weaponType = m_random.Float(0f, 1f);
+
+					if (weaponType < 0.3333f) // Clubs
+					{
+						float clubRoll = m_random.Float(0f, 1f);
+						if (clubRoll < 0.5f)
+							weaponValue = Terrain.MakeBlockValue(WoodenClubBlock.Index);
+						else
+							weaponValue = Terrain.MakeBlockValue(StoneClubBlock.Index);
+					}
+					else if (weaponType < 0.6666f) // Machetes
+					{
+						float macheteRoll = m_random.Float(0f, 1f);
+						if (macheteRoll < 0.1667f)
+							weaponValue = Terrain.MakeBlockValue(WoodMacheteBlock.Index);
+						else if (macheteRoll < 0.3333f)
+							weaponValue = Terrain.MakeBlockValue(StoneMacheteBlock.Index);
+						else if (macheteRoll < 0.5f)
+							weaponValue = Terrain.MakeBlockValue(CopperMacheteBlock.Index);
+						else if (macheteRoll < 0.6667f)
+							weaponValue = Terrain.MakeBlockValue(IronMacheteBlock.Index);
+						else if (macheteRoll < 0.8333f)
+							weaponValue = Terrain.MakeBlockValue(DiamondMacheteBlock.Index);
+						else
+							weaponValue = Terrain.MakeBlockValue(LavaMacheteBlock.Index);
+					}
+					else // Hachas
+					{
+						float axeRoll = m_random.Float(0f, 1f);
+						if (axeRoll < 0.1667f)
+							weaponValue = Terrain.MakeBlockValue(WoodAxeBlock.Index);
+						else if (axeRoll < 0.3333f)
+							weaponValue = Terrain.MakeBlockValue(StoneAxeOriginalBlock.Index);
+						else if (axeRoll < 0.5f)
+							weaponValue = Terrain.MakeBlockValue(CopperAxeBlock.Index);
+						else if (axeRoll < 0.6667f)
+							weaponValue = Terrain.MakeBlockValue(IronAxeBlock.Index);
+						else if (axeRoll < 0.8333f)
+							weaponValue = Terrain.MakeBlockValue(DiamondAxeBlock.Index);
+						else
+							weaponValue = Terrain.MakeBlockValue(LavaAxeBlock.Index);
+					}
+
+					if (weaponValue != 0)
+						inventory.AddSlotItems(1, weaponValue, 1);
+				}
+				// Si la probabilidad falla, el segundo slot queda vacío (30% de los casos)
+			}
+			else if (name == "InfectedFreezer")
+			{
+				// Primer slot: siempre Bola de Nieve Congelante con cantidad 40 o 5 (equitativo 50% cada uno)
+				int snowballValue = Terrain.MakeBlockValue(FreezingSnowballBlock.Index);
+				int snowballCount;
+
+				// Obtener capacidad máxima del slot 0
+				int slotCapacity = inventory.GetSlotCapacity(0, snowballValue);
+
+				// 50% probabilidad de 40, 50% probabilidad de 5 (respetando capacidad)
+				if (m_random.Float(0f, 1f) < 0.5f)
+					snowballCount = Math.Min(40, slotCapacity);
+				else
+					snowballCount = Math.Min(5, slotCapacity);
+
+				// Solo agregar si hay al menos 1 item que quepa
+				if (snowballCount > 0)
+					inventory.AddSlotItems(0, snowballValue, snowballCount);
+
+				// Segundo slot: arma cuerpo a cuerpo (machetes, clubs, hachas) con probabilidad 70%
+				if (m_random.Float(0f, 1f) < 0.7f)
+				{
+					int weaponValue = 0;
+					float weaponType = m_random.Float(0f, 1f);
+
+					if (weaponType < 0.3333f) // Clubs
+					{
+						float clubRoll = m_random.Float(0f, 1f);
+						if (clubRoll < 0.5f)
+							weaponValue = Terrain.MakeBlockValue(WoodenClubBlock.Index);
+						else
+							weaponValue = Terrain.MakeBlockValue(StoneClubBlock.Index);
+					}
+					else if (weaponType < 0.6666f) // Machetes
+					{
+						float macheteRoll = m_random.Float(0f, 1f);
+						if (macheteRoll < 0.1667f)
+							weaponValue = Terrain.MakeBlockValue(WoodMacheteBlock.Index);
+						else if (macheteRoll < 0.3333f)
+							weaponValue = Terrain.MakeBlockValue(StoneMacheteBlock.Index);
+						else if (macheteRoll < 0.5f)
+							weaponValue = Terrain.MakeBlockValue(CopperMacheteBlock.Index);
+						else if (macheteRoll < 0.6667f)
+							weaponValue = Terrain.MakeBlockValue(IronMacheteBlock.Index);
+						else if (macheteRoll < 0.8333f)
+							weaponValue = Terrain.MakeBlockValue(DiamondMacheteBlock.Index);
+						else
+							weaponValue = Terrain.MakeBlockValue(LavaMacheteBlock.Index);
+					}
+					else // Hachas
+					{
+						float axeRoll = m_random.Float(0f, 1f);
+						if (axeRoll < 0.1667f)
+							weaponValue = Terrain.MakeBlockValue(WoodAxeBlock.Index);
+						else if (axeRoll < 0.3333f)
+							weaponValue = Terrain.MakeBlockValue(StoneAxeOriginalBlock.Index);
+						else if (axeRoll < 0.5f)
+							weaponValue = Terrain.MakeBlockValue(CopperAxeBlock.Index);
+						else if (axeRoll < 0.6667f)
+							weaponValue = Terrain.MakeBlockValue(IronAxeBlock.Index);
+						else if (axeRoll < 0.8333f)
+							weaponValue = Terrain.MakeBlockValue(DiamondAxeBlock.Index);
+						else
+							weaponValue = Terrain.MakeBlockValue(LavaAxeBlock.Index);
+					}
+
+					if (weaponValue != 0)
+					{
+						int weaponSlotCapacity = inventory.GetSlotCapacity(1, weaponValue);
+						if (weaponSlotCapacity >= 1)
+							inventory.AddSlotItems(1, weaponValue, 1);
+					}
+				}
+				// Si la probabilidad falla, el segundo slot queda vacío (30% de los casos)
+			}
 		}
 
 		// Agrega un método público para copiar inventario
