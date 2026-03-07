@@ -44,22 +44,35 @@ namespace Game
 		public struct TradeItem
 		{
 			public int BlockIndex;
-			public int Variant; // -1 significa sin variante específica
+			public int Variant; // -1 si se usa template name
+			public string CreatureTemplateName; // para huevos
 			public float Probability;
 			public int Price;
 			public int MaxCount;
 
 			public int GetBlockValue()
 			{
-				if (Variant >= 0)
+				// Si es un huevo con template name, lo resolvemos
+				if (BlockIndex == EggBlock.Index && !string.IsNullOrEmpty(CreatureTemplateName))
 				{
-					// Aplicar la variante al bloque
+					EggBlock eggBlock = (EggBlock)BlocksManager.Blocks[BlockIndex];
+					var eggType = eggBlock.GetEggTypeByCreatureTemplateName(CreatureTemplateName);
+					if (eggType != null)
+					{
+						int data = EggBlock.SetEggType(0, eggType.EggTypeIndex);
+						data = EggBlock.SetIsLaid(data, false); // Huevo sin poner
+						return Terrain.MakeBlockValue(BlockIndex, 0, data);
+					}
+					// fallback
+					return Terrain.MakeBlockValue(BlockIndex);
+				}
+				else if (Variant >= 0)
+				{
 					Block block = BlocksManager.Blocks[BlockIndex];
 					return Terrain.MakeBlockValue(BlockIndex, 0, Variant);
 				}
 				else
 				{
-					// Sin variante específica, usar el bloque por defecto
 					return Terrain.MakeBlockValue(BlockIndex);
 				}
 			}
@@ -119,36 +132,38 @@ namespace Game
 			foreach (string item in items)
 			{
 				string[] parts = item.Split(':');
-
-				// Formatos soportados:
-				// - BlockName:prob:price:maxCount (sin variante)
-				// - BlockName:prob:price:maxCount:variant (con variante)
-
 				if (parts.Length >= 4)
 				{
 					string blockName = parts[0].Trim();
 					float prob;
 					int price;
 					int maxCount;
-					int variant = -1; // -1 significa sin variante específica
+					int variant = -1;
+					string templateName = null;
 
 					if (float.TryParse(parts[1], out prob) &&
 						int.TryParse(parts[2], out price) &&
 						int.TryParse(parts[3], out maxCount))
 					{
-						// Si hay una quinta parte, es la variante
-						if (parts.Length >= 5)
-						{
-							int.TryParse(parts[4], out variant);
-						}
-
 						int blockIndex = BlocksManager.GetBlockIndex(blockName, false);
 						if (blockIndex >= 0)
 						{
+							// Si es un huevo y hay 5 partes, la quinta es el template name
+							if (blockIndex == EggBlock.Index && parts.Length >= 5)
+							{
+								templateName = parts[4].Trim();
+							}
+							else if (parts.Length >= 5)
+							{
+								// Para otros bloques, la quinta parte es la variante entera
+								int.TryParse(parts[4], out variant);
+							}
+
 							m_tradeItems.Add(new TradeItem
 							{
 								BlockIndex = blockIndex,
 								Variant = variant,
+								CreatureTemplateName = templateName,
 								Probability = prob,
 								Price = price,
 								MaxCount = Math.Max(1, maxCount)
@@ -164,13 +179,9 @@ namespace Game
 			m_itemDataMap = new Dictionary<int, TradeItem>();
 			foreach (var item in m_tradeItems)
 			{
-				// Para el mapa de datos, usamos BlockIndex + Variant como clave compuesta?
-				// Pero para GetSlotCapacity necesitamos identificar el item por su BlockIndex+data
-				// Mejor guardar por BlockIndex y luego comparar también la variante
-				if (!m_itemDataMap.ContainsKey(item.BlockIndex))
-					m_itemDataMap[item.BlockIndex] = item;
-				// Nota: Esto asume que un mismo bloque no tiene múltiples entradas con diferentes precios/cantidades
-				// Si quieres diferentes precios por variante, necesitarías una clave compuesta
+				int value = item.GetBlockValue(); // valor único para este item
+				if (!m_itemDataMap.ContainsKey(value))
+					m_itemDataMap[value] = item;
 			}
 		}
 
@@ -303,26 +314,19 @@ namespace Game
 				if (isCreative)
 				{
 					int baseCapacity = base.GetSlotCapacity(slotIndex, value);
-					if (baseCapacity <= 1)
-						return baseCapacity;
-					return 100000;
+					return baseCapacity <= 1 ? baseCapacity : 100000;
 				}
 
 				if (m_modificationLock == 0)
 					return 0;
 
-				int blockIndex = Terrain.ExtractContents(value);
-				if (m_itemDataMap != null && m_itemDataMap.ContainsKey(blockIndex))
+				if (m_itemDataMap != null && m_itemDataMap.TryGetValue(value, out TradeItem tradeItem))
 				{
-					// Para simplificar, usamos el MaxCount del primer TradeItem que coincida con el BlockIndex
-					// Si necesitas diferentes capacidades por variante, habría que mejorar esto
-					return m_itemDataMap[blockIndex].MaxCount;
+					return tradeItem.MaxCount;
 				}
 
 				int baseCapacity2 = base.GetSlotCapacity(slotIndex, value);
-				if (baseCapacity2 <= 1)
-					return baseCapacity2;
-				return 100000;
+				return baseCapacity2 <= 1 ? baseCapacity2 : 100000;
 			}
 		}
 
@@ -349,9 +353,8 @@ namespace Game
 			if (slotIndex == 8) return 0;
 			int value = GetSlotValue(slotIndex);
 			if (value == 0) return 0;
-			int blockIndex = Terrain.ExtractContents(value);
-			if (m_itemDataMap != null && m_itemDataMap.ContainsKey(blockIndex))
-				return m_itemDataMap[blockIndex].Price;
+			if (m_itemDataMap != null && m_itemDataMap.TryGetValue(value, out TradeItem tradeItem))
+				return tradeItem.Price;
 			return 0;
 		}
 
