@@ -8,7 +8,6 @@ namespace Game
 {
 	public class ComponentZombieChaseBehavior : ComponentChaseBehavior, IUpdateable
 	{
-		// Token: 0x06000449 RID: 1097 RVA: 0x0003C850 File Offset: 0x0003AA50
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
 			base.Load(valuesDictionary, idToEntityMap);
@@ -51,7 +50,6 @@ namespace Game
 			}
 		}
 
-		// Token: 0x0600044A RID: 1098 RVA: 0x0003C918 File Offset: 0x0003AB18
 		private void SetupZombieInjuryHandler()
 		{
 			ComponentHealth componentHealth = this.m_componentCreature.ComponentHealth;
@@ -134,7 +132,6 @@ namespace Game
 			}));
 		}
 
-		// Token: 0x0600044B RID: 1099 RVA: 0x0003C960 File Offset: 0x0003AB60
 		private ComponentCreature FindExternalAttacker(Injury injury)
 		{
 			if (injury.Attacker == null)
@@ -143,16 +140,18 @@ namespace Game
 			return !this.IsSameHerd(injury.Attacker) ? injury.Attacker : null;
 		}
 
-		// Token: 0x0600044C RID: 1100 RVA: 0x0003C9A4 File Offset: 0x0003ABA4
 		private bool IsSameHerd(ComponentCreature otherCreature)
 		{
 			return otherCreature != null && this.m_componentZombieHerdBehavior != null &&
 				   this.m_componentZombieHerdBehavior.IsSameZombieHerd(otherCreature);
 		}
 
-		// Token: 0x0600044D RID: 1101 RVA: 0x0003C9DC File Offset: 0x0003ABDC
 		public override void Attack(ComponentCreature target, float maxRange, float maxChaseTime, bool isPersistent)
 		{
+			// CORRECCIÓN: Si el objetivo es nulo, no hacer nada
+			if (target == null)
+				return;
+
 			bool isRetaliating = this.m_isRetaliating && target == this.m_retaliationTarget;
 			bool isSameHerdTarget = !isRetaliating && !this.m_attacksSameHerd && this.IsSameHerd(target);
 
@@ -186,13 +185,16 @@ namespace Game
 										  this.m_subsystemGreenNightSky.IsGreenNightActive;
 
 				// Durante noche verde, priorizar jugadores pero sin ignorar retaliaciones
-				if (isGreenNightActive && !isRetaliating && target.Entity.FindComponent<ComponentPlayer>() == null)
+				if (isGreenNightActive && !isRetaliating)
 				{
-					// Buscar jugador cercano
-					ComponentPlayer nearestPlayer = this.FindNearestPlayer(maxRange);
-					if (nearestPlayer != null)
+					// CORRECCIÓN: Asegurar que la entidad del objetivo aún existe antes de buscar componente de jugador
+					if (target.Entity != null && target.Entity.FindComponent<ComponentPlayer>() == null)
 					{
-						target = nearestPlayer;
+						ComponentPlayer nearestPlayer = this.FindNearestPlayer(maxRange);
+						if (nearestPlayer != null)
+						{
+							target = nearestPlayer;
+						}
 					}
 				}
 
@@ -206,9 +208,12 @@ namespace Game
 			}
 		}
 
-		// Token: 0x0600044E RID: 1102 RVA: 0x0003CBEC File Offset: 0x0003ADEC
 		private ComponentCreature FindExternalEnemyNearby(float range)
 		{
+			// CORRECCIÓN: Verificar que el componente y su cuerpo existen
+			if (this.m_componentCreature == null || this.m_componentCreature.ComponentBody == null)
+				return null;
+
 			Vector3 position = this.m_componentCreature.ComponentBody.Position;
 			ComponentCreature bestTarget = null;
 			float bestScore = 0f;
@@ -233,9 +238,12 @@ namespace Game
 			return bestTarget;
 		}
 
-		// Token: 0x0600044F RID: 1103 RVA: 0x0003CCE0 File Offset: 0x0003AEE0
 		private ComponentPlayer FindNearestPlayer(float range)
 		{
+			// CORRECCIÓN: Verificar que el componente y su cuerpo existen
+			if (this.m_componentCreature == null || this.m_componentCreature.ComponentBody == null)
+				return null;
+
 			Vector3 position = this.m_componentCreature.ComponentBody.Position;
 			ComponentPlayer nearestPlayer = null;
 			float minDist = float.MaxValue;
@@ -259,7 +267,6 @@ namespace Game
 			return nearestPlayer;
 		}
 
-		// Token: 0x06000450 RID: 1104 RVA: 0x0003D0C4 File Offset: 0x0003B2C4
 		public override ComponentCreature FindTarget()
 		{
 			// PRIORIDAD 1: Retaliación - SIEMPRE verificar primero
@@ -311,7 +318,6 @@ namespace Game
 			return base.FindTarget();
 		}
 
-		// Token: 0x06000451 RID: 1105 RVA: 0x0003D1F0 File Offset: 0x0003B3F0
 		private ComponentCreature GetNextRetaliationTarget()
 		{
 			// Limpiar atacantes muertos
@@ -345,7 +351,6 @@ namespace Game
 			return null;
 		}
 
-		// Token: 0x06000452 RID: 1106 RVA: 0x0003D2F4 File Offset: 0x0003B4F4
 		public override float ScoreTarget(ComponentCreature componentCreature)
 		{
 			// Excluir miembros del mismo rebaño
@@ -375,7 +380,6 @@ namespace Game
 			return baseScore;
 		}
 
-		// Token: 0x06000453 RID: 1107 RVA: 0x0003D3A8 File Offset: 0x0003B5A8
 		private void AddFleeState()
 		{
 			this.m_stateMachine.AddState("Fleeing", delegate
@@ -416,7 +420,6 @@ namespace Game
 			});
 		}
 
-		// Token: 0x06000454 RID: 1108 RVA: 0x0003D3F0 File Offset: 0x0003B5F0
 		private void FleeFromTarget(ComponentCreature target)
 		{
 			if (target != null && this.m_componentCreature.ComponentHealth.Health > 0f)
@@ -426,7 +429,6 @@ namespace Game
 			}
 		}
 
-		// Token: 0x06000455 RID: 1109 RVA: 0x0003D440 File Offset: 0x0003B640
 		public override void Update(float dt)
 		{
 			base.Update(dt);
@@ -583,7 +585,6 @@ namespace Game
 			}
 		}
 
-		// Token: 0x06000456 RID: 1110 RVA: 0x0003D7C0 File Offset: 0x0003B9C0
 		public override void StopAttack()
 		{
 			base.StopAttack();
@@ -591,49 +592,20 @@ namespace Game
 			// No resetear estado de retaliación aquí, se maneja en Update
 		}
 
-		// Token: 0x04000485 RID: 1157
 		private ComponentZombieHerdBehavior m_componentZombieHerdBehavior;
-
-		// Token: 0x04000486 RID: 1158
 		private SubsystemGreenNightSky m_subsystemGreenNightSky;
-
-		// Token: 0x04000487 RID: 1159
 		private Dictionary<ComponentCreature, float> m_lastAttackTimes = new Dictionary<ComponentCreature, float>();
-
-		// Token: 0x04000488 RID: 1160
 		private float m_retaliationMemoryDuration = 30f;
-
-		// Token: 0x04000489 RID: 1161
 		private ComponentCreature m_lastAttacker;
-
-		// Token: 0x0400048A RID: 1162
 		private float m_retaliationCooldown;
-
-		// Token: 0x0400048B RID: 1163
 		private bool m_attacksSameHerd;
-
-		// Token: 0x0400048C RID: 1164
 		private bool m_attacksAllCategories;
-
-		// Token: 0x0400048D RID: 1165
 		private bool m_fleeFromSameHerd;
-
-		// Token: 0x0400048E RID: 1166
 		private float m_fleeDistance = 10f;
-
-		// Token: 0x0400048F RID: 1167
 		private bool m_forceAttackDuringGreenNight;
-
-		// Token: 0x04000490 RID: 1168
 		private ComponentZombieRunAwayBehavior m_zombieRunAwayBehavior;
-
-		// Token: 0x04000491 RID: 1169
 		private float m_lowHealthToEscape;
-
-		// Token: 0x04000492 RID: 1170
 		private bool m_previousGreenNightActive;
-
-		// Token: 0x04000493 RID: 1171
 		private float m_defaultTargetInRangeTime = 3f;
 
 		// NUEVOS CAMPOS PARA RETALIACIÓN MEJORADA
