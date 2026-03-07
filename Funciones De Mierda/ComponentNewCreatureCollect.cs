@@ -740,78 +740,237 @@ namespace Game
 			}
 			else if (name == "InfectedFreezer")
 			{
-				// Primer slot: siempre Bola de Nieve Congelante con cantidad 40 o 5 (equitativo 50% cada uno)
-				int snowballValue = Terrain.MakeBlockValue(FreezingSnowballBlock.Index);
-				int snowballCount;
+				// Probabilidad equitativa entre 3 opciones principales (33.33% cada una)
+				float mainChoice = m_random.Float(0f, 1f);
 
-				// Obtener capacidad máxima del slot 0
-				int slotCapacity = inventory.GetSlotCapacity(0, snowballValue);
-
-				// 50% probabilidad de 40, 50% probabilidad de 5 (respetando capacidad)
-				if (m_random.Float(0f, 1f) < 0.5f)
-					snowballCount = Math.Min(40, slotCapacity);
-				else
-					snowballCount = Math.Min(5, slotCapacity);
-
-				// Solo agregar si hay al menos 1 item que quepa
-				if (snowballCount > 0)
-					inventory.AddSlotItems(0, snowballValue, snowballCount);
-
-				// Segundo slot: arma cuerpo a cuerpo (machetes, clubs, hachas) con probabilidad 70%
-				if (m_random.Float(0f, 1f) < 0.7f)
+				if (mainChoice < 0.3333f) // Opción 1: Inventario realmente vacío (sin nada)
 				{
-					int weaponValue = 0;
-					float weaponType = m_random.Float(0f, 1f);
+					// No agregar ningún item - inventario completamente vacío
+					// El NPC no tiene nada
+				}
+				else if (mainChoice < 0.6666f) // Opción 2: Inventario "trampa" (parece vacío pero tiene items)
+				{
+					// Esta opción aplica la lógica normal de items pero el jugador creerá que está vacío
+					// (esto es solo para engañar al jugador, el código es el mismo que la opción 3)
 
-					if (weaponType < 0.3333f) // Clubs
+					// Determinar qué items tiene este NPC (puede tener bola, arma, ambos o solo uno)
+					bool hasSnowball = m_random.Float(0f, 1f) < 0.5f; // 50% de tener bola de nieve
+					bool hasMeleeWeapon = m_random.Float(0f, 1f) < 0.5f; // 50% de tener arma melee
+
+					// Bola de Nieve Congelante (si aplica)
+					if (hasSnowball)
 					{
-						float clubRoll = m_random.Float(0f, 1f);
-						if (clubRoll < 0.5f)
-							weaponValue = Terrain.MakeBlockValue(WoodenClubBlock.Index);
+						int snowballValue = Terrain.MakeBlockValue(FreezingSnowballBlock.Index);
+						int snowballCount;
+
+						// Obtener capacidad máxima del slot 0
+						int slotCapacity = inventory.GetSlotCapacity(0, snowballValue);
+
+						// 50% probabilidad de 40, 50% probabilidad de 5
+						if (m_random.Float(0f, 1f) < 0.5f)
+							snowballCount = Math.Min(40, slotCapacity);
 						else
-							weaponValue = Terrain.MakeBlockValue(StoneClubBlock.Index);
-					}
-					else if (weaponType < 0.6666f) // Machetes
-					{
-						float macheteRoll = m_random.Float(0f, 1f);
-						if (macheteRoll < 0.1667f)
-							weaponValue = Terrain.MakeBlockValue(WoodMacheteBlock.Index);
-						else if (macheteRoll < 0.3333f)
-							weaponValue = Terrain.MakeBlockValue(StoneMacheteBlock.Index);
-						else if (macheteRoll < 0.5f)
-							weaponValue = Terrain.MakeBlockValue(CopperMacheteBlock.Index);
-						else if (macheteRoll < 0.6667f)
-							weaponValue = Terrain.MakeBlockValue(IronMacheteBlock.Index);
-						else if (macheteRoll < 0.8333f)
-							weaponValue = Terrain.MakeBlockValue(DiamondMacheteBlock.Index);
-						else
-							weaponValue = Terrain.MakeBlockValue(LavaMacheteBlock.Index);
-					}
-					else // Hachas
-					{
-						float axeRoll = m_random.Float(0f, 1f);
-						if (axeRoll < 0.1667f)
-							weaponValue = Terrain.MakeBlockValue(WoodAxeBlock.Index);
-						else if (axeRoll < 0.3333f)
-							weaponValue = Terrain.MakeBlockValue(StoneAxeOriginalBlock.Index);
-						else if (axeRoll < 0.5f)
-							weaponValue = Terrain.MakeBlockValue(CopperAxeBlock.Index);
-						else if (axeRoll < 0.6667f)
-							weaponValue = Terrain.MakeBlockValue(IronAxeBlock.Index);
-						else if (axeRoll < 0.8333f)
-							weaponValue = Terrain.MakeBlockValue(DiamondAxeBlock.Index);
-						else
-							weaponValue = Terrain.MakeBlockValue(LavaAxeBlock.Index);
+							snowballCount = Math.Min(5, slotCapacity);
+
+						// Solo agregar si hay al menos 1 item que quepa
+						if (snowballCount > 0)
+							inventory.AddSlotItems(0, snowballValue, snowballCount);
 					}
 
-					if (weaponValue != 0)
+					// Arma cuerpo a cuerpo (si aplica)
+					if (hasMeleeWeapon)
 					{
-						int weaponSlotCapacity = inventory.GetSlotCapacity(1, weaponValue);
-						if (weaponSlotCapacity >= 1)
-							inventory.AddSlotItems(1, weaponValue, 1);
+						int weaponValue = 0;
+						float weaponType = m_random.Float(0f, 1f);
+
+						if (weaponType < 0.3333f) // Clubs
+						{
+							float clubRoll = m_random.Float(0f, 1f);
+							if (clubRoll < 0.5f)
+								weaponValue = Terrain.MakeBlockValue(WoodenClubBlock.Index);
+							else
+								weaponValue = Terrain.MakeBlockValue(StoneClubBlock.Index);
+						}
+						else if (weaponType < 0.6666f) // Machetes
+						{
+							float macheteRoll = m_random.Float(0f, 1f);
+							if (macheteRoll < 0.1667f)
+								weaponValue = Terrain.MakeBlockValue(WoodMacheteBlock.Index);
+							else if (macheteRoll < 0.3333f)
+								weaponValue = Terrain.MakeBlockValue(StoneMacheteBlock.Index);
+							else if (macheteRoll < 0.5f)
+								weaponValue = Terrain.MakeBlockValue(CopperMacheteBlock.Index);
+							else if (macheteRoll < 0.6667f)
+								weaponValue = Terrain.MakeBlockValue(IronMacheteBlock.Index);
+							else if (macheteRoll < 0.8333f)
+								weaponValue = Terrain.MakeBlockValue(DiamondMacheteBlock.Index);
+							else
+								weaponValue = Terrain.MakeBlockValue(LavaMacheteBlock.Index);
+						}
+						else // Hachas
+						{
+							float axeRoll = m_random.Float(0f, 1f);
+							if (axeRoll < 0.1667f)
+								weaponValue = Terrain.MakeBlockValue(WoodAxeBlock.Index);
+							else if (axeRoll < 0.3333f)
+								weaponValue = Terrain.MakeBlockValue(StoneAxeOriginalBlock.Index);
+							else if (axeRoll < 0.5f)
+								weaponValue = Terrain.MakeBlockValue(CopperAxeBlock.Index);
+							else if (axeRoll < 0.6667f)
+								weaponValue = Terrain.MakeBlockValue(IronAxeBlock.Index);
+							else if (axeRoll < 0.8333f)
+								weaponValue = Terrain.MakeBlockValue(DiamondAxeBlock.Index);
+							else
+								weaponValue = Terrain.MakeBlockValue(LavaAxeBlock.Index);
+						}
+
+						if (weaponValue != 0)
+						{
+							// Buscar un slot para el arma (preferiblemente slot 1, pero si está ocupado buscar otro)
+							int weaponSlot = -1;
+
+							// Verificar si el slot 1 está disponible
+							if (inventory.GetSlotCount(1) == 0)
+							{
+								int slotCapacity = inventory.GetSlotCapacity(1, weaponValue);
+								if (slotCapacity >= 1)
+									weaponSlot = 1;
+							}
+
+							// Si el slot 1 no está disponible, buscar otro slot vacío
+							if (weaponSlot == -1)
+							{
+								for (int i = 0; i < inventory.SlotsCount; i++)
+								{
+									if (i == 0 && hasSnowball) continue; // Saltar slot 0 si ya tiene bola
+
+									if (inventory.GetSlotCount(i) == 0)
+									{
+										int slotCapacity = inventory.GetSlotCapacity(i, weaponValue);
+										if (slotCapacity >= 1)
+										{
+											weaponSlot = i;
+											break;
+										}
+									}
+								}
+							}
+
+							if (weaponSlot != -1)
+								inventory.AddSlotItems(weaponSlot, weaponValue, 1);
+						}
 					}
 				}
-				// Si la probabilidad falla, el segundo slot queda vacío (30% de los casos)
+				else // Opción 3: Inventario normal con items (visible para el jugador)
+				{
+					// Determinar qué items tiene este NPC (puede tener bola, arma, ambos o solo uno)
+					bool hasSnowball = m_random.Float(0f, 1f) < 0.5f; // 50% de tener bola de nieve
+					bool hasMeleeWeapon = m_random.Float(0f, 1f) < 0.5f; // 50% de tener arma melee
+
+					// Bola de Nieve Congelante (si aplica)
+					if (hasSnowball)
+					{
+						int snowballValue = Terrain.MakeBlockValue(FreezingSnowballBlock.Index);
+						int snowballCount;
+
+						// Obtener capacidad máxima del slot 0
+						int slotCapacity = inventory.GetSlotCapacity(0, snowballValue);
+
+						// 50% probabilidad de 40, 50% probabilidad de 5
+						if (m_random.Float(0f, 1f) < 0.5f)
+							snowballCount = Math.Min(40, slotCapacity);
+						else
+							snowballCount = Math.Min(5, slotCapacity);
+
+						// Solo agregar si hay al menos 1 item que quepa
+						if (snowballCount > 0)
+							inventory.AddSlotItems(0, snowballValue, snowballCount);
+					}
+
+					// Arma cuerpo a cuerpo (si aplica)
+					if (hasMeleeWeapon)
+					{
+						int weaponValue = 0;
+						float weaponType = m_random.Float(0f, 1f);
+
+						if (weaponType < 0.3333f) // Clubs
+						{
+							float clubRoll = m_random.Float(0f, 1f);
+							if (clubRoll < 0.5f)
+								weaponValue = Terrain.MakeBlockValue(WoodenClubBlock.Index);
+							else
+								weaponValue = Terrain.MakeBlockValue(StoneClubBlock.Index);
+						}
+						else if (weaponType < 0.6666f) // Machetes
+						{
+							float macheteRoll = m_random.Float(0f, 1f);
+							if (macheteRoll < 0.1667f)
+								weaponValue = Terrain.MakeBlockValue(WoodMacheteBlock.Index);
+							else if (macheteRoll < 0.3333f)
+								weaponValue = Terrain.MakeBlockValue(StoneMacheteBlock.Index);
+							else if (macheteRoll < 0.5f)
+								weaponValue = Terrain.MakeBlockValue(CopperMacheteBlock.Index);
+							else if (macheteRoll < 0.6667f)
+								weaponValue = Terrain.MakeBlockValue(IronMacheteBlock.Index);
+							else if (macheteRoll < 0.8333f)
+								weaponValue = Terrain.MakeBlockValue(DiamondMacheteBlock.Index);
+							else
+								weaponValue = Terrain.MakeBlockValue(LavaMacheteBlock.Index);
+						}
+						else // Hachas
+						{
+							float axeRoll = m_random.Float(0f, 1f);
+							if (axeRoll < 0.1667f)
+								weaponValue = Terrain.MakeBlockValue(WoodAxeBlock.Index);
+							else if (axeRoll < 0.3333f)
+								weaponValue = Terrain.MakeBlockValue(StoneAxeOriginalBlock.Index);
+							else if (axeRoll < 0.5f)
+								weaponValue = Terrain.MakeBlockValue(CopperAxeBlock.Index);
+							else if (axeRoll < 0.6667f)
+								weaponValue = Terrain.MakeBlockValue(IronAxeBlock.Index);
+							else if (axeRoll < 0.8333f)
+								weaponValue = Terrain.MakeBlockValue(DiamondAxeBlock.Index);
+							else
+								weaponValue = Terrain.MakeBlockValue(LavaAxeBlock.Index);
+						}
+
+						if (weaponValue != 0)
+						{
+							// Buscar un slot para el arma (preferiblemente slot 1, pero si está ocupado buscar otro)
+							int weaponSlot = -1;
+
+							// Verificar si el slot 1 está disponible
+							if (inventory.GetSlotCount(1) == 0)
+							{
+								int slotCapacity = inventory.GetSlotCapacity(1, weaponValue);
+								if (slotCapacity >= 1)
+									weaponSlot = 1;
+							}
+
+							// Si el slot 1 no está disponible, buscar otro slot vacío
+							if (weaponSlot == -1)
+							{
+								for (int i = 0; i < inventory.SlotsCount; i++)
+								{
+									if (i == 0 && hasSnowball) continue; // Saltar slot 0 si ya tiene bola
+
+									if (inventory.GetSlotCount(i) == 0)
+									{
+										int slotCapacity = inventory.GetSlotCapacity(i, weaponValue);
+										if (slotCapacity >= 1)
+										{
+											weaponSlot = i;
+											break;
+										}
+									}
+								}
+							}
+
+							if (weaponSlot != -1)
+								inventory.AddSlotItems(weaponSlot, weaponValue, 1);
+						}
+					}
+				}
 			}
 		}
 
