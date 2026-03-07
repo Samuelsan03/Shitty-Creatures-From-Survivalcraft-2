@@ -42,23 +42,13 @@ namespace Game
 			m_buyButton = Children.Find<BevelledButtonWidget>("BuyButton", true);
 			m_infoLabel = Children.Find<LabelWidget>("InfoLabel", true);
 			m_coinSlot = Children.Find<InventorySlotWidget>("CoinSlot", true);
+			m_coinSlotHint = Children.Find<LabelWidget>("CoinSlotHint", true); // Ahora viene del XML
 
 			// Aplicar traducciones
 			m_pirateTraderTitle.Text = LanguageControl.GetContentWidgets("PirateTraderWidget", "Title");
 			m_inventoryTitle.Text = LanguageControl.GetContentWidgets("PirateTraderWidget", "Inventory");
 			m_buyButton.Text = LanguageControl.GetContentWidgets("PirateTraderWidget", "BuyButton");
-			m_infoLabel.Text = LanguageControl.GetContentWidgets("PirateTraderWidget", "SelectItemFirst"); // <-- LÍNEA AÑADIDA
-
-			// Crear hint para el slot de monedas
-			m_coinSlotHint = new LabelWidget
-			{
-				Color = new Color(128, 128, 128),
-				FontScale = 0.5f,
-				HorizontalAlignment = WidgetAlignment.Center,
-				VerticalAlignment = WidgetAlignment.Far
-			};
-			CanvasWidget.SetPosition(m_coinSlotHint, new Vector2(12, 192));
-			Children.Add(m_coinSlotHint);
+			m_infoLabel.Text = LanguageControl.GetContentWidgets("PirateTraderWidget", "SelectItemFirst");
 
 			m_coinSlot.AssignInventorySlot(trader, 8);
 			m_coinSlot.HideHighlightRectangle = true;
@@ -118,7 +108,7 @@ namespace Game
 			if (m_selectedSlot >= 0 && m_trader.GetSlotValue(m_selectedSlot) == 0)
 				m_selectedSlot = -1;
 
-			// Actualizar hint del slot de monedas
+			// Actualizar hint del slot de monedas (visibilidad y texto)
 			int coinValue = m_trader.GetSlotValue(8);
 			int coinCount = m_trader.GetSlotCount(8);
 			m_coinSlotHint.IsVisible = (coinValue == 0 || coinCount == 0);
