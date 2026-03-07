@@ -15,6 +15,8 @@ namespace Game
 		private Random m_random = new Random();
 
 		private Dictionary<Entity, int> m_playerImpactCount = new Dictionary<Entity, int>();
+		// Diccionario para rastrear los sistemas de partículas de cada proyectil
+		private Dictionary<Projectile, List<FreezingTrailParticleSystem>> m_projectileTrails = new Dictionary<Projectile, List<FreezingTrailParticleSystem>>();
 
 		public override int[] HandledBlocks => new int[] { FreezingSnowballBlock.Index };
 
@@ -29,17 +31,36 @@ namespace Game
 
 		public override void OnFiredAsProjectile(Projectile projectile)
 		{
+			// Crear dos sistemas de partículas para la nube alrededor de la bola
 			var particleSystem = new FreezingTrailParticleSystem(projectile.Position, 0.5f, float.MaxValue);
 			m_subsystemProjectiles.AddTrail(projectile, Vector3.Zero, particleSystem);
 
 			var particleSystem2 = new FreezingTrailParticleSystem(projectile.Position, 0.3f, float.MaxValue);
 			m_subsystemProjectiles.AddTrail(projectile, new Vector3(0f, 0.05f, 0f), particleSystem2);
 
+			// Guardar referencias para poder detenerlas al impactar
+			var trails = new List<FreezingTrailParticleSystem> { particleSystem, particleSystem2 };
+			m_projectileTrails[projectile] = trails;
+
 			m_subsystemAudio.PlaySound("Audio/Throw", 0.3f, m_random.Float(-0.2f, 0.2f), projectile.Position, 2f, true);
 		}
 
 		public override bool OnHitAsProjectile(CellFace? cellFace, ComponentBody componentBody, WorldItem worldItem)
 		{
+			// Obtener el proyectil (asumimos que worldItem es el Projectile)
+			Projectile projectile = worldItem as Projectile;
+			if (projectile != null && m_projectileTrails.TryGetValue(projectile, out List<FreezingTrailParticleSystem> trails))
+			{
+				// Detener los sistemas de partículas para que se desvanezcan (fade-out)
+				foreach (var trail in trails)
+				{
+					trail.IsStopped = true;
+				}
+				// Eliminar del diccionario
+				m_projectileTrails.Remove(projectile);
+			}
+
+			// Resto de la lógica de impacto (daño, efectos sobre criaturas, etc.)
 			if (componentBody != null)
 			{
 				ComponentCreature creature = componentBody.Entity.FindComponent<ComponentCreature>();
@@ -81,47 +102,15 @@ namespace Game
 				}
 			}
 
-			// === EFECTO DE IMPACTO CON TRANSICIÓN (como el fuego) ===
-			var impactParticles = new FreezingTrailParticleSystem(worldItem.Position, 0.6f, float.MaxValue);
-			impactParticles.IsStopped = true;
-
-			int particlesToSpawn = 25;
-			for (int i = 0; i < impactParticles.Particles.Length && particlesToSpawn > 0; i++)
-			{
-				var p = impactParticles.Particles[i];
-				if (!p.IsActive)
-				{
-					p.IsActive = true;
-					p.Position = worldItem.Position + new Vector3(
-						m_random.Float(-0.8f, 0.8f),
-						m_random.Float(-0.2f, 0.8f),
-						m_random.Float(-0.8f, 0.8f)
-					);
-					p.Color = new Color(200, 240, 255, 255);
-					float s = 0.5f * m_random.Float(0.8f, 1.5f);
-					p.Size = new Vector2(s, s);
-					p.Velocity = new Vector3(
-						m_random.Float(-0.2f, 0.2f),
-						m_random.Float(0.3f, 0.8f),
-						m_random.Float(-0.2f, 0.2f)
-					);
-					p.Time = 0f;
-					p.TimeToLive = m_random.Float(1.5f, 3f);
-					p.FlipX = (m_random.Int(0, 1) == 0);
-					p.FlipY = (m_random.Int(0, 1) == 0);
-					particlesToSpawn--;
-				}
-			}
-
-			Project.FindSubsystem<SubsystemParticles>(true)?.AddParticleSystem(impactParticles, false);
+			// Reproducir sonido de impacto (sin generar nuevas partículas)
 			m_subsystemAudio.PlaySound("Audio/congelado", 3.0f, m_random.Float(-0.2f, 0.2f), worldItem.Position, 2f, true);
 
-			return false;
+			return false; // Permitir que el proyectil continúe (o se destruya según la lógica base)
 		}
 
+		// Los métodos ApplyFreezingEffectsToPlayer, KillTarget, StartFluOnTarget permanecen igual
 		private void ApplyFreezingEffectsToPlayer(ComponentPlayer player, int impactNumber)
 		{
-			// Impulso base en todos los impactos (como en el original)
 			if (player.ComponentBody != null)
 			{
 				player.ComponentBody.ApplyImpulse(new Vector3(
@@ -134,12 +123,9 @@ namespace Game
 			switch (impactNumber)
 			{
 				case 1:
-					// Primer impacto: temperatura 4°C (hielo ~33%, visible pero no 50%)
-					SetPlayerTemperature(player, 4f);
+					SetPlayerTemperature(player, 6f);
 					break;
-
 				case 2:
-					// Segundo impacto: temperatura 3°C (hielo 50%)
 					SetPlayerTemperature(player, 3f);
 					player.ComponentBody?.ApplyImpulse(new Vector3(
 						m_random.Float(-0.8f, 0.8f),
@@ -147,9 +133,7 @@ namespace Game
 						m_random.Float(-0.8f, 0.8f)
 					));
 					break;
-
 				case 3:
-					// Tercer impacto: gripe + temperatura 1°C (hielo ~83%)
 					StartFluOnTarget(player, 45f);
 					SetPlayerTemperature(player, 1f);
 					player.ComponentBody?.ApplyImpulse(new Vector3(
@@ -158,9 +142,7 @@ namespace Game
 						m_random.Float(-1.2f, 1.2f)
 					));
 					break;
-
-				default: // impactNumber >= 4
-						 // Cuarto impacto: mata por hipotermia (temperatura casi 0)
+				default:
 					SetPlayerTemperature(player, 0.1f);
 					KillTarget(player);
 					player.ComponentBody?.ApplyImpulse(new Vector3(
