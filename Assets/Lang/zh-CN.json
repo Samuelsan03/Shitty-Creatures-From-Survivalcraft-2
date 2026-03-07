@@ -66,7 +66,9 @@
     "ScreenTitle": "Shitty Creatures 设置",
     "SettingsButton": "Shitty Creatures 设置",
     "GhostDescription": "启用/禁用幽灵追逐你时的音乐",
-    "TankDescription": "启用/禁用 Tanks 追逐你时的音乐"
+    "TankDescription": "启用/禁用 Tanks 追逐你时的音乐",
+    "SpawnDescription": "启用/禁用在死亡时生成NPC",
+    "SpawnButton": "死亡生成: {0}"
   },
   "ChaseMusic": {
     "GhostButton": "追逐音乐 - 幽灵：{0}",
@@ -142,7 +144,8 @@
     "NoPowerStatus": "无电源"
   },
   "Injury": {
-    "Poisoned": "中毒"
+    "Poisoned": "中毒",
+    "FrozenToDeath": "冻死"
    },
   "Database": {
     "DisplayName": {
@@ -376,6 +379,10 @@
     }
   },
   "Blocks": {
+    "FreezingSnowballBlock:0": {
+      "DisplayName": "极寒雪球",
+      "Description": "一枚注入极寒能量的雪球。投掷命中玩家时会产生逐步冻结效果：第一次降低体温，第二次造成部分冻结，第三次引发流感与极度寒冷，第四次因体温过低而死亡。命中生物时，如果其未感染流感，则会使其感染。飞行过程中会留下浓密的冰霜轨迹，并在命中时释放冰冻粒子效果。"
+    },
     "RemoteControlBlock:0": {
   "DisplayName": "遥控器",
   "Description": "一种远程控制设备。使用它来切换绿色夜晚现象。",
@@ -414,10 +421,10 @@
   "Description": "一个装有强效药用解毒剂的桶。可清除身体中的中毒和疾病状态，阻止其有害影响，并帮助身体迅速恢复。在治愈病症的同时，还会恢复失去的生命值。可用于自身或其他受感染的生物。",
   "CRDescription:0": "将药用白花注入纯净水中，酿造出强效解毒剂。 治疗毒药和疾病。"
 },
-    "TeaAntifluBucketBlock:0": {
+"TeaAntifluBucketBlock:0": {
   "DisplayName": "抗流感茶桶",
-  "Description": "装满药用茶的桶。饮用后可治愈流感并完全恢复生命值。",
-  "CRDescription:0": "通过将一桶水与高草混合并加热来冲泡舒缓的抗流感茶。 治疗流感并缓解症状。"
+  "Description": "一个装满药用茶的桶。饮用后可治愈流感并完全恢复生命值，也可以用于治愈被感染的生物。",
+  "CRDescription:0": "将一桶水与高草一起加热即可煮出舒缓的抗流感茶。可以治愈流感、缓解症状，并可用于治疗被感染的生物。"
 },
     "LavaLongspearBlock:0": {
       "DisplayName": "熔岩长矛",
@@ -946,6 +953,22 @@
     }
   },
   "ContentWidgets": {
+    "PirateTraderWidget": {
+    "Title": "海盗商人",
+    "InventoryTitle": "库存",
+    "BuyButton": "购买",
+    "CoinSlotHint": "硬币",
+    "CoinSlotLabel": "支付槽",
+    "CoinSlotLabelWithAmount": "支付槽：{0} 枚硬币",
+    "ItemNoLongerAvailable": "该物品已不可用。",
+    "ItemCannotBeBought": "该物品无法购买。",
+    "InsufficientCoins": "购买 {1} 需要 {0} 枚硬币。",
+    "NotEnoughSpace": "库存空间不足。",
+    "PurchaseSuccessful": "购买成功！感谢惠顾！",
+    "SelectItemFirst": "请先选择要购买的物品。",
+    "SlotEmpty": "此槽位为空。",
+    "InfoLabelFormat": "{0} - {1} 枚核币"
+},
     "AutoCannonWidget": {
     "Title": "自动炮",
     "InventoryTitle": "库存",
@@ -957,7 +980,7 @@
     "HelpText": "作者\nFire Dragon\nKike\n----------\n该武器使用快捷栏的第一个槽位或第一个有物品的槽位。要保存更改，请按“接受”，或按“X”取消。散布和速度设置决定弹丸的方向和距离。\n\n使用方法：在PC上按住右键，或在移动设备上按住屏幕，它会按你配置的每秒发射次数自动开火。可用于快速大量发射刷怪蛋生成生物。\n\n你也可以发射烟花或其他任何物品来娱乐。\n\n\n代码由Samuelsan03窃取，所以你可以随意使用此代码 xd"
   },
     "CreatureInventoryWidget": {
-      "CreatureInventoryLabel": "{0}的库存",
+      "CreatureInventoryLabel": "生物库存",
       "InventoryLabel": "库存"
     },
     "FlameThrowerWidget": {
