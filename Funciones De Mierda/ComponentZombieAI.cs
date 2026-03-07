@@ -568,12 +568,30 @@ namespace Game
 
 			Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
 			Vector3 targetPos = target.ComponentCreatureModel.EyePosition;
-			Vector3 direction = targetPos - eyePos;
-			float distance = direction.Length();
+			Vector3 directionToTarget = targetPos - eyePos;
+			float distance = directionToTarget.Length();
 
 			if (distance < 0.1f) return true;
 
-			direction = Vector3.Normalize(direction);
+			directionToTarget = Vector3.Normalize(directionToTarget);
+
+			// --- NUEVO: Verificar que el NPC esté mirando hacia el objetivo ---
+			Vector3 forward = m_componentCreature.ComponentBody.Matrix.Forward;
+			forward.Y = 0; // Ignorar inclinación vertical
+			Vector2 flatDir = new Vector2(directionToTarget.X, directionToTarget.Z);
+			Vector2 flatForward = new Vector2(forward.X, forward.Z);
+			if (flatForward.LengthSquared() > 0.01f && flatDir.LengthSquared() > 0.01f)
+			{
+				flatForward = Vector2.Normalize(flatForward);
+				flatDir = Vector2.Normalize(flatDir);
+				float dot = Vector2.Dot(flatForward, flatDir);
+				// Ángulo máximo de visión: 60 grados (dot > 0.5)
+				if (dot < 0.5f)
+				{
+					return false;
+				}
+			}
+			// ----------------------------------------------------------------
 
 			// Raycast contra el terreno (bloques sólidos)
 			TerrainRaycastResult? terrainHit = m_subsystemTerrain.Raycast(
@@ -584,7 +602,6 @@ namespace Game
 				(int value, float d) => BlocksManager.Blocks[Terrain.ExtractContents(value)].IsCollidable
 			);
 
-			// Si hay un bloque sólido entre medias, no hay línea de visión
 			if (terrainHit != null && terrainHit.Value.Distance < distance - 0.5f)
 			{
 				return false;
@@ -629,6 +646,7 @@ namespace Game
 			if (blockType == typeof(LavaLongspearBlock)) return true;
 			if (blockType == typeof(LavaSpearBlock)) return true;
 			if (blockType == typeof(DiamondLongspearBlock)) return true;
+			if (blockType == typeof(FreezingSnowballBlock)) return true;
 
 			return false;
 		}
@@ -877,16 +895,19 @@ namespace Game
 		{
 			List<ArrowBlock.ArrowType> availableBolts = new List<ArrowBlock.ArrowType>(m_crossbowBoltTypes);
 
+			// Filtrar explosivos si la distancia es menor al mínimo seguro
 			if (distance < m_explosiveBoltMinDistance)
 			{
 				availableBolts.Remove(ArrowBlock.ArrowType.ExplosiveBolt);
 			}
 
+			// Si no quedan tipos (solo explosivos y están filtrados), usar un tipo por defecto
 			if (availableBolts.Count == 0)
 			{
 				availableBolts.Add(ArrowBlock.ArrowType.IronBolt);
 			}
 
+			// Devolver un tipo aleatorio de los disponibles
 			return availableBolts[m_random.Int(0, availableBolts.Count - 1)];
 		}
 
@@ -894,11 +915,13 @@ namespace Game
 		{
 			List<RepeatArrowBlock.ArrowType> availableArrows = new List<RepeatArrowBlock.ArrowType>(m_repeatCrossbowArrowTypes);
 
+			// Filtrar explosivos si la distancia es menor al mínimo seguro
 			if (distance < m_explosiveRepeatArrowMinDistance)
 			{
 				availableArrows.Remove(RepeatArrowBlock.ArrowType.ExplosiveArrow);
 			}
 
+			// Si no quedan tipos, usar uno por defecto
 			if (availableArrows.Count == 0)
 			{
 				availableArrows.Add(RepeatArrowBlock.ArrowType.IronArrow);
@@ -1344,52 +1367,48 @@ namespace Game
 		{
 			if (target == null) return;
 
-			// Verificar línea de visión
 			bool hasLineOfSight = HasClearLineOfSight(target);
 
-			// Si NO hay línea de visión, NO detenerse - dejar que la persecución mueva al zombie
 			if (!hasLineOfSight)
 			{
-				// Cancelar cualquier estado de lanzamiento en progreso
 				m_isThrowableAiming = false;
 				m_isThrowableThrowing = false;
-				// Resetear el modelo
+				m_hasFirearmAimed = false;
+
 				if (m_componentModel != null)
 				{
-					m_componentModel.AimHandAngleOrder = AimHandAngleOrder;
+					m_componentModel.AimHandAngleOrder = 0f;
 					m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
 					m_componentModel.InHandItemRotationOrder = Vector3.Zero;
 					m_componentModel.LookAtOrder = null;
 				}
-				// IMPORTANTE: NO detener el movimiento
 				return;
 			}
 
-			// Verificar rango: si está fuera de la distancia óptima, cancelar lanzamiento
+			// Verificar rango
 			if (distance < m_throwableMinRange || distance > m_throwableMaxRange)
 			{
-				// Cancelar cualquier estado de lanzamiento en progreso
 				m_isThrowableAiming = false;
 				m_isThrowableThrowing = false;
-				// Resetear el modelo
 				if (m_componentModel != null)
 				{
-					m_componentModel.AimHandAngleOrder = AimHandAngleOrder;
+					m_componentModel.AimHandAngleOrder = 0f;
 					m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
 					m_componentModel.InHandItemRotationOrder = Vector3.Zero;
 					m_componentModel.LookAtOrder = null;
 				}
-				// IMPORTANTE: NO detener el movimiento
 				return;
 			}
 
-			// SOLO cuando hay línea de visión Y estamos en rango: detener el movimiento para lanzar
+			// Detener el movimiento para lanzar
 			if (m_componentPathfinding != null)
 			{
 				m_componentPathfinding.Destination = null;
 			}
 
-			// Resto de la lógica de lanzamiento igual...
+			// --- ELIMINADO: No forzar rotación manual ---
+			// (La rotación se realizará suavemente mediante LookAtOrder)
+
 			if (!m_isThrowableAiming && !m_isThrowableThrowing)
 			{
 				StartThrowableAiming();
@@ -1583,6 +1602,28 @@ namespace Game
 		private void ProcessFirearmBehavior(ComponentCreature target, float distance)
 		{
 			if (m_currentWeaponSlot < 0) return;
+
+			// --- NUEVA VERIFICACIÓN DE LÍNEA DE VISIÓN ---
+			if (!HasClearLineOfSight(target))
+			{
+				// Cancelar cualquier estado de disparo en curso
+				m_isFirearmAiming = false;
+				m_isFirearmFiring = false;
+				m_isFirearmReloading = false;
+
+				// Restablecer la animación del modelo
+				if (m_componentModel != null)
+				{
+					m_componentModel.AimHandAngleOrder = 0f;
+					m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
+					m_componentModel.InHandItemRotationOrder = Vector3.Zero;
+					m_componentModel.LookAtOrder = null;
+				}
+
+				// NO detener el movimiento: la chase behavior se encargará de reposicionar al NPC
+				return;
+			}
+			// ---------------------------------------------
 
 			int slotValue = m_componentInventory.GetSlotValue(m_currentWeaponSlot);
 			int blockIndex = Terrain.ExtractContents(slotValue);
@@ -2056,11 +2097,24 @@ namespace Game
 				if (m_subsystemTime.GameTime - m_animationStartTime >= m_aimTime)
 				{
 					m_isAiming = false;
+					// Seleccionar el tipo de virote justo antes de empezar a dibujar
+					m_currentBoltType = SelectBoltTypeBasedOnDistance(distance);
 					StartCrossbowDrawing(distance);
 				}
 			}
 			else if (m_isDrawing)
 			{
+				// --- NUEVA VERIFICACIÓN: Si el virote es explosivo y la distancia ya no es segura, cancelar ---
+				if (m_currentBoltType == ArrowBlock.ArrowType.ExplosiveBolt && distance < m_explosiveBoltMinDistance)
+				{
+					// Cancelar el dibujado y volver a aiming
+					m_isDrawing = false;
+					ClearBoltFromCrossbow(); // Limpiar el virote actual
+					StartAiming();
+					return;
+				}
+				// -----------------------------------------------------------------------------------------
+
 				ApplyCrossbowDrawingAnimation(target);
 
 				m_currentDraw = MathUtils.Clamp((float)((m_subsystemTime.GameTime - m_drawStartTime) / m_drawTime), 0f, 1f);
@@ -2836,17 +2890,26 @@ namespace Game
 				if (m_subsystemTime.GameTime - m_animationStartTime >= m_aimTime)
 				{
 					m_isAiming = false;
-
+					// Seleccionar el tipo de flecha justo antes de dibujar
 					m_currentRepeatArrowType = SelectRepeatArrowTypeBasedOnDistance(distance);
 					StartRepeatCrossbowDrawing();
 				}
 			}
 			else if (m_isDrawing)
 			{
+				// --- NUEVA VERIFICACIÓN: Si la flecha es explosiva y la distancia ya no es segura, cancelar ---
+				if (m_currentRepeatArrowType == RepeatArrowBlock.ArrowType.ExplosiveArrow && distance < m_explosiveRepeatArrowMinDistance)
+				{
+					m_isDrawing = false;
+					ClearArrowFromRepeatCrossbow(); // Limpiar flecha actual
+					StartAiming();
+					return;
+				}
+				// --------------------------------------------------------------------------------------------
+
 				ApplyRepeatCrossbowDrawingAnimation(target);
 
 				m_currentDraw = MathUtils.Clamp((float)((m_subsystemTime.GameTime - m_drawStartTime) / m_repeatCrossbowDrawTime), 0f, 1f);
-
 				UpdateRepeatCrossbowDraw((int)(m_currentDraw * 15f));
 
 				if (m_subsystemTime.GameTime - m_drawStartTime >= m_repeatCrossbowDrawTime)
@@ -2872,12 +2935,9 @@ namespace Game
 				if (m_subsystemTime.GameTime - m_fireTime >= 0.2f)
 				{
 					m_isFiring = false;
-
 					ClearArrowFromRepeatCrossbow();
 
-					m_currentRepeatArrowType = SelectRepeatArrowTypeBasedOnDistance(distance);
-					m_currentRepeatArrowTypeIndex = Array.IndexOf(m_repeatCrossbowArrowTypes, m_currentRepeatArrowType);
-
+					// Después de disparar, se seleccionará un nuevo tipo al reiniciar aiming
 					if (m_subsystemTime.GameTime - m_fireTime >= m_repeatCrossbowTimeBetweenShots)
 					{
 						StartAiming();
