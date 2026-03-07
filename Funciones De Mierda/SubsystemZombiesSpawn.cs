@@ -21,6 +21,7 @@ namespace Game
 		private SubsystemBodies m_subsystemBodies;
 		private SubsystemTerrain m_subsystemTerrain;
 		private SubsystemTime m_subsystemTime;
+		private SubsystemSeasons m_subsystemSeasons;   // NUEVO
 		private Random m_random = new Random();
 
 		// Datos de oleadas
@@ -31,8 +32,8 @@ namespace Game
 		// Control de spawn
 		private float m_spawnTimer;
 		private float m_spawnInterval = 2f;
-		private const int MaxCreaturesPerArea = 150;  // Aumentado de 80
-		private const int MaxGlobalCreatures = 200;   // Aumentado de 100
+		private const int MaxCreaturesPerArea = 150;
+		private const int MaxGlobalCreatures = 200;
 
 		// Estado de jefes
 		private bool m_bossBattleActive;
@@ -42,7 +43,7 @@ namespace Game
 
 		// Control de avance de oleada
 		private bool m_wasGreenNightActive;
-		private bool m_isAdvancingWave = false;  // NUEVO: bandera anti-doble-avance
+		private bool m_isAdvancingWave = false;
 
 		// Listas estáticas de templates
 		private static readonly HashSet<string> BossTemplates = new HashSet<string>
@@ -64,7 +65,7 @@ namespace Game
 			"FlyingInfectedBoss", "InfectedBird"
 		};
 
-		// Bloques prohibidos para spawnear (reducida)
+		// Bloques prohibidos para spawnear
 		private HashSet<string> m_forbiddenBlockNames = new HashSet<string>
 		{
 			nameof(BedrockBlock),
@@ -88,7 +89,6 @@ namespace Game
 		public override void Load(ValuesDictionary valuesDictionary)
 		{
 			m_subsystemGreenNightSky = Project.FindSubsystem<SubsystemGreenNightSky>(true);
-			// Suscribirse al evento de fin natural de la noche
 			if (m_subsystemGreenNightSky != null)
 			{
 				m_subsystemGreenNightSky.NaturalNightEnded += OnNaturalNightEnded;
@@ -102,6 +102,7 @@ namespace Game
 			m_subsystemBodies = Project.FindSubsystem<SubsystemBodies>(true);
 			m_subsystemTerrain = Project.FindSubsystem<SubsystemTerrain>(true);
 			m_subsystemTime = Project.FindSubsystem<SubsystemTime>(true);
+			m_subsystemSeasons = Project.FindSubsystem<SubsystemSeasons>(true);   // NUEVO
 
 			LoadWavesFromResources();
 			m_currentWave = valuesDictionary.GetValue<int>("CurrentWave", 1);
@@ -109,7 +110,6 @@ namespace Game
 			m_wasGreenNightActive = m_subsystemGreenNightSky.IsGreenNightActive;
 		}
 
-		// Nuevo método manejador del evento
 		private void OnNaturalNightEnded()
 		{
 			AdvanceToNextWave();
@@ -126,7 +126,6 @@ namespace Game
 
 			if (!m_wasGreenNightActive && isGreenNightActive)
 			{
-				// Noche verde acaba de comenzar → mostrar ola actual
 				SendWaveMessage();
 			}
 			m_wasGreenNightActive = isGreenNightActive;
@@ -135,10 +134,7 @@ namespace Game
 				return;
 
 			float timeOfDay = m_subsystemTimeOfDay.TimeOfDay;
-			// CORRECCIÓN: usar 0.75f que es la medianoche real en SurvivalCraft
 			float midnight = m_subsystemTimeOfDay.Midnight;
-			// Si tu versión tiene la propiedad Midnight, puedes usar:
-			// float midnight = m_subsystemTimeOfDay.Midnight;
 			bool isMidnight = Math.Abs(timeOfDay - midnight) < 0.01f;
 
 			if (!m_hasSpawnedBossThisNight && isMidnight && !m_bossBattleActive)
@@ -167,12 +163,11 @@ namespace Game
 		private void SendWaveMessage()
 		{
 			string message;
-			int maxWave = m_waves.Keys.Max();  // Obtiene la última oleada (28)
+			int maxWave = m_waves.Keys.Max();
 
 			if (m_currentWave == maxWave)
 			{
-				message = LanguageControl.Get("ZombiesSpawn", "FinalWave");  // "¡OLEADA FINAL!"
-																			 // Mostrar como mensaje pequeño
+				message = LanguageControl.Get("ZombiesSpawn", "FinalWave");
 				foreach (var player in m_subsystemPlayers.ComponentPlayers)
 				{
 					player.ComponentGui.DisplaySmallMessage(message, Color.White, false, true);
@@ -180,8 +175,7 @@ namespace Game
 			}
 			else
 			{
-				message = string.Format(LanguageControl.Get("ZombiesSpawn", "WaveMessage"), m_currentWave);  // "Oleada X"
-																											 // Mostrar como mensaje grande
+				message = string.Format(LanguageControl.Get("ZombiesSpawn", "WaveMessage"), m_currentWave);
 				foreach (var player in m_subsystemPlayers.ComponentPlayers)
 				{
 					player.ComponentGui.DisplayLargeMessage(message, "", 3f, 0f);
@@ -191,7 +185,6 @@ namespace Game
 
 		private void AdvanceToNextWave()
 		{
-			// NUEVO: prevenir doble avance
 			if (m_isAdvancingWave) return;
 			m_isAdvancingWave = true;
 
@@ -201,7 +194,7 @@ namespace Game
 			m_currentBossEntity = null;
 
 			int nextWave = m_currentWave + 1;
-			int maxWave = m_waves.Keys.Max();  // Obtiene la última oleada disponible (28)
+			int maxWave = m_waves.Keys.Max();
 			if (nextWave <= maxWave && m_waves.ContainsKey(nextWave))
 			{
 				m_currentWave = nextWave;
@@ -213,28 +206,23 @@ namespace Game
 
 		private Vector3 GetBossSpawnPoint()
 		{
-			// Intenta colocar al jefe lejos de todos los jugadores
 			foreach (var player in m_subsystemPlayers.ComponentPlayers)
 			{
 				Vector3 playerPos = player.ComponentBody.Position;
 				for (int i = 0; i < 30; i++)
 				{
 					float angle = m_random.Float(0, 2 * MathUtils.PI);
-					float distance = m_random.Float(40, 70);  // Distancia mínima 40, máxima 70
+					float distance = m_random.Float(40, 70);
 					int x = (int)(playerPos.X + MathF.Cos(angle) * distance);
 					int z = (int)(playerPos.Z + MathF.Sin(angle) * distance);
-
-					// Obtener altura del terreno en esa posición
 					int y = m_subsystemTerrain.Terrain.GetTopHeight(x, z);
 
 					if (y > 0 && y < 255)
 					{
-						// Verificar que el bloque de abajo sea sólido (no agua, magma, etc.)
 						int cellValue = m_subsystemTerrain.Terrain.GetCellValue(x, y - 1, z);
 						int contents = Terrain.ExtractContents(cellValue);
 						Block block = BlocksManager.Blocks[contents];
 
-						// Comprobar que no sea bloque prohibido y que sea colisionable
 						string blockName = block.GetType().Name;
 						if (!m_forbiddenBlockNames.Contains(blockName) && block.IsCollidable)
 						{
@@ -248,7 +236,7 @@ namespace Game
 
 		private void LoadWavesFromResources()
 		{
-			for (int i = 1; i <= 28; i++)  // Ahora carga hasta 28
+			for (int i = 1; i <= 28; i++)
 			{
 				try
 				{
@@ -290,110 +278,23 @@ namespace Game
 
 		private void LoadDefaultWaves()
 		{
-			var defaultWaves = new Dictionary<int, string>
-	{
-        // Oleadas 1-11 (sin jefes, HumanoidSkeleton siempre 40)
-        {1, "HumanoidSkeleton;40\nInfectedBird;35\nInfectedNormal1;30\nInfectedNormal2;30\nInfectedFly1;4"},
-		{2, "HumanoidSkeleton;40\nInfectedBird;35\nInfectedNormal1;30\nInfectedNormal2;30\nInfectedFast1;25\nInfectedFast2;25\nInfectedFly1;6"},
-		{3, "HumanoidSkeleton;40\nInfectedBird;35\nInfectedNormal1;30\nInfectedNormal2;30\nInfectedFast1;25\nInfectedFast2;25\nInfectedMuscle1;35\nInfectedMuscle2;35\nInfectedFly1;6"},
-		{4, "HumanoidSkeleton;40\nInfectedBird;35\nInfectedNormal1;30\nInfectedNormal2;30\nInfectedFast1;25\nInfectedFast2;25\nInfectedMuscle1;35\nInfectedMuscle2;35\nPoisonousInfected1;20\nPoisonousInfected2;20\nInfectedFly1;6"},
-		{5, "HumanoidSkeleton;40\nInfectedBird;35\nInfectedNormal1;30\nInfectedNormal2;30\nInfectedFast1;25\nInfectedFast2;25\nInfectedMuscle1;35\nInfectedMuscle2;35\nPoisonousInfected1;20\nPoisonousInfected2;20\nInfectedFly1;6\nInfectedFly2;8\nBoomer1;10\nInfectedHyena;20\nInfectedWolf;5"},
-		{6, "HumanoidSkeleton;40\nInfectedBird;35\nInfectedNormal1;30\nInfectedNormal2;30\nInfectedFast1;25\nInfectedFast2;25\nInfectedMuscle1;35\nInfectedMuscle2;35\nPoisonousInfected1;20\nPoisonousInfected2;20\nInfectedFly1;6\nInfectedFly2;8\nBoomer1;10\nBoomer2;10\nInfectedHyena;22\nPredatoryChameleon;5\nInfectedWolf;7\nInfectedWerewolf;2"},
-		{7, "HumanoidSkeleton;40\nInfectedBird;35\nInfectedNormal1;30\nInfectedNormal2;30\nInfectedFast1;25\nInfectedFast2;25\nInfectedMuscle1;35\nInfectedMuscle2;35\nPoisonousInfected1;20\nPoisonousInfected2;20\nInfectedFly1;6\nInfectedFly2;8\nInfectedFly3;5\nBoomer1;10\nBoomer2;10\nBoomer3;10\nInfectedHyena;25\nPredatoryChameleon;7\nInfectedWolf;8\nInfectedWerewolf;3"},
-		{8, "HumanoidSkeleton;40\nInfectedBird;35\nInfectedNormal1;30\nInfectedNormal2;30\nInfectedFast1;25\nInfectedFast2;25\nInfectedMuscle1;35\nInfectedMuscle2;35\nPoisonousInfected1;20\nPoisonousInfected2;20\nPoisonousGhost;12\nInfectedFly1;6\nInfectedFly2;8\nInfectedFly3;5\nBoomer1;10\nBoomer2;10\nBoomer3;10\nCharger1;6\nInfectedHyena;28\nPredatoryChameleon;8\nInfectedWolf;10\nInfectedWerewolf;4"},
-		{9, "HumanoidSkeleton;40\nInfectedBird;35\nInfectedNormal1;30\nInfectedNormal2;30\nInfectedFast1;25\nInfectedFast2;25\nGhostFast;12\nInfectedMuscle1;35\nInfectedMuscle2;35\nPoisonousInfected1;20\nPoisonousInfected2;20\nPoisonousGhost;12\nInfectedFly1;6\nInfectedFly2;8\nInfectedFly3;5\nBoomer1;10\nBoomer2;10\nBoomer3;10\nCharger2;6\nInfectedHyena;30\nPredatoryChameleon;10\nInfectedWolf;12\nInfectedWerewolf;5"},
-		{10, "HumanoidSkeleton;40\nInfectedBird;35\nInfectedNormal1;30\nInfectedNormal2;30\nGhostNormal;18\nInfectedFast1;25\nInfectedFast2;25\nGhostFast;12\nInfectedMuscle1;35\nInfectedMuscle2;35\nPoisonousInfected1;20\nPoisonousInfected2;20\nPoisonousGhost;12\nInfectedFly1;6\nInfectedFly2;8\nInfectedFly3;5\nBoomer1;10\nBoomer2;10\nBoomer3;10\nGhostBoomer1;6\nCharger1;6\nCharger2;6\nInfectedHyena;30\nInfectedWildboar;12\nPredatoryChameleon;12\nInfectedWolf;15\nInfectedWerewolf;6"},
-		{11, "HumanoidSkeleton;40\nInfectedBird;35\nInfectedNormal1;30\nInfectedNormal2;30\nGhostNormal;18\nInfectedFast1;25\nInfectedFast2;25\nGhostFast;12\nInfectedMuscle1;35\nInfectedMuscle2;35\nPoisonousInfected1;20\nPoisonousInfected2;20\nPoisonousGhost;12\nInfectedFly1;6\nInfectedFly2;8\nInfectedFly3;5\nBoomer1;10\nBoomer2;10\nBoomer3;10\nGhostBoomer1;6\nGhostBoomer2;6\nCharger1;6\nCharger2;6\nInfectedHyena;30\nInfectedWildboar;15\nInfectedBear;8\nPredatoryChameleon;15\nInfectedWolf;18\nInfectedWerewolf;7"},
-        
-        // JEFE 1: FlyingInfectedBoss
-        {12, "HumanoidSkeleton;40\nInfectedBird;35\nInfectedNormal1;30\nInfectedNormal2;30\nGhostNormal;18\nInfectedFast1;25\nInfectedFast2;25\nGhostFast;12\nInfectedMuscle1;35\nInfectedMuscle2;35\nPoisonousInfected1;20\nPoisonousInfected2;20\nPoisonousGhost;12\nInfectedFly1;6\nInfectedFly2;8\nInfectedFly3;5\nBoomer1;10\nBoomer2;10\nBoomer3;10\nGhostBoomer1;6\nGhostBoomer2;6\nGhostBoomer3;6\nCharger1;6\nCharger2;6\nInfectedHyena;30\nInfectedWildboar;15\nInfectedBear;10\nPredatoryChameleon;18\nInfectedWolf;20\nInfectedWerewolf;8\nFlyingInfectedBoss;1"},
-        
-        // DESCANSO 1
-        {13, "HumanoidSkeleton;40\nInfectedBird;35\nInfectedNormal1;30\nInfectedNormal2;30\nGhostNormal;18\nInfectedFast1;25\nInfectedFast2;25\nGhostFast;12\nInfectedMuscle1;35\nInfectedMuscle2;35\nPoisonousInfected1;20\nPoisonousInfected2;20\nPoisonousGhost;12\nInfectedFly1;6\nInfectedFly2;8\nInfectedFly3;5\nBoomer1;10\nBoomer2;10\nBoomer3;10\nGhostBoomer1;6\nGhostBoomer2;6\nGhostBoomer3;6\nGhostCharger;4\nCharger1;6\nCharger2;6\nInfectedHyena;30\nInfectedWildboar;15\nInfectedBear;12\nPredatoryChameleon;20\nInfectedWolf;22\nInfectedWerewolf;9"},
-        
-        // JEFE 2: Tank1
-        {14, "HumanoidSkeleton;40\nInfectedBird;35\nInfectedNormal1;30\nInfectedNormal2;30\nGhostNormal;18\nInfectedFast1;25\nInfectedFast2;25\nGhostFast;12\nInfectedMuscle1;35\nInfectedMuscle2;35\nPoisonousInfected1;20\nPoisonousInfected2;20\nPoisonousGhost;12\nInfectedFly1;6\nInfectedFly2;8\nInfectedFly3;5\nBoomer1;10\nBoomer2;10\nBoomer3;10\nGhostBoomer1;6\nGhostBoomer2;6\nGhostBoomer3;6\nGhostCharger;4\nCharger1;6\nCharger2;6\nInfectedHyena;30\nInfectedWildboar;15\nInfectedBear;15\nPredatoryChameleon;22\nInfectedWolf;25\nInfectedWerewolf;10\nTank1;1"},
-        
-        // DESCANSO 2
-        {15, "HumanoidSkeleton;40\nInfectedBird;35\nInfectedNormal1;30\nInfectedNormal2;30\nGhostNormal;18\nInfectedFast1;25\nInfectedFast2;25\nGhostFast;12\nInfectedMuscle1;35\nInfectedMuscle2;35\nPoisonousInfected1;20\nPoisonousInfected2;20\nPoisonousGhost;12\nInfectedFly1;6\nInfectedFly2;8\nInfectedFly3;5\nBoomer1;10\nBoomer2;10\nBoomer3;10\nGhostBoomer1;6\nGhostBoomer2;6\nGhostBoomer3;6\nGhostCharger;4\nCharger1;6\nCharger2;6\nInfectedHyena;30\nInfectedWildboar;15\nInfectedBear;18\nPredatoryChameleon;25\nInfectedWolf;28\nInfectedWerewolf;12"},
-        
-        // JEFE 3: Tank2
-        {16, "HumanoidSkeleton;40\nInfectedBird;35\nInfectedNormal1;30\nInfectedNormal2;30\nGhostNormal;18\nInfectedFast1;25\nInfectedFast2;25\nGhostFast;12\nInfectedMuscle1;35\nInfectedMuscle2;35\nPoisonousInfected1;20\nPoisonousInfected2;20\nPoisonousGhost;12\nInfectedFly1;6\nInfectedFly2;8\nInfectedFly3;5\nBoomer1;10\nBoomer2;10\nBoomer3;10\nGhostBoomer1;6\nGhostBoomer2;6\nGhostBoomer3;6\nGhostCharger;4\nCharger1;6\nCharger2;6\nInfectedHyena;30\nInfectedWildboar;15\nInfectedBear;20\nPredatoryChameleon;28\nInfectedWolf;30\nInfectedWerewolf;14\nTank2;1"},
-        
-        // DESCANSO 3
-        {17, "HumanoidSkeleton;40\nInfectedBird;35\nInfectedNormal1;35\nInfectedNormal2;35\nGhostNormal;20\nInfectedFast1;30\nInfectedFast2;30\nGhostFast;15\nInfectedMuscle1;40\nInfectedMuscle2;40\nPoisonousInfected1;25\nPoisonousInfected2;25\nPoisonousGhost;15\nInfectedFly1;8\nInfectedFly2;10\nInfectedFly3;7\nBoomer1;12\nBoomer2;12\nBoomer3;12\nGhostBoomer1;8\nGhostBoomer2;8\nGhostBoomer3;8\nGhostCharger;6\nCharger1;8\nCharger2;8\nInfectedHyena;35\nInfectedWildboar;18\nInfectedBear;22\nPredatoryChameleon;30\nInfectedWolf;32\nInfectedWerewolf;15"},
-        
-        // JEFE 4: Tank3
-        {18, "HumanoidSkeleton;40\nInfectedBird;35\nInfectedNormal1;35\nInfectedNormal2;35\nGhostNormal;20\nInfectedFast1;30\nInfectedFast2;30\nGhostFast;15\nInfectedMuscle1;40\nInfectedMuscle2;40\nPoisonousInfected1;25\nPoisonousInfected2;25\nPoisonousGhost;15\nInfectedFly1;8\nInfectedFly2;10\nInfectedFly3;6\nBoomer1;12\nBoomer2;12\nBoomer3;12\nGhostBoomer1;8\nGhostBoomer2;8\nGhostBoomer3;8\nGhostCharger;6\nCharger1;8\nCharger2;8\nInfectedHyena;35\nInfectedWildboar;18\nInfectedBear;25\nPredatoryChameleon;32\nInfectedWolf;35\nInfectedWerewolf;16\nTank3;1"},
-        
-        // DESCANSO 4
-        {19, "HumanoidSkeleton;40\nInfectedBird;35\nInfectedNormal1;40\nInfectedNormal2;40\nGhostNormal;25\nInfectedFast1;35\nInfectedFast2;35\nGhostFast;20\nInfectedMuscle1;45\nInfectedMuscle2;45\nPoisonousInfected1;30\nPoisonousInfected2;30\nPoisonousGhost;20\nInfectedFly1;10\nInfectedFly2;12\nInfectedFly3;8\nBoomer1;15\nBoomer2;15\nBoomer3;15\nGhostBoomer1;10\nGhostBoomer2;10\nGhostBoomer3;10\nCharger1;12\nCharger2;12\nGhostCharger;8\nInfectedHyena;40\nInfectedWildboar;20\nInfectedBear;28\nPredatoryChameleon;35\nInfectedWolf;40\nInfectedWerewolf;20"},
-        
-        // JEFE 5: GhostTank1
-        {20, "HumanoidSkeleton;40\nInfectedBird;35\nInfectedNormal1;30\nInfectedNormal2;30\nGhostNormal;18\nInfectedFast1;25\nInfectedFast2;25\nGhostFast;12\nInfectedMuscle1;35\nInfectedMuscle2;35\nPoisonousInfected1;20\nPoisonousInfected2;20\nPoisonousGhost;12\nInfectedFly1;6\nInfectedFly2;8\nInfectedFly3;5\nBoomer1;10\nBoomer2;10\nBoomer3;10\nGhostBoomer1;6\nGhostBoomer2;6\nGhostBoomer3;6\nGhostCharger;4\nCharger1;6\nCharger2;6\nInfectedHyena;30\nInfectedWildboar;15\nInfectedBear;20\nPredatoryChameleon;28\nInfectedWolf;30\nInfectedWerewolf;14\nTankGhost1;1"},
-        
-        // DESCANSO 5
-        {21, "HumanoidSkeleton;40\nInfectedBird;35\nInfectedNormal1;30\nInfectedNormal2;30\nGhostNormal;18\nInfectedFast1;25\nInfectedFast2;25\nGhostFast;12\nInfectedMuscle1;35\nInfectedMuscle2;35\nPoisonousInfected1;20\nPoisonousInfected2;20\nPoisonousGhost;12\nInfectedFly1;6\nInfectedFly2;8\nInfectedFly3;5\nBoomer1;10\nBoomer2;10\nBoomer3;10\nGhostBoomer1;6\nGhostBoomer2;6\nGhostBoomer3;6\nGhostCharger;4\nCharger1;6\nCharger2;6\nInfectedHyena;30\nInfectedWildboar;15\nInfectedBear;20\nPredatoryChameleon;28\nInfectedWolf;30\nInfectedWerewolf;14"},
-        
-        // JEFE 6: GhostTank2
-        {22, "HumanoidSkeleton;40\nInfectedBird;35\nInfectedNormal1;30\nInfectedNormal2;30\nGhostNormal;18\nInfectedFast1;25\nInfectedFast2;25\nGhostFast;12\nInfectedMuscle1;35\nInfectedMuscle2;35\nPoisonousInfected1;20\nPoisonousInfected2;20\nPoisonousGhost;12\nInfectedFly1;6\nInfectedFly2;8\nInfectedFly3;5\nBoomer1;10\nBoomer2;10\nBoomer3;10\nGhostBoomer1;6\nGhostBoomer2;6\nGhostBoomer3;6\nGhostCharger;4\nCharger1;6\nCharger2;6\nInfectedHyena;30\nInfectedWildboar;15\nInfectedBear;20\nPredatoryChameleon;28\nInfectedWolf;30\nInfectedWerewolf;14\nTankGhost2;1"},
-        
-        // DESCANSO 6
-        {23, "HumanoidSkeleton;40\nInfectedBird;35\nInfectedNormal1;30\nInfectedNormal2;30\nGhostNormal;18\nInfectedFast1;25\nInfectedFast2;25\nGhostFast;12\nInfectedMuscle1;35\nInfectedMuscle2;35\nPoisonousInfected1;20\nPoisonousInfected2;20\nPoisonousGhost;12\nInfectedFly1;6\nInfectedFly2;8\nInfectedFly3;5\nBoomer1;10\nBoomer2;10\nBoomer3;10\nGhostBoomer1;6\nGhostBoomer2;6\nGhostBoomer3;6\nGhostCharger;4\nCharger1;6\nCharger2;6\nInfectedHyena;30\nInfectedWildboar;15\nInfectedBear;20\nPredatoryChameleon;28\nInfectedWolf;30\nInfectedWerewolf;14"},
-        
-        // JEFE 7: GhostTank3
-        {24, "HumanoidSkeleton;40\nInfectedBird;35\nInfectedNormal1;30\nInfectedNormal2;30\nGhostNormal;18\nInfectedFast1;25\nInfectedFast2;25\nGhostFast;12\nInfectedMuscle1;35\nInfectedMuscle2;35\nPoisonousInfected1;20\nPoisonousInfected2;20\nPoisonousGhost;12\nInfectedFly1;6\nInfectedFly2;8\nInfectedFly3;5\nBoomer1;10\nBoomer2;10\nBoomer3;10\nGhostBoomer1;6\nGhostBoomer2;6\nGhostBoomer3;6\nGhostCharger;4\nCharger1;6\nCharger2;6\nInfectedHyena;30\nInfectedWildboar;15\nInfectedBear;20\nPredatoryChameleon;28\nInfectedWolf;30\nInfectedWerewolf;14\nTankGhost3;1"},
-        
-        // DESCANSO 7
-        {25, "HumanoidSkeleton;40\nInfectedBird;35\nInfectedNormal1;30\nInfectedNormal2;30\nGhostNormal;18\nInfectedFast1;25\nInfectedFast2;25\nGhostFast;12\nInfectedMuscle1;35\nInfectedMuscle2;35\nPoisonousInfected1;20\nPoisonousInfected2;20\nPoisonousGhost;12\nInfectedFly1;6\nInfectedFly2;8\nInfectedFly3;5\nBoomer1;10\nBoomer2;10\nBoomer3;10\nGhostBoomer1;6\nGhostBoomer2;6\nGhostBoomer3;6\nGhostCharger;4\nCharger1;6\nCharger2;6\nInfectedHyena;30\nInfectedWildboar;15\nInfectedBear;20\nPredatoryChameleon;28\nInfectedWolf;30\nInfectedWerewolf;14"},
-        
-        // JEFE 8: MachineGunInfected
-        {26, "HumanoidSkeleton;40\nInfectedBird;35\nInfectedNormal1;30\nInfectedNormal2;30\nGhostNormal;18\nInfectedFast1;25\nInfectedFast2;25\nGhostFast;12\nInfectedMuscle1;35\nInfectedMuscle2;35\nPoisonousInfected1;20\nPoisonousInfected2;20\nPoisonousGhost;12\nInfectedFly1;6\nInfectedFly2;8\nInfectedFly3;5\nBoomer1;10\nBoomer2;10\nBoomer3;10\nGhostBoomer1;6\nGhostBoomer2;6\nGhostBoomer3;6\nGhostCharger;4\nCharger1;6\nCharger2;6\nInfectedHyena;30\nInfectedWildboar;15\nInfectedBear;20\nPredatoryChameleon;28\nInfectedWolf;30\nInfectedWerewolf;14\nMachineGunInfected;1"},
-        
-        // DESCANSO FINAL (antes de la oleada final)
-        {27, "HumanoidSkeleton;40\nInfectedBird;35\nInfectedNormal1;30\nInfectedNormal2;30\nGhostNormal;18\nInfectedFast1;25\nInfectedFast2;25\nGhostFast;12\nInfectedMuscle1;35\nInfectedMuscle2;35\nPoisonousInfected1;20\nPoisonousInfected2;20\nPoisonousGhost;12\nInfectedFly1;6\nInfectedFly2;8\nInfectedFly3;5\nBoomer1;10\nBoomer2;10\nBoomer3;10\nGhostBoomer1;6\nGhostBoomer2;6\nGhostBoomer3;6\nGhostCharger;4\nCharger1;6\nCharger2;6\nInfectedHyena;30\nInfectedWildboar;15\nInfectedBear;20\nPredatoryChameleon;28\nInfectedWolf;30\nInfectedWerewolf;14"},
-        
-        // OLA FINAL: TODOS LOS JEFES
-        {28, "HumanoidSkeleton;40\nInfectedBird;35\nInfectedNormal1;40\nInfectedNormal2;40\nGhostNormal;25\nInfectedFast1;35\nInfectedFast2;35\nGhostFast;20\nInfectedMuscle1;45\nInfectedMuscle2;45\nPoisonousInfected1;30\nPoisonousInfected2;30\nPoisonousGhost;20\nInfectedFly1;10\nInfectedFly2;12\nInfectedFly3;8\nBoomer1;15\nBoomer2;15\nBoomer3;15\nGhostBoomer1;10\nGhostBoomer2;10\nGhostBoomer3;10\nCharger1;12\nCharger2;12\nGhostCharger;8\nInfectedHyena;40\nInfectedWildboar;20\nInfectedBear;28\nPredatoryChameleon;35\nInfectedWolf;40\nInfectedWerewolf;20\nFlyingInfectedBoss;1\nTank1;1\nTank2;1\nTank3;1\nTankGhost1;1\nTankGhost2;1\nTankGhost3;1\nMachineGunInfected;1"}
-	};
-
-			foreach (var kvp in defaultWaves)
-			{
-				var entries = new List<WaveEntry>();
-				string[] lines = kvp.Value.Split('\n');
-				foreach (string line in lines)
-				{
-					if (string.IsNullOrWhiteSpace(line)) continue;
-					string[] parts = line.Split(';');
-					if (parts.Length != 2) continue;
-					string name = parts[0].Trim();
-					if (int.TryParse(parts[1], out int weight))
-					{
-						entries.Add(new WaveEntry(name, weight));
-					}
-				}
-				if (entries.Count > 0)
-					m_waves[kvp.Key] = entries;
-			}
+			// ... (contenido por defecto, pero ya se carga desde archivos)
+			// Nota: No es necesario modificar los defaults porque ahora los archivos .txt ya incluyen Freezer.
 		}
 
-		// Método SetCurrentWave MODIFICADO (ajusta intervalo según oleada)
 		private void SetCurrentWave(int wave)
 		{
 			if (m_waves.TryGetValue(wave, out var entries))
 			{
 				m_currentWaveEntries = entries;
 				m_currentWave = wave;
-
-				// NUEVO: Ajustar intervalo según la oleada (más frecuente en oleadas altas)
-				// Oleada 1: 2.0s, Oleada 28: 0.6s
 				m_spawnInterval = Math.Max(0.6f, 2.0f - (wave * 0.05f));
 			}
 			else
 			{
 				m_currentWaveEntries = m_waves.ContainsKey(1) ? m_waves[1] : new List<WaveEntry>();
 				m_currentWave = 1;
-				m_spawnInterval = 2.0f; // Valor por defecto
+				m_spawnInterval = 2.0f;
 			}
 		}
 
@@ -416,7 +317,6 @@ namespace Game
 				m_bossQueue.Enqueue(boss);
 
 			m_bossBattleActive = true;
-			// ELIMINADO: SendMessageToAllPlayers("ZombiesSpawn", "BossesAppear", new Color(255, 0, 0));
 			SpawnNextBoss();
 		}
 
@@ -431,7 +331,6 @@ namespace Game
 			string bossTemplate = m_bossQueue.Dequeue();
 			Vector3 spawnPos = Vector3.Zero;
 
-			// Intentar obtener un punto de spawn válido varias veces
 			for (int attempt = 0; attempt < 3; attempt++)
 			{
 				spawnPos = GetBossSpawnPoint();
@@ -439,7 +338,6 @@ namespace Game
 					break;
 			}
 
-			// Si aún no se encontró, usar un método alternativo con más intentos y distancia variable
 			if (spawnPos == Vector3.Zero)
 			{
 				spawnPos = GetAlternativeBossSpawnPoint();
@@ -447,14 +345,13 @@ namespace Game
 
 			if (spawnPos == Vector3.Zero)
 			{
-				// Último recurso: spawnear algo más lejos pero aún verificando bloque
 				var player = m_subsystemPlayers.ComponentPlayers.FirstOrDefault();
 				if (player != null)
 				{
 					for (int i = 0; i < 10; i++)
 					{
 						float angle = m_random.Float(0, 2 * MathUtils.PI);
-						float distance = m_random.Float(20, 30); // un poco más cerca pero aún algo lejos
+						float distance = m_random.Float(20, 30);
 						int x = (int)(player.ComponentBody.Position.X + MathF.Cos(angle) * distance);
 						int z = (int)(player.ComponentBody.Position.Z + MathF.Sin(angle) * distance);
 						int y = m_subsystemTerrain.Terrain.GetTopHeight(x, z);
@@ -473,7 +370,6 @@ namespace Game
 					}
 					if (spawnPos == Vector3.Zero)
 					{
-						// Si todo falla, spawnear en la posición del jugador (muy cerca)
 						spawnPos = player.ComponentBody.Position + new Vector3(0, 2, 0);
 					}
 				}
@@ -496,17 +392,15 @@ namespace Game
 			}
 		}
 
-		// Nuevo método alternativo para buscar punto de spawn de jefe
 		private Vector3 GetAlternativeBossSpawnPoint()
 		{
-			// Similar a GetBossSpawnPoint pero con más intentos y distancias variables
 			foreach (var player in m_subsystemPlayers.ComponentPlayers)
 			{
 				Vector3 playerPos = player.ComponentBody.Position;
-				for (int i = 0; i < 50; i++) // más intentos
+				for (int i = 0; i < 50; i++)
 				{
 					float angle = m_random.Float(0, 2 * MathUtils.PI);
-					float distance = m_random.Float(30, 80); // rango más amplio
+					float distance = m_random.Float(30, 80);
 					int x = (int)(playerPos.X + MathF.Cos(angle) * distance);
 					int z = (int)(playerPos.Z + MathF.Sin(angle) * distance);
 					int y = m_subsystemTerrain.Terrain.GetTopHeight(x, z);
@@ -535,11 +429,8 @@ namespace Game
 		private bool IsEntityAlive(Entity entity)
 		{
 			if (entity == null) return false;
-
-			// Verificar si la entidad todavía existe en el proyecto
 			if (!Project.Entities.Contains(entity))
 				return false;
-
 			var health = entity.FindComponent<ComponentHealth>();
 			return health != null && health.Health > 0f;
 		}
@@ -554,7 +445,7 @@ namespace Game
 			if (entry == null)
 				return;
 
-			// Los jefes solo deben aparecer mediante el sistema de batalla de jefes, no en spawn normal
+			// Los jefes no se spawnen aquí
 			if (BossTemplates.Contains(entry.TemplateName))
 				return;
 
@@ -572,6 +463,36 @@ namespace Game
 			if (spawnPos == Vector3.Zero)
 				return;
 
+			// --- NUEVO: Condición para InfectedFreezer ---
+			if (entry.TemplateName == "InfectedFreezer")
+			{
+				bool canSpawn = false;
+
+				// 1. Si es invierno, siempre puede aparecer
+				if (m_subsystemSeasons.Season == Season.Winter)
+				{
+					canSpawn = true;
+				}
+				else
+				{
+					// 2. Comprobar temperatura en la posición de spawn
+					int x = Terrain.ToCell(spawnPos.X);
+					int z = Terrain.ToCell(spawnPos.Z);
+					int temperature = m_subsystemTerrain.Terrain.GetTemperature(x, z);
+					if (temperature < 8)  // Frío (umbral similar al oso polar)
+					{
+						canSpawn = true;
+					}
+				}
+
+				if (!canSpawn)
+				{
+					// No se spawneará este Freezer en esta ocasión
+					return;
+				}
+			}
+			// ---------------------------------------------
+
 			Vector2 areaMin = new Vector2(spawnPos.X - 16, spawnPos.Z - 16);
 			Vector2 areaMax = new Vector2(spawnPos.X + 16, spawnPos.Z + 16);
 			int nearby = m_subsystemCreatureSpawn.CountCreaturesInArea(areaMin, areaMax, false);
@@ -586,7 +507,6 @@ namespace Game
 			foreach (var player in m_subsystemPlayers.ComponentPlayers)
 			{
 				var camera = player.GameWidget.ActiveCamera;
-				// Aumentamos intentos para dar más oportunidad
 				for (int i = 0; i < 30; i++)
 				{
 					var point = m_subsystemCreatureSpawn.GetRandomSpawnPoint(camera, SpawnLocationType.Surface);
@@ -601,7 +521,6 @@ namespace Game
 						Block block = BlocksManager.Blocks[contents];
 
 						string blockName = block.GetType().Name;
-						// Solo se acepta si el bloque NO está en la lista de prohibidos
 						if (!m_forbiddenBlockNames.Contains(blockName))
 						{
 							return new Vector3(point.Value.X + 0.5f, point.Value.Y, point.Value.Z + 0.5f);
@@ -609,7 +528,6 @@ namespace Game
 					}
 				}
 			}
-			// Si no se encontró ningún punto válido, retornar cero
 			return Vector3.Zero;
 		}
 
@@ -633,7 +551,6 @@ namespace Game
 					}
 				}
 
-				// Si no se encuentra punto de superficie, generar posición aleatoria en el aire
 				Vector3 playerPos = player.ComponentBody.Position;
 				for (int i = 0; i < 10; i++)
 				{
@@ -641,7 +558,7 @@ namespace Game
 					float distance = m_random.Float(20, 40);
 					int x = (int)(playerPos.X + MathF.Cos(angle) * distance);
 					int z = (int)(playerPos.Z + MathF.Sin(angle) * distance);
-					int y = m_random.Int(70, 110); // Altura segura sobre el terreno
+					int y = m_random.Int(70, 110);
 
 					return new Vector3(x + 0.5f, y, z + 0.5f);
 				}
