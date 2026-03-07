@@ -1,4 +1,3 @@
-// PirateTraderModLoader.cs
 using System;
 using Engine;
 using GameEntitySystem;
@@ -10,7 +9,7 @@ namespace Game
 		public override void __ModInitialize() => ModsManager.RegisterHook("OnPlayerInputInteract", this);
 
 		public override void OnPlayerInputInteract(ComponentPlayer player, ref bool playerOperated,
-			ref double timeIntervalLastActionTime, ref int priorityUse, ref int priorityInteract, ref int priorityPlace)
+	ref double timeIntervalLastActionTime, ref int priorityUse, ref int priorityInteract, ref int priorityPlace)
 		{
 			if (playerOperated) return;
 			var input = player.ComponentInput.PlayerInput;
@@ -26,6 +25,11 @@ namespace Game
 					var trader = target.FindComponent<ComponentPirateTrader>();
 					if (trader != null)
 					{
+						// Verificar que el NPC esté vivo antes de abrir el panel
+						var health = target.FindComponent<ComponentHealth>();
+						if (health == null || health.Health <= 0f)
+							return; // No abrir el panel, el NPC está muerto
+
 						player.ComponentGui.ModalPanelWidget = new PirateTradeWidget(
 							player.ComponentMiner.Inventory, trader, player);
 						playerOperated = true;
