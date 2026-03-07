@@ -500,49 +500,55 @@ namespace Game
 
 					if (bombValue != 0)
 					{
-						// Buscar un slot adecuado para las bombas
-						int bombSlot = -1;
+						// Para bombas, necesitamos encontrar un slot con capacidad para múltiples items
+						int maxStack = BlocksManager.Blocks[Terrain.ExtractContents(bombValue)].GetMaxStacking(bombValue);
+						int bombCount = 8;
 
-						// Primero verificar si ya hay bombas del mismo tipo en algún slot
-						for (int i = 0; i < inventory.SlotsCount; i++)
+						int remainingBombs = bombCount;
+
+						// Intentar apilar en slots existentes primero
+						for (int i = 0; i < inventory.SlotsCount && remainingBombs > 0; i++)
 						{
 							int slotValue = inventory.GetSlotValue(i);
-							if (slotValue == bombValue && inventory.GetSlotCount(i) < inventory.GetSlotCapacity(i, bombValue))
+							if (slotValue == bombValue)
 							{
-								bombSlot = i;
-								break;
-							}
-						}
+								int currentCount = inventory.GetSlotCount(i);
+								int slotCapacity = inventory.GetSlotCapacity(i, bombValue);
+								int spaceLeft = slotCapacity - currentCount;
 
-						// Si no encontró un slot con bombas del mismo tipo, buscar un slot vacío
-						if (bombSlot == -1)
-						{
-							for (int i = 0; i < inventory.SlotsCount; i++)
-							{
-								if (inventory.GetSlotCount(i) == 0)
+								if (spaceLeft > 0)
 								{
-									bombSlot = i;
-									break;
+									int addAmount = Math.Min(spaceLeft, remainingBombs);
+									inventory.AddSlotItems(i, bombValue, addAmount);
+									remainingBombs -= addAmount;
 								}
 							}
 						}
 
-						// Si encontró un slot válido, agregar las bombas
-						if (bombSlot != -1)
+						// Si aún quedan bombas, buscar slots vacíos
+						for (int i = 0; i < inventory.SlotsCount && remainingBombs > 0; i++)
 						{
-							inventory.AddSlotItems(bombSlot, bombValue, 8);
+							if (inventory.GetSlotCount(i) == 0)
+							{
+								int slotCapacity = inventory.GetSlotCapacity(i, bombValue);
+								int addAmount = Math.Min(slotCapacity, remainingBombs);
+
+								if (addAmount > 0)
+								{
+									inventory.AddSlotItems(i, bombValue, addAmount);
+									remainingBombs -= addAmount;
+								}
+							}
 						}
 
-						else
+						if (remainingBombs > 0)
 						{
-							// Si no hay espacio, intentar soltar las bombas o simplemente no agregarlas
-							// Opcionalmente podrías registrar que no hay espacio
-							Console.WriteLine("No hay espacio en el inventario para las bombas");
+							Console.WriteLine($"No hay suficiente espacio para todas las bombas. Faltaron: {remainingBombs}");
 						}
 					}
 				}
 			}
-			// Ahora la lógica para HumanoidSkeleton (después de las otras entidades)
+			// Ahora la lógica para HumanoidSkeleton
 			else if (name == "HumanoidSkeleton")
 			{
 				// PRIMER SLOT - Armas cuerpo a cuerpo (siempre)
@@ -577,7 +583,8 @@ namespace Game
 
 				if (firstSlotValue != 0)
 				{
-					inventory.AddSlotItems(0, firstSlotValue, 1);
+					if (inventory.GetSlotCapacity(0, firstSlotValue) >= 1)
+						inventory.AddSlotItems(0, firstSlotValue, 1);
 				}
 
 				// SEGUNDO SLOT - Armas a distancia (siempre)
@@ -621,7 +628,8 @@ namespace Game
 
 				if (secondSlotValue != 0)
 				{
-					inventory.AddSlotItems(1, secondSlotValue, 1);
+					if (inventory.GetSlotCapacity(1, secondSlotValue) >= 1)
+						inventory.AddSlotItems(1, secondSlotValue, 1);
 				}
 
 				// TERCER SLOT - Objetos lanzables (60% probabilidad) o vacío (40%)
@@ -648,7 +656,8 @@ namespace Game
 						else
 							thirdSlotValue = Terrain.MakeBlockValue(LavaSpearBlock.Index);
 
-						inventory.AddSlotItems(2, thirdSlotValue, 1);
+						if (thirdSlotValue != 0 && inventory.GetSlotCapacity(2, thirdSlotValue) >= 1)
+							inventory.AddSlotItems(2, thirdSlotValue, 1);
 					}
 					else if (throwableType < 0.7f) // 30% - Longspears
 					{
@@ -666,9 +675,10 @@ namespace Game
 						else
 							thirdSlotValue = Terrain.MakeBlockValue(LavaLongspearBlock.Index);
 
-						inventory.AddSlotItems(2, thirdSlotValue, 1);
+						if (thirdSlotValue != 0 && inventory.GetSlotCapacity(2, thirdSlotValue) >= 1)
+							inventory.AddSlotItems(2, thirdSlotValue, 1);
 					}
-					else // 30% - Bombas (cantidad 5-8)
+					else // 30% - Bombas (cantidad 5-8) - MANEJO ESPECIAL PARA ITEMS APILABLES
 					{
 						float bombTypeChance = this.m_random.Float(0f, 1f);
 						int bombValue = 0;
@@ -681,79 +691,52 @@ namespace Game
 							bombValue = Terrain.MakeBlockValue(PoisonBombBlock.Index);
 
 						int bombCount = this.m_random.Int(5, 8);
-						inventory.AddSlotItems(2, bombValue, bombCount);
+						int maxStack = BlocksManager.Blocks[Terrain.ExtractContents(bombValue)].GetMaxStacking(bombValue);
+
+						// Las bombas son apilables, así que verificamos la capacidad del slot 2
+						int slotCapacity = inventory.GetSlotCapacity(2, bombValue);
+						int addCount = Math.Min(bombCount, slotCapacity);
+
+						if (addCount > 0)
+						{
+							inventory.AddSlotItems(2, bombValue, addCount);
+
+							// Si sobran bombas, intentar ponerlas en otro slot
+							if (addCount < bombCount)
+							{
+								int remainingBombs = bombCount - addCount;
+								// Buscar otro slot vacío o con bombas del mismo tipo
+								for (int i = 3; i < inventory.SlotsCount && remainingBombs > 0; i++)
+								{
+									int slotValue = inventory.GetSlotValue(i);
+									if (slotValue == bombValue)
+									{
+										int currentCount = inventory.GetSlotCount(i);
+										int otherSlotCapacity = inventory.GetSlotCapacity(i, bombValue);
+										int spaceLeft = otherSlotCapacity - currentCount;
+										if (spaceLeft > 0)
+										{
+											int addMore = Math.Min(spaceLeft, remainingBombs);
+											inventory.AddSlotItems(i, bombValue, addMore);
+											remainingBombs -= addMore;
+										}
+									}
+									else if (inventory.GetSlotCount(i) == 0)
+									{
+										int otherSlotCapacity = inventory.GetSlotCapacity(i, bombValue);
+										int addMore = Math.Min(otherSlotCapacity, remainingBombs);
+										if (addMore > 0)
+										{
+											inventory.AddSlotItems(i, bombValue, addMore);
+											remainingBombs -= addMore;
+										}
+									}
+								}
+							}
+						}
 					}
 				}
 				// 40% restante: el tercer slot queda vacío
-			}
-			else if (name == "InfectedFreezer")
-			{
-				// Primer slot: siempre Bola de Nieve Congelante con cantidad variable
-				int snowballValue = Terrain.MakeBlockValue(FreezingSnowballBlock.Index);
-				float snowballChance = m_random.Float(0f, 1f);
-				int snowballCount;
-
-				// Probabilidad baja (10%) de tener 40, media (40%) de tener 5, resto (50%) 1
-				if (snowballChance < 0.1f)
-					snowballCount = 40;
-				else if (snowballChance < 0.5f) // 0.1 + 0.4 = 0.5
-					snowballCount = 5;
-				else
-					snowballCount = 1;
-
-				inventory.AddSlotItems(0, snowballValue, snowballCount);
-
-				// Segundo slot: arma cuerpo a cuerpo (machetes, clubs, hachas) con probabilidad 70%
-				if (m_random.Float(0f, 1f) < 0.7f)
-				{
-					int weaponValue = 0;
-					float weaponType = m_random.Float(0f, 1f);
-
-					if (weaponType < 0.3333f) // Clubs
-					{
-						float clubRoll = m_random.Float(0f, 1f);
-						if (clubRoll < 0.5f)
-							weaponValue = Terrain.MakeBlockValue(WoodenClubBlock.Index);
-						else
-							weaponValue = Terrain.MakeBlockValue(StoneClubBlock.Index);
-					}
-					else if (weaponType < 0.6666f) // Machetes
-					{
-						float macheteRoll = m_random.Float(0f, 1f);
-						if (macheteRoll < 0.1667f)
-							weaponValue = Terrain.MakeBlockValue(WoodMacheteBlock.Index);
-						else if (macheteRoll < 0.3333f)
-							weaponValue = Terrain.MakeBlockValue(StoneMacheteBlock.Index);
-						else if (macheteRoll < 0.5f)
-							weaponValue = Terrain.MakeBlockValue(CopperMacheteBlock.Index);
-						else if (macheteRoll < 0.6667f)
-							weaponValue = Terrain.MakeBlockValue(IronMacheteBlock.Index);
-						else if (macheteRoll < 0.8333f)
-							weaponValue = Terrain.MakeBlockValue(DiamondMacheteBlock.Index);
-						else
-							weaponValue = Terrain.MakeBlockValue(LavaMacheteBlock.Index);
-					}
-					else // Hachas
-					{
-						float axeRoll = m_random.Float(0f, 1f);
-						if (axeRoll < 0.1667f)
-							weaponValue = Terrain.MakeBlockValue(WoodAxeBlock.Index);
-						else if (axeRoll < 0.3333f)
-							weaponValue = Terrain.MakeBlockValue(StoneAxeOriginalBlock.Index);
-						else if (axeRoll < 0.5f)
-							weaponValue = Terrain.MakeBlockValue(CopperAxeBlock.Index);
-						else if (axeRoll < 0.6667f)
-							weaponValue = Terrain.MakeBlockValue(IronAxeBlock.Index);
-						else if (axeRoll < 0.8333f)
-							weaponValue = Terrain.MakeBlockValue(DiamondAxeBlock.Index);
-						else
-							weaponValue = Terrain.MakeBlockValue(LavaAxeBlock.Index);
-					}
-
-					if (weaponValue != 0)
-						inventory.AddSlotItems(1, weaponValue, 1);
-				}
-				// Si la probabilidad falla, el segundo slot queda vacío (30% de los casos)
 			}
 			else if (name == "InfectedFreezer")
 			{
