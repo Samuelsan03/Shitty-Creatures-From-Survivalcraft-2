@@ -66,7 +66,9 @@
     "ScreenTitle": "Shitty Creatures Settings",
     "SettingsButton": "Shitty Creatures Settings",
     "GhostDescription": "Enable/disable music when ghosts chase you",
-    "TankDescription": "Enable/disable music when tanks chase you"
+    "TankDescription": "Enable/disable music when tanks chase you",
+    "SpawnDescription": "Enable/disable spawning of NPCs when one dies",
+    "SpawnButton": "Death Spawn: {0}"
   },
   "ChaseMusic": {
     "GhostButton": "Chase Music\n - Ghosts: {0}",
@@ -142,7 +144,8 @@
     "NoPowerStatus": "No Power"
   },
   "Injury": {
-    "Poisoned": "Poisoned"
+    "Poisoned": "Poisoned",
+    "FrozenToDeath": "Frozen to Death"
   },
   "Database": {
     "DisplayName": {
@@ -376,6 +379,10 @@
   }
 },
   "Blocks": {
+    "FreezingSnowballBlock:0": {
+  "DisplayName": "Freezing Snowball",
+  "Description": "A snowball infused with extreme freezing energy. When thrown at players, it applies progressive freezing effects: first impact lowers body temperature, second causes partial freezing, third induces flu and extreme cold, and the fourth impact results in death by hypothermia. Creatures hit by it contract flu if not already infected. Leaves a dense freezing trail and releases icy particles upon impact."
+    },
     "RemoteControlBlock:0": {
   "DisplayName": "Remote Control",
   "Description": "A remote control device. Use it to toggle the Green Night phenomenon.",
@@ -404,10 +411,10 @@
   "Description": "A bucket containing a powerful medicinal antidote. It removes poison and disease effects from the body, stopping their harmful consequences and allowing immediate recovery. When a condition is cured, lost health is also restored. It can be used on yourself or on other infected creatures.",
   "CRDescription:0": "Brew a powerful antidote by infusing medicinal white flowers into purified water. Cures poison and sickness."
 },
-    "TeaAntifluBucketBlock:0": {
+"TeaAntifluBucketBlock:0": {
   "DisplayName": "Anti-Flu Tea Bucket",
-  "Description": "A bucket filled with medicinal tea. Drinking it cures the flu and fully restores health.",
-  "CRDescription:0": "Brew soothing anti-flu tea by combining a bucket of water with tall grass and heating it. Cures influenza and relieves symptoms."
+  "Description": "A bucket filled with medicinal tea. Drinking it cures the flu and fully restores health. It can also be used to cure infected creatures.",
+  "CRDescription:0": "Brew soothing anti-flu tea by combining a bucket of water with tall grass and heating it. Cures influenza, relieves symptoms, and can be given to infected creatures."
 },
       "LavaLongspearBlock:0": {
       "DisplayName": "Lava Longspear",
@@ -944,6 +951,22 @@
 }
 },
       "ContentWidgets": {
+    "PirateTraderWidget": {
+    "Title": "Pirate Trader",
+    "InventoryTitle": "Inventory",
+        "BuyButton": "BUY",
+        "CoinSlotHint": "Coin",
+        "CoinSlotLabel": "Payment Slot",
+        "CoinSlotLabelWithAmount": "Payment Slot: {0} coins",
+        "ItemNoLongerAvailable": "This item is no longer available.",
+        "ItemCannotBeBought": "This item cannot be bought.",
+        "InsufficientCoins": "You don't have enough coins! Need {0} coins to buy {1} x{2} (${3} each). Come back when you have more coins!",
+        "NotEnoughSpace": "Not enough space in inventory.",
+        "PurchaseSuccessful": "Purchase successful! Thanks for your business!",
+        "SelectItemFirst": "Select an item to buy first.",
+        "SlotEmpty": "This slot is empty.",
+        "InfoLabelFormat": "{0} x{1}  |  Unit: ${2}  |  Total: ${3}"
+  },
         "AutoCannonWidget": {
     "Title": "Auto-Cannon",
     "InventoryTitle": "Inventory",
@@ -955,7 +978,7 @@
     "HelpText": "Authors\nFire Dragon\nKike\n----------\nThis weapon uses the first slot of the hotbar or the first available slot with an object. To save any changes, you must press 'Accept', or 'X' to discard. The spread and velocity settings determine the direction and distance of the projectiles.\n\nTo use it, simply hold right click if you are on PC, or hold the screen if you are on a mobile device, and it will automatically fire the times per second you have configured. Useful for shooting spawn eggs and generating creatures in large quantities in a short time.\n\nYou can also have fun launching fireworks or any other object.\n\n\nShitty code stolen by Samuelsan03, so do whatever you want with this code xd"
   },
     "CreatureInventoryWidget": {
-      "CreatureInventoryLabel": "Inventory of {0}",
+      "CreatureInventoryLabel": "Creature Inventory",
       "InventoryLabel": "Inventory"
     },
     "FlameThrowerWidget": {
