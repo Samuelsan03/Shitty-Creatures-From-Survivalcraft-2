@@ -8,7 +8,7 @@ namespace Game
 {
 	public class FreezingSnowballBlock : Block
 	{
-		public const int Index = 403;
+		public const int Index = 401;
 
 		private BlockMesh m_standaloneBlockMesh = new BlockMesh();
 		private Texture2D m_texture;
