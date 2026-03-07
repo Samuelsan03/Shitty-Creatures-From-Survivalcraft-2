@@ -380,7 +380,7 @@ namespace Game
 				return false;
 			}
 
-			int totalPrice = pricePerItem * count;
+			int totalPrice = pricePerItem; // Precio fijo por todo el stack
 			int coinIndex = BlocksManager.GetBlockIndex(typeof(NuclearCoinBlock).Name, true);
 
 			int coinSlotValue = GetSlotValue(8);
