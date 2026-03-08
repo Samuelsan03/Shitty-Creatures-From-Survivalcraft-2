@@ -9,7 +9,7 @@ namespace Game
 	{
 		private BevelledButtonWidget m_ghostButton;
 		private BevelledButtonWidget m_tankButton;
-		private BevelledButtonWidget m_spawnButton; // Nuevo botón
+		private BevelledButtonWidget m_spawnButton;
 		private StackPanelWidget m_contentPanel;
 		private LabelWidget m_titleLabel;
 
@@ -22,96 +22,69 @@ namespace Game
 			m_titleLabel.Text = LanguageControl.Get(new string[] { "ShittyCreatures", "ScreenTitle" });
 
 			m_contentPanel = this.Children.Find<StackPanelWidget>("Content", true);
-			m_contentPanel.Direction = LayoutDirection.Vertical;
-			m_contentPanel.HorizontalAlignment = WidgetAlignment.Near;
-			m_contentPanel.Margin = new Vector2(20f, 10f);
 
-			// Botón Ghost
-			m_ghostButton = new BevelledButtonWidget
-			{
-				Text = GetGhostButtonText(),
-				Size = new Vector2(310f, 60f),
-				BevelColor = Color.Gray,
-				CenterColor = Color.Gray,
-				Name = "GhostMusicButton",
-				HorizontalAlignment = WidgetAlignment.Far
-			};
-
-			// Botón Tank
-			m_tankButton = new BevelledButtonWidget
-			{
-				Text = GetTankButtonText(),
-				Size = new Vector2(310f, 60f),
-				BevelColor = Color.Red,
-				CenterColor = Color.Red,
-				Name = "TankMusicButton",
-				HorizontalAlignment = WidgetAlignment.Far
-			};
-
-			// Nuevo botón Spawn (verde claro)
-			m_spawnButton = new BevelledButtonWidget
-			{
-				Text = GetSpawnButtonText(),
-				Size = new Vector2(310f, 60f),
-				BevelColor = Color.LightGreen,
-				CenterColor = Color.LightGreen,
-				Name = "DeathSpawnButton",
-				HorizontalAlignment = WidgetAlignment.Far
-			};
-
-			// Crear filas
-			CreateOptionRow("ShittyCreatures", "GhostDescription", m_ghostButton);
-			CreateOptionRow("ShittyCreatures", "TankDescription", m_tankButton);
-			CreateOptionRow("ShittyCreatures", "SpawnDescription", m_spawnButton); // Nueva fila
+			// Crear las filas con ancho suficiente para las descripciones largas
+			CreateOptionRow("ShittyCreatures", "GhostDescription", out m_ghostButton, Color.Gray, GetGhostButtonText);
+			CreateOptionRow("ShittyCreatures", "TankDescription", out m_tankButton, Color.Red, GetTankButtonText);
+			CreateOptionRow("ShittyCreatures", "SpawnDescription", out m_spawnButton, Color.LightGreen, GetSpawnButtonText);
 		}
 
-		private void CreateOptionRow(string category, string descriptionKey, BevelledButtonWidget button)
+		private void CreateOptionRow(string category, string descriptionKey, out BevelledButtonWidget button, Color buttonColor, Func<string> getButtonTextFunc)
 		{
-			var rowContainer = new CanvasWidget
+			// Panel horizontal con separación vertical
+			var rowPanel = new UniformSpacingPanelWidget
 			{
-				Size = new Vector2(float.PositiveInfinity, 70f),
-				Margin = new Vector2(0f, 5f)
+				Direction = LayoutDirection.Horizontal,
+				Margin = new Vector2(0f, 8f) // Espacio entre filas
 			};
 
-			var descLabel = new LabelWidget
+			// Etiqueta descriptiva
+			var descriptionLabel = new LabelWidget
 			{
 				Text = LanguageControl.Get(new string[] { category, descriptionKey }),
-				FontScale = 0.7f,
-				Color = new Color(180, 180, 180),
-				HorizontalAlignment = WidgetAlignment.Near,
+				HorizontalAlignment = WidgetAlignment.Far,
 				VerticalAlignment = WidgetAlignment.Center,
+				Margin = new Vector2(20f, 0f),
+				Size = new Vector2(600f, -1f), // Suficiente espacio para la descripción
 				WordWrap = true
 			};
 
-			rowContainer.Children.Add(descLabel);
-			rowContainer.Children.Add(button);
-			m_contentPanel.Children.Add(rowContainer);
+			// Botón con color personalizado y texto SIMPLE (Enabled/Disabled)
+			button = new BevelledButtonWidget
+			{
+				Size = new Vector2(310f, 60f),
+				BevelColor = buttonColor,
+				CenterColor = buttonColor,
+				Name = $"Button_{descriptionKey}",
+				VerticalAlignment = WidgetAlignment.Center,
+				Margin = new Vector2(20f, 0f),
+				Text = getButtonTextFunc() // Ahora devuelve solo "Enabled" o "Disabled"
+			};
+
+			rowPanel.Children.Add(descriptionLabel);
+			rowPanel.Children.Add(button);
+			m_contentPanel.Children.Add(rowPanel);
 		}
 
 		private string GetGhostButtonText()
 		{
-			string onOff = ShittyCreaturesSettingsManager.GhostMusicEnabled ? LanguageControl.On : LanguageControl.Off;
-			string template = LanguageControl.Get(new string[] { "ChaseMusic", "GhostButton" });
-			return string.Format(template, onOff);
+			// Solo devuelve "Enabled" o "Disabled" (traducido)
+			return ShittyCreaturesSettingsManager.GhostMusicEnabled ? LanguageControl.On : LanguageControl.Off;
 		}
 
 		private string GetTankButtonText()
 		{
-			string onOff = ShittyCreaturesSettingsManager.TankMusicEnabled ? LanguageControl.On : LanguageControl.Off;
-			string template = LanguageControl.Get(new string[] { "ChaseMusic", "TankButton" });
-			return string.Format(template, onOff);
+			return ShittyCreaturesSettingsManager.TankMusicEnabled ? LanguageControl.On : LanguageControl.Off;
 		}
 
-		// Nuevo método para el botón de spawn
 		private string GetSpawnButtonText()
 		{
-			string onOff = ShittyCreaturesSettingsManager.DeathSpawnEnabled ? LanguageControl.On : LanguageControl.Off;
-			string template = LanguageControl.Get(new string[] { "ShittyCreatures", "SpawnButton" });
-			return string.Format(template, onOff);
+			return ShittyCreaturesSettingsManager.DeathSpawnEnabled ? LanguageControl.On : LanguageControl.Off;
 		}
 
 		public override void Update()
 		{
+			// Botón de retroceso
 			if (base.Input.Back || base.Input.Cancel || this.Children.Find<ButtonWidget>("TopBar.Back", true).IsClicked)
 			{
 				ShittyCreaturesSettingsManager.Save();
@@ -119,20 +92,20 @@ namespace Game
 				return;
 			}
 
-			if (m_ghostButton.IsClicked)
+			// Manejar clics en los botones
+			if (m_ghostButton != null && m_ghostButton.IsClicked)
 			{
 				ShittyCreaturesSettingsManager.GhostMusicEnabled = !ShittyCreaturesSettingsManager.GhostMusicEnabled;
 				m_ghostButton.Text = GetGhostButtonText();
 			}
 
-			if (m_tankButton.IsClicked)
+			if (m_tankButton != null && m_tankButton.IsClicked)
 			{
 				ShittyCreaturesSettingsManager.TankMusicEnabled = !ShittyCreaturesSettingsManager.TankMusicEnabled;
 				m_tankButton.Text = GetTankButtonText();
 			}
 
-			// Nuevo: manejar clic en botón de spawn
-			if (m_spawnButton.IsClicked)
+			if (m_spawnButton != null && m_spawnButton.IsClicked)
 			{
 				ShittyCreaturesSettingsManager.DeathSpawnEnabled = !ShittyCreaturesSettingsManager.DeathSpawnEnabled;
 				m_spawnButton.Text = GetSpawnButtonText();
