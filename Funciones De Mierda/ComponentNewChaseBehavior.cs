@@ -7,410 +7,217 @@ namespace Game
 {
 	public class ComponentNewChaseBehavior : ComponentChaseBehavior, IUpdateable
 	{
-		// Referencias a componentes y subsistemas necesarios
-		private ComponentNewHerdBehavior m_componentNewHerd;
-		private SubsystemGreenNightSky m_subsystemGreenNightSky;
-		private ComponentCreature m_lastAttacker;
-		private double m_lastAttackTime;
-		private float m_switchTargetCooldown;
-		private const float AttackerMemoryDuration = 30f;
+		// Referencias a subsistemas y componentes
+		private ComponentNewHerdBehavior m_newHerdBehavior;
+		private SubsystemPlayers m_subsystemPlayers;
+		private SubsystemGreenNightSky m_greenNightSky;
+		private SubsystemTime m_subsystemTime;
+		private new Random m_random = new Random(); // oculta el campo de la clase base
 
-		// Variables para la protección extrema
-		private bool m_isExtremeModeActive;
-		private ComponentCreature m_threatToPlayer;
-		private float m_threatScanTimer;
+		// Configuración de defensa proactiva
+		public float ProactiveDefenseRange { get; set; } = 20f;
+		public float ProactiveDefenseInterval { get; set; } = 2f;
+		public float GreenNightDefenseRangeMultiplier { get; set; } = 1.5f;
+		public float GreenNightDefenseInterval { get; set; } = 1f;
 
-		// Bandera para saber si estamos en modo retaliación (solo atacar a quien nos atacó)
-		private bool m_isRetaliating;
-		private ComponentCreature m_retaliationTarget;
-
-		public new UpdateOrder UpdateOrder => UpdateOrder.Default;
+		private double m_nextProactiveCheckTime;
 
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
 			base.Load(valuesDictionary, idToEntityMap);
 
-			// Obtener componentes necesarios
-			m_componentNewHerd = Entity.FindComponent<ComponentNewHerdBehavior>();
-			m_subsystemGreenNightSky = Project.FindSubsystem<SubsystemGreenNightSky>(true);
+			// Obtener componentes y subsistemas necesarios
+			m_newHerdBehavior = Entity.FindComponent<ComponentNewHerdBehavior>();
+			m_subsystemPlayers = Project.FindSubsystem<SubsystemPlayers>(true);
+			m_subsystemTime = Project.FindSubsystem<SubsystemTime>(true);
+			m_greenNightSky = Project.FindSubsystem<SubsystemGreenNightSky>();
 
-			// NO SOBREESCRIBIR los valores del XML - respetar lo configurado
-			// Solo aseguramos que los valores mínimos sean razonables
-			m_dayChaseRange = Math.Max(m_dayChaseRange, 1f);
-			m_nightChaseRange = Math.Max(m_nightChaseRange, 1f);
-			m_dayChaseTime = Math.Max(m_dayChaseTime, 1f);
-			m_nightChaseTime = Math.Max(m_nightChaseTime, 1f);
-
-			// Inicializar variables
-			m_lastAttacker = null;
-			m_lastAttackTime = 0f;
-			m_switchTargetCooldown = 0f;
-			m_threatScanTimer = 0f;
-			m_isRetaliating = false;
-			m_retaliationTarget = null;
-
-			// --- Manejador de daño recibido ---
-			ComponentHealth componentHealth = m_componentCreature.ComponentHealth;
-			Action<Injury> originalInjured = componentHealth.Injured;
-			componentHealth.Injured = delegate (Injury injury)
+			// Si la criatura pertenece a la manada del jugador, ajustar comportamiento por defecto
+			if (IsPlayerHerd())
 			{
-				originalInjured?.Invoke(injury);
+				AttacksPlayer = false;               // No atacar al jugador
+				AttacksNonPlayerCreature = true;      // Atacar a otras criaturas
+													  // Configurar máscara para perseguir depredadores y otras criaturas hostiles
+				m_autoChaseMask = CreatureCategory.LandPredator | CreatureCategory.LandOther |
+								  CreatureCategory.WaterPredator | CreatureCategory.WaterOther |
+								  CreatureCategory.Bird;
+				// Aumentar probabilidades de respuesta a ataques y colisiones
+				m_chaseWhenAttackedProbability = 1f;
+				m_chaseOnTouchProbability = 1f;
+			}
 
-				ComponentCreature attacker = injury.Attacker;
-
-				// Ignorar si el atacante es de la misma manada
-				if (attacker != null && m_componentNewHerd != null && !m_componentNewHerd.ShouldAttackCreature(attacker))
-					return;
-
-				// Registrar al atacante
-				if (attacker != null)
-				{
-					m_lastAttacker = attacker;
-					m_lastAttackTime = m_subsystemTime.GameTime;
-
-					// Activar modo retaliación - solo atacar a este agresor
-					m_isRetaliating = true;
-					m_retaliationTarget = attacker;
-				}
-
-				// Contraatacar al agresor si la probabilidad lo permite
-				if (attacker != null && m_random.Float(0f, 1f) < m_chaseWhenAttackedProbability)
-				{
-					float range, chaseTime;
-					bool isPersistent;
-
-					if (m_chaseWhenAttackedProbability >= 1f)
-					{
-						range = 30f;
-						chaseTime = 60f;
-						isPersistent = true;
-					}
-					else
-					{
-						range = 7f;
-						chaseTime = 7f;
-						isPersistent = false;
-					}
-
-					range = ChaseRangeOnAttacked.GetValueOrDefault(range);
-					chaseTime = ChaseTimeOnAttacked.GetValueOrDefault(chaseTime);
-					isPersistent = ChasePersistentOnAttacked.GetValueOrDefault(isPersistent);
-
-					Attack(attacker, range, chaseTime, isPersistent);
-				}
-			};
-
-			// --- Manejador de colisión (respetando m_autoChaseMask) ---
-			ComponentBody componentBody = m_componentCreature.ComponentBody;
-			Action<ComponentBody> originalCollided = componentBody.CollidedWithBody;
-			componentBody.CollidedWithBody = delegate (ComponentBody body)
-			{
-				originalCollided?.Invoke(body);
-
-				// Solo si no tenemos objetivo y no estamos en modo retaliación
-				if (m_target != null || m_isRetaliating || m_autoChaseSuppressionTime > 0f)
-					return;
-
-				if (m_random.Float(0f, 1f) >= m_chaseOnTouchProbability)
-					return;
-
-				ComponentCreature creature = body.Entity.FindComponent<ComponentCreature>();
-				if (creature == null) return;
-
-				// Ignorar si es de la misma manada
-				if (m_componentNewHerd != null && !m_componentNewHerd.ShouldAttackCreature(creature))
-					return;
-
-				bool isPlayer = m_subsystemPlayers.IsPlayer(body.Entity);
-				bool isValidTarget = (creature.Category & m_autoChaseMask) > 0;
-
-				// Verificar según configuraciones del XML
-				if ((AttacksPlayer && isPlayer && m_subsystemGameInfo.WorldSettings.GameMode > GameMode.Harmless) ||
-					(AttacksNonPlayerCreature && !isPlayer && isValidTarget))
-				{
-					Attack(creature, ChaseRangeOnTouch, ChaseTimeOnTouch, false);
-				}
-			};
+			// No es necesario reemplazar los manejadores de eventos, ya que la sobreescritura de Attack
+			// filtra cualquier intento de atacar a miembros de la misma manada.
 		}
 
-		public new void Update(float dt)
+		public override void Update(float dt)
 		{
-			// Llamar al Update base para mantener la máquina de estados original
 			base.Update(dt);
 
-			// Actualizar temporizador de escaneo de amenazas
-			m_threatScanTimer -= dt;
-			if (m_threatScanTimer <= 0f)
+			// Defensa proactiva solo para criaturas de la manada del jugador
+			if (m_newHerdBehavior != null && IsPlayerHerd())
 			{
-				m_threatScanTimer = 0.5f;
+				bool isGreenNight = m_greenNightSky != null && m_greenNightSky.IsGreenNightActive;
+				float checkInterval = isGreenNight ? GreenNightDefenseInterval : ProactiveDefenseInterval;
+				float range = isGreenNight ? ProactiveDefenseRange * GreenNightDefenseRangeMultiplier : ProactiveDefenseRange;
 
-				// Verificar si la noche verde está activa
-				bool greenNightActive = m_subsystemGreenNightSky != null && m_subsystemGreenNightSky.IsGreenNightActive;
-				m_isExtremeModeActive = greenNightActive;
-
-				// Escanear amenazas solo si no estamos en modo retaliación
-				if (!m_isRetaliating)
+				if (m_subsystemTime.GameTime >= m_nextProactiveCheckTime)
 				{
-					if (m_isExtremeModeActive)
-					{
-						ScanForZombieThreats();
-					}
-					ScanForBanditThreats();
+					m_nextProactiveCheckTime = m_subsystemTime.GameTime + checkInterval;
+					PerformProactiveDefense(range, isGreenNight);
 				}
-			}
-
-			// Actualizar cooldown de cambio de objetivo
-			if (m_switchTargetCooldown > 0f)
-				m_switchTargetCooldown -= dt;
-
-			// Verificar si el objetivo de retaliación sigue siendo válido
-			if (m_isRetaliating && m_retaliationTarget != null)
-			{
-				// Si el objetivo murió o pasó el tiempo de memoria, salir del modo retaliación
-				if (m_retaliationTarget.ComponentHealth.Health <= 0f ||
-					(m_subsystemTime.GameTime - m_lastAttackTime) > AttackerMemoryDuration)
-				{
-					m_isRetaliating = false;
-					m_retaliationTarget = null;
-
-					// Detener el ataque actual
-					if (m_target != null && m_target == m_retaliationTarget)
-					{
-						StopAttack();
-					}
-				}
-			}
-
-			// Priorizar amenazas detectadas SOLO si no estamos en modo retaliación
-			if (!m_isRetaliating && m_switchTargetCooldown <= 0f)
-			{
-				if (m_threatToPlayer != null && m_threatToPlayer != m_target)
-				{
-					// Verificar que la amenaza sea válida según las máscaras
-					if (IsValidTargetByMask(m_threatToPlayer))
-					{
-						Attack(m_threatToPlayer, 40f, 120f, true);
-						m_switchTargetCooldown = 2f;
-						m_threatToPlayer = null;
-					}
-				}
-			}
-
-			// Asegurar que no se ataque a miembros de la propia manada
-			if (m_target != null && m_componentNewHerd != null && !m_componentNewHerd.ShouldAttackCreature(m_target))
-			{
-				StopAttack();
 			}
 		}
 
-		private bool IsValidTargetByMask(ComponentCreature target)
+		/// <summary>
+		/// Determina si la criatura pertenece a la manada del jugador (nombre "player" o "guardian").
+		/// Maneja de forma segura el caso en que HerdName sea null.
+		/// </summary>
+		private bool IsPlayerHerd()
 		{
-			if (target == null) return false;
-
-			bool isPlayer = target.Entity.FindComponent<ComponentPlayer>() != null;
-			bool isValidCategory = (target.Category & m_autoChaseMask) > 0;
-
-			if (isPlayer)
-			{
-				return AttacksPlayer && m_subsystemGameInfo.WorldSettings.GameMode > GameMode.Harmless;
-			}
-			else
-			{
-				return AttacksNonPlayerCreature && isValidCategory;
-			}
+			if (m_newHerdBehavior == null) return false;
+			string herdName = m_newHerdBehavior.HerdName;
+			if (string.IsNullOrEmpty(herdName)) return false;
+			return herdName.Equals("player", StringComparison.OrdinalIgnoreCase) ||
+				   herdName.IndexOf("guardian", StringComparison.OrdinalIgnoreCase) >= 0;
 		}
 
-		private void ScanForZombieThreats()
+		/// <summary>
+		/// Escanea en busca de amenazas cerca del jugador y ataca a la más relevante.
+		/// </summary>
+		private void PerformProactiveDefense(float range, bool isGreenNight)
 		{
-			// Solo durante noche verde
-			if (!m_isExtremeModeActive) return;
-
-			SubsystemPlayers subsystemPlayers = Project.FindSubsystem<SubsystemPlayers>(true);
-			if (subsystemPlayers == null || subsystemPlayers.ComponentPlayers.Count == 0)
+			// Si ya está persiguiendo un objetivo, no interrumpir
+			if (m_target != null && m_importanceLevel > 0f)
 				return;
 
-			ComponentPlayer player = subsystemPlayers.ComponentPlayers[0];
-			if (player == null || player.ComponentHealth.Health <= 0f)
+			var players = m_subsystemPlayers.ComponentPlayers;
+			if (players.Count == 0)
 				return;
 
-			Vector3 playerPos = player.ComponentBody.Position;
-			float scanRange = 30f;
+			// Encontrar el jugador más cercano a esta criatura
+			Vector3 myPos = m_componentCreature.ComponentBody.Position;
+			ComponentPlayer nearestPlayer = null;
+			float minDistToPlayer = float.MaxValue;
+			foreach (var player in players)
+			{
+				if (player.ComponentHealth.Health <= 0f) continue;
+				float dist = Vector3.Distance(myPos, player.ComponentBody.Position);
+				if (dist < minDistToPlayer)
+				{
+					minDistToPlayer = dist;
+					nearestPlayer = player;
+				}
+			}
+			if (nearestPlayer == null)
+				return;
 
+			// Solo defender si estamos razonablemente cerca del jugador
+			if (minDistToPlayer > range * 2)
+				return;
+
+			Vector3 playerPos = nearestPlayer.ComponentBody.Position;
+			ComponentCreature bestThreat = null;
+			float bestScore = 0f;
+
+			// Buscar cuerpos alrededor del jugador
 			m_componentBodies.Clear();
-			m_subsystemBodies.FindBodiesAroundPoint(new Vector2(playerPos.X, playerPos.Z), scanRange, m_componentBodies);
+			m_subsystemBodies.FindBodiesAroundPoint(new Vector2(playerPos.X, playerPos.Z), range, m_componentBodies);
 
 			for (int i = 0; i < m_componentBodies.Count; i++)
 			{
-				ComponentCreature creature = m_componentBodies.Array[i].Entity.FindComponent<ComponentCreature>();
-				if (creature == null || creature == m_componentCreature)
+				ComponentCreature candidate = m_componentBodies.Array[i].Entity.FindComponent<ComponentCreature>();
+				if (candidate == null || candidate == m_componentCreature) continue;
+				if (candidate.ComponentHealth.Health <= 0f) continue;
+
+				// Verificar si es una criatura que debemos atacar
+				if (!m_newHerdBehavior.ShouldAttackCreature(candidate))
 					continue;
 
-				// Detectar zombies
-				if (creature.Entity.FindComponent<ComponentZombieHerdBehavior>() != null)
+				float distToPlayer = Vector3.Distance(playerPos, candidate.ComponentBody.Position);
+				if (distToPlayer > range) continue;
+
+				float score = range - distToPlayer;
+
+				// Incrementar puntuación si la criatura ya está persiguiendo al jugador o a un aliado
+				ComponentChaseBehavior candidateChase = candidate.Entity.FindComponent<ComponentChaseBehavior>();
+				if (candidateChase != null && candidateChase.Target != null)
 				{
-					// Verificar si el zombie está en rango de atacar al jugador
-					float distToPlayer = Vector3.Distance(playerPos, creature.ComponentBody.Position);
-					if (distToPlayer <= 15f) // Rango de ataque de zombie
+					ComponentCreature target = candidateChase.Target;
+					if (target != null)
 					{
-						m_threatToPlayer = creature;
-						return;
-					}
-				}
-			}
-		}
-
-		private void ScanForBanditThreats()
-		{
-			SubsystemPlayers subsystemPlayers = Project.FindSubsystem<SubsystemPlayers>(true);
-			if (subsystemPlayers == null || subsystemPlayers.ComponentPlayers.Count == 0)
-				return;
-
-			ComponentPlayer player = subsystemPlayers.ComponentPlayers[0];
-			if (player == null || player.ComponentHealth.Health <= 0f)
-				return;
-
-			Vector3 playerPos = player.ComponentBody.Position;
-			float scanRange = 25f;
-
-			m_componentBodies.Clear();
-			m_subsystemBodies.FindBodiesAroundPoint(new Vector2(playerPos.X, playerPos.Z), scanRange, m_componentBodies);
-
-			for (int i = 0; i < m_componentBodies.Count; i++)
-			{
-				ComponentCreature creature = m_componentBodies.Array[i].Entity.FindComponent<ComponentCreature>();
-				if (creature == null || creature == m_componentCreature)
-					continue;
-
-				// Detectar bandidos
-				if (creature.Entity.FindComponent<ComponentBanditHerdBehavior>() != null)
-				{
-					// Verificar si el bandido tiene al jugador como objetivo
-					ComponentChaseBehavior chase = creature.Entity.FindComponent<ComponentChaseBehavior>();
-					if (chase != null && chase.Target == player)
-					{
-						float distToPlayer = Vector3.Distance(playerPos, creature.ComponentBody.Position);
-						if (distToPlayer <= 20f) // Bandido en rango de ataque
+						bool isTargetPlayer = target.Entity.FindComponent<ComponentPlayer>() != null;
+						bool isTargetAlly = m_newHerdBehavior.IsSameHerdOrGuardian(target);
+						if (isTargetPlayer || isTargetAlly)
 						{
-							m_threatToPlayer = creature;
-							return;
+							score *= 2f; // Prioridad alta
 						}
 					}
 				}
-			}
-		}
 
-		public override float ScoreTarget(ComponentCreature componentCreature)
-		{
-			// Excluir miembros de la misma manada
-			if (m_componentNewHerd != null && !m_componentNewHerd.ShouldAttackCreature(componentCreature))
-				return 0f;
-
-			float score = base.ScoreTarget(componentCreature);
-			if (score <= 0f) return 0f;
-
-			// Durante noche verde, los zombies obtienen bonificación
-			if (m_isExtremeModeActive)
-			{
-				bool isZombie = componentCreature.Entity.FindComponent<ComponentZombieHerdBehavior>() != null;
-				if (isZombie)
+				// Durante noche verde, dar máxima prioridad a zombis
+				if (isGreenNight && candidate.Entity.FindComponent<ComponentZombieChaseBehavior>() != null)
 				{
-					score *= 2f; // Bonificación moderada, no masiva
+					score *= 5f;
+				}
+
+				if (score > bestScore)
+				{
+					bestScore = score;
+					bestThreat = candidate;
 				}
 			}
 
-			// Bonificación para amenazas al jugador
-			if (componentCreature == m_threatToPlayer)
+			if (bestThreat != null)
 			{
-				score *= 3f;
+				// Atacar a la amenaza con persistencia
+				Attack(bestThreat, range, 60f, true);
+				// Llamar a otros miembros de la manada cercanos para ayudar
+				m_newHerdBehavior?.CallNearbyCreaturesHelp(bestThreat, range, 30f, true, true);
 			}
+		}
 
-			// Bonificación para el último atacante (solo si estamos en modo retaliación)
-			if (m_isRetaliating && componentCreature == m_retaliationTarget)
-			{
-				score *= 5f;
-			}
-			else if (componentCreature == m_lastAttacker && (m_subsystemTime.GameTime - m_lastAttackTime) <= AttackerMemoryDuration)
-			{
-				// Recordar al último atacante pero con menor prioridad si no es retaliación activa
-				score *= 2f;
-			}
+		/// <summary>
+		/// Responde inmediatamente a una orden del jugador (usando el bloque TargetStick).
+		/// Ataca al objetivo y convoca ayuda de la manada.
+		/// </summary>
+		public void RespondToCommandImmediately(ComponentCreature target)
+		{
+			if (target == null || m_newHerdBehavior == null || !m_newHerdBehavior.CanAttackCreature(target))
+				return;
 
-			return score;
+			// Atacar al objetivo marcado
+			Attack(target, 30f, 45f, true);
+			// Llamar a miembros cercanos de la manada para que también ataquen
+			m_newHerdBehavior.CallNearbyCreaturesHelp(target, 20f, 30f, false, true);
+		}
+
+		public override void Attack(ComponentCreature target, float maxRange, float maxChaseTime, bool isPersistent)
+		{
+			// Prevenir ataque a miembros de la misma manada o aliados
+			if (m_newHerdBehavior != null && !m_newHerdBehavior.CanAttackCreature(target))
+				return;
+
+			base.Attack(target, maxRange, maxChaseTime, isPersistent);
+		}
+
+		public override float ScoreTarget(ComponentCreature creature)
+		{
+			// Excluir objetivos de la misma manada
+			if (m_newHerdBehavior != null && !m_newHerdBehavior.CanAttackCreature(creature))
+				return 0f;
+
+			return base.ScoreTarget(creature);
 		}
 
 		public override ComponentCreature FindTarget()
 		{
-			// Si estamos en modo retaliación, solo buscar a nuestro objetivo
-			if (m_isRetaliating && m_retaliationTarget != null)
-			{
-				if (m_retaliationTarget.ComponentHealth.Health > 0f)
-				{
-					float dist = Vector3.Distance(m_componentCreature.ComponentBody.Position, m_retaliationTarget.ComponentBody.Position);
-					if (dist <= m_range * 1.5f)
-					{
-						return m_retaliationTarget;
-					}
-				}
-				else
-				{
-					m_isRetaliating = false;
-					m_retaliationTarget = null;
-				}
-			}
+			ComponentCreature baseTarget = base.FindTarget();
+			// Filtrar si el objetivo encontrado es de la misma manada
+			if (baseTarget != null && m_newHerdBehavior != null && !m_newHerdBehavior.CanAttackCreature(baseTarget))
+				return null;
 
-			// Si hay amenaza al jugador y no estamos en retaliación, priorizarla
-			if (!m_isRetaliating && m_threatToPlayer != null && IsValidTargetByMask(m_threatToPlayer))
-			{
-				return m_threatToPlayer;
-			}
-
-			// Buscar objetivo normalmente respetando AutoChaseMask
-			return base.FindTarget();
-		}
-
-		public override void Attack(ComponentCreature componentCreature, float maxRange, float maxChaseTime, bool isPersistent)
-		{
-			// Verificar que el objetivo sea válido según las máscaras
-			if (!IsValidTargetByMask(componentCreature))
-				return;
-
-			// Verificar que no sea de la misma manada
-			if (m_componentNewHerd != null && !m_componentNewHerd.ShouldAttackCreature(componentCreature))
-				return;
-
-			// Llamar al método base
-			base.Attack(componentCreature, maxRange, maxChaseTime, isPersistent);
-
-			// Solo llamar ayuda si no estamos en retaliación (evitar spam)
-			if (!m_isRetaliating && m_componentNewHerd != null)
-			{
-				m_componentNewHerd.CallNearbyCreaturesHelp(componentCreature, 20f, 30f, false, false);
-			}
-		}
-
-		public override void StopAttack()
-		{
-			base.StopAttack();
-
-			// No resetear el modo retaliación aquí, se maneja en Update
-		}
-
-		public void RespondToCommandImmediately(ComponentCreature target)
-		{
-			if (target == null) return;
-			if (!IsValidTargetByMask(target)) return;
-			if (m_componentNewHerd != null && !m_componentNewHerd.CanAttackCreature(target))
-				return;
-
-			// Resetear modo retaliación al recibir orden directa
-			m_isRetaliating = false;
-			m_retaliationTarget = null;
-
-			// Atacar con parámetros agresivos
-			Attack(target, 40f, 120f, true);
-
-			// Llamar a la manada
-			m_componentNewHerd?.CallNearbyCreaturesHelp(target, 15f, 30f, false, true);
+			return baseTarget;
 		}
 	}
 }
