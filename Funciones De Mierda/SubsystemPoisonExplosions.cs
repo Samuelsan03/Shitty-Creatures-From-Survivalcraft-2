@@ -6,11 +6,8 @@ using TemplatesDatabase;
 
 namespace Game
 {
-	// Token: 0x02000375 RID: 885
 	public class SubsystemPoisonExplosions : Subsystem, IUpdateable
 	{
-		// Token: 0x17000435 RID: 1077
-		// (get) Token: 0x06001CD3 RID: 7379 RVA: 0x000DE24C File Offset: 0x000DC44C
 		public UpdateOrder UpdateOrder
 		{
 			get
@@ -19,7 +16,6 @@ namespace Game
 			}
 		}
 
-		// Token: 0x06001CD4 RID: 7380 RVA: 0x000DE250 File Offset: 0x000DC450
 		public void AddPoisonExplosion(int x, int y, int z, float pressure, float poisonIntensity, bool noExplosionSound)
 		{
 			if (pressure > 0f)
@@ -33,11 +29,9 @@ namespace Game
 					PoisonIntensity = poisonIntensity,
 					NoExplosionSound = noExplosionSound
 				});
-				this.ApplyPoisonEffect(new Vector3((float)x + 0.5f, (float)y + 0.5f, (float)z + 0.5f), pressure, poisonIntensity);
 			}
 		}
 
-		// Token: 0x06001CD5 RID: 7381 RVA: 0x000DE2D4 File Offset: 0x000DC4D4
 		public virtual void Update(float dt)
 		{
 			if (this.m_queuedExplosions.Count <= 0)
@@ -61,7 +55,6 @@ namespace Game
 			}
 		}
 
-		// Token: 0x06001CD6 RID: 7382 RVA: 0x000DE384 File Offset: 0x000DC584
 		public override void Load(ValuesDictionary valuesDictionary)
 		{
 			this.m_subsystemAudio = base.Project.FindSubsystem<SubsystemAudio>(true);
@@ -75,13 +68,12 @@ namespace Game
 			this.m_subsystemParticles.AddParticleSystem(this.m_poisonExplosionParticleSystem, false);
 		}
 
-		// Token: 0x06001CD7 RID: 7383 RVA: 0x000DE450 File Offset: 0x000DC650
 		public void ProcessPoisonExplosion(int x, int y, int z, float pressure, float poisonIntensity, bool noExplosionSound)
 		{
-			// Radio de efecto del veneno (ajustable)
+			// Radio de efecto del veneno
 			int radius = (int)MathUtils.Clamp(pressure / 10f, 3f, 10f);
 
-			// Crear partículas de explosión de veneno
+			// Crear partículas de explosión de veneno usando PoisonExplosionParticleSystem
 			for (int i = -radius; i <= radius; i++)
 			{
 				for (int j = -radius; j <= radius; j++)
@@ -115,24 +107,6 @@ namespace Game
 			}
 		}
 
-		// Token: 0x06001CD8 RID: 7384 RVA: 0x000DE594 File Offset: 0x000DC794
-		public void ApplyPoisonEffect(Vector3 center, float pressure, float poisonIntensity)
-		{
-			// x ELIMINADO: Sacudir cuerpos cercanos
-			// foreach (ComponentBody componentBody in this.m_subsystemBodies.Bodies)
-			// {
-			// 	float distance = Vector3.Distance(componentBody.Position, center);
-			// 	if (distance < 10f)
-			// 	{
-			// 		// Aplicar pequeño impulso
-			// 		Vector3 direction = Vector3.Normalize(componentBody.Position - center);
-			// 		float force = MathUtils.Max(0f, 1f - distance / 10f) * pressure * 0.5f;
-			// 		componentBody.ApplyImpulse(direction * force);
-			// 	}
-			// }
-		}
-
-		// Token: 0x06001CD9 RID: 7385 RVA: 0x000DE62C File Offset: 0x000DC82C
 		public void ApplyPoisonToEntities(Vector3 center, float radius, float poisonIntensity)
 		{
 			if (!this.m_subsystemGameInfo.WorldSettings.AreAdventureSurvivalMechanicsEnabled)
@@ -164,46 +138,26 @@ namespace Game
 								componentPlayer.ComponentSickness.m_sicknessDuration,
 								appliedIntensity);
 						}
-						// Para otras criaturas - solo si ya tienen el componente ComponentPoisonInfected
+						// Para otras criaturas
 						else
 						{
 							ComponentPoisonInfected componentPoisonInfected = componentCreature.Entity.FindComponent<ComponentPoisonInfected>();
 							if (componentPoisonInfected != null)
 							{
-								// Si ya tiene el componente, actualizar la duración
 								if (!componentPoisonInfected.IsInfected || componentPoisonInfected.m_InfectDuration < appliedIntensity)
 								{
 									componentPoisonInfected.StartInfect(appliedIntensity);
 								}
 							}
-							// Para criaturas sin ComponentPoisonInfected, aplicar daño directo
 							else if (componentCreature.ComponentHealth != null && appliedIntensity > 30f)
 							{
 								float damage = MathUtils.Min(0.5f, appliedIntensity / 100f);
 								componentCreature.ComponentHealth.Injure(damage, null, false, "PoisonExplosion");
 
-								// Reproducir sonido de dolor si es posible
 								if (componentCreature.ComponentCreatureSounds != null)
 								{
 									componentCreature.ComponentCreatureSounds.PlayPainSound();
 								}
-							}
-						}
-
-						// Efecto visual adicional - partículas de veneno alrededor de la criatura
-						if (appliedIntensity > 50f)
-						{
-							for (int i = 0; i < 5; i++)
-							{
-								Vector3 particlePos = componentBody.Position +
-									new Vector3(
-										this.m_random.Float(-0.5f, 0.5f),
-										this.m_random.Float(0f, 1.5f),
-										this.m_random.Float(-0.5f, 0.5f));
-
-								this.m_poisonExplosionParticleSystem.SetExplosionCell(
-									Terrain.ToCell(particlePos),
-									this.m_random.Float(0.3f, 0.7f));
 							}
 						}
 					}
@@ -224,55 +178,24 @@ namespace Game
 			}
 		}
 
-		// Token: 0x040013A4 RID: 5028
 		public SubsystemTerrain m_subsystemTerrain;
-
-		// Token: 0x040013A5 RID: 5029
 		public SubsystemAudio m_subsystemAudio;
-
-		// Token: 0x040013A6 RID: 5030
 		public SubsystemParticles m_subsystemParticles;
-
-		// Token: 0x040013A7 RID: 5031
 		public SubsystemBodies m_subsystemBodies;
-
-		// Token: 0x040013A8 RID: 5032
 		public SubsystemPickables m_subsystemPickables;
-
-		// Token: 0x040013A9 RID: 5033
 		public SubsystemProjectiles m_subsystemProjectiles;
-
-		// Token: 0x040013AA RID: 5034
 		public SubsystemGameInfo m_subsystemGameInfo;
-
-		// Token: 0x040013AB RID: 5035
 		public List<SubsystemPoisonExplosions.PoisonExplosionData> m_queuedExplosions = new List<SubsystemPoisonExplosions.PoisonExplosionData>();
-
-		// Token: 0x040013AC RID: 5036
 		public Random m_random = new Random();
-
-		// Token: 0x040013AD RID: 5037
 		public PoisonExplosionParticleSystem m_poisonExplosionParticleSystem;
 
-		// Token: 0x02000688 RID: 1672
 		public struct PoisonExplosionData
 		{
-			// Token: 0x0400209B RID: 8347
 			public int X;
-
-			// Token: 0x0400209C RID: 8348
 			public int Y;
-
-			// Token: 0x0400209D RID: 8349
 			public int Z;
-
-			// Token: 0x0400209E RID: 8350
 			public float Pressure;
-
-			// Token: 0x0400209F RID: 8351
 			public float PoisonIntensity;
-
-			// Token: 0x040020A0 RID: 8352
 			public bool NoExplosionSound;
 		}
 	}
