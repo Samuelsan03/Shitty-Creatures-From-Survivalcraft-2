@@ -162,22 +162,25 @@ namespace Game
 
 		private void SendWaveMessage()
 		{
-			string message;
 			int maxWave = m_waves.Keys.Max();
 
 			if (m_currentWave == maxWave)
 			{
-				message = LanguageControl.Get("ZombiesSpawn", "FinalWave");
+				string message = LanguageControl.Get("ZombiesSpawn", "FinalWave");
+				// --- SOLUCIÓN: Usamos DisplaySmallMessage con rojo intenso y parpadeo (blinking) ---
 				foreach (var player in m_subsystemPlayers.ComponentPlayers)
 				{
-					player.ComponentGui.DisplaySmallMessage(message, Color.White, false, true);
+					// Color rojo intenso y parpadeo (blinking = true) para que sea más notorio
+					player.ComponentGui.DisplaySmallMessage(message, new Color(255, 0, 0), true, true);
 				}
+				// --------------------------------------------------------------------------------
 			}
 			else
 			{
-				message = string.Format(LanguageControl.Get("ZombiesSpawn", "WaveMessage"), m_currentWave);
+				string message = string.Format(LanguageControl.Get("ZombiesSpawn", "WaveMessage"), m_currentWave);
 				foreach (var player in m_subsystemPlayers.ComponentPlayers)
 				{
+					// El mensaje grande normal (blanco, sin color)
 					player.ComponentGui.DisplayLargeMessage(message, "", 3f, 0f);
 				}
 			}
