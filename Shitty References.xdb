@@ -1,16 +1,19 @@
 <Mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://gitee.com/THPRC/survivalcraft-api/raw/SCAPI1.8/Survivalcraft/Content/Assets/Database.xsd">
 
     <Folder Name="Gameplay" Guid="d509e5e2-2c10-49f1-8223-85cd892c63b0">
-
 <ComponentTemplate Name="PirateTrader" Description="Permite que una criatura actúe como comerciante pirata. Se puede abrir interactuando con ella para comprar objetos usando NuclearCoin." Guid="7753c16f-a467-4624-be61-3a048cb51cf0" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
     <Parameter Name="SlotsCount" Description="Número de ranuras del inventario del comerciante." Guid="c6ee570b-66e7-4a61-ac7b-db306d0fe316" Value="8" Type="int"/>
     <Parameter Name="ActiveSlotIndex" Description="Índice de la ranura activa (por defecto 0, no se usa en este componente pero se mantiene por herencia)." Guid="5c2ceace-8cf9-45fb-b1d3-c64c6c41d298" Value="0" Type="int"/>
+    <Parameter Name="TradeItems" Description="Lista de objetos que el comerciante puede vender. Formato: 'BlockName:probability:price:maxCount[:variant]'. probability es el peso usado para seleccionar el objeto durante el reabastecimiento. price es el precio por unidad en NuclearCoin. maxCount es la cantidad máxima que aparecerá en el slot. variant es opcional y permite especificar la variante de bloque (por ejemplo diferentes tipos de madera, tela, etc.). Ejemplos: 'MusketBlock:0.5:50:1,RepeatCrossbowBlock:0.3:120:1,AmmoBlock:0.2:5:20' o 'ClothingBlock:0.4:30:1:5'." Guid="4c0c5d62-bf60-480a-8296-8aa76cfeacf1" Value="MusketBlock:1:50:1" Type="string"/>
+    <Parameter Name="RestockInterval" Description="Intervalo en segundos de tiempo de juego entre reabastecimientos." Guid="daa4d12b-d73f-4005-871b-34af37d243d3" Value="300" Type="double"/>
     <Parameter Name="Class" Value="Game.ComponentPirateTrader" Type="string"/>
 </ComponentTemplate>
 
     <ComponentTemplate Name="FluInfected" Description="Componente que aplica los efectos de la gripe a una criatura. Reduce la velocidad de movimiento (hasta 20% en casos graves) y provoca tos periódica con sonido y alerta de ruido." Guid="c7f45092-a74d-429a-8e77-76b1ae5120a3" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
     <Parameter Name="FluDuration" Description="Duración actual de la infección en segundos. Se actualiza automáticamente durante el juego." Guid="95bac8b6-ed74-41fa-88ae-92b79a127ba8" Value="0" Type="float"/>
     <Parameter Name="FluResistance" Description="Resistencia de la criatura a la gripe. Este valor se resta de la duración al recibir una nueva infección." Guid="2b015c53-331c-453c-ba60-b1c92974b6e4" Value="0" Type="float"/>
+    <Parameter Name="CoughSound" Description="Ruta(s) de sonido para la tos. Pueden ser múltiples separadas por punto y coma (;). Ej: 'Audio/Creatures/FemaleCough/FemaleCough1;Audio/Creatures/MaleCough/MaleCough1'" Guid="b163d080-1394-48c8-89d3-baf952bdbec6" Value="Audio/Creatures/FemaleCough/FemaleCough1" Type="string"/>
+    <Parameter Name="SneezeSound" Description="Ruta(s) de sonido para el estornudo. Pueden ser múltiples separadas por punto y coma (;). Ej: 'Audio/Creatures/FemaleSneeze/FemaleSneeze1;Audio/Creatures/MaleSneeze/MaleSneeze1'" Guid="10780f97-b39f-40c2-9c14-7ce06b803db7" Value="Audio/Creatures/FemaleSneeze/FemaleSneeze1" Type="string"/>
     <Parameter Name="Class" Guid="c43950db-c658-4ca5-a98c-1391d5d7bdf7" Value="Game.ComponentFluInfected" Type="string"/>
 </ComponentTemplate>
 
@@ -255,18 +258,6 @@
     <Parameter Name="LowHealthToEscape" Description="Salud baja para huir (NO SE USA, bandidos nunca huyen)" Guid="c2261c2b-7e18-4e25-a469-b3871b7f2f9f" Value="0.0" Type="float"/>
 </ComponentTemplate>
 
-    <ComponentTemplate Name="NewChaseBehavior2" Description="Comportamiento que hace que una criatura persiga al intruso" Guid="156963c2-5088-4d40-b0fa-73a8f0f202b5" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
-  <Parameter Name="Class" Guid="59578e6c-c3b9-451c-9472-f0626be12772" Value="Game.ComponentNewChaseBehavior2" Type="string"/>
-  <Parameter Name="ChaseWhenAttackedProbability" Description="Probabilidad de que la criatura persiga cuando es atacada" Guid="5e64f000-66c7-4950-b821-c67c7c101ec3" Value="1" Type="float"/>
-  <Parameter Name="NightChaseTime" Description="Tiempo de persecución cuando la criatura comienza a perseguir durante la noche, en segundos" Guid="a80cc983-aa50-421e-bbc9-bac0d5070f5f" Value="10" Type="float"/>
-  <Parameter Name="DayChaseRange" Description="Rango cuando la criatura comienza a perseguir durante el día" Guid="9ed3cebc-bec5-48c2-b52a-50588301adf9" Value="1.5" Type="float"/>
-  <Parameter Name="ChaseOnTouchProbability" Description="Probabilidad de que la criatura persiga si es tocada por una criatura en AutoChaseMask" Guid="658b58f4-d775-4964-b8b3-b4afb51a73e4" Value="1" Type="float"/>
-  <Parameter Name="DayChaseTime" Description="Tiempo de persecución cuando la criatura comienza a perseguir durante el día, en segundos" Guid="0bab483f-7602-4406-8952-7383d1e285b1" Value="10" Type="float"/>
-  <Parameter Name="NightChaseRange" Description="Rango cuando la criatura comienza a perseguir durante la noche" Guid="c2cad3d2-f471-4251-bd91-1e15bd37f3e4" Value="1.5" Type="float"/>
-  <Parameter Name="AutoChaseMask" Description="Categorías de criaturas a perseguir" Guid="b6f475a7-4ed9-40a3-b251-25416b58ed76" Value="LandOther, Bird" Type="Game.CreatureCategory"/>
-  <Parameter Name="ChaseNonPlayerProbability" Description="Probabilidad de que la criatura persiga un objetivo no-jugador cuando está en rango, de 0 a 1" Guid="8dedf1e9-5f38-4284-8ae6-0dfcc4530057" Value="0" Type="float"/>
-</ComponentTemplate>
-
 <ComponentTemplate Name="FirearmsShooters" Guid="927c0a46-b1e5-42a9-a6bb-0979acbc2518" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234" Description="Componente que permite a NPCs usar armas de fuego automáticamente">
     <Parameter Name="Class" Value="Game.ComponentFirearmsShooters" Type="string" Guid="05ae6aa2-3bb6-4bee-875d-89f2c1851e45" Description="Nombre de la clase C# que implementa el comportamiento de disparo con armas de fuego"/>
     <Parameter Name="UpdateOrder" Value="1000" Type="int" Guid="69c93012-6088-405e-8a76-bf44e9d42fe1" Description="Orden de actualización del componente durante el ciclo del juego"/>
@@ -501,18 +492,16 @@
   <Parameter Name="InfectProbability" Description="Probabilidad de que el ataque cause envenenamiento (0-1)" Guid="7c34d504-c34a-487a-8ca2-a115ca60e9d7" Value="1.0" Type="float"/>
 </ComponentTemplate>
 
-<ComponentTemplate Name="NewChaseBehavior" Description="Comportamiento avanzado de persecución con integración a manadas, defensa del jugador y detección prioritaria de amenazas (bandidos y criaturas hostiles)." Guid="ef7de64b-34ae-42cc-b51c-ebf3a0621558" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
-  <Parameter Name="Class" Value="Game.ComponentNewChaseBehavior" Type="string" Guid="11fabd7a-d7fc-41b1-89b7-886747fb212a"/>
-  <Parameter Name="DayChaseRange" Value="16" Type="float" Description="Distancia base máxima a la que detecta y comienza a perseguir objetivos durante el día. Se modifica por factores internos y estado del entorno." Guid="87e5a27b-dfa9-40fe-ab4e-b9dd7152e9f9"/>
-  <Parameter Name="NightChaseRange" Value="24" Type="float" Description="Distancia base máxima de detección y persecución durante la noche. Generalmente mayor que de día." Guid="e5712619-f858-46ca-adf5-9d257e3e8344"/>
-  <Parameter Name="DayChaseTime" Value="30" Type="float" Description="Tiempo máximo que mantiene la persecución iniciada durante el día antes de desistir, salvo que sea persistente." Guid="cb23ed02-a3a6-48e9-876f-620f88c7b501"/>
-  <Parameter Name="NightChaseTime" Value="60" Type="float" Description="Tiempo máximo que mantiene la persecución durante la noche. Puede extenderse si el objetivo sigue siendo válido." Guid="6859ead6-45be-4b49-8f9a-ae2b4406fa27"/>
-  <Parameter Name="ChaseNonPlayerProbability" Value="0.2" Type="float" Description="Probabilidad de seleccionar criaturas que no sean jugador como objetivo automático cuando coinciden con la máscara AutoChaseMask." Guid="a3a26703-023f-46c3-9fa8-f82b5d27b2e9"/>
-  <Parameter Name="ChaseWhenAttackedProbability" Value="0.8" Type="float" Description="Probabilidad de iniciar persecución contra quien lo haya atacado. Si es 1, siempre responde; si es menor, depende de azar." Guid="9b57872f-be8c-4060-aec8-f44ddcabd9f2"/>
-  <Parameter Name="ChaseOnTouchProbability" Value="0.5" Type="float" Description="Probabilidad de iniciar persecución cuando colisiona físicamente con otra criatura válida." Guid="b3efe392-27b6-49a5-9ab2-1497eed265c7"/>
-  <Parameter Name="AttackMode" Value="Default" Type="string" Description="Modo de ataque: Default (cuerpo a cuerpo y distancia), OnlyHand (solo cuerpo a cuerpo), Ranged (prioriza armas a distancia)." Guid="7f765cbd-1b04-48bc-9d21-8b967ad7a33f"/>
-  <Parameter Name="AttackRange" Value="2,15" Type="Vector2" Description="Rango mínimo y máximo efectivo de ataque. El primero es distancia cercana; el segundo determina alcance máximo (especialmente para armas a distancia)." Guid="f57205aa-acfe-43ec-838c-3733b0de4bae"/>
-  <Parameter Name="AutoChaseMask" Value="LandOther" Type="string" Description="Máscara de categorías de criaturas que puede seleccionar automáticamente como objetivo cuando no son jugador." Guid="20c217ec-1d40-454b-b67c-6f7607a17d6f"/>
+<ComponentTemplate Name="NewChaseBehavior" Description="Comportamiento de persecución mejorado con IA avanzada para protección del jugador, detección de amenazas durante noche verde y respuesta a ataques de la manada" Guid="1db20f99-32ba-4e7a-8e76-10686a2e76e5" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
+  <Parameter Name="Class" Guid="5c0703e1-9d16-48fd-8d02-b40001bcfb38" Value="Game.ComponentNewChaseBehavior" Type="string" />
+  <Parameter Name="ChaseWhenAttackedProbability" Description="Probabilidad de perseguir al ser atacado" Guid="c7fa1a73-7f50-4e21-b3e6-da5a97fdf8fb" Value="1" Type="float" />
+  <Parameter Name="NightChaseTime" Description="Tiempo de persecución durante la noche en segundos" Guid="549156e6-4c85-4d24-bdbc-3e1f85c09c54" Value="90" Type="float" />
+  <Parameter Name="DayChaseRange" Description="Rango de persecución durante el día" Guid="f60e3db1-0936-41c9-84aa-b3036ee7bbc0" Value="20" Type="float" />
+  <Parameter Name="ChaseOnTouchProbability" Description="Probabilidad de perseguir al ser tocado por una criatura de AutoChaseMask" Guid="6da7a564-e72a-4098-bbb8-03ac7a915f7d" Value="1" Type="float" />
+  <Parameter Name="DayChaseTime" Description="Tiempo de persecución durante el día en segundos" Guid="a728fe2c-7598-4e3b-ac6a-7fef0dffaac2" Value="60" Type="float" />
+  <Parameter Name="NightChaseRange" Description="Rango de persecución durante la noche" Guid="72dc0ba8-a7e7-4176-8765-828f01f5b146" Value="25" Type="float" />
+  <Parameter Name="AutoChaseMask" Description="Categorías de criaturas a perseguir automáticamente" Guid="236e7b27-66ca-4615-afbf-469696687c9c" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory" />
+  <Parameter Name="ChaseNonPlayerProbability" Description="Probabilidad de perseguir objetivos no jugadores" Guid="894d905f-354b-4a1b-b765-88bbb1bfcda8" Value="1" Type="float" />
 </ComponentTemplate>
 
 <ComponentTemplate Name="NewHerdBehavior" Description="Comportamiento de manada con cooperación, llamadas de ayuda y protección entre aliados" Guid="24c8a629-49be-4cb4-b829-78d5a5a14204" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
@@ -542,135 +531,85 @@
 <MemberSubsystemTemplate Name="MediumFirstAidKitBlockBehavior" Guid="2949f1c3-a7d6-4e37-b109-1e28d6027758" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
     <Parameter Name="Class" Value="Game.SubsystemMediumFirstAidKitBlockBehavior" Type="string" Guid="9dae5e67-b1b6-4360-8965-5f98b1d69e86"/>
 </MemberSubsystemTemplate>
-<MemberSubsystemTemplate Name="FireBulletBlockBehavior" Guid="60983db0-4933-45fd-8297-6071b1bc76af">
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="abe98a14-40e2-4fbe-aa31-7104ba634de9"/>
-    <Parameter Name="LoadOrder" Value="100" Type="int" Guid="79637918-2c40-4f58-aa89-d30a5cc9e000"/>
+<MemberSubsystemTemplate Name="FireBulletBlockBehavior" Guid="60983db0-4933-45fd-8297-6071b1bc76af" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
     <Parameter Name="Class" Value="Game.SubsystemFireBulletBlockBehavior" Type="string" Guid="82af8d72-320a-47d9-8133-cbccffd1d941"/>
 </MemberSubsystemTemplate>
 <MemberSubsystemTemplate Name="AirConditionerBlockBehavior" Guid="2d3cb7a4-5c7b-4473-a52f-02b7a7b9e93f" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
     <Parameter Name="Class" Value="Game.SubsystemAirConditionerBlockBehavior" Type="string" Guid="e15ec911-499b-4f7b-9476-47978bd06bf7"/>
 </MemberSubsystemTemplate>
-<MemberSubsystemTemplate Name="KABehavior" Guid="3e59214e-62d5-480a-9cc6-73f361dfa3aa">
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="a08e37bd-580e-42a9-8466-8419167d81f1"/>
-    <Parameter Name="LoadOrder" Value="100" Type="int" Guid="40986bd0-05eb-4e44-b4b4-bcdc6a80bcaa"/>
+<MemberSubsystemTemplate Name="KABehavior" Guid="3e59214e-62d5-480a-9cc6-73f361dfa3aa" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
     <Parameter Name="Class" Value="Game.SubsystemKABehavior" Type="string" Guid="3b8963f0-463f-471f-b23b-ffc94556ab00"/>
 </MemberSubsystemTemplate>
-<MemberSubsystemTemplate Name="TeaAntifluBucketBlockBehavior" Guid="fcde4991-516a-4bf6-9728-88093595a8cd">
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="e186bd10-5046-451f-98b7-fb1feeb7392d"/>
-    <Parameter Name="LoadOrder" Value="100" Type="int" Guid="5fb201a6-63d7-40d0-bc48-1f5b4dff0d21"/>
+<MemberSubsystemTemplate Name="TeaAntifluBucketBlockBehavior" Guid="fcde4991-516a-4bf6-9728-88093595a8cd" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
     <Parameter Name="Class" Value="Game.SubsystemTeaAntifluBucketBlockBehavior" Type="string" Guid="98e07078-7dd8-4664-ba1a-f1d1b1e5150d"/>
 </MemberSubsystemTemplate>
-<MemberSubsystemTemplate Name="AntidoteBucketBlockBehavior" Guid="85ff52b9-3989-4ae9-9e23-24460e730b70">
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="12fc7d7c-a8f1-4263-b4ae-eaeb25b72b97"/>
-    <Parameter Name="LoadOrder" Value="100" Type="int" Guid="03b84f3b-dfe4-4a2d-b927-333eea92f53a"/>
+<MemberSubsystemTemplate Name="AntidoteBucketBlockBehavior" Guid="85ff52b9-3989-4ae9-9e23-24460e730b70" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
     <Parameter Name="Class" Value="Game.SubsystemAntidoteBucketBlockBehavior" Type="string" Guid="8681f7d6-0621-4e0f-ab68-75e050d965d3"/>
 </MemberSubsystemTemplate>
-<MemberSubsystemTemplate Name="GrozaBehavior" Guid="b41cc8e1-f01d-4d6a-9cc9-75202aa6ac2a">
-    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="9c5602cf-d081-4eea-9e27-c489894c8a16"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="a10426ff-2f62-4a31-9815-b5b035a94a8b"/>
+<MemberSubsystemTemplate Name="GrozaBehavior" Guid="b41cc8e1-f01d-4d6a-9cc9-75202aa6ac2a" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
     <Parameter Name="Class" Value="Game.SubsystemGrozaBehavior" Type="string" Guid="6e48f992-1f3d-453b-97eb-cbbe6f333974"/>
 </MemberSubsystemTemplate>
-<MemberSubsystemTemplate Name="MendozaBehavior" Guid="a583fb3c-8c04-49f9-babb-18ffa95fa042">
-    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="4f8637de-9288-4b8b-b63a-8d3929fe2288"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="53e09634-8b89-474f-a9c3-32490709d1d4"/>
+<MemberSubsystemTemplate Name="MendozaBehavior" Guid="a583fb3c-8c04-49f9-babb-18ffa95fa042" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
     <Parameter Name="Class" Value="Game.SubsystemMendozaBehavior" Type="string" Guid="9c0f8aa8-b6c7-4d12-a72b-3f8c789a85e5"/>
 </MemberSubsystemTemplate>
-<MemberSubsystemTemplate Name="MP5SSDBehavior" Guid="66222ac5-1ee5-4e91-84d6-11454cee187f">
-    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="72ab3ac7-eebb-4293-9d8d-629e095fca33"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="a6d62961-0f48-406f-9c90-ebb50ce2305c"/>
+<MemberSubsystemTemplate Name="MP5SSDBehavior" Guid="66222ac5-1ee5-4e91-84d6-11454cee187f" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
     <Parameter Name="Class" Value="Game.SubsystemMP5SSDBehavior" Type="string" Guid="655c171b-2f39-4259-b62f-fdc9133508e9"/>
 </MemberSubsystemTemplate>
-<MemberSubsystemTemplate Name="NewG3Behavior" Guid="4a34d5ca-fa05-4c7b-9873-66c097652c21">
-    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="30ea11a3-cc32-43e3-9d91-d9140ab93048"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="1401601d-fc09-498f-8007-e81506521910"/>
+<MemberSubsystemTemplate Name="NewG3Behavior" Guid="4a34d5ca-fa05-4c7b-9873-66c097652c21" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
     <Parameter Name="Class" Value="Game.SubsystemNewG3Behavior" Type="string" Guid="f8536698-7715-4cf1-b806-aa67c49b25a4"/>
 </MemberSubsystemTemplate>
-<MemberSubsystemTemplate Name="AA12Behavior" Guid="b76ab09d-7e52-4740-a5fe-117c4cd96ef4">
-    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="41dcaea8-7432-441d-bbc9-108e71dffdb3"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="fd66d3b3-d836-4e2b-9356-48a38222baa9"/>
+<MemberSubsystemTemplate Name="AA12Behavior" Guid="b76ab09d-7e52-4740-a5fe-117c4cd96ef4" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
     <Parameter Name="Class" Value="Game.SubsystemAA12Behavior" Type="string" Guid="bd42705e-e758-4b49-9f09-7ab9e100302d"/>
 </MemberSubsystemTemplate>
-<MemberSubsystemTemplate Name="M249Behavior" Guid="327f41d4-193a-4900-af8a-826d841d774f">
-    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="9d93b8a8-b8c9-491d-b5dd-2831579f450b"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="6ab578a6-0037-4bd3-a52c-e14b6808f2bd"/>
+<MemberSubsystemTemplate Name="M249Behavior" Guid="327f41d4-193a-4900-af8a-826d841d774f" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
     <Parameter Name="Class" Value="Game.SubsystemM249Behavior" Type="string" Guid="127552cf-f2dd-4ee5-9be6-87493cbe574f"/>
 </MemberSubsystemTemplate>
-<MemberSubsystemTemplate Name="BanditsSpawn" Guid="cea6dfe3-467d-44b6-9f60-4b2af2e217d1" InheritanceParent="a3914c13-7801-46a6-b23a-9e2b36e9defb">
+<MemberSubsystemTemplate Name="BanditsSpawn" Guid="cea6dfe3-467d-44b6-9f60-4b2af2e217d1" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
     <Parameter Name="Class" Value="Game.SubsystemBanditsSpawn" Type="string" Guid="f84ec32f-5f7e-435f-87c5-33e9c4554d2a"/>
 </MemberSubsystemTemplate>
-<MemberSubsystemTemplate Name="FamasBehavior" Guid="2f91a7a6-b782-418b-a4dd-042ceaf42d4f">
-    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="f2a78a8f-9728-41ae-9e05-e7e105428e4b"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="8f67b37e-3d7a-422d-98cf-78dddc736ba0"/>
+<MemberSubsystemTemplate Name="FamasBehavior" Guid="2f91a7a6-b782-418b-a4dd-042ceaf42d4f" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
     <Parameter Name="Class" Value="Game.SubsystemFamasBehavior" Type="string" Guid="675d6a27-72a1-41b3-b53e-87892e093bcd"/>
 </MemberSubsystemTemplate>
-<MemberSubsystemTemplate Name="RevolverBehavior" Guid="9742de11-4b30-40f9-a302-3ebfc78e6219">
-    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="3f745a7b-fc4a-4274-93ce-c041b25a8331"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="8c093f38-d2e6-4348-88f9-c7185f3f3931"/>
+<MemberSubsystemTemplate Name="RevolverBehavior" Guid="9742de11-4b30-40f9-a302-3ebfc78e6219" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
     <Parameter Name="Class" Value="Game.SubsystemRevolverBehavior" Type="string" Guid="cdef54eb-6efc-4c91-a3a8-63876105dcce"/>
 </MemberSubsystemTemplate>
-<MemberSubsystemTemplate Name="SCARBehavior" Guid="ace323b1-6211-4daf-b811-70bfb7c26e5d">
-    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="9d211787-8d5d-4bcd-8e33-e04894ea2a90"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="c3398a61-972b-43de-879b-3927db873314"/>
+<MemberSubsystemTemplate Name="SCARBehavior" Guid="ace323b1-6211-4daf-b811-70bfb7c26e5d" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
     <Parameter Name="Class" Value="Game.SubsystemSCARBehavior" Type="string" Guid="ffc6b345-ba6f-4965-a4ff-5a94bcceaeec"/>
 </MemberSubsystemTemplate>
-<MemberSubsystemTemplate Name="P90Behavior" Guid="389a2e3e-baaf-4b4e-ac6a-325035d81a87">
-    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="cd259ca0-4ecd-476b-8e46-6b1618aa8319"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="200090e6-6fe8-4461-8826-f4199268bfcc"/>
+<MemberSubsystemTemplate Name="P90Behavior" Guid="389a2e3e-baaf-4b4e-ac6a-325035d81a87" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
     <Parameter Name="Class" Value="Game.SubsystemP90Behavior" Type="string" Guid="b8875ada-c780-4321-9a91-ab24b26c2f59"/>
 </MemberSubsystemTemplate>
-<MemberSubsystemTemplate Name="AUGBehavior" Guid="6ae53686-2f60-439f-a157-9f49b8322766">
-    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="73720825-b138-420e-867b-8652fe354cb6"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="36957040-5c7f-4275-8b9e-377279227d05"/>
+<MemberSubsystemTemplate Name="AUGBehavior" Guid="6ae53686-2f60-439f-a157-9f49b8322766" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
     <Parameter Name="Class" Value="Game.SubsystemAUGBehavior" Type="string" Guid="d2f393aa-8850-4d43-95f5-742e234d9444"/>
 </MemberSubsystemTemplate>
-<MemberSubsystemTemplate Name="SniperBehavior" Guid="cffc7256-0469-4064-a0db-ffe6bb1451d8">
-    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="e184d432-d9ba-4e3b-b22d-4161ed9679d0"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="8207ec48-4077-47a3-960a-2ef4ad08722c"/>
+<MemberSubsystemTemplate Name="SniperBehavior" Guid="cffc7256-0469-4064-a0db-ffe6bb1451d8" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
     <Parameter Name="Class" Value="Game.SubsystemSniperBehavior" Type="string" Guid="3d77b7e6-5846-4de9-9cbb-d158343fd9bd"/>
 </MemberSubsystemTemplate>
-<MemberSubsystemTemplate Name="G3Behavior" Guid="e091ef1a-6458-4b28-9532-56f3e8723bca">
-    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="c404b1a6-2886-4682-a489-e281dc7e5329"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="de5d844c-83c7-4a39-a772-480750553529"/>
+<MemberSubsystemTemplate Name="G3Behavior" Guid="e091ef1a-6458-4b28-9532-56f3e8723bca" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
     <Parameter Name="Class" Value="Game.SubsystemG3Behavior" Type="string" Guid="13711768-d191-45d6-9b67-2e10920a95dc"/>
 </MemberSubsystemTemplate>
-<MemberSubsystemTemplate Name="SWM500Behavior" Guid="3b7f0f69-4a31-4d47-938c-b9f4aa2943b6">
-    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="29bee04f-ac72-4af6-aff3-0b2f1f0bd87a"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="1c90fea6-71e5-4d2d-89bc-2921ea360158"/>
+<MemberSubsystemTemplate Name="SWM500Behavior" Guid="3b7f0f69-4a31-4d47-938c-b9f4aa2943b6" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
     <Parameter Name="Class" Value="Game.SubsystemSWM500Behavior" Type="string" Guid="3d92ff02-d783-4451-aeac-de4ac41360cd"/>
 </MemberSubsystemTemplate>
-<MemberSubsystemTemplate Name="Izh43Behavior" Guid="43c46ca8-33d6-48dd-992c-966031138b47">
-    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="6f2aefe6-ced5-405f-9f87-e609257b5eb1"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="bb92de7b-fe33-4d8b-822e-ad00cdc62cda"/>
+<MemberSubsystemTemplate Name="Izh43Behavior" Guid="43c46ca8-33d6-48dd-992c-966031138b47" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
     <Parameter Name="Class" Value="Game.SubsystemIzh43Behavior" Type="string" Guid="8e6693cf-d726-4747-8b33-0b3b4c4acbe6"/>
 </MemberSubsystemTemplate>
-<MemberSubsystemTemplate Name="MinigunBehavior" Guid="ca136ca9-5484-42e2-b9ed-20dd95cf617f">
-    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="53fbef55-5ce6-4996-b1de-b52501f8445a"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="4ef7c927-08bc-4718-878a-805027f6411a"/>
+<MemberSubsystemTemplate Name="MinigunBehavior" Guid="ca136ca9-5484-42e2-b9ed-20dd95cf617f" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
     <Parameter Name="Class" Value="Game.SubsystemMinigunBehavior" Type="string" Guid="a6e3fcd4-5274-4ff6-8f76-81eb295707f6"/>
 </MemberSubsystemTemplate>
-<MemberSubsystemTemplate Name="UziBehavior" Guid="2eb0cf40-ba09-45c3-b19e-7e30ad307002">
-    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="b1c563cc-afcc-471e-bcdd-afafff5e07a3"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="7bcfbccc-b407-4b03-8d42-85869ed91ab9"/>
+<MemberSubsystemTemplate Name="UziBehavior" Guid="2eb0cf40-ba09-45c3-b19e-7e30ad307002" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
     <Parameter Name="Class" Value="Game.SubsystemUziBehavior" Type="string" Guid="c0726523-09eb-4ad6-8864-6c2cab82bb15"/>
 </MemberSubsystemTemplate>
-<MemberSubsystemTemplate Name="Mac10Behavior" Guid="e97d1824-63cf-485c-9287-116947e2b424">
-    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="e7fe8e27-44ce-4bdd-8209-03957c5682b3"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="2530492e-cbae-4a70-a746-a5b950b5b7bb"/>
+<MemberSubsystemTemplate Name="Mac10Behavior" Guid="e97d1824-63cf-485c-9287-116947e2b424" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
     <Parameter Name="Class" Value="Game.SubsystemMac10Behavior" Type="string" Guid="bbfaaa70-71c0-497d-afd6-df5d0aa97433"/>
 </MemberSubsystemTemplate>
-<MemberSubsystemTemplate Name="SPAS12Behavior" Guid="01cdd0f9-e8e9-4971-922b-233d0ace74a8">
-    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="2c9e2b29-64fd-4cba-a854-d2c11f2d89e0"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="c085a6c7-8be4-4f08-b98c-50c236e6b377"/>
+<MemberSubsystemTemplate Name="SPAS12Behavior" Guid="01cdd0f9-e8e9-4971-922b-233d0ace74a8" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
     <Parameter Name="Class" Value="Game.SubsystemSPAS12Behavior" Type="string" Guid="1adfbdd5-28a7-45b7-a572-feba2d0bfed0"/>
 </MemberSubsystemTemplate>
-<MemberSubsystemTemplate Name="M4Behavior" Guid="4ad2e37a-a206-4bf0-b8bb-0cec05e711db">
-    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="4eb06acb-7774-4ca6-8c5d-977f35c5fff4"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="2327ed6d-b637-4869-8a56-0143539a3e14"/>
+<MemberSubsystemTemplate Name="M4Behavior" Guid="4ad2e37a-a206-4bf0-b8bb-0cec05e711db" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
     <Parameter Name="Class" Value="Game.SubsystemM4Behavior" Type="string" Guid="bbf130d2-90d7-42ba-a1aa-135a2938f6c0"/>
 </MemberSubsystemTemplate>
-<MemberSubsystemTemplate Name="AKBehavior" Guid="71910c7c-1299-4c49-815a-01674d1b59bb">
-    <Parameter Name="IsOptional" Value="false" Type="bool" Guid="41998ecf-4cda-447e-9dc5-b8fd06ebcfe0"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="c38dbda4-d77e-439a-b0f1-afcd5beba510"/>
+<MemberSubsystemTemplate Name="AKBehavior" Guid="71910c7c-1299-4c49-815a-01674d1b59bb" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
     <Parameter Name="Class" Value="Game.SubsystemAKBehavior" Type="string" Guid="84f8be5a-e285-4d3d-b822-93b6c850233f"/>
 </MemberSubsystemTemplate>
 <MemberSubsystemTemplate Name="ShittyCreaturesSpawn" Guid="6bf21fee-34d6-4509-a1d4-160a13c6991b" InheritanceParent="a3914c13-7801-46a6-b23a-9e2b36e9defb">
@@ -690,34 +629,22 @@
 <MemberSubsystemTemplate Name="TankChaseMusic" Guid="8f97faa0-ef7f-4455-9aaf-116e70e836be" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
         <Parameter Name="Class" Guid="60986de6-5785-457d-8ddd-a0124ec558ba" Value="Game.SubsystemTankChaseMusic" Type="string"/>
     </MemberSubsystemTemplate>
-<MemberSubsystemTemplate Name="TargetStickBlockBehavior" Guid="7b76d3e3-0a7b-4de2-9a1e-2e698212fe95">
-<Parameter Name="IsOptional" Value="false" Type="bool" Guid="e14de76f-e3cd-4e22-b4ab-c57d4f114ccf"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="ad9be30d-14a6-4eba-a7c8-1b0fd932e3d7"/>
+<MemberSubsystemTemplate Name="TargetStickBlockBehavior" Guid="7b76d3e3-0a7b-4de2-9a1e-2e698212fe95" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
         <Parameter Name="Class" Guid="4d38ad37-b22f-4420-9dab-74e486fff741" Value="Game.SubsystemTargetStickBlockBehavior" Type="string"/>
     </MemberSubsystemTemplate>
-<MemberSubsystemTemplate Name="PoisonBombBlockBehavior" Guid="ef079ad3-48f2-41bd-a9ee-592f529b36b8">
-<Parameter Name="IsOptional" Value="false" Type="bool" Guid="8f998ce8-74cf-43df-a91c-38a7d113b896"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="82d79df6-18ac-4cc5-90d3-37198eb35f0f"/>
+<MemberSubsystemTemplate Name="PoisonBombBlockBehavior" Guid="ef079ad3-48f2-41bd-a9ee-592f529b36b8" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
         <Parameter Name="Class" Guid="3f2a92e3-882f-412a-b416-19b7b287d520" Value="Game.SubsystemPoisonBombBlockBehavior" Type="string"/>
     </MemberSubsystemTemplate>
-<MemberSubsystemTemplate Name="BigStonePoisonChunkBlockBehavior" Guid="bdb7755a-97a8-4527-9876-c507323471cc">
-<Parameter Name="IsOptional" Value="false" Type="bool" Guid="12df1582-c33f-4750-b8a1-afa2851c38f2"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="94024efc-7655-45de-9535-7237ee865d8a"/>
+<MemberSubsystemTemplate Name="BigStonePoisonChunkBlockBehavior" Guid="bdb7755a-97a8-4527-9876-c507323471cc" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
         <Parameter Name="Class" Guid="ba4d2876-54dc-4507-bf5e-f8484b096a84" Value="Game.SubsystemBigStonePoisonChunkBlockBehavior" Type="string"/>
     </MemberSubsystemTemplate>
-<MemberSubsystemTemplate Name="BigStoneFlameChunkBlockBehavior" Guid="be5c6275-eee2-44f1-9f8e-eacdea6b2225">
-<Parameter Name="IsOptional" Value="false" Type="bool" Guid="3fee25be-1d4d-4a74-811f-f73b29013e1e"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="db0b48ef-2478-4381-8149-47a76bc73759"/>
+<MemberSubsystemTemplate Name="BigStoneFlameChunkBlockBehavior" Guid="be5c6275-eee2-44f1-9f8e-eacdea6b2225" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
         <Parameter Name="Class" Guid="2d2850e8-3e08-4184-8bf1-57cbbe2f1b57" Value="Game.SubsystemBigStoneFlameChunkBlockBehavior" Type="string"/>
     </MemberSubsystemTemplate>
-<MemberSubsystemTemplate Name="PoisonExplosions" Guid="6602178c-624b-426d-870f-8b21cd6a8400">
-<Parameter Name="IsOptional" Value="false" Type="bool" Guid="87040f01-93d5-4cb2-a890-edb430b09c25"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="3f8f2490-cbc9-40ed-a983-02c654228961"/>
+<MemberSubsystemTemplate Name="PoisonExplosions" Guid="6602178c-624b-426d-870f-8b21cd6a8400" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
         <Parameter Name="Class" Guid="1bd7c0bb-0b40-496e-91f6-c889b63f066b" Value="Game.SubsystemPoisonExplosions" Type="string"/>
     </MemberSubsystemTemplate>
 <MemberSubsystemTemplate Name="PoisonBulletBlockBehavior" Guid="fc95d14d-87db-4f63-9dfc-e5624c8b033f" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
-<Parameter Name="IsOptional" Value="false" Type="bool" Guid="ee980210-8105-486b-9fb0-db4018181e8a"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="a096b7fd-ff59-4a99-9cbf-72fcf53f0197"/>
         <Parameter Name="Class" Guid="4a9520e6-1988-4a8a-8e2d-5b84303d2576" Value="Game.SubsystemPoisonBulletBlockBehavior" Type="string"/>
     </MemberSubsystemTemplate>
 <MemberSubsystemTemplate Name="CollarBlockBehavior" Guid="de432b96-c29b-445c-bbde-660e3b5eaded" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
