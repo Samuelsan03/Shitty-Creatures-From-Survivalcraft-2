@@ -8,7 +8,6 @@ namespace Game
 {
 	public class ComponentFluInfected : Component, IUpdateable
 	{
-		// Propiedad requerida por IUpdateable (¡esto es lo que faltaba!)
 		public UpdateOrder UpdateOrder => UpdateOrder.Default;
 
 		public bool IsInfected => m_fluDuration > 0f;
@@ -16,9 +15,18 @@ namespace Game
 
 		public void StartFlu(float duration)
 		{
+			// Guardar velocidades actuales como base (pre-infección) solo si no estaba ya infectado
+			if (m_fluDuration <= 0f && m_componentCreature?.ComponentLocomotion != null)
+			{
+				m_originalWalkSpeed = m_componentCreature.ComponentLocomotion.WalkSpeed;
+				m_originalFlySpeed = m_componentCreature.ComponentLocomotion.FlySpeed;
+				m_originalSwimSpeed = m_componentCreature.ComponentLocomotion.SwimSpeed;
+				m_originalJumpSpeed = m_componentCreature.ComponentLocomotion.JumpSpeed;
+			}
+
 			m_fluDuration = MathUtils.Max(duration - FluResistance, 0f);
 			m_lastCoughTime = m_subsystemTime.GameTime;
-			Sneeze();
+			Sneeze(); // El primer estornudo al contagiarse
 
 			if (m_componentCreature is ComponentPlayer player)
 			{
@@ -57,6 +65,13 @@ namespace Game
 
 			Project.FindSubsystem<SubsystemNoise>(true)?.MakeNoise(
 				m_componentCreature.ComponentBody.Position, 0.25f, 10f);
+
+			// APLICAR DAÑO AL ESTORNUDAR
+			if (m_fluDuration > 0f && m_componentCreature.ComponentHealth.Health > 0.05f)
+			{
+				float damage = 0.02f; // daño por estornudo (ajustable)
+				m_componentCreature.ComponentHealth.Injure(damage, null, false, "Gripe");
+			}
 		}
 
 		public void Update(float dt)
@@ -65,51 +80,56 @@ namespace Game
 
 			if (m_componentCreature.ComponentHealth.Health <= 0f)
 			{
+				// Criatura muerta: eliminar efectos y restaurar velocidades originales
 				m_fluDuration = 0f;
 				m_coughingTimer = 0f;
+				RestoreOriginalSpeeds();
 				return;
 			}
 
 			if (!m_subsystemGameInfo.WorldSettings.AreAdventureSurvivalMechanicsEnabled)
 			{
 				m_fluDuration = 0f;
+				RestoreOriginalSpeeds();
 				return;
 			}
 
-			var creature = m_componentCreature;
-			if (creature.ComponentLocomotion == null || creature.ComponentBody == null) return;
+			var locomotion = m_componentCreature.ComponentLocomotion;
+			if (locomotion == null || m_componentCreature.ComponentBody == null) return;
 
-			var locomotion = creature.ComponentLocomotion;
-
+			// Actualizar duración de la gripe
 			if (m_fluDuration > 0f)
 			{
 				m_fluDuration = MathUtils.Max(m_fluDuration - dt, 0f);
 
-				if (creature.ComponentHealth.Health > 0f &&
+				// Tos periódica
+				if (m_componentCreature.ComponentHealth.Health > 0f &&
 					m_subsystemTime.PeriodicGameTimeEvent(8.0, -0.01) &&
 					m_subsystemTime.GameTime - m_lastCoughTime > 15.0)
 				{
 					Cough();
 				}
+
+				// El daño se aplica SOLO en Sneeze(), no aquí
 			}
 
-			// Factor de velocidad: visiblemente más lento
-			float factor;
-			if (m_fluDuration <= 0f)
+			// Aplicar ralentización si está infectado
+			if (m_fluDuration > 0f)
 			{
-				factor = 1f; // sano
+				// Cuanto más dura la infección, más lento se mueve (de 0.4 a 0.1)
+				float t = MathUtils.Saturate(m_fluDuration / MaxFluDuration);
+				float factor = MathUtils.Lerp(0.1f, 0.4f, t);
+
+				locomotion.WalkSpeed = factor * m_originalWalkSpeed;
+				locomotion.FlySpeed = factor * m_originalFlySpeed;
+				locomotion.SwimSpeed = factor * m_originalSwimSpeed;
+				locomotion.JumpSpeed = factor * m_originalJumpSpeed;
 			}
 			else
 			{
-				// Cuanto más dura la infección, más lento se mueve (0.4 → 0.1)
-				float t = MathUtils.Saturate(m_fluDuration / MaxFluDuration);
-				factor = MathUtils.Lerp(0.1f, 0.4f, t);
+				// Ya no está infectado: restaurar velocidades originales
+				RestoreOriginalSpeeds();
 			}
-
-			locomotion.WalkSpeed = factor * oldWalkSpeed;
-			locomotion.FlySpeed = factor * oldFlySpeed;
-			locomotion.SwimSpeed = factor * oldSwimSpeed;
-			locomotion.JumpSpeed = factor * oldJumpSpeed;
 
 			// Efecto visual de tos
 			if (m_coughingTimer > 0f)
@@ -133,25 +153,28 @@ namespace Game
 			m_coughSound = valuesDictionary.GetValue<string>("CoughSound", "Audio/Creatures/FemaleCough/FemaleCough1");
 			m_sneezeSound = valuesDictionary.GetValue<string>("SneezeSound", "Audio/Creatures/FemaleSneeze/FemaleSneeze1");
 
-			if (m_componentCreature?.ComponentLocomotion != null)
-			{
-				oldWalkSpeed = m_componentCreature.ComponentLocomotion.WalkSpeed;
-				oldFlySpeed = m_componentCreature.ComponentLocomotion.FlySpeed;
-				oldSwimSpeed = m_componentCreature.ComponentLocomotion.SwimSpeed;
-				oldJumpSpeed = m_componentCreature.ComponentLocomotion.JumpSpeed;
-			}
-			else
-			{
-				oldWalkSpeed = oldFlySpeed = oldSwimSpeed = oldJumpSpeed = 1f;
-			}
+			// Cargar velocidades originales guardadas, o si no existen, usar las actuales
+			m_originalWalkSpeed = valuesDictionary.GetValue<float>("OriginalWalkSpeed", m_componentCreature.ComponentLocomotion?.WalkSpeed ?? 1f);
+			m_originalFlySpeed = valuesDictionary.GetValue<float>("OriginalFlySpeed", m_componentCreature.ComponentLocomotion?.FlySpeed ?? 1f);
+			m_originalSwimSpeed = valuesDictionary.GetValue<float>("OriginalSwimSpeed", m_componentCreature.ComponentLocomotion?.SwimSpeed ?? 1f);
+			m_originalJumpSpeed = valuesDictionary.GetValue<float>("OriginalJumpSpeed", m_componentCreature.ComponentLocomotion?.JumpSpeed ?? 1f);
 		}
 
 		public override void Save(ValuesDictionary valuesDictionary, EntityToIdMap entityToIdMap)
 		{
 			valuesDictionary.SetValue("FluDuration", m_fluDuration);
 			valuesDictionary.SetValue("FluResistance", FluResistance);
-			valuesDictionary.SetValue("CoughSound", m_coughSound);
-			valuesDictionary.SetValue("SneezeSound", m_sneezeSound);
+		}
+
+		private void RestoreOriginalSpeeds()
+		{
+			var locomotion = m_componentCreature?.ComponentLocomotion;
+			if (locomotion == null) return;
+
+			locomotion.WalkSpeed = m_originalWalkSpeed;
+			locomotion.FlySpeed = m_originalFlySpeed;
+			locomotion.SwimSpeed = m_originalSwimSpeed;
+			locomotion.JumpSpeed = m_originalJumpSpeed;
 		}
 
 		private void PlayRandomSound(string sounds, float volume = 1f, float pitch = 0f)
@@ -177,10 +200,11 @@ namespace Game
 		private string m_coughSound;
 		private string m_sneezeSound;
 
-		private float oldWalkSpeed;
-		private float oldFlySpeed;
-		private float oldSwimSpeed;
-		private float oldJumpSpeed;
+		// Velocidades base previas a la infección
+		private float m_originalWalkSpeed = 1f;
+		private float m_originalFlySpeed = 1f;
+		private float m_originalSwimSpeed = 1f;
+		private float m_originalJumpSpeed = 1f;
 
 		public const float SeriousFluPeriod = 150f;
 		public const float MaxFluDuration = 300f;
