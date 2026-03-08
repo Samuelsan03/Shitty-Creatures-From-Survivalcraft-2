@@ -1,69 +1,89 @@
-<CanvasWidget xmlns="runtime-namespace:Game" Size="750, 800" ClampToBounds="true" HorizontalAlignment="Center" VerticalAlignment="Center">
-  <BevelledRectangleWidget Style="{Styles/ModLogDialogArea}"/>
-  <StackPanelWidget Direction="Vertical" HorizontalAlignment="Center" Margin="15, 15">
+<CanvasWidget xmlns="runtime-namespace:Game" Margin="0,10">
 
-    <!-- Main title -->
-    <LabelWidget Name="About.Title" Text="About Shitty Creatures MOD:" Color="255,0,0" HorizontalAlignment="Center" FontScale="2.0" Margin="0,15" DropShadow="true"/>
+    <!-- Diálogo estilo BulletinDialog con fondo gris -->
+    <CanvasWidget Size="750, 600" HorizontalAlignment="Center" VerticalAlignment="Center">
 
-    <ScrollPanelWidget Direction="Vertical" Margin="15,15">
-      <StackPanelWidget Direction="Vertical" Margin="15,10">
+        <!-- Fondo gris principal -->
+        <RectangleWidget FillColor="80, 80, 80, 255" OutlineColor="120, 120, 120, 160" OutlineThickness="2" />
 
-        <!-- Long description -->
-        <LabelWidget Name="About.Description" Text="This mod was originally born in October 2025 when the creator tested his mod to explore the world of modding. It wasn't until November 3rd that he resumed it, giving birth to what we know today.&#xA;&#xA;This mod, more than being shitty and humorous, lets you mess with creatures on your path, fight them or seek allies. Oh wait, the infected will be your worst enemies, so you can tame them to have them as guards in the middle of a strange chaotic world. Characters based on the creator's imagination as well as popular ones, especially from anime, series and others. Feel free to play it and steal my codes and textures if you want to learn like I did." 
-                 Color="220,220,220" HorizontalAlignment="Near" FontScale="0.95" DropShadow="true" Margin="0,10" WordWrap="true"/>
+        <StackPanelWidget Direction="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0, 5">
 
-        <!-- Creator subtitle -->
-        <LabelWidget Name="About.CreatorTitle" Text="Mod Creator:" Color="255,0,0" HorizontalAlignment="Center" FontScale="1.8" Margin="0,15" DropShadow="true"/>
-        
-        <!-- Creator image -->
-        <CanvasWidget Size="Infinity, 150" Margin="0,10">
-          <RectangleWidget Size="128,128" HorizontalAlignment="Center" VerticalAlignment="Center" Subtexture="{Textures/Gui/samuelsan03}" FillColor="255,255,255" OutlineColor="0,0,0,0"/>
-        </CanvasWidget>
-        
-        <LabelWidget Name="About.CreatorName" Text="Samuelsan03 (programmer, texture designer and more)" Color="220,220,220" HorizontalAlignment="Center" FontScale="1.0" Margin="0,5" DropShadow="true"/>
+            <!-- Área de contenido con fondo negro -->
+            <CanvasWidget Size="730, 500" Margin="10, 5">
+                <!-- Fondo negro -->
+                <RectangleWidget FillColor="0, 0, 0, 255" OutlineColor="20, 20, 20, 128" OutlineThickness="1" />
 
-        <!-- Social networks (links) -->
-        <StackPanelWidget Direction="Vertical" HorizontalAlignment="Center" Margin="0,10">
-          <LabelWidget Name="About.SocialTitle" Text="Social Media:" Color="255,255,0" HorizontalAlignment="Center" FontScale="1.2" Margin="0,5"/>
+                <!-- ScrollPanel que contiene TODO el contenido, incluido el título -->
+                <ScrollPanelWidget Direction="Vertical" Margin="3, 3" ClampToBounds="true">
+                    <CanvasWidget HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <StackPanelWidget Direction="Vertical" HorizontalAlignment="Center" Margin="10, 0">
 
-          <StackPanelWidget Direction="Horizontal" HorizontalAlignment="Center" Margin="0,2">
-            <LabelWidget Name="About.YoutubeLabel" Text="YouTube: " Color="200,200,200" FontScale="0.9"/>
-            <LinkWidget Text="Samuelsan03" Url="https://www.youtube.com/channel/UC5LOqJu_SYQ-RjNNKW1-vXA" Color="100,150,255" FontScale="0.9"/>
-          </StackPanelWidget>
+                            <!-- Título ahora DENTRO del scroll (se desplaza) -->
+                            <LabelWidget Name="About.Title" Text="About Shitty Creatures MOD:" Color="255,0,0" HorizontalAlignment="Center" FontScale="2.0" Margin="0,10" DropShadow="true" />
 
-          <StackPanelWidget Direction="Horizontal" HorizontalAlignment="Center" Margin="0,2">
-            <LabelWidget Name="About.TwitterLabel" Text="Twitter: " Color="200,200,200" FontScale="0.9"/>
-            <LinkWidget Text="Samuelsan03" Url="https://x.com/oticananyo" Color="100,150,255" FontScale="0.9"/>
-          </StackPanelWidget>
+                            <!-- Descripción larga -->
+                            <LabelWidget Name="About.Description" 
+                                         Text="This mod was originally born in October 2025 when the creator tested his mod to explore the world of modding. It wasn't until November 3rd that he resumed it, giving birth to what we know today.&#xA;&#xA;This mod, more than being shitty and humorous, lets you mess with creatures on your path, fight them or seek allies. Oh wait, the infected will be your worst enemies, so you can tame them to have them as guards in the middle of a strange chaotic world. Characters based on the creator's imagination as well as popular ones, especially from anime, series and others. Feel free to play it and steal my codes and textures if you want to learn like I did." 
+                                         Color="220,220,220" HorizontalAlignment="Near" FontScale="0.95" DropShadow="true" Margin="0,10" WordWrap="true"/>
 
-          <StackPanelWidget Direction="Horizontal" HorizontalAlignment="Center" Margin="0,2">
-            <LabelWidget Name="About.DiscordLabel" Text="Discord: " Color="200,200,200" FontScale="0.9"/>
-            <LabelWidget Text="samuelsan03" Color="100,150,255" FontScale="0.9"/>
-          </StackPanelWidget>
+                            <!-- Subtítulo del creador -->
+                            <LabelWidget Name="About.CreatorTitle" Text="Mod Creator:" Color="255,0,0" HorizontalAlignment="Center" FontScale="1.8" Margin="0,15" DropShadow="true"/>
 
-          <StackPanelWidget Direction="Horizontal" HorizontalAlignment="Center" Margin="0,2">
-            <LabelWidget Name="About.BiliBiliLabel" Text="BiliBili: " Color="200,200,200" FontScale="0.9"/>
-            <LinkWidget Text="Samuelsan03" Url="https://space.bilibili.com/3546882976516701" Color="100,150,255" FontScale="0.9"/>
-          </StackPanelWidget>
+                            <!-- Imagen del creador -->
+                            <CanvasWidget Size="Infinity, 150" Margin="0,10">
+                                <RectangleWidget Size="128,128" HorizontalAlignment="Center" VerticalAlignment="Center" Subtexture="{Textures/Gui/samuelsan03}" FillColor="255,255,255" OutlineColor="0,0,0,0"/>
+                            </CanvasWidget>
+
+                            <!-- Nombre del creador -->
+                            <LabelWidget Name="About.CreatorName" Text="Samuelsan03 (programmer, texture designer and more)" Color="220,220,220" HorizontalAlignment="Center" FontScale="1.0" Margin="0,5" DropShadow="true"/>
+
+                            <!-- Redes sociales -->
+                            <StackPanelWidget Direction="Vertical" HorizontalAlignment="Center" Margin="0,10">
+                                <LabelWidget Name="About.SocialTitle" Text="Social Media:" Color="255,255,0" HorizontalAlignment="Center" FontScale="1.2" Margin="0,5"/>
+
+                                <StackPanelWidget Direction="Horizontal" HorizontalAlignment="Center" Margin="0,2">
+                                    <LabelWidget Name="About.YoutubeLabel" Text="YouTube: " Color="200,200,200" FontScale="0.9"/>
+                                    <LinkWidget Text="Samuelsan03" Url="https://www.youtube.com/channel/UC5LOqJu_SYQ-RjNNKW1-vXA" Color="100,150,255" FontScale="0.9"/>
+                                </StackPanelWidget>
+
+                                <StackPanelWidget Direction="Horizontal" HorizontalAlignment="Center" Margin="0,2">
+                                    <LabelWidget Name="About.TwitterLabel" Text="Twitter: " Color="200,200,200" FontScale="0.9"/>
+                                    <LinkWidget Text="Samuelsan03" Url="https://x.com/oticananyo" Color="100,150,255" FontScale="0.9"/>
+                                </StackPanelWidget>
+
+                                <StackPanelWidget Direction="Horizontal" HorizontalAlignment="Center" Margin="0,2">
+                                    <LabelWidget Name="About.DiscordLabel" Text="Discord: " Color="200,200,200" FontScale="0.9"/>
+                                    <LabelWidget Text="samuelsan03" Color="100,150,255" FontScale="0.9"/>
+                                </StackPanelWidget>
+
+                                <StackPanelWidget Direction="Horizontal" HorizontalAlignment="Center" Margin="0,2">
+                                    <LabelWidget Name="About.BiliBiliLabel" Text="BiliBili: " Color="200,200,200" FontScale="0.9"/>
+                                    <LinkWidget Text="Samuelsan03" Url="https://space.bilibili.com/3546882976516701" Color="100,150,255" FontScale="0.9"/>
+                                </StackPanelWidget>
+                            </StackPanelWidget>
+
+                            <!-- Enlace a GitHub -->
+                            <StackPanelWidget Direction="Horizontal" HorizontalAlignment="Center" Margin="0,20">
+                                <LabelWidget Name="About.ModPageLabel" Text="Mod page: " Color="200,200,200" FontScale="0.9"/>
+                                <LinkWidget Text="GitHub" Url="https://github.com/Samuelsan03/Shitty-Creatures-From-Survivalcraft-2" Color="100,150,255" FontScale="0.9"/>
+                            </StackPanelWidget>
+
+                            <!-- Mensaje final -->
+                            <LabelWidget Name="About.FinalMessage" Text="If you have problems, bugs or suggestions, feel free to contact the author on his Discord." 
+                                         Color="255,200,100" HorizontalAlignment="Center" FontScale="0.95" Margin="0,15" WordWrap="true" DropShadow="true"/>
+
+                        </StackPanelWidget>
+                    </CanvasWidget>
+                </ScrollPanelWidget>
+            </CanvasWidget>
+
+            <!-- Botón OK centrado, con tamaño 160x60 (estilo estándar) -->
+            <StackPanelWidget Direction="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,10">
+                <BevelledButtonWidget Name="About.OkButton" Size="160, 60" Text="OK" Style="{Styles/ButtonStyle_160x60}" />
+            </StackPanelWidget>
+
         </StackPanelWidget>
 
-        <!-- Link to mod page -->
-        <StackPanelWidget Direction="Horizontal" HorizontalAlignment="Center" Margin="0,20">
-          <LabelWidget Name="About.ModPageLabel" Text="Mod page: " Color="200,200,200" FontScale="0.9"/>
-          <LinkWidget Text="GitHub" Url="https://github.com/Samuelsan03/Shitty-Creatures-From-Survivalcraft-2" Color="100,150,255" FontScale="0.9"/>
-        </StackPanelWidget>
+    </CanvasWidget>
 
-        <!-- Final message -->
-        <LabelWidget Name="About.FinalMessage" Text="If you have problems, bugs or suggestions, feel free to contact the author on his Discord." 
-                     Color="255,200,100" HorizontalAlignment="Center" FontScale="0.95" Margin="0,15" WordWrap="true" DropShadow="true"/>
-
-      </StackPanelWidget>
-    </ScrollPanelWidget>
-
-    <!-- OK Button -->
-    <StackPanelWidget Direction="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Far" Margin="0,15">
-      <BevelledButtonWidget Name="About.OkButton" Style="{Styles/ButtonStyle_160x60}" Margin="40,0" Text="OK"/>
-    </StackPanelWidget>
-
-  </StackPanelWidget>
 </CanvasWidget>
