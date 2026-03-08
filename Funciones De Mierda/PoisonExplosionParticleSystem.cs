@@ -7,98 +7,111 @@ namespace Game
 {
 	public class PoisonExplosionParticleSystem : ParticleSystem<PoisonExplosionParticleSystem.Particle>
 	{
-		public PoisonExplosionParticleSystem() : base(2000)
+		public const float Duration = 1.5f;
+
+		private Dictionary<Point3, Particle> m_particlesByPoint = new Dictionary<Point3, Particle>();
+		private List<Particle> m_inactiveParticles = new List<Particle>();
+		private Random m_random = new Random();
+		private bool m_isEmpty = true;
+
+		public PoisonExplosionParticleSystem() : base(1000)
 		{
-			base.Texture = ContentManager.Get<Texture2D>("Textures/Gui/Puke Particle Remake");
+			// Set the poison texture
+			base.Texture = ContentManager.Get<Texture2D>("Textures/Gui/vomito venenoso");
 			base.TextureSlotsCount = 3;
-			this.m_inactiveParticles.AddRange(base.Particles);
+
+			// Initialize inactive list with all particles
+			m_inactiveParticles.AddRange(base.Particles);
 		}
 
 		public void SetExplosionCell(Point3 point, float strength)
 		{
-			PoisonExplosionParticleSystem.Particle particle;
-			if (!this.m_particlesByPoint.TryGetValue(point, out particle))
+			Particle particle = null;
+
+			// Try to reuse an existing particle for this point
+			if (!m_particlesByPoint.TryGetValue(point, out particle))
 			{
-				if (this.m_inactiveParticles.Count > 0)
+				// Get an inactive particle if available
+				if (m_inactiveParticles.Count > 0)
 				{
-					List<PoisonExplosionParticleSystem.Particle> inactiveParticles = this.m_inactiveParticles;
-					particle = inactiveParticles[inactiveParticles.Count - 1];
-					this.m_inactiveParticles.RemoveAt(this.m_inactiveParticles.Count - 1);
+					particle = m_inactiveParticles[m_inactiveParticles.Count - 1];
+					m_inactiveParticles.RemoveAt(m_inactiveParticles.Count - 1);
 				}
 				else
 				{
+					// Otherwise try to steal a particle with lower strength
 					for (int i = 0; i < 5; i++)
 					{
-						int num = this.m_random.Int(0, base.Particles.Length - 1);
-						if (strength > base.Particles[num].Strength)
+						int index = m_random.Int(0, base.Particles.Length - 1);
+						if (strength > base.Particles[index].Strength)
 						{
-							particle = base.Particles[num];
+							particle = base.Particles[index];
 						}
 					}
 				}
+
 				if (particle != null)
 				{
-					this.m_particlesByPoint.Add(point, particle);
+					m_particlesByPoint.Add(point, particle);
 				}
 			}
+
 			if (particle != null)
 			{
 				particle.IsActive = true;
-				particle.Position = new Vector3((float)point.X, (float)point.Y, (float)point.Z) + new Vector3(0.5f) + 0.2f * new Vector3(this.m_random.Float(-1f, 1f), this.m_random.Float(-1f, 1f), this.m_random.Float(-1f, 1f));
-				particle.Size = new Vector2(this.m_random.Float(0.6f, 0.9f));
+				particle.Position = new Vector3(point.X, point.Y, point.Z) + new Vector3(0.5f)
+									+ 0.2f * new Vector3(
+										m_random.Float(-1f, 1f),
+										m_random.Float(-1f, 1f),
+										m_random.Float(-1f, 1f));
+				particle.Size = new Vector2(m_random.Float(0.6f, 0.9f));
 				particle.Strength = strength;
-				particle.Color = new Color(51, 255, 51, 255);
-				this.m_isEmpty = false;
+				particle.Color = Color.White;
+				m_isEmpty = false;
 			}
 		}
 
 		public override bool Simulate(float dt)
 		{
-			if (!this.m_isEmpty)
+			if (!m_isEmpty)
 			{
-				this.m_isEmpty = true;
+				m_isEmpty = true;
+
 				for (int i = 0; i < base.Particles.Length; i++)
 				{
-					PoisonExplosionParticleSystem.Particle particle = base.Particles[i];
+					Particle particle = base.Particles[i];
 					if (particle.IsActive)
 					{
-						this.m_isEmpty = false;
-						particle.Strength -= dt / 4.0f; // DURACIÓN 4 SEGUNDOS
+						m_isEmpty = false;
+						particle.Strength -= dt / Duration;
 
 						if (particle.Strength > 0f)
 						{
+							// Texture slot calculation (matching original explosion behavior)
 							particle.TextureSlot = (int)MathUtils.Min(9f * (1f - particle.Strength) * 0.6f, 8f);
-							PoisonExplosionParticleSystem.Particle particle2 = particle;
-							particle2.Position.Y = particle2.Position.Y + 1.5f * MathUtils.Max(1f - particle.Strength - 0.25f, 0f) * dt;
 
-							// Movimiento más lento y flotante
-							particle.Position.X += this.m_random.Float(-0.01f, 0.01f);
-							particle.Position.Z += this.m_random.Float(-0.01f, 0.01f);
+							// Rise effect
+							particle.Position.Y += 2f * MathUtils.Max(1f - particle.Strength - 0.25f, 0f) * dt;
 						}
 						else
 						{
 							particle.IsActive = false;
-							this.m_inactiveParticles.Add(particle);
+							m_inactiveParticles.Add(particle);
 						}
 					}
 				}
 			}
+
 			return false;
 		}
 
 		public override void Draw(Camera camera)
 		{
-			if (!this.m_isEmpty)
+			if (!m_isEmpty)
 			{
 				base.Draw(camera);
 			}
 		}
-
-		public Dictionary<Point3, PoisonExplosionParticleSystem.Particle> m_particlesByPoint = new Dictionary<Point3, PoisonExplosionParticleSystem.Particle>();
-		public List<PoisonExplosionParticleSystem.Particle> m_inactiveParticles = new List<PoisonExplosionParticleSystem.Particle>();
-		public Random m_random = new Random();
-		public const float m_duration = 4.0f; // DURACIÓN 4 SEGUNDOS
-		public bool m_isEmpty;
 
 		public class Particle : Game.Particle
 		{
