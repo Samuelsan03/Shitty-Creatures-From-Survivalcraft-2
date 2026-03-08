@@ -25,6 +25,10 @@ namespace Game
 		public float DisplayTime { get; set; }
 		public float FadeTime { get; set; }
 
+		// Lista para mantener el orden aleatorio de índices
+		private List<int> shuffledIndices;
+		private int currentPositionInShuffledList;
+
 		public enum TransitionState
 		{
 			Showing,
@@ -33,17 +37,43 @@ namespace Game
 		}
 		public TransitionState State = TransitionState.Showing;
 
-		// Usar el Random del juego en lugar de System.Random
+		// Usar el Random del juego
 		private static Random random = new Random();
 
 		public NewPanoramaWidget()
 		{
-			// Elegir un índice aleatorio al inicio usando el método Int(int bound) de la clase Random del juego
-			CurrentTextureIndex = random.Int(TexturePaths.Count);
+			// Crear lista aleatoria de índices
+			shuffledIndices = new List<int>();
+			for (int i = 0; i < TexturePaths.Count; i++)
+			{
+				shuffledIndices.Add(i);
+			}
+
+			// Mezclar los índices aleatoriamente
+			ShuffleIndices();
+
+			// Elegir el primer índice de la lista mezclada
+			currentPositionInShuffledList = 0;
+			CurrentTextureIndex = shuffledIndices[currentPositionInShuffledList];
+
 			LoadTexture(CurrentTextureIndex);
 			FadeAlpha = 0f;
 			DisplayTime = 0f;
 			FadeTime = 0f;
+		}
+
+		// Método para mezclar los índices usando Fisher-Yates
+		private void ShuffleIndices()
+		{
+			int n = shuffledIndices.Count;
+			for (int i = n - 1; i > 0; i--)
+			{
+				int j = random.Int(i + 1);
+				// Intercambiar
+				int temp = shuffledIndices[i];
+				shuffledIndices[i] = shuffledIndices[j];
+				shuffledIndices[j] = temp;
+			}
 		}
 
 		protected virtual void LoadTexture(int index)
@@ -123,8 +153,18 @@ namespace Game
 
 					if (FadeTime >= 1f)
 					{
-						CurrentTextureIndex = (CurrentTextureIndex + 1) % TexturePaths.Count;
+						// Avanzar a la siguiente posición en la lista mezclada
+						currentPositionInShuffledList = (currentPositionInShuffledList + 1) % shuffledIndices.Count;
+
+						// Si completamos un ciclo completo, re-mezclar para el siguiente ciclo
+						if (currentPositionInShuffledList == 0)
+						{
+							ShuffleIndices();
+						}
+
+						CurrentTextureIndex = shuffledIndices[currentPositionInShuffledList];
 						LoadTexture(CurrentTextureIndex);
+
 						State = TransitionState.FadingIn;
 						FadeTime = 0f;
 					}
