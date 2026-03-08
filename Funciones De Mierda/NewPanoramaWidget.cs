@@ -16,7 +16,8 @@ namespace Game
 			"Textures/Wallpapers/sparkster rocket",
 			"Textures/Wallpapers/left 4 dead",
 			"Textures/Wallpapers/digimon frontier",
-			"Textures/Wallpapers/multi digimon"
+			"Textures/Wallpapers/multi digimon",
+			"Textures/Wallpapers/axel gear"
 		};
 
 		public Texture2D Texture { get; set; }
