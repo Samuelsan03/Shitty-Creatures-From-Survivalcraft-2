@@ -180,6 +180,11 @@
     <Parameter Name="CanUseInventory" Guid="ddb27b73-4aa7-4580-a5bd-684db3139696" Value="true" Type="bool" Description="Si la criatura puede usar armas del inventario"/>
 </ComponentTemplate>
 
+<ComponentTemplate Name="DefensiveCreatureAI" Description="Inteligencia artificial para criaturas aliadas. Ataca enemigos pero NUNCA ataca al jugador ni a miembros de su manada. Los infectados aliados (InfectedNormalTamed, etc.) tienen animaciones especiales de disparo (brazos abajo, solo giran)." Guid="8f1b3024-f8c3-4ff7-9aad-01cf76ff3438" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
+    <Parameter Name="Class" Guid="a0983834-1f81-4fdc-8d79-7b6dd38a7b5e" Value="Game.ComponentDefensiveCreatureAI" Type="string" Description="Clase C# que implementa el componente de IA defensiva."/>
+    <Parameter Name="CanUseInventory" Guid="ffa76df4-5749-46f7-a4f7-ef8133b0b2e9" Value="true" Type="bool" Description="Habilita el uso de armas de fuego, arcos, lanzables, etc., desde el inventario de la criatura."/>
+</ComponentTemplate>
+
 <ComponentTemplate Name="CreatureClothing" Description="Permite asignar prendas de ropa a criaturas." Guid="84f381c3-b55c-4a49-bdd0-0bef89bbc0e9" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
 			<Parameter Name="DropClothesProbability" Description="Probabilidad de que la criatura suelte los objetos de ropa cuando muere, 1 es 100%" Guid="354d89f0-e0cd-40f7-acd2-2ffbf1fcf87e" Value="1" Type="float"/>
 			<ParameterSet Name="Clothes" Description="Contains clothes worn by creature" Guid="7c750c43-e2bb-4a53-8116-328ac217e66e">
