@@ -8,6 +8,12 @@ namespace Game
 {
 	public class ComponentTankLauncherBehavior : ComponentBehavior, IUpdateable
 	{
+		// Constantes de lanzamiento (inspiradas en InvShooter para Throwable)
+		private const float MinLaunchSpeed = 20f;
+		private const float MaxLaunchSpeed = 35f;
+		private const float VerticalBoost = 2f;
+		private const float TargetHeightFactor = 0.75f; // Apuntar al 75% de la altura de la caja de stance
+
 		// Variable para los items a lanzar (soporta múltiples items)
 		public string m_itemsToLaunch = "";
 		public List<int> m_launchItemIndices = new List<int>();
@@ -34,15 +40,9 @@ namespace Game
 		public SubsystemTime m_subsystemTime;
 		public Random m_random = new Random();
 
-		public override float ImportanceLevel
-		{
-			get { return 0f; }
-		}
+		public override float ImportanceLevel => 0f;
 
-		public UpdateOrder UpdateOrder
-		{
-			get { return UpdateOrder.Default; }
-		}
+		public UpdateOrder UpdateOrder => UpdateOrder.Default;
 
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
@@ -73,7 +73,6 @@ namespace Game
 					string trimmedItem = item.Trim();
 					if (string.IsNullOrEmpty(trimmedItem)) continue;
 
-					// Verificar si tiene formato "NombreBloque:Variante" (ejemplo: ArrowBlock:4)
 					if (trimmedItem.Contains(":"))
 					{
 						string[] parts = trimmedItem.Split(':');
@@ -83,16 +82,13 @@ namespace Game
 						int blockIndex = BlocksManager.GetBlockIndex(blockName, false);
 						if (blockIndex >= 0)
 						{
-							// Intentar parsear la variante
 							if (int.TryParse(variantStr, out int variant))
 							{
-								// Crear valor de bloque con variante
 								int blockValue = Terrain.MakeBlockValue(blockIndex, 0, variant);
 								m_launchItemIndices.Add(blockValue);
 							}
 							else
 							{
-								// Si no se puede parsear, usar el bloque sin variante
 								m_launchItemIndices.Add(blockIndex);
 								Log.Warning("ComponentTankLauncherBehavior: Invalid variant format for '" + trimmedItem + "', using default variant");
 							}
@@ -104,15 +100,12 @@ namespace Game
 					}
 					else
 					{
-						// Es solo el nombre del bloque sin variante
 						if (int.TryParse(trimmedItem, out int directIndex))
 						{
-							// Es un índice directo
 							m_launchItemIndices.Add(directIndex);
 						}
 						else
 						{
-							// Es un nombre de bloque
 							int blockIndex = BlocksManager.GetBlockIndex(trimmedItem, false);
 							if (blockIndex >= 0)
 							{
@@ -127,7 +120,6 @@ namespace Game
 				}
 			}
 
-			// Si no hay items válidos, usar valor por defecto
 			if (m_launchItemIndices.Count == 0)
 			{
 				m_launchItemIndices.Add(0);
@@ -149,13 +141,13 @@ namespace Game
 
 				if (hasTarget)
 				{
-					// POSICIÓN EXACTA DEL CÓDIGO CHINO
+					// Posición de lanzamiento (igual que antes)
 					Vector3 launchPosition = m_componentCreature.ComponentCreatureModel.EyePosition
 						+ m_componentCreature.ComponentBody.Matrix.Right * 0.3f
 						- m_componentCreature.ComponentBody.Matrix.Up * 0.2f
 						+ m_componentCreature.ComponentBody.Matrix.Forward * 0.2f;
 
-					// ANIMACIÓN DE MANOS EXACTA DEL CÓDIGO CHINO
+					// Animación de manos
 					var componentHumanModel = m_componentCreature.ComponentCreatureModel as ComponentHumanModel;
 					if (componentHumanModel != null)
 					{
@@ -165,32 +157,25 @@ namespace Game
 						m_launchAnimationTimer = 0f;
 					}
 
-					// CÁLCULO DE VELOCIDAD - COMBINACIÓN INVSHOOTER + DAYZMOD
+					// --- NUEVO CÁLCULO DE VELOCIDAD (inspirado en InvShooter) ---
+					// Apuntar a la altura del torso del objetivo (como en InvShooter)
 					Vector3 targetPos = target.ComponentBody.Position;
-					Vector3 direction = targetPos - launchPosition;
-					m_distance = direction.Length();
+					float targetHeight = target.ComponentBody.StanceBoxSize.Y;
+					Vector3 aimPoint = targetPos + new Vector3(0f, targetHeight * TargetHeightFactor, 0f);
 
-					// NORMALIZAR la dirección (crucial para apuntar)
-					Vector3 normalizedDirection = Vector3.Normalize(direction);
+					Vector3 direction = aimPoint - launchPosition;
+					float distance = direction.Length();
 
-					// CALCULAR VELOCIDAD BASE (como InvShooter)
-					float baseSpeed = 30f;
+					// Velocidad lineal que varía con la distancia (como en Throwable de InvShooter)
+					float speed = MathUtils.Lerp(MinLaunchSpeed, MaxLaunchSpeed, distance / 20f); // Ajusta 20f según el rango deseado
+					Vector3 velocity = Vector3.Normalize(direction) * speed + new Vector3(0f, VerticalBoost, 0f);
+					// -------------------------------------------------------------
 
-					// Factor de distancia (como InvShooter)
-					float distanceFactor = MathUtils.Clamp(m_distance / 12f, 0.6f, 1.8f);
-					float speed = baseSpeed * distanceFactor;
-
-					// ALTURA INICIAL (como InvShooter) - para compensar gravedad
-					float verticalBoost = MathUtils.Lerp(1f, 3f, m_distance / 25f);
-
-					// VELOCIDAD FINAL - dirección * velocidad + componente vertical
-					Vector3 velocity = normalizedDirection * speed + new Vector3(0f, verticalBoost, 0f);
-
-					// SELECCIONAR ITEM A LANZAR (rotación circular)
+					// Seleccionar item a lanzar (rotación circular)
 					int itemToLaunch = m_launchItemIndices[m_currentItemIndex];
 					m_currentItemIndex = (m_currentItemIndex + 1) % m_launchItemIndices.Count;
 
-					// LANZAR EL PROYECTIL
+					// Lanzar proyectil
 					m_subsystemProjectiles.FireProjectile(
 						itemToLaunch,
 						launchPosition,
@@ -199,7 +184,7 @@ namespace Game
 						m_componentCreature
 					);
 
-					// Fin de animación
+					// Continuar animación
 					if (m_isLaunching)
 					{
 						m_launchAnimationTimer += dt;
@@ -212,12 +197,11 @@ namespace Game
 					}
 				}
 
-				// TIEMPO DE RECARGA FIJO 1.0 SEGUNDO
+				// Tiempo de recarga fijo 1.0 segundo
 				m_ChargeTime = 1.0;
 				m_nextUpdateTime = m_subsystemTime.GameTime + m_ChargeTime;
 			}
 
-			// Si está en animación, continuar
 			if (m_isLaunching)
 			{
 				m_launchAnimationTimer += dt;
@@ -232,19 +216,15 @@ namespace Game
 
 		private ComponentCreature GetCurrentTarget()
 		{
-			// Prioridad: ComponentNewChaseBehavior2 (nuevo)
 			if (m_componentNewChaseBehavior2 != null && m_componentNewChaseBehavior2.Target != null)
 				return m_componentNewChaseBehavior2.Target;
 
-			// Prioridad: ComponentNewChaseBehavior (nuevo)
 			if (m_componentNewChaseBehavior != null && m_componentNewChaseBehavior.Target != null)
 				return m_componentNewChaseBehavior.Target;
 
-			// Prioridad: ComponentZombieChaseBehavior (zombie)
 			if (m_componentZombieChaseBehavior != null && m_componentZombieChaseBehavior.Target != null)
 				return m_componentZombieChaseBehavior.Target;
 
-			// Prioridad: ComponentChaseBehavior (original)
 			if (m_componentChaseBehavior != null && m_componentChaseBehavior.Target != null)
 				return m_componentChaseBehavior.Target;
 
@@ -280,19 +260,17 @@ namespace Game
 					- m_componentCreature.ComponentBody.Matrix.Up * 0.2f
 					+ m_componentCreature.ComponentBody.Matrix.Forward * 0.2f;
 
+				// Mismo cálculo de velocidad que en Update
 				Vector3 targetPos = target.ComponentBody.Position;
-				Vector3 direction = targetPos - launchPosition;
+				float targetHeight = target.ComponentBody.StanceBoxSize.Y;
+				Vector3 aimPoint = targetPos + new Vector3(0f, targetHeight * TargetHeightFactor, 0f);
+
+				Vector3 direction = aimPoint - launchPosition;
 				float distance = direction.Length();
 
-				// MISMA FÓRMULA QUE UPDATE
-				Vector3 normalizedDirection = Vector3.Normalize(direction);
-				float baseSpeed = 30f;
-				float distanceFactor = MathUtils.Clamp(distance / 12f, 0.6f, 1.8f);
-				float speed = baseSpeed * distanceFactor;
-				float verticalBoost = MathUtils.Lerp(1f, 3f, distance / 25f);
-				Vector3 velocity = normalizedDirection * speed + new Vector3(0f, verticalBoost, 0f);
+				float speed = MathUtils.Lerp(MinLaunchSpeed, MaxLaunchSpeed, distance / 20f);
+				Vector3 velocity = Vector3.Normalize(direction) * speed + new Vector3(0f, VerticalBoost, 0f);
 
-				// Seleccionar item (rotación circular)
 				int itemToLaunch = m_launchItemIndices[m_currentItemIndex];
 				m_currentItemIndex = (m_currentItemIndex + 1) % m_launchItemIndices.Count;
 
@@ -316,7 +294,7 @@ namespace Game
 
 		public void SetAttackTarget(ComponentCreature target)
 		{
-			// SIN LÍMITES DE DISTANCIA
+			// Sin límites de distancia
 			if (m_componentNewChaseBehavior2 != null)
 			{
 				m_componentNewChaseBehavior2.Attack(target, 1000f, 1000f, true);
