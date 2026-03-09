@@ -29,6 +29,24 @@ namespace Game
 		// Nuevo parámetro: habilidad para usar armas a distancia
 		public bool CanUseRangedWeapons { get; set; }
 
+		// Tipos de munición disponibles
+		private static readonly ArrowBlock.ArrowType[] BowArrowTypes = new ArrowBlock.ArrowType[]
+		{
+			ArrowBlock.ArrowType.WoodenArrow,
+			ArrowBlock.ArrowType.StoneArrow,
+			ArrowBlock.ArrowType.IronArrow,
+			ArrowBlock.ArrowType.DiamondArrow,
+			ArrowBlock.ArrowType.FireArrow,
+			ArrowBlock.ArrowType.CopperArrow
+		};
+
+		private static readonly ArrowBlock.ArrowType[] CrossbowBoltTypes = new ArrowBlock.ArrowType[]
+		{
+			ArrowBlock.ArrowType.IronBolt,
+			ArrowBlock.ArrowType.DiamondBolt,
+			ArrowBlock.ArrowType.ExplosiveBolt
+		};
+
 		// Estado para combate a distancia
 		private double m_rangedAttackStartTime;
 		private double m_nextRangedAttackTime;
@@ -192,10 +210,10 @@ namespace Game
 			int draw = BowBlock.GetDraw(data);
 			ArrowBlock.ArrowType? arrowType = BowBlock.GetArrowType(data);
 
-			// Si no hay flecha cargada, "cargar" una automáticamente
+			// Si no hay flecha cargada, cargar una aleatoria
 			if (arrowType == null)
 			{
-				arrowType = ArrowBlock.ArrowType.WoodenArrow;
+				arrowType = BowArrowTypes[m_random.Int(0, BowArrowTypes.Length - 1)];
 				data = BowBlock.SetArrowType(data, arrowType);
 				UpdateWeaponValue(weaponValue, data);
 			}
@@ -236,7 +254,7 @@ namespace Game
 				m_isAiming = false;
 				UpdateAimAnimations(false, GetBlockFromValue(weaponValue));
 				m_nextRangedAttackTime = m_subsystemTime.GameTime + 1.0f;
-				// Poner draw a 0 y quitar flecha
+				// Poner draw a 0 y quitar flecha (la próxima vez se cargará una nueva aleatoria)
 				data = BowBlock.SetDraw(data, 0);
 				data = BowBlock.SetArrowType(data, null);
 				UpdateWeaponValue(weaponValue, data);
@@ -249,9 +267,10 @@ namespace Game
 			int draw = CrossbowBlock.GetDraw(data);
 			ArrowBlock.ArrowType? arrowType = CrossbowBlock.GetArrowType(data);
 
+			// Si no hay virote cargado, cargar uno aleatorio
 			if (arrowType == null)
 			{
-				arrowType = ArrowBlock.ArrowType.IronBolt;
+				arrowType = CrossbowBoltTypes[m_random.Int(0, CrossbowBoltTypes.Length - 1)];
 				data = CrossbowBlock.SetArrowType(data, arrowType);
 				UpdateWeaponValue(weaponValue, data);
 			}
@@ -383,7 +402,17 @@ namespace Game
 			int projectileValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex<ArrowBlock>(), 0, ArrowBlock.SetArrowType(0, arrowType));
 			Vector3 velocity = m_componentCreature.ComponentBody.Velocity + direction * speed;
 
-			m_subsystemProjectiles.FireProjectile(projectileValue, eyePos, velocity, Vector3.Zero, m_componentCreature);
+			Projectile projectile = m_subsystemProjectiles.FireProjectile(projectileValue, eyePos, velocity, Vector3.Zero, m_componentCreature);
+			if (projectile != null)
+			{
+				projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
+				if (arrowType == ArrowBlock.ArrowType.FireArrow)
+				{
+					projectile.IsIncendiary = true;
+					m_subsystemProjectiles.AddTrail(projectile, Vector3.Zero, new SmokeTrailParticleSystem(20, 0.5f, float.MaxValue, Color.White));
+				}
+			}
+
 			m_subsystemAudio.PlaySound("Audio/Bow", 1f, m_random.Float(-0.1f, 0.1f), eyePos, 3f, true);
 		}
 
@@ -406,7 +435,13 @@ namespace Game
 			int projectileValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex<ArrowBlock>(), 0, ArrowBlock.SetArrowType(0, arrowType));
 			Vector3 velocity = m_componentCreature.ComponentBody.Velocity + direction * speed;
 
-			m_subsystemProjectiles.FireProjectile(projectileValue, eyePos, velocity, Vector3.Zero, m_componentCreature);
+			Projectile projectile = m_subsystemProjectiles.FireProjectile(projectileValue, eyePos, velocity, Vector3.Zero, m_componentCreature);
+			if (projectile != null)
+			{
+				projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
+				// Los virotes explosivos no tienen tratamiento especial aquí, pero podrían añadirse si se desea
+			}
+
 			m_subsystemAudio.PlaySound("Audio/Bow", 1f, m_random.Float(-0.1f, 0.1f), eyePos, 3f, true);
 		}
 
@@ -472,7 +507,11 @@ namespace Game
 				Vector3 velocity = m_componentCreature.ComponentBody.Velocity + finalDirection * speed;
 
 				int projectileValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex<BulletBlock>(), 0, BulletBlock.SetBulletType(0, actualBulletType));
-				m_subsystemProjectiles.FireProjectile(projectileValue, eyePos, velocity, Vector3.Zero, m_componentCreature);
+				Projectile proj = m_subsystemProjectiles.FireProjectile(projectileValue, eyePos, velocity, Vector3.Zero, m_componentCreature);
+				if (proj != null)
+				{
+					proj.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
+				}
 			}
 
 			// Humo
