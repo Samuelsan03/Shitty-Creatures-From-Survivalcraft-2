@@ -145,7 +145,7 @@ namespace Game
 							{
 								if (RepeatCrossbowBlock.GetLoadCount(slotValue) == 0)
 								{
-									data = RepeatCrossbowBlock.SetArrowType(data, null);
+									data = RepeatCrossbowBlock.SetArrowType(data, (RepeatArrowBlock.ArrowType?)null);
 								}
 								else
 								{
@@ -158,8 +158,7 @@ namespace Game
 								}
 							}
 						}
-						inventory.RemoveSlotItems(activeSlotIndex, 1);
-						int value2 = (loadCount > 1) ? Terrain.MakeBlockValue(num, loadCount - 1, RepeatCrossbowBlock.SetDraw(data, 15)) : Terrain.MakeBlockValue(num, 0, RepeatCrossbowBlock.SetDraw(RepeatCrossbowBlock.SetArrowType(data, null), 0));
+						int value2 = (loadCount > 1) ? Terrain.MakeBlockValue(num, loadCount - 1, RepeatCrossbowBlock.SetDraw(data, 15)): Terrain.MakeBlockValue(num, 0, RepeatCrossbowBlock.SetDraw(RepeatCrossbowBlock.SetArrowType(data, (RepeatArrowBlock.ArrowType?)null), 0));
 						inventory.AddSlotItems(activeSlotIndex, value2, 1);
 						if (draw > 0)
 						{
