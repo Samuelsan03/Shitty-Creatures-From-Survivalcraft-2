@@ -47,9 +47,26 @@ namespace Game
 			ArrowBlock.ArrowType.ExplosiveBolt
 		};
 
+		private static readonly RepeatArrowBlock.ArrowType[] RepeatCrossbowBoltTypes = new RepeatArrowBlock.ArrowType[]
+		{
+			RepeatArrowBlock.ArrowType.CopperArrow,
+			RepeatArrowBlock.ArrowType.IronArrow,
+			RepeatArrowBlock.ArrowType.DiamondArrow,
+			RepeatArrowBlock.ArrowType.ExplosiveArrow,
+			RepeatArrowBlock.ArrowType.PoisonArrow,
+			RepeatArrowBlock.ArrowType.SeriousPoisonArrow
+		};
+
+		private static readonly FlameBulletBlock.FlameBulletType[] FlameThrowerAmmoTypes = new FlameBulletBlock.FlameBulletType[]
+		{
+			FlameBulletBlock.FlameBulletType.Flame,
+			FlameBulletBlock.FlameBulletType.Poison
+		};
+
 		// Estado para combate a distancia
 		private double m_rangedAttackStartTime;
 		private double m_nextRangedAttackTime;
+		private double m_nextFlameThrowerShotTime; // Para control de cadencia
 		private bool m_isAiming;
 		private float m_aimProgress; // 0-1, usado para arco/ballesta
 		private MusketBlock.LoadState m_musketLoadState;
@@ -195,6 +212,18 @@ namespace Game
 			{
 				HandleMusketCombat(activeWeaponValue, dt);
 			}
+			else if (block is RepeatCrossbowBlock)
+			{
+				HandleRepeatCrossbowCombat(activeWeaponValue, dt);
+			}
+			else if (block is FlameThrowerBlock)
+			{
+				HandleFlameThrowerCombat(activeWeaponValue, dt);
+			}
+			else if (block is ItemsLauncherBlock)
+			{
+				HandleItemsLauncherCombat(activeWeaponValue, dt);
+			}
 		}
 
 		private Block GetBlockFromValue(int value)
@@ -210,54 +239,92 @@ namespace Game
 			int draw = BowBlock.GetDraw(data);
 			ArrowBlock.ArrowType? arrowType = BowBlock.GetArrowType(data);
 
-			// Si no hay flecha cargada, cargar una aleatoria
-			if (arrowType == null)
+			// Si no hay flecha cargada o el arco no está tensado, preparar instantáneamente
+			if (arrowType == null || draw < 15)
 			{
 				arrowType = BowArrowTypes[m_random.Int(0, BowArrowTypes.Length - 1)];
+				draw = 15;
 				data = BowBlock.SetArrowType(data, arrowType);
+				data = BowBlock.SetDraw(data, draw);
 				UpdateWeaponValue(weaponValue, data);
 			}
 
 			if (!m_isAiming)
 			{
-				// Empezar a apuntar
 				m_isAiming = true;
 				m_rangedAttackStartTime = m_subsystemTime.GameTime;
-				m_aimProgress = 0f;
 				UpdateAimAnimations(true, GetBlockFromValue(weaponValue));
 			}
 
-			// Incrementar el draw mientras se apunta
 			float aimTime = (float)(m_subsystemTime.GameTime - m_rangedAttackStartTime);
-			int newDraw = MathUtils.Min((int)(aimTime * 10f), 15);
-			if (newDraw > draw)
-			{
-				draw = newDraw;
-				data = BowBlock.SetDraw(data, draw);
-				UpdateWeaponValue(weaponValue, data);
-			}
 
-			// Disparar cuando draw >= 15 o después de un tiempo mínimo
-			if (draw >= 15 || aimTime >= 2.0f)
+			// Disparar después de 0.8 segundos de apuntado
+			if (aimTime >= 0.8f)
 			{
 				if (m_target != null)
 				{
 					FireBow(arrowType.Value, draw);
-					// Desgastar el arma según el draw
 					int damage = (draw >= 15) ? 2 : ((draw >= 4) ? 1 : 0);
 					if (damage > 0 && m_componentMiner != null)
-					{
 						m_componentMiner.DamageActiveTool(damage);
-					}
 				}
-				// Reiniciar estado
 				m_isAiming = false;
 				UpdateAimAnimations(false, GetBlockFromValue(weaponValue));
-				m_nextRangedAttackTime = m_subsystemTime.GameTime + 1.0f;
-				// Poner draw a 0 y quitar flecha (la próxima vez se cargará una nueva aleatoria)
+				m_nextRangedAttackTime = m_subsystemTime.GameTime + 1.5f; // Cooldown
+																		  // Reiniciar arma (sin munición, sin tensar)
 				data = BowBlock.SetDraw(data, 0);
 				data = BowBlock.SetArrowType(data, null);
 				UpdateWeaponValue(weaponValue, data);
+			}
+		}
+
+		// Funciones auxiliares para detectar explosivos y obtener tipos seguros
+		private bool IsExplosiveCrossbowBolt(ArrowBlock.ArrowType type)
+		{
+			return type == ArrowBlock.ArrowType.ExplosiveBolt;
+		}
+
+		private ArrowBlock.ArrowType GetSafeCrossbowBolt(float distance)
+		{
+			if (distance < 20f)
+			{
+				// Filtrar explosivos
+				var safe = new System.Collections.Generic.List<ArrowBlock.ArrowType>();
+				foreach (var t in CrossbowBoltTypes)
+					if (t != ArrowBlock.ArrowType.ExplosiveBolt)
+						safe.Add(t);
+				if (safe.Count > 0)
+					return safe[m_random.Int(0, safe.Count - 1)];
+				else
+					return CrossbowBoltTypes[0]; // fallback (no debería ocurrir)
+			}
+			else
+			{
+				return CrossbowBoltTypes[m_random.Int(0, CrossbowBoltTypes.Length - 1)];
+			}
+		}
+
+		private bool IsExplosiveRepeatBolt(RepeatArrowBlock.ArrowType type)
+		{
+			return type == RepeatArrowBlock.ArrowType.ExplosiveArrow;
+		}
+
+		private RepeatArrowBlock.ArrowType GetSafeRepeatBolt(float distance)
+		{
+			if (distance < 20f)
+			{
+				var safe = new System.Collections.Generic.List<RepeatArrowBlock.ArrowType>();
+				foreach (var t in RepeatCrossbowBoltTypes)
+					if (t != RepeatArrowBlock.ArrowType.ExplosiveArrow)
+						safe.Add(t);
+				if (safe.Count > 0)
+					return safe[m_random.Int(0, safe.Count - 1)];
+				else
+					return RepeatCrossbowBoltTypes[0];
+			}
+			else
+			{
+				return RepeatCrossbowBoltTypes[m_random.Int(0, RepeatCrossbowBoltTypes.Length - 1)];
 			}
 		}
 
@@ -267,11 +334,25 @@ namespace Game
 			int draw = CrossbowBlock.GetDraw(data);
 			ArrowBlock.ArrowType? arrowType = CrossbowBlock.GetArrowType(data);
 
-			// Si no hay virote cargado, cargar uno aleatorio
-			if (arrowType == null)
+			float distToTarget = Vector3.Distance(m_componentCreature.ComponentBody.Position, m_target.ComponentBody.Position);
+
+			// Si el proyectil cargado es explosivo y el objetivo está demasiado cerca, descartarlo
+			if (arrowType.HasValue && IsExplosiveCrossbowBolt(arrowType.Value) && distToTarget < 20f)
 			{
-				arrowType = CrossbowBoltTypes[m_random.Int(0, CrossbowBoltTypes.Length - 1)];
+				data = CrossbowBlock.SetDraw(data, 0);
+				data = CrossbowBlock.SetArrowType(data, null);
+				UpdateWeaponValue(weaponValue, data);
+				arrowType = null;
+				draw = 0;
+			}
+
+			// Si no hay proyectil o no está tensada, preparar con un tipo seguro
+			if (arrowType == null || draw < 15)
+			{
+				arrowType = GetSafeCrossbowBolt(distToTarget);
+				draw = 15;
 				data = CrossbowBlock.SetArrowType(data, arrowType);
+				data = CrossbowBlock.SetDraw(data, draw);
 				UpdateWeaponValue(weaponValue, data);
 			}
 
@@ -283,26 +364,14 @@ namespace Game
 			}
 
 			float aimTime = (float)(m_subsystemTime.GameTime - m_rangedAttackStartTime);
-			if (draw < 15)
-			{
-				int newDraw = MathUtils.Min((int)(aimTime * 5f), 15);
-				if (newDraw > draw)
-				{
-					draw = newDraw;
-					data = CrossbowBlock.SetDraw(data, draw);
-					UpdateWeaponValue(weaponValue, data);
-				}
-			}
 
-			if (draw == 15)
+			if (aimTime >= 0.8f)
 			{
 				if (m_target != null)
 				{
 					FireCrossbow(arrowType.Value);
 					if (m_componentMiner != null)
-					{
 						m_componentMiner.DamageActiveTool(1);
-					}
 				}
 				m_isAiming = false;
 				UpdateAimAnimations(false, GetBlockFromValue(weaponValue));
@@ -320,66 +389,196 @@ namespace Game
 			bool hammerState = MusketBlock.GetHammerState(data);
 			BulletBlock.BulletType? bulletType = MusketBlock.GetBulletType(data);
 
+			// Si no está cargado, cargar instantáneamente
+			if (loadState != MusketBlock.LoadState.Loaded || bulletType == null)
+			{
+				loadState = MusketBlock.LoadState.Loaded;
+				bulletType = BulletBlock.BulletType.MusketBall;
+				hammerState = true;
+				data = MusketBlock.SetLoadState(data, loadState);
+				data = MusketBlock.SetBulletType(data, bulletType);
+				data = MusketBlock.SetHammerState(data, hammerState);
+				UpdateWeaponValue(weaponValue, data);
+				m_subsystemAudio.PlaySound("Audio/HammerCock", 1f, m_random.Float(-0.1f, 0.1f), m_componentCreature.ComponentBody.Position, 3f, false);
+			}
+
 			if (!m_isAiming)
 			{
 				m_isAiming = true;
 				m_rangedAttackStartTime = m_subsystemTime.GameTime;
 				UpdateAimAnimations(true, GetBlockFromValue(weaponValue));
-				// Amartillar el martillo si no lo está
-				if (!hammerState)
-				{
-					hammerState = true;
-					data = MusketBlock.SetHammerState(data, true);
-					UpdateWeaponValue(weaponValue, data);
-					m_subsystemAudio.PlaySound("Audio/HammerCock", 1f, m_random.Float(-0.1f, 0.1f), m_componentCreature.ComponentBody.Position, 3f, false);
-				}
 			}
 
 			float aimTime = (float)(m_subsystemTime.GameTime - m_rangedAttackStartTime);
 
-			// Simular carga automática
-			if (loadState != MusketBlock.LoadState.Loaded)
-			{
-				if (loadState == MusketBlock.LoadState.Empty && aimTime > 1.0f)
-				{
-					loadState = MusketBlock.LoadState.Gunpowder;
-					m_rangedAttackStartTime = m_subsystemTime.GameTime;
-				}
-				else if (loadState == MusketBlock.LoadState.Gunpowder && aimTime > 1.0f)
-				{
-					loadState = MusketBlock.LoadState.Wad;
-					m_rangedAttackStartTime = m_subsystemTime.GameTime;
-				}
-				else if (loadState == MusketBlock.LoadState.Wad && aimTime > 1.0f)
-				{
-					loadState = MusketBlock.LoadState.Loaded;
-					bulletType = BulletBlock.BulletType.MusketBall; // Por defecto, bala de mosquete
-					m_rangedAttackStartTime = m_subsystemTime.GameTime;
-				}
-
-				data = MusketBlock.SetLoadState(data, loadState);
-				data = MusketBlock.SetBulletType(data, bulletType);
-				UpdateWeaponValue(weaponValue, data);
-			}
-
-			if (loadState == MusketBlock.LoadState.Loaded && hammerState && aimTime > 1.5f)
+			if (aimTime >= 0.8f)
 			{
 				if (m_target != null)
 				{
 					FireMusket(bulletType.Value);
 					if (m_componentMiner != null)
-					{
 						m_componentMiner.DamageActiveTool(1);
-					}
 				}
 				m_isAiming = false;
 				UpdateAimAnimations(false, GetBlockFromValue(weaponValue));
 				m_nextRangedAttackTime = m_subsystemTime.GameTime + 2.0f;
+				// Vaciar
 				data = MusketBlock.SetLoadState(data, MusketBlock.LoadState.Empty);
 				data = MusketBlock.SetHammerState(data, false);
 				data = MusketBlock.SetBulletType(data, null);
 				UpdateWeaponValue(weaponValue, data);
 				m_subsystemAudio.PlaySound("Audio/HammerRelease", 1f, m_random.Float(-0.1f, 0.1f), m_componentCreature.ComponentBody.Position, 3f, false);
+			}
+		}
+
+		// HandleRepeatCrossbowCombat modificado
+		private void HandleRepeatCrossbowCombat(int weaponValue, float dt)
+		{
+			int data = Terrain.ExtractData(weaponValue);
+			int draw = RepeatCrossbowBlock.GetDraw(data);
+			RepeatArrowBlock.ArrowType? arrowType = RepeatCrossbowBlock.GetArrowType(data);
+
+			float distToTarget = Vector3.Distance(m_componentCreature.ComponentBody.Position, m_target.ComponentBody.Position);
+
+			// Si el proyectil cargado es explosivo y el objetivo está demasiado cerca, descartarlo
+			if (arrowType.HasValue && IsExplosiveRepeatBolt(arrowType.Value) && distToTarget < 20f)
+			{
+				data = RepeatCrossbowBlock.SetDraw(data, 0);
+				data = RepeatCrossbowBlock.SetArrowType(data, (RepeatArrowBlock.ArrowType?)null);
+				UpdateWeaponValue(weaponValue, data);
+				arrowType = null;
+				draw = 0;
+			}
+
+			// Si no hay proyectil o no está tensada, preparar con un tipo seguro
+			if (arrowType == null || draw < 15)
+			{
+				arrowType = GetSafeRepeatBolt(distToTarget);
+				draw = 15;
+				data = RepeatCrossbowBlock.SetArrowType(data, arrowType);
+				data = RepeatCrossbowBlock.SetDraw(data, draw);
+				UpdateWeaponValue(weaponValue, data);
+			}
+
+			if (!m_isAiming)
+			{
+				m_isAiming = true;
+				m_rangedAttackStartTime = m_subsystemTime.GameTime;
+				UpdateAimAnimations(true, GetBlockFromValue(weaponValue));
+			}
+
+			float aimTime = (float)(m_subsystemTime.GameTime - m_rangedAttackStartTime);
+
+			if (aimTime >= 0.8f)
+			{
+				if (m_target != null)
+				{
+					FireRepeatCrossbow(arrowType.Value);
+					if (m_componentMiner != null)
+						m_componentMiner.DamageActiveTool(1);
+				}
+				m_isAiming = false;
+				UpdateAimAnimations(false, GetBlockFromValue(weaponValue));
+				m_nextRangedAttackTime = m_subsystemTime.GameTime + 1.5f;
+				data = RepeatCrossbowBlock.SetArrowType(data, (RepeatArrowBlock.ArrowType?)null);
+				data = RepeatCrossbowBlock.SetDraw(data, 0);
+				UpdateWeaponValue(weaponValue, data);
+			}
+		}
+
+		private void HandleFlameThrowerCombat(int weaponValue, float dt)
+		{
+			int data = Terrain.ExtractData(weaponValue);
+			FlameThrowerBlock.LoadState loadState = FlameThrowerBlock.GetLoadState(data);
+			bool switchState = FlameThrowerBlock.GetSwitchState(data);
+			int loadCount = FlameThrowerBlock.GetLoadCount(data);
+			FlameBulletBlock.FlameBulletType? bulletType = FlameThrowerBlock.GetBulletType(data);
+
+			if (!m_isAiming)
+			{
+				m_isAiming = true;
+				m_rangedAttackStartTime = m_subsystemTime.GameTime;
+				UpdateAimAnimations(true, GetBlockFromValue(weaponValue));
+				if (!switchState)
+				{
+					switchState = true;
+					data = FlameThrowerBlock.SetSwitchState(data, true);
+					UpdateWeaponValue(weaponValue, data);
+					m_subsystemAudio.PlaySound("Audio/Items/Hammer Cock Remake", 1f, m_random.Float(-0.1f, 0.1f), m_componentCreature.ComponentBody.Position, 3f, false);
+				}
+			}
+
+			// Si no está cargado, cargar automáticamente
+			if (loadState != FlameThrowerBlock.LoadState.Loaded || loadCount <= 0 || bulletType == null)
+			{
+				bulletType = FlameThrowerAmmoTypes[m_random.Int(0, FlameThrowerAmmoTypes.Length - 1)];
+				loadCount = 15;
+				loadState = FlameThrowerBlock.LoadState.Loaded;
+				data = FlameThrowerBlock.SetLoadState(data, loadState);
+				data = FlameThrowerBlock.SetBulletType(data, bulletType);
+				data = FlameThrowerBlock.SetLoadCount(data, loadCount);
+				UpdateWeaponValue(weaponValue, data);
+			}
+
+			if (loadState == FlameThrowerBlock.LoadState.Loaded && switchState && m_subsystemTime.GameTime >= m_nextFlameThrowerShotTime)
+			{
+				if (m_target != null && loadCount > 0)
+				{
+					FireFlameThrower(bulletType.Value);
+					loadCount--;
+					data = FlameThrowerBlock.SetLoadCount(data, loadCount);
+					if (loadCount == 0)
+					{
+						// Recargar automáticamente con otro tipo
+						bulletType = FlameThrowerAmmoTypes[m_random.Int(0, FlameThrowerAmmoTypes.Length - 1)];
+						loadCount = 15;
+						data = FlameThrowerBlock.SetLoadState(data, FlameThrowerBlock.LoadState.Loaded);
+						data = FlameThrowerBlock.SetBulletType(data, bulletType);
+						data = FlameThrowerBlock.SetLoadCount(data, loadCount);
+					}
+					UpdateWeaponValue(weaponValue, data);
+
+					if (m_componentMiner != null)
+						m_componentMiner.DamageActiveTool(1);
+
+					m_nextFlameThrowerShotTime = m_subsystemTime.GameTime + 0.3;
+				}
+			}
+
+			if (m_target == null || m_importanceLevel <= 0f)
+			{
+				if (switchState)
+				{
+					switchState = false;
+					data = FlameThrowerBlock.SetSwitchState(data, false);
+					UpdateWeaponValue(weaponValue, data);
+				}
+			}
+		}
+
+		private void HandleItemsLauncherCombat(int weaponValue, float dt)
+		{
+			// No necesita preparación especial
+			if (!m_isAiming)
+			{
+				m_isAiming = true;
+				m_rangedAttackStartTime = m_subsystemTime.GameTime;
+				UpdateAimAnimations(true, GetBlockFromValue(weaponValue));
+			}
+
+			float aimTime = (float)(m_subsystemTime.GameTime - m_rangedAttackStartTime);
+
+			if (aimTime >= 0.8f)
+			{
+				if (m_target != null)
+				{
+					FireItemsLauncher();
+					if (m_componentMiner != null)
+						m_componentMiner.DamageActiveTool(1);
+				}
+				m_isAiming = false;
+				UpdateAimAnimations(false, GetBlockFromValue(weaponValue));
+				m_nextRangedAttackTime = m_subsystemTime.GameTime + 2.0f;
 			}
 		}
 
@@ -439,7 +638,6 @@ namespace Game
 			if (projectile != null)
 			{
 				projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
-				// Los virotes explosivos no tienen tratamiento especial aquí, pero podrían añadirse si se desea
 			}
 
 			m_subsystemAudio.PlaySound("Audio/Bow", 1f, m_random.Float(-0.1f, 0.1f), eyePos, 3f, true);
@@ -474,7 +672,7 @@ namespace Game
 				spreadX = 0.04f;
 				spreadY = 0.04f;
 				spreadZ = 0.25f;
-				actualBulletType = BulletBlock.BulletType.BuckshotBall; // Los perdigones usan BuckshotBall
+				actualBulletType = BulletBlock.BulletType.BuckshotBall;
 			}
 			else if (bulletType == BulletBlock.BulletType.BuckshotBall)
 			{
@@ -525,6 +723,95 @@ namespace Game
 			m_componentCreature.ComponentBody.ApplyImpulse(-4f * direction);
 		}
 
+		private void FireRepeatCrossbow(RepeatArrowBlock.ArrowType arrowType)
+		{
+			Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
+			Vector3 targetPos = m_target.ComponentBody.BoundingBox.Center();
+			Vector3 direction = Vector3.Normalize(targetPos - eyePos);
+
+			float num2 = (float)MathUtils.Remainder(m_subsystemTime.GameTime, 1000.0);
+			float inaccuracy = (m_componentCreature.ComponentBody.IsCrouching ? 0.01f : 0.03f) + 0.15f * MathUtils.Saturate((float)(m_subsystemTime.GameTime - m_rangedAttackStartTime - 2.5f) / 6f);
+			Vector3 noise = new Vector3(
+				SimplexNoise.OctavedNoise(num2, 2f, 3, 2f, 0.5f, false),
+				SimplexNoise.OctavedNoise(num2 + 100f, 2f, 3, 2f, 0.5f, false),
+				SimplexNoise.OctavedNoise(num2 + 200f, 2f, 3, 2f, 0.5f, false)
+			) * inaccuracy;
+			direction = Vector3.Normalize(direction + noise);
+
+			float speed = 40f; // Velocidad similar a la ballesta
+			int projectileValue = Terrain.MakeBlockValue(RepeatArrowBlock.Index, 0, RepeatArrowBlock.SetArrowType(0, arrowType));
+			Vector3 velocity = m_componentCreature.ComponentBody.Velocity + direction * speed;
+
+			Projectile projectile = m_subsystemProjectiles.FireProjectile(projectileValue, eyePos, velocity, Vector3.Zero, m_componentCreature);
+			if (projectile != null)
+			{
+				projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
+				// Las flechas explosivas ya tienen su comportamiento en el subsistema
+			}
+
+			m_subsystemAudio.PlaySound("Audio/Crossbow Remake/Crossbow Shoot", 1f, m_random.Float(-0.1f, 0.1f), eyePos, 3f, true);
+		}
+
+		private void FireFlameThrower(FlameBulletBlock.FlameBulletType bulletType)
+		{
+			Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
+			Vector3 targetPos = m_target.ComponentBody.BoundingBox.Center();
+			Vector3 direction = Vector3.Normalize(targetPos - eyePos);
+
+			float num2 = (float)MathUtils.Remainder(m_subsystemTime.GameTime, 1000.0);
+			float inaccuracy = (m_componentCreature.ComponentBody.IsCrouching ? 0.01f : 0.03f) + 0.2f * MathUtils.Saturate((float)(m_subsystemTime.GameTime - m_rangedAttackStartTime - 2.5f) / 6f);
+			Vector3 noise = new Vector3(
+				SimplexNoise.OctavedNoise(num2, 2f, 3, 2f, 0.5f, false),
+				SimplexNoise.OctavedNoise(num2 + 100f, 2f, 3, 2f, 0.5f, false),
+				SimplexNoise.OctavedNoise(num2 + 200f, 2f, 3, 2f, 0.5f, false)
+			) * inaccuracy;
+			direction = Vector3.Normalize(direction + noise);
+
+			float speed = 40f;
+			int projectileValue = Terrain.MakeBlockValue(FlameBulletBlock.Index, 0, FlameBulletBlock.SetBulletType(0, bulletType));
+			Vector3 velocity = m_componentCreature.ComponentBody.Velocity + direction * speed;
+
+			Projectile projectile = m_subsystemProjectiles.FireProjectile(projectileValue, eyePos, velocity, Vector3.Zero, m_componentCreature);
+			if (projectile != null)
+			{
+				projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
+			}
+
+			// Sonido y partículas según el tipo
+			if (bulletType == FlameBulletBlock.FlameBulletType.Flame)
+			{
+				m_subsystemAudio.PlaySound("Audio/Flamethrower/Flamethrower Fire", 1f, m_random.Float(-0.1f, 0.1f), eyePos, 10f, true);
+				m_subsystemParticles.AddParticleSystem(new FlameSmokeParticleSystem(m_subsystemTerrain, eyePos + 0.3f * direction, direction), false);
+			}
+			else
+			{
+				m_subsystemAudio.PlaySound("Audio/Flamethrower/PoisonSmoke", 1f, m_random.Float(-0.1f, 0.1f), eyePos, 8f, true);
+				m_subsystemParticles.AddParticleSystem(new PoisonSmokeParticleSystem(m_subsystemTerrain, eyePos + 0.3f * direction, direction), false);
+			}
+		}
+
+		private void FireItemsLauncher()
+		{
+			Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
+			Vector3 targetPos = m_target.ComponentBody.BoundingBox.Center();
+			Vector3 direction = Vector3.Normalize(targetPos - eyePos);
+
+			// Sin imprecisión (disparo recto)
+			float speed = 80f; // Velocidad de mosquete
+			int projectileValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex<BulletBlock>(), 0, BulletBlock.SetBulletType(0, BulletBlock.BulletType.MusketBall));
+			Vector3 velocity = m_componentCreature.ComponentBody.Velocity + direction * speed;
+
+			Projectile projectile = m_subsystemProjectiles.FireProjectile(projectileValue, eyePos, velocity, Vector3.Zero, m_componentCreature);
+			if (projectile != null)
+			{
+				projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
+			}
+
+			// Sonido del lanzador
+			m_subsystemAudio.PlaySound("Audio/Items/ItemLauncher/Item Cannon Fire", 0.5f, m_random.Float(-0.1f, 0.1f), eyePos, 10f, true);
+			m_subsystemParticles.AddParticleSystem(new GunSmokeParticleSystem(m_subsystemTerrain, eyePos + 0.5f * direction, direction), false);
+		}
+
 		/// <summary>
 		/// Actualiza el valor del arma en el inventario (slot activo) con los nuevos datos.
 		/// </summary>
@@ -551,13 +838,13 @@ namespace Game
 					model.InHandItemOffsetOrder = Vector3.Zero;
 					model.InHandItemRotationOrder = new Vector3(0f, -0.2f, 0f);
 				}
-				else if (block is CrossbowBlock)
+				else if (block is CrossbowBlock || block is RepeatCrossbowBlock)
 				{
 					model.AimHandAngleOrder = 1.3f;
 					model.InHandItemOffsetOrder = new Vector3(-0.08f, -0.1f, 0.07f);
 					model.InHandItemRotationOrder = new Vector3(-1.55f, 0f, 0f);
 				}
-				else if (block is MusketBlock)
+				else if (block is MusketBlock || block is FlameThrowerBlock || block is ItemsLauncherBlock)
 				{
 					model.AimHandAngleOrder = 1.4f;
 					model.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
@@ -581,7 +868,10 @@ namespace Game
 			int contents = Terrain.ExtractContents(value);
 			return contents == BlocksManager.GetBlockIndex<BowBlock>() ||
 				   contents == BlocksManager.GetBlockIndex<CrossbowBlock>() ||
-				   contents == BlocksManager.GetBlockIndex<MusketBlock>();
+				   contents == BlocksManager.GetBlockIndex<MusketBlock>() ||
+				   contents == BlocksManager.GetBlockIndex<RepeatCrossbowBlock>() ||
+				   contents == BlocksManager.GetBlockIndex<FlameThrowerBlock>() ||
+				   contents == BlocksManager.GetBlockIndex<ItemsLauncherBlock>();
 		}
 
 		/// <summary>
