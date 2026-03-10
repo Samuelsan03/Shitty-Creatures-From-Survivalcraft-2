@@ -70,10 +70,6 @@
     "SpawnDescription": "启用/禁用在死亡时生成NPC",
     "SpawnButton": "死亡生成: {0}"
   },
-  "ChaseMusic": {
-    "GhostButton": "追逐音乐 - 幽灵：{0}",
-    "TankButton": "追逐音乐 - Tanks：{0}"
-  },
   "AntidoteBucket": {
     "NPCCured": "NPC 的毒素和疾病已被清除！",
     "PoisonAndSicknessCured": "恶心和疾病已治愈！"
@@ -379,9 +375,14 @@
     }
   },
   "Blocks": {
+    "FreezeBombBlock:0": {
+  "DisplayName": "冰冻炸弹",
+  "Description": "一种特殊的爆炸炸弹，内部填充了低温冷冻化合物。爆炸时会释放出寒冷冲击波，降低温度，造成寒冷伤害，并可能让生物感冒。受到影响的目标移动速度会变慢，并会不时咳嗽或打喷嚏。",
+  "CRDescription:0": "爆炸时释放一股寒冷波动，降低温度，造成冰冻伤害，并可能让生物感冒，从而减缓其移动速度。"
+},
     "FreezingSnowballBlock:0": {
       "DisplayName": "极寒雪球",
-      "Description": "一枚注入极寒能量的雪球。投掷命中玩家时会产生逐步冻结效果：第一次降低体温，第二次造成部分冻结，第三次引发流感与极度寒冷，第四次因体温过低而死亡。命中生物时，如果其未感染流感，则会使其感染。飞行过程中会留下浓密的冰霜轨迹，并在命中时释放冰冻粒子效果。"
+      "Description": "一种注入冰冻能量的雪球。投掷时会留下霜冻轨迹，击中目标后迅速降低其体温（玩家：降至6°C，然后3°C，然后1°C，然后0.1°C），造成击退（每次击中增加），四次击中后引发体温过低和死亡。受影响的生物会被击退并可能感冒（645秒流感）。只能通过击败在寒冷生物群系或冬季出现的感染冰冻者获得，或从皮拉塔 霍斯蒂尔 科梅尔西亚恩特处以20核能币购买（最多堆叠40个）。"
     },
     "RemoteControlBlock:0": {
   "DisplayName": "遥控器",
@@ -1001,6 +1002,7 @@
   "Messages": {
     "TooCloseToAim": "离目标太近，无法瞄准！",
     "NeedAmmo": "需要 {0} 才能射击",
+    "CollarTamedInfectedFreezerMessage": "你已经驯服了一只冰冻感染者！它的寒冷吐息现在为你所用。",
     "CollarTamedHumanoidSkeletonMessage": "你已经驯服了一个人类骨架！它的骨制弓现在会为你而战！",
     "CollarTamedPredatoryChameleonMessage": "你已经驯服了一个掠食性变色龙！它的致命狩猎本能现在听从你的指挥！",
     "CollarTamedInfectedBirdMessage": "你已经驯服了一只感染鸟！你的忠诚飞行守护者将监视天空！",
