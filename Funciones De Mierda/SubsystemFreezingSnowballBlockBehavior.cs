@@ -42,7 +42,7 @@ namespace Game
 			var trails = new List<FreezingTrailParticleSystem> { particleSystem, particleSystem2 };
 			m_projectileTrails[projectile] = trails;
 
-			m_subsystemAudio.PlaySound("Audio/Throw", 0.3f, m_random.Float(-0.2f, 0.2f), projectile.Position, 2f, true);
+			m_subsystemAudio.PlaySound("Audio/Throw", 1.0f, m_random.Float(-0.2f, 0.2f), projectile.Position, 2f, true);
 		}
 
 		public override bool OnHitAsProjectile(CellFace? cellFace, ComponentBody componentBody, WorldItem worldItem)
@@ -91,7 +91,7 @@ namespace Game
 						var infected = creature.Entity.FindComponent<ComponentFluInfected>();
 						if (infected == null || !infected.IsInfected)
 						{
-							StartFluOnTarget(creature, 45f);
+							StartFluOnTarget(creature, 645f);
 							creature.ComponentBody?.ApplyImpulse(new Vector3(
 								m_random.Float(-0.5f, 0.5f),
 								0.2f,
@@ -108,7 +108,6 @@ namespace Game
 			return false; // Permitir que el proyectil continúe (o se destruya según la lógica base)
 		}
 
-		// Los métodos ApplyFreezingEffectsToPlayer, KillTarget, StartFluOnTarget permanecen igual
 		private void ApplyFreezingEffectsToPlayer(ComponentPlayer player, int impactNumber)
 		{
 			if (player.ComponentBody != null)
@@ -134,7 +133,7 @@ namespace Game
 					));
 					break;
 				case 3:
-					StartFluOnTarget(player, 45f);
+					StartFluOnTarget(player, 645f);
 					SetPlayerTemperature(player, 1f);
 					player.ComponentBody?.ApplyImpulse(new Vector3(
 						m_random.Float(-1.2f, 1.2f),
@@ -171,6 +170,7 @@ namespace Game
 
 		private void StartFluOnTarget(ComponentCreature target, float duration)
 		{
+			// Intentar con el sistema de gripe para criaturas (ComponentFluInfected)
 			var targetFluInfected = target.Entity.FindComponent<ComponentFluInfected>();
 			if (targetFluInfected != null)
 			{
@@ -178,14 +178,22 @@ namespace Game
 				return;
 			}
 
+			// Si es un jugador, usar el sistema original ComponentFlu (del juego base)
 			if (target is ComponentPlayer player && player.ComponentFlu != null)
 			{
 				if (!player.ComponentFlu.HasFlu)
 					player.ComponentFlu.StartFlu();
+				// Ajustar duración mediante reflexión (si es necesario)
 				var fluField = typeof(ComponentFlu).GetField("m_fluDuration",
 					System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-				fluField?.SetValue(player.ComponentFlu, duration);
+				if (fluField != null)
+				{
+					float currentDuration = (float)fluField.GetValue(player.ComponentFlu);
+					if (duration > currentDuration)
+						fluField.SetValue(player.ComponentFlu, duration);
+				}
 			}
+			// Si no tiene componente de gripe, no se puede infectar (y no se añade)
 		}
 	}
 }
