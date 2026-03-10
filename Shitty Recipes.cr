@@ -134,22 +134,17 @@
     " a "
     " c "
 </Recipe>
-<Recipe Result="RepeatArrowBlock:2" ResultCount="8" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="repeatarrow:1" b="diamond" c="feather" Description="[2]">
+<Recipe Result="RepeatArrowBlock:2" ResultCount="8" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="repeatarrow:0" b="diamond" c="feather" Description="[2]">
     " b "
     " a "
     " c "
 </Recipe>
-<Recipe Result="RepeatArrowBlock:3" ResultCount="8" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="repeatarrow:1" b="gunpowder" c="feather" Description="[3]">
+<Recipe Result="RepeatArrowBlock:3" ResultCount="8" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="repeatarrow:0" b="gunpowder" c="feather" Description="[3]">
     " b "
     " a "
     " c "
 </Recipe>
-<Recipe Result="RepeatArrowBlock:4" ResultCount="8" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="repeatarrow:1" b="toxin" c="feather" Description="[4]">
-    " b "
-    " a "
-    " c "
-</Recipe>
-<Recipe Result="RepeatArrowBlock:5" ResultCount="8" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="repeatarrow:4" b="toxin" c="feather" Description="[5]">
+<Recipe Result="RepeatArrowBlock:4" ResultCount="8" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="repeatarrow:0" b="toxin" c="feather" Description="[4]">
     " b "
     " a "
     " c "
@@ -506,6 +501,11 @@
     "cdc"
     "aba"
 </Recipe>
+<Recipe Result="RemoteControlBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="3" a="semiconductorblock" b="wire" c="battery" Description="[0]">
+    " a "
+    "bcb"
+    " a "
+</Recipe>
         <Smelting>
         <Recipe Result="CopperSharpHammerBlock" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="3" a="coppermachete" b="ironhammer" Description="[0]">
         "ab"
@@ -523,6 +523,12 @@
     "ab"
 </Recipe>
 <Recipe Result="TeaAntifluBucketBlock" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="3" a="waterbucket" b="tallgrass" Description="[0]">
+    "ab"
+</Recipe>
+<Recipe Result="RepeatArrowBlock:5" ResultCount="8" RequiredHeatLevel="2" RequiredPlayerLevel="6" a="toxin" b="repeatarrow:4" Description="[0]">
+    "ab"
+</Recipe>
+<Recipe Result="FreezeBombBlock" ResultCount="6" RequiredHeatLevel="2" RequiredPlayerLevel="3" a="ice" b="bomb" Description="[0]">
     "ab"
 </Recipe>
         </Smelting>
