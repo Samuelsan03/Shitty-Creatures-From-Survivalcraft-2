@@ -66,11 +66,21 @@ namespace Game
 			Project.FindSubsystem<SubsystemNoise>(true)?.MakeNoise(
 				m_componentCreature.ComponentBody.Position, 0.25f, 10f);
 
-			// APLICAR DAÑO AL ESTORNUDAR
+			// APLICAR DAÑO AL ESTORNUDAR - MODIFICADO para no matar
 			if (m_fluDuration > 0f && m_componentCreature.ComponentHealth.Health > 0.05f)
 			{
 				float damage = 0.02f; // daño por estornudo (ajustable)
-				m_componentCreature.ComponentHealth.Injure(damage, null, false, "Gripe");
+
+				// Verificar que no mate a la criatura (deja siempre al menos 0.05f de vida)
+				if (m_componentCreature.ComponentHealth.Health - damage <= 0.05f)
+				{
+					damage = m_componentCreature.ComponentHealth.Health - 0.05f;
+				}
+
+				if (damage > 0f)
+				{
+					m_componentCreature.ComponentHealth.Injure(damage, null, false, "Gripe");
+				}
 			}
 		}
 
@@ -109,8 +119,6 @@ namespace Game
 				{
 					Cough();
 				}
-
-				// El daño se aplica SOLO en Sneeze(), no aquí
 			}
 
 			// Aplicar ralentización si está infectado
