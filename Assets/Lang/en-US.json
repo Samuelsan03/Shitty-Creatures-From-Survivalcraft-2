@@ -70,10 +70,6 @@
     "SpawnDescription": "Enable/disable spawning of NPCs when one dies",
     "SpawnButton": "Death Spawn: {0}"
   },
-  "ChaseMusic": {
-    "GhostButton": "Chase Music\n - Ghosts: {0}",
-    "TankButton": "Chase Music\n - Tanks: {0}"
-  },
   "AntidoteBucket": {
     "NPCCured": "The NPC has been cured of poison and sickness!",
     "PoisonAndSicknessCured": "Nausea and sickness have been cured!"
@@ -379,9 +375,14 @@
   }
 },
   "Blocks": {
+    "FreezeBombBlock:0": {
+      "DisplayName": "Freeze Bomb",
+      "Description": "A specialized explosive bomb filled with cryogenic compounds. Upon detonation, it releases a freezing blast that lowers temperatures, inflicts cold damage, and can cause creatures to catch a cold. Affected targets move slower and periodically cough or sneeze.",
+      "CRDescription:0": "Upon explosion, it releases a wave of cold that reduces temperature, causes freezing damage, and can give creatures a cold, slowing their movement."
+    },
     "FreezingSnowballBlock:0": {
   "DisplayName": "Freezing Snowball",
-  "Description": "A snowball infused with extreme freezing energy. When thrown at players, it applies progressive freezing effects: first impact lowers body temperature, second causes partial freezing, third induces flu and extreme cold, and the fourth impact results in death by hypothermia. Creatures hit by it contract flu if not already infected. Leaves a dense freezing trail and releases icy particles upon impact."
+  "Description": "A snowball infused with freezing energy. When thrown, it leaves a frosty trail and upon impact rapidly lowers the target's body temperature (player: reduces to 6°C, then 3°C, then 1°C, then 0.1°C), causes knockback (increasing with each hit), and after four hits induces hypothermia and death. Affected creatures are knocked back and may catch a cold (645s flu). Obtained only by defeating Infected Freezers that spawn in cold biomes or during winter, or by purchasing from the Pirata Hostil Comerciante for 20 Nuclear Coins (stack up to 40)."
     },
     "RemoteControlBlock:0": {
   "DisplayName": "Remote Control",
@@ -999,6 +1000,7 @@
   "Messages": {
     "TooCloseToAim": "Too close to aim.",
     "NeedAmmo": "Needs {0} to shoot.",
+    "CollarTamedInfectedFreezerMessage": "You have tamed a Infected Freezer! Its icy snowballs will slow and freeze your enemies!",
     "CollarTamedHumanoidSkeletonMessage": "You have tamed a Humanoid Skeleton! Its bony bow will now fight for you!",
     "CollarTamedPredatoryChameleonMessage": "You have tamed a Predatory Chameleon! Its lethal hunting instincts are now yours to command!",
     "CollarTamedInfectedBirdMessage": "You have tamed an Infected Bird! Your loyal flying guardian will watch the skies!",
