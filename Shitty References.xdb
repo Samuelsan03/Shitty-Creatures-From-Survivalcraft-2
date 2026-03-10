@@ -180,11 +180,6 @@
     <Parameter Name="CanUseInventory" Guid="ddb27b73-4aa7-4580-a5bd-684db3139696" Value="true" Type="bool" Description="Si la criatura puede usar armas del inventario"/>
 </ComponentTemplate>
 
-<ComponentTemplate Name="DefensiveCreatureAI" Description="Inteligencia artificial para criaturas aliadas. Ataca enemigos pero NUNCA ataca al jugador ni a miembros de su manada. Los infectados aliados (InfectedNormalTamed, etc.) tienen animaciones especiales de disparo (brazos abajo, solo giran)." Guid="8f1b3024-f8c3-4ff7-9aad-01cf76ff3438" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
-    <Parameter Name="Class" Guid="a0983834-1f81-4fdc-8d79-7b6dd38a7b5e" Value="Game.ComponentDefensiveCreatureAI" Type="string" Description="Clase C# que implementa el componente de IA defensiva."/>
-    <Parameter Name="CanUseInventory" Guid="ffa76df4-5749-46f7-a4f7-ef8133b0b2e9" Value="true" Type="bool" Description="Habilita el uso de armas de fuego, arcos, lanzables, etc., desde el inventario de la criatura."/>
-</ComponentTemplate>
-
 <ComponentTemplate Name="CreatureClothing" Description="Permite asignar prendas de ropa a criaturas." Guid="84f381c3-b55c-4a49-bdd0-0bef89bbc0e9" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
 			<Parameter Name="DropClothesProbability" Description="Probabilidad de que la criatura suelte los objetos de ropa cuando muere, 1 es 100%" Guid="354d89f0-e0cd-40f7-acd2-2ffbf1fcf87e" Value="1" Type="float"/>
 			<ParameterSet Name="Clothes" Description="Contains clothes worn by creature" Guid="7c750c43-e2bb-4a53-8116-328ac217e66e">
@@ -497,26 +492,26 @@
   <Parameter Name="InfectProbability" Description="Probabilidad de que el ataque cause envenenamiento (0-1)" Guid="7c34d504-c34a-487a-8ca2-a115ca60e9d7" Value="1.0" Type="float"/>
 </ComponentTemplate>
 
-<ComponentTemplate Name="NewChaseBehavior" Description="Comportamiento de persecución mejorado con IA avanzada para protección del jugador, detección de amenazas durante noche verde y respuesta a ataques de la manada" Guid="1db20f99-32ba-4e7a-8e76-10686a2e76e5" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
-  <Parameter Name="Class" Guid="5c0703e1-9d16-48fd-8d02-b40001bcfb38" Value="Game.ComponentNewChaseBehavior" Type="string" />
-  <Parameter Name="ChaseWhenAttackedProbability" Description="Probabilidad de perseguir al ser atacado" Guid="c7fa1a73-7f50-4e21-b3e6-da5a97fdf8fb" Value="1" Type="float" />
-  <Parameter Name="NightChaseTime" Description="Tiempo de persecución durante la noche en segundos" Guid="549156e6-4c85-4d24-bdbc-3e1f85c09c54" Value="90" Type="float" />
-  <Parameter Name="DayChaseRange" Description="Rango de persecución durante el día" Guid="f60e3db1-0936-41c9-84aa-b3036ee7bbc0" Value="20" Type="float" />
-  <Parameter Name="ChaseOnTouchProbability" Description="Probabilidad de perseguir al ser tocado por una criatura de AutoChaseMask" Guid="6da7a564-e72a-4098-bbb8-03ac7a915f7d" Value="1" Type="float" />
-  <Parameter Name="DayChaseTime" Description="Tiempo de persecución durante el día en segundos" Guid="a728fe2c-7598-4e3b-ac6a-7fef0dffaac2" Value="60" Type="float" />
-  <Parameter Name="NightChaseRange" Description="Rango de persecución durante la noche" Guid="72dc0ba8-a7e7-4176-8765-828f01f5b146" Value="25" Type="float" />
-  <Parameter Name="AutoChaseMask" Description="Categorías de criaturas a perseguir automáticamente" Guid="236e7b27-66ca-4615-afbf-469696687c9c" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory" />
-  <Parameter Name="ChaseNonPlayerProbability" Description="Probabilidad de perseguir objetivos no jugadores" Guid="894d905f-354b-4a1b-b765-88bbb1bfcda8" Value="1" Type="float" />
+<ComponentTemplate Name="NewChaseBehavior" Description="Comportamiento de persecución mejorado con IA avanzada para protección del jugador, detección de amenazas durante noche y respuesta a ataques de la manada" Guid="1db20f99-32ba-4e7a-8e76-10686a2e76e5" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+  <Parameter Name="Class" Guid="387e61aa-98d5-47f5-b74e-4a0ddb3a645b" Value="Game.ComponentNewChaseBehavior" Type="string"/>
+  <Parameter Name="DayChaseRange" Description="Rango de persecución durante el día" Guid="9d841aad-ecb7-49e6-95e2-c5530e18049e" Value="20" Type="float"/>
+  <Parameter Name="NightChaseRange" Description="Rango de persecución durante la noche" Guid="ded5be34-959b-4e1b-9246-34bfba2fa58c" Value="25" Type="float"/>
+  <Parameter Name="DayChaseTime" Description="Tiempo de persecución durante el día en segundos" Guid="e28083bc-c989-412b-8458-1b9d201a2967" Value="60" Type="float"/>
+  <Parameter Name="NightChaseTime" Description="Tiempo de persecución durante la noche en segundos" Guid="7f5f2cf3-1d72-4ac6-b3bd-5162425e2b4e" Value="90" Type="float"/>
+  <Parameter Name="ChaseWhenAttackedProbability" Description="Probabilidad de perseguir al ser atacado" Guid="055d0d94-39eb-4e77-a5c0-99ac3fbd52da" Value="0" Type="float"/>
+  <Parameter Name="ChaseOnTouchProbability" Description="Probabilidad de perseguir al ser tocado por una criatura de AutoChaseMask" Guid="63590376-889c-4959-b586-fc58d5cc9bbf" Value="0" Type="float"/>
+  <Parameter Name="AutoChaseMask" Description="Categorías de criaturas a perseguir automáticamente" Guid="5da7f87c-19be-463b-930e-57df04a0fd04" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
+  <Parameter Name="ChaseNonPlayerProbability" Description="Probabilidad de perseguir objetivos no jugadores" Guid="0b3b2584-ce25-4c73-8269-cd1ebd5df44d" Value="1" Type="float"/>
 </ComponentTemplate>
 
-<ComponentTemplate Name="NewHerdBehavior" Description="Comportamiento de manada con cooperación, llamadas de ayuda y protección entre aliados" Guid="24c8a629-49be-4cb4-b829-78d5a5a14204" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
-  <Parameter Name="Class" Type="string" Value="Game.ComponentNewHerdBehavior" Guid="f6593b48-8fa1-44a1-a29d-4b55b3b17829"/>
-  <Parameter Name="HerdName" Type="string" Value="KaalusGlitch" Guid="01a08d69-29a4-42c7-976a-4eec96396c02" Description="Identificador de manada. Mismo valor = aliados. 'player' coopera con nombres que contengan 'guardian'. 'guardian' coopera con 'player' y no ataca al jugador."/>
-  <Parameter Name="HerdingRange" Type="float" Value="32" Guid="5396040e-7ad3-47c6-b6b8-55d3c1cc8d8f" Description="Distancia máxima usada para buscar aliados al calcular el centro de la manada."/>
-  <Parameter Name="AutoNearbyCreaturesHelp" Type="bool" Value="True" Guid="b629709e-fe14-401c-9d95-9d493d26408a" Description="Si está activo, la criatura pide ayuda al ser atacada y responde a ataques contra aliados cercanos."/>
-  <Parameter Name="HelpCallRange" Type="float" Value="16" Guid="ea70d5f2-ee67-479c-a654-39ce7abfd8c8" Description="Radio máximo en el que otras criaturas pueden responder a una llamada de ayuda."/>
-  <Parameter Name="MaxHelpChaseTime" Type="float" Value="30" Guid="fb606508-b64c-48e5-b1b4-dbedbd8055b7" Description="Tiempo máximo que una criatura ayudará persiguiendo al objetivo."/>
-  <Parameter Name="AvoidAttackingSameHerd" Type="bool" Value="True" Guid="7dd6358a-b415-4f9b-8425-c390cda4f3c3" Description="Evita ataques contra miembros de la misma manada o aliados especiales."/>
+<ComponentTemplate Name="NewHerdBehavior" Description="Comportamiento de manada mejorado con reconocimiento del jugador y protección entre aliados" Guid="24c8a629-49be-4cb4-b829-78d5a5a14204" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+  <Parameter Name="Class" Type="string" Value="Game.ComponentNewHerdBehavior" Guid="32cb08cf-154e-47f1-a070-13b6f1120a59"/>
+  <Parameter Name="HerdName" Type="string" Value="player" Guid="1f0a8923-af89-45fc-bbdc-72eb4c1d0502" Description="Identificador de manada. Mismo valor = aliados. 'player' coopera con nombres que contengan 'guardian'. 'guardian' coopera con 'player' y no ataca al jugador."/>
+  <Parameter Name="HerdingRange" Type="float" Value="32" Guid="4e45b0fd-79a6-48fb-9fbf-ca1564e43564" Description="Distancia máxima usada para buscar aliados al calcular el centro de la manada."/>
+  <Parameter Name="AutoNearbyCreaturesHelp" Type="bool" Value="True" Guid="868cd214-1933-4259-9ddc-71f7c5ca334f" Description="Si está activo, la criatura pide ayuda al ser atacada y responde a ataques contra aliados cercanos."/>
+  <Parameter Name="HelpCallRange" Type="float" Value="16" Guid="196c618a-8129-490f-a833-324e78429745" Description="Radio máximo en el que otras criaturas pueden responder a una llamada de ayuda."/>
+  <Parameter Name="MaxHelpChaseTime" Type="float" Value="30" Guid="4300b7fe-6c5a-4654-981d-bedbc7055c66" Description="Tiempo máximo que una criatura ayudará persiguiendo al objetivo."/>
+  <Parameter Name="AvoidAttackingSameHerd" Type="bool" Value="True" Guid="2d4f617d-0242-4293-ac89-42f75d853662" Description="Evita ataques contra miembros de la misma manada o aliados especiales."/>
 </ComponentTemplate>
     </Folder>
 
@@ -649,6 +644,9 @@
 <MemberSubsystemTemplate Name="PoisonExplosions" Guid="6602178c-624b-426d-870f-8b21cd6a8400" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
         <Parameter Name="Class" Guid="1bd7c0bb-0b40-496e-91f6-c889b63f066b" Value="Game.SubsystemPoisonExplosions" Type="string"/>
     </MemberSubsystemTemplate>
+    <MemberSubsystemTemplate Name="FreezeExplosions" Guid="e27d0ea5-c8f4-4b6f-9012-5e09a6fad859" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+      <Parameter Name="Class" Guid="78187e73-33f0-4ff3-910d-d0de56d6619f" Value="Game.SubsystemFreezeExplosions" Type="string"/>
+    </MemberSubsystemTemplate>
 <MemberSubsystemTemplate Name="PoisonBulletBlockBehavior" Guid="fc95d14d-87db-4f63-9dfc-e5624c8b033f" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
         <Parameter Name="Class" Guid="4a9520e6-1988-4a8a-8e2d-5b84303d2576" Value="Game.SubsystemPoisonBulletBlockBehavior" Type="string"/>
     </MemberSubsystemTemplate>
@@ -672,6 +670,9 @@
     </MemberSubsystemTemplate>
     <MemberSubsystemTemplate Name="FlameThrowerBlockBehavior" Guid="542a26f8-f4ed-47f9-afb5-098d16d711c2" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
       <Parameter Name="Class" Guid="76328ace-b569-40d4-8cf8-414d685b8baa" Value="Game.SubsystemFlameThrowerBlockBehavior" Type="string"/>
+    </MemberSubsystemTemplate>
+    <MemberSubsystemTemplate Name="FreezeBombBlockBehavior" Guid="a3aada5d-df96-48b2-bd16-137408a8d85d" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+      <Parameter Name="Class" Guid="d33cfb29-2b47-4086-8667-5ae31fce0114" Value="Game.SubsystemFreezeBombBlockBehavior" Type="string"/>
     </MemberSubsystemTemplate>
 <MemberSubsystemTemplate Name="SkyGreen" Guid="280f1c5a-7c84-4149-9809-8a28b85bae1f" InheritanceParent="a3914c13-7801-46a6-b23a-9e2b36e9defb">
     <Parameter Name="Class" Value="Game.SubsystemGreenNightSky" Type="string" Guid="52c94fa8-b6d9-4c23-8bed-d7b9f76fce19"/>
