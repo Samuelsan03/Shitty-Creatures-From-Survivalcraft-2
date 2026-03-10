@@ -70,10 +70,6 @@
     "SpawnDescription": "Activar/desactivar la generación de NPCs al morir uno",
     "SpawnButton": "Generación al morir:\n {0}"
   },
-  "ChaseMusic": {
-    "GhostButton": "Música de Persecución\n - Fantasmas: {0}",
-    "TankButton": "Música de Persecución\n - Tanks: {0}"
-  },
     "AntidoteBucket": {
       "NPCCured": "¡El NPC ha sido curado de veneno y enfermedades!",
       "PoisonAndSicknessCured": "¡Las náuseas y la enfermedad han sido curadas!"
@@ -379,9 +375,14 @@
     }
   },
   "Blocks": {
+    "FreezeBombBlock:0": {
+  "DisplayName": "Bomba Congelante",
+  "Description": "Una bomba explosiva especializada llena de compuestos criogénicos. Al detonar, libera una explosión helada que reduce la temperatura, inflige daño por frío y puede causar que las criaturas se resfríen. Los objetivos afectados se mueven más lento y periódicamente tosen o estornudan.",
+  "CRDescription:0": "Al explotar, libera una ola de frío que reduce la temperatura, causa daño por congelación y puede resfriar a las criaturas, ralentizando su movimiento."
+},
     "FreezingSnowballBlock:0": {
       "DisplayName": "Bola de Nieve Congelante",
-      "Description": "Una bola de nieve impregnada con energía de congelación extrema. Al lanzarse contra jugadores, aplica efectos progresivos de congelamiento: el primer impacto reduce la temperatura corporal, el segundo provoca congelamiento parcial, el tercero causa gripe y frío extremo, y el cuarto impacto provoca muerte por hipotermia. Las criaturas golpeadas contraen gripe si no están infectadas. Deja una estela congelante densa y libera partículas heladas al impactar."
+      "Description": "Una bola de nieve imbuida con energía helada. Al lanzarla, deja un rastro de escarcha y al impactar reduce rápidamente la temperatura corporal del objetivo (jugador: reduce a 6°C, luego 3°C, luego 1°C, luego 0.1°C), causa retroceso (aumenta con cada golpe) y después de cuatro golpes induce hipotermia y muerte. Las criaturas afectadas sufren retroceso y pueden resfriarse (gripe de 645s). Se obtiene únicamente derrotando a Infectados Congelantes que aparecen en biomas fríos o durante el invierno, o comprándolo al Pirata Hostil Comerciante por 20 Monedas Nucleares (stack de hasta 40)."
     },
     "RemoteControlBlock:0": {
   "DisplayName": "Control Remoto",
@@ -1001,6 +1002,7 @@
   "Messages": {
     "TooCloseToAim": "Demasiado cerca para apuntar.",
     "NeedAmmo": "Necesita {0} para disparar.",
+    "CollarTamedInfectedFreezerMessage": "¡Has domesticado a un Infectado Congelador! Su aliento helado ahora está a tu servicio.",
     "CollarTamedHumanoidSkeletonMessage": "¡Has domesticado a un Esqueleto Humanoide! Su arco óseo luchará por ti.",
     "CollarTamedPredatoryChameleonMessage": "¡Has domesticado a un Camaleón Depredador! Sus instintos de caza letales ahora son tuyos.",
     "CollarTamedInfectedBirdMessage": "¡Has domesticado a un Pájaro Infectado! Tu fiel guardián volador vigilará los cielos.",
