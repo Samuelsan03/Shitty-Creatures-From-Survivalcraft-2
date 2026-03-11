@@ -647,6 +647,8 @@ namespace Game
 			if (blockType == typeof(LavaSpearBlock)) return true;
 			if (blockType == typeof(DiamondLongspearBlock)) return true;
 			if (blockType == typeof(FreezingSnowballBlock)) return true;
+			if (blockType == typeof(FreezeBombBlock)) return true;
+			if (blockType == typeof(FireworksBlock)) return true;
 
 			return false;
 		}
@@ -808,6 +810,10 @@ namespace Game
 		private void AttackMelee(ComponentCreature target)
 		{
 			if (m_componentMiner == null || target == null || m_componentModel == null)
+				return;
+
+			// VERIFICACIÓN DE FUEGO AMIGO
+			if (IsSameHerd(target))
 				return;
 
 			m_componentModel.AttackOrder = true;
@@ -1082,11 +1088,11 @@ namespace Game
 		{
 			if (target == null) return;
 			if (distance > 4f) return;
-
-			// NUNCA usar lanzables (tipo 6) como melee
 			if (m_weaponType == 6) return;
 
-			// ELIMINADO: m_componentPathfinding.Destination = null;
+			// VERIFICACIÓN DE FUEGO AMIGO
+			if (IsSameHerd(target))
+				return;
 
 			if (m_componentModel != null)
 				m_componentModel.LookAtOrder = new Vector3?(target.ComponentCreatureModel.EyePosition);
@@ -1098,7 +1104,6 @@ namespace Game
 					ComponentBody targetBody = target.ComponentBody;
 					Vector3 hitPoint = targetBody.Position;
 					Vector3 hitDirection = Vector3.Normalize(targetBody.Position - m_componentCreature.ComponentBody.Position);
-
 					m_componentMiner.Hit(targetBody, hitPoint, hitDirection);
 					m_nextMeleeAttackTime = m_subsystemTime.GameTime + m_meleeAttackInterval;
 				}
@@ -1250,6 +1255,12 @@ namespace Game
 		{
 			if (target == null) return;
 
+			// VERIFICACIÓN DE FUEGO AMIGO: No disparar a miembros de la misma manada
+			if (IsSameHerd(target))
+			{
+				return;
+			}
+
 			try
 			{
 				if (m_isItemsLauncherReloading) return;
@@ -1315,36 +1326,26 @@ namespace Game
 		private void ProcessMeleeBehavior(ComponentCreature target, float distance)
 		{
 			if (target == null) return;
-
-			// Si estamos demasiado lejos para atacar cuerpo a cuerpo, no hacer nada (la persecución nos acercará)
 			if (distance > 4f) return;
 
-			// Detener el movimiento para atacar
+			// VERIFICACIÓN DE FUEGO AMIGO
+			if (IsSameHerd(target))
+				return;
+
 			if (m_componentPathfinding != null)
-			{
 				m_componentPathfinding.Destination = null;
-			}
 
-			// Mirar al objetivo
 			if (m_componentModel != null && target != null)
-			{
 				m_componentModel.LookAtOrder = new Vector3?(target.ComponentCreatureModel.EyePosition);
-			}
 
-			// Atacar con el intervalo definido
 			if (m_subsystemTime.GameTime >= m_nextMeleeAttackTime)
 			{
-				// Usar ComponentMiner para golpear (ataque cuerpo a cuerpo)
 				if (m_componentMiner != null)
 				{
-					// CORREGIDO: Pasar los tres parámetros requeridos
 					ComponentBody targetBody = target.ComponentBody;
-					Vector3 hitPoint = targetBody.Position; // Punto de impacto (puedes usar alguna parte del cuerpo si existe)
+					Vector3 hitPoint = targetBody.Position;
 					Vector3 hitDirection = Vector3.Normalize(targetBody.Position - m_componentCreature.ComponentBody.Position);
-
-					// ¡FALTABA ESTA LÍNEA!
 					m_componentMiner.Hit(targetBody, hitPoint, hitDirection);
-
 					m_nextMeleeAttackTime = m_subsystemTime.GameTime + m_meleeAttackInterval;
 				}
 			}
@@ -1522,6 +1523,10 @@ namespace Game
 		private void ThrowThrowableWeapon(ComponentCreature target)
 		{
 			if (target == null) return;
+
+			// VERIFICACIÓN DE FUEGO AMIGO: No lanzar objetos a miembros de la misma manada
+			if (IsSameHerd(target))
+				return;
 
 			try
 			{
@@ -1828,6 +1833,12 @@ namespace Game
 		private void FireFirearm(ComponentCreature target, FirearmConfig config)
 		{
 			if (target == null) return;
+
+			// VERIFICACIÓN DE FUEGO AMIGO: No disparar a miembros de la misma manada
+			if (IsSameHerd(target))
+			{
+				return;
+			}
 
 			try
 			{
@@ -3308,6 +3319,9 @@ namespace Game
 		private void ShootBowArrow(ComponentCreature target)
 		{
 			if (target == null) return;
+			// VERIFICACIÓN DE FUEGO AMIGO: No disparar a miembros de la misma manada
+			if (IsSameHerd(target))
+				return;
 
 			try
 			{
@@ -3358,6 +3372,9 @@ namespace Game
 		private void ShootCrossbowBolt(ComponentCreature target)
 		{
 			if (target == null) return;
+			// VERIFICACIÓN DE FUEGO AMIGO: No disparar a miembros de la misma manada
+			if (IsSameHerd(target))
+				return;
 
 			try
 			{
@@ -3414,6 +3431,9 @@ namespace Game
 		private void ShootMusketBullet(ComponentCreature target)
 		{
 			if (target == null) return;
+			// VERIFICACIÓN DE FUEGO AMIGO: No disparar a miembros de la misma manada
+			if (IsSameHerd(target))
+				return;
 
 			try
 			{
@@ -3464,6 +3484,10 @@ namespace Game
 		{
 			if (target == null) return;
 
+			// VERIFICACIÓN DE FUEGO AMIGO: No disparar a miembros de la misma manada
+			if (IsSameHerd(target))
+				return;
+
 			try
 			{
 				Vector3 firePosition = m_componentCreature.ComponentCreatureModel.EyePosition;
@@ -3509,9 +3533,39 @@ namespace Game
 			catch { }
 		}
 
+		// AÑADIDO: Verificar si el objetivo es de la misma manada (para evitar fuego amigo)
+		private bool IsSameHerd(ComponentCreature target)
+		{
+			if (target == null || m_componentCreature == null)
+				return false;
+
+			ComponentZombieHerdBehavior thisHerd = Entity.FindComponent<ComponentZombieHerdBehavior>();
+			ComponentZombieHerdBehavior targetHerd = target.Entity.FindComponent<ComponentZombieHerdBehavior>();
+
+			if (thisHerd != null && targetHerd != null && !string.IsNullOrEmpty(thisHerd.HerdName))
+			{
+				return thisHerd.HerdName == targetHerd.HerdName;
+			}
+
+			// También verificar el ComponentHerdBehavior base por si acaso
+			ComponentHerdBehavior thisBaseHerd = Entity.FindComponent<ComponentHerdBehavior>();
+			ComponentHerdBehavior targetBaseHerd = target.Entity.FindComponent<ComponentHerdBehavior>();
+
+			if (thisBaseHerd != null && targetBaseHerd != null && !string.IsNullOrEmpty(thisBaseHerd.HerdName))
+			{
+				return thisBaseHerd.HerdName == targetBaseHerd.HerdName;
+			}
+
+			return false;
+		}
+
 		private void ShootRepeatCrossbowArrow(ComponentCreature target)
 		{
 			if (target == null) return;
+
+			// VERIFICACIÓN DE FUEGO AMIGO: No disparar a miembros de la misma manada
+			if (IsSameHerd(target))
+				return;
 
 			try
 			{
