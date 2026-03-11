@@ -17,6 +17,7 @@ namespace Game
 		private SubsystemAudio m_subsystemAudio;
 		private ComponentCreatureModel m_componentModel;
 		private SubsystemNoise m_subsystemNoise;
+		private SubsystemTerrain m_subsystemTerrain;
 		private Random m_random = new Random();
 
 		// Configuración - Mantener nombres originales del XML
@@ -81,6 +82,7 @@ namespace Game
 			m_subsystemAudio = base.Project.FindSubsystem<SubsystemAudio>(true);
 			m_componentModel = base.Entity.FindComponent<ComponentCreatureModel>(true);
 			m_subsystemNoise = base.Project.FindSubsystem<SubsystemNoise>(true);
+			m_subsystemTerrain = base.Project.FindSubsystem<SubsystemTerrain>(true);
 		}
 
 		public override void OnEntityAdded()
@@ -105,7 +107,7 @@ namespace Game
 			if (m_componentCreature.ComponentHealth.Health <= 0f)
 				return;
 
-			// Verificar objetivo usando el nuevo método
+			// Verificar objetivo
 			ComponentCreature target = GetChaseTarget();
 
 			if (target == null)
@@ -127,18 +129,26 @@ namespace Game
 				target.ComponentBody.Position
 			);
 
-			// Lógica de ataque - Solo verifica distancia máxima (sin mínima)
+			// SOLO VERIFICAR DISTANCIA MÁXIMA - SIEMPRE DISPARAR SI ESTÁ EN RANGO
 			if (distance <= MaxDistance)
 			{
 				if (!m_isAiming && !m_isDrawing && !m_isFiring && !m_isReloading)
 				{
-					StartAiming();
+					StartAiming(target);
 				}
 			}
 			else
 			{
 				ResetAnimations();
 				return;
+			}
+
+			// MIRAR AL OBJETIVO SIEMPRE
+			if (m_componentModel != null && target != null)
+			{
+				m_componentModel.LookAtOrder = new Vector3?(
+					target.ComponentCreatureModel.EyePosition
+				);
 			}
 
 			// Aplicar animaciones y lógica de estado
@@ -193,7 +203,7 @@ namespace Game
 					// Pausa antes de recargar según TimeBetweenShots del XML
 					if (m_subsystemTime.GameTime - m_fireTime >= TimeBetweenShots)
 					{
-						StartAiming();
+						StartAiming(target);
 					}
 				}
 			}
@@ -261,7 +271,7 @@ namespace Game
 			UpdateCrossbowArrowType(null);
 		}
 
-		private void StartAiming()
+		private void StartAiming(ComponentCreature target)
 		{
 			m_isAiming = true;
 			m_isDrawing = false;
@@ -269,7 +279,20 @@ namespace Game
 			m_isReloading = false;
 			m_animationStartTime = m_subsystemTime.GameTime;
 			m_currentDraw = 0f;
-			m_nextArrowType = null; // Limpiar el tipo seleccionado
+
+			// Seleccionar tipo de flecha basado en la distancia actual
+			if (target != null)
+			{
+				float distance = Vector3.Distance(
+					m_componentCreature.ComponentBody.Position,
+					target.ComponentBody.Position
+				);
+				m_nextArrowType = SelectArrowTypeForDistance(distance);
+			}
+			else
+			{
+				m_nextArrowType = GetFirstNonExplosiveArrowType();
+			}
 
 			// Mostrar ballesta sin tensar y sin flecha
 			UpdateCrossbowDraw(0);
@@ -284,13 +307,6 @@ namespace Game
 				m_componentModel.AimHandAngleOrder = 1.3f;
 				m_componentModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.1f, 0.07f);
 				m_componentModel.InHandItemRotationOrder = new Vector3(-1.55f, 0f, 0f);
-
-				if (target != null)
-				{
-					m_componentModel.LookAtOrder = new Vector3?(
-						target.ComponentCreatureModel.EyePosition
-					);
-				}
 			}
 		}
 
@@ -320,13 +336,6 @@ namespace Game
 					0.07f - (0.03f * drawFactor)
 				);
 				m_componentModel.InHandItemRotationOrder = new Vector3(-1.55f, 0f, 0f);
-
-				if (target != null)
-				{
-					m_componentModel.LookAtOrder = new Vector3?(
-						target.ComponentCreatureModel.EyePosition
-					);
-				}
 			}
 		}
 
@@ -419,13 +428,6 @@ namespace Game
 					0.04f
 				);
 				m_componentModel.InHandItemRotationOrder = new Vector3(-1.55f, 0f, 0f);
-
-				if (target != null)
-				{
-					m_componentModel.LookAtOrder = new Vector3?(
-						target.ComponentCreatureModel.EyePosition
-					);
-				}
 			}
 		}
 
@@ -451,9 +453,6 @@ namespace Game
 				);
 				m_componentCreature.ComponentBody.ApplyImpulse(-direction * 1.0f);
 			}
-
-			// Limpiar el tipo seleccionado para el próximo disparo
-			m_nextArrowType = null;
 		}
 
 		private void ApplyFiringAnimation(float dt)
@@ -515,7 +514,7 @@ namespace Game
 
 			try
 			{
-				// Usar el tipo seleccionado previamente (en LoadArrow)
+				// Usar el tipo seleccionado previamente (en LoadArrow o StartAiming)
 				RepeatArrowBlock.ArrowType? arrowType = m_nextArrowType;
 				if (arrowType == null)
 				{
@@ -579,7 +578,7 @@ namespace Game
 				// 3. Aplicar menos imprecisión vertical que horizontal
 				direction += new Vector3(
 					m_random.Float(-inaccuracy, inaccuracy),
-					m_random.Float(-inaccuracy * 0.3f, inaccuracy * 0.3f), // Vertical: 30% del horizontal
+					m_random.Float(-inaccuracy * 0.3f, inaccuracy * 0.3f),
 					m_random.Float(-inaccuracy, inaccuracy)
 				);
 
@@ -587,7 +586,7 @@ namespace Game
 				direction = Vector3.Normalize(direction);
 
 				// 5. Velocidad constante (sin variación por tensión para NPC)
-				float speed = BoltSpeed * 1.1f; // 10% más rápido que el valor base
+				float speed = BoltSpeed * 1.1f;
 
 				// Crear flecha de RepeatArrowBlock
 				int arrowData = RepeatArrowBlock.SetArrowType(0, arrowType.Value);
@@ -614,7 +613,6 @@ namespace Game
 					{
 						projectile.IsIncendiary = false;
 					}
-					// Las flechas de veneno ya tienen su comportamiento especial en SubsystemRepeatArrowBlockBehavior
 				}
 
 				// Ruido
