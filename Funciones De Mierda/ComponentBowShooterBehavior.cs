@@ -17,6 +17,7 @@ namespace Game
 		private SubsystemAudio m_subsystemAudio;
 		private ComponentCreatureModel m_componentModel;
 		private SubsystemParticles m_subsystemParticles;
+		private SubsystemTerrain m_subsystemTerrain;
 
 		// Configuración
 		public float MaxDistance = 25f;
@@ -26,7 +27,7 @@ namespace Game
 		public float Accuracy = 0.03f;
 		public float ArrowSpeed = 35f;
 
-		// Tipos de flechas a usar (fijo - solo usaremos el primero)
+		// Tipos de flechas a usar (selección aleatoria entre todas)
 		private ArrowBlock.ArrowType[] m_availableArrowTypes = new ArrowBlock.ArrowType[]
 		{
 			ArrowBlock.ArrowType.WoodenArrow,
@@ -49,8 +50,8 @@ namespace Game
 		private Random m_random = new Random();
 		private bool m_initialized = false;
 
-		// Tipo de flecha fijo (usamos WoodenArrow como predeterminado para simplificar)
-		private ArrowBlock.ArrowType m_fixedArrowType = ArrowBlock.ArrowType.WoodenArrow;
+		// Tipo de flecha seleccionado para el próximo disparo
+		private ArrowBlock.ArrowType m_nextArrowType = ArrowBlock.ArrowType.WoodenArrow;
 
 		// UpdateOrder
 		public int UpdateOrder => 0;
@@ -75,6 +76,7 @@ namespace Game
 			m_subsystemAudio = base.Project.FindSubsystem<SubsystemAudio>(true);
 			m_componentModel = base.Entity.FindComponent<ComponentCreatureModel>(true);
 			m_subsystemParticles = base.Project.FindSubsystem<SubsystemParticles>(true);
+			m_subsystemTerrain = base.Project.FindSubsystem<SubsystemTerrain>(true);
 		}
 
 		public override void OnEntityAdded()
@@ -89,13 +91,12 @@ namespace Game
 			if (m_bowSlot >= 0)
 			{
 				m_componentInventory.ActiveSlotIndex = m_bowSlot;
-				ClearArrowFromBow(); // Asegurar que el arco empiece vacío
+				ClearArrowFromBow();
 			}
 		}
 
 		private ComponentCreature GetChaseTarget()
 		{
-			// Fallback al ComponentChaseBehavior original
 			if (m_componentChaseBehavior != null && m_componentChaseBehavior.Target != null)
 				return m_componentChaseBehavior.Target;
 
@@ -120,7 +121,6 @@ namespace Game
 				ResetAnimations();
 				if (m_bowSlot >= 0)
 				{
-					// Mantener arco equipado pero SIN flecha visible cuando está inactivo
 					m_componentInventory.ActiveSlotIndex = m_bowSlot;
 					ClearArrowFromBow();
 				}
@@ -132,6 +132,7 @@ namespace Game
 				target.ComponentBody.Position
 			);
 
+			// SOLO VERIFICAR DISTANCIA MÁXIMA - SIEMPRE DISPARAR SI ESTÁ EN RANGO
 			if (distance <= MaxDistance)
 			{
 				if (!m_isAiming && !m_isDrawing && !m_isFiring)
@@ -144,11 +145,20 @@ namespace Game
 				ResetAnimations();
 				if (m_bowSlot >= 0)
 				{
-					ClearArrowFromBow(); // Arco vacío cuando está fuera de rango
+					ClearArrowFromBow();
 				}
 				return;
 			}
 
+			// MIRAR AL OBJETIVO SIEMPRE
+			if (m_componentModel != null && target != null)
+			{
+				m_componentModel.LookAtOrder = new Vector3?(
+					target.ComponentCreatureModel.EyePosition
+				);
+			}
+
+			// Ciclo de disparo
 			if (m_isAiming)
 			{
 				ApplyAimingAnimation(dt, target);
@@ -223,33 +233,24 @@ namespace Game
 
 				int currentData = Terrain.ExtractData(currentBowValue);
 
-				// Usar siempre el mismo tipo de flecha (WoodenArrow por defecto)
-				ArrowBlock.ArrowType arrowType = m_fixedArrowType;
+				ArrowBlock.ArrowType arrowType = m_nextArrowType;
 
-				// Verificar si el arco ya tiene esta flecha y nivel de tensado
 				ArrowBlock.ArrowType? currentArrowType = BowBlock.GetArrowType(currentData);
 				int currentDraw = BowBlock.GetDraw(currentData);
 				int newDraw = MathUtils.Clamp(drawValue, 0, 15);
 
-				// Solo actualizar si es necesario (diferente tipo de flecha o nivel de tensado)
 				if (!currentArrowType.HasValue ||
 					currentArrowType.Value != arrowType ||
 					currentDraw != newDraw)
 				{
-					// Primero establecer el tipo de flecha
 					int newData = BowBlock.SetArrowType(currentData, arrowType);
-
-					// Luego establecer el nivel de tensado
 					newData = BowBlock.SetDraw(newData, newDraw);
 
-					// Crear nuevo valor del bloque del arco
 					int newBowValue = Terrain.ReplaceData(currentBowValue, newData);
 
-					// Actualizar el slot del inventario
 					m_componentInventory.RemoveSlotItems(m_bowSlot, 1);
 					m_componentInventory.AddSlotItems(m_bowSlot, newBowValue, 1);
 
-					// Asegurar que el arco está en el slot activo para renderizado
 					m_componentInventory.ActiveSlotIndex = m_bowSlot;
 				}
 			}
@@ -270,19 +271,13 @@ namespace Game
 
 				int currentData = Terrain.ExtractData(currentBowValue);
 
-				// Solo limpiar si realmente hay una flecha en el arco
 				if (BowBlock.GetArrowType(currentData).HasValue)
 				{
-					// Remover la flecha del arco
 					int newData = BowBlock.SetArrowType(currentData, null);
-
-					// Resetear el nivel de tensado a 0
 					newData = BowBlock.SetDraw(newData, 0);
 
-					// Crear nuevo valor del bloque
 					int newBowValue = Terrain.ReplaceData(currentBowValue, newData);
 
-					// Actualizar el inventario
 					m_componentInventory.RemoveSlotItems(m_bowSlot, 1);
 					m_componentInventory.AddSlotItems(m_bowSlot, newBowValue, 1);
 				}
@@ -301,17 +296,16 @@ namespace Game
 			m_animationStartTime = m_subsystemTime.GameTime;
 			m_currentDraw = 0f;
 
-			// Asegurar que tenemos un arco antes de empezar
+			// Seleccionar tipo de flecha aleatorio para este disparo
+			m_nextArrowType = m_availableArrowTypes[m_random.Int(0, m_availableArrowTypes.Length - 1)];
+
 			if (m_bowSlot < 0)
 			{
 				FindBow();
 				if (m_bowSlot < 0) return;
 			}
 
-			// Equipar el arco inmediatamente
 			m_componentInventory.ActiveSlotIndex = m_bowSlot;
-
-			// Mostrar flecha inmediatamente al comenzar a apuntar
 			SetBowWithArrow(0);
 		}
 
@@ -319,21 +313,9 @@ namespace Game
 		{
 			if (m_componentModel != null)
 			{
-				// VALORES PARA ARCO CENTRADO - posición natural del arco
-				m_componentModel.AimHandAngleOrder = 0.5f; // Mano levantada
-
-				// ARCO CENTRADO
+				m_componentModel.AimHandAngleOrder = 0.5f;
 				m_componentModel.InHandItemOffsetOrder = new Vector3(0.02f, 0.12f, 0.08f);
-
-				// ROTACIÓN PARA ARCO RECTO
 				m_componentModel.InHandItemRotationOrder = new Vector3(-0.05f, 0.25f, 0.01f);
-
-				if (target != null)
-				{
-					m_componentModel.LookAtOrder = new Vector3?(
-						target.ComponentCreatureModel.EyePosition
-					);
-				}
 			}
 		}
 
@@ -354,7 +336,6 @@ namespace Game
 			{
 				float drawFactor = m_currentDraw;
 
-				// ANIMACIÓN CON ARCO CENTRADO durante el tensado
 				m_componentModel.AimHandAngleOrder = 0.5f + (0.4f * drawFactor);
 
 				float horizontalOffset = 0.02f - (0.01f * drawFactor);
@@ -375,13 +356,6 @@ namespace Game
 					yawRotation,
 					rollRotation
 				);
-
-				if (target != null)
-				{
-					m_componentModel.LookAtOrder = new Vector3?(
-						target.ComponentCreatureModel.EyePosition
-					);
-				}
 			}
 		}
 
@@ -421,7 +395,6 @@ namespace Game
 				{
 					float returnProgress = (fireProgress - 0.5f) / 0.5f;
 
-					// Volver a posición centrada
 					m_componentModel.AimHandAngleOrder = 0.5f * (1f - returnProgress);
 					m_componentModel.InHandItemOffsetOrder = new Vector3(
 						0.02f * (1f - returnProgress),
@@ -460,8 +433,7 @@ namespace Game
 
 			try
 			{
-				// Usar siempre el tipo de flecha fijo (WoodenArrow)
-				ArrowBlock.ArrowType arrowType = m_fixedArrowType;
+				ArrowBlock.ArrowType arrowType = m_nextArrowType;
 
 				Vector3 firePosition = m_componentCreature.ComponentCreatureModel.EyePosition;
 				firePosition.Y -= 0.1f;
@@ -492,12 +464,10 @@ namespace Game
 					m_componentCreature
 				);
 
-				// Configurar el proyectil para desaparecer después del impacto
 				if (projectile != null)
 				{
 					projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
 
-					// Solo las flechas de fuego tienen efecto especial
 					if (arrowType == ArrowBlock.ArrowType.FireArrow)
 					{
 						m_subsystemProjectiles.AddTrail(projectile, Vector3.Zero,
