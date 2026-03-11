@@ -1088,6 +1088,8 @@ namespace Game
 			if (blockType == typeof(LavaSpearBlock)) return true;
 			if (blockType == typeof(DiamondLongspearBlock)) return true;
 			if (blockType == typeof(FreezingSnowballBlock)) return true;
+			if (blockType == typeof(FreezeBombBlock)) return true;
+			if (blockType == typeof(FireworksBlock)) return true;
 
 			return false;
 		}
