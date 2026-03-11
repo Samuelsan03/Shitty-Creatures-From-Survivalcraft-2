@@ -19,6 +19,7 @@ namespace Game
 		private ComponentNewHumanModel m_componentNewHumanModel;
 		private SubsystemParticles m_subsystemParticles;
 		private SubsystemNoise m_subsystemNoise;
+		private SubsystemTerrain m_subsystemTerrain;
 
 		// Configuración
 		public float MaxDistance = 25f;
@@ -84,6 +85,7 @@ namespace Game
 			m_subsystemTime = base.Project.FindSubsystem<SubsystemTime>(true);
 			m_subsystemProjectiles = base.Project.FindSubsystem<SubsystemProjectiles>(true);
 			m_subsystemAudio = base.Project.FindSubsystem<SubsystemAudio>(true);
+			m_subsystemTerrain = base.Project.FindSubsystem<SubsystemTerrain>(true);
 
 			// Intentar primero obtener el ComponentNewHumanModel para mejor fluidez
 			m_componentNewHumanModel = base.Entity.FindComponent<ComponentNewHumanModel>(false);
@@ -157,12 +159,12 @@ namespace Game
 				target.ComponentBody.Position
 			);
 
-			// Lógica de ataque - Solo verifica distancia máxima
+			// SOLO VERIFICAR DISTANCIA MÁXIMA - SIEMPRE DISPARAR SI ESTÁ EN RANGO
 			if (distance <= MaxDistance)
 			{
 				if (!m_isAiming && !m_isDrawing && !m_isFiring && !m_isReloading)
 				{
-					StartAiming();
+					StartAiming(target);
 				}
 			}
 			else
@@ -173,6 +175,14 @@ namespace Game
 					SetCrossbowWithBolt(0, false);
 				}
 				return;
+			}
+
+			// MIRAR AL OBJETIVO SIEMPRE
+			if (m_componentModel != null && target != null)
+			{
+				m_componentModel.LookAtOrder = new Vector3?(
+					target.ComponentCreatureModel.EyePosition
+				);
 			}
 
 			// Aplicar suavizado de animaciones
@@ -229,7 +239,7 @@ namespace Game
 					// Pausa antes de recargar
 					if (m_subsystemTime.GameTime - m_fireTime >= 0.8f)
 					{
-						StartAiming();
+						StartAiming(target);
 					}
 				}
 			}
@@ -335,7 +345,7 @@ namespace Game
 			SetCrossbowWithBolt(0, false);
 		}
 
-		private void StartAiming()
+		private void StartAiming(ComponentCreature target)
 		{
 			m_isAiming = true;
 			m_isDrawing = false;
@@ -343,7 +353,20 @@ namespace Game
 			m_isReloading = false;
 			m_animationStartTime = m_subsystemTime.GameTime;
 			m_currentDraw = 0f;
-			m_nextBoltType = null; // Limpiar el tipo seleccionado
+
+			// Seleccionar tipo de virote basado en la distancia actual
+			if (target != null)
+			{
+				float distance = Vector3.Distance(
+					m_componentCreature.ComponentBody.Position,
+					target.ComponentBody.Position
+				);
+				m_nextBoltType = SelectBoltTypeForDistance(distance);
+			}
+			else
+			{
+				m_nextBoltType = GetFirstNonExplosiveBoltType();
+			}
 
 			// Mostrar ballesta sin virote
 			SetCrossbowWithBolt(0, false);
@@ -361,13 +384,6 @@ namespace Game
 				m_componentModel.AimHandAngleOrder = targetAimAngle;
 				m_componentModel.InHandItemOffsetOrder = targetOffset;
 				m_componentModel.InHandItemRotationOrder = targetRotation;
-
-				if (target != null)
-				{
-					m_componentModel.LookAtOrder = new Vector3?(
-						target.ComponentCreatureModel.EyePosition
-					);
-				}
 			}
 		}
 
@@ -402,13 +418,6 @@ namespace Game
 				m_componentModel.AimHandAngleOrder = targetAimAngle;
 				m_componentModel.InHandItemOffsetOrder = targetOffset;
 				m_componentModel.InHandItemRotationOrder = targetRotation;
-
-				if (target != null)
-				{
-					m_componentModel.LookAtOrder = new Vector3?(
-						target.ComponentCreatureModel.EyePosition
-					);
-				}
 			}
 		}
 
@@ -506,13 +515,6 @@ namespace Game
 				m_componentModel.AimHandAngleOrder = targetAimAngle;
 				m_componentModel.InHandItemOffsetOrder = targetOffset;
 				m_componentModel.InHandItemRotationOrder = targetRotation;
-
-				if (target != null)
-				{
-					m_componentModel.LookAtOrder = new Vector3?(
-						target.ComponentCreatureModel.EyePosition
-					);
-				}
 			}
 		}
 
@@ -538,9 +540,6 @@ namespace Game
 				);
 				m_componentCreature.ComponentBody.ApplyImpulse(-direction * 1.5f);
 			}
-
-			// Limpiar el tipo seleccionado para el próximo disparo
-			m_nextBoltType = null;
 		}
 
 		private void ApplyFiringAnimation(float dt)
@@ -616,7 +615,7 @@ namespace Game
 
 			try
 			{
-				// Usar el tipo seleccionado previamente (en LoadBolt)
+				// Usar el tipo seleccionado previamente (en LoadBolt o StartAiming)
 				ArrowBlock.ArrowType? boltType = m_nextBoltType;
 				if (boltType == null)
 				{
