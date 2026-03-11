@@ -1,25 +1,25 @@
 <CanvasWidget xmlns="runtime-namespace:Game" Margin="0,10">
 
-    <!-- Diálogo estilo BulletinDialog con fondo gris -->
-    <CanvasWidget Size="750, 600" HorizontalAlignment="Center" VerticalAlignment="Center">
+    <!-- Diálogo que se centra y tiene tamaño fijo pero razonable -->
+    <CanvasWidget Size="720, 520" HorizontalAlignment="Center" VerticalAlignment="Center">
 
         <!-- Fondo gris principal -->
         <RectangleWidget FillColor="80, 80, 80, 255" OutlineColor="120, 120, 120, 160" OutlineThickness="2" />
 
         <StackPanelWidget Direction="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0, 5">
 
-            <!-- Área de contenido con fondo negro -->
-            <CanvasWidget Size="730, 500" Margin="10, 5">
+            <!-- Área de contenido con fondo negro (título incluido dentro) -->
+            <CanvasWidget Size="700, 430" Margin="10, 5">
                 <!-- Fondo negro -->
                 <RectangleWidget FillColor="0, 0, 0, 255" OutlineColor="20, 20, 20, 128" OutlineThickness="1" />
 
                 <!-- ScrollPanel que contiene TODO el contenido, incluido el título -->
-                <ScrollPanelWidget Direction="Vertical" Margin="3, 3" ClampToBounds="true">
+                <ScrollPanelWidget Name="About.ScrollPanel" Direction="Vertical" Margin="3, 3" ClampToBounds="true">
                     <CanvasWidget HorizontalAlignment="Center" VerticalAlignment="Center">
                         <StackPanelWidget Direction="Vertical" HorizontalAlignment="Center" Margin="10, 0">
 
-                            <!-- Título ahora DENTRO del scroll (se desplaza) -->
-                            <LabelWidget Name="About.Title" Text="About Shitty Creatures MOD:" Color="255,0,0" HorizontalAlignment="Center" FontScale="2.0" Margin="0,10" DropShadow="true" />
+                            <!-- Título dentro del scroll (como estaba originalmente) -->
+                            <LabelWidget Name="About.Title" Text="About Shitty Creatures MOD:" Color="255,0,0" HorizontalAlignment="Center" FontScale="1.55" Margin="0,10" DropShadow="true" />
 
                             <!-- Descripción larga -->
                             <LabelWidget Name="About.Description" 
@@ -29,8 +29,8 @@
                             <!-- Subtítulo del creador -->
                             <LabelWidget Name="About.CreatorTitle" Text="Mod Creator:" Color="255,0,0" HorizontalAlignment="Center" FontScale="1.8" Margin="0,15" DropShadow="true"/>
 
-                            <!-- Imagen del creador -->
-                            <CanvasWidget Size="Infinity, 150" Margin="0,10">
+                            <!-- Imagen del creador (tamaño fijo, sin Infinity) -->
+                            <CanvasWidget Size="128,128" HorizontalAlignment="Center" Margin="0,10">
                                 <RectangleWidget Size="128,128" HorizontalAlignment="Center" VerticalAlignment="Center" Subtexture="{Textures/Gui/samuelsan03}" FillColor="255,255,255" OutlineColor="0,0,0,0"/>
                             </CanvasWidget>
 
@@ -77,9 +77,9 @@
                 </ScrollPanelWidget>
             </CanvasWidget>
 
-            <!-- Botón OK centrado, con tamaño 160x60 (estilo estándar) -->
+            <!-- Botón OK centrado, con tamaño 160x60, inicialmente invisible -->
             <StackPanelWidget Direction="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,10">
-                <BevelledButtonWidget Name="About.OkButton" Size="160, 60" Text="OK" Style="{Styles/ButtonStyle_160x60}" />
+                <BevelledButtonWidget Name="About.OkButton" Size="160, 60" Text="OK" Style="{Styles/ButtonStyle_160x60}" IsVisible="true" />
             </StackPanelWidget>
 
         </StackPanelWidget>
