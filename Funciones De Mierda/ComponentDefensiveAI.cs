@@ -370,33 +370,39 @@ namespace Game
 				TryReloadWeapon(m_currentWeapon);
 				RefreshCurrentWeaponReadyState();
 
-				// PARTÍCULAS Y SONIDO SOLO AL COMPLETAR LA RECARGA (como en ComponentFirearmsShooters)
-				if (m_subsystemParticles != null && m_subsystemTerrain != null)
-				{
-					try
-					{
-						Vector3 basePosition = m_componentCreature.ComponentCreatureModel.EyePosition;
-						Vector3 readyPosition = basePosition + new Vector3(0f, 0.2f, 0f);
-						KillParticleSystem readyParticles = new KillParticleSystem(m_subsystemTerrain, readyPosition, 0.5f);
-						m_subsystemParticles.AddParticleSystem(readyParticles, false);
+				// Solo reproducir sonido y partículas para armas de fuego modernas (M4, AK, Revolver, Sniper)
+				bool isModernFirearm = m_currentWeapon.Type == WeaponType.M4 ||
+									   m_currentWeapon.Type == WeaponType.AK ||
+									   m_currentWeapon.Type == WeaponType.Revolver ||
+									   m_currentWeapon.Type == WeaponType.Sniper;
 
-						// Partículas de confirmación alrededor
-						for (int i = 0; i < 3; i++)
+				if (isModernFirearm)
+				{
+					if (m_subsystemParticles != null && m_subsystemTerrain != null)
+					{
+						try
 						{
-							Vector3 offset = new Vector3(m_random.Float(-0.2f, 0.2f), m_random.Float(0.1f, 0.4f), m_random.Float(-0.2f, 0.2f));
-							KillParticleSystem additionalParticles = new KillParticleSystem(m_subsystemTerrain, basePosition + offset, 0.5f);
-							m_subsystemParticles.AddParticleSystem(additionalParticles, false);
+							Vector3 basePosition = m_componentCreature.ComponentCreatureModel.EyePosition;
+							Vector3 readyPosition = basePosition + new Vector3(0f, 0.2f, 0f);
+							KillParticleSystem readyParticles = new KillParticleSystem(m_subsystemTerrain, readyPosition, 0.5f);
+							m_subsystemParticles.AddParticleSystem(readyParticles, false);
+
+							for (int i = 0; i < 3; i++)
+							{
+								Vector3 offset = new Vector3(m_random.Float(-0.2f, 0.2f), m_random.Float(0.1f, 0.4f), m_random.Float(-0.2f, 0.2f));
+								KillParticleSystem additionalParticles = new KillParticleSystem(m_subsystemTerrain, basePosition + offset, 0.5f);
+								m_subsystemParticles.AddParticleSystem(additionalParticles, false);
+							}
+						}
+						catch (Exception ex)
+						{
+							Log.Warning($"Error mostrando partículas de recarga completada: {ex.Message}");
 						}
 					}
-					catch (Exception ex)
-					{
-						Log.Warning($"Error mostrando partículas de recarga completada: {ex.Message}");
-					}
-				}
 
-				// Sonido al terminar la recarga (volumen normal)
-				m_subsystemAudio.PlaySound("Audio/Armas/reload", 1f, m_random.Float(-0.1f, 0.1f),
-					m_componentCreature.ComponentCreatureModel.EyePosition, 5f, true);
+					m_subsystemAudio.PlaySound("Audio/Armas/reload", 1f, m_random.Float(-0.1f, 0.1f),
+						m_componentCreature.ComponentCreatureModel.EyePosition, 5f, true);
+				}
 
 				TransitionToState("Idle");
 			}
@@ -429,15 +435,16 @@ namespace Game
 
 		private bool RequiresReloadAfterShot(WeaponType type)
 		{
-			// Armas que tras cada disparo necesitan una acción de recarga (poner nueva flecha, cebar, etc.)
 			switch (type)
 			{
 				case WeaponType.Bow:
 				case WeaponType.Crossbow:
-				case WeaponType.RepeatCrossbow:
 				case WeaponType.Musket:
-				case WeaponType.ItemsLauncher:
 					return true;
+				case WeaponType.RepeatCrossbow:
+				case WeaponType.ItemsLauncher:
+				case WeaponType.FlameThrower: // Aunque es automática, por completitud
+					return false;
 				default:
 					return false;
 			}
@@ -581,24 +588,12 @@ namespace Game
 
 		private bool IsWeaponInRange(WeaponType type, float distance)
 		{
-			switch (type)
-			{
-				case WeaponType.Throwable: return distance >= 3f && distance <= 15f;
-				case WeaponType.Bow: return distance >= 5f && distance <= 30f;
-				case WeaponType.Crossbow: return distance >= 5f && distance <= 35f;
-				case WeaponType.RepeatCrossbow: return distance >= 5f && distance <= 35f;
-				case WeaponType.Musket: return distance >= 5f && distance <= 40f;
-				case WeaponType.FlameThrower: return distance >= 3f && distance <= 20f;
-				case WeaponType.ItemsLauncher: return distance >= 5f && distance <= 50f;
-				case WeaponType.M4:
-				case WeaponType.AK:
-					return distance >= 5f && distance <= 60f;
-				case WeaponType.Revolver:
-					return distance >= 3f && distance <= 30f;
-				case WeaponType.Sniper:
-					return distance >= 10f && distance <= 100f;
-				default: return false;
-			}
+			// Se eliminan las restricciones de distancia para todas las armas.
+			// El NPC usará cualquier arma de su inventario sin importar la distancia,
+			// y el cambio a melee se maneja en Idle_Update cuando la distancia ≤ 5f.
+			if (type == WeaponType.None)
+				return false;
+			return true;
 		}
 
 		private float GetAimDurationForWeapon(WeaponType type)
@@ -623,22 +618,10 @@ namespace Game
 
 		private float GetReloadDurationForWeapon(WeaponType type)
 		{
-			switch (type)
-			{
-				case WeaponType.Bow: return 1.0f;
-				case WeaponType.Crossbow: return 1.5f;
-				case WeaponType.RepeatCrossbow: return 1.5f;
-				case WeaponType.Musket: return 2.0f;
-				case WeaponType.FlameThrower: return 1.0f;
-				case WeaponType.ItemsLauncher: return 1.0f;
-				case WeaponType.M4: return 2.0f;
-				case WeaponType.AK: return 2.5f;
-				case WeaponType.Revolver: return 1.5f;
-				case WeaponType.Sniper: return 2.0f;
-				default: return 0.5f;
-			}
+			// Tiempo de recarga uniforme de 0.5 segundos para todas las armas,
+			// similar al comportamiento de ComponentFirearmsShooters.
+			return 0.5f;
 		}
-
 		private void ApplyAimingAnimation()
 		{
 			switch (m_currentWeapon.Type)
@@ -1509,7 +1492,7 @@ namespace Game
 				m_componentInventory.RemoveSlotItems(slot, 1);
 				m_componentInventory.AddSlotItems(slot, newValue, 1);
 				m_currentWeapon.IsReady = true;
-				m_subsystemAudio.PlaySound("Audio/Armas/reload", 1f, m_random.Float(-0.1f, 0.1f), m_componentCreature.ComponentBody.Position, 5f, false);
+				// El sonido de recarga se reproduce SOLO en Reloading_Update, no aquí.
 			}
 		}
 	}
