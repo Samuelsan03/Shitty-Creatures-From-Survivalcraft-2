@@ -56,7 +56,6 @@ namespace Game
 		{
 			base.Load(valuesDictionary, idToEntityMap);
 
-			// Cargar parámetros
 			MaxDistance = valuesDictionary.GetValue<float>("MaxDistance", 25f);
 			MeleeSwitchDistance = valuesDictionary.GetValue<float>("MeleeSwitchDistance", 5f);
 			ReloadTime = valuesDictionary.GetValue<float>("ReloadTime", 0.55f);
@@ -69,7 +68,6 @@ namespace Game
 			BulletSpeed = valuesDictionary.GetValue<float>("BulletSpeed", 120f);
 			RequireCocking = valuesDictionary.GetValue<bool>("RequireCocking", true);
 
-			// Inicializar componentes
 			m_componentCreature = base.Entity.FindComponent<ComponentCreature>(true);
 			m_componentChaseBehavior = base.Entity.FindComponent<ComponentChaseBehavior>(true);
 			m_componentInventory = base.Entity.FindComponent<ComponentInventory>(true);
@@ -90,23 +88,20 @@ namespace Game
 			if (m_componentCreature.ComponentHealth.Health <= 0f)
 				return;
 
-			// Verificar objetivo
 			if (m_componentChaseBehavior.Target == null)
 			{
 				ResetAnimations();
 				return;
 			}
 
-			// Calcular distancia
 			float distance = Vector3.Distance(
 				m_componentCreature.ComponentBody.Position,
 				m_componentChaseBehavior.Target.ComponentBody.Position
 			);
 
-			// Lógica de ataque basada en distancia - MEJORADA CON LÓGICA DE NEWCHASE
+			// SOLO VERIFICAR DISTANCIA MÁXIMA
 			if (distance <= MaxDistance)
 			{
-				// Si el enemigo está muy cerca (dentro de la distancia de cambio), cambiar inmediatamente a arma cuerpo a cuerpo
 				if (distance <= MeleeSwitchDistance)
 				{
 					if (!m_isMelee && !m_isFiring && !m_isReloading)
@@ -114,17 +109,14 @@ namespace Game
 						SwitchToMeleeModeImmediately();
 					}
 				}
-				// Si está a distancia media/lejana, usar mosquete
 				else
 				{
-					// Cancelar modo cuerpo a cuerpo si estaba activo
 					if (m_isMelee)
 					{
 						m_isMelee = false;
 						m_componentModel.AttackOrder = false;
 					}
 
-					// Si no está haciendo nada, empezar a apuntar
 					if (!m_isAiming && !m_isFiring && !m_isReloading && !m_isCocking)
 					{
 						StartAiming();
@@ -133,12 +125,18 @@ namespace Game
 			}
 			else
 			{
-				// Fuera de rango máximo, resetear
 				ResetAnimations();
 				return;
 			}
 
-			// Aplicar animaciones según el modo
+			// MIRAR AL OBJETIVO SIEMPRE
+			if (!m_isMelee && !m_isReloading && m_componentModel != null && m_componentChaseBehavior.Target != null)
+			{
+				m_componentModel.LookAtOrder = new Vector3?(
+					m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition
+				);
+			}
+
 			if (m_isMelee)
 			{
 				UpdateMeleeModeImproved(dt);
@@ -151,19 +149,16 @@ namespace Game
 
 		private void UpdateRangedMode(float dt)
 		{
-			// Lógica original del mosquete
 			if (m_isCocking)
 			{
 				ApplyCockingAnimation(dt);
 
-				// Después de tiempo de amartillado, empezar a apuntar
 				if (m_subsystemTime.GameTime - m_cockStartTime >= CockTime)
 				{
 					m_isCocking = false;
 					m_isAiming = true;
 					m_animationStartTime = m_subsystemTime.GameTime;
 
-					// Actualizar estado del martillo en el mosquete
 					UpdateMusketHammerState(true);
 				}
 			}
@@ -171,7 +166,6 @@ namespace Game
 			{
 				ApplyAimingAnimation(dt);
 
-				// Después de tiempo de apuntado, disparar
 				if (m_subsystemTime.GameTime - m_animationStartTime >= AimTime)
 				{
 					Fire();
@@ -181,7 +175,6 @@ namespace Game
 			{
 				ApplyFiringAnimation(dt);
 
-				// Después de corta animación de fuego, empezar recarga inmediatamente
 				if (m_subsystemTime.GameTime - m_fireTime >= 0.2)
 				{
 					m_isFiring = false;
@@ -192,27 +185,22 @@ namespace Game
 			{
 				ApplyReloadingAnimation(dt);
 
-				// Después de tiempo de recarga, volver a apuntar
 				if (m_subsystemTime.GameTime - m_animationStartTime >= ReloadTime)
 				{
 					m_isReloading = false;
 
-					// Actualizar estado de carga del mosquete
 					UpdateMusketLoadState(MusketBlock.LoadState.Loaded);
 					UpdateMusketBulletType(BulletBlock.BulletType.MusketBall);
 
-					StartAiming(); // Volver a apuntar para repetir ciclo
+					StartAiming();
 				}
 			}
 		}
 
-		// MÉTODO MEJORADO: Modo cuerpo a cuerpo con lógica de NewChase
 		private void UpdateMeleeModeImproved(float dt)
 		{
-			// Buscar y equipar mejor arma cuerpo a cuerpo
 			if (FindHitToolImproved())
 			{
-				// Mirar al objetivo
 				if (m_componentChaseBehavior.Target != null)
 				{
 					m_componentModel.LookAtOrder = new Vector3?(
@@ -220,13 +208,11 @@ namespace Game
 					);
 				}
 
-				// Atacar periódicamente
 				if (m_subsystemTime.GameTime - m_meleeAttackTime >= MeleeAttackTime)
 				{
 					m_componentModel.AttackOrder = true;
 					m_meleeAttackTime = m_subsystemTime.GameTime;
 
-					// Si es momento de golpear, aplicar daño
 					if (m_componentModel.IsAttackHitMoment)
 					{
 						Vector3 hitPoint;
@@ -241,7 +227,6 @@ namespace Game
 			}
 			else
 			{
-				// MEJORADO: Si no tiene arma cuerpo a cuerpo, retroceder (como en NewChase)
 				if (m_componentPathfinding != null && m_componentChaseBehavior.Target != null)
 				{
 					Vector3 retreatDirection = Vector3.Normalize(
@@ -253,7 +238,6 @@ namespace Game
 			}
 		}
 
-		// MÉTODO MEJORADO: Cambio inmediato a modo cuerpo a cuerpo (como en NewChase)
 		private void SwitchToMeleeModeImmediately()
 		{
 			m_isMelee = true;
@@ -263,7 +247,6 @@ namespace Game
 			m_isCocking = false;
 			m_meleeAttackTime = m_subsystemTime.GameTime;
 
-			// Resetear animaciones de mosquete
 			if (m_componentModel != null)
 			{
 				m_componentModel.AimHandAngleOrder = 0f;
@@ -271,28 +254,24 @@ namespace Game
 				m_componentModel.InHandItemRotationOrder = Vector3.Zero;
 			}
 
-			// Buscar y equipar mejor arma cuerpo a cuerpo
 			FindHitToolImproved();
 		}
 
-		// MÉTODO MEJORADO: Encontrar arma cuerpo a cuerpo (optimizado como en NewChase)
 		private bool FindHitToolImproved()
 		{
 			if (m_componentMiner.Inventory == null)
 				return false;
 
-			// Verificar si el arma actual es cuerpo a cuerpo
 			int activeBlockValue = m_componentMiner.ActiveBlockValue;
 			if (BlocksManager.Blocks[Terrain.ExtractContents(activeBlockValue)].GetMeleePower(activeBlockValue) > 1f)
 			{
 				return true;
 			}
 
-			// Buscar mejor arma cuerpo a cuerpo en inventario
 			float bestPower = 1f;
 			int bestSlot = -1;
 
-			for (int i = 0; i < 6; i++) // Solo primeros 6 slots (armas equipables)
+			for (int i = 0; i < 6; i++)
 			{
 				int slotValue = m_componentMiner.Inventory.GetSlotValue(i);
 				float meleePower = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)].GetMeleePower(slotValue);
@@ -312,7 +291,6 @@ namespace Game
 			return false;
 		}
 
-		// MÉTODO MEJORADO: Obtener cuerpo golpeado (como en NewChase)
 		private ComponentBody GetHitBodyImproved(ComponentBody target, out Vector3 hitPoint)
 		{
 			Vector3 vector = m_componentCreature.ComponentBody.BoundingBox.Center();
@@ -343,26 +321,21 @@ namespace Game
 			m_isReloading = false;
 			m_cockStartTime = m_subsystemTime.GameTime;
 
-			// Sonido de amartillar (hardcoded)
 			m_subsystemAudio.PlaySound("Audio/HammerCock", 1f, m_random.Float(-0.1f, 0.1f),
 				m_componentCreature.ComponentBody.Position, 3f, false);
 		}
 
 		private void StartAiming()
 		{
-			// Encontrar mosquete en inventario
 			FindMusket();
 
-			// Si no tiene mosquete, no hacer nada
 			if (m_musketSlot == -1)
 				return;
 
-			// Verificar estado de carga del mosquete
 			int slotValue = m_componentInventory.GetSlotValue(m_musketSlot);
 			int data = Terrain.ExtractData(slotValue);
 			MusketBlock.LoadState loadState = MusketBlock.GetLoadState(data);
 
-			// Si el mosquete no está cargado, recargarlo
 			if (loadState != MusketBlock.LoadState.Loaded)
 			{
 				UpdateMusketLoadState(MusketBlock.LoadState.Loaded);
@@ -375,10 +348,8 @@ namespace Game
 			m_isCocking = false;
 			m_animationStartTime = m_subsystemTime.GameTime;
 
-			// Si requiere amartillar, hacerlo
 			if (RequireCocking)
 			{
-				// Verificar si el martillo ya está amartillado
 				bool hammerState = MusketBlock.GetHammerState(Terrain.ExtractData(slotValue));
 				if (!hammerState)
 				{
@@ -386,7 +357,6 @@ namespace Game
 				}
 				else
 				{
-					// Si ya está amartillado, ir directamente a apuntar
 					m_isAiming = true;
 					m_isCocking = false;
 				}
@@ -395,7 +365,6 @@ namespace Game
 
 		private void FindMusket()
 		{
-			// Buscar mosquete por tipo de bloque
 			for (int i = 0; i < m_componentInventory.SlotsCount; i++)
 			{
 				int slotValue = m_componentInventory.GetSlotValue(i);
@@ -467,10 +436,8 @@ namespace Game
 		{
 			if (m_componentModel != null)
 			{
-				// ANIMACIÓN DE AMARTILLADO
 				float cockProgress = (float)((m_subsystemTime.GameTime - m_cockStartTime) / CockTime);
 
-				// Pequeño movimiento hacia atrás para simular amartillar
 				m_componentModel.AimHandAngleOrder = 1.2f;
 				m_componentModel.InHandItemOffsetOrder = new Vector3(
 					-0.08f + (0.03f * cockProgress),
@@ -478,14 +445,6 @@ namespace Game
 					0.07f
 				);
 				m_componentModel.InHandItemRotationOrder = new Vector3(-1.6f, 0f, 0f);
-
-				// Mirar al objetivo
-				if (m_componentChaseBehavior.Target != null)
-				{
-					m_componentModel.LookAtOrder = new Vector3?(
-						m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition
-					);
-				}
 			}
 		}
 
@@ -493,18 +452,9 @@ namespace Game
 		{
 			if (m_componentModel != null)
 			{
-				// ANIMACIÓN DE APUNTADO (MOSQUETE) - BRAZOS ALTOS
 				m_componentModel.AimHandAngleOrder = 1.4f;
 				m_componentModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
 				m_componentModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
-
-				// Mirar al objetivo
-				if (m_componentChaseBehavior.Target != null)
-				{
-					m_componentModel.LookAtOrder = new Vector3?(
-						m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition
-					);
-				}
 			}
 		}
 
@@ -516,7 +466,6 @@ namespace Game
 			m_isCocking = false;
 			m_fireTime = m_subsystemTime.GameTime;
 
-			// Encontrar mosquete en inventario (asegurarse que lo tiene)
 			if (m_musketSlot == -1)
 			{
 				FindMusket();
@@ -524,15 +473,12 @@ namespace Game
 					return;
 			}
 
-			// Verificar estado de carga
 			int slotValue = m_componentInventory.GetSlotValue(m_musketSlot);
 			int data = Terrain.ExtractData(slotValue);
 			MusketBlock.LoadState loadState = MusketBlock.GetLoadState(data);
 
-			// Si no está cargado, no disparar
 			if (loadState != MusketBlock.LoadState.Loaded)
 			{
-				// Sonido de fallo (hardcoded)
 				m_subsystemAudio.PlaySound("Audio/MusketMisfire", 1f, m_random.Float(-0.1f, 0.1f),
 					m_componentCreature.ComponentBody.Position, 3f, false);
 				m_isFiring = false;
@@ -540,43 +486,33 @@ namespace Game
 				return;
 			}
 
-			// --- NUEVA VERIFICACIÓN DE INMERSIÓN (AGUA) ---
 			float immersion = m_componentCreature.ComponentBody.ImmersionFactor;
 			if (immersion > 0.4f)
 			{
-				// Sonido de fallo por agua
 				m_subsystemAudio.PlaySound("Audio/MusketMisfire", 1f, m_random.Float(-0.1f, 0.1f),
 					m_componentCreature.ComponentBody.Position, 3f, false);
 
-				// Vaciar el mosquete (igual que después de un disparo normal)
 				UpdateMusketLoadState(MusketBlock.LoadState.Empty);
 				UpdateMusketHammerState(false);
 				UpdateMusketBulletType(BulletBlock.BulletType.MusketBall);
 
-				// Saltar la animación de disparo e ir directamente a recargar
 				m_isFiring = false;
 				StartReloading();
 				return;
 			}
-			// --- FIN DE LA NUEVA VERIFICACIÓN ---
 
-			// Sonido de disparo (hardcoded)
 			m_subsystemAudio.PlaySound("Audio/MusketFire", 1f, m_random.Float(-0.1f, 0.1f),
 				m_componentCreature.ComponentBody.Position, FireSoundDistance, false);
 
-			// Sonido de liberación del martillo
 			m_subsystemAudio.PlaySound("Audio/HammerUncock", 1f, m_random.Float(-0.1f, 0.1f),
 				m_componentCreature.ComponentBody.Position, 3f, false);
 
-			// Disparar bala real
 			ShootBullet();
 
-			// Actualizar estado del mosquete después de disparar
 			UpdateMusketLoadState(MusketBlock.LoadState.Empty);
 			UpdateMusketHammerState(false);
 			UpdateMusketBulletType(BulletBlock.BulletType.MusketBall);
 
-			// Retroceso
 			if (UseRecoil && m_componentChaseBehavior.Target != null)
 			{
 				Vector3 direction = Vector3.Normalize(
@@ -591,14 +527,12 @@ namespace Game
 		{
 			if (m_componentModel != null)
 			{
-				// ANIMACIÓN DE RETROCESO
 				float recoilFactor = (float)(1.5f - (m_subsystemTime.GameTime - m_fireTime) * 5f);
 				recoilFactor = MathUtils.Max(recoilFactor, 1.0f);
 
 				m_componentModel.AimHandAngleOrder = 1.4f * recoilFactor;
 				m_componentModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f - (0.05f * (1.5f - recoilFactor)));
 
-				// También aplicar movimiento rápido de las manos
 				m_componentModel.InHandItemRotationOrder = new Vector3(
 					-1.7f + (0.3f * (1.5f - recoilFactor)),
 					0f,
@@ -615,7 +549,6 @@ namespace Game
 			m_isCocking = false;
 			m_animationStartTime = m_subsystemTime.GameTime;
 
-			// Sonido de recarga (hardcoded)
 			m_subsystemAudio.PlaySound("Audio/Reload", 1.5f, m_random.Float(-0.1f, 0.1f),
 				m_componentCreature.ComponentBody.Position, 5f, false);
 		}
@@ -624,10 +557,8 @@ namespace Game
 		{
 			if (m_componentModel != null)
 			{
-				// ANIMACIÓN DE RECARGA - BRAZOS BAJOS
 				float reloadProgress = (float)((m_subsystemTime.GameTime - m_animationStartTime) / ReloadTime);
 
-				// Durante la recarga, las manos bajan un poco
 				m_componentModel.AimHandAngleOrder = MathUtils.Lerp(1.0f, 0.5f, reloadProgress);
 				m_componentModel.InHandItemOffsetOrder = new Vector3(
 					-0.08f,
@@ -640,7 +571,6 @@ namespace Game
 					0f
 				);
 
-				// Resetear look at durante recarga
 				m_componentModel.LookAtOrder = null;
 			}
 		}
@@ -675,7 +605,6 @@ namespace Game
 
 				Vector3 direction = Vector3.Normalize(targetPosition - firePosition);
 
-				// Aplicar error de puntería según configuración
 				direction += new Vector3(
 					m_random.Float(-Accuracy, Accuracy),
 					m_random.Float(-Accuracy * 0.5f, Accuracy * 0.5f),
@@ -683,14 +612,12 @@ namespace Game
 				);
 				direction = Vector3.Normalize(direction);
 
-				// Crear bala usando BulletBlock
 				int bulletBlockIndex = BlocksManager.GetBlockIndex<BulletBlock>(false, false);
 				if (bulletBlockIndex > 0)
 				{
 					int bulletData = BulletBlock.SetBulletType(0, BulletBlock.BulletType.MusketBall);
 					int bulletValue = Terrain.MakeBlockValue(bulletBlockIndex, 0, bulletData);
 
-					// Disparar
 					m_subsystemProjectiles.FireProjectile(
 						bulletValue,
 						firePosition,
@@ -699,10 +626,8 @@ namespace Game
 						m_componentCreature
 					);
 
-					// AGREGAR HUMO
 					Vector3 smokePosition = firePosition + direction * 0.3f;
 
-					// Crear sistema de partículas de humo
 					if (m_subsystemParticles != null)
 					{
 						if (m_subsystemTerrain != null)
@@ -714,17 +639,13 @@ namespace Game
 						}
 					}
 
-					// AGREGAR RUIDO
 					if (m_subsystemNoise != null)
 					{
 						m_subsystemNoise.MakeNoise(firePosition, 1f, 40f);
 					}
 				}
 			}
-			catch
-			{
-				// Ignorar errores de disparo
-			}
+			catch { }
 		}
 	}
 }
