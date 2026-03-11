@@ -43,11 +43,7 @@ namespace Game
 		private int m_shotsFired = 0;
 		private Game.Random m_random = new Game.Random();
 		private int m_flameThrowerSlot = -1;
-
-		// Obtener dinámicamente
 		private int m_flameThrowerBlockIndex = -1;
-
-		// Tipo de munición actual
 		private FlameBulletBlock.FlameBulletType m_currentBulletType = FlameBulletBlock.FlameBulletType.Flame;
 
 		// UpdateOrder
@@ -58,7 +54,6 @@ namespace Game
 		{
 			base.Load(valuesDictionary, idToEntityMap);
 
-			// Cargar parámetros del XML (sin CycleBulletTypes)
 			MaxDistance = valuesDictionary.GetValue<float>("MaxDistance", 20f);
 			AimTime = valuesDictionary.GetValue<float>("AimTime", 0.5f);
 			BurstTime = valuesDictionary.GetValue<float>("BurstTime", 5.0f);
@@ -69,7 +64,6 @@ namespace Game
 			BurstCount = valuesDictionary.GetValue<int>("BurstCount", 15);
 			SpreadAngle = valuesDictionary.GetValue<float>("SpreadAngle", 15f);
 
-			// Calcular BurstInterval automáticamente basado en BurstTime y BurstCount
 			if (BurstCount > 0 && BurstTime > 0)
 			{
 				BurstInterval = BurstTime / BurstCount;
@@ -79,7 +73,6 @@ namespace Game
 				BurstInterval = 5.0f;
 			}
 
-			// Inicializar componentes
 			m_componentCreature = base.Entity.FindComponent<ComponentCreature>(true);
 			m_componentChaseBehavior = base.Entity.FindComponent<ComponentChaseBehavior>(true);
 			m_componentInventory = base.Entity.FindComponent<ComponentInventory>(true);
@@ -92,7 +85,6 @@ namespace Game
 			m_subsystemTerrain = base.Project.FindSubsystem<SubsystemTerrain>(true);
 			m_subsystemNoise = base.Project.FindSubsystem<SubsystemNoise>(true);
 
-			// Obtener el índice del bloque FlameThrowerBlock dinámicamente
 			m_flameThrowerBlockIndex = BlocksManager.GetBlockIndex<FlameThrowerBlock>(false, false);
 
 			if (m_flameThrowerBlockIndex <= 0)
@@ -122,6 +114,7 @@ namespace Game
 				m_componentChaseBehavior.Target.ComponentBody.Position
 			);
 
+			// SOLO VERIFICAR DISTANCIA MÁXIMA
 			if (distance <= MaxDistance)
 			{
 				if (!m_isAiming && !m_isFiring && !m_isReloading)
@@ -133,6 +126,14 @@ namespace Game
 			{
 				ResetAnimations();
 				return;
+			}
+
+			// MIRAR AL OBJETIVO SIEMPRE
+			if (m_componentModel != null && m_componentChaseBehavior.Target != null)
+			{
+				m_componentModel.LookAtOrder = new Vector3?(
+					m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition
+				);
 			}
 
 			if (m_isAiming)
@@ -170,8 +171,10 @@ namespace Game
 				{
 					m_isReloading = false;
 
-					// Se ELIMINA el CycleBulletTypes - ya no se cambia el tipo aquí
-					// El tipo de bala se mantiene constante (el inicializado en Load)
+					// Rotar el tipo de bala durante la recarga (mantiene la variación original)
+					m_currentBulletType = (m_currentBulletType == FlameBulletBlock.FlameBulletType.Flame) ?
+						FlameBulletBlock.FlameBulletType.Poison :
+						FlameBulletBlock.FlameBulletType.Flame;
 
 					StartAiming();
 				}
@@ -182,10 +185,9 @@ namespace Game
 		{
 			m_flameThrowerSlot = -1;
 
-			// Verificar primero si el bloque FlameThrowerBlock está registrado
 			if (m_flameThrowerBlockIndex <= 0)
 			{
-				return; // Silenciosamente retornar si no está registrado
+				return;
 			}
 
 			for (int i = 0; i < m_componentInventory.SlotsCount; i++)
@@ -195,7 +197,6 @@ namespace Game
 				{
 					int blockIndex = Terrain.ExtractContents(slotValue);
 
-					// Verificar que es el bloque FlameThrowerBlock
 					if (blockIndex == m_flameThrowerBlockIndex)
 					{
 						m_flameThrowerSlot = i;
@@ -212,7 +213,6 @@ namespace Game
 
 			if (m_flameThrowerSlot == -1)
 			{
-				// No hay lanzallamas, simplemente no hacer nada
 				return;
 			}
 
@@ -230,22 +230,14 @@ namespace Game
 				m_componentModel.AimHandAngleOrder = 1.4f;
 				m_componentModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
 				m_componentModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
-
-				if (m_componentChaseBehavior.Target != null)
-				{
-					m_componentModel.LookAtOrder = new Vector3?(
-						m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition
-					);
-				}
 			}
 		}
 
 		private void StartFiring()
 		{
-			// Verificar nuevamente que tenemos el lanzallamas
 			if (m_flameThrowerSlot == -1)
 			{
-				return; // Silenciosamente retornar
+				return;
 			}
 
 			m_isAiming = false;
@@ -274,13 +266,6 @@ namespace Game
 					0f,
 					0f
 				);
-
-				if (m_componentChaseBehavior.Target != null)
-				{
-					m_componentModel.LookAtOrder = new Vector3?(
-						m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition
-					);
-				}
 			}
 		}
 
@@ -315,8 +300,6 @@ namespace Game
 					0f,
 					0f
 				);
-
-				m_componentModel.LookAtOrder = null;
 			}
 		}
 
@@ -338,26 +321,22 @@ namespace Game
 
 		private void FireShot()
 		{
-			// Verificar que tenemos el lanzallamas antes de disparar
 			if (m_flameThrowerSlot == -1)
 			{
-				return; // Silenciosamente retornar
+				return;
 			}
 
 			if (m_componentChaseBehavior.Target == null)
 				return;
 
-			// Verificación de inmersión (agua)
 			float immersion = m_componentCreature.ComponentBody.ImmersionFactor;
 			if (immersion > 0.4f)
 			{
-				// Sonido de fallo por agua
 				m_subsystemAudio.PlaySound("Audio/MusketMisfire", 1f, m_random.Float(-0.1f, 0.1f),
 					m_componentCreature.ComponentBody.Position, 3f, false);
 
-				// Detener el disparo y pasar a recarga
 				m_isFiring = false;
-				m_shotsFired = BurstCount; // Forzar fin de burst
+				m_shotsFired = BurstCount;
 				StartReloading();
 				return;
 			}
@@ -369,7 +348,6 @@ namespace Game
 
 				Vector3 direction = Vector3.Normalize(targetPosition - firePosition);
 
-				// Disparar recto como el mosquete
 				direction += new Vector3(
 					m_random.Float(-Accuracy, Accuracy),
 					m_random.Float(-Accuracy * 0.5f, Accuracy * 0.5f),
@@ -380,7 +358,6 @@ namespace Game
 				int bulletBlockIndex = BlocksManager.GetBlockIndex<FlameBulletBlock>(false, false);
 				if (bulletBlockIndex > 0)
 				{
-					// Se mantiene el tipo de bala actual (inicializado aleatoriamente en Load)
 					FlameBulletBlock.FlameBulletType bulletType = m_currentBulletType;
 
 					int bulletData = FlameBulletBlock.SetBulletType(0, bulletType);
@@ -394,16 +371,13 @@ namespace Game
 						m_componentCreature
 					);
 
-					// Audio y partículas según tipo
 					Vector3 smokePosition = firePosition + direction * 0.3f;
 
 					if (bulletType == FlameBulletBlock.FlameBulletType.Flame)
 					{
-						// Sonido de fuego
 						m_subsystemAudio.PlaySound("Audio/Flamethrower/Flamethrower Fire", 1f, m_random.Float(-0.1f, 0.1f),
 							m_componentCreature.ComponentBody.Position, 25f, false);
 
-						// Partículas de fuego
 						if (m_subsystemParticles != null && m_subsystemTerrain != null)
 						{
 							m_subsystemParticles.AddParticleSystem(
@@ -414,11 +388,9 @@ namespace Game
 					}
 					else
 					{
-						// Sonido de veneno
 						m_subsystemAudio.PlaySound("Audio/Flamethrower/PoisonSmoke", 1f, m_random.Float(-0.1f, 0.1f),
 							m_componentCreature.ComponentCreatureModel.EyePosition, 8f, true);
 
-						// Partículas de veneno
 						if (m_subsystemParticles != null && m_subsystemTerrain != null)
 						{
 							m_subsystemParticles.AddParticleSystem(
@@ -440,10 +412,7 @@ namespace Game
 					}
 				}
 			}
-			catch
-			{
-				// Ignorar errores silenciosamente
-			}
+			catch { }
 		}
 	}
 }
