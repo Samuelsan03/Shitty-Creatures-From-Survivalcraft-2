@@ -26,11 +26,9 @@ namespace Game
 		public bool UseRecoil = true;
 		public float BulletSpeed = 60f;
 		public bool RequireCocking = true;
-
-		// Niveles del ItemsLauncher
-		public int SpeedLevel = 2; // 1-3
-		public int RateLevel = 2;  // 1-15 (disparos por segundo)
-		public int SpreadLevel = 2; // 1-3
+		public int SpeedLevel = 2;
+		public int RateLevel = 2;
+		public int SpreadLevel = 2;
 
 		// Estado de animación
 		private bool m_isAiming = false;
@@ -52,7 +50,6 @@ namespace Game
 		{
 			base.Load(valuesDictionary, idToEntityMap);
 
-			// Cargar parámetros (sin los parámetros de sonido)
 			MaxDistance = valuesDictionary.GetValue<float>("MaxDistance", 25f);
 			ReloadTime = valuesDictionary.GetValue<float>("ReloadTime", 0.55f);
 			AimTime = valuesDictionary.GetValue<float>("AimTime", 1f);
@@ -64,12 +61,10 @@ namespace Game
 			RateLevel = valuesDictionary.GetValue<int>("RateLevel", 2);
 			SpreadLevel = valuesDictionary.GetValue<int>("SpreadLevel", 2);
 
-			// Limitar valores
 			SpeedLevel = MathUtils.Clamp(SpeedLevel, 1, 3);
 			RateLevel = MathUtils.Clamp(RateLevel, 1, 15);
 			SpreadLevel = MathUtils.Clamp(SpreadLevel, 1, 3);
 
-			// Inicializar componentes
 			m_componentCreature = base.Entity.FindComponent<ComponentCreature>(true);
 			m_componentChaseBehavior = base.Entity.FindComponent<ComponentChaseBehavior>(true);
 			m_componentInventory = base.Entity.FindComponent<ComponentInventory>(true);
@@ -86,30 +81,26 @@ namespace Game
 			if (m_componentCreature.ComponentHealth.Health <= 0f)
 				return;
 
-			// Verificar objetivo
 			if (m_componentChaseBehavior.Target == null)
 			{
 				ResetAnimations();
 				return;
 			}
 
-			// Buscar ItemsLauncher en inventario
 			if (!HasItemsLauncher())
 			{
 				ResetAnimations();
 				return;
 			}
 
-			// Calcular distancia
 			float distance = Vector3.Distance(
 				m_componentCreature.ComponentBody.Position,
 				m_componentChaseBehavior.Target.ComponentBody.Position
 			);
 
-			// Lógica de ataque - MODIFICADO: Solo verifica distancia máxima como en ComponentMusketShooterBehavior
+			// SOLO VERIFICAR DISTANCIA MÁXIMA - SIEMPRE DISPARAR SI ESTÁ EN RANGO
 			if (distance <= MaxDistance)
 			{
-				// Si no está haciendo nada, empezar a apuntar
 				if (!m_isAiming && !m_isFiring && !m_isReloading && !m_isCocking)
 				{
 					StartAiming();
@@ -117,17 +108,22 @@ namespace Game
 			}
 			else
 			{
-				// Fuera de rango, resetear
 				ResetAnimations();
 				return;
 			}
 
-			// Aplicar animaciones
+			// MIRAR AL OBJETIVO SIEMPRE
+			if (m_componentModel != null && m_componentChaseBehavior.Target != null)
+			{
+				m_componentModel.LookAtOrder = new Vector3?(
+					m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition
+				);
+			}
+
 			if (m_isCocking)
 			{
 				ApplyCockingAnimation(dt);
 
-				// Después de tiempo de amartillado, empezar a apuntar
 				if (m_subsystemTime.GameTime - m_cockStartTime >= 0.5)
 				{
 					m_isCocking = false;
@@ -139,12 +135,9 @@ namespace Game
 			{
 				ApplyAimingAnimation(dt);
 
-				// Disparar según la cadencia configurada
 				if (m_subsystemTime.GameTime >= m_nextFireTime)
 				{
 					Fire();
-
-					// Calcular próximo tiempo de disparo basado en RateLevel
 					float fireRate = GetRateValue(RateLevel);
 					m_nextFireTime = m_subsystemTime.GameTime + (1.0 / fireRate);
 				}
@@ -153,7 +146,6 @@ namespace Game
 			{
 				ApplyFiringAnimation(dt);
 
-				// Después de corta animación de fuego, empezar recarga
 				if (m_subsystemTime.GameTime - m_fireTime >= 0.2)
 				{
 					m_isFiring = false;
@@ -164,11 +156,10 @@ namespace Game
 			{
 				ApplyReloadingAnimation(dt);
 
-				// Después de tiempo de recarga, volver a apuntar
 				if (m_subsystemTime.GameTime - m_animationStartTime >= ReloadTime)
 				{
 					m_isReloading = false;
-					StartAiming(); // Volver a apuntar para repetir ciclo
+					StartAiming();
 				}
 			}
 		}
@@ -181,16 +172,12 @@ namespace Game
 			m_isCocking = false;
 			m_animationStartTime = m_subsystemTime.GameTime;
 
-			// Encontrar ItemsLauncher en inventario y equiparlo
 			FindAndEquipItemsLauncher();
-
-			// Inicializar tiempo para primer disparo
 			m_nextFireTime = m_subsystemTime.GameTime + 0.1;
 		}
 
 		private bool HasItemsLauncher()
 		{
-			// Buscar ItemsLauncher por nombre del bloque
 			for (int i = 0; i < m_componentInventory.SlotsCount; i++)
 			{
 				int slotValue = m_componentInventory.GetSlotValue(i);
@@ -209,7 +196,6 @@ namespace Game
 
 		private void FindAndEquipItemsLauncher()
 		{
-			// Buscar ItemsLauncher por nombre del bloque
 			for (int i = 0; i < m_componentInventory.SlotsCount; i++)
 			{
 				int slotValue = m_componentInventory.GetSlotValue(i);
@@ -231,7 +217,6 @@ namespace Game
 		{
 			if (m_componentModel != null)
 			{
-				// ANIMACIÓN DE AMARTILLADO
 				float cockProgress = (float)((m_subsystemTime.GameTime - m_cockStartTime) / 0.5);
 
 				m_componentModel.AimHandAngleOrder = 1.2f;
@@ -241,14 +226,6 @@ namespace Game
 					0.08f
 				);
 				m_componentModel.InHandItemRotationOrder = new Vector3(-1.5f, 0f, 0f);
-
-				// Mirar al objetivo
-				if (m_componentChaseBehavior.Target != null)
-				{
-					m_componentModel.LookAtOrder = new Vector3?(
-						m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition
-					);
-				}
 			}
 		}
 
@@ -256,24 +233,14 @@ namespace Game
 		{
 			if (m_componentModel != null)
 			{
-				// ANIMACIÓN DE APUNTADO
 				m_componentModel.AimHandAngleOrder = 1.4f;
 				m_componentModel.InHandItemOffsetOrder = new Vector3(-0.1f, -0.08f, 0.08f);
 				m_componentModel.InHandItemRotationOrder = new Vector3(-1.6f, 0f, 0f);
-
-				// Mirar al objetivo
-				if (m_componentChaseBehavior.Target != null)
-				{
-					m_componentModel.LookAtOrder = new Vector3?(
-						m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition
-					);
-				}
 			}
 		}
 
 		private void Fire()
 		{
-			// Verificar si todavía tiene el ItemsLauncher
 			if (!HasItemsLauncher())
 			{
 				ResetAnimations();
@@ -286,7 +253,6 @@ namespace Game
 			m_isCocking = false;
 			m_fireTime = m_subsystemTime.GameTime;
 
-			// Sonido de disparo (MANTENIDO)
 			if (m_subsystemAudio != null)
 			{
 				string fireSound = "Audio/Items/ItemLauncher/Item Cannon Fire";
@@ -294,10 +260,8 @@ namespace Game
 					m_componentCreature.ComponentBody.Position, 15f, false);
 			}
 
-			// Disparar proyectil
 			ShootItem();
 
-			// Retroceso
 			if (UseRecoil && m_componentChaseBehavior.Target != null)
 			{
 				Vector3 direction = Vector3.Normalize(
@@ -312,7 +276,6 @@ namespace Game
 		{
 			if (m_componentModel != null)
 			{
-				// ANIMACIÓN DE RETROCESO
 				float timeSinceFire = (float)(m_subsystemTime.GameTime - m_fireTime);
 				float recoilIntensity = MathUtils.Max(0f, 1f - (timeSinceFire * 5f));
 
@@ -342,7 +305,6 @@ namespace Game
 		{
 			if (m_componentModel != null)
 			{
-				// ANIMACIÓN DE RECARGA
 				float reloadProgress = (float)((m_subsystemTime.GameTime - m_animationStartTime) / ReloadTime);
 
 				float aimHandAngle = MathUtils.Lerp(1.0f, 0.3f, reloadProgress);
@@ -360,9 +322,6 @@ namespace Game
 					0f,
 					0f
 				);
-
-				// No mirar al objetivo durante recarga
-				m_componentModel.LookAtOrder = null;
 			}
 		}
 
@@ -394,7 +353,6 @@ namespace Game
 
 				Vector3 direction = Vector3.Normalize(targetPosition - firePosition);
 
-				// Aplicar dispersión según configuración
 				float spreadValue = GetSpreadValue(SpreadLevel);
 				direction += new Vector3(
 					m_random.Float(-spreadValue, spreadValue),
@@ -403,7 +361,6 @@ namespace Game
 				);
 				direction = Vector3.Normalize(direction);
 
-				// USAR BALAS DE MOSQUETE (igual que en ComponentMusketShooterBehavior)
 				int bulletBlockIndex = BlocksManager.GetBlockIndex<BulletBlock>(false, false);
 				if (bulletBlockIndex > 0)
 				{
@@ -412,7 +369,6 @@ namespace Game
 
 					float speedValue = GetSpeedValue(SpeedLevel);
 
-					// Disparar la bala
 					m_subsystemProjectiles.FireProjectile(
 						bulletValue,
 						firePosition,
@@ -421,7 +377,6 @@ namespace Game
 						m_componentCreature
 					);
 
-					// Partículas de humo (igual que en SubsystemMusketBlockBehavior)
 					Vector3 smokePosition = firePosition + direction * 0.3f;
 					if (m_subsystemParticles != null)
 					{
@@ -435,20 +390,15 @@ namespace Game
 						}
 					}
 
-					// Ruido (igual que en SubsystemMusketBlockBehavior)
 					if (m_subsystemNoise != null)
 					{
 						m_subsystemNoise.MakeNoise(firePosition, 1f, 40f);
 					}
 				}
 			}
-			catch (Exception ex)
-			{
-				// Ignorar errores de disparo
-			}
+			catch (Exception ex) { }
 		}
 
-		// Métodos para obtener valores según los niveles del ItemsLauncher
 		private float GetSpeedValue(int level)
 		{
 			switch (level)
@@ -462,7 +412,6 @@ namespace Game
 
 		private float GetRateValue(int level)
 		{
-			// Valores de cadencia en disparos por segundo
 			float[] rateValues = { 1f, 2f, 3f, 4f, 5f, 6f, 7f, 8f, 9f, 10f, 11f, 12f, 13f, 14f, 15f };
 			if (level >= 1 && level <= 15)
 				return rateValues[level - 1];
