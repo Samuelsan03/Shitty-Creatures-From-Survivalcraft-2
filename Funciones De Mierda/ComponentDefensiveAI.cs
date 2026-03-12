@@ -315,13 +315,10 @@ namespace Game
 		}
 		private void Idle_Update()
 		{
-			// Primero verificar si el target sigue vivo
 			if (m_componentChase.Target == null || !CanUseInventory || m_componentInventory == null || !IsTargetAlive())
 			{
 				if (m_componentChase.Target != null && !IsTargetAlive())
 				{
-					// El objetivo murió, necesitamos notificar al ComponentNewChaseBehavior
-					// Como Target es read-only, llamamos a StopAttack() si está disponible
 					if (m_componentChase != null)
 					{
 						m_componentChase.StopAttack();
@@ -330,13 +327,12 @@ namespace Game
 				m_importanceLevel = 0f;
 				return;
 			}
-
-			float distance = Vector3.Distance(
-				m_componentCreature.ComponentBody.Position,
-				m_componentChase.Target.ComponentBody.Position
-			);
-
-			// Prioridad 1: arma lanzable si existe (siempre, no solo en rango)
+			if (m_componentHerd != null && !m_componentHerd.ShouldAttackCreature(m_componentChase.Target))
+			{
+				m_importanceLevel = 0f;
+				return;
+			}
+			float distance = Vector3.Distance(m_componentCreature.ComponentBody.Position, m_componentChase.Target.ComponentBody.Position);
 			WeaponInfo throwable = FindThrowableWeapon();
 			if (throwable.Type != WeaponType.None)
 			{
@@ -346,8 +342,6 @@ namespace Game
 				TransitionToState("Aiming");
 				return;
 			}
-
-			// Prioridad 2: combate cuerpo a cuerpo si está muy cerca (distancia <= 5)
 			if (distance <= 5f)
 			{
 				WeaponInfo melee = FindMeleeWeapon();
@@ -360,15 +354,12 @@ namespace Game
 					return;
 				}
 			}
-
-			// Prioridad 3: otras armas a distancia
 			WeaponInfo best = FindBestRangedWeapon(distance);
 			if (best.Type != WeaponType.None)
 			{
 				m_currentWeapon = best;
 				m_componentInventory.ActiveSlotIndex = m_currentWeapon.Slot;
 				m_importanceLevel = 1f;
-
 				if (m_currentWeapon.IsReady)
 					TransitionToState("Aiming");
 				else
@@ -420,7 +411,6 @@ namespace Game
 		}
 		private void Aiming_Update()
 		{
-			// Validar que el arma actual siga siendo válida
 			if (m_componentInventory == null || m_componentInventory.ActiveSlotIndex < 0)
 			{
 				TransitionToState("Idle");
@@ -432,13 +422,10 @@ namespace Game
 				TransitionToState("Idle");
 				return;
 			}
-
-			// Verificar si el target sigue vivo
-			if (m_componentChase.Target == null || !IsTargetAlive())
+			if (m_componentChase.Target == null || !IsTargetAlive() || (m_componentHerd != null && !m_componentHerd.ShouldAttackCreature(m_componentChase.Target)))
 			{
 				if (m_componentChase.Target != null && !IsTargetAlive())
 				{
-					// El objetivo murió
 					if (m_componentChase != null)
 					{
 						m_componentChase.StopAttack();
@@ -447,28 +434,19 @@ namespace Game
 				TransitionToState("Idle");
 				return;
 			}
-
 			float distance = Vector3.Distance(m_componentCreature.ComponentBody.Position, m_componentChase.Target.ComponentBody.Position);
-
 			if (m_currentWeapon.Type == WeaponType.Throwable)
 			{
-				// Para lanzable, verificar si está en rango
 				bool inRange = distance >= ThrowMinRange && distance <= ThrowMaxRange;
-
 				if (inRange)
 				{
-					// Aplicar animación
 					ApplyAimingAnimation();
 					UpdateWeaponDuringAim();
-
 					if (m_aimStartTime == 0)
 					{
-						// Al entrar en rango, detener movimiento y empezar a apuntar
 						m_componentPathfinding.Stop();
 						m_aimStartTime = m_subsystemTime.GameTime;
 					}
-
-					// Verificar si ya terminó de apuntar
 					if (m_subsystemTime.GameTime >= m_aimStartTime + m_aimDuration)
 					{
 						TransitionToState("Firing");
@@ -476,31 +454,23 @@ namespace Game
 				}
 				else
 				{
-					// Fuera de rango: moverse hacia el objetivo
 					m_componentPathfinding.SetDestination(m_componentChase.Target.ComponentBody.Position, 1f, 1f, 0, false, true, false, null);
-
-					// Resetear el tiempo de apuntado
 					m_aimStartTime = 0;
-
-					// Resetear animación
 					m_componentCreatureModel.AimHandAngleOrder = 0f;
 					m_componentCreatureModel.InHandItemOffsetOrder = Vector3.Zero;
 					m_componentCreatureModel.InHandItemRotationOrder = Vector3.Zero;
 				}
 			}
-			else // Otras armas (no lanzables)
+			else
 			{
-				// Actualizar destino periódicamente
 				if (m_subsystemTime.GameTime - m_lastPathUpdateTime > 0.5)
 				{
 					m_componentPathfinding.SetDestination(m_componentChase.Target.ComponentBody.Position, 1f, 1f, 0, false, true, false, null);
 					m_lastPathUpdateTime = m_subsystemTime.GameTime;
 				}
-
 				m_componentCreatureModel.LookAtOrder = new Vector3?(m_componentChase.Target.ComponentCreatureModel.EyePosition);
 				ApplyAimingAnimation();
 				UpdateWeaponDuringAim();
-
 				if (m_subsystemTime.GameTime >= m_aimStartTime + m_aimDuration)
 				{
 					TransitionToState("Firing");
@@ -509,8 +479,7 @@ namespace Game
 		}
 		private void Firing_Enter()
 		{
-			// Verificar si el target sigue vivo antes de disparar
-			if (m_componentChase.Target == null || !IsTargetAlive())
+			if (m_componentChase.Target == null || !IsTargetAlive() || (m_componentHerd != null && !m_componentHerd.ShouldAttackCreature(m_componentChase.Target)))
 			{
 				if (m_componentChase.Target != null && !IsTargetAlive())
 				{
@@ -522,24 +491,15 @@ namespace Game
 				TransitionToState("Idle");
 				return;
 			}
-
-			// Detener pathfinding
 			m_componentPathfinding.Stop();
-
-			// Realizar el disparo
 			PerformFire();
-
-			// Refrescar estado del arma después de disparar
 			RefreshCurrentWeaponReadyState();
-
 			if (m_currentWeapon.Type == WeaponType.Throwable)
 			{
-				// Siempre ir a pausa después de lanzar
 				TransitionToState("PauseAfterThrow");
 			}
 			else if (m_currentWeapon.Type == WeaponType.ItemsLauncher)
 			{
-				// Para el lanzaobjetos, siempre ir a recarga después de disparar (como en el shooter)
 				TransitionToState("Reloading");
 			}
 			else if (IsAutomatic(m_currentWeapon.Type))
@@ -547,14 +507,13 @@ namespace Game
 				m_nextAutoShotTime = m_subsystemTime.GameTime + GetFireInterval(m_currentWeapon.Type);
 				m_fireEndTime = double.MaxValue;
 			}
-			else if (!m_currentWeapon.IsReady) // Armas que necesitan recarga
+			else if (!m_currentWeapon.IsReady)
 			{
 				m_nextCombatUpdateTime = m_subsystemTime.GameTime + m_random.Float(1.5f, 2.5f);
 				TransitionToState("Reloading");
 			}
 			else
 			{
-				// Volver a apuntar si el arma sigue lista
 				TransitionToState("Aiming");
 			}
 		}
@@ -571,7 +530,6 @@ namespace Game
 		}
 		private void PauseAfterThrow_Update()
 		{
-			// Validar que el arma actual siga siendo válida (aunque en pausa, si se quitó, salir)
 			if (m_componentInventory == null || m_componentInventory.ActiveSlotIndex < 0)
 			{
 				TransitionToState("Idle");
@@ -583,14 +541,11 @@ namespace Game
 				TransitionToState("Idle");
 				return;
 			}
-
 			if (m_subsystemTime.GameTime >= m_pauseEndTime)
 			{
-				// Refrescar el estado del arma actual
 				RefreshCurrentWeaponReadyState();
-
-				// Verificar si el target sigue vivo
 				bool targetAlive = IsTargetAlive();
+				bool targetAttackable = (m_componentHerd == null || m_componentHerd.ShouldAttackCreature(m_componentChase.Target));
 				if (!targetAlive && m_componentChase.Target != null)
 				{
 					if (m_componentChase != null)
@@ -598,17 +553,13 @@ namespace Game
 						m_componentChase.StopAttack();
 					}
 				}
-
-				// Verificar si aún hay objetos lanzables y el target sigue vivo
-				if (m_currentWeapon.IsReady && targetAlive)
+				if (m_currentWeapon.IsReady && targetAlive && targetAttackable)
 				{
-					// Aún quedan objetos y hay objetivo vivo - volver a Aiming
-					m_aimStartTime = 0; // Resetear tiempo de apuntado
+					m_aimStartTime = 0;
 					TransitionToState("Aiming");
 				}
 				else
 				{
-					// No quedan objetos, no hay objetivo o el objetivo murió - ir a Idle
 					TransitionToState("Idle");
 				}
 			}
@@ -619,7 +570,6 @@ namespace Game
 		}
 		private void Firing_Update()
 		{
-			// Validar que el arma actual siga siendo válida
 			if (m_componentInventory == null || m_componentInventory.ActiveSlotIndex < 0)
 			{
 				TransitionToState("Idle");
@@ -631,9 +581,7 @@ namespace Game
 				TransitionToState("Idle");
 				return;
 			}
-
-			// Verificar si el target sigue vivo
-			if (m_componentChase.Target == null || !IsTargetAlive())
+			if (m_componentChase.Target == null || !IsTargetAlive() || (m_componentHerd != null && !m_componentHerd.ShouldAttackCreature(m_componentChase.Target)))
 			{
 				if (m_componentChase.Target != null && !IsTargetAlive())
 				{
@@ -645,24 +593,19 @@ namespace Game
 				TransitionToState("Idle");
 				return;
 			}
-
-			// Actualizar destino periódicamente para armas no lanzables
 			if (m_currentWeapon.Type != WeaponType.Throwable && m_subsystemTime.GameTime - m_lastPathUpdateTime > 0.5)
 			{
 				m_componentPathfinding.SetDestination(m_componentChase.Target.ComponentBody.Position, 1f, 1f, 0, false, true, false, null);
 				m_lastPathUpdateTime = m_subsystemTime.GameTime;
 			}
-
 			m_componentCreatureModel.LookAtOrder = new Vector3?(m_componentChase.Target.ComponentCreatureModel.EyePosition);
 			ApplyAimingAnimation();
-
 			if (IsAutomatic(m_currentWeapon.Type))
 			{
 				if (m_subsystemTime.GameTime >= m_nextAutoShotTime)
 				{
 					PerformFire();
 					RefreshCurrentWeaponReadyState();
-
 					if (m_currentWeapon.IsReady)
 					{
 						m_nextAutoShotTime = m_subsystemTime.GameTime + GetFireInterval(m_currentWeapon.Type);
@@ -670,7 +613,6 @@ namespace Game
 					else
 					{
 						ApplyRecoilAnimation();
-
 						if (m_subsystemTime.GameTime >= m_fireEndTime)
 						{
 							if (m_currentWeapon.IsReady && !RequiresReloadAfterShot(m_currentWeapon.Type))
