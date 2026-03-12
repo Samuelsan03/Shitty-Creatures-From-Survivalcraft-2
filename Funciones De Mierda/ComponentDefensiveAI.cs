@@ -83,6 +83,7 @@ namespace Game
 		private int m_bowDraw;
 		private float m_importanceLevel;
 		private Random m_random = new Random();
+		private bool m_isTamedCreature;
 
 		private enum WeaponType
 		{
@@ -186,6 +187,15 @@ namespace Game
 			m_scarBlockIndex = BlocksManager.GetBlockIndex<SCARBlock>(false, false);
 			m_m249BlockIndex = BlocksManager.GetBlockIndex<M249Block>(false, false);
 			m_mp5ssdBlockIndex = BlocksManager.GetBlockIndex<MP5SSDBlock>(false, false);
+			// Determinar si la criatura pertenece a la lista de entidades tameadas
+			string entityName = Entity.ValuesDictionary.DatabaseObject.Name;
+			m_isTamedCreature = entityName != null && (
+				entityName == "InfectedNormalTamed1" ||
+				entityName == "InfectedNormalTamed2" ||
+				entityName == "InfectedMuscleTamed1" ||
+				entityName == "InfectedMuscleTamed2" ||
+				entityName == "InfectedFreezerTamed"
+			);
 
 			CanUseInventory = valuesDictionary.GetValue<bool>("CanUseInventory");
 
@@ -410,6 +420,19 @@ namespace Game
 		}
 		private void Aiming_Update()
 		{
+			// Validar que el arma actual siga siendo válida
+			if (m_componentInventory == null || m_componentInventory.ActiveSlotIndex < 0)
+			{
+				TransitionToState("Idle");
+				return;
+			}
+			int value = m_componentInventory.GetSlotValue(m_componentInventory.ActiveSlotIndex);
+			if (value == 0 || GetWeaponTypeFromValue(value) != m_currentWeapon.Type)
+			{
+				TransitionToState("Idle");
+				return;
+			}
+
 			// Verificar si el target sigue vivo
 			if (m_componentChase.Target == null || !IsTargetAlive())
 			{
@@ -548,6 +571,19 @@ namespace Game
 		}
 		private void PauseAfterThrow_Update()
 		{
+			// Validar que el arma actual siga siendo válida (aunque en pausa, si se quitó, salir)
+			if (m_componentInventory == null || m_componentInventory.ActiveSlotIndex < 0)
+			{
+				TransitionToState("Idle");
+				return;
+			}
+			int value = m_componentInventory.GetSlotValue(m_componentInventory.ActiveSlotIndex);
+			if (value == 0 || GetWeaponTypeFromValue(value) != m_currentWeapon.Type)
+			{
+				TransitionToState("Idle");
+				return;
+			}
+
 			if (m_subsystemTime.GameTime >= m_pauseEndTime)
 			{
 				// Refrescar el estado del arma actual
@@ -583,6 +619,19 @@ namespace Game
 		}
 		private void Firing_Update()
 		{
+			// Validar que el arma actual siga siendo válida
+			if (m_componentInventory == null || m_componentInventory.ActiveSlotIndex < 0)
+			{
+				TransitionToState("Idle");
+				return;
+			}
+			int value = m_componentInventory.GetSlotValue(m_componentInventory.ActiveSlotIndex);
+			if (value == 0 || GetWeaponTypeFromValue(value) != m_currentWeapon.Type)
+			{
+				TransitionToState("Idle");
+				return;
+			}
+
 			// Verificar si el target sigue vivo
 			if (m_componentChase.Target == null || !IsTargetAlive())
 			{
@@ -663,6 +712,19 @@ namespace Game
 
 		private void Reloading_Update()
 		{
+			// Validar que el arma actual siga siendo válida
+			if (m_componentInventory == null || m_componentInventory.ActiveSlotIndex < 0)
+			{
+				TransitionToState("Idle");
+				return;
+			}
+			int value = m_componentInventory.GetSlotValue(m_componentInventory.ActiveSlotIndex);
+			if (value == 0 || GetWeaponTypeFromValue(value) != m_currentWeapon.Type)
+			{
+				TransitionToState("Idle");
+				return;
+			}
+
 			if (m_subsystemTime.GameTime >= m_reloadStartTime + m_reloadDuration)
 			{
 				TryReloadWeapon(m_currentWeapon);
@@ -723,7 +785,6 @@ namespace Game
 				TransitionToState("Idle");
 			}
 		}
-
 		private void Reloading_Leave()
 		{
 			m_componentCreatureModel.AimHandAngleOrder = 0f;
@@ -1201,23 +1262,43 @@ namespace Game
 		}
 		private void ApplyAimingAnimation()
 		{
+			bool applyHandAngle = !m_isTamedCreature;
+
 			switch (m_currentWeapon.Type)
 			{
 				case WeaponType.Throwable:
-					m_componentCreatureModel.AimHandAngleOrder = 3.2f;
+					if (applyHandAngle)
+						m_componentCreatureModel.AimHandAngleOrder = 3.2f;
+					else
+						m_componentCreatureModel.AimHandAngleOrder = 0f;
 					m_componentCreatureModel.InHandItemOffsetOrder = new Vector3(0f, -0.25f, 0f);
 					m_componentCreatureModel.InHandItemRotationOrder = new Vector3(3.14159f, 0f, 0f);
 					break;
+
 				case WeaponType.Bow:
-					m_componentCreatureModel.AimHandAngleOrder = 1.2f;
-					m_componentCreatureModel.InHandItemRotationOrder = new Vector3(0f, -0.2f, 0f);
+					if (!m_isTamedCreature) // Para criaturas normales se aplica la animación completa
+					{
+						m_componentCreatureModel.AimHandAngleOrder = 1.2f;
+						m_componentCreatureModel.InHandItemRotationOrder = new Vector3(0f, -0.2f, 0f);
+					}
+					else
+					{
+						// Para tameadas, no se aplica ninguna transformación
+						m_componentCreatureModel.AimHandAngleOrder = 0f;
+						// No tocar InHandItemOffsetOrder ni InHandItemRotationOrder para que el arco se vea normal
+					}
 					break;
+
 				case WeaponType.Crossbow:
 				case WeaponType.RepeatCrossbow:
-					m_componentCreatureModel.AimHandAngleOrder = 1.3f;
+					if (applyHandAngle)
+						m_componentCreatureModel.AimHandAngleOrder = 1.3f;
+					else
+						m_componentCreatureModel.AimHandAngleOrder = 0f;
 					m_componentCreatureModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.1f, 0.07f);
 					m_componentCreatureModel.InHandItemRotationOrder = new Vector3(-1.55f, 0f, 0f);
 					break;
+
 				case WeaponType.Musket:
 				case WeaponType.ItemsLauncher:
 				case WeaponType.M4:
@@ -1240,43 +1321,57 @@ namespace Game
 				case WeaponType.Famas:
 				case WeaponType.SCAR:
 				case WeaponType.MP5SSD:
-					m_componentCreatureModel.AimHandAngleOrder = 1.4f;
+					if (applyHandAngle)
+						m_componentCreatureModel.AimHandAngleOrder = 1.4f;
+					else
+						m_componentCreatureModel.AimHandAngleOrder = 0f;
 					m_componentCreatureModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
 					m_componentCreatureModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
 					break;
+
 				case WeaponType.FlameThrower:
-					m_componentCreatureModel.AimHandAngleOrder = 1.4f;
+					if (applyHandAngle)
+						m_componentCreatureModel.AimHandAngleOrder = 1.4f;
+					else
+						m_componentCreatureModel.AimHandAngleOrder = 0f;
 					m_componentCreatureModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
 					m_componentCreatureModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
 					break;
+
 				case WeaponType.Minigun:
-					m_componentCreatureModel.AimHandAngleOrder = 1.3f;
+					if (applyHandAngle)
+						m_componentCreatureModel.AimHandAngleOrder = 1.3f;
+					else
+						m_componentCreatureModel.AimHandAngleOrder = 0f;
 					m_componentCreatureModel.InHandItemOffsetOrder = new Vector3(-0.1f, -0.1f, 0.05f);
 					m_componentCreatureModel.InHandItemRotationOrder = new Vector3(-1.8f, 0f, 0f);
 					break;
+
 				case WeaponType.AA12:
-					m_componentCreatureModel.AimHandAngleOrder = 1.2f;
-					m_componentCreatureModel.InHandItemOffsetOrder = new Vector3(-0.06f, -0.06f, 0.05f);
-					m_componentCreatureModel.InHandItemRotationOrder = new Vector3(-1.4f, 0f, 0f);
-					break;
 				case WeaponType.M249:
-					m_componentCreatureModel.AimHandAngleOrder = 1.2f;
+					if (applyHandAngle)
+						m_componentCreatureModel.AimHandAngleOrder = 1.2f;
+					else
+						m_componentCreatureModel.AimHandAngleOrder = 0f;
 					m_componentCreatureModel.InHandItemOffsetOrder = new Vector3(-0.06f, -0.06f, 0.05f);
 					m_componentCreatureModel.InHandItemRotationOrder = new Vector3(-1.4f, 0f, 0f);
 					break;
 			}
 		}
-
 		private void ApplyReloadAnimation()
 		{
 			m_componentCreatureModel.InHandItemOffsetOrder = new Vector3(0f, 0.1f, 0.1f);
-			m_componentCreatureModel.AimHandAngleOrder = 0.5f;
+			if (!m_isTamedCreature)
+				m_componentCreatureModel.AimHandAngleOrder = 0.5f;
+			else
+				m_componentCreatureModel.AimHandAngleOrder = 0f; // Las manos quedan quietas
 		}
 
 		private void ApplyRecoilAnimation()
 		{
-			m_componentCreatureModel.AimHandAngleOrder *= 1.1f;
-			m_componentCreatureModel.InHandItemOffsetOrder -= new Vector3(0f, 0f, 0.05f);
+			if (!m_isTamedCreature)
+				m_componentCreatureModel.AimHandAngleOrder *= 1.1f; // Retroceso solo para no tameadas
+			m_componentCreatureModel.InHandItemOffsetOrder -= new Vector3(0f, 0f, 0.05f); // El offset del arma se aplica siempre
 		}
 
 		private void UpdateWeaponDuringAim()
@@ -2829,7 +2924,50 @@ namespace Game
 			};
 			return bulletTypes[m_random.Int(0, bulletTypes.Length - 1)];
 		}
+		// Nuevo método auxiliar para obtener el tipo de arma a partir del valor del bloque
+		private WeaponType GetWeaponTypeFromValue(int value)
+		{
+			if (value == 0) return WeaponType.None;
+			Block block = BlocksManager.Blocks[Terrain.ExtractContents(value)];
+			int data = Terrain.ExtractData(value);
 
+			if (block is BowBlock) return WeaponType.Bow;
+			if (block is CrossbowBlock) return WeaponType.Crossbow;
+			if (block is RepeatCrossbowBlock) return WeaponType.RepeatCrossbow;
+			if (block is MusketBlock) return WeaponType.Musket;
+			if (block is FlameThrowerBlock) return WeaponType.FlameThrower;
+			if (block is ItemsLauncherBlock) return WeaponType.ItemsLauncher;
+			if (block is SpearBlock) return WeaponType.Melee; // Los SpearBlock son cuerpo a cuerpo o lanzables, pero aquí se tratan como melee
+			if (block is M4Block) return WeaponType.M4;
+			if (block is AKBlock) return WeaponType.AK;
+			if (block is RevolverBlock) return WeaponType.Revolver;
+			if (block is SniperBlock) return WeaponType.Sniper;
+			if (block is BK43Block) return WeaponType.BK43;
+			if (block is Mac10Block) return WeaponType.Mac10;
+			if (block is SWM500Block) return WeaponType.SWM500;
+			if (block is KABlock) return WeaponType.KA;
+			if (block is SPAS12Block) return WeaponType.SPAS12;
+			if (block is MinigunBlock) return WeaponType.Minigun;
+			if (block is P90Block) return WeaponType.P90;
+			if (block is AUGBlock) return WeaponType.AUG;
+			if (block is UziBlock) return WeaponType.Uzi;
+			if (block is MendozaBlock) return WeaponType.Mendoza;
+			if (block is GrozaBlock) return WeaponType.Groza;
+			if (block is Izh43Block) return WeaponType.Izh43;
+			if (block is AA12Block) return WeaponType.AA12;
+			if (block is G3Block) return WeaponType.G3;
+			if (block is NewG3Block) return WeaponType.NewG3;
+			if (block is FamasBlock) return WeaponType.Famas;
+			if (block is SCARBlock) return WeaponType.SCAR;
+			if (block is M249Block) return WeaponType.M249;
+			if (block is MP5SSDBlock) return WeaponType.MP5SSD;
+			// Objetos lanzables
+			if (block.GetProjectileSpeed(value) > 0f) return WeaponType.Throwable;
+			// Armas cuerpo a cuerpo
+			if (block is MacheteBlock || block is WoodenClubBlock || block is StoneClubBlock || block is AxeBlock || block is SharpHammerBlock || block is LongspearBlock || block is BaseballBatBlock)
+				return WeaponType.Melee;
+			return WeaponType.None;
+		}
 		private void TryReloadWeapon(WeaponInfo weaponInfo)
 		{
 			if (!CanUseInventory || weaponInfo.Type == WeaponType.None ||
