@@ -11,6 +11,14 @@ namespace Game
 		public override float ImportanceLevel => m_importanceLevel;
 		public bool CanUseInventory { get; set; } = true;
 
+		private const float ThrowMinRange = 5f;
+		private const float ThrowMaxRange = 15f;
+		private const float ThrowablePauseDuration = 1.5f;
+		private const float ThrowableAimDuration = 0.55f;
+		private const float ThrowableShortPause = 0.55f; // Pausa corta cuando aún quedan objetos
+		private double m_lastPathUpdateTime;
+		private double m_pauseEndTime;
+
 		private SubsystemTime m_subsystemTime;
 		private SubsystemProjectiles m_subsystemProjectiles;
 		private SubsystemAudio m_subsystemAudio;
@@ -26,6 +34,7 @@ namespace Game
 		private ComponentPathfinding m_componentPathfinding;
 		private ComponentCreatureModel m_componentCreatureModel;
 		private ComponentMiner m_componentMiner;
+		private ComponentHealth m_componentHealth;
 
 		private int m_bowBlockIndex;
 		private int m_crossbowBlockIndex;
@@ -69,8 +78,8 @@ namespace Game
 		private float m_aimDuration;
 		private double m_reloadStartTime;
 		private float m_reloadDuration;
-		private double m_nextAutoShotTime;       // Para armas automáticas (M4, AK, lanzallamas, Mac10, KA)
-		private double m_fireEndTime;             // Cooldown tras disparo para no automáticas
+		private double m_nextAutoShotTime;
+		private double m_fireEndTime;
 		private int m_bowDraw;
 		private float m_importanceLevel;
 		private Random m_random = new Random();
@@ -142,6 +151,7 @@ namespace Game
 			m_componentMiner = Entity.FindComponent<ComponentMiner>(true);
 			m_componentChase = Entity.FindComponent<ComponentNewChaseBehavior>(true);
 			m_componentHerd = Entity.FindComponent<ComponentNewHerdBehavior>();
+			m_componentHealth = Entity.FindComponent<ComponentHealth>(true);
 
 			m_bowBlockIndex = BlocksManager.GetBlockIndex<BowBlock>(false, false);
 			m_crossbowBlockIndex = BlocksManager.GetBlockIndex<CrossbowBlock>(false, false);
@@ -184,6 +194,7 @@ namespace Game
 			m_stateMachine.AddState("Firing", Firing_Enter, Firing_Update, Firing_Leave);
 			m_stateMachine.AddState("Reloading", Reloading_Enter, Reloading_Update, Reloading_Leave);
 			m_stateMachine.TransitionTo("Idle");
+			m_stateMachine.AddState("PauseAfterThrow", PauseAfterThrow_Enter, PauseAfterThrow_Update, PauseAfterThrow_Leave);
 		}
 
 		public void Update(float dt)
@@ -197,12 +208,8 @@ namespace Game
 				}
 			}
 
-			if (m_subsystemTime.GameTime >= m_nextCombatUpdateTime)
-			{
-				m_stateMachine.Update();
-			}
+			m_stateMachine.Update(); // Siempre actualizar la máquina de estados
 		}
-
 		private void TransitionToState(string stateName)
 		{
 			m_currentStateName = stateName;
@@ -274,7 +281,7 @@ namespace Game
 			else if (block is Izh43Block)
 				m_currentWeapon.IsReady = Izh43Block.GetBulletNum(data) > 0;
 			else if (block is AA12Block)
-				m_currentWeapon.IsReady = AA12Block.GetBulletNum(Terrain.ExtractData(value)) > 0; // Usar ExtractData si es necesario
+				m_currentWeapon.IsReady = AA12Block.GetBulletNum(Terrain.ExtractData(value)) > 0;
 			else if (block is G3Block)
 				m_currentWeapon.IsReady = G3Block.GetBulletNum(data) > 0;
 			else if (block is NewG3Block)
@@ -287,12 +294,29 @@ namespace Game
 				m_currentWeapon.IsReady = M249Block.GetBulletNum(Terrain.ExtractData(value)) > 0;
 			else if (block is MP5SSDBlock)
 				m_currentWeapon.IsReady = MP5SSDBlock.GetBulletNum(data) > 0;
+			else if (block.GetProjectileSpeed(value) > 0f)
+			{
+				m_currentWeapon.IsReady = (m_componentInventory.GetSlotCount(m_componentInventory.ActiveSlotIndex) > 0);
+			}
+			else
+			{
+				m_currentWeapon.IsReady = false;
+			}
 		}
-
 		private void Idle_Update()
 		{
-			if (m_componentChase.Target == null || !CanUseInventory || m_componentInventory == null)
+			// Primero verificar si el target sigue vivo
+			if (m_componentChase.Target == null || !CanUseInventory || m_componentInventory == null || !IsTargetAlive())
 			{
+				if (m_componentChase.Target != null && !IsTargetAlive())
+				{
+					// El objetivo murió, necesitamos notificar al ComponentNewChaseBehavior
+					// Como Target es read-only, llamamos a StopAttack() si está disponible
+					if (m_componentChase != null)
+					{
+						m_componentChase.StopAttack();
+					}
+				}
 				m_importanceLevel = 0f;
 				return;
 			}
@@ -302,6 +326,18 @@ namespace Game
 				m_componentChase.Target.ComponentBody.Position
 			);
 
+			// Prioridad 1: arma lanzable si existe (siempre, no solo en rango)
+			WeaponInfo throwable = FindThrowableWeapon();
+			if (throwable.Type != WeaponType.None)
+			{
+				m_currentWeapon = throwable;
+				m_componentInventory.ActiveSlotIndex = m_currentWeapon.Slot;
+				m_importanceLevel = 1f;
+				TransitionToState("Aiming");
+				return;
+			}
+
+			// Prioridad 2: combate cuerpo a cuerpo si está muy cerca (distancia <= 5)
 			if (distance <= 5f)
 			{
 				WeaponInfo melee = FindMeleeWeapon();
@@ -315,6 +351,7 @@ namespace Game
 				}
 			}
 
+			// Prioridad 3: otras armas a distancia
 			WeaponInfo best = FindBestRangedWeapon(distance);
 			if (best.Type != WeaponType.None)
 			{
@@ -332,57 +369,234 @@ namespace Game
 				m_importanceLevel = 0f;
 			}
 		}
+		private bool IsTargetAlive()
+		{
+			if (m_componentChase?.Target == null)
+				return false;
 
+			// Obtener el componente de salud del objetivo
+			ComponentHealth targetHealth = m_componentChase.Target.Entity.FindComponent<ComponentHealth>();
+
+			// Si no tiene componente de salud, asumimos que está vivo
+			// Si tiene, verificamos que su salud sea mayor que 0
+			return targetHealth == null || targetHealth.Health > 0f;
+		}
 		private void Aiming_Enter()
 		{
-			m_aimStartTime = m_subsystemTime.GameTime;
+			// Detener pathfinding solo para armas lanzables (se detendrá al entrar en rango)
+			if (m_currentWeapon.Type == WeaponType.Throwable)
+			{
+				// No detener aquí, se hará en Aiming_Update cuando esté en rango
+				// m_componentPathfinding.Stop();  ← Eliminado
+			}
+			else
+			{
+				// Iniciar movimiento hacia el objetivo
+				m_componentPathfinding.SetDestination(m_componentChase.Target.ComponentBody.Position, 1f, 1f, 0, false, true, false, null);
+				m_lastPathUpdateTime = m_subsystemTime.GameTime;
+			}
+
+			// No inicializamos m_aimStartTime para lanzable; se hará en Update cuando esté en rango
+			if (m_currentWeapon.Type != WeaponType.Throwable)
+			{
+				m_aimStartTime = m_subsystemTime.GameTime;
+			}
+			else
+			{
+				m_aimStartTime = 0; // Indica que aún no ha empezado a apuntar
+			}
 			m_aimDuration = GetAimDurationForWeapon(m_currentWeapon.Type);
 			m_bowDraw = 0;
 		}
-
 		private void Aiming_Update()
 		{
-			if (m_componentChase.Target == null)
+			// Verificar si el target sigue vivo
+			if (m_componentChase.Target == null || !IsTargetAlive())
 			{
+				if (m_componentChase.Target != null && !IsTargetAlive())
+				{
+					// El objetivo murió
+					if (m_componentChase != null)
+					{
+						m_componentChase.StopAttack();
+					}
+				}
 				TransitionToState("Idle");
 				return;
 			}
 
-			m_componentCreatureModel.LookAtOrder = new Vector3?(m_componentChase.Target.ComponentCreatureModel.EyePosition);
-			ApplyAimingAnimation();
-			UpdateWeaponDuringAim();
+			float distance = Vector3.Distance(m_componentCreature.ComponentBody.Position, m_componentChase.Target.ComponentBody.Position);
 
-			if (m_subsystemTime.GameTime >= m_aimStartTime + m_aimDuration)
-				TransitionToState("Firing");
+			if (m_currentWeapon.Type == WeaponType.Throwable)
+			{
+				// Para lanzable, verificar si está en rango
+				bool inRange = distance >= ThrowMinRange && distance <= ThrowMaxRange;
+
+				if (inRange)
+				{
+					// Aplicar animación
+					ApplyAimingAnimation();
+					UpdateWeaponDuringAim();
+
+					if (m_aimStartTime == 0)
+					{
+						// Al entrar en rango, detener movimiento y empezar a apuntar
+						m_componentPathfinding.Stop();
+						m_aimStartTime = m_subsystemTime.GameTime;
+					}
+
+					// Verificar si ya terminó de apuntar
+					if (m_subsystemTime.GameTime >= m_aimStartTime + m_aimDuration)
+					{
+						TransitionToState("Firing");
+					}
+				}
+				else
+				{
+					// Fuera de rango: moverse hacia el objetivo
+					m_componentPathfinding.SetDestination(m_componentChase.Target.ComponentBody.Position, 1f, 1f, 0, false, true, false, null);
+
+					// Resetear el tiempo de apuntado
+					m_aimStartTime = 0;
+
+					// Resetear animación
+					m_componentCreatureModel.AimHandAngleOrder = 0f;
+					m_componentCreatureModel.InHandItemOffsetOrder = Vector3.Zero;
+					m_componentCreatureModel.InHandItemRotationOrder = Vector3.Zero;
+				}
+			}
+			else // Otras armas (no lanzables)
+			{
+				// Actualizar destino periódicamente
+				if (m_subsystemTime.GameTime - m_lastPathUpdateTime > 0.5)
+				{
+					m_componentPathfinding.SetDestination(m_componentChase.Target.ComponentBody.Position, 1f, 1f, 0, false, true, false, null);
+					m_lastPathUpdateTime = m_subsystemTime.GameTime;
+				}
+
+				m_componentCreatureModel.LookAtOrder = new Vector3?(m_componentChase.Target.ComponentCreatureModel.EyePosition);
+				ApplyAimingAnimation();
+				UpdateWeaponDuringAim();
+
+				if (m_subsystemTime.GameTime >= m_aimStartTime + m_aimDuration)
+				{
+					TransitionToState("Firing");
+				}
+			}
 		}
-
 		private void Firing_Enter()
 		{
+			// Verificar si el target sigue vivo antes de disparar
+			if (m_componentChase.Target == null || !IsTargetAlive())
+			{
+				if (m_componentChase.Target != null && !IsTargetAlive())
+				{
+					if (m_componentChase != null)
+					{
+						m_componentChase.StopAttack();
+					}
+				}
+				TransitionToState("Idle");
+				return;
+			}
+
+			// Detener pathfinding
+			m_componentPathfinding.Stop();
+
+			// Realizar el disparo
 			PerformFire();
 
-			if (IsAutomatic(m_currentWeapon.Type))
+			// Refrescar estado del arma después de disparar
+			RefreshCurrentWeaponReadyState();
+
+			if (m_currentWeapon.Type == WeaponType.Throwable)
+			{
+				// Siempre ir a pausa después de lanzar
+				TransitionToState("PauseAfterThrow");
+			}
+			else if (IsAutomatic(m_currentWeapon.Type))
 			{
 				m_nextAutoShotTime = m_subsystemTime.GameTime + GetFireInterval(m_currentWeapon.Type);
 				m_fireEndTime = double.MaxValue;
 			}
+			else if (!m_currentWeapon.IsReady) // Armas que necesitan recarga
+			{
+				m_nextCombatUpdateTime = m_subsystemTime.GameTime + m_random.Float(1.5f, 2.5f);
+				TransitionToState("Reloading");
+			}
 			else
 			{
-				m_fireEndTime = m_subsystemTime.GameTime + 0.2;
+				// Volver a apuntar si el arma sigue lista
+				TransitionToState("Aiming");
+			}
+		}
+		private void PauseAfterThrow_Enter()
+		{
+			m_componentPathfinding.Stop();
 
-				if (!m_currentWeapon.IsReady)
+			// La duración de la pausa depende de si aún quedan objetos lanzables
+			float pauseDuration = m_currentWeapon.IsReady ? ThrowableShortPause : ThrowablePauseDuration;
+			m_pauseEndTime = m_subsystemTime.GameTime + pauseDuration;
+
+			// No resetear la importancia a 0, mantenerla para que el comportamiento siga activo
+			m_importanceLevel = 1f;
+		}
+		private void PauseAfterThrow_Update()
+		{
+			if (m_subsystemTime.GameTime >= m_pauseEndTime)
+			{
+				// Refrescar el estado del arma actual
+				RefreshCurrentWeaponReadyState();
+
+				// Verificar si el target sigue vivo
+				bool targetAlive = IsTargetAlive();
+				if (!targetAlive && m_componentChase.Target != null)
 				{
-					m_nextCombatUpdateTime = m_subsystemTime.GameTime + m_random.Float(1.5f, 2.5f);
-					TransitionToState("Reloading");
+					if (m_componentChase != null)
+					{
+						m_componentChase.StopAttack();
+					}
+				}
+
+				// Verificar si aún hay objetos lanzables y el target sigue vivo
+				if (m_currentWeapon.IsReady && targetAlive)
+				{
+					// Aún quedan objetos y hay objetivo vivo - volver a Aiming
+					m_aimStartTime = 0; // Resetear tiempo de apuntado
+					TransitionToState("Aiming");
+				}
+				else
+				{
+					// No quedan objetos, no hay objetivo o el objetivo murió - ir a Idle
+					TransitionToState("Idle");
 				}
 			}
 		}
-
+		private void PauseAfterThrow_Leave()
+		{
+			// No es necesario hacer nada especial
+		}
 		private void Firing_Update()
 		{
-			if (m_componentChase.Target == null)
+			// Verificar si el target sigue vivo
+			if (m_componentChase.Target == null || !IsTargetAlive())
 			{
+				if (m_componentChase.Target != null && !IsTargetAlive())
+				{
+					if (m_componentChase != null)
+					{
+						m_componentChase.StopAttack();
+					}
+				}
 				TransitionToState("Idle");
 				return;
+			}
+
+			// Actualizar destino periódicamente para armas no lanzables
+			if (m_currentWeapon.Type != WeaponType.Throwable && m_subsystemTime.GameTime - m_lastPathUpdateTime > 0.5)
+			{
+				m_componentPathfinding.SetDestination(m_componentChase.Target.ComponentBody.Position, 1f, 1f, 0, false, true, false, null);
+				m_lastPathUpdateTime = m_subsystemTime.GameTime;
 			}
 
 			m_componentCreatureModel.LookAtOrder = new Vector3?(m_componentChase.Target.ComponentCreatureModel.EyePosition);
@@ -401,32 +615,32 @@ namespace Game
 					}
 					else
 					{
-						m_nextCombatUpdateTime = m_subsystemTime.GameTime + m_random.Float(1.5f, 2.5f);
-						TransitionToState("Reloading");
-						return;
-					}
-				}
-			}
-			else
-			{
-				ApplyRecoilAnimation();
+						ApplyRecoilAnimation();
 
-				if (m_subsystemTime.GameTime >= m_fireEndTime)
-				{
-					if (m_currentWeapon.IsReady && !RequiresReloadAfterShot(m_currentWeapon.Type))
-					{
-						TransitionToState("Aiming");
+						if (m_subsystemTime.GameTime >= m_fireEndTime)
+						{
+							if (m_currentWeapon.IsReady && !RequiresReloadAfterShot(m_currentWeapon.Type))
+							{
+								TransitionToState("Aiming");
+							}
+							else
+							{
+								if (m_currentWeapon.Type == WeaponType.Throwable)
+								{
+									TransitionToState("PauseAfterThrow");
+								}
+								else
+								{
+									m_nextCombatUpdateTime = m_subsystemTime.GameTime + m_random.Float(1.5f, 2.5f);
+									TransitionToState("Reloading");
+								}
+							}
+							return;
+						}
 					}
-					else
-					{
-						m_nextCombatUpdateTime = m_subsystemTime.GameTime + m_random.Float(1.5f, 2.5f);
-						TransitionToState("Reloading");
-					}
-					return;
 				}
 			}
 		}
-
 		private void Firing_Leave()
 		{
 			m_componentCreatureModel.AimHandAngleOrder = 0f;
@@ -436,6 +650,7 @@ namespace Game
 
 		private void Reloading_Enter()
 		{
+			m_componentPathfinding.Stop();
 			m_reloadStartTime = m_subsystemTime.GameTime;
 			m_reloadDuration = GetReloadDurationForWeapon(m_currentWeapon.Type);
 			ApplyReloadAnimation();
@@ -530,19 +745,19 @@ namespace Game
 				case WeaponType.AK: return 0.17f;
 				case WeaponType.Mac10: return 0.1f;
 				case WeaponType.KA: return 0.1f;
-				case WeaponType.Minigun: return 0.08f;  // 750 RPM
-				case WeaponType.P90: return 0.067f;     // 900 RPM
-				case WeaponType.AUG: return 0.17f;       // 350 RPM (similar a AK)
-				case WeaponType.Uzi: return 0.08f;       // 750 RPM
-				case WeaponType.Mendoza: return 0.12f;   // ~500 RPM
-				case WeaponType.Groza: return 0.12f;     // ~500 RPM
-				case WeaponType.AA12: return 0.2f;       // 300 RPM
-				case WeaponType.G3: return 0.12f;        // 500 RPM
-				case WeaponType.NewG3: return 0.12f;     // 500 RPM
-				case WeaponType.Famas: return 0.09f;     // ~667 RPM
-				case WeaponType.SCAR: return 0.1f;       // 600 RPM
-				case WeaponType.M249: return 0.08f;      // 750 RPM
-				case WeaponType.MP5SSD: return 0.12f;    // 500 RPM
+				case WeaponType.Minigun: return 0.08f;
+				case WeaponType.P90: return 0.067f;
+				case WeaponType.AUG: return 0.17f;
+				case WeaponType.Uzi: return 0.08f;
+				case WeaponType.Mendoza: return 0.12f;
+				case WeaponType.Groza: return 0.12f;
+				case WeaponType.AA12: return 0.2f;
+				case WeaponType.G3: return 0.12f;
+				case WeaponType.NewG3: return 0.12f;
+				case WeaponType.Famas: return 0.09f;
+				case WeaponType.SCAR: return 0.1f;
+				case WeaponType.M249: return 0.08f;
+				case WeaponType.MP5SSD: return 0.12f;
 				default: return 0f;
 			}
 		}
@@ -557,25 +772,26 @@ namespace Game
 				case WeaponType.RepeatCrossbow:
 				case WeaponType.ItemsLauncher:
 				case WeaponType.FlameThrower:
-				case WeaponType.BK43:    // Escopeta de 2 cartuchos
-				case WeaponType.SWM500:   // Revólver de 8 balas
-				case WeaponType.Mac10:    // Automática
-				case WeaponType.KA:       // Automática
-				case WeaponType.SPAS12:   // Escopeta semiautomática de 8 cartuchos
-				case WeaponType.Minigun:  // Ametralladora rotativa
-				case WeaponType.P90:      // Automática
-				case WeaponType.AUG:      // Automática
-				case WeaponType.Uzi:      // Automática
-				case WeaponType.Mendoza:  // Automática
-				case WeaponType.Groza:    // Automática
-				case WeaponType.Izh43:    // Escopeta de 2 cartuchos
-				case WeaponType.AA12:     // Escopeta automática
-				case WeaponType.G3:       // Automática
-				case WeaponType.NewG3:    // Automática
-				case WeaponType.Famas:    // Automática
-				case WeaponType.SCAR:     // Automática
-				case WeaponType.M249:     // Ametralladora ligera
-				case WeaponType.MP5SSD:   // Automática
+				case WeaponType.BK43:
+				case WeaponType.SWM500:
+				case WeaponType.Mac10:
+				case WeaponType.KA:
+				case WeaponType.SPAS12:
+				case WeaponType.Minigun:
+				case WeaponType.P90:
+				case WeaponType.AUG:
+				case WeaponType.Uzi:
+				case WeaponType.Mendoza:
+				case WeaponType.Groza:
+				case WeaponType.Izh43:
+				case WeaponType.AA12:
+				case WeaponType.G3:
+				case WeaponType.NewG3:
+				case WeaponType.Famas:
+				case WeaponType.SCAR:
+				case WeaponType.M249:
+				case WeaponType.MP5SSD:
+				case WeaponType.Throwable:
 					return false;
 				default:
 					return false;
@@ -589,7 +805,7 @@ namespace Game
 				if (value == 0) continue;
 
 				Block block = BlocksManager.Blocks[Terrain.ExtractContents(value)];
-				if (block is MacheteBlock || block is WoodenClubBlock || block is StoneClubBlock || block is AxeBlock || block is SpearBlock)
+				if (block is MacheteBlock || block is WoodenClubBlock || block is StoneClubBlock || block is AxeBlock || block is SharpHammerBlock || block is LongspearBlock || block is SpearBlock || block is BaseballBatBlock)
 				{
 					return new WeaponInfo { Slot = i, Value = value, Type = WeaponType.Melee, IsReady = true };
 				}
@@ -597,6 +813,61 @@ namespace Game
 			return default;
 		}
 
+		private WeaponInfo FindThrowableWeapon()
+		{
+			for (int i = 0; i < m_componentInventory.SlotsCount; i++)
+			{
+				int value = m_componentInventory.GetSlotValue(i);
+				if (value == 0) continue;
+				int count = m_componentInventory.GetSlotCount(i);
+				if (count == 0) continue;
+				Block block = BlocksManager.Blocks[Terrain.ExtractContents(value)];
+				Type blockType = block.GetType();
+
+				// Lista completa de bloques lanzables
+				if (blockType == typeof(StoneChunkBlock) ||
+					blockType == typeof(SulphurChunkBlock) ||
+					blockType == typeof(CoalChunkBlock) ||
+					blockType == typeof(DiamondChunkBlock) ||
+					blockType == typeof(GermaniumChunkBlock) ||
+					blockType == typeof(GermaniumOreChunkBlock) ||
+					blockType == typeof(IronOreChunkBlock) ||
+					blockType == typeof(MalachiteChunkBlock) ||
+					blockType == typeof(SaltpeterChunkBlock) ||
+					blockType == typeof(GunpowderBlock) ||
+					blockType == typeof(BombBlock) ||
+					blockType == typeof(IncendiaryBombBlock) ||
+					blockType == typeof(PoisonBombBlock) ||
+					blockType == typeof(BrickBlock) ||
+					blockType == typeof(SnowballBlock) ||
+					blockType == typeof(EggBlock) ||
+					blockType == typeof(CopperSpearBlock) ||
+					blockType == typeof(DiamondSpearBlock) ||
+					blockType == typeof(IronSpearBlock) ||
+					blockType == typeof(WoodenSpearBlock) ||
+					blockType == typeof(WoodenLongspearBlock) ||
+					blockType == typeof(StoneSpearBlock) ||
+					blockType == typeof(StoneLongspearBlock) ||
+					blockType == typeof(IronLongspearBlock) ||
+					blockType == typeof(LavaLongspearBlock) ||
+					blockType == typeof(LavaSpearBlock) ||
+					blockType == typeof(DiamondLongspearBlock) ||
+					blockType == typeof(FreezingSnowballBlock) ||
+					blockType == typeof(FreezeBombBlock) ||
+					blockType == typeof(FireworksBlock) ||
+					block.GetProjectileSpeed(value) > 0f) // Mantener por si acaso
+				{
+					return new WeaponInfo
+					{
+						Slot = i,
+						Value = value,
+						Type = WeaponType.Throwable,
+						IsReady = true
+					};
+				}
+			}
+			return default;
+		}
 		private WeaponInfo FindBestRangedWeapon(float distance)
 		{
 			WeaponInfo best = default;
@@ -606,6 +877,8 @@ namespace Game
 			{
 				int value = m_componentInventory.GetSlotValue(i);
 				if (value == 0) continue;
+				int count = m_componentInventory.GetSlotCount(i);
+				if (count == 0) continue;
 
 				Block block = BlocksManager.Blocks[Terrain.ExtractContents(value)];
 				int data = Terrain.ExtractData(value);
@@ -615,6 +888,10 @@ namespace Game
 				RepeatArrowBlock.ArrowType? repeatArrowType = null;
 				BulletBlock.BulletType? bulletType = null;
 				FlameBulletBlock.FlameBulletType? flameBulletType = null;
+
+				// Skip throwable items (handled separately)
+				if (block.GetProjectileSpeed(value) > 0f)
+					continue;
 
 				if (block is BowBlock)
 				{
@@ -659,8 +936,8 @@ namespace Game
 				}
 				else if (block is SpearBlock)
 				{
-					type = WeaponType.Throwable;
-					isReady = true;
+					// Spear is throwable, already skipped by projectile speed check, but just in case:
+					continue;
 				}
 				else if (block is M4Block)
 				{
@@ -686,7 +963,6 @@ namespace Game
 					int bulletNum = SniperBlock.GetBulletNum(data);
 					isReady = bulletNum > 0;
 				}
-				// Nuevas armas
 				else if (block is BK43Block)
 				{
 					type = WeaponType.BK43;
@@ -846,7 +1122,7 @@ namespace Game
 				case WeaponType.Musket: return m_random.Float(1.0f, 1.5f);
 				case WeaponType.FlameThrower: return m_random.Float(0.5f, 0.8f);
 				case WeaponType.ItemsLauncher: return m_random.Float(0.5f, 1.0f);
-				case WeaponType.Throwable: return m_random.Float(0.3f, 0.6f);
+				case WeaponType.Throwable: return ThrowableAimDuration;
 				case WeaponType.M4:
 				case WeaponType.AK:
 				case WeaponType.Revolver:
@@ -874,18 +1150,58 @@ namespace Game
 				default: return 1.0f;
 			}
 		}
-
 		private float GetReloadDurationForWeapon(WeaponType type)
 		{
-			return 0.5f;
+			switch (type)
+			{
+				case WeaponType.Bow:
+					return 0.5f;                // Tiempo para colocar una nueva flecha
+				case WeaponType.Crossbow:
+					return 0.8f;                // Coincide con ComponentCrossbowShooterBehavior.ReloadTime
+				case WeaponType.RepeatCrossbow:
+					return 1.5f;                // Tiempo razonable para recargar el cargador
+				case WeaponType.Musket:
+					return 0.55f;               // Coincide con ComponentMusketShooterBehavior.ReloadTime
+				case WeaponType.FlameThrower:
+					return 1.5f;                 // Cooldown tras ráfaga (similar a CooldownTime)
+				case WeaponType.ItemsLauncher:
+					return 0.55f;                // Coincide con ComponentItemsLauncherShooterBehavior.ReloadTime
+				case WeaponType.M4:
+				case WeaponType.AK:
+				case WeaponType.Revolver:
+				case WeaponType.Sniper:
+				case WeaponType.BK43:
+				case WeaponType.Mac10:
+				case WeaponType.SWM500:
+				case WeaponType.KA:
+				case WeaponType.SPAS12:
+				case WeaponType.Minigun:
+				case WeaponType.P90:
+				case WeaponType.AUG:
+				case WeaponType.Uzi:
+				case WeaponType.Mendoza:
+				case WeaponType.Groza:
+				case WeaponType.Izh43:
+				case WeaponType.AA12:
+				case WeaponType.G3:
+				case WeaponType.NewG3:
+				case WeaponType.Famas:
+				case WeaponType.SCAR:
+				case WeaponType.M249:
+				case WeaponType.MP5SSD:
+					return 2.0f;                 // Tiempo estándar para armas de fuego modernas
+				default:
+					return 2.5f;                 // Valor por defecto (cuerpo a cuerpo u otros)
+			}
 		}
-
 		private void ApplyAimingAnimation()
 		{
 			switch (m_currentWeapon.Type)
 			{
 				case WeaponType.Throwable:
-					m_componentCreatureModel.AimHandAngleOrder = 1.6f;
+					m_componentCreatureModel.AimHandAngleOrder = 3.2f;
+					m_componentCreatureModel.InHandItemOffsetOrder = new Vector3(0f, -0.25f, 0f);
+					m_componentCreatureModel.InHandItemRotationOrder = new Vector3(3.14159f, 0f, 0f);
 					break;
 				case WeaponType.Bow:
 					m_componentCreatureModel.AimHandAngleOrder = 1.2f;
@@ -1007,7 +1323,6 @@ namespace Game
 						m_componentCreature.ComponentBody.Position, 3f, false);
 				}
 			}
-			// Las nuevas armas no requieren cambios durante la puntería
 
 			if (newValue != value)
 			{
@@ -1018,7 +1333,8 @@ namespace Game
 
 		private void PerformFire()
 		{
-			if (m_componentChase.Target == null) return;
+			// Verificación doble por seguridad
+			if (m_componentChase.Target == null || !IsTargetAlive()) return;
 
 			int slot = m_componentInventory.ActiveSlotIndex;
 			int value = m_componentInventory.GetSlotValue(slot);
@@ -1036,8 +1352,8 @@ namespace Game
 			{
 				case WeaponType.Throwable:
 					{
-						float speed = MathUtils.Lerp(20f, 35f, distance / 20f);
-						Vector3 velocity = direction * speed + new Vector3(0f, 2f, 0f);
+						float speed = BlocksManager.Blocks[Terrain.ExtractContents(value)].GetProjectileSpeed(value);
+						Vector3 velocity = m_componentCreature.ComponentBody.Velocity + direction * speed + new Vector3(0f, 2f, 0f);
 						m_subsystemProjectiles.FireProjectile(value, eyePos, velocity, Vector3.Zero, m_componentCreature);
 						m_subsystemAudio.PlaySound("Audio/Throw", 1f, m_random.Float(-0.1f, 0.1f), eyePos, 3f, false);
 						m_componentInventory.RemoveSlotItems(slot, 1);
@@ -1051,15 +1367,8 @@ namespace Game
 						{
 							float power = MathUtils.Lerp(0f, 28f, (float)Math.Pow(m_bowDraw / 15.0, 0.75));
 
-							Vector3 spread = GetArrowSpread(arrowType.Value);
-							Vector3 right = Vector3.Normalize(Vector3.Cross(direction, Vector3.UnitY));
-							Vector3 up = Vector3.Normalize(Vector3.Cross(direction, right));
-
-							Vector3 randomSpread = m_random.Float(-spread.X, spread.X) * right +
-												  m_random.Float(-spread.Y, spread.Y) * up +
-												  m_random.Float(-spread.Z, spread.Z) * direction;
-
-							Vector3 velocity = m_componentCreature.ComponentBody.Velocity + (direction + randomSpread) * power;
+							// SIN DISPERSIÓN: dirección exacta hacia el objetivo
+							Vector3 velocity = m_componentCreature.ComponentBody.Velocity + direction * power;
 
 							int arrowValue = Terrain.MakeBlockValue(m_arrowBlockIndex, 0, ArrowBlock.SetArrowType(0, arrowType.Value));
 
@@ -1082,15 +1391,8 @@ namespace Game
 						ArrowBlock.ArrowType? arrowType = CrossbowBlock.GetArrowType(data);
 						if (arrowType != null)
 						{
-							Vector3 spread = GetBoltSpread(arrowType.Value);
-							Vector3 right = Vector3.Normalize(Vector3.Cross(direction, Vector3.UnitY));
-							Vector3 up = Vector3.Normalize(Vector3.Cross(direction, right));
-
-							Vector3 randomSpread = m_random.Float(-spread.X, spread.X) * right +
-												  m_random.Float(-spread.Y, spread.Y) * up +
-												  m_random.Float(-spread.Z, spread.Z) * direction;
-
-							Vector3 velocity = m_componentCreature.ComponentBody.Velocity + (direction + randomSpread) * 38f;
+							// SIN DISPERSIÓN
+							Vector3 velocity = m_componentCreature.ComponentBody.Velocity + direction * 38f;
 
 							int boltValue = Terrain.MakeBlockValue(m_arrowBlockIndex, 0, ArrowBlock.SetArrowType(0, arrowType.Value));
 
@@ -1113,15 +1415,8 @@ namespace Game
 						RepeatArrowBlock.ArrowType? arrowType = RepeatCrossbowBlock.GetArrowType(data);
 						if (arrowType != null)
 						{
-							Vector3 spread = GetRepeatBoltSpread(arrowType.Value);
-							Vector3 right = Vector3.Normalize(Vector3.Cross(direction, Vector3.UnitY));
-							Vector3 up = Vector3.Normalize(Vector3.Cross(direction, right));
-
-							Vector3 randomSpread = m_random.Float(-spread.X, spread.X) * right +
-												  m_random.Float(-spread.Y, spread.Y) * up +
-												  m_random.Float(-spread.Z, spread.Z) * direction;
-
-							Vector3 velocity = m_componentCreature.ComponentBody.Velocity + (direction + randomSpread) * 38f;
+							// SIN DISPERSIÓN
+							Vector3 velocity = m_componentCreature.ComponentBody.Velocity + direction * 38f;
 
 							int boltValue = Terrain.MakeBlockValue(m_repeatArrowBlockIndex, 0, RepeatArrowBlock.SetArrowType(0, arrowType.Value));
 
@@ -1158,31 +1453,22 @@ namespace Game
 
 							int projectileCount = 1;
 							float baseSpeed = 120f;
-							Vector3 spread = Vector3.Zero;
 
 							if (bulletType == BulletBlock.BulletType.Buckshot)
 							{
 								projectileCount = 8;
-								spread = new Vector3(0.04f, 0.04f, 0.25f);
 								baseSpeed = 80f;
 							}
 							else if (bulletType == BulletBlock.BulletType.BuckshotBall)
 							{
 								projectileCount = 1;
-								spread = new Vector3(0.06f, 0.06f, 0f);
 								baseSpeed = 60f;
 							}
 
-							Vector3 right = Vector3.Normalize(Vector3.Cross(direction, Vector3.UnitY));
-							Vector3 up = Vector3.Normalize(Vector3.Cross(direction, right));
-
 							for (int i = 0; i < projectileCount; i++)
 							{
-								Vector3 randomSpread = m_random.Float(-spread.X, spread.X) * right +
-													  m_random.Float(-spread.Y, spread.Y) * up +
-													  m_random.Float(-spread.Z, spread.Z) * direction;
-
-								Vector3 velocity = m_componentCreature.ComponentBody.Velocity + (direction + randomSpread) * baseSpeed;
+								// SIN DISPERSIÓN: todos los perdigones van en la misma dirección exacta
+								Vector3 velocity = m_componentCreature.ComponentBody.Velocity + direction * baseSpeed;
 
 								int bulletValue = Terrain.MakeBlockValue(m_bulletBlockIndex, 0,
 									BulletBlock.SetBulletType(0, bulletType));
@@ -1203,33 +1489,23 @@ namespace Game
 						}
 						break;
 					}
+
 				case WeaponType.SPAS12:
 					{
 						int bulletNum = SPAS12Block.GetBulletNum(data);
 						if (bulletNum > 0)
 						{
-							float num4 = (float)MathUtils.Remainder(m_subsystemTime.GameTime, 1000.0);
-							Vector3 v = 0.03f * new Vector3
-							{
-								X = SimplexNoise.OctavedNoise(num4, 2f, 3, 2f, 0.5f, false),
-								Y = SimplexNoise.OctavedNoise(num4 + 100f, 2f, 3, 2f, 0.5f, false),
-								Z = SimplexNoise.OctavedNoise(num4 + 200f, 2f, 3, 2f, 0.5f, false)
-							};
-							direction = Vector3.Normalize(direction + v * 2f);
+							// SIN DISPERSIÓN - eliminar el ruido de puntería
+							// dirección ya es exacta hacia el objetivo
 
-							Vector3 right = Vector3.Normalize(Vector3.Cross(direction, Vector3.UnitY));
-							Vector3 up = Vector3.Normalize(Vector3.Cross(direction, right));
-							Vector3 spread = new Vector3(0.09f, 0.09f, 0.03f);
-							int projectileCount = 8; // Escopeta: 8 perdigones
+							int projectileCount = 8;
 							int projectileBlockIndex = BlocksManager.GetBlockIndex(typeof(NuevaBala), true, false);
 							int projectileValue = Terrain.MakeBlockValue(projectileBlockIndex, 0, 2);
 
 							for (int i = 0; i < projectileCount; i++)
 							{
-								Vector3 randomSpread = m_random.Float(-spread.X, spread.X) * right +
-													   m_random.Float(-spread.Y, spread.Y) * up +
-													   m_random.Float(-spread.Z, spread.Z) * direction;
-								Vector3 velocity = m_componentCreature.ComponentBody.Velocity + (direction + randomSpread) * 280f;
+								// SIN DISPERSIÓN - todos los perdigones en la misma dirección
+								Vector3 velocity = m_componentCreature.ComponentBody.Velocity + direction * 280f;
 								Projectile projectile = m_subsystemProjectiles.FireProjectile(projectileValue, eyePos, velocity, Vector3.Zero, m_componentCreature);
 								if (projectile != null)
 									projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
@@ -1254,33 +1530,22 @@ namespace Game
 						}
 						break;
 					}
+
 				case WeaponType.Minigun:
 					{
 						int bulletNum = MinigunBlock.GetBulletNum(data);
 						if (bulletNum > 0)
 						{
-							float num4 = (float)MathUtils.Remainder(m_subsystemTime.GameTime, 1000.0);
-							Vector3 v = 0.04f * new Vector3
-							{
-								X = SimplexNoise.OctavedNoise(num4, 2f, 3, 2f, 0.6f, false),
-								Y = SimplexNoise.OctavedNoise(num4 + 100f, 2f, 3, 2f, 0.6f, false),
-								Z = SimplexNoise.OctavedNoise(num4 + 200f, 2f, 3, 2f, 0.6f, false)
-							};
-							direction = Vector3.Normalize(direction + v * 2.5f);
+							// SIN DISPERSIÓN - eliminar ruido
+							// dirección exacta
 
-							Vector3 right = Vector3.Normalize(Vector3.Cross(direction, Vector3.UnitY));
-							Vector3 up = Vector3.Normalize(Vector3.Cross(direction, right));
-							Vector3 spread = new Vector3(0.02f, 0.02f, 0.08f);
 							int projectileCount = 1;
 							int projectileBlockIndex = BlocksManager.GetBlockIndex(typeof(NuevaBala6), true, false);
 							int projectileValue = Terrain.MakeBlockValue(projectileBlockIndex, 0, 0);
 
 							for (int i = 0; i < projectileCount; i++)
 							{
-								Vector3 randomSpread = m_random.Float(-spread.X, spread.X) * right +
-													   m_random.Float(-spread.Y, spread.Y) * up +
-													   m_random.Float(-spread.Z, spread.Z) * direction;
-								Vector3 velocity = m_componentCreature.ComponentBody.Velocity + (direction + randomSpread) * 260f;
+								Vector3 velocity = m_componentCreature.ComponentBody.Velocity + direction * 260f;
 								Projectile projectile = m_subsystemProjectiles.FireProjectile(projectileValue, eyePos, velocity, Vector3.Zero, m_componentCreature);
 								if (projectile != null)
 									projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
@@ -1305,33 +1570,22 @@ namespace Game
 						}
 						break;
 					}
+
 				case WeaponType.P90:
 					{
 						int bulletNum = P90Block.GetBulletNum(data);
 						if (bulletNum > 0)
 						{
-							float num4 = (float)MathUtils.Remainder(m_subsystemTime.GameTime, 1000.0);
-							Vector3 v = 0.025f * new Vector3
-							{
-								X = SimplexNoise.OctavedNoise(num4, 2f, 3, 2f, 0.5f, false),
-								Y = SimplexNoise.OctavedNoise(num4 + 100f, 2f, 3, 2f, 0.5f, false),
-								Z = SimplexNoise.OctavedNoise(num4 + 200f, 2f, 3, 2f, 0.5f, false)
-							};
-							direction = Vector3.Normalize(direction + v * 1.5f);
+							// SIN DISPERSIÓN - eliminar ruido
+							// dirección exacta
 
-							Vector3 right = Vector3.Normalize(Vector3.Cross(direction, Vector3.UnitY));
-							Vector3 up = Vector3.Normalize(Vector3.Cross(direction, right));
-							Vector3 spread = new Vector3(0.012f, 0.012f, 0.04f);
 							int projectileCount = 1;
 							int projectileBlockIndex = BlocksManager.GetBlockIndex(typeof(NuevaBala4), true, false);
 							int projectileValue = Terrain.MakeBlockValue(projectileBlockIndex, 0, 0);
 
 							for (int i = 0; i < projectileCount; i++)
 							{
-								Vector3 randomSpread = m_random.Float(-spread.X, spread.X) * right +
-													   m_random.Float(-spread.Y, spread.Y) * up +
-													   m_random.Float(-spread.Z, spread.Z) * direction;
-								Vector3 velocity = m_componentCreature.ComponentBody.Velocity + (direction + randomSpread) * 320f;
+								Vector3 velocity = m_componentCreature.ComponentBody.Velocity + direction * 320f;
 								Projectile projectile = m_subsystemProjectiles.FireProjectile(projectileValue, eyePos, velocity, Vector3.Zero, m_componentCreature);
 								if (projectile != null)
 									projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
@@ -1356,33 +1610,22 @@ namespace Game
 						}
 						break;
 					}
+
 				case WeaponType.AUG:
 					{
 						int bulletNum = AUGBlock.GetBulletNum(data);
 						if (bulletNum > 0)
 						{
-							float num4 = (float)MathUtils.Remainder(m_subsystemTime.GameTime, 1000.0);
-							Vector3 v = 0.03f * new Vector3
-							{
-								X = SimplexNoise.OctavedNoise(num4, 2f, 3, 2f, 0.5f, false),
-								Y = SimplexNoise.OctavedNoise(num4 + 100f, 2f, 3, 2f, 0.5f, false),
-								Z = SimplexNoise.OctavedNoise(num4 + 200f, 2f, 3, 2f, 0.5f, false)
-							};
-							direction = Vector3.Normalize(direction + v * 2f);
+							// SIN DISPERSIÓN - eliminar ruido
+							// dirección exacta
 
-							Vector3 right = Vector3.Normalize(Vector3.Cross(direction, Vector3.UnitY));
-							Vector3 up = Vector3.Normalize(Vector3.Cross(direction, right));
-							Vector3 spread = new Vector3(0.01f, 0.01f, 0.05f);
-							int projectileCount = 2; // Ráfaga de 2 balas
+							int projectileCount = 2;
 							int projectileBlockIndex = BlocksManager.GetBlockIndex(typeof(NuevaBala4), true, false);
 							int projectileValue = Terrain.MakeBlockValue(projectileBlockIndex, 0, 0);
 
 							for (int i = 0; i < projectileCount; i++)
 							{
-								Vector3 randomSpread = m_random.Float(-spread.X, spread.X) * right +
-													   m_random.Float(-spread.Y, spread.Y) * up +
-													   m_random.Float(-spread.Z, spread.Z) * direction;
-								Vector3 velocity = m_componentCreature.ComponentBody.Velocity + (direction + randomSpread) * 280f;
+								Vector3 velocity = m_componentCreature.ComponentBody.Velocity + direction * 280f;
 								Projectile projectile = m_subsystemProjectiles.FireProjectile(projectileValue, eyePos, velocity, Vector3.Zero, m_componentCreature);
 								if (projectile != null)
 									projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
@@ -1407,33 +1650,22 @@ namespace Game
 						}
 						break;
 					}
+
 				case WeaponType.G3:
 					{
 						int bulletNum = G3Block.GetBulletNum(data);
 						if (bulletNum > 0)
 						{
-							float num4 = (float)MathUtils.Remainder(m_subsystemTime.GameTime, 1000.0);
-							Vector3 v = 0.03f * new Vector3
-							{
-								X = SimplexNoise.OctavedNoise(num4, 2f, 3, 2f, 0.5f, false),
-								Y = SimplexNoise.OctavedNoise(num4 + 100f, 2f, 3, 2f, 0.5f, false),
-								Z = SimplexNoise.OctavedNoise(num4 + 200f, 2f, 3, 2f, 0.5f, false)
-							};
-							direction = Vector3.Normalize(direction + v * 2f);
+							// SIN DISPERSIÓN - eliminar ruido
+							// dirección exacta
 
-							Vector3 right = Vector3.Normalize(Vector3.Cross(direction, Vector3.UnitY));
-							Vector3 up = Vector3.Normalize(Vector3.Cross(direction, right));
-							Vector3 spread = new Vector3(0.009f, 0.009f, 0.04f);
 							int projectileCount = 2;
 							int projectileBlockIndex = BlocksManager.GetBlockIndex(typeof(NuevaBala), true, false);
 							int projectileValue = Terrain.MakeBlockValue(projectileBlockIndex, 0, 2);
 
 							for (int i = 0; i < projectileCount; i++)
 							{
-								Vector3 randomSpread = m_random.Float(-spread.X, spread.X) * right +
-													   m_random.Float(-spread.Y, spread.Y) * up +
-													   m_random.Float(-spread.Z, spread.Z) * direction;
-								Vector3 velocity = m_componentCreature.ComponentBody.Velocity + (direction + randomSpread) * 290f;
+								Vector3 velocity = m_componentCreature.ComponentBody.Velocity + direction * 290f;
 								Projectile projectile = m_subsystemProjectiles.FireProjectile(projectileValue, eyePos, velocity, Vector3.Zero, m_componentCreature);
 								if (projectile != null)
 									projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
@@ -1458,33 +1690,22 @@ namespace Game
 						}
 						break;
 					}
+
 				case WeaponType.NewG3:
 					{
 						int bulletNum = NewG3Block.GetBulletNum(data);
 						if (bulletNum > 0)
 						{
-							float num4 = (float)MathUtils.Remainder(m_subsystemTime.GameTime, 1000.0);
-							Vector3 v = 0.03f * new Vector3
-							{
-								X = SimplexNoise.OctavedNoise(num4, 2f, 3, 2f, 0.5f, false),
-								Y = SimplexNoise.OctavedNoise(num4 + 100f, 2f, 3, 2f, 0.5f, false),
-								Z = SimplexNoise.OctavedNoise(num4 + 200f, 2f, 3, 2f, 0.5f, false)
-							};
-							direction = Vector3.Normalize(direction + v * 2f);
+							// SIN DISPERSIÓN - eliminar ruido
+							// dirección exacta
 
-							Vector3 right = Vector3.Normalize(Vector3.Cross(direction, Vector3.UnitY));
-							Vector3 up = Vector3.Normalize(Vector3.Cross(direction, right));
-							Vector3 spread = new Vector3(0.009f, 0.009f, 0.04f);
 							int projectileCount = 2;
 							int projectileBlockIndex = BlocksManager.GetBlockIndex(typeof(NuevaBala3), true, false);
 							int projectileValue = Terrain.MakeBlockValue(projectileBlockIndex, 0, 2);
 
 							for (int i = 0; i < projectileCount; i++)
 							{
-								Vector3 randomSpread = m_random.Float(-spread.X, spread.X) * right +
-													   m_random.Float(-spread.Y, spread.Y) * up +
-													   m_random.Float(-spread.Z, spread.Z) * direction;
-								Vector3 velocity = m_componentCreature.ComponentBody.Velocity + (direction + randomSpread) * 290f;
+								Vector3 velocity = m_componentCreature.ComponentBody.Velocity + direction * 290f;
 								Projectile projectile = m_subsystemProjectiles.FireProjectile(projectileValue, eyePos, velocity, Vector3.Zero, m_componentCreature);
 								if (projectile != null)
 									projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
@@ -1509,33 +1730,22 @@ namespace Game
 						}
 						break;
 					}
+
 				case WeaponType.Famas:
 					{
 						int bulletNum = FamasBlock.GetBulletNum(data);
 						if (bulletNum > 0)
 						{
-							float num4 = (float)MathUtils.Remainder(m_subsystemTime.GameTime, 1000.0);
-							Vector3 v = 0.02f * new Vector3
-							{
-								X = SimplexNoise.OctavedNoise(num4, 2f, 3, 1.5f, 0.4f, false),
-								Y = SimplexNoise.OctavedNoise(num4 + 100f, 2f, 3, 1.5f, 0.4f, false),
-								Z = SimplexNoise.OctavedNoise(num4 + 200f, 2f, 3, 1.5f, 0.4f, false)
-							};
-							direction = Vector3.Normalize(direction + v * 1.5f);
+							// SIN DISPERSIÓN - eliminar ruido
+							// dirección exacta
 
-							Vector3 right = Vector3.Normalize(Vector3.Cross(direction, Vector3.UnitY));
-							Vector3 up = Vector3.Normalize(Vector3.Cross(direction, right));
-							Vector3 spread = new Vector3(0.012f, 0.012f, 0.04f);
 							int projectileCount = 1;
 							int projectileBlockIndex = BlocksManager.GetBlockIndex(typeof(NuevaBala4), true, false);
 							int projectileValue = Terrain.MakeBlockValue(projectileBlockIndex, 0, 2);
 
 							for (int i = 0; i < projectileCount; i++)
 							{
-								Vector3 randomSpread = m_random.Float(-spread.X, spread.X) * right +
-													   m_random.Float(-spread.Y, spread.Y) * up +
-													   m_random.Float(-spread.Z, spread.Z) * direction;
-								Vector3 velocity = m_componentCreature.ComponentBody.Velocity + (direction + randomSpread) * 450f;
+								Vector3 velocity = m_componentCreature.ComponentBody.Velocity + direction * 450f;
 								Projectile projectile = m_subsystemProjectiles.FireProjectile(projectileValue, eyePos, velocity, Vector3.Zero, m_componentCreature);
 								if (projectile != null)
 									projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
@@ -1560,33 +1770,22 @@ namespace Game
 						}
 						break;
 					}
+
 				case WeaponType.SCAR:
 					{
 						int bulletNum = SCARBlock.GetBulletNum(data);
 						if (bulletNum > 0)
 						{
-							float num4 = (float)MathUtils.Remainder(m_subsystemTime.GameTime, 1000.0);
-							Vector3 v = 0.022f * new Vector3
-							{
-								X = SimplexNoise.OctavedNoise(num4, 2f, 3, 2f, 0.5f, false),
-								Y = SimplexNoise.OctavedNoise(num4 + 100f, 2f, 3, 2f, 0.5f, false),
-								Z = SimplexNoise.OctavedNoise(num4 + 200f, 2f, 3, 2f, 0.5f, false)
-							};
-							direction = Vector3.Normalize(direction + v * 1.2f);
+							// SIN DISPERSIÓN - eliminar ruido
+							// dirección exacta
 
-							Vector3 right = Vector3.Normalize(Vector3.Cross(direction, Vector3.UnitY));
-							Vector3 up = Vector3.Normalize(Vector3.Cross(direction, right));
-							Vector3 spread = new Vector3(0.01f, 0.01f, 0.03f);
 							int projectileCount = 1;
 							int projectileBlockIndex = BlocksManager.GetBlockIndex(typeof(NuevaBala3), true, false);
 							int projectileValue = Terrain.MakeBlockValue(projectileBlockIndex, 0, 0);
 
 							for (int i = 0; i < projectileCount; i++)
 							{
-								Vector3 randomSpread = m_random.Float(-spread.X, spread.X) * right +
-													   m_random.Float(-spread.Y, spread.Y) * up +
-													   m_random.Float(-spread.Z, spread.Z) * direction;
-								Vector3 velocity = m_componentCreature.ComponentBody.Velocity + (direction + randomSpread) * 310f;
+								Vector3 velocity = m_componentCreature.ComponentBody.Velocity + direction * 310f;
 								Projectile projectile = m_subsystemProjectiles.FireProjectile(projectileValue, eyePos, velocity, Vector3.Zero, m_componentCreature);
 								if (projectile != null)
 									projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
@@ -1611,28 +1810,20 @@ namespace Game
 						}
 						break;
 					}
+
 				case WeaponType.M249:
 					{
 						int bulletNum = M249Block.GetBulletNum(data);
 						if (bulletNum > 0)
 						{
-							float num4 = (float)MathUtils.Remainder(m_subsystemTime.GameTime, 1000.0);
-							Vector3 v = 0.04f * new Vector3
-							{
-								X = SimplexNoise.OctavedNoise(num4, 2f, 3, 1.5f, 0.4f, false),
-								Y = SimplexNoise.OctavedNoise(num4 + 100f, 2f, 3, 1.5f, 0.4f, false),
-								Z = SimplexNoise.OctavedNoise(num4 + 200f, 2f, 3, 1.5f, 0.4f, false)
-							};
-							direction = Vector3.Normalize(direction + v * 1.5f);
-
-							Vector3 right = Vector3.Normalize(Vector3.Cross(direction, Vector3.UnitY));
-							Vector3 up = Vector3.Normalize(Vector3.Cross(direction, right));
+							// SIN DISPERSIÓN - eliminar ruido
+							// dirección exacta
 
 							int projectileBlockIndex = BlocksManager.GetBlockIndex(typeof(NuevaBala5), true, false);
 							int projectileValue = Terrain.MakeBlockValue(projectileBlockIndex, 0, 2);
 
-							Vector3 randomSpread = m_random.Float(-0.01f, 0.01f) * right + m_random.Float(-0.01f, 0.01f) * up;
-							Vector3 velocity = m_componentCreature.ComponentBody.Velocity + (direction + randomSpread) * 400f;
+							// SIN DISPERSIÓN - sin random spread
+							Vector3 velocity = m_componentCreature.ComponentBody.Velocity + direction * 400f;
 							Projectile projectile = m_subsystemProjectiles.FireProjectile(projectileValue, eyePos, velocity, Vector3.Zero, m_componentCreature);
 							if (projectile != null)
 								projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
@@ -1656,33 +1847,22 @@ namespace Game
 						}
 						break;
 					}
+
 				case WeaponType.MP5SSD:
 					{
 						int bulletNum = MP5SSDBlock.GetBulletNum(data);
 						if (bulletNum > 0)
 						{
-							float num4 = (float)MathUtils.Remainder(m_subsystemTime.GameTime, 1000.0);
-							Vector3 v = 0.03f * new Vector3
-							{
-								X = SimplexNoise.OctavedNoise(num4, 2f, 3, 2f, 0.5f, false),
-								Y = SimplexNoise.OctavedNoise(num4 + 100f, 2f, 3, 2f, 0.5f, false),
-								Z = SimplexNoise.OctavedNoise(num4 + 200f, 2f, 3, 2f, 0.5f, false)
-							};
-							direction = Vector3.Normalize(direction + v * 2f);
+							// SIN DISPERSIÓN - eliminar ruido
+							// dirección exacta
 
-							Vector3 right = Vector3.Normalize(Vector3.Cross(direction, Vector3.UnitY));
-							Vector3 up = Vector3.Normalize(Vector3.Cross(direction, right));
-							Vector3 spread = new Vector3(0.009f, 0.009f, 0.04f);
 							int projectileCount = 2;
 							int projectileBlockIndex = BlocksManager.GetBlockIndex(typeof(NuevaBala3), true, false);
 							int projectileValue = Terrain.MakeBlockValue(projectileBlockIndex, 0, 2);
 
 							for (int i = 0; i < projectileCount; i++)
 							{
-								Vector3 randomSpread = m_random.Float(-spread.X, spread.X) * right +
-													   m_random.Float(-spread.Y, spread.Y) * up +
-													   m_random.Float(-spread.Z, spread.Z) * direction;
-								Vector3 velocity = m_componentCreature.ComponentBody.Velocity + (direction + randomSpread) * 290f;
+								Vector3 velocity = m_componentCreature.ComponentBody.Velocity + direction * 290f;
 								Projectile projectile = m_subsystemProjectiles.FireProjectile(projectileValue, eyePos, velocity, Vector3.Zero, m_componentCreature);
 								if (projectile != null)
 									projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
@@ -1707,6 +1887,7 @@ namespace Game
 						}
 						break;
 					}
+
 				case WeaponType.FlameThrower:
 					{
 						if (FlameThrowerBlock.GetLoadState(data) == FlameThrowerBlock.LoadState.Loaded &&
@@ -1715,15 +1896,8 @@ namespace Game
 							FlameBulletBlock.FlameBulletType bulletType = FlameThrowerBlock.GetBulletType(data) ?? FlameBulletBlock.FlameBulletType.Flame;
 							int loadCount = FlameThrowerBlock.GetLoadCount(value);
 
-							Vector3 right = Vector3.Normalize(Vector3.Cross(direction, Vector3.UnitY));
-							Vector3 up = Vector3.Normalize(Vector3.Cross(direction, right));
-							Vector3 spread = new Vector3(0.02f, 0.02f, 0f);
-
-							Vector3 randomSpread = m_random.Float(-spread.X, spread.X) * right +
-												  m_random.Float(-spread.Y, spread.Y) * up +
-												  m_random.Float(-spread.Z, spread.Z) * direction;
-
-							Vector3 velocity = m_componentCreature.ComponentBody.Velocity + (direction + randomSpread) * 60f;
+							// SIN DISPERSIÓN - dirección exacta
+							Vector3 velocity = m_componentCreature.ComponentBody.Velocity + direction * 60f;
 
 							int bulletValue = Terrain.MakeBlockValue(m_flameBulletBlockIndex, 0,
 								FlameBulletBlock.SetBulletType(0, bulletType));
@@ -1776,28 +1950,16 @@ namespace Game
 						int bulletNum = M4Block.GetBulletNum(data);
 						if (bulletNum > 0)
 						{
-							float num4 = (float)MathUtils.Remainder(m_subsystemTime.GameTime, 1000.0);
-							Vector3 v = 0.03f * new Vector3
-							{
-								X = SimplexNoise.OctavedNoise(num4, 2f, 3, 2f, 0.5f, false),
-								Y = SimplexNoise.OctavedNoise(num4 + 100f, 2f, 3, 2f, 0.5f, false),
-								Z = SimplexNoise.OctavedNoise(num4 + 200f, 2f, 3, 2f, 0.5f, false)
-							};
-							direction = Vector3.Normalize(direction + v * 2f);
+							// SIN DISPERSIÓN - eliminar ruido
+							// dirección exacta
 
-							Vector3 right = Vector3.Normalize(Vector3.Cross(direction, Vector3.UnitY));
-							Vector3 up = Vector3.Normalize(Vector3.Cross(direction, right));
-							Vector3 spread = new Vector3(0.008f, 0.008f, 0.04f);
 							int projectileCount = 3;
 							int projectileBlockIndex = BlocksManager.GetBlockIndex(typeof(NuevaBala2), true, false);
 							int projectileValue = Terrain.MakeBlockValue(projectileBlockIndex, 0, 2);
 
 							for (int i = 0; i < projectileCount; i++)
 							{
-								Vector3 randomSpread = m_random.Float(-spread.X, spread.X) * right +
-													   m_random.Float(-spread.Y, spread.Y) * up +
-													   m_random.Float(-spread.Z, spread.Z) * direction;
-								Vector3 velocity = m_componentCreature.ComponentBody.Velocity + (direction + randomSpread) * 300f;
+								Vector3 velocity = m_componentCreature.ComponentBody.Velocity + direction * 300f;
 								Projectile projectile = m_subsystemProjectiles.FireProjectile(projectileValue, eyePos, velocity, Vector3.Zero, m_componentCreature);
 								if (projectile != null)
 									projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
@@ -1828,28 +1990,16 @@ namespace Game
 						int bulletNum = AKBlock.GetBulletNum(data);
 						if (bulletNum > 0)
 						{
-							float num4 = (float)MathUtils.Remainder(m_subsystemTime.GameTime, 1000.0);
-							Vector3 v = 0.03f * new Vector3
-							{
-								X = SimplexNoise.OctavedNoise(num4, 2f, 3, 2f, 0.5f, false),
-								Y = SimplexNoise.OctavedNoise(num4 + 100f, 2f, 3, 2f, 0.5f, false),
-								Z = SimplexNoise.OctavedNoise(num4 + 200f, 2f, 3, 2f, 0.5f, false)
-							};
-							direction = Vector3.Normalize(direction + v * 2f);
+							// SIN DISPERSIÓN - eliminar ruido
+							// dirección exacta
 
-							Vector3 right = Vector3.Normalize(Vector3.Cross(direction, Vector3.UnitY));
-							Vector3 up = Vector3.Normalize(Vector3.Cross(direction, right));
-							Vector3 spread = new Vector3(0.01f, 0.01f, 0.05f);
 							int projectileCount = 2;
 							int projectileBlockIndex = BlocksManager.GetBlockIndex(typeof(NuevaBala2), true, false);
 							int projectileValue = Terrain.MakeBlockValue(projectileBlockIndex, 0, 2);
 
 							for (int i = 0; i < projectileCount; i++)
 							{
-								Vector3 randomSpread = m_random.Float(-spread.X, spread.X) * right +
-													   m_random.Float(-spread.Y, spread.Y) * up +
-													   m_random.Float(-spread.Z, spread.Z) * direction;
-								Vector3 velocity = m_componentCreature.ComponentBody.Velocity + (direction + randomSpread) * 280f;
+								Vector3 velocity = m_componentCreature.ComponentBody.Velocity + direction * 280f;
 								Projectile projectile = m_subsystemProjectiles.FireProjectile(projectileValue, eyePos, velocity, Vector3.Zero, m_componentCreature);
 								if (projectile != null)
 									projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
@@ -1880,23 +2030,13 @@ namespace Game
 						int bulletNum = RevolverBlock.GetBulletNum(data);
 						if (bulletNum > 0)
 						{
-							float num4 = (float)MathUtils.Remainder(m_subsystemTime.GameTime, 1000.0);
-							Vector3 v = 0.03f * new Vector3
-							{
-								X = SimplexNoise.OctavedNoise(num4, 2f, 3, 2f, 0.5f, false),
-								Y = SimplexNoise.OctavedNoise(num4 + 100f, 2f, 3, 2f, 0.5f, false),
-								Z = SimplexNoise.OctavedNoise(num4 + 200f, 2f, 3, 2f, 0.5f, false)
-							};
-							direction = Vector3.Normalize(direction + v * 2f);
-
-							Vector3 right = Vector3.Normalize(Vector3.Cross(direction, Vector3.UnitY));
-							Vector3 up = Vector3.Normalize(Vector3.Cross(direction, right));
-							float spreadAngle = 0.08f;
-							Vector3 randomSpread = m_random.Float(-spreadAngle, spreadAngle) * up + m_random.Float(-spreadAngle, spreadAngle) * right;
-							Vector3 velocity = m_componentCreature.ComponentBody.Velocity + (direction + randomSpread) * 320f;
+							// SIN DISPERSIÓN - eliminar ruido
+							// dirección exacta
 
 							int projectileBlockIndex = BlocksManager.GetBlockIndex(typeof(NuevaBala4), true, false);
 							int projectileValue = Terrain.MakeBlockValue(projectileBlockIndex, 0, 2);
+
+							Vector3 velocity = m_componentCreature.ComponentBody.Velocity + direction * 320f;
 							Projectile projectile = m_subsystemProjectiles.FireProjectile(projectileValue, eyePos, velocity, Vector3.Zero, m_componentCreature);
 							if (projectile != null)
 								projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
@@ -1926,23 +2066,13 @@ namespace Game
 						int bulletNum = SniperBlock.GetBulletNum(data);
 						if (bulletNum > 0)
 						{
-							float num4 = (float)MathUtils.Remainder(m_subsystemTime.GameTime, 1000.0);
-							Vector3 v = 0.015f * new Vector3
-							{
-								X = SimplexNoise.OctavedNoise(num4, 1.5f, 2, 1.5f, 0.3f, false),
-								Y = SimplexNoise.OctavedNoise(num4 + 100f, 1.5f, 2, 1.5f, 0.3f, false),
-								Z = SimplexNoise.OctavedNoise(num4 + 200f, 1.5f, 2, 1.5f, 0.3f, false)
-							};
-							direction = Vector3.Normalize(direction + v * 0.5f);
-
-							Vector3 right = Vector3.Normalize(Vector3.Cross(direction, Vector3.UnitY));
-							Vector3 up = Vector3.Normalize(Vector3.Cross(direction, right));
-							float spreadAngle = 0.001f;
-							Vector3 randomSpread = m_random.Float(-spreadAngle, spreadAngle) * up + m_random.Float(-spreadAngle, spreadAngle) * right;
-							Vector3 velocity = m_componentCreature.ComponentBody.Velocity + (direction + randomSpread) * 450f;
+							// SIN DISPERSIÓN - eliminar ruido
+							// dirección exacta
 
 							int projectileBlockIndex = BlocksManager.GetBlockIndex(typeof(NuevaBala6), true, false);
 							int projectileValue = Terrain.MakeBlockValue(projectileBlockIndex, 0, 180);
+
+							Vector3 velocity = m_componentCreature.ComponentBody.Velocity + direction * 450f;
 							Projectile projectile = m_subsystemProjectiles.FireProjectile(projectileValue, eyePos, velocity, Vector3.Zero, m_componentCreature);
 							if (projectile != null)
 								projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
@@ -1967,26 +2097,21 @@ namespace Game
 						break;
 					}
 
-				// Nuevas armas
 				case WeaponType.BK43:
 					{
 						int bulletNum = BK43Block.GetBulletNum(data);
 						if (bulletNum > 0)
 						{
-							// Disparo de escopeta: 8 perdigones
-							Vector3 right = Vector3.Normalize(Vector3.Cross(direction, Vector3.UnitY));
-							Vector3 up = Vector3.Normalize(Vector3.Cross(direction, right));
-							Vector3 spread = new Vector3(0.1f, 0.1f, 0.03f); // Dispersión similar a la original
+							// SIN DISPERSIÓN - eliminar spread
+							// dirección exacta
+
 							int projectileCount = 8;
 							int projectileBlockIndex = BlocksManager.GetBlockIndex(typeof(NuevaBala3), true, false);
-							int projectileValue = Terrain.MakeBlockValue(projectileBlockIndex, 0, 0); // Datos 0 como en el subsystem
+							int projectileValue = Terrain.MakeBlockValue(projectileBlockIndex, 0, 0);
 
 							for (int i = 0; i < projectileCount; i++)
 							{
-								Vector3 randomSpread = m_random.Float(-spread.X, spread.X) * right +
-													   m_random.Float(-spread.Y, spread.Y) * up +
-													   m_random.Float(-spread.Z, spread.Z) * direction;
-								Vector3 velocity = m_componentCreature.ComponentBody.Velocity + (direction + randomSpread) * 300f;
+								Vector3 velocity = m_componentCreature.ComponentBody.Velocity + direction * 300f;
 								Projectile projectile = m_subsystemProjectiles.FireProjectile(projectileValue, eyePos, velocity, Vector3.Zero, m_componentCreature);
 								if (projectile != null)
 									projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
@@ -2017,28 +2142,16 @@ namespace Game
 						int bulletNum = Mac10Block.GetBulletNum(data);
 						if (bulletNum > 0)
 						{
-							float num4 = (float)MathUtils.Remainder(m_subsystemTime.GameTime, 1000.0);
-							Vector3 v = 0.03f * new Vector3
-							{
-								X = SimplexNoise.OctavedNoise(num4, 2f, 3, 2f, 0.5f, false),
-								Y = SimplexNoise.OctavedNoise(num4 + 100f, 2f, 3, 2f, 0.5f, false),
-								Z = SimplexNoise.OctavedNoise(num4 + 200f, 2f, 3, 2f, 0.5f, false)
-							};
-							direction = Vector3.Normalize(direction + v * 2f);
+							// SIN DISPERSIÓN - eliminar ruido
+							// dirección exacta
 
-							Vector3 right = Vector3.Normalize(Vector3.Cross(direction, Vector3.UnitY));
-							Vector3 up = Vector3.Normalize(Vector3.Cross(direction, right));
-							Vector3 spread = new Vector3(0.012f, 0.012f, 0.035f);
-							int projectileCount = 1; // Un proyectil por disparo
+							int projectileCount = 1;
 							int projectileBlockIndex = BlocksManager.GetBlockIndex(typeof(NuevaBala3), true, false);
 							int projectileValue = Terrain.MakeBlockValue(projectileBlockIndex, 0, 2);
 
 							for (int i = 0; i < projectileCount; i++)
 							{
-								Vector3 randomSpread = m_random.Float(-spread.X, spread.X) * right +
-													   m_random.Float(-spread.Y, spread.Y) * up +
-													   m_random.Float(-spread.Z, spread.Z) * direction;
-								Vector3 velocity = m_componentCreature.ComponentBody.Velocity + (direction + randomSpread) * 300f;
+								Vector3 velocity = m_componentCreature.ComponentBody.Velocity + direction * 300f;
 								Projectile projectile = m_subsystemProjectiles.FireProjectile(projectileValue, eyePos, velocity, Vector3.Zero, m_componentCreature);
 								if (projectile != null)
 									projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
@@ -2069,23 +2182,13 @@ namespace Game
 						int bulletNum = SWM500Block.GetBulletNum(data);
 						if (bulletNum > 0)
 						{
-							float num4 = (float)MathUtils.Remainder(m_subsystemTime.GameTime, 1000.0);
-							Vector3 v = 0.03f * new Vector3
-							{
-								X = SimplexNoise.OctavedNoise(num4, 2f, 3, 2f, 0.5f, false),
-								Y = SimplexNoise.OctavedNoise(num4 + 100f, 2f, 3, 2f, 0.5f, false),
-								Z = SimplexNoise.OctavedNoise(num4 + 200f, 2f, 3, 2f, 0.5f, false)
-							};
-							direction = Vector3.Normalize(direction + v * 2f);
-
-							Vector3 right = Vector3.Normalize(Vector3.Cross(direction, Vector3.UnitY));
-							Vector3 up = Vector3.Normalize(Vector3.Cross(direction, right));
-							float spreadAngle = 0.08f; // Similar a revólver
-							Vector3 randomSpread = m_random.Float(-spreadAngle, spreadAngle) * up + m_random.Float(-spreadAngle, spreadAngle) * right;
-							Vector3 velocity = m_componentCreature.ComponentBody.Velocity + (direction + randomSpread) * 320f;
+							// SIN DISPERSIÓN - eliminar ruido
+							// dirección exacta
 
 							int projectileBlockIndex = BlocksManager.GetBlockIndex(typeof(NuevaBala4), true, false);
 							int projectileValue = Terrain.MakeBlockValue(projectileBlockIndex, 0, 2);
+
+							Vector3 velocity = m_componentCreature.ComponentBody.Velocity + direction * 320f;
 							Projectile projectile = m_subsystemProjectiles.FireProjectile(projectileValue, eyePos, velocity, Vector3.Zero, m_componentCreature);
 							if (projectile != null)
 								projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
@@ -2115,28 +2218,16 @@ namespace Game
 						int bulletNum = KABlock.GetBulletNum(data);
 						if (bulletNum > 0)
 						{
-							float num4 = (float)MathUtils.Remainder(m_subsystemTime.GameTime, 1000.0);
-							Vector3 v = 0.03f * new Vector3
-							{
-								X = SimplexNoise.OctavedNoise(num4, 2f, 3, 2f, 0.5f, false),
-								Y = SimplexNoise.OctavedNoise(num4 + 100f, 2f, 3, 2f, 0.5f, false),
-								Z = SimplexNoise.OctavedNoise(num4 + 200f, 2f, 3, 2f, 0.5f, false)
-							};
-							direction = Vector3.Normalize(direction + v * 2f);
+							// SIN DISPERSIÓN - eliminar ruido
+							// dirección exacta
 
-							Vector3 right = Vector3.Normalize(Vector3.Cross(direction, Vector3.UnitY));
-							Vector3 up = Vector3.Normalize(Vector3.Cross(direction, right));
-							Vector3 spread = new Vector3(0.007f, 0.007f, 0.03f);
-							int projectileCount = 3; // Ráfaga de 3 balas
+							int projectileCount = 3;
 							int projectileBlockIndex = BlocksManager.GetBlockIndex(typeof(NuevaBala5), true, false);
 							int projectileValue = Terrain.MakeBlockValue(projectileBlockIndex, 0, 0);
 
 							for (int i = 0; i < projectileCount; i++)
 							{
-								Vector3 randomSpread = m_random.Float(-spread.X, spread.X) * right +
-													   m_random.Float(-spread.Y, spread.Y) * up +
-													   m_random.Float(-spread.Z, spread.Z) * direction;
-								Vector3 velocity = m_componentCreature.ComponentBody.Velocity + (direction + randomSpread) * 320f;
+								Vector3 velocity = m_componentCreature.ComponentBody.Velocity + direction * 320f;
 								Projectile projectile = m_subsystemProjectiles.FireProjectile(projectileValue, eyePos, velocity, Vector3.Zero, m_componentCreature);
 								if (projectile != null)
 									projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
@@ -2161,33 +2252,22 @@ namespace Game
 						}
 						break;
 					}
+
 				case WeaponType.Uzi:
 					{
 						int bulletNum = UziBlock.GetBulletNum(data);
 						if (bulletNum > 0)
 						{
-							float num4 = (float)MathUtils.Remainder(m_subsystemTime.GameTime, 1000.0);
-							Vector3 v = 0.03f * new Vector3
-							{
-								X = SimplexNoise.OctavedNoise(num4, 2f, 3, 2f, 0.5f, false),
-								Y = SimplexNoise.OctavedNoise(num4 + 100f, 2f, 3, 2f, 0.5f, false),
-								Z = SimplexNoise.OctavedNoise(num4 + 200f, 2f, 3, 2f, 0.5f, false)
-							};
-							direction = Vector3.Normalize(direction + v * 2f);
+							// SIN DISPERSIÓN - eliminar ruido
+							// dirección exacta
 
-							Vector3 right = Vector3.Normalize(Vector3.Cross(direction, Vector3.UnitY));
-							Vector3 up = Vector3.Normalize(Vector3.Cross(direction, right));
-							Vector3 spread = new Vector3(0.015f, 0.015f, 0.06f);
-							int projectileCount = 2; // Ráfaga de 2 balas por disparo
+							int projectileCount = 2;
 							int projectileBlockIndex = BlocksManager.GetBlockIndex(typeof(NuevaBala2), true, false);
 							int projectileValue = Terrain.MakeBlockValue(projectileBlockIndex, 0, 2);
 
 							for (int i = 0; i < projectileCount; i++)
 							{
-								Vector3 randomSpread = m_random.Float(-spread.X, spread.X) * right +
-													   m_random.Float(-spread.Y, spread.Y) * up +
-													   m_random.Float(-spread.Z, spread.Z) * direction;
-								Vector3 velocity = m_componentCreature.ComponentBody.Velocity + (direction + randomSpread) * 320f;
+								Vector3 velocity = m_componentCreature.ComponentBody.Velocity + direction * 320f;
 								Projectile projectile = m_subsystemProjectiles.FireProjectile(projectileValue, eyePos, velocity, Vector3.Zero, m_componentCreature);
 								if (projectile != null)
 									projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
@@ -2212,33 +2292,22 @@ namespace Game
 						}
 						break;
 					}
+
 				case WeaponType.Mendoza:
 					{
 						int bulletNum = MendozaBlock.GetBulletNum(data);
 						if (bulletNum > 0)
 						{
-							float num4 = (float)MathUtils.Remainder(m_subsystemTime.GameTime, 1000.0);
-							Vector3 v = 0.03f * new Vector3
-							{
-								X = SimplexNoise.OctavedNoise(num4, 2f, 3, 2f, 0.5f, false),
-								Y = SimplexNoise.OctavedNoise(num4 + 100f, 2f, 3, 2f, 0.5f, false),
-								Z = SimplexNoise.OctavedNoise(num4 + 200f, 2f, 3, 2f, 0.5f, false)
-							};
-							direction = Vector3.Normalize(direction + v * 2f);
+							// SIN DISPERSIÓN - eliminar ruido
+							// dirección exacta
 
-							Vector3 right = Vector3.Normalize(Vector3.Cross(direction, Vector3.UnitY));
-							Vector3 up = Vector3.Normalize(Vector3.Cross(direction, right));
-							Vector3 spread = new Vector3(0.009f, 0.009f, 0.04f);
 							int projectileCount = 2;
 							int projectileBlockIndex = BlocksManager.GetBlockIndex(typeof(NuevaBala3), true, false);
 							int projectileValue = Terrain.MakeBlockValue(projectileBlockIndex, 0, 2);
 
 							for (int i = 0; i < projectileCount; i++)
 							{
-								Vector3 randomSpread = m_random.Float(-spread.X, spread.X) * right +
-													   m_random.Float(-spread.Y, spread.Y) * up +
-													   m_random.Float(-spread.Z, spread.Z) * direction;
-								Vector3 velocity = m_componentCreature.ComponentBody.Velocity + (direction + randomSpread) * 290f;
+								Vector3 velocity = m_componentCreature.ComponentBody.Velocity + direction * 290f;
 								Projectile projectile = m_subsystemProjectiles.FireProjectile(projectileValue, eyePos, velocity, Vector3.Zero, m_componentCreature);
 								if (projectile != null)
 									projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
@@ -2263,33 +2332,22 @@ namespace Game
 						}
 						break;
 					}
+
 				case WeaponType.Groza:
 					{
 						int bulletNum = GrozaBlock.GetBulletNum(data);
 						if (bulletNum > 0)
 						{
-							float num4 = (float)MathUtils.Remainder(m_subsystemTime.GameTime, 1000.0);
-							Vector3 v = 0.03f * new Vector3
-							{
-								X = SimplexNoise.OctavedNoise(num4, 2f, 3, 2f, 0.5f, false),
-								Y = SimplexNoise.OctavedNoise(num4 + 100f, 2f, 3, 2f, 0.5f, false),
-								Z = SimplexNoise.OctavedNoise(num4 + 200f, 2f, 3, 2f, 0.5f, false)
-							};
-							direction = Vector3.Normalize(direction + v * 2f);
+							// SIN DISPERSIÓN - eliminar ruido
+							// dirección exacta
 
-							Vector3 right = Vector3.Normalize(Vector3.Cross(direction, Vector3.UnitY));
-							Vector3 up = Vector3.Normalize(Vector3.Cross(direction, right));
-							Vector3 spread = new Vector3(0.009f, 0.009f, 0.04f);
 							int projectileCount = 2;
 							int projectileBlockIndex = BlocksManager.GetBlockIndex(typeof(NuevaBala3), true, false);
 							int projectileValue = Terrain.MakeBlockValue(projectileBlockIndex, 0, 2);
 
 							for (int i = 0; i < projectileCount; i++)
 							{
-								Vector3 randomSpread = m_random.Float(-spread.X, spread.X) * right +
-													   m_random.Float(-spread.Y, spread.Y) * up +
-													   m_random.Float(-spread.Z, spread.Z) * direction;
-								Vector3 velocity = m_componentCreature.ComponentBody.Velocity + (direction + randomSpread) * 290f;
+								Vector3 velocity = m_componentCreature.ComponentBody.Velocity + direction * 290f;
 								Projectile projectile = m_subsystemProjectiles.FireProjectile(projectileValue, eyePos, velocity, Vector3.Zero, m_componentCreature);
 								if (projectile != null)
 									projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
@@ -2314,33 +2372,22 @@ namespace Game
 						}
 						break;
 					}
+
 				case WeaponType.Izh43:
 					{
 						int bulletNum = Izh43Block.GetBulletNum(data);
 						if (bulletNum > 0)
 						{
-							float num4 = (float)MathUtils.Remainder(m_subsystemTime.GameTime, 1000.0);
-							Vector3 v = 0.03f * new Vector3
-							{
-								X = SimplexNoise.OctavedNoise(num4, 2f, 3, 2f, 0.5f, false),
-								Y = SimplexNoise.OctavedNoise(num4 + 100f, 2f, 3, 2f, 0.5f, false),
-								Z = SimplexNoise.OctavedNoise(num4 + 200f, 2f, 3, 2f, 0.5f, false)
-							};
-							direction = Vector3.Normalize(direction + v * 2f);
+							// SIN DISPERSIÓN - eliminar spread
+							// dirección exacta
 
-							Vector3 right = Vector3.Normalize(Vector3.Cross(direction, Vector3.UnitY));
-							Vector3 up = Vector3.Normalize(Vector3.Cross(direction, right));
-							Vector3 spread = new Vector3(0.09f, 0.09f, 0.03f);
 							int projectileCount = 8;
 							int projectileBlockIndex = BlocksManager.GetBlockIndex(typeof(NuevaBala), true, false);
 							int projectileValue = Terrain.MakeBlockValue(projectileBlockIndex, 0, 2);
 
 							for (int i = 0; i < projectileCount; i++)
 							{
-								Vector3 randomSpread = m_random.Float(-spread.X, spread.X) * right +
-													   m_random.Float(-spread.Y, spread.Y) * up +
-													   m_random.Float(-spread.Z, spread.Z) * direction;
-								Vector3 velocity = m_componentCreature.ComponentBody.Velocity + (direction + randomSpread) * 280f;
+								Vector3 velocity = m_componentCreature.ComponentBody.Velocity + direction * 280f;
 								Projectile projectile = m_subsystemProjectiles.FireProjectile(projectileValue, eyePos, velocity, Vector3.Zero, m_componentCreature);
 								if (projectile != null)
 									projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
@@ -2365,33 +2412,22 @@ namespace Game
 						}
 						break;
 					}
+
 				case WeaponType.AA12:
 					{
 						int bulletNum = AA12Block.GetBulletNum(data);
 						if (bulletNum > 0)
 						{
-							float num4 = (float)MathUtils.Remainder(m_subsystemTime.GameTime, 1000.0);
-							Vector3 v = 0.04f * new Vector3
-							{
-								X = SimplexNoise.OctavedNoise(num4, 2f, 3, 1.5f, 0.4f, false),
-								Y = SimplexNoise.OctavedNoise(num4 + 100f, 2f, 3, 1.5f, 0.4f, false),
-								Z = SimplexNoise.OctavedNoise(num4 + 200f, 2f, 3, 1.5f, 0.4f, false)
-							};
-							direction = Vector3.Normalize(direction + v * 1.5f);
+							// SIN DISPERSIÓN - eliminar ruido
+							// dirección exacta
 
-							Vector3 right = Vector3.Normalize(Vector3.Cross(direction, Vector3.UnitY));
-							Vector3 up = Vector3.Normalize(Vector3.Cross(direction, right));
-							Vector3 spread = new Vector3(0.03f, 0.03f, 0.06f);
-							int projectileCount = 8; // 8 perdigones por disparo
+							int projectileCount = 8;
 							int projectileBlockIndex = BlocksManager.GetBlockIndex(typeof(NuevaBala6), true, false);
 							int projectileValue = Terrain.MakeBlockValue(projectileBlockIndex, 0, 2);
 
 							for (int i = 0; i < projectileCount; i++)
 							{
-								Vector3 randomSpread = m_random.Float(-spread.X, spread.X) * right +
-													   m_random.Float(-spread.Y, spread.Y) * up +
-													   m_random.Float(-spread.Z, spread.Z) * direction;
-								Vector3 velocity = m_componentCreature.ComponentBody.Velocity + (direction + randomSpread) * 350f;
+								Vector3 velocity = m_componentCreature.ComponentBody.Velocity + direction * 350f;
 								Projectile projectile = m_subsystemProjectiles.FireProjectile(projectileValue, eyePos, velocity, Vector3.Zero, m_componentCreature);
 								if (projectile != null)
 									projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
@@ -2485,7 +2521,8 @@ namespace Game
 
 		private void PerformMeleeAttack()
 		{
-			if (m_componentChase.Target == null || m_componentMiner == null) return;
+			if (m_componentChase.Target == null || m_componentMiner == null || !IsTargetAlive())
+				return;
 
 			m_componentCreatureModel.AttackOrder = true;
 			if (m_componentCreatureModel.IsAttackHitMoment)
@@ -2520,6 +2557,9 @@ namespace Game
 		private void ProactiveReloadCheck()
 		{
 			if (!CanUseInventory || m_componentInventory == null) return;
+
+			// No hacer recarga proactiva durante la pausa después de lanzar
+			if (m_subsystemTime.GameTime < m_nextCombatUpdateTime) return;
 
 			for (int i = 0; i < m_componentInventory.SlotsCount; i++)
 			{
@@ -2581,7 +2621,6 @@ namespace Game
 					type = WeaponType.Sniper;
 					needsReload = true;
 				}
-				// Nuevas armas
 				else if (block is BK43Block && BK43Block.GetBulletNum(data) == 0)
 				{
 					type = WeaponType.BK43;
@@ -2623,30 +2662,30 @@ namespace Game
 					needsReload = true;
 				}
 				else if (block is UziBlock && UziBlock.GetBulletNum(data) == 0)
-{
-    type = WeaponType.Uzi;
-    needsReload = true;
-}
-else if (block is MendozaBlock && MendozaBlock.GetBulletNum(data) == 0)
-{
-    type = WeaponType.Mendoza;
-    needsReload = true;
-}
-else if (block is GrozaBlock && GrozaBlock.GetBulletNum(data) == 0)
-{
-    type = WeaponType.Groza;
-    needsReload = true;
-}
-else if (block is Izh43Block && Izh43Block.GetBulletNum(data) == 0)
-{
-    type = WeaponType.Izh43;
-    needsReload = true;
-}
-else if (block is AA12Block && AA12Block.GetBulletNum(Terrain.ExtractData(value)) == 0)
-{
-    type = WeaponType.AA12;
-    needsReload = true;
-}
+				{
+					type = WeaponType.Uzi;
+					needsReload = true;
+				}
+				else if (block is MendozaBlock && MendozaBlock.GetBulletNum(data) == 0)
+				{
+					type = WeaponType.Mendoza;
+					needsReload = true;
+				}
+				else if (block is GrozaBlock && GrozaBlock.GetBulletNum(data) == 0)
+				{
+					type = WeaponType.Groza;
+					needsReload = true;
+				}
+				else if (block is Izh43Block && Izh43Block.GetBulletNum(data) == 0)
+				{
+					type = WeaponType.Izh43;
+					needsReload = true;
+				}
+				else if (block is AA12Block && AA12Block.GetBulletNum(Terrain.ExtractData(value)) == 0)
+				{
+					type = WeaponType.AA12;
+					needsReload = true;
+				}
 				else if (block is G3Block && G3Block.GetBulletNum(data) == 0)
 				{
 					type = WeaponType.G3;
@@ -2823,7 +2862,6 @@ else if (block is AA12Block && AA12Block.GetBulletNum(Terrain.ExtractData(value)
 					newValue = Terrain.MakeBlockValue(m_sniperBlockIndex, 0, SniperBlock.SetBulletNum(1));
 					break;
 
-				// Nuevas armas
 				case WeaponType.BK43:
 					newValue = Terrain.MakeBlockValue(m_bk43BlockIndex, 0, BK43Block.SetBulletNum(2));
 					break;
