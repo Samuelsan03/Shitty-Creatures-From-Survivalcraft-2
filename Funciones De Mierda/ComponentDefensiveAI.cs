@@ -2493,18 +2493,16 @@ namespace Game
 
 			RefreshCurrentWeaponReadyState();
 		}
-
 		private float GetItemsLauncherSpeed(int speedLevel)
 		{
 			switch (speedLevel)
 			{
-				case 1: return 10f;
-				case 2: return 35f;
-				case 3: return 60f;
-				default: return 35f;
+				case 1: return 80f;   // Similar a postas (buckshot)
+				case 2: return 100f;  // Valor intermedio
+				case 3: return 120f;  // Igual que bala de mosquete
+				default: return 80f;
 			}
 		}
-
 		private Vector3 GetArrowSpread(ArrowBlock.ArrowType arrowType)
 		{
 			switch (arrowType)
