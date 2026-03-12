@@ -514,6 +514,11 @@ namespace Game
 				// Siempre ir a pausa después de lanzar
 				TransitionToState("PauseAfterThrow");
 			}
+			else if (m_currentWeapon.Type == WeaponType.ItemsLauncher)
+			{
+				// Para el lanzaobjetos, siempre ir a recarga después de disparar (como en el shooter)
+				TransitionToState("Reloading");
+			}
 			else if (IsAutomatic(m_currentWeapon.Type))
 			{
 				m_nextAutoShotTime = m_subsystemTime.GameTime + GetFireInterval(m_currentWeapon.Type);
@@ -1357,6 +1362,38 @@ namespace Game
 						m_subsystemProjectiles.FireProjectile(value, eyePos, velocity, Vector3.Zero, m_componentCreature);
 						m_subsystemAudio.PlaySound("Audio/Throw", 1f, m_random.Float(-0.1f, 0.1f), eyePos, 3f, false);
 						m_componentInventory.RemoveSlotItems(slot, 1);
+						break;
+					}
+
+				case WeaponType.ItemsLauncher:
+					{
+						// Crear proyectil tipo bala de mosquete (MusketBall)
+						int bulletValue = Terrain.MakeBlockValue(m_bulletBlockIndex, 0, BulletBlock.SetBulletType(0, BulletBlock.BulletType.MusketBall));
+
+						// Obtener velocidad según el nivel de velocidad del lanzador
+						float speed = GetItemsLauncherSpeed(ItemsLauncherBlock.GetSpeedLevel(data));
+						Vector3 velocity = m_componentCreature.ComponentBody.Velocity + direction * speed;
+
+						// Disparar el proyectil (sin dispersión)
+						m_subsystemProjectiles.FireProjectile(bulletValue, eyePos, velocity, Vector3.Zero, m_componentCreature);
+						m_subsystemAudio.PlaySound("Audio/Items/ItemLauncher/Item Cannon Fire", 1f, m_random.Float(-0.1f, 0.1f), eyePos, 10f, false);
+
+						// Efectos de partículas (humo)
+						if (m_subsystemParticles != null && m_subsystemTerrain != null)
+						{
+							m_subsystemParticles.AddParticleSystem(new GunSmokeParticleSystem(m_subsystemTerrain, eyePos + 0.3f * direction, direction), false);
+						}
+
+						// Ruido
+						if (m_subsystemNoise != null)
+						{
+							m_subsystemNoise.MakeNoise(eyePos, 1f, 15f);
+						}
+
+						// Retroceso
+						m_componentCreature.ComponentBody.ApplyImpulse(-direction * 2.5f);
+
+						// No se consume combustible ni se modifica el arma
 						break;
 					}
 
