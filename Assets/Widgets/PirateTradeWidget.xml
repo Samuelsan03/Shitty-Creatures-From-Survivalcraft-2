@@ -5,12 +5,13 @@
   <GridPanelWidget CanvasWidget.Position="12, 52" Name="TraderGrid" ColumnsCount="4" RowsCount="2"/>
   <GridPanelWidget CanvasWidget.Position="306, 52" Name="InventoryGrid" ColumnsCount="4" RowsCount="4"/>
   
-  <!-- Slot de monedas con texto indicativo superpuesto -->
+  <!-- Slot de monedas con texto de fondo centrado y siempre visible, no bloquea interacción -->
   <CanvasWidget CanvasWidget.Position="12, 200" Size="68, 68">
+    <LabelWidget Name="CoinSlotHint" Text="Coins" 
+                 Color="128,128,128,255" FontScale="0.7"
+                 HorizontalAlignment="Center" VerticalAlignment="Center"
+                 IsHitTestVisible="false" />
     <InventorySlotWidget Name="CoinSlot" Size="68, 68" />
-    <LabelWidget Name="CoinSlotHint" Text="[PirateTraderWidget,CoinSlotHint]" 
-                 Color="128,128,128,255" FontScale="0.7" Size="68,68"
-                 HorizontalAlignment="Center" VerticalAlignment="Center" />
   </CanvasWidget>
   
   <CanvasWidget CanvasWidget.Position="90, 240" Size="288, 140">
