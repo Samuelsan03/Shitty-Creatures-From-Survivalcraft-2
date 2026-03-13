@@ -265,43 +265,56 @@ namespace Game
 				}
 			}
 		}
-
 		public override void AddSlotItems(int slotIndex, int value, int count)
 		{
 			bool isCreative = (m_subsystemGameInfo.WorldSettings.GameMode == GameMode.Creative);
 
-			if (isCreative && count == 1 && GetSlotCount(slotIndex) == 0 && IsDragInProgress)
+			if (slotIndex == 8)
 			{
-				int capacity = GetSlotCapacity(slotIndex, value);
-				if (capacity > 1)
-					count = capacity;
-			}
-
-			if (slotIndex == 8 || m_modificationLock > 0 || isCreative)
-			{
-				int currentCount = GetSlotCount(slotIndex);
-				int capacity = GetSlotCapacity(slotIndex, value);
-				if (currentCount + count > capacity)
+				// Comportamiento especial para el slot de monedas (arrastrar en creativo)
+				if (isCreative && count == 1 && GetSlotCount(slotIndex) == 0 && IsDragInProgress)
 				{
-					count = capacity - currentCount;
+					int tempCapacity = GetSlotCapacity(slotIndex, value);
+					if (tempCapacity > 1)
+						count = tempCapacity;
+				}
+
+				int currentCount = GetSlotCount(slotIndex);
+				int maxCapacity = GetSlotCapacity(slotIndex, value);
+
+				if (currentCount + count > maxCapacity)
+				{
+					count = maxCapacity - currentCount;
 					if (count <= 0) return;
 				}
+
 				base.AddSlotItems(slotIndex, value, count);
 			}
-		}
+			else if (m_modificationLock > 0)
+			{
+				// Solo durante reabastecimiento o compra se modifican los slots de venta
+				int currentCount = GetSlotCount(slotIndex);
+				int maxCapacity = GetSlotCapacity(slotIndex, value);
 
+				if (currentCount + count > maxCapacity)
+				{
+					count = maxCapacity - currentCount;
+					if (count <= 0) return;
+				}
+
+				base.AddSlotItems(slotIndex, value, count);
+			}
+			// En cualquier otro caso, no se hace nada
+		}
 		public override int RemoveSlotItems(int slotIndex, int count)
 		{
-			bool isCreative = (m_subsystemGameInfo.WorldSettings.GameMode == GameMode.Creative);
-			if (slotIndex == 8 || m_modificationLock > 0 || isCreative)
+			if (slotIndex == 8 || m_modificationLock > 0)
 				return base.RemoveSlotItems(slotIndex, count);
 			return 0;
 		}
 
 		public override int GetSlotCapacity(int slotIndex, int value)
 		{
-			bool isCreative = (m_subsystemGameInfo.WorldSettings.GameMode == GameMode.Creative);
-
 			if (slotIndex == 8)
 			{
 				int coinIndex = BlocksManager.GetBlockIndex(typeof(NuclearCoinBlock).Name, true);
@@ -311,12 +324,6 @@ namespace Game
 			}
 			else
 			{
-				if (isCreative)
-				{
-					int baseCapacity = base.GetSlotCapacity(slotIndex, value);
-					return baseCapacity <= 1 ? baseCapacity : 100000;
-				}
-
 				if (m_modificationLock == 0)
 					return 0;
 
@@ -325,14 +332,13 @@ namespace Game
 					return tradeItem.MaxCount;
 				}
 
-				int baseCapacity2 = base.GetSlotCapacity(slotIndex, value);
-				return baseCapacity2 <= 1 ? baseCapacity2 : 100000;
+				int baseCapacity = base.GetSlotCapacity(slotIndex, value);
+				return baseCapacity <= 1 ? baseCapacity : 100000;
 			}
 		}
 
 		public override int GetSlotProcessCapacity(int slotIndex, int value)
 		{
-			bool isCreative = (m_subsystemGameInfo.WorldSettings.GameMode == GameMode.Creative);
 			if (slotIndex == 8)
 			{
 				int coinIndex = BlocksManager.GetBlockIndex(typeof(NuclearCoinBlock).Name, true);
@@ -342,7 +348,7 @@ namespace Game
 			}
 			else
 			{
-				if (isCreative || m_modificationLock > 0)
+				if (m_modificationLock > 0)
 					return base.GetSlotProcessCapacity(slotIndex, value);
 				return 0;
 			}
@@ -357,7 +363,6 @@ namespace Game
 				return tradeItem.Price;
 			return 0;
 		}
-
 		public virtual bool TryBuy(int slotIndex, ComponentPlayer buyer)
 		{
 			if (slotIndex == 8) return false;
@@ -368,7 +373,7 @@ namespace Game
 			{
 				buyer.ComponentGui.DisplaySmallMessage(
 					LanguageControl.GetContentWidgets("PirateTraderWidget", "ItemNoLongerAvailable"),
-					Color.Red, true, true);
+					Color.Red, true, false); // playSound = false (solo nuestro sonido)
 				m_subsystemAudio.PlaySound("Audio/UI/warning", 1f, 0f, 0f, 0f);
 				return false;
 			}
@@ -378,7 +383,7 @@ namespace Game
 			{
 				buyer.ComponentGui.DisplaySmallMessage(
 					LanguageControl.GetContentWidgets("PirateTraderWidget", "ItemCannotBeBought"),
-					Color.Red, true, true);
+					Color.Red, true, false);
 				m_subsystemAudio.PlaySound("Audio/UI/warning", 1f, 0f, 0f, 0f);
 				return false;
 			}
@@ -395,7 +400,7 @@ namespace Game
 				string msg = string.Format(
 					LanguageControl.GetContentWidgets("PirateTraderWidget", "InsufficientCoins"),
 					totalPrice, itemName, count, pricePerItem);
-				buyer.ComponentGui.DisplaySmallMessage(msg, Color.Red, true, true);
+				buyer.ComponentGui.DisplaySmallMessage(msg, Color.Red, true, false);
 				m_subsystemAudio.PlaySound("Audio/UI/warning", 1f, 0f, 0f, 0f);
 				return false;
 			}
@@ -409,7 +414,7 @@ namespace Game
 				{
 					buyer.ComponentGui.DisplaySmallMessage(
 						LanguageControl.GetContentWidgets("PirateTraderWidget", "NotEnoughSpace"),
-						Color.Red, true, true);
+						Color.Red, true, false);
 					m_subsystemAudio.PlaySound("Audio/UI/warning", 1f, 0f, 0f, 0f);
 					return false;
 				}
@@ -433,11 +438,10 @@ namespace Game
 
 			buyer.ComponentGui.DisplaySmallMessage(
 				LanguageControl.GetContentWidgets("PirateTraderWidget", "PurchaseSuccessful"),
-				Color.Green, false, false);
+				Color.Green, false, false); // sin sonido (usamos el nuestro)
 			m_subsystemAudio.PlaySound("Audio/UI/money", 1f, 0f, 0f, 0f);
 			return true;
 		}
-
 		public void Update(float dt)
 		{
 			if (m_subsystemTime != null && m_tradeItems != null && m_tradeItems.Count > 0)
