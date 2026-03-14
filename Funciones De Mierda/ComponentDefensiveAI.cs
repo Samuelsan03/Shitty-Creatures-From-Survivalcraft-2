@@ -153,6 +153,7 @@ namespace Game
 		public int UpdateOrder => 0;
 		public override float ImportanceLevel => 0.5f;
 
+		private bool m_useWeaponRotationOnly; // Nueva variable
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
 			base.Load(valuesDictionary, idToEntityMap);
@@ -176,6 +177,16 @@ namespace Game
 			m_currentRepeatArrowType = m_repeatCrossbowArrowTypes[m_currentRepeatArrowTypeIndex];
 
 			InitializeFirearmConfigs();
+			// Identificar NPCs que solo deben girar el arma (sin levantar manos)
+			string templateName = Entity.ValuesDictionary.DatabaseObject.Name;
+			if (templateName == "InfectedNormalTamed1" ||
+				templateName == "InfectedNormalTamed2" ||
+				templateName == "InfectedMuscleTamed1" ||
+				templateName == "InfectedMuscleTamed2" ||
+				templateName == "InfectedFreezerTamed")
+			{
+				m_useWeaponRotationOnly = true;
+			}
 		}
 
 		private void InitializeFirearmConfigs()
@@ -1019,9 +1030,32 @@ namespace Game
 			if (m_componentModel != null)
 			{
 				float reloadProgress = (float)((m_subsystemTime.GameTime - m_itemsLauncherReloadStartTime) / m_itemsLauncherReloadTime);
-				m_componentModel.AimHandAngleOrder = MathUtils.Lerp(0f, 1.4f, reloadProgress);
+				Vector3 rotation = new Vector3(-1.7f, 0f, 0f);
+
+				if (m_useWeaponRotationOnly && m_componentNewChase?.Target != null)
+				{
+					ComponentCreature target = m_componentNewChase.Target;
+					Vector3 directionToTarget = target.ComponentCreatureModel.EyePosition - m_componentCreature.ComponentCreatureModel.EyePosition;
+					directionToTarget.Y = 0;
+					if (directionToTarget.LengthSquared() > 0.01f)
+					{
+						directionToTarget = Vector3.Normalize(directionToTarget);
+						Vector3 forward = m_componentCreature.ComponentBody.Matrix.Forward;
+						forward.Y = 0;
+						forward = Vector3.Normalize(forward);
+
+						float angle = MathUtils.Atan2(directionToTarget.X, directionToTarget.Z) - MathUtils.Atan2(forward.X, forward.Z);
+						rotation.Y = angle;
+					}
+					m_componentModel.AimHandAngleOrder = 0f;
+				}
+				else
+				{
+					m_componentModel.AimHandAngleOrder = MathUtils.Lerp(0f, 1.4f, reloadProgress);
+				}
+
 				m_componentModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
-				m_componentModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
+				m_componentModel.InHandItemRotationOrder = rotation;
 			}
 		}
 
@@ -1141,6 +1175,15 @@ namespace Game
 		{
 			if (target == null) return;
 
+			// Verificar que el arma sigue en el slot
+			if (m_currentWeaponSlot < 0) return;
+			int slotValue = m_componentInventory.GetSlotValue(m_currentWeaponSlot);
+			if (slotValue == 0 || !(BlocksManager.Blocks[Terrain.ExtractContents(slotValue)] is ItemsLauncherBlock))
+			{
+				ResetWeaponState();
+				return;
+			}
+
 			if (!HasClearLineOfSight(target))
 			{
 				m_isItemsLauncherAiming = false;
@@ -1171,9 +1214,31 @@ namespace Game
 			{
 				if (m_componentModel != null)
 				{
-					m_componentModel.AimHandAngleOrder = 1.4f;
+					Vector3 rotation = new Vector3(-1.7f, 0f, 0f);
+
+					if (m_useWeaponRotationOnly && target != null)
+					{
+						Vector3 directionToTarget = target.ComponentCreatureModel.EyePosition - m_componentCreature.ComponentCreatureModel.EyePosition;
+						directionToTarget.Y = 0;
+						if (directionToTarget.LengthSquared() > 0.01f)
+						{
+							directionToTarget = Vector3.Normalize(directionToTarget);
+							Vector3 forward = m_componentCreature.ComponentBody.Matrix.Forward;
+							forward.Y = 0;
+							forward = Vector3.Normalize(forward);
+
+							float angle = MathUtils.Atan2(directionToTarget.X, directionToTarget.Z) - MathUtils.Atan2(forward.X, forward.Z);
+							rotation.Y = angle;
+						}
+						m_componentModel.AimHandAngleOrder = 0f;
+					}
+					else
+					{
+						m_componentModel.AimHandAngleOrder = 1.4f;
+					}
+
 					m_componentModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
-					m_componentModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
+					m_componentModel.InHandItemRotationOrder = rotation;
 					m_componentModel.LookAtOrder = new Vector3?(target.ComponentCreatureModel.EyePosition);
 				}
 
@@ -1188,16 +1253,37 @@ namespace Game
 			{
 				if (m_componentModel != null)
 				{
-					m_componentModel.AimHandAngleOrder = 1.4f;
+					Vector3 rotation = new Vector3(-1.7f, 0f, 0f);
+
+					if (m_useWeaponRotationOnly && target != null)
+					{
+						Vector3 directionToTarget = target.ComponentCreatureModel.EyePosition - m_componentCreature.ComponentCreatureModel.EyePosition;
+						directionToTarget.Y = 0;
+						if (directionToTarget.LengthSquared() > 0.01f)
+						{
+							directionToTarget = Vector3.Normalize(directionToTarget);
+							Vector3 forward = m_componentCreature.ComponentBody.Matrix.Forward;
+							forward.Y = 0;
+							forward = Vector3.Normalize(forward);
+
+							float angle = MathUtils.Atan2(directionToTarget.X, directionToTarget.Z) - MathUtils.Atan2(forward.X, forward.Z);
+							rotation.Y = angle;
+						}
+						m_componentModel.AimHandAngleOrder = 0f;
+					}
+					else
+					{
+						m_componentModel.AimHandAngleOrder = 1.4f;
+					}
+
 					m_componentModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
-					m_componentModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
+					m_componentModel.InHandItemRotationOrder = rotation;
 					m_componentModel.LookAtOrder = new Vector3?(target.ComponentCreatureModel.EyePosition);
 				}
 
-				else if (m_isItemsLauncherReloading)
+				if (m_isItemsLauncherReloading)
 				{
 					ApplyItemsLauncherReloadingAnimation();
-
 					if (m_subsystemTime.GameTime - m_itemsLauncherReloadStartTime >= m_itemsLauncherReloadTime)
 					{
 						m_isItemsLauncherReloading = false;
@@ -1638,18 +1724,32 @@ namespace Game
 		{
 			if (m_componentModel != null)
 			{
+				Vector3 offset;
+				Vector3 rotation;
+
 				if (config.IsSniper)
 				{
-					m_componentModel.AimHandAngleOrder = 1.2f;
-					m_componentModel.InHandItemOffsetOrder = new Vector3(-0.1f, -0.06f, 0.08f);
-					m_componentModel.InHandItemRotationOrder = new Vector3(-1.5f, 0f, 0f);
+					offset = new Vector3(-0.1f, -0.06f, 0.08f);
+					rotation = new Vector3(-1.5f, 0f, 0f);
 				}
 				else
 				{
-					m_componentModel.AimHandAngleOrder = 1.4f;
-					m_componentModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
-					m_componentModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
+					offset = new Vector3(-0.08f, -0.08f, 0.07f);
+					rotation = new Vector3(-1.7f, 0f, 0f);
 				}
+
+				if (m_useWeaponRotationOnly && target != null)
+				{
+					rotation.Y = CalculateHorizontalAngle(target);
+					m_componentModel.AimHandAngleOrder = 0f;
+				}
+				else
+				{
+					m_componentModel.AimHandAngleOrder = config.IsSniper ? 1.2f : 1.4f;
+				}
+
+				m_componentModel.InHandItemOffsetOrder = offset;
+				m_componentModel.InHandItemRotationOrder = rotation;
 
 				if (target != null)
 				{
@@ -1671,9 +1771,26 @@ namespace Game
 				float timeSinceFire = (float)(m_subsystemTime.GameTime - m_fireTime);
 				float recoilFactor = MathUtils.Max(1.5f - timeSinceFire * 8f, 1.0f);
 
-				m_componentModel.AimHandAngleOrder = 1.4f * recoilFactor;
-				m_componentModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f - (0.05f * (1.5f - recoilFactor)));
-				m_componentModel.InHandItemRotationOrder = new Vector3(-1.7f + (0.3f * (1.5f - recoilFactor)), 0f, 0f);
+				Vector3 offset = new Vector3(-0.08f, -0.08f, 0.07f - (0.05f * (1.5f - recoilFactor)));
+				float pitch = -1.7f + (0.3f * (1.5f - recoilFactor));
+				Vector3 rotation = new Vector3(pitch, 0f, 0f);
+
+				if (m_useWeaponRotationOnly)
+				{
+					ComponentCreature target = m_componentNewChase?.Target;
+					if (target != null)
+					{
+						rotation.Y = CalculateHorizontalAngle(target);
+					}
+					m_componentModel.AimHandAngleOrder = 0f;
+				}
+				else
+				{
+					m_componentModel.AimHandAngleOrder = 1.4f * recoilFactor;
+				}
+
+				m_componentModel.InHandItemOffsetOrder = offset;
+				m_componentModel.InHandItemRotationOrder = rotation;
 			}
 		}
 
@@ -1681,9 +1798,23 @@ namespace Game
 		{
 			if (m_componentModel != null)
 			{
-				m_componentModel.AimHandAngleOrder = 0.0f;
+				if (m_useWeaponRotationOnly)
+				{
+					ComponentCreature target = m_componentNewChase?.Target;
+					Vector3 rotation = Vector3.Zero;
+					if (target != null)
+					{
+						rotation.Y = CalculateHorizontalAngle(target);
+					}
+					m_componentModel.InHandItemRotationOrder = rotation;
+					m_componentModel.AimHandAngleOrder = 0f;
+				}
+				else
+				{
+					m_componentModel.AimHandAngleOrder = 0.0f;
+					m_componentModel.InHandItemRotationOrder = Vector3.Zero;
+				}
 				m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
-				m_componentModel.InHandItemRotationOrder = Vector3.Zero;
 				m_componentModel.LookAtOrder = null;
 			}
 		}
@@ -1940,9 +2071,20 @@ namespace Game
 		{
 			if (m_componentModel != null)
 			{
-				m_componentModel.AimHandAngleOrder = 0.2f;
+				Vector3 rotation = new Vector3(-0.05f, 0.3f, 0.05f);
+
+				if (m_useWeaponRotationOnly && target != null)
+				{
+					rotation.Y = CalculateHorizontalAngle(target);
+					m_componentModel.AimHandAngleOrder = 0f;
+				}
+				else
+				{
+					m_componentModel.AimHandAngleOrder = 0.2f;
+				}
+
 				m_componentModel.InHandItemOffsetOrder = new Vector3(0.05f, 0.05f, 0.05f);
-				m_componentModel.InHandItemRotationOrder = new Vector3(-0.05f, 0.3f, 0.05f);
+				m_componentModel.InHandItemRotationOrder = rotation;
 
 				if (target != null)
 				{
@@ -1963,7 +2105,19 @@ namespace Game
 				float yawRotation = 0.3f - (0.05f * drawFactor);
 				float rollRotation = 0.05f - (0.02f * drawFactor);
 
-				m_componentModel.AimHandAngleOrder = 0.2f + (0.3f * drawFactor);
+				if (m_useWeaponRotationOnly)
+				{
+					if (target != null)
+					{
+						yawRotation = CalculateHorizontalAngle(target);
+					}
+					m_componentModel.AimHandAngleOrder = 0f;
+				}
+				else
+				{
+					m_componentModel.AimHandAngleOrder = 0.2f + (0.3f * drawFactor);
+				}
+
 				m_componentModel.InHandItemOffsetOrder = new Vector3(horizontalOffset, verticalOffset, depthOffset);
 				m_componentModel.InHandItemRotationOrder = new Vector3(pitchRotation, yawRotation, rollRotation);
 
@@ -1993,23 +2147,62 @@ namespace Game
 				if (fireProgress < 0.5f)
 				{
 					float recoil = 0.02f * (1f - (fireProgress * 2f));
-					m_componentModel.InHandItemOffsetOrder += new Vector3(recoil, 0f, 0f);
-					m_componentModel.InHandItemRotationOrder += new Vector3(recoil * 2f, 0f, 0f);
+					if (m_useWeaponRotationOnly)
+					{
+						ComponentCreature target = m_componentNewChase?.Target;
+						Vector3 currentRot = m_componentModel.InHandItemRotationOrder;
+						if (target != null)
+						{
+							currentRot.Y = CalculateHorizontalAngle(target);
+						}
+						currentRot.X += recoil * 2f;
+						m_componentModel.InHandItemRotationOrder = currentRot;
+						m_componentModel.AimHandAngleOrder = 0f;
+						m_componentModel.InHandItemOffsetOrder += new Vector3(recoil, 0f, 0f);
+					}
+					else
+					{
+						m_componentModel.InHandItemOffsetOrder += new Vector3(recoil, 0f, 0f);
+						m_componentModel.InHandItemRotationOrder += new Vector3(recoil * 2f, 0f, 0f);
+					}
 				}
 				else
 				{
 					float returnProgress = (fireProgress - 0.5f) / 0.5f;
-					m_componentModel.AimHandAngleOrder = 0.2f * (1f - returnProgress);
-					m_componentModel.InHandItemOffsetOrder = new Vector3(
-						0.05f * (1f - returnProgress),
-						0.05f * (1f - returnProgress),
-						0.05f * (1f - returnProgress)
-					);
-					m_componentModel.InHandItemRotationOrder = new Vector3(
-						-0.05f * (1f - returnProgress),
-						0.3f * (1f - returnProgress),
-						0.05f * (1f - returnProgress)
-					);
+					if (m_useWeaponRotationOnly)
+					{
+						ComponentCreature target = m_componentNewChase?.Target;
+						Vector3 rotation = new Vector3(
+							-0.05f * (1f - returnProgress),
+							0f,
+							0.05f * (1f - returnProgress)
+						);
+						if (target != null)
+						{
+							rotation.Y = CalculateHorizontalAngle(target);
+						}
+						m_componentModel.InHandItemRotationOrder = rotation;
+						m_componentModel.AimHandAngleOrder = 0f;
+						m_componentModel.InHandItemOffsetOrder = new Vector3(
+							0.05f * (1f - returnProgress),
+							0.05f * (1f - returnProgress),
+							0.05f * (1f - returnProgress)
+						);
+					}
+					else
+					{
+						m_componentModel.AimHandAngleOrder = 0.2f * (1f - returnProgress);
+						m_componentModel.InHandItemOffsetOrder = new Vector3(
+							0.05f * (1f - returnProgress),
+							0.05f * (1f - returnProgress),
+							0.05f * (1f - returnProgress)
+						);
+						m_componentModel.InHandItemRotationOrder = new Vector3(
+							-0.05f * (1f - returnProgress),
+							0.3f * (1f - returnProgress),
+							0.05f * (1f - returnProgress)
+						);
+					}
 				}
 			}
 		}
@@ -2134,9 +2327,20 @@ namespace Game
 		{
 			if (m_componentModel != null)
 			{
-				m_componentModel.AimHandAngleOrder = 1.4f;
+				Vector3 rotation = new Vector3(-1.7f, 0f, 0f);
+
+				if (m_useWeaponRotationOnly && target != null)
+				{
+					rotation.Y = CalculateHorizontalAngle(target);
+					m_componentModel.AimHandAngleOrder = 0f;
+				}
+				else
+				{
+					m_componentModel.AimHandAngleOrder = 1.4f;
+				}
+
 				m_componentModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
-				m_componentModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
+				m_componentModel.InHandItemRotationOrder = rotation;
 
 				if (target != null)
 				{
@@ -2150,13 +2354,27 @@ namespace Game
 			if (m_componentModel != null)
 			{
 				float drawFactor = m_currentDraw;
-				m_componentModel.AimHandAngleOrder = 1.4f;
+				Vector3 rotation = new Vector3(-1.7f, 0f, 0f);
+
+				if (m_useWeaponRotationOnly)
+				{
+					if (target != null)
+					{
+						rotation.Y = CalculateHorizontalAngle(target);
+					}
+					m_componentModel.AimHandAngleOrder = 0f;
+				}
+				else
+				{
+					m_componentModel.AimHandAngleOrder = 1.4f;
+				}
+
 				m_componentModel.InHandItemOffsetOrder = new Vector3(
 					-0.08f + (0.05f * drawFactor),
 					-0.08f,
 					0.07f - (0.03f * drawFactor)
 				);
-				m_componentModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
+				m_componentModel.InHandItemRotationOrder = rotation;
 
 				if (target != null)
 				{
@@ -2170,13 +2388,27 @@ namespace Game
 			if (m_componentModel != null)
 			{
 				float reloadProgress = (float)((m_subsystemTime.GameTime - m_animationStartTime) / 0.3f);
-				m_componentModel.AimHandAngleOrder = 1.4f;
+				Vector3 rotation = new Vector3(-1.7f, 0f, 0f);
+
+				if (m_useWeaponRotationOnly)
+				{
+					if (target != null)
+					{
+						rotation.Y = CalculateHorizontalAngle(target);
+					}
+					m_componentModel.AimHandAngleOrder = 0f;
+				}
+				else
+				{
+					m_componentModel.AimHandAngleOrder = 1.4f;
+				}
+
 				m_componentModel.InHandItemOffsetOrder = new Vector3(
 					-0.08f,
 					-0.08f - (0.05f * reloadProgress),
 					0.07f
 				);
-				m_componentModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
+				m_componentModel.InHandItemRotationOrder = rotation;
 
 				if (target != null)
 				{
@@ -2208,27 +2440,66 @@ namespace Game
 			if (m_componentModel != null)
 			{
 				float fireProgress = (float)((m_subsystemTime.GameTime - m_fireTime) / 0.2f);
+				float pitch = -1.7f;
+				Vector3 rotation = new Vector3(pitch, 0f, 0f);
 
 				if (fireProgress < 0.5f)
 				{
 					float recoil = 0.05f * (1f - (fireProgress * 2f));
-					m_componentModel.InHandItemOffsetOrder += new Vector3(recoil, 0f, 0f);
-					m_componentModel.InHandItemRotationOrder += new Vector3(recoil * 2f, 0f, 0f);
+					if (m_useWeaponRotationOnly)
+					{
+						ComponentCreature target = m_componentNewChase?.Target;
+						if (target != null)
+						{
+							rotation.Y = CalculateHorizontalAngle(target);
+						}
+						m_componentModel.AimHandAngleOrder = 0f;
+						m_componentModel.InHandItemOffsetOrder += new Vector3(recoil, 0f, 0f);
+						rotation.X += recoil * 2f;
+					}
+					else
+					{
+						m_componentModel.AimHandAngleOrder = 1.4f;
+						m_componentModel.InHandItemOffsetOrder += new Vector3(recoil, 0f, 0f);
+						m_componentModel.InHandItemRotationOrder += new Vector3(recoil * 2f, 0f, 0f);
+					}
 				}
 				else
 				{
 					float returnProgress = (fireProgress - 0.5f) / 0.5f;
-					m_componentModel.AimHandAngleOrder = 1.4f * (1f - returnProgress);
-					m_componentModel.InHandItemOffsetOrder = new Vector3(
-						-0.08f * (1f - returnProgress),
-						-0.08f * (1f - returnProgress),
-						0.07f * (1f - returnProgress)
-					);
-					m_componentModel.InHandItemRotationOrder = new Vector3(
-						-1.7f * (1f - returnProgress),
-						0f,
-						0f
-					);
+					if (m_useWeaponRotationOnly)
+					{
+						ComponentCreature target = m_componentNewChase?.Target;
+						if (target != null)
+						{
+							rotation.Y = CalculateHorizontalAngle(target);
+						}
+						m_componentModel.AimHandAngleOrder = 0f;
+						m_componentModel.InHandItemOffsetOrder = new Vector3(
+							-0.08f * (1f - returnProgress),
+							-0.08f * (1f - returnProgress),
+							0.07f * (1f - returnProgress)
+						);
+						m_componentModel.InHandItemRotationOrder = new Vector3(
+							-1.7f * (1f - returnProgress),
+							rotation.Y,
+							0f
+						);
+					}
+					else
+					{
+						m_componentModel.AimHandAngleOrder = 1.4f * (1f - returnProgress);
+						m_componentModel.InHandItemOffsetOrder = new Vector3(
+							-0.08f * (1f - returnProgress),
+							-0.08f * (1f - returnProgress),
+							0.07f * (1f - returnProgress)
+						);
+						m_componentModel.InHandItemRotationOrder = new Vector3(
+							-1.7f * (1f - returnProgress),
+							0f,
+							0f
+						);
+					}
 				}
 			}
 		}
@@ -2422,9 +2693,20 @@ namespace Game
 		{
 			if (m_componentModel != null)
 			{
-				m_componentModel.AimHandAngleOrder = 1.4f;
+				Vector3 rotation = new Vector3(-1.7f, 0f, 0f);
+
+				if (m_useWeaponRotationOnly && target != null)
+				{
+					rotation.Y = CalculateHorizontalAngle(target);
+					m_componentModel.AimHandAngleOrder = 0f;
+				}
+				else
+				{
+					m_componentModel.AimHandAngleOrder = 1.4f;
+				}
+
 				m_componentModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
-				m_componentModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
+				m_componentModel.InHandItemRotationOrder = rotation;
 
 				float breath = (float)Math.Sin(m_subsystemTime.GameTime * 3f) * 0.01f;
 				m_componentModel.InHandItemOffsetOrder += new Vector3(0f, breath, 0f);
@@ -2441,27 +2723,66 @@ namespace Game
 			if (m_componentModel != null)
 			{
 				float fireProgress = (float)((m_subsystemTime.GameTime - m_fireTime) / 0.2f);
+				float pitch = -1.7f;
+				Vector3 rotation = new Vector3(pitch, 0f, 0f);
 
 				if (fireProgress < 0.5f)
 				{
 					float recoil = 0.1f * (1f - (fireProgress * 2f));
-					m_componentModel.InHandItemOffsetOrder += new Vector3(recoil, 0f, 0f);
-					m_componentModel.InHandItemRotationOrder += new Vector3(recoil * 3f, 0f, 0f);
+					if (m_useWeaponRotationOnly)
+					{
+						ComponentCreature target = m_componentNewChase?.Target;
+						if (target != null)
+						{
+							rotation.Y = CalculateHorizontalAngle(target);
+						}
+						m_componentModel.AimHandAngleOrder = 0f;
+						m_componentModel.InHandItemOffsetOrder += new Vector3(recoil, 0f, 0f);
+						rotation.X += recoil * 3f;
+					}
+					else
+					{
+						m_componentModel.AimHandAngleOrder = 1.4f;
+						m_componentModel.InHandItemOffsetOrder += new Vector3(recoil, 0f, 0f);
+						m_componentModel.InHandItemRotationOrder += new Vector3(recoil * 3f, 0f, 0f);
+					}
 				}
 				else
 				{
 					float returnProgress = (fireProgress - 0.5f) / 0.5f;
-					m_componentModel.AimHandAngleOrder = 1.4f * (1f - returnProgress);
-					m_componentModel.InHandItemOffsetOrder = new Vector3(
-						-0.08f * (1f - returnProgress),
-						-0.08f * (1f - returnProgress),
-						0.07f * (1f - returnProgress)
-					);
-					m_componentModel.InHandItemRotationOrder = new Vector3(
-						-1.7f * (1f - returnProgress),
-						0f,
-						0f
-					);
+					if (m_useWeaponRotationOnly)
+					{
+						ComponentCreature target = m_componentNewChase?.Target;
+						if (target != null)
+						{
+							rotation.Y = CalculateHorizontalAngle(target);
+						}
+						m_componentModel.AimHandAngleOrder = 0f;
+						m_componentModel.InHandItemOffsetOrder = new Vector3(
+							-0.08f * (1f - returnProgress),
+							-0.08f * (1f - returnProgress),
+							0.07f * (1f - returnProgress)
+						);
+						m_componentModel.InHandItemRotationOrder = new Vector3(
+							-1.7f * (1f - returnProgress),
+							rotation.Y,
+							0f
+						);
+					}
+					else
+					{
+						m_componentModel.AimHandAngleOrder = 1.4f * (1f - returnProgress);
+						m_componentModel.InHandItemOffsetOrder = new Vector3(
+							-0.08f * (1f - returnProgress),
+							-0.08f * (1f - returnProgress),
+							0.07f * (1f - returnProgress)
+						);
+						m_componentModel.InHandItemRotationOrder = new Vector3(
+							-1.7f * (1f - returnProgress),
+							0f,
+							0f
+						);
+					}
 				}
 			}
 		}
@@ -2471,17 +2792,28 @@ namespace Game
 			if (m_componentModel != null)
 			{
 				float reloadProgress = (float)((m_subsystemTime.GameTime - m_animationStartTime) / m_reloadTime);
-				m_componentModel.AimHandAngleOrder = MathUtils.Lerp(1.0f, 0.5f, reloadProgress);
+				Vector3 rotation = new Vector3(-1.7f + (0.5f * reloadProgress), 0f, 0f);
+
+				if (m_useWeaponRotationOnly)
+				{
+					ComponentCreature target = m_componentNewChase?.Target;
+					if (target != null)
+					{
+						rotation.Y = CalculateHorizontalAngle(target);
+					}
+					m_componentModel.AimHandAngleOrder = 0f;
+				}
+				else
+				{
+					m_componentModel.AimHandAngleOrder = MathUtils.Lerp(1.0f, 0.5f, reloadProgress);
+				}
+
 				m_componentModel.InHandItemOffsetOrder = new Vector3(
 					-0.08f,
 					-0.08f,
 					0.07f - (0.1f * reloadProgress)
 				);
-				m_componentModel.InHandItemRotationOrder = new Vector3(
-					-1.7f + (0.5f * reloadProgress),
-					0f,
-					0f
-				);
+				m_componentModel.InHandItemRotationOrder = rotation;
 				m_componentModel.LookAtOrder = null;
 			}
 		}
@@ -2739,18 +3071,27 @@ namespace Game
 			if (m_componentModel != null)
 			{
 				float cockProgress = (float)((m_subsystemTime.GameTime - m_cockStartTime) / m_flameCockTime);
+				Vector3 rotation = new Vector3(-1.5f - (0.2f * cockProgress), 0f, 0f);
 
-				m_componentModel.AimHandAngleOrder = 1.2f + (0.2f * cockProgress);
+				if (m_useWeaponRotationOnly)
+				{
+					if (target != null)
+					{
+						rotation.Y = CalculateHorizontalAngle(target);
+					}
+					m_componentModel.AimHandAngleOrder = 0f;
+				}
+				else
+				{
+					m_componentModel.AimHandAngleOrder = 1.2f + (0.2f * cockProgress);
+				}
+
 				m_componentModel.InHandItemOffsetOrder = new Vector3(
 					-0.07f + (0.02f * cockProgress),
 					-0.06f - (0.01f * cockProgress),
 					0.06f + (0.01f * cockProgress)
 				);
-				m_componentModel.InHandItemRotationOrder = new Vector3(
-					-1.5f - (0.2f * cockProgress),
-					0f,
-					0f
-				);
+				m_componentModel.InHandItemRotationOrder = rotation;
 
 				if (target != null)
 				{
@@ -2763,9 +3104,20 @@ namespace Game
 		{
 			if (m_componentModel != null)
 			{
-				m_componentModel.AimHandAngleOrder = 1.3f;
+				Vector3 rotation = new Vector3(-1.5f, 0f, 0f);
+
+				if (m_useWeaponRotationOnly && target != null)
+				{
+					rotation.Y = CalculateHorizontalAngle(target);
+					m_componentModel.AimHandAngleOrder = 0f;
+				}
+				else
+				{
+					m_componentModel.AimHandAngleOrder = 1.3f;
+				}
+
 				m_componentModel.InHandItemOffsetOrder = new Vector3(-0.07f, -0.06f, 0.06f);
-				m_componentModel.InHandItemRotationOrder = new Vector3(-1.5f, 0f, 0f);
+				m_componentModel.InHandItemRotationOrder = rotation;
 
 				if (target != null)
 				{
@@ -2779,14 +3131,27 @@ namespace Game
 			if (m_componentModel != null)
 			{
 				float shake = (float)Math.Sin(m_subsystemTime.GameTime * 50f) * 0.005f;
+				Vector3 rotation = new Vector3(-1.5f + shake * 2f, 0f, 0f);
 
-				m_componentModel.AimHandAngleOrder = 1.3f;
+				if (m_useWeaponRotationOnly)
+				{
+					if (target != null)
+					{
+						rotation.Y = CalculateHorizontalAngle(target);
+					}
+					m_componentModel.AimHandAngleOrder = 0f;
+				}
+				else
+				{
+					m_componentModel.AimHandAngleOrder = 1.3f;
+				}
+
 				m_componentModel.InHandItemOffsetOrder = new Vector3(
 					-0.07f + shake,
 					-0.06f,
 					0.06f
 				);
-				m_componentModel.InHandItemRotationOrder = new Vector3(-1.5f + shake * 2f, 0f, 0f);
+				m_componentModel.InHandItemRotationOrder = rotation;
 
 				float fireProgress = (float)((m_subsystemTime.GameTime - m_flameStartTime) / 3.0);
 				float recoil = MathUtils.Min(fireProgress * 0.02f, 0.01f);
@@ -2804,18 +3169,28 @@ namespace Game
 			if (m_componentModel != null)
 			{
 				float reloadProgress = (float)((m_subsystemTime.GameTime - m_animationStartTime) / 1.5f);
+				Vector3 rotation = new Vector3(-1.5f + (0.5f * reloadProgress), 0f, 0f);
 
-				m_componentModel.AimHandAngleOrder = MathUtils.Lerp(1.0f, 0.3f, reloadProgress);
+				if (m_useWeaponRotationOnly)
+				{
+					ComponentCreature target = m_componentNewChase?.Target;
+					if (target != null)
+					{
+						rotation.Y = CalculateHorizontalAngle(target);
+					}
+					m_componentModel.AimHandAngleOrder = 0f;
+				}
+				else
+				{
+					m_componentModel.AimHandAngleOrder = MathUtils.Lerp(1.0f, 0.3f, reloadProgress);
+				}
+
 				m_componentModel.InHandItemOffsetOrder = new Vector3(
 					-0.07f,
 					-0.06f - (0.1f * reloadProgress),
 					0.06f - (0.05f * reloadProgress)
 				);
-				m_componentModel.InHandItemRotationOrder = new Vector3(
-					-1.5f + (0.5f * reloadProgress),
-					0f,
-					0f
-				);
+				m_componentModel.InHandItemRotationOrder = rotation;
 				m_componentModel.LookAtOrder = null;
 			}
 		}
@@ -2955,9 +3330,20 @@ namespace Game
 		{
 			if (m_componentModel != null)
 			{
-				m_componentModel.AimHandAngleOrder = 1.3f;
+				Vector3 rotation = new Vector3(-1.55f, 0f, 0f);
+
+				if (m_useWeaponRotationOnly && target != null)
+				{
+					rotation.Y = CalculateHorizontalAngle(target);
+					m_componentModel.AimHandAngleOrder = 0f;
+				}
+				else
+				{
+					m_componentModel.AimHandAngleOrder = 1.3f;
+				}
+
 				m_componentModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.1f, 0.07f);
-				m_componentModel.InHandItemRotationOrder = new Vector3(-1.55f, 0f, 0f);
+				m_componentModel.InHandItemRotationOrder = rotation;
 
 				if (target != null)
 				{
@@ -2971,14 +3357,27 @@ namespace Game
 			if (m_componentModel != null)
 			{
 				float drawFactor = m_currentDraw;
+				Vector3 rotation = new Vector3(-1.55f, 0f, 0f);
 
-				m_componentModel.AimHandAngleOrder = 1.3f + drawFactor * 0.1f;
+				if (m_useWeaponRotationOnly)
+				{
+					if (target != null)
+					{
+						rotation.Y = CalculateHorizontalAngle(target);
+					}
+					m_componentModel.AimHandAngleOrder = 0f;
+				}
+				else
+				{
+					m_componentModel.AimHandAngleOrder = 1.3f + drawFactor * 0.1f;
+				}
+
 				m_componentModel.InHandItemOffsetOrder = new Vector3(
 					-0.08f + (0.05f * drawFactor),
 					-0.1f,
 					0.07f - (0.03f * drawFactor)
 				);
-				m_componentModel.InHandItemRotationOrder = new Vector3(-1.55f, 0f, 0f);
+				m_componentModel.InHandItemRotationOrder = rotation;
 
 				if (target != null)
 				{
@@ -2992,14 +3391,27 @@ namespace Game
 			if (m_componentModel != null)
 			{
 				float reloadProgress = (float)((m_subsystemTime.GameTime - m_animationStartTime) / 0.2f);
+				Vector3 rotation = new Vector3(-1.55f, 0f, 0f);
 
-				m_componentModel.AimHandAngleOrder = 1.4f;
+				if (m_useWeaponRotationOnly)
+				{
+					if (target != null)
+					{
+						rotation.Y = CalculateHorizontalAngle(target);
+					}
+					m_componentModel.AimHandAngleOrder = 0f;
+				}
+				else
+				{
+					m_componentModel.AimHandAngleOrder = 1.4f;
+				}
+
 				m_componentModel.InHandItemOffsetOrder = new Vector3(
 					-0.03f,
 					-0.1f - (0.05f * reloadProgress),
 					0.04f
 				);
-				m_componentModel.InHandItemRotationOrder = new Vector3(-1.55f, 0f, 0f);
+				m_componentModel.InHandItemRotationOrder = rotation;
 
 				if (target != null)
 				{
@@ -3033,27 +3445,66 @@ namespace Game
 			if (m_componentModel != null)
 			{
 				float fireProgress = (float)((m_subsystemTime.GameTime - m_fireTime) / 0.2f);
+				float pitch = -1.55f;
+				Vector3 rotation = new Vector3(pitch, 0f, 0f);
 
 				if (fireProgress < 0.5f)
 				{
 					float recoil = 0.05f * (1f - (fireProgress * 2f));
-					m_componentModel.InHandItemOffsetOrder += new Vector3(recoil, 0f, 0f);
-					m_componentModel.InHandItemRotationOrder += new Vector3(recoil * 2f, 0f, 0f);
+					if (m_useWeaponRotationOnly)
+					{
+						ComponentCreature target = m_componentNewChase?.Target;
+						if (target != null)
+						{
+							rotation.Y = CalculateHorizontalAngle(target);
+						}
+						m_componentModel.AimHandAngleOrder = 0f;
+						m_componentModel.InHandItemOffsetOrder += new Vector3(recoil, 0f, 0f);
+						rotation.X += recoil * 2f;
+					}
+					else
+					{
+						m_componentModel.AimHandAngleOrder = 1.4f;
+						m_componentModel.InHandItemOffsetOrder += new Vector3(recoil, 0f, 0f);
+						m_componentModel.InHandItemRotationOrder += new Vector3(recoil * 2f, 0f, 0f);
+					}
 				}
 				else
 				{
 					float returnProgress = (fireProgress - 0.5f) / 0.5f;
-					m_componentModel.AimHandAngleOrder = 1.4f * (1f - returnProgress);
-					m_componentModel.InHandItemOffsetOrder = new Vector3(
-						-0.03f * (1f - returnProgress),
-						-0.1f * (1f - returnProgress),
-						0.04f * (1f - returnProgress)
-					);
-					m_componentModel.InHandItemRotationOrder = new Vector3(
-						-1.55f * (1f - returnProgress),
-						0f,
-						0f
-					);
+					if (m_useWeaponRotationOnly)
+					{
+						ComponentCreature target = m_componentNewChase?.Target;
+						if (target != null)
+						{
+							rotation.Y = CalculateHorizontalAngle(target);
+						}
+						m_componentModel.AimHandAngleOrder = 0f;
+						m_componentModel.InHandItemOffsetOrder = new Vector3(
+							-0.03f * (1f - returnProgress),
+							-0.1f * (1f - returnProgress),
+							0.04f * (1f - returnProgress)
+						);
+						m_componentModel.InHandItemRotationOrder = new Vector3(
+							-1.55f * (1f - returnProgress),
+							rotation.Y,
+							0f
+						);
+					}
+					else
+					{
+						m_componentModel.AimHandAngleOrder = 1.4f * (1f - returnProgress);
+						m_componentModel.InHandItemOffsetOrder = new Vector3(
+							-0.03f * (1f - returnProgress),
+							-0.1f * (1f - returnProgress),
+							0.04f * (1f - returnProgress)
+						);
+						m_componentModel.InHandItemRotationOrder = new Vector3(
+							-1.55f * (1f - returnProgress),
+							0f,
+							0f
+						);
+					}
 				}
 			}
 		}
@@ -3569,6 +4020,20 @@ namespace Game
 				m_currentRepeatArrowTypeIndex = 0;
 				m_currentRepeatArrowType = m_repeatCrossbowArrowTypes[0];
 			}
+		}
+		private float CalculateHorizontalAngle(ComponentCreature target)
+		{
+			if (target == null || target.ComponentCreatureModel == null || m_componentCreature?.ComponentCreatureModel == null)
+				return 0f;
+			Vector3 directionToTarget = target.ComponentCreatureModel.EyePosition - m_componentCreature.ComponentCreatureModel.EyePosition;
+			directionToTarget.Y = 0;
+			if (directionToTarget.LengthSquared() <= 0.01f)
+				return 0f;
+			directionToTarget = Vector3.Normalize(directionToTarget);
+			Vector3 forward = m_componentCreature.ComponentBody.Matrix.Forward;
+			forward.Y = 0;
+			forward = Vector3.Normalize(forward);
+			return MathUtils.Atan2(directionToTarget.X, directionToTarget.Z) - MathUtils.Atan2(forward.X, forward.Z);
 		}
 	}
 }
