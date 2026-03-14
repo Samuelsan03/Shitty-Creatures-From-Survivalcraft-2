@@ -145,6 +145,7 @@
   },
   "Database": {
     "DisplayName": {
+      "Aimep3": "Aimep3",
       "Bandit15": "Bandit 15",
       "Bandit14": "Bandit 14",
       "Bandit13": "Bandit 13",
@@ -294,6 +295,7 @@
       "Richard": "Richard"
     },
     "Description": {
+      "Aimep3": "According to information found on the internet, Aimep3 (whose real name is Marisol Domínguez Maya) is a Mexican content creator and internet personality from Ciudad Nezahualcóyotl. She became known through YouTube and other social platforms where she posts unusual cooking videos, personal life content, and other material that often goes viral and generates controversy online. Her eccentric and unfiltered style made her a widely discussed figure in internet culture, gaining both dedicated fans and strong critics while appearing in many memes and online discussions. In the mod, you can hire her as an ally for the player, allowing her to accompany and protect you during your adventure, so make good use of her and don’t miss the chance to take advantage of her help.",
       "InfectedFreezer": "The Freezing Infected is another rare special infected. It is not a boss or mini-boss, but its appearance seems to come from frozen lands. It shares similarities with other normal infected, but its special ability is throwing freezing snowballs. Be very careful—if it hits you, you could suffer from freezing, and in the worst case, catch a cold! Another one will attack you, and upon hitting its weak point, it will start giving you cold effects. The last one will vomit ice, infecting creatures with the flu as well. However, using a Zombie Collar will give you advantages, providing you with freezing protection. It only appears in waves of other infected, always during winter or in frozen areas.",
       "HumanoidSkeleton": "The Humanoid Skeleton is a very special infected (though not a special infected as you might think). Who does it remind you of when you see it at night? Ah, of course, it brings to mind the skeletons from Minecraft! And guess what? It's also part of the horde of the Infected. However, just like in Minecraft, it can fire a bow, or, depending on the probability, it will change its items. Although you might associate them only with bows, they can also use other ranged and firearms. It's the only infected that appears during the normal night, but the Green Night makes it even more dangerous, as it will hunt you to death. Nevertheless, you can enslave it using the Zombie Collar to make the bony human your guardian.",
       "PredatoryChameleon": "The Predator Chameleon is a unique special infected (note: it is neither a mini-boss nor a boss like other special infected). It emerges when a chameleon, a predator, and a human are exposed to the infection, resulting in a creature that has adapted the appearance of a predator, also bearing human-like features from the mutation, while retaining reptilian characteristics. Although it cannot camouflage itself for hunting, its danger lies in its speed and its deadly attacks, which are far from simple. It can run quickly to catch its victims. Unlike other infected that destroy all blocks, the Predator Chameleon can manipulate doors, making it dangerous to seek refuge, as it can open them. It can also break glass, making any glass-based shelters or defenses vulnerable, as it is the only infected capable of destroying this specific block. During the Green Night, it becomes even more aggressive, relentlessly hunting the player until death. However, its deadly hunting instincts can be calmed by using a Zombie Collar, transforming the infected reptile into your loyal guardian, maintaining its lethal hunting drive.",
@@ -663,7 +665,7 @@
       "CRDescription:0": "Belt-fed light machine gun for sustained automatic fire. Uses 5.56×45mm NATO rounds with manageable recoil."
     },
     "NewG3Block:0": {
-      "DisplayName": "New G3 Assault Rifle",
+      "DisplayName": "G3 Assault Rifle",
       "Description": "A modern assault rifle with advanced polymer construction and enhanced accuracy. Designed for versatile combat situations, it provides a balanced mix of firepower and handling, making it suitable for mid to long-range engagements.",
       "CRDescription:0": "Modern assault rifle with improved accuracy and handling for versatile combat."
     },
@@ -952,9 +954,18 @@
 }
 },
       "ContentWidgets": {
+        "HireWidget": {
+        "Title": "HIRE MERCENARY",
+        "HireButton": "HIRE",
+        "LoreText": "Before you kill me or run away, know that I am not like those bandits who kill everything. I used to be one of them, but I rebelled against their ways. If you want proof that I'm different, the only way is to pay me {0} Nuclear Coins. Then you can give me weapons, distance, and fire. I swear I will be your loyal companion. If you don't want to, no problem – I'll still be here until you change your mind.",
+        "InfoText": "Hire for {0} Nuclear Coins?",
+        "DeadMessage": "This person is dead and cannot be hired.",
+        "NeedCoinsMessage": "You need {0} Nuclear Coins to hire this person.",
+        "SuccessMessage": "You have hired this person! They will now follow you."
+    },
     "PirateTraderWidget": {
     "Title": "Pirate Trader",
-    "InventoryTitle": "Inventory",
+    "Inventory": "Inventory",
     "BuyButton": "BUY",
     "CoinSlotHint": "Coin",
     "CoinSlotLabel": "Payment Slot",
