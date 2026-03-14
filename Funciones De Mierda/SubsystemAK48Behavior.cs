@@ -161,7 +161,7 @@ namespace Game
 										ComponentPlayer playerComp = componentMiner.ComponentPlayer;
 										if (playerComp != null)
 										{
-											string bulletName = LanguageControl.Get("Blocks", "AK48Bullet:0", "DisplayName");
+											string bulletName = LanguageControl.Get("Blocks", "AK48BulletBlock:0", "DisplayName");
 											playerComp.ComponentGui.DisplaySmallMessage(
 												LanguageControl.Get("Messages", "NeedAmmo").Replace("{0}", bulletName),
 												Color.White, true, false);
