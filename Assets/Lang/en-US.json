@@ -377,6 +377,26 @@
   }
 },
   "Blocks": {
+    "AK48Block:0": {
+  "DisplayName": "AK-48 Assault Rifle",
+  "Description": "A powerful assault rifle with high rate of fire and large magazine. Uses 7.62mm rounds.",
+  "CRDescription:0": "Crudely crafted but deadly assault rifle"
+},
+"AK48BulletBlock:0": {
+  "DisplayName": "AK-48 Cartridges",
+  "Description": "Ammunition for the AK-48 assault rifle. Large caliber rounds with excellent penetration power.",
+  "CRDescription:0": "7.62mm assault rifle cartridges"
+},
+"Master308Block:0": {
+  "DisplayName": "Master 308",
+  "Description": "Precision .308 caliber sniper rifle. Robust design and excellent stability for long-range shots.",
+  "CRDescription:0": "Long-range precision rifle"
+},
+"Master308BulletBlock:0": {
+  "DisplayName": "Master 308 Cartridges",
+  "Description": ".308 caliber ammunition for sniper rifle. High-precision rounds with great stopping power.",
+  "CRDescription:0": "Sniper rifle cartridges"
+},
     "FreezeBombBlock:0": {
       "DisplayName": "Freeze Bomb",
       "Description": "A specialized explosive bomb filled with cryogenic compounds. Upon detonation, it releases a freezing blast that lowers temperatures, inflicts cold damage, and can cause creatures to catch a cold. Affected targets move slower and periodically cough or sneeze.",
