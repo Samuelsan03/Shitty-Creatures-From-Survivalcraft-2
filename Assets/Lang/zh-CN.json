@@ -377,6 +377,26 @@
     }
   },
   "Blocks": {
+    "AK48Block:0": {
+  "DisplayName": "AK-48突击步枪",
+  "Description": "一把威力强大的突击步枪，射速高且弹匣容量大。使用7.62毫米子弹。",
+  "CRDescription:0": "粗制但致命的突击步枪"
+},
+"AK48BulletBlock:0": {
+  "DisplayName": "AK-48子弹",
+  "Description": "用于AK-48突击步枪的弹药。大口径子弹，具有极佳的穿透力。",
+  "CRDescription:0": "7.62毫米突击步枪子弹"
+},
+"Master308Block:0": {
+  "DisplayName": "Master 308狙击步枪",
+  "Description": "精密的.308口径狙击步枪。结构坚固，稳定性优秀，适合远距离射击。",
+  "CRDescription:0": "远程精密步枪"
+},
+"Master308BulletBlock:0": {
+  "DisplayName": "Master 308子弹",
+  "Description": "用于狙击步枪的.308口径弹药。高精度子弹，具有强大的停止力。",
+  "CRDescription:0": "狙击步枪子弹"
+},
     "FreezeBombBlock:0": {
   "DisplayName": "冰冻炸弹",
   "Description": "一种特殊的爆炸炸弹，内部填充了低温冷冻化合物。爆炸时会释放出寒冷冲击波，降低温度，造成寒冷伤害，并可能让生物感冒。受到影响的目标移动速度会变慢，并会不时咳嗽或打喷嚏。",
