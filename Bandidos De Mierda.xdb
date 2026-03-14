@@ -871,19 +871,15 @@
     <Parameter Name="LoadOrder" Value="60" Type="int" Guid="a180a61b-59bb-49cd-99a8-b756682b615f"/>
               <Parameter Name="IsEnabled" Guid="b6c44594-7d39-4c3c-a32e-fa1a244be1d9" Value="True" Type="bool"/>
             </MemberComponentTemplate>
-    <MemberComponentTemplate Name="DeathSpawner" Guid="ee0f5750-2d8b-46a2-83cf-8b3977a50962">
-    <Parameter Name="Class" Value="Game.ComponentDeathSpawn" Type="string" Guid="6ee7ee7d-2e6b-409f-8370-f50912852f81"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="8e131b56-45b9-412f-8a45-2899f0f3ae37"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="35344594-a7dc-4c5f-ad89-6bd7214ed612"/>
+            <MemberComponentTemplate Name="HireableNPC" Guid="1f43dff9-949d-4e07-aafb-c7355a7cd67d" InheritanceParent="4582a365-6082-4260-a7ba-35d141cddbbd">
+    <Parameter Name="HirePrice" Guid="5e7894f4-fb94-4c6a-a02d-ea6f80182442" Value="250" Type="int"/>
+</MemberComponentTemplate>
+    <MemberComponentTemplate Name="DeathSpawner" Guid="ee0f5750-2d8b-46a2-83cf-8b3977a50962" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="09d65299-aba5-4b26-b1c5-1c1cdfc6aced"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1;InfectedNormal2" Type="string" Guid="6a60b567-1a12-44be-887c-40fbce539ef5"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="a45b3588-2145-40cc-ad56-d68ab8255b23">
-    <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="088891fb-9ddf-4c72-b1c1-e90e2227327c"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="d4bb5c7d-2793-4ddf-b4a9-80a9b18ec6db"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="179a10c9-7762-45c8-bfc3-e5f3fd075e93"/>
-    <Parameter Name="LowHealthToEscape" Value="0.1" Type="float" Guid="85534753-77f8-4478-a5b2-6f61d918b736"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="0964e14f-99b8-4bdc-a1b6-e77fea531a12" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
+<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="57fa213c-e303-457d-b096-3956a9345fc9" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
 <MemberComponentTemplate Name="NewAutoInteract" Guid="26049dce-6f9d-4858-8803-3b3496e8cc40" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
@@ -1447,6 +1443,9 @@
     <Parameter Name="PickFactors" Guid="03071251-c77a-4a1b-bac9-cbadac960c0e" Value="Tools;1.0,Weapons;1.0" Type="string"/>
     <Parameter Name="Class" Value="Game.ComponentNewCreatureCollect" Type="string"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="HireableNPC" Guid="78c20fa8-13e4-46fb-af50-787e310e8859" InheritanceParent="4582a365-6082-4260-a7ba-35d141cddbbd">
+    <Parameter Name="HirePrice" Guid="cbf5a3a4-5386-4f17-889f-abf8cb362f10" Value="100" Type="int"/>
+</MemberComponentTemplate>
 <MemberComponentTemplate Name="SummonBehavior" Guid="e1aab0b5-4aa7-470e-864f-5c418ce68f40">
               <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="3ef8b19b-291b-45a5-87c6-ac772ac209a9"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="df4246cc-d9a0-4644-8f1e-a0f721462f56"/>
@@ -1460,12 +1459,8 @@
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="a18e40d1-90d9-4346-b950-785ff44cd58b"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1;InfectedNormal2" Type="string" Guid="ff891556-884b-4778-8499-850bd9f13626"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="35dcc4b2-c144-40d4-b04f-e86b6155898f">
-    <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="5115d837-5c9f-40d7-b599-9a5ee594e4f7"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="604e9265-0258-498f-8356-7ca9d68206de"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="4a757bb3-a635-4b7e-86e6-5fab3fad6229"/>
-    <Parameter Name="LowHealthToEscape" Value="0.1" Type="float" Guid="e019a845-8d66-4f51-b229-6646b41c9576"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="145a1a32-9405-458c-a1a8-f911dad0a0f9" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
+<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="02c65ef5-161f-46e6-bbe1-124eaf66501a" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
 <MemberComponentTemplate Name="NewAutoInteract" Guid="8cba412c-668f-4504-9417-47222cfca45d" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
@@ -1598,6 +1593,9 @@
     <Parameter Name="PickFactors" Guid="d5bf693d-450c-47fd-9e77-12ff1b2a0568" Value="Tools;1.0,Weapons;1.0" Type="string"/>
     <Parameter Name="Class" Value="Game.ComponentNewCreatureCollect" Type="string"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="HireableNPC" Guid="b1421ad8-7460-4454-914b-34de9ebef248" InheritanceParent="4582a365-6082-4260-a7ba-35d141cddbbd">
+    <Parameter Name="HirePrice" Guid="d9497dbb-5cf9-4002-9ded-41d3ade17181" Value="50" Type="int"/>
+</MemberComponentTemplate>
 <MemberComponentTemplate Name="SummonBehavior" Guid="1a157bb3-5c9d-4454-8b7a-9363ac671249">
               <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="bb84797f-b5ca-4970-a265-c20ceb917b27"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="653c8414-ef77-48ff-8bfc-3ab4114aa81c"/>
@@ -1611,12 +1609,8 @@
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="8b23076b-28c7-4585-8b00-d16ff9ce387c"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1;InfectedNormal2" Type="string" Guid="1276daaa-37cd-432f-9aef-2692699348e9"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="c05ed2d4-44e7-4d9c-990b-21a2b19a348b">
-    <Parameter Name="Class" Value="Game.ComponentNewRunAwayBehavior" Type="string" Guid="88e11934-89cf-4ed1-9285-d9bc2efe98c1"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="d170adc7-a7a2-4640-b8fe-c53380dfd4a2"/>
-    <Parameter Name="LoadOrder" Value="55" Type="int" Guid="7a63a6fe-77e9-49d5-99d2-181256afbc2e"/>
-    <Parameter Name="LowHealthToEscape" Value="0.1" Type="float" Guid="ca4157d4-7bca-43e5-80ca-0c0783e63b9f"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="bf0ea840-f39f-4a1d-a5cb-408434e9eb05" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
+<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="9bd754e7-fdba-4e96-9b7f-c73904cb577a" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
 <MemberComponentTemplate Name="NewAutoInteract" Guid="49dcee52-492b-478f-b34b-7c1ed8b4cc4e" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
