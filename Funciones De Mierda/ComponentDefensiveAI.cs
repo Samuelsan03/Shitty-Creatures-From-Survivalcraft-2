@@ -182,6 +182,40 @@ namespace Game
 		{
 			try
 			{
+				// AK48
+				int ak48Index = BlocksManager.GetBlockIndex(typeof(AK48Block), true, false);
+				m_firearmConfigs[ak48Index] = new FirearmConfig
+				{
+					BulletBlockType = typeof(NuevaBala6),
+					ShootSound = "Audio/Armas/AK48 fire",
+					FireRate = 0.17,
+					BulletSpeed = 280f,
+					MaxShotsBeforeReload = 60,
+					ProjectilesPerShot = 2,
+					SpreadVector = new Vector3(0.01f, 0.01f, 0.05f),
+					NoiseRadius = 40f,
+					IsAutomatic = true,
+					IsSniper = false,
+					IsShotgun = false
+				};
+
+				// Master308
+				int master308Index = BlocksManager.GetBlockIndex(typeof(Master308Block), true, false);
+				m_firearmConfigs[master308Index] = new FirearmConfig
+				{
+					BulletBlockType = typeof(NuevaBala4),
+					ShootSound = "Audio/Armas/308 Master fire",
+					FireRate = 0.48,
+					BulletSpeed = 300f,
+					MaxShotsBeforeReload = 8,
+					ProjectilesPerShot = 1,
+					SpreadVector = new Vector3(0.001f, 0.001f, 0.001f),
+					NoiseRadius = 50f,
+					IsAutomatic = false,
+					IsSniper = false,
+					IsShotgun = false
+				};
+
 				int kaIndex = BlocksManager.GetBlockIndex(typeof(KABlock), true, false);
 				m_firearmConfigs[kaIndex] = new FirearmConfig
 				{
@@ -561,6 +595,23 @@ namespace Game
 				return;
 
 			ComponentCreature target = m_componentNewChase?.Target;
+
+			// --- NUEVA VERIFICACIÓN: evitar fuego amigo ---
+			if (target != null && m_componentNewHerd != null && !m_componentNewHerd.CanAttackCreature(target))
+			{
+				// El objetivo no es atacable (misma manada o aliado), detener persecución y resetear arma
+				m_componentNewChase?.StopAttack();
+				ResetWeaponState();
+				if (m_componentModel != null)
+				{
+					m_componentModel.AimHandAngleOrder = 0f;
+					m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
+					m_componentModel.InHandItemRotationOrder = Vector3.Zero;
+					m_componentModel.LookAtOrder = null;
+				}
+				return;
+			}
+			// ------------------------------------------------
 
 			if (target != null && target.ComponentHealth.Health > 0f)
 			{
