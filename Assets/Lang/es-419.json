@@ -145,6 +145,7 @@
    },
   "Database": {
     "DisplayName": {
+      "Aimep3": "Aimep3",
       "Bandit15": "Bandido 15",
       "Bandit14": "Bandido 14",
       "Bandit13": "Bandido 13",
@@ -294,6 +295,7 @@
       "Richard": "Richard"
     },
     "Description": {
+      "Aimep3": "Según información encontrada en internet, Aimep3 es una creadora de contenido e influencer mexicana originaria de Ciudad Nezahualcóyotl, conocida principalmente por sus videos en YouTube y redes sociales donde comparte recetas curiosas, momentos de su vida personal y contenido que con el tiempo se volvió viral y polémico dentro de la cultura de internet. Su estilo espontáneo y excéntrico la convirtió en un personaje muy comentado en redes, acumulando tanto seguidores como críticos y formando parte de numerosos memes y discusiones en la comunidad online. En el mod puedes contratarla como aliada del jugador para que te acompañe y te proteja durante la aventura, así que aprovéchala bien y no desaproveches su ayuda.",
       "InfectedFreezer": "El Infectado Congelante es otro infectado especial raro. No es un jefe ni un mini-jefe, pero su apariencia parece provenir de tierras congeladas. Comparte similitudes con otros infectados normales, pero su poder especial es lanzar bolas de nieve congelantes. ¡TEN CUIDADO! Si te impacta, podrás sufrir congelamiento y, en el peor de los casos, contraer gripa. Otro infectado te atacará y, al darle en su punto débil, comenzará a causarte efectos de gripe. El último vomitará hielo, infectando también a las criaturas con la gripe. Sin embargo, el collar zombie te dará ventajas, protegiéndote del congelamiento. Solo aparece en las olas de otros infectados, siempre que sea invierno o en lugares congelados.",
       "HumanoidSkeleton": "El Esqueleto Humanoide es un infectado muy especial (aunque no es un infectado especial como podrías pensar). ¿A quién te recuerda cuando lo ves en la noche? Ah, claro, ¡te trae a la mente los esqueletos de Minecraft! ¿Y adivina qué? También está en la manada de los Infectados. Sin embargo, al igual que en Minecraft, puede disparar un arco o, dependiendo de la probabilidad, cambiará sus objetos. Aunque podrías relacionarlos solo con arcos, también pueden usar otras armas a distancia y de fuego. Es el único infectado que aparece en la noche normal, pero la Noche Verde lo hace aún más peligroso, ya que te cazará hasta la muerte. No obstante, puedes esclavizarlo usando el Collar Zombie para hacer del humano huesudo tu guardián.",
       "PredatoryChameleon": "El Camaleón Depredador es un infectado especial único (nota: no es ni un mini-jefe ni un jefe como otros infectados especiales). Surge cuando un camaleón, un depredador y un humano están expuestos a la infección, lo que resulta en una criatura que ha adaptado la apariencia de un depredador, también con rasgos humanos debido a la mutación, mientras conserva características de reptil. Aunque no puede camuflarse para cazar, su peligro radica en su velocidad y sus ataques mortales, que están lejos de ser simples. Puede correr rápidamente para atrapar a sus víctimas. A diferencia de otros infectados que destruyen todos los bloques, el Camaleón Depredador puede manipular puertas, lo que hace que sea peligroso buscar refugio, ya que puede abrirlas. También puede romper cristales, lo que hace que cualquier refugio o defensa basada en vidrio sea vulnerable, ya que es el único infectado capaz de destruir este bloque específico. Durante la Noche Verde, se vuelve aún más agresivo, cazando implacablemente al jugador hasta la muerte. Sin embargo, sus instintos de caza mortales pueden ser calmados usando un Collar Zombie, transformando al reptil infectado en tu leal guardián, manteniendo su impulso de caza letal.",
@@ -688,7 +690,7 @@
   "CRDescription:0": "Escopeta de asalto automática con bajo retroceso, ideal para combate a corta distancia."
 },
 "NewG3Block:0": {
-      "DisplayName": "Nuevo Fusil de Asalto G3",
+      "DisplayName": "Fusil de Asalto G3",
       "Description": "Un fusil de asalto moderno con construcción de polímero avanzado y precisión mejorada. Diseñado para situaciones de combate versátiles, ofrece un equilibrio entre potencia de fuego y manejo, ideal para enfrentamientos a media y larga distancia.",
       "CRDescription:0": "Fusil de asalto moderno con buen equilibrio entre potencia y precisión, ideal para enfrentamientos a media y larga distancia."
     },
@@ -954,9 +956,18 @@
     }
 },
   "ContentWidgets": {
+    "HireWidget": {
+        "Title": "CONTRATAR MERCENARIO",
+        "HireButton": "CONTRATAR",
+        "LoreText": "Antes de que me mates o huyas, debes saber que no soy como esos bandidos que matan todo. Yo solía ser uno de ellos, pero me rebelé contra sus métodos. Si quieres pruebas de que soy diferente, la única forma es pagarme {0} Monedas Nucleares. Entonces podrás darme armas, distancia y fuego. Te juro que seré tu compañero leal. Si no quieres, no hay problema – seguiré aquí hasta que cambies de opinión.",
+        "InfoText": "¿Contratar por {0} Monedas Nucleares?",
+        "DeadMessage": "Esta persona está muerta y no puede ser contratada.",
+        "NeedCoinsMessage": "Necesitas {0} Monedas Nucleares para contratar a esta persona.",
+        "SuccessMessage": "¡Has contratado a esta persona! Ahora te seguirá."
+    },
     "PirateTraderWidget": {
     "Title": "Comerciante Pirata",
-    "InventoryTitle": "Inventario",
+    "Inventory": "Inventario",
     "BuyButton": "Comprar",
     "CoinSlotHint": "Moneda",
     "CoinSlotLabel": "Ranura de pago",
