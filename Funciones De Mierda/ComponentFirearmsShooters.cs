@@ -41,7 +41,6 @@ namespace Game
 		private ComponentInventory m_componentInventory;
 		private ComponentChaseBehavior m_componentChaseBehavior;
 		private ComponentNewChaseBehavior m_componentNewChaseBehavior;
-		private ComponentNewChaseBehavior2 m_componentNewChaseBehavior2;
 		private ComponentBanditChaseBehavior m_componentBanditChaseBehavior;
 		private ComponentZombieChaseBehavior m_componentZombieChaseBehavior;
 		private ComponentCreatureModel m_componentModel;
@@ -62,8 +61,6 @@ namespace Game
 				return m_componentChaseBehavior.Target;
 			if (m_componentNewChaseBehavior != null && m_componentNewChaseBehavior.Target != null)
 				return m_componentNewChaseBehavior.Target;
-			if (m_componentNewChaseBehavior2 != null && m_componentNewChaseBehavior2.Target != null)
-				return m_componentNewChaseBehavior2.Target;
 			if (m_componentBanditChaseBehavior != null && m_componentBanditChaseBehavior.Target != null)
 				return m_componentBanditChaseBehavior.Target;
 			if (m_componentZombieChaseBehavior != null && m_componentZombieChaseBehavior.Target != null)
@@ -98,7 +95,6 @@ namespace Game
 			m_componentInventory = base.Entity.FindComponent<ComponentInventory>(true);
 			m_componentChaseBehavior = base.Entity.FindComponent<ComponentChaseBehavior>(false);
 			m_componentNewChaseBehavior = base.Entity.FindComponent<ComponentNewChaseBehavior>(false);
-			m_componentNewChaseBehavior2 = base.Entity.FindComponent<ComponentNewChaseBehavior2>(false);
 			m_componentBanditChaseBehavior = base.Entity.FindComponent<ComponentBanditChaseBehavior>(false);
 			m_componentZombieChaseBehavior = base.Entity.FindComponent<ComponentZombieChaseBehavior>(false);
 			m_componentModel = base.Entity.FindComponent<ComponentCreatureModel>(true);
@@ -120,6 +116,38 @@ namespace Game
 		{
 			try
 			{
+				// AK48 (fusil de asalto mejorado, 60 balas, NuevaBala6)
+				int ak48Index = BlocksManager.GetBlockIndex(typeof(AK48Block), true, false);
+				FirearmConfigs[ak48Index] = new FirearmConfig
+				{
+					BulletBlockType = typeof(NuevaBala6),
+					ShootSound = "Audio/Armas/AK48 fire",
+					FireRate = 0.17,
+					BulletSpeed = 280f,
+					MaxShotsBeforeReload = 60,
+					ProjectilesPerShot = 2,
+					SpreadVector = new Vector3(0.01f, 0.01f, 0.05f),
+					NoiseRadius = 40f,
+					IsAutomatic = true,
+					IsSniper = false
+				};
+
+				// Master308 (rifle semiautomático, 8 cartuchos, NuevaBala4)
+				int master308Index = BlocksManager.GetBlockIndex(typeof(Master308Block), true, false);
+				FirearmConfigs[master308Index] = new FirearmConfig
+				{
+					BulletBlockType = typeof(NuevaBala4),
+					ShootSound = "Audio/Armas/308 Master fire",
+					FireRate = 0.48,
+					BulletSpeed = 300f,
+					MaxShotsBeforeReload = 8,
+					ProjectilesPerShot = 1,
+					SpreadVector = new Vector3(0.001f, 0.001f, 0.001f),
+					NoiseRadius = 50f,
+					IsAutomatic = false,
+					IsSniper = false
+				};
+
 				int bk43Index = BlocksManager.GetBlockIndex(typeof(BK43Block), true, false);
 				FirearmConfigs[bk43Index] = new FirearmConfig
 				{
