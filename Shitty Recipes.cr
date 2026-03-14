@@ -506,6 +506,26 @@
     "bcb"
     " a "
 </Recipe>
+<Recipe Result="AK48Block" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="4" a="ironblock" b="rod" c="copperblock" d="planks" Description="[0]">
+    "cba"
+    "cda"
+    " aa"
+</Recipe>
+<Recipe Result="AK48BulletBlock" ResultCount="8" RequiredHeatLevel="0" RequiredPlayerLevel="4" a="bullet" b="sulphurchunk" c="copperingot" Description="[0]">
+    " a "
+    "bcb"
+    " a "
+</Recipe>
+<Recipe Result="Master308Block" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="5" a="ironblock" b="rod" c="diamond" d="copperblock" Description="[0]">
+    "aab"
+    "acd"
+    " b "
+</Recipe>
+<Recipe Result="Master308BulletBlock" ResultCount="8" RequiredHeatLevel="0" RequiredPlayerLevel="5" a="bullet" b="sulphurchunk" c="diamond" Description="[0]">
+    "b b"
+    "aca"
+    "b b"
+</Recipe>
         <Smelting>
         <Recipe Result="CopperSharpHammerBlock" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="3" a="coppermachete" b="ironhammer" Description="[0]">
         "ab"
