@@ -377,6 +377,26 @@
     }
   },
   "Blocks": {
+    "AK48Block:0": {
+  "DisplayName": "Rifle de asalto AK-48",
+  "Description": "Un potente rifle de asalto con alta cadencia de fuego y cargador grande. Utiliza munición de 7,62 mm.",
+  "CRDescription:0": "Rifle de asalto rudimentario pero mortal"
+},
+"AK48BulletBlock:0": {
+  "DisplayName": "Cartuchos AK-48",
+  "Description": "Munición para el rifle de asalto AK-48. Proyectiles de gran calibre con excelente poder de penetración.",
+  "CRDescription:0": "Cartuchos de rifle de asalto de 7,62 mm"
+},
+"Master308Block:0": {
+  "DisplayName": "Master 308",
+  "Description": "Rifle de francotirador de calibre .308 de precisión. Diseño robusto y excelente estabilidad para disparos de larga distancia.",
+  "CRDescription:0": "Rifle de precisión de largo alcance"
+},
+"Master308BulletBlock:0": {
+  "DisplayName": "Cartuchos Master 308",
+  "Description": "Munición calibre .308 para rifle de francotirador. Proyectiles de alta precisión con gran poder de detención.",
+  "CRDescription:0": "Cartuchos de rifle de francotirador"
+},
     "FreezeBombBlock:0": {
   "DisplayName": "Bomba Congelante",
   "Description": "Una bomba explosiva especializada llena de compuestos criogénicos. Al detonar, libera una explosión helada que reduce la temperatura, inflige daño por frío y puede causar que las criaturas se resfríen. Los objetivos afectados se mueven más lento y periódicamente tosen o estornudan.",
