@@ -1,0 +1,34 @@
+<CanvasWidget xmlns="runtime-namespace:Game" Size="600, 400">
+    <!-- Fondo con bordes biselados (estilo VitalStats) -->
+    <BevelledRectangleWidget BevelSize="3" CenterColor="0,0,0,200" BevelColor="128,128,128" />
+
+    <!-- Panel principal vertical con márgenes amplios -->
+    <StackPanelWidget Direction="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="30,30">
+
+        <!-- Título (texto desde código) -->
+        <LabelWidget Name="HireTitleLabel" Color="255,255,255" FontScale="1.8" HorizontalAlignment="Center" />
+        <CanvasWidget Size="0,15" />
+
+        <!-- Texto extendido con lore (texto desde código) -->
+        <LabelWidget Name="HireLoreLabel" 
+                     Color="255,255,255" 
+                     HorizontalAlignment="Center" 
+                     WordWrap="true"
+                     FontScale="0.9" />
+        <CanvasWidget Size="0,20" />
+
+        <!-- Panel horizontal para el precio y el icono -->
+        <StackPanelWidget Direction="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <LabelWidget Name="HireInfoLabel" Color="255,255,255" FontScale="1.2" VerticalAlignment="Center" />
+            <CanvasWidget Size="10,0" />
+            <!-- Icono de la moneda nuclear sin contorno -->
+            <RectangleWidget Name="CoinIcon" Size="32,32" FillColor="255,255,255" OutlineColor="0,0,0,0" Subtexture="{Textures/Items/moneda nuclear}" VerticalAlignment="Center" />
+        </StackPanelWidget>
+
+        <CanvasWidget Size="0,25" />
+
+        <!-- Botón de contratar (texto desde código) -->
+        <BevelledButtonWidget Name="HireButton" FontScale="1.3" HorizontalAlignment="Center" Size="120,45" />
+
+    </StackPanelWidget>
+</CanvasWidget>
