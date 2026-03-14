@@ -1,6 +1,16 @@
 <Mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://gitee.com/THPRC/survivalcraft-api/raw/SCAPI1.8/Survivalcraft/Content/Assets/Database.xsd">
 
     <Folder Name="Gameplay" Guid="d509e5e2-2c10-49f1-8223-85cd892c63b0">
+    <ComponentTemplate Name="HireableNPC" Description="Permite contratar a la criatura con monedas nucleares" Guid="4582a365-6082-4260-a7ba-35d141cddbbd" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+    <Parameter Name="Class" Guid="e0bca7bc-5f06-4b64-a8c9-bfd6d0267b9e" Value="Game.ComponentHireableNPC" Type="string"/>
+    <Parameter Name="HirePrice" Description="Precio en monedas nucleares para contratar" Guid="6cb5c4eb-8db6-453a-bc52-452ae6b4e1ee" Value="100" Type="int"/>
+</ComponentTemplate>
+
+<ComponentTemplate Name="DefensiveAI" Description="AI that uses ranged weapons from inventory" Guid="2e0ff3f9-d699-41d1-b64a-cb06cda18234" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+  <Parameter Name="Class" Guid="46e77927-3c3d-4605-9f7c-1943a184d1f7" Value="Game.ComponentDefensiveAI" Type="string"/>
+  <Parameter Name="CanUseInventory" Description="Whether this creature can use weapons from its inventory" Guid="f98c4707-640d-4153-bd9a-91e9c57032d8" Value="false" Type="bool"/>
+</ComponentTemplate>
+
 <ComponentTemplate Name="PirateTrader" Description="Permite que una criatura actúe como comerciante pirata. Se puede abrir interactuando con ella para comprar objetos usando NuclearCoin." Guid="7753c16f-a467-4624-be61-3a048cb51cf0" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
     <Parameter Name="SlotsCount" Description="Número de ranuras del inventario del comerciante." Guid="c6ee570b-66e7-4a61-ac7b-db306d0fe316" Value="8" Type="int"/>
     <Parameter Name="ActiveSlotIndex" Description="Índice de la ranura activa (por defecto 0, no se usa en este componente pero se mantiene por herencia)." Guid="5c2ceace-8cf9-45fb-b1d3-c64c6c41d298" Value="0" Type="int"/>
