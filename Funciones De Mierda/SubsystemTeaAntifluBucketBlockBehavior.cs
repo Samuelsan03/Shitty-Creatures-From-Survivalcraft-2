@@ -76,13 +76,19 @@ namespace Game
 			// Reproducir sonido de beber
 			m_subsystemAudio.PlaySound("Audio/UI/drinking", 1f, 0f, 0f, 0f);
 
-			// Curar la gripe y restaurar salud
+			// Curar la gripe
 			bool cured = CureFlu(targetEntity);
-			bool healthRestored = false;
-			if (cured)
+
+			// --- AÑADIR SED AL JUGADOR SI ES LA ENTIDAD OBJETIVO ---
+			if (targetEntity != null)
 			{
-				healthRestored = RestoreHealth(targetEntity);
+				var thirst = targetEntity.FindComponent<ComponentThirst>();
+				if (thirst != null)
+				{
+					thirst.Drink(0.4f); // Restaura un 40% de sed
+				}
 			}
+			// -------------------------------------------------------
 
 			// Mostrar mensajes según el objetivo
 			ComponentPlayer targetPlayer = targetEntity.FindComponent<ComponentPlayer>();
@@ -181,24 +187,9 @@ namespace Game
 			{
 				// Campo público
 				creatureFlu.m_fluDuration = 0f;
-
-				// Opcional: detener tos inmediatamente (campo privado, pero se puede dejar que la actualización lo haga)
-				// Si quieres forzar el fin de la tos, necesitarías reflexión para m_isCoughing, pero no es obligatorio.
 				return true;
 			}
 
-			return false;
-		}
-
-		private bool RestoreHealth(Entity entity)
-		{
-			var health = entity.FindComponent<ComponentHealth>();
-			if (health != null && health.Health < 1f)
-			{
-				float missing = 1f - health.Health;
-				health.Heal(missing);
-				return true;
-			}
 			return false;
 		}
 
