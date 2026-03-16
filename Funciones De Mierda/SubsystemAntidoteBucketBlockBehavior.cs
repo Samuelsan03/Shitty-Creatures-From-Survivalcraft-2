@@ -25,32 +25,25 @@ namespace Game
 				return false;
 			}
 
-			// Realizar raycast para detectar entidades cercanas (NPCs)
 			Entity targetEntity = null;
 			ComponentBody hitBody = null;
 			float? hitDistance = null;
 
-			// Buscar todas las entidades cercanas usando el método correcto
 			var componentBodies = new DynamicArray<ComponentBody>();
 
-			// Crear un área de búsqueda alrededor del jugador (usamos Vector2 para XZ)
 			Vector2 center = new Vector2(componentPlayer.ComponentBody.Position.X, componentPlayer.ComponentBody.Position.Z);
-			float searchRadius = 6f; // Radio de búsqueda
+			float searchRadius = 6f;
 
-			// Usar el método correcto basado en el código de ComponentBody
 			m_subsystemBodies.FindBodiesAroundPoint(center, searchRadius, componentBodies);
 
-			// Crear un rayo desde la posición del jugador
-			Vector3 rayStart = componentPlayer.ComponentBody.Position + new Vector3(0f, 1.5f, 0f); // Altura de los ojos
+			Vector3 rayStart = componentPlayer.ComponentBody.Position + new Vector3(0f, 1.5f, 0f);
 			Vector3 rayDirection = ray.Direction;
 			float maxDistance = 6f;
 
-			// Verificar intersección con cada cuerpo
 			foreach (ComponentBody body in componentBodies)
 			{
-				if (body.Entity == componentPlayer.Entity) continue; // Saltar al jugador
+				if (body.Entity == componentPlayer.Entity) continue;
 
-				// Verificar si el rayo intersecta con el bounding box del cuerpo
 				float? distance = RayBoxIntersection(rayStart, rayDirection, body.BoundingBox);
 				if (distance.HasValue && distance.Value < maxDistance &&
 					(!hitDistance.HasValue || distance.Value < hitDistance.Value))
@@ -65,44 +58,29 @@ namespace Game
 				targetEntity = hitBody.Entity;
 			}
 
-			// Determinar si estamos intentando curar al jugador o a un NPC
 			bool isTargetingPlayer = (targetEntity == null || targetEntity == componentPlayer.Entity);
 
-			// Si está apuntando al jugador, verificar restricciones de modo de juego
 			if (isTargetingPlayer)
 			{
 				targetEntity = componentPlayer.Entity;
-
-				// Solo funciona para jugadores en modos de supervivencia
-				if (m_subsystemGameInfo.WorldSettings.GameMode == GameMode.Creative ||
-					!m_subsystemGameInfo.WorldSettings.AreAdventureSurvivalMechanicsEnabled)
-				{
-					return false;
-				}
+				// Se permite auto-curarse en cualquier modo de juego
 			}
-			// Si está apuntando a un NPC, permitir en cualquier modo de juego
 
-			// Verificar si el objetivo tiene veneno o enfermedad
 			bool hasPoison = HasPoison(targetEntity);
 			bool hasSickness = HasSickness(targetEntity);
 
-			// +++ AGREGADO: Verificar si el objetivo está muerto +++
 			ComponentHealth targetHealth = targetEntity.FindComponent<ComponentHealth>();
 			bool isDead = targetHealth != null && targetHealth.Health <= 0f;
 
-			// Si no tiene ni veneno ni enfermedad, O está muerto, NO usar el antídoto
 			if ((!hasPoison && !hasSickness) || isDead)
 			{
 				return false;
 			}
 
-			// Reproducir sonido de bebida
 			m_subsystemAudio.PlaySound("Audio/UI/drinking", 1f, 0f, 0f, 0f);
 
-			// Curar efectos negativos (solo si los tiene)
 			bool curedPoison = false;
 			bool curedSickness = false;
-			bool restoredHealth = false;
 
 			if (hasPoison)
 			{
@@ -114,17 +92,20 @@ namespace Game
 				curedSickness = CureSickness(targetEntity);
 			}
 
-			// Restaurar salud SOLO si se curó veneno o enfermedad
-			if (curedPoison || curedSickness)
+			// --- AÑADIR SED AL JUGADOR SI ES LA ENTIDAD OBJETIVO ---
+			if (targetEntity != null)
 			{
-				restoredHealth = RestoreHealth(targetEntity);
+				var thirst = targetEntity.FindComponent<ComponentThirst>();
+				if (thirst != null)
+				{
+					thirst.Drink(0.4f); // Restaura un 40% de sed
+				}
 			}
+			// -------------------------------------------------------
 
-			// Mostrar mensajes solo para jugadores
 			ComponentPlayer targetPlayer = targetEntity.FindComponent<ComponentPlayer>();
 			if (targetPlayer != null)
 			{
-				// Mostrar un solo mensaje combinado si se curó veneno O enfermedad
 				if (curedPoison || curedSickness)
 				{
 					string curedMessage = LanguageControl.Get("AntidoteBucket", "PoisonAndSicknessCured");
@@ -133,12 +114,10 @@ namespace Game
 			}
 			else if (!isTargetingPlayer)
 			{
-				// Si curó a un NPC (no al jugador), mostrar un mensaje al jugador
 				string npcCuredMessage = LanguageControl.Get("AntidoteBucket", "NPCCured");
 				componentPlayer.ComponentGui.DisplaySmallMessage(npcCuredMessage, new Color(0, 255, 0), true, false);
 			}
 
-			// Reemplazar el AntidoteBucketBlock con un EmptyBucketBlock
 			IInventory inventory = componentMiner.Inventory;
 			if (inventory != null)
 			{
@@ -150,7 +129,6 @@ namespace Game
 			return true;
 		}
 
-		// Método auxiliar para intersección rayo-boundingbox
 		private float? RayBoxIntersection(Vector3 rayOrigin, Vector3 rayDirection, BoundingBox box)
 		{
 			Vector3 dirFrac = new Vector3(
@@ -169,19 +147,16 @@ namespace Game
 			float tmin = MathUtils.Max(MathUtils.Min(t1, t2), MathUtils.Min(t3, t4), MathUtils.Min(t5, t6));
 			float tmax = MathUtils.Min(MathUtils.Max(t1, t2), MathUtils.Max(t3, t4), MathUtils.Max(t5, t6));
 
-			// Si tmax < 0, el rayo está intersectando pero en dirección opuesta
 			if (tmax < 0)
 			{
 				return null;
 			}
 
-			// Si tmin > tmax, no hay intersección
 			if (tmin > tmax)
 			{
 				return null;
 			}
 
-			// Si tmin < 0, el origen está dentro de la caja
 			if (tmin < 0)
 			{
 				return tmax;
@@ -211,7 +186,6 @@ namespace Game
 			ComponentPoisonInfected poison = entity.FindComponent<ComponentPoisonInfected>();
 			if (poison != null && poison.IsInfected)
 			{
-				// Detener el sistema de partículas de vómito (campo privado, requiere reflexión)
 				var pukeSystemField = typeof(ComponentPoisonInfected).GetField("m_pukeParticleSystem",
 					System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 				var pukeSystem = pukeSystemField?.GetValue(poison) as PukeParticleSystem;
@@ -221,10 +195,8 @@ namespace Game
 					pukeSystemField.SetValue(poison, null);
 				}
 
-				// Forzar la duración de infección a 0 (campo público, acceso directo)
 				poison.m_InfectDuration = 0f;
 
-				// Reiniciar temporizadores internos para evitar que el NPC vuelva a vomitar
 				var nauseaField = typeof(ComponentPoisonInfected).GetField("m_lastNauseaTime",
 					System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 				nauseaField?.SetValue(poison, null);
@@ -233,9 +205,7 @@ namespace Game
 					System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 				pukeTimeField?.SetValue(poison, null);
 
-				// Restablecer resistencia (opcional)
 				poison.PoisonResistance = MathUtils.Max(poison.PoisonResistance, 50f);
-
 				return true;
 			}
 			return false;
@@ -252,25 +222,20 @@ namespace Game
 				sickness.m_greenoutDuration = 0f;
 				sickness.m_greenoutFactor = 0f;
 
+				var pukeSystemField = typeof(ComponentSickness).GetField("m_pukeParticleSystem",
+					System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+				var pukeSystem = pukeSystemField?.GetValue(sickness) as PukeParticleSystem;
+				if (pukeSystem != null && !pukeSystem.IsStopped)
+				{
+					pukeSystem.IsStopped = true;
+					pukeSystemField.SetValue(sickness, null);
+				}
+
 				ComponentPlayer player = entity.FindComponent<ComponentPlayer>();
 				if (player != null)
 				{
 					player.ComponentScreenOverlays.GreenoutFactor = 0f;
 				}
-				return true;
-			}
-			return false;
-		}
-
-		private bool RestoreHealth(Entity entity)
-		{
-			if (entity == null) return false;
-
-			ComponentHealth health = entity.FindComponent<ComponentHealth>();
-			if (health != null && health.Health < 1f)
-			{
-				float missingHealth = 1f - health.Health;
-				health.Heal(missingHealth);
 				return true;
 			}
 			return false;
