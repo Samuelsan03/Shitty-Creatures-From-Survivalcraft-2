@@ -1,9 +1,7 @@
-﻿using System;
+using System;
 using System.Xml.Linq;
 using Engine;
 using Engine.Graphics;
-using GameEntitySystem;
-using TemplatesDatabase;
 
 namespace Game
 {
@@ -30,7 +28,6 @@ namespace Game
 			m_cancelButton = Children.Find<ButtonWidget>("CancelButton", true);
 			m_titleLabel = Children.Find<LabelWidget>("TitleLabel", true);
 
-			// Aplicar traducciones
 			m_titleLabel.Text = LanguageControl.Get("GreenNightDialog", "Title");
 			m_checkbox.Text = LanguageControl.Get("GreenNightDialog", "CheckboxText");
 			m_okButton.Text = LanguageControl.Get("GreenNightDialog", "OkButton");
@@ -38,13 +35,11 @@ namespace Game
 
 			m_checkbox.IsChecked = m_subsystemGreenNightSky.GreenNightEnabled;
 
-			// Agregar el texto explicativo
 			AddExplanationText();
 		}
 
 		private void AddExplanationText()
 		{
-			// Buscar el StackPanel principal
 			StackPanelWidget mainStack = null;
 			foreach (var child in Children)
 			{
@@ -57,11 +52,10 @@ namespace Game
 
 			if (mainStack != null)
 			{
-				// Crear la etiqueta explicativa
 				m_explanationLabel = new LabelWidget
 				{
 					Text = LanguageControl.Get("GreenNightDialog", "ToggleExplanation"),
-					Color = new Color(255, 140, 0), // Naranja
+					Color = new Color(255, 140, 0),
 					HorizontalAlignment = WidgetAlignment.Center,
 					VerticalAlignment = WidgetAlignment.Center,
 					FontScale = 0.8f,
@@ -69,7 +63,6 @@ namespace Game
 					Margin = new Vector2(10, 5)
 				};
 
-				// Crear contenedor con fondo semitransparente para el texto explicativo
 				CanvasWidget explanationContainer = new CanvasWidget
 				{
 					Size = new Vector2(float.PositiveInfinity, 90),
@@ -85,8 +78,6 @@ namespace Game
 					}
 				};
 
-				// Insertar después del checkbox (posición 3 en el stack vertical)
-				// El stack tiene: [Label (título), CanvasWidget (spacer), CanvasWidget (checkbox), ...]
 				if (mainStack.Children.Count >= 3)
 				{
 					mainStack.Children.Insert(3, explanationContainer);
@@ -101,12 +92,10 @@ namespace Game
 				bool oldValue = m_subsystemGreenNightSky.GreenNightEnabled;
 				bool newValue = m_checkbox.IsChecked;
 
-				// Solo aplicar cambios y mostrar mensaje si el valor realmente cambió
 				if (oldValue != newValue)
 				{
 					m_subsystemGreenNightSky.GreenNightEnabled = newValue;
 
-					// Mostrar mensaje al jugador solo si hubo cambio
 					if (m_player != null && m_player.ComponentGui != null)
 					{
 						string messageKey = newValue ? "EnabledNotification" : "DisabledNotification";
