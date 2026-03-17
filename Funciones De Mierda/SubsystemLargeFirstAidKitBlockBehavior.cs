@@ -82,7 +82,7 @@ namespace Game
 			m_subsystemBodies.FindBodiesAroundPoint(center, searchRadius, componentBodies);
 
 			// Crear un rayo desde la posición del jugador
-			Vector3 rayStart = componentPlayer.ComponentBody.Position + new Vector3(0f, 1.5f, 0f);
+			Vector3 rayStart = componentPlayer.ComponentCreatureModel.EyePosition;
 			Vector3 rayDirection = ray.Direction;
 			float maxDistance = 5f;
 
