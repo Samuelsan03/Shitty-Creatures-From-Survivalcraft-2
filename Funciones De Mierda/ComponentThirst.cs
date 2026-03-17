@@ -133,23 +133,22 @@ namespace Game
 
 			// Misma tasa base que el hambre: 1/2880 por segundo
 			float drainRate = 1f / 2880f;
-			float hungerFactor = m_componentPlayer.ComponentLevel?.HungerFactor ?? 1f;
 
-			// Reducción base (siempre presente)
-			float decrease = drainRate * hungerFactor * dt;
+			// Reducción base (siempre presente) - sin depender del hambre
+			float decrease = drainRate * dt;
 
 			// Extra por caminar (igual que el hambre)
 			var loco = m_componentPlayer.ComponentLocomotion;
 			if (loco.LastWalkOrder != null)
 			{
 				float walkSpeed = loco.LastWalkOrder.Value.Length();
-				decrease += drainRate * hungerFactor * walkSpeed * dt;
+				decrease += drainRate * walkSpeed * dt;
 			}
 
-			// Extra por saltar (igual que el hambre: 1/1200 por salto)
+			// Extra por saltar (igual que el hambre: 1/1200 por salto) - sin depender del hambre
 			if (loco.LastJumpOrder > 0f)
 			{
-				decrease += hungerFactor * loco.LastJumpOrder / 1200f;
+				decrease += loco.LastJumpOrder / 1200f;
 			}
 
 			Water -= decrease;
