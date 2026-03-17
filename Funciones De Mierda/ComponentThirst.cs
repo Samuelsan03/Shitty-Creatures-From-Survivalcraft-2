@@ -117,55 +117,72 @@ namespace Game
 		public void Update(float dt)
 		{
 			if (m_componentPlayer.ComponentHealth.Health <= 0f) return;
+
 			bool shouldShow = !(m_subsystemGameInfo.WorldSettings.GameMode == GameMode.Creative || !ShittyCreaturesSettingsManager.ThirstEnabled);
 			if (!shouldShow)
 			{
-				if (m_waterBar != null)
-				{
-					if (m_waterBar.IsVisible) m_waterBar.IsVisible = false;
-				}
+				if (m_waterBar != null && m_waterBar.IsVisible)
+					m_waterBar.IsVisible = false;
 				return;
 			}
 			else
 			{
-				if (m_waterBar != null && !m_waterBar.IsVisible) m_waterBar.IsVisible = true;
+				if (m_waterBar != null && !m_waterBar.IsVisible)
+					m_waterBar.IsVisible = true;
 			}
-			float drainRate = 1f / 4800f;
-			float activityFactor = 1f;
-			var loco = m_componentPlayer.ComponentLocomotion;
-			if (loco.LastWalkOrder != null) activityFactor += 0.5f * loco.LastWalkOrder.Value.Length();
-			if (loco.LastJumpOrder > 0f) activityFactor += 1f;
+
+			// Misma tasa base que el hambre: 1/2880 por segundo
+			float drainRate = 1f / 2880f;
 			float hungerFactor = m_componentPlayer.ComponentLevel?.HungerFactor ?? 1f;
-			float decrease = drainRate * activityFactor * hungerFactor * dt;
+
+			// Reducción base (siempre presente)
+			float decrease = drainRate * hungerFactor * dt;
+
+			// Extra por caminar (igual que el hambre)
+			var loco = m_componentPlayer.ComponentLocomotion;
+			if (loco.LastWalkOrder != null)
+			{
+				float walkSpeed = loco.LastWalkOrder.Value.Length();
+				decrease += drainRate * hungerFactor * walkSpeed * dt;
+			}
+
+			// Extra por saltar (igual que el hambre: 1/1200 por salto)
+			if (loco.LastJumpOrder > 0f)
+			{
+				decrease += hungerFactor * loco.LastJumpOrder / 1200f;
+			}
+
 			Water -= decrease;
 			Water = Math.Clamp(Water, 0f, 1f);
-			if (Water <= 0f && !m_componentPlayer.ComponentSleep.IsSleeping && m_subsystemTime.PeriodicGameTimeEvent(10.0, 0.0))
+
+			// Daño por deshidratación (cada 50 segundos como el hambre)
+			if (Water <= 0f && !m_componentPlayer.ComponentSleep.IsSleeping && m_subsystemTime.PeriodicGameTimeEvent(50.0, 0.0))
 			{
 				m_componentPlayer.ComponentHealth.Injure(0.1f, null, false, "Dehydration");
 				string message = LanguageControl.Get("ComponentThirst", "Dehydrating");
 				m_componentPlayer.ComponentGui.DisplaySmallMessage(message, Color.Red, true, false);
 			}
+
 			LastWater = Water;
-			if (m_waterBar != null) m_waterBar.Value = Water;
+
+			if (m_waterBar != null)
+				m_waterBar.Value = Water;
 			else
 			{
 				var bottomBars = FindBottomBarsContainer();
-				if (bottomBars != null) m_waterBar = bottomBars.Children.Find<ValueBarWidget>("WaterBar", false);
+				if (bottomBars != null)
+					m_waterBar = bottomBars.Children.Find<ValueBarWidget>("WaterBar", false);
 			}
 		}
 
 		public bool DrinkWater(float amount)
 		{
-			// Consideramos lleno si el valor redondeado a 2 decimales es 1.0
 			if (Math.Round(Water, 2) >= 1.0)
 			{
 				string message = LanguageControl.Get("ComponentThirst", "AlreadyNotThirsty");
 				if (!string.IsNullOrEmpty(message))
 				{
 					m_componentPlayer?.ComponentGui?.DisplaySmallMessage(message, Color.White, true, true);
-				}
-				else
-				{
 				}
 				return false;
 			}
