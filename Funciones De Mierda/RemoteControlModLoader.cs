@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Engine;
 using GameEntitySystem;
 using TemplatesDatabase;
@@ -57,7 +57,6 @@ namespace Game
 				var greenNightSky = player.Project.FindSubsystem<SubsystemGreenNightSky>(true);
 				if (greenNightSky != null)
 				{
-					// Pasar el jugador al diálogo
 					GreenNightToggleDialog dialog = new GreenNightToggleDialog(greenNightSky, player);
 					player.ComponentGui.ModalPanelWidget = dialog;
 					AudioManager.PlaySound("Audio/UI/ButtonClick", 1f, 0f, 0f);
