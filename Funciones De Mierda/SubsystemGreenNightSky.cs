@@ -7,7 +7,6 @@ namespace Game
 {
 	public class SubsystemGreenNightSky : Subsystem, IUpdateable
 	{
-		// Evento para notificar el fin natural de la noche
 		public event Action NaturalNightEnded;
 
 		public virtual bool IsGreenNightActive { get; set; }
@@ -26,17 +25,15 @@ namespace Game
 					}
 					else
 					{
-						// Al activar, si es de noche y la luna es adecuada, comenzar inmediatamente
 						if (m_subsystemTimeOfDay != null && m_subsystemSky != null)
 						{
 							float timeOfDay = m_subsystemTimeOfDay.TimeOfDay;
-							// Es de noche si la hora es posterior al anochecer (DuskStart) o anterior al amanecer (DawnStart)
 							bool isNight = timeOfDay >= m_subsystemTimeOfDay.DuskStart || timeOfDay < m_subsystemTimeOfDay.DawnStart;
 							if (isNight && (m_subsystemSky.MoonPhase == 0 || m_subsystemSky.MoonPhase == 4))
 							{
 								IsGreenNightActive = true;
-								HasRolledTonight = true;      // Evita que se intente activar de nuevo al anochecer
-								DaysSinceLastGreenNight = 0;  // Reinicia el contador de días
+								HasRolledTonight = true;
+								DaysSinceLastGreenNight = 0;
 							}
 						}
 					}
@@ -52,7 +49,7 @@ namespace Game
 		public bool HasRolledTonight { get; set; }
 		public double LastCheckedDay { get; set; }
 		public int DaysSinceLastGreenNight { get; set; }
-		public float GreenNightChance { get; set; } = 1f;  // CAMBIADO: siempre 1 para que ocurra cada luna llena/nueva
+		public float GreenNightChance { get; set; } = 1f;
 
 		public static SubsystemGreenNightSky Instance { get; set; }
 
@@ -89,11 +86,9 @@ namespace Game
 
 			if (!this.IsGreenNightActive && (this.m_subsystemSky.MoonPhase == 0 || this.m_subsystemSky.MoonPhase == 4))
 			{
-				// MODIFICADO: Eliminada la condición DaysSinceLastGreenNight >= 1
 				if (isStartMoment && !this.HasRolledTonight)
 				{
 					this.HasRolledTonight = true;
-					// Siempre activar (probabilidad 1)
 					this.IsGreenNightActive = true;
 					this.DaysSinceLastGreenNight = 0;
 
@@ -116,8 +111,6 @@ namespace Game
 			if (this.IsGreenNightActive && isEndMoment)
 			{
 				this.IsGreenNightActive = false;
-
-				// Disparar el evento de fin natural
 				NaturalNightEnded?.Invoke();
 
 				SubsystemPlayers subsystemPlayers = base.Project.FindSubsystem<SubsystemPlayers>(true);
