@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Engine;
 using GameEntitySystem;
 using TemplatesDatabase;
@@ -41,7 +41,6 @@ namespace Game
 			ComponentPlayer player = miner.ComponentPlayer;
 			if (player != null && player.ComponentGui != null)
 			{
-				// Pasar el jugador al diálogo
 				GreenNightToggleDialog dialog = new GreenNightToggleDialog(m_subsystemGreenNightSky, player);
 				player.ComponentGui.ModalPanelWidget = dialog;
 				return true;
@@ -60,7 +59,6 @@ namespace Game
 			ComponentPlayer player = miner.ComponentPlayer;
 			if (player != null && player.ComponentGui != null)
 			{
-				// Pasar el jugador al diálogo
 				GreenNightToggleDialog dialog = new GreenNightToggleDialog(m_subsystemGreenNightSky, player);
 				player.ComponentGui.ModalPanelWidget = dialog;
 				return true;
