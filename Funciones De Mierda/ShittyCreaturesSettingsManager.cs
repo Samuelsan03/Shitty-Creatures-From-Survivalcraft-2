@@ -13,7 +13,8 @@ namespace Game
 
 		public static bool GhostMusicEnabled { get; set; } = true;
 		public static bool TankMusicEnabled { get; set; } = true;
-		public static bool DeathSpawnEnabled { get; set; } = true; // Nueva opción
+		public static bool DeathSpawnEnabled { get; set; } = true;
+		public static bool ThirstEnabled { get; set; } = true; // Nueva opción para sed
 
 		public static void Load()
 		{
@@ -42,8 +43,11 @@ namespace Game
 							case "TankMusicEnabled":
 								TankMusicEnabled = value;
 								break;
-							case "DeathSpawnEnabled": // Nueva opción
+							case "DeathSpawnEnabled":
 								DeathSpawnEnabled = value;
+								break;
+							case "ThirstEnabled": // Nueva opción
+								ThirstEnabled = value;
 								break;
 						}
 					}
@@ -76,11 +80,16 @@ namespace Game
 						new XAttribute("Type", "bool"),
 						new XAttribute("Value", TankMusicEnabled)));
 
-					// Nuevo valor
 					root.Add(new XElement("Value",
 						new XAttribute("Name", "DeathSpawnEnabled"),
 						new XAttribute("Type", "bool"),
 						new XAttribute("Value", DeathSpawnEnabled)));
+
+					// Nuevo valor para la sed
+					root.Add(new XElement("Value",
+						new XAttribute("Name", "ThirstEnabled"),
+						new XAttribute("Type", "bool"),
+						new XAttribute("Value", ThirstEnabled)));
 
 					XmlUtils.SaveXmlToStream(root, stream, null, true);
 				}
