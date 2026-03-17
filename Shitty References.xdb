@@ -1,6 +1,11 @@
 <Mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://gitee.com/THPRC/survivalcraft-api/raw/SCAPI1.8/Survivalcraft/Content/Assets/Database.xsd">
 
     <Folder Name="Gameplay" Guid="d509e5e2-2c10-49f1-8223-85cd892c63b0">
+<ComponentTemplate Name="Thirst" Description="Añade la necesidad de beber agua (sed) a la criatura" Guid="69b81fb0-a822-43cb-bbaa-e0c4eefd4bbe" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
+    <Parameter Name="Class" Guid="457e3cc7-edeb-442b-ba7f-6248d62dc63e" Value="Game.ComponentThirst" Type="string"/>
+    <Parameter Name="Water" Description="Nivel de agua inicial (0-1)" Guid="4d87c707-b03e-4749-9119-f87f99f8850e" Value="1" Type="float"/>
+</ComponentTemplate>
+
     <ComponentTemplate Name="HireableNPC" Description="Permite contratar a la criatura con monedas nucleares" Guid="4582a365-6082-4260-a7ba-35d141cddbbd" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
     <Parameter Name="Class" Guid="e0bca7bc-5f06-4b64-a8c9-bfd6d0267b9e" Value="Game.ComponentHireableNPC" Type="string"/>
     <Parameter Name="HirePrice" Description="Precio en monedas nucleares para contratar" Guid="6cb5c4eb-8db6-453a-bc52-452ae6b4e1ee" Value="100" Type="int"/>
@@ -526,6 +531,27 @@
     </Folder>
 
     <ProjectTemplate Name="Project" Guid="85023bf8-1c90-4dd1-9442-e6c13691d078">
+    <MemberSubsystemTemplate Name="MilkBucketBlockBehavior" Guid="88787b89-7ed9-427d-9200-4842885b6409" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+    <Parameter Name="Class" Value="Game.SubsystemMilkBucketBlockBehavior" Type="string" Guid="e5f81fda-f12d-423d-aab1-396b6480f43f"/>
+</MemberSubsystemTemplate>
+    <MemberSubsystemTemplate Name="PumpkinSoupBucketBlockBehavior" Guid="bfe270f1-9971-4d21-bae7-d6d7ad25520a" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+    <Parameter Name="Class" Value="Game.SubsystemPumpkinSoupBucketBlockBehavior" Type="string" Guid="a14ad37e-5cae-4ab5-baed-46af70c44df2"/>
+</MemberSubsystemTemplate>
+    <MemberSubsystemTemplate Name="RottenMilkBucketBlockBehavior" Guid="d264d12f-46fc-4d26-8c94-a2adf0ed3a04" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+    <Parameter Name="Class" Value="Game.SubsystemRottenMilkBucketBlockBehavior" Type="string" Guid="f8f0c2a4-6f32-4f96-b320-fbedf9591263"/>
+</MemberSubsystemTemplate>
+    <MemberSubsystemTemplate Name="RottenPumpkinSoupBucketBlockBehavior" Guid="d63f99a1-73bd-4118-acd2-15bd53ca5b4b" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+    <Parameter Name="Class" Value="Game.SubsystemRottenPumpkinSoupBucketBlockBehavior" Type="string" Guid="15629159-1669-49b6-8fd4-1f898f823497"/>
+</MemberSubsystemTemplate>
+    <MemberSubsystemTemplate Name="BoiledWaterBucketBlockBehavior" Guid="f6e8ea93-5e43-4804-a5fb-3da4e3a88793" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+    <Parameter Name="Class" Value="Game.SubsystemBoiledWaterBucketBlockBehavior" Type="string" Guid="6fa6a513-16d2-4081-8a96-f1cc2a0ccec4"/>
+</MemberSubsystemTemplate>
+    <MemberSubsystemTemplate Name="Master308Behavior" Guid="b164759d-1bcc-49a5-982c-9d3ebcafed79" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+    <Parameter Name="Class" Value="Game.SubsystemMaster308Behavior" Type="string" Guid="4756dc60-fc9c-47df-9ec2-db29ef95e074"/>
+</MemberSubsystemTemplate>
+    <MemberSubsystemTemplate Name="AK48Behavior" Guid="a3725456-8e61-4196-872e-eaa0628ceb87" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+    <Parameter Name="Class" Value="Game.SubsystemAK48Behavior" Type="string" Guid="05a217ff-c7d1-491c-8145-067731f93739"/>
+</MemberSubsystemTemplate>
 <MemberSubsystemTemplate Name="FreezingSnowballBlockBehavior" Guid="063d71db-2091-48d6-bf9c-433bc8561f09" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
     <Parameter Name="Class" Value="Game.SubsystemFreezingSnowballBlockBehavior" Type="string" Guid="597f6024-60fe-4b4a-aea2-8add2149f3b8"/>
 </MemberSubsystemTemplate>
@@ -694,10 +720,8 @@
     <MemberSubsystemTemplate Name="SubsystemInGameMusic" Description="Reproduccion músical durante el juego." Guid="f009f348-e373-4936-bf4d-fbe684c64cbd" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
         <Parameter Name="Class" Guid="12016d6d-2f3a-4c74-88a4-6dc50e5427fe" Value="Game.SubsystemInGameMusic" Type="string"/>
     </MemberSubsystemTemplate>
-    <MemberSubsystemTemplate Name="PoisonSystem" Description="Sistema de veneno para criaturas" Guid="71b54344-233a-48d5-a71a-7b77d94550a4">
+    <MemberSubsystemTemplate Name="PoisonSystem" Description="Sistema de veneno para criaturas" Guid="71b54344-233a-48d5-a71a-7b77d94550a4" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
   <Parameter Name="Class" Guid="a16b7806-06e2-4e13-a8dd-49ba594d3d06" Value="Game.SubsystemPoisonSystem" Type="string"/>
-  <Parameter Name="IsOptional" Value="true" Type="bool"/>
-  <Parameter Name="LoadOrder" Value="-1" Type="int"/>
 </MemberSubsystemTemplate>
 </ProjectTemplate>
 </Mod>
