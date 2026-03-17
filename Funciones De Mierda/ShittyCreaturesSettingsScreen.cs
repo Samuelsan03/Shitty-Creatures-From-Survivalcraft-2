@@ -10,6 +10,7 @@ namespace Game
 		private BevelledButtonWidget m_ghostButton;
 		private BevelledButtonWidget m_tankButton;
 		private BevelledButtonWidget m_spawnButton;
+		private BevelledButtonWidget m_thirstButton;
 		private StackPanelWidget m_contentPanel;
 		private LabelWidget m_titleLabel;
 
@@ -23,33 +24,30 @@ namespace Game
 
 			m_contentPanel = this.Children.Find<StackPanelWidget>("Content", true);
 
-			// Crear las filas con ancho suficiente para las descripciones largas
 			CreateOptionRow("ShittyCreatures", "GhostDescription", out m_ghostButton, Color.Gray, GetGhostButtonText);
 			CreateOptionRow("ShittyCreatures", "TankDescription", out m_tankButton, Color.Red, GetTankButtonText);
 			CreateOptionRow("ShittyCreatures", "SpawnDescription", out m_spawnButton, Color.LightGreen, GetSpawnButtonText);
+			CreateOptionRow("ShittyCreatures", "ThirstDescription", out m_thirstButton, Color.LightGray, GetThirstButtonText);
 		}
 
 		private void CreateOptionRow(string category, string descriptionKey, out BevelledButtonWidget button, Color buttonColor, Func<string> getButtonTextFunc)
 		{
-			// Panel horizontal con separación vertical
 			var rowPanel = new UniformSpacingPanelWidget
 			{
 				Direction = LayoutDirection.Horizontal,
-				Margin = new Vector2(0f, 8f) // Espacio entre filas
+				Margin = new Vector2(0f, 8f)
 			};
 
-			// Etiqueta descriptiva
 			var descriptionLabel = new LabelWidget
 			{
 				Text = LanguageControl.Get(new string[] { category, descriptionKey }),
 				HorizontalAlignment = WidgetAlignment.Far,
 				VerticalAlignment = WidgetAlignment.Center,
 				Margin = new Vector2(20f, 0f),
-				Size = new Vector2(600f, -1f), // Suficiente espacio para la descripción
+				Size = new Vector2(600f, -1f),
 				WordWrap = true
 			};
 
-			// Botón con color personalizado y texto SIMPLE (Enabled/Disabled)
 			button = new BevelledButtonWidget
 			{
 				Size = new Vector2(310f, 60f),
@@ -58,7 +56,7 @@ namespace Game
 				Name = $"Button_{descriptionKey}",
 				VerticalAlignment = WidgetAlignment.Center,
 				Margin = new Vector2(20f, 0f),
-				Text = getButtonTextFunc() // Ahora devuelve solo "Enabled" o "Disabled"
+				Text = getButtonTextFunc()
 			};
 
 			rowPanel.Children.Add(descriptionLabel);
@@ -66,25 +64,13 @@ namespace Game
 			m_contentPanel.Children.Add(rowPanel);
 		}
 
-		private string GetGhostButtonText()
-		{
-			// Solo devuelve "Enabled" o "Disabled" (traducido)
-			return ShittyCreaturesSettingsManager.GhostMusicEnabled ? LanguageControl.On : LanguageControl.Off;
-		}
-
-		private string GetTankButtonText()
-		{
-			return ShittyCreaturesSettingsManager.TankMusicEnabled ? LanguageControl.On : LanguageControl.Off;
-		}
-
-		private string GetSpawnButtonText()
-		{
-			return ShittyCreaturesSettingsManager.DeathSpawnEnabled ? LanguageControl.On : LanguageControl.Off;
-		}
+		private string GetGhostButtonText() => ShittyCreaturesSettingsManager.GhostMusicEnabled ? LanguageControl.On : LanguageControl.Off;
+		private string GetTankButtonText() => ShittyCreaturesSettingsManager.TankMusicEnabled ? LanguageControl.On : LanguageControl.Off;
+		private string GetSpawnButtonText() => ShittyCreaturesSettingsManager.DeathSpawnEnabled ? LanguageControl.On : LanguageControl.Off;
+		private string GetThirstButtonText() => ShittyCreaturesSettingsManager.ThirstEnabled ? LanguageControl.On : LanguageControl.Off;
 
 		public override void Update()
 		{
-			// Botón de retroceso
 			if (base.Input.Back || base.Input.Cancel || this.Children.Find<ButtonWidget>("TopBar.Back", true).IsClicked)
 			{
 				ShittyCreaturesSettingsManager.Save();
@@ -92,7 +78,6 @@ namespace Game
 				return;
 			}
 
-			// Manejar clics en los botones
 			if (m_ghostButton != null && m_ghostButton.IsClicked)
 			{
 				ShittyCreaturesSettingsManager.GhostMusicEnabled = !ShittyCreaturesSettingsManager.GhostMusicEnabled;
@@ -109,6 +94,12 @@ namespace Game
 			{
 				ShittyCreaturesSettingsManager.DeathSpawnEnabled = !ShittyCreaturesSettingsManager.DeathSpawnEnabled;
 				m_spawnButton.Text = GetSpawnButtonText();
+			}
+
+			if (m_thirstButton != null && m_thirstButton.IsClicked)
+			{
+				ShittyCreaturesSettingsManager.ThirstEnabled = !ShittyCreaturesSettingsManager.ThirstEnabled;
+				m_thirstButton.Text = GetThirstButtonText();
 			}
 		}
 	}
