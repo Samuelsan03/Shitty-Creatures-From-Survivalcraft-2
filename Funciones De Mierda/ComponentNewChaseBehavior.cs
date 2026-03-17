@@ -30,7 +30,6 @@ namespace Game
 		public bool PlayIdleSoundWhenStartToChase = true;
 		public bool PlayAngrySoundWhenChasing = true;
 		public float TargetInRangeTimeToChase = 3f;
-		public float SpecialChaseRange = 50f; // Para zombis en noche verde y bandidos
 
 		// ===== CAMPOS PRIVADOS =====
 		private SubsystemGameInfo m_subsystemGameInfo;
@@ -49,7 +48,7 @@ namespace Game
 		private ComponentCreatureModel m_componentCreatureModel;
 		private ComponentFactors m_componentFactors;
 		private ComponentNewHerdBehavior m_componentHerd;
-		private ComponentHireableNPC m_componentHireable; // NUEVO
+		private ComponentHireableNPC m_componentHireable;
 
 		private DynamicArray<ComponentBody> m_componentBodies = new DynamicArray<ComponentBody>();
 		private Random m_random = new Random();
@@ -70,6 +69,7 @@ namespace Game
 		private bool IsZombie => HerdName != null && HerdName.ToLower().Contains("zombie");
 		private bool IsBandit => HerdName != null && HerdName.ToLower().Contains("bandit");
 		private bool IsGreenNightActive => m_subsystemGreenNightSky != null && m_subsystemGreenNightSky.IsGreenNightActive;
+		private float SpecialChaseRange => (IsZombie && IsGreenNightActive) || IsBandit ? 50f : m_range;
 
 		public string HerdName
 		{
@@ -84,15 +84,20 @@ namespace Game
 		// ===== MÉTODOS PÚBLICOS =====
 		public virtual void Attack(ComponentCreature target, float maxRange, float maxChaseTime, bool isPersistent)
 		{
-			// Si es contratable y no está contratado, no atacar
 			if (m_componentHireable != null && !m_componentHireable.IsHired)
 				return;
 
 			if (Suppressed || target == null) return;
 
-			// Verificar si la manada permite atacar a este objetivo
 			if (m_componentHerd != null && !m_componentHerd.CanAttackCreature(target))
 				return;
+
+			if (IsExtremePriorityTarget(target))
+			{
+				isPersistent = true;
+				maxChaseTime = Math.Max(maxChaseTime, 120f);
+				maxRange = Math.Max(maxRange, SpecialChaseRange);
+			}
 
 			m_target = target;
 			m_nextUpdateTime = 0.0;
@@ -128,6 +133,11 @@ namespace Game
 			{
 				StopAttack();
 				return;
+			}
+
+			if (m_target != null && IsExtremePriorityTarget(m_target))
+			{
+				m_autoChaseSuppressionTime = 0f;
 			}
 
 			m_autoChaseSuppressionTime -= dt;
@@ -167,7 +177,6 @@ namespace Game
 		// ===== LOAD =====
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
-			// Subsistemas
 			m_subsystemGameInfo = Project.FindSubsystem<SubsystemGameInfo>(true);
 			m_subsystemPlayers = Project.FindSubsystem<SubsystemPlayers>(true);
 			m_subsystemSky = Project.FindSubsystem<SubsystemSky>(true);
@@ -177,17 +186,15 @@ namespace Game
 			m_subsystemCreatureSpawn = Project.FindSubsystem<SubsystemCreatureSpawn>(true);
 			m_subsystemGreenNightSky = Project.FindSubsystem<SubsystemGreenNightSky>(true);
 
-			// Componentes propios
 			m_componentCreature = Entity.FindComponent<ComponentCreature>(true);
 			m_componentPathfinding = Entity.FindComponent<ComponentPathfinding>(true);
 			m_componentMiner = Entity.FindComponent<ComponentMiner>(true);
 			m_componentFeedBehavior = Entity.FindComponent<ComponentRandomFeedBehavior>();
 			m_componentCreatureModel = Entity.FindComponent<ComponentCreatureModel>(true);
 			m_componentFactors = Entity.FindComponent<ComponentFactors>(true);
-			m_componentHerd = Entity.FindComponent<ComponentNewHerdBehavior>();
-			m_componentHireable = Entity.FindComponent<ComponentHireableNPC>(); // NUEVO
+			m_componentHerd = Entity.FindComponent<ComponentNewHerdBehavior>(true);
+			m_componentHireable = Entity.FindComponent<ComponentHireableNPC>();
 
-			// Cargar parámetros de la base de datos
 			m_dayChaseRange = valuesDictionary.GetValue<float>("DayChaseRange");
 			m_nightChaseRange = valuesDictionary.GetValue<float>("NightChaseRange");
 			m_dayChaseTime = valuesDictionary.GetValue<float>("DayChaseTime");
@@ -197,10 +204,8 @@ namespace Game
 			m_chaseWhenAttackedProbability = valuesDictionary.GetValue<float>("ChaseWhenAttackedProbability");
 			m_chaseOnTouchProbability = valuesDictionary.GetValue<float>("ChaseOnTouchProbability");
 
-			// Eventos
 			RegisterEvents();
 
-			// Inicializar máquina de estados
 			SetupStateMachine();
 			m_stateMachine.TransitionTo("LookingForTarget");
 		}
@@ -210,10 +215,8 @@ namespace Game
 		// ===== REGISTRO DE EVENTOS =====
 		private void RegisterEvents()
 		{
-			// Evento de colisión
 			m_componentCreature.ComponentBody.CollidedWithBody += delegate (ComponentBody body)
 			{
-				// Si es contratable y no está contratado, ignorar
 				if (m_componentHireable != null && !m_componentHireable.IsHired)
 					return;
 
@@ -238,44 +241,30 @@ namespace Game
 				}
 			};
 
-			// Evento de daño
 			m_componentCreature.ComponentHealth.Injured += delegate (Injury injury)
 			{
-				// Si es contratable y no está contratado, no reaccionar
 				if (m_componentHireable != null && !m_componentHireable.IsHired)
 					return;
 
 				ComponentCreature attacker = injury.Attacker;
 				if (attacker != null && attacker != m_componentCreature && CanAttackCreature(attacker))
 				{
-					if (m_random.Float(0f, 1f) < m_chaseWhenAttackedProbability)
+					bool persistent = false;
+					float range, time;
+
+					range = 7f;
+					time = 7f;
+					persistent = false;
+
+					range = ChaseRangeOnAttacked ?? range;
+					time = ChaseTimeOnAttacked ?? time;
+					persistent = ChasePersistentOnAttacked ?? persistent;
+
+					Attack(attacker, range, time, persistent);
+
+					if (m_componentHerd != null)
 					{
-						bool persistent = false;
-						float range, time;
-
-						if (m_chaseWhenAttackedProbability >= 1f)
-						{
-							range = 30f;
-							time = 60f;
-							persistent = true;
-						}
-						else
-						{
-							range = 7f;
-							time = 7f;
-						}
-
-						range = ChaseRangeOnAttacked ?? range;
-						time = ChaseTimeOnAttacked ?? time;
-						persistent = ChasePersistentOnAttacked ?? persistent;
-
-						Attack(attacker, range, time, persistent);
-
-						// Llamar a ayuda de la manada
-						if (m_componentHerd != null)
-						{
-							m_componentHerd.CallNearbyCreaturesHelp(attacker, 20f, 30f, false, true);
-						}
+						m_componentHerd.CallNearbyCreaturesHelp(attacker, 20f, 30f, false, true);
 					}
 				}
 			};
@@ -284,7 +273,6 @@ namespace Game
 		// ===== CONFIGURACIÓN DE LA MÁQUINA DE ESTADOS =====
 		private void SetupStateMachine()
 		{
-			// Estado: Buscando objetivo
 			m_stateMachine.AddState("LookingForTarget", () =>
 			{
 				m_importanceLevel = 0f;
@@ -301,13 +289,23 @@ namespace Game
 					(m_target == null || ScoreTarget(m_target) <= 0f) &&
 					m_componentCreature.ComponentHealth.Health > MinHealthToAttackActively)
 				{
-					// Determinar rango de búsqueda según la luz
 					m_range = (m_subsystemSky.SkyLightIntensity < 0.2f) ? m_nightChaseRange : m_dayChaseRange;
 					m_range *= m_componentFactors.GetOtherFactorResult("ChaseRange", false, false);
 
 					ComponentCreature target = FindTarget();
 					if (target != null)
 					{
+						float score = ScoreTarget(target);
+						if (score > 1e9f)
+						{
+							bool isDay = m_subsystemSky.SkyLightIntensity >= 0.1f;
+							float maxRange = isDay ? (m_dayChaseRange + 6f) : (m_nightChaseRange + 6f);
+							float maxChaseTime = isDay ? (m_dayChaseTime * m_random.Float(0.75f, 1f)) : (m_nightChaseTime * m_random.Float(0.75f, 1f));
+							maxRange = Math.Max(maxRange, SpecialChaseRange);
+							Attack(target, maxRange, maxChaseTime, true);
+							return;
+						}
+
 						m_targetInRangeTime += m_dt;
 					}
 					else
@@ -325,7 +323,6 @@ namespace Game
 				}
 			}, null);
 
-			// Estado: Movimiento aleatorio (cuando está atascado en persecución persistente)
 			m_stateMachine.AddState("RandomMoving", () =>
 			{
 				Vector3 offset = new Vector3(6f * m_random.Float(-1f, 1f), 0f, 6f * m_random.Float(-1f, 1f));
@@ -342,7 +339,6 @@ namespace Game
 				}
 			}, () => m_componentPathfinding.Stop());
 
-			// Estado: Persiguiendo
 			m_stateMachine.AddState("Chasing", () =>
 			{
 				m_subsystemNoise.MakeNoise(m_componentCreature.ComponentBody, 0.25f, 6f);
@@ -388,7 +384,6 @@ namespace Game
 				}
 				else
 				{
-					// Verificar si el objetivo sigue siendo válido
 					if (ScoreTarget(m_target) <= 0f)
 						m_targetUnsuitableTime += m_dt;
 					else
@@ -400,7 +395,6 @@ namespace Game
 					}
 					else
 					{
-						// Configurar pathfinding hacia el objetivo
 						int maxPathfinding = m_isPersistent ? (m_subsystemTime.FixedTimeStep != null ? 2000 : 500) : 0;
 
 						BoundingBox bbSelf = m_componentCreature.ComponentBody.BoundingBox;
@@ -414,7 +408,6 @@ namespace Game
 						m_componentPathfinding.SetDestination(targetCenter + followFactor * dist * m_target.ComponentBody.Velocity,
 							1f, 1.5f, maxPathfinding, true, false, true, m_target.ComponentBody);
 
-						// Sonidos de ataque aleatorios
 						if (PlayAngrySoundWhenChasing && m_random.Float(0f, 1f) < 0.33f * m_dt)
 						{
 							m_componentCreature.ComponentCreatureSounds.PlayAttackSound();
@@ -428,7 +421,6 @@ namespace Game
 		private bool CanAttackCreature(ComponentCreature creature)
 		{
 			if (creature == null) return false;
-			// Si es contratable y no está contratado, no puede atacar
 			if (m_componentHireable != null && !m_componentHireable.IsHired)
 				return false;
 			if (m_componentHerd != null && !m_componentHerd.CanAttackCreature(creature))
@@ -460,13 +452,18 @@ namespace Game
 			return nearest;
 		}
 
+		private bool IsExtremePriorityTarget(ComponentCreature creature)
+		{
+			if (creature == null) return false;
+			bool isPlayer = creature.Entity.FindComponent<ComponentPlayer>() != null;
+			return (IsZombie && IsGreenNightActive && isPlayer) || (IsBandit && isPlayer);
+		}
+
 		private ComponentCreature FindTarget()
 		{
-			// Si es contratable y no está contratado, no buscar objetivos
 			if (m_componentHireable != null && !m_componentHireable.IsHired)
 				return null;
 
-			// PRIORIDAD EXTREMA: Zombis en noche verde o bandidos en cualquier momento
 			if ((IsZombie && IsGreenNightActive) || IsBandit)
 			{
 				ComponentPlayer player = FindNearestPlayer(SpecialChaseRange);
@@ -476,7 +473,6 @@ namespace Game
 				}
 			}
 
-			// Búsqueda normal
 			Vector3 position = m_componentCreature.ComponentBody.Position;
 			ComponentCreature best = null;
 			float bestScore = 0f;
@@ -502,11 +498,9 @@ namespace Game
 
 		private float ScoreTarget(ComponentCreature creature)
 		{
-			// Si es contratable y no está contratado, no puntuar ningún objetivo
 			if (m_componentHireable != null && !m_componentHireable.IsHired)
 				return 0f;
 
-			// Verificar si la manada permite atacar
 			if (!CanAttackCreature(creature))
 				return 0f;
 
@@ -516,14 +510,12 @@ namespace Game
 			bool isTargetOrCreative = creature == Target || m_subsystemGameInfo.WorldSettings.GameMode > GameMode.Harmless;
 			bool categoryMatch = (creature.Category & m_autoChaseMask) > (CreatureCategory)0;
 
-			// Probabilidad pseudo-aleatoria para no jugadores
 			double randomSeed = 0.005 * m_subsystemTime.GameTime +
 							   (GetHashCode() % 1000) / 1000.0 +
 							   (creature.GetHashCode() % 1000) / 1000.0;
 			bool probabilityMatch = creature == Target || (categoryMatch &&
 				MathUtils.Remainder(randomSeed, 1.0) < m_chaseNonPlayerProbability);
 
-			// PRIORIDAD EXTREMA para jugadores en condiciones especiales
 			if (isPlayer && ((IsZombie && IsGreenNightActive) || IsBandit))
 			{
 				return float.MaxValue / 2;
