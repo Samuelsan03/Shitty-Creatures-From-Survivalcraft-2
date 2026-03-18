@@ -221,7 +221,6 @@ namespace Game
 			m_currentMusic.Dispose();
 			m_currentMusic = null;
 			m_isPlaying = false;
-			Log.Information("Music stopped");
 		}
 
 		public void ToggleMusic()
@@ -234,8 +233,6 @@ namespace Game
 				m_valuesDictionary.SetValue<bool>("MusicEnabled", m_musicEnabled);
 			}
 
-			Log.Information($"Music toggled from {oldState} to {m_musicEnabled}");
-
 			if (m_musicEnabled)
 			{
 				// MODIFICADO: Usar LanguageControl con categoría "InGameMusic"
@@ -244,12 +241,10 @@ namespace Game
 
 				if (!m_isPlaying)
 				{
-					Log.Information("Starting music playback");
 					m_nextMusicTime = m_subsystemTime.GameTime;
 				}
 				else
 				{
-					Log.Information("Music is already playing");
 				}
 			}
 			else
@@ -317,7 +312,6 @@ namespace Game
 			{
 				StopCurrentMusic();
 
-				Log.Information($"Attempting to play track: {trackPath}");
 
 				// Obtener el streaming source
 				var streamingSource = ContentManager.Get<StreamingSource>(trackPath);
@@ -344,7 +338,6 @@ namespace Game
 				m_isPlaying = true;
 				m_currentMusic.Play();
 
-				Log.Information($"Playing music: {trackPath}, State: {m_currentMusic.State}, IsPlaying: {m_isPlaying}");
 
 				// MODIFICADO: Usar LanguageControl
 				string nowPlayingText = LanguageControl.Get("InGameMusic", "NowPlaying", "Now playing:");
@@ -405,8 +398,6 @@ namespace Game
 			int num = m_availableTracks[index];
 			SubsystemInGameMusic.TrackInfo trackInfo = m_tracks[num];
 			UpdateTrackHistory(num);
-
-			Log.Information($"Selected track {num}: {trackInfo.Path}");
 			PlayTrack(trackInfo.Path);
 			m_musicDuration = (double)trackInfo.Duration;
 		}
@@ -424,7 +415,6 @@ namespace Game
 			{
 				// Usar solo la duración de la canción
 				m_nextMusicTime = m_subsystemTime.GameTime + m_musicDuration;
-				Log.Information($"Next music scheduled in {m_musicDuration} seconds at game time {m_nextMusicTime}");
 			}
 			else
 			{
@@ -455,7 +445,6 @@ namespace Game
 			m_valuesDictionary = valuesDictionary;
 			m_musicEnabled = valuesDictionary.GetValue<bool>("MusicEnabled", false);
 
-			Log.Information($"SubsystemInGameMusic loaded. Music enabled: {m_musicEnabled}");
 
 			for (int i = 0; i < m_tracks.Length; i++)
 			{
@@ -465,7 +454,6 @@ namespace Game
 			if (m_musicEnabled)
 			{
 				m_nextMusicTime = m_subsystemTime.GameTime + 1.0; // Pequeño retraso inicial
-				Log.Information("Music enabled on load, will start playing soon");
 			}
 			else
 			{
