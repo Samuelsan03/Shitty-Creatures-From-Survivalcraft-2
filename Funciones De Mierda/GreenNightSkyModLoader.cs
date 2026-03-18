@@ -11,6 +11,7 @@ namespace Game
 		public override void __ModInitialize()
 		{
 			ModsManager.RegisterHook("ChangeSkyColor", this);
+			ModsManager.RegisterHook("OnVitalStatsUpdateSleep", this);
 		}
 
 		public override void OnProjectLoaded(Project project)
@@ -29,6 +30,17 @@ namespace Game
 				return Color.Lerp(oldColor, greenColor, factor);
 			}
 			return oldColor;
+		}
+
+		public override void OnVitalStatsUpdateSleep(ComponentVitalStats vitalStats, ref float modifiedSleep, ref float gameTimeDelta, ref bool skipVanilla)
+		{
+			// Si la Noche Verde está activa, congelamos el sueño
+			if (SubsystemGreenNightSky.Instance != null && SubsystemGreenNightSky.Instance.IsGreenNightActive)
+			{
+				// Evitamos que la lógica original modifique el sueño
+				skipVanilla = true;
+				// No modificamos modifiedSleep, por lo que se mantiene el valor actual
+			}
 		}
 	}
 }
