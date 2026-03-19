@@ -527,6 +527,9 @@
     "b b"
 </Recipe>
         <Smelting>
+         <Recipe Result="BoiledWaterBlock" ResultCount="1" RequiredHeatLevel="1" a="waterbucket" Description="[0]">
+        "a"
+        </Recipe>
         <Recipe Result="CopperSharpHammerBlock" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="3" a="coppermachete" b="ironhammer" Description="[0]">
         "ab"
         </Recipe>
