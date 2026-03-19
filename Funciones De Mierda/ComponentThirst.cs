@@ -154,6 +154,13 @@ namespace Game
 			Water -= decrease;
 			Water = Math.Clamp(Water, 0f, 1f);
 
+			// Mostrar mensaje cuando el agua baja de la mitad (0.5)
+			if (LastWater >= 0.5f && Water < 0.5f)
+			{
+				string message = LanguageControl.Get("ComponentThirst", "HalfThirsty");
+				m_componentPlayer?.ComponentGui?.DisplaySmallMessage(message, Color.White, true, false);
+			}
+
 			// Daño por deshidratación (cada 50 segundos como el hambre)
 			if (Water <= 0f && !m_componentPlayer.ComponentSleep.IsSleeping && m_subsystemTime.PeriodicGameTimeEvent(50.0, 0.0))
 			{
