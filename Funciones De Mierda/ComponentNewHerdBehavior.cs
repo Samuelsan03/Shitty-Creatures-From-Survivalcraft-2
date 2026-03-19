@@ -41,6 +41,13 @@ namespace Game
 
 			if (target == null) return;
 
+			// Verificar si debemos huir en lugar de pedir ayuda (usando el componente defensivo)
+			ComponentDefensiveRunAwayBehavior defensiveRunAway = Entity.FindComponent<ComponentDefensiveRunAwayBehavior>();
+			if (defensiveRunAway != null && defensiveRunAway.IsActive)
+			{
+				return; // Si ya estamos huyendo, no pedir ayuda
+			}
+
 			// No pedir ayuda si el objetivo es de la misma manada o es guardián
 			ComponentNewHerdBehavior targetHerdBehavior = target.Entity.FindComponent<ComponentNewHerdBehavior>();
 			if (targetHerdBehavior != null && !string.IsNullOrEmpty(targetHerdBehavior.HerdName) && IsSameHerdOrGuardian(target))
@@ -61,10 +68,15 @@ namespace Game
 
 				ComponentNewHerdBehavior herdBehavior = creature.Entity.FindComponent<ComponentNewHerdBehavior>();
 				ComponentNewChaseBehavior chaseBehavior = creature.Entity.FindComponent<ComponentNewChaseBehavior>();
-				ComponentHireableNPC hireable = creature.Entity.FindComponent<ComponentHireableNPC>(); // NUEVO
+				ComponentHireableNPC hireable = creature.Entity.FindComponent<ComponentHireableNPC>();
 
 				// Si la criatura es contratable y no está contratada, no responde a la llamada
 				if (hireable != null && !hireable.IsHired)
+					continue;
+
+				// Si la criatura está huyendo (defensive mode), no responder a la llamada
+				ComponentDefensiveRunAwayBehavior creatureDefensive = creature.Entity.FindComponent<ComponentDefensiveRunAwayBehavior>();
+				if (creatureDefensive != null && creatureDefensive.IsActive)
 					continue;
 
 				if (herdBehavior != null && !string.IsNullOrEmpty(herdBehavior.HerdName) &&
