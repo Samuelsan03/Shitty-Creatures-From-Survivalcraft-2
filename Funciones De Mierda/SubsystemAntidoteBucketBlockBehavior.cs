@@ -21,7 +21,11 @@ namespace Game
 		{
 			ComponentPlayer componentPlayer = componentMiner?.ComponentPlayer;
 			if (componentPlayer == null) return false;
-			if (m_subsystemGameInfo.WorldSettings.GameMode == GameMode.Creative) return false;
+
+			// --- DETECCIÓN DE MODO CREATIVO ---
+			bool isCreative = (m_subsystemGameInfo.WorldSettings.GameMode == GameMode.Creative);
+
+			// Buscar objetivo
 			Entity targetEntity = null;
 			ComponentBody hitBody = null;
 			float? hitDistance = null;
@@ -42,39 +46,36 @@ namespace Game
 					hitDistance = distance.Value;
 				}
 			}
-			if (hitBody != null)
-			{
-				targetEntity = hitBody.Entity;
-			}
+			if (hitBody != null) targetEntity = hitBody.Entity;
+
 			bool isTargetingPlayer = (targetEntity == null || targetEntity == componentPlayer.Entity);
-			if (isTargetingPlayer)
-			{
-				targetEntity = componentPlayer.Entity;
-			}
+			if (isTargetingPlayer) targetEntity = componentPlayer.Entity;
+
+			// Si es modo creativo, solo permitir curar a criaturas (no jugador)
+			if (isCreative && isTargetingPlayer) return false;
+
 			bool hasPoison = HasPoison(targetEntity);
 			bool hasSickness = HasSickness(targetEntity);
 			ComponentHealth targetHealth = targetEntity.FindComponent<ComponentHealth>();
 			bool isDead = targetHealth != null && targetHealth.Health <= 0f;
+
 			if ((!hasPoison && !hasSickness) || isDead) return false;
+
+			// --- CURACIÓN ---
 			m_subsystemAudio.PlaySound("Audio/UI/drinking", 1f, 0f, 0f, 0f);
 			bool curedPoison = false;
 			bool curedSickness = false;
-			if (hasPoison)
-			{
-				curedPoison = CurePoison(targetEntity);
-			}
-			if (hasSickness)
-			{
-				curedSickness = CureSickness(targetEntity);
-			}
-			if (targetEntity != null && ShittyCreaturesSettingsManager.ThirstEnabled)
+			if (hasPoison) curedPoison = CurePoison(targetEntity);
+			if (hasSickness) curedSickness = CureSickness(targetEntity);
+
+			// --- BEBIDA (solo si la sed está activada y NO es modo creativo) ---
+			if (!isCreative && ShittyCreaturesSettingsManager.ThirstEnabled)
 			{
 				ComponentThirst thirst = targetEntity.FindComponent<ComponentThirst>();
-				if (thirst != null)
-				{
-					if (!thirst.Drink(0.4f)) return false;
-				}
+				thirst?.Drink(0.4f);
 			}
+
+			// --- MENSAJES ---
 			ComponentPlayer targetPlayer = targetEntity.FindComponent<ComponentPlayer>();
 			if (targetPlayer != null)
 			{
@@ -89,14 +90,21 @@ namespace Game
 				string npcCuredMessage = LanguageControl.Get("AntidoteBucket", "NPCCured");
 				componentPlayer.ComponentGui.DisplaySmallMessage(npcCuredMessage, new Color(0, 255, 0), true, false);
 			}
-			IInventory inventory = componentMiner.Inventory;
-			if (inventory != null)
+
+			// --- CONSUMIR CUBO (si se curó algo) ---
+			if (curedPoison || curedSickness)
 			{
-				int activeSlotIndex = inventory.ActiveSlotIndex;
-				inventory.RemoveSlotItems(activeSlotIndex, 1);
-				inventory.AddSlotItems(activeSlotIndex, EmptyBucketBlock.Index, 1);
+				IInventory inventory = componentMiner.Inventory;
+				if (inventory != null)
+				{
+					int activeSlotIndex = inventory.ActiveSlotIndex;
+					inventory.RemoveSlotItems(activeSlotIndex, 1);
+					inventory.AddSlotItems(activeSlotIndex, EmptyBucketBlock.Index, 1);
+				}
+				return true;
 			}
-			return true;
+
+			return false;
 		}
 
 		private float? RayBoxIntersection(Vector3 rayOrigin, Vector3 rayDirection, BoundingBox box)
