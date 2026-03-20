@@ -1,5 +1,6 @@
 using System;
 using Engine;
+using Game;
 using GameEntitySystem;
 using TemplatesDatabase;
 
@@ -35,10 +36,24 @@ namespace Game
 			{
 				CreateWaterBar();
 			}
+
+			// Suscribirse al evento FoodEaten de ComponentVitalStats
+			var vitalStats = m_componentPlayer?.ComponentVitalStats;
+			if (vitalStats != null)
+			{
+				vitalStats.FoodEaten += OnFoodEaten;
+			}
 		}
 
 		public override void OnEntityRemoved()
 		{
+			// Desuscribirse del evento
+			var vitalStats = m_componentPlayer?.ComponentVitalStats;
+			if (vitalStats != null)
+			{
+				vitalStats.FoodEaten -= OnFoodEaten;
+			}
+
 			if (m_waterBar != null && m_componentPlayer?.ComponentGui != null)
 			{
 				var bottomBars = FindBottomBarsContainer();
@@ -47,6 +62,79 @@ namespace Game
 					bottomBars.Children.Remove(m_waterBar);
 				}
 				m_waterBar = null;
+			}
+		}
+
+		// Manejador del evento cuando se come un alimento
+		private void OnFoodEaten(int value)
+		{
+			// Solo si la sed está habilitada y no es modo creativo
+			if (m_subsystemGameInfo.WorldSettings.GameMode == GameMode.Creative ||
+				!ShittyCreaturesSettingsManager.ThirstEnabled)
+				return;
+
+			int blockIndex = Terrain.ExtractContents(value);
+			Block block = BlocksManager.Blocks[blockIndex];
+
+			// Verificar si es una fruta (FoodType.Fruit)
+			if (block.GetFoodType(value) == FoodType.Fruit)
+			{
+				float nutritionalValue = block.GetNutritionalValue(value);
+				float thirstGain = 0f;
+
+				// Asignar ganancia de sed basada en el valor nutricional de cada fruta según el CSV
+				// Valores nutricionales del CSV:
+				// AppleBlock: 4
+				// PearBlock: 4
+				// OrangeBlock: 5
+				// CherryBlock: 2
+				// SliceOfWatermelonBlock: 3
+				// BananaBlock: 6
+				// BlueberryBlock: 2
+
+				if (block is AppleBlock)
+				{
+					thirstGain = 0.20f; // Manzana: 20% de sed (4 nutrición)
+				}
+				else if (block is PearBlock)
+				{
+					thirstGain = 0.20f; // Pera: 20% de sed (4 nutrición)
+				}
+				else if (block is OrangeBlock)
+				{
+					thirstGain = 0.25f; // Naranja: 25% de sed (5 nutrición)
+				}
+				else if (block is CherryBlock)
+				{
+					thirstGain = 0.10f; // Cereza: 10% de sed (2 nutrición)
+				}
+				else if (block is SliceOfWatermelonBlock)
+				{
+					thirstGain = 0.15f; // Trozo de sandía: 15% de sed (3 nutrición)
+				}
+				else if (block is BananaBlock)
+				{
+					thirstGain = 0.30f; // Banana: 30% de sed (6 nutrición)
+				}
+				else if (block is BlueberryBlock)
+				{
+					thirstGain = 0.10f; // Arándano: 10% de sed (2 nutrición)
+				}
+				else
+				{
+					// Para cualquier otra fruta, usar la fórmula nutricional estándar
+					thirstGain = nutritionalValue * 0.05f;
+				}
+
+				if (thirstGain > 0f)
+				{
+					bool drank = DrinkWater(thirstGain);
+					if (drank)
+					{
+						string message = LanguageControl.Get("ComponentThirst", "AteFruit");
+						m_componentPlayer?.ComponentGui?.DisplaySmallMessage(message, new Color(80, 80, 255), true, false);
+					}
+				}
 			}
 		}
 
