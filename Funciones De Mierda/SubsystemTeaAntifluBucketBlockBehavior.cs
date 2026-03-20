@@ -21,7 +21,11 @@ namespace Game
 		{
 			ComponentPlayer componentPlayer = componentMiner?.ComponentPlayer;
 			if (componentPlayer == null) return false;
-			if (m_subsystemGameInfo.WorldSettings.GameMode == GameMode.Creative) return false;
+
+			// --- DETECCIÓN DE MODO CREATIVO ---
+			bool isCreative = (m_subsystemGameInfo.WorldSettings.GameMode == GameMode.Creative);
+
+			// Buscar objetivo
 			Entity targetEntity = null;
 			ComponentBody hitBody = null;
 			float? hitDistance = null;
@@ -42,31 +46,36 @@ namespace Game
 					hitDistance = distance.Value;
 				}
 			}
-			if (hitBody != null)
-			{
-				targetEntity = hitBody.Entity;
-			}
+			if (hitBody != null) targetEntity = hitBody.Entity;
+
 			bool isTargetingPlayer = (targetEntity == null || targetEntity == componentPlayer.Entity);
 			if (isTargetingPlayer)
 			{
 				targetEntity = componentPlayer.Entity;
-				if (m_subsystemGameInfo.WorldSettings.GameMode == GameMode.Creative || !m_subsystemGameInfo.WorldSettings.AreAdventureSurvivalMechanicsEnabled)
+				// En modo creativo no permitir curar jugador
+				if (isCreative) return false;
+				// En otros modos, verificar mecánicas de supervivencia (como ya estaba)
+				if (!m_subsystemGameInfo.WorldSettings.AreAdventureSurvivalMechanicsEnabled)
 				{
 					return false;
 				}
 			}
+
 			bool hasFlu = HasFlu(targetEntity);
 			if (!hasFlu) return false;
+
+			// --- CURACIÓN ---
 			m_subsystemAudio.PlaySound("Audio/UI/drinking", 1f, 0f, 0f, 0f);
 			bool cured = CureFlu(targetEntity);
-			if (targetEntity != null && ShittyCreaturesSettingsManager.ThirstEnabled)
+
+			// --- BEBIDA (solo si la sed está activada y NO es modo creativo) ---
+			if (!isCreative && ShittyCreaturesSettingsManager.ThirstEnabled)
 			{
 				ComponentThirst thirst = targetEntity.FindComponent<ComponentThirst>();
-				if (thirst != null)
-				{
-					if (!thirst.Drink(0.4f)) return false;
-				}
+				thirst?.Drink(0.4f);
 			}
+
+			// --- MENSAJES ---
 			ComponentPlayer targetPlayer = targetEntity.FindComponent<ComponentPlayer>();
 			if (targetPlayer != null)
 			{
@@ -78,16 +87,22 @@ namespace Game
 				string npcMessage = LanguageControl.Get("AntifluBucket", "FluNPCCured");
 				componentPlayer.ComponentGui.DisplaySmallMessage(npcMessage, new Color(102, 178, 255), true, false);
 			}
-			IInventory inventory = componentMiner.Inventory;
-			if (inventory != null)
-			{
-				int activeSlotIndex = inventory.ActiveSlotIndex;
-				inventory.RemoveSlotItems(activeSlotIndex, 1);
-				inventory.AddSlotItems(activeSlotIndex, EmptyBucketBlock.Index, 1);
-			}
-			return true;
-		}
 
+			// --- CONSUMIR CUBO (si se curó) ---
+			if (cured)
+			{
+				IInventory inventory = componentMiner.Inventory;
+				if (inventory != null)
+				{
+					int activeSlotIndex = inventory.ActiveSlotIndex;
+					inventory.RemoveSlotItems(activeSlotIndex, 1);
+					inventory.AddSlotItems(activeSlotIndex, EmptyBucketBlock.Index, 1);
+				}
+				return true;
+			}
+
+			return false;
+		}
 		private float? RayBoxIntersection(Vector3 rayOrigin, Vector3 rayDirection, BoundingBox box)
 		{
 			Vector3 dirFrac = new Vector3(1.0f / (rayDirection.X != 0 ? rayDirection.X : float.Epsilon), 1.0f / (rayDirection.Y != 0 ? rayDirection.Y : float.Epsilon), 1.0f / (rayDirection.Z != 0 ? rayDirection.Z : float.Epsilon));
