@@ -24,12 +24,7 @@
             " a "
             "aca"
             " b "
-            </Recipe>
-            <Recipe Result="LavaLongspearBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="magmabucket" b="stick" c="lavaspear" Description="[0]">
-            " a "
-            "aca"
-            " b "
-            </Recipe>               
+            </Recipe>              
     <Recipe Result="ItemsLauncherBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="10" a="copperblock" b="musket" c="rod" Description="[0]">
 			"bca"
 		</Recipe>
@@ -79,42 +74,6 @@
             " a "
         </Recipe>
         <Recipe Result="StoneShovelBlock" ResultCount="1" RequiredHeatLevel="0" a="stick" b="cobblestoneslab" Description="[0]">
-            "b"
-            "a"
-            "a"
-        </Recipe>
-        <!-- Lava Tools require level 6 -->
-        <Recipe Result="LavaSpearBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="stick" b="magmabucket" Description="[0]">
-            " b "
-            "bab"
-            " a "
-        </Recipe>
-        <Recipe Result="LavaMacheteBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="stick" b="magmabucket" Description="[0]">
-            "b"
-            "b"
-            "a"
-        </Recipe>
-        <Recipe Result="LavaAxeBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="stick" b="magmabucket" Description="[0]">
-            "bb"
-            "ba"
-            " a"
-        </Recipe>
-        <Recipe Result="LavaPickaxeBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="stick" b="magmabucket" Description="[0]">
-            "bbb"
-            " a "
-            " a "
-        </Recipe>
-        <Recipe Result="LavaHammerBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="stick" b="magmabucket" Description="[0]">
-            "bbb"
-            "bab"
-            " a "
-        </Recipe>
-        <Recipe Result="LavaRakeBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="stick" b="magmabucket" Description="[0]">
-            "b b"
-            " a "
-            " a "
-        </Recipe>
-        <Recipe Result="LavaShovelBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="6" a="stick" b="magmabucket" Description="[0]">
             "b"
             "a"
             "a"
@@ -322,7 +281,7 @@
 </Recipe>
 <Recipe Result="P90BulletBlock" ResultCount="15" RequiredHeatLevel="0" RequiredPlayerLevel="4" a="rod" b="sulphurchunk" c="bullet" Description="[0]">
     "cbc"
-    "cbc"
+    "c c"
     "cbc"
 </Recipe>
 <Recipe Result="SCARBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="5" a="rod" b="ironblock" c="diamond" Description="[0]">
@@ -527,6 +486,27 @@
     "b b"
 </Recipe>
         <Smelting>
+        <Recipe Result="LavaMacheteBlock" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="6" a="diamondmachete" b="magmabucket" Description="[0]">
+        "ab"
+        </Recipe>
+        <Recipe Result="LavaAxeBlock" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="6" a="diamondaxe" b="magmabucket" Description="[0]">
+        "ab"
+        </Recipe>
+        <Recipe Result="LavaPickaxeBlock" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="6" a="diamondpickaxe" b="magmabucket" Description="[0]">
+        "ab"
+        </Recipe>
+        <Recipe Result="LavaShovelBlock" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="6" a="diamondshovel" b="magmabucket" Description="[0]">
+        "ab"
+        </Recipe>
+        <Recipe Result="LavaSpearBlock" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="6" a="diamondspear" b="magmabucket" Description="[0]">
+        "ab"
+        </Recipe>
+        <Recipe Result="LavaRakeBlock" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="6" a="diamondrake" b="magmabucket" Description="[0]">
+        "ab"
+        </Recipe>
+        <Recipe Result="LavaHammerBlock" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="6" a="ironhammer" b="magmabucket" Description="[0]">
+        "ab"
+        </Recipe>
          <Recipe Result="BoiledWaterBlock" ResultCount="1" RequiredHeatLevel="1" a="waterbucket" Description="[0]">
         "a"
         </Recipe>
