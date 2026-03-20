@@ -61,6 +61,18 @@ namespace Game
 		public virtual void Update(float dt)
 		{
 			if (!GreenNightEnabled) return;
+
+			// Si el modo de tiempo NO es "Changing", no procesamos la Noche Verde
+			if (m_subsystemGameInfo.WorldSettings.TimeOfDayMode != TimeOfDayMode.Changing)
+			{
+				// Aseguramos que la Noche Verde esté inactiva si el tiempo está congelado
+				if (IsGreenNightActive)
+				{
+					IsGreenNightActive = false;
+				}
+				return;
+			}
+
 			this.UpdateGreenNight();
 		}
 
