@@ -33,7 +33,7 @@ namespace Game
 
 			// Mostrar mensaje de satisfacción
 			string message = LanguageControl.Get("ComponentThirst", "DrankBoiledWater");
-			componentPlayer.ComponentGui.DisplaySmallMessage(message, Color.Blue, true, false);
+			componentPlayer.ComponentGui.DisplaySmallMessage(message, new Color(80,80,255), true, false);
 
 			m_subsystemAudio.PlaySound("Audio/UI/drinking", 1f, 0f, componentPlayer.ComponentBody.Position, 2f, 0f);
 			int emptyBucketValue = Terrain.MakeBlockValue(90);
