@@ -18,7 +18,7 @@ namespace Game
 
 		public override bool OnEditInventoryItem(IInventory inventory, int slotIndex, ComponentPlayer componentPlayer)
 		{
-			componentPlayer.ComponentGui.ModalPanelWidget = ((componentPlayer.ComponentGui.ModalPanelWidget == null) ? new RepeatCrossbowWidget(inventory, slotIndex) : null);
+			componentPlayer.ComponentGui.ModalPanelWidget = (componentPlayer.ComponentGui.ModalPanelWidget == null) ? new RepeatCrossbowWidget(inventory, slotIndex) : null;
 			return true;
 		}
 
@@ -59,6 +59,7 @@ namespace Game
 			float z = SimplexNoise.OctavedNoise(num5 + 200f, 2f, 3, 2f, 0.5f, false);
 			Vector3 v = new Vector3(x, y, z) * s;
 			aim.Direction = Vector3.Normalize(aim.Direction + v);
+
 			switch (state)
 			{
 				case AimState.InProgress:
@@ -83,16 +84,12 @@ namespace Game
 						componentMiner.ComponentCreature.ComponentCreatureModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.1f, 0.07f);
 						componentMiner.ComponentCreature.ComponentCreatureModel.InHandItemRotationOrder = new Vector3(-1.55f, 0f, 0f);
 
-						// DETECCIÓN DE CUANDO LA BALLESTA SE TENSE COMPLETAMENTE
 						if (this.m_subsystemTime.PeriodicGameTimeEvent(0.10000000149011612, 0.0) && componentMiner.ComponentPlayer == null)
 						{
 							RepeatArrowBlock.ArrowType? arrowType = RepeatCrossbowBlock.GetArrowType(data);
 							if (draw != 15)
 							{
-								// LA BALLESTA ESTÁ SIENDO TENSADA - REPRODUCIR SONIDO DE CARGA
 								data = RepeatCrossbowBlock.SetDraw(data, 15);
-
-								// REPRODUCIR SONIDO DE CARGA DE BALLESTA REPETIDORA
 								this.m_subsystemAudio.PlaySound("Audio/Crossbow Remake/Crossbow Loading Remake", 0.5f,
 									this.m_random.Float(-0.1f, 0.1f), componentMiner.ComponentCreature.ComponentCreatureModel.EyePosition, 3f, false);
 							}
@@ -143,14 +140,7 @@ namespace Game
 							Projectile projectile = this.m_subsystemProjectiles.FireProjectile(value, vector, v5 * 40f, Vector3.Zero, componentMiner.ComponentCreature);
 							if (projectile != null)
 							{
-								if (RepeatCrossbowBlock.GetLoadCount(slotValue) == 0)
-								{
-									data = RepeatCrossbowBlock.SetArrowType(data, (RepeatArrowBlock.ArrowType?)null);
-								}
-								else
-								{
-									RepeatCrossbowBlock.SetLoadCount(slotValue, RepeatCrossbowBlock.GetLoadCount(slotValue) - 1);
-								}
+								// No es necesario modificar data aquí, se hará al construir el nuevo valor
 								this.m_subsystemAudio.PlaySound("Audio/Crossbow Remake/Crossbow Shoot", 1f, this.m_random.Float(-0.1f, 0.1f), componentMiner.ComponentCreature.ComponentCreatureModel.EyePosition, 3f, 0.05f);
 								if (componentMiner.ComponentPlayer == null)
 								{
@@ -158,8 +148,25 @@ namespace Game
 								}
 							}
 						}
-						int value2 = (loadCount > 1) ? Terrain.MakeBlockValue(num, loadCount - 1, RepeatCrossbowBlock.SetDraw(data, 15)): Terrain.MakeBlockValue(num, 0, RepeatCrossbowBlock.SetDraw(RepeatCrossbowBlock.SetArrowType(data, (RepeatArrowBlock.ArrowType?)null), 0));
+						// Eliminar la ballesta antigua del inventario
+						inventory.RemoveSlotItems(activeSlotIndex, 1);
+
+						// Construir la nueva ballesta con la cuenta de munición actualizada
+						int newCount = (loadCount > 1) ? loadCount - 1 : 0;
+						int newData;
+						if (loadCount > 1)
+						{
+							// Quedan flechas, mantener tensada y el tipo de flecha
+							newData = RepeatCrossbowBlock.SetDraw(data, 15);
+						}
+						else
+						{
+							// Era la última flecha, destensar y quitar el tipo
+							newData = RepeatCrossbowBlock.SetDraw(RepeatCrossbowBlock.SetArrowType(data, null), 0);
+						}
+						int value2 = Terrain.MakeBlockValue(num, newCount, newData);
 						inventory.AddSlotItems(activeSlotIndex, value2, 1);
+
 						if (draw > 0)
 						{
 							componentMiner.DamageActiveTool(1);
@@ -235,15 +242,10 @@ namespace Game
 		}
 
 		public SubsystemTime m_subsystemTime;
-
 		public SubsystemProjectiles m_subsystemProjectiles;
-
 		public SubsystemAudio m_subsystemAudio;
-
 		public Game.Random m_random = new Game.Random();
-
 		public Dictionary<ComponentMiner, double> m_aimStartTimes = new Dictionary<ComponentMiner, double>();
-
 		public const int MCount = 8;
 	}
 }
