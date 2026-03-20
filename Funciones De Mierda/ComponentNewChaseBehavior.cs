@@ -65,11 +65,19 @@ namespace Game
 		private float m_dt;
 		private float m_autoChaseSuppressionTime;
 
+		// Suscripción a eventos de salud de jugadores
+		private List<ComponentHealth> m_subscribedPlayerHealths = new List<ComponentHealth>();
+
 		// ===== PROPIEDADES AUXILIARES =====
-		private bool IsZombie => HerdName != null && HerdName.ToLower().Contains("zombie");
-		private bool IsBandit => HerdName != null && HerdName.ToLower().Contains("bandit");
+		private bool IsZombie => HerdName != null && HerdName.ToLower().Contains("Zombie");
+		private bool IsBandit => HerdName != null && HerdName.ToLower().Contains("bandits");
 		private bool IsGreenNightActive => m_subsystemGreenNightSky != null && m_subsystemGreenNightSky.IsGreenNightActive;
 		private float SpecialChaseRange => (IsZombie && IsGreenNightActive) || IsBandit ? 50f : m_range;
+
+		private bool ShouldProtectPlayer =>
+			!string.IsNullOrEmpty(HerdName) &&
+			(HerdName.Equals("player", StringComparison.OrdinalIgnoreCase) ||
+			 HerdName.ToLower().Contains("guardian"));
 
 		public string HerdName
 		{
@@ -206,11 +214,101 @@ namespace Game
 
 			RegisterEvents();
 
+			if (ShouldProtectPlayer)
+			{
+				SubscribeToPlayersForProtection();
+			}
+
 			SetupStateMachine();
 			m_stateMachine.TransitionTo("LookingForTarget");
 		}
 
+		// ===== SUSCRIPCIÓN A JUGADORES PARA PROTEGERLOS =====
+		private void SubscribeToPlayersForProtection()
+		{
+			if (m_subsystemPlayers == null) return;
+
+			foreach (ComponentPlayer player in m_subsystemPlayers.ComponentPlayers)
+			{
+				if (player?.ComponentHealth != null && !m_subscribedPlayerHealths.Contains(player.ComponentHealth))
+				{
+					player.ComponentHealth.Injured += OnPlayerInjured;
+					m_subscribedPlayerHealths.Add(player.ComponentHealth);
+				}
+			}
+		}
+
+		// ===== MANEJAR DAÑO A JUGADORES =====
+		private void OnPlayerInjured(Injury injury)
+		{
+			if (!ShouldProtectPlayer) return;
+
+			if (m_componentHireable != null && !m_componentHireable.IsHired) return;
+
+			ComponentDefensiveRunAwayBehavior defensiveRunAway = Entity.FindComponent<ComponentDefensiveRunAwayBehavior>();
+			if (defensiveRunAway != null && defensiveRunAway.IsActive) return;
+
+			ComponentCreature attacker = injury.Attacker;
+			if (attacker != null && CanAttackCreature(attacker))
+			{
+				Attack(attacker, 20f, 30f, false);
+
+				if (m_componentHerd != null)
+				{
+					m_componentHerd.CallNearbyCreaturesHelp(attacker, 20f, 30f, false, true);
+				}
+			}
+		}
+
+		// ===== REACCIÓN AL GOLPE A PUÑO LIMPIO DEL JUGADOR =====
+		public void OnPlayerHitWithFist(ComponentCreature hitCreature, ComponentPlayer player)
+		{
+			if (!ShouldProtectPlayer) return;
+
+			if (m_componentHireable != null && !m_componentHireable.IsHired) return;
+
+			ComponentDefensiveRunAwayBehavior defensiveRunAway = Entity.FindComponent<ComponentDefensiveRunAwayBehavior>();
+			if (defensiveRunAway != null && defensiveRunAway.IsActive) return;
+
+			if (hitCreature == null || hitCreature.ComponentHealth.Health <= 0f) return;
+			if (!CanAttackCreature(hitCreature)) return;
+			if (hitCreature.Entity.FindComponent<ComponentPlayer>() != null) return;
+
+			Attack(hitCreature, 30f, 45f, false);
+
+			if (m_componentHerd != null)
+			{
+				m_componentHerd.CallNearbyCreaturesHelp(hitCreature, 30f, 45f, false, true);
+			}
+		}
+
+		// ===== VERIFICAR SI PUEDE ATACAR A UNA CRIATURA =====
+		private bool CanAttackCreature(ComponentCreature creature)
+		{
+			if (creature == null) return false;
+			if (m_componentHireable != null && !m_componentHireable.IsHired) return false;
+
+			if (m_componentHerd != null && !m_componentHerd.CanAttackCreature(creature))
+				return false;
+
+			return true;
+		}
+
 		public override void Save(ValuesDictionary valuesDictionary, EntityToIdMap entityToIdMap) { }
+
+		public override void Dispose()
+		{
+			if (m_subscribedPlayerHealths != null)
+			{
+				foreach (ComponentHealth health in m_subscribedPlayerHealths)
+				{
+					if (health != null)
+						health.Injured -= OnPlayerInjured;
+				}
+				m_subscribedPlayerHealths.Clear();
+			}
+			base.Dispose();
+		}
 
 		// ===== REGISTRO DE EVENTOS =====
 		private void RegisterEvents()
@@ -418,16 +516,6 @@ namespace Game
 		}
 
 		// ===== MÉTODOS AUXILIARES =====
-		private bool CanAttackCreature(ComponentCreature creature)
-		{
-			if (creature == null) return false;
-			if (m_componentHireable != null && !m_componentHireable.IsHired)
-				return false;
-			if (m_componentHerd != null && !m_componentHerd.CanAttackCreature(creature))
-				return false;
-			return true;
-		}
-
 		private ComponentPlayer FindNearestPlayer(float range)
 		{
 			if (m_subsystemPlayers == null || m_componentCreature?.ComponentBody == null)
