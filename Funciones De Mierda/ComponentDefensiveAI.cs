@@ -21,7 +21,7 @@ namespace Game
 		private const double CROSSBOW_COOLDOWN = 1.5;
 		private const double MUSKET_COOLDOWN = 0.8;
 		private const double REPEAT_CROSSBOW_COOLDOWN = 1.2;
-		private const double FLAMETHROWER_COOLDOWN = 0.3;      // Cadencia real
+		private const double FLAMETHROWER_COOLDOWN = 0.3;
 		private const double THROWABLE_COOLDOWN = 0.5;
 
 		private const double CROSSBOW_MIN_AIM_TIME = 0.3;
@@ -213,6 +213,12 @@ namespace Game
 			if (!CanUseInventory || m_componentMiner == null || m_componentInventory == null)
 				return;
 
+			if (m_defensiveRunAway != null && m_defensiveRunAway.IsActive)
+			{
+				CancelAiming();
+				return;
+			}
+
 			if (m_componentChase == null || m_componentChase.Target == null)
 			{
 				if (m_componentCreatureModel != null)
@@ -259,7 +265,6 @@ namespace Game
 					m_currentWeaponType = Terrain.ExtractContents(activeValue);
 				}
 
-				// Mantener la misma lógica de apuntado que las armas a distancia: línea de visión + frente
 				if (HasLineOfSight(target) && IsTargetInFront(target))
 				{
 					StopMovement();
@@ -290,7 +295,6 @@ namespace Game
 							TryFullyLoadWeapon(slot);
 					}
 
-					// Ballesta normal: evitar explosivos a menos de 20m
 					if (m_currentWeaponType == m_crossbowBlockIndex && m_currentDistanceToTarget < 20f)
 					{
 						int data = Terrain.ExtractData(activeValue);
@@ -301,7 +305,6 @@ namespace Game
 						}
 					}
 
-					// Ballesta repetitiva: evitar explosivos a menos de 20m
 					if (m_currentWeaponType == m_repeatCrossbowBlockIndex && m_currentDistanceToTarget < 20f)
 					{
 						int data = Terrain.ExtractData(activeValue);
