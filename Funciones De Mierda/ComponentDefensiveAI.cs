@@ -21,7 +21,7 @@ namespace Game
 		private const double CROSSBOW_COOLDOWN = 1.5;
 		private const double MUSKET_COOLDOWN = 0.8;
 		private const double REPEAT_CROSSBOW_COOLDOWN = 1.2;
-		private const double FLAMETHROWER_COOLDOWN = 0.3;
+		private const double FLAMETHROWER_COOLDOWN = 0;
 		private const double THROWABLE_COOLDOWN = 0.5;
 
 		private const double CROSSBOW_MIN_AIM_TIME = 0.3;
