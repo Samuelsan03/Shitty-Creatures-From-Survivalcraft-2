@@ -204,106 +204,86 @@ namespace Game
 
 			ComponentCreature target = m_componentChase.Target;
 
+			// Mirar siempre al objetivo
 			if (m_componentCreatureModel != null && target.ComponentCreatureModel != null)
 				m_componentCreatureModel.LookAtOrder = new Vector3?(target.ComponentCreatureModel.EyePosition);
 
 			float distance = Vector3.Distance(m_componentCreature.ComponentBody.Position, target.ComponentBody.Position);
 
-			// Determine the desired weapon type based on distance
-			bool bestIsMelee = distance <= m_meleeRange;
-			bool bestIsThrowable = !bestIsMelee && distance <= m_throwableRange && HasThrowableWeapon();
-			bool bestIsRanged = !bestIsMelee && !bestIsThrowable && distance <= m_rangedRange && HasRangedWeapon(); // we need HasRangedWeapon method
+			// Determinar el arma más adecuada según la distancia
+			bool hasThrowable = HasThrowableWeapon();
+			bool useMelee = distance <= m_meleeRange;
+			bool useThrowable = !useMelee && distance <= m_throwableRange && hasThrowable;
+			bool useRanged = !useThrowable && distance > m_meleeRange && distance <= m_rangedRange;
 
+			// Obtener el arma actual
 			int activeValue = m_componentInventory.GetSlotValue(m_componentInventory.ActiveSlotIndex);
 			bool isMelee = IsMeleeWeapon(activeValue);
 			bool isThrowable = IsThrowableWeapon(activeValue);
 			bool isRanged = IsRangedWeapon(activeValue);
 
-			// Check if current weapon matches the best type (or if best type is not available)
-			if (bestIsMelee)
+			// Lógica de combate
+			if (useMelee)
 			{
-				if (isMelee || isThrowable) // we allow throwable as melee
+				CancelAiming();
+				// Equipar arma lanzable (si la hay) o un arma cuerpo a cuerpo normal
+				EquipMeleeOrThrowableWeapon();
+				// Nota: no es necesario asignar m_currentWeaponType aquí porque no se va a apuntar
+			}
+			else if (useThrowable)
+			{
+				// Si el arma actual no es lanzable, equipar una
+				if (!isThrowable)
 				{
-					// Current weapon is suitable for melee, just cancel aiming and maybe ensure it's equipped (but it already is)
-					CancelAiming();
-					// If it's throwable but not equipped? It is equipped because isThrowable true.
+					if (!EquipThrowableWeapon())
+					{
+						CancelAiming();
+						return;
+					}
 				}
 				else
 				{
-					// Not suitable, equip melee or throwable
-					EquipMeleeOrThrowableWeapon();
-					// After equipping, cancel aiming
-					CancelAiming();
+					// Ya tiene lanzable, asegurar que m_currentWeaponType esté actualizado
+					m_currentWeaponType = Terrain.ExtractContents(activeValue);
+				}
+
+				// Solo detenerse y apuntar si hay línea de visión y el objetivo está enfrente
+				if (HasLineOfSight(target) && IsTargetInFront(target))
+				{
+					StopMovement();
+					UpdateAiming(target);
+				}
+				else
+				{
+					CancelAiming(); // Reanuda movimiento si estaba detenido
 				}
 			}
-			else if (bestIsThrowable)
+			else if (useRanged)
 			{
-				if (isThrowable)
+				// Si el arma actual no es a distancia, equipar una
+				if (!isRanged)
 				{
-					// Already have throwable, use it
-					if (HasLineOfSight(target) && IsTargetInFront(target))
-					{
-						StopMovement();
-						UpdateAiming(target);
-					}
-					else
+					if (!EquipAndLoadRangedWeapon())
 					{
 						CancelAiming();
+						return;
 					}
 				}
 				else
 				{
-					// Equip throwable
-					if (EquipThrowableWeapon())
+					// Asegurar que el arma está cargada (si es necesario)
+					m_currentWeaponType = Terrain.ExtractContents(activeValue);
+					int slot = m_componentInventory.ActiveSlotIndex;
+					if (!IsWeaponLoaded(activeValue))
 					{
-						if (HasLineOfSight(target) && IsTargetInFront(target))
-						{
-							StopMovement();
-							UpdateAiming(target);
-						}
-						else
-						{
-							CancelAiming();
-						}
-					}
-					else
-					{
-						// No throwable available, fallback to ranged or melee? But bestIsThrowable implies we have a throwable because we called HasThrowableWeapon. So shouldn't happen.
-						CancelAiming();
+						// Intentar cargar
+						if (!LoadWeapon(slot))
+							TryFullyLoadWeapon(slot);
 					}
 				}
-			}
-			else if (bestIsRanged)
-			{
-				if (isRanged)
-				{
-					if (IsTargetInFront(target))
-					{
-						UpdateAiming(target);
-					}
-					else
-					{
-						CancelAiming();
-					}
-				}
-				else
-				{
-					if (EquipAndLoadRangedWeapon())
-					{
-						if (IsTargetInFront(target))
-						{
-							UpdateAiming(target);
-						}
-						else
-						{
-							CancelAiming();
-						}
-					}
-					else
-					{
-						CancelAiming();
-					}
-				}
+
+				// Las armas a distancia no detienen el movimiento y no requieren que el objetivo esté enfrente
+				UpdateAiming(target);
 			}
 			else
 			{
