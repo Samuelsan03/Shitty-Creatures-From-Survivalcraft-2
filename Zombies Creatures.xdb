@@ -182,8 +182,8 @@
               <Parameter Name="GlowingEyesColor" Guid="09e703b0-e299-499e-a4fd-7b24fda701a0" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="9cc602fe-bc1a-4985-a601-6b580c0d2969" Value="0.06,0.2,0.1" Type="Vector3"/>
             </MemberComponentTemplate>
-<MemberComponentTemplate Name="RunAwayBehavior" Guid="1aa63c88-b85e-40ff-b910-435c287b0584" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="6e0570ca-27cb-4092-8cd6-22f1a99b3c70" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="1aa63c88-b85e-40ff-b910-435c287b0584" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
+<MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="6e0570ca-27cb-4092-8cd6-22f1a99b3c70" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="a387fdcd-457a-4557-9b97-7aa96b687a52" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
                 <Parameter Name="DayRange" Guid="0c19e7bf-16af-45e8-b7e4-b4b81698f9fb" Value="0" Type="float"/>
                 <Parameter Name="NightRange" Guid="7e220876-edb2-4934-bf32-8dbbafa3238a" Value="0" Type="float"/>
@@ -449,8 +449,8 @@
     <Parameter Name="LoadOrder" Value="60" Type="int" Guid="592321f4-d5f5-4ead-86b4-b9dd7487b989"/>
               <Parameter Name="IsEnabled" Guid="8d080d24-04a8-410c-a25d-64fa492c79d1" Value="True" Type="bool"/>
             </MemberComponentTemplate>
-<MemberComponentTemplate Name="RunAwayBehavior" Guid="f261e365-6933-4508-aba9-148922b6d894" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="e6c62cd1-9bfb-41b0-99d8-ace723defdaf" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="f261e365-6933-4508-aba9-148922b6d894" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
+<MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="e6c62cd1-9bfb-41b0-99d8-ace723defdaf" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
 <MemberComponentTemplate Name="GlowingEyes" Guid="9d7edd09-fdb7-418c-97ae-6292ac1f7940" InheritanceParent="bb8701d3-3a4f-44f7-8a1f-3a455533f632">
               <Parameter Name="GlowingEyesColor" Guid="aba0ed8f-3725-4e82-99f5-d701a48825fb" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="e61869cd-abf4-45bb-9185-577c555161c7" Value="0.06,0.2,0.1" Type="Vector3"/>
@@ -732,8 +732,8 @@
               <Parameter Name="GlowingEyesColor" Guid="928fb39a-cdaf-423b-b6d1-df345a955ba0" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="ded6dd1c-4930-4304-9185-a5518de4b778" Value="0.06,0.2,0.1" Type="Vector3"/>
             </MemberComponentTemplate>
-<MemberComponentTemplate Name="RunAwayBehavior" Guid="3944fc68-5a01-4ae6-841c-97f8dd0b620f" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="5449b739-00bf-4e69-b9a8-f1573b0eba71" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="3944fc68-5a01-4ae6-841c-97f8dd0b620f" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
+<MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="5449b739-00bf-4e69-b9a8-f1573b0eba71" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="fac06497-dc95-4cc6-89f0-955b6fe0143b" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
                 <Parameter Name="DayRange" Guid="98b0a66c-fd04-489c-ae04-488125c12cf9" Value="0" Type="float"/>
                 <Parameter Name="NightRange" Guid="3be359a9-d999-489b-9436-daa610d8bbeb" Value="0" Type="float"/>
@@ -1005,8 +1005,8 @@
               <Parameter Name="GlowingEyesColor" Guid="3bff54e8-2e19-4331-9a3c-4ed1c7eaaa57" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="d668f8a1-2580-4556-9209-3af545aa3e1c" Value="0.06,0.2,0.1" Type="Vector3"/>
             </MemberComponentTemplate>
-<MemberComponentTemplate Name="RunAwayBehavior" Guid="1cd71d00-aff3-4750-9d14-8b076a07cfe3" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="3635a189-18ea-4774-abff-559714e489c0" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="1cd71d00-aff3-4750-9d14-8b076a07cfe3" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e13"/>
+<MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="3635a189-18ea-4774-abff-559714e489c0" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="dd5e33b9-08b4-448d-9ee1-efb8f6ad9ce3" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
                 <Parameter Name="DayRange" Guid="f5b2f07b-721d-4505-a9e9-58ac7465ff43" Value="0" Type="float"/>
                 <Parameter Name="NightRange" Guid="8e97576c-06c5-409f-b572-8c9d6b3864d9" Value="0" Type="float"/>
@@ -1308,8 +1308,8 @@
               <Parameter Name="GlowingEyesColor" Guid="f4a9ae31-c1a1-4061-9ae3-8c0295c477b7" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="bf9b0f90-d31a-4a9a-bdea-77605ea95045" Value="0.06,0.2,0.1" Type="Vector3"/>
             </MemberComponentTemplate>
-<MemberComponentTemplate Name="RunAwayBehavior" Guid="1beff999-274d-46e9-97c6-15083f1cd26d" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="2ef41635-8330-496a-b443-866bc720ad10" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="1beff999-274d-46e9-97c6-15083f1cd26d" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
+<MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="2ef41635-8330-496a-b443-866bc720ad10" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="5a2ff1e3-de37-4640-8d8d-edfb56cfd33d" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
                 <Parameter Name="DayRange" Guid="7588297b-be0b-4d91-8a2d-a5bddce455bb" Value="0" Type="float"/>
                 <Parameter Name="NightRange" Guid="efcfbe87-5f69-42c1-b7ab-c114e96a82b6" Value="0" Type="float"/>
@@ -1588,8 +1588,8 @@
               <Parameter Name="GlowingEyesColor" Guid="2ea0e33f-91ad-4573-a1ff-546d2faf43aa" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="ea86ee95-f4ff-41cd-af7f-fa3d5f62cc21" Value="0.06,0.2,0.1" Type="Vector3"/>
             </MemberComponentTemplate>
-<MemberComponentTemplate Name="RunAwayBehavior" Guid="1beff208-274d-46e9-97c6-15083f1cd26d" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="c81f2dbc-2f47-4a98-b633-cd0d3d9a1414" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="1beff208-274d-46e9-97c6-15083f1cd26d" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
+<MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="c81f2dbc-2f47-4a98-b633-cd0d3d9a1414" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="8c41705a-4556-4b4e-abde-d050c2b0d9a4" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
                 <Parameter Name="DayRange" Guid="99189aab-13f6-4765-a7d0-7751f7ba2a02" Value="0" Type="float"/>
                 <Parameter Name="NightRange" Guid="f23cbab3-f050-4ac8-be5b-8d1428915477" Value="0" Type="float"/>
@@ -1860,8 +1860,8 @@
               <Parameter Name="GlowingEyesColor" Guid="75015294-b75b-4007-b2be-7fca50b20895" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="88094460-9edb-4c56-89ac-b9d0c185032a" Value="0.06,0.2,0.1" Type="Vector3"/>
             </MemberComponentTemplate>
-<MemberComponentTemplate Name="RunAwayBehavior" Guid="2d2a038d-7fa3-4b14-951f-92777644e0d5" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="2f161ed9-1a63-49a5-9baa-003a49a911bd" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="2d2a038d-7fa3-4b14-951f-92777644e0d5" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
+<MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="2f161ed9-1a63-49a5-9baa-003a49a911bd" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="5fe444ee-207b-45a1-a912-3379457e30ea" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
                 <Parameter Name="DayRange" Guid="5f79ae53-1a7a-4478-99a3-a2b84a0841ea" Value="0" Type="float"/>
                 <Parameter Name="NightRange" Guid="ac28783e-68f2-4365-b8cd-08478a1d89ab" Value="0" Type="float"/>
@@ -2139,8 +2139,8 @@
               <Parameter Name="GlowingEyesColor" Guid="e24032f5-0393-404e-854d-490a43c5483d" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="2ea5d406-fe8d-401b-8f99-e336630449ac" Value="0.06,0.2,0.1" Type="Vector3"/>
             </MemberComponentTemplate>
-<MemberComponentTemplate Name="RunAwayBehavior" Guid="fc64eb99-8fd3-4673-b826-8cba45fe507a" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="64e51a63-00a8-499d-b674-a57e747c0954" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="fc64eb99-8fd3-4673-b826-8cba45fe507a" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
+<MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="64e51a63-00a8-499d-b674-a57e747c0954" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="67b1ea80-6a1c-4a0d-8f4f-5e9d49c0a198" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
                 <Parameter Name="DayRange" Guid="16c7df8d-9ce2-49fd-a797-c4eb668dc92f" Value="0" Type="float"/>
                 <Parameter Name="NightRange" Guid="c3987f2a-d4d9-4ab8-a897-0fb4abf1b36c" Value="0" Type="float"/>
@@ -2440,8 +2440,8 @@
     <MemberComponentTemplate Name="Spawn" Guid="99d7d39e-56f8-4e52-b482-b2b0f7e2ac8f">
         <Parameter Name="AutoDespawn" Guid="ff576976-dc9d-4afa-9b2a-88af70ac6012" Value="False" Type="bool"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="RunAwayBehavior" Guid="428cfff0-dc69-4116-a608-d010c233fbd4" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="6ce86dd7-3dad-4c0f-b689-3fe73892bd90" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
+    <MemberComponentTemplate Name="RunAwayBehavior" Guid="428cfff0-dc69-4116-a608-d010c233fbd4" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
+<MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="6ce86dd7-3dad-4c0f-b689-3fe73892bd90" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
             <MemberComponentTemplate Name="SummonBehavior" Guid="4dd2ee70-6bb3-4a64-9d88-c8901ea8e780">
               <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="c749edb5-26c2-496f-a40e-cd975c116404"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="e3521ad4-8b8f-4d71-b5c2-7dcd1385dfd7"/>
@@ -2682,8 +2682,8 @@
     <MemberComponentTemplate Name="Spawn" Guid="a3896354-0f53-48f3-8bae-c4ea4e4c8ef9">
         <Parameter Name="AutoDespawn" Guid="fd62f4a0-715e-4eb6-aeca-d33e208ac510" Value="False" Type="bool"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="RunAwayBehavior" Guid="e2bbe753-8737-4708-8cb3-531b2b6c822b" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="77575c57-0f0c-4764-bd69-1938ee70ae7e" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
+    <MemberComponentTemplate Name="RunAwayBehavior" Guid="e2bbe753-8737-4708-8cb3-531b2b6c822b" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
+<MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="77575c57-0f0c-4764-bd69-1938ee70ae7e" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
 </EntityTemplate>
 
 <EntityTemplate Name="InfectedFly3" Guid="3592cbed-fb5e-4365-adf8-507037de0a3a" InheritanceParent="0cb14482-b936-410e-9317-66d385d7d2fd">
@@ -2833,8 +2833,8 @@
             </ParameterSet>
         </ParameterSet>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="RunAwayBehavior" Guid="e9e042fe-c80c-4b56-8ced-03b8b2235bb9" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="8c4ac39d-778b-47b3-8f49-bf920e1d5f32" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
+    <MemberComponentTemplate Name="RunAwayBehavior" Guid="e9e042fe-c80c-4b56-8ced-03b8b2235bb9" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
+<MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="8c4ac39d-778b-47b3-8f49-bf920e1d5f32" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
 <MemberComponentTemplate Name="InvShooterBehavior" Guid="ec82a101-d3c1-427c-a8b8-89324ebeada9" InheritanceParent="456e3558-0e7f-42c3-bc05-35eef7540900">
         <Parameter Name="SpecialThrowableItem" Value="FireBulletBlock" Type="string"/> <!-- Lanzara fuego como proyectil -->
         <Parameter Name="DiscountFromInventory" Value="False" Type="bool"/>
@@ -3155,8 +3155,8 @@
     <MemberComponentTemplate Name="Spawn" Guid="06405407-34ac-4778-9255-7e99cc8b97f3">
         <Parameter Name="AutoDespawn" Guid="71503a1d-d891-40e4-87be-ab71ad899a61" Value="False" Type="bool"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="RunAwayBehavior" Guid="9ea86c12-dbf8-4183-9849-a934ae7f2c73" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="7eb728d3-cf67-4952-886c-e7c369723ece" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
+    <MemberComponentTemplate Name="RunAwayBehavior" Guid="9ea86c12-dbf8-4183-9849-a934ae7f2c73" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
+<MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="7eb728d3-cf67-4952-886c-e7c369723ece" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
 </EntityTemplate>
 
 <EntityTemplate Name="Boomer1" Guid="39ca6ee2-fa65-4c2d-8239-ae60d3ec241c" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
@@ -3363,8 +3363,8 @@
               <Parameter Name="GlowingEyesColor" Guid="ba5e41c8-bd71-43e8-b45f-45a56c09ccfb" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="236a1d6c-59e4-42e9-8b4b-23d1669b4c7e" Value="0.06,0.2,0.1" Type="Vector3"/>
             </MemberComponentTemplate>
-<MemberComponentTemplate Name="RunAwayBehavior" Guid="5cd0fe7f-831f-43cb-9230-77f60fc96e44" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="6bed5da1-254b-4f67-92f6-9fdcd435f551" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="5cd0fe7f-831f-43cb-9230-77f60fc96e44" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
+<MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="6bed5da1-254b-4f67-92f6-9fdcd435f551" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="2b3f11f2-4fa0-43c6-998a-a5b91145115f" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
                 <Parameter Name="DayRange" Guid="929d163a-eb1f-46f0-a2df-668cc77b91dd" Value="0" Type="float"/>
                 <Parameter Name="NightRange" Guid="64da686c-cd42-423c-ad11-9db91e47380e" Value="0" Type="float"/>
@@ -3661,8 +3661,8 @@
               <Parameter Name="GlowingEyesColor" Guid="1b30b0a1-eb64-4962-8589-2165fe74c33c" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="76232e16-15a3-4b6d-b408-5e5120c930b9" Value="0.06,0.2,0.1" Type="Vector3"/>
             </MemberComponentTemplate>
-<MemberComponentTemplate Name="RunAwayBehavior" Guid="00459bfe-abee-413e-bbd6-46001d0716e3" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="9794e8a6-a772-4651-95ab-c63e5410d746" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="00459bfe-abee-413e-bbd6-46001d0716e3" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
+<MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="9794e8a6-a772-4651-95ab-c63e5410d746" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="afa2aa79-7e53-423d-ae03-73969114a736" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
                 <Parameter Name="DayRange" Guid="2f85a3b9-bd9c-4405-8b1f-a3e04c7e6651" Value="0" Type="float"/>
                 <Parameter Name="NightRange" Guid="57c063e5-b9f3-42ae-ab94-6967043320cc" Value="0" Type="float"/>
@@ -3943,8 +3943,8 @@
               <Parameter Name="GlowingEyesColor" Guid="a3ec4d72-895f-4895-9fbc-718fec492a79" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="f3c90528-f935-419a-9a42-5ea9dfcb1570" Value="0.06,0.2,0.1" Type="Vector3"/>
             </MemberComponentTemplate>
-<MemberComponentTemplate Name="RunAwayBehavior" Guid="5cfdebe7-e6f8-4491-b32b-23a1c4155c03" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="bf7eb5c1-fd38-4b82-8e9a-10eee4e0a410" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="5cfdebe7-e6f8-4491-b32b-23a1c4155c03" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
+<MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="bf7eb5c1-fd38-4b82-8e9a-10eee4e0a410" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="80a0f321-ada7-4a3b-bfb5-a52f8dbeab81" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
                 <Parameter Name="DayRange" Guid="ee25c0d6-50fc-4aa9-8e65-1cef271d7b9d" Value="0" Type="float"/>
                 <Parameter Name="NightRange" Guid="98659b8f-6b0c-4b7d-bb73-cea6eb34c811" Value="0" Type="float"/>
@@ -4207,8 +4207,8 @@
               <Parameter Name="GlowingEyesColor" Guid="1ca4905f-aeb5-4eb8-90c1-da5e41d5f928" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="c41ddae7-8f7b-40bb-8412-9b95b0f20240" Value="0.06,0.2,0.1" Type="Vector3"/>
             </MemberComponentTemplate>
-<MemberComponentTemplate Name="RunAwayBehavior" Guid="4f16d92f-a73b-4615-a54f-a167f45f9478" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="c3bcdafb-1ff4-4de6-a1b3-f3bfc2b731c6" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="4f16d92f-a73b-4615-a54f-a167f45f9478" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
+<MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="c3bcdafb-1ff4-4de6-a1b3-f3bfc2b731c6" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="f10db383-969e-46fe-91f3-91c3bc051d86" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
                 <Parameter Name="DayRange" Guid="08439d2d-45a6-4092-a123-361d2d9ba560" Value="0" Type="float"/>
                 <Parameter Name="NightRange" Guid="f7ff4508-6b99-4173-820c-762a3deab007" Value="0" Type="float"/>
@@ -4469,8 +4469,8 @@
               <Parameter Name="GlowingEyesColor" Guid="71579616-8776-4320-8ba1-480b92da885b" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="e80177f9-0dd8-4cac-b56e-dbe9ed0a8b93" Value="0.06,0.2,0.1" Type="Vector3"/>
             </MemberComponentTemplate>
-<MemberComponentTemplate Name="RunAwayBehavior" Guid="d1d0b411-d9e2-4d66-85f5-45fe153ce42d" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="64a1abc7-ca7b-4589-b30d-ea543152b611" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="d1d0b411-d9e2-4d66-85f5-45fe153ce42d" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
+<MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="64a1abc7-ca7b-4589-b30d-ea543152b611" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="26e4151d-28e1-4fe5-9f5f-2c92e3205c77" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
                 <Parameter Name="DayRange" Guid="4ff92517-c4fc-4787-8c0f-8b3ab9715108" Value="0" Type="float"/>
                 <Parameter Name="NightRange" Guid="f672ce04-e4da-475e-b4bb-b99284609bea" Value="0" Type="float"/>
@@ -4728,8 +4728,8 @@
               <Parameter Name="GlowingEyesColor" Guid="ecf5bf88-d30e-4c1b-97fa-bf69ecc4b982" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="0ae02429-a37d-453f-ab7f-873c563493f8" Value="0.06,0.2,0.1" Type="Vector3"/>
             </MemberComponentTemplate>
-<MemberComponentTemplate Name="RunAwayBehavior" Guid="b874b299-eaa7-481d-87f9-147e10edc416" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="4b07eaea-cf12-4cd3-b749-619d9c677040" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="b874b299-eaa7-481d-87f9-147e10edc416" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
+<MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="4b07eaea-cf12-4cd3-b749-619d9c677040" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="df47f5dd-584d-4ab0-b592-77ab9dd6019b" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
                 <Parameter Name="DayRange" Guid="8c29ff55-dbfd-49ba-8f45-bd378a075a7c" Value="0" Type="float"/>
                 <Parameter Name="NightRange" Guid="ac267788-a22f-440f-92f9-8a0e6c4b10be" Value="0" Type="float"/>
@@ -4999,8 +4999,8 @@
               <Parameter Name="GlowingEyesColor" Guid="98e607cd-0d6f-4d6f-a6c4-117b8275f0d7" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="b56fe735-6a67-480a-8f03-f47a9e40b281" Value="0.06,0.2,0.1" Type="Vector3"/>
             </MemberComponentTemplate>
-<MemberComponentTemplate Name="RunAwayBehavior" Guid="8c314a20-6760-49d3-9430-4d0e745524cd" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="24db4f62-3ecb-471d-a292-dd95db1194c3" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="8c314a20-6760-49d3-9430-4d0e745524cd" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
+<MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="24db4f62-3ecb-471d-a292-dd95db1194c3" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="bc5b5092-7ddc-4ab7-830c-08a528b8fe1a" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
                 <Parameter Name="DayRange" Guid="3fc58036-8c2b-4573-8431-c1448c8a2d42" Value="0" Type="float"/>
                 <Parameter Name="NightRange" Guid="ca7e9aed-5a68-41e4-81ab-44130c33feae" Value="0" Type="float"/>
@@ -5280,8 +5280,8 @@
               <Parameter Name="GlowingEyesColor" Guid="a37dff0b-22a8-4050-b8a0-a338be7eb806" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="3976ab3a-a73a-4d36-9d97-7e465ad75042" Value="0.06,0.2,0.1" Type="Vector3"/>
             </MemberComponentTemplate>
-<MemberComponentTemplate Name="RunAwayBehavior" Guid="3a0e7a78-3ab3-4435-aa9b-d2c30f1d3fac" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="c852775a-bcc3-4258-b4ea-877618a92cb2" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="3a0e7a78-3ab3-4435-aa9b-d2c30f1d3fac" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
+<MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="c852775a-bcc3-4258-b4ea-877618a92cb2" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="61e901b0-3574-4b37-9988-f87940164096" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
                 <Parameter Name="DayRange" Guid="0e2d111d-9f4c-473b-97cc-b202b3134649" Value="0" Type="float"/>
                 <Parameter Name="NightRange" Guid="dac5fb4e-b6e7-4ebf-b2db-1763ec824083" Value="0" Type="float"/>
@@ -5567,8 +5567,8 @@
         <Parameter Name="MaxHelpChaseTime" Value="30" Type="float" Guid="150c6335-24e0-4c92-b77b-e57df2d7c8bb"/>
         <Parameter Name="AvoidAttackingSameHerd" Value="true" Type="bool" Guid="9a1528f5-609d-40d3-b12c-a6c2adcaf7d4"/>
     </MemberComponentTemplate>
-<MemberComponentTemplate Name="RunAwayBehavior" Guid="c4961720-5779-4cba-8e0a-db780d533b79" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="f19427ae-d2f7-4074-871c-3c55b8a8b302" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="c4961720-5779-4cba-8e0a-db780d533b79" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
+<MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="f19427ae-d2f7-4074-871c-3c55b8a8b302" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="71bedf48-1163-4bed-a265-8acc137ff1a4" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
                 <Parameter Name="DayRange" Guid="399debf1-82f3-419e-856e-354517c4bdb5" Value="0" Type="float"/>
                 <Parameter Name="NightRange" Guid="02b575d5-8c7e-4144-947a-d83828ed07ca" Value="0" Type="float"/>
@@ -5894,8 +5894,8 @@
         <Parameter Name="MaxHelpChaseTime" Value="30" Type="float" Guid="c8b6ab71-dd08-43d7-830a-85f3e38bbae1"/>
         <Parameter Name="AvoidAttackingSameHerd" Value="true" Type="bool" Guid="8af8b1f1-ccd7-4795-8b6b-5fad3a37c130"/>
     </MemberComponentTemplate>
-<MemberComponentTemplate Name="RunAwayBehavior" Guid="8d46e35c-7645-487c-bb76-768bd1d729ac" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="a7705b21-2811-4f18-9c96-af589f43aa5b" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="8d46e35c-7645-487c-bb76-768bd1d729ac" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
+<MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="a7705b21-2811-4f18-9c96-af589f43aa5b" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="99355998-a2f5-438e-92d7-ef10118097b7" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
                 <Parameter Name="DayRange" Guid="06912939-3995-40eb-b141-9d823dff003a" Value="0" Type="float"/>
                 <Parameter Name="NightRange" Guid="f79354c7-9854-4139-bb24-05137892e345" Value="0" Type="float"/>
@@ -6209,8 +6209,8 @@
         <Parameter Name="MaxHelpChaseTime" Value="30" Type="float" Guid="65b76111-2555-45de-b323-f491fcd5140c"/>
         <Parameter Name="AvoidAttackingSameHerd" Value="true" Type="bool" Guid="235f05df-eb7c-4d43-a83b-8d789b84da18"/>
     </MemberComponentTemplate>
-<MemberComponentTemplate Name="RunAwayBehavior" Guid="dd4c3e37-fe33-4d9f-ac21-d566d79347af" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="de5d592d-0735-42ca-869a-1cdc50d54cfe" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="dd4c3e37-fe33-4d9f-ac21-d566d79347af" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
+<MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="de5d592d-0735-42ca-869a-1cdc50d54cfe" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="2db0bbd3-4031-42df-95bd-aa71520cb934" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
                 <Parameter Name="DayRange" Guid="f66aee55-671f-4727-919b-cbe3b1879ce3" Value="0" Type="float"/>
                 <Parameter Name="NightRange" Guid="c5ded9c5-ddfd-4248-bb07-79c213608903" Value="0" Type="float"/>
@@ -6556,8 +6556,8 @@
               <Parameter Name="GlowingEyesColor" Guid="15d1708b-ca57-4dd4-b954-7afd8ae466f5" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="f7258562-cd92-41c5-b5c6-7e3221f5ba29" Value="0.06,0.2,0.1" Type="Vector3"/>
             </MemberComponentTemplate>
-<MemberComponentTemplate Name="RunAwayBehavior" Guid="e7643688-b45e-41fe-9b81-501827a4fb9e" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="f61a7ffd-7bbf-459d-b97a-a69cc03cdfed" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="e7643688-b45e-41fe-9b81-501827a4fb9e" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
+<MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="f61a7ffd-7bbf-459d-b97a-a69cc03cdfed" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="ae714c9b-bf08-410b-832a-b196d37619e3" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
                 <Parameter Name="DayRange" Guid="ca41c99e-673e-4d72-bfa4-c77084d75708" Value="0" Type="float"/>
                 <Parameter Name="NightRange" Guid="18618cf2-642e-458b-af08-f0a29d65aea7" Value="0" Type="float"/>
@@ -6897,8 +6897,8 @@
               <Parameter Name="GlowingEyesColor" Guid="e3e6f3fb-6caf-4ea9-b9da-a52e1cd1df0b" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="0ef6b4f3-7cfa-41a6-9846-803d3639ccca" Value="0.06,0.2,0.1" Type="Vector3"/>
             </MemberComponentTemplate>
-<MemberComponentTemplate Name="RunAwayBehavior" Guid="b26a4c51-67b1-42f8-a495-6a00416c5c14" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="2c1b5c59-1b19-4a42-9984-681de5eeb528" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="b26a4c51-67b1-42f8-a495-6a00416c5c14" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
+<MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="2c1b5c59-1b19-4a42-9984-681de5eeb528" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="06c15d0b-0896-4d56-9c0c-f45fb6adceea" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
                 <Parameter Name="DayRange" Guid="fe5a185d-1b8c-44f5-81ed-6d8a0fa3309a" Value="0" Type="float"/>
                 <Parameter Name="NightRange" Guid="ee490723-4cef-408a-bb91-ccec28ccb1cc" Value="0" Type="float"/>
@@ -7212,8 +7212,8 @@
               <Parameter Name="GlowingEyesColor" Guid="abacbbec-77f1-441b-bc75-0a875c0e20f0" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="5809e34e-267b-40d9-bdd3-eeb7475cdca3" Value="0.06,0.2,0.1" Type="Vector3"/>
             </MemberComponentTemplate>
-<MemberComponentTemplate Name="RunAwayBehavior" Guid="e3460cec-6cac-4d1b-bcb4-5427cdae81f2" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="74776444-3f44-4cf5-8377-7783ea5ebcf1" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="e3460cec-6cac-4d1b-bcb4-5427cdae81f2" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
+<MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="74776444-3f44-4cf5-8377-7783ea5ebcf1" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="2a3351d5-a23b-40cc-852c-927573aa5b0d" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
                 <Parameter Name="DayRange" Guid="0a9875e5-16e2-4d16-80d5-f1a3b8b46924" Value="0" Type="float"/>
                 <Parameter Name="NightRange" Guid="fb96de16-ba3a-48c7-a010-0d3448cee679" Value="0" Type="float"/>
@@ -7495,8 +7495,8 @@
               <Parameter Name="GlowingEyesColor" Guid="ed63f919-bcb8-42e1-ae1c-520a977b34cf" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="2f8d5c3b-de2e-49c9-a478-6b18b49e3013" Value="0.06,0.2,0.1" Type="Vector3"/>
             </MemberComponentTemplate>
-<MemberComponentTemplate Name="RunAwayBehavior" Guid="d82ab227-46cb-4bbe-8de8-ced4ba44250f" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="4ec3ae63-4cf1-47f3-bbf7-7553959fbe16" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="d82ab227-46cb-4bbe-8de8-ced4ba44250f" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
+<MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="4ec3ae63-4cf1-47f3-bbf7-7553959fbe16" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="fa97550a-c682-4c57-8577-6ec1671c7e0c" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
                 <Parameter Name="DayRange" Guid="622cdf4a-73d7-49b3-854b-840583673c99" Value="0" Type="float"/>
                 <Parameter Name="NightRange" Guid="e6967994-847a-463d-a07f-7eca4e4eac01" Value="0" Type="float"/>
@@ -7801,8 +7801,8 @@
               <Parameter Name="GlowingEyesColor" Guid="0b52d9a6-8c8b-449b-8104-d57c860037be" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="40cd956b-10d2-47f7-bf28-6558d0c43423" Value="0.06,0.2,0.1" Type="Vector3"/>
             </MemberComponentTemplate>
-<MemberComponentTemplate Name="RunAwayBehavior" Guid="e79d7fd7-6480-4c53-b70b-af4b02ec7f22" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="595dc002-6a33-4150-a70f-bb5b3da579e6" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="e79d7fd7-6480-4c53-b70b-af4b02ec7f22" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
+<MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="595dc002-6a33-4150-a70f-bb5b3da579e6" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="932399cf-c0eb-48eb-b2b9-690df00ed065" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
                 <Parameter Name="DayRange" Guid="02f585ed-b9cf-4a6b-b8a6-8136e1c25593" Value="0" Type="float"/>
                 <Parameter Name="NightRange" Guid="f83f01da-4565-4608-aca3-5f0aceaaad20" Value="0" Type="float"/>
@@ -8083,8 +8083,8 @@
               <Parameter Name="GlowingEyesColor" Guid="a43341d5-882c-4540-9b1e-4caadc52c2fc" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="11b36479-8760-4efc-9b13-7d78c8c87df2" Value="0.06,0.2,0.1" Type="Vector3"/>
             </MemberComponentTemplate>
-<MemberComponentTemplate Name="RunAwayBehavior" Guid="75042ff5-d50a-4034-b149-ccfb5b4d0caa" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="523fb008-9c37-4def-b0fe-11aca15ca613" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="75042ff5-d50a-4034-b149-ccfb5b4d0caa" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
+<MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="523fb008-9c37-4def-b0fe-11aca15ca613" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="6158585e-cee0-48ad-a128-381dca42397b" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
                 <Parameter Name="DayRange" Guid="e65e9b3a-ceb5-424e-a45f-8144d0fc9f1b" Value="0" Type="float"/>
                 <Parameter Name="NightRange" Guid="a94e028c-7477-4637-abec-d83cfbd031d2" Value="0" Type="float"/>
@@ -8366,8 +8366,8 @@
               <Parameter Name="GlowingEyesColor" Guid="a5833f09-dfc0-4a35-b31b-4986f5fac3f3" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="20373c2f-00b7-4819-a5e6-71853d61a35d" Value="0.06,0.2,0.1" Type="Vector3"/>
             </MemberComponentTemplate>
-<MemberComponentTemplate Name="RunAwayBehavior" Guid="f76289b0-27ad-4d4d-b4cc-3e2ea16c9569" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="8a09e26b-40f8-4636-96f9-4aa973cd6f81" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="f76289b0-27ad-4d4d-b4cc-3e2ea16c9569" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
+<MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="8a09e26b-40f8-4636-96f9-4aa973cd6f81" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="9e552bb7-d770-4879-af40-a66713771d83" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
                 <Parameter Name="DayRange" Guid="854209d1-8669-4408-93ff-1ee2274b6df8" Value="0" Type="float"/>
                 <Parameter Name="NightRange" Guid="4c75c8f8-e4f1-4c63-8787-6d60ddca5c48" Value="0" Type="float"/>
@@ -8675,8 +8675,8 @@
               <Parameter Name="GlowingEyesColor" Guid="ba26fc7b-a788-4ae2-8338-4e4c6a1d6625" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="75a032ce-a297-4bfa-9e6f-4cf42eeba9ae" Value="0.06,0.2,0.1" Type="Vector3"/>
             </MemberComponentTemplate>
-<MemberComponentTemplate Name="RunAwayBehavior" Guid="3a902e5c-e98b-4460-b358-a04a0e6df2a8" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="cee56f88-94ce-4ca7-ad77-ec8ac623c09b" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="3a902e5c-e98b-4460-b358-a04a0e6df2a8" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
+<MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="cee56f88-94ce-4ca7-ad77-ec8ac623c09b" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="79dc292c-fb1b-4ae8-9281-5dd55dee1767" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
                 <Parameter Name="DayRange" Guid="c7e5e6a3-0e43-44e4-9342-f74700258442" Value="0" Type="float"/>
                 <Parameter Name="NightRange" Guid="708865d5-c3e9-4fc6-bf93-a347f97c1afa" Value="0" Type="float"/>
@@ -9238,8 +9238,8 @@
         <Parameter Name="AccelerationFactor" Guid="fd17f7f6-3801-46f5-8aa6-27a0b2730ebf" Value="1.35" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="c0f97133-193a-4aec-9718-b65d9b071ae7" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
-<MemberComponentTemplate Name="RunAwayBehavior" Guid="d675e416-9082-417e-8330-ea55f970bf05" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="d9a5a0ec-f39b-4d16-8b74-2d5d7c73e251" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="d675e416-9082-417e-8330-ea55f970bf05" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
+<MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="d9a5a0ec-f39b-4d16-8b74-2d5d7c73e251" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
     <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="12b742fc-46d9-4c44-9856-40053acda2c8" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
         <Parameter Name="DayRange" Guid="a4fef095-7c4a-440e-b105-e1c2417590a0" Value="0" Type="float"/>
         <Parameter Name="NightRange" Guid="b1ee9e20-3f08-4bf0-9508-3b6064a87fce" Value="0" Type="float"/>
@@ -9401,8 +9401,8 @@
 </EntityTemplate>
 
 <EntityTemplate Name="InfectedHyenaTamed" Guid="94393520-531c-4fe1-b28a-245621b43703" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="RunAwayBehavior" Guid="c32e18e5-b0d9-42b5-85ca-71069a9310aa" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="16d907af-cf43-4ae3-80ff-a5ba13e3b418" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="c32e18e5-b0d9-42b5-85ca-71069a9310aa" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
+<MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="16d907af-cf43-4ae3-80ff-a5ba13e3b418" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
 <MemberComponentTemplate Name="SummonBehavior" Guid="34b8b931-37e5-494e-bf45-8d04b4feae4c" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
               <Parameter Name="IsEnabled" Guid="36e3bbc1-bd74-409a-bb2a-0e2400ec7923" Value="True" Type="bool"/>
             </MemberComponentTemplate>
@@ -9610,8 +9610,8 @@
         <Parameter Name="StubbornProbability" Guid="df6bf110-5ef3-4ff6-88ad-f9d959a58757" Value="0.3" Type="float"/>
         <Parameter Name="StubbornEndTime" Guid="a198c658-7b37-4983-9ec0-2e38b0133ed3" Value="0" Type="double"/>
     </MemberComponentTemplate>
-          <MemberComponentTemplate Name="RunAwayBehavior" Guid="a54c0ea8-ba4d-4760-97bb-58158d43faf1" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="df78fa3e-9a0d-496b-b14a-1ebd5736ce94" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
+          <MemberComponentTemplate Name="RunAwayBehavior" Guid="a54c0ea8-ba4d-4760-97bb-58158d43faf1" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
+<MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="df78fa3e-9a0d-496b-b14a-1ebd5736ce94" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
           <MemberComponentTemplate Name="AutoJump" Guid="c89499c4-adad-461c-9e85-b1bd011ae535">
         <Parameter Name="JumpStrength" Guid="756b8d35-0b40-4b48-bd6f-74485d0bf56a" Value="1.0" Type="float"/>
     </MemberComponentTemplate>
@@ -9782,8 +9782,8 @@
           </EntityTemplate>
 
           <EntityTemplate Name="InfectedWildboarTamed" Guid="c8787c56-c7ca-4fac-988d-45e81ddef109" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-          <MemberComponentTemplate Name="RunAwayBehavior" Guid="888d9b37-773b-4487-9ecc-b30ab14655db" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="0be3795d-b774-4b94-8afd-75ff8837646f" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
+          <MemberComponentTemplate Name="RunAwayBehavior" Guid="888d9b37-773b-4487-9ecc-b30ab14655db" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
+<MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="0be3795d-b774-4b94-8afd-75ff8837646f" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
           <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="eb1905ca-e25d-4fbe-89de-c14ee34b8ffa" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
         <Parameter Name="DayRange" Guid="a19f9665-af05-4625-a672-ad5b0f89d68a" Value="0" Type="float"/>
         <Parameter Name="NightRange" Guid="74f41f43-a4f8-4b44-9006-80d621044939" Value="0" Type="float"/>
@@ -9961,8 +9961,8 @@
             </EntityTemplate>
 
             <EntityTemplate Name="InfectedBirdTamed" Guid="cddd54bc-d23a-4490-9ff5-0ce9d3499d52" InheritanceParent="0cb14482-b936-410e-9317-66d385d7d2fd">
-            <MemberComponentTemplate Name="RunAwayBehavior" Guid="09406146-6c3f-46cc-9409-89dffc648c97" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="f39a99a3-4443-44d2-a49b-765ac13d75ce" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
+            <MemberComponentTemplate Name="RunAwayBehavior" Guid="09406146-6c3f-46cc-9409-89dffc648c97" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
+<MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="f39a99a3-4443-44d2-a49b-765ac13d75ce" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
     <MemberComponentTemplate Name="PoisonInfected" Guid="a07233cf-9dfb-40be-8276-54ecf47c034f" InheritanceParent="d5e7f9a1-b3c5-4d9f-1a3b-5c7d9f1a3b5c">
     <Parameter Name="PoisonResistance" Value="5" Type="float"/>
 </MemberComponentTemplate>
@@ -10153,8 +10153,8 @@
 </EntityTemplate>
 
 <EntityTemplate Name="PredatoryChameleonTamed" Guid="09fcb5bf-1456-4b1c-bc10-6460fe19d048" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="RunAwayBehavior" Guid="eced35a8-e422-4b45-b4f0-0f9edde40073" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="65cc8334-24db-49fb-ae64-a8dfe1b5cc23" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="eced35a8-e422-4b45-b4f0-0f9edde40073" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
+<MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="65cc8334-24db-49fb-ae64-a8dfe1b5cc23" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
 <MemberComponentTemplate Name="NewChaseBehavior" Guid="661b5aec-84c9-47ad-9f22-2685d367a8e7" InheritanceParent="1db20f99-32ba-4e7a-8e76-10686a2e76e5">
   <Parameter Name="ChaseWhenAttackedProbability" Guid="13a4ab80-a5da-4806-bf6b-aa29bab93cbf" Value="1" Type="float"/>
   <Parameter Name="NightChaseTime" Guid="5bc5ba90-baf5-43f8-8462-1d20e0ccace5" Value="90" Type="float"/>
@@ -10402,8 +10402,8 @@
 <MemberComponentTemplate Name="SummonBehavior" Guid="d8470fa4-52ff-4265-9da3-475c81460ef8" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
         <Parameter Name="IsEnabled" Guid="1e7221a9-ceb6-41e4-8a5f-4793050d1325" Value="True" Type="bool"/>
       </MemberComponentTemplate>
-<MemberComponentTemplate Name="RunAwayBehavior" Guid="610445fe-653d-4ff6-a892-f01e82bff833" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="ddf86415-3ec9-441b-bace-5cbc84569020" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="610445fe-653d-4ff6-a892-f01e82bff833" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
+<MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="ddf86415-3ec9-441b-bace-5cbc84569020" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
 <MemberComponentTemplate Name="NewChaseBehavior" Guid="1c73516b-392c-41dd-ae60-0cb19fa6c37a" InheritanceParent="1db20f99-32ba-4e7a-8e76-10686a2e76e5">
   <Parameter Name="ChaseWhenAttackedProbability" Guid="39be80ff-9a65-49d1-8dd0-bf4e4c9510de" Value="1" Type="float"/>
   <Parameter Name="NightChaseTime" Guid="248fa2ff-c171-44cf-9cbf-8489e9274823" Value="90" Type="float"/>
