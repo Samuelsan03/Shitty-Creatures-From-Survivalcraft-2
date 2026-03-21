@@ -196,11 +196,19 @@ namespace Game
 
 			if (m_componentChase == null || m_componentChase.Target == null)
 			{
+				// Resetear la mirada cuando no hay objetivo
+				if (m_componentCreatureModel != null)
+					m_componentCreatureModel.LookAtOrder = null;
 				CancelAiming();
 				return;
 			}
 
 			ComponentCreature target = m_componentChase.Target;
+
+			// Hacer que el NPC mire al objetivo constantemente (como en WonderfulEra)
+			if (m_componentCreatureModel != null && target.ComponentCreatureModel != null)
+				m_componentCreatureModel.LookAtOrder = new Vector3?(target.ComponentCreatureModel.EyePosition);
+
 			float distance = Vector3.Distance(m_componentCreature.ComponentBody.Position, target.ComponentBody.Position);
 
 			bool hasThrowable = HasThrowableWeapon();
@@ -220,6 +228,7 @@ namespace Game
 					CancelAiming();
 					return;
 				}
+				// Solo detenerse y apuntar si hay línea de visión Y el objetivo está enfrente
 				if (HasLineOfSight(target) && IsTargetInFront(target))
 				{
 					StopMovement();
@@ -227,7 +236,7 @@ namespace Game
 				}
 				else
 				{
-					CancelAiming();
+					CancelAiming(); // Reanuda movimiento si estaba detenido, permitiendo orientarse
 				}
 			}
 			else if (useRanged)
@@ -237,7 +246,16 @@ namespace Game
 					CancelAiming();
 					return;
 				}
-				UpdateAiming(target);
+				// Las armas a distancia no detienen el movimiento, pero si el objetivo no está enfrente,
+				// se cancela el apuntado para seguir moviéndose y orientarse
+				if (IsTargetInFront(target))
+				{
+					UpdateAiming(target);
+				}
+				else
+				{
+					CancelAiming();
+				}
 			}
 			else
 			{
