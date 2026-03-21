@@ -204,26 +204,30 @@ namespace Game
 			float distance = Vector3.Distance(m_componentCreature.ComponentBody.Position, target.ComponentBody.Position);
 
 			bool hasThrowable = HasThrowableWeapon();
-			bool useThrowable = distance <= m_throwableRange && hasThrowable;
 			bool useMelee = distance <= m_meleeRange;
+			bool useThrowable = !useMelee && distance <= m_throwableRange && hasThrowable;
 			bool useRanged = !useThrowable && distance > m_meleeRange && distance <= m_rangedRange;
 
-			if (useThrowable)
+			if (useMelee)
+			{
+				CancelAiming();
+				EquipMeleeOrThrowableWeapon();  // prioriza el arma lanzable para melee
+			}
+			else if (useThrowable)
 			{
 				if (!EquipThrowableWeapon())
 				{
 					CancelAiming();
 					return;
 				}
-				// Solo para lanzables: detenemos el movimiento si tenemos línea de visión, de lo contrario seguimos moviéndonos.
-				if (HasLineOfSight(target))
+				if (HasLineOfSight(target) && IsTargetInFront(target))
 				{
 					StopMovement();
 					UpdateAiming(target);
 				}
 				else
 				{
-					CancelAiming(); // Reanuda movimiento si estaba detenido.
+					CancelAiming();
 				}
 			}
 			else if (useRanged)
@@ -233,18 +237,52 @@ namespace Game
 					CancelAiming();
 					return;
 				}
-				// Las armas a distancia no detienen el movimiento, siguen moviéndose mientras apuntan/disparan.
 				UpdateAiming(target);
-			}
-			else if (useMelee)
-			{
-				CancelAiming();
-				EquipMeleeWeapon();
 			}
 			else
 			{
 				CancelAiming();
 			}
+		}
+
+		private void EquipMeleeOrThrowableWeapon()
+		{
+			// Prioridad: arma lanzable como melee
+			if (HasThrowableWeapon())
+			{
+				EquipThrowableWeapon();
+				return;
+			}
+
+			// Si no hay lanzable, equipar un arma melee normal
+			int activeSlot = m_componentInventory.ActiveSlotIndex;
+			int activeValue = m_componentInventory.GetSlotValue(activeSlot);
+			if (IsMeleeWeapon(activeValue)) return;
+
+			for (int i = 0; i < m_componentInventory.SlotsCount; i++)
+			{
+				int value = m_componentInventory.GetSlotValue(i);
+				if (IsMeleeWeapon(value))
+				{
+					m_componentInventory.ActiveSlotIndex = i;
+					break;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Verifica si el objetivo está frente al NPC (dentro de un ángulo de 60 grados)
+		/// </summary>
+		private bool IsTargetInFront(ComponentCreature target)
+		{
+			if (target == null || m_componentCreature?.ComponentBody == null)
+				return false;
+
+			Vector3 toTarget = Vector3.Normalize(target.ComponentBody.Position - m_componentCreature.ComponentBody.Position);
+			Vector3 forward = m_componentCreature.ComponentBody.Matrix.Forward;
+			float dot = Vector3.Dot(forward, toTarget);
+			// Umbral de 0.5 corresponde a ~60°, ajustable según necesidad
+			return dot > 0.5f;
 		}
 
 		private bool HasThrowableWeapon()
@@ -603,6 +641,14 @@ namespace Game
 
 		private void UpdateAiming(ComponentCreature target)
 		{
+			// Cancelar si el objetivo ya no está enfrente (para armas lanzables)
+			// Esto evita que se siga apuntando si el objetivo se mueve detrás
+			if (!IsTargetInFront(target))
+			{
+				CancelAiming();
+				return;
+			}
+
 			double currentTime = m_subsystemTime.GameTime;
 			bool canFireCooldown = true;
 
