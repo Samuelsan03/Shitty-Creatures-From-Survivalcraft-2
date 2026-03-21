@@ -21,7 +21,7 @@ namespace Game
 		private const double CROSSBOW_COOLDOWN = 1.5;
 		private const double MUSKET_COOLDOWN = 0.8;
 		private const double REPEAT_CROSSBOW_COOLDOWN = 1.2;
-		private const double FLAMETHROWER_COOLDOWN = 0;
+		private const double FLAMETHROWER_COOLDOWN = 0.3;      // Cadencia real
 		private const double THROWABLE_COOLDOWN = 0.5;
 
 		private const double CROSSBOW_MIN_AIM_TIME = 0.3;
@@ -259,6 +259,7 @@ namespace Game
 					m_currentWeaponType = Terrain.ExtractContents(activeValue);
 				}
 
+				// Mantener la misma lógica de apuntado que las armas a distancia: línea de visión + frente
 				if (HasLineOfSight(target) && IsTargetInFront(target))
 				{
 					StopMovement();
