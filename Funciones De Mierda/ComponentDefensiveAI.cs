@@ -215,13 +215,16 @@ namespace Game
 					CancelAiming();
 					return;
 				}
-				StopMovement();
-				UpdateAiming(target);
-			}
-			else if (useMelee)
-			{
-				CancelAiming();
-				EquipMeleeWeapon();
+				// Solo para lanzables: detenemos el movimiento si tenemos línea de visión, de lo contrario seguimos moviéndonos.
+				if (HasLineOfSight(target))
+				{
+					StopMovement();
+					UpdateAiming(target);
+				}
+				else
+				{
+					CancelAiming(); // Reanuda movimiento si estaba detenido.
+				}
 			}
 			else if (useRanged)
 			{
@@ -230,7 +233,13 @@ namespace Game
 					CancelAiming();
 					return;
 				}
+				// Las armas a distancia no detienen el movimiento, siguen moviéndose mientras apuntan/disparan.
 				UpdateAiming(target);
+			}
+			else if (useMelee)
+			{
+				CancelAiming();
+				EquipMeleeWeapon();
 			}
 			else
 			{
