@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Engine;
 using GameEntitySystem;
 using TemplatesDatabase;
@@ -13,6 +14,7 @@ namespace Game
 		public bool CanUseInventory = true;
 
 		private float m_meleeRange = 5f;
+		private float m_throwableRange = 15f;
 		private float m_rangedRange = 100f;
 
 		private const double BOW_COOLDOWN = 1.5;
@@ -20,16 +22,19 @@ namespace Game
 		private const double MUSKET_COOLDOWN = 0.8;
 		private const double REPEAT_CROSSBOW_COOLDOWN = 1.2;
 		private const double FLAMETHROWER_COOLDOWN = 0;
+		private const double THROWABLE_COOLDOWN = 0.5;
 
 		private const double CROSSBOW_MIN_AIM_TIME = 0.3;
 		private const double MUSKET_MIN_AIM_TIME = 1.5;
 		private const double REPEAT_CROSSBOW_MIN_AIM_TIME = 0.5;
+		private const double THROWABLE_MIN_AIM_TIME = 1.5;
 
 		private ComponentCreature m_componentCreature;
 		private ComponentMiner m_componentMiner;
 		private ComponentInventory m_componentInventory;
 		private ComponentNewChaseBehavior m_componentChase;
 		private ComponentCreatureModel m_componentCreatureModel;
+		private ComponentPathfinding m_componentPathfinding;
 
 		private SubsystemTime m_subsystemTime;
 		private SubsystemProjectiles m_subsystemProjectiles;
@@ -39,12 +44,21 @@ namespace Game
 		private double m_aimStartTime;
 		private Ray3 m_aimRay;
 		private int m_currentWeaponType;
+		private Vector3? m_originalDestination;
+		private float m_originalSpeed;
+		private float m_originalRange;
+		private int m_originalMaxPathfindingPositions;
+		private bool m_originalUseRandomMovements;
+		private bool m_originalIgnoreHeightDifference;
+		private bool m_originalRaycastDestination;
+		private ComponentBody m_originalDoNotAvoidBody;
 
 		private double m_lastBowShotTime = -1000;
 		private double m_lastCrossbowShotTime = -1000;
 		private double m_lastMusketShotTime = -1000;
 		private double m_lastRepeatCrossbowShotTime = -1000;
 		private double m_lastFlameThrowerShotTime = -1000;
+		private double m_lastThrowableShotTime = -1000;
 
 		private int m_bowBlockIndex;
 		private int m_crossbowBlockIndex;
@@ -55,6 +69,8 @@ namespace Game
 		private int m_bulletBlockIndex;
 		private int m_repeatArrowBlockIndex;
 		private int m_flameBulletBlockIndex;
+
+		private HashSet<int> m_throwableBlockIndices;
 
 		private Random m_random = new Random();
 
@@ -105,6 +121,7 @@ namespace Game
 			m_componentInventory = Entity.FindComponent<ComponentInventory>();
 			m_componentChase = Entity.FindComponent<ComponentNewChaseBehavior>();
 			m_componentCreatureModel = Entity.FindComponent<ComponentCreatureModel>(true);
+			m_componentPathfinding = Entity.FindComponent<ComponentPathfinding>();
 
 			m_subsystemTime = Project.FindSubsystem<SubsystemTime>(true);
 			m_subsystemProjectiles = Project.FindSubsystem<SubsystemProjectiles>(true);
@@ -119,6 +136,40 @@ namespace Game
 			m_bulletBlockIndex = BlocksManager.GetBlockIndex<BulletBlock>(false);
 			m_repeatArrowBlockIndex = BlocksManager.GetBlockIndex<RepeatArrowBlock>(false);
 			m_flameBulletBlockIndex = BlocksManager.GetBlockIndex<FlameBulletBlock>(false);
+
+			m_throwableBlockIndices = new HashSet<int>
+			{
+				BlocksManager.GetBlockIndex<StoneChunkBlock>(),
+				BlocksManager.GetBlockIndex<SulphurChunkBlock>(),
+				BlocksManager.GetBlockIndex<CoalChunkBlock>(),
+				BlocksManager.GetBlockIndex<DiamondChunkBlock>(),
+				BlocksManager.GetBlockIndex<GermaniumChunkBlock>(),
+				BlocksManager.GetBlockIndex<GermaniumOreChunkBlock>(),
+				BlocksManager.GetBlockIndex<IronOreChunkBlock>(),
+				BlocksManager.GetBlockIndex<MalachiteChunkBlock>(),
+				BlocksManager.GetBlockIndex<SaltpeterChunkBlock>(),
+				BlocksManager.GetBlockIndex<GunpowderBlock>(),
+				BlocksManager.GetBlockIndex<BombBlock>(),
+				BlocksManager.GetBlockIndex<IncendiaryBombBlock>(),
+				BlocksManager.GetBlockIndex<PoisonBombBlock>(),
+				BlocksManager.GetBlockIndex<BrickBlock>(),
+				BlocksManager.GetBlockIndex<SnowballBlock>(),
+				BlocksManager.GetBlockIndex<EggBlock>(),
+				BlocksManager.GetBlockIndex<CopperSpearBlock>(),
+				BlocksManager.GetBlockIndex<DiamondSpearBlock>(),
+				BlocksManager.GetBlockIndex<IronSpearBlock>(),
+				BlocksManager.GetBlockIndex<WoodenSpearBlock>(),
+				BlocksManager.GetBlockIndex<WoodenLongspearBlock>(),
+				BlocksManager.GetBlockIndex<StoneSpearBlock>(),
+				BlocksManager.GetBlockIndex<StoneLongspearBlock>(),
+				BlocksManager.GetBlockIndex<IronLongspearBlock>(),
+				BlocksManager.GetBlockIndex<LavaLongspearBlock>(),
+				BlocksManager.GetBlockIndex<LavaSpearBlock>(),
+				BlocksManager.GetBlockIndex<DiamondLongspearBlock>(),
+				BlocksManager.GetBlockIndex<FreezingSnowballBlock>(),
+				BlocksManager.GetBlockIndex<FreezeBombBlock>(),
+				BlocksManager.GetBlockIndex<FireworksBlock>()
+			};
 
 			CanUseInventory = valuesDictionary.GetValue<bool>("CanUseInventory", CanUseInventory);
 
@@ -152,10 +203,22 @@ namespace Game
 			ComponentCreature target = m_componentChase.Target;
 			float distance = Vector3.Distance(m_componentCreature.ComponentBody.Position, target.ComponentBody.Position);
 
+			bool hasThrowable = HasThrowableWeapon();
+			bool useThrowable = distance <= m_throwableRange && hasThrowable;
 			bool useMelee = distance <= m_meleeRange;
-			bool useRanged = distance > m_meleeRange && distance <= m_rangedRange;
+			bool useRanged = !useThrowable && distance > m_meleeRange && distance <= m_rangedRange;
 
-			if (useMelee)
+			if (useThrowable)
+			{
+				if (!EquipThrowableWeapon())
+				{
+					CancelAiming();
+					return;
+				}
+				StopMovement();
+				UpdateAiming(target);
+			}
+			else if (useMelee)
 			{
 				CancelAiming();
 				EquipMeleeWeapon();
@@ -173,6 +236,40 @@ namespace Game
 			{
 				CancelAiming();
 			}
+		}
+
+		private bool HasThrowableWeapon()
+		{
+			for (int i = 0; i < m_componentInventory.SlotsCount; i++)
+			{
+				int value = m_componentInventory.GetSlotValue(i);
+				if (IsThrowableWeapon(value))
+					return true;
+			}
+			return false;
+		}
+
+		private bool EquipThrowableWeapon()
+		{
+			int activeSlot = m_componentInventory.ActiveSlotIndex;
+			int activeValue = m_componentInventory.GetSlotValue(activeSlot);
+			if (IsThrowableWeapon(activeValue))
+			{
+				m_currentWeaponType = Terrain.ExtractContents(activeValue);
+				return true;
+			}
+
+			for (int i = 0; i < m_componentInventory.SlotsCount; i++)
+			{
+				int value = m_componentInventory.GetSlotValue(i);
+				if (IsThrowableWeapon(value))
+				{
+					m_componentInventory.ActiveSlotIndex = i;
+					m_currentWeaponType = Terrain.ExtractContents(value);
+					return true;
+				}
+			}
+			return false;
 		}
 
 		private void EquipMeleeWeapon()
@@ -411,7 +508,7 @@ namespace Game
 			Block block = BlocksManager.Blocks[contents];
 			float meleePower = block.GetMeleePower(value);
 			if (meleePower <= 0) return false;
-			return !IsRangedWeapon(value);
+			return !IsRangedWeapon(value) && !IsThrowableWeapon(value);
 		}
 
 		private bool IsRangedWeapon(int value)
@@ -424,6 +521,53 @@ namespace Game
 				   contents == m_flameThrowerBlockIndex;
 		}
 
+		private bool IsThrowableWeapon(int value)
+		{
+			int contents = Terrain.ExtractContents(value);
+			return m_throwableBlockIndices.Contains(contents);
+		}
+
+		private void StopMovement()
+		{
+			if (m_componentPathfinding != null && m_componentPathfinding.Destination != null)
+			{
+				m_originalDestination = m_componentPathfinding.Destination;
+				m_originalSpeed = m_componentPathfinding.Speed;
+				m_originalRange = m_componentPathfinding.Range;
+				m_originalMaxPathfindingPositions = m_componentPathfinding.MaxPathfindingPositions;
+				m_originalUseRandomMovements = m_componentPathfinding.UseRandomMovements;
+				m_originalIgnoreHeightDifference = m_componentPathfinding.IgnoreHeightDifference;
+				m_originalRaycastDestination = m_componentPathfinding.RaycastDestination;
+				m_originalDoNotAvoidBody = m_componentPathfinding.DoNotAvoidBody;
+				m_componentPathfinding.Stop();
+			}
+		}
+
+		private void ResumeMovement()
+		{
+			if (m_componentChase != null && m_componentChase.Target != null)
+			{
+				if (m_componentPathfinding != null)
+				{
+					Vector3 targetPos = m_componentChase.Target.ComponentBody.Position;
+					m_componentPathfinding.SetDestination(targetPos, m_originalSpeed > 0 ? m_originalSpeed : 1f,
+						m_originalRange > 0 ? m_originalRange : 1f, m_originalMaxPathfindingPositions,
+						m_originalUseRandomMovements, m_originalIgnoreHeightDifference,
+						m_originalRaycastDestination, m_originalDoNotAvoidBody);
+				}
+			}
+			else if (m_originalDestination != null)
+			{
+				if (m_componentPathfinding != null)
+				{
+					m_componentPathfinding.SetDestination(m_originalDestination, m_originalSpeed, m_originalRange,
+						m_originalMaxPathfindingPositions, m_originalUseRandomMovements,
+						m_originalIgnoreHeightDifference, m_originalRaycastDestination, m_originalDoNotAvoidBody);
+					m_originalDestination = null;
+				}
+			}
+		}
+
 		private bool HasLineOfSight(ComponentCreature target)
 		{
 			if (m_subsystemTerrain == null || m_componentCreatureModel == null || target.ComponentCreatureModel == null)
@@ -432,19 +576,15 @@ namespace Game
 			Vector3 start = m_componentCreatureModel.EyePosition;
 			Vector3 end = target.ComponentCreatureModel.EyePosition;
 
-			// Raycast through terrain, ignore the target's own body (we only care about blocks)
 			TerrainRaycastResult? result = m_subsystemTerrain.Raycast(start, end, false, true, (int value, float distance) =>
 			{
 				Block block = BlocksManager.Blocks[Terrain.ExtractContents(value)];
 				return block.IsCollidable_(value);
 			});
 
-			// If no hit, line of sight is clear.
-			// If hit, check if the hit point is very close to the target's eye (maybe due to rounding)
 			if (result == null)
 				return true;
 
-			// If the hit is very close to the target (e.g., inside the target's hitbox), consider it clear.
 			float distanceToTarget = Vector3.Distance(start, end);
 			if (result.Value.Distance >= distanceToTarget - 0.1f)
 				return true;
@@ -467,6 +607,8 @@ namespace Game
 				canFireCooldown = currentTime - m_lastRepeatCrossbowShotTime >= REPEAT_CROSSBOW_COOLDOWN;
 			else if (m_currentWeaponType == m_flameThrowerBlockIndex)
 				canFireCooldown = currentTime - m_lastFlameThrowerShotTime >= FLAMETHROWER_COOLDOWN;
+			else if (IsThrowableWeapon(m_componentInventory.GetSlotValue(m_componentInventory.ActiveSlotIndex)))
+				canFireCooldown = currentTime - m_lastThrowableShotTime >= THROWABLE_COOLDOWN;
 
 			if (!canFireCooldown)
 			{
@@ -474,7 +616,6 @@ namespace Game
 				return;
 			}
 
-			// Check line of sight before aiming
 			if (!HasLineOfSight(target))
 			{
 				CancelAiming();
@@ -538,14 +679,25 @@ namespace Game
 				bool switchState = FlameThrowerBlock.GetSwitchState(data);
 				readyToFire = loadState == FlameThrowerBlock.LoadState.Loaded && loadCount > 0 && switchState;
 			}
+			else if (IsThrowableWeapon(weaponValue))
+			{
+				readyToFire = aimTime >= THROWABLE_MIN_AIM_TIME;
+			}
 
 			if (readyToFire)
 			{
 				bool isAutomatic = (m_currentWeaponType == m_flameThrowerBlockIndex);
+				bool isThrowable = IsThrowableWeapon(weaponValue);
+
 				if (!isAutomatic)
 				{
 					m_componentMiner.Aim(m_aimRay, AimState.Completed);
 					m_isAiming = false;
+
+					if (isThrowable)
+					{
+						ResumeMovement();
+					}
 
 					if (m_currentWeaponType == m_bowBlockIndex)
 						m_lastBowShotTime = currentTime;
@@ -555,6 +707,8 @@ namespace Game
 						m_lastMusketShotTime = currentTime;
 					else if (m_currentWeaponType == m_repeatCrossbowBlockIndex)
 						m_lastRepeatCrossbowShotTime = currentTime;
+					else if (isThrowable)
+						m_lastThrowableShotTime = currentTime;
 				}
 				else
 				{
@@ -582,6 +736,7 @@ namespace Game
 			{
 				m_componentMiner.Aim(m_aimRay, AimState.Cancelled);
 				m_isAiming = false;
+				ResumeMovement();
 			}
 		}
 
@@ -589,7 +744,10 @@ namespace Game
 		{
 			if (projectile.Owner == m_componentCreature)
 			{
-				projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
+				if (!IsThrowableWeapon(projectile.Value))
+				{
+					projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
+				}
 			}
 		}
 	}
