@@ -5808,6 +5808,7 @@
 				<Parameter Name="AttackResilience" Guid="3bd3eb3e-cca0-47cf-bd88-2b21d0e7035b" Value="300" Type="float"/>
 				<Parameter Name="FireResilience" Guid="0f863b65-64f8-4713-8d90-d212d8a0d878" Value="1000" Type="float"/>
                 <Parameter Name="ExplosionResilience" Guid="e755caec-d56c-42c5-98c4-f2c7ccac02e0" Value="850" Type="float"/>
+                <Parameter Name="FallResilience" Guid="c265193e-9527-4e52-a645-099a95598f7a" Value="250" Type="float"/>
 			</MemberComponentTemplate>
 			<MemberComponentTemplate Name="WalkAroundBehavior" Guid="ad84f517-3744-4612-9799-09ad1521afa6" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
 			<MemberComponentTemplate Name="OnFire" Guid="a90ba279-067a-4792-b4f6-e358e8830c4e"/>
