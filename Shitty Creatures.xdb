@@ -4307,9 +4307,6 @@
     <Parameter Name="LoadOrder" Value="60" Type="int" Guid="7a2f907c-e808-4b8f-937d-a9a8e1fba9a4"/>
               <Parameter Name="IsEnabled" Guid="f8bcf0c8-8ef2-4f55-a2bd-53e626a77b79" Value="True" Type="bool"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="DefensiveAI" Guid="109510fa-09ca-4e94-9475-29c9dc07e891" InheritanceParent="2e0ff3f9-d699-41d1-b64a-cb06cda18234">
-  <Parameter Name="CanUseInventory" Guid="331e0145-9a11-4822-970c-2dd0bdd89c22" Value="true" Type="bool"/>
-</MemberComponentTemplate>
 <MemberComponentTemplate Name="DeathSpawner" Guid="15d89127-8e67-416f-ba95-fcbdab445409" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="93a784db-00eb-4a41-8971-317c7b184b2c"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:0.5;InfectedNormal2:0.5" Type="string" Guid="e2f52e1b-a441-47c6-8e8c-3cd8e967844a"/>
@@ -4319,8 +4316,8 @@
     <Parameter Name="IdleSound" Guid="bd5f401a-f7f3-40d8-b566-b5995f80b7ce" Value="Audio/Creatures/Sparkster/Idie" Type="string"/>
     <Parameter Name="AttackSound" Guid="65ed698e-2192-4504-abf0-1264f155b4da" Value="Audio/Creatures/Sparkster/Attack" Type="string"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="RunAwayBehavior" Guid="a9898857-386c-46f0-bbb2-a40321693a8f" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="29b768ba-3cc6-42bd-8a49-168d3cae7ec6" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="a9898857-386c-46f0-bbb2-a40321693a8f" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
+<MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="29b768ba-3cc6-42bd-8a49-168d3cae7ec6" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
 <MemberComponentTemplate Name="NewChaseBehavior" Guid="27ebd649-13aa-4e75-9745-fe350e197419" InheritanceParent="1db20f99-32ba-4e7a-8e76-10686a2e76e5">
   <Parameter Name="ChaseWhenAttackedProbability" Guid="d88a5c86-39d6-4299-b010-c10145ed9843" Value="1" Type="float"/>
   <Parameter Name="NightChaseTime" Guid="64590853-9b58-4eb2-aff5-8ba8a9e9b797" Value="90" Type="float"/>
@@ -4346,6 +4343,9 @@
     <Parameter Name="DayRange" Guid="c8d9e0f1-2a3b-4c5d-8e7f-9a1b2c3d4e5f" Value="0" Type="float"/>
     <Parameter Name="NightRange" Guid="8829b6fc-a7ac-43e7-930f-50f4cc10d97f" Value="0" Type="float"/>
   </MemberComponentTemplate>
+  <MemberComponentTemplate Name="DefensiveAI" Guid="8dbea280-09af-4e6f-9b3a-eb1b2a0e0b46" InheritanceParent="2e0ff3f9-d699-41d1-b64a-cb06cda18234">
+  <Parameter Name="CanUseInventory" Guid="0891b9e4-0fb0-41c8-beb8-90f0229c44f0" Value="true" Type="bool"/>
+</MemberComponentTemplate>
   <MemberComponentTemplate Name="EatPickableBehavior" Guid="1a0d340d-4c11-49c5-a685-3b32b887d8ec">
     <ParameterSet Name="FoodFactors" Guid="7d4a1591-f3c5-47b6-9852-d31f5a1b7cd6">
       <Parameter Name="Fruit" Guid="73a6e1c3-c943-476a-8260-3b819c4b5035" Value="1" Type="float"/>
@@ -4415,8 +4415,7 @@
     <Parameter Name="AttackPower" Guid="db06c6c8-e973-448a-a5eb-f4e6fe517256" Value="15" Type="float"/>
     <Parameter Name="AutoInteractRate" Guid="c14f2bc6-4422-4125-ba28-acceacfec9df" Value="1.0" Type="float"/>
   </MemberComponentTemplate>
-<MemberComponentTemplate Name="MinecraftHumanModel" Guid="4e6b14fd-85e0-4b82-bb6a-1fe296242fa6" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="Class" Guid="dae9dbbf-5c44-46ba-8ea7-75e2fe8342e8" Value="Game.ComponentMinecraftHumanModel" Type="string"/>
+<MemberComponentTemplate Name="MinecraftHumanModel" Guid="4e6b14fd-85e0-4b82-bb6a-1fe296242fa6" InheritanceParent="ce3990d2-70bd-4c37-8969-65bb9500795b">
     <Parameter Name="ModelName" Guid="66f05ca3-92b7-4f50-a0b2-aea0e511771f" Value="Models/MC 1" Type="string"/>
     <Parameter Name="TextureOverride" Guid="afbe5224-3554-40b9-9b47-825c9e6684e7" Value="Textures/Sparkster" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="7fb0ac9b-d00e-408e-9d14-e15fa862a369" Value="0.65" Type="float"/>
@@ -4433,7 +4432,6 @@
     <Parameter Name="AttackOrder" Guid="1941ff6e-8c1f-4a76-936b-3dc7fc3139b2" Value="false" Type="bool"/>
     </MemberComponentTemplate>
   <MemberComponentTemplate Name="HealthBarDisplay" Guid="d3e4f5a6-7b8c-9d0e-1f2a-3b4c5d6e7f8a" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-    <Parameter Name="MaxDisplayDistance" Value="19" Type="float"/>
   </MemberComponentTemplate>
 <MemberComponentTemplate Name="Health" Guid="0ea98e9f-85de-4901-ae6d-6c4ce529ff33">
   <Parameter Name="FallResilience" Guid="b5c60f38-ac23-4e64-aaca-9c82ae103729" Value="17" Type="float"/>
@@ -4897,8 +4895,8 @@
 <MemberComponentTemplate Name="DefensiveAI" Guid="3e4a5d5d-63ed-4ddc-8919-c5ac75734dbf" InheritanceParent="2e0ff3f9-d699-41d1-b64a-cb06cda18234">
   <Parameter Name="CanUseInventory" Guid="5c1b21fa-684b-4001-b3b0-52aceca28b9b" Value="true" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="RunAwayBehavior" Guid="eeafcfa9-2331-4174-b120-862bc0f96e59" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="c3af5c4b-78f4-4f04-9ea7-ad6b2ba205d7" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="eeafcfa9-2331-4174-b120-862bc0f96e59" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
+<MemberComponentTemplate Name="DefensiveNewRunAwayBehavior" Guid="c3af5c4b-78f4-4f04-9ea7-ad6b2ba205d7" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
         <MemberComponentTemplate Name="CreatureSounds" Guid="0a11682b-9e5a-463b-ad3a-4e770e95f3c4">
                 <Parameter Name="PainSound" Guid="f14be139-5086-4a91-8fb6-6953e578b8ca" Value="Audio/Creatures/Pirata/Pain" Type="string"/>
                 <Parameter Name="IdleSound" Guid="de3690c8-66d3-4a35-8947-74ebfdbb03f3" Value="Audio/Creatures/Pirata/Idie" Type="string"/>
@@ -5045,7 +5043,7 @@
   <Parameter Name="CanUseInventory" Guid="9f9401e5-026f-496d-9ed5-e913da436995" Value="true" Type="bool"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="RunAwayBehavior" Guid="5e16a8cb-497f-4ae8-82b3-0c44e2111b07" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="f5c5f484-2a78-4f3d-a384-e5ce51ed3811" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
+<MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="f5c5f484-2a78-4f3d-a384-e5ce51ed3811" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
         <MemberComponentTemplate Name="CreatureSounds" Guid="8eb4229e-549a-4097-a0c0-42ca401c7d0a">
                 <Parameter Name="PainSound" Guid="204c18de-a45a-4afb-9e06-c39552f5b1c0" Value="Audio/Creatures/Pirata/Pain" Type="string"/>
                 <Parameter Name="IdleSound" Guid="b7306ca6-9160-441b-b3f9-128ffcfd33c2" Value="Audio/Creatures/Pirata/Idie" Type="string"/>
@@ -5842,8 +5840,8 @@
             <MemberComponentTemplate Name="PoisonInfected" Guid="ed907a6e-c542-42cd-8b62-e613d34a4c87" InheritanceParent="c7f45092-a74d-429a-8e77-76b1ae5120a3">
     <Parameter Name="PoisonResistance" Value="100" Type="float"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="RunAwayBehavior" Guid="57778fa9-ce90-4392-8f5b-de4da1616990" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
-<MemberComponentTemplate Name="NewRunAwayBehavior" Guid="0c106e2e-1b27-4100-afd8-0b2d3366ea79" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="57778fa9-ce90-4392-8f5b-de4da1616990" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
+<MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="0c106e2e-1b27-4100-afd8-0b2d3366ea79" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
 			<MemberComponentTemplate Name="Locomotion" Guid="91b98817-2259-4519-b7e9-cbcdcac3613c">
         <Parameter Name="WalkSpeedWhenTurning" Guid="84d1e297-4b5b-436b-bd01-06073a932dfc" Value="0.5" Type="float"/>
         <Parameter Name="LadderSpeed" Guid="2b669784-030e-4f59-9645-4a58252a2826" Value="4" Type="float"/>
