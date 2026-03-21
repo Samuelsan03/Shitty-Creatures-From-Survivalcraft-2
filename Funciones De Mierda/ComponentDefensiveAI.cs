@@ -27,7 +27,7 @@ namespace Game
 		private const double CROSSBOW_MIN_AIM_TIME = 0.3;
 		private const double MUSKET_MIN_AIM_TIME = 1.5;
 		private const double REPEAT_CROSSBOW_MIN_AIM_TIME = 0.5;
-		private const double THROWABLE_MIN_AIM_TIME = 1.5;
+		private const double THROWABLE_MIN_AIM_TIME = 1.55;
 
 		private ComponentCreature m_componentCreature;
 		private ComponentMiner m_componentMiner;
@@ -35,6 +35,7 @@ namespace Game
 		private ComponentNewChaseBehavior m_componentChase;
 		private ComponentCreatureModel m_componentCreatureModel;
 		private ComponentPathfinding m_componentPathfinding;
+		private ComponentDefensiveRunAwayBehavior m_defensiveRunAway;
 
 		private SubsystemTime m_subsystemTime;
 		private SubsystemProjectiles m_subsystemProjectiles;
@@ -91,14 +92,13 @@ namespace Game
 			ArrowBlock.ArrowType.ExplosiveBolt
 		};
 
-		private BulletBlock.BulletType[] m_bulletTypes = new BulletBlock.BulletType[]
+		private ArrowBlock.ArrowType[] m_crossbowNormalBolts = new ArrowBlock.ArrowType[]
 		{
-			BulletBlock.BulletType.MusketBall,
-			BulletBlock.BulletType.Buckshot,
-			BulletBlock.BulletType.BuckshotBall
+			ArrowBlock.ArrowType.IronBolt,
+			ArrowBlock.ArrowType.DiamondBolt
 		};
 
-		private RepeatArrowBlock.ArrowType[] m_repeatArrowTypes = new RepeatArrowBlock.ArrowType[]
+		private RepeatArrowBlock.ArrowType[] m_repeatCrossbowBolts = new RepeatArrowBlock.ArrowType[]
 		{
 			RepeatArrowBlock.ArrowType.CopperArrow,
 			RepeatArrowBlock.ArrowType.IronArrow,
@@ -108,11 +108,29 @@ namespace Game
 			RepeatArrowBlock.ArrowType.SeriousPoisonArrow
 		};
 
+		private RepeatArrowBlock.ArrowType[] m_repeatCrossbowNormalBolts = new RepeatArrowBlock.ArrowType[]
+		{
+			RepeatArrowBlock.ArrowType.CopperArrow,
+			RepeatArrowBlock.ArrowType.IronArrow,
+			RepeatArrowBlock.ArrowType.DiamondArrow,
+			RepeatArrowBlock.ArrowType.PoisonArrow,
+			RepeatArrowBlock.ArrowType.SeriousPoisonArrow
+		};
+
+		private BulletBlock.BulletType[] m_bulletTypes = new BulletBlock.BulletType[]
+		{
+			BulletBlock.BulletType.MusketBall,
+			BulletBlock.BulletType.Buckshot,
+			BulletBlock.BulletType.BuckshotBall
+		};
+
 		private FlameBulletBlock.FlameBulletType[] m_flameBulletTypes = new FlameBulletBlock.FlameBulletType[]
 		{
 			FlameBulletBlock.FlameBulletType.Flame,
 			FlameBulletBlock.FlameBulletType.Poison
 		};
+
+		private float m_currentDistanceToTarget = 0f;
 
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
@@ -122,6 +140,7 @@ namespace Game
 			m_componentChase = Entity.FindComponent<ComponentNewChaseBehavior>();
 			m_componentCreatureModel = Entity.FindComponent<ComponentCreatureModel>(true);
 			m_componentPathfinding = Entity.FindComponent<ComponentPathfinding>();
+			m_defensiveRunAway = Entity.FindComponent<ComponentDefensiveRunAwayBehavior>();
 
 			m_subsystemTime = Project.FindSubsystem<SubsystemTime>(true);
 			m_subsystemProjectiles = Project.FindSubsystem<SubsystemProjectiles>(true);
@@ -204,35 +223,29 @@ namespace Game
 
 			ComponentCreature target = m_componentChase.Target;
 
-			// Mirar siempre al objetivo
 			if (m_componentCreatureModel != null && target.ComponentCreatureModel != null)
 				m_componentCreatureModel.LookAtOrder = new Vector3?(target.ComponentCreatureModel.EyePosition);
 
 			float distance = Vector3.Distance(m_componentCreature.ComponentBody.Position, target.ComponentBody.Position);
+			m_currentDistanceToTarget = distance;
 
-			// Determinar el arma más adecuada según la distancia
 			bool hasThrowable = HasThrowableWeapon();
 			bool useMelee = distance <= m_meleeRange;
 			bool useThrowable = !useMelee && distance <= m_throwableRange && hasThrowable;
 			bool useRanged = !useThrowable && distance > m_meleeRange && distance <= m_rangedRange;
 
-			// Obtener el arma actual
 			int activeValue = m_componentInventory.GetSlotValue(m_componentInventory.ActiveSlotIndex);
 			bool isMelee = IsMeleeWeapon(activeValue);
 			bool isThrowable = IsThrowableWeapon(activeValue);
 			bool isRanged = IsRangedWeapon(activeValue);
 
-			// Lógica de combate
 			if (useMelee)
 			{
 				CancelAiming();
-				// Equipar arma lanzable (si la hay) o un arma cuerpo a cuerpo normal
 				EquipMeleeOrThrowableWeapon();
-				// Nota: no es necesario asignar m_currentWeaponType aquí porque no se va a apuntar
 			}
 			else if (useThrowable)
 			{
-				// Si el arma actual no es lanzable, equipar una
 				if (!isThrowable)
 				{
 					if (!EquipThrowableWeapon())
@@ -243,11 +256,9 @@ namespace Game
 				}
 				else
 				{
-					// Ya tiene lanzable, asegurar que m_currentWeaponType esté actualizado
 					m_currentWeaponType = Terrain.ExtractContents(activeValue);
 				}
 
-				// Solo detenerse y apuntar si hay línea de visión y el objetivo está enfrente
 				if (HasLineOfSight(target) && IsTargetInFront(target))
 				{
 					StopMovement();
@@ -255,12 +266,11 @@ namespace Game
 				}
 				else
 				{
-					CancelAiming(); // Reanuda movimiento si estaba detenido
+					CancelAiming();
 				}
 			}
 			else if (useRanged)
 			{
-				// Si el arma actual no es a distancia, equipar una
 				if (!isRanged)
 				{
 					if (!EquipAndLoadRangedWeapon())
@@ -271,18 +281,37 @@ namespace Game
 				}
 				else
 				{
-					// Asegurar que el arma está cargada (si es necesario)
 					m_currentWeaponType = Terrain.ExtractContents(activeValue);
 					int slot = m_componentInventory.ActiveSlotIndex;
 					if (!IsWeaponLoaded(activeValue))
 					{
-						// Intentar cargar
 						if (!LoadWeapon(slot))
 							TryFullyLoadWeapon(slot);
 					}
+
+					// Ballesta normal: evitar explosivos a menos de 20m
+					if (m_currentWeaponType == m_crossbowBlockIndex && m_currentDistanceToTarget < 20f)
+					{
+						int data = Terrain.ExtractData(activeValue);
+						ArrowBlock.ArrowType? currentBolt = CrossbowBlock.GetArrowType(data);
+						if (currentBolt.HasValue && currentBolt.Value == ArrowBlock.ArrowType.ExplosiveBolt)
+						{
+							ReloadCrossbowWithNormalBolt(slot);
+						}
+					}
+
+					// Ballesta repetitiva: evitar explosivos a menos de 20m
+					if (m_currentWeaponType == m_repeatCrossbowBlockIndex && m_currentDistanceToTarget < 20f)
+					{
+						int data = Terrain.ExtractData(activeValue);
+						RepeatArrowBlock.ArrowType? currentArrow = RepeatCrossbowBlock.GetArrowType(data);
+						if (currentArrow.HasValue && currentArrow.Value == RepeatArrowBlock.ArrowType.ExplosiveArrow)
+						{
+							ReloadRepeatCrossbowWithNormalBolt(slot);
+						}
+					}
 				}
 
-				// Las armas a distancia no detienen el movimiento y no requieren que el objetivo esté enfrente
 				UpdateAiming(target);
 			}
 			else
@@ -291,45 +320,29 @@ namespace Game
 			}
 		}
 
-		private bool HasRangedWeapon()
+		private void ReloadCrossbowWithNormalBolt(int slot)
 		{
-			for (int i = 0; i < m_componentInventory.SlotsCount; i++)
-			{
-				int value = m_componentInventory.GetSlotValue(i);
-				if (IsRangedWeapon(value))
-					return true;
-			}
-			return false;
+			int weaponValue = m_componentInventory.GetSlotValue(slot);
+			int data = Terrain.ExtractData(weaponValue);
+			ArrowBlock.ArrowType normalBolt = m_crossbowNormalBolts[m_random.Int(m_crossbowNormalBolts.Length)];
+			int newData = CrossbowBlock.SetArrowType(data, normalBolt);
+			int newValue = Terrain.MakeBlockValue(m_crossbowBlockIndex, 0, newData);
+			m_componentInventory.RemoveSlotItems(slot, 1);
+			m_componentInventory.AddSlotItems(slot, newValue, 1);
 		}
 
-		private void EquipMeleeOrThrowableWeapon()
+		private void ReloadRepeatCrossbowWithNormalBolt(int slot)
 		{
-			// Prioridad: arma lanzable como melee
-			if (HasThrowableWeapon())
-			{
-				EquipThrowableWeapon();
-				return;
-			}
-
-			// Si no hay lanzable, equipar un arma melee normal
-			int activeSlot = m_componentInventory.ActiveSlotIndex;
-			int activeValue = m_componentInventory.GetSlotValue(activeSlot);
-			if (IsMeleeWeapon(activeValue)) return;
-
-			for (int i = 0; i < m_componentInventory.SlotsCount; i++)
-			{
-				int value = m_componentInventory.GetSlotValue(i);
-				if (IsMeleeWeapon(value))
-				{
-					m_componentInventory.ActiveSlotIndex = i;
-					break;
-				}
-			}
+			int weaponValue = m_componentInventory.GetSlotValue(slot);
+			int data = Terrain.ExtractData(weaponValue);
+			int loadCount = RepeatCrossbowBlock.GetLoadCount(weaponValue);
+			RepeatArrowBlock.ArrowType normalArrow = m_repeatCrossbowNormalBolts[m_random.Int(m_repeatCrossbowNormalBolts.Length)];
+			int newData = RepeatCrossbowBlock.SetArrowType(data, normalArrow);
+			int newValue = Terrain.MakeBlockValue(m_repeatCrossbowBlockIndex, loadCount, newData);
+			m_componentInventory.RemoveSlotItems(slot, 1);
+			m_componentInventory.AddSlotItems(slot, newValue, 1);
 		}
 
-		/// <summary>
-		/// Verifica si el objetivo está frente al NPC (dentro de un ángulo de 60 grados)
-		/// </summary>
 		private bool IsTargetInFront(ComponentCreature target)
 		{
 			if (target == null || m_componentCreature?.ComponentBody == null)
@@ -338,7 +351,6 @@ namespace Game
 			Vector3 toTarget = Vector3.Normalize(target.ComponentBody.Position - m_componentCreature.ComponentBody.Position);
 			Vector3 forward = m_componentCreature.ComponentBody.Matrix.Forward;
 			float dot = Vector3.Dot(forward, toTarget);
-			// Umbral de 0.5 corresponde a ~60°, ajustable según necesidad
 			return dot > 0.5f;
 		}
 
@@ -448,7 +460,7 @@ namespace Game
 			if (contents == m_repeatCrossbowBlockIndex)
 			{
 				int loadCount = RepeatCrossbowBlock.GetLoadCount(weaponValue);
-				return loadCount >= 1;
+				return loadCount >= 8;
 			}
 			if (contents == m_flameThrowerBlockIndex)
 			{
@@ -483,7 +495,8 @@ namespace Game
 				if (draw == 15 && arrowType != null)
 					return true;
 
-				ArrowBlock.ArrowType boltType = m_crossbowBolts[m_random.Int(m_crossbowBolts.Length)];
+				ArrowBlock.ArrowType[] boltPool = (m_currentDistanceToTarget < 20f) ? m_crossbowNormalBolts : m_crossbowBolts;
+				ArrowBlock.ArrowType boltType = boltPool[m_random.Int(boltPool.Length)];
 				int newData = CrossbowBlock.SetArrowType(data, boltType);
 				newData = CrossbowBlock.SetDraw(newData, 15);
 				int newValue = Terrain.MakeBlockValue(m_crossbowBlockIndex, 0, newData);
@@ -522,7 +535,8 @@ namespace Game
 
 				if (arrowType == null)
 				{
-					RepeatArrowBlock.ArrowType newArrowType = m_repeatArrowTypes[m_random.Int(m_repeatArrowTypes.Length)];
+					RepeatArrowBlock.ArrowType[] arrowPool = (m_currentDistanceToTarget < 20f) ? m_repeatCrossbowNormalBolts : m_repeatCrossbowBolts;
+					RepeatArrowBlock.ArrowType newArrowType = arrowPool[m_random.Int(arrowPool.Length)];
 					int newData = RepeatCrossbowBlock.SetArrowType(data, newArrowType);
 					int newValue = Terrain.MakeBlockValue(m_repeatCrossbowBlockIndex, 1, newData);
 					m_componentInventory.RemoveSlotItems(slot, 1);
@@ -631,6 +645,29 @@ namespace Game
 			return m_throwableBlockIndices.Contains(contents);
 		}
 
+		private void EquipMeleeOrThrowableWeapon()
+		{
+			if (HasThrowableWeapon())
+			{
+				EquipThrowableWeapon();
+				return;
+			}
+
+			int activeSlot = m_componentInventory.ActiveSlotIndex;
+			int activeValue = m_componentInventory.GetSlotValue(activeSlot);
+			if (IsMeleeWeapon(activeValue)) return;
+
+			for (int i = 0; i < m_componentInventory.SlotsCount; i++)
+			{
+				int value = m_componentInventory.GetSlotValue(i);
+				if (IsMeleeWeapon(value))
+				{
+					m_componentInventory.ActiveSlotIndex = i;
+					break;
+				}
+			}
+		}
+
 		private void StopMovement()
 		{
 			if (m_componentPathfinding != null && m_componentPathfinding.Destination != null)
@@ -698,8 +735,6 @@ namespace Game
 
 		private void UpdateAiming(ComponentCreature target)
 		{
-			// Cancelar si el objetivo ya no está enfrente (para armas lanzables)
-			// Esto evita que se siga apuntando si el objetivo se mueve detrás
 			if (!IsTargetInFront(target))
 			{
 				CancelAiming();
@@ -851,22 +886,7 @@ namespace Game
 				ResumeMovement();
 			}
 		}
-		private void AutoEquipWeapon(float distance)
-		{
-			// Prioridad: si distancia > melee, intentar equipar lanzable o a distancia
-			if (distance > m_meleeRange)
-			{
-				if (HasThrowableWeapon())
-				{
-					EquipThrowableWeapon();
-					return;
-				}
-				if (EquipAndLoadRangedWeapon())
-					return;
-			}
-			// Si no, intentar equipar un arma melee
-			EquipMeleeWeapon();
-		}
+
 		private void OnProjectileAdded(Projectile projectile)
 		{
 			if (projectile.Owner == m_componentCreature)
