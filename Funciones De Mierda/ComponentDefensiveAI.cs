@@ -33,6 +33,7 @@ namespace Game
 
 		private SubsystemTime m_subsystemTime;
 		private SubsystemProjectiles m_subsystemProjectiles;
+		private SubsystemTerrain m_subsystemTerrain;
 
 		private bool m_isAiming = false;
 		private double m_aimStartTime;
@@ -107,6 +108,7 @@ namespace Game
 
 			m_subsystemTime = Project.FindSubsystem<SubsystemTime>(true);
 			m_subsystemProjectiles = Project.FindSubsystem<SubsystemProjectiles>(true);
+			m_subsystemTerrain = Project.FindSubsystem<SubsystemTerrain>(true);
 
 			m_bowBlockIndex = BlocksManager.GetBlockIndex<BowBlock>(false);
 			m_crossbowBlockIndex = BlocksManager.GetBlockIndex<CrossbowBlock>(false);
@@ -422,6 +424,34 @@ namespace Game
 				   contents == m_flameThrowerBlockIndex;
 		}
 
+		private bool HasLineOfSight(ComponentCreature target)
+		{
+			if (m_subsystemTerrain == null || m_componentCreatureModel == null || target.ComponentCreatureModel == null)
+				return false;
+
+			Vector3 start = m_componentCreatureModel.EyePosition;
+			Vector3 end = target.ComponentCreatureModel.EyePosition;
+
+			// Raycast through terrain, ignore the target's own body (we only care about blocks)
+			TerrainRaycastResult? result = m_subsystemTerrain.Raycast(start, end, false, true, (int value, float distance) =>
+			{
+				Block block = BlocksManager.Blocks[Terrain.ExtractContents(value)];
+				return block.IsCollidable_(value);
+			});
+
+			// If no hit, line of sight is clear.
+			// If hit, check if the hit point is very close to the target's eye (maybe due to rounding)
+			if (result == null)
+				return true;
+
+			// If the hit is very close to the target (e.g., inside the target's hitbox), consider it clear.
+			float distanceToTarget = Vector3.Distance(start, end);
+			if (result.Value.Distance >= distanceToTarget - 0.1f)
+				return true;
+
+			return false;
+		}
+
 		private void UpdateAiming(ComponentCreature target)
 		{
 			double currentTime = m_subsystemTime.GameTime;
@@ -439,6 +469,13 @@ namespace Game
 				canFireCooldown = currentTime - m_lastFlameThrowerShotTime >= FLAMETHROWER_COOLDOWN;
 
 			if (!canFireCooldown)
+			{
+				CancelAiming();
+				return;
+			}
+
+			// Check line of sight before aiming
+			if (!HasLineOfSight(target))
 			{
 				CancelAiming();
 				return;
