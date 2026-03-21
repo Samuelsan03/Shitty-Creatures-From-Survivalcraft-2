@@ -8,7 +8,7 @@ namespace Game
 	/// <summary>
 	/// IA defensiva que usa armas a distancia sin necesidad de munición en inventario.
 	/// Las animaciones y el ciclo de disparo son gestionados por los subsistemas originales.
-	/// Variedad de municiones: arco (todas las flechas), ballesta (pernos de hierro, diamante, explosivos), mosquete (balas).
+	/// Soporte para arco, ballesta, mosquete, ballesta repetidora (RepeatCrossbow) y lanzallamas (FlameThrower).
 	/// </summary>
 	public class ComponentDefensiveAI : ComponentBehavior, IUpdateable
 	{
@@ -22,14 +22,17 @@ namespace Game
 		private float m_meleeRange = 5f;
 		private float m_rangedRange = 100f;
 
-		// Cooldowns después de disparar (segundos)
+		// Cooldowns después de disparar (segundos) – para armas no automáticas
 		private const double BOW_COOLDOWN = 1.5;
 		private const double CROSSBOW_COOLDOWN = 1.5;
 		private const double MUSKET_COOLDOWN = 0.8;
+		private const double REPEAT_CROSSBOW_COOLDOWN = 1.2; // Tiempo entre disparos de la ballesta repetidora
+		private const double FLAMETHROWER_COOLDOWN = 0;    // Cooldown para el lanzallamas (coincide con el subsistema)
 
 		// Tiempo mínimo de apuntado antes de poder disparar (segundos)
 		private const double CROSSBOW_MIN_AIM_TIME = 0.3;
-		private const double MUSKET_MIN_AIM_TIME = 0.5; // el martillo se amartilla tras ~0.5s
+		private const double MUSKET_MIN_AIM_TIME = 1.5;     // el martillo se amartilla tras ~0.5s
+		private const double REPEAT_CROSSBOW_MIN_AIM_TIME = 0.5; // Mínimo para que se vea la animación
 
 		// Componentes
 		private ComponentCreature m_componentCreature;
@@ -46,19 +49,25 @@ namespace Game
 		private bool m_isAiming = false;
 		private double m_aimStartTime;
 		private Ray3 m_aimRay;
-		private int m_currentWeaponType; // 0=none, 1=bow, 2=crossbow, 3=musket
+		private int m_currentWeaponType; // 0=none, 1=bow, 2=crossbow, 3=musket, 4=repeatCrossbow, 5=flameThrower
 
 		// Último tiempo de disparo para cada arma
 		private double m_lastBowShotTime = -1000;
 		private double m_lastCrossbowShotTime = -1000;
 		private double m_lastMusketShotTime = -1000;
+		private double m_lastRepeatCrossbowShotTime = -1000;
+		private double m_lastFlameThrowerShotTime = -1000;
 
 		// Índices de bloques (obtenidos dinámicamente)
 		private int m_bowBlockIndex;
 		private int m_crossbowBlockIndex;
 		private int m_musketBlockIndex;
+		private int m_repeatCrossbowBlockIndex;
+		private int m_flameThrowerBlockIndex;
 		private int m_arrowBlockIndex;
 		private int m_bulletBlockIndex;
+		private int m_repeatArrowBlockIndex;
+		private int m_flameBulletBlockIndex;
 
 		// Aleatoriedad
 		private Random m_random = new Random();
@@ -82,12 +91,30 @@ namespace Game
 			ArrowBlock.ArrowType.ExplosiveBolt
 		};
 
-		// Lista de tipos de bala
+		// Lista de tipos de bala para mosquete
 		private BulletBlock.BulletType[] m_bulletTypes = new BulletBlock.BulletType[]
 		{
 			BulletBlock.BulletType.MusketBall,
 			BulletBlock.BulletType.Buckshot,
 			BulletBlock.BulletType.BuckshotBall
+		};
+
+		// Lista de tipos de flecha para ballesta repetidora (RepeatArrow)
+		private RepeatArrowBlock.ArrowType[] m_repeatArrowTypes = new RepeatArrowBlock.ArrowType[]
+		{
+			RepeatArrowBlock.ArrowType.CopperArrow,
+			RepeatArrowBlock.ArrowType.IronArrow,
+			RepeatArrowBlock.ArrowType.DiamondArrow,
+			RepeatArrowBlock.ArrowType.ExplosiveArrow,
+			RepeatArrowBlock.ArrowType.PoisonArrow,
+			RepeatArrowBlock.ArrowType.SeriousPoisonArrow
+		};
+
+		// Lista de tipos de bala para lanzallamas
+		private FlameBulletBlock.FlameBulletType[] m_flameBulletTypes = new FlameBulletBlock.FlameBulletType[]
+		{
+			FlameBulletBlock.FlameBulletType.Flame,
+			FlameBulletBlock.FlameBulletType.Poison
 		};
 
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
@@ -105,8 +132,12 @@ namespace Game
 			m_bowBlockIndex = BlocksManager.GetBlockIndex<BowBlock>(false);
 			m_crossbowBlockIndex = BlocksManager.GetBlockIndex<CrossbowBlock>(false);
 			m_musketBlockIndex = BlocksManager.GetBlockIndex<MusketBlock>(false);
+			m_repeatCrossbowBlockIndex = BlocksManager.GetBlockIndex<RepeatCrossbowBlock>(false);
+			m_flameThrowerBlockIndex = BlocksManager.GetBlockIndex<FlameThrowerBlock>(false);
 			m_arrowBlockIndex = BlocksManager.GetBlockIndex<ArrowBlock>(false);
 			m_bulletBlockIndex = BlocksManager.GetBlockIndex<BulletBlock>(false);
+			m_repeatArrowBlockIndex = BlocksManager.GetBlockIndex<RepeatArrowBlock>(false);
+			m_flameBulletBlockIndex = BlocksManager.GetBlockIndex<FlameBulletBlock>(false);
 
 			CanUseInventory = valuesDictionary.GetValue<bool>("CanUseInventory", CanUseInventory);
 
@@ -167,21 +198,21 @@ namespace Game
 		// ===== GESTIÓN DE ARMAS =====
 
 		private void EquipMeleeWeapon()
-		{
-			int activeSlot = m_componentInventory.ActiveSlotIndex;
-			int activeValue = m_componentInventory.GetSlotValue(activeSlot);
-			if (IsMeleeWeapon(activeValue)) return;
+{
+    int activeSlot = m_componentInventory.ActiveSlotIndex;
+    int activeValue = m_componentInventory.GetSlotValue(activeSlot);
+    if (IsMeleeWeapon(activeValue)) return;
 
-			for (int i = 0; i < m_componentInventory.SlotsCount; i++)
-			{
-				int value = m_componentInventory.GetSlotValue(i);
-				if (IsMeleeWeapon(value))
-				{
-					m_componentInventory.ActiveSlotIndex = i;
-					break;
-				}
-			}
-		}
+    for (int i = 0; i < m_componentInventory.SlotsCount; i++)
+    {
+        int value = m_componentInventory.GetSlotValue(i);
+        if (IsMeleeWeapon(value))
+        {
+            m_componentInventory.ActiveSlotIndex = i;
+            break;
+        }
+    }
+}
 
 		private bool EquipAndLoadRangedWeapon()
 		{
@@ -193,12 +224,16 @@ namespace Game
 				if (IsWeaponLoaded(activeValue))
 				{
 					m_currentWeaponType = Terrain.ExtractContents(activeValue);
+					// Si el arma está cargada pero no completamente (para RepeatCrossbow y FlameThrower), intentar cargar más
+					TryFullyLoadWeapon(activeSlot);
 					return true;
 				}
 				// El arma equipada está descargada, intentar recargarla
 				if (LoadWeapon(activeSlot))
 				{
-					m_currentWeaponType = Terrain.ExtractContents(activeValue);
+					// Recargar completamente si es posible
+					TryFullyLoadWeapon(activeSlot);
+					m_currentWeaponType = Terrain.ExtractContents(m_componentInventory.GetSlotValue(activeSlot));
 					return true;
 				}
 			}
@@ -209,12 +244,50 @@ namespace Game
 				int value = m_componentInventory.GetSlotValue(i);
 				if (IsRangedWeapon(value) && LoadWeapon(i))
 				{
+					// Recargar completamente
+					TryFullyLoadWeapon(i);
 					m_componentInventory.ActiveSlotIndex = i;
-					m_currentWeaponType = Terrain.ExtractContents(value);
+					m_currentWeaponType = Terrain.ExtractContents(m_componentInventory.GetSlotValue(i));
 					return true;
 				}
 			}
 			return false;
+		}
+
+		// Carga tantas municiones como sea posible para armas con cargador (RepeatCrossbow, FlameThrower)
+		private void TryFullyLoadWeapon(int slot)
+		{
+			int maxAttempts = 20; // Evitar bucles infinitos
+			for (int i = 0; i < maxAttempts; i++)
+			{
+				int weaponValue = m_componentInventory.GetSlotValue(slot);
+				if (!IsRangedWeapon(weaponValue)) break;
+
+				// Si el arma ya está completamente cargada (según su capacidad), salir
+				if (IsWeaponFullyLoaded(weaponValue)) break;
+
+				// Intentar cargar una munición más
+				if (!LoadWeapon(slot)) break;
+			}
+		}
+
+		private bool IsWeaponFullyLoaded(int weaponValue)
+		{
+			int contents = Terrain.ExtractContents(weaponValue);
+			int data = Terrain.ExtractData(weaponValue);
+
+			if (contents == m_repeatCrossbowBlockIndex)
+			{
+				int loadCount = RepeatCrossbowBlock.GetLoadCount(weaponValue);
+				return loadCount >= 1; // Capacidad máxima
+			}
+			if (contents == m_flameThrowerBlockIndex)
+			{
+				int loadCount = FlameThrowerBlock.GetLoadCount(weaponValue);
+				return loadCount >= 15; // Capacidad máxima
+			}
+			// Otras armas: se consideran completamente cargadas si tienen munición (una sola)
+			return IsWeaponLoaded(weaponValue);
 		}
 
 		private bool LoadWeapon(int slot)
@@ -269,6 +342,79 @@ namespace Game
 				m_componentInventory.AddSlotItems(slot, newValue, 1);
 				return true;
 			}
+			else if (contents == m_repeatCrossbowBlockIndex)
+			{
+				int draw = RepeatCrossbowBlock.GetDraw(data);
+				RepeatArrowBlock.ArrowType? arrowType = RepeatCrossbowBlock.GetArrowType(data);
+				int loadCount = RepeatCrossbowBlock.GetLoadCount(weaponValue);
+
+				// Si el arma no está tensada (draw < 15), tensarla
+				if (draw < 15)
+				{
+					int newData = RepeatCrossbowBlock.SetDraw(data, 15);
+					int newValue = Terrain.MakeBlockValue(m_repeatCrossbowBlockIndex, loadCount, newData);
+					m_componentInventory.RemoveSlotItems(slot, 1);
+					m_componentInventory.AddSlotItems(slot, newValue, 1);
+					return true;
+				}
+
+				// Si está tensada pero no tiene tipo de flecha, cargar una flecha
+				if (arrowType == null)
+				{
+					// Seleccionar tipo de flecha aleatorio
+					RepeatArrowBlock.ArrowType newArrowType = m_repeatArrowTypes[m_random.Int(m_repeatArrowTypes.Length)];
+					int newData = RepeatCrossbowBlock.SetArrowType(data, newArrowType);
+					int newValue = Terrain.MakeBlockValue(m_repeatCrossbowBlockIndex, 1, newData);
+					m_componentInventory.RemoveSlotItems(slot, 1);
+					m_componentInventory.AddSlotItems(slot, newValue, 1);
+					return true;
+				}
+
+				// Ya tiene flecha, si no está llena, incrementar carga
+				if (loadCount < 8)
+				{
+					int newData = data; // mismo tipo de flecha
+					int newValue = Terrain.MakeBlockValue(m_repeatCrossbowBlockIndex, loadCount + 1, newData);
+					m_componentInventory.RemoveSlotItems(slot, 1);
+					m_componentInventory.AddSlotItems(slot, newValue, 1);
+					return true;
+				}
+
+				return true; // ya está llena
+			}
+			else if (contents == m_flameThrowerBlockIndex)
+			{
+				FlameThrowerBlock.LoadState loadState = FlameThrowerBlock.GetLoadState(data);
+				int loadCount = FlameThrowerBlock.GetLoadCount(weaponValue);
+				FlameBulletBlock.FlameBulletType? bulletType = FlameThrowerBlock.GetBulletType(data);
+
+				// Si está vacío, cargar una bala
+				if (loadState == FlameThrowerBlock.LoadState.Empty)
+				{
+					// Seleccionar tipo de bala aleatorio
+					FlameBulletBlock.FlameBulletType newBulletType = m_flameBulletTypes[m_random.Int(m_flameBulletTypes.Length)];
+					int newData = FlameThrowerBlock.SetBulletType(data, newBulletType);
+					newData = FlameThrowerBlock.SetLoadState(newData, FlameThrowerBlock.LoadState.Loaded);
+					// Activar interruptor (switch) automáticamente
+					newData = FlameThrowerBlock.SetSwitchState(newData, true);
+					int newValue = Terrain.MakeBlockValue(m_flameThrowerBlockIndex, 1, newData);
+					m_componentInventory.RemoveSlotItems(slot, 1);
+					m_componentInventory.AddSlotItems(slot, newValue, 1);
+					return true;
+				}
+
+				// Ya está cargado, si no está lleno, incrementar carga
+				if (loadCount < 15)
+				{
+					int newData = data; // mismo tipo de bala
+					int newValue = Terrain.MakeBlockValue(m_flameThrowerBlockIndex, loadCount + 1, newData);
+					m_componentInventory.RemoveSlotItems(slot, 1);
+					m_componentInventory.AddSlotItems(slot, newValue, 1);
+					return true;
+				}
+
+				return true; // ya está lleno
+			}
 			return false;
 		}
 
@@ -289,6 +435,19 @@ namespace Game
 				MusketBlock.LoadState loadState = MusketBlock.GetLoadState(data);
 				return loadState == MusketBlock.LoadState.Loaded;
 			}
+			if (contents == m_repeatCrossbowBlockIndex)
+			{
+				int draw = RepeatCrossbowBlock.GetDraw(data);
+				RepeatArrowBlock.ArrowType? arrowType = RepeatCrossbowBlock.GetArrowType(data);
+				int loadCount = RepeatCrossbowBlock.GetLoadCount(weaponValue);
+				return draw == 15 && arrowType != null && loadCount > 0;
+			}
+			if (contents == m_flameThrowerBlockIndex)
+			{
+				FlameThrowerBlock.LoadState loadState = FlameThrowerBlock.GetLoadState(data);
+				int loadCount = FlameThrowerBlock.GetLoadCount(weaponValue);
+				return loadState == FlameThrowerBlock.LoadState.Loaded && loadCount > 0;
+			}
 			return false;
 		}
 
@@ -306,14 +465,16 @@ namespace Game
 			int contents = Terrain.ExtractContents(value);
 			return contents == m_bowBlockIndex ||
 				   contents == m_crossbowBlockIndex ||
-				   contents == m_musketBlockIndex;
+				   contents == m_musketBlockIndex ||
+				   contents == m_repeatCrossbowBlockIndex ||
+				   contents == m_flameThrowerBlockIndex;
 		}
 
 		// ===== GESTIÓN DE APUNTADO Y DISPARO =====
 
 		private void UpdateAiming(ComponentCreature target)
 		{
-			// Verificar cooldown según el arma actual
+			// Verificar cooldown según el arma actual (para armas no automáticas)
 			double currentTime = m_subsystemTime.GameTime;
 			bool canFireCooldown = true;
 
@@ -323,6 +484,10 @@ namespace Game
 				canFireCooldown = currentTime - m_lastCrossbowShotTime >= CROSSBOW_COOLDOWN;
 			else if (m_currentWeaponType == m_musketBlockIndex)
 				canFireCooldown = currentTime - m_lastMusketShotTime >= MUSKET_COOLDOWN;
+			else if (m_currentWeaponType == m_repeatCrossbowBlockIndex)
+				canFireCooldown = currentTime - m_lastRepeatCrossbowShotTime >= REPEAT_CROSSBOW_COOLDOWN;
+			else if (m_currentWeaponType == m_flameThrowerBlockIndex)
+				canFireCooldown = currentTime - m_lastFlameThrowerShotTime >= FLAMETHROWER_COOLDOWN;
 
 			if (!canFireCooldown)
 			{
@@ -370,19 +535,59 @@ namespace Game
 				MusketBlock.LoadState loadState = MusketBlock.GetLoadState(data);
 				readyToFire = hammerCocked && loadState == MusketBlock.LoadState.Loaded && aimTime >= MUSKET_MIN_AIM_TIME;
 			}
+			else if (m_currentWeaponType == m_repeatCrossbowBlockIndex)
+			{
+				// Ballesta repetidora: necesita draw = 15, tener tipo de flecha y tiempo mínimo de apuntado
+				int draw = RepeatCrossbowBlock.GetDraw(data);
+				RepeatArrowBlock.ArrowType? arrowType = RepeatCrossbowBlock.GetArrowType(data);
+				readyToFire = draw == 15 && arrowType != null && aimTime >= REPEAT_CROSSBOW_MIN_AIM_TIME;
+			}
+			else if (m_currentWeaponType == m_flameThrowerBlockIndex)
+			{
+				// Lanzallamas: necesita estar cargado y el interruptor activado
+				FlameThrowerBlock.LoadState loadState = FlameThrowerBlock.GetLoadState(data);
+				int loadCount = FlameThrowerBlock.GetLoadCount(weaponValue);
+				bool switchState = FlameThrowerBlock.GetSwitchState(data);
+				readyToFire = loadState == FlameThrowerBlock.LoadState.Loaded && loadCount > 0 && switchState;
+			}
 
 			if (readyToFire)
 			{
-				m_componentMiner.Aim(m_aimRay, AimState.Completed);
-				m_isAiming = false;
+				// Para armas automáticas (lanzallamas), no completamos el apuntado, solo continuamos apuntando.
+				// Para las demás, completamos el apuntado para que dispare.
+				bool isAutomatic = (m_currentWeaponType == m_flameThrowerBlockIndex);
+				if (!isAutomatic)
+				{
+					m_componentMiner.Aim(m_aimRay, AimState.Completed);
+					m_isAiming = false;
 
-				// Registrar el momento del disparo para el cooldown
-				if (m_currentWeaponType == m_bowBlockIndex)
-					m_lastBowShotTime = currentTime;
-				else if (m_currentWeaponType == m_crossbowBlockIndex)
-					m_lastCrossbowShotTime = currentTime;
-				else if (m_currentWeaponType == m_musketBlockIndex)
-					m_lastMusketShotTime = currentTime;
+					// Registrar el momento del disparo para el cooldown
+					if (m_currentWeaponType == m_bowBlockIndex)
+						m_lastBowShotTime = currentTime;
+					else if (m_currentWeaponType == m_crossbowBlockIndex)
+						m_lastCrossbowShotTime = currentTime;
+					else if (m_currentWeaponType == m_musketBlockIndex)
+						m_lastMusketShotTime = currentTime;
+					else if (m_currentWeaponType == m_repeatCrossbowBlockIndex)
+						m_lastRepeatCrossbowShotTime = currentTime;
+				}
+				else
+				{
+					// Para lanzallamas, actualizamos el tiempo de último disparo para cooldown,
+					// pero no cancelamos el apuntado.
+					m_lastFlameThrowerShotTime = currentTime;
+				}
+			}
+
+			// Para lanzallamas, si se quedó sin munición durante el apuntado, cancelar y recargar
+			if (m_currentWeaponType == m_flameThrowerBlockIndex)
+			{
+				int loadCount = FlameThrowerBlock.GetLoadCount(weaponValue);
+				FlameThrowerBlock.LoadState loadState = FlameThrowerBlock.GetLoadState(data);
+				if (loadCount <= 0 || loadState != FlameThrowerBlock.LoadState.Loaded)
+				{
+					CancelAiming();
+				}
 			}
 
 			// Evitar que ComponentNewChaseBehavior intente atacar cuerpo a cuerpo mientras apuntamos
