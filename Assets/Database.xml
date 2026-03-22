@@ -339,19 +339,9 @@
             </MemberComponentTemplate>
           </EntityTemplate>
           <EntityTemplate Name="Player" Guid="4be6c1c5-d65d-4537-8a8b-a391969e6dc2">
-          <MemberComponentTemplate Name="NewHerdBehavior" Guid="76062572-c5d9-4318-b015-bbf7edbae158" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
-        <Parameter Name="HerdName" Value="player" Type="string" Guid="73786811-6335-4c67-9b07-5760c736b288"/>
-        <Parameter Name="HerdingRange" Value="20" Type="float" Guid="5338a8c2-46ba-49c2-b500-3fa460936a85"/>
-        <Parameter Name="AutoNearbyCreaturesHelp" Value="true" Type="bool" Guid="a1dcf80e-bffc-4a2d-b4cf-2d7256990c6a"/>
-        <Parameter Name="HelpCallRange" Value="16" Type="float" Guid="2fa33781-1dc6-4b8d-b26b-ba203f37a5de"/>
-        <Parameter Name="MaxHelpChaseTime" Value="30" Type="float" Guid="e93d00b7-efb2-4598-8c65-58eb5fd3ef37"/>
-        <Parameter Name="AvoidAttackingSameHerd" Value="true" Type="bool" Guid="969d3c86-eb89-4596-aadf-4717122e9e35"/>
-    </MemberComponentTemplate>
           <MemberComponentTemplate Name="Thirst" Guid="a266705f-a31f-418d-82bb-25bab4664a74" InheritanceParent="69b81fb0-a822-43cb-bbaa-e0c4eefd4bbe">
     <Parameter Name="Water" Guid="447f3b14-70e1-454b-b6a1-28d35ed14ca2" Value="1" Type="float"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="Pilot" Guid="8e5515cd-e2df-4d5a-97f8-526db8936c77" InheritanceParent="53510bee-16d1-4245-9b55-05cf26064cfc"/>
-<MemberComponentTemplate Name="Pathfinding" Guid="f4c82c75-4654-4ada-8727-dc80f972a034" InheritanceParent="125dc475-9340-4137-b694-e003f740ea2d"/>
           <MemberComponentTemplate Name="DeathSpawner" Guid="b018af52-20d3-40aa-a617-342814e09ddd" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="a229bf56-fd68-4f7e-9325-fd231f3125ed"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1;InfectedNormal2" Type="string" Guid="6aa0ff67-4f1e-44d4-9dfe-cda76afc7147"/>
@@ -380,6 +370,16 @@
               <Parameter Name="TextureOverride" Guid="e6697724-468a-46b5-8130-74e8a7d325a9" Value="" Type="string"/>
               <Parameter Name="WalkLegsAngle" Guid="e78f936f-58f6-47d3-b536-5d831d100a91" Value="0.6" Type="float"/>
             </MemberComponentTemplate>
+            <MemberComponentTemplate Name="NewHerdBehavior" Guid="38333a12-7d23-4ee8-96b2-8aab7a99a441" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
+        <Parameter Name="HerdName" Value="player" Type="string" Guid="21de68cc-4305-43a8-9fdc-f6adee4655eb"/>
+        <Parameter Name="HerdingRange" Value="20" Type="float" Guid="84de85ed-fdf7-4785-9d65-a0decf25a0c0"/>
+        <Parameter Name="AutoNearbyCreaturesHelp" Value="true" Type="bool" Guid="eb2ca9f0-9a2b-4d14-8f1f-3c644d4d99e9"/>
+        <Parameter Name="HelpCallRange" Value="16" Type="float" Guid="8657c9c1-1692-4bf8-9b30-42249a5a04ef"/>
+        <Parameter Name="MaxHelpChaseTime" Value="30" Type="float" Guid="ef9d3d3c-6ba7-4bd0-8e1c-b5073fb82a31"/>
+        <Parameter Name="AvoidAttackingSameHerd" Value="true" Type="bool" Guid="d741c640-f92c-44ee-8771-a2fb9a8ee60e"/>
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Pathfinding" Guid="d2e17a44-2205-4b45-8ed7-c2c2c59ef302" InheritanceParent="125dc475-9340-4137-b694-e003f740ea2d"/>
+<MemberComponentTemplate Name="Pilot" Guid="72c2754f-16a7-416c-bf3b-cdfc18003d63" InheritanceParent="53510bee-16d1-4245-9b55-05cf26064cfc"/>
             <MemberComponentTemplate Name="AimingSights" Guid="4598a5ab-b2d5-4c02-aa5f-adbda64f21f0" InheritanceParent="5a459021-1d51-407c-8d55-03c73fb55210"/>
             <MemberComponentTemplate Name="Miner" Guid="4c2a4169-aecb-48e3-a9ed-a88156f5e304" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62"/>
             <MemberComponentTemplate Name="OnFire" Guid="5aef1c90-bb24-4a6a-bebd-04919ca619d8" InheritanceParent="93590d78-63b9-4cd6-bc41-e66864cbb050"/>
@@ -431,7 +431,7 @@
             <MemberComponentTemplate Name="Clothing" Guid="e2ce8219-5742-406b-8488-55490ae5472a" InheritanceParent="b7d5ba34-de1b-4f62-a24c-314e4e1b25ca">
               <ParameterSet Name="Clothes" Guid="c7fcbb9d-f26c-430d-9ca7-5c472a0ebdce"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="Sleep" Guid="abf303a8-6da3-426e-a496-d351d080d221" InheritanceParent="188816b9-23bd-4fb2-9a3b-ac78540b5e6b"/>
+            <MemberComponentTemplate Name="Sleep" Guid="abf303a8-6da3-426e-a496-d351d080d221" InheritanceParent="585d2fc1-f523-459a-9cb3-8fafa9fbadbd"/>
             <MemberComponentTemplate Name="Input" Guid="f5e5a7c3-b04e-4d95-8db4-2e7574adc4b9" InheritanceParent="74f93359-4e79-43ab-8cce-ff85a3ddedb3"/>
             <MemberComponentTemplate Name="BlockHighlight" Guid="f985c94e-37f3-4491-9887-d3c4162f48ac" InheritanceParent="3a86f5a6-1d85-4f4c-8c3b-de5bdcbd1505"/>
             <MemberComponentTemplate Name="PickableGathererPlayer" Guid="24696c7b-d41f-07c2-b997-29e03d88d973" InheritanceParent="fa2bb746-b851-8b94-c3f5-bf09ead351a6"/>
