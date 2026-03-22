@@ -1,6 +1,28 @@
 <Mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://gitee.com/THPRC/survivalcraft-api/raw/SCAPI1.8/Survivalcraft/Content/Assets/Database.xsd">
+<Parameter Name="Class" Guid="9d071853-10cd-4208-9bdf-ffed6b5d5bdd" new-Value="Game.ComponentNewSleep" Type="string"/>
 
     <Folder Name="Gameplay" Guid="d509e5e2-2c10-49f1-8223-85cd892c63b0">
+    <ComponentTemplate Name="RageZombieBehavior" Description="Hace que el zombi entre en furia con poca salud, aumentando su velocidad, atacando sin demora y mostrando ojos brillantes." Guid="2d584a55-7ccb-42c7-8fc0-c3f288eefae9" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+    <Parameter Name="Class" Guid="e4fb314e-1a7a-43ae-afde-69d0033eabc1" Value="Game.ComponentRageZombieBehavior" Type="string"/>
+</ComponentTemplate>
+
+<ComponentTemplate Name="NewGlowingEyes" Description="Draws glowing eyes for a creature" Guid="982182a7-d628-41a8-a2ab-8718f1cae19a" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
+          <Parameter Name="GlowingEyesOffset" Description="Glowing eyes offset from head" Guid="d496fa5d-84a1-4133-88f3-c8801bd56171" Value="0,0,0" Type="Vector3"/>
+          <Parameter Name="GlowingEyesColor" Description="Glowing eyes color, or transparent if no glowing eyes" Guid="5c58d55c-7495-4fb8-93c2-407d56d12945" Value="0,0,0,0" Type="Color"/>
+          <Parameter Name="Class" Guid="d4169be4-ff59-40a3-8475-96eab5e2e8c7" Value="Game.ComponentNewGlowingEyes" Type="string"/>
+        </ComponentTemplate>
+
+    <ComponentTemplate Name="DefensiveRunAwayBehavior" Description="Versión de ComponentRunAwayBehavior que solo huye cuando es atacado, ignorando ruidos y salud baja." Guid="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+    <Parameter Name="LowHealthToEscape" Description="Umbral de salud para huir (no utilizado en esta versión)" Guid="75069ae7-c5bc-4990-8249-2f44632aca2e" Value="0.3" Type="float"/>
+    <Parameter Name="Class" Guid="bed3ec74-af04-408d-b1dd-9c2b20bb7a1d" Value="Game.ComponentDefensiveRunAwayBehavior" Type="string"/>
+</ComponentTemplate>
+
+    <ComponentTemplate Name="Sleep" Description="Handles sleeping of the creature entity" Guid="585d2fc1-f523-459a-9cb3-8fafa9fbadbd" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
+          <Parameter Name="SleepStartTime" Description="Time when creature went to sleep, or 0 if not sleeping" Guid="8fd03c34-cd99-410c-8bc4-14dc0acbfb2a" Value="0" Type="double"/>
+          <Parameter Name="Class" Guid="6e461b52-3ea8-4164-b053-12270b61fdea" Value="Game.ComponentNewSleep" Type="string"/>
+          <Parameter Name="AllowManualWakeUp" Description="Whether manual wakeup is allowed" Guid="a1283ce3-e15f-4a6b-a2c4-7db18befcb98" Value="False" Type="bool"/>
+        </ComponentTemplate>
+
 <ComponentTemplate Name="Thirst" Description="Añade la necesidad de beber agua (sed) a la criatura" Guid="69b81fb0-a822-43cb-bbaa-e0c4eefd4bbe" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
     <Parameter Name="Class" Guid="457e3cc7-edeb-442b-ba7f-6248d62dc63e" Value="Game.ComponentThirst" Type="string"/>
     <Parameter Name="Water" Description="Nivel de agua inicial (0-1)" Guid="4d87c707-b03e-4749-9119-f87f99f8850e" Value="1" Type="float"/>
@@ -14,6 +36,7 @@
 <ComponentTemplate Name="DefensiveAI" Description="AI that uses ranged weapons from inventory" Guid="2e0ff3f9-d699-41d1-b64a-cb06cda18234" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
   <Parameter Name="Class" Guid="46e77927-3c3d-4605-9f7c-1943a184d1f7" Value="Game.ComponentDefensiveAI" Type="string"/>
   <Parameter Name="CanUseInventory" Description="Whether this creature can use weapons from its inventory" Guid="f98c4707-640d-4153-bd9a-91e9c57032d8" Value="false" Type="bool"/>
+  <Parameter Name="CanDestroyBlocksWhenStuck" Description="Allow creature to destroy blocks when stuck" Guid="c91325b2-6efa-44a0-9ddf-13c3f8c6a6a2" Value="false" Type="bool"/>
 </ComponentTemplate>
 
 <ComponentTemplate Name="PirateTrader" Description="Permite que una criatura actúe como comerciante pirata. Se puede abrir interactuando con ella para comprar objetos usando NuclearCoin." Guid="7753c16f-a467-4624-be61-3a048cb51cf0" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
@@ -531,6 +554,9 @@
     </Folder>
 
     <ProjectTemplate Name="Project" Guid="85023bf8-1c90-4dd1-9442-e6c13691d078">
+    <MemberSubsystemTemplate Name="TridentBehavior" Guid="4c112971-4320-48ef-9063-4d4d5a2adb64" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+    <Parameter Name="Class" Value="Game.SubsystemTridentBehavior" Type="string" Guid="588f3717-33aa-40eb-ba6a-8755d656f555"/>
+</MemberSubsystemTemplate>
     <MemberSubsystemTemplate Name="MilkBucketBlockBehavior" Guid="88787b89-7ed9-427d-9200-4842885b6409" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
     <Parameter Name="Class" Value="Game.SubsystemMilkBucketBlockBehavior" Type="string" Guid="e5f81fda-f12d-423d-aab1-396b6480f43f"/>
 </MemberSubsystemTemplate>
