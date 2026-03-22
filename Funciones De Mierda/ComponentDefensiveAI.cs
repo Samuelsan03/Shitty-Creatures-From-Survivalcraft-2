@@ -378,13 +378,21 @@ namespace Game
 			m_componentInventory.AddSlotItems(slot, newValue, 1);
 		}
 
+		// Método modificado: ignora la componente vertical al determinar si el objetivo está en frente
 		private bool IsTargetInFront(ComponentCreature target)
 		{
 			if (target == null || m_componentCreature?.ComponentBody == null)
 				return false;
 
-			Vector3 toTarget = Vector3.Normalize(target.ComponentBody.Position - m_componentCreature.ComponentBody.Position);
+			Vector3 toTarget = target.ComponentBody.Position - m_componentCreature.ComponentBody.Position;
+			toTarget.Y = 0f; // Ignorar diferencia vertical
+			if (toTarget.LengthSquared() < 0.001f)
+				return true; // Si horizontalmente está en el mismo punto, considerar que está en frente
+
+			toTarget = Vector3.Normalize(toTarget);
 			Vector3 forward = m_componentCreature.ComponentBody.Matrix.Forward;
+			forward.Y = 0f;
+			forward = Vector3.Normalize(forward);
 			float dot = Vector3.Dot(forward, toTarget);
 			return dot > 0.5f;
 		}
