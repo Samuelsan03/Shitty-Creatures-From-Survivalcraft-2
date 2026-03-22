@@ -1710,8 +1710,8 @@
               <Parameter Name="GlowingEyesColor" Guid="1328c240-1969-43c1-a7e8-20f4055e2fcd" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="9c29d113-aa31-455f-807f-6adf55fdaa5d" Value="0.06,0.2,0.1" Type="Vector3"/>
             </MemberComponentTemplate>
-<MemberComponentTemplate Name="RunAwayBehavior" Guid="4ca0ca51-7179-4800-8698-54167ea484a9" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
-<MemberComponentTemplate Name="ZombieRunAwayBehavior" Guid="a5a400c8-40a7-4fbc-8ee3-d73f414f909c" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="4ca0ca51-7179-4800-8698-54167ea484a9" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
+<MemberComponentTemplate Name="ZombieRunAwayBehavior" Guid="a5a400c8-40a7-4fbc-8ee3-d73f414f909c" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="2f285970-ce0a-434d-a22e-c65a51aeb829" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
                 <Parameter Name="DayRange" Guid="ce245934-8a79-4748-8898-1363231f1fef" Value="0" Type="float"/>
                 <Parameter Name="NightRange" Guid="2c163c48-bedd-43ec-a1f0-00d6b68c2437" Value="0" Type="float"/>
@@ -1989,8 +1989,8 @@
               <Parameter Name="GlowingEyesColor" Guid="0e189e89-ffee-4552-a6e1-c4d3a000c5a4" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="87a4a173-8778-423d-95ca-7360983d1b63" Value="0.06,0.2,0.1" Type="Vector3"/>
             </MemberComponentTemplate>
-<MemberComponentTemplate Name="RunAwayBehavior" Guid="5199ac29-e715-4e44-a646-32b3ac26791b" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
-<MemberComponentTemplate Name="ZombieRunAwayBehavior" Guid="c6c616d8-e63a-4577-aa65-638643db8b91" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="5199ac29-e715-4e44-a646-32b3ac26791b" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
+<MemberComponentTemplate Name="ZombieRunAwayBehavior" Guid="c6c616d8-e63a-4577-aa65-638643db8b91" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="61185892-c782-417b-b17b-74f8ed5ec335" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
                 <Parameter Name="DayRange" Guid="70d0b7cd-5ebc-4e34-b58c-868d5d34a4ce" Value="0" Type="float"/>
                 <Parameter Name="NightRange" Guid="277d3aa7-5b89-442c-83dc-97175487cedc" Value="0" Type="float"/>
