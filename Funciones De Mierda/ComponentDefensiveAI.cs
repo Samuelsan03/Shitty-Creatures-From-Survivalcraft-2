@@ -131,6 +131,7 @@ namespace Game
 		};
 
 		private float m_currentDistanceToTarget = 0f;
+		private bool m_isSpecialCreature = false;
 
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
@@ -192,6 +193,26 @@ namespace Game
 
 			CanUseInventory = valuesDictionary.GetValue<bool>("CanUseInventory", CanUseInventory);
 
+			// Determine if this creature is a special type that should only rotate the weapon horizontally
+			string templateName = Entity.ValuesDictionary.DatabaseObject.Name;
+			// List of special creature template names as provided
+			string[] specialCreatureNames = new string[]
+			{
+				"InfectedNormalTamed1",
+				"InfectedNormalTamed2",
+				"InfectedMuscleTamed1",
+				"InfectedMuscleTamed2",
+				"InfectedFreezerTamed"
+			};
+			foreach (string name in specialCreatureNames)
+			{
+				if (templateName == name)
+				{
+					m_isSpecialCreature = true;
+					break;
+				}
+			}
+
 			if (m_subsystemProjectiles != null)
 				m_subsystemProjectiles.ProjectileAdded += OnProjectileAdded;
 		}
@@ -230,7 +251,17 @@ namespace Game
 			ComponentCreature target = m_componentChase.Target;
 
 			if (m_componentCreatureModel != null && target.ComponentCreatureModel != null)
-				m_componentCreatureModel.LookAtOrder = new Vector3?(target.ComponentCreatureModel.EyePosition);
+			{
+				// Para criaturas especiales, NO rotar el cuerpo hacia el objetivo (para que el arma gire independientemente)
+				if (!m_isSpecialCreature)
+				{
+					m_componentCreatureModel.LookAtOrder = new Vector3?(target.ComponentCreatureModel.EyePosition);
+				}
+				else
+				{
+					m_componentCreatureModel.LookAtOrder = null;
+				}
+			}
 
 			float distance = Vector3.Distance(m_componentCreature.ComponentBody.Position, target.ComponentBody.Position);
 			m_currentDistanceToTarget = distance;
@@ -796,6 +827,26 @@ namespace Game
 
 			m_componentMiner.Aim(m_aimRay, AimState.InProgress);
 
+			// Para criaturas especiales: rotar el arma horizontalmente sin levantar las manos
+			if (m_isSpecialCreature)
+			{
+				Vector3 toTarget = target.ComponentBody.Position - m_componentCreature.ComponentBody.Position;
+				toTarget.Y = 0f;
+				if (toTarget.LengthSquared() > 0.01f)
+				{
+					Vector3 targetDir = Vector3.Normalize(toTarget);
+					Vector3 forward = m_componentCreature.ComponentBody.Matrix.Forward;
+					forward.Y = 0f;
+					forward = Vector3.Normalize(forward);
+					float angle = MathF.Atan2(targetDir.X, targetDir.Z) - MathF.Atan2(forward.X, forward.Z);
+					if (angle > MathF.PI) angle -= 2f * MathF.PI;
+					if (angle < -MathF.PI) angle += 2f * MathF.PI;
+					m_componentCreatureModel.InHandItemRotationOrder = new Vector3(0f, angle, 0f);
+				}
+				m_componentCreatureModel.AimHandAngleOrder = 0f;
+				m_componentCreatureModel.InHandItemOffsetOrder = Vector3.Zero;
+			}
+
 			int activeSlot = m_componentInventory.ActiveSlotIndex;
 			int weaponValue = m_componentInventory.GetSlotValue(activeSlot);
 			int data = Terrain.ExtractData(weaponValue);
@@ -888,6 +939,12 @@ namespace Game
 				m_componentMiner.Aim(m_aimRay, AimState.Cancelled);
 				m_isAiming = false;
 				ResumeMovement();
+				if (m_isSpecialCreature)
+				{
+					m_componentCreatureModel.AimHandAngleOrder = 0f;
+					m_componentCreatureModel.InHandItemOffsetOrder = Vector3.Zero;
+					m_componentCreatureModel.InHandItemRotationOrder = Vector3.Zero;
+				}
 			}
 		}
 
