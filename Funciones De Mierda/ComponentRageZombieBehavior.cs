@@ -16,7 +16,6 @@ namespace Game
 		private ComponentLocomotion m_locomotion;
 		private ComponentMiner m_miner;
 		private ComponentCreatureModel m_creatureModel;
-		private SubsystemTime m_subsystemTime;
 
 		private float m_originalWalkSpeed;
 		private float m_originalAttackPower;
@@ -28,7 +27,6 @@ namespace Game
 		{
 			base.Load(valuesDictionary, idToEntityMap);
 
-			m_subsystemTime = Project.FindSubsystem<SubsystemTime>(true);
 			m_health = Entity.FindComponent<ComponentHealth>(true);
 			m_locomotion = Entity.FindComponent<ComponentLocomotion>(true);
 			m_miner = Entity.FindComponent<ComponentMiner>(true);
@@ -57,12 +55,6 @@ namespace Game
 			else if (healthFraction > RageHealthThreshold && IsEnraged)
 			{
 				ExitRage();
-			}
-
-			if (IsEnraged && m_creatureModel != null)
-			{
-				float pulse = 0.5f + 0.5f * (float)Math.Sin(10.0 * m_subsystemTime.GameTime);
-				m_creatureModel.m_injuryColorFactor = MathUtils.Max(m_creatureModel.m_injuryColorFactor, pulse);
 			}
 		}
 
