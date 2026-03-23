@@ -49,6 +49,8 @@ namespace Game
 		public float BowCooldown = 0.5f;
 		public float CrossbowAimTime = 1.5f;
 		public float CrossbowCooldown = 1.0f;
+		public float RepeatCrossbowAimTime = 1.5f;
+		public float RepeatCrossbowCooldown = 1.0f;
 
 		// ===== CAMPOS PRIVADOS =====
 		private SubsystemGameInfo m_subsystemGameInfo;
@@ -322,6 +324,81 @@ namespace Game
 				}
 			}
 			return false;
+		}
+
+		private bool HasRepeatCrossbow(out int slotIndex, out int value)
+		{
+			slotIndex = -1;
+			value = 0;
+			if (m_componentMiner?.Inventory == null) return false;
+
+			for (int i = 0; i < m_componentMiner.Inventory.SlotsCount; i++)
+			{
+				int slotValue = m_componentMiner.Inventory.GetSlotValue(i);
+				if (Terrain.ExtractContents(slotValue) == RepeatCrossbowBlock.Index)
+				{
+					slotIndex = i;
+					value = slotValue;
+					return true;
+				}
+			}
+			return false;
+		}
+
+		private bool IsRepeatCrossbowLoaded()
+		{
+			if (!HasRepeatCrossbow(out int slotIndex, out int crossbowValue))
+				return false;
+
+			int data = Terrain.ExtractData(crossbowValue);
+			int draw = RepeatCrossbowBlock.GetDraw(data);
+			RepeatArrowBlock.ArrowType? arrowType = RepeatCrossbowBlock.GetArrowType(data);
+			return draw == 15 && arrowType != null;
+		}
+
+		private void EnsureRepeatCrossbowActive()
+		{
+			if (m_componentMiner?.Inventory == null) return;
+
+			if (HasRepeatCrossbow(out int slotIndex, out _))
+			{
+				if (m_componentMiner.Inventory.ActiveSlotIndex != slotIndex)
+					m_componentMiner.Inventory.ActiveSlotIndex = slotIndex;
+			}
+		}
+
+		private void StartRepeatCrossbowAim()
+		{
+			EnsureRepeatCrossbowActive();
+			if (!HasRepeatCrossbow(out int slotIndex, out int crossbowValue))
+				return;
+
+			m_aimingStarted = true;
+			m_isAimingRanged = true;
+			m_rangedAimStartTime = m_subsystemTime.GameTime;
+			m_triedToLoad = false;
+		}
+
+		private void CompleteRepeatCrossbowAim()
+		{
+			EnsureRepeatCrossbowActive();
+			if (!HasRepeatCrossbow(out int slotIndex, out int crossbowValue))
+			{
+				m_isAimingRanged = false;
+				m_aimingStarted = false;
+				return;
+			}
+
+			Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
+			Vector3 targetCenter = m_target.ComponentCreatureModel.EyePosition;
+			Vector3 direction = Vector3.Normalize(targetCenter - eyePos);
+			Ray3 ray = new Ray3(eyePos, direction);
+
+			m_componentMiner.Aim(ray, AimState.Completed);
+			m_nextRangedAttackTime = m_subsystemTime.GameTime + RepeatCrossbowCooldown;
+			m_isAimingRanged = false;
+			m_aimingStarted = false;
+			m_triedToLoad = false;
 		}
 
 		private bool HasAnyRangedWeapon(out int slotIndex, out int value, out bool isMusket, out bool isBow, out bool isCrossbow)
@@ -638,6 +715,15 @@ namespace Game
 					Ray3 ray = new Ray3(eyePos, direction);
 					m_componentMiner.Aim(ray, AimState.Cancelled);
 				}
+				else if (HasRepeatCrossbow(out int repeatCrossbowSlot, out int repeatCrossbowValue))
+				{
+					EnsureRepeatCrossbowActive();
+					Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
+					Vector3 targetCenter = m_target.ComponentCreatureModel.EyePosition;
+					Vector3 direction = Vector3.Normalize(targetCenter - eyePos);
+					Ray3 ray = new Ray3(eyePos, direction);
+					m_componentMiner.Aim(ray, AimState.Cancelled);
+				}
 			}
 			m_isAimingRanged = false;
 			m_aimingStarted = false;
@@ -677,12 +763,14 @@ namespace Game
 			bool hasMusket = HasMusket(out int musketSlot, out int musketValue);
 			bool hasBow = HasBow(out int bowSlot, out int bowValue);
 			bool hasCrossbow = HasCrossbow(out int crossbowSlot, out int crossbowValue);
+			bool hasRepeatCrossbow = HasRepeatCrossbow(out int repeatCrossbowSlot, out int repeatCrossbowValue);
 
 			bool useMusket = hasMusket;
 			bool useBow = !useMusket && hasBow;
 			bool useCrossbow = !useMusket && !useBow && hasCrossbow;
+			bool useRepeatCrossbow = !useMusket && !useBow && !useCrossbow && hasRepeatCrossbow;
 
-			if (!useMusket && !useBow && !useCrossbow)
+			if (!useMusket && !useBow && !useCrossbow && !useRepeatCrossbow)
 			{
 				CancelRangedAim();
 				return;
@@ -814,6 +902,36 @@ namespace Game
 					else if (!IsCrossbowLoaded())
 					{
 						CancelRangedAim();
+					}
+				}
+			}
+			else if (useRepeatCrossbow)
+			{
+				if (!m_isAimingRanged)
+				{
+					if (m_subsystemTime.GameTime < m_nextRangedAttackTime)
+						return;
+
+					// No es necesario cargar manualmente, el subsistema se encarga durante el apuntado
+					StartRepeatCrossbowAim();
+					Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
+					Vector3 targetCenter = m_target.ComponentCreatureModel.EyePosition;
+					Vector3 direction = Vector3.Normalize(targetCenter - eyePos);
+					Ray3 ray = new Ray3(eyePos, direction);
+					m_componentMiner.Aim(ray, AimState.InProgress);
+				}
+				else
+				{
+					Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
+					Vector3 targetCenter = m_target.ComponentCreatureModel.EyePosition;
+					Vector3 direction = Vector3.Normalize(targetCenter - eyePos);
+					Ray3 ray = new Ray3(eyePos, direction);
+					m_componentMiner.Aim(ray, AimState.InProgress);
+
+					double aimTimeElapsed = m_subsystemTime.GameTime - m_rangedAimStartTime;
+					if (aimTimeElapsed >= RepeatCrossbowAimTime)
+					{
+						CompleteRepeatCrossbowAim();
 					}
 				}
 			}
