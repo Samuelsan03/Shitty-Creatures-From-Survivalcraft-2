@@ -94,6 +94,9 @@ namespace Game
 		private bool m_triedToLoad;
 		private bool m_aimingStarted;
 
+		// Campos para disparo triple
+		public float TripleShotProbability = 0.05f;
+
 		// Campos para objetos lanzables
 		private double m_nextThrowableAttackTime;
 		private double m_throwableAimStartTime;
@@ -1383,11 +1386,6 @@ namespace Game
 
 			RangedAttackRange = valuesDictionary.GetValue<Vector2>("RangedAttackRange", new Vector2(5f, 20f));
 			RangedAttackMode = valuesDictionary.GetValue<AttackMode>("AttackMode", AttackMode.Default);
-
-			// Nuevos parámetros para objetos lanzables
-			ThrowableAttackRange = valuesDictionary.GetValue<Vector2>("ThrowableAttackRange", new Vector2(5f, 15f));
-			ThrowableAimTime = valuesDictionary.GetValue<float>("ThrowableAimTime", 1.0f);
-			ThrowableCooldown = valuesDictionary.GetValue<float>("ThrowableCooldown", 0.5f);
 
 			RegisterEvents();
 
