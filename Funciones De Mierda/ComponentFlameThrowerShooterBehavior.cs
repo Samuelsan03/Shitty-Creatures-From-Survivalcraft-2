@@ -22,9 +22,6 @@ namespace Game
 		public float BurstTime = 2.0f;
 		public float CooldownTime = 1.0f;
 
-		// Tipo de munición por defecto (configurable desde el editor)
-		public FlameBulletBlock.FlameBulletType DefaultAmmoType = FlameBulletBlock.FlameBulletType.Flame;
-
 		// Estado
 		private bool m_isAiming = false;
 		private bool m_isFiring = false;
@@ -45,9 +42,6 @@ namespace Game
 			AimTime = valuesDictionary.GetValue<float>("AimTime", 0.5f);
 			BurstTime = valuesDictionary.GetValue<float>("BurstTime", 5.0f);
 			CooldownTime = valuesDictionary.GetValue<float>("CooldownTime", 1.0f);
-
-			int ammoTypeValue = valuesDictionary.GetValue<int>("DefaultAmmoType", 0);
-			DefaultAmmoType = (FlameBulletBlock.FlameBulletType)Math.Clamp(ammoTypeValue, 0, 1);
 
 			m_componentCreature = base.Entity.FindComponent<ComponentCreature>(true);
 			m_componentChaseBehavior = base.Entity.FindComponent<ComponentChaseBehavior>(true);
@@ -89,7 +83,7 @@ namespace Game
 			// Asegurar que el lanzallamas está en el slot activo
 			EnsureFlameThrowerActive();
 
-			// Si el lanzallamas está vacío, recargar manteniendo el tipo de munición
+			// Si el lanzallamas está vacío, recargar (con tipo aleatorio si es necesario)
 			if (IsFlameThrowerEmpty())
 			{
 				ReloadFlameThrower();
@@ -237,11 +231,24 @@ namespace Game
 			if (contents != m_flameThrowerBlockIndex)
 				return;
 
-			// Obtener el tipo de munición actual del lanzallamas (si está vacío, usar el tipo por defecto)
+			// Obtener el tipo de munición actual (si existe)
 			FlameBulletBlock.FlameBulletType? currentBulletType = GetCurrentBulletType();
-			FlameBulletBlock.FlameBulletType bulletTypeToUse = currentBulletType ?? DefaultAmmoType;
 
-			// Crear un lanzallamas cargado con el mismo tipo de munición que tenía
+			FlameBulletBlock.FlameBulletType bulletTypeToUse;
+			if (currentBulletType.HasValue)
+			{
+				// Mantener el tipo que ya tenía
+				bulletTypeToUse = currentBulletType.Value;
+			}
+			else
+			{
+				// Si está vacío y sin tipo, elegir aleatoriamente entre fuego y veneno
+				bulletTypeToUse = m_random.Bool()
+					? FlameBulletBlock.FlameBulletType.Flame
+					: FlameBulletBlock.FlameBulletType.Poison;
+			}
+
+			// Crear un lanzallamas cargado con el tipo de munición determinado
 			int newValue = Terrain.MakeBlockValue(
 				m_flameThrowerBlockIndex,
 				0,
