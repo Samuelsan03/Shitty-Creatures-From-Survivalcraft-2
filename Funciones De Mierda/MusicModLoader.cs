@@ -49,7 +49,7 @@ namespace Game
 			"MenuMusic/Prince Of Persia (SNES) Recap",
 			"MenuMusic/Prince Of Persia (SNES) Staff Roll",
 			"MenuMusic/FIELD OF VIEW 渇いた叫び - 捨てられた物。",
-			"MenuMusic/Mappy 1983 In Game Theme",
+			"MenuMusic/瞬間ときはファンタジー",
 			"MenuMusic/Power Rangers The Movie Title Theme SNES",
 			"MenuMusic/Sonic Boom Closing Theme Sonic CD",
 			"MenuMusic/Sonic Boom Sonic CD",
