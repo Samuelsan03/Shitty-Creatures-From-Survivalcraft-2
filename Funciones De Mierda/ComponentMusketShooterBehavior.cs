@@ -5,7 +5,7 @@ using TemplatesDatabase;
 
 namespace Game
 {
-	public class ComponentMusketShooterBehavior2 : ComponentBehavior, IUpdateable
+	public class ComponentMusketShooterBehavior : ComponentBehavior, IUpdateable
 	{
 		// Componentes necesarios
 		private ComponentCreature m_componentCreature;
@@ -90,7 +90,7 @@ namespace Game
 
 			if (distance <= MaxDistance)
 			{
-				if (distance <= MeleeSwitchDistance)
+				if (distance < MeleeSwitchDistance)
 				{
 					if (!m_isMelee && !m_isFiring)
 					{
@@ -133,7 +133,7 @@ namespace Game
 
 			if (m_isMelee)
 			{
-				UpdateMeleeModeImproved(dt);
+				UpdateMeleeMode(dt);
 			}
 			else
 			{
@@ -169,9 +169,9 @@ namespace Game
 			}
 		}
 
-		private void UpdateMeleeModeImproved(float dt)
+		private void UpdateMeleeMode(float dt)
 		{
-			if (FindHitToolImproved())
+			if (FindHitTool())
 			{
 				if (m_componentChaseBehavior.Target != null)
 				{
@@ -188,24 +188,13 @@ namespace Game
 					if (m_componentModel.IsAttackHitMoment)
 					{
 						Vector3 hitPoint;
-						ComponentBody hitBody = GetHitBodyImproved(m_componentChaseBehavior.Target.ComponentBody, out hitPoint);
+						ComponentBody hitBody = GetHitBody(m_componentChaseBehavior.Target.ComponentBody, out hitPoint);
 						if (hitBody != null)
 						{
 							m_componentMiner.Hit(hitBody, hitPoint, m_componentCreature.ComponentBody.Matrix.Forward);
 							m_componentCreature.ComponentCreatureSounds.PlayAttackSound();
 						}
 					}
-				}
-			}
-			else
-			{
-				if (m_componentPathfinding != null && m_componentChaseBehavior.Target != null)
-				{
-					Vector3 retreatDirection = Vector3.Normalize(
-						m_componentCreature.ComponentBody.Position - m_componentChaseBehavior.Target.ComponentBody.Position
-					);
-					Vector3 retreatPosition = m_componentCreature.ComponentBody.Position + retreatDirection * 3f;
-					m_componentPathfinding.SetDestination(new Vector3?(retreatPosition), 1f, 1f, 0, false, true, false, null);
 				}
 			}
 		}
@@ -280,10 +269,10 @@ namespace Game
 				m_componentModel.InHandItemRotationOrder = Vector3.Zero;
 			}
 
-			FindHitToolImproved();
+			FindHitTool();
 		}
 
-		private bool FindHitToolImproved()
+		private bool FindHitTool()
 		{
 			if (m_componentMiner.Inventory == null)
 				return false;
@@ -317,7 +306,7 @@ namespace Game
 			return false;
 		}
 
-		private ComponentBody GetHitBodyImproved(ComponentBody target, out Vector3 hitPoint)
+		private ComponentBody GetHitBody(ComponentBody target, out Vector3 hitPoint)
 		{
 			Vector3 vector = m_componentCreature.ComponentBody.BoundingBox.Center();
 			Vector3 v = target.BoundingBox.Center();
