@@ -1,5 +1,6 @@
 <Mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://gitee.com/THPRC/survivalcraft-api/raw/SCAPI1.8/Survivalcraft/Content/Assets/Database.xsd">
 <Parameter Name="Class" Guid="9d071853-10cd-4208-9bdf-ffed6b5d5bdd" new-Value="Game.ComponentNewSleep" Type="string"/>
+<Parameter Name="Class" Guid="3bb544e4-4e2b-4b31-9172-7709a9271366" new-Value="Game.ComponentNewHumanModel" Type="string"/>
 
     <Folder Name="Gameplay" Guid="d509e5e2-2c10-49f1-8223-85cd892c63b0">
     <ComponentTemplate Name="RageZombieBehavior" Description="Hace que el zombi entre en furia con poca salud, aumentando su velocidad, atacando sin demora y mostrando ojos brillantes." Guid="2d584a55-7ccb-42c7-8fc0-c3f288eefae9" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
@@ -190,7 +191,7 @@
     <Parameter Name="AimHandAngleOrder" Guid="e7fe5453-3ba9-4139-a2b9-b534ee25ea9a" Value="90" Type="float" Description="Ángulo en grados que determina la orientación de la mano al apuntar el arma"/>
 </ComponentTemplate>
 
-<ComponentTemplate Name="NewHumanModel" Description="Modelo humano con animaciones mejoradas y fluidas" Guid="da33e501-1378-4644-8b5f-ef90863234a5" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
+<ComponentTemplate Name="HumanModel" Description="Modelo humano con animaciones mejoradas y fluidas" Guid="da33e501-1378-4644-8b5f-ef90863234a5" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
     <Parameter Name="WalkAnimationSpeed" Description="Velocidad de animación al caminar, en ciclos por metro" Guid="c4a0e696-751b-4f02-8d5a-227c46cbd031" Value="1.1" Type="float"/>
     <Parameter Name="WalkLegsAngle" Description="Ángulo de animación de piernas, en radianes" Guid="87e7375a-5bf3-4216-85c2-1fa67b7cbe98" Value="0.5" Type="float"/>
     <Parameter Name="WalkBobHeight" Description="Altura del movimiento vertical al caminar, en metros" Guid="093a1729-42a1-45a4-9be3-d96ec6d1d06a" Value="0.045" Type="float"/>
