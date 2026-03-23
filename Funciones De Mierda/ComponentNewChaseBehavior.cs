@@ -47,7 +47,7 @@ namespace Game
 		public float FlameThrowerAimTime = 1.55f;
 		public float FlameThrowerCooldown = 0.0f;
 
-		// Nuevos parámetros para objetos lanzables
+		// Parámetros para objetos lanzables (solo configurables en código, no en XML)
 		public Vector2 ThrowableAttackRange = new Vector2(5f, 15f);
 		public float ThrowableAimTime = 1.0f;
 		public float ThrowableCooldown = 0.5f;
@@ -93,9 +93,6 @@ namespace Game
 		private bool m_isAimingRanged;
 		private bool m_triedToLoad;
 		private bool m_aimingStarted;
-
-		// Campos para disparo triple
-		public float TripleShotProbability = 0.05f;
 
 		// Campos para objetos lanzables
 		private double m_nextThrowableAttackTime;
@@ -252,6 +249,9 @@ namespace Game
 
 				if (inMeleeRange)
 				{
+					// Seleccionar mejor arma cuerpo a cuerpo: priorizar objetos lanzables
+					SelectBestMeleeWeapon();
+
 					m_componentCreatureModel.AttackOrder = true;
 					if (m_componentCreatureModel.IsAttackHitMoment)
 					{
@@ -281,6 +281,22 @@ namespace Game
 				m_nextUpdateTime = m_subsystemTime.GameTime + (double)m_dt;
 				m_stateMachine.Update();
 			}
+		}
+
+		// ===== SELECCIÓN DE ARMA CUERPO A CUERPO =====
+		private bool SelectBestMeleeWeapon()
+		{
+			// Prioridad: objeto lanzable en inventario
+			if (HasThrowableItem(out int throwableSlot, out _))
+			{
+				if (m_componentMiner.Inventory.ActiveSlotIndex != throwableSlot)
+				{
+					m_componentMiner.Inventory.ActiveSlotIndex = throwableSlot;
+					return true;
+				}
+				return true;
+			}
+			return false;
 		}
 
 		// ===== MÉTODOS DE DETECCIÓN DE ARMAS =====
@@ -843,14 +859,13 @@ namespace Game
 			m_isThrowing = false;
 		}
 
-		// ===== NUEVOS MÉTODOS PARA OBJETOS LANZABLES =====
+		// ===== MÉTODOS PARA OBJETOS LANZABLES =====
 		private bool IsThrowableBlock(int value)
 		{
 			if (value == 0) return false;
 			int contents = Terrain.ExtractContents(value);
 			Type blockType = BlocksManager.Blocks[contents].GetType();
 
-			// Lista de tipos de bloques lanzables
 			if (blockType == typeof(StoneChunkBlock)) return true;
 			if (blockType == typeof(SulphurChunkBlock)) return true;
 			if (blockType == typeof(CoalChunkBlock)) return true;
@@ -929,7 +944,6 @@ namespace Game
 			m_isThrowing = true;
 			m_throwableAimStartTime = m_subsystemTime.GameTime;
 
-			// Detener movimiento mientras apunta
 			m_componentPathfinding.Stop();
 
 			Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
@@ -958,9 +972,6 @@ namespace Game
 			m_componentMiner.Aim(ray, AimState.Completed);
 			m_nextThrowableAttackTime = m_subsystemTime.GameTime + ThrowableCooldown;
 			m_isThrowing = false;
-
-			// Reanudar movimiento después de lanzar
-			// El estado Chasing reanudará la navegación en la próxima actualización
 		}
 
 		private void CancelThrowableAim()
@@ -980,7 +991,7 @@ namespace Game
 			m_isThrowing = false;
 		}
 
-		// ===== ACTUALIZACIÓN DEL ATAQUE A DISTANCIA (MODIFICADA PARA INCLUIR LANZABLES) =====
+		// ===== ACTUALIZACIÓN DEL ATAQUE A DISTANCIA =====
 		private void UpdateRangedAttack(float dt)
 		{
 			if (m_target == null)
@@ -994,11 +1005,9 @@ namespace Game
 			bool inThrowableRange = false;
 			bool inRangedWeaponRange = false;
 
-			// Rango para lanzables
 			if (distance >= ThrowableAttackRange.X && distance <= ThrowableAttackRange.Y)
 				inThrowableRange = true;
 
-			// Rango para armas a distancia (bows, muskets, etc.)
 			if (RangedAttackMode == AttackMode.Remote)
 			{
 				inRangedWeaponRange = distance <= RangedAttackRange.Y;
@@ -1008,12 +1017,10 @@ namespace Game
 				inRangedWeaponRange = distance >= RangedAttackRange.X && distance <= RangedAttackRange.Y && distance > MaxAttackRange;
 			}
 
-			// PRIORIDAD: 1. Lanzables, 2. Armas a distancia, 3. Cuerpo a cuerpo (manejado fuera de este método)
 			bool hasThrowable = HasThrowableItem(out int throwableSlot, out int throwableValue);
 
 			if (hasThrowable && inThrowableRange)
 			{
-				// Manejar lanzables
 				if (!m_isThrowing)
 				{
 					if (m_subsystemTime.GameTime < m_nextThrowableAttackTime)
@@ -1023,7 +1030,6 @@ namespace Game
 				}
 				else
 				{
-					// Continuar apuntando
 					EnsureThrowableActive();
 					Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
 					Vector3 targetCenter = m_target.ComponentCreatureModel.EyePosition;
@@ -1041,14 +1047,12 @@ namespace Game
 						CancelThrowableAim();
 					}
 				}
-				return; // Prioridad lanzables, no se procesan otras armas
+				return;
 			}
 			else if (inRangedWeaponRange)
 			{
-				// Cancelar lanzable si está activo pero ya no cumple condiciones
 				CancelThrowableAim();
 
-				// Resto del código original para armas a distancia (sin cambios)
 				bool hasMusket = HasMusket(out int musketSlot, out int musketValue);
 				bool hasBow = HasBow(out int bowSlot, out int bowValue);
 				bool hasCrossbow = HasCrossbow(out int crossbowSlot, out int crossbowValue);
@@ -1069,7 +1073,6 @@ namespace Game
 
 				if (useMusket)
 				{
-					// Código original para mosquete...
 					if (!m_isAimingRanged)
 					{
 						if (m_subsystemTime.GameTime < m_nextRangedAttackTime)
@@ -1113,7 +1116,6 @@ namespace Game
 				}
 				else if (useFlameThrower)
 				{
-					// Código original para lanzallamas...
 					if (!m_isAimingRanged)
 					{
 						if (!IsFlameThrowerLoaded())
@@ -1149,7 +1151,6 @@ namespace Game
 				}
 				else if (useBow)
 				{
-					// Código original para arco...
 					if (!m_isAimingRanged)
 					{
 						if (m_subsystemTime.GameTime < m_nextRangedAttackTime)
@@ -1193,7 +1194,6 @@ namespace Game
 				}
 				else if (useCrossbow)
 				{
-					// Código original para ballesta...
 					if (!m_isAimingRanged)
 					{
 						if (m_subsystemTime.GameTime < m_nextRangedAttackTime)
@@ -1237,7 +1237,6 @@ namespace Game
 				}
 				else if (useRepeatCrossbow)
 				{
-					// Código original para ballesta repetidora...
 					if (!m_isAimingRanged)
 					{
 						if (m_subsystemTime.GameTime < m_nextRangedAttackTime)
@@ -1685,7 +1684,6 @@ namespace Game
 					}
 					else
 					{
-						// Si no está apuntando un lanzable, actualizar destino
 						if (!m_isThrowing)
 						{
 							int maxPathfindingPositions = 0;
