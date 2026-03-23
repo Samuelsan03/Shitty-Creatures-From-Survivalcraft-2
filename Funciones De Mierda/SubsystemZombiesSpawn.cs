@@ -21,7 +21,7 @@ namespace Game
 		private SubsystemBodies m_subsystemBodies;
 		private SubsystemTerrain m_subsystemTerrain;
 		private SubsystemTime m_subsystemTime;
-		private SubsystemSeasons m_subsystemSeasons;   // NUEVO
+		private SubsystemSeasons m_subsystemSeasons;
 		private Random m_random = new Random();
 
 		// Datos de oleadas
@@ -102,7 +102,7 @@ namespace Game
 			m_subsystemBodies = Project.FindSubsystem<SubsystemBodies>(true);
 			m_subsystemTerrain = Project.FindSubsystem<SubsystemTerrain>(true);
 			m_subsystemTime = Project.FindSubsystem<SubsystemTime>(true);
-			m_subsystemSeasons = Project.FindSubsystem<SubsystemSeasons>(true);   // NUEVO
+			m_subsystemSeasons = Project.FindSubsystem<SubsystemSeasons>(true);
 
 			LoadWavesFromResources();
 			m_currentWave = valuesDictionary.GetValue<int>("CurrentWave", 1);
@@ -167,20 +167,16 @@ namespace Game
 			if (m_currentWave == maxWave)
 			{
 				string message = LanguageControl.Get("ZombiesSpawn", "FinalWave");
-				// --- SOLUCIÓN: Usamos DisplaySmallMessage con rojo intenso y parpadeo (blinking) ---
 				foreach (var player in m_subsystemPlayers.ComponentPlayers)
 				{
-					// Color rojo intenso y parpadeo (blinking = true) para que sea más notorio
 					player.ComponentGui.DisplaySmallMessage(message, new Color(255, 0, 0), true, true);
 				}
-				// --------------------------------------------------------------------------------
 			}
 			else
 			{
 				string message = string.Format(LanguageControl.Get("ZombiesSpawn", "WaveMessage"), m_currentWave);
 				foreach (var player in m_subsystemPlayers.ComponentPlayers)
 				{
-					// El mensaje grande normal (blanco, sin color)
 					player.ComponentGui.DisplayLargeMessage(message, "", 3f, 0f);
 				}
 			}
@@ -281,8 +277,7 @@ namespace Game
 
 		private void LoadDefaultWaves()
 		{
-			// ... (contenido por defecto, pero ya se carga desde archivos)
-			// Nota: No es necesario modificar los defaults porque ahora los archivos .txt ya incluyen Freezer.
+			// Default waves remain unchanged (not needed because we load from files)
 		}
 
 		private void SetCurrentWave(int wave)
@@ -440,6 +435,10 @@ namespace Game
 
 		private void TrySpawnCreature()
 		{
+			// Si la oleada solo contiene jefes, no spawnear criaturas normales
+			if (m_currentWaveEntries.All(e => BossTemplates.Contains(e.TemplateName)))
+				return;
+
 			int totalCreatures = m_subsystemCreatureSpawn.CountCreatures(false);
 			if (totalCreatures >= MaxGlobalCreatures)
 				return;
@@ -466,35 +465,29 @@ namespace Game
 			if (spawnPos == Vector3.Zero)
 				return;
 
-			// --- NUEVO: Condición para InfectedFreezer ---
+			// Condición para InfectedFreezer
 			if (entry.TemplateName == "InfectedFreezer")
 			{
 				bool canSpawn = false;
 
-				// 1. Si es invierno, siempre puede aparecer
 				if (m_subsystemSeasons.Season == Season.Winter)
 				{
 					canSpawn = true;
 				}
 				else
 				{
-					// 2. Comprobar temperatura en la posición de spawn
 					int x = Terrain.ToCell(spawnPos.X);
 					int z = Terrain.ToCell(spawnPos.Z);
 					int temperature = m_subsystemTerrain.Terrain.GetTemperature(x, z);
-					if (temperature < 8)  // Frío (umbral similar al oso polar)
+					if (temperature < 8)
 					{
 						canSpawn = true;
 					}
 				}
 
 				if (!canSpawn)
-				{
-					// No se spawneará este Freezer en esta ocasión
 					return;
-				}
 			}
-			// ---------------------------------------------
 
 			Vector2 areaMin = new Vector2(spawnPos.X - 16, spawnPos.Z - 16);
 			Vector2 areaMax = new Vector2(spawnPos.X + 16, spawnPos.Z + 16);
