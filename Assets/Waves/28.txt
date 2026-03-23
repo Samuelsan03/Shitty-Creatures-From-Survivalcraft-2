@@ -1,8 +1,0 @@
-FlyingInfectedBoss;1
-Tank1;1
-Tank2;1
-Tank3;1
-TankGhost1;1
-TankGhost2;1
-TankGhost3;1
-MachineGunInfected;1

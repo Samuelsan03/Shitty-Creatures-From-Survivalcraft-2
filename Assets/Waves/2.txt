@@ -1,8 +1,0 @@
-HumanoidSkeleton;40
-InfectedBird;35
-InfectedNormal1;30
-InfectedNormal2;30
-InfectedFast1;25
-InfectedFast2;25
-InfectedFly1;6
-InfectedFreezer;30
