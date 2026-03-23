@@ -1901,11 +1901,6 @@
             </ParameterSet>
           </EntityTemplate>
           <EntityTemplate Name="Werewolf" Guid="6a4c3ee2-bb65-4d45-9b91-e1ec3dc3e865" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-          <MemberComponentTemplate Name="PathBreaker" Guid="a8325192-6050-4665-a5bb-920499ac5711" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
-		<Parameter Name="CanBreakBlocks" Guid="28aef169-db27-4dcc-b346-de7e4576100a" Value="True" Type="bool"/>
-		<Parameter Name="SpecificBlocks" Guid="dfbb0bc9-c12f-4b26-9b92-6c9460b4c87e" Value="" Type="string"/>
-		<Parameter Name="BreakProbability" Guid="f466f28e-4575-4a60-a622-0d83314f40d4" Value="0.5" Type="float"/>
-	</MemberComponentTemplate>
           <MemberComponentTemplate Name="DeathSpawner" Guid="8cf45b4d-c99f-4ffd-8e03-64f4aa92abe8" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="c4c91f74-cf56-46df-9e85-ed2392a2f36c"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:0.005;InfectedNormal2:0.005;InfectedFast1:0.005;InfectedFast2:0.05;GhostFast:0.03;InfectedWerewolf:1.0" Type="string" Guid="18131065-4721-4863-88d4-fc351a1cf480"/>
@@ -1961,10 +1956,20 @@
               <Parameter Name="FireResilience" Guid="fe585d30-8771-4bdf-8b9c-df936141b36d" Value="15" Type="float"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="HumanModel" Guid="9ca7c9d5-6b1e-47c9-a0c4-21ea752301c6" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
-              <Parameter Name="WalkLegsAngle" Guid="495feebc-7b26-40d8-8af3-688638752c30" Value="0.35" Type="float"/>
               <Parameter Name="ModelName" Guid="8602204e-b85e-4317-884b-7de7d6f0bbf0" Value="Models/Werewolf" Type="string"/>
               <Parameter Name="TextureOverride" Guid="96a84a19-1df6-4227-a58e-dc24ff5f8585" Value="Textures/Creatures/Werewolf" Type="string"/>
-              <Parameter Name="WalkAnimationSpeed" Guid="e49f62bf-e0aa-4f29-b064-ba88d8d5d04c" Value="0.65" Type="float"/>
+              <Parameter Name="WalkAnimationSpeed" Guid="5d63fe53-26fe-4f1d-9a7d-e00f2dd7abb3" Value="0.65" Type="float"/>
+    <Parameter Name="WalkBobHeight" Guid="503355f3-a31f-48f7-9bc1-09b502829c70" Value="0.045" Type="float"/>
+    <Parameter Name="WalkLegsAngle" Guid="e1416de2-0d3f-4e02-8457-6ff71649433c" Value="0.75" Type="float"/>
+    <Parameter Name="SmoothFactor" Guid="f6e06812-b293-4dd4-a713-c8c077dc873e" Value="0.12" Type="float"/>
+    <Parameter Name="AnimationResponsiveness" Guid="72885cd8-0ae8-4790-88b6-c9a729c1ce14" Value="15" Type="float"/>
+    <Parameter Name="AimSmoothFactor" Guid="ce0d12d9-dab0-4139-abdd-112ca6fc8734" Value="0.2" Type="float"/>
+    <Parameter Name="AimTransitionSpeed" Guid="ca1228a4-e322-4c2f-8585-f4df52a1eced" Value="7" Type="float"/>
+    <Parameter Name="MovementAnimationPhase" Guid="b3e410ff-cb91-4416-9690-88c2fda0a910" Value="0" Type="float"/>
+    <Parameter Name="DeathPhase" Guid="252256d5-7d14-47fd-a751-1de480a2aff8" Value="0" Type="float"/>
+    <Parameter Name="Bob" Guid="daa47736-8e46-45f9-9993-063e26564a78" Value="0" Type="float"/>
+    <Parameter Name="IsAttackHitMoment" Guid="2ec97a3e-9c4f-4d96-a0c4-280fb3d27e18" Value="false" Type="bool"/>
+    <Parameter Name="AttackOrder" Guid="cdd8564f-a156-4144-8cba-5af40e2959fc" Value="false" Type="bool"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Miner" Guid="d47bf6eb-6d75-4b9f-9e37-5a97dc15d8fd" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
               <Parameter Name="AttackPower" Guid="cf608320-e57c-46be-9ffd-351aa10a9683" Value="3" Type="float"/>
