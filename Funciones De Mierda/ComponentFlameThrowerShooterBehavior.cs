@@ -11,42 +11,29 @@ namespace Game
 		// Componentes necesarios
 		private ComponentCreature m_componentCreature;
 		private ComponentChaseBehavior m_componentChaseBehavior;
-		private ComponentInventory m_componentInventory;
-		private SubsystemTime m_subsystemTime;
-		private SubsystemProjectiles m_subsystemProjectiles;
-		private SubsystemAudio m_subsystemAudio;
-		private ComponentCreatureModel m_componentModel;
-		private SubsystemParticles m_subsystemParticles;
-		private SubsystemTerrain m_subsystemTerrain;
 		private ComponentMiner m_componentMiner;
-		private SubsystemNoise m_subsystemNoise;
+		private SubsystemTime m_subsystemTime;
+		private SubsystemTerrain m_subsystemTerrain;
+		private SubsystemBodies m_subsystemBodies;
 
 		// Configuración
 		public float MaxDistance = 20f;
 		public float AimTime = 0.5f;
 		public float BurstTime = 2.0f;
 		public float CooldownTime = 1.0f;
-		public float Accuracy = 0.1f;
-		public bool UseRecoil = true;
-		public float FlameSpeed = 40f;
-		public int BurstCount = 15;
-		public float SpreadAngle = 15f;
-		public float BurstInterval = 0.15f;
+
+		// Tipo de munición por defecto (configurable desde el editor)
+		public FlameBulletBlock.FlameBulletType DefaultAmmoType = FlameBulletBlock.FlameBulletType.Flame;
 
 		// Estado
 		private bool m_isAiming = false;
 		private bool m_isFiring = false;
 		private bool m_isReloading = false;
-		private double m_animationStartTime;
-		private double m_fireStartTime;
-		private double m_nextShotTime;
-		private int m_shotsFired = 0;
-		private Game.Random m_random = new Game.Random();
-		private int m_flameThrowerSlot = -1;
+		private double m_stateStartTime;
+		private Random m_random = new Random();
 		private int m_flameThrowerBlockIndex = -1;
-		private FlameBulletBlock.FlameBulletType m_currentBulletType = FlameBulletBlock.FlameBulletType.Flame;
+		private int m_flameBulletBlockIndex = -1;
 
-		// UpdateOrder
 		public int UpdateOrder => 0;
 		public override float ImportanceLevel => 0.5f;
 
@@ -58,44 +45,19 @@ namespace Game
 			AimTime = valuesDictionary.GetValue<float>("AimTime", 0.5f);
 			BurstTime = valuesDictionary.GetValue<float>("BurstTime", 5.0f);
 			CooldownTime = valuesDictionary.GetValue<float>("CooldownTime", 1.0f);
-			Accuracy = valuesDictionary.GetValue<float>("Accuracy", 0.1f);
-			UseRecoil = valuesDictionary.GetValue<bool>("UseRecoil", true);
-			FlameSpeed = valuesDictionary.GetValue<float>("FlameSpeed", 40f);
-			BurstCount = valuesDictionary.GetValue<int>("BurstCount", 15);
-			SpreadAngle = valuesDictionary.GetValue<float>("SpreadAngle", 15f);
 
-			if (BurstCount > 0 && BurstTime > 0)
-			{
-				BurstInterval = BurstTime / BurstCount;
-			}
-			else
-			{
-				BurstInterval = 5.0f;
-			}
+			int ammoTypeValue = valuesDictionary.GetValue<int>("DefaultAmmoType", 0);
+			DefaultAmmoType = (FlameBulletBlock.FlameBulletType)Math.Clamp(ammoTypeValue, 0, 1);
 
 			m_componentCreature = base.Entity.FindComponent<ComponentCreature>(true);
 			m_componentChaseBehavior = base.Entity.FindComponent<ComponentChaseBehavior>(true);
-			m_componentInventory = base.Entity.FindComponent<ComponentInventory>(true);
 			m_componentMiner = base.Entity.FindComponent<ComponentMiner>(true);
-			m_componentModel = base.Entity.FindComponent<ComponentCreatureModel>(true);
 			m_subsystemTime = base.Project.FindSubsystem<SubsystemTime>(true);
-			m_subsystemProjectiles = base.Project.FindSubsystem<SubsystemProjectiles>(true);
-			m_subsystemAudio = base.Project.FindSubsystem<SubsystemAudio>(true);
-			m_subsystemParticles = base.Project.FindSubsystem<SubsystemParticles>(true);
 			m_subsystemTerrain = base.Project.FindSubsystem<SubsystemTerrain>(true);
-			m_subsystemNoise = base.Project.FindSubsystem<SubsystemNoise>(true);
+			m_subsystemBodies = base.Project.FindSubsystem<SubsystemBodies>(true);
 
 			m_flameThrowerBlockIndex = BlocksManager.GetBlockIndex<FlameThrowerBlock>(false, false);
-
-			if (m_flameThrowerBlockIndex <= 0)
-			{
-				Log.Warning("ComponentFlameThrowerShooterBehavior: No se pudo obtener el índice del bloque FlameThrowerBlock.");
-			}
-
-			// Inicializar tipo de bala aleatorio (se mantiene la variación)
-			m_currentBulletType = m_random.Bool() ?
-				FlameBulletBlock.FlameBulletType.Flame :
-				FlameBulletBlock.FlameBulletType.Poison;
+			m_flameBulletBlockIndex = BlocksManager.GetBlockIndex<FlameBulletBlock>(false, false);
 		}
 
 		public void Update(float dt)
@@ -105,173 +67,228 @@ namespace Game
 
 			if (m_componentChaseBehavior.Target == null)
 			{
-				ResetAnimations();
+				Reset();
 				return;
 			}
 
-			float distance = Vector3.Distance(
-				m_componentCreature.ComponentBody.Position,
-				m_componentChaseBehavior.Target.ComponentBody.Position
-			);
+			Vector3 shooterEye = m_componentCreature.ComponentCreatureModel.EyePosition;
+			Vector3 targetEye = m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition;
 
-			// SOLO VERIFICAR DISTANCIA MÁXIMA
-			if (distance <= MaxDistance)
+			float distance = Vector3.Distance(shooterEye, targetEye);
+			bool hasLOS = HasLineOfSight(shooterEye, targetEye);
+
+			if (distance > MaxDistance || !hasLOS)
 			{
-				if (!m_isAiming && !m_isFiring && !m_isReloading)
+				Reset();
+				return;
+			}
+
+			// Siempre mirar al objetivo
+			m_componentCreature.ComponentCreatureModel.LookAtOrder = new Vector3?(targetEye);
+
+			// Asegurar que el lanzallamas está en el slot activo
+			EnsureFlameThrowerActive();
+
+			// Si el lanzallamas está vacío, recargar manteniendo el tipo de munición
+			if (IsFlameThrowerEmpty())
+			{
+				ReloadFlameThrower();
+			}
+
+			// Máquina de estados
+			if (m_isAiming)
+			{
+				if (m_subsystemTime.GameTime - m_stateStartTime >= AimTime)
 				{
+					m_isAiming = false;
+					StartFiring();
+				}
+				else
+				{
+					CallAim(AimState.InProgress);
+				}
+			}
+			else if (m_isFiring)
+			{
+				CallAim(AimState.InProgress);
+
+				if (m_subsystemTime.GameTime - m_stateStartTime >= BurstTime)
+				{
+					m_isFiring = false;
+					StartReloading();
+				}
+			}
+			else if (m_isReloading)
+			{
+				CallAim(AimState.Cancelled);
+
+				if (m_subsystemTime.GameTime - m_stateStartTime >= CooldownTime)
+				{
+					m_isReloading = false;
 					StartAiming();
 				}
 			}
 			else
 			{
-				ResetAnimations();
-				return;
-			}
-
-			// MIRAR AL OBJETIVO SIEMPRE
-			if (m_componentModel != null && m_componentChaseBehavior.Target != null)
-			{
-				m_componentModel.LookAtOrder = new Vector3?(
-					m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition
-				);
-			}
-
-			if (m_isAiming)
-			{
-				ApplyAimingAnimation(dt);
-
-				if (m_subsystemTime.GameTime - m_animationStartTime >= AimTime)
-				{
-					m_isAiming = false;
-					StartFiring();
-				}
-			}
-			else if (m_isFiring)
-			{
-				ApplyFiringAnimation(dt);
-
-				if (m_subsystemTime.GameTime >= m_nextShotTime && m_shotsFired < BurstCount)
-				{
-					FireShot();
-					m_shotsFired++;
-					m_nextShotTime = m_subsystemTime.GameTime + BurstInterval;
-				}
-
-				if (m_subsystemTime.GameTime - m_fireStartTime >= BurstTime || m_shotsFired >= BurstCount)
-				{
-					m_isFiring = false;
-					StopFiring();
-				}
-			}
-			else if (m_isReloading)
-			{
-				ApplyReloadingAnimation(dt);
-
-				if (m_subsystemTime.GameTime - m_animationStartTime >= CooldownTime)
-				{
-					m_isReloading = false;
-
-					// Rotar el tipo de bala durante la recarga (mantiene la variación original)
-					m_currentBulletType = (m_currentBulletType == FlameBulletBlock.FlameBulletType.Flame) ?
-						FlameBulletBlock.FlameBulletType.Poison :
-						FlameBulletBlock.FlameBulletType.Flame;
-
-					StartAiming();
-				}
+				StartAiming();
 			}
 		}
 
-		private void FindFlameThrower()
+		private bool HasLineOfSight(Vector3 from, Vector3 to)
 		{
-			m_flameThrowerSlot = -1;
-
-			if (m_flameThrowerBlockIndex <= 0)
+			TerrainRaycastResult? terrainHit = m_subsystemTerrain.Raycast(from, to, false, true, (value, distance) =>
 			{
+				int contents = Terrain.ExtractContents(value);
+				Block block = BlocksManager.Blocks[contents];
+				return block.IsCollidable_(value) && block.BlockIndex != 0;
+			});
+
+			if (terrainHit != null && terrainHit.Value.Distance < Vector3.Distance(from, to) - 0.1f)
+				return false;
+
+			BodyRaycastResult? bodyHit = m_subsystemBodies.Raycast(from, to, 0.2f, (body, distance) =>
+			{
+				if (body.Entity == m_componentCreature.Entity || body.Entity == m_componentChaseBehavior.Target.Entity)
+					return false;
+				if (body.IsChildOfBody(m_componentCreature.ComponentBody))
+					return false;
+				return true;
+			});
+
+			if (bodyHit != null && bodyHit.Value.Distance < Vector3.Distance(from, to) - 0.1f)
+				return false;
+
+			return true;
+		}
+
+		private void EnsureFlameThrowerActive()
+		{
+			if (m_componentMiner.Inventory == null)
 				return;
-			}
 
-			for (int i = 0; i < m_componentInventory.SlotsCount; i++)
+			for (int i = 0; i < m_componentMiner.Inventory.SlotsCount; i++)
 			{
-				int slotValue = m_componentInventory.GetSlotValue(i);
+				int slotValue = m_componentMiner.Inventory.GetSlotValue(i);
 				if (slotValue != 0)
 				{
 					int blockIndex = Terrain.ExtractContents(slotValue);
-
 					if (blockIndex == m_flameThrowerBlockIndex)
 					{
-						m_flameThrowerSlot = i;
-						m_componentInventory.ActiveSlotIndex = i;
-						break;
+						if (m_componentMiner.Inventory.ActiveSlotIndex != i)
+							m_componentMiner.Inventory.ActiveSlotIndex = i;
+						return;
 					}
 				}
 			}
 		}
 
+		private bool IsFlameThrowerEmpty()
+		{
+			if (m_componentMiner.Inventory == null)
+				return true;
+
+			int activeSlot = m_componentMiner.Inventory.ActiveSlotIndex;
+			if (activeSlot < 0)
+				return true;
+
+			int slotValue = m_componentMiner.Inventory.GetSlotValue(activeSlot);
+			int contents = Terrain.ExtractContents(slotValue);
+
+			if (contents != m_flameThrowerBlockIndex)
+				return true;
+
+			int data = Terrain.ExtractData(slotValue);
+			FlameThrowerBlock.LoadState loadState = FlameThrowerBlock.GetLoadState(data);
+
+			return loadState == FlameThrowerBlock.LoadState.Empty;
+		}
+
+		private FlameBulletBlock.FlameBulletType? GetCurrentBulletType()
+		{
+			if (m_componentMiner.Inventory == null)
+				return null;
+
+			int activeSlot = m_componentMiner.Inventory.ActiveSlotIndex;
+			if (activeSlot < 0)
+				return null;
+
+			int slotValue = m_componentMiner.Inventory.GetSlotValue(activeSlot);
+			int contents = Terrain.ExtractContents(slotValue);
+
+			if (contents != m_flameThrowerBlockIndex)
+				return null;
+
+			int data = Terrain.ExtractData(slotValue);
+			return FlameThrowerBlock.GetBulletType(data);
+		}
+
+		private void ReloadFlameThrower()
+		{
+			if (m_componentMiner.Inventory == null)
+				return;
+
+			int activeSlot = m_componentMiner.Inventory.ActiveSlotIndex;
+			if (activeSlot < 0)
+				return;
+
+			int slotValue = m_componentMiner.Inventory.GetSlotValue(activeSlot);
+			int contents = Terrain.ExtractContents(slotValue);
+
+			if (contents != m_flameThrowerBlockIndex)
+				return;
+
+			// Obtener el tipo de munición actual del lanzallamas (si está vacío, usar el tipo por defecto)
+			FlameBulletBlock.FlameBulletType? currentBulletType = GetCurrentBulletType();
+			FlameBulletBlock.FlameBulletType bulletTypeToUse = currentBulletType ?? DefaultAmmoType;
+
+			// Crear un lanzallamas cargado con el mismo tipo de munición que tenía
+			int newValue = Terrain.MakeBlockValue(
+				m_flameThrowerBlockIndex,
+				0,
+				FlameThrowerBlock.SetLoadState(
+					FlameThrowerBlock.SetBulletType(
+						FlameThrowerBlock.SetLoadCount(0, 15),
+						bulletTypeToUse
+					),
+					FlameThrowerBlock.LoadState.Loaded
+				)
+			);
+
+			// Reemplazar el item en el inventario
+			m_componentMiner.Inventory.RemoveSlotItems(activeSlot, 1);
+			m_componentMiner.Inventory.AddSlotItems(activeSlot, newValue, 1);
+		}
+
+		private void CallAim(AimState state)
+		{
+			EnsureFlameThrowerActive();
+
+			Vector3 from = m_componentCreature.ComponentCreatureModel.EyePosition;
+			Vector3 to = m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition;
+			Vector3 direction = Vector3.Normalize(to - from);
+			Ray3 ray = new Ray3(from, direction);
+
+			m_componentMiner.Aim(ray, state);
+		}
+
 		private void StartAiming()
 		{
-			FindFlameThrower();
-
-			if (m_flameThrowerSlot == -1)
-			{
-				return;
-			}
-
 			m_isAiming = true;
 			m_isFiring = false;
 			m_isReloading = false;
-			m_animationStartTime = m_subsystemTime.GameTime;
-			m_shotsFired = 0;
-		}
+			m_stateStartTime = m_subsystemTime.GameTime;
 
-		private void ApplyAimingAnimation(float dt)
-		{
-			if (m_componentModel != null)
-			{
-				m_componentModel.AimHandAngleOrder = 1.4f;
-				m_componentModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
-				m_componentModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
-			}
+			CallAim(AimState.InProgress);
 		}
 
 		private void StartFiring()
 		{
-			if (m_flameThrowerSlot == -1)
-			{
-				return;
-			}
-
 			m_isAiming = false;
 			m_isFiring = true;
 			m_isReloading = false;
-			m_fireStartTime = m_subsystemTime.GameTime;
-			m_nextShotTime = m_subsystemTime.GameTime;
-			m_shotsFired = 0;
-		}
+			m_stateStartTime = m_subsystemTime.GameTime;
 
-		private void ApplyFiringAnimation(float dt)
-		{
-			if (m_componentModel != null)
-			{
-				float fireProgress = (float)((m_subsystemTime.GameTime - m_fireStartTime) / BurstTime);
-				float vibration = (float)Math.Sin(fireProgress * 20f) * 0.02f;
-
-				m_componentModel.AimHandAngleOrder = 1.4f + vibration;
-				m_componentModel.InHandItemOffsetOrder = new Vector3(
-					-0.08f + vibration,
-					-0.08f,
-					0.07f
-				);
-				m_componentModel.InHandItemRotationOrder = new Vector3(
-					-1.7f + vibration * 2f,
-					0f,
-					0f
-				);
-			}
-		}
-
-		private void StopFiring()
-		{
-			StartReloading();
+			CallAim(AimState.InProgress);
 		}
 
 		private void StartReloading()
@@ -279,140 +296,22 @@ namespace Game
 			m_isAiming = false;
 			m_isFiring = false;
 			m_isReloading = true;
-			m_animationStartTime = m_subsystemTime.GameTime;
-			m_shotsFired = 0;
+			m_stateStartTime = m_subsystemTime.GameTime;
+
+			CallAim(AimState.Cancelled);
 		}
 
-		private void ApplyReloadingAnimation(float dt)
+		private void Reset()
 		{
-			if (m_componentModel != null)
+			if (m_isAiming || m_isFiring || m_isReloading)
 			{
-				float reloadProgress = (float)((m_subsystemTime.GameTime - m_animationStartTime) / CooldownTime);
-
-				m_componentModel.AimHandAngleOrder = MathUtils.Lerp(1.0f, 0.5f, reloadProgress);
-				m_componentModel.InHandItemOffsetOrder = new Vector3(
-					-0.08f,
-					-0.08f,
-					0.07f - (0.1f * reloadProgress)
-				);
-				m_componentModel.InHandItemRotationOrder = new Vector3(
-					-1.7f + (0.5f * reloadProgress),
-					0f,
-					0f
-				);
+				CallAim(AimState.Cancelled);
 			}
-		}
 
-		private void ResetAnimations()
-		{
 			m_isAiming = false;
 			m_isFiring = false;
 			m_isReloading = false;
-			m_shotsFired = 0;
-
-			if (m_componentModel != null)
-			{
-				m_componentModel.AimHandAngleOrder = 0f;
-				m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
-				m_componentModel.InHandItemRotationOrder = Vector3.Zero;
-				m_componentModel.LookAtOrder = null;
-			}
-		}
-
-		private void FireShot()
-		{
-			if (m_flameThrowerSlot == -1)
-			{
-				return;
-			}
-
-			if (m_componentChaseBehavior.Target == null)
-				return;
-
-			float immersion = m_componentCreature.ComponentBody.ImmersionFactor;
-			if (immersion > 0.4f)
-			{
-				m_subsystemAudio.PlaySound("Audio/MusketMisfire", 1f, m_random.Float(-0.1f, 0.1f),
-					m_componentCreature.ComponentBody.Position, 3f, false);
-
-				m_isFiring = false;
-				m_shotsFired = BurstCount;
-				StartReloading();
-				return;
-			}
-
-			try
-			{
-				Vector3 firePosition = m_componentCreature.ComponentCreatureModel.EyePosition;
-				Vector3 targetPosition = m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition;
-
-				Vector3 direction = Vector3.Normalize(targetPosition - firePosition);
-
-				direction += new Vector3(
-					m_random.Float(-Accuracy, Accuracy),
-					m_random.Float(-Accuracy * 0.5f, Accuracy * 0.5f),
-					m_random.Float(-Accuracy, Accuracy)
-				);
-				direction = Vector3.Normalize(direction);
-
-				int bulletBlockIndex = BlocksManager.GetBlockIndex<FlameBulletBlock>(false, false);
-				if (bulletBlockIndex > 0)
-				{
-					FlameBulletBlock.FlameBulletType bulletType = m_currentBulletType;
-
-					int bulletData = FlameBulletBlock.SetBulletType(0, bulletType);
-					int bulletValue = Terrain.MakeBlockValue(bulletBlockIndex, 0, bulletData);
-
-					m_subsystemProjectiles.FireProjectile(
-						bulletValue,
-						firePosition,
-						direction * FlameSpeed,
-						Vector3.Zero,
-						m_componentCreature
-					);
-
-					Vector3 smokePosition = firePosition + direction * 0.3f;
-
-					if (bulletType == FlameBulletBlock.FlameBulletType.Flame)
-					{
-						m_subsystemAudio.PlaySound("Audio/Flamethrower/Flamethrower Fire", 1f, m_random.Float(-0.1f, 0.1f),
-							m_componentCreature.ComponentBody.Position, 25f, false);
-
-						if (m_subsystemParticles != null && m_subsystemTerrain != null)
-						{
-							m_subsystemParticles.AddParticleSystem(
-								new FlameSmokeParticleSystem(m_subsystemTerrain, smokePosition, direction),
-								false
-							);
-						}
-					}
-					else
-					{
-						m_subsystemAudio.PlaySound("Audio/Flamethrower/PoisonSmoke", 1f, m_random.Float(-0.1f, 0.1f),
-							m_componentCreature.ComponentCreatureModel.EyePosition, 8f, true);
-
-						if (m_subsystemParticles != null && m_subsystemTerrain != null)
-						{
-							m_subsystemParticles.AddParticleSystem(
-								new PoisonSmokeParticleSystem(m_subsystemTerrain, smokePosition + 0.3f * direction, direction),
-								false
-							);
-						}
-					}
-
-					if (UseRecoil)
-					{
-						float recoilStrength = (bulletType == FlameBulletBlock.FlameBulletType.Flame) ? 0.8f : 0.5f;
-						m_componentCreature.ComponentBody.ApplyImpulse(-direction * recoilStrength);
-					}
-
-					if (m_subsystemNoise != null)
-					{
-						m_subsystemNoise.MakeNoise(firePosition, 0.7f, 25f);
-					}
-				}
-			}
-			catch { }
+			m_componentCreature.ComponentCreatureModel.LookAtOrder = null;
 		}
 	}
 }
