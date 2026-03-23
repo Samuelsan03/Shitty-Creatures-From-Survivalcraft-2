@@ -74,7 +74,7 @@ namespace Game
 			new SubsystemInGameMusic.TrackInfo("MenuMusic/Sonic Boom Closing Theme Sonic CD", 213f),
 			new SubsystemInGameMusic.TrackInfo("MenuMusic/Sonic Boom Sonic CD", 184f),
 			new SubsystemInGameMusic.TrackInfo("MenuMusic/Power Rangers The Movie Title Theme SNES", 117f),
-			new SubsystemInGameMusic.TrackInfo("MenuMusic/Mappy 1983 In Game Theme", 170f),
+			new SubsystemInGameMusic.TrackInfo("MenuMusic/瞬間ときはファンタジー", 206f),
 			new SubsystemInGameMusic.TrackInfo("MenuMusic/Prince Of Persia (SNES) Staff Roll", 185f),
 			new SubsystemInGameMusic.TrackInfo("MenuMusic/Prince Of Persia (SNES) Recap", 129f),
 			new SubsystemInGameMusic.TrackInfo("MenuMusic/FIELD OF VIEW 渇いた叫び - 捨てられた物。", 254f),
