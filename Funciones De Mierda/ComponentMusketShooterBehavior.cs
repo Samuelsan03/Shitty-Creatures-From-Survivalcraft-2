@@ -5,7 +5,7 @@ using TemplatesDatabase;
 
 namespace Game
 {
-	public class ComponentMusketShooterBehavior : ComponentBehavior, IUpdateable
+	public class ComponentMusketShooterBehavior2 : ComponentBehavior, IUpdateable
 	{
 		// Componentes necesarios
 		private ComponentCreature m_componentCreature;
@@ -20,28 +20,22 @@ namespace Game
 		private SubsystemTerrain m_subsystemTerrain;
 		private ComponentMiner m_componentMiner;
 		private SubsystemBodies m_subsystemBodies;
+		private ComponentPathfinding m_componentPathfinding;
 
 		// Configuración
 		public float MaxDistance = 25f;
 		public float MeleeSwitchDistance = 5f;
-		public float ReloadTime = 0.55f;
 		public float AimTime = 1f;
-		public float CockTime = 0.5f;
 		public float MeleeAttackTime = 0.8f;
 		public float FireSoundDistance = 15f;
-		public float Accuracy = 0.02f;
 		public bool UseRecoil = true;
 		public float BulletSpeed = 120f;
-		public bool RequireCocking = true;
 
 		// Estado de animación
 		private bool m_isAiming = false;
 		private bool m_isFiring = false;
-		private bool m_isReloading = false;
-		private bool m_isCocking = false;
 		private bool m_isMelee = false;
 		private double m_animationStartTime;
-		private double m_cockStartTime;
 		private double m_fireTime;
 		private double m_meleeAttackTime;
 		private int m_musketSlot = -1;
@@ -57,20 +51,17 @@ namespace Game
 
 			MaxDistance = valuesDictionary.GetValue<float>("MaxDistance", 25f);
 			MeleeSwitchDistance = valuesDictionary.GetValue<float>("MeleeSwitchDistance", 5f);
-			ReloadTime = valuesDictionary.GetValue<float>("ReloadTime", 0.55f);
 			AimTime = valuesDictionary.GetValue<float>("AimTime", 1f);
-			CockTime = valuesDictionary.GetValue<float>("CockTime", 0.5f);
 			MeleeAttackTime = valuesDictionary.GetValue<float>("MeleeAttackTime", 0.8f);
 			FireSoundDistance = valuesDictionary.GetValue<float>("FireSoundDistance", 15f);
-			Accuracy = valuesDictionary.GetValue<float>("Accuracy", 0.02f);
 			UseRecoil = valuesDictionary.GetValue<bool>("UseRecoil", true);
 			BulletSpeed = valuesDictionary.GetValue<float>("BulletSpeed", 120f);
-			RequireCocking = valuesDictionary.GetValue<bool>("RequireCocking", true);
 
 			m_componentCreature = base.Entity.FindComponent<ComponentCreature>(true);
 			m_componentChaseBehavior = base.Entity.FindComponent<ComponentChaseBehavior>(true);
 			m_componentInventory = base.Entity.FindComponent<ComponentInventory>(true);
 			m_componentMiner = base.Entity.FindComponent<ComponentMiner>(true);
+			m_componentPathfinding = base.Entity.FindComponent<ComponentPathfinding>(true);
 			m_subsystemTime = base.Project.FindSubsystem<SubsystemTime>(true);
 			m_subsystemProjectiles = base.Project.FindSubsystem<SubsystemProjectiles>(true);
 			m_subsystemAudio = base.Project.FindSubsystem<SubsystemAudio>(true);
@@ -97,12 +88,11 @@ namespace Game
 				m_componentChaseBehavior.Target.ComponentBody.Position
 			);
 
-			// SOLO VERIFICAR DISTANCIA MÁXIMA
 			if (distance <= MaxDistance)
 			{
-				if (distance < MeleeSwitchDistance)
+				if (distance <= MeleeSwitchDistance)
 				{
-					if (!m_isMelee && !m_isFiring && !m_isReloading)
+					if (!m_isMelee && !m_isFiring)
 					{
 						SwitchToMeleeModeImmediately();
 					}
@@ -115,9 +105,16 @@ namespace Game
 						m_componentModel.AttackOrder = false;
 					}
 
-					if (!m_isAiming && !m_isFiring && !m_isReloading && !m_isCocking)
+					if (!m_isAiming && !m_isFiring && !m_isMelee)
 					{
-						StartAiming();
+						if (HasLineOfSightToTarget())
+						{
+							StartAiming();
+						}
+						else
+						{
+							MoveToGetLineOfSight();
+						}
 					}
 				}
 			}
@@ -127,8 +124,7 @@ namespace Game
 				return;
 			}
 
-			// MIRAR AL OBJETIVO SIEMPRE (cuando no está en melee o recargando)
-			if (!m_isMelee && !m_isReloading && m_componentModel != null && m_componentChaseBehavior.Target != null)
+			if (!m_isMelee && m_componentModel != null && m_componentChaseBehavior.Target != null)
 			{
 				m_componentModel.LookAtOrder = new Vector3?(
 					m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition
@@ -137,7 +133,7 @@ namespace Game
 
 			if (m_isMelee)
 			{
-				UpdateMeleeMode(dt);
+				UpdateMeleeModeImproved(dt);
 			}
 			else
 			{
@@ -147,25 +143,17 @@ namespace Game
 
 		private void UpdateRangedMode(float dt)
 		{
-			if (m_isCocking)
-			{
-				ApplyCockingAnimation(dt);
-
-				if (m_subsystemTime.GameTime - m_cockStartTime >= CockTime)
-				{
-					m_isCocking = false;
-					m_isAiming = true;
-					m_animationStartTime = m_subsystemTime.GameTime;
-					UpdateMusketHammerState(true);
-				}
-			}
-			else if (m_isAiming)
+			if (m_isAiming)
 			{
 				ApplyAimingAnimation(dt);
 
 				if (m_subsystemTime.GameTime - m_animationStartTime >= AimTime)
 				{
 					Fire();
+				}
+				else
+				{
+					UpdateAimState(AimState.InProgress);
 				}
 			}
 			else if (m_isFiring)
@@ -175,28 +163,15 @@ namespace Game
 				if (m_subsystemTime.GameTime - m_fireTime >= 0.2)
 				{
 					m_isFiring = false;
-					StartReloading();
-				}
-			}
-			else if (m_isReloading)
-			{
-				ApplyReloadingAnimation(dt);
-
-				if (m_subsystemTime.GameTime - m_animationStartTime >= ReloadTime)
-				{
-					m_isReloading = false;
-
-					UpdateMusketLoadState(MusketBlock.LoadState.Loaded);
-					UpdateMusketBulletType(BulletBlock.BulletType.MusketBall);
-
-					StartAiming();
+					m_isAiming = true;
+					m_animationStartTime = m_subsystemTime.GameTime;
 				}
 			}
 		}
 
-		private void UpdateMeleeMode(float dt)
+		private void UpdateMeleeModeImproved(float dt)
 		{
-			if (FindHitTool())
+			if (FindHitToolImproved())
 			{
 				if (m_componentChaseBehavior.Target != null)
 				{
@@ -213,7 +188,7 @@ namespace Game
 					if (m_componentModel.IsAttackHitMoment)
 					{
 						Vector3 hitPoint;
-						ComponentBody hitBody = GetHitBody(m_componentChaseBehavior.Target.ComponentBody, out hitPoint);
+						ComponentBody hitBody = GetHitBodyImproved(m_componentChaseBehavior.Target.ComponentBody, out hitPoint);
 						if (hitBody != null)
 						{
 							m_componentMiner.Hit(hitBody, hitPoint, m_componentCreature.ComponentBody.Matrix.Forward);
@@ -222,6 +197,73 @@ namespace Game
 					}
 				}
 			}
+			else
+			{
+				if (m_componentPathfinding != null && m_componentChaseBehavior.Target != null)
+				{
+					Vector3 retreatDirection = Vector3.Normalize(
+						m_componentCreature.ComponentBody.Position - m_componentChaseBehavior.Target.ComponentBody.Position
+					);
+					Vector3 retreatPosition = m_componentCreature.ComponentBody.Position + retreatDirection * 3f;
+					m_componentPathfinding.SetDestination(new Vector3?(retreatPosition), 1f, 1f, 0, false, true, false, null);
+				}
+			}
+		}
+
+		private bool HasLineOfSightToTarget()
+		{
+			if (m_componentChaseBehavior.Target == null)
+				return false;
+
+			Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
+			Vector3 targetEyePos = m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition;
+			Vector3 direction = targetEyePos - eyePos;
+			float distance = direction.Length();
+			direction = Vector3.Normalize(direction);
+
+			TerrainRaycastResult? terrainHit = m_subsystemTerrain.Raycast(eyePos, eyePos + direction * distance, false, true, (int value, float d) => true);
+
+			return terrainHit == null;
+		}
+
+		private void MoveToGetLineOfSight()
+		{
+			if (m_componentPathfinding == null || m_componentChaseBehavior.Target == null)
+				return;
+
+			Vector3 targetPos = m_componentChaseBehavior.Target.ComponentBody.Position;
+			Vector3 myPos = m_componentCreature.ComponentBody.Position;
+
+			Vector3 directionToTarget = targetPos - myPos;
+			directionToTarget.Y = 0;
+			directionToTarget = Vector3.Normalize(directionToTarget);
+
+			float angle = m_random.Float(-1.5f, 1.5f);
+			Vector3 lateral = Vector3.Transform(directionToTarget, Quaternion.CreateFromAxisAngle(Vector3.UnitY, angle));
+			Vector3 targetDestination = targetPos + lateral * 3f;
+
+			int groundY = m_subsystemTerrain.Terrain.CalculateTopmostCellHeight(Terrain.ToCell(targetDestination.X), Terrain.ToCell(targetDestination.Z));
+			targetDestination.Y = groundY + 1.5f;
+
+			m_componentPathfinding.SetDestination(new Vector3?(targetDestination), m_componentCreature.ComponentLocomotion.WalkSpeed, 1f, 20, false, false, false, null);
+		}
+
+		private void UpdateAimState(AimState state)
+		{
+			if (m_musketSlot == -1)
+				FindMusket();
+
+			if (m_musketSlot == -1)
+				return;
+
+			if (m_componentInventory.ActiveSlotIndex != m_musketSlot)
+				m_componentInventory.ActiveSlotIndex = m_musketSlot;
+
+			Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
+			Vector3 targetEyePos = m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition;
+			Ray3 aimRay = new Ray3(eyePos, Vector3.Normalize(targetEyePos - eyePos));
+
+			m_componentMiner.Aim(aimRay, state);
 		}
 
 		private void SwitchToMeleeModeImmediately()
@@ -229,8 +271,6 @@ namespace Game
 			m_isMelee = true;
 			m_isAiming = false;
 			m_isFiring = false;
-			m_isReloading = false;
-			m_isCocking = false;
 			m_meleeAttackTime = m_subsystemTime.GameTime;
 
 			if (m_componentModel != null)
@@ -240,10 +280,10 @@ namespace Game
 				m_componentModel.InHandItemRotationOrder = Vector3.Zero;
 			}
 
-			FindHitTool();
+			FindHitToolImproved();
 		}
 
-		private bool FindHitTool()
+		private bool FindHitToolImproved()
 		{
 			if (m_componentMiner.Inventory == null)
 				return false;
@@ -277,7 +317,7 @@ namespace Game
 			return false;
 		}
 
-		private ComponentBody GetHitBody(ComponentBody target, out Vector3 hitPoint)
+		private ComponentBody GetHitBodyImproved(ComponentBody target, out Vector3 hitPoint)
 		{
 			Vector3 vector = m_componentCreature.ComponentBody.BoundingBox.Center();
 			Vector3 v = target.BoundingBox.Center();
@@ -299,18 +339,6 @@ namespace Game
 			return null;
 		}
 
-		private void StartCocking()
-		{
-			m_isCocking = true;
-			m_isAiming = false;
-			m_isFiring = false;
-			m_isReloading = false;
-			m_cockStartTime = m_subsystemTime.GameTime;
-
-			m_subsystemAudio.PlaySound("Audio/HammerCock", 1f, m_random.Float(-0.1f, 0.1f),
-				m_componentCreature.ComponentBody.Position, 3f, false);
-		}
-
 		private void StartAiming()
 		{
 			FindMusket();
@@ -318,35 +346,11 @@ namespace Game
 			if (m_musketSlot == -1)
 				return;
 
-			int slotValue = m_componentInventory.GetSlotValue(m_musketSlot);
-			int data = Terrain.ExtractData(slotValue);
-			MusketBlock.LoadState loadState = MusketBlock.GetLoadState(data);
-
-			if (loadState != MusketBlock.LoadState.Loaded)
-			{
-				UpdateMusketLoadState(MusketBlock.LoadState.Loaded);
-				UpdateMusketBulletType(BulletBlock.BulletType.MusketBall);
-			}
+			m_componentInventory.ActiveSlotIndex = m_musketSlot;
 
 			m_isAiming = true;
 			m_isFiring = false;
-			m_isReloading = false;
-			m_isCocking = false;
 			m_animationStartTime = m_subsystemTime.GameTime;
-
-			if (RequireCocking)
-			{
-				bool hammerState = MusketBlock.GetHammerState(Terrain.ExtractData(slotValue));
-				if (!hammerState)
-				{
-					StartCocking();
-				}
-				else
-				{
-					m_isAiming = true;
-					m_isCocking = false;
-				}
-			}
 		}
 
 		private void FindMusket()
@@ -367,23 +371,7 @@ namespace Game
 			}
 		}
 
-		private void UpdateMusketHammerState(bool hammerState)
-		{
-			if (m_musketSlot >= 0)
-			{
-				int slotValue = m_componentInventory.GetSlotValue(m_musketSlot);
-				int contents = Terrain.ExtractContents(slotValue);
-				if (BlocksManager.Blocks[contents] is MusketBlock)
-				{
-					int data = Terrain.ExtractData(slotValue);
-					data = MusketBlock.SetHammerState(data, hammerState);
-					int newValue = Terrain.ReplaceData(slotValue, data);
-					m_componentInventory.RemoveSlotItems(m_musketSlot, 1);
-					m_componentInventory.AddSlotItems(m_musketSlot, newValue, 1);
-				}
-			}
-		}
-
+		// Métodos para cargar el mosquete (sin dependencia de munición)
 		private void UpdateMusketLoadState(MusketBlock.LoadState loadState)
 		{
 			if (m_musketSlot >= 0)
@@ -418,20 +406,10 @@ namespace Game
 			}
 		}
 
-		private void ApplyCockingAnimation(float dt)
+		private void EnsureMusketLoaded()
 		{
-			if (m_componentModel != null)
-			{
-				float cockProgress = (float)((m_subsystemTime.GameTime - m_cockStartTime) / CockTime);
-
-				m_componentModel.AimHandAngleOrder = 1.2f;
-				m_componentModel.InHandItemOffsetOrder = new Vector3(
-					-0.08f + (0.03f * cockProgress),
-					-0.08f,
-					0.07f
-				);
-				m_componentModel.InHandItemRotationOrder = new Vector3(-1.6f, 0f, 0f);
-			}
+			UpdateMusketLoadState(MusketBlock.LoadState.Loaded);
+			UpdateMusketBulletType(BulletBlock.BulletType.MusketBall);
 		}
 
 		private void ApplyAimingAnimation(float dt)
@@ -448,8 +426,6 @@ namespace Game
 		{
 			m_isAiming = false;
 			m_isFiring = true;
-			m_isReloading = false;
-			m_isCocking = false;
 			m_fireTime = m_subsystemTime.GameTime;
 
 			if (m_musketSlot == -1)
@@ -459,54 +435,54 @@ namespace Game
 					return;
 			}
 
-			int slotValue = m_componentInventory.GetSlotValue(m_musketSlot);
-			int data = Terrain.ExtractData(slotValue);
-			MusketBlock.LoadState loadState = MusketBlock.GetLoadState(data);
+			// Asegurar que el mosquete esté cargado antes de disparar (munición infinita)
+			EnsureMusketLoaded();
 
-			if (loadState != MusketBlock.LoadState.Loaded)
+			UpdateAimState(AimState.Completed);
+
+			// Bonus: 0.05% de probabilidad de disparar TRES BALAS JUNTAS
+			if (m_random.Float(0f, 1f) < 0.0005f)
 			{
-				m_subsystemAudio.PlaySound("Audio/MusketMisfire", 1f, m_random.Float(-0.1f, 0.1f),
-					m_componentCreature.ComponentBody.Position, 3f, false);
-				m_isFiring = false;
-				StartReloading();
-				return;
-			}
+				Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
+				Vector3 targetEyePos = m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition;
+				Vector3 direction = Vector3.Normalize(targetEyePos - eyePos);
 
-			float immersion = m_componentCreature.ComponentBody.ImmersionFactor;
-			if (immersion > 0.4f)
+				Vector3 spread1 = direction + new Vector3(m_random.Float(-0.03f, 0.03f), m_random.Float(-0.03f, 0.03f), m_random.Float(-0.03f, 0.03f));
+				Vector3 spread2 = direction + new Vector3(m_random.Float(-0.03f, 0.03f), m_random.Float(-0.03f, 0.03f), m_random.Float(-0.03f, 0.03f));
+				spread1 = Vector3.Normalize(spread1);
+				spread2 = Vector3.Normalize(spread2);
+
+				ShootExtraBullet(spread1);
+				ShootExtraBullet(spread2);
+			}
+		}
+
+		private void ShootExtraBullet(Vector3 direction)
+		{
+			try
 			{
-				m_subsystemAudio.PlaySound("Audio/MusketMisfire", 1f, m_random.Float(-0.1f, 0.1f),
-					m_componentCreature.ComponentBody.Position, 3f, false);
+				Vector3 firePosition = m_componentCreature.ComponentCreatureModel.EyePosition;
 
-				UpdateMusketLoadState(MusketBlock.LoadState.Empty);
-				UpdateMusketHammerState(false);
-				UpdateMusketBulletType(BulletBlock.BulletType.MusketBall);
+				int bulletBlockIndex = BlocksManager.GetBlockIndex<BulletBlock>(false, false);
+				if (bulletBlockIndex > 0)
+				{
+					int bulletValue = Terrain.MakeBlockValue(bulletBlockIndex, 0, 0); // Tipo MusketBall por defecto
 
-				m_isFiring = false;
-				StartReloading();
-				return;
+					m_subsystemProjectiles.FireProjectile(
+						bulletValue,
+						firePosition,
+						direction * BulletSpeed,
+						Vector3.Zero,
+						m_componentCreature
+					);
+
+					if (m_subsystemNoise != null)
+					{
+						m_subsystemNoise.MakeNoise(firePosition, 0.5f, 30f);
+					}
+				}
 			}
-
-			m_subsystemAudio.PlaySound("Audio/MusketFire", 1f, m_random.Float(-0.1f, 0.1f),
-				m_componentCreature.ComponentBody.Position, FireSoundDistance, false);
-
-			m_subsystemAudio.PlaySound("Audio/HammerUncock", 1f, m_random.Float(-0.1f, 0.1f),
-				m_componentCreature.ComponentBody.Position, 3f, false);
-
-			ShootBullet();
-
-			UpdateMusketLoadState(MusketBlock.LoadState.Empty);
-			UpdateMusketHammerState(false);
-			UpdateMusketBulletType(BulletBlock.BulletType.MusketBall);
-
-			if (UseRecoil && m_componentChaseBehavior.Target != null)
-			{
-				Vector3 direction = Vector3.Normalize(
-					m_componentChaseBehavior.Target.ComponentBody.Position -
-					m_componentCreature.ComponentBody.Position
-				);
-				m_componentCreature.ComponentBody.ApplyImpulse(-direction * 3f);
-			}
+			catch { }
 		}
 
 		private void ApplyFiringAnimation(float dt)
@@ -527,46 +503,10 @@ namespace Game
 			}
 		}
 
-		private void StartReloading()
-		{
-			m_isAiming = false;
-			m_isFiring = false;
-			m_isReloading = true;
-			m_isCocking = false;
-			m_animationStartTime = m_subsystemTime.GameTime;
-
-			m_subsystemAudio.PlaySound("Audio/Reload", 1.5f, m_random.Float(-0.1f, 0.1f),
-				m_componentCreature.ComponentBody.Position, 5f, false);
-		}
-
-		private void ApplyReloadingAnimation(float dt)
-		{
-			if (m_componentModel != null)
-			{
-				float reloadProgress = (float)((m_subsystemTime.GameTime - m_animationStartTime) / ReloadTime);
-
-				m_componentModel.AimHandAngleOrder = MathUtils.Lerp(1.0f, 0.5f, reloadProgress);
-				m_componentModel.InHandItemOffsetOrder = new Vector3(
-					-0.08f,
-					-0.08f,
-					0.07f - (0.1f * reloadProgress)
-				);
-				m_componentModel.InHandItemRotationOrder = new Vector3(
-					-1.7f + (0.5f * reloadProgress),
-					0f,
-					0f
-				);
-
-				m_componentModel.LookAtOrder = null;
-			}
-		}
-
 		private void ResetAnimations()
 		{
 			m_isAiming = false;
 			m_isFiring = false;
-			m_isReloading = false;
-			m_isCocking = false;
 			m_isMelee = false;
 
 			if (m_componentModel != null)
@@ -577,61 +517,11 @@ namespace Game
 				m_componentModel.LookAtOrder = null;
 				m_componentModel.AttackOrder = false;
 			}
-		}
 
-		private void ShootBullet()
-		{
-			if (m_componentChaseBehavior.Target == null)
-				return;
-
-			try
+			if (m_musketSlot != -1)
 			{
-				Vector3 firePosition = m_componentCreature.ComponentCreatureModel.EyePosition;
-				Vector3 targetPosition = m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition;
-
-				Vector3 direction = Vector3.Normalize(targetPosition - firePosition);
-
-				direction += new Vector3(
-					m_random.Float(-Accuracy, Accuracy),
-					m_random.Float(-Accuracy * 0.5f, Accuracy * 0.5f),
-					m_random.Float(-Accuracy, Accuracy)
-				);
-				direction = Vector3.Normalize(direction);
-
-				int bulletBlockIndex = BlocksManager.GetBlockIndex<BulletBlock>(false, false);
-				if (bulletBlockIndex > 0)
-				{
-					int bulletData = BulletBlock.SetBulletType(0, BulletBlock.BulletType.MusketBall);
-					int bulletValue = Terrain.MakeBlockValue(bulletBlockIndex, 0, bulletData);
-
-					m_subsystemProjectiles.FireProjectile(
-						bulletValue,
-						firePosition,
-						direction * BulletSpeed,
-						Vector3.Zero,
-						m_componentCreature
-					);
-
-					Vector3 smokePosition = firePosition + direction * 0.3f;
-
-					if (m_subsystemParticles != null)
-					{
-						if (m_subsystemTerrain != null)
-						{
-							m_subsystemParticles.AddParticleSystem(
-								new GunSmokeParticleSystem(m_subsystemTerrain, smokePosition, direction),
-								false
-							);
-						}
-					}
-
-					if (m_subsystemNoise != null)
-					{
-						m_subsystemNoise.MakeNoise(firePosition, 1f, 40f);
-					}
-				}
+				UpdateAimState(AimState.Cancelled);
 			}
-			catch { }
 		}
 	}
 }
