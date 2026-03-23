@@ -609,6 +609,9 @@ namespace Game
 
 				m_currentTargetDistance = distance;
 
+				bool isStuck = (m_componentPathfinding != null && m_componentPathfinding.IsStuck);
+				bool hasLineOfSight = HasClearLineOfSight(target);
+
 				const float MeleeRange = 5f;
 
 				if (distance <= MeleeRange)
@@ -637,8 +640,25 @@ namespace Game
 
 							if (m_currentWeaponSlot != -1)
 							{
-								ProcessWeaponBehavior(target, distance);
+								// Golpear con el arma a distancia siempre, sin importar stuck/LOS
 								ProcessRangedWeaponAsMelee(target, distance);
+
+								// Disparar solo si no está atascado y tiene línea de visión
+								if (!isStuck && hasLineOfSight)
+								{
+									ProcessWeaponBehavior(target, distance);
+								}
+								else
+								{
+									ResetWeaponState();
+									if (m_componentModel != null)
+									{
+										m_componentModel.AimHandAngleOrder = 0f;
+										m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
+										m_componentModel.InHandItemRotationOrder = Vector3.Zero;
+										m_componentModel.LookAtOrder = null;
+									}
+								}
 							}
 						}
 					}
@@ -658,7 +678,22 @@ namespace Game
 
 					if (m_currentWeaponSlot != -1)
 					{
-						ProcessWeaponBehavior(target, distance);
+						// Solo disparar si no está atascado y tiene línea de visión
+						if (!isStuck && hasLineOfSight)
+						{
+							ProcessWeaponBehavior(target, distance);
+						}
+						else
+						{
+							ResetWeaponState();
+							if (m_componentModel != null)
+							{
+								m_componentModel.AimHandAngleOrder = 0f;
+								m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
+								m_componentModel.InHandItemRotationOrder = Vector3.Zero;
+								m_componentModel.LookAtOrder = null;
+							}
+						}
 					}
 					else
 					{
