@@ -6,12 +6,6 @@
     <Parameter Name="Class" Guid="e4fb314e-1a7a-43ae-afde-69d0033eabc1" Value="Game.ComponentRageZombieBehavior" Type="string"/>
 </ComponentTemplate>
 
-<ComponentTemplate Name="NewGlowingEyes" Description="Draws glowing eyes for a creature" Guid="982182a7-d628-41a8-a2ab-8718f1cae19a" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
-          <Parameter Name="GlowingEyesOffset" Description="Glowing eyes offset from head" Guid="d496fa5d-84a1-4133-88f3-c8801bd56171" Value="0,0,0" Type="Vector3"/>
-          <Parameter Name="GlowingEyesColor" Description="Glowing eyes color, or transparent if no glowing eyes" Guid="5c58d55c-7495-4fb8-93c2-407d56d12945" Value="0,0,0,0" Type="Color"/>
-          <Parameter Name="Class" Guid="d4169be4-ff59-40a3-8475-96eab5e2e8c7" Value="Game.ComponentNewGlowingEyes" Type="string"/>
-        </ComponentTemplate>
-
     <ComponentTemplate Name="DefensiveRunAwayBehavior" Description="Versión de ComponentRunAwayBehavior que solo huye cuando es atacado, ignorando ruidos y salud baja." Guid="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
     <Parameter Name="LowHealthToEscape" Description="Umbral de salud para huir (no utilizado en esta versión)" Guid="75069ae7-c5bc-4990-8249-2f44632aca2e" Value="0.3" Type="float"/>
     <Parameter Name="Class" Guid="bed3ec74-af04-408d-b1dd-9c2b20bb7a1d" Value="Game.ComponentDefensiveRunAwayBehavior" Type="string"/>
@@ -31,12 +25,6 @@
     <ComponentTemplate Name="HireableNPC" Description="Permite contratar a la criatura con monedas nucleares" Guid="4582a365-6082-4260-a7ba-35d141cddbbd" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
     <Parameter Name="Class" Guid="e0bca7bc-5f06-4b64-a8c9-bfd6d0267b9e" Value="Game.ComponentHireableNPC" Type="string"/>
     <Parameter Name="HirePrice" Description="Precio en monedas nucleares para contratar" Guid="6cb5c4eb-8db6-453a-bc52-452ae6b4e1ee" Value="100" Type="int"/>
-</ComponentTemplate>
-
-<ComponentTemplate Name="DefensiveAI" Description="AI that uses ranged weapons from inventory" Guid="2e0ff3f9-d699-41d1-b64a-cb06cda18234" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
-  <Parameter Name="Class" Guid="46e77927-3c3d-4605-9f7c-1943a184d1f7" Value="Game.ComponentDefensiveAI" Type="string"/>
-  <Parameter Name="CanUseInventory" Description="Whether this creature can use weapons from its inventory" Guid="f98c4707-640d-4153-bd9a-91e9c57032d8" Value="false" Type="bool"/>
-  <Parameter Name="CanDestroyBlocksWhenStuck" Description="Allow creature to destroy blocks when stuck" Guid="c91325b2-6efa-44a0-9ddf-13c3f8c6a6a2" Value="false" Type="bool"/>
 </ComponentTemplate>
 
 <ComponentTemplate Name="PirateTrader" Description="Permite que una criatura actúe como comerciante pirata. Se puede abrir interactuando con ella para comprar objetos usando NuclearCoin." Guid="7753c16f-a467-4624-be61-3a048cb51cf0" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
@@ -540,6 +528,7 @@
   <Parameter Name="ChaseOnTouchProbability" Description="Probabilidad de perseguir al ser tocado por una criatura de AutoChaseMask" Guid="63590376-889c-4959-b586-fc58d5cc9bbf" Value="0" Type="float"/>
   <Parameter Name="AutoChaseMask" Description="Categorías de criaturas a perseguir automáticamente" Guid="5da7f87c-19be-463b-930e-57df04a0fd04" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
   <Parameter Name="ChaseNonPlayerProbability" Description="Probabilidad de perseguir objetivos no jugadores" Guid="0b3b2584-ce25-4c73-8269-cd1ebd5df44d" Value="1" Type="float"/>
+  <Parameter Name="RangedAttackRange" Description="Rango de ataque a distancia (X = distancia mínima para melee, Y = distancia máxima para ranged)" Guid="e5aaebe5-378d-426e-98dc-dd6fcca09ecb" Value="5,20" Type="Vector2"/>
 </ComponentTemplate>
 
 <ComponentTemplate Name="NewHerdBehavior" Description="Comportamiento de manada mejorado con reconocimiento del jugador y protección entre aliados" Guid="24c8a629-49be-4cb4-b829-78d5a5a14204" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
@@ -554,6 +543,9 @@
     </Folder>
 
     <ProjectTemplate Name="Project" Guid="85023bf8-1c90-4dd1-9442-e6c13691d078">
+    <MemberSubsystemTemplate Name="DigimonSpawn" Guid="62e990d3-553c-445b-b766-43ddc013a789" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+    <Parameter Name="Class" Value="Game.SubsystemDigimonSpawn" Type="string" Guid="b2d008c4-89f0-4a79-a23e-95d672e1ae16"/>
+</MemberSubsystemTemplate>
     <MemberSubsystemTemplate Name="TridentBehavior" Guid="4c112971-4320-48ef-9063-4d4d5a2adb64" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
     <Parameter Name="Class" Value="Game.SubsystemTridentBehavior" Type="string" Guid="588f3717-33aa-40eb-ba6a-8755d656f555"/>
 </MemberSubsystemTemplate>
@@ -683,9 +675,7 @@
 <MemberSubsystemTemplate Name="GhostNormalChaseMusic" Guid="fe454a1e-89d4-4f2a-aa36-9200d7ba1570" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
     <Parameter Name="Class" Value="Game.SubsystemGhostNormalChaseMusic" Type="string" Guid="a274b5c9-b092-4d27-8ae0-1c64167ac3e5"/>
 </MemberSubsystemTemplate>
-<MemberSubsystemTemplate Name="AntiTanksBulletBlockBehavior" Guid="dc7f2c73-54c5-4dbb-844a-a6a00a018589">
-<Parameter Name="IsOptional" Value="false" Type="bool" Guid="04ca7c03-a46d-494f-b8c7-1064ef240b48"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="04fae416-be40-4597-a540-b9133a43b6fb"/>
+<MemberSubsystemTemplate Name="AntiTanksBulletBlockBehavior" Guid="dc7f2c73-54c5-4dbb-844a-a6a00a018589" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
         <Parameter Name="Class" Guid="9b826f1c-14c8-45de-bb01-eb46c3d6ee7f" Value="Game.SubsystemAntiTanksBulletBlockBehavior" Type="string"/>
     </MemberSubsystemTemplate>
 <MemberSubsystemTemplate Name="TankChaseMusic" Guid="8f97faa0-ef7f-4455-9aaf-116e70e836be" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
