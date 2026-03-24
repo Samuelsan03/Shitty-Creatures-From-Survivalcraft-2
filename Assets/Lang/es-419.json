@@ -1,4 +1,16 @@
 {
+  "ComponentNewSleep": {
+    "CantSleepGreenNight": "No puedes dormir durante la Noche Verde"
+  },
+  "ComponentThirst": {
+    "AlreadyNotThirsty": "Ya estás completamente hidratado",
+    "DrankBoiledWater": "Te has hidratado",
+    "Dehydrating": "¡Te estás deshidratando!",
+    "DrankDrinkableWater": "Te has hidratado parcialmente",
+    "DrankRotten": "La bebida estaba podrida. Te revuelve el estómago.",
+    "AteFruit": "Comiste una fruta y te sientes un poco más hidratado",
+    "HalfThirsty": "Estás empezando a sentir sed"
+  },
   "ShittyCreaturesAbout": {
     "AboutButton": "Acerca del Mod",
     "Title": "Acerca de Shitty Creatures MOD:",
@@ -11,7 +23,8 @@
     "DiscordLabel": "Discord: ",
     "BiliBiliLabel": "BiliBili: ",
     "ModPageLabel": "Página del mod: ",
-    "FinalMessage": "Si tienes problemas, bugs o sugerencias, no dudes en contactar al autor en su Discord."
+    "FinalMessage": "Si tienes problemas, bugs o sugerencias, no dudes en contactar al autor en su Discord.",
+    "ExitButton": "Salir"
   },
   "ShittyCreaturesLog": {
     "Title": "Registro de Shitty Creatures",
@@ -68,7 +81,7 @@
     "GhostDescription": "Activar/desactivar la música cuando los fantasmas te persiguen",
     "TankDescription": "Activar/desactivar la música cuando los Tanks te persiguen",
     "SpawnDescription": "Activar/desactivar la generación de NPCs al morir uno",
-    "SpawnButton": "Generación al morir:\n {0}"
+    "ThirstDescription": "Activar/desactivar la simulación de sed"
   },
     "AntidoteBucket": {
       "NPCCured": "¡El NPC ha sido curado de veneno y enfermedades!",
@@ -141,7 +154,8 @@
   },
   "Injury": {
     "Poisoned": "Envenenado",
-    "FrozenToDeath": "Congelado hasta morir"
+    "FrozenToDeath": "Congelado hasta morir",
+    "Dehydration": "Deshidratación"
    },
   "Database": {
     "DisplayName": {
@@ -377,6 +391,39 @@
     }
   },
   "Blocks": {
+    "AppleBlock:0": {
+    "DisplayName": "Manzana",
+    "Description": "Una fruta fresca y jugosa que restaura una pequeña cantidad de hambre y también ayuda a reducir la sed."
+  },
+  "PearBlock:0": {
+    "DisplayName": "Pera",
+    "Description": "Una fruta dulce y suave que proporciona nutrición moderada y contribuye a la hidratación."
+  },
+  "OrangeBlock:0": {
+    "DisplayName": "Naranja",
+    "Description": "Una fruta cítrica rica en jugo que restaura el hambre y aporta una buena cantidad de hidratación."
+  },
+  "CherryBlock:0": {
+    "DisplayName": "Cereza",
+    "Description": "Una fruta pequeña y dulce que ofrece poca nutrición pero un ligero efecto de hidratación."
+  },
+  "SliceOfWatermelonBlock:0": {
+    "DisplayName": "Trozo de sandía",
+    "Description": "Una fruta muy refrescante con alto contenido de agua que ayuda significativamente a reducir la sed."
+  },
+  "BananaBlock:0": {
+    "DisplayName": "Banana",
+    "Description": "Una fruta energética que restaura bastante hambre y también proporciona una buena cantidad de hidratación."
+  },
+  "BlueberryBlock:0": {
+    "DisplayName": "Arándano",
+    "Description": "Una fruta pequeña y nutritiva que ofrece poca energía pero ayuda ligeramente con la sed."
+  },
+    "BoiledWaterBlock:0": {
+  "DisplayName": "Cubo de agua hervida",
+  "Description": "Un cubo lleno de agua hervida. Beberla restaura la hidratación de forma segura.",
+  "CRDescription:0": "Agua hervida limpia almacenada en un cubo."
+},
     "AK48Block:0": {
   "DisplayName": "Rifle de asalto AK-48",
   "Description": "Un potente rifle de asalto con alta cadencia de fuego y cargador grande. Utiliza munición de 7,62 mm.",
@@ -441,13 +488,13 @@
   },
     "AntidoteBucketBlock:0": {
   "DisplayName": "Cubo de Antídoto",
-  "Description": "Un cubo que contiene un potente antídoto medicinal. Elimina los efectos del veneno y las enfermedades del cuerpo, deteniendo sus consecuencias dañinas y ayudando a una recuperación inmediata. Al curar una afección, también restaura la salud perdida. Puede usarse tanto en uno mismo como en otras criaturas enfermas.",
-  "CRDescription:0": "Prepara un antídoto potente infusionando flores blancas medicinales en agua purificada. Cura el veneno y la enfermedad."
+  "Description": "Un cubo que contiene un poderoso antídoto medicinal. Al beberlo elimina el veneno y la enfermedad del cuerpo, deteniendo sus efectos dañinos. Puede usarse en ti mismo o en otras criaturas infectadas. También restaura algo de sed.",
+  "CRDescription:0": "Prepara un antídoto medicinal infusionando flores blancas en agua purificada. Elimina veneno y enfermedad."
 },
 "TeaAntifluBucketBlock:0": {
   "DisplayName": "Cubo de Té Antigripal",
-  "Description": "Un cubo lleno de té medicinal. Beberlo cura la gripe y restaura completamente la salud. También puede usarse para curar criaturas infectadas.",
-  "CRDescription:0": "Prepara un reconfortante té antigripal combinando un cubo de agua con hierba alta y calentándolo. Cura la gripe, alivia los síntomas y puede administrarse a criaturas infectadas."
+  "Description": "Un cubo lleno de té medicinal. Al beberlo cura la gripe y alivia sus síntomas. También puede usarse para tratar criaturas infectadas. Además restaura algo de sed.",
+  "CRDescription:0": "Prepara té antigripal calentando un cubo de agua con hierba alta. Cura la gripe."
 },
     "LavaLongspearBlock:0": {
       "DisplayName": "Lanza Larga de Lava",
@@ -999,7 +1046,7 @@
     "PurchaseSuccessful": "¡Compra exitosa! ¡Gracias por tu compra!",
     "SelectItemFirst": "Selecciona primero un objeto para comprar.",
     "SlotEmpty": "Esta ranura está vacía.",
-    "InfoLabelFormat": "{0} - {1} monedas nucleares"
+    "InfoLabelFormat": "Precio: {0} monedas nucleares"
 },
     "AutoCannonWidget": {
     "Title": "Auto-Cañón",
