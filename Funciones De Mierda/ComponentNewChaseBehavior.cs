@@ -53,7 +53,14 @@ namespace Game
 		public float FlameThrowerAimTime = 1.55f;
 		public float FlameThrowerCooldown = 0.0f;
 
+		// NUEVO PARÁMETRO: destruye bloques cuando está atascado
+		public bool DestroyBlocksWhenStuck = false;
+
+		private Vector3 m_lastStuckCheckPosition;
+		private double m_stuckDetectionStartTime;
+
 		// ===== CAMPOS PRIVADOS =====
+		private SubsystemTerrain m_subsystemTerrain;
 		private SubsystemGameInfo m_subsystemGameInfo;
 		private SubsystemPlayers m_subsystemPlayers;
 		private SubsystemSky m_subsystemSky;
@@ -110,6 +117,9 @@ namespace Game
 
 		// Conjunto estático de bloques lanzables (índices)
 		private static HashSet<int> s_throwableBlockIndices;
+
+		// NUEVO: tiempo de inicio del atasco para destruir bloques
+		private double m_stuckStartTime;
 
 		// ===== PROPIEDADES AUXILIARES =====
 		private bool IsZombie => HerdName != null && HerdName.ToLower().Contains("zombie");
@@ -257,6 +267,8 @@ namespace Game
 			m_nextThrowableAttackTime = 0;
 			m_triedToLoad = false;
 			m_aimingStarted = false;
+			m_stuckStartTime = 0; // reiniciar temporizador de atasco
+			m_lastStuckCheckPosition = m_componentCreature.ComponentBody.Position;
 
 			SubscribeToProjectileEvents();
 
@@ -285,6 +297,7 @@ namespace Game
 			m_nextThrowableAttackTime = 0;
 			m_triedToLoad = false;
 			m_aimingStarted = false;
+			m_stuckStartTime = 0;
 
 			UnsubscribeFromProjectileEvents();
 		}
@@ -1783,9 +1796,98 @@ namespace Game
 			return null;
 		}
 
+		// ===== NUEVO: DESTRUIR BLOQUES CUANDO ESTÁ ATASCADO (DOS BLOQUES EN FRENTE: PIES Y CABEZA) =====
+		private void TryDestroyBlocksToFree()
+		{
+			if (!DestroyBlocksWhenStuck) return;
+
+			Vector3 currentPos = m_componentCreature.ComponentBody.Position;
+
+			if (m_stateMachine.CurrentState == "Chasing")
+			{
+				// Si la posición cambió, reiniciar el contador
+				if (Vector3.Distance(currentPos, m_lastStuckCheckPosition) > 0.1f)
+				{
+					m_stuckDetectionStartTime = 0;
+					m_lastStuckCheckPosition = currentPos;
+					return;
+				}
+
+				// Iniciar temporizador si aún no empezó
+				if (m_stuckDetectionStartTime == 0)
+				{
+					m_stuckDetectionStartTime = m_subsystemTime.GameTime;
+					m_lastStuckCheckPosition = currentPos;
+					return;
+				}
+
+				// Si lleva atascado más de 2 segundos, destruir los dos bloques al frente (arriba y abajo)
+				if (m_subsystemTime.GameTime - m_stuckDetectionStartTime >= 2.0)
+				{
+					// Dirección hacia donde mira el NPC
+					Vector3 forward = m_componentCreature.ComponentBody.Matrix.Forward;
+
+					// Destruir bloque a la altura de los pies (ligeramente por debajo de los ojos)
+					DestroyBlockInDirection(forward, -0.5f);
+					// Destruir bloque a la altura de la cabeza (ligeramente por encima de los ojos)
+					DestroyBlockInDirection(forward, 0.8f);
+
+					// Reiniciar temporizador para no destruir en cada frame
+					m_stuckDetectionStartTime = m_subsystemTime.GameTime;
+				}
+			}
+			else
+			{
+				m_stuckDetectionStartTime = 0;
+			}
+		}
+
+		private void DestroyBlockInDirection(Vector3 direction, float verticalOffset = 0f)
+		{
+			Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
+			Vector3 targetPos = eyePos + direction * 0.6f + Vector3.UnitY * verticalOffset;
+			int x = Terrain.ToCell(targetPos.X);
+			int y = Terrain.ToCell(targetPos.Y);
+			int z = Terrain.ToCell(targetPos.Z);
+
+			if (m_subsystemTerrain.Terrain.IsCellValid(x, y, z))
+			{
+				int value = m_subsystemTerrain.Terrain.GetCellValue(x, y, z);
+				if (value != 0)
+				{
+					m_subsystemTerrain.DestroyCell(0, x, y, z, 0, false, false, null);
+					var soundMaterials = Project.FindSubsystem<SubsystemSoundMaterials>(true);
+					if (soundMaterials != null)
+						soundMaterials.PlayImpactSound(value, new Vector3(x, y, z), 1f);
+				}
+			}
+		}
+
+		private void DestroyBlockInDirection(Vector3 direction)
+		{
+			Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
+			Vector3 targetPos = eyePos + direction * 0.6f;
+			int x = Terrain.ToCell(targetPos.X);
+			int y = Terrain.ToCell(targetPos.Y);
+			int z = Terrain.ToCell(targetPos.Z);
+
+			if (m_subsystemTerrain.Terrain.IsCellValid(x, y, z))
+			{
+				int value = m_subsystemTerrain.Terrain.GetCellValue(x, y, z);
+				if (value != 0)
+				{
+					m_subsystemTerrain.DestroyCell(0, x, y, z, 0, false, false, null);
+					var soundMaterials = Project.FindSubsystem<SubsystemSoundMaterials>(true);
+					if (soundMaterials != null)
+						soundMaterials.PlayImpactSound(value, new Vector3(x, y, z), 1f);
+				}
+			}
+		}
+
 		// ===== LOAD =====
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
+			m_subsystemTerrain = Project.FindSubsystem<SubsystemTerrain>();
 			m_subsystemGameInfo = Project.FindSubsystem<SubsystemGameInfo>(true);
 			m_subsystemPlayers = Project.FindSubsystem<SubsystemPlayers>(true);
 			m_subsystemSky = Project.FindSubsystem<SubsystemSky>(true);
@@ -1816,6 +1918,9 @@ namespace Game
 
 			RangedAttackRange = valuesDictionary.GetValue<Vector2>("RangedAttackRange", new Vector2(5f, 20f));
 			RangedAttackMode = valuesDictionary.GetValue<AttackMode>("AttackMode", AttackMode.Default);
+
+			// Cargar el nuevo parámetro
+			DestroyBlocksWhenStuck = valuesDictionary.GetValue<bool>("DestroyBlocksWhenStuck", false);
 
 			RegisterEvents();
 
@@ -2139,6 +2244,9 @@ namespace Game
 						}
 					}
 				}
+
+				// Intentar liberarse si está atascado y la opción está activada
+				TryDestroyBlocksToFree();
 			}, null);
 		}
 
