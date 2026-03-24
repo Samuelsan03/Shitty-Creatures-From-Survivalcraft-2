@@ -1,4 +1,16 @@
 {
+  "ComponentNewSleep": {
+    "CantSleepGreenNight": "你不能在绿色之夜入睡"
+  },
+  "ComponentThirst": {
+    "AlreadyNotThirsty": "你已经完全补充水分了",
+    "DrankBoiledWater": "你已经补充了水分",
+    "Dehydrating": "你正在脱水！",
+    "DrankDrinkableWater": "你已经部分补充了水分",
+    "DrankRotten": "这饮料已经变质了，你的胃一阵翻腾。",
+    "AteFruit": "你吃了一些水果，感觉更补水了",
+    "HalfThirsty": "你开始感到口渴了"
+  },
   "ShittyCreaturesAbout": {
     "AboutButton": "关于模组",
     "Title": "关于 Shitty Creatures MOD：",
@@ -11,7 +23,8 @@
     "DiscordLabel": "Discord：",
     "BiliBiliLabel": "哔哩哔哩：",
     "ModPageLabel": "模组页面：",
-    "FinalMessage": "如果你有问题、错误或建议，请随时在 Discord 上联系作者。"
+    "FinalMessage": "如果你有问题、错误或建议，请随时在 Discord 上联系作者。",
+    "ExitButton": "退出"
   },
   "ShittyCreaturesLog": {
     "Title": "Shitty Creatures 更新日志",
@@ -68,7 +81,7 @@
     "GhostDescription": "启用/禁用幽灵追逐你时的音乐",
     "TankDescription": "启用/禁用 Tanks 追逐你时的音乐",
     "SpawnDescription": "启用/禁用在死亡时生成NPC",
-    "SpawnButton": "死亡生成: {0}"
+    "ThirstDescription": "启用/禁用口渴模拟"
   },
   "AntidoteBucket": {
     "NPCCured": "NPC 的毒素和疾病已被清除！",
@@ -141,7 +154,8 @@
   },
   "Injury": {
     "Poisoned": "中毒",
-    "FrozenToDeath": "冻死"
+    "FrozenToDeath": "冻死",
+    "Dehydration": "脱水"
    },
   "Database": {
     "DisplayName": {
@@ -377,6 +391,39 @@
     }
   },
   "Blocks": {
+    "AppleBlock:0": {
+    "DisplayName": "苹果",
+    "Description": "一种新鲜多汁的水果，可以恢复少量饥饿值，并略微减少口渴。"
+  },
+  "PearBlock:0": {
+    "DisplayName": "梨",
+    "Description": "一种香甜柔软的水果，提供适中的营养并有助于补充水分。"
+  },
+  "OrangeBlock:0": {
+    "DisplayName": "橙子",
+    "Description": "富含汁液的柑橘类水果，可恢复饥饿值并提供良好的水分补充。"
+  },
+  "CherryBlock:0": {
+    "DisplayName": "樱桃",
+    "Description": "一种小而甜的水果，营养较低，但能提供轻微的水分补充。"
+  },
+  "SliceOfWatermelonBlock:0": {
+    "DisplayName": "西瓜片",
+    "Description": "一种非常清爽、含水量高的水果，可以显著降低口渴。"
+  },
+  "BananaBlock:0": {
+    "DisplayName": "香蕉",
+    "Description": "一种高能量水果，可恢复较多饥饿值，并提供不错的水分补充。"
+  },
+  "BlueberryBlock:0": {
+    "DisplayName": "蓝莓",
+    "Description": "一种小型营养水果，提供少量能量，并略微缓解口渴。"
+  },
+    "BoiledWaterBlock:0": {
+  "DisplayName": "一桶煮沸的水",
+  "Description": "装满煮沸水的桶。饮用后可以安全地恢复水分。",
+  "CRDescription:0": "存放在桶中的干净煮沸水。"
+},
     "AK48Block:0": {
   "DisplayName": "AK-48突击步枪",
   "Description": "一把威力强大的突击步枪，射速高且弹匣容量大。使用7.62毫米子弹。",
@@ -440,14 +487,14 @@
     "CRDescription:0": "一种先进的医疗包，无论当前健康状况如何，总是能治愈到 100%。"
   },
     "AntidoteBucketBlock:0": {
-  "DisplayName": "解毒药桶",
-  "Description": "一个装有强效药用解毒剂的桶。可清除身体中的中毒和疾病状态，阻止其有害影响，并帮助身体迅速恢复。在治愈病症的同时，还会恢复失去的生命值。可用于自身或其他受感染的生物。",
-  "CRDescription:0": "将药用白花注入纯净水中，酿造出强效解毒剂。 治疗毒药和疾病。"
+  "DisplayName": "解毒桶",
+  "Description": "一个装有强效药用解毒剂的桶。饮用后可以清除体内的中毒和疾病效果，停止其有害影响。可以对自己使用，也可以用于其他被感染的生物。同时恢复少量口渴值。",
+  "CRDescription:0": "将白花浸泡在净化水中制成药用解毒剂。可清除中毒和疾病。"
 },
 "TeaAntifluBucketBlock:0": {
   "DisplayName": "抗流感茶桶",
-  "Description": "一个装满药用茶的桶。饮用后可治愈流感并完全恢复生命值，也可以用于治愈被感染的生物。",
-  "CRDescription:0": "将一桶水与高草一起加热即可煮出舒缓的抗流感茶。可以治愈流感、缓解症状，并可用于治疗被感染的生物。"
+  "Description": "一个装满药用茶的桶。饮用后可以治愈流感并缓解症状。也可以用于治疗被感染的生物。同时恢复少量口渴值。",
+  "CRDescription:0": "将一桶水与高草一起加热制成抗流感茶。可治愈流感。"
 },
     "LavaLongspearBlock:0": {
       "DisplayName": "熔岩长矛",
@@ -999,7 +1046,7 @@
     "PurchaseSuccessful": "购买成功！感谢惠顾！",
     "SelectItemFirst": "请先选择要购买的物品。",
     "SlotEmpty": "此槽位为空。",
-    "InfoLabelFormat": "{0} - {1} 枚核币"
+    "InfoLabelFormat": "价格：{0} 核子硬币"
 },
     "AutoCannonWidget": {
     "Title": "自动炮",
