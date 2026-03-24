@@ -58,6 +58,11 @@ namespace Game
 			m_componentMiner = base.Entity.FindComponent<ComponentMiner>();
 			AutoInteractRate = valuesDictionary.GetValue<float>("AutoInteractRate", 0f);
 		}
+
+		public override void Save(ValuesDictionary valuesDictionary, EntityToIdMap entityToIdMap)
+		{
+			valuesDictionary.SetValue("AutoInteractRate", AutoInteractRate);
+		}
 	}
 }
 
