@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using Engine;
 using GameEntitySystem;
 using TemplatesDatabase;
@@ -34,12 +32,16 @@ namespace Game
 		private float m_spawnInterval = 2f;
 		private const int MaxCreaturesPerArea = 150;
 		private const int MaxGlobalCreatures = 200;
+		private const int MaxSpawnsPerFrame = 2;
 
 		// Estado de jefes
 		private bool m_bossBattleActive;
 		private Queue<string> m_bossQueue = new Queue<string>();
 		private Entity m_currentBossEntity;
 		private bool m_hasSpawnedBossThisNight;
+		private bool m_bossSpawnDelayed = false;
+		private float m_bossSpawnDelayTimer = 0f;
+		private const float BossSpawnDelay = 0.5f;
 
 		// Control de avance de oleada
 		private bool m_wasGreenNightActive;
@@ -123,10 +125,19 @@ namespace Game
 		public void Update(float dt)
 		{
 			bool isGreenNightActive = m_subsystemGreenNightSky.IsGreenNightActive;
+			int maxWave = m_waves.Keys.Max();
 
 			if (!m_wasGreenNightActive && isGreenNightActive)
 			{
 				SendWaveMessage();
+
+				// Si es la ola final, iniciar batalla de jefes inmediatamente al comenzar la noche
+				if (m_currentWave == maxWave && !m_hasSpawnedBossThisNight && !m_bossBattleActive)
+				{
+					StartBossBattle();
+					m_bossSpawnDelayed = true;
+					m_bossSpawnDelayTimer = 0.5f;
+				}
 			}
 			m_wasGreenNightActive = isGreenNightActive;
 
@@ -137,26 +148,50 @@ namespace Game
 			float midnight = m_subsystemTimeOfDay.Midnight;
 			bool isMidnight = Math.Abs(timeOfDay - midnight) < 0.01f;
 
-			if (!m_hasSpawnedBossThisNight && isMidnight && !m_bossBattleActive)
+			// Solo para olas NO finales, los jefes aparecen en medianoche
+			if (m_currentWave != maxWave)
 			{
-				StartBossBattle();
+				if (!m_hasSpawnedBossThisNight && isMidnight && !m_bossBattleActive && !m_bossSpawnDelayed)
+				{
+					StartBossBattle();
+					m_bossSpawnDelayed = true;
+					m_bossSpawnDelayTimer = 0.5f;
+				}
+			}
+
+			// Procesar delay de spawn de jefes
+			if (m_bossSpawnDelayed)
+			{
+				m_bossSpawnDelayTimer -= dt;
+				if (m_bossSpawnDelayTimer <= 0f)
+				{
+					m_bossSpawnDelayed = false;
+					if (m_bossBattleActive && m_currentBossEntity == null)
+					{
+						SpawnNextBoss();
+					}
+				}
 			}
 
 			if (m_bossBattleActive)
 			{
-				if (m_currentBossEntity == null || !IsEntityAlive(m_currentBossEntity))
+				if (m_currentBossEntity != null && !IsEntityAlive(m_currentBossEntity))
 				{
+					m_currentBossEntity = null;
 					AdvanceBossBattle();
 				}
 			}
 
+			// Control de spawn de criaturas normales con límite por frame
 			float effectiveInterval = m_bossBattleActive ? m_spawnInterval * 2f : m_spawnInterval;
 			m_spawnTimer += dt;
+			int spawnsThisFrame = 0;
 
-			while (m_spawnTimer >= effectiveInterval)
+			while (m_spawnTimer >= effectiveInterval && spawnsThisFrame < MaxSpawnsPerFrame)
 			{
 				m_spawnTimer -= effectiveInterval;
 				TrySpawnCreature();
+				spawnsThisFrame++;
 			}
 		}
 
@@ -189,6 +224,7 @@ namespace Game
 
 			m_hasSpawnedBossThisNight = false;
 			m_bossBattleActive = false;
+			m_bossSpawnDelayed = false;
 			m_bossQueue.Clear();
 			m_currentBossEntity = null;
 
@@ -208,7 +244,7 @@ namespace Game
 			foreach (var player in m_subsystemPlayers.ComponentPlayers)
 			{
 				Vector3 playerPos = player.ComponentBody.Position;
-				for (int i = 0; i < 30; i++)
+				for (int i = 0; i < 15; i++)
 				{
 					float angle = m_random.Float(0, 2 * MathUtils.PI);
 					float distance = m_random.Float(40, 70);
@@ -235,49 +271,22 @@ namespace Game
 
 		private void LoadWavesFromResources()
 		{
-			for (int i = 1; i <= 28; i++)
-			{
-				try
-				{
-					string content = ContentManager.Get<string>("Waves/" + i);
-					if (!string.IsNullOrEmpty(content))
-					{
-						var entries = new List<WaveEntry>();
-						string[] lines = content.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-
-						foreach (string line in lines)
-						{
-							string[] parts = line.Split(';');
-							if (parts.Length != 2) continue;
-
-							string name = parts[0].Trim();
-							if (int.TryParse(parts[1], out int weight))
-							{
-								entries.Add(new WaveEntry(name, weight));
-							}
-						}
-
-						if (entries.Count > 0)
-						{
-							m_waves[i] = entries;
-						}
-					}
-				}
-				catch
-				{
-					// Ignorar
-				}
-			}
+			m_waves = WavesData.LoadFromXml();
 
 			if (m_waves.Count == 0)
 			{
-				LoadDefaultWaves();
+				Log.Error("No se pudieron cargar las oleadas desde Waves.xml. El sistema de aparición de zombis no funcionará correctamente.");
+				var defaultWave = new List<WaveEntry>
+				{
+					new WaveEntry("HumanoidSkeleton", 40),
+					new WaveEntry("InfectedBird", 35),
+					new WaveEntry("InfectedNormal1", 30),
+					new WaveEntry("InfectedNormal2", 30),
+					new WaveEntry("InfectedFly1", 4)
+				};
+				m_waves[1] = defaultWave;
+				Log.Warning("Usando oleada por defecto de emergencia.");
 			}
-		}
-
-		private void LoadDefaultWaves()
-		{
-			// Default waves remain unchanged (not needed because we load from files)
 		}
 
 		private void SetCurrentWave(int wave)
@@ -298,7 +307,11 @@ namespace Game
 
 		private void StartBossBattle()
 		{
+			if (m_bossBattleActive) return;
+
 			m_hasSpawnedBossThisNight = true;
+			m_bossBattleActive = true;
+			m_bossQueue.Clear();
 
 			var bosses = new List<string>();
 			foreach (var entry in m_currentWaveEntries)
@@ -308,14 +321,13 @@ namespace Game
 			}
 
 			if (bosses.Count == 0)
+			{
+				m_bossBattleActive = false;
 				return;
+			}
 
-			m_bossQueue.Clear();
 			foreach (string boss in bosses)
 				m_bossQueue.Enqueue(boss);
-
-			m_bossBattleActive = true;
-			SpawnNextBoss();
 		}
 
 		private void SpawnNextBoss()
@@ -323,6 +335,7 @@ namespace Game
 			if (m_bossQueue.Count == 0)
 			{
 				m_bossBattleActive = false;
+				m_currentBossEntity = null;
 				return;
 			}
 
@@ -346,30 +359,7 @@ namespace Game
 				var player = m_subsystemPlayers.ComponentPlayers.FirstOrDefault();
 				if (player != null)
 				{
-					for (int i = 0; i < 10; i++)
-					{
-						float angle = m_random.Float(0, 2 * MathUtils.PI);
-						float distance = m_random.Float(20, 30);
-						int x = (int)(player.ComponentBody.Position.X + MathF.Cos(angle) * distance);
-						int z = (int)(player.ComponentBody.Position.Z + MathF.Sin(angle) * distance);
-						int y = m_subsystemTerrain.Terrain.GetTopHeight(x, z);
-						if (y > 0 && y < 255)
-						{
-							int cellValue = m_subsystemTerrain.Terrain.GetCellValue(x, y - 1, z);
-							int contents = Terrain.ExtractContents(cellValue);
-							Block block = BlocksManager.Blocks[contents];
-							string blockName = block.GetType().Name;
-							if (!m_forbiddenBlockNames.Contains(blockName) && block.IsCollidable)
-							{
-								spawnPos = new Vector3(x + 0.5f, y, z + 0.5f);
-								break;
-							}
-						}
-					}
-					if (spawnPos == Vector3.Zero)
-					{
-						spawnPos = player.ComponentBody.Position + new Vector3(0, 2, 0);
-					}
+					spawnPos = player.ComponentBody.Position + new Vector3(0, 2, 0);
 				}
 				else
 				{
@@ -395,7 +385,7 @@ namespace Game
 			foreach (var player in m_subsystemPlayers.ComponentPlayers)
 			{
 				Vector3 playerPos = player.ComponentBody.Position;
-				for (int i = 0; i < 50; i++)
+				for (int i = 0; i < 30; i++)
 				{
 					float angle = m_random.Float(0, 2 * MathUtils.PI);
 					float distance = m_random.Float(30, 80);
@@ -421,7 +411,16 @@ namespace Game
 		private void AdvanceBossBattle()
 		{
 			m_currentBossEntity = null;
-			SpawnNextBoss();
+
+			if (m_bossQueue.Count == 0)
+			{
+				m_bossBattleActive = false;
+			}
+			else
+			{
+				m_bossSpawnDelayed = true;
+				m_bossSpawnDelayTimer = BossSpawnDelay;
+			}
 		}
 
 		private bool IsEntityAlive(Entity entity)
@@ -435,10 +434,6 @@ namespace Game
 
 		private void TrySpawnCreature()
 		{
-			// Si la oleada solo contiene jefes, no spawnear criaturas normales
-			if (m_currentWaveEntries.All(e => BossTemplates.Contains(e.TemplateName)))
-				return;
-
 			int totalCreatures = m_subsystemCreatureSpawn.CountCreatures(false);
 			if (totalCreatures >= MaxGlobalCreatures)
 				return;
@@ -447,7 +442,6 @@ namespace Game
 			if (entry == null)
 				return;
 
-			// Los jefes no se spawnen aquí
 			if (BossTemplates.Contains(entry.TemplateName))
 				return;
 
@@ -465,7 +459,6 @@ namespace Game
 			if (spawnPos == Vector3.Zero)
 				return;
 
-			// Condición para InfectedFreezer
 			if (entry.TemplateName == "InfectedFreezer")
 			{
 				bool canSpawn = false;
@@ -486,7 +479,9 @@ namespace Game
 				}
 
 				if (!canSpawn)
+				{
 					return;
+				}
 			}
 
 			Vector2 areaMin = new Vector2(spawnPos.X - 16, spawnPos.Z - 16);
@@ -503,7 +498,7 @@ namespace Game
 			foreach (var player in m_subsystemPlayers.ComponentPlayers)
 			{
 				var camera = player.GameWidget.ActiveCamera;
-				for (int i = 0; i < 30; i++)
+				for (int i = 0; i < 10; i++)
 				{
 					var point = m_subsystemCreatureSpawn.GetRandomSpawnPoint(camera, SpawnLocationType.Surface);
 					if (point.HasValue)
@@ -532,7 +527,7 @@ namespace Game
 			foreach (var player in m_subsystemPlayers.ComponentPlayers)
 			{
 				var camera = player.GameWidget.ActiveCamera;
-				for (int i = 0; i < 20; i++)
+				for (int i = 0; i < 8; i++)
 				{
 					var point = m_subsystemCreatureSpawn.GetRandomSpawnPoint(camera, SpawnLocationType.Surface);
 					if (point.HasValue)
@@ -548,7 +543,7 @@ namespace Game
 				}
 
 				Vector3 playerPos = player.ComponentBody.Position;
-				for (int i = 0; i < 10; i++)
+				for (int i = 0; i < 5; i++)
 				{
 					float angle = m_random.Float(0, 2 * MathUtils.PI);
 					float distance = m_random.Float(20, 40);
@@ -557,23 +552,6 @@ namespace Game
 					int y = m_random.Int(70, 110);
 
 					return new Vector3(x + 0.5f, y, z + 0.5f);
-				}
-			}
-			return Vector3.Zero;
-		}
-
-		private Vector3 GetRandomSpawnPointAroundPlayers(bool forceSurface = false)
-		{
-			foreach (var player in m_subsystemPlayers.ComponentPlayers)
-			{
-				var camera = player.GameWidget.ActiveCamera;
-				for (int i = 0; i < 5; i++)
-				{
-					var point = m_subsystemCreatureSpawn.GetRandomSpawnPoint(camera, SpawnLocationType.Surface);
-					if (point.HasValue)
-					{
-						return new Vector3(point.Value.X + 0.5f, point.Value.Y, point.Value.Z + 0.5f);
-					}
 				}
 			}
 			return Vector3.Zero;
@@ -613,25 +591,13 @@ namespace Game
 		{
 			if (bossTemplate.StartsWith("Tank"))
 				return "BossTank";
-			if (bossTemplate.StartsWith("GhostTank"))
+			if (bossTemplate.StartsWith("GhostTank") || bossTemplate.StartsWith("TankGhost"))
 				return "BossGhostTank";
 			if (bossTemplate == "MachineGunInfected")
 				return "BossMachineGun";
 			if (bossTemplate == "FlyingInfectedBoss")
 				return "BossFlying";
 			return "BossGeneric";
-		}
-
-		private class WaveEntry
-		{
-			public string TemplateName { get; }
-			public int Weight { get; }
-
-			public WaveEntry(string name, int weight)
-			{
-				TemplateName = name;
-				Weight = weight;
-			}
 		}
 	}
 }
