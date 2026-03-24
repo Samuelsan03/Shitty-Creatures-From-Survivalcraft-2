@@ -37,6 +37,7 @@ namespace Game
 		private SubsystemParticles m_subsystemParticles;
 		private SubsystemNoise m_subsystemNoise;
 		private SubsystemTerrain m_subsystemTerrain;
+		private SubsystemBodies m_subsystemBodies;
 		private ComponentCreature m_componentCreature;
 		private ComponentInventory m_componentInventory;
 		private ComponentChaseBehavior m_componentChaseBehavior;
@@ -68,10 +69,38 @@ namespace Game
 			return null;
 		}
 
+		private bool IsStuck()
+		{
+			return m_componentPathfinding != null && m_componentPathfinding.IsStuck;
+		}
+
+		private bool IsLineOfSightBlocked(ComponentCreature target)
+		{
+			if (target == null) return true;
+			Vector3 start = m_componentCreature.ComponentCreatureModel.EyePosition;
+			Vector3 end = target.ComponentCreatureModel.EyePosition;
+			float distance = Vector3.Distance(start, end);
+			if (distance <= 0.1f) return false;
+			TerrainRaycastResult? terrainHit = m_subsystemTerrain.Raycast(start, end, true, true, (int value, float d) =>
+			{
+				int contents = Terrain.ExtractContents(value);
+				Block block = BlocksManager.Blocks[contents];
+				return block.IsCollidable_(value);
+			});
+			if (terrainHit != null && terrainHit.Value.Distance < distance) return true;
+			BodyRaycastResult? bodyHit = m_subsystemBodies.Raycast(start, end, 0.35f, (ComponentBody body, float dist) =>
+			{
+				if (body == m_componentCreature.ComponentBody) return false;
+				if (body == target.ComponentBody) return false;
+				return true;
+			});
+			if (bodyHit != null && bodyHit.Value.Distance < distance) return true;
+			return false;
+		}
+
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
 			base.Load(valuesDictionary, idToEntityMap);
-
 			MaxShootingDistance = valuesDictionary.GetValue<float>("MaxShootingDistance", 25f);
 			SpreadFactor = valuesDictionary.GetValue<float>("SpreadFactor", 0.05f);
 			ReloadChance = valuesDictionary.GetValue<float>("ReloadChance", 0.05f);
@@ -83,14 +112,13 @@ namespace Game
 			SniperAimTime = valuesDictionary.GetValue<float>("SniperAimTime", 1.0f);
 			MeleeRange = valuesDictionary.GetValue<float>("MeleeRange", 5f);
 			UseMeleeSwitch = valuesDictionary.GetValue<bool>("UseMeleeSwitch", true);
-
 			m_subsystemTime = base.Project.FindSubsystem<SubsystemTime>(true);
 			m_subsystemProjectiles = base.Project.FindSubsystem<SubsystemProjectiles>(true);
 			m_subsystemAudio = base.Project.FindSubsystem<SubsystemAudio>(true);
 			m_subsystemParticles = base.Project.FindSubsystem<SubsystemParticles>(true);
 			m_subsystemNoise = base.Project.FindSubsystem<SubsystemNoise>(true);
 			m_subsystemTerrain = base.Project.FindSubsystem<SubsystemTerrain>(true);
-
+			m_subsystemBodies = base.Project.FindSubsystem<SubsystemBodies>(true);
 			m_componentCreature = base.Entity.FindComponent<ComponentCreature>(true);
 			m_componentInventory = base.Entity.FindComponent<ComponentInventory>(true);
 			m_componentChaseBehavior = base.Entity.FindComponent<ComponentChaseBehavior>(false);
@@ -100,12 +128,10 @@ namespace Game
 			m_componentModel = base.Entity.FindComponent<ComponentCreatureModel>(true);
 			m_componentMiner = base.Entity.FindComponent<ComponentMiner>(true);
 			m_componentPathfinding = base.Entity.FindComponent<ComponentPathfinding>(true);
-
 			if (FirearmConfigs.Count == 0)
 			{
 				InitializeFirearmConfigs();
 			}
-
 			if (m_componentCreature == null || m_componentInventory == null)
 			{
 				throw new InvalidOperationException("NPC necesita ComponentCreature y ComponentInventory para usar armas de fuego.");
@@ -116,7 +142,6 @@ namespace Game
 		{
 			try
 			{
-				// AK48 (fusil de asalto mejorado, 60 balas, NuevaBala6)
 				int ak48Index = BlocksManager.GetBlockIndex(typeof(AK48Block), true, false);
 				FirearmConfigs[ak48Index] = new FirearmConfig
 				{
@@ -131,8 +156,6 @@ namespace Game
 					IsAutomatic = true,
 					IsSniper = false
 				};
-
-				// Master308 (rifle semiautomático, 8 cartuchos, NuevaBala4)
 				int master308Index = BlocksManager.GetBlockIndex(typeof(Master308Block), true, false);
 				FirearmConfigs[master308Index] = new FirearmConfig
 				{
@@ -147,19 +170,18 @@ namespace Game
 					IsAutomatic = false,
 					IsSniper = false
 				};
-
 				int bk43Index = BlocksManager.GetBlockIndex(typeof(BK43Block), true, false);
 				FirearmConfigs[bk43Index] = new FirearmConfig
 				{
-					BulletBlockType = typeof(NuevaBala3),  // Mismo tipo de bala que usa el BK43
+					BulletBlockType = typeof(NuevaBala3),
 					ShootSound = "Audio/Armas/bk 43",
-					FireRate = 1.5,  // Cooldown de 1.5 segundos como en SubsystemBK43Behavior
-					BulletSpeed = 280f,  // Velocidad ajustada para escopeta
-					MaxShotsBeforeReload = 2,  // Capacidad de 2 cartuchos
-					ProjectilesPerShot = 8,  // 8 perdigones como patrón de escopeta
-					SpreadVector = new Vector3(0.1f, 0.1f, 0.03f),  // Dispersión de escopeta
-					NoiseRadius = 50f,  // Ruido mayor por ser escopeta
-					IsAutomatic = false  // No automático, es de bombeo/acción simple
+					FireRate = 1.5,
+					BulletSpeed = 280f,
+					MaxShotsBeforeReload = 2,
+					ProjectilesPerShot = 8,
+					SpreadVector = new Vector3(0.1f, 0.1f, 0.03f),
+					NoiseRadius = 50f,
+					IsAutomatic = false
 				};
 				int akIndex = BlocksManager.GetBlockIndex(typeof(AKBlock), true, false);
 				FirearmConfigs[akIndex] = new FirearmConfig
@@ -174,7 +196,6 @@ namespace Game
 					NoiseRadius = 40f,
 					IsAutomatic = true
 				};
-
 				int m4Index = BlocksManager.GetBlockIndex(typeof(M4Block), true, false);
 				FirearmConfigs[m4Index] = new FirearmConfig
 				{
@@ -188,7 +209,6 @@ namespace Game
 					NoiseRadius = 40f,
 					IsAutomatic = true
 				};
-
 				int kaIndex = BlocksManager.GetBlockIndex(typeof(KABlock), true, false);
 				FirearmConfigs[kaIndex] = new FirearmConfig
 				{
@@ -202,7 +222,6 @@ namespace Game
 					NoiseRadius = 35f,
 					IsAutomatic = true
 				};
-
 				int mac10Index = BlocksManager.GetBlockIndex(typeof(Mac10Block), true, false);
 				FirearmConfigs[mac10Index] = new FirearmConfig
 				{
@@ -216,7 +235,6 @@ namespace Game
 					NoiseRadius = 30f,
 					IsAutomatic = true
 				};
-
 				int swm500Index = BlocksManager.GetBlockIndex(typeof(SWM500Block), true, false);
 				FirearmConfigs[swm500Index] = new FirearmConfig
 				{
@@ -230,7 +248,6 @@ namespace Game
 					NoiseRadius = 40f,
 					IsAutomatic = false
 				};
-
 				int g3Index = BlocksManager.GetBlockIndex(typeof(G3Block), true, false);
 				FirearmConfigs[g3Index] = new FirearmConfig
 				{
@@ -244,7 +261,6 @@ namespace Game
 					NoiseRadius = 40f,
 					IsAutomatic = true
 				};
-
 				int izh43Index = BlocksManager.GetBlockIndex(typeof(Izh43Block), true, false);
 				FirearmConfigs[izh43Index] = new FirearmConfig
 				{
@@ -258,7 +274,6 @@ namespace Game
 					NoiseRadius = 45f,
 					IsAutomatic = false
 				};
-
 				int minigunIndex = BlocksManager.GetBlockIndex(typeof(MinigunBlock), true, false);
 				FirearmConfigs[minigunIndex] = new FirearmConfig
 				{
@@ -272,7 +287,6 @@ namespace Game
 					NoiseRadius = 50f,
 					IsAutomatic = true
 				};
-
 				int spas12Index = BlocksManager.GetBlockIndex(typeof(SPAS12Block), true, false);
 				FirearmConfigs[spas12Index] = new FirearmConfig
 				{
@@ -286,7 +300,6 @@ namespace Game
 					NoiseRadius = 40f,
 					IsAutomatic = false
 				};
-
 				int uziIndex = BlocksManager.GetBlockIndex(typeof(UziBlock), true, false);
 				FirearmConfigs[uziIndex] = new FirearmConfig
 				{
@@ -300,7 +313,6 @@ namespace Game
 					NoiseRadius = 40f,
 					IsAutomatic = true
 				};
-
 				int sniperIndex = BlocksManager.GetBlockIndex(typeof(SniperBlock), true, false);
 				FirearmConfigs[sniperIndex] = new FirearmConfig
 				{
@@ -315,7 +327,6 @@ namespace Game
 					IsAutomatic = false,
 					IsSniper = true
 				};
-
 				int augIndex = BlocksManager.GetBlockIndex(typeof(AUGBlock), true, false);
 				FirearmConfigs[augIndex] = new FirearmConfig
 				{
@@ -329,7 +340,6 @@ namespace Game
 					NoiseRadius = 40f,
 					IsAutomatic = true
 				};
-
 				int p90Index = BlocksManager.GetBlockIndex(typeof(P90Block), true, false);
 				FirearmConfigs[p90Index] = new FirearmConfig
 				{
@@ -343,7 +353,6 @@ namespace Game
 					NoiseRadius = 35f,
 					IsAutomatic = true
 				};
-
 				int scarIndex = BlocksManager.GetBlockIndex(typeof(SCARBlock), true, false);
 				FirearmConfigs[scarIndex] = new FirearmConfig
 				{
@@ -357,7 +366,6 @@ namespace Game
 					NoiseRadius = 45f,
 					IsAutomatic = true
 				};
-
 				int revolverIndex = BlocksManager.GetBlockIndex(typeof(RevolverBlock), true, false);
 				FirearmConfigs[revolverIndex] = new FirearmConfig
 				{
@@ -371,7 +379,6 @@ namespace Game
 					NoiseRadius = 40f,
 					IsAutomatic = false
 				};
-
 				int famasIndex = BlocksManager.GetBlockIndex(typeof(FamasBlock), true, false);
 				FirearmConfigs[famasIndex] = new FirearmConfig
 				{
@@ -385,7 +392,6 @@ namespace Game
 					NoiseRadius = 35f,
 					IsAutomatic = true
 				};
-
 				int aa12Index = BlocksManager.GetBlockIndex(typeof(AA12Block), true, false);
 				FirearmConfigs[aa12Index] = new FirearmConfig
 				{
@@ -399,7 +405,6 @@ namespace Game
 					NoiseRadius = 45f,
 					IsAutomatic = true
 				};
-
 				int m249Index = BlocksManager.GetBlockIndex(typeof(M249Block), true, false);
 				FirearmConfigs[m249Index] = new FirearmConfig
 				{
@@ -413,7 +418,6 @@ namespace Game
 					NoiseRadius = 50f,
 					IsAutomatic = true
 				};
-
 				int newG3Index = BlocksManager.GetBlockIndex(typeof(NewG3Block), true, false);
 				FirearmConfigs[newG3Index] = new FirearmConfig
 				{
@@ -427,7 +431,6 @@ namespace Game
 					NoiseRadius = 40f,
 					IsAutomatic = true
 				};
-
 				int mp5ssdIndex = BlocksManager.GetBlockIndex(typeof(MP5SSDBlock), true, false);
 				FirearmConfigs[mp5ssdIndex] = new FirearmConfig
 				{
@@ -441,7 +444,6 @@ namespace Game
 					NoiseRadius = 40f,
 					IsAutomatic = true
 				};
-
 				int mendozaIndex = BlocksManager.GetBlockIndex(typeof(MendozaBlock), true, false);
 				FirearmConfigs[mendozaIndex] = new FirearmConfig
 				{
@@ -455,7 +457,6 @@ namespace Game
 					NoiseRadius = 40f,
 					IsAutomatic = true
 				};
-
 				int grozaIndex = BlocksManager.GetBlockIndex(typeof(GrozaBlock), true, false);
 				FirearmConfigs[grozaIndex] = new FirearmConfig
 				{
@@ -484,8 +485,6 @@ namespace Game
 				ResetAnimations();
 				return;
 			}
-
-			// VERIFICACIÓN TEMPRANA CRÍTICA: Si somos bandidos, verificar que no estemos apuntando a otro bandido amigo
 			ComponentBanditHerdBehavior ourBanditHerd = Entity.FindComponent<ComponentBanditHerdBehavior>();
 			if (ourBanditHerd != null)
 			{
@@ -495,10 +494,7 @@ namespace Game
 					if (targetBanditHerd != null &&
 						string.Equals(ourBanditHerd.HerdName, targetBanditHerd.HerdName, StringComparison.OrdinalIgnoreCase))
 					{
-						// Objetivo es bandido de la misma manada - detener ataque inmediatamente
 						ResetAnimations();
-
-						// También detener el comportamiento de persecución si existe
 						if (m_componentBanditChaseBehavior != null && m_componentBanditChaseBehavior.Target == GetTarget())
 						{
 							m_componentBanditChaseBehavior.StopAttack();
@@ -507,7 +503,6 @@ namespace Game
 					}
 				}
 			}
-
 			if (m_isReloading)
 			{
 				ApplyReloadingAnimation(dt);
@@ -557,6 +552,12 @@ namespace Game
 			}
 			ComponentCreature target = GetTarget();
 			if (target == null)
+			{
+				ResetAnimations();
+				m_currentWeaponIndex = -1;
+				return;
+			}
+			if (IsStuck() || IsLineOfSightBlocked(target))
 			{
 				ResetAnimations();
 				m_currentWeaponIndex = -1;
@@ -623,6 +624,12 @@ namespace Game
 				m_isAiming = false;
 				return;
 			}
+			if (target == null || IsLineOfSightBlocked(target))
+			{
+				ResetAnimations();
+				m_isAiming = false;
+				return;
+			}
 			if (!m_isAiming)
 			{
 				if (!m_isReloading)
@@ -638,7 +645,6 @@ namespace Game
 			{
 				if (currentTime - m_lastShootTime >= GetCurrentFireRate())
 				{
-					// x NUEVA COMPROBACIÓN: Verificar si el objetivo está vivo antes de disparar
 					if (target != null && !IsTargetFriendly(target) && target.ComponentHealth.Health > 0f)
 					{
 						Fire(target);
@@ -664,6 +670,12 @@ namespace Game
 				m_isAiming = false;
 				return;
 			}
+			if (target == null || IsLineOfSightBlocked(target))
+			{
+				ResetAnimations();
+				m_isAiming = false;
+				return;
+			}
 			if (!m_isAiming)
 			{
 				if (!m_isReloading)
@@ -682,7 +694,6 @@ namespace Game
 			{
 				if (currentTime - m_lastShootTime >= GetCurrentFireRate())
 				{
-					// x NUEVA COMPROBACIÓN: Verificar si el objetivo está vivo antes de disparar
 					if (target != null && !IsTargetFriendly(target) && target.ComponentHealth.Health > 0f)
 					{
 						Fire(target);
@@ -704,33 +715,24 @@ namespace Game
 				return false;
 			if (target == m_componentCreature)
 				return true;
-
 			ComponentNewHerdBehavior ourNewHerd = Entity.FindComponent<ComponentNewHerdBehavior>();
 			ComponentHerdBehavior ourOldHerd = Entity.FindComponent<ComponentHerdBehavior>();
 			ComponentBanditHerdBehavior ourBanditHerd = Entity.FindComponent<ComponentBanditHerdBehavior>();
 			ComponentZombieHerdBehavior ourZombieHerd = Entity.FindComponent<ComponentZombieHerdBehavior>();
-
 			ComponentNewHerdBehavior targetNewHerd = target.Entity.FindComponent<ComponentNewHerdBehavior>();
 			ComponentHerdBehavior targetOldHerd = target.Entity.FindComponent<ComponentHerdBehavior>();
 			ComponentBanditHerdBehavior targetBanditHerd = target.Entity.FindComponent<ComponentBanditHerdBehavior>();
 			ComponentZombieHerdBehavior targetZombieHerd = target.Entity.FindComponent<ComponentZombieHerdBehavior>();
 			ComponentPlayer targetPlayer = target.Entity.FindComponent<ComponentPlayer>();
-
-			// VERIFICACIÓN CRÍTICA 1: Si ambos somos bandidos de la misma manada
 			if (ourBanditHerd != null && targetBanditHerd != null)
 			{
-				// Solo son amigos si son de la misma manada (nombre igual, insensible a mayúsculas/minúsculas)
 				return string.Equals(ourBanditHerd.HerdName, targetBanditHerd.HerdName, StringComparison.OrdinalIgnoreCase);
 			}
-
-			// VERIFICACIÓN CRÍTICA 2: Si somos bandidos y el objetivo también parece bandido
 			if ((ourBanditHerd != null && IsCreatureBandit(target)) ||
 				(targetBanditHerd != null && IsCreatureBandit(m_componentCreature)))
 			{
-				// Por defecto, asumimos que no son amigos para evitar disparos accidentales
 				return false;
 			}
-
 			if (targetPlayer != null)
 			{
 				if (ourNewHerd != null)
@@ -748,7 +750,6 @@ namespace Game
 					return false;
 				}
 			}
-
 			if (ourNewHerd != null && targetNewHerd != null)
 			{
 				return !ourNewHerd.CanAttackCreature(target);
@@ -761,7 +762,6 @@ namespace Game
 			{
 				return ourZombieHerd.HerdName == targetZombieHerd.HerdName;
 			}
-
 			if (ourNewHerd != null && targetOldHerd != null)
 			{
 				return !ourNewHerd.CanAttackCreature(target);
@@ -774,33 +774,22 @@ namespace Game
 					return ourOldHerd.HerdName == tempHerd.HerdName;
 				}
 			}
-
 			return false;
 		}
 
-		// Método auxiliar para identificar bandidos
 		private bool IsCreatureBandit(ComponentCreature creature)
 		{
 			if (creature == null) return false;
-
-			// 1. Verificar por componente de persecución de bandidos
 			ComponentBanditChaseBehavior banditChase = creature.Entity.FindComponent<ComponentBanditChaseBehavior>();
 			if (banditChase != null) return true;
-
-			// 2. Verificar por componente de manada de bandidos
 			ComponentBanditHerdBehavior banditHerd = creature.Entity.FindComponent<ComponentBanditHerdBehavior>();
 			if (banditHerd != null) return true;
-
-			// 3. Verificar por nombre de entidad (como respaldo)
 			string entityName = creature.Entity.GetType().Name.ToLower();
 			if (entityName.Contains("bandit") || entityName.Contains("bandido"))
 				return true;
-
-			// 4. Verificar por nombre de template (último recurso)
 			string templateName = creature.Entity.ValuesDictionary.DatabaseObject.Name.ToLower();
 			if (templateName.Contains("bandit") || templateName.Contains("bandido"))
 				return true;
-
 			return false;
 		}
 
@@ -808,6 +797,12 @@ namespace Game
 		{
 			if (target != null && IsTargetFriendly(target))
 			{
+				m_isAiming = false;
+				return;
+			}
+			if (target == null || IsLineOfSightBlocked(target))
+			{
+				ResetAnimations();
 				m_isAiming = false;
 				return;
 			}
@@ -1000,7 +995,6 @@ namespace Game
 			if (m_currentWeaponIndex == -1)
 				return;
 			FirearmConfig config = GetCurrentConfig();
-			// x NUEVA COMPROBACIÓN: Verificar si el objetivo está vivo antes de disparar
 			if (config == null || target == null || target.ComponentHealth.Health <= 0f)
 				return;
 			try
@@ -1173,19 +1167,14 @@ namespace Game
 
 		private void UpdateMeleeMode(float dt, ComponentCreature target)
 		{
-			// Solo buscar un arma cuerpo a cuerpo si no hay una equipada
 			if (!HasMeleeWeaponEquipped())
 			{
-				FindMeleeWeapon(); // Intenta encontrar una, pero no es obligatorio
+				FindMeleeWeapon();
 			}
-
-			// Asegurarse de que el modelo está mirando al objetivo
 			if (target != null && m_componentModel != null)
 			{
 				m_componentModel.LookAtOrder = new Vector3?(target.ComponentCreatureModel.EyePosition);
 			}
-
-			// Atacar independientemente de si tiene arma o no
 			double currentTime = m_subsystemTime.GameTime;
 			if (currentTime - m_lastMeleeAttackTime >= 0.8f)
 			{
@@ -1236,9 +1225,7 @@ namespace Game
 		{
 			if (m_componentMiner == null || target == null || m_componentModel == null)
 				return;
-
 			m_componentModel.AttackOrder = true;
-
 			if (m_componentModel.IsAttackHitMoment)
 			{
 				Vector3 hitPoint;
