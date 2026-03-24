@@ -1916,8 +1916,7 @@
     <MemberComponentTemplate Name="Miner" Guid="dc5011b5-5a7d-468c-bdc5-c728b6735fec" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="862b6dd5-e4c7-418c-a43e-c9793b1327b3" Value="5.95" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="MinecraftHumanModel" Guid="3bd967f2-c48d-4ba4-8663-106396399c34" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="Class" Guid="d13d7d94-7952-43d7-b4cd-6b8300869ff0" Value="Game.ComponentMinecraftHumanModel" Type="string"/>
+    <MemberComponentTemplate Name="MinecraftHumanModel" Guid="3bd967f2-c48d-4ba4-8663-106396399c34" InheritanceParent="ce3990d2-70bd-4c37-8969-65bb9500795b">
     <Parameter Name="ModelName" Guid="1d869b6d-8618-42c8-a256-2ebcb66a072e" Value="Models/MC 1" Type="string"/>
     <Parameter Name="TextureOverride" Guid="a13667d2-a88b-4153-8c56-c320a9972315" Value="Textures/Conker" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="0a48c539-6ce1-43f9-a0ce-ae440122ff28" Value="0.65" Type="float"/>
@@ -4327,6 +4326,7 @@
   <Parameter Name="NightChaseRange" Guid="55a34cb3-31ef-42a9-88ea-a2a5aee0ce63" Value="75" Type="float"/>
   <Parameter Name="AutoChaseMask" Guid="af566bad-3cbc-4862-bf27-f51538a760d4" Value="LandPredator" Type="Game.CreatureCategory"/>
   <Parameter Name="ChaseNonPlayerProbability" Guid="ef831bb5-ae7c-4618-a1e6-26dadb168f8a" Value="1" Type="float"/>
+  <Parameter Name="RangedAttackRange" Guid="39a0d30a-76db-4710-9cc6-d9420b0be7ab" Value="5,100" Type="Vector2"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="NewHerdBehavior" Guid="bfa4a491-70a5-433d-a240-39ae31531b79" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
         <Parameter Name="HerdName" Value="player" Type="string" Guid="168ea41d-2610-48d7-9b93-59cbc28b3bd8"/>
@@ -4343,9 +4343,6 @@
     <Parameter Name="DayRange" Guid="c8d9e0f1-2a3b-4c5d-8e7f-9a1b2c3d4e5f" Value="0" Type="float"/>
     <Parameter Name="NightRange" Guid="8829b6fc-a7ac-43e7-930f-50f4cc10d97f" Value="0" Type="float"/>
   </MemberComponentTemplate>
-  <MemberComponentTemplate Name="DefensiveAI" Guid="8dbea280-09af-4e6f-9b3a-eb1b2a0e0b46" InheritanceParent="2e0ff3f9-d699-41d1-b64a-cb06cda18234">
-  <Parameter Name="CanUseInventory" Guid="0891b9e4-0fb0-41c8-beb8-90f0229c44f0" Value="true" Type="bool"/>
-</MemberComponentTemplate>
   <MemberComponentTemplate Name="EatPickableBehavior" Guid="1a0d340d-4c11-49c5-a685-3b32b887d8ec">
     <ParameterSet Name="FoodFactors" Guid="7d4a1591-f3c5-47b6-9852-d31f5a1b7cd6">
       <Parameter Name="Fruit" Guid="73a6e1c3-c943-476a-8260-3b819c4b5035" Value="1" Type="float"/>
@@ -4892,9 +4889,6 @@
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="497288b8-85ff-4181-8ab4-c5f5f83f4f6c"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:0.5;InfectedNormal2:0.5" Type="string" Guid="bdde762c-10ff-45e8-9a66-8640121977bc"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="DefensiveAI" Guid="3e4a5d5d-63ed-4ddc-8919-c5ac75734dbf" InheritanceParent="2e0ff3f9-d699-41d1-b64a-cb06cda18234">
-  <Parameter Name="CanUseInventory" Guid="5c1b21fa-684b-4001-b3b0-52aceca28b9b" Value="true" Type="bool"/>
-</MemberComponentTemplate>
 <MemberComponentTemplate Name="RunAwayBehavior" Guid="eeafcfa9-2331-4174-b120-862bc0f96e59" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
 <MemberComponentTemplate Name="DefensiveNewRunAwayBehavior" Guid="c3af5c4b-78f4-4f04-9ea7-ad6b2ba205d7" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
         <MemberComponentTemplate Name="CreatureSounds" Guid="0a11682b-9e5a-463b-ad3a-4e770e95f3c4">
@@ -4917,6 +4911,7 @@
   <Parameter Name="NightChaseRange" Guid="6dc7415d-07c7-4a86-9e63-957f110ff533" Value="75" Type="float"/>
   <Parameter Name="AutoChaseMask" Guid="a655f2fa-ad5d-404a-85a5-dbb3067f51f9" Value="LandPredator" Type="Game.CreatureCategory"/>
   <Parameter Name="ChaseNonPlayerProbability" Guid="453a1642-6753-4294-9767-efc996e3c3ef" Value="1" Type="float"/>
+  <Parameter Name="RangedAttackRange" Guid="bb51e60b-a73e-4059-9e97-fc16c96b1396" Value="5,100" Type="Vector2"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="NewHerdBehavior" Guid="741ef8ec-15e1-419b-b685-04124969b525" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
         <Parameter Name="HerdName" Value="player" Type="string" Guid="e00ded5c-9f37-4e34-a2a3-6d11e06ecc44"/>
@@ -5039,9 +5034,6 @@
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="ef5aab35-5c25-4046-9a26-76f7fc4d625b"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:0.5;InfectedNormal2:0.5" Type="string" Guid="6913b26a-c98e-47e0-bb6a-f4e831616dca"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="DefensiveAI" Guid="7dd098f2-c05b-4604-9de1-7a2c881a8493" InheritanceParent="2e0ff3f9-d699-41d1-b64a-cb06cda18234">
-  <Parameter Name="CanUseInventory" Guid="9f9401e5-026f-496d-9ed5-e913da436995" Value="true" Type="bool"/>
-</MemberComponentTemplate>
 <MemberComponentTemplate Name="RunAwayBehavior" Guid="5e16a8cb-497f-4ae8-82b3-0c44e2111b07" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
 <MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="f5c5f484-2a78-4f3d-a384-e5ce51ed3811" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
         <MemberComponentTemplate Name="CreatureSounds" Guid="8eb4229e-549a-4097-a0c0-42ca401c7d0a">
@@ -5077,6 +5069,7 @@
   <Parameter Name="NightChaseRange" Guid="863ba2f7-6b48-4148-932c-b8305f80fc43" Value="75" Type="float"/>
   <Parameter Name="AutoChaseMask" Guid="89e57af5-9672-4bf4-85cf-33923df31849" Value="LandPredator" Type="Game.CreatureCategory"/>
   <Parameter Name="ChaseNonPlayerProbability" Guid="9bae7fb0-011d-4238-bc9c-4e9b88cf10be" Value="1" Type="float"/>
+  <Parameter Name="RangedAttackRange" Guid="1696660b-a0a3-47b0-996f-3ceabca04876" Value="5,100" Type="Vector2"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="e6e3f3e7-5355-43f2-8e76-3e0563eaeaba" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
                 <Parameter Name="DayRange" Guid="c7ec09f1-d99a-4f02-b293-317ec6b6d3de" Value="0" Type="float"/>
@@ -5751,6 +5744,7 @@
   <Parameter Name="NightChaseRange" Guid="235f4f69-99f4-4c04-8325-70ae879cf4f3" Value="60" Type="float"/>
   <Parameter Name="AutoChaseMask" Guid="afc4a684-bd83-4915-826d-57911e7cf423" Value="LandPredator, WaterPredator" Type="Game.CreatureCategory"/>
   <Parameter Name="ChaseNonPlayerProbability" Guid="30dcd658-86d5-41a9-b4c5-59ca08bc7f2f" Value="1" Type="float"/>
+  <Parameter Name="RangedAttackRange" Guid="9fe469ec-e561-438f-a6a7-fee08ec31354" Value="5,100" Type="Vector2"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="NewHerdBehavior" Guid="24092441-0685-4357-94ce-a31e795ac11a" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
         <Parameter Name="HerdName" Value="player" Type="string" Guid="7c4ae8d0-a812-4953-8ac5-6127532b4830"/>
@@ -5772,9 +5766,6 @@
 				<Parameter Name="KillVerbs" Guid="f9b384a8-4e21-424b-907f-9dec517eef01" Value="Kill" Type="string"/>
 				<Parameter Name="Description" Guid="3cd28547-f8b3-4834-8227-d00606289785" Value="[Description:Aimep3]" Type="string"/>
 			</MemberComponentTemplate>
-            <MemberComponentTemplate Name="DefensiveAI" Guid="0649920c-83e1-48e2-8efa-02e493afee0e" InheritanceParent="2e0ff3f9-d699-41d1-b64a-cb06cda18234">
-  <Parameter Name="CanUseInventory" Guid="bec83333-48c3-4016-9607-704a337e520a" Value="true" Type="bool"/>
-</MemberComponentTemplate>
             <MemberComponentTemplate Name="Inventory" Guid="878c001a-1e89-4d40-b102-d462a455c3ae" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="NewCreatureCollect" Guid="c208e04b-f262-46cc-85f3-8b0119c6dd45" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
@@ -5787,8 +5778,7 @@
 			<MemberComponentTemplate Name="Miner" Guid="c0790232-ff0e-4077-86fd-983c04fde602" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
 				<Parameter Name="AttackPower" Guid="18ffa37b-6698-43aa-891b-ff71f1a71582" Value="5" Type="float"/>
 			</MemberComponentTemplate>
-			<MemberComponentTemplate Name="NewHumanModel" Guid="b06e71b8-6488-48ae-999c-42cc60704b11" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="Class" Guid="107af7a1-a564-4609-9282-b1180f8ba8b0" Value="Game.ComponentNewHumanModel" Type="string"/>
+			<MemberComponentTemplate Name="NewHumanModel" Guid="b06e71b8-6488-48ae-999c-42cc60704b11" InheritanceParent="da33e501-1378-4644-8b5f-ef90863234a5">
     <Parameter Name="ModelName" Guid="2d1edb8f-dab3-4e9b-8a1e-5f7d8f646436" Value="Models/aimep3" Type="string"/>
     <Parameter Name="TextureOverride" Guid="fb083389-9830-470a-abd8-3cc729d86b21" Value="Textures/aimep3" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="77080ebc-2df1-4a99-a6ca-3da1a522d650" Value="0.65" Type="float"/>
@@ -5806,9 +5796,10 @@
 </MemberComponentTemplate>
 			<MemberComponentTemplate Name="Health" Guid="03cbae6b-6871-4ab6-8c52-40c9c29b516f">
 				<Parameter Name="AttackResilience" Guid="3bd3eb3e-cca0-47cf-bd88-2b21d0e7035b" Value="300" Type="float"/>
-				<Parameter Name="FireResilience" Guid="0f863b65-64f8-4713-8d90-d212d8a0d878" Value="1000" Type="float"/>
-                <Parameter Name="ExplosionResilience" Guid="e755caec-d56c-42c5-98c4-f2c7ccac02e0" Value="850" Type="float"/>
-                <Parameter Name="FallResilience" Guid="c265193e-9527-4e52-a645-099a95598f7a" Value="250" Type="float"/>
+				<Parameter Name="FireResilience" Guid="0f863b65-64f8-4713-8d90-d212d8a0d878" Value="300" Type="float"/>
+                <Parameter Name="ExplosionResilience" Guid="e755caec-d56c-42c5-98c4-f2c7ccac02e0" Value="300" Type="float"/>
+                <Parameter Name="FallResilience" Guid="c265193e-9527-4e52-a645-099a95598f7a" Value="300" Type="float"/>
+                <Parameter Name="HealFactor" Guid="93834e2d-82ee-4d93-b6d6-e53fb4753fd6" Value="15.5" Type="float"/>
 			</MemberComponentTemplate>
 			<MemberComponentTemplate Name="WalkAroundBehavior" Guid="ad84f517-3744-4612-9799-09ad1521afa6" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
 			<MemberComponentTemplate Name="OnFire" Guid="a90ba279-067a-4792-b4f6-e358e8830c4e"/>
