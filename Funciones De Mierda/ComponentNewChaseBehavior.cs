@@ -656,12 +656,46 @@ namespace Game
 			direction /= distance;
 
 			Ray3 ray = new Ray3(eyePos, direction);
-			var result = m_componentMiner.Raycast<BodyRaycastResult>(ray, RaycastMode.Interaction, true, true, true, null);
 
-			if (result != null && result.Value.Distance < distance - 0.5f)
+			// Usar Raycast que devuelve object y filtrar manualmente
+			object result = m_componentMiner.Raycast(ray, RaycastMode.Interaction, true, true, true, null);
+
+			// Si el resultado es un BodyRaycastResult
+			if (result is BodyRaycastResult bodyResult)
 			{
-				return false;
+				// Si el cuerpo golpeado es el objetivo o un hijo del objetivo
+				if (bodyResult.ComponentBody == m_target.ComponentBody ||
+					m_target.ComponentBody.IsChildOfBody(bodyResult.ComponentBody) ||
+					bodyResult.ComponentBody.IsChildOfBody(m_target.ComponentBody))
+				{
+					return true;
+				}
+
+				// Si el cuerpo golpeado es el propio NPC, ignorar y seguir comprobando
+				if (bodyResult.ComponentBody == m_componentCreature.ComponentBody)
+				{
+					// Continuar verificando si hay otros objetos en el camino
+					// En este caso, como solo hay un resultado, si solo golpea su propio cuerpo,
+					// significa que no hay obstáculos reales
+					return true;
+				}
+
+				// Si golpeó otro cuerpo que no es el objetivo ni el propio NPC
+				if (bodyResult.Distance < distance - 0.5f)
+				{
+					return false;
+				}
 			}
+
+			// Si el resultado es un TerrainRaycastResult
+			if (result is TerrainRaycastResult terrainResult)
+			{
+				if (terrainResult.Distance < distance - 0.5f)
+				{
+					return false;
+				}
+			}
+
 			return true;
 		}
 
@@ -723,6 +757,13 @@ namespace Game
 		private void UpdateThrowableAttack(float dt)
 		{
 			if (m_target == null)
+			{
+				CancelThrowableAim();
+				return;
+			}
+
+			// Nuevo: Si está atascado, no intentar lanzar
+			if (m_componentPathfinding.IsStuck)
 			{
 				CancelThrowableAim();
 				return;
@@ -1359,6 +1400,20 @@ namespace Game
 		private void UpdateRangedAttack(float dt)
 		{
 			if (m_target == null)
+			{
+				CancelRangedAim();
+				return;
+			}
+
+			// Nuevo: Si está atascado, no intentar disparar
+			if (m_componentPathfinding.IsStuck)
+			{
+				CancelRangedAim();
+				return;
+			}
+
+			// Nuevo: Verificar línea de visión antes de cualquier acción
+			if (!HasLineOfSightToTarget())
 			{
 				CancelRangedAim();
 				return;
