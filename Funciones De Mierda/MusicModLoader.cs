@@ -1,15 +1,14 @@
 using System;
+using System.Collections.Generic;
 using Engine;
-using Engine.Audio;
-using Engine.Media;
 using Game;
 
 namespace Game
 {
 	public class MusicModLoader : ModLoader
 	{
-		// Lista de pistas de música disponibles
-		private static readonly string[] musicTracks = new string[]
+		// Lista de canciones personalizadas para el menú principal
+		private static readonly List<string> _menuSongs = new List<string>
 		{
 			"MenuMusic/Dragon Quest NES Title Theme",
 			"MenuMusic/Digimon 02 Target Wada Kouji",
@@ -53,177 +52,113 @@ namespace Game
 			"MenuMusic/Power Rangers The Movie Title Theme SNES",
 			"MenuMusic/Sonic Boom Closing Theme Sonic CD",
 			"MenuMusic/Sonic Boom Sonic CD",
-			"MenuMusic/You Can Do Anything Sonic CD",
+			"MenuMusic/You Can Do Anything Sonic CD"
 		};
 
-		// Variables para control de selección
-		private static string lastSelectedTrack = "";
-		private static Random random = new Random();
-		private static int lastIndex = -1;
-		private static bool initialized = false;
+		// Generador de números aleatorios para seleccionar canciones
+		private static Random _random;
 
+		// Índice de la canción actual para evitar repeticiones consecutivas
+		private static int _lastSongIndex = -1;
+
+		/// <summary>
+		/// Se ejecuta cuando el cargador del mod es instanciado.
+		/// Registra el hook para la música del menú.
+		/// </summary>
 		public override void __ModInitialize()
 		{
-			if (!initialized)
-			{
-				ModsManager.RegisterHook("MenuPlayMusic", this);
+			// Inicializar el generador aleatorio
+			_random = new Random();
 
-				// Registrar método para actualizar el fade out
-				RegisterUpdateHook();
+			// Registrar este cargador de mod para el hook "MenuPlayMusic"
+			// Prioridad 0 (predeterminado) - números más bajos = mayor prioridad
+			ModsManager.RegisterHook("MenuPlayMusic", this);
 
-				initialized = true;
-			}
+			// Registrar también el hook para cambiar la música cuando termina una canción
+			// Esto permite que el gestor de música reproduzca una nueva canción de nuestra lista
+			ModsManager.RegisterHook("PlayInGameMusic", this);
+
+			// Log opcional para verificar que el mod se cargó correctamente
+			Log.Information("MusicModLoader: Mod de música personalizada cargado correctamente. " + _menuSongs.Count + " canciones disponibles.");
 		}
 
-		private void RegisterUpdateHook()
-		{
-			// Podemos usar un hook de actualización si el sistema lo soporta
-			// O usar un método estático que sea llamado desde el NewMusicManager
-			// Por ahora, confiamos en que NewMusicManager maneje el fade out
-		}
-
+		/// <summary>
+		/// Sobrescribe la música del menú para reproducir una pista personalizada.
+		/// Este método se llama cuando se activa el hook "MenuPlayMusic".
+		/// </summary>
+		/// <param name="contentMusicPath">Ruta de salida con la canción personalizada a reproducir</param>
 		public override void MenuPlayMusic(out string contentMusicPath)
 		{
-			if (musicTracks.Length == 0)
-			{
-				contentMusicPath = string.Empty;
-				return;
-			}
+			// Seleccionar una canción aleatoria de la lista
+			contentMusicPath = GetRandomSong();
 
-			// Selección aleatoria con semilla basada en tiempo
-			int currentTick = Environment.TickCount;
-			int index = Math.Abs(currentTick) % musicTracks.Length;
-
-			// Si solo hay una pista, usar esa
-			if (musicTracks.Length == 1)
-			{
-				contentMusicPath = musicTracks[0];
-				lastSelectedTrack = contentMusicPath;
-				return;
-			}
-
-			// Evitar repetir la misma canción consecutivamente
-			if (musicTracks[index] == lastSelectedTrack)
-			{
-				// Buscar siguiente pista diferente
-				for (int i = 1; i < musicTracks.Length; i++)
-				{
-					int nextIndex = (index + i) % musicTracks.Length;
-					if (musicTracks[nextIndex] != lastSelectedTrack)
-					{
-						index = nextIndex;
-						break;
-					}
-				}
-			}
-
-			// Si después de buscar aún es la misma (todas iguales o solo hay una diferente),
-			// usar selección aleatoria simple
-			if (musicTracks[index] == lastSelectedTrack)
-			{
-				index = random.Int(0, musicTracks.Length - 1);
-			}
-
-			string selectedTrack = musicTracks[index];
-			lastSelectedTrack = selectedTrack;
-			lastIndex = index;
-
-			contentMusicPath = selectedTrack;
-
+			// Log opcional para verificar qué canción se está reproduciendo
+			Log.Information("MusicModLoader: Reproduciendo música de menú: " + contentMusicPath);
 		}
 
-		// Método auxiliar para obtener información sobre las pistas
-		public static int GetTrackCount()
+		/// <summary>
+		/// Maneja la reproducción de música durante el juego.
+		/// Este método se llama cuando se activa el hook "PlayInGameMusic".
+		/// Puedes decidir si quieres modificar la música del juego también.
+		/// </summary>
+		public override void PlayInGameMusic()
 		{
-			return musicTracks.Length;
+			// Si quieres que también se reproduzca música personalizada durante el juego,
+			// descomenta las siguientes líneas:
+			/*
+            string customMusic = GetRandomSong();
+            if (!string.IsNullOrEmpty(customMusic))
+            {
+                // Nota: La música del juego se maneja de manera diferente
+                // Este es un ejemplo de cómo podrías implementarlo
+                MusicManager.PlayMusic(customMusic, 0f);
+            }
+            */
+
+			// Por ahora, no modificamos la música del juego
+			Log.Debug("MusicModLoader: Hook PlayInGameMusic ejecutado (sin cambios)");
 		}
 
-		public static string[] GetAllTracks()
+		/// <summary>
+		/// Selecciona una canción aleatoria de la lista, evitando repetir la última canción.
+		/// </summary>
+		/// <returns>Ruta de la canción seleccionada aleatoriamente</returns>
+		private static string GetRandomSong()
 		{
-			return (string[])musicTracks.Clone();
+			if (_menuSongs.Count == 0)
+			{
+				Log.Warning("MusicModLoader: No hay canciones disponibles en la lista.");
+				return string.Empty;
+			}
+
+			// Si solo hay una canción, devolver esa
+			if (_menuSongs.Count == 1)
+			{
+				return _menuSongs[0];
+			}
+
+			// Seleccionar un índice aleatorio diferente al último
+			int newIndex;
+			do
+			{
+				newIndex = _random.Int(0, _menuSongs.Count - 1);
+			}
+			while (newIndex == _lastSongIndex);
+
+			// Actualizar el último índice
+			_lastSongIndex = newIndex;
+
+			return _menuSongs[newIndex];
 		}
 
-		public static string GetTrackInfo(int index)
+		/// <summary>
+		/// Opcional: Se ejecuta cuando el mod es descargado.
+		/// Limpia los recursos si es necesario.
+		/// </summary>
+		public override void ModDispose()
 		{
-			if (index >= 0 && index < musicTracks.Length)
-			{
-				return musicTracks[index];
-			}
-			return "Invalid track index";
-		}
-
-		// Método para manejar el fade out desde el MusicManager
-		public static float GetFadeOutVolume(double currentTime, double trackStartTime)
-		{
-			const float TRACK_DURATION = 45f;
-			const float FADE_START = 40f;
-			const float FADE_DURATION = TRACK_DURATION - FADE_START;
-
-			float elapsedSeconds = (float)(currentTime - trackStartTime);
-
-			if (elapsedSeconds < FADE_START)
-			{
-				// Volumen completo antes del fade
-				return 1f;
-			}
-			else if (elapsedSeconds < TRACK_DURATION)
-			{
-				// Durante el fade out
-				float fadeProgress = (elapsedSeconds - FADE_START) / FADE_DURATION;
-				return MathUtils.Max(0f, 1f - fadeProgress);
-			}
-			else
-			{
-				// Después de terminar
-				return 0f;
-			}
-		}
-
-		// Método para verificar si es tiempo de cambiar de canción
-		public static bool ShouldChangeTrack(double currentTime, double trackStartTime)
-		{
-			const float TRACK_DURATION = 45f;
-			return (currentTime - trackStartTime) >= TRACK_DURATION;
-		}
-
-		// Método para obtener una pista específica (útil para testing)
-		public static string GetTrackByIndex(int index)
-		{
-			if (index >= 0 && index < musicTracks.Length)
-			{
-				return musicTracks[index];
-			}
-			return string.Empty;
-		}
-
-		// Método para obtener una pista diferente a la actual
-		public static string GetDifferentTrack(string currentTrack)
-		{
-			if (musicTracks.Length <= 1)
-				return currentTrack;
-
-			int attempts = 0;
-			while (attempts < 10) // Límite de intentos para evitar bucle infinito
-			{
-				int index = random.Int(0, musicTracks.Length - 1);
-				if (musicTracks[index] != currentTrack)
-				{
-					return musicTracks[index];
-				}
-				attempts++;
-			}
-
-			// Si no encuentra diferente después de 10 intentos, usar la siguiente
-			for (int i = 0; i < musicTracks.Length; i++)
-			{
-				if (musicTracks[i] != currentTrack)
-				{
-					return musicTracks[i];
-				}
-			}
-
-			// Si todas son iguales, devolver la primera
-			return musicTracks[0];
+			// No es necesario desregistrar hooks manualmente, la API lo maneja automáticamente
+			Log.Information("MusicModLoader: Mod descargado correctamente.");
 		}
 	}
 }
