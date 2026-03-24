@@ -79,7 +79,6 @@ namespace Game
 			ModsManager.RegisterHook("PlayInGameMusic", this);
 
 			// Log opcional para verificar que el mod se cargó correctamente
-			Log.Information("MusicModLoader: Mod de música personalizada cargado correctamente. " + _menuSongs.Count + " canciones disponibles.");
 		}
 
 		/// <summary>
@@ -93,7 +92,6 @@ namespace Game
 			contentMusicPath = GetRandomSong();
 
 			// Log opcional para verificar qué canción se está reproduciendo
-			Log.Information("MusicModLoader: Reproduciendo música de menú: " + contentMusicPath);
 		}
 
 		/// <summary>
@@ -116,7 +114,6 @@ namespace Game
             */
 
 			// Por ahora, no modificamos la música del juego
-			Log.Debug("MusicModLoader: Hook PlayInGameMusic ejecutado (sin cambios)");
 		}
 
 		/// <summary>
@@ -158,7 +155,6 @@ namespace Game
 		public override void ModDispose()
 		{
 			// No es necesario desregistrar hooks manualmente, la API lo maneja automáticamente
-			Log.Information("MusicModLoader: Mod descargado correctamente.");
 		}
 	}
 }
