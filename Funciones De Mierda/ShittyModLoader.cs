@@ -32,33 +32,50 @@ namespace Game
 				topArea.Children.InsertBefore(versionLabel, modVersionLabel);
 			}
 
-			// --- AÑADIR BOTÓN "ACERCA DEL MOD" EN EL CENTRO (CON TRADUCCIÓN) ---
+			// --- AÑADIR BOTONES "ACERCA DEL MOD" Y "SALIR" EN EL CENTRO ---
 			StackPanelWidget centerButtons = mainMenuScreen.Children.Find<StackPanelWidget>("CenterButtons", true);
 			if (centerButtons != null)
 			{
-				// Crear una nueva fila horizontal para el botón
-				StackPanelWidget newRow = new StackPanelWidget
+				// Verificar si ya existe la fila (para no duplicar)
+				if (centerButtons.Children.Find<StackPanelWidget>("ShittyButtonRow", false) == null)
 				{
-					HorizontalAlignment = WidgetAlignment.Center,
-					Margin = new Vector2(0f, 5f)
-				};
+					// Crear un panel horizontal para los dos botones
+					StackPanelWidget buttonRow = new StackPanelWidget
+					{
+						Name = "ShittyButtonRow",
+						Direction = LayoutDirection.Horizontal,
+						HorizontalAlignment = WidgetAlignment.Center,
+						Margin = new Vector2(0f, 5f)
+					};
 
-				// Obtener texto traducido para el botón
-				string aboutButtonText = LanguageControl.Get(new string[] { "ShittyCreaturesAbout", "AboutButton" });
+					// Botón "Acerca del Mod" (morado)
+					string aboutButtonText = LanguageControl.Get(new string[] { "ShittyCreaturesAbout", "AboutButton" });
+					BevelledButtonWidget aboutButton = new BevelledButtonWidget
+					{
+						Name = "ShittyAboutButton",
+						Text = aboutButtonText,
+						Size = new Vector2(310f, 60f),
+						BevelColor = new Color(128, 0, 128),
+						CenterColor = new Color(128, 0, 128),
+						Margin = new Vector2(10f, 0f)  // Margen derecho para separar botones
+					};
 
-				// Crear el botón morado con texto traducido
-				BevelledButtonWidget aboutButton = new BevelledButtonWidget
-				{
-					Name = "ShittyAboutButton",
-					Text = aboutButtonText,
-					Size = new Vector2(310f, 60f),
-					BevelColor = new Color(128, 0, 128),   // Púrpura oscuro
-					CenterColor = new Color(128, 0, 128), // Mismo color para el centro
-					HorizontalAlignment = WidgetAlignment.Center
-				};
+					// Botón "Salir" (color normal) usando traducción
+					string exitButtonText = LanguageControl.Get(new string[] { "ShittyCreaturesAbout", "ExitButton" });
+					BevelledButtonWidget exitButton = new BevelledButtonWidget
+					{
+						Name = "ShittyExitButton",
+						Text = exitButtonText,
+						Size = new Vector2(310f, 60f),
+						BevelColor = new Color(128, 128, 128),
+						CenterColor = new Color(128, 128, 128),
+						Margin = new Vector2(10f, 0f)
+					};
 
-				newRow.Children.Add(aboutButton);
-				centerButtons.Children.Add(newRow);
+					buttonRow.Children.Add(aboutButton);
+					buttonRow.Children.Add(exitButton);
+					centerButtons.Children.Add(buttonRow);
+				}
 			}
 
 			// --- BOTÓN ORIGINAL (ESQUINA INFERIOR DERECHA) ---
@@ -100,11 +117,18 @@ namespace Game
 				DialogsManager.ShowDialog(null, new ShittyCreaturesLogDialog());
 			}
 
-			// Nuevo botón "Acerca Del Mod" (con traducción)
+			// Botón "Acerca Del Mod"
 			BevelledButtonWidget aboutButton = mainMenu.Children.Find<BevelledButtonWidget>("ShittyAboutButton", false);
 			if (aboutButton != null && aboutButton.IsClicked)
 			{
 				DialogsManager.ShowDialog(null, new ShittyCreaturesAboutDialog());
+			}
+
+			// Botón "Salir"
+			BevelledButtonWidget exitButton = mainMenu.Children.Find<BevelledButtonWidget>("ShittyExitButton", false);
+			if (exitButton != null && exitButton.IsClicked)
+			{
+				Environment.Exit(0);
 			}
 		}
 	}
