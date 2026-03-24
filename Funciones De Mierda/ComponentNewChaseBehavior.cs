@@ -37,7 +37,7 @@ namespace Game
 		public AttackMode RangedAttackMode = AttackMode.Default;
 
 		// Nuevos parámetros para objetos lanzables
-		public float ThrowableAimTime = 1f;
+		public float ThrowableAimTime = 1.55f;
 		public float ThrowableCooldown = 0.5f;
 		public Vector2 ThrowableAttackRange = new Vector2(5f, 15f);
 
@@ -129,6 +129,49 @@ namespace Game
 				if (m_componentHerd == null)
 					m_componentHerd = Entity.FindComponent<ComponentNewHerdBehavior>();
 				return m_componentHerd != null ? m_componentHerd.HerdName : null;
+			}
+		}
+
+		// ===== NUEVAS PROPIEDADES PARA DETECCIÓN DE TIPO DE ARMA =====
+		private bool IsCurrentWeaponMelee
+		{
+			get
+			{
+				int activeValue = m_componentMiner?.ActiveBlockValue ?? 0;
+				if (activeValue == 0) return true; // Manos desnudas es cuerpo a cuerpo
+
+				int contents = Terrain.ExtractContents(activeValue);
+				// Armas a distancia conocidas
+				if (contents == MusketBlock.Index ||
+					contents == BowBlock.Index ||
+					contents == CrossbowBlock.Index ||
+					contents == RepeatCrossbowBlock.Index ||
+					contents == FlameThrowerBlock.Index)
+				{
+					return false;
+				}
+				// Objetos lanzables también se consideran a distancia
+				if (IsThrowableBlock(activeValue))
+					return false;
+
+				return true; // Cualquier otra cosa se considera cuerpo a cuerpo
+			}
+		}
+
+		private bool IsCurrentWeaponRanged
+		{
+			get
+			{
+				int activeValue = m_componentMiner?.ActiveBlockValue ?? 0;
+				if (activeValue == 0) return false;
+
+				int contents = Terrain.ExtractContents(activeValue);
+				return contents == MusketBlock.Index ||
+					   contents == BowBlock.Index ||
+					   contents == CrossbowBlock.Index ||
+					   contents == RepeatCrossbowBlock.Index ||
+					   contents == FlameThrowerBlock.Index ||
+					   IsThrowableBlock(activeValue);
 			}
 		}
 
@@ -280,6 +323,216 @@ namespace Game
 			}
 		}
 
+		// ===== NUEVOS MÉTODOS PARA SELECCIÓN Y CAMBIO DE ARMAS =====
+		private int FindBestMeleeWeapon(out int slotIndex, out int value)
+		{
+			slotIndex = -1;
+			value = 0;
+			if (m_componentMiner?.Inventory == null) return -1;
+
+			float bestPower = 0f;
+			for (int i = 0; i < m_componentMiner.Inventory.SlotsCount; i++)
+			{
+				int slotValue = m_componentMiner.Inventory.GetSlotValue(i);
+				int slotCount = m_componentMiner.Inventory.GetSlotCount(i);
+				if (slotCount > 0)
+				{
+					int contents = Terrain.ExtractContents(slotValue);
+					// Excluir armas a distancia y objetos lanzables
+					if (contents == MusketBlock.Index ||
+						contents == BowBlock.Index ||
+						contents == CrossbowBlock.Index ||
+						contents == RepeatCrossbowBlock.Index ||
+						contents == FlameThrowerBlock.Index ||
+						IsThrowableBlock(slotValue))
+					{
+						continue;
+					}
+					// Calcular poder cuerpo a cuerpo del arma
+					Block block = BlocksManager.Blocks[contents];
+					float power = block.GetMeleePower(slotValue);
+					if (power > bestPower)
+					{
+						bestPower = power;
+						slotIndex = i;
+						value = slotValue;
+					}
+				}
+			}
+			// Si no se encontró ningún arma cuerpo a cuerpo, usar las manos (slotIndex -1, valor 0)
+			if (slotIndex == -1)
+			{
+				value = 0;
+				return -1;
+			}
+			return slotIndex;
+		}
+
+		private int FindBestRangedWeapon(out int slotIndex, out int value)
+		{
+			slotIndex = -1;
+			value = 0;
+			if (m_componentMiner?.Inventory == null) return -1;
+
+			float bestPower = 0f;
+			for (int i = 0; i < m_componentMiner.Inventory.SlotsCount; i++)
+			{
+				int slotValue = m_componentMiner.Inventory.GetSlotValue(i);
+				int slotCount = m_componentMiner.Inventory.GetSlotCount(i);
+				if (slotCount > 0)
+				{
+					int contents = Terrain.ExtractContents(slotValue);
+					bool isRanged = contents == MusketBlock.Index ||
+									contents == BowBlock.Index ||
+									contents == CrossbowBlock.Index ||
+									contents == RepeatCrossbowBlock.Index ||
+									contents == FlameThrowerBlock.Index;
+					if (!isRanged) continue;
+
+					// Priorizar armas a distancia: podemos usar el daño a distancia (GetRangePower) o simplemente un orden
+					float power = 0f;
+					if (contents == MusketBlock.Index) power = 100f;
+					else if (contents == BowBlock.Index) power = 80f;
+					else if (contents == CrossbowBlock.Index) power = 90f;
+					else if (contents == RepeatCrossbowBlock.Index) power = 95f;
+					else if (contents == FlameThrowerBlock.Index) power = 70f;
+					if (power > bestPower)
+					{
+						bestPower = power;
+						slotIndex = i;
+						value = slotValue;
+					}
+				}
+			}
+			return slotIndex;
+		}
+
+		private void EquipWeapon(int slotIndex)
+		{
+			if (m_componentMiner?.Inventory == null) return;
+			if (slotIndex >= 0 && slotIndex < m_componentMiner.Inventory.SlotsCount)
+			{
+				m_componentMiner.Inventory.ActiveSlotIndex = slotIndex;
+			}
+		}
+
+		private void ManageWeaponSwitching(bool inMeleeRange)
+		{
+			if (m_componentMiner?.Inventory == null) return;
+
+			if (inMeleeRange)
+			{
+				// Si estamos en rango cuerpo a cuerpo y el arma actual no es cuerpo a cuerpo
+				if (!IsCurrentWeaponMelee)
+				{
+					// Buscar un arma cuerpo a cuerpo en el inventario
+					int meleeSlot = FindBestMeleeWeapon(out int meleeValue);
+					if (meleeSlot != -1)
+					{
+						// Cancelar cualquier apuntado en curso
+						CancelRangedAim();
+						CancelThrowableAim();
+						// Cambiar al arma cuerpo a cuerpo
+						EquipWeapon(meleeSlot);
+					}
+					// Si no hay arma cuerpo a cuerpo, nos quedamos con la actual (que será a distancia) y se usará como garrote
+				}
+			}
+			else
+			{
+				// Fuera de rango cuerpo a cuerpo: si el arma actual no es a distancia y no estamos apuntando lanzables
+				if (!IsCurrentWeaponRanged && !m_isAimingThrowable)
+				{
+					int rangedSlot = FindBestRangedWeapon(out int rangedValue);
+					if (rangedSlot != -1)
+					{
+						// Cancelar cualquier apuntado (por si acaso)
+						CancelRangedAim();
+						// No cancelamos lanzables porque pueden estar en proceso y queremos mantenerlos
+						EquipWeapon(rangedSlot);
+					}
+				}
+			}
+		}
+
+		private int FindBestRangedWeapon(out int value)
+		{
+			value = 0;
+			if (m_componentMiner?.Inventory == null) return -1;
+
+			int bestSlot = -1;
+			float bestPower = 0f;
+			for (int i = 0; i < m_componentMiner.Inventory.SlotsCount; i++)
+			{
+				int slotValue = m_componentMiner.Inventory.GetSlotValue(i);
+				int slotCount = m_componentMiner.Inventory.GetSlotCount(i);
+				if (slotCount > 0)
+				{
+					int contents = Terrain.ExtractContents(slotValue);
+					bool isRanged = contents == MusketBlock.Index ||
+									contents == BowBlock.Index ||
+									contents == CrossbowBlock.Index ||
+									contents == RepeatCrossbowBlock.Index ||
+									contents == FlameThrowerBlock.Index;
+					if (!isRanged) continue;
+
+					// Priorizar armas a distancia: podemos usar el daño a distancia o simplemente un orden
+					float power = 0f;
+					if (contents == MusketBlock.Index) power = 100f;
+					else if (contents == BowBlock.Index) power = 80f;
+					else if (contents == CrossbowBlock.Index) power = 90f;
+					else if (contents == RepeatCrossbowBlock.Index) power = 95f;
+					else if (contents == FlameThrowerBlock.Index) power = 70f;
+					if (power > bestPower)
+					{
+						bestPower = power;
+						bestSlot = i;
+						value = slotValue;
+					}
+				}
+			}
+			return bestSlot;
+		}
+
+		// ===== NUEVOS MÉTODOS PARA SELECCIÓN Y CAMBIO DE ARMAS =====
+		private int FindBestMeleeWeapon(out int value)
+		{
+			value = 0;
+			if (m_componentMiner?.Inventory == null) return -1;
+
+			int bestSlot = -1;
+			float bestPower = 0f;
+			for (int i = 0; i < m_componentMiner.Inventory.SlotsCount; i++)
+			{
+				int slotValue = m_componentMiner.Inventory.GetSlotValue(i);
+				int slotCount = m_componentMiner.Inventory.GetSlotCount(i);
+				if (slotCount > 0)
+				{
+					int contents = Terrain.ExtractContents(slotValue);
+					// Excluir armas a distancia y objetos lanzables
+					if (contents == MusketBlock.Index ||
+						contents == BowBlock.Index ||
+						contents == CrossbowBlock.Index ||
+						contents == RepeatCrossbowBlock.Index ||
+						contents == FlameThrowerBlock.Index ||
+						IsThrowableBlock(slotValue))
+					{
+						continue;
+					}
+					// Calcular poder cuerpo a cuerpo del arma
+					Block block = BlocksManager.Blocks[contents];
+					float power = block.GetMeleePower(slotValue);
+					if (power > bestPower)
+					{
+						bestPower = power;
+						bestSlot = i;
+						value = slotValue;
+					}
+				}
+			}
+			return bestSlot;
+		}
+
 		// ===== UPDATE =====
 		public virtual void Update(float dt)
 		{
@@ -303,8 +556,15 @@ namespace Game
 
 				bool inMeleeRange = IsTargetInAttackRange(m_target.ComponentBody);
 
+				// Gestionar cambio de armas según la distancia al objetivo
+				ManageWeaponSwitching(inMeleeRange);
+
 				if (inMeleeRange)
 				{
+					// Cancelar cualquier apuntado a distancia o lanzable
+					CancelRangedAim();
+					CancelThrowableAim();
+
 					m_componentCreatureModel.AttackOrder = true;
 					if (m_componentCreatureModel.IsAttackHitMoment)
 					{
@@ -324,11 +584,14 @@ namespace Game
 				}
 				else
 				{
-					UpdateThrowableAttack(dt);
-					// Si no se está lanzando un objeto, intentar ataque a distancia normal
-					if (!m_isAimingThrowable)
+					// Solo intentar ataques a distancia si el arma actual es a distancia
+					if (IsCurrentWeaponRanged)
 					{
-						UpdateRangedAttack(dt);
+						UpdateThrowableAttack(dt);
+						if (!m_isAimingThrowable)
+						{
+							UpdateRangedAttack(dt);
+						}
 					}
 				}
 			}
@@ -1748,7 +2011,7 @@ namespace Game
 					}
 					else
 					{
-						// ⚠️ NUEVO: No establecer destino mientras se está apuntando un objeto lanzable
+						// No establecer destino mientras se apunta un objeto lanzable
 						if (!m_isAimingThrowable)
 						{
 							int maxPathfindingPositions = 0;
