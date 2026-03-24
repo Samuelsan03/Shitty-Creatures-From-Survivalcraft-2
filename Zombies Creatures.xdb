@@ -13,6 +13,7 @@
               <Parameter Name="GlowingEyesColor" Guid="15190bb2-ea49-453f-84c3-915b7dfcb754" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="aed702cd-f2b4-41b6-9fd6-7ce7539643de" Value="0.06,0.2,0.1" Type="Vector3"/>
             </MemberComponentTemplate>
+            <MemberComponentTemplate Name="RageZombieBehavior" Guid="2fc37c54-ef02-4c8a-9171-0496eeaf11c4" InheritanceParent="2d584a55-7ccb-42c7-8fc0-c3f288eefae9"/>
 <MemberComponentTemplate Name="ZombieRunAwayBehavior" Guid="1d57a213-e6e6-42f2-a9f2-13616a4bfd61" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
         <MemberComponentTemplate Name="RunAwayBehavior" Guid="2a65852b-da52-4ab0-ae69-b5b6c213a8cc" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="3a98a1e5-a065-4fef-9c65-b8737ff9b218" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
@@ -93,8 +94,7 @@
 <MemberComponentTemplate Name="NewAutoInteract" Guid="49748fe7-873e-46ee-a0d1-a1a71beed43a" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="NewZombieModel" Guid="39436ca8-b9c4-470c-bd64-30fb2d5ec3ac" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="Class" Guid="e2d14118-9be5-4bb2-b2b9-a807a3a2a687" Value="Game.ComponentNewZombieModel" Type="string"/>
+<MemberComponentTemplate Name="NewZombieModel" Guid="39436ca8-b9c4-470c-bd64-30fb2d5ec3ac" InheritanceParent="aac9f762-4b85-4cee-a9f1-39d9c11f106d">
     <Parameter Name="ModelName" Guid="10cfa439-a0fc-449f-8a9e-00dc89992bae" Value="Models/Zombies Modelos De Cagada/ZombieNormal" Type="string"/>
     <Parameter Name="TextureOverride" Guid="b2c80dee-8743-4b51-b6e5-21fd74d72147" Value="Textures/ZombiesDeMierda/ZombieNormal1" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="46ca7f5d-6203-44fe-9d63-f7d0276a3352" Value="0.65" Type="float"/>
@@ -162,6 +162,7 @@
   <Parameter Name="NightChaseRange" Guid="2cdf18c1-932b-45e1-911f-52aef53f70f2" Value="75" Type="float"/>
   <Parameter Name="AutoChaseMask" Guid="5bb5c4e0-1679-4e39-ae09-cb72811d8855" Value="LandPredator" Type="Game.CreatureCategory"/>
   <Parameter Name="ChaseNonPlayerProbability" Guid="4c110f53-7aeb-4c3f-b54a-09a9f4788850" Value="1" Type="float"/>
+  <Parameter Name="RangedAttackRange" Guid="0727b306-e072-49e6-a56d-939ccdf859d6" Value="5,100" Type="Vector2"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="NewHerdBehavior" Guid="3b375243-6874-4416-bf63-c93c44f34010" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
         <Parameter Name="HerdName" Value="player" Type="string" Guid="b0da6d6b-9e0c-48d8-9a54-6d66a3a9807e"/>
@@ -171,9 +172,6 @@
         <Parameter Name="MaxHelpChaseTime" Value="30" Type="float" Guid="43414d65-a7b8-4db3-a7af-818e0125e444"/>
         <Parameter Name="AvoidAttackingSameHerd" Value="true" Type="bool" Guid="20f604e8-627c-4ed9-9cb1-13e24be65225"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="DefensiveAI" Guid="de3d3400-a295-4515-8c44-38bf77767003" InheritanceParent="2e0ff3f9-d699-41d1-b64a-cb06cda18234">
-  <Parameter Name="CanUseInventory" Guid="5a617ddf-6657-406f-b06b-8a5baf7e0dcd" Value="true" Type="bool"/>
-</MemberComponentTemplate>
         <MemberComponentTemplate Name="DeathSpawner" Guid="5de64640-216c-4d4a-a122-314890eb1aca" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="5bb3f969-a526-4d06-b6de-86c1b8ff3440"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:0.5;GhostNormal:0.01" Type="string" Guid="ca858b8e-e96f-45a6-a244-757db31e97a1"/>
@@ -249,8 +247,7 @@
 <MemberComponentTemplate Name="NewAutoInteract" Guid="500bda0b-4de3-4da1-aa12-f0cb2534e44d" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="NewZombieModel" Guid="0718940c-7808-4149-b17d-73204f6a8162" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="Class" Guid="887afb70-35b4-4869-b5d4-0d155ddde6f6" Value="Game.ComponentNewZombieModel" Type="string"/>
+<MemberComponentTemplate Name="NewZombieModel" Guid="0718940c-7808-4149-b17d-73204f6a8162" InheritanceParent="aac9f762-4b85-4cee-a9f1-39d9c11f106d">
     <Parameter Name="ModelName" Guid="f9b46bc9-b748-41da-b871-9f8ca0e5712d" Value="Models/Zombies Modelos De Cagada/ZombieNormal" Type="string"/>
     <Parameter Name="TextureOverride" Guid="eec59266-4742-48af-bacd-a48313394089" Value="Textures/ZombiesDeMierda/ZombieNormal1" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="fcd6e4b7-b7a7-4cd3-a7c7-58b0775010de" Value="0.65" Type="float"/>
@@ -298,6 +295,7 @@
               <Parameter Name="GlowingEyesColor" Guid="27c5c151-abbd-463b-96be-e5510d540a25" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="f8c0c5ac-fedb-47c0-9218-ed31aadb9d6a" Value="0.06,0.2,0.1" Type="Vector3"/>
             </MemberComponentTemplate>
+            <MemberComponentTemplate Name="RageZombieBehavior" Guid="433ce6e4-64b8-441f-b15e-0b85675e2695" InheritanceParent="2d584a55-7ccb-42c7-8fc0-c3f288eefae9"/>
 <MemberComponentTemplate Name="ZombieRunAwayBehavior" Guid="8c3c8c64-627b-4dff-8bc6-783178007474" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
         <MemberComponentTemplate Name="RunAwayBehavior" Guid="f8923cbf-ba99-476f-bf28-8a40f14aa107" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="06bd12aa-d183-4dc9-be73-3d69940f94e3" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
@@ -378,8 +376,7 @@
 <MemberComponentTemplate Name="NewAutoInteract" Guid="59be6567-cb23-4220-9e4b-26de9592f274" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="NewZombieModel" Guid="a2e986f7-fdae-4806-bb67-cb6cd71ed0c7" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="Class" Guid="d8d1a467-7e70-4b7c-887c-0a23e202e4de" Value="Game.ComponentNewZombieModel" Type="string"/>
+<MemberComponentTemplate Name="NewZombieModel" Guid="a2e986f7-fdae-4806-bb67-cb6cd71ed0c7" InheritanceParent="aac9f762-4b85-4cee-a9f1-39d9c11f106d">
     <Parameter Name="ModelName" Guid="ff888afa-8d13-4bec-bb1a-5f5edba985df" Value="Models/Zombies Modelos De Cagada/ZombieNormal" Type="string"/>
     <Parameter Name="TextureOverride" Guid="89a736df-61f0-4745-b20d-e03cd870fee1" Value="Textures/ZombiesDeMierda/ZombieNormal2" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="4ed79db2-d36c-43f0-a740-649fd1d9b9ef" Value="0.65" Type="float"/>
@@ -436,9 +433,6 @@
     <Parameter Name="SlotsCount" Value="16" Type="int"/>
     <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
   </MemberComponentTemplate>
-  <MemberComponentTemplate Name="DefensiveAI" Guid="e554bbab-f9c4-42f8-a9d9-09e05180bcda" InheritanceParent="2e0ff3f9-d699-41d1-b64a-cb06cda18234">
-  <Parameter Name="CanUseInventory" Guid="6790a951-3f7f-4c2a-bb0b-606f4b0da121" Value="true" Type="bool"/>
-</MemberComponentTemplate>
         <MemberComponentTemplate Name="DeathSpawner" Guid="ccfffacf-e1cc-4923-aa97-452fb814a137" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="6fe392e0-1d6e-4b23-93de-538cf07b284f"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal2:0.5;GhostNormal:0.01" Type="string" Guid="b2c61036-9885-47f5-a71f-77ba5f96f8d3"/>
@@ -492,6 +486,7 @@
   <Parameter Name="NightChaseRange" Guid="e6797e01-3951-4e85-84c0-b030c32ebf3f" Value="75" Type="float"/>
   <Parameter Name="AutoChaseMask" Guid="56aa6ea0-7521-44c8-9d17-c04f00ea5991" Value="LandPredator" Type="Game.CreatureCategory"/>
   <Parameter Name="ChaseNonPlayerProbability" Guid="8e64bb69-8003-4335-8a9f-43ff0f10689d" Value="1" Type="float"/>
+  <Parameter Name="RangedAttackRange" Guid="461636cd-df31-4d1e-bca5-4116424c0b20" Value="5,100" Type="Vector2"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="NewHerdBehavior" Guid="6da8c96d-39e4-4312-be05-3d44d4942049" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
         <Parameter Name="HerdName" Value="player" Type="string" Guid="6a7f140f-c45e-4a66-a61b-6ed4f7aa5ee3"/>
@@ -535,8 +530,7 @@
 <MemberComponentTemplate Name="NewAutoInteract" Guid="b62dbb6c-b109-457c-a9f8-f6884d64c66f" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="NewZombieModel" Guid="983b9281-3b57-4a81-bc4d-048fbf1c94c3" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="Class" Guid="86c29ded-e8a5-42d1-a455-480a19b582f2" Value="Game.ComponentNewZombieModel" Type="string"/>
+<MemberComponentTemplate Name="NewZombieModel" Guid="983b9281-3b57-4a81-bc4d-048fbf1c94c3" InheritanceParent="aac9f762-4b85-4cee-a9f1-39d9c11f106d">
     <Parameter Name="ModelName" Guid="12c613ee-8454-42a6-89f0-9e5b7fd4f5a7" Value="Models/Zombies Modelos De Cagada/ZombieNormal" Type="string"/>
     <Parameter Name="TextureOverride" Guid="61124b63-ea52-4472-8216-6b931aa9a210" Value="Textures/ZombiesDeMierda/ZombieNormal2" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="a6746bc9-2550-4da9-987d-edf05275fbab" Value="0.65" Type="float"/>
@@ -658,8 +652,7 @@
 <MemberComponentTemplate Name="NewAutoInteract" Guid="20e0c15c-ec0d-465b-aff8-9a4d251def50" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="NewZombieModel" Guid="324876e6-61c1-4a86-a9fd-e4110e32d0e6" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="Class" Guid="96027080-fae9-44c6-8435-680e50769c5b" Value="Game.ComponentNewZombieModel" Type="string"/>
+<MemberComponentTemplate Name="NewZombieModel" Guid="324876e6-61c1-4a86-a9fd-e4110e32d0e6" InheritanceParent="aac9f762-4b85-4cee-a9f1-39d9c11f106d">
     <Parameter Name="ModelName" Guid="8eb2d165-126f-4efa-b863-b85e06e352d3" Value="Models/Zombies Modelos De Cagada/ZombieNormal" Type="string"/>
     <Parameter Name="TextureOverride" Guid="a295c120-788d-4a41-8803-8bbad3763665" Value="Textures/ZombiesDeMierda/ZombieFaster1" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="eb441c3f-b8fa-4bdb-9858-9cd4eda49a80" Value="0.65" Type="float"/>
@@ -676,7 +669,6 @@
     <Parameter Name="AttackOrder" Guid="3347705f-29de-4677-8d7e-ede117d5c106" Value="false" Type="bool"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="HealthBarDisplay" Guid="ee54cdc8-f025-41f7-8a52-62b342253c29" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-        <Parameter Name="MaxDisplayDistance" Value="19" Type="float"/>
     </MemberComponentTemplate>
             <MemberComponentTemplate Name="Health" Guid="f88c2a0c-b3d2-4d87-89ed-dd2689d426fc">
             <Parameter Name="FallResilience" Guid="39c4b3ee-d885-4475-8f5b-00a90d9c7431" Value="30" Type="float"/>
@@ -794,8 +786,7 @@
 <MemberComponentTemplate Name="NewAutoInteract" Guid="890fb902-a5f9-4346-8603-d422d0717475" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="NewZombieModel" Guid="3043fdb0-dc73-465b-8db0-a438f12a8ee5" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="Class" Guid="bdc5cf0c-0630-4b48-99e4-e74a0a0c51ea" Value="Game.ComponentNewZombieModel" Type="string"/>
+<MemberComponentTemplate Name="NewZombieModel" Guid="3043fdb0-dc73-465b-8db0-a438f12a8ee5" InheritanceParent="aac9f762-4b85-4cee-a9f1-39d9c11f106d">
     <Parameter Name="ModelName" Guid="01580396-28c6-446a-9236-f5f24629ec46" Value="Models/Zombies Modelos De Cagada/ZombieNormal" Type="string"/>
     <Parameter Name="TextureOverride" Guid="dfd3cb19-18d9-4e5a-8908-392a3bdd23e8" Value="Textures/ZombiesDeMierda/ZombieFaster1" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="2a2097ea-75eb-474a-a4d9-ab408df1bf0c" Value="0.65" Type="float"/>
@@ -931,8 +922,7 @@
 <MemberComponentTemplate Name="NewAutoInteract" Guid="bbabca0c-e499-4da7-8fff-4293bc6af626" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="NewZombieModel" Guid="f23bd78d-f187-4d76-ac6b-bf55ebfdc8c4" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="Class" Guid="0ed4f51a-a2d6-475f-bf05-54d66f6fded6" Value="Game.ComponentNewZombieModel" Type="string"/>
+<MemberComponentTemplate Name="NewZombieModel" Guid="f23bd78d-f187-4d76-ac6b-bf55ebfdc8c4" InheritanceParent="aac9f762-4b85-4cee-a9f1-39d9c11f106d">
     <Parameter Name="ModelName" Guid="e9e941fd-a9a0-448c-90db-53fd814a4127" Value="Models/Zombies Modelos De Cagada/ZombieNormal" Type="string"/>
     <Parameter Name="TextureOverride" Guid="ef75b48f-3c39-4269-a5d2-12896c729f35" Value="Textures/ZombiesDeMierda/ZombieFaster2" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="122b3a2a-2e87-4e94-a3fb-212f9b591bb8" Value="0.65" Type="float"/>
@@ -1067,8 +1057,7 @@
 <MemberComponentTemplate Name="NewAutoInteract" Guid="f848ee9f-2c78-4661-b107-c930e35b8751" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="NewZombieModel" Guid="f18f4b7f-90ff-444f-a0ea-b581eb2f3a3c" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="Class" Guid="274324af-e36a-4748-996b-e06096d63427" Value="Game.ComponentNewZombieModel" Type="string"/>
+<MemberComponentTemplate Name="NewZombieModel" Guid="f18f4b7f-90ff-444f-a0ea-b581eb2f3a3c" InheritanceParent="aac9f762-4b85-4cee-a9f1-39d9c11f106d">
     <Parameter Name="ModelName" Guid="812f83ac-be8c-46a5-95b5-52fd27ed39cd" Value="Models/Zombies Modelos De Cagada/ZombieNormal" Type="string"/>
     <Parameter Name="TextureOverride" Guid="44f533d7-4536-4856-9b4d-257288c1de80" Value="Textures/ZombiesDeMierda/ZombieFaster2" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="baeb7258-85f9-47eb-9bc7-f59d45aacf8f" Value="0.65" Type="float"/>
@@ -1210,8 +1199,7 @@
 <MemberComponentTemplate Name="NewAutoInteract" Guid="16ff8140-99d5-487c-a36b-d9d137eaa0c1" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="NewZombieModel" Guid="7ed787fd-a192-47ca-bfa2-379241b7018a" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="Class" Guid="ba9d5797-f52d-49d2-ae6b-caead0f9be06" Value="Game.ComponentNewZombieModel" Type="string"/>
+<MemberComponentTemplate Name="NewZombieModel" Guid="7ed787fd-a192-47ca-bfa2-379241b7018a" InheritanceParent="aac9f762-4b85-4cee-a9f1-39d9c11f106d">
     <Parameter Name="ModelName" Guid="fcd14ebd-b8a3-48db-8d2f-b94843cccbcb" Value="Models/Zombies Modelos De Cagada/ZombieMuscle" Type="string"/>
     <Parameter Name="TextureOverride" Guid="63682430-c3dc-46c4-841f-63b1cdfa5dc3" Value="Textures/ZombiesDeMierda/ZombieMuscle1" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="59daf88e-4b87-469d-a9c7-3c5f36cd2595" Value="0.65" Type="float"/>
@@ -1268,9 +1256,6 @@
     <Parameter Name="SlotsCount" Value="16" Type="int"/>
     <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
   </MemberComponentTemplate>
-  <MemberComponentTemplate Name="DefensiveAI" Guid="e4172a83-9827-485d-bef2-d3f4282af3e3" InheritanceParent="2e0ff3f9-d699-41d1-b64a-cb06cda18234">
-  <Parameter Name="CanUseInventory" Guid="56d6fbd5-186d-45bc-ba4d-0ae112045df3" Value="true" Type="bool"/>
-</MemberComponentTemplate>
         <MemberComponentTemplate Name="PathBreaker" Guid="bf1cca68-edfc-4cab-8a67-1e6369ae5821" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
 		<Parameter Name="CanBreakBlocks" Guid="55dd291a-8d29-4b11-92de-540e84c2514f" Value="True" Type="bool"/>
 		<Parameter Name="SpecificBlocks" Guid="c0e8e611-99be-4ac5-aed2-6ebc7c21824b" Value="" Type="string"/>
@@ -1295,6 +1280,7 @@
   <Parameter Name="NightChaseRange" Guid="08d5d5a1-6203-4cfd-a4e2-76d2fc8d1da9" Value="75" Type="float"/>
   <Parameter Name="AutoChaseMask" Guid="e1ef7640-0df3-4906-9a7e-799f2fd67c78" Value="LandPredator" Type="Game.CreatureCategory"/>
   <Parameter Name="ChaseNonPlayerProbability" Guid="00a29cd3-2884-4bc6-8883-b3b300fe3567" Value="1" Type="float"/>
+  <Parameter Name="RangedAttackRange" Guid="34ebd4ba-5e04-465b-b635-4e53c57e3c08" Value="5,100" Type="Vector2"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="NewHerdBehavior" Guid="b790f525-9431-4e36-990e-3dcbbcabaea7" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
         <Parameter Name="HerdName" Value="player" Type="string" Guid="81ef2fea-c736-4f03-b8d9-612d1461be36"/>
@@ -1372,8 +1358,7 @@
 <MemberComponentTemplate Name="NewAutoInteract" Guid="201dd8a2-0f44-4422-9b1e-8315b364f92d" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="NewZombieModel" Guid="29ce87ea-a11c-4c63-a75f-3c0242e5ce9d" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="Class" Guid="b5560c22-fce5-48e4-b040-58644d3c1216" Value="Game.ComponentNewZombieModel" Type="string"/>
+<MemberComponentTemplate Name="NewZombieModel" Guid="29ce87ea-a11c-4c63-a75f-3c0242e5ce9d" InheritanceParent="aac9f762-4b85-4cee-a9f1-39d9c11f106d">
     <Parameter Name="ModelName" Guid="04d71def-0376-476a-94c9-be22e6170eec" Value="Models/Zombies Modelos De Cagada/ZombieMuscle" Type="string"/>
     <Parameter Name="TextureOverride" Guid="6c89560c-f9e3-46d1-9372-af7b8b389b8f" Value="Textures/ZombiesDeMierda/ZombieMuscle1" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="5b0b25a1-7a68-4cf8-845f-04fe601579d0" Value="0.65" Type="float"/>
@@ -1496,8 +1481,7 @@
 <MemberComponentTemplate Name="NewAutoInteract" Guid="610be15f-335d-40e3-861f-ba6761278776" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="NewZombieModel" Guid="977b36b3-8264-49fa-94bd-e923350cbcd2" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="Class" Guid="1925a4e7-dff2-49d4-b6db-57fca94997bd" Value="Game.ComponentNewZombieModel" Type="string"/>
+<MemberComponentTemplate Name="NewZombieModel" Guid="977b36b3-8264-49fa-94bd-e923350cbcd2" InheritanceParent="aac9f762-4b85-4cee-a9f1-39d9c11f106d">
     <Parameter Name="ModelName" Guid="f5e6ebb9-01e6-4b6d-ade3-288dd1d20736" Value="Models/Zombies Modelos De Cagada/ZombieMuscle" Type="string"/>
     <Parameter Name="TextureOverride" Guid="bf5df834-3794-4a19-b171-3a6ec71ec0f3" Value="Textures/ZombiesDeMierda/ZombieMuscle2" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="c56140aa-56c8-4a31-880a-e1f3b3587694" Value="0.65" Type="float"/>
@@ -1554,9 +1538,6 @@
     <Parameter Name="SlotsCount" Value="16" Type="int"/>
     <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
   </MemberComponentTemplate>
-  <MemberComponentTemplate Name="DefensiveAI" Guid="a6082677-21f8-4c20-a8bc-825139cc8621" InheritanceParent="2e0ff3f9-d699-41d1-b64a-cb06cda18234">
-  <Parameter Name="CanUseInventory" Guid="271c5bc8-23f9-4002-918f-90223363414b" Value="true" Type="bool"/>
-</MemberComponentTemplate>
         <MemberComponentTemplate Name="PathBreaker" Guid="c5c25c0d-ddfa-4956-9fe8-e891cdf85f97" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
 		<Parameter Name="CanBreakBlocks" Guid="cd903b9b-d46e-4ba7-a920-260f53f21483" Value="True" Type="bool"/>
 		<Parameter Name="SpecificBlocks" Guid="422cd2fa-365f-48c8-8ca7-a7268086afb1" Value="" Type="string"/>
@@ -1575,6 +1556,7 @@
   <Parameter Name="NightChaseRange" Guid="75491c06-3f36-4f57-8bd7-b2134a0ea252" Value="75" Type="float"/>
   <Parameter Name="AutoChaseMask" Guid="65f809ad-5931-44bb-a355-44491ce7f2d5" Value="LandPredator" Type="Game.CreatureCategory"/>
   <Parameter Name="ChaseNonPlayerProbability" Guid="6431c540-fa39-4e22-92bc-82191aa5ce15" Value="1" Type="float"/>
+  <Parameter Name="RangedAttackRange" Guid="cbada280-8897-42b5-93a9-ebe236cd1458" Value="5,100" Type="Vector2"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="NewHerdBehavior" Guid="a08a8392-3591-4927-bce4-12c8e6840123" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
         <Parameter Name="HerdName" Value="player" Type="string" Guid="fae94e9c-177f-4357-8bdd-7e7313b6f2e1"/>
@@ -1652,8 +1634,7 @@
 <MemberComponentTemplate Name="NewAutoInteract" Guid="c5ed6c1e-c500-432d-9cd5-ed6cb204b654" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="NewZombieModel" Guid="a722f15c-46f3-4ff0-8de4-49e493a36c61" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="Class" Guid="80b65c93-e0fa-47da-8b90-d3e500c64400" Value="Game.ComponentNewZombieModel" Type="string"/>
+<MemberComponentTemplate Name="NewZombieModel" Guid="a722f15c-46f3-4ff0-8de4-49e493a36c61" InheritanceParent="aac9f762-4b85-4cee-a9f1-39d9c11f106d">
     <Parameter Name="ModelName" Guid="f540df9e-6f56-4515-9210-50abd0e9c3a5" Value="Models/Zombies Modelos De Cagada/ZombieMuscle" Type="string"/>
     <Parameter Name="TextureOverride" Guid="e2450bd0-e8f4-48b9-9dba-b0052929143c" Value="Textures/ZombiesDeMierda/ZombieMuscle2" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="6cd75474-5576-447b-8f45-9cf353df7ead" Value="0.65" Type="float"/>
@@ -1785,8 +1766,7 @@
 <MemberComponentTemplate Name="NewAutoInteract" Guid="3d70a1ce-0071-450a-af76-d3d14b708f06" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="NewZombieModel" Guid="ceaa2199-93b6-4de7-a7bb-b909a8e5d36d" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="Class" Guid="4b17f4b2-31d4-4b08-90c1-102ad2161273" Value="Game.ComponentNewZombieModel" Type="string"/>
+<MemberComponentTemplate Name="NewZombieModel" Guid="ceaa2199-93b6-4de7-a7bb-b909a8e5d36d" InheritanceParent="aac9f762-4b85-4cee-a9f1-39d9c11f106d">
     <Parameter Name="ModelName" Guid="c1549a8f-0900-4ee9-b02a-713b5bc2c5ce" Value="Models/Zombies Modelos De Cagada/ZombieNormal" Type="string"/>
     <Parameter Name="TextureOverride" Guid="36ddca17-e45f-4c77-a17b-fbae55de6fc5" Value="Textures/ZombiesDeMierda/PoisonousZombie1" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="603aed0f-bc53-457b-8ad2-d3aab5f6945d" Value="0.65" Type="float"/>
@@ -1919,8 +1899,7 @@
 <MemberComponentTemplate Name="NewAutoInteract" Guid="e4016811-97b3-42f7-94fc-9b4dfd85875b" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="NewZombieModel" Guid="e67c12a1-cd72-4863-a0a9-ab339ba57bb2" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="Class" Guid="a43a45fa-f323-438f-afd3-8e4f0e6f4afc" Value="Game.ComponentNewZombieModel" Type="string"/>
+<MemberComponentTemplate Name="NewZombieModel" Guid="e67c12a1-cd72-4863-a0a9-ab339ba57bb2" InheritanceParent="aac9f762-4b85-4cee-a9f1-39d9c11f106d">
     <Parameter Name="ModelName" Guid="4d524c45-d22a-4c4b-ad34-e00a9c3d6f50" Value="Models/Zombies Modelos De Cagada/ZombieNormal" Type="string"/>
     <Parameter Name="TextureOverride" Guid="23b9c86e-76c2-4250-b2ef-384e6f88936a" Value="Textures/ZombiesDeMierda/PoisonousZombie1" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="f2d4a231-c829-401e-b04e-13ce094f27ce" Value="0.65" Type="float"/>
@@ -2064,8 +2043,7 @@
 <MemberComponentTemplate Name="NewAutoInteract" Guid="200b5efc-d529-4afc-aec4-e8f0d03320fe" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="NewZombieModel" Guid="f4ef2782-7fa2-4995-8852-49c8ca698d8c" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="Class" Guid="2d361345-fced-45bb-9b1f-a119254f5d0c" Value="Game.ComponentNewZombieModel" Type="string"/>
+<MemberComponentTemplate Name="NewZombieModel" Guid="f4ef2782-7fa2-4995-8852-49c8ca698d8c" InheritanceParent="aac9f762-4b85-4cee-a9f1-39d9c11f106d">
     <Parameter Name="ModelName" Guid="7f6df10f-6f1d-4907-be38-139f2b63c8cf" Value="Models/Zombies Modelos De Cagada/ZombieNormal" Type="string"/>
     <Parameter Name="TextureOverride" Guid="a57078ac-d992-4609-a93f-86b110cb7553" Value="Textures/ZombiesDeMierda/PoisonousZombie2" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="333c83ac-055b-4a5e-a9bb-5459b715f6ce" Value="0.65" Type="float"/>
@@ -2198,8 +2176,7 @@
 <MemberComponentTemplate Name="NewAutoInteract" Guid="303af906-bb6c-4dc3-b0c7-e15b335198c1" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="NewZombieModel" Guid="41a3ed05-0137-4688-85d6-95a86f2be8a9" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="Class" Guid="3728835b-a6fc-4bae-8b92-dc37bec8f2db" Value="Game.ComponentNewZombieModel" Type="string"/>
+<MemberComponentTemplate Name="NewZombieModel" Guid="41a3ed05-0137-4688-85d6-95a86f2be8a9" InheritanceParent="aac9f762-4b85-4cee-a9f1-39d9c11f106d">
     <Parameter Name="ModelName" Guid="c595ea9a-af30-4114-bbdd-815e0d6f7ec1" Value="Models/Zombies Modelos De Cagada/ZombieNormal" Type="string"/>
     <Parameter Name="TextureOverride" Guid="508e377f-8cef-46f4-9b6c-aedd5e43db79" Value="Textures/ZombiesDeMierda/PoisonousZombie2" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="67c9cf8e-a5c2-4aa9-92cc-18e946973337" Value="0.65" Type="float"/>
@@ -3261,8 +3238,7 @@
 <MemberComponentTemplate Name="NewAutoInteract" Guid="78d736aa-ea80-4f34-8068-2519fb68b117" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="NewZombieModel" Guid="eddf798e-8a20-4ff7-91b0-ea3c50d1cba7" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="Class" Guid="c48c2ff2-b955-49f5-b9c0-33ed2cfd2314" Value="Game.ComponentNewZombieModel" Type="string"/>
+<MemberComponentTemplate Name="NewZombieModel" Guid="eddf798e-8a20-4ff7-91b0-ea3c50d1cba7" InheritanceParent="aac9f762-4b85-4cee-a9f1-39d9c11f106d">
     <Parameter Name="ModelName" Guid="d9a3a68b-0c3f-4dbc-9375-d269785a8c0b" Value="Models/Gordo Mamon" Type="string"/>
     <Parameter Name="TextureOverride" Guid="78d6111e-660d-4c96-bfc8-d92a50bc876d" Value="Textures/ZombiesDeMierda/Boomer 1" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="8c28c07c-9b69-427c-a9a8-39b83d56ed5f" Value="0.65" Type="float"/>
@@ -3421,8 +3397,7 @@
 <MemberComponentTemplate Name="NewAutoInteract" Guid="1b9dde1d-cdf4-43b3-9dce-005ace0f8ee9" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="NewZombieModel" Guid="dcb2754f-7b1b-4cf4-92d2-d7abd82cee97" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="Class" Guid="6bcdd755-40de-4eed-8b3c-098b660aa768" Value="Game.ComponentNewZombieModel" Type="string"/>
+<MemberComponentTemplate Name="NewZombieModel" Guid="dcb2754f-7b1b-4cf4-92d2-d7abd82cee97" InheritanceParent="aac9f762-4b85-4cee-a9f1-39d9c11f106d">
     <Parameter Name="ModelName" Guid="e63a71d3-e27a-4ee1-b08d-bead1bf45fb1" Value="Models/Gordo Mamon" Type="string"/>
     <Parameter Name="TextureOverride" Guid="9b0ad5aa-d7b5-4931-86f0-b2d947fe7fbe" Value="Textures/ZombiesDeMierda/Boomer 1" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="d7ec7047-586d-4f7f-84ec-e9db8cecca00" Value="0.65" Type="float"/>
@@ -3557,8 +3532,7 @@
 <MemberComponentTemplate Name="NewAutoInteract" Guid="8ae8a759-8f29-40a7-be1e-736f1cc944fa" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="NewZombieModel" Guid="2e62efe2-3a2f-4860-b3f2-49f2251a25e4" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="Class" Guid="a87aac32-8ee1-4f37-8ca7-4536596b73c0" Value="Game.ComponentNewZombieModel" Type="string"/>
+<MemberComponentTemplate Name="NewZombieModel" Guid="2e62efe2-3a2f-4860-b3f2-49f2251a25e4" InheritanceParent="aac9f762-4b85-4cee-a9f1-39d9c11f106d">
     <Parameter Name="ModelName" Guid="791bc379-6027-4f8a-8eac-bea915666967" Value="Models/Gordo Mamon" Type="string"/>
     <Parameter Name="TextureOverride" Guid="d07d765c-6f9f-490c-a8bd-e0a0b0834e61" Value="Textures/ZombiesDeMierda/Boomer 2" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="fe17c833-67b7-4a1a-8466-f3375604de0d" Value="0.65" Type="float"/>
@@ -3719,8 +3693,7 @@
 <MemberComponentTemplate Name="NewAutoInteract" Guid="59d5ef35-b1fc-4ebd-997e-47ae6cb274d1" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="NewZombieModel" Guid="e0e0ec00-4e9b-4214-902e-7d3368176266" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="Class" Guid="23954eac-2745-48c9-8d2f-8fb315dd157c" Value="Game.ComponentNewZombieModel" Type="string"/>
+<MemberComponentTemplate Name="NewZombieModel" Guid="e0e0ec00-4e9b-4214-902e-7d3368176266" InheritanceParent="aac9f762-4b85-4cee-a9f1-39d9c11f106d">
     <Parameter Name="ModelName" Guid="b857e9be-8a00-49bc-a93d-67e3fd67673f" Value="Models/Gordo Mamon" Type="string"/>
     <Parameter Name="TextureOverride" Guid="a09f481c-b884-40da-92a6-9562723d049e" Value="Textures/ZombiesDeMierda/Boomer 2" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="a1331e66-67a1-4f83-990c-1a1bfdc3fefa" Value="0.65" Type="float"/>
@@ -3847,8 +3820,7 @@
 <MemberComponentTemplate Name="NewAutoInteract" Guid="0a972300-517b-4f5d-be2e-a00cdd4f2b07" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="NewZombieModel" Guid="d7efb369-23a4-47c7-bfc7-574219f576eb" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="Class" Guid="2926491b-2425-4634-b6ce-d3477233b566" Value="Game.ComponentNewZombieModel" Type="string"/>
+<MemberComponentTemplate Name="NewZombieModel" Guid="d7efb369-23a4-47c7-bfc7-574219f576eb" InheritanceParent="aac9f762-4b85-4cee-a9f1-39d9c11f106d">
     <Parameter Name="ModelName" Guid="dc78a225-c3ea-43c5-8152-5d780717df48" Value="Models/Gordo Mamon" Type="string"/>
     <Parameter Name="TextureOverride" Guid="03c48ab2-197d-4282-bb6d-18505e5c2e31" Value="Textures/ZombiesDeMierda/Boomer 3" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="19229d58-c104-4fff-85e4-fe21e8694ccf" Value="0.65" Type="float"/>
@@ -4002,8 +3974,7 @@
 <MemberComponentTemplate Name="NewAutoInteract" Guid="422aafca-ff3e-47e4-bcca-89be1e3ea31f" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="NewZombieModel" Guid="7438a14d-8ea4-4e14-92db-840c544b49b9" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="Class" Guid="87fc42cf-d7f6-42a1-b652-379b1f9c812a" Value="Game.ComponentNewZombieModel" Type="string"/>
+<MemberComponentTemplate Name="NewZombieModel" Guid="7438a14d-8ea4-4e14-92db-840c544b49b9" InheritanceParent="aac9f762-4b85-4cee-a9f1-39d9c11f106d">
     <Parameter Name="ModelName" Guid="f54c6329-694d-4f67-9a72-3f9b7c368c78" Value="Models/Gordo Mamon" Type="string"/>
     <Parameter Name="TextureOverride" Guid="3eb4f3c9-a386-48ca-9b57-eb7e58cfb3b4" Value="Textures/ZombiesDeMierda/Boomer 3" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="e46f8563-8ee9-4d61-bc74-16e09b1a00b8" Value="0.65" Type="float"/>
@@ -4121,8 +4092,7 @@
 <MemberComponentTemplate Name="NewAutoInteract" Guid="22d815ba-0339-45e2-a336-56333f3c8d3f" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="NewZombieModel" Guid="ef477a50-a95e-4a3f-93b0-489b1c7543b8" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="Class" Guid="208121b5-ce3c-41a8-a3f9-e738a2bb2d61" Value="Game.ComponentNewZombieModel" Type="string"/>
+<MemberComponentTemplate Name="NewZombieModel" Guid="ef477a50-a95e-4a3f-93b0-489b1c7543b8" InheritanceParent="aac9f762-4b85-4cee-a9f1-39d9c11f106d">
     <Parameter Name="ModelName" Guid="59623348-46b1-43e8-a899-138eed58734f" Value="Models/Zombies Modelos De Cagada/Charger" Type="string"/>
     <Parameter Name="TextureOverride" Guid="9c91b713-5571-4c5e-855d-273200be60ca" Value="Textures/ZombiesDeMierda/Charger 1" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="6162761e-e429-4e71-b7bf-ac39188a5b81" Value="0.65" Type="float"/>
@@ -4265,8 +4235,7 @@
 <MemberComponentTemplate Name="NewAutoInteract" Guid="cac8c978-b2da-4901-b33d-1edacb618f91" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="NewZombieModel" Guid="5fa455b3-84de-41f0-8043-ade44bd1ea2d" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="Class" Guid="efe50266-bb12-4e17-893e-6c60a82aeb7c" Value="Game.ComponentNewZombieModel" Type="string"/>
+<MemberComponentTemplate Name="NewZombieModel" Guid="5fa455b3-84de-41f0-8043-ade44bd1ea2d" InheritanceParent="aac9f762-4b85-4cee-a9f1-39d9c11f106d">
     <Parameter Name="ModelName" Guid="f2aad6de-3dd8-40b2-89a9-a77ae186bcec" Value="Models/Zombies Modelos De Cagada/Charger" Type="string"/>
     <Parameter Name="TextureOverride" Guid="ddca928d-22df-4722-b74f-9d2e4d425d15" Value="Textures/ZombiesDeMierda/Charger 1" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="f6db1dc8-5995-4a93-be93-fe884252ae2a" Value="0.65" Type="float"/>
@@ -4383,8 +4352,7 @@
 <MemberComponentTemplate Name="NewAutoInteract" Guid="0e90656c-8d34-4250-8212-cf56681d7682" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="NewZombieModel" Guid="c4fed1fe-0b4f-4357-8853-acac94dbd87b" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="Class" Guid="c5973103-14c0-4b16-878c-04be7c99ed49" Value="Game.ComponentNewZombieModel" Type="string"/>
+<MemberComponentTemplate Name="NewZombieModel" Guid="c4fed1fe-0b4f-4357-8853-acac94dbd87b" InheritanceParent="aac9f762-4b85-4cee-a9f1-39d9c11f106d">
     <Parameter Name="ModelName" Guid="b125909a-875d-4b5d-8bd8-872b18ade8a0" Value="Models/Zombies Modelos De Cagada/Charger" Type="string"/>
     <Parameter Name="TextureOverride" Guid="2978bbaa-1169-4c69-99cb-9cd80eb4fc03" Value="Textures/ZombiesDeMierda/Charger 2" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="e9715ef0-4de1-41a4-a3e8-e44e693a9a3b" Value="0.65" Type="float"/>
@@ -4527,8 +4495,7 @@
 <MemberComponentTemplate Name="NewAutoInteract" Guid="b4ba68a5-1943-4546-9856-ab2e5fe2de71" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="NewZombieModel" Guid="c4ce280c-52e9-4356-81e5-ad3ca2c5f631" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="Class" Guid="a9080e7f-9161-4ddb-998f-c6c2b54807e5" Value="Game.ComponentNewZombieModel" Type="string"/>
+<MemberComponentTemplate Name="NewZombieModel" Guid="c4ce280c-52e9-4356-81e5-ad3ca2c5f631" InheritanceParent="aac9f762-4b85-4cee-a9f1-39d9c11f106d">
     <Parameter Name="ModelName" Guid="137d6952-44a2-42af-84ac-b99ad626b1e9" Value="Models/Zombies Modelos De Cagada/Charger" Type="string"/>
     <Parameter Name="TextureOverride" Guid="d23de0f6-9d8a-43ad-8536-349cbb8a1151" Value="Textures/ZombiesDeMierda/Charger 2" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="7a2cc56c-08be-49c6-aede-c1aa66b0cab5" Value="0.65" Type="float"/>
@@ -5535,9 +5502,6 @@
     <Parameter Name="SlotsCount" Value="16" Type="int"/>
     <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
   </MemberComponentTemplate>
-  <MemberComponentTemplate Name="DefensiveAI" Guid="6edeb858-6423-4e2c-9e86-154ec61e45b2" InheritanceParent="2e0ff3f9-d699-41d1-b64a-cb06cda18234">
-  <Parameter Name="CanUseInventory" Guid="a2824bd8-8d53-4c5b-a28d-f37d73cbe651" Value="true" Type="bool"/>
-</MemberComponentTemplate>
         <MemberComponentTemplate Name="PathBreaker" Guid="a05036f7-2a90-4b4f-9b4f-f95b2ccbb44f" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
 		<Parameter Name="CanBreakBlocks" Guid="f1b44e27-13ef-441d-a315-dabc1f60b23d" Value="True" Type="bool"/>
 		<Parameter Name="SpecificBlocks" Guid="b314ce83-64e8-47fd-b6bb-a0013e0bc9fa" Value="" Type="string"/>
@@ -5558,6 +5522,7 @@
   <Parameter Name="NightChaseRange" Guid="74a612fd-ae79-4863-9349-8c2d606e38ac" Value="75" Type="float"/>
   <Parameter Name="AutoChaseMask" Guid="7c317119-2f20-40a4-be8c-6cd00acd0b7c" Value="LandPredator" Type="Game.CreatureCategory"/>
   <Parameter Name="ChaseNonPlayerProbability" Guid="4aa6a1ae-3e80-42c1-9679-922f66c5bad0" Value="1" Type="float"/>
+  <Parameter Name="RangedAttackRange" Guid="7e4b9115-b751-4d7b-b2ee-834134b8cc7b" Value="5,100" Type="Vector2"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="NewHerdBehavior" Guid="c8637ae9-c19a-48b9-af5f-2abe15c6587c" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
         <Parameter Name="HerdName" Value="player" Type="string" Guid="cc137e48-215c-4dde-b00e-fedd41cb94b8"/>
@@ -5855,9 +5820,6 @@
     <Parameter Name="SlotsCount" Value="16" Type="int"/>
     <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
   </MemberComponentTemplate>
-  <MemberComponentTemplate Name="DefensiveAI" Guid="2f284a07-56e7-4d0d-b0e0-334702a7a4c0" InheritanceParent="2e0ff3f9-d699-41d1-b64a-cb06cda18234">
-  <Parameter Name="CanUseInventory" Guid="9cd6a004-e605-4705-96b1-067546b70514" Value="true" Type="bool"/>
-</MemberComponentTemplate>
         <MemberComponentTemplate Name="PathBreaker" Guid="4fbcf7ba-42a3-484f-bc48-0a22d8e4e144" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
 		<Parameter Name="CanBreakBlocks" Guid="33537b8e-c811-41a9-b370-ed57e36ffabc" Value="True" Type="bool"/>
 		<Parameter Name="SpecificBlocks" Guid="352bfad2-1545-4160-bd7f-9c0543cbbe91" Value="" Type="string"/>
@@ -5882,6 +5844,7 @@
   <Parameter Name="NightChaseRange" Guid="5dde6d69-99ec-484a-9c34-ca69a981149e" Value="75" Type="float"/>
   <Parameter Name="AutoChaseMask" Guid="779b9ab9-977e-4021-88e8-e756dd4fed34" Value="LandPredator" Type="Game.CreatureCategory"/>
   <Parameter Name="ChaseNonPlayerProbability" Guid="8f980612-e4af-49aa-b6cc-f065f126e14f" Value="1" Type="float"/>
+  <Parameter Name="RangedAttackRange" Guid="c18c38d2-e862-4e1e-9a28-c3df39b3fc56" Value="5,100" Type="Vector2"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="NewHerdBehavior" Guid="7188626e-0a9e-4a1c-a6da-f73d38a20370">
         <Parameter Name="Class" Value="Game.ComponentNewHerdBehavior" Type="string" Guid="8cf60e7f-1fd0-42ad-825c-33fb3da67c55"/>
@@ -6197,6 +6160,7 @@
   <Parameter Name="NightChaseRange" Guid="1726bd93-3b76-4a4e-bacf-870e12e34e38" Value="75" Type="float"/>
   <Parameter Name="AutoChaseMask" Guid="2d30e5be-6648-4507-9e24-a2e7fcf6bcd9" Value="LandPredator" Type="Game.CreatureCategory"/>
   <Parameter Name="ChaseNonPlayerProbability" Guid="c8d66571-d4c0-4b71-a8c6-799ae152b447" Value="1" Type="float"/>
+  <Parameter Name="RangedAttackRange" Guid="3f03b659-2797-40cf-a6ce-75fe4f0c7266" Value="5,100" Type="Vector2"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="NewHerdBehavior" Guid="dfd5f992-14aa-4acc-b222-d533d7324849">
         <Parameter Name="Class" Value="Game.ComponentNewHerdBehavior" Type="string" Guid="187d7e81-88ff-4b41-9934-0a9c7e7ed859"/>
@@ -8562,8 +8526,7 @@
 <MemberComponentTemplate Name="NewAutoInteract" Guid="d250372e-915d-4620-8227-74d21405bacc" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="NewZombieModel" Guid="aef7c3f3-69d7-4a8d-a10a-4b86739506b5" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="Class" Guid="8e6fd138-19de-4f39-8fd1-e88ab12ad545" Value="Game.ComponentNewZombieModel" Type="string"/>
+<MemberComponentTemplate Name="NewZombieModel" Guid="aef7c3f3-69d7-4a8d-a10a-4b86739506b5" InheritanceParent="aac9f762-4b85-4cee-a9f1-39d9c11f106d">
     <Parameter Name="ModelName" Guid="4d9a6b6c-3bfd-40da-8378-654634a17e75" Value="Models/MuscleHuman" Type="string"/>
     <Parameter Name="TextureOverride" Guid="1fed0831-e89c-41e6-a71c-52c765d261ae" Value="Textures/ZombiesDeMierda/Infectado Ametrallador" Type="string"/>
     <Parameter Name="ModelScale" Guid="55d273a3-d38d-4cea-956c-aee568dda9e5" Value="1.5" Type="float"/>
@@ -8742,8 +8705,7 @@
 <MemberComponentTemplate Name="NewAutoInteract" Guid="00ad43ca-27a4-4caf-a0b6-f0707edbe906" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="NewZombieModel" Guid="9f6bf705-ee68-46e1-960a-c3f39d8bbf9b" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="Class" Guid="7a116e5f-be4d-4662-80d1-7bb4f23e5e18" Value="Game.ComponentNewZombieModel" Type="string"/>
+<MemberComponentTemplate Name="NewZombieModel" Guid="9f6bf705-ee68-46e1-960a-c3f39d8bbf9b" InheritanceParent="aac9f762-4b85-4cee-a9f1-39d9c11f106d">
     <Parameter Name="ModelName" Guid="7142d9f6-afa9-426a-85f3-e74b094b9599" Value="Models/MuscleHuman" Type="string"/>
     <Parameter Name="TextureOverride" Guid="2e27fcc9-10d1-47bd-8963-5d282dc767fa" Value="Textures/ZombiesDeMierda/Infectado Ametrallador" Type="string"/>
     <Parameter Name="ModelScale" Guid="3cf37823-6620-43bc-9fa7-5cee6aa9f2d9" Value="1.5" Type="float"/>
@@ -10342,8 +10304,7 @@
 <MemberComponentTemplate Name="NewAutoInteract" Guid="ceb6fc05-0e06-45a9-9bd2-a40e99273d6b" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="NewZombieModel" Guid="50b0d311-9580-4b93-b117-39c9ed8d2b22" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="Class" Guid="2a7d708a-9e10-4e43-8574-1dc45ae19a52" Value="Game.ComponentNewZombieModel" Type="string"/>
+<MemberComponentTemplate Name="NewZombieModel" Guid="50b0d311-9580-4b93-b117-39c9ed8d2b22" InheritanceParent="aac9f762-4b85-4cee-a9f1-39d9c11f106d">
     <Parameter Name="ModelName" Guid="3e046448-0fa8-48fd-b513-7ccc0d76b5c4" Value="Models/Zombies Modelos De Cagada/Human_skeleton" Type="string"/>
     <Parameter Name="TextureOverride" Guid="e34727c4-6748-4538-ae64-b368246d0d16" Value="Textures/ZombiesDeMierda/Skull" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="49279154-4959-42ec-a980-9c0866cc4619" Value="0.65" Type="float"/>
@@ -10360,7 +10321,6 @@
     <Parameter Name="AttackOrder" Guid="496a66c9-6106-4d0c-a879-aa4231b44db0" Value="false" Type="bool"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="HealthBarDisplay" Guid="fd069b76-e20e-4e12-a141-b35623e931ed" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-        <Parameter Name="MaxDisplayDistance" Value="19" Type="float"/>
     </MemberComponentTemplate>
             <MemberComponentTemplate Name="Health" Guid="e3e6c336-9a5d-4032-9f52-e307b847a1d7">
         <Parameter Name="FireResilience" Guid="ed6a2b2c-d641-4379-8774-96a61f926e2a" Value="30" Type="float"/>
@@ -10380,7 +10340,7 @@
             <MemberComponentTemplate Name="WalkAroundBehavior" Guid="fd22d000-a3c7-40f5-bc29-662dd27c7245" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
 <MemberComponentTemplate Name="PathBreaker" Guid="87be4ffa-452c-49fb-b7cc-f41d7063d22d" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
 		<Parameter Name="CanBreakBlocks" Guid="aa8e7983-91d3-48a4-963e-a5be8d8c258a" Value="True" Type="bool"/>
-		<Parameter Name="SpecificBlocks" Guid="3b245ef2-7c0a-4688-922d-e7757550d480" Value="" Type="string"/>
+		<Parameter Name="SpecificBlocks" Guid="3b245ef2-7c0a-4688-922d-e7757550d480" Value="GlassBlock, WindowBlock, FramedGlassBlock" Type="string"/>
 		<Parameter Name="BreakProbability" Guid="6fb25812-754f-472b-acc8-e5effb7af7f2" Value="1.0" Type="float"/>
 	</MemberComponentTemplate>
             <MemberComponentTemplate Name="FeedBehavior" Guid="7351902a-e177-449e-8984-e70e050ba2ac" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
@@ -10396,9 +10356,6 @@
         </EntityTemplate>
 
 <EntityTemplate Name="HumanoidSkeletonTamed" Guid="b26c59e6-6180-46f7-ade3-ea72c45d4ca9" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="DefensiveAI" Guid="36b0071d-16d0-49d0-8e11-796a359723df" InheritanceParent="2e0ff3f9-d699-41d1-b64a-cb06cda18234">
-  <Parameter Name="CanUseInventory" Guid="a9adaa96-76b6-4769-84e3-28d94d651372" Value="true" Type="bool"/>
-</MemberComponentTemplate>
 <MemberComponentTemplate Name="SummonBehavior" Guid="d8470fa4-52ff-4265-9da3-475c81460ef8" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
         <Parameter Name="IsEnabled" Guid="1e7221a9-ceb6-41e4-8a5f-4793050d1325" Value="True" Type="bool"/>
       </MemberComponentTemplate>
@@ -10413,6 +10370,7 @@
   <Parameter Name="NightChaseRange" Guid="0e862aab-3d80-4e15-87d4-cb9555e043f1" Value="75" Type="float"/>
   <Parameter Name="AutoChaseMask" Guid="8d453c6a-f478-4ca4-8205-c7cfd4f3ca88" Value="LandPredator" Type="Game.CreatureCategory"/>
   <Parameter Name="ChaseNonPlayerProbability" Guid="add000c7-7538-4ebd-a88f-1d74670c50b8" Value="1" Type="float"/>
+  <Parameter Name="RangedAttackRange" Guid="d27f39c9-cdf1-4f97-86c7-43653cff43ad" Value="5,100" Type="Vector2"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="NewHerdBehavior" Guid="da4b293a-5852-4fe3-8f21-9268005a42c4" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
         <Parameter Name="HerdName" Value="player" Type="string" Guid="7520525f-38ad-489d-baba-29d0ef5b1d03"/>
@@ -10501,6 +10459,11 @@
     <MemberComponentTemplate Name="NewAutoInteract" Guid="69cd1d43-5b4b-4e82-b8d6-c61c4e6c57e6" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="PathBreaker" Guid="d18bd732-ec22-4734-89d4-7fd7c2dba435" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
+		<Parameter Name="CanBreakBlocks" Guid="ef6a4a10-7ef0-4774-8ea3-4e7fcd4f3029" Value="True" Type="bool"/>
+		<Parameter Name="SpecificBlocks" Guid="124922f4-5255-443e-92a8-ebf19ecb48d1" Value="GlassBlock, WindowBlock, FramedGlassBlock" Type="string"/>
+		<Parameter Name="BreakProbability" Guid="3ea05bfe-96c6-4517-b01d-364d10276d23" Value="1.0" Type="float"/>
+	</MemberComponentTemplate>
 </EntityTemplate>
 
 <EntityTemplate Name="InfectedFreezer" Guid="ebe5a1e8-4106-4139-8a4f-3a955d84f7a4" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
@@ -10522,6 +10485,7 @@
               <Parameter Name="GlowingEyesColor" Guid="602db1fc-8527-48a6-83a7-47146b6bd651" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="297c9f16-e991-4428-a2af-011e001699d7" Value="0.06,0.2,0.1" Type="Vector3"/>
             </MemberComponentTemplate>
+            <MemberComponentTemplate Name="RageZombieBehavior" Guid="135d0e4a-8d30-412a-bdde-421cd1799d11" InheritanceParent="2d584a55-7ccb-42c7-8fc0-c3f288eefae9"/>
 <MemberComponentTemplate Name="ZombieRunAwayBehavior" Guid="b09418cf-c9d3-4e59-9305-52e628476cf6" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
         <MemberComponentTemplate Name="RunAwayBehavior" Guid="ad856c14-e206-4166-88ad-90b9fb0c5ce3" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="f437975e-708c-456f-8ffa-819db0b087e3" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
@@ -10588,8 +10552,7 @@
 <MemberComponentTemplate Name="NewAutoInteract" Guid="67924027-a6ca-41d9-ae89-0bf5c1598e8e" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="NewZombieModel" Guid="58a13c58-0b8a-4dd7-9743-340143b3dbdc" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="Class" Guid="669ec46e-83fb-43b1-abbd-35ede47d7c10" Value="Game.ComponentNewZombieModel" Type="string"/>
+<MemberComponentTemplate Name="NewZombieModel" Guid="58a13c58-0b8a-4dd7-9743-340143b3dbdc" InheritanceParent="aac9f762-4b85-4cee-a9f1-39d9c11f106d">
     <Parameter Name="ModelName" Guid="ffe055d4-535f-472e-9510-a776ce4c62d0" Value="Models/Zombies Modelos De Cagada/ZombieNormal" Type="string"/>
     <Parameter Name="TextureOverride" Guid="f1ac28ba-4820-450d-afc1-3294c913897a" Value="Textures/ZombiesDeMierda/infectado congelante" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="a362f5ac-a741-4fd0-a757-5528b94dc7be" Value="0.65" Type="float"/>
@@ -10644,9 +10607,6 @@
         </EntityTemplate>
 
 <EntityTemplate Name="InfectedFreezerTamed" Guid="7091688a-c5ad-4499-b0f6-80b1aa73869d" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="DefensiveAI" Guid="990faa29-6c54-4bc9-9c54-062fa46ebd47" InheritanceParent="2e0ff3f9-d699-41d1-b64a-cb06cda18234">
-  <Parameter Name="CanUseInventory" Guid="e889267c-3944-4520-9582-13cf91344ba0" Value="true" Type="bool"/>
-</MemberComponentTemplate>
 <MemberComponentTemplate Name="PoisonInfected" Guid="40c0fa67-c79b-4f61-aa72-0e5b8aa4beb5" InheritanceParent="d5e7f9a1-b3c5-4d9f-1a3b-5c7d9f1a3b5c">
     <Parameter Name="PoisonResistance" Value="-450" Type="float"/>
 </MemberComponentTemplate>
@@ -10740,6 +10700,7 @@
   <Parameter Name="NightChaseRange" Guid="20985bb5-5076-4754-98f9-1dd5cadc71b6" Value="25" Type="float" />
   <Parameter Name="AutoChaseMask" Guid="3a6c4da7-03b4-4cdb-b878-d2cc584f2c8b" Value="LandPredator" Type="Game.CreatureCategory" />
   <Parameter Name="ChaseNonPlayerProbability" Guid="a1205198-4c92-4b7b-b6e2-39805a2914f0" Value="1" Type="float" />
+  <Parameter Name="RangedAttackRange" Guid="a86f083d-20f3-46b4-b8c9-5e3768806faf" Value="5,100" Type="Vector2"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="NewHerdBehavior" Guid="7e57559a-b63c-4ba2-9b8b-2c814167dee5" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
   <Parameter Name="HerdName" Type="string" Value="guardian" Guid="b5f469d9-b68e-4288-b5fc-6953a58edcca"/>
