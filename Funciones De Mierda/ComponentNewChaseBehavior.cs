@@ -35,11 +35,6 @@ namespace Game
 		public Vector2 RangedAttackRange = new Vector2(5f, 20f);
 		public AttackMode RangedAttackMode = AttackMode.Default;
 
-		// NUEVO: Parámetros para objetos lanzables
-		public Vector2 ThrowableAttackRange = new Vector2(5f, 15f);
-		public float ThrowableAimTime = 1.0f;
-		public float ThrowableCooldown = 0.8f;
-
 		// Tiempos de apuntado
 		public float MusketAimTime = 1.65f;
 		public float MusketCooldown = 0.8f;
@@ -62,7 +57,6 @@ namespace Game
 		private SubsystemCreatureSpawn m_subsystemCreatureSpawn;
 		private SubsystemGreenNightSky m_subsystemGreenNightSky;
 		private SubsystemProjectiles m_subsystemProjectiles;
-		private SubsystemBlockBehaviors m_subsystemBlockBehaviors;
 
 		private ComponentCreature m_componentCreature;
 		private ComponentPathfinding m_componentPathfinding;
@@ -94,13 +88,6 @@ namespace Game
 		private bool m_isAimingRanged;
 		private bool m_triedToLoad;
 		private bool m_aimingStarted;
-
-		// Campos para lanzables
-		private double m_nextThrowableAttackTime;
-		private double m_throwableAimStartTime;
-		private bool m_isAimingThrowable;
-		private bool m_throwableAimingStarted;
-		private bool m_throwableTriedToLoad;
 
 		// Suscripción a eventos de salud de jugadores
 		private List<ComponentHealth> m_subscribedPlayerHealths = new List<ComponentHealth>();
@@ -154,13 +141,9 @@ namespace Game
 			m_isPersistent = isPersistent;
 			m_importanceLevel = isPersistent ? ImportanceLevelPersistent : ImportanceLevelNonPersistent;
 			m_isAimingRanged = false;
-			m_isAimingThrowable = false;
 			m_nextRangedAttackTime = 0;
-			m_nextThrowableAttackTime = 0;
 			m_triedToLoad = false;
 			m_aimingStarted = false;
-			m_throwableTriedToLoad = false;
-			m_throwableAimingStarted = false;
 
 			SubscribeToProjectileEvents();
 
@@ -184,13 +167,9 @@ namespace Game
 			m_isPersistent = false;
 			m_importanceLevel = 0f;
 			m_isAimingRanged = false;
-			m_isAimingThrowable = false;
 			m_nextRangedAttackTime = 0;
-			m_nextThrowableAttackTime = 0;
 			m_triedToLoad = false;
 			m_aimingStarted = false;
-			m_throwableTriedToLoad = false;
-			m_throwableAimingStarted = false;
 
 			UnsubscribeFromProjectileEvents();
 		}
@@ -269,15 +248,10 @@ namespace Game
 					}
 					m_isAimingRanged = false;
 					m_aimingStarted = false;
-					m_isAimingThrowable = false;
-					m_throwableAimingStarted = false;
 				}
 				else
 				{
-					if (!UpdateThrowableAttack(dt))
-					{
-						UpdateRangedAttack(dt);
-					}
+					UpdateRangedAttack(dt);
 				}
 			}
 
@@ -286,214 +260,6 @@ namespace Game
 				m_dt = m_random.Float(0.25f, 0.35f) + MathUtils.Min((float)(m_subsystemTime.GameTime - m_nextUpdateTime), 0.1f);
 				m_nextUpdateTime = m_subsystemTime.GameTime + (double)m_dt;
 				m_stateMachine.Update();
-			}
-		}
-
-		// ===== MÉTODOS DE DETECCIÓN DE OBJETOS LANZABLES =====
-		private bool IsThrowableItem(int value)
-		{
-			if (value == 0) return false;
-			int contents = Terrain.ExtractContents(value);
-			Type blockType = BlocksManager.Blocks[contents].GetType();
-
-			if (blockType == typeof(StoneChunkBlock)) return true;
-			if (blockType == typeof(SulphurChunkBlock)) return true;
-			if (blockType == typeof(CoalChunkBlock)) return true;
-			if (blockType == typeof(DiamondChunkBlock)) return true;
-			if (blockType == typeof(GermaniumChunkBlock)) return true;
-			if (blockType == typeof(GermaniumOreChunkBlock)) return true;
-			if (blockType == typeof(IronOreChunkBlock)) return true;
-			if (blockType == typeof(MalachiteChunkBlock)) return true;
-			if (blockType == typeof(SaltpeterChunkBlock)) return true;
-			if (blockType == typeof(GunpowderBlock)) return true;
-			if (blockType == typeof(BombBlock)) return true;
-			if (blockType == typeof(IncendiaryBombBlock)) return true;
-			if (blockType == typeof(PoisonBombBlock)) return true;
-			if (blockType == typeof(BrickBlock)) return true;
-			if (blockType == typeof(SnowballBlock)) return true;
-			if (blockType == typeof(EggBlock)) return true;
-			if (blockType == typeof(CopperSpearBlock)) return true;
-			if (blockType == typeof(DiamondSpearBlock)) return true;
-			if (blockType == typeof(IronSpearBlock)) return true;
-			if (blockType == typeof(WoodenSpearBlock)) return true;
-			if (blockType == typeof(WoodenLongspearBlock)) return true;
-			if (blockType == typeof(StoneSpearBlock)) return true;
-			if (blockType == typeof(StoneLongspearBlock)) return true;
-			if (blockType == typeof(IronLongspearBlock)) return true;
-			if (blockType == typeof(LavaLongspearBlock)) return true;
-			if (blockType == typeof(LavaSpearBlock)) return true;
-			if (blockType == typeof(DiamondLongspearBlock)) return true;
-			if (blockType == typeof(FreezingSnowballBlock)) return true;
-			if (blockType == typeof(FreezeBombBlock)) return true;
-			if (blockType == typeof(FireworksBlock)) return true;
-
-			return false;
-		}
-
-		private bool HasThrowableItem(out int slotIndex, out int value)
-		{
-			slotIndex = -1;
-			value = 0;
-			if (m_componentMiner?.Inventory == null) return false;
-
-			for (int i = 0; i < m_componentMiner.Inventory.SlotsCount; i++)
-			{
-				int slotValue = m_componentMiner.Inventory.GetSlotValue(i);
-				if (IsThrowableItem(slotValue) && m_componentMiner.Inventory.GetSlotCount(i) > 0)
-				{
-					slotIndex = i;
-					value = slotValue;
-					return true;
-				}
-			}
-			return false;
-		}
-
-		private void EnsureThrowableItemActive()
-		{
-			if (m_componentMiner?.Inventory == null) return;
-
-			if (HasThrowableItem(out int slotIndex, out _))
-			{
-				if (m_componentMiner.Inventory.ActiveSlotIndex != slotIndex)
-				{
-					m_componentMiner.Inventory.ActiveSlotIndex = slotIndex;
-				}
-			}
-		}
-
-		private void StartThrowableAim()
-		{
-			EnsureThrowableItemActive();
-			if (!HasThrowableItem(out int slotIndex, out int throwableValue))
-				return;
-
-			m_throwableAimingStarted = true;
-			m_isAimingThrowable = true;
-			m_throwableAimStartTime = m_subsystemTime.GameTime;
-			m_throwableTriedToLoad = false;
-		}
-
-		private void CompleteThrowableAim()
-		{
-			EnsureThrowableItemActive();
-			if (!HasThrowableItem(out int slotIndex, out int throwableValue))
-			{
-				m_isAimingThrowable = false;
-				m_throwableAimingStarted = false;
-				return;
-			}
-
-			Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
-			Vector3 targetCenter = m_target.ComponentCreatureModel.EyePosition;
-			Vector3 direction = Vector3.Normalize(targetCenter - eyePos);
-			Ray3 ray = new Ray3(eyePos, direction);
-
-			// Usar el comportamiento de lanzamiento estándar
-			SubsystemBlockBehavior[] behaviors = m_subsystemBlockBehaviors.GetBlockBehaviors(Terrain.ExtractContents(throwableValue));
-			for (int i = 0; i < behaviors.Length; i++)
-			{
-				if (behaviors[i].OnAim(ray, m_componentMiner, AimState.Completed))
-					break;
-			}
-
-			m_nextThrowableAttackTime = m_subsystemTime.GameTime + ThrowableCooldown;
-			m_isAimingThrowable = false;
-			m_throwableAimingStarted = false;
-			m_throwableTriedToLoad = false;
-		}
-
-		private void CancelThrowableAim()
-		{
-			if (m_isAimingThrowable)
-			{
-				if (HasThrowableItem(out int slotIndex, out int throwableValue))
-				{
-					EnsureThrowableItemActive();
-					Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
-					Vector3 targetCenter = m_target.ComponentCreatureModel.EyePosition;
-					Vector3 direction = Vector3.Normalize(targetCenter - eyePos);
-					Ray3 ray = new Ray3(eyePos, direction);
-
-					SubsystemBlockBehavior[] behaviors = m_subsystemBlockBehaviors.GetBlockBehaviors(Terrain.ExtractContents(throwableValue));
-					for (int i = 0; i < behaviors.Length; i++)
-					{
-						if (behaviors[i].OnAim(ray, m_componentMiner, AimState.Cancelled))
-							break;
-					}
-				}
-			}
-			m_isAimingThrowable = false;
-			m_throwableAimingStarted = false;
-			m_throwableTriedToLoad = false;
-		}
-
-		private bool UpdateThrowableAttack(float dt)
-		{
-			if (m_target == null)
-			{
-				CancelThrowableAim();
-				return false;
-			}
-
-			float distance = GetDistanceToTarget();
-
-			// Verificar si está en rango de lanzables
-			bool inThrowableRange = distance >= ThrowableAttackRange.X && distance <= ThrowableAttackRange.Y && distance > MaxAttackRange;
-
-			if (!inThrowableRange)
-			{
-				CancelThrowableAim();
-				return false;
-			}
-
-			if (!HasThrowableItem(out int slotIndex, out int throwableValue))
-			{
-				CancelThrowableAim();
-				return false;
-			}
-
-			if (!m_isAimingThrowable)
-			{
-				if (m_subsystemTime.GameTime < m_nextThrowableAttackTime)
-					return true; // En cooldown, pero seguimos en estado de lanzable
-
-				StartThrowableAim();
-
-				Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
-				Vector3 targetCenter = m_target.ComponentCreatureModel.EyePosition;
-				Vector3 direction = Vector3.Normalize(targetCenter - eyePos);
-				Ray3 ray = new Ray3(eyePos, direction);
-
-				SubsystemBlockBehavior[] behaviors = m_subsystemBlockBehaviors.GetBlockBehaviors(Terrain.ExtractContents(throwableValue));
-				for (int i = 0; i < behaviors.Length; i++)
-				{
-					if (behaviors[i].OnAim(ray, m_componentMiner, AimState.InProgress))
-						break;
-				}
-				return true;
-			}
-			else
-			{
-				// Continuar apuntando
-				Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
-				Vector3 targetCenter = m_target.ComponentCreatureModel.EyePosition;
-				Vector3 direction = Vector3.Normalize(targetCenter - eyePos);
-				Ray3 ray = new Ray3(eyePos, direction);
-
-				SubsystemBlockBehavior[] behaviors = m_subsystemBlockBehaviors.GetBlockBehaviors(Terrain.ExtractContents(throwableValue));
-				for (int i = 0; i < behaviors.Length; i++)
-				{
-					if (behaviors[i].OnAim(ray, m_componentMiner, AimState.InProgress))
-						break;
-				}
-
-				double aimTimeElapsed = m_subsystemTime.GameTime - m_throwableAimStartTime;
-				if (aimTimeElapsed >= ThrowableAimTime)
-				{
-					CompleteThrowableAim();
-				}
-				return true;
 			}
 		}
 
@@ -656,6 +422,7 @@ namespace Game
 			if (!HasFlameThrower(out int slotIndex, out int flameThrowerValue))
 				return;
 
+			// Asegurar que esté cargado (si no, lo carga automáticamente)
 			EnsureFlameThrowerLoaded();
 			if (!IsFlameThrowerLoaded())
 				return;
@@ -833,20 +600,26 @@ namespace Game
 			FlameBulletBlock.FlameBulletType? bulletType = FlameThrowerBlock.GetBulletType(data);
 			int loadCount = FlameThrowerBlock.GetLoadCount(flameThrowerValue);
 
+			// Si ya está cargado y tiene balas, no hacer nada
 			if (loadState == FlameThrowerBlock.LoadState.Loaded && bulletType != null && loadCount > 0)
 				return;
 
+			// Elegir aleatoriamente entre bala de fuego y bala de veneno
 			FlameBulletBlock.FlameBulletType selectedBullet = m_random.Bool(0.5f)
 				? FlameBulletBlock.FlameBulletType.Flame
 				: FlameBulletBlock.FlameBulletType.Poison;
 
+			// Configurar el lanzallamas con munición infinita
 			int newData = data;
 			newData = FlameThrowerBlock.SetLoadState(newData, FlameThrowerBlock.LoadState.Loaded);
 			newData = FlameThrowerBlock.SetBulletType(newData, new FlameBulletBlock.FlameBulletType?(selectedBullet));
+			// Tensar el interruptor para que pueda disparar inmediatamente
 			newData = FlameThrowerBlock.SetSwitchState(newData, true);
 			int newValue = Terrain.MakeBlockValue(FlameThrowerBlock.Index, 1, newData);
+			// Establecer la cantidad de carga a 15 (máxima)
 			newValue = FlameThrowerBlock.SetLoadCount(newValue, 15);
 
+			// Reemplazar el ítem en el inventario
 			m_componentMiner.Inventory.RemoveSlotItems(slotIndex, 1);
 			m_componentMiner.Inventory.AddSlotItems(slotIndex, newValue, 1);
 		}
@@ -1151,6 +924,7 @@ namespace Game
 			{
 				if (!m_isAimingRanged)
 				{
+					// Asegurar que esté cargado antes de empezar a apuntar
 					if (!IsFlameThrowerLoaded())
 					{
 						EnsureFlameThrowerLoaded();
@@ -1166,15 +940,18 @@ namespace Game
 				}
 				else
 				{
+					// Continuar apuntando
 					Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
 					Vector3 targetCenter = m_target.ComponentCreatureModel.EyePosition;
 					Vector3 direction = Vector3.Normalize(targetCenter - eyePos);
 					Ray3 ray = new Ray3(eyePos, direction);
 					m_componentMiner.Aim(ray, AimState.InProgress);
 
+					// *** RECARGA AUTOMÁTICA MIENTRAS APUNTA ***
 					if (!IsFlameThrowerLoaded())
 					{
 						EnsureFlameThrowerLoaded();
+						// Si después de recargar sigue sin estar cargado (por algún error), cancelar el apuntado
 						if (!IsFlameThrowerLoaded())
 						{
 							CancelRangedAim();
@@ -1297,6 +1074,34 @@ namespace Game
 					}
 				}
 			}
+			else if (useFlameThrower)
+			{
+				if (!m_isAimingRanged)
+				{
+					// Asegurar que esté cargado antes de empezar a apuntar
+					if (!IsFlameThrowerLoaded())
+					{
+						EnsureFlameThrowerLoaded();
+						return;
+					}
+
+					StartFlameThrowerAim();
+					Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
+					Vector3 targetCenter = m_target.ComponentCreatureModel.EyePosition;
+					Vector3 direction = Vector3.Normalize(targetCenter - eyePos);
+					Ray3 ray = new Ray3(eyePos, direction);
+					m_componentMiner.Aim(ray, AimState.InProgress);
+				}
+				else
+				{
+					// Continuar apuntando
+					Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
+					Vector3 targetCenter = m_target.ComponentCreatureModel.EyePosition;
+					Vector3 direction = Vector3.Normalize(targetCenter - eyePos);
+					Ray3 ray = new Ray3(eyePos, direction);
+					m_componentMiner.Aim(ray, AimState.InProgress);
+				}
+			}
 		}
 
 		private float GetDistanceToTarget()
@@ -1391,7 +1196,6 @@ namespace Game
 			m_subsystemCreatureSpawn = Project.FindSubsystem<SubsystemCreatureSpawn>(true);
 			m_subsystemGreenNightSky = Project.FindSubsystem<SubsystemGreenNightSky>(true);
 			m_subsystemProjectiles = Project.FindSubsystem<SubsystemProjectiles>(true);
-			m_subsystemBlockBehaviors = Project.FindSubsystem<SubsystemBlockBehaviors>(true);
 
 			m_componentCreature = Entity.FindComponent<ComponentCreature>(true);
 			m_componentPathfinding = Entity.FindComponent<ComponentPathfinding>(true);
@@ -1413,8 +1217,6 @@ namespace Game
 
 			RangedAttackRange = valuesDictionary.GetValue<Vector2>("RangedAttackRange", new Vector2(5f, 20f));
 			RangedAttackMode = valuesDictionary.GetValue<AttackMode>("AttackMode", AttackMode.Default);
-
-			// Los parámetros de lanzables NO se cargan desde XML, usan valores por defecto de los campos públicos
 
 			RegisterEvents();
 
@@ -1649,31 +1451,25 @@ namespace Game
 				}
 				m_nextUpdateTime = 0.0;
 				m_isAimingRanged = false;
-				m_isAimingThrowable = false;
 				m_triedToLoad = false;
 				m_aimingStarted = false;
-				m_throwableTriedToLoad = false;
-				m_throwableAimingStarted = false;
 			}, () =>
 			{
 				if (!IsActive)
 				{
 					m_stateMachine.TransitionTo("LookingForTarget");
 					CancelRangedAim();
-					CancelThrowableAim();
 				}
 				else if (m_chaseTime <= 0f)
 				{
 					m_autoChaseSuppressionTime = m_random.Float(10f, 60f);
 					m_importanceLevel = 0f;
 					CancelRangedAim();
-					CancelThrowableAim();
 				}
 				else if (m_target == null)
 				{
 					m_importanceLevel = 0f;
 					CancelRangedAim();
-					CancelThrowableAim();
 				}
 				else if (m_target.ComponentHealth.Health <= 0f)
 				{
@@ -1687,19 +1483,16 @@ namespace Game
 					}
 					m_importanceLevel = 0f;
 					CancelRangedAim();
-					CancelThrowableAim();
 				}
 				else if (!m_isPersistent && m_componentPathfinding.IsStuck)
 				{
 					m_importanceLevel = 0f;
 					CancelRangedAim();
-					CancelThrowableAim();
 				}
 				else if (m_isPersistent && m_componentPathfinding.IsStuck)
 				{
 					m_stateMachine.TransitionTo("RandomMoving");
 					CancelRangedAim();
-					CancelThrowableAim();
 				}
 				else
 				{
@@ -1712,7 +1505,6 @@ namespace Game
 					{
 						m_importanceLevel = 0f;
 						CancelRangedAim();
-						CancelThrowableAim();
 					}
 					else
 					{
@@ -1728,7 +1520,7 @@ namespace Game
 						float dist = Vector3.Distance(selfCenter, targetCenter);
 						float followFactor = (dist < 4f) ? 0.2f : 0f;
 						m_componentPathfinding.SetDestination(targetCenter + followFactor * dist * m_target.ComponentBody.Velocity,
-							1f, 1.5f, maxPathfindingPositions, true, false, true, m_target.ComponentBody);
+								1f, 1.5f, maxPathfindingPositions, true, false, true, m_target.ComponentBody);
 
 						if (PlayAngrySoundWhenChasing && m_random.Float(0f, 1f) < 0.33f * m_dt)
 						{
