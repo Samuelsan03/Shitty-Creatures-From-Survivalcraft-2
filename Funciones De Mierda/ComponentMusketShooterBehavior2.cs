@@ -408,8 +408,12 @@ namespace Game
 
 		private void EnsureMusketLoaded()
 		{
+			// Establece el estado cargado
 			UpdateMusketLoadState(MusketBlock.LoadState.Loaded);
-			UpdateMusketBulletType(BulletBlock.BulletType.MusketBall);
+
+			// Elige un tipo de bala aleatorio entre los tres disponibles
+			BulletBlock.BulletType randomType = (BulletBlock.BulletType)m_random.Int(0, 2); // 0,1,2
+			UpdateMusketBulletType(randomType);
 		}
 
 		private void ApplyAimingAnimation(float dt)
