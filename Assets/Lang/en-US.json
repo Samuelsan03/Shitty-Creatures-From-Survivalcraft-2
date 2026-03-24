@@ -1,4 +1,16 @@
 {
+  "ComponentNewSleep": {
+    "CantSleepGreenNight": "You can't sleep during the Green Night."
+  },
+  "ComponentThirst": {
+    "AlreadyNotThirsty": "You are already fully hydrated",
+    "DrankBoiledWater": "You feel hydrated",
+    "Dehydrating": "You are dehydrating!",
+    "DrankDrinkableWater": "You are partially hydrated",
+    "DrankRotten": "That drink was spoiled. Your stomach turns.",
+    "AteFruit": "You ate a fruit and feel a bit more hydrated",
+    "HalfThirsty": "You are starting to feel thirsty"
+  },
   "ShittyCreaturesAbout": {
     "AboutButton": "About The Mod",
     "Title": "About Shitty Creatures MOD:",
@@ -11,7 +23,8 @@
     "DiscordLabel": "Discord: ",
     "BiliBiliLabel": "BiliBili: ",
     "ModPageLabel": "Mod page: ",
-    "FinalMessage": "If you have problems, bugs or suggestions, feel free to contact the author on his Discord."
+    "FinalMessage": "If you have problems, bugs or suggestions, feel free to contact the author on his Discord.",
+    "ExitButton": "Exit"
   },
   "ShittyCreaturesLog": {
     "Title": "Shitty Creatures Log",
@@ -68,7 +81,7 @@
     "GhostDescription": "Enable/disable music when ghosts chase you",
     "TankDescription": "Enable/disable music when tanks chase you",
     "SpawnDescription": "Enable/disable spawning of NPCs when one dies",
-    "SpawnButton": "Death Spawn: {0}"
+    "ThirstDescription": "Enable/disable thirst simulation"
   },
   "AntidoteBucket": {
     "NPCCured": "The NPC has been cured of poison and sickness!",
@@ -141,7 +154,8 @@
   },
   "Injury": {
     "Poisoned": "Poisoned",
-    "FrozenToDeath": "Frozen to Death"
+    "FrozenToDeath": "Frozen to Death",
+    "Dehydration": "Dehydration"
   },
   "Database": {
     "DisplayName": {
@@ -377,6 +391,39 @@
   }
 },
   "Blocks": {
+    "AppleBlock:0": {
+    "DisplayName": "Apple",
+    "Description": "A fresh and juicy fruit that restores a small amount of hunger and slightly reduces thirst."
+  },
+  "PearBlock:0": {
+    "DisplayName": "Pear",
+    "Description": "A sweet and soft fruit that provides moderate nutrition and contributes to hydration."
+  },
+  "OrangeBlock:0": {
+    "DisplayName": "Orange",
+    "Description": "A citrus fruit rich in juice that restores hunger and provides a good amount of hydration."
+  },
+  "CherryBlock:0": {
+    "DisplayName": "Cherry",
+    "Description": "A small and sweet fruit that offers low nutrition but a slight hydration effect."
+  },
+  "SliceOfWatermelonBlock:0": {
+    "DisplayName": "Watermelon Slice",
+    "Description": "A very refreshing fruit with high water content that significantly reduces thirst."
+  },
+  "BananaBlock:0": {
+    "DisplayName": "Banana",
+    "Description": "An energy-rich fruit that restores a good amount of hunger and provides decent hydration."
+  },
+  "BlueberryBlock:0": {
+    "DisplayName": "Blueberry",
+    "Description": "A small and nutritious fruit that offers little energy but slightly helps with thirst."
+  },
+    "BoiledWaterBlock:0": {
+  "DisplayName": "Bucket of Boiled Water",
+  "Description": "A bucket filled with boiled water. Drinking it safely restores hydration.",
+  "CRDescription:0": "Clean boiled water stored in a bucket."
+},
     "AK48Block:0": {
   "DisplayName": "AK-48 Assault Rifle",
   "Description": "A powerful assault rifle with high rate of fire and large magazine. Uses 7.62mm rounds.",
@@ -431,13 +478,13 @@
   },
     "AntidoteBucketBlock:0": {
   "DisplayName": "Antidote Bucket",
-  "Description": "A bucket containing a powerful medicinal antidote. It removes poison and disease effects from the body, stopping their harmful consequences and allowing immediate recovery. When a condition is cured, lost health is also restored. It can be used on yourself or on other infected creatures.",
-  "CRDescription:0": "Brew a powerful antidote by infusing medicinal white flowers into purified water. Cures poison and sickness."
+  "Description": "A bucket containing a powerful medicinal antidote. Drinking it removes poison and sickness from the body, stopping their harmful effects. It can be used on yourself or on other infected creatures. Also restores some thirst.",
+  "CRDescription:0": "Brew a medicinal antidote by infusing white flowers into purified water. Removes poison and sickness."
 },
 "TeaAntifluBucketBlock:0": {
   "DisplayName": "Anti-Flu Tea Bucket",
-  "Description": "A bucket filled with medicinal tea. Drinking it cures the flu and fully restores health. It can also be used to cure infected creatures.",
-  "CRDescription:0": "Brew soothing anti-flu tea by combining a bucket of water with tall grass and heating it. Cures influenza, relieves symptoms, and can be given to infected creatures."
+  "Description": "A bucket filled with medicinal tea. Drinking it cures influenza and relieves its symptoms. It can also be used to treat infected creatures. Also restores some thirst.",
+  "CRDescription:0": "Prepare anti-flu tea by heating a bucket of water with tall grass. Cures influenza."
 },
       "LavaLongspearBlock:0": {
       "DisplayName": "Lava Longspear",
@@ -997,7 +1044,7 @@
     "PurchaseSuccessful": "Purchase successful! Thanks for your business!",
     "SelectItemFirst": "Select an item to buy first.",
     "SlotEmpty": "This slot is empty.",
-    "InfoLabelFormat": "{0} - {1} nuclear coins"
+    "InfoLabelFormat": "{0} nuclear coins"
 },
         "AutoCannonWidget": {
     "Title": "Auto-Cannon",
