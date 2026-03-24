@@ -985,10 +985,40 @@ namespace Game
 			if (!HasRepeatCrossbow(out int slotIndex, out int crossbowValue))
 				return;
 
+			// Cargar la ballesta con un virote aleatorio de los disponibles en RepeatArrowBlock
+			LoadRepeatCrossbowWithRandomBolt(slotIndex, crossbowValue);
+
 			m_aimingStarted = true;
 			m_isAimingRanged = true;
 			m_rangedAimStartTime = m_subsystemTime.GameTime;
 			m_triedToLoad = false;
+		}
+
+		private void LoadRepeatCrossbowWithRandomBolt(int slotIndex, int crossbowValue)
+		{
+			if (m_componentMiner?.Inventory == null) return;
+
+			int data = Terrain.ExtractData(crossbowValue);
+			int draw = RepeatCrossbowBlock.GetDraw(data);
+			RepeatArrowBlock.ArrowType? currentArrowType = RepeatCrossbowBlock.GetArrowType(data);
+
+			// Si ya está cargada con un virote válido, no hacer nada
+			if (draw == 15 && currentArrowType != null)
+				return;
+
+			// Seleccionar un tipo de virote aleatorio de los disponibles en RepeatArrowBlock
+			// Incluye: Copper, Iron, Diamond, Explosive, Poison, SeriousPoison
+			Array arrowTypes = Enum.GetValues(typeof(RepeatArrowBlock.ArrowType));
+			RepeatArrowBlock.ArrowType selectedType = (RepeatArrowBlock.ArrowType)arrowTypes.GetValue(m_random.Int(0, arrowTypes.Length - 1));
+
+			// Construir el nuevo valor de la ballesta cargada
+			int newData = RepeatCrossbowBlock.SetDraw(data, 15);
+			newData = RepeatCrossbowBlock.SetArrowType(newData, selectedType);
+			int newValue = Terrain.MakeBlockValue(RepeatCrossbowBlock.Index, 0, newData);
+
+			// Reemplazar la ballesta en el inventario
+			m_componentMiner.Inventory.RemoveSlotItems(slotIndex, 1);
+			m_componentMiner.Inventory.AddSlotItems(slotIndex, newValue, 1);
 		}
 
 		private void StartFlameThrowerAim()
@@ -1017,6 +1047,18 @@ namespace Game
 				return;
 			}
 
+			int data = Terrain.ExtractData(crossbowValue);
+			int draw = RepeatCrossbowBlock.GetDraw(data);
+			RepeatArrowBlock.ArrowType? arrowType = RepeatCrossbowBlock.GetArrowType(data);
+
+			if (draw != 15 || arrowType == null)
+			{
+				// No está lista para disparar, cancelar
+				CancelRangedAim();
+				return;
+			}
+
+			// Apuntar y disparar
 			Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
 			Vector3 targetCenter = m_target.ComponentCreatureModel.EyePosition;
 			Vector3 direction = Vector3.Normalize(targetCenter - eyePos);
@@ -1024,6 +1066,13 @@ namespace Game
 
 			m_componentMiner.Aim(ray, AimState.Completed);
 			m_nextRangedAttackTime = m_subsystemTime.GameTime + RepeatCrossbowCooldown;
+
+			// Después de disparar, la ballesta debe quedar descargada (sin virote, draw = 0)
+			int newData = RepeatCrossbowBlock.SetDraw(RepeatCrossbowBlock.SetArrowType(data, null), 0);
+			int newValue = Terrain.MakeBlockValue(RepeatCrossbowBlock.Index, 0, newData);
+			m_componentMiner.Inventory.RemoveSlotItems(slotIndex, 1);
+			m_componentMiner.Inventory.AddSlotItems(slotIndex, newValue, 1);
+
 			m_isAimingRanged = false;
 			m_aimingStarted = false;
 			m_triedToLoad = false;
