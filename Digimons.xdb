@@ -94,8 +94,7 @@
     <MemberComponentTemplate Name="Miner" Guid="f57a04d0-aef1-488e-bb59-f9dbaa261677" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="de8b9e0b-d242-4f18-a121-388a689a6366" Value="20" Type="float"/>
     </MemberComponentTemplate>
-<MemberComponentTemplate Name="MinecraftHumanModel" Guid="32c6cea9-7502-4fc8-ad20-152a81c3319d" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="Class" Guid="5cda8cdc-22b8-4b2e-be1a-d05dba9c0b4d" Value="Game.ComponentMinecraftHumanModel" Type="string"/>
+<MemberComponentTemplate Name="MinecraftHumanModel" Guid="32c6cea9-7502-4fc8-ad20-152a81c3319d" InheritanceParent="ce3990d2-70bd-4c37-8969-65bb9500795b">
     <Parameter Name="ModelName" Guid="128fc1b0-d6a0-4684-b0b2-79c9e769b32b" Value="Models/MC 1" Type="string"/>
     <Parameter Name="TextureOverride" Guid="9d6830ee-f93a-46d4-9e83-c5cee458c3cf" Value="Textures/Veemon" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="ac3c5b57-7831-4349-8de5-b7b2f5b4fa00" Value="0.65" Type="float"/>
@@ -238,8 +237,7 @@
     <MemberComponentTemplate Name="Miner" Guid="49e82d79-78bc-4e00-b5e3-35103403325c" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="5411571e-ef17-49b7-8c52-e14aaf1c0aa3" Value="28" Type="float"/>
     </MemberComponentTemplate>
-<MemberComponentTemplate Name="MinecraftHumanModel" Guid="1783df39-9235-4da2-b77c-c7e86cd5a801" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="Class" Guid="6e8f2f2d-2011-4788-951b-57a922107b0d" Value="Game.ComponentMinecraftHumanModel" Type="string"/>
+<MemberComponentTemplate Name="MinecraftHumanModel" Guid="1783df39-9235-4da2-b77c-c7e86cd5a801" InheritanceParent="ce3990d2-70bd-4c37-8969-65bb9500795b">
     <Parameter Name="ModelName" Guid="dd1261ab-568c-4b26-b4c8-3c38be20e8d3" Value="Models/MC 1" Type="string"/>
     <Parameter Name="TextureOverride" Guid="2252a4db-1083-479e-98eb-d771586a61eb" Value="Textures/Shoutmon" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="21615436-9453-4fec-90c8-a822aed682f9" Value="0.65" Type="float"/>
@@ -380,8 +378,7 @@
     <MemberComponentTemplate Name="Miner" Guid="ff99b342-d5fe-487c-be19-d8068bca4458" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="04d9e397-1ab4-48f1-8ad3-a39fd3746de9" Value="25" Type="float"/>
     </MemberComponentTemplate>
-<MemberComponentTemplate Name="MinecraftHumanModel" Guid="b613fae4-da5a-47bc-a640-0525e701098f" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="Class" Guid="975894bf-8bc5-4084-94d0-3608387b3659" Value="Game.ComponentMinecraftHumanModel" Type="string"/>
+<MemberComponentTemplate Name="MinecraftHumanModel" Guid="b613fae4-da5a-47bc-a640-0525e701098f" InheritanceParent="ce3990d2-70bd-4c37-8969-65bb9500795b">
     <Parameter Name="ModelName" Guid="59bcdb99-e517-4338-935e-89e90493daa2" Value="Models/MC 2" Type="string"/>
     <Parameter Name="TextureOverride" Guid="ad314aaf-1e63-4b87-919a-2fa86d1781d6" Value="Textures/Agumon" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="fb3c122c-d874-4176-a596-d9ce98fd0320" Value="0.65" Type="float"/>
@@ -530,8 +527,7 @@
     <MemberComponentTemplate Name="Miner" Guid="f7bd13c2-81c9-4b86-9286-3dcc495e639f" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="45062ab1-6ea8-4c68-8b5e-efcd3fbc7b86" Value="25" Type="float"/>
     </MemberComponentTemplate>
-<MemberComponentTemplate Name="MinecraftHumanModel" Guid="36fdac2f-334f-4596-8bb0-84732fb0ea7f" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="Class" Guid="8a8256a2-e126-49a4-ad21-9ec7b4378174" Value="Game.ComponentMinecraftHumanModel" Type="string"/>
+<MemberComponentTemplate Name="MinecraftHumanModel" Guid="36fdac2f-334f-4596-8bb0-84732fb0ea7f" InheritanceParent="ce3990d2-70bd-4c37-8969-65bb9500795b">
     <Parameter Name="ModelName" Guid="e3eebf25-67b4-4b34-8924-9370906cd7ec" Value="Models/MC 1" Type="string"/>
     <Parameter Name="TextureOverride" Guid="fc61df3b-3416-4ce6-be50-1255b6685818" Value="Textures/Guilmon" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="469dbbf4-807f-4b23-8955-866c174fcbb2" Value="0.65" Type="float"/>
@@ -580,9 +576,6 @@
 </EntityTemplate>
 
 <EntityTemplate Name="Gumdramon" Guid="001bcd0a-686c-4552-9a14-2d7bda4efa32" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="DefensiveAI" Guid="a9547f2f-2db9-4eb2-ba44-fbb7aaf626ff" InheritanceParent="2e0ff3f9-d699-41d1-b64a-cb06cda18234">
-  <Parameter Name="CanUseInventory" Guid="dd64a2ff-b169-46d7-9d36-dda11050ee75" Value="true" Type="bool"/>
-</MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureInventory" Guid="5e1e44f2-7f67-477a-9d23-c8bc31eda045" InheritanceParent="b0d27f89-dc61-4c44-b675-63d6a6f8bf78">
     <Parameter Name="SlotsCount" Value="16" Type="int"/>
     <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
@@ -609,6 +602,7 @@
   <Parameter Name="NightChaseRange" Guid="29abf6e5-cfd3-4e9b-aad8-40851f380d92" Value="75" Type="float"/>
   <Parameter Name="AutoChaseMask" Guid="61ba89c0-2c10-4540-b9b8-08f101c70811" Value="LandPredator" Type="Game.CreatureCategory"/>
   <Parameter Name="ChaseNonPlayerProbability" Guid="80a4daba-84dd-4a62-86ed-d45d345df34d" Value="1" Type="float"/>
+  <Parameter Name="RangedAttackRange" Guid="d1c2ee1f-4372-457e-ad30-4fa5436ace5e" Value="5,100" Type="Vector2"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="NewHerdBehavior" Guid="3c7efc3d-8697-4f99-8847-22c4a8986198" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
         <Parameter Name="HerdName" Value="player" Type="string" Guid="8ccd4e2f-440b-47cb-978d-b42479545037"/>
@@ -659,8 +653,7 @@
     <MemberComponentTemplate Name="Miner" Guid="7a9f0963-f7a2-425d-8763-0db31d56c257" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="1849cf02-7d3b-4004-af27-adaf103c47be" Value="28" Type="float"/>
     </MemberComponentTemplate>
-<MemberComponentTemplate Name="MinecraftHumanModel" Guid="4791a518-fc92-47a6-b86d-90e3e9580ac3" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="Class" Guid="714dde8b-4456-4a19-90ca-7279e02d537a" Value="Game.ComponentMinecraftHumanModel" Type="string"/>
+<MemberComponentTemplate Name="MinecraftHumanModel" Guid="4791a518-fc92-47a6-b86d-90e3e9580ac3" InheritanceParent="ce3990d2-70bd-4c37-8969-65bb9500795b">
     <Parameter Name="ModelName" Guid="8a09587b-c89b-40d7-82b4-2052bd73d762" Value="Models/MC 2" Type="string"/>
     <Parameter Name="TextureOverride" Guid="417c64b9-7f6a-4fee-8ba0-ce394b78aad7" Value="Textures/Gumdramon" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="94406a12-3e7b-4fe3-b696-3ce07298a9ec" Value="0.65" Type="float"/>
@@ -806,8 +799,7 @@
     <MemberComponentTemplate Name="Miner" Guid="a23d1e91-2701-43ba-b803-0d5514b46820" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="94b70c70-062a-47b9-b78c-7f0624fe805d" Value="32" Type="float"/>
     </MemberComponentTemplate>
-<MemberComponentTemplate Name="MinecraftHumanModel" Guid="c48d115d-0797-40a0-b7f8-ec451469213b" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="Class" Guid="2c51fbfc-9885-41b5-95e4-e05757f90db4" Value="Game.ComponentMinecraftHumanModel" Type="string"/>
+<MemberComponentTemplate Name="MinecraftHumanModel" Guid="c48d115d-0797-40a0-b7f8-ec451469213b" InheritanceParent="ce3990d2-70bd-4c37-8969-65bb9500795b">
     <Parameter Name="ModelName" Guid="e519f11c-fc47-41d7-ba62-ee8dc5fc2995" Value="Models/MC 2" Type="string"/>
     <Parameter Name="TextureOverride" Guid="14089671-711b-4767-9c09-88f8a886bef5" Value="Textures/BetelGammamon" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="5abc1091-ce03-4dde-ad78-84e72d3fa45d" Value="0.65" Type="float"/>
@@ -864,9 +856,6 @@
 </EntityTemplate>
 
 <EntityTemplate Name="Gaomon" Guid="7f3b2886-cb9c-4645-af3c-feb3ca375c8a" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="DefensiveAI" Guid="b769dde6-39ec-4686-9d27-5d53a5016d7f" InheritanceParent="2e0ff3f9-d699-41d1-b64a-cb06cda18234">
-  <Parameter Name="CanUseInventory" Guid="280a6250-2e8b-427d-bf26-da2680484844" Value="true" Type="bool"/>
-</MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureInventory" Guid="02a105e2-0b63-40f1-892f-e590be7171a1" InheritanceParent="b0d27f89-dc61-4c44-b675-63d6a6f8bf78">
     <Parameter Name="SlotsCount" Value="16" Type="int"/>
     <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
@@ -896,6 +885,7 @@
   <Parameter Name="NightChaseRange" Guid="2e411093-b4da-438a-b57b-411cc696c6f1" Value="75" Type="float"/>
   <Parameter Name="AutoChaseMask" Guid="a148055f-7fb4-431a-ac64-5c90a84aada9" Value="LandPredator" Type="Game.CreatureCategory"/>
   <Parameter Name="ChaseNonPlayerProbability" Guid="d0b13399-4167-4d20-bcae-56efc7e17a5b" Value="1" Type="float"/>
+  <Parameter Name="RangedAttackRange" Guid="62d53455-4112-400a-81af-1bf3dd1c1639" Value="5,100" Type="Vector2"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="NewHerdBehavior" Guid="6ecbb26d-22b4-438d-93bf-5040fd7ca841" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
         <Parameter Name="HerdName" Value="player" Type="string" Guid="c15ce386-8a8e-4eaf-ad7a-9fd508e33a0b"/>
@@ -957,8 +947,7 @@
     <MemberComponentTemplate Name="Miner" Guid="a9330744-f92d-48ab-9d2b-466e8331b0d4" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="1286cdbd-ed77-42ab-b49c-f3127557618e" Value="30" Type="float"/>
     </MemberComponentTemplate>
-<MemberComponentTemplate Name="MinecraftHumanModel" Guid="1ac183f3-9cee-4778-8f58-2139517b893d" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="Class" Guid="d3fb6351-f854-4b94-8c0a-38bb2b60315c" Value="Game.ComponentMinecraftHumanModel" Type="string"/>
+<MemberComponentTemplate Name="MinecraftHumanModel" Guid="1ac183f3-9cee-4778-8f58-2139517b893d" InheritanceParent="ce3990d2-70bd-4c37-8969-65bb9500795b">
     <Parameter Name="ModelName" Guid="30d385eb-8538-45d2-8852-7d200479e349" Value="Models/MC 2" Type="string"/>
     <Parameter Name="TextureOverride" Guid="ddc7709a-aad8-433f-9443-446ca7c134da" Value="Textures/Gaomon" Type="string"/>
    <Parameter Name="WalkAnimationSpeed" Guid="f95b6b93-8fb1-4f2f-8634-6f6334c588f7" Value="0.65" Type="float"/>
@@ -1104,8 +1093,7 @@
     <MemberComponentTemplate Name="Miner" Guid="d9c64723-f135-40cb-97ad-13aecaf9e93f" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="5e29c826-922d-4a81-b4bb-7c458b795096" Value="25" Type="float"/>
     </MemberComponentTemplate>
-<MemberComponentTemplate Name="MinecraftHumanModel" Guid="dd0c9e19-5f40-4a87-ac0f-832d2d38f6d5" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="Class" Guid="31e0788d-222d-436a-81a7-06e4ebcc4ea7" Value="Game.ComponentMinecraftHumanModel" Type="string"/>
+<MemberComponentTemplate Name="MinecraftHumanModel" Guid="dd0c9e19-5f40-4a87-ac0f-832d2d38f6d5" InheritanceParent="ce3990d2-70bd-4c37-8969-65bb9500795b">
     <Parameter Name="ModelName" Guid="3f4bfbaa-ea09-4b49-a253-3871e19019dc" Value="Models/MC 2" Type="string"/>
     <Parameter Name="TextureOverride" Guid="712e0a3f-e53d-4c6b-94f4-f1d5423f1f7e" Value="Textures/Impmon" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="ec6f7306-6b32-4682-bc17-d61a79c3ed3e" Value="0.65" Type="float"/>
@@ -1155,9 +1143,6 @@
 </EntityTemplate>
 
 <EntityTemplate Name="Hawkmon" Guid="a82b51fa-6d6e-4c52-aed7-21761c95693f" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="DefensiveAI" Guid="570b876a-ef4d-4faf-962e-2e368c90aace" InheritanceParent="2e0ff3f9-d699-41d1-b64a-cb06cda18234">
-  <Parameter Name="CanUseInventory" Guid="33f658a6-1e04-4fea-b9cb-3ba9eb1e82e1" Value="true" Type="bool"/>
-</MemberComponentTemplate>
 <MemberComponentTemplate Name="NewAutoInteract" Guid="0a93e2b4-56cc-4523-8021-2715b5abe8c1" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
@@ -1182,6 +1167,7 @@
   <Parameter Name="NightChaseRange" Guid="3fb2d842-1727-4aef-9aff-38c61db6064b" Value="75" Type="float"/>
   <Parameter Name="AutoChaseMask" Guid="aaa196b2-5181-48a9-a297-c34bce820d66" Value="LandPredator" Type="Game.CreatureCategory"/>
   <Parameter Name="ChaseNonPlayerProbability" Guid="af40837e-9ee1-4e0b-a568-14d5096615ca" Value="1" Type="float"/>
+  <Parameter Name="RangedAttackRange" Guid="dae158c2-46c1-4574-a102-d70ae6f9f89a" Value="5,100" Type="Vector2"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="NewHerdBehavior" Guid="cce85e36-cb3f-4469-acee-0275dd72ff5d" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
         <Parameter Name="HerdName" Value="player" Type="string" Guid="9f221c41-0172-499f-80bd-a56d99081a4d"/>
@@ -1236,8 +1222,7 @@
     <MemberComponentTemplate Name="Miner" Guid="745eb5b2-0b8e-4156-be47-e153e1903486" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="e45dc525-ec92-4bf9-8994-b847c96339b3" Value="35" Type="float"/>
     </MemberComponentTemplate>
-<MemberComponentTemplate Name="MinecraftHumanModel" Guid="0c297068-1a0f-4301-b6b0-8cc39699db24" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="Class" Guid="73030f5b-8364-4e6c-825c-2729a7b2be23" Value="Game.ComponentMinecraftHumanModel" Type="string"/>
+<MemberComponentTemplate Name="MinecraftHumanModel" Guid="0c297068-1a0f-4301-b6b0-8cc39699db24" InheritanceParent="ce3990d2-70bd-4c37-8969-65bb9500795b">
     <Parameter Name="ModelName" Guid="6ef4f9ae-13f0-4cdc-8686-5f94585914a5" Value="Models/MC 2" Type="string"/>
     <Parameter Name="TextureOverride" Guid="6db85f88-7a5a-4090-b937-88671a2d83a5" Value="Textures/Hawkmon" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="854770d3-e0d8-4196-b2aa-de39e0849d87" Value="0.65" Type="float"/>
@@ -1283,9 +1268,6 @@
 </EntityTemplate>
 
 <EntityTemplate Name="Gabumon" Guid="cb2815b4-b128-459f-9293-ce95e3f02e5c" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="DefensiveAI" Guid="6a4818ae-5808-4bff-b79d-45d36a6a038e" InheritanceParent="2e0ff3f9-d699-41d1-b64a-cb06cda18234">
-  <Parameter Name="CanUseInventory" Guid="af4df846-3fae-4b67-ab14-fe849d02edd4" Value="true" Type="bool"/>
-</MemberComponentTemplate>
 <MemberComponentTemplate Name="RunAwayBehavior" Guid="9c6188cf-ba84-4858-bb30-104c43a2b21b" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
 <MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="d0fb2519-fbb0-4fae-9838-8b4ebc318cef" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
 <MemberComponentTemplate Name="CreatureInventory" Guid="3469d9be-18a2-40d0-8f3f-6c542dd73ed4" InheritanceParent="b0d27f89-dc61-4c44-b675-63d6a6f8bf78">
@@ -1307,6 +1289,7 @@
   <Parameter Name="NightChaseRange" Guid="86fe73de-c0a6-4048-a05b-a23ae9e7fd75" Value="75" Type="float"/>
   <Parameter Name="AutoChaseMask" Guid="66ac1e12-76eb-405c-a080-c7e76f0a002c" Value="LandPredator" Type="Game.CreatureCategory"/>
   <Parameter Name="ChaseNonPlayerProbability" Guid="4689512a-30b5-42b2-8653-e0d6cfc8b236" Value="1" Type="float"/>
+  <Parameter Name="RangedAttackRange" Guid="462854dd-a94c-4b94-bc2e-ba379b714761" Value="5,100" Type="Vector2"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="NewHerdBehavior" Guid="610a107f-fee3-46fc-bde5-925e2f6fdb70" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
         <Parameter Name="HerdName" Value="player" Type="string" Guid="ae29462c-7dc8-480a-9972-b744619c18a4"/>
@@ -1361,8 +1344,7 @@
     <MemberComponentTemplate Name="Miner" Guid="d53e5fb2-4b9a-4030-b73e-4930fe4956b8" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="2736e1f3-295f-4562-83ed-315dec616c87" Value="40" Type="float"/>
     </MemberComponentTemplate>
-<MemberComponentTemplate Name="MinecraftHumanModel" Guid="604d2b5a-8503-4b2e-bb5f-e3d3e4e587cb" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="Class" Guid="8790b334-8b59-4ccf-9464-9231d3a0e93b" Value="Game.ComponentMinecraftHumanModel" Type="string"/>
+<MemberComponentTemplate Name="MinecraftHumanModel" Guid="604d2b5a-8503-4b2e-bb5f-e3d3e4e587cb" InheritanceParent="ce3990d2-70bd-4c37-8969-65bb9500795b">
     <Parameter Name="ModelName" Guid="3c0594dc-b23e-4c9f-bb6d-42d7d402a82d" Value="Models/MC 1" Type="string"/>
     <Parameter Name="TextureOverride" Guid="852b1e91-49df-4e03-a21d-06a38acf5543" Value="Textures/Gabumon" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="247a1016-6f43-4e2e-982f-fac06edf1d74" Value="0.65" Type="float"/>
