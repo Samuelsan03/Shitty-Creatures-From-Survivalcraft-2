@@ -1,13 +1,13 @@
 using System;
-using System.Collections.Generic;
 using Engine;
 using Engine.Graphics;
+using Game;
 
 namespace Game
 {
 	public class NewPanoramaWidget : Widget
 	{
-		public static List<string> TexturePaths = new List<string>
+		private static readonly string[] WallpaperPaths = new string[]
 		{
 			"Textures/Wallpapers/Digimon Fusion Wallpaper",
 			"Textures/Wallpapers/Tai and Wargreymon",
@@ -20,166 +20,94 @@ namespace Game
 			"Textures/Wallpapers/axel gear"
 		};
 
-		public Texture2D Texture { get; set; }
-		public int CurrentTextureIndex { get; protected set; }
-		public float FadeAlpha { get; set; }
-		public float DisplayTime { get; set; }
-		public float FadeTime { get; set; }
-
-		// Lista para mantener el orden aleatorio de índices
-		private List<int> shuffledIndices;
-		private int currentPositionInShuffledList;
-
-		public enum TransitionState
+		private enum TransitionState
 		{
-			Showing,
-			FadingOut,
-			FadingIn
+			ShowingTexture,
+			FadingToBlack,
+			HoldingBlack,
+			SwitchingTexture,
+			FadingFromBlack
 		}
-		public TransitionState State = TransitionState.Showing;
 
-		// Usar el Random del juego
-		private static Random random = new Random();
+		private TransitionState m_transitionState = TransitionState.ShowingTexture;
+		private float m_transitionTime = 0f;
+		private float m_blackFadeAlpha = 0f;
+
+		private Texture2D currentTexture;
+		private Texture2D nextTexture;
+		private int currentIndex = 0;
+
+		// Tiempos ajustables (en segundos)
+		private const float ShowDuration = 5f;        // Tiempo que se ve la imagen
+		private const float FadeDuration = 0.5f;      // Duración del fundido (entrada y salida)
+		private const float HoldBlackDuration = 0f;    // Pausa en negro entre imágenes (0 = cambio inmediato)
 
 		public NewPanoramaWidget()
 		{
-			// Crear lista aleatoria de índices
-			shuffledIndices = new List<int>();
-			for (int i = 0; i < TexturePaths.Count; i++)
-			{
-				shuffledIndices.Add(i);
-			}
-
-			// Mezclar los índices aleatoriamente
-			ShuffleIndices();
-
-			// Elegir el primer índice de la lista mezclada
-			currentPositionInShuffledList = 0;
-			CurrentTextureIndex = shuffledIndices[currentPositionInShuffledList];
-
-			LoadTexture(CurrentTextureIndex);
-			FadeAlpha = 0f;
-			DisplayTime = 0f;
-			FadeTime = 0f;
-		}
-
-		// Método para mezclar los índices usando Fisher-Yates
-		private void ShuffleIndices()
-		{
-			int n = shuffledIndices.Count;
-			for (int i = n - 1; i > 0; i--)
-			{
-				int j = random.Int(i + 1);
-				// Intercambiar
-				int temp = shuffledIndices[i];
-				shuffledIndices[i] = shuffledIndices[j];
-				shuffledIndices[j] = temp;
-			}
-		}
-
-		protected virtual void LoadTexture(int index)
-		{
-			if (index >= 0 && index < TexturePaths.Count)
-			{
-				try
-				{
-					Texture = ContentManager.Get<Texture2D>(TexturePaths[index]);
-				}
-				catch
-				{
-					Texture = null;
-				}
-			}
-		}
-
-		public virtual void SwitchToNextTexture()
-		{
-			State = TransitionState.FadingOut;
-			FadeTime = 0f;
-		}
-
-		public virtual void DrawBlackFade(Widget.DrawContext dc, float alpha)
-		{
-			if (alpha <= 0f) return;
-
-			FlatBatch2D flatBatch2D = dc.PrimitivesRenderer2D.FlatBatch(1, DepthStencilState.None, null, BlendState.AlphaBlend);
-			Color color = Color.Black * alpha;
-			Vector2 zero = Vector2.Zero;
-			Vector2 actualSize = base.ActualSize;
-
-			flatBatch2D.QueueQuad(zero, actualSize, 0f, color);
-			flatBatch2D.TransformTriangles(base.GlobalTransform, 0, -1);
-		}
-
-		public virtual void DrawImage(Widget.DrawContext dc)
-		{
-			if (Texture == null) return;
-
-			// Calcular escala para que la imagen cubra toda la pantalla sin deformarse
-			float scaleX = base.ActualSize.X / (float)Texture.Width;
-			float scaleY = base.ActualSize.Y / (float)Texture.Height;
-			float scale = Math.Max(scaleX, scaleY);
-
-			// Calcular tamaño y posición centrada
-			Vector2 size = new Vector2((float)Texture.Width * scale, (float)Texture.Height * scale);
-			Vector2 offset = new Vector2((base.ActualSize.X - size.X) / 2f, (base.ActualSize.Y - size.Y) / 2f);
-
-			// Dibujar la textura completa y estática
-			TexturedBatch2D texturedBatch2D = dc.PrimitivesRenderer2D.TexturedBatch(Texture, false, 0, DepthStencilState.DepthWrite, null, BlendState.AlphaBlend, SamplerState.LinearClamp);
-			int count = texturedBatch2D.TriangleVertices.Count;
-			texturedBatch2D.QueueQuad(offset, offset + size, 1f, Vector2.Zero, Vector2.One, base.GlobalColorTransform);
-			texturedBatch2D.TransformTriangles(base.GlobalTransform, count, -1);
-		}
-
-		public override void MeasureOverride(Vector2 parentAvailableSize)
-		{
-			base.IsDrawRequired = true;
+			Engine.Random random = new Engine.Random();
+			currentIndex = random.Int(0, WallpaperPaths.Length - 1);
+			currentTexture = ContentManager.Get<Texture2D>(WallpaperPaths[currentIndex]);
 		}
 
 		public override void Update()
 		{
-			switch (State)
+			base.Update();
+			float dt = Time.FrameDuration;
+
+			switch (m_transitionState)
 			{
-				case TransitionState.Showing:
-					DisplayTime += Time.FrameDuration;
-					if (DisplayTime >= 5f)
+				case TransitionState.ShowingTexture:
+					m_transitionTime += dt;
+					if (m_transitionTime >= ShowDuration)
 					{
-						SwitchToNextTexture();
+						m_transitionState = TransitionState.FadingToBlack;
+						m_transitionTime = 0f;
 					}
 					break;
 
-				case TransitionState.FadingOut:
-					FadeTime += Time.FrameDuration;
-					FadeAlpha = MathUtils.Saturate(FadeTime / 1f);
-
-					if (FadeTime >= 1f)
+				case TransitionState.FadingToBlack:
+					m_transitionTime += dt;
+					m_blackFadeAlpha = MathUtils.Saturate(m_transitionTime / FadeDuration);
+					if (m_transitionTime >= FadeDuration)
 					{
-						// Avanzar a la siguiente posición en la lista mezclada
-						currentPositionInShuffledList = (currentPositionInShuffledList + 1) % shuffledIndices.Count;
-
-						// Si completamos un ciclo completo, re-mezclar para el siguiente ciclo
-						if (currentPositionInShuffledList == 0)
-						{
-							ShuffleIndices();
-						}
-
-						CurrentTextureIndex = shuffledIndices[currentPositionInShuffledList];
-						LoadTexture(CurrentTextureIndex);
-
-						State = TransitionState.FadingIn;
-						FadeTime = 0f;
+						m_transitionState = TransitionState.HoldingBlack;
+						m_transitionTime = 0f;
 					}
 					break;
 
-				case TransitionState.FadingIn:
-					FadeTime += Time.FrameDuration;
-					FadeAlpha = 1f - MathUtils.Saturate(FadeTime / 1f);
-
-					if (FadeTime >= 1f)
+				case TransitionState.HoldingBlack:
+					m_transitionTime += dt;
+					m_blackFadeAlpha = 1f;
+					if (m_transitionTime >= HoldBlackDuration)
 					{
-						FadeAlpha = 0f;
-						State = TransitionState.Showing;
-						DisplayTime = 0f;
+						m_transitionState = TransitionState.SwitchingTexture;
+						m_transitionTime = 0f;
+						int nextIndex = (currentIndex + 1) % WallpaperPaths.Length;
+						nextTexture = ContentManager.Get<Texture2D>(WallpaperPaths[nextIndex]);
+					}
+					break;
+
+				case TransitionState.SwitchingTexture:
+					m_transitionTime += dt;
+					if (m_transitionTime >= 0.05f) // breve pausa para cargar
+					{
+						currentTexture = nextTexture;
+						currentIndex = (currentIndex + 1) % WallpaperPaths.Length;
+						nextTexture = null;
+
+						m_transitionState = TransitionState.FadingFromBlack;
+						m_transitionTime = 0f;
+					}
+					break;
+
+				case TransitionState.FadingFromBlack:
+					m_transitionTime += dt;
+					m_blackFadeAlpha = 1f - MathUtils.Saturate(m_transitionTime / FadeDuration);
+					if (m_transitionTime >= FadeDuration)
+					{
+						m_transitionState = TransitionState.ShowingTexture;
+						m_blackFadeAlpha = 0f;
+						m_transitionTime = 0f;
 					}
 					break;
 			}
@@ -187,12 +115,50 @@ namespace Game
 
 		public override void Draw(Widget.DrawContext dc)
 		{
-			DrawImage(dc);
+			Vector2 screenSize = base.ActualSize;
+			float screenAspect = screenSize.X / screenSize.Y;
+			float textureAspect = (float)currentTexture.Width / currentTexture.Height;
 
-			if (FadeAlpha > 0f)
+			Vector2 texCoord0, texCoord1;
+
+			if (textureAspect > screenAspect)
 			{
-				DrawBlackFade(dc, FadeAlpha);
+				float scale = screenAspect / textureAspect;
+				texCoord0 = new Vector2((1f - scale) / 2f, 0f);
+				texCoord1 = new Vector2(1f - ((1f - scale) / 2f), 1f);
 			}
+			else
+			{
+				float scale = textureAspect / screenAspect;
+				texCoord0 = new Vector2(0f, (1f - scale) / 2f);
+				texCoord1 = new Vector2(1f, 1f - ((1f - scale) / 2f));
+			}
+
+			// Dibujar la textura actual
+			if (currentTexture != null)
+			{
+				TexturedBatch2D batch = dc.PrimitivesRenderer2D.TexturedBatch(
+					currentTexture, false, 0, DepthStencilState.DepthWrite,
+					null, BlendState.AlphaBlend, SamplerState.LinearClamp);
+
+				int count = batch.TriangleVertices.Count;
+				batch.QueueQuad(Vector2.Zero, screenSize, 1f, texCoord0, texCoord1, base.GlobalColorTransform);
+				batch.TransformTriangles(base.GlobalTransform, count, -1);
+			}
+
+			// Dibujar el rectángulo negro de transición
+			if (m_blackFadeAlpha > 0.01f)
+			{
+				FlatBatch2D fadeBatch = dc.PrimitivesRenderer2D.FlatBatch(1, DepthStencilState.None, null, BlendState.AlphaBlend);
+				int countFade = fadeBatch.TriangleVertices.Count;
+				fadeBatch.QueueQuad(Vector2.Zero, screenSize, 0f, new Color(0f, 0f, 0f, m_blackFadeAlpha));
+				fadeBatch.TransformTriangles(base.GlobalTransform, countFade, -1);
+			}
+		}
+
+		public override void MeasureOverride(Vector2 parentAvailableSize)
+		{
+			base.IsDrawRequired = true;
 		}
 	}
 }
