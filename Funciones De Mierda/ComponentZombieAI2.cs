@@ -665,12 +665,8 @@ namespace Game
 				}
 				else
 				{
-					if (m_isMelee)
-					{
-						ExitMeleeMode();
-					}
+					if (m_isMelee) ExitMeleeMode();
 
-					// Siempre intentar usar el arma a distancia
 					if (m_currentWeaponSlot == -1)
 					{
 						FindRangedWeapon();
@@ -678,13 +674,17 @@ namespace Game
 
 					if (m_currentWeaponSlot != -1)
 					{
-						// Solo disparar si no está atascado y tiene línea de visión
 						if (!isStuck && hasLineOfSight)
 						{
 							ProcessWeaponBehavior(target, distance);
 						}
 						else
 						{
+							if (!hasLineOfSight && !isStuck)
+							{
+								TryRepositionForLineOfSight(target);
+							}
+
 							ResetWeaponState();
 							if (m_componentModel != null)
 							{
@@ -707,6 +707,35 @@ namespace Game
 						}
 					}
 				}
+			}
+		}
+
+		private void TryRepositionForLineOfSight(ComponentCreature target)
+		{
+			if (target == null || m_componentPathfinding == null) return;
+
+			Vector3 targetPos = target.ComponentBody.Position;
+			Vector3 myPos = m_componentCreature.ComponentBody.Position;
+
+			Vector3 directionToTarget = targetPos - myPos;
+			directionToTarget.Y = 0f;
+			if (directionToTarget.LengthSquared() < 0.01f) return;
+
+			directionToTarget = Vector3.Normalize(directionToTarget);
+
+			Vector3 perp = Vector3.Cross(Vector3.UnitY, directionToTarget);
+			perp = Vector3.Normalize(perp);
+
+			float side = (myPos.X + myPos.Z) % 2f > 1f ? 1f : -1f;
+			Vector3 offset = perp * side * 5f;
+
+			Vector3 newDestination = targetPos + offset;
+
+			if (m_componentPathfinding.Destination == null ||
+				Vector3.DistanceSquared(newDestination, m_componentPathfinding.Destination.Value) > 1f)
+			{
+				float speed = m_componentCreature.ComponentLocomotion.WalkSpeed;
+				m_componentPathfinding.SetDestination(newDestination, speed, 1f, 0, false, true, true, null);
 			}
 		}
 
@@ -1062,9 +1091,8 @@ namespace Game
 
 			directionToTarget = Vector3.Normalize(directionToTarget);
 
-			// --- NUEVO: Verificar que el NPC esté mirando hacia el objetivo ---
 			Vector3 forward = m_componentCreature.ComponentBody.Matrix.Forward;
-			forward.Y = 0; // Ignorar inclinación vertical
+			forward.Y = 0;
 			Vector2 flatDir = new Vector2(directionToTarget.X, directionToTarget.Z);
 			Vector2 flatForward = new Vector2(forward.X, forward.Z);
 			if (flatForward.LengthSquared() > 0.01f && flatDir.LengthSquared() > 0.01f)
@@ -1072,27 +1100,29 @@ namespace Game
 				flatForward = Vector2.Normalize(flatForward);
 				flatDir = Vector2.Normalize(flatDir);
 				float dot = Vector2.Dot(flatForward, flatDir);
-				// Ángulo máximo de visión: 60 grados (dot > 0.5)
-				if (dot < 0.5f)
-				{
-					return false;
-				}
+				if (dot < 0.5f) return false;
 			}
-			// ----------------------------------------------------------------
 
-			// Raycast contra el terreno (bloques sólidos)
 			TerrainRaycastResult? terrainHit = m_subsystemTerrain.Raycast(
-				eyePos,
-				targetPos,
-				false,
-				true,
+				eyePos, targetPos, false, true,
 				(int value, float d) => BlocksManager.Blocks[Terrain.ExtractContents(value)].IsCollidable
 			);
 
 			if (terrainHit != null && terrainHit.Value.Distance < distance - 0.5f)
-			{
 				return false;
-			}
+
+			BodyRaycastResult? bodyHit = m_subsystemBodies.Raycast(
+				eyePos, targetPos, 1f,
+				(ComponentBody body, float d) =>
+				{
+					if (body == m_componentCreature.ComponentBody || body == target.ComponentBody)
+						return false;
+					return d < distance - 0.5f;
+				}
+			);
+
+			if (bodyHit != null && bodyHit.Value.ComponentBody != null)
+				return false;
 
 			return true;
 		}
