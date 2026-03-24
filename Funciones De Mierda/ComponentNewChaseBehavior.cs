@@ -102,6 +102,10 @@ namespace Game
 		private int m_throwableSlotIndex = -1;
 		private int m_throwableValue;
 
+		// Campos para armas cuerpo a cuerpo
+		private int m_meleeWeaponSlot = -1;
+		private int m_rangedWeaponSlot = -1;
+
 		// Suscripción a eventos de salud de jugadores
 		private List<ComponentHealth> m_subscribedPlayerHealths = new List<ComponentHealth>();
 
@@ -214,6 +218,8 @@ namespace Game
 			m_nextThrowableAttackTime = 0;
 			m_triedToLoad = false;
 			m_aimingStarted = false;
+			m_meleeWeaponSlot = -1;
+			m_rangedWeaponSlot = -1;
 
 			SubscribeToProjectileEvents();
 
@@ -242,6 +248,8 @@ namespace Game
 			m_nextThrowableAttackTime = 0;
 			m_triedToLoad = false;
 			m_aimingStarted = false;
+			m_meleeWeaponSlot = -1;
+			m_rangedWeaponSlot = -1;
 
 			UnsubscribeFromProjectileEvents();
 		}
@@ -280,6 +288,107 @@ namespace Game
 			}
 		}
 
+		// ===== MÉTODOS PARA DETECCIÓN DE ARMAS CUERPO A CUERPO =====
+		private bool HasMeleeWeapon(out int slotIndex, out int value)
+		{
+			slotIndex = -1;
+			value = 0;
+			if (m_componentMiner?.Inventory == null) return false;
+
+			for (int i = 0; i < m_componentMiner.Inventory.SlotsCount; i++)
+			{
+				int slotValue = m_componentMiner.Inventory.GetSlotValue(i);
+				int slotCount = m_componentMiner.Inventory.GetSlotCount(i);
+				if (slotCount > 0 && slotValue != 0)
+				{
+					int contents = Terrain.ExtractContents(slotValue);
+					Block block = BlocksManager.Blocks[contents];
+					// Un arma cuerpo a cuerpo tiene poder melee > 0 y no es apuntable
+					if (block.GetMeleePower(slotValue) > 0 && !block.IsAimable_(slotValue))
+					{
+						slotIndex = i;
+						value = slotValue;
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+
+		private void EquipMeleeWeapon()
+		{
+			if (m_componentMiner?.Inventory == null) return;
+
+			// Si ya tenemos un arma melee equipada, no hacer nada
+			if (m_meleeWeaponSlot != -1 && m_componentMiner.Inventory.ActiveSlotIndex == m_meleeWeaponSlot)
+				return;
+
+			if (HasMeleeWeapon(out int slotIndex, out _))
+			{
+				// Guardar el slot actual si es un arma a distancia
+				int currentSlot = m_componentMiner.Inventory.ActiveSlotIndex;
+				int currentValue = m_componentMiner.Inventory.GetSlotValue(currentSlot);
+				if (currentValue != 0)
+				{
+					int currentContents = Terrain.ExtractContents(currentValue);
+					Block currentBlock = BlocksManager.Blocks[currentContents];
+					if (currentBlock.IsAimable_(currentValue))
+					{
+						m_rangedWeaponSlot = currentSlot;
+					}
+				}
+
+				m_componentMiner.Inventory.ActiveSlotIndex = slotIndex;
+				m_meleeWeaponSlot = slotIndex;
+			}
+		}
+
+		private void ReequipRangedWeapon()
+		{
+			if (m_componentMiner?.Inventory == null) return;
+
+			// Si ya tenemos un arma a distancia equipada, no hacer nada
+			int currentSlot = m_componentMiner.Inventory.ActiveSlotIndex;
+			int currentValue = m_componentMiner.Inventory.GetSlotValue(currentSlot);
+			if (currentValue != 0)
+			{
+				int currentContents = Terrain.ExtractContents(currentValue);
+				Block currentBlock = BlocksManager.Blocks[currentContents];
+				if (currentBlock.IsAimable_(currentValue))
+					return;
+			}
+
+			// Intentar volver al arma a distancia guardada
+			if (m_rangedWeaponSlot != -1)
+			{
+				int rangedValue = m_componentMiner.Inventory.GetSlotValue(m_rangedWeaponSlot);
+				int rangedCount = m_componentMiner.Inventory.GetSlotCount(m_rangedWeaponSlot);
+				if (rangedCount > 0 && rangedValue != 0)
+				{
+					int rangedContents = Terrain.ExtractContents(rangedValue);
+					Block rangedBlock = BlocksManager.Blocks[rangedContents];
+					if (rangedBlock.IsAimable_(rangedValue))
+					{
+						m_componentMiner.Inventory.ActiveSlotIndex = m_rangedWeaponSlot;
+						m_meleeWeaponSlot = -1;
+						return;
+					}
+				}
+				m_rangedWeaponSlot = -1;
+			}
+
+			// Buscar cualquier arma a distancia
+			if (HasMusket(out int musketSlot, out _) ||
+				HasBow(out int bowSlot, out _) ||
+				HasCrossbow(out int crossbowSlot, out _) ||
+				HasRepeatCrossbow(out int repeatCrossbowSlot, out _) ||
+				HasFlameThrower(out int flameThrowerSlot, out _))
+			{
+				// Ya está equipada o se equipará en UpdateRangedAttack
+				m_meleeWeaponSlot = -1;
+			}
+		}
+
 		// ===== UPDATE =====
 		public virtual void Update(float dt)
 		{
@@ -305,6 +414,16 @@ namespace Game
 
 				if (inMeleeRange)
 				{
+					// Si estábamos apuntando, cancelar el apuntado
+					if (m_isAimingRanged || m_isAimingThrowable)
+					{
+						CancelRangedAim();
+						CancelThrowableAim();
+					}
+
+					// Equipar arma cuerpo a cuerpo si está disponible
+					EquipMeleeWeapon();
+
 					m_componentCreatureModel.AttackOrder = true;
 					if (m_componentCreatureModel.IsAttackHitMoment)
 					{
@@ -324,6 +443,9 @@ namespace Game
 				}
 				else
 				{
+					// Reequipar arma a distancia si no estamos en rango melee
+					ReequipRangedWeapon();
+
 					UpdateThrowableAttack(dt);
 					// Si no se está lanzando un objeto, intentar ataque a distancia normal
 					if (!m_isAimingThrowable)
@@ -466,6 +588,14 @@ namespace Game
 			}
 
 			float distance = GetDistanceToTarget();
+
+			// Si está en rango melee, no lanzar objetos
+			bool inMeleeRange = IsTargetInAttackRange(m_target.ComponentBody);
+			if (inMeleeRange)
+			{
+				CancelThrowableAim();
+				return;
+			}
 
 			// Verificar si está en rango de lanzamiento
 			bool inThrowableRange = distance >= ThrowableAttackRange.X && distance <= ThrowableAttackRange.Y;
@@ -938,6 +1068,9 @@ namespace Game
 			m_isAimingRanged = true;
 			m_rangedAimStartTime = m_subsystemTime.GameTime;
 			m_triedToLoad = false;
+
+			// Guardar el slot del arma a distancia
+			m_rangedWeaponSlot = slotIndex;
 		}
 
 		private void StartBowAim()
@@ -951,6 +1084,9 @@ namespace Game
 			m_isAimingRanged = true;
 			m_rangedAimStartTime = m_subsystemTime.GameTime;
 			m_triedToLoad = false;
+
+			// Guardar el slot del arma a distancia
+			m_rangedWeaponSlot = slotIndex;
 		}
 
 		private void StartCrossbowAim()
@@ -964,6 +1100,9 @@ namespace Game
 			m_isAimingRanged = true;
 			m_rangedAimStartTime = m_subsystemTime.GameTime;
 			m_triedToLoad = false;
+
+			// Guardar el slot del arma a distancia
+			m_rangedWeaponSlot = slotIndex;
 		}
 
 		private void CompleteMusketAim()
@@ -1102,6 +1241,15 @@ namespace Game
 			}
 
 			float distance = GetDistanceToTarget();
+
+			// Si está en rango melee, no usar ataque a distancia
+			bool inMeleeRange = IsTargetInAttackRange(m_target.ComponentBody);
+			if (inMeleeRange)
+			{
+				CancelRangedAim();
+				return;
+			}
+
 			bool inRangedRange = false;
 			if (RangedAttackMode == AttackMode.Remote)
 			{
@@ -1748,8 +1896,8 @@ namespace Game
 					}
 					else
 					{
-						// ⚠️ NUEVO: No establecer destino mientras se está apuntando un objeto lanzable
-						if (!m_isAimingThrowable)
+						// No establecer destino mientras se está apuntando un objeto lanzable
+						if (!m_isAimingThrowable && !m_isAimingRanged)
 						{
 							int maxPathfindingPositions = 0;
 							if (m_isPersistent)
