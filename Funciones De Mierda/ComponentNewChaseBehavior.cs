@@ -2,6 +2,7 @@ using System;
 using Engine;
 using GameEntitySystem;
 using TemplatesDatabase;
+using System.Collections.Generic;
 
 namespace Game
 {
@@ -34,6 +35,11 @@ namespace Game
 		// Parámetros de ataque a distancia
 		public Vector2 RangedAttackRange = new Vector2(5f, 20f);
 		public AttackMode RangedAttackMode = AttackMode.Default;
+
+		// Nuevos parámetros para objetos lanzables
+		public float ThrowableAimTime = 1f;
+		public float ThrowableCooldown = 0.5f;
+		public Vector2 ThrowableAttackRange = new Vector2(5f, 15f);
 
 		// Tiempos de apuntado
 		public float MusketAimTime = 1.65f;
@@ -89,11 +95,21 @@ namespace Game
 		private bool m_triedToLoad;
 		private bool m_aimingStarted;
 
+		// Campos para objetos lanzables
+		private bool m_isAimingThrowable;
+		private double m_nextThrowableAttackTime;
+		private double m_throwableAimStartTime;
+		private int m_throwableSlotIndex = -1;
+		private int m_throwableValue;
+
 		// Suscripción a eventos de salud de jugadores
 		private List<ComponentHealth> m_subscribedPlayerHealths = new List<ComponentHealth>();
 
 		// Manejador para eliminar pickables de flechas/virotes
 		private Action<Projectile> m_projectileAddedHandler;
+
+		// Conjunto estático de bloques lanzables (índices)
+		private static HashSet<int> s_throwableBlockIndices;
 
 		// ===== PROPIEDADES AUXILIARES =====
 		private bool IsZombie => HerdName != null && HerdName.ToLower().Contains("zombie");
@@ -113,6 +129,58 @@ namespace Game
 				if (m_componentHerd == null)
 					m_componentHerd = Entity.FindComponent<ComponentNewHerdBehavior>();
 				return m_componentHerd != null ? m_componentHerd.HerdName : null;
+			}
+		}
+
+		// ===== CONSTRUCTOR ESTÁTICO PARA INICIALIZAR BLOQUES LANZABLES =====
+		static ComponentNewChaseBehavior()
+		{
+			s_throwableBlockIndices = new HashSet<int>();
+			// Registrar los tipos de bloques lanzables usando reflexión para obtener sus índices
+			// Nota: Los índices se obtienen dinámicamente ya que pueden variar según los mods cargados
+			RegisterThrowableBlock(typeof(StoneChunkBlock));
+			RegisterThrowableBlock(typeof(SulphurChunkBlock));
+			RegisterThrowableBlock(typeof(CoalChunkBlock));
+			RegisterThrowableBlock(typeof(DiamondChunkBlock));
+			RegisterThrowableBlock(typeof(GermaniumChunkBlock));
+			RegisterThrowableBlock(typeof(GermaniumOreChunkBlock));
+			RegisterThrowableBlock(typeof(IronOreChunkBlock));
+			RegisterThrowableBlock(typeof(MalachiteChunkBlock));
+			RegisterThrowableBlock(typeof(SaltpeterChunkBlock));
+			RegisterThrowableBlock(typeof(GunpowderBlock));
+			RegisterThrowableBlock(typeof(BombBlock));
+			RegisterThrowableBlock(typeof(IncendiaryBombBlock));
+			RegisterThrowableBlock(typeof(PoisonBombBlock));
+			RegisterThrowableBlock(typeof(BrickBlock));
+			RegisterThrowableBlock(typeof(SnowballBlock));
+			RegisterThrowableBlock(typeof(EggBlock));
+			RegisterThrowableBlock(typeof(CopperSpearBlock));
+			RegisterThrowableBlock(typeof(DiamondSpearBlock));
+			RegisterThrowableBlock(typeof(IronSpearBlock));
+			RegisterThrowableBlock(typeof(WoodenSpearBlock));
+			RegisterThrowableBlock(typeof(WoodenLongspearBlock));
+			RegisterThrowableBlock(typeof(StoneSpearBlock));
+			RegisterThrowableBlock(typeof(StoneLongspearBlock));
+			RegisterThrowableBlock(typeof(IronLongspearBlock));
+			RegisterThrowableBlock(typeof(LavaLongspearBlock));
+			RegisterThrowableBlock(typeof(LavaSpearBlock));
+			RegisterThrowableBlock(typeof(DiamondLongspearBlock));
+			RegisterThrowableBlock(typeof(FreezingSnowballBlock));
+			RegisterThrowableBlock(typeof(FreezeBombBlock));
+			RegisterThrowableBlock(typeof(FireworksBlock));
+		}
+
+		private static void RegisterThrowableBlock(Type blockType)
+		{
+			// Obtener el campo estático Index del tipo de bloque
+			var field = blockType.GetField("Index");
+			if (field != null && field.FieldType == typeof(int))
+			{
+				int index = (int)field.GetValue(null);
+				if (index != 0)
+				{
+					s_throwableBlockIndices.Add(index);
+				}
 			}
 		}
 
@@ -141,7 +209,9 @@ namespace Game
 			m_isPersistent = isPersistent;
 			m_importanceLevel = isPersistent ? ImportanceLevelPersistent : ImportanceLevelNonPersistent;
 			m_isAimingRanged = false;
+			m_isAimingThrowable = false;
 			m_nextRangedAttackTime = 0;
+			m_nextThrowableAttackTime = 0;
 			m_triedToLoad = false;
 			m_aimingStarted = false;
 
@@ -167,7 +237,9 @@ namespace Game
 			m_isPersistent = false;
 			m_importanceLevel = 0f;
 			m_isAimingRanged = false;
+			m_isAimingThrowable = false;
 			m_nextRangedAttackTime = 0;
+			m_nextThrowableAttackTime = 0;
 			m_triedToLoad = false;
 			m_aimingStarted = false;
 
@@ -247,11 +319,17 @@ namespace Game
 						}
 					}
 					m_isAimingRanged = false;
+					m_isAimingThrowable = false;
 					m_aimingStarted = false;
 				}
 				else
 				{
-					UpdateRangedAttack(dt);
+					UpdateThrowableAttack(dt);
+					// Si no se está lanzando un objeto, intentar ataque a distancia normal
+					if (!m_isAimingThrowable)
+					{
+						UpdateRangedAttack(dt);
+					}
 				}
 			}
 
@@ -260,6 +338,199 @@ namespace Game
 				m_dt = m_random.Float(0.25f, 0.35f) + MathUtils.Min((float)(m_subsystemTime.GameTime - m_nextUpdateTime), 0.1f);
 				m_nextUpdateTime = m_subsystemTime.GameTime + (double)m_dt;
 				m_stateMachine.Update();
+			}
+		}
+
+		// ===== MÉTODOS DE DETECCIÓN DE OBJETOS LANZABLES =====
+		private bool HasThrowableItem(out int slotIndex, out int value)
+		{
+			slotIndex = -1;
+			value = 0;
+			if (m_componentMiner?.Inventory == null) return false;
+
+			for (int i = 0; i < m_componentMiner.Inventory.SlotsCount; i++)
+			{
+				int slotValue = m_componentMiner.Inventory.GetSlotValue(i);
+				int slotCount = m_componentMiner.Inventory.GetSlotCount(i);
+				if (slotCount > 0 && IsThrowableBlock(slotValue))
+				{
+					slotIndex = i;
+					value = slotValue;
+					return true;
+				}
+			}
+			return false;
+		}
+
+		private bool IsThrowableBlock(int value)
+		{
+			int contents = Terrain.ExtractContents(value);
+			return s_throwableBlockIndices.Contains(contents);
+		}
+
+		private void EnsureThrowableActive()
+		{
+			if (m_componentMiner?.Inventory == null) return;
+
+			if (HasThrowableItem(out int slotIndex, out _))
+			{
+				if (m_componentMiner.Inventory.ActiveSlotIndex != slotIndex)
+				{
+					m_componentMiner.Inventory.ActiveSlotIndex = slotIndex;
+				}
+			}
+		}
+
+		// ===== MÉTODOS DE APUNTADO Y LANZAMIENTO =====
+		private bool HasLineOfSightToTarget()
+		{
+			if (m_target == null) return false;
+
+			Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
+			Vector3 targetCenter = m_target.ComponentCreatureModel.EyePosition;
+			Vector3 direction = targetCenter - eyePos;
+			float distance = direction.Length();
+			direction /= distance;
+
+			Ray3 ray = new Ray3(eyePos, direction);
+			var result = m_componentMiner.Raycast<BodyRaycastResult>(ray, RaycastMode.Interaction, true, true, true, null);
+
+			if (result != null && result.Value.Distance < distance - 0.5f)
+			{
+				return false;
+			}
+			return true;
+		}
+
+		private void StartThrowableAim()
+		{
+			if (!HasThrowableItem(out int slotIndex, out int value))
+				return;
+
+			m_throwableSlotIndex = slotIndex;
+			m_throwableValue = value;
+			EnsureThrowableActive();
+
+			m_isAimingThrowable = true;
+			m_throwableAimStartTime = m_subsystemTime.GameTime;
+		}
+
+		private void CompleteThrowableAim()
+		{
+			if (!HasThrowableItem(out int slotIndex, out int value))
+			{
+				CancelThrowableAim();
+				return;
+			}
+
+			EnsureThrowableActive();
+
+			// Apuntar y lanzar usando el sistema de proyectiles
+			Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
+			Vector3 targetCenter = m_target.ComponentCreatureModel.EyePosition;
+			Vector3 direction = Vector3.Normalize(targetCenter - eyePos);
+			Ray3 ray = new Ray3(eyePos, direction);
+
+			// Usar el Aim para activar el lanzamiento
+			m_componentMiner.Aim(ray, AimState.Completed);
+
+			// Registrar el tiempo de reutilización
+			m_nextThrowableAttackTime = m_subsystemTime.GameTime + ThrowableCooldown;
+
+			m_isAimingThrowable = false;
+			m_throwableSlotIndex = -1;
+			m_throwableValue = 0;
+		}
+
+		private void CancelThrowableAim()
+		{
+			if (m_isAimingThrowable)
+			{
+				Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
+				Vector3 targetCenter = m_target.ComponentCreatureModel.EyePosition;
+				Vector3 direction = Vector3.Normalize(targetCenter - eyePos);
+				Ray3 ray = new Ray3(eyePos, direction);
+				m_componentMiner.Aim(ray, AimState.Cancelled);
+			}
+			m_isAimingThrowable = false;
+			m_throwableSlotIndex = -1;
+			m_throwableValue = 0;
+		}
+
+		private void UpdateThrowableAttack(float dt)
+		{
+			if (m_target == null)
+			{
+				CancelThrowableAim();
+				return;
+			}
+
+			float distance = GetDistanceToTarget();
+
+			// Verificar si está en rango de lanzamiento
+			bool inThrowableRange = distance >= ThrowableAttackRange.X && distance <= ThrowableAttackRange.Y;
+
+			if (!inThrowableRange)
+			{
+				CancelThrowableAim();
+				return;
+			}
+
+			// Verificar si tenemos un objeto lanzable
+			if (!HasThrowableItem(out int slotIndex, out int value))
+			{
+				CancelThrowableAim();
+				return;
+			}
+
+			// Verificar línea de visión
+			if (!HasLineOfSightToTarget())
+			{
+				CancelThrowableAim();
+				return;
+			}
+
+			// Verificar tiempo de reutilización
+			if (m_subsystemTime.GameTime < m_nextThrowableAttackTime)
+			{
+				CancelThrowableAim();
+				return;
+			}
+
+			if (!m_isAimingThrowable)
+			{
+				// Detener el movimiento mientras se apunta
+				if (m_componentPathfinding != null)
+				{
+					m_componentPathfinding.Stop();  // ← Esto detiene el movimiento inmediatamente
+				}
+
+				StartThrowableAim();
+				// Iniciar el apuntado
+				Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
+				Vector3 targetCenter = m_target.ComponentCreatureModel.EyePosition;
+				Vector3 direction = Vector3.Normalize(targetCenter - eyePos);
+				Ray3 ray = new Ray3(eyePos, direction);
+				m_componentMiner.Aim(ray, AimState.InProgress);
+			}
+			else
+			{
+				// Continuar apuntando
+				Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
+				Vector3 targetCenter = m_target.ComponentCreatureModel.EyePosition;
+				Vector3 direction = Vector3.Normalize(targetCenter - eyePos);
+				Ray3 ray = new Ray3(eyePos, direction);
+				m_componentMiner.Aim(ray, AimState.InProgress);
+
+				double aimTimeElapsed = m_subsystemTime.GameTime - m_throwableAimStartTime;
+				if (aimTimeElapsed >= ThrowableAimTime)
+				{
+					CompleteThrowableAim();
+				}
+				else if (!HasThrowableItem(out _, out _))
+				{
+					CancelThrowableAim();
+				}
 			}
 		}
 
@@ -422,7 +693,6 @@ namespace Game
 			if (!HasFlameThrower(out int slotIndex, out int flameThrowerValue))
 				return;
 
-			// Asegurar que esté cargado (si no, lo carga automáticamente)
 			EnsureFlameThrowerLoaded();
 			if (!IsFlameThrowerLoaded())
 				return;
@@ -600,26 +870,20 @@ namespace Game
 			FlameBulletBlock.FlameBulletType? bulletType = FlameThrowerBlock.GetBulletType(data);
 			int loadCount = FlameThrowerBlock.GetLoadCount(flameThrowerValue);
 
-			// Si ya está cargado y tiene balas, no hacer nada
 			if (loadState == FlameThrowerBlock.LoadState.Loaded && bulletType != null && loadCount > 0)
 				return;
 
-			// Elegir aleatoriamente entre bala de fuego y bala de veneno
 			FlameBulletBlock.FlameBulletType selectedBullet = m_random.Bool(0.5f)
 				? FlameBulletBlock.FlameBulletType.Flame
 				: FlameBulletBlock.FlameBulletType.Poison;
 
-			// Configurar el lanzallamas con munición infinita
 			int newData = data;
 			newData = FlameThrowerBlock.SetLoadState(newData, FlameThrowerBlock.LoadState.Loaded);
 			newData = FlameThrowerBlock.SetBulletType(newData, new FlameBulletBlock.FlameBulletType?(selectedBullet));
-			// Tensar el interruptor para que pueda disparar inmediatamente
 			newData = FlameThrowerBlock.SetSwitchState(newData, true);
 			int newValue = Terrain.MakeBlockValue(FlameThrowerBlock.Index, 1, newData);
-			// Establecer la cantidad de carga a 15 (máxima)
 			newValue = FlameThrowerBlock.SetLoadCount(newValue, 15);
 
-			// Reemplazar el ítem en el inventario
 			m_componentMiner.Inventory.RemoveSlotItems(slotIndex, 1);
 			m_componentMiner.Inventory.AddSlotItems(slotIndex, newValue, 1);
 		}
@@ -924,7 +1188,6 @@ namespace Game
 			{
 				if (!m_isAimingRanged)
 				{
-					// Asegurar que esté cargado antes de empezar a apuntar
 					if (!IsFlameThrowerLoaded())
 					{
 						EnsureFlameThrowerLoaded();
@@ -940,18 +1203,15 @@ namespace Game
 				}
 				else
 				{
-					// Continuar apuntando
 					Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
 					Vector3 targetCenter = m_target.ComponentCreatureModel.EyePosition;
 					Vector3 direction = Vector3.Normalize(targetCenter - eyePos);
 					Ray3 ray = new Ray3(eyePos, direction);
 					m_componentMiner.Aim(ray, AimState.InProgress);
 
-					// *** RECARGA AUTOMÁTICA MIENTRAS APUNTA ***
 					if (!IsFlameThrowerLoaded())
 					{
 						EnsureFlameThrowerLoaded();
-						// Si después de recargar sigue sin estar cargado (por algún error), cancelar el apuntado
 						if (!IsFlameThrowerLoaded())
 						{
 							CancelRangedAim();
@@ -1072,34 +1332,6 @@ namespace Game
 					{
 						CompleteRepeatCrossbowAim();
 					}
-				}
-			}
-			else if (useFlameThrower)
-			{
-				if (!m_isAimingRanged)
-				{
-					// Asegurar que esté cargado antes de empezar a apuntar
-					if (!IsFlameThrowerLoaded())
-					{
-						EnsureFlameThrowerLoaded();
-						return;
-					}
-
-					StartFlameThrowerAim();
-					Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
-					Vector3 targetCenter = m_target.ComponentCreatureModel.EyePosition;
-					Vector3 direction = Vector3.Normalize(targetCenter - eyePos);
-					Ray3 ray = new Ray3(eyePos, direction);
-					m_componentMiner.Aim(ray, AimState.InProgress);
-				}
-				else
-				{
-					// Continuar apuntando
-					Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
-					Vector3 targetCenter = m_target.ComponentCreatureModel.EyePosition;
-					Vector3 direction = Vector3.Normalize(targetCenter - eyePos);
-					Ray3 ray = new Ray3(eyePos, direction);
-					m_componentMiner.Aim(ray, AimState.InProgress);
 				}
 			}
 		}
@@ -1451,6 +1683,7 @@ namespace Game
 				}
 				m_nextUpdateTime = 0.0;
 				m_isAimingRanged = false;
+				m_isAimingThrowable = false;
 				m_triedToLoad = false;
 				m_aimingStarted = false;
 			}, () =>
@@ -1459,17 +1692,20 @@ namespace Game
 				{
 					m_stateMachine.TransitionTo("LookingForTarget");
 					CancelRangedAim();
+					CancelThrowableAim();
 				}
 				else if (m_chaseTime <= 0f)
 				{
 					m_autoChaseSuppressionTime = m_random.Float(10f, 60f);
 					m_importanceLevel = 0f;
 					CancelRangedAim();
+					CancelThrowableAim();
 				}
 				else if (m_target == null)
 				{
 					m_importanceLevel = 0f;
 					CancelRangedAim();
+					CancelThrowableAim();
 				}
 				else if (m_target.ComponentHealth.Health <= 0f)
 				{
@@ -1483,16 +1719,19 @@ namespace Game
 					}
 					m_importanceLevel = 0f;
 					CancelRangedAim();
+					CancelThrowableAim();
 				}
 				else if (!m_isPersistent && m_componentPathfinding.IsStuck)
 				{
 					m_importanceLevel = 0f;
 					CancelRangedAim();
+					CancelThrowableAim();
 				}
 				else if (m_isPersistent && m_componentPathfinding.IsStuck)
 				{
 					m_stateMachine.TransitionTo("RandomMoving");
 					CancelRangedAim();
+					CancelThrowableAim();
 				}
 				else
 				{
@@ -1505,22 +1744,27 @@ namespace Game
 					{
 						m_importanceLevel = 0f;
 						CancelRangedAim();
+						CancelThrowableAim();
 					}
 					else
 					{
-						int maxPathfindingPositions = 0;
-						if (m_isPersistent)
+						// ⚠️ NUEVO: No establecer destino mientras se está apuntando un objeto lanzable
+						if (!m_isAimingThrowable)
 						{
-							maxPathfindingPositions = ((m_subsystemTime.FixedTimeStep != null) ? 2000 : 500);
+							int maxPathfindingPositions = 0;
+							if (m_isPersistent)
+							{
+								maxPathfindingPositions = ((m_subsystemTime.FixedTimeStep != null) ? 2000 : 500);
+							}
+							BoundingBox bbSelf = m_componentCreature.ComponentBody.BoundingBox;
+							BoundingBox bbTarget = m_target.ComponentBody.BoundingBox;
+							Vector3 selfCenter = 0.5f * (bbSelf.Min + bbSelf.Max);
+							Vector3 targetCenter = 0.5f * (bbTarget.Min + bbTarget.Max);
+							float dist = Vector3.Distance(selfCenter, targetCenter);
+							float followFactor = (dist < 4f) ? 0.2f : 0f;
+							m_componentPathfinding.SetDestination(targetCenter + followFactor * dist * m_target.ComponentBody.Velocity,
+												1f, 1.5f, maxPathfindingPositions, true, false, true, m_target.ComponentBody);
 						}
-						BoundingBox bbSelf = m_componentCreature.ComponentBody.BoundingBox;
-						BoundingBox bbTarget = m_target.ComponentBody.BoundingBox;
-						Vector3 selfCenter = 0.5f * (bbSelf.Min + bbSelf.Max);
-						Vector3 targetCenter = 0.5f * (bbTarget.Min + bbTarget.Max);
-						float dist = Vector3.Distance(selfCenter, targetCenter);
-						float followFactor = (dist < 4f) ? 0.2f : 0f;
-						m_componentPathfinding.SetDestination(targetCenter + followFactor * dist * m_target.ComponentBody.Velocity,
-								1f, 1.5f, maxPathfindingPositions, true, false, true, m_target.ComponentBody);
 
 						if (PlayAngrySoundWhenChasing && m_random.Float(0f, 1f) < 0.33f * m_dt)
 						{
