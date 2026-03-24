@@ -305,9 +305,6 @@ namespace Game
 
 				if (inMeleeRange)
 				{
-					// Asegurar que el arma melee esté equipada
-					EnsureMeleeWeaponActive();
-
 					m_componentCreatureModel.AttackOrder = true;
 					if (m_componentCreatureModel.IsAttackHitMoment)
 					{
@@ -1776,73 +1773,6 @@ namespace Game
 					}
 				}
 			}, null);
-		}
-
-		// ===== MÉTODOS DE DETECCIÓN DE ARMAS CUERPO A CUERPO =====
-		private bool HasMeleeWeapon(out int slotIndex, out int value)
-		{
-			slotIndex = -1;
-			value = 0;
-			if (m_componentMiner?.Inventory == null) return false;
-
-			for (int i = 0; i < m_componentMiner.Inventory.SlotsCount; i++)
-			{
-				int slotValue = m_componentMiner.Inventory.GetSlotValue(i);
-				int slotCount = m_componentMiner.Inventory.GetSlotCount(i);
-				if (slotCount > 0 && !IsThrowableBlock(slotValue))
-				{
-					int contents = Terrain.ExtractContents(slotValue);
-					if (BlocksManager.Blocks[contents].GetMeleePower(slotValue) > 0f)
-					{
-						slotIndex = i;
-						value = slotValue;
-						return true;
-					}
-				}
-			}
-			return false;
-		}
-
-		private void EnsureMeleeWeaponActive()
-		{
-			if (m_componentMiner?.Inventory == null) return;
-
-			// 1. Intentar equipar un arma cuerpo a cuerpo (no lanzable)
-			if (HasMeleeWeapon(out int slotIndex, out _))
-			{
-				if (m_componentMiner.Inventory.ActiveSlotIndex != slotIndex)
-					m_componentMiner.Inventory.ActiveSlotIndex = slotIndex;
-				return;
-			}
-
-			// 2. Si no hay, intentar un objeto lanzable (también sirve como melee)
-			if (HasThrowableItem(out slotIndex, out _))
-			{
-				if (m_componentMiner.Inventory.ActiveSlotIndex != slotIndex)
-					m_componentMiner.Inventory.ActiveSlotIndex = slotIndex;
-				return;
-			}
-
-			// 3. Si no, intentar un arma a distancia (también tiene poder melee)
-			if (HasMusket(out slotIndex, out _))
-			{
-				if (m_componentMiner.Inventory.ActiveSlotIndex != slotIndex)
-					m_componentMiner.Inventory.ActiveSlotIndex = slotIndex;
-				return;
-			}
-			if (HasBow(out slotIndex, out _))
-			{
-				if (m_componentMiner.Inventory.ActiveSlotIndex != slotIndex)
-					m_componentMiner.Inventory.ActiveSlotIndex = slotIndex;
-				return;
-			}
-			if (HasCrossbow(out slotIndex, out _))
-			{
-				if (m_componentMiner.Inventory.ActiveSlotIndex != slotIndex)
-					m_componentMiner.Inventory.ActiveSlotIndex = slotIndex;
-				return;
-			}
-			// Si nada, se deja la mano vacía (active slot no se modifica)
 		}
 
 		// ===== MÉTODOS AUXILIARES =====
