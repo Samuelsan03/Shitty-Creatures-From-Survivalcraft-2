@@ -37,7 +37,7 @@ namespace Game
 		public AttackMode RangedAttackMode = AttackMode.Default;
 
 		// Nuevos parámetros para objetos lanzables
-		public float ThrowableAimTime = 1f;
+		public float ThrowableAimTime = 1.55f;
 		public float ThrowableCooldown = 0.5f;
 		public Vector2 ThrowableAttackRange = new Vector2(5f, 15f);
 
@@ -446,6 +446,12 @@ namespace Game
 					// Reequipar arma a distancia si no estamos en rango melee
 					ReequipRangedWeapon();
 
+					// Si estamos apuntando a distancia pero el objetivo ya no es visible, cancelar apuntado
+					if (m_isAimingRanged && !HasLineOfSightToTarget())
+					{
+						CancelRangedAim();
+					}
+
 					UpdateThrowableAttack(dt);
 					// Si no se está lanzando un objeto, intentar ataque a distancia normal
 					if (!m_isAimingThrowable)
@@ -509,21 +515,36 @@ namespace Game
 			if (m_target == null) return false;
 
 			Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
-			Vector3 targetCenter = m_target.ComponentCreatureModel.EyePosition;
-			Vector3 direction = targetCenter - eyePos;
+			Vector3 targetPos = m_target.ComponentCreatureModel.EyePosition;
+			Vector3 direction = targetPos - eyePos;
 			float distance = direction.Length();
+			if (distance <= 0.1f) return true; // Demasiado cerca, ignorar
+
 			direction /= distance;
-
 			Ray3 ray = new Ray3(eyePos, direction);
-			var result = m_componentMiner.Raycast<BodyRaycastResult>(ray, RaycastMode.Interaction, true, true, true, null);
 
-			if (result != null && result.Value.Distance < distance - 0.5f)
+			// 1. Raycast de terreno (bloques sólidos)
+			TerrainRaycastResult? terrainHit = m_componentMiner.Raycast<TerrainRaycastResult>(
+				ray, RaycastMode.Digging, true, false, false, null);
+
+			if (terrainHit != null && terrainHit.Value.Distance < distance - 0.2f)
 			{
-				return false;
+				return false; // Hay un bloque sólido entre la criatura y el objetivo
 			}
+
+			// 2. Raycast de cuerpos (otros seres)
+			BodyRaycastResult? bodyHit = m_componentMiner.Raycast<BodyRaycastResult>(
+				ray, RaycastMode.Interaction, false, true, false, null);
+
+			if (bodyHit != null && bodyHit.Value.ComponentBody != null &&
+				bodyHit.Value.ComponentBody.Entity != m_target.Entity &&
+				bodyHit.Value.Distance < distance - 0.5f)
+			{
+				return false; // Otro cuerpo bloquea la vista
+			}
+
 			return true;
 		}
-
 		private void StartThrowableAim()
 		{
 			if (!HasThrowableItem(out int slotIndex, out int value))
@@ -613,7 +634,7 @@ namespace Game
 				return;
 			}
 
-			// Verificar línea de visión
+			// NUEVO: Verificar línea de visión (ya usa HasLineOfSightToTarget mejorado)
 			if (!HasLineOfSightToTarget())
 			{
 				CancelThrowableAim();
@@ -1245,6 +1266,21 @@ namespace Game
 			// Si está en rango melee, no usar ataque a distancia
 			bool inMeleeRange = IsTargetInAttackRange(m_target.ComponentBody);
 			if (inMeleeRange)
+			{
+				CancelRangedAim();
+				return;
+			}
+
+			// Verificar si está en rango de lanzamiento
+			bool inThrowableRange = distance >= ThrowableAttackRange.X && distance <= ThrowableAttackRange.Y;
+			if (!inThrowableRange)
+			{
+				CancelThrowableAim();
+				return;
+			}
+
+			// NUEVO: Verificar línea de visión
+			if (!HasLineOfSightToTarget())
 			{
 				CancelRangedAim();
 				return;
