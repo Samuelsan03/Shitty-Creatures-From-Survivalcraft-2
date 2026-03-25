@@ -20,6 +20,8 @@ namespace Game
 		private SubsystemParticles m_subsystemParticles;
 		private SubsystemNoise m_subsystemNoise;
 		private SubsystemTerrain m_subsystemTerrain;
+		private SubsystemBodies m_subsystemBodies;
+		private ComponentPathfinding m_componentPathfinding;
 
 		// Configuración
 		public float MaxDistance = 25f;
@@ -86,6 +88,8 @@ namespace Game
 			m_subsystemProjectiles = base.Project.FindSubsystem<SubsystemProjectiles>(true);
 			m_subsystemAudio = base.Project.FindSubsystem<SubsystemAudio>(true);
 			m_subsystemTerrain = base.Project.FindSubsystem<SubsystemTerrain>(true);
+			m_subsystemBodies = base.Project.FindSubsystem<SubsystemBodies>(true);
+			m_componentPathfinding = base.Entity.FindComponent<ComponentPathfinding>(false);
 
 			// Intentar primero obtener el ComponentNewHumanModel para mejor fluidez
 			m_componentNewHumanModel = base.Entity.FindComponent<ComponentNewHumanModel>(false);
@@ -126,6 +130,35 @@ namespace Game
 			}
 		}
 
+		private bool IsStuck()
+		{
+			return m_componentPathfinding != null && m_componentPathfinding.IsStuck;
+		}
+
+		private bool IsLineOfSightBlocked(ComponentCreature target)
+		{
+			if (target == null) return true;
+			Vector3 start = m_componentCreature.ComponentCreatureModel.EyePosition;
+			Vector3 end = target.ComponentCreatureModel.EyePosition;
+			float distance = Vector3.Distance(start, end);
+			if (distance <= 0.1f) return false;
+			TerrainRaycastResult? terrainHit = m_subsystemTerrain.Raycast(start, end, true, true, (int value, float d) =>
+			{
+				int contents = Terrain.ExtractContents(value);
+				Block block = BlocksManager.Blocks[contents];
+				return block.IsCollidable_(value);
+			});
+			if (terrainHit != null && terrainHit.Value.Distance < distance) return true;
+			BodyRaycastResult? bodyHit = m_subsystemBodies.Raycast(start, end, 0.35f, (ComponentBody body, float dist) =>
+			{
+				if (body == m_componentCreature.ComponentBody) return false;
+				if (body == target.ComponentBody) return false;
+				return true;
+			});
+			if (bodyHit != null && bodyHit.Value.Distance < distance) return true;
+			return false;
+		}
+
 		private ComponentCreature GetChaseTarget()
 		{
 			// Fallback al ComponentChaseBehavior original
@@ -143,7 +176,7 @@ namespace Game
 			// Verificar objetivo
 			ComponentCreature target = GetChaseTarget();
 
-			if (target == null)
+			if (target == null || IsStuck() || IsLineOfSightBlocked(target))
 			{
 				ResetAnimations();
 				if (m_crossbowSlot >= 0)
