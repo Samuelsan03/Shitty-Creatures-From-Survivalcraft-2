@@ -4327,6 +4327,7 @@
   <Parameter Name="AutoChaseMask" Guid="af566bad-3cbc-4862-bf27-f51538a760d4" Value="LandPredator" Type="Game.CreatureCategory"/>
   <Parameter Name="ChaseNonPlayerProbability" Guid="ef831bb5-ae7c-4618-a1e6-26dadb168f8a" Value="1" Type="float"/>
   <Parameter Name="RangedAttackRange" Guid="39a0d30a-76db-4710-9cc6-d9420b0be7ab" Value="5,100" Type="Vector2"/>
+  <Parameter Name="DestroyBlocksWhenStuck" Guid="1d209509-1ab3-4cfe-88a5-cef3fd456e52" Value="true" Type="bool"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="NewHerdBehavior" Guid="bfa4a491-70a5-433d-a240-39ae31531b79" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
         <Parameter Name="HerdName" Value="player" Type="string" Guid="168ea41d-2610-48d7-9b93-59cbc28b3bd8"/>
@@ -5747,6 +5748,7 @@
   <Parameter Name="ChaseNonPlayerProbability" Guid="30dcd658-86d5-41a9-b4c5-59ca08bc7f2f" Value="1" Type="float"/>
   <Parameter Name="RangedAttackRange" Guid="9fe469ec-e561-438f-a6a7-fee08ec31354" Value="5,100" Type="Vector2"/>
   <Parameter Name="DestroyBlocksWhenStuck" Guid="1bfd721f-8d53-4d39-8cca-3d4524f722f6" Value="true" Type="bool"/>
+  <Parameter Name="InvokeLightningOnHit" Guid="3946a281-a031-47a0-91a9-7003e878b39f" Value="true" Type="bool"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="NewHerdBehavior" Guid="24092441-0685-4357-94ce-a31e795ac11a" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
         <Parameter Name="HerdName" Value="player" Type="string" Guid="7c4ae8d0-a812-4953-8ac5-6127532b4830"/>
