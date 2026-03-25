@@ -14,25 +14,20 @@ namespace Game
 		private ComponentInventory m_componentInventory;
 		private SubsystemTime m_subsystemTime;
 		private SubsystemProjectiles m_subsystemProjectiles;
-		private SubsystemAudio m_subsystemAudio;
-		private ComponentCreatureModel m_componentModel;
-		private ComponentNewHumanModel m_componentNewHumanModel;
-		private SubsystemParticles m_subsystemParticles;
-		private SubsystemNoise m_subsystemNoise;
 		private SubsystemTerrain m_subsystemTerrain;
 		private SubsystemBodies m_subsystemBodies;
 		private ComponentPathfinding m_componentPathfinding;
+		private ComponentCreatureModel m_componentModel;
 
 		// Configuración
 		public float MaxDistance = 25f;
-		public float DrawTime = 1.5f;
-		public float AimTime = 0.5f;
-		public float ReloadTime = 0.8f;
-		public float FireSoundDistance = 15f;
-		public float Accuracy = 0.02f;
-		public float BoltSpeed = 45f;
+		public float DrawTime = 1.5f;           // Tiempo de tensado
+		public float AimTime = 0.5f;             // Tiempo de apuntado antes de tensar
+		public float ReloadTime = 0.8f;           // Tiempo de carga del virote
+		public float Accuracy = 0.02f;            // Dispersión
+		public float BoltSpeed = 45f;             // Velocidad base del virote
 
-		// Tipos de virotes a usar (solo los compatibles con ballesta)
+		// Tipos de virotes disponibles
 		public ArrowBlock.ArrowType[] AvailableBoltTypes = new ArrowBlock.ArrowType[]
 		{
 			ArrowBlock.ArrowType.IronBolt,
@@ -52,18 +47,8 @@ namespace Game
 		private float m_currentDraw = 0f;
 		private Random m_random = new Random();
 		private bool m_initialized = false;
-
-		// Tipo de virote seleccionado para el próximo disparo (basado en distancia)
 		private ArrowBlock.ArrowType? m_nextBoltType = null;
 
-		// Variables para suavizado de animaciones
-		private float m_smoothedAimHandAngle = 0f;
-		private Vector3 m_smoothedItemOffset = Vector3.Zero;
-		private Vector3 m_smoothedItemRotation = Vector3.Zero;
-		private float m_animationSmoothFactor = 0.18f;
-		private float m_aimSmoothFactor = 0.3f;
-
-		// UpdateOrder
 		public int UpdateOrder => 0;
 		public override float ImportanceLevel => 0.5f;
 
@@ -76,64 +61,33 @@ namespace Game
 			DrawTime = valuesDictionary.GetValue<float>("DrawTime", 1.5f);
 			AimTime = valuesDictionary.GetValue<float>("AimTime", 0.5f);
 			ReloadTime = valuesDictionary.GetValue<float>("ReloadTime", 0.8f);
-			FireSoundDistance = valuesDictionary.GetValue<float>("FireSoundDistance", 15f);
 			Accuracy = valuesDictionary.GetValue<float>("Accuracy", 0.02f);
 			BoltSpeed = valuesDictionary.GetValue<float>("BoltSpeed", 45f);
 
-			// Inicializar componentes
+			// Componentes
 			m_componentCreature = base.Entity.FindComponent<ComponentCreature>(true);
 			m_componentChaseBehavior = base.Entity.FindComponent<ComponentChaseBehavior>(true);
 			m_componentInventory = base.Entity.FindComponent<ComponentInventory>(true);
 			m_subsystemTime = base.Project.FindSubsystem<SubsystemTime>(true);
 			m_subsystemProjectiles = base.Project.FindSubsystem<SubsystemProjectiles>(true);
-			m_subsystemAudio = base.Project.FindSubsystem<SubsystemAudio>(true);
 			m_subsystemTerrain = base.Project.FindSubsystem<SubsystemTerrain>(true);
 			m_subsystemBodies = base.Project.FindSubsystem<SubsystemBodies>(true);
 			m_componentPathfinding = base.Entity.FindComponent<ComponentPathfinding>(false);
-
-			// Intentar primero obtener el ComponentNewHumanModel para mejor fluidez
-			m_componentNewHumanModel = base.Entity.FindComponent<ComponentNewHumanModel>(false);
-			if (m_componentNewHumanModel != null)
-			{
-				m_componentModel = m_componentNewHumanModel;
-				// Ajustar parámetros de suavizado del nuevo modelo
-				m_componentNewHumanModel.SetAimSmoothness(0.4f);
-			}
-			else
-			{
-				// Fallback al modelo humano normal
-				m_componentModel = base.Entity.FindComponent<ComponentCreatureModel>(true);
-			}
-
-			m_subsystemParticles = base.Project.FindSubsystem<SubsystemParticles>(true);
-			m_subsystemNoise = base.Project.FindSubsystem<SubsystemNoise>(true);
+			m_componentModel = base.Entity.FindComponent<ComponentCreatureModel>(true);
 		}
 
 		public override void OnEntityAdded()
 		{
 			base.OnEntityAdded();
-
 			m_initialized = true;
-
-			// Buscar ballesta
 			FindCrossbow();
 
-			// Inicializar valores suavizados
-			m_smoothedAimHandAngle = 0f;
-			m_smoothedItemOffset = Vector3.Zero;
-			m_smoothedItemRotation = Vector3.Zero;
-
-			// Ballesta sin virote inicialmente
+			// Dejar la ballesta sin virote
 			if (m_crossbowSlot >= 0)
-			{
 				SetCrossbowWithBolt(0, false);
-			}
 		}
 
-		private bool IsStuck()
-		{
-			return m_componentPathfinding != null && m_componentPathfinding.IsStuck;
-		}
+		private bool IsStuck() => m_componentPathfinding != null && m_componentPathfinding.IsStuck;
 
 		private bool IsLineOfSightBlocked(ComponentCreature target)
 		{
@@ -142,29 +96,32 @@ namespace Game
 			Vector3 end = target.ComponentCreatureModel.EyePosition;
 			float distance = Vector3.Distance(start, end);
 			if (distance <= 0.1f) return false;
-			TerrainRaycastResult? terrainHit = m_subsystemTerrain.Raycast(start, end, true, true, (int value, float d) =>
-			{
-				int contents = Terrain.ExtractContents(value);
-				Block block = BlocksManager.Blocks[contents];
-				return block.IsCollidable_(value);
-			});
+
+			TerrainRaycastResult? terrainHit = m_subsystemTerrain.Raycast(start, end, true, true,
+				(int value, float d) =>
+				{
+					int contents = Terrain.ExtractContents(value);
+					Block block = BlocksManager.Blocks[contents];
+					return block.IsCollidable_(value);
+				});
 			if (terrainHit != null && terrainHit.Value.Distance < distance) return true;
-			BodyRaycastResult? bodyHit = m_subsystemBodies.Raycast(start, end, 0.35f, (ComponentBody body, float dist) =>
-			{
-				if (body == m_componentCreature.ComponentBody) return false;
-				if (body == target.ComponentBody) return false;
-				return true;
-			});
+
+			BodyRaycastResult? bodyHit = m_subsystemBodies.Raycast(start, end, 0.35f,
+				(ComponentBody body, float dist) =>
+				{
+					if (body == m_componentCreature.ComponentBody) return false;
+					if (body == target.ComponentBody) return false;
+					return true;
+				});
 			if (bodyHit != null && bodyHit.Value.Distance < distance) return true;
+
 			return false;
 		}
 
 		private ComponentCreature GetChaseTarget()
 		{
-			// Fallback al ComponentChaseBehavior original
 			if (m_componentChaseBehavior != null && m_componentChaseBehavior.Target != null)
 				return m_componentChaseBehavior.Target;
-
 			return null;
 		}
 
@@ -173,59 +130,42 @@ namespace Game
 			if (!m_initialized || m_componentCreature.ComponentHealth.Health <= 0f)
 				return;
 
-			// Verificar objetivo
 			ComponentCreature target = GetChaseTarget();
 
 			if (target == null || IsStuck() || IsLineOfSightBlocked(target))
 			{
-				ResetAnimations();
+				ResetState();
 				if (m_crossbowSlot >= 0)
-				{
 					SetCrossbowWithBolt(0, false);
-				}
 				return;
 			}
 
-			// Calcular distancia
 			float distance = Vector3.Distance(
 				m_componentCreature.ComponentBody.Position,
 				target.ComponentBody.Position
 			);
 
-			// SOLO VERIFICAR DISTANCIA MÁXIMA - SIEMPRE DISPARAR SI ESTÁ EN RANGO
 			if (distance <= MaxDistance)
 			{
+				// Iniciar secuencia si no estamos en ningún estado
 				if (!m_isAiming && !m_isDrawing && !m_isFiring && !m_isReloading)
-				{
 					StartAiming(target);
-				}
 			}
 			else
 			{
-				ResetAnimations();
+				ResetState();
 				if (m_crossbowSlot >= 0)
-				{
 					SetCrossbowWithBolt(0, false);
-				}
 				return;
 			}
 
-			// MIRAR AL OBJETIVO SIEMPRE
+			// Mirar al objetivo (solo visual, sin animación extra)
 			if (m_componentModel != null && target != null)
-			{
-				m_componentModel.LookAtOrder = new Vector3?(
-					target.ComponentCreatureModel.EyePosition
-				);
-			}
+				m_componentModel.LookAtOrder = target.ComponentCreatureModel.EyePosition;
 
-			// Aplicar suavizado de animaciones
-			ApplySmoothAnimations(dt);
-
-			// Lógica de estados
+			// Máquina de estados
 			if (m_isAiming)
 			{
-				ApplyAimingAnimation(dt, target);
-
 				if (m_subsystemTime.GameTime - m_animationStartTime >= AimTime)
 				{
 					m_isAiming = false;
@@ -234,25 +174,17 @@ namespace Game
 			}
 			else if (m_isDrawing)
 			{
-				ApplyDrawingAnimation(dt, target);
-
 				m_currentDraw = MathUtils.Clamp((float)((m_subsystemTime.GameTime - m_drawStartTime) / DrawTime), 0f, 1f);
-
-				// Actualizar tensión visual
 				SetCrossbowWithBolt((int)(m_currentDraw * 15f), false);
 
 				if (m_subsystemTime.GameTime - m_drawStartTime >= DrawTime)
 				{
-					// Tensado completo, cargar virote
 					LoadBolt(target);
 				}
 			}
 			else if (m_isReloading)
 			{
-				ApplyReloadingAnimation(dt, target);
-
-				// Después de cargar el virote, disparar inmediatamente
-				if (m_subsystemTime.GameTime - m_animationStartTime >= 0.3f)
+				if (m_subsystemTime.GameTime - m_animationStartTime >= ReloadTime)
 				{
 					m_isReloading = false;
 					Fire(target);
@@ -260,61 +192,12 @@ namespace Game
 			}
 			else if (m_isFiring)
 			{
-				ApplyFiringAnimation(dt);
-
-				if (m_subsystemTime.GameTime - m_fireTime >= 0.2f)
+				if (m_subsystemTime.GameTime - m_fireTime >= 0.2f) // breve pausa tras disparo
 				{
 					m_isFiring = false;
-
-					// Quitar virote después de disparar
 					ClearBoltFromCrossbow();
-
-					// Pausa antes de recargar
-					if (m_subsystemTime.GameTime - m_fireTime >= 0.8f)
-					{
-						StartAiming(target);
-					}
+					// Volver a empezar el ciclo (el siguiente frame empezará a apuntar)
 				}
-			}
-		}
-
-		// Aplicar suavizado igual que NewHumanModel
-		private void ApplySmoothAnimations(float dt)
-		{
-			float smoothSpeed = MathUtils.Min(10f * dt, 0.85f);
-			float aimSmoothSpeed = MathUtils.Min(5f * dt, 0.9f);
-
-			// Si tenemos ComponentNewHumanModel, usar su sistema de suavizado interno
-			if (m_componentNewHumanModel != null)
-			{
-				// El modelo ya maneja el suavizado internamente
-				return;
-			}
-
-			// Suavizado manual para el modelo normal
-			if (m_componentModel != null)
-			{
-				// Suavizar el ángulo de apuntar
-				float targetAimAngle = m_componentModel.AimHandAngleOrder;
-				m_smoothedAimHandAngle = MathUtils.Lerp(m_smoothedAimHandAngle,
-					targetAimAngle, aimSmoothSpeed * 0.7f);
-
-				// Aplicar ángulo suavizado
-				m_componentModel.AimHandAngleOrder = m_smoothedAimHandAngle;
-
-				// Suavizar offset del ítem
-				Vector3 targetOffset = m_componentModel.InHandItemOffsetOrder;
-				m_smoothedItemOffset = Vector3.Lerp(m_smoothedItemOffset,
-					targetOffset, smoothSpeed);
-
-				// Suavizar rotación del ítem
-				Vector3 targetRotation = m_componentModel.InHandItemRotationOrder;
-				m_smoothedItemRotation = Vector3.Lerp(m_smoothedItemRotation,
-					targetRotation, smoothSpeed);
-
-				// Aplicar valores suavizados
-				m_componentModel.InHandItemOffsetOrder = m_smoothedItemOffset;
-				m_componentModel.InHandItemRotationOrder = m_smoothedItemRotation;
 			}
 		}
 
@@ -350,33 +233,19 @@ namespace Game
 				if (currentCrossbowValue == 0) return;
 
 				int currentData = Terrain.ExtractData(currentCrossbowValue);
+				ArrowBlock.ArrowType? boltType = hasBolt ? m_nextBoltType : null;
 
-				ArrowBlock.ArrowType? boltType = null;
-				if (hasBolt)
-				{
-					// Usar el tipo previamente seleccionado para este disparo
-					boltType = m_nextBoltType;
-				}
-
-				// Configurar ballesta con tensión y virote
 				int newData = CrossbowBlock.SetDraw(currentData, MathUtils.Clamp(drawValue, 0, 15));
 				newData = CrossbowBlock.SetArrowType(newData, boltType);
 
-				// Actualizar la ballesta en el inventario
 				int newCrossbowValue = Terrain.ReplaceData(currentCrossbowValue, newData);
 				m_componentInventory.RemoveSlotItems(m_crossbowSlot, 1);
 				m_componentInventory.AddSlotItems(m_crossbowSlot, newCrossbowValue, 1);
 			}
-			catch (Exception ex)
-			{
-				// Log.Error($"Error en SetCrossbowWithBolt: {ex.Message}");
-			}
+			catch (Exception) { }
 		}
 
-		private void ClearBoltFromCrossbow()
-		{
-			SetCrossbowWithBolt(0, false);
-		}
+		private void ClearBoltFromCrossbow() => SetCrossbowWithBolt(0, false);
 
 		private void StartAiming(ComponentCreature target)
 		{
@@ -387,7 +256,6 @@ namespace Game
 			m_animationStartTime = m_subsystemTime.GameTime;
 			m_currentDraw = 0f;
 
-			// Seleccionar tipo de virote basado en la distancia actual
 			if (target != null)
 			{
 				float distance = Vector3.Distance(
@@ -401,23 +269,7 @@ namespace Game
 				m_nextBoltType = GetFirstNonExplosiveBoltType();
 			}
 
-			// Mostrar ballesta sin virote
 			SetCrossbowWithBolt(0, false);
-		}
-
-		private void ApplyAimingAnimation(float dt, ComponentCreature target)
-		{
-			if (m_componentModel != null)
-			{
-				// ANIMACIÓN DE APUNTADO - VERTICAL COMO MOSQUETE
-				float targetAimAngle = 1.4f;
-				Vector3 targetOffset = new Vector3(-0.08f, -0.08f, 0.07f);
-				Vector3 targetRotation = new Vector3(-1.7f, 0f, 0f);
-
-				m_componentModel.AimHandAngleOrder = targetAimAngle;
-				m_componentModel.InHandItemOffsetOrder = targetOffset;
-				m_componentModel.InHandItemRotationOrder = targetRotation;
-			}
 		}
 
 		private void StartDrawing()
@@ -427,49 +279,20 @@ namespace Game
 			m_isFiring = false;
 			m_isReloading = false;
 			m_drawStartTime = m_subsystemTime.GameTime;
-
-			// Sonido de tensado de ballesta
-			m_subsystemAudio.PlaySound("Audio/CrossbowDraw", 0.5f, m_random.Float(-0.1f, 0.1f),
-				m_componentCreature.ComponentBody.Position, 3f, false);
-		}
-
-		private void ApplyDrawingAnimation(float dt, ComponentCreature target)
-		{
-			if (m_componentModel != null)
-			{
-				float drawFactor = m_currentDraw;
-
-				// ANIMACIÓN DE TENSADO - MOVIMIENTO HACIA ATRÁS
-				float targetAimAngle = 1.4f;
-				Vector3 targetOffset = new Vector3(
-					-0.08f + (0.05f * drawFactor),
-					-0.08f,
-					0.07f - (0.03f * drawFactor)
-				);
-				Vector3 targetRotation = new Vector3(-1.7f, 0f, 0f);
-
-				m_componentModel.AimHandAngleOrder = targetAimAngle;
-				m_componentModel.InHandItemOffsetOrder = targetOffset;
-				m_componentModel.InHandItemRotationOrder = targetRotation;
-			}
 		}
 
 		private void LoadBolt(ComponentCreature target)
 		{
-			// Determinar el tipo de virote según la distancia actual
 			if (target != null)
 			{
 				float distance = Vector3.Distance(
 					m_componentCreature.ComponentBody.Position,
 					target.ComponentBody.Position
 				);
-
-				// Elegir el tipo apropiado
 				m_nextBoltType = SelectBoltTypeForDistance(distance);
 			}
 			else
 			{
-				// Si no hay objetivo, usar un tipo por defecto (el primero no explosivo)
 				m_nextBoltType = GetFirstNonExplosiveBoltType();
 			}
 
@@ -477,22 +300,37 @@ namespace Game
 			m_isReloading = true;
 			m_animationStartTime = m_subsystemTime.GameTime;
 
-			// Cargar virote en la ballesta (tensada completamente)
 			SetCrossbowWithBolt(15, true);
-
-			// Sonido de recarga
-			m_subsystemAudio.PlaySound("Audio/Reload", 1f, m_random.Float(-0.1f, 0.1f),
-				m_componentCreature.ComponentBody.Position, 3f, false);
 		}
 
-		// Selecciona el tipo de virote basado en la distancia
+		private void Fire(ComponentCreature target)
+		{
+			m_isReloading = false;
+			m_isFiring = true;
+			m_fireTime = m_subsystemTime.GameTime;
+
+			ShootBolt(target);
+		}
+
+		private void ResetState()
+		{
+			m_isAiming = false;
+			m_isDrawing = false;
+			m_isFiring = false;
+			m_isReloading = false;
+			m_currentDraw = 0f;
+			m_nextBoltType = null;
+
+			if (m_componentModel != null)
+				m_componentModel.LookAtOrder = null;
+		}
+
 		private ArrowBlock.ArrowType? SelectBoltTypeForDistance(float distance)
 		{
 			const float explosiveMinDistance = 20f;
 
 			if (distance >= explosiveMinDistance)
 			{
-				// A larga distancia: usar TODOS los tipos disponibles (incluyendo explosivos)
 				if (AvailableBoltTypes.Length > 0)
 				{
 					int index = m_random.Int(0, AvailableBoltTypes.Length - 1);
@@ -501,22 +339,18 @@ namespace Game
 			}
 			else
 			{
-				// A corta distancia: solo tipos no explosivos (por seguridad)
 				var nonExplosiveTypes = new List<ArrowBlock.ArrowType>();
 				foreach (var boltType in AvailableBoltTypes)
 				{
 					if (boltType != ArrowBlock.ArrowType.ExplosiveBolt)
 						nonExplosiveTypes.Add(boltType);
 				}
-
 				if (nonExplosiveTypes.Count > 0)
 				{
 					int index = m_random.Int(0, nonExplosiveTypes.Count - 1);
 					return nonExplosiveTypes[index];
 				}
 			}
-
-			// Si no hay tipos disponibles o solo hay explosivos a corta distancia, usar el primero
 			return AvailableBoltTypes.Length > 0 ? AvailableBoltTypes[0] : (ArrowBlock.ArrowType?)null;
 		}
 
@@ -530,143 +364,23 @@ namespace Game
 			return AvailableBoltTypes.Length > 0 ? AvailableBoltTypes[0] : (ArrowBlock.ArrowType?)null;
 		}
 
-		private void ApplyReloadingAnimation(float dt, ComponentCreature target)
-		{
-			if (m_componentModel != null)
-			{
-				// ANIMACIÓN DE CARGA - PEQUEÑO MOVIMIENTO HACIA ABAJO
-				float reloadProgress = (float)((m_subsystemTime.GameTime - m_animationStartTime) / 0.3f);
-
-				float targetAimAngle = 1.4f;
-				Vector3 targetOffset = new Vector3(
-					-0.08f,
-					-0.08f - (0.05f * reloadProgress),
-					0.07f
-				);
-				Vector3 targetRotation = new Vector3(-1.7f, 0f, 0f);
-
-				m_componentModel.AimHandAngleOrder = targetAimAngle;
-				m_componentModel.InHandItemOffsetOrder = targetOffset;
-				m_componentModel.InHandItemRotationOrder = targetRotation;
-			}
-		}
-
-		private void Fire(ComponentCreature target)
-		{
-			m_isReloading = false;
-			m_isFiring = true;
-			m_fireTime = m_subsystemTime.GameTime;
-
-			// Disparar virote
-			ShootBolt(target);
-
-			// Sonido de disparo de ballesta
-			m_subsystemAudio.PlaySound("Audio/Bow", 0.8f, m_random.Float(-0.1f, 0.1f),
-				m_componentCreature.ComponentBody.Position, FireSoundDistance, false);
-
-			// Retroceso ligero
-			if (target != null)
-			{
-				Vector3 direction = Vector3.Normalize(
-					target.ComponentBody.Position -
-					m_componentCreature.ComponentBody.Position
-				);
-				m_componentCreature.ComponentBody.ApplyImpulse(-direction * 1.5f);
-			}
-		}
-
-		private void ApplyFiringAnimation(float dt)
-		{
-			if (m_componentModel != null)
-			{
-				float fireProgress = (float)((m_subsystemTime.GameTime - m_fireTime) / 0.2f);
-
-				if (fireProgress < 0.5f)
-				{
-					// Pequeño retroceso
-					float recoil = 0.05f * (1f - (fireProgress * 2f));
-
-					Vector3 targetOffset = m_componentModel.InHandItemOffsetOrder + new Vector3(recoil, 0f, 0f);
-					Vector3 targetRotation = m_componentModel.InHandItemRotationOrder + new Vector3(recoil * 2f, 0f, 0f);
-					float targetAimAngle = 1.4f;
-
-					m_componentModel.AimHandAngleOrder = targetAimAngle;
-					m_componentModel.InHandItemOffsetOrder = targetOffset;
-					m_componentModel.InHandItemRotationOrder = targetRotation;
-				}
-				else
-				{
-					// Volver a posición normal gradualmente
-					float returnProgress = (fireProgress - 0.5f) / 0.5f;
-
-					float targetAimAngle = 1.4f * (1f - returnProgress);
-					Vector3 targetOffset = new Vector3(
-						-0.08f * (1f - returnProgress),
-						-0.08f * (1f - returnProgress),
-						0.07f * (1f - returnProgress)
-					);
-					Vector3 targetRotation = new Vector3(
-						-1.7f * (1f - returnProgress),
-						0f,
-						0f
-					);
-
-					m_componentModel.AimHandAngleOrder = targetAimAngle;
-					m_componentModel.InHandItemOffsetOrder = targetOffset;
-					m_componentModel.InHandItemRotationOrder = targetRotation;
-				}
-			}
-		}
-
-		private void ResetAnimations()
-		{
-			m_isAiming = false;
-			m_isDrawing = false;
-			m_isFiring = false;
-			m_isReloading = false;
-			m_currentDraw = 0f;
-			m_nextBoltType = null;
-
-			// Resetear valores suavizados
-			m_smoothedAimHandAngle = 0f;
-			m_smoothedItemOffset = Vector3.Zero;
-			m_smoothedItemRotation = Vector3.Zero;
-
-			if (m_componentModel != null)
-			{
-				m_componentModel.AimHandAngleOrder = 0f;
-				m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
-				m_componentModel.InHandItemRotationOrder = Vector3.Zero;
-				m_componentModel.LookAtOrder = null;
-			}
-		}
-
 		private void ShootBolt(ComponentCreature target)
 		{
-			if (target == null)
-				return;
+			if (target == null) return;
 
 			try
 			{
-				// Usar el tipo seleccionado previamente (en LoadBolt o StartAiming)
 				ArrowBlock.ArrowType? boltType = m_nextBoltType;
 				if (boltType == null)
 				{
-					// Por si acaso, elegir uno ahora (no debería ocurrir)
 					float distance = Vector3.Distance(
 						m_componentCreature.ComponentBody.Position,
 						target.ComponentBody.Position
 					);
 					boltType = SelectBoltTypeForDistance(distance);
 				}
+				if (boltType == null) return;
 
-				if (boltType == null)
-				{
-					// No hay tipos disponibles
-					return;
-				}
-
-				// Si por algún motivo el tipo es explosivo y la distancia es menor a 20, cambiamos a uno no explosivo
 				float currentDistance = Vector3.Distance(
 					m_componentCreature.ComponentBody.Position,
 					target.ComponentBody.Position
@@ -707,22 +421,11 @@ namespace Game
 				if (projectile != null)
 				{
 					projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
-
 					if (boltType == ArrowBlock.ArrowType.ExplosiveBolt)
-					{
 						projectile.IsIncendiary = false;
-					}
-				}
-
-				if (m_subsystemNoise != null)
-				{
-					m_subsystemNoise.MakeNoise(firePosition, 0.5f, 20f);
 				}
 			}
-			catch (Exception ex)
-			{
-				// Log.Error($"Error en ShootBolt: {ex.Message}");
-			}
+			catch (Exception) { }
 		}
 	}
 }
