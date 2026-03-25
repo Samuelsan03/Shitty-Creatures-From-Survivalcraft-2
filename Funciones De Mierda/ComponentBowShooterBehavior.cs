@@ -1,3 +1,4 @@
+// ComponentBowShooterBehavior.cs - Versión modificada que usa ComponentMiner.Aim
 using System;
 using System.Collections.Generic;
 using Engine;
@@ -12,12 +13,15 @@ namespace Game
 		private ComponentCreature m_componentCreature;
 		private ComponentChaseBehavior m_componentChaseBehavior;
 		private ComponentInventory m_componentInventory;
+		private ComponentMiner m_componentMiner;
 		private SubsystemTime m_subsystemTime;
 		private SubsystemProjectiles m_subsystemProjectiles;
 		private SubsystemAudio m_subsystemAudio;
 		private ComponentCreatureModel m_componentModel;
 		private SubsystemParticles m_subsystemParticles;
 		private SubsystemTerrain m_subsystemTerrain;
+		private SubsystemBodies m_subsystemBodies;
+		private ComponentPathfinding m_componentPathfinding;
 
 		// Configuración
 		public float MaxDistance = 25f;
@@ -53,7 +57,6 @@ namespace Game
 		// Tipo de flecha seleccionado para el próximo disparo
 		private ArrowBlock.ArrowType m_nextArrowType = ArrowBlock.ArrowType.WoodenArrow;
 
-		// UpdateOrder
 		public int UpdateOrder => 0;
 		public override float ImportanceLevel => 0.5f;
 
@@ -71,36 +74,52 @@ namespace Game
 			m_componentCreature = base.Entity.FindComponent<ComponentCreature>(true);
 			m_componentChaseBehavior = base.Entity.FindComponent<ComponentChaseBehavior>(true);
 			m_componentInventory = base.Entity.FindComponent<ComponentInventory>(true);
+			m_componentMiner = base.Entity.FindComponent<ComponentMiner>(true);
 			m_subsystemTime = base.Project.FindSubsystem<SubsystemTime>(true);
 			m_subsystemProjectiles = base.Project.FindSubsystem<SubsystemProjectiles>(true);
 			m_subsystemAudio = base.Project.FindSubsystem<SubsystemAudio>(true);
 			m_componentModel = base.Entity.FindComponent<ComponentCreatureModel>(true);
 			m_subsystemParticles = base.Project.FindSubsystem<SubsystemParticles>(true);
 			m_subsystemTerrain = base.Project.FindSubsystem<SubsystemTerrain>(true);
+			m_subsystemBodies = base.Project.FindSubsystem<SubsystemBodies>(true);
+			m_componentPathfinding = base.Entity.FindComponent<ComponentPathfinding>(false);
 		}
 
 		public override void OnEntityAdded()
 		{
 			base.OnEntityAdded();
-
 			m_initialized = true;
-
 			FindBow();
+		}
 
-			// NO mostrar flecha al inicio - arco vacío
-			if (m_bowSlot >= 0)
+		private bool IsStuck() => m_componentPathfinding != null && m_componentPathfinding.IsStuck;
+
+		private bool IsLineOfSightBlocked(ComponentCreature target)
+		{
+			if (target == null) return true;
+			Vector3 start = m_componentCreature.ComponentCreatureModel.EyePosition;
+			Vector3 end = target.ComponentCreatureModel.EyePosition;
+			float distance = Vector3.Distance(start, end);
+			if (distance <= 0.1f) return false;
+			TerrainRaycastResult? terrainHit = m_subsystemTerrain.Raycast(start, end, true, true, (int value, float d) =>
 			{
-				m_componentInventory.ActiveSlotIndex = m_bowSlot;
-				ClearArrowFromBow();
-			}
+				int contents = Terrain.ExtractContents(value);
+				Block block = BlocksManager.Blocks[contents];
+				return block.IsCollidable_(value);
+			});
+			if (terrainHit != null && terrainHit.Value.Distance < distance) return true;
+			BodyRaycastResult? bodyHit = m_subsystemBodies.Raycast(start, end, 0.35f, (ComponentBody body, float dist) =>
+			{
+				if (body == m_componentCreature.ComponentBody) return false;
+				if (body == target.ComponentBody) return false;
+				return true;
+			});
+			return bodyHit != null && bodyHit.Value.Distance < distance;
 		}
 
 		private ComponentCreature GetChaseTarget()
 		{
-			if (m_componentChaseBehavior != null && m_componentChaseBehavior.Target != null)
-				return m_componentChaseBehavior.Target;
-
-			return null;
+			return m_componentChaseBehavior?.Target;
 		}
 
 		public void Update(float dt)
@@ -116,14 +135,11 @@ namespace Game
 
 			ComponentCreature target = GetChaseTarget();
 
-			if (target == null)
+			if (target == null || IsStuck() || IsLineOfSightBlocked(target))
 			{
-				ResetAnimations();
+				ResetState();
 				if (m_bowSlot >= 0)
-				{
-					m_componentInventory.ActiveSlotIndex = m_bowSlot;
-					ClearArrowFromBow();
-				}
+					ClearBowState();
 				return;
 			}
 
@@ -132,7 +148,6 @@ namespace Game
 				target.ComponentBody.Position
 			);
 
-			// SOLO VERIFICAR DISTANCIA MÁXIMA - SIEMPRE DISPARAR SI ESTÁ EN RANGO
 			if (distance <= MaxDistance)
 			{
 				if (!m_isAiming && !m_isDrawing && !m_isFiring)
@@ -142,26 +157,27 @@ namespace Game
 			}
 			else
 			{
-				ResetAnimations();
+				ResetState();
 				if (m_bowSlot >= 0)
-				{
-					ClearArrowFromBow();
-				}
+					ClearBowState();
 				return;
 			}
 
 			// MIRAR AL OBJETIVO SIEMPRE
 			if (m_componentModel != null && target != null)
 			{
-				m_componentModel.LookAtOrder = new Vector3?(
-					target.ComponentCreatureModel.EyePosition
-				);
+				m_componentModel.LookAtOrder = target.ComponentCreatureModel.EyePosition;
 			}
 
-			// Ciclo de disparo
+			// Ciclo de disparo usando Aim
 			if (m_isAiming)
 			{
-				ApplyAimingAnimation(dt, target);
+				Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
+				Vector3 targetPos = target.ComponentBody.Position;
+				targetPos.Y += target.ComponentBody.BoxSize.Y * 0.5f;
+				Vector3 dir = Vector3.Normalize(targetPos - eyePos);
+				Ray3 aimRay = new Ray3(eyePos, dir);
+				m_componentMiner.Aim(aimRay, AimState.InProgress);
 
 				if (m_subsystemTime.GameTime - m_animationStartTime >= AimTime)
 				{
@@ -171,27 +187,26 @@ namespace Game
 			}
 			else if (m_isDrawing)
 			{
-				ApplyDrawingAnimation(dt, target);
+				Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
+				Vector3 targetPos = target.ComponentBody.Position;
+				targetPos.Y += target.ComponentBody.BoxSize.Y * 0.5f;
+				Vector3 dir = Vector3.Normalize(targetPos - eyePos);
+				Ray3 aimRay = new Ray3(eyePos, dir);
+				m_componentMiner.Aim(aimRay, AimState.InProgress);
 
 				m_currentDraw = MathUtils.Clamp((float)((m_subsystemTime.GameTime - m_drawStartTime) / DrawTime), 0f, 1f);
 
-				SetBowWithArrow((int)(m_currentDraw * 15f));
-
 				if (m_subsystemTime.GameTime - m_drawStartTime >= DrawTime)
 				{
+					m_isDrawing = false;
 					Fire(target);
 				}
 			}
 			else if (m_isFiring)
 			{
-				ApplyFiringAnimation(dt);
-
 				if (m_subsystemTime.GameTime - m_fireTime >= 0.2)
 				{
 					m_isFiring = false;
-
-					ClearArrowFromBow();
-
 					if (m_subsystemTime.GameTime - m_fireTime >= 0.8)
 					{
 						StartAiming();
@@ -205,87 +220,42 @@ namespace Game
 			for (int i = 0; i < m_componentInventory.SlotsCount; i++)
 			{
 				int slotValue = m_componentInventory.GetSlotValue(i);
-				if (slotValue != 0)
+				if (slotValue != 0 && BlocksManager.Blocks[Terrain.ExtractContents(slotValue)] is BowBlock)
 				{
-					Block block = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)];
-					if (block is BowBlock)
-					{
-						m_bowSlot = i;
-						m_componentInventory.ActiveSlotIndex = i;
-						break;
-					}
+					m_bowSlot = i;
+					m_componentInventory.ActiveSlotIndex = i;
+					break;
 				}
 			}
 		}
 
-		private void SetBowWithArrow(int drawValue)
-		{
-			if (m_bowSlot < 0)
-			{
-				FindBow();
-				if (m_bowSlot < 0) return;
-			}
-
-			try
-			{
-				int currentBowValue = m_componentInventory.GetSlotValue(m_bowSlot);
-				if (currentBowValue == 0) return;
-
-				int currentData = Terrain.ExtractData(currentBowValue);
-
-				ArrowBlock.ArrowType arrowType = m_nextArrowType;
-
-				ArrowBlock.ArrowType? currentArrowType = BowBlock.GetArrowType(currentData);
-				int currentDraw = BowBlock.GetDraw(currentData);
-				int newDraw = MathUtils.Clamp(drawValue, 0, 15);
-
-				if (!currentArrowType.HasValue ||
-					currentArrowType.Value != arrowType ||
-					currentDraw != newDraw)
-				{
-					int newData = BowBlock.SetArrowType(currentData, arrowType);
-					newData = BowBlock.SetDraw(newData, newDraw);
-
-					int newBowValue = Terrain.ReplaceData(currentBowValue, newData);
-
-					m_componentInventory.RemoveSlotItems(m_bowSlot, 1);
-					m_componentInventory.AddSlotItems(m_bowSlot, newBowValue, 1);
-
-					m_componentInventory.ActiveSlotIndex = m_bowSlot;
-				}
-			}
-			catch (Exception ex)
-			{
-				Log.Error($"Error en SetBowWithArrow: {ex.Message}");
-			}
-		}
-
-		private void ClearArrowFromBow()
+		private void SetBowArrowType(ArrowBlock.ArrowType arrowType)
 		{
 			if (m_bowSlot < 0) return;
+			int bowValue = m_componentInventory.GetSlotValue(m_bowSlot);
+			if (bowValue == 0) return;
 
-			try
-			{
-				int currentBowValue = m_componentInventory.GetSlotValue(m_bowSlot);
-				if (currentBowValue == 0) return;
+			int data = Terrain.ExtractData(bowValue);
+			data = BowBlock.SetArrowType(data, arrowType);
+			int newValue = Terrain.ReplaceData(bowValue, data);
 
-				int currentData = Terrain.ExtractData(currentBowValue);
+			m_componentInventory.RemoveSlotItems(m_bowSlot, 1);
+			m_componentInventory.AddSlotItems(m_bowSlot, newValue, 1);
+		}
 
-				if (BowBlock.GetArrowType(currentData).HasValue)
-				{
-					int newData = BowBlock.SetArrowType(currentData, null);
-					newData = BowBlock.SetDraw(newData, 0);
+		private void ClearBowState()
+		{
+			if (m_bowSlot < 0) return;
+			int bowValue = m_componentInventory.GetSlotValue(m_bowSlot);
+			if (bowValue == 0) return;
 
-					int newBowValue = Terrain.ReplaceData(currentBowValue, newData);
+			int data = Terrain.ExtractData(bowValue);
+			data = BowBlock.SetDraw(data, 0);
+			data = BowBlock.SetArrowType(data, null);
+			int newValue = Terrain.ReplaceData(bowValue, data);
 
-					m_componentInventory.RemoveSlotItems(m_bowSlot, 1);
-					m_componentInventory.AddSlotItems(m_bowSlot, newBowValue, 1);
-				}
-			}
-			catch (Exception ex)
-			{
-				Log.Error($"Error en ClearArrowFromBow: {ex.Message}");
-			}
+			m_componentInventory.RemoveSlotItems(m_bowSlot, 1);
+			m_componentInventory.AddSlotItems(m_bowSlot, newValue, 1);
 		}
 
 		private void StartAiming()
@@ -299,24 +269,11 @@ namespace Game
 			// Seleccionar tipo de flecha aleatorio para este disparo
 			m_nextArrowType = m_availableArrowTypes[m_random.Int(0, m_availableArrowTypes.Length - 1)];
 
-			if (m_bowSlot < 0)
-			{
-				FindBow();
-				if (m_bowSlot < 0) return;
-			}
+			// Pre-cargar la flecha en el arco (sin tensar)
+			SetBowArrowType(m_nextArrowType);
 
-			m_componentInventory.ActiveSlotIndex = m_bowSlot;
-			SetBowWithArrow(0);
-		}
-
-		private void ApplyAimingAnimation(float dt, ComponentCreature target)
-		{
-			if (m_componentModel != null)
-			{
-				m_componentModel.AimHandAngleOrder = 0.5f;
-				m_componentModel.InHandItemOffsetOrder = new Vector3(0.02f, 0.12f, 0.08f);
-				m_componentModel.InHandItemRotationOrder = new Vector3(-0.05f, 0.25f, 0.01f);
-			}
+			if (m_bowSlot >= 0 && m_componentInventory.ActiveSlotIndex != m_bowSlot)
+				m_componentInventory.ActiveSlotIndex = m_bowSlot;
 		}
 
 		private void StartDrawing()
@@ -325,38 +282,6 @@ namespace Game
 			m_isDrawing = true;
 			m_isFiring = false;
 			m_drawStartTime = m_subsystemTime.GameTime;
-
-			m_subsystemAudio.PlaySound("Audio/BowDraw", 0.5f, m_random.Float(-0.1f, 0.1f),
-				m_componentCreature.ComponentBody.Position, 3f, false);
-		}
-
-		private void ApplyDrawingAnimation(float dt, ComponentCreature target)
-		{
-			if (m_componentModel != null)
-			{
-				float drawFactor = m_currentDraw;
-
-				m_componentModel.AimHandAngleOrder = 0.5f + (0.4f * drawFactor);
-
-				float horizontalOffset = 0.02f - (0.01f * drawFactor);
-				float verticalOffset = 0.12f + (0.05f * drawFactor);
-				float depthOffset = 0.08f - (0.03f * drawFactor);
-
-				float pitchRotation = -0.05f - (0.15f * drawFactor);
-				float yawRotation = 0.25f - (0.08f * drawFactor);
-				float rollRotation = 0.01f - (0.005f * drawFactor);
-
-				m_componentModel.InHandItemOffsetOrder = new Vector3(
-					horizontalOffset,
-					verticalOffset,
-					depthOffset
-				);
-				m_componentModel.InHandItemRotationOrder = new Vector3(
-					pitchRotation,
-					yawRotation,
-					rollRotation
-				);
-			}
 		}
 
 		private void Fire(ComponentCreature target)
@@ -365,121 +290,30 @@ namespace Game
 			m_isFiring = true;
 			m_fireTime = m_subsystemTime.GameTime;
 
-			try
-			{
-				ShootArrow(target);
-			}
-			catch (Exception ex)
-			{
-				Log.Error($"Error en Fire(): {ex.Message}");
-			}
-
-			m_subsystemAudio.PlaySound("Audio/Bow", 0.8f, m_random.Float(-0.1f, 0.1f),
-				m_componentCreature.ComponentBody.Position, FireSoundDistance, false);
+			// Llamar a Aim con estado Completed
+			Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
+			Vector3 targetPos = target.ComponentBody.Position;
+			targetPos.Y += target.ComponentBody.BoxSize.Y * 0.5f;
+			Vector3 dir = Vector3.Normalize(targetPos - eyePos);
+			Ray3 aimRay = new Ray3(eyePos, dir);
+			m_componentMiner.Aim(aimRay, AimState.Completed);
 		}
 
-		private void ApplyFiringAnimation(float dt)
-		{
-			if (m_componentModel != null)
-			{
-				float fireProgress = (float)((m_subsystemTime.GameTime - m_fireTime) / 0.2);
-
-				if (fireProgress < 0.5f)
-				{
-					float recoil = 0.01f * (1f - (fireProgress * 2f));
-
-					m_componentModel.InHandItemOffsetOrder += new Vector3(recoil, 0f, 0f);
-					m_componentModel.InHandItemRotationOrder += new Vector3(recoil * 1.5f, 0f, 0f);
-				}
-				else
-				{
-					float returnProgress = (fireProgress - 0.5f) / 0.5f;
-
-					m_componentModel.AimHandAngleOrder = 0.5f * (1f - returnProgress);
-					m_componentModel.InHandItemOffsetOrder = new Vector3(
-						0.02f * (1f - returnProgress),
-						0.12f * (1f - returnProgress),
-						0.08f * (1f - returnProgress)
-					);
-					m_componentModel.InHandItemRotationOrder = new Vector3(
-						-0.05f * (1f - returnProgress),
-						0.25f * (1f - returnProgress),
-						0.01f * (1f - returnProgress)
-					);
-				}
-			}
-		}
-
-		private void ResetAnimations()
+		private void ResetState()
 		{
 			m_isAiming = false;
 			m_isDrawing = false;
 			m_isFiring = false;
 			m_currentDraw = 0f;
 
+			if (m_componentMiner != null)
+			{
+				Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
+				m_componentMiner.Aim(new Ray3(eyePos, Vector3.Zero), AimState.Cancelled);
+			}
+
 			if (m_componentModel != null)
-			{
-				m_componentModel.AimHandAngleOrder = 0f;
-				m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
-				m_componentModel.InHandItemRotationOrder = Vector3.Zero;
 				m_componentModel.LookAtOrder = null;
-			}
-		}
-
-		private void ShootArrow(ComponentCreature target)
-		{
-			if (target == null)
-				return;
-
-			try
-			{
-				ArrowBlock.ArrowType arrowType = m_nextArrowType;
-
-				Vector3 firePosition = m_componentCreature.ComponentCreatureModel.EyePosition;
-				firePosition.Y -= 0.1f;
-
-				Vector3 targetPosition = target.ComponentCreatureModel.EyePosition;
-				Vector3 direction = Vector3.Normalize(targetPosition - firePosition);
-
-				float currentAccuracy = Accuracy * (1.5f - m_currentDraw);
-
-				direction += new Vector3(
-					m_random.Float(-currentAccuracy, currentAccuracy),
-					m_random.Float(-currentAccuracy * 0.5f, currentAccuracy * 0.5f),
-					m_random.Float(-currentAccuracy, currentAccuracy)
-				);
-				direction = Vector3.Normalize(direction);
-
-				float speedMultiplier = 0.5f + (m_currentDraw * 1.5f);
-				float currentSpeed = ArrowSpeed * speedMultiplier;
-
-				int arrowData = ArrowBlock.SetArrowType(0, arrowType);
-				int arrowValue = Terrain.MakeBlockValue(ArrowBlock.Index, 0, arrowData);
-
-				var projectile = m_subsystemProjectiles.FireProjectile(
-					arrowValue,
-					firePosition,
-					direction * currentSpeed,
-					Vector3.Zero,
-					m_componentCreature
-				);
-
-				if (projectile != null)
-				{
-					projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
-
-					if (arrowType == ArrowBlock.ArrowType.FireArrow)
-					{
-						m_subsystemProjectiles.AddTrail(projectile, Vector3.Zero,
-							new SmokeTrailParticleSystem(15, 0.5f, float.MaxValue, Color.White));
-						projectile.IsIncendiary = true;
-					}
-				}
-			}
-			catch (Exception ex)
-			{
-				Log.Error($"Error en ShootArrow(): {ex.Message}");
-			}
 		}
 	}
 }
