@@ -5070,6 +5070,7 @@
   <Parameter Name="AutoChaseMask" Guid="89e57af5-9672-4bf4-85cf-33923df31849" Value="LandPredator" Type="Game.CreatureCategory"/>
   <Parameter Name="ChaseNonPlayerProbability" Guid="9bae7fb0-011d-4238-bc9c-4e9b88cf10be" Value="1" Type="float"/>
   <Parameter Name="RangedAttackRange" Guid="1696660b-a0a3-47b0-996f-3ceabca04876" Value="5,100" Type="Vector2"/>
+  <Parameter Name="DestroyBlocksWhenStuck" Guid="dd4ceaf5-aa49-4cde-93b9-1bdc7886e15c" Value="true" Type="bool"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="e6e3f3e7-5355-43f2-8e76-3e0563eaeaba" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
                 <Parameter Name="DayRange" Guid="c7ec09f1-d99a-4f02-b293-317ec6b6d3de" Value="0" Type="float"/>
