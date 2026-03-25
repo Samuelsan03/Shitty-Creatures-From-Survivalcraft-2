@@ -15,14 +15,12 @@ namespace Game
 			set { m_activeSlotIndex = Math.Clamp(value, 0, Math.Max(0, SlotsCount - 1)); }
 		}
 
-		// Anular VisibleSlotsCount para que devuelva todos los slots
 		public override int VisibleSlotsCount
 		{
 			get { return SlotsCount; }
 			set { /* Ignorar */ }
 		}
 
-		// Anular GetSlotCapacity para eliminar la restricción de slots no visibles
 		public override int GetSlotCapacity(int slotIndex, int value)
 		{
 			if (slotIndex < 0 || slotIndex >= SlotsCount)
@@ -32,7 +30,7 @@ namespace Game
 
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
-			// Establecer SlotsCount
+			// Asegurar que SlotsCount sea 16
 			int slotsCount = 16;
 			if (valuesDictionary.ContainsKey("SlotsCount"))
 				slotsCount = valuesDictionary.GetValue<int>("SlotsCount");
@@ -43,7 +41,7 @@ namespace Game
 			if (!valuesDictionary.ContainsKey("ActiveSlotIndex"))
 				valuesDictionary.SetValue<int>("ActiveSlotIndex", 0);
 
-			// Asegurar Slots
+			// Asegurar que Slots existe
 			if (!valuesDictionary.ContainsKey("Slots"))
 			{
 				var slotsDict = new ValuesDictionary();
