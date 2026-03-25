@@ -9,7 +9,7 @@
   <GridPanelWidget CanvasWidget.Position="12, 52" Name="TraderGrid" ColumnsCount="4" RowsCount="2"/>
   <GridPanelWidget CanvasWidget.Position="306, 52" Name="InventoryGrid" ColumnsCount="4" RowsCount="4"/>
   
-  <!-- Slot de monedas (izquierda) - igual que antes -->
+  <!-- Slot de monedas -->
   <CanvasWidget CanvasWidget.Position="12, 200" Size="68, 68">
     <LabelWidget Name="CoinSlotHint" Text="Coins" 
                  Color="128,128,128,255" FontScale="0.7"
@@ -18,12 +18,21 @@
     <InventorySlotWidget Name="CoinSlot" Size="68, 68" />
   </CanvasWidget>
   
-  <!-- Panel inferior izquierdo con label y botón (como en DispenserWidget) -->
-  <CanvasWidget CanvasWidget.Position="12, 200" Size="288, 140">
-    <StackPanelWidget Direction="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
-      <LabelWidget Name="InfoLabel" Text="Select an item to buy." Color="255,255,0" HorizontalAlignment="Center"/>
-      <CanvasWidget Size="0, 90" /> <!-- Espaciador -->
-      <BevelledButtonWidget Name="BuyButton" Text="BUY" Style="{Styles/ButtonStyle_160x60}" HorizontalAlignment="Center" />
-    </StackPanelWidget>
+  <!-- Panel inferior izquierdo -->
+  <CanvasWidget CanvasWidget.Position="12, 255" Size="288, 140">
+
+    <!-- TEXTO (puedes moverlo libremente) -->
+    <LabelWidget CanvasWidget.Position="10, 10"
+                 Name="InfoLabel" 
+                 Text="Select an item to buy." 
+                 Color="255,255,0"/>
+
+    <!-- BOTÓN (posición independiente) -->
+    <BevelledButtonWidget CanvasWidget.Position="60, 70"
+                          Name="BuyButton" 
+                          Text="BUY" 
+                          Style="{Styles/ButtonStyle_160x60}" />
+
   </CanvasWidget>
+
 </CanvasWidget>
