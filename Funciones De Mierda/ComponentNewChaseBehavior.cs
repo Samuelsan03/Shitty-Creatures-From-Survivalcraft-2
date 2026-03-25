@@ -59,6 +59,9 @@ namespace Game
 		// NUEVO PARÁMETRO: invoca un rayo al golpear
 		public bool InvokeLightningOnHit = false;
 
+		// ===== NUEVO PARÁMETRO: auto monta y desmonta =====
+		public bool AutoMountAndDismount = false;
+
 		private Vector3 m_lastStuckCheckPosition;
 		private double m_stuckDetectionStartTime;
 
@@ -82,6 +85,8 @@ namespace Game
 		private ComponentFactors m_componentFactors;
 		private ComponentNewHerdBehavior m_componentHerd;
 		private ComponentHireableNPC m_componentHireable;
+		private ComponentRider m_componentRider;              // NUEVO: para montar/desmontar
+		private ComponentMount m_currentMount;                // NUEVO: montura actual
 
 		private DynamicArray<ComponentBody> m_componentBodies = new DynamicArray<ComponentBody>();
 		private Random m_random = new Random();
@@ -284,8 +289,79 @@ namespace Game
 			Attack(target, 30f, 45f, false);
 		}
 
+		// ===== NUEVO MÉTODO: ENCONTRAR MONTURA CERCANA (usa ComponentNewMount) =====
+		private ComponentMount FindNearestMount()
+		{
+			const float range = 6f;
+			var bodies = new DynamicArray<ComponentBody>();
+			m_subsystemBodies.FindBodiesAroundPoint(
+				new Vector2(m_componentCreature.ComponentBody.Position.X, m_componentCreature.ComponentBody.Position.Z),
+				range, bodies);
+
+			ComponentMount bestMount = null;
+			float bestDistanceSq = range * range;
+
+			foreach (ComponentBody body in bodies)
+			{
+				// Buscar tanto ComponentMount como ComponentNewMount
+				ComponentMount mount = body.Entity.FindComponent<ComponentMount>();
+				if (mount == null)
+				{
+					mount = body.Entity.FindComponent<ComponentNewMount>();
+				}
+
+				if (mount != null && mount.Rider == null)
+				{
+					float distSq = Vector3.DistanceSquared(m_componentCreature.ComponentBody.Position, body.Position);
+					if (distSq < bestDistanceSq)
+					{
+						bestDistanceSq = distSq;
+						bestMount = mount;
+					}
+				}
+			}
+			return bestMount;
+		}
+
+		// ===== NUEVO MÉTODO: GESTIONAR MONTAJE Y MOVIMIENTO (usa ComponentNewMount) =====
+		private void TryMountAndManageMovement()
+		{
+			if (m_componentRider == null || !AutoMountAndDismount) return;
+
+			// Si no estamos montados, buscar montura
+			if (m_componentRider.Mount == null)
+			{
+				ComponentMount nearestMount = FindNearestMount();
+				if (nearestMount != null)
+				{
+					m_componentRider.StartMounting(nearestMount);
+					m_currentMount = nearestMount;
+				}
+			}
+
+			// Si estamos montados, delegar el movimiento a la montura
+			if (m_componentRider.Mount != null && m_target != null)
+			{
+				// Obtener el ComponentPathfinding de la montura (puede ser ComponentNewMount o ComponentMount)
+				ComponentPathfinding mountPathfinding = m_componentRider.Mount.Entity.FindComponent<ComponentPathfinding>();
+				if (mountPathfinding != null)
+				{
+					int maxPathfindingPositions = m_isPersistent ? 2000 : 500;
+					mountPathfinding.SetDestination(m_target.ComponentBody.Position, 1f, 1.5f, maxPathfindingPositions, true, false, true, null);
+				}
+			}
+		}
+
+		// ===== STOPATTACK MODIFICADO - DESMONTAJE TAMBIÉN CON ComponentNewMount =====
 		public virtual void StopAttack()
 		{
+			// NUEVO: desmontar si estamos montados y la opción está activada
+			if (m_componentRider != null && m_componentRider.Mount != null && AutoMountAndDismount)
+			{
+				m_componentRider.StartDismounting();
+				m_currentMount = null;
+			}
+
 			m_stateMachine.TransitionTo("LookingForTarget");
 			IsActive = false;
 			m_target = null;
@@ -672,53 +748,70 @@ namespace Game
 			if (m_target == null) return false;
 
 			Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
-			Vector3 targetCenter = m_target.ComponentCreatureModel.EyePosition;
-			Vector3 direction = targetCenter - eyePos;
-			float distance = direction.Length();
-			direction /= distance;
+			ComponentBody targetBody = m_target.ComponentBody;
 
-			Ray3 ray = new Ray3(eyePos, direction);
+			// Definir múltiples puntos a comprobar en el objetivo para mayor precisión
+			Vector3[] targetPoints = {
+		targetBody.BoundingBox.Center(),
+		m_target.ComponentCreatureModel.EyePosition,
+		targetBody.BoundingBox.Min + new Vector3(0, 0.1f, 0),
+		targetBody.BoundingBox.Max - new Vector3(0, 0.1f, 0),
+		targetBody.BoundingBox.Min + new Vector3(0.3f, 0.5f, 0.3f),
+		targetBody.BoundingBox.Max - new Vector3(0.3f, 0.5f, 0.3f)
+	};
 
-			// Usar Raycast que devuelve object y filtrar manualmente
-			object result = m_componentMiner.Raycast(ray, RaycastMode.Interaction, true, true, true, null);
-
-			// Si el resultado es un BodyRaycastResult
-			if (result is BodyRaycastResult bodyResult)
+			foreach (Vector3 targetPoint in targetPoints)
 			{
-				// Si el cuerpo golpeado es el objetivo o un hijo del objetivo
-				if (bodyResult.ComponentBody == m_target.ComponentBody ||
-					m_target.ComponentBody.IsChildOfBody(bodyResult.ComponentBody) ||
-					bodyResult.ComponentBody.IsChildOfBody(m_target.ComponentBody))
-				{
-					return true;
-				}
+				Vector3 direction = targetPoint - eyePos;
+				float distance = direction.Length();
+				if (distance < 0.1f) continue;
+				direction /= distance;
 
-				// Si el cuerpo golpeado es el propio NPC, ignorar y seguir comprobando
-				if (bodyResult.ComponentBody == m_componentCreature.ComponentBody)
-				{
-					// Continuar verificando si hay otros objetos en el camino
-					// En este caso, como solo hay un resultado, si solo golpea su propio cuerpo,
-					// significa que no hay obstáculos reales
-					return true;
-				}
+				Ray3 ray = new Ray3(eyePos, direction);
 
-				// Si golpeó otro cuerpo que no es el objetivo ni el propio NPC
-				if (bodyResult.Distance < distance )
+				// Realizar raycast con el modo Interaction para detectar bloques y cuerpos
+				object result = m_componentMiner.Raycast(ray, RaycastMode.Interaction, true, true, true, null);
+
+				// Si el resultado es un BodyRaycastResult
+				if (result is BodyRaycastResult bodyResult)
 				{
-					return false;
+					// Si el cuerpo golpeado es el objetivo o un hijo/padre del objetivo, hay visión clara
+					if (bodyResult.ComponentBody == targetBody ||
+						targetBody.IsChildOfBody(bodyResult.ComponentBody) ||
+						bodyResult.ComponentBody.IsChildOfBody(targetBody))
+					{
+						return true;
+					}
+
+					// Si el cuerpo golpeado es el propio shooter, ignorar y probar con otro punto
+					if (bodyResult.ComponentBody == m_componentCreature.ComponentBody)
+					{
+						continue;
+					}
+
+					// Si golpeó otro cuerpo que no es el objetivo ni el propio shooter, el rayo está bloqueado
+					if (bodyResult.Distance < distance)
+					{
+						continue;
+					}
+				}
+				// Si el resultado es un TerrainRaycastResult
+				else if (result is TerrainRaycastResult terrainResult)
+				{
+					// Si un bloque está en el camino más cerca que el objetivo, el rayo está bloqueado
+					if (terrainResult.Distance < distance)
+					{
+						continue;
+					}
+				}
+				else
+				{
+					// Si no hubo hit, el rayo llegó al objetivo sin obstáculos
+					return true;
 				}
 			}
 
-			// Si el resultado es un TerrainRaycastResult
-			if (result is TerrainRaycastResult terrainResult)
-			{
-				if (terrainResult.Distance < distance )
-				{
-					return false;
-				}
-			}
-
-			return true;
+			return false;
 		}
 
 		private void StartThrowableAim()
@@ -809,10 +902,21 @@ namespace Game
 				return;
 			}
 
-			// Verificar línea de visión
+			// NUEVO: verificar línea de visión con múltiples puntos y forzar movimiento si está bloqueada
 			if (!HasLineOfSightToTarget())
 			{
 				CancelThrowableAim();
+
+				// Forzar movimiento para intentar conseguir línea de visión
+				if (m_componentPathfinding.Destination != null && !m_componentPathfinding.IsStuck)
+				{
+					if (m_componentPathfinding.m_componentPilot.Destination == null)
+					{
+						Vector3 lateralMove = m_componentCreature.ComponentBody.Position +
+							new Vector3(3f * m_random.Float(-1f, 1f), 0, 3f * m_random.Float(-1f, 1f));
+						m_componentPathfinding.SetDestination(lateralMove, 1f, 1.5f, 100, true, false, true, null);
+					}
+				}
 				return;
 			}
 
@@ -1520,9 +1624,22 @@ namespace Game
 				return;
 			}
 
+			// NUEVO: si no hay línea de visión, cancelar apuntado y forzar movimiento para conseguir visión
 			if (!HasLineOfSightToTarget())
 			{
 				CancelRangedAim();
+
+				// Forzar movimiento para intentar conseguir línea de visión
+				if (m_componentPathfinding.Destination != null && !m_componentPathfinding.IsStuck)
+				{
+					// Si el pathfinding tiene destino pero está atascado en visión, forzar movimiento lateral
+					if (m_componentPathfinding.m_componentPilot.Destination == null)
+					{
+						Vector3 lateralMove = m_componentCreature.ComponentBody.Position +
+							new Vector3(3f * m_random.Float(-1f, 1f), 0, 3f * m_random.Float(-1f, 1f));
+						m_componentPathfinding.SetDestination(lateralMove, 1f, 1.5f, 100, true, false, true, null);
+					}
+				}
 				return;
 			}
 
@@ -2030,6 +2147,13 @@ namespace Game
 			m_componentHerd = Entity.FindComponent<ComponentNewHerdBehavior>(true);
 			m_componentHireable = Entity.FindComponent<ComponentHireableNPC>();
 
+			// Buscar ComponentRider o ComponentNewRider
+			m_componentRider = Entity.FindComponent<ComponentRider>();
+			if (m_componentRider == null)
+			{
+				m_componentRider = Entity.FindComponent<ComponentNewRider>();
+			}
+
 			m_dayChaseRange = valuesDictionary.GetValue<float>("DayChaseRange");
 			m_nightChaseRange = valuesDictionary.GetValue<float>("NightChaseRange");
 			m_dayChaseTime = valuesDictionary.GetValue<float>("DayChaseTime");
@@ -2040,10 +2164,9 @@ namespace Game
 			m_chaseOnTouchProbability = valuesDictionary.GetValue<float>("ChaseOnTouchProbability");
 			RangedAttackRange = valuesDictionary.GetValue<Vector2>("RangedAttackRange", new Vector2(5f, 20f));
 			RangedAttackMode = valuesDictionary.GetValue<AttackMode>("AttackMode", AttackMode.Default);
-			// Cargar el nuevo parámetro
 			DestroyBlocksWhenStuck = valuesDictionary.GetValue<bool>("DestroyBlocksWhenStuck", false);
-			// Cargar el parámetro de invocar rayo al golpear
 			InvokeLightningOnHit = valuesDictionary.GetValue<bool>("InvokeLightningOnHit", false);
+			AutoMountAndDismount = valuesDictionary.GetValue<bool>("AutoMountAndDismount", false);
 
 			RegisterEvents();
 
@@ -2269,6 +2392,7 @@ namespace Game
 				}
 			}, () => m_componentPathfinding.Stop());
 
+			// ===== ESTADO CHASING MODIFICADO (dentro de SetupStateMachine) =====
 			m_stateMachine.AddState("Chasing", () =>
 			{
 				m_subsystemNoise.MakeNoise(m_componentCreature.ComponentBody, 0.25f, 6f);
@@ -2343,8 +2467,11 @@ namespace Game
 					}
 					else
 					{
-						// No establecer destino mientras se apunta un objeto lanzable
-						if (!m_isAimingThrowable)
+						// NUEVO: gestionar montaje y movimiento
+						TryMountAndManageMovement();
+
+						// Solo establecer destino si NO estamos montados (la montura ya lo hace)
+						if (!m_isAimingThrowable && (m_componentRider == null || m_componentRider.Mount == null))
 						{
 							int maxPathfindingPositions = 0;
 							if (m_isPersistent)
@@ -2358,7 +2485,7 @@ namespace Game
 							float dist = Vector3.Distance(selfCenter, targetCenter);
 							float followFactor = (dist < 4f) ? 0.2f : 0f;
 							m_componentPathfinding.SetDestination(targetCenter + followFactor * dist * m_target.ComponentBody.Velocity,
-												1f, 1.5f, maxPathfindingPositions, true, false, true, m_target.ComponentBody);
+													1f, 1.5f, maxPathfindingPositions, true, false, true, m_target.ComponentBody);
 						}
 
 						if (PlayAngrySoundWhenChasing && m_random.Float(0f, 1f) < 0.33f * m_dt)
@@ -2368,7 +2495,6 @@ namespace Game
 					}
 				}
 
-				// Intentar liberarse si está atascado y la opción está activada
 				TryDestroyBlocksToFree();
 			}, null);
 		}
