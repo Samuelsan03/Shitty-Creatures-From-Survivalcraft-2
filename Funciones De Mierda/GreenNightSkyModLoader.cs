@@ -1,45 +1,42 @@
 using System;
 using Engine;
 using GameEntitySystem;
+using TemplatesDatabase;
 
 namespace Game
 {
 	public class GreenNightSkyModLoader : ModLoader
 	{
-		private SubsystemGreenNightSky m_subsystemGreenNightSky;
-
 		public override void __ModInitialize()
 		{
+			// Registrar el hook para cambiar el color del cielo
 			ModsManager.RegisterHook("ChangeSkyColor", this);
+			// Registrar el hook para congelar el sueño
 			ModsManager.RegisterHook("OnVitalStatsUpdateSleep", this);
 		}
 
-		public override void OnProjectLoaded(Project project)
-		{
-			m_subsystemGreenNightSky = project.FindSubsystem<SubsystemGreenNightSky>(true);
-		}
-
+		// Hook para modificar el color del cielo
 		public override Color ChangeSkyColor(Color oldColor, Vector3 direction, float timeOfDay, int temperature)
 		{
-			var instance = SubsystemGreenNightSky.Instance;
-			if (instance != null && instance.IsGreenNightActive && instance.GreenNightEnabled)
+			var greenNight = SubsystemGreenNightSky.Instance;
+			if (greenNight != null && greenNight.IsGreenNightActive)
 			{
-				Color greenColor = new Color(0, 50, 0);
-				float factor = 1f - instance.m_subsystemSky.SkyLightIntensity;
-				factor = MathUtils.Saturate(factor * 2f);
-				return Color.Lerp(oldColor, greenColor, factor);
+				// Color verde (0, 50, 0) en formato RGBA (alpha = 255)
+				return new Color(0, 50, 0);
 			}
 			return oldColor;
 		}
 
-		public override void OnVitalStatsUpdateSleep(ComponentVitalStats vitalStats, ref float modifiedSleep, ref float gameTimeDelta, ref bool skipVanilla)
+		// Hook para congelar la barra de sueño durante la Noche Verde
+		public override void OnVitalStatsUpdateSleep(ComponentVitalStats vitalStats, ref float sleep, ref float gameTimeDelta, ref bool skipVanilla)
 		{
-			// Si la Noche Verde está activa, congelamos el sueño
-			if (SubsystemGreenNightSky.Instance != null && SubsystemGreenNightSky.Instance.IsGreenNightActive)
+			var greenNight = SubsystemGreenNightSky.Instance;
+			if (greenNight != null && greenNight.IsGreenNightActive)
 			{
-				// Evitamos que la lógica original modifique el sueño
+				// Impedir que el sueño se modifique
 				skipVanilla = true;
-				// No modificamos modifiedSleep, por lo que se mantiene el valor actual
+				// Opcional: mantener el valor actual (sleep ya contiene el valor actual)
+				// sleep = vitalStats.Sleep; // No es necesario porque skipVanilla evita que se ejecute el código original
 			}
 		}
 	}
