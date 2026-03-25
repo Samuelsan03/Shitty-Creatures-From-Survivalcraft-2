@@ -56,6 +56,9 @@ namespace Game
 		// NUEVO PARÁMETRO: destruye bloques cuando está atascado
 		public bool DestroyBlocksWhenStuck = false;
 
+		// NUEVO PARÁMETRO: invoca un rayo al golpear
+		public bool InvokeLightningOnHit = false;
+
 		private Vector3 m_lastStuckCheckPosition;
 		private double m_stuckDetectionStartTime;
 
@@ -589,6 +592,12 @@ namespace Game
 							m_chaseTime = MathUtils.Max(m_chaseTime, extraChaseTime);
 							m_componentMiner.Hit(hitBody, hitPoint, m_componentCreature.ComponentBody.Matrix.Forward);
 							m_componentCreature.ComponentCreatureSounds.PlayAttackSound();
+
+							// Invocar rayo al golpear si está activado (5% de probabilidad)
+							if (InvokeLightningOnHit && m_subsystemSky != null && m_random.Float(0f, 1f) < 0.05f)
+							{
+								m_subsystemSky.MakeLightningStrike(m_target.ComponentBody.Position, true);
+							}
 						}
 					}
 					m_isAimingRanged = false;
@@ -1986,12 +1995,12 @@ namespace Game
 			m_chaseNonPlayerProbability = valuesDictionary.GetValue<float>("ChaseNonPlayerProbability");
 			m_chaseWhenAttackedProbability = valuesDictionary.GetValue<float>("ChaseWhenAttackedProbability");
 			m_chaseOnTouchProbability = valuesDictionary.GetValue<float>("ChaseOnTouchProbability");
-
 			RangedAttackRange = valuesDictionary.GetValue<Vector2>("RangedAttackRange", new Vector2(5f, 20f));
 			RangedAttackMode = valuesDictionary.GetValue<AttackMode>("AttackMode", AttackMode.Default);
-
 			// Cargar el nuevo parámetro
 			DestroyBlocksWhenStuck = valuesDictionary.GetValue<bool>("DestroyBlocksWhenStuck", false);
+			// Cargar el parámetro de invocar rayo al golpear
+			InvokeLightningOnHit = valuesDictionary.GetValue<bool>("InvokeLightningOnHit", false);
 
 			RegisterEvents();
 
