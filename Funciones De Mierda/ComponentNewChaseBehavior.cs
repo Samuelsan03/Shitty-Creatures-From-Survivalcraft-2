@@ -1931,42 +1931,44 @@ namespace Game
 				if (m_subsystemTime.GameTime - m_stuckDetectionStartTime >= 2.0)
 				{
 					Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
-					Vector3 targetPos = m_target.ComponentBody.Position;
-					float targetHeight = m_target.ComponentBody.BoundingBox.Size().Y;
-					float targetTop = targetPos.Y + targetHeight * 0.5f;
-					float targetBottom = targetPos.Y - targetHeight * 0.5f;
+					Vector3 targetEyePos = m_target.ComponentCreatureModel.EyePosition;
+					Vector3 toTarget = targetEyePos - eyePos;
+					float distance = toTarget.Length();
+					if (distance < 0.1f) return;
 
-					// Alturas de referencia de la criatura
-					float feetY = currentPos.Y + 0.2f;          // Altura de los pies
-					float eyeY = eyePos.Y;                      // Altura de los ojos
-					float headY = currentPos.Y + m_componentCreature.ComponentBody.StanceBoxSize.Y - 0.2f; // Altura de la cabeza
+					toTarget /= distance;
 
-					// Determinar si el objetivo está claramente arriba o abajo
-					bool targetClearlyAbove = targetBottom > eyeY;
-					bool targetClearlyBelow = targetTop < feetY;
+					// Calcular ángulo vertical (radianes)
+					float verticalAngle = (float)Math.Asin(Math.Clamp(toTarget.Y, -1f, 1f));
+					const float thresholdDeg = 25f;   // Ajusta a 30° o 45° si prefieres
+					float thresholdRad = MathUtils.DegToRad(thresholdDeg);
 
-					if (targetClearlyAbove)
+					bool isUp = verticalAngle > thresholdRad;
+					bool isDown = verticalAngle < -thresholdRad;
+
+					if (isUp)
 					{
-						// Romper dos bloques hacia arriba (desde los ojos)
+						// Dos bloques hacia arriba, desde los ojos
 						DestroyBlockAtPosition(eyePos + Vector3.UnitY * 0.5f);
 						DestroyBlockAtPosition(eyePos + Vector3.UnitY * 1.6f);
 					}
-					else if (targetClearlyBelow)
+					else if (isDown)
 					{
-						// Romper dos bloques hacia abajo (desde los pies)
-						// Primero el bloque sobre el que está parado (justo debajo de los pies)
-						// y luego el bloque de abajo
+						// Dos bloques hacia abajo, desde los pies
+						float feetY = currentPos.Y + 0.2f;
 						DestroyBlockAtPosition(new Vector3(currentPos.X, feetY, currentPos.Z) - Vector3.UnitY * 0.5f);
 						DestroyBlockAtPosition(new Vector3(currentPos.X, feetY, currentPos.Z) - Vector3.UnitY * 1.6f);
 					}
 					else
 					{
-						// Al frente: dirección horizontal hacia el objetivo
-						Vector3 toTarget = targetPos - eyePos;
+						// Al frente: dos bloques (pies y cabeza) en la dirección horizontal hacia el objetivo
 						Vector3 horizDir = new Vector3(toTarget.X, 0, toTarget.Z);
 						if (horizDir.LengthSquared() > 0.001f)
 						{
 							horizDir = Vector3.Normalize(horizDir);
+
+							float feetY = currentPos.Y + 0.2f;
+							float headY = currentPos.Y + m_componentCreature.ComponentBody.StanceBoxSize.Y - 0.2f;
 
 							Vector3 feetPos = new Vector3(currentPos.X, feetY, currentPos.Z) + horizDir * 0.6f;
 							Vector3 headPos = new Vector3(currentPos.X, headY, currentPos.Z) + horizDir * 0.6f;
