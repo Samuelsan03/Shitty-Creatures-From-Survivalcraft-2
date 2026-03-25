@@ -1015,21 +1015,39 @@ namespace Game
 			int draw = RepeatCrossbowBlock.GetDraw(data);
 			RepeatArrowBlock.ArrowType? currentArrowType = RepeatCrossbowBlock.GetArrowType(data);
 
-			// Si ya está cargada con un virote válido, no hacer nada
 			if (draw == 15 && currentArrowType != null)
 				return;
 
-			// Seleccionar un tipo de virote aleatorio de los disponibles en RepeatArrowBlock
-			// Incluye: Copper, Iron, Diamond, Explosive, Poison, SeriousPoison
-			Array arrowTypes = Enum.GetValues(typeof(RepeatArrowBlock.ArrowType));
-			RepeatArrowBlock.ArrowType selectedType = (RepeatArrowBlock.ArrowType)arrowTypes.GetValue(m_random.Int(0, arrowTypes.Length - 1));
+			// Obtener distancia al objetivo
+			float distance = GetDistanceToTarget();
 
-			// Construir el nuevo valor de la ballesta cargada
+			// Seleccionar tipo de virote
+			RepeatArrowBlock.ArrowType selectedType;
+
+			if (distance <= 20f)
+			{
+				// Todos los tipos incluyendo explosivo
+				Array arrowTypes = Enum.GetValues(typeof(RepeatArrowBlock.ArrowType));
+				selectedType = (RepeatArrowBlock.ArrowType)arrowTypes.GetValue(m_random.Int(0, arrowTypes.Length - 1));
+			}
+			else
+			{
+				// Todos los tipos excepto explosivo
+				RepeatArrowBlock.ArrowType[] nonExplosiveTypes = new RepeatArrowBlock.ArrowType[]
+				{
+			RepeatArrowBlock.ArrowType.CopperArrow,
+			RepeatArrowBlock.ArrowType.IronArrow,
+			RepeatArrowBlock.ArrowType.DiamondArrow,
+			RepeatArrowBlock.ArrowType.PoisonArrow,
+			RepeatArrowBlock.ArrowType.SeriousPoisonArrow
+				};
+				selectedType = nonExplosiveTypes[m_random.Int(0, nonExplosiveTypes.Length - 1)];
+			}
+
 			int newData = RepeatCrossbowBlock.SetDraw(data, 15);
 			newData = RepeatCrossbowBlock.SetArrowType(newData, selectedType);
 			int newValue = Terrain.MakeBlockValue(RepeatCrossbowBlock.Index, 0, newData);
 
-			// Reemplazar la ballesta en el inventario
 			m_componentMiner.Inventory.RemoveSlotItems(slotIndex, 1);
 			m_componentMiner.Inventory.AddSlotItems(slotIndex, newValue, 1);
 		}
@@ -1209,13 +1227,33 @@ namespace Game
 			bool loaded = CrossbowBlock.GetDraw(data) == 15 && CrossbowBlock.GetArrowType(data) != null;
 			if (!loaded)
 			{
-				ArrowBlock.ArrowType[] boltTypes = new ArrowBlock.ArrowType[]
+				// Obtener distancia al objetivo
+				float distance = GetDistanceToTarget();
+
+				ArrowBlock.ArrowType selected;
+
+				if (distance <= 20f)
 				{
-					ArrowBlock.ArrowType.IronBolt,
-					ArrowBlock.ArrowType.DiamondBolt,
-					ArrowBlock.ArrowType.ExplosiveBolt
-				};
-				ArrowBlock.ArrowType selected = boltTypes[m_random.Int(0, boltTypes.Length - 1)];
+					// Todos los tipos incluyendo explosivo
+					ArrowBlock.ArrowType[] allBolts = new ArrowBlock.ArrowType[]
+					{
+				ArrowBlock.ArrowType.IronBolt,
+				ArrowBlock.ArrowType.DiamondBolt,
+				ArrowBlock.ArrowType.ExplosiveBolt
+					};
+					selected = allBolts[m_random.Int(0, allBolts.Length - 1)];
+				}
+				else
+				{
+					// Solo tipos no explosivos
+					ArrowBlock.ArrowType[] nonExplosiveBolts = new ArrowBlock.ArrowType[]
+					{
+				ArrowBlock.ArrowType.IronBolt,
+				ArrowBlock.ArrowType.DiamondBolt
+					};
+					selected = nonExplosiveBolts[m_random.Int(0, nonExplosiveBolts.Length - 1)];
+				}
+
 				data = CrossbowBlock.SetArrowType(data, selected);
 				data = CrossbowBlock.SetDraw(data, 15);
 				int newValue = Terrain.MakeBlockValue(CrossbowBlock.Index, 0, data);
