@@ -1889,13 +1889,13 @@ namespace Game
 					Vector3 targetEyePos = m_target.ComponentCreatureModel.EyePosition;
 					Vector3 toTarget = targetEyePos - eyePos;
 					float distance = toTarget.Length();
-					if (distance < 0.1f) return; // Demasiado cerca, no romper
+					if (distance < 0.1f) return;
 
 					toTarget /= distance;
 
 					// Calcular ángulo vertical (radianes)
 					float verticalAngle = (float)Math.Asin(Math.Clamp(toTarget.Y, -1f, 1f));
-					const float thresholdDeg = 45f;
+					const float thresholdDeg = 25f;  // Reducido de 45° a 25°
 					float thresholdRad = MathUtils.DegToRad(thresholdDeg);
 
 					// Determinar dirección principal
@@ -1904,15 +1904,16 @@ namespace Game
 
 					if (isUp)
 					{
-						// Romper dos bloques hacia arriba
+						// Romper dos bloques hacia arriba (desde los ojos)
 						DestroyBlockAtPosition(eyePos + Vector3.UnitY * 0.5f);
 						DestroyBlockAtPosition(eyePos + Vector3.UnitY * 1.2f);
 					}
 					else if (isDown)
 					{
-						// Romper dos bloques hacia abajo
-						DestroyBlockAtPosition(eyePos - Vector3.UnitY * 0.5f);
-						DestroyBlockAtPosition(eyePos - Vector3.UnitY * 1.2f);
+						// Romper hacia abajo: desde los pies y un poco más abajo
+						float feetY = currentPos.Y + 0.2f; // altura de los pies
+						DestroyBlockAtPosition(new Vector3(eyePos.X, feetY, eyePos.Z) - Vector3.UnitY * 0.5f);
+						DestroyBlockAtPosition(new Vector3(eyePos.X, feetY, eyePos.Z) - Vector3.UnitY * 1.2f);
 					}
 					else
 					{
@@ -1922,9 +1923,7 @@ namespace Game
 						{
 							horizDir = Vector3.Normalize(horizDir);
 
-							// Altura de los pies: base de la caja + pequeño offset
 							float feetY = currentPos.Y + 0.2f;
-							// Altura de la cabeza: posición Y + altura de la caja - 0.2f
 							float headY = currentPos.Y + m_componentCreature.ComponentBody.StanceBoxSize.Y - 0.2f;
 
 							Vector3 feetPos = new Vector3(currentPos.X, feetY, currentPos.Z) + horizDir * 0.6f;
@@ -1932,6 +1931,13 @@ namespace Game
 
 							DestroyBlockAtPosition(feetPos);
 							DestroyBlockAtPosition(headPos);
+						}
+
+						// **NUEVO**: si el objetivo está abajo (ángulo negativo), también romper un bloque justo debajo de los pies
+						if (verticalAngle < 0f)
+						{
+							float feetY = currentPos.Y + 0.2f;
+							DestroyBlockAtPosition(new Vector3(currentPos.X, feetY, currentPos.Z) - Vector3.UnitY * 0.5f);
 						}
 					}
 
