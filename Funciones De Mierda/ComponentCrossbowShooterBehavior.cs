@@ -18,13 +18,13 @@ namespace Game
 		private SubsystemBodies m_subsystemBodies;
 		private ComponentPathfinding m_componentPathfinding;
 		private ComponentCreatureModel m_componentModel;
+		private ComponentMiner m_componentMiner;
 
 		// Configuración
 		public float MaxDistance = 25f;
-		public float DrawTime = 1.5f;           // Tiempo de tensado
-		public float AimTime = 0.5f;             // Tiempo de apuntado antes de tensar
-		public float ReloadTime = 0.8f;           // Tiempo de carga del virote
-		public float Accuracy = 0.02f;            // Dispersión
+		public float AimTime = 0.5f;            // Tiempo de apuntado antes de disparar
+		public float Cooldown = 0.8f;            // Tiempo de recarga tras disparo
+		public float Accuracy = 0.02f;           // Dispersión (en radianes)
 		public float BoltSpeed = 45f;             // Velocidad base del virote
 
 		// Tipos de virotes disponibles
@@ -37,17 +37,16 @@ namespace Game
 
 		// Estado
 		private bool m_isAiming = false;
-		private bool m_isDrawing = false;
 		private bool m_isFiring = false;
-		private bool m_isReloading = false;
-		private double m_animationStartTime;
-		private double m_drawStartTime;
-		private double m_fireTime;
+		private double m_aimStartTime;
+		private double m_cooldownEndTime;
 		private int m_crossbowSlot = -1;
-		private float m_currentDraw = 0f;
 		private Random m_random = new Random();
 		private bool m_initialized = false;
 		private ArrowBlock.ArrowType? m_nextBoltType = null;
+
+		// Evento para eliminar los pickables de virotes
+		private Action<Projectile> m_projectileAddedHandler;
 
 		public int UpdateOrder => 0;
 		public override float ImportanceLevel => 0.5f;
@@ -58,9 +57,8 @@ namespace Game
 
 			// Cargar parámetros
 			MaxDistance = valuesDictionary.GetValue<float>("MaxDistance", 25f);
-			DrawTime = valuesDictionary.GetValue<float>("DrawTime", 1.5f);
 			AimTime = valuesDictionary.GetValue<float>("AimTime", 0.5f);
-			ReloadTime = valuesDictionary.GetValue<float>("ReloadTime", 0.8f);
+			Cooldown = valuesDictionary.GetValue<float>("Cooldown", 0.8f);
 			Accuracy = valuesDictionary.GetValue<float>("Accuracy", 0.02f);
 			BoltSpeed = valuesDictionary.GetValue<float>("BoltSpeed", 45f);
 
@@ -74,6 +72,7 @@ namespace Game
 			m_subsystemBodies = base.Project.FindSubsystem<SubsystemBodies>(true);
 			m_componentPathfinding = base.Entity.FindComponent<ComponentPathfinding>(false);
 			m_componentModel = base.Entity.FindComponent<ComponentCreatureModel>(true);
+			m_componentMiner = base.Entity.FindComponent<ComponentMiner>(true);
 		}
 
 		public override void OnEntityAdded()
@@ -84,9 +83,48 @@ namespace Game
 
 			// Dejar la ballesta sin virote
 			if (m_crossbowSlot >= 0)
-				SetCrossbowWithBolt(0, false);
+				SetCrossbowDraw(0);
 		}
 
+		// -----------------------------------------------------------------
+		// Suscripción para que los virotes desaparezcan al tocar el suelo
+		// -----------------------------------------------------------------
+		private void SubscribeToProjectileEvents()
+		{
+			if (m_subsystemProjectiles == null)
+				return;
+
+			if (m_projectileAddedHandler == null)
+			{
+				m_projectileAddedHandler = OnProjectileAdded;
+				m_subsystemProjectiles.ProjectileAdded += m_projectileAddedHandler;
+			}
+		}
+
+		private void UnsubscribeFromProjectileEvents()
+		{
+			if (m_subsystemProjectiles != null && m_projectileAddedHandler != null)
+			{
+				m_subsystemProjectiles.ProjectileAdded -= m_projectileAddedHandler;
+				m_projectileAddedHandler = null;
+			}
+		}
+
+		private void OnProjectileAdded(Projectile projectile)
+		{
+			if (projectile.Owner != m_componentCreature)
+				return;
+
+			int contents = Terrain.ExtractContents(projectile.Value);
+			if (contents == ArrowBlock.Index)
+			{
+				projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
+			}
+		}
+
+		// -----------------------------------------------------------------
+		// Métodos auxiliares
+		// -----------------------------------------------------------------
 		private bool IsStuck() => m_componentPathfinding != null && m_componentPathfinding.IsStuck;
 
 		private bool IsLineOfSightBlocked(ComponentCreature target)
@@ -125,82 +163,9 @@ namespace Game
 			return null;
 		}
 
-		public void Update(float dt)
-		{
-			if (!m_initialized || m_componentCreature.ComponentHealth.Health <= 0f)
-				return;
-
-			ComponentCreature target = GetChaseTarget();
-
-			if (target == null || IsStuck() || IsLineOfSightBlocked(target))
-			{
-				ResetState();
-				if (m_crossbowSlot >= 0)
-					SetCrossbowWithBolt(0, false);
-				return;
-			}
-
-			float distance = Vector3.Distance(
-				m_componentCreature.ComponentBody.Position,
-				target.ComponentBody.Position
-			);
-
-			if (distance <= MaxDistance)
-			{
-				// Iniciar secuencia si no estamos en ningún estado
-				if (!m_isAiming && !m_isDrawing && !m_isFiring && !m_isReloading)
-					StartAiming(target);
-			}
-			else
-			{
-				ResetState();
-				if (m_crossbowSlot >= 0)
-					SetCrossbowWithBolt(0, false);
-				return;
-			}
-
-			// Mirar al objetivo (solo visual, sin animación extra)
-			if (m_componentModel != null && target != null)
-				m_componentModel.LookAtOrder = target.ComponentCreatureModel.EyePosition;
-
-			// Máquina de estados
-			if (m_isAiming)
-			{
-				if (m_subsystemTime.GameTime - m_animationStartTime >= AimTime)
-				{
-					m_isAiming = false;
-					StartDrawing();
-				}
-			}
-			else if (m_isDrawing)
-			{
-				m_currentDraw = MathUtils.Clamp((float)((m_subsystemTime.GameTime - m_drawStartTime) / DrawTime), 0f, 1f);
-				SetCrossbowWithBolt((int)(m_currentDraw * 15f), false);
-
-				if (m_subsystemTime.GameTime - m_drawStartTime >= DrawTime)
-				{
-					LoadBolt(target);
-				}
-			}
-			else if (m_isReloading)
-			{
-				if (m_subsystemTime.GameTime - m_animationStartTime >= ReloadTime)
-				{
-					m_isReloading = false;
-					Fire(target);
-				}
-			}
-			else if (m_isFiring)
-			{
-				if (m_subsystemTime.GameTime - m_fireTime >= 0.2f) // breve pausa tras disparo
-				{
-					m_isFiring = false;
-					ClearBoltFromCrossbow();
-					// Volver a empezar el ciclo (el siguiente frame empezará a apuntar)
-				}
-			}
-		}
-
+		// -----------------------------------------------------------------
+		// Gestión del inventario y ballesta
+		// -----------------------------------------------------------------
 		private void FindCrossbow()
 		{
 			for (int i = 0; i < m_componentInventory.SlotsCount; i++)
@@ -219,7 +184,7 @@ namespace Game
 			}
 		}
 
-		private void SetCrossbowWithBolt(int drawValue, bool hasBolt)
+		private void SetCrossbowDraw(int drawValue)
 		{
 			if (m_crossbowSlot < 0)
 			{
@@ -233,11 +198,7 @@ namespace Game
 				if (currentCrossbowValue == 0) return;
 
 				int currentData = Terrain.ExtractData(currentCrossbowValue);
-				ArrowBlock.ArrowType? boltType = hasBolt ? m_nextBoltType : null;
-
 				int newData = CrossbowBlock.SetDraw(currentData, MathUtils.Clamp(drawValue, 0, 15));
-				newData = CrossbowBlock.SetArrowType(newData, boltType);
-
 				int newCrossbowValue = Terrain.ReplaceData(currentCrossbowValue, newData);
 				m_componentInventory.RemoveSlotItems(m_crossbowSlot, 1);
 				m_componentInventory.AddSlotItems(m_crossbowSlot, newCrossbowValue, 1);
@@ -245,86 +206,232 @@ namespace Game
 			catch (Exception) { }
 		}
 
-		private void ClearBoltFromCrossbow() => SetCrossbowWithBolt(0, false);
+		private void SetCrossbowLoaded(ArrowBlock.ArrowType boltType)
+		{
+			if (m_crossbowSlot < 0)
+			{
+				FindCrossbow();
+				if (m_crossbowSlot < 0) return;
+			}
+
+			try
+			{
+				int currentCrossbowValue = m_componentInventory.GetSlotValue(m_crossbowSlot);
+				if (currentCrossbowValue == 0) return;
+
+				int currentData = Terrain.ExtractData(currentCrossbowValue);
+				int newData = CrossbowBlock.SetDraw(currentData, 15);
+				newData = CrossbowBlock.SetArrowType(newData, boltType);
+				int newCrossbowValue = Terrain.ReplaceData(currentCrossbowValue, newData);
+				m_componentInventory.RemoveSlotItems(m_crossbowSlot, 1);
+				m_componentInventory.AddSlotItems(m_crossbowSlot, newCrossbowValue, 1);
+			}
+			catch (Exception) { }
+		}
+
+		// -----------------------------------------------------------------
+		// Lógica de estado
+		// -----------------------------------------------------------------
+		public void Update(float dt)
+		{
+			if (!m_initialized || m_componentCreature.ComponentHealth.Health <= 0f)
+				return;
+
+			ComponentCreature target = GetChaseTarget();
+
+			if (target == null || IsStuck() || IsLineOfSightBlocked(target))
+			{
+				ResetState();
+				if (m_crossbowSlot >= 0)
+					SetCrossbowDraw(0);
+				return;
+			}
+
+			float distance = Vector3.Distance(
+				m_componentCreature.ComponentBody.Position,
+				target.ComponentBody.Position
+			);
+
+			if (distance > MaxDistance)
+			{
+				ResetState();
+				if (m_crossbowSlot >= 0)
+					SetCrossbowDraw(0);
+				return;
+			}
+
+			// Mirar al objetivo (solo visual)
+			if (m_componentModel != null)
+				m_componentModel.LookAtOrder = target.ComponentCreatureModel.EyePosition;
+
+			// Máquina de estados
+			if (!m_isAiming && !m_isFiring)
+			{
+				// Comprobar cooldown
+				if (m_subsystemTime.GameTime >= m_cooldownEndTime)
+				{
+					StartAiming(target);
+				}
+			}
+
+			if (m_isAiming)
+			{
+				// Mientras apunta, llamar a AimState.InProgress cada frame
+				Ray3 ray = GetAimRay(target);
+				m_componentMiner.Aim(ray, AimState.InProgress);
+
+				if (m_subsystemTime.GameTime - m_aimStartTime >= AimTime)
+				{
+					// Terminar apuntado y disparar
+					m_componentMiner.Aim(ray, AimState.Completed);
+					m_isAiming = false;
+					m_isFiring = true;
+					m_cooldownEndTime = m_subsystemTime.GameTime + Cooldown;
+				}
+			}
+			else if (m_isFiring)
+			{
+				// Pequeña pausa tras disparo
+				if (m_subsystemTime.GameTime - (m_aimStartTime + AimTime) >= 0.1f)
+				{
+					m_isFiring = false;
+					// Reiniciar para el siguiente ciclo
+				}
+			}
+		}
+
+		// -----------------------------------------------------------------
+		// Métodos de apuntado mejorado (balística y predicción)
+		// -----------------------------------------------------------------
+
+		/// <summary>
+		/// Resuelve la dirección necesaria para que un proyectil con velocidad inicial speed y gravedad gravity
+		/// alcance el punto target desde el punto start.
+		/// </summary>
+		private Vector3 SolveBallisticDirection(Vector3 start, Vector3 target, float speed, float gravity)
+		{
+			Vector3 delta = target - start;
+			float horizontalDist = new Vector2(delta.X, delta.Z).Length();
+			float verticalDiff = delta.Y;
+
+			if (horizontalDist < 0.01f)
+			{
+				// Si el objetivo está casi vertical, apuntar directamente
+				return Vector3.Normalize(delta);
+			}
+
+			// Ecuación cuadrática para tan(theta)
+			float a = gravity * horizontalDist;
+			float b = speed * speed;
+			float c = gravity * horizontalDist * horizontalDist + 2 * verticalDiff * speed * speed;
+			float discriminant = b * b - gravity * c;
+
+			if (discriminant < 0)
+			{
+				// No solución real, usar dirección directa
+				return Vector3.Normalize(delta);
+			}
+
+			float sqrtDisc = MathF.Sqrt(discriminant);
+			float tanTheta1 = (b + sqrtDisc) / a;
+			float tanTheta2 = (b - sqrtDisc) / a;
+
+			// Elegir el ángulo más bajo (trayectoria más plana)
+			float tanTheta = MathF.Abs(tanTheta1) < MathF.Abs(tanTheta2) ? tanTheta1 : tanTheta2;
+			float angle = MathF.Atan(tanTheta);
+
+			// Dirección horizontal normalizada
+			Vector3 horizontalDir = Vector3.Normalize(new Vector3(delta.X, 0, delta.Z));
+			// Construir dirección final
+			return horizontalDir * MathF.Cos(angle) + Vector3.UnitY * MathF.Sin(angle);
+		}
+
+		/// <summary>
+		/// Calcula la dirección de apuntado considerando la gravedad, velocidad del proyectil y velocidad del objetivo.
+		/// </summary>
+		private Vector3 CalculateAimDirection(Vector3 start, Vector3 target, Vector3 targetVelocity, float speed, float gravity)
+		{
+			// Primer intento: dirección directa
+			Vector3 aimDir = Vector3.Normalize(target - start);
+			int iterations = 3;
+
+			for (int i = 0; i < iterations; i++)
+			{
+				// Tiempo estimado de vuelo (distancia / velocidad)
+				float time = Vector3.Distance(start, target) / speed;
+				Vector3 predictedTarget = target + targetVelocity * time;
+
+				aimDir = SolveBallisticDirection(start, predictedTarget, speed, gravity);
+				if (aimDir == Vector3.Zero)
+					break; // fallback
+			}
+
+			return aimDir;
+		}
+
+		private Ray3 GetAimRay(ComponentCreature target)
+		{
+			Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
+			Vector3 targetPos = target.ComponentCreatureModel.EyePosition;
+			Vector3 targetVel = target.ComponentBody.Velocity;
+
+			// Calcular dirección corregida
+			Vector3 direction = CalculateAimDirection(eyePos, targetPos, targetVel, BoltSpeed, 10f);
+
+			// Aplicar dispersión aleatoria (opcional, basada en Accuracy)
+			if (Accuracy > 0f)
+			{
+				// Generar ángulos aleatorios (yaw y pitch) dentro del cono definido por Accuracy
+				float yaw = m_random.Float(-Accuracy, Accuracy);
+				float pitch = m_random.Float(-Accuracy, Accuracy);
+				// Crear quaternion de rotación
+				Quaternion rot = Quaternion.CreateFromYawPitchRoll(yaw, pitch, 0);
+				direction = Vector3.Transform(direction, rot);
+				direction = Vector3.Normalize(direction);
+			}
+
+			return new Ray3(eyePos, direction);
+		}
 
 		private void StartAiming(ComponentCreature target)
 		{
+			// Seleccionar tipo de virote según distancia
+			float distance = Vector3.Distance(
+				m_componentCreature.ComponentBody.Position,
+				target.ComponentBody.Position
+			);
+			m_nextBoltType = SelectBoltTypeForDistance(distance);
+			if (m_nextBoltType == null)
+				return;
+
+			// Cargar la ballesta (draw=15 y virote)
+			SetCrossbowLoaded(m_nextBoltType.Value);
+			// Asegurar que la ballesta está en el slot activo
+			m_componentInventory.ActiveSlotIndex = m_crossbowSlot;
+
 			m_isAiming = true;
-			m_isDrawing = false;
 			m_isFiring = false;
-			m_isReloading = false;
-			m_animationStartTime = m_subsystemTime.GameTime;
-			m_currentDraw = 0f;
+			m_aimStartTime = m_subsystemTime.GameTime;
 
-			if (target != null)
-			{
-				float distance = Vector3.Distance(
-					m_componentCreature.ComponentBody.Position,
-					target.ComponentBody.Position
-				);
-				m_nextBoltType = SelectBoltTypeForDistance(distance);
-			}
-			else
-			{
-				m_nextBoltType = GetFirstNonExplosiveBoltType();
-			}
-
-			SetCrossbowWithBolt(0, false);
-		}
-
-		private void StartDrawing()
-		{
-			m_isAiming = false;
-			m_isDrawing = true;
-			m_isFiring = false;
-			m_isReloading = false;
-			m_drawStartTime = m_subsystemTime.GameTime;
-		}
-
-		private void LoadBolt(ComponentCreature target)
-		{
-			if (target != null)
-			{
-				float distance = Vector3.Distance(
-					m_componentCreature.ComponentBody.Position,
-					target.ComponentBody.Position
-				);
-				m_nextBoltType = SelectBoltTypeForDistance(distance);
-			}
-			else
-			{
-				m_nextBoltType = GetFirstNonExplosiveBoltType();
-			}
-
-			m_isDrawing = false;
-			m_isReloading = true;
-			m_animationStartTime = m_subsystemTime.GameTime;
-
-			SetCrossbowWithBolt(15, true);
-		}
-
-		private void Fire(ComponentCreature target)
-		{
-			m_isReloading = false;
-			m_isFiring = true;
-			m_fireTime = m_subsystemTime.GameTime;
-
-			ShootBolt(target);
+			// Suscribirse a los eventos de proyectiles para que desaparezcan
+			SubscribeToProjectileEvents();
 		}
 
 		private void ResetState()
 		{
 			m_isAiming = false;
-			m_isDrawing = false;
 			m_isFiring = false;
-			m_isReloading = false;
-			m_currentDraw = 0f;
 			m_nextBoltType = null;
 
 			if (m_componentModel != null)
 				m_componentModel.LookAtOrder = null;
+
+			UnsubscribeFromProjectileEvents();
 		}
 
+		// -----------------------------------------------------------------
+		// Selección de tipo de virote (igual que antes)
+		// -----------------------------------------------------------------
 		private ArrowBlock.ArrowType? SelectBoltTypeForDistance(float distance)
 		{
 			const float explosiveMinDistance = 20f;
@@ -352,80 +459,6 @@ namespace Game
 				}
 			}
 			return AvailableBoltTypes.Length > 0 ? AvailableBoltTypes[0] : (ArrowBlock.ArrowType?)null;
-		}
-
-		private ArrowBlock.ArrowType? GetFirstNonExplosiveBoltType()
-		{
-			foreach (var boltType in AvailableBoltTypes)
-			{
-				if (boltType != ArrowBlock.ArrowType.ExplosiveBolt)
-					return boltType;
-			}
-			return AvailableBoltTypes.Length > 0 ? AvailableBoltTypes[0] : (ArrowBlock.ArrowType?)null;
-		}
-
-		private void ShootBolt(ComponentCreature target)
-		{
-			if (target == null) return;
-
-			try
-			{
-				ArrowBlock.ArrowType? boltType = m_nextBoltType;
-				if (boltType == null)
-				{
-					float distance = Vector3.Distance(
-						m_componentCreature.ComponentBody.Position,
-						target.ComponentBody.Position
-					);
-					boltType = SelectBoltTypeForDistance(distance);
-				}
-				if (boltType == null) return;
-
-				float currentDistance = Vector3.Distance(
-					m_componentCreature.ComponentBody.Position,
-					target.ComponentBody.Position
-				);
-				if (boltType == ArrowBlock.ArrowType.ExplosiveBolt && currentDistance < 20f)
-				{
-					var nonExplosive = GetFirstNonExplosiveBoltType();
-					if (nonExplosive != null)
-						boltType = nonExplosive;
-				}
-
-				Vector3 firePosition = m_componentCreature.ComponentCreatureModel.EyePosition;
-				firePosition.Y -= 0.1f;
-
-				Vector3 targetPosition = target.ComponentCreatureModel.EyePosition;
-				Vector3 direction = Vector3.Normalize(targetPosition - firePosition);
-
-				direction += new Vector3(
-					m_random.Float(-Accuracy, Accuracy),
-					m_random.Float(-Accuracy * 0.5f, Accuracy * 0.5f),
-					m_random.Float(-Accuracy, Accuracy)
-				);
-				direction = Vector3.Normalize(direction);
-
-				float speed = BoltSpeed * (0.8f + (m_currentDraw * 0.4f));
-
-				int boltData = ArrowBlock.SetArrowType(0, boltType.Value);
-				int boltValue = Terrain.MakeBlockValue(ArrowBlock.Index, 0, boltData);
-
-				var projectile = m_subsystemProjectiles.FireProjectile(
-					boltValue,
-					firePosition,
-					direction * speed,
-					Vector3.Zero,
-					m_componentCreature
-				);
-
-				if (projectile != null)
-				{
-					projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
-					if (boltType == ArrowBlock.ArrowType.ExplosiveBolt)
-						projectile.IsIncendiary = false;
-				}
-			}
-			catch (Exception) { }
 		}
 	}
 }
