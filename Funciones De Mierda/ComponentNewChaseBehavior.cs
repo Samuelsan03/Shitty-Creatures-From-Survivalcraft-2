@@ -1796,16 +1796,32 @@ namespace Game
 			return null;
 		}
 
-		// ===== NUEVO: DESTRUIR BLOQUES CUANDO ESTÁ ATASCADO (DOS BLOQUES EN FRENTE: PIES Y CABEZA) =====
+		// ===== NUEVO MÉTODO AUXILIAR PARA VERIFICAR SI UN BLOQUE ES ROMPIBLE =====
+		private bool IsBlockBreakable(int value)
+		{
+			int contents = Terrain.ExtractContents(value);
+			if (contents == 0) return false;
+
+			Block block = BlocksManager.Blocks[contents];
+
+			// No romper bloques indestructibles (como bedrock)
+			if (block.GetExplosionResilience(value) >= float.MaxValue)
+				return false;
+
+			// Verificar que sea colisionable y tenga resiliencia de excavación no negativa
+			return block.IsCollidable_(value) && block.DigResilience >= 0f;
+		}
+
+		// ===== MÉTODO MEJORADO: DESTRUIR BLOQUES CUANDO ESTÁ ATASCADO (CON DETECCIÓN POR ÁNGULO) =====
 		private void TryDestroyBlocksToFree()
 		{
-			if (!DestroyBlocksWhenStuck) return;
+			if (!DestroyBlocksWhenStuck || m_target == null) return;
 
 			Vector3 currentPos = m_componentCreature.ComponentBody.Position;
 
 			if (m_stateMachine.CurrentState == "Chasing")
 			{
-				// Si la posición cambió, reiniciar el contador
+				// Detectar si lleva 2 segundos sin moverse
 				if (Vector3.Distance(currentPos, m_lastStuckCheckPosition) > 0.1f)
 				{
 					m_stuckDetectionStartTime = 0;
@@ -1813,7 +1829,6 @@ namespace Game
 					return;
 				}
 
-				// Iniciar temporizador si aún no empezó
 				if (m_stuckDetectionStartTime == 0)
 				{
 					m_stuckDetectionStartTime = m_subsystemTime.GameTime;
@@ -1821,18 +1836,58 @@ namespace Game
 					return;
 				}
 
-				// Si lleva atascado más de 2 segundos, destruir los dos bloques al frente (arriba y abajo)
 				if (m_subsystemTime.GameTime - m_stuckDetectionStartTime >= 2.0)
 				{
-					// Dirección hacia donde mira el NPC
-					Vector3 forward = m_componentCreature.ComponentBody.Matrix.Forward;
+					Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
+					Vector3 targetEyePos = m_target.ComponentCreatureModel.EyePosition;
+					Vector3 toTarget = targetEyePos - eyePos;
+					float distance = toTarget.Length();
+					if (distance < 0.1f) return; // Demasiado cerca, no romper
 
-					// Destruir bloque a la altura de los pies (ligeramente por debajo de los ojos)
-					DestroyBlockInDirection(forward, -0.5f);
-					// Destruir bloque a la altura de la cabeza (ligeramente por encima de los ojos)
-					DestroyBlockInDirection(forward, 0.8f);
+					toTarget /= distance;
 
-					// Reiniciar temporizador para no destruir en cada frame
+					// Calcular ángulo vertical (radianes)
+					float verticalAngle = (float)Math.Asin(Math.Clamp(toTarget.Y, -1f, 1f));
+					const float thresholdDeg = 45f;
+					float thresholdRad = MathUtils.DegToRad(thresholdDeg);
+
+					// Determinar dirección principal
+					bool isUp = verticalAngle > thresholdRad;
+					bool isDown = verticalAngle < -thresholdRad;
+
+					if (isUp)
+					{
+						// Romper dos bloques hacia arriba
+						DestroyBlockAtPosition(eyePos + Vector3.UnitY * 0.5f);
+						DestroyBlockAtPosition(eyePos + Vector3.UnitY * 1.2f);
+					}
+					else if (isDown)
+					{
+						// Romper dos bloques hacia abajo
+						DestroyBlockAtPosition(eyePos - Vector3.UnitY * 0.5f);
+						DestroyBlockAtPosition(eyePos - Vector3.UnitY * 1.2f);
+					}
+					else
+					{
+						// Al frente: dirección horizontal hacia el objetivo
+						Vector3 horizDir = new Vector3(toTarget.X, 0, toTarget.Z);
+						if (horizDir.LengthSquared() > 0.001f)
+						{
+							horizDir = Vector3.Normalize(horizDir);
+
+							// Altura de los pies: base de la caja + pequeño offset
+							float feetY = currentPos.Y + 0.2f;
+							// Altura de la cabeza: posición Y + altura de la caja - 0.2f
+							float headY = currentPos.Y + m_componentCreature.ComponentBody.StanceBoxSize.Y - 0.2f;
+
+							Vector3 feetPos = new Vector3(currentPos.X, feetY, currentPos.Z) + horizDir * 0.6f;
+							Vector3 headPos = new Vector3(currentPos.X, headY, currentPos.Z) + horizDir * 0.6f;
+
+							DestroyBlockAtPosition(feetPos);
+							DestroyBlockAtPosition(headPos);
+						}
+					}
+
 					m_stuckDetectionStartTime = m_subsystemTime.GameTime;
 				}
 			}
@@ -1842,45 +1897,23 @@ namespace Game
 			}
 		}
 
-		private void DestroyBlockInDirection(Vector3 direction, float verticalOffset = 0f)
+		// ===== NUEVO MÉTODO: DESTRUIR BLOQUE EN UNA POSICIÓN MUNDO SI ES ROMPIBLE =====
+		private void DestroyBlockAtPosition(Vector3 worldPos)
 		{
-			Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
-			Vector3 targetPos = eyePos + direction * 0.6f + Vector3.UnitY * verticalOffset;
-			int x = Terrain.ToCell(targetPos.X);
-			int y = Terrain.ToCell(targetPos.Y);
-			int z = Terrain.ToCell(targetPos.Z);
+			int x = Terrain.ToCell(worldPos.X);
+			int y = Terrain.ToCell(worldPos.Y);
+			int z = Terrain.ToCell(worldPos.Z);
 
-			if (m_subsystemTerrain.Terrain.IsCellValid(x, y, z))
+			if (!m_subsystemTerrain.Terrain.IsCellValid(x, y, z))
+				return;
+
+			int value = m_subsystemTerrain.Terrain.GetCellValue(x, y, z);
+			if (value != 0 && IsBlockBreakable(value))
 			{
-				int value = m_subsystemTerrain.Terrain.GetCellValue(x, y, z);
-				if (value != 0)
-				{
-					m_subsystemTerrain.DestroyCell(0, x, y, z, 0, false, false, null);
-					var soundMaterials = Project.FindSubsystem<SubsystemSoundMaterials>(true);
-					if (soundMaterials != null)
-						soundMaterials.PlayImpactSound(value, new Vector3(x, y, z), 1f);
-				}
-			}
-		}
-
-		private void DestroyBlockInDirection(Vector3 direction)
-		{
-			Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
-			Vector3 targetPos = eyePos + direction * 0.6f;
-			int x = Terrain.ToCell(targetPos.X);
-			int y = Terrain.ToCell(targetPos.Y);
-			int z = Terrain.ToCell(targetPos.Z);
-
-			if (m_subsystemTerrain.Terrain.IsCellValid(x, y, z))
-			{
-				int value = m_subsystemTerrain.Terrain.GetCellValue(x, y, z);
-				if (value != 0)
-				{
-					m_subsystemTerrain.DestroyCell(0, x, y, z, 0, false, false, null);
-					var soundMaterials = Project.FindSubsystem<SubsystemSoundMaterials>(true);
-					if (soundMaterials != null)
-						soundMaterials.PlayImpactSound(value, new Vector3(x, y, z), 1f);
-				}
+				m_subsystemTerrain.DestroyCell(0, x, y, z, 0, false, false, null);
+				var soundMaterials = Project.FindSubsystem<SubsystemSoundMaterials>(true);
+				if (soundMaterials != null)
+					soundMaterials.PlayImpactSound(value, new Vector3(x, y, z), 1f);
 			}
 		}
 
