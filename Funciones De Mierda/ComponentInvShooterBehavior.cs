@@ -9,28 +9,26 @@ namespace Game
 {
 	public class ComponentInvShooterBehavior : ComponentBehavior, IUpdateable
 	{
+		// Nuevas constantes para línea de visión
+		private const float LineOfSightOffset = 0.1f; // Margen para raycast
+
+		// Referencias a componentes de línea de visión y aturdimiento
+		private SubsystemBodies m_subsystemBodies;
+		private ComponentLocomotion m_componentLocomotion;
+
 		public int UpdateOrder
 		{
-			get
-			{
-				return 0;
-			}
+			get { return 0; }
 		}
 
 		public override float ImportanceLevel
 		{
-			get
-			{
-				return 0f;
-			}
+			get { return 0f; }
 		}
 
 		UpdateOrder IUpdateable.UpdateOrder
 		{
-			get
-			{
-				return this.m_subsystemProjectiles.UpdateOrder;
-			}
+			get { return this.m_subsystemProjectiles.UpdateOrder; }
 		}
 
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
@@ -41,7 +39,6 @@ namespace Game
 			// Intentar encontrar comportamientos de persecución (opcionales)
 			this.m_componentChaseBehavior = base.Entity.FindComponent<ComponentChaseBehavior>(false);
 			this.m_componentNewChaseBehavior = base.Entity.FindComponent<ComponentNewChaseBehavior>(false);
-			this.m_componentNewChaseBehavior2 = base.Entity.FindComponent<ComponentNewChaseBehavior2>(false);
 			this.m_componentZombieChaseBehavior = base.Entity.FindComponent<ComponentZombieChaseBehavior>(false);
 
 			this.m_componentInventory = base.Entity.FindComponent<ComponentInventory>(true);
@@ -49,7 +46,12 @@ namespace Game
 			this.m_subsystemTime = base.Project.FindSubsystem<SubsystemTime>(true);
 			this.m_subsystemProjectiles = base.Project.FindSubsystem<SubsystemProjectiles>(true);
 			this.m_subsystemAudio = base.Project.FindSubsystem<SubsystemAudio>(true);
+			this.m_subsystemBodies = base.Project.FindSubsystem<SubsystemBodies>(true);
 			this.m_componentModel = base.Entity.FindComponent<ComponentCreatureModel>(false);
+
+			// Obtener locomoción para verificar aturdimiento
+			this.m_componentLocomotion = this.m_componentCreature.ComponentLocomotion;
+
 			this.ThrowingSound = valuesDictionary.GetValue<string>("ThrowingSound");
 			this.ThrowingSoundDistance = valuesDictionary.GetValue<float>("ThrowingSoundDistance");
 			this.DiscountFromInventory = valuesDictionary.GetValue<bool>("DiscountFromInventory");
@@ -59,11 +61,13 @@ namespace Game
 			this.SelectRandomThrowableItems = base.ValuesDictionary.GetValue<bool>("SelectRandomThrowableItems");
 			this.ThrowFromHead = base.ValuesDictionary.GetValue<bool>("ThrowFromHead");
 			this.MeleeRange = valuesDictionary.GetValue<float>("MeleeRange", 2.5f);
+
 			this.m_stateMachine.AddState("Idle", null, new Action(this.Idle_Update), null);
 			this.m_stateMachine.AddState("Aiming", new Action(this.Aiming_Enter), new Action(this.Aiming_Update), null);
 			this.m_stateMachine.AddState("Fire", new Action(this.Fire_Enter), new Action(this.Fire_Update), new Action(this.Fire_Leave));
 			this.m_stateMachine.AddState("Reloading", null, new Action(this.Reloading_Update), null);
 			this.TransitionToState("Idle");
+
 			string value = valuesDictionary.GetValue<string>("ExcludedThrowableItems", string.Empty);
 			string value2 = base.ValuesDictionary.GetValue<string>("SpecialThrowableItem", string.Empty);
 			bool flag = !string.IsNullOrEmpty(value2);
@@ -134,6 +138,7 @@ namespace Game
 			{
 				this.m_specialThrowableItemValues.Clear();
 			}
+
 			bool flag13 = !string.IsNullOrEmpty(value);
 			bool flag14 = flag13;
 			if (flag14)
@@ -164,6 +169,7 @@ namespace Game
 					}
 				}
 			}
+
 			string[] array6 = this.MinMaxRandomWaitTime.Split(';', StringSplitOptions.None);
 			bool flag19 = array6.Length >= 2 && float.TryParse(array6[0], out this.m_randomWaitMin) && float.TryParse(array6[1], out this.m_randomWaitMax);
 			bool flag20 = !flag19;
@@ -181,6 +187,7 @@ namespace Game
 				defaultInterpolatedStringHandler.AppendLiteral("').");
 				Log.Warning(defaultInterpolatedStringHandler.ToStringAndClear());
 			}
+
 			string[] array7 = this.MinMaxDistance.Split(';', StringSplitOptions.None);
 			bool flag21 = array7.Length >= 2 && float.TryParse(array7[0], out this.m_minDistance) && float.TryParse(array7[1], out this.m_maxDistance);
 			bool flag22 = !flag21;
@@ -198,6 +205,7 @@ namespace Game
 				defaultInterpolatedStringHandler2.AppendLiteral("').");
 				Log.Warning(defaultInterpolatedStringHandler2.ToStringAndClear());
 			}
+
 			bool flag23 = !string.IsNullOrEmpty(this.SpecialThrowableItem);
 			bool flag24 = flag23;
 			if (flag24)
@@ -229,6 +237,7 @@ namespace Game
 			{
 				this.m_specialThrowableItemValue = 0;
 			}
+
 			string[] array8 = this.MinMaxRandomChargeTime.Split(';', StringSplitOptions.None);
 			bool flag29 = array8.Length >= 2 && float.TryParse(array8[0], out this.m_randomThrowMin) && float.TryParse(array8[1], out this.m_randomThrowMax);
 			bool flag30 = !flag29;
@@ -250,6 +259,21 @@ namespace Game
 
 		public void Update(float dt)
 		{
+			// Verificar si está aturdido
+			bool isStunned = this.m_componentLocomotion != null && this.m_componentLocomotion.StunTime > 0f;
+			if (isStunned)
+			{
+				// Si está aturdido, forzar estado Idle y cancelar cualquier acción
+				if (this.m_currentStateName != "Idle")
+				{
+					this.TransitionToState("Idle");
+				}
+				this.m_isCharging = false;
+				this.m_arrowValue = 0;
+				// No procesar más en este frame
+				return;
+			}
+
 			bool flag = this.m_componentCreature.ComponentHealth.Health <= 0f;
 			bool flag2 = !flag;
 			if (flag2)
@@ -313,6 +337,15 @@ namespace Game
 					}
 					else
 					{
+						// Verificar línea de visión antes de disparar
+						if (!HasLineOfSight(target))
+						{
+							// Si la línea de visión se pierde, cancelar la carga y volver a Idle
+							this.m_isCharging = false;
+							this.TransitionToState("Idle");
+							return;
+						}
+
 						bool flag15 = gameTime >= this.m_chargeStartTime + (double)this.m_chargeDuration;
 						bool flag16 = flag15;
 						if (flag16)
@@ -343,6 +376,14 @@ namespace Game
 						bool flag23 = flag22;
 						if (flag23)
 						{
+							// Verificar línea de visión antes de empezar a cargar
+							if (!HasLineOfSight(target))
+							{
+								// Si no hay línea de visión, no iniciar carga
+								this.m_nextUpdateTime = gameTime + 0.5;
+								return;
+							}
+
 							bool throwFromHead2 = this.ThrowFromHead;
 							bool flag24 = throwFromHead2;
 							Vector3 vector2;
@@ -397,8 +438,6 @@ namespace Game
 		{
 			if (this.m_componentNewChaseBehavior != null && this.m_componentNewChaseBehavior.Target != null)
 				return this.m_componentNewChaseBehavior.Target;
-			if (this.m_componentNewChaseBehavior2 != null && this.m_componentNewChaseBehavior2.Target != null)
-				return this.m_componentNewChaseBehavior2.Target;
 			if (this.m_componentZombieChaseBehavior != null && this.m_componentZombieChaseBehavior.Target != null)
 				return this.m_componentZombieChaseBehavior.Target;
 			if (this.m_componentChaseBehavior != null && this.m_componentChaseBehavior.Target != null)
@@ -431,6 +470,14 @@ namespace Game
 						return;
 					}
 				}
+
+				// Verificar línea de visión antes de decidir usar arma a distancia
+				if (!HasLineOfSight(target))
+				{
+					// Si no hay línea de visión, no se puede atacar a distancia
+					return;
+				}
+
 				ComponentInvShooterBehavior.WeaponInfo weaponInfo2 = this.FindReadyRangedWeapon();
 				bool flag4 = weaponInfo2.Type == ComponentInvShooterBehavior.WeaponType.None;
 				if (flag4)
@@ -466,41 +513,47 @@ namespace Game
 			if (flag)
 			{
 				this.TransitionToState("Idle");
+				return;
+			}
+
+			// Verificar línea de visión continuamente durante el apuntado
+			if (!HasLineOfSight(target))
+			{
+				this.TransitionToState("Idle");
+				return;
+			}
+
+			this.ApplyAimingAnimation(target);
+			int activeSlotIndex = this.m_componentInventory.ActiveSlotIndex;
+			int slotValue = this.m_componentInventory.GetSlotValue(activeSlotIndex);
+			int num = Terrain.ExtractData(slotValue);
+			int num2 = slotValue;
+			bool flag2 = this.m_weaponInfo.Type == ComponentInvShooterBehavior.WeaponType.Bow;
+			if (flag2)
+			{
+				float num3 = (float)((this.m_subsystemTime.GameTime - this.m_aimStartTime) / (double)this.m_aimDuration);
+				this.m_bowDraw = MathUtils.Min((int)(num3 * 16f), 15);
+				num2 = Terrain.ReplaceData(slotValue, BowBlock.SetDraw(num, this.m_bowDraw));
 			}
 			else
 			{
-				this.ApplyAimingAnimation(target);
-				int activeSlotIndex = this.m_componentInventory.ActiveSlotIndex;
-				int slotValue = this.m_componentInventory.GetSlotValue(activeSlotIndex);
-				int num = Terrain.ExtractData(slotValue);
-				int num2 = slotValue;
-				bool flag2 = this.m_weaponInfo.Type == ComponentInvShooterBehavior.WeaponType.Bow;
-				if (flag2)
+				bool flag3 = this.m_weaponInfo.Type == ComponentInvShooterBehavior.WeaponType.Musket && !MusketBlock.GetHammerState(num) && this.m_subsystemTime.GameTime > this.m_aimStartTime + 0.5;
+				if (flag3)
 				{
-					float num3 = (float)((this.m_subsystemTime.GameTime - this.m_aimStartTime) / (double)this.m_aimDuration);
-					this.m_bowDraw = MathUtils.Min((int)(num3 * 16f), 15);
-					num2 = Terrain.ReplaceData(slotValue, BowBlock.SetDraw(num, this.m_bowDraw));
+					num2 = Terrain.ReplaceData(slotValue, MusketBlock.SetHammerState(num, true));
+					this.m_subsystemAudio.PlaySound("Audio/HammerCock", 1f, this.m_random.Float(-0.1f, 0.1f), this.m_componentCreature.ComponentBody.Position, 3f, false);
 				}
-				else
-				{
-					bool flag3 = this.m_weaponInfo.Type == ComponentInvShooterBehavior.WeaponType.Musket && !MusketBlock.GetHammerState(num) && this.m_subsystemTime.GameTime > this.m_aimStartTime + 0.5;
-					if (flag3)
-					{
-						num2 = Terrain.ReplaceData(slotValue, MusketBlock.SetHammerState(num, true));
-						this.m_subsystemAudio.PlaySound("Audio/HammerCock", 1f, this.m_random.Float(-0.1f, 0.1f), this.m_componentCreature.ComponentBody.Position, 3f, false);
-					}
-				}
-				bool flag4 = num2 != slotValue;
-				if (flag4)
-				{
-					this.m_componentInventory.RemoveSlotItems(activeSlotIndex, 1);
-					this.m_componentInventory.AddSlotItems(activeSlotIndex, num2, 1);
-				}
-				bool flag5 = this.m_subsystemTime.GameTime > this.m_aimStartTime + (double)this.m_aimDuration;
-				if (flag5)
-				{
-					this.TransitionToState("Fire");
-				}
+			}
+			bool flag4 = num2 != slotValue;
+			if (flag4)
+			{
+				this.m_componentInventory.RemoveSlotItems(activeSlotIndex, 1);
+				this.m_componentInventory.AddSlotItems(activeSlotIndex, num2, 1);
+			}
+			bool flag5 = this.m_subsystemTime.GameTime > this.m_aimStartTime + (double)this.m_aimDuration;
+			if (flag5)
+			{
+				this.TransitionToState("Fire");
 			}
 		}
 
@@ -764,6 +817,10 @@ namespace Game
 			ComponentCreature target = this.GetCurrentTarget();
 			if (target == null) return;
 
+			// Verificar línea de visión antes de lanzar
+			if (!HasLineOfSight(target))
+				return;
+
 			bool throwFromHead = this.ThrowFromHead;
 			Vector3 vector;
 			if (throwFromHead)
@@ -805,6 +862,50 @@ namespace Game
 				this.RemoveAimableItemFromInventory(this.m_arrowValue);
 			}
 		}
+
+		// Método para verificar línea de visión
+		private bool HasLineOfSight(ComponentCreature target)
+		{
+			if (target == null) return false;
+
+			Vector3 start = this.m_componentCreature.ComponentCreatureModel.EyePosition;
+			float targetHeight = target.ComponentBody.StanceBoxSize.Y;
+			Vector3 aimPoint = target.ComponentBody.Position + new Vector3(0f, targetHeight * 0.75f, 0f); // Apuntar al torso
+			float targetDistance = Vector3.Distance(start, aimPoint);
+
+			// Raycast contra terreno (bloques sólidos)
+			SubsystemTerrain terrain = this.m_subsystemTerrain;
+			if (terrain != null)
+			{
+				TerrainRaycastResult? terrainHit = terrain.Raycast(start, aimPoint, false, true, (value, dist) =>
+				{
+					int contents = Terrain.ExtractContents(value);
+					if (contents != 0 && BlocksManager.Blocks[contents].IsCollidable_(value))
+						return true;
+					return false;
+				});
+				if (terrainHit != null && terrainHit.Value.Distance < targetDistance - LineOfSightOffset)
+					return false;
+			}
+
+			// Raycast contra cuerpos (criaturas)
+			if (this.m_subsystemBodies != null)
+			{
+				BodyRaycastResult? bodyHit = this.m_subsystemBodies.Raycast(start, aimPoint, targetDistance, (body, dist) =>
+				{
+					if (body == this.m_componentCreature.ComponentBody || body == target.ComponentBody)
+						return false;
+					return true;
+				});
+				if (bodyHit != null && bodyHit.Value.Distance < targetDistance - LineOfSightOffset)
+					return false;
+			}
+
+			return true;
+		}
+
+		// Resto de métodos sin cambios (FindAimableItemInInventory, RemoveAimableItemFromInventory, etc.)
+		// pero asegurarse de que estén presentes.
 
 		private int FindAimableItemInInventory()
 		{
@@ -1351,94 +1452,50 @@ namespace Game
 		};
 
 		public ComponentCreature m_componentCreature;
-
 		public float MeleeRange;
-
 		public ComponentChaseBehavior m_componentChaseBehavior;
 		public ComponentNewChaseBehavior m_componentNewChaseBehavior;
-		public ComponentNewChaseBehavior2 m_componentNewChaseBehavior2;
 		public ComponentZombieChaseBehavior m_componentZombieChaseBehavior;
-
 		public SubsystemTerrain m_subsystemTerrain;
-
 		public StateMachine m_stateMachine = new StateMachine();
-
 		public SubsystemTime m_subsystemTime;
-
 		public SubsystemProjectiles m_subsystemProjectiles;
-
 		public Random m_random = new Random();
-
 		public int m_arrowValue;
-
 		public double m_nextUpdateTime;
-
 		public double m_ChargeTime;
-
 		public float m_distance;
-
 		public bool DiscountFromInventory;
-
 		public string MinMaxRandomChargeTime;
-
 		public float m_randomThrowMin;
-
 		public float m_randomThrowMax;
-
 		public SubsystemAudio m_subsystemAudio;
-
 		public string ThrowingSound;
-
 		public float ThrowingSoundDistance;
-
 		public bool SelectRandomThrowableItems;
-
 		public string SpecialThrowableItem;
-
 		public int m_specialThrowableItemValue;
-
 		public List<int> m_specialThrowableItemValues = new List<int>();
-
 		public float m_minDistance;
-
 		public float m_maxDistance;
-
 		public string MinMaxDistance;
-
 		public float m_randomWaitMin;
-
 		public float m_randomWaitMax;
-
 		public string MinMaxRandomWaitTime;
-
 		public double m_chargeStartTime;
-
 		public bool m_isCharging;
-
 		public float m_chargeDuration;
-
 		public bool ThrowFromHead;
-
 		public ComponentCreatureModel m_componentModel;
-
 		public List<int> m_excludedItems = new List<int>();
-
 		public ComponentInventory m_componentInventory;
-
 		private string m_currentStateName;
-
 		private double m_nextCombatUpdateTime;
-
 		private double m_nextProactiveReloadTime;
-
 		private double m_fireStateEndTime;
-
 		private ComponentInvShooterBehavior.WeaponInfo m_weaponInfo;
-
 		private double m_aimStartTime;
-
 		private float m_aimDuration;
-
 		private int m_bowDraw;
 
 		public enum WeaponType
