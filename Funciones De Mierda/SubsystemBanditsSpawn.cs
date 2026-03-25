@@ -43,7 +43,7 @@ namespace Game
 					this.m_newSpawnChunks.RandomShuffle((int max) => this.m_random.Int(0, max - 1));
 					foreach (SpawnChunk chunk in this.m_newSpawnChunks)
 					{
-						this.SpawnChunkCreatures(chunk, 1, false);
+						this.SpawnChunkCreatures(chunk, 5, false);
 					}
 					this.m_newSpawnChunks.Clear();
 				}
@@ -57,7 +57,7 @@ namespace Game
 					}
 					this.m_spawnChunks.Clear();
 				}
-				bool flag4 = this.m_subsystemTime.PeriodicGameTimeEvent(60.0, 2.0);
+				bool flag4 = this.m_subsystemTime.PeriodicGameTimeEvent(90.0, 2.0);
 				if (flag4)
 				{
 					this.SpawnRandomCreature();
@@ -114,33 +114,24 @@ namespace Game
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemBanditsSpawn.CreatureType creatureType, Point3 point)
 				{
-					// Verificar que no esté en agua o lava
 					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
 					int blockAbove = Terrain.ExtractContents(cellValue);
-
 					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
 					int blockHead = Terrain.ExtractContents(cellValueHead);
-
-					// Agua (18) o lava (92)
 					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
 					{
 						return 0f;
 					}
-
-					// Verificar el bloque del suelo
 					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
 					int groundBlock = Terrain.ExtractContents(cellValueGround);
-
-					// Condiciones MUY permisivas para que aparezca en cualquier lugar
-					// Bloque del suelo puede ser: tierra (2), piedra (3), grava (7), arena (8)
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 0.002f; // 20% de probabilidad (0.2)
+						return 0.001f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemBanditsSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "Bandit1", point, 1).Count) // Solo 1 bandido por spawn
+					this.SpawnCreatures(creatureType, "Bandit1", point, 1).Count)
 			});
 
 			// Spawn para Bandit1 Constant - DESDE DÍA 0, cualquier hora, estación, ubicación
@@ -148,32 +139,24 @@ namespace Game
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemBanditsSpawn.CreatureType creatureType, Point3 point)
 				{
-					// Verificar que no esté en agua o lava
 					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
 					int blockAbove = Terrain.ExtractContents(cellValue);
-
 					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
 					int blockHead = Terrain.ExtractContents(cellValueHead);
-
-					// Agua (18) o lava (92)
 					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
 					{
 						return 0f;
 					}
-
-					// Verificar el bloque del suelo
 					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
 					int groundBlock = Terrain.ExtractContents(cellValueGround);
-
-					// Condiciones MUY permisivas para que aparezca en cualquier lugar
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 0.002f; // 20% de probabilidad (0.2)
+						return 0.001f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemBanditsSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "Bandit1", point, 1).Count) // Solo 1 bandido por spawn constante
+					this.SpawnCreatures(creatureType, "Bandit1", point, 1).Count)
 			});
 
 			// Spawn para Bandit2 con 10% de probabilidad - DESDE DÍA 0, cualquier hora, estación, ubicación
@@ -181,33 +164,24 @@ namespace Game
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemBanditsSpawn.CreatureType creatureType, Point3 point)
 				{
-					// Verificar que no esté en agua o lava
 					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
 					int blockAbove = Terrain.ExtractContents(cellValue);
-
 					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
 					int blockHead = Terrain.ExtractContents(cellValueHead);
-
-					// Agua (18) o lava (92)
 					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
 					{
 						return 0f;
 					}
-
-					// Verificar el bloque del suelo
 					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
 					int groundBlock = Terrain.ExtractContents(cellValueGround);
-
-					// Condiciones MUY permisivas para que aparezca en cualquier lugar
-					// Bloque del suelo puede ser: tierra (2), piedra (3), grava (7), arena (8)
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 0.001f; // 10% de probabilidad (0.1)
+						return 0.0005f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemBanditsSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "Bandit2", point, 1).Count) // Solo 1 bandido por spawn
+					this.SpawnCreatures(creatureType, "Bandit2", point, 1).Count)
 			});
 
 			// Spawn para Bandit2 Constant - DESDE DÍA 0, cualquier hora, estación, ubicación
@@ -215,1221 +189,902 @@ namespace Game
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemBanditsSpawn.CreatureType creatureType, Point3 point)
 				{
-					// Verificar que no esté en agua o lava
 					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
 					int blockAbove = Terrain.ExtractContents(cellValue);
-
 					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
 					int blockHead = Terrain.ExtractContents(cellValueHead);
-
-					// Agua (18) o lava (92)
 					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
 					{
 						return 0f;
 					}
-
-					// Verificar el bloque del suelo
 					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
 					int groundBlock = Terrain.ExtractContents(cellValueGround);
-
-					// Condiciones MUY permisivas para que aparezca en cualquier lugar
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 0.001f; // 10% de probabilidad (0.1)
+						return 0.0005f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemBanditsSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "Bandit2", point, 1).Count) // Solo 1 bandido por spawn constante
+					this.SpawnCreatures(creatureType, "Bandit2", point, 1).Count)
 			});
 
-			// Spawn para Bandit3 con 10% de probabilidad - DESDE DÍA 2, solo de noche, cualquier estación, ubicación
+			// Spawn para Bandit3 con 10% de probabilidad - DESDE DÍA 2, solo de noche
 			this.m_creatureTypes.Add(new SubsystemBanditsSpawn.CreatureType("Bandit3", SpawnLocationType.Surface, true, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemBanditsSpawn.CreatureType creatureType, Point3 point)
 				{
-					// Condición de día: solo a partir del día 2
 					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
 					int currentDay = 0;
 					if (timeOfDay != null)
 					{
 						currentDay = (int)Math.Floor(timeOfDay.Day);
 					}
-
 					bool isDay2OrLater = currentDay >= 2;
 					if (!isDay2OrLater)
 						return 0f;
-
-					// Verificar que sea de noche
 					bool isNight = this.m_subsystemSky.SkyLightIntensity < 0.3f;
 					if (!isNight)
 						return 0f;
-
-					// Verificar que no esté en agua o lava
 					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
 					int blockAbove = Terrain.ExtractContents(cellValue);
-
 					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
 					int blockHead = Terrain.ExtractContents(cellValueHead);
-
-					// Agua (18) o lava (92)
 					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
 					{
 						return 0f;
 					}
-
-					// Verificar el bloque del suelo
 					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
 					int groundBlock = Terrain.ExtractContents(cellValueGround);
-
-					// Condiciones permisivas para que aparezca en cualquier lugar
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 0.001f; // 10% de probabilidad (0.1)
+						return 0.0005f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemBanditsSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "Bandit3", point, 1).Count) // Solo 1 bandido por spawn
+					this.SpawnCreatures(creatureType, "Bandit3", point, 1).Count)
 			});
 
-			// Spawn para Bandit3 Constant - DESDE DÍA 2, solo de noche, cualquier estación, ubicación
+			// Spawn para Bandit3 Constant - DESDE DÍA 2, solo de noche
 			this.m_creatureTypes.Add(new SubsystemBanditsSpawn.CreatureType("Bandit3 Constant", SpawnLocationType.Surface, false, true)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemBanditsSpawn.CreatureType creatureType, Point3 point)
 				{
-					// Condición de día: solo a partir del día 2
 					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
 					int currentDay = 0;
 					if (timeOfDay != null)
 					{
 						currentDay = (int)Math.Floor(timeOfDay.Day);
 					}
-
 					bool isDay2OrLater = currentDay >= 2;
 					if (!isDay2OrLater)
 						return 0f;
-
-					// Verificar que sea de noche
 					bool isNight = this.m_subsystemSky.SkyLightIntensity < 0.3f;
 					if (!isNight)
 						return 0f;
-
-					// Verificar que no esté en agua o lava
 					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
 					int blockAbove = Terrain.ExtractContents(cellValue);
-
 					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
 					int blockHead = Terrain.ExtractContents(cellValueHead);
-
-					// Agua (18) o lava (92)
 					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
 					{
 						return 0f;
 					}
-
-					// Verificar el bloque del suelo
 					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
 					int groundBlock = Terrain.ExtractContents(cellValueGround);
-
-					// Condiciones permisivas para que aparezca en cualquier lugar
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 0.001f; // 10% de probabilidad (0.1)
+						return 0.0005f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemBanditsSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "Bandit3", point, 1).Count) // Solo 1 bandido por spawn constante
+					this.SpawnCreatures(creatureType, "Bandit3", point, 1).Count)
 			});
 
-			// Spawn para Bandit4 con 10% de probabilidad - DESDE DÍA 2, solo de noche, cualquier estación, ubicación
+			// Spawn para Bandit4 con 10% de probabilidad - DESDE DÍA 2, solo de noche
 			this.m_creatureTypes.Add(new SubsystemBanditsSpawn.CreatureType("Bandit4", SpawnLocationType.Surface, true, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemBanditsSpawn.CreatureType creatureType, Point3 point)
 				{
-					// Condición de día: solo a partir del día 2
 					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
 					int currentDay = 0;
 					if (timeOfDay != null)
 					{
 						currentDay = (int)Math.Floor(timeOfDay.Day);
 					}
-
 					bool isDay2OrLater = currentDay >= 2;
 					if (!isDay2OrLater)
 						return 0f;
-
-					// Verificar que sea de noche
 					bool isNight = this.m_subsystemSky.SkyLightIntensity < 0.3f;
 					if (!isNight)
 						return 0f;
-
-					// Verificar que no esté en agua o lava
 					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
 					int blockAbove = Terrain.ExtractContents(cellValue);
-
 					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
 					int blockHead = Terrain.ExtractContents(cellValueHead);
-
-					// Agua (18) o lava (92)
 					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
 					{
 						return 0f;
 					}
-
-					// Verificar el bloque del suelo
 					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
 					int groundBlock = Terrain.ExtractContents(cellValueGround);
-
-					// Condiciones permisivas para que aparezca en cualquier lugar
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 0.001f; // 10% de probabilidad (0.1)
+						return 0.0005f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemBanditsSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "Bandit4", point, 1).Count) // Solo 1 bandido por spawn
+					this.SpawnCreatures(creatureType, "Bandit4", point, 1).Count)
 			});
 
-			// Spawn para Bandit4 Constant - DESDE DÍA 2, solo de noche, cualquier estación, ubicación
+			// Spawn para Bandit4 Constant - DESDE DÍA 2, solo de noche
 			this.m_creatureTypes.Add(new SubsystemBanditsSpawn.CreatureType("Bandit4 Constant", SpawnLocationType.Surface, false, true)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemBanditsSpawn.CreatureType creatureType, Point3 point)
 				{
-					// Condición de día: solo a partir del día 2
 					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
 					int currentDay = 0;
 					if (timeOfDay != null)
 					{
 						currentDay = (int)Math.Floor(timeOfDay.Day);
 					}
-
 					bool isDay2OrLater = currentDay >= 2;
 					if (!isDay2OrLater)
 						return 0f;
-
-					// Verificar que sea de noche
 					bool isNight = this.m_subsystemSky.SkyLightIntensity < 0.3f;
 					if (!isNight)
 						return 0f;
-
-					// Verificar que no esté en agua o lava
 					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
 					int blockAbove = Terrain.ExtractContents(cellValue);
-
 					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
 					int blockHead = Terrain.ExtractContents(cellValueHead);
-
-					// Agua (18) o lava (92)
 					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
 					{
 						return 0f;
 					}
-
-					// Verificar el bloque del suelo
 					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
 					int groundBlock = Terrain.ExtractContents(cellValueGround);
-
-					// Condiciones permisivas para que aparezca en cualquier lugar
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 0.0005f; // 10% de probabilidad (0.1)
+						return 0.00025f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemBanditsSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "Bandit4", point, 1).Count) // Solo 1 bandido por spawn constante
+					this.SpawnCreatures(creatureType, "Bandit4", point, 1).Count)
 			});
 
-			// Spawn para Bandit5 con 10% de probabilidad - DESDE DÍA 0, solo de día, cualquier estación, ubicación
+			// Spawn para Bandit5 con 10% de probabilidad - DESDE DÍA 0, solo de día
 			this.m_creatureTypes.Add(new SubsystemBanditsSpawn.CreatureType("Bandit5", SpawnLocationType.Surface, true, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemBanditsSpawn.CreatureType creatureType, Point3 point)
 				{
-					// Verificar que sea de día
 					bool isDay = this.m_subsystemSky.SkyLightIntensity > 0.5f;
 					if (!isDay)
 						return 0f;
-
-					// Verificar que no esté en agua o lava
 					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
 					int blockAbove = Terrain.ExtractContents(cellValue);
-
 					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
 					int blockHead = Terrain.ExtractContents(cellValueHead);
-
-					// Agua (18) o lava (92)
 					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
 					{
 						return 0f;
 					}
-
-					// Verificar el bloque del suelo
 					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
 					int groundBlock = Terrain.ExtractContents(cellValueGround);
-
-					// Condiciones permisivas para que aparezca en cualquier lugar
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 0.001f; // 10% de probabilidad (0.1)
+						return 0.0005f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemBanditsSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "Bandit5", point, 1).Count) // Solo 1 bandido por spawn
+					this.SpawnCreatures(creatureType, "Bandit5", point, 1).Count)
 			});
 
-			// Spawn para Bandit5 Constant - DESDE DÍA 0, solo de día, cualquier estación, ubicación
+			// Spawn para Bandit5 Constant - DESDE DÍA 0, solo de día
 			this.m_creatureTypes.Add(new SubsystemBanditsSpawn.CreatureType("Bandit5 Constant", SpawnLocationType.Surface, false, true)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemBanditsSpawn.CreatureType creatureType, Point3 point)
 				{
-					// Verificar que sea de día
 					bool isDay = this.m_subsystemSky.SkyLightIntensity > 0.5f;
 					if (!isDay)
 						return 0f;
-
-					// Verificar que no esté en agua o lava
 					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
 					int blockAbove = Terrain.ExtractContents(cellValue);
-
 					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
 					int blockHead = Terrain.ExtractContents(cellValueHead);
-
-					// Agua (18) o lava (92)
 					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
 					{
 						return 0f;
 					}
-
-					// Verificar el bloque del suelo
 					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
 					int groundBlock = Terrain.ExtractContents(cellValueGround);
-
-					// Condiciones permisivas para que aparezca en cualquier lugar
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 0.001f; // 10% de probabilidad (0.1)
+						return 0.0005f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemBanditsSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "Bandit5", point, 1).Count) // Solo 1 bandido por spawn constante
+					this.SpawnCreatures(creatureType, "Bandit5", point, 1).Count)
 			});
 
-			// Spawn para Bandit6 con 10% de probabilidad - DESDE DÍA 0, solo de día, cualquier estación, ubicación
+			// Spawn para Bandit6 con 10% de probabilidad - DESDE DÍA 0, solo de día
 			this.m_creatureTypes.Add(new SubsystemBanditsSpawn.CreatureType("Bandit6", SpawnLocationType.Surface, true, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemBanditsSpawn.CreatureType creatureType, Point3 point)
 				{
-					// Verificar que sea de día
 					bool isDay = this.m_subsystemSky.SkyLightIntensity > 0.5f;
 					if (!isDay)
 						return 0f;
-
-					// Verificar que no esté en agua o lava
 					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
 					int blockAbove = Terrain.ExtractContents(cellValue);
-
 					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
 					int blockHead = Terrain.ExtractContents(cellValueHead);
-
-					// Agua (18) o lava (92)
 					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
 					{
 						return 0f;
 					}
-
-					// Verificar el bloque del suelo
 					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
 					int groundBlock = Terrain.ExtractContents(cellValueGround);
-
-					// Condiciones permisivas para que aparezca en cualquier lugar
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 0.001f; // 10% de probabilidad (0.1)
+						return 0.0005f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemBanditsSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "Bandit6", point, 1).Count) // Solo 1 bandido por spawn
+					this.SpawnCreatures(creatureType, "Bandit6", point, 1).Count)
 			});
 
-			// Spawn para Bandit6 Constant - DESDE DÍA 0, solo de día, cualquier estación, ubicación
+			// Spawn para Bandit6 Constant - DESDE DÍA 0, solo de día
 			this.m_creatureTypes.Add(new SubsystemBanditsSpawn.CreatureType("Bandit6 Constant", SpawnLocationType.Surface, false, true)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemBanditsSpawn.CreatureType creatureType, Point3 point)
 				{
-					// Verificar que sea de día
 					bool isDay = this.m_subsystemSky.SkyLightIntensity > 0.5f;
 					if (!isDay)
 						return 0f;
-
-					// Verificar que no esté en agua o lava
 					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
 					int blockAbove = Terrain.ExtractContents(cellValue);
-
 					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
 					int blockHead = Terrain.ExtractContents(cellValueHead);
-
-					// Agua (18) o lava (92)
 					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
 					{
 						return 0f;
 					}
-
-					// Verificar el bloque del suelo
 					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
 					int groundBlock = Terrain.ExtractContents(cellValueGround);
-
-					// Condiciones permisivas para que aparezca en cualquier lugar
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 0.001f; // 10% de probabilidad (0.1)
+						return 0.0005f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemBanditsSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "Bandit6", point, 1).Count) // Solo 1 bandido por spawn constante
+					this.SpawnCreatures(creatureType, "Bandit6", point, 1).Count)
 			});
 
-			// Spawn para Bandit8 con 5% de probabilidad - DESDE DÍA 0, solo de día, solo en otoño, cualquier ubicación
+			// Spawn para Bandit8 con 5% de probabilidad - DESDE DÍA 0, solo de día, solo en otoño
 			this.m_creatureTypes.Add(new SubsystemBanditsSpawn.CreatureType("Bandit8", SpawnLocationType.Surface, true, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemBanditsSpawn.CreatureType creatureType, Point3 point)
 				{
-					// Verificar que sea de día
 					bool isDay = this.m_subsystemSky.SkyLightIntensity > 0.5f;
 					if (!isDay)
 						return 0f;
-
-					// Verificar que sea otoño
 					SubsystemSeasons seasons = base.Project.FindSubsystem<SubsystemSeasons>(true);
 					if (seasons == null)
 						return 0f;
-
 					bool isAutumn = seasons.Season == Season.Autumn;
 					if (!isAutumn)
 						return 0f;
-
-					// Verificar que no esté en agua o lava
 					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
 					int blockAbove = Terrain.ExtractContents(cellValue);
-
 					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
 					int blockHead = Terrain.ExtractContents(cellValueHead);
-
-					// Agua (18) o lava (92)
 					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
 					{
 						return 0f;
 					}
-
-					// Verificar el bloque del suelo
 					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
 					int groundBlock = Terrain.ExtractContents(cellValueGround);
-
-					// Condiciones permisivas para que aparezca en cualquier lugar
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 0.005f; // 5% de probabilidad (0.05)
+						return 0.00025f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemBanditsSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "Bandit8", point, 1).Count) // Solo 1 bandido por spawn
+					this.SpawnCreatures(creatureType, "Bandit8", point, 1).Count)
 			});
 
-			// Spawn para Bandit8 Constant - DESDE DÍA 0, solo de día, solo en otoño, cualquier ubicación
+			// Spawn para Bandit8 Constant - DESDE DÍA 0, solo de día, solo en otoño
 			this.m_creatureTypes.Add(new SubsystemBanditsSpawn.CreatureType("Bandit8 Constant", SpawnLocationType.Surface, false, true)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemBanditsSpawn.CreatureType creatureType, Point3 point)
 				{
-					// Verificar que sea de día
 					bool isDay = this.m_subsystemSky.SkyLightIntensity > 0.5f;
 					if (!isDay)
 						return 0f;
-
-					// Verificar que sea otoño
 					SubsystemSeasons seasons = base.Project.FindSubsystem<SubsystemSeasons>(true);
 					if (seasons == null)
 						return 0f;
-
 					bool isAutumn = seasons.Season == Season.Autumn;
 					if (!isAutumn)
 						return 0f;
-
-					// Verificar que no esté en agua o lava
 					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
 					int blockAbove = Terrain.ExtractContents(cellValue);
-
 					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
 					int blockHead = Terrain.ExtractContents(cellValueHead);
-
-					// Agua (18) o lava (92)
 					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
 					{
 						return 0f;
 					}
-
-					// Verificar el bloque del suelo
 					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
 					int groundBlock = Terrain.ExtractContents(cellValueGround);
-
-					// Condiciones permisivas para que aparezca en cualquier lugar
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 0.005f; // 5% de probabilidad (0.05)
+						return 0.00025f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemBanditsSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "Bandit8", point, 1).Count) // Solo 1 bandido por spawn constante
+					this.SpawnCreatures(creatureType, "Bandit8", point, 1).Count)
 			});
 
-			// Spawn para Bandit9 con 5% de probabilidad - DESDE DÍA 0, solo de día, solo en otoño, cualquier ubicación
+			// Spawn para Bandit9 con 5% de probabilidad - DESDE DÍA 0, solo de día, solo en otoño
 			this.m_creatureTypes.Add(new SubsystemBanditsSpawn.CreatureType("Bandit9", SpawnLocationType.Surface, true, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemBanditsSpawn.CreatureType creatureType, Point3 point)
 				{
-					// Verificar que sea de día
 					bool isDay = this.m_subsystemSky.SkyLightIntensity > 0.5f;
 					if (!isDay)
 						return 0f;
-
-					// Verificar que sea otoño
 					SubsystemSeasons seasons = base.Project.FindSubsystem<SubsystemSeasons>(true);
 					if (seasons == null)
 						return 0f;
-
 					bool isAutumn = seasons.Season == Season.Autumn;
 					if (!isAutumn)
 						return 0f;
-
-					// Verificar que no esté en agua o lava
 					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
 					int blockAbove = Terrain.ExtractContents(cellValue);
-
 					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
 					int blockHead = Terrain.ExtractContents(cellValueHead);
-
-					// Agua (18) o lava (92)
 					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
 					{
 						return 0f;
 					}
-
-					// Verificar el bloque del suelo
 					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
 					int groundBlock = Terrain.ExtractContents(cellValueGround);
-
-					// Condiciones permisivas para que aparezca en cualquier lugar
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 0.005f; // 5% de probabilidad (0.05)
+						return 0.00025f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemBanditsSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "Bandit9", point, 1).Count) // Solo 1 bandido por spawn
+					this.SpawnCreatures(creatureType, "Bandit9", point, 1).Count)
 			});
 
-			// Spawn para Bandit9 Constant - DESDE DÍA 0, solo de día, solo en otoño, cualquier ubicación
+			// Spawn para Bandit9 Constant - DESDE DÍA 0, solo de día, solo en otoño
 			this.m_creatureTypes.Add(new SubsystemBanditsSpawn.CreatureType("Bandit9 Constant", SpawnLocationType.Surface, false, true)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemBanditsSpawn.CreatureType creatureType, Point3 point)
 				{
-					// Verificar que sea de día
 					bool isDay = this.m_subsystemSky.SkyLightIntensity > 0.5f;
 					if (!isDay)
 						return 0f;
-
-					// Verificar que sea otoño
 					SubsystemSeasons seasons = base.Project.FindSubsystem<SubsystemSeasons>(true);
 					if (seasons == null)
 						return 0f;
-
 					bool isAutumn = seasons.Season == Season.Autumn;
 					if (!isAutumn)
 						return 0f;
-
-					// Verificar que no esté en agua o lava
 					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
 					int blockAbove = Terrain.ExtractContents(cellValue);
-
 					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
 					int blockHead = Terrain.ExtractContents(cellValueHead);
-
-					// Agua (18) o lava (92)
 					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
 					{
 						return 0f;
 					}
-
-					// Verificar el bloque del suelo
 					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
 					int groundBlock = Terrain.ExtractContents(cellValueGround);
-
-					// Condiciones permisivas para que aparezca en cualquier lugar
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 0.005f; // 5% de probabilidad (0.05)
+						return 0.00025f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemBanditsSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "Bandit9", point, 1).Count) // Solo 1 bandido por spawn constante
+					this.SpawnCreatures(creatureType, "Bandit9", point, 1).Count)
 			});
 
-			// Spawn para Bandit10 con 10% de probabilidad - DESDE DÍA 0, solo de noche, solo en invierno, cualquier ubicación
+			// Spawn para Bandit10 con 10% de probabilidad - DESDE DÍA 0, solo de noche, solo en invierno
 			this.m_creatureTypes.Add(new SubsystemBanditsSpawn.CreatureType("Bandit10", SpawnLocationType.Surface, true, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemBanditsSpawn.CreatureType creatureType, Point3 point)
 				{
-					// Verificar que sea de noche
 					bool isNight = this.m_subsystemSky.SkyLightIntensity < 0.3f;
 					if (!isNight)
 						return 0f;
-
-					// Verificar que sea invierno
 					SubsystemSeasons seasons = base.Project.FindSubsystem<SubsystemSeasons>(true);
 					if (seasons == null)
 						return 0f;
-
 					bool isWinter = seasons.Season == Season.Winter;
 					if (!isWinter)
 						return 0f;
-
-					// Verificar que no esté en agua o lava
 					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
 					int blockAbove = Terrain.ExtractContents(cellValue);
-
 					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
 					int blockHead = Terrain.ExtractContents(cellValueHead);
-
-					// Agua (18) o lava (92)
 					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
 					{
 						return 0f;
 					}
-
-					// Verificar el bloque del suelo
 					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
 					int groundBlock = Terrain.ExtractContents(cellValueGround);
-
-					// Condiciones permisivas para que aparezca en cualquier lugar
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 0.001f; // 10% de probabilidad (0.1)
+						return 0.0005f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemBanditsSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "Bandit10", point, 1).Count) // Solo 1 bandido por spawn
+					this.SpawnCreatures(creatureType, "Bandit10", point, 1).Count)
 			});
 
-			// Spawn para Bandit10 Constant - DESDE DÍA 0, solo de noche, solo en invierno, cualquier ubicación
+			// Spawn para Bandit10 Constant - DESDE DÍA 0, solo de noche, solo en invierno
 			this.m_creatureTypes.Add(new SubsystemBanditsSpawn.CreatureType("Bandit10 Constant", SpawnLocationType.Surface, false, true)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemBanditsSpawn.CreatureType creatureType, Point3 point)
 				{
-					// Verificar que sea de noche
 					bool isNight = this.m_subsystemSky.SkyLightIntensity < 0.3f;
 					if (!isNight)
 						return 0f;
-
-					// Verificar que sea invierno
 					SubsystemSeasons seasons = base.Project.FindSubsystem<SubsystemSeasons>(true);
 					if (seasons == null)
 						return 0f;
-
 					bool isWinter = seasons.Season == Season.Winter;
 					if (!isWinter)
 						return 0f;
-
-					// Verificar que no esté en agua o lava
 					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
 					int blockAbove = Terrain.ExtractContents(cellValue);
-
 					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
 					int blockHead = Terrain.ExtractContents(cellValueHead);
-
-					// Agua (18) o lava (92)
 					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
 					{
 						return 0f;
 					}
-
-					// Verificar el bloque del suelo
 					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
 					int groundBlock = Terrain.ExtractContents(cellValueGround);
-
-					// Condiciones permisivas para que aparezca en cualquier lugar
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 0.001f; // 10% de probabilidad (0.1)
+						return 0.0005f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemBanditsSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "Bandit10", point, 1).Count) // Solo 1 bandido por spawn constante
+					this.SpawnCreatures(creatureType, "Bandit10", point, 1).Count)
 			});
 
-			// Spawn para Bandit7 con 45% de probabilidad - DESDE DÍA 0, cualquier hora, estación, ubicación
+			// Spawn para Bandit7 con 45% de probabilidad - DESDE DÍA 0, cualquier hora
 			this.m_creatureTypes.Add(new SubsystemBanditsSpawn.CreatureType("Bandit7", SpawnLocationType.Surface, true, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemBanditsSpawn.CreatureType creatureType, Point3 point)
 				{
-					// Verificar que no esté en agua o lava
 					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
 					int blockAbove = Terrain.ExtractContents(cellValue);
-
 					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
 					int blockHead = Terrain.ExtractContents(cellValueHead);
-
-					// Agua (18) o lava (92)
 					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
 					{
 						return 0f;
 					}
-
-					// Verificar el bloque del suelo
 					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
 					int groundBlock = Terrain.ExtractContents(cellValueGround);
-
-					// Condiciones MUY permisivas para que aparezca en cualquier lugar
-					// Bloque del suelo puede ser: tierra (2), piedra (3), grava (7), arena (8)
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 0.0045f; // 45% de probabilidad (0.45)
+						return 0.002f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemBanditsSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "Bandit7", point, 1).Count) // Solo 1 bandido por spawn
+					this.SpawnCreatures(creatureType, "Bandit7", point, 1).Count)
 			});
 
-			// Spawn para Bandit7 Constant - DESDE DÍA 0, cualquier hora, estación, ubicación
+			// Spawn para Bandit7 Constant - DESDE DÍA 0, cualquier hora
 			this.m_creatureTypes.Add(new SubsystemBanditsSpawn.CreatureType("Bandit7 Constant", SpawnLocationType.Surface, false, true)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemBanditsSpawn.CreatureType creatureType, Point3 point)
 				{
-					// Verificar que no esté en agua o lava
 					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
 					int blockAbove = Terrain.ExtractContents(cellValue);
-
 					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
 					int blockHead = Terrain.ExtractContents(cellValueHead);
-
-					// Agua (18) o lava (92)
 					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
 					{
 						return 0f;
 					}
-
-					// Verificar el bloque del suelo
 					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
 					int groundBlock = Terrain.ExtractContents(cellValueGround);
-
-					// Condiciones MUY permisivas para que aparezca en cualquier lugar
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 0.002f; // 2% de probabilidad constante (0.02)
+						return 0.001f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemBanditsSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "Bandit7", point, 1).Count) // Solo 1 bandido por spawn constante
+					this.SpawnCreatures(creatureType, "Bandit7", point, 1).Count)
 			});
 
-			// Spawn para Bandit11 con 45% de probabilidad - DESDE DÍA 0, cualquier hora, estación, ubicación
+			// Spawn para Bandit11 con 45% de probabilidad - DESDE DÍA 0, cualquier hora
 			this.m_creatureTypes.Add(new SubsystemBanditsSpawn.CreatureType("Bandit11", SpawnLocationType.Surface, true, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemBanditsSpawn.CreatureType creatureType, Point3 point)
 				{
-					// Verificar que no esté en agua o lava
 					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
 					int blockAbove = Terrain.ExtractContents(cellValue);
-
 					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
 					int blockHead = Terrain.ExtractContents(cellValueHead);
-
-					// Agua (18) o lava (92)
 					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
 					{
 						return 0f;
 					}
-
-					// Verificar el bloque del suelo
 					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
 					int groundBlock = Terrain.ExtractContents(cellValueGround);
-
-					// Condiciones MUY permisivas para que aparezca en cualquier lugar
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 0.0045f; // 45% de probabilidad (0.45)
+						return 0.002f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemBanditsSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "Bandit11", point, 1).Count) // Solo 1 bandido por spawn
+					this.SpawnCreatures(creatureType, "Bandit11", point, 1).Count)
 			});
 
-			// Spawn para Bandit11 Constant - DESDE DÍA 0, cualquier hora, estación, ubicación
+			// Spawn para Bandit11 Constant - DESDE DÍA 0, cualquier hora
 			this.m_creatureTypes.Add(new SubsystemBanditsSpawn.CreatureType("Bandit11 Constant", SpawnLocationType.Surface, false, true)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemBanditsSpawn.CreatureType creatureType, Point3 point)
 				{
-					// Verificar que no esté en agua o lava
 					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
 					int blockAbove = Terrain.ExtractContents(cellValue);
-
 					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
 					int blockHead = Terrain.ExtractContents(cellValueHead);
-
-					// Agua (18) o lava (92)
 					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
 					{
 						return 0f;
 					}
-
-					// Verificar el bloque del suelo
 					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
 					int groundBlock = Terrain.ExtractContents(cellValueGround);
-
-					// Condiciones MUY permisivas para que aparezca en cualquier lugar
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 0.002f; // 2% de probabilidad constante (0.02)
+						return 0.001f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemBanditsSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "Bandit11", point, 1).Count) // Solo 1 bandido por spawn constante
+					this.SpawnCreatures(creatureType, "Bandit11", point, 1).Count)
 			});
 
-			// Spawn para Bandit12 con 5% de probabilidad - DESDE DÍA 0, solo de día, solo en primavera, cualquier ubicación
+			// Spawn para Bandit12 con 5% de probabilidad - DESDE DÍA 0, solo de día, solo en primavera
 			this.m_creatureTypes.Add(new SubsystemBanditsSpawn.CreatureType("Bandit12", SpawnLocationType.Surface, true, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemBanditsSpawn.CreatureType creatureType, Point3 point)
 				{
-					// Verificar que sea de día
 					bool isDay = this.m_subsystemSky.SkyLightIntensity > 0.5f;
 					if (!isDay)
 						return 0f;
-
-					// Verificar que sea primavera
 					SubsystemSeasons seasons = base.Project.FindSubsystem<SubsystemSeasons>(true);
 					if (seasons == null)
 						return 0f;
-
 					bool isSpring = seasons.Season == Season.Spring;
 					if (!isSpring)
 						return 0f;
-
-					// Verificar que no esté en agua o lava
 					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
 					int blockAbove = Terrain.ExtractContents(cellValue);
-
 					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
 					int blockHead = Terrain.ExtractContents(cellValueHead);
-
-					// Agua (18) o lava (92)
 					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
 					{
 						return 0f;
 					}
-
-					// Verificar el bloque del suelo
 					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
 					int groundBlock = Terrain.ExtractContents(cellValueGround);
-
-					// Condiciones permisivas para que aparezca en cualquier lugar
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 0.0005f; // 5% de probabilidad (0.005)
+						return 0.00025f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemBanditsSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "Bandit12", point, 1).Count) // Solo 1 bandido por spawn
+					this.SpawnCreatures(creatureType, "Bandit12", point, 1).Count)
 			});
 
-			// Spawn para Bandit12 Constant - DESDE DÍA 0, cualquier hora, estación, ubicación
+			// Spawn para Bandit12 Constant - DESDE DÍA 0, solo de día, solo en primavera
 			this.m_creatureTypes.Add(new SubsystemBanditsSpawn.CreatureType("Bandit12 Constant", SpawnLocationType.Surface, false, true)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemBanditsSpawn.CreatureType creatureType, Point3 point)
 				{
-					// Verificar que sea de día
 					bool isDay = this.m_subsystemSky.SkyLightIntensity > 0.5f;
 					if (!isDay)
 						return 0f;
-
-					// Verificar que sea primavera
 					SubsystemSeasons seasons = base.Project.FindSubsystem<SubsystemSeasons>(true);
 					if (seasons == null)
 						return 0f;
-
 					bool isSpring = seasons.Season == Season.Spring;
 					if (!isSpring)
 						return 0f;
-
-					// Verificar que no esté en agua o lava
 					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
 					int blockAbove = Terrain.ExtractContents(cellValue);
-
 					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
 					int blockHead = Terrain.ExtractContents(cellValueHead);
-
-					// Agua (18) o lava (92)
 					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
 					{
 						return 0f;
 					}
-
-					// Verificar el bloque del suelo
 					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
 					int groundBlock = Terrain.ExtractContents(cellValueGround);
-
-					// Condiciones permisivas para que aparezca en cualquier lugar
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 0.0002f; // 2% de probabilidad (0.02)
+						return 0.0001f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemBanditsSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "Bandit12", point, 1).Count) // Solo 1 bandido por spawn constante
+					this.SpawnCreatures(creatureType, "Bandit12", point, 1).Count)
 			});
 
-			// Spawn para Bandit13 con 5% de probabilidad - DESDE DÍA 0, cualquier hora, estación, ubicación
+			// Spawn para Bandit13 con 5% de probabilidad - DESDE DÍA 0, solo en verano
 			this.m_creatureTypes.Add(new SubsystemBanditsSpawn.CreatureType("Bandit13", SpawnLocationType.Surface, true, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemBanditsSpawn.CreatureType creatureType, Point3 point)
 				{
-					// Verificar que no esté en agua o lava
 					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
 					int blockAbove = Terrain.ExtractContents(cellValue);
-
 					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
 					int blockHead = Terrain.ExtractContents(cellValueHead);
-
-					// Agua (18) o lava (92)
 					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
 					{
 						return 0f;
 					}
-
-					// Verificar que sea verano
 					SubsystemSeasons seasons = base.Project.FindSubsystem<SubsystemSeasons>(true);
 					if (seasons == null)
 						return 0f;
-
 					bool isSummer = seasons.Season == Season.Summer;
 					if (!isSummer)
 						return 0f;
-
-					// Verificar el bloque del suelo
 					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
 					int groundBlock = Terrain.ExtractContents(cellValueGround);
-
-					// Condiciones MUY permisivas para que aparezca en cualquier lugar
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 0.0005f; // 5% de probabilidad (0.05)
+						return 0.00025f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemBanditsSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "Bandit13", point, 1).Count) // Solo 1 bandido por spawn
+					this.SpawnCreatures(creatureType, "Bandit13", point, 1).Count)
 			});
 
-			// Spawn para Bandit13 Constant - DESDE DÍA 0, cualquier hora, estación, ubicación
+			// Spawn para Bandit13 Constant - DESDE DÍA 0, solo en verano
 			this.m_creatureTypes.Add(new SubsystemBanditsSpawn.CreatureType("Bandit13 Constant", SpawnLocationType.Surface, false, true)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemBanditsSpawn.CreatureType creatureType, Point3 point)
 				{
-					// Verificar que no esté en agua o lava
 					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
 					int blockAbove = Terrain.ExtractContents(cellValue);
-
 					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
 					int blockHead = Terrain.ExtractContents(cellValueHead);
-
-					// Agua (18) o lava (92)
 					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
 					{
 						return 0f;
 					}
-
-					// Verificar que sea verano
 					SubsystemSeasons seasons = base.Project.FindSubsystem<SubsystemSeasons>(true);
 					if (seasons == null)
 						return 0f;
-
 					bool isSummer = seasons.Season == Season.Summer;
 					if (!isSummer)
 						return 0f;
-
-					// Verificar el bloque del suelo
 					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
 					int groundBlock = Terrain.ExtractContents(cellValueGround);
-
-					// Condiciones MUY permisivas para que aparezca en cualquier lugar
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 0.0002f; // 2% de probabilidad constante (0.02)
+						return 0.0001f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemBanditsSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "Bandit13", point, 1).Count) // Solo 1 bandido por spawn constante
+					this.SpawnCreatures(creatureType, "Bandit13", point, 1).Count)
 			});
 
-			// Spawn para Bandit14 con 5% de probabilidad - DESDE DÍA 5, solo de noche, solo en otoño e invierno, cualquier ubicación
+			// Spawn para Bandit14 con 5% de probabilidad - DESDE DÍA 5, solo de noche, otoño/invierno
 			this.m_creatureTypes.Add(new SubsystemBanditsSpawn.CreatureType("Bandit14", SpawnLocationType.Surface, true, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemBanditsSpawn.CreatureType creatureType, Point3 point)
 				{
-					// Condición de día: solo a partir del día 5
 					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
 					int currentDay = 0;
 					if (timeOfDay != null)
 					{
 						currentDay = (int)Math.Floor(timeOfDay.Day);
 					}
-
 					bool isDay5OrLater = currentDay >= 5;
 					if (!isDay5OrLater)
 						return 0f;
-
-					// Verificar que sea de noche
 					bool isNight = this.m_subsystemSky.SkyLightIntensity < 0.3f;
 					if (!isNight)
 						return 0f;
-
-					// Verificar que sea otoño o invierno
 					SubsystemSeasons seasons = base.Project.FindSubsystem<SubsystemSeasons>(true);
 					if (seasons == null)
 						return 0f;
-
 					bool isAutumn = seasons.Season == Season.Autumn;
 					bool isWinter = seasons.Season == Season.Winter;
 					if (!isAutumn && !isWinter)
 						return 0f;
-
-					// Verificar que no esté en agua o lava
 					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
 					int blockAbove = Terrain.ExtractContents(cellValue);
-
 					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
 					int blockHead = Terrain.ExtractContents(cellValueHead);
-
-					// Agua (18) o lava (92)
 					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
 					{
 						return 0f;
 					}
-
-					// Verificar el bloque del suelo
 					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
 					int groundBlock = Terrain.ExtractContents(cellValueGround);
-
-					// Condiciones permisivas para que aparezca en cualquier lugar
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 0.0005f; // 5% de probabilidad (0.005)
+						return 0.00025f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemBanditsSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "Bandit14", point, 1).Count) // Solo 1 bandido por spawn
+					this.SpawnCreatures(creatureType, "Bandit14", point, 1).Count)
 			});
 
-			// Spawn para Bandit14 Constant - DESDE DÍA 5, solo de noche, solo en otoño e invierno, cualquier ubicación
+			// Spawn para Bandit14 Constant - DESDE DÍA 5, solo de noche, otoño/invierno
 			this.m_creatureTypes.Add(new SubsystemBanditsSpawn.CreatureType("Bandit14 Constant", SpawnLocationType.Surface, false, true)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemBanditsSpawn.CreatureType creatureType, Point3 point)
 				{
-					// Condición de día: solo a partir del día 5
 					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
 					int currentDay = 0;
 					if (timeOfDay != null)
 					{
 						currentDay = (int)Math.Floor(timeOfDay.Day);
 					}
-
 					bool isDay5OrLater = currentDay >= 5;
 					if (!isDay5OrLater)
 						return 0f;
-
-					// Verificar que sea de noche
 					bool isNight = this.m_subsystemSky.SkyLightIntensity < 0.3f;
 					if (!isNight)
 						return 0f;
-
-					// Verificar que sea otoño o invierno
 					SubsystemSeasons seasons = base.Project.FindSubsystem<SubsystemSeasons>(true);
 					if (seasons == null)
 						return 0f;
-
 					bool isAutumn = seasons.Season == Season.Autumn;
 					bool isWinter = seasons.Season == Season.Winter;
 					if (!isAutumn && !isWinter)
 						return 0f;
-
-					// Verificar que no esté en agua o lava
 					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
 					int blockAbove = Terrain.ExtractContents(cellValue);
-
 					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
 					int blockHead = Terrain.ExtractContents(cellValueHead);
-
-					// Agua (18) o lava (92)
 					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
 					{
 						return 0f;
 					}
-
-					// Verificar el bloque del suelo
 					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
 					int groundBlock = Terrain.ExtractContents(cellValueGround);
-
-					// Condiciones permisivas para que aparezca en cualquier lugar
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 0.0002f; // 2% de probabilidad constante (0.02)
+						return 0.0001f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemBanditsSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "Bandit14", point, 1).Count) // Solo 1 bandido por spawn constante
+					this.SpawnCreatures(creatureType, "Bandit14", point, 1).Count)
 			});
 
-			// Spawn para Bandit15 con 5% de probabilidad - DESDE DÍA 10, cualquier hora, solo en primavera y verano, cualquier ubicación
+			// Spawn para Bandit15 con 5% de probabilidad - DESDE DÍA 10, primavera/verano
 			this.m_creatureTypes.Add(new SubsystemBanditsSpawn.CreatureType("Bandit15", SpawnLocationType.Surface, true, false)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemBanditsSpawn.CreatureType creatureType, Point3 point)
 				{
-					// Condición de día: solo a partir del día 10
 					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
 					int currentDay = 0;
 					if (timeOfDay != null)
 					{
 						currentDay = (int)Math.Floor(timeOfDay.Day);
 					}
-
 					bool isDay10OrLater = currentDay >= 10;
 					if (!isDay10OrLater)
 						return 0f;
-
-					// Verificar que sea primavera o verano
 					SubsystemSeasons seasons = base.Project.FindSubsystem<SubsystemSeasons>(true);
 					if (seasons == null)
 						return 0f;
-
 					bool isSpring = seasons.Season == Season.Spring;
 					bool isSummer = seasons.Season == Season.Summer;
 					if (!isSpring && !isSummer)
 						return 0f;
-
-					// Verificar que no esté en agua o lava
 					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
 					int blockAbove = Terrain.ExtractContents(cellValue);
-
 					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
 					int blockHead = Terrain.ExtractContents(cellValueHead);
-
-					// Agua (18) o lava (92)
 					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
 					{
 						return 0f;
 					}
-
-					// Verificar el bloque del suelo
 					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
 					int groundBlock = Terrain.ExtractContents(cellValueGround);
-
-					// Condiciones permisivas para que aparezca en cualquier lugar
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 0.0005f; // 5% de probabilidad (0.005)
+						return 0.00025f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemBanditsSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "Bandit15", point, 1).Count) // Solo 1 bandido por spawn
+					this.SpawnCreatures(creatureType, "Bandit15", point, 1).Count)
 			});
 
-			// Spawn para Bandit15 Constant - DESDE DÍA 10, cualquier hora, solo en primavera y verano, cualquier ubicación
+			// Spawn para Bandit15 Constant - DESDE DÍA 10, primavera/verano
 			this.m_creatureTypes.Add(new SubsystemBanditsSpawn.CreatureType("Bandit15 Constant", SpawnLocationType.Surface, false, true)
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemBanditsSpawn.CreatureType creatureType, Point3 point)
 				{
-					// Condición de día: solo a partir del día 10
 					SubsystemTimeOfDay timeOfDay = base.Project.FindSubsystem<SubsystemTimeOfDay>(true);
 					int currentDay = 0;
 					if (timeOfDay != null)
 					{
 						currentDay = (int)Math.Floor(timeOfDay.Day);
 					}
-
 					bool isDay10OrLater = currentDay >= 10;
 					if (!isDay10OrLater)
 						return 0f;
-
-					// Verificar que sea primavera o verano
 					SubsystemSeasons seasons = base.Project.FindSubsystem<SubsystemSeasons>(true);
 					if (seasons == null)
 						return 0f;
-
 					bool isSpring = seasons.Season == Season.Spring;
 					bool isSummer = seasons.Season == Season.Summer;
 					if (!isSpring && !isSummer)
 						return 0f;
-
-					// Verificar que no esté en agua o lava
 					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
 					int blockAbove = Terrain.ExtractContents(cellValue);
-
 					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
 					int blockHead = Terrain.ExtractContents(cellValueHead);
-
-					// Agua (18) o lava (92)
 					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
 					{
 						return 0f;
 					}
-
-					// Verificar el bloque del suelo
 					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
 					int groundBlock = Terrain.ExtractContents(cellValueGround);
-
-					// Condiciones permisivas para que aparezca en cualquier lugar
 					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
 					{
-						return 0.0002f; // 2% de probabilidad constante (0.02)
+						return 0.0001f;
 					}
 					return 0f;
 				},
 				SpawnFunction = ((SubsystemBanditsSpawn.CreatureType creatureType, Point3 point) =>
-					this.SpawnCreatures(creatureType, "Bandit15", point, 1).Count) // Solo 1 bandido por spawn constante
+					this.SpawnCreatures(creatureType, "Bandit15", point, 1).Count)
 			});
 		}
 
 		// Token: 0x06000255 RID: 597 RVA: 0x0001E11C File Offset: 0x0001C31C
 		private void SpawnRandomCreature()
 		{
-			bool flag = this.CountCreatures(false) >= 24;
+			bool flag = this.CountCreatures(false) >= m_totalLimit;
 			if (!flag)
 			{
 				foreach (GameWidget gameWidget in this.m_subsystemViews.GameWidgets)
 				{
-					int num = 48;
+					int num = 12;
 					Vector2 v = new Vector2(gameWidget.ActiveCamera.ViewPosition.X, gameWidget.ActiveCamera.ViewPosition.Z);
-					bool flag2 = this.CountCreaturesInArea(v - new Vector2(60f), v + new Vector2(60f), false) >= num;
+					bool flag2 = this.CountCreaturesInArea(v - new Vector2(30f), v + new Vector2(30f), false) >= num;
 					if (flag2)
 					{
 						break;
@@ -1457,6 +1112,7 @@ namespace Game
 						{
 							SubsystemBanditsSpawn.CreatureType creatureType = source.ElementAt(randomWeightedItem);
 							creatureType.SpawnFunction(creatureType, spawnPoint.Value);
+							break;
 						}
 					}
 				}
@@ -1466,9 +1122,9 @@ namespace Game
 		// Token: 0x06000256 RID: 598 RVA: 0x0001E34C File Offset: 0x0001C54C
 		private void SpawnChunkCreatures(SpawnChunk chunk, int maxAttempts, bool constantSpawn)
 		{
-			int num = constantSpawn ? 18 : 24;
-			int num2 = constantSpawn ? 4 : 3;
-			float v = (float)(constantSpawn ? 42 : 16);
+			int num = constantSpawn ? m_totalLimitConstant : m_totalLimit;
+			int num2 = constantSpawn ? m_areaLimitConstant : m_areaLimit;
+			float v = (float)(constantSpawn ? m_areaRadiusConstant : m_areaRadius);
 			int num3 = this.CountCreatures(constantSpawn);
 			Vector2 c3 = new Vector2((float)(chunk.Point.X * 16), (float)(chunk.Point.Y * 16)) - new Vector2(v);
 			Vector2 c2 = new Vector2((float)((chunk.Point.X + 1) * 16), (float)((chunk.Point.Y + 1) * 16)) + new Vector2(v);
@@ -1830,20 +1486,15 @@ namespace Game
 		private static SpawnLocationType[] m_spawnLocations = EnumUtils.GetEnumValues(typeof(SpawnLocationType)).Cast<SpawnLocationType>().ToArray<SpawnLocationType>();
 
 		// Token: 0x04000303 RID: 771
-		private const int m_totalLimit = 24;
-
+		private const int m_totalLimit = 10;
 		// Token: 0x04000304 RID: 772
-		private const int m_areaLimit = 3;
-
+		private const int m_areaLimit = 2;
 		// Token: 0x04000305 RID: 773
 		private const int m_areaRadius = 16;
-
 		// Token: 0x04000306 RID: 774
-		private const int m_totalLimitConstant = 18;
-
+		private const int m_totalLimitConstant = 6;
 		// Token: 0x04000307 RID: 775
-		private const int m_areaLimitConstant = 4;
-
+		private const int m_areaLimitConstant = 2;
 		// Token: 0x04000308 RID: 776
 		private const int m_areaRadiusConstant = 42;
 
