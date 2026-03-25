@@ -51,7 +51,7 @@ namespace Game
 		public float RepeatCrossbowAimTime = 1.5f;
 		public float RepeatCrossbowCooldown = 1.0f;
 		public float FlameThrowerAimTime = 1.55f;
-		public float FlameThrowerCooldown = 0.0f;
+		public float FlameThrowerCooldown = 1.0f;
 
 		// NUEVO PARÁMETRO: destruye bloques cuando está atascado
 		public bool DestroyBlocksWhenStuck = false;
@@ -1179,8 +1179,26 @@ namespace Game
 			m_isAimingRanged = true;
 			m_rangedAimStartTime = m_subsystemTime.GameTime;
 			m_triedToLoad = false;
-		}
 
+			// Importante: NO cancelar apuntado después de empezar
+		}
+		// NUEVO MÉTODO: completar el apuntado del lanzallamas (para cuando se acaba la munición)
+		private void CompleteFlameThrowerAim()
+		{
+			EnsureFlameThrowerActive();
+			if (!HasFlameThrower(out int slotIndex, out int flameThrowerValue))
+			{
+				m_isAimingRanged = false;
+				m_aimingStarted = false;
+				return;
+			}
+
+			// El lanzallamas ya disparó todo, aplicar cooldown de recarga
+			m_nextRangedAttackTime = m_subsystemTime.GameTime + FlameThrowerCooldown;
+			m_isAimingRanged = false;
+			m_aimingStarted = false;
+			m_triedToLoad = false;
+		}
 		private void CompleteRepeatCrossbowAim()
 		{
 			EnsureRepeatCrossbowActive();
@@ -1609,7 +1627,6 @@ namespace Game
 			m_aimingStarted = false;
 			m_triedToLoad = false;
 		}
-
 		private void UpdateRangedAttack(float dt)
 		{
 			if (m_target == null)
@@ -1777,6 +1794,10 @@ namespace Game
 			{
 				if (!m_isAimingRanged)
 				{
+					// Verificar cooldown de recarga (similar al mosquete)
+					if (m_subsystemTime.GameTime < m_nextRangedAttackTime)
+						return;
+
 					if (!IsFlameThrowerLoaded())
 					{
 						EnsureFlameThrowerLoaded();
@@ -1798,14 +1819,25 @@ namespace Game
 					Ray3 ray = new Ray3(eyePos, direction);
 					m_componentMiner.Aim(ray, AimState.InProgress);
 
+					// NO cancelar el apuntado mientras haya munición
+					// Solo verificar si el lanzallamas está descargado para recargar
 					if (!IsFlameThrowerLoaded())
 					{
+						// Intentar recargar
 						EnsureFlameThrowerLoaded();
 						if (!IsFlameThrowerLoaded())
 						{
+							// Si no hay más munición, aplicar cooldown de recarga y cancelar
+							m_nextRangedAttackTime = m_subsystemTime.GameTime + FlameThrowerCooldown;
 							CancelRangedAim();
 						}
+						else
+						{
+							// Si se pudo recargar, reiniciar el temporizador de apuntado para no interrumpir
+							m_rangedAimStartTime = m_subsystemTime.GameTime;
+						}
 					}
+					// Si tiene munición, seguir disparando sin cancelar
 				}
 			}
 			else if (useBow)
