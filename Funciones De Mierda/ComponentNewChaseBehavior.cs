@@ -703,7 +703,7 @@ namespace Game
 				}
 
 				// Si golpeó otro cuerpo que no es el objetivo ni el propio NPC
-				if (bodyResult.Distance < distance - 0.5f)
+				if (bodyResult.Distance < distance )
 				{
 					return false;
 				}
@@ -712,7 +712,7 @@ namespace Game
 			// Si el resultado es un TerrainRaycastResult
 			if (result is TerrainRaycastResult terrainResult)
 			{
-				if (terrainResult.Distance < distance - 0.5f)
+				if (terrainResult.Distance < distance )
 				{
 					return false;
 				}
@@ -1514,14 +1514,12 @@ namespace Game
 				return;
 			}
 
-			// Nuevo: Si está atascado, no intentar disparar
 			if (m_componentPathfinding.IsStuck)
 			{
 				CancelRangedAim();
 				return;
 			}
 
-			// Nuevo: Verificar línea de visión antes de cualquier acción
 			if (!HasLineOfSightToTarget())
 			{
 				CancelRangedAim();
@@ -1603,7 +1601,54 @@ namespace Game
 					double aimTimeElapsed = m_subsystemTime.GameTime - m_rangedAimStartTime;
 					if (aimTimeElapsed >= MusketAimTime)
 					{
-						CompleteMusketAim();
+						// NUEVO: Probabilidad 5% de disparo triple con los 3 tipos de bala juntos
+						bool tripleShot = m_random.Float(0f, 1f) < 0.05f;
+
+						if (tripleShot)
+						{
+							// Guardar el valor actual del mosquete
+							int currentValue = m_componentMiner.Inventory.GetSlotValue(musketSlot);
+							int currentData = Terrain.ExtractData(currentValue);
+
+							// Forzar que dispare MusketBall, Buckshot y BuckshotBall juntos
+							int newData = MusketBlock.SetLoadState(currentData, MusketBlock.LoadState.Loaded);
+							newData = MusketBlock.SetBulletType(newData, BulletBlock.BulletType.MusketBall);
+							int musketBallValue = Terrain.MakeBlockValue(MusketBlock.Index, 0, newData);
+
+							newData = MusketBlock.SetBulletType(currentData, BulletBlock.BulletType.Buckshot);
+							int buckshotValue = Terrain.MakeBlockValue(MusketBlock.Index, 0, newData);
+
+							newData = MusketBlock.SetBulletType(currentData, BulletBlock.BulletType.BuckshotBall);
+							int buckshotBallValue = Terrain.MakeBlockValue(MusketBlock.Index, 0, newData);
+
+							// Disparar cada tipo
+							m_componentMiner.Inventory.RemoveSlotItems(musketSlot, 1);
+							m_componentMiner.Inventory.AddSlotItems(musketSlot, musketBallValue, 1);
+							m_componentMiner.Aim(ray, AimState.Completed);
+
+							m_componentMiner.Inventory.RemoveSlotItems(musketSlot, 1);
+							m_componentMiner.Inventory.AddSlotItems(musketSlot, buckshotValue, 1);
+							m_componentMiner.Aim(ray, AimState.Completed);
+
+							m_componentMiner.Inventory.RemoveSlotItems(musketSlot, 1);
+							m_componentMiner.Inventory.AddSlotItems(musketSlot, buckshotBallValue, 1);
+							m_componentMiner.Aim(ray, AimState.Completed);
+
+							// Restaurar el valor original o dejar vacío
+							m_componentMiner.Inventory.RemoveSlotItems(musketSlot, 1);
+							int emptyValue = Terrain.MakeBlockValue(MusketBlock.Index, 0, MusketBlock.SetLoadState(currentData, MusketBlock.LoadState.Empty));
+							m_componentMiner.Inventory.AddSlotItems(musketSlot, emptyValue, 1);
+						}
+						else
+						{
+							// Disparo normal con variación de perdigones
+							m_componentMiner.Aim(ray, AimState.Completed);
+						}
+
+						m_nextRangedAttackTime = m_subsystemTime.GameTime + MusketCooldown;
+						m_isAimingRanged = false;
+						m_aimingStarted = false;
+						m_triedToLoad = false;
 					}
 					else if (!IsMusketLoaded())
 					{
@@ -1886,58 +1931,48 @@ namespace Game
 				if (m_subsystemTime.GameTime - m_stuckDetectionStartTime >= 2.0)
 				{
 					Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
-					Vector3 targetEyePos = m_target.ComponentCreatureModel.EyePosition;
-					Vector3 toTarget = targetEyePos - eyePos;
-					float distance = toTarget.Length();
-					if (distance < 0.1f) return;
+					Vector3 targetPos = m_target.ComponentBody.Position;
+					float targetHeight = m_target.ComponentBody.BoundingBox.Size().Y;
+					float targetTop = targetPos.Y + targetHeight * 0.5f;
+					float targetBottom = targetPos.Y - targetHeight * 0.5f;
 
-					toTarget /= distance;
+					// Alturas de referencia de la criatura
+					float feetY = currentPos.Y + 0.2f;          // Altura de los pies
+					float eyeY = eyePos.Y;                      // Altura de los ojos
+					float headY = currentPos.Y + m_componentCreature.ComponentBody.StanceBoxSize.Y - 0.2f; // Altura de la cabeza
 
-					// Calcular ángulo vertical (radianes)
-					float verticalAngle = (float)Math.Asin(Math.Clamp(toTarget.Y, -1f, 1f));
-					const float thresholdDeg = 25f;  // Reducido de 45° a 25°
-					float thresholdRad = MathUtils.DegToRad(thresholdDeg);
+					// Determinar si el objetivo está claramente arriba o abajo
+					bool targetClearlyAbove = targetBottom > eyeY;
+					bool targetClearlyBelow = targetTop < feetY;
 
-					// Determinar dirección principal
-					bool isUp = verticalAngle > thresholdRad;
-					bool isDown = verticalAngle < -thresholdRad;
-
-					if (isUp)
+					if (targetClearlyAbove)
 					{
 						// Romper dos bloques hacia arriba (desde los ojos)
 						DestroyBlockAtPosition(eyePos + Vector3.UnitY * 0.5f);
-						DestroyBlockAtPosition(eyePos + Vector3.UnitY * 1.2f);
+						DestroyBlockAtPosition(eyePos + Vector3.UnitY * 1.6f);
 					}
-					else if (isDown)
+					else if (targetClearlyBelow)
 					{
-						// Romper hacia abajo: desde los pies y un poco más abajo
-						float feetY = currentPos.Y + 0.2f; // altura de los pies
-						DestroyBlockAtPosition(new Vector3(eyePos.X, feetY, eyePos.Z) - Vector3.UnitY * 0.5f);
-						DestroyBlockAtPosition(new Vector3(eyePos.X, feetY, eyePos.Z) - Vector3.UnitY * 1.2f);
+						// Romper dos bloques hacia abajo (desde los pies)
+						// Primero el bloque sobre el que está parado (justo debajo de los pies)
+						// y luego el bloque de abajo
+						DestroyBlockAtPosition(new Vector3(currentPos.X, feetY, currentPos.Z) - Vector3.UnitY * 0.5f);
+						DestroyBlockAtPosition(new Vector3(currentPos.X, feetY, currentPos.Z) - Vector3.UnitY * 1.6f);
 					}
 					else
 					{
 						// Al frente: dirección horizontal hacia el objetivo
+						Vector3 toTarget = targetPos - eyePos;
 						Vector3 horizDir = new Vector3(toTarget.X, 0, toTarget.Z);
 						if (horizDir.LengthSquared() > 0.001f)
 						{
 							horizDir = Vector3.Normalize(horizDir);
-
-							float feetY = currentPos.Y + 0.2f;
-							float headY = currentPos.Y + m_componentCreature.ComponentBody.StanceBoxSize.Y - 0.2f;
 
 							Vector3 feetPos = new Vector3(currentPos.X, feetY, currentPos.Z) + horizDir * 0.6f;
 							Vector3 headPos = new Vector3(currentPos.X, headY, currentPos.Z) + horizDir * 0.6f;
 
 							DestroyBlockAtPosition(feetPos);
 							DestroyBlockAtPosition(headPos);
-						}
-
-						// **NUEVO**: si el objetivo está abajo (ángulo negativo), también romper un bloque justo debajo de los pies
-						if (verticalAngle < 0f)
-						{
-							float feetY = currentPos.Y + 0.2f;
-							DestroyBlockAtPosition(new Vector3(currentPos.X, feetY, currentPos.Z) - Vector3.UnitY * 0.5f);
 						}
 					}
 
