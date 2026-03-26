@@ -8,7 +8,7 @@ namespace Game
 {
 	/// <summary>
 	/// Comportamiento que permite a una criatura infectar a su objetivo con gripe durante el ataque.
-	/// Utiliza únicamente ComponentChaseBehavior (estándar del juego).
+	/// Utiliza ComponentChaseBehavior y ComponentNewChaseBehavior (estándar del juego).
 	/// </summary>
 	public class ComponentFluInfectBehavior : ComponentBehavior, IUpdateable
 	{
@@ -24,7 +24,7 @@ namespace Game
 			if (target == null)
 				return false;
 
-			// Por ahora, solo infectamos criaturas no jugador (se puede ampliar después)
+			// Los jugadores no pueden ser infectados por criaturas (su gripe es manejada por ComponentFlu)
 			if (target is ComponentPlayer)
 				return false;
 
@@ -43,7 +43,9 @@ namespace Game
 		{
 			m_subsystemTime = Project.FindSubsystem<SubsystemTime>(true);
 			m_componentCreature = Entity.FindComponent<ComponentCreature>(true);
+			// Obtener ambos comportamientos de persecución
 			m_chaseBehavior = Entity.FindComponent<ComponentChaseBehavior>();
+			m_newChaseBehavior = Entity.FindComponent<ComponentNewChaseBehavior>();
 
 			m_fluIntensity = valuesDictionary.GetValue<float>("FluIntensity");
 			m_infectProbability = valuesDictionary.GetValue<float>("InfectProbability", 1f);
@@ -53,14 +55,32 @@ namespace Game
 				m_importanceLevel = 0f;
 			}, delegate
 			{
-				if (m_chaseBehavior != null)
+				// Obtener objetivo usando la propiedad pública Target de ComponentNewChaseBehavior
+				if (m_newChaseBehavior != null)
 				{
+					m_target = m_newChaseBehavior.Target;
+				}
+				if (m_target == null && m_chaseBehavior != null)
+				{
+					// ComponentChaseBehavior tiene m_target como público, pero usamos su propiedad si existe
+					// En ComponentChaseBehavior original, m_target es público, así que accedemos directamente
 					m_target = m_chaseBehavior.m_target;
 				}
 
 				if (m_target != null && m_componentCreature.ComponentCreatureModel.IsAttackHitMoment)
 				{
-					if (m_random.Float(0f, 1f) < m_infectProbability)
+					float probability = m_infectProbability;
+					// Si la salud es baja, la infección es más probable
+					if (m_componentCreature.ComponentHealth.Health < 0.85f)
+					{
+						probability = 1f;
+					}
+					else if (m_random.Float(0f, 1f) < 5f * m_subsystemTime.GameTimeDelta)
+					{
+						probability = Math.Max(probability, 0.5f);
+					}
+
+					if (m_random.Float(0f, 1f) < probability)
 					{
 						m_importanceLevel = 201f;
 					}
@@ -80,13 +100,17 @@ namespace Game
 			{
 				if (StartInfect(m_target))
 				{
+					// Hacer que la criatura infectada huya
 					var runAway = m_componentCreature.Entity.FindComponent<ComponentRunAwayBehavior>();
 					runAway?.RunAwayFrom(m_target.ComponentBody);
+					var newRunAway = m_componentCreature.Entity.FindComponent<ComponentNewRunAwayBehavior>();
+					newRunAway?.RunAwayFrom(m_target.ComponentBody);
+
 					m_stateMachine.TransitionTo("Inactive");
 				}
 				else if (IsActive && m_target != null)
 				{
-					// permanece
+					// permanecer en el estado
 				}
 				else
 				{
@@ -100,6 +124,7 @@ namespace Game
 		private SubsystemTime m_subsystemTime;
 		private ComponentCreature m_componentCreature;
 		private ComponentChaseBehavior m_chaseBehavior;
+		private ComponentNewChaseBehavior m_newChaseBehavior;
 
 		private readonly StateMachine m_stateMachine = new StateMachine();
 		private readonly Game.Random m_random = new Game.Random();
