@@ -2667,6 +2667,10 @@
     <MemberComponentTemplate Name="Spawn" Guid="a3896354-0f53-48f3-8bae-c4ea4e4c8ef9">
         <Parameter Name="AutoDespawn" Guid="fd62f4a0-715e-4eb6-aeca-d33e208ac510" Value="False" Type="bool"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="ef03e382-201f-4eea-934d-ad9de7b97ae3" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
+                <Parameter Name="DayRange" Guid="a33f4a1a-cff3-4434-b06a-b7797d18f6b7" Value="0" Type="float"/>
+                <Parameter Name="NightRange" Guid="adc42cb3-5145-4153-b3d3-09b23e658701" Value="0" Type="float"/>
+            </MemberComponentTemplate>
     <MemberComponentTemplate Name="RunAwayBehavior" Guid="e2bbe753-8737-4708-8cb3-531b2b6c822b" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
 <MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="77575c57-0f0c-4764-bd69-1938ee70ae7e" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
 </EntityTemplate>
@@ -2792,6 +2796,10 @@
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="317497d4-7ff7-4fb2-a867-ce11525d5668"/>
     <Parameter Name="LoadOrder" Value="60" Type="int" Guid="cb611bcb-ef54-4f13-ba34-31033ed9976e"/>
               <Parameter Name="IsEnabled" Guid="dfa7525b-616c-4870-9325-7005d820fc45" Value="True" Type="bool"/>
+            </MemberComponentTemplate>
+            <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="255c35ff-b7cd-4e49-bf45-25549e86cdf9" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
+                <Parameter Name="DayRange" Guid="1a799a1e-fea8-4c94-8712-e5dc11453e5c" Value="0" Type="float"/>
+                <Parameter Name="NightRange" Guid="d027ac19-d5e9-49d8-840c-0cab07b67a20" Value="0" Type="float"/>
             </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewChaseBehavior" Guid="93af7926-0de1-45b7-ab11-61b74a0f63e4" InheritanceParent="1db20f99-32ba-4e7a-8e76-10686a2e76e5">
   <Parameter Name="ChaseWhenAttackedProbability" Guid="81a543d0-d1ad-48d6-9fa4-de650c16f5f4" Value="1" Type="float"/>
@@ -3142,6 +3150,10 @@
     <MemberComponentTemplate Name="Spawn" Guid="06405407-34ac-4778-9255-7e99cc8b97f3">
         <Parameter Name="AutoDespawn" Guid="71503a1d-d891-40e4-87be-ab71ad899a61" Value="False" Type="bool"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="c5281c76-6f9f-485b-b1f2-8378319f06e3" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
+                <Parameter Name="DayRange" Guid="3e33e230-2e9c-4d5c-b0ca-677faad12b5b" Value="0" Type="float"/>
+                <Parameter Name="NightRange" Guid="ae29472f-3851-4833-94df-771931f6409f" Value="0" Type="float"/>
+            </MemberComponentTemplate>
     <MemberComponentTemplate Name="RunAwayBehavior" Guid="9ea86c12-dbf8-4183-9849-a934ae7f2c73" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
 <MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="7eb728d3-cf67-4952-886c-e7c369723ece" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
 </EntityTemplate>
