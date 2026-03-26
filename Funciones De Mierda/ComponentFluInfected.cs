@@ -13,9 +13,14 @@ namespace Game
 		public bool IsInfected => m_fluDuration > 0f;
 		public bool IsCoughing => m_coughingTimer > 0f;
 
+		/// <summary>
+		/// Si es true, la criatura infectada saltará erráticamente (inspirado en el veneno).
+		/// </summary>
+		public bool IsJumpMove { get; set; }
+
 		public void StartFlu(float duration)
 		{
-			// Guardar velocidades actuales como base (pre-infección) solo si no estaba ya infectado
+			// Guardar velocidades originales solo si no estaba infectado
 			if (m_fluDuration <= 0f && m_componentCreature?.ComponentLocomotion != null)
 			{
 				m_originalWalkSpeed = m_componentCreature.ComponentLocomotion.WalkSpeed;
@@ -26,11 +31,12 @@ namespace Game
 
 			m_fluDuration = MathUtils.Max(duration - FluResistance, 0f);
 			m_lastCoughTime = m_subsystemTime.GameTime;
-			Sneeze(); // El primer estornudo al contagiarse
+			Sneeze(); // Estornudo inicial
 
 			if (m_componentCreature is ComponentPlayer player)
 			{
-				player.ComponentGui?.DisplaySmallMessage("¡Te has resfriado!", Color.White, true, true);
+				// Los jugadores no usan este componente; su gripe es manejada por ComponentFlu
+				// Este bloque se mantiene por compatibilidad pero no se ejecuta porque StartInfect ya excluye jugadores.
 			}
 		}
 
@@ -66,31 +72,66 @@ namespace Game
 			Project.FindSubsystem<SubsystemNoise>(true)?.MakeNoise(
 				m_componentCreature.ComponentBody.Position, 0.25f, 10f);
 
-			// APLICAR DAÑO AL ESTORNUDAR - MODIFICADO para no matar
+			// Daño al estornudar (no letal)
 			if (m_fluDuration > 0f && m_componentCreature.ComponentHealth.Health > 0.05f)
 			{
-				float damage = 0.02f; // daño por estornudo (ajustable)
-
-				// Verificar que no mate a la criatura (deja siempre al menos 0.05f de vida)
+				float damage = 0.02f;
 				if (m_componentCreature.ComponentHealth.Health - damage <= 0.05f)
-				{
 					damage = m_componentCreature.ComponentHealth.Health - 0.05f;
-				}
 
 				if (damage > 0f)
 				{
-					m_componentCreature.ComponentHealth.Injure(damage, null, false, "Gripe");
+					m_componentCreature.ComponentHealth.Injure(damage, null, false, "Flu");
 				}
 			}
+		}
+
+		/// <summary>
+		/// Efecto periódico de la gripe (daño, tos fuerte, etc.) inspirado en NauseaEffect del veneno.
+		/// </summary>
+		private void FluEffect()
+		{
+			if (m_componentCreature?.ComponentHealth == null) return;
+
+			m_lastFluEffectTime = m_subsystemTime.GameTime;
+
+			// Daño leve
+			float injury = MathUtils.Min(0.05f, m_componentCreature.ComponentHealth.Health - 0.05f);
+			if (injury > 0f)
+			{
+				m_subsystemTime.QueueGameTimeDelayedExecution(m_subsystemTime.GameTime + 0.5, delegate
+				{
+					m_componentCreature.ComponentHealth.Injure(injury, null, false, "Flu");
+					m_componentCreature.ComponentCreatureSounds.PlayPainSound();
+				});
+			}
+
+			// Activar tos fuerte (puede ser un sonido especial)
+			if (!string.IsNullOrEmpty(m_coughSound))
+				PlayRandomSound(m_coughSound, 1f, m_random.Float(-0.1f, 0.1f));
+			else
+				m_componentCreature.ComponentCreatureSounds?.PlayCoughSound();
+
+			// Reiniciar el temporizador de tos para la animación
+			m_coughingTimer = 1.2f;
+
+			// Opcional: añadir un efecto de partículas (por simplicidad no se incluye, pero podría agregarse)
 		}
 
 		public void Update(float dt)
 		{
 			if (m_componentCreature?.ComponentHealth == null) return;
 
+			// Si es un jugador, no aplicamos este componente (su gripe es manejada por ComponentFlu)
+			if (m_componentCreature is ComponentPlayer)
+			{
+				m_fluDuration = 0f;
+				RestoreOriginalSpeeds();
+				return;
+			}
+
 			if (m_componentCreature.ComponentHealth.Health <= 0f)
 			{
-				// Criatura muerta: eliminar efectos y restaurar velocidades originales
 				m_fluDuration = 0f;
 				m_coughingTimer = 0f;
 				RestoreOriginalSpeeds();
@@ -112,19 +153,29 @@ namespace Game
 			{
 				m_fluDuration = MathUtils.Max(m_fluDuration - dt, 0f);
 
-				// Tos periódica
+				// Tos periódica (como antes)
 				if (m_componentCreature.ComponentHealth.Health > 0f &&
 					m_subsystemTime.PeriodicGameTimeEvent(8.0, -0.01) &&
 					m_subsystemTime.GameTime - m_lastCoughTime > 15.0)
 				{
 					Cough();
 				}
+
+				// Efecto periódico adicional (daño, tos fuerte) - similar al veneno
+				if (m_componentCreature.ComponentHealth.Health > 0f)
+				{
+					double period = (m_fluDuration > SeriousFluPeriod) ? 5.0 : 12.0;
+					if (m_subsystemTime.PeriodicGameTimeEvent(period, -0.01) &&
+						(m_lastFluEffectTime == null || m_subsystemTime.GameTime - m_lastFluEffectTime.Value > period))
+					{
+						FluEffect();
+					}
+				}
 			}
 
-			// Aplicar ralentización si está infectado
+			// Aplicar ralentización (mantenemos el lerp original, que es más suave)
 			if (m_fluDuration > 0f)
 			{
-				// Cuanto más dura la infección, más lento se mueve (de 0.4 a 0.1)
 				float t = MathUtils.Saturate(m_fluDuration / MaxFluDuration);
 				float factor = MathUtils.Lerp(0.1f, 0.4f, t);
 
@@ -135,7 +186,6 @@ namespace Game
 			}
 			else
 			{
-				// Ya no está infectado: restaurar velocidades originales
 				RestoreOriginalSpeeds();
 			}
 
@@ -145,6 +195,21 @@ namespace Game
 				m_coughingTimer -= dt;
 				float pitchAngle = MathUtils.DegToRad(-45f) * MathUtils.Saturate(m_coughingTimer * 2f);
 				locomotion.LookOrder = new Vector2(locomotion.LookOrder.X, pitchAngle);
+			}
+
+			// Movimiento de salto errático (inspirado en el veneno)
+			if (IsJumpMove && m_fluDuration > 0f)
+			{
+				var pilot = m_componentCreature.Entity.FindComponent<ComponentPilot>();
+				if (pilot != null && pilot.Speed > 0f &&
+					(m_componentCreature.ComponentBody.StandingOnValue != null || m_componentCreature.ComponentBody.StandingOnBody != null) &&
+					m_subsystemTime.PeriodicGameTimeEvent(2.0, 0.0))
+				{
+					float jumpSpeed = locomotion.JumpSpeed;
+					locomotion.JumpOrder = 1f;
+					Vector3 forward = m_componentCreature.ComponentBody.Matrix.Forward;
+					m_componentCreature.ComponentBody.Velocity = new Vector3(forward.X * jumpSpeed, jumpSpeed, forward.Z * jumpSpeed);
+				}
 			}
 		}
 
@@ -160,8 +225,9 @@ namespace Game
 			FluResistance = valuesDictionary.GetValue<float>("FluResistance", 0f);
 			m_coughSound = valuesDictionary.GetValue<string>("CoughSound", "Audio/Creatures/FemaleCough/FemaleCough1");
 			m_sneezeSound = valuesDictionary.GetValue<string>("SneezeSound", "Audio/Creatures/FemaleSneeze/FemaleSneeze1");
+			IsJumpMove = valuesDictionary.GetValue<bool>("IsJumpMove", false); // Nuevo parámetro
 
-			// Cargar velocidades originales guardadas, o si no existen, usar las actuales
+			// Cargar velocidades originales guardadas, o usar las actuales
 			m_originalWalkSpeed = valuesDictionary.GetValue<float>("OriginalWalkSpeed", m_componentCreature.ComponentLocomotion?.WalkSpeed ?? 1f);
 			m_originalFlySpeed = valuesDictionary.GetValue<float>("OriginalFlySpeed", m_componentCreature.ComponentLocomotion?.FlySpeed ?? 1f);
 			m_originalSwimSpeed = valuesDictionary.GetValue<float>("OriginalSwimSpeed", m_componentCreature.ComponentLocomotion?.SwimSpeed ?? 1f);
@@ -204,6 +270,7 @@ namespace Game
 		public float m_fluDuration;
 		public float FluResistance;
 		private double m_lastCoughTime = -1000.0;
+		private double? m_lastFluEffectTime; // Para el efecto periódico
 
 		private string m_coughSound;
 		private string m_sneezeSound;
