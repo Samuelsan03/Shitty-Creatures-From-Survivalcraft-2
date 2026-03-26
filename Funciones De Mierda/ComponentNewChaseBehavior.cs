@@ -42,14 +42,14 @@ namespace Game
 		public Vector2 ThrowableAttackRange = new Vector2(5f, 15f);
 
 		// Tiempos de apuntado
-		public float MusketAimTime = 1.65f;
-		public float MusketCooldown = 0.8f;
-		public float BowAimTime = 1.2f;
-		public float BowCooldown = 0.5f;
-		public float CrossbowAimTime = 1.5f;
-		public float CrossbowCooldown = 1.0f;
-		public float RepeatCrossbowAimTime = 1.5f;
-		public float RepeatCrossbowCooldown = 1.0f;
+		public float MusketAimTime = 1f;
+		public float MusketCooldown = 0f;
+		public float BowAimTime = 1f;
+		public float BowCooldown = 0f;
+		public float CrossbowAimTime = 1f;
+		public float CrossbowCooldown = 0f;
+		public float RepeatCrossbowAimTime = 1f;
+		public float RepeatCrossbowCooldown = 0f;
 		public float FlameThrowerAimTime = 1.55f;
 		public float FlameThrowerCooldown = 1.0f;
 
