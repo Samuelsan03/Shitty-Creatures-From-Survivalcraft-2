@@ -5,85 +5,48 @@ using TemplatesDatabase;
 
 namespace Game
 {
-	public class ComponentRageZombieBehavior : Component, IUpdateable
+	public class ComponentRageZombieBehavior : ComponentBehavior, IUpdateable
 	{
-		public float RageHealthThreshold { get; set; } = 0.3f;
-		public float AttackPowerMultiplier { get; set; } = 2f;
-		public float SpeedMultiplier { get; set; } = 1.5f;
-		public bool IsEnraged { get; private set; }
+		private ComponentCreature m_componentCreature;
+		private ComponentMiner m_componentMiner;
+		private ComponentLocomotion m_componentLocomotion;
+		private ComponentZombieChaseBehavior m_componentZombieChase;
+		private bool m_rageActivated;
 
-		private ComponentHealth m_health;
-		private ComponentLocomotion m_locomotion;
-		private ComponentMiner m_miner;
-		private ComponentCreatureModel m_creatureModel;
-
-		private float m_originalWalkSpeed;
-		private float m_originalAttackPower;
-		private float m_originalInjuryColor;
-
+		public override float ImportanceLevel => 0f;
 		public UpdateOrder UpdateOrder => UpdateOrder.Default;
 
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
 			base.Load(valuesDictionary, idToEntityMap);
-
-			m_health = Entity.FindComponent<ComponentHealth>(true);
-			m_locomotion = Entity.FindComponent<ComponentLocomotion>(true);
-			m_miner = Entity.FindComponent<ComponentMiner>(true);
-			m_creatureModel = Entity.FindComponent<ComponentCreatureModel>(true);
-
-			if (m_locomotion != null)
-				m_originalWalkSpeed = m_locomotion.WalkSpeed;
-
-			if (m_miner != null)
-				m_originalAttackPower = m_miner.AttackPower;
-
-			if (m_creatureModel != null)
-				m_originalInjuryColor = m_creatureModel.m_injuryColorFactor;
+			m_componentCreature = Entity.FindComponent<ComponentCreature>(true);
+			m_componentMiner = Entity.FindComponent<ComponentMiner>();
+			m_componentLocomotion = Entity.FindComponent<ComponentLocomotion>();
+			m_componentZombieChase = Entity.FindComponent<ComponentZombieChaseBehavior>();
 		}
 
 		public void Update(float dt)
 		{
-			if (m_health == null) return;
+			if (m_rageActivated)
+				return;
 
-			float healthFraction = m_health.Health;
+			if (m_componentCreature?.ComponentHealth == null)
+				return;
 
-			if (healthFraction <= RageHealthThreshold && !IsEnraged)
+			if (m_componentCreature.ComponentHealth.Health <= 0.3f)
 			{
-				EnterRage();
+				if (m_componentMiner != null)
+					m_componentMiner.AttackPower *= 2.5f;
+
+				if (m_componentLocomotion != null)
+				{
+					m_componentLocomotion.WalkSpeed *= 2f;
+					m_componentLocomotion.LadderSpeed *= 2f;
+					m_componentLocomotion.SwimSpeed *= 2f;
+				}
+
+				m_rageActivated = true;
 			}
-			else if (healthFraction > RageHealthThreshold && IsEnraged)
-			{
-				ExitRage();
-			}
-		}
-
-		private void EnterRage()
-		{
-			IsEnraged = true;
-
-			if (m_locomotion != null)
-				m_locomotion.WalkSpeed = m_originalWalkSpeed * SpeedMultiplier;
-
-			if (m_miner != null)
-				m_miner.AttackPower = m_originalAttackPower * AttackPowerMultiplier;
-
-			if (m_creatureModel != null)
-				m_creatureModel.m_injuryColorFactor = 1f;
-		}
-
-		private void ExitRage()
-		{
-			IsEnraged = false;
-
-			if (m_locomotion != null)
-				m_locomotion.WalkSpeed = m_originalWalkSpeed;
-
-			if (m_miner != null)
-				m_miner.AttackPower = m_originalAttackPower;
-
-			if (m_creatureModel != null)
-				m_creatureModel.m_injuryColorFactor = m_originalInjuryColor;
 		}
 	}
 }
