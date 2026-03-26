@@ -1,49 +1,63 @@
 using System;
 using Engine;
 using Engine.Graphics;
+using Game;
 
 namespace Game
 {
-	public abstract class ShittyCreaturesBlock : Block
+	public class ShittyCreaturesBlock : Block
 	{
-		public virtual int DefaultTextureSlot => 0;
+		public int TextureSlot { get; set; } = 0;
 
-		public virtual int TextureSlotCount => 16;
-
-		public virtual string TextureName => null;
+		public ShittyCreaturesBlock()
+		{
+			IsCollidable = true;
+			IsPlaceable = true;
+			IsTransparent = false;
+			GenerateFacesForSameNeighbors = false;
+			DefaultTextureSlot = TextureSlot;
+			Density = 1f;
+			DigResilience = 1f;
+			DefaultDropContent = 0;
+			DefaultDropCount = 0;
+		}
 
 		public override int GetFaceTextureSlot(int face, int value)
 		{
-			return DefaultTextureSlot;
-		}
-
-		public override int GetTextureSlotCount(int value)
-		{
-			return TextureSlotCount;
-		}
-
-		public override void DrawBlock(PrimitivesRenderer3D primitivesRenderer, int value, Color color, float size, ref Matrix matrix, DrawBlockEnvironmentData environmentData)
-		{
-			environmentData = environmentData ?? BlocksManager.m_defaultEnvironmentData;
-
-			Texture2D texture;
-			if (!string.IsNullOrEmpty(TextureName))
-			{
-				texture = ShittyCreaturesBlockManager.LoadTexture(TextureName);
-			}
-			else
-			{
-				texture = environmentData.SubsystemTerrain != null
-					? environmentData.SubsystemTerrain.SubsystemAnimatedTextures.AnimatedBlocksTexture
-					: ShittyCreaturesBlockManager.DefaultShittyCreaturesTexture;
-			}
-
-			BlocksManager.DrawFlatOrImageExtrusionBlock(primitivesRenderer, value, size, ref matrix, texture, color, false, environmentData);
+			return TextureSlot;
 		}
 
 		public override void GenerateTerrainVertices(BlockGeometryGenerator generator, TerrainGeometry geometry, int value, int x, int y, int z)
 		{
-			generator.GenerateCubeVertices(this, value, x, y, z, Color.White, geometry.OpaqueSubsetsByFace);
+			// Obtener la textura del manager
+			Texture2D texture = ShittyCreaturesBlockManager.AnimatedBlocksTexture ?? ShittyCreaturesBlockManager.BlocksTexture;
+
+			// Obtener el geometry específico para esta textura
+			TerrainGeometry targetGeometry = geometry.GetGeometry(texture);
+
+			// Color base para las caras (la iluminación se aplicará internamente)
+			Color sideColor = Color.White;
+
+			// Elegir los subsets según el tipo de transparencia
+			if (IsTransparent_(value))
+			{
+				generator.GenerateCubeVertices(this, value, x, y, z, sideColor, targetGeometry.TransparentSubsetsByFace);
+			}
+			else if (IsDiggingTransparent)
+			{
+				generator.GenerateCubeVertices(this, value, x, y, z, sideColor, targetGeometry.AlphaTestSubsetsByFace);
+			}
+			else
+			{
+				generator.GenerateCubeVertices(this, value, x, y, z, sideColor, targetGeometry.OpaqueSubsetsByFace);
+			}
+		}
+
+		public override void DrawBlock(PrimitivesRenderer3D primitivesRenderer, int value, Color color, float size, ref Matrix matrix, DrawBlockEnvironmentData environmentData)
+		{
+			Texture2D texture = ShittyCreaturesBlockManager.AnimatedBlocksTexture ?? ShittyCreaturesBlockManager.BlocksTexture;
+			// Usar la sobrecarga que acepta Texture2D al final
+			BlocksManager.DrawCubeBlock(primitivesRenderer, value, Vector3.One, ref matrix, color, color, environmentData, texture);
 		}
 	}
 }
