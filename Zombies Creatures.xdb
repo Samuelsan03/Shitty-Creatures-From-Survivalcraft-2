@@ -10318,6 +10318,7 @@
   <Parameter Name="AutoChaseMask" Guid="8d453c6a-f478-4ca4-8205-c7cfd4f3ca88" Value="LandPredator" Type="Game.CreatureCategory"/>
   <Parameter Name="ChaseNonPlayerProbability" Guid="add000c7-7538-4ebd-a88f-1d74670c50b8" Value="1" Type="float"/>
   <Parameter Name="RangedAttackRange" Guid="d27f39c9-cdf1-4f97-86c7-43653cff43ad" Value="5,100" Type="Vector2"/>
+  <Parameter Name="DestroyBlocksWhenStuck" Guid="5cba4fda-5e98-4267-8dd0-05103f80af1f" Value="true" Type="bool"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="NewHerdBehavior" Guid="da4b293a-5852-4fe3-8f21-9268005a42c4" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
         <Parameter Name="HerdName" Value="player" Type="string" Guid="7520525f-38ad-489d-baba-29d0ef5b1d03"/>
@@ -10406,11 +10407,6 @@
     <MemberComponentTemplate Name="NewAutoInteract" Guid="69cd1d43-5b4b-4e82-b8d6-c61c4e6c57e6" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="PathBreaker" Guid="d18bd732-ec22-4734-89d4-7fd7c2dba435" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
-		<Parameter Name="CanBreakBlocks" Guid="ef6a4a10-7ef0-4774-8ea3-4e7fcd4f3029" Value="True" Type="bool"/>
-		<Parameter Name="SpecificBlocks" Guid="124922f4-5255-443e-92a8-ebf19ecb48d1" Value="GlassBlock, WindowBlock, FramedGlassBlock" Type="string"/>
-		<Parameter Name="BreakProbability" Guid="3ea05bfe-96c6-4517-b01d-364d10276d23" Value="1.0" Type="float"/>
-	</MemberComponentTemplate>
 </EntityTemplate>
 
 <EntityTemplate Name="InfectedFreezer" Guid="ebe5a1e8-4106-4139-8a4f-3a955d84f7a4" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
