@@ -59,9 +59,6 @@ namespace Game
 		// NUEVO PARÁMETRO: invoca un rayo al golpear
 		public bool InvokeLightningOnHit = false;
 
-		// ===== NUEVO PARÁMETRO: auto monta y desmonta =====
-		public bool AutoMountAndDismount = false;
-
 		private Vector3 m_lastStuckCheckPosition;
 		private double m_stuckDetectionStartTime;
 
@@ -85,8 +82,6 @@ namespace Game
 		private ComponentFactors m_componentFactors;
 		private ComponentNewHerdBehavior m_componentHerd;
 		private ComponentHireableNPC m_componentHireable;
-		private ComponentRider m_componentRider;              // NUEVO: para montar/desmontar
-		private ComponentMount m_currentMount;                // NUEVO: montura actual
 
 		private DynamicArray<ComponentBody> m_componentBodies = new DynamicArray<ComponentBody>();
 		private Random m_random = new Random();
@@ -198,7 +193,6 @@ namespace Game
 		{
 			s_throwableBlockIndices = new HashSet<int>();
 			// Registrar los tipos de bloques lanzables usando reflexión para obtener sus índices
-			// Nota: Los índices se obtienen dinámicamente ya que pueden variar según los mods cargados
 			RegisterThrowableBlock(typeof(StoneChunkBlock));
 			RegisterThrowableBlock(typeof(SulphurChunkBlock));
 			RegisterThrowableBlock(typeof(CoalChunkBlock));
@@ -233,7 +227,6 @@ namespace Game
 
 		private static void RegisterThrowableBlock(Type blockType)
 		{
-			// Obtener el campo estático Index del tipo de bloque
 			var field = blockType.GetField("Index");
 			if (field != null && field.FieldType == typeof(int))
 			{
@@ -275,7 +268,7 @@ namespace Game
 			m_nextThrowableAttackTime = 0;
 			m_triedToLoad = false;
 			m_aimingStarted = false;
-			m_stuckStartTime = 0; // reiniciar temporizador de atasco
+			m_stuckStartTime = 0;
 			m_lastStuckCheckPosition = m_componentCreature.ComponentBody.Position;
 
 			SubscribeToProjectileEvents();
@@ -289,79 +282,8 @@ namespace Game
 			Attack(target, 30f, 45f, false);
 		}
 
-		// ===== NUEVO MÉTODO: ENCONTRAR MONTURA CERCANA (usa ComponentNewMount) =====
-		private ComponentMount FindNearestMount()
-		{
-			const float range = 6f;
-			var bodies = new DynamicArray<ComponentBody>();
-			m_subsystemBodies.FindBodiesAroundPoint(
-				new Vector2(m_componentCreature.ComponentBody.Position.X, m_componentCreature.ComponentBody.Position.Z),
-				range, bodies);
-
-			ComponentMount bestMount = null;
-			float bestDistanceSq = range * range;
-
-			foreach (ComponentBody body in bodies)
-			{
-				// Buscar tanto ComponentMount como ComponentNewMount
-				ComponentMount mount = body.Entity.FindComponent<ComponentMount>();
-				if (mount == null)
-				{
-					mount = body.Entity.FindComponent<ComponentNewMount>();
-				}
-
-				if (mount != null && mount.Rider == null)
-				{
-					float distSq = Vector3.DistanceSquared(m_componentCreature.ComponentBody.Position, body.Position);
-					if (distSq < bestDistanceSq)
-					{
-						bestDistanceSq = distSq;
-						bestMount = mount;
-					}
-				}
-			}
-			return bestMount;
-		}
-
-		// ===== NUEVO MÉTODO: GESTIONAR MONTAJE Y MOVIMIENTO (usa ComponentNewMount) =====
-		private void TryMountAndManageMovement()
-		{
-			if (m_componentRider == null || !AutoMountAndDismount) return;
-
-			// Si no estamos montados, buscar montura
-			if (m_componentRider.Mount == null)
-			{
-				ComponentMount nearestMount = FindNearestMount();
-				if (nearestMount != null)
-				{
-					m_componentRider.StartMounting(nearestMount);
-					m_currentMount = nearestMount;
-				}
-			}
-
-			// Si estamos montados, delegar el movimiento a la montura
-			if (m_componentRider.Mount != null && m_target != null)
-			{
-				// Obtener el ComponentPathfinding de la montura (puede ser ComponentNewMount o ComponentMount)
-				ComponentPathfinding mountPathfinding = m_componentRider.Mount.Entity.FindComponent<ComponentPathfinding>();
-				if (mountPathfinding != null)
-				{
-					int maxPathfindingPositions = m_isPersistent ? 2000 : 500;
-					mountPathfinding.SetDestination(m_target.ComponentBody.Position, 1f, 1.5f, maxPathfindingPositions, true, false, true, null);
-				}
-			}
-		}
-
-		// ===== STOPATTACK MODIFICADO - DESMONTAJE TAMBIÉN CON ComponentNewMount =====
 		public virtual void StopAttack()
 		{
-			// NUEVO: desmontar si estamos montados y la opción está activada
-			if (m_componentRider != null && m_componentRider.Mount != null && AutoMountAndDismount)
-			{
-				m_componentRider.StartDismounting();
-				m_currentMount = null;
-			}
-
 			m_stateMachine.TransitionTo("LookingForTarget");
 			IsActive = false;
 			m_target = null;
@@ -430,7 +352,6 @@ namespace Game
 				if (slotCount > 0)
 				{
 					int contents = Terrain.ExtractContents(slotValue);
-					// Excluir armas a distancia y objetos lanzables
 					if (contents == MusketBlock.Index ||
 						contents == BowBlock.Index ||
 						contents == CrossbowBlock.Index ||
@@ -440,7 +361,6 @@ namespace Game
 					{
 						continue;
 					}
-					// Calcular poder cuerpo a cuerpo del arma
 					Block block = BlocksManager.Blocks[contents];
 					float power = block.GetMeleePower(slotValue);
 					if (power > bestPower)
@@ -451,7 +371,6 @@ namespace Game
 					}
 				}
 			}
-			// Si no se encontró ningún arma cuerpo a cuerpo, usar las manos (slotIndex -1, valor 0)
 			if (slotIndex == -1)
 			{
 				value = 0;
@@ -481,7 +400,6 @@ namespace Game
 									contents == FlameThrowerBlock.Index;
 					if (!isRanged) continue;
 
-					// Priorizar armas a distancia: podemos usar el daño a distancia (GetRangePower) o simplemente un orden
 					float power = 0f;
 					if (contents == MusketBlock.Index) power = 100f;
 					else if (contents == BowBlock.Index) power = 80f;
@@ -514,33 +432,25 @@ namespace Game
 
 			if (inMeleeRange)
 			{
-				// Si estamos en rango cuerpo a cuerpo y el arma actual no es cuerpo a cuerpo
 				if (!IsCurrentWeaponMelee)
 				{
-					// Buscar un arma cuerpo a cuerpo en el inventario
 					int meleeSlot = FindBestMeleeWeapon(out int meleeValue);
 					if (meleeSlot != -1)
 					{
-						// Cancelar cualquier apuntado en curso
 						CancelRangedAim();
 						CancelThrowableAim();
-						// Cambiar al arma cuerpo a cuerpo
 						EquipWeapon(meleeSlot);
 					}
-					// Si no hay arma cuerpo a cuerpo, nos quedamos con la actual (que será a distancia) y se usará como garrote
 				}
 			}
 			else
 			{
-				// Fuera de rango cuerpo a cuerpo: si el arma actual no es a distancia y no estamos apuntando lanzables
 				if (!IsCurrentWeaponRanged && !m_isAimingThrowable)
 				{
 					int rangedSlot = FindBestRangedWeapon(out int rangedValue);
 					if (rangedSlot != -1)
 					{
-						// Cancelar cualquier apuntado (por si acaso)
 						CancelRangedAim();
-						// No cancelamos lanzables porque pueden estar en proceso y queremos mantenerlos
 						EquipWeapon(rangedSlot);
 					}
 				}
@@ -568,7 +478,6 @@ namespace Game
 									contents == FlameThrowerBlock.Index;
 					if (!isRanged) continue;
 
-					// Priorizar armas a distancia: podemos usar el daño a distancia o simplemente un orden
 					float power = 0f;
 					if (contents == MusketBlock.Index) power = 100f;
 					else if (contents == BowBlock.Index) power = 80f;
@@ -586,7 +495,6 @@ namespace Game
 			return bestSlot;
 		}
 
-		// ===== NUEVOS MÉTODOS PARA SELECCIÓN Y CAMBIO DE ARMAS =====
 		private int FindBestMeleeWeapon(out int value)
 		{
 			value = 0;
@@ -601,7 +509,6 @@ namespace Game
 				if (slotCount > 0)
 				{
 					int contents = Terrain.ExtractContents(slotValue);
-					// Excluir armas a distancia y objetos lanzables
 					if (contents == MusketBlock.Index ||
 						contents == BowBlock.Index ||
 						contents == CrossbowBlock.Index ||
@@ -611,7 +518,6 @@ namespace Game
 					{
 						continue;
 					}
-					// Calcular poder cuerpo a cuerpo del arma
 					Block block = BlocksManager.Blocks[contents];
 					float power = block.GetMeleePower(slotValue);
 					if (power > bestPower)
@@ -648,12 +554,10 @@ namespace Game
 
 				bool inMeleeRange = IsTargetInAttackRange(m_target.ComponentBody);
 
-				// Gestionar cambio de armas según la distancia al objetivo
 				ManageWeaponSwitching(inMeleeRange);
 
 				if (inMeleeRange)
 				{
-					// Cancelar cualquier apuntado a distancia o lanzable
 					CancelRangedAim();
 					CancelThrowableAim();
 
@@ -669,7 +573,6 @@ namespace Game
 							m_componentMiner.Hit(hitBody, hitPoint, m_componentCreature.ComponentBody.Matrix.Forward);
 							m_componentCreature.ComponentCreatureSounds.PlayAttackSound();
 
-							// Invocar rayo al golpear si está activado (5% de probabilidad)
 							if (InvokeLightningOnHit && m_subsystemSky != null && m_random.Float(0f, 1f) < 0.05f)
 							{
 								m_subsystemSky.MakeLightningStrike(m_target.ComponentBody.Position, true);
@@ -682,7 +585,6 @@ namespace Game
 				}
 				else
 				{
-					// Solo intentar ataques a distancia si el arma actual es a distancia
 					if (IsCurrentWeaponRanged)
 					{
 						UpdateThrowableAttack(dt);
@@ -750,15 +652,14 @@ namespace Game
 			Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
 			ComponentBody targetBody = m_target.ComponentBody;
 
-			// Definir múltiples puntos a comprobar en el objetivo para mayor precisión
 			Vector3[] targetPoints = {
-		targetBody.BoundingBox.Center(),
-		m_target.ComponentCreatureModel.EyePosition,
-		targetBody.BoundingBox.Min + new Vector3(0, 0.1f, 0),
-		targetBody.BoundingBox.Max - new Vector3(0, 0.1f, 0),
-		targetBody.BoundingBox.Min + new Vector3(0.3f, 0.5f, 0.3f),
-		targetBody.BoundingBox.Max - new Vector3(0.3f, 0.5f, 0.3f)
-	};
+				targetBody.BoundingBox.Center(),
+				m_target.ComponentCreatureModel.EyePosition,
+				targetBody.BoundingBox.Min + new Vector3(0, 0.1f, 0),
+				targetBody.BoundingBox.Max - new Vector3(0, 0.1f, 0),
+				targetBody.BoundingBox.Min + new Vector3(0.3f, 0.5f, 0.3f),
+				targetBody.BoundingBox.Max - new Vector3(0.3f, 0.5f, 0.3f)
+			};
 
 			foreach (Vector3 targetPoint in targetPoints)
 			{
@@ -768,14 +669,10 @@ namespace Game
 				direction /= distance;
 
 				Ray3 ray = new Ray3(eyePos, direction);
-
-				// Realizar raycast con el modo Interaction para detectar bloques y cuerpos
 				object result = m_componentMiner.Raycast(ray, RaycastMode.Interaction, true, true, true, null);
 
-				// Si el resultado es un BodyRaycastResult
 				if (result is BodyRaycastResult bodyResult)
 				{
-					// Si el cuerpo golpeado es el objetivo o un hijo/padre del objetivo, hay visión clara
 					if (bodyResult.ComponentBody == targetBody ||
 						targetBody.IsChildOfBody(bodyResult.ComponentBody) ||
 						bodyResult.ComponentBody.IsChildOfBody(targetBody))
@@ -783,22 +680,18 @@ namespace Game
 						return true;
 					}
 
-					// Si el cuerpo golpeado es el propio shooter, ignorar y probar con otro punto
 					if (bodyResult.ComponentBody == m_componentCreature.ComponentBody)
 					{
 						continue;
 					}
 
-					// Si golpeó otro cuerpo que no es el objetivo ni el propio shooter, el rayo está bloqueado
 					if (bodyResult.Distance < distance)
 					{
 						continue;
 					}
 				}
-				// Si el resultado es un TerrainRaycastResult
 				else if (result is TerrainRaycastResult terrainResult)
 				{
-					// Si un bloque está en el camino más cerca que el objetivo, el rayo está bloqueado
 					if (terrainResult.Distance < distance)
 					{
 						continue;
@@ -806,7 +699,6 @@ namespace Game
 				}
 				else
 				{
-					// Si no hubo hit, el rayo llegó al objetivo sin obstáculos
 					return true;
 				}
 			}
@@ -837,16 +729,13 @@ namespace Game
 
 			EnsureThrowableActive();
 
-			// Apuntar y lanzar usando el sistema de proyectiles
 			Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
 			Vector3 targetCenter = m_target.ComponentCreatureModel.EyePosition;
 			Vector3 direction = Vector3.Normalize(targetCenter - eyePos);
 			Ray3 ray = new Ray3(eyePos, direction);
 
-			// Usar el Aim para activar el lanzamiento
 			m_componentMiner.Aim(ray, AimState.Completed);
 
-			// Registrar el tiempo de reutilización
 			m_nextThrowableAttackTime = m_subsystemTime.GameTime + ThrowableCooldown;
 
 			m_isAimingThrowable = false;
@@ -877,7 +766,6 @@ namespace Game
 				return;
 			}
 
-			// Nuevo: Si está atascado, no intentar lanzar
 			if (m_componentPathfinding.IsStuck)
 			{
 				CancelThrowableAim();
@@ -885,8 +773,6 @@ namespace Game
 			}
 
 			float distance = GetDistanceToTarget();
-
-			// Verificar si está en rango de lanzamiento
 			bool inThrowableRange = distance >= ThrowableAttackRange.X && distance <= ThrowableAttackRange.Y;
 
 			if (!inThrowableRange)
@@ -895,19 +781,16 @@ namespace Game
 				return;
 			}
 
-			// Verificar si tenemos un objeto lanzable
 			if (!HasThrowableItem(out int slotIndex, out int value))
 			{
 				CancelThrowableAim();
 				return;
 			}
 
-			// NUEVO: verificar línea de visión con múltiples puntos y forzar movimiento si está bloqueada
 			if (!HasLineOfSightToTarget())
 			{
 				CancelThrowableAim();
 
-				// Forzar movimiento para intentar conseguir línea de visión
 				if (m_componentPathfinding.Destination != null && !m_componentPathfinding.IsStuck)
 				{
 					if (m_componentPathfinding.m_componentPilot.Destination == null)
@@ -920,7 +803,6 @@ namespace Game
 				return;
 			}
 
-			// Verificar tiempo de reutilización
 			if (m_subsystemTime.GameTime < m_nextThrowableAttackTime)
 			{
 				CancelThrowableAim();
@@ -929,14 +811,12 @@ namespace Game
 
 			if (!m_isAimingThrowable)
 			{
-				// Detener el movimiento mientras se apunta
 				if (m_componentPathfinding != null)
 				{
-					m_componentPathfinding.Stop();  // ← Esto detiene el movimiento inmediatamente
+					m_componentPathfinding.Stop();
 				}
 
 				StartThrowableAim();
-				// Iniciar el apuntado
 				Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
 				Vector3 targetCenter = m_target.ComponentCreatureModel.EyePosition;
 				Vector3 direction = Vector3.Normalize(targetCenter - eyePos);
@@ -945,7 +825,6 @@ namespace Game
 			}
 			else
 			{
-				// Continuar apuntando
 				Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
 				Vector3 targetCenter = m_target.ComponentCreatureModel.EyePosition;
 				Vector3 direction = Vector3.Normalize(targetCenter - eyePos);
@@ -1111,7 +990,6 @@ namespace Game
 			if (!HasRepeatCrossbow(out int slotIndex, out int crossbowValue))
 				return;
 
-			// Cargar la ballesta con un virote aleatorio de los disponibles en RepeatArrowBlock
 			LoadRepeatCrossbowWithRandomBolt(slotIndex, crossbowValue);
 
 			m_aimingStarted = true;
@@ -1131,28 +1009,23 @@ namespace Game
 			if (draw == 15 && currentArrowType != null)
 				return;
 
-			// Obtener distancia al objetivo
 			float distance = GetDistanceToTarget();
-
-			// Seleccionar tipo de virote
 			RepeatArrowBlock.ArrowType selectedType;
 
 			if (distance <= 20f)
 			{
-				// Todos los tipos incluyendo explosivo
 				Array arrowTypes = Enum.GetValues(typeof(RepeatArrowBlock.ArrowType));
 				selectedType = (RepeatArrowBlock.ArrowType)arrowTypes.GetValue(m_random.Int(0, arrowTypes.Length - 1));
 			}
 			else
 			{
-				// Todos los tipos excepto explosivo
 				RepeatArrowBlock.ArrowType[] nonExplosiveTypes = new RepeatArrowBlock.ArrowType[]
 				{
-			RepeatArrowBlock.ArrowType.CopperArrow,
-			RepeatArrowBlock.ArrowType.IronArrow,
-			RepeatArrowBlock.ArrowType.DiamondArrow,
-			RepeatArrowBlock.ArrowType.PoisonArrow,
-			RepeatArrowBlock.ArrowType.SeriousPoisonArrow
+					RepeatArrowBlock.ArrowType.CopperArrow,
+					RepeatArrowBlock.ArrowType.IronArrow,
+					RepeatArrowBlock.ArrowType.DiamondArrow,
+					RepeatArrowBlock.ArrowType.PoisonArrow,
+					RepeatArrowBlock.ArrowType.SeriousPoisonArrow
 				};
 				selectedType = nonExplosiveTypes[m_random.Int(0, nonExplosiveTypes.Length - 1)];
 			}
@@ -1179,10 +1052,8 @@ namespace Game
 			m_isAimingRanged = true;
 			m_rangedAimStartTime = m_subsystemTime.GameTime;
 			m_triedToLoad = false;
-
-			// Importante: NO cancelar apuntado después de empezar
 		}
-		// NUEVO MÉTODO: completar el apuntado del lanzallamas (para cuando se acaba la munición)
+
 		private void CompleteFlameThrowerAim()
 		{
 			EnsureFlameThrowerActive();
@@ -1193,12 +1064,12 @@ namespace Game
 				return;
 			}
 
-			// El lanzallamas ya disparó todo, aplicar cooldown de recarga
 			m_nextRangedAttackTime = m_subsystemTime.GameTime + FlameThrowerCooldown;
 			m_isAimingRanged = false;
 			m_aimingStarted = false;
 			m_triedToLoad = false;
 		}
+
 		private void CompleteRepeatCrossbowAim()
 		{
 			EnsureRepeatCrossbowActive();
@@ -1215,12 +1086,10 @@ namespace Game
 
 			if (draw != 15 || arrowType == null)
 			{
-				// No está lista para disparar, cancelar
 				CancelRangedAim();
 				return;
 			}
 
-			// Apuntar y disparar
 			Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
 			Vector3 targetCenter = m_target.ComponentCreatureModel.EyePosition;
 			Vector3 direction = Vector3.Normalize(targetCenter - eyePos);
@@ -1229,7 +1098,6 @@ namespace Game
 			m_componentMiner.Aim(ray, AimState.Completed);
 			m_nextRangedAttackTime = m_subsystemTime.GameTime + RepeatCrossbowCooldown;
 
-			// Después de disparar, la ballesta debe quedar descargada (sin virote, draw = 0)
 			int newData = RepeatCrossbowBlock.SetDraw(RepeatCrossbowBlock.SetArrowType(data, null), 0);
 			int newValue = Terrain.MakeBlockValue(RepeatCrossbowBlock.Index, 0, newData);
 			m_componentMiner.Inventory.RemoveSlotItems(slotIndex, 1);
@@ -1358,29 +1226,25 @@ namespace Game
 			bool loaded = CrossbowBlock.GetDraw(data) == 15 && CrossbowBlock.GetArrowType(data) != null;
 			if (!loaded)
 			{
-				// Obtener distancia al objetivo
 				float distance = GetDistanceToTarget();
-
 				ArrowBlock.ArrowType selected;
 
 				if (distance <= 20f)
 				{
-					// Todos los tipos incluyendo explosivo
 					ArrowBlock.ArrowType[] allBolts = new ArrowBlock.ArrowType[]
 					{
-				ArrowBlock.ArrowType.IronBolt,
-				ArrowBlock.ArrowType.DiamondBolt,
-				ArrowBlock.ArrowType.ExplosiveBolt
+						ArrowBlock.ArrowType.IronBolt,
+						ArrowBlock.ArrowType.DiamondBolt,
+						ArrowBlock.ArrowType.ExplosiveBolt
 					};
 					selected = allBolts[m_random.Int(0, allBolts.Length - 1)];
 				}
 				else
 				{
-					// Solo tipos no explosivos
 					ArrowBlock.ArrowType[] nonExplosiveBolts = new ArrowBlock.ArrowType[]
 					{
-				ArrowBlock.ArrowType.IronBolt,
-				ArrowBlock.ArrowType.DiamondBolt
+						ArrowBlock.ArrowType.IronBolt,
+						ArrowBlock.ArrowType.DiamondBolt
 					};
 					selected = nonExplosiveBolts[m_random.Int(0, nonExplosiveBolts.Length - 1)];
 				}
@@ -1627,6 +1491,7 @@ namespace Game
 			m_aimingStarted = false;
 			m_triedToLoad = false;
 		}
+
 		private void UpdateRangedAttack(float dt)
 		{
 			if (m_target == null)
@@ -1641,15 +1506,12 @@ namespace Game
 				return;
 			}
 
-			// NUEVO: si no hay línea de visión, cancelar apuntado y forzar movimiento para conseguir visión
 			if (!HasLineOfSightToTarget())
 			{
 				CancelRangedAim();
 
-				// Forzar movimiento para intentar conseguir línea de visión
 				if (m_componentPathfinding.Destination != null && !m_componentPathfinding.IsStuck)
 				{
-					// Si el pathfinding tiene destino pero está atascado en visión, forzar movimiento lateral
 					if (m_componentPathfinding.m_componentPilot.Destination == null)
 					{
 						Vector3 lateralMove = m_componentCreature.ComponentBody.Position +
@@ -1735,16 +1597,13 @@ namespace Game
 					double aimTimeElapsed = m_subsystemTime.GameTime - m_rangedAimStartTime;
 					if (aimTimeElapsed >= MusketAimTime)
 					{
-						// NUEVO: Probabilidad 5% de disparo triple con los 3 tipos de bala juntos
 						bool tripleShot = m_random.Float(0f, 1f) < 0.05f;
 
 						if (tripleShot)
 						{
-							// Guardar el valor actual del mosquete
 							int currentValue = m_componentMiner.Inventory.GetSlotValue(musketSlot);
 							int currentData = Terrain.ExtractData(currentValue);
 
-							// Forzar que dispare MusketBall, Buckshot y BuckshotBall juntos
 							int newData = MusketBlock.SetLoadState(currentData, MusketBlock.LoadState.Loaded);
 							newData = MusketBlock.SetBulletType(newData, BulletBlock.BulletType.MusketBall);
 							int musketBallValue = Terrain.MakeBlockValue(MusketBlock.Index, 0, newData);
@@ -1755,7 +1614,6 @@ namespace Game
 							newData = MusketBlock.SetBulletType(currentData, BulletBlock.BulletType.BuckshotBall);
 							int buckshotBallValue = Terrain.MakeBlockValue(MusketBlock.Index, 0, newData);
 
-							// Disparar cada tipo
 							m_componentMiner.Inventory.RemoveSlotItems(musketSlot, 1);
 							m_componentMiner.Inventory.AddSlotItems(musketSlot, musketBallValue, 1);
 							m_componentMiner.Aim(ray, AimState.Completed);
@@ -1768,14 +1626,12 @@ namespace Game
 							m_componentMiner.Inventory.AddSlotItems(musketSlot, buckshotBallValue, 1);
 							m_componentMiner.Aim(ray, AimState.Completed);
 
-							// Restaurar el valor original o dejar vacío
 							m_componentMiner.Inventory.RemoveSlotItems(musketSlot, 1);
 							int emptyValue = Terrain.MakeBlockValue(MusketBlock.Index, 0, MusketBlock.SetLoadState(currentData, MusketBlock.LoadState.Empty));
 							m_componentMiner.Inventory.AddSlotItems(musketSlot, emptyValue, 1);
 						}
 						else
 						{
-							// Disparo normal con variación de perdigones
 							m_componentMiner.Aim(ray, AimState.Completed);
 						}
 
@@ -1794,7 +1650,6 @@ namespace Game
 			{
 				if (!m_isAimingRanged)
 				{
-					// Verificar cooldown de recarga (similar al mosquete)
 					if (m_subsystemTime.GameTime < m_nextRangedAttackTime)
 						return;
 
@@ -1819,25 +1674,19 @@ namespace Game
 					Ray3 ray = new Ray3(eyePos, direction);
 					m_componentMiner.Aim(ray, AimState.InProgress);
 
-					// NO cancelar el apuntado mientras haya munición
-					// Solo verificar si el lanzallamas está descargado para recargar
 					if (!IsFlameThrowerLoaded())
 					{
-						// Intentar recargar
 						EnsureFlameThrowerLoaded();
 						if (!IsFlameThrowerLoaded())
 						{
-							// Si no hay más munición, aplicar cooldown de recarga y cancelar
 							m_nextRangedAttackTime = m_subsystemTime.GameTime + FlameThrowerCooldown;
 							CancelRangedAim();
 						}
 						else
 						{
-							// Si se pudo recargar, reiniciar el temporizador de apuntado para no interrumpir
 							m_rangedAimStartTime = m_subsystemTime.GameTime;
 						}
 					}
-					// Si tiene munición, seguir disparando sin cancelar
 				}
 			}
 			else if (useBow)
@@ -2045,15 +1894,13 @@ namespace Game
 
 			Block block = BlocksManager.Blocks[contents];
 
-			// No romper bloques indestructibles (como bedrock)
 			if (block.GetExplosionResilience(value) >= float.MaxValue)
 				return false;
 
-			// Verificar que sea colisionable y tenga resiliencia de excavación no negativa
 			return block.IsCollidable_(value) && block.DigResilience >= 0f;
 		}
 
-		// ===== MÉTODO MEJORADO: DESTRUIR BLOQUES CUANDO ESTÁ ATASCADO (CON DETECCIÓN POR ÁNGULO) =====
+		// ===== MÉTODO MEJORADO: DESTRUIR BLOQUES CUANDO ESTÁ ATASCADO =====
 		private void TryDestroyBlocksToFree()
 		{
 			if (!DestroyBlocksWhenStuck || m_target == null) return;
@@ -2062,7 +1909,6 @@ namespace Game
 
 			if (m_stateMachine.CurrentState == "Chasing")
 			{
-				// Detectar si lleva 2 segundos sin moverse
 				if (Vector3.Distance(currentPos, m_lastStuckCheckPosition) > 0.1f)
 				{
 					m_stuckDetectionStartTime = 0;
@@ -2087,9 +1933,8 @@ namespace Game
 
 					toTarget /= distance;
 
-					// Calcular ángulo vertical (radianes)
 					float verticalAngle = (float)Math.Asin(Math.Clamp(toTarget.Y, -1f, 1f));
-					const float thresholdDeg = 25f;   // Ajusta a 30° o 45° si prefieres
+					const float thresholdDeg = 25f;
 					float thresholdRad = MathUtils.DegToRad(thresholdDeg);
 
 					bool isUp = verticalAngle > thresholdRad;
@@ -2097,20 +1942,17 @@ namespace Game
 
 					if (isUp)
 					{
-						// Dos bloques hacia arriba, desde los ojos
 						DestroyBlockAtPosition(eyePos + Vector3.UnitY * 0.5f);
 						DestroyBlockAtPosition(eyePos + Vector3.UnitY * 1.6f);
 					}
 					else if (isDown)
 					{
-						// Dos bloques hacia abajo, desde los pies
 						float feetY = currentPos.Y + 0.2f;
 						DestroyBlockAtPosition(new Vector3(currentPos.X, feetY, currentPos.Z) - Vector3.UnitY * 0.5f);
 						DestroyBlockAtPosition(new Vector3(currentPos.X, feetY, currentPos.Z) - Vector3.UnitY * 1.6f);
 					}
 					else
 					{
-						// Al frente: dos bloques (pies y cabeza) en la dirección horizontal hacia el objetivo
 						Vector3 horizDir = new Vector3(toTarget.X, 0, toTarget.Z);
 						if (horizDir.LengthSquared() > 0.001f)
 						{
@@ -2136,7 +1978,6 @@ namespace Game
 			}
 		}
 
-		// ===== NUEVO MÉTODO: DESTRUIR BLOQUE EN UNA POSICIÓN MUNDO SI ES ROMPIBLE =====
 		private void DestroyBlockAtPosition(Vector3 worldPos)
 		{
 			int x = Terrain.ToCell(worldPos.X);
@@ -2179,13 +2020,6 @@ namespace Game
 			m_componentHerd = Entity.FindComponent<ComponentNewHerdBehavior>(true);
 			m_componentHireable = Entity.FindComponent<ComponentHireableNPC>();
 
-			// Buscar ComponentRider o ComponentNewRider
-			m_componentRider = Entity.FindComponent<ComponentRider>();
-			if (m_componentRider == null)
-			{
-				m_componentRider = Entity.FindComponent<ComponentNewRider>();
-			}
-
 			m_dayChaseRange = valuesDictionary.GetValue<float>("DayChaseRange");
 			m_nightChaseRange = valuesDictionary.GetValue<float>("NightChaseRange");
 			m_dayChaseTime = valuesDictionary.GetValue<float>("DayChaseTime");
@@ -2198,7 +2032,6 @@ namespace Game
 			RangedAttackMode = valuesDictionary.GetValue<AttackMode>("AttackMode", AttackMode.Default);
 			DestroyBlocksWhenStuck = valuesDictionary.GetValue<bool>("DestroyBlocksWhenStuck", false);
 			InvokeLightningOnHit = valuesDictionary.GetValue<bool>("InvokeLightningOnHit", false);
-			AutoMountAndDismount = valuesDictionary.GetValue<bool>("AutoMountAndDismount", false);
 
 			RegisterEvents();
 
@@ -2424,7 +2257,6 @@ namespace Game
 				}
 			}, () => m_componentPathfinding.Stop());
 
-			// ===== ESTADO CHASING MODIFICADO (dentro de SetupStateMachine) =====
 			m_stateMachine.AddState("Chasing", () =>
 			{
 				m_subsystemNoise.MakeNoise(m_componentCreature.ComponentBody, 0.25f, 6f);
@@ -2499,11 +2331,7 @@ namespace Game
 					}
 					else
 					{
-						// NUEVO: gestionar montaje y movimiento
-						TryMountAndManageMovement();
-
-						// Solo establecer destino si NO estamos montados (la montura ya lo hace)
-						if (!m_isAimingThrowable && (m_componentRider == null || m_componentRider.Mount == null))
+						if (!m_isAimingThrowable)
 						{
 							int maxPathfindingPositions = 0;
 							if (m_isPersistent)
