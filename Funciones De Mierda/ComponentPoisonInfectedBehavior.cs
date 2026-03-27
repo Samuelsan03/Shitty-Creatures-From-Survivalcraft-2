@@ -6,161 +6,149 @@ using TemplatesDatabase;
 
 namespace Game
 {
-	// Token: 0x02000096 RID: 150
 	public class ComponentPoisonInfectBehavior : ComponentBehavior, IUpdateable
 	{
-		// Token: 0x17000044 RID: 68
-		// (get) Token: 0x06000497 RID: 1175 RVA: 0x00018C9A File Offset: 0x00016E9A
-		public override float ImportanceLevel
-		{
-			get
-			{
-				return this.m_importanceLevel;
-			}
-		}
+		public override float ImportanceLevel => m_importanceLevel;
 
-		// Token: 0x06000498 RID: 1176 RVA: 0x00018CA2 File Offset: 0x00016EA2
 		public void Update(float dt)
 		{
-			this.m_stateMachine.Update();
+			m_stateMachine.Update();
 		}
 
-		// Token: 0x06000499 RID: 1177 RVA: 0x00018CB0 File Offset: 0x00016EB0
+		// FIX: Método que comprueba si el ataque realmente impactó usando raycast
+		private bool IsAttackHitValid(ComponentCreature target)
+		{
+			if (m_componentCreature == null || target == null)
+				return false;
+
+			ComponentBody attackerBody = m_componentCreature.ComponentBody;
+			ComponentBody targetBody = target.ComponentBody;
+			if (attackerBody == null || targetBody == null)
+				return false;
+
+			// Obtener la posición de los ojos del atacante (punto de origen del raycast)
+			Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
+			// Punto central del objetivo (podría ser el centro del cuerpo o sus ojos)
+			Vector3 targetPos = targetBody.Position + new Vector3(0f, targetBody.BoxSize.Y * 0.5f, 0f);
+
+			Vector3 direction = targetPos - eyePos;
+			float distance = direction.Length();
+			if (distance > 3f) // Alcance máximo del ataque
+				return false;
+
+			direction /= distance; // Normalizar
+
+			// Realizar el raycast en el subsistema de cuerpos
+			var ray = new Ray3(eyePos, direction);
+			var result = m_subsystemBodies.Raycast(eyePos, eyePos + direction * distance, 0.35f,
+				(ComponentBody body, float dist) => body == targetBody);
+
+			return result.HasValue; // Si el raycast impactó en el objetivo, el ataque fue válido
+		}
+
 		public bool StartInfect(ComponentCreature target)
 		{
-			if (target != null)
+			if (target == null)
+				return false;
+
+			// FIX: Verificar si el ataque realmente impactó mediante raycast
+			if (!IsAttackHitValid(target))
+				return false;
+
+			ComponentPoisonInfected componentPoisonInfected = target.Entity.FindComponent<ComponentPoisonInfected>();
+			ComponentPlayer componentPlayer = target as ComponentPlayer;
+			if (componentPlayer != null)
 			{
-				ComponentPoisonInfected componentPoisonInfected = target.Entity.FindComponent<ComponentPoisonInfected>();
-				ComponentPlayer componentPlayer = target as ComponentPlayer;
-				if (componentPlayer != null)
+				if (componentPlayer.ComponentSickness.IsSick)
+					return true;
+				componentPlayer.ComponentSickness.StartSickness();
+				if (componentPoisonInfected != null)
 				{
-					if (componentPlayer.ComponentSickness.IsSick)
-					{
-						return true;
-					}
-					componentPlayer.ComponentSickness.StartSickness();
-					if (componentPoisonInfected != null)
-					{
-						componentPlayer.ComponentSickness.m_sicknessDuration = this.m_poisonIntensity - componentPoisonInfected.PoisonResistance;
-					}
-					return componentPlayer.ComponentSickness.IsSick;
+					componentPlayer.ComponentSickness.m_sicknessDuration = m_poisonIntensity - componentPoisonInfected.PoisonResistance;
 				}
-				else if (componentPoisonInfected != null)
-				{
-					if (componentPoisonInfected.IsInfected)
-					{
-						return true;
-					}
-					componentPoisonInfected.StartInfect(this.m_poisonIntensity);
-					return componentPoisonInfected.IsInfected;
-				}
+				return componentPlayer.ComponentSickness.IsSick;
+			}
+			else if (componentPoisonInfected != null)
+			{
+				if (componentPoisonInfected.IsInfected)
+					return true;
+				componentPoisonInfected.StartInfect(m_poisonIntensity);
+				return componentPoisonInfected.IsInfected;
 			}
 			return false;
 		}
 
-		// Token: 0x0600049A RID: 1178 RVA: 0x00018D38 File Offset: 0x00016F38
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
-			this.m_subsystemTime = base.Project.FindSubsystem<SubsystemTime>(true);
-			this.m_componentCreature = base.Entity.FindComponent<ComponentCreature>(true);
-			this.m_newChaseBehavior = base.Entity.FindComponent<ComponentNewChaseBehavior>();
-			this.m_chaseBehavior = base.Entity.FindComponent<ComponentChaseBehavior>();
-			this.m_poisonIntensity = valuesDictionary.GetValue<float>("PoisonIntensity");
-			this.m_infectProbability = valuesDictionary.GetValue<float>("InfectProbability", 1f); // 100% por defecto
+			m_subsystemTime = Project.FindSubsystem<SubsystemTime>(true);
+			m_subsystemBodies = Project.FindSubsystem<SubsystemBodies>(true); // FIX: Obtener referencia al subsistema de cuerpos
+			m_componentCreature = Entity.FindComponent<ComponentCreature>(true);
+			m_newChaseBehavior = Entity.FindComponent<ComponentNewChaseBehavior>();
+			m_chaseBehavior = Entity.FindComponent<ComponentChaseBehavior>();
+			m_poisonIntensity = valuesDictionary.GetValue<float>("PoisonIntensity");
+			m_infectProbability = valuesDictionary.GetValue<float>("InfectProbability", 1f);
 
-			this.m_stateMachine.AddState("Inactive", delegate
+			m_stateMachine.AddState("Inactive", delegate
 			{
-				this.m_importanceLevel = 0f;
+				m_importanceLevel = 0f;
 			}, delegate
 			{
-				ComponentNewChaseBehavior newChaseBehavior = this.m_newChaseBehavior;
-				ComponentCreature target;
-				if ((target = ((newChaseBehavior != null) ? newChaseBehavior.m_target : null)) == null)
+				ComponentNewChaseBehavior newChaseBehavior = m_newChaseBehavior;
+				ComponentCreature target = null;
+				if (newChaseBehavior != null)
+					target = newChaseBehavior.Target;
+				if (target == null)
 				{
-					ComponentChaseBehavior chaseBehavior = this.m_chaseBehavior;
-					target = ((chaseBehavior != null) ? chaseBehavior.m_target : null);
+					ComponentChaseBehavior chaseBehavior = m_chaseBehavior;
+					if (chaseBehavior != null)
+						target = chaseBehavior.m_target;
 				}
-				this.m_target = target;
-
-				if (this.m_target != null && this.m_componentCreature.ComponentCreatureModel.IsAttackHitMoment)
+				m_target = target;
+				if (m_target != null && m_componentCreature.ComponentCreatureModel.IsAttackHitMoment && (double)m_random.Float(0f, 1f) < (double)m_infectProbability)
 				{
-					// Usar probabilidad de infección configurable
-					bool shouldInfect = (double)this.m_random.Float(0f, 1f) < (double)this.m_infectProbability;
-
-					if (shouldInfect)
-					{
-						this.m_importanceLevel = 201f;
-					}
+					m_importanceLevel = 201f;
 				}
-
-				if (!this.IsActive)
-				{
+				if (!IsActive)
 					return;
-				}
-				this.m_stateMachine.TransitionTo("PoisonInfect");
+				m_stateMachine.TransitionTo("PoisonInfect");
 			}, null);
 
-			this.m_stateMachine.AddState("PoisonInfect", delegate
+			m_stateMachine.AddState("PoisonInfect", delegate
 			{
-				if (this.m_target == null)
-				{
+				if (m_target == null)
 					return;
-				}
-				this.m_componentCreature.ComponentCreatureModel.LookAtOrder = new Vector3?(this.m_target.ComponentCreatureModel.EyePosition);
-				this.m_componentCreature.ComponentCreatureSounds.PlayIdleSound(false);
+				m_componentCreature.ComponentCreatureModel.LookAtOrder = new Vector3?(m_target.ComponentCreatureModel.EyePosition);
+				m_componentCreature.ComponentCreatureSounds.PlayIdleSound(false);
 			}, delegate
 			{
-				if (this.StartInfect(this.m_target))
+				if (StartInfect(m_target))
 				{
-					ComponentRunAwayBehavior componentRunAwayBehavior = this.m_componentCreature.Entity.FindComponent<ComponentRunAwayBehavior>();
+					ComponentRunAwayBehavior componentRunAwayBehavior = m_componentCreature.Entity.FindComponent<ComponentRunAwayBehavior>();
 					if (componentRunAwayBehavior != null)
-					{
-						componentRunAwayBehavior.RunAwayFrom(this.m_target.ComponentBody);
-					}
-					ComponentNewRunAwayBehavior componentNewRunAwayBehavior = this.m_componentCreature.Entity.FindComponent<ComponentNewRunAwayBehavior>();
+						componentRunAwayBehavior.RunAwayFrom(m_target.ComponentBody);
+					ComponentNewRunAwayBehavior componentNewRunAwayBehavior = m_componentCreature.Entity.FindComponent<ComponentNewRunAwayBehavior>();
 					if (componentNewRunAwayBehavior != null)
-					{
-						componentNewRunAwayBehavior.RunAwayFrom(this.m_target.ComponentBody);
-					}
-					this.m_stateMachine.TransitionTo("Inactive");
+						componentNewRunAwayBehavior.RunAwayFrom(m_target.ComponentBody);
+					m_stateMachine.TransitionTo("Inactive");
 				}
-				if (this.IsActive && this.m_target != null)
-				{
+				if (IsActive && m_target != null)
 					return;
-				}
-				this.m_stateMachine.TransitionTo("Inactive");
+				m_stateMachine.TransitionTo("Inactive");
 			}, null);
-			this.m_stateMachine.TransitionTo("Inactive");
+
+			m_stateMachine.TransitionTo("Inactive");
 		}
 
-		// Token: 0x0400024C RID: 588
 		private SubsystemTime m_subsystemTime;
-
-		// Token: 0x0400024D RID: 589
+		private SubsystemBodies m_subsystemBodies; // FIX: Nuevo campo para el raycast
 		private ComponentCreature m_componentCreature;
-
-		// Token: 0x0400024E RID: 590
 		private ComponentNewChaseBehavior m_newChaseBehavior;
-
-		// Token: 0x0400024F RID: 591
 		private ComponentChaseBehavior m_chaseBehavior;
-
-		// Token: 0x04000250 RID: 592
 		private readonly StateMachine m_stateMachine = new StateMachine();
-
-		// Token: 0x04000251 RID: 593
 		private readonly Game.Random m_random = new Game.Random();
-
-		// Token: 0x04000252 RID: 594
 		private float m_importanceLevel;
-
-		// Token: 0x04000253 RID: 595
 		public float m_poisonIntensity;
-
-		// Token: 0x04000254 RID: 596
 		private ComponentCreature m_target;
-
-		// Token: 0x04000255 RID: 597
-		private float m_infectProbability = 1f; // 100% de probabilidad por defecto
+		private float m_infectProbability = 1f;
 	}
 }
