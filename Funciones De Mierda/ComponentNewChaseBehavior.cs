@@ -59,6 +59,9 @@ namespace Game
 		// NUEVO PARÁMETRO: invoca un rayo al golpear
 		public bool InvokeLightningOnHit = false;
 
+		// Protección Extrema que consiste en proteger al jugador durante noche verde y anti-bandidos sin dependencias del injury (dolor)
+		public bool ExtremeProtection { get; set; } = false; // Nuevo parámetro
+
 		private Vector3 m_lastStuckCheckPosition;
 		private double m_stuckDetectionStartTime;
 
@@ -128,7 +131,7 @@ namespace Game
 		private bool IsZombie => HerdName != null && HerdName.ToLower().Contains("zombie");
 		private bool IsBandit => HerdName != null && HerdName.ToLower().Contains("bandits");
 		private bool IsGreenNightActive => m_subsystemGreenNightSky != null && m_subsystemGreenNightSky.IsGreenNightActive;
-		private float SpecialChaseRange => (IsZombie && IsGreenNightActive) || IsBandit ? 50f : m_range;
+		private float SpecialChaseRange => (ExtremeProtection && ((IsZombie && IsGreenNightActive) || IsBandit)) ? 50f : m_range;
 
 		private bool ShouldProtectPlayer =>
 			!string.IsNullOrEmpty(HerdName) &&
@@ -249,7 +252,8 @@ namespace Game
 			if (m_componentHerd != null && !m_componentHerd.CanAttackCreature(target))
 				return;
 
-			if (IsExtremePriorityTarget(target))
+			// Solo si ExtremeProtection está activo
+			if (ExtremeProtection && IsExtremePriorityTarget(target))
 			{
 				isPersistent = true;
 				maxChaseTime = Math.Max(maxChaseTime, 120f);
@@ -531,6 +535,12 @@ namespace Game
 			return bestSlot;
 		}
 
+		private bool ShouldForceAttackPlayer()
+		{
+			if (!ExtremeProtection) return false;
+			return (IsZombie && IsGreenNightActive) || IsBandit;
+		}
+
 		// ===== UPDATE =====
 		public virtual void Update(float dt)
 		{
@@ -546,6 +556,32 @@ namespace Game
 			}
 
 			m_autoChaseSuppressionTime -= dt;
+
+			// === NUEVA LÓGICA DE PROTECCIÓN EXTREMA (solo si está activada) ===
+			if (ExtremeProtection)
+			{
+				// 1. Zombis: detener persecución de jugadores cuando termina la Noche Verde
+				if (IsZombie && !IsGreenNightActive && m_target != null && m_target.Entity.FindComponent<ComponentPlayer>() != null)
+				{
+					StopAttack();
+					return;
+				}
+
+				// 2. Forzar ataque al jugador si corresponde (zombi en Noche Verde O bandido)
+				if (ShouldForceAttackPlayer())
+				{
+					ComponentPlayer player = FindNearestPlayer(SpecialChaseRange);
+					if (player != null && (m_target != player || m_target == null))
+					{
+						StopAttack();
+						Attack(player, SpecialChaseRange, 120f, true);
+						m_chaseTime = 120f;
+						m_isPersistent = true;
+						return;
+					}
+				}
+			}
+			// === FIN NUEVA LÓGICA ===
 
 			if (IsActive && m_target != null)
 			{
@@ -2032,6 +2068,7 @@ namespace Game
 			RangedAttackMode = valuesDictionary.GetValue<AttackMode>("AttackMode", AttackMode.Default);
 			DestroyBlocksWhenStuck = valuesDictionary.GetValue<bool>("DestroyBlocksWhenStuck", false);
 			InvokeLightningOnHit = valuesDictionary.GetValue<bool>("InvokeLightningOnHit", false);
+			ExtremeProtection = valuesDictionary.GetValue<bool>("ExtremeProtection", false);
 
 			RegisterEvents();
 
@@ -2386,6 +2423,7 @@ namespace Game
 
 		private bool IsExtremePriorityTarget(ComponentCreature creature)
 		{
+			if (!ExtremeProtection) return false;
 			if (creature == null) return false;
 			bool isPlayer = creature.Entity.FindComponent<ComponentPlayer>() != null;
 			return (IsZombie && IsGreenNightActive && isPlayer) || (IsBandit && isPlayer);
@@ -2396,7 +2434,8 @@ namespace Game
 			if (m_componentHireable != null && !m_componentHireable.IsHired)
 				return null;
 
-			if ((IsZombie && IsGreenNightActive) || IsBandit)
+			// Solo si ExtremeProtection está activo
+			if (ExtremeProtection && ((IsZombie && IsGreenNightActive) || IsBandit))
 			{
 				ComponentPlayer player = FindNearestPlayer(SpecialChaseRange);
 				if (player != null)
@@ -2448,7 +2487,7 @@ namespace Game
 			bool probabilityMatch = creature == Target || (categoryMatch &&
 				MathUtils.Remainder(randomSeed, 1.0) < m_chaseNonPlayerProbability);
 
-			if (isPlayer && ((IsZombie && IsGreenNightActive) || IsBandit))
+			if (ExtremeProtection && isPlayer && ((IsZombie && IsGreenNightActive) || IsBandit))
 			{
 				return float.MaxValue / 2;
 			}
