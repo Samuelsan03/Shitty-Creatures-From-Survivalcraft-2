@@ -163,6 +163,7 @@
   <Parameter Name="AutoChaseMask" Guid="5bb5c4e0-1679-4e39-ae09-cb72811d8855" Value="LandPredator" Type="Game.CreatureCategory"/>
   <Parameter Name="ChaseNonPlayerProbability" Guid="4c110f53-7aeb-4c3f-b54a-09a9f4788850" Value="1" Type="float"/>
   <Parameter Name="RangedAttackRange" Guid="0727b306-e072-49e6-a56d-939ccdf859d6" Value="5,100" Type="Vector2"/>
+  <Parameter Name="DestroyBlocksWhenStuck" Guid="9e25354b-71fb-4cb4-857d-2ba10fbe0b57" Value="true" Type="bool"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="NewHerdBehavior" Guid="3b375243-6874-4416-bf63-c93c44f34010" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
         <Parameter Name="HerdName" Value="player" Type="string" Guid="b0da6d6b-9e0c-48d8-9a54-6d66a3a9807e"/>
@@ -272,11 +273,6 @@
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="OnFire" Guid="9f8f8b22-b348-4c2a-b04f-002a0c67058a"/>
             <MemberComponentTemplate Name="WalkAroundBehavior" Guid="b37c70cc-9fd7-4cd3-941d-2c8bd3853256" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
-<MemberComponentTemplate Name="PathBreaker" Guid="488e9d0b-945e-4e99-b0df-8ceb8e53f05f" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
-		<Parameter Name="CanBreakBlocks" Guid="6a6bdd12-a198-4e91-82d2-e73f7cf7614d" Value="True" Type="bool"/>
-		<Parameter Name="SpecificBlocks" Guid="c8accc67-25ee-425c-b9a5-afe37eb732b9" Value="" Type="string"/>
-		<Parameter Name="BreakProbability" Guid="cce9ff38-624d-486c-bc01-fee13f1939a0" Value="1.0" Type="float"/>
-	</MemberComponentTemplate>
             <MemberComponentTemplate Name="FeedBehavior" Guid="9b93868a-e03d-43c7-8c35-fe273774be77" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="3cbf9c6e-606b-42a2-b70c-5b874ee91657" Value="False" Type="bool"/>
             </MemberComponentTemplate>
@@ -487,6 +483,7 @@
   <Parameter Name="AutoChaseMask" Guid="56aa6ea0-7521-44c8-9d17-c04f00ea5991" Value="LandPredator" Type="Game.CreatureCategory"/>
   <Parameter Name="ChaseNonPlayerProbability" Guid="8e64bb69-8003-4335-8a9f-43ff0f10689d" Value="1" Type="float"/>
   <Parameter Name="RangedAttackRange" Guid="461636cd-df31-4d1e-bca5-4116424c0b20" Value="5,100" Type="Vector2"/>
+  <Parameter Name="DestroyBlocksWhenStuck" Guid="c3be7e17-5a69-4177-bd6f-35cbfdc881ad" Value="true" Type="bool"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="NewHerdBehavior" Guid="6da8c96d-39e4-4312-be05-3d44d4942049" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
         <Parameter Name="HerdName" Value="player" Type="string" Guid="6a7f140f-c45e-4a66-a61b-6ed4f7aa5ee3"/>
@@ -555,11 +552,6 @@
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="OnFire" Guid="5e3e516d-2141-4472-a1ac-e6e7ddf53a55"/>
             <MemberComponentTemplate Name="WalkAroundBehavior" Guid="7a39ca21-0553-480d-8874-2501cce5abce" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
-<MemberComponentTemplate Name="PathBreaker" Guid="21fd94cb-88b7-4269-bdf2-8fb0a494c038" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
-		<Parameter Name="CanBreakBlocks" Guid="50f7c485-9105-4854-a4d3-31e8cef8b4d1" Value="True" Type="bool"/>
-		<Parameter Name="SpecificBlocks" Guid="23439043-d1ed-4810-aae3-ecc818f1605e" Value="" Type="string"/>
-		<Parameter Name="BreakProbability" Guid="838013da-4965-45e2-8aca-5724f45c9fab" Value="1.0" Type="float"/>
-	</MemberComponentTemplate>
             <MemberComponentTemplate Name="FeedBehavior" Guid="3725d6cd-3443-47fa-b2e2-e7a750fb9f37" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="cd8765e7-baf7-45df-9be5-0addec674a35" Value="False" Type="bool"/>
             </MemberComponentTemplate>
@@ -706,11 +698,6 @@
         </EntityTemplate>
 
         <EntityTemplate Name="InfectedFastTamed1" Guid="0117c65b-d60e-47de-8ffb-b110348c0efc" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-        <MemberComponentTemplate Name="PathBreaker" Guid="f208b5fc-592d-4acc-8811-fdfafc68a4a5" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
-		<Parameter Name="CanBreakBlocks" Guid="f2f30947-aa5d-447f-bfb4-d9620a7f0094" Value="True" Type="bool"/>
-		<Parameter Name="SpecificBlocks" Guid="5972de96-6ccc-47a8-951c-245140a20600" Value="" Type="string"/>
-		<Parameter Name="BreakProbability" Guid="52e2cd2c-9297-428c-88bb-b8d8c2bd2c4c" Value="1.0" Type="float"/>
-	</MemberComponentTemplate>
         <MemberComponentTemplate Name="DeathSpawner" Guid="05bcbcba-e372-4866-a2fc-7ddcd3c343e4" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="d9e18959-9d49-4a6c-b0df-3176e40b04a1"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedFast1:0.5;GhostFast:0.01" Type="string" Guid="8ece6df0-211b-47e7-bc2a-47d6aaff5640"/>
@@ -822,6 +809,7 @@
   <Parameter Name="NightChaseRange" Guid="2a397fde-994a-4e4f-966f-5b6a113ffb65" Value="75" Type="float"/>
   <Parameter Name="AutoChaseMask" Guid="92fbd27f-19a0-4667-8d51-5016f4e8b691" Value="LandPredator" Type="Game.CreatureCategory"/>
   <Parameter Name="ChaseNonPlayerProbability" Guid="6995b6ea-de2d-4429-9780-e8209b6caac2" Value="1" Type="float"/>
+  <Parameter Name="DestroyBlocksWhenStuck" Guid="8a8998a8-d8ef-44fa-9963-ee058b501994" Value="true" Type="bool"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="NewHerdBehavior" Guid="1f04d746-1d2a-4f81-ac61-43304d1f4029" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
         <Parameter Name="HerdName" Value="player" Type="string" Guid="d135aa26-6495-4513-9fa3-d9d69b5b9c48"/>
@@ -978,11 +966,6 @@
         </EntityTemplate>
 
         <EntityTemplate Name="InfectedFastTamed2" Guid="9b8dd50d-52ad-4f80-8788-3a660b33ce26" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-        <MemberComponentTemplate Name="PathBreaker" Guid="0eaeba4e-d0c4-4867-8e25-828993e73afd" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
-		<Parameter Name="CanBreakBlocks" Guid="7f4d6deb-a52c-4480-bb59-5361c8cdc51d" Value="True" Type="bool"/>
-		<Parameter Name="SpecificBlocks" Guid="1a39e7a7-3a13-4616-a12b-35dc004b1f94" Value="" Type="string"/>
-		<Parameter Name="BreakProbability" Guid="1fd8adcc-3257-41eb-a76f-f6eb3885cbc7" Value="1.0" Type="float"/>
-	</MemberComponentTemplate>
         <MemberComponentTemplate Name="DeathSpawner" Guid="0557d605-a9ab-43d7-885c-233bfcb905ac" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="c6bc17e4-056f-453d-817b-3ca7dc135471"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedFast2:0.5;GhostFast:0.01" Type="string" Guid="f0daf486-c6c3-4b31-938c-e8b43306c82f"/>
@@ -1094,6 +1077,7 @@
   <Parameter Name="NightChaseRange" Guid="52e6f45f-ed4a-4438-b5c1-dd79b795bff6" Value="75" Type="float"/>
   <Parameter Name="AutoChaseMask" Guid="536dfc3a-9ebc-42f1-8b98-9f619729edbd" Value="LandPredator" Type="Game.CreatureCategory"/>
   <Parameter Name="ChaseNonPlayerProbability" Guid="5d525a09-bf5a-4187-9742-93205d07a677" Value="1" Type="float"/>
+  <Parameter Name="DestroyBlocksWhenStuck" Guid="a09a7ffd-e953-416e-ae7f-d1ac0a57060c" Value="true" Type="bool"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="NewHerdBehavior" Guid="79ae4fda-6d31-43fd-b397-499f1e79cd28" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
         <Parameter Name="HerdName" Value="player" Type="string" Guid="9456571b-8c1d-4a60-a669-142959b68fe2"/>
@@ -1259,11 +1243,6 @@
     <Parameter Name="SlotsCount" Value="16" Type="int"/>
     <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
   </MemberComponentTemplate>
-        <MemberComponentTemplate Name="PathBreaker" Guid="bf1cca68-edfc-4cab-8a67-1e6369ae5821" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
-		<Parameter Name="CanBreakBlocks" Guid="55dd291a-8d29-4b11-92de-540e84c2514f" Value="True" Type="bool"/>
-		<Parameter Name="SpecificBlocks" Guid="c0e8e611-99be-4ac5-aed2-6ebc7c21824b" Value="" Type="string"/>
-		<Parameter Name="BreakProbability" Guid="e97aa2b9-f6d4-4800-8ccc-3efcebb1a176" Value="1.0" Type="float"/>
-	</MemberComponentTemplate>
         <MemberComponentTemplate Name="DeathSpawner" Guid="34890adb-4b45-47a9-ae32-4509d1b0a922" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="c8e5556d-cfbb-495a-8222-33e774a20b84"/>
     <Parameter Name="DeathSpawnTemplates" Value="GhostNormal:0.01;InfectedMuscle1:0.5" Type="string" Guid="a209b406-0a3f-494d-969f-b729f96ba971"/>
@@ -1284,6 +1263,7 @@
   <Parameter Name="AutoChaseMask" Guid="e1ef7640-0df3-4906-9a7e-799f2fd67c78" Value="LandPredator" Type="Game.CreatureCategory"/>
   <Parameter Name="ChaseNonPlayerProbability" Guid="00a29cd3-2884-4bc6-8883-b3b300fe3567" Value="1" Type="float"/>
   <Parameter Name="RangedAttackRange" Guid="34ebd4ba-5e04-465b-b635-4e53c57e3c08" Value="5,100" Type="Vector2"/>
+  <Parameter Name="DestroyBlocksWhenStuck" Guid="983be6c2-3365-494f-9eca-13ba6d955aeb" Value="true" Type="bool"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="NewHerdBehavior" Guid="b790f525-9431-4e36-990e-3dcbbcabaea7" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
         <Parameter Name="HerdName" Value="player" Type="string" Guid="81ef2fea-c736-4f03-b8d9-612d1461be36"/>
@@ -1542,11 +1522,6 @@
     <Parameter Name="SlotsCount" Value="16" Type="int"/>
     <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
   </MemberComponentTemplate>
-        <MemberComponentTemplate Name="PathBreaker" Guid="c5c25c0d-ddfa-4956-9fe8-e891cdf85f97" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
-		<Parameter Name="CanBreakBlocks" Guid="cd903b9b-d46e-4ba7-a920-260f53f21483" Value="True" Type="bool"/>
-		<Parameter Name="SpecificBlocks" Guid="422cd2fa-365f-48c8-8ca7-a7268086afb1" Value="" Type="string"/>
-		<Parameter Name="BreakProbability" Guid="b87e477a-ffc9-4a89-bdd1-0bd12cae7eb6" Value="1.0" Type="float"/>
-	</MemberComponentTemplate>
         <MemberComponentTemplate Name="DeathSpawner" Guid="37cc4a1f-dfce-42cf-857e-609297c75d0a" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="d679bddf-6df5-4a38-b696-4ea67af17fc4"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedMuscle2" Type="string" Guid="1c2b2215-cc2d-4a63-bf86-a1c2f6dc9625"/>
@@ -1561,6 +1536,7 @@
   <Parameter Name="AutoChaseMask" Guid="65f809ad-5931-44bb-a355-44491ce7f2d5" Value="LandPredator" Type="Game.CreatureCategory"/>
   <Parameter Name="ChaseNonPlayerProbability" Guid="6431c540-fa39-4e22-92bc-82191aa5ce15" Value="1" Type="float"/>
   <Parameter Name="RangedAttackRange" Guid="cbada280-8897-42b5-93a9-ebe236cd1458" Value="5,100" Type="Vector2"/>
+  <Parameter Name="DestroyBlocksWhenStuck" Guid="472d3f04-b0cd-4f0a-8271-2a3d6632a9d7" Value="true" Type="bool"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="NewHerdBehavior" Guid="a08a8392-3591-4927-bce4-12c8e6840123" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
         <Parameter Name="HerdName" Value="player" Type="string" Guid="fae94e9c-177f-4357-8bdd-7e7313b6f2e1"/>
@@ -1684,10 +1660,7 @@
     <Parameter Name="DeathSpawnProbability" Value="0.01" Type="float" Guid="33ae4c21-f5b2-44b4-bab7-e2c6003197d7"/>
     <Parameter Name="DeathSpawnTemplates" Value="PoisonousGhost:0.01" Type="string" Guid="9ea7de38-96d6-458d-b640-9b5d1c49b484"/>
 </MemberComponentTemplate>
-        <MemberComponentTemplate Name="PoisonInfectedBehavior" Guid="50a41292-324c-4361-8d46-b5007a238fee">
-  <Parameter Name="Class" Guid="0065a980-5617-4155-b2b9-dc1b4aa2893f" Value="Game.ComponentPoisonInfectBehavior" Type="string"/>
-  <Parameter Name="IsOptional" Value="true" Type="bool"/>
-  <Parameter Name="LoadOrder" Value="50" Type="int"/>
+        <MemberComponentTemplate Name="PoisonInfectedBehavior" Guid="50a41292-324c-4361-8d46-b5007a238fee" InheritanceParent="d5e7f9a1-b3c5-4d9f-1a3b-5c7d9f1a3b5c">
   <Parameter Name="PoisonIntensity" Value="800" Type="float"/>
   <Parameter Name="InfectProbability" Value="0.5" Type="float"/>
 </MemberComponentTemplate>
@@ -1834,10 +1807,7 @@
     <Parameter Name="LoadOrder" Value="60" Type="int" Guid="dd212e84-9cbc-404a-a51b-ce59f26969e3"/>
               <Parameter Name="IsEnabled" Guid="fb97e6d8-559e-49f5-82dd-59864db139c4" Value="True" Type="bool"/>
             </MemberComponentTemplate>
-        <MemberComponentTemplate Name="PoisonInfectedBehavior" Guid="6293d671-1ce9-41df-8e0d-7bf82eee59d5">
-  <Parameter Name="Class" Guid="87f55579-c147-4584-8e38-6b912a85f181" Value="Game.ComponentPoisonInfectBehavior" Type="string"/>
-  <Parameter Name="IsOptional" Value="true" Type="bool"/>
-  <Parameter Name="LoadOrder" Value="50" Type="int"/>
+        <MemberComponentTemplate Name="PoisonInfectedBehavior" Guid="6293d671-1ce9-41df-8e0d-7bf82eee59d5" InheritanceParent="d5e7f9a1-b3c5-4d9f-1a3b-5c7d9f1a3b5c">
   <Parameter Name="PoisonIntensity" Value="800" Type="float"/>
   <Parameter Name="InfectProbability" Value="0.5" Type="float"/>
 </MemberComponentTemplate>
@@ -1962,10 +1932,7 @@
     <Parameter Name="DeathSpawnProbability" Value="0.01" Type="float" Guid="212e4236-1dbf-4ff3-b951-61b099dfa8e0"/>
     <Parameter Name="DeathSpawnTemplates" Value="PoisonousGhost:0.01" Type="string" Guid="03fb6c61-53ba-4670-b2c9-f262a026f377"/>
 </MemberComponentTemplate>
-        <MemberComponentTemplate Name="PoisonInfectedBehavior" Guid="9da37fe6-4109-44cf-939d-c9cccbc2b4ad">
-  <Parameter Name="Class" Guid="b0c0c2ba-ef63-4bf3-b900-9ada6d9e78ae" Value="Game.ComponentPoisonInfectBehavior" Type="string"/>
-  <Parameter Name="IsOptional" Value="true" Type="bool"/>
-  <Parameter Name="LoadOrder" Value="50" Type="int"/>
+        <MemberComponentTemplate Name="PoisonInfectedBehavior" Guid="9da37fe6-4109-44cf-939d-c9cccbc2b4ad" InheritanceParent="d5e7f9a1-b3c5-4d9f-1a3b-5c7d9f1a3b5c">
   <Parameter Name="PoisonIntensity" Value="800" Type="float"/>
   <Parameter Name="InfectProbability" Value="0.5" Type="float"/>
 </MemberComponentTemplate>
@@ -2112,10 +2079,7 @@
     <Parameter Name="LoadOrder" Value="60" Type="int" Guid="c953c3a8-52f4-4784-8c4b-c38e578946a1"/>
               <Parameter Name="IsEnabled" Guid="24c78383-d5e2-430d-92f1-7de63907a7a9" Value="True" Type="bool"/>
             </MemberComponentTemplate>
-        <MemberComponentTemplate Name="PoisonInfectedBehavior" Guid="d4f04f7f-53de-4ba7-9012-a33fe23d1a66">
-  <Parameter Name="Class" Guid="bbc48d9a-2085-46d8-9cca-2a65a297d5dd" Value="Game.ComponentPoisonInfectBehavior" Type="string"/>
-  <Parameter Name="IsOptional" Value="true" Type="bool"/>
-  <Parameter Name="LoadOrder" Value="50" Type="int"/>
+        <MemberComponentTemplate Name="PoisonInfectedBehavior" Guid="d4f04f7f-53de-4ba7-9012-a33fe23d1a66" InheritanceParent="d5e7f9a1-b3c5-4d9f-1a3b-5c7d9f1a3b5c">
   <Parameter Name="PoisonIntensity" Value="800" Type="float"/>
   <Parameter Name="InfectProbability" Value="0.5" Type="float"/>
 </MemberComponentTemplate>
@@ -2455,10 +2419,7 @@
     <Parameter Name="MinMaxRandomWaitTime" Value="0.3;0.7" Type="string"/>
     <Parameter Name="MinMaxDistance" Value="10;85.5" Type="string"/>
     </MemberComponentTemplate>
-<MemberComponentTemplate Name="PoisonInfectedBehavior" Guid="15d73a1b-071b-43c9-842b-a8a642a83174">
-  <Parameter Name="Class" Guid="a26ed11c-503e-47ed-befb-9ef84b2cab6a" Value="Game.ComponentPoisonInfectBehavior" Type="string"/>
-  <Parameter Name="IsOptional" Value="true" Type="bool"/>
-  <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="PoisonInfectedBehavior" Guid="15d73a1b-071b-43c9-842b-a8a642a83174" InheritanceParent="d5e7f9a1-b3c5-4d9f-1a3b-5c7d9f1a3b5c">
   <Parameter Name="PoisonIntensity" Value="800" Type="float"/>
   <Parameter Name="InfectProbability" Value="0.5" Type="float"/>
 </MemberComponentTemplate>
@@ -2600,10 +2561,7 @@
     <Parameter Name="MinMaxDistance" Value="10;85.5" Type="string"/>
     <Parameter Name="Class" Value="Game.ComponentInvShooterBehavior" Type="string"/>
     </MemberComponentTemplate>
-<MemberComponentTemplate Name="PoisonInfectedBehavior" Guid="8ce4cf6b-9db5-4691-875d-1068a1933893">
-  <Parameter Name="Class" Guid="a5ead053-8c51-4f02-a38e-21ee24566d3f" Value="Game.ComponentPoisonInfectBehavior" Type="string"/>
-  <Parameter Name="IsOptional" Value="true" Type="bool"/>
-  <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="PoisonInfectedBehavior" Guid="8ce4cf6b-9db5-4691-875d-1068a1933893" InheritanceParent="d5e7f9a1-b3c5-4d9f-1a3b-5c7d9f1a3b5c">
   <Parameter Name="PoisonIntensity" Value="800" Type="float"/>
   <Parameter Name="InfectProbability" Value="0.5" Type="float"/>
 </MemberComponentTemplate>
@@ -2934,10 +2892,7 @@
         <Parameter Name="GlowingEyesColor" Guid="8bf08c8c-cb82-4bb6-b35b-309a583a4418" Value="0,255,0" Type="Color"/>
         <Parameter Name="GlowingEyesOffset" Guid="c9108e44-0855-4c51-b6fa-8a207e586d75" Value="0.06,0.2,0.1" Type="Vector3"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="PoisonInfectedBehavior" Guid="681a4c22-0349-4eb9-8a06-d3d524aee20a">
-  <Parameter Name="Class" Guid="c8fe4f41-db0d-4434-bf99-2c848cc8e1ce" Value="Game.ComponentPoisonInfectBehavior" Type="string"/>
-  <Parameter Name="IsOptional" Value="true" Type="bool"/>
-  <Parameter Name="LoadOrder" Value="50" Type="int"/>
+    <MemberComponentTemplate Name="PoisonInfectedBehavior" Guid="681a4c22-0349-4eb9-8a06-d3d524aee20a" InheritanceParent="d5e7f9a1-b3c5-4d9f-1a3b-5c7d9f1a3b5c">
   <Parameter Name="PoisonIntensity" Value="800" Type="float"/>
   <Parameter Name="InfectProbability" Value="0.5" Type="float"/>
 </MemberComponentTemplate>
@@ -3095,10 +3050,7 @@
         <Parameter Name="GlowingEyesColor" Guid="3e8e9aa0-e7d5-4c1b-9a2e-1759039999a0" Value="0,255,0" Type="Color"/>
         <Parameter Name="GlowingEyesOffset" Guid="17209100-4454-45e1-b389-fca362bd0c1b" Value="0.06,0.2,0.1" Type="Vector3"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="PoisonInfectedBehavior" Guid="e0a578be-6821-4e8e-ac74-2991ca6bee99">
-  <Parameter Name="Class" Guid="d22880b5-e8c1-4ef7-ba2c-4bd82871c8f2" Value="Game.ComponentPoisonInfectBehavior" Type="string"/>
-  <Parameter Name="IsOptional" Value="true" Type="bool"/>
-  <Parameter Name="LoadOrder" Value="50" Type="int"/>
+    <MemberComponentTemplate Name="PoisonInfectedBehavior" Guid="e0a578be-6821-4e8e-ac74-2991ca6bee99" InheritanceParent="d5e7f9a1-b3c5-4d9f-1a3b-5c7d9f1a3b5c">
   <Parameter Name="PoisonIntensity" Value="800" Type="float"/>
   <Parameter Name="InfectProbability" Value="0.5" Type="float"/>
 </MemberComponentTemplate>
@@ -4975,6 +4927,7 @@
   <Parameter Name="NightChaseRange" Guid="089f31a9-781f-49ff-bdf3-498fcc701780" Value="75" Type="float"/>
   <Parameter Name="AutoChaseMask" Guid="185f6d52-c420-47f9-a04b-b272afdc9735" Value="LandPredator" Type="Game.CreatureCategory"/>
   <Parameter Name="ChaseNonPlayerProbability" Guid="0180cc14-66b2-494d-b871-eb91ad33d119" Value="1" Type="float"/>
+  <Parameter Name="DestroyBlocksWhenStuck" Guid="f16303a7-34c2-4ff2-b436-49a27b29c60d" Value="true" Type="bool"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="NewHerdBehavior" Guid="964cdfd7-e665-4886-a157-22b972bb43d8" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
         <Parameter Name="HerdName" Value="player" Type="string" Guid="b288fc85-6c19-4629-b15b-72b2d4f0a7d0"/>
@@ -5256,6 +5209,7 @@
   <Parameter Name="NightChaseRange" Guid="e0f0d9cd-e577-4a71-adca-f7f3e1ba015e" Value="75" Type="float"/>
   <Parameter Name="AutoChaseMask" Guid="9f62a176-4616-41d4-9b94-d6048e6f06da" Value="LandPredator" Type="Game.CreatureCategory"/>
   <Parameter Name="ChaseNonPlayerProbability" Guid="b41b26ee-e0ec-40cf-b534-4e7ac7d81134" Value="1" Type="float"/>
+  <Parameter Name="DestroyBlocksWhenStuck" Guid="fb89c3c4-43d5-465c-90f2-8280dee6326f" Value="true" Type="bool"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="NewHerdBehavior" Guid="4c5086c7-3d20-42a9-a4af-6846b1cb49c1" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
         <Parameter Name="HerdName" Value="player" Type="string" Guid="d132c30c-d84e-4eb8-8e14-447fb635c3b8"/>
@@ -5344,11 +5298,6 @@
     <Parameter Name="AnimationResponsiveness" Guid="d3f86418-1747-462f-95c6-bc57bcb96a20" Value="12" Type="float"/>
     <Parameter Name="Class" Guid="e125a2a4-2422-4712-b5d8-2551dfe35b70" Value="Game.ComponentTankModel" Type="string"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="PathBreaker" Guid="7ac0840f-d8b5-473e-bf11-1662aa15300d" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
-		<Parameter Name="CanBreakBlocks" Guid="5ba48a01-05f9-495d-aa4e-65de0bb13d4b" Value="True" Type="bool"/>
-		<Parameter Name="SpecificBlocks" Guid="20072115-e135-402d-8b0b-36e346fd3b65" Value="" Type="string"/>
-		<Parameter Name="BreakProbability" Guid="77d9632c-aba4-4ece-b08c-c30d33ec1008" Value="1.0" Type="float"/>
-	</MemberComponentTemplate>
             <MemberComponentTemplate Name="Health" Guid="c84a7cda-6851-4f9c-8d97-dabfe627f713">
                 <Parameter Name="FireResilience" Guid="c03dc137-077c-4f87-90d4-84b36d989151" Value="30000" Type="float"/>
         <Parameter Name="AttackResilience" Guid="e0522e23-def0-4ef2-98a5-c9d003c10369" Value="30000" Type="float"/>
@@ -5528,11 +5477,6 @@
     <Parameter Name="SlotsCount" Value="16" Type="int"/>
     <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
   </MemberComponentTemplate>
-        <MemberComponentTemplate Name="PathBreaker" Guid="a05036f7-2a90-4b4f-9b4f-f95b2ccbb44f" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
-		<Parameter Name="CanBreakBlocks" Guid="f1b44e27-13ef-441d-a315-dabc1f60b23d" Value="True" Type="bool"/>
-		<Parameter Name="SpecificBlocks" Guid="b314ce83-64e8-47fd-b6bb-a0013e0bc9fa" Value="" Type="string"/>
-		<Parameter Name="BreakProbability" Guid="a444ca6b-a742-429d-88b5-6df76a01331c" Value="1.0" Type="float"/>
-	</MemberComponentTemplate>
         <MemberComponentTemplate Name="SummonBehavior" Guid="a0b633dc-5a79-4d25-9db6-9238e25f1ce9">
               <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="9ff897fc-57ee-44dd-8eb9-19b2c045e974"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="f0fab102-e565-4296-8ec4-396fbcf61717"/>
@@ -5549,6 +5493,7 @@
   <Parameter Name="AutoChaseMask" Guid="7c317119-2f20-40a4-be8c-6cd00acd0b7c" Value="LandPredator" Type="Game.CreatureCategory"/>
   <Parameter Name="ChaseNonPlayerProbability" Guid="4aa6a1ae-3e80-42c1-9679-922f66c5bad0" Value="1" Type="float"/>
   <Parameter Name="RangedAttackRange" Guid="7e4b9115-b751-4d7b-b2ee-834134b8cc7b" Value="5,100" Type="Vector2"/>
+  <Parameter Name="DestroyBlocksWhenStuck" Guid="ccb3decc-5bb4-4229-afca-0800ae3f2839" Value="true" Type="bool"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="NewHerdBehavior" Guid="c8637ae9-c19a-48b9-af5f-2abe15c6587c" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
         <Parameter Name="HerdName" Value="player" Type="string" Guid="cc137e48-215c-4dde-b00e-fedd41cb94b8"/>
@@ -5847,11 +5792,6 @@
     <Parameter Name="SlotsCount" Value="16" Type="int"/>
     <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
   </MemberComponentTemplate>
-        <MemberComponentTemplate Name="PathBreaker" Guid="4fbcf7ba-42a3-484f-bc48-0a22d8e4e144" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
-		<Parameter Name="CanBreakBlocks" Guid="33537b8e-c811-41a9-b370-ed57e36ffabc" Value="True" Type="bool"/>
-		<Parameter Name="SpecificBlocks" Guid="352bfad2-1545-4160-bd7f-9c0543cbbe91" Value="" Type="string"/>
-		<Parameter Name="BreakProbability" Guid="c37cbe71-9caf-4f5f-9288-19cba1dbbdca" Value="1.0" Type="float"/>
-	</MemberComponentTemplate>
         <MemberComponentTemplate Name="DeathSpawner" Guid="1829f380-dd91-439b-8341-1c6d669a5254" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="d557745e-5da3-4f20-b0f4-3f4de01b5bec"/>
     <Parameter Name="DeathSpawnTemplates" Value="GhostFast" Type="string" Guid="b9b89f68-b426-4e61-80e5-7d7d31f3c60d"/>
@@ -5872,6 +5812,7 @@
   <Parameter Name="AutoChaseMask" Guid="779b9ab9-977e-4021-88e8-e756dd4fed34" Value="LandPredator" Type="Game.CreatureCategory"/>
   <Parameter Name="ChaseNonPlayerProbability" Guid="8f980612-e4af-49aa-b6cc-f065f126e14f" Value="1" Type="float"/>
   <Parameter Name="RangedAttackRange" Guid="c18c38d2-e862-4e1e-9a28-c3df39b3fc56" Value="5,100" Type="Vector2"/>
+  <Parameter Name="DestroyBlocksWhenStuck" Guid="2082ef4f-0452-472b-86f2-0eb95853800e" Value="true" Type="bool"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="NewHerdBehavior" Guid="7188626e-0a9e-4a1c-a6da-f73d38a20370">
         <Parameter Name="Class" Value="Game.ComponentNewHerdBehavior" Type="string" Guid="8cf60e7f-1fd0-42ad-825c-33fb3da67c55"/>
@@ -6041,10 +5982,7 @@
     <Parameter Name="PoisonResistance" Value="100" Type="float"/>
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="PoisonInfectedBehavior" Guid="a41b466a-6480-4d93-9ef9-6880079b6d91">
-  <Parameter Name="Class" Guid="6658d60a-cd1e-4836-90be-8487f4488425" Value="Game.ComponentPoisonInfectBehavior" Type="string"/>
-  <Parameter Name="IsOptional" Value="true" Type="bool"/>
-  <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="PoisonInfectedBehavior" Guid="a41b466a-6480-4d93-9ef9-6880079b6d91" InheritanceParent="d5e7f9a1-b3c5-4d9f-1a3b-5c7d9f1a3b5c">
   <Parameter Name="PoisonIntensity" Value="800" Type="float"/>
   <Parameter Name="InfectProbability" Value="0.5" Type="float"/>
 </MemberComponentTemplate>
@@ -6189,6 +6127,7 @@
   <Parameter Name="AutoChaseMask" Guid="2d30e5be-6648-4507-9e24-a2e7fcf6bcd9" Value="LandPredator" Type="Game.CreatureCategory"/>
   <Parameter Name="ChaseNonPlayerProbability" Guid="c8d66571-d4c0-4b71-a8c6-799ae152b447" Value="1" Type="float"/>
   <Parameter Name="RangedAttackRange" Guid="3f03b659-2797-40cf-a6ce-75fe4f0c7266" Value="5,100" Type="Vector2"/>
+  <Parameter Name="DestroyBlocksWhenStuck" Guid="ea169362-0cee-46a8-9105-c6ef3797e77a" Value="true" Type="bool"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="NewHerdBehavior" Guid="dfd5f992-14aa-4acc-b222-d533d7324849">
         <Parameter Name="Class" Value="Game.ComponentNewHerdBehavior" Type="string" Guid="187d7e81-88ff-4b41-9934-0a9c7e7ed859"/>
@@ -6231,10 +6170,7 @@
     <Parameter Name="PoisonResistance" Value="100" Type="float"/>
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="PoisonInfectedBehavior" Guid="3cad8e68-7e58-4fa7-8aaa-6cdb02a8387e">
-  <Parameter Name="Class" Guid="a582e79e-4f5a-4200-bed1-23a0793c774d" Value="Game.ComponentPoisonInfectBehavior" Type="string"/>
-  <Parameter Name="IsOptional" Value="true" Type="bool"/>
-  <Parameter Name="LoadOrder" Value="50" Type="int"/>
+<MemberComponentTemplate Name="PoisonInfectedBehavior" Guid="3cad8e68-7e58-4fa7-8aaa-6cdb02a8387e" InheritanceParent="d5e7f9a1-b3c5-4d9f-1a3b-5c7d9f1a3b5c">
   <Parameter Name="PoisonIntensity" Value="800" Type="float"/>
   <Parameter Name="InfectProbability" Value="0.5" Type="float"/>
 </MemberComponentTemplate>
@@ -7781,6 +7717,7 @@
   <Parameter Name="NightChaseRange" Guid="b44d7e90-bb6e-452c-90f9-cb88ed069270" Value="75" Type="float"/>
   <Parameter Name="AutoChaseMask" Guid="3c9e4f1e-f83f-4804-b14c-680821155baf" Value="LandPredator" Type="Game.CreatureCategory"/>
   <Parameter Name="ChaseNonPlayerProbability" Guid="bab63160-ed3e-4298-930a-19e784d44891" Value="1" Type="float"/>
+  <Parameter Name="DestroyBlocksWhenStuck" Guid="6f22ed25-3f80-4aed-a447-1325429c7da5" Value="true" Type="bool"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="NewHerdBehavior" Guid="e58c6a32-8e26-4495-9239-b7b95bf5289e" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
         <Parameter Name="HerdName" Value="player" Type="string" Guid="d55ebd8f-770e-49d5-bd06-878909f804b9"/>
@@ -7888,11 +7825,6 @@
     <Parameter Name="TextureOverride" Guid="c56cfae9-c8e3-4f78-ac17-532f00875706" Value="Textures/ZombiesDeMierda/Ghost" Type="string"/>
     <Parameter Name="Class" Guid="95649cbe-e8b1-4d8d-a68d-14ac20dd7b95" Value="Game.ComponentNewGhostTankModel" Type="string"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="PathBreaker" Guid="aafb8d4d-4acb-498c-abad-cbab05a641e9" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
-		<Parameter Name="CanBreakBlocks" Guid="6c7ab654-87fc-4217-8a5c-53d7879ff130" Value="True" Type="bool"/>
-		<Parameter Name="SpecificBlocks" Guid="3186bce9-d4f9-4214-9682-94eb1117a45e" Value="" Type="string"/>
-		<Parameter Name="BreakProbability" Guid="02cfdd47-1b94-4a83-a64b-3f9055053e9c" Value="1.0" Type="float"/>
-	</MemberComponentTemplate>
             <MemberComponentTemplate Name="Health" Guid="b6c195ce-5b5f-4116-a257-6cfd2f96519d">
                 <Parameter Name="FireResilience" Guid="5cab8f45-ec1f-4747-8354-27505f7bccf9" Value="10000" Type="float"/>
         <Parameter Name="AttackResilience" Guid="9204e113-3461-45a3-8cd8-ec99f1033326" Value="10000" Type="float"/>
@@ -8063,6 +7995,7 @@
   <Parameter Name="NightChaseRange" Guid="e94a11b3-9686-4737-ae72-f7f5cf232a9f" Value="75" Type="float"/>
   <Parameter Name="AutoChaseMask" Guid="edbe8efc-d1e9-491e-88dd-5c8f6ca980f7" Value="LandPredator" Type="Game.CreatureCategory"/>
   <Parameter Name="ChaseNonPlayerProbability" Guid="d60b9e7f-d371-4183-92fd-ecac962ebb25" Value="1" Type="float"/>
+  <Parameter Name="DestroyBlocksWhenStuck" Guid="01cbbbd5-f62f-4dcb-a209-fdbc5ee75dac" Value="true" Type="bool"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="NewHerdBehavior" Guid="32f5ad78-ce1d-43ca-a680-e626eab4799e" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
         <Parameter Name="HerdName" Value="player" Type="string" Guid="1e5279a1-0210-42f4-a401-7514b61cfed4"/>
@@ -8170,11 +8103,6 @@
     <Parameter Name="TextureOverride" Guid="ff521809-f716-44ea-b44b-dd2f80bdc8c8" Value="Textures/ZombiesDeMierda/Tank Fire Ghost" Type="string"/>
     <Parameter Name="Class" Guid="ecffc274-2b9c-402c-9988-0e8529c9ecec" Value="Game.ComponentNewGhostTankModel" Type="string"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="PathBreaker" Guid="e1bac378-20e3-4769-a341-8a032684c419" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
-		<Parameter Name="CanBreakBlocks" Guid="69126a10-4222-44bf-ab06-0ade06f36513" Value="True" Type="bool"/>
-		<Parameter Name="SpecificBlocks" Guid="ed41f41b-5880-4254-9545-dbe233f42bff" Value="" Type="string"/>
-		<Parameter Name="BreakProbability" Guid="3ce8aab0-4731-484a-9135-a0f4f7b0ad42" Value="1.0" Type="float"/>
-	</MemberComponentTemplate>
             <MemberComponentTemplate Name="Health" Guid="d8731dc7-a9ab-48c9-b98a-1eb38a14c865">
                 <Parameter Name="FireResilience" Guid="c04a225c-e7d7-4cfb-ab09-0d07134aed21" Value="20000" Type="float"/>
         <Parameter Name="AttackResilience" Guid="764da337-6107-48f8-aa2f-7627ff6fbaa3" Value="10000" Type="float"/>
@@ -8346,6 +8274,7 @@
   <Parameter Name="NightChaseRange" Guid="7a60ab7c-5f8a-4430-a3fb-1bd8e39b8ff6" Value="75" Type="float"/>
   <Parameter Name="AutoChaseMask" Guid="8289cc5e-0b95-45d0-b8d8-4885c3a29302" Value="LandPredator" Type="Game.CreatureCategory"/>
   <Parameter Name="ChaseNonPlayerProbability" Guid="5a97c1e5-2c1c-4dc5-b69f-c448437b7f39" Value="1" Type="float"/>
+  <Parameter Name="DestroyBlocksWhenStuck" Guid="17046282-5bbf-44db-98f2-43cdb6f59c92" Value="true" Type="bool"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="NewHerdBehavior" Guid="709585df-08e6-4c26-90dc-0a83342f09d6" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
         <Parameter Name="HerdName" Value="player" Type="string" Guid="6cb4c108-3ec0-473a-9d32-7a8bd0ffef83"/>
@@ -8440,11 +8369,6 @@
     <Parameter Name="TextureOverride" Guid="ec6a8b0f-187d-48f3-846c-23d440f55770" Value="Textures/ZombiesDeMierda/Poisonous Ghost" Type="string"/>
     <Parameter Name="Class" Guid="a8316435-5b4d-4203-b560-1dce26db7d37" Value="Game.ComponentNewGhostTankModel" Type="string"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="PathBreaker" Guid="d74cfc6e-85a8-4c38-aacc-9f417acb8ee7" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
-		<Parameter Name="CanBreakBlocks" Guid="6bc9eb28-00ac-4660-9159-685fc82350bc" Value="True" Type="bool"/>
-		<Parameter Name="SpecificBlocks" Guid="e3344405-ad06-4ffa-b976-2c958e61d721" Value="" Type="string"/>
-		<Parameter Name="BreakProbability" Guid="9f6b61b8-714b-48bc-a556-4db8007f7809" Value="1.0" Type="float"/>
-	</MemberComponentTemplate>
             <MemberComponentTemplate Name="Health" Guid="974513c7-90e5-4a4e-931a-d5dfc7efcb49">
                 <Parameter Name="FireResilience" Guid="4c9395cc-27d3-486d-9d15-499dd1e94ad9" Value="20000" Type="float"/>
         <Parameter Name="AttackResilience" Guid="8d770338-0200-449b-8434-cc432d01b3cb" Value="55000" Type="float"/>
@@ -8604,11 +8528,6 @@
             <MemberComponentTemplate Name="FeedBehavior" Guid="78b05c10-dc93-4505-98a4-99d1369b1dbe" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="d7ed0e17-d280-46f5-8634-26ab191325bf" Value="False" Type="bool"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="PathBreaker" Guid="6fe9c103-dce6-47b2-9a10-98e0ccb36278" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
-		<Parameter Name="CanBreakBlocks" Guid="3ef8dfe4-66ba-4036-99d7-627089077e4d" Value="True" Type="bool"/>
-		<Parameter Name="SpecificBlocks" Guid="5d139822-dbb8-423a-9e32-4ffc52538064" Value="" Type="string"/>
-		<Parameter Name="BreakProbability" Guid="74ae823d-bff1-41d9-91a7-e10d21c783fe" Value="1.0" Type="float"/>
-	</MemberComponentTemplate>
             <ParameterSet Name="CreatureEggData" Guid="3697a2bc-3ab4-4607-bf84-865d28ca6d76">
                 <Parameter Name="Color" Guid="6da19952-a6b0-4415-8ad8-25de75aa33ff" Value="174,123,58" Type="Color"/>
                 <Parameter Name="Scale" Guid="1835d3f8-d479-414d-86fe-6eb492b1e8aa" Value="7.0" Type="float"/>
@@ -8657,6 +8576,7 @@
   <Parameter Name="NightChaseRange" Guid="96281cff-328b-410a-bf52-cbb352d201c0" Value="75" Type="float"/>
   <Parameter Name="AutoChaseMask" Guid="0c2cbab2-2599-4863-afe2-1459f79a7b00" Value="LandPredator" Type="Game.CreatureCategory"/>
   <Parameter Name="ChaseNonPlayerProbability" Guid="65f47312-a4a6-48ad-8f84-73bddacbf58c" Value="1" Type="float"/>
+  <Parameter Name="DestroyBlocksWhenStuck" Guid="8d312a85-e311-47f6-9547-d2c085227dd2" Value="true" Type="bool"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="NewHerdBehavior" Guid="c4b518f8-4ea7-439d-99b5-43480c849073" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
         <Parameter Name="HerdName" Value="player" Type="string" Guid="1e080e54-37d4-49d0-a629-99fa81ef39ad"/>
@@ -8697,11 +8617,6 @@
         </ParameterSet>
     </ParameterSet>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="PathBreaker" Guid="3b4fe09c-7487-425f-959e-b9e7534f4c7f" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
-		<Parameter Name="CanBreakBlocks" Guid="fb4d76e3-480a-4b08-8fa2-6a85b0538ce0" Value="True" Type="bool"/>
-		<Parameter Name="SpecificBlocks" Guid="f6070b6b-1fe8-41d7-90b4-b9d9805988c2" Value="" Type="string"/>
-		<Parameter Name="BreakProbability" Guid="383c29c4-138d-49cd-bdd1-548f93eca19f" Value="1.0" Type="float"/>
-	</MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidFireBehavior" Guid="a91c53cf-1aca-4732-a2c0-e7ebcecd4e29" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
             <MemberComponentTemplate Name="Locomotion" Guid="aa8f250d-3ec2-447f-9cc5-500cbe73cc5b">
                 <Parameter Name="AccelerationFactor" Guid="86e18076-d2b6-4f44-a67d-713553a93a4d" Value="2.0" Type="float"/>
@@ -9135,11 +9050,6 @@
 </EntityTemplate>
 
 <EntityTemplate Name="InfectedWerewolfTamed" Guid="6401c4d7-b05a-4f94-bc15-89c79a387ec3" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="PathBreaker" Guid="cbb53e7d-7e2a-40dc-b73a-2fef3ce62402" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
-		<Parameter Name="CanBreakBlocks" Guid="d787396f-0f2e-4b3f-800f-a0ce7e496574" Value="True" Type="bool"/>
-		<Parameter Name="SpecificBlocks" Guid="abb8c23c-cf14-4e52-abfb-ac2f994eda19" Value="" Type="string"/>
-		<Parameter Name="BreakProbability" Guid="748f0189-acac-47ba-a116-cc238a88b337" Value="1.0" Type="float"/>
-	</MemberComponentTemplate>
 <MemberComponentTemplate Name="SummonBehavior" Guid="d2394dd9-253a-4563-9b26-6f3c64f6704d">
               <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="a89aa490-80a9-4471-bf7c-6c19f14a3c75"/>
     <Parameter Name="IsOptional" Value="true" Type="bool" Guid="2ab927ac-ee87-4b31-a194-943a0bbb7895"/>
@@ -9155,6 +9065,7 @@
   <Parameter Name="NightChaseRange" Guid="9c5a893d-6c3d-4eed-b749-898781d7ce9d" Value="75" Type="float"/>
   <Parameter Name="AutoChaseMask" Guid="c440494a-658d-4bc3-8479-7d682dd0c0a4" Value="LandPredator" Type="Game.CreatureCategory"/>
   <Parameter Name="ChaseNonPlayerProbability" Guid="9bf9cc4e-a166-42f0-865b-06342230a198" Value="1" Type="float"/>
+  <Parameter Name="DestroyBlocksWhenStuck" Guid="00f8987f-cbc5-4353-8fcf-29f836700cde" Value="true" Type="bool"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="NewHerdBehavior" Guid="f93e9702-9990-4140-b176-4e2ae888f99e" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
         <Parameter Name="HerdName" Value="player" Type="string" Guid="6b487e63-4324-4d92-a115-10de5e2764c7"/>
@@ -9774,6 +9685,9 @@
           </EntityTemplate>
 
           <EntityTemplate Name="InfectedWildboarTamed" Guid="c8787c56-c7ca-4fac-988d-45e81ddef109" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+          <MemberComponentTemplate Name="SummonBehavior" Guid="f5880e6b-db48-4f66-aeea-ceae3afec72d" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
+              <Parameter Name="IsEnabled" Guid="74031905-96a6-4f97-b171-311d35658e29" Value="True" Type="bool"/>
+            </MemberComponentTemplate>
           <MemberComponentTemplate Name="RunAwayBehavior" Guid="888d9b37-773b-4487-9ecc-b30ab14655db" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
 <MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="0be3795d-b774-4b94-8afd-75ff8837646f" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
           <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="eb1905ca-e25d-4fbe-89de-c14ee34b8ffa" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
@@ -10734,6 +10648,7 @@
   <Parameter Name="AutoChaseMask" Guid="3a6c4da7-03b4-4cdb-b878-d2cc584f2c8b" Value="LandPredator" Type="Game.CreatureCategory" />
   <Parameter Name="ChaseNonPlayerProbability" Guid="a1205198-4c92-4b7b-b6e2-39805a2914f0" Value="1" Type="float" />
   <Parameter Name="RangedAttackRange" Guid="a86f083d-20f3-46b4-b8c9-5e3768806faf" Value="5,100" Type="Vector2"/>
+  <Parameter Name="DestroyBlocksWhenStuck" Guid="3e912f89-61b2-4403-be10-24c0999a94d6" Value="true" Type="bool"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="NewHerdBehavior" Guid="7e57559a-b63c-4ba2-9b8b-2c814167dee5" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
   <Parameter Name="HerdName" Type="string" Value="guardian" Guid="b5f469d9-b68e-4288-b5fc-6953a58edcca"/>
@@ -10743,11 +10658,6 @@
   <Parameter Name="MaxHelpChaseTime" Type="float" Value="60" Guid="70fabd20-986d-4bd5-a1f4-b0a7e4a62da5"/>
   <Parameter Name="AvoidAttackingSameHerd" Type="bool" Value="true" Guid="d61c90b0-9cb0-448e-9242-28e48f9a7cf0"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="PathBreaker" Guid="57ef59e0-f0a0-4f04-b022-00f1304bd96f" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
-		<Parameter Name="CanBreakBlocks" Guid="30997344-c4f8-4e20-8483-4798784903ce" Value="True" Type="bool"/>
-		<Parameter Name="SpecificBlocks" Guid="c697af5e-132a-4e9e-9b8e-24bf3da54dee" Value="SnowBlock, IceBlock, WindowBlock, FramedGlassBlock, GlassBlock" Type="string"/>
-		<Parameter Name="BreakProbability" Guid="cb56e937-fcb6-4f76-a926-de3484e055c7" Value="0.5" Type="float"/>
-	</MemberComponentTemplate>
     <MemberComponentTemplate Name="DeathSpawner" Guid="79c30767-8b64-433a-8cc4-30151c766566" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="460fd3c5-14bf-420d-935b-20cb2b47dbf1"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedFreezer" Type="string" Guid="fab05794-02ef-4b81-a470-d8082811291f"/>
