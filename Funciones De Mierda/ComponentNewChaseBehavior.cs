@@ -802,7 +802,6 @@ namespace Game
 			Vector3 direction = Vector3.Normalize(targetCenter - eyePos);
 			Ray3 ray = new Ray3(eyePos, direction);
 
-			// ✅ Completar el lanzamiento
 			m_componentMiner.Aim(ray, AimState.Completed);
 
 			m_nextThrowableAttackTime = m_subsystemTime.GameTime + ThrowableCooldown;
@@ -810,6 +809,22 @@ namespace Game
 			m_isAimingThrowable = false;
 			m_throwableSlotIndex = -1;
 			m_throwableValue = 0;
+
+			if (!HasThrowableItem(out _, out _))
+			{
+				if (IsTargetInAttackRange(m_target?.ComponentBody))
+				{
+					int meleeSlot = FindBestMeleeWeapon(out int meleeValue);
+					if (meleeSlot != -1)
+						EquipWeapon(meleeSlot);
+				}
+				else
+				{
+					int rangedSlot = FindBestRangedWeapon(out int rangedValue);
+					if (rangedSlot != -1)
+						EquipWeapon(rangedSlot);
+				}
+			}
 		}
 
 		private void CancelThrowableAim()
@@ -825,6 +840,22 @@ namespace Game
 			m_isAimingThrowable = false;
 			m_throwableSlotIndex = -1;
 			m_throwableValue = 0;
+
+			if (!HasThrowableItem(out _, out _))
+			{
+				if (IsTargetInAttackRange(m_target?.ComponentBody))
+				{
+					int meleeSlot = FindBestMeleeWeapon(out int meleeValue);
+					if (meleeSlot != -1)
+						EquipWeapon(meleeSlot);
+				}
+				else
+				{
+					int rangedSlot = FindBestRangedWeapon(out int rangedValue);
+					if (rangedSlot != -1)
+						EquipWeapon(rangedSlot);
+				}
+			}
 		}
 
 		private void UpdateThrowableAttack(float dt)
@@ -859,6 +890,21 @@ namespace Game
 			if (!HasThrowableItem(out int slotIndex, out int value))
 			{
 				CancelThrowableAim();
+				if (!HasThrowableItem(out _, out _))
+				{
+					if (IsTargetInAttackRange(m_target?.ComponentBody))
+					{
+						int meleeSlot = FindBestMeleeWeapon(out int meleeValue);
+						if (meleeSlot != -1)
+							EquipWeapon(meleeSlot);
+					}
+					else
+					{
+						int rangedSlot = FindBestRangedWeapon(out int rangedValue);
+						if (rangedSlot != -1)
+							EquipWeapon(rangedSlot);
+					}
+				}
 				return;
 			}
 
