@@ -42,14 +42,14 @@ namespace Game
 		public Vector2 ThrowableAttackRange = new Vector2(5f, 15f);
 
 		// Tiempos de apuntado
-		public float MusketAimTime = 1f;
-		public float MusketCooldown = 0f;
-		public float BowAimTime = 1f;
-		public float BowCooldown = 0f;
-		public float CrossbowAimTime = 1f;
-		public float CrossbowCooldown = 0f;
-		public float RepeatCrossbowAimTime = 1f;
-		public float RepeatCrossbowCooldown = 0f;
+		public float MusketAimTime = 1.45f;
+		public float MusketCooldown = 0.3f;
+		public float BowAimTime = 1.45f;
+		public float BowCooldown = 0.3f;
+		public float CrossbowAimTime = 1.45f;
+		public float CrossbowCooldown = 0.3f;
+		public float RepeatCrossbowAimTime = 1.45f;
+		public float RepeatCrossbowCooldown = 0.3f;
 		public float FlameThrowerAimTime = 1.55f;
 		public float FlameThrowerCooldown = 1.0f;
 
@@ -430,6 +430,10 @@ namespace Game
 		{
 			if (m_componentMiner?.Inventory == null) return;
 
+			// ✅ Si está apuntando un lanzable, no cambiar de arma
+			if (m_isAimingThrowable)
+				return;
+
 			if (inMeleeRange)
 			{
 				if (!IsCurrentWeaponMelee)
@@ -445,13 +449,22 @@ namespace Game
 			}
 			else
 			{
+				// ✅ Para distancia, priorizar objetos lanzables sobre armas a distancia normales
 				if (!IsCurrentWeaponRanged && !m_isAimingThrowable)
 				{
-					int rangedSlot = FindBestRangedWeapon(out int rangedValue);
-					if (rangedSlot != -1)
+					// Verificar si tiene objeto lanzable
+					if (HasThrowableItem(out int throwSlot, out int throwValue))
 					{
-						CancelRangedAim();
-						EquipWeapon(rangedSlot);
+						EquipWeapon(throwSlot);
+					}
+					else
+					{
+						int rangedSlot = FindBestRangedWeapon(out int rangedValue);
+						if (rangedSlot != -1)
+						{
+							CancelRangedAim();
+							EquipWeapon(rangedSlot);
+						}
 					}
 				}
 			}
@@ -582,7 +595,11 @@ namespace Game
 
 				bool inMeleeRange = IsTargetInAttackRange(m_target.ComponentBody);
 
-				ManageWeaponSwitching(inMeleeRange);
+				// ✅ No gestionar cambio de arma si está apuntando lanzable
+				if (!m_isAimingThrowable)
+				{
+					ManageWeaponSwitching(inMeleeRange);
+				}
 
 				if (inMeleeRange)
 				{
@@ -613,13 +630,14 @@ namespace Game
 				}
 				else
 				{
-					if (IsCurrentWeaponRanged)
+					// ✅ Dar prioridad al lanzamiento sobre otras armas a distancia
+					if (HasThrowableItem(out _, out _))
 					{
 						UpdateThrowableAttack(dt);
-						if (!m_isAimingThrowable)
-						{
-							UpdateRangedAttack(dt);
-						}
+					}
+					else if (IsCurrentWeaponRanged)
+					{
+						UpdateRangedAttack(dt);
 					}
 				}
 			}
@@ -762,6 +780,7 @@ namespace Game
 			Vector3 direction = Vector3.Normalize(targetCenter - eyePos);
 			Ray3 ray = new Ray3(eyePos, direction);
 
+			// ✅ Completar el lanzamiento
 			m_componentMiner.Aim(ray, AimState.Completed);
 
 			m_nextThrowableAttackTime = m_subsystemTime.GameTime + ThrowableCooldown;
@@ -831,9 +850,10 @@ namespace Game
 				return;
 			}
 
+			// ✅ IMPORTANTE: No cancelar por cooldown, solo esperar
 			if (m_subsystemTime.GameTime < m_nextThrowableAttackTime)
 			{
-				CancelThrowableAim();
+				// No cancelar, solo salir y mantener el estado actual si está apuntando
 				return;
 			}
 
@@ -853,6 +873,7 @@ namespace Game
 			}
 			else
 			{
+				// Mantener el apuntado continuamente
 				Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
 				Vector3 targetCenter = m_target.ComponentCreatureModel.EyePosition;
 				Vector3 direction = Vector3.Normalize(targetCenter - eyePos);
@@ -864,9 +885,20 @@ namespace Game
 				{
 					CompleteThrowableAim();
 				}
+				// ✅ No cancelar si no hay item, solo intentar obtener otro
 				else if (!HasThrowableItem(out _, out _))
 				{
-					CancelThrowableAim();
+					// Buscar otro objeto lanzable en otros slots
+					if (HasThrowableItem(out int newSlot, out int newValue))
+					{
+						m_throwableSlotIndex = newSlot;
+						m_throwableValue = newValue;
+						EnsureThrowableActive();
+					}
+					else
+					{
+						CancelThrowableAim();
+					}
 				}
 			}
 		}
@@ -1845,11 +1877,18 @@ namespace Game
 		// ===== MÉTODOS DE APOYO ORIGINALES =====
 		private bool IsTargetInAttackRange(ComponentBody target)
 		{
+			// Comprobación simple por distancia: si los centros están muy cerca, se considera melee
+			Vector3 selfCenter = m_componentCreature.ComponentBody.BoundingBox.Center();
+			Vector3 targetCenter = target.BoundingBox.Center();
+			float centerDistance = Vector3.Distance(selfCenter, targetCenter);
+			if (centerDistance <= MaxAttackRange + 0.5f)
+				return true;
+
 			if (IsBodyInAttackRange(target)) return true;
 
 			BoundingBox bbSelf = m_componentCreature.ComponentBody.BoundingBox;
 			BoundingBox bbTarget = target.BoundingBox;
-			Vector3 selfCenter = 0.5f * (bbSelf.Min + bbSelf.Max);
+			selfCenter = 0.5f * (bbSelf.Min + bbSelf.Max);
 			Vector3 toTarget = 0.5f * (bbTarget.Min + bbTarget.Max) - selfCenter;
 			float dist = toTarget.Length();
 			Vector3 dir = toTarget / dist;
