@@ -32,7 +32,8 @@ namespace Game
 		private float m_spawnInterval = 2f;
 		private const int MaxCreaturesPerArea = 150;
 		private const int MaxGlobalCreatures = 200;
-		private const int MaxSpawnsPerFrame = 2;
+		private const int MaxSpawnsPerFrame = 5;          // Aumentado para spawn grupal
+		private const int GroupSpawnCount = 3;            // Criaturas extra por grupo
 
 		// Estado de jefes
 		private bool m_bossBattleActive;
@@ -70,24 +71,8 @@ namespace Game
 			"FlyingInfectedBoss", "InfectedBird"
 		};
 
-		// Bloques prohibidos para spawnear
-		private HashSet<string> m_forbiddenBlockNames = new HashSet<string>
-		{
-			nameof(BedrockBlock),
-			nameof(IronBlock),
-			nameof(CopperBlock),
-			nameof(DiamondBlock),
-			nameof(BrickBlock),
-			nameof(MalachiteBlock),
-			nameof(WaterBlock),
-			nameof(MagmaBlock),
-			nameof(GraniteBlock),
-			nameof(BasaltBlock),
-			nameof(BasaltFenceBlock),
-			nameof(BasaltSlabBlock),
-			nameof(BasaltStairsBlock),
-			nameof(LimestoneBlock)
-		};
+		// Bloques prohibidos para spawnear (caché de índices)
+		private HashSet<int> m_forbiddenBlockIndices = new HashSet<int>();
 
 		public UpdateOrder UpdateOrder => UpdateOrder.Default;
 
@@ -114,11 +99,35 @@ namespace Game
 			m_subsystemTime = Project.FindSubsystem<SubsystemTime>(true);
 			m_subsystemSeasons = Project.FindSubsystem<SubsystemSeasons>(true);
 
+			// Inicializar caché de bloques prohibidos por índice (mucho más rápido)
+			InitializeForbiddenBlockIndices();
+
 			LoadWavesFromResources();
 			m_currentWave = valuesDictionary.GetValue<int>("CurrentWave", 1);
 			SetCurrentWave(m_currentWave);
 			m_wasGreenNightActive = m_subsystemGreenNightSky.IsGreenNightActive;
 			Instance = this;
+		}
+
+		private void InitializeForbiddenBlockIndices()
+		{
+			// Lista de nombres de bloques que queremos prohibir
+			string[] forbiddenNames = {
+				nameof(BedrockBlock), nameof(IronBlock), nameof(CopperBlock),
+				nameof(DiamondBlock), nameof(BrickBlock), nameof(MalachiteBlock),
+				nameof(WaterBlock), nameof(MagmaBlock), nameof(GraniteBlock),
+				nameof(BasaltBlock), nameof(BasaltFenceBlock), nameof(BasaltSlabBlock),
+				nameof(BasaltStairsBlock), nameof(LimestoneBlock)
+			};
+
+			// Recorrer todos los bloques registrados y guardar los índices de los que coinciden
+			foreach (var block in BlocksManager.Blocks)
+			{
+				if (block != null && forbiddenNames.Contains(block.GetType().Name))
+				{
+					m_forbiddenBlockIndices.Add(block.BlockIndex);
+				}
+			}
 		}
 
 		private void OnNaturalNightEnded()
@@ -209,60 +218,156 @@ namespace Game
 				}
 			}
 
-			float effectiveInterval = m_bossBattleActive ? m_spawnInterval * 2f : m_spawnInterval;
+			// Intervalo dinámico según cantidad de criaturas
+			int totalCreatures = m_subsystemCreatureSpawn.CountCreatures(false);
+			float dynamicInterval = m_bossBattleActive ? m_spawnInterval * 2f : m_spawnInterval;
+			if (totalCreatures > MaxGlobalCreatures * 0.8f)
+				dynamicInterval *= 1.5f;   // Más tiempo si casi lleno
+			else if (totalCreatures < MaxGlobalCreatures * 0.3f)
+				dynamicInterval *= 0.8f;   // Más rápido si hay pocas
+
 			m_spawnTimer += dt;
 			int spawnsThisFrame = 0;
 
-			while (m_spawnTimer >= effectiveInterval && spawnsThisFrame < MaxSpawnsPerFrame)
+			while (m_spawnTimer >= dynamicInterval && spawnsThisFrame < MaxSpawnsPerFrame)
 			{
-				m_spawnTimer -= effectiveInterval;
-				TrySpawnCreature();
-				spawnsThisFrame++;
+				m_spawnTimer -= dynamicInterval;
+
+				// Intentar spawn en grupo (múltiples criaturas por iteración)
+				int spawnedThisIteration = TrySpawnGroup();
+				spawnsThisFrame += spawnedThisIteration;
+
+				// Si no se pudo spawnear nada, salimos para no entrar en bucle infinito
+				if (spawnedThisIteration == 0)
+					break;
 			}
 		}
 
-		private void SendWaveMessage()
+		private int TrySpawnGroup()
 		{
-			int maxWave = m_waves.Keys.Max();
+			int spawned = 0;
+			int totalCreatures = m_subsystemCreatureSpawn.CountCreatures(false);
+			if (totalCreatures >= MaxGlobalCreatures)
+				return 0;
 
-			// Mensaje grande con el número de ola (para todas las olas)
-			string waveMessage = string.Format(LanguageControl.Get("ZombiesSpawn", "WaveMessage"), m_currentWave);
-			foreach (var player in m_subsystemPlayers.ComponentPlayers)
+			// Seleccionar una criatura base
+			var entry = GetRandomWeightedEntry(m_currentWaveEntries);
+			if (entry == null || BossTemplates.Contains(entry.TemplateName))
+				return 0;
+
+			// Obtener un punto válido
+			Vector3 spawnPos;
+			bool isFlying = FlyingTemplates.Contains(entry.TemplateName);
+			if (isFlying)
 			{
-				player.ComponentGui.DisplayLargeMessage(waveMessage, "", 3f, 0f);
+				spawnPos = GetRandomFlyingSpawnPoint();
+			}
+			else
+			{
+				spawnPos = GetValidSpawnPoint();
 			}
 
-			// Adicionalmente, si es la ola final, mostrar mensaje pequeño rojo de advertencia
-			if (m_currentWave == maxWave)
+			if (spawnPos == Vector3.Zero)
+				return 0;
+
+			// Verificar límite por área para la primera criatura
+			Vector2 areaMin = new Vector2(spawnPos.X - 16, spawnPos.Z - 16);
+			Vector2 areaMax = new Vector2(spawnPos.X + 16, spawnPos.Z + 16);
+			int nearby = m_subsystemCreatureSpawn.CountCreaturesInArea(areaMin, areaMax, false);
+			if (nearby >= MaxCreaturesPerArea)
+				return 0;
+
+			// Spawnear la primera
+			if (CanSpawnCreature(entry.TemplateName, spawnPos))
 			{
-				string finalMessage = LanguageControl.Get("ZombiesSpawn", "FinalWave");
-				foreach (var player in m_subsystemPlayers.ComponentPlayers)
+				m_subsystemCreatureSpawn.SpawnCreature(entry.TemplateName, spawnPos, false);
+				spawned++;
+			}
+			else
+			{
+				return 0; // Si falla la primera, no intentamos más
+			}
+
+			// Intentar spawnear criaturas adicionales en el mismo grupo
+			int groupCount = m_random.Int(1, GroupSpawnCount);
+			for (int i = 0; i < groupCount && spawned < MaxSpawnsPerFrame; i++)
+			{
+				// Seleccionar otra criatura al azar (puede ser distinta)
+				var extraEntry = GetRandomWeightedEntry(m_currentWaveEntries);
+				if (extraEntry == null || BossTemplates.Contains(extraEntry.TemplateName))
+					continue;
+
+				// Buscar un punto cercano al original
+				Vector3 extraPos = GetNearbySpawnPoint(spawnPos, 5f, 15f, isFlying);
+				if (extraPos == Vector3.Zero)
+					continue;
+
+				// Verificar área de nuevo (el área puede solaparse)
+				Vector2 extraAreaMin = new Vector2(extraPos.X - 16, extraPos.Z - 16);
+				Vector2 extraAreaMax = new Vector2(extraPos.X + 16, extraPos.Z + 16);
+				int extraNearby = m_subsystemCreatureSpawn.CountCreaturesInArea(extraAreaMin, extraAreaMax, false);
+				if (extraNearby >= MaxCreaturesPerArea)
+					continue;
+
+				if (CanSpawnCreature(extraEntry.TemplateName, extraPos))
 				{
-					player.ComponentGui.DisplaySmallMessage(finalMessage, new Color(255, 0, 0), true, true);
+					m_subsystemCreatureSpawn.SpawnCreature(extraEntry.TemplateName, extraPos, false);
+					spawned++;
 				}
 			}
+
+			return spawned;
 		}
 
-		private void AdvanceToNextWave()
+		private bool CanSpawnCreature(string templateName, Vector3 pos)
 		{
-			if (m_isAdvancingWave) return;
-			m_isAdvancingWave = true;
-
-			m_hasSpawnedBossThisNight = false;
-			m_bossBattleActive = false;
-			m_bossSpawnDelayed = false;
-			m_bossQueue.Clear();
-			m_currentBossEntity = null;
-
-			int nextWave = m_currentWave + 1;
-			int maxWave = m_waves.Keys.Max();
-			if (nextWave <= maxWave && m_waves.ContainsKey(nextWave))
+			// Condiciones especiales para InfectedFreezer
+			if (templateName == "InfectedFreezer")
 			{
-				m_currentWave = nextWave;
-				SetCurrentWave(m_currentWave);
-			}
+				if (m_subsystemSeasons.Season == Season.Winter)
+					return true;
 
-			m_isAdvancingWave = false;
+				int x = Terrain.ToCell(pos.X);
+				int z = Terrain.ToCell(pos.Z);
+				int temperature = m_subsystemTerrain.Terrain.GetTemperature(x, z);
+				return temperature < 8;
+			}
+			return true;
+		}
+
+		private Vector3 GetNearbySpawnPoint(Vector3 center, float minDistance, float maxDistance, bool isFlying)
+		{
+			for (int i = 0; i < 5; i++)
+			{
+				float angle = m_random.Float(0, 2 * MathUtils.PI);
+				float distance = m_random.Float(minDistance, maxDistance);
+				int x = (int)(center.X + MathF.Cos(angle) * distance);
+				int z = (int)(center.Z + MathF.Sin(angle) * distance);
+
+				if (isFlying)
+				{
+					// Para voladores, mantener altura similar
+					int y = (int)center.Y + m_random.Int(-5, 5);
+					if (y >= 10 && y <= 255)
+						return new Vector3(x + 0.5f, y, z + 0.5f);
+				}
+				else
+				{
+					int y = m_subsystemTerrain.Terrain.GetTopHeight(x, z);
+					if (y > 0 && y < 255)
+					{
+						int cellValue = m_subsystemTerrain.Terrain.GetCellValue(x, y - 1, z);
+						int contents = Terrain.ExtractContents(cellValue);
+						if (!m_forbiddenBlockIndices.Contains(contents))
+						{
+							Block block = BlocksManager.Blocks[contents];
+							if (block.IsCollidable)
+								return new Vector3(x + 0.5f, y, z + 0.5f);
+						}
+					}
+				}
+			}
+			return Vector3.Zero;
 		}
 
 		private Vector3 GetBossSpawnPoint(float minDistance = 40f, float maxDistance = 70f)
@@ -282,12 +387,11 @@ namespace Game
 					{
 						int cellValue = m_subsystemTerrain.Terrain.GetCellValue(x, y - 1, z);
 						int contents = Terrain.ExtractContents(cellValue);
-						Block block = BlocksManager.Blocks[contents];
-
-						string blockName = block.GetType().Name;
-						if (!m_forbiddenBlockNames.Contains(blockName) && block.IsCollidable)
+						if (!m_forbiddenBlockIndices.Contains(contents))
 						{
-							return new Vector3(x + 0.5f, y, z + 0.5f);
+							Block block = BlocksManager.Blocks[contents];
+							if (block.IsCollidable)
+								return new Vector3(x + 0.5f, y, z + 0.5f);
 						}
 					}
 				}
@@ -311,11 +415,11 @@ namespace Game
 					{
 						int cellValue = m_subsystemTerrain.Terrain.GetCellValue(x, y - 1, z);
 						int contents = Terrain.ExtractContents(cellValue);
-						Block block = BlocksManager.Blocks[contents];
-						string blockName = block.GetType().Name;
-						if (!m_forbiddenBlockNames.Contains(blockName) && block.IsCollidable)
+						if (!m_forbiddenBlockIndices.Contains(contents))
 						{
-							return new Vector3(x + 0.5f, y, z + 0.5f);
+							Block block = BlocksManager.Blocks[contents];
+							if (block.IsCollidable)
+								return new Vector3(x + 0.5f, y, z + 0.5f);
 						}
 					}
 				}
@@ -341,11 +445,11 @@ namespace Game
 					{
 						int cellValue = m_subsystemTerrain.Terrain.GetCellValue(x, groundY - 1, z);
 						int contents = Terrain.ExtractContents(cellValue);
-						Block block = BlocksManager.Blocks[contents];
-						string blockName = block.GetType().Name;
-						if (!m_forbiddenBlockNames.Contains(blockName) && block.IsCollidable)
+						if (!m_forbiddenBlockIndices.Contains(contents))
 						{
-							return new Vector3(x + 0.5f, y, z + 0.5f);
+							Block block = BlocksManager.Blocks[contents];
+							if (block.IsCollidable)
+								return new Vector3(x + 0.5f, y, z + 0.5f);
 						}
 					}
 					else
@@ -414,7 +518,6 @@ namespace Game
 				return;
 			}
 
-			// Solo en la oleada final se añaden TODOS los jefes
 			if (m_currentWave == MaxWave)
 			{
 				foreach (string boss in bosses)
@@ -422,7 +525,6 @@ namespace Game
 			}
 			else
 			{
-				// En oleadas normales, solo aparece un jefe
 				m_bossQueue.Enqueue(bosses[0]);
 			}
 		}
@@ -481,12 +583,14 @@ namespace Game
 						int z = point.Value.Z;
 						int cellValue = m_subsystemTerrain.Terrain.GetCellValue(x, y, z);
 						int contents = Terrain.ExtractContents(cellValue);
-						Block block = BlocksManager.Blocks[contents];
-						string blockName = block.GetType().Name;
-						if (!m_forbiddenBlockNames.Contains(blockName) && block.IsCollidable)
+						if (!m_forbiddenBlockIndices.Contains(contents))
 						{
-							spawnPos = new Vector3(point.Value.X + 0.5f, point.Value.Y, point.Value.Z + 0.5f);
-							break;
+							Block block = BlocksManager.Blocks[contents];
+							if (block.IsCollidable)
+							{
+								spawnPos = new Vector3(point.Value.X + 0.5f, point.Value.Y, point.Value.Z + 0.5f);
+								break;
+							}
 						}
 					}
 				}
@@ -536,73 +640,55 @@ namespace Game
 			return health != null && health.Health > 0f;
 		}
 
-		private void TrySpawnCreature()
+		private void SendWaveMessage()
 		{
-			int totalCreatures = m_subsystemCreatureSpawn.CountCreatures(false);
-			if (totalCreatures >= MaxGlobalCreatures)
-				return;
+			int maxWave = m_waves.Keys.Max();
 
-			var entry = GetRandomWeightedEntry(m_currentWaveEntries);
-			if (entry == null)
-				return;
-
-			if (BossTemplates.Contains(entry.TemplateName))
-				return;
-
-			Vector3 spawnPos;
-
-			if (FlyingTemplates.Contains(entry.TemplateName))
+			string waveMessage = string.Format(LanguageControl.Get("ZombiesSpawn", "WaveMessage"), m_currentWave);
+			foreach (var player in m_subsystemPlayers.ComponentPlayers)
 			{
-				spawnPos = GetRandomFlyingSpawnPoint();
-			}
-			else
-			{
-				spawnPos = GetValidSpawnPoint();
+				player.ComponentGui.DisplayLargeMessage(waveMessage, "", 3f, 0f);
 			}
 
-			if (spawnPos == Vector3.Zero)
-				return;
-
-			if (entry.TemplateName == "InfectedFreezer")
+			if (m_currentWave == maxWave)
 			{
-				bool canSpawn = false;
-
-				if (m_subsystemSeasons.Season == Season.Winter)
+				string finalMessage = LanguageControl.Get("ZombiesSpawn", "FinalWave");
+				foreach (var player in m_subsystemPlayers.ComponentPlayers)
 				{
-					canSpawn = true;
-				}
-				else
-				{
-					int x = Terrain.ToCell(spawnPos.X);
-					int z = Terrain.ToCell(spawnPos.Z);
-					int temperature = m_subsystemTerrain.Terrain.GetTemperature(x, z);
-					if (temperature < 8)
-					{
-						canSpawn = true;
-					}
-				}
-
-				if (!canSpawn)
-				{
-					return;
+					player.ComponentGui.DisplaySmallMessage(finalMessage, new Color(255, 0, 0), true, true);
 				}
 			}
-
-			Vector2 areaMin = new Vector2(spawnPos.X - 16, spawnPos.Z - 16);
-			Vector2 areaMax = new Vector2(spawnPos.X + 16, spawnPos.Z + 16);
-			int nearby = m_subsystemCreatureSpawn.CountCreaturesInArea(areaMin, areaMax, false);
-			if (nearby >= MaxCreaturesPerArea)
-				return;
-
-			m_subsystemCreatureSpawn.SpawnCreature(entry.TemplateName, spawnPos, false);
 		}
 
+		private void AdvanceToNextWave()
+		{
+			if (m_isAdvancingWave) return;
+			m_isAdvancingWave = true;
+
+			m_hasSpawnedBossThisNight = false;
+			m_bossBattleActive = false;
+			m_bossSpawnDelayed = false;
+			m_bossQueue.Clear();
+			m_currentBossEntity = null;
+
+			int nextWave = m_currentWave + 1;
+			int maxWave = m_waves.Keys.Max();
+			if (nextWave <= maxWave && m_waves.ContainsKey(nextWave))
+			{
+				m_currentWave = nextWave;
+				SetCurrentWave(m_currentWave);
+			}
+
+			m_isAdvancingWave = false;
+		}
+
+		// Métodos optimizados para spawn normal (con menos intentos y caché)
 		private Vector3 GetValidSpawnPoint()
 		{
 			foreach (var player in m_subsystemPlayers.ComponentPlayers)
 			{
 				var camera = player.GameWidget.ActiveCamera;
-				for (int i = 0; i < 10; i++)
+				for (int i = 0; i < 5; i++) // Reducido de 10 a 5
 				{
 					var point = m_subsystemCreatureSpawn.GetRandomSpawnPoint(camera, SpawnLocationType.Surface);
 					if (point.HasValue)
@@ -613,12 +699,11 @@ namespace Game
 
 						int cellValue = m_subsystemTerrain.Terrain.GetCellValue(x, y, z);
 						int contents = Terrain.ExtractContents(cellValue);
-						Block block = BlocksManager.Blocks[contents];
-
-						string blockName = block.GetType().Name;
-						if (!m_forbiddenBlockNames.Contains(blockName))
+						if (!m_forbiddenBlockIndices.Contains(contents))
 						{
-							return new Vector3(point.Value.X + 0.5f, point.Value.Y, point.Value.Z + 0.5f);
+							Block block = BlocksManager.Blocks[contents];
+							if (block.IsCollidable)
+								return new Vector3(point.Value.X + 0.5f, point.Value.Y, point.Value.Z + 0.5f);
 						}
 					}
 				}
@@ -631,7 +716,7 @@ namespace Game
 			foreach (var player in m_subsystemPlayers.ComponentPlayers)
 			{
 				var camera = player.GameWidget.ActiveCamera;
-				for (int i = 0; i < 8; i++)
+				for (int i = 0; i < 5; i++) // Reducido de 8 a 5
 				{
 					var point = m_subsystemCreatureSpawn.GetRandomSpawnPoint(camera, SpawnLocationType.Surface);
 					if (point.HasValue)
@@ -647,14 +732,13 @@ namespace Game
 				}
 
 				Vector3 playerPos = player.ComponentBody.Position;
-				for (int i = 0; i < 5; i++)
+				for (int i = 0; i < 3; i++) // Reducido de 5 a 3
 				{
 					float angle = m_random.Float(0, 2 * MathUtils.PI);
 					float distance = m_random.Float(20, 40);
 					int x = (int)(playerPos.X + MathF.Cos(angle) * distance);
 					int z = (int)(playerPos.Z + MathF.Sin(angle) * distance);
 					int y = m_random.Int(70, 110);
-
 					return new Vector3(x + 0.5f, y, z + 0.5f);
 				}
 			}
