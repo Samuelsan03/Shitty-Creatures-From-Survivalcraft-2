@@ -426,6 +426,28 @@ namespace Game
 			}
 		}
 
+		private bool IsTargetInViewCone()
+		{
+			if (m_target == null) return false;
+
+			Vector3 forward = m_componentCreature.ComponentBody.Matrix.Forward;
+			Vector3 toTarget = m_target.ComponentBody.Position - m_componentCreature.ComponentBody.Position;
+
+			forward.Y = 0f;
+			toTarget.Y = 0f;
+
+			float dot = forward.X * toTarget.X + forward.Z * toTarget.Z;
+			float lenForward = MathF.Sqrt(forward.X * forward.X + forward.Z * forward.Z);
+			float lenToTarget = MathF.Sqrt(toTarget.X * toTarget.X + toTarget.Z * toTarget.Z);
+
+			if (lenToTarget < 0.001f) return true;
+
+			float cosAngle = dot / (lenForward * lenToTarget);
+			float halfAngleRad = 45f * 3.14159274f / 180f;
+			float cosHalfAngle = MathF.Cos(halfAngleRad);
+
+			return cosAngle >= cosHalfAngle;
+		}
 		private void ManageWeaponSwitching(bool inMeleeRange)
 		{
 			if (m_componentMiner?.Inventory == null) return;
@@ -813,6 +835,12 @@ namespace Game
 				return;
 			}
 
+			if (!IsTargetInViewCone())
+			{
+				CancelThrowableAim();
+				return;
+			}
+
 			if (m_componentPathfinding.IsStuck)
 			{
 				CancelThrowableAim();
@@ -850,10 +878,8 @@ namespace Game
 				return;
 			}
 
-			// ✅ IMPORTANTE: No cancelar por cooldown, solo esperar
 			if (m_subsystemTime.GameTime < m_nextThrowableAttackTime)
 			{
-				// No cancelar, solo salir y mantener el estado actual si está apuntando
 				return;
 			}
 
@@ -867,16 +893,25 @@ namespace Game
 				StartThrowableAim();
 				Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
 				Vector3 targetCenter = m_target.ComponentCreatureModel.EyePosition;
-				Vector3 direction = Vector3.Normalize(targetCenter - eyePos);
+				Vector3 direction = targetCenter - eyePos;
+				float len = MathF.Sqrt(direction.X * direction.X + direction.Y * direction.Y + direction.Z * direction.Z);
+				direction = new Vector3(direction.X / len, direction.Y / len, direction.Z / len);
 				Ray3 ray = new Ray3(eyePos, direction);
 				m_componentMiner.Aim(ray, AimState.InProgress);
 			}
 			else
 			{
-				// Mantener el apuntado continuamente
+				if (!IsTargetInViewCone())
+				{
+					CancelThrowableAim();
+					return;
+				}
+
 				Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
 				Vector3 targetCenter = m_target.ComponentCreatureModel.EyePosition;
-				Vector3 direction = Vector3.Normalize(targetCenter - eyePos);
+				Vector3 direction = targetCenter - eyePos;
+				float len = MathF.Sqrt(direction.X * direction.X + direction.Y * direction.Y + direction.Z * direction.Z);
+				direction = new Vector3(direction.X / len, direction.Y / len, direction.Z / len);
 				Ray3 ray = new Ray3(eyePos, direction);
 				m_componentMiner.Aim(ray, AimState.InProgress);
 
@@ -885,10 +920,8 @@ namespace Game
 				{
 					CompleteThrowableAim();
 				}
-				// ✅ No cancelar si no hay item, solo intentar obtener otro
 				else if (!HasThrowableItem(out _, out _))
 				{
-					// Buscar otro objeto lanzable en otros slots
 					if (HasThrowableItem(out int newSlot, out int newValue))
 					{
 						m_throwableSlotIndex = newSlot;
@@ -1560,6 +1593,12 @@ namespace Game
 				return;
 			}
 
+			if (!IsTargetInViewCone())
+			{
+				CancelRangedAim();
+				return;
+			}
+
 			if (m_componentPathfinding.IsStuck)
 			{
 				CancelRangedAim();
@@ -1642,15 +1681,25 @@ namespace Game
 					StartMusketAim();
 					Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
 					Vector3 targetCenter = m_target.ComponentCreatureModel.EyePosition;
-					Vector3 direction = Vector3.Normalize(targetCenter - eyePos);
+					Vector3 direction = targetCenter - eyePos;
+					float len = MathF.Sqrt(direction.X * direction.X + direction.Y * direction.Y + direction.Z * direction.Z);
+					direction = new Vector3(direction.X / len, direction.Y / len, direction.Z / len);
 					Ray3 ray = new Ray3(eyePos, direction);
 					m_componentMiner.Aim(ray, AimState.InProgress);
 				}
 				else
 				{
+					if (!IsTargetInViewCone())
+					{
+						CancelRangedAim();
+						return;
+					}
+
 					Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
 					Vector3 targetCenter = m_target.ComponentCreatureModel.EyePosition;
-					Vector3 direction = Vector3.Normalize(targetCenter - eyePos);
+					Vector3 direction = targetCenter - eyePos;
+					float len = MathF.Sqrt(direction.X * direction.X + direction.Y * direction.Y + direction.Z * direction.Z);
+					direction = new Vector3(direction.X / len, direction.Y / len, direction.Z / len);
 					Ray3 ray = new Ray3(eyePos, direction);
 					m_componentMiner.Aim(ray, AimState.InProgress);
 
@@ -1722,15 +1771,25 @@ namespace Game
 					StartFlameThrowerAim();
 					Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
 					Vector3 targetCenter = m_target.ComponentCreatureModel.EyePosition;
-					Vector3 direction = Vector3.Normalize(targetCenter - eyePos);
+					Vector3 direction = targetCenter - eyePos;
+					float len = MathF.Sqrt(direction.X * direction.X + direction.Y * direction.Y + direction.Z * direction.Z);
+					direction = new Vector3(direction.X / len, direction.Y / len, direction.Z / len);
 					Ray3 ray = new Ray3(eyePos, direction);
 					m_componentMiner.Aim(ray, AimState.InProgress);
 				}
 				else
 				{
+					if (!IsTargetInViewCone())
+					{
+						CancelRangedAim();
+						return;
+					}
+
 					Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
 					Vector3 targetCenter = m_target.ComponentCreatureModel.EyePosition;
-					Vector3 direction = Vector3.Normalize(targetCenter - eyePos);
+					Vector3 direction = targetCenter - eyePos;
+					float len = MathF.Sqrt(direction.X * direction.X + direction.Y * direction.Y + direction.Z * direction.Z);
+					direction = new Vector3(direction.X / len, direction.Y / len, direction.Z / len);
 					Ray3 ray = new Ray3(eyePos, direction);
 					m_componentMiner.Aim(ray, AimState.InProgress);
 
@@ -1769,15 +1828,25 @@ namespace Game
 					StartBowAim();
 					Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
 					Vector3 targetCenter = m_target.ComponentCreatureModel.EyePosition;
-					Vector3 direction = Vector3.Normalize(targetCenter - eyePos);
+					Vector3 direction = targetCenter - eyePos;
+					float len = MathF.Sqrt(direction.X * direction.X + direction.Y * direction.Y + direction.Z * direction.Z);
+					direction = new Vector3(direction.X / len, direction.Y / len, direction.Z / len);
 					Ray3 ray = new Ray3(eyePos, direction);
 					m_componentMiner.Aim(ray, AimState.InProgress);
 				}
 				else
 				{
+					if (!IsTargetInViewCone())
+					{
+						CancelRangedAim();
+						return;
+					}
+
 					Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
 					Vector3 targetCenter = m_target.ComponentCreatureModel.EyePosition;
-					Vector3 direction = Vector3.Normalize(targetCenter - eyePos);
+					Vector3 direction = targetCenter - eyePos;
+					float len = MathF.Sqrt(direction.X * direction.X + direction.Y * direction.Y + direction.Z * direction.Z);
+					direction = new Vector3(direction.X / len, direction.Y / len, direction.Z / len);
 					Ray3 ray = new Ray3(eyePos, direction);
 					m_componentMiner.Aim(ray, AimState.InProgress);
 
@@ -1812,15 +1881,25 @@ namespace Game
 					StartCrossbowAim();
 					Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
 					Vector3 targetCenter = m_target.ComponentCreatureModel.EyePosition;
-					Vector3 direction = Vector3.Normalize(targetCenter - eyePos);
+					Vector3 direction = targetCenter - eyePos;
+					float len = MathF.Sqrt(direction.X * direction.X + direction.Y * direction.Y + direction.Z * direction.Z);
+					direction = new Vector3(direction.X / len, direction.Y / len, direction.Z / len);
 					Ray3 ray = new Ray3(eyePos, direction);
 					m_componentMiner.Aim(ray, AimState.InProgress);
 				}
 				else
 				{
+					if (!IsTargetInViewCone())
+					{
+						CancelRangedAim();
+						return;
+					}
+
 					Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
 					Vector3 targetCenter = m_target.ComponentCreatureModel.EyePosition;
-					Vector3 direction = Vector3.Normalize(targetCenter - eyePos);
+					Vector3 direction = targetCenter - eyePos;
+					float len = MathF.Sqrt(direction.X * direction.X + direction.Y * direction.Y + direction.Z * direction.Z);
+					direction = new Vector3(direction.X / len, direction.Y / len, direction.Z / len);
 					Ray3 ray = new Ray3(eyePos, direction);
 					m_componentMiner.Aim(ray, AimState.InProgress);
 
@@ -1845,15 +1924,25 @@ namespace Game
 					StartRepeatCrossbowAim();
 					Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
 					Vector3 targetCenter = m_target.ComponentCreatureModel.EyePosition;
-					Vector3 direction = Vector3.Normalize(targetCenter - eyePos);
+					Vector3 direction = targetCenter - eyePos;
+					float len = MathF.Sqrt(direction.X * direction.X + direction.Y * direction.Y + direction.Z * direction.Z);
+					direction = new Vector3(direction.X / len, direction.Y / len, direction.Z / len);
 					Ray3 ray = new Ray3(eyePos, direction);
 					m_componentMiner.Aim(ray, AimState.InProgress);
 				}
 				else
 				{
+					if (!IsTargetInViewCone())
+					{
+						CancelRangedAim();
+						return;
+					}
+
 					Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
 					Vector3 targetCenter = m_target.ComponentCreatureModel.EyePosition;
-					Vector3 direction = Vector3.Normalize(targetCenter - eyePos);
+					Vector3 direction = targetCenter - eyePos;
+					float len = MathF.Sqrt(direction.X * direction.X + direction.Y * direction.Y + direction.Z * direction.Z);
+					direction = new Vector3(direction.X / len, direction.Y / len, direction.Z / len);
 					Ray3 ray = new Ray3(eyePos, direction);
 					m_componentMiner.Aim(ray, AimState.InProgress);
 
