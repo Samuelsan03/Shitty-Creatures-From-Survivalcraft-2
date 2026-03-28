@@ -2,8 +2,8 @@
   <BevelledRectangleWidget Size="614, 422" BevelSize="3" />
   
   <!-- Títulos -->
-  <LabelWidget CanvasWidget.Position="12, 14" Name="PirateTraderTitle" Text="Pirate Trader" Color="255,255,255,192"/>
-  <LabelWidget CanvasWidget.Position="306, 14" Name="InventoryTitle" Text="Inventory" Color="255,255,255,192"/>
+  <LabelWidget CanvasWidget.Position="12, 14" Name="PirateTraderTitle" Text="[PirateTraderWidget:Title]" Color="255,255,255,192"/>
+  <LabelWidget CanvasWidget.Position="306, 14" Name="InventoryTitle" Text="[PirateTraderWidget:Inventory]" Color="255,255,255,192"/>
   
   <!-- Grids de slots -->
   <GridPanelWidget CanvasWidget.Position="12, 52" Name="TraderGrid" ColumnsCount="4" RowsCount="2"/>
@@ -11,7 +11,7 @@
   
   <!-- Slot de monedas -->
   <CanvasWidget CanvasWidget.Position="12, 200" Size="68, 68">
-    <LabelWidget Name="CoinSlotHint" Text="Coins" 
+    <LabelWidget Name="CoinSlotHint" Text="[Trader:CoinSlotHint]" 
                  Color="128,128,128,255" FontScale="0.7"
                  HorizontalAlignment="Center" VerticalAlignment="Center"
                  IsHitTestVisible="false" />
@@ -20,19 +20,13 @@
   
   <!-- Panel inferior izquierdo -->
   <CanvasWidget CanvasWidget.Position="12, 255" Size="288, 140">
-
-    <!-- TEXTO (puedes moverlo libremente) -->
     <LabelWidget CanvasWidget.Position="10, 10"
                  Name="InfoLabel" 
-                 Text="Select an item to buy." 
+                 Text="[Trader:SelectItemFirst]" 
                  Color="255,255,0"/>
-
-    <!-- BOTÓN (posición independiente) -->
     <BevelledButtonWidget CanvasWidget.Position="60, 70"
                           Name="BuyButton" 
-                          Text="BUY" 
+                          Text="[Trader:BuyButton]" 
                           Style="{Styles/ButtonStyle_160x60}" />
-
   </CanvasWidget>
-
 </CanvasWidget>
