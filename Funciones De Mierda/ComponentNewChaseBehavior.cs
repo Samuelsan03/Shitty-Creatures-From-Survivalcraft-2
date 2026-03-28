@@ -42,16 +42,16 @@ namespace Game
 		public Vector2 ThrowableAttackRange = new Vector2(5f, 15f);
 
 		// Tiempos de apuntado
-		public float MusketAimTime = 1.45f;
-		public float MusketCooldown = 0.3f;
-		public float BowAimTime = 1.45f;
-		public float BowCooldown = 0.3f;
-		public float CrossbowAimTime = 1.45f;
-		public float CrossbowCooldown = 0.3f;
-		public float RepeatCrossbowAimTime = 1.45f;
-		public float RepeatCrossbowCooldown = 0.3f;
-		public float FlameThrowerAimTime = 1.55f;
-		public float FlameThrowerCooldown = 1.0f;
+		public float MusketAimTime = 1.5f;
+		public float MusketCooldown = 0.35f;
+		public float BowAimTime = 1.5f;
+		public float BowCooldown = 0.1f;
+		public float CrossbowAimTime = 1.5f;
+		public float CrossbowCooldown = 0.1f;
+		public float RepeatCrossbowAimTime = 1.5f;
+		public float RepeatCrossbowCooldown = 0.1f;
+		public float FlameThrowerAimTime = 1.5f;
+		public float FlameThrowerCooldown = 0.35f;
 
 		// NUEVO PARÁMETRO: destruye bloques cuando está atascado
 		public bool DestroyBlocksWhenStuck = false;
@@ -1098,6 +1098,7 @@ namespace Game
 			FlameThrowerBlock.LoadState loadState = FlameThrowerBlock.GetLoadState(data);
 			FlameBulletBlock.FlameBulletType? bulletType = FlameThrowerBlock.GetBulletType(data);
 			int loadCount = FlameThrowerBlock.GetLoadCount(flameThrowerValue);
+
 			return loadState == FlameThrowerBlock.LoadState.Loaded && bulletType != null && loadCount > 0;
 		}
 
@@ -1183,7 +1184,9 @@ namespace Game
 			if (!HasFlameThrower(out int slotIndex, out int flameThrowerValue))
 				return;
 
+			// Asegurar que el arma esté cargada (esto ahora variará la munición si es necesario)
 			EnsureFlameThrowerLoaded();
+
 			if (!IsFlameThrowerLoaded())
 				return;
 
@@ -1405,23 +1408,46 @@ namespace Game
 
 			int data = Terrain.ExtractData(flameThrowerValue);
 			FlameThrowerBlock.LoadState loadState = FlameThrowerBlock.GetLoadState(data);
-			FlameBulletBlock.FlameBulletType? bulletType = FlameThrowerBlock.GetBulletType(data);
-			int loadCount = FlameThrowerBlock.GetLoadCount(flameThrowerValue);
+			FlameBulletBlock.FlameBulletType? currentBulletType = FlameThrowerBlock.GetBulletType(data);
+			int currentLoadCount = FlameThrowerBlock.GetLoadCount(flameThrowerValue);
 
-			if (loadState == FlameThrowerBlock.LoadState.Loaded && bulletType != null && loadCount > 0)
+			// Si ya está cargado con munición, no hacer nada
+			if (loadState == FlameThrowerBlock.LoadState.Loaded && currentBulletType != null && currentLoadCount > 0)
 				return;
 
-			FlameBulletBlock.FlameBulletType selectedBullet = m_random.Bool(0.5f)
-				? FlameBulletBlock.FlameBulletType.Flame
-				: FlameBulletBlock.FlameBulletType.Poison;
+			// Obtener el tipo de bala actual (si existe)
+			FlameBulletBlock.FlameBulletType newBulletType;
 
+			if (currentBulletType.HasValue && currentLoadCount == 0)
+			{
+				// Si se acabó la munición, cambiar al otro tipo de bala
+				newBulletType = (currentBulletType.Value == FlameBulletBlock.FlameBulletType.Flame)
+					? FlameBulletBlock.FlameBulletType.Poison
+					: FlameBulletBlock.FlameBulletType.Flame;
+			}
+			else if (currentBulletType.HasValue)
+			{
+				// Si todavía tiene munición pero no está cargado (caso raro), mantener el mismo tipo
+				newBulletType = currentBulletType.Value;
+			}
+			else
+			{
+				// Si es la primera vez, elegir aleatoriamente
+				newBulletType = m_random.Bool(0.5f)
+					? FlameBulletBlock.FlameBulletType.Flame
+					: FlameBulletBlock.FlameBulletType.Poison;
+			}
+
+			// Construir el nuevo valor del lanzallamas
 			int newData = data;
 			newData = FlameThrowerBlock.SetLoadState(newData, FlameThrowerBlock.LoadState.Loaded);
-			newData = FlameThrowerBlock.SetBulletType(newData, new FlameBulletBlock.FlameBulletType?(selectedBullet));
+			newData = FlameThrowerBlock.SetBulletType(newData, newBulletType);
 			newData = FlameThrowerBlock.SetSwitchState(newData, true);
-			int newValue = Terrain.MakeBlockValue(FlameThrowerBlock.Index, 1, newData);
-			newValue = FlameThrowerBlock.SetLoadCount(newValue, 15);
 
+			int newValue = Terrain.MakeBlockValue(FlameThrowerBlock.Index, 1, newData);
+			newValue = FlameThrowerBlock.SetLoadCount(newValue, 15); // Recargar 15 unidades del nuevo tipo
+
+			// Reemplazar el arma en el inventario
 			m_componentMiner.Inventory.RemoveSlotItems(slotIndex, 1);
 			m_componentMiner.Inventory.AddSlotItems(slotIndex, newValue, 1);
 		}
@@ -1810,7 +1836,13 @@ namespace Game
 
 					if (!IsFlameThrowerLoaded())
 					{
+						// Intentar recargar (esto cambiará automáticamente al otro tipo si es necesario)
 						EnsureFlameThrowerLoaded();
+						if (!IsFlameThrowerLoaded())
+						{
+							// Si después de intentar recargar sigue sin cargar, cancelar
+							CancelRangedAim();
+						}
 						return;
 					}
 
@@ -1839,18 +1871,13 @@ namespace Game
 					Ray3 ray = new Ray3(eyePos, direction);
 					m_componentMiner.Aim(ray, AimState.InProgress);
 
+					// Verificar si la munición se acabó durante el disparo
 					if (!IsFlameThrowerLoaded())
 					{
+						// La munición se acabó, cancelar el apuntado y recargar con el otro tipo
+						CancelRangedAim();
 						EnsureFlameThrowerLoaded();
-						if (!IsFlameThrowerLoaded())
-						{
-							m_nextRangedAttackTime = m_subsystemTime.GameTime + FlameThrowerCooldown;
-							CancelRangedAim();
-						}
-						else
-						{
-							m_rangedAimStartTime = m_subsystemTime.GameTime;
-						}
+						return;
 					}
 				}
 			}
@@ -2533,7 +2560,8 @@ namespace Game
 					}
 					else
 					{
-						if (!m_isAimingThrowable)
+						// También detenemos el movimiento si estamos apuntando con armas a distancia
+						if (!m_isAimingThrowable && !m_isAimingRanged)
 						{
 							int maxPathfindingPositions = 0;
 							if (m_isPersistent)
@@ -2547,7 +2575,7 @@ namespace Game
 							float dist = Vector3.Distance(selfCenter, targetCenter);
 							float followFactor = (dist < 4f) ? 0.2f : 0f;
 							m_componentPathfinding.SetDestination(targetCenter + followFactor * dist * m_target.ComponentBody.Velocity,
-													1f, 1.5f, maxPathfindingPositions, true, false, true, m_target.ComponentBody);
+																1f, 1.5f, maxPathfindingPositions, true, false, true, m_target.ComponentBody);
 						}
 
 						if (PlayAngrySoundWhenChasing && m_random.Float(0f, 1f) < 0.33f * m_dt)
