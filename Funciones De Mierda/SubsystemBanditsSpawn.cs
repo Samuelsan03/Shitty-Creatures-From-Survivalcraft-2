@@ -698,6 +698,56 @@ namespace Game
 					this.SpawnCreatures(creatureType, "Bandit7", point, 1).Count)
 			});
 
+			// Spawn para FirearmsDealer con 10% de probabilidad - DESDE DÍA 0, cualquier hora, estación, ubicación
+			this.m_creatureTypes.Add(new SubsystemBanditsSpawn.CreatureType("FirearmsDealer", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemBanditsSpawn.CreatureType creatureType, Point3 point)
+				{
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 0.0005f; // Probabilidad 10% (ajustada en relación a otros spawns)
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemBanditsSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "FirearmsDealer", point, 1).Count)
+			});
+
+			// Spawn para FirearmsDealer Constant - DESDE DÍA 0, cualquier hora, estación, ubicación
+			this.m_creatureTypes.Add(new SubsystemBanditsSpawn.CreatureType("FirearmsDealer Constant", SpawnLocationType.Surface, false, true)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemBanditsSpawn.CreatureType creatureType, Point3 point)
+				{
+					int cellValue = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y, point.Z);
+					int blockAbove = Terrain.ExtractContents(cellValue);
+					int cellValueHead = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y + 1, point.Z);
+					int blockHead = Terrain.ExtractContents(cellValueHead);
+					if (blockAbove == 18 || blockAbove == 92 || blockHead == 18 || blockHead == 92)
+					{
+						return 0f;
+					}
+					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
+					int groundBlock = Terrain.ExtractContents(cellValueGround);
+					if (groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8)
+					{
+						return 0.0005f; // Probabilidad 10%
+					}
+					return 0f;
+				},
+				SpawnFunction = ((SubsystemBanditsSpawn.CreatureType creatureType, Point3 point) =>
+					this.SpawnCreatures(creatureType, "FirearmsDealer", point, 1).Count)
+			});
+
 			// Spawn para Bandit7 Constant - DESDE DÍA 0, cualquier hora
 			this.m_creatureTypes.Add(new SubsystemBanditsSpawn.CreatureType("Bandit7 Constant", SpawnLocationType.Surface, false, true)
 			{
