@@ -7,7 +7,7 @@ namespace Game
 {
 	public class PirateTradeWidget : CanvasWidget
 	{
-		private ComponentPirateTrader m_trader;
+		private ComponentTrader m_trader;
 		private ComponentPlayer m_player;
 		private SubsystemTerrain m_subsystemTerrain;
 		private SubsystemAudio m_subsystemAudio;
@@ -17,13 +17,10 @@ namespace Game
 		private GridPanelWidget m_inventoryGrid;
 		private BevelledButtonWidget m_buyButton;
 		private LabelWidget m_infoLabel;
-		private LabelWidget m_pirateTraderTitle;
-		private LabelWidget m_inventoryTitle;
 		private InventorySlotWidget m_coinSlot;
-		private LabelWidget m_coinSlotHint;
 		private int m_selectedSlot = -1;
 
-		public PirateTradeWidget(IInventory playerInventory, ComponentPirateTrader trader, ComponentPlayer player)
+		public PirateTradeWidget(IInventory playerInventory, ComponentTrader trader, ComponentPlayer player)
 		{
 			m_trader = trader;
 			m_player = player;
@@ -34,20 +31,19 @@ namespace Game
 			XElement node = ContentManager.Get<XElement>("Widgets/PirateTradeWidget");
 			LoadContents(this, node);
 
-			m_pirateTraderTitle = Children.Find<LabelWidget>("PirateTraderTitle", true);
-			m_inventoryTitle = Children.Find<LabelWidget>("InventoryTitle", true);
 			m_traderGrid = Children.Find<GridPanelWidget>("TraderGrid", true);
 			m_inventoryGrid = Children.Find<GridPanelWidget>("InventoryGrid", true);
 			m_buyButton = Children.Find<BevelledButtonWidget>("BuyButton", true);
 			m_infoLabel = Children.Find<LabelWidget>("InfoLabel", true);
 			m_coinSlot = Children.Find<InventorySlotWidget>("CoinSlot", true);
-			m_coinSlotHint = Children.Find<LabelWidget>("CoinSlotHint", true);
 
-			m_pirateTraderTitle.Text = LanguageControl.GetContentWidgets("PirateTraderWidget", "Title");
-			m_inventoryTitle.Text = LanguageControl.GetContentWidgets("PirateTraderWidget", "Inventory");
-			m_buyButton.Text = LanguageControl.GetContentWidgets("PirateTraderWidget", "BuyButton");
-			m_infoLabel.Text = LanguageControl.GetContentWidgets("PirateTraderWidget", "SelectItemFirst");
-			m_coinSlotHint.Text = LanguageControl.GetContentWidgets("PirateTraderWidget", "CoinSlotHint");
+			m_infoLabel.Size = new Vector2(200, 40);
+			m_infoLabel.FontScale = 0.7f;
+			m_infoLabel.HorizontalAlignment = WidgetAlignment.Center;
+			m_infoLabel.VerticalAlignment = WidgetAlignment.Far;
+
+			m_buyButton.HorizontalAlignment = WidgetAlignment.Far;
+			m_buyButton.Margin = new Vector2(0, 0);
 
 			m_coinSlot.AssignInventorySlot(trader, 8);
 			m_coinSlot.HideHighlightRectangle = true;
@@ -115,7 +111,7 @@ namespace Game
 				else
 				{
 					m_player.ComponentGui.DisplaySmallMessage(
-						LanguageControl.GetContentWidgets("PirateTraderWidget", "SelectItemFirst"),
+						LanguageControl.GetContentWidgets("Trader", "SelectItemFirst"),
 						Color.Red, true, false);
 					m_subsystemAudio.PlaySound("Audio/UI/warning", 1f, 0f, 0f, 0f);
 				}
@@ -128,22 +124,19 @@ namespace Game
 		{
 			if (m_selectedSlot < 0)
 			{
-				m_infoLabel.Text = LanguageControl.GetContentWidgets("PirateTraderWidget", "SelectItemFirst");
+				m_infoLabel.Text = LanguageControl.GetContentWidgets("Trader", "SelectItemFirst");
 				return;
 			}
 			int value = m_trader.GetSlotValue(m_selectedSlot);
 			if (value == 0)
 			{
-				m_infoLabel.Text = LanguageControl.GetContentWidgets("PirateTraderWidget", "SlotEmpty");
+				m_infoLabel.Text = LanguageControl.GetContentWidgets("Trader", "SlotEmpty");
 				return;
 			}
-			Block block = BlocksManager.Blocks[Terrain.ExtractContents(value)];
-			string name = block.GetDisplayName(m_subsystemTerrain, value);
 			int price = m_trader.GetPrice(m_selectedSlot);
-
 			m_infoLabel.Text = string.Format(
-				LanguageControl.GetContentWidgets("PirateTraderWidget", "InfoLabelFormat"),
-				name, price);
+				LanguageControl.GetContentWidgets("Trader", "InfoLabelFormat"),
+				price);
 		}
 	}
 }
