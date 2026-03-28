@@ -6,7 +6,7 @@ using TemplatesDatabase;
 
 namespace Game
 {
-	public class ComponentPirateTrader : ComponentInventoryBase, IUpdateable
+	public class ComponentTrader : ComponentInventoryBase, IUpdateable
 	{
 		private SubsystemTerrain m_subsystemTerrain;
 		private SubsystemAudio m_subsystemAudio;
@@ -115,7 +115,6 @@ namespace Game
 			{
 				m_tradeItems = new List<TradeItem>();
 				m_itemDataMap = new Dictionary<int, TradeItem>();
-				Log.Warning("PirateTrader: No TradeItems defined in XDB. Trader will have no items.");
 			}
 		}
 
@@ -372,8 +371,8 @@ namespace Game
 			if (value == 0 || count <= 0)
 			{
 				buyer.ComponentGui.DisplaySmallMessage(
-					LanguageControl.GetContentWidgets("PirateTraderWidget", "ItemNoLongerAvailable"),
-					Color.Red, true, false); // playSound = false (solo nuestro sonido)
+					LanguageControl.GetContentWidgets("Trader", "ItemNoLongerAvailable"),
+					Color.Red, true, false);
 				m_subsystemAudio.PlaySound("Audio/UI/warning", 1f, 0f, 0f, 0f);
 				return false;
 			}
@@ -382,7 +381,7 @@ namespace Game
 			if (pricePerItem <= 0)
 			{
 				buyer.ComponentGui.DisplaySmallMessage(
-					LanguageControl.GetContentWidgets("PirateTraderWidget", "ItemCannotBeBought"),
+					LanguageControl.GetContentWidgets("Trader", "ItemCannotBeBought"),
 					Color.Red, true, false);
 				m_subsystemAudio.PlaySound("Audio/UI/warning", 1f, 0f, 0f, 0f);
 				return false;
@@ -398,7 +397,7 @@ namespace Game
 				Block block = BlocksManager.Blocks[Terrain.ExtractContents(value)];
 				string itemName = block.GetDisplayName(m_subsystemTerrain, value);
 				string msg = string.Format(
-					LanguageControl.GetContentWidgets("PirateTraderWidget", "InsufficientCoins"),
+					LanguageControl.GetContentWidgets("Trader", "InsufficientCoins"),
 					totalPrice, itemName, count, pricePerItem);
 				buyer.ComponentGui.DisplaySmallMessage(msg, Color.Red, true, false);
 				m_subsystemAudio.PlaySound("Audio/UI/warning", 1f, 0f, 0f, 0f);
@@ -413,7 +412,7 @@ namespace Game
 				if (slot < 0)
 				{
 					buyer.ComponentGui.DisplaySmallMessage(
-						LanguageControl.GetContentWidgets("PirateTraderWidget", "NotEnoughSpace"),
+						LanguageControl.GetContentWidgets("Trader", "NotEnoughSpace"),
 						Color.Red, true, false);
 					m_subsystemAudio.PlaySound("Audio/UI/warning", 1f, 0f, 0f, 0f);
 					return false;
@@ -437,8 +436,8 @@ namespace Game
 			EndModification();
 
 			buyer.ComponentGui.DisplaySmallMessage(
-				LanguageControl.GetContentWidgets("PirateTraderWidget", "PurchaseSuccessful"),
-				Color.Green, false, false); // sin sonido (usamos el nuestro)
+				LanguageControl.GetContentWidgets("Trader", "PurchaseSuccessful"),
+				Color.Green, false, false);
 			m_subsystemAudio.PlaySound("Audio/UI/money", 1f, 0f, 0f, 0f);
 			return true;
 		}
