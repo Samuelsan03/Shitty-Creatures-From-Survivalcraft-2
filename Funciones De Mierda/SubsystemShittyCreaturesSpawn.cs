@@ -842,12 +842,13 @@ namespace Game
 				SpawnFunction = (ct, point) => SpawnCreatures(ct, "Aimep3", point, 1).Count
 			});
 
-			// ----- PirataNormal (day, day >= 4, beach proximity, 50% probability) -----
+			// ----- PirataNormal (day, day >= 4, beach proximity, summer or spring only, 50% probability) -----
 			m_creatureTypes.Add(new CreatureType("PirataNormal", SpawnLocationType.Surface, true, false)
 			{
 				SpawnSuitabilityFunction = (ct, point) =>
 				{
 					if (GetCurrentDay() < 4) return 0f;
+					if (m_subsystemSeasons.Season != Season.Summer && m_subsystemSeasons.Season != Season.Spring) return 0f;
 					if (m_subsystemSky.SkyLightIntensity < 0.5f) return 0f;
 					int below = m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
 					int contents = Terrain.ExtractContents(below);
@@ -872,12 +873,13 @@ namespace Game
 				SpawnFunction = (ct, point) => SpawnCreatures(ct, "PirataNormal", point, 1).Count
 			});
 
-			// ----- PirataNormal Constant (day, day >= 4, beach proximity, constant spawn, 50% probability) -----
+			// ----- PirataNormal Constant (day, day >= 4, beach proximity, summer or spring only, constant spawn, 50% probability) -----
 			m_creatureTypes.Add(new CreatureType("Constant PirataNormal", SpawnLocationType.Surface, false, true)
 			{
 				SpawnSuitabilityFunction = (ct, point) =>
 				{
 					if (GetCurrentDay() < 4) return 0f;
+					if (m_subsystemSeasons.Season != Season.Summer && m_subsystemSeasons.Season != Season.Spring) return 0f;
 					if (m_subsystemSky.SkyLightIntensity < 0.5f) return 0f;
 					int below = m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
 					int contents = Terrain.ExtractContents(below);
@@ -902,12 +904,13 @@ namespace Game
 				SpawnFunction = (ct, point) => SpawnCreatures(ct, "PirataNormal", point, 1).Count
 			});
 
-			// ----- PirataElite (day, day >= 11, beach proximity, 50% probability) -----
+			// ----- PirataElite (day, day >= 11, beach proximity, summer or spring only, 50% probability) -----
 			m_creatureTypes.Add(new CreatureType("PirataElite", SpawnLocationType.Surface, true, false)
 			{
 				SpawnSuitabilityFunction = (ct, point) =>
 				{
 					if (GetCurrentDay() < 11) return 0f;
+					if (m_subsystemSeasons.Season != Season.Summer && m_subsystemSeasons.Season != Season.Spring) return 0f;
 					if (m_subsystemSky.SkyLightIntensity < 0.5f) return 0f;
 					int below = m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
 					int contents = Terrain.ExtractContents(below);
@@ -932,12 +935,13 @@ namespace Game
 				SpawnFunction = (ct, point) => SpawnCreatures(ct, "PirataElite", point, 1).Count
 			});
 
-			// ----- PirataElite Constant (day, day >= 11, beach proximity, constant spawn, 50% probability) -----
+			// ----- PirataElite Constant (day, day >= 11, beach proximity, summer or spring only, constant spawn, 50% probability) -----
 			m_creatureTypes.Add(new CreatureType("Constant PirataElite", SpawnLocationType.Surface, false, true)
 			{
 				SpawnSuitabilityFunction = (ct, point) =>
 				{
 					if (GetCurrentDay() < 11) return 0f;
+					if (m_subsystemSeasons.Season != Season.Summer && m_subsystemSeasons.Season != Season.Spring) return 0f;
 					if (m_subsystemSky.SkyLightIntensity < 0.5f) return 0f;
 					int below = m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
 					int contents = Terrain.ExtractContents(below);
@@ -962,12 +966,13 @@ namespace Game
 				SpawnFunction = (ct, point) => SpawnCreatures(ct, "PirataElite", point, 1).Count
 			});
 
-			// ----- PirataHostilComerciante (day, day >= 15, beach proximity, 50% probability) -----
+			// ----- PirataHostilComerciante (day, day >= 15, beach proximity, summer or spring only, 50% probability) -----
 			m_creatureTypes.Add(new CreatureType("PirataHostilComerciante", SpawnLocationType.Surface, true, false)
 			{
 				SpawnSuitabilityFunction = (ct, point) =>
 				{
 					if (GetCurrentDay() < 15) return 0f;
+					if (m_subsystemSeasons.Season != Season.Summer && m_subsystemSeasons.Season != Season.Spring) return 0f;
 					if (m_subsystemSky.SkyLightIntensity < 0.5f) return 0f;
 					int below = m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
 					int contents = Terrain.ExtractContents(below);
@@ -992,12 +997,13 @@ namespace Game
 				SpawnFunction = (ct, point) => SpawnCreatures(ct, "PirataHostilComerciante", point, 1).Count
 			});
 
-			// ----- PirataHostilComerciante Constant (day, day >= 15, beach proximity, constant spawn, 50% probability) -----
+			// ----- PirataHostilComerciante Constant (day, day >= 15, beach proximity, summer or spring only, constant spawn, 50% probability) -----
 			m_creatureTypes.Add(new CreatureType("Constant PirataHostilComerciante", SpawnLocationType.Surface, false, true)
 			{
 				SpawnSuitabilityFunction = (ct, point) =>
 				{
 					if (GetCurrentDay() < 15) return 0f;
+					if (m_subsystemSeasons.Season != Season.Summer && m_subsystemSeasons.Season != Season.Spring) return 0f;
 					if (m_subsystemSky.SkyLightIntensity < 0.5f) return 0f;
 					int below = m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
 					int contents = Terrain.ExtractContents(below);
@@ -1022,12 +1028,13 @@ namespace Game
 				SpawnFunction = (ct, point) => SpawnCreatures(ct, "PirataHostilComerciante", point, 1).Count
 			});
 
-			// ----- CapitanPirata (day, day >= 25, beach proximity, 50% probability) -----
+			// ----- CapitanPirata (day, day >= 25, beach proximity, summer or spring only, 50% probability) -----
 			m_creatureTypes.Add(new CreatureType("CapitanPirata", SpawnLocationType.Surface, true, false)
 			{
 				SpawnSuitabilityFunction = (ct, point) =>
 				{
 					if (GetCurrentDay() < 25) return 0f;
+					if (m_subsystemSeasons.Season != Season.Summer && m_subsystemSeasons.Season != Season.Spring) return 0f;
 					if (m_subsystemSky.SkyLightIntensity < 0.5f) return 0f;
 					int below = m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
 					int contents = Terrain.ExtractContents(below);
@@ -1052,12 +1059,13 @@ namespace Game
 				SpawnFunction = (ct, point) => SpawnCreatures(ct, "CapitanPirata", point, 1).Count
 			});
 
-			// ----- CapitanPirata Constant (day, day >= 25, beach proximity, constant spawn, 50% probability) -----
+			// ----- CapitanPirata Constant (day, day >= 25, beach proximity, summer or spring only, constant spawn, 50% probability) -----
 			m_creatureTypes.Add(new CreatureType("Constant CapitanPirata", SpawnLocationType.Surface, false, true)
 			{
 				SpawnSuitabilityFunction = (ct, point) =>
 				{
 					if (GetCurrentDay() < 25) return 0f;
+					if (m_subsystemSeasons.Season != Season.Summer && m_subsystemSeasons.Season != Season.Spring) return 0f;
 					if (m_subsystemSky.SkyLightIntensity < 0.5f) return 0f;
 					int below = m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
 					int contents = Terrain.ExtractContents(below);
