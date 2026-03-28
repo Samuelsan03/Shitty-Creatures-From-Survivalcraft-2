@@ -31,9 +31,14 @@ namespace Game
 				var target = result.Value.ComponentBody?.Entity;
 				if (target != null && target != player.Entity)
 				{
-					var trader = target.FindComponent<ComponentPirateTrader>();
+					var trader = target.FindComponent<ComponentTrader>();
 					if (trader != null)
 					{
+						// Verificar que la entidad sea el comerciante pirata por su nombre en la base de datos
+						string entityName = target.ValuesDictionary?.DatabaseObject?.Name;
+						if (entityName != "PirataHostilComerciante")
+							return;
+
 						var health = target.FindComponent<ComponentHealth>();
 						if (health == null || health.Health <= 0f)
 							return;
