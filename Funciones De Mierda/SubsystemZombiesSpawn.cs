@@ -292,17 +292,19 @@ namespace Game
 			int groupCount = m_random.Int(1, GroupSpawnCount);
 			for (int i = 0; i < groupCount && spawned < MaxSpawnsPerFrame; i++)
 			{
-				// Seleccionar otra criatura al azar (puede ser distinta)
 				var extraEntry = GetRandomWeightedEntry(m_currentWaveEntries);
 				if (extraEntry == null || BossTemplates.Contains(extraEntry.TemplateName))
 					continue;
 
-				// Buscar un punto cercano al original
-				Vector3 extraPos = GetNearbySpawnPoint(spawnPos, 5f, 15f, isFlying);
+				// ✅ Determinar si esta criatura es voladora
+				bool extraIsFlying = FlyingTemplates.Contains(extraEntry.TemplateName);
+
+				// Buscar punto cercano con su propio tipo de vuelo
+				Vector3 extraPos = GetNearbySpawnPoint(spawnPos, 5f, 15f, extraIsFlying);
 				if (extraPos == Vector3.Zero)
 					continue;
 
-				// Verificar área de nuevo (el área puede solaparse)
+				// Verificar límite de área
 				Vector2 extraAreaMin = new Vector2(extraPos.X - 16, extraPos.Z - 16);
 				Vector2 extraAreaMax = new Vector2(extraPos.X + 16, extraPos.Z + 16);
 				int extraNearby = m_subsystemCreatureSpawn.CountCreaturesInArea(extraAreaMin, extraAreaMax, false);
