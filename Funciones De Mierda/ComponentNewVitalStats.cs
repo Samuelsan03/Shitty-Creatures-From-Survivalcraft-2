@@ -170,10 +170,43 @@ namespace Game
 				return false;
 			}
 
+			// --- Comprobaciones para antídoto y antigripal ---
+			if (isAntidote)
+			{
+				// Verificar si realmente hay algo que curar
+				bool hasPoison = false;
+				bool hasSickness = false;
+				var poison = m_componentPlayer?.Entity.FindComponent<ComponentPoisonInfected>();
+				if (poison != null && poison.IsInfected) hasPoison = true;
+				var sickness = m_componentPlayer?.ComponentSickness;
+				if (sickness != null && sickness.IsSick) hasSickness = true;
+
+				if (!hasPoison && !hasSickness)
+				{
+					// No hay enfermedad, no se puede beber el antídoto
+					return false;
+				}
+			}
+
+			if (isAntiflu)
+			{
+				bool hasFlu = false;
+				var flu = m_componentPlayer?.ComponentFlu;
+				if (flu != null && flu.HasFlu) hasFlu = true;
+
+				if (!hasFlu)
+				{
+					// No hay gripe, no se puede beber el té
+					return false;
+				}
+			}
+			// ------------------------------------------------
+
 			if (!ShittyCreaturesSettingsManager.ThirstEnabled)
 			{
 				m_subsystemAudio?.PlaySound("Audio/UI/drinking", 1f, 0f, 0f, 0f);
 
+				// Curar solo si es necesario (ya sabemos que hay enfermedad)
 				if (isAntidote)
 				{
 					var poison = m_componentPlayer?.Entity.FindComponent<ComponentPoisonInfected>();
@@ -218,6 +251,7 @@ namespace Game
 				return true;
 			}
 
+			// Modo con sed activada
 			if (thirstRestore > 0f && Thirst >= 0.99f)
 			{
 				m_componentGui?.DisplaySmallMessage(
@@ -263,6 +297,7 @@ namespace Game
 
 			if (isAntidote)
 			{
+				// Ya sabemos que hay enfermedad por la comprobación inicial
 				bool cured = false;
 				var poison = m_componentPlayer?.Entity.FindComponent<ComponentPoisonInfected>();
 				if (poison != null && poison.IsInfected)
@@ -279,17 +314,12 @@ namespace Game
 					sickness.m_greenoutFactor = 0f;
 					cured = true;
 				}
-				if (!cured)
-				{
-					m_componentGui?.DisplaySmallMessage(
-						LanguageControl.Get("ComponentNewVitalStats", "AlreadyNotThirsty"),
-						Color.White, true, false);
-				}
+				// No es necesario mostrar mensaje extra si no se curó porque ya tenemos la enfermedad
 			}
 
 			if (isAntiflu)
 			{
-				bool cured = false;
+				// Ya sabemos que hay gripe
 				var flu = m_componentPlayer?.ComponentFlu;
 				if (flu != null && flu.HasFlu)
 				{
@@ -300,13 +330,6 @@ namespace Game
 					flu.m_blackoutDuration = 0f;
 					flu.m_blackoutFactor = 0f;
 					m_componentPlayer.ComponentScreenOverlays.BlackoutFactor = 0f;
-					cured = true;
-				}
-				if (!cured)
-				{
-					m_componentGui?.DisplaySmallMessage(
-						LanguageControl.Get("ComponentNewVitalStats", "AlreadyNotThirsty"),
-						Color.White, true, false);
 				}
 			}
 
