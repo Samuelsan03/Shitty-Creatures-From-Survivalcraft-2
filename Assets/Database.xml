@@ -339,9 +339,6 @@
             </MemberComponentTemplate>
           </EntityTemplate>
           <EntityTemplate Name="Player" Guid="4be6c1c5-d65d-4537-8a8b-a391969e6dc2">
-          <MemberComponentTemplate Name="Thirst" Guid="a266705f-a31f-418d-82bb-25bab4664a74" InheritanceParent="69b81fb0-a822-43cb-bbaa-e0c4eefd4bbe">
-    <Parameter Name="Water" Guid="447f3b14-70e1-454b-b6a1-28d35ed14ca2" Value="1" Type="float"/>
-</MemberComponentTemplate>
           <MemberComponentTemplate Name="DeathSpawner" Guid="b018af52-20d3-40aa-a617-342814e09ddd" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="a229bf56-fd68-4f7e-9325-fd231f3125ed"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1;InfectedNormal2" Type="string" Guid="6aa0ff67-4f1e-44d4-9dfe-cda76afc7147"/>
@@ -384,8 +381,9 @@
             <MemberComponentTemplate Name="Miner" Guid="4c2a4169-aecb-48e3-a9ed-a88156f5e304" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62"/>
             <MemberComponentTemplate Name="OnFire" Guid="5aef1c90-bb24-4a6a-bebd-04919ca619d8" InheritanceParent="93590d78-63b9-4cd6-bc41-e66864cbb050"/>
             <MemberComponentTemplate Name="ScreenOverlays" Guid="615c6eab-80ad-4fe7-83a1-e29a92a7be90" InheritanceParent="a37b6ac4-185a-4df8-99d0-4daee61df71d"/>
-            <MemberComponentTemplate Name="VitalStats" Guid="6fbe5b56-9107-4c10-bdb8-6b77ccd6e2fd" InheritanceParent="351c0abe-45ca-48fa-82e9-5f293c17e1f4">
+            <MemberComponentTemplate Name="VitalStats" Guid="6fbe5b56-9107-4c10-bdb8-6b77ccd6e2fd" InheritanceParent="4f2ad7cc-d19a-4d64-99eb-5c6ca2b7a7b3">
               <Parameter Name="Food" Guid="97f0f58e-44b1-4f49-a284-54250cab5049" Value="0.55" Type="float"/>
+              <Parameter Name="Thirst" Guid="e578f085-b224-4d5f-bb56-fa878158b78c" Value="1" Type="float"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Health" Guid="7d44674f-1ec9-4331-abf6-8e06ea5c6ff0" InheritanceParent="d7a50718-e128-4d0e-bac1-16f789d50ddd">
               <Parameter Name="CorpseDuration" Guid="6f8c084e-f4e0-4b5d-aef0-e5ce6ef69acd" Value="0" Type="float"/>
