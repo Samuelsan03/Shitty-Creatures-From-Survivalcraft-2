@@ -1,16 +1,23 @@
 {
+  "RemoteControlAchievement": {
+  "CraftingLocked": "¡Debes sobrevivir a todas las oleadas primero!",
+  "Unlocked": "¡Control remoto desbloqueado!",
+  "UnlockedInfo": "Ahora puedes fabricar el Control Remoto para gestionar las Noches Verdes."
+},
   "ComponentNewSleep": {
     "CantSleepGreenNight": "No puedes dormir durante la Noche Verde"
   },
-  "ComponentThirst": {
+  "ComponentNewVitalStats": {
     "AlreadyNotThirsty": "Ya estás completamente hidratado",
     "DrankBoiledWater": "Te has hidratado",
     "Dehydrating": "¡Te estás deshidratando!",
     "DrankDrinkableWater": "Te has hidratado parcialmente",
     "DrankRotten": "La bebida estaba podrida. Te revuelve el estómago.",
     "AteFruit": "Comiste una fruta y te sientes un poco más hidratado",
-    "HalfThirsty": "Estás empezando a sentir sed"
-  },
+    "HalfThirsty": "Estás empezando a sentir sed",
+    "DrankAntidote": "¡Las náuseas y la enfermedad han sido curadas!",
+    "DrankAntiflu": "¡La gripe ha sido curada!"
+},
   "ShittyCreaturesAbout": {
     "AboutButton": "Acerca del Mod",
     "Title": "Acerca de Shitty Creatures MOD:",
@@ -84,11 +91,9 @@
     "ThirstDescription": "Activar/desactivar la simulación de sed"
   },
     "AntidoteBucket": {
-      "NPCCured": "¡El NPC ha sido curado de veneno y enfermedades!",
-      "PoisonAndSicknessCured": "¡Las náuseas y la enfermedad han sido curadas!"
+      "NPCCured": "¡El NPC ha sido curado de veneno y enfermedades!"
     },
     "AntifluBucket": {
-      "FluCured": "¡La gripa ha sido curada!",
       "FluNPCCured": "¡La gripa del NPC ha sido curada!"
     },
   "GreenNightDialog": {
@@ -159,6 +164,7 @@
    },
   "Database": {
     "DisplayName": {
+      "FirearmsDealer": "Comerciante de Armas",
       "Aimep3": "Aimep3",
       "Bandit15": "Bandido 15",
       "Bandit14": "Bandido 14",
@@ -309,6 +315,7 @@
       "Richard": "Richard"
     },
     "Description": {
+      "FirearmsDealer": "Un vendedor neutral de armas de fuego. Vende armas y munición a cambio de pago. Si estás cansado o prefieres ahorrar tiempo buscando materiales caros de conseguir, esta es la opción.",
       "Aimep3": "Aimep3 es una creadora de contenido mexicana originaria de Ciudad Nezahualcóyotl, conocida en internet por sus videos en plataformas como YouTube, donde comparte recetas poco convencionales, momentos de su vida diaria y contenido espontáneo que con el tiempo se volvió viral. Su estilo directo, excéntrico y sin filtros la convirtió en una figura muy comentada dentro de la cultura de internet hispanohablante, generando tanto seguidores como críticas y siendo fuente frecuente de memes y discusiones en redes sociales. En este mod, Aimep3 se representa como una aliada invocable que aparece exclusivamente durante el día 3, sin importar la hora. Posee un comportamiento impredecible pero altamente efectivo en combate: ataca y persigue enemigos de forma constante, reaccionando de inmediato ante cualquier amenaza o contacto. Cuenta con la capacidad especial de invocar rayos al golpear a sus enemigos y puede destruir obstáculos si queda atrapada, lo que le permite mantenerse siempre activa en combate. Coopera con el jugador como parte de su grupo, pudiendo pedir ayuda a criaturas cercanas y coordinar ataques sin dañar a sus aliados. Además, tiene una resistencia excepcional frente a múltiples tipos de daño y una regeneración de salud muy elevada, lo que la convierte en una compañera difícil de derrotar. También puede recolectar herramientas y armas, adaptándose con facilidad a distintas situaciones durante la aventura.",
       "InfectedFreezer": "El Infectado Congelante es otro infectado especial raro. No es un jefe ni un mini-jefe, pero su apariencia parece provenir de tierras congeladas. Comparte similitudes con otros infectados normales, pero su poder especial es lanzar bolas de nieve congelantes. ¡TEN CUIDADO! Si te impacta, podrás sufrir congelamiento y, en el peor de los casos, contraer gripa. Otro infectado te atacará y, al darle en su punto débil, comenzará a causarte efectos de gripe. El último vomitará hielo, infectando también a las criaturas con la gripe. Sin embargo, el collar zombie te dará ventajas, protegiéndote del congelamiento. Solo aparece en las olas de otros infectados, siempre que sea invierno o en lugares congelados.",
       "HumanoidSkeleton": "El Esqueleto Humanoide es un infectado muy especial (aunque no es un infectado especial como podrías pensar). ¿A quién te recuerda cuando lo ves en la noche? Ah, claro, ¡te trae a la mente los esqueletos de Minecraft! ¿Y adivina qué? También está en la manada de los Infectados. Sin embargo, al igual que en Minecraft, puede disparar un arco o, dependiendo de la probabilidad, cambiará sus objetos. Aunque podrías relacionarlos solo con arcos, también pueden usar otras armas a distancia y de fuego. Es el único infectado que aparece en la noche normal, pero la Noche Verde lo hace aún más peligroso, ya que te cazará hasta la muerte. No obstante, puedes esclavizarlo usando el Collar Zombie para hacer del humano huesudo tu guardián.",
@@ -462,10 +469,10 @@
       "Description": "Una bola de nieve imbuida con energía helada. Al lanzarla, deja un rastro de escarcha y al impactar reduce rápidamente la temperatura corporal del objetivo (jugador: reduce a 6°C, luego 3°C, luego 1°C, luego 0.1°C), causa retroceso (aumenta con cada golpe) y después de cuatro golpes induce hipotermia y muerte. Las criaturas afectadas sufren retroceso y pueden resfriarse (gripe de 645s). Se obtiene únicamente derrotando a Infectados Congelantes que aparecen en biomas fríos o durante el invierno, o comprándolo al Pirata Hostil Comerciante por 20 Monedas Nucleares (stack de hasta 40)."
     },
     "RemoteControlBlock:0": {
-  "DisplayName": "Control Remoto",
-  "Description": "Un dispositivo de control a distancia. Úsalo para alternar el fenómeno de la Noche Verde.",
-  "CRDescription:0": "Alterna la Noche Verde."
-},
+      "DisplayName": "Control Remoto",
+      "Description": "Se usa para gestionar la Noche Verde. Abre la interfaz de control. Solo se puede fabricar tras completar todas las oleadas.",
+      "CRDescription:0": "Abre el control de la Noche Verde."
+    },
     "BK43Block:0": {
   "DisplayName": "Escopeta de Doble Cañón BK-43",
   "Description": "Escopeta de doble cañón, simple y confiable. Tiene capacidad para dos cartuchos y es muy efectiva a corta distancia gracias a la dispersión de perdigones.",
@@ -1031,6 +1038,18 @@
     }
 },
   "ContentWidgets": {
+    "Trader": {
+    "BuyButton": "Comprar",
+    "CoinSlotHint": "Moneda",
+    "SelectItemFirst": "Selecciona primero un objeto para comprar.",
+    "SlotEmpty": "Esta ranura está vacía.",
+    "InfoLabelFormat": "Precio: {0} monedas nucleares",
+    "ItemNoLongerAvailable": "Este objeto ya no está disponible.",
+    "ItemCannotBeBought": "Este objeto no se puede comprar.",
+    "InsufficientCoins": "Necesitas {0} monedas nucleares para comprar {1}.",
+    "NotEnoughSpace": "No hay suficiente espacio en el inventario.",
+    "PurchaseSuccessful": "¡Compra exitosa! ¡Gracias por tu compra!"
+},
     "HireWidget": {
         "Title": "CONTRATAR MERCENARIO",
         "HireButton": "CONTRATAR",
@@ -1042,19 +1061,11 @@
     },
     "PirateTraderWidget": {
     "Title": "Comerciante Pirata",
-    "Inventory": "Inventario",
-    "BuyButton": "Comprar",
-    "CoinSlotHint": "Moneda",
-    "CoinSlotLabel": "Ranura de pago",
-    "CoinSlotLabelWithAmount": "Ranura de pago: {0} monedas",
-    "ItemNoLongerAvailable": "Este objeto ya no está disponible.",
-    "ItemCannotBeBought": "Este objeto no se puede comprar.",
-    "InsufficientCoins": "Necesitas {0} monedas para comprar {1}.",
-    "NotEnoughSpace": "No hay suficiente espacio en el inventario.",
-    "PurchaseSuccessful": "¡Compra exitosa! ¡Gracias por tu compra!",
-    "SelectItemFirst": "Selecciona primero un objeto para comprar.",
-    "SlotEmpty": "Esta ranura está vacía.",
-    "InfoLabelFormat": "Precio: {0} monedas nucleares"
+    "Inventory": "Inventario"
+},
+"GunsTraderWidget": {
+    "Title": "Comerciante de Armas",
+    "Inventory": "Inventario"
 },
     "AutoCannonWidget": {
     "Title": "Auto-Cañón",
