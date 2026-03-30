@@ -522,13 +522,13 @@
         <Recipe Result="LavaSharpHammerBlock" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="6" a="lavamachete" b="ironhammer" Description="[0]">
         "ab"
         </Recipe>
-        <Recipe Result="AntidoteBucketBlock" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="3" a="teaantiflubucket" b="whiteflower" Description="[0]">
+        <Recipe Result="AntidoteBucketBlock" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="3" a="teaantiflubucket" b="purpleflower" Description="[0]">
     "ab"
 </Recipe>
 <Recipe Result="TeaAntifluBucketBlock" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="3" a="waterbucket" b="tallgrass" Description="[0]">
     "ab"
 </Recipe>
-<Recipe Result="RepeatArrowBlock:5" ResultCount="8" RequiredHeatLevel="2" RequiredPlayerLevel="6" a="toxin" b="repeatarrow:4" Description="[0]">
+<Recipe Result="RepeatArrowBlock:5" ResultCount="8" RequiredHeatLevel="2" RequiredPlayerLevel="6" a="toxin" b="repeatarrow:4" Description="[5]">
     "ab"
 </Recipe>
 <Recipe Result="FreezeBombBlock" ResultCount="6" RequiredHeatLevel="2" RequiredPlayerLevel="3" a="ice" b="bomb" Description="[0]">
