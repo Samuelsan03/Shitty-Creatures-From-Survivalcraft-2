@@ -7,11 +7,8 @@ using TemplatesDatabase;
 
 namespace Game
 {
-	// Token: 0x0200001C RID: 28
 	public class ComponentInvShooterBehavior : ComponentBehavior, IUpdateable
 	{
-		// Token: 0x17000011 RID: 17
-		// (get) Token: 0x060000F1 RID: 241 RVA: 0x0000BA74 File Offset: 0x00009C74
 		public int UpdateOrder
 		{
 			get
@@ -20,8 +17,6 @@ namespace Game
 			}
 		}
 
-		// Token: 0x17000012 RID: 18
-		// (get) Token: 0x060000F2 RID: 242 RVA: 0x0000BA88 File Offset: 0x00009C88
 		public override float ImportanceLevel
 		{
 			get
@@ -30,8 +25,6 @@ namespace Game
 			}
 		}
 
-		// Token: 0x17000013 RID: 19
-		// (get) Token: 0x060000F3 RID: 243 RVA: 0x0000BAA0 File Offset: 0x00009CA0
 		UpdateOrder IUpdateable.UpdateOrder
 		{
 			get
@@ -40,12 +33,13 @@ namespace Game
 			}
 		}
 
-		// Token: 0x060000F4 RID: 244 RVA: 0x0000BAC0 File Offset: 0x00009CC0
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
 			base.Load(valuesDictionary, idToEntityMap);
 			this.m_componentCreature = base.Entity.FindComponent<ComponentCreature>(true);
-			this.m_componentChaseBehavior = base.Entity.FindComponent<ComponentChaseBehavior>(true);
+			this.m_componentChaseBehavior = base.Entity.FindComponent<ComponentChaseBehavior>();
+			this.m_componentNewChaseBehavior = base.Entity.FindComponent<ComponentNewChaseBehavior>();
+			this.m_componentZombieChaseBehavior = base.Entity.FindComponent<ComponentZombieChaseBehavior>();
 			this.m_componentInventory = base.Entity.FindComponent<ComponentInventory>(true);
 			this.m_subsystemTerrain = base.Project.FindSubsystem<SubsystemTerrain>(true);
 			this.m_subsystemTime = base.Project.FindSubsystem<SubsystemTime>(true);
@@ -265,7 +259,24 @@ namespace Game
 			}
 		}
 
-		// Token: 0x060000F5 RID: 245 RVA: 0x0000C2B4 File Offset: 0x0000A4B4
+		// ===== MÉTODO AUXILIAR PARA OBTENER EL TARGET DEL CHASE ACTIVO =====
+		private ComponentCreature GetCurrentTarget()
+		{
+			if (m_componentZombieChaseBehavior != null && m_componentZombieChaseBehavior.IsActive)
+			{
+				return m_componentZombieChaseBehavior.Target;
+			}
+			if (m_componentNewChaseBehavior != null && m_componentNewChaseBehavior.IsActive)
+			{
+				return m_componentNewChaseBehavior.Target;
+			}
+			if (m_componentChaseBehavior != null && m_componentChaseBehavior.IsActive)
+			{
+				return m_componentChaseBehavior.Target;
+			}
+			return null;
+		}
+
 		public void Update(float dt)
 		{
 			bool flag = this.m_componentCreature.ComponentHealth.Health <= 0f;
@@ -297,7 +308,8 @@ namespace Game
 				bool flag11 = flag10;
 				if (flag11)
 				{
-					bool flag12 = this.m_componentChaseBehavior.Target != null;
+					ComponentCreature currentTarget = this.GetCurrentTarget();
+					bool flag12 = currentTarget != null;
 					float num = 0f;
 					bool flag13 = flag12;
 					bool flag14 = flag13;
@@ -316,14 +328,14 @@ namespace Game
 						{
 							v = this.m_componentCreature.ComponentCreatureModel.EyePosition + this.m_componentCreature.ComponentBody.Matrix.Right * 0.3f - this.m_componentCreature.ComponentBody.Matrix.Up * 0.2f + this.m_componentCreature.ComponentBody.Matrix.Forward * 0.2f;
 						}
-						num = Vector3.Distance(v, this.m_componentChaseBehavior.Target.ComponentBody.Position);
+						num = Vector3.Distance(v, currentTarget.ComponentBody.Position);
 					}
 					bool flag18 = flag12 && num >= this.m_minDistance && num <= this.m_maxDistance;
 					bool flag19 = flag18;
 					bool flag20;
 					if (flag19)
 					{
-						ComponentHealth componentHealth = this.m_componentChaseBehavior.Target.Entity.FindComponent<ComponentHealth>();
+						ComponentHealth componentHealth = currentTarget.Entity.FindComponent<ComponentHealth>();
 						flag20 = (componentHealth != null && componentHealth.Health <= 0f);
 					}
 					else
@@ -366,17 +378,17 @@ namespace Game
 					if (flag32)
 					{
 						this.m_arrowValue = this.FindAimableItemInInventory();
-						bool flag33 = this.m_arrowValue != 0;
-						bool flag34 = flag33 && this.m_componentChaseBehavior.Target != null;
+						ComponentCreature currentTarget2 = this.GetCurrentTarget();
+						bool flag33 = this.m_arrowValue != 0 && currentTarget2 != null;
+						bool flag34 = flag33;
 						bool flag35 = flag34;
-						bool flag36 = flag35;
-						if (flag36)
+						if (flag35)
 						{
 							bool throwFromHead2 = this.ThrowFromHead;
-							bool flag37 = throwFromHead2;
-							bool flag38 = flag37;
+							bool flag36 = throwFromHead2;
+							bool flag37 = flag36;
 							Vector3 v2;
-							if (flag38)
+							if (flag37)
 							{
 								v2 = this.m_componentCreature.ComponentCreatureModel.EyePosition;
 							}
@@ -384,11 +396,11 @@ namespace Game
 							{
 								v2 = this.m_componentCreature.ComponentCreatureModel.EyePosition + this.m_componentCreature.ComponentBody.Matrix.Right * 0.3f - this.m_componentCreature.ComponentBody.Matrix.Up * 0.2f + this.m_componentCreature.ComponentBody.Matrix.Forward * 0.2f;
 							}
-							this.m_distance = (this.m_componentChaseBehavior.Target.ComponentBody.Position - v2).Length();
-							bool flag39 = this.m_distance >= this.m_minDistance && this.m_distance <= this.m_maxDistance;
+							this.m_distance = (currentTarget2.ComponentBody.Position - v2).Length();
+							bool flag38 = this.m_distance >= this.m_minDistance && this.m_distance <= this.m_maxDistance;
+							bool flag39 = flag38;
 							bool flag40 = flag39;
-							bool flag41 = flag40;
-							if (flag41)
+							if (flag40)
 							{
 								this.m_isCharging = true;
 								float num2 = this.m_random.Float(0.8f, 1.2f);
@@ -399,25 +411,25 @@ namespace Game
 						else
 						{
 							this.m_ChargeTime = (double)this.m_random.Float(this.m_randomThrowMin, this.m_randomThrowMax);
-							bool flag42 = this.m_distance < this.m_minDistance;
+							bool flag41 = this.m_distance < this.m_minDistance;
+							bool flag42 = flag41;
 							bool flag43 = flag42;
-							bool flag44 = flag43;
-							if (flag44)
+							if (flag43)
 							{
 								this.m_ChargeTime *= 0.9;
 							}
 							this.m_nextUpdateTime = gameTime + this.m_ChargeTime;
 						}
-						bool flag45 = !this.m_isCharging && this.m_componentModel != null;
+						bool flag44 = !this.m_isCharging && this.m_componentModel != null;
+						bool flag45 = flag44;
 						bool flag46 = flag45;
-						bool flag47 = flag46;
-						if (flag47)
+						if (flag46)
 						{
 							ComponentHumanModel componentHumanModel = this.m_componentModel as ComponentHumanModel;
-							bool flag48 = componentHumanModel != null;
+							bool flag47 = componentHumanModel != null;
+							bool flag48 = flag47;
 							bool flag49 = flag48;
-							bool flag50 = flag49;
-							if (flag50)
+							if (flag49)
 							{
 								componentHumanModel.m_handAngles2 = Vector2.Lerp(componentHumanModel.m_handAngles2, new Vector2(0f, componentHumanModel.m_handAngles2.Y), 5f * dt);
 							}
@@ -427,21 +439,20 @@ namespace Game
 			}
 		}
 
-		// Token: 0x060000F6 RID: 246 RVA: 0x0000C850 File Offset: 0x0000AA50
 		private void TransitionToState(string stateName)
 		{
 			this.m_currentStateName = stateName;
 			this.m_stateMachine.TransitionTo(stateName);
 		}
 
-		// Token: 0x060000F7 RID: 247 RVA: 0x0000C868 File Offset: 0x0000AA68
 		private void Idle_Update()
 		{
-			bool flag = this.m_componentChaseBehavior.Target == null;
+			ComponentCreature currentTarget = this.GetCurrentTarget();
+			bool flag = currentTarget == null;
 			bool flag2 = !flag;
 			if (flag2)
 			{
-				float num = Vector3.Distance(this.m_componentCreature.ComponentBody.Position, this.m_componentChaseBehavior.Target.ComponentBody.Position);
+				float num = Vector3.Distance(this.m_componentCreature.ComponentBody.Position, currentTarget.ComponentBody.Position);
 				bool flag3 = num <= this.MeleeRange;
 				bool flag4 = flag3;
 				if (flag4)
@@ -480,7 +491,6 @@ namespace Game
 			}
 		}
 
-		// Token: 0x060000F8 RID: 248 RVA: 0x0000C9C5 File Offset: 0x0000ABC5
 		private void Aiming_Enter()
 		{
 			this.m_aimStartTime = this.m_subsystemTime.GameTime;
@@ -488,10 +498,10 @@ namespace Game
 			this.m_aimDuration = 0f;
 		}
 
-		// Token: 0x060000F9 RID: 249 RVA: 0x0000C9EC File Offset: 0x0000ABEC
 		private void Aiming_Update()
 		{
-			bool flag = this.m_componentChaseBehavior.Target == null;
+			ComponentCreature currentTarget = this.GetCurrentTarget();
+			bool flag = currentTarget == null;
 			bool flag2 = flag;
 			if (flag2)
 			{
@@ -538,10 +548,10 @@ namespace Game
 			}
 		}
 
-		// Token: 0x060000FA RID: 250 RVA: 0x0000CBB0 File Offset: 0x0000ADB0
 		private void Fire_Enter()
 		{
-			bool flag = this.m_componentChaseBehavior.Target != null;
+			ComponentCreature currentTarget = this.GetCurrentTarget();
+			bool flag = currentTarget != null;
 			bool flag2 = flag;
 			if (flag2)
 			{
@@ -550,7 +560,6 @@ namespace Game
 			this.m_fireStateEndTime = this.m_subsystemTime.GameTime + 0.2;
 		}
 
-		// Token: 0x060000FB RID: 251 RVA: 0x0000CBF8 File Offset: 0x0000ADF8
 		private void Fire_Update()
 		{
 			this.ApplyRecoilAnimation();
@@ -563,7 +572,6 @@ namespace Game
 			}
 		}
 
-		// Token: 0x060000FC RID: 252 RVA: 0x0000CC54 File Offset: 0x0000AE54
 		private void Fire_Leave()
 		{
 			bool flag = this.m_componentModel != null;
@@ -576,7 +584,6 @@ namespace Game
 			}
 		}
 
-		// Token: 0x060000FD RID: 253 RVA: 0x0000CCA8 File Offset: 0x0000AEA8
 		private void Reloading_Update()
 		{
 			bool flag = this.CanReloadWeapon(this.m_weaponInfo);
@@ -599,7 +606,6 @@ namespace Game
 			this.TransitionToState("Idle");
 		}
 
-		// Token: 0x060000FE RID: 254 RVA: 0x0000CD20 File Offset: 0x0000AF20
 		private void ApplyAimingAnimation()
 		{
 			bool flag = this.m_aimDuration == 0f;
@@ -625,11 +631,12 @@ namespace Game
 						break;
 				}
 			}
-			bool flag3 = this.m_componentChaseBehavior.Target != null && this.m_componentModel != null;
+			ComponentCreature currentTarget = this.GetCurrentTarget();
+			bool flag3 = currentTarget != null && this.m_componentModel != null;
 			bool flag4 = flag3;
 			if (flag4)
 			{
-				this.m_componentModel.LookAtOrder = new Vector3?(this.m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition);
+				this.m_componentModel.LookAtOrder = new Vector3?(currentTarget.ComponentCreatureModel.EyePosition);
 			}
 			bool flag5 = this.m_componentModel != null;
 			bool flag6 = flag5;
@@ -663,7 +670,6 @@ namespace Game
 			}
 		}
 
-		// Token: 0x060000FF RID: 255 RVA: 0x0000CFE0 File Offset: 0x0000B1E0
 		private void ApplyRecoilAnimation()
 		{
 			bool flag = this.m_componentModel != null;
@@ -675,7 +681,6 @@ namespace Game
 			}
 		}
 
-		// Token: 0x06000100 RID: 256 RVA: 0x0000D044 File Offset: 0x0000B244
 		private void PerformRangedFireAction()
 		{
 			int activeSlotIndex = this.m_componentInventory.ActiveSlotIndex;
@@ -684,8 +689,11 @@ namespace Game
 			bool flag2 = !flag;
 			if (flag2)
 			{
+				ComponentCreature currentTarget = this.GetCurrentTarget();
+				if (currentTarget == null) return;
+
 				Vector3 eyePosition = this.m_componentCreature.ComponentCreatureModel.EyePosition;
-				Vector3 eyePosition2 = this.m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition;
+				Vector3 eyePosition2 = currentTarget.ComponentCreatureModel.EyePosition;
 				float num = Vector3.Distance(eyePosition, eyePosition2);
 				Vector3 vector = Vector3.Normalize(eyePosition2 - eyePosition);
 				int data = Terrain.ExtractData(slotValue);
@@ -821,9 +829,11 @@ namespace Game
 			}
 		}
 
-		// Token: 0x06000101 RID: 257 RVA: 0x0000D69C File Offset: 0x0000B89C
 		private void FireProjectile()
 		{
+			ComponentCreature currentTarget = this.GetCurrentTarget();
+			if (currentTarget == null) return;
+
 			bool throwFromHead = this.ThrowFromHead;
 			bool flag = throwFromHead;
 			Vector3 vector;
@@ -835,7 +845,7 @@ namespace Game
 			{
 				vector = this.m_componentCreature.ComponentCreatureModel.EyePosition + this.m_componentCreature.ComponentBody.Matrix.Right * 0.3f - this.m_componentCreature.ComponentBody.Matrix.Up * 0.2f + this.m_componentCreature.ComponentBody.Matrix.Forward * 0.2f;
 			}
-			Vector3 v = this.m_componentChaseBehavior.Target.ComponentBody.Position - vector;
+			Vector3 v = currentTarget.ComponentBody.Position - vector;
 			this.m_distance = v.Length();
 			float num = 30f;
 			float num2 = MathUtils.Clamp(this.m_distance / 12f, 0.6f, 1.8f);
@@ -871,7 +881,6 @@ namespace Game
 			}
 		}
 
-		// Token: 0x06000102 RID: 258 RVA: 0x0000D8E0 File Offset: 0x0000BAE0
 		private int FindAimableItemInInventory()
 		{
 			bool flag = this.m_specialThrowableItemValues.Count > 0;
@@ -944,7 +953,6 @@ namespace Game
 			return result;
 		}
 
-		// Token: 0x06000103 RID: 259 RVA: 0x0000DA68 File Offset: 0x0000BC68
 		private void RemoveAimableItemFromInventory(int value)
 		{
 			bool flag = this.m_componentInventory == null;
@@ -966,7 +974,6 @@ namespace Game
 			}
 		}
 
-		// Token: 0x06000104 RID: 260 RVA: 0x0000DAEC File Offset: 0x0000BCEC
 		private void TryReloadWeapon(ComponentInvShooterBehavior.WeaponInfo weaponToReload)
 		{
 			bool flag = !this.DiscountFromInventory || weaponToReload.Type == ComponentInvShooterBehavior.WeaponType.None;
@@ -1067,7 +1074,6 @@ namespace Game
 			}
 		}
 
-		// Token: 0x06000105 RID: 261 RVA: 0x0000DE3C File Offset: 0x0000C03C
 		private int FindItemSlotByContents(int contents)
 		{
 			for (int i = 0; i < this.m_componentInventory.SlotsCount; i++)
@@ -1082,7 +1088,6 @@ namespace Game
 			return -1;
 		}
 
-		// Token: 0x06000106 RID: 262 RVA: 0x0000DE8C File Offset: 0x0000C08C
 		private int FindBulletSlot(out int bulletValue)
 		{
 			int blockIndex = BlocksManager.GetBlockIndex<BulletBlock>(false, false);
@@ -1101,7 +1106,6 @@ namespace Game
 			return -1;
 		}
 
-		// Token: 0x06000107 RID: 263 RVA: 0x0000DEF4 File Offset: 0x0000C0F4
 		private bool IsWeaponReady(ComponentInvShooterBehavior.WeaponInfo weaponInfo)
 		{
 			bool flag = weaponInfo.Type == ComponentInvShooterBehavior.WeaponType.None;
@@ -1158,7 +1162,6 @@ namespace Game
 			return result;
 		}
 
-		// Token: 0x06000108 RID: 264 RVA: 0x0000E018 File Offset: 0x0000C218
 		private void ProactiveReloadCheck()
 		{
 			ComponentInvShooterBehavior.WeaponInfo weaponInfo = this.FindReloadableRangedWeapon();
@@ -1176,7 +1179,6 @@ namespace Game
 			}
 		}
 
-		// Token: 0x06000109 RID: 265 RVA: 0x0000E078 File Offset: 0x0000C278
 		private bool HasAmmoForWeapon(ComponentInvShooterBehavior.WeaponInfo weaponInfo)
 		{
 			bool flag = weaponInfo.Type == ComponentInvShooterBehavior.WeaponType.None;
@@ -1261,13 +1263,11 @@ namespace Game
 			return result;
 		}
 
-		// Token: 0x0600010A RID: 266 RVA: 0x0000E22C File Offset: 0x0000C42C
 		private bool CanReloadWeapon(ComponentInvShooterBehavior.WeaponInfo weaponInfo)
 		{
 			return this.HasAmmoForWeapon(weaponInfo);
 		}
 
-		// Token: 0x0600010B RID: 267 RVA: 0x0000E248 File Offset: 0x0000C448
 		private ComponentInvShooterBehavior.WeaponInfo FindReadyRangedWeapon()
 		{
 			for (int i = 0; i < this.m_componentInventory.SlotsCount; i++)
@@ -1341,7 +1341,6 @@ namespace Game
 			return this.FindMeleeWeapon();
 		}
 
-		// Token: 0x0600010C RID: 268 RVA: 0x0000E408 File Offset: 0x0000C608
 		private ComponentInvShooterBehavior.WeaponInfo FindReloadableRangedWeapon()
 		{
 			for (int i = 0; i < this.m_componentInventory.SlotsCount; i++)
@@ -1415,7 +1414,6 @@ namespace Game
 			return default(ComponentInvShooterBehavior.WeaponInfo);
 		}
 
-		// Token: 0x0600010D RID: 269 RVA: 0x0000E5C4 File Offset: 0x0000C7C4
 		private ComponentInvShooterBehavior.WeaponInfo FindThrowableWeapon()
 		{
 			for (int i = 0; i < this.m_componentInventory.SlotsCount; i++)
@@ -1436,7 +1434,6 @@ namespace Game
 			return default(ComponentInvShooterBehavior.WeaponInfo);
 		}
 
-		// Token: 0x0600010E RID: 270 RVA: 0x0000E654 File Offset: 0x0000C854
 		private ComponentInvShooterBehavior.WeaponInfo FindMeleeWeapon()
 		{
 			for (int i = 0; i < this.m_componentInventory.SlotsCount; i++)
@@ -1463,7 +1460,6 @@ namespace Game
 			return default(ComponentInvShooterBehavior.WeaponInfo);
 		}
 
-		// Token: 0x04000119 RID: 281
 		private static readonly float[] m_speedValues = new float[]
 		{
 			50f,
@@ -1471,7 +1467,6 @@ namespace Game
 			100f
 		};
 
-		// Token: 0x0400011A RID: 282
 		private static readonly float[] m_spreadValues = new float[]
 		{
 			0.001f,
@@ -1479,167 +1474,68 @@ namespace Game
 			0.05f
 		};
 
-		// Token: 0x0400011B RID: 283
 		public ComponentCreature m_componentCreature;
-
-		// Token: 0x0400011C RID: 284
 		public float MeleeRange;
-
-		// Token: 0x0400011D RID: 285
 		public ComponentChaseBehavior m_componentChaseBehavior;
-
-		// Token: 0x0400011E RID: 286
+		public ComponentNewChaseBehavior m_componentNewChaseBehavior;
+		public ComponentZombieChaseBehavior m_componentZombieChaseBehavior;
 		public SubsystemTerrain m_subsystemTerrain;
-
-		// Token: 0x0400011F RID: 287
 		public StateMachine m_stateMachine = new StateMachine();
-
-		// Token: 0x04000120 RID: 288
 		public SubsystemTime m_subsystemTime;
-
-		// Token: 0x04000121 RID: 289
 		public SubsystemProjectiles m_subsystemProjectiles;
-
-		// Token: 0x04000122 RID: 290
 		public Random m_random = new Random();
-
-		// Token: 0x04000123 RID: 291
 		public int m_arrowValue;
-
-		// Token: 0x04000124 RID: 292
 		public double m_nextUpdateTime;
-
-		// Token: 0x04000125 RID: 293
 		public double m_ChargeTime;
-
-		// Token: 0x04000126 RID: 294
 		public float m_distance;
-
-		// Token: 0x04000127 RID: 295
 		public bool DiscountFromInventory;
-
-		// Token: 0x04000128 RID: 296
 		public string MinMaxRandomChargeTime;
-
-		// Token: 0x04000129 RID: 297
 		public float m_randomThrowMin;
-
-		// Token: 0x0400012A RID: 298
 		public float m_randomThrowMax;
-
-		// Token: 0x0400012B RID: 299
 		public SubsystemAudio m_subsystemAudio;
-
-		// Token: 0x0400012C RID: 300
 		public string ThrowingSound;
-
-		// Token: 0x0400012D RID: 301
 		public float ThrowingSoundDistance;
-
-		// Token: 0x0400012E RID: 302
 		public bool SelectRandomThrowableItems;
-
-		// Token: 0x0400012F RID: 303
 		public string SpecialThrowableItem;
-
-		// Token: 0x04000130 RID: 304
 		public int m_specialThrowableItemValue;
-
-		// Token: 0x04000131 RID: 305
 		public List<int> m_specialThrowableItemValues = new List<int>();
-
-		// Token: 0x04000132 RID: 306
 		public float m_minDistance;
-
-		// Token: 0x04000133 RID: 307
 		public float m_maxDistance;
-
-		// Token: 0x04000134 RID: 308
 		public string MinMaxDistance;
-
-		// Token: 0x04000135 RID: 309
 		public float m_randomWaitMin;
-
-		// Token: 0x04000136 RID: 310
 		public float m_randomWaitMax;
-
-		// Token: 0x04000137 RID: 311
 		public string MinMaxRandomWaitTime;
-
-		// Token: 0x04000138 RID: 312
 		public double m_chargeStartTime;
-
-		// Token: 0x04000139 RID: 313
 		public bool m_isCharging;
-
-		// Token: 0x0400013A RID: 314
 		public float m_chargeDuration;
-
-		// Token: 0x0400013B RID: 315
 		public bool ThrowFromHead;
-
-		// Token: 0x0400013C RID: 316
 		public ComponentCreatureModel m_componentModel;
-
-		// Token: 0x0400013D RID: 317
 		public List<int> m_excludedItems = new List<int>();
-
-		// Token: 0x0400013E RID: 318
 		public ComponentInventory m_componentInventory;
-
-		// Token: 0x0400013F RID: 319
 		private string m_currentStateName;
-
-		// Token: 0x04000140 RID: 320
 		private double m_nextCombatUpdateTime;
-
-		// Token: 0x04000141 RID: 321
 		private double m_nextProactiveReloadTime;
-
-		// Token: 0x04000142 RID: 322
 		private double m_fireStateEndTime;
-
-		// Token: 0x04000143 RID: 323
 		private ComponentInvShooterBehavior.WeaponInfo m_weaponInfo;
-
-		// Token: 0x04000144 RID: 324
 		private double m_aimStartTime;
-
-		// Token: 0x04000145 RID: 325
 		private float m_aimDuration;
-
-		// Token: 0x04000146 RID: 326
 		private int m_bowDraw;
 
-		// Token: 0x0200008B RID: 139
 		public enum WeaponType
 		{
-			// Token: 0x04000471 RID: 1137
 			None,
-			// Token: 0x04000472 RID: 1138
 			Throwable,
-			// Token: 0x04000473 RID: 1139
 			Bow,
-			// Token: 0x04000474 RID: 1140
 			Crossbow,
-			// Token: 0x04000475 RID: 1141
 			Musket,
-			// Token: 0x04000476 RID: 1142
 			ItemsLauncher,
-			// Token: 0x04000477 RID: 1143
 			Melee
 		}
 
-		// Token: 0x0200008C RID: 140
 		public struct WeaponInfo
 		{
-			// Token: 0x04000478 RID: 1144
 			public int WeaponSlot;
-
-			// Token: 0x04000479 RID: 1145
 			public int WeaponValue;
-
-			// Token: 0x0400047A RID: 1146
 			public ComponentInvShooterBehavior.WeaponType Type;
 		}
 	}
