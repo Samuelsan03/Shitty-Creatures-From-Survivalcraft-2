@@ -1,16 +1,23 @@
 {
+  "RemoteControlAchievement": {
+  "CraftingLocked": "你必须先完成所有波次！",
+  "Unlocked": "遥控器已解锁！",
+  "UnlockedInfo": "你现在可以制作遥控器来管理绿色之夜。"
+},
   "ComponentNewSleep": {
     "CantSleepGreenNight": "你不能在绿色之夜入睡"
   },
-  "ComponentThirst": {
-    "AlreadyNotThirsty": "你已经完全补充水分了",
-    "DrankBoiledWater": "你已经补充了水分",
+  "ComponentNewVitalStats": {
+    "AlreadyNotThirsty": "你已经完全不口渴了",
+    "DrankBoiledWater": "你补充了水分",
     "Dehydrating": "你正在脱水！",
-    "DrankDrinkableWater": "你已经部分补充了水分",
-    "DrankRotten": "这饮料已经变质了，你的胃一阵翻腾。",
-    "AteFruit": "你吃了一些水果，感觉更补水了",
-    "HalfThirsty": "你开始感到口渴了"
-  },
+    "DrankDrinkableWater": "你补充了一些水分",
+    "DrankRotten": "饮料已经变质，让你的胃不舒服。",
+    "AteFruit": "你吃了水果，感觉稍微补充了一点水分",
+    "HalfThirsty": "你开始感到口渴了",
+    "DrankAntidote": "恶心和疾病已经被治愈！",
+    "DrankAntiflu": "流感已经被治愈！"
+},
   "ShittyCreaturesAbout": {
     "AboutButton": "关于模组",
     "Title": "关于 Shitty Creatures MOD：",
@@ -84,11 +91,9 @@
     "ThirstDescription": "启用/禁用口渴模拟"
   },
   "AntidoteBucket": {
-    "NPCCured": "NPC 的毒素和疾病已被清除！",
-    "PoisonAndSicknessCured": "恶心和疾病已治愈！"
+    "NPCCured": "NPC 的毒素和疾病已被清除！"
   },
   "AntifluBucket": {
-    "FluCured": "流感已治愈！",
     "FluNPCCured": "NPC 的流感已治愈！"
   },
   "GreenNightDialog": {
@@ -159,6 +164,7 @@
    },
   "Database": {
     "DisplayName": {
+      "FirearmsDealer": "枪械商",
       "Aimep3": "Aimep3",
       "Bandit15": "强盗15",
       "Bandit14": "强盗14",
@@ -309,6 +315,7 @@
       "Richard": "理查德"
     },
     "Description": {
+      "FirearmsDealer": "一名中立的武器商人。出售武器和弹药，需要付费交易。如果你感到疲惫，或希望节省寻找昂贵材料的时间，这是一个不错的选择。",
       "Aimep3": "Aimep3是一位来自墨西哥内萨瓦尔科约特尔城的内容创作者，她因在YouTube等平台发布视频而在互联网上走红，内容包括非常规食谱、日常生活片段以及具有即兴风格的作品，这些内容随着时间逐渐走红。她直率、古怪且毫无保留的风格使她成为西班牙语互联网文化中备受讨论的人物，既吸引了大量粉丝，也引发了不少争议，并且经常成为网络迷因和社交媒体讨论的来源。在这个模组中，Aimep3被设定为一个可召唤的盟友，只会在第3天出现，与具体时间无关。她的行为不可预测但在战斗中极为高效：会持续攻击并追击敌人，对任何威胁或接触立即做出反应。她拥有特殊能力，在攻击敌人时可以召唤闪电，并且在被困时可以摧毁障碍物，从而始终保持战斗活跃。她会作为玩家队伍的一员进行协作，能够向附近的生物请求帮助，并在不伤害队友的情况下协调攻击。此外，她对多种类型的伤害具有极高的抗性，并拥有非常强的生命恢复能力，使她成为一个难以被击败的伙伴。她还可以收集工具和武器，能够在冒险过程中轻松适应各种不同的情况。",
       "InfectedFreezer": "冻结感染者是另一种罕见的特殊感染者。它既不是 Boss，也不是迷你 Boss，但它的外观似乎来自冰封之地。它与其他普通感染者相似，但它的特殊能力是投掷冰雪球。非常小心 —— 如果被击中，你可能会受到冻伤，最坏的情况是感冒！另一只会攻击你，并在击中弱点时开始给你带来感冒效果。最后一只会吐出冰块，也会感染生物感冒。然而，使用僵尸项圈可以为你带来优势，提供防冻保护。它只在其他感染者的波次中出现，总是在冬天或冰冻地区。",
       "HumanoidSkeleton": "类人骷髅是一种非常特殊的感染者（尽管不是你想象的那种特殊感染者）。当你在晚上看到它时，它让你想起了谁？啊，当然，它让你想起了 Minecraft 中的骷髅！你猜怎么着？它也是感染者群的一部分。然而，就像在 Minecraft 中一样，它可以射箭，或者，根据概率，它会改变它的物品。虽然你可能只将它们与弓箭联系起来，但它们也可以使用其他远程武器和火器。它是唯一出现在正常夜晚的感染者，但绿夜使它更加危险，因为它会追捕你直到死亡。不过，你可以使用僵尸项圈来奴役它，让骨骼人成为你的守护者。",
@@ -462,10 +469,10 @@
       "Description": "一种注入冰冻能量的雪球。投掷时会留下霜冻轨迹，击中目标后迅速降低其体温（玩家：降至6°C，然后3°C，然后1°C，然后0.1°C），造成击退（每次击中增加），四次击中后引发体温过低和死亡。受影响的生物会被击退并可能感冒（645秒流感）。只能通过击败在寒冷生物群系或冬季出现的感染冰冻者获得，或从皮拉塔 霍斯蒂尔 科梅尔西亚恩特处以20核能币购买（最多堆叠40个）。"
     },
     "RemoteControlBlock:0": {
-  "DisplayName": "遥控器",
-  "Description": "一种远程控制设备。使用它来切换绿色夜晚现象。",
-  "CRDescription:0": "切换绿色夜晚。"
-},
+      "DisplayName": "遥控器",
+      "Description": "用于管理绿色之夜。打开控制界面。仅在完成所有波次后才能制作。",
+      "CRDescription:0": "打开绿色之夜控制界面。"
+    },
     "BK43Block:0": {
   "DisplayName": "BK-43 双管霰弹枪",
   "Description": "一把结构简单且可靠的双管霰弹枪。可装填两发弹药，在近距离由于弹丸散布而非常有效。",
@@ -1031,6 +1038,18 @@
     }
   },
   "ContentWidgets": {
+    "Trader": {
+    "BuyButton": "购买",
+    "CoinSlotHint": "硬币",
+    "SelectItemFirst": "请先选择要购买的物品。",
+    "SlotEmpty": "此槽位为空。",
+    "InfoLabelFormat": "价格：{0} 核能币",
+    "ItemNoLongerAvailable": "该物品已不可用。",
+    "ItemCannotBeBought": "该物品无法购买。",
+    "InsufficientCoins": "你需要 {0} 个核能币来购买 {1}。",
+    "NotEnoughSpace": "背包空间不足。",
+    "PurchaseSuccessful": "购买成功！感谢你的购买！"
+},
     "HireWidget": {
         "Title": "雇佣佣兵",
         "HireButton": "雇佣",
@@ -1042,19 +1061,23 @@
     },
     "PirateTraderWidget": {
     "Title": "海盗商人",
+    "Inventory": "库存"
+},
+"GunsTraderWidget": {
+    "Title": "武器商人",
     "Inventory": "库存",
     "BuyButton": "购买",
     "CoinSlotHint": "硬币",
     "CoinSlotLabel": "支付槽",
-    "CoinSlotLabelWithAmount": "支付槽：{0} 枚硬币",
-    "ItemNoLongerAvailable": "该物品已不可用。",
+    "CoinSlotLabelWithAmount": "支付槽：{0} 硬币",
+    "ItemNoLongerAvailable": "该物品已无法获取。",
     "ItemCannotBeBought": "该物品无法购买。",
-    "InsufficientCoins": "购买 {1} 需要 {0} 枚硬币。",
+    "InsufficientCoins": "需要 {0} 硬币才能购买 {1}。",
     "NotEnoughSpace": "库存空间不足。",
-    "PurchaseSuccessful": "购买成功！感谢惠顾！",
+    "PurchaseSuccessful": "购买成功！感谢您的光顾！",
     "SelectItemFirst": "请先选择要购买的物品。",
-    "SlotEmpty": "此槽位为空。",
-    "InfoLabelFormat": "价格：{0} 核子硬币"
+    "SlotEmpty": "此槽为空。",
+    "InfoLabelFormat": "{0} 核子硬币"
 },
     "AutoCannonWidget": {
     "Title": "自动炮",
