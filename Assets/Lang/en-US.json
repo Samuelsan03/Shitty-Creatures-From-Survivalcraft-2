@@ -1,16 +1,23 @@
 {
+  "RemoteControlAchievement": {
+  "CraftingLocked": "You must survive all waves first!",
+  "Unlocked": "Remote Control unlocked!",
+  "UnlockedInfo": "You can now craft the Remote Control to manage the Green Nights."
+},
   "ComponentNewSleep": {
     "CantSleepGreenNight": "You can't sleep during the Green Night."
   },
-  "ComponentThirst": {
+  "ComponentNewVitalStats": {
     "AlreadyNotThirsty": "You are already fully hydrated",
-    "DrankBoiledWater": "You feel hydrated",
-    "Dehydrating": "You are dehydrating!",
-    "DrankDrinkableWater": "You are partially hydrated",
-    "DrankRotten": "That drink was spoiled. Your stomach turns.",
+    "DrankBoiledWater": "You hydrated yourself",
+    "Dehydrating": "You are getting dehydrated!",
+    "DrankDrinkableWater": "You partially hydrated yourself",
+    "DrankRotten": "The drink was spoiled. It upset your stomach.",
     "AteFruit": "You ate a fruit and feel a bit more hydrated",
-    "HalfThirsty": "You are starting to feel thirsty"
-  },
+    "HalfThirsty": "You are starting to feel thirsty",
+    "DrankAntidote": "Nausea and illness have been cured!",
+    "DrankAntiflu": "The flu has been cured!"
+},
   "ShittyCreaturesAbout": {
     "AboutButton": "About The Mod",
     "Title": "About Shitty Creatures MOD:",
@@ -84,11 +91,9 @@
     "ThirstDescription": "Enable/disable thirst simulation"
   },
   "AntidoteBucket": {
-    "NPCCured": "The NPC has been cured of poison and sickness!",
-    "PoisonAndSicknessCured": "Nausea and sickness have been cured!"
+    "NPCCured": "The NPC has been cured of poison and sickness!"
   },
   "AntifluBucket": {
-    "FluCured": "Flu has been cured!",
     "FluNPCCured": "The NPC's flu has been cured!"
   },
   "GreenNightDialog": {
@@ -159,6 +164,7 @@
   },
   "Database": {
     "DisplayName": {
+      "FirearmsDealer": "Firearms Dealer",
       "Aimep3": "Aimep3",
       "Bandit15": "Bandit 15",
       "Bandit14": "Bandit 14",
@@ -309,6 +315,7 @@
       "Richard": "Richard"
     },
     "Description": {
+      "FirearmsDealer": "A neutral firearms dealer. Sells weapons and ammunition in exchange for payment. If you are tired or prefer to save time searching for expensive materials, this is the option.",
       "Aimep3": "Aimep3 is a Mexican content creator originally from Ciudad Nezahualcóyotl, known on the internet for her videos on platforms like YouTube, where she shares unconventional recipes, moments from her daily life, and spontaneous content that over time became viral. Her direct, eccentric, and unfiltered style made her a highly talked-about figure within Spanish-speaking internet culture, generating both followers and criticism, and becoming a frequent source of memes and discussions on social media. In this mod, Aimep3 is represented as a summonable ally who appears exclusively on day 3, regardless of the time. She has unpredictable but highly effective combat behavior: she constantly attacks and chases enemies, reacting immediately to any threat or contact. She has the special ability to summon lightning when striking her enemies and can destroy obstacles if trapped, allowing her to remain constantly active in combat. She cooperates with the player as part of their group, being able to call for help from nearby creatures and coordinate attacks without harming allies. Additionally, she has exceptional resistance to multiple types of damage and very high health regeneration, making her a difficult companion to defeat. She can also collect tools and weapons, easily adapting to different situations during the adventure.",
       "InfectedFreezer": "The Freezing Infected is another rare special infected. It is not a boss or mini-boss, but its appearance seems to come from frozen lands. It shares similarities with other normal infected, but its special ability is throwing freezing snowballs. Be very careful—if it hits you, you could suffer from freezing, and in the worst case, catch a cold! Another one will attack you, and upon hitting its weak point, it will start giving you cold effects. The last one will vomit ice, infecting creatures with the flu as well. However, using a Zombie Collar will give you advantages, providing you with freezing protection. It only appears in waves of other infected, always during winter or in frozen areas.",
       "HumanoidSkeleton": "The Humanoid Skeleton is a very special infected (though not a special infected as you might think). Who does it remind you of when you see it at night? Ah, of course, it brings to mind the skeletons from Minecraft! And guess what? It's also part of the horde of the Infected. However, just like in Minecraft, it can fire a bow, or, depending on the probability, it will change its items. Although you might associate them only with bows, they can also use other ranged and firearms. It's the only infected that appears during the normal night, but the Green Night makes it even more dangerous, as it will hunt you to death. Nevertheless, you can enslave it using the Zombie Collar to make the bony human your guardian.",
@@ -462,10 +469,10 @@
   "Description": "A snowball infused with freezing energy. When thrown, it leaves a frosty trail and upon impact rapidly lowers the target's body temperature (player: reduces to 6°C, then 3°C, then 1°C, then 0.1°C), causes knockback (increasing with each hit), and after four hits induces hypothermia and death. Affected creatures are knocked back and may catch a cold (645s flu). Obtained only by defeating Infected Freezers that spawn in cold biomes or during winter, or by purchasing from the Pirata Hostil Comerciante for 20 Nuclear Coins (stack up to 40)."
     },
     "RemoteControlBlock:0": {
-  "DisplayName": "Remote Control",
-  "Description": "A remote control device. Use it to toggle the Green Night phenomenon.",
-  "CRDescription:0": "Toggles the Green Night."
-},
+      "DisplayName": "Remote Control",
+      "Description": "Use to manage Green Night. Opens the control interface. Can only be crafted after completing all waves.",
+      "CRDescription:0": "Opens Green Night controls."
+    },
     "NuclearCoinBlock:0": {
       "DisplayName": "Nuclear Coin",
       "Description": "A coin forged in a post-apocalyptic world. It cannot be crafted, but can be obtained by killing mobs. Used to trade with the Pirata Hostil Comerciante and for other purposes such as hiring and more, depending on the player's needs."
@@ -1029,6 +1036,18 @@
 }
 },
       "ContentWidgets": {
+        "Trader": {
+    "BuyButton": "Buy",
+    "CoinSlotHint": "Coin",
+    "SelectItemFirst": "Select an item first to purchase.",
+    "SlotEmpty": "This slot is empty.",
+    "InfoLabelFormat": "Price: {0} nuclear coins",
+    "ItemNoLongerAvailable": "This item is no longer available.",
+    "ItemCannotBeBought": "This item cannot be purchased.",
+    "InsufficientCoins": "You need {0} nuclear coins to buy {1}.",
+    "NotEnoughSpace": "Not enough inventory space.",
+    "PurchaseSuccessful": "Purchase successful! Thank you for your purchase!"
+},
         "HireWidget": {
         "Title": "HIRE MERCENARY",
         "HireButton": "HIRE",
@@ -1040,19 +1059,11 @@
     },
     "PirateTraderWidget": {
     "Title": "Pirate Trader",
-    "Inventory": "Inventory",
-    "BuyButton": "BUY",
-    "CoinSlotHint": "Coin",
-    "CoinSlotLabel": "Payment Slot",
-    "CoinSlotLabelWithAmount": "Payment Slot: {0} coins",
-    "ItemNoLongerAvailable": "This item is no longer available.",
-    "ItemCannotBeBought": "This item cannot be bought.",
-    "InsufficientCoins": "Need {0} coins to buy {1}.",
-    "NotEnoughSpace": "Not enough space in inventory.",
-    "PurchaseSuccessful": "Purchase successful! Thanks for your business!",
-    "SelectItemFirst": "Select an item to buy first.",
-    "SlotEmpty": "This slot is empty.",
-    "InfoLabelFormat": "{0} nuclear coins"
+    "Inventory": "Inventory"
+},
+"GunsTraderWidget": {
+    "Title": "Guns Trader",
+    "Inventory": "Inventory"
 },
         "AutoCannonWidget": {
     "Title": "Auto-Cannon",
