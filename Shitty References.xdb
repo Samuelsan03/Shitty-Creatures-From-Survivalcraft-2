@@ -1,8 +1,20 @@
 <Mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://gitee.com/THPRC/survivalcraft-api/raw/SCAPI1.8/Survivalcraft/Content/Assets/Database.xsd">
 <Parameter Name="Class" Guid="9d071853-10cd-4208-9bdf-ffed6b5d5bdd" new-Value="Game.ComponentNewSleep" Type="string"/>
 <Parameter Name="Class" Guid="3bb544e4-4e2b-4b31-9172-7709a9271366" new-Value="Game.ComponentNewHumanModel" Type="string"/>
+<Parameter Name="Class" Guid="8c4f00ca-8f77-47c9-99bb-cefa4f94ee8d" new-Value="Game.ComponentNewVitalStats" Type="string"/>
 
     <Folder Name="Gameplay" Guid="d509e5e2-2c10-49f1-8223-85cd892c63b0">
+    <ComponentTemplate Name="VitalStats" Description="Handles creature vital stats, including hunger, thirst, stamina, sleep, temperature and wetness" Guid="4f2ad7cc-d19a-4d64-99eb-5c6ca2b7a7b3" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
+  <ParameterSet Name="Satiation" Description="Contains satiation for each food item index" Guid="18e05ebe-9421-4169-9469-83f926f14af3"/>
+  <Parameter Name="Stamina" Description="Stamina level, 0 to 1" Guid="6e113066-4b9b-4f7f-be54-cfd7dc91e97f" Value="1" Type="float"/>
+  <Parameter Name="Wetness" Description="Wetness, 0 to 1" Guid="cbe6401e-253d-4ef3-94a1-dc52e476c90e" Value="0" Type="float"/>
+  <Parameter Name="Food" Description="Amount of food, 0 to 1" Guid="20eacb65-b947-4613-9a01-31df75cef42c" Value="1" Type="float"/>
+  <Parameter Name="Class" Guid="1d7f533f-0295-4df4-be0c-70a9d27ce65b" Value="Game.ComponentNewVitalStats" Type="string"/>
+  <Parameter Name="Sleep" Description="Sleep level, 0 to 1" Guid="69e3578f-48ee-4fe1-b9af-c46b099a7328" Value="1" Type="float"/>
+  <Parameter Name="Temperature" Description="Body temperature, in world temperature units" Guid="93b62c67-e897-431b-992d-13f2f8015006" Value="12" Type="float"/>
+  <Parameter Name="Thirst" Description="Water/Thirst level, 0 to 1" Guid="f0878cb9-d7b8-458d-99f9-35e88fa29b5a" Value="1" Type="float"/>
+</ComponentTemplate>
+
     <ComponentTemplate Name="RageZombieBehavior" Description="Hace que el zombi entre en furia con poca salud, aumentando su velocidad, atacando sin demora y mostrando ojos brillantes." Guid="2d584a55-7ccb-42c7-8fc0-c3f288eefae9" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
     <Parameter Name="Class" Guid="e4fb314e-1a7a-43ae-afde-69d0033eabc1" Value="Game.ComponentRageZombieBehavior" Type="string"/>
 </ComponentTemplate>
@@ -28,12 +40,12 @@
     <Parameter Name="HirePrice" Description="Precio en monedas nucleares para contratar" Guid="6cb5c4eb-8db6-453a-bc52-452ae6b4e1ee" Value="100" Type="int"/>
 </ComponentTemplate>
 
-<ComponentTemplate Name="PirateTrader" Description="Permite que una criatura actúe como comerciante pirata. Se puede abrir interactuando con ella para comprar objetos usando NuclearCoin." Guid="7753c16f-a467-4624-be61-3a048cb51cf0" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+<ComponentTemplate Name="Trader" Description="Permite que una criatura actúe como comerciante pirata. Se puede abrir interactuando con ella para comprar objetos usando NuclearCoin." Guid="7753c16f-a467-4624-be61-3a048cb51cf0" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
     <Parameter Name="SlotsCount" Description="Número de ranuras del inventario del comerciante." Guid="c6ee570b-66e7-4a61-ac7b-db306d0fe316" Value="8" Type="int"/>
     <Parameter Name="ActiveSlotIndex" Description="Índice de la ranura activa (por defecto 0, no se usa en este componente pero se mantiene por herencia)." Guid="5c2ceace-8cf9-45fb-b1d3-c64c6c41d298" Value="0" Type="int"/>
     <Parameter Name="TradeItems" Description="Lista de objetos que el comerciante puede vender. Formato: 'BlockName:probability:price:maxCount[:variant]'. probability es el peso usado para seleccionar el objeto durante el reabastecimiento. price es el precio por unidad en NuclearCoin. maxCount es la cantidad máxima que aparecerá en el slot. variant es opcional y permite especificar la variante de bloque (por ejemplo diferentes tipos de madera, tela, etc.). Ejemplos: 'MusketBlock:0.5:50:1,RepeatCrossbowBlock:0.3:120:1,AmmoBlock:0.2:5:20' o 'ClothingBlock:0.4:30:1:5'." Guid="4c0c5d62-bf60-480a-8296-8aa76cfeacf1" Value="MusketBlock:1:50:1" Type="string"/>
     <Parameter Name="RestockInterval" Description="Intervalo en segundos de tiempo de juego entre reabastecimientos." Guid="daa4d12b-d73f-4005-871b-34af37d243d3" Value="300" Type="double"/>
-    <Parameter Name="Class" Value="Game.ComponentPirateTrader" Type="string"/>
+    <Parameter Name="Class" Value="Game.ComponentTrader" Type="string"/>
 </ComponentTemplate>
 
     <ComponentTemplate Name="FluInfected" Description="Componente que aplica los efectos de la gripe a una criatura. Reduce la velocidad de movimiento (hasta 20% en casos graves) y provoca tos periódica con sonido y alerta de ruido." Guid="c7f45092-a74d-429a-8e77-76b1ae5120a3" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
@@ -532,7 +544,6 @@
   <Parameter Name="RangedAttackRange" Description="Rango de ataque a distancia (X = distancia mínima para melee, Y = distancia máxima para ranged)" Guid="e5aaebe5-378d-426e-98dc-dd6fcca09ecb" Value="5,20" Type="Vector2"/>
   <Parameter Name="DestroyBlocksWhenStuck" Description="Si está activado, la criatura destruirá bloques para liberarse cuando esté atascada durante más de 2 segundos" Guid="5b766c40-2a37-4027-9da1-c3218e109aa6" Value="false" Type="bool"/>
   <Parameter Name="InvokeLightningOnHit" Description="Si está activado, la criatura invocará un rayo sobre el objetivo cada vez que realice un golpe cuerpo a cuerpo exitoso" Guid="9ffef00f-7ee4-4fec-b94c-24ac538f344a" Value="false" Type="bool"/>
-  <Parameter Name="AutoMountAndDismount" Description="Si está activado, la criatura puede montar una montura cercana durante la persecución y desmontarse al finalizar" Guid="5c06c410-9bab-4687-b84a-a6044a4e85a2" Value="false" Type="bool"/>
 </ComponentTemplate>
 
 <ComponentTemplate Name="NewHerdBehavior" Description="Comportamiento de manada mejorado con reconocimiento del jugador y protección entre aliados" Guid="24c8a629-49be-4cb4-b829-78d5a5a14204" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
@@ -552,21 +563,6 @@
 </MemberSubsystemTemplate>
     <MemberSubsystemTemplate Name="TridentBehavior" Guid="4c112971-4320-48ef-9063-4d4d5a2adb64" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
     <Parameter Name="Class" Value="Game.SubsystemTridentBehavior" Type="string" Guid="588f3717-33aa-40eb-ba6a-8755d656f555"/>
-</MemberSubsystemTemplate>
-    <MemberSubsystemTemplate Name="MilkBucketBlockBehavior" Guid="88787b89-7ed9-427d-9200-4842885b6409" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
-    <Parameter Name="Class" Value="Game.SubsystemMilkBucketBlockBehavior" Type="string" Guid="e5f81fda-f12d-423d-aab1-396b6480f43f"/>
-</MemberSubsystemTemplate>
-    <MemberSubsystemTemplate Name="PumpkinSoupBucketBlockBehavior" Guid="bfe270f1-9971-4d21-bae7-d6d7ad25520a" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
-    <Parameter Name="Class" Value="Game.SubsystemPumpkinSoupBucketBlockBehavior" Type="string" Guid="a14ad37e-5cae-4ab5-baed-46af70c44df2"/>
-</MemberSubsystemTemplate>
-    <MemberSubsystemTemplate Name="RottenMilkBucketBlockBehavior" Guid="d264d12f-46fc-4d26-8c94-a2adf0ed3a04" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
-    <Parameter Name="Class" Value="Game.SubsystemRottenMilkBucketBlockBehavior" Type="string" Guid="f8f0c2a4-6f32-4f96-b320-fbedf9591263"/>
-</MemberSubsystemTemplate>
-    <MemberSubsystemTemplate Name="RottenPumpkinSoupBucketBlockBehavior" Guid="d63f99a1-73bd-4118-acd2-15bd53ca5b4b" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
-    <Parameter Name="Class" Value="Game.SubsystemRottenPumpkinSoupBucketBlockBehavior" Type="string" Guid="15629159-1669-49b6-8fd4-1f898f823497"/>
-</MemberSubsystemTemplate>
-    <MemberSubsystemTemplate Name="BoiledWaterBucketBlockBehavior" Guid="f6e8ea93-5e43-4804-a5fb-3da4e3a88793" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
-    <Parameter Name="Class" Value="Game.SubsystemBoiledWaterBucketBlockBehavior" Type="string" Guid="6fa6a513-16d2-4081-8a96-f1cc2a0ccec4"/>
 </MemberSubsystemTemplate>
     <MemberSubsystemTemplate Name="Master308Behavior" Guid="b164759d-1bcc-49a5-982c-9d3ebcafed79" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
     <Parameter Name="Class" Value="Game.SubsystemMaster308Behavior" Type="string" Guid="4756dc60-fc9c-47df-9ec2-db29ef95e074"/>
