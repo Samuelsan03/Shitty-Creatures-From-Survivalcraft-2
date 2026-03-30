@@ -19,7 +19,7 @@ namespace Game
 		private SubsystemTerrain m_subsystemTerrain;
 		private SubsystemBodies m_subsystemBodies;
 		private ComponentPathfinding m_componentPathfinding;
-		private Random m_random = new Random();
+		private Game.Random m_random = new Game.Random();
 
 		// Configuración
 		public float MaxDistance = 25f;
@@ -139,12 +139,14 @@ namespace Game
 			}
 		}
 
+		// Selección aleatoria normal de tipo de flecha (sin inventario)
 		private RepeatArrowBlock.ArrowType? SelectArrowTypeForDistance(float distance)
 		{
 			const float explosiveMinDistance = 20f;
 
 			if (distance >= explosiveMinDistance)
 			{
+				// A larga distancia: todos los tipos, incluyendo explosivo
 				if (m_availableArrowTypes.Length > 0)
 				{
 					int index = m_random.Int(0, m_availableArrowTypes.Length - 1);
@@ -153,6 +155,7 @@ namespace Game
 			}
 			else
 			{
+				// A corta distancia: todos excepto explosivo
 				var nonExplosiveTypes = new List<RepeatArrowBlock.ArrowType>();
 				foreach (var arrowType in m_availableArrowTypes)
 				{
@@ -167,7 +170,39 @@ namespace Game
 				}
 			}
 
-			return m_availableArrowTypes.Length > 0 ? m_availableArrowTypes[0] : (RepeatArrowBlock.ArrowType?)null;
+			return m_availableArrowTypes.Length > 0 ? m_availableArrowTypes[0] : null;
+		}
+
+		// Carga la ballesta con un tipo aleatorio (similar a ComponentNewChaseBehavior)
+		private void LoadCrossbowWithRandomBolt()
+		{
+			int crossbowValue = m_componentInventory.GetSlotValue(m_crossbowSlot);
+			if (crossbowValue == 0) return;
+
+			int data = Terrain.ExtractData(crossbowValue);
+			int draw = RepeatCrossbowBlock.GetDraw(data);
+			RepeatArrowBlock.ArrowType? currentArrowType = RepeatCrossbowBlock.GetArrowType(data);
+
+			// Si ya está tensada y cargada, no hacer nada
+			if (draw == 15 && currentArrowType != null)
+				return;
+
+			float distance = Vector3.Distance(
+				m_componentCreature.ComponentBody.Position,
+				m_currentTarget.ComponentBody.Position
+			);
+
+			RepeatArrowBlock.ArrowType? selectedType = SelectArrowTypeForDistance(distance);
+			if (!selectedType.HasValue) return;
+
+			// Crear la nueva ballesta cargada
+			int newData = RepeatCrossbowBlock.SetDraw(data, 15);
+			newData = RepeatCrossbowBlock.SetArrowType(newData, selectedType.Value);
+			int newValue = Terrain.ReplaceData(crossbowValue, newData);
+
+			// Reemplazar el ítem en el inventario
+			m_componentInventory.RemoveSlotItems(m_crossbowSlot, 1);
+			m_componentInventory.AddSlotItems(m_crossbowSlot, newValue, 1);
 		}
 
 		public void Update(float dt)
@@ -230,11 +265,14 @@ namespace Game
 
 			if (!m_isAiming)
 			{
-				// Iniciar apuntado
+				// Iniciar apuntado: primero cargar la ballesta si es necesario
 				m_currentTarget = target;
 				m_currentAimRay = aimRay;
 				m_aimStartTime = m_subsystemTime.GameTime;
 				m_isAiming = true;
+
+				// Cargar la ballesta con un tipo aleatorio (si no está lista)
+				LoadCrossbowWithRandomBolt();
 
 				// Llamar a Aim con estado InProgress
 				m_componentMiner.Aim(aimRay, AimState.InProgress);
@@ -249,7 +287,7 @@ namespace Game
 
 				if (aimTime >= 1.0f)
 				{
-					// Verificar si la ballesta tiene flecha cargada
+					// Verificar que la ballesta esté realmente cargada
 					int crossbowValue = m_componentInventory.GetSlotValue(m_crossbowSlot);
 					if (crossbowValue != 0)
 					{
@@ -257,31 +295,18 @@ namespace Game
 						int draw = RepeatCrossbowBlock.GetDraw(data);
 						RepeatArrowBlock.ArrowType? loadedArrow = RepeatCrossbowBlock.GetArrowType(data);
 
-						// Si no está tensada o no tiene flecha, preparar antes de disparar
-						if (draw != 15 || !loadedArrow.HasValue)
+						if (draw == 15 && loadedArrow.HasValue)
 						{
-							// Seleccionar tipo de flecha según distancia
-							float currentDistance = Vector3.Distance(
-								m_componentCreature.ComponentBody.Position,
-								m_currentTarget.ComponentBody.Position
-							);
-							RepeatArrowBlock.ArrowType? arrowType = SelectArrowTypeForDistance(currentDistance);
-
-							if (arrowType.HasValue)
-							{
-								// Tensar ballesta y cargar flecha
-								int newData = RepeatCrossbowBlock.SetDraw(data, 15);
-								newData = RepeatCrossbowBlock.SetArrowType(newData, arrowType);
-								int newValue = Terrain.ReplaceData(crossbowValue, newData);
-
-								m_componentInventory.RemoveSlotItems(m_crossbowSlot, 1);
-								m_componentInventory.AddSlotItems(m_crossbowSlot, newValue, 1);
-							}
+							// Disparar
+							m_componentMiner.Aim(aimRay, AimState.Completed);
+						}
+						else
+						{
+							// Si por algún motivo no está cargada, cancelar el disparo
+							m_componentMiner.Aim(aimRay, AimState.Cancelled);
 						}
 					}
 
-					// Completar el disparo
-					m_componentMiner.Aim(aimRay, AimState.Completed);
 					m_isAiming = false;
 					m_currentTarget = null;
 				}
