@@ -11,6 +11,7 @@ namespace Game
 		private float m_lastThirst = 1f;
 		private ValueBarWidget m_thirstBarWidget;
 		private ComponentGui m_componentGui;
+		private Random m_random = new Random();
 
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
@@ -43,7 +44,8 @@ namespace Game
 				UnlitBarColor = new Color(48, 48, 48),
 				BarSubtexture = ContentManager.Get<Subtexture>("Textures/Gui/agua"),
 				TextureLinearFilter = true,
-				HalfBars = false,
+				HalfBars = true,
+				BarBlending = false,
 				LayoutDirection = LayoutDirection.Horizontal,
 				Value = Thirst
 			};
@@ -56,31 +58,259 @@ namespace Game
 			}
 		}
 
+		private bool IsFruit(Block block)
+		{
+			return block is AppleBlock ||
+				   block is OrangeBlock ||
+				   block is PearBlock ||
+				   block is CherryBlock ||
+				   block is BlueberryBlock ||
+				   block is BananaBlock ||
+				   block is SliceOfWatermelonBlock;
+		}
+
+		private float GetFruitThirstRestore(Block block)
+		{
+			if (block is AppleBlock) return 0.10f;
+			if (block is OrangeBlock) return 0.12f;
+			if (block is PearBlock) return 0.10f;
+			if (block is CherryBlock) return 0.08f;
+			if (block is BlueberryBlock) return 0.06f;
+			if (block is BananaBlock) return 0.12f;
+			if (block is SliceOfWatermelonBlock) return 0.15f;
+			return 0f;
+		}
+
+		public override bool Eat(int value)
+		{
+			Block block = BlocksManager.Blocks[Terrain.ExtractContents(value)];
+
+			if (block is BucketBlock && !(block is EmptyBucketBlock))
+			{
+				return Drink(value);
+			}
+
+			if (IsFruit(block))
+			{
+				bool ateSuccess = base.Eat(value);
+				if (!ateSuccess)
+					return false;
+
+				if (!ShittyCreaturesSettingsManager.ThirstEnabled)
+					return true;
+
+				float thirstRestore = GetFruitThirstRestore(block);
+				if (thirstRestore > 0f)
+				{
+					Thirst = Math.Min(Thirst + thirstRestore, 1f);
+					m_lastThirst = Thirst;
+
+					m_componentGui?.DisplaySmallMessage(
+						LanguageControl.Get("ComponentNewVitalStats", "AteFruit"),
+						new Color(80, 80, 255), true, false);
+				}
+				return true;
+			}
+
+			return base.Eat(value);
+		}
+
 		public virtual bool Drink(int value)
 		{
 			Block block = BlocksManager.Blocks[Terrain.ExtractContents(value)];
-			if (!(block is BoiledWaterBlock))
-				return false;
+			float thirstRestore = 0f;
+			bool causesSickness = false;
+			bool isRotten = false;
+			bool isAntidote = false;
+			bool isAntiflu = false;
+			string messageKey = null;
 
-			if (Thirst >= 0.99f)
+			if (block is BoiledWaterBlock)
+			{
+				thirstRestore = 1f;
+				messageKey = "DrankBoiledWater";
+			}
+			else if (block is WaterBucketBlock)
+			{
+				thirstRestore = 0.5f;
+				messageKey = "DrankDrinkableWater";
+				causesSickness = true;
+			}
+			else if (block is MilkBucketBlock)
+			{
+				thirstRestore = 0.4f;
+				messageKey = "DrankDrinkableWater";
+			}
+			else if (block is PumpkinSoupBucketBlock)
+			{
+				thirstRestore = 0.6f;
+				messageKey = "DrankDrinkableWater";
+			}
+			else if (block is RottenMilkBucketBlock || block is RottenPumpkinSoupBucketBlock)
+			{
+				thirstRestore = 0.1f;
+				messageKey = "DrankRotten";
+				isRotten = true;
+				causesSickness = true;
+			}
+			else if (block is AntidoteBucketBlock)
+			{
+				thirstRestore = 0f;
+				messageKey = "DrankAntidote";
+				isAntidote = true;
+			}
+			else if (block is TeaAntifluBucketBlock)
+			{
+				thirstRestore = 0f;
+				messageKey = "DrankAntiflu";
+				isAntiflu = true;
+			}
+			else
+			{
+				return false;
+			}
+
+			if (!ShittyCreaturesSettingsManager.ThirstEnabled)
+			{
+				m_subsystemAudio?.PlaySound("Audio/UI/drinking", 1f, 0f, 0f, 0f);
+
+				if (isAntidote)
+				{
+					var poison = m_componentPlayer?.Entity.FindComponent<ComponentPoisonInfected>();
+					if (poison != null && poison.IsInfected)
+					{
+						poison.m_InfectDuration = 0f;
+						poison.PoisonResistance = MathUtils.Max(poison.PoisonResistance, 50f);
+						m_componentGui?.DisplaySmallMessage(
+							LanguageControl.Get("ComponentNewVitalStats", "DrankAntidote"),
+							Color.White, true, false);
+					}
+					var sickness = m_componentPlayer?.ComponentSickness;
+					if (sickness != null && sickness.IsSick)
+					{
+						sickness.m_sicknessDuration = 0f;
+						sickness.m_greenoutDuration = 0f;
+						sickness.m_greenoutFactor = 0f;
+						m_componentGui?.DisplaySmallMessage(
+							LanguageControl.Get("ComponentNewVitalStats", "DrankAntidote"),
+							Color.LightGreen, true, false);
+					}
+				}
+				else if (isAntiflu)
+				{
+					var flu = m_componentPlayer?.ComponentFlu;
+					if (flu != null && flu.HasFlu)
+					{
+						flu.m_fluDuration = 0f;
+						flu.m_fluOnset = 0f;
+						flu.m_coughDuration = 0f;
+						flu.m_sneezeDuration = 0f;
+						flu.m_blackoutDuration = 0f;
+						flu.m_blackoutFactor = 0f;
+						m_componentPlayer.ComponentScreenOverlays.BlackoutFactor = 0f;
+						m_componentGui?.DisplaySmallMessage(
+							LanguageControl.Get("ComponentNewVitalStats", "DrankAntiflu"),
+							Color.LightGreen, true, false);
+					}
+				}
+
+				ReplaceHeldItemWithEmptyBucket();
+				return true;
+			}
+
+			if (thirstRestore > 0f && Thirst >= 0.99f)
 			{
 				m_componentGui?.DisplaySmallMessage(
-					LanguageControl.Get("ComponentThirst", "AlreadyNotThirsty"),
+					LanguageControl.Get("ComponentNewVitalStats", "AlreadyNotThirsty"),
 					Color.White, true, true);
 				return false;
 			}
 
-			Thirst = 1f;
-			m_lastThirst = Thirst;
+			if (thirstRestore > 0f)
+			{
+				Thirst = Math.Min(Thirst + thirstRestore, 1f);
+				m_lastThirst = Thirst;
+			}
 
 			m_subsystemAudio?.PlaySound("Audio/UI/drinking", 1f, 0f, 0f, 0f);
 
+			Color messageColor;
+			if (messageKey == "DrankBoiledWater" || messageKey == "DrankDrinkableWater")
+			{
+				messageColor = new Color(80, 80, 255);
+			}
+			else if (messageKey == "DrankAntidote" || messageKey == "DrankAntiflu")
+			{
+				messageColor = Color.LightGreen;
+			}
+			else
+			{
+				messageColor = Color.White;
+			}
+
 			m_componentGui?.DisplaySmallMessage(
-				LanguageControl.Get("ComponentThirst", "DrankBoiledWater"),
-				Color.White, true, false);
+				LanguageControl.Get("ComponentNewVitalStats", messageKey),
+				messageColor, true, false);
+
+			if (causesSickness)
+			{
+				float sicknessProb = isRotten ? 0.9f : 0.3f;
+				if (m_random.Float(0f, 1f) < sicknessProb)
+				{
+					m_componentPlayer?.ComponentSickness?.StartSickness();
+				}
+			}
+
+			if (isAntidote)
+			{
+				bool cured = false;
+				var poison = m_componentPlayer?.Entity.FindComponent<ComponentPoisonInfected>();
+				if (poison != null && poison.IsInfected)
+				{
+					poison.m_InfectDuration = 0f;
+					poison.PoisonResistance = MathUtils.Max(poison.PoisonResistance, 50f);
+					cured = true;
+				}
+				var sickness = m_componentPlayer?.ComponentSickness;
+				if (sickness != null && sickness.IsSick)
+				{
+					sickness.m_sicknessDuration = 0f;
+					sickness.m_greenoutDuration = 0f;
+					sickness.m_greenoutFactor = 0f;
+					cured = true;
+				}
+				if (!cured)
+				{
+					m_componentGui?.DisplaySmallMessage(
+						LanguageControl.Get("ComponentNewVitalStats", "AlreadyNotThirsty"),
+						Color.White, true, false);
+				}
+			}
+
+			if (isAntiflu)
+			{
+				bool cured = false;
+				var flu = m_componentPlayer?.ComponentFlu;
+				if (flu != null && flu.HasFlu)
+				{
+					flu.m_fluDuration = 0f;
+					flu.m_fluOnset = 0f;
+					flu.m_coughDuration = 0f;
+					flu.m_sneezeDuration = 0f;
+					flu.m_blackoutDuration = 0f;
+					flu.m_blackoutFactor = 0f;
+					m_componentPlayer.ComponentScreenOverlays.BlackoutFactor = 0f;
+					cured = true;
+				}
+				if (!cured)
+				{
+					m_componentGui?.DisplaySmallMessage(
+						LanguageControl.Get("ComponentNewVitalStats", "AlreadyNotThirsty"),
+						Color.White, true, false);
+				}
+			}
 
 			ReplaceHeldItemWithEmptyBucket();
-
 			return true;
 		}
 
@@ -100,57 +330,61 @@ namespace Game
 			}
 		}
 
-		public override bool Eat(int value)
-		{
-			Block block = BlocksManager.Blocks[Terrain.ExtractContents(value)];
-			if (block is BoiledWaterBlock)
-			{
-				return Drink(value);
-			}
-			return base.Eat(value);
-		}
-
 		public override void Update(float dt)
 		{
 			base.Update(dt);
 
-			if (m_subsystemGameInfo.WorldSettings.GameMode != GameMode.Creative &&
-				m_subsystemGameInfo.WorldSettings.AreAdventureSurvivalMechanicsEnabled)
+			bool thirstEnabled = ShittyCreaturesSettingsManager.ThirstEnabled;
+			bool isCreative = m_subsystemGameInfo.WorldSettings.GameMode == GameMode.Creative;
+			bool survivalMechanics = m_subsystemGameInfo.WorldSettings.AreAdventureSurvivalMechanicsEnabled;
+
+			if (m_thirstBarWidget != null)
+			{
+				m_thirstBarWidget.IsVisible = thirstEnabled && !isCreative && survivalMechanics;
+				m_thirstBarWidget.Value = Thirst;
+			}
+
+			if (!thirstEnabled)
+			{
+				Thirst = 1f;
+				m_lastThirst = 1f;
+				return;
+			}
+
+			if (!isCreative && survivalMechanics)
 			{
 				float delta = m_subsystemTime.GameTimeDelta;
 				float hungerFactor = m_componentPlayer?.ComponentLevel?.HungerFactor ?? 1f;
 
-				Thirst -= hungerFactor * delta / 2880f;
-
+				Thirst -= hungerFactor * delta / 2600.0f;
 				Vector2? walk = m_componentPlayer?.ComponentLocomotion?.LastWalkOrder;
 				float move = walk.HasValue ? walk.Value.Length() : 0f;
-				Thirst -= hungerFactor * delta * move / 2880f;
-
+				Thirst -= hungerFactor * delta * move / 2600.0f;
 				Thirst = Math.Clamp(Thirst, 0f, 1f);
 
 				bool periodic = m_subsystemTime.PeriodicGameTimeEvent(240.0, 9.0);
 				if (Thirst <= 0f)
 				{
-					if (m_subsystemTime.PeriodicGameTimeEvent(50.0, 0.0))
+					if (m_subsystemTime.PeriodicGameTimeEvent(30.0, 0.0))
 					{
-						m_componentPlayer?.ComponentHealth.Injure(0.05f, null, false,
-							LanguageControl.Get("ComponentThirst", "Dehydrating"));
+						string cause = LanguageControl.Get("Injury", "Dehydration");
+						m_componentPlayer?.ComponentHealth.Injure(0.1f, null, false, cause);
 						m_componentGui?.DisplaySmallMessage(
-							LanguageControl.Get("ComponentThirst", "Dehydrating"),
-							Color.White, true, false);
+							LanguageControl.Get("ComponentNewVitalStats", "Dehydrating"),
+							Color.Red, true, false);
 						m_thirstBarWidget?.Flash(10);
 					}
 				}
 				else if (Thirst < 0.1f && (m_lastThirst >= 0.1f || periodic))
 				{
 					m_componentGui?.DisplaySmallMessage(
-						LanguageControl.Get("ComponentThirst", "Dehydrating"),
+						LanguageControl.Get("ComponentNewVitalStats", "Dehydrating"),
 						Color.White, true, true);
 				}
 				else if (Thirst < 0.25f && (m_lastThirst >= 0.25f || periodic))
 				{
 					m_componentGui?.DisplaySmallMessage(
-						LanguageControl.Get("ComponentThirst", "HalfThirsty"),
+						LanguageControl.Get("ComponentNewVitalStats", "HalfThirsty"),
 						Color.White, true, false);
 				}
 
@@ -160,9 +394,6 @@ namespace Game
 			{
 				Thirst = 1f;
 			}
-
-			if (m_thirstBarWidget != null)
-				m_thirstBarWidget.Value = Thirst;
 		}
 	}
 }
