@@ -115,6 +115,23 @@ namespace Game
 			return base.Eat(value);
 		}
 
+		/// <summary>
+		/// Añade una cubeta vacía exactamente en el mismo slot donde se consumió la cubeta de líquido.
+		/// El sistema base ya redujo el stack en 1, ahora solo añadimos la vacía en ese mismo slot.
+		/// </summary>
+		private void AddEmptyBucketToActiveSlot()
+		{
+			var inventory = m_componentPlayer?.ComponentMiner?.Inventory;
+			if (inventory == null) return;
+
+			int activeSlot = inventory.ActiveSlotIndex;
+			int emptyBucketIndex = BlocksManager.GetBlockIndex<EmptyBucketBlock>(throwIfNotFound: true);
+			int emptyBucketValue = Terrain.MakeBlockValue(emptyBucketIndex, 0, 0);
+			
+			// Añade la cubeta vacía en el mismo slot activo
+			inventory.AddSlotItems(activeSlot, emptyBucketValue, 1);
+		}
+
 		public virtual bool Drink(int value)
 		{
 			Block block = BlocksManager.Blocks[Terrain.ExtractContents(value)];
@@ -170,10 +187,9 @@ namespace Game
 				return false;
 			}
 
-			// --- Comprobaciones para antídoto y antigripal ---
+			// Comprobaciones para antídoto y antigripal
 			if (isAntidote)
 			{
-				// Verificar si realmente hay algo que curar
 				bool hasPoison = false;
 				bool hasSickness = false;
 				var poison = m_componentPlayer?.Entity.FindComponent<ComponentPoisonInfected>();
@@ -183,7 +199,6 @@ namespace Game
 
 				if (!hasPoison && !hasSickness)
 				{
-					// No hay enfermedad, no se puede beber el antídoto
 					return false;
 				}
 			}
@@ -196,17 +211,14 @@ namespace Game
 
 				if (!hasFlu)
 				{
-					// No hay gripe, no se puede beber el té
 					return false;
 				}
 			}
-			// ------------------------------------------------
 
 			if (!ShittyCreaturesSettingsManager.ThirstEnabled)
 			{
 				m_subsystemAudio?.PlaySound("Audio/UI/drinking", 1f, 0f, 0f, 0f);
 
-				// Curar solo si es necesario (ya sabemos que hay enfermedad)
 				if (isAntidote)
 				{
 					var poison = m_componentPlayer?.Entity.FindComponent<ComponentPoisonInfected>();
@@ -247,7 +259,7 @@ namespace Game
 					}
 				}
 
-				ReplaceHeldItemWithEmptyBucket();
+				AddEmptyBucketToActiveSlot();
 				return true;
 			}
 
@@ -297,14 +309,11 @@ namespace Game
 
 			if (isAntidote)
 			{
-				// Ya sabemos que hay enfermedad por la comprobación inicial
-				bool cured = false;
 				var poison = m_componentPlayer?.Entity.FindComponent<ComponentPoisonInfected>();
 				if (poison != null && poison.IsInfected)
 				{
 					poison.m_InfectDuration = 0f;
 					poison.PoisonResistance = MathUtils.Max(poison.PoisonResistance, 50f);
-					cured = true;
 				}
 				var sickness = m_componentPlayer?.ComponentSickness;
 				if (sickness != null && sickness.IsSick)
@@ -312,14 +321,11 @@ namespace Game
 					sickness.m_sicknessDuration = 0f;
 					sickness.m_greenoutDuration = 0f;
 					sickness.m_greenoutFactor = 0f;
-					cured = true;
 				}
-				// No es necesario mostrar mensaje extra si no se curó porque ya tenemos la enfermedad
 			}
 
 			if (isAntiflu)
 			{
-				// Ya sabemos que hay gripe
 				var flu = m_componentPlayer?.ComponentFlu;
 				if (flu != null && flu.HasFlu)
 				{
@@ -333,24 +339,8 @@ namespace Game
 				}
 			}
 
-			ReplaceHeldItemWithEmptyBucket();
+			AddEmptyBucketToActiveSlot();
 			return true;
-		}
-
-		private void ReplaceHeldItemWithEmptyBucket()
-		{
-			var inventory = m_componentPlayer?.ComponentMiner?.Inventory;
-			if (inventory == null) return;
-
-			int slot = inventory.ActiveSlotIndex;
-			int count = inventory.GetSlotCount(slot);
-			if (count > 0)
-			{
-				int emptyBucketIndex = BlocksManager.GetBlockIndex<EmptyBucketBlock>(throwIfNotFound: true);
-				int emptyBucketValue = Terrain.MakeBlockValue(emptyBucketIndex, 0, 0);
-				inventory.RemoveSlotItems(slot, count);
-				inventory.AddSlotItems(slot, emptyBucketValue, 1);
-			}
 		}
 
 		public override void Update(float dt)
