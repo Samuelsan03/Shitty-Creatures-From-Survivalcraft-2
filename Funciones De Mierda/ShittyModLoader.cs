@@ -15,6 +15,26 @@ namespace Game
 
 		public override void OnMainMenuScreenCreated(MainMenuScreen mainMenuScreen, StackPanelWidget leftBottomBar, StackPanelWidget rightBottomBar)
 		{
+			// --- AJUSTAR EL LOGO PRINCIPAL CON TAMAÑO PERSONALIZADO (336x128) ---
+			RectangleWidget logo = mainMenuScreen.Children.Find<RectangleWidget>("Logo", true);
+			if (logo != null)
+			{
+				// Cambiar el tamaño a 336x128 (dimensiones exactas de la textura)
+				logo.Size = new Vector2(336f, 128f);
+
+				// Asegurar que la textura sea la correcta
+				logo.Subtexture = ContentManager.Get<Subtexture>("Textures/Gui/Logo");
+
+				// Mantener la alineación centrada
+				logo.HorizontalAlignment = WidgetAlignment.Center;
+
+				// Habilitar filtro lineal para mejor calidad
+				logo.TextureLinearFilter = true;
+
+				// Opcional: ajustar margen superior para centrar verticalmente (ajusta según necesidad)
+				logo.Margin = new Vector2(0f, 5f);
+			}
+
 			// --- AÑADIR ETIQUETA DE VERSIÓN DEL MOD ---
 			StackPanelWidget topArea = mainMenuScreen.Children.Find<StackPanelWidget>("TopArea", true);
 			LabelWidget versionLabel = mainMenuScreen.Children.Find<LabelWidget>("Version", true);
@@ -57,7 +77,7 @@ namespace Game
 						Size = new Vector2(310f, 60f),
 						BevelColor = new Color(128, 0, 128),
 						CenterColor = new Color(128, 0, 128),
-						Margin = new Vector2(10f, 0f)  // Margen derecho para separar botones
+						Margin = new Vector2(10f, 0f)
 					};
 
 					// Botón "Salir" (color normal) usando traducción
