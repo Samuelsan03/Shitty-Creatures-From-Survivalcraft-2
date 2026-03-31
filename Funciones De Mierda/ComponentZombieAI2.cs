@@ -2263,147 +2263,77 @@ namespace Game
 
 		private void ProcessMusketBehavior(ComponentCreature target)
 		{
-			if (!m_isAiming && !m_isFiring && !m_isReloading && !m_isCocking)
+			if (target == null || m_componentMiner == null) return;
+
+			// Si no tenemos arma o no es un mosquete, salir
+			if (m_currentWeaponSlot < 0 || m_weaponType != 2)
+				return;
+
+			// Estado de recarga
+			if (m_isReloading)
 			{
-				StartAiming();
-			}
-
-			// Verificar inmersión en agua
-			bool isInWater = (m_componentCreature.ComponentBody.ImmersionFactor > 0.4f);
-
-			if (m_isCocking)
-			{
-				float cockProgress = (float)((m_subsystemTime.GameTime - m_drawStartTime) / m_cockTime);
-
-				if (m_componentModel != null)
-				{
-					m_componentModel.AimHandAngleOrder = 1.2f + (0.2f * cockProgress);
-					m_componentModel.InHandItemOffsetOrder = new Vector3(
-						-0.08f + (0.03f * cockProgress),
-						-0.08f - (0.01f * cockProgress),
-						0.07f + (0.01f * cockProgress)
-					);
-					m_componentModel.InHandItemRotationOrder = new Vector3(
-						-1.6f - (0.1f * cockProgress),
-						0f,
-						0f
-					);
-
-					if (target != null)
-					{
-						m_componentModel.LookAtOrder = new Vector3?(target.ComponentCreatureModel.EyePosition);
-					}
-				}
-
-				if (m_subsystemTime.GameTime - m_drawStartTime >= m_cockTime)
-				{
-					m_isCocking = false;
-					m_isAiming = true;
-					m_animationStartTime = m_subsystemTime.GameTime;
-					UpdateMusketHammerState(true);
-				}
-			}
-			else if (m_isAiming)
-			{
-				ApplyMusketAimingAnimation(target);
-
-				if (m_subsystemTime.GameTime - m_animationStartTime >= m_aimTime)
-				{
-					// [CORREGIDO] Intentar disparar - SIEMPRE se completa el disparo, pero con efecto diferente
-					m_isAiming = false;
-					m_isFiring = true;
-					m_fireTime = m_subsystemTime.GameTime;
-
-					// Sonido de martillo (siempre suena)
-					m_subsystemAudio.PlaySound("Audio/HammerUncock", 1f, m_random.Float(-0.1f, 0.1f),
-						m_componentCreature.ComponentBody.Position, 3f, false);
-
-					if (isInWater)
-					{
-						// [CORREGIDO] Igual que SubsystemMusketBlockBehavior: fallo bajo el agua
-						// Programar sonido de fallo en lugar del disparo normal
-						m_subsystemTime.QueueGameTimeDelayedExecution(m_subsystemTime.GameTime + 0.05, delegate
-						{
-							m_subsystemAudio.PlaySound("Audio/MusketMisfire", 1f, m_random.Float(-0.1f, 0.1f),
-								m_componentCreature.ComponentBody.Position, 15f, false);
-						});
-
-						// NO disparar proyectil
-					}
-					else
-					{
-						// Disparo normal (programado con delay como en el original)
-						m_subsystemTime.QueueGameTimeDelayedExecution(m_subsystemTime.GameTime + 0.05, delegate
-						{
-							m_subsystemAudio.PlaySound("Audio/MusketFire", 1f, m_random.Float(-0.1f, 0.1f),
-								m_componentCreature.ComponentBody.Position, 15f, false);
-						});
-
-						// Disparar la bala
-						ShootMusketBullet(target);
-					}
-
-					// [CORREGIDO] SIEMPRE se descarga el arma (como en el original)
-					UpdateMusketHammerState(false);
-					UpdateMusketLoadState(MusketBlock.LoadState.Empty);
-
-					// Aplicar retroceso (solo si no está en agua? El original aplica siempre)
-					if (target != null)
-					{
-						Vector3 direction = Vector3.Normalize(
-							target.ComponentBody.Position - m_componentCreature.ComponentBody.Position
-						);
-						m_componentCreature.ComponentBody.ApplyImpulse(-direction * 3f);
-					}
-				}
-			}
-			else if (m_isFiring)
-			{
-				ApplyMusketFiringAnimation();
-
-				if (m_subsystemTime.GameTime - m_fireTime >= 0.2)
-				{
-					m_isFiring = false;
-					StartMusketReloading();
-				}
-			}
-			else if (m_isReloading)
-			{
-				ApplyMusketReloadingAnimation();
-
+				// Esperar el tiempo de recarga
 				if (m_subsystemTime.GameTime - m_animationStartTime >= m_reloadTime)
 				{
-					m_isReloading = false;
+					// Seleccionar un tipo de bala aleatorio (MusketBall, Buckshot o BuckshotBall)
+					BulletBlock.BulletType randomBullet = (BulletBlock.BulletType)m_random.Int(0, 2);
+
+					// Marcar el arma como cargada con el tipo de bala aleatorio
 					UpdateMusketLoadState(MusketBlock.LoadState.Loaded);
-					UpdateMusketBulletType(BulletBlock.BulletType.MusketBall);
-					StartMusketCocking();
+					UpdateMusketBulletType(randomBullet);   // ← ALEATORIO
+															// El martillo debe estar en reposo para que OnAim lo amartille al apuntar
+					UpdateMusketHammerState(false);
+
+					m_isReloading = false;
+					// Iniciar el apuntado después de recargar
+					StartAiming();
 				}
+				return;
 			}
-		}
 
-		private void StartMusketCocking()
-		{
-			m_isCocking = true;
-			m_isAiming = false;
-			m_drawStartTime = m_subsystemTime.GameTime;
-			UpdateMusketHammerState(true);
-			m_subsystemAudio.PlaySound("Audio/HammerCock", 1f, m_random.Float(-0.1f, 0.1f),
-				m_componentCreature.ComponentBody.Position, 3f, false);
+			// Verificar si el arma está cargada
+			int slotValue = m_componentInventory.GetSlotValue(m_currentWeaponSlot);
+			int data = Terrain.ExtractData(slotValue);
+			MusketBlock.LoadState loadState = MusketBlock.GetLoadState(data);
+			bool hammerState = MusketBlock.GetHammerState(data);
 
-			if (m_componentModel != null)
+			// Si no está cargada, iniciar recarga
+			if (loadState != MusketBlock.LoadState.Loaded)
 			{
-				m_componentModel.AimHandAngleOrder = 1.2f;
-				m_componentModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
-				m_componentModel.InHandItemRotationOrder = new Vector3(-1.6f, 0f, 0f);
+				m_isAiming = false;
+				m_isReloading = true;
+				m_animationStartTime = m_subsystemTime.GameTime;
+				return;
 			}
-		}
 
-		private void StartMusketReloading()
-		{
-			m_isReloading = true;
-			m_animationStartTime = m_subsystemTime.GameTime;
-			m_subsystemAudio.PlaySound("Audio/Reload", 1.5f, m_random.Float(-0.1f, 0.1f),
-				m_componentCreature.ComponentBody.Position, 5f, false);
+			// Proceso de apuntado
+			if (!m_isAiming)
+			{
+				StartAiming();
+				return;
+			}
+
+			// Durante el apuntado: llamar a ComponentMiner.Aim con estado InProgress
+			Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
+			Vector3 targetPos = target.ComponentCreatureModel.EyePosition;
+			Vector3 direction = Vector3.Normalize(targetPos - eyePos);
+			Ray3 aimRay = new Ray3(eyePos, direction);
+
+			// Llamar al sistema de apuntado (SubsystemMusketBlockBehavior se encargará de animaciones, sonidos y disparo)
+			m_componentMiner.Aim(aimRay, AimState.InProgress);
+
+			// Si el tiempo de apuntado ha pasado, completar el disparo
+			if (m_subsystemTime.GameTime - m_animationStartTime >= m_aimTime)
+			{
+				// Completar apuntado (esto activa el disparo si el arma está lista)
+				m_componentMiner.Aim(aimRay, AimState.Completed);
+
+				// El arma ahora está descargada y el martillo bajado (SubsystemMusketBlockBehavior se encarga de esto)
+				// Iniciar recarga después del disparo
+				m_isAiming = false;
+				m_isReloading = true;
+				m_animationStartTime = m_subsystemTime.GameTime;
+			}
 		}
 
 		private void UpdateMusketHammerState(bool hammerState)
@@ -2456,105 +2386,6 @@ namespace Game
 				}
 			}
 		}
-
-		private void ApplyMusketAimingAnimation(ComponentCreature target)
-		{
-			if (m_componentModel != null)
-			{
-				m_componentModel.AimHandAngleOrder = 1.4f;
-				m_componentModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
-				m_componentModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
-
-				float breath = (float)Math.Sin(m_subsystemTime.GameTime * 3f) * 0.01f;
-				m_componentModel.InHandItemOffsetOrder += new Vector3(0f, breath, 0f);
-
-				if (target != null)
-				{
-					m_componentModel.LookAtOrder = new Vector3?(target.ComponentCreatureModel.EyePosition);
-				}
-			}
-		}
-
-		private void FireMusket(ComponentCreature target)
-		{
-			m_isAiming = false;
-			m_isFiring = true;
-			m_fireTime = m_subsystemTime.GameTime;
-			UpdateMusketHammerState(true);
-			double fireDelay = 0.05;
-
-			m_subsystemAudio.PlaySound("Audio/HammerUncock", 1f, m_random.Float(-0.1f, 0.1f),
-				m_componentCreature.ComponentBody.Position, 3f, false);
-
-			m_subsystemTime.QueueGameTimeDelayedExecution(m_subsystemTime.GameTime + fireDelay, delegate
-			{
-				m_subsystemAudio.PlaySound("Audio/MusketFire", 1f, m_random.Float(-0.1f, 0.1f),
-					m_componentCreature.ComponentBody.Position, 15f, false);
-			});
-
-			UpdateMusketHammerState(false);
-			UpdateMusketLoadState(MusketBlock.LoadState.Empty);
-			ShootMusketBullet(target);
-
-			if (target != null)
-			{
-				Vector3 direction = Vector3.Normalize(
-					target.ComponentBody.Position - m_componentCreature.ComponentBody.Position
-				);
-				m_componentCreature.ComponentBody.ApplyImpulse(-direction * 3f);
-			}
-		}
-
-		private void ApplyMusketFiringAnimation()
-		{
-			if (m_componentModel != null)
-			{
-				float fireProgress = (float)((m_subsystemTime.GameTime - m_fireTime) / 0.2f);
-
-				if (fireProgress < 0.5f)
-				{
-					float recoil = 0.1f * (1f - (fireProgress * 2f));
-					m_componentModel.InHandItemOffsetOrder += new Vector3(recoil, 0f, 0f);
-					m_componentModel.InHandItemRotationOrder += new Vector3(recoil * 3f, 0f, 0f);
-				}
-				else
-				{
-					float returnProgress = (fireProgress - 0.5f) / 0.5f;
-					m_componentModel.AimHandAngleOrder = 1.4f * (1f - returnProgress);
-					m_componentModel.InHandItemOffsetOrder = new Vector3(
-						-0.08f * (1f - returnProgress),
-						-0.08f * (1f - returnProgress),
-						0.07f * (1f - returnProgress)
-					);
-					m_componentModel.InHandItemRotationOrder = new Vector3(
-						-1.7f * (1f - returnProgress),
-						0f,
-						0f
-					);
-				}
-			}
-		}
-
-		private void ApplyMusketReloadingAnimation()
-		{
-			if (m_componentModel != null)
-			{
-				float reloadProgress = (float)((m_subsystemTime.GameTime - m_animationStartTime) / m_reloadTime);
-				m_componentModel.AimHandAngleOrder = MathUtils.Lerp(1.0f, 0.5f, reloadProgress);
-				m_componentModel.InHandItemOffsetOrder = new Vector3(
-					-0.08f,
-					-0.08f,
-					0.07f - (0.1f * reloadProgress)
-				);
-				m_componentModel.InHandItemRotationOrder = new Vector3(
-					-1.7f + (0.5f * reloadProgress),
-					0f,
-					0f
-				);
-				m_componentModel.LookAtOrder = null;
-			}
-		}
-
 		private void ProcessFlameThrowerBehavior(ComponentCreature target, float distance)
 		{
 			if (!m_isAiming && !m_isFlameFiring && !m_isReloading && !m_isFlameCocking)
@@ -3200,26 +3031,10 @@ namespace Game
 			}
 			else if (m_weaponType == 2 && m_currentWeaponSlot >= 0)
 			{
-				int slotValue = m_componentInventory.GetSlotValue(m_currentWeaponSlot);
-				int data = Terrain.ExtractData(slotValue);
-				MusketBlock.LoadState loadState = MusketBlock.GetLoadState(data);
-				bool hammerState = MusketBlock.GetHammerState(data);
-
-				if (loadState != MusketBlock.LoadState.Loaded)
-				{
-					UpdateMusketLoadState(MusketBlock.LoadState.Loaded);
-					UpdateMusketBulletType(BulletBlock.BulletType.MusketBall);
-				}
-
-				if (loadState == MusketBlock.LoadState.Loaded && !hammerState)
-				{
-					StartMusketCocking();
-				}
-				else if (loadState == MusketBlock.LoadState.Loaded && hammerState)
-				{
-					m_isAiming = true;
-					m_animationStartTime = m_subsystemTime.GameTime;
-				}
+				// No hacemos verificaciones de carga; la recarga se maneja en ProcessMusketBehavior.
+				// Simplemente ponemos el arma en estado de apuntado.
+				m_isAiming = true;
+				m_animationStartTime = m_subsystemTime.GameTime;
 			}
 			else if (m_weaponType == 3 && m_currentWeaponSlot >= 0)
 			{
@@ -3487,55 +3302,6 @@ namespace Game
 				if (m_subsystemNoise != null)
 				{
 					m_subsystemNoise.MakeNoise(firePosition, 0.5f, 25f);
-				}
-			}
-			catch { }
-		}
-
-		private void ShootMusketBullet(ComponentCreature target)
-		{
-			if (target == null) return;
-
-			try
-			{
-				Vector3 firePosition = m_componentCreature.ComponentCreatureModel.EyePosition;
-				Vector3 targetPosition = target.ComponentCreatureModel.EyePosition;
-
-				Vector3 direction = Vector3.Normalize(targetPosition - firePosition);
-				direction += new Vector3(
-					m_random.Float(-0.02f, 0.02f),
-					m_random.Float(-0.01f, 0.01f),
-					m_random.Float(-0.02f, 0.02f)
-				);
-				direction = Vector3.Normalize(direction);
-
-				int bulletBlockIndex = BlocksManager.GetBlockIndex<BulletBlock>();
-				if (bulletBlockIndex > 0)
-				{
-					int bulletData = BulletBlock.SetBulletType(0, BulletBlock.BulletType.MusketBall);
-					int bulletValue = Terrain.MakeBlockValue(bulletBlockIndex, 0, bulletData);
-
-					m_subsystemProjectiles.FireProjectile(
-						bulletValue,
-						firePosition,
-						direction * 120f,
-						Vector3.Zero,
-						m_componentCreature
-					);
-
-					Vector3 smokePosition = firePosition + direction * 0.3f;
-					if (m_subsystemParticles != null && m_subsystemTerrain != null)
-					{
-						m_subsystemParticles.AddParticleSystem(
-							new GunSmokeParticleSystem(m_subsystemTerrain, smokePosition, direction),
-							false
-						);
-					}
-
-					if (m_subsystemNoise != null)
-					{
-						m_subsystemNoise.MakeNoise(firePosition, 1f, 40f);
-					}
 				}
 			}
 			catch { }
