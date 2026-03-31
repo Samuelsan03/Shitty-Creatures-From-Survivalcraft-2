@@ -23,7 +23,8 @@ namespace Game
 		private ValuesDictionary m_valuesDictionary;
 		private StreamingSound m_currentMusic = null;
 		private bool m_isPlaying = false;
-		private double m_currentTrackStartTime; // Para temporizador de respaldo
+		private double m_currentTrackStartTime;
+		private double m_currentTrackStartRealTime;
 
 		// Variables para mostrar mensajes
 		private double m_nextTrackNameDisplayTime = 0.0;
@@ -138,12 +139,11 @@ namespace Game
 				return;
 			}
 
-			// MÉTODO 2: Temporizador de respaldo por si el estado no se actualiza
-			// Esto fuerza el cambio cuando pasa la duración real de la canción
+			// MÉTODO 2: Temporizador de respaldo usando tiempo real
 			if (m_musicDuration > 0)
 			{
-				double elapsed = m_subsystemTime.GameTime - m_currentTrackStartTime;
-				if (elapsed >= m_musicDuration + 0.5) // 0.5 segundos de margen
+				double elapsedReal = Time.RealTime - m_currentTrackStartRealTime;
+				if (elapsedReal >= m_musicDuration + 0.5)
 				{
 					StopCurrentMusic();
 					PlayRandomMusic();
@@ -311,7 +311,8 @@ namespace Game
 
 				m_isPlaying = true;
 				m_currentMusic.Play();
-				m_currentTrackStartTime = m_subsystemTime.GameTime; // Guardamos el tiempo de inicio para el respaldo
+				m_currentTrackStartTime = m_subsystemTime.GameTime;
+				m_currentTrackStartRealTime = Time.RealTime;
 
 				string nowPlayingText = LanguageControl.Get("InGameMusic", "NowPlaying", "Now playing:");
 				ShowMessageToAllPlayers(nowPlayingText);
