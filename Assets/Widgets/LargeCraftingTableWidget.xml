@@ -6,7 +6,9 @@
   <InventorySlotWidget Name="CraftingRemainsSlot" CanvasWidget.Position="550, 320" >
     <LabelWidget Text="..." FontScale="0.9" Color="0, 0, 0, 96" HorizontalAlignment="Center" VerticalAlignment="Center"/>
   </InventorySlotWidget>
-  <LabelWidget CanvasWidget.Position="26, 14" Text="" FontScale="0.9" Color="255, 255, 255, 192"/>
-  <LabelWidget CanvasWidget.Position="400, 14" Text="" FontScale="0.9" Color="255, 255, 255, 192"/>
+  <!-- Título de la cuadrícula de crafteo (debajo de los 5x5 slots) -->
+  <LabelWidget CanvasWidget.Position="16, 390" Text="[LargeCraftingTableWidget:LargeCraftingGrid]" FontScale="0.9" Color="255, 255, 255, 192"/>
+  <!-- Título del inventario (debajo de los slots de resultado y resto) -->
+  <LabelWidget CanvasWidget.Position="400, 410" Text="[LargeCraftingTableWidget:Inventory]" FontScale="0.9" Color="255, 255, 255, 192"/>
   <ArrowLineWidget Color="0, 0, 0, 96" Width="8" ArrowWidth="24" AbsoluteCoordinates="true" PointsString="390, 350; 405, 350; 450, 350" />
 </CraftingTableWidget>
