@@ -36,16 +36,20 @@ namespace Game
 		private Texture2D currentTexture;
 		private Texture2D nextTexture;
 		private int currentIndex = 0;
+		private int nextIndex = 0;   // Almacena el índice de la siguiente textura
 
 		// Tiempos ajustables (en segundos)
-		private const float ShowDuration = 5f;        // Tiempo que se ve la imagen
-		private const float FadeDuration = 0.5f;      // Duración del fundido (entrada y salida)
-		private const float HoldBlackDuration = 0f;    // Pausa en negro entre imágenes (0 = cambio inmediato)
+		private const float ShowDuration = 5f;
+		private const float FadeDuration = 0.5f;
+		private const float HoldBlackDuration = 0f;
+
+		// Generador de números aleatorios
+		private static Random m_random = new Random();
 
 		public NewPanoramaWidget()
 		{
-			Engine.Random random = new Engine.Random();
-			currentIndex = random.Int(0, WallpaperPaths.Length - 1);
+			// Elegir índice inicial aleatorio
+			currentIndex = m_random.Int(0, WallpaperPaths.Length - 1);
 			currentTexture = ContentManager.Get<Texture2D>(WallpaperPaths[currentIndex]);
 		}
 
@@ -82,7 +86,19 @@ namespace Game
 					{
 						m_transitionState = TransitionState.SwitchingTexture;
 						m_transitionTime = 0f;
-						int nextIndex = (currentIndex + 1) % WallpaperPaths.Length;
+
+						// Seleccionar índice aleatorio diferente al actual (si hay más de una imagen)
+						if (WallpaperPaths.Length > 1)
+						{
+							do
+							{
+								nextIndex = m_random.Int(0, WallpaperPaths.Length - 1);
+							} while (nextIndex == currentIndex);
+						}
+						else
+						{
+							nextIndex = 0;
+						}
 						nextTexture = ContentManager.Get<Texture2D>(WallpaperPaths[nextIndex]);
 					}
 					break;
@@ -92,7 +108,7 @@ namespace Game
 					if (m_transitionTime >= 0.05f) // breve pausa para cargar
 					{
 						currentTexture = nextTexture;
-						currentIndex = (currentIndex + 1) % WallpaperPaths.Length;
+						currentIndex = nextIndex;   // Actualizar el índice actual directamente
 						nextTexture = null;
 
 						m_transitionState = TransitionState.FadingFromBlack;
