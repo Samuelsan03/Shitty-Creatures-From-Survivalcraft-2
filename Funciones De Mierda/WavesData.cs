@@ -16,8 +16,8 @@ namespace Game
 			// 1. Intentar cargar con ContentManager (recomendado)
 			try
 			{
-				// Ruta esperada: Waves/Waves.xml en los recursos del mod
-				root = ContentManager.Get<XElement>("Waves/Waves");
+				// Ruta esperada: Waves/Waves Programming.xml en los recursos del mod
+				root = ContentManager.Get<XElement>("Waves/Waves Programming");
 			}
 			catch (Exception ex)
 			{
@@ -36,8 +36,8 @@ namespace Game
 					{
 						string[] filePaths = new string[]
 						{
-							Path.Combine(modDir, "Waves.xml"),
-							Path.Combine(modDir, "Waves", "Waves.xml")
+							Path.Combine(modDir, "Waves Programming.xml"),
+							Path.Combine(modDir, "Waves Programming", "Waves Programming.xml")
 						};
 						foreach (var filePath in filePaths)
 						{
