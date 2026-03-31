@@ -1411,188 +1411,53 @@ namespace Game
 				m_componentPathfinding.Destination = null;
 			}
 
-			// --- ELIMINADO: No forzar rotación manual ---
-			// (La rotación se realizará suavemente mediante LookAtOrder)
-
 			if (!m_isThrowableAiming && !m_isThrowableThrowing)
 			{
-				StartThrowableAiming();
+				m_isThrowableAiming = true;
+				m_animationStartTime = m_subsystemTime.GameTime;
+
+				// Iniciar apuntado con ComponentMiner.Aim
+				if (m_componentMiner != null)
+				{
+					Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
+					Vector3 targetPos = target.ComponentCreatureModel.EyePosition;
+					Vector3 dir = Vector3.Normalize(targetPos - eyePos);
+					Ray3 aimRay = new Ray3(eyePos, dir);
+					m_componentMiner.Aim(aimRay, AimState.InProgress);
+				}
 			}
 
 			if (m_isThrowableAiming)
 			{
-				ApplyThrowableAimingAnimation(target);
+				// Actualizar apuntado continuamente
+				if (m_componentMiner != null)
+				{
+					Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
+					Vector3 targetPos = target.ComponentCreatureModel.EyePosition;
+					Vector3 dir = Vector3.Normalize(targetPos - eyePos);
+					Ray3 aimRay = new Ray3(eyePos, dir);
+					m_componentMiner.Aim(aimRay, AimState.InProgress);
+				}
 
 				if (m_subsystemTime.GameTime - m_animationStartTime >= m_throwableAimTime)
 				{
 					m_isThrowableAiming = false;
-					ThrowThrowableWeapon(target);
-				}
-			}
-			else if (m_isThrowableThrowing)
-			{
-				ApplyThrowableThrowingAnimation();
 
-				if (m_subsystemTime.GameTime - m_throwableThrowTime >= 0.3f)
-				{
-					m_isThrowableThrowing = false;
-
-					int slotValue = m_componentInventory.GetSlotValue(m_currentWeaponSlot);
-					if (slotValue != 0)
+					// Completar apuntado y lanzar
+					if (m_componentMiner != null)
 					{
-						StartThrowableAiming();
+						Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
+						Vector3 targetPos = target.ComponentCreatureModel.EyePosition;
+						Vector3 dir = Vector3.Normalize(targetPos - eyePos);
+						Ray3 aimRay = new Ray3(eyePos, dir);
+						m_componentMiner.Aim(aimRay, AimState.Completed);
 					}
-					else
-					{
-						ResetWeaponState();
-					}
-				}
-				if (m_componentModel != null)
-				{
-					m_componentModel.AimHandAngleOrder = 0f;
-					m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
-					m_componentModel.InHandItemRotationOrder = Vector3.Zero;
-					m_componentModel.LookAtOrder = null;
-				}
-			}
-		}
 
-		private void ApplyThrowableAimingAnimation(ComponentCreature target)
-		{
-			if (m_componentModel != null)
-			{
-				// VALOR DIRECTO: 3f - Brazo extendido hacia adelante como el jugador
-				m_componentModel.AimHandAngleOrder = 3f;
-
-				if (m_currentWeaponSlot >= 0)
-				{
-					int slotValue = m_componentInventory.GetSlotValue(m_currentWeaponSlot);
-					Block block = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)];
-
-					// Valores CORRECTOS con Y negativo para que el objeto esté en la mano
-					if (block is SpearBlock || block is LongspearBlock)
-					{
-						m_componentModel.InHandItemOffsetOrder = new Vector3(0.05f, -0.1f, 0.1f);
-						m_componentModel.InHandItemRotationOrder = new Vector3(3.14159f, 0.3f, 0f);
-					}
-					else if (block is BombBlock || block is IncendiaryBombBlock || block is PoisonBombBlock)
-					{
-						m_componentModel.InHandItemOffsetOrder = new Vector3(0.1f, -0.1f, 0.2f);
-						m_componentModel.InHandItemRotationOrder = new Vector3(0.2f, 0.5f, 0.1f);
-					}
-					else if (block is SnowballBlock)
-					{
-						m_componentModel.InHandItemOffsetOrder = new Vector3(0.1f, -0.1f, 0.15f);
-						m_componentModel.InHandItemRotationOrder = new Vector3(0.1f, 0.2f, 0f);
-					}
-					else
-					{
-						m_componentModel.InHandItemOffsetOrder = new Vector3(0.08f, -0.1f, 0.12f);
-						m_componentModel.InHandItemRotationOrder = new Vector3(0.15f, 0.3f, 0f);
-					}
-				}
-
-				if (target != null)
-				{
-					m_componentModel.LookAtOrder = new Vector3?(target.ComponentCreatureModel.EyePosition);
-				}
-			}
-		}
-
-		private void ApplyThrowableThrowingAnimation()
-		{
-			if (m_componentModel != null)
-			{
-				float throwProgress = (float)((m_subsystemTime.GameTime - m_throwableThrowTime) / 0.3f);
-
-				// CreatureAI: valor directo 4f
-				// ZombieAI2: podemos usar el mismo valor directo ya que está en otra clase
-				m_componentModel.AimHandAngleOrder = 4f * (1f - throwProgress);
-
-				// Los offsets vuelven a cero gradualmente
-				m_componentModel.InHandItemOffsetOrder = Vector3.Lerp(
-					new Vector3(0.08f, -0.1f, 0.12f),
-					Vector3.Zero,
-					throwProgress
-				);
-
-				m_componentModel.InHandItemRotationOrder = Vector3.Lerp(
-					new Vector3(0.15f, 0.3f, 0f),
-					Vector3.Zero,
-					throwProgress
-				);
-			}
-		}
-
-		private void ThrowThrowableWeapon(ComponentCreature target)
-		{
-			if (target == null) return;
-
-			try
-			{
-				int slotValue = m_componentInventory.GetSlotValue(m_currentWeaponSlot);
-				if (slotValue == 0)
-				{
+					// El lanzamiento ya se realizó, reiniciar estado
 					ResetWeaponState();
-					return;
 				}
-
-				m_isThrowableThrowing = true;
-				m_throwableThrowTime = m_subsystemTime.GameTime;
-
-				Block block = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)];
-
-				// Posición de lanzamiento desde la mano - ORIGINAL RESTAURADA
-				Vector3 throwPosition = m_componentCreature.ComponentCreatureModel.EyePosition +
-									   m_componentCreature.ComponentBody.Matrix.Right * 0.3f +
-									   m_componentCreature.ComponentBody.Matrix.Up * 0.1f +
-									   m_componentCreature.ComponentBody.Matrix.Forward * 0.2f; // Pequeño offset frontal
-
-				Vector3 targetPosition = target.ComponentCreatureModel.EyePosition;
-				Vector3 direction = Vector3.Normalize(targetPosition - throwPosition);
-
-				// CORRECCIÓN: Asegurar que no apunte al suelo
-				if (target.ComponentBody.Position.Y > m_componentCreature.ComponentBody.Position.Y && direction.Y < 0.1f)
-				{
-					direction.Y = 0.2f;
-					direction = Vector3.Normalize(direction);
-				}
-
-				// Spread normal para lanzables
-				direction += new Vector3(
-					m_random.Float(-0.02f, 0.02f),
-					m_random.Float(-0.015f, 0.015f),
-					m_random.Float(-0.02f, 0.02f)
-				);
-				direction = Vector3.Normalize(direction);
-
-				float speed = block.GetProjectileSpeed(slotValue);
-				if (speed < 15f) speed = 22f; // Velocidad aumentada para trayectoria más recta
-
-				Vector3 angularVelocity = new Vector3(
-					m_random.Float(8f, 12f),
-					m_random.Float(8f, 12f),
-					m_random.Float(8f, 12f)
-				);
-
-				if (m_subsystemProjectiles.FireProjectile(
-					slotValue,
-					throwPosition,
-					direction * speed,
-					angularVelocity,
-					m_componentCreature) != null)
-				{
-					m_componentInventory.RemoveSlotItems(m_currentWeaponSlot, 1);
-					m_subsystemAudio.PlaySound("Audio/Throw", 0.3f, m_random.Float(-0.15f, 0.15f),
-						m_componentCreature.ComponentBody.Position, 3f, false);
-				}
-			}
-			catch (Exception)
-			{
-				ResetWeaponState();
 			}
 		}
-
 		private void StartFirearmAiming()
 		{
 			m_isFirearmAiming = true;
