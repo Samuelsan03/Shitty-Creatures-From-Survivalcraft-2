@@ -30,10 +30,10 @@ namespace Game
 		// Control de spawn
 		private float m_spawnTimer;
 		private float m_spawnInterval = 2f;
-		private const int MaxCreaturesPerArea = 150;
-		private const int MaxGlobalCreatures = 200;
-		private const int MaxSpawnsPerFrame = 5;          // Aumentado para spawn grupal
-		private const int GroupSpawnCount = 3;            // Criaturas extra por grupo
+		private const int MaxCreaturesPerArea = 60;   // antes 150
+		private const int MaxGlobalCreatures = 80;    // antes 200
+		private const int MaxSpawnsPerFrame = 3;      // antes 5
+		private const int GroupSpawnCount = 2;        // antes 3
 
 		// Estado de jefes
 		private bool m_bossBattleActive;
@@ -489,13 +489,14 @@ namespace Game
 			{
 				m_currentWaveEntries = entries;
 				m_currentWave = wave;
-				m_spawnInterval = Math.Max(0.6f, 2.0f - (wave * 0.05f));
+				// Intervalo base 2.5s, se reduce hasta un mínimo de 1.2s en oleadas altas
+				m_spawnInterval = Math.Max(1.2f, 2.5f - (wave * 0.04f));
 			}
 			else
 			{
 				m_currentWaveEntries = m_waves.ContainsKey(1) ? m_waves[1] : new List<WaveEntry>();
 				m_currentWave = 1;
-				m_spawnInterval = 2.0f;
+				m_spawnInterval = 2.5f;
 			}
 		}
 
