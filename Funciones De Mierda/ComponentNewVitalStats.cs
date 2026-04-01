@@ -115,23 +115,6 @@ namespace Game
 			return base.Eat(value);
 		}
 
-		/// <summary>
-		/// Añade una cubeta vacía exactamente en el mismo slot donde se consumió la cubeta de líquido.
-		/// El sistema base ya redujo el stack en 1, ahora solo añadimos la vacía en ese mismo slot.
-		/// </summary>
-		private void AddEmptyBucketToActiveSlot()
-		{
-			var inventory = m_componentPlayer?.ComponentMiner?.Inventory;
-			if (inventory == null) return;
-
-			int activeSlot = inventory.ActiveSlotIndex;
-			int emptyBucketIndex = BlocksManager.GetBlockIndex<EmptyBucketBlock>(throwIfNotFound: true);
-			int emptyBucketValue = Terrain.MakeBlockValue(emptyBucketIndex, 0, 0);
-			
-			// Añade la cubeta vacía en el mismo slot activo
-			inventory.AddSlotItems(activeSlot, emptyBucketValue, 1);
-		}
-
 		public virtual bool Drink(int value)
 		{
 			Block block = BlocksManager.Blocks[Terrain.ExtractContents(value)];
@@ -141,6 +124,11 @@ namespace Game
 			bool isAntidote = false;
 			bool isAntiflu = false;
 			string messageKey = null;
+
+			// Guardar referencia al inventario y slot activo
+			var inventory = m_componentPlayer?.ComponentMiner?.Inventory;
+			int activeSlot = inventory != null ? inventory.ActiveSlotIndex : -1;
+			int slotCount = (activeSlot >= 0 && inventory != null) ? inventory.GetSlotCount(activeSlot) : 0;
 
 			if (block is BoiledWaterBlock)
 			{
@@ -215,6 +203,41 @@ namespace Game
 				}
 			}
 
+			// --- REALIZAR EL REEMPLAZO ANTES DE QUE EL SISTEMA BASE CONSUMA ---
+			if (activeSlot >= 0 && inventory != null && slotCount > 0)
+			{
+				int emptyBucketIndex = BlocksManager.GetBlockIndex<EmptyBucketBlock>(throwIfNotFound: true);
+				int emptyBucketValue = Terrain.MakeBlockValue(emptyBucketIndex, 0, 0);
+
+				// Si solo había 1 cubeta, reemplazar el slot con cubeta vacía
+				if (slotCount == 1)
+				{
+					// Eliminar la cubeta líquida
+					inventory.RemoveSlotItems(activeSlot, 1);
+					// Poner la cubeta vacía en el mismo slot
+					inventory.AddSlotItems(activeSlot, emptyBucketValue, 1);
+				}
+				else
+				{
+					// Hay más de una cubeta: reducir en 1 y añadir vacía en otro slot
+					inventory.RemoveSlotItems(activeSlot, 1);
+
+					// Buscar slot vacío para la cubeta vacía
+					bool added = false;
+					for (int i = 0; i < inventory.SlotsCount; i++)
+					{
+						if (inventory.GetSlotCount(i) == 0)
+						{
+							inventory.AddSlotItems(i, emptyBucketValue, 1);
+							added = true;
+							break;
+						}
+					}
+					// Si no hay slot vacío, no se añade (inventario lleno)
+				}
+			}
+			// ----------------------------------------------------------------
+
 			if (!ShittyCreaturesSettingsManager.ThirstEnabled)
 			{
 				m_subsystemAudio?.PlaySound("Audio/UI/drinking", 1f, 0f, 0f, 0f);
@@ -259,7 +282,6 @@ namespace Game
 					}
 				}
 
-				AddEmptyBucketToActiveSlot();
 				return true;
 			}
 
@@ -339,7 +361,6 @@ namespace Game
 				}
 			}
 
-			AddEmptyBucketToActiveSlot();
 			return true;
 		}
 
