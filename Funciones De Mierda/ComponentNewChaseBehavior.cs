@@ -847,9 +847,25 @@ namespace Game
 				{
 					if (m_componentPathfinding.m_componentPilot.Destination == null)
 					{
-						Vector3 lateralMove = m_componentCreature.ComponentBody.Position +
-							new Vector3(3f * m_random.Float(-1f, 1f), 0, 3f * m_random.Float(-1f, 1f));
-						m_componentPathfinding.SetDestination(lateralMove, 1f, 1.5f, 100, true, false, true, null);
+						// Calculate direction to target (horizontal)
+						Vector3 toTarget = m_target.ComponentBody.Position - m_componentCreature.ComponentBody.Position;
+						toTarget.Y = 0;
+						if (toTarget.LengthSquared() > 0.1f)
+						{
+							toTarget = Vector3.Normalize(toTarget); // Cambio aquí
+							Vector3 perpendicular = Vector3.Cross(toTarget, Vector3.UnitY);
+							// Elegir dirección aleatoria (izquierda o derecha)
+							float direction = m_random.Float(0f, 1f) > 0.5f ? 1f : -1f;
+							// Moverse 5 metros hacia un lado
+							Vector3 lateralMove = m_componentCreature.ComponentBody.Position + direction * perpendicular * 5f;
+							m_componentPathfinding.SetDestination(lateralMove, 1f, 1.5f, 100, true, false, true, null);
+						}
+						else
+						{
+							Vector3 lateralMove = m_componentCreature.ComponentBody.Position +
+								new Vector3(3f * m_random.Float(-1f, 1f), 0, 3f * m_random.Float(-1f, 1f));
+							m_componentPathfinding.SetDestination(lateralMove, 1f, 1.5f, 100, true, false, true, null);
+						}
 					}
 				}
 				return;
@@ -1467,13 +1483,30 @@ namespace Game
 			if (!HasLineOfSightToTarget())
 			{
 				CancelRangedAim();
+
 				if (m_componentPathfinding.Destination != null && !m_componentPathfinding.IsStuck)
 				{
 					if (m_componentPathfinding.m_componentPilot.Destination == null)
 					{
-						Vector3 lateralMove = m_componentCreature.ComponentBody.Position +
-							new Vector3(3f * m_random.Float(-1f, 1f), 0, 3f * m_random.Float(-1f, 1f));
-						m_componentPathfinding.SetDestination(lateralMove, 1f, 1.5f, 100, true, false, true, null);
+						// Calculate direction to target (horizontal)
+						Vector3 toTarget = m_target.ComponentBody.Position - m_componentCreature.ComponentBody.Position;
+						toTarget.Y = 0;
+						if (toTarget.LengthSquared() > 0.1f)
+						{
+							toTarget = Vector3.Normalize(toTarget); // Cambio aquí
+							Vector3 perpendicular = Vector3.Cross(toTarget, Vector3.UnitY);
+							// Elegir dirección aleatoria (izquierda o derecha)
+							float direction = m_random.Float(0f, 1f) > 0.5f ? 1f : -1f;
+							// Moverse 5 metros hacia un lado
+							Vector3 lateralMove = m_componentCreature.ComponentBody.Position + direction * perpendicular * 5f;
+							m_componentPathfinding.SetDestination(lateralMove, 1f, 1.5f, 100, true, false, true, null);
+						}
+						else
+						{
+							Vector3 lateralMove = m_componentCreature.ComponentBody.Position +
+								new Vector3(3f * m_random.Float(-1f, 1f), 0, 3f * m_random.Float(-1f, 1f));
+							m_componentPathfinding.SetDestination(lateralMove, 1f, 1.5f, 100, true, false, true, null);
+						}
 					}
 				}
 				return;
