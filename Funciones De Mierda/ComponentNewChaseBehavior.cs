@@ -449,14 +449,14 @@ namespace Game
 			return cosAngle >= cosHalfAngle;
 		}
 
-		private void ManageWeaponSwitching(bool inMeleeRange)
+		private void ManageWeaponSwitching(bool shouldUseMelee)
 		{
 			if (m_componentMiner?.Inventory == null) return;
 
 			if (m_isAimingThrowable)
 				return;
 
-			if (inMeleeRange)
+			if (shouldUseMelee)
 			{
 				if (!IsCurrentWeaponMelee)
 				{
@@ -548,11 +548,13 @@ namespace Game
 				m_chaseTime -= dt;
 				m_componentCreature.ComponentCreatureModel.LookAtOrder = new Vector3?(m_target.ComponentCreatureModel.EyePosition);
 
+				float distance = GetDistanceToTarget();
 				bool inMeleeRange = IsTargetInAttackRange(m_target.ComponentBody);
+				bool shouldUseMelee = distance <= RangedAttackRange.X;
 
 				if (!m_isAimingThrowable)
 				{
-					ManageWeaponSwitching(inMeleeRange);
+					ManageWeaponSwitching(shouldUseMelee);
 				}
 
 				if (inMeleeRange)
