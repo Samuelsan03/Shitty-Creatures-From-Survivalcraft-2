@@ -61,6 +61,7 @@ namespace Game
 
 		private Vector3 m_lastStuckCheckPosition;
 		private double m_stuckDetectionStartTime;
+		private double m_lastLateralMoveTime;
 
 		// ===== CAMPOS PRIVADOS =====
 		private SubsystemTerrain m_subsystemTerrain;
@@ -843,22 +844,18 @@ namespace Game
 
 			if (!HasLineOfSightToTarget())
 			{
-				CancelThrowableAim();
-
-				if (m_componentPathfinding.Destination != null && !m_componentPathfinding.IsStuck)
+				// NO se cancela el apuntado, solo se mueve lateralmente sin perder el progreso
+				if (!m_componentPathfinding.IsStuck)
 				{
-					if (m_componentPathfinding.m_componentPilot.Destination == null)
+					if (m_subsystemTime.GameTime - m_lastLateralMoveTime > 1.0)
 					{
-						// Calculate direction to target (horizontal)
 						Vector3 toTarget = m_target.ComponentBody.Position - m_componentCreature.ComponentBody.Position;
 						toTarget.Y = 0;
 						if (toTarget.LengthSquared() > 0.1f)
 						{
-							toTarget = Vector3.Normalize(toTarget); // Cambio aquí
+							toTarget = Vector3.Normalize(toTarget);
 							Vector3 perpendicular = Vector3.Cross(toTarget, Vector3.UnitY);
-							// Elegir dirección aleatoria (izquierda o derecha)
 							float direction = m_random.Float(0f, 1f) > 0.5f ? 1f : -1f;
-							// Moverse 5 metros hacia un lado
 							Vector3 lateralMove = m_componentCreature.ComponentBody.Position + direction * perpendicular * 5f;
 							m_componentPathfinding.SetDestination(lateralMove, 1f, 1.5f, 100, true, false, true, null);
 						}
@@ -868,6 +865,7 @@ namespace Game
 								new Vector3(3f * m_random.Float(-1f, 1f), 0, 3f * m_random.Float(-1f, 1f));
 							m_componentPathfinding.SetDestination(lateralMove, 1f, 1.5f, 100, true, false, true, null);
 						}
+						m_lastLateralMoveTime = m_subsystemTime.GameTime;
 					}
 				}
 				return;
