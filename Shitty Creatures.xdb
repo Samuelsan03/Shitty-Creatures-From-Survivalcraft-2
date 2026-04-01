@@ -82,8 +82,7 @@
 <MemberComponentTemplate Name="NewAutoInteract" Guid="c11cc6e7-51f7-4e0b-89e5-dc6b2efffb9d" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="NewHumanModel" Guid="2c44bbd7-4295-4095-8bad-89a3e537dcaf" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="Class" Guid="d612b57d-c627-4195-9f9b-58d1f45d2849" Value="Game.ComponentNewHumanModel" Type="string"/>
+<MemberComponentTemplate Name="HumanModel" Guid="2c44bbd7-4295-4095-8bad-89a3e537dcaf" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
     <Parameter Name="ModelName" Guid="b5b8801b-7a64-4c9c-8605-30549cce5206" Value="Models/HumanFemale" Type="string"/>
     <Parameter Name="TextureOverride" Guid="b96b887e-339f-4fb8-abe3-89df35cbdf71" Value="Textures/Naomi" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="21953476-fdae-40ff-90f1-720479650054" Value="0.65" Type="float"/>
@@ -225,8 +224,7 @@
                 <Parameter Name="AttackPower" Guid="a3b4c5d6-e7f8-4m90-9n12-c3d4e5f6a7b8" Value="3.0" Type="float"/>
                 <Parameter Name="AutoInteractRate" Guid="e8855440-a6c0-4c7d-9045-ca4b93bf20c8" Value="1.0" Type="float"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="NewHumanModel" Guid="77ea2d19-7ff6-4ae8-bdd1-a2cd0d39896b" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="Class" Guid="9e285bed-0703-440b-98f0-d4ce06672f83" Value="Game.ComponentNewHumanModel" Type="string"/>
+            <MemberComponentTemplate Name="HumanModel" Guid="77ea2d19-7ff6-4ae8-bdd1-a2cd0d39896b" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
     <Parameter Name="ModelName" Guid="7bebf7d5-537c-431e-aad9-ff3932c37364" Value="Models/HumanMale" Type="string"/>
     <Parameter Name="TextureOverride" Guid="cf888be8-acef-41ee-a61f-2970f0c6e045" Value="Textures/Ricardo" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="1bfdf67d-b626-4e39-9400-42c2fb1a4582" Value="0.65" Type="float"/>
@@ -364,10 +362,9 @@
     <MemberComponentTemplate Name="Miner" Guid="f0a1b2c3-d4e5-7678-def0-123456789abc" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="a1b2c3d4-e5f6-7789-ef01-23456789abcd" Value="4.0" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="NewHumanModel" Guid="b3fb39a9-1c91-4bf2-9bac-faeb8dc45e0f" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
+    <MemberComponentTemplate Name="HumanModel" Guid="b3fb39a9-1c91-4bf2-9bac-faeb8dc45e0f" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
     <Parameter Name="ModelName" Guid="e96a69de-ddb0-4b03-942c-33f711564641" Value="Models/HumanRealist" Type="string"/>
     <Parameter Name="TextureOverride" Guid="91b886bf-6a56-4855-b4d2-63ad509d3373" Value="Textures/Paco" Type="string"/>
-    <Parameter Name="Class" Guid="01f01c9e-5976-4bf1-9ca6-3701ca8284ce" Value="Game.ComponentNewHumanModel" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="0749a285-0e22-404c-84a6-aa339eadc3fe" Value="0.65" Type="float"/>
     <Parameter Name="WalkBobHeight" Guid="63cb025e-7e23-48fe-8fb1-f29894f39f16" Value="0.045" Type="float"/>
     <Parameter Name="WalkLegsAngle" Guid="29d6d15e-8fb9-4fe7-9994-0aeda2e8b961" Value="0.75" Type="float"/>
@@ -496,8 +493,7 @@
     <MemberComponentTemplate Name="Miner" Guid="e7f8a9b0-c1d2-7345-0123-23456789abcd" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="f8a9b0c1-d2e3-7456-1234-3456789abcde" Value="4.95" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="NewHumanModel" Guid="34c7291c-9173-483f-aa11-bae2886fe43f" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="Class" Guid="c8e44280-53f9-43f4-94d1-f146fbe8ad2f" Value="Game.ComponentNewHumanModel" Type="string"/>
+    <MemberComponentTemplate Name="HumanModel" Guid="34c7291c-9173-483f-aa11-bae2886fe43f" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
     <Parameter Name="ModelName" Guid="cc718dd9-26ac-4609-bdc9-42150bb6d3b9" Value="Models/HumanRealist" Type="string"/>
     <Parameter Name="TextureOverride" Guid="af9165f5-b26e-4335-af65-f630c4ff994d" Value="Textures/Barack" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="b8b0492d-63f5-406e-8aeb-fc0d4e10fb53" Value="0.65" Type="float"/>
@@ -624,8 +620,7 @@
     <MemberComponentTemplate Name="Miner" Guid="71e06217-4d5d-439b-b4ea-a1e11d778115" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="841fa564-4d90-44a0-8071-1effc03bd6cf" Value="3.25" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="NewHumanModel" Guid="ada335c4-11de-4522-997a-c9c1d210c1c8" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="Class" Guid="19e88a3e-65e2-4555-b4d2-e25ce7ee910b" Value="Game.ComponentNewHumanModel" Type="string"/>
+    <MemberComponentTemplate Name="HumanModel" Guid="ada335c4-11de-4522-997a-c9c1d210c1c8" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
     <Parameter Name="ModelName" Guid="cee58241-9369-4896-9369-5008c438d272" Value="Models/HumanRealist" Type="string"/>
     <Parameter Name="TextureOverride" Guid="9d651bab-a582-4285-9130-7eb37d69a523" Value="Textures/El Marihuanero" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="8f0a9667-32b9-4853-9a82-9c31bc69f1f2" Value="0.65" Type="float"/>
@@ -773,8 +768,7 @@
     <MemberComponentTemplate Name="Miner" Guid="5226597d-239d-4f09-a61f-147907109158" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="02c0ca9d-43ea-4533-be55-b241256d234e" Value="4.85" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="NewHumanModel" Guid="f136c6cb-e40c-44c3-8f53-648aed13fadd" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="Class" Guid="7cee18ad-abd7-418c-b449-576f45ba2642" Value="Game.ComponentNewHumanModel" Type="string"/>
+    <MemberComponentTemplate Name="HumanModel" Guid="f136c6cb-e40c-44c3-8f53-648aed13fadd" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
     <Parameter Name="ModelName" Guid="004ebb63-8729-4b7b-bfe2-6836c6988724" Value="Models/HumanRealist" Type="string"/>
     <Parameter Name="TextureOverride" Guid="79ce85b3-7fcb-40ed-9600-17a7ff1c5027" Value="Textures/El Marihuanero Mamon" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="b5492ec4-4640-473e-972f-8950ce34ce3b" Value="0.65" Type="float"/>
@@ -908,8 +902,7 @@
     <MemberComponentTemplate Name="Miner" Guid="38afa6db-b090-4cef-8ce6-e05353b1ff99" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="0f54f33e-1459-4ccf-81b9-66f595dbfe07" Value="4.25" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="NewHumanModel" Guid="fd92f830-10af-423c-b713-c8a907fa8872" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="Class" Guid="2893e6da-9c91-4682-9ac1-d04277882841" Value="Game.ComponentNewHumanModel" Type="string"/>
+    <MemberComponentTemplate Name="HumanModel" Guid="fd92f830-10af-423c-b713-c8a907fa8872" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
     <Parameter Name="ModelName" Guid="4b53b6d5-51a1-42a5-a6bb-4b5648c3b897" Value="Models/HumanMale" Type="string"/>
     <Parameter Name="TextureOverride" Guid="a43801af-cfd7-4b2c-ac1d-43b827145524" Value="Textures/FumadorQuimico" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="ed9c86d2-de07-4ac0-8d0a-4b994d8df617" Value="0.65" Type="float"/>
@@ -1151,8 +1144,7 @@
     <MemberComponentTemplate Name="Miner" Guid="a4b5c6d7-e8f9-8012-1234-6789abcdef09" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="b5c6d7e8-f9a0-8123-2345-789abcdef01a" Value="0.8" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="NewHumanModel" Guid="61f05716-51f1-400f-8d7d-e842f21329ca" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="Class" Guid="4b26c540-884c-4a88-9661-7717cd605e31" Value="Game.ComponentNewHumanModel" Type="string"/>
+    <MemberComponentTemplate Name="HumanModel" Guid="61f05716-51f1-400f-8d7d-e842f21329ca" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
     <Parameter Name="ModelName" Guid="0401a922-77a8-48e0-84ab-20318166ddef" Value="Models/HumanMale" Type="string"/>
     <Parameter Name="TextureOverride" Guid="dd33364e-0e02-42c4-8175-f55233b2b6e1" Value="Textures/Claude Speed" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="6e55cc6f-f254-4f3f-bbf7-28dba2b79a5b" Value="0.65" Type="float"/>
@@ -1303,8 +1295,7 @@
     <MemberComponentTemplate Name="Miner" Guid="158a2c37-3109-4a5d-9fce-951f6237e49b" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="ae4c853b-8a7b-4b84-a55a-4eb45b3ab9a3" Value="6.5" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="NewHumanModel" Guid="70ec8b87-a626-420d-b334-6dbaf8fd158f" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="Class" Guid="aca7b612-f2a8-4d3d-8b8b-3ab77a4211c4" Value="Game.ComponentNewHumanModel" Type="string"/>
+    <MemberComponentTemplate Name="HumanModel" Guid="70ec8b87-a626-420d-b334-6dbaf8fd158f" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
     <Parameter Name="ModelName" Guid="be0f1a73-9ad5-4104-b078-f67ee9d7a407" Value="Models/HumanMale" Type="string"/>
     <Parameter Name="TextureOverride" Guid="a1de04ad-14fd-43bd-a06f-197fb1d0d15f" Value="Textures/Tommy Vercetti" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="cb5d22a9-06fb-4a5d-ae6d-1abb3947dc38" Value="0.65" Type="float"/>
@@ -1430,8 +1421,7 @@
     <MemberComponentTemplate Name="Miner" Guid="c6d7e8f9-a0b1-8012-1234-6789abcdef0b" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="d7e8f9a0-b1c2-8123-2345-789abcdef01c" Value="3.0" Type="float"/>
     </MemberComponentTemplate>
-<MemberComponentTemplate Name="NewHumanModel" Guid="43e60bef-badf-4eab-8c00-3d41a78849d5" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="Class" Guid="14f7a713-62bd-43b8-997b-be5b12f45d91" Value="Game.ComponentNewHumanModel" Type="string"/>
+<MemberComponentTemplate Name="HumanModel" Guid="43e60bef-badf-4eab-8c00-3d41a78849d5" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
     <Parameter Name="ModelName" Guid="ba8c2727-20cf-4c21-ac21-63dcbd675153" Value="Models/HumanMale" Type="string"/>
     <Parameter Name="TextureOverride" Guid="7bb91170-233f-47a0-8eab-2937bf85af66" Value="Textures/LaMuerteX" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="96f2a5c1-fc87-492e-810d-4e71a8bb1998" Value="0.65" Type="float"/>
@@ -1552,8 +1542,7 @@
     <MemberComponentTemplate Name="Miner" Guid="f0a1b2c3-d4e5-7901-6789-789012345678" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="a1b2c3d4-e5f6-8012-7890-890123456789" Value="4.5" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="NewHumanModel" Guid="4c70a10f-6c08-4342-bc0b-7ce516e1f4ad" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
-    <Parameter Name="Class" Guid="0c3855fd-ce47-4605-980f-860c3df5fd33" Value="Game.ComponentNewHumanModel" Type="string"/>
+    <MemberComponentTemplate Name="HumanModel" Guid="4c70a10f-6c08-4342-bc0b-7ce516e1f4ad" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
     <Parameter Name="ModelName" Guid="59e86dbf-9276-432b-a93f-49887242bb66" Value="Models/HumanMale" Type="string"/>
     <Parameter Name="TextureOverride" Guid="6e8d9271-1c1f-48e8-811c-a03fd7262950" Value="Textures/El Senor De Las Tumbas Moradas" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="9230bc07-9601-484d-a53b-8053b942d3d2" Value="0.65" Type="float"/>
@@ -5771,7 +5760,7 @@
 			<MemberComponentTemplate Name="Miner" Guid="c0790232-ff0e-4077-86fd-983c04fde602" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
 				<Parameter Name="AttackPower" Guid="18ffa37b-6698-43aa-891b-ff71f1a71582" Value="5" Type="float"/>
 			</MemberComponentTemplate>
-			<MemberComponentTemplate Name="NewHumanModel" Guid="b06e71b8-6488-48ae-999c-42cc60704b11" InheritanceParent="da33e501-1378-4644-8b5f-ef90863234a5">
+			<MemberComponentTemplate Name="HumanModel" Guid="b06e71b8-6488-48ae-999c-42cc60704b11" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
     <Parameter Name="ModelName" Guid="2d1edb8f-dab3-4e9b-8a1e-5f7d8f646436" Value="Models/aimep3" Type="string"/>
     <Parameter Name="TextureOverride" Guid="fb083389-9830-470a-abd8-3cc729d86b21" Value="Textures/aimep3" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="77080ebc-2df1-4a99-a6ca-3da1a522d650" Value="0.65" Type="float"/>
