@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using Engine;
 using GameEntitySystem;
 using TemplatesDatabase;
@@ -125,10 +126,36 @@ namespace Game
 			bool isAntiflu = false;
 			string messageKey = null;
 
-			// Guardar referencia al inventario y slot activo
-			var inventory = m_componentPlayer?.ComponentMiner?.Inventory;
-			int activeSlot = inventory != null ? inventory.ActiveSlotIndex : -1;
-			int slotCount = (activeSlot >= 0 && inventory != null) ? inventory.GetSlotCount(activeSlot) : 0;
+			// Guardar referencia al inventario
+			var playerInventory = m_componentPlayer?.ComponentMiner?.Inventory;
+			int activeSlot = playerInventory != null ? playerInventory.ActiveSlotIndex : -1;
+
+			// Detectar si el ítem viene de un arrastre
+			bool fromDrag = false;
+			if (m_componentGui != null)
+			{
+				var gameWidget = m_componentGui.GameWidget;
+				if (gameWidget != null)
+				{
+					var dragHost = gameWidget.Children.Find<DragHostWidget>(false);
+					if (dragHost != null)
+					{
+						var dragDataField = dragHost.GetType().GetField("m_dragData", BindingFlags.NonPublic | BindingFlags.Instance);
+						if (dragDataField != null)
+						{
+							var dragData = dragDataField.GetValue(dragHost) as InventoryDragData;
+							if (dragData != null && dragData.Inventory != null && dragData.SlotIndex >= 0)
+							{
+								int dragValue = dragData.Inventory.GetSlotValue(dragData.SlotIndex);
+								if (dragValue == value)
+								{
+									fromDrag = true;
+								}
+							}
+						}
+					}
+				}
+			}
 
 			if (block is BoiledWaterBlock)
 			{
@@ -203,40 +230,31 @@ namespace Game
 				}
 			}
 
-			// --- REALIZAR EL REEMPLAZO ANTES DE QUE EL SISTEMA BASE CONSUMA ---
-			if (activeSlot >= 0 && inventory != null && slotCount > 0)
+			// --- REALIZAR EL REEMPLAZO DE LA CUBETA ---
+			if (playerInventory != null)
 			{
 				int emptyBucketIndex = BlocksManager.GetBlockIndex<EmptyBucketBlock>(throwIfNotFound: true);
 				int emptyBucketValue = Terrain.MakeBlockValue(emptyBucketIndex, 0, 0);
 
-				// Si solo había 1 cubeta, reemplazar el slot con cubeta vacía
-				if (slotCount == 1)
+				if (fromDrag)
 				{
-					// Eliminar la cubeta líquida
-					inventory.RemoveSlotItems(activeSlot, 1);
-					// Poner la cubeta vacía en el mismo slot
-					inventory.AddSlotItems(activeSlot, emptyBucketValue, 1);
+					// Modo arrastre: la cubeta original será eliminada por el sistema de arrastre,
+					// solo añadimos la vacía al inventario del jugador.
+					playerInventory.AddSlotItems(activeSlot, emptyBucketValue, 1);
 				}
 				else
 				{
-					// Hay más de una cubeta: reducir en 1 y añadir vacía en otro slot
-					inventory.RemoveSlotItems(activeSlot, 1);
-
-					// Buscar slot vacío para la cubeta vacía
-					bool added = false;
-					for (int i = 0; i < inventory.SlotsCount; i++)
+					// Modo normal: la cubeta está en el slot activo
+					int slotCount = playerInventory.GetSlotCount(activeSlot);
+					if (slotCount > 0 && playerInventory.GetSlotValue(activeSlot) == value)
 					{
-						if (inventory.GetSlotCount(i) == 0)
-						{
-							inventory.AddSlotItems(i, emptyBucketValue, 1);
-							added = true;
-							break;
-						}
+						// Eliminar una unidad de la cubeta líquida
+						playerInventory.RemoveSlotItems(activeSlot, 1);
+						// Añadir una cubeta vacía
+						playerInventory.AddSlotItems(activeSlot, emptyBucketValue, 1);
 					}
-					// Si no hay slot vacío, no se añade (inventario lleno)
 				}
 			}
-			// ----------------------------------------------------------------
 
 			if (!ShittyCreaturesSettingsManager.ThirstEnabled)
 			{
