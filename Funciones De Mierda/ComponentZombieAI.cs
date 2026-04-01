@@ -3407,16 +3407,51 @@ namespace Game
 				int bulletBlockIndex = BlocksManager.GetBlockIndex<BulletBlock>();
 				if (bulletBlockIndex > 0)
 				{
-					int bulletData = BulletBlock.SetBulletType(0, BulletBlock.BulletType.MusketBall);
-					int bulletValue = Terrain.MakeBlockValue(bulletBlockIndex, 0, bulletData);
+					// 5% de probabilidad de disparo triple
+					bool tripleShot = m_random.Int() < 0.05;
 
-					m_subsystemProjectiles.FireProjectile(
-						bulletValue,
-						firePosition,
-						direction * 120f,
-						Vector3.Zero,
-						m_componentCreature
-					);
+					if (tripleShot)
+					{
+						// Disparo triple: 3 balas con dispersión tipo escopeta
+						Vector3 right = Vector3.Normalize(Vector3.Cross(direction, Vector3.UnitY));
+						Vector3 up = Vector3.Normalize(Vector3.Cross(direction, right));
+						float spreadAngle = 0.08f;
+
+						for (int i = 0; i < 3; i++)
+						{
+							Vector3 spread = (right * m_random.Float(-spreadAngle, spreadAngle)) +
+											 (up * m_random.Float(-spreadAngle, spreadAngle)) +
+											 (direction * m_random.Float(-0.02f, 0.02f));
+							Vector3 shotDir = Vector3.Normalize(direction + spread);
+
+							BulletBlock.BulletType bulletType = GetRandomMusketBulletType();
+							int bulletData = BulletBlock.SetBulletType(0, bulletType);
+							int bulletValue = Terrain.MakeBlockValue(bulletBlockIndex, 0, bulletData);
+
+							m_subsystemProjectiles.FireProjectile(
+								bulletValue,
+								firePosition,
+								shotDir * 120f,
+								Vector3.Zero,
+								m_componentCreature
+							);
+						}
+					}
+					else
+					{
+						// Disparo normal: 1 bala con tipo aleatorio
+						BulletBlock.BulletType bulletType = GetRandomMusketBulletType();
+						int bulletData = BulletBlock.SetBulletType(0, bulletType);
+						int bulletValue = Terrain.MakeBlockValue(bulletBlockIndex, 0, bulletData);
+
+						m_subsystemProjectiles.FireProjectile(
+							bulletValue,
+							firePosition,
+							direction * 120f,
+							Vector3.Zero,
+							m_componentCreature
+						);
+					}
 
 					Vector3 smokePosition = firePosition + direction * 0.3f;
 					if (m_subsystemParticles != null && m_subsystemTerrain != null)
@@ -3436,6 +3471,12 @@ namespace Game
 			catch { }
 		}
 
+		private BulletBlock.BulletType GetRandomMusketBulletType()
+		{
+			// 33.33% de probabilidad para cada tipo de bala
+			int roll = m_random.Int(0, 2);
+			return (BulletBlock.BulletType)roll;
+		}
 		private void FireFlameThrowerShot(ComponentCreature target)
 		{
 			if (target == null) return;
