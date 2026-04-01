@@ -2032,10 +2032,6 @@ namespace Game
 			DestroyBlocksWhenStuck = valuesDictionary.GetValue<bool>("DestroyBlocksWhenStuck", false);
 			InvokeLightningOnHit = valuesDictionary.GetValue<bool>("InvokeLightningOnHit", false);
 
-			// Cargar parámetros del lanzallamas si existen en la base de datos
-			FlameThrowerAimTime = valuesDictionary.GetValue<float>("FlameThrowerAimTime", 1.5f);
-			FlameThrowerCooldown = valuesDictionary.GetValue<float>("FlameThrowerCooldown", 0.35f);
-
 			RegisterEvents();
 
 			if (ShouldProtectPlayer)
