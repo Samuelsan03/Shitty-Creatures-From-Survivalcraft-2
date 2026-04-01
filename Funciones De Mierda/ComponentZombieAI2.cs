@@ -2265,39 +2265,29 @@ namespace Game
 		{
 			if (target == null || m_componentMiner == null) return;
 
-			// Si no tenemos arma o no es un mosquete, salir
 			if (m_currentWeaponSlot < 0 || m_weaponType != 2)
 				return;
 
-			// Estado de recarga
 			if (m_isReloading)
 			{
-				// Esperar el tiempo de recarga
 				if (m_subsystemTime.GameTime - m_animationStartTime >= m_reloadTime)
 				{
-					// Seleccionar un tipo de bala aleatorio (MusketBall, Buckshot o BuckshotBall)
 					BulletBlock.BulletType randomBullet = (BulletBlock.BulletType)m_random.Int(0, 2);
 
-					// Marcar el arma como cargada con el tipo de bala aleatorio
 					UpdateMusketLoadState(MusketBlock.LoadState.Loaded);
-					UpdateMusketBulletType(randomBullet);   // ← ALEATORIO
-															// El martillo debe estar en reposo para que OnAim lo amartille al apuntar
+					UpdateMusketBulletType(randomBullet);
 					UpdateMusketHammerState(false);
 
 					m_isReloading = false;
-					// Iniciar el apuntado después de recargar
 					StartAiming();
 				}
 				return;
 			}
 
-			// Verificar si el arma está cargada
 			int slotValue = m_componentInventory.GetSlotValue(m_currentWeaponSlot);
 			int data = Terrain.ExtractData(slotValue);
 			MusketBlock.LoadState loadState = MusketBlock.GetLoadState(data);
-			bool hammerState = MusketBlock.GetHammerState(data);
 
-			// Si no está cargada, iniciar recarga
 			if (loadState != MusketBlock.LoadState.Loaded)
 			{
 				m_isAiming = false;
@@ -2306,30 +2296,47 @@ namespace Game
 				return;
 			}
 
-			// Proceso de apuntado
 			if (!m_isAiming)
 			{
 				StartAiming();
 				return;
 			}
 
-			// Durante el apuntado: llamar a ComponentMiner.Aim con estado InProgress
 			Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
 			Vector3 targetPos = target.ComponentCreatureModel.EyePosition;
 			Vector3 direction = Vector3.Normalize(targetPos - eyePos);
 			Ray3 aimRay = new Ray3(eyePos, direction);
 
-			// Llamar al sistema de apuntado (SubsystemMusketBlockBehavior se encargará de animaciones, sonidos y disparo)
 			m_componentMiner.Aim(aimRay, AimState.InProgress);
 
-			// Si el tiempo de apuntado ha pasado, completar el disparo
 			if (m_subsystemTime.GameTime - m_animationStartTime >= m_aimTime)
 			{
-				// Completar apuntado (esto activa el disparo si el arma está lista)
 				m_componentMiner.Aim(aimRay, AimState.Completed);
 
-				// El arma ahora está descargada y el martillo bajado (SubsystemMusketBlockBehavior se encarga de esto)
-				// Iniciar recarga después del disparo
+				// TRIPLE DISPARO: 5% de probabilidad de disparar los 3 tipos de bala
+				if (m_random.Float(0f, 1f) < 0.05f)
+				{
+					Vector3 shootPosition = m_componentCreature.ComponentCreatureModel.EyePosition;
+					Vector3 targetDirection = Vector3.Normalize(targetPos - shootPosition);
+
+					int bulletBlockIndex = BlocksManager.GetBlockIndex<BulletBlock>();
+
+					// Disparar MusketBall
+					int bulletData1 = BulletBlock.SetBulletType(0, BulletBlock.BulletType.MusketBall);
+					int bulletValue1 = Terrain.MakeBlockValue(bulletBlockIndex, 0, bulletData1);
+					m_subsystemProjectiles.FireProjectile(bulletValue1, shootPosition, targetDirection * 120f, Vector3.Zero, m_componentCreature);
+
+					// Disparar Buckshot
+					int bulletData2 = BulletBlock.SetBulletType(0, BulletBlock.BulletType.Buckshot);
+					int bulletValue2 = Terrain.MakeBlockValue(bulletBlockIndex, 0, bulletData2);
+					m_subsystemProjectiles.FireProjectile(bulletValue2, shootPosition, targetDirection * 120f, Vector3.Zero, m_componentCreature);
+
+					// Disparar BuckshotBall
+					int bulletData3 = BulletBlock.SetBulletType(0, BulletBlock.BulletType.BuckshotBall);
+					int bulletValue3 = Terrain.MakeBlockValue(bulletBlockIndex, 0, bulletData3);
+					m_subsystemProjectiles.FireProjectile(bulletValue3, shootPosition, targetDirection * 120f, Vector3.Zero, m_componentCreature);
+				}
+
 				m_isAiming = false;
 				m_isReloading = true;
 				m_animationStartTime = m_subsystemTime.GameTime;
