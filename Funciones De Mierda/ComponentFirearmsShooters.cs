@@ -45,6 +45,7 @@ namespace Game
 		private ComponentBanditChaseBehavior m_componentBanditChaseBehavior;
 		private ComponentZombieChaseBehavior m_componentZombieChaseBehavior;
 		private ComponentCreatureModel m_componentModel;
+		private ComponentCreatureSounds m_componentCreatureSounds; // AÑADIDO
 		private Game.Random m_random = new Game.Random();
 
 		private double m_lastShootTime;
@@ -128,6 +129,7 @@ namespace Game
 			m_componentModel = base.Entity.FindComponent<ComponentCreatureModel>(true);
 			m_componentMiner = base.Entity.FindComponent<ComponentMiner>(true);
 			m_componentPathfinding = base.Entity.FindComponent<ComponentPathfinding>(true);
+			m_componentCreatureSounds = base.Entity.FindComponent<ComponentCreatureSounds>(true);
 			if (FirearmConfigs.Count == 0)
 			{
 				InitializeFirearmConfigs();
@@ -1039,6 +1041,12 @@ namespace Game
 					pitchVariation = m_random.Float(-0.05f, 0.05f);
 				}
 				m_subsystemAudio.PlaySound(config.ShootSound, SoundVolume, pitchVariation, shootPosition, SoundRange, true);
+
+				// AÑADIDO: Reproducir sonido de ataque/enojado al disparar
+				if (m_componentCreatureSounds != null)
+				{
+					m_componentCreatureSounds.PlayAttackSound();
+				}
 			}
 			catch (Exception ex)
 			{
