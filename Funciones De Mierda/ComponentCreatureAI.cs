@@ -1376,18 +1376,27 @@ namespace Game
 
 			if (!hasLineOfSight)
 			{
-				m_isThrowableAiming = false;
-				m_isThrowableThrowing = false;
-				m_hasFirearmAimed = false;
+				// Attempt a side‑step that clears the line of sight
+				TryRepositionForLineOfSight(target);
 
-				if (m_componentModel != null)
+				// Re‑check LOS after the attempt
+				hasLineOfSight = HasClearLineOfSight(target);
+				if (!hasLineOfSight)
 				{
-					m_componentModel.AimHandAngleOrder = 0f;
-					m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
-					m_componentModel.InHandItemRotationOrder = Vector3.Zero;
-					m_componentModel.LookAtOrder = null;
+					// Still blocked – give up on the throw
+					m_isThrowableAiming = false;
+					m_isThrowableThrowing = false;
+					m_hasFirearmAimed = false;
+
+					if (m_componentModel != null)
+					{
+						m_componentModel.AimHandAngleOrder = 0f;
+						m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
+						m_componentModel.InHandItemRotationOrder = Vector3.Zero;
+						m_componentModel.LookAtOrder = null;
+					}
+					return;
 				}
-				return;
 			}
 
 			// Verificar rango
