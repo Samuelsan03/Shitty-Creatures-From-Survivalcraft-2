@@ -5784,6 +5784,9 @@
                 <Parameter Name="HealFactor" Guid="93834e2d-82ee-4d93-b6d6-e53fb4753fd6" Value="666" Type="float"/>
                 <Parameter Name="CrushResilience" Guid="ddd12785-c1c9-4f81-a6a3-4b05393c9192" Value="666" Type="float"/>
                 <Parameter Name="SpikeResilience" Guid="acde5b3e-6ee0-4930-a5a8-42b3bb8f99ce" Value="666" Type="float"/>
+                <Parameter Name="MagmaResilience" Guid="9bc15583-ecc3-4a31-8079-7f68a5b91a2a" Value="666" Type="float"/>
+                <Parameter Name="AirCapacity" Guid="1cea5238-e2d5-4958-8d48-b65b281c2ad7" Value="666" Type="float"/>
+                <Parameter Name="AirLackResilience" Guid="f737136f-fd7c-4097-bb38-61f99aedba64" Value="666" Type="float"/>
 			</MemberComponentTemplate>
 			<MemberComponentTemplate Name="WalkAroundBehavior" Guid="ad84f517-3744-4612-9799-09ad1521afa6" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
 			<MemberComponentTemplate Name="OnFire" Guid="a90ba279-067a-4792-b4f6-e358e8830c4e"/>
