@@ -563,21 +563,25 @@ namespace Game
 					CancelRangedAim();
 					CancelThrowableAim();
 
-					m_componentCreatureModel.AttackOrder = true;
-					if (m_componentCreatureModel.IsAttackHitMoment)
+					// Solo atacar si el objetivo está delante
+					if (IsTargetInFront())
 					{
-						Vector3 hitPoint;
-						ComponentBody hitBody = GetHitBody(m_target.ComponentBody, out hitPoint);
-						if (hitBody != null)
+						m_componentCreatureModel.AttackOrder = true;
+						if (m_componentCreatureModel.IsAttackHitMoment)
 						{
-							float extraChaseTime = m_isPersistent ? m_random.Float(8f, 10f) : 2f;
-							m_chaseTime = MathUtils.Max(m_chaseTime, extraChaseTime);
-							m_componentMiner.Hit(hitBody, hitPoint, m_componentCreature.ComponentBody.Matrix.Forward);
-							m_componentCreature.ComponentCreatureSounds.PlayAttackSound();
-
-							if (InvokeLightningOnHit && m_subsystemSky != null && m_random.Float(0f, 1f) < 0.05f)
+							Vector3 hitPoint;
+							ComponentBody hitBody = GetHitBody(m_target.ComponentBody, out hitPoint);
+							if (hitBody != null)
 							{
-								m_subsystemSky.MakeLightningStrike(m_target.ComponentBody.Position, true);
+								float extraChaseTime = m_isPersistent ? m_random.Float(8f, 10f) : 2f;
+								m_chaseTime = MathUtils.Max(m_chaseTime, extraChaseTime);
+								m_componentMiner.Hit(hitBody, hitPoint, m_componentCreature.ComponentBody.Matrix.Forward);
+								m_componentCreature.ComponentCreatureSounds.PlayAttackSound();
+
+								if (InvokeLightningOnHit && m_subsystemSky != null && m_random.Float(0f, 1f) < 0.05f)
+								{
+									m_subsystemSky.MakeLightningStrike(m_target.ComponentBody.Position, true);
+								}
 							}
 						}
 					}
@@ -606,6 +610,28 @@ namespace Game
 			}
 		}
 
+		private bool IsTargetInFront()
+		{
+			if (m_target == null) return false;
+
+			Vector3 forward = m_componentCreature.ComponentBody.Matrix.Forward;
+			Vector3 toTarget = m_target.ComponentBody.Position - m_componentCreature.ComponentBody.Position;
+
+			forward.Y = 0f;
+			toTarget.Y = 0f;
+
+			float dot = forward.X * toTarget.X + forward.Z * toTarget.Z;
+			float lenForward = MathF.Sqrt(forward.X * forward.X + forward.Z * forward.Z);
+			float lenToTarget = MathF.Sqrt(toTarget.X * toTarget.X + toTarget.Z * toTarget.Z);
+
+			if (lenToTarget < 0.001f) return true;
+
+			float cosAngle = dot / (lenForward * lenToTarget);
+			float halfAngleRad = 45f * MathUtils.DegToRad(1f);
+			float cosHalfAngle = MathF.Cos(halfAngleRad);
+
+			return cosAngle >= cosHalfAngle;
+		}
 		// ===== MÉTODOS DE DETECCIÓN DE OBJETOS LANZABLES =====
 		private bool HasThrowableItem(out int slotIndex, out int value)
 		{
@@ -2323,7 +2349,8 @@ namespace Game
 					}
 					else
 					{
-						if (!m_isAimingThrowable && !m_isAimingRanged)
+						// Solo las lanzables detienen el movimiento. Las armas a distancia ya no.
+						if (!m_isAimingThrowable)
 						{
 							int maxPathfindingPositions = 0;
 							if (m_isPersistent)
