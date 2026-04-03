@@ -149,8 +149,8 @@ namespace Game
 		private float m_throwableMinRange = 5f;      // AÑADIR
 		private float m_throwableMaxRange = 15.5f;     // AÑADIR
 
-		private float m_explosiveBoltMinDistance = 15f;
-		private float m_explosiveRepeatArrowMinDistance = 15f;
+		private float m_explosiveBoltMinDistance = 20f;
+		private float m_explosiveRepeatArrowMinDistance = 20f;
 
 		private float m_repeatCrossbowDrawTime = 0.3f;
 		private float m_repeatCrossbowTimeBetweenShots = 0.5f;
