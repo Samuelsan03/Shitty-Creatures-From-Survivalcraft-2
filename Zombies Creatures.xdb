@@ -147,10 +147,7 @@
         </EntityTemplate>
 
         <EntityTemplate Name="InfectedNormalTamed1" Guid="922c6e4a-ef62-456d-8167-0f8e40ef7c44" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-        <MemberComponentTemplate Name="SummonBehavior" Guid="197c9032-326b-4d61-9633-bd950f38553d">
-              <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="861dd1da-959e-4f3f-87f1-49ef8363a102"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="f85d69bc-ae81-42e4-848d-a8d02d383247"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="41e5974e-e2b7-4caf-a4e4-70f07ed3fc75"/>
+        <MemberComponentTemplate Name="SummonBehavior" Guid="197c9032-326b-4d61-9633-bd950f38553d" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
               <Parameter Name="IsEnabled" Guid="7dee6d83-74c7-4abd-b2c9-13a22e76c15a" Value="True" Type="bool"/>
             </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewChaseBehavior" Guid="54f2678d-f714-46fd-ab4b-bffa3174c32b" InheritanceParent="1db20f99-32ba-4e7a-8e76-10686a2e76e5">
@@ -433,10 +430,7 @@
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="6fe392e0-1d6e-4b23-93de-538cf07b284f"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal2:0.5;GhostNormal:0.01" Type="string" Guid="b2c61036-9885-47f5-a71f-77ba5f96f8d3"/>
 </MemberComponentTemplate>
-        <MemberComponentTemplate Name="SummonBehavior" Guid="4bcb47cc-0b06-42ab-9cbc-1614f855bb74">
-              <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="5a4e86a0-633f-4282-be16-dea86835047a"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="0afe2324-afd3-4442-92aa-9e3d108452d2"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="592321f4-d5f5-4ead-86b4-b9dd7487b989"/>
+        <MemberComponentTemplate Name="SummonBehavior" Guid="4bcb47cc-0b06-42ab-9cbc-1614f855bb74" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
               <Parameter Name="IsEnabled" Guid="8d080d24-04a8-410c-a25d-64fa492c79d1" Value="True" Type="bool"/>
             </MemberComponentTemplate>
 <MemberComponentTemplate Name="RunAwayBehavior" Guid="f261e365-6933-4508-aba9-148922b6d894" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
@@ -702,10 +696,7 @@
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="d9e18959-9d49-4a6c-b0df-3176e40b04a1"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedFast1:0.5;GhostFast:0.01" Type="string" Guid="8ece6df0-211b-47e7-bc2a-47d6aaff5640"/>
 </MemberComponentTemplate>
-        <MemberComponentTemplate Name="SummonBehavior" Guid="cce31f52-6f35-4ac2-90f9-627bebc5b35d">
-              <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="d2175b63-3d74-4702-9b23-2993a82b33c2"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="7d1e998f-153a-4dcc-98a2-94c8b750d08b"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="99d60fdd-4a4a-4bbe-a539-fab4fa7c7437"/>
+        <MemberComponentTemplate Name="SummonBehavior" Guid="cce31f52-6f35-4ac2-90f9-627bebc5b35d" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
               <Parameter Name="IsEnabled" Guid="c34cd7fd-c40c-4227-ad4b-c914da3c8349" Value="True" Type="bool"/>
             </MemberComponentTemplate>
         <MemberComponentTemplate Name="GlowingEyes" Guid="57631a66-8dae-498c-b1ee-e0f89f519443" InheritanceParent="bb8701d3-3a4f-44f7-8a1f-3a455533f632">
@@ -970,10 +961,7 @@
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="c6bc17e4-056f-453d-817b-3ca7dc135471"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedFast2:0.5;GhostFast:0.01" Type="string" Guid="f0daf486-c6c3-4b31-938c-e8b43306c82f"/>
 </MemberComponentTemplate>
-        <MemberComponentTemplate Name="SummonBehavior" Guid="3ce56f7b-6f11-4dee-b72d-a93c5a32c8a8">
-              <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="4784fea3-42eb-45fe-88f9-1984921bdfad"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="1735caee-4fc9-4e36-ae29-2215dc88beee"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="a09a0f88-b2b4-4af4-afad-e13e06a4d6c8"/>
+        <MemberComponentTemplate Name="SummonBehavior" Guid="3ce56f7b-6f11-4dee-b72d-a93c5a32c8a8" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
               <Parameter Name="IsEnabled" Guid="e5a9b74b-d6b0-4364-9acc-68b57b98fbe7" Value="True" Type="bool"/>
             </MemberComponentTemplate>
         <MemberComponentTemplate Name="GlowingEyes" Guid="aacb3d5d-fa5d-499c-8906-7a19aaee74fc" InheritanceParent="bb8701d3-3a4f-44f7-8a1f-3a455533f632">
@@ -1247,10 +1235,7 @@
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="c8e5556d-cfbb-495a-8222-33e774a20b84"/>
     <Parameter Name="DeathSpawnTemplates" Value="GhostNormal:0.01;InfectedMuscle1:0.5" Type="string" Guid="a209b406-0a3f-494d-969f-b729f96ba971"/>
 </MemberComponentTemplate>
-        <MemberComponentTemplate Name="SummonBehavior" Guid="abda865f-1bf4-4b42-941f-c75e6a900b84">
-              <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="bc589ecd-8db9-4d5b-97ae-6b501b39ae65"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="9a609470-bcba-48b1-ad29-43b3513fb5d4"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="9efc4537-d480-4e20-9236-2c15e524b39e"/>
+        <MemberComponentTemplate Name="SummonBehavior" Guid="abda865f-1bf4-4b42-941f-c75e6a900b84" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
               <Parameter Name="IsEnabled" Guid="df49972f-167f-4bcb-b9e1-52d2e3d9a52a" Value="True" Type="bool"/>
             </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewChaseBehavior" Guid="4dc4d4bb-26ed-47f6-a429-0397b5a11bff" InheritanceParent="1db20f99-32ba-4e7a-8e76-10686a2e76e5">
@@ -1633,10 +1618,7 @@
             <MemberComponentTemplate Name="HealthBarDisplay" Guid="8871c5d7-2c38-4e31-a2c5-017db1dc76f2" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
         <Parameter Name="MaxDisplayDistance" Value="19" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="SummonBehavior" Guid="58258788-85cf-474e-8b3b-1eecc0d850bb">
-              <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="8487d0d1-41b6-4d2b-a02c-777828279767"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="a7015b1d-824e-4415-a4b3-b1af390497c2"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="7f17714d-a0e7-410e-b6b8-44eb78df7777"/>
+    <MemberComponentTemplate Name="SummonBehavior" Guid="58258788-85cf-474e-8b3b-1eecc0d850bb" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
               <Parameter Name="IsEnabled" Guid="f47f8494-e8d9-4a55-acb0-1c82b4b866ef" Value="True" Type="bool"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Health" Guid="3e97e8de-18de-4e11-b901-d8f6fe1f95c2">
@@ -1801,10 +1783,7 @@
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="348ad964-a9f5-4025-9d5d-6ca15ef2c238"/>
     <Parameter Name="DeathSpawnTemplates" Value="PoisonousGhost:0.01;PoisonousInfected1:0.5" Type="string" Guid="3936b2d5-3280-4418-a4b0-19f2b8095280"/>
 </MemberComponentTemplate>
-        <MemberComponentTemplate Name="SummonBehavior" Guid="dc4179d1-f510-49ea-ada0-c9e9698cc7ea">
-              <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="e4321241-587c-458b-a11b-5a4a27dde3c7"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="736428c3-8a8f-4b48-bc0f-81452599e1bf"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="dd212e84-9cbc-404a-a51b-ce59f26969e3"/>
+        <MemberComponentTemplate Name="SummonBehavior" Guid="dc4179d1-f510-49ea-ada0-c9e9698cc7ea" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
               <Parameter Name="IsEnabled" Guid="fb97e6d8-559e-49f5-82dd-59864db139c4" Value="True" Type="bool"/>
             </MemberComponentTemplate>
         <MemberComponentTemplate Name="PoisonInfectedBehavior" Guid="6293d671-1ce9-41df-8e0d-7bf82eee59d5" InheritanceParent="d5e7f9a1-b3c5-4d9f-1a3b-5c7d9f1a3b5c">
@@ -2073,10 +2052,7 @@
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="bf8fdb1b-a052-4b3a-ab5c-155f178de6f2"/>
     <Parameter Name="DeathSpawnTemplates" Value="PoisonousGhost:0.01;PoisonousInfected2:0.5" Type="string" Guid="eb4d8aa6-57f3-4093-9edc-ed6f494e1744"/>
 </MemberComponentTemplate>
-        <MemberComponentTemplate Name="SummonBehavior" Guid="d7b4f75a-8537-4f7a-8b20-483536c3637e">
-              <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="fae42c4a-23c1-413c-821c-aa1248ac3820"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="200c5936-28dc-40c8-9e39-0173e26183b5"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="c953c3a8-52f4-4784-8c4b-c38e578946a1"/>
+        <MemberComponentTemplate Name="SummonBehavior" Guid="d7b4f75a-8537-4f7a-8b20-483536c3637e" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
               <Parameter Name="IsEnabled" Guid="24c78383-d5e2-430d-92f1-7de63907a7a9" Value="True" Type="bool"/>
             </MemberComponentTemplate>
         <MemberComponentTemplate Name="PoisonInfectedBehavior" Guid="d4f04f7f-53de-4ba7-9012-a33fe23d1a66" InheritanceParent="d5e7f9a1-b3c5-4d9f-1a3b-5c7d9f1a3b5c">
@@ -2390,10 +2366,7 @@
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="RunAwayBehavior" Guid="428cfff0-dc69-4116-a608-d010c233fbd4" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
 <MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="6ce86dd7-3dad-4c0f-b689-3fe73892bd90" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
-            <MemberComponentTemplate Name="SummonBehavior" Guid="4dd2ee70-6bb3-4a64-9d88-c8901ea8e780">
-              <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="c749edb5-26c2-496f-a40e-cd975c116404"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="e3521ad4-8b8f-4d71-b5c2-7dcd1385dfd7"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="68334ec8-2f4c-4948-90ed-0ff8682dee36"/>
+            <MemberComponentTemplate Name="SummonBehavior" Guid="4dd2ee70-6bb3-4a64-9d88-c8901ea8e780" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
               <Parameter Name="IsEnabled" Guid="5aa3bd58-627d-43d6-81ea-6f2c2b5a2443" Value="True" Type="bool"/>
             </MemberComponentTemplate>
 </EntityTemplate>
@@ -2519,10 +2492,7 @@
 </EntityTemplate>
 
 <EntityTemplate Name="InfectedFlyTamed2" Guid="54f063f3-0c55-4589-9cb5-0c7eb5ad50df" InheritanceParent="0cb14482-b936-410e-9317-66d385d7d2fd">
-<MemberComponentTemplate Name="SummonBehavior" Guid="06d0d0d3-a6bf-46a1-9204-c177270e6ea8">
-              <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="128dc8cf-40fe-4cb0-8ec0-280ed9b96b89"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="20e9d7e7-bece-43bd-a2a7-8313d76d51c0"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="3773bfc9-0174-42ea-902d-0716949fbf54"/>
+<MemberComponentTemplate Name="SummonBehavior" Guid="06d0d0d3-a6bf-46a1-9204-c177270e6ea8" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
               <Parameter Name="IsEnabled" Guid="68c1a514-4cb5-4bd9-8baa-5021876a388f" Value="True" Type="bool"/>
             </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewChaseBehavior" Guid="7e3805c9-f7f4-4787-a638-9fb770929d67" InheritanceParent="1db20f99-32ba-4e7a-8e76-10686a2e76e5">
@@ -2749,10 +2719,7 @@
 </EntityTemplate>
 
 <EntityTemplate Name="InfectedFlyTamed3" Guid="0faf17b8-76eb-4c0b-8e09-4906d27b6e4f" InheritanceParent="0cb14482-b936-410e-9317-66d385d7d2fd">
-<MemberComponentTemplate Name="SummonBehavior" Guid="682c5c35-7d1f-48de-bfcd-43be2f2ced2b">
-              <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="0eff7dfa-dabe-45a7-9bb5-e503f62c2e9d"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="317497d4-7ff7-4fb2-a867-ce11525d5668"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="cb611bcb-ef54-4f13-ba34-31033ed9976e"/>
+<MemberComponentTemplate Name="SummonBehavior" Guid="682c5c35-7d1f-48de-bfcd-43be2f2ced2b" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
               <Parameter Name="IsEnabled" Guid="dfa7525b-616c-4870-9325-7005d820fc45" Value="True" Type="bool"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="255c35ff-b7cd-4e49-bf45-25549e86cdf9" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
@@ -2995,10 +2962,7 @@
         <Parameter Name="StubbornProbability" Guid="8ce32e2c-ce1e-4b8f-a5b3-9cb72110378e" Value="0.3" Type="float"/>
         <Parameter Name="StubbornEndTime" Guid="7b54ed15-948d-488c-8dd8-517c3e2e9833" Value="0" Type="double"/>
     </MemberComponentTemplate>
-<MemberComponentTemplate Name="SummonBehavior" Guid="e36ef8fd-bed1-4a0f-8567-415873b9f749">
-              <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="4c80e3c0-bcf1-46d9-b213-fbf079e800c4"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="74a5ffc5-8f64-4d79-a6ea-ef32feb79b79"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="c5f275f3-ec5f-4dcd-89ab-7321d917b13f"/>
+<MemberComponentTemplate Name="SummonBehavior" Guid="e36ef8fd-bed1-4a0f-8567-415873b9f749" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
               <Parameter Name="IsEnabled" Guid="9571295b-dd9a-4d09-91ee-c942fbe03225" Value="True" Type="bool"/>
             </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewChaseBehavior" Guid="df17dfa9-c9a3-4028-b79d-47fdc75e679f" InheritanceParent="1db20f99-32ba-4e7a-8e76-10686a2e76e5">
@@ -3275,10 +3239,7 @@
   <Parameter Name="DestroyBlocks" Value="true" Type="bool"/>
   <Parameter Name="PreventExplosion" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-        <MemberComponentTemplate Name="SummonBehavior" Guid="b3600731-9c19-4c79-a5fd-661edd5a3909">
-              <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="12007928-d108-44b1-a050-cc1ea9edc75c"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="3e898a7d-5067-4073-a757-c53a3c964b55"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="159bb9b5-76fa-4a59-850a-864d6919f507"/>
+        <MemberComponentTemplate Name="SummonBehavior" Guid="b3600731-9c19-4c79-a5fd-661edd5a3909" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
               <Parameter Name="IsEnabled" Guid="0ae628f0-9433-475d-809e-8adfbca432ec" Value="True" Type="bool"/>
             </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewChaseBehavior" Guid="79de41dd-0575-4789-85f8-a0c38d085e4a" InheritanceParent="1db20f99-32ba-4e7a-8e76-10686a2e76e5">
@@ -3571,10 +3532,7 @@
   <Parameter Name="FireDuration" Value="10" Type="float"/>
   <Parameter Name="PreventExplosion" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="SummonBehavior" Guid="f15fbb7a-20f8-4964-9193-e239ab500ced">
-              <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="72e5fc57-645e-449d-ab4a-b4f0c163e210"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="2cb6269d-be19-472d-b566-fe568813c250"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="1782ceae-8bac-4d56-a827-6c025a79f697"/>
+<MemberComponentTemplate Name="SummonBehavior" Guid="f15fbb7a-20f8-4964-9193-e239ab500ced" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
               <Parameter Name="IsEnabled" Guid="c665f19a-3315-40bc-8b87-25af33eec7fa" Value="True" Type="bool"/>
             </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewChaseBehavior" Guid="a4a1376c-87e4-4498-af8d-2eadef247fde" InheritanceParent="1db20f99-32ba-4e7a-8e76-10686a2e76e5">
@@ -3852,10 +3810,7 @@
   <Parameter Name="ExplosionPressure" Value="40" Type="float"/>
   <Parameter Name="PreventExplosion" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-        <MemberComponentTemplate Name="SummonBehavior" Guid="8eae594a-f160-4973-8d86-4e3d76c5e3a4">
-              <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="485ca708-1512-4193-8dea-cb83160f2842"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="25627386-9e41-471c-9537-f4471c849527"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="f56b36a1-32cf-4eec-8bca-d9a6809c93b8"/>
+        <MemberComponentTemplate Name="SummonBehavior" Guid="8eae594a-f160-4973-8d86-4e3d76c5e3a4" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
               <Parameter Name="IsEnabled" Guid="aa766323-bd44-4279-98ee-9dc4ae1146f4" Value="True" Type="bool"/>
             </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewChaseBehavior" Guid="a5bf92eb-e99b-4049-89b2-12f6d27432c5" InheritanceParent="1db20f99-32ba-4e7a-8e76-10686a2e76e5">
@@ -4125,10 +4080,7 @@
     <Parameter Name="KnockbackForce" Value="999" Type="float"/>
     <Parameter Name="KnockbackChance" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
-        <MemberComponentTemplate Name="SummonBehavior" Guid="b80f62d9-c54f-4495-8fe0-a712d994ca79">
-              <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="693659c4-dee8-470b-876b-1c55ee88d41f"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="f9bd5ebd-dfb4-42b4-9788-8b6c7fc7540c"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="c7a9cf6f-c324-425c-b358-5b75af058e34"/>
+        <MemberComponentTemplate Name="SummonBehavior" Guid="b80f62d9-c54f-4495-8fe0-a712d994ca79" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
               <Parameter Name="IsEnabled" Guid="a026f632-5309-4f7a-bceb-5a4cf38829ff" Value="True" Type="bool"/>
             </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewChaseBehavior" Guid="2fc815e3-6833-4859-8329-5212d2b21b76" InheritanceParent="1db20f99-32ba-4e7a-8e76-10686a2e76e5">
@@ -4386,10 +4338,7 @@
     <Parameter Name="KnockbackForce" Value="999" Type="float"/>
     <Parameter Name="KnockbackChance" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
-        <MemberComponentTemplate Name="SummonBehavior" Guid="7bb4c758-aaaf-4d29-b2bb-1e4624716932">
-              <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="51cf0387-0fe3-42f0-bab6-02b77322dd13"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="47ba1ed2-3912-4ea7-8f97-b32a45d609b9"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="e5d54fb1-5832-4320-9d1e-a0a08ac0c218"/>
+        <MemberComponentTemplate Name="SummonBehavior" Guid="7bb4c758-aaaf-4d29-b2bb-1e4624716932" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
               <Parameter Name="IsEnabled" Guid="279ebb21-3a8f-46a9-a2f7-556db03f806f" Value="True" Type="bool"/>
             </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewChaseBehavior" Guid="ac945723-12a1-431e-842e-02ffad5ccc7a" InheritanceParent="1db20f99-32ba-4e7a-8e76-10686a2e76e5">
@@ -4641,10 +4590,7 @@
         </EntityTemplate>
 
         <EntityTemplate Name="TankTamed1" Guid="1c076bb6-99c0-408e-b0a5-3dbcf90c79d2" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-        <MemberComponentTemplate Name="SummonBehavior" Guid="28a752c9-5f09-46aa-b64e-c69efeca9bfa">
-              <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="0839c063-a5a6-4e1b-b384-519b7de2f04f"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="b641a3d4-4d3c-41e5-8d6c-281942aa2853"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="64ca8775-aa36-4d2a-a676-590bbac6081e"/>
+        <MemberComponentTemplate Name="SummonBehavior" Guid="28a752c9-5f09-46aa-b64e-c69efeca9bfa" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
               <Parameter Name="IsEnabled" Guid="b14c8398-06ca-4b03-b88e-e75a9948d8ef" Value="True" Type="bool"/>
             </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewChaseBehavior" Guid="0896ee3e-0f5a-4533-95a0-13b0a801d9e5" InheritanceParent="1db20f99-32ba-4e7a-8e76-10686a2e76e5">
@@ -4900,10 +4846,7 @@
         </EntityTemplate>
 
         <EntityTemplate Name="TankTamed2" Guid="1310d97c-f6f7-4fef-8596-19e3f76b22ff" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-        <MemberComponentTemplate Name="SummonBehavior" Guid="e61b1b5d-e948-4239-b068-0a2ee8e52ee7">
-              <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="5c29bb42-8c8c-4135-bf35-1c2c606bdbdd"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="1f1c9d52-6924-4567-9165-161ac6e3d7fe"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="fdfacf34-c2d3-4dca-a767-95e8cf8849ce"/>
+        <MemberComponentTemplate Name="SummonBehavior" Guid="e61b1b5d-e948-4239-b068-0a2ee8e52ee7" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
               <Parameter Name="IsEnabled" Guid="84a79e78-9b66-489c-ba2d-bdd505429e67" Value="true" Type="bool"/>
             </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewChaseBehavior" Guid="02b46774-cf5d-4fc3-af70-5d8685e3bf12" InheritanceParent="1db20f99-32ba-4e7a-8e76-10686a2e76e5">
@@ -5163,10 +5106,7 @@
         </EntityTemplate>
 
         <EntityTemplate Name="TankTamed3" Guid="8220b1d1-6c19-416f-b6ed-eb34710e6835" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-        <MemberComponentTemplate Name="SummonBehavior" Guid="7ec7b4a5-88b9-489c-9f14-1de296cf978c">
-              <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="7e353723-61fa-4436-a061-784186b5dc9b"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="0fdc9cce-80f0-43de-8a59-5ea1f197a778"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="6026acc8-eaea-4ded-9867-85728942b58d"/>
+        <MemberComponentTemplate Name="SummonBehavior" Guid="7ec7b4a5-88b9-489c-9f14-1de296cf978c" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
               <Parameter Name="IsEnabled" Guid="8b529e42-cc66-4c0d-bfc0-521a37bd17d2" Value="True" Type="bool"/>
             </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewChaseBehavior" Guid="63082b08-7d95-49e5-acff-94b33eefb7ba" InheritanceParent="1db20f99-32ba-4e7a-8e76-10686a2e76e5">
@@ -5446,10 +5386,7 @@
     <Parameter Name="SlotsCount" Value="16" Type="int"/>
     <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
   </MemberComponentTemplate>
-        <MemberComponentTemplate Name="SummonBehavior" Guid="a0b633dc-5a79-4d25-9db6-9238e25f1ce9">
-              <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="9ff897fc-57ee-44dd-8eb9-19b2c045e974"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="f0fab102-e565-4296-8ec4-396fbcf61717"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="2b3982a5-81e7-4382-8b2f-887a96db5128"/>
+        <MemberComponentTemplate Name="SummonBehavior" Guid="a0b633dc-5a79-4d25-9db6-9238e25f1ce9" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
               <Parameter Name="IsEnabled" Guid="f8cdbcfb-d9b1-4e58-b0e0-dffe2e3f9488" Value="True" Type="bool"/>
             </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewChaseBehavior" Guid="7bd172eb-ef1d-45a0-af34-31d964a986a7" InheritanceParent="1db20f99-32ba-4e7a-8e76-10686a2e76e5">
@@ -5765,10 +5702,7 @@
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="d557745e-5da3-4f20-b0f4-3f4de01b5bec"/>
     <Parameter Name="DeathSpawnTemplates" Value="GhostFast" Type="string" Guid="b9b89f68-b426-4e61-80e5-7d7d31f3c60d"/>
 </MemberComponentTemplate>
-        <MemberComponentTemplate Name="SummonBehavior" Guid="67fd9701-1bd7-4742-9c71-bfd22f0014b7">
-              <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="9b4b46e2-e7bf-4272-a45b-2b7e9f1ccfe3"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="5f5c8762-8c46-41a1-b124-4c810ef8f493"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="b1ebd6ae-9efc-4bc9-9bae-d9055a7b8755"/>
+        <MemberComponentTemplate Name="SummonBehavior" Guid="67fd9701-1bd7-4742-9c71-bfd22f0014b7" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
               <Parameter Name="IsEnabled" Guid="5242c0bb-c86f-45a6-9e95-81995a3d6894" Value="True" Type="bool"/>
             </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewChaseBehavior" Guid="8f00112a-78d1-40ae-95b3-83e852f5c76d" InheritanceParent="1db20f99-32ba-4e7a-8e76-10686a2e76e5">
@@ -6080,10 +6014,7 @@
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="3fcb28ea-2f41-42f9-9618-9a76e02ea6ca"/>
     <Parameter Name="DeathSpawnTemplates" Value="PoisonousGhost" Type="string" Guid="996eb5df-c985-4aa8-b650-0ea54490d6e7"/>
 </MemberComponentTemplate>
-        <MemberComponentTemplate Name="SummonBehavior" Guid="40ec0208-0d70-4aa5-bcc3-4b89211cac5f">
-              <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="3793044d-fb6a-4253-bd00-34c3bfe6488a"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="2320ac1b-1b1f-4d63-8fc3-cb3ae4acd6ff"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="6acabfbc-b52e-4381-b451-565c158e6aa1"/>
+        <MemberComponentTemplate Name="SummonBehavior" Guid="40ec0208-0d70-4aa5-bcc3-4b89211cac5f" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
               <Parameter Name="IsEnabled" Guid="d39cedae-f4af-4339-9ee9-95d1411c1674" Value="True" Type="bool"/>
             </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewChaseBehavior" Guid="f501752c-9bc4-4dc4-98e8-232024709928" InheritanceParent="1db20f99-32ba-4e7a-8e76-10686a2e76e5">
@@ -6416,10 +6347,7 @@
   <Parameter Name="DestroyBlocks" Value="true" Type="bool"/>
   <Parameter Name="PreventExplosion" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-        <MemberComponentTemplate Name="SummonBehavior" Guid="2c0e38a5-7743-47ad-8165-ae9d9a70b67b">
-              <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="06d6534b-b7e4-48e6-98ef-cdddc011727c"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="46cc730e-5e2b-45ca-80e2-3bbcf1426929"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="ac6c95f4-dc11-41a7-a47f-535be23db615"/>
+        <MemberComponentTemplate Name="SummonBehavior" Guid="2c0e38a5-7743-47ad-8165-ae9d9a70b67b" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
               <Parameter Name="IsEnabled" Guid="626191db-aeb0-4e4e-afa6-f44ac0e6a03e" Value="True" Type="bool"/>
             </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewChaseBehavior" Guid="04b9fc2c-d018-49a9-bc0c-ef19fafb1249" InheritanceParent="1db20f99-32ba-4e7a-8e76-10686a2e76e5">
@@ -6758,10 +6686,7 @@
   <Parameter Name="FireDuration" Value="10" Type="float"/>
   <Parameter Name="PreventExplosion" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-        <MemberComponentTemplate Name="SummonBehavior" Guid="a1641514-8807-49d9-b185-50b1c5e71ddc">
-              <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="8c4319f3-f673-48ab-a36f-7fedc5aa1dd0"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="4bfe479b-1c49-4a16-b9da-279e14081648"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="0e30c021-6dc8-4483-825f-34a946467d9c"/>
+        <MemberComponentTemplate Name="SummonBehavior" Guid="a1641514-8807-49d9-b185-50b1c5e71ddc" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
               <Parameter Name="IsEnabled" Guid="81f34115-ea8d-4b76-9109-ec40e8784448" Value="True" Type="bool"/>
             </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewChaseBehavior" Guid="4cb3df0e-f259-4079-ae01-1f8a999fdfee" InheritanceParent="1db20f99-32ba-4e7a-8e76-10686a2e76e5">
@@ -7084,10 +7009,7 @@
   <Parameter Name="ExplosionPressure" Value="40" Type="float"/>
   <Parameter Name="PreventExplosion" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-        <MemberComponentTemplate Name="SummonBehavior" Guid="8339c27e-c210-4571-81b1-ca78b37474d8">
-              <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="509350c5-2d5c-4866-8a36-0636c531b217"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="592f74cb-bbe7-41c2-811a-50d7be327278"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="e617d463-3668-4cd8-9c85-6ef64df5a03c"/>
+        <MemberComponentTemplate Name="SummonBehavior" Guid="8339c27e-c210-4571-81b1-ca78b37474d8" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
               <Parameter Name="IsEnabled" Guid="e7420adb-c432-4884-9955-4d6beb5c1555" Value="True" Type="bool"/>
             </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewChaseBehavior" Guid="0d590818-bd20-4535-8145-c062f9e600dd" InheritanceParent="1db20f99-32ba-4e7a-8e76-10686a2e76e5">
@@ -7671,10 +7593,7 @@
         </EntityTemplate>
 
         <EntityTemplate Name="TankGhostTamed1" Guid="af912da0-2a5d-4116-ae58-ae52cd557dfb" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-        <MemberComponentTemplate Name="SummonBehavior" Guid="1092a1ce-e0fc-45d2-8853-e94ce2b4fe67">
-              <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="dccb9183-1a48-4532-801c-74ff02b5e46f"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="246f6e7c-1214-4d57-906e-5636565b24ce"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="5afe822f-15bb-43ca-b89b-0b731fe242c5"/>
+        <MemberComponentTemplate Name="SummonBehavior" Guid="1092a1ce-e0fc-45d2-8853-e94ce2b4fe67" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
               <Parameter Name="IsEnabled" Guid="02d900d8-75dc-47cb-9fe3-20adcc4cef47" Value="True" Type="bool"/>
             </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewChaseBehavior" Guid="09428460-735b-46c3-8651-35f36765da92" InheritanceParent="1db20f99-32ba-4e7a-8e76-10686a2e76e5">
@@ -7949,10 +7868,7 @@
         </EntityTemplate>
 
         <EntityTemplate Name="TankGhostTamed2" Guid="cb71396b-664c-4d7f-9842-93e3ba06ce93" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-        <MemberComponentTemplate Name="SummonBehavior" Guid="bf6ea902-19c1-44f1-b79d-d2147746a03c">
-              <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="ded7de9e-c120-43f6-b2ef-386844b4ca4b"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="5655c1be-4ef2-4a8e-961a-57e16740eb00"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="a9f98b8d-b10b-4cf3-8878-086f67365b18"/>
+        <MemberComponentTemplate Name="SummonBehavior" Guid="bf6ea902-19c1-44f1-b79d-d2147746a03c" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
               <Parameter Name="IsEnabled" Guid="f1367cb8-a7b2-4066-93b7-7e9c244909bc" Value="True" Type="bool"/>
             </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewChaseBehavior" Guid="40ba6849-ef9f-488e-8da3-37a1888a9979" InheritanceParent="1db20f99-32ba-4e7a-8e76-10686a2e76e5">
@@ -8228,10 +8144,7 @@
         </EntityTemplate>
 
         <EntityTemplate Name="TankGhostTamed3" Guid="02455402-6ea9-4c49-b3e9-af8872c0a815" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-        <MemberComponentTemplate Name="SummonBehavior" Guid="4c5a47d0-bf8a-4f36-b192-d0b77b591c92">
-              <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="de5bdf42-bbd6-4cd9-8840-2c4c830aefe1"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="ec98bd13-23ff-4826-8b75-ec8fe2aa5b6c"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="6dd099cd-fe6c-41c7-b192-19274b2f0af5"/>
+        <MemberComponentTemplate Name="SummonBehavior" Guid="4c5a47d0-bf8a-4f36-b192-d0b77b591c92" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
               <Parameter Name="IsEnabled" Guid="9f436a82-08e0-4647-bb4c-94f1dde4c781" Value="True" Type="bool"/>
             </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewChaseBehavior" Guid="e350d8c7-72bf-4375-a255-e63e55f5ecec" InheritanceParent="1db20f99-32ba-4e7a-8e76-10686a2e76e5">
@@ -8376,10 +8289,7 @@
                     <Parameter Name="Meat" Guid="713439df-8e9d-46a9-899a-ddf094d25c95" Value="1" Type="float"/>
                 </ParameterSet>
             </MemberComponentTemplate>
-<MemberComponentTemplate Name="PoisonInfected" Guid="6655009d-03e5-4dff-accd-5c05ce32c2a1">
-    <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int"/>
+<MemberComponentTemplate Name="PoisonInfected" Guid="6655009d-03e5-4dff-accd-5c05ce32c2a1" InheritanceParent="d5e7f9a1-b3c5-4d9f-1a3b-5c7d9f1a3b5c">
     <Parameter Name="PoisonResistance" Value="1000" Type="float"/>
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
@@ -8508,7 +8418,7 @@
         </EntityTemplate>
 
         <EntityTemplate Name="MachineGunInfectedTamed" Guid="0ced2f63-6233-4199-8463-2dfb4d458f02" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="CreatureInventory" Guid="d1823c57-13de-447b-9aa1-326cc4634dbf" InheritanceParent="b0d27f89-dc61-4c44-b675-63d6a6f8bf78">
+        <MemberComponentTemplate Name="CreatureInventory" Guid="6026fc63-cabd-4e04-bc21-2a5c4027ea94" InheritanceParent="b0d27f89-dc61-4c44-b675-63d6a6f8bf78">
     <Parameter Name="SlotsCount" Value="16" Type="int"/>
     <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
   </MemberComponentTemplate>
@@ -8530,10 +8440,7 @@
             <Parameter Name="IdleSound" Guid="c47783ec-ccbe-42f1-8034-d619fc9157f1" Value="Audio/Creatures/Infectado Ametrallador/Idie" Type="string"/>
             <Parameter Name="AttackSound" Guid="6284d1fe-5b6a-438d-91e1-879c734f6eb0" Value="Audio/Creatures/Infectado Ametrallador/Attack" Type="string"/>
         </MemberComponentTemplate>
-        <MemberComponentTemplate Name="SummonBehavior" Guid="e029f254-37ca-4173-8a83-5029bdc29f80">
-              <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="cc9f654a-aa92-4838-96fe-50eabf02d6e1"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="b9d787fc-c2cf-45a8-bf29-09a66b1f91d7"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="c953d3ce-64c4-41e8-a039-870b68638002"/>
+        <MemberComponentTemplate Name="SummonBehavior" Guid="e029f254-37ca-4173-8a83-5029bdc29f80" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
               <Parameter Name="IsEnabled" Guid="97671d05-2efe-4cc6-a54f-35ea4da437cc" Value="True" Type="bool"/>
             </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewChaseBehavior" Guid="c490e0b6-f0ca-4153-95fb-3b5b48715f4d" InheritanceParent="1db20f99-32ba-4e7a-8e76-10686a2e76e5">
@@ -8546,6 +8453,7 @@
   <Parameter Name="AutoChaseMask" Guid="0c2cbab2-2599-4863-afe2-1459f79a7b00" Value="LandPredator" Type="Game.CreatureCategory"/>
   <Parameter Name="ChaseNonPlayerProbability" Guid="65f47312-a4a6-48ad-8f84-73bddacbf58c" Value="1" Type="float"/>
   <Parameter Name="DestroyBlocksWhenStuck" Guid="8d312a85-e311-47f6-9547-d2c085227dd2" Value="true" Type="bool"/>
+  <Parameter Name="RangedAttackRange" Guid="02e3439c-b2c6-4690-84f6-0b88eed68077" Value="5,100" Type="Vector2"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="NewHerdBehavior" Guid="c4b518f8-4ea7-439d-99b5-43480c849073" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
         <Parameter Name="HerdName" Value="player" Type="string" Guid="1e080e54-37d4-49d0-a629-99fa81ef39ad"/>
@@ -8621,25 +8529,24 @@
 <MemberComponentTemplate Name="NewAutoInteract" Guid="00ad43ca-27a4-4caf-a0b6-f0707edbe906" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="NewZombieModel" Guid="9f6bf705-ee68-46e1-960a-c3f39d8bbf9b" InheritanceParent="aac9f762-4b85-4cee-a9f1-39d9c11f106d">
+<MemberComponentTemplate Name="HumanModel" Guid="9f6bf705-ee68-46e1-960a-c3f39d8bbf9b" InheritanceParent="0566662e-bb24-45f9-84d8-f3c1e5d083df">
     <Parameter Name="ModelName" Guid="7142d9f6-afa9-426a-85f3-e74b094b9599" Value="Models/MuscleHuman" Type="string"/>
-    <Parameter Name="TextureOverride" Guid="2e27fcc9-10d1-47bd-8963-5d282dc767fa" Value="Textures/ZombiesDeMierda/Infectado Ametrallador" Type="string"/>
     <Parameter Name="ModelScale" Guid="3cf37823-6620-43bc-9fa7-5cee6aa9f2d9" Value="1.5" Type="float"/>
-    <Parameter Name="WalkAnimationSpeed" Guid="b8ca94c6-340d-40c6-be99-419d9e211ed3" Value="0.65" Type="float"/>
-    <Parameter Name="WalkBobHeight" Guid="06b66f9b-d8e0-45e8-8f72-3741efe479bf" Value="0.045" Type="float"/>
-    <Parameter Name="WalkLegsAngle" Guid="e0e925de-c742-4002-87cb-531925cf951d" Value="0.75" Type="float"/>
-    <Parameter Name="SmoothFactor" Guid="6ef99516-f7a3-4f4a-aa35-4909f11751ac" Value="0.12" Type="float"/>
-    <Parameter Name="AnimationResponsiveness" Guid="cd5074e9-8387-4bfd-9eaf-16e624699dd1" Value="15" Type="float"/>
-    <Parameter Name="AimSmoothFactor" Guid="4775b6f4-8760-4884-a9dc-81748fa37a24" Value="0.2" Type="float"/>
-    <Parameter Name="AimTransitionSpeed" Guid="0b2bf388-3bc8-43ef-8e4c-d415e6fd9ad7" Value="7" Type="float"/>
-    <Parameter Name="MovementAnimationPhase" Guid="d6e2b75f-156d-4452-b1f9-6a05cd16515d" Value="0" Type="float"/>
-    <Parameter Name="DeathPhase" Guid="15a46538-c354-4b43-ac48-800299500e08" Value="0" Type="float"/>
-    <Parameter Name="Bob" Guid="9698f0ed-4d65-4508-ab62-62a7f19b8179" Value="0" Type="float"/>
-    <Parameter Name="IsAttackHitMoment" Guid="b81b4b97-32c1-4e2b-8e10-c22a43bd7bf0" Value="false" Type="bool"/>
-    <Parameter Name="AttackOrder" Guid="242ff117-039d-4f2d-be42-319d5b23d704" Value="false" Type="bool"/>
+    <Parameter Name="TextureOverride" Guid="2e27fcc9-10d1-47bd-8963-5d282dc767fa" Value="Textures/ZombiesDeMierda/Infectado Ametrallador" Type="string"/>
+    <Parameter Name="WalkAnimationSpeed" Guid="0b701b28-5578-4a77-a84f-b4730f9fbba7" Value="0.65" Type="float"/>
+    <Parameter Name="WalkBobHeight" Guid="7e3c46bb-292b-427e-a43b-496bf90634ab" Value="0.045" Type="float"/>
+    <Parameter Name="WalkLegsAngle" Guid="58b71d76-e456-4e50-bfe3-ff2a5d11fc5c" Value="0.75" Type="float"/>
+    <Parameter Name="SmoothFactor" Guid="1368608e-5dd9-48b9-99c1-1b7feb7f1c7a" Value="0.12" Type="float"/>
+    <Parameter Name="AnimationResponsiveness" Guid="1a77a4a1-bbad-466f-91b5-1d7e573a251d" Value="15" Type="float"/>
+    <Parameter Name="AimSmoothFactor" Guid="2539761f-96b9-45df-99aa-33a6657370a2" Value="0.2" Type="float"/>
+    <Parameter Name="AimTransitionSpeed" Guid="b3f7fc2d-1de1-4185-bceb-b28c87ca65c0" Value="7" Type="float"/>
+    <Parameter Name="MovementAnimationPhase" Guid="3ae5d41d-a878-4004-90d2-2c7814358977" Value="0" Type="float"/>
+    <Parameter Name="DeathPhase" Guid="40a161e6-c3e2-4aa1-a2a6-b2c8e67e3e7c" Value="0" Type="float"/>
+    <Parameter Name="Bob" Guid="00ed19f7-f096-404a-8d86-7a8ac77b08b1" Value="0" Type="float"/>
+    <Parameter Name="IsAttackHitMoment" Guid="6f7637ba-558d-451f-8b1d-b3a412c27b61" Value="false" Type="bool"/>
+    <Parameter Name="AttackOrder" Guid="e4e32e75-9605-4cd6-8ded-0337fd9668d4" Value="false" Type="bool"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="HealthBarDisplay" Guid="1a4cffc9-83c1-4990-b151-8df1fb7b7b34" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-        <Parameter Name="MaxDisplayDistance" Value="19" Type="float"/>
     </MemberComponentTemplate>
             <MemberComponentTemplate Name="Health" Guid="3bc38576-fa80-48cb-9446-fd3d465c1844">
                 <Parameter Name="FireResilience" Guid="5f2da1c9-5330-46b1-bf95-c4e9bef17cb0" Value="30000" Type="float"/>
@@ -9019,10 +8926,7 @@
 </EntityTemplate>
 
 <EntityTemplate Name="InfectedWerewolfTamed" Guid="6401c4d7-b05a-4f94-bc15-89c79a387ec3" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="SummonBehavior" Guid="d2394dd9-253a-4563-9b26-6f3c64f6704d">
-              <Parameter Name="Class" Value="Game.ComponentSummonBehavior" Type="string" Guid="a89aa490-80a9-4471-bf7c-6c19f14a3c75"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool" Guid="2ab927ac-ee87-4b31-a194-943a0bbb7895"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int" Guid="7cceff83-dd78-4d4d-8b72-d0bea48bee2d"/>
+<MemberComponentTemplate Name="SummonBehavior" Guid="d2394dd9-253a-4563-9b26-6f3c64f6704d" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
               <Parameter Name="IsEnabled" Guid="68ce4100-2290-4be5-9585-92a6ca70f060" Value="True" Type="bool"/>
             </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewChaseBehavior" Guid="42fdda33-5c66-4c7f-bc56-e5c63ada80a1" InheritanceParent="1db20f99-32ba-4e7a-8e76-10686a2e76e5">
@@ -10088,6 +9992,9 @@
 </EntityTemplate>
 
 <EntityTemplate Name="PredatoryChameleonTamed" Guid="09fcb5bf-1456-4b1c-bc10-6460fe19d048" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="SummonBehavior" Guid="d7b26f82-b270-4f76-8d46-390dbcb3339e" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
+              <Parameter Name="IsEnabled" Guid="ccbc382e-fa33-4ec4-85e5-54505a5c8ac2" Value="True" Type="bool"/>
+            </MemberComponentTemplate>
 <MemberComponentTemplate Name="RunAwayBehavior" Guid="eced35a8-e422-4b45-b4f0-0f9edde40073" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
 <MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="65cc8334-24db-49fb-ae64-a8dfe1b5cc23" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
 <MemberComponentTemplate Name="NewChaseBehavior" Guid="661b5aec-84c9-47ad-9f22-2685d367a8e7" InheritanceParent="1db20f99-32ba-4e7a-8e76-10686a2e76e5">
