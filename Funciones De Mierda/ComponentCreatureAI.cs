@@ -690,85 +690,7 @@ namespace Game
 							// Romper bloques si está atascado, la opción está activada y ha pasado el cooldown
 							if (BreakBlocksWhenStuck && isStuck && m_subsystemTime.GameTime >= m_nextBlockBreakTime)
 							{
-								Vector3 myPos = m_componentCreature.ComponentBody.Position;
-								Vector3 targetPos = target.ComponentBody.Position;
-								Vector3 dirToTarget = Vector3.Normalize(targetPos - myPos);
-
-								CellFace block1 = new CellFace();
-								CellFace block2 = new CellFace();
-								bool canBreak = false;
-
-								// Usar producto punto para determinar la dirección dominante
-								float dotUp = Vector3.Dot(dirToTarget, Vector3.UnitY);
-								float dotForward = Vector3.Dot(dirToTarget, m_componentCreature.ComponentBody.Matrix.Forward);
-
-								// Si el objetivo está predominantemente arriba (dotUp > 0.7f)
-								if (dotUp > 0.7f)
-								{
-									// Romper techo: dos bloques encima del NPC
-									int x = Terrain.ToCell(myPos.X);
-									int z = Terrain.ToCell(myPos.Z);
-									int yBase = Terrain.ToCell(myPos.Y + m_componentCreature.ComponentBody.BoxSize.Y);
-									if (yBase >= 0 && yBase < 255 && yBase + 1 < 255)
-									{
-										block1 = new CellFace(x, yBase, z, 4);
-										block2 = new CellFace(x, yBase + 1, z, 4);
-										canBreak = true;
-									}
-								}
-								// Si el objetivo está predominantemente abajo (dotUp < -0.7f)
-								else if (dotUp < -0.7f)
-								{
-									// Romper suelo: dos bloques debajo del NPC
-									int x = Terrain.ToCell(myPos.X);
-									int z = Terrain.ToCell(myPos.Z);
-									int yBase = Terrain.ToCell(myPos.Y) - 1;
-									if (yBase >= 1 && yBase - 1 >= 0)
-									{
-										block1 = new CellFace(x, yBase, z, 5);
-										block2 = new CellFace(x, yBase - 1, z, 5);
-										canBreak = true;
-									}
-								}
-								// En caso contrario, romper pared al frente (si dotForward es positivo)
-								else if (dotForward > 0.3f)
-								{
-									// Romper pared: dos bloques en la dirección horizontal hacia el objetivo
-									Vector3 forwardDir = m_componentCreature.ComponentBody.Matrix.Forward;
-									forwardDir.Y = 0f;
-									forwardDir = Vector3.Normalize(forwardDir);
-									Vector3 frontPos = myPos + forwardDir * 1.0f;
-									int x = Terrain.ToCell(frontPos.X);
-									int z = Terrain.ToCell(frontPos.Z);
-									int yBase = Terrain.ToCell(frontPos.Y);
-									if (yBase >= 0 && yBase < 255 && yBase + 1 < 255)
-									{
-										block1 = new CellFace(x, yBase, z, 0);
-										block2 = new CellFace(x, yBase + 1, z, 0);
-										canBreak = true;
-									}
-								}
-
-								if (canBreak)
-								{
-									// Romper primer bloque
-									int value1 = m_subsystemTerrain.Terrain.GetCellValue(block1.X, block1.Y, block1.Z);
-									if (Terrain.ExtractContents(value1) != 0)
-									{
-										m_subsystemTerrain.DestroyCell(100, block1.X, block1.Y, block1.Z, 0, false, false, null);
-										m_subsystemSoundMaterials.PlayImpactSound(value1, new Vector3(block1.X, block1.Y, block1.Z), 1f);
-									}
-
-									// Romper segundo bloque
-									int value2 = m_subsystemTerrain.Terrain.GetCellValue(block2.X, block2.Y, block2.Z);
-									if (Terrain.ExtractContents(value2) != 0)
-									{
-										m_subsystemTerrain.DestroyCell(100, block2.X, block2.Y, block2.Z, 0, false, false, null);
-										m_subsystemSoundMaterials.PlayImpactSound(value2, new Vector3(block2.X, block2.Y, block2.Z), 1f);
-									}
-
-									m_nextBlockBreakTime = m_subsystemTime.GameTime + m_blockBreakInterval;
-								}
+								TryBreakBlocksTowardsTarget(target);
 							}
 
 							if (!hasLineOfSight && !isStuck)
@@ -954,6 +876,90 @@ namespace Game
 			}
 		}
 
+		private void TryBreakBlocksTowardsTarget(ComponentCreature target)
+		{
+			if (target == null) return;
+
+			Vector3 myPos = m_componentCreature.ComponentBody.Position;
+			Vector3 targetPos = target.ComponentBody.Position;
+			Vector3 dirToTarget = targetPos - myPos;
+			float verticalDiff = dirToTarget.Y;
+			float horizontalDist = new Vector2(dirToTarget.X, dirToTarget.Z).Length();
+			float absVertical = Math.Abs(verticalDiff);
+
+			CellFace block1 = new CellFace();
+			CellFace block2 = new CellFace();
+			bool canBreak = false;
+
+			// Si la diferencia vertical es significativa (más de 1.2 bloques) y domina sobre la horizontal
+			if (absVertical > 1.2f && absVertical > horizontalDist)
+			{
+				if (verticalDiff > 0)
+				{
+					// Arriba: romper techo (dos bloques encima del NPC)
+					int x = Terrain.ToCell(myPos.X);
+					int z = Terrain.ToCell(myPos.Z);
+					int yBase = Terrain.ToCell(myPos.Y + m_componentCreature.ComponentBody.BoxSize.Y);
+					if (yBase >= 0 && yBase < 255 && yBase + 1 < 255)
+					{
+						block1 = new CellFace(x, yBase, z, 4);
+						block2 = new CellFace(x, yBase + 1, z, 4);
+						canBreak = true;
+					}
+				}
+				else
+				{
+					// Abajo: romper suelo (dos bloques debajo del NPC)
+					int x = Terrain.ToCell(myPos.X);
+					int z = Terrain.ToCell(myPos.Z);
+					int yBase = Terrain.ToCell(myPos.Y) - 1;
+					if (yBase >= 1 && yBase - 1 >= 0)
+					{
+						block1 = new CellFace(x, yBase, z, 5);
+						block2 = new CellFace(x, yBase - 1, z, 5);
+						canBreak = true;
+					}
+				}
+			}
+			else
+			{
+				// Frente: usar la dirección de la matriz de orientación (como ya funcionaba)
+				Vector3 forwardDir = m_componentCreature.ComponentBody.Matrix.Forward;
+				forwardDir.Y = 0f;
+				forwardDir = Vector3.Normalize(forwardDir);
+				Vector3 frontPos = myPos + forwardDir * 1.0f;
+				int x = Terrain.ToCell(frontPos.X);
+				int z = Terrain.ToCell(frontPos.Z);
+				int yBase = Terrain.ToCell(frontPos.Y);
+				if (yBase >= 0 && yBase < 255 && yBase + 1 < 255)
+				{
+					block1 = new CellFace(x, yBase, z, 0);
+					block2 = new CellFace(x, yBase + 1, z, 0);
+					canBreak = true;
+				}
+			}
+
+			if (canBreak)
+			{
+				// Romper primer bloque
+				int value1 = m_subsystemTerrain.Terrain.GetCellValue(block1.X, block1.Y, block1.Z);
+				if (Terrain.ExtractContents(value1) != 0)
+				{
+					m_subsystemTerrain.DestroyCell(100, block1.X, block1.Y, block1.Z, 0, false, false, null);
+					m_subsystemSoundMaterials.PlayImpactSound(value1, new Vector3(block1.X, block1.Y, block1.Z), 1f);
+				}
+
+				// Romper segundo bloque
+				int value2 = m_subsystemTerrain.Terrain.GetCellValue(block2.X, block2.Y, block2.Z);
+				if (Terrain.ExtractContents(value2) != 0)
+				{
+					m_subsystemTerrain.DestroyCell(100, block2.X, block2.Y, block2.Z, 0, false, false, null);
+					m_subsystemSoundMaterials.PlayImpactSound(value2, new Vector3(block2.X, block2.Y, block2.Z), 1f);
+				}
+
+				m_nextBlockBreakTime = m_subsystemTime.GameTime + m_blockBreakInterval;
+			}
+		}
 		private float GetWeaponMaxDistance()
 		{
 			if (m_weaponType == 3) return m_flameMaxDistance;
