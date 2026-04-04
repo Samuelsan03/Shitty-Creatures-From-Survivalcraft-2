@@ -880,50 +880,55 @@ namespace Game
 		{
 			if (target == null) return;
 
+			// Solo romper si el chase behavior está activo
+			if (m_componentChaseBehavior == null || m_componentChaseBehavior.ImportanceLevel <= 0f)
+				return;
+
 			Vector3 myPos = m_componentCreature.ComponentBody.Position;
 			Vector3 targetPos = target.ComponentBody.Position;
-			Vector3 dirToTarget = targetPos - myPos;
-			float verticalDiff = dirToTarget.Y;
-			float horizontalDist = new Vector2(dirToTarget.X, dirToTarget.Z).Length();
-			float absVertical = Math.Abs(verticalDiff);
+			Vector3 mySize = m_componentCreature.ComponentBody.BoxSize;
+
+			// Altura de los ojos (aprox 90% de la altura)
+			float eyeHeight = myPos.Y + mySize.Y * 0.9f;
+			// Altura de los pies
+			float feetHeight = myPos.Y;
+
+			float targetHeight = targetPos.Y;
 
 			CellFace block1 = new CellFace();
 			CellFace block2 = new CellFace();
 			bool canBreak = false;
 
-			// Si la diferencia vertical es significativa (más de 1.2 bloques) y domina sobre la horizontal
-			if (absVertical > 1.2f && absVertical > horizontalDist)
+			// Determinar dirección basada en la altura relativa
+			if (targetHeight > eyeHeight + 0.5f)   // Objetivo claramente arriba
 			{
-				if (verticalDiff > 0)
+				// Romper techo: dos bloques encima del NPC
+				int x = Terrain.ToCell(myPos.X);
+				int z = Terrain.ToCell(myPos.Z);
+				int yBase = Terrain.ToCell(myPos.Y + mySize.Y);
+				if (yBase >= 0 && yBase < 255 && yBase + 1 < 255)
 				{
-					// Arriba: romper techo (dos bloques encima del NPC)
-					int x = Terrain.ToCell(myPos.X);
-					int z = Terrain.ToCell(myPos.Z);
-					int yBase = Terrain.ToCell(myPos.Y + m_componentCreature.ComponentBody.BoxSize.Y);
-					if (yBase >= 0 && yBase < 255 && yBase + 1 < 255)
-					{
-						block1 = new CellFace(x, yBase, z, 4);
-						block2 = new CellFace(x, yBase + 1, z, 4);
-						canBreak = true;
-					}
+					block1 = new CellFace(x, yBase, z, 4);
+					block2 = new CellFace(x, yBase + 1, z, 4);
+					canBreak = true;
 				}
-				else
+			}
+			else if (targetHeight < feetHeight - 0.5f)   // Objetivo claramente abajo
+			{
+				// Romper suelo: dos bloques debajo del NPC
+				int x = Terrain.ToCell(myPos.X);
+				int z = Terrain.ToCell(myPos.Z);
+				int yBase = Terrain.ToCell(myPos.Y) - 1;
+				if (yBase >= 1 && yBase - 1 >= 0)
 				{
-					// Abajo: romper suelo (dos bloques debajo del NPC)
-					int x = Terrain.ToCell(myPos.X);
-					int z = Terrain.ToCell(myPos.Z);
-					int yBase = Terrain.ToCell(myPos.Y) - 1;
-					if (yBase >= 1 && yBase - 1 >= 0)
-					{
-						block1 = new CellFace(x, yBase, z, 5);
-						block2 = new CellFace(x, yBase - 1, z, 5);
-						canBreak = true;
-					}
+					block1 = new CellFace(x, yBase, z, 5);
+					block2 = new CellFace(x, yBase - 1, z, 5);
+					canBreak = true;
 				}
 			}
 			else
 			{
-				// Frente: usar la dirección de la matriz de orientación (como ya funcionaba)
+				// Frente: usar la dirección hacia adelante del NPC
 				Vector3 forwardDir = m_componentCreature.ComponentBody.Matrix.Forward;
 				forwardDir.Y = 0f;
 				forwardDir = Vector3.Normalize(forwardDir);
@@ -941,17 +946,17 @@ namespace Game
 
 			if (canBreak)
 			{
-				// Romper primer bloque
+				// Romper primer bloque si es rompible
 				int value1 = m_subsystemTerrain.Terrain.GetCellValue(block1.X, block1.Y, block1.Z);
-				if (Terrain.ExtractContents(value1) != 0)
+				if (IsBreakableBlock(value1))
 				{
 					m_subsystemTerrain.DestroyCell(100, block1.X, block1.Y, block1.Z, 0, false, false, null);
 					m_subsystemSoundMaterials.PlayImpactSound(value1, new Vector3(block1.X, block1.Y, block1.Z), 1f);
 				}
 
-				// Romper segundo bloque
+				// Romper segundo bloque si es rompible
 				int value2 = m_subsystemTerrain.Terrain.GetCellValue(block2.X, block2.Y, block2.Z);
-				if (Terrain.ExtractContents(value2) != 0)
+				if (IsBreakableBlock(value2))
 				{
 					m_subsystemTerrain.DestroyCell(100, block2.X, block2.Y, block2.Z, 0, false, false, null);
 					m_subsystemSoundMaterials.PlayImpactSound(value2, new Vector3(block2.X, block2.Y, block2.Z), 1f);
@@ -959,6 +964,30 @@ namespace Game
 
 				m_nextBlockBreakTime = m_subsystemTime.GameTime + m_blockBreakInterval;
 			}
+		}
+
+		// Método auxiliar para determinar si un bloque puede ser roto por la IA
+		private bool IsBreakableBlock(int value)
+		{
+			int contents = Terrain.ExtractContents(value);
+			if (contents == 0) return false; // Aire
+
+			Block block = BlocksManager.Blocks[contents];
+
+			// No romper bloques indestructibles (como BedrockBlock)
+			if (block is BedrockBlock) return false;
+
+			// No romper bloques que no son colisionables (no bloquean el paso)
+			if (!block.IsCollidable_(value)) return false;
+
+			// Opcional: evitar bloques con resistencia muy alta (piedra, minerales, etc.)
+			// Para que la IA no rompa cualquier cosa, se puede limitar a bloques con digResilience <= 2.0f
+			// Si se desea que rompa solo tierra/arena/madera, ajustar el umbral.
+			// Por defecto, permitimos romper cualquier bloque que no sea Bedrock ni aire.
+			// Si se quiere más restrictivo, descomentar la siguiente línea:
+			// if (block.GetDigResilience(value) > 2.0f) return false;
+
+			return true;
 		}
 		private float GetWeaponMaxDistance()
 		{
