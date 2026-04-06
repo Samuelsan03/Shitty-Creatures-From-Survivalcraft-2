@@ -189,28 +189,38 @@ namespace Game
 				if (!m_labelInitialized) return;
 			}
 
-			int daysLeft = GetDaysUntilNextGreenNight();
-
-			// Noche Verde desactivada: mostrar cuenta regresiva normal
+			// Si la Noche Verde está desactivada, ocultar la etiqueta y salir
 			if (!m_subsystemGreenNightSky.GreenNightEnabled)
 			{
-				string text = string.Format(LanguageControl.Get("ZombiesSpawn", "TheyComeInXDays"), daysLeft);
-				m_countdownLabel.Text = text;
-				m_countdownLabel.IsVisible = true;
+				m_countdownLabel.IsVisible = false;
 				return;
 			}
 
-			// Noche Verde activada
-			if (daysLeft == 0)
+			// A partir de aquí, la Noche Verde está activada
+			int daysLeft = GetDaysUntilNextGreenNight();
+			float timeOfDay = m_subsystemTimeOfDay.TimeOfDay;
+			bool isDaytime = timeOfDay >= m_subsystemTimeOfDay.DawnStart && timeOfDay < m_subsystemTimeOfDay.DuskStart;
+
+			if (m_subsystemGreenNightSky.IsGreenNightActive)
 			{
 				m_countdownLabel.Text = LanguageControl.Get("ZombiesSpawn", "TheyComeTonight");
 			}
-			else
+			else if (!m_subsystemGreenNightSky.IsGreenNightActive && isDaytime)
 			{
 				string text = string.Format(LanguageControl.Get("ZombiesSpawn", "TheyComeInXDays"), daysLeft);
 				m_countdownLabel.Text = text;
 			}
-			m_countdownLabel.IsVisible = true;   // Siempre visible
+			else
+			{
+				if (daysLeft == 0)
+					m_countdownLabel.Text = LanguageControl.Get("ZombiesSpawn", "TheyComeTonight");
+				else
+				{
+					string text = string.Format(LanguageControl.Get("ZombiesSpawn", "TheyComeInXDays"), daysLeft);
+					m_countdownLabel.Text = text;
+				}
+			}
+			m_countdownLabel.IsVisible = true;
 		}
 
 		private int GetDaysUntilNextGreenNight()
@@ -218,7 +228,7 @@ namespace Game
 			int phase = m_subsystemSky.MoonPhase;
 			float timeOfDay = m_subsystemTimeOfDay.TimeOfDay;
 
-			// Si la Noche Verde está desactivada, mostrar cuenta regresiva normal (nunca "tonight")
+			// Noche Verde desactivada: cuenta regresiva normal
 			if (!m_subsystemGreenNightSky.GreenNightEnabled)
 			{
 				if (phase == 0 || phase == 4)
@@ -232,13 +242,16 @@ namespace Game
 			// Noche Verde activada
 			if (phase == 0 || phase == 4)
 			{
-				// Si la noche verde de esta fase ya ocurrió (no está activa y el contador de días desde la última es 0)
-				if (!m_subsystemGreenNightSky.IsGreenNightActive && m_subsystemGreenNightSky.DaysSinceLastGreenNight == 0)
-				{
-					// La próxima noche verde será dentro de 4 días (próxima fase 0/4)
+				// Si la noche está activa ahora -> hoy
+				if (m_subsystemGreenNightSky.IsGreenNightActive)
+					return 0;
+
+				// Si la noche de esta fase lunar ya ocurrió (DaysSinceLastGreenNight == 0)
+				// entonces la próxima es en 4 días
+				if (m_subsystemGreenNightSky.DaysSinceLastGreenNight == 0)
 					return 4;
-				}
-				// En caso contrario, la noche verde es hoy (o está ocurriendo)
+
+				// En caso contrario, la noche aún no ha ocurrido (es de día) -> hoy es la noche
 				return 0;
 			}
 			else if (phase < 4)
