@@ -107,6 +107,8 @@
   },
   "ZombiesSpawn": {
   "WaveMessage": "You are in wave {0}!",
+  "TheyComeTonight": "They come tonight!",
+  "TheyComeInXDays": "They come in {0} days",
   "FinalWave": "Final Wave has begun!",
   "BossTank": "A Tank has appeared!",
   "BossGhostTank": "A Ghost Tank has appeared!",
