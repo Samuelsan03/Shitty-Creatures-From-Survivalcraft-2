@@ -203,10 +203,25 @@ namespace Game
 		private int GetDaysUntilNextGreenNight()
 		{
 			int phase = m_subsystemSky.MoonPhase;
+			float timeOfDay = m_subsystemTimeOfDay.TimeOfDay;
+			bool isNight = timeOfDay >= m_subsystemTimeOfDay.DuskStart || timeOfDay < m_subsystemTimeOfDay.DawnStart;
 
+			// Si la Noche Verde está desactivada, siempre mostrar la cuenta regresiva (nunca "tonight")
+			if (!m_subsystemGreenNightSky.GreenNightEnabled)
+			{
+				if (phase == 0 || phase == 4)
+					return 4;
+				else if (phase < 4)
+					return 4 - phase;
+				else
+					return 8 - phase;
+			}
+
+			// Noche Verde activada
 			if (phase == 0 || phase == 4)
 			{
-				return m_subsystemGreenNightSky.GreenNightEnabled ? 0 : 4;
+				// Fase de luna nueva o llena: la noche verde ocurre esta noche (o ya está ocurriendo)
+				return 0;
 			}
 			else if (phase < 4)
 				return 4 - phase;
@@ -334,7 +349,6 @@ namespace Game
 					break;
 			}
 		}
-
 		private int TrySpawnGroup()
 		{
 			int spawned = 0;
