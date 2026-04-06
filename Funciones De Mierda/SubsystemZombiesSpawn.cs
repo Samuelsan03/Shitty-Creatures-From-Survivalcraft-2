@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Engine;
+using Engine.Graphics;
 using GameEntitySystem;
 using TemplatesDatabase;
 
@@ -20,6 +21,8 @@ namespace Game
 		private SubsystemTerrain m_subsystemTerrain;
 		private SubsystemTime m_subsystemTime;
 		private SubsystemSeasons m_subsystemSeasons;
+		private SubsystemSky m_subsystemSky;
+		private SubsystemAudio m_subsystemAudio;
 		private Random m_random = new Random();
 
 		// Datos de oleadas
@@ -30,10 +33,10 @@ namespace Game
 		// Control de spawn
 		private float m_spawnTimer;
 		private float m_spawnInterval = 2f;
-		private const int MaxCreaturesPerArea = 60;   // antes 150
-		private const int MaxGlobalCreatures = 80;    // antes 200
-		private const int MaxSpawnsPerFrame = 3;      // antes 5
-		private const int GroupSpawnCount = 2;        // antes 3
+		private const int MaxCreaturesPerArea = 60;
+		private const int MaxGlobalCreatures = 80;
+		private const int MaxSpawnsPerFrame = 3;
+		private const int GroupSpawnCount = 2;
 
 		// Estado de jefes
 		private bool m_bossBattleActive;
@@ -51,6 +54,10 @@ namespace Game
 		// Control de mensaje de desbloqueo
 		private bool m_hasShownUnlockMessage = false;
 
+		// Label estático para la cuenta regresiva
+		private LabelWidget m_countdownLabel;
+		private bool m_labelInitialized = false;
+
 		// Listas estáticas de templates
 		private static readonly HashSet<string> BossTemplates = new HashSet<string>
 		{
@@ -64,20 +71,16 @@ namespace Game
 			"InfectedBear", "InfectedWildboar"
 		};
 
-		// Voladores (spawnean en aire)
 		private static readonly HashSet<string> FlyingTemplates = new HashSet<string>
 		{
 			"InfectedFly1", "InfectedFly2", "InfectedFly3",
 			"FlyingInfectedBoss", "InfectedBird"
 		};
 
-		// Bloques prohibidos para spawnear (caché de índices)
 		private HashSet<int> m_forbiddenBlockIndices = new HashSet<int>();
 
 		public UpdateOrder UpdateOrder => UpdateOrder.Default;
-
 		public static SubsystemZombiesSpawn Instance { get; private set; }
-
 		public int MaxWave => m_waves.Keys.Max();
 		public bool IsAllWavesCompleted => m_currentWave >= MaxWave && !m_bossBattleActive;
 
@@ -98,20 +101,21 @@ namespace Game
 			m_subsystemTerrain = Project.FindSubsystem<SubsystemTerrain>(true);
 			m_subsystemTime = Project.FindSubsystem<SubsystemTime>(true);
 			m_subsystemSeasons = Project.FindSubsystem<SubsystemSeasons>(true);
+			m_subsystemSky = Project.FindSubsystem<SubsystemSky>(true);
+			m_subsystemAudio = Project.FindSubsystem<SubsystemAudio>(true);
 
-			// Inicializar caché de bloques prohibidos por índice (mucho más rápido)
 			InitializeForbiddenBlockIndices();
-
 			LoadWavesFromResources();
 			m_currentWave = valuesDictionary.GetValue<int>("CurrentWave", 1);
 			SetCurrentWave(m_currentWave);
 			m_wasGreenNightActive = m_subsystemGreenNightSky.IsGreenNightActive;
 			Instance = this;
+
+			CreateCountdownLabel();
 		}
 
 		private void InitializeForbiddenBlockIndices()
 		{
-			// Lista de nombres de bloques que queremos prohibir
 			string[] forbiddenNames = {
 				nameof(BedrockBlock), nameof(IronBlock), nameof(CopperBlock),
 				nameof(DiamondBlock), nameof(BrickBlock), nameof(MalachiteBlock),
@@ -120,13 +124,106 @@ namespace Game
 				nameof(BasaltStairsBlock), nameof(LimestoneBlock)
 			};
 
-			// Recorrer todos los bloques registrados y guardar los índices de los que coinciden
 			foreach (var block in BlocksManager.Blocks)
 			{
 				if (block != null && forbiddenNames.Contains(block.GetType().Name))
 				{
 					m_forbiddenBlockIndices.Add(block.BlockIndex);
 				}
+			}
+		}
+
+		private void CreateCountdownLabel()
+		{
+			if (m_countdownLabel != null) return;
+
+			m_countdownLabel = new LabelWidget
+			{
+				DropShadow = true,
+				FontScale = 0.8f,
+				Margin = new Vector2(5f, 0f),
+				IsHitTestVisible = false,
+				TextAnchor = TextAnchor.HorizontalCenter,
+				HorizontalAlignment = WidgetAlignment.Far,
+				VerticalAlignment = WidgetAlignment.Center,
+				Color = new Color(255, 255, 0)
+			};
+
+			m_labelInitialized = false;
+			AttachLabelToPlayers();
+		}
+
+		private void AttachLabelToPlayers()
+		{
+			if (m_countdownLabel == null) return;
+
+			bool attached = false;
+			foreach (var player in m_subsystemPlayers.ComponentPlayers)
+			{
+				var controlsContainer = player.GuiWidget.Children.Find<ContainerWidget>("ControlsContainer", true);
+				if (controlsContainer == null) continue;
+
+				if (!controlsContainer.Children.Contains(m_countdownLabel))
+				{
+					controlsContainer.AddChildren(m_countdownLabel);
+					attached = true;
+				}
+			}
+			if (attached)
+			{
+				m_labelInitialized = true;
+			}
+		}
+
+		private void UpdateCountdownLabel()
+		{
+			if (m_countdownLabel == null)
+			{
+				CreateCountdownLabel();
+				return;
+			}
+
+			if (!m_labelInitialized)
+			{
+				AttachLabelToPlayers();
+				if (!m_labelInitialized) return;
+			}
+
+			int daysLeft = GetDaysUntilNextGreenNight();
+			string text;
+			if (daysLeft == 0)
+				text = LanguageControl.Get("ZombiesSpawn", "TheyComeTonight");
+			else
+				text = string.Format(LanguageControl.Get("ZombiesSpawn", "TheyComeInXDays"), daysLeft);
+
+			m_countdownLabel.Text = text;
+			m_countdownLabel.IsVisible = m_subsystemGreenNightSky.GreenNightEnabled;
+		}
+
+		private int GetDaysUntilNextGreenNight()
+		{
+			int phase = m_subsystemSky.MoonPhase;
+
+			if (phase == 0 || phase == 4)
+			{
+				float timeOfDay = m_subsystemTimeOfDay.TimeOfDay;
+				bool isAfterDusk = timeOfDay >= m_subsystemTimeOfDay.DuskStart;
+				if (isAfterDusk && !m_subsystemGreenNightSky.IsGreenNightActive)
+					return 4;
+				else
+					return 0;
+			}
+			else if (phase < 4)
+				return 4 - phase;
+			else
+				return 8 - phase;
+		}
+
+		private void PlayEvilLaugh()
+		{
+			if (m_subsystemAudio != null)
+			{
+				m_subsystemAudio.PlaySound("Audio/UI/mk-evil-laugh", 1f, 0f, 0f, 0f);
 			}
 		}
 
@@ -163,11 +260,14 @@ namespace Game
 
 		public void Update(float dt)
 		{
+			UpdateCountdownLabel();
+
 			bool isGreenNightActive = m_subsystemGreenNightSky.IsGreenNightActive;
 			int maxWave = m_waves.Keys.Max();
 
 			if (!m_wasGreenNightActive && isGreenNightActive)
 			{
+				PlayEvilLaugh();
 				SendWaveMessage();
 
 				if (m_currentWave == maxWave && !m_hasSpawnedBossThisNight && !m_bossBattleActive)
@@ -218,13 +318,12 @@ namespace Game
 				}
 			}
 
-			// Intervalo dinámico según cantidad de criaturas
 			int totalCreatures = m_subsystemCreatureSpawn.CountCreatures(false);
 			float dynamicInterval = m_bossBattleActive ? m_spawnInterval * 2f : m_spawnInterval;
 			if (totalCreatures > MaxGlobalCreatures * 0.8f)
-				dynamicInterval *= 1.5f;   // Más tiempo si casi lleno
+				dynamicInterval *= 1.5f;
 			else if (totalCreatures < MaxGlobalCreatures * 0.3f)
-				dynamicInterval *= 0.8f;   // Más rápido si hay pocas
+				dynamicInterval *= 0.8f;
 
 			m_spawnTimer += dt;
 			int spawnsThisFrame = 0;
@@ -233,11 +332,9 @@ namespace Game
 			{
 				m_spawnTimer -= dynamicInterval;
 
-				// Intentar spawn en grupo (múltiples criaturas por iteración)
 				int spawnedThisIteration = TrySpawnGroup();
 				spawnsThisFrame += spawnedThisIteration;
 
-				// Si no se pudo spawnear nada, salimos para no entrar en bucle infinito
 				if (spawnedThisIteration == 0)
 					break;
 			}
@@ -250,34 +347,26 @@ namespace Game
 			if (totalCreatures >= MaxGlobalCreatures)
 				return 0;
 
-			// Seleccionar una criatura base
 			var entry = GetRandomWeightedEntry(m_currentWaveEntries);
 			if (entry == null || BossTemplates.Contains(entry.TemplateName))
 				return 0;
 
-			// Obtener un punto válido
 			Vector3 spawnPos;
 			bool isFlying = FlyingTemplates.Contains(entry.TemplateName);
 			if (isFlying)
-			{
 				spawnPos = GetRandomFlyingSpawnPoint();
-			}
 			else
-			{
 				spawnPos = GetValidSpawnPoint();
-			}
 
 			if (spawnPos == Vector3.Zero)
 				return 0;
 
-			// Verificar límite por área para la primera criatura
 			Vector2 areaMin = new Vector2(spawnPos.X - 16, spawnPos.Z - 16);
 			Vector2 areaMax = new Vector2(spawnPos.X + 16, spawnPos.Z + 16);
 			int nearby = m_subsystemCreatureSpawn.CountCreaturesInArea(areaMin, areaMax, false);
 			if (nearby >= MaxCreaturesPerArea)
 				return 0;
 
-			// Spawnear la primera
 			if (CanSpawnCreature(entry.TemplateName, spawnPos))
 			{
 				m_subsystemCreatureSpawn.SpawnCreature(entry.TemplateName, spawnPos, false);
@@ -285,10 +374,9 @@ namespace Game
 			}
 			else
 			{
-				return 0; // Si falla la primera, no intentamos más
+				return 0;
 			}
 
-			// Intentar spawnear criaturas adicionales en el mismo grupo
 			int groupCount = m_random.Int(1, GroupSpawnCount);
 			for (int i = 0; i < groupCount && spawned < MaxSpawnsPerFrame; i++)
 			{
@@ -296,15 +384,11 @@ namespace Game
 				if (extraEntry == null || BossTemplates.Contains(extraEntry.TemplateName))
 					continue;
 
-				// ✅ Determinar si esta criatura es voladora
 				bool extraIsFlying = FlyingTemplates.Contains(extraEntry.TemplateName);
-
-				// Buscar punto cercano con su propio tipo de vuelo
 				Vector3 extraPos = GetNearbySpawnPoint(spawnPos, 5f, 15f, extraIsFlying);
 				if (extraPos == Vector3.Zero)
 					continue;
 
-				// Verificar límite de área
 				Vector2 extraAreaMin = new Vector2(extraPos.X - 16, extraPos.Z - 16);
 				Vector2 extraAreaMax = new Vector2(extraPos.X + 16, extraPos.Z + 16);
 				int extraNearby = m_subsystemCreatureSpawn.CountCreaturesInArea(extraAreaMin, extraAreaMax, false);
@@ -323,7 +407,6 @@ namespace Game
 
 		private bool CanSpawnCreature(string templateName, Vector3 pos)
 		{
-			// Condiciones especiales para InfectedFreezer
 			if (templateName == "InfectedFreezer")
 			{
 				if (m_subsystemSeasons.Season == Season.Winter)
@@ -348,7 +431,6 @@ namespace Game
 
 				if (isFlying)
 				{
-					// Para voladores, mantener altura similar
 					int y = (int)center.Y + m_random.Int(-5, 5);
 					if (y >= 10 && y <= 255)
 						return new Vector3(x + 0.5f, y, z + 0.5f);
@@ -489,7 +571,6 @@ namespace Game
 			{
 				m_currentWaveEntries = entries;
 				m_currentWave = wave;
-				// Intervalo base 2.5s, se reduce hasta un mínimo de 1.2s en oleadas altas
 				m_spawnInterval = Math.Max(1.2f, 2.5f - (wave * 0.04f));
 			}
 			else
@@ -685,13 +766,12 @@ namespace Game
 			m_isAdvancingWave = false;
 		}
 
-		// Métodos optimizados para spawn normal (con menos intentos y caché)
 		private Vector3 GetValidSpawnPoint()
 		{
 			foreach (var player in m_subsystemPlayers.ComponentPlayers)
 			{
 				var camera = player.GameWidget.ActiveCamera;
-				for (int i = 0; i < 5; i++) // Reducido de 10 a 5
+				for (int i = 0; i < 5; i++)
 				{
 					var point = m_subsystemCreatureSpawn.GetRandomSpawnPoint(camera, SpawnLocationType.Surface);
 					if (point.HasValue)
@@ -719,7 +799,7 @@ namespace Game
 			foreach (var player in m_subsystemPlayers.ComponentPlayers)
 			{
 				var camera = player.GameWidget.ActiveCamera;
-				for (int i = 0; i < 5; i++) // Reducido de 8 a 5
+				for (int i = 0; i < 5; i++)
 				{
 					var point = m_subsystemCreatureSpawn.GetRandomSpawnPoint(camera, SpawnLocationType.Surface);
 					if (point.HasValue)
@@ -735,7 +815,7 @@ namespace Game
 				}
 
 				Vector3 playerPos = player.ComponentBody.Position;
-				for (int i = 0; i < 3; i++) // Reducido de 5 a 3
+				for (int i = 0; i < 3; i++)
 				{
 					float angle = m_random.Float(0, 2 * MathUtils.PI);
 					float distance = m_random.Float(20, 40);
