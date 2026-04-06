@@ -1391,6 +1391,48 @@ namespace Game
 				},
 				SpawnFunction = ((CreatureType creatureType, Point3 point) => SpawnCreatures(creatureType, "CapitanPirata", point, 1).Count)
 			});
+
+			// Aimep3 (día 3, cualquier hora del día, sin restricción de habilidades)
+			m_creatureTypes.Add(new CreatureType("Aimep3", SpawnLocationType.Surface, false, false)
+			{
+				SpawnSuitabilityFunction = delegate (CreatureType _, Point3 point)
+				{
+					// Solo aparece en el día 3 (sin importar la hora)
+					if (Math.Floor(m_subsystemTimeOfDay.Day) < 3) return 0f;
+					if (Math.Floor(m_subsystemTimeOfDay.Day) > 3) return 0f;
+
+					// Verificar tipo de suelo
+					int ground = Terrain.ExtractContents(m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z));
+					if (ground != 2 && ground != 8 && ground != 7 && ground != 3) return 0f;
+
+					// Probabilidad del 50% de aparecer
+					if (m_random.Float() > 0.5f) return 0f;
+
+					return 1f;
+				},
+				SpawnFunction = ((CreatureType creatureType, Point3 point) => SpawnCreatures(creatureType, "Aimep3", point, 1).Count)
+			});
+
+			// Aimep3 Constant (versión de aparición constante en chunks)
+			m_creatureTypes.Add(new CreatureType("Aimep3 Constant", SpawnLocationType.Surface, false, true)
+			{
+				SpawnSuitabilityFunction = delegate (CreatureType _, Point3 point)
+				{
+					// Solo aparece en el día 3 (sin importar la hora)
+					if (Math.Floor(m_subsystemTimeOfDay.Day) < 3) return 0f;
+					if (Math.Floor(m_subsystemTimeOfDay.Day) > 3) return 0f;
+
+					// Verificar tipo de suelo
+					int ground = Terrain.ExtractContents(m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z));
+					if (ground != 2 && ground != 8 && ground != 7 && ground != 3) return 0f;
+
+					// Probabilidad del 50% de aparecer
+					if (m_random.Float() > 0.5f) return 0f;
+
+					return 2f;
+				},
+				SpawnFunction = ((CreatureType creatureType, Point3 point) => SpawnCreatures(creatureType, "Aimep3", point, 1).Count)
+			});
 		}
 
 		public virtual void Update(float dt)
