@@ -551,14 +551,15 @@ namespace Game
 
 					SubsystemSeasons seasons = base.Project.FindSubsystem<SubsystemSeasons>(true);
 					if (seasons == null) return 0f;
-					bool isSpring = (seasons.Season == Season.Spring);
-					if (!isSpring) return 0f;
+					// CAMBIO: Permitir Verano O Primavera
+					bool isSpringOrSummer = (seasons.Season == Season.Spring || seasons.Season == Season.Summer);
+					if (!isSpringOrSummer) return 0f;
 
 					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
 					int groundBlock = Terrain.ExtractContents(cellValueGround);
 
-					if ((groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8) && point.Y > 70)
-						return 1.0f;
+					if ((groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
+						return 1f;
 
 					return 0f;
 				},
@@ -587,13 +588,14 @@ namespace Game
 
 					SubsystemSeasons seasons = base.Project.FindSubsystem<SubsystemSeasons>(true);
 					if (seasons == null) return 0f;
-					bool isSpring = (seasons.Season == Season.Spring);
-					if (!isSpring) return 0f;
+					// CAMBIO: Permitir Verano O Primavera
+					bool isSpringOrSummer = (seasons.Season == Season.Spring || seasons.Season == Season.Summer);
+					if (!isSpringOrSummer) return 0f;
 
 					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
 					int groundBlock = Terrain.ExtractContents(cellValueGround);
 
-					if ((groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8) && point.Y > 70)
+					if ((groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 						return 0.5f;
 
 					return 0f;
@@ -630,7 +632,7 @@ namespace Game
 					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
 					int groundBlock = Terrain.ExtractContents(cellValueGround);
 
-					if (groundBlock == 62 || groundBlock == 2 || groundBlock == 3)
+					if ((groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 						return 1.0f;
 
 					return 0f;
@@ -666,7 +668,7 @@ namespace Game
 					int cellValueGround = this.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z);
 					int groundBlock = Terrain.ExtractContents(cellValueGround);
 
-					if (groundBlock == 62 || groundBlock == 2 || groundBlock == 3)
+					if ((groundBlock == 2 || groundBlock == 3 || groundBlock == 7 || groundBlock == 8))
 						return 0.5f;
 
 					return 0f;
