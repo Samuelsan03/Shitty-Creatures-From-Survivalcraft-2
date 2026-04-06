@@ -460,7 +460,7 @@
     "cdc"
     "aba"
 </Recipe>
-<Recipe Result="RemoteControlBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="3" a="semiconductorblock" b="wire" c="battery" Description="[0]">
+<Recipe Result="RemoteControlBlock" ResultCount="1" RequiredHeatLevel="0" a="semiconductorblock" b="wire" c="battery" Description="[0]">
     " a "
     "bcb"
     " a "
@@ -532,6 +532,18 @@
     "ab"
 </Recipe>
 <Recipe Result="FreezeBombBlock" ResultCount="6" RequiredHeatLevel="2" RequiredPlayerLevel="3" a="ice" b="bomb" Description="[0]">
+    "ab"
+</Recipe>
+<Recipe Result="CopperThinHammerBlock" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="2" a="copperpickaxe" b="ironhammer" Description="[0]">
+    "ab"
+</Recipe>
+<Recipe Result="IronThinHammerBlock" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="3" a="ironpickaxe" b="ironhammer" Description="[0]">
+    "ab"
+</Recipe>
+<Recipe Result="DiamondThinHammerBlock" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="4" a="diamondpickaxe" b="ironhammer" Description="[0]">
+    "ab"
+</Recipe>
+<Recipe Result="LavaThinHammerBlock" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="6" a="lavapickaxe" b="ironhammer" Description="[0]">
     "ab"
 </Recipe>
         </Smelting>
