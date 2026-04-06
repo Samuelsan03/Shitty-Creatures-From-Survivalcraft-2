@@ -13,6 +13,7 @@ namespace Game
 		private ValueBarWidget m_thirstBarWidget;
 		private ComponentGui m_componentGui;
 		private Random m_random = new Random();
+		private static Subtexture s_waterSubtexture; // cache de la textura de agua
 
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
@@ -22,6 +23,8 @@ namespace Game
 			Thirst = valuesDictionary.GetValue<float>("Thirst", 1f);
 			m_lastThirst = Thirst;
 
+			// Eliminar todas las barras de sed existentes (incluyendo huérfanas de muertes anteriores)
+			RemoveAllThirstBarWidgets();
 			CreateThirstBarWidget();
 		}
 
@@ -31,19 +34,59 @@ namespace Game
 			valuesDictionary.SetValue("Thirst", Thirst);
 		}
 
+		public override void OnEntityRemoved()
+		{
+			base.OnEntityRemoved();
+			RemoveThirstBarWidget(); // limpieza al destruir el componente
+		}
+
+		private void RemoveThirstBarWidget()
+		{
+			if (m_thirstBarWidget != null && m_thirstBarWidget.ParentWidget is ContainerWidget parent)
+			{
+				parent.Children.Remove(m_thirstBarWidget);
+				m_thirstBarWidget = null;
+			}
+		}
+
+		private void RemoveAllThirstBarWidgets()
+		{
+			// Obtener la subtextura de agua (la misma que se usará en CreateThirstBarWidget)
+			if (s_waterSubtexture == null)
+				s_waterSubtexture = ContentManager.Get<Subtexture>("Textures/Gui/agua");
+
+			if (m_componentGui?.FoodBarWidget?.ParentWidget is ContainerWidget parent)
+			{
+				// Recorrer los hijos en orden inverso para evitar problemas al eliminar
+				for (int i = parent.Children.Count - 1; i >= 0; i--)
+				{
+					if (parent.Children[i] is ValueBarWidget bar && bar.BarSubtexture == s_waterSubtexture)
+					{
+						parent.Children.RemoveAt(i);
+					}
+				}
+			}
+			// Anular referencia local por si acaso
+			m_thirstBarWidget = null;
+		}
+
 		private void CreateThirstBarWidget()
 		{
 			if (m_componentGui?.FoodBarWidget == null) return;
 
 			var foodBar = m_componentGui.FoodBarWidget;
+			// Cargar textura de agua (si no se ha cargado aún)
+			if (s_waterSubtexture == null)
+				s_waterSubtexture = ContentManager.Get<Subtexture>("Textures/Gui/agua");
+
 			m_thirstBarWidget = new ValueBarWidget
 			{
 				BarSize = foodBar.BarSize,
-				BarsCount = foodBar.BarsCount,
+				BarsCount = 10,               // Valor fijo, evita corrupción (la barra de comida a veces da 99993)
 				Spacing = foodBar.Spacing,
 				LitBarColor = new Color(64, 164, 255),
 				UnlitBarColor = new Color(48, 48, 48),
-				BarSubtexture = ContentManager.Get<Subtexture>("Textures/Gui/agua"),
+				BarSubtexture = s_waterSubtexture,
 				TextureLinearFilter = true,
 				HalfBars = true,
 				BarBlending = false,
@@ -59,6 +102,7 @@ namespace Game
 			}
 		}
 
+		// ========== MÉTODOS ORIGINALES SIN CAMBIOS ==========
 		private bool IsFruit(Block block)
 		{
 			return block is AppleBlock ||
