@@ -109,6 +109,8 @@
   "WaveMessage": "¡Estás en la ola {0}!",
   "FinalWave": "¡La ola final ha comenzado!",
   "BossTank": "¡Ha aparecido un Tank!",
+  "TheyComeTonight": "¡Vienen esta noche!",
+  "TheyComeInXDays": "Vienen en {0} días",
   "BossGhostTank": "¡Ha aparecido un Tank Fantasma!",
   "BossMachineGun": "¡Ha aparecido Infectado Ametrallador!",
   "BossFlying": "¡Ha aparecido Jefe Infectado Volador!",
