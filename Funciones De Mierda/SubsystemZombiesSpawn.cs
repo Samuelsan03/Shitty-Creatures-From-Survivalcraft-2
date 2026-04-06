@@ -206,12 +206,7 @@ namespace Game
 
 			if (phase == 0 || phase == 4)
 			{
-				float timeOfDay = m_subsystemTimeOfDay.TimeOfDay;
-				bool isAfterDusk = timeOfDay >= m_subsystemTimeOfDay.DuskStart;
-				if (isAfterDusk && !m_subsystemGreenNightSky.IsGreenNightActive)
-					return 4;
-				else
-					return 0;
+				return m_subsystemGreenNightSky.GreenNightEnabled ? 0 : 4;
 			}
 			else if (phase < 4)
 				return 4 - phase;
