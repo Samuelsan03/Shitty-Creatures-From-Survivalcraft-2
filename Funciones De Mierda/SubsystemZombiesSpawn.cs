@@ -190,23 +190,35 @@ namespace Game
 			}
 
 			int daysLeft = GetDaysUntilNextGreenNight();
-			string text;
-			if (daysLeft == 0)
-				text = LanguageControl.Get("ZombiesSpawn", "TheyComeTonight");
-			else
-				text = string.Format(LanguageControl.Get("ZombiesSpawn", "TheyComeInXDays"), daysLeft);
 
-			m_countdownLabel.Text = text;
-			m_countdownLabel.IsVisible = m_subsystemGreenNightSky.GreenNightEnabled;
+			// Noche Verde desactivada: mostrar cuenta regresiva normal
+			if (!m_subsystemGreenNightSky.GreenNightEnabled)
+			{
+				string text = string.Format(LanguageControl.Get("ZombiesSpawn", "TheyComeInXDays"), daysLeft);
+				m_countdownLabel.Text = text;
+				m_countdownLabel.IsVisible = true;
+				return;
+			}
+
+			// Noche Verde activada
+			if (daysLeft == 0)
+			{
+				m_countdownLabel.Text = LanguageControl.Get("ZombiesSpawn", "TheyComeTonight");
+			}
+			else
+			{
+				string text = string.Format(LanguageControl.Get("ZombiesSpawn", "TheyComeInXDays"), daysLeft);
+				m_countdownLabel.Text = text;
+			}
+			m_countdownLabel.IsVisible = true;   // Siempre visible
 		}
 
 		private int GetDaysUntilNextGreenNight()
 		{
 			int phase = m_subsystemSky.MoonPhase;
 			float timeOfDay = m_subsystemTimeOfDay.TimeOfDay;
-			bool isNight = timeOfDay >= m_subsystemTimeOfDay.DuskStart || timeOfDay < m_subsystemTimeOfDay.DawnStart;
 
-			// Si la Noche Verde está desactivada, siempre mostrar la cuenta regresiva (nunca "tonight")
+			// Si la Noche Verde está desactivada, mostrar cuenta regresiva normal (nunca "tonight")
 			if (!m_subsystemGreenNightSky.GreenNightEnabled)
 			{
 				if (phase == 0 || phase == 4)
@@ -220,7 +232,13 @@ namespace Game
 			// Noche Verde activada
 			if (phase == 0 || phase == 4)
 			{
-				// Fase de luna nueva o llena: la noche verde ocurre esta noche (o ya está ocurriendo)
+				// Si la noche verde de esta fase ya ocurrió (no está activa y el contador de días desde la última es 0)
+				if (!m_subsystemGreenNightSky.IsGreenNightActive && m_subsystemGreenNightSky.DaysSinceLastGreenNight == 0)
+				{
+					// La próxima noche verde será dentro de 4 días (próxima fase 0/4)
+					return 4;
+				}
+				// En caso contrario, la noche verde es hoy (o está ocurriendo)
 				return 0;
 			}
 			else if (phase < 4)
