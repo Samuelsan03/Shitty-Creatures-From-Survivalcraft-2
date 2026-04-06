@@ -10087,6 +10087,10 @@
 </EntityTemplate>
 
 <EntityTemplate Name="HumanoidSkeleton" Guid="7098f91a-f59f-4833-86cb-6e87b3f051c4" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="CreatureSounds" Guid="8ca27dd5-09a3-4ae6-9ca8-94b43d62d419">
+              <Parameter Name="IdleSound" Guid="3b28785d-31c9-4a0d-8288-955bb91990db" Value="Audio/Creatures/Skeleton/Idle" Type="string"/>
+              <Parameter Name="PainSound" Guid="e61767ad-6091-4ef8-9e2c-6dc64ebe2d9c" Value="Audio/Creatures/Skeleton/Pain" Type="string"/>
+            </MemberComponentTemplate>
 <MemberComponentTemplate Name="ZombieAI2" Guid="1be83274-316f-496c-89b2-9cfcd9fa9474" InheritanceParent="9d185bf8-92ec-4ea6-ad86-b8a99b650fd2">
     <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="79302b5f-3206-4e55-9212-b796668f669e"/>
 </MemberComponentTemplate>
@@ -10226,6 +10230,10 @@
         </EntityTemplate>
 
 <EntityTemplate Name="HumanoidSkeletonTamed" Guid="b26c59e6-6180-46f7-ade3-ea72c45d4ca9" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="CreatureSounds" Guid="2855d150-7cdc-447d-a499-e98702455b8e">
+              <Parameter Name="IdleSound" Guid="298d8f51-c76a-46b4-a820-723b44ae1aea" Value="Audio/Creatures/Skeleton/Idle" Type="string"/>
+              <Parameter Name="PainSound" Guid="0f000ec0-4319-4444-b073-5e1feefdbc05" Value="Audio/Creatures/Skeleton/Pain" Type="string"/>
+            </MemberComponentTemplate>
 <MemberComponentTemplate Name="SummonBehavior" Guid="d8470fa4-52ff-4265-9da3-475c81460ef8" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
         <Parameter Name="IsEnabled" Guid="1e7221a9-ceb6-41e4-8a5f-4793050d1325" Value="True" Type="bool"/>
       </MemberComponentTemplate>
