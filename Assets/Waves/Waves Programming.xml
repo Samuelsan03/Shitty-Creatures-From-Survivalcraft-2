@@ -7,6 +7,7 @@
     <Entry template="InfectedNormal2" count="6"/>
     <Entry template="InfectedFly1" count="2"/>
     <Entry template="InfectedFreezer" count="6"/>
+    <Entry template="FrozenGhost" count="6"/>
   </Wave>
   <Wave number="2">
     <Entry template="HumanoidSkeleton" count="10"/>
@@ -17,6 +18,7 @@
     <Entry template="InfectedFast2" count="5"/>
     <Entry template="InfectedFly1" count="2"/>
     <Entry template="InfectedFreezer" count="6"/>
+    <Entry template="FrozenGhost" count="6"/>
   </Wave>
   <Wave number="3">
     <Entry template="HumanoidSkeleton" count="10"/>
@@ -29,8 +31,10 @@
     <Entry template="InfectedMuscle2" count="8"/>
     <Entry template="InfectedFly1" count="2"/>
     <Entry template="InfectedFreezer" count="6"/>
+    <Entry template="FrozenGhost" count="6"/>
   </Wave>
   <Wave number="4">
+    <Entry template="FrozenGhost" count="6"/>
     <Entry template="HumanoidSkeleton" count="10"/>
     <Entry template="InfectedBird" count="8"/>
     <Entry template="InfectedNormal1" count="6"/>
@@ -46,6 +50,7 @@
   </Wave>
   <Wave number="5">
     <Entry template="HumanoidSkeleton" count="10"/>
+    <Entry template="FrozenGhost" count="6"/>
     <Entry template="InfectedBird" count="8"/>
     <Entry template="InfectedNormal1" count="6"/>
     <Entry template="InfectedNormal2" count="6"/>
@@ -64,6 +69,7 @@
   </Wave>
   <Wave number="6">
     <Entry template="HumanoidSkeleton" count="10"/>
+    <Entry template="FrozenGhost" count="6"/>
     <Entry template="InfectedBird" count="8"/>
     <Entry template="InfectedNormal1" count="6"/>
     <Entry template="InfectedNormal2" count="6"/>
@@ -85,6 +91,7 @@
   </Wave>
   <Wave number="7">
     <Entry template="HumanoidSkeleton" count="10"/>
+    <Entry template="FrozenGhost" count="6"/>
     <Entry template="InfectedBird" count="8"/>
     <Entry template="InfectedNormal1" count="6"/>
     <Entry template="InfectedNormal2" count="6"/>
@@ -130,6 +137,7 @@
     <Entry template="InfectedWolf" count="4"/>
     <Entry template="InfectedWerewolf" count="2"/>
     <Entry template="InfectedFreezer" count="6"/>
+    <Entry template="FrozenGhost" count="6"/>
   </Wave>
   <Wave number="9">
     <Entry template="HumanoidSkeleton" count="10"/>
@@ -156,6 +164,7 @@
     <Entry template="InfectedWolf" count="4"/>
     <Entry template="InfectedWerewolf" count="2"/>
     <Entry template="InfectedFreezer" count="6"/>
+    <Entry template="FrozenGhost" count="6"/>
   </Wave>
   <Wave number="10">
     <Entry template="HumanoidSkeleton" count="10"/>
@@ -186,6 +195,7 @@
     <Entry template="InfectedWolf" count="5"/>
     <Entry template="InfectedWerewolf" count="2"/>
     <Entry template="InfectedFreezer" count="6"/>
+    <Entry template="FrozenGhost" count="6"/>
   </Wave>
   <Wave number="11">
     <Entry template="HumanoidSkeleton" count="10"/>
@@ -218,6 +228,7 @@
     <Entry template="InfectedWolf" count="6"/>
     <Entry template="InfectedWerewolf" count="2"/>
     <Entry template="InfectedFreezer" count="6"/>
+    <Entry template="FrozenGhost" count="6"/>
   </Wave>
   <Wave number="12">
     <Entry template="HumanoidSkeleton" count="10"/>
@@ -252,6 +263,7 @@
     <Entry template="InfectedWerewolf" count="3"/>
     <Entry template="FlyingInfectedBoss" count="1"/>
     <Entry template="InfectedFreezer" count="6"/>
+    <Entry template="FrozenGhost" count="6"/>
   </Wave>
   <Wave number="13">
     <Entry template="HumanoidSkeleton" count="10"/>
@@ -276,6 +288,7 @@
     <Entry template="GhostBoomer1" count="2"/>
     <Entry template="GhostBoomer2" count="2"/>
     <Entry template="GhostBoomer3" count="2"/>
+    <Entry template="BoomerFrozen" count="2"/>
     <Entry template="GhostCharger" count="2"/>
     <Entry template="Charger1" count="2"/>
     <Entry template="Charger2" count="2"/>
@@ -286,6 +299,7 @@
     <Entry template="InfectedWolf" count="7"/>
     <Entry template="InfectedWerewolf" count="3"/>
     <Entry template="InfectedFreezer" count="6"/>
+    <Entry template="FrozenGhost" count="6"/>
   </Wave>
   <Wave number="14">
     <Entry template="HumanoidSkeleton" count="10"/>
@@ -310,6 +324,8 @@
     <Entry template="GhostBoomer1" count="2"/>
     <Entry template="GhostBoomer2" count="2"/>
     <Entry template="GhostBoomer3" count="2"/>
+    <Entry template="BoomerFrozen" count="2"/>
+    <Entry template="FrozenGhostBoomer" count="2"/>
     <Entry template="GhostCharger" count="2"/>
     <Entry template="Charger1" count="2"/>
     <Entry template="Charger2" count="2"/>
@@ -321,11 +337,14 @@
     <Entry template="InfectedWerewolf" count="4"/>
     <Entry template="Tank1" count="1"/>
     <Entry template="InfectedFreezer" count="6"/>
+    <Entry template="FrozenGhost" count="6"/>
   </Wave>
   <Wave number="15">
     <Entry template="HumanoidSkeleton" count="10"/>
     <Entry template="InfectedBird" count="8"/>
     <Entry template="InfectedNormal1" count="6"/>
+    <Entry template="BoomerFrozen" count="2"/>
+    <Entry template="FrozenGhostBoomer" count="2"/>
     <Entry template="InfectedNormal2" count="6"/>
     <Entry template="GhostNormal" count="4"/>
     <Entry template="InfectedFast1" count="5"/>
@@ -345,6 +364,8 @@
     <Entry template="GhostBoomer1" count="2"/>
     <Entry template="GhostBoomer2" count="2"/>
     <Entry template="GhostBoomer3" count="2"/>
+    <Entry template="BoomerFrozen" count="2"/>
+    <Entry template="FrozenGhostBoomer" count="2"/>
     <Entry template="GhostCharger" count="2"/>
     <Entry template="Charger1" count="2"/>
     <Entry template="Charger2" count="2"/>
@@ -355,6 +376,7 @@
     <Entry template="InfectedWolf" count="9"/>
     <Entry template="InfectedWerewolf" count="4"/>
     <Entry template="InfectedFreezer" count="6"/>
+    <Entry template="FrozenGhost" count="6"/>
   </Wave>
   <Wave number="16">
     <Entry template="HumanoidSkeleton" count="10"/>
@@ -379,6 +401,8 @@
     <Entry template="GhostBoomer1" count="2"/>
     <Entry template="GhostBoomer2" count="2"/>
     <Entry template="GhostBoomer3" count="2"/>
+    <Entry template="BoomerFrozen" count="2"/>
+    <Entry template="FrozenGhostBoomer" count="2"/>
     <Entry template="GhostCharger" count="2"/>
     <Entry template="Charger1" count="2"/>
     <Entry template="Charger2" count="2"/>
@@ -390,6 +414,7 @@
     <Entry template="InfectedWerewolf" count="5"/>
     <Entry template="Tank2" count="1"/>
     <Entry template="InfectedFreezer" count="6"/>
+    <Entry template="FrozenGhost" count="6"/>
   </Wave>
   <Wave number="17">
     <Entry template="HumanoidSkeleton" count="10"/>
@@ -414,6 +439,8 @@
     <Entry template="GhostBoomer1" count="3"/>
     <Entry template="GhostBoomer2" count="3"/>
     <Entry template="GhostBoomer3" count="3"/>
+    <Entry template="BoomerFrozen" count="3"/>
+    <Entry template="FrozenGhostBoomer" count="3"/>
     <Entry template="GhostCharger" count="3"/>
     <Entry template="Charger1" count="3"/>
     <Entry template="Charger2" count="3"/>
@@ -424,6 +451,7 @@
     <Entry template="InfectedWolf" count="10"/>
     <Entry template="InfectedWerewolf" count="5"/>
     <Entry template="InfectedFreezer" count="8"/>
+    <Entry template="FrozenGhost" count="6"/>
   </Wave>
   <Wave number="18">
     <Entry template="HumanoidSkeleton" count="10"/>
@@ -448,6 +476,8 @@
     <Entry template="GhostBoomer1" count="3"/>
     <Entry template="GhostBoomer2" count="3"/>
     <Entry template="GhostBoomer3" count="3"/>
+    <Entry template="BoomerFrozen" count="3"/>
+    <Entry template="FrozenGhostBoomer" count="3"/>
     <Entry template="GhostCharger" count="3"/>
     <Entry template="Charger1" count="3"/>
     <Entry template="Charger2" count="3"/>
@@ -459,6 +489,7 @@
     <Entry template="InfectedWerewolf" count="5"/>
     <Entry template="Tank3" count="1"/>
     <Entry template="InfectedFreezer" count="8"/>
+    <Entry template="FrozenGhost" count="6"/>
   </Wave>
   <Wave number="19">
     <Entry template="HumanoidSkeleton" count="10"/>
@@ -483,6 +514,8 @@
     <Entry template="GhostBoomer1" count="4"/>
     <Entry template="GhostBoomer2" count="4"/>
     <Entry template="GhostBoomer3" count="4"/>
+    <Entry template="BoomerFrozen" count="4"/>
+    <Entry template="FrozenGhostBoomer" count="4"/>
     <Entry template="Charger1" count="4"/>
     <Entry template="Charger2" count="4"/>
     <Entry template="GhostCharger" count="3"/>
@@ -493,6 +526,7 @@
     <Entry template="InfectedWolf" count="10"/>
     <Entry template="InfectedWerewolf" count="6"/>
     <Entry template="InfectedFreezer" count="8"/>
+    <Entry template="FrozenGhost" count="6"/>
   </Wave>
   <Wave number="20">
     <Entry template="HumanoidSkeleton" count="10"/>
@@ -514,9 +548,11 @@
     <Entry template="Boomer1" count="3"/>
     <Entry template="Boomer2" count="3"/>
     <Entry template="Boomer3" count="3"/>
-    <Entry template="GhostBoomer1" count="2"/>
-    <Entry template="GhostBoomer2" count="2"/>
-    <Entry template="GhostBoomer3" count="2"/>
+    <Entry template="GhostBoomer1" count="4"/>
+    <Entry template="GhostBoomer2" count="4"/>
+    <Entry template="GhostBoomer3" count="4"/>
+    <Entry template="BoomerFrozen" count="4"/>
+    <Entry template="FrozenGhostBoomer" count="4"/>
     <Entry template="GhostCharger" count="2"/>
     <Entry template="Charger1" count="2"/>
     <Entry template="Charger2" count="2"/>
@@ -528,6 +564,7 @@
     <Entry template="InfectedWerewolf" count="5"/>
     <Entry template="TankGhost1" count="1"/>
     <Entry template="InfectedFreezer" count="6"/>
+    <Entry template="FrozenGhost" count="6"/>
   </Wave>
   <Wave number="21">
     <Entry template="HumanoidSkeleton" count="10"/>
@@ -549,9 +586,11 @@
     <Entry template="Boomer1" count="3"/>
     <Entry template="Boomer2" count="3"/>
     <Entry template="Boomer3" count="3"/>
-    <Entry template="GhostBoomer1" count="2"/>
-    <Entry template="GhostBoomer2" count="2"/>
-    <Entry template="GhostBoomer3" count="2"/>
+    <Entry template="GhostBoomer1" count="4"/>
+    <Entry template="GhostBoomer2" count="4"/>
+    <Entry template="GhostBoomer3" count="4"/>
+    <Entry template="BoomerFrozen" count="4"/>
+    <Entry template="FrozenGhostBoomer" count="4"/>
     <Entry template="GhostCharger" count="2"/>
     <Entry template="Charger1" count="2"/>
     <Entry template="Charger2" count="2"/>
@@ -562,6 +601,7 @@
     <Entry template="InfectedWolf" count="10"/>
     <Entry template="InfectedWerewolf" count="5"/>
     <Entry template="InfectedFreezer" count="6"/>
+    <Entry template="FrozenGhost" count="6"/>
   </Wave>
   <Wave number="22">
     <Entry template="HumanoidSkeleton" count="10"/>
@@ -583,9 +623,11 @@
     <Entry template="Boomer1" count="3"/>
     <Entry template="Boomer2" count="3"/>
     <Entry template="Boomer3" count="3"/>
-    <Entry template="GhostBoomer1" count="2"/>
-    <Entry template="GhostBoomer2" count="2"/>
-    <Entry template="GhostBoomer3" count="2"/>
+    <Entry template="GhostBoomer1" count="4"/>
+    <Entry template="GhostBoomer2" count="4"/>
+    <Entry template="GhostBoomer3" count="4"/>
+    <Entry template="BoomerFrozen" count="4"/>
+    <Entry template="FrozenGhostBoomer" count="4"/>
     <Entry template="GhostCharger" count="2"/>
     <Entry template="Charger1" count="2"/>
     <Entry template="Charger2" count="2"/>
@@ -597,6 +639,7 @@
     <Entry template="InfectedWerewolf" count="5"/>
     <Entry template="TankGhost2" count="1"/>
     <Entry template="InfectedFreezer" count="6"/>
+    <Entry template="FrozenGhost" count="6"/>
   </Wave>
   <Wave number="23">
     <Entry template="HumanoidSkeleton" count="10"/>
@@ -618,9 +661,11 @@
     <Entry template="Boomer1" count="3"/>
     <Entry template="Boomer2" count="3"/>
     <Entry template="Boomer3" count="3"/>
-    <Entry template="GhostBoomer1" count="2"/>
-    <Entry template="GhostBoomer2" count="2"/>
-    <Entry template="GhostBoomer3" count="2"/>
+    <Entry template="GhostBoomer1" count="4"/>
+    <Entry template="GhostBoomer2" count="4"/>
+    <Entry template="GhostBoomer3" count="4"/>
+    <Entry template="BoomerFrozen" count="4"/>
+    <Entry template="FrozenGhostBoomer" count="4"/>
     <Entry template="GhostCharger" count="2"/>
     <Entry template="Charger1" count="2"/>
     <Entry template="Charger2" count="2"/>
@@ -631,6 +676,7 @@
     <Entry template="InfectedWolf" count="10"/>
     <Entry template="InfectedWerewolf" count="5"/>
     <Entry template="InfectedFreezer" count="6"/>
+    <Entry template="FrozenGhost" count="6"/>
   </Wave>
   <Wave number="24">
     <Entry template="HumanoidSkeleton" count="10"/>
@@ -652,9 +698,11 @@
     <Entry template="Boomer1" count="3"/>
     <Entry template="Boomer2" count="3"/>
     <Entry template="Boomer3" count="3"/>
-    <Entry template="GhostBoomer1" count="2"/>
-    <Entry template="GhostBoomer2" count="2"/>
-    <Entry template="GhostBoomer3" count="2"/>
+    <Entry template="GhostBoomer1" count="4"/>
+    <Entry template="GhostBoomer2" count="4"/>
+    <Entry template="GhostBoomer3" count="4"/>
+    <Entry template="BoomerFrozen" count="4"/>
+    <Entry template="FrozenGhostBoomer" count="4"/>
     <Entry template="GhostCharger" count="2"/>
     <Entry template="Charger1" count="2"/>
     <Entry template="Charger2" count="2"/>
@@ -666,6 +714,7 @@
     <Entry template="InfectedWerewolf" count="5"/>
     <Entry template="TankGhost3" count="1"/>
     <Entry template="InfectedFreezer" count="6"/>
+    <Entry template="FrozenGhost" count="6"/>
   </Wave>
   <Wave number="25">
     <Entry template="HumanoidSkeleton" count="10"/>
@@ -687,9 +736,11 @@
     <Entry template="Boomer1" count="3"/>
     <Entry template="Boomer2" count="3"/>
     <Entry template="Boomer3" count="3"/>
-    <Entry template="GhostBoomer1" count="2"/>
-    <Entry template="GhostBoomer2" count="2"/>
-    <Entry template="GhostBoomer3" count="2"/>
+    <Entry template="GhostBoomer1" count="4"/>
+    <Entry template="GhostBoomer2" count="4"/>
+    <Entry template="GhostBoomer3" count="4"/>
+    <Entry template="BoomerFrozen" count="4"/>
+    <Entry template="FrozenGhostBoomer" count="4"/>
     <Entry template="GhostCharger" count="2"/>
     <Entry template="Charger1" count="2"/>
     <Entry template="Charger2" count="2"/>
@@ -700,6 +751,7 @@
     <Entry template="InfectedWolf" count="10"/>
     <Entry template="InfectedWerewolf" count="5"/>
     <Entry template="InfectedFreezer" count="6"/>
+    <Entry template="FrozenGhost" count="6"/>
   </Wave>
   <Wave number="26">
     <Entry template="HumanoidSkeleton" count="10"/>
@@ -721,9 +773,11 @@
     <Entry template="Boomer1" count="3"/>
     <Entry template="Boomer2" count="3"/>
     <Entry template="Boomer3" count="3"/>
-    <Entry template="GhostBoomer1" count="2"/>
-    <Entry template="GhostBoomer2" count="2"/>
-    <Entry template="GhostBoomer3" count="2"/>
+    <Entry template="GhostBoomer1" count="4"/>
+    <Entry template="GhostBoomer2" count="4"/>
+    <Entry template="GhostBoomer3" count="4"/>
+    <Entry template="BoomerFrozen" count="4"/>
+    <Entry template="FrozenGhostBoomer" count="4"/>
     <Entry template="GhostCharger" count="2"/>
     <Entry template="Charger1" count="2"/>
     <Entry template="Charger2" count="2"/>
@@ -735,6 +789,7 @@
     <Entry template="InfectedWerewolf" count="5"/>
     <Entry template="MachineGunInfected" count="1"/>
     <Entry template="InfectedFreezer" count="6"/>
+    <Entry template="FrozenGhost" count="6"/>
   </Wave>
   <Wave number="27">
     <Entry template="HumanoidSkeleton" count="10"/>
@@ -756,9 +811,11 @@
     <Entry template="Boomer1" count="3"/>
     <Entry template="Boomer2" count="3"/>
     <Entry template="Boomer3" count="3"/>
-    <Entry template="GhostBoomer1" count="2"/>
-    <Entry template="GhostBoomer2" count="2"/>
-    <Entry template="GhostBoomer3" count="2"/>
+    <Entry template="GhostBoomer1" count="4"/>
+    <Entry template="GhostBoomer2" count="4"/>
+    <Entry template="GhostBoomer3" count="4"/>
+    <Entry template="BoomerFrozen" count="4"/>
+    <Entry template="FrozenGhostBoomer" count="4"/>
     <Entry template="GhostCharger" count="2"/>
     <Entry template="Charger1" count="2"/>
     <Entry template="Charger2" count="2"/>
@@ -769,6 +826,7 @@
     <Entry template="InfectedWolf" count="10"/>
     <Entry template="InfectedWerewolf" count="5"/>
     <Entry template="InfectedFreezer" count="6"/>
+    <Entry template="FrozenGhost" count="6"/>
   </Wave>
   <Wave number="28">
     <Entry template="HumanoidSkeleton" count="10"/>
@@ -793,6 +851,8 @@
     <Entry template="GhostBoomer1" count="4"/>
     <Entry template="GhostBoomer2" count="4"/>
     <Entry template="GhostBoomer3" count="4"/>
+    <Entry template="BoomerFrozen" count="4"/>
+    <Entry template="FrozenGhostBoomer" count="4"/>
     <Entry template="Charger1" count="3"/>
     <Entry template="Charger2" count="3"/>
     <Entry template="GhostCharger" count="3"/>
@@ -811,5 +871,6 @@
     <Entry template="TankGhost3" count="1"/>
     <Entry template="MachineGunInfected" count="1"/>
     <Entry template="InfectedFreezer" count="3"/>
+    <Entry template="FrozenGhost" count="6"/>
   </Wave>
 </Waves>
