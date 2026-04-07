@@ -97,12 +97,13 @@
     "FluNPCCured": "NPC 的流感已治愈！"
   },
   "GreenNightDialog": {
-    "Title": "绿夜配置",
-    "ToggleExplanation": "启用绿夜将在夜间导致受感染的部落出现。禁用它将使世界恢复正常进程，而不会发生绿夜事件和受感染的部落。",
-    "EnabledNotification": "绿夜已激活！受感染的部落现在将在夜间攻击你。",
-    "DisabledNotification": "绿夜已停用。世界现在将正常进行。",
-    "CheckboxText": "启用绿夜",
-    "OkButton": "接受",
+    "Title": "绿色之夜设置",
+    "EnableExplanation": "启用后，每晚都会有感染者群袭击你，世界将变得更加危险。",
+    "DisableExplanation": "禁用后，世界将恢复正常进程。不会出现绿色之夜事件或感染者群。",
+    "EnabledNotification": "绿色之夜已开启！感染者群现在会在夜间攻击你。",
+    "DisabledNotification": "绿色之夜已关闭。世界将恢复正常发展。",
+    "CheckboxText": "启用绿色之夜",
+    "OkButton": "确认",
     "CancelButton": "取消"
   },
   "ZombiesSpawn": {
