@@ -901,7 +901,7 @@ namespace Game
 				}
 				// 40% restante: el tercer slot queda vacío
 			}
-			else if (name == "InfectedFreezer")
+			else if (name == "InfectedFreezer" || name == "FrozenGhostBoomer" || name == "BoomerFrozen" || name == "FrozenGhost")
 			{
 				// Probabilidad equitativa entre 3 opciones principales (33.33% cada una)
 				float mainChoice = m_random.Float(0f, 1f);
