@@ -546,6 +546,9 @@
 <Recipe Result="LavaThinHammerBlock" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="6" a="lavapickaxe" b="ironhammer" Description="[0]">
     "ab"
 </Recipe>
+<Recipe Result="LavaLongspearBlock" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="6" a="lavaspear" b="ironhammer" Description="[0]">
+    "ab"
+</Recipe>
         </Smelting>
     </Recipes>
 </ShittyRecipes>
