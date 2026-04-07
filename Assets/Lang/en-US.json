@@ -98,7 +98,8 @@
   },
   "GreenNightDialog": {
     "Title": "Green Night Configuration",
-    "ToggleExplanation": "Enabling Green Night will cause infected hordes to appear during the night. Disabling it will return the world to normal progression without the Green Night event and infected hordes.",
+    "EnableExplanation": "When enabled, infected hordes will attack you every night. The world becomes more dangerous.",
+    "DisableExplanation": "When disabled, the world returns to normal progression. No Green Night events or infected hordes will appear.",
     "EnabledNotification": "Green Night activated! Infected hordes will now attack you at night.",
     "DisabledNotification": "Green Night deactivated. The world will now progress normally.",
     "CheckboxText": "Enable Green Night",
