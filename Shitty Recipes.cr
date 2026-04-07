@@ -546,7 +546,10 @@
 <Recipe Result="LavaLongspearBlock" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="6" a="lavaspear" b="ironhammer" Description="[0]">
     "ab"
 </Recipe>
-<Recipe Result="BoiledWaterBlock" ResultCount="1" RequiredHeatLevel="1" a="waterbucket" Description="[0]">
+<Recipe Result="BoiledWaterBucketBlock" ResultCount="1" RequiredHeatLevel="1" a="waterbucket" Description="[0]">
+    "a"
+</Recipe>
+<Recipe Result="BoiledWaterBowlBlock" ResultCount="1" RequiredHeatLevel="1" a="waterbowl" Description="[0]">
     "a"
 </Recipe>
         </Smelting>
