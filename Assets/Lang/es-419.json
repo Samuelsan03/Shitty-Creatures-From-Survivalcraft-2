@@ -441,7 +441,7 @@
     "DisplayName": "Arándano",
     "Description": "Una fruta pequeña y nutritiva que ofrece poca energía pero ayuda ligeramente con la sed."
   },
-    "BoiledWaterBlock:0": {
+    "BoiledWaterBucketBlock:0": {
   "DisplayName": "Cubo de agua hervida",
   "Description": "Un cubo lleno de agua hervida. Beberla restaura la hidratación de forma segura.",
   "CRDescription:0": "Agua hervida limpia almacenada en un cubo."
@@ -518,6 +518,35 @@
   "Description": "Un cubo lleno de té medicinal. Al beberlo cura la gripe y alivia sus síntomas. También puede usarse para tratar criaturas infectadas. Además restaura algo de sed.",
   "CRDescription:0": "Prepara té antigripal calentando un cubo de agua con hierba alta. Cura la gripe."
 },
+"BoiledWaterBowlBlock:0": {
+    "DisplayName": "Tazón de Agua Hervida",
+    "Description": "Un tazón lleno de agua hervida. Es seguro para beber y quita la sed.",
+    "CRDescription:0": "Hervir un tazón de agua"
+  },
+  "CactusJuiceBowlBlock:0": {
+    "DisplayName": "Tazón de Jugo de Cactus",
+    "Description": "Un tazón de jugo de cactus. Refrescante y quita algo de sed.",
+    "CRDescription:0": "Hervir agua con cactus"
+  },
+  "AntidoteBowlBlock:0": {
+    "DisplayName": "Tazón de Antídoto",
+    "Description": "Un tazón medicinal que cura el veneno y las enfermedades.",
+    "CRDescription:0": "Hervir té antigripal con flores moradas"
+  },
+  "TeaAntifluBowlBlock:0": {
+    "DisplayName": "Tazón de Té Antigripal",
+    "Description": "Un té herbal caliente que cura la gripe.",
+    "CRDescription:0": "Hervir agua con hierba alta"
+  },
+  "WaterBowlBlock:0": {
+    "DisplayName": "Tazón de Agua",
+    "Description": "Un tazón lleno de agua. Puede que no sea segura para beber."
+  },
+  "EmptyBowlBlock:0": {
+    "DisplayName": "Tazón Vacío",
+    "Description": "Un tazón vacío. Útil para contener líquidos.",
+    "CRDescription:0": "Dar forma a la tierra en un tazón"
+  },
     "WoodenLongspearBlock:0": {
     "DisplayName": "Lanza Larga de Madera",
     "Description": "Una lanza larga es un arma de asta de madera extendida que proporciona un excelente alcance. Puede lanzarse o usarse en combate cuerpo a cuerpo. Las lanzas arrojadas se clavan en superficies blandas. La construcción de madera es básica pero efectiva.",
