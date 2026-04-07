@@ -124,7 +124,7 @@ namespace Game
 
 					if (entityName != "GhostNormal" && entityName != "GhostFast" && entityName != "PoisonousGhost" &&
 						entityName != "GhostCharger" && entityName != "GhostBoomer1" && entityName != "GhostBoomer2" &&
-						entityName != "GhostBoomer3")
+						entityName != "GhostBoomer3" && entityName != "FrozenGhost" && entityName != "FrozenGhostBoomer")
 						continue;
 
 					ComponentHealth health = entity.FindComponent<ComponentHealth>();
