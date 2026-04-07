@@ -98,9 +98,10 @@
     },
   "GreenNightDialog": {
     "Title": "Configuración de Noche Verde",
-    "ToggleExplanation": "Si activas el evento de Noche Verde, aparecerán hordas de infectados durante la noche. Si lo desactivas, el mundo volverá a la progresión normal sin el evento de Noche Verde ni las hordas de infectados.",
+    "EnableExplanation": "Cuando está activado, hordas de infectados te atacarán cada noche. El mundo se vuelve más peligroso.",
+    "DisableExplanation": "Cuando está desactivado, el mundo vuelve a su progresión normal. No aparecerán eventos de Noche Verde ni hordas de infectados.",
     "EnabledNotification": "¡Noche Verde activada! Las hordas de infectados ahora te atacarán por la noche.",
-    "DisabledNotification": "Noche Verde desactivada. El mundo ahora progresará normalmente.",
+    "DisabledNotification": "Noche Verde desactivada. El mundo volverá a progresar normalmente.",
     "CheckboxText": "Activar Noche Verde",
     "OkButton": "Aceptar",
     "CancelButton": "Cancelar"
