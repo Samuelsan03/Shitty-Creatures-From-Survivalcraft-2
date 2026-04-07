@@ -14,6 +14,7 @@ namespace Game
 		private SubsystemAudio m_subsystemAudio;
 		private const float MaxUseDistance = 3f;
 		private System.Random m_random = new System.Random();
+		private Dictionary<string, string> m_tameableCreatures;
 
 		private static readonly string[] CollarVariants = new string[]
 		{
@@ -40,26 +41,8 @@ namespace Game
 			this.m_subsystemGameInfo = base.Project.FindSubsystem<SubsystemGameInfo>(true);
 			this.m_subsystemPlayers = base.Project.FindSubsystem<SubsystemPlayers>(true);
 			this.m_subsystemAudio = base.Project.FindSubsystem<SubsystemAudio>(true);
-		}
 
-		public override bool OnUse(Ray3 ray, ComponentMiner componentMiner)
-		{
-			BodyRaycastResult? bodyRaycastResult = componentMiner.Raycast<BodyRaycastResult>(ray, RaycastMode.Interaction, true, true, true, null);
-			if (bodyRaycastResult == null)
-				return false;
-
-			float distance = Vector3.Distance(ray.Position, bodyRaycastResult.Value.HitPoint());
-			if (distance > MaxUseDistance)
-				return false;
-
-			Entity entity = bodyRaycastResult.Value.ComponentBody.Entity;
-			ComponentHealth componentHealth = entity.FindComponent<ComponentHealth>();
-			if (componentHealth != null && componentHealth.Health <= 0f)
-				return false;
-
-			string currentEntityName = entity.ValuesDictionary.DatabaseObject.Name;
-
-			Dictionary<string, string> tameableCreatures = new Dictionary<string, string>()
+			m_tameableCreatures = new Dictionary<string, string>()
 			{
 				{"InfectedNormal1", "InfectedNormalTamed1"},
 				{"InfectedNormal2", "InfectedNormalTamed2"},
@@ -100,62 +83,96 @@ namespace Game
 				{"PredatoryChameleon", "PredatoryChameleonTamed"},
 				{"InfectedBird", "InfectedBirdTamed"},
 				{"InfectedWildboar", "InfectedWildboarTamed"},
-				{"InfectedFreezer", "InfectedFreezerTamed" }
+				{"InfectedFreezer", "InfectedFreezerTamed" },
+				{"BoomerFrozen", "BoomerFrozenTamed" },
+				{"FrozenGhost", "FrozenGhostTamed" },
+				{"FrozenGhostBoomer", "FrozenGhostBoomerTamed" },
 			};
+		}
 
-			if (tameableCreatures.ContainsKey(currentEntityName))
+		public bool IsCreatureTameable(Entity entity)
+		{
+			if (entity == null) return false;
+			if (m_tameableCreatures == null) return false;
+			try
+			{
+				string entityName = entity.ValuesDictionary?.DatabaseObject?.Name;
+				if (string.IsNullOrEmpty(entityName)) return false;
+				return m_tameableCreatures.ContainsKey(entityName);
+			}
+			catch
+			{
+				return false;
+			}
+		}
+
+		public override bool OnUse(Ray3 ray, ComponentMiner componentMiner)
+		{
+			BodyRaycastResult? bodyRaycastResult = componentMiner.Raycast<BodyRaycastResult>(ray, RaycastMode.Interaction, true, true, true, null);
+			if (bodyRaycastResult == null)
+				return false;
+			float distance = Vector3.Distance(ray.Position, bodyRaycastResult.Value.HitPoint());
+			if (distance > MaxUseDistance)
+				return false;
+			Entity entity = bodyRaycastResult.Value.ComponentBody.Entity;
+			ComponentHealth componentHealth = entity.FindComponent<ComponentHealth>();
+			if (componentHealth != null && componentHealth.Health <= 0f)
+				return false;
+			string currentEntityName = entity.ValuesDictionary.DatabaseObject.Name;
+			if (m_tameableCreatures.ContainsKey(currentEntityName))
 			{
 				bool isBoomer = currentEntityName.StartsWith("Boomer") || currentEntityName.StartsWith("GhostBoomer");
 				bool isGhostBoomer = currentEntityName.StartsWith("GhostBoomer");
-
+				bool isFrozenGhostBoomer = currentEntityName == "FrozenGhostBoomer";
+				bool isBoomerFrozen = currentEntityName == "BoomerFrozen";
+				bool isFrozenGhost = currentEntityName == "FrozenGhost";
 				ComponentBoomerExplosion boomerExplosion = null;
 				ComponentBoomerFireExplosion boomerExplosion2 = null;
 				ComponentBoomerPoisonExplosion boomerPoisonExplosion = null;
-
+				ComponentBoomerFrozenExplosion boomerFrozenExplosion = null;
 				if (isBoomer)
 				{
 					boomerExplosion = entity.FindComponent<ComponentBoomerExplosion>();
 					boomerExplosion2 = entity.FindComponent<ComponentBoomerFireExplosion>();
 					boomerPoisonExplosion = entity.FindComponent<ComponentBoomerPoisonExplosion>();
-
-					if (boomerExplosion != null)
-						boomerExplosion.PreventExplosion = true;
-					if (boomerExplosion2 != null)
-						boomerExplosion2.PreventExplosion = true;
-					if (boomerPoisonExplosion != null)
-						boomerPoisonExplosion.PreventExplosion = true;
+					if (boomerExplosion != null) boomerExplosion.PreventExplosion = true;
+					if (boomerExplosion2 != null) boomerExplosion2.PreventExplosion = true;
+					if (boomerPoisonExplosion != null) boomerPoisonExplosion.PreventExplosion = true;
 				}
-
+				if (isFrozenGhostBoomer || isBoomerFrozen || isFrozenGhost)
+				{
+					boomerFrozenExplosion = entity.FindComponent<ComponentBoomerFrozenExplosion>();
+					if (boomerFrozenExplosion != null) boomerFrozenExplosion.PreventExplosion = true;
+				}
 				ComponentNewCreatureCollect originalCollectComponent = entity.FindComponent<ComponentNewCreatureCollect>();
-
-				string entityTemplateName = tameableCreatures[currentEntityName];
+				string entityTemplateName = m_tameableCreatures[currentEntityName];
 				Entity entity2 = DatabaseManager.CreateEntity(base.Project, entityTemplateName, false);
 				if (entity2 == null)
 				{
 					if (boomerExplosion != null) boomerExplosion.PreventExplosion = false;
 					if (boomerExplosion2 != null) boomerExplosion2.PreventExplosion = false;
 					if (boomerPoisonExplosion != null) boomerPoisonExplosion.PreventExplosion = false;
+					if (boomerFrozenExplosion != null) boomerFrozenExplosion.PreventExplosion = false;
 					return true;
 				}
-
 				ComponentBody componentBody = entity2.FindComponent<ComponentBody>(true);
 				componentBody.Position = bodyRaycastResult.Value.ComponentBody.Position;
 				componentBody.Rotation = bodyRaycastResult.Value.ComponentBody.Rotation;
 				componentBody.Velocity = bodyRaycastResult.Value.ComponentBody.Velocity;
 				entity2.FindComponent<ComponentSpawn>(true).SpawnDuration = 0f;
-
 				ComponentNewCreatureCollect newCollectComponent = entity2.FindComponent<ComponentNewCreatureCollect>();
 				if (originalCollectComponent != null && newCollectComponent != null)
 				{
 					newCollectComponent.CopyInventoryFrom(originalCollectComponent);
 				}
-
 				base.Project.RemoveEntity(entity, true);
 				base.Project.AddEntity(entity2);
-
 				bool isTamedBoss = entityTemplateName == "FlyingInfectedBossTamed";
 				bool isTamedBoomer = entityTemplateName.StartsWith("BoomerTamed");
 				bool isTamedGhostBoomer = entityTemplateName.StartsWith("GhostBoomerTamed");
+				bool isTamedFrozenGhostBoomer = entityTemplateName == "FrozenGhostBoomerTamed";
+				bool isTamedBoomerFrozen = entityTemplateName == "BoomerFrozenTamed";
+				bool isTamedFrozenGhost = entityTemplateName == "FrozenGhostTamed";
 				bool isTamedCharger = entityTemplateName.StartsWith("ChargerTamed");
 				bool isTamedGhostCharger = entityTemplateName == "GhostChargerTamed";
 				bool isTamedTank = entityTemplateName.StartsWith("TankTamed");
@@ -171,7 +188,6 @@ namespace Game
 				bool isTamedInfectedBird = entityTemplateName == "InfectedBirdTamed";
 				bool isTamedInfectedWildboar = entityTemplateName == "InfectedWildboarTamed";
 				bool isTamedInfectedFreezer = entityTemplateName == "InfectedFreezerTamed";
-
 				ComponentPlayer componentPlayer = FindPlayerWithMiner(componentMiner);
 				if (componentPlayer != null)
 				{
@@ -180,13 +196,11 @@ namespace Game
 						string message;
 						Color messageColor;
 						string soundToPlay;
-
 						if (isTamedBoss)
 						{
 							bool translationFound;
 							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedBossMessage");
-							if (!translationFound)
-								message = "You have tamed the Flying Infected Boss, use it wisely for emergency cases";
+							if (!translationFound) message = "You have tamed the Flying Infected Boss, use it wisely for emergency cases";
 							messageColor = new Color(66, 0, 142);
 							soundToPlay = "Audio/UI/Bosses FNAF 3";
 						}
@@ -194,8 +208,7 @@ namespace Game
 						{
 							bool translationFound;
 							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedBoomerMessage");
-							if (!translationFound)
-								message = "You have tamed a Boomer!\nNow you can use it as an explosive guardian slave.\nUse it wisely in emergency cases!";
+							if (!translationFound) message = "You have tamed a Boomer!\nNow you can use it as an explosive guardian slave.\nUse it wisely in emergency cases!";
 							messageColor = new Color(153, 0, 76);
 							soundToPlay = "Audio/UI/Bosses FNAF 3";
 						}
@@ -203,17 +216,39 @@ namespace Game
 						{
 							bool translationFound;
 							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedGhostBoomerMessage");
-							if (!translationFound)
-								message = "You have tamed a Ghost Boomer!\nIts spectral explosions will haunt your enemies!\nA ghostly explosive guardian is now yours!";
+							if (!translationFound) message = "You have tamed a Ghost Boomer!\nIts spectral explosions will haunt your enemies!\nA ghostly explosive guardian is now yours!";
 							messageColor = new Color(102, 0, 153);
 							soundToPlay = "Audio/UI/Bosses FNAF 3";
+						}
+						else if (isTamedFrozenGhostBoomer)
+						{
+							bool translationFound;
+							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedFrozenGhostBoomerMessage");
+							if (!translationFound) message = "You have tamed a Frozen Ghost Boomer!\nIts icy explosions will freeze your enemies!";
+							messageColor = new Color(0, 191, 255);
+							soundToPlay = "Audio/UI/Tada";
+						}
+						else if (isTamedBoomerFrozen)
+						{
+							bool translationFound;
+							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedBoomerFrozenMessage");
+							if (!translationFound) message = "You have tamed a Frozen Boomer!\nIts chilling explosion will freeze nearby enemies solid!";
+							messageColor = new Color(0, 191, 255);
+							soundToPlay = "Audio/UI/Tada";
+						}
+						else if (isTamedFrozenGhost)
+						{
+							bool translationFound;
+							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedFrozenGhostMessage");
+							if (!translationFound) message = "You have tamed a Frozen Ghost!\nIts spectral icy touch will freeze your foes!";
+							messageColor = new Color(0, 191, 255);
+							soundToPlay = "Audio/UI/Tada";
 						}
 						else if (isTamedCharger)
 						{
 							bool translationFound;
 							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedChargerMessage");
-							if (!translationFound)
-								message = "You have tamed a Charger! Its brute force to push enemies strongly will now be your tool! Use it well and wisely!";
+							if (!translationFound) message = "You have tamed a Charger! Its brute force to push enemies strongly will now be your tool! Use it well and wisely!";
 							messageColor = new Color(44, 44, 110);
 							soundToPlay = "Audio/UI/Bosses FNAF 3";
 						}
@@ -221,8 +256,7 @@ namespace Game
 						{
 							bool translationFound;
 							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedGhostChargerMessage");
-							if (!translationFound)
-								message = "You have tamed a Ghost Charger!\nIts phantom force will push enemies from beyond!\nA spectral brute is now under your command!";
+							if (!translationFound) message = "You have tamed a Ghost Charger!\nIts phantom force will push enemies from beyond!\nA spectral brute is now under your command!";
 							messageColor = new Color(75, 0, 130);
 							soundToPlay = "Audio/UI/Bosses FNAF 3";
 						}
@@ -232,8 +266,7 @@ namespace Game
 							{
 								bool translationFound;
 								message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedMachineGunMessage");
-								if (!translationFound)
-									message = "You have tamed a Machine Gun Infected!\nIts devastating minigun is now under your command!\nUnleash a hailstorm of bullets upon your enemies!";
+								if (!translationFound) message = "You have tamed a Machine Gun Infected!\nIts devastating minigun is now under your command!\nUnleash a hailstorm of bullets upon your enemies!";
 								messageColor = new Color(255, 140, 0);
 								soundToPlay = "Audio/UI/Tank Tamed Sound";
 							}
@@ -241,8 +274,7 @@ namespace Game
 							{
 								bool translationFound;
 								message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedTankMessage");
-								if (!translationFound)
-									message = "You have tamed a Tank! The most feared boss of bosses is now your slave! Take advantage of its brute force as your guardian!";
+								if (!translationFound) message = "You have tamed a Tank! The most feared boss of bosses is now your slave! Take advantage of its brute force as your guardian!";
 								messageColor = new Color(153, 0, 0);
 								soundToPlay = "Audio/UI/Tank Tamed Sound";
 							}
@@ -251,8 +283,7 @@ namespace Game
 						{
 							bool translationFound;
 							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedGhostTankMessage");
-							if (!translationFound)
-								message = "You have tamed a Ghost Tank!\nThe spectral terror of bosses is now your phantom slave!\nIts ghostly brute force will guard you from the shadows!";
+							if (!translationFound) message = "You have tamed a Ghost Tank!\nThe spectral terror of bosses is now your phantom slave!\nIts ghostly brute force will guard you from the shadows!";
 							messageColor = new Color(139, 0, 139);
 							soundToPlay = "Audio/UI/Tank Tamed Sound";
 						}
@@ -260,8 +291,7 @@ namespace Game
 						{
 							bool translationFound;
 							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedGhostMessage");
-							if (!translationFound)
-								message = "You have tamed a Ghost!\nIts invisibility is now in your hands!";
+							if (!translationFound) message = "You have tamed a Ghost!\nIts invisibility is now in your hands!";
 							messageColor = new Color(128, 0, 128);
 							soundToPlay = "Audio/UI/Tada";
 						}
@@ -269,8 +299,7 @@ namespace Game
 						{
 							bool translationFound;
 							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedInfectedWolfMessage");
-							if (!translationFound)
-								message = "You have tamed an infected wolf! It will now fight for you.";
+							if (!translationFound) message = "You have tamed an infected wolf! It will now fight for you.";
 							messageColor = new Color(0, 255, 128);
 							soundToPlay = "Audio/UI/Tada";
 						}
@@ -278,8 +307,7 @@ namespace Game
 						{
 							bool translationFound;
 							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedInfectedWerewolfMessage");
-							if (!translationFound)
-								message = "You have tamed an infected werewolf! Its savage strength is now yours to command.";
+							if (!translationFound) message = "You have tamed an infected werewolf! Its savage strength is now yours to command.";
 							messageColor = new Color(0, 255, 128);
 							soundToPlay = "Audio/UI/Tada";
 						}
@@ -287,8 +315,7 @@ namespace Game
 						{
 							bool translationFound;
 							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedInfectedHyenaMessage");
-							if (!translationFound)
-								message = "You have tamed an infected hyena! Its pack instincts will protect you.";
+							if (!translationFound) message = "You have tamed an infected hyena! Its pack instincts will protect you.";
 							messageColor = new Color(255, 215, 0);
 							soundToPlay = "Audio/UI/Tada";
 						}
@@ -296,8 +323,7 @@ namespace Game
 						{
 							bool translationFound;
 							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedInfectedBearMessage");
-							if (!translationFound)
-								message = "You have tamed an Infected Bear! Its brute strength will protect you.";
+							if (!translationFound) message = "You have tamed an Infected Bear! Its brute strength will protect you.";
 							messageColor = new Color(131, 0, 0);
 							soundToPlay = "Audio/UI/Tada";
 						}
@@ -305,8 +331,7 @@ namespace Game
 						{
 							bool translationFound;
 							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedHumanoidSkeletonMessage");
-							if (!translationFound)
-								message = "You have tamed a Humanoid Skeleton! Its bony bow will now fight for you!";
+							if (!translationFound) message = "You have tamed a Humanoid Skeleton! Its bony bow will now fight for you!";
 							messageColor = new Color(200, 200, 200);
 							soundToPlay = "Audio/UI/Tada";
 						}
@@ -314,8 +339,7 @@ namespace Game
 						{
 							bool translationFound;
 							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedPredatoryChameleonMessage");
-							if (!translationFound)
-								message = "You have tamed a Predatory Chameleon! Its lethal hunting instincts are now yours to command!";
+							if (!translationFound) message = "You have tamed a Predatory Chameleon! Its lethal hunting instincts are now yours to command!";
 							messageColor = new Color(50, 205, 50);
 							soundToPlay = "Audio/UI/Tada";
 						}
@@ -323,8 +347,7 @@ namespace Game
 						{
 							bool translationFound;
 							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedInfectedBirdMessage");
-							if (!translationFound)
-								message = "You have tamed an Infected Bird! Your loyal flying guardian will watch the skies!";
+							if (!translationFound) message = "You have tamed an Infected Bird! Your loyal flying guardian will watch the skies!";
 							messageColor = new Color(135, 206, 235);
 							soundToPlay = "Audio/UI/Tada";
 						}
@@ -332,8 +355,7 @@ namespace Game
 						{
 							bool translationFound;
 							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedInfectedWildboarMessage");
-							if (!translationFound)
-								message = "You have tamed an Infected Wildboar! Its powerful shoves will push your enemies away!";
+							if (!translationFound) message = "You have tamed an Infected Wildboar! Its powerful shoves will push your enemies away!";
 							messageColor = new Color(139, 69, 19);
 							soundToPlay = "Audio/UI/Tada";
 						}
@@ -341,23 +363,19 @@ namespace Game
 						{
 							bool translationFound;
 							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedInfectedFreezerMessage");
-							if (!translationFound)
-								message = "You have tamed a Freezing Infected! Its icy snowballs will slow and freeze your enemies!";
-							messageColor = new Color(0, 191, 255); // color azul claro para hielo
-							soundToPlay = "Audio/UI/Tada"; // sonido de confirmación
+							if (!translationFound) message = "You have tamed a Freezing Infected! Its icy snowballs will slow and freeze your enemies!";
+							messageColor = new Color(0, 191, 255);
+							soundToPlay = "Audio/UI/Tada";
 						}
 						else
 						{
 							bool translationFound;
 							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedMessage");
-							if (!translationFound)
-								message = "You have tamed a hostile Infected!\nNow it will be your guardian!";
+							if (!translationFound) message = "You have tamed a hostile Infected!\nNow it will be your guardian!";
 							messageColor = new Color(0, 255, 128);
 							soundToPlay = "Audio/UI/Tada";
 						}
-
 						componentPlayer.ComponentGui.DisplaySmallMessage(message, messageColor, false, false);
-
 						if (this.m_subsystemAudio != null)
 						{
 							try
@@ -374,7 +392,6 @@ namespace Game
 					{
 						string defaultMessage;
 						Color defaultColor;
-
 						if (isTamedBoss)
 						{
 							defaultMessage = "You have tamed the Flying Infected Boss, use it wisely for emergency cases";
@@ -392,6 +409,21 @@ namespace Game
 								defaultMessage = "You have tamed a Boomer!\nNow you can use it as an explosive guardian slave.\nUse it wisely in emergency cases!";
 								defaultColor = new Color(153, 0, 76);
 							}
+						}
+						else if (isTamedFrozenGhostBoomer)
+						{
+							defaultMessage = "You have tamed a Frozen Ghost Boomer!\nIts icy explosions will freeze your enemies!";
+							defaultColor = new Color(0, 191, 255);
+						}
+						else if (isTamedBoomerFrozen)
+						{
+							defaultMessage = "You have tamed a Frozen Boomer!\nIts chilling explosion will freeze nearby enemies solid!";
+							defaultColor = new Color(0, 191, 255);
+						}
+						else if (isTamedFrozenGhost)
+						{
+							defaultMessage = "You have tamed a Frozen Ghost!\nIts spectral icy touch will freeze your foes!";
+							defaultColor = new Color(0, 191, 255);
 						}
 						else if (isTamedCharger || isTamedGhostCharger)
 						{
@@ -474,17 +506,14 @@ namespace Game
 							defaultMessage = "You have tamed a Infected Freezer! Its icy snowballs will slow and freeze your enemies!";
 							defaultColor = new Color(0, 191, 255);
 						}
-		
 						else
 						{
 							defaultMessage = "You have tamed a hostile Infected! Now it will be your guardian!";
 							defaultColor = new Color(0, 255, 128);
 						}
-
 						componentPlayer.ComponentGui.DisplaySmallMessage(defaultMessage, defaultColor, false, true);
 					}
 				}
-
 				componentMiner.RemoveActiveTool(1);
 				return true;
 			}
@@ -492,9 +521,7 @@ namespace Game
 			{
 				string entityTemplateName = CollarVariants[this.m_random.Next(CollarVariants.Length)];
 				Entity entity2 = DatabaseManager.CreateEntity(base.Project, entityTemplateName, false);
-				if (entity2 == null)
-					return true;
-
+				if (entity2 == null) return true;
 				ComponentBody componentBody = entity2.FindComponent<ComponentBody>(true);
 				componentBody.Position = bodyRaycastResult.Value.ComponentBody.Position;
 				componentBody.Rotation = bodyRaycastResult.Value.ComponentBody.Rotation;
@@ -502,7 +529,6 @@ namespace Game
 				entity2.FindComponent<ComponentSpawn>(true).SpawnDuration = 0f;
 				base.Project.RemoveEntity(entity, true);
 				base.Project.AddEntity(entity2);
-
 				componentMiner.RemoveActiveTool(1);
 				return true;
 			}
@@ -510,22 +536,14 @@ namespace Game
 
 		private ComponentPlayer FindPlayerWithMiner(ComponentMiner componentMiner)
 		{
-			if (this.m_subsystemPlayers == null || componentMiner == null)
-				return null;
-
+			if (this.m_subsystemPlayers == null || componentMiner == null) return null;
 			foreach (ComponentPlayer componentPlayer in this.m_subsystemPlayers.ComponentPlayers)
 			{
-				if (componentPlayer.ComponentMiner == componentMiner)
-					return componentPlayer;
+				if (componentPlayer.ComponentMiner == componentMiner) return componentPlayer;
 			}
-
 			ComponentPlayer componentPlayerFromEntity = componentMiner.Entity.FindComponent<ComponentPlayer>();
-			if (componentPlayerFromEntity != null)
-				return componentPlayerFromEntity;
-
-			if (this.m_subsystemPlayers.ComponentPlayers.Count > 0)
-				return this.m_subsystemPlayers.ComponentPlayers[0];
-
+			if (componentPlayerFromEntity != null) return componentPlayerFromEntity;
+			if (this.m_subsystemPlayers.ComponentPlayers.Count > 0) return this.m_subsystemPlayers.ComponentPlayers[0];
 			return null;
 		}
 	}
