@@ -107,7 +107,7 @@
   },
   "ZombiesSpawn": {
   "WaveMessage": "You are in wave {0}!",
-  "TheyComeTonight": "They come tonight!",
+  "TheyComeTonight": "They are coming…",
   "TheyComeInXDays": "They come in {0} days",
   "FinalWave": "Final Wave has begun!",
   "BossTank": "A Tank has appeared!",
@@ -506,57 +506,76 @@
   "DisplayName": "Anti-Flu Tea Bucket",
   "Description": "A bucket filled with medicinal tea. Drinking it cures influenza and relieves its symptoms. It can also be used to treat infected creatures. Also restores some thirst.",
   "CRDescription:0": "Prepare anti-flu tea by heating a bucket of water with tall grass. Cures influenza."
-},
-      "LavaLongspearBlock:0": {
-      "DisplayName": "Lava Longspear",
-      "Description": "The Lava Long Spear stands as the ultimate melee weapon. Forged with volcanic energy and indestructible materials, it surpasses even the diamond spear in damage and durability. Its blazing edge not only delivers devastating strikes but also scorches enemies with every hit, making it a weapon feared even by the strongest bosses. With extended reach and near-infinite resilience, this spear represents the pinnacle of power and survival. Only the most prepared warriors can wield it effectively.",
-      "CRDescription:0": "Improved and lengthened version of the original lava spear"
-    },
-    "DiamondLongspearBlock:0": {
-      "DisplayName": "Diamond Longspear",
-      "Description": "The Diamond Long Spear represents the pinnacle of the spear progression, far surpassing the wooden, stone, copper, and iron versions. Its diamond-tipped blade delivers devastating damage and exceptional durability, able to withstand the fiercest battles without losing effectiveness. Along with its extended reach, this weapon combines raw power and resilience, making it the ultimate tool for keeping enemies at bay and asserting dominance on the battlefield. It is regarded as one of the most lethal and prestigious weapons a player can acquire.",
-      "CRDescription:0": "Improved and lengthened version of the original diamond spear"
-    },
-    "IronLongspearBlock:0": {
-      "DisplayName": "Iron Longspear",
-      "Description": "The Iron Long Spear is a far more advanced weapon compared to its wooden, stone, and copper predecessors. Its iron-forged tip delivers high damage and significant durability, making it a lethal tool for extended combat. Unlike earlier versions, this spear not only provides extended reach but also the resilience needed to withstand intense battles. It is one of the first weapons that can truly be considered mid-tier, perfect for players seeking greater offensive power and reliability on the battlefield.",
-      "CRDescription:0": "Improved and lengthened version of the original iron spear"
-    },
-    "CopperLongspearBlock:0": {
-      "DisplayName": "Copper Longspear",
-      "Description": "The Copper Long Spear marks a clear improvement over the wooden and stone versions. Its metal tip delivers greater damage and higher durability, making it a far more reliable weapon for extended battles. While still somewhat basic compared to iron or steel weapons, its extended reach and sturdiness provide a tactical edge, allowing you to keep enemies at bay. This is the first spear that truly represents a notable upgrade to your arsenal.",
-      "CRDescription:0": "Improved and lengthened version of the original copper spear"
-    },
-    "StoneLongspearBlock:0": {
-      "DisplayName": "Stone Longspear",
-      "Description": "The Stone Long Spear is an improved version of the wooden spear, built to be sturdier and tipped with a crude stone edge. Unlike the basic variant, it deals greater damage and has better durability, making it a reliable choice for extended battles. Its larger size and extended reach allow you to keep enemies at bay, providing a tactical advantage in close combat.",
-      "CRDescription:0": "Improved and lengthened version of the original stone spear"
-    },
-    "WoodenLongspearBlock:0": {
-      "DisplayName": "Wooden Longspear",
-      "Description": "The Wooden Long Spear is a larger and longer variant of the original wooden spear. While its damage is modest and its durability only average, its extended reach allows you to keep enemies at a safer distance. It remains a basic yet tactical choice for players seeking a simple and reliable melee weapon for defense.",
-      "CRDescription:0": "Improved and lengthened version of the original wooden spear"
-    },
+},"WoodenLongspearBlock:0": {
+    "DisplayName": "Wooden Longspear",
+    "Description": "A longspear is an extended wooden polearm that provides excellent reach. It can be thrown or used in melee combat. Thrown longspears will stick into soft surfaces. The wooden construction is basic but effective.",
+    "CRDescription:0": "Craft a wooden longspear using planks, a stick, and a wooden spear."
+  },
+  "StoneLongspearBlock:0": {
+    "DisplayName": "Stone Longspear",
+    "Description": "A longspear with a stone tip, offering better durability and damage than its wooden counterpart. Its extended reach makes it effective against foes from a distance. Thrown spears can embed deeply into targets.",
+    "CRDescription:0": "Craft a stone longspear using cobblestone, a stick, and a stone spear."
+  },
+  "CopperLongspearBlock:0": {
+    "DisplayName": "Copper Longspear",
+    "Description": "A copper-headed longspear that balances reach and striking power. Copper provides improved sharpness and longevity. Ideal for hunters and warriors seeking a reliable polearm.",
+    "CRDescription:0": "Craft a copper longspear using a copper ingot, a stick, and a copper spear."
+  },
+  "IronLongspearBlock:0": {
+    "DisplayName": "Iron Longspear",
+    "Description": "An iron longspear with formidable durability and piercing capability. Its weight and balance make it a fearsome weapon in both melee and thrown attacks. A staple for seasoned fighters.",
+    "CRDescription:0": "Craft an iron longspear using an iron ingot, a stick, and an iron spear."
+  },
+  "DiamondLongspearBlock:0": {
+    "DisplayName": "Diamond Longspear",
+    "Description": "The diamond longspear is a masterwork weapon, combining exceptional sharpness, durability, and reach. It glistens with lethal elegance and can penetrate even the toughest hides.",
+    "CRDescription:0": "Craft a diamond longspear using a diamond, a stick, and a diamond spear."
+  },
+  "LavaLongspearBlock:0": {
+    "DisplayName": "Lava Longspear",
+    "Description": "A longspear forged with the essence of magma, radiating intense heat. It can sear wounds on impact and is incredibly durable. Only the bravest warriors dare wield this molten weapon.",
+    "CRDescription:0": "Smelt a Lava Spear with an Iron Hammer to create a Lava Longspear."
+  },
     "CopperSharpHammerBlock:0": {
-      "DisplayName": "Copper Sharp Hammer",
-      "Description": "The Copper Sharp Hammer is a powerful weapon. At first glance it looks like a simple work tool, but in reality its lethality surpasses that of the copper machete. Although it is not as durable as the machete, it is taller and far deadlier, capable of delivering devastating blows that make it one of the most dangerous copper-based weapons.",
-      "CRDescription:0": "Use the old copper machete and iron hammer and turn him like a monster"
-    },
-    "IronSharpHammerBlock:0": {
-      "DisplayName": "Iron Sharp Hammer",
-      "Description": "The Iron Sharp Hammer is similar to the iron machete, but slightly more lethal and a bit more durable. While it shares the same brutal design, its enhanced endurance and sharper impact make it a superior choice for those seeking a weapon that balances resilience with deadly efficiency.",
-      "CRDescription:0": "Use the old iron machete and iron hammer and turn him like a monster"
-    },
-    "DiamondSharpHammerBlock:0": {
-      "DisplayName": "Diamond Sharp Hammer",
-      "Description": "The Diamond Sharp Hammer is similar to the diamond machete, but far more lethal and durable. Its unmatched resilience and devastating power make it an exceptional weapon, capable of enduring prolonged battles while delivering fatal strikes. Perhaps its greatest value lies in confronting bosses, where its strength and durability can turn the tide of combat.",
-      "CRDescription:0": "Use the diamond machete and iron hammer and turn him into a deadly monster."
-    },
-    "LavaSharpHammerBlock:0": {
-      "DisplayName": "Lava Sharp Hammer",
-      "Description": "The Lava Sharp Hammer is similar to the lava machete, but far more lethal and durable. Its blazing core and molten edge make it a weapon of pure destruction, capable of enduring the fiercest battles while delivering catastrophic strikes. It is not just stronger than the machete—it is a true infernal tool of war. This hammer is 100% extremely useful for slaying bosses, a weapon that radiates danger and promise. Players will feel its fiery potential, knowing that when the time comes, it may be the decisive force that turns impossible fights into victories.",
-      "CRDescription:0": "Use the new lava machete and old iron hammer and turn him into a MEGA MONSTER"
-    },
+    "DisplayName": "Copper Sharp Hammer",
+    "Description": "A hammer with a sharpened copper head, designed for both blunt force and cutting. It delivers devastating strikes that can crush armor and wound flesh alike.",
+    "CRDescription:0": "Smith a copper sharp hammer using a copper machete and an iron hammer."
+  },
+  "IronSharpHammerBlock:0": {
+    "DisplayName": "Iron Sharp Hammer",
+    "Description": "An iron hammer with a keen edge, balancing weight and sharpness perfectly. Its powerful swings can break bones and slice through protections with ease.",
+    "CRDescription:0": "Smith an iron sharp hammer using an iron machete and an iron hammer."
+  },
+  "DiamondSharpHammerBlock:0": {
+    "DisplayName": "Diamond Sharp Hammer",
+    "Description": "A masterfully crafted hammer with a diamond-sharpened head. It combines incredible hardness with razor edges, capable of shattering the toughest defenses.",
+    "CRDescription:0": "Smith a diamond sharp hammer using a diamond machete and an iron hammer."
+  },
+  "LavaSharpHammerBlock:0": {
+    "DisplayName": "Lava Sharp Hammer",
+    "Description": "A legendary hammer infused with molten fury. Its sharp edge glows with heat, searing wounds on contact while delivering crushing blows that few can survive.",
+    "CRDescription:0": "Smith a lava sharp hammer using a lava machete and an iron hammer."
+  },
+    "CopperThinHammerBlock:0": {
+  "DisplayName": "Copper Thin Hammer",
+  "Description": "A lightweight hammer with a slender head. Faster than standard hammers, making it ideal for quick excavation and mining.",
+  "CRDescription:0": "Smelt a copper pickaxe with an iron hammer."
+},
+"IronThinHammerBlock:0": {
+  "DisplayName": "Iron Thin Hammer",
+  "Description": "A durable thin-headed hammer that balances speed and strength. Excellent for large digging projects.",
+  "CRDescription:0": "Smelt an iron pickaxe with an iron hammer."
+},
+"DiamondThinHammerBlock:0": {
+  "DisplayName": "Diamond Thin Hammer",
+  "Description": "An incredibly fast and resilient thin hammer. Its diamond head cuts through terrain with ease.",
+  "CRDescription:0": "Smelt a diamond pickaxe with an iron hammer."
+},
+"LavaThinHammerBlock:0": {
+  "DisplayName": "Lava Thin Hammer",
+  "Description": "A blazing hot thin hammer that melts through soft materials. Extremely fast and long-lasting.",
+  "CRDescription:0": "Smelt a lava pickaxe with an iron hammer."
+},
     "TargetStickBlock:0": {
   "DisplayName": "Targeting Stick",
   "Description": "A specialized stick used to command allied creatures. When pointed at an enemy, it signals all nearby player-allied creatures to focus their attacks on the target. Useful for coordinating attacks and managing your creature army in battle.",
@@ -581,9 +600,9 @@
     },
     "CollarBlock:0": {
   "DisplayName": "Zombie Collar",
-  "Description": "A special collar that can be crafted and is essential for taming hostile zombies. Once placed on a zombie, it pacifies the creature and allows it to be domesticated as a loyal companion. The collar also provides protection against other zombie attacks and can be enchanted for additional effects. Extremely useful for players looking to build an undead army or secure their base with zombie guardians.",
-  "CRDescription:0": "Use it wisely to enslave the infected"
-    },
+  "Description": "A specialized collar used to tame hostile infected creatures. When applied, it transforms them into loyal companions that will defend and assist you. Particularly useful for controlling dangerous enemies and turning them into powerful allies.",
+  "CRDescription:0": "Used to tame hostile infected creatures and turn them into allies."
+},
     "RefrigeratorXiaomiBlock:0": {
       "DisplayName": "Xiaomi Refrigerator",
       "Description": "A Xiaomi refrigerator is a household appliance designed for cooling and storing food. It is defined as a smart refrigerator that provides efficient preservation of perishable goods. In the mod it is useful as an object that represents a modern appliance and expands building options. Its main utility is to preserve food if you are tired of it spoiling quickly, both raw and cooked, giving more durability time. Note: the refrigerator requires energy such as a battery, lever, or another electrical source, otherwise it will not work.",
