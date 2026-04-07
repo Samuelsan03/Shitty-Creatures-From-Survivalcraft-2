@@ -48,7 +48,7 @@
     <Parameter Name="Class" Value="Game.ComponentTrader" Type="string"/>
 </ComponentTemplate>
 
-    <ComponentTemplate Name="FluInfected" Description="Componente que aplica los efectos de la gripe a una criatura. Reduce la velocidad de movimiento (hasta 20% en casos graves) y provoca tos periódica con sonido y alerta de ruido." Guid="c7f45092-a74d-429a-8e77-76b1ae5120a3" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+    <ComponentTemplate Name="FluInfected" Description="Componente que aplica los efectos de la gripe a una criatura. Reduce la velocidad de movimiento (hasta 20% en casos graves) y provoca tos periódica con sonido y alerta de ruido." Guid="4301cca7-d3dd-4e09-ab45-eed3ff27e6aa" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
     <Parameter Name="FluDuration" Description="Duración actual de la infección en segundos. Se actualiza automáticamente durante el juego." Guid="95bac8b6-ed74-41fa-88ae-92b79a127ba8" Value="0" Type="float"/>
     <Parameter Name="FluResistance" Description="Resistencia de la criatura a la gripe. Este valor se resta de la duración al recibir una nueva infección." Guid="2b015c53-331c-453c-ba60-b1c92974b6e4" Value="0" Type="float"/>
     <Parameter Name="CoughSound" Description="Ruta(s) de sonido para la tos. Pueden ser múltiples separadas por punto y coma (;). Ej: 'Audio/Creatures/FemaleCough/FemaleCough1;Audio/Creatures/MaleCough/MaleCough1'" Guid="b163d080-1394-48c8-89d3-baf952bdbec6" Value="Audio/Creatures/FemaleCough/FemaleCough1" Type="string"/>
@@ -285,9 +285,16 @@
     <Parameter Name="LowHealthToEscape" Description="Salud baja para huir (NO SE USA, los zombis nunca huyen)" Guid="83e2db36-bd3c-48b3-a7ae-b3ae0f2ac841" Value="0.0" Type="float"/>
 </ComponentTemplate>
 
-        <ComponentTemplate Name="PoisonInfected" Description="Componente de criatura infectada por veneno" Guid="d5e7f9a1-b3c5-4d9f-1a3b-5c7d9f1a3b5c" InheritanceParent="a753aca6-3dcb-4667-a655-70f4bfd875f6">
-  <Parameter Name="Class" Guid="e6f8a0b2-c4d6-4e0a-2b4c-6d8e0a2b4c6d" Value="Game.ComponentPoisonInfected" Type="string"/>
-  <Parameter Name="PoisonResistance" Description="Resistencia al veneno (reduce duración)" Guid="f7a9b1c3-d5e7-4f1b-3c5d-7e9f1b3c5d7e" Value="0" Type="float"/>
+<ComponentTemplate Name="PoisonInfected" Description="Hace que la criatura pueda infectarse de veneno" Guid="c7f45092-a74d-429a-8e77-76b1ae5120a3" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+    <Parameter Name="Class" Guid="8ba186d8-e4b3-47da-8f75-006cec97ff7a" Value="Game.ComponentPoisonInfected" Type="string"/>
+    <Parameter Name="PoisonResistance" Description="Resistencia al veneno (mayor = menos daño y menos probabilidad de infección)" Guid="b90992ce-ebb4-4e06-bd33-eac7f5f5f5a8" Value="1" Type="float"/>
+    <Parameter Name="InfectDuration" Description="Duración total de la infección en segundos" Guid="eb653d96-10ea-4550-9a7e-1576d28ff104" Value="300" Type="float"/>
+</ComponentTemplate>
+
+<ComponentTemplate Name="PoisonInfectedBehavior" Description="Comportamiento para infectar a otros al atacar" Guid="d5e7f9a1-b3c5-4d9f-1a3b-5c7d9f1a3b5c" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+    <Parameter Name="Class" Guid="b5167b60-b181-42b6-bdcb-1011784d02e6" Value="Game.ComponentPoisonInfectedBehavior" Type="string"/>
+    <Parameter Name="PoisonIntensity" Description="Intensidad del veneno (multiplica la duración de la infección en el objetivo)" Guid="9a998b8f-b919-45e3-93dd-a35873bb10d2" Value="1" Type="float"/>
+    <Parameter Name="InfectProbability" Description="Probabilidad de infectar al golpear (0-1)" Guid="ae8578d4-067f-4615-ab40-7c04e8d267a9" Value="0.5" Type="float"/>
 </ComponentTemplate>
     </Folder>
 
@@ -525,12 +532,6 @@
   <Parameter Name="ItemsToLaunch" Guid="6e84b901-041f-4413-84e7-9c9d929781c7" Value="" Type="string"/>
 </ComponentTemplate>
 
-<ComponentTemplate Name="PoisonInfectedBehavior" Description="Comportamiento de infección por veneno" Guid="be2c0252-8847-40dc-ab78-db6c09df60e7" InheritanceParent="a753aca6-3dcb-4667-a655-70f4bfd875f6">
-  <Parameter Name="Class" Guid="882ee14c-4b4d-426e-9e2f-831261910ed2" Value="Game.ComponentPoisonInfectBehavior" Type="string"/>
-  <Parameter Name="PoisonIntensity" Description="Intensidad del veneno (mayor = más tiempo de infección)" Guid="ddbff8f8-c6c3-4c45-b801-43881241663f" Value="400" Type="float"/>
-  <Parameter Name="InfectProbability" Description="Probabilidad de que el ataque cause envenenamiento (0-1)" Guid="7c34d504-c34a-487a-8ca2-a115ca60e9d7" Value="1.0" Type="float"/>
-</ComponentTemplate>
-
 <ComponentTemplate Name="NewChaseBehavior" Description="Comportamiento de persecución mejorado con IA avanzada para protección del jugador, detección de amenazas durante noche y respuesta a ataques de la manada" Guid="1db20f99-32ba-4e7a-8e76-10686a2e76e5" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
   <Parameter Name="Class" Guid="387e61aa-98d5-47f5-b74e-4a0ddb3a645b" Value="Game.ComponentNewChaseBehavior" Type="string"/>
   <Parameter Name="DayChaseRange" Description="Rango de persecución durante el día" Guid="9d841aad-ecb7-49e6-95e2-c5530e18049e" Value="20" Type="float"/>
@@ -558,6 +559,9 @@
     </Folder>
 
     <ProjectTemplate Name="Project" Guid="85023bf8-1c90-4dd1-9442-e6c13691d078">
+    <MemberSubsystemTemplate Name="BowlBlockBehavior" Guid="ffcc940b-8798-436f-a88c-07c24b00c55d" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+    <Parameter Name="Class" Value="Game.SubsystemBowlBlockBehavior" Type="string" Guid="15f02377-c9d0-45b9-be1b-b6eec22b8839"/>
+</MemberSubsystemTemplate>
     <MemberSubsystemTemplate Name="DigimonSpawn" Guid="62e990d3-553c-445b-b766-43ddc013a789" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
     <Parameter Name="Class" Value="Game.SubsystemDigimonSpawn" Type="string" Guid="b2d008c4-89f0-4a79-a23e-95d672e1ae16"/>
 </MemberSubsystemTemplate>
