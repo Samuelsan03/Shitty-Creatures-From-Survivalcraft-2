@@ -5,7 +5,7 @@ using Engine.Graphics;
 namespace Game
 {
 	// Token: 0x0200011E RID: 286
-	public class BoiledWaterBlock : BucketBlock
+	public class BoiledWaterBucketBlock : BucketBlock
 	{
 		// Token: 0x06000727 RID: 1831 RVA: 0x00022774 File Offset: 0x00020974
 		public override void Initialize()
