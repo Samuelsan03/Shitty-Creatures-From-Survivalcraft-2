@@ -441,7 +441,7 @@
     "DisplayName": "Blueberry",
     "Description": "A small and nutritious fruit that offers little energy but slightly helps with thirst."
   },
-    "BoiledWaterBlock:0": {
+    "BoiledWaterBucketBlock:0": {
   "DisplayName": "Bucket of Boiled Water",
   "Description": "A bucket filled with boiled water. Drinking it safely restores hydration.",
   "CRDescription:0": "Clean boiled water stored in a bucket."
@@ -507,7 +507,37 @@
   "DisplayName": "Anti-Flu Tea Bucket",
   "Description": "A bucket filled with medicinal tea. Drinking it cures influenza and relieves its symptoms. It can also be used to treat infected creatures. Also restores some thirst.",
   "CRDescription:0": "Prepare anti-flu tea by heating a bucket of water with tall grass. Cures influenza."
-},"WoodenLongspearBlock:0": {
+},
+"BoiledWaterBowlBlock:0": {
+    "DisplayName": "Bowl of Boiled Water",
+    "Description": "A bowl filled with boiled water. Safe to drink and restores thirst.",
+    "CRDescription:0": "Boil a bowl of water"
+  },
+  "CactusJuiceBowlBlock:0": {
+    "DisplayName": "Bowl of Cactus Juice",
+    "Description": "A bowl of cactus juice. Refreshing and restores some thirst.",
+    "CRDescription:0": "Boil water with cactus"
+  },
+  "AntidoteBowlBlock:0": {
+    "DisplayName": "Bowl of Antidote",
+    "Description": "A medicinal bowl that cures poison and sickness.",
+    "CRDescription:0": "Boil anti-flu tea with purple flowers"
+  },
+  "TeaAntifluBowlBlock:0": {
+    "DisplayName": "Bowl of Anti-Flu Tea",
+    "Description": "A warm herbal tea that cures flu.",
+    "CRDescription:0": "Boil water with tall grass"
+  },
+  "WaterBowlBlock:0": {
+    "DisplayName": "Bowl of Water",
+    "Description": "A bowl filled with water. It may not be safe to drink."
+  },
+  "EmptyBowlBlock:0": {
+    "DisplayName": "Empty Bowl",
+    "Description": "An empty bowl. Useful for holding liquids.",
+    "CRDescription:0": "Shape dirt into a bowl"
+  },
+"WoodenLongspearBlock:0": {
     "DisplayName": "Wooden Longspear",
     "Description": "A longspear is an extended wooden polearm that provides excellent reach. It can be thrown or used in melee combat. Thrown longspears will stick into soft surfaces. The wooden construction is basic but effective.",
     "CRDescription:0": "Craft a wooden longspear using planks, a stick, and a wooden spear."
