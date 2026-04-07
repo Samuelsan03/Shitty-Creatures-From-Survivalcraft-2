@@ -14,6 +14,7 @@ namespace Game
 		private ButtonWidget m_cancelButton;
 		private LabelWidget m_titleLabel;
 		private LabelWidget m_explanationLabel;
+		private bool m_lastCheckState;
 
 		public GreenNightToggleDialog(SubsystemGreenNightSky greenNightSky, ComponentPlayer player)
 		{
@@ -34,8 +35,10 @@ namespace Game
 			m_cancelButton.Text = LanguageControl.Get("GreenNightDialog", "CancelButton");
 
 			m_checkbox.IsChecked = m_subsystemGreenNightSky.GreenNightEnabled;
+			m_lastCheckState = m_checkbox.IsChecked;
 
 			AddExplanationText();
+			UpdateExplanationText();
 		}
 
 		private void AddExplanationText()
@@ -54,7 +57,7 @@ namespace Game
 			{
 				m_explanationLabel = new LabelWidget
 				{
-					Text = LanguageControl.Get("GreenNightDialog", "ToggleExplanation"),
+					Text = "",
 					Color = new Color(255, 140, 0),
 					HorizontalAlignment = WidgetAlignment.Center,
 					VerticalAlignment = WidgetAlignment.Center,
@@ -85,8 +88,21 @@ namespace Game
 			}
 		}
 
+		private void UpdateExplanationText()
+		{
+			if (m_explanationLabel == null) return;
+			string explanationKey = m_checkbox.IsChecked ? "EnableExplanation" : "DisableExplanation";
+			m_explanationLabel.Text = LanguageControl.Get("GreenNightDialog", explanationKey);
+		}
+
 		public override void Update()
 		{
+			if (m_checkbox.IsChecked != m_lastCheckState)
+			{
+				m_lastCheckState = m_checkbox.IsChecked;
+				UpdateExplanationText();
+			}
+
 			if (m_okButton.IsClicked)
 			{
 				bool oldValue = m_subsystemGreenNightSky.GreenNightEnabled;
