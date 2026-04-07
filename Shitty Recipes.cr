@@ -3,7 +3,7 @@
     <Recipe Result="EmptyBowlBlock" ResultCount="1" RequiredHeatLevel="0" a="dirt" Description="[0]">
     "a a"
     " a "
-            </Recipe>
+    </Recipe>
     <Recipe Result="WoodenLongspearBlock" ResultCount="1" RequiredHeatLevel="0" a="planks" b="stick" c="woodenspear" Description="[0]">
             " a "
             "aca"
@@ -559,10 +559,10 @@
 <Recipe Result="CactusJuiceBowlBlock" ResultCount="1" RequiredHeatLevel="1" a="waterbowl" b="cactus" Description="[0]">
     "ab"
 </Recipe>
-<Recipe Result="AntidoteBowlBlock" ResultCount="1" RequiredHeatLevel="1" a="waterbowl" b="tallgrass" Description="[0]">
+<Recipe Result="AntidoteBowlBlock" ResultCount="1" RequiredHeatLevel="1" a="teaantiflubowl" b="purpleflower" Description="[0]">
     "ab"
 </Recipe>
-<Recipe Result="TeaAntifluBowlBlock" ResultCount="1" RequiredHeatLevel="1" a="waterbowl" b="purpleflower" Description="[0]">
+<Recipe Result="TeaAntifluBowlBlock" ResultCount="1" RequiredHeatLevel="1" a="waterbowl" b="tallgrass" Description="[0]">
     "ab"
 </Recipe>
         </Smelting>
