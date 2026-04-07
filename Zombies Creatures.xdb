@@ -10939,25 +10939,20 @@
             <MemberComponentTemplate Name="SummonBehavior" Guid="e44775bf-49df-43f3-98b2-eda3eac04227" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
               <Parameter Name="IsEnabled" Guid="646e9eaa-6dea-4224-a0e3-c2316e7d32e6" Value="True" Type="bool"/>
             </MemberComponentTemplate>
-        <MemberComponentTemplate Name="NewHerdBehavior" Guid="c4fa61f4-b1f9-4da0-8a26-2fe09a7618e1" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
-        <Parameter Name="HerdName" Value="player" Type="string" Guid="2233945e-04b6-4c44-995a-90fe067c8f56"/>
-        <Parameter Name="HerdingRange" Value="80" Type="float" Guid="dc4bbf16-d166-4908-bd3a-0b821eea6092"/>
-        <Parameter Name="AutoNearbyCreaturesHelp" Value="true" Type="bool" Guid="ac538c4b-8e13-425c-b142-4667b2e72f6e"/>
-        <Parameter Name="HelpCallRange" Value="16" Type="float" Guid="db2e7bdd-ecfe-4f8e-ad74-65d8ab5269de"/>
-        <Parameter Name="MaxHelpChaseTime" Value="30" Type="float" Guid="2e0907ad-772d-4701-96c2-cd7b417f7692"/>
-        <Parameter Name="AvoidAttackingSameHerd" Value="true" Type="bool" Guid="73beedaa-0be7-4dd3-b30b-2b7cb7177a58"/>
-    </MemberComponentTemplate>
-<MemberComponentTemplate Name="NewChaseBehavior" Guid="4fed5412-8e1f-416d-98d9-b197bb459bbc" InheritanceParent="1db20f99-32ba-4e7a-8e76-10686a2e76e5">
-  <Parameter Name="ChaseWhenAttackedProbability" Guid="b48e1d85-6d05-43c8-87ee-64d7c75c3a10" Value="1" Type="float"/>
-  <Parameter Name="NightChaseTime" Guid="df01d8fc-0bc2-4d7b-95b3-15ad3a1546e2" Value="90" Type="float"/>
-  <Parameter Name="DayChaseRange" Guid="1b207c01-1866-42ec-826a-172a456b1e8a" Value="60" Type="float"/>
-  <Parameter Name="ChaseOnTouchProbability" Guid="a174c8ef-55d4-4396-b314-f40d73c22625" Value="1" Type="float"/>
-  <Parameter Name="DayChaseTime" Guid="2bef091d-eac4-47b5-9bfa-05460cd89f05" Value="60" Type="float"/>
-  <Parameter Name="NightChaseRange" Guid="403cd462-6056-4857-9f8e-70fb172acf52" Value="75" Type="float"/>
-  <Parameter Name="AutoChaseMask" Guid="91672778-4d9d-475e-b3fa-79de928c87a2" Value="LandPredator" Type="Game.CreatureCategory"/>
-  <Parameter Name="ChaseNonPlayerProbability" Guid="e001f54d-ff17-43dd-bd00-c6f70982faf9" Value="1" Type="float"/>
-  <Parameter Name="RangedAttackRange" Guid="f81c72eb-6248-4479-aafe-777fec2f4f4d" Value="5,100" Type="Vector2"/>
-  <Parameter Name="DestroyBlocksWhenStuck" Guid="c098ead5-3a06-418c-a428-2a1cf2c9ec3b" Value="true" Type="bool"/>
+            <MemberComponentTemplate Name="ZombieChaseBehavior" Guid="bb9afeee-76de-4714-99a7-63749233ca11" InheritanceParent="1a05e72e-fd6b-4eb3-b72b-59e530c4c7b9">
+  <Parameter Name="DayChaseRange" Guid="edc6f37e-1f94-4579-b2b7-43918d611986" Value="999" Type="float"/>
+  <Parameter Name="NightChaseRange" Guid="a339570c-56b5-4508-9409-3e046824b6e9" Value="999" Type="float"/>
+  <Parameter Name="NightChaseTime" Guid="f5d1a6cd-b1da-464f-a42f-38833afd1790" Value="999" Type="float"/>
+  <Parameter Name="DayChaseTime" Guid="4e6b5ceb-00aa-45cb-9e2e-3213b4266251" Value="999" Type="float"/>
+  <Parameter Name="ChaseWhenAttackedProbability" Guid="39fc4864-453f-4243-95ca-52078dc7bb3c" Value="1" Type="float"/>
+  <Parameter Name="ChaseOnTouchProbability" Guid="4b93a1d3-a725-42df-870b-6c0af255a8d9" Value="1" Type="float"/>
+  <Parameter Name="AutoChaseMask" Guid="384107fd-0df9-4872-ada8-a1b6bc494a29" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
+  <Parameter Name="ChaseNonPlayerProbability" Guid="898772f4-f8ef-446e-9657-63f7b11567d8" Value="1" Type="float"/>
+  <Parameter Name="AttacksSameHerd" Guid="eb6f0f98-7e8a-46a0-bc8f-e52853101aef" Value="false" Type="bool"/>
+  <Parameter Name="AttacksAllCategories" Guid="a9c5cb9e-abce-475b-8c2d-7d008057718e" Value="true" Type="bool"/>
+  <Parameter Name="FleeFromSameHerd" Guid="b7ca63fa-e324-4dde-b620-fc836fb0640b" Value="true" Type="bool"/>
+  <Parameter Name="FleeDistance" Guid="37c80e1d-d0c9-48f3-ba7f-2bc08779cb45" Value="10" Type="float"/>
+  <Parameter Name="ForceAttackDuringGreenNight" Guid="047a1f93-5d2a-417f-8fd7-77629f8d0db2" Value="true" Type="bool"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="Loot" Guid="fec4b8c7-7920-4d79-bc96-06ce6c1d7249">
                 <ParameterSet Name="Loot" Guid="85a1cc96-4971-40a3-a595-b7999ab2fee1">
