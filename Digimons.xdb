@@ -1260,7 +1260,7 @@
               <Parameter Name="AttackSound" Guid="cea8a3bc-8164-4a6f-9d34-5469540e914e" Value="Audio/Creatures/Gabumon/Attack" Type="string"/>
               <Parameter Name="PainSound" Guid="df7c9507-9f3a-401c-ab26-da6626eae704" Value="Audio/Creatures/GAbumon/Pain" Type="string"/>
             </MemberComponentTemplate>
-<MemberComponentTemplate Name="RunAwayBehavior" Guid="9c6188cf-ba84-4858-bb30-104c43a2b21b" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="9c6188cf-ba84-4858-bb30-104c43a2b21b" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
 <MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="d0fb2519-fbb0-4fae-9838-8b4ebc318cef" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
 <MemberComponentTemplate Name="CreatureInventory" Guid="3469d9be-18a2-40d0-8f3f-6c542dd73ed4" InheritanceParent="b0d27f89-dc61-4c44-b675-63d6a6f8bf78">
     <Parameter Name="SlotsCount" Value="16" Type="int"/>
