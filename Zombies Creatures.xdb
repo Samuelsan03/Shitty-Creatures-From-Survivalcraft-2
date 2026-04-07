@@ -10899,6 +10899,9 @@
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="31f10bfe-7295-40cc-b051-0a3731a0e752"/>
     <Parameter Name="DeathSpawnTemplates" Value="GhostNormal" Type="string" Guid="b4da0406-b9ed-4cd0-9925-0bf3640b1693"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="ZombieAI2" Guid="05723636-af12-48ad-ae3e-c1140b427a0e" InheritanceParent="9d185bf8-92ec-4ea6-ad86-b8a99b650fd2">
+    <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="e7386916-02a8-4a1e-a223-2f5005b1c66b"/>
+</MemberComponentTemplate>
 <MemberComponentTemplate Name="RageZombieBehavior" Guid="8f1d8afb-2493-49f1-a8f2-346f0cf030c8" InheritanceParent="2d584a55-7ccb-42c7-8fc0-c3f288eefae9"/>
         <MemberComponentTemplate Name="ZombieRunAwayBehavior" Guid="b6f24d8b-e5a1-4055-80b3-62f283eaedb4" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
         <MemberComponentTemplate Name="RunAwayBehavior" Guid="03a24e67-c69c-458c-8b6a-1a0e86434961" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
