@@ -441,7 +441,7 @@
     "DisplayName": "蓝莓",
     "Description": "一种小型营养水果，提供少量能量，并略微缓解口渴。"
   },
-    "BoiledWaterBlock:0": {
+    "BoiledWaterBucketBlock:0": {
   "DisplayName": "一桶煮沸的水",
   "Description": "装满煮沸水的桶。饮用后可以安全地恢复水分。",
   "CRDescription:0": "存放在桶中的干净煮沸水。"
@@ -518,6 +518,35 @@
   "Description": "一个装满药用茶的桶。饮用后可以治愈流感并缓解症状。也可以用于治疗被感染的生物。同时恢复少量口渴值。",
   "CRDescription:0": "将一桶水与高草一起加热制成抗流感茶。可治愈流感。"
 },
+"BoiledWaterBowlBlock:0": {
+    "DisplayName": "一碗开水",
+    "Description": "一碗煮沸的水。可以安全饮用并恢复口渴值。",
+    "CRDescription:0": "将一碗水煮沸"
+  },
+  "CactusJuiceBowlBlock:0": {
+    "DisplayName": "一碗仙人掌汁",
+    "Description": "一碗仙人掌汁。清爽并恢复一些口渴值。",
+    "CRDescription:0": "将水和仙人掌一起煮沸"
+  },
+  "AntidoteBowlBlock:0": {
+    "DisplayName": "一碗解毒剂",
+    "Description": "一种药用碗，可以治愈中毒和疾病。",
+    "CRDescription:0": "用紫色花朵将抗流感茶煮沸"
+  },
+  "TeaAntifluBowlBlock:0": {
+    "DisplayName": "一碗抗流感茶",
+    "Description": "一种温热的草药茶，可以治愈流感。",
+    "CRDescription:0": "将水和高草一起煮沸"
+  },
+  "WaterBowlBlock:0": {
+    "DisplayName": "一碗水",
+    "Description": "一碗水。可能不适合饮用。"
+  },
+  "EmptyBowlBlock:0": {
+    "DisplayName": "空碗",
+    "Description": "一个空碗。可用于盛放液体。",
+    "CRDescription:0": "用泥土做成一个碗"
+  },
     "WoodenLongspearBlock:0": {
     "DisplayName": "木制长矛",
     "Description": "长矛是一种加长的木制长柄武器，具有出色的攻击距离。可以投掷或用于近战。投出的长矛会插入较软的表面。木制结构虽然简单，但十分实用。",
