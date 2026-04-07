@@ -507,9 +507,6 @@
         <Recipe Result="LavaHammerBlock" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="6" a="ironhammer" b="magmabucket" Description="[0]">
         "ab"
         </Recipe>
-         <Recipe Result="BoiledWaterBlock" ResultCount="1" RequiredHeatLevel="1" a="waterbucket" Description="[0]">
-        "a"
-        </Recipe>
         <Recipe Result="CopperSharpHammerBlock" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="3" a="coppermachete" b="ironhammer" Description="[0]">
         "ab"
         </Recipe>
@@ -548,6 +545,9 @@
 </Recipe>
 <Recipe Result="LavaLongspearBlock" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="6" a="lavaspear" b="ironhammer" Description="[0]">
     "ab"
+</Recipe>
+<Recipe Result="BoiledWaterBlock" ResultCount="1" RequiredHeatLevel="1" a="waterbucket" Description="[0]">
+    "a"
 </Recipe>
         </Smelting>
     </Recipes>
