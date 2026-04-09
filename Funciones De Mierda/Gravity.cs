@@ -66,18 +66,22 @@ namespace Game
 				ComponentCreature victim = GetCurrentTarget();
 				if (victim != null && victim.ComponentBody != null)
 				{
+					// No golpear si la víctima ya está muerta
+					if (victim.ComponentHealth == null || victim.ComponentHealth.Health <= 0f)
+						return;
+
 					if (m_random.Float(0f, 1f) <= Probability && m_subsystemTime.GameTime - m_lastHitTime > 0.2)
 					{
 						// Detener persecuciones del atacante
 						StopAttackBehaviors();
 
-						// Detener persecuciones de la víctima
+						// Detener persecuciones de la víctima (solo si está viva, ya lo comprobamos)
 						StopVictimChaseBehaviors(victim);
 
-						// Guardar y aumentar temporalmente la MaxSpeed de la víctima a un valor enorme
+						// Guardar y aumentar temporalmente la MaxSpeed de la víctima
 						m_currentVictimBody = victim.ComponentBody;
 						m_originalMaxSpeed = m_currentVictimBody.MaxSpeed;
-						m_currentVictimBody.MaxSpeed = 1e9f; // Sin límite práctico, permite cualquier fuerza
+						m_currentVictimBody.MaxSpeed = 1e9f; // Sin límite práctico
 
 						// Dirección desde el atacante hacia la víctima
 						Vector3 direction = victim.ComponentBody.Position - Entity.FindComponent<ComponentBody>(true).Position;
@@ -85,7 +89,7 @@ namespace Game
 						if (direction.LengthSquared() > 0.001f)
 							direction = Vector3.Normalize(direction);
 
-						// Aplicar impulso (la fuerza se usa directamente, sin multiplicaciones extra)
+						// Aplicar impulso
 						victim.ComponentBody.ApplyImpulse(direction * Force);
 
 						m_lastHitTime = m_subsystemTime.GameTime;
