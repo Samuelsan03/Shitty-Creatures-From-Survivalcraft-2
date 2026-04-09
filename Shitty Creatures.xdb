@@ -5796,7 +5796,7 @@
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Body" Guid="c293109c-ed5f-48af-b81c-6ce2fcdb6fdf">
 				<Parameter Name="BoxSize" Guid="b0487e25-2082-48cf-a5a3-59c376bdb827" Value="0.7,1.8,0.7" Type="Vector3"/>
-				<Parameter Name="Mass" Guid="1572bb71-d5df-428f-83e1-d25588f3fa3a" Value="120" Type="float"/>
+				<Parameter Name="Mass" Guid="1572bb71-d5df-428f-83e1-d25588f3fa3a" Value="666" Type="float"/>
 				<Parameter Name="Density" Guid="c6f6ca75-046d-4b7e-b4a3-d0633c95706e" Value="0.66" Type="float"/>
 			</MemberComponentTemplate>
             <MemberComponentTemplate Name="Creature" Guid="08cb3f39-7b21-4c52-a3b8-4059c95c18bd">
@@ -5815,7 +5815,7 @@
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="FindPlayerBehavior" Guid="c332aa4e-0067-4c9d-8ea2-dff037cf4b92" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
             <MemberComponentTemplate Name="Miner" Guid="42ec0aa3-503b-4efe-b067-17418a9e1fb0" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
-                <Parameter Name="AttackPower" Guid="13b4ac5e-7532-4c84-92b3-21ff8e5071ec" Value="15.5" Type="float"/>
+                <Parameter Name="AttackPower" Guid="13b4ac5e-7532-4c84-92b3-21ff8e5071ec" Value="666" Type="float"/>
             </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewAutoInteract" Guid="7f85dc27-3c43-443e-a68a-80e84df1ac51" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
