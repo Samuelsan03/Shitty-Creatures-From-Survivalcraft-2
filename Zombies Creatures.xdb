@@ -7331,21 +7331,6 @@
     <Parameter Name="PoisonResistance" Value="550" Type="float"/>
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="ZombieChaseBehavior" Guid="c1f037ff-0d74-4050-8658-a24a77d786d4" InheritanceParent="1a05e72e-fd6b-4eb3-b72b-59e530c4c7b9">
-  <Parameter Name="DayChaseRange" Guid="bc2f12f8-52be-48e8-a427-39fed8c95bc4" Value="999" Type="float"/>
-  <Parameter Name="NightChaseRange" Guid="f30ed214-536a-424b-8712-a1eafb1ab9a8" Value="999" Type="float"/>
-  <Parameter Name="NightChaseTime" Guid="41fca2e9-f21a-47f9-a9a0-dd772e728550" Value="999" Type="float"/>
-  <Parameter Name="DayChaseTime" Guid="1776f7f3-aeab-472f-9ed0-7ee5ef712943" Value="999" Type="float"/>
-  <Parameter Name="ChaseWhenAttackedProbability" Guid="ec7ad33e-dc44-4ae6-b4d8-47e7cb37cc3c" Value="1" Type="float"/>
-  <Parameter Name="ChaseOnTouchProbability" Guid="756b76cf-f631-4925-aef9-fb1e57ce3bb8" Value="1" Type="float"/>
-  <Parameter Name="AutoChaseMask" Guid="af9f20bb-9126-4819-80fb-7c563fe9971d" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
-  <Parameter Name="ChaseNonPlayerProbability" Guid="1fa12e76-579c-4a36-8594-d89eede03e0f" Value="1" Type="float"/>
-  <Parameter Name="AttacksSameHerd" Guid="4809a31c-e301-42c8-b7c6-91f4a88a057b" Value="false" Type="bool"/>
-  <Parameter Name="AttacksAllCategories" Guid="80a26fdf-6bd7-4563-ac4f-dac9a8955ec3" Value="true" Type="bool"/>
-  <Parameter Name="FleeFromSameHerd" Guid="df859677-5fe8-4fd3-a0aa-1d2af8d056d2" Value="true" Type="bool"/>
-  <Parameter Name="FleeDistance" Guid="4ff38b20-f8d2-41a8-9606-10bd25b78a8d" Value="10" Type="float"/>
-  <Parameter Name="ForceAttackDuringGreenNight" Guid="c4027607-80c8-424c-b683-f321d21f8a8b" Value="true" Type="bool"/>
-</MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidFireBehavior" Guid="e72e4bc1-4818-41dc-8109-ddd3585eddb2" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
             <MemberComponentTemplate Name="Locomotion" Guid="14a703c3-a108-4173-b44e-4f6939346137">
     <Parameter Name="AccelerationFactor" Guid="6932d8b5-37d0-4e1b-a26c-cbd9fa769db7" Value="3.5" Type="float"/> <!-- más aceleración para simular la embestida -->
@@ -7419,18 +7404,26 @@
     <Parameter Name="AimTransitionSpeed" Value="6.0" Type="float" Guid="e4262e0a-2a7f-46d8-beef-d6f003a4a577"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="HealthBarDisplay" Guid="7f3f1340-f7d3-4bcb-9cc7-ddf591269e94" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-        <Parameter Name="MaxDisplayDistance" Value="19" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="ZombieHerdBehavior" Guid="1d9e8a0a-41d3-4732-ade4-693545cc01be" InheritanceParent="384dbb1e-8baf-4880-9e86-db1ef0b51169">
-    <Parameter Name="HerdName" Value="Zombie" Type="string" Guid="4a96e28e-ea96-4c18-8c86-dd9724763e2a"/>
-    <Parameter Name="HerdingRange" Value="40" Type="float" Guid="80ffbf2b-d0dc-4131-b3bc-1cf429f709d1"/>
-    <Parameter Name="AutoNearbyCreaturesHelp" Value="true" Type="bool" Guid="f5b627b5-64f3-488d-93c3-79ba8c4295ac"/>
-    <Parameter Name="CallForHelpWhenAttacked" Value="true" Type="bool" Guid="48c22f6b-c6d4-4db7-854b-f0efd7f97162"/>
-    <Parameter Name="HelpCallRange" Value="25" Type="float" Guid="0e71a004-cd1f-44e5-a735-fd1cbca6b0df"/>
-    <Parameter Name="HelpChaseTime" Value="30" Type="float" Guid="da7d9e40-ca7a-4bca-a3fb-5d41eceb772c"/>
-    <Parameter Name="IsPersistentHelp" Value="false" Type="bool" Guid="b82a92d8-69e5-4ee6-8a70-6572c3bfb2cc"/>
-    <Parameter Name="ZombieAggressiveGrouping" Value="false" Type="bool" Guid="49140548-e79f-46ad-9a5e-b0245977ed42"/>
+    <MemberComponentTemplate Name="NewChaseBehavior" Guid="9b228e66-1963-4a6c-928b-e5707b95da59" InheritanceParent="1db20f99-32ba-4e7a-8e76-10686a2e76e5">
+  <Parameter Name="ChaseWhenAttackedProbability" Guid="667260ff-5346-477e-95fd-f4dced9946fd" Value="1" Type="float"/>
+  <Parameter Name="NightChaseTime" Guid="15150f3e-c2ee-4d06-a2e2-16f7adf31696" Value="90" Type="float"/>
+  <Parameter Name="DayChaseRange" Guid="8bc0e92d-aedb-47cf-b14f-677273630645" Value="60" Type="float"/>
+  <Parameter Name="ChaseOnTouchProbability" Guid="ebc8f10f-03e0-407e-9d6f-3171c052e465" Value="1" Type="float"/>
+  <Parameter Name="DayChaseTime" Guid="440c0306-51d7-424e-b861-e5aeb8ff3372" Value="60" Type="float"/>
+  <Parameter Name="NightChaseRange" Guid="a95f36a8-aa0d-47f9-9db8-4bc96952799c" Value="75" Type="float"/>
+  <Parameter Name="AutoChaseMask" Guid="5e498fc3-faee-47af-9507-1f9051eb596a" Value="LandPredator" Type="Game.CreatureCategory"/>
+  <Parameter Name="ChaseNonPlayerProbability" Guid="4ba19d65-071c-4b32-8746-eda1457aa0a5" Value="1" Type="float"/>
+  <Parameter Name="DestroyBlocksWhenStuck" Guid="11b66310-1ce3-4efd-b62a-469173953c88" Value="true" Type="bool"/>
 </MemberComponentTemplate>
+    <MemberComponentTemplate Name="NewHerdBehavior" Guid="109df437-1fba-464a-bd61-b4e8c9ec6bb5" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
+        <Parameter Name="HerdName" Value="player" Type="string" Guid="67561356-ce6d-4c2d-b1c2-2ac032b9f461"/>
+        <Parameter Name="HerdingRange" Value="20" Type="float" Guid="413ac458-211d-4ea4-b07c-d83cbb6273ee"/>
+        <Parameter Name="AutoNearbyCreaturesHelp" Value="true" Type="bool" Guid="c37a5438-b9d3-4b7e-b52b-ee6e601d4c2a"/>
+        <Parameter Name="HelpCallRange" Value="16" Type="float" Guid="d2871967-c82b-40a9-ad94-a412b0a39c2c"/>
+        <Parameter Name="MaxHelpChaseTime" Value="30" Type="float" Guid="4ac5ce05-02c0-4ca3-a63e-4d110f8fa802"/>
+        <Parameter Name="AvoidAttackingSameHerd" Value="true" Type="bool" Guid="79d8ef0b-2a9c-4b5e-b18c-2c91bbdc243c"/>
+    </MemberComponentTemplate>
             <MemberComponentTemplate Name="Health" Guid="fad28cdf-3ffc-4658-9a58-d9de2b1b2c0b">
                 <Parameter Name="FireResilience" Guid="2aa84dff-a6c4-4b1c-a715-6bee68b4e9e2" Value="650" Type="float"/>
         <Parameter Name="AttackResilience" Guid="6bfe1382-6dd7-4071-812b-06f658754b6c" Value="750" Type="float"/>
