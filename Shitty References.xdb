@@ -135,6 +135,14 @@
     <Parameter Name="PreventExplosion" Description="Prevenir la explosión de veneno." Guid="c18781d2-2e1a-44a5-b934-e0c8e9c0ecd8" Value="false" Type="bool"/>
 </ComponentTemplate>
 
+<ComponentTemplate Name="BoomerFrozenExplosion" Description="Comportamiento que hace que el Boomer explote al morir, liberando una nube congelante que infecta de gripe a las criaturas cercanas sin dañar bloques." Guid="af664dea-7587-4464-b0a6-4c6df93bbe4f" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+    <Parameter Name="Class" Guid="8161c069-3500-4645-b93c-d5e14ff87105" Value="Game.ComponentBoomerFrozenExplosion" Type="string"/>
+    <Parameter Name="FreezePressure" Description="Presión de la explosión congelante. Determina el radio de la nube (3 a 10 bloques)." Guid="4240e3c6-9d38-480f-bfb0-86e5ebb6ba27" Value="50" Type="float"/>
+    <Parameter Name="FluDuration" Description="Duración de la gripe en segundos que se aplica a las criaturas afectadas." Guid="ceaf7623-2c37-463c-8571-a0dcea2cee8a" Value="300" Type="float"/>
+    <Parameter Name="NoExplosionSound" Description="Si es true, suprime el sonido de la explosión congelante." Guid="2fd680d5-5c76-44a2-8b15-57d1f0608704" Value="false" Type="bool"/>
+    <Parameter Name="PreventExplosion" Description="Si es true, evita que el Boomer explote al morir. Útil para depuración." Guid="030f08c8-9216-45c9-b84e-df882d2799e6" Value="false" Type="bool"/>
+</ComponentTemplate>
+
 <ComponentTemplate Name="CreatureInventory" Description="Permite que una criatura tenga un inventario de objetos. Se puede abrir interactuando con ella." Guid="b0d27f89-dc61-4c44-b675-63d6a6f8bf78" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
     <Parameter Name="SlotsCount" Description="Número de ranuras del inventario de la criatura." Guid="c49bba53-bcdb-4b68-aa75-514b18486515" Value="16" Type="int"/>
     <Parameter Name="ActiveSlotIndex" Description="Índice de la ranura activa (por defecto 0)." Guid="6af6fc2c-0685-486c-bcf4-df0e9fbf542e" Value="0" Type="int"/>
@@ -351,10 +359,10 @@
     <Parameter Name="ImportanceLevelPersistent" Value="300" Type="float" Guid="79a9991d-17fe-4622-ab39-e3844554e6a6" Description="Nivel de importancia para persecuciones persistentes"/>
 </ComponentTemplate>
 
-<ComponentTemplate Name="KnockbackBehavior" Guid="2a14152c-58b2-4964-98cb-01eab7072838" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
-    <Parameter Name="Class" Value="Game.ComponentKnockbackBehavior" Type="string" Description="Componente que aplica fuerza de retroceso a objetivos al atacar."/>
-    <Parameter Name="KnockbackForce" Value="10" Type="float" Description="Fuerza de retroceso aplicada al objetivo al impactar."/>
-    <Parameter Name="KnockbackChance" Value="0.3" Type="float" Description="Probabilidad (0-1) de que se aplique el retroceso en cada golpe."/>
+<ComponentTemplate Name="Gravity" Description="Makes creature fly away when hit" Guid="a773b42a-6f6d-4829-a453-49a2db96b132" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+  <Parameter Name="Class" Guid="533d2e44-f88e-4757-980b-11b455d6a2c5" Value="Game.Gravity" Type="string"/>
+  <Parameter Name="Probability" Description="Chance to activate (0-1)" Guid="06006223-0efe-4ef7-b1d6-2dd248d735a9" Value="1" Type="float"/>
+  <Parameter Name="Force" Description="Launch force multiplier" Guid="becbcdac-6ef6-46a8-bfc9-d4ab04756ed1" Value="10" Type="float"/>
 </ComponentTemplate>
 
 <ComponentTemplate Name="ZombieHerdBehavior" Description="Comportamiento de manada especializado para zombis. Permite coordinación avanzada de ataques, llamadas de ayuda inteligentes, agrupamiento agresivo opcional, y lógica especial para evitar conflictos internos." Guid="384dbb1e-8baf-4880-9e86-db1ef0b51169" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
