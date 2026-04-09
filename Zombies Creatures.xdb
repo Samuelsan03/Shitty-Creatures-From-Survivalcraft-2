@@ -3929,9 +3929,9 @@
     <Parameter Name="DeathSpawnProbability" Value="0.01" Type="float" Guid="1c84c3a0-f8d7-4d7d-9cf2-9447b27a3f21"/>
     <Parameter Name="DeathSpawnTemplates" Value="GhostCharger:0.01" Type="string" Guid="07ce1723-99a3-45ac-8349-ad52e97d3e6d"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="KnockbackBehavior" Guid="dc6aedc6-1472-4d7d-b2ab-e5facfc8a9ab" InheritanceParent="2a14152c-58b2-4964-98cb-01eab7072838">
-    <Parameter Name="KnockbackForce" Value="999" Type="float"/>
-    <Parameter Name="KnockbackChance" Value="1.0" Type="float"/>
+<MemberComponentTemplate Name="Gravity" Guid="7f5218d4-f4f3-4f3a-9c1c-2364f2060eff" InheritanceParent="a773b42a-6f6d-4829-a453-49a2db96b132">
+  <Parameter Name="Probability" Guid="f68fead6-d272-47eb-a2b4-babf6ec4cca3" Value="1" Type="float"/>
+  <Parameter Name="Force" Guid="113b4fe9-e084-4676-aeaa-506aa1dc5176" Value="25" Type="float"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="GlowingEyes" Guid="eb80813f-6f6a-4cbe-9fa9-3711df033c66" InheritanceParent="bb8701d3-3a4f-44f7-8a1f-3a455533f632">
               <Parameter Name="GlowingEyesColor" Guid="3f3fdfca-6856-4143-a3f5-db413147c874" Value="0,255,0" Type="Color"/>
@@ -4065,9 +4065,9 @@
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="47a8a857-dbb5-4971-8eec-b1876090f8a6"/>
     <Parameter Name="DeathSpawnTemplates" Value="Charger1:0.5;GhostCharger:0.01" Type="string" Guid="ad2aec39-d2f4-43d6-b55d-d4bcb3abae9f"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="KnockbackBehavior" Guid="880fafc6-6a8c-4470-8f5c-8763bf7cb366" InheritanceParent="2a14152c-58b2-4964-98cb-01eab7072838">
-    <Parameter Name="KnockbackForce" Value="999" Type="float"/>
-    <Parameter Name="KnockbackChance" Value="1.0" Type="float"/>
+<MemberComponentTemplate Name="Gravity" Guid="a4b18a61-5db4-4e24-895b-d93595520af0" InheritanceParent="a773b42a-6f6d-4829-a453-49a2db96b132">
+  <Parameter Name="Probability" Guid="2859072b-2447-4d74-93b7-d6eefafe5fee" Value="1" Type="float"/>
+  <Parameter Name="Force" Guid="4c6c9446-014c-45c5-825e-61b4f9281101" Value="25" Type="float"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="SummonBehavior" Guid="b80f62d9-c54f-4495-8fe0-a712d994ca79" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
               <Parameter Name="IsEnabled" Guid="a026f632-5309-4f7a-bceb-5a4cf38829ff" Value="True" Type="bool"/>
@@ -4187,9 +4187,9 @@
     <Parameter Name="DeathSpawnProbability" Value="0.01" Type="float" Guid="dbc93c59-6963-483c-a8a9-531ea83d5624"/>
     <Parameter Name="DeathSpawnTemplates" Value="GhostCharger" Type="string" Guid="a85fe59d-abcf-43c2-a71e-2060b3f82bdc"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="KnockbackBehavior" Guid="5195615c-dd2d-460d-b354-7177c6b67fc7" InheritanceParent="2a14152c-58b2-4964-98cb-01eab7072838">
-    <Parameter Name="KnockbackForce" Value="999" Type="float"/>
-    <Parameter Name="KnockbackChance" Value="1.0" Type="float"/>
+<MemberComponentTemplate Name="Gravity" Guid="01a43f9e-8118-4f83-9da9-d5d5d9cba011" InheritanceParent="a773b42a-6f6d-4829-a453-49a2db96b132">
+  <Parameter Name="Probability" Guid="7be112d5-654c-4988-a843-5f33848eff75" Value="1" Type="float"/>
+  <Parameter Name="Force" Guid="793c8f2d-f1e7-436d-8513-bd5d79d581d5" Value="25" Type="float"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="GlowingEyes" Guid="eae2a51e-386c-4918-a50f-9b828395afbe" InheritanceParent="bb8701d3-3a4f-44f7-8a1f-3a455533f632">
               <Parameter Name="GlowingEyesColor" Guid="3cabbf0e-8bb0-43bf-a399-4c35d473ba01" Value="0,255,0" Type="Color"/>
@@ -4323,9 +4323,9 @@
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="3d6461d6-ca2d-4f8e-8b72-7e5ac029e733"/>
     <Parameter Name="DeathSpawnTemplates" Value="Charger2:0.5;GhostCharger:0.01" Type="string" Guid="71f149c6-e2cd-4f2f-b354-4d1cace7f86b"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="KnockbackBehavior" Guid="b530226f-d869-4688-a490-13adcd7bc63f" InheritanceParent="2a14152c-58b2-4964-98cb-01eab7072838">
-    <Parameter Name="KnockbackForce" Value="999" Type="float"/>
-    <Parameter Name="KnockbackChance" Value="1.0" Type="float"/>
+<MemberComponentTemplate Name="Gravity" Guid="2a933ea3-6e85-4186-8679-7c616702c541" InheritanceParent="a773b42a-6f6d-4829-a453-49a2db96b132">
+  <Parameter Name="Probability" Guid="2647dcdf-b4bc-4225-ba36-5ac46dc129f4" Value="1" Type="float"/>
+  <Parameter Name="Force" Guid="984f2459-0c73-428a-b7ad-9e90f7afb897" Value="25" Type="float"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="SummonBehavior" Guid="7bb4c758-aaaf-4d29-b2bb-1e4624716932" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
               <Parameter Name="IsEnabled" Guid="279ebb21-3a8f-46a9-a2f7-556db03f806f" Value="True" Type="bool"/>
@@ -7145,9 +7145,9 @@
         </EntityTemplate>
 
         <EntityTemplate Name="GhostCharger" Guid="c7818e1d-6552-4e58-967d-56975b91d50c" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="KnockbackBehavior" Guid="7dfa9e66-3e39-4bc0-aab8-e55574c3c7fb" InheritanceParent="2a14152c-58b2-4964-98cb-01eab7072838">
-    <Parameter Name="KnockbackForce" Value="999" Type="float"/>
-    <Parameter Name="KnockbackChance" Value="1.0" Type="float"/>
+<MemberComponentTemplate Name="Gravity" Guid="a9fe7ab7-f756-48a8-b365-58fa3fddb5b6" InheritanceParent="a773b42a-6f6d-4829-a453-49a2db96b132">
+  <Parameter Name="Probability" Guid="7c0d7561-bbb6-424d-bf72-78abe1d9a33a" Value="1" Type="float"/>
+  <Parameter Name="Force" Guid="6e6b5bc7-5483-4161-a0a8-fab32104b03c" Value="25" Type="float"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="GlowingEyes" Guid="ed49ff07-29a6-4591-8c0b-ea829900efdc" InheritanceParent="bb8701d3-3a4f-44f7-8a1f-3a455533f632">
               <Parameter Name="GlowingEyesColor" Guid="dd2c4918-c0f4-4135-bbd3-5a39153d4932" Value="0,255,0" Type="Color"/>
@@ -7299,9 +7299,9 @@
         </EntityTemplate>
 
         <EntityTemplate Name="GhostChargerTamed" Guid="2bad85ab-cf65-45a7-aab9-c8a333b2d918" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="KnockbackBehavior" Guid="782422a9-84f2-41b0-9430-6363e801e88f" InheritanceParent="2a14152c-58b2-4964-98cb-01eab7072838">
-    <Parameter Name="KnockbackForce" Value="999" Type="float"/>
-    <Parameter Name="KnockbackChance" Value="1.0" Type="float"/>
+<MemberComponentTemplate Name="Gravity" Guid="77b5dd9e-b26a-40ac-9c7e-46de70b6ef21" InheritanceParent="a773b42a-6f6d-4829-a453-49a2db96b132">
+  <Parameter Name="Probability" Guid="fa3d48ff-cbf3-4d9c-bb9c-e3ced7e32305" Value="1" Type="float"/>
+  <Parameter Name="Force" Guid="a411524a-4d55-4874-a5cb-57d4322e3585" Value="25" Type="float"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="GlowingEyes" Guid="16e58e3f-4a05-4cf7-bfae-d3ab95c8ded5" InheritanceParent="bb8701d3-3a4f-44f7-8a1f-3a455533f632">
               <Parameter Name="GlowingEyesColor" Guid="ed63f919-bcb8-42e1-ae1c-520a977b34cf" Value="0,255,0" Type="Color"/>
@@ -9584,9 +9584,9 @@
                 <Parameter Name="Meat" Guid="7fd1213c-22c5-4afb-ae5a-10d05350fc58" Value="1" Type="float"/>
               </ParameterSet>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="KnockbackBehavior" Guid="ddc2e6f6-596a-405e-ba1b-e0d7bd560968" InheritanceParent="2a14152c-58b2-4964-98cb-01eab7072838">
-    <Parameter Name="KnockbackForce" Value="999" Type="float"/>
-    <Parameter Name="KnockbackChance" Value="0.5" Type="float"/>
+            <MemberComponentTemplate Name="Gravity" Guid="ab4fc32f-d3a6-4735-804d-f17fd9cd2026" InheritanceParent="a773b42a-6f6d-4829-a453-49a2db96b132">
+  <Parameter Name="Probability" Guid="2135f2d0-a2bb-42f2-bcc7-796accda28b8" Value="1" Type="float"/>
+  <Parameter Name="Force" Guid="393ac780-cbfa-4a9f-9baf-8cc2fdc67a19" Value="25" Type="float"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="WalkAroundBehavior" Guid="9e2197b2-1980-4e6c-8b9e-1913895b96ee" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
             <ParameterSet Name="CreatureEggData" Guid="bc513cab-ac61-4440-a81d-372c4c5702a2">
@@ -9667,9 +9667,9 @@
                 <Parameter Name="Meat" Guid="a9824152-42d3-4108-9bf7-2e29c6cc71e1" Value="1" Type="float"/>
               </ParameterSet>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="KnockbackBehavior" Guid="4adf4a77-bd0c-4ea4-a768-4f5ad10cc53e" InheritanceParent="2a14152c-58b2-4964-98cb-01eab7072838">
-    <Parameter Name="KnockbackForce" Value="999" Type="float"/>
-    <Parameter Name="KnockbackChance" Value="0.5" Type="float"/>
+            <MemberComponentTemplate Name="Gravity" Guid="ca4860f8-cabd-451f-aa3b-2e1a0aec702d" InheritanceParent="a773b42a-6f6d-4829-a453-49a2db96b132">
+  <Parameter Name="Probability" Guid="0e8a1c20-1ce6-436d-b15a-10756b315607" Value="1" Type="float"/>
+  <Parameter Name="Force" Guid="f4b5fd01-1f22-4c4e-814c-8640ef0de84e" Value="25" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewChaseBehavior" Guid="de5cc85a-aa56-4485-aa0e-9e9129010679" InheritanceParent="1db20f99-32ba-4e7a-8e76-10686a2e76e5">
   <Parameter Name="ChaseWhenAttackedProbability" Guid="b2347b4e-2061-4b30-97e1-4e133043b589" Value="1" Type="float"/>
