@@ -489,6 +489,11 @@
     "aca"
     "b b"
 </Recipe>
+<Recipe Result="DoubleMusketBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="3" a="musket" b="ironingot" c="planks" Description="[0]">
+    " b "
+    "bab"
+    " c "
+</Recipe>
         <Smelting>
         <Recipe Result="LavaMacheteBlock" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="6" a="diamondmachete" b="magmabucket" Description="[0]">
         "ab"
@@ -550,9 +555,6 @@
 <Recipe Result="LavaLongspearBlock" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="6" a="lavaspear" b="ironhammer" Description="[0]">
     "ab"
 </Recipe>
-<Recipe Result="BoiledWaterBucketBlock" ResultCount="1" RequiredHeatLevel="1" a="waterbucket" Description="[0]">
-    "a"
-</Recipe>
 <Recipe Result="BoiledWaterBowlBlock" ResultCount="1" RequiredHeatLevel="1" a="waterbowl" Description="[0]">
     "a"
 </Recipe>
@@ -564,6 +566,9 @@
 </Recipe>
 <Recipe Result="TeaAntifluBowlBlock" ResultCount="1" RequiredHeatLevel="1" a="waterbowl" b="tallgrass" Description="[0]">
     "ab"
+</Recipe>
+<Recipe Result="BoiledWaterBucketBlock" ResultCount="1" RequiredHeatLevel="1" a="waterbucket" Description="[0]">
+    "a"
 </Recipe>
         </Smelting>
     </Recipes>
