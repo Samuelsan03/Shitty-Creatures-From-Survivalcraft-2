@@ -9585,7 +9585,7 @@
               </ParameterSet>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Gravity" Guid="ab4fc32f-d3a6-4735-804d-f17fd9cd2026" InheritanceParent="a773b42a-6f6d-4829-a453-49a2db96b132">
-  <Parameter Name="Probability" Guid="2135f2d0-a2bb-42f2-bcc7-796accda28b8" Value="1" Type="float"/>
+  <Parameter Name="Probability" Guid="2135f2d0-a2bb-42f2-bcc7-796accda28b8" Value="0.5" Type="float"/>
   <Parameter Name="Force" Guid="393ac780-cbfa-4a9f-9baf-8cc2fdc67a19" Value="25" Type="float"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="WalkAroundBehavior" Guid="9e2197b2-1980-4e6c-8b9e-1913895b96ee" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
@@ -9668,7 +9668,7 @@
               </ParameterSet>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Gravity" Guid="ca4860f8-cabd-451f-aa3b-2e1a0aec702d" InheritanceParent="a773b42a-6f6d-4829-a453-49a2db96b132">
-  <Parameter Name="Probability" Guid="0e8a1c20-1ce6-436d-b15a-10756b315607" Value="1" Type="float"/>
+  <Parameter Name="Probability" Guid="0e8a1c20-1ce6-436d-b15a-10756b315607" Value="0.5" Type="float"/>
   <Parameter Name="Force" Guid="f4b5fd01-1f22-4c4e-814c-8640ef0de84e" Value="25" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewChaseBehavior" Guid="de5cc85a-aa56-4485-aa0e-9e9129010679" InheritanceParent="1db20f99-32ba-4e7a-8e76-10686a2e76e5">
