@@ -568,6 +568,9 @@
     </Folder>
 
     <ProjectTemplate Name="Project" Guid="85023bf8-1c90-4dd1-9442-e6c13691d078">
+    <MemberSubsystemTemplate Name="BigStoneFrozenChunkBlockBehavior" Guid="f20610e5-813b-4f15-b562-cd136e0dd359" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+    <Parameter Name="Class" Value="Game.SubsystemBigStoneFrozenChunkBlockBehavior" Type="string" Guid="9a16b69e-36f2-4b95-9cc9-afd668729701"/>
+</MemberSubsystemTemplate>
     <MemberSubsystemTemplate Name="BowlBlockBehavior" Guid="ffcc940b-8798-436f-a88c-07c24b00c55d" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
     <Parameter Name="Class" Value="Game.SubsystemBowlBlockBehavior" Type="string" Guid="15f02377-c9d0-45b9-be1b-b6eec22b8839"/>
 </MemberSubsystemTemplate>
