@@ -1896,10 +1896,25 @@ namespace Game
 			else if (dist < height + 0.3f && Math.Abs(Vector3.Dot(dir, Vector3.UnitY)) > 0.8f)
 				return true;
 
-			return (target.ParentBody != null && IsTargetInAttackRange(target.ParentBody)) ||
-				   (AllowAttackingStandingOnBody && target.StandingOnBody != null &&
-					target.StandingOnBody.Position.Y < target.Position.Y &&
-					IsTargetInAttackRange(target.StandingOnBody));
+			// Caso 1: el objetivo es hijo de otro cuerpo (ej. montado)
+			if (target.ParentBody != null && IsTargetInAttackRange(target.ParentBody))
+				return true;
+
+			// Caso 2: el objetivo está parado sobre otro cuerpo (atacar hacia abajo)
+			if (AllowAttackingStandingOnBody && target.StandingOnBody != null &&
+				target.StandingOnBody.Position.Y < target.Position.Y &&
+				IsTargetInAttackRange(target.StandingOnBody))
+				return true;
+
+			// NUEVO: Caso 3: el atacante está parado sobre el objetivo (atacar hacia abajo)
+			ComponentBody myStandingOn = m_componentCreature.ComponentBody.StandingOnBody;
+			if (AllowAttackingStandingOnBody && myStandingOn != null &&
+				myStandingOn == target)
+			{
+				return true;
+			}
+
+			return false;
 		}
 
 		private bool IsBodyInAttackRange(ComponentBody target)
@@ -1936,7 +1951,9 @@ namespace Game
 				(result.Value.ComponentBody == target ||
 				 result.Value.ComponentBody.IsChildOfBody(target) ||
 				 target.IsChildOfBody(result.Value.ComponentBody) ||
-				 (target.StandingOnBody == result.Value.ComponentBody && AllowAttackingStandingOnBody)))
+				 (target.StandingOnBody == result.Value.ComponentBody && AllowAttackingStandingOnBody) ||
+				 // NUEVO: el atacante está parado sobre el objetivo
+				 (m_componentCreature.ComponentBody.StandingOnBody == target && AllowAttackingStandingOnBody)))
 			{
 				hitPoint = result.Value.HitPoint();
 				return result.Value.ComponentBody;
