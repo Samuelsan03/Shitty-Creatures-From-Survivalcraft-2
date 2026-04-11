@@ -1,4 +1,7 @@
 {
+  "SubsystemDoubleMusketBlockBehavior": {
+    "0": "The double musket is not loaded!"
+  },
   "RemoteControlAchievement": {
   "CraftingLocked": "You must survive all waves first!",
   "Unlocked": "Remote Control unlocked!",
@@ -420,6 +423,11 @@
   }
 },
   "Blocks": {
+    "DoubleMusketBlock:0": {
+    "DisplayName": "Double Musket",
+    "Description": "A double-barreled musket that can fire two shots before reloading. It can use standard bullets or powerful Anti-Tanks rounds that deal massive damage and penetrate armor. Crafted with a musket, iron ingot, and planks.",
+    "CRDescription:0": "Craft a double musket from a musket, iron ingot, and planks"
+  },
     "AppleWoodBlock:0": {
     "DisplayName": "Apple Wood",
     "Description": "Wood obtained from apple trees. Can be used for building and crafting."
@@ -1107,6 +1115,12 @@
 }
 },
       "ContentWidgets": {
+        "DoubleMusketWidget": {
+    "0": "Not loaded. Drag bullets to load (max 2).",
+    "1": "Inventory",
+    "2": "Double-Barrel Musket",
+    "3": "Loaded ({0} shot(s) left)"
+  },
         "Trader": {
     "BuyButton": "Buy",
     "CoinSlotHint": "Coin",
