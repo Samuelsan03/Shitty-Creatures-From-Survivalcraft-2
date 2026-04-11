@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Engine;
 using Engine.Graphics;
@@ -72,7 +72,7 @@ namespace Game
 
 		public static float[] m_weaponPowers = new float[]
 		{
-			450f, // Daño base para antitanque
+			999f, // Daño base para antitanque
         };
 
 		public static float[] m_explosionPressures = new float[1]; // Sin explosión
