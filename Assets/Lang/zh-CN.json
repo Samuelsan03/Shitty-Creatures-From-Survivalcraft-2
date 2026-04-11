@@ -1,4 +1,7 @@
 {
+  "SubsystemDoubleMusketBlockBehavior": {
+  "0": "双管火枪尚未装填！"
+},
   "RemoteControlAchievement": {
   "CraftingLocked": "你必须先完成所有波次！",
   "Unlocked": "遥控器已解锁！",
@@ -420,6 +423,11 @@
     }
   },
   "Blocks": {
+    "DoubleMusketBlock:0": {
+    "DisplayName": "双管火枪",
+    "Description": "双管火枪，装填后可连续发射两次。可使用标准子弹或强大的 Anti-Tanks 弹药，造成巨额伤害并穿透护甲。由火枪、铁锭和木板合成。",
+    "CRDescription:0": "用火枪、铁锭和木板合成双管火枪"
+  },
     "AppleWoodBlock:0": {
     "DisplayName": "苹果木",
     "Description": "从苹果树获得的木材，可用于建造和制作物品。"
@@ -1109,6 +1117,12 @@
     }
   },
   "ContentWidgets": {
+    "DoubleMusketWidget": {
+  "0": "未装填。拖动子弹进行装填（最多2发）。",
+  "1": "物品栏",
+  "2": "双管火枪",
+  "3": "已装填（剩余 {0} 发）"
+},
     "Trader": {
     "BuyButton": "购买",
     "CoinSlotHint": "硬币",
