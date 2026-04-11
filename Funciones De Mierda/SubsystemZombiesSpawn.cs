@@ -63,7 +63,7 @@ namespace Game
 		{
 			"Tank1", "Tank2", "Tank3",
 			"TankGhost1", "TankGhost2", "TankGhost3",
-			"MachineGunInfected", "FlyingInfectedBoss"
+			"MachineGunInfected", "FlyingInfectedBoss", "FrozenTank", "FrozenTankGhost"
 		};
 
 		private static readonly HashSet<string> MiniBossTemplates = new HashSet<string>
@@ -75,6 +75,17 @@ namespace Game
 		{
 			"InfectedFly1", "InfectedFly2", "InfectedFly3",
 			"FlyingInfectedBoss", "InfectedBird"
+		};
+
+		// Nuevo: NPCs que solo aparecen en invierno o temperaturas bajas
+		private static readonly HashSet<string> ColdOnlyTemplates = new HashSet<string>
+		{
+			"InfectedFreezer",
+			"BoomerFrozen",
+			"FrozenGhost",
+			"FrozenGhostBoomer",
+			"FrozenTankGhost",
+			"FrozenTank"
 		};
 
 		private HashSet<int> m_forbiddenBlockIndices = new HashSet<int>();
@@ -189,37 +200,19 @@ namespace Game
 				if (!m_labelInitialized) return;
 			}
 
-			// Si la Noche Verde está desactivada, ocultar la etiqueta y salir
-			if (!m_subsystemGreenNightSky.GreenNightEnabled)
+			if (!m_subsystemGreenNightSky.GreenNightEnabled ||
+				m_subsystemGameInfo.WorldSettings.TimeOfDayMode != TimeOfDayMode.Changing)
 			{
 				m_countdownLabel.IsVisible = false;
 				return;
 			}
 
-			// A partir de aquí, la Noche Verde está activada
 			int daysLeft = GetDaysUntilNextGreenNight();
-			float timeOfDay = m_subsystemTimeOfDay.TimeOfDay;
-			bool isDaytime = timeOfDay >= m_subsystemTimeOfDay.DawnStart && timeOfDay < m_subsystemTimeOfDay.DuskStart;
-
-			if (m_subsystemGreenNightSky.IsGreenNightActive)
-			{
+			if (daysLeft == 0)
 				m_countdownLabel.Text = LanguageControl.Get("ZombiesSpawn", "TheyComeTonight");
-			}
-			else if (!m_subsystemGreenNightSky.IsGreenNightActive && isDaytime)
-			{
-				string text = string.Format(LanguageControl.Get("ZombiesSpawn", "TheyComeInXDays"), daysLeft);
-				m_countdownLabel.Text = text;
-			}
 			else
-			{
-				if (daysLeft == 0)
-					m_countdownLabel.Text = LanguageControl.Get("ZombiesSpawn", "TheyComeTonight");
-				else
-				{
-					string text = string.Format(LanguageControl.Get("ZombiesSpawn", "TheyComeInXDays"), daysLeft);
-					m_countdownLabel.Text = text;
-				}
-			}
+				m_countdownLabel.Text = string.Format(LanguageControl.Get("ZombiesSpawn", "TheyComeInXDays"), daysLeft);
+
 			m_countdownLabel.IsVisible = true;
 		}
 
@@ -228,7 +221,6 @@ namespace Game
 			int phase = m_subsystemSky.MoonPhase;
 			float timeOfDay = m_subsystemTimeOfDay.TimeOfDay;
 
-			// Noche Verde desactivada: cuenta regresiva normal
 			if (!m_subsystemGreenNightSky.GreenNightEnabled)
 			{
 				if (phase == 0 || phase == 4)
@@ -239,19 +231,12 @@ namespace Game
 					return 8 - phase;
 			}
 
-			// Noche Verde activada
 			if (phase == 0 || phase == 4)
 			{
-				// Si la noche está activa ahora -> hoy
 				if (m_subsystemGreenNightSky.IsGreenNightActive)
 					return 0;
-
-				// Si la noche de esta fase lunar ya ocurrió (DaysSinceLastGreenNight == 0)
-				// entonces la próxima es en 4 días
 				if (m_subsystemGreenNightSky.DaysSinceLastGreenNight == 0)
 					return 4;
-
-				// En caso contrario, la noche aún no ha ocurrido (es de día) -> hoy es la noche
 				return 0;
 			}
 			else if (phase < 4)
@@ -380,6 +365,7 @@ namespace Game
 					break;
 			}
 		}
+
 		private int TrySpawnGroup()
 		{
 			int spawned = 0;
@@ -445,10 +431,12 @@ namespace Game
 			return spawned;
 		}
 
+		// Método modificado para incluir los nuevos NPCs de frío
 		private bool CanSpawnCreature(string templateName, Vector3 pos)
 		{
-			if (templateName == "InfectedFreezer")
+			if (ColdOnlyTemplates.Contains(templateName))
 			{
+				// Solo en invierno o temperatura baja
 				if (m_subsystemSeasons.Season == Season.Winter)
 					return true;
 
@@ -900,9 +888,9 @@ namespace Game
 
 		private string GetBossMessageKey(string bossTemplate)
 		{
-			if (bossTemplate.StartsWith("Tank"))
+			if (bossTemplate.StartsWith("Tank") ||bossTemplate.StartsWith("FrozenTank"))
 				return "BossTank";
-			if (bossTemplate.StartsWith("GhostTank") || bossTemplate.StartsWith("TankGhost"))
+			if (bossTemplate.StartsWith("GhostTank") || bossTemplate.StartsWith("TankGhost")|| bossTemplate.StartsWith("FrozenTankGhost"))
 				return "BossGhostTank";
 			if (bossTemplate == "MachineGunInfected")
 				return "BossMachineGun";
