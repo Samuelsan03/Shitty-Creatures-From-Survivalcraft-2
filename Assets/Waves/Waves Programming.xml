@@ -455,7 +455,7 @@
     <Entry template="InfectedFreezer" count="6"/>
     <Entry template="FrozenGhost" count="6"/>
   </Wave>
-  <Wave number="19">
+  <Wave number="18">
     <Entry template="HumanoidSkeleton" count="10"/>
     <Entry template="InfectedBird" count="8"/>
     <Entry template="InfectedNormal1" count="6"/>
@@ -493,7 +493,7 @@
     <Entry template="InfectedFreezer" count="6"/>
     <Entry template="FrozenGhost" count="6"/>
   </Wave>
-  <Wave number="20">
+  <Wave number="19">
     <Entry template="HumanoidSkeleton" count="10"/>
     <Entry template="InfectedBird" count="8"/>
     <Entry template="InfectedNormal1" count="6"/>
@@ -531,7 +531,7 @@
     <Entry template="InfectedFreezer" count="6"/>
     <Entry template="FrozenGhost" count="6"/>
   </Wave>
-  <Wave number="21">
+  <Wave number="20">
     <Entry template="HumanoidSkeleton" count="10"/>
     <Entry template="InfectedBird" count="8"/>
     <Entry template="InfectedNormal1" count="6"/>
@@ -569,7 +569,7 @@
     <Entry template="InfectedFreezer" count="6"/>
     <Entry template="FrozenGhost" count="6"/>
   </Wave>
-  <Wave number="22">
+  <Wave number="21">
     <Entry template="HumanoidSkeleton" count="10"/>
     <Entry template="InfectedBird" count="8"/>
     <Entry template="InfectedNormal1" count="6"/>
@@ -607,7 +607,7 @@
     <Entry template="InfectedFreezer" count="6"/>
     <Entry template="FrozenGhost" count="6"/>
   </Wave>
-  <Wave number="23">
+  <Wave number="22">
     <Entry template="HumanoidSkeleton" count="10"/>
     <Entry template="InfectedBird" count="8"/>
     <Entry template="InfectedNormal1" count="8"/>
