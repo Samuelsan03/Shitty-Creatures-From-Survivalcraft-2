@@ -1,4 +1,7 @@
 {
+  "SubsystemDoubleMusketBlockBehavior": {
+  "0": "¡El mosquete de doble cañón no está cargado!"
+},
   "RemoteControlAchievement": {
   "CraftingLocked": "¡Debes sobrevivir a todas las oleadas primero!",
   "Unlocked": "¡Control remoto desbloqueado!",
@@ -420,6 +423,11 @@
     }
   },
   "Blocks": {
+    "DoubleMusketBlock:0": {
+    "DisplayName": "Mosquete Doble",
+    "Description": "Un mosquete de dos cañones que puede disparar dos veces antes de recargar. Puede usar balas estándar o potentes rondas Anti-Tanks que causan un daño masivo y penetran armaduras. Se fabrica con un mosquete, lingote de hierro y tablones.",
+    "CRDescription:0": "Fabrica un mosquete doble con un mosquete, lingote de hierro y tablones"
+  },
     "AppleWoodBlock:0": {
     "DisplayName": "Madera de manzano",
     "Description": "Madera obtenida de árboles de manzano. Se puede usar para construir y fabricar objetos."
@@ -1109,6 +1117,12 @@
     }
 },
   "ContentWidgets": {
+    "DoubleMusketWidget": {
+  "0": "No cargado. Arrastra balas para cargar (máx. 2).",
+  "1": "Inventario",
+  "2": "Mosquete de doble cañón",
+  "3": "Cargado ({0} disparo(s) restante(s))"
+},
     "Trader": {
     "BuyButton": "Comprar",
     "CoinSlotHint": "Moneda",
