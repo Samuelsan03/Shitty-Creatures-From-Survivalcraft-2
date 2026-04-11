@@ -1,11 +1,6 @@
 <BandidosDeMierda xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://gitee.com/THPRC/survivalcraft-api/raw/SCAPI1.8/Survivalcraft/Content/Assets/Database.xsd">
 
     <EntityTemplate Name="Bandit1" Guid="ec68ffdc-d006-4583-aac7-109738d19121" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-    <MemberComponentTemplate Name="FluInfected" Guid="3bf99aff-befd-4a02-b1a4-216aabb6fa5d" InheritanceParent="c7f45092-a74d-429a-8e77-76b1ae5120a3">
-        <Parameter Name="FluResistance" Value="-250" Type="float"/>
-        <Parameter Name="CoughSound" Value="Audio/Creatures/MaleCough/MaleCough1" Type="string"/>
-        <Parameter Name="SneezeSound" Value="Audio/Creatures/MaleSneeze/MaleSneeze1" Type="string"/>
-    </MemberComponentTemplate>
     <MemberComponentTemplate Name="BanditRunAwayBehavior" Guid="51ec403f-1081-4285-84b4-dcb469d09bd1" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
 <MemberComponentTemplate Name="RunAwayBehavior" Guid="ca90b631-cf08-4ac1-a03e-f2fee10586c6" InheritanceParent="991f0b69-1749-4390-b17c-b135569988f4"/>
     <MemberComponentTemplate Name="DeathSpawner" Guid="3afb48fb-279d-40d9-9502-ff5cd4768b8d" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
@@ -147,11 +142,6 @@
 </EntityTemplate>
 
 <EntityTemplate Name="Bandit2" Guid="12893abd-e115-4b43-915f-cdbbbd1331d1" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="FluInfected" Guid="1c0220c4-40e2-42f6-ba31-d12ab823e7de" InheritanceParent="c7f45092-a74d-429a-8e77-76b1ae5120a3">
-        <Parameter Name="FluResistance" Value="-50" Type="float"/>
-        <Parameter Name="CoughSound" Value="Audio/Creatures/MaleCough/MaleCough1" Type="string"/>
-        <Parameter Name="SneezeSound" Value="Audio/Creatures/MaleSneeze/MaleSneeze1" Type="string"/>
-    </MemberComponentTemplate>
 <MemberComponentTemplate Name="DeathSpawner" Guid="6f3c292d-3c7a-4a1c-aa3a-2d0692404ef4" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="a680c1f9-7d5b-42fc-9ac6-9a98cf6e0e24"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1;InfectedNormal2" Type="string" Guid="e0ce2870-ab72-4b4c-84f4-a7271b0ba235"/>
