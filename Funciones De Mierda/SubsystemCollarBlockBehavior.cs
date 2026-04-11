@@ -87,7 +87,8 @@ namespace Game
 				{"BoomerFrozen", "BoomerFrozenTamed" },
 				{"FrozenGhost", "FrozenGhostTamed" },
 				{"FrozenGhostBoomer", "FrozenGhostBoomerTamed" },
-				{"FrozenTankGhost", "FrozenTankGhostTamed" },
+				{"FrozenTank", "FrozenTankTamed"},
+				{"FrozenTankGhost", "FrozenTankGhostTamed"},
 			};
 		}
 
@@ -189,6 +190,7 @@ namespace Game
 				bool isTamedInfectedBird = entityTemplateName == "InfectedBirdTamed";
 				bool isTamedInfectedWildboar = entityTemplateName == "InfectedWildboarTamed";
 				bool isTamedInfectedFreezer = entityTemplateName == "InfectedFreezerTamed";
+				bool isTamedFrozenTank = entityTemplateName == "FrozenTankTamed";
 				bool isTamedFrozenTankGhost = entityTemplateName == "FrozenTankGhostTamed";
 				ComponentPlayer componentPlayer = FindPlayerWithMiner(componentMiner);
 				if (componentPlayer != null)
@@ -289,6 +291,22 @@ namespace Game
 							messageColor = new Color(139, 0, 139);
 							soundToPlay = "Audio/UI/Tank Tamed Sound";
 						}
+						else if (isTamedFrozenTank)
+						{
+							bool translationFound;
+							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedFrozenTankMessage");
+							if (!translationFound) message = "You have tamed a Frozen Tank!\nIts icy brute force will freeze and crush your enemies!\nA frozen guardian is now under your command!";
+							messageColor = new Color(0, 191, 255);
+							soundToPlay = "Audio/UI/Tank Tamed Sound";
+						}
+						else if (isTamedFrozenTankGhost)
+						{
+							bool translationFound;
+							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedFrozenTankGhostMessage");
+							if (!translationFound) message = "You have tamed a Frozen Ghost Tank!\nA spectral icy terror now serves you from beyond!\nIts frozen phantom wrath will haunt your foes!";
+							messageColor = new Color(100, 200, 255);
+							soundToPlay = "Audio/UI/Tank Tamed Sound";
+						}
 						else if (isTamedGhost)
 						{
 							bool translationFound;
@@ -368,14 +386,6 @@ namespace Game
 							if (!translationFound) message = "You have tamed a Freezing Infected! Its icy snowballs will slow and freeze your enemies!";
 							messageColor = new Color(0, 191, 255);
 							soundToPlay = "Audio/UI/Tada";
-						}
-						else if (isTamedFrozenTankGhost)
-						{
-							bool translationFound;
-							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedFrozenTankGhostMessage");
-							if (!translationFound) message = "You have tamed a Frozen Tank Ghost!\nIts icy boulders will freeze and shatter your enemies!\nA glacial juggernaut now obeys your command!";
-							messageColor = new Color(0, 191, 255);
-							soundToPlay = "Audio/UI/Tank Tamed Sound";
 						}
 						else
 						{
@@ -466,6 +476,16 @@ namespace Game
 							defaultMessage = "You have tamed a Ghost Tank!\nThe spectral terror of bosses is now your phantom slave!\nIts ghostly brute force will guard you from the shadows!";
 							defaultColor = new Color(139, 0, 139);
 						}
+						else if (isTamedFrozenTank)
+						{
+							defaultMessage = "You have tamed a Frozen Tank!\nIts icy brute force will freeze and crush your enemies!\nA frozen guardian is now under your command!";
+							defaultColor = new Color(0, 191, 255);
+						}
+						else if (isTamedFrozenTankGhost)
+						{
+							defaultMessage = "You have tamed a Frozen Ghost Tank!\nA spectral icy terror now serves you from beyond!\nIts frozen phantom wrath will haunt your foes!";
+							defaultColor = new Color(100, 200, 255);
+						}
 						else if (isTamedGhost)
 						{
 							defaultMessage = "You have tamed a Ghost! Its spectral powers are now in your hands!";
@@ -514,11 +534,6 @@ namespace Game
 						else if (isTamedInfectedFreezer)
 						{
 							defaultMessage = "You have tamed a Infected Freezer! Its icy snowballs will slow and freeze your enemies!";
-							defaultColor = new Color(0, 191, 255);
-						}
-						else if (isTamedFrozenTankGhost)
-						{
-							defaultMessage = "You have tamed a Frozen Tank Ghost!\nIts icy boulders will freeze and shatter your enemies!\nA glacial juggernaut now obeys your command!";
 							defaultColor = new Color(0, 191, 255);
 						}
 						else
