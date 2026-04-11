@@ -289,42 +289,6 @@
     <Entry template="GhostBoomer2" count="2"/>
     <Entry template="GhostBoomer3" count="2"/>
     <Entry template="BoomerFrozen" count="2"/>
-    <Entry template="GhostCharger" count="2"/>
-    <Entry template="Charger1" count="2"/>
-    <Entry template="Charger2" count="2"/>
-    <Entry template="InfectedHyena" count="8"/>
-    <Entry template="InfectedWildboar" count="4"/>
-    <Entry template="InfectedBear" count="4"/>
-    <Entry template="PredatoryChameleon" count="6"/>
-    <Entry template="InfectedWolf" count="7"/>
-    <Entry template="InfectedWerewolf" count="3"/>
-    <Entry template="InfectedFreezer" count="6"/>
-    <Entry template="FrozenGhost" count="6"/>
-  </Wave>
-  <Wave number="14">
-    <Entry template="HumanoidSkeleton" count="10"/>
-    <Entry template="InfectedBird" count="8"/>
-    <Entry template="InfectedNormal1" count="6"/>
-    <Entry template="InfectedNormal2" count="6"/>
-    <Entry template="GhostNormal" count="4"/>
-    <Entry template="InfectedFast1" count="5"/>
-    <Entry template="InfectedFast2" count="5"/>
-    <Entry template="GhostFast" count="3"/>
-    <Entry template="InfectedMuscle1" count="8"/>
-    <Entry template="InfectedMuscle2" count="8"/>
-    <Entry template="PoisonousInfected1" count="4"/>
-    <Entry template="PoisonousInfected2" count="4"/>
-    <Entry template="PoisonousGhost" count="3"/>
-    <Entry template="InfectedFly1" count="2"/>
-    <Entry template="InfectedFly2" count="3"/>
-    <Entry template="InfectedFly3" count="2"/>
-    <Entry template="Boomer1" count="3"/>
-    <Entry template="Boomer2" count="3"/>
-    <Entry template="Boomer3" count="3"/>
-    <Entry template="GhostBoomer1" count="2"/>
-    <Entry template="GhostBoomer2" count="2"/>
-    <Entry template="GhostBoomer3" count="2"/>
-    <Entry template="BoomerFrozen" count="2"/>
     <Entry template="FrozenGhostBoomer" count="2"/>
     <Entry template="GhostCharger" count="2"/>
     <Entry template="Charger1" count="2"/>
@@ -339,46 +303,7 @@
     <Entry template="InfectedFreezer" count="6"/>
     <Entry template="FrozenGhost" count="6"/>
   </Wave>
-  <Wave number="15">
-    <Entry template="HumanoidSkeleton" count="10"/>
-    <Entry template="InfectedBird" count="8"/>
-    <Entry template="InfectedNormal1" count="6"/>
-    <Entry template="BoomerFrozen" count="2"/>
-    <Entry template="FrozenGhostBoomer" count="2"/>
-    <Entry template="InfectedNormal2" count="6"/>
-    <Entry template="GhostNormal" count="4"/>
-    <Entry template="InfectedFast1" count="5"/>
-    <Entry template="InfectedFast2" count="5"/>
-    <Entry template="GhostFast" count="3"/>
-    <Entry template="InfectedMuscle1" count="8"/>
-    <Entry template="InfectedMuscle2" count="8"/>
-    <Entry template="PoisonousInfected1" count="4"/>
-    <Entry template="PoisonousInfected2" count="4"/>
-    <Entry template="PoisonousGhost" count="3"/>
-    <Entry template="InfectedFly1" count="2"/>
-    <Entry template="InfectedFly2" count="3"/>
-    <Entry template="InfectedFly3" count="2"/>
-    <Entry template="Boomer1" count="3"/>
-    <Entry template="Boomer2" count="3"/>
-    <Entry template="Boomer3" count="3"/>
-    <Entry template="GhostBoomer1" count="2"/>
-    <Entry template="GhostBoomer2" count="2"/>
-    <Entry template="GhostBoomer3" count="2"/>
-    <Entry template="BoomerFrozen" count="2"/>
-    <Entry template="FrozenGhostBoomer" count="2"/>
-    <Entry template="GhostCharger" count="2"/>
-    <Entry template="Charger1" count="2"/>
-    <Entry template="Charger2" count="2"/>
-    <Entry template="InfectedHyena" count="8"/>
-    <Entry template="InfectedWildboar" count="4"/>
-    <Entry template="InfectedBear" count="6"/>
-    <Entry template="PredatoryChameleon" count="8"/>
-    <Entry template="InfectedWolf" count="9"/>
-    <Entry template="InfectedWerewolf" count="4"/>
-    <Entry template="InfectedFreezer" count="6"/>
-    <Entry template="FrozenGhost" count="6"/>
-  </Wave>
-  <Wave number="16">
+  <Wave number="14">
     <Entry template="HumanoidSkeleton" count="10"/>
     <Entry template="InfectedBird" count="8"/>
     <Entry template="InfectedNormal1" count="6"/>
@@ -416,44 +341,7 @@
     <Entry template="InfectedFreezer" count="6"/>
     <Entry template="FrozenGhost" count="6"/>
   </Wave>
-  <Wave number="17">
-    <Entry template="HumanoidSkeleton" count="10"/>
-    <Entry template="InfectedBird" count="8"/>
-    <Entry template="InfectedNormal1" count="8"/>
-    <Entry template="InfectedNormal2" count="8"/>
-    <Entry template="GhostNormal" count="5"/>
-    <Entry template="InfectedFast1" count="6"/>
-    <Entry template="InfectedFast2" count="6"/>
-    <Entry template="GhostFast" count="4"/>
-    <Entry template="InfectedMuscle1" count="10"/>
-    <Entry template="InfectedMuscle2" count="10"/>
-    <Entry template="PoisonousInfected1" count="5"/>
-    <Entry template="PoisonousInfected2" count="5"/>
-    <Entry template="PoisonousGhost" count="4"/>
-    <Entry template="InfectedFly1" count="3"/>
-    <Entry template="InfectedFly2" count="4"/>
-    <Entry template="InfectedFly3" count="3"/>
-    <Entry template="Boomer1" count="4"/>
-    <Entry template="Boomer2" count="4"/>
-    <Entry template="Boomer3" count="4"/>
-    <Entry template="GhostBoomer1" count="3"/>
-    <Entry template="GhostBoomer2" count="3"/>
-    <Entry template="GhostBoomer3" count="3"/>
-    <Entry template="BoomerFrozen" count="3"/>
-    <Entry template="FrozenGhostBoomer" count="3"/>
-    <Entry template="GhostCharger" count="3"/>
-    <Entry template="Charger1" count="3"/>
-    <Entry template="Charger2" count="3"/>
-    <Entry template="InfectedHyena" count="10"/>
-    <Entry template="InfectedWildboar" count="5"/>
-    <Entry template="InfectedBear" count="7"/>
-    <Entry template="PredatoryChameleon" count="10"/>
-    <Entry template="InfectedWolf" count="10"/>
-    <Entry template="InfectedWerewolf" count="5"/>
-    <Entry template="InfectedFreezer" count="8"/>
-    <Entry template="FrozenGhost" count="6"/>
-  </Wave>
-  <Wave number="18">
+  <Wave number="15">
     <Entry template="HumanoidSkeleton" count="10"/>
     <Entry template="InfectedBird" count="8"/>
     <Entry template="InfectedNormal1" count="8"/>
@@ -491,41 +379,118 @@
     <Entry template="InfectedFreezer" count="8"/>
     <Entry template="FrozenGhost" count="6"/>
   </Wave>
-  <Wave number="19">
+  <Wave number="16">
     <Entry template="HumanoidSkeleton" count="10"/>
     <Entry template="InfectedBird" count="8"/>
     <Entry template="InfectedNormal1" count="8"/>
     <Entry template="InfectedNormal2" count="8"/>
-    <Entry template="GhostNormal" count="6"/>
-    <Entry template="InfectedFast1" count="8"/>
-    <Entry template="InfectedFast2" count="8"/>
-    <Entry template="GhostFast" count="5"/>
+    <Entry template="GhostNormal" count="5"/>
+    <Entry template="InfectedFast1" count="6"/>
+    <Entry template="InfectedFast2" count="6"/>
+    <Entry template="GhostFast" count="4"/>
     <Entry template="InfectedMuscle1" count="10"/>
     <Entry template="InfectedMuscle2" count="10"/>
-    <Entry template="PoisonousInfected1" count="6"/>
-    <Entry template="PoisonousInfected2" count="6"/>
-    <Entry template="PoisonousGhost" count="5"/>
-    <Entry template="InfectedFly1" count="4"/>
-    <Entry template="InfectedFly2" count="5"/>
+    <Entry template="PoisonousInfected1" count="5"/>
+    <Entry template="PoisonousInfected2" count="5"/>
+    <Entry template="PoisonousGhost" count="4"/>
+    <Entry template="InfectedFly1" count="3"/>
+    <Entry template="InfectedFly2" count="4"/>
     <Entry template="InfectedFly3" count="3"/>
-    <Entry template="Boomer1" count="5"/>
-    <Entry template="Boomer2" count="5"/>
-    <Entry template="Boomer3" count="5"/>
+    <Entry template="Boomer1" count="4"/>
+    <Entry template="Boomer2" count="4"/>
+    <Entry template="Boomer3" count="4"/>
+    <Entry template="GhostBoomer1" count="3"/>
+    <Entry template="GhostBoomer2" count="3"/>
+    <Entry template="GhostBoomer3" count="3"/>
+    <Entry template="BoomerFrozen" count="3"/>
+    <Entry template="FrozenGhostBoomer" count="3"/>
+    <Entry template="GhostCharger" count="3"/>
+    <Entry template="Charger1" count="3"/>
+    <Entry template="Charger2" count="3"/>
+    <Entry template="InfectedHyena" count="10"/>
+    <Entry template="InfectedWildboar" count="5"/>
+    <Entry template="InfectedBear" count="8"/>
+    <Entry template="PredatoryChameleon" count="10"/>
+    <Entry template="InfectedWolf" count="10"/>
+    <Entry template="InfectedWerewolf" count="5"/>
+    <Entry template="FrozenTank" count="1"/>
+    <Entry template="InfectedFreezer" count="8"/>
+    <Entry template="FrozenGhost" count="6"/>
+  </Wave>
+  <Wave number="17">
+    <Entry template="HumanoidSkeleton" count="10"/>
+    <Entry template="InfectedBird" count="8"/>
+    <Entry template="InfectedNormal1" count="6"/>
+    <Entry template="InfectedNormal2" count="6"/>
+    <Entry template="GhostNormal" count="4"/>
+    <Entry template="InfectedFast1" count="5"/>
+    <Entry template="InfectedFast2" count="5"/>
+    <Entry template="GhostFast" count="3"/>
+    <Entry template="InfectedMuscle1" count="8"/>
+    <Entry template="InfectedMuscle2" count="8"/>
+    <Entry template="PoisonousInfected1" count="4"/>
+    <Entry template="PoisonousInfected2" count="4"/>
+    <Entry template="PoisonousGhost" count="3"/>
+    <Entry template="InfectedFly1" count="2"/>
+    <Entry template="InfectedFly2" count="3"/>
+    <Entry template="InfectedFly3" count="2"/>
+    <Entry template="Boomer1" count="3"/>
+    <Entry template="Boomer2" count="3"/>
+    <Entry template="Boomer3" count="3"/>
     <Entry template="GhostBoomer1" count="4"/>
     <Entry template="GhostBoomer2" count="4"/>
     <Entry template="GhostBoomer3" count="4"/>
     <Entry template="BoomerFrozen" count="4"/>
     <Entry template="FrozenGhostBoomer" count="4"/>
-    <Entry template="Charger1" count="4"/>
-    <Entry template="Charger2" count="4"/>
-    <Entry template="GhostCharger" count="3"/>
-    <Entry template="InfectedHyena" count="10"/>
-    <Entry template="InfectedWildboar" count="6"/>
-    <Entry template="InfectedBear" count="8"/>
-    <Entry template="PredatoryChameleon" count="10"/>
+    <Entry template="GhostCharger" count="2"/>
+    <Entry template="Charger1" count="2"/>
+    <Entry template="Charger2" count="2"/>
+    <Entry template="InfectedHyena" count="8"/>
+    <Entry template="InfectedWildboar" count="4"/>
+    <Entry template="InfectedBear" count="7"/>
+    <Entry template="PredatoryChameleon" count="9"/>
     <Entry template="InfectedWolf" count="10"/>
-    <Entry template="InfectedWerewolf" count="6"/>
-    <Entry template="InfectedFreezer" count="8"/>
+    <Entry template="InfectedWerewolf" count="5"/>
+    <Entry template="TankGhost1" count="1"/>
+    <Entry template="InfectedFreezer" count="6"/>
+    <Entry template="FrozenGhost" count="6"/>
+  </Wave>
+  <Wave number="19">
+    <Entry template="HumanoidSkeleton" count="10"/>
+    <Entry template="InfectedBird" count="8"/>
+    <Entry template="InfectedNormal1" count="6"/>
+    <Entry template="InfectedNormal2" count="6"/>
+    <Entry template="GhostNormal" count="4"/>
+    <Entry template="InfectedFast1" count="5"/>
+    <Entry template="InfectedFast2" count="5"/>
+    <Entry template="GhostFast" count="3"/>
+    <Entry template="InfectedMuscle1" count="8"/>
+    <Entry template="InfectedMuscle2" count="8"/>
+    <Entry template="PoisonousInfected1" count="4"/>
+    <Entry template="PoisonousInfected2" count="4"/>
+    <Entry template="PoisonousGhost" count="3"/>
+    <Entry template="InfectedFly1" count="2"/>
+    <Entry template="InfectedFly2" count="3"/>
+    <Entry template="InfectedFly3" count="2"/>
+    <Entry template="Boomer1" count="3"/>
+    <Entry template="Boomer2" count="3"/>
+    <Entry template="Boomer3" count="3"/>
+    <Entry template="GhostBoomer1" count="4"/>
+    <Entry template="GhostBoomer2" count="4"/>
+    <Entry template="GhostBoomer3" count="4"/>
+    <Entry template="BoomerFrozen" count="4"/>
+    <Entry template="FrozenGhostBoomer" count="4"/>
+    <Entry template="GhostCharger" count="2"/>
+    <Entry template="Charger1" count="2"/>
+    <Entry template="Charger2" count="2"/>
+    <Entry template="InfectedHyena" count="8"/>
+    <Entry template="InfectedWildboar" count="4"/>
+    <Entry template="InfectedBear" count="7"/>
+    <Entry template="PredatoryChameleon" count="9"/>
+    <Entry template="InfectedWolf" count="10"/>
+    <Entry template="InfectedWerewolf" count="5"/>
+    <Entry template="TankGhost2" count="1"/>
+    <Entry template="InfectedFreezer" count="6"/>
     <Entry template="FrozenGhost" count="6"/>
   </Wave>
   <Wave number="20">
@@ -562,7 +527,7 @@
     <Entry template="PredatoryChameleon" count="9"/>
     <Entry template="InfectedWolf" count="10"/>
     <Entry template="InfectedWerewolf" count="5"/>
-    <Entry template="TankGhost1" count="1"/>
+    <Entry template="TankGhost3" count="1"/>
     <Entry template="InfectedFreezer" count="6"/>
     <Entry template="FrozenGhost" count="6"/>
   </Wave>
@@ -600,235 +565,11 @@
     <Entry template="PredatoryChameleon" count="9"/>
     <Entry template="InfectedWolf" count="10"/>
     <Entry template="InfectedWerewolf" count="5"/>
-    <Entry template="InfectedFreezer" count="6"/>
-    <Entry template="FrozenGhost" count="6"/>
-  </Wave>
-  <Wave number="22">
-    <Entry template="HumanoidSkeleton" count="10"/>
-    <Entry template="InfectedBird" count="8"/>
-    <Entry template="InfectedNormal1" count="6"/>
-    <Entry template="InfectedNormal2" count="6"/>
-    <Entry template="GhostNormal" count="4"/>
-    <Entry template="InfectedFast1" count="5"/>
-    <Entry template="InfectedFast2" count="5"/>
-    <Entry template="GhostFast" count="3"/>
-    <Entry template="InfectedMuscle1" count="8"/>
-    <Entry template="InfectedMuscle2" count="8"/>
-    <Entry template="PoisonousInfected1" count="4"/>
-    <Entry template="PoisonousInfected2" count="4"/>
-    <Entry template="PoisonousGhost" count="3"/>
-    <Entry template="InfectedFly1" count="2"/>
-    <Entry template="InfectedFly2" count="3"/>
-    <Entry template="InfectedFly3" count="2"/>
-    <Entry template="Boomer1" count="3"/>
-    <Entry template="Boomer2" count="3"/>
-    <Entry template="Boomer3" count="3"/>
-    <Entry template="GhostBoomer1" count="4"/>
-    <Entry template="GhostBoomer2" count="4"/>
-    <Entry template="GhostBoomer3" count="4"/>
-    <Entry template="BoomerFrozen" count="4"/>
-    <Entry template="FrozenGhostBoomer" count="4"/>
-    <Entry template="GhostCharger" count="2"/>
-    <Entry template="Charger1" count="2"/>
-    <Entry template="Charger2" count="2"/>
-    <Entry template="InfectedHyena" count="8"/>
-    <Entry template="InfectedWildboar" count="4"/>
-    <Entry template="InfectedBear" count="7"/>
-    <Entry template="PredatoryChameleon" count="9"/>
-    <Entry template="InfectedWolf" count="10"/>
-    <Entry template="InfectedWerewolf" count="5"/>
-    <Entry template="TankGhost2" count="1"/>
-    <Entry template="InfectedFreezer" count="6"/>
-    <Entry template="FrozenGhost" count="6"/>
-  </Wave>
-  <Wave number="23">
-    <Entry template="HumanoidSkeleton" count="10"/>
-    <Entry template="InfectedBird" count="8"/>
-    <Entry template="InfectedNormal1" count="6"/>
-    <Entry template="InfectedNormal2" count="6"/>
-    <Entry template="GhostNormal" count="4"/>
-    <Entry template="InfectedFast1" count="5"/>
-    <Entry template="InfectedFast2" count="5"/>
-    <Entry template="GhostFast" count="3"/>
-    <Entry template="InfectedMuscle1" count="8"/>
-    <Entry template="InfectedMuscle2" count="8"/>
-    <Entry template="PoisonousInfected1" count="4"/>
-    <Entry template="PoisonousInfected2" count="4"/>
-    <Entry template="PoisonousGhost" count="3"/>
-    <Entry template="InfectedFly1" count="2"/>
-    <Entry template="InfectedFly2" count="3"/>
-    <Entry template="InfectedFly3" count="2"/>
-    <Entry template="Boomer1" count="3"/>
-    <Entry template="Boomer2" count="3"/>
-    <Entry template="Boomer3" count="3"/>
-    <Entry template="GhostBoomer1" count="4"/>
-    <Entry template="GhostBoomer2" count="4"/>
-    <Entry template="GhostBoomer3" count="4"/>
-    <Entry template="BoomerFrozen" count="4"/>
-    <Entry template="FrozenGhostBoomer" count="4"/>
-    <Entry template="GhostCharger" count="2"/>
-    <Entry template="Charger1" count="2"/>
-    <Entry template="Charger2" count="2"/>
-    <Entry template="InfectedHyena" count="8"/>
-    <Entry template="InfectedWildboar" count="4"/>
-    <Entry template="InfectedBear" count="7"/>
-    <Entry template="PredatoryChameleon" count="9"/>
-    <Entry template="InfectedWolf" count="10"/>
-    <Entry template="InfectedWerewolf" count="5"/>
-    <Entry template="InfectedFreezer" count="6"/>
-    <Entry template="FrozenGhost" count="6"/>
-  </Wave>
-  <Wave number="24">
-    <Entry template="HumanoidSkeleton" count="10"/>
-    <Entry template="InfectedBird" count="8"/>
-    <Entry template="InfectedNormal1" count="6"/>
-    <Entry template="InfectedNormal2" count="6"/>
-    <Entry template="GhostNormal" count="4"/>
-    <Entry template="InfectedFast1" count="5"/>
-    <Entry template="InfectedFast2" count="5"/>
-    <Entry template="GhostFast" count="3"/>
-    <Entry template="InfectedMuscle1" count="8"/>
-    <Entry template="InfectedMuscle2" count="8"/>
-    <Entry template="PoisonousInfected1" count="4"/>
-    <Entry template="PoisonousInfected2" count="4"/>
-    <Entry template="PoisonousGhost" count="3"/>
-    <Entry template="InfectedFly1" count="2"/>
-    <Entry template="InfectedFly2" count="3"/>
-    <Entry template="InfectedFly3" count="2"/>
-    <Entry template="Boomer1" count="3"/>
-    <Entry template="Boomer2" count="3"/>
-    <Entry template="Boomer3" count="3"/>
-    <Entry template="GhostBoomer1" count="4"/>
-    <Entry template="GhostBoomer2" count="4"/>
-    <Entry template="GhostBoomer3" count="4"/>
-    <Entry template="BoomerFrozen" count="4"/>
-    <Entry template="FrozenGhostBoomer" count="4"/>
-    <Entry template="GhostCharger" count="2"/>
-    <Entry template="Charger1" count="2"/>
-    <Entry template="Charger2" count="2"/>
-    <Entry template="InfectedHyena" count="8"/>
-    <Entry template="InfectedWildboar" count="4"/>
-    <Entry template="InfectedBear" count="7"/>
-    <Entry template="PredatoryChameleon" count="9"/>
-    <Entry template="InfectedWolf" count="10"/>
-    <Entry template="InfectedWerewolf" count="5"/>
-    <Entry template="TankGhost3" count="1"/>
-    <Entry template="InfectedFreezer" count="6"/>
-    <Entry template="FrozenGhost" count="6"/>
-  </Wave>
-  <Wave number="25">
-    <Entry template="HumanoidSkeleton" count="10"/>
-    <Entry template="InfectedBird" count="8"/>
-    <Entry template="InfectedNormal1" count="6"/>
-    <Entry template="InfectedNormal2" count="6"/>
-    <Entry template="GhostNormal" count="4"/>
-    <Entry template="InfectedFast1" count="5"/>
-    <Entry template="InfectedFast2" count="5"/>
-    <Entry template="GhostFast" count="3"/>
-    <Entry template="InfectedMuscle1" count="8"/>
-    <Entry template="InfectedMuscle2" count="8"/>
-    <Entry template="PoisonousInfected1" count="4"/>
-    <Entry template="PoisonousInfected2" count="4"/>
-    <Entry template="PoisonousGhost" count="3"/>
-    <Entry template="InfectedFly1" count="2"/>
-    <Entry template="InfectedFly2" count="3"/>
-    <Entry template="InfectedFly3" count="2"/>
-    <Entry template="Boomer1" count="3"/>
-    <Entry template="Boomer2" count="3"/>
-    <Entry template="Boomer3" count="3"/>
-    <Entry template="GhostBoomer1" count="4"/>
-    <Entry template="GhostBoomer2" count="4"/>
-    <Entry template="GhostBoomer3" count="4"/>
-    <Entry template="BoomerFrozen" count="4"/>
-    <Entry template="FrozenGhostBoomer" count="4"/>
-    <Entry template="GhostCharger" count="2"/>
-    <Entry template="Charger1" count="2"/>
-    <Entry template="Charger2" count="2"/>
-    <Entry template="InfectedHyena" count="8"/>
-    <Entry template="InfectedWildboar" count="4"/>
-    <Entry template="InfectedBear" count="7"/>
-    <Entry template="PredatoryChameleon" count="9"/>
-    <Entry template="InfectedWolf" count="10"/>
-    <Entry template="InfectedWerewolf" count="5"/>
-    <Entry template="InfectedFreezer" count="6"/>
-    <Entry template="FrozenGhost" count="6"/>
-  </Wave>
-  <Wave number="26">
-    <Entry template="HumanoidSkeleton" count="10"/>
-    <Entry template="InfectedBird" count="8"/>
-    <Entry template="InfectedNormal1" count="6"/>
-    <Entry template="InfectedNormal2" count="6"/>
-    <Entry template="GhostNormal" count="4"/>
-    <Entry template="InfectedFast1" count="5"/>
-    <Entry template="InfectedFast2" count="5"/>
-    <Entry template="GhostFast" count="3"/>
-    <Entry template="InfectedMuscle1" count="8"/>
-    <Entry template="InfectedMuscle2" count="8"/>
-    <Entry template="PoisonousInfected1" count="4"/>
-    <Entry template="PoisonousInfected2" count="4"/>
-    <Entry template="PoisonousGhost" count="3"/>
-    <Entry template="InfectedFly1" count="2"/>
-    <Entry template="InfectedFly2" count="3"/>
-    <Entry template="InfectedFly3" count="2"/>
-    <Entry template="Boomer1" count="3"/>
-    <Entry template="Boomer2" count="3"/>
-    <Entry template="Boomer3" count="3"/>
-    <Entry template="GhostBoomer1" count="4"/>
-    <Entry template="GhostBoomer2" count="4"/>
-    <Entry template="GhostBoomer3" count="4"/>
-    <Entry template="BoomerFrozen" count="4"/>
-    <Entry template="FrozenGhostBoomer" count="4"/>
-    <Entry template="GhostCharger" count="2"/>
-    <Entry template="Charger1" count="2"/>
-    <Entry template="Charger2" count="2"/>
-    <Entry template="InfectedHyena" count="8"/>
-    <Entry template="InfectedWildboar" count="4"/>
-    <Entry template="InfectedBear" count="7"/>
-    <Entry template="PredatoryChameleon" count="9"/>
-    <Entry template="InfectedWolf" count="10"/>
-    <Entry template="InfectedWerewolf" count="5"/>
     <Entry template="MachineGunInfected" count="1"/>
     <Entry template="InfectedFreezer" count="6"/>
     <Entry template="FrozenGhost" count="6"/>
   </Wave>
-  <Wave number="27">
-    <Entry template="HumanoidSkeleton" count="10"/>
-    <Entry template="InfectedBird" count="8"/>
-    <Entry template="InfectedNormal1" count="6"/>
-    <Entry template="InfectedNormal2" count="6"/>
-    <Entry template="GhostNormal" count="4"/>
-    <Entry template="InfectedFast1" count="5"/>
-    <Entry template="InfectedFast2" count="5"/>
-    <Entry template="GhostFast" count="3"/>
-    <Entry template="InfectedMuscle1" count="8"/>
-    <Entry template="InfectedMuscle2" count="8"/>
-    <Entry template="PoisonousInfected1" count="4"/>
-    <Entry template="PoisonousInfected2" count="4"/>
-    <Entry template="PoisonousGhost" count="3"/>
-    <Entry template="InfectedFly1" count="2"/>
-    <Entry template="InfectedFly2" count="3"/>
-    <Entry template="InfectedFly3" count="2"/>
-    <Entry template="Boomer1" count="3"/>
-    <Entry template="Boomer2" count="3"/>
-    <Entry template="Boomer3" count="3"/>
-    <Entry template="GhostBoomer1" count="4"/>
-    <Entry template="GhostBoomer2" count="4"/>
-    <Entry template="GhostBoomer3" count="4"/>
-    <Entry template="BoomerFrozen" count="4"/>
-    <Entry template="FrozenGhostBoomer" count="4"/>
-    <Entry template="GhostCharger" count="2"/>
-    <Entry template="Charger1" count="2"/>
-    <Entry template="Charger2" count="2"/>
-    <Entry template="InfectedHyena" count="8"/>
-    <Entry template="InfectedWildboar" count="4"/>
-    <Entry template="InfectedBear" count="7"/>
-    <Entry template="PredatoryChameleon" count="9"/>
-    <Entry template="InfectedWolf" count="10"/>
-    <Entry template="InfectedWerewolf" count="5"/>
-    <Entry template="InfectedFreezer" count="6"/>
-    <Entry template="FrozenGhost" count="6"/>
-  </Wave>
-  <Wave number="28">
+  <Wave number="22">
     <Entry template="HumanoidSkeleton" count="10"/>
     <Entry template="InfectedBird" count="8"/>
     <Entry template="InfectedNormal1" count="8"/>
@@ -866,9 +607,11 @@
     <Entry template="Tank1" count="1"/>
     <Entry template="Tank2" count="1"/>
     <Entry template="Tank3" count="1"/>
+    <Entry template="FrozenTank" count="1"/>
     <Entry template="TankGhost1" count="1"/>
     <Entry template="TankGhost2" count="1"/>
     <Entry template="TankGhost3" count="1"/>
+    <Entry template="FrozenTankGhost" count="1"/>
     <Entry template="MachineGunInfected" count="1"/>
     <Entry template="InfectedFreezer" count="3"/>
     <Entry template="FrozenGhost" count="6"/>
