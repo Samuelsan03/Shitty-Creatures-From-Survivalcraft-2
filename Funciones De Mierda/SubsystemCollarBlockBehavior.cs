@@ -87,6 +87,7 @@ namespace Game
 				{"BoomerFrozen", "BoomerFrozenTamed" },
 				{"FrozenGhost", "FrozenGhostTamed" },
 				{"FrozenGhostBoomer", "FrozenGhostBoomerTamed" },
+				{"FrozenTankGhost", "FrozenTankGhostTamed" },
 			};
 		}
 
@@ -188,6 +189,7 @@ namespace Game
 				bool isTamedInfectedBird = entityTemplateName == "InfectedBirdTamed";
 				bool isTamedInfectedWildboar = entityTemplateName == "InfectedWildboarTamed";
 				bool isTamedInfectedFreezer = entityTemplateName == "InfectedFreezerTamed";
+				bool isTamedFrozenTankGhost = entityTemplateName == "FrozenTankGhostTamed";
 				ComponentPlayer componentPlayer = FindPlayerWithMiner(componentMiner);
 				if (componentPlayer != null)
 				{
@@ -367,6 +369,14 @@ namespace Game
 							messageColor = new Color(0, 191, 255);
 							soundToPlay = "Audio/UI/Tada";
 						}
+						else if (isTamedFrozenTankGhost)
+						{
+							bool translationFound;
+							message = LanguageControl.Get(out translationFound, "Messages", "CollarTamedFrozenTankGhostMessage");
+							if (!translationFound) message = "You have tamed a Frozen Tank Ghost!\nIts icy boulders will freeze and shatter your enemies!\nA glacial juggernaut now obeys your command!";
+							messageColor = new Color(0, 191, 255);
+							soundToPlay = "Audio/UI/Tank Tamed Sound";
+						}
 						else
 						{
 							bool translationFound;
@@ -504,6 +514,11 @@ namespace Game
 						else if (isTamedInfectedFreezer)
 						{
 							defaultMessage = "You have tamed a Infected Freezer! Its icy snowballs will slow and freeze your enemies!";
+							defaultColor = new Color(0, 191, 255);
+						}
+						else if (isTamedFrozenTankGhost)
+						{
+							defaultMessage = "You have tamed a Frozen Tank Ghost!\nIts icy boulders will freeze and shatter your enemies!\nA glacial juggernaut now obeys your command!";
 							defaultColor = new Color(0, 191, 255);
 						}
 						else
