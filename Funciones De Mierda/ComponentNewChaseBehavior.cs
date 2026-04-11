@@ -58,6 +58,8 @@ namespace Game
 		public float RepeatCrossbowCooldown = 0.1f;
 		public float FlameThrowerAimTime = 1.5f;
 		public float FlameThrowerCooldown = 0.1f;
+		public float DoubleMusketAimTime = 1.5f;
+		public float DoubleMusketCooldown = 0.35f;
 
 		public bool DestroyBlocksWhenStuck = false;
 		public bool InvokeLightningOnHit = false;
@@ -161,7 +163,8 @@ namespace Game
 					contents == BowBlock.Index ||
 					contents == CrossbowBlock.Index ||
 					contents == RepeatCrossbowBlock.Index ||
-					contents == FlameThrowerBlock.Index)
+					contents == FlameThrowerBlock.Index ||
+					contents == DoubleMusketBlock.Index)
 				{
 					return false;
 				}
@@ -185,6 +188,7 @@ namespace Game
 					   contents == CrossbowBlock.Index ||
 					   contents == RepeatCrossbowBlock.Index ||
 					   contents == FlameThrowerBlock.Index ||
+					   contents == DoubleMusketBlock.Index ||
 					   IsThrowableBlock(activeValue);
 			}
 		}
@@ -351,6 +355,7 @@ namespace Game
 				case 2: targetIndex = CrossbowBlock.Index; break;
 				case 3: targetIndex = RepeatCrossbowBlock.Index; break;
 				case 4: targetIndex = FlameThrowerBlock.Index; break;
+				case 5: targetIndex = DoubleMusketBlock.Index; break;
 				default: return false;
 			}
 
@@ -427,7 +432,8 @@ namespace Game
 									contents == BowBlock.Index ||
 									contents == CrossbowBlock.Index ||
 									contents == RepeatCrossbowBlock.Index ||
-									contents == FlameThrowerBlock.Index;
+									contents == FlameThrowerBlock.Index ||
+									contents == DoubleMusketBlock.Index;
 					if (!isRanged) continue;
 
 					float power = 0f;
@@ -436,6 +442,7 @@ namespace Game
 					else if (contents == CrossbowBlock.Index) power = 90f;
 					else if (contents == RepeatCrossbowBlock.Index) power = 95f;
 					else if (contents == FlameThrowerBlock.Index) power = 70f;
+					else if (contents == DoubleMusketBlock.Index) power = 110f;  // más potente que el mosquete simple
 					if (power > bestPower)
 					{
 						bestPower = power;
@@ -479,6 +486,72 @@ namespace Game
 			return cosAngle >= cosHalfAngle;
 		}
 
+		private bool IsDoubleMusketLoaded()
+		{
+			if (!HasWeapon(5, out int slotIndex, out int musketValue))
+				return false;
+
+			int data = Terrain.ExtractData(musketValue);
+			return DoubleMusketBlock.IsLoaded(data) && DoubleMusketBlock.GetShotsRemaining(data) > 0;
+		}
+
+		private void EnsureDoubleMusketLoaded(int slotIndex, int currentValue)
+		{
+			int data = Terrain.ExtractData(currentValue);
+			if (!DoubleMusketBlock.IsLoaded(data) || DoubleMusketBlock.GetShotsRemaining(data) == 0)
+			{
+				// Cargar con balas antitanque (munición principal del DoubleMusket)
+				data = DoubleMusketBlock.SetLoaded(data, true);
+				data = DoubleMusketBlock.SetShotsRemaining(data, 2);
+				data = DoubleMusketBlock.SetAntiTanksBullet(data, true);
+				// No se asigna BulletType (o se puede dejar en null)
+				int newValue = Terrain.MakeBlockValue(DoubleMusketBlock.Index, 0, data);
+				m_componentMiner.Inventory.RemoveSlotItems(slotIndex, 1);
+				m_componentMiner.Inventory.AddSlotItems(slotIndex, newValue, 1);
+			}
+		}
+
+		private void EnsureDoubleMusketActive()
+		{
+			if (HasWeapon(5, out int slotIndex, out _))
+			{
+				if (m_componentMiner.Inventory.ActiveSlotIndex != slotIndex)
+					m_componentMiner.Inventory.ActiveSlotIndex = slotIndex;
+			}
+		}
+
+		private void StartDoubleMusketAim()
+		{
+			EnsureDoubleMusketActive();
+			if (!HasWeapon(5, out int slotIndex, out int musketValue))
+				return;
+			EnsureDoubleMusketLoaded(slotIndex, musketValue);
+			m_aimingStarted = true;
+			m_isAimingRanged = true;
+			m_rangedAimStartTime = m_subsystemTime.GameTime;
+			m_triedToLoad = false;
+		}
+
+		private void CompleteDoubleMusketAim()
+		{
+			EnsureDoubleMusketActive();
+			if (!HasWeapon(5, out int slotIndex, out int musketValue))
+			{
+				m_isAimingRanged = false;
+				m_aimingStarted = false;
+				return;
+			}
+			EnsureDoubleMusketLoaded(slotIndex, musketValue);
+			Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
+			Vector3 targetCenter = m_target.ComponentCreatureModel.EyePosition;
+			Vector3 direction = Vector3.Normalize(targetCenter - eyePos);
+			Ray3 ray = new Ray3(eyePos, direction);
+			m_componentMiner.Aim(ray, AimState.Completed);
+			m_nextRangedAttackTime = m_subsystemTime.GameTime + DoubleMusketCooldown;
+			m_isAimingRanged = false;
+			m_aimingStarted = false;
+			m_triedToLoad = false;
+		}
 		private void ManageWeaponSwitching(bool shouldUseMelee)
 		{
 			if (m_componentMiner?.Inventory == null) return;
@@ -1539,6 +1612,15 @@ namespace Game
 						m_triedToLoad = false;
 					};
 					break;
+				case 5:
+					aimTime = DoubleMusketAimTime;
+					cooldown = DoubleMusketCooldown;
+					isLoaded = IsDoubleMusketLoaded;
+					ensureLoaded = EnsureDoubleMusketLoaded;
+					ensureActive = EnsureDoubleMusketActive;
+					startAim = StartDoubleMusketAim;
+					completeAim = CompleteDoubleMusketAim;
+					break;
 				default:
 					return;
 			}
@@ -1723,6 +1805,12 @@ namespace Game
 				weaponType = 4;
 				slot = flameThrowerSlot;
 				value = flameThrowerValue;
+			}
+			else if (HasWeapon(5, out int doubleMusketSlot, out int doubleMusketValue))
+			{
+				weaponType = 5;
+				slot = doubleMusketSlot;
+				value = doubleMusketValue;
 			}
 
 			if (weaponType == -1)
