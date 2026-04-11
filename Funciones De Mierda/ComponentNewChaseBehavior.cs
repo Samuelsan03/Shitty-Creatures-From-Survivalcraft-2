@@ -56,16 +56,11 @@ namespace Game
 		public float CrossbowCooldown = 0.1f;
 		public float RepeatCrossbowAimTime = 1.5f;
 		public float RepeatCrossbowCooldown = 0.1f;
-		public float FlameThrowerAimTime = 1.5f;      // Nuevo
-		public float FlameThrowerCooldown = 0.1f;    // Nuevo
+		public float FlameThrowerAimTime = 1.5f;
+		public float FlameThrowerCooldown = 0.1f;
 
-		// NUEVO PARÁMETRO: destruye bloques cuando está atascado
 		public bool DestroyBlocksWhenStuck = false;
-
-		// NUEVO PARÁMETRO: invoca un rayo al golpear
 		public bool InvokeLightningOnHit = false;
-
-		// NUEVO PARÁMETRO: empuja al objetivo al golpear en cuerpo a cuerpo
 		public bool PushWhileAttacking = false;
 
 		private Vector3 m_lastStuckCheckPosition;
@@ -131,7 +126,6 @@ namespace Game
 		// Conjunto estático de bloques lanzables (índices)
 		private static HashSet<int> s_throwableBlockIndices;
 
-		// NUEVO: tiempo de inicio del atasco para destruir bloques
 		private double m_stuckStartTime;
 
 		// ===== PROPIEDADES AUXILIARES =====
@@ -155,29 +149,26 @@ namespace Game
 			}
 		}
 
-		// ===== PROPIEDADES PARA DETECCIÓN DE TIPO DE ARMA =====
 		private bool IsCurrentWeaponMelee
 		{
 			get
 			{
 				int activeValue = m_componentMiner?.ActiveBlockValue ?? 0;
-				if (activeValue == 0) return true; // Manos desnudas es cuerpo a cuerpo
+				if (activeValue == 0) return true;
 
 				int contents = Terrain.ExtractContents(activeValue);
-				// Armas a distancia conocidas (incluyendo lanzallamas)
 				if (contents == MusketBlock.Index ||
 					contents == BowBlock.Index ||
 					contents == CrossbowBlock.Index ||
 					contents == RepeatCrossbowBlock.Index ||
-					contents == FlameThrowerBlock.Index)   // <-- Nuevo
+					contents == FlameThrowerBlock.Index)
 				{
 					return false;
 				}
-				// Objetos lanzables también se consideran a distancia
 				if (IsThrowableBlock(activeValue))
 					return false;
 
-				return true; // Cualquier otra cosa se considera cuerpo a cuerpo
+				return true;
 			}
 		}
 
@@ -193,7 +184,7 @@ namespace Game
 					   contents == BowBlock.Index ||
 					   contents == CrossbowBlock.Index ||
 					   contents == RepeatCrossbowBlock.Index ||
-					   contents == FlameThrowerBlock.Index ||   // <-- Nuevo
+					   contents == FlameThrowerBlock.Index ||
 					   IsThrowableBlock(activeValue);
 			}
 		}
@@ -202,7 +193,6 @@ namespace Game
 		static ComponentNewChaseBehavior()
 		{
 			s_throwableBlockIndices = new HashSet<int>();
-			// Registrar los tipos de bloques lanzables usando reflexión para obtener sus índices
 			RegisterThrowableBlock(typeof(StoneChunkBlock));
 			RegisterThrowableBlock(typeof(SulphurChunkBlock));
 			RegisterThrowableBlock(typeof(CoalChunkBlock));
@@ -313,7 +303,6 @@ namespace Game
 			UnsubscribeFromProjectileEvents();
 		}
 
-		// ===== EVENTO PARA ELIMINAR PICKABLES DE FLECHAS / VIROTES =====
 		private void SubscribeToProjectileEvents()
 		{
 			if (m_subsystemProjectiles == null)
@@ -347,7 +336,38 @@ namespace Game
 			}
 		}
 
-		// ===== MÉTODOS PARA SELECCIÓN Y CAMBIO DE ARMAS =====
+		// ===== MÉTODO UNIFICADO PARA DETECCIÓN DE ARMAS =====
+		private bool HasWeapon(int weaponType, out int slotIndex, out int value)
+		{
+			slotIndex = -1;
+			value = 0;
+			if (m_componentMiner?.Inventory == null) return false;
+
+			int targetIndex = -1;
+			switch (weaponType)
+			{
+				case 0: targetIndex = MusketBlock.Index; break;
+				case 1: targetIndex = BowBlock.Index; break;
+				case 2: targetIndex = CrossbowBlock.Index; break;
+				case 3: targetIndex = RepeatCrossbowBlock.Index; break;
+				case 4: targetIndex = FlameThrowerBlock.Index; break;
+				default: return false;
+			}
+
+			for (int i = 0; i < m_componentMiner.Inventory.SlotsCount; i++)
+			{
+				int slotValue = m_componentMiner.Inventory.GetSlotValue(i);
+				int slotCount = m_componentMiner.Inventory.GetSlotCount(i);
+				if (slotCount > 0 && Terrain.ExtractContents(slotValue) == targetIndex)
+				{
+					slotIndex = i;
+					value = slotValue;
+					return true;
+				}
+			}
+			return false;
+		}
+
 		private int FindBestMeleeWeapon(out int slotIndex, out int value)
 		{
 			slotIndex = -1;
@@ -366,7 +386,7 @@ namespace Game
 						contents == BowBlock.Index ||
 						contents == CrossbowBlock.Index ||
 						contents == RepeatCrossbowBlock.Index ||
-						contents == FlameThrowerBlock.Index ||   // <-- Nuevo
+						contents == FlameThrowerBlock.Index ||
 						IsThrowableBlock(slotValue))
 					{
 						continue;
@@ -407,7 +427,7 @@ namespace Game
 									contents == BowBlock.Index ||
 									contents == CrossbowBlock.Index ||
 									contents == RepeatCrossbowBlock.Index ||
-									contents == FlameThrowerBlock.Index;   // <-- Nuevo
+									contents == FlameThrowerBlock.Index;
 					if (!isRanged) continue;
 
 					float power = 0f;
@@ -415,7 +435,7 @@ namespace Game
 					else if (contents == BowBlock.Index) power = 80f;
 					else if (contents == CrossbowBlock.Index) power = 90f;
 					else if (contents == RepeatCrossbowBlock.Index) power = 95f;
-					else if (contents == FlameThrowerBlock.Index) power = 70f;   // <-- Nuevo
+					else if (contents == FlameThrowerBlock.Index) power = 70f;
 					if (power > bestPower)
 					{
 						bestPower = power;
@@ -470,7 +490,7 @@ namespace Game
 			{
 				if (!IsCurrentWeaponMelee)
 				{
-					int meleeSlot = FindBestMeleeWeapon(out int meleeValue);
+					int meleeSlot = FindBestMeleeWeapon(out int meleeSlotIdx, out int meleeValue);
 					if (meleeSlot != -1)
 					{
 						CancelRangedAim();
@@ -489,7 +509,7 @@ namespace Game
 					}
 					else
 					{
-						int rangedSlot = FindBestRangedWeapon(out int rangedValue);
+						int rangedSlot = FindBestRangedWeapon(out int rangedSlotIdx, out int rangedValue);
 						if (rangedSlot != -1)
 						{
 							CancelRangedAim();
@@ -500,7 +520,6 @@ namespace Game
 			}
 		}
 
-		// Sobrecargas para compatibilidad
 		private int FindBestRangedWeapon(out int value)
 		{
 			int slot;
@@ -572,7 +591,6 @@ namespace Game
 					CancelRangedAim();
 					CancelThrowableAim();
 
-					// Solo atacar si el objetivo está delante
 					if (IsTargetInFront())
 					{
 						m_componentCreatureModel.AttackOrder = true;
@@ -587,29 +605,18 @@ namespace Game
 								m_componentMiner.Hit(hitBody, hitPoint, m_componentCreature.ComponentBody.Matrix.Forward);
 								m_componentCreature.ComponentCreatureSounds.PlayAttackSound();
 
-								// NUEVO: Empujar al objetivo con probabilidad y fuerza configurables
 								if (PushWhileAttacking && m_random.Float(0f, 1f) < 0.5f)
 								{
-									// Dirección desde el atacante hacia la víctima
 									Vector3 direction = m_target.ComponentBody.Position - m_componentCreature.ComponentBody.Position;
-									// Asegurar un componente vertical mínimo hacia arriba para que salga volando
 									direction.Y = Math.Max(direction.Y, 0.5f);
 									if (direction.LengthSquared() > 0.001f)
 										direction = Vector3.Normalize(direction);
 									else
 										direction = Vector3.UnitY;
 
-									// Guardar MaxSpeed original y aumentarlo temporalmente para que no limite el impulso
 									float originalMaxSpeed = m_target.ComponentBody.MaxSpeed;
-									m_target.ComponentBody.MaxSpeed = 1e9f; // Sin límite práctico
-
-									// Aplicar impulso combinado (horizontal y vertical)
+									m_target.ComponentBody.MaxSpeed = 1e9f;
 									m_target.ComponentBody.ApplyImpulse(direction * 55f);
-
-									// Restaurar MaxSpeed después de un breve retardo (se podría hacer con un timer, 
-									// pero para simplificar, lo restauramos inmediatamente después del impulso ya que 
-									// ApplyImpulse modifica la velocidad instantáneamente y la restricción de MaxSpeed 
-									// solo afecta asignaciones directas a Velocity, no al impulso acumulado)
 									m_target.ComponentBody.MaxSpeed = originalMaxSpeed;
 								}
 
@@ -667,7 +674,7 @@ namespace Game
 
 			return cosAngle >= cosHalfAngle;
 		}
-		// ===== MÉTODOS DE DETECCIÓN DE OBJETOS LANZABLES =====
+
 		private bool HasThrowableItem(out int slotIndex, out int value)
 		{
 			slotIndex = -1;
@@ -707,7 +714,6 @@ namespace Game
 			}
 		}
 
-		// ===== MÉTODOS DE APUNTADO Y LANZAMIENTO =====
 		private bool HasLineOfSightToTarget()
 		{
 			if (m_target == null) return false;
@@ -809,13 +815,13 @@ namespace Game
 			{
 				if (IsTargetInAttackRange(m_target?.ComponentBody))
 				{
-					int meleeSlot = FindBestMeleeWeapon(out int meleeValue);
+					int meleeSlot = FindBestMeleeWeapon(out int meleeSlotIdx, out int meleeValue);
 					if (meleeSlot != -1)
 						EquipWeapon(meleeSlot);
 				}
 				else
 				{
-					int rangedSlot = FindBestRangedWeapon(out int rangedValue);
+					int rangedSlot = FindBestRangedWeapon(out int rangedSlotIdx, out int rangedValue);
 					if (rangedSlot != -1)
 						EquipWeapon(rangedSlot);
 				}
@@ -840,13 +846,13 @@ namespace Game
 			{
 				if (IsTargetInAttackRange(m_target?.ComponentBody))
 				{
-					int meleeSlot = FindBestMeleeWeapon(out int meleeValue);
+					int meleeSlot = FindBestMeleeWeapon(out int meleeSlotIdx, out int meleeValue);
 					if (meleeSlot != -1)
 						EquipWeapon(meleeSlot);
 				}
 				else
 				{
-					int rangedSlot = FindBestRangedWeapon(out int rangedValue);
+					int rangedSlot = FindBestRangedWeapon(out int rangedSlotIdx, out int rangedValue);
 					if (rangedSlot != -1)
 						EquipWeapon(rangedSlot);
 				}
@@ -889,13 +895,13 @@ namespace Game
 				{
 					if (IsTargetInAttackRange(m_target?.ComponentBody))
 					{
-						int meleeSlot = FindBestMeleeWeapon(out int meleeValue);
+						int meleeSlot = FindBestMeleeWeapon(out int meleeSlotIdx, out int meleeValue);
 						if (meleeSlot != -1)
 							EquipWeapon(meleeSlot);
 					}
 					else
 					{
-						int rangedSlot = FindBestRangedWeapon(out int rangedValue);
+						int rangedSlot = FindBestRangedWeapon(out int rangedSlotIdx, out int rangedValue);
 						if (rangedSlot != -1)
 							EquipWeapon(rangedSlot);
 					}
@@ -905,7 +911,6 @@ namespace Game
 
 			if (!HasLineOfSightToTarget())
 			{
-				// NO se cancela el apuntado, solo se mueve lateralmente sin perder el progreso
 				if (!m_componentPathfinding.IsStuck)
 				{
 					if (m_subsystemTime.GameTime - m_lastLateralMoveTime > 1.0)
@@ -990,106 +995,10 @@ namespace Game
 			}
 		}
 
-		// ===== MÉTODOS DE DETECCIÓN DE ARMAS A DISTANCIA =====
-		private bool HasMusket(out int slotIndex, out int value)
-		{
-			slotIndex = -1;
-			value = 0;
-			if (m_componentMiner?.Inventory == null) return false;
-
-			for (int i = 0; i < m_componentMiner.Inventory.SlotsCount; i++)
-			{
-				int slotValue = m_componentMiner.Inventory.GetSlotValue(i);
-				if (Terrain.ExtractContents(slotValue) == MusketBlock.Index)
-				{
-					slotIndex = i;
-					value = slotValue;
-					return true;
-				}
-			}
-			return false;
-		}
-
-		private bool HasBow(out int slotIndex, out int value)
-		{
-			slotIndex = -1;
-			value = 0;
-			if (m_componentMiner?.Inventory == null) return false;
-
-			for (int i = 0; i < m_componentMiner.Inventory.SlotsCount; i++)
-			{
-				int slotValue = m_componentMiner.Inventory.GetSlotValue(i);
-				if (Terrain.ExtractContents(slotValue) == BowBlock.Index)
-				{
-					slotIndex = i;
-					value = slotValue;
-					return true;
-				}
-			}
-			return false;
-		}
-
-		private bool HasCrossbow(out int slotIndex, out int value)
-		{
-			slotIndex = -1;
-			value = 0;
-			if (m_componentMiner?.Inventory == null) return false;
-
-			for (int i = 0; i < m_componentMiner.Inventory.SlotsCount; i++)
-			{
-				int slotValue = m_componentMiner.Inventory.GetSlotValue(i);
-				if (Terrain.ExtractContents(slotValue) == CrossbowBlock.Index)
-				{
-					slotIndex = i;
-					value = slotValue;
-					return true;
-				}
-			}
-			return false;
-		}
-
-		private bool HasRepeatCrossbow(out int slotIndex, out int value)
-		{
-			slotIndex = -1;
-			value = 0;
-			if (m_componentMiner?.Inventory == null) return false;
-
-			for (int i = 0; i < m_componentMiner.Inventory.SlotsCount; i++)
-			{
-				int slotValue = m_componentMiner.Inventory.GetSlotValue(i);
-				if (Terrain.ExtractContents(slotValue) == RepeatCrossbowBlock.Index)
-				{
-					slotIndex = i;
-					value = slotValue;
-					return true;
-				}
-			}
-			return false;
-		}
-
-		private bool HasFlameThrower(out int slotIndex, out int value)   // <-- Nuevo
-		{
-			slotIndex = -1;
-			value = 0;
-			if (m_componentMiner?.Inventory == null) return false;
-
-			for (int i = 0; i < m_componentMiner.Inventory.SlotsCount; i++)
-			{
-				int slotValue = m_componentMiner.Inventory.GetSlotValue(i);
-				if (Terrain.ExtractContents(slotValue) == FlameThrowerBlock.Index)
-				{
-					slotIndex = i;
-					value = slotValue;
-					return true;
-				}
-			}
-			return false;
-		}
-
 		// ===== MÉTODOS DE CARGA DE ARMAS A DISTANCIA =====
 		private bool IsMusketLoaded()
 		{
-			if (!HasMusket(out int slotIndex, out int musketValue))
+			if (!HasWeapon(0, out int slotIndex, out int musketValue))
 				return false;
 
 			int data = Terrain.ExtractData(musketValue);
@@ -1098,7 +1007,7 @@ namespace Game
 
 		private bool IsBowLoaded()
 		{
-			if (!HasBow(out int slotIndex, out int bowValue))
+			if (!HasWeapon(1, out int slotIndex, out int bowValue))
 				return false;
 
 			int data = Terrain.ExtractData(bowValue);
@@ -1107,7 +1016,7 @@ namespace Game
 
 		private bool IsCrossbowLoaded()
 		{
-			if (!HasCrossbow(out int slotIndex, out int crossbowValue))
+			if (!HasWeapon(2, out int slotIndex, out int crossbowValue))
 				return false;
 
 			int data = Terrain.ExtractData(crossbowValue);
@@ -1116,7 +1025,7 @@ namespace Game
 
 		private bool IsRepeatCrossbowLoaded()
 		{
-			if (!HasRepeatCrossbow(out int slotIndex, out int crossbowValue))
+			if (!HasWeapon(3, out int slotIndex, out int crossbowValue))
 				return false;
 
 			int data = Terrain.ExtractData(crossbowValue);
@@ -1125,9 +1034,9 @@ namespace Game
 			return draw == 15 && arrowType != null;
 		}
 
-		private bool IsFlameThrowerLoaded()   // <-- Nuevo
+		private bool IsFlameThrowerLoaded()
 		{
-			if (!HasFlameThrower(out int slotIndex, out int flameThrowerValue))
+			if (!HasWeapon(4, out int slotIndex, out int flameThrowerValue))
 				return false;
 
 			int data = Terrain.ExtractData(flameThrowerValue);
@@ -1251,7 +1160,7 @@ namespace Game
 			m_componentMiner.Inventory.AddSlotItems(slotIndex, newValue, 1);
 		}
 
-		private void EnsureFlameThrowerLoaded(int slotIndex, int currentValue)   // <-- Nuevo
+		private void EnsureFlameThrowerLoaded(int slotIndex, int currentValue)
 		{
 			int data = Terrain.ExtractData(currentValue);
 			FlameThrowerBlock.LoadState loadState = FlameThrowerBlock.GetLoadState(data);
@@ -1292,7 +1201,7 @@ namespace Game
 
 		private void EnsureMusketActive()
 		{
-			if (HasMusket(out int slotIndex, out _))
+			if (HasWeapon(0, out int slotIndex, out _))
 			{
 				if (m_componentMiner.Inventory.ActiveSlotIndex != slotIndex)
 					m_componentMiner.Inventory.ActiveSlotIndex = slotIndex;
@@ -1301,7 +1210,7 @@ namespace Game
 
 		private void EnsureBowActive()
 		{
-			if (HasBow(out int slotIndex, out _))
+			if (HasWeapon(1, out int slotIndex, out _))
 			{
 				if (m_componentMiner.Inventory.ActiveSlotIndex != slotIndex)
 					m_componentMiner.Inventory.ActiveSlotIndex = slotIndex;
@@ -1310,7 +1219,7 @@ namespace Game
 
 		private void EnsureCrossbowActive()
 		{
-			if (HasCrossbow(out int slotIndex, out _))
+			if (HasWeapon(2, out int slotIndex, out _))
 			{
 				if (m_componentMiner.Inventory.ActiveSlotIndex != slotIndex)
 					m_componentMiner.Inventory.ActiveSlotIndex = slotIndex;
@@ -1319,27 +1228,26 @@ namespace Game
 
 		private void EnsureRepeatCrossbowActive()
 		{
-			if (HasRepeatCrossbow(out int slotIndex, out _))
+			if (HasWeapon(3, out int slotIndex, out _))
 			{
 				if (m_componentMiner.Inventory.ActiveSlotIndex != slotIndex)
 					m_componentMiner.Inventory.ActiveSlotIndex = slotIndex;
 			}
 		}
 
-		private void EnsureFlameThrowerActive()   // <-- Nuevo
+		private void EnsureFlameThrowerActive()
 		{
-			if (HasFlameThrower(out int slotIndex, out _))
+			if (HasWeapon(4, out int slotIndex, out _))
 			{
 				if (m_componentMiner.Inventory.ActiveSlotIndex != slotIndex)
 					m_componentMiner.Inventory.ActiveSlotIndex = slotIndex;
 			}
 		}
 
-		// ===== MÉTODOS DE APUNTADO DE ARMAS A DISTANCIA =====
 		private void StartMusketAim()
 		{
 			EnsureMusketActive();
-			if (!HasMusket(out int slotIndex, out int musketValue))
+			if (!HasWeapon(0, out int slotIndex, out int musketValue))
 				return;
 			EnsureMusketLoaded(slotIndex, musketValue);
 			m_aimingStarted = true;
@@ -1351,7 +1259,7 @@ namespace Game
 		private void StartBowAim()
 		{
 			EnsureBowActive();
-			if (!HasBow(out int slotIndex, out int bowValue))
+			if (!HasWeapon(1, out int slotIndex, out int bowValue))
 				return;
 			EnsureBowLoaded(slotIndex, bowValue);
 			m_aimingStarted = true;
@@ -1363,7 +1271,7 @@ namespace Game
 		private void StartCrossbowAim()
 		{
 			EnsureCrossbowActive();
-			if (!HasCrossbow(out int slotIndex, out int crossbowValue))
+			if (!HasWeapon(2, out int slotIndex, out int crossbowValue))
 				return;
 			EnsureCrossbowLoaded(slotIndex, crossbowValue);
 			m_aimingStarted = true;
@@ -1375,7 +1283,7 @@ namespace Game
 		private void StartRepeatCrossbowAim()
 		{
 			EnsureRepeatCrossbowActive();
-			if (!HasRepeatCrossbow(out int slotIndex, out int crossbowValue))
+			if (!HasWeapon(3, out int slotIndex, out int crossbowValue))
 				return;
 			EnsureRepeatCrossbowLoaded(slotIndex, crossbowValue);
 			m_aimingStarted = true;
@@ -1384,10 +1292,10 @@ namespace Game
 			m_triedToLoad = false;
 		}
 
-		private void StartFlameThrowerAim()   // <-- Nuevo
+		private void StartFlameThrowerAim()
 		{
 			EnsureFlameThrowerActive();
-			if (!HasFlameThrower(out int slotIndex, out int flameThrowerValue))
+			if (!HasWeapon(4, out int slotIndex, out int flameThrowerValue))
 				return;
 			EnsureFlameThrowerLoaded(slotIndex, flameThrowerValue);
 			m_aimingStarted = true;
@@ -1399,7 +1307,7 @@ namespace Game
 		private void CompleteMusketAim()
 		{
 			EnsureMusketActive();
-			if (!HasMusket(out int slotIndex, out int musketValue))
+			if (!HasWeapon(0, out int slotIndex, out int musketValue))
 			{
 				m_isAimingRanged = false;
 				m_aimingStarted = false;
@@ -1420,7 +1328,7 @@ namespace Game
 		private void CompleteBowAim()
 		{
 			EnsureBowActive();
-			if (!HasBow(out int slotIndex, out int bowValue))
+			if (!HasWeapon(1, out int slotIndex, out int bowValue))
 			{
 				m_isAimingRanged = false;
 				m_aimingStarted = false;
@@ -1441,7 +1349,7 @@ namespace Game
 		private void CompleteCrossbowAim()
 		{
 			EnsureCrossbowActive();
-			if (!HasCrossbow(out int slotIndex, out int crossbowValue))
+			if (!HasWeapon(2, out int slotIndex, out int crossbowValue))
 			{
 				m_isAimingRanged = false;
 				m_aimingStarted = false;
@@ -1462,7 +1370,7 @@ namespace Game
 		private void CompleteRepeatCrossbowAim()
 		{
 			EnsureRepeatCrossbowActive();
-			if (!HasRepeatCrossbow(out int slotIndex, out int crossbowValue))
+			if (!HasWeapon(3, out int slotIndex, out int crossbowValue))
 			{
 				m_isAimingRanged = false;
 				m_aimingStarted = false;
@@ -1491,10 +1399,10 @@ namespace Game
 			m_triedToLoad = false;
 		}
 
-		private void CompleteFlameThrowerAim()   // <-- Nuevo
+		private void CompleteFlameThrowerAim()
 		{
 			EnsureFlameThrowerActive();
-			if (!HasFlameThrower(out int slotIndex, out int flameThrowerValue))
+			if (!HasWeapon(4, out int slotIndex, out int flameThrowerValue))
 			{
 				m_isAimingRanged = false;
 				m_aimingStarted = false;
@@ -1519,6 +1427,200 @@ namespace Game
 			m_isAimingRanged = false;
 			m_aimingStarted = false;
 			m_triedToLoad = false;
+		}
+
+		private void HandleRangedWeapon(int weaponType, int slot, int currentValue)
+		{
+			if (!m_isAimingRanged && m_subsystemTime.GameTime < m_nextRangedAttackTime)
+				return;
+
+			float aimTime;
+			float cooldown;
+			System.Func<bool> isLoaded;
+			System.Action<int, int> ensureLoaded;
+			System.Action ensureActive;
+			System.Action startAim;
+			System.Action completeAim;
+			bool isRepeatCrossbow = false;
+
+			switch (weaponType)
+			{
+				case 0:
+					aimTime = MusketAimTime;
+					cooldown = MusketCooldown;
+					isLoaded = IsMusketLoaded;
+					ensureLoaded = EnsureMusketLoaded;
+					ensureActive = EnsureMusketActive;
+					startAim = StartMusketAim;
+					completeAim = CompleteMusketAim;
+					break;
+				case 1:
+					aimTime = BowAimTime;
+					cooldown = BowCooldown;
+					isLoaded = IsBowLoaded;
+					ensureLoaded = EnsureBowLoaded;
+					ensureActive = EnsureBowActive;
+					startAim = StartBowAim;
+					completeAim = CompleteBowAim;
+					break;
+				case 2:
+					aimTime = CrossbowAimTime;
+					cooldown = CrossbowCooldown;
+					isLoaded = IsCrossbowLoaded;
+					ensureLoaded = EnsureCrossbowLoaded;
+					ensureActive = EnsureCrossbowActive;
+					startAim = StartCrossbowAim;
+					completeAim = CompleteCrossbowAim;
+					break;
+				case 3:
+					aimTime = RepeatCrossbowAimTime;
+					cooldown = RepeatCrossbowCooldown;
+					isLoaded = () =>
+					{
+						if (!HasWeapon(3, out int s, out int v)) return false;
+						int data = Terrain.ExtractData(v);
+						return RepeatCrossbowBlock.GetDraw(data) == 15 && RepeatCrossbowBlock.GetArrowType(data) != null;
+					};
+					ensureLoaded = EnsureRepeatCrossbowLoaded;
+					ensureActive = EnsureRepeatCrossbowActive;
+					startAim = StartRepeatCrossbowAim;
+					completeAim = () =>
+					{
+						EnsureRepeatCrossbowActive();
+						if (!HasWeapon(3, out int s, out int v))
+						{
+							m_isAimingRanged = false;
+							m_aimingStarted = false;
+							return;
+						}
+						int data = Terrain.ExtractData(v);
+						int draw = RepeatCrossbowBlock.GetDraw(data);
+						RepeatArrowBlock.ArrowType? arrowType = RepeatCrossbowBlock.GetArrowType(data);
+						if (draw != 15 || arrowType == null)
+						{
+							CancelRangedAim();
+							return;
+						}
+						Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
+						Vector3 targetCenter = m_target.ComponentCreatureModel.EyePosition;
+						Vector3 direction = Vector3.Normalize(targetCenter - eyePos);
+						Ray3 ray = new Ray3(eyePos, direction);
+						m_componentMiner.Aim(ray, AimState.Completed);
+						m_nextRangedAttackTime = m_subsystemTime.GameTime + RepeatCrossbowCooldown;
+						int newData = RepeatCrossbowBlock.SetDraw(RepeatCrossbowBlock.SetArrowType(data, null), 0);
+						int newValue = Terrain.MakeBlockValue(RepeatCrossbowBlock.Index, 0, newData);
+						m_componentMiner.Inventory.RemoveSlotItems(s, 1);
+						m_componentMiner.Inventory.AddSlotItems(s, newValue, 1);
+						m_isAimingRanged = false;
+						m_aimingStarted = false;
+						m_triedToLoad = false;
+					};
+					isRepeatCrossbow = true;
+					break;
+				case 4:
+					aimTime = FlameThrowerAimTime;
+					cooldown = FlameThrowerCooldown;
+					isLoaded = IsFlameThrowerLoaded;
+					ensureLoaded = EnsureFlameThrowerLoaded;
+					ensureActive = EnsureFlameThrowerActive;
+					startAim = StartFlameThrowerAim;
+					completeAim = () =>
+					{
+						EnsureFlameThrowerActive();
+						if (!HasWeapon(4, out int s, out int v))
+						{
+							m_isAimingRanged = false;
+							m_aimingStarted = false;
+							return;
+						}
+						m_nextRangedAttackTime = m_subsystemTime.GameTime + FlameThrowerCooldown;
+						m_isAimingRanged = false;
+						m_aimingStarted = false;
+						m_triedToLoad = false;
+					};
+					break;
+				default:
+					return;
+			}
+
+			if (!m_isAimingRanged)
+			{
+				if (!isLoaded())
+				{
+					if (!m_triedToLoad)
+					{
+						ensureLoaded(slot, currentValue);
+						m_triedToLoad = true;
+					}
+					return;
+				}
+
+				startAim();
+				Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
+				Vector3 targetCenter = m_target.ComponentCreatureModel.EyePosition;
+				Vector3 direction = Vector3.Normalize(targetCenter - eyePos);
+				Ray3 ray = new Ray3(eyePos, direction);
+				m_componentMiner.Aim(ray, AimState.InProgress);
+			}
+			else
+			{
+				if (!IsTargetInViewCone())
+				{
+					CancelRangedAim();
+					return;
+				}
+
+				Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
+				Vector3 targetCenter = m_target.ComponentCreatureModel.EyePosition;
+				Vector3 direction = Vector3.Normalize(targetCenter - eyePos);
+				Ray3 ray = new Ray3(eyePos, direction);
+				m_componentMiner.Aim(ray, AimState.InProgress);
+
+				double aimTimeElapsed = m_subsystemTime.GameTime - m_rangedAimStartTime;
+				if (aimTimeElapsed >= aimTime)
+				{
+					if (weaponType == 0 && m_random.Float(0f, 1f) < 0.05f)
+					{
+						int musketSlot = slot;
+						int data = Terrain.ExtractData(currentValue);
+						int newData = MusketBlock.SetLoadState(data, MusketBlock.LoadState.Loaded);
+						newData = MusketBlock.SetBulletType(newData, BulletBlock.BulletType.MusketBall);
+						int musketBallValue = Terrain.MakeBlockValue(MusketBlock.Index, 0, newData);
+						newData = MusketBlock.SetBulletType(data, BulletBlock.BulletType.Buckshot);
+						int buckshotValue = Terrain.MakeBlockValue(MusketBlock.Index, 0, newData);
+						newData = MusketBlock.SetBulletType(data, BulletBlock.BulletType.BuckshotBall);
+						int buckshotBallValue = Terrain.MakeBlockValue(MusketBlock.Index, 0, newData);
+
+						m_componentMiner.Inventory.RemoveSlotItems(musketSlot, 1);
+						m_componentMiner.Inventory.AddSlotItems(musketSlot, musketBallValue, 1);
+						m_componentMiner.Aim(ray, AimState.Completed);
+						m_componentMiner.Inventory.RemoveSlotItems(musketSlot, 1);
+						m_componentMiner.Inventory.AddSlotItems(musketSlot, buckshotValue, 1);
+						m_componentMiner.Aim(ray, AimState.Completed);
+						m_componentMiner.Inventory.RemoveSlotItems(musketSlot, 1);
+						m_componentMiner.Inventory.AddSlotItems(musketSlot, buckshotBallValue, 1);
+						m_componentMiner.Aim(ray, AimState.Completed);
+						int emptyValue = Terrain.MakeBlockValue(MusketBlock.Index, 0, MusketBlock.SetLoadState(data, MusketBlock.LoadState.Empty));
+						m_componentMiner.Inventory.AddSlotItems(musketSlot, emptyValue, 1);
+					}
+					else
+					{
+						completeAim();
+					}
+
+					m_nextRangedAttackTime = m_subsystemTime.GameTime + cooldown;
+					if (!isRepeatCrossbow)
+					{
+						m_isAimingRanged = false;
+						m_aimingStarted = false;
+						m_triedToLoad = false;
+					}
+				}
+				else if (!isLoaded())
+				{
+					CancelRangedAim();
+				}
+			}
 		}
 
 		private void UpdateRangedAttack(float dt)
@@ -1549,16 +1651,13 @@ namespace Game
 				{
 					if (m_componentPathfinding.m_componentPilot.Destination == null)
 					{
-						// Calculate direction to target (horizontal)
 						Vector3 toTarget = m_target.ComponentBody.Position - m_componentCreature.ComponentBody.Position;
 						toTarget.Y = 0;
 						if (toTarget.LengthSquared() > 0.1f)
 						{
-							toTarget = Vector3.Normalize(toTarget); // Cambio aquí
+							toTarget = Vector3.Normalize(toTarget);
 							Vector3 perpendicular = Vector3.Cross(toTarget, Vector3.UnitY);
-							// Elegir dirección aleatoria (izquierda o derecha)
 							float direction = m_random.Float(0f, 1f) > 0.5f ? 1f : -1f;
-							// Moverse 5 metros hacia un lado
 							Vector3 lateralMove = m_componentCreature.ComponentBody.Position + direction * perpendicular * 5f;
 							m_componentPathfinding.SetDestination(lateralMove, 1f, 1.5f, 100, true, false, true, null);
 						}
@@ -1591,273 +1690,48 @@ namespace Game
 				return;
 			}
 
-			bool hasMusket = HasMusket(out int musketSlot, out int musketValue);
-			bool hasBow = HasBow(out int bowSlot, out int bowValue);
-			bool hasCrossbow = HasCrossbow(out int crossbowSlot, out int crossbowValue);
-			bool hasRepeatCrossbow = HasRepeatCrossbow(out int repeatCrossbowSlot, out int repeatCrossbowValue);
-			bool hasFlameThrower = HasFlameThrower(out int flameThrowerSlot, out int flameThrowerValue);   // <-- Nuevo
+			int weaponType = -1;
+			int slot = -1;
+			int value = 0;
 
-			bool useMusket = hasMusket;
-			bool useBow = !useMusket && hasBow;
-			bool useCrossbow = !useMusket && !useBow && hasCrossbow;
-			bool useRepeatCrossbow = !useMusket && !useBow && !useCrossbow && hasRepeatCrossbow;
-			bool useFlameThrower = !useMusket && !useBow && !useCrossbow && !useRepeatCrossbow && hasFlameThrower;   // <-- Nuevo
+			if (HasWeapon(0, out int musketSlot, out int musketValue))
+			{
+				weaponType = 0;
+				slot = musketSlot;
+				value = musketValue;
+			}
+			else if (HasWeapon(1, out int bowSlot, out int bowValue))
+			{
+				weaponType = 1;
+				slot = bowSlot;
+				value = bowValue;
+			}
+			else if (HasWeapon(2, out int crossbowSlot, out int crossbowValue))
+			{
+				weaponType = 2;
+				slot = crossbowSlot;
+				value = crossbowValue;
+			}
+			else if (HasWeapon(3, out int repeatCrossbowSlot, out int repeatCrossbowValue))
+			{
+				weaponType = 3;
+				slot = repeatCrossbowSlot;
+				value = repeatCrossbowValue;
+			}
+			else if (HasWeapon(4, out int flameThrowerSlot, out int flameThrowerValue))
+			{
+				weaponType = 4;
+				slot = flameThrowerSlot;
+				value = flameThrowerValue;
+			}
 
-			if (!useMusket && !useBow && !useCrossbow && !useRepeatCrossbow && !useFlameThrower)
+			if (weaponType == -1)
 			{
 				CancelRangedAim();
 				return;
 			}
 
-			// ===== Mosquete =====
-			if (useMusket)
-			{
-				if (!m_isAimingRanged)
-				{
-					if (m_subsystemTime.GameTime < m_nextRangedAttackTime) return;
-					if (!IsMusketLoaded())
-					{
-						if (!m_triedToLoad)
-						{
-							EnsureMusketLoaded(musketSlot, musketValue);
-							m_triedToLoad = true;
-						}
-						return;
-					}
-					StartMusketAim();
-					Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
-					Vector3 targetCenter = m_target.ComponentCreatureModel.EyePosition;
-					Vector3 direction = Vector3.Normalize(targetCenter - eyePos);
-					Ray3 ray = new Ray3(eyePos, direction);
-					m_componentMiner.Aim(ray, AimState.InProgress);
-				}
-				else
-				{
-					if (!IsTargetInViewCone())
-					{
-						CancelRangedAim();
-						return;
-					}
-					Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
-					Vector3 targetCenter = m_target.ComponentCreatureModel.EyePosition;
-					Vector3 direction = Vector3.Normalize(targetCenter - eyePos);
-					Ray3 ray = new Ray3(eyePos, direction);
-					m_componentMiner.Aim(ray, AimState.InProgress);
-					double aimTimeElapsed = m_subsystemTime.GameTime - m_rangedAimStartTime;
-					if (aimTimeElapsed >= MusketAimTime)
-					{
-						bool tripleShot = m_random.Float(0f, 1f) < 0.05f;
-						if (tripleShot)
-						{
-							int currentValue = m_componentMiner.Inventory.GetSlotValue(musketSlot);
-							int currentData = Terrain.ExtractData(currentValue);
-							int newData = MusketBlock.SetLoadState(currentData, MusketBlock.LoadState.Loaded);
-							newData = MusketBlock.SetBulletType(newData, BulletBlock.BulletType.MusketBall);
-							int musketBallValue = Terrain.MakeBlockValue(MusketBlock.Index, 0, newData);
-							newData = MusketBlock.SetBulletType(currentData, BulletBlock.BulletType.Buckshot);
-							int buckshotValue = Terrain.MakeBlockValue(MusketBlock.Index, 0, newData);
-							newData = MusketBlock.SetBulletType(currentData, BulletBlock.BulletType.BuckshotBall);
-							int buckshotBallValue = Terrain.MakeBlockValue(MusketBlock.Index, 0, newData);
-							m_componentMiner.Inventory.RemoveSlotItems(musketSlot, 1);
-							m_componentMiner.Inventory.AddSlotItems(musketSlot, musketBallValue, 1);
-							m_componentMiner.Aim(ray, AimState.Completed);
-							m_componentMiner.Inventory.RemoveSlotItems(musketSlot, 1);
-							m_componentMiner.Inventory.AddSlotItems(musketSlot, buckshotValue, 1);
-							m_componentMiner.Aim(ray, AimState.Completed);
-							m_componentMiner.Inventory.RemoveSlotItems(musketSlot, 1);
-							m_componentMiner.Inventory.AddSlotItems(musketSlot, buckshotBallValue, 1);
-							m_componentMiner.Aim(ray, AimState.Completed);
-							m_componentMiner.Inventory.RemoveSlotItems(musketSlot, 1);
-							int emptyValue = Terrain.MakeBlockValue(MusketBlock.Index, 0, MusketBlock.SetLoadState(currentData, MusketBlock.LoadState.Empty));
-							m_componentMiner.Inventory.AddSlotItems(musketSlot, emptyValue, 1);
-						}
-						else
-						{
-							m_componentMiner.Aim(ray, AimState.Completed);
-						}
-						m_nextRangedAttackTime = m_subsystemTime.GameTime + MusketCooldown;
-						m_isAimingRanged = false;
-						m_aimingStarted = false;
-						m_triedToLoad = false;
-					}
-					else if (!IsMusketLoaded())
-					{
-						CancelRangedAim();
-					}
-				}
-			}
-			// ===== Arco =====
-			else if (useBow)
-			{
-				if (!m_isAimingRanged)
-				{
-					if (m_subsystemTime.GameTime < m_nextRangedAttackTime) return;
-					if (!IsBowLoaded())
-					{
-						if (!m_triedToLoad)
-						{
-							EnsureBowLoaded(bowSlot, bowValue);
-							m_triedToLoad = true;
-						}
-						return;
-					}
-					StartBowAim();
-					Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
-					Vector3 targetCenter = m_target.ComponentCreatureModel.EyePosition;
-					Vector3 direction = Vector3.Normalize(targetCenter - eyePos);
-					Ray3 ray = new Ray3(eyePos, direction);
-					m_componentMiner.Aim(ray, AimState.InProgress);
-				}
-				else
-				{
-					if (!IsTargetInViewCone())
-					{
-						CancelRangedAim();
-						return;
-					}
-					Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
-					Vector3 targetCenter = m_target.ComponentCreatureModel.EyePosition;
-					Vector3 direction = Vector3.Normalize(targetCenter - eyePos);
-					Ray3 ray = new Ray3(eyePos, direction);
-					m_componentMiner.Aim(ray, AimState.InProgress);
-					double aimTimeElapsed = m_subsystemTime.GameTime - m_rangedAimStartTime;
-					if (aimTimeElapsed >= BowAimTime)
-					{
-						CompleteBowAim();
-					}
-					else if (!IsBowLoaded())
-					{
-						CancelRangedAim();
-					}
-				}
-			}
-			// ===== Ballesta =====
-			else if (useCrossbow)
-			{
-				if (!m_isAimingRanged)
-				{
-					if (m_subsystemTime.GameTime < m_nextRangedAttackTime) return;
-					if (!IsCrossbowLoaded())
-					{
-						if (!m_triedToLoad)
-						{
-							EnsureCrossbowLoaded(crossbowSlot, crossbowValue);
-							m_triedToLoad = true;
-						}
-						return;
-					}
-					StartCrossbowAim();
-					Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
-					Vector3 targetCenter = m_target.ComponentCreatureModel.EyePosition;
-					Vector3 direction = Vector3.Normalize(targetCenter - eyePos);
-					Ray3 ray = new Ray3(eyePos, direction);
-					m_componentMiner.Aim(ray, AimState.InProgress);
-				}
-				else
-				{
-					if (!IsTargetInViewCone())
-					{
-						CancelRangedAim();
-						return;
-					}
-					Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
-					Vector3 targetCenter = m_target.ComponentCreatureModel.EyePosition;
-					Vector3 direction = Vector3.Normalize(targetCenter - eyePos);
-					Ray3 ray = new Ray3(eyePos, direction);
-					m_componentMiner.Aim(ray, AimState.InProgress);
-					double aimTimeElapsed = m_subsystemTime.GameTime - m_rangedAimStartTime;
-					if (aimTimeElapsed >= CrossbowAimTime)
-					{
-						CompleteCrossbowAim();
-					}
-					else if (!IsCrossbowLoaded())
-					{
-						CancelRangedAim();
-					}
-				}
-			}
-			// ===== Ballesta repetidora =====
-			else if (useRepeatCrossbow)
-			{
-				if (!m_isAimingRanged)
-				{
-					if (m_subsystemTime.GameTime < m_nextRangedAttackTime) return;
-					StartRepeatCrossbowAim();
-					Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
-					Vector3 targetCenter = m_target.ComponentCreatureModel.EyePosition;
-					Vector3 direction = Vector3.Normalize(targetCenter - eyePos);
-					Ray3 ray = new Ray3(eyePos, direction);
-					m_componentMiner.Aim(ray, AimState.InProgress);
-				}
-				else
-				{
-					if (!IsTargetInViewCone())
-					{
-						CancelRangedAim();
-						return;
-					}
-					Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
-					Vector3 targetCenter = m_target.ComponentCreatureModel.EyePosition;
-					Vector3 direction = Vector3.Normalize(targetCenter - eyePos);
-					Ray3 ray = new Ray3(eyePos, direction);
-					m_componentMiner.Aim(ray, AimState.InProgress);
-					double aimTimeElapsed = m_subsystemTime.GameTime - m_rangedAimStartTime;
-					if (aimTimeElapsed >= RepeatCrossbowAimTime)
-					{
-						CompleteRepeatCrossbowAim();
-					}
-				}
-			}
-			// ===== Lanzallamas (NUEVO) =====
-			else if (useFlameThrower)
-			{
-				if (!m_isAimingRanged)
-				{
-					if (m_subsystemTime.GameTime < m_nextRangedAttackTime) return;
-					if (!IsFlameThrowerLoaded())
-					{
-						if (!m_triedToLoad)
-						{
-							EnsureFlameThrowerLoaded(flameThrowerSlot, flameThrowerValue);
-							m_triedToLoad = true;
-						}
-						return;
-					}
-					StartFlameThrowerAim();
-					Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
-					Vector3 targetCenter = m_target.ComponentCreatureModel.EyePosition;
-					Vector3 direction = Vector3.Normalize(targetCenter - eyePos);
-					Ray3 ray = new Ray3(eyePos, direction);
-					m_componentMiner.Aim(ray, AimState.InProgress);
-				}
-				else
-				{
-					if (!IsTargetInViewCone())
-					{
-						CancelRangedAim();
-						return;
-					}
-					Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
-					Vector3 targetCenter = m_target.ComponentCreatureModel.EyePosition;
-					Vector3 direction = Vector3.Normalize(targetCenter - eyePos);
-					Ray3 ray = new Ray3(eyePos, direction);
-					m_componentMiner.Aim(ray, AimState.InProgress);
-
-					// Verificar si la munición se acabó durante el disparo
-					if (!IsFlameThrowerLoaded())
-					{
-						CancelRangedAim();
-						EnsureFlameThrowerLoaded(flameThrowerSlot, flameThrowerValue);
-						return;
-					}
-
-					double aimTimeElapsed = m_subsystemTime.GameTime - m_rangedAimStartTime;
-					if (aimTimeElapsed >= FlameThrowerAimTime)
-					{
-						CompleteFlameThrowerAim();
-					}
-				}
-			}
+			HandleRangedWeapon(weaponType, slot, value);
 		}
 
 		private float GetDistanceToTarget()
@@ -1868,7 +1742,6 @@ namespace Game
 			return Vector3.Distance(selfPos, targetPos);
 		}
 
-		// ===== MÉTODOS DE APOYO ORIGINALES =====
 		private bool IsTargetInAttackRange(ComponentBody target)
 		{
 			Vector3 selfCenter = m_componentCreature.ComponentBody.BoundingBox.Center();
@@ -1896,17 +1769,14 @@ namespace Game
 			else if (dist < height + 0.3f && Math.Abs(Vector3.Dot(dir, Vector3.UnitY)) > 0.8f)
 				return true;
 
-			// Caso 1: el objetivo es hijo de otro cuerpo (ej. montado)
 			if (target.ParentBody != null && IsTargetInAttackRange(target.ParentBody))
 				return true;
 
-			// Caso 2: el objetivo está parado sobre otro cuerpo (atacar hacia abajo)
 			if (AllowAttackingStandingOnBody && target.StandingOnBody != null &&
 				target.StandingOnBody.Position.Y < target.Position.Y &&
 				IsTargetInAttackRange(target.StandingOnBody))
 				return true;
 
-			// NUEVO: Caso 3: el atacante está parado sobre el objetivo (atacar hacia abajo)
 			ComponentBody myStandingOn = m_componentCreature.ComponentBody.StandingOnBody;
 			if (AllowAttackingStandingOnBody && myStandingOn != null &&
 				myStandingOn == target)
@@ -1952,7 +1822,6 @@ namespace Game
 				 result.Value.ComponentBody.IsChildOfBody(target) ||
 				 target.IsChildOfBody(result.Value.ComponentBody) ||
 				 (target.StandingOnBody == result.Value.ComponentBody && AllowAttackingStandingOnBody) ||
-				 // NUEVO: el atacante está parado sobre el objetivo
 				 (m_componentCreature.ComponentBody.StandingOnBody == target && AllowAttackingStandingOnBody)))
 			{
 				hitPoint = result.Value.HitPoint();
@@ -1963,7 +1832,6 @@ namespace Game
 			return null;
 		}
 
-		// ===== NUEVO MÉTODO AUXILIAR PARA VERIFICAR SI UN BLOQUE ES ROMPIBLE =====
 		private bool IsBlockBreakable(int value)
 		{
 			int contents = Terrain.ExtractContents(value);
@@ -1977,7 +1845,6 @@ namespace Game
 			return block.IsCollidable_(value) && block.DigResilience >= 0f;
 		}
 
-		// ===== MÉTODO MEJORADO: DESTRUIR BLOQUES CUANDO ESTÁ ATASCADO =====
 		private void TryDestroyBlocksToFree()
 		{
 			if (!DestroyBlocksWhenStuck || m_target == null) return;
@@ -2074,7 +1941,6 @@ namespace Game
 			}
 		}
 
-		// ===== LOAD =====
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
 			m_subsystemTerrain = Project.FindSubsystem<SubsystemTerrain>();
@@ -2122,7 +1988,6 @@ namespace Game
 			m_stateMachine.TransitionTo("LookingForTarget");
 		}
 
-		// ===== SUSCRIPCIÓN A JUGADORES PARA PROTEGERLOS =====
 		private void SubscribeToPlayersForProtection()
 		{
 			if (m_subsystemPlayers == null) return;
@@ -2208,7 +2073,6 @@ namespace Game
 			base.Dispose();
 		}
 
-		// ===== REGISTRO DE EVENTOS =====
 		private void RegisterEvents()
 		{
 			m_componentCreature.ComponentBody.CollidedWithBody += delegate (ComponentBody body)
@@ -2259,7 +2123,6 @@ namespace Game
 			};
 		}
 
-		// ===== CONFIGURACIÓN DE LA MÁQUINA DE ESTADOS =====
 		private void SetupStateMachine()
 		{
 			m_stateMachine.AddState("LookingForTarget", () =>
@@ -2402,7 +2265,6 @@ namespace Game
 					}
 					else
 					{
-						// Solo las lanzables detienen el movimiento. Las armas a distancia ya no.
 						if (!m_isAimingThrowable)
 						{
 							int maxPathfindingPositions = 0;
@@ -2431,7 +2293,6 @@ namespace Game
 			}, null);
 		}
 
-		// ===== MÉTODOS AUXILIARES =====
 		private ComponentPlayer FindNearestPlayer(float range)
 		{
 			if (m_subsystemPlayers == null || m_componentCreature?.ComponentBody == null)
@@ -2546,7 +2407,6 @@ namespace Game
 					IsTargetInWater(target.StandingOnBody));
 		}
 
-		// ===== CAMPOS DE LA BASE DE DATOS =====
 		private float m_dayChaseRange;
 		private float m_nightChaseRange;
 		private float m_dayChaseTime;
