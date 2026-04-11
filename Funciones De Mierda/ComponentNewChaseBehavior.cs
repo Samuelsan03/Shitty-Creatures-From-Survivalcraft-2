@@ -6,6 +6,12 @@ using System.Collections.Generic;
 
 namespace Game
 {
+	public enum AttackMode
+	{
+		Default,
+		Remote,
+		OnlyHand
+	}
 	public class ComponentNewChaseBehavior : ComponentBehavior, IUpdateable
 	{
 		// ===== PROPIEDADES PÚBLICAS =====
@@ -58,6 +64,9 @@ namespace Game
 
 		// NUEVO PARÁMETRO: invoca un rayo al golpear
 		public bool InvokeLightningOnHit = false;
+
+		// NUEVO PARÁMETRO: empuja al objetivo al golpear en cuerpo a cuerpo
+		public bool PushWhileAttacking = false;
 
 		private Vector3 m_lastStuckCheckPosition;
 		private double m_stuckDetectionStartTime;
@@ -577,6 +586,32 @@ namespace Game
 								m_chaseTime = MathUtils.Max(m_chaseTime, extraChaseTime);
 								m_componentMiner.Hit(hitBody, hitPoint, m_componentCreature.ComponentBody.Matrix.Forward);
 								m_componentCreature.ComponentCreatureSounds.PlayAttackSound();
+
+								// NUEVO: Empujar al objetivo con probabilidad y fuerza configurables
+								if (PushWhileAttacking && m_random.Float(0f, 1f) < 0.5f)
+								{
+									// Dirección desde el atacante hacia la víctima
+									Vector3 direction = m_target.ComponentBody.Position - m_componentCreature.ComponentBody.Position;
+									// Asegurar un componente vertical mínimo hacia arriba para que salga volando
+									direction.Y = Math.Max(direction.Y, 0.5f);
+									if (direction.LengthSquared() > 0.001f)
+										direction = Vector3.Normalize(direction);
+									else
+										direction = Vector3.UnitY;
+
+									// Guardar MaxSpeed original y aumentarlo temporalmente para que no limite el impulso
+									float originalMaxSpeed = m_target.ComponentBody.MaxSpeed;
+									m_target.ComponentBody.MaxSpeed = 1e9f; // Sin límite práctico
+
+									// Aplicar impulso combinado (horizontal y vertical)
+									m_target.ComponentBody.ApplyImpulse(direction * 55f);
+
+									// Restaurar MaxSpeed después de un breve retardo (se podría hacer con un timer, 
+									// pero para simplificar, lo restauramos inmediatamente después del impulso ya que 
+									// ApplyImpulse modifica la velocidad instantáneamente y la restricción de MaxSpeed 
+									// solo afecta asignaciones directas a Velocity, no al impulso acumulado)
+									m_target.ComponentBody.MaxSpeed = originalMaxSpeed;
+								}
 
 								if (InvokeLightningOnHit && m_subsystemSky != null && m_random.Float(0f, 1f) < 0.05f)
 								{
@@ -2057,6 +2092,7 @@ namespace Game
 			RangedAttackMode = valuesDictionary.GetValue<AttackMode>("AttackMode", AttackMode.Default);
 			DestroyBlocksWhenStuck = valuesDictionary.GetValue<bool>("DestroyBlocksWhenStuck", false);
 			InvokeLightningOnHit = valuesDictionary.GetValue<bool>("InvokeLightningOnHit", false);
+			PushWhileAttacking = valuesDictionary.GetValue<bool>("PushWhileAttacking", false);
 
 			RegisterEvents();
 
@@ -2502,12 +2538,5 @@ namespace Game
 		private float m_chaseWhenAttackedProbability;
 		private float m_chaseOnTouchProbability;
 		private CreatureCategory m_autoChaseMask;
-	}
-
-	public enum AttackMode
-	{
-		Default,
-		Remote,
-		OnlyHand
 	}
 }
