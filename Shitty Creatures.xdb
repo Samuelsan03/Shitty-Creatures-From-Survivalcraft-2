@@ -5739,6 +5739,7 @@
   <Parameter Name="RangedAttackRange" Guid="9fe469ec-e561-438f-a6a7-fee08ec31354" Value="5,100" Type="Vector2"/>
   <Parameter Name="DestroyBlocksWhenStuck" Guid="1bfd721f-8d53-4d39-8cca-3d4524f722f6" Value="true" Type="bool"/>
   <Parameter Name="InvokeLightningOnHit" Guid="3946a281-a031-47a0-91a9-7003e878b39f" Value="true" Type="bool"/>
+  <Parameter Name="PushWhileAttacking" Guid="d21651ed-ff48-4a31-a37e-2e2b75c8d74f" Value="true" Type="bool"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="NewHerdBehavior" Guid="7334287f-2739-47c1-a63d-fc69902dcfdd" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
         <Parameter Name="HerdName" Value="player" Type="string" Guid="684c2721-f2a6-448e-bb88-d73f72225648"/>
@@ -5780,9 +5781,9 @@
         <Parameter Name="InAirWalkFactor" Guid="a110f893-16d5-4c86-bc21-2aa50e8af2f6" Value="1" Type="float"/>
         <Parameter Name="WalkSpeed" Guid="4a5b854a-9e28-40a7-a7a7-7418629defcd" Value="5" Type="float"/>
         <Parameter Name="FlySpeed" Guid="3159eb5c-bac2-4288-81a6-b87902c856c8" Value="0" Type="float"/>
-        <Parameter Name="TurnSpeed" Guid="f036c68b-28b0-4c1e-92e4-0a4bb9fe6e7f" Value="3" Type="float"/>
+        <Parameter Name="TurnSpeed" Guid="f036c68b-28b0-4c1e-92e4-0a4bb9fe6e7f" Value="5" Type="float"/>
         <Parameter Name="JumpSpeed" Guid="a9f4a5f8-50a2-495c-8418-d2e3c73ee1cf" Value="8.5" Type="float"/>
-        <Parameter Name="AccelerationFactor" Guid="0d296c22-3277-4ede-845f-6aa47d9ab2df" Value="1.25" Type="float"/>
+        <Parameter Name="AccelerationFactor" Guid="0d296c22-3277-4ede-845f-6aa47d9ab2df" Value="1.55" Type="float"/>
       </MemberComponentTemplate>
       <MemberComponentTemplate Name="AutoJump" Guid="87850c4c-5b80-4b01-a5c8-e2aaef3baf15" InheritanceParent="ef94c9db-75b0-4e0f-9971-f575ac88661b">
               <Parameter Name="JumpStrength" Guid="194d169e-50d0-4c12-9dd2-71ef16910d9d" Value="0.7" Type="float"/>
