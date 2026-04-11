@@ -138,7 +138,7 @@ namespace Game
 
 					// Verificar si es un tanque (vivo o fantasma)
 					if (entityName != "Tank1" && entityName != "Tank2" && entityName != "Tank3" &&
-						entityName != "TankGhost1" && entityName != "TankGhost2" && entityName != "TankGhost3")
+						entityName != "TankGhost1" && entityName != "TankGhost2" && entityName != "TankGhost3" && entityName != "FrozenTankGhost" && entityName != "FrozenTank")
 						continue;
 
 					// Verificar si está vivo
@@ -202,7 +202,6 @@ namespace Game
 			// NUEVO: Verificar si la música está habilitada
 			if (!ChaseMusicConfig.TankMusicEnabled)
 			{
-				Log.Debug("[TankMusic] Música desactivada por configuración");
 				return;
 			}
 
