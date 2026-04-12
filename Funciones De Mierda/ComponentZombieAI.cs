@@ -73,6 +73,7 @@ namespace Game
 
 		public bool CanUseInventory = false;
 
+		private double m_lastDoubleMusketShotTime;
 		private bool m_isAiming = false;
 		private bool m_isDrawing = false;
 		private bool m_isFiring = false;
@@ -1119,6 +1120,14 @@ namespace Game
 						StartAiming();
 						return;
 					}
+					else if (block is DoubleMusketBlock)
+					{
+						m_currentWeaponSlot = i;
+						m_weaponType = 9;
+						m_componentInventory.ActiveSlotIndex = i;
+						StartAiming();
+						return;
+					}
 					else if (block is FlameThrowerBlock)
 					{
 						m_currentWeaponSlot = i;
@@ -1226,7 +1235,147 @@ namespace Game
 				case 6: ProcessThrowableBehavior(target, distance); break;
 				case 7: ProcessMeleeBehavior(target, distance); break;
 				case 8: ProcessItemsLauncherBehavior(target, distance); break;
+				case 9: ProcessDoubleMusketBehavior(target); break;   // <-- AÑADIR
 			}
+		}
+
+		private void ProcessDoubleMusketBehavior(ComponentCreature target)
+		{
+			if (target == null) return;
+			if (m_currentWeaponSlot < 0 || m_weaponType != 9) return;
+
+			int slotValue = m_componentInventory.GetSlotValue(m_currentWeaponSlot);
+			int data = Terrain.ExtractData(slotValue);
+			int contents = Terrain.ExtractContents(slotValue);
+			bool isLoaded = DoubleMusketBlock.IsLoaded(data);
+			int shotsRemaining = DoubleMusketBlock.GetShotsRemaining(data);
+
+			// Cooldown entre disparos (1 segundo)
+			if (m_subsystemTime.GameTime - m_lastDoubleMusketShotTime < 1.0)
+				return;
+
+			// Recarga automática si está vacía
+			if (!isLoaded || shotsRemaining <= 0)
+			{
+				int newData = DoubleMusketBlock.SetLoaded(data, true);
+				newData = DoubleMusketBlock.SetShotsRemaining(newData, 2);
+				newData = DoubleMusketBlock.SetAntiTanksBullet(newData, true);
+				newData = DoubleMusketBlock.SetBulletType(newData, BulletBlock.BulletType.MusketBall);
+				newData = DoubleMusketBlock.SetHammerState(newData, false);
+				int newValue = Terrain.MakeBlockValue(contents, 0, newData);
+				m_componentInventory.RemoveSlotItems(m_currentWeaponSlot, 1);
+				m_componentInventory.AddSlotItems(m_currentWeaponSlot, newValue, 1);
+				return;
+			}
+
+			// Iniciar apuntado si no está en progreso
+			if (!m_isAiming && !m_isFiring)
+			{
+				StartAiming();
+				return;
+			}
+
+			// Estado de apuntado
+			if (m_isAiming)
+			{
+				// Animación de apuntado
+				if (m_componentModel != null)
+				{
+					m_componentModel.AimHandAngleOrder = AimHandAngleOrder + ((AimHandAngleOrder != 0f) ? 0.1f : 0f);
+					m_componentModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
+					m_componentModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
+					if (target != null)
+						m_componentModel.LookAtOrder = new Vector3?(target.ComponentCreatureModel.EyePosition);
+				}
+
+				if (m_subsystemTime.GameTime - m_animationStartTime >= m_aimTime)
+				{
+					m_isAiming = false;
+					m_isFiring = true;
+					m_fireTime = m_subsystemTime.GameTime;
+
+					// Disparar proyectil (AntiTanks)
+					ShootDoubleMusketBullet(target);
+
+					// Actualizar datos del arma (consumir un disparo)
+					shotsRemaining--;
+					int newData = DoubleMusketBlock.SetShotsRemaining(data, shotsRemaining);
+					if (shotsRemaining <= 0)
+					{
+						newData = DoubleMusketBlock.SetLoaded(newData, false);
+						newData = DoubleMusketBlock.SetAntiTanksBullet(newData, false);
+					}
+					int newValue = Terrain.MakeBlockValue(contents, 0, newData);
+					m_componentInventory.RemoveSlotItems(m_currentWeaponSlot, 1);
+					m_componentInventory.AddSlotItems(m_currentWeaponSlot, newValue, 1);
+
+					m_lastDoubleMusketShotTime = m_subsystemTime.GameTime;
+				}
+			}
+			// Estado de disparo (animación de retroceso)
+			else if (m_isFiring)
+			{
+				if (m_componentModel != null)
+				{
+					m_componentModel.AimHandAngleOrder = AimHandAngleOrder;
+					m_componentModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
+					m_componentModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
+				}
+
+				if (m_subsystemTime.GameTime - m_fireTime >= 0.2)
+				{
+					m_isFiring = false;
+					// Vuelve a apuntar automáticamente en el próximo ciclo
+				}
+			}
+		}
+
+		private void ShootDoubleMusketBullet(ComponentCreature target)
+		{
+			if (target == null) return;
+			if (IsSameHerd(target)) return;
+
+			try
+			{
+				Vector3 firePosition = m_componentCreature.ComponentCreatureModel.EyePosition;
+				Vector3 targetPosition = target.ComponentCreatureModel.EyePosition;
+				Vector3 direction = Vector3.Normalize(targetPosition - firePosition);
+
+				// Disparar bala anti‑tanque
+				int bulletValue = Terrain.MakeBlockValue(AntiTanksBulletBlock.Index, 0, 0);
+				float speed = 180f; // Velocidad de AntiTanksBullet
+
+				Projectile projectile = m_subsystemProjectiles.FireProjectile(
+					bulletValue,
+					firePosition,
+					direction * speed,
+					Vector3.Zero,
+					m_componentCreature
+				);
+
+				if (projectile != null)
+					projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
+
+				// Efectos de sonido y partículas
+				m_subsystemAudio.PlaySound("Audio/Items/GunShot Musket Remake", 1f,
+					m_random.Float(-0.1f, 0.1f), m_componentCreature.ComponentBody.Position, 15f, false);
+
+				if (m_subsystemParticles != null && m_subsystemTerrain != null)
+				{
+					Vector3 smokePos = firePosition + direction * 0.3f;
+					m_subsystemParticles.AddParticleSystem(
+						new GunSmokeParticleSystem(m_subsystemTerrain, smokePos, direction),
+						false
+					);
+				}
+
+				if (m_subsystemNoise != null)
+					m_subsystemNoise.MakeNoise(firePosition, 1f, 40f);
+
+				// Retroceso
+				m_componentCreature.ComponentBody.ApplyImpulse(-direction * 4f);
+			}
+			catch { }
 		}
 
 		private void ProcessItemsLauncherBehavior(ComponentCreature target, float distance)
@@ -3115,6 +3264,13 @@ namespace Game
 					m_animationStartTime = m_subsystemTime.GameTime;
 				}
 			}
+			// --- INICIO DOUBLE MUSKET ---
+			else if (m_weaponType == 9 && m_currentWeaponSlot >= 0)
+			{
+				m_isAiming = true;
+				m_animationStartTime = m_subsystemTime.GameTime;
+			}
+			// --- FIN DOUBLE MUSKET ---
 			else if (m_weaponType == 3 && m_currentWeaponSlot >= 0)
 			{
 				int slotValue = m_componentInventory.GetSlotValue(m_currentWeaponSlot);
