@@ -8,8 +8,10 @@ namespace Game
 {
 	public class ComponentZombieAI2 : ComponentBehavior, IUpdateable
 	{
+		private ComponentPathfinding m_componentPathfinding;
+		private SubsystemBodies m_subsystemBodies; // AÑADIR junto a los otros subsystems
 		private ComponentCreature m_componentCreature;
-		private ComponentZombieChaseBehavior m_componentZombieChaseBehavior;
+		private ComponentChaseBehavior m_componentChaseBehavior;
 		private ComponentInventory m_componentInventory;
 		private SubsystemTime m_subsystemTime;
 		private SubsystemProjectiles m_subsystemProjectiles;
@@ -19,8 +21,7 @@ namespace Game
 		private SubsystemNoise m_subsystemNoise;
 		private SubsystemTerrain m_subsystemTerrain;
 		private ComponentMiner m_componentMiner;
-		private ComponentPathfinding m_componentPathfinding; // AÑADIR
-		private SubsystemBodies m_subsystemBodies; // AÑADIR junto a los otros subsystems
+		private SubsystemSoundMaterials m_subsystemSoundMaterials;
 		private Random m_random = new Random();
 
 		private class FirearmConfig
@@ -93,31 +94,23 @@ namespace Game
 		private double m_lastFirearmShotTime;
 		private double m_firearmReloadStartTime;
 		private double m_throwableThrowTime;
-
-		// DESPUÉS (junto a las otras variables bool/double)
-		private bool m_isItemsLauncherAiming = false;
-		private bool m_isItemsLauncherFiring = false;
-		private double m_itemsLauncherLastFireTime;
-		private float m_itemsLauncherFireInterval = 1.2f;
-		private float m_itemsLauncherSpeed = 35f;
-		private float m_itemsLauncherSpread = 0.1f;
-		private float m_itemsLauncherReloadTime = 1.2f;     // ← NUEVO (valor del XML)
-		private float m_itemsLauncherMaxShots = 0f;         // ← NUEVO
-		private int m_itemsLauncherShotsFired = 0;          // ← NUEVO
-		private bool m_isItemsLauncherReloading = false;    // ← NUEVO
-		private double m_itemsLauncherReloadStartTime;      // ← NUEVO
-
-		// AÑADIDO: variables para ataque cuerpo a cuerpo
-		private bool m_isMeleeAttacking = false;
+		private double m_lastDoubleMusketShotTime;
+		// AÑADIR: Variable para controlar ataques melee
 		private double m_nextMeleeAttackTime = 0.0;
 		private float m_meleeAttackInterval = 0.5f;
 
-		// AÑADIDO: distancias para cambio de arma
-		private float m_meleeSwitchDistance = 3f;   // Si está a menos de 3, cambia a melee
-		private float m_rangedSwitchDistance = 5f;  // Si está a más de 5, cambia a distancia
-
-		private bool m_isMelee = false;
-		private double m_lastMeleeAttackTime = 0.0;
+		// DESPUÉS (añadir junto a las otras variables bool/double)
+		private bool m_isItemsLauncherAiming = false;
+		private bool m_isItemsLauncherFiring = false;
+		private double m_itemsLauncherLastFireTime;
+		private float m_itemsLauncherFireInterval = 1.2f;     // Se calculará según RateLevel
+		private float m_itemsLauncherSpeed = 35f;            // Se calculará según SpeedLevel
+		private float m_itemsLauncherSpread = 0.1f;          // Se calculará según SpreadLevel
+		private float m_itemsLauncherReloadTime = 1.2f;     // ← NUEVO (valor del XML)
+		private float m_itemsLauncherMaxShots = 0f;         // ← NUEVO (se calculará según algo, o fijo)
+		private int m_itemsLauncherShotsFired = 0;          // ← NUEVO
+		private bool m_isItemsLauncherReloading = false;    // ← NUEVO
+		private double m_itemsLauncherReloadStartTime;      // ← NUEVO
 
 		private int m_currentWeaponSlot = -1;
 		private int m_weaponType = -1;
@@ -133,10 +126,14 @@ namespace Game
 		private int m_shotsSinceLastReload = 0;
 		private bool m_hasFirearmAimed = false;
 
+		private bool m_isMelee = false;
+		private double m_lastMeleeAttackTime = 0.0;
+
 		private float m_maxDistance = 100f;
 		private float m_drawTime = 0.5f;
 		private float m_aimTime = 0.55f;
-		private float m_reloadTime = 0.8f;
+		private float m_DoubleMusketaimTime = 1f;
+		private float m_reloadTime = 0.5f;
 		private float m_cockTime = 0.5f;
 		private float m_flameShotInterval = 0.3f;
 		private float m_flameSoundInterval = 0.2f;
@@ -165,7 +162,7 @@ namespace Game
 			base.Load(valuesDictionary, idToEntityMap);
 			CanUseInventory = valuesDictionary.GetValue<bool>("CanUseInventory", false);
 			m_componentCreature = Entity.FindComponent<ComponentCreature>(true);
-			m_componentZombieChaseBehavior = Entity.FindComponent<ComponentZombieChaseBehavior>();
+			m_componentChaseBehavior = Entity.FindComponent<ComponentChaseBehavior>();
 			m_componentInventory = Entity.FindComponent<ComponentInventory>(true);
 			m_componentMiner = Entity.FindComponent<ComponentMiner>(true);
 			m_componentModel = Entity.FindComponent<ComponentCreatureModel>();
@@ -176,7 +173,8 @@ namespace Game
 			m_subsystemNoise = Project.FindSubsystem<SubsystemNoise>(true);
 			m_subsystemTerrain = Project.FindSubsystem<SubsystemTerrain>(true);
 			m_componentPathfinding = Entity.FindComponent<ComponentPathfinding>(true); // AÑADIR
-			m_subsystemBodies = Project.FindSubsystem<SubsystemBodies>(true); // AÑADIR
+			m_subsystemBodies = Project.FindSubsystem<SubsystemBodies>(true);
+			m_subsystemSoundMaterials = Project.FindSubsystem<SubsystemSoundMaterials>(true);
 
 			m_currentRepeatArrowTypeIndex = m_random.Int(0, m_repeatCrossbowArrowTypes.Length - 1);
 			m_currentRepeatArrowType = m_repeatCrossbowArrowTypes[m_currentRepeatArrowTypeIndex];
@@ -222,6 +220,7 @@ namespace Game
 					IsShotgun = false
 				};
 
+
 				int kaIndex = BlocksManager.GetBlockIndex(typeof(KABlock), true, false);
 				m_firearmConfigs[kaIndex] = new FirearmConfig
 				{
@@ -238,7 +237,7 @@ namespace Game
 					IsShotgun = false
 				};
 
-				int bk43Index = BlocksManager.GetBlockIndex(typeof(BK43Block), true, false);
+				int bk43Index = BlocksManager.GetBlockIndex(typeof(Game.BK43Block), true, false);
 				m_firearmConfigs[bk43Index] = new FirearmConfig
 				{
 					BulletBlockType = typeof(NuevaBala3),  // Mismo tipo de bala que usa el BK43
@@ -598,7 +597,7 @@ namespace Game
 			if (!CanUseInventory || m_componentCreature == null || m_componentCreature.ComponentHealth.Health <= 0f)
 				return;
 
-			ComponentCreature target = m_componentZombieChaseBehavior?.Target;
+			ComponentCreature target = m_componentChaseBehavior?.Target;
 
 			if (target != null && target.ComponentHealth.Health > 0f)
 			{
@@ -640,16 +639,21 @@ namespace Game
 
 							if (m_currentWeaponSlot != -1)
 							{
-								// Golpear con el arma a distancia siempre, sin importar stuck/LOS
-								ProcessRangedWeaponAsMelee(target, distance);
+								const double MeleeAttackInterval = 0.8;
+								double currentTime = m_subsystemTime.GameTime;
+								if (currentTime - m_lastMeleeAttackTime >= MeleeAttackInterval)
+								{
+									AttackMelee(target);
+									m_lastMeleeAttackTime = currentTime;
+								}
 
-								// Disparar solo si no está atascado y tiene línea de visión
 								if (!isStuck && hasLineOfSight)
 								{
 									ProcessWeaponBehavior(target, distance);
 								}
 								else
 								{
+
 									ResetWeaponState();
 									if (m_componentModel != null)
 									{
@@ -680,6 +684,7 @@ namespace Game
 						}
 						else
 						{
+
 							if (!hasLineOfSight && !isStuck)
 							{
 								TryRepositionForLineOfSight(target);
@@ -738,8 +743,6 @@ namespace Game
 				m_componentPathfinding.SetDestination(newDestination, speed, 1f, 0, false, true, true, null);
 			}
 		}
-
-		// AÑADIDO: Entrar en modo cuerpo a cuerpo (exactamente como en ComponentCreatureAI)
 		private bool EnterMeleeMode()
 		{
 			int bestSlot = FindBestMeleeWeaponSlot();
@@ -775,21 +778,21 @@ namespace Game
 			return false;
 		}
 
-		// AÑADIDO: Salir del modo cuerpo a cuerpo (exactamente como en ComponentCreatureAI)
 		private void ExitMeleeMode()
 		{
 			m_isMelee = false;
+			// Fuerza a re‑buscar un arma a distancia en el próximo ciclo
 			m_currentWeaponSlot = -1;
 			m_weaponType = -1;
 			m_lastMeleeAttackTime = 0.0;
 		}
 
-		// AÑADIDO: Actualizar modo cuerpo a cuerpo (exactamente como en ComponentCreatureAI)
 		private void UpdateMeleeMode(ComponentCreature target)
 		{
 			if (target == null || m_componentModel == null || m_componentMiner == null)
 				return;
 
+			// Mirar al objetivo
 			m_componentModel.LookAtOrder = new Vector3?(target.ComponentCreatureModel.EyePosition);
 
 			const double MeleeAttackInterval = 0.8;
@@ -801,7 +804,6 @@ namespace Game
 			}
 		}
 
-		// AÑADIDO: Atacar cuerpo a cuerpo (exactamente como en ComponentCreatureAI)
 		private void AttackMelee(ComponentCreature target)
 		{
 			if (m_componentMiner == null || target == null || m_componentModel == null)
@@ -821,7 +823,6 @@ namespace Game
 			}
 		}
 
-		// AÑADIDO: Obtener cuerpo a impactar (exactamente como en ComponentCreatureAI)
 		private ComponentBody GetHitBody(ComponentBody target, out Vector3 hitPoint)
 		{
 			Vector3 start = m_componentCreature.ComponentBody.BoundingBox.Center();
@@ -841,9 +842,6 @@ namespace Game
 			return null;
 		}
 
-
-
-		// AÑADIDO: Buscar arma cuerpo a cuerpo (adaptada de ComponentCreatureAI)
 		private void FindMeleeWeapon()
 		{
 			if (m_componentInventory == null)
@@ -868,9 +866,7 @@ namespace Game
 			{
 				m_componentInventory.ActiveSlotIndex = bestSlot;
 			}
-			// Si no hay arma, se mantiene la mano vacía
 		}
-
 		private float GetWeaponMaxDistance()
 		{
 			if (m_weaponType == 3) return m_flameMaxDistance;
@@ -949,7 +945,7 @@ namespace Game
 				}
 			}
 
-			// SEGUNDO: Buscar lanzador de objetos (tipo 8) si no hay lanzables
+			// SEGUNDO: Buscar lanzador de objetos (tipo 7) si no hay lanzables
 			for (int i = 0; i < m_componentInventory.SlotsCount; i++)
 			{
 				int slotValue = m_componentInventory.GetSlotValue(i);
@@ -959,7 +955,7 @@ namespace Game
 					if (block is ItemsLauncherBlock)
 					{
 						m_currentWeaponSlot = i;
-						m_weaponType = 8;
+						m_weaponType = 7;
 						m_componentInventory.ActiveSlotIndex = i;
 						StartItemsLauncherAiming();
 						return;
@@ -1017,6 +1013,14 @@ namespace Game
 						StartAiming();
 						return;
 					}
+					else if (block is DoubleMusketBlock)
+					{
+						m_currentWeaponSlot = i;
+						m_weaponType = 9;  // Mismo tipo que el mosquete
+						m_componentInventory.ActiveSlotIndex = i;
+						StartAiming();
+						return;
+					}
 					else if (block is FlameThrowerBlock)
 					{
 						m_currentWeaponSlot = i;
@@ -1037,6 +1041,33 @@ namespace Game
 			}
 		}
 
+		private void ProcessRangedWeaponAsMelee(ComponentCreature target, float distance)
+		{
+			if (target == null) return;
+			if (distance > 4f) return;
+
+			// NUNCA usar lanzables (tipo 6) como melee
+			if (m_weaponType == 6) return;
+
+			// ELIMINADO: m_componentPathfinding.Destination = null;
+
+			if (m_componentModel != null)
+				m_componentModel.LookAtOrder = new Vector3?(target.ComponentCreatureModel.EyePosition);
+
+			if (m_subsystemTime.GameTime >= m_nextMeleeAttackTime)
+			{
+				if (m_componentMiner != null)
+				{
+					ComponentBody targetBody = target.ComponentBody;
+					Vector3 hitPoint = targetBody.Position;
+					Vector3 hitDirection = Vector3.Normalize(targetBody.Position - m_componentCreature.ComponentBody.Position);
+
+					m_componentMiner.Hit(targetBody, hitPoint, hitDirection);
+					m_nextMeleeAttackTime = m_subsystemTime.GameTime + m_meleeAttackInterval;
+				}
+			}
+		}
+
 		private void StartItemsLauncherReloading()
 		{
 			m_isItemsLauncherAiming = false;
@@ -1052,7 +1083,6 @@ namespace Game
 				m_componentModel.InHandItemRotationOrder = Vector3.Zero;
 				m_componentModel.LookAtOrder = null;
 			}
-
 		}
 
 		private void ApplyItemsLauncherReloadingAnimation()
@@ -1068,6 +1098,7 @@ namespace Game
 			}
 		}
 
+		// NUEVO MÉTODO (insertar junto a los otros Start...)
 		private void StartItemsLauncherAiming()
 		{
 			m_isItemsLauncherAiming = true;
@@ -1172,14 +1203,6 @@ namespace Game
 
 		private void ProcessWeaponBehavior(ComponentCreature target, float distance)
 		{
-			// SOLO usar ataque cuerpo a cuerpo con arma a distancia si ESTAMOS EN MODO MELEE
-			// y tenemos un arma a distancia equipada (porque no encontramos arma melee)
-			if (m_isMelee && distance <= m_meleeSwitchDistance && m_weaponType >= 0 && m_weaponType <= 6)
-			{
-				ProcessRangedWeaponAsMelee(target, distance);
-				return;
-			}
-
 			switch (m_weaponType)
 			{
 				case 0: ProcessBowBehavior(target); break;
@@ -1189,8 +1212,58 @@ namespace Game
 				case 4: ProcessRepeatCrossbowBehavior(target, distance); break;
 				case 5: ProcessFirearmBehavior(target, distance); break;
 				case 6: ProcessThrowableBehavior(target, distance); break;
-				case 7: ProcessMeleeBehavior(target, distance); break;
-				case 8: ProcessItemsLauncherBehavior(target, distance); break;
+				case 7: ProcessItemsLauncherBehavior(target, distance); break;
+				case 9: ProcessDoubleMusketBehavior(target); break;   // <-- AÑADIR
+			}
+		}
+
+		private void ProcessDoubleMusketBehavior(ComponentCreature target)
+		{
+			if (target == null || m_componentMiner == null) return;
+			if (m_currentWeaponSlot < 0 || m_weaponType != 9) return;
+
+			int slotValue = m_componentInventory.GetSlotValue(m_currentWeaponSlot);
+			int data = Terrain.ExtractData(slotValue);
+			int contents = Terrain.ExtractContents(slotValue);
+
+			// Cooldown entre disparos
+			if (m_subsystemTime.GameTime - m_lastDoubleMusketShotTime < 1.15)
+				return;
+
+			// Recarga automática si está vacía
+			if (!DoubleMusketBlock.IsLoaded(data) || DoubleMusketBlock.GetShotsRemaining(data) <= 0)
+			{
+				int newData = DoubleMusketBlock.SetLoaded(data, true);
+				newData = DoubleMusketBlock.SetShotsRemaining(newData, 2);
+				newData = DoubleMusketBlock.SetAntiTanksBullet(newData, true);
+				newData = DoubleMusketBlock.SetBulletType(newData, BulletBlock.BulletType.MusketBall);
+				newData = DoubleMusketBlock.SetHammerState(newData, false);
+				int newValue = Terrain.MakeBlockValue(contents, 0, newData);
+				m_componentInventory.RemoveSlotItems(m_currentWeaponSlot, 1);
+				m_componentInventory.AddSlotItems(m_currentWeaponSlot, newValue, 1);
+				return;
+			}
+
+			// Iniciar apuntado si no está en progreso
+			if (!m_isAiming)
+			{
+				StartAiming();
+				return;
+			}
+
+			// Apuntar con ComponentMiner
+			Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
+			Vector3 targetPos = target.ComponentCreatureModel.EyePosition;
+			Vector3 direction = Vector3.Normalize(targetPos - eyePos);
+			Ray3 aimRay = new Ray3(eyePos, direction);
+			m_componentMiner.Aim(aimRay, AimState.InProgress);
+
+			// Tiempo de apuntado (usa m_aimTime = 0.55f)
+			if (m_subsystemTime.GameTime - m_animationStartTime >= m_DoubleMusketaimTime)
+			{
+				m_componentMiner.Aim(aimRay, AimState.Completed);
+				m_lastDoubleMusketShotTime = m_subsystemTime.GameTime;
+				m_isAiming = false;
 			}
 		}
 
@@ -1278,6 +1351,7 @@ namespace Game
 			}
 		}
 
+		// NUEVO MÉTODO (insertar después del anterior)
 		private void FireItemsLauncher(ComponentCreature target)
 		{
 			if (target == null) return;
@@ -1343,73 +1417,6 @@ namespace Game
 			catch { }
 		}
 
-		// AÑADIDO: Golpear cuerpo a cuerpo con arma a distancia
-		private void ProcessRangedWeaponAsMelee(ComponentCreature target, float distance)
-		{
-			if (target == null) return;
-			if (distance > 4f) return;
-
-			// NUNCA usar lanzables (tipo 6) como melee
-			if (m_weaponType == 6) return;
-
-			// ELIMINADO: m_componentPathfinding.Destination = null;
-
-			if (m_componentModel != null)
-				m_componentModel.LookAtOrder = new Vector3?(target.ComponentCreatureModel.EyePosition);
-
-			if (m_subsystemTime.GameTime >= m_nextMeleeAttackTime)
-			{
-				if (m_componentMiner != null)
-				{
-					ComponentBody targetBody = target.ComponentBody;
-					Vector3 hitPoint = targetBody.Position;
-					Vector3 hitDirection = Vector3.Normalize(targetBody.Position - m_componentCreature.ComponentBody.Position);
-
-					m_componentMiner.Hit(targetBody, hitPoint, hitDirection);
-					m_nextMeleeAttackTime = m_subsystemTime.GameTime + m_meleeAttackInterval;
-				}
-			}
-		}
-
-		// AÑADIDO: Comportamiento de ataque cuerpo a cuerpo
-		private void ProcessMeleeBehavior(ComponentCreature target, float distance)
-		{
-			if (target == null) return;
-
-			// Si estamos demasiado lejos para atacar cuerpo a cuerpo, no hacer nada (la persecución nos acercará)
-			if (distance > 4f) return;
-
-			// Detener el movimiento para atacar
-			if (m_componentPathfinding != null)
-			{
-				m_componentPathfinding.Destination = null;
-			}
-
-			// Mirar al objetivo
-			if (m_componentModel != null && target != null)
-			{
-				m_componentModel.LookAtOrder = new Vector3?(target.ComponentCreatureModel.EyePosition);
-			}
-
-			// Atacar con el intervalo definido
-			if (m_subsystemTime.GameTime >= m_nextMeleeAttackTime)
-			{
-				// Usar ComponentMiner para golpear (ataque cuerpo a cuerpo)
-				if (m_componentMiner != null)
-				{
-					// CORREGIDO: Pasar los tres parámetros requeridos
-					ComponentBody targetBody = target.ComponentBody;
-					Vector3 hitPoint = targetBody.Position; // Punto de impacto (puedes usar alguna parte del cuerpo si existe)
-					Vector3 hitDirection = Vector3.Normalize(targetBody.Position - m_componentCreature.ComponentBody.Position);
-
-					// ¡FALTABA ESTA LÍNEA!
-					m_componentMiner.Hit(targetBody, hitPoint, hitDirection);
-
-					m_nextMeleeAttackTime = m_subsystemTime.GameTime + m_meleeAttackInterval;
-				}
-			}
-		}
-
 		private void StartThrowableAiming()
 		{
 			m_isThrowableAiming = true;
@@ -1438,7 +1445,7 @@ namespace Game
 				hasLineOfSight = HasClearLineOfSight(target);
 				if (!hasLineOfSight)
 				{
-					// Still blocked – cancel throwing attempt
+					// Still blocked – give up on the throw
 					m_isThrowableAiming = false;
 					m_isThrowableThrowing = false;
 					m_hasFirearmAimed = false;
@@ -1582,7 +1589,8 @@ namespace Game
 					{
 						try
 						{
-							Vector3 basePosition = m_componentCreature.ComponentCreatureModel.EyePosition;
+							// Usar posición del cuerpo para mayor seguridad
+							Vector3 basePosition = m_componentCreature.ComponentBody.Position + new Vector3(0f, 1f, 0f);
 							Vector3 readyPosition = basePosition + new Vector3(0f, 0.2f, 0f);
 							KillParticleSystem readyParticles = new KillParticleSystem(m_subsystemTerrain, readyPosition, 0.5f);
 							m_subsystemParticles.AddParticleSystem(readyParticles, false);
@@ -1593,13 +1601,14 @@ namespace Game
 								m_subsystemParticles.AddParticleSystem(additionalParticles, false);
 							}
 						}
-						catch (Exception)
+						catch (Exception ex)
 						{
+							Log.Error($"Error al crear partículas de fin de recarga: {ex.Message}");
 						}
 					}
 
 					m_subsystemAudio.PlaySound("Audio/Armas/reload", 1f, 0f, m_componentCreature.ComponentCreatureModel.EyePosition, 10f, true);
-					m_isFirearmAiming = false;
+					// CORREGIDO: eliminar doble asignación, solo establecer a true
 					m_isFirearmAiming = true;
 					m_animationStartTime = m_subsystemTime.GameTime;
 					m_hasFirearmAimed = false;
@@ -1741,7 +1750,8 @@ namespace Game
 			{
 				try
 				{
-					Vector3 basePosition = m_componentCreature.ComponentCreatureModel.EyePosition;
+					// Usar posición del cuerpo para mayor seguridad
+					Vector3 basePosition = m_componentCreature.ComponentBody.Position + new Vector3(0f, 1f, 0f); // altura media
 					KillParticleSystem reloadParticles = new KillParticleSystem(m_subsystemTerrain, basePosition, 0.5f);
 					m_subsystemParticles.AddParticleSystem(reloadParticles, false);
 					for (int i = 0; i < 3; i++)
@@ -1755,8 +1765,9 @@ namespace Game
 						m_subsystemParticles.AddParticleSystem(additionalParticles, false);
 					}
 				}
-				catch (Exception)
+				catch (Exception ex)
 				{
+					Log.Error($"Error al crear partículas de inicio de recarga: {ex.Message}");
 				}
 			}
 
@@ -3047,11 +3058,16 @@ namespace Game
 			}
 			else if (m_weaponType == 2 && m_currentWeaponSlot >= 0)
 			{
-				// No hacemos verificaciones de carga; la recarga se maneja en ProcessMusketBehavior.
-				// Simplemente ponemos el arma en estado de apuntado.
 				m_isAiming = true;
 				m_animationStartTime = m_subsystemTime.GameTime;
 			}
+			// --- INICIO DOUBLE MUSKET ---
+			else if (m_weaponType == 9 && m_currentWeaponSlot >= 0)
+			{
+				m_isAiming = true;
+				m_animationStartTime = m_subsystemTime.GameTime;
+			}
+			// --- FIN DOUBLE MUSKET ---
 			else if (m_weaponType == 3 && m_currentWeaponSlot >= 0)
 			{
 				int slotValue = m_componentInventory.GetSlotValue(m_currentWeaponSlot);
@@ -3323,6 +3339,29 @@ namespace Game
 			catch { }
 		}
 
+		private int FindBestMeleeWeaponSlot()
+		{
+			if (m_componentInventory == null)
+				return -1;
+
+			float bestPower = 1f;
+			int bestSlot = -1;
+			for (int i = 0; i < m_componentInventory.SlotsCount; i++)
+			{
+				int slotValue = m_componentInventory.GetSlotValue(i);
+				if (slotValue != 0)
+				{
+					float power = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)].GetMeleePower(slotValue);
+					if (power > bestPower)
+					{
+						bestPower = power;
+						bestSlot = i;
+					}
+				}
+			}
+			return bestSlot;
+		}
+
 		private void FireFlameThrowerShot(ComponentCreature target)
 		{
 			if (target == null) return;
@@ -3372,28 +3411,6 @@ namespace Game
 			catch { }
 		}
 
-		private int FindBestMeleeWeaponSlot()
-		{
-			if (m_componentInventory == null)
-				return -1;
-
-			float bestPower = 1f;
-			int bestSlot = -1;
-			for (int i = 0; i < m_componentInventory.SlotsCount; i++)
-			{
-				int slotValue = m_componentInventory.GetSlotValue(i);
-				if (slotValue != 0)
-				{
-					float power = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)].GetMeleePower(slotValue);
-					if (power > bestPower)
-					{
-						bestPower = power;
-						bestSlot = i;
-					}
-				}
-			}
-			return bestSlot;
-		}
 		private void ShootRepeatCrossbowArrow(ComponentCreature target)
 		{
 			if (target == null) return;
