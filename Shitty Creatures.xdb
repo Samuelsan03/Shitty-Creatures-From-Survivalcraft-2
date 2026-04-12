@@ -5740,6 +5740,7 @@
   <Parameter Name="DestroyBlocksWhenStuck" Guid="1bfd721f-8d53-4d39-8cca-3d4524f722f6" Value="true" Type="bool"/>
   <Parameter Name="InvokeLightningOnHit" Guid="3946a281-a031-47a0-91a9-7003e878b39f" Value="true" Type="bool"/>
   <Parameter Name="PushWhileAttacking" Guid="d21651ed-ff48-4a31-a37e-2e2b75c8d74f" Value="true" Type="bool"/>
+  <Parameter Name="ExplodeOnHit" Guid="090090eb-9882-4248-821a-a9f271b4571f" Value="true" Type="bool"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="NewHerdBehavior" Guid="7334287f-2739-47c1-a63d-fc69902dcfdd" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
         <Parameter Name="HerdName" Value="player" Type="string" Guid="684c2721-f2a6-448e-bb88-d73f72225648"/>
