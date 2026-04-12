@@ -554,6 +554,7 @@
   <Parameter Name="DestroyBlocksWhenStuck" Description="Si está activado, la criatura destruirá bloques para liberarse cuando esté atascada durante más de 2 segundos" Guid="5b766c40-2a37-4027-9da1-c3218e109aa6" Value="false" Type="bool"/>
   <Parameter Name="InvokeLightningOnHit" Description="Si está activado, la criatura invocará un rayo sobre el objetivo cada vez que realice un golpe cuerpo a cuerpo exitoso" Guid="9ffef00f-7ee4-4fec-b94c-24ac538f344a" Value="false" Type="bool"/>
   <Parameter Name="PushWhileAttacking" Description="Empuja al objetivo al golpear en cuerpo a cuerpo" Guid="51b107e6-f019-4b2b-a4f0-1e231b534d84" Value="false" Type="bool"/>
+  <Parameter Name="ExplodeOnHit" Description="Provoca una explosión al golpear cuerpo a cuerpo" Guid="d1b75fea-9371-4af9-811f-85db7ff478b0" Value="false" Type="bool"/>
 </ComponentTemplate>
 
 <ComponentTemplate Name="NewHerdBehavior" Description="Comportamiento de manada mejorado con reconocimiento del jugador y protección entre aliados" Guid="24c8a629-49be-4cb4-b829-78d5a5a14204" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
@@ -568,6 +569,9 @@
     </Folder>
 
     <ProjectTemplate Name="Project" Guid="85023bf8-1c90-4dd1-9442-e6c13691d078">
+    <MemberSubsystemTemplate Name="DoubleMusketBlockBehavior" Guid="4d437bca-2625-479c-979d-c8e2984c959f" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+    <Parameter Name="Class" Value="Game.SubsystemDoubleMusketBlockBehavior" Type="string" Guid="4a100bd5-84d5-4aa9-a292-533eaf194c73"/>
+</MemberSubsystemTemplate>
     <MemberSubsystemTemplate Name="BigStoneFrozenChunkBlockBehavior" Guid="f20610e5-813b-4f15-b562-cd136e0dd359" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
     <Parameter Name="Class" Value="Game.SubsystemBigStoneFrozenChunkBlockBehavior" Type="string" Guid="9a16b69e-36f2-4b95-9cc9-afd668729701"/>
 </MemberSubsystemTemplate>
