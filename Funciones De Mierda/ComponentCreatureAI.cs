@@ -94,6 +94,7 @@ namespace Game
 		private double m_lastFirearmShotTime;
 		private double m_firearmReloadStartTime;
 		private double m_throwableThrowTime;
+		private double m_lastDoubleMusketShotTime;
 		// AÑADIR: Variable para controlar ataques melee
 		private double m_nextMeleeAttackTime = 0.0;
 		private float m_meleeAttackInterval = 0.5f;
@@ -131,6 +132,7 @@ namespace Game
 		private float m_maxDistance = 100f;
 		private float m_drawTime = 0.5f;
 		private float m_aimTime = 0.55f;
+		private float m_DoubleMusketaimTime = 1f;
 		private float m_reloadTime = 0.5f;
 		private float m_cockTime = 0.5f;
 		private float m_flameShotInterval = 0.3f;
@@ -1011,6 +1013,14 @@ namespace Game
 						StartAiming();
 						return;
 					}
+					else if (block is DoubleMusketBlock)
+					{
+						m_currentWeaponSlot = i;
+						m_weaponType = 9;  // Mismo tipo que el mosquete
+						m_componentInventory.ActiveSlotIndex = i;
+						StartAiming();
+						return;
+					}
 					else if (block is FlameThrowerBlock)
 					{
 						m_currentWeaponSlot = i;
@@ -1203,6 +1213,57 @@ namespace Game
 				case 5: ProcessFirearmBehavior(target, distance); break;
 				case 6: ProcessThrowableBehavior(target, distance); break;
 				case 7: ProcessItemsLauncherBehavior(target, distance); break;
+				case 9: ProcessDoubleMusketBehavior(target); break;   // <-- AÑADIR
+			}
+		}
+
+		private void ProcessDoubleMusketBehavior(ComponentCreature target)
+		{
+			if (target == null || m_componentMiner == null) return;
+			if (m_currentWeaponSlot < 0 || m_weaponType != 9) return;
+
+			int slotValue = m_componentInventory.GetSlotValue(m_currentWeaponSlot);
+			int data = Terrain.ExtractData(slotValue);
+			int contents = Terrain.ExtractContents(slotValue);
+
+			// Cooldown entre disparos
+			if (m_subsystemTime.GameTime - m_lastDoubleMusketShotTime < 1.15)
+				return;
+
+			// Recarga automática si está vacía
+			if (!DoubleMusketBlock.IsLoaded(data) || DoubleMusketBlock.GetShotsRemaining(data) <= 0)
+			{
+				int newData = DoubleMusketBlock.SetLoaded(data, true);
+				newData = DoubleMusketBlock.SetShotsRemaining(newData, 2);
+				newData = DoubleMusketBlock.SetAntiTanksBullet(newData, true);
+				newData = DoubleMusketBlock.SetBulletType(newData, BulletBlock.BulletType.MusketBall);
+				newData = DoubleMusketBlock.SetHammerState(newData, false);
+				int newValue = Terrain.MakeBlockValue(contents, 0, newData);
+				m_componentInventory.RemoveSlotItems(m_currentWeaponSlot, 1);
+				m_componentInventory.AddSlotItems(m_currentWeaponSlot, newValue, 1);
+				return;
+			}
+
+			// Iniciar apuntado si no está en progreso
+			if (!m_isAiming)
+			{
+				StartAiming();
+				return;
+			}
+
+			// Apuntar con ComponentMiner
+			Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
+			Vector3 targetPos = target.ComponentCreatureModel.EyePosition;
+			Vector3 direction = Vector3.Normalize(targetPos - eyePos);
+			Ray3 aimRay = new Ray3(eyePos, direction);
+			m_componentMiner.Aim(aimRay, AimState.InProgress);
+
+			// Tiempo de apuntado (usa m_aimTime = 0.55f)
+			if (m_subsystemTime.GameTime - m_animationStartTime >= m_DoubleMusketaimTime)
+			{
+				m_componentMiner.Aim(aimRay, AimState.Completed);
+				m_lastDoubleMusketShotTime = m_subsystemTime.GameTime;
+				m_isAiming = false;
 			}
 		}
 
@@ -2997,11 +3058,16 @@ namespace Game
 			}
 			else if (m_weaponType == 2 && m_currentWeaponSlot >= 0)
 			{
-				// No hacemos verificaciones de carga; la recarga se maneja en ProcessMusketBehavior.
-				// Simplemente ponemos el arma en estado de apuntado.
 				m_isAiming = true;
 				m_animationStartTime = m_subsystemTime.GameTime;
 			}
+			// --- INICIO DOUBLE MUSKET ---
+			else if (m_weaponType == 9 && m_currentWeaponSlot >= 0)
+			{
+				m_isAiming = true;
+				m_animationStartTime = m_subsystemTime.GameTime;
+			}
+			// --- FIN DOUBLE MUSKET ---
 			else if (m_weaponType == 3 && m_currentWeaponSlot >= 0)
 			{
 				int slotValue = m_componentInventory.GetSlotValue(m_currentWeaponSlot);
