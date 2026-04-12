@@ -64,6 +64,7 @@ namespace Game
 		public bool DestroyBlocksWhenStuck = false;
 		public bool InvokeLightningOnHit = false;
 		public bool PushWhileAttacking = false;
+		public bool ExplodeOnHit = false;
 
 		private Vector3 m_lastStuckCheckPosition;
 		private double m_stuckDetectionStartTime;
@@ -677,6 +678,24 @@ namespace Game
 								m_chaseTime = MathUtils.Max(m_chaseTime, extraChaseTime);
 								m_componentMiner.Hit(hitBody, hitPoint, m_componentCreature.ComponentBody.Matrix.Forward);
 								m_componentCreature.ComponentCreatureSounds.PlayAttackSound();
+
+								// Nueva funcionalidad: explosión al golpear con 10% de probabilidad
+								if (ExplodeOnHit && m_random.Float(0f, 1f) < 0.1f)
+								{
+									// Obtener SubsystemExplosions (si no está ya en caché)
+									SubsystemExplosions subsystemExplosions = Project.FindSubsystem<SubsystemExplosions>(true);
+									if (subsystemExplosions != null)
+									{
+										subsystemExplosions.AddExplosion(
+											Terrain.ToCell(hitPoint.X),
+											Terrain.ToCell(hitPoint.Y),
+											Terrain.ToCell(hitPoint.Z),
+											255f,        // presión típica de barril mediano
+											false,      // no incendiario
+											false       // con sonido de explosión
+										);
+									}
+								}
 
 								if (PushWhileAttacking && m_random.Float(0f, 1f) < 0.5f)
 								{
@@ -2064,6 +2083,7 @@ namespace Game
 			DestroyBlocksWhenStuck = valuesDictionary.GetValue<bool>("DestroyBlocksWhenStuck", false);
 			InvokeLightningOnHit = valuesDictionary.GetValue<bool>("InvokeLightningOnHit", false);
 			PushWhileAttacking = valuesDictionary.GetValue<bool>("PushWhileAttacking", false);
+			ExplodeOnHit = valuesDictionary.GetValue<bool>("ExplodeOnHit", false);
 
 			RegisterEvents();
 
