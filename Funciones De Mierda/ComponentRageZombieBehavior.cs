@@ -6,263 +6,210 @@ using TemplatesDatabase;
 namespace Game
 {
 	/// <summary>
-	/// Comportamiento de rabia para zombis usando máquina de estados.
-	/// Cuando la salud cae por debajo del 30% entra en estado de rabia (aumenta daño y velocidad).
-	/// Al recuperarse por encima del 40% vuelve al estado normal.
-	/// No requiere parámetros adicionales en la plantilla.
+	/// Comportamiento de furia para zombis: cuando la salud cae por debajo del 30%,
+	/// el zombi entra en modo furia, aumentando poder de ataque, velocidades,
+	/// y modificando comportamientos de persecución y huida.
 	/// </summary>
 	public class ComponentRageZombieBehavior : ComponentBehavior, IUpdateable
 	{
-		// Umbrales de activación y desactivación de la rabia
-		private const float RageActivationThreshold = 0.3f;   // 30% de vida o menos activa la rabia
-		private const float RageDeactivationThreshold = 0.4f; // 40% o más desactiva la rabia
+		// --- Constantes fijas ---
+		private const float RageHealthThreshold = 0.3f;
+		private const float AttackPowerMultiplier = 2.5f;
+		private const float SpeedMultiplier = 2.5f;
 
-		// Multiplicadores de la rabia (valores por defecto)
-		private const float RageSpeedMultiplier = 2.5f;      // Velocidad de movimiento x2.5
-		private const float RageDamageMultiplier = 2.5f;     // Daño de ataque x2.5
-
-		// Referencias a componentes necesarios
+		// --- Componentes específicos de zombi ---
+		private ComponentCreature m_componentCreature;
 		private ComponentHealth m_componentHealth;
 		private ComponentLocomotion m_componentLocomotion;
 		private ComponentMiner m_componentMiner;
-		private ComponentCreature m_componentCreature;
-		private ComponentZombieChaseBehavior m_componentZombieChase;
+		private ComponentZombieChaseBehavior m_componentZombieChaseBehavior;
+		private ComponentZombieRunAwayBehavior m_componentZombieRunAwayBehavior;
 
-		// Referencias a subsistemas
-		private SubsystemTime m_subsystemTime;
-		private SubsystemGameInfo m_subsystemGameInfo;
-
-		// Valores originales (para restaurar al salir de la rabia)
-		private float m_originalWalkSpeed;
-		private float m_originalAttackPower;
-		private float m_originalTargetInRangeTimeToChase; // Tiempo de persecución original
-		private bool m_originalValuesStored;
-
-		// Vida máxima (para calcular el porcentaje)
-		private float m_maxHealth;
-
-		// Máquina de estados
+		// --- State Machine ---
 		private StateMachine m_stateMachine;
 
-		// Propiedades de la interfaz IUpdateable
+		// --- Valores originales para restaurar ---
+		private float m_originalAttackPower;
+		private float m_originalWalkSpeed;
+		private float m_originalSwimSpeed;
+		private float m_originalFlySpeed;
+		private float m_originalJumpSpeed;
+		private bool m_originalRunAwayEnabled;
+
+		// --- Estado interno ---
+		private bool m_isRaging;
+
+		// --- Propiedades de comportamiento ---
+		public override float ImportanceLevel => m_isRaging ? 20f : 0f;
 		public UpdateOrder UpdateOrder => UpdateOrder.Default;
 
-		// Importancia del comportamiento (siempre activo)
-		public override float ImportanceLevel => 10f;
-
+		// ------------------------------------------------------------------------
+		// Carga: solo busca componentes, no lee ValuesDictionary
+		// ------------------------------------------------------------------------
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
-			base.Load(valuesDictionary, idToEntityMap);
-
-			// Obtener subsistemas
-			m_subsystemTime = Project.FindSubsystem<SubsystemTime>(true);
-			m_subsystemGameInfo = Project.FindSubsystem<SubsystemGameInfo>(true);
-
-			// Obtener referencias a los componentes necesarios
 			m_componentCreature = Entity.FindComponent<ComponentCreature>(true);
-			if (m_componentCreature == null)
-				return;
-
-			m_componentHealth = m_componentCreature.ComponentHealth;
-			m_componentLocomotion = Entity.FindComponent<ComponentLocomotion>();
+			m_componentHealth = Entity.FindComponent<ComponentHealth>(true);
+			m_componentLocomotion = Entity.FindComponent<ComponentLocomotion>(true);
 			m_componentMiner = Entity.FindComponent<ComponentMiner>();
-			m_componentZombieChase = Entity.FindComponent<ComponentZombieChaseBehavior>();
+			m_componentZombieChaseBehavior = Entity.FindComponent<ComponentZombieChaseBehavior>();
+			m_componentZombieRunAwayBehavior = Entity.FindComponent<ComponentZombieRunAwayBehavior>();
 
-			if (m_componentHealth == null)
-				return;
-
-			// Almacenar la vida máxima
-			m_maxHealth = m_componentHealth.Health;
-
-			// Guardar valores originales
-			StoreOriginalValues();
-
-			// Inicializar la máquina de estados
+			m_stateMachine = new StateMachine();
 			InitializeStateMachine();
 
-			// Determinar el estado inicial según la salud actual
-			if (m_maxHealth > 0f && (m_componentHealth.Health / m_maxHealth) <= RageActivationThreshold)
-			{
-				m_stateMachine.TransitionTo("Rage");
-			}
-			else
-			{
-				m_stateMachine.TransitionTo("Normal");
-			}
+			m_isRaging = false;
+			m_stateMachine.TransitionTo("Normal");
 		}
 
-		private void StoreOriginalValues()
+		// ------------------------------------------------------------------------
+		// Configuración de la máquina de estados
+		// ------------------------------------------------------------------------
+		private void InitializeStateMachine()
 		{
-			if (m_originalValuesStored)
-				return;
+			m_stateMachine.AddState("Normal",
+				enter: () =>
+				{
+					RestoreOriginalValues();
+					m_isRaging = false;
+				},
+				update: () =>
+				{
+					if (ShouldEnterRage())
+					{
+						m_stateMachine.TransitionTo("Rage");
+					}
+				},
+				leave: null
+			);
 
-			if (m_componentLocomotion != null)
-			{
-				m_originalWalkSpeed = m_componentLocomotion.WalkSpeed;
-			}
+			m_stateMachine.AddState("Rage",
+				enter: () =>
+				{
+					ApplyRageBonuses();
+					m_isRaging = true;
+				},
+				update: () =>
+				{
+					if (!ShouldEnterRage())
+					{
+						m_stateMachine.TransitionTo("Normal");
+					}
+				},
+				leave: () =>
+				{
+					RestoreOriginalValues();
+					m_isRaging = false;
+				}
+			);
+		}
 
+		// ------------------------------------------------------------------------
+		// Condición de furia
+		// ------------------------------------------------------------------------
+		private bool ShouldEnterRage()
+		{
+			if (m_componentHealth == null)
+				return false;
+
+			float health = m_componentHealth.Health;
+			return health <= RageHealthThreshold && health > 0f;
+		}
+
+		// ------------------------------------------------------------------------
+		// Aplicar bonificaciones de furia (ataque, locomoción, chase, huida)
+		// ------------------------------------------------------------------------
+		private void ApplyRageBonuses()
+		{
+			// 1. Ataque (ComponentMiner)
 			if (m_componentMiner != null)
 			{
 				m_originalAttackPower = m_componentMiner.AttackPower;
+				m_componentMiner.AttackPower *= AttackPowerMultiplier;
 			}
 
-			if (m_componentZombieChase != null)
-			{
-				// Guardar el tiempo de persecución original (TargetInRangeTimeToChase)
-				// Usamos reflexión o asumimos que existe un campo accesible
-				var field = typeof(ComponentZombieChaseBehavior).GetField("m_defaultTargetInRangeTime",
-					System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-				if (field != null)
-				{
-					m_originalTargetInRangeTimeToChase = (float)field.GetValue(m_componentZombieChase);
-				}
-				else
-				{
-					// Valor por defecto si no se puede obtener
-					m_originalTargetInRangeTimeToChase = 3f;
-				}
-			}
-
-			m_originalValuesStored = true;
-		}
-
-		private void InitializeStateMachine()
-		{
-			m_stateMachine = new StateMachine();
-
-			// Estado Normal
-			m_stateMachine.AddState("Normal",
-				enter: OnEnterNormal,
-				update: OnUpdateNormal,
-				leave: OnLeaveNormal
-			);
-
-			// Estado Rage (rabia)
-			m_stateMachine.AddState("Rage",
-				enter: OnEnterRage,
-				update: OnUpdateRage,
-				leave: OnLeaveRage
-			);
-		}
-
-		// --------------------------------------------------
-		// Estado Normal
-		// --------------------------------------------------
-		private void OnEnterNormal()
-		{
-			// Restaurar valores originales si veníamos de rabia
+			// 2. Locomoción
 			if (m_componentLocomotion != null)
 			{
-				m_componentLocomotion.WalkSpeed = m_originalWalkSpeed;
+				m_originalWalkSpeed = m_componentLocomotion.WalkSpeed;
+				m_originalSwimSpeed = m_componentLocomotion.SwimSpeed;
+				m_originalFlySpeed = m_componentLocomotion.FlySpeed;
+				m_originalJumpSpeed = m_componentLocomotion.JumpSpeed;
+
+				m_componentLocomotion.WalkSpeed *= SpeedMultiplier;
+				m_componentLocomotion.SwimSpeed *= SpeedMultiplier;
+				m_componentLocomotion.FlySpeed *= SpeedMultiplier;
+				m_componentLocomotion.JumpSpeed *= SpeedMultiplier;
 			}
-			if (m_componentMiner != null)
+
+			// 3. Persecución (ZombieChaseBehavior)
+			if (m_componentZombieChaseBehavior != null)
+			{
+				// Aumentar agresividad: reducir tiempo necesario para empezar a perseguir
+				m_componentZombieChaseBehavior.TargetInRangeTimeToChase = 0f;
+				// Si ya tiene un objetivo, forzar un ataque inmediato
+				if (m_componentZombieChaseBehavior.Target != null)
+				{
+					m_componentZombieChaseBehavior.Attack(
+						m_componentZombieChaseBehavior.Target,
+						40f,   // Rango típico usado en otras partes del código
+						120f,  // Tiempo de persecución largo durante furia
+						true
+					);
+				}
+			}
+
+			// 4. Huida (ZombieRunAwayBehavior)
+			if (m_componentZombieRunAwayBehavior != null)
+			{
+				// En furia, el zombi NO debe huir bajo ninguna circunstancia.
+				m_originalRunAwayEnabled = (m_componentZombieRunAwayBehavior.LowHealthToEscape > 0f);
+				m_componentZombieRunAwayBehavior.LowHealthToEscape = 0f;
+			}
+		}
+
+		// ------------------------------------------------------------------------
+		// Restaurar valores originales
+		// ------------------------------------------------------------------------
+		private void RestoreOriginalValues()
+		{
+			if (m_componentMiner != null && m_originalAttackPower > 0f)
 			{
 				m_componentMiner.AttackPower = m_originalAttackPower;
 			}
-			if (m_componentZombieChase != null)
-			{
-				// Restaurar tiempo de persecución original
-				var field = typeof(ComponentZombieChaseBehavior).GetField("m_defaultTargetInRangeTime",
-					System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-				if (field != null)
-				{
-					field.SetValue(m_componentZombieChase, m_originalTargetInRangeTimeToChase);
-				}
-				// También restaurar TargetInRangeTimeToChase si es accesible
-				var prop = typeof(ComponentZombieChaseBehavior).GetProperty("TargetInRangeTimeToChase",
-					System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
-				if (prop != null && prop.CanWrite)
-				{
-					prop.SetValue(m_componentZombieChase, m_originalTargetInRangeTimeToChase);
-				}
-			}
-		}
 
-		private void OnUpdateNormal()
-		{
-			// Verificar si debemos entrar en rabia
-			if (m_componentHealth == null || m_maxHealth <= 0f)
-				return;
-
-			float healthRatio = m_componentHealth.Health / m_maxHealth;
-			if (healthRatio <= RageActivationThreshold)
-			{
-				m_stateMachine.TransitionTo("Rage");
-			}
-		}
-
-		private void OnLeaveNormal()
-		{
-			// No es necesario hacer nada al salir del estado normal
-		}
-
-		// --------------------------------------------------
-		// Estado Rage
-		// --------------------------------------------------
-		private void OnEnterRage()
-		{
-			// Aplicar multiplicadores de rabia
 			if (m_componentLocomotion != null)
 			{
-				m_componentLocomotion.WalkSpeed = m_originalWalkSpeed * RageSpeedMultiplier;
-			}
-			if (m_componentMiner != null)
-			{
-				m_componentMiner.AttackPower = m_originalAttackPower * RageDamageMultiplier;
-			}
-			if (m_componentZombieChase != null)
-			{
-				// En rabia, reducir el tiempo de persecución a 0 (ataque inmediato)
-				var prop = typeof(ComponentZombieChaseBehavior).GetProperty("TargetInRangeTimeToChase",
-					System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
-				if (prop != null && prop.CanWrite)
-				{
-					prop.SetValue(m_componentZombieChase, 0f);
-				}
+				if (m_originalWalkSpeed > 0f) m_componentLocomotion.WalkSpeed = m_originalWalkSpeed;
+				if (m_originalSwimSpeed > 0f) m_componentLocomotion.SwimSpeed = m_originalSwimSpeed;
+				if (m_originalFlySpeed > 0f) m_componentLocomotion.FlySpeed = m_originalFlySpeed;
+				if (m_originalJumpSpeed > 0f) m_componentLocomotion.JumpSpeed = m_originalJumpSpeed;
 			}
 
-			// Aquí se podrían añadir efectos visuales o sonidos
-			// Por ejemplo, hacer que el zombi grite al activar la rabia
-			if (m_componentCreature != null && m_componentCreature.ComponentCreatureSounds != null)
+			if (m_componentZombieChaseBehavior != null)
 			{
-				m_componentCreature.ComponentCreatureSounds.PlayPainSound();
+				// Restaurar tiempo de persecución normal (valor por defecto 3f según código original)
+				m_componentZombieChaseBehavior.TargetInRangeTimeToChase = 3f;
+			}
+
+			if (m_componentZombieRunAwayBehavior != null)
+			{
+				// Restaurar umbral de huida original
+				m_componentZombieRunAwayBehavior.LowHealthToEscape = m_originalRunAwayEnabled ? 0.2f : 0f;
 			}
 		}
 
-		private void OnUpdateRage()
-		{
-			// Verificar si debemos salir de la rabia
-			if (m_componentHealth == null || m_maxHealth <= 0f)
-				return;
-
-			float healthRatio = m_componentHealth.Health / m_maxHealth;
-			if (healthRatio >= RageDeactivationThreshold)
-			{
-				m_stateMachine.TransitionTo("Normal");
-			}
-		}
-
-		private void OnLeaveRage()
-		{
-			// No es necesario hacer nada específico al salir de rabia,
-			// la restauración se hará al entrar a Normal.
-		}
-
-		// --------------------------------------------------
-		// Update del componente (IUpdateable)
-		// --------------------------------------------------
+		// ------------------------------------------------------------------------
+		// Update
+		// ------------------------------------------------------------------------
 		public void Update(float dt)
 		{
-			// Si no hay salud o la criatura está muerta, no hacemos nada
-			if (m_componentHealth == null || m_componentHealth.Health <= 0f || m_maxHealth <= 0f)
+			if (m_componentHealth == null || m_componentHealth.Health <= 0f)
 				return;
 
-			// Asegurar que los valores originales están almacenados
-			if (!m_originalValuesStored)
-				StoreOriginalValues();
-
-			// Actualizar la máquina de estados
-			m_stateMachine?.Update();
+			m_stateMachine.Update();
 		}
+
+		public bool IsRaging => m_isRaging;
 	}
 }
