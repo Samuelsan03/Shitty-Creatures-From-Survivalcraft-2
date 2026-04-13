@@ -28,7 +28,7 @@ namespace Game
 		private double m_lastImpactSoundTime;
 
 		public FireVomitParticleSystem(SubsystemTerrain terrain, SubsystemBodies bodies, SubsystemSoundMaterials soundMaterials, SubsystemTime time, ComponentCreature owner)
-			: base(200)   // <-- Tamaño del pool sin cambios
+			: base(200)
 		{
 			m_subsystemTerrain = terrain;
 			m_subsystemBodies = bodies;
@@ -67,10 +67,14 @@ namespace Game
 			dt = Math.Clamp(dt, 0f, 0.1f);
 			m_duration += dt;
 
-			// Se elimina el auto-stop por tiempo. Ahora el control externo (ComponentCreatureVomit) decide cuándo parar.
+			// ✅ CORRECCIÓN: Auto-stop después de 3.5 segundos (igual que PoisonVomit)
+			if (m_duration > 3.5f)
+			{
+				IsStopped = true;
+			}
 
 			float noise = MathUtils.Saturate(1.3f * SimplexNoise.Noise(3f * m_duration + (float)(GetHashCode() % 100)) - 0.3f);
-			float generationRate = 55f * noise;   // Mayor tasa de generación para chorro denso
+			float generationRate = 55f * noise;
 			m_toGenerate += generationRate * dt;
 
 			bool anyActive = false;
@@ -123,7 +127,6 @@ namespace Game
 						}
 
 						particle.Position = newPos;
-						// Sin gravedad ni decaimiento (chorro recto)
 						particle.Color *= MathUtils.Saturate(particle.TimeToLive);
 						particle.TextureSlot = (int)(8.99f * MathUtils.Saturate(2f - particle.TimeToLive));
 					}
@@ -134,13 +137,13 @@ namespace Game
 				}
 				else if (!IsStopped && m_toGenerate >= 1f)
 				{
-					Vector3 randomOffset = m_random.Vector3(0.05f);    // Menor dispersión inicial
+					Vector3 randomOffset = m_random.Vector3(0.05f);
 					particle.IsActive = true;
 					particle.Position = Position + randomOffset;
 					particle.Color = Color.MultiplyColorOnly(baseColor, m_random.Float(0.7f, 1f));
-					Vector3 spread = m_random.Vector3(0.02f);         // Dirección más ceñida
+					Vector3 spread = m_random.Vector3(0.02f);
 					particle.Velocity = MathUtils.Lerp(10f, 14f, noise) * Vector3.Normalize(Direction + 0.1f * spread);
-					particle.TimeToLive = m_random.Float(1.2f, 2.0f); // Vida más corta para evitar acumulación
+					particle.TimeToLive = m_random.Float(1.2f, 2.0f);
 					particle.Size = new Vector2(0.55f);
 					particle.FlipX = m_random.Bool();
 					particle.FlipY = m_random.Bool();
@@ -148,6 +151,7 @@ namespace Game
 				}
 			}
 
+			// ✅ CORRECCIÓN: Retorna true solo cuando está detenido Y no hay partículas activas
 			return IsStopped && !anyActive;
 		}
 
