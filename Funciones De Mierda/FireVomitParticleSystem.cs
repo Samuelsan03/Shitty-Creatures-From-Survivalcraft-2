@@ -28,7 +28,7 @@ namespace Game
 		private double m_lastImpactSoundTime;
 
 		public FireVomitParticleSystem(SubsystemTerrain terrain, SubsystemBodies bodies, SubsystemSoundMaterials soundMaterials, SubsystemTime time, ComponentCreature owner)
-			: base(150)
+			: base(200)   // <-- Tamaño del pool sin cambios
 		{
 			m_subsystemTerrain = terrain;
 			m_subsystemBodies = bodies;
@@ -65,15 +65,12 @@ namespace Game
 			baseColor.A = 255;
 
 			dt = Math.Clamp(dt, 0f, 0.1f);
-			// Velocidad constante (sin decaimiento)
-			// float decay = MathF.Pow(0.02f, dt);   // <-- eliminado para efecto láser recto
 			m_duration += dt;
 
-			if (m_duration > 5f)
-				IsStopped = true;
+			// Se elimina el auto-stop por tiempo. Ahora el control externo (ComponentCreatureVomit) decide cuándo parar.
 
 			float noise = MathUtils.Saturate(1.3f * SimplexNoise.Noise(3f * m_duration + (float)(GetHashCode() % 100)) - 0.3f);
-			float generationRate = 30f * noise;
+			float generationRate = 55f * noise;   // Mayor tasa de generación para chorro denso
 			m_toGenerate += generationRate * dt;
 
 			bool anyActive = false;
@@ -121,15 +118,12 @@ namespace Game
 								m_subsystemSoundMaterials.PlayImpactSound(terrainHit.Value.Value, terrainHit.Value.HitPoint(), 1f);
 								m_lastImpactSoundTime = m_subsystemTime.GameTime;
 							}
-							// Al impactar con el terreno, la partícula desaparece (efecto láser)
 							particle.IsActive = false;
 							continue;
 						}
 
 						particle.Position = newPos;
-						// Sin gravedad y sin decaimiento de velocidad
-						// particle.Velocity.Y += -9.81f * dt;   // <-- eliminado
-						// particle.Velocity *= decay;           // <-- eliminado
+						// Sin gravedad ni decaimiento (chorro recto)
 						particle.Color *= MathUtils.Saturate(particle.TimeToLive);
 						particle.TextureSlot = (int)(8.99f * MathUtils.Saturate(2f - particle.TimeToLive));
 					}
@@ -140,13 +134,13 @@ namespace Game
 				}
 				else if (!IsStopped && m_toGenerate >= 1f)
 				{
-					Vector3 randomOffset = m_random.Vector3(0.1f);
+					Vector3 randomOffset = m_random.Vector3(0.05f);    // Menor dispersión inicial
 					particle.IsActive = true;
 					particle.Position = Position + randomOffset;
 					particle.Color = Color.MultiplyColorOnly(baseColor, m_random.Float(0.7f, 1f));
-					Vector3 spread = m_random.Vector3(0.03f);
-					particle.Velocity = MathUtils.Lerp(8f, 12f, noise) * Vector3.Normalize(Direction + 0.1f * spread);
-					particle.TimeToLive = m_random.Float(1.5f, 2.5f);
+					Vector3 spread = m_random.Vector3(0.02f);         // Dirección más ceñida
+					particle.Velocity = MathUtils.Lerp(10f, 14f, noise) * Vector3.Normalize(Direction + 0.1f * spread);
+					particle.TimeToLive = m_random.Float(1.2f, 2.0f); // Vida más corta para evitar acumulación
 					particle.Size = new Vector2(0.55f);
 					particle.FlipX = m_random.Bool();
 					particle.FlipY = m_random.Bool();
