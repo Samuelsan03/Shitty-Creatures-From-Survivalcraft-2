@@ -11,10 +11,11 @@ namespace Game
 		public SubsystemGameInfo m_subsystemGameInfo;
 		public SubsystemPlayers m_subsystemPlayers;
 		public SubsystemBodies m_subsystemBodies;
+		public SubsystemPickables m_subsystemPickables;
 
 		public override int[] HandledBlocks
 		{
-			get { return new int[] { TeaAntifluBucketBlock.Index }; }
+			get { return new int[] { TeaAntifluBucketBlock.Index, TeaAntifluBowlBlock.Index }; }
 		}
 
 		public override bool OnUse(Ray3 ray, ComponentMiner componentMiner)
@@ -22,10 +23,6 @@ namespace Game
 			ComponentPlayer componentPlayer = componentMiner?.ComponentPlayer;
 			if (componentPlayer == null) return false;
 
-			// --- DETECCIÓN DE MODO CREATIVO ---
-			bool isCreative = (m_subsystemGameInfo.WorldSettings.GameMode == GameMode.Creative);
-
-			// Buscar objetivo
 			Entity targetEntity = null;
 			ComponentBody hitBody = null;
 			float? hitDistance = null;
@@ -48,61 +45,67 @@ namespace Game
 			}
 			if (hitBody != null) targetEntity = hitBody.Entity;
 
-			bool isTargetingPlayer = (targetEntity == null || targetEntity == componentPlayer.Entity);
-			if (isTargetingPlayer)
-			{
-				targetEntity = componentPlayer.Entity;
-				// En modo creativo no permitir curar jugador
-				if (isCreative) return false;
-				// En otros modos, verificar mecánicas de supervivencia (como ya estaba)
-				if (!m_subsystemGameInfo.WorldSettings.AreAdventureSurvivalMechanicsEnabled)
-				{
-					return false;
-				}
-			}
+			if (targetEntity == null || targetEntity == componentPlayer.Entity) return false;
 
 			bool hasFlu = HasFlu(targetEntity);
 			if (!hasFlu) return false;
 
-			// --- CURACIÓN ---
 			m_subsystemAudio.PlaySound("Audio/UI/drinking", 1f, 0f, 0f, 0f);
 			bool cured = CureFlu(targetEntity);
 
-			// --- BEBIDA (solo si la sed está activada y NO es modo creativo) ---
-			if (!isCreative && ShittyCreaturesSettingsManager.ThirstEnabled)
-			{
-				ComponentThirst thirst = targetEntity.FindComponent<ComponentThirst>();
-				thirst?.Drink(0.4f);
-			}
-
-			// --- MENSAJES ---
-			ComponentPlayer targetPlayer = targetEntity.FindComponent<ComponentPlayer>();
-			if (targetPlayer != null)
-			{
-				string message = LanguageControl.Get("AntifluBucket", "FluCured");
-				targetPlayer.ComponentGui.DisplaySmallMessage(message, new Color(102, 178, 255), true, false);
-			}
-			else if (!isTargetingPlayer)
+			if (cured)
 			{
 				string npcMessage = LanguageControl.Get("AntifluBucket", "FluNPCCured");
 				componentPlayer.ComponentGui.DisplaySmallMessage(npcMessage, new Color(102, 178, 255), true, false);
-			}
 
-			// --- CONSUMIR CUBO (si se curó) ---
-			if (cured)
-			{
 				IInventory inventory = componentMiner.Inventory;
 				if (inventory != null)
 				{
 					int activeSlotIndex = inventory.ActiveSlotIndex;
+					int currentValue = inventory.GetSlotValue(activeSlotIndex);
+					int contents = Terrain.ExtractContents(currentValue);
+					Block usedBlock = BlocksManager.Blocks[contents];
+
+					// 1. Eliminar el ítem usado
 					inventory.RemoveSlotItems(activeSlotIndex, 1);
-					inventory.AddSlotItems(activeSlotIndex, EmptyBucketBlock.Index, 1);
+
+					// 2. Determinar el ítem vacío correspondiente según el tipo real del bloque
+					int emptyItemIndex;
+					if (usedBlock is TeaAntifluBucketBlock)
+						emptyItemIndex = EmptyBucketBlock.Index;
+					else if (usedBlock is TeaAntifluBowlBlock)
+						emptyItemIndex = EmptyBowlBlock.Index;
+					else
+						return false; // Tipo desconocido
+
+					// 3. Intentar agregar el ítem vacío al slot activo
+					inventory.AddSlotItems(activeSlotIndex, emptyItemIndex, 1);
+
+					// 4. Verificar si el ítem vacío está ahora en el inventario
+					bool foundEmpty = false;
+					for (int i = 0; i < inventory.SlotsCount; i++)
+					{
+						int slotValue = inventory.GetSlotValue(i);
+						if (Terrain.ExtractContents(slotValue) == emptyItemIndex && inventory.GetSlotCount(i) > 0)
+						{
+							foundEmpty = true;
+							break;
+						}
+					}
+
+					// 5. Si no se encontró, crear el ítem en el mundo
+					if (!foundEmpty)
+					{
+						Vector3 dropPosition = componentPlayer.ComponentBody.Position + new Vector3(0f, 1.2f, 0f);
+						m_subsystemPickables.AddPickable(emptyItemIndex, 1, dropPosition, null, null);
+					}
 				}
 				return true;
 			}
 
 			return false;
 		}
+
 		private float? RayBoxIntersection(Vector3 rayOrigin, Vector3 rayDirection, BoundingBox box)
 		{
 			Vector3 dirFrac = new Vector3(1.0f / (rayDirection.X != 0 ? rayDirection.X : float.Epsilon), 1.0f / (rayDirection.Y != 0 ? rayDirection.Y : float.Epsilon), 1.0f / (rayDirection.Z != 0 ? rayDirection.Z : float.Epsilon));
@@ -163,6 +166,7 @@ namespace Game
 			m_subsystemGameInfo = Project.FindSubsystem<SubsystemGameInfo>(true);
 			m_subsystemPlayers = Project.FindSubsystem<SubsystemPlayers>(true);
 			m_subsystemBodies = Project.FindSubsystem<SubsystemBodies>(true);
+			m_subsystemPickables = Project.FindSubsystem<SubsystemPickables>(true);
 		}
 
 		public override void Save(ValuesDictionary valuesDictionary)
