@@ -52,6 +52,66 @@ namespace Game
 			VomitProbability = valuesDictionary.GetValue<float>("VomitProbability", 0.1f);
 			VomitCooldown = valuesDictionary.GetValue<float>("VomitCooldown", 5f);
 		}
+
+		// Calcula la posición de la boca según el tipo de modelo
+		private Vector3 GetVomitMouthPosition()
+		{
+			// Posición base (humanoides)
+			Vector3 basePos = m_componentCreatureModel.EyePosition
+				- m_componentCreatureModel.EyeRotation.GetUpVector() * 0.08f
+				+ m_componentCreatureModel.EyeRotation.GetForwardVector() * 0.3f;
+
+			Type modelType = m_componentCreatureModel.GetType();
+
+			if (modelType == typeof(ComponentBirdModel))
+			{
+				// Aves: pico más adelante
+				return m_componentCreatureModel.EyePosition
+					+ m_componentCreatureModel.EyeRotation.GetForwardVector() * 0.8f;
+			}
+			if (modelType == typeof(ComponentFishModel))
+			{
+				// Peces: boca en el extremo frontal
+				return m_componentCreatureModel.EyePosition
+					+ m_componentCreatureModel.EyeRotation.GetForwardVector() * 0.7f;
+			}
+			if (modelType == typeof(ComponentFourLeggedModel))
+			{
+				// Cuadrúpedos: hocico hacia adelante y un poco abajo
+				return m_componentCreatureModel.EyePosition
+					+ m_componentCreatureModel.EyeRotation.GetForwardVector() * 0.5f
+					- m_componentCreatureModel.EyeRotation.GetUpVector() * 0.1f;
+			}
+			// Humanoides y otros
+			return basePos;
+		}
+
+		// Verifica si el objetivo está dentro del cono de visión
+		private bool IsTargetInViewCone(ComponentCreature target)
+		{
+			if (target == null) return false;
+
+			Vector3 forward = m_componentCreature.ComponentBody.Matrix.Forward;
+			Vector3 toTarget = target.ComponentBody.Position - m_componentCreature.ComponentBody.Position;
+
+			// Ignorar diferencia de altura para el cono horizontal
+			forward.Y = 0f;
+			toTarget.Y = 0f;
+
+			float dot = Vector3.Dot(forward, toTarget);
+			if (dot <= 0f) return false;
+
+			float forwardLength = forward.Length();
+			float toTargetLength = toTarget.Length();
+			if (toTargetLength < 0.001f) return true;
+
+			float cosAngle = dot / (forwardLength * toTargetLength);
+			float halfAngleRad = MathUtils.DegToRad(60f); // Cono de 120° (60° a cada lado)
+			float cosHalfAngle = MathF.Cos(halfAngleRad);
+
+			return cosAngle >= cosHalfAngle;
+		}
+
 		public void Update(float dt)
 		{
 			if (m_componentCreature.ComponentHealth.Health <= 0f)
@@ -59,6 +119,7 @@ namespace Game
 
 			ComponentCreature target = GetCurrentChaseTarget();
 
+			// --- Vómito de veneno activo ---
 			if (m_activePoisonVomit != null)
 			{
 				if (m_activePoisonVomit.IsStopped)
@@ -67,14 +128,13 @@ namespace Game
 				}
 				else if (target != null)
 				{
-					m_activePoisonVomit.Position = m_componentCreatureModel.EyePosition
-						- m_componentCreatureModel.EyeRotation.GetUpVector() * 0.08f
-						+ m_componentCreatureModel.EyeRotation.GetForwardVector() * 0.3f;
+					m_activePoisonVomit.Position = GetVomitMouthPosition();
 					m_activePoisonVomit.Direction = Vector3.Normalize(target.ComponentCreatureModel.EyePosition - m_activePoisonVomit.Position);
 				}
 				return;
 			}
 
+			// --- Vómito de fuego activo ---
 			if (m_activeFireVomit != null)
 			{
 				if (m_activeFireVomit.IsStopped)
@@ -83,15 +143,17 @@ namespace Game
 				}
 				else if (target != null)
 				{
-					m_activeFireVomit.Position = m_componentCreatureModel.EyePosition
-						- m_componentCreatureModel.EyeRotation.GetUpVector() * 0.08f
-						+ m_componentCreatureModel.EyeRotation.GetForwardVector() * 0.3f;
+					m_activeFireVomit.Position = GetVomitMouthPosition();
 					m_activeFireVomit.Direction = Vector3.Normalize(target.ComponentCreatureModel.EyePosition - m_activeFireVomit.Position);
 				}
 				return;
 			}
 
 			if (target == null)
+				return;
+
+			// Verificar que el objetivo esté dentro del cono de visión
+			if (!IsTargetInViewCone(target))
 				return;
 
 			float distance = Vector3.Distance(m_componentBody.Position, target.ComponentBody.Position);
@@ -117,9 +179,7 @@ namespace Game
 				usePoison = !useFire;
 			}
 
-			Vector3 mouthPos = m_componentCreatureModel.EyePosition
-				- m_componentCreatureModel.EyeRotation.GetUpVector() * 0.08f
-				+ m_componentCreatureModel.EyeRotation.GetForwardVector() * 0.3f;
+			Vector3 mouthPos = GetVomitMouthPosition();
 			Vector3 direction = Vector3.Normalize(target.ComponentCreatureModel.EyePosition - mouthPos);
 
 			if (usePoison)
