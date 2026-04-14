@@ -24,8 +24,10 @@ namespace Game
 		public bool VomitFire { get; set; }
 		public float VomitProbability { get; set; } = 0.1f;
 		public float VomitCooldown { get; set; } = 5f;
+		public float MaxVomitDuration { get; set; } = 3.5f;   // Duración máxima del vómito
 
 		private double m_lastVomitTime;
+		private double m_vomitStartTime;      // Nuevo: para controlar duración máxima
 		private PoisonVomitParticleSystem m_activePoisonVomit;
 		private FireVomitParticleSystem m_activeFireVomit;
 		private Random m_random = new Random();
@@ -51,42 +53,26 @@ namespace Game
 			VomitFire = valuesDictionary.GetValue<bool>("VomitFire", false);
 			VomitProbability = valuesDictionary.GetValue<float>("VomitProbability", 0.1f);
 			VomitCooldown = valuesDictionary.GetValue<float>("VomitCooldown", 5f);
+			MaxVomitDuration = valuesDictionary.GetValue<float>("MaxVomitDuration", 3.5f);
 		}
 
-		// Calcula la posición de la boca según el tipo de modelo
 		private Vector3 GetVomitMouthPosition()
 		{
-			// Posición base (humanoides)
 			Vector3 basePos = m_componentCreatureModel.EyePosition
 				- m_componentCreatureModel.EyeRotation.GetUpVector() * 0.08f
 				+ m_componentCreatureModel.EyeRotation.GetForwardVector() * 0.3f;
 
 			Type modelType = m_componentCreatureModel.GetType();
-
 			if (modelType == typeof(ComponentBirdModel))
-			{
-				// Aves: pico más adelante
-				return m_componentCreatureModel.EyePosition
-					+ m_componentCreatureModel.EyeRotation.GetForwardVector() * 0.8f;
-			}
+				return m_componentCreatureModel.EyePosition + m_componentCreatureModel.EyeRotation.GetForwardVector() * 0.8f;
 			if (modelType == typeof(ComponentFishModel))
-			{
-				// Peces: boca en el extremo frontal
-				return m_componentCreatureModel.EyePosition
-					+ m_componentCreatureModel.EyeRotation.GetForwardVector() * 0.7f;
-			}
+				return m_componentCreatureModel.EyePosition + m_componentCreatureModel.EyeRotation.GetForwardVector() * 0.7f;
 			if (modelType == typeof(ComponentFourLeggedModel))
-			{
-				// Cuadrúpedos: hocico hacia adelante y un poco abajo
-				return m_componentCreatureModel.EyePosition
-					+ m_componentCreatureModel.EyeRotation.GetForwardVector() * 0.5f
-					- m_componentCreatureModel.EyeRotation.GetUpVector() * 0.1f;
-			}
-			// Humanoides y otros
+				return m_componentCreatureModel.EyePosition + m_componentCreatureModel.EyeRotation.GetForwardVector() * 0.5f - m_componentCreatureModel.EyeRotation.GetUpVector() * 0.1f;
+
 			return basePos;
 		}
 
-		// Verifica si el objetivo está dentro del cono de visión
 		private bool IsTargetInViewCone(ComponentCreature target)
 		{
 			if (target == null) return false;
@@ -94,7 +80,6 @@ namespace Game
 			Vector3 forward = m_componentCreature.ComponentBody.Matrix.Forward;
 			Vector3 toTarget = target.ComponentBody.Position - m_componentCreature.ComponentBody.Position;
 
-			// Ignorar diferencia de altura para el cono horizontal
 			forward.Y = 0f;
 			toTarget.Y = 0f;
 
@@ -106,7 +91,7 @@ namespace Game
 			if (toTargetLength < 0.001f) return true;
 
 			float cosAngle = dot / (forwardLength * toTargetLength);
-			float halfAngleRad = MathUtils.DegToRad(60f); // Cono de 120° (60° a cada lado)
+			float halfAngleRad = MathUtils.DegToRad(60f);
 			float cosHalfAngle = MathF.Cos(halfAngleRad);
 
 			return cosAngle >= cosHalfAngle;
@@ -119,14 +104,23 @@ namespace Game
 
 			ComponentCreature target = GetCurrentChaseTarget();
 
-			// --- Vómito de veneno activo ---
+			// ---- Vómito de veneno activo ----
 			if (m_activePoisonVomit != null)
 			{
-				if (m_activePoisonVomit.IsStopped)
+				bool shouldStop = false;
+				if (target == null)
+					shouldStop = true;
+				else if (!IsTargetInViewCone(target))
+					shouldStop = true;
+				else if (m_subsystemTime.GameTime - m_vomitStartTime > MaxVomitDuration)
+					shouldStop = true;
+
+				if (shouldStop || m_activePoisonVomit.IsStopped)
 				{
+					m_activePoisonVomit.IsStopped = true;
 					m_activePoisonVomit = null;
 				}
-				else if (target != null)
+				else
 				{
 					m_activePoisonVomit.Position = GetVomitMouthPosition();
 					m_activePoisonVomit.Direction = Vector3.Normalize(target.ComponentCreatureModel.EyePosition - m_activePoisonVomit.Position);
@@ -134,14 +128,23 @@ namespace Game
 				return;
 			}
 
-			// --- Vómito de fuego activo ---
+			// ---- Vómito de fuego activo ----
 			if (m_activeFireVomit != null)
 			{
-				if (m_activeFireVomit.IsStopped)
+				bool shouldStop = false;
+				if (target == null)
+					shouldStop = true;
+				else if (!IsTargetInViewCone(target))
+					shouldStop = true;
+				else if (m_subsystemTime.GameTime - m_vomitStartTime > MaxVomitDuration)
+					shouldStop = true;
+
+				if (shouldStop || m_activeFireVomit.IsStopped)
 				{
+					m_activeFireVomit.IsStopped = true;
 					m_activeFireVomit = null;
 				}
-				else if (target != null)
+				else
 				{
 					m_activeFireVomit.Position = GetVomitMouthPosition();
 					m_activeFireVomit.Direction = Vector3.Normalize(target.ComponentCreatureModel.EyePosition - m_activeFireVomit.Position);
@@ -149,16 +152,14 @@ namespace Game
 				return;
 			}
 
+			// ---- Iniciar nuevo vómito ----
 			if (target == null)
 				return;
 
-			// Verificar que el objetivo esté dentro del cono de visión
 			if (!IsTargetInViewCone(target))
 				return;
 
-			float distance = Vector3.Distance(m_componentBody.Position, target.ComponentBody.Position);
-			if (distance < 3f)
-				return;
+			// ⚠️ Se ha eliminado la restricción de distancia mínima (antes: if (distance < 3f) return;)
 
 			if (m_random.Float(0f, 1f) > VomitProbability * dt)
 				return;
@@ -204,7 +205,8 @@ namespace Game
 			}
 
 			m_lastVomitTime = currentTime;
-			m_componentCreature.ComponentCreatureSounds.PlayIdleSound(false);
+			m_vomitStartTime = currentTime;   // Registrar inicio para control de duración
+			m_componentCreature.ComponentCreatureSounds.PlayAttackSound();
 		}
 
 		private ComponentCreature GetCurrentChaseTarget()
