@@ -11,12 +11,9 @@ namespace Game
 		private SubsystemBodies m_subsystemBodies;
 		private SubsystemSoundMaterials m_subsystemSoundMaterials;
 		private SubsystemTime m_subsystemTime;
+		private SubsystemFireBlockBehavior m_subsystemFireBlockBehavior;
 		private ComponentCreature m_owner;
 		private Random m_random = new Random();
-
-		private ComponentNewChaseBehavior m_newChaseBehavior;
-		private ComponentChaseBehavior m_oldChaseBehavior;
-		private ComponentZombieChaseBehavior m_zombieChaseBehavior;
 
 		public Vector3 Position { get; set; }
 		public Vector3 Direction { get; set; }
@@ -28,7 +25,7 @@ namespace Game
 		private double m_lastImpactSoundTime;
 
 		public FireVomitParticleSystem(SubsystemTerrain terrain, SubsystemBodies bodies, SubsystemSoundMaterials soundMaterials, SubsystemTime time, ComponentCreature owner)
-			: base(200)
+			: base(400) // Suficiente para chorro denso
 		{
 			m_subsystemTerrain = terrain;
 			m_subsystemBodies = bodies;
@@ -36,12 +33,7 @@ namespace Game
 			m_subsystemTime = time;
 			m_owner = owner;
 
-			if (m_owner != null)
-			{
-				m_newChaseBehavior = m_owner.Entity.FindComponent<ComponentNewChaseBehavior>();
-				m_oldChaseBehavior = m_owner.Entity.FindComponent<ComponentChaseBehavior>();
-				m_zombieChaseBehavior = m_owner.Entity.FindComponent<ComponentZombieChaseBehavior>();
-			}
+			m_subsystemFireBlockBehavior = terrain.Project.FindSubsystem<SubsystemFireBlockBehavior>(true);
 
 			Texture = ContentManager.Get<Texture2D>("Textures/FireParticle");
 			TextureSlotsCount = 3;
@@ -49,6 +41,7 @@ namespace Game
 
 		public override bool Simulate(float dt)
 		{
+			// Calcular luz ambiente (igual que PoisonVomit)
 			int x = Terrain.ToCell(Position.X);
 			int y = Terrain.ToCell(Position.Y);
 			int z = Terrain.ToCell(Position.Z);
@@ -67,17 +60,20 @@ namespace Game
 			dt = Math.Clamp(dt, 0f, 0.1f);
 			m_duration += dt;
 
-			// ✅ CORRECCIÓN: Auto-stop después de 3.5 segundos (igual que PoisonVomit)
+			// Auto-stop después de 3.5 segundos (como PoisonVomit)
 			if (m_duration > 3.5f)
 			{
 				IsStopped = true;
 			}
 
+			// Tasa de generación con ruido (similar a PoisonVomit pero constante alta para chorro denso)
 			float noise = MathUtils.Saturate(1.3f * SimplexNoise.Noise(3f * m_duration + (float)(GetHashCode() % 100)) - 0.3f);
-			float generationRate = 55f * noise;
+			float generationRate = 70f * noise; // Alta tasa
 			m_toGenerate += generationRate * dt;
 
 			bool anyActive = false;
+			Vector3 normalizedDir = Direction.LengthSquared() > 0f ? Vector3.Normalize(Direction) : Vector3.UnitZ;
+
 			for (int i = 0; i < Particles.Length; i++)
 			{
 				Particle particle = Particles[i];
@@ -90,6 +86,7 @@ namespace Game
 						Vector3 oldPos = particle.Position;
 						Vector3 newPos = oldPos + particle.Velocity * dt;
 
+						// Colisión con cuerpos (excepto dueño)
 						BodyRaycastResult? bodyHit = m_subsystemBodies.Raycast(oldPos, newPos, 0.1f, (body, d) =>
 						{
 							if (body.Entity == m_owner.Entity) return false;
@@ -107,16 +104,21 @@ namespace Game
 
 							if (m_subsystemTime.GameTime - m_lastImpactSoundTime > 0.5)
 							{
-								m_subsystemSoundMaterials.PlayImpactSound(bodyHit.Value.ComponentBody.Entity.FindComponent<ComponentBody>()?.StandingOnValue ?? 0, bodyHit.Value.HitPoint(), 1f);
+								m_subsystemSoundMaterials.PlayImpactSound(bodyHit.Value.ComponentBody.StandingOnValue ?? 0, bodyHit.Value.HitPoint(), 1f);
 								m_lastImpactSoundTime = m_subsystemTime.GameTime;
 							}
 							particle.IsActive = false;
 							continue;
 						}
 
-						TerrainRaycastResult? terrainHit = m_subsystemTerrain.Raycast(oldPos, newPos, false, true, (int value, float _) => BlocksManager.Blocks[Terrain.ExtractContents(value)].IsCollidable_(value));
+						// Colisión con terreno
+						TerrainRaycastResult? terrainHit = m_subsystemTerrain.Raycast(oldPos, newPos, false, true,
+							(int value, float _) => BlocksManager.Blocks[Terrain.ExtractContents(value)].IsCollidable_(value));
+
 						if (terrainHit != null)
 						{
+							TryIgniteBlock(terrainHit.Value);
+
 							if (m_subsystemTime.GameTime - m_lastImpactSoundTime > 0.3)
 							{
 								m_subsystemSoundMaterials.PlayImpactSound(terrainHit.Value.Value, terrainHit.Value.HitPoint(), 1f);
@@ -127,7 +129,7 @@ namespace Game
 						}
 
 						particle.Position = newPos;
-						particle.Color *= MathUtils.Saturate(particle.TimeToLive);
+						particle.Color = baseColor * MathUtils.Saturate(particle.TimeToLive);
 						particle.TextureSlot = (int)(8.99f * MathUtils.Saturate(2f - particle.TimeToLive));
 					}
 					else
@@ -137,22 +139,46 @@ namespace Game
 				}
 				else if (!IsStopped && m_toGenerate >= 1f)
 				{
-					Vector3 randomOffset = m_random.Vector3(0.05f);
+					// Crear nueva partícula con dispersión mínima para chorro recto
+					Vector3 offset = m_random.Vector3(0.04f);
 					particle.IsActive = true;
-					particle.Position = Position + randomOffset;
-					particle.Color = Color.MultiplyColorOnly(baseColor, m_random.Float(0.7f, 1f));
-					Vector3 spread = m_random.Vector3(0.02f);
-					particle.Velocity = MathUtils.Lerp(10f, 14f, noise) * Vector3.Normalize(Direction + 0.1f * spread);
-					particle.TimeToLive = m_random.Float(1.2f, 2.0f);
-					particle.Size = new Vector2(0.55f);
+					particle.Position = Position;
+					particle.Color = Color.MultiplyColorOnly(baseColor, m_random.Float(0.8f, 1f));
+					// Dirección principal con muy poca variación (casi recta)
+					Vector3 dirOffset = m_random.Vector3(0.02f);
+					particle.Velocity = normalizedDir * 100f;
+					particle.TimeToLive = m_random.Float(1.5f, 2.2f);
+					particle.Size = new Vector2(1f);
 					particle.FlipX = m_random.Bool();
 					particle.FlipY = m_random.Bool();
 					m_toGenerate -= 1f;
 				}
 			}
 
-			// ✅ CORRECCIÓN: Retorna true solo cuando está detenido Y no hay partículas activas
 			return IsStopped && !anyActive;
+		}
+
+		private void TryIgniteBlock(TerrainRaycastResult hit)
+		{
+			int x = hit.CellFace.X;
+			int y = hit.CellFace.Y;
+			int z = hit.CellFace.Z;
+			int face = hit.CellFace.Face;
+
+			int neighborX = x;
+			int neighborY = y;
+			int neighborZ = z;
+			switch (face)
+			{
+				case 0: neighborY--; break;
+				case 1: neighborY++; break;
+				case 2: neighborZ--; break;
+				case 3: neighborZ++; break;
+				case 4: neighborX--; break;
+				case 5: neighborX++; break;
+			}
+
+			m_subsystemFireBlockBehavior.SetCellOnFire(neighborX, neighborY, neighborZ, 1f);
 		}
 
 		public class Particle : Game.Particle
