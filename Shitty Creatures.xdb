@@ -5294,7 +5294,7 @@
                 <Parameter Name="AutoChaseMask" Guid="10abca12-377e-4714-b19c-f2fad32d5622" Value="LandOther, Bird, WaterOther" Type="Game.CreatureCategory"/>
                 <Parameter Name="DayChaseRange" Guid="5b8c1c36-0a0f-4534-8f8c-d67553d7e546" Value="90" Type="float"/>
                 <Parameter Name="NightChaseRange" Guid="f524941b-2198-4920-93e4-3bb42e9b8d09" Value="90" Type="float"/>
-                <Parameter Name="ChasePlayerProbability" Guid="beb27b35-99b5-48c7-b565-b426917949b2" Value="90" Type="float"/>
+                <Parameter Name="ChasePlayerProbability" Guid="beb27b35-99b5-48c7-b565-b426917949b2" Value="0" Type="float"/>
                 <Parameter Name="ChaseNonPlayerProbability" Guid="75e69bad-9c8f-4d86-a047-b3447400ba07" Value="1.0" Type="float"/>
                 <Parameter Name="NightChaseTime" Guid="b483a1e0-12ef-4b01-809e-005cce0df5cb" Value="90" Type="float"/>
                 <Parameter Name="DayChaseTime" Guid="d8e63356-c1fd-4685-8533-3651877d77f3" Value="90" Type="float"/>
