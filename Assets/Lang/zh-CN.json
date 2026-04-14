@@ -1,4 +1,7 @@
 {
+  "ComponentCoordinateDisplay": {
+    "CoordinateFormat": "坐标：X: {0:F1}  Y: {1:F1}  Z: {2:F1}"
+  },
   "SubsystemDoubleMusketBlockBehavior": {
   "0": "双管火枪尚未装填！"
 },
@@ -91,7 +94,8 @@
     "GhostDescription": "启用/禁用幽灵追逐你时的音乐",
     "TankDescription": "启用/禁用 Tanks 追逐你时的音乐",
     "SpawnDescription": "启用/禁用在死亡时生成NPC",
-    "ThirstDescription": "启用/禁用口渴模拟"
+    "ThirstDescription": "启用/禁用口渴模拟",
+    "CoordinateDisplay": "显示坐标"
   },
   "AntidoteBucket": {
     "NPCCured": "NPC 的毒素和疾病已被清除！"
@@ -166,7 +170,8 @@
   "Injury": {
     "Poisoned": "中毒",
     "FrozenToDeath": "冻死",
-    "Dehydration": "脱水"
+    "Dehydration": "脱水",
+    "FrozenVomit": "被冰冷的呕吐物冻住"
    },
   "Database": {
     "DisplayName": {
