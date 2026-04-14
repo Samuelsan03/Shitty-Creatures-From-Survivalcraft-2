@@ -1319,7 +1319,7 @@
 <MemberComponentTemplate Name="CreatureSounds" Guid="6bed0b9d-04cf-461c-a3cd-9d162be48851">
               <Parameter Name="IdleSound" Guid="0302bb02-cc89-4b7e-9300-afc54ff4a8de" Value="Audio/Creatures/Gabumon/Idie" Type="string"/>
               <Parameter Name="AttackSound" Guid="cea8a3bc-8164-4a6f-9d34-5469540e914e" Value="Audio/Creatures/Gabumon/Attack" Type="string"/>
-              <Parameter Name="PainSound" Guid="df7c9507-9f3a-401c-ab26-da6626eae704" Value="Audio/Creatures/GAbumon/Pain" Type="string"/>
+              <Parameter Name="PainSound" Guid="df7c9507-9f3a-401c-ab26-da6626eae704" Value="Audio/Creatures/Gabumon/Pain" Type="string"/>
             </MemberComponentTemplate>
 <MemberComponentTemplate Name="RunAwayBehavior" Guid="9c6188cf-ba84-4858-bb30-104c43a2b21b" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
 <MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="d0fb2519-fbb0-4fae-9838-8b4ebc318cef" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
