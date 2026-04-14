@@ -1,4 +1,7 @@
 {
+  "ComponentCoordinateDisplay": {
+    "CoordinateFormat": "Coordinates: X: {0:F1}  Y: {1:F1}  Z: {2:F1}"
+  },
   "SubsystemDoubleMusketBlockBehavior": {
     "0": "The double musket is not loaded!"
   },
@@ -91,7 +94,8 @@
     "GhostDescription": "Enable/disable music when ghosts chase you",
     "TankDescription": "Enable/disable music when tanks chase you",
     "SpawnDescription": "Enable/disable spawning of NPCs when one dies",
-    "ThirstDescription": "Enable/disable thirst simulation"
+    "ThirstDescription": "Enable/disable thirst simulation",
+    "CoordinateDisplay": "Show coordinates"
   },
   "AntidoteBucket": {
     "NPCCured": "The NPC has been cured of poison and sickness!"
@@ -166,7 +170,8 @@
   "Injury": {
     "Poisoned": "Poisoned",
     "FrozenToDeath": "Frozen to Death",
-    "Dehydration": "Dehydration"
+    "Dehydration": "Dehydration",
+    "FrozenVomit": "Frozen by icy vomit"
   },
   "Database": {
     "DisplayName": {
