@@ -19,6 +19,7 @@ namespace Game
 		public Vector3 Direction { get; set; }
 		public bool IsStopped { get; set; }
 		public float FireDuration { get; set; } = 30f;
+		public float ImpactDamage { get; set; } = 0.01f; // Daño directo por partícula
 
 		private float m_duration;
 		private float m_toGenerate;
@@ -98,6 +99,14 @@ namespace Game
 							ComponentCreature target = bodyHit.Value.ComponentBody.Entity.FindComponent<ComponentCreature>();
 							if (target != null)
 							{
+								// Aplicar daño directo (nuevo)
+								ComponentHealth health = target.Entity.FindComponent<ComponentHealth>();
+								if (health != null)
+								{
+									health.Injure(ImpactDamage, m_owner, false, null);
+								}
+
+								// Prender fuego (existente)
 								ComponentOnFire onFire = target.Entity.FindComponent<ComponentOnFire>();
 								onFire?.SetOnFire(m_owner, FireDuration);
 							}
