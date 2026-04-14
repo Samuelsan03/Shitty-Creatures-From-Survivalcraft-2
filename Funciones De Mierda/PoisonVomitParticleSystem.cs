@@ -136,8 +136,7 @@ namespace Game
 					particle.Color = baseColor;
 					// Velocidad en la dirección principal, con muy poca variación
 					Vector3 dirOffset = m_random.Vector3(0.02f);
-					particle.Velocity = normalizedDir + dirOffset;
-					particle.Velocity = Vector3.Normalize(particle.Velocity) * MathUtils.Lerp(8f, 12f, noise);
+					particle.Velocity = normalizedDir * 100f;
 					particle.TimeToLive = m_random.Float(1.5f, 2.2f);
 					particle.Size = new Vector2(0.55f);
 					particle.FlipX = m_random.Bool();
