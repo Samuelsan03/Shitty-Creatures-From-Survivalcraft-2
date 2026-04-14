@@ -1,4 +1,7 @@
 {
+  "ComponentCoordinateDisplay": {
+    "CoordinateFormat": "Coordenadas: X: {0:F1}  Y: {1:F1}  Z: {2:F1}"
+  },
   "SubsystemDoubleMusketBlockBehavior": {
   "0": "¡El mosquete de doble cañón no está cargado!"
 },
@@ -91,7 +94,8 @@
     "GhostDescription": "Activar/desactivar la música cuando los fantasmas te persiguen",
     "TankDescription": "Activar/desactivar la música cuando los Tanks te persiguen",
     "SpawnDescription": "Activar/desactivar la generación de NPCs al morir uno",
-    "ThirstDescription": "Activar/desactivar la simulación de sed"
+    "ThirstDescription": "Activar/desactivar la simulación de sed",
+    "CoordinateDisplay": "Mostrar coordenadas"
   },
     "AntidoteBucket": {
       "NPCCured": "¡El NPC ha sido curado de veneno y enfermedades!"
@@ -166,7 +170,8 @@
   "Injury": {
     "Poisoned": "Envenenado",
     "FrozenToDeath": "Congelado hasta morir",
-    "Dehydration": "Deshidratación"
+    "Dehydration": "Deshidratación",
+    "FrozenVomit": "Congelado por vómito helado"
    },
   "Database": {
     "DisplayName": {
