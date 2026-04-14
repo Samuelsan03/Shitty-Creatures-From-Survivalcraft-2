@@ -204,7 +204,7 @@ namespace Game
 					}
 					else
 					{
-						if (!isLoaded || shotsRemaining == 0)
+						if (DoubleMusketBlock.GetHammerState(data) && (!isLoaded || shotsRemaining == 0))
 							componentMiner.ComponentPlayer?.ComponentGui.DisplaySmallMessage(LanguageControl.Get("SubsystemDoubleMusketBlockBehavior", 0), Color.White, true, false);
 					}
 
