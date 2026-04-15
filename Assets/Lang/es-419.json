@@ -1125,8 +1125,8 @@
   "ContentWidgets": {
     "DoubleMusketWidget": {
   "0": "No cargado. Arrastra balas para cargar (máx. 2).",
-  "1": "Inventario",
-  "2": "Mosquete de doble cañón",
+  "1": "Mosquete de doble cañón",
+  "2": "Inventario",
   "3": "Cargado ({0} disparo(s) restante(s))"
 },
     "Trader": {
