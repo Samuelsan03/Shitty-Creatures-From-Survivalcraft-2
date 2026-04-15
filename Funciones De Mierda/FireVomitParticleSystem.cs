@@ -19,14 +19,14 @@ namespace Game
 		public Vector3 Direction { get; set; }
 		public bool IsStopped { get; set; }
 		public float FireDuration { get; set; } = 30f;
-		public float ImpactDamage { get; set; } = 0.01f; // Daño directo por partícula
+		public float ImpactDamage { get; set; } = 0.01f;
 
 		private float m_duration;
 		private float m_toGenerate;
 		private double m_lastImpactSoundTime;
 
 		public FireVomitParticleSystem(SubsystemTerrain terrain, SubsystemBodies bodies, SubsystemSoundMaterials soundMaterials, SubsystemTime time, ComponentCreature owner)
-			: base(400) // Suficiente para chorro denso
+			: base(400)
 		{
 			m_subsystemTerrain = terrain;
 			m_subsystemBodies = bodies;
@@ -42,7 +42,7 @@ namespace Game
 
 		public override bool Simulate(float dt)
 		{
-			// Calcular luz ambiente (igual que PoisonVomit)
+			// Calcular luz ambiente
 			int x = Terrain.ToCell(Position.X);
 			int y = Terrain.ToCell(Position.Y);
 			int z = Terrain.ToCell(Position.Z);
@@ -58,18 +58,16 @@ namespace Game
 			baseColor *= intensity;
 			baseColor.A = 255;
 
-			dt = Math.Clamp(dt, 0f, 0.1f);
+			dt = Math.Clamp(dt, 0f, 0.05f);
 			m_duration += dt;
 
-			// Auto-stop después de 3.5 segundos (como PoisonVomit)
 			if (m_duration > 3.5f)
 			{
 				IsStopped = true;
 			}
 
-			// Tasa de generación con ruido (similar a PoisonVomit pero constante alta para chorro denso)
 			float noise = MathUtils.Saturate(1.3f * SimplexNoise.Noise(3f * m_duration + (float)(GetHashCode() % 100)) - 0.3f);
-			float generationRate = 70f * noise; // Alta tasa
+			float generationRate = 70f * noise;
 			m_toGenerate += generationRate * dt;
 
 			bool anyActive = false;
@@ -87,8 +85,43 @@ namespace Game
 						Vector3 oldPos = particle.Position;
 						Vector3 newPos = oldPos + particle.Velocity * dt;
 
+						// Verificar si la partícula ya está dentro de un bloque sólido
+						int contents = m_subsystemTerrain.Terrain.GetCellContents(Terrain.ToCell(oldPos));
+						if (BlocksManager.Blocks[contents].IsCollidable_(contents))
+						{
+							particle.IsActive = false;
+							continue;
+						}
+
+						// Colisión con terreno (con radio)
+						float radius = 0.1f;
+						Vector3 dir = newPos - oldPos;
+						float dist = dir.Length();
+						if (dist > 0.001f)
+						{
+							dir /= dist;
+							TerrainRaycastResult? terrainHit = m_subsystemTerrain.Raycast(
+								oldPos,
+								oldPos + dir * (dist + radius),
+								false,
+								true,
+								(value, d) => BlocksManager.Blocks[Terrain.ExtractContents(value)].IsCollidable_(value));
+
+							if (terrainHit != null && terrainHit.Value.Distance <= dist + radius)
+							{
+								TryIgniteBlock(terrainHit.Value);
+								if (m_subsystemTime.GameTime - m_lastImpactSoundTime > 0.3)
+								{
+									m_subsystemSoundMaterials.PlayImpactSound(terrainHit.Value.Value, terrainHit.Value.HitPoint(), 1f);
+									m_lastImpactSoundTime = m_subsystemTime.GameTime;
+								}
+								particle.IsActive = false;
+								continue;
+							}
+						}
+
 						// Colisión con cuerpos (excepto dueño)
-						BodyRaycastResult? bodyHit = m_subsystemBodies.Raycast(oldPos, newPos, 0.1f, (body, d) =>
+						BodyRaycastResult? bodyHit = m_subsystemBodies.Raycast(oldPos, newPos, 0.15f, (body, d) =>
 						{
 							if (body.Entity == m_owner.Entity) return false;
 							return body.Entity.FindComponent<ComponentCreature>() != null;
@@ -99,14 +132,11 @@ namespace Game
 							ComponentCreature target = bodyHit.Value.ComponentBody.Entity.FindComponent<ComponentCreature>();
 							if (target != null)
 							{
-								// Aplicar daño directo (nuevo)
 								ComponentHealth health = target.Entity.FindComponent<ComponentHealth>();
 								if (health != null)
 								{
 									health.Injure(ImpactDamage, m_owner, false, null);
 								}
-
-								// Prender fuego (existente)
 								ComponentOnFire onFire = target.Entity.FindComponent<ComponentOnFire>();
 								onFire?.SetOnFire(m_owner, FireDuration);
 							}
@@ -114,23 +144,6 @@ namespace Game
 							if (m_subsystemTime.GameTime - m_lastImpactSoundTime > 0.5)
 							{
 								m_subsystemSoundMaterials.PlayImpactSound(bodyHit.Value.ComponentBody.StandingOnValue ?? 0, bodyHit.Value.HitPoint(), 1f);
-								m_lastImpactSoundTime = m_subsystemTime.GameTime;
-							}
-							particle.IsActive = false;
-							continue;
-						}
-
-						// Colisión con terreno
-						TerrainRaycastResult? terrainHit = m_subsystemTerrain.Raycast(oldPos, newPos, false, true,
-							(int value, float _) => BlocksManager.Blocks[Terrain.ExtractContents(value)].IsCollidable_(value));
-
-						if (terrainHit != null)
-						{
-							TryIgniteBlock(terrainHit.Value);
-
-							if (m_subsystemTime.GameTime - m_lastImpactSoundTime > 0.3)
-							{
-								m_subsystemSoundMaterials.PlayImpactSound(terrainHit.Value.Value, terrainHit.Value.HitPoint(), 1f);
 								m_lastImpactSoundTime = m_subsystemTime.GameTime;
 							}
 							particle.IsActive = false;
@@ -148,12 +161,10 @@ namespace Game
 				}
 				else if (!IsStopped && m_toGenerate >= 1f)
 				{
-					// Crear nueva partícula con dispersión mínima para chorro recto
 					Vector3 offset = m_random.Vector3(0.04f);
 					particle.IsActive = true;
 					particle.Position = Position;
 					particle.Color = Color.MultiplyColorOnly(baseColor, m_random.Float(0.8f, 1f));
-					// Dirección principal con muy poca variación (casi recta)
 					Vector3 dirOffset = m_random.Vector3(0.02f);
 					particle.Velocity = normalizedDir * 100f;
 					particle.TimeToLive = m_random.Float(1.5f, 2.2f);
