@@ -95,7 +95,8 @@
     "TankDescription": "Activar/desactivar la música cuando los Tanks te persiguen",
     "SpawnDescription": "Activar/desactivar la generación de NPCs al morir uno",
     "ThirstDescription": "Activar/desactivar la simulación de sed",
-    "CoordinateDisplay": "Mostrar coordenadas"
+    "CoordinateDisplay": "Mostrar coordenadas",
+    "PunchCommandDescription": "Los aliados atacarán y perseguirán al NPC que golpees, sin importar el tipo de ataque"
   },
     "AntidoteBucket": {
       "NPCCured": "¡El NPC ha sido curado de veneno y enfermedades!"
