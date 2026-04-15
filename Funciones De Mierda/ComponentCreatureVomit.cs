@@ -22,14 +22,16 @@ namespace Game
 
 		public bool VomitShit { get; set; }
 		public bool VomitFire { get; set; }
+		public bool VomitFrozen { get; set; }
 		public float VomitProbability { get; set; } = 0.1f;
 		public float VomitCooldown { get; set; } = 5f;
-		public float MaxVomitDuration { get; set; } = 3.5f;   // Duración máxima del vómito
+		public Vector2 VomitDistanceRange { get; set; } = new Vector2(2f, 12f); // X = min, Y = max
 
 		private double m_lastVomitTime;
-		private double m_vomitStartTime;      // Nuevo: para controlar duración máxima
+		private double m_vomitStartTime;
 		private PoisonVomitParticleSystem m_activePoisonVomit;
 		private FireVomitParticleSystem m_activeFireVomit;
+		private FrozenVomitParticleSystem m_activeFrozenVomit;
 		private Random m_random = new Random();
 
 		public UpdateOrder UpdateOrder => UpdateOrder.Default;
@@ -51,9 +53,10 @@ namespace Game
 
 			VomitShit = valuesDictionary.GetValue<bool>("VomitShit", false);
 			VomitFire = valuesDictionary.GetValue<bool>("VomitFire", false);
+			VomitFrozen = valuesDictionary.GetValue<bool>("VomitFrozen", false);
 			VomitProbability = valuesDictionary.GetValue<float>("VomitProbability", 0.1f);
 			VomitCooldown = valuesDictionary.GetValue<float>("VomitCooldown", 5f);
-			MaxVomitDuration = valuesDictionary.GetValue<float>("MaxVomitDuration", 3.5f);
+			VomitDistanceRange = valuesDictionary.GetValue<Vector2>("VomitDistanceRange", new Vector2(2f, 12f));
 		}
 
 		private Vector3 GetVomitMouthPosition()
@@ -97,6 +100,13 @@ namespace Game
 			return cosAngle >= cosHalfAngle;
 		}
 
+		private bool IsTargetInDistanceRange(ComponentCreature target)
+		{
+			if (target == null) return false;
+			float distance = Vector3.Distance(m_componentCreature.ComponentBody.Position, target.ComponentBody.Position);
+			return distance >= VomitDistanceRange.X && distance <= VomitDistanceRange.Y;
+		}
+
 		public void Update(float dt)
 		{
 			if (m_componentCreature.ComponentHealth.Health <= 0f)
@@ -112,7 +122,7 @@ namespace Game
 					shouldStop = true;
 				else if (!IsTargetInViewCone(target))
 					shouldStop = true;
-				else if (m_subsystemTime.GameTime - m_vomitStartTime > MaxVomitDuration)
+				else if (m_subsystemTime.GameTime - m_vomitStartTime > 3.5f)
 					shouldStop = true;
 
 				if (shouldStop || m_activePoisonVomit.IsStopped)
@@ -136,7 +146,7 @@ namespace Game
 					shouldStop = true;
 				else if (!IsTargetInViewCone(target))
 					shouldStop = true;
-				else if (m_subsystemTime.GameTime - m_vomitStartTime > MaxVomitDuration)
+				else if (m_subsystemTime.GameTime - m_vomitStartTime > 3.5f)
 					shouldStop = true;
 
 				if (shouldStop || m_activeFireVomit.IsStopped)
@@ -152,6 +162,30 @@ namespace Game
 				return;
 			}
 
+			// ---- Vómito congelado activo ----
+			if (m_activeFrozenVomit != null)
+			{
+				bool shouldStop = false;
+				if (target == null)
+					shouldStop = true;
+				else if (!IsTargetInViewCone(target))
+					shouldStop = true;
+				else if (m_subsystemTime.GameTime - m_vomitStartTime > 3.5f)
+					shouldStop = true;
+
+				if (shouldStop || m_activeFrozenVomit.IsStopped)
+				{
+					m_activeFrozenVomit.IsStopped = true;
+					m_activeFrozenVomit = null;
+				}
+				else
+				{
+					m_activeFrozenVomit.Position = GetVomitMouthPosition();
+					m_activeFrozenVomit.Direction = Vector3.Normalize(target.ComponentCreatureModel.EyePosition - m_activeFrozenVomit.Position);
+				}
+				return;
+			}
+
 			// ---- Iniciar nuevo vómito ----
 			if (target == null)
 				return;
@@ -159,26 +193,34 @@ namespace Game
 			if (!IsTargetInViewCone(target))
 				return;
 
-			// ⚠️ Se ha eliminado la restricción de distancia mínima (antes: if (distance < 3f) return;)
+			if (!IsTargetInDistanceRange(target))
+				return;
 
+			// Probabilidad por frame
 			if (m_random.Float(0f, 1f) > VomitProbability * dt)
 				return;
 
 			double currentTime = m_subsystemTime.GameTime;
-			if (currentTime - m_lastVomitTime < VomitCooldown)
+			if (currentTime - m_lastVomitTime < (double)VomitCooldown)
 				return;
 
 			bool useFire = VomitFire;
 			bool usePoison = VomitShit;
+			bool useFrozen = VomitFrozen;
 
-			if (!useFire && !usePoison)
-				return;
-
+			// Priorizar uno solo si hay múltiples activos
+			if (useFrozen && useFire)
+				useFire = false;
+			if (useFrozen && usePoison)
+				usePoison = false;
 			if (useFire && usePoison)
 			{
 				useFire = m_random.Bool();
 				usePoison = !useFire;
 			}
+
+			if (!useFire && !usePoison && !useFrozen)
+				return;
 
 			Vector3 mouthPos = GetVomitMouthPosition();
 			Vector3 direction = Vector3.Normalize(target.ComponentCreatureModel.EyePosition - mouthPos);
@@ -203,9 +245,18 @@ namespace Game
 				m_activeFireVomit.FireDuration = 30f;
 				m_subsystemParticles.AddParticleSystem(m_activeFireVomit, false);
 			}
+			else if (useFrozen)
+			{
+				m_activeFrozenVomit = new FrozenVomitParticleSystem(
+					m_subsystemTerrain, m_subsystemBodies, m_subsystemSoundMaterials,
+					m_subsystemTime, m_componentCreature);
+				m_activeFrozenVomit.Position = mouthPos;
+				m_activeFrozenVomit.Direction = direction;
+				m_subsystemParticles.AddParticleSystem(m_activeFrozenVomit, false);
+			}
 
 			m_lastVomitTime = currentTime;
-			m_vomitStartTime = currentTime;   // Registrar inicio para control de duración
+			m_vomitStartTime = currentTime;
 			m_componentCreature.ComponentCreatureSounds.PlayAttackSound();
 		}
 
@@ -226,6 +277,8 @@ namespace Game
 				m_activePoisonVomit.IsStopped = true;
 			if (m_activeFireVomit != null)
 				m_activeFireVomit.IsStopped = true;
+			if (m_activeFrozenVomit != null)
+				m_activeFrozenVomit.IsStopped = true;
 		}
 	}
 }
