@@ -707,17 +707,20 @@ namespace Game
 					ComponentCreature targetCreature = hitBody.Entity.FindComponent<ComponentCreature>();
 					if (targetCreature != null && targetCreature.ComponentHealth.Health > 0f)
 					{
-						// SUSCRIBIRSE TEMPORALMENTE al evento Injured del objetivo
-						// para detectar CUANDO REALMENTE RECIBE DAÑO
-						targetCreature.ComponentHealth.Injured += (Injury injury) =>
+						// ✅ Solo se activa si está habilitada la opción de comando por puñetazo
+						if (ShittyCreaturesSettingsManager.PunchCommandEnabled)
 						{
-							// Verificar que el daño fue causado por el jugador
-							// 'player' ya es un ComponentCreature, lo usamos directamente
-							if (injury.Attacker == player)
+							// SUSCRIBIRSE TEMPORALMENTE al evento Injured del objetivo
+							// para detectar CUANDO REALMENTE RECIBE DAÑO
+							targetCreature.ComponentHealth.Injured += (Injury injury) =>
 							{
-								CommandAlliesToAttack(player, targetCreature);
-							}
-						};
+								// Verificar que el daño fue causado por el jugador
+								if (injury.Attacker == player)
+								{
+									CommandAlliesToAttack(player, targetCreature);
+								}
+							};
+						}
 					}
 				}
 			}
