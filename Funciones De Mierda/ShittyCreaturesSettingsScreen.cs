@@ -12,7 +12,8 @@ namespace Game
 		private BevelledButtonWidget m_spawnButton;
 		private BevelledButtonWidget m_thirstButton;
 		private BevelledButtonWidget m_coordinateButton;
-		private BevelledButtonWidget m_punchCommandButton; // Nuevo botón
+		private BevelledButtonWidget m_punchCommandButton;
+		private BevelledButtonWidget m_creativeDefenseButton; // Nuevo botón
 		private StackPanelWidget m_contentPanel;
 		private LabelWidget m_titleLabel;
 
@@ -22,17 +23,18 @@ namespace Game
 			this.LoadContents(this, node);
 
 			m_titleLabel = this.Children.Find<LabelWidget>("TopBar.Label", true);
-			m_titleLabel.Text = LanguageControl.Get(new string[] { "ShittyCreatures", "ScreenTitle" });
+			m_titleLabel.Text = LanguageControl.Get(new string[] { "ShittyCreaturesSettings", "ScreenTitle" });
 
 			m_contentPanel = this.Children.Find<StackPanelWidget>("Content", true);
 
-			CreateOptionRow("ShittyCreatures", "GhostDescription", out m_ghostButton, Color.Gray, GetGhostButtonText);
-			CreateOptionRow("ShittyCreatures", "TankDescription", out m_tankButton, Color.Red, GetTankButtonText);
-			CreateOptionRow("ShittyCreatures", "SpawnDescription", out m_spawnButton, Color.LightGreen, GetSpawnButtonText);
-			CreateOptionRow("ShittyCreatures", "ThirstDescription", out m_thirstButton, Color.LightGray, GetThirstButtonText);
-			CreateOptionRow("ShittyCreatures", "CoordinateDisplay", out m_coordinateButton, Color.LightGray, GetCoordinateButtonText);
-			// Nuevo botón para comando de puñetazo
-			CreateOptionRow("ShittyCreatures", "PunchCommandDescription", out m_punchCommandButton, Color.LightGray, GetPunchCommandButtonText);
+			CreateOptionRow("ShittyCreaturesSettings", "GhostDescription", out m_ghostButton, Color.Gray, GetGhostButtonText);
+			CreateOptionRow("ShittyCreaturesSettings", "TankDescription", out m_tankButton, Color.Red, GetTankButtonText);
+			CreateOptionRow("ShittyCreaturesSettings", "SpawnDescription", out m_spawnButton, Color.LightGreen, GetSpawnButtonText);
+			CreateOptionRow("ShittyCreaturesSettings", "ThirstDescription", out m_thirstButton, Color.LightGray, GetThirstButtonText);
+			CreateOptionRow("ShittyCreaturesSettings", "CoordinateDisplay", out m_coordinateButton, Color.LightGray, GetCoordinateButtonText);
+			CreateOptionRow("ShittyCreaturesSettings", "PunchCommandDescription", out m_punchCommandButton, Color.LightGray, GetPunchCommandButtonText);
+			// Nuevo botón para defensa en Creativo
+			CreateOptionRow("ShittyCreaturesSettings", "CreativeDefenseDescription", out m_creativeDefenseButton, Color.LightGray, GetCreativeDefenseButtonText);
 		}
 
 		private void CreateOptionRow(string category, string descriptionKey, out BevelledButtonWidget button, Color buttonColor, Func<string> getButtonTextFunc)
@@ -75,6 +77,7 @@ namespace Game
 		private string GetThirstButtonText() => ShittyCreaturesSettingsManager.ThirstEnabled ? LanguageControl.On : LanguageControl.Off;
 		private string GetCoordinateButtonText() => ShittyCreaturesSettingsManager.CoordinateDisplayEnabled ? LanguageControl.On : LanguageControl.Off;
 		private string GetPunchCommandButtonText() => ShittyCreaturesSettingsManager.PunchCommandEnabled ? LanguageControl.On : LanguageControl.Off;
+		private string GetCreativeDefenseButtonText() => ShittyCreaturesSettingsManager.CreativeDefenseEnabled ? LanguageControl.On : LanguageControl.Off;
 
 		public override void Update()
 		{
@@ -119,6 +122,12 @@ namespace Game
 			{
 				ShittyCreaturesSettingsManager.PunchCommandEnabled = !ShittyCreaturesSettingsManager.PunchCommandEnabled;
 				m_punchCommandButton.Text = GetPunchCommandButtonText();
+			}
+
+			if (m_creativeDefenseButton != null && m_creativeDefenseButton.IsClicked)
+			{
+				ShittyCreaturesSettingsManager.CreativeDefenseEnabled = !ShittyCreaturesSettingsManager.CreativeDefenseEnabled;
+				m_creativeDefenseButton.Text = GetCreativeDefenseButtonText();
 			}
 		}
 	}
