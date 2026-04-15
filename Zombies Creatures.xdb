@@ -1636,8 +1636,9 @@
         <MemberComponentTemplate Name="RageZombieBehavior" Guid="5fbc32fa-7053-4c8f-a297-8385c3a59512" InheritanceParent="2d584a55-7ccb-42c7-8fc0-c3f288eefae9"/>
         <MemberComponentTemplate Name="CreatureVomitBehavior" Guid="871b17bb-9d73-4773-aa13-62a640aa8791" InheritanceParent="a91f3c5e-8c2d-4c1e-b7f4-6e2a9d3b7c11">
   <Parameter Name="VomitShit" Guid="7b22f2f9-e70e-4001-8b5c-f2556e5d31c8" Value="true" Type="bool"/>
-  <Parameter Name="VomitProbability" Guid="9753af23-2f7e-44b5-9bca-869caf554b86" Value="1" Type="float"/>
+  <Parameter Name="VomitProbability" Guid="9753af23-2f7e-44b5-9bca-869caf554b86" Value="0.05" Type="float"/>
   <Parameter Name="VomitCooldown" Guid="67d76f73-ca2f-4244-a1c7-407ce30d19b5" Value="35" Type="float"/>
+  <Parameter Name="VomitDistanceRange" Guid="e9f09956-a869-4d87-8db5-0d284cf13a33" Value="5,20" Type="Vector2"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="PathBreaker" Guid="c8d72d75-66a7-44dd-8cc2-e591f03dfed1" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
 		<Parameter Name="CanBreakBlocks" Guid="5af182a8-46ef-4d39-ac33-1eb2d130533a" Value="True" Type="bool"/>
@@ -1776,8 +1777,9 @@
         <EntityTemplate Name="PoisonousInfectedTamed1" Guid="6990ec17-91bf-4b4f-9fb7-470f88d63b09" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
         <MemberComponentTemplate Name="CreatureVomitBehavior" Guid="8ff0bc71-db7a-477d-a9dc-d267d352873e" InheritanceParent="a91f3c5e-8c2d-4c1e-b7f4-6e2a9d3b7c11">
   <Parameter Name="VomitShit" Guid="cfa436f5-3ac7-4d84-9279-0bd73f64123c" Value="true" Type="bool"/>
-  <Parameter Name="VomitProbability" Guid="00dcef0c-b7b2-4a34-9f70-4902f5596915" Value="1" Type="float"/>
-  <Parameter Name="VomitCooldown" Guid="00644da4-185b-4b49-af16-e27633a3a9d1" Value="35" Type="float"/>
+  <Parameter Name="VomitProbability" Guid="00dcef0c-b7b2-4a34-9f70-4902f5596915" Value="0.05" Type="float"/>
+  <Parameter Name="VomitCooldown" Guid="00644da4-185b-4b49-af16-e27633a3a9d1" Value="35" Type="float"/>+
+  <Parameter Name="VomitDistanceRange" Guid="d28be062-b8c6-46a0-86ee-5ab2b08df550" Value="5,20" Type="Vector2"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="PathBreaker" Guid="cc48ce96-514b-4f72-a5aa-915b13c6849a" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
 		<Parameter Name="CanBreakBlocks" Guid="c0f9621c-9982-4ee0-bf91-d921549e7853" Value="True" Type="bool"/>
@@ -1904,6 +1906,12 @@
         </EntityTemplate>
 
         <EntityTemplate Name="PoisonousInfected2" Guid="926580df-3c33-4d94-8e36-eb64ae703ab1" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <MemberComponentTemplate Name="CreatureVomitBehavior" Guid="64aadfc2-d6c5-4028-9330-6ffcfd12a757" InheritanceParent="a91f3c5e-8c2d-4c1e-b7f4-6e2a9d3b7c11">
+  <Parameter Name="VomitShit" Guid="1ccd6b19-0a19-4edb-a181-49162a458693" Value="true" Type="bool"/>
+  <Parameter Name="VomitProbability" Guid="4efc0cea-29fe-4c4a-937a-53ed37eaa38e" Value="0.05" Type="float"/>
+  <Parameter Name="VomitCooldown" Guid="de659066-e2f4-4d1e-9095-3e9d919bf245" Value="35" Type="float"/>
+  <Parameter Name="VomitDistanceRange" Guid="52955ff1-2fd0-4fcf-88f4-3f9816f6fecd" Value="5,20" Type="Vector2"/>
+</MemberComponentTemplate>
         <MemberComponentTemplate Name="PathBreaker" Guid="bef852a0-c8a1-47bb-ba06-70ee0ff7112e" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
 		<Parameter Name="CanBreakBlocks" Guid="f7cf7030-31d9-4130-aef6-8b7e95ebb100" Value="True" Type="bool"/>
 		<Parameter Name="SpecificBlocks" Guid="9133db78-fed0-44f7-b69a-03484541d14c" Value="" Type="string"/>
@@ -2043,8 +2051,9 @@
         <EntityTemplate Name="PoisonousInfectedTamed2" Guid="ce1a9422-a91e-48de-b251-98917cef397d" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
         <MemberComponentTemplate Name="CreatureVomitBehavior" Guid="36298e31-69d8-45b7-9c6e-8affe9904ad6" InheritanceParent="a91f3c5e-8c2d-4c1e-b7f4-6e2a9d3b7c11">
   <Parameter Name="VomitShit" Guid="f02a5200-ec66-4830-aaf0-82ee90f7b4ba" Value="true" Type="bool"/>
-  <Parameter Name="VomitProbability" Guid="8fc66ca2-eed0-4b73-b367-3722c9cf958d" Value="1" Type="float"/>
+  <Parameter Name="VomitProbability" Guid="8fc66ca2-eed0-4b73-b367-3722c9cf958d" Value="0.05" Type="float"/>
   <Parameter Name="VomitCooldown" Guid="adaa39d5-63aa-4573-88c7-60b02808851c" Value="35" Type="float"/>
+  <Parameter Name="VomitDistanceRange" Guid="eb083248-1e11-48b7-88f1-e5c176420470" Value="5,20" Type="Vector2"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="PathBreaker" Guid="a1ae9738-fc93-46e8-81b9-75ed318d5a9f" InheritanceParent="c1b4a3e9-6f0e-4B5d-8a7c-1f9d2e8a7B6c">
 		<Parameter Name="CanBreakBlocks" Guid="fb895864-e35a-4c8c-ae15-8fff047ee64f" Value="True" Type="bool"/>
@@ -2381,8 +2390,9 @@
         <MemberComponentTemplate Name="RunAwayBehavior" Guid="e8e7cb4d-09b2-408b-adff-9bb31731bd5a" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
 <MemberComponentTemplate Name="CreatureVomitBehavior" Guid="008e5137-7f82-470f-8a86-84db9f2afafd" InheritanceParent="a91f3c5e-8c2d-4c1e-b7f4-6e2a9d3b7c11">
   <Parameter Name="VomitShit" Guid="4d2e73f9-8495-4ee7-ba1a-de0b9b10afea" Value="true" Type="bool"/>
-  <Parameter Name="VomitProbability" Guid="27095be1-a208-45eb-be0f-9a13f2f0dee0" Value="1" Type="float"/>
+  <Parameter Name="VomitProbability" Guid="27095be1-a208-45eb-be0f-9a13f2f0dee0" Value="0.05" Type="float"/>
   <Parameter Name="VomitCooldown" Guid="fd1093ee-3fbc-4ec2-a1dd-490714f9d4dc" Value="35" Type="float"/>
+  <Parameter Name="VomitDistanceRange" Guid="f1d00867-cfe9-46b0-b1a6-cb7a8abc9f9f" Value="5,20" Type="Vector2"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="PoisonInfectedBehavior" Guid="15d73a1b-071b-43c9-842b-a8a642a83174" InheritanceParent="d5e7f9a1-b3c5-4d9f-1a3b-5c7d9f1a3b5c">
   <Parameter Name="PoisonIntensity" Value="800" Type="float"/>
@@ -2507,8 +2517,9 @@
     </MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureVomitBehavior" Guid="da64df27-d0cc-4199-b70f-7c107276979c" InheritanceParent="a91f3c5e-8c2d-4c1e-b7f4-6e2a9d3b7c11">
   <Parameter Name="VomitShit" Guid="b5ea167f-4000-47dd-804d-46460c038530" Value="true" Type="bool"/>
-  <Parameter Name="VomitProbability" Guid="282f04d4-f73c-44fd-b84a-03bfd8a602a9" Value="1" Type="float"/>
+  <Parameter Name="VomitProbability" Guid="282f04d4-f73c-44fd-b84a-03bfd8a602a9" Value="0.05" Type="float"/>
   <Parameter Name="VomitCooldown" Guid="8fe4c2f2-de75-4a14-b070-5c1adea2f9dc" Value="35" Type="float"/>
+  <Parameter Name="VomitDistanceRange" Guid="dadbb5fa-16f4-44bc-a7c3-088c9cc7cf43" Value="5,20" Type="Vector2"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="PoisonInfectedBehavior" Guid="8ce4cf6b-9db5-4691-875d-1068a1933893" InheritanceParent="d5e7f9a1-b3c5-4d9f-1a3b-5c7d9f1a3b5c">
   <Parameter Name="PoisonIntensity" Value="800" Type="float"/>
@@ -2596,8 +2607,9 @@
     </MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureVomitBehavior" Guid="76d38c17-c322-4b14-8212-a2193fdda6ad" InheritanceParent="a91f3c5e-8c2d-4c1e-b7f4-6e2a9d3b7c11">
   <Parameter Name="VomitFire" Guid="7a94f919-4d65-4388-91e2-9b1ce90ab48e" Value="true" Type="bool"/>
-  <Parameter Name="VomitProbability" Guid="29df1648-f03b-482c-ab4e-871e93da27b7" Value="1" Type="float"/>
+  <Parameter Name="VomitProbability" Guid="29df1648-f03b-482c-ab4e-871e93da27b7" Value="0.05" Type="float"/>
   <Parameter Name="VomitCooldown" Guid="072ebaeb-765a-469f-a776-fe9a8e20ea0a" Value="35" Type="float"/>
+  <Parameter Name="VomitDistanceRange" Guid="f3dbed2e-d76c-4abf-8060-35badfb07417" Value="5,20" Type="Vector2"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="BirdModel" Guid="c4e87571-9891-43b9-bcbb-dbb333ce423c">
         <Parameter Name="ModelScale" Guid="64651e3c-2b10-46a2-8f42-5564a1342033" Value="1.5" Type="float"/>
@@ -2723,8 +2735,9 @@
 <MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="8c4ac39d-778b-47b3-8f49-bf920e1d5f32" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
 <MemberComponentTemplate Name="CreatureVomitBehavior" Guid="7bcc1dbe-b90d-4454-8fdd-ffac4eed0b8b" InheritanceParent="a91f3c5e-8c2d-4c1e-b7f4-6e2a9d3b7c11">
   <Parameter Name="VomitFire" Guid="165ae7c7-51dc-4019-b2a7-af65cd5fde7a" Value="true" Type="bool"/>
-  <Parameter Name="VomitProbability" Guid="137bb809-4f00-45bc-83aa-0975591868ba" Value="1" Type="float"/>
+  <Parameter Name="VomitProbability" Guid="137bb809-4f00-45bc-83aa-0975591868ba" Value="0.05" Type="float"/>
   <Parameter Name="VomitCooldown" Guid="e51cf02d-7f27-44c4-b1fa-77433468e4bc" Value="35" Type="float"/>
+  <Parameter Name="VomitDistanceRange" Guid="9f1bb5d5-12f5-4d8f-a95d-772fff33ca99" Value="5,20" Type="Vector2"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="BirdModel" Guid="f5cba9c1-ab7e-48c6-9b78-2a24db49064c">
         <Parameter Name="ModelScale" Guid="460f9af2-98d1-4e6c-bcfd-8c90d85aaeba" Value="1.5" Type="float"/>
@@ -2796,6 +2809,7 @@
   <Parameter Name="VomitShit" Guid="cbe59888-c01a-4651-b2d1-f3f12c681a4d" Value="true" Type="bool"/>
   <Parameter Name="VomitProbability" Guid="e6052f2c-ac17-4a24-94db-bd6dde9e26b7" Value="1" Type="float"/>
   <Parameter Name="VomitCooldown" Guid="fa7dbad5-d8cf-4c50-93f3-e630d6806e68" Value="35" Type="float"/>
+  <Parameter Name="VomitDistanceRange" Guid="f62db7c9-1039-42f1-aa9a-5a1382ed43dc" Value="5,25" Type="Vector2"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="BirdModel" Guid="cd1b3fb3-93a6-4b53-830c-dad9f3cfc5e6">
         <Parameter Name="ModelScale" Guid="d7c1d475-7969-40b2-a81a-fe696f5a8650" Value="4.5" Type="float"/>
@@ -2940,6 +2954,7 @@
   <Parameter Name="VomitShit" Guid="e0a083cd-25c2-46d1-a8b4-78b5d523289e" Value="true" Type="bool"/>
   <Parameter Name="VomitProbability" Guid="8b01a8df-1012-4402-869a-b8634df40321" Value="1" Type="float"/>
   <Parameter Name="VomitCooldown" Guid="f7fc4fd3-7a20-4128-8107-5e92a977051c" Value="35" Type="float"/>
+  <Parameter Name="VomitDistanceRange" Guid="0aa20571-8770-4f41-a939-e044332f7c7e" Value="5,25" Type="Vector2"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="BirdModel" Guid="73a6ced5-90b8-429a-897e-e97babb3bb13">
         <Parameter Name="ModelScale" Guid="be0b8419-840e-4e3f-a7b1-b88f1737ddf3" Value="4.5" Type="float"/>
@@ -3375,8 +3390,9 @@
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureVomitBehavior" Guid="a5104139-d4b8-40f9-b1d9-bea687ccf317" InheritanceParent="a91f3c5e-8c2d-4c1e-b7f4-6e2a9d3b7c11">
   <Parameter Name="VomitFire" Guid="acff823f-100e-4d97-98fe-45fd3dfc0ede" Value="true" Type="bool"/>
-  <Parameter Name="VomitProbability" Guid="294a27c3-32e3-41f8-9414-28e458db635d" Value="1" Type="float"/>
+  <Parameter Name="VomitProbability" Guid="294a27c3-32e3-41f8-9414-28e458db635d" Value="0.05" Type="float"/>
   <Parameter Name="VomitCooldown" Guid="fff413a4-d97a-4eb5-91ed-b8c5fdd2f913" Value="35" Type="float"/>
+  <Parameter Name="VomitDistanceRange" Guid="b0d8189a-31ff-4b74-ba85-fe6773a94177" Value="5,20" Type="Vector2"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidFireBehavior" Guid="432274be-962b-495b-994b-3cd8a5fa1b46" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
             <MemberComponentTemplate Name="Locomotion" Guid="0fb08051-5de8-4c32-bb8d-05babe50d17d">
@@ -3480,8 +3496,9 @@
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureVomitBehavior" Guid="1df9b336-1b5c-400b-9119-5bec34b9db44" InheritanceParent="a91f3c5e-8c2d-4c1e-b7f4-6e2a9d3b7c11">
   <Parameter Name="VomitFire" Guid="387df872-b856-45ac-b7ab-002f56980c65" Value="true" Type="bool"/>
-  <Parameter Name="VomitProbability" Guid="669f6c22-d9b8-42a4-954e-d98dc2749d1e" Value="1" Type="float"/>
+  <Parameter Name="VomitProbability" Guid="669f6c22-d9b8-42a4-954e-d98dc2749d1e" Value="0.05" Type="float"/>
   <Parameter Name="VomitCooldown" Guid="3de53569-fb1b-4cf4-9592-a89f7dd6c8c2" Value="35" Type="float"/>
+  <Parameter Name="VomitDistanceRange" Guid="0214733d-1452-4d7d-aa32-d00d0f9b117d" Value="5,20" Type="Vector2"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="SummonBehavior" Guid="f15fbb7a-20f8-4964-9193-e239ab500ced" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
               <Parameter Name="IsEnabled" Guid="c665f19a-3315-40bc-8b87-25af33eec7fa" Value="True" Type="bool"/>
@@ -3618,8 +3635,9 @@
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureVomitBehavior" Guid="b9ecaa34-0e07-490f-b4bd-a2d76292a89c" InheritanceParent="a91f3c5e-8c2d-4c1e-b7f4-6e2a9d3b7c11">
   <Parameter Name="VomitShit" Guid="1559907e-f96b-4c56-979f-6542e6a8d3aa" Value="true" Type="bool"/>
-  <Parameter Name="VomitProbability" Guid="ed38318f-2a67-4684-a3d4-3baddb38195b" Value="1" Type="float"/>
+  <Parameter Name="VomitProbability" Guid="ed38318f-2a67-4684-a3d4-3baddb38195b" Value="0.05" Type="float"/>
   <Parameter Name="VomitCooldown" Guid="c26fc16b-a106-4564-93c5-1fd6c9f19a7d" Value="35" Type="float"/>
+  <Parameter Name="VomitDistanceRange" Guid="1d18ce2f-0ee3-4e9e-9693-da1d3274122c" Value="5,20" Type="Vector2"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="BoomerPoisonExplosion" Guid="a5e47301-ba89-41ad-a8d1-727004fc1a3f" InheritanceParent="b1966e3c-5e1f-4483-acc9-90f88c0e0748">
   <Parameter Name="PoisonRadius" Value="15" Type="float"/>
@@ -3768,8 +3786,9 @@
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureVomitBehavior" Guid="34890d24-a0f9-464c-8153-e9b9e32ff85d" InheritanceParent="a91f3c5e-8c2d-4c1e-b7f4-6e2a9d3b7c11">
   <Parameter Name="VomitShit" Guid="242d583b-71ce-4fe4-811f-4ecac61dc9b4" Value="true" Type="bool"/>
-  <Parameter Name="VomitProbability" Guid="86b2fc78-0cc7-4780-bf8b-71b41a42429d" Value="1" Type="float"/>
+  <Parameter Name="VomitProbability" Guid="86b2fc78-0cc7-4780-bf8b-71b41a42429d" Value="0.05" Type="float"/>
   <Parameter Name="VomitCooldown" Guid="3c69ae34-4942-4691-b6de-6db10ad594f3" Value="35" Type="float"/>
+  <Parameter Name="VomitDistanceRange" Guid="c125eccc-e3fc-47ae-9084-789b8d0ee450" Value="5,20" Type="Vector2"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="SummonBehavior" Guid="8eae594a-f160-4973-8d86-4e3d76c5e3a4" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
               <Parameter Name="IsEnabled" Guid="aa766323-bd44-4279-98ee-9dc4ae1146f4" Value="True" Type="bool"/>
@@ -5812,8 +5831,9 @@
         <EntityTemplate Name="PoisonousGhost" Guid="a12a2e42-6922-439e-abe0-993a8c35df8b" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
         <MemberComponentTemplate Name="CreatureVomitBehavior" Guid="76506260-f078-4081-b658-e8c4828bcfa0" InheritanceParent="a91f3c5e-8c2d-4c1e-b7f4-6e2a9d3b7c11">
   <Parameter Name="VomitShit" Guid="c488d54d-8c99-4431-bc85-6091a051f55b" Value="true" Type="bool"/>
-  <Parameter Name="VomitProbability" Guid="bbc1f07c-83a2-4aad-ba1f-02b5cf1497d3" Value="1" Type="float"/>
+  <Parameter Name="VomitProbability" Guid="bbc1f07c-83a2-4aad-ba1f-02b5cf1497d3" Value="0.05" Type="float"/>
   <Parameter Name="VomitCooldown" Guid="b70846cb-f8e7-459c-a9ae-83ea27b2d85c" Value="35" Type="float"/>
+  <Parameter Name="VomitDistanceRange" Guid="ea614b74-5c86-40e6-b106-7ff986900d82" Value="5,20" Type="Vector2"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="DeathSpawner" Guid="c1724cac-df96-4dfb-a010-4c0eb6670909" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="d648c485-d6d9-4d64-b9c0-a25288884cac"/>
@@ -5977,8 +5997,9 @@
         <EntityTemplate Name="PoisonousGhostTamed" Guid="5fc09d45-ec47-4c7e-8927-1973d4b4bb30" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
         <MemberComponentTemplate Name="CreatureVomitBehavior" Guid="6c69c0a2-5879-4b3d-80af-60b148c6eb5f" InheritanceParent="a91f3c5e-8c2d-4c1e-b7f4-6e2a9d3b7c11">
   <Parameter Name="VomitShit" Guid="cad18112-f45b-499c-8893-8fcc2c540ae3" Value="true" Type="bool"/>
-  <Parameter Name="VomitProbability" Guid="213d3ae4-1b38-48b7-8ced-12b4df85e49c" Value="1" Type="float"/>
+  <Parameter Name="VomitProbability" Guid="213d3ae4-1b38-48b7-8ced-12b4df85e49c" Value="0.05" Type="float"/>
   <Parameter Name="VomitCooldown" Guid="8b3eb272-c8f8-4b58-9ea0-b7948c11b277" Value="35" Type="float"/>
+  <Parameter Name="VomitDistanceRange" Guid="17e33e8e-07af-4fb8-8b6c-b31fb6c8af06" Value="5,20" Type="Vector2"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="DeathSpawner" Guid="77ecf2a6-35e1-4610-8c94-46455c036744" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="3fcb28ea-2f41-42f9-9618-9a76e02ea6ca"/>
@@ -6570,8 +6591,9 @@
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureVomitBehavior" Guid="66bd9bd7-37fa-40f0-a420-6cda194d0008" InheritanceParent="a91f3c5e-8c2d-4c1e-b7f4-6e2a9d3b7c11">
   <Parameter Name="VomitFire" Guid="6e8ba899-4fd9-4616-8b40-ab0a97faa8be" Value="true" Type="bool"/>
-  <Parameter Name="VomitProbability" Guid="2e0f58a6-cd7b-42e4-ad4b-38f82acac62d" Value="1" Type="float"/>
+  <Parameter Name="VomitProbability" Guid="2e0f58a6-cd7b-42e4-ad4b-38f82acac62d" Value="0.05" Type="float"/>
   <Parameter Name="VomitCooldown" Guid="83b4eb38-61bb-4340-8a09-22be77600522" Value="35" Type="float"/>
+  <Parameter Name="VomitDistanceRange" Guid="9804e26a-6f41-4093-866f-ffec887b3935" Value="5,20" Type="Vector2"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewGhostHumanModel" Guid="34b861b9-ec89-47a2-bc29-7e5fa592b2af" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
     <Parameter Name="Class" Value="Game.ComponentNewGhostHumanModel" Type="string" Guid="6be7bb04-7e51-4aff-9593-dd6f52bcccd6"/>
@@ -6710,8 +6732,9 @@
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="CreatureVomitBehavior" Guid="91eccc97-97f6-457e-a670-fd4bb0efcd58" InheritanceParent="a91f3c5e-8c2d-4c1e-b7f4-6e2a9d3b7c11">
   <Parameter Name="VomitFire" Guid="00dcfc6b-5e09-41d9-a7cc-93c777bd5fb7" Value="true" Type="bool"/>
-  <Parameter Name="VomitProbability" Guid="077e13b9-0773-467f-9871-57c7c4c49d87" Value="1" Type="float"/>
+  <Parameter Name="VomitProbability" Guid="077e13b9-0773-467f-9871-57c7c4c49d87" Value="0.05" Type="float"/>
   <Parameter Name="VomitCooldown" Guid="5da34436-7b33-4c7b-a24e-d87be0656736" Value="35" Type="float"/>
+  <Parameter Name="VomitDistanceRange" Guid="1138af1c-fa7f-4f03-a6ab-faf7668d5480" Value="5,20" Type="Vector2"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="CreatureSounds" Guid="b23362eb-e94f-4db6-8f72-ae6bbe22b551">
                 <Parameter Name="PainSound" Guid="ad17e85a-fd6f-45bc-ab35-5b4557e3e493" Value="Audio/Creatures/Boomer/Pain" Type="string"/>
@@ -6832,8 +6855,9 @@
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureVomitBehavior" Guid="97d820f6-a89f-4812-bfd4-5d94d66562a7" InheritanceParent="a91f3c5e-8c2d-4c1e-b7f4-6e2a9d3b7c11">
   <Parameter Name="VomitShit" Guid="df6bf82e-5b87-426b-8de0-1e2327967dc0" Value="true" Type="bool"/>
-  <Parameter Name="VomitProbability" Guid="469c3bab-9909-410b-97f1-a371ebce241b" Value="1" Type="float"/>
+  <Parameter Name="VomitProbability" Guid="469c3bab-9909-410b-97f1-a371ebce241b" Value="0.05" Type="float"/>
   <Parameter Name="VomitCooldown" Guid="6ec9f413-0207-448d-a461-638e9899b9a7" Value="35" Type="float"/>
+  <Parameter Name="VomitDistanceRange" Guid="ccc93fed-e548-4f07-b96c-4c6275ae4eff" Value="5,20" Type="Vector2"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="GlowingEyes" Guid="c3ef6ed6-2166-4430-a0e8-c8bf1ff524aa" InheritanceParent="bb8701d3-3a4f-44f7-8a1f-3a455533f632">
               <Parameter Name="GlowingEyesColor" Guid="ef7d9750-0896-4281-9cc6-ee3453328c15" Value="0,255,0" Type="Color"/>
@@ -6996,8 +7020,9 @@
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureVomitBehavior" Guid="89ab7be6-a5e3-4b89-808e-3f3c9a3233f6" InheritanceParent="a91f3c5e-8c2d-4c1e-b7f4-6e2a9d3b7c11">
   <Parameter Name="VomitShit" Guid="538938fa-e391-4223-a218-d7176331369f" Value="true" Type="bool"/>
-  <Parameter Name="VomitProbability" Guid="5c0d1ead-2f28-4e6e-b844-e11771cd37bb" Value="1" Type="float"/>
+  <Parameter Name="VomitProbability" Guid="5c0d1ead-2f28-4e6e-b844-e11771cd37bb" Value="0.05" Type="float"/>
   <Parameter Name="VomitCooldown" Guid="10251057-8d6c-471a-89c1-1f2a71eba37e" Value="35" Type="float"/>
+  <Parameter Name="VomitDistanceRange" Guid="e91f412c-c4d3-4d7d-b9d9-2fc39d295bd3" Value="5,20" Type="Vector2"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="SummonBehavior" Guid="8339c27e-c210-4571-81b1-ca78b37474d8" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
               <Parameter Name="IsEnabled" Guid="e7420adb-c432-4884-9955-4d6beb5c1555" Value="True" Type="bool"/>
@@ -10316,8 +10341,9 @@
 <EntityTemplate Name="InfectedFreezer" Guid="55796d08-05b3-4079-a33a-18e67ef54f6a" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
 <MemberComponentTemplate Name="CreatureVomitBehavior" Guid="6319fc10-7ec5-4360-a099-ae9f9bcf237b" InheritanceParent="a91f3c5e-8c2d-4c1e-b7f4-6e2a9d3b7c11">
   <Parameter Name="VomitFrozen" Guid="f2eae27c-b3e4-44ca-95bb-fe9bbb62f88d" Value="true" Type="bool"/>
-  <Parameter Name="VomitProbability" Guid="3b11b800-4adf-4477-b804-2aa0f76b9cee" Value="1" Type="float"/>
+  <Parameter Name="VomitProbability" Guid="3b11b800-4adf-4477-b804-2aa0f76b9cee" Value="0.05" Type="float"/>
   <Parameter Name="VomitCooldown" Guid="ff36567d-5a31-471e-a003-67ad1b4d4a33" Value="35" Type="float"/>
+  <Parameter Name="VomitDistanceRange" Guid="aeee784b-5b0a-4a87-a36f-2cd54eb8cdae" Value="5,20" Type="Vector2"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="ZombieAI" Guid="c3d49b06-8141-43cc-bcb6-f9f9eab18266" InheritanceParent="dc91ba3e-c474-45c3-8d03-ca9a9996dc5f">
     <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="d0b85c86-035f-4284-8e70-66f3c6119aea"/>
@@ -10565,8 +10591,9 @@
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="CreatureVomitBehavior" Guid="b0ec8d55-41f8-472f-9740-315396a0cda3" InheritanceParent="a91f3c5e-8c2d-4c1e-b7f4-6e2a9d3b7c11">
   <Parameter Name="VomitFrozen" Guid="0ffc288d-8bd8-4da1-a875-f2d8971172ad" Value="true" Type="bool"/>
-  <Parameter Name="VomitProbability" Guid="1a977711-197d-4453-8af4-ee50074a3b41" Value="1" Type="float"/>
+  <Parameter Name="VomitProbability" Guid="1a977711-197d-4453-8af4-ee50074a3b41" Value="0.05" Type="float"/>
   <Parameter Name="VomitCooldown" Guid="5da04f31-dee9-4398-b3e7-b3e73dd1d258" Value="35" Type="float"/>
+  <Parameter Name="VomitDistanceRange" Guid="74442dfd-1a2b-4b65-8c27-957a6464bd60" Value="5,20" Type="Vector2"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewAutoInteract" Guid="c9a251ad-cfe5-454d-b6c3-02b73eaea238" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
@@ -10610,8 +10637,9 @@
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureVomitBehavior" Guid="878949d6-a0c5-4437-98e2-19f2d2722fe9" InheritanceParent="a91f3c5e-8c2d-4c1e-b7f4-6e2a9d3b7c11">
   <Parameter Name="VomitFrozen" Guid="3c5479b9-886e-46f9-82b1-e5b0f034983c" Value="true" Type="bool"/>
-  <Parameter Name="VomitProbability" Guid="e8857fca-c473-4e79-bd1a-5205ebaadc5f" Value="1" Type="float"/>
+  <Parameter Name="VomitProbability" Guid="e8857fca-c473-4e79-bd1a-5205ebaadc5f" Value="0.05" Type="float"/>
   <Parameter Name="VomitCooldown" Guid="0e043e5d-1a4f-4d77-9858-192aa24067ae" Value="35" Type="float"/>
+  <Parameter Name="VomitDistanceRange" Guid="459fa5a3-0554-49b3-82de-d70c8eb1b116" Value="5,20" Type="Vector2"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="Inventory" Guid="936c9fb2-db23-417d-b487-ca5b376b8f23" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
             </MemberComponentTemplate>
@@ -10754,8 +10782,9 @@
         <EntityTemplate Name="BoomerFrozenTamed" Guid="9b7aee17-8d12-4120-a46d-4a5a0ca7bb09" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
         <MemberComponentTemplate Name="CreatureVomitBehavior" Guid="850ba24c-b698-45d2-b7e2-cd6114949366" InheritanceParent="a91f3c5e-8c2d-4c1e-b7f4-6e2a9d3b7c11">
   <Parameter Name="VomitFrozen" Guid="44a2de0a-20df-49f1-9c26-9b09137a4fb8" Value="true" Type="bool"/>
-  <Parameter Name="VomitProbability" Guid="ed0ae938-37e9-4e00-ac04-ac66e538b04d" Value="1" Type="float"/>
+  <Parameter Name="VomitProbability" Guid="ed0ae938-37e9-4e00-ac04-ac66e538b04d" Value="0.05" Type="float"/>
   <Parameter Name="VomitCooldown" Guid="72c00a94-6b13-47e4-afdd-974edbd61570" Value="35" Type="float"/>
+  <Parameter Name="VomitDistanceRange" Guid="b5eb9f5a-a618-4ad0-90bf-322293582992" Value="5,20" Type="Vector2"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="BoomerFrozenExplosion" Guid="540d73ba-41a9-4c2d-ba96-19d95e233cfe" InheritanceParent="af664dea-7587-4464-b0a6-4c6df93bbe4f">
   <Parameter Name="FreezePressure" Value="50" Type="float"/>
@@ -10891,8 +10920,9 @@
         <EntityTemplate Name="FrozenGhost" Guid="4b42a029-3ad4-460c-ada6-7d13d3e42bb5" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
         <MemberComponentTemplate Name="CreatureVomitBehavior" Guid="878507b7-6ec0-4940-82da-1964d3e3567e" InheritanceParent="a91f3c5e-8c2d-4c1e-b7f4-6e2a9d3b7c11">
   <Parameter Name="VomitFrozen" Guid="d2c442bf-b787-40c3-9458-2e4cbda79fa6" Value="true" Type="bool"/>
-  <Parameter Name="VomitProbability" Guid="0f0031d1-f6f2-4443-99b7-81295a5cd871" Value="1" Type="float"/>
+  <Parameter Name="VomitProbability" Guid="0f0031d1-f6f2-4443-99b7-81295a5cd871" Value="0.05" Type="float"/>
   <Parameter Name="VomitCooldown" Guid="61bea9f3-32df-4f62-b357-b3e1b3a2015a" Value="35" Type="float"/>
+  <Parameter Name="VomitDistanceRange" Guid="4e50e85a-75cf-4a72-a7f5-a84d4493cf9c" Value="5,20" Type="Vector2"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="DeathSpawner" Guid="30fb8841-8bf1-4cda-a471-b4cbc6d8f35d" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="31f10bfe-7295-40cc-b051-0a3731a0e752"/>
@@ -11161,8 +11191,9 @@
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureVomitBehavior" Guid="290f9a50-0e28-4ca3-be78-50754dd9e93d" InheritanceParent="a91f3c5e-8c2d-4c1e-b7f4-6e2a9d3b7c11">
   <Parameter Name="VomitFrozen" Guid="73efb709-241c-4bd6-aaf1-627cd2652246" Value="true" Type="bool"/>
-  <Parameter Name="VomitProbability" Guid="7b50c730-12d4-4510-81e8-942027184a29" Value="1" Type="float"/>
+  <Parameter Name="VomitProbability" Guid="7b50c730-12d4-4510-81e8-942027184a29" Value="0.05" Type="float"/>
   <Parameter Name="VomitCooldown" Guid="c0bc3cfa-9de0-44ab-8e9a-bc49e1cc360a" Value="35" Type="float"/>
+  <Parameter Name="VomitDistanceRange" Guid="0dbd6eac-6bc2-4485-9388-29f73093e6e0" Value="5,20" Type="Vector2"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewGhostHumanModel" Guid="7ec349e9-9802-4325-a24a-d930f67eb733" InheritanceParent="24547bf5-a0ba-4f78-bd60-98520da7977b">
     <Parameter Name="ModelName" Value="Models/HumanMale" Type="string" Guid="2d6b6d81-fc80-4864-8309-1db056aeb22e"/>
