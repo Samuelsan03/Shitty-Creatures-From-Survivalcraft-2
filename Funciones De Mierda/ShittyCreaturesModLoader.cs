@@ -669,19 +669,18 @@ namespace Game
 
 		// Hook: OnPlayerInputHit (cuando el jugador golpea cuerpo a cuerpo)
 		public override void OnPlayerInputHit(
-			ComponentPlayer player,
-			ref bool playerOperated,
-			ref double timeIntervalHit,
-			ref float meleeAttackRange,
-			bool skipVanilla,
-			out bool flag)
+	ComponentPlayer player,
+	ref bool playerOperated,
+	ref double timeIntervalHit,
+	ref float meleeAttackRange,
+	bool skipVanilla,
+	out bool flag)
 		{
 			flag = false;
 
 			// Suscribir al evento Injured del jugador si no lo está ya
 			if (player != null && player.ComponentHealth != null)
 			{
-				// Nos suscribimos solo una vez (la suscripción múltiple no causa problemas)
 				player.ComponentHealth.Injured -= OnPlayerInjuredForAllies;
 				player.ComponentHealth.Injured += OnPlayerInjuredForAllies;
 			}
@@ -708,7 +707,17 @@ namespace Game
 					ComponentCreature targetCreature = hitBody.Entity.FindComponent<ComponentCreature>();
 					if (targetCreature != null && targetCreature.ComponentHealth.Health > 0f)
 					{
-						CommandAlliesToAttack(player, targetCreature);
+						// SUSCRIBIRSE TEMPORALMENTE al evento Injured del objetivo
+						// para detectar CUANDO REALMENTE RECIBE DAÑO
+						targetCreature.ComponentHealth.Injured += (Injury injury) =>
+						{
+							// Verificar que el daño fue causado por el jugador
+							// 'player' ya es un ComponentCreature, lo usamos directamente
+							if (injury.Attacker == player)
+							{
+								CommandAlliesToAttack(player, targetCreature);
+							}
+						};
 					}
 				}
 			}
@@ -730,48 +739,6 @@ namespace Game
 				return;
 
 			CommandAlliesToAttack(player, attacker);
-		}
-
-		/// <summary>
-		/// Hook llamado cuando cualquier entidad realiza un ataque cuerpo a cuerpo.
-		/// Se usa para que las criaturas aliadas respondan a ataques dirigidos al jugador,
-		/// especialmente en modo Creativo donde el jugador no recibe daño.
-		/// </summary>
-		public override void OnMinerHit(
-			ComponentMiner miner,
-			ComponentBody targetBody,
-			Vector3 hitPoint,
-			Vector3 hitDirection,
-			ref float attackPower,
-			ref float hitProbability,
-			ref float hitProbability2,
-			out bool skipVanilla)
-		{
-			skipVanilla = false;
-
-			// 1. Verificar que el atacante NO sea un jugador
-			if (miner.ComponentPlayer != null)
-				return;
-
-			// 2. Verificar que el objetivo SÍ sea un jugador
-			ComponentPlayer targetPlayer = targetBody.Entity.FindComponent<ComponentPlayer>();
-			if (targetPlayer == null)
-				return;
-
-			// 3. Obtener el GameMode actual
-			SubsystemGameInfo gameInfo = targetPlayer.Project.FindSubsystem<SubsystemGameInfo>(true);
-
-			// 4. Solo aplicar esta lógica en modo Creativo.
-			//    En otros modos, el evento 'Injured' se encargará de la defensa.
-			if (gameInfo.WorldSettings.GameMode != GameMode.Creative)
-				return;
-
-			// 5. Ordenar a los aliados atacar al agresor
-			ComponentCreature attackerCreature = miner.ComponentCreature;
-			if (attackerCreature != null)
-			{
-				CommandAlliesToAttack(targetPlayer, attackerCreature);
-			}
 		}
 
 		// Ordena a todas las criaturas aliadas atacar al objetivo sin límites
@@ -826,6 +793,42 @@ namespace Game
 				{
 					chase.Attack(target, float.MaxValue, float.MaxValue, true);
 				}
+			}
+		}
+		public override void OnMinerHit(
+	ComponentMiner miner,
+	ComponentBody targetBody,
+	Vector3 hitPoint,
+	Vector3 hitDirection,
+	ref float attackPower,
+	ref float hitProbability,
+	ref float hitProbability2,
+	out bool skipVanilla)
+		{
+			skipVanilla = false;
+
+			// 1. Verificar que el atacante NO sea un jugador
+			if (miner.ComponentPlayer != null)
+				return;
+
+			// 2. Verificar que el objetivo SÍ sea un jugador
+			ComponentPlayer targetPlayer = targetBody.Entity.FindComponent<ComponentPlayer>();
+			if (targetPlayer == null)
+				return;
+
+			// 3. Obtener el GameMode actual
+			SubsystemGameInfo gameInfo = targetPlayer.Project.FindSubsystem<SubsystemGameInfo>(true);
+
+			// 4. Solo aplicar esta lógica en modo Creativo.
+			//    En otros modos, el evento 'Injured' se encargará de la defensa.
+			if (gameInfo.WorldSettings.GameMode != GameMode.Creative)
+				return;
+
+			// 5. Ordenar a los aliados atacar al agresor
+			ComponentCreature attackerCreature = miner.ComponentCreature;
+			if (attackerCreature != null)
+			{
+				CommandAlliesToAttack(targetPlayer, attackerCreature);
 			}
 		}
 
