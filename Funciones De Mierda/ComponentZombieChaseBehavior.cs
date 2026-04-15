@@ -17,9 +17,9 @@ namespace Game
 			this.m_attacksAllCategories = valuesDictionary.GetValue<bool>("AttacksAllCategories", true);
 			this.m_fleeFromSameHerd = valuesDictionary.GetValue<bool>("FleeFromSameHerd", true);
 			this.m_fleeDistance = valuesDictionary.GetValue<float>("FleeDistance", 10f);
-			this.m_forceAttackDuringGreenNight = valuesDictionary.GetValue<bool>("ForceAttackDuringGreenNight", false);
+			this.m_forceAttackDuringGreenNight = valuesDictionary.GetValue<bool>("ForceAttackDuringGreenNight", false); // Por defecto false
 
-			// Referencia al ComponentZombieRunAwayBehavior y su LowHealthToEscape
+			// Referencia al ComponentZombieRunAwayBehavior
 			this.m_zombieRunAwayBehavior = base.Entity.FindComponent<ComponentZombieRunAwayBehavior>();
 			if (this.m_zombieRunAwayBehavior != null)
 			{
@@ -43,6 +43,7 @@ namespace Game
 			this.m_previousGreenNightActive = false;
 			m_defaultTargetInRangeTime = this.TargetInRangeTimeToChase;
 
+			// Solo si ForceAttackDuringGreenNight es true y la noche verde está activa, se ajustan los tiempos
 			if (this.m_forceAttackDuringGreenNight && this.m_subsystemGreenNightSky != null && this.m_subsystemGreenNightSky.IsGreenNightActive)
 			{
 				this.TargetInRangeTimeToChase = 0f;
@@ -60,57 +61,42 @@ namespace Game
 				ComponentCreature attacker = injury.Attacker;
 				if (attacker != null)
 				{
-					// Registrar al atacante
 					this.m_lastAttackTimes[attacker] = this.m_retaliationMemoryDuration;
-
-					// Guardar el último atacante (el más reciente)
 					this.m_lastAttacker = attacker;
-
-					// Guardar en la cola de retaliación
 					this.m_retaliationQueue.Add(attacker);
 
-					// Limitar tamaño de la cola
 					while (this.m_retaliationQueue.Count > 5)
 					{
 						this.m_retaliationQueue.RemoveAt(0);
 					}
 
-					// Determinar si debemos atacar al agresor
 					bool shouldAttackAttacker = !this.IsSameHerd(attacker) || this.m_attacksSameHerd;
 
-					// SIEMPRE atacar al agresor si es válido (sin importar el objetivo actual)
 					if (shouldAttackAttacker)
 					{
-						// Detener el ataque actual si es diferente
 						if (this.m_target != attacker)
 						{
 							this.StopAttack();
 
-							// Calcular tiempo de persecución basado en noche verde
 							bool isGreenNightActive = this.m_forceAttackDuringGreenNight &&
 													  this.m_subsystemGreenNightSky != null &&
 													  this.m_subsystemGreenNightSky.IsGreenNightActive;
 
-							float chaseTime = isGreenNightActive ? 120f : 60f; // Más tiempo durante noche verde
+							float chaseTime = isGreenNightActive ? 120f : 60f;
 
-							// Atacar al agresor con máxima prioridad
 							this.Attack(attacker, 40f, chaseTime, true);
 							this.m_retaliationCooldown = 1f;
-
-							// Marcar que estamos en modo retaliación
 							this.m_isRetaliating = true;
 							this.m_retaliationTarget = attacker;
 						}
 					}
 
-					// Llamar a ayuda si es necesario
 					if (!this.IsSameHerd(attacker) && this.m_componentZombieHerdBehavior != null &&
 						this.m_componentZombieHerdBehavior.CallForHelpWhenAttacked)
 					{
 						this.m_componentZombieHerdBehavior.CallZombiesForHelp(attacker);
 					}
 
-					// Manejar ataque de mismo rebaño
 					if (attacker != null && !this.m_attacksSameHerd && this.IsSameHerd(attacker))
 					{
 						if (this.m_componentZombieHerdBehavior != null &&
@@ -148,7 +134,6 @@ namespace Game
 
 		public override void Attack(ComponentCreature target, float maxRange, float maxChaseTime, bool isPersistent)
 		{
-			// CORRECCIÓN: Si el objetivo es nulo, no hacer nada
 			if (target == null)
 				return;
 
@@ -168,26 +153,21 @@ namespace Game
 			}
 			else
 			{
-				// Dar prioridad máxima a retaliaciones
 				if (isRetaliating)
 				{
 					this.Suppressed = false;
-					this.ImportanceLevelNonPersistent = 500f; // Prioridad máxima
+					this.ImportanceLevelNonPersistent = 500f;
 					this.ImportanceLevelPersistent = 500f;
-
-					// Durante retaliación, ignorar supresión
 					this.m_autoChaseSuppressionTime = 0f;
 				}
 
-				// Verificar si es noche verde
+				// Solo si ForceAttackDuringGreenNight es true, se prioriza a los jugadores
 				bool isGreenNightActive = this.m_forceAttackDuringGreenNight &&
 										  this.m_subsystemGreenNightSky != null &&
 										  this.m_subsystemGreenNightSky.IsGreenNightActive;
 
-				// Durante noche verde, priorizar jugadores pero sin ignorar retaliaciones
 				if (isGreenNightActive && !isRetaliating)
 				{
-					// CORRECCIÓN: Asegurar que la entidad del objetivo aún existe antes de buscar componente de jugador
 					if (target.Entity != null && target.Entity.FindComponent<ComponentPlayer>() == null)
 					{
 						ComponentPlayer nearestPlayer = this.FindNearestPlayer(maxRange);
@@ -200,7 +180,6 @@ namespace Game
 
 				base.Attack(target, maxRange, maxChaseTime, isPersistent);
 
-				// Notificar al rebaño
 				if (!isRetaliating && this.m_componentZombieHerdBehavior != null)
 				{
 					this.m_componentZombieHerdBehavior.CoordinateGroupAttack(target);
@@ -210,7 +189,6 @@ namespace Game
 
 		private ComponentCreature FindExternalEnemyNearby(float range)
 		{
-			// CORRECCIÓN: Verificar que el componente y su cuerpo existen
 			if (this.m_componentCreature == null || this.m_componentCreature.ComponentBody == null)
 				return null;
 
@@ -240,7 +218,6 @@ namespace Game
 
 		private ComponentPlayer FindNearestPlayer(float range)
 		{
-			// CORRECCIÓN: Verificar que el componente y su cuerpo existen
 			if (this.m_componentCreature == null || this.m_componentCreature.ComponentBody == null)
 				return null;
 
@@ -269,14 +246,13 @@ namespace Game
 
 		public override ComponentCreature FindTarget()
 		{
-			// PRIORIDAD 1: Retaliación - SIEMPRE verificar primero
 			ComponentCreature retaliationTarget = this.GetNextRetaliationTarget();
 			if (retaliationTarget != null)
 			{
 				return retaliationTarget;
 			}
 
-			// PRIORIDAD 2: Noche verde - buscar jugadores
+			// Solo si ForceAttackDuringGreenNight es true, se busca jugadores durante noche verde
 			bool isGreenNightActive = this.m_forceAttackDuringGreenNight &&
 									  this.m_subsystemGreenNightSky != null &&
 									  this.m_subsystemGreenNightSky.IsGreenNightActive;
@@ -289,7 +265,6 @@ namespace Game
 				}
 			}
 
-			// PRIORIDAD 3: Búsqueda normal
 			if (!this.m_attacksSameHerd)
 			{
 				Vector3 position = this.m_componentCreature.ComponentBody.Position;
@@ -320,7 +295,6 @@ namespace Game
 
 		private ComponentCreature GetNextRetaliationTarget()
 		{
-			// Limpiar atacantes muertos
 			for (int i = this.m_retaliationQueue.Count - 1; i >= 0; i--)
 			{
 				ComponentCreature attacker = this.m_retaliationQueue[i];
@@ -332,12 +306,10 @@ namespace Game
 				}
 			}
 
-			// Devolver el atacante más reciente
 			if (this.m_retaliationQueue.Count > 0)
 			{
 				ComponentCreature latestAttacker = this.m_retaliationQueue[this.m_retaliationQueue.Count - 1];
 
-				// Verificar que sea válido para atacar
 				bool isValid = (!this.IsSameHerd(latestAttacker) || this.m_attacksSameHerd) &&
 							   Vector3.Distance(this.m_componentCreature.ComponentBody.Position,
 											   latestAttacker.ComponentBody.Position) <= this.m_range * 2f;
@@ -353,7 +325,6 @@ namespace Game
 
 		public override float ScoreTarget(ComponentCreature componentCreature)
 		{
-			// Excluir miembros del mismo rebaño
 			if (!this.m_attacksSameHerd && this.IsSameHerd(componentCreature))
 			{
 				return 0f;
@@ -361,15 +332,13 @@ namespace Game
 
 			float baseScore = base.ScoreTarget(componentCreature);
 
-			// BONUS MÁXIMO para retaliaciones (10x en lugar de 5x)
 			if (this.m_retaliationQueue.Contains(componentCreature) &&
 				this.m_lastAttackTimes.ContainsKey(componentCreature) &&
 				this.m_lastAttackTimes[componentCreature] > 0f)
 			{
-				return baseScore * 10f; // Prioridad absoluta
+				return baseScore * 10f;
 			}
 
-			// BONUS para el último atacante
 			if (componentCreature == this.m_lastAttacker &&
 				this.m_lastAttackTimes.ContainsKey(componentCreature) &&
 				this.m_lastAttackTimes[componentCreature] > 0f)
@@ -433,13 +402,11 @@ namespace Game
 		{
 			base.Update(dt);
 
-			// Actualizar cooldown de retaliación
 			if (this.m_retaliationCooldown > 0f)
 			{
 				this.m_retaliationCooldown -= dt;
 			}
 
-			// Actualizar tiempos de memoria de ataque
 			List<ComponentCreature> expiredAttackers = new List<ComponentCreature>();
 			foreach (var kvp in this.m_lastAttackTimes)
 			{
@@ -447,10 +414,7 @@ namespace Game
 				if (this.m_lastAttackTimes[kvp.Key] <= 0f)
 				{
 					expiredAttackers.Add(kvp.Key);
-
-					// Limpiar de la cola de retaliación
 					this.m_retaliationQueue.Remove(kvp.Key);
-
 					if (kvp.Key == this.m_lastAttacker)
 					{
 						this.m_lastAttacker = null;
@@ -468,20 +432,18 @@ namespace Game
 				this.m_lastAttackTimes.Remove(attacker);
 			}
 
-			// Detectar estado de noche verde
+			// Detectar noche verde solo si ForceAttackDuringGreenNight es true
 			bool greenNightActive = this.m_forceAttackDuringGreenNight &&
 									this.m_subsystemGreenNightSky != null &&
 									this.m_subsystemGreenNightSky.IsGreenNightActive;
 
-			// Manejar cambios de noche verde
 			if (greenNightActive != this.m_previousGreenNightActive)
 			{
 				if (greenNightActive && !this.m_previousGreenNightActive)
 				{
-					// NOCHE VERDE COMIENZA
+					// Solo se activa el comportamiento agresivo si ForceAttackDuringGreenNight es true
 					this.TargetInRangeTimeToChase = 0f;
 
-					// Si no estamos en retaliación, buscar jugador inmediatamente
 					if (!this.m_isRetaliating)
 					{
 						ComponentPlayer nearestPlayer = this.FindNearestPlayer(this.m_range);
@@ -494,15 +456,12 @@ namespace Game
 				}
 				else if (!greenNightActive && this.m_previousGreenNightActive)
 				{
-					// NOCHE VERDE TERMINA
 					this.TargetInRangeTimeToChase = m_defaultTargetInRangeTime;
 
-					// Solo detener ataque si no estamos en retaliación
 					if (!this.m_isRetaliating)
 					{
 						this.StopAttack();
 						this.m_target = null;
-
 						if (this.m_stateMachine.CurrentState != "LookingForTarget")
 						{
 							this.m_stateMachine.TransitionTo("LookingForTarget");
@@ -515,7 +474,7 @@ namespace Game
 				this.m_previousGreenNightActive = greenNightActive;
 			}
 
-			// Lógica durante noche verde
+			// Comportamiento durante noche verde SOLO si ForceAttackDuringGreenNight es true
 			if (greenNightActive)
 			{
 				this.AttacksPlayer = true;
@@ -528,7 +487,6 @@ namespace Game
 					this.m_stateMachine.TransitionTo("LookingForTarget");
 				}
 
-				// IMPORTANTE: Durante noche verde, seguir priorizando retaliaciones
 				if (!this.m_isRetaliating && this.m_target == null)
 				{
 					ComponentPlayer nearestPlayer = this.FindNearestPlayer(this.m_range);
@@ -540,12 +498,12 @@ namespace Game
 			}
 			else
 			{
+				// Comportamiento normal fuera de noche verde
 				if (this.m_subsystemGreenNightSky != null && !this.m_subsystemGreenNightSky.IsGreenNightActive)
 				{
 					this.TargetInRangeTimeToChase = m_defaultTargetInRangeTime;
 				}
 
-				// Verificar si debemos cambiar al siguiente objetivo (fuera de noche verde)
 				if (!this.m_isRetaliating)
 				{
 					ComponentCreature nextRetaliation = this.GetNextRetaliationTarget();
@@ -560,7 +518,6 @@ namespace Game
 				}
 			}
 
-			// Verificar si el objetivo de retaliación sigue siendo válido
 			if (this.m_isRetaliating && this.m_retaliationTarget != null)
 			{
 				bool targetStillValid = this.m_retaliationTarget.ComponentHealth.Health > 0f &&
@@ -573,7 +530,6 @@ namespace Game
 					this.m_isRetaliating = false;
 					this.m_retaliationTarget = null;
 
-					// Buscar siguiente objetivo en cola
 					ComponentCreature nextTarget = this.GetNextRetaliationTarget();
 					if (nextTarget != null)
 					{
@@ -588,8 +544,6 @@ namespace Game
 		public override void StopAttack()
 		{
 			base.StopAttack();
-
-			// No resetear estado de retaliación aquí, se maneja en Update
 		}
 
 		private ComponentZombieHerdBehavior m_componentZombieHerdBehavior;
@@ -607,8 +561,6 @@ namespace Game
 		private float m_lowHealthToEscape;
 		private bool m_previousGreenNightActive;
 		private float m_defaultTargetInRangeTime = 3f;
-
-		// NUEVOS CAMPOS PARA RETALIACIÓN MEJORADA
 		private List<ComponentCreature> m_retaliationQueue = new List<ComponentCreature>();
 		private bool m_isRetaliating;
 		private ComponentCreature m_retaliationTarget;
