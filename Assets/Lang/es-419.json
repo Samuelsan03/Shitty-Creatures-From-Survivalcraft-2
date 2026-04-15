@@ -88,7 +88,7 @@
     "Line1_0_0_2": "• Modelos, texturas y audios del mod dayzmod",
     "Line1_0_0_3": "• Compatible con 2.3 y 2.4"
   },
-  "ShittyCreatures": {
+  "ShittyCreaturesSettings": {
     "ScreenTitle": "Ajustes de Shitty Creatures",
     "SettingsButton": "Ajustes de Shitty Creatures",
     "GhostDescription": "Activar/desactivar la música cuando los fantasmas te persiguen",
@@ -96,7 +96,8 @@
     "SpawnDescription": "Activar/desactivar la generación de NPCs al morir uno",
     "ThirstDescription": "Activar/desactivar la simulación de sed",
     "CoordinateDisplay": "Mostrar coordenadas",
-    "PunchCommandDescription": "Los aliados atacarán y perseguirán al NPC que golpees, sin importar el tipo de ataque"
+    "PunchCommandDescription": "Los aliados atacarán y perseguirán al NPC que golpees, sin importar el tipo de ataque",
+    "CreativeDefenseDescription": "En modo Creativo, cuando una criatura golpea al jugador, los aliados atacarán al agresor"
   },
     "AntidoteBucket": {
       "NPCCured": "¡El NPC ha sido curado de veneno y enfermedades!"
