@@ -4,6 +4,23 @@
 <Parameter Name="Class" Guid="8c4f00ca-8f77-47c9-99bb-cefa4f94ee8d" new-Value="Game.ComponentNewVitalStats" Type="string"/>
 
     <Folder Name="Gameplay" Guid="d509e5e2-2c10-49f1-8223-85cd892c63b0">
+    <ComponentTemplate Name="CoordinateDisplay" Description="Hace que se vea las coordenadas en pantalla del jugador" Guid="bd8323f8-399d-4acf-b96d-ed790ea2a6d7" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+    <Parameter Name="Class" Guid="91e9e7ee-3394-4f89-85ef-06f45f85c8dd" Value="Game.ComponentCoordinateDisplay" Type="string"/>
+</ComponentTemplate>
+
+    <ComponentTemplate Name="NewFlyAwayBehavior" Description="Comportamiento nulo. El bicho no huye por nada." Guid="a1cca7f2-9a15-4a07-9ab7-31bda890427e" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+          <Parameter Name="Class" Guid="b1371149-4d6e-464b-85a7-9a08731ee395" Value="Game.ComponentNewFlyAwayBehavior" Type="string"/>
+        </ComponentTemplate>
+
+    <ComponentTemplate Name="CreatureVomitBehavior" Description="Permite que una criatura realice un ataque especial escupiendo veneno o fuego hacia su objetivo cuando lo está persiguiendo." Guid="a91f3c5e-8c2d-4c1e-b7f4-6e2a9d3b7c11" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+  <Parameter Name="VomitShit" Description="Activa el vómito venenoso (daño tipo veneno)." Guid="b12c4a91-3f8d-4f4d-9d8c-1a2b3c4d5e61" Value="false" Type="bool"/>
+  <Parameter Name="VomitFire" Description="Activa el vómito de fuego (daño tipo fuego)." Guid="c23d5b82-4e9f-5a6b-8c7d-2b3c4d5e6f72" Value="false" Type="bool"/>
+  <Parameter Name="VomitFrozen" Description="Activa el vómito congelante (causa gripe, reduce temperatura y daño leve)." Guid="a78451cc-725e-4165-b091-6fdd3fa124fe" Value="false" Type="bool"/>
+  <Parameter Name="VomitProbability" Description="Probabilidad por segundo de ejecutar el ataque de vómito cuando el objetivo está a distancia válida." Guid="d34e6c93-5f0a-6b7c-9d8e-3c4d5e6f7a83" Value="0.1" Type="float"/>
+  <Parameter Name="VomitCooldown" Description="Tiempo mínimo en segundos entre cada uso del ataque de vómito." Guid="e45f7da4-6a1b-7c8d-0e9f-4d5e6f7a8b94" Value="5" Type="float"/>
+  <Parameter Name="Class" Description="Clase que implementa el comportamiento de vómito en la criatura." Guid="f56a8eb5-7b2c-8d9e-1f0a-5e6f7a8b9c05" Value="Game.ComponentCreatureVomit" Type="string"/>
+</ComponentTemplate>
+
     <ComponentTemplate Name="VitalStats" Description="Handles creature vital stats, including hunger, thirst, stamina, sleep, temperature and wetness" Guid="4f2ad7cc-d19a-4d64-99eb-5c6ca2b7a7b3" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
   <ParameterSet Name="Satiation" Description="Contains satiation for each food item index" Guid="18e05ebe-9421-4169-9469-83f926f14af3"/>
   <Parameter Name="Stamina" Description="Stamina level, 0 to 1" Guid="6e113066-4b9b-4f7f-be54-cfd7dc91e97f" Value="1" Type="float"/>
