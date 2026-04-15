@@ -1,16 +1,21 @@
-<CrossbowWidget xmlns="runtime-namespace:Game">
+<DoubleMusketWidget xmlns="runtime-namespace:Game">
+  
   <BevelledRectangleWidget Size="614, 382" BevelSize="3"/>
-  <!-- 将标题移到右侧物品栏上方 -->
+  
+  <!-- Título del arma (izquierda) -->
+  <LabelWidget CanvasWidget.Position="36, 14" Text="[DoubleMusketWidget:1]" Color="255, 255, 255, 192"/>
+  
+  <!-- Título "Inventario" (derecha) -->
   <LabelWidget CanvasWidget.Position="286, 14" Text="[DoubleMusketWidget:2]" Color="255, 255, 255, 192"/>
+
+  <!-- Cuadrícula de inventario (derecha) -->
   <GridPanelWidget Name="InventoryGrid" CanvasWidget.Position="286, 52" ColumnsCount="4" RowsCount="4"/>
 
-  <!-- 武器预览区域，将标题放入此画布内 -->
-  <CanvasWidget Size="230, 288" CanvasWidget.Position="36, 14">
-    <!-- 武器名称标签，位于预览图上方 -->
-    <LabelWidget CanvasWidget.Position="0, 0" Text="[DoubleMusketWidget:1]" Color="255, 255, 255, 192"/>
-    <!-- 武器预览插槽 -->
-    <InventorySlotWidget Name="InventorySlot" Size="230, 288" CanvasWidget.Position="0, 24" VerticalAlignment="Center" HideHighlightRectangle="true" ProcessingOnly="true" HideEditOverlay="true">
+  <!-- Vista previa del arma e instrucciones (izquierda) -->
+  <CanvasWidget Size="230, 288" CanvasWidget.Position="36, 52">
+    <InventorySlotWidget Name="InventorySlot" Size="230, 288" VerticalAlignment="Center" HideHighlightRectangle="true" ProcessingOnly="true" HideEditOverlay="true">
       <LabelWidget Name="InstructionsLabel" HorizontalAlignment="Center" VerticalAlignment="Far" Margin="0, 2"/>
     </InventorySlotWidget>
   </CanvasWidget>
-</CrossbowWidget>
+  
+</DoubleMusketWidget>
