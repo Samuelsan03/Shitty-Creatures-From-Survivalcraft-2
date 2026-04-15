@@ -1123,8 +1123,8 @@
       "ContentWidgets": {
         "DoubleMusketWidget": {
     "0": "Not loaded. Drag bullets to load (max 2).",
-    "1": "Inventory",
-    "2": "Double-Barrel Musket",
+    "1": "Double-Barrel Musket",
+    "2": "Inventory",
     "3": "Loaded ({0} shot(s) left)"
   },
         "Trader": {
