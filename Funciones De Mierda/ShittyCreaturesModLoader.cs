@@ -112,6 +112,11 @@ namespace Game
 			RegisterRemoteControlBlock();
 			ModsManager.RegisterHook("MatchRecipe", this);
 
+			// Hook para cuando el jugador golpea cuerpo a cuerpo (prioridad alta)
+			ModsManager.RegisterHook("OnPlayerInputHit", this, -100);
+			// Hook para cuando el jugador recibe daño (se usa evento Injured, no hook directo)
+			// La suscripción se realiza en OnPlayerInputHit cuando el jugador está disponible
+
 			// Reemplazar overlay de captura de pantalla
 			ReplaceScreenCaptureOverlay();
 		}
@@ -657,6 +662,126 @@ namespace Game
 				throw new InvalidOperationException("Actual ingredient data not specified.");
 
 			return requiredId == actualId && (requiredData == null || requiredData.Value == actualData.Value);
+		}
+
+		// Hook: OnPlayerInputHit (cuando el jugador golpea cuerpo a cuerpo)
+		public override void OnPlayerInputHit(
+			ComponentPlayer player,
+			ref bool playerOperated,
+			ref double timeIntervalHit,
+			ref float meleeAttackRange,
+			bool skipVanilla,
+			out bool flag)
+		{
+			flag = false;
+
+			// Suscribir al evento Injured del jugador si no lo está ya
+			if (player != null && player.ComponentHealth != null)
+			{
+				// Nos suscribimos solo una vez (la suscripción múltiple no causa problemas)
+				player.ComponentHealth.Injured -= OnPlayerInjuredForAllies;
+				player.ComponentHealth.Injured += OnPlayerInjuredForAllies;
+			}
+
+			if (playerOperated || skipVanilla || player == null)
+				return;
+
+			PlayerInput input = player.ComponentInput.PlayerInput;
+			if (input.Hit == null)
+				return;
+
+			ComponentMiner miner = player.ComponentMiner;
+			if (miner == null)
+				return;
+
+			BodyRaycastResult? result = miner.Raycast<BodyRaycastResult>(
+				input.Hit.Value, RaycastMode.Interaction, true, true, true, meleeAttackRange);
+
+			if (result.HasValue)
+			{
+				ComponentBody hitBody = result.Value.ComponentBody;
+				if (hitBody != null && hitBody.Entity != player.Entity)
+				{
+					ComponentCreature targetCreature = hitBody.Entity.FindComponent<ComponentCreature>();
+					if (targetCreature != null && targetCreature.ComponentHealth.Health > 0f)
+					{
+						CommandAlliesToAttack(player, targetCreature);
+					}
+				}
+			}
+		}
+
+		// Manejador del evento Injured del jugador
+		private void OnPlayerInjuredForAllies(Injury injury)
+		{
+			ComponentHealth health = injury.ComponentHealth;
+			if (health == null)
+				return;
+
+			ComponentPlayer player = health.Entity.FindComponent<ComponentPlayer>();
+			if (player == null)
+				return;
+
+			ComponentCreature attacker = injury.Attacker;
+			if (attacker == null)
+				return;
+
+			CommandAlliesToAttack(player, attacker);
+		}
+
+		// Ordena a todas las criaturas aliadas atacar al objetivo sin límites
+		private void CommandAlliesToAttack(ComponentPlayer player, ComponentCreature target)
+		{
+			if (player == null || target == null)
+				return;
+
+			var project = player.Project;
+			if (project == null)
+				return;
+
+			SubsystemCreatureSpawn creatureSpawn = project.FindSubsystem<SubsystemCreatureSpawn>(true);
+			if (creatureSpawn == null)
+				return;
+
+			foreach (ComponentCreature creature in creatureSpawn.Creatures)
+			{
+				if (creature == null || creature.ComponentHealth.Health <= 0f)
+					continue;
+
+				// Verificar si es aliado del jugador
+				bool isAlly = false;
+
+				// 1. Contratado por el jugador
+				ComponentHireableNPC hireable = creature.Entity.FindComponent<ComponentHireableNPC>();
+				if (hireable != null && hireable.IsHired)
+				{
+					isAlly = true;
+				}
+
+				// 2. Pertenece a manada "player" o "guardian"
+				if (!isAlly)
+				{
+					ComponentNewHerdBehavior herd = creature.Entity.FindComponent<ComponentNewHerdBehavior>();
+					if (herd != null && !string.IsNullOrEmpty(herd.HerdName))
+					{
+						string herdName = herd.HerdName.ToLower();
+						if (herdName == "player" || herdName.Contains("guardian"))
+						{
+							isAlly = true;
+						}
+					}
+				}
+
+				if (!isAlly)
+					continue;
+
+				// Ordenar ataque sin límites
+				ComponentNewChaseBehavior chase = creature.Entity.FindComponent<ComponentNewChaseBehavior>();
+				if (chase != null && !chase.Suppressed)
+				{
+					chase.Attack(target, float.MaxValue, float.MaxValue, true);
+				}
+			}
 		}
 
 		// ---------------------------------------------------------------------------------
