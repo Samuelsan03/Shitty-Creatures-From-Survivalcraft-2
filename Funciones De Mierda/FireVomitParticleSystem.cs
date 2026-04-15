@@ -135,7 +135,8 @@ namespace Game
 								ComponentHealth health = target.Entity.FindComponent<ComponentHealth>();
 								if (health != null)
 								{
-									health.Injure(ImpactDamage, m_owner, false, null);
+									string causeOfDeath = LanguageControl.Get("Injury", "FireVomit");
+									health.Injure(ImpactDamage, m_owner, false, causeOfDeath);
 								}
 								ComponentOnFire onFire = target.Entity.FindComponent<ComponentOnFire>();
 								onFire?.SetOnFire(m_owner, FireDuration);
