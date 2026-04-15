@@ -26,7 +26,7 @@ namespace Game
 
 		public PoisonVomitParticleSystem(SubsystemTerrain terrain, SubsystemBodies bodies, SubsystemSoundMaterials soundMaterials,
 			SubsystemTime time, SubsystemParticles particles, ComponentCreature creature)
-			: base(200) // Capacidad suficiente para un chorro denso
+			: base(200)
 		{
 			m_subsystemTerrain = terrain;
 			m_subsystemBodies = bodies;
@@ -41,7 +41,7 @@ namespace Game
 
 		public override bool Simulate(float dt)
 		{
-			// Cálculo de luz ambiente (igual que PukeParticleSystem)
+			// Cálculo de luz ambiente
 			int x = Terrain.ToCell(Position.X);
 			int y = Terrain.ToCell(Position.Y);
 			int z = Terrain.ToCell(Position.Z);
@@ -57,18 +57,18 @@ namespace Game
 			baseColor *= intensity;
 			baseColor.A = 255;
 
-			dt = Math.Clamp(dt, 0f, 0.1f);
+			dt = Math.Clamp(dt, 0f, 0.05f); // Reducir paso máximo para mejor detección de colisiones
 			m_duration += dt;
 
-			// Auto-stop después de 3.5 segundos (como el Puke original)
+			// Auto-stop después de 3.5 segundos
 			if (m_duration > 3.5f)
 			{
 				IsStopped = true;
 			}
 
-			// Generación de partículas basada en ruido (similar al Puke)
+			// Generación de partículas basada en ruido
 			float noise = MathUtils.Saturate(1.3f * SimplexNoise.Noise(3f * m_duration + (float)(GetHashCode() % 100)) - 0.3f);
-			float generationRate = 60f * noise; // Tasa alta para chorro denso
+			float generationRate = 60f * noise;
 			m_toGenerate += generationRate * dt;
 
 			bool anyActive = false;
@@ -86,8 +86,39 @@ namespace Game
 						Vector3 oldPos = particle.Position;
 						Vector3 newPos = oldPos + particle.Velocity * dt;
 
+						// Verificar si la partícula ya está dentro de un bloque sólido
+						int contents = m_subsystemTerrain.Terrain.GetCellContents(Terrain.ToCell(oldPos));
+						Block block = BlocksManager.Blocks[contents];
+						if (block.IsCollidable_(contents))
+						{
+							particle.IsActive = false;
+							continue;
+						}
+
+						// Colisión con terreno (con radio para evitar que el rayo pase de largo)
+						float radius = 0.1f;
+						Vector3 direction = newPos - oldPos;
+						float distance = direction.Length();
+						if (distance > 0.001f)
+						{
+							direction /= distance;
+							TerrainRaycastResult? terrainHit = m_subsystemTerrain.Raycast(
+								oldPos,
+								oldPos + direction * (distance + radius),
+								false,
+								true,
+								(value, d) => BlocksManager.Blocks[Terrain.ExtractContents(value)].IsCollidable_(value));
+
+							if (terrainHit != null && terrainHit.Value.Distance <= distance + radius)
+							{
+								m_subsystemSoundMaterials.PlayImpactSound(terrainHit.Value.Value, terrainHit.Value.HitPoint(), 0.5f);
+								particle.IsActive = false;
+								continue;
+							}
+						}
+
 						// Colisión con cuerpos (excepto el dueño)
-						BodyRaycastResult? bodyHit = m_subsystemBodies.Raycast(oldPos, newPos, 0.1f, (body, d) =>
+						BodyRaycastResult? bodyHit = m_subsystemBodies.Raycast(oldPos, newPos, 0.15f, (body, d) =>
 						{
 							if (body.Entity == m_componentCreature.Entity) return false;
 							return true;
@@ -100,25 +131,12 @@ namespace Game
 							{
 								ApplyPoisonToBody(hitBody);
 							}
-							// Sonido de impacto
 							m_subsystemSoundMaterials.PlayImpactSound(bodyHit.Value.ComponentBody.StandingOnValue ?? 0, bodyHit.Value.HitPoint(), 0.5f);
 							particle.IsActive = false;
 							continue;
 						}
 
-						// Colisión con terreno
-						TerrainRaycastResult? terrainHit = m_subsystemTerrain.Raycast(oldPos, newPos, false, true,
-							(value, d) => BlocksManager.Blocks[Terrain.ExtractContents(value)].IsCollidable_(value));
-
-						if (terrainHit != null)
-						{
-							m_subsystemSoundMaterials.PlayImpactSound(terrainHit.Value.Value, terrainHit.Value.HitPoint(), 0.5f);
-							particle.IsActive = false;
-							continue;
-						}
-
 						particle.Position = newPos;
-						// Sin gravedad, el chorro es recto
 						particle.Color = baseColor * MathUtils.Saturate(particle.TimeToLive);
 						particle.TextureSlot = (int)(8.99f * MathUtils.Saturate(2f - particle.TimeToLive));
 					}
@@ -129,12 +147,11 @@ namespace Game
 				}
 				else if (!IsStopped && m_toGenerate >= 1f)
 				{
-					// Crear nueva partícula con mínima dispersión para que el chorro sea recto
-					Vector3 offset = m_random.Vector3(0.04f); // dispersión muy pequeña
+					// Crear nueva partícula
+					Vector3 offset = m_random.Vector3(0.04f);
 					particle.IsActive = true;
 					particle.Position = Position + offset;
 					particle.Color = baseColor;
-					// Velocidad en la dirección principal, con muy poca variación
 					Vector3 dirOffset = m_random.Vector3(0.02f);
 					particle.Velocity = normalizedDir * 100f;
 					particle.TimeToLive = m_random.Float(1.5f, 2.2f);
