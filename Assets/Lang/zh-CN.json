@@ -173,7 +173,8 @@
     "Poisoned": "中毒",
     "FrozenToDeath": "冻死",
     "Dehydration": "脱水",
-    "FrozenVomit": "被冰冷的呕吐物冻住"
+    "FrozenVomit": "被冰冷的呕吐物冻住",
+    "FireVomit": "被炽热的呕吐物灼伤"
    },
   "Database": {
     "DisplayName": {
