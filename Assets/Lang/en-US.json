@@ -88,7 +88,7 @@
     "Line1_0_0_2": "• Models, textures, and audios from dayzmod mod",
     "Line1_0_0_3": "• Compatible with 2.3 and 2.4"
   },
-  "ShittyCreatures": {
+  "ShittyCreaturesSettings": {
     "ScreenTitle": "Shitty Creatures Settings",
     "SettingsButton": "Shitty Creatures Settings",
     "GhostDescription": "Enable/disable music when ghosts chase you",
@@ -96,7 +96,8 @@
     "SpawnDescription": "Enable/disable spawning of NPCs when one dies",
     "ThirstDescription": "Enable/disable thirst simulation",
     "CoordinateDisplay": "Show coordinates",
-    "PunchCommandDescription": "Allies will attack and chase any NPC you hit, regardless of the type of attack"
+    "PunchCommandDescription": "Allies will attack and chase any NPC you hit, regardless of the type of attack",
+    "CreativeDefenseDescription": "In Creative mode, when a creature hits the player, allies will attack the attacker"
   },
   "AntidoteBucket": {
     "NPCCured": "The NPC has been cured of poison and sickness!"
