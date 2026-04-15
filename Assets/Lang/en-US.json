@@ -173,7 +173,8 @@
     "Poisoned": "Poisoned",
     "FrozenToDeath": "Frozen to Death",
     "Dehydration": "Dehydration",
-    "FrozenVomit": "Frozen by icy vomit"
+    "FrozenVomit": "Frozen by icy vomit",
+    "FireVomit": "Burned by fiery vomit"
   },
   "Database": {
     "DisplayName": {
