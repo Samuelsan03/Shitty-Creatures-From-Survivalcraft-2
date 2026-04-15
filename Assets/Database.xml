@@ -1492,12 +1492,8 @@
 </MemberComponentTemplate>
           <MemberComponentTemplate Name="HealthBarDisplay" Guid="796e75cd-72b2-4394-886d-bd037e9e283a" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
     </MemberComponentTemplate>
-          <MemberComponentTemplate Name="PoisonInfected" Guid="b556e504-3f6b-43a5-b143-cde86b32ce0f">
-        <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
-        <Parameter Name="IsOptional" Value="true" Type="bool"/>
-        <Parameter Name="LoadOrder" Value="60" Type="int"/>
+          <MemberComponentTemplate Name="PoisonInfected" Guid="b556e504-3f6b-43a5-b143-cde86b32ce0f" InheritanceParent="d5e7f9a1-b3c5-4d9f-1a3b-5c7d9f1a3b5c">
         <Parameter Name="PoisonResistance" Value="0" Type="float"/> <!-- Resistencia al veneno -->
-        <Parameter Name="IsJumpMove" Value="false" Type="bool"/> <!-- No tiene movimiento de salto con veneno -->
     </MemberComponentTemplate>
             <MemberComponentTemplate Name="WalkAroundBehavior" Guid="001e8c4f-41fb-4d72-bd95-82a802ab8ff4" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
             <MemberComponentTemplate Name="FourLeggedModel" Guid="0fe9412b-1584-490c-a537-cc6b359b90a2" InheritanceParent="76d24f74-5f25-4d30-92ef-658c1a4d66c8">
@@ -4188,6 +4184,7 @@
               <Parameter Name="DisplayName" Guid="ba9e4fe5-d483-4535-8b60-4d6f71f49c7a" Value="[DisplayName:97]" Type="string"/>
               <Parameter Name="Description" Guid="c45d1431-b27b-4ba7-9d5e-93ccd1ea05b5" Value="[Description:43]" Type="string"/>
             </MemberComponentTemplate>
+            <MemberComponentTemplate Name="CoordinateDisplay" Guid="f4a5b6c7-d8e9-4x01-9y23-b4c5d6e7f8a9" InheritanceParent="bd8323f8-399d-4acf-b96d-ed790ea2a6d7"/>
             <MemberComponentTemplate Name="Health" Guid="781fd365-7a11-4a2d-9ea4-606d3c79b79b">
               <Parameter Name="AttackResilience" Guid="c83ef685-d311-42ba-bf4a-4e2994ef1859" Value="10" Type="float"/>
             </MemberComponentTemplate>
