@@ -18,6 +18,7 @@
   <Parameter Name="VomitFrozen" Description="Activa el vómito congelante (causa gripe, reduce temperatura y daño leve)." Guid="a78451cc-725e-4165-b091-6fdd3fa124fe" Value="false" Type="bool"/>
   <Parameter Name="VomitProbability" Description="Probabilidad por segundo de ejecutar el ataque de vómito cuando el objetivo está a distancia válida." Guid="d34e6c93-5f0a-6b7c-9d8e-3c4d5e6f7a83" Value="0.1" Type="float"/>
   <Parameter Name="VomitCooldown" Description="Tiempo mínimo en segundos entre cada uso del ataque de vómito." Guid="e45f7da4-6a1b-7c8d-0e9f-4d5e6f7a8b94" Value="5" Type="float"/>
+  <Parameter Name="VomitDistanceRange" Description="Rango de distancia (mínima, máxima) en bloques a la que la criatura puede vomitar. Formato: X,Y donde X es la distancia mínima e Y la máxima." Guid="e93d0f52-5283-41f1-8fa2-9516d5c32b71" Value="2,12" Type="Vector2"/>
   <Parameter Name="Class" Description="Clase que implementa el comportamiento de vómito en la criatura." Guid="f56a8eb5-7b2c-8d9e-1f0a-5e6f7a8b9c05" Value="Game.ComponentCreatureVomit" Type="string"/>
 </ComponentTemplate>
 
