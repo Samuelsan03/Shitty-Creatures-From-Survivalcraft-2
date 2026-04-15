@@ -95,7 +95,8 @@
     "TankDescription": "Enable/disable music when tanks chase you",
     "SpawnDescription": "Enable/disable spawning of NPCs when one dies",
     "ThirstDescription": "Enable/disable thirst simulation",
-    "CoordinateDisplay": "Show coordinates"
+    "CoordinateDisplay": "Show coordinates",
+    "PunchCommandDescription": "Allies will attack and chase any NPC you hit, regardless of the type of attack"
   },
   "AntidoteBucket": {
     "NPCCured": "The NPC has been cured of poison and sickness!"
