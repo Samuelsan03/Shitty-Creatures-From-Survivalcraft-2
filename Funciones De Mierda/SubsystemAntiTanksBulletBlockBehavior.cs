@@ -8,61 +8,38 @@ namespace Game
 	{
 		public override int[] HandledBlocks
 		{
-			get
-			{
-				return new int[] { AntiTanksBulletBlock.Index };
-			}
+			get { return new int[] { AntiTanksBulletBlock.Index }; }
 		}
 
 		public override bool OnHitAsProjectile(CellFace? cellFace, ComponentBody componentBody, WorldItem worldItem)
 		{
-			Console.WriteLine($"AntiTanksBulletBlockBehavior.OnHitAsProjectile llamado!");
+			bool result = true;
 
-			// LOG 1: Verifica si se está llamando
-			if (worldItem == null)
-			{
-				Console.WriteLine("ERROR: worldItem es null!");
-				return true;
-			}
-
-			Console.WriteLine($"Velocidad: {worldItem.Velocity.Length()}");
-
-			// DAÑO DIRECTO SIMPLE - SIN VERIFICACIONES COMPLEJAS
-			if (componentBody != null)
-			{
-				Console.WriteLine($"componentBody encontrado!");
-
-				var health = componentBody.Entity.FindComponent<ComponentHealth>();
-				if (health != null)
-				{
-					Console.WriteLine($"ComponentHealth encontrado! Aplicando daño...");
-					// Daño MÁSICO para testing
-					health.Injure(999f, null, false, "ANTI-TANK TEST DAMAGE");
-					Console.WriteLine($"Daño aplicado: 999");
-				}
-				else
-				{
-					Console.WriteLine($"ERROR: ComponentHealth NO encontrado!");
-				}
-			}
-			else
-			{
-				Console.WriteLine($"componentBody es null!");
-			}
-
-			// También daño por explosión
 			if (cellFace != null)
 			{
-				Console.WriteLine($"Impacto en bloque en ({cellFace.Value.X}, {cellFace.Value.Y}, {cellFace.Value.Z})");
-				if (m_subsystemExplosions != null)
+				int cellValue = m_subsystemTerrain.Terrain.GetCellValue(cellFace.Value.X, cellFace.Value.Y, cellFace.Value.Z);
+				int contents = Terrain.ExtractContents(cellValue);
+				Block block = BlocksManager.Blocks[contents];
+
+				// Explosión al impactar con velocidad > 30
+				if (worldItem.Velocity.Length() > 30f)
 				{
-					int cellValue = m_subsystemTerrain.Terrain.GetCellValue(cellFace.Value.X, cellFace.Value.Y, cellFace.Value.Z);
 					m_subsystemExplosions.TryExplodeBlock(cellFace.Value.X, cellFace.Value.Y, cellFace.Value.Z, cellValue);
-					Console.WriteLine($"Explosión intentada");
+				}
+
+				// Sonido de rebote para bloques densos
+				if (block.GetDensity(cellValue) >= 1.5f && worldItem.Velocity.Length() > 30f)
+				{
+					if (m_random.Float(0f, 1f) < 1f) // 100% probabilidad de rebote
+					{
+						m_subsystemAudio.PlayRandomSound("Audio/Ricochets", 1f, m_random.Float(-0.2f, 0.2f),
+							new Vector3(cellFace.Value.X, cellFace.Value.Y, cellFace.Value.Z), 8f, true);
+						result = false;
+					}
 				}
 			}
 
-			return true;
+			return result;
 		}
 
 		public override void Load(ValuesDictionary valuesDictionary)
@@ -71,11 +48,11 @@ namespace Game
 			m_subsystemTerrain = Project.FindSubsystem<SubsystemTerrain>(true);
 			m_subsystemAudio = Project.FindSubsystem<SubsystemAudio>(true);
 			m_subsystemExplosions = Project.FindSubsystem<SubsystemExplosions>(true);
-			Console.WriteLine($"SubsystemAntiTanksBulletBlockBehavior CARGADO!");
 		}
 
-		private SubsystemTerrain m_subsystemTerrain;
-		private SubsystemExplosions m_subsystemExplosions;
-		private SubsystemAudio m_subsystemAudio;
+		public SubsystemTerrain m_subsystemTerrain;
+		public SubsystemExplosions m_subsystemExplosions;
+		public SubsystemAudio m_subsystemAudio;
+		public Random m_random = new Random();
 	}
 }
