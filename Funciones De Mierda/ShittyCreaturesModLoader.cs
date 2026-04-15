@@ -117,6 +117,9 @@ namespace Game
 			// Hook para cuando el jugador recibe daño (se usa evento Injured, no hook directo)
 			// La suscripción se realiza en OnPlayerInputHit cuando el jugador está disponible
 
+			// Hook para detectar ataques al jugador incluso en modo Creativo
+			ModsManager.RegisterHook("OnMinerHit", this, -100);
+
 			// Reemplazar overlay de captura de pantalla
 			ReplaceScreenCaptureOverlay();
 		}
@@ -727,6 +730,48 @@ namespace Game
 				return;
 
 			CommandAlliesToAttack(player, attacker);
+		}
+
+		/// <summary>
+		/// Hook llamado cuando cualquier entidad realiza un ataque cuerpo a cuerpo.
+		/// Se usa para que las criaturas aliadas respondan a ataques dirigidos al jugador,
+		/// especialmente en modo Creativo donde el jugador no recibe daño.
+		/// </summary>
+		public override void OnMinerHit(
+			ComponentMiner miner,
+			ComponentBody targetBody,
+			Vector3 hitPoint,
+			Vector3 hitDirection,
+			ref float attackPower,
+			ref float hitProbability,
+			ref float hitProbability2,
+			out bool skipVanilla)
+		{
+			skipVanilla = false;
+
+			// 1. Verificar que el atacante NO sea un jugador
+			if (miner.ComponentPlayer != null)
+				return;
+
+			// 2. Verificar que el objetivo SÍ sea un jugador
+			ComponentPlayer targetPlayer = targetBody.Entity.FindComponent<ComponentPlayer>();
+			if (targetPlayer == null)
+				return;
+
+			// 3. Obtener el GameMode actual
+			SubsystemGameInfo gameInfo = targetPlayer.Project.FindSubsystem<SubsystemGameInfo>(true);
+
+			// 4. Solo aplicar esta lógica en modo Creativo.
+			//    En otros modos, el evento 'Injured' se encargará de la defensa.
+			if (gameInfo.WorldSettings.GameMode != GameMode.Creative)
+				return;
+
+			// 5. Ordenar a los aliados atacar al agresor
+			ComponentCreature attackerCreature = miner.ComponentCreature;
+			if (attackerCreature != null)
+			{
+				CommandAlliesToAttack(targetPlayer, attackerCreature);
+			}
 		}
 
 		// Ordena a todas las criaturas aliadas atacar al objetivo sin límites
