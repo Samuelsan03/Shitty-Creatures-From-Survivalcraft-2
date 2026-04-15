@@ -173,7 +173,8 @@
     "Poisoned": "Envenenado",
     "FrozenToDeath": "Congelado hasta morir",
     "Dehydration": "Deshidratación",
-    "FrozenVomit": "Congelado por vómito helado"
+    "FrozenVomit": "Congelado por vómito helado",
+    "FireVomit": "Quemado por vómito ardiente"
    },
   "Database": {
     "DisplayName": {
