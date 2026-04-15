@@ -11,9 +11,8 @@ namespace Game
 		private BevelledButtonWidget m_tankButton;
 		private BevelledButtonWidget m_spawnButton;
 		private BevelledButtonWidget m_thirstButton;
-		// --- NUEVO BOTÓN ---
 		private BevelledButtonWidget m_coordinateButton;
-		// ------------------
+		private BevelledButtonWidget m_punchCommandButton; // Nuevo botón
 		private StackPanelWidget m_contentPanel;
 		private LabelWidget m_titleLabel;
 
@@ -31,10 +30,9 @@ namespace Game
 			CreateOptionRow("ShittyCreatures", "TankDescription", out m_tankButton, Color.Red, GetTankButtonText);
 			CreateOptionRow("ShittyCreatures", "SpawnDescription", out m_spawnButton, Color.LightGreen, GetSpawnButtonText);
 			CreateOptionRow("ShittyCreatures", "ThirstDescription", out m_thirstButton, Color.LightGray, GetThirstButtonText);
-
-			// --- NUEVO BOTÓN: coordenadas con color normal (blanco) ---
 			CreateOptionRow("ShittyCreatures", "CoordinateDisplay", out m_coordinateButton, Color.LightGray, GetCoordinateButtonText);
-			// ----------------------------------------------------------
+			// Nuevo botón para comando de puñetazo
+			CreateOptionRow("ShittyCreatures", "PunchCommandDescription", out m_punchCommandButton, Color.LightGray, GetPunchCommandButtonText);
 		}
 
 		private void CreateOptionRow(string category, string descriptionKey, out BevelledButtonWidget button, Color buttonColor, Func<string> getButtonTextFunc)
@@ -75,9 +73,8 @@ namespace Game
 		private string GetTankButtonText() => ShittyCreaturesSettingsManager.TankMusicEnabled ? LanguageControl.On : LanguageControl.Off;
 		private string GetSpawnButtonText() => ShittyCreaturesSettingsManager.DeathSpawnEnabled ? LanguageControl.On : LanguageControl.Off;
 		private string GetThirstButtonText() => ShittyCreaturesSettingsManager.ThirstEnabled ? LanguageControl.On : LanguageControl.Off;
-		// --- NUEVO MÉTODO ---
 		private string GetCoordinateButtonText() => ShittyCreaturesSettingsManager.CoordinateDisplayEnabled ? LanguageControl.On : LanguageControl.Off;
-		// --------------------
+		private string GetPunchCommandButtonText() => ShittyCreaturesSettingsManager.PunchCommandEnabled ? LanguageControl.On : LanguageControl.Off;
 
 		public override void Update()
 		{
@@ -112,13 +109,17 @@ namespace Game
 				m_thirstButton.Text = GetThirstButtonText();
 			}
 
-			// --- NUEVO MANEJADOR DE CLICK ---
 			if (m_coordinateButton != null && m_coordinateButton.IsClicked)
 			{
 				ShittyCreaturesSettingsManager.CoordinateDisplayEnabled = !ShittyCreaturesSettingsManager.CoordinateDisplayEnabled;
 				m_coordinateButton.Text = GetCoordinateButtonText();
 			}
-			// --------------------------------
+
+			if (m_punchCommandButton != null && m_punchCommandButton.IsClicked)
+			{
+				ShittyCreaturesSettingsManager.PunchCommandEnabled = !ShittyCreaturesSettingsManager.PunchCommandEnabled;
+				m_punchCommandButton.Text = GetPunchCommandButtonText();
+			}
 		}
 	}
 }
