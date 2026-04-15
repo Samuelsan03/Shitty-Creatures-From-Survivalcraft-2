@@ -88,7 +88,7 @@
     "Line1_0_0_2": "• 模型、纹理和音频来自 dayzmod 模组",
     "Line1_0_0_3": "• 兼容 2.3 和 2.4"
   },
-  "ShittyCreatures": {
+  "ShittyCreaturesSettings": {
     "ScreenTitle": "Shitty Creatures 设置",
     "SettingsButton": "Shitty Creatures 设置",
     "GhostDescription": "启用/禁用幽灵追逐你时的音乐",
@@ -96,7 +96,8 @@
     "SpawnDescription": "启用/禁用在死亡时生成NPC",
     "ThirstDescription": "启用/禁用口渴模拟",
     "CoordinateDisplay": "显示坐标",
-    "PunchCommandDescription": "无论使用哪种攻击方式，只要你攻击NPC，盟友都会攻击并追击该目标"
+    "PunchCommandDescription": "无论使用哪种攻击方式，只要你攻击NPC，盟友都会攻击并追击该目标",
+    "CreativeDefenseDescription": "在创造模式中，当生物攻击玩家时，盟友会攻击该攻击者"
   },
   "AntidoteBucket": {
     "NPCCured": "NPC 的毒素和疾病已被清除！"
