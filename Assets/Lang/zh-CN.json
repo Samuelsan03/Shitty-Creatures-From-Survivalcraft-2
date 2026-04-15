@@ -95,7 +95,8 @@
     "TankDescription": "启用/禁用 Tanks 追逐你时的音乐",
     "SpawnDescription": "启用/禁用在死亡时生成NPC",
     "ThirstDescription": "启用/禁用口渴模拟",
-    "CoordinateDisplay": "显示坐标"
+    "CoordinateDisplay": "显示坐标",
+    "PunchCommandDescription": "无论使用哪种攻击方式，只要你攻击NPC，盟友都会攻击并追击该目标"
   },
   "AntidoteBucket": {
     "NPCCured": "NPC 的毒素和疾病已被清除！"
