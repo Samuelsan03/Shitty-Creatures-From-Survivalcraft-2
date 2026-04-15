@@ -358,7 +358,7 @@ namespace Game
 			{
 				var shittyButton = new BevelledButtonWidget
 				{
-					Text = LanguageControl.Get(new string[] { "ShittyCreatures", "SettingsButton" }),
+					Text = LanguageControl.Get(new string[] { "ShittyCreaturesSettings", "SettingsButton" }),
 					Size = new Vector2(310f, 60f),
 					BevelColor = Color.DarkRed,
 					CenterColor = Color.DarkRed,
@@ -798,15 +798,7 @@ namespace Game
 				}
 			}
 		}
-		public override void OnMinerHit(
-	ComponentMiner miner,
-	ComponentBody targetBody,
-	Vector3 hitPoint,
-	Vector3 hitDirection,
-	ref float attackPower,
-	ref float hitProbability,
-	ref float hitProbability2,
-	out bool skipVanilla)
+		public override void OnMinerHit(ComponentMiner miner, ComponentBody targetBody, Vector3 hitPoint, Vector3 hitDirection, ref float attackPower, ref float hitProbability, ref float hitProbability2, out bool skipVanilla)
 		{
 			skipVanilla = false;
 
@@ -827,7 +819,11 @@ namespace Game
 			if (gameInfo.WorldSettings.GameMode != GameMode.Creative)
 				return;
 
-			// 5. Ordenar a los aliados atacar al agresor
+			// 5. Verificar si la defensa en Creativo está habilitada
+			if (!ShittyCreaturesSettingsManager.CreativeDefenseEnabled)
+				return;
+
+			// 6. Ordenar a los aliados atacar al agresor
 			ComponentCreature attackerCreature = miner.ComponentCreature;
 			if (attackerCreature != null)
 			{
