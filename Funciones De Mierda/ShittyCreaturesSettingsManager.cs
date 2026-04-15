@@ -16,8 +16,9 @@ namespace Game
 		public static bool DeathSpawnEnabled { get; set; } = true;
 		public static bool ThirstEnabled { get; set; } = true;
 		public static bool CoordinateDisplayEnabled { get; set; } = true;
-		// Nueva propiedad para controlar la orden de ataque al golpear con el puño
 		public static bool PunchCommandEnabled { get; set; } = true;
+		// Nueva propiedad para controlar la defensa en modo Creativo
+		public static bool CreativeDefenseEnabled { get; set; } = true;
 
 		public static void Load()
 		{
@@ -55,8 +56,11 @@ namespace Game
 							case "CoordinateDisplayEnabled":
 								CoordinateDisplayEnabled = value;
 								break;
-							case "PunchCommandDescription":
+							case "PunchCommandEnabled":
 								PunchCommandEnabled = value;
+								break;
+							case "CreativeDefenseEnabled":
+								CreativeDefenseEnabled = value;
 								break;
 						}
 					}
@@ -105,9 +109,14 @@ namespace Game
 						new XAttribute("Value", CoordinateDisplayEnabled)));
 
 					root.Add(new XElement("Value",
-						new XAttribute("Name", "PunchCommandDescription"),
+						new XAttribute("Name", "PunchCommandEnabled"),
 						new XAttribute("Type", "bool"),
 						new XAttribute("Value", PunchCommandEnabled)));
+
+					root.Add(new XElement("Value",
+						new XAttribute("Name", "CreativeDefenseEnabled"),
+						new XAttribute("Type", "bool"),
+						new XAttribute("Value", CreativeDefenseEnabled)));
 
 					XmlUtils.SaveXmlToStream(root, stream, null, true);
 				}
