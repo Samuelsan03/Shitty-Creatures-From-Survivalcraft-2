@@ -43,7 +43,7 @@ namespace Game
 				DropShadow = true,               // ← Sombra estándar del GUI del juego
 				HorizontalAlignment = WidgetAlignment.Center,
 				VerticalAlignment = WidgetAlignment.Center,
-				FontScale = 0.6f,
+				FontScale = 0.55f,
 				Text = string.Format(m_coordinateFormat, 0f, 0f, 0f)
 			};
 

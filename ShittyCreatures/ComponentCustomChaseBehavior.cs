@@ -32,7 +32,6 @@ namespace Game
 
 			// Buscar los nuevos comportamientos de persecución (opcionales)
 			this.m_componentNewChase = base.Entity.FindComponent<ComponentNewChaseBehavior>();
-			this.m_componentNewChase2 = base.Entity.FindComponent<ComponentNewChaseBehavior2>();
 
 			string value = valuesDictionary.GetValue<string>("ChaseByCreatures", "");
 			string value2 = valuesDictionary.GetValue<string>("ChaseToCreatures", "");
@@ -60,14 +59,10 @@ namespace Game
 			bool hasActiveTarget = this.m_componentChase.Target != null;
 			if (this.m_componentNewChase != null && this.m_componentNewChase.Target != null)
 				hasActiveTarget = true;
-			if (this.m_componentNewChase2 != null && this.m_componentNewChase2.Target != null)
-				hasActiveTarget = true;
 
 			// Verificar si algún comportamiento está suprimido
 			bool isSuppressed = this.m_componentChase.Suppressed;
 			if (this.m_componentNewChase != null && this.m_componentNewChase.Suppressed)
-				isSuppressed = true;
-			if (this.m_componentNewChase2 != null && this.m_componentNewChase2.Suppressed)
 				isSuppressed = true;
 
 			bool flag = this.m_subsystemTime.GameTime < this.m_nextCheckTime || isSuppressed || hasActiveTarget;
@@ -122,14 +117,7 @@ namespace Game
 			{
 				componentNewChaseBehavior.Attack(this.m_componentCreature, componentNewChaseBehavior.ChaseRangeOnTouch, componentNewChaseBehavior.ChaseTimeOnTouch, false);
 				return;
-			}
-
-			// Intentar con ComponentNewChaseBehavior2 si existe
-			ComponentNewChaseBehavior2 componentNewChaseBehavior2 = chaser.Entity.FindComponent<ComponentNewChaseBehavior2>();
-			if (componentNewChaseBehavior2 != null && componentNewChaseBehavior2.Target == null && !componentNewChaseBehavior2.Suppressed)
-			{
-				componentNewChaseBehavior2.Attack(this.m_componentCreature, componentNewChaseBehavior2.ChaseRangeOnTouch, componentNewChaseBehavior2.ChaseTimeOnTouch, false);
-				return;
+			
 			}
 		}
 
@@ -149,13 +137,6 @@ namespace Game
 				this.m_componentNewChase.Attack(target, this.m_componentNewChase.ChaseRangeOnTouch, this.m_componentNewChase.ChaseTimeOnTouch, false);
 				return;
 			}
-
-			// Intentar con ComponentNewChaseBehavior2 si existe y está disponible
-			if (this.m_componentNewChase2 != null && this.m_componentNewChase2.Target == null && !this.m_componentNewChase2.Suppressed)
-			{
-				this.m_componentNewChase2.Attack(target, this.m_componentNewChase2.ChaseRangeOnTouch, this.m_componentNewChase2.ChaseTimeOnTouch, false);
-				return;
-			}
 		}
 
 		// Obtener el rango máximo de persecución entre todos los comportamientos disponibles
@@ -165,9 +146,6 @@ namespace Game
 
 			if (this.m_componentNewChase != null && this.m_componentNewChase.ChaseRangeOnTouch > maxRange)
 				maxRange = this.m_componentNewChase.ChaseRangeOnTouch;
-
-			if (this.m_componentNewChase2 != null && this.m_componentNewChase2.ChaseRangeOnTouch > maxRange)
-				maxRange = this.m_componentNewChase2.ChaseRangeOnTouch;
 
 			return maxRange;
 		}
@@ -227,7 +205,5 @@ namespace Game
 		// Token: 0x0400012F RID: 303
 		private ComponentNewChaseBehavior m_componentNewChase;
 
-		// Token: 0x04000130 RID: 304
-		private ComponentNewChaseBehavior2 m_componentNewChase2;
 	}
 }

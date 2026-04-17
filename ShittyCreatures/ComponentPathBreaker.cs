@@ -35,7 +35,6 @@ namespace Game
 			this.m_componentChaseBehavior = base.Entity.FindComponent<ComponentChaseBehavior>();
 			this.m_componentZombieChaseBehavior = base.Entity.FindComponent<ComponentZombieChaseBehavior>();
 			this.m_componentNewChaseBehavior = base.Entity.FindComponent<ComponentNewChaseBehavior>();
-			this.m_componentNewChaseBehavior2 = base.Entity.FindComponent<ComponentNewChaseBehavior2>();
 
 			// Estos componentes SÍ son obligatorios para el PathBreaker
 			this.m_componentPathfinding = base.Entity.FindComponent<ComponentPathfinding>(true);
@@ -250,11 +249,6 @@ namespace Game
 			// Nuevo comportamiento de persecución (opcional)
 			if (this.m_componentNewChaseBehavior != null && this.m_componentNewChaseBehavior.Target != null)
 				return true;
-
-			// Nuevo comportamiento de persecución 2 (opcional)
-			if (this.m_componentNewChaseBehavior2 != null && this.m_componentNewChaseBehavior2.Target != null)
-				return true;
-
 			return false;
 		}
 
@@ -273,9 +267,6 @@ namespace Game
 			if (this.m_componentNewChaseBehavior != null && this.m_componentNewChaseBehavior.Target != null)
 				return this.m_componentNewChaseBehavior.Target.ComponentBody;
 
-			// Nuevo comportamiento de persecución 2 (opcional)
-			if (this.m_componentNewChaseBehavior2 != null && this.m_componentNewChaseBehavior2.Target != null)
-				return this.m_componentNewChaseBehavior2.Target.ComponentBody;
 
 			return null;
 		}
@@ -473,7 +464,6 @@ namespace Game
 		private ComponentChaseBehavior m_componentChaseBehavior;
 		private ComponentZombieChaseBehavior m_componentZombieChaseBehavior;
 		private ComponentNewChaseBehavior m_componentNewChaseBehavior;
-		private ComponentNewChaseBehavior2 m_componentNewChaseBehavior2;
 
 		// Componentes obligatorios para PathBreaker
 		private ComponentPathfinding m_componentPathfinding;

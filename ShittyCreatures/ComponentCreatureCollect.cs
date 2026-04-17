@@ -63,7 +63,6 @@ namespace Game
 			// TODOS los chase behaviors como en los archivos originales
 			this.m_componentChaseBehavior = base.Entity.FindComponent<ComponentChaseBehavior>(false);
 			this.m_componentNewChaseBehavior = base.Entity.FindComponent<ComponentNewChaseBehavior>(false);
-			this.m_componentNewChaseBehavior2 = base.Entity.FindComponent<ComponentNewChaseBehavior2>(false);
 			this.m_componentZombieChaseBehavior = base.Entity.FindComponent<ComponentZombieChaseBehavior>(false);
 			this.m_componentBanditChaseBehavior = base.Entity.FindComponent<ComponentBanditChaseBehavior>(false);
 		}
@@ -182,7 +181,6 @@ namespace Game
 		// TODOS los chase behaviors como en los archivos que me mostraste
 		private ComponentChaseBehavior m_componentChaseBehavior;
 		private ComponentNewChaseBehavior m_componentNewChaseBehavior;
-		private ComponentNewChaseBehavior2 m_componentNewChaseBehavior2;
 		private ComponentZombieChaseBehavior m_componentZombieChaseBehavior;
 		private ComponentBanditChaseBehavior m_componentBanditChaseBehavior;
 	}

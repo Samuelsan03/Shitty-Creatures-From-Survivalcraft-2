@@ -6,8 +6,6 @@ using Engine;
 namespace Game
 {
 	// Token: 0x0200000A RID: 10
-	[NullableContext(1)]
-	[Nullable(0)]
 	public class CreatureCollectInventoryWidget : CanvasWidget
 	{
 		// Token: 0x0600006A RID: 106 RVA: 0x00006C08 File Offset: 0x00004E08

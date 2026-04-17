@@ -7,7 +7,6 @@ using Game;
 public static class InventoryExtension
 {
 	// Token: 0x06000007 RID: 7 RVA: 0x00002880 File Offset: 0x00000A80
-	[NullableContext(1)]
 	public static void TryAddItems(this IInventory inventory, int value, int count)
 	{
 		int num = 0;
