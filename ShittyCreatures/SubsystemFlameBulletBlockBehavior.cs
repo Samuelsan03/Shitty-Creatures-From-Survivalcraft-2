@@ -1,7 +1,6 @@
 ﻿using System;
 using Game;
 using TemplatesDatabase;
-using WonderfulEra;
 
 namespace Game
 {
