@@ -204,28 +204,25 @@ namespace Game
 			if (currentTime - m_lastVomitTime < (double)VomitCooldown)
 				return;
 
-			bool useFire = VomitFire;
-			bool usePoison = VomitShit;
-			bool useFrozen = VomitFrozen;
+			// ---- NUEVA LÓGICA: Elegir aleatoriamente entre todos los tipos habilitados ----
+			// Recopilar los tipos de vómito que están activos en la configuración
+			System.Collections.Generic.List<int> availableTypes = new System.Collections.Generic.List<int>();
+			if (VomitShit) availableTypes.Add(0);   // 0 = Veneno
+			if (VomitFire) availableTypes.Add(1);   // 1 = Fuego
+			if (VomitFrozen) availableTypes.Add(2); // 2 = Congelado
 
-			// Priorizar uno solo si hay múltiples activos
-			if (useFrozen && useFire)
-				useFire = false;
-			if (useFrozen && usePoison)
-				usePoison = false;
-			if (useFire && usePoison)
-			{
-				useFire = m_random.Bool();
-				usePoison = !useFire;
-			}
-
-			if (!useFire && !usePoison && !useFrozen)
+			// Si no hay ningún tipo habilitado, no hacer nada
+			if (availableTypes.Count == 0)
 				return;
+
+			// Seleccionar un tipo al azar de entre los disponibles
+			int chosenType = availableTypes[m_random.Int(availableTypes.Count)];
 
 			Vector3 mouthPos = GetVomitMouthPosition();
 			Vector3 direction = Vector3.Normalize(target.ComponentCreatureModel.EyePosition - mouthPos);
 
-			if (usePoison)
+			// Ejecutar el tipo de vómito seleccionado
+			if (chosenType == 0) // Veneno
 			{
 				m_activePoisonVomit = new PoisonVomitParticleSystem(
 					m_subsystemTerrain, m_subsystemBodies, m_subsystemSoundMaterials,
@@ -235,7 +232,7 @@ namespace Game
 				m_activePoisonVomit.PoisonIntensity = 180f;
 				m_subsystemParticles.AddParticleSystem(m_activePoisonVomit, false);
 			}
-			else if (useFire)
+			else if (chosenType == 1) // Fuego
 			{
 				m_activeFireVomit = new FireVomitParticleSystem(
 					m_subsystemTerrain, m_subsystemBodies, m_subsystemSoundMaterials,
@@ -245,7 +242,7 @@ namespace Game
 				m_activeFireVomit.FireDuration = 30f;
 				m_subsystemParticles.AddParticleSystem(m_activeFireVomit, false);
 			}
-			else if (useFrozen)
+			else if (chosenType == 2) // Congelado
 			{
 				m_activeFrozenVomit = new FrozenVomitParticleSystem(
 					m_subsystemTerrain, m_subsystemBodies, m_subsystemSoundMaterials,
