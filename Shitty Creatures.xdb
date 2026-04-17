@@ -5803,6 +5803,14 @@
 				<Parameter Name="Mass" Guid="1572bb71-d5df-428f-83e1-d25588f3fa3a" Value="666" Type="float"/>
 				<Parameter Name="Density" Guid="c6f6ca75-046d-4b7e-b4a3-d0633c95706e" Value="0.66" Type="float"/>
 			</MemberComponentTemplate>
+            <MemberComponentTemplate Name="CreatureVomitBehavior" Guid="4f7d3907-2f28-4619-818b-f1e36677eade" InheritanceParent="a91f3c5e-8c2d-4c1e-b7f4-6e2a9d3b7c11">
+  <Parameter Name="VomitShit" Guid="0d44f5c5-f89c-4184-a1d2-7c9c88a2dc53" Value="true" Type="bool"/>
+<Parameter Name="VomitFire" Guid="e8101cda-8c82-4847-bd6b-19bc0770efc2" Value="true" Type="bool"/>
+<Parameter Name="VomitFrozen" Guid="c1569a76-a5f3-4239-8549-e3212eac3cb1" Value="true" Type="bool"/>
+  <Parameter Name="VomitProbability" Guid="f3a7261b-a02f-4258-a3d1-92e090413079" Value="0.1" Type="float"/>
+  <Parameter Name="VomitCooldown" Guid="d05796d0-b4ed-4a72-81dc-ca6d76fd0544" Value="35" Type="float"/>
+  <Parameter Name="VomitDistanceRange" Guid="3d754deb-c9cf-4662-b653-17b6feae42f0" Value="5,55" Type="Vector2"/>
+</MemberComponentTemplate>
             <MemberComponentTemplate Name="Creature" Guid="08cb3f39-7b21-4c52-a3b8-4059c95c18bd">
 				<Parameter Name="Category" Guid="d7ca3476-2b19-4544-861d-27c55517c1cd" Value="LandOther" Type="Game.CreatureCategory"/>
 				<Parameter Name="DisplayName" Guid="73c3a49c-e6e3-4234-b22b-69fa50245a48" Value="[DisplayName:Aimep3]" Type="string"/>
