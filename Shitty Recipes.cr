@@ -534,6 +534,9 @@
 <Recipe Result="TeaAntifluBucketBlock" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="3" a="waterbucket" b="tallgrass" Description="[0]">
     "ab"
 </Recipe>
+<Recipe Result="TeaAntifluBucketBlock" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="3" a="boiledwaterbucket" b="tallgrass" Description="[0]">
+    "ab"
+</Recipe>
 <Recipe Result="RepeatArrowBlock:5" ResultCount="8" RequiredHeatLevel="2" RequiredPlayerLevel="6" a="toxin" b="repeatarrow:4" Description="[5]">
     "ab"
 </Recipe>
@@ -565,6 +568,9 @@
     "ab"
 </Recipe>
 <Recipe Result="TeaAntifluBowlBlock" ResultCount="1" RequiredHeatLevel="1" a="waterbowl" b="tallgrass" Description="[0]">
+    "ab"
+</Recipe>
+<Recipe Result="TeaAntifluBowlBlock" ResultCount="1" RequiredHeatLevel="1" a="boiledwaterbowl" b="tallgrass" Description="[0]">
     "ab"
 </Recipe>
 <Recipe Result="BoiledWaterBucketBlock" ResultCount="1" RequiredHeatLevel="1" a="waterbucket" Description="[0]">
