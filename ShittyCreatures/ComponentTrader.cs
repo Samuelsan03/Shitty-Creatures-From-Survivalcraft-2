@@ -218,50 +218,47 @@ namespace Game
 		{
 			if (m_tradeItems == null || m_tradeItems.Count == 0) return;
 
-			// Calcular probabilidad total de items
-			float totalProb = 0f;
-			foreach (var item in m_tradeItems)
-				totalProb += item.Probability;
-			if (totalProb <= 0) return;
-
-			// Limpiar todas las ranuras
+			// Limpiar todas las ranuras de venta (0-7)
 			for (int i = 0; i < 8; i++)
 			{
 				m_slots[i].Value = 0;
 				m_slots[i].Count = 0;
 			}
 
-			// Determinar cuántos slots van a estar ocupados (1-8)
+			// Crear una lista de ítems disponibles
+			List<TradeItem> availableItems = new List<TradeItem>(m_tradeItems);
+
+			// Determinar cuántos slots queremos llenar
 			int slotsToFill = GetRandomOccupiedSlotsCount();
 
-			// Crear lista de índices disponibles (0-7)
-			List<int> availableSlots = new List<int>();
+			// Crear y barajar índices de slots
+			List<int> slotIndices = new List<int>();
 			for (int i = 0; i < 8; i++)
-				availableSlots.Add(i);
+				slotIndices.Add(i);
 
-			// Llenar la cantidad determinada de slots
+			for (int i = 0; i < slotIndices.Count; i++)
+			{
+				int j = m_random.Int(i, slotIndices.Count - 1);
+				int temp = slotIndices[i];
+				slotIndices[i] = slotIndices[j];
+				slotIndices[j] = temp;
+			}
+
+			// Llenar los slots
 			for (int i = 0; i < slotsToFill; i++)
 			{
-				if (availableSlots.Count == 0) break;
+				int selectedSlot = slotIndices[i];
 
-				// Seleccionar un slot aleatorio de los disponibles
-				int slotIndex = m_random.Int(0, availableSlots.Count - 1);
-				int selectedSlot = availableSlots[slotIndex];
-				availableSlots.RemoveAt(slotIndex);
+				// Si se agotan los ítems, recargar la lista (esto permite duplicados)
+				if (availableItems.Count == 0)
+					availableItems = new List<TradeItem>(m_tradeItems);
 
-				// Seleccionar un item aleatorio según probabilidades
-				float r = m_random.Float() * totalProb;
-				float accum = 0f;
-				foreach (var item in m_tradeItems)
-				{
-					accum += item.Probability;
-					if (r < accum)
-					{
-						m_slots[selectedSlot].Value = item.GetBlockValue();
-						m_slots[selectedSlot].Count = item.MaxCount;
-						break;
-					}
-				}
+				int itemIndex = m_random.Int(0, availableItems.Count - 1);
+				TradeItem selectedItem = availableItems[itemIndex];
+				availableItems.RemoveAt(itemIndex);
+
+				m_slots[selectedSlot].Value = selectedItem.GetBlockValue();
+				m_slots[selectedSlot].Count = selectedItem.MaxCount;
 			}
 		}
 		public override void AddSlotItems(int slotIndex, int value, int count)
