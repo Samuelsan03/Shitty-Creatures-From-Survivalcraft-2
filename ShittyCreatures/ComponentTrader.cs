@@ -359,6 +359,17 @@ namespace Game
 				return tradeItem.Price;
 			return 0;
 		}
+
+		public double TimeUntilRestock
+		{
+			get
+			{
+				if (m_subsystemTime == null)
+					return 0.0;
+				double remaining = m_nextRestockTime - m_subsystemTime.GameTime;
+				return remaining > 0.0 ? remaining : 0.0;
+			}
+		}
 		public virtual bool TryBuy(int slotIndex, ComponentPlayer buyer)
 		{
 			if (slotIndex == 8) return false;
