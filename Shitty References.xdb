@@ -48,11 +48,6 @@
           <Parameter Name="AllowManualWakeUp" Description="Whether manual wakeup is allowed" Guid="a1283ce3-e15f-4a6b-a2c4-7db18befcb98" Value="False" Type="bool"/>
         </ComponentTemplate>
 
-<ComponentTemplate Name="Thirst" Description="Añade la necesidad de beber agua (sed) a la criatura" Guid="69b81fb0-a822-43cb-bbaa-e0c4eefd4bbe" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
-    <Parameter Name="Class" Guid="457e3cc7-edeb-442b-ba7f-6248d62dc63e" Value="Game.ComponentThirst" Type="string"/>
-    <Parameter Name="Water" Description="Nivel de agua inicial (0-1)" Guid="4d87c707-b03e-4749-9119-f87f99f8850e" Value="1" Type="float"/>
-</ComponentTemplate>
-
     <ComponentTemplate Name="HireableNPC" Description="Permite contratar a la criatura con monedas nucleares" Guid="4582a365-6082-4260-a7ba-35d141cddbbd" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
     <Parameter Name="Class" Guid="e0bca7bc-5f06-4b64-a8c9-bfd6d0267b9e" Value="Game.ComponentHireableNPC" Type="string"/>
     <Parameter Name="HirePrice" Description="Precio en monedas nucleares para contratar" Guid="6cb5c4eb-8db6-453a-bc52-452ae6b4e1ee" Value="100" Type="int"/>
@@ -244,24 +239,6 @@
     <Parameter Name="Class" Guid="e43a2641-0995-446c-aa50-390e7c0e2c12" Value="Game.ComponentCreatureAI" Type="string" Description="Clase C# que implementa el componente"/>
     <Parameter Name="CanUseInventory" Guid="ddb27b73-4aa7-4580-a5bd-684db3139696" Value="true" Type="bool" Description="Si la criatura puede usar armas del inventario"/>
 </ComponentTemplate>
-
-<ComponentTemplate Name="CreatureClothing" Description="Permite asignar prendas de ropa a criaturas." Guid="84f381c3-b55c-4a49-bdd0-0bef89bbc0e9" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
-			<Parameter Name="DropClothesProbability" Description="Probabilidad de que la criatura suelte los objetos de ropa cuando muere, 1 es 100%" Guid="354d89f0-e0cd-40f7-acd2-2ffbf1fcf87e" Value="1" Type="float"/>
-			<ParameterSet Name="Clothes" Description="Contains clothes worn by creature" Guid="7c750c43-e2bb-4a53-8116-328ac217e66e">
-				<Parameter Name="Legs" Description="List of legs clothes" Value="" Type="string"/>
-				<Parameter Name="Feet" Description="List of feet clothes" Value="" Type="string"/>
-				<Parameter Name="Torso" Description="List of torso clothes" Value="" Type="string"/>
-				<Parameter Name="Head" Description="List of head clothes" Value="" Type="string"/>
-			</ParameterSet>
-			<Parameter Name="RandomClothing" Guid="1faaf429-fcb3-4649-aae6-8cf5d651ffd2" Value="false" Type="bool"/>
-			<ParameterSet Name="RandomClothesList" Guid="794062ea-c035-481b-a544-2eb9c52ec8d3">
-				<Parameter Name="Legs" Value="" Type="string"/>
-				<Parameter Name="Feet" Value="" Type="string"/>
-				<Parameter Name="Torso" Value="" Type="string"/>
-				<Parameter Name="Head" Value="" Type="string"/>
-			</ParameterSet>
-			<Parameter Name="Class" Guid="0b319571-d38a-474b-ae6d-d84ec7c110ba" Value="Game.ComponentCreatureClothing" Type="string"/>
-		</ComponentTemplate>
         
 <ComponentTemplate Name="DeathSpawner" Description="Genera una entidad al morir, seleccionada aleatoriamente según probabilidades configuradas" Guid="32905e25-1938-46fb-8659-a86ee79cfaa4" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
     <Parameter Name="Class" Guid="928c18a2-2cbb-49c5-bfdf-20634526aa0f" Value="Game.ComponentDeathSpawn" Type="string" Description="Clase C# que implementa el comportamiento de spawn al morir"/>
