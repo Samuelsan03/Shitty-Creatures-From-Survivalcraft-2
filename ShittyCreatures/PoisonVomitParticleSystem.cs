@@ -26,7 +26,7 @@ namespace Game
 
 		public PoisonVomitParticleSystem(SubsystemTerrain terrain, SubsystemBodies bodies, SubsystemSoundMaterials soundMaterials,
 			SubsystemTime time, SubsystemParticles particles, ComponentCreature creature)
-			: base(200)
+			: base(400)
 		{
 			m_subsystemTerrain = terrain;
 			m_subsystemBodies = bodies;
@@ -41,7 +41,6 @@ namespace Game
 
 		public override bool Simulate(float dt)
 		{
-			// Cálculo de luz ambiente
 			int x = Terrain.ToCell(Position.X);
 			int y = Terrain.ToCell(Position.Y);
 			int z = Terrain.ToCell(Position.Z);
@@ -57,16 +56,14 @@ namespace Game
 			baseColor *= intensity;
 			baseColor.A = 255;
 
-			dt = Math.Clamp(dt, 0f, 0.05f); // Reducir paso máximo para mejor detección de colisiones
+			dt = Math.Clamp(dt, 0f, 0.05f);
 			m_duration += dt;
 
-			// Auto-stop después de 3.5 segundos
 			if (m_duration > 3.5f)
 			{
 				IsStopped = true;
 			}
 
-			// Generación de partículas basada en ruido
 			float noise = MathUtils.Saturate(1.3f * SimplexNoise.Noise(3f * m_duration + (float)(GetHashCode() % 100)) - 0.3f);
 			float generationRate = 60f * noise;
 			m_toGenerate += generationRate * dt;
@@ -86,7 +83,6 @@ namespace Game
 						Vector3 oldPos = particle.Position;
 						Vector3 newPos = oldPos + particle.Velocity * dt;
 
-						// Verificar si la partícula ya está dentro de un bloque sólido
 						int contents = m_subsystemTerrain.Terrain.GetCellContents(Terrain.ToCell(oldPos));
 						Block block = BlocksManager.Blocks[contents];
 						if (block.IsCollidable_(contents))
@@ -95,8 +91,7 @@ namespace Game
 							continue;
 						}
 
-						// Colisión con terreno (con radio para evitar que el rayo pase de largo)
-						float radius = 0.1f;
+						float radius = 0.15f;
 						Vector3 direction = newPos - oldPos;
 						float distance = direction.Length();
 						if (distance > 0.001f)
@@ -117,11 +112,11 @@ namespace Game
 							}
 						}
 
-						// Colisión con cuerpos (excepto el dueño)
+						// Colisión con cuerpos (cualquier cuerpo sólido)
 						BodyRaycastResult? bodyHit = m_subsystemBodies.Raycast(oldPos, newPos, 0.15f, (body, d) =>
 						{
 							if (body.Entity == m_componentCreature.Entity) return false;
-							return true;
+							return !body.IsRaycastTransparent;
 						});
 
 						if (bodyHit != null)
@@ -147,7 +142,6 @@ namespace Game
 				}
 				else if (!IsStopped && m_toGenerate >= 1f)
 				{
-					// Crear nueva partícula
 					Vector3 offset = m_random.Vector3(0.04f);
 					particle.IsActive = true;
 					particle.Position = Position + offset;
@@ -167,14 +161,12 @@ namespace Game
 
 		private void ApplyPoisonToBody(ComponentBody body)
 		{
-			// Evitar múltiples aplicaciones en el mismo frame
 			if (m_subsystemTime.GameTime - m_lastPoisonApplyTime < 0.2)
 				return;
 
 			Entity entity = body.Entity;
 			if (entity == null) return;
 
-			// Jugador
 			ComponentPlayer player = entity.FindComponent<ComponentPlayer>();
 			if (player != null)
 			{
@@ -188,7 +180,6 @@ namespace Game
 				return;
 			}
 
-			// Criatura
 			ComponentCreature creature = entity.FindComponent<ComponentCreature>();
 			if (creature != null && creature != m_componentCreature)
 			{
