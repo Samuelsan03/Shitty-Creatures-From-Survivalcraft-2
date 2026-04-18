@@ -352,22 +352,11 @@
     <MemberComponentTemplate Name="AutoJump" Guid="d8134f93-51b4-4b9e-8c3c-066232a077be" InheritanceParent="ef94c9db-75b0-4e0f-9971-f575ac88661b">
               <Parameter Name="JumpStrength" Guid="dbe1f74c-f48f-4502-84db-340dd75faf81" Value="1" Type="float"/>
             </MemberComponentTemplate>
-    <MemberComponentTemplate Name="Inventory" Guid="6e19a3f7-085c-4475-b9eb-1fdec2d773b5" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
-    <ParameterSet Name="Slots">
-        <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="0" Type="int"/>
-            <Parameter Name="Count" Value="1" Type="int"/>
-        </ParameterSet>
-    </ParameterSet>
-</MemberComponentTemplate>
-			<MemberComponentTemplate Name="InvShooterBehavior" Guid="17cba071-0e86-43ef-88e9-1511e28b316a" InheritanceParent="456e3558-0e7f-42c3-bc05-35eef7540900">
-    <Parameter Name="SpecialThrowableItem" Guid="23e0018b-6c05-4cf3-aee5-541570de49ee" Value="ArrowBlock:4" Type="string"/>
-    <Parameter Name="DiscountFromInventory" Guid="1cc9d126-422a-4d7e-9d7c-83bd6b4c6ca1" Value="True" Type="bool"/>
-    <Parameter Name="SelectRandomThrowableItems" Guid="b648a2c7-e850-45a4-974f-35b208c37b24" Value="False" Type="bool"/>
-    <Parameter Name="ThrowFromHead" Guid="ac6b7df5-fa4a-4dd1-aa1f-7c102aeb9cd5" Value="True" Type="bool"/>
-    <Parameter Name="MinMaxRandomChargeTime" Guid="f6752164-e5af-4b32-9905-210625181635" Value="1;1" Type="string"/>
-    <Parameter Name="MinMaxRandomWaitTime" Guid="920b01af-eef5-436c-9f72-6abe4d44317f" Value="0.5;0.8" Type="string"/>
-    <Parameter Name="MinMaxDistance" Guid="4efb9732-4f19-464f-b8de-c65a5cfbc926" Value="2;25" Type="string"/>
+            <MemberComponentTemplate Name="CreatureVomitBehavior" Guid="9cdb9d7a-8b2b-452a-a8e6-3a0065e2c5d3" InheritanceParent="a91f3c5e-8c2d-4c1e-b7f4-6e2a9d3b7c11">
+<Parameter Name="VomitFire" Guid="d4412e39-b787-4970-9d1e-7b6dc7f20ef0" Value="true" Type="bool"/>
+  <Parameter Name="VomitProbability" Guid="e06f7e04-be5e-45d9-9103-f843ec2088fe" Value="1" Type="float"/>
+  <Parameter Name="VomitCooldown" Guid="04388afd-7689-4a1b-a9be-892e1dd2315b" Value="35" Type="float"/>
+  <Parameter Name="VomitDistanceRange" Guid="bc6014b4-752f-4a04-8854-fe4992b1ae7c" Value="5,35" Type="Vector2"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Loot" Guid="17a90418-81ff-4551-9883-4f1a9784e5bb">
         <ParameterSet Name="Loot" Guid="ec440436-43d8-418b-b271-b076446c77bc">
