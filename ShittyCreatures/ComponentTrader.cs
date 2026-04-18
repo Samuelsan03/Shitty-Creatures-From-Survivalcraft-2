@@ -19,7 +19,7 @@ namespace Game
 
 		// Lista de objetos que puede vender (con probabilidad, precio, cantidad y variante)
 		private List<TradeItem> m_tradeItems;
-		private Dictionary<int, TradeItem> m_itemDataMap; // BlockIndex -> TradeItem (para obtener precio y cantidad máxima)
+		private Dictionary<int, TradeItem> m_itemDataMap;
 		private double m_nextRestockTime;
 		private double m_restockInterval = 300.0;
 		private Random m_random = new Random();
@@ -44,15 +44,14 @@ namespace Game
 		public struct TradeItem
 		{
 			public int BlockIndex;
-			public int Variant; // -1 si se usa template name
-			public string CreatureTemplateName; // para huevos
+			public int Variant;
+			public string CreatureTemplateName;
 			public float Probability;
 			public int Price;
 			public int MaxCount;
 
 			public int GetBlockValue()
 			{
-				// Si es un huevo con template name, lo resolvemos
 				if (BlockIndex == EggBlock.Index && !string.IsNullOrEmpty(CreatureTemplateName))
 				{
 					EggBlock eggBlock = (EggBlock)BlocksManager.Blocks[BlockIndex];
@@ -60,15 +59,13 @@ namespace Game
 					if (eggType != null)
 					{
 						int data = EggBlock.SetEggType(0, eggType.EggTypeIndex);
-						data = EggBlock.SetIsLaid(data, false); // Huevo sin poner
+						data = EggBlock.SetIsLaid(data, false);
 						return Terrain.MakeBlockValue(BlockIndex, 0, data);
 					}
-					// fallback
 					return Terrain.MakeBlockValue(BlockIndex);
 				}
 				else if (Variant >= 0)
 				{
-					Block block = BlocksManager.Blocks[BlockIndex];
 					return Terrain.MakeBlockValue(BlockIndex, 0, Variant);
 				}
 				else
@@ -100,7 +97,9 @@ namespace Game
 				ParseTradeItems(tradeItemsStr);
 				BuildItemDataMap();
 
-				m_nextRestockTime = valuesDictionary.GetValue<double>("NextRestockTime", m_subsystemTime.GameTime + m_restockInterval);
+				// Usar TotalElapsedGameTime (persistente) en lugar de GameTime (se reinicia)
+				double worldTime = m_subsystemGameInfo.TotalElapsedGameTime;
+				m_nextRestockTime = valuesDictionary.GetValue<double>("NextRestockTime", worldTime + m_restockInterval);
 
 				bool anyItem = false;
 				for (int i = 0; i < 8; i++)
@@ -147,14 +146,12 @@ namespace Game
 						int blockIndex = BlocksManager.GetBlockIndex(blockName, false);
 						if (blockIndex >= 0)
 						{
-							// Si es un huevo y hay 5 partes, la quinta es el template name
 							if (blockIndex == EggBlock.Index && parts.Length >= 5)
 							{
 								templateName = parts[4].Trim();
 							}
 							else if (parts.Length >= 5)
 							{
-								// Para otros bloques, la quinta parte es la variante entera
 								int.TryParse(parts[4], out variant);
 							}
 
@@ -178,7 +175,7 @@ namespace Game
 			m_itemDataMap = new Dictionary<int, TradeItem>();
 			foreach (var item in m_tradeItems)
 			{
-				int value = item.GetBlockValue(); // valor único para este item
+				int value = item.GetBlockValue();
 				if (!m_itemDataMap.ContainsKey(value))
 					m_itemDataMap[value] = item;
 			}
@@ -188,21 +185,15 @@ namespace Game
 		{
 			float r = m_random.Float();
 
-			if (r < 0.05f) // 5% - Casi vacío (1 slot)
-				return 1;
-			else if (r < 0.35f) // 30% - Poco lleno (2-3 slots)
-				return m_random.Int(2, 3);
-			else if (r < 0.75f) // 40% - Medianamente lleno (4-5 slots)
-				return m_random.Int(4, 5);
-			else if (r < 0.95f) // 20% - Bastante lleno (6-7 slots)
-				return m_random.Int(6, 7);
-			else // 5% - Completamente lleno (8 slots)
-				return 8;
+			if (r < 0.05f) return 1;
+			else if (r < 0.35f) return m_random.Int(2, 3);
+			else if (r < 0.75f) return m_random.Int(4, 5);
+			else if (r < 0.95f) return m_random.Int(6, 7);
+			else return 8;
 		}
 
 		public override void DropAllItems(Vector3 position)
 		{
-			// Soltar solo las monedas del slot 8
 			int coinValue = GetSlotValue(8);
 			int coinCount = GetSlotCount(8);
 			if (coinValue != 0 && coinCount > 0)
@@ -211,27 +202,21 @@ namespace Game
 				subsystemPickables.AddPickable(coinValue, coinCount, position, null, null, Entity);
 				RemoveSlotItems(8, coinCount);
 			}
-			// Los items de venta no se sueltan
 		}
 
 		private void Restock()
 		{
 			if (m_tradeItems == null || m_tradeItems.Count == 0) return;
 
-			// Limpiar todas las ranuras de venta (0-7)
 			for (int i = 0; i < 8; i++)
 			{
 				m_slots[i].Value = 0;
 				m_slots[i].Count = 0;
 			}
 
-			// Crear una lista de ítems disponibles
 			List<TradeItem> availableItems = new List<TradeItem>(m_tradeItems);
-
-			// Determinar cuántos slots queremos llenar
 			int slotsToFill = GetRandomOccupiedSlotsCount();
 
-			// Crear y barajar índices de slots
 			List<int> slotIndices = new List<int>();
 			for (int i = 0; i < 8; i++)
 				slotIndices.Add(i);
@@ -244,12 +229,10 @@ namespace Game
 				slotIndices[j] = temp;
 			}
 
-			// Llenar los slots
 			for (int i = 0; i < slotsToFill; i++)
 			{
 				int selectedSlot = slotIndices[i];
 
-				// Si se agotan los ítems, recargar la lista (esto permite duplicados)
 				if (availableItems.Count == 0)
 					availableItems = new List<TradeItem>(m_tradeItems);
 
@@ -261,13 +244,13 @@ namespace Game
 				m_slots[selectedSlot].Count = selectedItem.MaxCount;
 			}
 		}
+
 		public override void AddSlotItems(int slotIndex, int value, int count)
 		{
 			bool isCreative = (m_subsystemGameInfo.WorldSettings.GameMode == GameMode.Creative);
 
 			if (slotIndex == 8)
 			{
-				// Comportamiento especial para el slot de monedas (arrastrar en creativo)
 				if (isCreative && count == 1 && GetSlotCount(slotIndex) == 0 && IsDragInProgress)
 				{
 					int tempCapacity = GetSlotCapacity(slotIndex, value);
@@ -288,7 +271,6 @@ namespace Game
 			}
 			else if (m_modificationLock > 0)
 			{
-				// Solo durante reabastecimiento o compra se modifican los slots de venta
 				int currentCount = GetSlotCount(slotIndex);
 				int maxCapacity = GetSlotCapacity(slotIndex, value);
 
@@ -300,8 +282,8 @@ namespace Game
 
 				base.AddSlotItems(slotIndex, value, count);
 			}
-			// En cualquier otro caso, no se hace nada
 		}
+
 		public override int RemoveSlotItems(int slotIndex, int count)
 		{
 			if (slotIndex == 8 || m_modificationLock > 0)
@@ -360,16 +342,18 @@ namespace Game
 			return 0;
 		}
 
+		// Tiempo restante basado en el tiempo total del mundo (persistente)
 		public double TimeUntilRestock
 		{
 			get
 			{
-				if (m_subsystemTime == null)
+				if (m_subsystemGameInfo == null)
 					return 0.0;
-				double remaining = m_nextRestockTime - m_subsystemTime.GameTime;
+				double remaining = m_nextRestockTime - m_subsystemGameInfo.TotalElapsedGameTime;
 				return remaining > 0.0 ? remaining : 0.0;
 			}
 		}
+
 		public virtual bool TryBuy(int slotIndex, ComponentPlayer buyer)
 		{
 			if (slotIndex == 8) return false;
@@ -395,7 +379,7 @@ namespace Game
 				return false;
 			}
 
-			int totalPrice = pricePerItem; // Precio fijo por todo el stack
+			int totalPrice = pricePerItem;
 			int coinIndex = BlocksManager.GetBlockIndex(typeof(NuclearCoinBlock).Name, true);
 
 			int coinSlotValue = GetSlotValue(8);
@@ -413,10 +397,9 @@ namespace Game
 			}
 
 			int itemsToAdd = count;
-			int tmpValue = value;
 			while (itemsToAdd > 0)
 			{
-				int slot = ComponentInventoryBase.FindAcquireSlotForItem(buyer.ComponentMiner.Inventory, tmpValue);
+				int slot = ComponentInventoryBase.FindAcquireSlotForItem(buyer.ComponentMiner.Inventory, value);
 				if (slot < 0)
 				{
 					buyer.ComponentGui.DisplaySmallMessage(
@@ -449,14 +432,15 @@ namespace Game
 			m_subsystemAudio.PlaySound("Audio/UI/money", 1f, 0f, 0f, 0f);
 			return true;
 		}
+
 		public void Update(float dt)
 		{
-			if (m_subsystemTime != null && m_tradeItems != null && m_tradeItems.Count > 0)
+			if (m_subsystemGameInfo != null && m_tradeItems != null && m_tradeItems.Count > 0)
 			{
-				if (m_subsystemTime.GameTime >= m_nextRestockTime)
+				if (m_subsystemGameInfo.TotalElapsedGameTime >= m_nextRestockTime)
 				{
 					Restock();
-					m_nextRestockTime = m_subsystemTime.GameTime + m_restockInterval;
+					m_nextRestockTime = m_subsystemGameInfo.TotalElapsedGameTime + m_restockInterval;
 				}
 			}
 		}
