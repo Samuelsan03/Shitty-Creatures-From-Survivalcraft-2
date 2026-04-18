@@ -20,10 +20,19 @@
   
   <!-- Panel inferior izquierdo -->
   <CanvasWidget CanvasWidget.Position="12, 255" Size="288, 140">
+    <!-- Información del ítem seleccionado (precio) -->
     <LabelWidget CanvasWidget.Position="10, 10"
                  Name="InfoLabel" 
                  Text="[Trader:SelectItemFirst]" 
                  Color="255,255,0"/>
+    <!-- Temporizador de reabastecimiento (solo números) -->
+    <LabelWidget CanvasWidget.Position="10, 35"
+                 Name="TimerLabel"
+                 Text="00:00"
+                 Color="255,140,0"
+                 FontScale="0.8"
+                 HorizontalAlignment="Center"
+                 VerticalAlignment="Center"/>
     <BevelledButtonWidget CanvasWidget.Position="60, 70"
                           Name="BuyButton" 
                           Text="[Trader:BuyButton]" 
