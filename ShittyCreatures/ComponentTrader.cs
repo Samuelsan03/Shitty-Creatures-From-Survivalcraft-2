@@ -114,6 +114,7 @@ namespace Game
 			{
 				m_tradeItems = new List<TradeItem>();
 				m_itemDataMap = new Dictionary<int, TradeItem>();
+				Log.Warning("ComponentTrader: No se ha definido 'TradeItems' en la plantilla. El comerciante no tendrá objetos para vender.");
 			}
 		}
 
@@ -127,46 +128,98 @@ namespace Game
 		{
 			m_tradeItems = new List<TradeItem>();
 			string[] items = str.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+			int lineNumber = 0;
 			foreach (string item in items)
 			{
-				string[] parts = item.Split(':');
-				if (parts.Length >= 4)
+				lineNumber++;
+				string trimmedItem = item.Trim();
+				if (string.IsNullOrEmpty(trimmedItem)) continue;
+
+				string[] parts = trimmedItem.Split(':');
+				if (parts.Length < 4)
 				{
-					string blockName = parts[0].Trim();
-					float prob;
-					int price;
-					int maxCount;
-					int variant = -1;
-					string templateName = null;
+					Log.Warning(string.Format("ComponentTrader: Formato incorrecto en elemento #{0}: '{1}'. Se esperaban al menos 4 partes separadas por ':'. Se omite este elemento.", lineNumber, trimmedItem));
+					continue;
+				}
 
-					if (float.TryParse(parts[1], out prob) &&
-						int.TryParse(parts[2], out price) &&
-						int.TryParse(parts[3], out maxCount))
+				string blockName = parts[0].Trim();
+				float prob;
+				int price;
+				int maxCount;
+				int variant = -1;
+				string templateName = null;
+
+				if (!float.TryParse(parts[1], out prob))
+				{
+					Log.Warning(string.Format("ComponentTrader: Probabilidad inválida en elemento #{0}: '{1}'. Se omite.", lineNumber, parts[1]));
+					continue;
+				}
+				if (!int.TryParse(parts[2], out price))
+				{
+					Log.Warning(string.Format("ComponentTrader: Precio inválido en elemento #{0}: '{1}'. Se omite.", lineNumber, parts[2]));
+					continue;
+				}
+				if (!int.TryParse(parts[3], out maxCount))
+				{
+					Log.Warning(string.Format("ComponentTrader: Cantidad máxima inválida en elemento #{0}: '{1}'. Se omite.", lineNumber, parts[3]));
+					continue;
+				}
+
+				int blockIndex = BlocksManager.GetBlockIndex(blockName, false);
+				if (blockIndex < 0)
+				{
+					Log.Warning(string.Format("ComponentTrader: Nombre de bloque no encontrado '{0}' en elemento #{1}. Se omite.", blockName, lineNumber));
+					continue;
+				}
+
+				// Procesar parámetros adicionales (variante o template de criatura)
+				if (blockIndex == EggBlock.Index && parts.Length >= 5)
+				{
+					templateName = parts[4].Trim();
+					if (string.IsNullOrEmpty(templateName))
 					{
-						int blockIndex = BlocksManager.GetBlockIndex(blockName, false);
-						if (blockIndex >= 0)
-						{
-							if (blockIndex == EggBlock.Index && parts.Length >= 5)
-							{
-								templateName = parts[4].Trim();
-							}
-							else if (parts.Length >= 5)
-							{
-								int.TryParse(parts[4], out variant);
-							}
-
-							m_tradeItems.Add(new TradeItem
-							{
-								BlockIndex = blockIndex,
-								Variant = variant,
-								CreatureTemplateName = templateName,
-								Probability = prob,
-								Price = price,
-								MaxCount = Math.Max(1, maxCount)
-							});
-						}
+						Log.Warning(string.Format("ComponentTrader: Se especificó EggBlock pero el nombre de la criatura está vacío en elemento #{0}. Se usará huevo sin tipo específico.", lineNumber));
 					}
 				}
+				else if (parts.Length >= 5)
+				{
+					if (!int.TryParse(parts[4], out variant))
+					{
+						Log.Warning(string.Format("ComponentTrader: Variante inválida '{0}' en elemento #{1}. Se usará -1 (sin variante).", parts[4], lineNumber));
+						variant = -1;
+					}
+				}
+
+				// Validaciones adicionales
+				if (prob <= 0f)
+				{
+					Log.Warning(string.Format("ComponentTrader: Probabilidad <= 0 para '{0}' en elemento #{1}. El ítem nunca aparecerá.", blockName, lineNumber));
+				}
+				if (price < 0)
+				{
+					Log.Warning(string.Format("ComponentTrader: Precio negativo para '{0}' en elemento #{1}. Se ajustará a 0.", blockName, lineNumber));
+					price = 0;
+				}
+				if (maxCount <= 0)
+				{
+					Log.Warning(string.Format("ComponentTrader: Cantidad máxima <= 0 para '{0}' en elemento #{1}. Se ajustará a 1.", blockName, lineNumber));
+					maxCount = 1;
+				}
+
+				m_tradeItems.Add(new TradeItem
+				{
+					BlockIndex = blockIndex,
+					Variant = variant,
+					CreatureTemplateName = templateName,
+					Probability = prob,
+					Price = price,
+					MaxCount = Math.Max(1, maxCount)
+				});
+			}
+
+			if (m_tradeItems.Count == 0)
+			{
+				Log.Error("ComponentTrader: No se pudo parsear ningún TradeItem válido. El comerciante estará vacío.");
 			}
 		}
 
@@ -342,7 +395,6 @@ namespace Game
 			return 0;
 		}
 
-		// Tiempo restante basado en el tiempo total del mundo (persistente)
 		public double TimeUntilRestock
 		{
 			get
