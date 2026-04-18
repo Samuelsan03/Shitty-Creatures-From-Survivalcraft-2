@@ -93,8 +93,8 @@ namespace Game
 							continue;
 						}
 
-						// Colisión con terreno (con radio)
-						float radius = 0.1f;
+						// Colisión con terreno (con radio aumentado para mejor detección)
+						float radius = 0.15f;
 						Vector3 dir = newPos - oldPos;
 						float dist = dir.Length();
 						if (dist > 0.001f)
@@ -109,6 +109,7 @@ namespace Game
 
 							if (terrainHit != null && terrainHit.Value.Distance <= dist + radius)
 							{
+								// Incendiar el bloque impactado (NO el vecino)
 								TryIgniteBlock(terrainHit.Value);
 								if (m_subsystemTime.GameTime - m_lastImpactSoundTime > 0.3)
 								{
@@ -120,16 +121,18 @@ namespace Game
 							}
 						}
 
-						// Colisión con cuerpos (excepto dueño)
+						// Colisión con cuerpos (cualquier cuerpo que no sea el dueño y no sea transparente al raycast)
 						BodyRaycastResult? bodyHit = m_subsystemBodies.Raycast(oldPos, newPos, 0.15f, (body, d) =>
 						{
 							if (body.Entity == m_owner.Entity) return false;
-							return body.Entity.FindComponent<ComponentCreature>() != null;
+							// Detenerse con cualquier cuerpo sólido (no transparente)
+							return !body.IsRaycastTransparent;
 						});
 
 						if (bodyHit != null)
 						{
-							ComponentCreature target = bodyHit.Value.ComponentBody.Entity.FindComponent<ComponentCreature>();
+							ComponentBody hitBody = bodyHit.Value.ComponentBody;
+							ComponentCreature target = hitBody.Entity.FindComponent<ComponentCreature>();
 							if (target != null)
 							{
 								ComponentHealth health = target.Entity.FindComponent<ComponentHealth>();
@@ -181,25 +184,8 @@ namespace Game
 
 		private void TryIgniteBlock(TerrainRaycastResult hit)
 		{
-			int x = hit.CellFace.X;
-			int y = hit.CellFace.Y;
-			int z = hit.CellFace.Z;
-			int face = hit.CellFace.Face;
-
-			int neighborX = x;
-			int neighborY = y;
-			int neighborZ = z;
-			switch (face)
-			{
-				case 0: neighborY--; break;
-				case 1: neighborY++; break;
-				case 2: neighborZ--; break;
-				case 3: neighborZ++; break;
-				case 4: neighborX--; break;
-				case 5: neighborX++; break;
-			}
-
-			m_subsystemFireBlockBehavior.SetCellOnFire(neighborX, neighborY, neighborZ, 1f);
+			// Incendiar la celda impactada directamente
+			m_subsystemFireBlockBehavior.SetCellOnFire(hit.CellFace.X, hit.CellFace.Y, hit.CellFace.Z, 1f);
 		}
 
 		public class Particle : Game.Particle
