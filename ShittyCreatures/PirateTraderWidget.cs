@@ -17,6 +17,7 @@ namespace Game
 		private GridPanelWidget m_inventoryGrid;
 		private BevelledButtonWidget m_buyButton;
 		private LabelWidget m_infoLabel;
+		private LabelWidget m_timerLabel;
 		private InventorySlotWidget m_coinSlot;
 		private int m_selectedSlot = -1;
 
@@ -35,12 +36,19 @@ namespace Game
 			m_inventoryGrid = Children.Find<GridPanelWidget>("InventoryGrid", true);
 			m_buyButton = Children.Find<BevelledButtonWidget>("BuyButton", true);
 			m_infoLabel = Children.Find<LabelWidget>("InfoLabel", true);
+			m_timerLabel = Children.Find<LabelWidget>("TimerLabel", true);
 			m_coinSlot = Children.Find<InventorySlotWidget>("CoinSlot", true);
 
 			m_infoLabel.Size = new Vector2(200, 40);
 			m_infoLabel.FontScale = 0.7f;
 			m_infoLabel.HorizontalAlignment = WidgetAlignment.Center;
 			m_infoLabel.VerticalAlignment = WidgetAlignment.Far;
+
+			m_timerLabel.FontScale = 0.8f;
+			m_timerLabel.Color = new Color(255, 140, 0);
+			m_timerLabel.HorizontalAlignment = WidgetAlignment.Center;
+			m_timerLabel.VerticalAlignment = WidgetAlignment.Center;
+			m_timerLabel.Text = "00:00";
 
 			m_buyButton.HorizontalAlignment = WidgetAlignment.Far;
 			m_buyButton.Margin = new Vector2(0, 0);
@@ -86,6 +94,11 @@ namespace Game
 
 			var dragHost = m_player.GameWidget?.Children.Find<DragHostWidget>(false);
 			m_trader.IsDragInProgress = (dragHost != null && dragHost.IsDragInProgress);
+
+			double timeLeft = m_trader.TimeUntilRestock;
+			int minutes = (int)(timeLeft / 60.0);
+			int seconds = (int)(timeLeft % 60.0);
+			m_timerLabel.Text = string.Format("{0:00}:{1:00}", minutes, seconds);
 
 			if (Input.Click != null)
 			{
