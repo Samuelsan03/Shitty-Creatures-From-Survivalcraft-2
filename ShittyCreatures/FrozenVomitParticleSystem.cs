@@ -79,7 +79,6 @@ namespace Game
 						Vector3 oldPos = particle.Position;
 						Vector3 newPos = oldPos + particle.Velocity * dt;
 
-						// Verificar si la partícula ya está dentro de un bloque sólido
 						int contents = m_subsystemTerrain.Terrain.GetCellContents(Terrain.ToCell(oldPos));
 						if (BlocksManager.Blocks[contents].IsCollidable_(contents))
 						{
@@ -87,8 +86,7 @@ namespace Game
 							continue;
 						}
 
-						// Colisión con terreno (con radio)
-						float radius = 0.1f;
+						float radius = 0.15f;
 						Vector3 dir = newPos - oldPos;
 						float dist = dir.Length();
 						if (dist > 0.001f)
@@ -113,11 +111,11 @@ namespace Game
 							}
 						}
 
-						// Colisión con cuerpos
+						// Colisión con cuerpos (cualquier cuerpo sólido)
 						BodyRaycastResult? bodyHit = m_subsystemBodies.Raycast(oldPos, newPos, 0.15f, (body, d) =>
 						{
 							if (body.Entity == m_owner.Entity) return false;
-							return true;
+							return !body.IsRaycastTransparent;
 						});
 
 						if (bodyHit != null)
