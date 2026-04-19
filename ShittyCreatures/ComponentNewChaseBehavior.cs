@@ -749,11 +749,11 @@ namespace Game
 			if (m_subsystemTime.GameTime >= m_nextUpdateTime)
 
 				if (m_subsystemTime.GameTime >= m_nextUpdateTime)
-			{
-				m_dt = m_random.Float(0.25f, 0.35f) + MathUtils.Min((float)(m_subsystemTime.GameTime - m_nextUpdateTime), 0.1f);
-				m_nextUpdateTime = m_subsystemTime.GameTime + (double)m_dt;
-				m_stateMachine.Update();
-			}
+				{
+					m_dt = m_random.Float(0.25f, 0.35f) + MathUtils.Min((float)(m_subsystemTime.GameTime - m_nextUpdateTime), 0.1f);
+					m_nextUpdateTime = m_subsystemTime.GameTime + (double)m_dt;
+					m_stateMachine.Update();
+				}
 		}
 
 		private bool IsTargetInFront()
@@ -2335,11 +2335,9 @@ namespace Game
 			}
 			else
 			{
-				// Si usamos el slot activo, guardamos su contenido original para restaurarlo después
 				originalActiveSlotValue = inventory.GetSlotValue(originalActiveSlot);
 				originalActiveSlotCount = inventory.GetSlotCount(originalActiveSlot);
 				hadActiveItem = originalActiveSlotCount > 0;
-				// Vaciar slot activo
 				inventory.RemoveSlotItems(originalActiveSlot, int.MaxValue);
 			}
 
@@ -2381,9 +2379,10 @@ namespace Game
 					TerrainChunk chunk = m_subsystemTerrain.Terrain.GetChunkAtCell(capturedFeetX, capturedFeetZ);
 					if (chunk != null)
 					{
-						chunk.State = TerrainChunkState.InvalidVertices1;
+						// Se usa InvalidLight para forzar regeneración de geometría e iluminación
+						chunk.State = TerrainChunkState.InvalidLight;
 						m_subsystemTerrain.TerrainUpdater.DowngradeChunkNeighborhoodState(
-							chunk.Coords, 1, TerrainChunkState.InvalidVertices1, true);
+							chunk.Coords, 1, TerrainChunkState.InvalidLight, true);
 					}
 
 					// Sonido de colocación
@@ -2407,7 +2406,6 @@ namespace Game
 
 						if (capturedUsingActiveSlot)
 						{
-							// Restaurar el ítem original que estaba en el slot activo
 							if (capturedHadActiveItem)
 							{
 								inv.AddSlotItems(capturedOriginalActiveSlot, capturedOriginalActiveSlotValue, capturedOriginalActiveSlotCount);
@@ -2415,14 +2413,12 @@ namespace Game
 						}
 						else
 						{
-							// Si el slot temporal tenía algo antes (no debería), lo restauramos
 							if (capturedOriginalDirtSlotCount > 0)
 							{
 								inv.AddSlotItems(capturedDirtSlot, capturedOriginalDirtSlotValue, capturedOriginalDirtSlotCount);
 							}
 						}
 
-						// Volver al slot activo original (donde está el arma intacta)
 						m_componentMiner.Inventory.ActiveSlotIndex = capturedOriginalActiveSlot;
 						if (m_componentCreature.ComponentCreatureModel != null)
 						{
