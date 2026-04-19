@@ -4,6 +4,11 @@
 <Parameter Name="Class" Guid="8c4f00ca-8f77-47c9-99bb-cefa4f94ee8d" new-Value="Game.ComponentNewVitalStats" Type="string"/>
 
     <Folder Name="Gameplay" Guid="d509e5e2-2c10-49f1-8223-85cd892c63b0">
+    <ComponentTemplate Name="Healing" Description="Permite que una criatura cure a jugadores o criaturas amistosas de su manada cuando están heridos (salud menor al 30%). La criatura se moverá hacia el objetivo, realizará una animación de alimentación y restaurará su salud al 100%." Guid="636585cc-8eee-4fcb-b777-16f3e038e696" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+  <Parameter Name="CanHeal" Description="Activa la habilidad de curar. Si es false, la criatura no realizará ninguna acción de curación." Guid="5c2ccdf5-4418-479d-b0e1-a7968fe3854e" Value="false" Type="bool"/>
+  <Parameter Name="Class" Description="Clase que implementa el comportamiento de curación en la criatura." Guid="a0810c74-e9b2-4e5c-bc3d-bf074914cedb" Value="Game.Healing" Type="string"/>
+</ComponentTemplate>
+    
     <ComponentTemplate Name="CoordinateDisplay" Description="Hace que se vea las coordenadas en pantalla del jugador" Guid="bd8323f8-399d-4acf-b96d-ed790ea2a6d7" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
     <Parameter Name="Class" Guid="91e9e7ee-3394-4f89-85ef-06f45f85c8dd" Value="Game.ComponentCoordinateDisplay" Type="string"/>
 </ComponentTemplate>
@@ -547,6 +552,7 @@
   <Parameter Name="ChaseNonPlayerProbability" Description="Probabilidad de perseguir objetivos no jugadores" Guid="0b3b2584-ce25-4c73-8269-cd1ebd5df44d" Value="1" Type="float"/>
   <Parameter Name="RangedAttackRange" Description="Rango de ataque a distancia (X = distancia mínima para melee, Y = distancia máxima para ranged)" Guid="e5aaebe5-378d-426e-98dc-dd6fcca09ecb" Value="5,20" Type="Vector2"/>
   <Parameter Name="DestroyBlocksWhenStuck" Description="Si está activado, la criatura destruirá bloques para liberarse cuando esté atascada durante más de 2 segundos" Guid="5b766c40-2a37-4027-9da1-c3218e109aa6" Value="false" Type="bool"/>
+  <Parameter Name="PlaceBlocksWhenTargetHigh" Description="Si está activado, la criatura colocará bloques de tierra para alcanzar a su presa cuando esta se encuentre en una altura elevada (máximo 2 bloques verticales a la vez)" Guid="f6ffc52c-883d-4e29-a333-c413ccd864d7" Value="false" Type="bool"/>
   <Parameter Name="InvokeLightningOnHit" Description="Si está activado, la criatura invocará un rayo sobre el objetivo cada vez que realice un golpe cuerpo a cuerpo exitoso" Guid="9ffef00f-7ee4-4fec-b94c-24ac538f344a" Value="false" Type="bool"/>
   <Parameter Name="PushWhileAttacking" Description="Empuja al objetivo al golpear en cuerpo a cuerpo" Guid="51b107e6-f019-4b2b-a4f0-1e231b534d84" Value="false" Type="bool"/>
   <Parameter Name="ExplodeOnHit" Description="Provoca una explosión al golpear cuerpo a cuerpo" Guid="d1b75fea-9371-4af9-811f-85db7ff478b0" Value="false" Type="bool"/>
