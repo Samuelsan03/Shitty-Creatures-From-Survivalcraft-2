@@ -246,7 +246,7 @@ namespace Game
 				LabelWidget modVersionLabel = new LabelWidget
 				{
 					Name = "ShittyCreaturesVersion",
-					FontScale = 0.6f,
+					FontScale = versionLabel.FontScale,  // ← Toma el tamaño de la etiqueta original
 					HorizontalAlignment = WidgetAlignment.Center,
 					Color = new Color(215, 0, 0),
 					DropShadow = true,
