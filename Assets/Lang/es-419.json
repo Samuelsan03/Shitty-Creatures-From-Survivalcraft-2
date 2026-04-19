@@ -40,14 +40,6 @@
     "ExitButton": "Salir"
   },
   "ShittyCreaturesLog": {
-    "Title": "Registro de Shitty Creatures",
-    "Version1_0_6": "1.0.6",
-    "Version1_0_5": "1.0.5",
-    "Version1_0_4": "1.0.4",
-    "Version1_0_3": "1.0.3",
-    "Version1_0_2": "1.0.2",
-    "Version1_0_1": "1.0.1",
-    "Version1_0_0": "1.0.0",
     "Line1_0_6_1": "• Nuevo evento añadido en el mod: Noche Verde y sus hordas de infectados.",
     "Line1_0_6_2": "• Se añadieron nuevas criaturas: nuevos infectados, 2 Digimon y bandidos (4 de los bandidos son únicos y pueden aliarse con el jugador y protegerlo).",
     "Line1_0_6_3": "• Nuevas armas de fuego añadidas.",
@@ -1125,6 +1117,9 @@
     }
 },
   "ContentWidgets": {
+    "ShittyCreaturesReleasesScreen": {
+    "0": "Shitty Creatures - Historial de versiones"
+  },
     "DoubleMusketWidget": {
   "0": "No cargado. Arrastra balas para cargar (máx. 2).",
   "1": "Mosquete de doble cañón",
