@@ -118,6 +118,8 @@ namespace Game
 		private bool m_triedToLoad;
 		private bool m_aimingStarted;
 
+		private bool m_waitingForDestructionBeforeBuild;
+
 		// Campos para objetos lanzables
 		private bool m_isAimingThrowable;
 		private double m_nextThrowableAttackTime;
@@ -743,7 +745,27 @@ namespace Game
 
 			if (IsActive && m_target != null && PlaceBlocksWhenTargetHigh)
 			{
-				TryPlaceDirtBlocksToReachTarget();
+				// Si estamos atascados, el objetivo está alto y debemos destruir bloques, posponer construcción
+				bool isStuck = m_componentPathfinding.IsStuck;
+				bool targetIsHigh = (m_target.ComponentBody.Position.Y - m_componentCreature.ComponentBody.Position.Y) > 2.0f;
+				bool canDestroy = DestroyBlocksWhenStuck;
+
+				if (isStuck && targetIsHigh && canDestroy)
+				{
+					// Ya se está intentando destruir en TryDestroyBlocksToFree (llamado en el estado Chasing)
+					// Esperar a que la destrucción haga efecto antes de construir
+					m_waitingForDestructionBeforeBuild = true;
+				}
+				else
+				{
+					// Si ya no estamos atascados o el objetivo no está tan alto, permitir construcción
+					m_waitingForDestructionBeforeBuild = false;
+				}
+
+				if (IsActive && m_target != null && PlaceBlocksWhenTargetHigh)
+				{
+					TryPlaceDirtBlocksToReachTarget();
+				}
 			}
 
 			if (m_subsystemTime.GameTime >= m_nextUpdateTime)
@@ -1993,7 +2015,6 @@ namespace Game
 					Vector3 toTarget = targetEyePos - eyePos;
 					float distance = toTarget.Length();
 					if (distance < 0.1f) return;
-
 					toTarget /= distance;
 
 					float verticalAngle = (float)Math.Asin(Math.Clamp(toTarget.Y, -1f, 1f));
@@ -2005,8 +2026,13 @@ namespace Game
 
 					if (isUp)
 					{
-						DestroyBlockAtPosition(eyePos + Vector3.UnitY * 0.5f);
-						DestroyBlockAtPosition(eyePos + Vector3.UnitY * 1.6f);
+						// Destruir las dos celdas justo encima de la cabeza (las que impedirían colocar los bloques de tierra)
+						float headHeight = currentPos.Y + m_componentCreature.ComponentBody.BoxSize.Y;
+						Vector3 headPos = new Vector3(currentPos.X, headHeight, currentPos.Z);
+						DestroyBlockAtPosition(headPos + Vector3.UnitY * 0.2f);      // celda a la altura de los ojos
+						DestroyBlockAtPosition(headPos + Vector3.UnitY * 1.2f);      // celda superior
+																					 // Forzar salto para aprovechar el espacio liberado
+						m_componentCreature.ComponentLocomotion.JumpOrder = 1f;
 					}
 					else if (isDown)
 					{
@@ -2275,157 +2301,70 @@ namespace Game
 			int feetY = Terrain.ToCell(myPos.Y - 0.1f);
 			int feetZ = Terrain.ToCell(myPos.Z);
 
+			// Comprobar que el suelo debajo es sólido
 			int belowY = feetY - 1;
 			if (!m_subsystemTerrain.Terrain.IsCellValid(feetX, belowY, feetZ))
 				return;
-
 			int belowContents = m_subsystemTerrain.Terrain.GetCellContents(feetX, belowY, feetZ);
 			Block belowBlock = BlocksManager.Blocks[belowContents];
 			if (!belowBlock.IsCollidable_(m_subsystemTerrain.Terrain.GetCellValue(feetX, belowY, feetZ)))
 				return;
 
+			// Posiciones donde se colocarán los bloques
 			int targetY1 = feetY;
 			int targetY2 = feetY + 1;
 
+			// 🚫 **NUEVA VERIFICACIÓN: las dos celdas sobre la cabeza deben estar libres**
+			int headY1 = Terrain.ToCell(myPos.Y + m_componentCreature.ComponentBody.BoxSize.Y - 0.1f);
+			int headY2 = headY1 + 1;
+			if (!m_subsystemTerrain.Terrain.IsCellValid(feetX, headY1, feetZ) ||
+				!m_subsystemTerrain.Terrain.IsCellValid(feetX, headY2, feetZ))
+				return;
+			int headContents1 = m_subsystemTerrain.Terrain.GetCellContents(feetX, headY1, feetZ);
+			int headContents2 = m_subsystemTerrain.Terrain.GetCellContents(feetX, headY2, feetZ);
+			Block headBlock1 = BlocksManager.Blocks[headContents1];
+			Block headBlock2 = BlocksManager.Blocks[headContents2];
+			if (headBlock1.IsCollidable_(m_subsystemTerrain.Terrain.GetCellValue(feetX, headY1, feetZ)) ||
+				headBlock2.IsCollidable_(m_subsystemTerrain.Terrain.GetCellValue(feetX, headY2, feetZ)))
+			{
+				// Aún hay bloques sobre la cabeza → no colocar todavía (TryDestroyBlocksToFree se encargará)
+				return;
+			}
+
+			// Verificar que las posiciones de colocación estén vacías
 			if (!m_subsystemTerrain.Terrain.IsCellValid(feetX, targetY1, feetZ) ||
 				!m_subsystemTerrain.Terrain.IsCellValid(feetX, targetY2, feetZ))
 				return;
-
 			int contents1 = m_subsystemTerrain.Terrain.GetCellContents(feetX, targetY1, feetZ);
 			int contents2 = m_subsystemTerrain.Terrain.GetCellContents(feetX, targetY2, feetZ);
 			if (contents1 != 0 || contents2 != 0)
 				return;
 
-			// ===== FASE 1: BUSCAR SLOT VACÍO PARA LA TIERRA Y MOSTRAR EN MANO =====
-			IInventory inventory = m_componentMiner.Inventory;
-			if (inventory == null) return;
-
-			int originalActiveSlot = inventory.ActiveSlotIndex;
+			// Colocar bloques directamente sin modificar inventario
 			int dirtValue = Terrain.MakeBlockValue(DirtBlock.Index);
+			m_subsystemTerrain.ChangeCell(feetX, targetY1, feetZ, dirtValue, true);
+			m_subsystemTerrain.ChangeCell(feetX, targetY2, feetZ, dirtValue, true);
 
-			// Buscar un slot vacío que pueda contener tierra
-			int dirtSlot = -1;
-			for (int i = 0; i < inventory.SlotsCount; i++)
+			// Actualizar chunk visualmente
+			TerrainChunk chunk = m_subsystemTerrain.Terrain.GetChunkAtCell(feetX, feetZ);
+			if (chunk != null)
 			{
-				if (inventory.GetSlotCount(i) == 0 && inventory.GetSlotCapacity(i, dirtValue) > 0)
-				{
-					dirtSlot = i;
-					break;
-				}
+				chunk.State = TerrainChunkState.InvalidLight;
+				m_subsystemTerrain.TerrainUpdater.DowngradeChunkNeighborhoodState(
+					chunk.Coords, 1, TerrainChunkState.InvalidLight, true);
 			}
 
-			// Si no hay slot vacío, usar el slot activo como último recurso
-			bool usingActiveSlot = (dirtSlot == -1);
-			if (usingActiveSlot)
+			// Sonido de colocación
+			SubsystemSoundMaterials soundMaterials = Project.FindSubsystem<SubsystemSoundMaterials>(true);
+			if (soundMaterials != null)
 			{
-				dirtSlot = originalActiveSlot;
+				soundMaterials.PlayImpactSound(dirtValue, new Vector3(feetX + 0.5f, targetY1 + 0.5f, feetZ + 0.5f), 1f);
+				soundMaterials.PlayImpactSound(dirtValue, new Vector3(feetX + 0.5f, targetY2 + 0.5f, feetZ + 0.5f), 1f);
 			}
 
-			// Guardar estado original del slot de tierra (si es distinto del activo)
-			int originalDirtSlotValue = 0;
-			int originalDirtSlotCount = 0;
-			int originalActiveSlotValue = 0;
-			int originalActiveSlotCount = 0;
-			bool hadActiveItem = false;
-
-			if (!usingActiveSlot)
-			{
-				originalDirtSlotValue = inventory.GetSlotValue(dirtSlot);
-				originalDirtSlotCount = inventory.GetSlotCount(dirtSlot);
-			}
-			else
-			{
-				originalActiveSlotValue = inventory.GetSlotValue(originalActiveSlot);
-				originalActiveSlotCount = inventory.GetSlotCount(originalActiveSlot);
-				hadActiveItem = originalActiveSlotCount > 0;
-				inventory.RemoveSlotItems(originalActiveSlot, int.MaxValue);
-			}
-
-			// Inyectar 2 bloques de tierra en el slot elegido
-			inventory.AddSlotItems(dirtSlot, dirtValue, 2);
-
-			// Cambiar al slot de tierra para mostrarlo en la mano
-			m_componentMiner.Inventory.ActiveSlotIndex = dirtSlot;
-			if (m_componentCreature.ComponentCreatureModel != null)
-			{
-				m_componentCreature.ComponentCreatureModel.Animate();
-			}
-
-			// Guardar referencias para el callback
-			var capturedFeetX = feetX;
-			var capturedFeetY1 = targetY1;
-			var capturedFeetY2 = targetY2;
-			var capturedFeetZ = feetZ;
-			var capturedDirtValue = dirtValue;
-			var capturedOriginalActiveSlot = originalActiveSlot;
-			var capturedDirtSlot = dirtSlot;
-			var capturedUsingActiveSlot = usingActiveSlot;
-			var capturedOriginalDirtSlotValue = originalDirtSlotValue;
-			var capturedOriginalDirtSlotCount = originalDirtSlotCount;
-			var capturedHadActiveItem = hadActiveItem;
-			var capturedOriginalActiveSlotValue = originalActiveSlotValue;
-			var capturedOriginalActiveSlotCount = originalActiveSlotCount;
-
-			// ===== FASE 2: COLOCAR BLOQUES Y RESTAURAR (50ms después) =====
-			m_subsystemTime.QueueGameTimeDelayedExecution(
-				m_subsystemTime.GameTime + 0.05,
-				() =>
-				{
-					// Colocar ambos bloques
-					m_subsystemTerrain.ChangeCell(capturedFeetX, capturedFeetY1, capturedFeetZ, capturedDirtValue, true);
-					m_subsystemTerrain.ChangeCell(capturedFeetX, capturedFeetY2, capturedFeetZ, capturedDirtValue, true);
-
-					// Actualizar chunk visualmente
-					TerrainChunk chunk = m_subsystemTerrain.Terrain.GetChunkAtCell(capturedFeetX, capturedFeetZ);
-					if (chunk != null)
-					{
-						// Se usa InvalidLight para forzar regeneración de geometría e iluminación
-						chunk.State = TerrainChunkState.InvalidLight;
-						m_subsystemTerrain.TerrainUpdater.DowngradeChunkNeighborhoodState(
-							chunk.Coords, 1, TerrainChunkState.InvalidLight, true);
-					}
-
-					// Sonido de colocación
-					SubsystemSoundMaterials soundMaterials = Project.FindSubsystem<SubsystemSoundMaterials>(true);
-					if (soundMaterials != null)
-					{
-						soundMaterials.PlayImpactSound(capturedDirtValue, new Vector3(capturedFeetX + 0.5f, capturedFeetY1 + 0.5f, capturedFeetZ + 0.5f), 1f);
-						soundMaterials.PlayImpactSound(capturedDirtValue, new Vector3(capturedFeetX + 0.5f, capturedFeetY2 + 0.5f, capturedFeetZ + 0.5f), 1f);
-					}
-
-					m_placedDirtBlocks.Add(new Point3(capturedFeetX, capturedFeetY1, capturedFeetZ));
-					m_placedDirtBlocks.Add(new Point3(capturedFeetX, capturedFeetY2, capturedFeetZ));
-					m_lastBlockPlaceTime = m_subsystemTime.GameTime;
-
-					// ===== RESTAURAR INVENTARIO =====
-					IInventory inv = m_componentMiner.Inventory;
-					if (inv != null)
-					{
-						// Eliminar los 2 bloques de tierra del slot usado
-						inv.RemoveSlotItems(capturedDirtSlot, 2);
-
-						if (capturedUsingActiveSlot)
-						{
-							if (capturedHadActiveItem)
-							{
-								inv.AddSlotItems(capturedOriginalActiveSlot, capturedOriginalActiveSlotValue, capturedOriginalActiveSlotCount);
-							}
-						}
-						else
-						{
-							if (capturedOriginalDirtSlotCount > 0)
-							{
-								inv.AddSlotItems(capturedDirtSlot, capturedOriginalDirtSlotValue, capturedOriginalDirtSlotCount);
-							}
-						}
-
-						m_componentMiner.Inventory.ActiveSlotIndex = capturedOriginalActiveSlot;
-						if (m_componentCreature.ComponentCreatureModel != null)
-						{
-							m_componentCreature.ComponentCreatureModel.Animate();
-						}
-					}
-				});
+			m_placedDirtBlocks.Add(new Point3(feetX, targetY1, feetZ));
+			m_placedDirtBlocks.Add(new Point3(feetX, targetY2, feetZ));
+			m_lastBlockPlaceTime = m_subsystemTime.GameTime;
 		}
 
 		private void SetupStateMachine()
