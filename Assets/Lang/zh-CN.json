@@ -40,14 +40,6 @@
     "ExitButton": "退出"
   },
   "ShittyCreaturesLog": {
-    "Title": "Shitty Creatures 更新日志",
-    "Version1_0_6": "1.0.6",
-    "Version1_0_5": "1.0.5",
-    "Version1_0_4": "1.0.4",
-    "Version1_0_3": "1.0.3",
-    "Version1_0_2": "1.0.2",
-    "Version1_0_1": "1.0.1",
-    "Version1_0_0": "1.0.0",
     "Line1_0_6_1": "• 新增事件：绿夜及其感染部落",
     "Line1_0_6_2": "• 添加新生物：新的感染者、2个数码宝贝和强盗（4个强盗是独特的，可以与玩家结盟并保护他）",
     "Line1_0_6_3": "• 添加新枪械",
@@ -1125,6 +1117,9 @@
     }
   },
   "ContentWidgets": {
+    "ShittyCreaturesReleasesScreen": {
+    "0": "Shitty Creatures - 版本历史"
+  },
     "DoubleMusketWidget": {
   "0": "未装填。拖动子弹进行装填（最多2发）。",
   "1": "双管火枪",
