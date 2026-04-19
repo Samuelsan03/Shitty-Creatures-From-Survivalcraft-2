@@ -2296,52 +2296,79 @@ namespace Game
 			if (contents1 != 0 || contents2 != 0)
 				return;
 
-			// ===== FASE 1: INYECTAR BLOQUES DE TIERRA Y MOSTRARLOS EN LA MANO =====
+			// ===== FASE 1: BUSCAR SLOT VACÍO PARA LA TIERRA Y MOSTRAR EN MANO =====
 			IInventory inventory = m_componentMiner.Inventory;
-			int originalActiveSlot = inventory?.ActiveSlotIndex ?? 0;
-			int originalSlotValue = 0;
-			int originalSlotCount = 0;
-			bool hadItem = false;
+			if (inventory == null) return;
 
-			if (inventory != null)
-			{
-				originalSlotValue = inventory.GetSlotValue(originalActiveSlot);
-				originalSlotCount = inventory.GetSlotCount(originalActiveSlot);
-				hadItem = originalSlotCount > 0;
-			}
-
+			int originalActiveSlot = inventory.ActiveSlotIndex;
 			int dirtValue = Terrain.MakeBlockValue(DirtBlock.Index);
 
-			// Inyectar temporalmente 2 bloques de tierra
-			if (inventory != null)
+			// Buscar un slot vacío que pueda contener tierra
+			int dirtSlot = -1;
+			for (int i = 0; i < inventory.SlotsCount; i++)
 			{
-				inventory.RemoveSlotItems(originalActiveSlot, int.MaxValue);
-				inventory.AddSlotItems(originalActiveSlot, dirtValue, 2);
-				m_componentMiner.Inventory.ActiveSlotIndex = originalActiveSlot;
+				if (inventory.GetSlotCount(i) == 0 && inventory.GetSlotCapacity(i, dirtValue) > 0)
+				{
+					dirtSlot = i;
+					break;
+				}
 			}
 
-			// Forzar actualización inmediata del modelo de la mano
+			// Si no hay slot vacío, usar el slot activo como último recurso
+			bool usingActiveSlot = (dirtSlot == -1);
+			if (usingActiveSlot)
+			{
+				dirtSlot = originalActiveSlot;
+			}
+
+			// Guardar estado original del slot de tierra (si es distinto del activo)
+			int originalDirtSlotValue = 0;
+			int originalDirtSlotCount = 0;
+			int originalActiveSlotValue = 0;
+			int originalActiveSlotCount = 0;
+			bool hadActiveItem = false;
+
+			if (!usingActiveSlot)
+			{
+				originalDirtSlotValue = inventory.GetSlotValue(dirtSlot);
+				originalDirtSlotCount = inventory.GetSlotCount(dirtSlot);
+			}
+			else
+			{
+				// Si usamos el slot activo, guardamos su contenido original para restaurarlo después
+				originalActiveSlotValue = inventory.GetSlotValue(originalActiveSlot);
+				originalActiveSlotCount = inventory.GetSlotCount(originalActiveSlot);
+				hadActiveItem = originalActiveSlotCount > 0;
+				// Vaciar slot activo
+				inventory.RemoveSlotItems(originalActiveSlot, int.MaxValue);
+			}
+
+			// Inyectar 2 bloques de tierra en el slot elegido
+			inventory.AddSlotItems(dirtSlot, dirtValue, 2);
+
+			// Cambiar al slot de tierra para mostrarlo en la mano
+			m_componentMiner.Inventory.ActiveSlotIndex = dirtSlot;
 			if (m_componentCreature.ComponentCreatureModel != null)
 			{
-				int slotCount = inventory?.SlotsCount ?? 10;
-				int otherSlot = (originalActiveSlot + 1) % slotCount;
-				m_componentMiner.Inventory.ActiveSlotIndex = otherSlot;
-				m_componentMiner.Inventory.ActiveSlotIndex = originalActiveSlot;
 				m_componentCreature.ComponentCreatureModel.Animate();
 			}
 
-			// Guardar referencia local para usar en el callback
+			// Guardar referencias para el callback
 			var capturedFeetX = feetX;
 			var capturedFeetY1 = targetY1;
 			var capturedFeetY2 = targetY2;
 			var capturedFeetZ = feetZ;
 			var capturedDirtValue = dirtValue;
-			var capturedOriginalSlot = originalActiveSlot;
-			var capturedOriginalValue = originalSlotValue;
-			var capturedOriginalCount = originalSlotCount;
-			var capturedHadItem = hadItem;
+			var capturedOriginalActiveSlot = originalActiveSlot;
+			var capturedDirtSlot = dirtSlot;
+			var capturedUsingActiveSlot = usingActiveSlot;
+			var capturedOriginalDirtSlotValue = originalDirtSlotValue;
+			var capturedOriginalDirtSlotCount = originalDirtSlotCount;
+			var capturedHadActiveItem = hadActiveItem;
+			var capturedOriginalActiveSlotValue = originalActiveSlotValue;
+			var capturedOriginalActiveSlotCount = originalActiveSlotCount;
 
-			// ===== FASE 2: COLOCAR LOS BLOQUES (50ms después) =====
+			// ===== FASE 2: COLOCAR BLOQUES Y RESTAURAR (50ms después) =====
 			m_subsystemTime.QueueGameTimeDelayedExecution(
 				m_subsystemTime.GameTime + 0.05,
 				() =>
@@ -2350,16 +2377,13 @@ namespace Game
 					m_subsystemTerrain.ChangeCell(capturedFeetX, capturedFeetY1, capturedFeetZ, capturedDirtValue, true);
 					m_subsystemTerrain.ChangeCell(capturedFeetX, capturedFeetY2, capturedFeetZ, capturedDirtValue, true);
 
-					// Forzar actualización visual inmediata del chunk
+					// Actualizar chunk visualmente
 					TerrainChunk chunk = m_subsystemTerrain.Terrain.GetChunkAtCell(capturedFeetX, capturedFeetZ);
 					if (chunk != null)
 					{
 						chunk.State = TerrainChunkState.InvalidVertices1;
 						m_subsystemTerrain.TerrainUpdater.DowngradeChunkNeighborhoodState(
-							chunk.Coords,
-							1,
-							TerrainChunkState.InvalidVertices1,
-							true);
+							chunk.Coords, 1, TerrainChunkState.InvalidVertices1, true);
 					}
 
 					// Sonido de colocación
@@ -2374,27 +2398,34 @@ namespace Game
 					m_placedDirtBlocks.Add(new Point3(capturedFeetX, capturedFeetY2, capturedFeetZ));
 					m_lastBlockPlaceTime = m_subsystemTime.GameTime;
 
-					// ===== RESTAURAR INVENTARIO INMEDIATAMENTE (sin anidar otra ejecución diferida) =====
+					// ===== RESTAURAR INVENTARIO =====
 					IInventory inv = m_componentMiner.Inventory;
 					if (inv != null)
 					{
-						// Eliminar exactamente los 2 bloques de tierra
-						inv.RemoveSlotItems(capturedOriginalSlot, 2);
+						// Eliminar los 2 bloques de tierra del slot usado
+						inv.RemoveSlotItems(capturedDirtSlot, 2);
 
-						// Devolver el objeto original si tenía
-						if (capturedHadItem)
+						if (capturedUsingActiveSlot)
 						{
-							inv.AddSlotItems(capturedOriginalSlot, capturedOriginalValue, capturedOriginalCount);
+							// Restaurar el ítem original que estaba en el slot activo
+							if (capturedHadActiveItem)
+							{
+								inv.AddSlotItems(capturedOriginalActiveSlot, capturedOriginalActiveSlotValue, capturedOriginalActiveSlotCount);
+							}
+						}
+						else
+						{
+							// Si el slot temporal tenía algo antes (no debería), lo restauramos
+							if (capturedOriginalDirtSlotCount > 0)
+							{
+								inv.AddSlotItems(capturedDirtSlot, capturedOriginalDirtSlotValue, capturedOriginalDirtSlotCount);
+							}
 						}
 
-						// Forzar actualización de mano para mostrar ítem original
-						m_componentMiner.Inventory.ActiveSlotIndex = capturedOriginalSlot;
+						// Volver al slot activo original (donde está el arma intacta)
+						m_componentMiner.Inventory.ActiveSlotIndex = capturedOriginalActiveSlot;
 						if (m_componentCreature.ComponentCreatureModel != null)
 						{
-							int slotCount = inv.SlotsCount;
-							int otherSlot = (capturedOriginalSlot + 1) % slotCount;
-							m_componentMiner.Inventory.ActiveSlotIndex = otherSlot;
-							m_componentMiner.Inventory.ActiveSlotIndex = capturedOriginalSlot;
 							m_componentCreature.ComponentCreatureModel.Animate();
 						}
 					}
