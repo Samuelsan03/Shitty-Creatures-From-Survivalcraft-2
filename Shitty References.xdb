@@ -4,11 +4,6 @@
 <Parameter Name="Class" Guid="8c4f00ca-8f77-47c9-99bb-cefa4f94ee8d" new-Value="Game.ComponentNewVitalStats" Type="string"/>
 
     <Folder Name="Gameplay" Guid="d509e5e2-2c10-49f1-8223-85cd892c63b0">
-    <ComponentTemplate Name="Healing" Description="Permite que una criatura cure a jugadores o criaturas amistosas de su manada cuando están heridos (salud menor al 30%). La criatura se moverá hacia el objetivo, realizará una animación de alimentación y restaurará su salud al 100%." Guid="636585cc-8eee-4fcb-b777-16f3e038e696" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
-  <Parameter Name="CanHeal" Description="Activa la habilidad de curar. Si es false, la criatura no realizará ninguna acción de curación." Guid="5c2ccdf5-4418-479d-b0e1-a7968fe3854e" Value="false" Type="bool"/>
-  <Parameter Name="Class" Description="Clase que implementa el comportamiento de curación en la criatura." Guid="a0810c74-e9b2-4e5c-bc3d-bf074914cedb" Value="Game.Healing" Type="string"/>
-</ComponentTemplate>
-    
     <ComponentTemplate Name="CoordinateDisplay" Description="Hace que se vea las coordenadas en pantalla del jugador" Guid="bd8323f8-399d-4acf-b96d-ed790ea2a6d7" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
     <Parameter Name="Class" Guid="91e9e7ee-3394-4f89-85ef-06f45f85c8dd" Value="Game.ComponentCoordinateDisplay" Type="string"/>
 </ComponentTemplate>
