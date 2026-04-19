@@ -40,14 +40,6 @@
     "ExitButton": "Exit"
   },
   "ShittyCreaturesLog": {
-    "Title": "Shitty Creatures Log",
-    "Version1_0_6": "1.0.6",
-    "Version1_0_5": "1.0.5",
-    "Version1_0_4": "1.0.4",
-    "Version1_0_3": "1.0.3",
-    "Version1_0_2": "1.0.2",
-    "Version1_0_1": "1.0.1",
-    "Version1_0_0": "1.0.0",
     "Line1_0_6_1": "• New event added in the mod: Green Night and its hordes of infected",
     "Line1_0_6_2": "• New creatures were added: new infected, 2 Digimon, and bandits (4 of the bandits are unique and can ally with the player and protect them).",
     "Line1_0_6_3": "• New firearms added",
@@ -1123,6 +1115,9 @@
 }
 },
       "ContentWidgets": {
+        "ShittyCreaturesReleasesScreen": {
+    "0": "Shitty Creatures - Version History"
+  },
         "DoubleMusketWidget": {
     "0": "Not loaded. Drag bullets to load (max 2).",
     "1": "Double-Barrel Musket",
