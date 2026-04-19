@@ -65,10 +65,15 @@ namespace Game
 		public bool InvokeLightningOnHit = false;
 		public bool PushWhileAttacking = false;
 		public bool ExplodeOnHit = false;
+		public bool PlaceBlocksWhenTargetHigh = false;
 
 		private Vector3 m_lastStuckCheckPosition;
 		private double m_stuckDetectionStartTime;
 		private double m_lastLateralMoveTime;
+
+		private List<Point3> m_placedDirtBlocks = new List<Point3>();
+		private double m_lastBlockPlaceTime;
+		private const float BlockPlaceCooldown = 0.5f;
 
 		// ===== CAMPOS PRIVADOS =====
 		private SubsystemTerrain m_subsystemTerrain;
@@ -736,7 +741,14 @@ namespace Game
 				}
 			}
 
+			if (IsActive && m_target != null && PlaceBlocksWhenTargetHigh)
+			{
+				TryPlaceDirtBlocksToReachTarget();
+			}
+
 			if (m_subsystemTime.GameTime >= m_nextUpdateTime)
+
+				if (m_subsystemTime.GameTime >= m_nextUpdateTime)
 			{
 				m_dt = m_random.Float(0.25f, 0.35f) + MathUtils.Min((float)(m_subsystemTime.GameTime - m_nextUpdateTime), 0.1f);
 				m_nextUpdateTime = m_subsystemTime.GameTime + (double)m_dt;
@@ -2081,6 +2093,7 @@ namespace Game
 			RangedAttackRange = valuesDictionary.GetValue<Vector2>("RangedAttackRange", new Vector2(5f, 20f));
 			RangedAttackMode = valuesDictionary.GetValue<AttackMode>("AttackMode", AttackMode.Default);
 			DestroyBlocksWhenStuck = valuesDictionary.GetValue<bool>("DestroyBlocksWhenStuck", false);
+			PlaceBlocksWhenTargetHigh = valuesDictionary.GetValue<bool>("PlaceBlocksWhenTargetHigh", false);
 			InvokeLightningOnHit = valuesDictionary.GetValue<bool>("InvokeLightningOnHit", false);
 			PushWhileAttacking = valuesDictionary.GetValue<bool>("PushWhileAttacking", false);
 			ExplodeOnHit = valuesDictionary.GetValue<bool>("ExplodeOnHit", false);
@@ -2231,6 +2244,124 @@ namespace Game
 			};
 		}
 
+		private void TryPlaceDirtBlocksToReachTarget()
+		{
+			if (!PlaceBlocksWhenTargetHigh || m_target == null || m_componentCreature == null || m_subsystemTerrain == null)
+				return;
+
+			// Cooldown entre intentos para evitar spam excesivo
+			if (m_subsystemTime.GameTime - m_lastBlockPlaceTime < BlockPlaceCooldown)
+				return;
+
+			Vector3 myPos = m_componentCreature.ComponentBody.Position;
+			Vector3 targetPos = m_target.ComponentBody.Position;
+
+			// Solo si el objetivo está al menos 2 bloques por encima
+			float verticalDiff = targetPos.Y - myPos.Y;
+			if (verticalDiff < 2.0f)
+				return;
+
+			// Limpiar lista de bloques que ya no son de tierra
+			m_placedDirtBlocks.RemoveAll(p =>
+			{
+				int contents = m_subsystemTerrain.Terrain.GetCellContents(p.X, p.Y, p.Z);
+				return contents != DirtBlock.Index;
+			});
+
+			// Máximo 2 bloques simultáneos
+			if (m_placedDirtBlocks.Count >= 2)
+				return;
+
+			int feetX = Terrain.ToCell(myPos.X);
+			int feetY = Terrain.ToCell(myPos.Y - 0.1f);
+			int feetZ = Terrain.ToCell(myPos.Z);
+
+			// Verificar que hay un bloque sólido debajo como soporte
+			int belowY = feetY - 1;
+			if (!m_subsystemTerrain.Terrain.IsCellValid(feetX, belowY, feetZ))
+				return;
+
+			int belowContents = m_subsystemTerrain.Terrain.GetCellContents(feetX, belowY, feetZ);
+			Block belowBlock = BlocksManager.Blocks[belowContents];
+			if (!belowBlock.IsCollidable_(m_subsystemTerrain.Terrain.GetCellValue(feetX, belowY, feetZ)))
+				return;
+
+			// Posiciones para los dos bloques verticales
+			int targetY1 = feetY;
+			int targetY2 = feetY + 1;
+
+			// Validar que ambas posiciones estén libres y dentro del mundo
+			if (!m_subsystemTerrain.Terrain.IsCellValid(feetX, targetY1, feetZ) ||
+				!m_subsystemTerrain.Terrain.IsCellValid(feetX, targetY2, feetZ))
+				return;
+
+			int contents1 = m_subsystemTerrain.Terrain.GetCellContents(feetX, targetY1, feetZ);
+			int contents2 = m_subsystemTerrain.Terrain.GetCellContents(feetX, targetY2, feetZ);
+			if (contents1 != 0 || contents2 != 0)
+				return;
+
+			// Guardar estado del inventario activo
+			IInventory inventory = m_componentMiner.Inventory;
+			int originalActiveSlot = inventory?.ActiveSlotIndex ?? 0;
+			int originalSlotValue = 0;
+			int originalSlotCount = 0;
+			bool hadItem = false;
+			if (inventory != null)
+			{
+				originalSlotValue = inventory.GetSlotValue(originalActiveSlot);
+				originalSlotCount = inventory.GetSlotCount(originalActiveSlot);
+				hadItem = originalSlotCount > 0;
+			}
+
+			int dirtValue = Terrain.MakeBlockValue(DirtBlock.Index);
+			// Inyectar temporalmente 2 bloques de tierra en el slot activo (para animación)
+			if (inventory != null)
+			{
+				inventory.RemoveSlotItems(originalActiveSlot, originalSlotCount);
+				inventory.AddSlotItems(originalActiveSlot, dirtValue, 2);
+			}
+
+			try
+			{
+				// Colocar ambos bloques directamente (sin validaciones de raycast)
+				m_subsystemTerrain.ChangeCell(feetX, targetY1, feetZ, dirtValue, true);
+				m_subsystemTerrain.ChangeCell(feetX, targetY2, feetZ, dirtValue, true);
+
+				// Forzar actualización inmediata del chunk para que se vean juntos
+				TerrainChunk chunk = m_subsystemTerrain.Terrain.GetChunkAtCell(feetX, feetZ);
+				if (chunk != null)
+				{
+					chunk.ModificationCounter++;
+					m_subsystemTerrain.TerrainUpdater.DowngradeChunkNeighborhoodState(chunk.Coords, 1, TerrainChunkState.InvalidLight, true);
+				}
+
+				// Sonido de colocación para ambos bloques
+				SubsystemSoundMaterials soundMaterials = Project.FindSubsystem<SubsystemSoundMaterials>(true);
+				if (soundMaterials != null)
+				{
+					soundMaterials.PlayImpactSound(dirtValue, new Vector3(feetX + 0.5f, targetY1 + 0.5f, feetZ + 0.5f), 1f);
+					soundMaterials.PlayImpactSound(dirtValue, new Vector3(feetX + 0.5f, targetY2 + 0.5f, feetZ + 0.5f), 1f);
+				}
+
+				// Registrar bloques colocados
+				m_placedDirtBlocks.Add(new Point3(feetX, targetY1, feetZ));
+				m_placedDirtBlocks.Add(new Point3(feetX, targetY2, feetZ));
+				m_lastBlockPlaceTime = m_subsystemTime.GameTime;
+			}
+			finally
+			{
+				// Restaurar inventario original
+				if (inventory != null)
+				{
+					inventory.RemoveSlotItems(originalActiveSlot, inventory.GetSlotCount(originalActiveSlot));
+					if (hadItem)
+					{
+						inventory.AddSlotItems(originalActiveSlot, originalSlotValue, originalSlotCount);
+					}
+				}
+			}
+		}
+
 		private void SetupStateMachine()
 		{
 			m_stateMachine.AddState("LookingForTarget", () =>
@@ -2311,6 +2442,8 @@ namespace Game
 				m_isAimingThrowable = false;
 				m_triedToLoad = false;
 				m_aimingStarted = false;
+
+				m_placedDirtBlocks.Clear();
 			}, () =>
 			{
 				if (!IsActive)
