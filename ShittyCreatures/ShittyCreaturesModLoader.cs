@@ -246,7 +246,7 @@ namespace Game
 				LabelWidget modVersionLabel = new LabelWidget
 				{
 					Name = "ShittyCreaturesVersion",
-					FontScale = 0.75f,
+					FontScale = 0.6f,
 					HorizontalAlignment = WidgetAlignment.Center,
 					Color = new Color(215, 0, 0),
 					DropShadow = true,
@@ -335,7 +335,11 @@ namespace Game
 			// Botón Veemon (changelog)
 			BevelledButtonWidget shittyButton = mainMenu.Children.Find<BevelledButtonWidget>("ShittyButton", false);
 			if (shittyButton != null && shittyButton.IsClicked)
-				DialogsManager.ShowDialog(null, new ShittyCreaturesLogDialog());
+			{
+				if (ScreensManager.FindScreen<ShittyCreaturesReleasesScreen>("ShittyCreaturesReleases") == null)
+					ScreensManager.AddScreen("ShittyCreaturesReleases", new ShittyCreaturesReleasesScreen());
+				ScreensManager.SwitchScreen("ShittyCreaturesReleases");
+			}
 
 			// Botón "Acerca del Mod"
 			BevelledButtonWidget aboutButton = mainMenu.Children.Find<BevelledButtonWidget>("ShittyAboutButton", false);
