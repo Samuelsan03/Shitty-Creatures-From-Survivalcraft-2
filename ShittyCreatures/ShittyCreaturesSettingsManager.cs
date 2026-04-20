@@ -17,6 +17,8 @@ namespace Game
 		public static bool ThirstEnabled { get; set; } = true;
 		public static bool CoordinateDisplayEnabled { get; set; } = true;
 		public static bool PunchCommandEnabled { get; set; } = true;
+		public static bool FreeCameraEnabled { get; set; } = true;
+
 		// Nueva propiedad para controlar la defensa en modo Creativo
 		public static bool CreativeDefenseEnabled { get; set; } = true;
 
@@ -61,6 +63,9 @@ namespace Game
 								break;
 							case "CreativeDefenseEnabled":
 								CreativeDefenseEnabled = value;
+								break;
+							case "FreeCameraEnabled":
+								FreeCameraEnabled = value;
 								break;
 						}
 					}
@@ -117,6 +122,10 @@ namespace Game
 						new XAttribute("Name", "CreativeDefenseEnabled"),
 						new XAttribute("Type", "bool"),
 						new XAttribute("Value", CreativeDefenseEnabled)));
+					root.Add(new XElement("Value",
+						new XAttribute("Name", "FreeCameraEnabled"),
+						new XAttribute("Type", "bool"),
+						new XAttribute("Value", FreeCameraEnabled)));
 
 					XmlUtils.SaveXmlToStream(root, stream, null, true);
 				}
