@@ -107,6 +107,14 @@ namespace Game
 			return distance >= VomitDistanceRange.X && distance <= VomitDistanceRange.Y;
 		}
 
+		// Nueva comprobación para saber si el objetivo está demasiado cerca
+		private bool IsTargetTooClose(ComponentCreature target)
+		{
+			if (target == null) return false;
+			float distance = Vector3.Distance(m_componentCreature.ComponentBody.Position, target.ComponentBody.Position);
+			return distance < VomitDistanceRange.X;
+		}
+
 		public void Update(float dt)
 		{
 			if (m_componentCreature.ComponentHealth.Health <= 0f)
@@ -121,6 +129,8 @@ namespace Game
 				if (target == null)
 					shouldStop = true;
 				else if (!IsTargetInViewCone(target))
+					shouldStop = true;
+				else if (IsTargetTooClose(target))          // <<< NUEVO: cancela si se acerca demasiado
 					shouldStop = true;
 				else if (m_subsystemTime.GameTime - m_vomitStartTime > 3.5f)
 					shouldStop = true;
@@ -146,6 +156,8 @@ namespace Game
 					shouldStop = true;
 				else if (!IsTargetInViewCone(target))
 					shouldStop = true;
+				else if (IsTargetTooClose(target))          // <<< NUEVO
+					shouldStop = true;
 				else if (m_subsystemTime.GameTime - m_vomitStartTime > 3.5f)
 					shouldStop = true;
 
@@ -169,6 +181,8 @@ namespace Game
 				if (target == null)
 					shouldStop = true;
 				else if (!IsTargetInViewCone(target))
+					shouldStop = true;
+				else if (IsTargetTooClose(target))          // <<< NUEVO
 					shouldStop = true;
 				else if (m_subsystemTime.GameTime - m_vomitStartTime > 3.5f)
 					shouldStop = true;
@@ -204,24 +218,20 @@ namespace Game
 			if (currentTime - m_lastVomitTime < (double)VomitCooldown)
 				return;
 
-			// ---- NUEVA LÓGICA: Elegir aleatoriamente entre todos los tipos habilitados ----
-			// Recopilar los tipos de vómito que están activos en la configuración
+			// Elegir aleatoriamente entre todos los tipos habilitados
 			System.Collections.Generic.List<int> availableTypes = new System.Collections.Generic.List<int>();
 			if (VomitShit) availableTypes.Add(0);   // 0 = Veneno
 			if (VomitFire) availableTypes.Add(1);   // 1 = Fuego
 			if (VomitFrozen) availableTypes.Add(2); // 2 = Congelado
 
-			// Si no hay ningún tipo habilitado, no hacer nada
 			if (availableTypes.Count == 0)
 				return;
 
-			// Seleccionar un tipo al azar de entre los disponibles
 			int chosenType = availableTypes[m_random.Int(availableTypes.Count)];
 
 			Vector3 mouthPos = GetVomitMouthPosition();
 			Vector3 direction = Vector3.Normalize(target.ComponentCreatureModel.EyePosition - mouthPos);
 
-			// Ejecutar el tipo de vómito seleccionado
 			if (chosenType == 0) // Veneno
 			{
 				m_activePoisonVomit = new PoisonVomitParticleSystem(
