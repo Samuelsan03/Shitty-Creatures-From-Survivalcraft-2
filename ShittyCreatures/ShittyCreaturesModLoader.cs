@@ -122,6 +122,7 @@ namespace Game
 
 			ModsManager.RegisterHook("ManageCameras", this);
 
+			ModsManager.RegisterHook("OnPlayerSpawned", this);
 			// Reemplazar overlay de captura de pantalla
 			ReplaceScreenCaptureOverlay();
 		}
@@ -851,6 +852,97 @@ namespace Game
 
 			if (ShittyCreaturesSettingsManager.FreeCameraEnabled)
 				gameWidget.AddCamera(new FreeCamera(gameWidget), (gw) => !isCreative);
+		}
+
+		// Variable estática para evitar entregar los ítems más de una vez en el mismo mundo
+		private static bool s_initialItemsGiven = false;
+
+		public override bool OnPlayerSpawned(PlayerData.SpawnMode spawnMode, ComponentPlayer componentPlayer, Vector3 spawnPosition)
+		{
+			// Solo entregar en el primer spawn del mundo (no en respawns)
+			if (spawnMode != PlayerData.SpawnMode.InitialIntro && spawnMode != PlayerData.SpawnMode.InitialNoIntro)
+				return true;
+
+			// Evitar múltiples entregas en el mismo mundo
+			if (s_initialItemsGiven)
+				return true;
+
+			// Obtener el modo de juego actual
+			SubsystemGameInfo gameInfo = componentPlayer.Project.FindSubsystem<SubsystemGameInfo>(true);
+			if (gameInfo.WorldSettings.GameMode == GameMode.Creative)
+			{
+				// No entregar ítems en Creativo, pero marcamos como dado para no repetir si luego se cambia (opcional)
+				s_initialItemsGiven = true;
+				return true;
+			}
+
+			// Marcar como entregado
+			s_initialItemsGiven = true;
+
+			// Obtener inventario del jugador
+			IInventory inventory = componentPlayer.ComponentMiner.Inventory;
+			if (inventory == null)
+				return true;
+
+			// Usar nombres reales para obtener índices de bloque
+			int ironMacheteIndex = GetBlockIndexByName("IronMacheteBlock");
+			int boiledWaterBucketIndex = GetBlockIndexByName("BoiledWaterBucketBlock");
+			int nuclearCoinIndex = GetBlockIndexByName("NuclearCoinBlock");
+			int swm500Index = GetBlockIndexByName("SWM500Block");
+			int swm500BulletIndex = GetBlockIndexByName("SWM500Bullet");
+			int stonePickaxeIndex = GetBlockIndexByName("StonePickaxeBlock");
+
+			// Añadir ítems
+			GiveItemToPlayer(inventory, ironMacheteIndex, 1);
+			GiveItemToPlayer(inventory, boiledWaterBucketIndex, 1);
+			GiveItemToPlayer(inventory, nuclearCoinIndex, 100);
+			GiveItemToPlayer(inventory, stonePickaxeIndex, 1);
+
+			// Desert Eagle con 8 balas cargadas
+			int swm500Value = Terrain.MakeBlockValue(swm500Index, 0, SWM500Block.SetBulletNum(8));
+			GiveItemToPlayer(inventory, swm500Value, 1);
+
+			// 12 balas extra
+			GiveItemToPlayer(inventory, swm500BulletIndex, 12);
+
+			return true; // Indica que el hook se ejecutó correctamente y se debe continuar
+		}
+
+		// Método auxiliar para obtener índice de bloque por nombre de clase
+		private int GetBlockIndexByName(string blockClassName)
+		{
+			// Buscar en todos los bloques registrados
+			foreach (Block block in BlocksManager.Blocks)
+			{
+				if (block != null && block.GetType().Name == blockClassName)
+					return block.BlockIndex;
+			}
+			Log.Warning($"[ShittyCreatures] No se encontró el bloque: {blockClassName}");
+			return 0;
+		}
+
+		// Método auxiliar para dar ítems al jugador (busca slot disponible y añade)
+		private void GiveItemToPlayer(IInventory inventory, int value, int count)
+		{
+			if (value == 0) return;
+
+			int remaining = count;
+			while (remaining > 0)
+			{
+				int slot = ComponentInventoryBase.FindAcquireSlotForItem(inventory, value);
+				if (slot < 0)
+				{
+					Log.Warning($"[ShittyCreatures] No hay espacio para añadir {count}x {value}");
+					break;
+				}
+				int capacity = inventory.GetSlotCapacity(slot, value);
+				int existing = inventory.GetSlotCount(slot);
+				int canAdd = Math.Min(capacity - existing, remaining);
+				if (canAdd <= 0) continue;
+
+				inventory.AddSlotItems(slot, value, canAdd);
+				remaining -= canAdd;
+			}
 		}
 
 		// ---------------------------------------------------------------------------------
