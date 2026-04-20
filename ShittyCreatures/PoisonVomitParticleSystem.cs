@@ -22,7 +22,6 @@ namespace Game
 		private Random m_random = new Random();
 		private float m_duration;
 		private float m_toGenerate;
-		private double m_lastPoisonApplyTime;
 
 		public PoisonVomitParticleSystem(SubsystemTerrain terrain, SubsystemBodies bodies, SubsystemSoundMaterials soundMaterials,
 			SubsystemTime time, SubsystemParticles particles, ComponentCreature creature)
@@ -161,12 +160,14 @@ namespace Game
 
 		private void ApplyPoisonToBody(ComponentBody body)
 		{
-			if (m_subsystemTime.GameTime - m_lastPoisonApplyTime < 0.2)
+			// Evitar auto-infección
+			if (body.Entity == m_componentCreature.Entity)
 				return;
 
 			Entity entity = body.Entity;
 			if (entity == null) return;
 
+			// Jugador
 			ComponentPlayer player = entity.FindComponent<ComponentPlayer>();
 			if (player != null)
 			{
@@ -176,19 +177,19 @@ namespace Game
 					sickness.StartSickness();
 					sickness.m_sicknessDuration = PoisonIntensity;
 				}
-				m_lastPoisonApplyTime = m_subsystemTime.GameTime;
 				return;
 			}
 
+			// Criatura (solo si ya tiene ComponentPoisonInfected)
 			ComponentCreature creature = entity.FindComponent<ComponentCreature>();
-			if (creature != null && creature != m_componentCreature)
+			if (creature != null)
 			{
 				ComponentPoisonInfected poison = entity.FindComponent<ComponentPoisonInfected>();
 				if (poison != null && !poison.IsInfected)
 				{
 					poison.StartInfect(PoisonIntensity);
 				}
-				m_lastPoisonApplyTime = m_subsystemTime.GameTime;
+				// Si no tiene el componente, simplemente no pasa nada (no se puede agregar en runtime)
 			}
 		}
 
