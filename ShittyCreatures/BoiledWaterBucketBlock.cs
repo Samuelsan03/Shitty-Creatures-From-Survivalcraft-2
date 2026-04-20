@@ -25,6 +25,10 @@ namespace Game
 		{
 			BlocksManager.DrawMeshBlock(primitivesRenderer, this.m_standaloneBlockMesh, color, 2f * size, ref matrix, environmentData);
 		}
+		public override float GetNutritionalValue(int value)
+		{
+			return 0.001f;   // Valor mínimo para activar el arrastre
+		}
 
 		// Token: 0x040002F2 RID: 754
 		public static int Index = 408;
