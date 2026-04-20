@@ -846,10 +846,11 @@ namespace Game
 
 		public override void ManageCameras(GameWidget gameWidget)
 		{
-			// Obtener SubsystemGameInfo desde el Project del jugador
 			var gameInfo = gameWidget.PlayerData.SubsystemPlayers.Project.FindSubsystem<SubsystemGameInfo>(true);
 			bool isCreative = gameInfo.WorldSettings.GameMode == GameMode.Creative;
-			gameWidget.AddCamera(new FreeCamera(gameWidget), (gw) => !isCreative);
+
+			if (ShittyCreaturesSettingsManager.FreeCameraEnabled)
+				gameWidget.AddCamera(new FreeCamera(gameWidget), (gw) => !isCreative);
 		}
 
 		// ---------------------------------------------------------------------------------
