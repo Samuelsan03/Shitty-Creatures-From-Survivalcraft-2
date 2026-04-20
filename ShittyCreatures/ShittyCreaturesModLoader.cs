@@ -120,6 +120,8 @@ namespace Game
 			// Hook para detectar ataques al jugador incluso en modo Creativo
 			ModsManager.RegisterHook("OnMinerHit", this, -100);
 
+			ModsManager.RegisterHook("ManageCameras", this);
+
 			// Reemplazar overlay de captura de pantalla
 			ReplaceScreenCaptureOverlay();
 		}
@@ -658,6 +660,13 @@ namespace Game
 			return true;
 		}
 
+		public override IEnumerable<KeyValuePair<string, int>> GetCameraList()
+		{
+			// La clave debe coincidir con el nombre completo de la clase (Game.FreeCamera)
+			// El valor es el orden por defecto (puede ser cualquier número, se reordenará después)
+			yield return new KeyValuePair<string, int>("Game.FreeCamera", 5);
+		}
+
 		private bool CompareIngredients(string required, string actual)
 		{
 			if (required == null) return actual == null;
@@ -833,6 +842,14 @@ namespace Game
 			{
 				CommandAlliesToAttack(targetPlayer, attackerCreature);
 			}
+		}
+
+		public override void ManageCameras(GameWidget gameWidget)
+		{
+			// Obtener SubsystemGameInfo desde el Project del jugador
+			var gameInfo = gameWidget.PlayerData.SubsystemPlayers.Project.FindSubsystem<SubsystemGameInfo>(true);
+			bool isCreative = gameInfo.WorldSettings.GameMode == GameMode.Creative;
+			gameWidget.AddCamera(new FreeCamera(gameWidget), (gw) => !isCreative);
 		}
 
 		// ---------------------------------------------------------------------------------
