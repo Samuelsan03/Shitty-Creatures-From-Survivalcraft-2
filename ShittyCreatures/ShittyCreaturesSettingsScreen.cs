@@ -14,6 +14,7 @@ namespace Game
 		private BevelledButtonWidget m_coordinateButton;
 		private BevelledButtonWidget m_punchCommandButton;
 		private BevelledButtonWidget m_creativeDefenseButton; // Nuevo botón
+		private BevelledButtonWidget m_freeCameraButton;
 		private StackPanelWidget m_contentPanel;
 		private LabelWidget m_titleLabel;
 
@@ -35,6 +36,7 @@ namespace Game
 			CreateOptionRow("ShittyCreaturesSettings", "PunchCommandDescription", out m_punchCommandButton, Color.LightGray, GetPunchCommandButtonText);
 			// Nuevo botón para defensa en Creativo
 			CreateOptionRow("ShittyCreaturesSettings", "CreativeDefenseDescription", out m_creativeDefenseButton, Color.LightGray, GetCreativeDefenseButtonText);
+			CreateOptionRow("ShittyCreaturesSettings", "FreeCameraDescription", out m_freeCameraButton, Color.LightGray, GetFreeCameraButtonText);
 		}
 
 		private void CreateOptionRow(string category, string descriptionKey, out BevelledButtonWidget button, Color buttonColor, Func<string> getButtonTextFunc)
@@ -78,6 +80,7 @@ namespace Game
 		private string GetCoordinateButtonText() => ShittyCreaturesSettingsManager.CoordinateDisplayEnabled ? LanguageControl.On : LanguageControl.Off;
 		private string GetPunchCommandButtonText() => ShittyCreaturesSettingsManager.PunchCommandEnabled ? LanguageControl.On : LanguageControl.Off;
 		private string GetCreativeDefenseButtonText() => ShittyCreaturesSettingsManager.CreativeDefenseEnabled ? LanguageControl.On : LanguageControl.Off;
+		private string GetFreeCameraButtonText() => ShittyCreaturesSettingsManager.FreeCameraEnabled ? LanguageControl.On : LanguageControl.Off;
 
 		public override void Update()
 		{
@@ -128,6 +131,11 @@ namespace Game
 			{
 				ShittyCreaturesSettingsManager.CreativeDefenseEnabled = !ShittyCreaturesSettingsManager.CreativeDefenseEnabled;
 				m_creativeDefenseButton.Text = GetCreativeDefenseButtonText();
+			}
+			if (m_freeCameraButton != null && m_freeCameraButton.IsClicked)
+			{
+				ShittyCreaturesSettingsManager.FreeCameraEnabled = !ShittyCreaturesSettingsManager.FreeCameraEnabled;
+				m_freeCameraButton.Text = GetFreeCameraButtonText();
 			}
 		}
 	}
