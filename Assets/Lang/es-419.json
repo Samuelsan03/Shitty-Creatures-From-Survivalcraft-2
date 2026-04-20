@@ -43,17 +43,19 @@
     "ExitButton": "Salir"
   },
   "ShittyCreaturesLog": {
-    "Line1_0_6_1": "• Nuevo evento añadido en el mod: Noche Verde y sus hordas de infectados.",
-    "Line1_0_6_2": "• Se añadieron nuevas criaturas: nuevos infectados, 2 Digimon y bandidos (4 de los bandidos son únicos y pueden aliarse con el jugador y protegerlo).",
-    "Line1_0_6_3": "• Nuevas armas de fuego añadidas.",
-    "Line1_0_6_4": "• Ahora puedes gestionar el inventario de los NPC aliados y colocar cualquier objeto dentro de él.",
-    "Line1_0_6_5": "• Se añadieron 2 nuevos botones para gestionar la configuración de la música de persecución de los NPC y activar o desactivar su música si quieres que se escuche o no en tu mundo. Ahora estarán en el botón de configuración y habrá un botón llamado 'Configuración de Shitty Creatures' y al hacer clic aparecerán los 2 botones junto con sus cambios guardados cuando salgas del juego.",
-    "Line1_0_6_6": "• Nuevas ropas añadidas.",
-    "Line1_0_6_7": "• Ahora los infectados esclavizados, los infectados voladores, el jefe infectado y el oso infectado pueden ser montados, así que disfruta del viaje en el aire y en tierra con ellos.",
-    "Line1_0_6_8": "• Métodos de curación añadidos: cubo antídoto (cura el veneno) y el mecanismo de curación para criaturas con veneno, además del cubo anti-gripe (cura la gripe) y kits de salud con su mecanismo de curación (el mediano cura parcialmente la salud y el grande la cura completamente).",
-    "Line1_0_6_9": "• La inteligencia artificial de criaturas normales e infectadas ha sido mejorada, ya no usarán la persecución para controlar armas a distancia y otras, ahora podrán usar cualquier arma a distancia y de fuego, objetos arrojadizos y gestionar el cambio entre arma y cuerpo a cuerpo.",
-    "Line1_0_6_10": "• Las traducciones fueron corregidas y mejoradas para sonar más fluidas y comprensibles.",
-    "Line1_0_6_11": "• Los Digimon sin poderes, como Gaomon, Gumdramon, Hawkmon y Gabumon, ahora podrán usar armas a distancia y cuerpo a cuerpo.",
+    "Line1_0_6_1": "• Se ha añadido la Cámara Libre. Este modo solo está disponible en Pacífico (Harmless), Supervivencia (Survival), Desafiante (Challenging), Cruel (Cruel) y Aventura (Adventure); no funciona en modo Creativo. Su comportamiento es similar a la cámara de depuración, permitiendo desplazarse libremente por el mundo para observar el entorno y a las criaturas sin restricciones.",
+    "Line1_0_6_2": "• Se ha añadido el evento especial \"Noche Verde\". Este solo se activará durante la luna llena o la luna nueva, e incluirá un contador regresivo que indica cuándo comenzará. Al iniciarse, los infectados entrarán en un estado de agresividad extrema, formando hordas y enfocándose en el jugador como su objetivo principal. Deberás resistir múltiples oleadas hasta el final del evento. Al completarlo, obtendrás el control remoto de Noche Verde, que te permitirá desactivar el evento (restableciendo la normalidad) o mantenerlo activo según tu preferencia. Se han incorporado nuevos jefes en oleadas específicas, y la última será especialmente desafiante, ya que reaparecerán jefes previamente derrotados. Si no cuentas con recursos desde el inicio, será fundamental refugiarte debido a la alta cantidad de infectados. A medida que avances, podrás recolectar recursos de defensa, mejorar tu protección y conseguir criaturas aliadas, las cuales serán clave para sobrevivir, ya que combatirán por ti. Durante todo el evento, no será posible dormir hasta que finalice.",
+    "Line1_0_6_3": "• Se ha incorporado el sistema de sed para ofrecer una experiencia más realista. Ahora será necesario encontrar fuentes de agua, como cubetas o recipientes. Sin embargo, beber agua sin tratar puede provocar náuseas, especialmente si proviene de fuentes no seguras. Para evitar efectos negativos, se recomienda hervir el agua antes de consumirla.",
+    "Line1_0_6_4": "• Se han añadido nuevos Digimons y bandidos. Actualmente, hay 4 bandidos únicos que los jugadores pueden contratar usando monedas nucleares.",
+    "Line1_0_6_5": "• Se añadió un sistema de comercio y contratación. Se mejoró la inteligencia artificial de las criaturas; ahora pueden manejar cualquier arma, incluyendo a distancia, arrojadizas, de fuego y cuerpo a cuerpo.",
+    "Line1_0_6_6": "• Mejora en ComponentNewChaseBehavior: manejo mejorado de armas a distancia y ataques cuerpo a cuerpo para aliados del jugador que se activan cuando la presa se acerca demasiado. Se añadió un comportamiento de protección extrema para los Zombis durante la Noche Verde y para los Bandidos en cualquier momento, haciendo que busquen y ataquen agresivamente a los jugadores cercanos inmediatamente sin necesidad de que el jugador esté herido primero. Nuevos parámetros añadidos: ExplodeOnHit (probabilidad de explotar al impactar), InvokeLightningOnHit (probabilidad de invocar un rayo), PushWhileAttacking (efecto de empuje), DestroyBlocksWhenStuck (rompe bloques que obstruyen cuando se queda atascado durante la persecución) y PlaceBlocksWhenTargetHigh (construye escaleras de bloques de tierra para alcanzar objetivos elevados, despejando obstáculos primero si es necesario).",
+    "Line1_0_6_7": "• Se añadieron configuraciones de Shitty Creatures accesibles desde las opciones principales del juego mediante un botón rojo, permitiendo a los jugadores personalizar su experiencia con el mod. Las configuraciones se guardan en un archivo XML para persistir entre sesiones de juego y evitar reinicios no deseados a los valores predeterminados.",
+    "Line1_0_6_8": "• Se añadieron nuevas armas: armas de fuego, bomba congelante y mosquete de doble cañón.",
+    "Line1_0_6_9": "• Se incorporaron nuevas herramientas: martillo de cabeza delgada (pica más rápido que los picos tradicionales).",
+    "Line1_0_6_10": "• Se implementó un sistema de gripe para criaturas.",
+    "Line1_0_6_11": "• Se añadió un sistema de curación compatible tanto con criaturas como con el jugador, incluyendo tratamiento contra náuseas, veneno y gripe, así como curación para criaturas con baja salud.",
+    "Line1_0_6_12": "• El tridente ahora invoca un rayo al impactar contra el objetivo.",
+    "Line1_0_6_13": "• Se han corregido, pulido y mejorado las traducciones.",
     "Line1_0_5_1": "• Nuevas armas: Lanzallamas, Guadaña, Tridente, Ballesta Repetidora, Bomba Venenosa, Lanzaobjetos",
     "Line1_0_5_2": "• Nuevos NPCs: Digimon, miembros de la Alianza, miembros de Muerte, Piratas, Infectados (zombis)",
     "Line1_0_5_3": "• Nuevo sistema de música (música de fondo, música de persecución para enemigos)",
@@ -92,7 +94,8 @@
     "ThirstDescription": "Activar/desactivar la simulación de sed",
     "CoordinateDisplay": "Mostrar coordenadas",
     "PunchCommandDescription": "Los aliados atacarán y perseguirán al NPC que golpees, sin importar el tipo de ataque",
-    "CreativeDefenseDescription": "En modo Creativo, cuando una criatura golpea al jugador, los aliados atacarán al agresor"
+    "CreativeDefenseDescription": "En modo Creativo, cuando una criatura golpea al jugador, los aliados atacarán al agresor",
+    "FreeCameraDescription": "Activar/desactivar el modo de cámara libre (solo en modos no creativos)"
   },
     "AntidoteBucket": {
       "NPCCured": "¡El NPC ha sido curado de veneno y enfermedades!"
