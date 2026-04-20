@@ -43,17 +43,19 @@
     "ExitButton": "Exit"
   },
   "ShittyCreaturesLog": {
-    "Line1_0_6_1": "• New event added in the mod: Green Night and its hordes of infected",
-    "Line1_0_6_2": "• New creatures were added: new infected, 2 Digimon, and bandits (4 of the bandits are unique and can ally with the player and protect them).",
-    "Line1_0_6_3": "• New firearms added",
-    "Line1_0_6_4": "• Now you can manage the inventory of allied npcs and place any object inside there",
-    "Line1_0_6_5": "• 2 new buttons were added to manage the configuration of the npcs chase music to activate and deactivate their music if you want them to be heard or not in your world, now they will be in the configuration button and there will be a button called 'Shitty Creatures settings' and when you click it the 2 buttons will appear along with their saved changes when you exit the game",
-    "Line1_0_6_6": "• New clothes added",
-    "Line1_0_6_7": "• Now the enslaved infected Flying Infected 1, Flying Infected Boss, Infected Bear can now be ridden, so enjoy the journey in the air and on the ground with them",
-    "Line1_0_6_8": "• Added healing methods: Antidote Bucket (cures poison) and the added healing mechanism for creatures with poison and Anti-Flu Bucket (cures the flu) and health healing kits with its creature healing mechanism (the medium one partially heals health and the large one completely heals health)",
-    "Line1_0_6_9": "• The artificial intelligence of normal and infected creatures has been improved, they will no longer use the new chase to control ranged weapons and others, they will now be able to use any ranged and firearm weapons, throwable objects and the management of switching from weapon to melee",
-    "Line1_0_6_10": "• The translations were corrected and improved to sound more fluid and understandable.",
-    "Line1_0_6_11": "• Digimon without powers, such as Gaomon, Gumdramon, Hawkmon, and Gabumon, will now be able to wield ranged and melee weapons.",
+    "Line1_0_6_1": "• Free Camera has been added. This mode is only available in Peaceful (Harmless), Survival (Survival), Challenging (Challenging), Cruel (Cruel), and Adventure (Adventure); it does not work in Creative mode. Its behavior is similar to the debug camera, allowing you to move freely around the world to observe the environment and creatures without restrictions.",
+    "Line1_0_6_2": "• A new special event, \"Green Night\", has been introduced. It only triggers during a full moon or a new moon and features a countdown timer showing when it will begin. Once active, the infected enter a state of extreme aggression, forming hordes and targeting the player as their primary objective. You must endure multiple waves until the event ends. Upon completion, you will unlock the Green Night remote control, allowing you to disable the event (restoring normal conditions) or keep it active as you prefer. New bosses appear in specific waves, and the final wave is especially challenging, as previously defeated bosses return. If you start without resources, taking shelter is essential due to the large number of infected. As you progress, you can gather defensive resources, improve protection, and obtain allied creatures that will fight on your behalf—crucial for survival. You will not be able to sleep for the duration of the event.",
+    "Line1_0_6_3:": "A thirst mechanic has been introduced to create a more realistic experience. You will now need to find sources of water, such as buckets or containers. However, drinking untreated water may cause nausea, especially if it comes from unsafe sources. To avoid negative effects, it is recommended to boil water before consuming it.",
+    "Line1_0_6_4": "• New Digimons and bandits have been added. Currently, there are 4 unique bandits that players can hire using nuclear coins.",
+    "Line1_0_6_5": "• Added trading and hiring system. Improved creature artificial intelligence, they can now handle any weapon including ranged, throwables, firearms and melee.",
+    "Line1_0_6_6": "• Improved ComponentNewChaseBehavior: enhanced ranged weapon handling and melee attacks for player allies that trigger when prey gets too close. Added extreme protection behavior for Zombies during Green Night and for Bandits at any time, causing them to aggressively seek out and attack nearby players immediately without needing the player to be injured first. New parameters added: ExplodeOnHit (chance to explode on impact), InvokeLightningOnHit (chance to summon lightning), PushWhileAttacking (knockback effect), DestroyBlocksWhenStuck (breaks obstructing blocks when stuck during chase), and PlaceBlocksWhenTargetHigh (builds dirt block stairs to reach elevated targets, clearing obstacles first if blocked).",
+    "Line1_0_6_7": "• Added Shitty Creatures settings accessible from the main game options via a red button, allowing players to customize their mod experience. Settings are saved to an XML file to persist between game sessions and prevent unwanted reset to defaults.",
+    "Line1_0_6_8": "• New weapons have been added: firearms, freezing bomb, and double-barrel musket.",
+    "Line1_0_6_9": "• New tools have been introduced: thin-head hammer (mines faster than standard pickaxes).",
+    "Line1_0_6_10": "• A flu system for creatures has been implemented.",
+    "Line1_0_6_11": "• A healing system has been added, compatible with both creatures and players, including treatment for nausea, poison, and flu, as well as healing for low-health creatures.",
+    "Line1_0_6_12": "• The trident now summons lightning when it hits a target.",
+    "Line1_0_6_13": "• Translations have been fixed, polished, and improved.",
     "Line1_0_5_1": "• Added new weapons: Flamethrower, Scythe, Trident, Repeating Crossbow, Poison Bomb, Item Cannon",
     "Line1_0_5_2": "• Added new NPCs: Digimon, Alliance members, Muerte members, Pirates, Infected (zombies)",
     "Line1_0_5_3": "• Added music system (background music, chase music for enemies)",
@@ -92,7 +94,8 @@
     "ThirstDescription": "Enable/disable thirst simulation",
     "CoordinateDisplay": "Show coordinates",
     "PunchCommandDescription": "Allies will attack and chase any NPC you hit, regardless of the type of attack",
-    "CreativeDefenseDescription": "In Creative mode, when a creature hits the player, allies will attack the attacker"
+    "CreativeDefenseDescription": "In Creative mode, when a creature hits the player, allies will attack the attacker",
+    "FreeCameraDescription": "Enable/disable free camera mode (only in non-creative modes)"
   },
   "AntidoteBucket": {
     "NPCCured": "The NPC has been cured of poison and sickness!"
