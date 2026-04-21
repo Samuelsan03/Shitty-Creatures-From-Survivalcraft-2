@@ -1174,18 +1174,20 @@
       "InventoryLabel": "Inventory"
     },
     "FlameThrowerWidget": {
-      "Title": "Flamethrower",
-      "Inventory": "Inventory",
-      "LoadAmmunition": "Load ammunition",
-      "SprayFire": "Prepare to spray fire {0}/15",
-      "SprayPoison": "Prepare to spray poison {0}/15"
-    },
+    "1": "Flamethrower",
+    "2": "Inventory",
+    "3": "Load ammunition",
+    "4": "Prepare to spray fire {0}/15",
+    "5": "Prepare to spray poison {0}/15"
+},
     "RepeatCrossbowWidget": {
-      "Title": "Repeating Crossbow",
-      "Inventory": "Inventory",
-      "InstructionsPull": "Pull back to load",
-      "InstructionsInsert": "Insert bolts",
-      "InstructionsArrows": "Arrows: {0}/8"
+      "1": "Repeating Crossbow",
+      "2": "Inventory",
+      "3": "Pull back to load",
+      "4": "Insert bolts",
+      "5": "Bolts: {0}/8",
+      "6": "First pull back the crossbow!",
+      "7": "First load an bolt!"
     }
   },
   "Messages": {
@@ -1216,10 +1218,7 @@
     "CollarTamedBossMessage": "You have tamed the Flying Infected Boss, use it wisely for emergency cases",
     "CollarTamedMessage": "You have tamed a hostile Infected!\n Now it will be your guardian!",
     "CollarTamedFrozenTankMessage": "You have tamed a Frozen Tank!\nIts icy brute force will freeze and crush your enemies!\nA frozen guardian is now under your command!",
-    "CollarTamedFrozenTankGhostMessage": "You have tamed a Frozen Ghost Tank!\nA spectral icy terror now serves you from beyond!\nIts frozen phantom wrath will haunt your foes!",
-    "FirstPullCrossbow": "First pull back the crossbow!",
-    "FirstLoadArrow": "First load an bolt!",
-    "ArrowCount": "Bolts: {0}/8"
+    "CollarTamedFrozenTankGhostMessage": "You have tamed a Frozen Ghost Tank!\nA spectral icy terror now serves you from beyond!\nIts frozen phantom wrath will haunt your foes!"
   },
   "Usual": {
     "ok": "OK",
