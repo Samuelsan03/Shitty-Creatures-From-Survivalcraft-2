@@ -23,7 +23,7 @@ namespace Game
 
 		public FrozenVomitParticleSystem(SubsystemTerrain terrain, SubsystemBodies bodies,
 			SubsystemSoundMaterials soundMaterials, SubsystemTime time, ComponentCreature owner)
-			: base(400)
+			: base(60)
 		{
 			m_subsystemTerrain = terrain;
 			m_subsystemBodies = bodies;
