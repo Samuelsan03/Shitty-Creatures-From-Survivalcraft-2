@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Xml.Linq;
 using Engine;
 using Game;
@@ -16,6 +16,7 @@ namespace Game
 			this.m_inventoryGrid = this.Children.Find<GridPanelWidget>("InventoryGrid", true);
 			this.m_inventorySlotWidget = this.Children.Find<InventorySlotWidget>("InventorySlot", true);
 			this.m_instructionsLabel = this.Children.Find<LabelWidget>("InstructionsLabel", true);
+
 			for (int i = 0; i < this.m_inventoryGrid.RowsCount; i++)
 			{
 				for (int j = 0; j < this.m_inventoryGrid.ColumnsCount; j++)
@@ -50,7 +51,7 @@ namespace Game
 			FlameThrowerBlock.LoadState loadState = FlameThrowerBlock.GetLoadState(Terrain.ExtractData(slotValue));
 			if (loadState == FlameThrowerBlock.LoadState.Empty)
 			{
-				this.m_instructionsLabel.Text = "Load ammunition";
+				this.m_instructionsLabel.Text = LanguageControl.GetContentWidgets("FlameThrowerWidget", "3");
 				this.m_instructionsLabel.Color = Color.White;
 				return;
 			}
@@ -60,15 +61,12 @@ namespace Game
 				return;
 			}
 
-			// Obtener tipo de bala
 			FlameBulletBlock.FlameBulletType? bulletType = FlameThrowerBlock.GetBulletType(Terrain.ExtractData(slotValue));
-			string ammoType = "fire";
-			if (bulletType == FlameBulletBlock.FlameBulletType.Poison)
-			{
-				ammoType = "poison";
-			}
+			string key = (bulletType == FlameBulletBlock.FlameBulletType.Poison) ? "5" : "4";
+			int loadCount = FlameThrowerBlock.GetLoadCount(slotValue);
 
-			this.m_instructionsLabel.Text = "Prepare to spray " + ammoType + " " + FlameThrowerBlock.GetLoadCount(slotValue).ToString() + "/15";
+			string format = LanguageControl.GetContentWidgets("FlameThrowerWidget", key);
+			this.m_instructionsLabel.Text = string.Format(format, loadCount);
 			this.m_instructionsLabel.Color = Color.White;
 		}
 
