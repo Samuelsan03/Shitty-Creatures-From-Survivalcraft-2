@@ -891,6 +891,7 @@ namespace Game
 			int swm500Index = GetBlockIndexByName("SWM500Block");
 			int swm500BulletIndex = GetBlockIndexByName("SWM500Bullet");
 			int stonePickaxeIndex = GetBlockIndexByName("StonePickaxeBlock");
+			int mediumFirstAidKitIndex = GetBlockIndexByName("MediumFirstAidKitBlock");
 
 			// Añadir ítems
 			GiveItemToPlayer(inventory, ironMacheteIndex, 1);
@@ -904,6 +905,7 @@ namespace Game
 
 			// 12 balas extra
 			GiveItemToPlayer(inventory, swm500BulletIndex, 12);
+			GiveItemToPlayer(inventory, mediumFirstAidKitIndex, 5);
 
 			return true; // Indica que el hook se ejecutó correctamente y se debe continuar
 		}
