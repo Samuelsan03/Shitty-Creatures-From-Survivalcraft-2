@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Reflection.Metadata;
 using System.Xml.Linq;
 using Engine;
@@ -22,8 +22,8 @@ namespace Game
 			this.m_inventoryLabel = this.Children.Find<LabelWidget>("InventoryLabel", true);
 
 			// Set translated texts - ¡CORREGIDO! Usando GetContentWidgets
-			this.m_titleLabel.Text = LanguageControl.GetContentWidgets("RepeatCrossbowWidget", "Title");
-			this.m_inventoryLabel.Text = LanguageControl.GetContentWidgets("RepeatCrossbowWidget", "Inventory");
+			this.m_titleLabel.Text = LanguageControl.GetContentWidgets("RepeatCrossbowWidget", "1");
+			this.m_inventoryLabel.Text = LanguageControl.GetContentWidgets("RepeatCrossbowWidget", "2");
 
 			for (int i = 0; i < this.m_inventoryGrid.RowsCount; i++)
 			{
@@ -62,15 +62,15 @@ namespace Game
 			}
 			if (draw < 15)
 			{
-				this.m_instructionsLabel.Text = LanguageControl.GetContentWidgets("RepeatCrossbowWidget", "InstructionsPull");
+				this.m_instructionsLabel.Text = LanguageControl.GetContentWidgets("RepeatCrossbowWidget", "3");
 			}
 			else if (arrowType == null)
 			{
-				this.m_instructionsLabel.Text = LanguageControl.GetContentWidgets("RepeatCrossbowWidget", "InstructionsInsert");
+				this.m_instructionsLabel.Text = LanguageControl.GetContentWidgets("RepeatCrossbowWidget", "4");
 			}
 			else
 			{
-				this.m_instructionsLabel.Text = string.Format(LanguageControl.GetContentWidgets("RepeatCrossbowWidget", "InstructionsArrows"), RepeatCrossbowBlock.GetLoadCount(slotValue).ToString());
+				this.m_instructionsLabel.Text = string.Format(LanguageControl.GetContentWidgets("RepeatCrossbowWidget", "5"), RepeatCrossbowBlock.GetLoadCount(slotValue).ToString());
 			}
 			if ((draw < 15 || arrowType == null) && base.Input.Tap != null && this.HitTestGlobal(base.Input.Tap.Value, null) == this.m_inventorySlotWidget)
 			{
