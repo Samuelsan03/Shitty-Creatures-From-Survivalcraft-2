@@ -1176,18 +1176,20 @@
       "InventoryLabel": "Inventario"
     },
     "FlameThrowerWidget": {
-      "Title": "Lanzallamas",
-      "Inventory": "Inventario",
-      "LoadAmmunition": "Carga una munición",
-      "SprayFire": "Prepárate para rociar fuego {0}/15",
-      "SprayPoison": "Prepárate para rociar veneno {0}/15"
-    },
+    "1": "Lanzallamas",
+    "2": "Inventario",
+    "3": "Cargar munición",
+    "4": "Prepararse para rociar fuego {0}/15",
+    "5": "Prepararse para rociar veneno {0}/15"
+  },
     "RepeatCrossbowWidget": {
-      "Title": "Ballesta Repetidora",
-      "Inventory": "Inventario",
-      "InstructionsPull": "Tensa para cargar",
-      "InstructionsInsert": "Inserta virotes",
-      "InstructionsArrows": "Virotes: {0}/8"
+      "1": "Ballesta repetidora",
+    "2": "Inventario",
+    "3": "Tira hacia atrás para cargar",
+    "4": "Inserta virotes",
+    "5": "Virotes: {0}/8",
+    "6": "¡Primero tira hacia atrás de la ballesta!",
+    "7": "¡Primero carga un virote!"
     }
   },
   "Messages": {
@@ -1218,10 +1220,7 @@
     "CollarTamedBossMessage": "Has domesticado al Jefe Infectado Volador, úsalo sabiamente para casos de emergencia!",
     "CollarTamedMessage": "¡Has domesticado a un Infectado hostil!\n ¡Ahora será tu guardián!",
     "CollarTamedFrozenTankMessage": "¡Has domesticado un Tank Congelado!\n¡Su fuerza bruta helada congelará y aplastará a tus enemigos!\n¡Un guardián congelado está ahora bajo tu mando!",
-    "CollarTamedFrozenTankGhostMessage": "¡Has domesticado un Tank Fantasma Congelado!\n¡Un terror espectral helado ahora te sirve desde el más allá!\n¡Su ira fantasmal congelada acechará a tus enemigos!",
-    "FirstPullCrossbow": "¡Primero tensa la ballesta!",
-    "FirstLoadArrow": "¡Primero carga una virote!",
-    "ArrowCount": "Virotes: {0}/8"
+    "CollarTamedFrozenTankGhostMessage": "¡Has domesticado un Tank Fantasma Congelado!\n¡Un terror espectral helado ahora te sirve desde el más allá!\n¡Su ira fantasmal congelada acechará a tus enemigos!"
   },
   "Usual": {
     "ok": "Aceptar",
