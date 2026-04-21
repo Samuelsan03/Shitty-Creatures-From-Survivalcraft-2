@@ -26,7 +26,7 @@ namespace Game
 		private double m_lastImpactSoundTime;
 
 		public FireVomitParticleSystem(SubsystemTerrain terrain, SubsystemBodies bodies, SubsystemSoundMaterials soundMaterials, SubsystemTime time, ComponentCreature owner)
-			: base(400)
+			: base(50)
 		{
 			m_subsystemTerrain = terrain;
 			m_subsystemBodies = bodies;
