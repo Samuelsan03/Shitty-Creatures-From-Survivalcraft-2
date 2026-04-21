@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Engine;
 using Game;
@@ -126,7 +126,7 @@ namespace Game
 										ComponentPlayer componentPlayer2 = componentMiner.ComponentPlayer;
 										if (componentPlayer2 != null)
 										{
-											componentPlayer2.ComponentGui.DisplaySmallMessage(LanguageControl.GetContentWidgets("FlameThrowerWidget", "LoadAmmunition"), Color.Orange, true, false);
+											componentPlayer2.ComponentGui.DisplaySmallMessage(LanguageControl.GetContentWidgets("FlameThrowerWidget", "3"), Color.Orange, true, false);
 										}
 										return true;
 									}
