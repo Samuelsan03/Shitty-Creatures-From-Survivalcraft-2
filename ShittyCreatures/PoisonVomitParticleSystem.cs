@@ -25,7 +25,7 @@ namespace Game
 
 		public PoisonVomitParticleSystem(SubsystemTerrain terrain, SubsystemBodies bodies, SubsystemSoundMaterials soundMaterials,
 			SubsystemTime time, SubsystemParticles particles, ComponentCreature creature)
-			: base(400)
+			: base(60)
 		{
 			m_subsystemTerrain = terrain;
 			m_subsystemBodies = bodies;
