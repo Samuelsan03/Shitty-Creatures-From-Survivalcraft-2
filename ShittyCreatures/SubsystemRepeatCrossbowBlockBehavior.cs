@@ -116,7 +116,7 @@ namespace Game
 							ComponentPlayer componentPlayer2 = componentMiner.ComponentPlayer;
 							if (componentPlayer2 != null)
 							{
-								componentPlayer2.ComponentGui.DisplaySmallMessage(LanguageControl.Get("Messages", "FirstPullCrossbow"), Color.Orange, true, false);
+								componentPlayer2.ComponentGui.DisplaySmallMessage(LanguageControl.GetContentWidgets("RepeatCrossbowWidget", "6"), Color.Orange, true, false);
 							}
 						}
 						else if (arrowType2 == null)
@@ -124,7 +124,7 @@ namespace Game
 							ComponentPlayer componentPlayer3 = componentMiner.ComponentPlayer;
 							if (componentPlayer3 != null)
 							{
-								componentPlayer3.ComponentGui.DisplaySmallMessage(LanguageControl.Get("Messages", "FirstLoadArrow"), Color.Orange, true, false);
+								componentPlayer3.ComponentGui.DisplaySmallMessage(LanguageControl.GetContentWidgets("RepeatCrossbowWidget", "7"), Color.Orange, true, false);
 							}
 						}
 						else
