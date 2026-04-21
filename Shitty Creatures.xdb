@@ -5019,8 +5019,8 @@
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="ef5aab35-5c25-4046-9a26-76f7fc4d625b"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:0.5;InfectedNormal2:0.5" Type="string" Guid="6913b26a-c98e-47e0-bb6a-f4e831616dca"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="RunAwayBehavior" Guid="5e16a8cb-497f-4ae8-82b3-0c44e2111b07" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
-<MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="f5c5f484-2a78-4f3d-a384-e5ce51ed3811" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
+<MemberComponentTemplate Name="RunAwayBehavior" Guid="5e16a8cb-497f-4ae8-82b3-0c44e2111b07" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
+<MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="f5c5f484-2a78-4f3d-a384-e5ce51ed3811" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
         <MemberComponentTemplate Name="CreatureSounds" Guid="8eb4229e-549a-4097-a0c0-42ca401c7d0a">
                 <Parameter Name="PainSound" Guid="204c18de-a45a-4afb-9e06-c39552f5b1c0" Value="Audio/Creatures/Pirata/Pain" Type="string"/>
                 <Parameter Name="IdleSound" Guid="b7306ca6-9160-441b-b3f9-128ffcfd33c2" Value="Audio/Creatures/Pirata/Idie" Type="string"/>
@@ -5788,6 +5788,7 @@
         <Parameter Name="FlySpeed" Guid="3159eb5c-bac2-4288-81a6-b87902c856c8" Value="0" Type="float"/>
         <Parameter Name="TurnSpeed" Guid="f036c68b-28b0-4c1e-92e4-0a4bb9fe6e7f" Value="5" Type="float"/>
         <Parameter Name="JumpSpeed" Guid="a9f4a5f8-50a2-495c-8418-d2e3c73ee1cf" Value="8.5" Type="float"/>
+        <Parameter Name="SwimSpeed" Guid="6c214413-cd0f-468c-b629-b6e9077508ef" Value="10.5" Type="float"/>
         <Parameter Name="AccelerationFactor" Guid="0d296c22-3277-4ede-845f-6aa47d9ab2df" Value="1.55" Type="float"/>
       </MemberComponentTemplate>
       <MemberComponentTemplate Name="AutoJump" Guid="87850c4c-5b80-4b01-a5c8-e2aaef3baf15" InheritanceParent="ef94c9db-75b0-4e0f-9971-f575ac88661b">
