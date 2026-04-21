@@ -1188,18 +1188,21 @@
       "InventoryLabel": "库存"
     },
     "FlameThrowerWidget": {
-      "Title": "火焰喷射器",
-      "Inventory": "库存",
-      "LoadAmmunition": "装填弹药",
-      "SprayFire": "准备喷射火焰 {0}/15",
-      "SprayPoison": "准备喷射毒药 {0}/15"
-    },
+    "1": "火焰喷射器",
+    "2": "物品栏",
+    "3": "装填弹药",
+    "4": "准备喷射火焰 {0}/15",
+    "5": "准备喷射毒液 {0}/15"
+  },
     "RepeatCrossbowWidget": {
-      "Title": "连发弩",
-      "Inventory": "库存",
-      "InstructionsPull": "上弦以装填",
-      "InstructionsInsert": "插入箭矢",
-      "InstructionsArrows": "箭矢: {0}/8"
+      "1": "连弩",
+    "2": "背包",
+    "3": "向后拉以装填",
+    "4": "装入弩箭",
+    "5": "弩箭：{0}/8",
+    "6": "请先拉开弩！",
+    "7": "请先装入一支弩箭！",
+    "8": "弩箭：{0}/8"
     }
   },
   "Messages": {
