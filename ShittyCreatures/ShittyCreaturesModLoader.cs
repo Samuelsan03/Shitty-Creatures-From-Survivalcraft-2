@@ -847,11 +847,20 @@ namespace Game
 
 		public override void ManageCameras(GameWidget gameWidget)
 		{
-			var gameInfo = gameWidget.PlayerData.SubsystemPlayers.Project.FindSubsystem<SubsystemGameInfo>(true);
-			bool isCreative = gameInfo.WorldSettings.GameMode == GameMode.Creative;
+			// Condición dinámica que se evalúa cada vez que se intenta activar
+			bool FreeCameraCondition(GameWidget gw)
+			{
+				if (!ShittyCreaturesSettingsManager.FreeCameraEnabled)
+					return false;
 
-			if (ShittyCreaturesSettingsManager.FreeCameraEnabled)
-				gameWidget.AddCamera(new FreeCamera(gameWidget), (gw) => !isCreative);
+				if (SettingsManager.GetCameraManageSetting("Game.FreeCamera", false) < 0)
+					return false;
+
+				var gameInfo = gw.PlayerData.SubsystemPlayers.Project.FindSubsystem<SubsystemGameInfo>(true);
+				return gameInfo.WorldSettings.GameMode != GameMode.Creative;
+			}
+
+			gameWidget.AddCamera(new FreeCamera(gameWidget), FreeCameraCondition);
 		}
 
 		// Variable estática para evitar entregar los ítems más de una vez en el mismo mundo
