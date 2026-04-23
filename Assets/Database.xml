@@ -351,10 +351,7 @@
             <MemberComponentTemplate Name="CraftingTable" Guid="0b234d05-36eb-4902-9571-6a884d707b85" InheritanceParent="48fdc8bb-8ca8-4d0f-af8d-25bfe9b56a19">
               <Parameter Name="SlotsCount" Guid="89328a33-979d-48a9-9b68-aac10a9404b2" Value="6" Type="int"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="PoisonInfected" Guid="37d9910d-2c4e-4e2e-b9bf-2ad2225773e3">
-    <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
-    <Parameter Name="IsOptional" Value="true" Type="bool"/>
-    <Parameter Name="LoadOrder" Value="60" Type="int"/>
+            <MemberComponentTemplate Name="PoisonInfected" Guid="37d9910d-2c4e-4e2e-b9bf-2ad2225773e3" InheritanceParent="c7f45092-a74d-429a-8e77-76b1ae5120a3">
     <Parameter Name="PoisonResistance" Value="75" Type="float"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="AutoJump" Guid="1381f0b2-ac0e-4bf8-bbde-daba5f821303" InheritanceParent="ef94c9db-75b0-4e0f-9971-f575ac88661b">
