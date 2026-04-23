@@ -23,6 +23,14 @@ namespace Game
 
 		public override void Update(float dt)
 		{
+			// Si la cámara fue desactivada, volver a primera persona inmediatamente
+			if (ShittyCreaturesSettingsManager.FreeCameraEnabled == false ||
+				SettingsManager.GetCameraManageSetting("Game.FreeCamera", false) < 0 ||
+				GameWidget.PlayerData.SubsystemPlayers.Project.FindSubsystem<SubsystemGameInfo>(true).WorldSettings.GameMode == GameMode.Creative)
+			{
+				GameWidget.ActiveCamera = GameWidget.FindCamera<FppCamera>(true);
+				return;
+			}
 			dt = MathUtils.Min(dt, 0.1f);
 
 			Vector3 move = Vector3.Zero;
