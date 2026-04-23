@@ -890,14 +890,14 @@ namespace Game
 			int nuclearCoinIndex = GetBlockIndexByName("NuclearCoinBlock");
 			int swm500Index = GetBlockIndexByName("SWM500Block");
 			int swm500BulletIndex = GetBlockIndexByName("SWM500Bullet");
-			int stonePickaxeIndex = GetBlockIndexByName("StonePickaxeBlock");
+			int StoneAxeBlockIndex = GetBlockIndexByName("StoneAxeBlock");
 			int mediumFirstAidKitIndex = GetBlockIndexByName("MediumFirstAidKitBlock");
 
 			// Añadir ítems
 			GiveItemToPlayer(inventory, ironMacheteIndex, 1);
 			GiveItemToPlayer(inventory, boiledWaterBucketIndex, 1);
 			GiveItemToPlayer(inventory, nuclearCoinIndex, 100);
-			GiveItemToPlayer(inventory, stonePickaxeIndex, 1);
+			GiveItemToPlayer(inventory, StoneAxeBlockIndex, 1);
 
 			// Desert Eagle con 8 balas cargadas
 			int swm500Value = Terrain.MakeBlockValue(swm500Index, 0, SWM500Block.SetBulletNum(8));
