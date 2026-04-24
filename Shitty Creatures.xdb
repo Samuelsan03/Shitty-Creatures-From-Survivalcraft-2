@@ -5754,6 +5754,11 @@
         <Parameter Name="MaxHelpChaseTime" Value="30" Type="float" Guid="4a73aa08-a94f-4b4c-ac18-5d3cd208423f"/>
         <Parameter Name="AvoidAttackingSameHerd" Value="true" Type="bool" Guid="ae47ce4b-7023-4212-acff-ac8506426410"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Healing" Guid="cdd29b21-a486-48a7-a838-d0bd52469d3a" InheritanceParent="70bc630d-3fd9-4ced-ae74-27ac1da95fba">
+  <Parameter Name="SelfHealing" Guid="e95d8339-c427-4941-8240-4584353d553b" Value="true" Type="bool"/>
+  <Parameter Name="HealCreatures" Guid="81b12897-5cd3-4a9f-a4e5-e0a35911a5ab" Value="true" Type="bool"/>
+  <Parameter Name="Probability" Guid="abbee3b2-f50b-46d8-9bdd-74c45bb97b4d" Value="1" Type="float"/>
+</MemberComponentTemplate>
         <MemberComponentTemplate Name="DeathSpawner" Guid="5c9406f3-1d80-457b-abba-922f0b2909f5" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="3881f9c3-9687-4ff0-a184-9eb25362f009"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:0.5;GhostNormal:0.01" Type="string" Guid="a288b067-dcd0-4ed5-8586-87cafd7e1f19"/>
