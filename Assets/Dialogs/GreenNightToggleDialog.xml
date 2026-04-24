@@ -1,6 +1,6 @@
 <CanvasWidget xmlns="runtime-namespace:Game" Size="700, 320" HorizontalAlignment="Center" VerticalAlignment="Center" ClampToBounds="true">
-  <!-- Fondo con estilo DialogArea (referencia externa) -->
-  <BevelledRectangleWidget Style="{Styles/DialogArea}" />
+  <!-- Fondo semitransparente (alpha=200) para ver el gameplay detrás -->
+  <RectangleWidget FillColor="0, 0, 0, 255" OutlineColor="128, 128, 128, 255" OutlineThickness="2" />
   
   <StackPanelWidget Direction="Vertical" HorizontalAlignment="Center" VerticalAlignment="Near" Margin="15, 15">
     <!-- Título -->
