@@ -25,7 +25,7 @@ namespace Game
 		// Token: 0x06001278 RID: 4728 RVA: 0x0007F56B File Offset: 0x0007D76B
 		public NewShapeshiftParticleSystem() : base(40)
 		{
-			base.Texture = ContentManager.Get<Texture2D>("Textures/Gui/NewShapeshiftParticle");
+			base.Texture = ContentManager.Get<Texture2D>("Textures/ShapeshiftParticle");
 			base.TextureSlotsCount = 3;
 		}
 
@@ -63,7 +63,7 @@ namespace Game
 						particle.Position.Y = this.m_random.Float(this.BoundingBox.Min.Y, this.BoundingBox.Max.Y);
 						particle.Position.Z = this.m_random.Float(this.BoundingBox.Min.Z, this.BoundingBox.Max.Z);
 						particle.Velocity = new Vector3(0f, this.m_random.Float(0.5f, 1.5f), 0f);
-						particle.Color = Color.White;
+						particle.Color = new Color (85,255,0);
 						particle.Size = new Vector2(0.4f);
 						particle.Time = 0f;
 						particle.Duration = this.m_random.Float(0.75f, 1.5f);
