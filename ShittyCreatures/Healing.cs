@@ -16,6 +16,9 @@ namespace Game
 		public bool HealCreatures { get; set; } = false;
 		public float Probability { get; set; } = 0.5f;
 
+		// Radio de detección de aliados heridos (en bloques)
+		public float HealRadius { get; set; } = 50f;   // ← campo configurable
+
 		SubsystemTime m_subsystemTime;
 		SubsystemParticles m_subsystemParticles;
 		SubsystemAudio m_subsystemAudio;
@@ -23,8 +26,9 @@ namespace Game
 		ComponentHealth m_componentHealth;
 		ComponentPathfinding m_componentPathfinding;
 		ComponentCreatureModel m_componentCreatureModel;
-		ComponentCreatureSounds m_componentCreatureSounds;   // ¡restaurado!
+		ComponentCreatureSounds m_componentCreatureSounds;
 		ComponentNewHerdBehavior m_componentHerd;
+		ComponentNewChaseBehavior m_componentChase;
 
 		Random m_random = new Random();
 		StateMachine m_stateMachine = new StateMachine();
@@ -41,7 +45,7 @@ namespace Game
 		List<ComponentCreature> m_healTargets = new List<ComponentCreature>();
 		bool m_isHealingAllies;
 		double m_allyHealStartTime;
-		HealingParticleSystem m_healerChargeParticles;   // partículas en el sanador durante la carga
+		HealingParticleSystem m_healerChargeParticles;
 		List<HealingParticleSystem> m_allyHealParticles = new List<HealingParticleSystem>();
 		bool m_alliesHealApplied;
 
@@ -54,12 +58,16 @@ namespace Game
 			m_componentHealth = Entity.FindComponent<ComponentHealth>(true);
 			m_componentPathfinding = Entity.FindComponent<ComponentPathfinding>(true);
 			m_componentCreatureModel = Entity.FindComponent<ComponentCreatureModel>(true);
-			m_componentCreatureSounds = Entity.FindComponent<ComponentCreatureSounds>(true);   // ← cargado
+			m_componentCreatureSounds = Entity.FindComponent<ComponentCreatureSounds>(true);
 			m_componentHerd = Entity.FindComponent<ComponentNewHerdBehavior>();
+			m_componentChase = Entity.FindComponent<ComponentNewChaseBehavior>();
 
 			SelfHealing = valuesDictionary.GetValue<bool>("SelfHealing", false);
 			HealCreatures = valuesDictionary.GetValue<bool>("HealCreatures", false);
 			Probability = valuesDictionary.GetValue<float>("Probability", 0.5f);
+
+			// HealRadius NO se carga del XML, queda con su valor por defecto (10)
+			// Si otro componente necesita cambiarlo, puede hacerlo en código.
 
 			SetupStateMachine();
 			m_stateMachine.TransitionTo("Idle");
@@ -101,7 +109,6 @@ namespace Game
 				m_subsystemParticles.AddParticleSystem(m_selfHealParticles, false);
 				m_componentPathfinding.Stop();
 				m_componentCreatureModel.AimHandAngleOrder = 3.2f;
-				// Ambos sonidos: primero idle, luego mágico
 				m_componentCreatureSounds.PlayIdleSound(false);
 				m_subsystemAudio.PlaySound("Audio/Shapeshift", 1f, 0f, m_componentCreature.ComponentBody.Position, 3f, true);
 			}, () =>
@@ -128,6 +135,9 @@ namespace Game
 			// Curación a TODOS los aliados
 			m_stateMachine.AddState("HealingAllies", () =>
 			{
+				// Suprimir persecución mientras se cura
+				if (m_componentChase != null) m_componentChase.Suppressed = true;
+
 				m_isHealingAllies = true;
 				m_allyHealStartTime = m_subsystemTime.GameTime;
 
@@ -172,7 +182,7 @@ namespace Game
 				m_healerChargeParticles.BoundingBox = m_componentCreature.ComponentBody.BoundingBox;
 				m_componentCreatureModel.AimHandAngleOrder = 3.2f;
 
-				// *** ACTUALIZAR PARTÍCULAS DE ALIADOS ***
+				// Actualizar partículas de aliados
 				for (int i = 0; i < m_allyHealParticles.Count; i++)
 				{
 					if (m_allyHealParticles[i] != null && i < m_allyHealBodies.Count)
@@ -208,6 +218,9 @@ namespace Game
 				m_allyHealParticles.Clear();
 				m_healTargets.Clear();
 				m_isHealingAllies = false;
+
+				// Restaurar comportamiento normal (persecución, etc.)
+				if (m_componentChase != null) m_componentChase.Suppressed = false;
 			}
 		}
 
@@ -223,12 +236,13 @@ namespace Game
 				return;
 
 			Vector3 pos = m_componentCreature.ComponentBody.Position;
+			float radiusSq = HealRadius * HealRadius;   // ← usa el campo configurable
 			foreach (ComponentCreature creature in Project.FindSubsystem<SubsystemCreatureSpawn>(true).Creatures)
 			{
 				if (creature == m_componentCreature || creature.ComponentHealth.Health <= 0f || creature.ComponentHealth.Health >= 0.2f)
 					continue;
 
-				if (Vector3.DistanceSquared(pos, creature.ComponentBody.Position) > 100f) // radio 10
+				if (Vector3.DistanceSquared(pos, creature.ComponentBody.Position) > radiusSq)
 					continue;
 
 				ComponentNewHerdBehavior herd = creature.Entity.FindComponent<ComponentNewHerdBehavior>();
