@@ -11,7 +11,7 @@ namespace Game
 		public UpdateOrder UpdateOrder => UpdateOrder.Default;
 		public override float ImportanceLevel => m_importanceLevel;
 
-		// ===== Parámetros (solo 3 ahora) =====
+		// ===== Parámetros =====
 		public int CloneCount = 5;
 		public bool CanClone = false;
 		public float CloningProbability = 0.3f;
@@ -20,6 +20,15 @@ namespace Game
 		private const int RequiredAttackers = 3;
 		private const float AttackerMemory = 10f;
 		private const float PreparationTime = 2.5f;
+
+		// ===== Lista de jefes (template names) =====
+		private static readonly HashSet<string> BossTemplateNames = new HashSet<string>
+		{
+			"Tank1", "Tank2", "Tank3",
+			"TankGhost1", "TankGhost2", "TankGhost3",
+			"MachineGunInfected", "FlyingInfectedBoss",
+			"FrozenTank", "FrozenTankGhost"
+		};
 
 		// ===== Campos internos =====
 		private SubsystemTime m_subsystemTime;
@@ -47,6 +56,18 @@ namespace Game
 		private List<Entity> m_activeClones = new List<Entity>();
 
 		private Dictionary<ComponentCreature, double> m_recentAttackers = new Dictionary<ComponentCreature, double>();
+
+		// ===== Propiedad auxiliar: comprueba si el objetivo es un jefe =====
+		private bool IsTargetBoss
+		{
+			get
+			{
+				if (m_componentChase == null || m_componentChase.Target == null)
+					return false;
+				string targetTemplate = m_componentChase.Target.Entity.ValuesDictionary.DatabaseObject.Name;
+				return BossTemplateNames.Contains(targetTemplate);
+			}
+		}
 
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
@@ -126,9 +147,15 @@ namespace Game
 
 		private bool IsCloningConditionMet()
 		{
+			// Caso 2: el objetivo es un jefe -> clonación de emergencia
+			if (IsTargetBoss)
+				return true;
+
+			// Caso 1: muchos atacantes (>3)
 			if (m_recentAttackers.Count >= RequiredAttackers)
 				return true;
 
+			// Caso 1b: manada en combate
 			if (m_componentHerd != null && !string.IsNullOrEmpty(m_componentHerd.HerdName))
 			{
 				int herdCombatCount = 0;
@@ -154,10 +181,9 @@ namespace Game
 		{
 			m_stateMachine.AddState("Idle", null, () =>
 			{
-				// Verificar que no esté atascado antes de permitir la clonación
 				if (CanClone && m_componentChase != null && m_componentChase.Target != null &&
 					!m_hasClonedDuringChase && IsCloningConditionMet() &&
-					!m_componentPathfinding.IsStuck &&   // <-- No clonar si está atascado
+					!m_componentPathfinding.IsStuck &&
 					m_random.Float(0f, 1f) < CloningProbability * m_dt)
 				{
 					m_target = m_componentChase.Target;
@@ -181,7 +207,6 @@ namespace Game
 				m_particleSystem.Stopped = false;
 			}, () =>
 			{
-				// Si el objetivo desapareció o estamos atascados, cancelar
 				if (m_target == null || m_target.ComponentHealth.Health <= 0f ||
 					m_componentPathfinding.IsStuck)
 				{
