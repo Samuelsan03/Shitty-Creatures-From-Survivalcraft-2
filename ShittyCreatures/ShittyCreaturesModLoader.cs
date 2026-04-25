@@ -241,7 +241,7 @@ namespace Game
 				logo.Margin = new Vector2(0f, 5f);
 			}
 
-			// Etiqueta de versión del mod
+			//Etiqueta
 			StackPanelWidget topArea = mainMenuScreen.Children.Find<StackPanelWidget>("TopArea", true);
 			LabelWidget versionLabel = mainMenuScreen.Children.Find<LabelWidget>("Version", true);
 			if (topArea != null && versionLabel != null)
@@ -249,8 +249,8 @@ namespace Game
 				LabelWidget modVersionLabel = new LabelWidget
 				{
 					Name = "ShittyCreaturesVersion",
-					FontScale = versionLabel.FontScale,  // ← Toma el tamaño de la etiqueta original
-					HorizontalAlignment = WidgetAlignment.Center,
+					FontScale = versionLabel.FontScale,
+					HorizontalAlignment = WidgetAlignment.Center,   // ← aquí se centra
 					Color = new Color(215, 0, 0),
 					DropShadow = true,
 					Text = "Shitty Creatures v1.0.6"
