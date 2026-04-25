@@ -879,30 +879,17 @@ namespace Game
 			gameWidget.AddCamera(new FreeCamera(gameWidget), FreeCameraCondition);
 		}
 
-		// Variable estática para evitar entregar los ítems más de una vez en el mismo mundo
-		private static bool s_initialItemsGiven = false;
-
 		public override bool OnPlayerSpawned(PlayerData.SpawnMode spawnMode, ComponentPlayer componentPlayer, Vector3 spawnPosition)
 		{
-			// Solo entregar en el primer spawn del mundo (no en respawns)
-			if (spawnMode != PlayerData.SpawnMode.InitialIntro && spawnMode != PlayerData.SpawnMode.InitialNoIntro)
-				return true;
-
-			// Evitar múltiples entregas en el mismo mundo
-			if (s_initialItemsGiven)
+			// Solo entregar en la primera aparición del mundo (no en respawns)
+			// SpawnsCount == 1 indica el primer spawn real; 0 es antes de spawnear.
+			if (componentPlayer.PlayerData.SpawnsCount != 1)
 				return true;
 
 			// Obtener el modo de juego actual
 			SubsystemGameInfo gameInfo = componentPlayer.Project.FindSubsystem<SubsystemGameInfo>(true);
 			if (gameInfo.WorldSettings.GameMode == GameMode.Creative)
-			{
-				// No entregar ítems en Creativo, pero marcamos como dado para no repetir si luego se cambia (opcional)
-				s_initialItemsGiven = true;
-				return true;
-			}
-
-			// Marcar como entregado
-			s_initialItemsGiven = true;
+				return true; // No entregar ítems en Creativo
 
 			// Obtener inventario del jugador
 			IInventory inventory = componentPlayer.ComponentMiner.Inventory;
@@ -915,14 +902,14 @@ namespace Game
 			int nuclearCoinIndex = GetBlockIndexByName("NuclearCoinBlock");
 			int swm500Index = GetBlockIndexByName("SWM500Block");
 			int swm500BulletIndex = GetBlockIndexByName("SWM500Bullet");
-			int StoneAxeBlockIndex = GetBlockIndexByName("StoneAxeBlock");
+			int stoneAxeBlockIndex = GetBlockIndexByName("StoneAxeBlock");
 			int mediumFirstAidKitIndex = GetBlockIndexByName("MediumFirstAidKitBlock");
 
 			// Añadir ítems
 			GiveItemToPlayer(inventory, ironMacheteIndex, 1);
 			GiveItemToPlayer(inventory, boiledWaterBucketIndex, 1);
 			GiveItemToPlayer(inventory, nuclearCoinIndex, 100);
-			GiveItemToPlayer(inventory, StoneAxeBlockIndex, 1);
+			GiveItemToPlayer(inventory, stoneAxeBlockIndex, 1);
 
 			// Desert Eagle con 8 balas cargadas
 			int swm500Value = Terrain.MakeBlockValue(swm500Index, 0, SWM500Block.SetBulletNum(8));
@@ -932,7 +919,7 @@ namespace Game
 			GiveItemToPlayer(inventory, swm500BulletIndex, 12);
 			GiveItemToPlayer(inventory, mediumFirstAidKitIndex, 5);
 
-			return true; // Indica que el hook se ejecutó correctamente y se debe continuar
+			return true;
 		}
 
 		// Método auxiliar para obtener índice de bloque por nombre de clase
