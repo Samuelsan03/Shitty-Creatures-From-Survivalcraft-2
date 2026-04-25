@@ -28,6 +28,7 @@ namespace Game
 		ComponentCreatureSounds m_componentCreatureSounds;
 		ComponentNewHerdBehavior m_componentHerd;
 		ComponentNewChaseBehavior m_componentChase;
+		ComponentLocomotion m_componentLocomotion;
 
 		Random m_random = new Random();
 		StateMachine m_stateMachine = new StateMachine();
@@ -58,6 +59,7 @@ namespace Game
 			m_componentCreatureSounds = Entity.FindComponent<ComponentCreatureSounds>(true);
 			m_componentHerd = Entity.FindComponent<ComponentNewHerdBehavior>();
 			m_componentChase = Entity.FindComponent<ComponentNewChaseBehavior>();
+			m_componentLocomotion = Entity.FindComponent<ComponentLocomotion>();
 
 			SelfHealing = valuesDictionary.GetValue<bool>("SelfHealing", false);
 			HealCreatures = valuesDictionary.GetValue<bool>("HealCreatures", false);
@@ -102,6 +104,19 @@ namespace Game
 				m_selfHealParticles = new HealingParticleSystem();
 				m_subsystemParticles.AddParticleSystem(m_selfHealParticles, false);
 				m_componentPathfinding.Stop();
+				if (m_componentLocomotion != null)
+				{
+					m_componentLocomotion.WalkOrder = null;
+					m_componentLocomotion.FlyOrder = null;
+					m_componentLocomotion.SwimOrder = null;
+					m_componentLocomotion.JumpOrder = 0f;
+					m_componentLocomotion.TurnOrder = Vector2.Zero;
+					m_componentLocomotion.LookOrder = Vector2.Zero;
+				}
+				if (m_componentHerd != null)
+				{
+					m_componentHerd.IsActive = false;
+				}
 				m_componentCreatureModel.AimHandAngleOrder = 3.2f;
 				m_componentCreatureSounds.PlayIdleSound(false);
 				m_subsystemAudio.PlaySound("Audio/Shapeshift", 1f, 0f, m_componentCreature.ComponentBody.Position, 3f, true);
@@ -114,7 +129,7 @@ namespace Game
 				if (elapsed >= 1.5)
 				{
 					if (CureDiseases)
-						CureCreatureDiseases(m_componentCreature);
+						CureCreatureDiseases(m_componentCreature, null);
 
 					m_componentHealth.Health = 1f;
 					m_componentCreatureModel.AimHandAngleOrder = 0f;
@@ -127,6 +142,10 @@ namespace Game
 				if (m_selfHealParticles != null)
 					m_selfHealParticles.Stopped = true;
 				m_isSelfHealing = false;
+				if (m_componentHerd != null)
+				{
+					m_componentHerd.IsActive = true;
+				}
 			});
 
 			m_stateMachine.AddState("HealingAllies", () =>
@@ -140,8 +159,20 @@ namespace Game
 				m_subsystemParticles.AddParticleSystem(m_healerChargeParticles, false);
 
 				m_componentPathfinding.Stop();
-				if (m_healTargets.Count > 0)
-					m_componentCreatureModel.LookAtOrder = m_healTargets[0].ComponentCreatureModel.EyePosition;
+				if (m_componentLocomotion != null)
+				{
+					m_componentLocomotion.WalkOrder = null;
+					m_componentLocomotion.FlyOrder = null;
+					m_componentLocomotion.SwimOrder = null;
+					m_componentLocomotion.JumpOrder = 0f;
+					m_componentLocomotion.TurnOrder = Vector2.Zero;
+					m_componentLocomotion.LookOrder = Vector2.Zero;
+				}
+				if (m_componentHerd != null)
+				{
+					m_componentHerd.IsActive = false;
+				}
+
 				m_componentCreatureModel.AimHandAngleOrder = 3.2f;
 
 				m_componentCreatureSounds.PlayIdleSound(false);
@@ -188,11 +219,21 @@ namespace Game
 						if (ally != null && ally.ComponentHealth.Health > 0f)
 						{
 							if (CureDiseases)
-								CureCreatureDiseases(ally);
+								CureCreatureDiseases(ally, m_componentCreature);
 
-							// Restaurar salud solo si no está ya llena
 							if (ally.ComponentHealth.Health < 1f)
 								ally.ComponentHealth.Health = 1f;
+
+							if (ally is ComponentPlayer player)
+							{
+								string healMsg = LanguageControl.Get("Healing", "0");
+								if (!string.IsNullOrEmpty(healMsg))
+								{
+									healMsg = string.Format(healMsg, m_componentCreature.DisplayName);
+									player.ComponentGui.DisplaySmallMessage(healMsg, new Color(50, 200, 50), false, false);
+									m_subsystemAudio.PlaySound("Audio/UI/success", 1f, 0f, 0f, 0f);
+								}
+							}
 						}
 					}
 
@@ -220,6 +261,10 @@ namespace Game
 				m_healTargets.Clear();
 				m_isHealingAllies = false;
 				if (m_componentChase != null) m_componentChase.Suppressed = false;
+				if (m_componentHerd != null)
+				{
+					m_componentHerd.IsActive = true;
+				}
 			}
 		}
 
@@ -266,25 +311,67 @@ namespace Game
 			}
 		}
 
-		void CureCreatureDiseases(ComponentCreature creature)
+		void CureCreatureDiseases(ComponentCreature creature, ComponentCreature healer)
 		{
 			if (creature == null) return;
 
+			bool hadFlu = false;
+			bool hadPoison = false;
+
 			var fluInfected = creature.Entity.FindComponent<ComponentFluInfected>();
 			if (fluInfected != null && fluInfected.IsInfected)
+			{
 				fluInfected.m_fluDuration = 0f;
+				hadFlu = true;
+			}
 
 			var poisonInfected = creature.Entity.FindComponent<ComponentPoisonInfected>();
 			if (poisonInfected != null && poisonInfected.IsInfected)
+			{
 				poisonInfected.m_InfectDuration = 0f;
+				hadPoison = true;
+			}
 
 			var playerFlu = creature.Entity.FindComponent<ComponentFlu>();
 			if (playerFlu != null && playerFlu.HasFlu)
+			{
 				playerFlu.m_fluDuration = 0f;
+				hadFlu = true;
+				var vitalStats = creature.Entity.FindComponent<ComponentVitalStats>();
+				if (vitalStats != null)
+					vitalStats.Temperature = 12f;
+			}
 
 			var playerSickness = creature.Entity.FindComponent<ComponentSickness>();
 			if (playerSickness != null && playerSickness.IsSick)
+			{
 				playerSickness.m_sicknessDuration = 0f;
+				hadPoison = true;
+			}
+
+			if (healer != null && creature is ComponentPlayer player)
+			{
+				if (hadFlu)
+				{
+					string msg = LanguageControl.Get("Healing", "1");
+					if (!string.IsNullOrEmpty(msg))
+					{
+						msg = string.Format(msg, healer.DisplayName);
+						player.ComponentGui.DisplaySmallMessage(msg, new Color(100, 150, 255), false, false);
+						m_subsystemAudio.PlaySound("Audio/UI/success", 1f, 0f, 0f, 0f);
+					}
+				}
+				if (hadPoison)
+				{
+					string msg = LanguageControl.Get("Healing", "2");
+					if (!string.IsNullOrEmpty(msg))
+					{
+						msg = string.Format(msg, healer.DisplayName);
+						player.ComponentGui.DisplaySmallMessage(msg, new Color(200, 100, 255), false, false);
+						m_subsystemAudio.PlaySound("Audio/UI/success", 1f, 0f, 0f, 0f);
+					}
+				}
+			}
 		}
 	}
 }
