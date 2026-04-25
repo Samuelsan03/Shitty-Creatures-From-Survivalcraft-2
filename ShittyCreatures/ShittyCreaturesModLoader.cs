@@ -390,12 +390,12 @@ namespace Game
 		// Se respeta el orden de prioridad manual: primero Hireable (alta), luego el resto.
 		// ---------------------------------------------------------------------------------
 		public override void OnPlayerInputInteract(
-			ComponentPlayer player,
-			ref bool playerOperated,
-			ref double timeIntervalLastActionTime,
-			ref int priorityUse,
-			ref int priorityInteract,
-			ref int priorityPlace)
+	ComponentPlayer player,
+	ref bool playerOperated,
+	ref double timeIntervalLastActionTime,
+	ref int priorityUse,
+	ref int priorityInteract,
+	ref int priorityPlace)
 		{
 			if (playerOperated) return;
 
@@ -440,8 +440,18 @@ namespace Game
 
 			// Verificar si el objetivo está muerto
 			var health = target.FindComponent<ComponentHealth>();
-			if (health != null && (health.Health <= 0f || health.DeathTime.HasValue))
+			if (health != null && (health.Health <= 0f || health.DeathTime.HasValue)) return;
+
+			// --- VehicleInventory (criaturas montables) ---
+			var vehicleInv = target.FindComponent<ComponentVehicleInventory>();
+			if (vehicleInv != null)
+			{
+				vehicleInv.OpenInventory(player);
+				AudioManager.PlaySound("Audio/UI/ButtonClick", 1f, 0f, 0f);
+				player.ComponentMiner.Poke(false);
+				playerOperated = true;
 				return;
+			}
 
 			// 2. HireableNPC (prioridad alta simulada)
 			var hireable = target.FindComponent<ComponentHireableNPC>();
@@ -465,6 +475,8 @@ namespace Game
 				{
 					player.ComponentGui.ModalPanelWidget = new GunsTradeWidget(
 						player.ComponentMiner.Inventory, trader, player);
+					AudioManager.PlaySound("Audio/UI/ButtonClick", 1f, 0f, 0f);
+					player.ComponentMiner.Poke(false);
 					playerOperated = true;
 					return;
 				}
@@ -472,6 +484,8 @@ namespace Game
 				{
 					player.ComponentGui.ModalPanelWidget = new PirateTradeWidget(
 						player.ComponentMiner.Inventory, trader, player);
+					AudioManager.PlaySound("Audio/UI/ButtonClick", 1f, 0f, 0f);
+					player.ComponentMiner.Poke(false);
 					playerOperated = true;
 					return;
 				}
@@ -484,6 +498,8 @@ namespace Game
 				// Si tiene hireable y no está contratado, ya fue manejado arriba.
 				// Si está contratado o no tiene hireable, abrimos inventario.
 				creatureInv.OpenInventory(player);
+				AudioManager.PlaySound("Audio/UI/ButtonClick", 1f, 0f, 0f);
+				player.ComponentMiner.Poke(false);
 				playerOperated = true;
 			}
 		}
