@@ -1,4 +1,9 @@
 {
+  "Healing": {
+    "0": "Has sido curado por {0}.",
+    "1": "{0} te ha curado de la gripe.",
+    "2": "{0} te ha curado del veneno."
+  },
   "CameraManage": {
   "Game.FreeCamera": "Cámara libre"
 },
@@ -1124,6 +1129,10 @@
     }
 },
   "ContentWidgets": {
+    "VehicleInventoryWidget": {
+  "1": "Vehículo",
+  "2": "Inventario"
+},
     "ShittyCreaturesReleasesScreen": {
     "0": "Shitty Creatures - Historial de versiones"
   },
