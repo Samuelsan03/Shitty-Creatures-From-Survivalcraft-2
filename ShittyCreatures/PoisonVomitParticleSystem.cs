@@ -105,6 +105,15 @@ namespace Game
 
 							if (terrainHit != null && terrainHit.Value.Distance <= distance + radius)
 							{
+								// Romper bloques frágiles (cristales) si corresponde
+								int hitValue = terrainHit.Value.Value;
+								int hitContents = Terrain.ExtractContents(hitValue);
+								if (hitContents == GlassBlock.Index || hitContents == FramedGlassBlock.Index ||
+									hitContents == WindowBlock.Index || hitContents == LightbulbBlock.Index)
+								{
+									TryBreakFragileBlock(terrainHit.Value);
+								}
+
 								m_subsystemSoundMaterials.PlayImpactSound(terrainHit.Value.Value, terrainHit.Value.HitPoint(), 0.5f);
 								particle.IsActive = false;
 								continue;
@@ -156,6 +165,13 @@ namespace Game
 			}
 
 			return IsStopped && !anyActive;
+		}
+
+		private void TryBreakFragileBlock(TerrainRaycastResult hit)
+		{
+			// Romper bloques frágiles (cristales): GlassBlock, FramedGlassBlock, WindowBlock, LightbulbBlock
+			// Parámetros: toolLevel=0 (manos desnudas), newValue=0 (aire), noDrop=false, noParticleSystem=false
+			m_subsystemTerrain.DestroyCell(0, hit.CellFace.X, hit.CellFace.Y, hit.CellFace.Z, 0, false, false, null);
 		}
 
 		private void ApplyPoisonToBody(ComponentBody body)
