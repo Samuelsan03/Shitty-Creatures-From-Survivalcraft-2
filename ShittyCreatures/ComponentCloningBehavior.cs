@@ -20,8 +20,10 @@ namespace Game
 		private const int RequiredAttackers = 3;
 		private const float AttackerMemory = 10f;
 		private const float PreparationTime = 2.5f;
+		private const float CloneDestructionDelay = 1.5f;      // Tiempo hasta eliminar clones
+		private const float ParticleStopDelay = 0.8f;          // Detener partículas un poco antes
 
-		// ===== Lista de jefes (template names) =====
+		// ===== Lista de jefes =====
 		private static readonly HashSet<string> BossTemplateNames = new HashSet<string>
 		{
 			"Tank1", "Tank2", "Tank3",
@@ -55,9 +57,13 @@ namespace Game
 		private bool m_hasClonedDuringChase = false;
 		private List<Entity> m_activeClones = new List<Entity>();
 
+		// ===== Destrucción temporizada =====
+		private bool m_destroyingClones = false;
+		private double m_destructionStartTime;
+		private List<CloningParticleSystem> m_destructionParticles = new List<CloningParticleSystem>();
+
 		private Dictionary<ComponentCreature, double> m_recentAttackers = new Dictionary<ComponentCreature, double>();
 
-		// ===== Propiedad auxiliar: comprueba si el objetivo es un jefe =====
 		private bool IsTargetBoss
 		{
 			get
@@ -105,13 +111,41 @@ namespace Game
 			if (!CanClone)
 				return;
 
-			// Si la persecución ha terminado, reseteamos el flag y destruimos clones
+			// --- Limpieza de clones que murieron o fueron eliminados por otras causas ---
+			m_activeClones.RemoveAll(e => e == null || !e.IsAddedToProject);
+
+			// --- Destrucción temporizada ---
+			if (m_destroyingClones)
+			{
+				double elapsed = m_subsystemTime.GameTime - m_destructionStartTime;
+
+				// Detener las partículas para que no se congelen
+				if (elapsed >= ParticleStopDelay && m_destructionParticles.Count > 0)
+				{
+					foreach (var ps in m_destructionParticles)
+						ps.Stopped = true;
+					m_destructionParticles.Clear();
+				}
+
+				// Eliminar definitivamente los clones
+				if (elapsed >= CloneDestructionDelay)
+				{
+					foreach (Entity entity in m_activeClones)
+					{
+						if (entity != null && entity.IsAddedToProject)
+							Project.RemoveEntity(entity, true);
+					}
+					m_activeClones.Clear();
+					m_destroyingClones = false;
+				}
+			}
+
+			// Si la persecución terminó y hay clones activos, iniciar destrucción
 			if (m_componentChase.Target == null)
 			{
-				if (m_hasClonedDuringChase)
+				if (m_hasClonedDuringChase && !m_destroyingClones)
 				{
-					m_hasClonedDuringChase = false;
-					DestroyAllClones();
+					StartCloneDestruction();
 				}
 			}
 
@@ -145,17 +179,47 @@ namespace Game
 			}
 		}
 
+		private void StartCloneDestruction()
+		{
+			m_destroyingClones = true;
+			m_hasClonedDuringChase = false;
+			m_destructionStartTime = m_subsystemTime.GameTime;
+			m_destructionParticles.Clear();
+
+			foreach (Entity cloneEntity in m_activeClones)
+			{
+				if (cloneEntity == null || !cloneEntity.IsAddedToProject)
+					continue;
+
+				// 1. Iniciar despawn del clon (genera el fade‑out automático)
+				var cloneSpawn = cloneEntity.FindComponent<ComponentSpawn>();
+				if (cloneSpawn != null && !cloneSpawn.IsDespawning)
+				{
+					cloneSpawn.DespawnDuration = CloneDestructionDelay;
+					cloneSpawn.Despawn();
+				}
+
+				// 2. Añadir partículas de clonación
+				ComponentBody cloneBody = cloneEntity.FindComponent<ComponentBody>(true);
+				if (cloneBody != null)
+				{
+					var particleSystem = new CloningParticleSystem();
+					particleSystem.BoundingBox = cloneBody.BoundingBox;
+					particleSystem.Stopped = false;
+					m_subsystemParticles.AddParticleSystem(particleSystem, false);
+					m_destructionParticles.Add(particleSystem);
+				}
+			}
+		}
+
 		private bool IsCloningConditionMet()
 		{
-			// Caso 2: el objetivo es un jefe -> clonación de emergencia
 			if (IsTargetBoss)
 				return true;
 
-			// Caso 1: muchos atacantes (>3)
 			if (m_recentAttackers.Count >= RequiredAttackers)
 				return true;
 
-			// Caso 1b: manada en combate
 			if (m_componentHerd != null && !string.IsNullOrEmpty(m_componentHerd.HerdName))
 			{
 				int herdCombatCount = 0;
@@ -181,7 +245,8 @@ namespace Game
 		{
 			m_stateMachine.AddState("Idle", null, () =>
 			{
-				if (CanClone && m_componentChase != null && m_componentChase.Target != null &&
+				if (CanClone && !m_destroyingClones &&
+					m_componentChase != null && m_componentChase.Target != null &&
 					!m_hasClonedDuringChase && IsCloningConditionMet() &&
 					!m_componentPathfinding.IsStuck &&
 					m_random.Float(0f, 1f) < CloningProbability * m_dt)
@@ -303,16 +368,6 @@ namespace Game
 				Project.AddEntity(cloneEntity);
 				m_activeClones.Add(cloneEntity);
 			}
-		}
-
-		private void DestroyAllClones()
-		{
-			foreach (var entity in m_activeClones)
-			{
-				if (entity != null && entity.IsAddedToProject)
-					Project.RemoveEntity(entity, true);
-			}
-			m_activeClones.Clear();
 		}
 	}
 }
