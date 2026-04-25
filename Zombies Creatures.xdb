@@ -2281,6 +2281,9 @@
 </EntityTemplate>
 
 <EntityTemplate Name="InfectedFlyTamed1" Guid="d56fcb71-d0e3-4f82-9760-ee66fa62f953" InheritanceParent="0cb14482-b936-410e-9317-66d385d7d2fd">
+<MemberComponentTemplate Name="VehicleInventory" Guid="ec2777d0-cf42-4f48-9744-d183c7763d80" InheritanceParent="87078009-8f4b-4324-9632-544521eec907">
+    <Parameter Name="SlotsCount" Guid="15cae58b-a280-4b84-bf66-1824d43b6237" Value="16" Type="int" />
+</MemberComponentTemplate>
 <MemberComponentTemplate Name="NewMount" Guid="af97dcb4-303e-499c-81c4-39b26d7bcfc4" InheritanceParent="ba0e138c-fe06-4b83-a405-503e03843493">
         <Parameter Name="DismountOffset" Guid="a2d7e939-3d8b-404d-84d2-4defc2747c25" Value="1.5,0.3,0" Type="Vector3"/>
         <Parameter Name="MountOffset" Guid="fbb5319e-01fa-4326-85a0-c4d1fc5855ab" Value="0.0, 1.0, 0.0" Type="Vector3"/>
@@ -2913,6 +2916,9 @@
 </EntityTemplate>
 
 <EntityTemplate Name="FlyingInfectedBossTamed" Guid="9c02bd72-5d77-4aee-b250-550c3e2eb3ee" InheritanceParent="0cb14482-b936-410e-9317-66d385d7d2fd">
+<MemberComponentTemplate Name="VehicleInventory" Guid="3a2e250c-b278-4f18-ab34-9b201a03f14f" InheritanceParent="87078009-8f4b-4324-9632-544521eec907">
+    <Parameter Name="SlotsCount" Guid="006cd75c-652c-4bf2-b78e-72e55d3b5dad" Value="16" Type="int" />
+</MemberComponentTemplate>
 <MemberComponentTemplate Name="NewMount" Guid="284c3a55-23b2-479a-bff5-d696e769b346" InheritanceParent="ba0e138c-fe06-4b83-a405-503e03843493">
         <Parameter Name="DismountOffset" Guid="b2fe1977-fc0c-477c-aeea-09b0c00bc079" Value="1.5,0.3,0" Type="Vector3"/>
         <Parameter Name="MountOffset" Guid="ec9acc23-f8d9-4e90-b526-2469aa8c28e1" Value="0.15, 2.0, 0.0" Type="Vector3"/>
@@ -9370,6 +9376,9 @@
           </EntityTemplate>
 
           <EntityTemplate Name="InfectedBearTamed" Guid="b4f69790-e83f-4141-ad5e-a94e7e392ac0" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+          <MemberComponentTemplate Name="VehicleInventory" Guid="0aad3e58-9a78-4cd7-b7cf-d54c44a0b55a" InheritanceParent="87078009-8f4b-4324-9632-544521eec907">
+    <Parameter Name="SlotsCount" Guid="ca0c4625-3586-42b4-a092-f6915475cfc0" Value="16" Type="int" />
+</MemberComponentTemplate>
         <MemberComponentTemplate Name="SummonBehavior" Guid="74f5f0f4-49b1-4f50-84e7-ac7e485bfd3d" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
               <Parameter Name="IsEnabled" Guid="afadf733-7235-41f8-9574-9f49fcd32ffe" Value="True" Type="bool"/>
             </MemberComponentTemplate>
