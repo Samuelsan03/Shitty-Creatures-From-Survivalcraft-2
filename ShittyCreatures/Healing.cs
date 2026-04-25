@@ -218,20 +218,24 @@ namespace Game
 					{
 						if (ally != null && ally.ComponentHealth.Health > 0f)
 						{
+							bool diseaseCured = false;
 							if (CureDiseases)
-								CureCreatureDiseases(ally, m_componentCreature);
+								diseaseCured = CureCreatureDiseases(ally, m_componentCreature);
 
 							if (ally.ComponentHealth.Health < 1f)
+							{
 								ally.ComponentHealth.Health = 1f;
 
-							if (ally is ComponentPlayer player)
-							{
-								string healMsg = LanguageControl.Get("Healing", "0");
-								if (!string.IsNullOrEmpty(healMsg))
+								// Mostrar mensaje genérico solo si NO se curó ninguna enfermedad
+								if (!diseaseCured && ally is ComponentPlayer player)
 								{
-									healMsg = string.Format(healMsg, m_componentCreature.DisplayName);
-									player.ComponentGui.DisplaySmallMessage(healMsg, new Color(50, 200, 50), false, false);
-									m_subsystemAudio.PlaySound("Audio/UI/success", 1f, 0f, 0f, 0f);
+									string healMsg = LanguageControl.Get("Healing", "0");
+									if (!string.IsNullOrEmpty(healMsg))
+									{
+										healMsg = string.Format(healMsg, m_componentCreature.DisplayName);
+										player.ComponentGui.DisplaySmallMessage(healMsg, new Color(50, 200, 50), false, false);
+										m_subsystemAudio.PlaySound("Audio/UI/success", 1f, 0f, 0f, 0f);
+									}
 								}
 							}
 						}
@@ -311,9 +315,9 @@ namespace Game
 			}
 		}
 
-		void CureCreatureDiseases(ComponentCreature creature, ComponentCreature healer)
+		bool CureCreatureDiseases(ComponentCreature creature, ComponentCreature healer)
 		{
-			if (creature == null) return;
+			if (creature == null) return false;
 
 			bool hadFlu = false;
 			bool hadPoison = false;
@@ -372,6 +376,8 @@ namespace Game
 					}
 				}
 			}
+
+			return hadFlu || hadPoison;
 		}
 	}
 }
