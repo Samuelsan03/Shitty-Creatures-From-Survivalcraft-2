@@ -109,8 +109,19 @@ namespace Game
 
 							if (terrainHit != null && terrainHit.Value.Distance <= dist + radius)
 							{
-								// Incendiar el bloque impactado (NO el vecino)
-								TryIgniteBlock(terrainHit.Value);
+								// Romper bloques frágiles (cristales) o incendiar otros bloques
+								int hitValue = terrainHit.Value.Value;
+								int hitContents = Terrain.ExtractContents(hitValue);
+								if (hitContents == GlassBlock.Index || hitContents == FramedGlassBlock.Index || hitContents == WindowBlock.Index || hitContents == LightbulbBlock.Index)
+								{
+									// Romper bloques frágiles
+									TryBreakFragileBlock(terrainHit.Value);
+								}
+								else
+								{
+									// Incendiar el bloque impactado (comportamiento original)
+									TryIgniteBlock(terrainHit.Value);
+								}
 								if (m_subsystemTime.GameTime - m_lastImpactSoundTime > 0.3)
 								{
 									m_subsystemSoundMaterials.PlayImpactSound(terrainHit.Value.Value, terrainHit.Value.HitPoint(), 1f);
@@ -182,9 +193,16 @@ namespace Game
 			return IsStopped && !anyActive;
 		}
 
+		private void TryBreakFragileBlock(TerrainRaycastResult hit)
+		{
+			// Romper bloques frágiles (cristales): GlassBlock, FramedGlassBlock, WindowBlock, LightbulbBlock
+			// Parámetros: toolLevel=0 (manos desnudas), newValue=0 (aire), noDrop=false, noParticleSystem=false
+			m_subsystemTerrain.DestroyCell(0, hit.CellFace.X, hit.CellFace.Y, hit.CellFace.Z, 0, false, false, null);
+		}
+
 		private void TryIgniteBlock(TerrainRaycastResult hit)
 		{
-			// Incendiar la celda impactada directamente
+			// Incendiar la celda impactada directamente (comportamiento original)
 			m_subsystemFireBlockBehavior.SetCellOnFire(hit.CellFace.X, hit.CellFace.Y, hit.CellFace.Z, 1f);
 		}
 
