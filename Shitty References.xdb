@@ -4,11 +4,17 @@
 <Parameter Name="Class" Guid="8c4f00ca-8f77-47c9-99bb-cefa4f94ee8d" new-Value="Game.ComponentNewVitalStats" Type="string"/>
 
     <Folder Name="Gameplay" Guid="d509e5e2-2c10-49f1-8223-85cd892c63b0">
+    <ComponentTemplate Name="VehicleInventory" Description="Inventory for vehicles" Guid="87078009-8f4b-4324-9632-544521eec907" InheritanceParent="81a44c6a-c30a-4f53-8d64-0c30aabab8f9">
+    <Parameter Name="SlotsCount" Guid="f3d042c1-d140-48c8-a472-dd45d183734f" Value="16" Type="int" />
+    <Parameter Name="Class" Guid="6baf2dab-d2e1-46df-97f8-00d547d3c198" Value="Game.ComponentVehicleInventory" Type="string" />
+</ComponentTemplate>
+
     <ComponentTemplate Name="Healing" Description="Comportamiento que permite a una criatura curarse a sí misma o a sus compañeros de manada" Guid="70bc630d-3fd9-4ced-ae74-27ac1da95fba" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
   <Parameter Name="Class" Guid="4c01dad9-a210-4e61-9fdd-af7269026355" Value="Game.Healing" Type="string"/>
   <Parameter Name="SelfHealing" Description="Si la criatura puede curarse a sí misma cuando está herida. Al activarse, la criatura se detiene, adopta la pose de lanzamiento y emite partículas rojas mientras se regenera" Guid="cd1255b9-ae1f-405b-b27c-f06a9e2b2c1b" Value="false" Type="bool"/>
   <Parameter Name="HealCreatures" Description="Si la criatura puede curar a sus compañeros de manada cuando están heridos. Al activarse, la criatura se detiene, mira al aliado y emite partículas rojas mientras lo cura" Guid="bc2a8edb-7c26-44df-8ff9-ec580304a9d4" Value="false" Type="bool"/>
   <Parameter Name="Probability" Description="Probabilidad de que la criatura intente curarse o curar a un compañero cuando las condiciones se cumplen, 0 a 1" Guid="214307a3-d8a8-4123-a933-56994e74a336" Value="0.5" Type="float"/>
+  <Parameter Name="CureDiseases" Description="If true, also cures flu and poison before restoring health" Guid="5699c149-0f80-4c06-951a-c9814d7d89aa" Value="false" Type="bool"/>
 </ComponentTemplate>
 
     <ComponentTemplate Name="CoordinateDisplay" Description="Hace que se vea las coordenadas en pantalla del jugador" Guid="bd8323f8-399d-4acf-b96d-ed790ea2a6d7" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
