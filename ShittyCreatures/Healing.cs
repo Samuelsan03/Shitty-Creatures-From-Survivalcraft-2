@@ -15,9 +15,8 @@ namespace Game
 		public bool SelfHealing { get; set; } = false;
 		public bool HealCreatures { get; set; } = false;
 		public float Probability { get; set; } = 0.5f;
-
-		// Radio de detección de aliados heridos (en bloques)
-		public float HealRadius { get; set; } = 50f;   // ← campo configurable
+		public float HealRadius { get; set; } = 50f;
+		public bool CureDiseases { get; set; } = false;
 
 		SubsystemTime m_subsystemTime;
 		SubsystemParticles m_subsystemParticles;
@@ -36,12 +35,10 @@ namespace Game
 		float m_dt;
 		double m_nextUpdateTime;
 
-		// Auto‑curación
 		bool m_isSelfHealing;
 		double m_selfHealStartTime;
 		HealingParticleSystem m_selfHealParticles;
 
-		// Curación masiva a compañeros
 		List<ComponentCreature> m_healTargets = new List<ComponentCreature>();
 		bool m_isHealingAllies;
 		double m_allyHealStartTime;
@@ -65,9 +62,7 @@ namespace Game
 			SelfHealing = valuesDictionary.GetValue<bool>("SelfHealing", false);
 			HealCreatures = valuesDictionary.GetValue<bool>("HealCreatures", false);
 			Probability = valuesDictionary.GetValue<float>("Probability", 0.5f);
-
-			// HealRadius NO se carga del XML, queda con su valor por defecto (10)
-			// Si otro componente necesita cambiarlo, puede hacerlo en código.
+			CureDiseases = valuesDictionary.GetValue<bool>("CureDiseases", false);
 
 			SetupStateMachine();
 			m_stateMachine.TransitionTo("Idle");
@@ -90,7 +85,7 @@ namespace Game
 
 					if (HealCreatures && m_componentHerd != null)
 					{
-						FindAllHurtAllies(m_healTargets);
+						FindAllHurtOrDiseasedAllies(m_healTargets);
 						if (m_healTargets.Count > 0 && m_random.Float(0f, 1f) < Probability)
 						{
 							m_stateMachine.TransitionTo("HealingAllies");
@@ -100,7 +95,6 @@ namespace Game
 				}
 			}, null);
 
-			// Auto‑curación
 			m_stateMachine.AddState("SelfHealing", () =>
 			{
 				m_isSelfHealing = true;
@@ -119,6 +113,9 @@ namespace Game
 
 				if (elapsed >= 1.5)
 				{
+					if (CureDiseases)
+						CureCreatureDiseases(m_componentCreature);
+
 					m_componentHealth.Health = 1f;
 					m_componentCreatureModel.AimHandAngleOrder = 0f;
 					m_selfHealParticles.Stopped = true;
@@ -132,16 +129,13 @@ namespace Game
 				m_isSelfHealing = false;
 			});
 
-			// Curación a TODOS los aliados
 			m_stateMachine.AddState("HealingAllies", () =>
 			{
-				// Suprimir persecución mientras se cura
 				if (m_componentChase != null) m_componentChase.Suppressed = true;
 
 				m_isHealingAllies = true;
 				m_allyHealStartTime = m_subsystemTime.GameTime;
 
-				// Partículas del sanador
 				m_healerChargeParticles = new HealingParticleSystem();
 				m_subsystemParticles.AddParticleSystem(m_healerChargeParticles, false);
 
@@ -153,7 +147,6 @@ namespace Game
 				m_componentCreatureSounds.PlayIdleSound(false);
 				m_subsystemAudio.PlaySound("Audio/Shapeshift", 1f, 0f, m_componentCreature.ComponentBody.Position, 3f, true);
 
-				// Partículas en cada aliado herido
 				m_allyHealParticles.Clear();
 				m_allyHealBodies.Clear();
 				foreach (var ally in m_healTargets)
@@ -169,7 +162,7 @@ namespace Game
 				m_alliesHealApplied = false;
 			}, () =>
 			{
-				m_healTargets.RemoveAll(c => c == null || c.ComponentHealth.Health <= 0f || c.ComponentHealth.Health >= 1f);
+				m_healTargets.RemoveAll(c => c == null || c.ComponentHealth.Health <= 0f);
 
 				if (m_healTargets.Count == 0)
 				{
@@ -182,7 +175,6 @@ namespace Game
 				m_healerChargeParticles.BoundingBox = m_componentCreature.ComponentBody.BoundingBox;
 				m_componentCreatureModel.AimHandAngleOrder = 3.2f;
 
-				// Actualizar partículas de aliados
 				for (int i = 0; i < m_allyHealParticles.Count; i++)
 				{
 					if (m_allyHealParticles[i] != null && i < m_allyHealBodies.Count)
@@ -192,8 +184,17 @@ namespace Game
 				if (!m_alliesHealApplied && elapsed >= 1.5)
 				{
 					foreach (var ally in m_healTargets)
+					{
 						if (ally != null && ally.ComponentHealth.Health > 0f)
-							ally.ComponentHealth.Health = 1f;
+						{
+							if (CureDiseases)
+								CureCreatureDiseases(ally);
+
+							// Restaurar salud solo si no está ya llena
+							if (ally.ComponentHealth.Health < 1f)
+								ally.ComponentHealth.Health = 1f;
+						}
+					}
 
 					m_alliesHealApplied = true;
 					m_healerChargeParticles.Stopped = true;
@@ -218,8 +219,6 @@ namespace Game
 				m_allyHealParticles.Clear();
 				m_healTargets.Clear();
 				m_isHealingAllies = false;
-
-				// Restaurar comportamiento normal (persecución, etc.)
 				if (m_componentChase != null) m_componentChase.Suppressed = false;
 			}
 		}
@@ -229,26 +228,63 @@ namespace Game
 			m_stateMachine.Update();
 		}
 
-		void FindAllHurtAllies(List<ComponentCreature> list)
+		void FindAllHurtOrDiseasedAllies(List<ComponentCreature> list)
 		{
 			list.Clear();
 			if (m_componentHerd == null || string.IsNullOrEmpty(m_componentHerd.HerdName))
 				return;
 
 			Vector3 pos = m_componentCreature.ComponentBody.Position;
-			float radiusSq = HealRadius * HealRadius;   // ← usa el campo configurable
+			float radiusSq = HealRadius * HealRadius;
 			foreach (ComponentCreature creature in Project.FindSubsystem<SubsystemCreatureSpawn>(true).Creatures)
 			{
-				if (creature == m_componentCreature || creature.ComponentHealth.Health <= 0f || creature.ComponentHealth.Health >= 0.2f)
+				if (creature == m_componentCreature || creature.ComponentHealth.Health <= 0f)
 					continue;
 
 				if (Vector3.DistanceSquared(pos, creature.ComponentBody.Position) > radiusSq)
 					continue;
 
 				ComponentNewHerdBehavior herd = creature.Entity.FindComponent<ComponentNewHerdBehavior>();
-				if (herd != null && m_componentHerd.IsSameHerdOrGuardian(creature))
+				if (herd == null || !m_componentHerd.IsSameHerdOrGuardian(creature))
+					continue;
+
+				bool isHurt = creature.ComponentHealth.Health < 0.2f;
+				bool isDiseased = false;
+
+				if (CureDiseases)
+				{
+					isDiseased = (creature.Entity.FindComponent<ComponentFluInfected>()?.IsInfected == true)
+							  || (creature.Entity.FindComponent<ComponentPoisonInfected>()?.IsInfected == true)
+							  || (creature.Entity.FindComponent<ComponentFlu>()?.HasFlu == true)
+							  || (creature.Entity.FindComponent<ComponentSickness>()?.IsSick == true);
+				}
+
+				if (isHurt || isDiseased)
+				{
 					list.Add(creature);
+				}
 			}
+		}
+
+		void CureCreatureDiseases(ComponentCreature creature)
+		{
+			if (creature == null) return;
+
+			var fluInfected = creature.Entity.FindComponent<ComponentFluInfected>();
+			if (fluInfected != null && fluInfected.IsInfected)
+				fluInfected.m_fluDuration = 0f;
+
+			var poisonInfected = creature.Entity.FindComponent<ComponentPoisonInfected>();
+			if (poisonInfected != null && poisonInfected.IsInfected)
+				poisonInfected.m_InfectDuration = 0f;
+
+			var playerFlu = creature.Entity.FindComponent<ComponentFlu>();
+			if (playerFlu != null && playerFlu.HasFlu)
+				playerFlu.m_fluDuration = 0f;
+
+			var playerSickness = creature.Entity.FindComponent<ComponentSickness>();
+			if (playerSickness != null && playerSickness.IsSick)
+				playerSickness.m_sicknessDuration = 0f;
 		}
 	}
 }
