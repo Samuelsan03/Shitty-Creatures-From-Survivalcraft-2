@@ -17,9 +17,9 @@ namespace Game
 		public float CloningProbability = 0.3f;
 
 		// ===== Constantes internas =====
-		private const int RequiredAttackers = 3;        // mínimo de atacantes o miembros de manada en combate
-		private const float AttackerMemory = 10f;       // segundos que recordamos a un atacante
-		private const float PreparationTime = 2.5f;     // duración de la fase de preparación
+		private const int RequiredAttackers = 3;
+		private const float AttackerMemory = 10f;
+		private const float PreparationTime = 2.5f;
 
 		// ===== Campos internos =====
 		private SubsystemTime m_subsystemTime;
@@ -46,7 +46,6 @@ namespace Game
 		private bool m_hasClonedDuringChase = false;
 		private List<Entity> m_activeClones = new List<Entity>();
 
-		// Control de atacantes individuales
 		private Dictionary<ComponentCreature, double> m_recentAttackers = new Dictionary<ComponentCreature, double>();
 
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
@@ -155,8 +154,10 @@ namespace Game
 		{
 			m_stateMachine.AddState("Idle", null, () =>
 			{
+				// Verificar que no esté atascado antes de permitir la clonación
 				if (CanClone && m_componentChase != null && m_componentChase.Target != null &&
 					!m_hasClonedDuringChase && IsCloningConditionMet() &&
+					!m_componentPathfinding.IsStuck &&   // <-- No clonar si está atascado
 					m_random.Float(0f, 1f) < CloningProbability * m_dt)
 				{
 					m_target = m_componentChase.Target;
@@ -180,7 +181,9 @@ namespace Game
 				m_particleSystem.Stopped = false;
 			}, () =>
 			{
-				if (m_target == null || m_target.ComponentHealth.Health <= 0f)
+				// Si el objetivo desapareció o estamos atascados, cancelar
+				if (m_target == null || m_target.ComponentHealth.Health <= 0f ||
+					m_componentPathfinding.IsStuck)
 				{
 					StopPreparation();
 					m_stateMachine.TransitionTo("Idle");
@@ -212,7 +215,7 @@ namespace Game
 				SpawnClones(m_target);
 
 				m_recentAttackers.Clear();
-				m_hasClonedDuringChase = true;   // solo una clonación por persecución
+				m_hasClonedDuringChase = true;
 
 				if (m_particleSystem != null)
 					m_particleSystem.Stopped = true;
@@ -266,11 +269,10 @@ namespace Game
 				if (cloneCloning != null)
 					cloneCloning.CanClone = false;
 
-				// Ya no se usa CloneDuration, los clones se eliminan cuando termina la persecución
 				ComponentNewChaseBehavior cloneChase = cloneEntity.FindComponent<ComponentNewChaseBehavior>();
 				if (cloneChase != null && target != null)
 				{
-					cloneChase.Attack(target, 30f, 60f /* tiempo máximo por si acaso */, false);
+					cloneChase.Attack(target, 30f, 60f, false);
 				}
 
 				Project.AddEntity(cloneEntity);
