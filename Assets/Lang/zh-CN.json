@@ -1,4 +1,9 @@
 {
+  "Healing": {
+    "0": "你已被{0}治疗。",
+    "1": "{0}治愈了你的流感。",
+    "2": "{0}解除了你的中毒状态。"
+  },
   "CameraManage": {
   "Game.FreeCamera": "自由视角"
 },
@@ -1124,6 +1129,10 @@
     }
   },
   "ContentWidgets": {
+    "VehicleInventoryWidget": {
+  "1": "车辆",
+  "2": "库存"
+},
     "ShittyCreaturesReleasesScreen": {
     "0": "Shitty Creatures - 版本历史"
   },
