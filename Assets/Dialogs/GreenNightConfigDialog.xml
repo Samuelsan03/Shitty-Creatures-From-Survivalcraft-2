@@ -1,28 +1,26 @@
-<Dialog xmlns="runtime-namespace:Game">
-  <CanvasWidget Size="480, 230" ClampToBounds="true" HorizontalAlignment="Center" VerticalAlignment="Center">
-    <!-- Fondo biselado del panel -->
-    <BevelledRectangleWidget Style="{Styles/DialogArea}" />
-    <!-- Contenido -->
-    <StackPanelWidget Direction="Vertical" HorizontalAlignment="Center" Margin="15, 10">
-      
-      <!-- Título -->
-      <LabelWidget Name="Title" FontScale="1.2" HorizontalAlignment="Center" Color="255, 255, 255" DropShadow="true" Margin="0, 0, 0, 12" />
-      
-      <!-- Fila: Etiqueta + Botón cíclico -->
-      <StackPanelWidget Direction="Horizontal" HorizontalAlignment="Center" Margin="0, 6">
-        <LabelWidget Name="LabelDays" Text="Días de supervivencia:" FontScale="0.8" VerticalAlignment="Center" Color="255, 255, 255" Margin="0, 0, 10, 0" />
-        <BevelledButtonWidget Name="CycleButton" Size="200, 48" BevelColor="0, 0, 255" CenterColor="0, 0, 200" Color="255, 255, 255" />
-      </StackPanelWidget>
-
-      <!-- Texto descriptivo -->
-      <LabelWidget Name="DescriptionLabel" FontScale="0.7" HorizontalAlignment="Center" Color="255, 165, 0" WordWrap="true" Margin="0, 10, 0, 6" />
-      
-      <!-- Fila: Botones Aceptar / Cancelar -->
-      <StackPanelWidget Direction="Horizontal" HorizontalAlignment="Center" Margin="0, 12, 0, 0">
-        <BevelledButtonWidget Name="OkButton" Text="Aceptar" Size="120, 48" BevelColor="0, 128, 0" CenterColor="0, 96, 0" Color="255, 255, 255" Margin="8, 0" />
-        <BevelledButtonWidget Name="CancelButton" Text="Cancelar" Size="120, 48" BevelColor="128, 128, 128" CenterColor="96, 96, 96" Color="255, 255, 255" Margin="8, 0" />
-      </StackPanelWidget>
-      
+<CanvasWidget xmlns="runtime-namespace:Game" Size="480, 230" ClampToBounds="true" HorizontalAlignment="Center" VerticalAlignment="Center">
+  <!-- Fondo biselado del panel -->
+  <BevelledRectangleWidget Style="{Styles/DialogArea}" />
+  <!-- Contenido -->
+  <StackPanelWidget Direction="Vertical" HorizontalAlignment="Center" Margin="15, 10">
+    
+    <!-- Título -->
+    <LabelWidget Name="Title" FontScale="1.2" HorizontalAlignment="Center" Color="255, 255, 255" DropShadow="true" Margin="0, 0, 0, 12" />
+    
+    <!-- Fila: Etiqueta + Botón cíclico -->
+    <StackPanelWidget Direction="Horizontal" HorizontalAlignment="Center" Margin="0, 6">
+      <LabelWidget Name="LabelDays" Text="Días de supervivencia:" FontScale="0.8" VerticalAlignment="Center" Color="255, 255, 255" Margin="0, 0, 10, 0" />
+      <BevelledButtonWidget Name="CycleButton" Size="200, 48" BevelColor="0, 0, 255" CenterColor="0, 0, 200" Color="255, 255, 255" />
     </StackPanelWidget>
-  </CanvasWidget>
-</Dialog>
+
+    <!-- Texto descriptivo -->
+    <LabelWidget Name="DescriptionLabel" FontScale="0.7" HorizontalAlignment="Center" Color="255, 165, 0" WordWrap="true" Margin="0, 10, 0, 6" />
+    
+    <!-- Fila: Botones Aceptar / Cancelar -->
+    <StackPanelWidget Direction="Horizontal" HorizontalAlignment="Center" Margin="0, 12, 0, 0">
+      <BevelledButtonWidget Name="OkButton" Text="Aceptar" Size="120, 48" BevelColor="0, 128, 0" CenterColor="0, 96, 0" Color="255, 255, 255" Margin="8, 0" />
+      <BevelledButtonWidget Name="CancelButton" Text="Cancelar" Size="120, 48" BevelColor="128, 128, 128" CenterColor="96, 96, 96" Color="255, 255, 255" Margin="8, 0" />
+    </StackPanelWidget>
+    
+  </StackPanelWidget>
+</CanvasWidget>
