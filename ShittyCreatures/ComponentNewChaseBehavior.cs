@@ -669,68 +669,133 @@ namespace Game
 
 				if (inMeleeRange)
 				{
-					CancelRangedAim();
-					CancelThrowableAim();
+					bool hasMeleeWeapon = FindBestMeleeWeapon(out int meleeSlot, out int meleeValue) != -1;
 
-					if (IsTargetInFront())
+					if (hasMeleeWeapon)
 					{
-						m_componentCreatureModel.AttackOrder = true;
-						if (m_componentCreatureModel.IsAttackHitMoment)
-						{
-							Vector3 hitPoint;
-							ComponentBody hitBody = GetHitBody(m_target.ComponentBody, out hitPoint);
-							if (hitBody != null)
-							{
-								float extraChaseTime = m_isPersistent ? m_random.Float(8f, 10f) : 2f;
-								m_chaseTime = MathUtils.Max(m_chaseTime, extraChaseTime);
-								m_componentMiner.Hit(hitBody, hitPoint, m_componentCreature.ComponentBody.Matrix.Forward);
-								m_componentCreature.ComponentCreatureSounds.PlayAttackSound();
+						CancelRangedAim();
+						CancelThrowableAim();
 
-								// Nueva funcionalidad: explosión al golpear con 10% de probabilidad
-								if (ExplodeOnHit && m_random.Float(0f, 1f) < 0.1f)
+						if (IsTargetInFront())
+						{
+							m_componentCreatureModel.AttackOrder = true;
+							if (m_componentCreatureModel.IsAttackHitMoment)
+							{
+								Vector3 hitPoint;
+								ComponentBody hitBody = GetHitBody(m_target.ComponentBody, out hitPoint);
+								if (hitBody != null)
 								{
-									// Obtener SubsystemExplosions (si no está ya en caché)
-									SubsystemExplosions subsystemExplosions = Project.FindSubsystem<SubsystemExplosions>(true);
-									if (subsystemExplosions != null)
+									float extraChaseTime = m_isPersistent ? m_random.Float(8f, 10f) : 2f;
+									m_chaseTime = MathUtils.Max(m_chaseTime, extraChaseTime);
+									m_componentMiner.Hit(hitBody, hitPoint, m_componentCreature.ComponentBody.Matrix.Forward);
+									m_componentCreature.ComponentCreatureSounds.PlayAttackSound();
+
+									// Nueva funcionalidad: explosión al golpear con 10% de probabilidad
+									if (ExplodeOnHit && m_random.Float(0f, 1f) < 0.1f)
 									{
-										subsystemExplosions.AddExplosion(
-											Terrain.ToCell(hitPoint.X),
-											Terrain.ToCell(hitPoint.Y),
-											Terrain.ToCell(hitPoint.Z),
-											255f,        // presión típica de barril mediano
-											false,      // no incendiario
-											false       // con sonido de explosión
-										);
+										// Obtener SubsystemExplosions (si no está ya en caché)
+										SubsystemExplosions subsystemExplosions = Project.FindSubsystem<SubsystemExplosions>(true);
+										if (subsystemExplosions != null)
+										{
+											subsystemExplosions.AddExplosion(
+												Terrain.ToCell(hitPoint.X),
+												Terrain.ToCell(hitPoint.Y),
+												Terrain.ToCell(hitPoint.Z),
+												255f,        // presión típica de barril mediano
+												false,      // no incendiario
+												false       // con sonido de explosión
+											);
+										}
+									}
+
+									if (PushWhileAttacking && m_random.Float(0f, 1f) < 0.5f)
+									{
+										Vector3 direction = m_target.ComponentBody.Position - m_componentCreature.ComponentBody.Position;
+										direction.Y = Math.Max(direction.Y, 0.5f);
+										if (direction.LengthSquared() > 0.001f)
+											direction = Vector3.Normalize(direction);
+										else
+											direction = Vector3.UnitY;
+
+										float originalMaxSpeed = m_target.ComponentBody.MaxSpeed;
+										m_target.ComponentBody.MaxSpeed = 1e9f;
+										m_target.ComponentBody.ApplyImpulse(direction * 55f);
+										m_target.ComponentBody.MaxSpeed = originalMaxSpeed;
+									}
+
+									if (InvokeLightningOnHit && m_subsystemSky != null && m_random.Float(0f, 1f) < 0.05f)
+									{
+										m_subsystemSky.MakeLightningStrike(m_target.ComponentBody.Position, true);
 									}
 								}
-
-								if (PushWhileAttacking && m_random.Float(0f, 1f) < 0.5f)
+							}
+						}
+						m_isAimingRanged = false;
+						m_isAimingThrowable = false;
+						m_aimingStarted = false;
+					}
+					else
+					{
+						// No tenemos arma cuerpo a cuerpo, golpeamos con lo que tengamos equipado sin cancelar el apuntado a distancia
+						if (IsTargetInFront())
+						{
+							m_componentCreatureModel.AttackOrder = true;
+							if (m_componentCreatureModel.IsAttackHitMoment)
+							{
+								Vector3 hitPoint;
+								ComponentBody hitBody = GetHitBody(m_target.ComponentBody, out hitPoint);
+								if (hitBody != null)
 								{
-									Vector3 direction = m_target.ComponentBody.Position - m_componentCreature.ComponentBody.Position;
-									direction.Y = Math.Max(direction.Y, 0.5f);
-									if (direction.LengthSquared() > 0.001f)
-										direction = Vector3.Normalize(direction);
-									else
-										direction = Vector3.UnitY;
+									float extraChaseTime = m_isPersistent ? m_random.Float(8f, 10f) : 2f;
+									m_chaseTime = MathUtils.Max(m_chaseTime, extraChaseTime);
+									m_componentMiner.Hit(hitBody, hitPoint, m_componentCreature.ComponentBody.Matrix.Forward);
+									m_componentCreature.ComponentCreatureSounds.PlayAttackSound();
 
-									float originalMaxSpeed = m_target.ComponentBody.MaxSpeed;
-									m_target.ComponentBody.MaxSpeed = 1e9f;
-									m_target.ComponentBody.ApplyImpulse(direction * 55f);
-									m_target.ComponentBody.MaxSpeed = originalMaxSpeed;
-								}
+									// Nueva funcionalidad: explosión al golpear con 10% de probabilidad
+									if (ExplodeOnHit && m_random.Float(0f, 1f) < 0.1f)
+									{
+										// Obtener SubsystemExplosions (si no está ya en caché)
+										SubsystemExplosions subsystemExplosions = Project.FindSubsystem<SubsystemExplosions>(true);
+										if (subsystemExplosions != null)
+										{
+											subsystemExplosions.AddExplosion(
+												Terrain.ToCell(hitPoint.X),
+												Terrain.ToCell(hitPoint.Y),
+												Terrain.ToCell(hitPoint.Z),
+												255f,        // presión típica de barril mediano
+												false,      // no incendiario
+												false       // con sonido de explosión
+											);
+										}
+									}
 
-								if (InvokeLightningOnHit && m_subsystemSky != null && m_random.Float(0f, 1f) < 0.05f)
-								{
-									m_subsystemSky.MakeLightningStrike(m_target.ComponentBody.Position, true);
+									if (PushWhileAttacking && m_random.Float(0f, 1f) < 0.5f)
+									{
+										Vector3 direction = m_target.ComponentBody.Position - m_componentCreature.ComponentBody.Position;
+										direction.Y = Math.Max(direction.Y, 0.5f);
+										if (direction.LengthSquared() > 0.001f)
+											direction = Vector3.Normalize(direction);
+										else
+											direction = Vector3.UnitY;
+
+										float originalMaxSpeed = m_target.ComponentBody.MaxSpeed;
+										m_target.ComponentBody.MaxSpeed = 1e9f;
+										m_target.ComponentBody.ApplyImpulse(direction * 55f);
+										m_target.ComponentBody.MaxSpeed = originalMaxSpeed;
+									}
+
+									if (InvokeLightningOnHit && m_subsystemSky != null && m_random.Float(0f, 1f) < 0.05f)
+									{
+										m_subsystemSky.MakeLightningStrike(m_target.ComponentBody.Position, true);
+									}
 								}
 							}
 						}
 					}
-					m_isAimingRanged = false;
-					m_isAimingThrowable = false;
-					m_aimingStarted = false;
 				}
-				else
+
+				// Permitir ataques a distancia incluso en rango cuerpo a cuerpo si no tenemos arma cuerpo a cuerpo
+				if (!inMeleeRange || FindBestMeleeWeapon(out _, out _) == -1)
 				{
 					if (HasThrowableItem(out _, out _))
 					{
@@ -1808,11 +1873,17 @@ namespace Game
 			}
 
 			float distance = GetDistanceToTarget();
+			bool hasMeleeWeapon = FindBestMeleeWeapon(out _, out _) != -1;
 			bool inRangedRange = false;
 			if (RangedAttackMode == AttackMode.Remote)
 				inRangedRange = distance <= RangedAttackRange.Y;
 			else if (RangedAttackMode == AttackMode.Default)
-				inRangedRange = distance >= RangedAttackRange.X && distance <= RangedAttackRange.Y && distance > MaxAttackRange;
+			{
+				if (hasMeleeWeapon)
+					inRangedRange = distance >= RangedAttackRange.X && distance <= RangedAttackRange.Y && distance > MaxAttackRange;
+				else
+					inRangedRange = distance <= RangedAttackRange.Y && distance > MaxAttackRange;
+			}
 			else
 			{
 				CancelRangedAim();
