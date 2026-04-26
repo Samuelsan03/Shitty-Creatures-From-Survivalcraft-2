@@ -26,6 +26,7 @@ namespace Game
 		public SubsystemModelsRenderer m_subsystemModelsRenderer;
 		public SubsystemAudio m_subsystemAudio;
 		public SubsystemParticles m_subsystemParticles;
+		public SubsystemSoundMaterials m_subsystemSoundMaterials;
 		public Random m_random = new Random();
 
 		// Texturas de ropa generadas
@@ -70,6 +71,7 @@ namespace Game
 			m_subsystemAudio = Project.FindSubsystem<SubsystemAudio>(true);
 			m_subsystemParticles = Project.FindSubsystem<SubsystemParticles>(true);
 			m_subsystemGameInfo = Project.FindSubsystem<SubsystemGameInfo>(true);
+			m_subsystemSoundMaterials = Project.FindSubsystem<SubsystemSoundMaterials>(true);
 
 			m_componentCreature = Entity.FindComponent<ComponentCreature>(true);
 			m_componentBody = m_componentCreature.ComponentBody;
@@ -101,7 +103,7 @@ namespace Game
 				}
 			}
 
-			// Suscribirse al evento de lesión para aplicar desgaste de armadura
+			// Suscribirse al evento de lesión para aplicar protección de armadura
 			if (m_componentHealth != null)
 			{
 				m_componentHealth.Injured += OnInjured;
@@ -140,7 +142,7 @@ namespace Game
 		}
 
 		// -------------------------------------------------------------
-		// MANEJADOR DE LESIONES (Desgaste de armadura al recibir daño)
+		// MANEJADOR DE LESIONES (Protección de armadura)
 		// -------------------------------------------------------------
 		private void OnInjured(Injury injury)
 		{
@@ -152,7 +154,7 @@ namespace Game
 			// Intentar absorber daño con la armadura
 			float remainingDamage = ApplyArmorProtection(damageToAbsorb);
 
-			// Reducir la cantidad de daño de la lesión
+			// Reducir la cantidad de daño de la lesión original
 			injury.Amount = remainingDamage;
 		}
 
@@ -256,19 +258,25 @@ namespace Game
 				if (absorb > 0f)
 				{
 					remainingPower -= absorb;
-					if (m_subsystemGameInfo.WorldSettings.GameMode != GameMode.Creative)
 					{
 						float rawDamage = absorb / sturdiness * durability + 0.001f;
 						int damagePoints = (int)(MathF.Floor(rawDamage) + (m_random.Bool(MathUtils.Remainder(rawDamage, 1f)) ? 1 : 0));
 						afterProtection[i] = BlocksManager.DamageItem(value, damagePoints, Entity);
 					}
+					// Reproducir sonido de impacto
 					if (!string.IsNullOrEmpty(data.ImpactSoundsFolder))
 					{
 						m_subsystemAudio.PlayRandomSound(data.ImpactSoundsFolder, 1f, m_random.Float(-0.3f, 0.3f), m_componentBody.Position, 4f, 0.15f);
 					}
+					else
+					{
+						// Usar el sistema de materiales de sonido para la prenda
+						m_subsystemSoundMaterials.PlayImpactSound(value, m_componentBody.Position, 1f);
+					}
 				}
 			}
 
+			// Eliminar prendas rotas
 			for (int j = afterProtection.Count - 1; j >= 0; j--)
 			{
 				if (!BlocksManager.Blocks[Terrain.ExtractContents(afterProtection[j])].CanWear(afterProtection[j]))
@@ -279,6 +287,7 @@ namespace Game
 				}
 			}
 
+			// Reordenar por capa
 			afterProtection.Sort((a, b) =>
 			{
 				ClothingData da = GetClothingData(a);
