@@ -76,6 +76,9 @@ namespace Game
 		// NewPanoramaModLoader
 		private static bool s_panoramaHookRegistered = false;
 
+		// Coordenadas HUD
+		private Dictionary<ComponentPlayer, LabelWidget> m_coordinateLabels = new Dictionary<ComponentPlayer, LabelWidget>();
+
 		// ---------------------------------------------------------------------------------
 		// Inicialización del ModLoader (registro de hooks)
 		// ---------------------------------------------------------------------------------
@@ -123,6 +126,8 @@ namespace Game
 			ModsManager.RegisterHook("ManageCameras", this);
 
 			ModsManager.RegisterHook("OnPlayerSpawned", this);
+
+			ModsManager.RegisterHook("OnPlayerDead", this);
 			// Reemplazar overlay de captura de pantalla
 			ReplaceScreenCaptureOverlay();
 		}
@@ -332,27 +337,79 @@ namespace Game
 		// ---------------------------------------------------------------------------------
 		public override void BeforeWidgetUpdate(Widget widget)
 		{
+			// ---------- Lógica original del menú ----------
 			MainMenuScreen mainMenu = widget as MainMenuScreen;
-			if (mainMenu == null) return;
-
-			// Botón Veemon (changelog)
-			BevelledButtonWidget shittyButton = mainMenu.Children.Find<BevelledButtonWidget>("ShittyButton", false);
-			if (shittyButton != null && shittyButton.IsClicked)
+			if (mainMenu != null)
 			{
-				if (ScreensManager.FindScreen<ShittyCreaturesReleasesScreen>("ShittyCreaturesReleases") == null)
-					ScreensManager.AddScreen("ShittyCreaturesReleases", new ShittyCreaturesReleasesScreen());
-				ScreensManager.SwitchScreen("ShittyCreaturesReleases");
+				// Botón Veemon (changelog)
+				BevelledButtonWidget shittyButton = mainMenu.Children.Find<BevelledButtonWidget>("ShittyButton", false);
+				if (shittyButton != null && shittyButton.IsClicked)
+				{
+					if (ScreensManager.FindScreen<ShittyCreaturesReleasesScreen>("ShittyCreaturesReleases") == null)
+						ScreensManager.AddScreen("ShittyCreaturesReleases", new ShittyCreaturesReleasesScreen());
+					ScreensManager.SwitchScreen("ShittyCreaturesReleases");
+				}
+
+				// Botón "Acerca del Mod"
+				BevelledButtonWidget aboutButton = mainMenu.Children.Find<BevelledButtonWidget>("ShittyAboutButton", false);
+				if (aboutButton != null && aboutButton.IsClicked)
+					DialogsManager.ShowDialog(null, new ShittyCreaturesAboutDialog());
+
+				// Botón "Salir"
+				BevelledButtonWidget exitButton = mainMenu.Children.Find<BevelledButtonWidget>("ShittyExitButton", false);
+				if (exitButton != null && exitButton.IsClicked)
+					Environment.Exit(0);
 			}
 
-			// Botón "Acerca del Mod"
-			BevelledButtonWidget aboutButton = mainMenu.Children.Find<BevelledButtonWidget>("ShittyAboutButton", false);
-			if (aboutButton != null && aboutButton.IsClicked)
-				DialogsManager.ShowDialog(null, new ShittyCreaturesAboutDialog());
+			// ---------- NUEVO: Actualizar HUD de coordenadas ----------
+			if (!ShittyCreaturesSettingsManager.CoordinateDisplayEnabled)
+				return;
 
-			// Botón "Salir"
-			BevelledButtonWidget exitButton = mainMenu.Children.Find<BevelledButtonWidget>("ShittyExitButton", false);
-			if (exitButton != null && exitButton.IsClicked)
-				Environment.Exit(0);
+			GameWidget gameWidget = widget as GameWidget;
+			if (gameWidget == null)
+				return;
+
+			ComponentPlayer player = gameWidget.PlayerData?.ComponentPlayer;
+			// Verificar que el jugador existe y está VIVO (salud > 0)
+			if (player == null || player.ComponentHealth.Health <= 0f)
+				return;
+
+			// Crear label si no existe
+			if (!m_coordinateLabels.ContainsKey(player))
+			{
+				LabelWidget label = new LabelWidget
+				{
+					FontScale = 0.5f,
+					HorizontalAlignment = WidgetAlignment.Far,
+					VerticalAlignment = WidgetAlignment.Far,
+					Margin = new Vector2(0f, 0f),
+					Color = Color.White,
+					DropShadow = true,
+					IsHitTestVisible = false
+				};
+				gameWidget.GuiWidget.Children.Add(label);
+				m_coordinateLabels[player] = label;
+			}
+
+			// Obtener el label y actualizar texto
+			LabelWidget coordLabel = m_coordinateLabels[player];
+			Vector3 pos = player.ComponentBody.Position;
+			string format = LanguageControl.Get(new string[] { "Coordinates", "0" });
+			coordLabel.Text = string.Format(format, pos.X.ToString("F1"), pos.Z.ToString("F1"), pos.Y.ToString("F1"));
+		}
+
+		public override void OnPlayerDead(PlayerData playerData)
+		{
+			// Eliminar cualquier label de coordenadas asociado a este PlayerData,
+			// independientemente de la instancia de ComponentPlayer que esté registrada.
+			foreach (var kvp in m_coordinateLabels.ToArray())
+			{
+				if (kvp.Key.PlayerData == playerData)
+				{
+					kvp.Value.ParentWidget?.Children.Remove(kvp.Value);
+					m_coordinateLabels.Remove(kvp.Key);
+				}
+			}
 		}
 
 		// ---------------------------------------------------------------------------------
@@ -529,12 +586,12 @@ namespace Game
 		// Hook: MenuPlayMusic (MusicModLoader)
 		// ---------------------------------------------------------------------------------
 		public override void MenuPlayMusic(out string contentMusicPath)
-		{
-			if (ShittyCreaturesSettingsManager.MenuMusicEnabled)
-				contentMusicPath = GetRandomSong();
-			else
-				contentMusicPath = string.Empty; // Retorna vacío para que MusicManager use la música original
-		}
+{
+    if (ShittyCreaturesSettingsManager.MenuMusicEnabled)
+        contentMusicPath = GetRandomSong();
+    else
+        contentMusicPath = string.Empty; // Retorna vacío para que MusicManager use la música original
+}
 
 		// ---------------------------------------------------------------------------------
 		// Hook: PlayInGameMusic (MusicModLoader)
@@ -884,6 +941,22 @@ namespace Game
 
 		public override bool OnPlayerSpawned(PlayerData.SpawnMode spawnMode, ComponentPlayer componentPlayer, Vector3 spawnPosition)
 		{
+			// Crear label de coordenadas para este jugador
+			if (!m_coordinateLabels.ContainsKey(componentPlayer))
+			{
+				LabelWidget label = new LabelWidget
+				{
+					FontScale = 0.5f,
+					HorizontalAlignment = WidgetAlignment.Far,
+					VerticalAlignment = WidgetAlignment.Far,
+					Margin = new Vector2(0f, 0f),
+					Color = Color.White,
+					DropShadow = true,
+					IsHitTestVisible = false
+				};
+				componentPlayer.GuiWidget.Children.Add(label);
+				m_coordinateLabels[componentPlayer] = label;
+			}
 			// Solo entregar en la primera aparición del mundo (no en respawns)
 			// SpawnsCount == 1 indica el primer spawn real; 0 es antes de spawnear.
 			if (componentPlayer.PlayerData.SpawnsCount != 1)
