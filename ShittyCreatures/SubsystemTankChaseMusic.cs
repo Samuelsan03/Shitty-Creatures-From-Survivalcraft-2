@@ -15,7 +15,7 @@ namespace Game
 		private const string ALERT_SOUND_PATH = "Audio/UI/Tank Warning Sound";
 		private const float MUSIC_DURATION = 52.0f;
 		private const float CHECK_INTERVAL = 0.1f;
-		private const float DETECTION_RADIUS = 50f;  // Cambiado de 20 a 50
+		private const float DETECTION_RADIUS = 50f;  // Radio de 50
 
 		#endregion
 
@@ -144,19 +144,25 @@ namespace Game
 					if (health != null && health.Health <= 0f)
 						continue;
 
-					ComponentBody tankBody = entity.FindComponent<ComponentBody>();
-					if (tankBody == null)
-						continue;
-
-					foreach (ComponentPlayer player in activePlayers)
+					// Primero verificar si ya está persiguiendo activamente
+					ComponentZombieChaseBehavior chaseBehavior = entity.FindComponent<ComponentZombieChaseBehavior>();
+					if (chaseBehavior != null && chaseBehavior.IsActive)
 					{
-						ComponentBody playerBody = player.Entity.FindComponent<ComponentBody>();
-						if (playerBody != null)
+						// Verificar también que esté dentro del radio de detección
+						ComponentBody tankBody = entity.FindComponent<ComponentBody>();
+						if (tankBody != null)
 						{
-							float distance = Vector3.Distance(tankBody.Position, playerBody.Position);
-							if (distance < DETECTION_RADIUS)  // Ahora usa 50f
+							foreach (ComponentPlayer player in activePlayers)
 							{
-								return true;
+								ComponentBody playerBody = player.Entity.FindComponent<ComponentBody>();
+								if (playerBody != null)
+								{
+									float distance = Vector3.Distance(tankBody.Position, playerBody.Position);
+									if (distance < DETECTION_RADIUS)  // Usa el radio de 50f
+									{
+										return true;
+									}
+								}
 							}
 						}
 					}
