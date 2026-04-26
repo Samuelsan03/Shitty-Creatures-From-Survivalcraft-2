@@ -530,7 +530,10 @@ namespace Game
 		// ---------------------------------------------------------------------------------
 		public override void MenuPlayMusic(out string contentMusicPath)
 		{
-			contentMusicPath = GetRandomSong();
+			if (ShittyCreaturesSettingsManager.MenuMusicEnabled)
+				contentMusicPath = GetRandomSong();
+			else
+				contentMusicPath = string.Empty; // Retorna vacío para que MusicManager use la música original
 		}
 
 		// ---------------------------------------------------------------------------------
