@@ -7,8 +7,8 @@
   "CameraManage": {
   "Game.FreeCamera": "Cámara libre"
 },
-  "ComponentCoordinateDisplay": {
-    "CoordinateFormat": "Coordenadas: X: {0:F1}  Y: {1:F1}  Z: {2:F1}"
+  "Coordinates": {
+    "0": "Coordenadas: X: {0:F1}  Y: {1:F1}  Z: {2:F1}"
   },
   "SubsystemDoubleMusketBlockBehavior": {
   "0": "¡El mosquete de doble cañón no está cargado!"
