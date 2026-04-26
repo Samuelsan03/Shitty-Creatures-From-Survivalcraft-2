@@ -33,6 +33,9 @@ namespace Game
 		public PrimitivesRenderer2D m_primitivesRenderer = new PrimitivesRenderer2D();
 		public bool m_clothedTexturesValid;
 
+		// Textura original de la piel (sin ropa)
+		public Texture2D m_originalSkinTexture;
+
 		// Para IInventory
 		Project IInventory.Project => Project;
 		public int SlotsCount => 4;
@@ -41,7 +44,6 @@ namespace Game
 
 		public UpdateOrder UpdateOrder => UpdateOrder.Default;
 
-		// Mapeo de índices del inventario a ClothingSlot
 		private static readonly ClothingSlot[] m_slotsOrder = new[]
 		{
 			ClothingSlot.Head,
@@ -69,16 +71,17 @@ namespace Game
 			m_componentCreature = Entity.FindComponent<ComponentCreature>(true);
 			m_componentBody = m_componentCreature.ComponentBody;
 			m_componentHumanModel = Entity.FindComponent<ComponentHumanModel>(true);
-			m_componentNewHumanModel = Entity.FindComponent<ComponentNewHumanModel>();
+			m_componentNewHumanModel = Entity.FindComponent<ComponentNewHumanModel>(false);
 			m_componentOuterClothingModel = Entity.FindComponent<ComponentOuterClothingModel>(true);
 
-			// Inicializar ranuras vacías
+			// Guardar la textura de piel original (puede ser null al inicio)
+			m_originalSkinTexture = m_componentHumanModel.TextureOverride;
+
 			foreach (ClothingSlot slot in ClothingSlot.ClothingSlots.Values)
 			{
 				m_clothes[slot] = new List<int>();
 			}
 
-			// Cargar datos persistentes
 			ValuesDictionary clothesData = valuesDictionary.GetValue<ValuesDictionary>("CreatureClothes", null);
 			if (clothesData != null)
 			{
@@ -211,7 +214,6 @@ namespace Game
 				}
 			}
 
-			// Eliminar prendas rotas
 			for (int j = afterProtection.Count - 1; j >= 0; j--)
 			{
 				if (!BlocksManager.Blocks[Terrain.ExtractContents(afterProtection[j])].CanWear(afterProtection[j]))
@@ -222,7 +224,6 @@ namespace Game
 				}
 			}
 
-			// Reordenar por capa
 			afterProtection.Sort((a, b) =>
 			{
 				ClothingData da = GetClothingData(a);
@@ -325,25 +326,60 @@ namespace Game
 			UpdateRenderTargets();
 		}
 
+		private bool HasAnyClothes()
+		{
+			foreach (var list in m_clothes.Values)
+			{
+				if (list.Count > 0) return true;
+			}
+			return false;
+		}
+
 		private void UpdateRenderTargets()
 		{
-			Texture2D skinTexture = m_componentHumanModel.TextureOverride;
-			if (skinTexture == null) return;
+			// Actualizar la textura original si el modelo cambió su TextureOverride a algo que no es nuestro.
+			Texture2D currentTex = m_componentHumanModel.TextureOverride;
+			if (currentTex != m_innerClothedTexture && currentTex != null)
+			{
+				m_originalSkinTexture = currentTex;
+			}
 
+			if (!HasAnyClothes())
+			{
+				// No hay ropa: restaurar la textura original y limpiar nuestros RenderTargets
+				if (m_innerClothedTexture != null)
+				{
+					Utilities.Dispose(ref m_innerClothedTexture);
+				}
+				if (m_outerClothedTexture != null)
+				{
+					Utilities.Dispose(ref m_outerClothedTexture);
+				}
+				m_componentHumanModel.TextureOverride = m_originalSkinTexture;
+				m_componentOuterClothingModel.TextureOverride = null;
+				return;
+			}
+
+			Texture2D skinTexture = m_originalSkinTexture;
+			if (skinTexture == null) return; // no hay textura base todavía
+
+			// Crear RenderTargets si es necesario
 			if (m_innerClothedTexture == null || m_innerClothedTexture.Width != skinTexture.Width || m_innerClothedTexture.Height != skinTexture.Height)
 			{
 				Utilities.Dispose(ref m_innerClothedTexture);
 				m_innerClothedTexture = new RenderTarget2D(skinTexture.Width, skinTexture.Height, 1, ColorFormat.Rgba8888, DepthFormat.None);
-				m_componentHumanModel.TextureOverride = m_innerClothedTexture;
 				m_clothedTexturesValid = false;
 			}
 			if (m_outerClothedTexture == null || m_outerClothedTexture.Width != skinTexture.Width || m_outerClothedTexture.Height != skinTexture.Height)
 			{
 				Utilities.Dispose(ref m_outerClothedTexture);
 				m_outerClothedTexture = new RenderTarget2D(skinTexture.Width, skinTexture.Height, 1, ColorFormat.Rgba8888, DepthFormat.None);
-				m_componentOuterClothingModel.TextureOverride = m_outerClothedTexture;
 				m_clothedTexturesValid = false;
 			}
+
+			// Asignar nuestros RenderTargets a los modelos
+			m_componentHumanModel.TextureOverride = m_innerClothedTexture;
+			m_componentOuterClothingModel.TextureOverride = m_outerClothedTexture;
 
 			if (!m_clothedTexturesValid)
 			{
@@ -352,6 +388,7 @@ namespace Game
 				RenderTarget2D oldTarget = Display.RenderTarget;
 				try
 				{
+					// Generar textura interior (piel + ropa interior)
 					Display.RenderTarget = m_innerClothedTexture;
 					Display.Clear(new Vector4?(new Vector4(Color.Transparent)), null, null);
 					int batchIndex = 0;
@@ -373,6 +410,7 @@ namespace Game
 					}
 					m_primitivesRenderer.Flush(true, int.MaxValue);
 
+					// Generar textura exterior (solo ropa exterior)
 					Display.RenderTarget = m_outerClothedTexture;
 					Display.Clear(new Vector4?(new Vector4(Color.Transparent)), null, null);
 					batchIndex = 0;
