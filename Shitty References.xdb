@@ -4,6 +4,16 @@
 <Parameter Name="Class" Guid="8c4f00ca-8f77-47c9-99bb-cefa4f94ee8d" new-Value="Game.ComponentNewVitalStats" Type="string"/>
 
     <Folder Name="Gameplay" Guid="d509e5e2-2c10-49f1-8223-85cd892c63b0">
+    <ComponentTemplate Name="CreatureClothing" Description="Handles clothes worn by creatures" Guid="c1965be4-62ff-42f9-90e6-4e12b4d9a3af" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
+  <Parameter Name="Class" Guid="dbbfd94b-2a9e-45bd-81c0-7a2b6dbb06ec" Value="Game.ComponentCreatureClothing" Type="string"/>
+  <ParameterSet Name="CreatureClothes" Description="Contains clothes worn by creature" Guid="4f57a2eb-2f66-4c72-8005-8fd1f9c65b35">
+    <Parameter Name="Head" Description="List of head clothes" Guid="9804f8ee-6d1e-44e0-be01-fbabf8db806e" Value="" Type="string"/>
+    <Parameter Name="Torso" Description="List of torso clothes" Guid="ff15bccf-2691-4ba3-8e6b-004139829abc" Value="" Type="string"/>
+    <Parameter Name="Legs" Description="List of legs clothes" Guid="ff82679f-3119-4a42-bff3-fdcc9d9c81b1" Value="" Type="string"/>
+    <Parameter Name="Feet" Description="List of feet clothes" Guid="a6949517-bc9b-411a-8471-bf33ca6b6077" Value="" Type="string"/>
+  </ParameterSet>
+</ComponentTemplate>
+
     <ComponentTemplate Name="VehicleInventory" Description="Inventory for vehicles" Guid="87078009-8f4b-4324-9632-544521eec907" InheritanceParent="81a44c6a-c30a-4f53-8d64-0c30aabab8f9">
     <Parameter Name="SlotsCount" Guid="f3d042c1-d140-48c8-a472-dd45d183734f" Value="16" Type="int" />
     <Parameter Name="Class" Guid="6baf2dab-d2e1-46df-97f8-00d547d3c198" Value="Game.ComponentVehicleInventory" Type="string" />
@@ -15,10 +25,6 @@
   <Parameter Name="HealCreatures" Description="Si la criatura puede curar a sus compañeros de manada cuando están heridos. Al activarse, la criatura se detiene, mira al aliado y emite partículas rojas mientras lo cura" Guid="bc2a8edb-7c26-44df-8ff9-ec580304a9d4" Value="false" Type="bool"/>
   <Parameter Name="Probability" Description="Probabilidad de que la criatura intente curarse o curar a un compañero cuando las condiciones se cumplen, 0 a 1" Guid="214307a3-d8a8-4123-a933-56994e74a336" Value="0.5" Type="float"/>
   <Parameter Name="CureDiseases" Description="If true, also cures flu and poison before restoring health" Guid="5699c149-0f80-4c06-951a-c9814d7d89aa" Value="false" Type="bool"/>
-</ComponentTemplate>
-
-    <ComponentTemplate Name="CoordinateDisplay" Description="Hace que se vea las coordenadas en pantalla del jugador" Guid="bd8323f8-399d-4acf-b96d-ed790ea2a6d7" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
-    <Parameter Name="Class" Guid="91e9e7ee-3394-4f89-85ef-06f45f85c8dd" Value="Game.ComponentCoordinateDisplay" Type="string"/>
 </ComponentTemplate>
 
     <ComponentTemplate Name="NewFlyAwayBehavior" Description="Comportamiento nulo. El bicho no huye por nada." Guid="a1cca7f2-9a15-4a07-9ab7-31bda890427e" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
@@ -229,12 +235,20 @@
 <ComponentTemplate Name="ZombieAI2" Description="Inteligencia artificial avanzada para zombies con soporte para armas, recarga automática y animaciones" Guid="9d185bf8-92ec-4ea6-ad86-b8a99b650fd2" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
     <Parameter Name="Class" Guid="86cba08c-bbc6-464a-85df-76bc2791ebef" Value="Game.ComponentZombieAI2" Type="string" Description="Clase C# que implementa el componente de IA para zombies"/>
     <Parameter Name="CanUseInventory" Guid="fa80dc29-cf40-4617-af33-23ce40e094bf" Value="true" Type="bool" Description="Si el zombie puede usar armas del inventario"/>
+    <Parameter Name="CanEquipClothing" Guid="25a42bc3-f008-4eb9-bfcc-5da545faca9f" Value="true" Type="bool" Description="Si la criatura puede equiparse ropa y armadura automáticamente del inventario"/>
 </ComponentTemplate>
 
 <ComponentTemplate Name="ZombieAI" Description="Inteligencia artificial avanzada para zombies con soporte para armas, recarga automática y animaciones" Guid="dc91ba3e-c474-45c3-8d03-ca9a9996dc5f" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
     <Parameter Name="Class" Guid="7f034217-2fb5-4da2-b6a2-c1ffec350ddb" Value="Game.ComponentZombieAI" Type="string" Description="Clase C# que implementa el componente de IA para zombies"/>
     <Parameter Name="CanUseInventory" Guid="65316e97-6084-43e7-b97f-f1382258dded" Value="true" Type="bool" Description="Si el zombie puede usar armas del inventario"/>
     <Parameter Name="AimHandAngleOrder" Guid="e7fe5453-3ba9-4139-a2b9-b534ee25ea9a" Value="90" Type="float" Description="Ángulo en grados que determina la orientación de la mano al apuntar el arma"/>
+    <Parameter Name="CanEquipClothing" Guid="c0d6fa78-314f-4716-b02e-dc4f67519950" Value="true" Type="bool" Description="Si la criatura puede equiparse ropa y armadura automáticamente del inventario"/>
+</ComponentTemplate>
+
+<ComponentTemplate Name="CreatureAI" Description="Inteligencia artificial para criaturas con soporte para armas y recarga automática" Guid="a703e514-0246-49c4-a58d-282a2e0737d1" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
+    <Parameter Name="Class" Guid="e43a2641-0995-446c-aa50-390e7c0e2c12" Value="Game.ComponentCreatureAI" Type="string" Description="Clase C# que implementa el componente"/>
+    <Parameter Name="CanUseInventory" Guid="ddb27b73-4aa7-4580-a5bd-684db3139696" Value="true" Type="bool" Description="Si la criatura puede usar armas del inventario"/>
+    <Parameter Name="CanEquipClothing" Guid="f5668c0a-04a1-4a3c-901a-9f877ef899c9" Value="false" Type="bool" Description="Si la criatura puede equiparse ropa y armadura automáticamente del inventario"/>
 </ComponentTemplate>
 
 <ComponentTemplate Name="HumanModel" Description="Modelo humano con animaciones mejoradas y fluidas" Guid="da33e501-1378-4644-8b5f-ef90863234a5" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
@@ -246,11 +260,6 @@
     <Parameter Name="AimSmoothFactor" Description="Factor de suavizado específico para apuntar (0.1-0.5)" Guid="9de74454-475d-4820-bac6-e38c8d24a2f8" Value="0.3" Type="float"/>
     <Parameter Name="AimTransitionSpeed" Description="Velocidad de transición para apuntar (3-8, menor = más lento)" Guid="607c17ad-8d6d-4551-99fb-f3bba5726ed4" Value="5" Type="float"/>
     <Parameter Name="Class" Guid="4a840f5c-acee-468a-babd-f2d835620c2a" Value="Game.ComponentNewHumanModel" Type="string"/>
-</ComponentTemplate>
-
-<ComponentTemplate Name="CreatureAI" Description="Inteligencia artificial para criaturas con soporte para armas y recarga automática" Guid="a703e514-0246-49c4-a58d-282a2e0737d1" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
-    <Parameter Name="Class" Guid="e43a2641-0995-446c-aa50-390e7c0e2c12" Value="Game.ComponentCreatureAI" Type="string" Description="Clase C# que implementa el componente"/>
-    <Parameter Name="CanUseInventory" Guid="ddb27b73-4aa7-4580-a5bd-684db3139696" Value="true" Type="bool" Description="Si la criatura puede usar armas del inventario"/>
 </ComponentTemplate>
         
 <ComponentTemplate Name="DeathSpawner" Description="Genera una entidad al morir, seleccionada aleatoriamente según probabilidades configuradas" Guid="32905e25-1938-46fb-8659-a86ee79cfaa4" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
