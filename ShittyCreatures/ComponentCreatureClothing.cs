@@ -20,6 +20,7 @@ namespace Game
 		public ComponentNewHumanModel m_componentNewHumanModel;
 		public ComponentOuterClothingModel m_componentOuterClothingModel;
 		public ComponentBody m_componentBody;
+		public ComponentHealth m_componentHealth;
 		public SubsystemTerrain m_subsystemTerrain;
 		public SubsystemGameInfo m_subsystemGameInfo;
 		public SubsystemModelsRenderer m_subsystemModelsRenderer;
@@ -32,9 +33,11 @@ namespace Game
 		public RenderTarget2D m_outerClothedTexture;
 		public PrimitivesRenderer2D m_primitivesRenderer = new PrimitivesRenderer2D();
 		public bool m_clothedTexturesValid;
-
-		// Textura original de la piel (sin ropa)
 		public Texture2D m_originalSkinTexture;
+
+		// Control de peso (densidad)
+		public float m_baseDensity;
+		public float m_totalDensityModifier;
 
 		// Para IInventory
 		Project IInventory.Project => Project;
@@ -70,11 +73,16 @@ namespace Game
 
 			m_componentCreature = Entity.FindComponent<ComponentCreature>(true);
 			m_componentBody = m_componentCreature.ComponentBody;
+			m_componentHealth = Entity.FindComponent<ComponentHealth>(true);
 			m_componentHumanModel = Entity.FindComponent<ComponentHumanModel>(true);
 			m_componentNewHumanModel = Entity.FindComponent<ComponentNewHumanModel>(false);
 			m_componentOuterClothingModel = Entity.FindComponent<ComponentOuterClothingModel>(true);
 
-			// Guardar la textura de piel original (puede ser null al inicio)
+			// Guardar densidad base
+			m_baseDensity = m_componentBody.Density;
+			m_totalDensityModifier = 0f;
+
+			// Guardar textura original
 			m_originalSkinTexture = m_componentHumanModel.TextureOverride;
 
 			foreach (ClothingSlot slot in ClothingSlot.ClothingSlots.Values)
@@ -93,7 +101,14 @@ namespace Game
 				}
 			}
 
+			// Suscribirse al evento de lesión para aplicar desgaste de armadura
+			if (m_componentHealth != null)
+			{
+				m_componentHealth.Injured += OnInjured;
+			}
+
 			Display.DeviceReset += Display_DeviceReset;
+			RecalculateDensity();
 		}
 
 		public override void Save(ValuesDictionary valuesDictionary, EntityToIdMap entityToIdMap)
@@ -113,11 +128,32 @@ namespace Game
 			Utilities.Dispose(ref m_innerClothedTexture);
 			Utilities.Dispose(ref m_outerClothedTexture);
 			Display.DeviceReset -= Display_DeviceReset;
+			if (m_componentHealth != null)
+			{
+				m_componentHealth.Injured -= OnInjured;
+			}
 		}
 
 		private void Display_DeviceReset()
 		{
 			m_clothedTexturesValid = false;
+		}
+
+		// -------------------------------------------------------------
+		// MANEJADOR DE LESIONES (Desgaste de armadura al recibir daño)
+		// -------------------------------------------------------------
+		private void OnInjured(Injury injury)
+		{
+			if (injury == null || m_componentHealth == null || m_componentHealth.Health <= 0f)
+				return;
+
+			float damageToAbsorb = injury.Amount;
+
+			// Intentar absorber daño con la armadura
+			float remainingDamage = ApplyArmorProtection(damageToAbsorb);
+
+			// Reducir la cantidad de daño de la lesión
+			injury.Amount = remainingDamage;
 		}
 
 		// -------------------------------------------------------------
@@ -142,7 +178,26 @@ namespace Game
 
 				m_clothes[slot] = clothesList;
 				m_clothedTexturesValid = false;
+				RecalculateDensity();
 			}
+		}
+
+		private void RecalculateDensity()
+		{
+			float totalModifier = 0f;
+			foreach (var kv in m_clothes)
+			{
+				foreach (int value in kv.Value)
+				{
+					ClothingData data = GetClothingData(value);
+					if (data != null)
+					{
+						totalModifier += data.DensityModifier;
+					}
+				}
+			}
+			m_totalDensityModifier = totalModifier;
+			m_componentBody.Density = m_baseDensity + totalModifier;
 		}
 
 		public ReadOnlyList<int> GetClothes(ClothingSlot slot)
@@ -337,7 +392,6 @@ namespace Game
 
 		private void UpdateRenderTargets()
 		{
-			// Actualizar la textura original si el modelo cambió su TextureOverride a algo que no es nuestro.
 			Texture2D currentTex = m_componentHumanModel.TextureOverride;
 			if (currentTex != m_innerClothedTexture && currentTex != null)
 			{
@@ -346,7 +400,6 @@ namespace Game
 
 			if (!HasAnyClothes())
 			{
-				// No hay ropa: restaurar la textura original y limpiar nuestros RenderTargets
 				if (m_innerClothedTexture != null)
 				{
 					Utilities.Dispose(ref m_innerClothedTexture);
@@ -361,9 +414,8 @@ namespace Game
 			}
 
 			Texture2D skinTexture = m_originalSkinTexture;
-			if (skinTexture == null) return; // no hay textura base todavía
+			if (skinTexture == null) return;
 
-			// Crear RenderTargets si es necesario
 			if (m_innerClothedTexture == null || m_innerClothedTexture.Width != skinTexture.Width || m_innerClothedTexture.Height != skinTexture.Height)
 			{
 				Utilities.Dispose(ref m_innerClothedTexture);
@@ -377,7 +429,6 @@ namespace Game
 				m_clothedTexturesValid = false;
 			}
 
-			// Asignar nuestros RenderTargets a los modelos
 			m_componentHumanModel.TextureOverride = m_innerClothedTexture;
 			m_componentOuterClothingModel.TextureOverride = m_outerClothedTexture;
 
@@ -388,7 +439,6 @@ namespace Game
 				RenderTarget2D oldTarget = Display.RenderTarget;
 				try
 				{
-					// Generar textura interior (piel + ropa interior)
 					Display.RenderTarget = m_innerClothedTexture;
 					Display.Clear(new Vector4?(new Vector4(Color.Transparent)), null, null);
 					int batchIndex = 0;
@@ -410,7 +460,6 @@ namespace Game
 					}
 					m_primitivesRenderer.Flush(true, int.MaxValue);
 
-					// Generar textura exterior (solo ropa exterior)
 					Display.RenderTarget = m_outerClothedTexture;
 					Display.Clear(new Vector4?(new Vector4(Color.Transparent)), null, null);
 					batchIndex = 0;
