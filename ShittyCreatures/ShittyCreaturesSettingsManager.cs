@@ -18,9 +18,10 @@ namespace Game
 		public static bool CoordinateDisplayEnabled { get; set; } = true;
 		public static bool PunchCommandEnabled { get; set; } = true;
 		public static bool FreeCameraEnabled { get; set; } = true;
-
-		// Nueva propiedad para controlar la defensa en modo Creativo
 		public static bool CreativeDefenseEnabled { get; set; } = true;
+
+		// Nueva propiedad para la música del menú
+		public static bool MenuMusicEnabled { get; set; } = true;
 
 		public static void Load()
 		{
@@ -66,6 +67,9 @@ namespace Game
 								break;
 							case "FreeCameraEnabled":
 								FreeCameraEnabled = value;
+								break;
+							case "MenuMusicEnabled":
+								MenuMusicEnabled = value;
 								break;
 						}
 					}
@@ -122,10 +126,16 @@ namespace Game
 						new XAttribute("Name", "CreativeDefenseEnabled"),
 						new XAttribute("Type", "bool"),
 						new XAttribute("Value", CreativeDefenseEnabled)));
+
 					root.Add(new XElement("Value",
 						new XAttribute("Name", "FreeCameraEnabled"),
 						new XAttribute("Type", "bool"),
 						new XAttribute("Value", FreeCameraEnabled)));
+
+					root.Add(new XElement("Value",
+						new XAttribute("Name", "MenuMusicEnabled"),
+						new XAttribute("Type", "bool"),
+						new XAttribute("Value", MenuMusicEnabled)));
 
 					XmlUtils.SaveXmlToStream(root, stream, null, true);
 				}
