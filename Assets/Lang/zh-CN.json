@@ -101,7 +101,8 @@
     "CoordinateDisplay": "显示坐标",
     "PunchCommandDescription": "无论使用哪种攻击方式，只要你攻击NPC，盟友都会攻击并追击该目标",
     "CreativeDefenseDescription": "在创造模式中，当生物攻击玩家时，盟友会攻击该攻击者",
-    "FreeCameraDescription": "启用/禁用自由相机模式（仅在非创造模式下）"
+    "FreeCameraDescription": "启用/禁用自由相机模式（仅在非创造模式下）",
+    "MenuMusicDescription": "控制在浏览游戏菜单时是否播放自定义音乐"
   },
   "AntidoteBucket": {
     "NPCCured": "NPC 的毒素和疾病已被清除！"
