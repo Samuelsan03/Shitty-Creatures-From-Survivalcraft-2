@@ -337,7 +337,7 @@ namespace Game
 		// ---------------------------------------------------------------------------------
 		public override void BeforeWidgetUpdate(Widget widget)
 		{
-			// ---------- Lógica original del menú ----------
+			// ---------- Lógica del menú principal ----------
 			MainMenuScreen mainMenu = widget as MainMenuScreen;
 			if (mainMenu != null)
 			{
@@ -350,8 +350,15 @@ namespace Game
 					ScreensManager.SwitchScreen("ShittyCreaturesReleases");
 				}
 
-				// Botón "Acerca del Mod"
+				// Efecto arcoíris en "Acerca del Mod"
 				BevelledButtonWidget aboutButton = mainMenu.Children.Find<BevelledButtonWidget>("ShittyAboutButton", false);
+				if (aboutButton != null)
+				{
+					// Sin desfase
+					float hue = (float)((Time.RealTime * 60.0) % 360.0);
+					Vector3 rgb = Color.HsvToRgb(new Vector3(hue, 1f, 1f));
+					aboutButton.Color = new Color(rgb);
+				}
 				if (aboutButton != null && aboutButton.IsClicked)
 					DialogsManager.ShowDialog(null, new ShittyCreaturesAboutDialog());
 
@@ -361,7 +368,21 @@ namespace Game
 					Environment.Exit(0);
 			}
 
-			// ---------- NUEVO: Actualizar HUD de coordenadas ----------
+			// ─── Efecto arcoíris en el botón de ajustes del mod (fuera del bloque MainMenuScreen) ───
+			SettingsScreen settings = widget as SettingsScreen;
+			if (settings != null)
+			{
+				BevelledButtonWidget modSettingsButton = settings.Children.Find<BevelledButtonWidget>("ShittyCreaturesSettingsButton", true);
+				if (modSettingsButton != null)
+				{
+					// Desfasado 180° → color complementario
+					float hue = (float)((Time.RealTime * 60.0 + 180.0) % 360.0);
+					Vector3 rgb = Color.HsvToRgb(new Vector3(hue, 1f, 1f));
+					modSettingsButton.Color = new Color(rgb);
+				}
+			}
+
+			// ---------- HUD de coordenadas ----------
 			if (!ShittyCreaturesSettingsManager.CoordinateDisplayEnabled)
 				return;
 
@@ -370,11 +391,9 @@ namespace Game
 				return;
 
 			ComponentPlayer player = gameWidget.PlayerData?.ComponentPlayer;
-			// Verificar que el jugador existe y está VIVO (salud > 0)
 			if (player == null || player.ComponentHealth.Health <= 0f)
 				return;
 
-			// Crear label si no existe
 			if (!m_coordinateLabels.ContainsKey(player))
 			{
 				LabelWidget label = new LabelWidget
@@ -391,7 +410,6 @@ namespace Game
 				m_coordinateLabels[player] = label;
 			}
 
-			// Obtener el label y actualizar texto
 			LabelWidget coordLabel = m_coordinateLabels[player];
 			Vector3 pos = player.ComponentBody.Position;
 			string format = LanguageControl.Get(new string[] { "Coordinates", "0" });
@@ -586,12 +604,12 @@ namespace Game
 		// Hook: MenuPlayMusic (MusicModLoader)
 		// ---------------------------------------------------------------------------------
 		public override void MenuPlayMusic(out string contentMusicPath)
-{
-    if (ShittyCreaturesSettingsManager.MenuMusicEnabled)
-        contentMusicPath = GetRandomSong();
-    else
-        contentMusicPath = string.Empty; // Retorna vacío para que MusicManager use la música original
-}
+		{
+			if (ShittyCreaturesSettingsManager.MenuMusicEnabled)
+				contentMusicPath = GetRandomSong();
+			else
+				contentMusicPath = string.Empty; // Retorna vacío para que MusicManager use la música original
+		}
 
 		// ---------------------------------------------------------------------------------
 		// Hook: PlayInGameMusic (MusicModLoader)
