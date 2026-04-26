@@ -15,7 +15,7 @@ namespace Game
 		private const string ALERT_SOUND_PATH = "Audio/UI/Tank Warning Sound";
 		private const float MUSIC_DURATION = 52.0f;
 		private const float CHECK_INTERVAL = 0.1f;
-		private const float DETECTION_RADIUS = 20f;
+		private const float DETECTION_RADIUS = 50f;  // Cambiado de 20 a 50
 
 		#endregion
 
@@ -93,9 +93,8 @@ namespace Game
 				{
 					if (m_isChaseActive)
 					{
-						StartChaseMusicImmediately();  // Internamente respeta TankMusicEnabled
+						StartChaseMusicImmediately();
 
-						// Alertas SIEMPRE se muestran, independientemente de la música
 						PlayAlertSound();
 						if (!m_alertShown)
 						{
@@ -136,36 +135,33 @@ namespace Game
 				{
 					string entityName = entity.ValuesDictionary.DatabaseObject.Name;
 
-					// Verificar si es un tanque (vivo o fantasma)
 					if (entityName != "Tank1" && entityName != "Tank2" && entityName != "Tank3" &&
-						entityName != "TankGhost1" && entityName != "TankGhost2" && entityName != "TankGhost3" && entityName != "FrozenTankGhost" && entityName != "FrozenTank")
+						entityName != "TankGhost1" && entityName != "TankGhost2" && entityName != "TankGhost3" &&
+						entityName != "FrozenTankGhost" && entityName != "FrozenTank")
 						continue;
 
-					// Verificar si está vivo
 					ComponentHealth health = entity.FindComponent<ComponentHealth>();
 					if (health != null && health.Health <= 0f)
 						continue;
 
-					// Obtener su cuerpo para verificar distancia
 					ComponentBody tankBody = entity.FindComponent<ComponentBody>();
 					if (tankBody == null)
 						continue;
 
-					// Verificar distancia con cada jugador activo
 					foreach (ComponentPlayer player in activePlayers)
 					{
 						ComponentBody playerBody = player.Entity.FindComponent<ComponentBody>();
 						if (playerBody != null)
 						{
 							float distance = Vector3.Distance(tankBody.Position, playerBody.Position);
-							if (distance < DETECTION_RADIUS)
+							if (distance < DETECTION_RADIUS)  // Ahora usa 50f
 							{
-								return true; // Tanque cerca detectado
+								return true;
 							}
 						}
 					}
 				}
-				catch (Exception)
+				catch (System.Exception)
 				{
 					// Ignorar errores
 				}
@@ -199,7 +195,6 @@ namespace Game
 
 		private void StartChaseMusicImmediately()
 		{
-			// NUEVO: Verificar si la música está habilitada
 			if (!ChaseMusicConfig.TankMusicEnabled)
 			{
 				return;
@@ -252,7 +247,6 @@ namespace Game
 			if (!m_isChaseActive || !m_musicPlaying)
 				return;
 
-			// Verificar configuración antes de reiniciar
 			if (!ChaseMusicConfig.TankMusicEnabled)
 			{
 				StopChaseMusicImmediately();
@@ -308,7 +302,7 @@ namespace Game
 
 		private void PlayAlertSound()
 		{
-			if (m_subsystemAudio == null) return;  // Solo verificamos que el subsistema exista
+			if (m_subsystemAudio == null) return;
 
 			try
 			{
@@ -322,7 +316,7 @@ namespace Game
 
 		private void ShowAlertMessage()
 		{
-			if (m_subsystemPlayers == null) return;  // Solo verificamos que exista el subsistema
+			if (m_subsystemPlayers == null) return;
 
 			var componentPlayers = m_subsystemPlayers.ComponentPlayers;
 			if (componentPlayers.Count == 0) return;
