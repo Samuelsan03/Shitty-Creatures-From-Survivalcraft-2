@@ -14,7 +14,7 @@ namespace Game
 		private const string MUSIC_PATH = "MenuMusic/ChaseTheme/Hotel Insanity Chase Theme";
 		private const float MUSIC_DURATION = 32.0f;
 		private const float CHECK_INTERVAL = 0.1f;
-		private const float DETECTION_RADIUS = 20f;
+		private const float DETECTION_RADIUS = 50f;  // Radio de 50
 
 		#endregion
 
@@ -131,24 +131,24 @@ namespace Game
 					if (health != null && health.Health <= 0f)
 						continue;
 
+					// Primero verificar si ya está persiguiendo activamente
 					ComponentZombieChaseBehavior chaseBehavior = entity.FindComponent<ComponentZombieChaseBehavior>();
 					if (chaseBehavior != null && chaseBehavior.IsActive)
 					{
-						return true;
-					}
-
-					ComponentBody ghostBody = entity.FindComponent<ComponentBody>();
-					if (ghostBody != null)
-					{
-						foreach (ComponentPlayer player in activePlayers)
+						// Verificar también que esté dentro del radio de detección
+						ComponentBody ghostBody = entity.FindComponent<ComponentBody>();
+						if (ghostBody != null)
 						{
-							ComponentBody playerBody = player.Entity.FindComponent<ComponentBody>();
-							if (playerBody != null)
+							foreach (ComponentPlayer player in activePlayers)
 							{
-								float distance = (ghostBody.Position - playerBody.Position).Length();
-								if (distance < DETECTION_RADIUS)
+								ComponentBody playerBody = player.Entity.FindComponent<ComponentBody>();
+								if (playerBody != null)
 								{
-									return true;
+									float distance = (ghostBody.Position - playerBody.Position).Length();
+									if (distance < DETECTION_RADIUS)  // Usa el radio de 50f
+									{
+										return true;
+									}
 								}
 							}
 						}
@@ -188,7 +188,6 @@ namespace Game
 
 		private void StartChaseMusicImmediately()
 		{
-			// NUEVO: Verificar si la música está habilitada
 			if (!ChaseMusicConfig.GhostMusicEnabled)
 			{
 				Log.Debug("[GhostMusic] Música desactivada por configuración");
@@ -242,7 +241,6 @@ namespace Game
 			if (!m_isChaseActive || !m_musicPlaying)
 				return;
 
-			// Verificar configuración antes de reiniciar
 			if (!ChaseMusicConfig.GhostMusicEnabled)
 			{
 				StopChaseMusicImmediately();
