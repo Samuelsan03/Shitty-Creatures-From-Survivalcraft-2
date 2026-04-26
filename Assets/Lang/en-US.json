@@ -101,7 +101,8 @@
     "CoordinateDisplay": "Show coordinates",
     "PunchCommandDescription": "Allies will attack and chase any NPC you hit, regardless of the type of attack",
     "CreativeDefenseDescription": "In Creative mode, when a creature hits the player, allies will attack the attacker",
-    "FreeCameraDescription": "Enable/disable free camera mode (only in non-creative modes)"
+    "FreeCameraDescription": "Enable/disable free camera mode (only in non-creative modes)",
+    "MenuMusicDescription": "Controls whether custom music is played while navigating the game menu"
   },
   "AntidoteBucket": {
     "NPCCured": "The NPC has been cured of poison and sickness!"
@@ -1127,6 +1128,16 @@
 }
 },
       "ContentWidgets": {
+        "GreenNightConfigDialog": {
+  "1": "Green Night Configuration",
+  "2": "Days between events:",
+  "3": "{0} days",
+  "4": "Few days to prepare. Green nights will be frequent, ideal for those looking for a constant challenge.",
+  "5": "More days to establish your base and gather resources before each event. Recommended for balanced games.",
+  "6": "Accept",
+  "7": "Cancel",
+  "8": "Set to {0} days."
+},
         "VehicleInventoryWidget": {
           "1": "Vehicle",
           "2": "Inventory"
