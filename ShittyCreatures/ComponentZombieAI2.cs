@@ -24,6 +24,12 @@ namespace Game
 		private SubsystemSoundMaterials m_subsystemSoundMaterials;
 		private Random m_random = new Random();
 
+		private ComponentCreatureClothing m_componentCreatureClothing;
+		private bool m_canEquipClothing = false;
+		private double m_clothingEquipStartTime;
+		private bool m_isEquippingClothing;
+		private int m_pendingClothingSlot;
+
 		private class FirearmConfig
 		{
 			public Type BulletBlockType { get; set; }
@@ -175,6 +181,9 @@ namespace Game
 			m_componentPathfinding = Entity.FindComponent<ComponentPathfinding>(true); // AÑADIR
 			m_subsystemBodies = Project.FindSubsystem<SubsystemBodies>(true);
 			m_subsystemSoundMaterials = Project.FindSubsystem<SubsystemSoundMaterials>(true);
+
+			m_componentCreatureClothing = Entity.FindComponent<ComponentCreatureClothing>();
+			m_canEquipClothing = valuesDictionary.GetValue<bool>("CanEquipClothing", false);
 
 			m_currentRepeatArrowTypeIndex = m_random.Int(0, m_repeatCrossbowArrowTypes.Length - 1);
 			m_currentRepeatArrowType = m_repeatCrossbowArrowTypes[m_currentRepeatArrowTypeIndex];
@@ -596,6 +605,86 @@ namespace Game
 		{
 			if (!CanUseInventory || m_componentCreature == null || m_componentCreature.ComponentHealth.Health <= 0f)
 				return;
+
+			if (m_canEquipClothing && m_componentCreatureClothing != null && m_componentInventory != null)
+			{
+				if (m_isEquippingClothing)
+				{
+					if (m_subsystemTime.GameTime - m_clothingEquipStartTime >= 0.55)
+					{
+						int slotIndex = m_pendingClothingSlot;
+						int slotValue = m_componentInventory.GetSlotValue(slotIndex);
+						if (slotValue != 0)
+						{
+							Block block = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)];
+							ClothingData data = block.GetClothingData(slotValue);
+							if (data != null)
+							{
+								int clothingSlotIndex = ComponentCreatureClothing.GetClothingSlotIndex(data.Slot);
+								if (clothingSlotIndex >= 0 && m_componentCreatureClothing.GetSlotProcessCapacity(clothingSlotIndex, slotValue) > 0)
+								{
+									m_componentCreatureClothing.ProcessSlotItems(clothingSlotIndex, slotValue, 1, 1, out int processedValue, out int processedCount);
+									if (processedCount > 0)
+									{
+										m_componentInventory.RemoveSlotItems(slotIndex, 1);
+									}
+								}
+							}
+						}
+						m_isEquippingClothing = false;
+						ResetWeaponState();
+						if (m_componentModel != null)
+						{
+							m_componentModel.AimHandAngleOrder = 0f;
+							m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
+							m_componentModel.InHandItemRotationOrder = Vector3.Zero;
+							m_componentModel.LookAtOrder = null;
+						}
+						return;
+					}
+					else
+					{
+						if (m_componentModel != null)
+						{
+							m_componentModel.AimHandAngleOrder = 0f;
+							m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
+							m_componentModel.InHandItemRotationOrder = Vector3.Zero;
+							m_componentModel.LookAtOrder = null;
+						}
+						return;
+					}
+				}
+				else
+				{
+					for (int i = 0; i < m_componentInventory.SlotsCount; i++)
+					{
+						int slotValue = m_componentInventory.GetSlotValue(i);
+						if (slotValue != 0)
+						{
+							Block block = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)];
+							ClothingData data = block.GetClothingData(slotValue);
+							if (data != null)
+							{
+								int clothingSlotIndex = ComponentCreatureClothing.GetClothingSlotIndex(data.Slot);
+								if (clothingSlotIndex >= 0 && m_componentCreatureClothing.GetSlotProcessCapacity(clothingSlotIndex, slotValue) > 0)
+								{
+									m_isEquippingClothing = true;
+									m_clothingEquipStartTime = m_subsystemTime.GameTime;
+									m_pendingClothingSlot = i;
+									if (m_componentModel != null)
+									{
+										m_componentModel.AimHandAngleOrder = 0f;
+										m_componentModel.InHandItemOffsetOrder = Vector3.Zero;
+										m_componentModel.InHandItemRotationOrder = Vector3.Zero;
+										m_componentModel.LookAtOrder = null;
+									}
+									return;
+								}
+							}
+						}
+					}
+				}
+			}
 
 			ComponentCreature target = m_componentChaseBehavior?.Target;
 
@@ -3120,6 +3209,7 @@ namespace Game
 			m_isItemsLauncherReloading = false;
 			m_itemsLauncherShotsFired = 0;
 			m_isAiming = false;
+			m_isEquippingClothing = false;
 			m_isDrawing = false;
 			m_isFiring = false;
 			m_isReloading = false;
