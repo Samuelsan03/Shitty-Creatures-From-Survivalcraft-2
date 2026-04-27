@@ -601,6 +601,22 @@ namespace Game
 			}
 		}
 
+		private bool IsTargetInFront(ComponentCreature target)
+		{
+			if (target == null) return false;
+			Vector3 forward = m_componentCreature.ComponentBody.Matrix.Forward;
+			Vector3 toTarget = target.ComponentBody.Position - m_componentCreature.ComponentBody.Position;
+			forward.Y = 0f;
+			toTarget.Y = 0f;
+			float dot = forward.X * toTarget.X + forward.Z * toTarget.Z;
+			float lenForward = MathF.Sqrt(forward.X * forward.X + forward.Z * forward.Z);
+			float lenToTarget = MathF.Sqrt(toTarget.X * toTarget.X + toTarget.Z * toTarget.Z);
+			if (lenToTarget < 0.001f) return true;
+			float cosAngle = dot / (lenForward * lenToTarget);
+			float halfAngleRad = 45f * MathF.PI / 180f;
+			return cosAngle >= MathF.Cos(halfAngleRad);
+		}
+
 		public void Update(float dt)
 		{
 			if (!CanUseInventory || m_componentCreature == null || m_componentCreature.ComponentHealth.Health <= 0f)
@@ -706,12 +722,15 @@ namespace Game
 				{
 					if (!m_isMelee)
 					{
-						if (!EnterMeleeMode())
+						if (IsTargetInFront(target) && EnterMeleeMode())
+						{
+							// m_isMelee ya true
+						}
+						else
 						{
 							m_isMelee = false;
 						}
 					}
-
 					if (m_isMelee)
 					{
 						UpdateMeleeMode(target);
@@ -721,7 +740,7 @@ namespace Game
 						float maxDistance = GetWeaponMaxDistance();
 						if (distance <= maxDistance)
 						{
-							if (m_currentWeaponSlot == -1)
+							if (m_currentWeaponSlot == -1 && IsTargetInFront(target))
 							{
 								FindRangedWeapon();
 							}
@@ -756,11 +775,11 @@ namespace Game
 						}
 					}
 				}
-				else
+				else // distance > MeleeRange
 				{
 					if (m_isMelee) ExitMeleeMode();
 
-					if (m_currentWeaponSlot == -1)
+					if (m_currentWeaponSlot == -1 && IsTargetInFront(target))
 					{
 						FindRangedWeapon();
 					}
