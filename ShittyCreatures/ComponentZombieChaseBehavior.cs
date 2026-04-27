@@ -8,6 +8,13 @@ namespace Game
 {
 	public class ComponentZombieChaseBehavior : ComponentChaseBehavior, IUpdateable
 	{
+		public bool ForceAttackDuringGreenNight => this.m_forceAttackDuringGreenNight;
+		public bool Suppressed
+		{
+			get => base.Suppressed;
+			set => base.Suppressed = value;
+		}
+		public string CurrentState => this.m_stateMachine?.CurrentState;
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
 			base.Load(valuesDictionary, idToEntityMap);
