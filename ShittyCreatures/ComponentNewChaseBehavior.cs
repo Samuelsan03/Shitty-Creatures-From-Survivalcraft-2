@@ -51,11 +51,11 @@ namespace Game
 		public float MusketAimTime = 1.5f;
 		public float MusketCooldown = 0.35f;
 		public float BowAimTime = 1.5f;
-		public float BowCooldown = 0.1f;
+		public float BowCooldown = 0.05f;
 		public float CrossbowAimTime = 1.5f;
-		public float CrossbowCooldown = 0.1f;
+		public float CrossbowCooldown = 0.05f;
 		public float RepeatCrossbowAimTime = 1.5f;
-		public float RepeatCrossbowCooldown = 0.1f;
+		public float RepeatCrossbowCooldown = 0.05f;
 		public float FlameThrowerAimTime = 1.5f;
 		public float FlameThrowerCooldown = 0.1f;
 		public float DoubleMusketAimTime = 1.5f;
