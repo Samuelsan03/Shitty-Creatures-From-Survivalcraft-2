@@ -17,7 +17,10 @@ namespace Game
 			"Textures/Wallpapers/left 4 dead",
 			"Textures/Wallpapers/digimon frontier",
 			"Textures/Wallpapers/multi digimon",
-			"Textures/Wallpapers/axel gear"
+			"Textures/Wallpapers/axel gear",
+			"Textures/Wallpapers/infinite jack",
+			"Textures/Wallpapers/jack metamorphosis",
+			"Textures/Wallpapers/jack the chacal serious",
 		};
 
 		private enum TransitionState
