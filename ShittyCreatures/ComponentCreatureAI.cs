@@ -707,12 +707,16 @@ namespace Game
 				{
 					if (!m_isMelee)
 					{
-						if (!EnterMeleeMode())
+						// Solo intentar entrar en modo melee si está mirando al objetivo
+						if (IsTargetInFront(target) && EnterMeleeMode())
+						{
+							// m_isMelee ya está puesto a true por EnterMeleeMode
+						}
+						else
 						{
 							m_isMelee = false;
 						}
 					}
-
 					if (m_isMelee)
 					{
 						UpdateMeleeMode(target);
@@ -722,7 +726,8 @@ namespace Game
 						float maxDistance = GetWeaponMaxDistance();
 						if (distance <= maxDistance)
 						{
-							if (m_currentWeaponSlot == -1)
+							// Solo buscar arma a distancia si está mirando al objetivo
+							if (m_currentWeaponSlot == -1 && IsTargetInFront(target))
 							{
 								FindRangedWeapon();
 							}
@@ -757,11 +762,12 @@ namespace Game
 						}
 					}
 				}
-				else
+				else // distance > MeleeRange
 				{
 					if (m_isMelee) ExitMeleeMode();
 
-					if (m_currentWeaponSlot == -1)
+					// Solo buscar arma a distancia si está mirando al objetivo
+					if (m_currentWeaponSlot == -1 && IsTargetInFront(target))
 					{
 						FindRangedWeapon();
 					}
@@ -1862,6 +1868,22 @@ namespace Game
 			}
 
 			m_subsystemAudio.PlaySound("Audio/Armas/reload", 0.8f, 0f, m_componentCreature.ComponentCreatureModel.EyePosition, 10f, true);
+		}
+
+		private bool IsTargetInFront(ComponentCreature target)
+		{
+			if (target == null) return false;
+			Vector3 forward = m_componentCreature.ComponentBody.Matrix.Forward;
+			Vector3 toTarget = target.ComponentBody.Position - m_componentCreature.ComponentBody.Position;
+			forward.Y = 0f;
+			toTarget.Y = 0f;
+			float dot = forward.X * toTarget.X + forward.Z * toTarget.Z;
+			float lenForward = MathF.Sqrt(forward.X * forward.X + forward.Z * forward.Z);
+			float lenToTarget = MathF.Sqrt(toTarget.X * toTarget.X + toTarget.Z * toTarget.Z);
+			if (lenToTarget < 0.001f) return true;
+			float cosAngle = dot / (lenForward * lenToTarget);
+			float halfAngleRad = 45f * MathF.PI / 180f;
+			return cosAngle >= MathF.Cos(halfAngleRad);
 		}
 
 		private void FireFirearm(ComponentCreature target, FirearmConfig config)
