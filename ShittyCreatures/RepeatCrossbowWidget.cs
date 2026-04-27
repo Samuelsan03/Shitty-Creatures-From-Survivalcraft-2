@@ -103,7 +103,7 @@ namespace Game
 						return;
 					}
 				}
-				AudioManager.PlaySound("Audio/CrossbowDraw", 1f, this.m_random.Float(-0.2f, 0.2f), 0f);
+				AudioManager.PlaySound("Audio/Crossbow Remake/Crossbow Loading Remake", 1f, this.m_random.Float(-0.2f, 0.2f), 0f);
 				return;
 			}
 			this.m_dragStartOffset = null;
