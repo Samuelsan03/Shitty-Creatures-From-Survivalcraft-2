@@ -803,27 +803,27 @@ namespace Game
 				{
 					if (!m_isMelee)
 					{
-						if (!EnterMeleeMode())
+						// Solo intentar entrar en modo melee si está mirando al objetivo
+						if (IsTargetInFront(target) && EnterMeleeMode())
 						{
-							// No hay arma cuerpo a cuerpo - NO entrar en modo melee
-							// PERO seguir disparando y golpeando
+							// m_isMelee ya está puesto a true por EnterMeleeMode
+						}
+						else
+						{
 							m_isMelee = false;
 						}
 					}
-
 					if (m_isMelee)
 					{
 						UpdateMeleeMode(target);
 					}
 					else
 					{
-						// NO hay arma melee - usar arma a distancia Y golpear al mismo tiempo
-
-						// Usar el arma a distancia NORMAL (dispara)
-						float maxDistance = GetWeaponMaxDistance(); // Esto es 100f o más
-						if (distance <= maxDistance) // Siempre true si distance <= 5f
+						float maxDistance = GetWeaponMaxDistance();
+						if (distance <= maxDistance)
 						{
-							if (m_currentWeaponSlot == -1)
+							// Solo buscar arma a distancia si está mirando al objetivo
+							if (m_currentWeaponSlot == -1 && IsTargetInFront(target))
 							{
 								FindRangedWeapon();
 							}
@@ -853,11 +853,12 @@ namespace Game
 						}
 					}
 				}
-				else
+				else // distance > MeleeRange
 				{
 					if (m_isMelee) ExitMeleeMode();
 
-					if (m_currentWeaponSlot == -1)
+					// Solo buscar arma a distancia si está mirando al objetivo
+					if (m_currentWeaponSlot == -1 && IsTargetInFront(target))
 					{
 						FindRangedWeapon();
 					}
@@ -1682,6 +1683,22 @@ namespace Game
 					m_nextMeleeAttackTime = m_subsystemTime.GameTime + m_meleeAttackInterval;
 				}
 			}
+		}
+
+		private bool IsTargetInFront(ComponentCreature target)
+		{
+			if (target == null) return false;
+			Vector3 forward = m_componentCreature.ComponentBody.Matrix.Forward;
+			Vector3 toTarget = target.ComponentBody.Position - m_componentCreature.ComponentBody.Position;
+			forward.Y = 0f;
+			toTarget.Y = 0f;
+			float dot = forward.X * toTarget.X + forward.Z * toTarget.Z;
+			float lenForward = MathF.Sqrt(forward.X * forward.X + forward.Z * forward.Z);
+			float lenToTarget = MathF.Sqrt(toTarget.X * toTarget.X + toTarget.Z * toTarget.Z);
+			if (lenToTarget < 0.001f) return true;
+			float cosAngle = dot / (lenForward * lenToTarget);
+			float halfAngleRad = 45f * MathF.PI / 180f;
+			return cosAngle >= MathF.Cos(halfAngleRad);
 		}
 
 		private void StartThrowableAiming()
