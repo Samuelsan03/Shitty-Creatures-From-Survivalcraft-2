@@ -567,6 +567,10 @@ namespace Game
 			if (m_isAimingThrowable)
 				return;
 
+			// Solo cambiar de arma si estamos mirando al objetivo
+			if (!IsTargetInFront())
+				return;
+
 			if (shouldUseMelee)
 			{
 				if (!IsCurrentWeaponMelee)
