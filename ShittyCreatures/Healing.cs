@@ -218,10 +218,12 @@ namespace Game
 					{
 						if (ally != null && ally.ComponentHealth.Health > 0f)
 						{
+							// Curar enfermedades si está activado
 							bool diseaseCured = false;
 							if (CureDiseases)
 								diseaseCured = CureCreatureDiseases(ally, m_componentCreature);
 
+							// Restaurar salud
 							if (ally.ComponentHealth.Health < 1f)
 							{
 								ally.ComponentHealth.Health = 1f;
@@ -285,6 +287,7 @@ namespace Game
 
 			Vector3 pos = m_componentCreature.ComponentBody.Position;
 			float radiusSq = HealRadius * HealRadius;
+			SubsystemGameInfo gameInfo = Project.FindSubsystem<SubsystemGameInfo>(true);
 			foreach (ComponentCreature creature in Project.FindSubsystem<SubsystemCreatureSpawn>(true).Creatures)
 			{
 				if (creature == m_componentCreature || creature.ComponentHealth.Health <= 0f)
@@ -308,6 +311,16 @@ namespace Game
 							  || (creature.Entity.FindComponent<ComponentSickness>()?.IsSick == true);
 				}
 
+				// Si es jugador en creativo, solo se considera si está herido (no enfermedades)
+				if (creature is ComponentPlayer)
+				{
+					if (gameInfo.WorldSettings.GameMode == GameMode.Creative ||
+						!gameInfo.WorldSettings.AreAdventureSurvivalMechanicsEnabled)
+					{
+						isDiseased = false; // En creativo no puede tener enfermedades
+					}
+				}
+
 				if (isHurt || isDiseased)
 				{
 					list.Add(creature);
@@ -318,6 +331,17 @@ namespace Game
 		bool CureCreatureDiseases(ComponentCreature creature, ComponentCreature healer)
 		{
 			if (creature == null) return false;
+
+			// Si es jugador en creativo o sin mecánicas de supervivencia, no intentamos curar enfermedades
+			if (creature is ComponentPlayer)
+			{
+				SubsystemGameInfo gameInfo = Project.FindSubsystem<SubsystemGameInfo>(true);
+				if (gameInfo.WorldSettings.GameMode == GameMode.Creative ||
+					!gameInfo.WorldSettings.AreAdventureSurvivalMechanicsEnabled)
+				{
+					return false;
+				}
+			}
 
 			bool hadFlu = false;
 			bool hadPoison = false;
