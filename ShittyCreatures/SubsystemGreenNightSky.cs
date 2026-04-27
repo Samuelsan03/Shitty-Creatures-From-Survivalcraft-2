@@ -8,6 +8,7 @@ namespace Game
 	public class SubsystemGreenNightSky : Subsystem, IUpdateable
 	{
 		public event Action NaturalNightEnded;
+		public event Action GreenNightStarted;
 
 		public virtual bool IsGreenNightActive { get; set; }
 		private bool m_greenNightEnabled = true;
@@ -103,6 +104,8 @@ namespace Game
 					this.HasRolledTonight = true;
 					this.IsGreenNightActive = true;
 					this.DaysSinceLastGreenNight = 0;
+
+					GreenNightStarted?.Invoke();
 
 					SubsystemPlayers subsystemPlayers = base.Project.FindSubsystem<SubsystemPlayers>(true);
 					if (subsystemPlayers != null)
