@@ -246,21 +246,28 @@ namespace Game
 				logo.Margin = new Vector2(0f, 5f);
 			}
 
-			//Etiqueta
+			// Añadir etiqueta de versión del mod bajo el logo, imitando el estilo de la versión original
 			StackPanelWidget topArea = mainMenuScreen.Children.Find<StackPanelWidget>("TopArea", true);
-			LabelWidget versionLabel = mainMenuScreen.Children.Find<LabelWidget>("Version", true);
-			if (topArea != null && versionLabel != null)
+			if (topArea != null)
 			{
-				LabelWidget modVersionLabel = new LabelWidget
+				LabelWidget versionLabel = topArea.Children.Find<LabelWidget>("Version", false);
+				if (versionLabel != null)
 				{
-					Name = "ShittyCreaturesVersion",
-					FontScale = versionLabel.FontScale,
-					HorizontalAlignment = WidgetAlignment.Center,   // ← aquí se centra
-					Color = new Color(215, 0, 0),
-					DropShadow = true,
-					Text = "Shitty Creatures v1.0.6"
-				};
-				topArea.Children.InsertBefore(versionLabel, modVersionLabel);
+					LabelWidget modVersionLabel = new LabelWidget
+					{
+						Text = "Shitty Creatures v1.0.6",
+						FontScale = versionLabel.FontScale,  // 0.5
+						HorizontalAlignment = versionLabel.HorizontalAlignment, // Center
+						Color = Color.Red,      // rojo para el mod
+						DropShadow = versionLabel.DropShadow,
+						Name = "ModVersionLabel"
+					};
+					int index = topArea.Children.IndexOf(versionLabel);
+					if (index >= 0 && index + 1 <= topArea.Children.Count)
+						topArea.Children.Insert(index + 1, modVersionLabel);
+					else
+						topArea.Children.Add(modVersionLabel);
+				}
 			}
 
 			// Botones centrales "Acerca del Mod" y "Salir"
