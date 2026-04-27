@@ -78,6 +78,7 @@ namespace Game
 
 		// Coordenadas HUD
 		private Dictionary<ComponentPlayer, LabelWidget> m_coordinateLabels = new Dictionary<ComponentPlayer, LabelWidget>();
+		private bool m_greenNightHooksRegistered = false;
 
 		// ---------------------------------------------------------------------------------
 		// Inicialización del ModLoader (registro de hooks)
@@ -128,6 +129,7 @@ namespace Game
 			ModsManager.RegisterHook("OnPlayerSpawned", this);
 
 			ModsManager.RegisterHook("OnPlayerDead", this);
+			ModsManager.RegisterHook("OnProjectLoaded", this);
 			// Reemplazar overlay de captura de pantalla
 			ReplaceScreenCaptureOverlay();
 		}
@@ -135,6 +137,79 @@ namespace Game
 		// ---------------------------------------------------------------------------------
 		// Métodos auxiliares privados
 		// ---------------------------------------------------------------------------------
+
+		public override void OnProjectLoaded(Project project)
+		{
+			if (m_greenNightHooksRegistered)
+				return;
+			m_greenNightHooksRegistered = true;
+
+			SubsystemGreenNightSky greenNight = project.FindSubsystem<SubsystemGreenNightSky>(true);
+			if (greenNight != null)
+			{
+				greenNight.GreenNightStarted += () => CancelGreenNightChaseDelay(project);
+			}
+		}
+
+		private void CancelGreenNightChaseDelay(Project project)
+		{
+			SubsystemCreatureSpawn creatureSpawn = project.FindSubsystem<SubsystemCreatureSpawn>(true);
+			if (creatureSpawn == null)
+				return;
+
+			int cancelledCount = 0;
+			foreach (ComponentCreature creature in creatureSpawn.Creatures)
+			{
+				if (creature == null || creature.ComponentHealth.Health <= 0f)
+					continue;
+
+				ComponentZombieChaseBehavior zombieChase = creature.Entity.FindComponent<ComponentZombieChaseBehavior>();
+				if (zombieChase == null)
+					continue;
+
+				if (!zombieChase.ForceAttackDuringGreenNight)
+					continue;
+
+				try
+				{
+					FieldInfo targetTimeField = typeof(ComponentChaseBehavior).GetField("m_targetInRangeTime",
+						BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+					if (targetTimeField != null)
+					{
+						targetTimeField.SetValue(zombieChase, 1f);
+					}
+
+					PropertyInfo chaseTimeProp = typeof(ComponentChaseBehavior).GetProperty("TargetInRangeTimeToChase",
+						BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+					if (chaseTimeProp != null && chaseTimeProp.CanWrite)
+					{
+						chaseTimeProp.SetValue(zombieChase, 0f);
+					}
+
+					zombieChase.Suppressed = false;
+
+					if (zombieChase.CurrentState == "Fleeing")
+					{
+						MethodInfo transitionMethod = typeof(ComponentChaseBehavior).GetMethod("TransitionTo",
+							BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+						if (transitionMethod != null)
+						{
+							transitionMethod.Invoke(zombieChase, new object[] { "LookingForTarget" });
+						}
+					}
+
+					cancelledCount++;
+				}
+				catch (Exception ex)
+				{
+					Log.Warning($"[ShittyCreatures] Error al cancelar delay de caza en criatura: {ex.Message}");
+				}
+			}
+
+			if (cancelledCount > 0)
+			{
+			}
+		}
 
 		private void ReplaceScreenCaptureOverlay()
 		{
@@ -176,7 +251,6 @@ namespace Game
 						if (cacheList[i] is Texture2D)
 							cacheList.RemoveAt(i);
 					cacheList.Add(customOverlay);
-					Log.Information("[ShittyCreatures] Overlay de captura personalizado cargado (620x220)");
 				}
 			}
 			catch (Exception ex)
