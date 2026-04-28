@@ -619,7 +619,7 @@ namespace Game
 
 		public void Update(float dt)
 		{
-			if (!CanUseInventory || m_componentCreature == null || m_componentCreature.ComponentHealth.Health <= 0f)
+			if (m_componentCreature == null || m_componentCreature.ComponentHealth.Health <= 0f)
 				return;
 
 			if (m_canEquipClothing && m_componentCreatureClothing != null && m_componentInventory != null)
@@ -701,6 +701,9 @@ namespace Game
 					}
 				}
 			}
+
+			if (!CanUseInventory)
+				return;
 
 			ComponentCreature target = m_componentChaseBehavior?.Target;
 
