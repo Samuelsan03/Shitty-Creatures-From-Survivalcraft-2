@@ -8,7 +8,16 @@ namespace Game
 {
 	public class ComponentMusicWalkAroundBehavior : ComponentBehavior, IUpdateable
 	{
-		public override float ImportanceLevel => m_importanceLevel;
+		public override float ImportanceLevel
+		{
+			get
+			{
+				// Forzar importancia alta si hay una canción pendiente de reanudar
+				if (m_pendingMusicResume)
+					return 100f;
+				return m_importanceLevel;
+			}
+		}
 		public UpdateOrder UpdateOrder => UpdateOrder.Default;
 
 		private SubsystemTerrain m_subsystemTerrain;
@@ -27,6 +36,11 @@ namespace Game
 		private Sound m_currentMusicSound;
 		private int m_currentTrackIndex = -1;
 
+		// Radio fijo para el área de baile (puedes ajustarlo aquí si es necesario)
+		private float m_danceRadius = 5f;
+		// Punto central del área de baile
+		private Vector3 m_danceCenter;
+
 		private static readonly Color[] m_noteColors = new Color[]
 		{
 			Color.Pink,
@@ -37,15 +51,25 @@ namespace Game
 		private static readonly string[] m_musicTracks = new string[]
 		{
 			"MenuMusic/MusicWalkAround/Aaron-Smith-Dancin",
-			"MenuMusic/MusicWalkAround/Bajo_el_Lente"
+			"MenuMusic/MusicWalkAround/Bajo_el_Lente",
+			"MenuMusic/MusicWalkAround/L'amour Toujours",
+			"MenuMusic/MusicWalkAround/la la la"
 		};
-		private static readonly float[] m_musicDurations = new float[] { 17f, 30f };
+		private static readonly float[] m_musicDurations = new float[] { 18f, 30f, 27f, 34f };
 
 		private bool m_attackedWhilePlaying;
 		private bool m_pendingMusicResume;
 
 		public virtual void Update(float dt)
 		{
+			// Actualizar el estado de la persecución para detectar cambios
+			bool chaseActive = m_chaseBehavior != null && m_chaseBehavior.IsActive;
+			if (!chaseActive && m_pendingMusicResume && !m_attackedWhilePlaying)
+			{
+				// Forzar importancia para que el comportamiento se active si no lo está
+				m_importanceLevel = 100f;
+			}
+
 			m_stateMachine.Update();
 		}
 
@@ -65,11 +89,14 @@ namespace Game
 				m_componentHealth.Injured += OnInjured;
 			}
 
+			// No se cargan nuevos parámetros desde el diccionario, se usa el radio por defecto (5)
+
 			m_stateMachine.AddState("Inactive", delegate
 			{
 				m_importanceLevel = m_random.Float(0f, 1f);
 			}, delegate
 			{
+				// Si hay una canción pendiente y ya no hay persecución/ataque, reanudar de inmediato
 				if (m_pendingMusicResume)
 				{
 					bool chaseActive = m_chaseBehavior != null && m_chaseBehavior.IsActive;
@@ -143,15 +170,20 @@ namespace Game
 			{
 				m_attackedWhilePlaying = false;
 
+				// Detener cualquier desplazamiento anterior
 				m_componentPathfinding.Stop();
+
+				// Establecer el centro del baile en la posición actual
+				m_danceCenter = m_componentCreature.ComponentBody.Position;
 
 				string track;
 				float duration;
 				if (m_pendingMusicResume && m_currentTrackIndex >= 0 && m_currentTrackIndex < m_musicTracks.Length)
 				{
+					// Reanudar la misma pista con el tiempo restante
 					track = m_musicTracks[m_currentTrackIndex];
 					duration = m_musicDurations[m_currentTrackIndex];
-					m_musicTimer = m_musicTimer;
+					// m_musicTimer ya contiene el tiempo restante, no se modifica
 				}
 				else
 				{
@@ -185,8 +217,9 @@ namespace Game
 					Log.Warning("[ComponentMusicWalkAroundBehavior] Failed to create/play music: " + ex.Message);
 				}
 
-				float speed = 0.2f;
-				m_componentPathfinding.SetDestination(new Vector3?(FindDestination()), speed, 1f, 0, false, true, false, null);
+				// Asignar un destino inicial dentro del radio de baile, a velocidad normal (1.0)
+				Vector3 danceDest = FindDanceDestination();
+				m_componentPathfinding.SetDestination(new Vector3?(danceDest), 1.0f, 1f, 0, false, true, false, null);
 			}, delegate
 			{
 				float dt = m_subsystemTime.GameTimeDelta;
@@ -206,6 +239,7 @@ namespace Game
 					return;
 				}
 
+				// Efectos visuales (notas musicales)
 				if (m_subsystemTime.PeriodicGameTimeEvent(0.2, -0.01))
 				{
 					try
@@ -222,13 +256,21 @@ namespace Game
 					}
 				}
 
+				// Movimiento de baile dentro del área: reasignar destino si es necesario
 				if (m_componentPathfinding.IsStuck || m_componentPathfinding.Destination == null)
 				{
-					float speed = 0.2f;
-					m_componentPathfinding.SetDestination(new Vector3?(FindDestination()), speed, 1f, 0, false, true, false, null);
+					Vector3 newDest = FindDanceDestination();
+					m_componentPathfinding.SetDestination(new Vector3?(newDest), 1.0f, 1f, 0, false, true, false, null);
 				}
 
-				if (m_random.Float(0f, 1f) < 0.3f * dt)
+				// Giros rápidos y aleatorios
+				if (m_subsystemTime.PeriodicGameTimeEvent(0.25, -0.05))
+				{
+					m_componentCreature.ComponentLocomotion.TurnOrder = new Vector2(m_random.Float(-1.2f, 1.2f), 0f);
+				}
+
+				// Saltos frecuentes para animar el baile
+				if (m_random.Float(0f, 1f) < 0.5f * dt)
 				{
 					m_componentCreature.ComponentLocomotion.JumpOrder = 1f;
 				}
@@ -282,6 +324,16 @@ namespace Game
 			return m_componentCreature.ComponentBody.Position + Vector3.UnitY * m_componentCreature.ComponentBody.BoxSize.Y * 0.9f;
 		}
 
+		// Buscar un destino aleatorio dentro del radio de baile alrededor de m_danceCenter
+		private Vector3 FindDanceDestination()
+		{
+			Vector2 randomCircle = Vector2.Normalize(m_random.Vector2(1f)) * m_random.Float(0f, m_danceRadius);
+			Vector3 candidate = new Vector3(m_danceCenter.X + randomCircle.X, 0f, m_danceCenter.Z + randomCircle.Y);
+			candidate.Y = (float)(m_subsystemTerrain.Terrain.GetTopHeight(Terrain.ToCell(candidate.X), Terrain.ToCell(candidate.Z)) + 1);
+			return candidate;
+		}
+
+		// El método original FindDestination (para el estado "Walk") se mantiene igual
 		public virtual Vector3 FindDestination()
 		{
 			Vector3 position = m_componentCreature.ComponentBody.Position;
