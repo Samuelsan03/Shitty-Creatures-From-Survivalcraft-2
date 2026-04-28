@@ -3,7 +3,19 @@
         <EntityTemplate Name="Naomi" Guid="a8104ab0-1c2b-4857-9b68-97c64d8e531f" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
 <MemberComponentTemplate Name="CreatureAI" Guid="608ae220-4f3a-48ed-8da9-b3c1ffa1d12e" InheritanceParent="a703e514-0246-49c4-a58d-282a2e0737d1">
     <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="9d66867e-3b67-4ff8-8627-b9f81752c7f1"/>
+    <Parameter Name="CanEquipClothing" Guid="0e3940e4-22c2-4183-b73e-02be8ab709dc" Value="true" Type="bool"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureClothing" Guid="27f552a1-ecd0-42a7-ad0d-251f7e26b1ff" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
+  <ParameterSet Name="CreatureClothes" Guid="335f1be8-9c4a-455a-91bf-58a6ab2dc7cc">
+    <Parameter Name="Head" Guid="78bf4386-2dc8-476e-a2b0-3265b5b0aa84" Value="" Type="string"/>
+    <Parameter Name="Torso" Guid="fbbba2aa-dfa6-47da-a09c-e271ffeb99f7" Value="" Type="string"/>
+    <Parameter Name="Legs" Guid="5944d7f2-7bba-453d-b837-53498924667b" Value="" Type="string"/>
+    <Parameter Name="Feet" Guid="406150fd-3101-4a34-9001-60214facd7b6" Value="" Type="string"/>
+  </ParameterSet>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="OuterClothingModel" Guid="aa898ee9-0679-424f-86e6-2522d42f8dfa" InheritanceParent="c2429b7f-55e0-4ca7-b435-2c569f112229">
+              <Parameter Name="ModelName" Guid="ddfa67b0-e534-4495-a911-d532ea09957b" Value="Models/OuterClothingFemale" Type="string"/>
+            </MemberComponentTemplate>
 <MemberComponentTemplate Name="FluInfected" Guid="213e52ba-e199-498e-815f-02604fa4dcc0" InheritanceParent="4301cca7-d3dd-4e09-ab45-eed3ff27e6aa">
         <Parameter Name="FluResistance" Value="-50" Type="float"/>
         <Parameter Name="CoughSound" Value="Audio/Creatures/FemaleCough/FemaleCough1" Type="string"/>
@@ -48,6 +60,10 @@
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="NewCreatureCollect" Guid="33a5e147-435d-4122-b611-767afa3323c6" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
     <Parameter Name="PickFactors" Guid="41107403-b699-4068-a456-0f24944a3865" Value="Tools;1.0,Weapons;1.0" Type="string"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureCollect" Guid="dd458965-7f28-4271-a3f7-0b5d69859475" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <Parameter Name="CanCollect" Guid="90e710cc-e2e1-4dd9-b786-9bb52eb5ecdb" Value="true" Type="bool"/>
+    <Parameter Name="CollectableItems" Guid="cf1c30d2-37e5-4652-b159-b8442f5d6f99" Value="ClothingBlock" Type="string"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidFireBehavior" Guid="a32b33f3-7ce6-4ecc-84dd-26f525dbe36b" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
             <MemberComponentTemplate Name="Locomotion" Guid="4fefc06c-7d3d-48e6-bb36-48b2d639b1cf">
@@ -140,7 +156,19 @@
         <EntityTemplate Name="Ricardo" Guid="b7f3e8a2-9c14-4d82-a5f3-8c2d6e9a1b47" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
 <MemberComponentTemplate Name="CreatureAI" Guid="6031cb89-17c9-469f-9a03-6442ebcfeefb" InheritanceParent="a703e514-0246-49c4-a58d-282a2e0737d1">
     <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="49218e27-64b2-4777-a92e-a226af2a2e18"/>
+<Parameter Name="CanEquipClothing" Guid="0702a4ec-a994-4691-8957-8741813abbee" Value="true" Type="bool"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureClothing" Guid="ca4c5910-0cf0-479d-9373-80c9a5c84c01" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
+  <ParameterSet Name="CreatureClothes" Guid="64d36a2d-be7b-4be9-9794-6678eab312dc">
+    <Parameter Name="Head" Guid="70276f6c-23a0-4737-aa1f-6d1af6d17c2b" Value="" Type="string"/>
+    <Parameter Name="Torso" Guid="a633ee4d-6851-4bbf-85c5-6d41a5fc41b9" Value="" Type="string"/>
+    <Parameter Name="Legs" Guid="705c8650-2619-414b-99e0-ee3d6315b4ed" Value="" Type="string"/>
+    <Parameter Name="Feet" Guid="a633a3cf-3b35-4536-98d3-b98d36edac07" Value="" Type="string"/>
+  </ParameterSet>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="OuterClothingModel" Guid="b80aa486-d6eb-4968-97a7-df801e240330" InheritanceParent="c2429b7f-55e0-4ca7-b435-2c569f112229">
+              <Parameter Name="ModelName" Guid="10362e12-eee8-483c-a418-b66c6c6730d1" Value="Models/OuterClothingMale" Type="string"/>
+            </MemberComponentTemplate>
 <MemberComponentTemplate Name="FluInfected" Guid="258ed44d-b3ca-42d1-a914-ee98fb981c2d" InheritanceParent="4301cca7-d3dd-4e09-ab45-eed3ff27e6aa">
         <Parameter Name="FluResistance" Value="-50" Type="float"/>
         <Parameter Name="CoughSound" Value="Audio/Creatures/MaleCough/MaleCough1" Type="string"/>
@@ -148,7 +176,7 @@
     </MemberComponentTemplate>
         <MemberComponentTemplate Name="DeathSpawner" Guid="2d7d81c0-7954-49e5-a25d-64f5b5f5c705" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="3724ac1c-f246-4b3b-a33c-1017f329e8c7"/>
-    <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:1.0;InfectedNormal2:0.55" Type="string" Guid="9f709cf5-bfd7-4c74-89f9-0f8e5b4e6031"/>
+    <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:0.55;InfectedNormal2:0.55" Type="string" Guid="9f709cf5-bfd7-4c74-89f9-0f8e5b4e6031"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="RunAwayBehavior" Guid="56a54459-748c-411d-b888-b553c2107e83" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
 <MemberComponentTemplate Name="NewRunAwayBehavior" Guid="4a43971a-5f2f-4adb-8356-ab87460da2d0" InheritanceParent="0a320e99-fd38-4e3f-a5cf-d3e789235213"/>
@@ -185,6 +213,10 @@
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="NewCreatureCollect" Guid="f80f46fa-2974-4389-aca3-2a605d6d739d" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
     <Parameter Name="PickFactors" Guid="b35153c0-addd-4189-bcb0-897f2954714f" Value="Tools;1.0,Weapons;1.0" Type="string"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureCollect" Guid="0e58304b-5ea8-42c6-aa94-47db6b330b82" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <Parameter Name="CanCollect" Guid="a65f4b5b-4c6c-4a8c-bae6-c8f651db7f1a" Value="true" Type="bool"/>
+    <Parameter Name="CollectableItems" Guid="954603f4-085c-4e1e-8df0-3e1df1b4a1c4" Value="ClothingBlock" Type="string"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidFireBehavior" Guid="c8d9e0f1-a2b3-4c45-8d6e-7f8a9b0c1d2e" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
             <MemberComponentTemplate Name="Locomotion" Guid="e1f2a3b4-c5d6-4e78-9f01-a2b3c4d5e6f7">
@@ -5757,6 +5789,7 @@
     <MemberComponentTemplate Name="Healing" Guid="cdd29b21-a486-48a7-a838-d0bd52469d3a" InheritanceParent="70bc630d-3fd9-4ced-ae74-27ac1da95fba">
   <Parameter Name="SelfHealing" Guid="e95d8339-c427-4941-8240-4584353d553b" Value="true" Type="bool"/>
   <Parameter Name="HealCreatures" Guid="81b12897-5cd3-4a9f-a4e5-e0a35911a5ab" Value="true" Type="bool"/>
+  <Parameter Name="CureDiseases" Guid="f35d96c0-b2f8-4c5a-96de-fb812e4a82dd" Value="true" Type="bool"/>
   <Parameter Name="Probability" Guid="abbee3b2-f50b-46d8-9bdd-74c45bb97b4d" Value="1" Type="float"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="DeathSpawner" Guid="5c9406f3-1d80-457b-abba-922f0b2909f5" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
@@ -5776,8 +5809,9 @@
                 </ParameterSet>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="CreatureSounds" Guid="9414d6c2-767f-43fb-8d6c-1a8da1ddeb25">
-				<Parameter Name="PainSound" Guid="814e9953-c14f-486f-b6bd-42e73365c1fc" Value="Audio/Creatures/aime" Type="string"/>
-				<Parameter Name="AttackSound" Guid="df8f8b15-c020-4069-96d2-d25a5f34595c" Value="Audio/Creatures/aime" Type="string"/>
+				<Parameter Name="IdleSound" Guid="df8f8b15-c020-4069-96d2-d25a5f34595c" Value="Audio/Creatures/aime" Type="string"/>
+                <Parameter Name="PainSound" Guid="8d4639c3-88ad-4247-9729-c9e49396d138" Value="Audio/Creatures/aime" Type="string"/>
+                <Parameter Name="AttackSound" Guid="4bf5eaff-f6a9-4874-a485-6a1dacc74ec5" Value="Audio/Creatures/aime" Type="string"/>
 			</MemberComponentTemplate>
             <MemberComponentTemplate Name="NewCreatureCollect" Guid="50f34002-36b2-4598-b781-7bf8c46920b4" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
     <Parameter Name="PickFactors" Guid="02981138-ee97-4175-abb1-fb8269cf7c03" Value="Tools;1.0,Weapons;1.0" Type="string"/>
@@ -5871,7 +5905,7 @@
                 <Parameter Name="AirLackResilience" Guid="f737136f-fd7c-4097-bb38-61f99aedba64" Value="666" Type="float"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="OnFire" Guid="5eb31dd5-aa9f-48e8-8c3d-f9a35857705c"/>
-            <MemberComponentTemplate Name="WalkAroundBehavior" Guid="6378fe39-ece1-4b66-bb40-42fc4bac0f27" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
+            <MemberComponentTemplate Name="MusicWalkAroundBehavior" Guid="6dd831af-8beb-438d-be29-e4876121e9ba" InheritanceParent="d06206af-5354-44dd-9a46-daa068440e63"/>
             <MemberComponentTemplate Name="FeedBehavior" Guid="00698938-329f-4f87-8a53-6dd9a6733f48" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="a8033fa9-e1f4-4f83-985f-405c9c7da31e" Value="False" Type="bool"/>
             </MemberComponentTemplate>
