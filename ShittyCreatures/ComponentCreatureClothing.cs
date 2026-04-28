@@ -146,8 +146,13 @@ namespace Game
 			if (injury == null || m_componentHealth == null || m_componentHealth.Health <= 0f) return;
 			if (injury.Attackment != null)
 			{
-				float remaining = ApplyArmorProtection(injury.Amount);
-				injury.Amount = remaining;
+				// Reconstruir el daño original (antes de la resistencia de la criatura)
+				float originalDamage = injury.Amount * Math.Max(m_componentHealth.AttackResilience, 1f);
+				// Calcular cuánto daño queda después de la armadura
+				float remainingAfterArmor = ApplyArmorProtection(originalDamage);
+				// El daño real que recibe la criatura se reduce en lo absorbido
+				float absorbed = originalDamage - remainingAfterArmor;
+				injury.Amount = Math.Max(0f, injury.Amount - absorbed);
 			}
 		}
 
