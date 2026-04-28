@@ -309,8 +309,24 @@
         </EntityTemplate>
         
         <EntityTemplate Name="Paco" Guid="a1b2c3d4-e5f6-4789-9012-3456789abcde" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="CreatureAI" Guid="f6360b4a-7c0d-4497-8e4d-79cb138c1039" InheritanceParent="a703e514-0246-49c4-a58d-282a2e0737d1">
-    <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="31f36bfc-ac2f-404f-926c-1255b51f95ab"/>
+<MemberComponentTemplate Name="CreatureAI" Guid="75f9dcd5-d860-4452-9df6-b1111c10da43" InheritanceParent="a703e514-0246-49c4-a58d-282a2e0737d1">
+    <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="5d6f0289-7d99-4f91-b620-a737ac46b381"/>
+    <Parameter Name="CanEquipClothing" Guid="324ab7d4-18c5-4c70-8996-cbfcf0e2a156" Value="true" Type="bool"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureClothing" Guid="ea420089-ca84-40f8-8afb-125aad45d08e" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
+  <ParameterSet Name="CreatureClothes" Guid="eb946e24-b682-41ae-b89a-acab32f47e72">
+    <Parameter Name="Head" Guid="7b15f8a7-192b-49a0-a6f9-62c0605919ca" Value="" Type="string"/>
+    <Parameter Name="Torso" Guid="8601dff0-123d-49d3-9055-e85cc65e8e1d" Value="" Type="string"/>
+    <Parameter Name="Legs" Guid="ba781b9d-50a3-4053-beaf-31670300cf00" Value="" Type="string"/>
+    <Parameter Name="Feet" Guid="98921405-998d-4c9d-ad3b-dac6ba446124" Value="" Type="string"/>
+  </ParameterSet>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="OuterClothingModel" Guid="d93e9a98-01b8-44af-9ae2-ffc7dcfda909" InheritanceParent="c2429b7f-55e0-4ca7-b435-2c569f112229">
+              <Parameter Name="ModelName" Guid="5583bd5c-fb27-4f94-a56d-7124e6489574" Value="Models/OuterClothingMale" Type="string"/>
+            </MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureCollect" Guid="be4b0691-08fa-42ce-a1db-8de1c9e7e434" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <Parameter Name="CanCollect" Guid="03f67adb-3c2a-45b4-8147-7539a4c0cff9" Value="true" Type="bool"/>
+    <Parameter Name="CollectableItems" Guid="790eccb2-e33f-4db4-81ce-bd41aa29ac40" Value="ClothingBlock" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="FluInfected" Guid="fc527dce-4b55-44a6-a2c0-19b9579d847e" InheritanceParent="4301cca7-d3dd-4e09-ab45-eed3ff27e6aa">
         <Parameter Name="FluResistance" Value="-50" Type="float"/>
@@ -447,8 +463,24 @@
 </EntityTemplate>
 
          <EntityTemplate Name="Barack" Guid="f8a9b0c1-d2e3-4456-9234-56789abcdef0" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="CreatureAI" Guid="443690ef-6a48-45e6-ab4e-91c745966db9" InheritanceParent="a703e514-0246-49c4-a58d-282a2e0737d1">
-    <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="bee9a483-d05c-463e-b3b4-f2f20e635e6d"/>
+<MemberComponentTemplate Name="CreatureAI" Guid="58865b8b-536d-407c-8ea0-b12502a97b5c" InheritanceParent="a703e514-0246-49c4-a58d-282a2e0737d1">
+    <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="91e8f908-e53b-4267-af85-9ea2f3a9b746"/>
+    <Parameter Name="CanEquipClothing" Guid="e62fbcc3-b14e-4fb6-8177-58c2fd4466da" Value="true" Type="bool"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureClothing" Guid="05a104fa-bb47-44a8-b01a-78c9d37d171b" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
+  <ParameterSet Name="CreatureClothes" Guid="3ba59393-cdca-403e-a232-aa7f490a1d0b">
+    <Parameter Name="Head" Guid="78797aa1-0bfe-4acb-9921-e0ddee05473f" Value="" Type="string"/>
+    <Parameter Name="Torso" Guid="399bdd87-cb3d-46d7-89ac-f646fe1d54a5" Value="" Type="string"/>
+    <Parameter Name="Legs" Guid="ae53008a-e2f9-4db1-a209-f505c5547ad6" Value="" Type="string"/>
+    <Parameter Name="Feet" Guid="7c18e2a0-f45c-4711-a099-5036b9745c1f" Value="" Type="string"/>
+  </ParameterSet>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="OuterClothingModel" Guid="0a44b47a-8cfd-4e9a-b0e3-7f0adfb8c771" InheritanceParent="c2429b7f-55e0-4ca7-b435-2c569f112229">
+              <Parameter Name="ModelName" Guid="564742f7-3e1e-459a-9dba-b60cbc8b4d91" Value="Models/OuterClothingMale" Type="string"/>
+            </MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureCollect" Guid="889f3a59-de5e-45f7-9598-3d0d6b873fdc" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <Parameter Name="CanCollect" Guid="4e0553a8-9d6c-447c-8aae-09546a7fc6ba" Value="true" Type="bool"/>
+    <Parameter Name="CollectableItems" Guid="dd588fc2-eeef-430b-84c4-e6ac73085018" Value="ClothingBlock" Type="string"/>
 </MemberComponentTemplate>
          <MemberComponentTemplate Name="DeathSpawner" Guid="2136f8a1-ba37-4d00-b79b-3771b423ef47" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="3c3789ba-866a-4225-ba9c-643aa8ecfe9a"/>
@@ -580,8 +612,24 @@
 </EntityTemplate>
 
 <EntityTemplate Name="ElMarihuanero" Guid="0d9b62e7-35da-4135-8a31-e53a316fbe25" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="CreatureAI" Guid="8852fed4-f826-4f5f-bbe0-16ce974f92fc" InheritanceParent="a703e514-0246-49c4-a58d-282a2e0737d1">
-    <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="2460585e-2547-4428-8390-e5d6d5ba4e1a"/>
+<MemberComponentTemplate Name="CreatureAI" Guid="9208ff89-f038-404c-9190-bc6be84e4ae9" InheritanceParent="a703e514-0246-49c4-a58d-282a2e0737d1">
+    <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="58157bd2-4e83-45c3-b145-78a738405cf2"/>
+    <Parameter Name="CanEquipClothing" Guid="b95d82b0-7b0f-4be8-88c5-b16821f7d948" Value="true" Type="bool"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureClothing" Guid="6397daff-88d6-4a16-b827-f7bd23e5889f" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
+  <ParameterSet Name="CreatureClothes" Guid="f17b1316-a4fd-4fa5-878c-796c9af82d52">
+    <Parameter Name="Head" Guid="2d1bf8ac-616a-4da5-8f7b-1e8a8a840eec" Value="" Type="string"/>
+    <Parameter Name="Torso" Guid="7ef6afb7-6f50-46c1-b85b-4740b80448e7" Value="" Type="string"/>
+    <Parameter Name="Legs" Guid="7eccfcf1-64b3-413e-af6f-98f8ba50db67" Value="" Type="string"/>
+    <Parameter Name="Feet" Guid="c3a482d0-c1dd-4ead-a27c-6fb07e4dcab1" Value="" Type="string"/>
+  </ParameterSet>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="OuterClothingModel" Guid="9922af81-09ce-4ae2-a22c-198455a54dfe" InheritanceParent="c2429b7f-55e0-4ca7-b435-2c569f112229">
+              <Parameter Name="ModelName" Guid="d13b41e8-ed9f-4bf8-993d-93f06668a5ad" Value="Models/OuterClothingMale" Type="string"/>
+            </MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureCollect" Guid="34019262-559b-42fe-8a57-a4d27e27d503" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <Parameter Name="CanCollect" Guid="93c27ef9-3168-457b-919c-2f8296680f4b" Value="true" Type="bool"/>
+    <Parameter Name="CollectableItems" Guid="69b3edab-68be-4205-9b7c-68a4460b8fe0" Value="ClothingBlock" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="DeathSpawner" Guid="791fa28c-bac8-4b7f-8d0f-37cfcf2f8694" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="debbb341-7d17-4b51-aded-4a045249093e"/>
@@ -704,6 +752,24 @@
 </EntityTemplate>
 
 <EntityTemplate Name="ElMarihuaneroMamon" Guid="2c6c8cd6-acb6-433a-b5a4-2f5b5b4cd52c" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="CreatureAI" Guid="9b275bb5-fcef-4dd9-aea7-6a9719fce628" InheritanceParent="a703e514-0246-49c4-a58d-282a2e0737d1">
+    <Parameter Name="CanEquipClothing" Guid="1da06767-db1a-456b-a378-2e1401804dd5" Value="true" Type="bool"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureClothing" Guid="974f5a42-7369-4632-be90-4b2f76ddff13" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
+  <ParameterSet Name="CreatureClothes" Guid="a671320a-9db1-422f-94b9-5f51f051472b">
+    <Parameter Name="Head" Guid="63fcbd44-5041-439d-b110-ffb76b13e1f4" Value="" Type="string"/>
+    <Parameter Name="Torso" Guid="91cddfa5-87fb-4f3c-a284-01196bde903d" Value="" Type="string"/>
+    <Parameter Name="Legs" Guid="a9885559-aed7-424f-b31e-e942ad766927" Value="" Type="string"/>
+    <Parameter Name="Feet" Guid="79353ba5-5c10-478d-a329-561044b34d4a" Value="" Type="string"/>
+  </ParameterSet>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="OuterClothingModel" Guid="a87e7d4d-713f-4a25-8128-10cc447c4ce6" InheritanceParent="c2429b7f-55e0-4ca7-b435-2c569f112229">
+              <Parameter Name="ModelName" Guid="561f399f-f819-4bf1-81bf-cb18ab0e3f2e" Value="Models/OuterClothingMale" Type="string"/>
+            </MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureCollect" Guid="c8791b25-7bc1-420a-9d1e-ef54eeb55828" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <Parameter Name="CanCollect" Guid="5dfa0895-b19f-43bc-ac46-e439f12f633e" Value="true" Type="bool"/>
+    <Parameter Name="CollectableItems" Guid="ca17e1ae-f1fd-4c86-a05e-c32f6bf0d136" Value="ClothingBlock" Type="string"/>
+</MemberComponentTemplate>
 <MemberComponentTemplate Name="DeathSpawner" Guid="c909ae5f-3f1b-4ad4-86be-0cfd7c6841fc" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="9c628125-4f4d-445c-a694-808ed87f8720"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:1.0;InfectedNormal2:0.55" Type="string" Guid="d418ca52-f473-4942-951c-edcd85021aa3"/>
@@ -853,6 +919,24 @@
 </EntityTemplate>
 
 <EntityTemplate Name="FumadorQuimico" Guid="6054c1b3-834c-471d-af2f-dee55e898e51" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="CreatureAI" Guid="2afb0ef2-5054-4ca6-86b5-31e1c9a3792d" InheritanceParent="a703e514-0246-49c4-a58d-282a2e0737d1">
+    <Parameter Name="CanEquipClothing" Guid="11a6e919-355b-4009-adef-a67496e653af" Value="true" Type="bool"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureClothing" Guid="dec9db49-8cd7-4caf-a624-f1324d923a63" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
+  <ParameterSet Name="CreatureClothes" Guid="82db0911-d689-4847-9a60-fdbf698a750c">
+    <Parameter Name="Head" Guid="3c02ead2-c910-43c8-8d3b-58c545e67df8" Value="" Type="string"/>
+    <Parameter Name="Torso" Guid="613e4785-a499-485d-b3bc-e75383ee33d0" Value="" Type="string"/>
+    <Parameter Name="Legs" Guid="2695349e-3518-4e34-921d-035e2dcb0f09" Value="" Type="string"/>
+    <Parameter Name="Feet" Guid="a0beadc7-407b-4c91-8bff-0015d966bed4" Value="" Type="string"/>
+  </ParameterSet>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="OuterClothingModel" Guid="ae4b2769-e435-41b0-b8cf-8131994afc36" InheritanceParent="c2429b7f-55e0-4ca7-b435-2c569f112229">
+              <Parameter Name="ModelName" Guid="36a40705-0e12-47cf-9d08-64ca0b481327" Value="Models/OuterClothingMale" Type="string"/>
+            </MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureCollect" Guid="f9ffbd26-def1-44ba-997d-80a02db4427f" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <Parameter Name="CanCollect" Guid="d1d1d8a6-907d-4198-94d6-2cd48e913a85" Value="true" Type="bool"/>
+    <Parameter Name="CollectableItems" Guid="49e25ba7-154f-4d91-8629-e7efdc0b6dcf" Value="ClothingBlock" Type="string"/>
+</MemberComponentTemplate>
 <MemberComponentTemplate Name="FluInfected" Guid="215d8058-57d1-4b2a-92ed-8d485a633dde" InheritanceParent="4301cca7-d3dd-4e09-ab45-eed3ff27e6aa">
         <Parameter Name="FluResistance" Value="-50" Type="float"/>
         <Parameter Name="CoughSound" Value="Audio/Creatures/MaleCough/MaleCough1" Type="string"/>
@@ -1122,6 +1206,24 @@
 </EntityTemplate>
 
 <EntityTemplate Name="ClaudeSpeed" Guid="58c0c0b3-dbf7-49df-b394-64373fa05c04" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="CreatureAI" Guid="e5cd2570-8449-46f0-8f63-61181b3ffc86" InheritanceParent="a703e514-0246-49c4-a58d-282a2e0737d1">
+    <Parameter Name="CanEquipClothing" Guid="a942a3dc-d37b-408b-96b6-6f62b0e322a2" Value="true" Type="bool"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureClothing" Guid="6f23ad9e-b96b-4b30-a416-3de1a5e6282d" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
+  <ParameterSet Name="CreatureClothes" Guid="783413c4-3fa4-4a67-adb5-74df257fb8dc">
+    <Parameter Name="Head" Guid="ac472c84-77dc-44f9-8274-1d3133d6df74" Value="" Type="string"/>
+    <Parameter Name="Torso" Guid="e8659fed-0f07-476f-a03d-aaf61f7572b6" Value="" Type="string"/>
+    <Parameter Name="Legs" Guid="e3cb9564-dae2-4d2f-9482-3cc5007edac4" Value="" Type="string"/>
+    <Parameter Name="Feet" Guid="2468029f-b84b-47ac-8ab8-9b98a3744483" Value="" Type="string"/>
+  </ParameterSet>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="OuterClothingModel" Guid="c0d2c4b5-9119-4fe6-85c5-9ccd80053840" InheritanceParent="c2429b7f-55e0-4ca7-b435-2c569f112229">
+              <Parameter Name="ModelName" Guid="18be8239-a1d1-4085-8024-6c7da948dec7" Value="Models/OuterClothingMale" Type="string"/>
+            </MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureCollect" Guid="c642f0a3-68ea-4225-91b7-14776d1adefb" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <Parameter Name="CanCollect" Guid="ccc7c251-29a1-4789-8889-ff2570613360" Value="true" Type="bool"/>
+    <Parameter Name="CollectableItems" Guid="1b2b02c4-00ee-4720-8ba8-14b668c7e3bb" Value="ClothingBlock" Type="string"/>
+</MemberComponentTemplate>
 <MemberComponentTemplate Name="DeathSpawner" Guid="16e49b97-0790-421c-bb8a-eeea72155404" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="bb7327bb-552a-47e2-b5bd-45f49d03a5cc"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:1.0;InfectedNormal2:0.55" Type="string" Guid="631543e7-537c-4d95-9879-7d048610c2b7"/>
@@ -1236,6 +1338,24 @@
 </EntityTemplate>
 
 <EntityTemplate Name="TommyVercetti" Guid="a59b49a1-06c1-4741-855f-456996d42c30" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="CreatureAI" Guid="ab78fc4f-2297-4dd5-a37d-439e784dfa5c" InheritanceParent="a703e514-0246-49c4-a58d-282a2e0737d1">
+    <Parameter Name="CanEquipClothing" Guid="e9065bf0-439e-4a70-a37e-9a3a1c5c50e2" Value="true" Type="bool"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureClothing" Guid="11e3ae56-25a0-4e0e-8fbd-203d1f508483" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
+  <ParameterSet Name="CreatureClothes" Guid="6884f3f3-fd37-4813-8c65-b3a306d61d29">
+    <Parameter Name="Head" Guid="a9f705e1-0d4e-42ce-be0a-31e309c77274" Value="" Type="string"/>
+    <Parameter Name="Torso" Guid="c8cf82d4-98a7-48ee-bae1-f72b844b356c" Value="" Type="string"/>
+    <Parameter Name="Legs" Guid="cd6cb2bf-e8a3-45bd-9eba-83a8fcfe7cf2" Value="" Type="string"/>
+    <Parameter Name="Feet" Guid="94855375-3670-4baf-90f6-260847005444" Value="" Type="string"/>
+  </ParameterSet>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="OuterClothingModel" Guid="ae542e17-8d1a-463f-ad2c-096ef2c8a17a" InheritanceParent="c2429b7f-55e0-4ca7-b435-2c569f112229">
+              <Parameter Name="ModelName" Guid="8afae548-8d14-4337-bcba-a799907d3ef6" Value="Models/OuterClothingMale" Type="string"/>
+            </MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureCollect" Guid="2fb1f2db-5975-4549-98d3-1467b626d671" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <Parameter Name="CanCollect" Guid="55713046-a3b0-411e-b52d-733dca61ed81" Value="true" Type="bool"/>
+    <Parameter Name="CollectableItems" Guid="baa08456-5efc-4e50-85b4-742479cc6d78" Value="ClothingBlock" Type="string"/>
+</MemberComponentTemplate>
 <MemberComponentTemplate Name="FluInfected" Guid="7a435a8a-bb8d-467a-b40c-1c8b243c4a60" InheritanceParent="4301cca7-d3dd-4e09-ab45-eed3ff27e6aa">
         <Parameter Name="FluResistance" Value="-50" Type="float"/>
         <Parameter Name="CoughSound" Value="Audio/Creatures/MaleCough/MaleCough1" Type="string"/>
@@ -1875,8 +1995,24 @@
 </EntityTemplate>
 
 <EntityTemplate Name="Conker" Guid="8d959f25-edc7-4572-b545-4eba05869e45" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="CreatureAI" Guid="b72400af-5090-4ff9-b553-92fb0b0103a6" InheritanceParent="a703e514-0246-49c4-a58d-282a2e0737d1">
-    <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="5a48ecad-e1d7-4729-b793-9d45be563dae"/>
+<MemberComponentTemplate Name="CreatureAI" Guid="e785cc30-21cc-4ca0-a4a6-f202865b56f6" InheritanceParent="a703e514-0246-49c4-a58d-282a2e0737d1">
+    <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="18032d74-6fad-4abf-be06-2b75f24986ea"/>
+    <Parameter Name="CanEquipClothing" Guid="1047e4dd-4001-4af8-85c4-b625ff36b0b9" Value="true" Type="bool"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureClothing" Guid="32be5be8-1390-45d8-961c-ef7885ba3d36" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
+  <ParameterSet Name="CreatureClothes" Guid="2b4e4205-8335-4cc2-9b77-97f8d8eb4b50">
+    <Parameter Name="Head" Guid="03e13da5-850b-40a1-85d0-83fdfd05765c" Value="" Type="string"/>
+    <Parameter Name="Torso" Guid="6a42a5d5-a496-4457-86af-73b29492990c" Value="" Type="string"/>
+    <Parameter Name="Legs" Guid="59bfb242-c173-4701-a7c0-fe0063279d34" Value="" Type="string"/>
+    <Parameter Name="Feet" Guid="021161d1-26d2-464c-b903-4024b3aa2408" Value="" Type="string"/>
+  </ParameterSet>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="OuterClothingModel" Guid="8864e223-d15c-41c9-a49a-12bf1aa2c145" InheritanceParent="c2429b7f-55e0-4ca7-b435-2c569f112229">
+              <Parameter Name="ModelName" Guid="1f446a2c-3b0b-4438-9e61-50a3ee26e4d2" Value="Models/OuterClothingMale MC" Type="string"/>
+            </MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureCollect" Guid="6ce9cae2-b600-4a60-8cde-829311afe3b2" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <Parameter Name="CanCollect" Guid="9abb7f18-928b-4c08-b7e5-c8d6349a194c" Value="true" Type="bool"/>
+    <Parameter Name="CollectableItems" Guid="b89c624e-46fc-4e51-afb8-8bd7652d720a" Value="ClothingBlock" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="FluInfected" Guid="24d72cc0-15a7-44d4-b65b-5fca7806de47" InheritanceParent="4301cca7-d3dd-4e09-ab45-eed3ff27e6aa">
         <Parameter Name="FluResistance" Value="-50" Type="float"/>
@@ -1999,8 +2135,24 @@
 </EntityTemplate>
 
 <EntityTemplate Name="Beavis" Guid="e9d8d930-9dd1-49b8-8140-a35cc200be64" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="CreatureAI" Guid="666f5551-e482-41f9-bb08-5effc3952380" InheritanceParent="a703e514-0246-49c4-a58d-282a2e0737d1">
-    <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="cf9a45d5-53af-4177-9047-9f7691878d01"/>
+<MemberComponentTemplate Name="CreatureAI" Guid="0097ae35-6c8d-4742-921f-2a9e6165e0fa" InheritanceParent="a703e514-0246-49c4-a58d-282a2e0737d1">
+    <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="6f7698eb-27f4-4c6a-82f6-8bc8e37b1955"/>
+    <Parameter Name="CanEquipClothing" Guid="34a24d1d-2ca7-4367-aca0-97bfba0306b2" Value="true" Type="bool"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureClothing" Guid="2cd05fa7-bd40-47d0-ac18-015b6fd80248" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
+  <ParameterSet Name="CreatureClothes" Guid="4cd1d825-dcef-4e45-bb72-8634f46b93c3">
+    <Parameter Name="Head" Guid="57e46dc2-c76f-4c8b-a2cc-138d05eabf50" Value="" Type="string"/>
+    <Parameter Name="Torso" Guid="c7aceaab-3abe-4500-b6e4-0d1dc28ee02f" Value="" Type="string"/>
+    <Parameter Name="Legs" Guid="afce1317-8229-4435-8b9b-5bf80fc67be2" Value="" Type="string"/>
+    <Parameter Name="Feet" Guid="182f6eac-d9ef-4bb2-9951-f7b3e7fb6213" Value="" Type="string"/>
+  </ParameterSet>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="OuterClothingModel" Guid="cce005dc-0d17-4964-b4ee-73b41851e8ce" InheritanceParent="c2429b7f-55e0-4ca7-b435-2c569f112229">
+              <Parameter Name="ModelName" Guid="2d514ea7-56ee-4916-a2d4-1809f2cc6381" Value="Models/OuterClothingMale" Type="string"/>
+            </MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureCollect" Guid="cf33147c-e928-4dc0-b3b0-b1c254dd508b" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <Parameter Name="CanCollect" Guid="da14e36c-0adf-4fea-adef-f59c6cac6e2b" Value="true" Type="bool"/>
+    <Parameter Name="CollectableItems" Guid="77e295de-a739-4545-918c-624cdd0dd57c" Value="ClothingBlock" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="FluInfected" Guid="8c227f6f-c1ae-4a3a-bdcc-2f0e39115db3" InheritanceParent="4301cca7-d3dd-4e09-ab45-eed3ff27e6aa">
         <Parameter Name="FluResistance" Value="-50" Type="float"/>
@@ -2131,8 +2283,24 @@
 </EntityTemplate>
 
 <EntityTemplate Name="Butt-Head" Guid="09699a5a-89f9-4883-b77f-e8adf8f52473" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="CreatureAI" Guid="68fd01a9-3a57-47a3-bd6b-4a21642f0f6b" InheritanceParent="a703e514-0246-49c4-a58d-282a2e0737d1">
-    <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="c3d80b1b-5b6d-44fc-9247-baca754eb6ca"/>
+<MemberComponentTemplate Name="CreatureAI" Guid="5b157201-36ac-47f0-8731-98e78f0f11ad" InheritanceParent="a703e514-0246-49c4-a58d-282a2e0737d1">
+    <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="e4490e7a-89fd-47cd-8ed8-419fd4e59e2c"/>
+    <Parameter Name="CanEquipClothing" Guid="0ba4de12-9da6-4964-9896-d4a0c5cb8962" Value="true" Type="bool"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureClothing" Guid="21be6dba-f311-4d7f-97ce-257077a2e372" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
+  <ParameterSet Name="CreatureClothes" Guid="a3399c92-8b1f-41cf-8c3e-59e2a5540138">
+    <Parameter Name="Head" Guid="a40d6fd6-1e73-42f8-8cbc-8bbac39119b2" Value="" Type="string"/>
+    <Parameter Name="Torso" Guid="193e5d97-10b3-4598-9063-8d2c54f068b1" Value="" Type="string"/>
+    <Parameter Name="Legs" Guid="3ac8b985-6973-47c4-a896-1378a42e723f" Value="" Type="string"/>
+    <Parameter Name="Feet" Guid="b4b728cd-7ad1-4d7e-8cd1-feea8f1523bc" Value="" Type="string"/>
+  </ParameterSet>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="OuterClothingModel" Guid="a7ad3394-5920-42c5-95fa-4abb00faa400" InheritanceParent="c2429b7f-55e0-4ca7-b435-2c569f112229">
+              <Parameter Name="ModelName" Guid="54ecdb16-5ec9-44ff-9412-50d4a04fdc41" Value="Models/OuterClothingMale" Type="string"/>
+            </MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureCollect" Guid="bd6ab937-ac8b-4a22-a64f-acc9dbe49700" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <Parameter Name="CanCollect" Guid="7649fb65-aebe-49f0-9158-f60d64a01966" Value="true" Type="bool"/>
+    <Parameter Name="CollectableItems" Guid="be4b0bdc-01cc-4045-aa4b-14331d714216" Value="ClothingBlock" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="FluInfected" Guid="004e23ab-f28f-45fb-be81-484055ea4e05" InheritanceParent="4301cca7-d3dd-4e09-ab45-eed3ff27e6aa">
         <Parameter Name="FluResistance" Value="-50" Type="float"/>
@@ -2913,6 +3081,24 @@
 </EntityTemplate>
 
 <EntityTemplate Name="ArqueroPrisionero" Guid="e8831650-83a1-4ba7-b796-1149dfa88eae" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="CreatureAI" Guid="2f1a69d1-2a42-484f-ac52-4f5851c60ddb" InheritanceParent="a703e514-0246-49c4-a58d-282a2e0737d1">
+    <Parameter Name="CanEquipClothing" Guid="1f5b9779-fb4e-43c4-8a6b-f26c0ddaabb7" Value="true" Type="bool"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureClothing" Guid="b2e94636-437f-4f86-bd6c-c237263b695b" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
+  <ParameterSet Name="CreatureClothes" Guid="03a3bb2b-172d-4b74-b193-4a893a044bc2">
+    <Parameter Name="Head" Guid="00a80522-d5ea-4c8c-99d1-dc12c6bbdeea" Value="" Type="string"/>
+    <Parameter Name="Torso" Guid="db73393f-2ec5-4eb4-adad-ce3041e65d33" Value="" Type="string"/>
+    <Parameter Name="Legs" Guid="26a10b9f-b931-41d6-a64f-9b40a0c44f21" Value="" Type="string"/>
+    <Parameter Name="Feet" Guid="0c30eb0f-4719-4ee4-b402-4eeb8a96c8df" Value="" Type="string"/>
+  </ParameterSet>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="OuterClothingModel" Guid="e0c28b3f-6375-4c08-8732-453d5edfcfac" InheritanceParent="c2429b7f-55e0-4ca7-b435-2c569f112229">
+              <Parameter Name="ModelName" Guid="6b57cb71-572a-4939-9d14-21775cef3b55" Value="Models/OuterClothingMale" Type="string"/>
+            </MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureCollect" Guid="6f796773-ed32-4188-9ccb-9e09132b0d16" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <Parameter Name="CanCollect" Guid="3bd4775e-c6fd-4843-afac-01d21f9dee9b" Value="true" Type="bool"/>
+    <Parameter Name="CollectableItems" Guid="102baae7-ec23-41de-889c-8eabf186f2aa" Value="ClothingBlock" Type="string"/>
+</MemberComponentTemplate>
 <MemberComponentTemplate Name="FluInfected" Guid="a8b6df82-21e3-48df-9b55-4c6b7e1c3f37" InheritanceParent="4301cca7-d3dd-4e09-ab45-eed3ff27e6aa">
         <Parameter Name="FluResistance" Value="-5" Type="float"/>
         <Parameter Name="CoughSound" Value="Audio/Creatures/MaleCough/MaleCough1" Type="string"/>
@@ -3048,6 +3234,24 @@
 </EntityTemplate>
 
 <EntityTemplate Name="BallestadoraMusculosa" Guid="95999472-71b3-4a92-9d6a-da99378b3d2c" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="CreatureAI" Guid="57350700-57b7-4c82-a858-c4752e1e6891" InheritanceParent="a703e514-0246-49c4-a58d-282a2e0737d1">
+    <Parameter Name="CanEquipClothing" Guid="1e1a2224-e458-46e3-81bb-763f9bc66174" Value="true" Type="bool"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureClothing" Guid="d564f398-42db-48f1-b3cd-2b52903970e2" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
+  <ParameterSet Name="CreatureClothes" Guid="2114ed6d-6e58-4266-93f0-b9aac6c8629e">
+    <Parameter Name="Head" Guid="d604c8a2-ba70-4139-ac40-e50f40a79cc0" Value="" Type="string"/>
+    <Parameter Name="Torso" Guid="40f39a77-2e3d-4d79-b6f9-0cf6ae9b41bd" Value="" Type="string"/>
+    <Parameter Name="Legs" Guid="40eb0ca0-9d69-48ec-b1e2-983559043fed" Value="" Type="string"/>
+    <Parameter Name="Feet" Guid="9267fd87-542c-434f-a828-003dac1ccfed" Value="" Type="string"/>
+  </ParameterSet>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="OuterClothingModel" Guid="1a545c37-d5ef-459d-b233-ced62b94d6bb" InheritanceParent="c2429b7f-55e0-4ca7-b435-2c569f112229">
+              <Parameter Name="ModelName" Guid="c373684f-bc97-4ee8-85b2-cfaf0e1b9301" Value="Models/Human_Strong_OuterclothingModel" Type="string"/>
+            </MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureCollect" Guid="cb16295f-8989-42fa-ba73-4731ac8b5ffd" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <Parameter Name="CanCollect" Guid="c22fdc19-c32e-490d-a412-fe544940271e" Value="true" Type="bool"/>
+    <Parameter Name="CollectableItems" Guid="652907c4-adbd-4b71-bcea-7fda628ef951" Value="ClothingBlock" Type="string"/>
+</MemberComponentTemplate>
 <MemberComponentTemplate Name="FluInfected" Guid="d00b9016-5c26-418b-ad81-de1b135d13dc" InheritanceParent="4301cca7-d3dd-4e09-ab45-eed3ff27e6aa">
         <Parameter Name="FluResistance" Value="90" Type="float"/>
         <Parameter Name="CoughSound" Value="Audio/Creatures/FemaleCough/FemaleCough1" Type="string"/>
@@ -3198,8 +3402,24 @@
     </MemberComponentTemplate>
 <MemberComponentTemplate Name="Inventory" Guid="f124876c-4952-4a71-ac46-365f83f7c31e" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="CreatureAI" Guid="8ff9afec-7182-4d75-82e6-f5eafd30b96e" InheritanceParent="a703e514-0246-49c4-a58d-282a2e0737d1">
-    <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="8c391457-ab60-44f7-b8ec-5f904186725b"/>
+<MemberComponentTemplate Name="CreatureAI" Guid="23b620d5-16fd-4581-a406-7569a9f6cf5c" InheritanceParent="a703e514-0246-49c4-a58d-282a2e0737d1">
+    <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="3e9babd8-aaa8-4879-b593-0b7e23560120"/>
+    <Parameter Name="CanEquipClothing" Guid="9639b7e0-87de-4f9c-8143-31193850b31b" Value="true" Type="bool"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureClothing" Guid="2bd63aac-803e-4a9a-bdbc-b047298dcd3a" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
+  <ParameterSet Name="CreatureClothes" Guid="2841854e-d73e-4fdd-996d-8724fc3853b8">
+    <Parameter Name="Head" Guid="ad082941-6750-4412-b8b1-6d8682263687" Value="" Type="string"/>
+    <Parameter Name="Torso" Guid="dc19db95-ad33-48f3-b82d-c2afe13889c7" Value="" Type="string"/>
+    <Parameter Name="Legs" Guid="6682abd2-2a35-470f-a292-2fc8986a7ea6" Value="" Type="string"/>
+    <Parameter Name="Feet" Guid="d147726f-d2fb-4a32-bdc2-07583da7d1bf" Value="" Type="string"/>
+  </ParameterSet>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="OuterClothingModel" Guid="a4de4ae6-1a7f-485a-8817-e9291defe1d9" InheritanceParent="c2429b7f-55e0-4ca7-b435-2c569f112229">
+              <Parameter Name="ModelName" Guid="9104041f-1c40-434b-a521-79e732337268" Value="Models/OuterClothingMale" Type="string"/>
+            </MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureCollect" Guid="1ca22250-32ca-4bc8-94ef-ca11fade20f1" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <Parameter Name="CanCollect" Guid="9b1f72b6-f61b-41fe-9956-f32a2b0326ac" Value="true" Type="bool"/>
+    <Parameter Name="CollectableItems" Guid="1d969d4e-799c-4f48-9c3b-d7a5d319d922" Value="ClothingBlock" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="DeathSpawner" Guid="8313cc1a-dcab-4c81-89ec-bfcac8c2835b" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="3d4cd10e-e025-4b8c-9532-0ddeadfdb8cf"/>
@@ -3590,6 +3810,24 @@
     </EntityTemplate>
 
 <EntityTemplate Name="CarlJohnson" Guid="1e9bf665-6998-478e-ba9d-3f850d0dbb7b" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="CreatureAI" Guid="ad8479ef-ecb2-4d4b-ba9f-60751b826f55" InheritanceParent="a703e514-0246-49c4-a58d-282a2e0737d1">
+    <Parameter Name="CanEquipClothing" Guid="0331110d-a954-4211-8e41-a7c1ea60c7d6" Value="true" Type="bool"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureClothing" Guid="6caab4ac-3807-43f4-8aba-c32a0071842e" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
+  <ParameterSet Name="CreatureClothes" Guid="81b01f3c-9634-450c-9491-84481d1e05c9">
+    <Parameter Name="Head" Guid="76e7d326-d9f5-41b7-b07e-60dca8773ba1" Value="" Type="string"/>
+    <Parameter Name="Torso" Guid="dfcc8d0c-dd53-474e-a410-1fdd70d1091e" Value="" Type="string"/>
+    <Parameter Name="Legs" Guid="3a724646-7514-442f-aa6e-95814efee397" Value="" Type="string"/>
+    <Parameter Name="Feet" Guid="1b337db9-7b67-45d4-ac0e-029871a08490" Value="" Type="string"/>
+  </ParameterSet>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="OuterClothingModel" Guid="f5298e36-5ce2-4443-954a-a87b75e99a4c" InheritanceParent="c2429b7f-55e0-4ca7-b435-2c569f112229">
+              <Parameter Name="ModelName" Guid="963a6421-e449-4f6c-8a5a-e5b22b87adb0" Value="Models/OuterClothingMale" Type="string"/>
+            </MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureCollect" Guid="8a9e5df5-c29d-4427-a6b6-2060a69ac640" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <Parameter Name="CanCollect" Guid="d32a769a-ef6e-4f8e-b80c-fe7fefd194b7" Value="true" Type="bool"/>
+    <Parameter Name="CollectableItems" Guid="8025ee1a-e074-488b-bbd9-121c41f58a51" Value="ClothingBlock" Type="string"/>
+</MemberComponentTemplate>
 <MemberComponentTemplate Name="FluInfected" Guid="70b2bb63-536e-4c27-b566-6e171f58d1e3" InheritanceParent="4301cca7-d3dd-4e09-ab45-eed3ff27e6aa">
         <Parameter Name="FluResistance" Value="-150" Type="float"/>
         <Parameter Name="CoughSound" Value="Audio/Creatures/MaleCough/MaleCough1" Type="string"/>
@@ -3726,6 +3964,24 @@
 </EntityTemplate>
 
 <EntityTemplate Name="ElGuerrillero" Guid="5424f3d9-6e79-4eb9-a1a4-03ccd52d5286" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="CreatureAI" Guid="6a900f2d-dd1c-4d8a-baf1-b13c6bab9d1a" InheritanceParent="a703e514-0246-49c4-a58d-282a2e0737d1">
+    <Parameter Name="CanEquipClothing" Guid="b53281fe-d6fc-40e0-bf86-bbe4c7a27533" Value="true" Type="bool"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureClothing" Guid="74694119-c691-4778-b2a8-a047d61104dc" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
+  <ParameterSet Name="CreatureClothes" Guid="db9e4ece-fbf7-414c-b4c4-c6a101144f9e">
+    <Parameter Name="Head" Guid="c021f48a-17c5-4062-9816-dd62ff74bc26" Value="" Type="string"/>
+    <Parameter Name="Torso" Guid="42e5d1cf-0ca6-4612-a998-4e8a293078d1" Value="" Type="string"/>
+    <Parameter Name="Legs" Guid="148307a6-da76-4fce-821c-3e2934e7e4cb" Value="" Type="string"/>
+    <Parameter Name="Feet" Guid="1aefd268-64f4-42f4-be11-5e7144e37752" Value="" Type="string"/>
+  </ParameterSet>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="OuterClothingModel" Guid="8d36e9f5-916e-4b8f-8d09-fabe888a0dc8" InheritanceParent="c2429b7f-55e0-4ca7-b435-2c569f112229">
+              <Parameter Name="ModelName" Guid="eb101bf9-907e-4eb6-9273-6898b612c11b" Value="Models/OuterClothingMale" Type="string"/>
+            </MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureCollect" Guid="a3a5f11b-cca7-4f45-9f31-ee04e492146f" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <Parameter Name="CanCollect" Guid="19ce7a42-78d8-41f2-9978-f18b012abc68" Value="true" Type="bool"/>
+    <Parameter Name="CollectableItems" Guid="84fa1faf-a971-4d87-a964-ecf29140a5f3" Value="ClothingBlock" Type="string"/>
+</MemberComponentTemplate>
 <MemberComponentTemplate Name="FluInfected" Guid="44373629-6494-4468-b8ee-541033c3f8a2" InheritanceParent="4301cca7-d3dd-4e09-ab45-eed3ff27e6aa">
         <Parameter Name="FluResistance" Value="150" Type="float"/>
         <Parameter Name="CoughSound" Value="Audio/Creatures/MaleCough/MaleCough1" Type="string"/>
@@ -3883,6 +4139,24 @@
 </EntityTemplate>
 
 <EntityTemplate Name="ElGuerrilleroTenebroso" Guid="d076df21-0ee8-4a9e-a85a-0953b32a77b9" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="CreatureAI" Guid="4c75a8ba-f1b1-4431-84b5-4eaff38fbca4" InheritanceParent="a703e514-0246-49c4-a58d-282a2e0737d1">
+    <Parameter Name="CanEquipClothing" Guid="1cce60ee-ab5f-4a0f-bc80-f2a3e7e60298" Value="true" Type="bool"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureClothing" Guid="044d35f8-69b4-4318-9b47-9e03299ec5c1" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
+  <ParameterSet Name="CreatureClothes" Guid="3fb32322-a181-4af7-bf38-00ed6631301b">
+    <Parameter Name="Head" Guid="1237f707-c2f0-4c86-be1d-21bb52dfa8e9" Value="" Type="string"/>
+    <Parameter Name="Torso" Guid="ffbae12a-0a29-4685-92b5-e6d2e08d0b2a" Value="" Type="string"/>
+    <Parameter Name="Legs" Guid="91952975-b126-445a-af0f-0fd1991c6586" Value="" Type="string"/>
+    <Parameter Name="Feet" Guid="5c6d5c6b-b761-4a8d-9207-49ad485e5fcb" Value="" Type="string"/>
+  </ParameterSet>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="OuterClothingModel" Guid="48a6a579-6536-4523-9d54-837286e6541b" InheritanceParent="c2429b7f-55e0-4ca7-b435-2c569f112229">
+              <Parameter Name="ModelName" Guid="476c94a1-2030-4bcb-9a4f-aa34808ea43c" Value="Models/OuterClothingMale" Type="string"/>
+            </MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureCollect" Guid="4cd43b10-1bd3-4ddf-b008-5646fc4f1a13" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <Parameter Name="CanCollect" Guid="b34e7957-7088-44d1-a3bf-937d2be8441e" Value="true" Type="bool"/>
+    <Parameter Name="CollectableItems" Guid="1007ea57-4634-4d59-9cf8-115c8dde9829" Value="ClothingBlock" Type="string"/>
+</MemberComponentTemplate>
 <MemberComponentTemplate Name="FluInfected" Guid="c0287377-3bea-49ea-b6be-ddd11debb73e" InheritanceParent="4301cca7-d3dd-4e09-ab45-eed3ff27e6aa">
         <Parameter Name="FluResistance" Value="50" Type="float"/>
         <Parameter Name="CoughSound" Value="Audio/Creatures/MaleCough/MaleCough1" Type="string"/>
@@ -4479,8 +4753,24 @@
 </EntityTemplate>
 
 <EntityTemplate Name="Tulio" Guid="5ff2501e-8568-4f85-a1d7-cb30437148f1" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="CreatureAI" Guid="0a00b0f1-8274-4fe1-834c-97b13476508f" InheritanceParent="a703e514-0246-49c4-a58d-282a2e0737d1">
-    <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="78e1e8a4-5591-4068-8e18-b5d6d870b1c0"/>
+<MemberComponentTemplate Name="CreatureAI" Guid="ba3287e7-4efe-4fa6-a63a-bbc1fdc6b38f" InheritanceParent="a703e514-0246-49c4-a58d-282a2e0737d1">
+    <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="89fda346-33e0-4b66-a333-89bfe5d9d32b"/>
+    <Parameter Name="CanEquipClothing" Guid="e5ee562a-3bb4-43a6-b69c-beff99eb7261" Value="true" Type="bool"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureClothing" Guid="a170b34b-067c-492d-855b-bf72f4c569bb" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
+  <ParameterSet Name="CreatureClothes" Guid="a7cf5628-e782-4ef3-ab40-a47ebbd95267">
+    <Parameter Name="Head" Guid="33deda06-7991-4f32-b170-199b10f5b0aa" Value="" Type="string"/>
+    <Parameter Name="Torso" Guid="6aa3f71c-d3ec-415b-af48-3d732b89e893" Value="" Type="string"/>
+    <Parameter Name="Legs" Guid="15c4e4e4-2dbe-4f5d-ba41-aad7992d5372" Value="" Type="string"/>
+    <Parameter Name="Feet" Guid="43838f43-901e-4595-bad7-02fa43c4a32d" Value="" Type="string"/>
+  </ParameterSet>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="OuterClothingModel" Guid="cc68ef02-365e-4e65-bad3-6b392eb98bff" InheritanceParent="c2429b7f-55e0-4ca7-b435-2c569f112229">
+              <Parameter Name="ModelName" Guid="165f7253-68cf-4427-872d-cab91687db9a" Value="Models/OuterClothingMale" Type="string"/>
+            </MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureCollect" Guid="4b260c61-a177-46bb-85ef-d736c956e610" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <Parameter Name="CanCollect" Guid="68f891cd-ce66-459e-9092-aa349fa0b0ee" Value="true" Type="bool"/>
+    <Parameter Name="CollectableItems" Guid="6bf4c9cf-aec9-4665-a8d1-7b89f1cf9a50" Value="ClothingBlock" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="DeathSpawner" Guid="0f3a375f-07d7-4012-a24e-b5d5909ff5e8" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="b0d30780-ff66-4416-a20a-4e4828bf03e5"/>
@@ -4612,8 +4902,24 @@
 </EntityTemplate>
 
 <EntityTemplate Name="Brayan" Guid="ecfa50bc-836c-4103-a3f7-0249aa579ea2" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="CreatureAI" Guid="ca01f3ef-3c96-4dda-8011-1279b6a12fb7" InheritanceParent="a703e514-0246-49c4-a58d-282a2e0737d1">
-    <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="47123cd9-b45e-4f2a-9a3e-64dbae6590f7"/>
+<MemberComponentTemplate Name="CreatureAI" Guid="6665ce3a-4389-416c-b4d6-50bd15c0f395" InheritanceParent="a703e514-0246-49c4-a58d-282a2e0737d1">
+    <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="30eb794f-32bb-4349-be67-cd8bfff45c7c"/>
+    <Parameter Name="CanEquipClothing" Guid="69f769ca-6c10-48bc-8fca-946c3a3a73b8" Value="true" Type="bool"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureClothing" Guid="66784ec6-5352-4ff2-be4b-70f8935ad584" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
+  <ParameterSet Name="CreatureClothes" Guid="3340cfd3-8182-41bf-b072-ddeba91c68c4">
+    <Parameter Name="Head" Guid="f76cecd8-3ec4-4f80-858f-ee9530a09772" Value="" Type="string"/>
+    <Parameter Name="Torso" Guid="4719af1f-7eb4-4570-b4c3-c0927d5e29ab" Value="" Type="string"/>
+    <Parameter Name="Legs" Guid="e7776631-fc56-4548-bd7c-238acd51b4a8" Value="" Type="string"/>
+    <Parameter Name="Feet" Guid="57d4c323-3002-4315-8380-b8891b88d2a0" Value="" Type="string"/>
+  </ParameterSet>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="OuterClothingModel" Guid="473f8b8a-e7c7-41ca-af8b-0d84092bc30f" InheritanceParent="c2429b7f-55e0-4ca7-b435-2c569f112229">
+              <Parameter Name="ModelName" Guid="36cd030a-a736-42ab-bbc1-334b36388f54" Value="Models/OuterClothingMale" Type="string"/>
+            </MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureCollect" Guid="f1ee3343-43c3-491b-8b30-54321ea10480" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <Parameter Name="CanCollect" Guid="1e067fd6-1163-4dfc-949f-c2301bfd5da0" Value="true" Type="bool"/>
+    <Parameter Name="CollectableItems" Guid="9fec4d9d-3a59-4d0b-a8f7-0f15247fee4a" Value="ClothingBlock" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="DeathSpawner" Guid="5389eed9-092f-47a7-abfe-f184ce9710d2" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="b8aa60af-7c87-48d0-bc61-ffec79a56a84"/>
@@ -4751,6 +5057,24 @@
 </EntityTemplate>
 
 <EntityTemplate Name="Richard" Guid="2454e93e-9dfc-4388-ac02-e777deb8ab51" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="CreatureAI" Guid="22db21d0-9494-4482-8cea-71d623f799ae" InheritanceParent="a703e514-0246-49c4-a58d-282a2e0737d1">
+    <Parameter Name="CanEquipClothing" Guid="1d7e60a8-18c4-42ee-9289-b657c67894ea" Value="true" Type="bool"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureClothing" Guid="cbea2ec7-4e11-4a2e-acc1-e024d1caf1d6" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
+  <ParameterSet Name="CreatureClothes" Guid="116180f3-f866-4c05-8dbf-a6a8bfd65879">
+    <Parameter Name="Head" Guid="ff4ec2ea-bf71-4aaf-bdec-a859bd0cc17d" Value="" Type="string"/>
+    <Parameter Name="Torso" Guid="71ce59c9-d9e7-4ea2-bf32-e8b8e5fc5b92" Value="" Type="string"/>
+    <Parameter Name="Legs" Guid="0f511360-6529-4580-9e42-a4bb17ff2d0c" Value="" Type="string"/>
+    <Parameter Name="Feet" Guid="3c54b889-2882-4000-8e34-f82f38c42301" Value="" Type="string"/>
+  </ParameterSet>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="OuterClothingModel" Guid="9d4250af-c0b9-4400-968d-3d6f33ae9ed9" InheritanceParent="c2429b7f-55e0-4ca7-b435-2c569f112229">
+              <Parameter Name="ModelName" Guid="b81b8149-567f-46d5-a70b-971c068e6f2f" Value="Models/OuterClothingMale" Type="string"/>
+            </MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureCollect" Guid="74e4ce11-d14a-4e54-b165-acce1e878a77" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <Parameter Name="CanCollect" Guid="efe8b4a0-670d-489a-beb3-c170c33c1b38" Value="true" Type="bool"/>
+    <Parameter Name="CollectableItems" Guid="d22f78c0-ff5a-4e1f-b672-7079761aba26" Value="ClothingBlock" Type="string"/>
+</MemberComponentTemplate>
 <MemberComponentTemplate Name="FluInfected" Guid="41dbfe95-625e-4c0f-aa06-88e0d9ac4408" InheritanceParent="4301cca7-d3dd-4e09-ab45-eed3ff27e6aa">
         <Parameter Name="FluResistance" Value="100" Type="float"/>
         <Parameter Name="CoughSound" Value="Audio/Creatures/MaleCough/MaleCough1" Type="string"/>
@@ -5905,7 +6229,7 @@
                 <Parameter Name="AirLackResilience" Guid="f737136f-fd7c-4097-bb38-61f99aedba64" Value="666" Type="float"/>
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="OnFire" Guid="5eb31dd5-aa9f-48e8-8c3d-f9a35857705c"/>
-            <MemberComponentTemplate Name="MusicWalkAroundBehavior" Guid="6dd831af-8beb-438d-be29-e4876121e9ba" InheritanceParent="d06206af-5354-44dd-9a46-daa068440e63"/>
+            <MemberComponentTemplate Name="WalkAroundBehavior" Guid="6dd831af-8beb-438d-be29-e4876121e9ba" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
             <MemberComponentTemplate Name="FeedBehavior" Guid="00698938-329f-4f87-8a53-6dd9a6733f48" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="a8033fa9-e1f4-4f83-985f-405c9c7da31e" Value="False" Type="bool"/>
             </MemberComponentTemplate>
