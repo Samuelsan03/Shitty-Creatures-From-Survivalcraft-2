@@ -309,6 +309,53 @@ namespace Game
 		// ---------------------------------------------------------------------------------
 		public override void OnMainMenuScreenCreated(MainMenuScreen mainMenuScreen, StackPanelWidget leftBottomBar, StackPanelWidget rightBottomBar)
 		{
+			// ----- Nuevo: enlace de TikTok (encima del copyright) -----
+			var bottomInfos = mainMenuScreen.Children.Find<StackPanelWidget>("BottomInfos", true);
+			if (bottomInfos != null)
+			{
+				// Solo añadir si no existe ya
+				if (bottomInfos.Children.Find<StackPanelWidget>("TikTokLinkRow", false) == null)
+				{
+					// Fila horizontal para el texto TikTok + link
+					var tikTokRow = new StackPanelWidget
+					{
+						Name = "TikTokLinkRow",
+						Direction = LayoutDirection.Horizontal,
+						HorizontalAlignment = WidgetAlignment.Center,
+						Margin = new Vector2(0, 2) // pequeño margen vertical
+					};
+
+					// Nombre de usuario fijo, sin traducir
+					LinkWidget tikTokLink = new LinkWidget
+					{
+						Text = " @athormi",
+						Color = new Color (255,181,31),
+						FontScale = 0.7f,
+						VerticalAlignment = WidgetAlignment.Center,
+						Url = "https://www.tiktok.com/@athormi",
+						DropShadow = true
+					};
+
+					// Añadir etiqueta y link a la fila
+					tikTokRow.Children.Add(new LabelWidget
+					{
+						Text = "TikTok:",
+						Color = Color.DarkRed,
+						VerticalAlignment = WidgetAlignment.Center,
+						FontScale = 0.7f,
+						DropShadow = true
+					});
+					tikTokRow.Children.Add(tikTokLink);
+
+					// Insertar al principio (índice 0), encima del copyright
+					int insertIndex = 0;
+					if (insertIndex <= bottomInfos.Children.Count)
+						bottomInfos.Children.Insert(insertIndex, tikTokRow);
+					else
+						bottomInfos.Children.Add(tikTokRow);
+				}
+			}
+
 			// Ajustar logo principal
 			RectangleWidget logo = mainMenuScreen.Children.Find<RectangleWidget>("Logo", true);
 			if (logo != null)
