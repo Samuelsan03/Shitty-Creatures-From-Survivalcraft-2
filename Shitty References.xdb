@@ -4,6 +4,10 @@
 <Parameter Name="Class" Guid="8c4f00ca-8f77-47c9-99bb-cefa4f94ee8d" new-Value="Game.ComponentNewVitalStats" Type="string"/>
 
     <Folder Name="Gameplay" Guid="d509e5e2-2c10-49f1-8223-85cd892c63b0">
+    <ComponentTemplate Name="MusicWalkAroundBehavior" Description="Behavior that walks a creature randomly and makes it sing and dance while idle" Guid="d06206af-5354-44dd-9a46-daa068440e63" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+  <Parameter Name="Class" Guid="b9a5072f-9b7c-4ab8-8c49-7fdd5c7a918f" Value="Game.ComponentMusicWalkAroundBehavior" Type="string"/>
+</ComponentTemplate>
+
     <ComponentTemplate Name="CreatureClothing" Description="Handles clothes worn by creatures" Guid="c1965be4-62ff-42f9-90e6-4e12b4d9a3af" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
   <Parameter Name="Class" Guid="dbbfd94b-2a9e-45bd-81c0-7a2b6dbb06ec" Value="Game.ComponentCreatureClothing" Type="string"/>
   <ParameterSet Name="CreatureClothes" Description="Contains clothes worn by creature" Guid="4f57a2eb-2f66-4c72-8005-8fd1f9c65b35">
@@ -247,7 +251,7 @@
 
 <ComponentTemplate Name="CreatureAI" Description="Inteligencia artificial para criaturas con soporte para armas y recarga automática" Guid="a703e514-0246-49c4-a58d-282a2e0737d1" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
     <Parameter Name="Class" Guid="e43a2641-0995-446c-aa50-390e7c0e2c12" Value="Game.ComponentCreatureAI" Type="string" Description="Clase C# que implementa el componente"/>
-    <Parameter Name="CanUseInventory" Guid="ddb27b73-4aa7-4580-a5bd-684db3139696" Value="true" Type="bool" Description="Si la criatura puede usar armas del inventario"/>
+    <Parameter Name="CanUseInventory" Guid="ddb27b73-4aa7-4580-a5bd-684db3139696" Value="false" Type="bool" Description="Si la criatura puede usar armas del inventario"/>
     <Parameter Name="CanEquipClothing" Guid="f5668c0a-04a1-4a3c-901a-9f877ef899c9" Value="false" Type="bool" Description="Si la criatura puede equiparse ropa y armadura automáticamente del inventario"/>
 </ComponentTemplate>
 
