@@ -18,6 +18,7 @@ namespace Game
 		public ComponentCreature Target => m_target;
 		public UpdateOrder UpdateOrder => UpdateOrder.Default;
 		public override float ImportanceLevel => m_importanceLevel;
+		public bool IsProtectingPlayer => ShouldProtectPlayer;
 
 		// ===== PARÁMETROS CONFIGURABLES (valores por defecto) =====
 		public float ImportanceLevelNonPersistent = 200f;
@@ -666,7 +667,7 @@ namespace Game
 				bool inMeleeRange = IsTargetInAttackRange(m_target.ComponentBody);
 				bool shouldUseMelee = distance <= RangedAttackRange.X;
 
-				if (!m_isAimingThrowable)
+				if (!m_isAimingThrowable && !m_isAimingRanged)
 				{
 					ManageWeaponSwitching(shouldUseMelee);
 				}
@@ -801,10 +802,12 @@ namespace Game
 				// Permitir ataques a distancia incluso en rango cuerpo a cuerpo si no tenemos arma cuerpo a cuerpo
 				if (!inMeleeRange || FindBestMeleeWeapon(out _, out _) == -1)
 				{
+					// PRIORIDAD 1: Armas lanzables
 					if (HasThrowableItem(out _, out _))
 					{
 						UpdateThrowableAttack(dt);
 					}
+					// PRIORIDAD 2: Armas a distancia
 					else if (IsCurrentWeaponRanged)
 					{
 						UpdateRangedAttack(dt);
@@ -1266,23 +1269,27 @@ namespace Game
 		private void EnsureBowLoaded(int slotIndex, int currentValue)
 		{
 			int data = Terrain.ExtractData(currentValue);
+			// Forzar siempre draw=15 (máxima tensión instantánea)
+			data = BowBlock.SetDraw(data, 15);
+
 			if (BowBlock.GetArrowType(data) == null)
 			{
 				ArrowBlock.ArrowType[] arrowTypes = new ArrowBlock.ArrowType[]
 				{
-					ArrowBlock.ArrowType.WoodenArrow,
-					ArrowBlock.ArrowType.StoneArrow,
-					ArrowBlock.ArrowType.IronArrow,
-					ArrowBlock.ArrowType.DiamondArrow,
-					ArrowBlock.ArrowType.FireArrow,
-					ArrowBlock.ArrowType.CopperArrow
+			ArrowBlock.ArrowType.WoodenArrow,
+			ArrowBlock.ArrowType.StoneArrow,
+			ArrowBlock.ArrowType.IronArrow,
+			ArrowBlock.ArrowType.DiamondArrow,
+			ArrowBlock.ArrowType.FireArrow,
+			ArrowBlock.ArrowType.CopperArrow
 				};
 				ArrowBlock.ArrowType selected = arrowTypes[m_random.Int(0, arrowTypes.Length - 1)];
 				data = BowBlock.SetArrowType(data, selected);
-				int newValue = Terrain.MakeBlockValue(BowBlock.Index, 0, data);
-				m_componentMiner.Inventory.RemoveSlotItems(slotIndex, 1);
-				m_componentMiner.Inventory.AddSlotItems(slotIndex, newValue, 1);
 			}
+
+			int newValue = Terrain.MakeBlockValue(BowBlock.Index, 0, data);
+			m_componentMiner.Inventory.RemoveSlotItems(slotIndex, 1);
+			m_componentMiner.Inventory.AddSlotItems(slotIndex, newValue, 1);
 		}
 
 		private void EnsureCrossbowLoaded(int slotIndex, int currentValue)
@@ -1529,13 +1536,26 @@ namespace Game
 				m_aimingStarted = false;
 				return;
 			}
-			EnsureBowLoaded(slotIndex, bowValue);
+
+			// Forzar draw=15 antes de disparar
+			int data = Terrain.ExtractData(bowValue);
+			data = BowBlock.SetDraw(data, 15);
+			EnsureBowLoaded(slotIndex, Terrain.MakeBlockValue(BowBlock.Index, 0, data));
+
 			Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
 			Vector3 targetCenter = m_target.ComponentCreatureModel.EyePosition;
 			Vector3 direction = Vector3.Normalize(targetCenter - eyePos);
 			Ray3 ray = new Ray3(eyePos, direction);
 			m_componentMiner.Aim(ray, AimState.Completed);
 			m_nextRangedAttackTime = m_subsystemTime.GameTime + BowCooldown;
+
+			// Disparar y restaurar draw=0
+			int newData = BowBlock.SetDraw(data, 0);
+			newData = BowBlock.SetArrowType(newData, null);
+			int newValue = Terrain.MakeBlockValue(BowBlock.Index, 0, newData);
+			m_componentMiner.Inventory.RemoveSlotItems(slotIndex, 1);
+			m_componentMiner.Inventory.AddSlotItems(slotIndex, newValue, 1);
+
 			m_isAimingRanged = false;
 			m_aimingStarted = false;
 			m_triedToLoad = false;
@@ -2736,5 +2756,75 @@ namespace Game
 		private float m_chaseWhenAttackedProbability;
 		private float m_chaseOnTouchProbability;
 		private CreatureCategory m_autoChaseMask;
+		// Método para protección extrema del jugador (llamado desde ModLoader)
+		public void ForceProtectiveAttack()
+		{
+			if (!ShouldProtectPlayer)
+				return;
+
+			if (Suppressed || m_componentHireable != null && !m_componentHireable.IsHired)
+				return;
+
+			// Cancelar cualquier delay de caza
+			TargetInRangeTimeToChase = 0f;
+			Suppressed = false;
+
+			// Si ya está persiguiendo un enemigo válido, no interrumpir
+			if (m_target != null && m_target.ComponentHealth.Health > 0f && IsEnemy(m_target))
+				return;
+
+			// Buscar el enemigo más cercano (zombi o bandido agresivo)
+			ComponentCreature enemy = FindNearestEnemy(40f);
+			if (enemy != null)
+			{
+				StopAttack();
+				Attack(enemy, 40f, 120f, true);
+			}
+		}
+
+		private bool IsEnemy(ComponentCreature creature)
+		{
+			if (creature == null || creature.ComponentHealth.Health <= 0f)
+				return false;
+
+			// Verificar si es zombi con ForceAttackDuringGreenNight
+			ComponentZombieChaseBehavior zChase = creature.Entity.FindComponent<ComponentZombieChaseBehavior>();
+			if (zChase != null && zChase.ForceAttackDuringGreenNight)
+				return true;
+
+			// Verificar si es bandido (tienen ComponentBanditChaseBehavior)
+			ComponentBanditChaseBehavior bChase = creature.Entity.FindComponent<ComponentBanditChaseBehavior>();
+			if (bChase != null)
+				return true;
+
+			return false;
+		}
+
+		private ComponentCreature FindNearestEnemy(float range)
+		{
+			if (m_componentCreature?.ComponentBody == null)
+				return null;
+
+			Vector3 position = m_componentCreature.ComponentBody.Position;
+			ComponentCreature nearest = null;
+			float minDist = float.MaxValue;
+
+			foreach (ComponentCreature creature in m_subsystemCreatureSpawn.Creatures)
+			{
+				if (creature == m_componentCreature || creature.ComponentHealth.Health <= 0f)
+					continue;
+
+				if (!IsEnemy(creature))
+					continue;
+
+				float dist = Vector3.Distance(position, creature.ComponentBody.Position);
+				if (dist <= range && dist < minDist)
+				{
+					minDist = dist;
+					nearest = creature;
+				}
+			}
+			return nearest;
+		}
 	}
 }
