@@ -95,7 +95,6 @@ namespace Game
 					}
 				}
 			}
-			// Si sigue siendo null, no se podrá renderizar (se usará textura por defecto del modelo, no se sobrescribe)
 
 			foreach (ClothingSlot slot in ClothingSlot.ClothingSlots.Values)
 				m_clothes[slot] = new List<int>();
@@ -135,8 +134,6 @@ namespace Game
 			Display.DeviceReset -= Display_DeviceReset;
 			if (m_componentHealth != null)
 				m_componentHealth.Injured -= OnInjured;
-			// No es necesario restaurar TextureOverride porque al destruir el componente
-			// el modelo quedará huérfano de textura, pero el motor lo manejará.
 		}
 
 		private void Display_DeviceReset() => m_clothedTexturesValid = false;
@@ -146,13 +143,8 @@ namespace Game
 			if (injury == null || m_componentHealth == null || m_componentHealth.Health <= 0f) return;
 			if (injury.Attackment != null)
 			{
-				// Reconstruir el daño original (antes de la resistencia de la criatura)
-				float originalDamage = injury.Amount * Math.Max(m_componentHealth.AttackResilience, 1f);
-				// Calcular cuánto daño queda después de la armadura
-				float remainingAfterArmor = ApplyArmorProtection(originalDamage);
-				// El daño real que recibe la criatura se reduce en lo absorbido
-				float absorbed = originalDamage - remainingAfterArmor;
-				injury.Amount = Math.Max(0f, injury.Amount - absorbed);
+				float remaining = ApplyArmorProtection(injury.Amount);
+				injury.Amount = remaining;
 			}
 		}
 
@@ -359,7 +351,6 @@ namespace Game
 						}
 					}
 				}
-				// Si sigue siendo null, no podemos hacer nada
 				if (m_cachedSkinTexture == null) return;
 			}
 
@@ -377,6 +368,12 @@ namespace Game
 				m_outerClothedTexture = new RenderTarget2D(m_cachedSkinTexture.Width, m_cachedSkinTexture.Height, 1, ColorFormat.Rgba8888, DepthFormat.None);
 				m_componentOuterClothingModel.TextureOverride = m_outerClothedTexture;
 				m_clothedTexturesValid = false;
+			}
+
+			// Sincronizar opacidad del modelo exterior con el modelo principal (para fantasmas)
+			if (m_componentHumanModel.Opacity.HasValue)
+			{
+				m_componentOuterClothingModel.Opacity = m_componentHumanModel.Opacity;
 			}
 
 			// Siempre asignar los render targets para que el modelo tenga textura
@@ -397,7 +394,7 @@ namespace Game
 
 					// Capa base: piel
 					TexturedBatch2D batch = m_primitivesRenderer.TexturedBatch(m_cachedSkinTexture, false, batchIndex++,
-						DepthStencilState.None, null, BlendState.NonPremultiplied, SamplerState.PointClamp);
+						DepthStencilState.None, null, BlendState.Opaque, SamplerState.PointClamp);
 					batch.QueueQuad(Vector2.Zero, new Vector2(m_cachedSkinTexture.Width, m_cachedSkinTexture.Height), 0f, Vector2.Zero, Vector2.One, Color.White);
 
 					// Capas de ropa interior
@@ -417,7 +414,7 @@ namespace Game
 							{
 								Color color = GetClothingColor(value);
 								batch = m_primitivesRenderer.TexturedBatch(data.Texture, false, batchIndex++,
-									DepthStencilState.None, null, BlendState.NonPremultiplied, SamplerState.PointClamp);
+									DepthStencilState.None, null, BlendState.AlphaBlend, SamplerState.PointClamp);
 								batch.QueueQuad(Vector2.Zero, new Vector2(m_cachedSkinTexture.Width, m_cachedSkinTexture.Height), 0f, Vector2.Zero, Vector2.One, color);
 							}
 						}
@@ -445,7 +442,7 @@ namespace Game
 							{
 								Color color = GetClothingColor(value);
 								batch = m_primitivesRenderer.TexturedBatch(data.Texture, false, batchIndex++,
-									DepthStencilState.None, null, BlendState.NonPremultiplied, SamplerState.PointClamp);
+									DepthStencilState.None, null, BlendState.AlphaBlend, SamplerState.PointClamp);
 								batch.QueueQuad(Vector2.Zero, new Vector2(m_cachedSkinTexture.Width, m_cachedSkinTexture.Height), 0f, Vector2.Zero, Vector2.One, color);
 							}
 						}
@@ -456,7 +453,6 @@ namespace Game
 				{
 					Log.Error($"Error en UpdateRenderTargets de ComponentCreatureClothing: {ex.Message}");
 					m_clothedTexturesValid = false;
-					// En caso de error, no desasignamos TextureOverride para mantener el último estado válido
 				}
 				finally
 				{
