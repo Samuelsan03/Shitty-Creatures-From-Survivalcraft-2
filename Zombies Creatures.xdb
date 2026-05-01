@@ -296,6 +296,22 @@
 <MemberComponentTemplate Name="ZombieAI" Guid="aba5452f-e7f2-48d5-8f44-929577b3771e" InheritanceParent="dc91ba3e-c474-45c3-8d03-ca9a9996dc5f">
     <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="da463ff3-9ea2-47a7-9dce-41890350c0ae"/>
     <Parameter Name="AimHandAngleOrder" Value="0" Type="float" Guid="e5e19769-cba9-4c7a-bc45-7887f5ffd8ad"/>
+<Parameter Name="CanEquipClothing" Guid="fa360897-7f35-4438-8687-688d75b7a7f5" Value="true" Type="bool"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureClothing" Guid="8e58a07f-6544-49b1-b440-8969dfeecc90" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
+  <ParameterSet Name="CreatureClothes" Guid="5518b064-fd18-49dc-b295-d27bded19bae">
+    <Parameter Name="Head" Guid="7ba6747c-0bf5-4e78-9e83-d50c59e6a60b" Value="" Type="string"/>
+    <Parameter Name="Torso" Guid="32d9986d-1402-4bfb-a455-b763d7e84f2d" Value="" Type="string"/>
+    <Parameter Name="Legs" Guid="922369ce-cfcd-46a2-b481-e3e6c8b7dab9" Value="" Type="string"/>
+    <Parameter Name="Feet" Guid="8aba94f8-88df-463d-8ed9-d63b33f69a73" Value="" Type="string"/>
+  </ParameterSet>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="OuterClothingModel" Guid="e90542b8-6684-436b-8b73-0caeafa07f21" InheritanceParent="c2429b7f-55e0-4ca7-b435-2c569f112229">
+              <Parameter Name="ModelName" Guid="c8533542-bdb8-41e4-b879-cb6ff88386ca" Value="Models/OuterClothingMale" Type="string"/>
+            </MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureCollect" Guid="74bfbfd1-1e6d-48dc-b242-1c0ed09422d6" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <Parameter Name="CanCollect" Guid="e61e2755-12bb-4d26-b76c-8d5966dcab52" Value="true" Type="bool"/>
+    <Parameter Name="CollectableItems" Guid="d0e7770f-7e8f-422c-b5e4-e5990fb20f16" Value="ClothingBlock" Type="string"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="DeathSpawner" Guid="80840522-653e-4a79-99e5-04df5ca3af69" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="289539ad-72dc-418e-9ece-bc8e43c90ed5"/>
