@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Shitty_Creatures</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <FileVersion>1</FileVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="Engine">
+      <HintPath>..\..\..\..\Desktop\Survivalcraft 2 1.9\Engine.dll</HintPath>
+    </Reference>
+    <Reference Include="EntitySystem">
+      <HintPath>..\..\..\..\Desktop\Survivalcraft 2 1.9\EntitySystem.dll</HintPath>
+    </Reference>
+    <Reference Include="Survivalcraft">
+      <HintPath>..\..\..\..\Desktop\Survivalcraft 2 1.9\Survivalcraft.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Game\" />
+  </ItemGroup>
+
+</Project>
