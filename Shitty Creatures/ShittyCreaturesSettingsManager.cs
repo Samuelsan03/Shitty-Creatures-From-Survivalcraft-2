@@ -22,6 +22,8 @@ namespace Game
 
 		// Nueva propiedad para la música del menú
 		public static bool MenuMusicEnabled { get; set; } = true;
+		public static bool BleedingEnabled { get; set; } = true;
+		public static bool HealthBarEnabled { get; set; } = true;
 
 		public static void Load()
 		{
@@ -70,6 +72,12 @@ namespace Game
 								break;
 							case "MenuMusicEnabled":
 								MenuMusicEnabled = value;
+								break;
+							case "BleedingEnabled":
+								BleedingEnabled = value;
+								break;
+							case "HealthBarEnabled":
+								HealthBarEnabled = value;
 								break;
 						}
 					}
@@ -136,6 +144,10 @@ namespace Game
 						new XAttribute("Name", "MenuMusicEnabled"),
 						new XAttribute("Type", "bool"),
 						new XAttribute("Value", MenuMusicEnabled)));
+					root.Add(new XElement("Value",
+				        new XAttribute("Name", "HealthBarEnabled"),
+				        new XAttribute("Type", "bool"),
+				        new XAttribute("Value", HealthBarEnabled)));
 
 					XmlUtils.SaveXmlToStream(root, stream, null, true);
 				}
