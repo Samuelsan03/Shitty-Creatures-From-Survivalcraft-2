@@ -11,6 +11,7 @@ namespace Game
 		public override float ImportanceLevel => m_importanceLevel;
 
 		public float SearchRange = 20f;
+		public bool CanBeMounted = false; // ← NUEVO: propiedad saveable, false por defecto
 
 		private static readonly string[] s_mountableTemplates = new string[]
 		{
@@ -42,6 +43,7 @@ namespace Game
 
 		public virtual void Update(float dt)
 		{
+			if (!CanBeMounted) return; // Si no puede montarse, no hacer nada
 			m_stateMachine.Update();
 		}
 
@@ -60,6 +62,7 @@ namespace Game
 			m_summonBehavior = Entity.FindComponent<ComponentSummonBehavior>();
 
 			SearchRange = valuesDictionary.GetValue<float>("SearchRange", 20f);
+			CanBeMounted = valuesDictionary.GetValue<bool>("CanBeMounted", false); // ← NUEVO: cargar del diccionario
 
 			// ----- Estados -----
 			// Idle
@@ -147,7 +150,7 @@ namespace Game
 
 				// 1. Persecución: solo si el objetivo está vivo
 				if (m_chaseBehavior != null && m_chaseBehavior.IsActive && m_chaseBehavior.Target != null &&
-					m_chaseBehavior.Target.ComponentHealth.Health > 0f)   // ← ¡Corregido!
+					m_chaseBehavior.Target.ComponentHealth.Health > 0f)
 				{
 					urgentTarget = m_chaseBehavior.Target.ComponentBody.Position;
 					urgentImportance = 250f;
@@ -244,6 +247,11 @@ namespace Game
 			});
 
 			m_stateMachine.TransitionTo("Idle");
+		}
+
+		public override void Save(ValuesDictionary valuesDictionary, EntityToIdMap entityToIdMap)
+		{
+			valuesDictionary.SetValue<bool>("CanBeMounted", CanBeMounted); // ← NUEVO: guardar al XML
 		}
 
 		private Vector3 FindWanderDestination()
