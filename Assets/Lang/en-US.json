@@ -104,7 +104,8 @@
     "CreativeDefenseDescription": "In Creative mode, when a creature hits the player, allies will attack the attacker",
     "FreeCameraDescription": "Enable/disable free camera mode (only in non-creative modes)",
     "MenuMusicDescription": "Controls whether custom music is played while navigating the game menu",
-    "BleedingDescription": "Toggle bleeding on wounded creatures"
+    "BleedingDescription": "Toggle bleeding on wounded creatures",
+    "HealthBarDescription": "Show health bars on creatures"
   },
   "AntidoteBucket": {
     "NPCCured": "The NPC has been cured of poison and sickness!"
