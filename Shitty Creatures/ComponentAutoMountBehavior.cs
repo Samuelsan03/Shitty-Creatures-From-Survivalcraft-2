@@ -25,7 +25,7 @@ namespace Game
 		private SubsystemTerrain m_subsystemTerrain;
 		private SubsystemCampfireBlockBehavior m_subsystemCampfireBlockBehavior;
 		private ComponentCreature m_componentCreature;
-		private ComponentPathfinding m_componentPathfinding;
+		private ComponentPathfinding m_componentPathfinding; // pathfinding del jinete
 		private ComponentRider m_componentRider;
 		private StateMachine m_stateMachine = new StateMachine();
 		private Random m_random = new Random();
@@ -37,6 +37,8 @@ namespace Game
 
 		private ComponentNewChaseBehavior m_chaseBehavior;
 		private ComponentSummonBehavior m_summonBehavior;
+
+		private double m_summonStoppedTime = -1.0; // para imitar el comportamiento de FollowTarget
 
 		private DynamicArray<ComponentBody> m_tempBodies = new DynamicArray<ComponentBody>();
 
@@ -127,6 +129,7 @@ namespace Game
 				m_importanceLevel = 10f;
 				m_wanderDestination = null;
 				m_nextWanderUpdateTime = 0.0;
+				m_summonStoppedTime = -1.0;
 			}, delegate {
 				if (m_componentRider.Mount == null)
 				{
@@ -139,21 +142,47 @@ namespace Game
 				ComponentPathfinding mountPathfinding = mountEntity.FindComponent<ComponentPathfinding>();
 				if (mountPathfinding == null) return;
 
-				// ----- Detección de tareas urgentes (sin importar IsActive de este comportamiento) -----
+				// ----- Detección de tareas urgentes -----
 				Vector3? urgentTarget = null;
 				float urgentImportance = 10f;
+				float speed = 1f;
+				float range = 1.5f;
 
-				// 1. Persecución (el chase behavior tiene un target activo)
-				if (m_chaseBehavior != null && m_chaseBehavior.Target != null && m_chaseBehavior.IsActive)
+				// 1. Persecución: mover montura hacia el target y detener pathfinding del jinete
+				if (m_chaseBehavior != null && m_chaseBehavior.IsActive && m_chaseBehavior.Target != null)
 				{
 					urgentTarget = m_chaseBehavior.Target.ComponentBody.Position;
 					urgentImportance = 250f;
+					// Detener pathfinding del jinete para que no interfiera
+					m_componentPathfinding.Stop();
 				}
-				// 2. Llamada (silbato) - el SummonTarget puede estar establecido aunque IsActive aún no sea true
+				// 2. Llamada (silbato): imitar FollowTarget original
 				else if (m_summonBehavior != null && m_summonBehavior.SummonTarget != null)
 				{
-					urgentTarget = m_summonBehavior.SummonTarget.Position;
-					urgentImportance = 250f;
+					Vector3 targetPos = m_summonBehavior.SummonTarget.Position;
+					float distToTarget = Vector3.Distance(mount.ComponentBody.Position, targetPos);
+					if (distToTarget > 4f)
+					{
+						// Calcular punto lateral (igual que ComponentSummonBehavior)
+						Vector3 cross = Vector3.Normalize(Vector3.Cross(Vector3.UnitY, targetPos - mount.ComponentBody.Position));
+						float side = 0.75f * (float)((GetHashCode() % 2 != 0) ? 1 : -1) * (float)(1 + GetHashCode() % 3);
+						Vector3 lateralDest = targetPos + cross * side;
+						speed = MathUtils.Lerp(0.4f, 1f, MathUtils.Saturate(0.25f * (distToTarget - 5f)));
+						range = 3.75f;
+						urgentTarget = lateralDest;
+						urgentImportance = 250f;
+						m_summonStoppedTime = -1.0; // reiniciar contador
+													// Detener pathfinding del jinete
+						m_componentPathfinding.Stop();
+					}
+					else
+					{
+						// Cerca del jugador: detenerse
+						mountPathfinding.Stop();
+						m_summonStoppedTime = m_subsystemTime.GameTime;
+						m_importanceLevel = 0f; // para que pueda desactivarse
+						return;
+					}
 				}
 				// 3. Evitar fuego
 				else
@@ -189,9 +218,8 @@ namespace Game
 
 				if (urgentTarget.HasValue)
 				{
-					// Asignar alta importancia para que este comportamiento mantenga el control
 					m_importanceLevel = urgentImportance;
-					mountPathfinding.SetDestination(urgentTarget.Value, 1f, 1.5f, 100, false, true, false, null);
+					mountPathfinding.SetDestination(urgentTarget.Value, speed, range, 100, false, true, false, null);
 					m_wanderDestination = null;
 					return;
 				}
