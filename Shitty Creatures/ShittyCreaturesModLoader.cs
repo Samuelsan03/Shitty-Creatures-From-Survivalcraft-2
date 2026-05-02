@@ -325,6 +325,27 @@ namespace Game
 			var bottomInfos = mainMenuScreen.Children.Find<StackPanelWidget>("BottomInfos", true);
 			if (bottomInfos != null)
 			{
+
+				// Línea de copyright del mod (primero, índice 0)
+				if (bottomInfos.Children.Find<StackPanelWidget>("ModCopyrightRow", false) == null)
+				{
+					var modCopyrightRow = new StackPanelWidget
+					{
+						Name = "ModCopyrightRow",
+						Direction = LayoutDirection.Horizontal,
+						HorizontalAlignment = WidgetAlignment.Center,
+						Margin = new Vector2(0, 2)
+					};
+					modCopyrightRow.Children.Add(new LabelWidget
+					{
+						Text = "© 2025-2026 Shitty Creatures",
+						Color = new Color(229,24,24),
+						FontScale = 0.7f,
+						DropShadow = true
+					});
+					bottomInfos.Children.Insert(0, modCopyrightRow);
+				}
+
 				// Solo añadir si no existe ya
 				if (bottomInfos.Children.Find<StackPanelWidget>("TikTokLinkRow", false) == null)
 				{
@@ -360,7 +381,7 @@ namespace Game
 					tikTokRow.Children.Add(tikTokLink);
 
 					// Insertar al principio (índice 0), encima del copyright
-					int insertIndex = 0;
+					int insertIndex = bottomInfos.Children.Find<StackPanelWidget>("ModCopyrightRow", false) != null ? 1 : 0;
 					if (insertIndex <= bottomInfos.Children.Count)
 						bottomInfos.Children.Insert(insertIndex, tikTokRow);
 					else
@@ -442,6 +463,32 @@ namespace Game
 				centerButtons.Children.Add(buttonRow);
 			}
 
+			// ---------- NUEVO: Botón de Agradecimientos en la barra izquierda ----------
+			BevelledButtonWidget thanksButton = leftBottomBar.Children.Find<BevelledButtonWidget>("SpecialThanksButton", false);
+			if (thanksButton == null)
+			{
+				thanksButton = new BevelledButtonWidget
+				{
+					Name = "SpecialThanksButton",
+					Size = new Vector2(60f, 60f)
+				};
+				RectangleWidget icon = new RectangleWidget
+				{
+					Size = new Vector2(28f, 28f),
+					TextureLinearFilter = true,
+					HorizontalAlignment = WidgetAlignment.Center,
+					VerticalAlignment = WidgetAlignment.Center,
+					Subtexture = ContentManager.Get<Subtexture>("Textures/Gui/Xros_heart_emblem"),
+					OutlineColor = new Color(0, 0, 0, 0),
+					FillColor = Color.White,
+					IsVisible = true,
+					TextureAnisotropicFilter = true,
+					BlendState = BlendState.NonPremultiplied
+				};
+				thanksButton.Children.Add(icon);
+				leftBottomBar.Children.Insert(0, thanksButton); // Inserta al principio para que quede arriba del todo
+			}
+
 			// Botón Veemon en la barra inferior derecha (comportamiento original)
 			BevelledButtonWidget existing = rightBottomBar.Children.Find<BevelledButtonWidget>("ShittyButton", false);
 			if (existing == null)
@@ -481,6 +528,14 @@ namespace Game
 			MainMenuScreen mainMenu = widget as MainMenuScreen;
 			if (mainMenu != null)
 			{
+				// Botón de Agradecimientos
+				BevelledButtonWidget thanksButton = mainMenu.Children.Find<BevelledButtonWidget>("SpecialThanksButton", false);
+				if (thanksButton != null && thanksButton.IsClicked)
+				{
+					if (ScreensManager.FindScreen<SpecialThanksScreen>("SpecialThanks") == null)
+						ScreensManager.AddScreen("SpecialThanks", new SpecialThanksScreen());
+					ScreensManager.SwitchScreen("SpecialThanks");
+				}
 				// Botón Veemon (changelog)
 				BevelledButtonWidget shittyButton = mainMenu.Children.Find<BevelledButtonWidget>("ShittyButton", false);
 				if (shittyButton != null && shittyButton.IsClicked)
