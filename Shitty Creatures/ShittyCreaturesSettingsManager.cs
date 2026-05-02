@@ -144,6 +144,12 @@ namespace Game
 						new XAttribute("Name", "MenuMusicEnabled"),
 						new XAttribute("Type", "bool"),
 						new XAttribute("Value", MenuMusicEnabled)));
+
+					root.Add(new XElement("Value",
+						new XAttribute("Name", "BleedingEnabled"),
+						new XAttribute("Type", "bool"),
+						new XAttribute("Value", BleedingEnabled)));
+
 					root.Add(new XElement("Value",
 				        new XAttribute("Name", "HealthBarEnabled"),
 				        new XAttribute("Type", "bool"),
