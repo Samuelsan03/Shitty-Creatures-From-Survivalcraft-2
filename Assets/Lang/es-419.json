@@ -104,7 +104,8 @@
     "CreativeDefenseDescription": "En modo Creativo, cuando una criatura golpea al jugador, los aliados atacarán al agresor",
     "FreeCameraDescription": "Activar/desactivar el modo de cámara libre (solo en modos no creativos)",
     "MenuMusicDescription": "Controla si se reproduce música personalizada mientras se navega por el menú del juego",
-    "BleedingDescription": "Activar/desactivar sangrado en criaturas heridas"
+    "BleedingDescription": "Activar/desactivar sangrado en criaturas heridas",
+    "HealthBarDescription": "Mostrar barras de salud en las criaturas"
   },
     "AntidoteBucket": {
       "NPCCured": "¡El NPC ha sido curado de veneno y enfermedades!"
