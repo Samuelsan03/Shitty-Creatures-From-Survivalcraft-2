@@ -16,6 +16,8 @@ namespace Game
 		private BevelledButtonWidget m_creativeDefenseButton;
 		private BevelledButtonWidget m_freeCameraButton;
 		private BevelledButtonWidget m_menuMusicButton;
+		private BevelledButtonWidget m_bleedingButton;
+		private BevelledButtonWidget m_healthBarButton;
 		private StackPanelWidget m_contentPanel;
 		private LabelWidget m_titleLabel;
 
@@ -38,6 +40,8 @@ namespace Game
 			CreateOptionRow("ShittyCreaturesSettings", "CreativeDefenseDescription", out m_creativeDefenseButton, Color.LightGray, GetCreativeDefenseButtonText);
 			CreateOptionRow("ShittyCreaturesSettings", "FreeCameraDescription", out m_freeCameraButton, Color.LightGray, GetFreeCameraButtonText);
 			CreateOptionRow("ShittyCreaturesSettings", "MenuMusicDescription", out m_menuMusicButton, Color.LightGray, GetMenuMusicButtonText);
+			CreateOptionRow("ShittyCreaturesSettings", "BleedingDescription", out m_bleedingButton, Color.LightGray, GetBleedingButtonText);
+			CreateOptionRow("ShittyCreaturesSettings", "HealthBarDescription", out m_healthBarButton, Color.LightGray, GetHealthBarButtonText);
 		}
 
 		private void CreateOptionRow(string category, string descriptionKey, out BevelledButtonWidget button, Color buttonColor, Func<string> getButtonTextFunc)
@@ -83,6 +87,8 @@ namespace Game
 		private string GetCreativeDefenseButtonText() => ShittyCreaturesSettingsManager.CreativeDefenseEnabled ? LanguageControl.On : LanguageControl.Off;
 		private string GetFreeCameraButtonText() => ShittyCreaturesSettingsManager.FreeCameraEnabled ? LanguageControl.On : LanguageControl.Off;
 		private string GetMenuMusicButtonText() => ShittyCreaturesSettingsManager.MenuMusicEnabled ? LanguageControl.On : LanguageControl.Off;
+		private string GetBleedingButtonText() => ShittyCreaturesSettingsManager.BleedingEnabled ? LanguageControl.On : LanguageControl.Off;
+		private string GetHealthBarButtonText() => ShittyCreaturesSettingsManager.HealthBarEnabled ? LanguageControl.On : LanguageControl.Off;
 
 		public override void Update()
 		{
@@ -146,6 +152,16 @@ namespace Game
 				ShittyCreaturesSettingsManager.MenuMusicEnabled = !ShittyCreaturesSettingsManager.MenuMusicEnabled;
 				m_menuMusicButton.Text = GetMenuMusicButtonText();
 				MusicManager.ChangeMenuMusic(); // Forzar la actualización inmediata de la música
+			}
+			if (m_bleedingButton != null && m_bleedingButton.IsClicked)
+			{
+				ShittyCreaturesSettingsManager.BleedingEnabled = !ShittyCreaturesSettingsManager.BleedingEnabled;
+				m_bleedingButton.Text = GetBleedingButtonText();
+			}
+			if (m_healthBarButton != null && m_healthBarButton.IsClicked)
+			{
+				ShittyCreaturesSettingsManager.HealthBarEnabled = !ShittyCreaturesSettingsManager.HealthBarEnabled;
+				m_healthBarButton.Text = GetHealthBarButtonText();
 			}
 		}
 	}
