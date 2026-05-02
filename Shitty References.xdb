@@ -4,9 +4,6 @@
 <Parameter Name="Class" Guid="8c4f00ca-8f77-47c9-99bb-cefa4f94ee8d" new-Value="Game.ComponentNewVitalStats" Type="string"/>
 
     <Folder Name="Gameplay" Guid="d509e5e2-2c10-49f1-8223-85cd892c63b0">
-    <ComponentTemplate Name="MusicWalkAroundBehavior" Description="Behavior that walks a creature randomly and makes it sing and dance while idle" Guid="d06206af-5354-44dd-9a46-daa068440e63" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
-  <Parameter Name="Class" Guid="b9a5072f-9b7c-4ab8-8c49-7fdd5c7a918f" Value="Game.ComponentMusicWalkAroundBehavior" Type="string"/>
-</ComponentTemplate>
 
     <ComponentTemplate Name="CreatureClothing" Description="Handles clothes worn by creatures" Guid="c1965be4-62ff-42f9-90e6-4e12b4d9a3af" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
   <Parameter Name="Class" Guid="dbbfd94b-2a9e-45bd-81c0-7a2b6dbb06ec" Value="Game.ComponentCreatureClothing" Type="string"/>
@@ -282,11 +279,6 @@
 <ComponentTemplate Name="RefrigeratorXiaomi" Description="Refrigerador Xiaomi con control eléctrico" Guid="064a3848-3864-4d94-b078-7e3d8fdc145c" InheritanceParent="81a44c6a-c30a-4f53-8d64-0c30aabab8f9">
             <Parameter Name="SlotsCount" Guid="a51950cf-39fb-4d50-ab30-b182ef9ece9a" Value="12" Type="int"/>
             <Parameter Name="Class" Guid="e5dee275-a048-4f66-9253-1a6df67b9596" Value="Game.ComponentRefrigeratorXiaomi" Type="string"/>
-        </ComponentTemplate>
-
-        <ComponentTemplate Name="HealthBarDisplay" Guid="cc577309-064e-4bd3-82ed-89be72213cc6" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
-            <Parameter Name="Class" Guid="63d41ee3-3ab0-4715-b666-693c08a49360" Value="Game.ComponentHealthBar" Type="string"/>
-            <Parameter Name="IsOptional" Guid="ef55b5cd-a52c-47ad-afa0-abd660047a5a" Value="True" Type="bool"/>
         </ComponentTemplate>
         
         <ComponentTemplate Name="RandomChatter" Guid="a93baf1c-930f-47a8-a98a-f79fd0de910f" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
