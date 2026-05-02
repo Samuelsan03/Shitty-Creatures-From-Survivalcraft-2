@@ -1,0 +1,29 @@
+<Screen xmlns="runtime-namespace:Game">
+
+  <PanoramaWidget />
+
+  <StackPanelWidget Direction="Horizontal">
+
+    <CanvasWidget Style="{Widgets/TopBarContents}" >
+      <LabelWidget Name="TopBar.Label" Text="Special Thanks" />
+    </CanvasWidget>
+
+    <CanvasWidget Size="Infinity, Infinity" Margin="10, 10">
+
+      <BevelledRectangleWidget Style="{Styles/Area}" />
+
+      <ScrollPanelWidget Name="ScrollPanel" Direction="Vertical" Margin="3, 3" ClampToBounds="true">
+        <CanvasWidget HorizontalAlignment="Center" VerticalAlignment="Near">
+
+          <!-- StackPanel principal donde se agregarán los agradecimientos -->
+          <StackPanelWidget Name="ThanksStack" Direction="Vertical" HorizontalAlignment="Center" Margin="10, 10" >
+            <!-- Se llenará desde código -->
+          </StackPanelWidget>
+
+        </CanvasWidget>
+      </ScrollPanelWidget>
+
+    </CanvasWidget>
+  </StackPanelWidget>
+
+</Screen>
