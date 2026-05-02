@@ -74,7 +74,7 @@ namespace Game
 					particle.Color = Color.White;
 					particle.Velocity = MathUtils.Lerp(1f, 2.5f, num5) * Vector3.Normalize(new Vector3(v.X, -Math.Abs(v.Y), v.Z) + new Vector3(0f, -1f, 0f));
 					particle.TimeToLive = 3f;
-					particle.Size = new Vector2(0.35f);
+					particle.Size = new Vector2(0.44f);
 					particle.FlipX = m_random.Bool();
 					particle.FlipY = m_random.Bool();
 					m_toGenerate -= 1f;
