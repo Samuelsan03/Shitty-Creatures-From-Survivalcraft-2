@@ -16,6 +16,8 @@ namespace Game
 		// Campos estáticos (heredados de los distintos ModLoaders originales)
 		// ---------------------------------------------------------------------------------
 
+		private Dictionary<ComponentCreature, BloodParticleSystem> m_bleedingSystems = new Dictionary<ComponentCreature, BloodParticleSystem>();
+
 		// ShittyModLoader (original)
 		private static FieldInfo m_cachesField;
 
@@ -511,11 +513,15 @@ namespace Game
 			}
 
 			// ---------- HUD de coordenadas ----------
-			if (!ShittyCreaturesSettingsManager.CoordinateDisplayEnabled)
-				return;
-
 			GameWidget gameWidget = widget as GameWidget;
 			if (gameWidget == null)
+				return;
+
+			// ─── Sistema de sangrado (siempre se ejecuta cada frame) ───
+			UpdateBleedingSystems(gameWidget);
+
+			// ─── Coordenadas (solo si están activadas) ───
+			if (!ShittyCreaturesSettingsManager.CoordinateDisplayEnabled)
 				return;
 
 			ComponentPlayer player = gameWidget.PlayerData?.ComponentPlayer;
@@ -1180,6 +1186,136 @@ namespace Game
 				remaining -= canAdd;
 			}
 		}
+
+		private void UpdateBleedingSystems(GameWidget gameWidget)
+		{
+			var project = gameWidget.PlayerData?.SubsystemPlayers?.Project;
+			if (project == null) return;
+
+			var creatureSpawn = project.FindSubsystem<SubsystemCreatureSpawn>(true);
+			var particles = project.FindSubsystem<SubsystemParticles>(true);
+			var terrain = project.FindSubsystem<SubsystemTerrain>(true);
+			var players = project.FindSubsystem<SubsystemPlayers>(true);
+
+			if (creatureSpawn == null || particles == null || terrain == null || players == null)
+				return;
+
+			// Lista de nombres de plantilla que NO sangran
+			var noBleedCreatures = new HashSet<string>
+	{
+		"HumanoidSkeleton"
+	};
+
+			var allCreatures = new List<ComponentCreature>(creatureSpawn.Creatures);
+			foreach (var p in players.ComponentPlayers)
+				if (p != null) allCreatures.Add(p);
+
+			var toRemove = new List<ComponentCreature>();
+
+			foreach (var creature in allCreatures)
+			{
+				if (creature == null || creature.Entity == null) continue;
+				var health = creature.ComponentHealth;
+				if (health == null) continue;
+
+				string templateName = creature.Entity.ValuesDictionary?.DatabaseObject?.Name;
+				bool canBleed = !noBleedCreatures.Contains(templateName ?? string.Empty);
+				bool isAlive = health.Health > 0f && health.DeathTime == null;
+
+				// Verificar si la criatura tiene una enfermedad o veneno que cause daño interno (sin sangrado externo)
+				bool hasNonPhysicalAilment = false;
+				if (creature is ComponentPlayer player)
+				{
+					// Jugador: gripe o enfermedad (náuseas)
+					if ((player.ComponentSickness != null && player.ComponentSickness.IsSick) ||
+						(player.ComponentFlu != null && player.ComponentFlu.HasFlu))
+					{
+						hasNonPhysicalAilment = true;
+					}
+				}
+				else
+				{
+					// Criatura no jugador: veneno o gripe de criatura
+					var poison = creature.Entity.FindComponent<ComponentPoisonInfected>();
+					if (poison != null && poison.IsInfected)
+						hasNonPhysicalAilment = true;
+
+					var flu = creature.Entity.FindComponent<ComponentFluInfected>();
+					if (flu != null && flu.IsInfected)
+						hasNonPhysicalAilment = true;
+				}
+
+				// Solo iniciar sangrado si:
+				// - Está viva
+				// - Puede sangrar
+				// - Su salud es menor del 30%
+				// - NO tiene una enfermedad que cause daño interno
+				bool shouldStartBleeding = isAlive && canBleed && health.Health < 0.3f && !hasNonPhysicalAilment;
+
+				if (m_bleedingSystems.TryGetValue(creature, out var bps))
+				{
+					// Si la criatura está viva y su salud ya NO está baja, detenemos el sangrado (se curó)
+					if (isAlive && health.Health >= 0.3f)
+					{
+						bps.IsStopped = true;
+						toRemove.Add(creature);
+					}
+					else
+					{
+						// Mantenemos el sangrado activo (vivo con poca vida, muerto, o incluso enfermo si ya estaba sangrando antes)
+						bps.Position = creature.ComponentBody.Position + new Vector3(0f, 0.4f, 0f);
+					}
+				}
+				else if (shouldStartBleeding)
+				{
+					// Iniciar sangrado solo para criaturas vivas con poca vida por heridas físicas
+					try
+					{
+						var newBps = new BloodParticleSystem(terrain);
+						newBps.Position = creature.ComponentBody.Position + new Vector3(0f, 0.4f, 0f);
+						particles.AddParticleSystem(newBps, false);
+						m_bleedingSystems[creature] = newBps;
+					}
+					catch (Exception ex)
+					{
+						Log.Warning($"[ShittyCreatures] No se pudo crear sangre: {ex.Message}");
+					}
+				}
+				else if (!isAlive && canBleed) // Criatura muerta que puede sangrar (heridas físicas)
+				{
+					// Iniciar sangrado post-mortem (explosiones, proyectiles, etc.)
+					try
+					{
+						var newBps = new BloodParticleSystem(terrain);
+						newBps.Position = creature.ComponentBody.Position + new Vector3(0f, 0.4f, 0f);
+						particles.AddParticleSystem(newBps, false);
+						m_bleedingSystems[creature] = newBps;
+					}
+					catch (Exception ex)
+					{
+						Log.Warning($"[ShittyCreatures] No se pudo crear sangre: {ex.Message}");
+					}
+				}
+			}
+
+			foreach (var c in toRemove)
+				m_bleedingSystems.Remove(c);
+
+			// Limpiar sistemas cuyas criaturas ya no existen (despawned)
+			var activeCreaturesSet = new HashSet<ComponentCreature>(allCreatures);
+			toRemove.Clear();
+			foreach (var kvp in m_bleedingSystems)
+			{
+				if (kvp.Key == null || kvp.Key.Entity == null || !activeCreaturesSet.Contains(kvp.Key))
+				{
+					kvp.Value.IsStopped = true;
+					toRemove.Add(kvp.Key);
+				}
+			}
+			foreach (var c in toRemove)
+				m_bleedingSystems.Remove(c);
+		}
+
 
 		// ---------------------------------------------------------------------------------
 		// SaveSettings / LoadSettings (heredados de ChaseMusicModLoader, vacíos)
