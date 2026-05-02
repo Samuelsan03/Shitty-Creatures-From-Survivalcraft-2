@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Xml.Linq;
 using Engine;
 using Engine.Graphics;
+using Engine.Media;
 using GameEntitySystem;
 using TemplatesDatabase;
 using XmlUtilities;
@@ -17,9 +18,13 @@ namespace Game
 		// ---------------------------------------------------------------------------------
 
 		private Dictionary<ComponentCreature, BloodParticleSystem> m_bleedingSystems = new Dictionary<ComponentCreature, BloodParticleSystem>();
+		private SubsystemModelsRenderer m_healthBarModelsRenderer;
+		private SubsystemCreatureSpawn m_healthBarCreatureSpawn;
+		private SubsystemPlayers m_healthBarPlayers;
+		public float MaxDisplayDistance = 20f;
 
 		// ShittyModLoader (original)
-		private static FieldInfo m_cachesField;
+		static FieldInfo m_cachesField;
 
 		// MusicModLoader
 		private static readonly List<string> _menuSongs = new List<string>
@@ -140,18 +145,23 @@ namespace Game
 		// Métodos auxiliares privados
 		// ---------------------------------------------------------------------------------
 
-		public override void OnProjectLoaded(Project project)
+			public override void OnProjectLoaded(Project project)
+	{
+		if (!m_greenNightHooksRegistered)
 		{
-			if (m_greenNightHooksRegistered)
-				return;
 			m_greenNightHooksRegistered = true;
-
 			SubsystemGreenNightSky greenNight = project.FindSubsystem<SubsystemGreenNightSky>(true);
 			if (greenNight != null)
 			{
 				greenNight.GreenNightStarted += () => CancelGreenNightChaseDelay(project);
 			}
 		}
+		m_healthBarModelsRenderer = project.FindSubsystem<SubsystemModelsRenderer>(true);
+		m_healthBarCreatureSpawn = project.FindSubsystem<SubsystemCreatureSpawn>(true);
+		m_healthBarPlayers = project.FindSubsystem<SubsystemPlayers>(true);
+		HealthBarDrawable healthBarDrawable = new HealthBarDrawable(this);
+		project.FindSubsystem<SubsystemDrawing>(true).AddDrawable(healthBarDrawable);
+	}
 
 		private void CancelGreenNightChaseDelay(Project project)
 		{
@@ -1187,6 +1197,65 @@ namespace Game
 			}
 		}
 
+		private void DrawHealthBar(Camera camera)
+		{
+			if (!ShittyCreaturesSettingsManager.HealthBarEnabled)
+				return;
+			if (m_healthBarModelsRenderer == null || m_healthBarCreatureSpawn == null)
+				return;
+			var allCreatures = new List<ComponentCreature>(m_healthBarCreatureSpawn.Creatures);
+			if (m_healthBarPlayers != null)
+			{
+				foreach (var player in m_healthBarPlayers.ComponentPlayers)
+				{
+					if (player != null && player.ComponentHealth.Health > 0f)
+						allCreatures.Add(player);
+				}
+			}
+			foreach (var creature in allCreatures)
+			{
+				if (creature == null) continue;
+				var health = creature.ComponentHealth;
+				if (health == null || health.Health <= 0f) continue;
+				var body = creature.ComponentBody;
+				if (body == null) continue;
+				Vector3 center = (body.BoundingBox.Min + body.BoundingBox.Max) * 0.5f;
+				float height = body.BoundingBox.Max.Y - body.BoundingBox.Min.Y;
+				if (Vector3.Distance(camera.ViewPosition, center) > MaxDisplayDistance) continue;
+				Vector3 textPos = new Vector3(center.X, body.BoundingBox.Max.Y + height * 0.3f, center.Z);
+				Vector3 barPos = new Vector3(center.X, body.BoundingBox.Max.Y + height * 0.2f, center.Z);
+				if (Vector3.Dot(camera.ViewDirection, textPos - camera.ViewPosition) <= 0f) continue;
+				if (Vector3.Dot(camera.ViewDirection, barPos - camera.ViewPosition) <= 0f) continue;
+				Vector3 textViewPos = Vector3.Transform(textPos, camera.ViewMatrix);
+				Vector3 barViewPos = Vector3.Transform(barPos, camera.ViewMatrix);
+				Vector3 horizontalOffset = Vector3.TransformNormal(0.005f * Vector3.Normalize(Vector3.Cross(camera.ViewDirection, camera.ViewUp)), camera.ViewMatrix);
+				Vector3 verticalOffset = Vector3.TransformNormal(-0.005f * Vector3.UnitY, camera.ViewMatrix);
+				float healthPercent = MathUtils.Saturate(health.Health);
+				float attackResilience = health.AttackResilience;
+				float displayedHealth = health.Health * attackResilience;
+				Color color = (healthPercent < 0.3f) ? Color.Red : ((healthPercent < 0.7f) ? Color.Yellow : Color.Green);
+				string hpText = LanguageControl.Get("HealthBar", "HP", "HP");
+				string text = creature.DisplayName + " " + displayedHealth.ToString("0") + " " + hpText;
+				BitmapFont bitmapFont = ContentManager.Get<BitmapFont>("Fonts/Pericles");
+				FontBatch3D fontBatch = m_healthBarModelsRenderer.PrimitivesRenderer.FontBatch(bitmapFont, 1, DepthStencilState.DepthRead, RasterizerState.CullNoneScissor, BlendState.AlphaBlend, SamplerState.LinearClamp);
+				fontBatch.QueueText(text, textViewPos, horizontalOffset, verticalOffset, color, TextAnchor.Center);
+				fontBatch.Flush(camera.ViewProjectionMatrix, false);
+				float barWidth = 120f;
+				float barHeight = 12.5f;
+				Vector3 barStart = barViewPos - horizontalOffset * (barWidth * 0.5f);
+				Vector3 barEnd = barViewPos + horizontalOffset * (barWidth * 0.5f);
+				Vector3 barTop = barStart + verticalOffset * barHeight;
+				Vector3 barTopEnd = barEnd + verticalOffset * barHeight;
+				FlatBatch3D flatBatch = m_healthBarModelsRenderer.PrimitivesRenderer.FlatBatch(0, null, null, null);
+				flatBatch.QueueQuad(barStart, barTop, Vector3.Lerp(barTop, barTopEnd, healthPercent), Vector3.Lerp(barStart, barEnd, healthPercent), Color.Lerp(Color.Red, Color.Green, healthPercent));
+				if (healthPercent < 1f)
+				{
+					flatBatch.QueueQuad(Vector3.Lerp(barStart, barEnd, healthPercent), Vector3.Lerp(barTop, barTopEnd, healthPercent), barTopEnd, barEnd, new Color(0, 0, 0, 180));
+				}
+				flatBatch.Flush(camera.ViewProjectionMatrix, false);
+			}
+		}
+
 		private void UpdateBleedingSystems(GameWidget gameWidget)
 		{
 			if (!ShittyCreaturesSettingsManager.BleedingEnabled)
@@ -1332,5 +1401,13 @@ namespace Game
 		// ---------------------------------------------------------------------------------
 		public override void SaveSettings(XElement xElement) { }
 		public override void LoadSettings(XElement xElement) { }
+
+		private class HealthBarDrawable : IDrawable
+		{
+			public int[] DrawOrders { get { return new int[] { 1000 }; } }
+			private ShittyCreaturesModLoader m_owner;
+			public HealthBarDrawable(ShittyCreaturesModLoader owner) { m_owner = owner; }
+			public void Draw(Camera camera, int drawOrder) { m_owner.DrawHealthBar(camera); }
+		}
 	}
 }
