@@ -59,21 +59,6 @@
               <Parameter Name="JumpStrength" Guid="1eb0c8de-bf44-49a1-adda-0e2591803e41" Value="1" Type="float"/>
             </MemberComponentTemplate>
     <MemberComponentTemplate Name="Inventory" Guid="997c9d66-af9f-42b5-a5a0-6e89651093c0" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
-    <ParameterSet Name="Slots">
-        <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="0" Type="int"/>
-            <Parameter Name="Count" Value="1" Type="int"/>
-        </ParameterSet>
-    </ParameterSet>
-</MemberComponentTemplate>
-<MemberComponentTemplate Name="InvShooterBehavior" Guid="485eb753-0db3-4e86-86da-6b040d253cf1" InheritanceParent="456e3558-0e7f-42c3-bc05-35eef7540900">
-    <Parameter Name="SpecialThrowableItem" Guid="ba0cd99b-d5d9-46f4-8771-bd504cc420cd" Value="ArrowBlock:4" Type="string"/>
-    <Parameter Name="DiscountFromInventory" Guid="a5e9ae34-2a46-4d15-9500-4931da38f755" Value="True" Type="bool"/>
-    <Parameter Name="SelectRandomThrowableItems" Guid="a2dcfadb-0907-4deb-9b56-c92a9146972e" Value="False" Type="bool"/>
-    <Parameter Name="ThrowFromHead" Guid="a9742836-e03f-480e-8869-81b60068e5ba" Value="True" Type="bool"/>
-    <Parameter Name="MinMaxRandomChargeTime" Guid="684e1d7b-e1de-4543-93a4-ac548ea785e0" Value="0.7;1.0" Type="string"/>
-    <Parameter Name="MinMaxRandomWaitTime" Guid="486e34eb-69e3-4faf-b150-8602d1a727c7" Value="0.3;0.6" Type="string"/>
-    <Parameter Name="MinMaxDistance" Guid="7a251a63-7442-4ca4-8aa9-e5d0eb641b3f" Value="3;30" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="Spawn" Guid="bf57e634-5748-44c0-b1bb-05728824d4ed">
     <Parameter Name="AutoDespawn" Guid="f97872b2-677e-455b-906d-40f67ae84241" Value="False" Type="bool"/>
@@ -114,8 +99,6 @@
     <Parameter Name="Bob" Guid="16741fe1-e90f-454b-998c-77aae4cb8666" Value="0" Type="float"/>
     <Parameter Name="IsAttackHitMoment" Guid="7041896e-9825-4ef1-a0eb-993306d7f935" Value="false" Type="bool"/>
     <Parameter Name="AttackOrder" Guid="13ba8092-58f1-447c-b38a-bc56d0092f6d" Value="false" Type="bool"/>
-    </MemberComponentTemplate>
-    <MemberComponentTemplate Name="HealthBarDisplay" Guid="9ddea5df-80b5-4bda-a44f-51fb194b5eaf" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="e912494b-c0fd-4238-9682-1f65b13436a5">
     <Parameter Name="FallResilience" Guid="91213e4c-2a8b-4395-8fb5-04bd9bbca60d" Value="35" Type="float"/>
@@ -209,22 +192,11 @@
     <MemberComponentTemplate Name="AutoJump" Guid="c4ad2644-2aaf-4eab-973e-cd8fce87b560" InheritanceParent="ef94c9db-75b0-4e0f-9971-f575ac88661b">
               <Parameter Name="JumpStrength" Guid="4b380ea8-149b-4305-a82a-266a21306810" Value="1" Type="float"/>
             </MemberComponentTemplate>
-    <MemberComponentTemplate Name="Inventory" Guid="0a5551c3-79c9-495c-860f-07a9126c5208" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
-    <ParameterSet Name="Slots">
-        <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="0" Type="int"/>
-            <Parameter Name="Count" Value="1" Type="int"/>
-        </ParameterSet>
-    </ParameterSet>
-</MemberComponentTemplate>
-			<MemberComponentTemplate Name="InvShooterBehavior" Guid="a42f816c-d403-4f50-8195-f2f1e9cffc04" InheritanceParent="456e3558-0e7f-42c3-bc05-35eef7540900">
-    <Parameter Name="SpecialThrowableItem" Guid="1e863891-bb3c-479b-8135-c4d27d93b268" Value="ArrowBlock:4" Type="string"/>
-    <Parameter Name="DiscountFromInventory" Guid="43646225-f728-49db-aace-7087c090d597" Value="True" Type="bool"/>
-    <Parameter Name="SelectRandomThrowableItems" Guid="38254f0d-f5a0-489e-bbd3-8afd66f72b4f" Value="False" Type="bool"/>
-    <Parameter Name="ThrowFromHead" Guid="e6fcb203-165a-44aa-9a24-f1a06cf9b4db" Value="True" Type="bool"/>
-    <Parameter Name="MinMaxRandomChargeTime" Guid="9892cfdc-c648-4cac-ab45-11cb0991b2ff" Value="0.7;1.0" Type="string"/>
-    <Parameter Name="MinMaxRandomWaitTime" Guid="e19eac2d-750b-4db5-af96-ee6a34ff2c73" Value="0.3;0.6" Type="string"/>
-    <Parameter Name="MinMaxDistance" Guid="ad643f82-2cde-4919-89e7-82c6c2fb41b1" Value="3;30" Type="string"/>
+            <MemberComponentTemplate Name="CreatureVomitBehavior" Guid="337a4269-890a-47a0-9977-15a1206f269a" InheritanceParent="a91f3c5e-8c2d-4c1e-b7f4-6e2a9d3b7c11">
+<Parameter Name="VomitFire" Guid="753c1d12-17fc-41e7-b043-9cf75dcd0c83" Value="true" Type="bool"/>
+  <Parameter Name="VomitProbability" Guid="658fc7d1-e138-4275-bb68-bc7cc200439d" Value="1" Type="float"/>
+  <Parameter Name="VomitCooldown" Guid="498308e9-453e-41ee-9990-36eb35d24c43" Value="35" Type="float"/>
+  <Parameter Name="VomitDistanceRange" Guid="645a0668-76bf-4827-86ad-dd2a21447a45" Value="5,55" Type="Vector2"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Loot" Guid="a3086732-cfff-4c08-99ac-a7139bf4c94b">
         <ParameterSet Name="Loot" Guid="22099c20-f68e-4c1b-8d2e-76e7c6ae1255">
@@ -266,8 +238,6 @@
     <MemberComponentTemplate Name="Spawn" Guid="d30c0965-0e24-4a12-9143-323d21f9f600">
     <Parameter Name="AutoDespawn" Guid="b0654a7e-2b20-44a7-895c-edc6b12e17b4" Value="False" Type="bool"/>
 </MemberComponentTemplate>
-    <MemberComponentTemplate Name="HealthBarDisplay" Guid="74888973-d861-4566-a594-5e39fb47679a" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="719afdc6-f565-4351-afce-323142a2afd5">
     <Parameter Name="FallResilience" Guid="71a99777-5add-4ec3-956d-ba7be033960b" Value="35" Type="float"/>
         <Parameter Name="FireResilience" Guid="571a6f73-4a45-4818-8187-ef84a9befed6" Value="155.5" Type="float"/>
@@ -398,9 +368,6 @@
     <Parameter Name="IsAttackHitMoment" Guid="4ec3fab6-0220-480b-8d22-9c08f096050d" Value="false" Type="bool"/>
     <Parameter Name="AttackOrder" Guid="89127bdc-8462-492f-a6e3-a2f0d8348041" Value="false" Type="bool"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="HealthBarDisplay" Guid="7ad843dc-9b25-40c7-81f0-af6c5cc82a8a" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
-    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="a25a4086-4050-43d1-864d-d246cc7d34a5">
     <Parameter Name="FallResilience" Guid="88cc59c1-6d68-4783-925a-a0901e59ca17" Value="35" Type="float"/>
         <Parameter Name="AttackResilience" Guid="a26b2524-5503-4f96-8eec-c0f79a2766e7" Value="255.23" Type="float"/>
@@ -496,22 +463,11 @@
     <MemberComponentTemplate Name="AutoJump" Guid="faed5a78-a518-438b-b4f6-952d94eb4386" InheritanceParent="ef94c9db-75b0-4e0f-9971-f575ac88661b">
               <Parameter Name="JumpStrength" Guid="066b6390-896e-408a-84c2-9ff6d4b1c432" Value="1" Type="float"/>
             </MemberComponentTemplate>
-    <MemberComponentTemplate Name="Inventory" Guid="2e39358b-2230-45d2-b7d6-b6f855318db4" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
-    <ParameterSet Name="Slots">
-        <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="0" Type="int"/>
-            <Parameter Name="Count" Value="1" Type="int"/>
-        </ParameterSet>
-    </ParameterSet>
-</MemberComponentTemplate>
-			<MemberComponentTemplate Name="InvShooterBehavior" Guid="bbc33485-1bde-4b84-abfc-274a742b5d04" InheritanceParent="456e3558-0e7f-42c3-bc05-35eef7540900">
-    <Parameter Name="SpecialThrowableItem" Guid="314a5bf9-dfa4-447c-9d3b-37f47c74ef18" Value="ArrowBlock:4" Type="string"/>
-    <Parameter Name="DiscountFromInventory" Guid="cc43ef07-f445-4ece-b2f6-c60438f5cc52" Value="True" Type="bool"/>
-    <Parameter Name="SelectRandomThrowableItems" Guid="faf52c50-9037-42af-ac85-2074b63bf8fd" Value="False" Type="bool"/>
-    <Parameter Name="ThrowFromHead" Guid="5df089b9-4909-4143-88ec-62d7eabefd7b" Value="True" Type="bool"/>
-    <Parameter Name="MinMaxRandomChargeTime" Guid="9d9d5397-c9b3-49a4-9a44-a02f204710b9" Value="1;1" Type="string"/>
-    <Parameter Name="MinMaxRandomWaitTime" Guid="b763b505-118a-4adb-921b-f96e3843a618" Value="0.5;0.8" Type="string"/>
-    <Parameter Name="MinMaxDistance" Guid="ef9a4d3e-eb50-4a44-838d-50092fe052a8" Value="2;25" Type="string"/>
+            <MemberComponentTemplate Name="CreatureVomitBehavior" Guid="92a53abf-380e-483a-9730-d164b88cadf5" InheritanceParent="a91f3c5e-8c2d-4c1e-b7f4-6e2a9d3b7c11">
+<Parameter Name="VomitFire" Guid="e65a0ee6-0b79-4acb-a4e3-25a6ec2f4216" Value="true" Type="bool"/>
+  <Parameter Name="VomitProbability" Guid="5480402d-4d9d-4c8a-8452-4faff3f07d35" Value="1" Type="float"/>
+  <Parameter Name="VomitCooldown" Guid="4bbcaffb-e93a-402e-88a9-ae5a5c652c3a" Value="35" Type="float"/>
+  <Parameter Name="VomitDistanceRange" Guid="7fabf19d-fa8c-4c56-ac67-96dd148f4381" Value="5,55" Type="Vector2"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Loot" Guid="e433852b-88a4-4f30-9236-6f99eff193f8">
         <ParameterSet Name="Loot" Guid="e7a9fff9-4c7d-45f1-a57f-7f4a46cf0493">
@@ -552,9 +508,6 @@
     <Parameter Name="Bob" Guid="4359e828-7862-4d38-9c3f-d9ab86c3bd27" Value="0" Type="float"/>
     <Parameter Name="IsAttackHitMoment" Guid="c22ad083-064f-4929-aa23-24c516383fa1" Value="false" Type="bool"/>
     <Parameter Name="AttackOrder" Guid="6450da9c-30b3-4da0-ae70-b9ce63a26059" Value="false" Type="bool"/>
-    </MemberComponentTemplate>
-    <MemberComponentTemplate Name="HealthBarDisplay" Guid="bcd77b66-b7d1-4891-8532-e2369310c371" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-        <Parameter Name="MaxDisplayDistance" Value="19" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="09a39277-7125-4e5d-8df5-fbc1ba4e13bd">
     <Parameter Name="FallResilience" Guid="98658b1c-ad60-4c25-98eb-20638830e957" Value="35" Type="float"/>
@@ -685,9 +638,6 @@
     <Parameter Name="IsAttackHitMoment" Guid="0e24878d-4afc-46ad-9131-f87c051e9849" Value="false" Type="bool"/>
     <Parameter Name="AttackOrder" Guid="8fffa0bd-f43f-4fd6-b789-942a24bb5183" Value="false" Type="bool"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="HealthBarDisplay" Guid="7d4d64f7-0777-45c9-968b-0b0addca4d69" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
-    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="309aa37d-42cb-4af7-9f19-957050c1621a">
     <Parameter Name="FallResilience" Guid="9f9f3a5b-f9dd-4996-b967-7982c077b201" Value="35" Type="float"/>
         <Parameter Name="FireResilience" Guid="cea24ba6-1d08-4f48-bab6-8a6d7c19a6c5" Value="200" Type="float"/>
@@ -789,22 +739,11 @@
         </ParameterSet>
         <ParameterSet Name="LootOnFire" Guid="49cbdec7-2131-4541-b569-9db6dbfde2e1"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="Inventory" Guid="15a6b3b2-96ea-499f-a536-9f993f74d82d" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
-    <ParameterSet Name="Slots">
-        <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="0" Type="int"/>
-            <Parameter Name="Count" Value="1" Type="int"/>
-        </ParameterSet>
-    </ParameterSet>
-</MemberComponentTemplate>
-			<MemberComponentTemplate Name="InvShooterBehavior" Guid="07d59cfc-9c04-4d08-8332-b86d04fc24fe" InheritanceParent="456e3558-0e7f-42c3-bc05-35eef7540900">
-    <Parameter Name="SpecialThrowableItem" Guid="da6af166-5a89-41e4-a548-9e430b463c40" Value="ArrowBlock:4" Type="string"/>
-    <Parameter Name="DiscountFromInventory" Guid="aadb5282-79d9-466c-93f4-aaa5943c73b1" Value="True" Type="bool"/>
-    <Parameter Name="SelectRandomThrowableItems" Guid="2b2d63c0-70e8-41a4-a24c-63fed98c0d69" Value="False" Type="bool"/>
-    <Parameter Name="ThrowFromHead" Guid="939b91b4-3abd-4ca0-a18f-d7d4ef77cc79" Value="False" Type="bool"/>
-    <Parameter Name="MinMaxRandomChargeTime" Guid="f763b007-b145-4405-887d-d176d5bd754d" Value="1.0;1.5" Type="string"/>
-    <Parameter Name="MinMaxRandomWaitTime" Guid="573cfaa5-a7a0-432b-8af8-b2abe77eec3d" Value="0.2;0.4" Type="string"/>
-    <Parameter Name="MinMaxDistance" Guid="78991b51-3691-4309-8643-6c3f04f4e2d7" Value="5;35" Type="string"/>
+    <MemberComponentTemplate Name="CreatureVomitBehavior" Guid="c0fb9308-4d81-4690-b4af-dee76bc1c91b" InheritanceParent="a91f3c5e-8c2d-4c1e-b7f4-6e2a9d3b7c11">
+<Parameter Name="VomitFire" Guid="0f7d81f5-edff-469b-8552-06e7b5451a49" Value="true" Type="bool"/>
+  <Parameter Name="VomitProbability" Guid="eff0c835-cf76-4fdd-9297-df6c78c67112" Value="1" Type="float"/>
+  <Parameter Name="VomitCooldown" Guid="1234d574-ede9-4ac8-9e61-87f63f07b89d" Value="35" Type="float"/>
+  <Parameter Name="VomitDistanceRange" Guid="9d9e7137-8355-4ef2-a8d7-d1e1cb0e4db3" Value="5,55" Type="Vector2"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="0f5b9c12-705f-4bf8-82d3-2be4dcea32f7">
         <Parameter Name="Mass" Guid="95a4b859-f34d-4dc1-939f-517ce9e85e61" Value="5 " Type="float"/>
@@ -836,9 +775,6 @@
     <Parameter Name="Bob" Guid="48fc0ab9-a9a8-4002-8f00-8e3a5a40a8d6" Value="0" Type="float"/>
     <Parameter Name="IsAttackHitMoment" Guid="5f8f0177-629a-4008-808b-228fe676be10" Value="false" Type="bool"/>
     <Parameter Name="AttackOrder" Guid="88563a05-c68e-45a9-b59f-f406f027f101" Value="false" Type="bool"/>
-    </MemberComponentTemplate>
-    <MemberComponentTemplate Name="HealthBarDisplay" Guid="61b4ba84-15c2-4597-9901-ef27e9371c3b" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
     </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="32c5a461-3e07-4870-8c37-ce9779c349e1">
     <Parameter Name="FallResilience" Guid="b03172da-f5e4-4454-a3fa-fbdb9c0a2359" Value="35" Type="float"/>
@@ -888,9 +824,6 @@
     <Parameter Name="PickFactors" Guid="b0fb09cc-fc9e-4186-b650-b32de37a373c" Value="Tools;1.0,Weapons;1.0" Type="string"/>
     <Parameter Name="Class" Value="Game.ComponentNewCreatureCollect" Type="string"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="HealthBarDisplay" Guid="e8857afe-163c-4585-aafa-f4e0ba35e2c2" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-        <Parameter Name="MaxDisplayDistance" Value="19" Type="float"/>
-    </MemberComponentTemplate>
 <MemberComponentTemplate Name="RunAwayBehavior" Guid="6dc07532-4aa3-4c24-a25a-282ef8b7625e" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
 <MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="6c57d3d3-984d-4591-b9d7-142ffaaadcfb" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
 <MemberComponentTemplate Name="SummonBehavior" Guid="fadf89ef-9c58-4c9b-a439-e801a7c78d7d" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
@@ -1089,26 +1022,12 @@
         </ParameterSet>
         <ParameterSet Name="LootOnFire" Guid="b4ccf08f-546f-4aea-a0f9-10588d53e238"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="Inventory" Guid="a08a86dd-8857-4d83-9c29-3003aa9488ee" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
-        <ParameterSet Name="Slots">
-            <ParameterSet Name="Slot0">
-                <Parameter Name="Contents" Value="0" Type="int"/>
-                <Parameter Name="Count" Value="1" Type="int"/>
-            </ParameterSet>
-        </ParameterSet>
-    </MemberComponentTemplate>
-    <MemberComponentTemplate Name="InvShooterBehavior" Guid="7c117a3b-ef30-4fca-9529-030c8c9fbcb6" InheritanceParent="456e3558-0e7f-42c3-bc05-35eef7540900">
-        <Parameter Name="SpecialThrowableItem" Value="ArrowBlock:4" Type="string"/>
-        <Parameter Name="DiscountFromInventory" Value="False" Type="bool"/>
-        <Parameter Name="SelectRandomThrowableItems" Value="False" Type="bool"/>
-        <Parameter Name="ThrowFromHead" Value="True" Type="bool"/>
-        <Parameter Name="MinMaxRandomChargeTime" Value="0.6;1.0" Type="string"/>
-        <Parameter Name="MinMaxRandomWaitTime" Value="0.2;0.5" Type="string"/>
-        <Parameter Name="MinMaxDistance" Value="8;40" Type="string"/>
-    </MemberComponentTemplate>
-    <MemberComponentTemplate Name="HealthBarDisplay" Guid="9666c3a4-d5b8-4801-81f3-8f4e10f0fdd7" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
-    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="CreatureVomitBehavior" Guid="e6bcf94d-f105-4236-99dc-f8260653289c" InheritanceParent="a91f3c5e-8c2d-4c1e-b7f4-6e2a9d3b7c11">
+<Parameter Name="VomitFire" Guid="a3d8c912-8d22-4c3e-b444-b2a7d1dbba17" Value="true" Type="bool"/>
+  <Parameter Name="VomitProbability" Guid="c9a2522e-9432-4295-9888-3406aa3ce499" Value="1" Type="float"/>
+  <Parameter Name="VomitCooldown" Guid="163f6eca-dea0-46e5-887e-50c03bb12612" Value="35" Type="float"/>
+  <Parameter Name="VomitDistanceRange" Guid="31ebfd41-33ca-4de1-a9e0-2639d62b35b1" Value="5,55" Type="Vector2"/>
+</MemberComponentTemplate>
     <MemberComponentTemplate Name="Spawn" Guid="e6eb6f1f-3d91-4db7-aebb-f8a2cf996656">
     <Parameter Name="AutoDespawn" Guid="ba48792f-8492-42e8-9447-f94206b503e3" Value="False" Type="bool"/>
 </MemberComponentTemplate>
@@ -1246,9 +1165,6 @@
     <Parameter Name="PickFactors" Guid="a0b42cc3-a959-4d25-81b5-2308feed1ec0" Value="Tools;1.0,Weapons;1.0" Type="string"/>
     <Parameter Name="Class" Value="Game.ComponentNewCreatureCollect" Type="string"/>
 </MemberComponentTemplate>
-    <MemberComponentTemplate Name="HealthBarDisplay" Guid="c21c6dd7-67cf-4418-ace5-9d40236ae40d" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
-    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Spawn" Guid="993a3dd8-6d84-470c-9f00-50e16c6411bd">
     <Parameter Name="AutoDespawn" Guid="4f8b9487-9534-48c7-8a8d-e7e6c13157a8" Value="False" Type="bool"/>
 </MemberComponentTemplate>
@@ -1379,9 +1295,6 @@
     <Parameter Name="PickFactors" Guid="f700f258-bd46-4919-8fc9-a84010cbce51" Value="Tools;1.0,Weapons;1.0" Type="string"/>
     <Parameter Name="Class" Value="Game.ComponentNewCreatureCollect" Type="string"/>
 </MemberComponentTemplate>
-    <MemberComponentTemplate Name="HealthBarDisplay" Guid="89ed3931-0b6c-4536-a10b-0e8e62152bcd" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
-    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Spawn" Guid="efc86f35-c872-4a93-91e4-fcdcf4baed2b">
     <Parameter Name="AutoDespawn" Guid="301b9c7d-4430-43b0-9f78-0f18a9bc0d98" Value="False" Type="bool"/>
 </MemberComponentTemplate>
