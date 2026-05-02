@@ -1271,7 +1271,7 @@ namespace Game
 			{
 				if (creature == null) continue;
 				var health = creature.ComponentHealth;
-				if (health == null || health.Health <= 0f) continue;
+				if (health == null) continue;
 				var body = creature.ComponentBody;
 				if (body == null) continue;
 				Vector3 center = (body.BoundingBox.Min + body.BoundingBox.Max) * 0.5f;
@@ -1289,6 +1289,8 @@ namespace Game
 				float attackResilience = health.AttackResilience;
 				float displayedHealth = health.Health * attackResilience;
 				Color color = (healthPercent < 0.3f) ? Color.Red : ((healthPercent < 0.7f) ? Color.Yellow : Color.Green);
+				if (health.Health <= 0f)
+					color = Color.White;
 				string hpText = LanguageControl.Get("HealthBar", "HP", "HP");
 				string text = creature.DisplayName + " " + displayedHealth.ToString("0") + " " + hpText;
 				BitmapFont bitmapFont = ContentManager.Get<BitmapFont>("Fonts/Pericles");
