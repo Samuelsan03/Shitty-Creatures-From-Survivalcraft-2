@@ -121,8 +121,6 @@
     <Parameter Name="IsAttackHitMoment" Guid="c85ef0c1-1e52-4064-9912-25059772bb72" Value="false" Type="bool"/>
     <Parameter Name="AttackOrder" Guid="78d12379-96e8-4aae-8193-03f18b551a19" Value="false" Type="bool"/>
     </MemberComponentTemplate>
-            <MemberComponentTemplate Name="HealthBarDisplay" Guid="0ff190d4-f765-47d4-8ecd-44861fcd1f92" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-    </MemberComponentTemplate>
             <MemberComponentTemplate Name="Health" Guid="4568007e-cd0e-458d-9bff-9e4b12bf6ae1">
                 <Parameter Name="FireResilience" Guid="40aafdbb-abb6-49c3-98dc-978a2f57b448" Value="7" Type="float"/>
         <Parameter Name="AttackResilience" Guid="7792ce65-f30f-4f3e-a71e-7cfc66719718" Value="21.5" Type="float"/>
@@ -275,9 +273,6 @@
     <Parameter Name="IsAttackHitMoment" Guid="310bb96b-7e08-4bd1-ad5f-15e5f42c3a12" Value="false" Type="bool"/>
     <Parameter Name="AttackOrder" Guid="a6ef4a6a-259c-4c94-a98b-25946f8176f9" Value="false" Type="bool"/>
     </MemberComponentTemplate>
-            <MemberComponentTemplate Name="HealthBarDisplay" Guid="145724df-21f1-4080-a941-fee1273d777b" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-        <Parameter Name="MaxDisplayDistance" Value="19" Type="float"/>
-    </MemberComponentTemplate>
             <MemberComponentTemplate Name="Health" Guid="a9b0c1d2-e3f4-4s56-9t78-c9d0e1f2a3b4">
                 <Parameter Name="FireResilience" Guid="373e606d-cb7a-4b22-9900-21784fb2b8a9" Value="7.5" Type="float"/>
         <Parameter Name="AttackResilience" Guid="db79c062-d408-44dc-a468-b09d483a3e01" Value="22.6" Type="float"/>
@@ -429,9 +424,6 @@
     <Parameter Name="IsAttackHitMoment" Guid="32a5fdd2-eb2e-43ed-88f0-934a9a0427d9" Value="false" Type="bool"/>
     <Parameter Name="AttackOrder" Guid="3443b6a9-b1c0-41f2-91a6-bba8dfa27ac5" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-    <MemberComponentTemplate Name="HealthBarDisplay" Guid="f5c43270-b51f-41f7-b0ac-e7083e21eabf" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
-    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="a7b8c9d0-e1f2-8345-4567-89abcdef0123">
         <Parameter Name="FireResilience" Guid="bff26ea4-bd20-4f86-ab28-37a5c76159ac" Value="9.85" Type="float"/>
         <Parameter Name="AttackResilience" Guid="eb1ab98c-3dab-4a48-a52b-03fd6f1659cf" Value="25" Type="float"/>
@@ -576,9 +568,6 @@
     <Parameter Name="IsAttackHitMoment" Guid="ef57a0a1-8b4e-489a-91ba-531e026311cb" Value="false" Type="bool"/>
     <Parameter Name="AttackOrder" Guid="defec14b-427b-4add-871b-cd01b28d5806" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-    <MemberComponentTemplate Name="HealthBarDisplay" Guid="650ff4d7-762a-4751-a792-2baeb6ee15a7" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
-    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="4a02ca36-983a-4708-80ec-94180b018852">
         <Parameter Name="FireResilience" Guid="c" Value="15" Type="float"/>
         <Parameter Name="AttackResilience" Guid="08a3d08d-3f9d-4aed-8e13-bb6f94651ddc" Value="36.23" Type="float"/>
@@ -719,9 +708,6 @@
     <Parameter Name="IsAttackHitMoment" Guid="e3b06705-4fbe-42a4-905b-132f9cc1cb61" Value="false" Type="bool"/>
     <Parameter Name="AttackOrder" Guid="75e47f3f-8d6a-424b-bba3-48fcc8c9291f" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-    <MemberComponentTemplate Name="HealthBarDisplay" Guid="6669d00e-a068-439d-9661-330d9dbc49f2" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
-    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="ed2db84f-ffe1-4517-b1a9-d55ebee202d6">
         <Parameter Name="FireResilience" Guid="c96418e2-b4e5-4c8d-ac31-5931c9251cd1" Value="17.5" Type="float"/>
         <Parameter Name="AttackResilience" Guid="10ebaba6-b8a9-4a28-9c77-26fe35ab5e36" Value="37.2" Type="float"/>
@@ -885,9 +871,6 @@
     <Parameter Name="IsAttackHitMoment" Guid="0313ecd1-6a6c-443f-9401-ec56d9e052cc" Value="false" Type="bool"/>
     <Parameter Name="AttackOrder" Guid="cde5d09e-d758-4621-8d58-eee0fe1b79ff" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-    <MemberComponentTemplate Name="HealthBarDisplay" Guid="79615e52-c23d-4a94-a6f1-9897ef2064a7" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
-    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="386d0dd1-ec7c-46c8-9114-def6f040bbef">
         <Parameter Name="FireResilience" Guid="5e947fe2-a3c4-4596-b171-9a42342290e2" Value="20" Type="float"/>
         <Parameter Name="AttackResilience" Guid="af93d980-1fbc-4751-90f0-b92814ef65b5" Value="37.55" Type="float"/>
@@ -1037,9 +1020,6 @@
     <Parameter Name="IsAttackHitMoment" Guid="02d63d51-9af3-4378-b8d8-dbab20593690" Value="false" Type="bool"/>
     <Parameter Name="AttackOrder" Guid="18f8e52e-3a59-46e1-ae50-fcc0b9072a37" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-    <MemberComponentTemplate Name="HealthBarDisplay" Guid="53618103-2f60-42b1-9257-32e63cfa8424" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-        <Parameter Name="MaxDisplayDistance" Value="19" Type="float"/>
-    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="9b50910e-560d-4e8f-80b2-e69d517a1392">
         <Parameter Name="FireResilience" Guid="3055ec68-6465-4699-9a9b-874c17589abb" Value="37.5" Type="float"/>
         <Parameter Name="FallResilience" Guid="a0e4485a-8410-46b3-a3a4-7e75f53152cc" Value="37.5" Type="float"/>
@@ -1165,9 +1145,6 @@
     <Parameter Name="AnimationResponsiveness" Guid="7e0e7bd5-c273-48c7-aeea-d7f4e77747c7" Value="12" Type="float"/>
     <Parameter Name="Class" Guid="c058db8d-57d0-4fd7-ac9a-055d8b15e786" Value="Game.ComponentTankModel" Type="string"/>
 </MemberComponentTemplate>
-    <MemberComponentTemplate Name="HealthBarDisplay" Guid="d7fda3a3-96ec-4a4c-858a-1b8eea3ae813" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
-    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="e2715c93-cbdc-4ed9-8743-e03bf5a4e9ef">
         <Parameter Name="FireResilience" Guid="31fec7b0-3b2a-4c7f-a5e5-6325d5cff7e5" Value="155.5" Type="float"/>
         <Parameter Name="AttackResilience" Guid="0e18c1d5-ea4e-41d7-9177-e75aebf56911" Value="1250" Type="float"/>
@@ -1297,9 +1274,6 @@
     <Parameter Name="IsAttackHitMoment" Guid="9c0919c3-d85f-4bfd-b77a-9b451f18834d" Value="false" Type="bool"/>
     <Parameter Name="AttackOrder" Guid="4e9526b0-718c-4653-be37-7c983902fb9e" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-    <MemberComponentTemplate Name="HealthBarDisplay" Guid="497856fe-b6e2-496d-85e3-788c94a14a5c" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
-    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="b1c2d3e4-f5a6-8789-89ab-def012345670">
         <Parameter Name="FireResilience" Guid="e48e9011-5e3d-461a-8e83-7fd0203060dd" Value="39.5" Type="float"/>
         <Parameter Name="FallResilience" Guid="78e03ac9-dd49-4d8d-abd8-ac04a5697574" Value="25.5" Type="float"/>
@@ -1466,9 +1440,6 @@
     <Parameter Name="IsAttackHitMoment" Guid="cf74fe38-56ad-443e-beb3-7dce1657bf60" Value="false" Type="bool"/>
     <Parameter Name="AttackOrder" Guid="f209d651-5aaa-4f67-a66c-0757d8ec979a" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-    <MemberComponentTemplate Name="HealthBarDisplay" Guid="511e75ce-54b5-47f0-9bc8-1778a2ae2b7a" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
-    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="dd168f20-51ea-4329-a750-bd9d7774046b">
         <Parameter Name="FireResilience" Guid="0f5a9d18-d6e0-417a-9916-036b28e514e2" Value="45" Type="float"/>
         <Parameter Name="FallResilience" Guid="3f7f18df-b242-4d1a-a28d-e4d17463d133" Value="25" Type="float"/>
@@ -1592,9 +1563,6 @@
     <Parameter Name="IsAttackHitMoment" Guid="a5335b3d-e2e7-42c3-8677-7b51a9060bff" Value="false" Type="bool"/>
     <Parameter Name="AttackOrder" Guid="b702ee9d-7f9e-4026-bf87-743b785a2151" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-    <MemberComponentTemplate Name="HealthBarDisplay" Guid="6e01f4e7-8b13-4030-a30a-a1b5bc7c0141" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
-    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="d3e4f5a6-b7c8-8789-89ab-def012345672">
         <Parameter Name="FireResilience" Guid="ec2cf825-40ec-4d56-b8e9-29e14489b081" Value="26.66" Type="float"/>
         <Parameter Name="FallResilience" Guid="d7c50038-6329-404e-b83c-baa1caa163b3" Value="16.6" Type="float"/>
@@ -1713,9 +1681,6 @@
     <Parameter Name="IsAttackHitMoment" Guid="ccbfd9aa-258c-4d6b-ad1f-771ac50afc79" Value="false" Type="bool"/>
     <Parameter Name="AttackOrder" Guid="be94a762-e0df-49c2-b2ff-cef21ba52eb7" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-    <MemberComponentTemplate Name="HealthBarDisplay" Guid="0c101032-a0b7-4700-8e1b-7620e7398713" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
-    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="a7b8c9d0-e1f2-8678-3456-456789012345">
         <Parameter Name="FireResilience" Guid="8db5d872-dbbc-4363-b06e-eb34b31c1f19" Value="27.2" Type="float"/>
         <Parameter Name="FallResilience" Guid="9ee6a4cc-7d68-4f7f-84e4-9e62f87a48c7" Value="47.5" Type="float"/>
@@ -1838,9 +1803,6 @@
     <Parameter Name="IsAttackHitMoment" Guid="073bdfe5-525d-4e1e-bff4-cc07a6491593" Value="false" Type="bool"/>
     <Parameter Name="AttackOrder" Guid="7764db19-683c-455c-83a5-b096434e39eb" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-    <MemberComponentTemplate Name="HealthBarDisplay" Guid="63825269-8801-4598-82e7-07217a350e31" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
-    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="a1f2c3d4-e5f6-7890-ab12-34567890abcd">
     <Parameter Name="FireResilience" Guid="b2c3d4e5-f6a7-8901-bc23-45678901bcde" Value="80" Type="float"/>
     <Parameter Name="FallResilience" Guid="c3d4e5f6-a7b8-9012-cd34-56789012cdef" Value="80" Type="float"/>
@@ -1942,9 +1904,6 @@
     <Parameter Name="AnimationResponsiveness" Guid="8a956908-d810-4662-9fab-cfdd1fc70ca0" Value="12" Type="float"/>
     <Parameter Name="Class" Guid="e60c9df2-defe-4a4e-9c4f-9dd2c48274f6" Value="Game.ComponentTankModel" Type="string"/>
 </MemberComponentTemplate>
-    <MemberComponentTemplate Name="HealthBarDisplay" Guid="9250d44f-460f-4a0c-853b-109c3286c40c" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-        <Parameter Name="MaxDisplayDistance" Value="19" Type="float"/>
-    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="f7a9c8d1-2345-6789-abcd-ef0123456789">
     <Parameter Name="FireResilience" Guid="a2b3c4d5-e6f7-8901-ab23-4567890abcde" Value="80" Type="float"/>
     <Parameter Name="FallResilience" Guid="b3c4d5e6-f7a8-9012-bc34-5678901bcdef" Value="80" Type="float"/>
@@ -2093,9 +2052,6 @@
     <MemberComponentTemplate Name="Spawn" Guid="67b8ada9-4579-471a-b3fb-5e3a95181105">
     <Parameter Name="AutoDespawn" Guid="0a5e26a6-f941-494f-aee7-ce2aa2929592" Value="False" Type="bool"/>
 </MemberComponentTemplate>
-    <MemberComponentTemplate Name="HealthBarDisplay" Guid="fcabab84-4011-4e4d-9af0-9c8729626248" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-        <Parameter Name="MaxDisplayDistance" Value="19" Type="float"/>
-    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="e7f8a9b0-c1d2-3456-7890-abcd1234ef56">
     <Parameter Name="FireResilience" Guid="f9a0b1c2-d3e4-5678-9012-bcde2345f678" Value="9" Type="float"/>
     <Parameter Name="FallResilience" Guid="0a1b2c3d-4e5f-6789-0123-cdef3456a789" Value="14.55" Type="float"/>
@@ -2243,9 +2199,6 @@
     <Parameter Name="IsAttackHitMoment" Guid="a9345ffc-23e6-449d-8ba8-8bbdc9a24000" Value="false" Type="bool"/>
     <Parameter Name="AttackOrder" Guid="d5268ab9-3e46-488b-82ce-d78d3e017d16" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-    <MemberComponentTemplate Name="HealthBarDisplay" Guid="e4f31d99-0c23-467c-ad52-b8fa0976ee5f" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-        <Parameter Name="MaxDisplayDistance" Value="19" Type="float"/>
-    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="1371fd61-9e3d-454f-bb07-8906a85b2a88">
         <Parameter Name="FireResilience" Guid="b637a02f-8bc9-485a-9d22-ca39aaa377cb" Value="32.45" Type="float"/>
         <Parameter Name="AttackResilience" Guid="98c3c4ea-599e-49f7-94df-db8e6d6cf68a" Value="52.5" Type="float"/>
@@ -2389,9 +2342,6 @@
     <Parameter Name="IsAttackHitMoment" Guid="8ef2a7c2-3d89-421f-a7c1-566f254b8fc0" Value="false" Type="bool"/>
     <Parameter Name="AttackOrder" Guid="a5743b4d-25c9-42c7-8b85-95689b67e2cd" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-    <MemberComponentTemplate Name="HealthBarDisplay" Guid="78e80b06-6ffa-4229-aefe-ee2add71c7ec" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
-    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="82c9c9e8-48f1-40b8-89b4-138dd255abde">
         <Parameter Name="FireResilience" Guid="3f10f02f-a3e5-4b4e-8528-76626da3cfdc" Value="23" Type="float"/>
         <Parameter Name="AttackResilience" Guid="77f87b63-96d3-4c7e-a467-79f5db3fdb54" Value="35" Type="float"/>
@@ -2502,9 +2452,6 @@
     <Parameter Name="AnimationResponsiveness" Guid="2d0b2b04-ee31-4637-b7e4-2f69913d66ef" Value="12" Type="float"/>
     <Parameter Name="Class" Guid="b018431a-14bc-46a6-9ff4-cab69d4879b7" Value="Game.ComponentTankModel" Type="string"/>
 </MemberComponentTemplate>
-    <MemberComponentTemplate Name="HealthBarDisplay" Guid="ec1f0d86-3bd0-48f1-8e9c-64e70afedcab" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
-    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="a9b8c7d6-e5f4-4321-9abc-0123456789ef">
     <Parameter Name="FireResilience" Guid="b1c2d3e4-f5a6-7890-ab12-34567890abcd" Value="100000" Type="float"/>
     <Parameter Name="AttackResilience" Guid="c2d3e4f5-a6b7-8901-bc23-45678901bcde" Value="1550.55" Type="float"/>
@@ -2623,9 +2570,6 @@
     <Parameter Name="AnimationResponsiveness" Guid="cc2ec245-ab94-4407-8266-c0553399c125" Value="12" Type="float"/>
     <Parameter Name="Class" Guid="ca2a3299-a150-4dab-a5df-4db13461d8a1" Value="Game.ComponentTankModel" Type="string"/>
 </MemberComponentTemplate>
-    <MemberComponentTemplate Name="HealthBarDisplay" Guid="6da5ff60-2fb2-4457-8dc9-97bb2895506f" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-        <Parameter Name="MaxDisplayDistance" Value="19" Type="float"/>
-    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="a1234567-b89c-4def-9012-3456789abcde">
     <Parameter Name="AttackResilience" Guid="c3456789-d01e-4fab-1234-56789abcdef0" Value="1850" Type="float"/>
     <Parameter Name="ExplosionResilience" Guid="d4567890-e12f-4abc-2345-6789abcdef01" Value="100" Type="float"/>
@@ -2777,9 +2721,6 @@
     <Parameter Name="IsAttackHitMoment" Guid="f8d332c3-4562-4acb-9a9a-dabb83db90f6" Value="false" Type="bool"/>
     <Parameter Name="AttackOrder" Guid="2c3719b7-f936-45ba-8029-5bb1c6b12498" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-    <MemberComponentTemplate Name="HealthBarDisplay" Guid="dad0262c-b40a-4d31-b76b-945d28b32f28" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
-    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="f6602d48-65a0-42d1-9c60-489a7030ac49">
         <Parameter Name="FireResilience" Guid="31049544-bed6-481a-855c-8e4995ac203b" Value="54" Type="float"/>
 <Parameter Name="AttackResilience" Guid="95672e4d-d73e-4e03-b755-94c4a376fc70" Value="70" Type="float"/>
@@ -2893,9 +2834,6 @@
     <Parameter Name="IsAttackHitMoment" Guid="1a4b0b85-2b21-41d0-9f7b-b9e63b6fdd6c" Value="false" Type="bool"/>
     <Parameter Name="AttackOrder" Guid="de5d5df9-9884-40bf-ad5a-db8c72e7351b" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-    <MemberComponentTemplate Name="HealthBarDisplay" Guid="adfafc32-afec-4846-b82f-8b4f7144c77a" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-        <Parameter Name="MaxDisplayDistance" Value="19" Type="float"/>
-    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="c3d4e5f6-a7b8-8345-4567-89abcdef0123">
         <Parameter Name="FireResilience" Guid="bb9dace9-a2f3-46f3-be2b-049a934a82e1" Value="80" Type="float"/>
 <Parameter Name="AttackResilience" Guid="9a1a7e13-0635-4f05-ae74-bc2f0fc41ed7" Value="100" Type="float"/>
@@ -3046,9 +2984,6 @@
     <Parameter Name="IsAttackHitMoment" Guid="19ce6f98-8456-4c3c-8e35-a4e55cc92466" Value="false" Type="bool"/>
     <Parameter Name="AttackOrder" Guid="2a6eabb3-3ea4-43ff-a30f-a9abf9a0774a" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-    <MemberComponentTemplate Name="HealthBarDisplay" Guid="3e23fef3-7ae8-4472-95cb-82ac07a47f32" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
-    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="c1f71021-a41e-48ba-bfd5-8fb4cfcd9128">
         <Parameter Name="FireResilience" Guid="fa534715-2e7b-4eaa-9b21-e7c76aa21f96" Value="12" Type="float"/>
 <Parameter Name="AttackResilience" Guid="0e8f9fbb-f19a-4114-aab2-90ab41151ed7" Value="70" Type="float"/>
@@ -3196,9 +3131,6 @@
     <Parameter Name="IsAttackHitMoment" Guid="268bd9d8-7288-4cb3-9962-fc288e19cc9f" Value="false" Type="bool"/>
     <Parameter Name="AttackOrder" Guid="3e7d568e-6d28-4ed3-9eae-e81661dea502" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-    <MemberComponentTemplate Name="HealthBarDisplay" Guid="0ec8509e-72c9-4243-9b3e-5b8572e9ca6c" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
-    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="31ab08b5-54b3-481b-b5eb-dc17e962a0a1">
         <Parameter Name="FireResilience" Guid="d180b72b-3a90-48f7-8dad-73f9a6365bfd" Value="20" Type="float"/>
 <Parameter Name="AttackResilience" Guid="b7ef8384-f70c-4016-8425-ae6d861695d1" Value="80" Type="float"/>
@@ -3347,9 +3279,6 @@
     <Parameter Name="IsAttackHitMoment" Guid="4a9cb4f3-1c08-4c3d-99bd-6f968bf95e77" Value="false" Type="bool"/>
     <Parameter Name="AttackOrder" Guid="8b5027f3-fff1-4c01-a12f-f515cffdb631" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-    <MemberComponentTemplate Name="HealthBarDisplay" Guid="147a4ee2-1292-4c35-9a33-53e454c8c8b7" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
-    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="04e1868d-4721-4e13-b5c9-06c9b3ff507d">
         <Parameter Name="FireResilience" Guid="036a9368-a461-48bf-a8fe-8ab36a767020" Value="118" Type="float"/>
         <Parameter Name="AttackResilience" Guid="3ccf519d-ccd2-4e43-bbc0-b03f6545dad1" Value="220.23" Type="float"/>
@@ -3502,9 +3431,6 @@
     <Parameter Name="IsAttackHitMoment" Guid="1f360ea5-7de5-4ba0-906e-720c23e1af98" Value="false" Type="bool"/>
     <Parameter Name="AttackOrder" Guid="1e9b1ea4-b9f6-410e-8685-1897db5a4543" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-    <MemberComponentTemplate Name="HealthBarDisplay" Guid="18c1ae71-e52d-42b5-a61f-b1b189c972b1" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
-    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="5f43b80b-ef0a-4315-bad4-f5d99610fc19">
         <Parameter Name="AttackResilience" Guid="a92d4a1c-563b-4fb3-a184-43cf3e3a5929" Value="76.5" Type="float"/>
         <Parameter Name="FireResilience" Guid="60850b6d-c71b-4f27-a087-5c440eebfcb3" Value="56.89" Type="float"/>
@@ -3628,9 +3554,6 @@
     <Parameter Name="AnimationResponsiveness" Guid="72214987-1173-4b9e-913c-2cbbf5b11f73" Value="12" Type="float"/>
     <Parameter Name="Class" Guid="e31d8087-bfea-4245-9bc5-b8e7e553a9ea" Value="Game.ComponentTankModel" Type="string"/>
 </MemberComponentTemplate>
-    <MemberComponentTemplate Name="HealthBarDisplay" Guid="fea30469-3f5b-4a16-a1a9-5ea9bdfd8024" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-        <Parameter Name="MaxDisplayDistance" Value="19" Type="float"/>
-    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="8323cf23-ef32-401f-8b8c-95341c9ec0fc">
         <Parameter Name="AttackResilience" Guid="a94b2813-7ece-4324-9cfb-61aaeb8b21b2" Value="8500" Type="float"/>
 <Parameter Name="FallResilience" Guid="07bf8dc6-f3c6-48e0-8c5f-c881aaac8ae4" Value="5000.55" Type="float"/>
@@ -3767,9 +3690,6 @@
     <Parameter Name="IsAttackHitMoment" Guid="8fb83251-9312-4eab-8630-8964e6386390" Value="false" Type="bool"/>
     <Parameter Name="AttackOrder" Guid="54ef9617-4a1f-456c-a05c-864ae919cfb5" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-    <MemberComponentTemplate Name="HealthBarDisplay" Guid="418e2f87-934c-4ca6-bd93-eb2f5ff3cb13" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-        <Parameter Name="MaxDisplayDistance" Value="20" Type="float"/>
-    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="d6e7f8a9-b0c1-8345-4567-89abcdef0123">
         <Parameter Name="AttackResilience" Guid="77656d1b-c7ea-42f7-846c-8a41369082dd" Value="30" Type="float"/>
 <Parameter Name="FallResilience" Guid="f9ca7788-a239-41a8-b49f-26e29dc6308a" Value="10" Type="float"/>
@@ -3885,9 +3805,6 @@
     <Parameter Name="RateLevel" Guid="p4q5r6s7-t8u9-0123-opqr-456789012345" Value="3" Type="int"/>
     <Parameter Name="SpreadLevel" Guid="q5r6s7t8-u9v0-1234-pqrs-567890123456" Value="1" Type="int"/>
 </MemberComponentTemplate>
-    <MemberComponentTemplate Name="HealthBarDisplay" Guid="f3a4b5c6-d7e8-9012-3456-789abcdef012" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-        <Parameter Name="MaxDisplayDistance" Value="19" Type="float"/>
-    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Body" Guid="e1f2a3b4-c5d6-7012-7890-bcdef0123456">
         <Parameter Name="Mass" Guid="f2a3b4c5-d6e7-7123-8901-cdef01234567" Value="85" Type="float"/>
         <Parameter Name="BoxSize" Guid="a3b4c5d6-e7f8-7234-9012-def012345678" Value="0.8,1.8,0.8" Type="Vector3"/>
@@ -4093,9 +4010,6 @@
     <Parameter Name="IsAttackHitMoment" Guid="1126d60e-9566-4aff-951e-89b93bf171fa" Value="false" Type="bool"/>
     <Parameter Name="AttackOrder" Guid="d8174f7a-3457-4613-b039-a605e00552c1" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-    <MemberComponentTemplate Name="HealthBarDisplay" Guid="0d25a011-2f9b-4b82-83f7-622740ad7c4e" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-        <Parameter Name="MaxDisplayDistance" Value="30" Type="float"/>
-    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="7faee291-a4b7-4cbb-b8b9-3ad9b92e7329">
         <Parameter Name="AttackResilience" Guid="17c8b8a2-6995-4961-bef2-4d0de46f606c" Value="300" Type="float"/>
         <Parameter Name="FireResilience" Guid="e7a51d35-ac0a-40fa-a19c-4d627a1ae74b" Value="220" Type="float"/>
@@ -4273,9 +4187,6 @@
     <Parameter Name="IsAttackHitMoment" Guid="e49d5196-a9d4-43e3-ba82-4f26de60bdbd" Value="false" Type="bool"/>
     <Parameter Name="AttackOrder" Guid="b6815eaa-b04e-4716-9ec9-cedbed06dfd1" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-    <MemberComponentTemplate Name="HealthBarDisplay" Guid="5239b57c-0e5a-4d88-a24f-239de788fdcd" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
-    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="baac63a3-b3e5-4fe0-ada7-2e08520042ee">
         <Parameter Name="AttackResilience" Guid="148cd3bd-84c2-4915-9422-40ba957436f4" Value="445.55" Type="float"/>
         <Parameter Name="FallResilience" Guid="69417939-c1da-497d-b15c-39706edaf3dd" Value="445.55" Type="float"/>
@@ -4404,9 +4315,6 @@
     <Parameter Name="IsAttackHitMoment" Guid="25f97963-4af2-462a-8f06-b379d3f66be9" Value="false" Type="bool"/>
     <Parameter Name="AttackOrder" Guid="34178caa-a9c1-4f3c-bc84-3576e2ca0f73" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-    <MemberComponentTemplate Name="HealthBarDisplay" Guid="3bbe8d8f-b27b-40a9-9b83-6a128938c9ef" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-        <Parameter Name="MaxDisplayDistance" Value="12" Type="float"/>
-    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="c2d3e4f5-a6b7-8789-89ab-def012345671">
         <Parameter Name="AttackResilience" Guid="2b74d284-7892-434c-9711-ef5c319ae01b" Value="555.55" Type="float"/>
         <Parameter Name="FallResilience" Guid="c7dbe269-78d6-436c-9944-9deb08b7c3f4" Value="523" Type="float"/>
@@ -4555,9 +4463,6 @@
     <Parameter Name="IsAttackHitMoment" Guid="ce8bf607-90a8-4e94-8f50-43d2efbf5f77" Value="false" Type="bool"/>
     <Parameter Name="AttackOrder" Guid="9fdf6be1-f816-48fe-9b31-824842d0cc61" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-    <MemberComponentTemplate Name="HealthBarDisplay" Guid="25df0933-3c92-4a6d-8008-5605e304ab22" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-        <Parameter Name="MaxDisplayDistance" Value="19" Type="float"/>
-    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="d337003f-ae19-42b9-b031-5ba66c2bb0b7">
         <Parameter Name="AttackResilience" Guid="301a07fd-bc35-48d8-9b7c-cb74579a7f94" Value="1000.55" Type="float"/>
         <Parameter Name="FireResilience" Guid="ef1d71e1-a034-4800-af65-df3908819b6f" Value="22225.55" Type="float"/>
@@ -4722,8 +4627,6 @@
     <Parameter Name="IsAttackHitMoment" Guid="517fb875-87bc-48de-8b4f-df47b997794b" Value="false" Type="bool"/>
     <Parameter Name="AttackOrder" Guid="1941ff6e-8c1f-4a76-936b-3dc7fc3139b2" Value="false" Type="bool"/>
     </MemberComponentTemplate>
-  <MemberComponentTemplate Name="HealthBarDisplay" Guid="d3e4f5a6-7b8c-9d0e-1f2a-3b4c5d6e7f8a" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-  </MemberComponentTemplate>
 <MemberComponentTemplate Name="Health" Guid="0ea98e9f-85de-4901-ae6d-6c4ce529ff33">
   <Parameter Name="FallResilience" Guid="b5c60f38-ac23-4e64-aaca-9c82ae103729" Value="17" Type="float"/>
     <Parameter Name="FireResilience" Guid="e1953459-1ae4-4fea-906e-351650143c0e" Value="90" Type="float"/>
@@ -4868,9 +4771,6 @@
     <Parameter Name="IsAttackHitMoment" Guid="1f96363e-7ba7-46a4-9ca4-9eac98d6899a" Value="false" Type="bool"/>
     <Parameter Name="AttackOrder" Guid="50380887-fe82-40e0-b06d-815f6358aac8" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-    <MemberComponentTemplate Name="HealthBarDisplay" Guid="74542c6b-1ba0-4e1c-b210-f0bf71ff4984" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-        <Parameter Name="MaxDisplayDistance" Value="19" Type="float"/>
-    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="701a0aaf-6255-486a-954f-c5531d119b16">
         <Parameter Name="FireResilience" Guid="e177b835-2322-414d-a571-344bb3044cc7" Value="15" Type="float"/>
         <Parameter Name="AttackResilience" Guid="d85eb4b3-f48d-416d-afdb-0c6c1dda6ac9" Value="36.23" Type="float"/>
@@ -4925,9 +4825,6 @@
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="b8aa60af-7c87-48d0-bc61-ffec79a56a84"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:0.5;InfectedNormal2:0.5" Type="string" Guid="1429efff-b2f9-45b3-9196-e1bd7faf5fe8"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="HealthBarDisplay" Guid="ca0b77b2-a1a8-4406-a7e6-5437bd42a661" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-        <Parameter Name="MaxDisplayDistance" Value="19" Type="float"/>
-    </MemberComponentTemplate>
     <MemberComponentTemplate Name="Health" Guid="c28c4bd1-86f6-49b1-b381-e4720b995720">
         <Parameter Name="FireResilience" Guid="1cfae114-59d2-4dbf-aff1-6e5755add8ce" Value="15" Type="float"/>
         <Parameter Name="AttackResilience" Guid="4842e24b-63ff-41f9-9b4b-4fcd20b403ca" Value="36.23" Type="float"/>
@@ -5183,9 +5080,6 @@
     <Parameter Name="IsAttackHitMoment" Guid="96c15b0a-3eda-4562-b742-b7cd27075fb0" Value="false" Type="bool"/>
     <Parameter Name="AttackOrder" Guid="0292cedb-01ad-47f9-ac11-67e7185426d9" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-            <MemberComponentTemplate Name="HealthBarDisplay" Guid="b40850ff-b1dc-4f2b-a29b-7250d43af1be" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-        <Parameter Name="MaxDisplayDistance" Value="19" Type="float"/>
-    </MemberComponentTemplate>
             <MemberComponentTemplate Name="Health" Guid="67b2b477-d87d-4488-8f41-8e2df9c7fe8e">
                 <Parameter Name="FireResilience" Guid="13de065f-1d62-4f31-a7e3-d4a280e9a68a" Value="57.5" Type="float"/>
                 <Parameter Name="ExplosionResilience" Guid="c3475d3d-bade-4699-9bb6-5893a6c6e902" Value="77.5" Type="float"/>
@@ -5339,9 +5233,6 @@
     <Parameter Name="IsAttackHitMoment" Guid="17d79971-406f-4e7e-86d3-0c791ecb4115" Value="false" Type="bool"/>
     <Parameter Name="AttackOrder" Guid="254d65f8-6673-428f-a1fb-54306e63206e" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-            <MemberComponentTemplate Name="HealthBarDisplay" Guid="dc518bd8-2857-4b38-8b8c-363d5b9c30c1" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-        <Parameter Name="MaxDisplayDistance" Value="19" Type="float"/>
-    </MemberComponentTemplate>
             <MemberComponentTemplate Name="Health" Guid="fbf360c8-f7d8-4d94-b4a5-9bcefb6b506c">
             <Parameter Name="FallResilience" Guid="5b753f31-364c-44bb-9c3b-946c4fa6cd58" Value="12" Type="float"/>
                 <Parameter Name="FireResilience" Guid="82507fc7-a724-4adb-aaa3-48c7a483dad6" Value="70" Type="float"/>
@@ -5479,8 +5370,6 @@
     <Parameter Name="IsAttackHitMoment" Guid="88366d02-3f89-4934-9f3e-9c11a4d9aa2d" Value="false" Type="bool"/>
     <Parameter Name="AttackOrder" Guid="7c80d9e7-fbea-44b9-bba7-32a63e575487" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-            <MemberComponentTemplate Name="HealthBarDisplay" Guid="6cca4d4e-a410-4693-8d46-8f3607ddc436" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-    </MemberComponentTemplate>
             <MemberComponentTemplate Name="Health" Guid="385f218c-39e3-4df7-b4cf-eafaf3917564">
   <Parameter Name="FallResilience" Guid="634389bf-92ba-4955-9db7-6c517bf54773" Value="57" Type="float"/>
     <Parameter Name="FireResilience" Guid="e885492d-25a4-422b-bf94-082583259288" Value="90" Type="float"/>
@@ -5625,9 +5514,6 @@
     <Parameter Name="IsAttackHitMoment" Guid="3bd2ccbc-302c-4705-b04f-26412f8844b0" Value="false" Type="bool"/>
     <Parameter Name="AttackOrder" Guid="074f47b3-c1de-44e0-914b-970db31e9c68" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-            <MemberComponentTemplate Name="HealthBarDisplay" Guid="0baeb39c-a559-44fd-a98e-d0fc7540bf36" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-        <Parameter Name="MaxDisplayDistance" Value="19" Type="float"/>
-    </MemberComponentTemplate>
             <MemberComponentTemplate Name="Health" Guid="4897b4da-122d-4d72-9c11-cfe8f459bd4e">
             <Parameter Name="AttackResilience" Guid="fc957fa1-83c0-450b-a47c-5bbe3db1fe53" Value="730" Type="float"/>
         <Parameter Name="FallResilience" Guid="b3c59bac-83a6-4f10-92a3-2db454239218" Value="116" Type="float"/>
@@ -5767,9 +5653,6 @@
     <Parameter Name="IsAttackHitMoment" Guid="830f7563-bdbc-4ef6-9279-d38ae6d4ad62" Value="false" Type="bool"/>
     <Parameter Name="AttackOrder" Guid="68b38130-bdc1-44f5-bb24-0f37cd218e6a" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-            <MemberComponentTemplate Name="HealthBarDisplay" Guid="e3ebac6f-258e-447f-a374-7e917b51099d" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-        <Parameter Name="MaxDisplayDistance" Value="19" Type="float"/>
-    </MemberComponentTemplate>
             <MemberComponentTemplate Name="Health" Guid="b3d89cf6-5ba6-42bf-b816-00587dd228ca">
                 <Parameter Name="AttackResilience" Guid="74452072-a9d1-4f1f-bf67-478064c5f80c" Value="1880" Type="float"/>
         <Parameter Name="FallResilience" Guid="8994c3f1-9865-45bd-87fe-0f026c0ee6f3" Value="416" Type="float"/>
@@ -5900,9 +5783,6 @@
     <Parameter Name="IsAttackHitMoment" Guid="fde299cf-d3a7-4b2b-89e1-b4f903300b13" Value="false" Type="bool"/>
     <Parameter Name="AttackOrder" Guid="bf74d545-3ca7-44cb-b6b6-c816d1f13cfb" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-            <MemberComponentTemplate Name="HealthBarDisplay" Guid="36fabb51-b8cb-4d26-83a8-7201ad3c6e10" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-        <Parameter Name="MaxDisplayDistance" Value="19" Type="float"/>
-    </MemberComponentTemplate>
             <MemberComponentTemplate Name="Health" Guid="0c6b11b6-5f00-4e67-9b5f-8978a99d4b60">
                 <Parameter Name="FireResilience" Guid="9765d4e9-3fb3-4bbd-8834-90bc091ae0a4" Value="200" Type="float"/>
         <Parameter Name="AttackResilience" Guid="35f3b729-b0eb-4bda-bfd4-578d17c8baf9" Value="435" Type="float"/>
@@ -6033,9 +5913,6 @@
     <Parameter Name="IsAttackHitMoment" Guid="40fe1691-ba83-4d9c-b4db-be2fb2c546ae" Value="false" Type="bool"/>
     <Parameter Name="AttackOrder" Guid="acff0f04-e93f-45d3-949d-cea7e74de2d1" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-            <MemberComponentTemplate Name="HealthBarDisplay" Guid="27a72b51-cae9-4951-a3ff-1b4cb0952a49" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-        <Parameter Name="MaxDisplayDistance" Value="19" Type="float"/>
-    </MemberComponentTemplate>
             <MemberComponentTemplate Name="Health" Guid="0bbb9d17-8263-4f32-bc7d-3cdeb2779d52">
                 <Parameter Name="FireResilience" Guid="158ce6c4-93c8-4862-8445-74fbbc385c55" Value="95" Type="float"/>
         <Parameter Name="AttackResilience" Guid="4e525135-74f1-48b3-a310-3b5bf9479a93" Value="135" Type="float"/>
@@ -6214,8 +6091,6 @@
     <Parameter Name="IsAttackHitMoment" Guid="1e2f08c6-951c-48ac-8017-2315a1f9c6c8" Value="false" Type="bool"/>
     <Parameter Name="AttackOrder" Guid="82e4dc46-051b-4616-99ab-6fab9868560e" Value="false" Type="bool"/>
 </MemberComponentTemplate>
-            <MemberComponentTemplate Name="HealthBarDisplay" Guid="898344b4-c088-4980-beeb-84b2773c9582" InheritanceParent="cc577309-064e-4bd3-82ed-89be72213cc6">
-    </MemberComponentTemplate>
             <MemberComponentTemplate Name="Health" Guid="d518b453-ffcc-4022-8b5a-e64028b2a5da">
         <Parameter Name="AttackResilience" Guid="3bd3eb3e-cca0-47cf-bd88-2b21d0e7035b" Value="666" Type="float"/>
 				<Parameter Name="FireResilience" Guid="0f863b65-64f8-4713-8d90-d212d8a0d878" Value="666" Type="float"/>
