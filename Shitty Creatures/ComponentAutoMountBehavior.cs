@@ -145,13 +145,14 @@ namespace Game
 				float speed = 1f;
 				float range = 1.5f;
 
-				// 1. Persecución: actualizar destino continuamente y detener pathfinding del jinete
-				if (m_chaseBehavior != null && m_chaseBehavior.IsActive && m_chaseBehavior.Target != null)
+				// 1. Persecución: solo si el objetivo está vivo
+				if (m_chaseBehavior != null && m_chaseBehavior.IsActive && m_chaseBehavior.Target != null &&
+					m_chaseBehavior.Target.ComponentHealth.Health > 0f)   // ← ¡Corregido!
 				{
 					urgentTarget = m_chaseBehavior.Target.ComponentBody.Position;
 					urgentImportance = 250f;
-					range = 1.0f; // reducido para que entre en rango de ataque
-					m_componentPathfinding.Stop(); // evita que el pathfinding del jinete interfiera
+					range = 1.0f;
+					m_componentPathfinding.Stop();
 				}
 				// 2. Llamada (silbato)
 				else if (m_summonBehavior != null && m_summonBehavior.SummonTarget != null)
