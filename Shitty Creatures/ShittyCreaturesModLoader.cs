@@ -21,7 +21,7 @@ namespace Game
 		private SubsystemModelsRenderer m_healthBarModelsRenderer;
 		private SubsystemCreatureSpawn m_healthBarCreatureSpawn;
 		private SubsystemPlayers m_healthBarPlayers;
-		public float MaxDisplayDistance = 20f;
+		public float HealthBarVisibilityRadius = 50f;
 
 		// ShittyModLoader (original)
 		static FieldInfo m_cachesField;
@@ -1221,7 +1221,7 @@ namespace Game
 				if (body == null) continue;
 				Vector3 center = (body.BoundingBox.Min + body.BoundingBox.Max) * 0.5f;
 				float height = body.BoundingBox.Max.Y - body.BoundingBox.Min.Y;
-				if (Vector3.Distance(camera.ViewPosition, center) > MaxDisplayDistance) continue;
+				if (Vector3.Distance(camera.ViewPosition, center) > HealthBarVisibilityRadius) continue;
 				Vector3 textPos = new Vector3(center.X, body.BoundingBox.Max.Y + height * 0.3f, center.Z);
 				Vector3 barPos = new Vector3(center.X, body.BoundingBox.Max.Y + height * 0.2f, center.Z);
 				if (Vector3.Dot(camera.ViewDirection, textPos - camera.ViewPosition) <= 0f) continue;
