@@ -1189,6 +1189,16 @@ namespace Game
 
 		private void UpdateBleedingSystems(GameWidget gameWidget)
 		{
+			if (!ShittyCreaturesSettingsManager.BleedingEnabled)
+			{
+				// Detener todos los sistemas de sangrado existentes
+				foreach (var kvp in m_bleedingSystems)
+				{
+					kvp.Value.IsStopped = true;
+				}
+				m_bleedingSystems.Clear();
+				return;
+			}
 			var project = gameWidget.PlayerData?.SubsystemPlayers?.Project;
 			if (project == null) return;
 
@@ -1248,9 +1258,9 @@ namespace Game
 				// Solo iniciar sangrado si:
 				// - Está viva
 				// - Puede sangrar
-				// - Su salud es menor del 30%
+				// - Su salud es menor del 20%
 				// - NO tiene una enfermedad que cause daño interno
-				bool shouldStartBleeding = isAlive && canBleed && health.Health < 0.3f && !hasNonPhysicalAilment;
+				bool shouldStartBleeding = isAlive && canBleed && health.Health < 0.2f && !hasNonPhysicalAilment;
 
 				if (m_bleedingSystems.TryGetValue(creature, out var bps))
 				{
