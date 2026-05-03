@@ -156,57 +156,78 @@ namespace Game
 					urgentImportance = 250f;
 					range = 1.0f;
 					m_componentPathfinding.Stop();
-				}
-				// 2. Llamada (silbato)
-				else if (m_summonBehavior != null && m_summonBehavior.SummonTarget != null)
-				{
-					Vector3 targetPos = m_summonBehavior.SummonTarget.Position;
-					float distToTarget = Vector3.Distance(mount.ComponentBody.Position, targetPos);
-					if (distToTarget > 4f)
+
+					// Sincronizar ataque de la montura con el jinete
+					ComponentNewChaseBehavior mountChase = mountEntity.FindComponent<ComponentNewChaseBehavior>();
+					if (mountChase != null)
 					{
-						Vector3 cross = Vector3.Normalize(Vector3.Cross(Vector3.UnitY, targetPos - mount.ComponentBody.Position));
-						float side = 0.75f * (float)((GetHashCode() % 2 != 0) ? 1 : -1) * (float)(1 + GetHashCode() % 3);
-						Vector3 lateralDest = targetPos + cross * side;
-						speed = MathUtils.Lerp(0.4f, 1f, MathUtils.Saturate(0.25f * (distToTarget - 5f)));
-						range = 3.75f;
-						urgentTarget = lateralDest;
-						urgentImportance = 250f;
-					}
-					else
-					{
-						mountPathfinding.Stop();
-						m_importanceLevel = 0f;
-						return;
-					}
-				}
-				// 3. Evitar fuego
-				else
-				{
-					Vector3 mountPos = mount.ComponentBody.Position;
-					float closestFireDist = 12f;
-					Vector3? closestFire = null;
-					if (m_subsystemCampfireBlockBehavior != null)
-					{
-						foreach (Point3 point in m_subsystemCampfireBlockBehavior.Campfires)
+						ComponentCreature target = m_chaseBehavior.Target;
+						if (mountChase.Target != target || !mountChase.IsActive)
 						{
-							Vector3 firePos = new Vector3(point.X + 0.5f, point.Y + 0.5f, point.Z + 0.5f);
-							float dist = Vector3.Distance(mountPos, firePos);
-							if (dist < closestFireDist)
-							{
-								closestFireDist = dist;
-								closestFire = firePos;
-							}
+							mountChase.Attack(target, 40f, 120f, true);
 						}
 					}
-					if (closestFire.HasValue)
+					// También verificar otros tipos de chase
+					ComponentZombieChaseBehavior mountZombieChase = mountEntity.FindComponent<ComponentZombieChaseBehavior>();
+					if (mountZombieChase != null)
 					{
-						Vector3 awayFromFire = mountPos - closestFire.Value;
-						awayFromFire.Y = 0f;
-						if (awayFromFire.LengthSquared() > 0.01f)
+						ComponentCreature target = m_chaseBehavior.Target;
+						if (mountZombieChase.Target != target || !mountZombieChase.IsActive)
 						{
-							awayFromFire = Vector3.Normalize(awayFromFire);
-							urgentTarget = mountPos + awayFromFire * 10f;
-							urgentImportance = 200f;
+							mountZombieChase.Attack(target, 40f, 120f, true);
+						}
+					}
+					ComponentBanditChaseBehavior mountBanditChase = mountEntity.FindComponent<ComponentBanditChaseBehavior>();
+					if (mountBanditChase != null)
+					{
+						ComponentCreature target = m_chaseBehavior.Target;
+						if (mountBanditChase.Target != target || !mountBanditChase.IsActive)
+						{
+							mountBanditChase.Attack(target, 40f, 120f, true);
+						}
+					}
+				}
+				// También verificar si la montura está persiguiendo a alguien (inversa)
+				else
+				{
+					// Revisar si la montura tiene sus propios comportamientos de persecución
+					ComponentNewChaseBehavior mountNewChase = mountEntity.FindComponent<ComponentNewChaseBehavior>();
+					ComponentZombieChaseBehavior mountZombieChase = mountEntity.FindComponent<ComponentZombieChaseBehavior>();
+					ComponentBanditChaseBehavior mountBanditChase = mountEntity.FindComponent<ComponentBanditChaseBehavior>();
+
+					ComponentCreature mountTarget = null;
+					bool mountIsActive = false;
+
+					if (mountNewChase != null && mountNewChase.IsActive && mountNewChase.Target != null &&
+						mountNewChase.Target.ComponentHealth.Health > 0f)
+					{
+						mountTarget = mountNewChase.Target;
+						mountIsActive = true;
+					}
+					else if (mountZombieChase != null && mountZombieChase.IsActive && mountZombieChase.Target != null &&
+							 mountZombieChase.Target.ComponentHealth.Health > 0f)
+					{
+						mountTarget = mountZombieChase.Target;
+						mountIsActive = true;
+					}
+					else if (mountBanditChase != null && mountBanditChase.IsActive && mountBanditChase.Target != null &&
+							 mountBanditChase.Target.ComponentHealth.Health > 0f)
+					{
+						mountTarget = mountBanditChase.Target;
+						mountIsActive = true;
+					}
+
+					if (mountIsActive && mountTarget != null)
+					{
+						urgentTarget = mountTarget.ComponentBody.Position;
+						urgentImportance = 250f;
+						range = 1.0f;
+						m_componentPathfinding.Stop();
+
+						// Sincronizar el jinete con la montura
+						if (m_chaseBehavior != null && (m_chaseBehavior.Target != mountTarget || !m_chaseBehavior.IsActive))
+						{
+							m_chaseBehavior.Attack(mountTarget, 40f, 120f, true);
 						}
 					}
 				}
