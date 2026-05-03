@@ -407,14 +407,6 @@ namespace Game
 
 		public override void Update(float dt)
 		{
-			// Si está en grupo de monta, asegurar que el ataque continúe
-			if (IsPartOfMountGroup && m_target != null && m_target.ComponentHealth.Health > 0f)
-			{
-				IsActive = true;
-				m_chaseTime = Math.Max(m_chaseTime, 1f);
-				m_importanceLevel = Math.Max(m_importanceLevel, 300f);
-				Suppressed = false;
-			}
 			base.Update(dt);
 
 			if (this.m_retaliationCooldown > 0f)
@@ -558,40 +550,8 @@ namespace Game
 
 		public override void StopAttack()
 		{
-			// No detener el ataque si está en grupo de monta y tiene objetivo válido
-			if (IsPartOfMountGroup && m_target != null && m_target.ComponentHealth.Health > 0f)
-				return;
 			base.StopAttack();
 		}
-
-		private bool IsMounted
-		{
-			get
-			{
-				ComponentBody body = m_componentCreature.ComponentBody;
-				if (body.ParentBody != null)
-				{
-					return body.ParentBody.Entity.FindComponent<ComponentMount>() != null;
-				}
-				return false;
-			}
-		}
-
-		private bool HasRider
-		{
-			get
-			{
-				ComponentBody body = m_componentCreature.ComponentBody;
-				foreach (ComponentBody child in body.ChildBodies)
-				{
-					if (child.Entity.FindComponent<ComponentRider>() != null)
-						return true;
-				}
-				return false;
-			}
-		}
-
-		private bool IsPartOfMountGroup => IsMounted || HasRider;
 
 		private ComponentZombieHerdBehavior m_componentZombieHerdBehavior;
 		private SubsystemGreenNightSky m_subsystemGreenNightSky;
