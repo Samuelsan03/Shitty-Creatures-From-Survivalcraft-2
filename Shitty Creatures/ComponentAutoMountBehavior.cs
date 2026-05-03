@@ -11,7 +11,6 @@ namespace Game
 		public override float ImportanceLevel => m_importanceLevel;
 
 		public float SearchRange = 20f;
-		public bool CanBeMounted = false; // Propiedad saveable, false por defecto
 
 		private static readonly string[] s_mountableTemplates = new string[]
 		{
@@ -43,16 +42,13 @@ namespace Game
 
 		public virtual void Update(float dt)
 		{
-			// 🔧 CORREGIDO: Si la criatura jinete está muerta, forzar desmontaje y detener todo
+			// Si la criatura jinete está muerta, forzar desmontaje y detener todo
 			if (m_componentCreature.ComponentHealth.Health <= 0f)
 			{
 				if (m_componentRider != null && m_componentRider.Mount != null)
 					m_componentRider.StartDismounting();
 				return;
 			}
-
-			if (!CanBeMounted && (m_componentRider == null || m_componentRider.Mount == null))
-				return;
 
 			m_stateMachine.Update();
 		}
@@ -72,9 +68,9 @@ namespace Game
 			m_summonBehavior = Entity.FindComponent<ComponentSummonBehavior>();
 
 			SearchRange = valuesDictionary.GetValue<float>("SearchRange", 20f);
-			CanBeMounted = valuesDictionary.GetValue<bool>("CanBeMounted", false);
 
 			// ----- Estados -----
+
 			// Idle
 			m_stateMachine.AddState("Idle", delegate {
 				m_importanceLevel = 0f;
@@ -135,7 +131,7 @@ namespace Game
 				}
 			}, null);
 
-			// Wander (maneja persecución, llamado y evitación de fuego)
+			// Wander
 			m_stateMachine.AddState("Wander", delegate {
 				m_importanceLevel = 10f;
 				m_wanderDestination = null;
@@ -152,13 +148,11 @@ namespace Game
 				ComponentPathfinding mountPathfinding = mountEntity.FindComponent<ComponentPathfinding>();
 				if (mountPathfinding == null) return;
 
-				// ----- Detección de tareas urgentes -----
 				Vector3? urgentTarget = null;
 				float urgentImportance = 10f;
 				float speed = 1f;
 				float range = 1.5f;
 
-				// 1. Persecución: solo si el objetivo está vivo
 				if (m_chaseBehavior != null && m_chaseBehavior.IsActive && m_chaseBehavior.Target != null &&
 					m_chaseBehavior.Target.ComponentHealth.Health > 0f)
 				{
@@ -167,7 +161,6 @@ namespace Game
 					range = 1.0f;
 					m_componentPathfinding.Stop();
 
-					// Sincronizar ataque de la montura con el jinete
 					ComponentNewChaseBehavior mountChase = mountEntity.FindComponent<ComponentNewChaseBehavior>();
 					if (mountChase != null)
 					{
@@ -175,69 +168,6 @@ namespace Game
 						if (mountChase.Target != target || !mountChase.IsActive)
 						{
 							mountChase.Attack(target, 40f, 120f, true);
-						}
-					}
-					// También verificar otros tipos de chase
-					ComponentZombieChaseBehavior mountZombieChase = mountEntity.FindComponent<ComponentZombieChaseBehavior>();
-					if (mountZombieChase != null)
-					{
-						ComponentCreature target = m_chaseBehavior.Target;
-						if (mountZombieChase.Target != target || !mountZombieChase.IsActive)
-						{
-							mountZombieChase.Attack(target, 40f, 120f, true);
-						}
-					}
-					ComponentBanditChaseBehavior mountBanditChase = mountEntity.FindComponent<ComponentBanditChaseBehavior>();
-					if (mountBanditChase != null)
-					{
-						ComponentCreature target = m_chaseBehavior.Target;
-						if (mountBanditChase.Target != target || !mountBanditChase.IsActive)
-						{
-							mountBanditChase.Attack(target, 40f, 120f, true);
-						}
-					}
-				}
-				// También verificar si la montura está persiguiendo a alguien (inversa)
-				else
-				{
-					// Revisar si la montura tiene sus propios comportamientos de persecución
-					ComponentNewChaseBehavior mountNewChase = mountEntity.FindComponent<ComponentNewChaseBehavior>();
-					ComponentZombieChaseBehavior mountZombieChase = mountEntity.FindComponent<ComponentZombieChaseBehavior>();
-					ComponentBanditChaseBehavior mountBanditChase = mountEntity.FindComponent<ComponentBanditChaseBehavior>();
-
-					ComponentCreature mountTarget = null;
-					bool mountIsActive = false;
-
-					if (mountNewChase != null && mountNewChase.IsActive && mountNewChase.Target != null &&
-						mountNewChase.Target.ComponentHealth.Health > 0f)
-					{
-						mountTarget = mountNewChase.Target;
-						mountIsActive = true;
-					}
-					else if (mountZombieChase != null && mountZombieChase.IsActive && mountZombieChase.Target != null &&
-							 mountZombieChase.Target.ComponentHealth.Health > 0f)
-					{
-						mountTarget = mountZombieChase.Target;
-						mountIsActive = true;
-					}
-					else if (mountBanditChase != null && mountBanditChase.IsActive && mountBanditChase.Target != null &&
-							 mountBanditChase.Target.ComponentHealth.Health > 0f)
-					{
-						mountTarget = mountBanditChase.Target;
-						mountIsActive = true;
-					}
-
-					if (mountIsActive && mountTarget != null)
-					{
-						urgentTarget = mountTarget.ComponentBody.Position;
-						urgentImportance = 250f;
-						range = 1.0f;
-						m_componentPathfinding.Stop();
-
-						// Sincronizar el jinete con la montura
-						if (m_chaseBehavior != null && (m_chaseBehavior.Target != mountTarget || !m_chaseBehavior.IsActive))
-						{
-							m_chaseBehavior.Attack(mountTarget, 40f, 120f, true);
 						}
 					}
 				}
@@ -250,10 +180,8 @@ namespace Game
 					return;
 				}
 
-				// Si no hay tareas urgentes, restaurar importancia baja
 				m_importanceLevel = 10f;
 
-				// ----- Wander normal -----
 				if (m_subsystemTime.GameTime >= m_nextWanderUpdateTime)
 				{
 					m_wanderDestination = FindWanderDestination();
@@ -282,7 +210,6 @@ namespace Game
 
 		public override void Save(ValuesDictionary valuesDictionary, EntityToIdMap entityToIdMap)
 		{
-			valuesDictionary.SetValue<bool>("CanBeMounted", CanBeMounted);
 		}
 
 		private Vector3 FindWanderDestination()
@@ -290,16 +217,27 @@ namespace Game
 			Vector3 currentPos = m_componentRider.Mount != null
 				? m_componentRider.Mount.ComponentBody.Position
 				: m_componentCreature.ComponentBody.Position;
+
 			float bestScore = float.MinValue;
 			Vector3 bestDest = currentPos;
+
 			for (int i = 0; i < 8; i++)
 			{
 				Vector2 offset = m_random.Vector2(6f, 18f);
 				Vector3 candidate = new Vector3(currentPos.X + offset.X, 0f, currentPos.Z + offset.Y);
-				int topHeight = m_subsystemTerrain.Terrain.GetTopHeight(Terrain.ToCell(candidate.X), Terrain.ToCell(candidate.Z));
+
+				int topHeight = m_subsystemTerrain.Terrain.GetTopHeight(
+					Terrain.ToCell(candidate.X),
+					Terrain.ToCell(candidate.Z));
+
 				candidate.Y = topHeight + 1;
+
 				float score = ScoreWanderDestination(candidate, currentPos);
-				if (score > bestScore) { bestScore = score; bestDest = candidate; }
+				if (score > bestScore)
+				{
+					bestScore = score;
+					bestDest = candidate;
+				}
 			}
 			return bestDest;
 		}
@@ -307,29 +245,44 @@ namespace Game
 		private float ScoreWanderDestination(Vector3 dest, Vector3 currentPos)
 		{
 			float score = MathF.Max(0f, 10f - MathF.Abs(dest.Y - currentPos.Y));
-			int cx = Terrain.ToCell(dest.X), cz = Terrain.ToCell(dest.Z);
+
+			int cx = Terrain.ToCell(dest.X);
+			int cz = Terrain.ToCell(dest.Z);
 			int topY = m_subsystemTerrain.Terrain.GetTopHeight(cx, cz);
-			if (m_subsystemTerrain.Terrain.GetCellContents(cx, topY, cz) == 18) score -= 20f;
+
+			if (m_subsystemTerrain.Terrain.GetCellContents(cx, topY, cz) == 18)
+				score -= 20f;
+
 			return score;
 		}
 
 		private ComponentMount FindMountableCreature()
 		{
 			Vector3 pos = m_componentCreature.ComponentBody.Position;
+
 			m_tempBodies.Clear();
 			m_subsystemBodies.FindBodiesAroundPoint(new Vector2(pos.X, pos.Z), SearchRange, m_tempBodies);
+
 			foreach (ComponentBody body in m_tempBodies)
 			{
 				Entity entity = body.Entity;
+
 				ComponentMount mount = entity.FindComponent<ComponentNewMount>() as ComponentMount
 									   ?? entity.FindComponent<ComponentMount>();
+
 				if (mount == null) continue;
 				if (mount.Rider != null) continue;
+
 				ComponentHealth health = entity.FindComponent<ComponentHealth>();
 				if (health != null && health.Health <= 0f) continue;
+
 				string name = entity.ValuesDictionary.DatabaseObject.Name;
-				foreach (string t in s_mountableTemplates) if (name == t) return mount;
+
+				foreach (string t in s_mountableTemplates)
+					if (name == t)
+						return mount;
 			}
+
 			return null;
 		}
 	}
