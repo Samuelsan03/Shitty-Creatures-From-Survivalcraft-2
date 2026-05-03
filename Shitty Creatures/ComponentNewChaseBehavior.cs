@@ -451,7 +451,7 @@ namespace Game
 					else if (contents == CrossbowBlock.Index) power = 90f;
 					else if (contents == RepeatCrossbowBlock.Index) power = 95f;
 					else if (contents == FlameThrowerBlock.Index) power = 70f;
-					else if (contents == DoubleMusketBlock.Index) power = 110f;  // más potente que el mosquete simple
+					else if (contents == DoubleMusketBlock.Index) power = 110f;
 					if (power > bestPower)
 					{
 						bestPower = power;
@@ -509,11 +509,9 @@ namespace Game
 			int data = Terrain.ExtractData(currentValue);
 			if (!DoubleMusketBlock.IsLoaded(data) || DoubleMusketBlock.GetShotsRemaining(data) == 0)
 			{
-				// Cargar con balas antitanque (munición principal del DoubleMusket)
 				data = DoubleMusketBlock.SetLoaded(data, true);
 				data = DoubleMusketBlock.SetShotsRemaining(data, 2);
 				data = DoubleMusketBlock.SetAntiTanksBullet(data, true);
-				// No se asigna BulletType (o se puede dejar en null)
 				int newValue = Terrain.MakeBlockValue(DoubleMusketBlock.Index, 0, data);
 				m_componentMiner.Inventory.RemoveSlotItems(slotIndex, 1);
 				m_componentMiner.Inventory.AddSlotItems(slotIndex, newValue, 1);
@@ -561,6 +559,7 @@ namespace Game
 			m_aimingStarted = false;
 			m_triedToLoad = false;
 		}
+
 		private void ManageWeaponSwitching(bool shouldUseMelee)
 		{
 			if (m_componentMiner?.Inventory == null) return;
@@ -568,7 +567,6 @@ namespace Game
 			if (m_isAimingThrowable)
 				return;
 
-			// Solo cambiar de arma si estamos mirando al objetivo
 			if (!IsTargetInFront())
 				return;
 
@@ -658,14 +656,9 @@ namespace Game
 				}
 			}
 
-			if ((IsActive || IsPartOfMountGroup) && m_target != null && m_target.ComponentHealth.Health > 0f)
+			if (IsActive && m_target != null)
 			{
 				m_chaseTime -= dt;
-				// Si está en un grupo de monta, mantenemos el tiempo de persecución para que no expire
-				if (IsPartOfMountGroup)
-				{
-					m_chaseTime = Math.Max(m_chaseTime, 1f);
-				}
 				m_componentCreature.ComponentCreatureModel.LookAtOrder = new Vector3?(m_target.ComponentCreatureModel.EyePosition);
 
 				float distance = GetDistanceToTarget();
@@ -700,10 +693,8 @@ namespace Game
 									m_componentMiner.Hit(hitBody, hitPoint, m_componentCreature.ComponentBody.Matrix.Forward);
 									m_componentCreature.ComponentCreatureSounds.PlayAttackSound();
 
-									// Nueva funcionalidad: explosión al golpear con 10% de probabilidad
 									if (ExplodeOnHit && m_random.Float(0f, 1f) < 0.1f)
 									{
-										// Obtener SubsystemExplosions (si no está ya en caché)
 										SubsystemExplosions subsystemExplosions = Project.FindSubsystem<SubsystemExplosions>(true);
 										if (subsystemExplosions != null)
 										{
@@ -711,9 +702,9 @@ namespace Game
 												Terrain.ToCell(hitPoint.X),
 												Terrain.ToCell(hitPoint.Y),
 												Terrain.ToCell(hitPoint.Z),
-												255f,        // presión típica de barril mediano
-												false,      // no incendiario
-												false       // con sonido de explosión
+												255f,
+												false,
+												false
 											);
 										}
 									}
@@ -746,7 +737,6 @@ namespace Game
 					}
 					else
 					{
-						// No tenemos arma cuerpo a cuerpo, golpeamos con lo que tengamos equipado sin cancelar el apuntado a distancia
 						if (IsTargetInFront())
 						{
 							m_componentCreatureModel.AttackOrder = true;
@@ -761,10 +751,8 @@ namespace Game
 									m_componentMiner.Hit(hitBody, hitPoint, m_componentCreature.ComponentBody.Matrix.Forward);
 									m_componentCreature.ComponentCreatureSounds.PlayAttackSound();
 
-									// Nueva funcionalidad: explosión al golpear con 10% de probabilidad
 									if (ExplodeOnHit && m_random.Float(0f, 1f) < 0.1f)
 									{
-										// Obtener SubsystemExplosions (si no está ya en caché)
 										SubsystemExplosions subsystemExplosions = Project.FindSubsystem<SubsystemExplosions>(true);
 										if (subsystemExplosions != null)
 										{
@@ -772,9 +760,9 @@ namespace Game
 												Terrain.ToCell(hitPoint.X),
 												Terrain.ToCell(hitPoint.Y),
 												Terrain.ToCell(hitPoint.Z),
-												255f,        // presión típica de barril mediano
-												false,      // no incendiario
-												false       // con sonido de explosión
+												255f,
+												false,
+												false
 											);
 										}
 									}
@@ -804,15 +792,12 @@ namespace Game
 					}
 				}
 
-				// Permitir ataques a distancia incluso en rango cuerpo a cuerpo si no tenemos arma cuerpo a cuerpo
 				if (!inMeleeRange || FindBestMeleeWeapon(out _, out _) == -1)
 				{
-					// PRIORIDAD 1: Armas lanzables
 					if (HasThrowableItem(out _, out _))
 					{
 						UpdateThrowableAttack(dt);
 					}
-					// PRIORIDAD 2: Armas a distancia
 					else if (IsCurrentWeaponRanged)
 					{
 						UpdateRangedAttack(dt);
@@ -822,20 +807,16 @@ namespace Game
 
 			if (IsActive && m_target != null && PlaceBlocksWhenTargetHigh)
 			{
-				// Si estamos atascados, el objetivo está alto y debemos destruir bloques, posponer construcción
 				bool isStuck = m_componentPathfinding.IsStuck;
 				bool targetIsHigh = (m_target.ComponentBody.Position.Y - m_componentCreature.ComponentBody.Position.Y) > 2.0f;
 				bool canDestroy = DestroyBlocksWhenStuck;
 
 				if (isStuck && targetIsHigh && canDestroy)
 				{
-					// Ya se está intentando destruir en TryDestroyBlocksToFree (llamado en el estado Chasing)
-					// Esperar a que la destrucción haga efecto antes de construir
 					m_waitingForDestructionBeforeBuild = true;
 				}
 				else
 				{
-					// Si ya no estamos atascados o el objetivo no está tan alto, permitir construcción
 					m_waitingForDestructionBeforeBuild = false;
 				}
 
@@ -846,13 +827,11 @@ namespace Game
 			}
 
 			if (m_subsystemTime.GameTime >= m_nextUpdateTime)
-
-				if (m_subsystemTime.GameTime >= m_nextUpdateTime)
-				{
-					m_dt = m_random.Float(0.25f, 0.35f) + MathUtils.Min((float)(m_subsystemTime.GameTime - m_nextUpdateTime), 0.1f);
-					m_nextUpdateTime = m_subsystemTime.GameTime + (double)m_dt;
-					m_stateMachine.Update();
-				}
+			{
+				m_dt = m_random.Float(0.25f, 0.35f) + MathUtils.Min((float)(m_subsystemTime.GameTime - m_nextUpdateTime), 0.1f);
+				m_nextUpdateTime = m_subsystemTime.GameTime + (double)m_dt;
+				m_stateMachine.Update();
+			}
 		}
 
 		private bool IsTargetInFront()
@@ -1274,19 +1253,18 @@ namespace Game
 		private void EnsureBowLoaded(int slotIndex, int currentValue)
 		{
 			int data = Terrain.ExtractData(currentValue);
-			// Forzar siempre draw=15 (máxima tensión instantánea)
 			data = BowBlock.SetDraw(data, 15);
 
 			if (BowBlock.GetArrowType(data) == null)
 			{
 				ArrowBlock.ArrowType[] arrowTypes = new ArrowBlock.ArrowType[]
 				{
-			ArrowBlock.ArrowType.WoodenArrow,
-			ArrowBlock.ArrowType.StoneArrow,
-			ArrowBlock.ArrowType.IronArrow,
-			ArrowBlock.ArrowType.DiamondArrow,
-			ArrowBlock.ArrowType.FireArrow,
-			ArrowBlock.ArrowType.CopperArrow
+					ArrowBlock.ArrowType.WoodenArrow,
+					ArrowBlock.ArrowType.StoneArrow,
+					ArrowBlock.ArrowType.IronArrow,
+					ArrowBlock.ArrowType.DiamondArrow,
+					ArrowBlock.ArrowType.FireArrow,
+					ArrowBlock.ArrowType.CopperArrow
 				};
 				ArrowBlock.ArrowType selected = arrowTypes[m_random.Int(0, arrowTypes.Length - 1)];
 				data = BowBlock.SetArrowType(data, selected);
@@ -1542,7 +1520,6 @@ namespace Game
 				return;
 			}
 
-			// Forzar draw=15 antes de disparar
 			int data = Terrain.ExtractData(bowValue);
 			data = BowBlock.SetDraw(data, 15);
 			EnsureBowLoaded(slotIndex, Terrain.MakeBlockValue(BowBlock.Index, 0, data));
@@ -1554,7 +1531,6 @@ namespace Game
 			m_componentMiner.Aim(ray, AimState.Completed);
 			m_nextRangedAttackTime = m_subsystemTime.GameTime + BowCooldown;
 
-			// Disparar y restaurar draw=0
 			int newData = BowBlock.SetDraw(data, 0);
 			newData = BowBlock.SetArrowType(newData, null);
 			int newValue = Terrain.MakeBlockValue(BowBlock.Index, 0, newData);
@@ -2073,36 +2049,6 @@ namespace Game
 			return null;
 		}
 
-		private bool IsMounted
-		{
-			get
-			{
-				ComponentBody body = m_componentCreature.ComponentBody;
-				if (body.ParentBody != null)
-				{
-					return body.ParentBody.Entity.FindComponent<ComponentMount>() != null;
-				}
-				return false;
-			}
-		}
-
-		private bool HasRider
-		{
-			get
-			{
-				ComponentBody body = m_componentCreature.ComponentBody;
-				foreach (ComponentBody child in body.ChildBodies)
-				{
-					if (child.Entity.FindComponent<ComponentRider>() != null)
-						return true;
-				}
-				return false;
-			}
-		}
-
-		// Propiedad combinada: true si la criatura es jinete (montada en otra) o montura (con jinete encima)
-		private bool IsPartOfMountGroup => IsMounted || HasRider;
-
 		private bool IsBlockBreakable(int value)
 		{
 			int contents = Terrain.ExtractContents(value);
@@ -2156,12 +2102,10 @@ namespace Game
 
 					if (isUp)
 					{
-						// Destruir las dos celdas justo encima de la cabeza (las que impedirían colocar los bloques de tierra)
 						float headHeight = currentPos.Y + m_componentCreature.ComponentBody.BoxSize.Y;
 						Vector3 headPos = new Vector3(currentPos.X, headHeight, currentPos.Z);
-						DestroyBlockAtPosition(headPos + Vector3.UnitY * 0.2f);      // celda a la altura de los ojos
-						DestroyBlockAtPosition(headPos + Vector3.UnitY * 1.2f);      // celda superior
-																					 // Forzar salto para aprovechar el espacio liberado
+						DestroyBlockAtPosition(headPos + Vector3.UnitY * 0.2f);
+						DestroyBlockAtPosition(headPos + Vector3.UnitY * 1.2f);
 						m_componentCreature.ComponentLocomotion.JumpOrder = 1f;
 					}
 					else if (isDown)
@@ -2415,7 +2359,6 @@ namespace Game
 			if (verticalDiff < 2.0f)
 				return;
 
-			// Limpiar lista de bloques que ya no son de tierra
 			for (int i = m_placedDirtBlocks.Count - 1; i >= 0; i--)
 			{
 				Point3 p = m_placedDirtBlocks[i];
@@ -2431,7 +2374,6 @@ namespace Game
 			int feetY = Terrain.ToCell(myPos.Y - 0.1f);
 			int feetZ = Terrain.ToCell(myPos.Z);
 
-			// Comprobar que el suelo debajo es sólido
 			int belowY = feetY - 1;
 			if (!m_subsystemTerrain.Terrain.IsCellValid(feetX, belowY, feetZ))
 				return;
@@ -2440,11 +2382,9 @@ namespace Game
 			if (!belowBlock.IsCollidable_(m_subsystemTerrain.Terrain.GetCellValue(feetX, belowY, feetZ)))
 				return;
 
-			// Posiciones donde se colocarán los bloques
 			int targetY1 = feetY;
 			int targetY2 = feetY + 1;
 
-			// 🚫 **NUEVA VERIFICACIÓN: las dos celdas sobre la cabeza deben estar libres**
 			int headY1 = Terrain.ToCell(myPos.Y + m_componentCreature.ComponentBody.BoxSize.Y - 0.1f);
 			int headY2 = headY1 + 1;
 			if (!m_subsystemTerrain.Terrain.IsCellValid(feetX, headY1, feetZ) ||
@@ -2457,11 +2397,9 @@ namespace Game
 			if (headBlock1.IsCollidable_(m_subsystemTerrain.Terrain.GetCellValue(feetX, headY1, feetZ)) ||
 				headBlock2.IsCollidable_(m_subsystemTerrain.Terrain.GetCellValue(feetX, headY2, feetZ)))
 			{
-				// Aún hay bloques sobre la cabeza → no colocar todavía (TryDestroyBlocksToFree se encargará)
 				return;
 			}
 
-			// Verificar que las posiciones de colocación estén vacías
 			if (!m_subsystemTerrain.Terrain.IsCellValid(feetX, targetY1, feetZ) ||
 				!m_subsystemTerrain.Terrain.IsCellValid(feetX, targetY2, feetZ))
 				return;
@@ -2470,12 +2408,10 @@ namespace Game
 			if (contents1 != 0 || contents2 != 0)
 				return;
 
-			// Colocar bloques directamente sin modificar inventario
 			int dirtValue = Terrain.MakeBlockValue(DirtBlock.Index);
 			m_subsystemTerrain.ChangeCell(feetX, targetY1, feetZ, dirtValue, true);
 			m_subsystemTerrain.ChangeCell(feetX, targetY2, feetZ, dirtValue, true);
 
-			// Actualizar chunk visualmente
 			TerrainChunk chunk = m_subsystemTerrain.Terrain.GetChunkAtCell(feetX, feetZ);
 			if (chunk != null)
 			{
@@ -2484,7 +2420,6 @@ namespace Game
 					chunk.Coords, 1, TerrainChunkState.InvalidLight, true);
 			}
 
-			// Sonido de colocación
 			SubsystemSoundMaterials soundMaterials = Project.FindSubsystem<SubsystemSoundMaterials>(true);
 			if (soundMaterials != null)
 			{
@@ -2581,22 +2516,18 @@ namespace Game
 				m_placedDirtBlocks.Clear();
 			}, () =>
 			{
-				if (!IsActive && !(IsPartOfMountGroup && m_target != null && m_target.ComponentHealth.Health > 0f))
+				if (!IsActive)
 				{
 					m_stateMachine.TransitionTo("LookingForTarget");
 					CancelRangedAim();
 					CancelThrowableAim();
 				}
-				else if (m_chaseTime <= 0f && !IsPartOfMountGroup)
+				else if (m_chaseTime <= 0f)
 				{
 					m_autoChaseSuppressionTime = m_random.Float(10f, 60f);
 					m_importanceLevel = 0f;
 					CancelRangedAim();
 					CancelThrowableAim();
-				}
-				if (IsPartOfMountGroup && m_target != null && m_target.ComponentHealth.Health > 0f)
-				{
-					m_importanceLevel = Math.Max(m_importanceLevel, 200f);
 				}
 				else if (m_target == null)
 				{
@@ -2618,13 +2549,13 @@ namespace Game
 					CancelRangedAim();
 					CancelThrowableAim();
 				}
-				else if (!IsMounted && !m_isPersistent && m_componentPathfinding.IsStuck)
+				else if (!m_isPersistent && m_componentPathfinding.IsStuck)
 				{
 					m_importanceLevel = 0f;
 					CancelRangedAim();
 					CancelThrowableAim();
 				}
-				else if (!IsMounted && m_isPersistent && m_componentPathfinding.IsStuck)
+				else if (m_isPersistent && m_componentPathfinding.IsStuck)
 				{
 					m_stateMachine.TransitionTo("RandomMoving");
 					CancelRangedAim();
@@ -2645,7 +2576,7 @@ namespace Game
 					}
 					else
 					{
-						if (!m_isAimingThrowable && !IsMounted)  // No usar pathfinding si está montado
+						if (!m_isAimingThrowable)
 						{
 							int maxPathfindingPositions = 0;
 							if (m_isPersistent)
@@ -2795,7 +2726,7 @@ namespace Game
 		private float m_chaseWhenAttackedProbability;
 		private float m_chaseOnTouchProbability;
 		private CreatureCategory m_autoChaseMask;
-		// Método para protección extrema del jugador (llamado desde ModLoader)
+
 		public void ForceProtectiveAttack()
 		{
 			if (!ShouldProtectPlayer)
@@ -2804,15 +2735,12 @@ namespace Game
 			if (Suppressed || m_componentHireable != null && !m_componentHireable.IsHired)
 				return;
 
-			// Cancelar cualquier delay de caza
 			TargetInRangeTimeToChase = 0f;
 			Suppressed = false;
 
-			// Si ya está persiguiendo un enemigo válido, no interrumpir
 			if (m_target != null && m_target.ComponentHealth.Health > 0f && IsEnemy(m_target))
 				return;
 
-			// Buscar el enemigo más cercano (zombi o bandido agresivo)
 			ComponentCreature enemy = FindNearestEnemy(40f);
 			if (enemy != null)
 			{
@@ -2826,12 +2754,10 @@ namespace Game
 			if (creature == null || creature.ComponentHealth.Health <= 0f)
 				return false;
 
-			// Verificar si es zombi con ForceAttackDuringGreenNight
 			ComponentZombieChaseBehavior zChase = creature.Entity.FindComponent<ComponentZombieChaseBehavior>();
 			if (zChase != null && zChase.ForceAttackDuringGreenNight)
 				return true;
 
-			// Verificar si es bandido (tienen ComponentBanditChaseBehavior)
 			ComponentBanditChaseBehavior bChase = creature.Entity.FindComponent<ComponentBanditChaseBehavior>();
 			if (bChase != null)
 				return true;
