@@ -15,7 +15,6 @@ namespace Game
 		private BevelledButtonWidget m_punchCommandButton;
 		private BevelledButtonWidget m_creativeDefenseButton;
 		private BevelledButtonWidget m_freeCameraButton;
-		private BevelledButtonWidget m_menuMusicButton;
 		private BevelledButtonWidget m_bleedingButton;
 		private BevelledButtonWidget m_healthBarButton;
 		private StackPanelWidget m_contentPanel;
@@ -39,7 +38,6 @@ namespace Game
 			CreateOptionRow("ShittyCreaturesSettings", "PunchCommandDescription", out m_punchCommandButton, Color.LightGray, GetPunchCommandButtonText);
 			CreateOptionRow("ShittyCreaturesSettings", "CreativeDefenseDescription", out m_creativeDefenseButton, Color.LightGray, GetCreativeDefenseButtonText);
 			CreateOptionRow("ShittyCreaturesSettings", "FreeCameraDescription", out m_freeCameraButton, Color.LightGray, GetFreeCameraButtonText);
-			CreateOptionRow("ShittyCreaturesSettings", "MenuMusicDescription", out m_menuMusicButton, Color.LightGray, GetMenuMusicButtonText);
 			CreateOptionRow("ShittyCreaturesSettings", "BleedingDescription", out m_bleedingButton, Color.LightGray, GetBleedingButtonText);
 			CreateOptionRow("ShittyCreaturesSettings", "HealthBarDescription", out m_healthBarButton, Color.LightGray, GetHealthBarButtonText);
 		}
@@ -86,7 +84,6 @@ namespace Game
 		private string GetPunchCommandButtonText() => ShittyCreaturesSettingsManager.PunchCommandEnabled ? LanguageControl.On : LanguageControl.Off;
 		private string GetCreativeDefenseButtonText() => ShittyCreaturesSettingsManager.CreativeDefenseEnabled ? LanguageControl.On : LanguageControl.Off;
 		private string GetFreeCameraButtonText() => ShittyCreaturesSettingsManager.FreeCameraEnabled ? LanguageControl.On : LanguageControl.Off;
-		private string GetMenuMusicButtonText() => ShittyCreaturesSettingsManager.MenuMusicEnabled ? LanguageControl.On : LanguageControl.Off;
 		private string GetBleedingButtonText() => ShittyCreaturesSettingsManager.BleedingEnabled ? LanguageControl.On : LanguageControl.Off;
 		private string GetHealthBarButtonText() => ShittyCreaturesSettingsManager.HealthBarEnabled ? LanguageControl.On : LanguageControl.Off;
 
@@ -145,13 +142,6 @@ namespace Game
 			{
 				ShittyCreaturesSettingsManager.FreeCameraEnabled = !ShittyCreaturesSettingsManager.FreeCameraEnabled;
 				m_freeCameraButton.Text = GetFreeCameraButtonText();
-			}
-
-			if (m_menuMusicButton != null && m_menuMusicButton.IsClicked)
-			{
-				ShittyCreaturesSettingsManager.MenuMusicEnabled = !ShittyCreaturesSettingsManager.MenuMusicEnabled;
-				m_menuMusicButton.Text = GetMenuMusicButtonText();
-				MusicManager.ChangeMenuMusic(); // Forzar la actualización inmediata de la música
 			}
 			if (m_bleedingButton != null && m_bleedingButton.IsClicked)
 			{
