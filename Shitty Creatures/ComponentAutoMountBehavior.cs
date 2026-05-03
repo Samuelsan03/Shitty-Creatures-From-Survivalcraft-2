@@ -11,7 +11,7 @@ namespace Game
 		public override float ImportanceLevel => m_importanceLevel;
 
 		public float SearchRange = 20f;
-		public bool CanBeMounted = false; // ← NUEVO: propiedad saveable, false por defecto
+		public bool CanBeMounted = false; // Propiedad saveable, false por defecto
 
 		private static readonly string[] s_mountableTemplates = new string[]
 		{
@@ -43,7 +43,11 @@ namespace Game
 
 		public virtual void Update(float dt)
 		{
-			if (!CanBeMounted) return; // Si no puede montarse, no hacer nada
+			// 🔧 CORREGIDO: No bloquear la actualización si ya está montado,
+			// incluso si CanBeMounted == false. Así reacciona a ataques recibidos.
+			if (!CanBeMounted && (m_componentRider == null || m_componentRider.Mount == null))
+				return;
+
 			m_stateMachine.Update();
 		}
 
@@ -62,7 +66,7 @@ namespace Game
 			m_summonBehavior = Entity.FindComponent<ComponentSummonBehavior>();
 
 			SearchRange = valuesDictionary.GetValue<float>("SearchRange", 20f);
-			CanBeMounted = valuesDictionary.GetValue<bool>("CanBeMounted", false); // ← NUEVO: cargar del diccionario
+			CanBeMounted = valuesDictionary.GetValue<bool>("CanBeMounted", false);
 
 			// ----- Estados -----
 			// Idle
@@ -272,7 +276,7 @@ namespace Game
 
 		public override void Save(ValuesDictionary valuesDictionary, EntityToIdMap entityToIdMap)
 		{
-			valuesDictionary.SetValue<bool>("CanBeMounted", CanBeMounted); // ← NUEVO: guardar al XML
+			valuesDictionary.SetValue<bool>("CanBeMounted", CanBeMounted);
 		}
 
 		private Vector3 FindWanderDestination()
