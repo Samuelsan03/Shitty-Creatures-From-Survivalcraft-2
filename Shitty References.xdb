@@ -4,6 +4,10 @@
 <Parameter Name="Class" Guid="8c4f00ca-8f77-47c9-99bb-cefa4f94ee8d" new-Value="Game.ComponentNewVitalStats" Type="string"/>
 
     <Folder Name="Gameplay" Guid="d509e5e2-2c10-49f1-8223-85cd892c63b0">
+    <ComponentTemplate Name="AutoMountBehavior" Description="Automatically finds, approaches, mounts and controls mountable creatures" Guid="ec9e1281-4622-44aa-8d46-8c822dded702" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
+  <Parameter Name="SearchRange" Description="Maximum distance to search for mountable creatures" Guid="6ddd1a39-6edc-4b83-ae56-8855a4b3a28a" Value="20" Type="float"/>
+  <Parameter Name="Class" Guid="c0312425-46d1-4a7c-a7ed-614a02fdf8f2" Value="Game.ComponentAutoMountBehavior" Type="string"/>
+</ComponentTemplate>
 
     <ComponentTemplate Name="CreatureClothing" Description="Handles clothes worn by creatures" Guid="c1965be4-62ff-42f9-90e6-4e12b4d9a3af" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
   <Parameter Name="Class" Guid="dbbfd94b-2a9e-45bd-81c0-7a2b6dbb06ec" Value="Game.ComponentCreatureClothing" Type="string"/>
@@ -54,7 +58,7 @@
 </ComponentTemplate>
 
     <ComponentTemplate Name="RageZombieBehavior" Description="Hace que el zombi entre en furia con poca salud, aumentando su velocidad, atacando sin demora y mostrando ojos brillantes." Guid="2d584a55-7ccb-42c7-8fc0-c3f288eefae9" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
-    <Parameter Name="Class" Guid="e4fb314e-1a7a-43ae-afde-69d0033eabc1" Value="Game.ComponentRageZombieBehavior" Type="string"/>
+    <Parameter Name="Class" Guid="e4fb314e-1a7a-43ae-afde-69d0033eabc1" Value="Game.ComponentZombieRageBehavior" Type="string"/>
 </ComponentTemplate>
 
     <ComponentTemplate Name="DefensiveRunAwayBehavior" Description="Versión de ComponentRunAwayBehavior que solo huye cuando es atacado, ignorando ruidos y salud baja." Guid="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
@@ -250,6 +254,7 @@
     <Parameter Name="Class" Guid="e43a2641-0995-446c-aa50-390e7c0e2c12" Value="Game.ComponentCreatureAI" Type="string" Description="Clase C# que implementa el componente"/>
     <Parameter Name="CanUseInventory" Guid="ddb27b73-4aa7-4580-a5bd-684db3139696" Value="false" Type="bool" Description="Si la criatura puede usar armas del inventario"/>
     <Parameter Name="CanEquipClothing" Guid="f5668c0a-04a1-4a3c-901a-9f877ef899c9" Value="false" Type="bool" Description="Si la criatura puede equiparse ropa y armadura automáticamente del inventario"/>
+    <Parameter Name="CanBeMounted" Guid="a0bbc150-96fa-4944-9397-3424a4bc4c0a" Value="false" Type="bool" Description="Indica si la criatura puede ser montada por otras criaturas"/>
 </ComponentTemplate>
 
 <ComponentTemplate Name="HumanModel" Description="Modelo humano con animaciones mejoradas y fluidas" Guid="da33e501-1378-4644-8b5f-ef90863234a5" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
