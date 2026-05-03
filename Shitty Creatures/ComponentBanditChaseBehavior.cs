@@ -270,14 +270,6 @@ namespace Game
 			bool wasNearDeath = m_isNearDeath;
 			m_isNearDeath = IsNearDeath();
 
-			// Si está en grupo de monta, mantener el ataque activo
-			if (IsPartOfMountGroup && m_target != null && m_target.ComponentHealth.Health > 0f)
-			{
-				m_chaseTime = Math.Max(m_chaseTime, 1f);
-				m_importanceLevel = Math.Max(m_importanceLevel, 300f);
-				Suppressed = false;
-			}
-
 			// Ajustar factor de persistencia según salud Y MANEJAR COMPORTAMIENTO DE HUIDA
 			if (m_isNearDeath && !wasNearDeath)
 			{
@@ -574,10 +566,6 @@ namespace Game
 
 		public new void StopAttack()
 		{
-			// No detener el ataque si está en grupo de monta y tiene objetivo válido
-			if (IsPartOfMountGroup && m_target != null && m_target.ComponentHealth.Health > 0f)
-				return;
-
 			// SOLO DETENER EL ATAQUE SI NO ESTÁ CERCA DE LA MUERTE
 			if (!m_isNearDeath)
 			{
@@ -628,34 +616,5 @@ namespace Game
 
 			return bestTarget != m_target ? bestTarget : null;
 		}
-
-		private bool IsMounted
-		{
-			get
-			{
-				ComponentBody body = m_componentCreature.ComponentBody;
-				if (body.ParentBody != null)
-				{
-					return body.ParentBody.Entity.FindComponent<ComponentMount>() != null;
-				}
-				return false;
-			}
-		}
-
-		private bool HasRider
-		{
-			get
-			{
-				ComponentBody body = m_componentCreature.ComponentBody;
-				foreach (ComponentBody child in body.ChildBodies)
-				{
-					if (child.Entity.FindComponent<ComponentRider>() != null)
-						return true;
-				}
-				return false;
-			}
-		}
-
-		private bool IsPartOfMountGroup => IsMounted || HasRider;
 	}
 }
