@@ -19,9 +19,6 @@ namespace Game
 		public static bool PunchCommandEnabled { get; set; } = true;
 		public static bool FreeCameraEnabled { get; set; } = true;
 		public static bool CreativeDefenseEnabled { get; set; } = true;
-
-		// Nueva propiedad para la música del menú
-		public static bool MenuMusicEnabled { get; set; } = true;
 		public static bool BleedingEnabled { get; set; } = true;
 		public static bool HealthBarEnabled { get; set; } = true;
 
@@ -69,9 +66,6 @@ namespace Game
 								break;
 							case "FreeCameraEnabled":
 								FreeCameraEnabled = value;
-								break;
-							case "MenuMusicEnabled":
-								MenuMusicEnabled = value;
 								break;
 							case "BleedingEnabled":
 								BleedingEnabled = value;
@@ -139,11 +133,6 @@ namespace Game
 						new XAttribute("Name", "FreeCameraEnabled"),
 						new XAttribute("Type", "bool"),
 						new XAttribute("Value", FreeCameraEnabled)));
-
-					root.Add(new XElement("Value",
-						new XAttribute("Name", "MenuMusicEnabled"),
-						new XAttribute("Type", "bool"),
-						new XAttribute("Value", MenuMusicEnabled)));
 
 					root.Add(new XElement("Value",
 						new XAttribute("Name", "BleedingEnabled"),
