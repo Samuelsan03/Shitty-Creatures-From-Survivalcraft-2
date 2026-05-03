@@ -2170,6 +2170,7 @@
 
         <EntityTemplate Name="InfectedFly1" Guid="fb860ae9-04c2-4c12-a721-3fe7157db639" InheritanceParent="0cb14482-b936-410e-9317-66d385d7d2fd">
         <MemberComponentTemplate Name="NewFlyAwayBehavior" Guid="a4efbf06-68e7-4015-97e7-6334a8af1677" InheritanceParent="a1cca7f2-9a15-4a07-9ab7-31bda890427e"/>
+        <MemberComponentTemplate Name="FlyAwayBehavior" Guid="4df93d9d-f210-4cef-a48a-d1e34c90ac82" InheritanceParent="a1cca7f2-9a15-4a07-9ab7-31bda890427e"/>
         <MemberComponentTemplate Name="RageZombieBehavior" Guid="8a4aea55-6fe8-4987-bb45-81f9ede583a5" InheritanceParent="2d584a55-7ccb-42c7-8fc0-c3f288eefae9"/>
         <MemberComponentTemplate Name="ZombieRunAwayBehavior" Guid="475ffe78-79d5-4327-9af0-d2881846ed97" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
         <MemberComponentTemplate Name="RunAwayBehavior" Guid="8e2f0206-5e8f-4846-877c-b4fe6f147472" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
@@ -2360,6 +2361,7 @@
     <MemberComponentTemplate Name="Spawn" Guid="99d7d39e-56f8-4e52-b482-b2b0f7e2ac8f">
         <Parameter Name="AutoDespawn" Guid="ff576976-dc9d-4afa-9b2a-88af70ac6012" Value="False" Type="bool"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="FlyAwayBehavior" Guid="bc77c039-ef52-40be-8a5f-6c151ea6ad7f" InheritanceParent="a1cca7f2-9a15-4a07-9ab7-31bda890427e"/>
     <MemberComponentTemplate Name="NewFlyAwayBehavior" Guid="2bbf38a2-808d-4b05-89b6-d1185d52b0cd" InheritanceParent="a1cca7f2-9a15-4a07-9ab7-31bda890427e"/>
     <MemberComponentTemplate Name="RunAwayBehavior" Guid="428cfff0-dc69-4116-a608-d010c233fbd4" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
 <MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="6ce86dd7-3dad-4c0f-b689-3fe73892bd90" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
@@ -2369,6 +2371,8 @@
 </EntityTemplate>
 
 <EntityTemplate Name="InfectedFly2" Guid="e1fed65e-13fb-4b05-94c9-4c5b0010e2d1" InheritanceParent="0cb14482-b936-410e-9317-66d385d7d2fd">
+<MemberComponentTemplate Name="FlyAwayBehavior" Guid="ee2f7df1-e218-4a3a-a572-d4722e6071f2" InheritanceParent="a1cca7f2-9a15-4a07-9ab7-31bda890427e"/>
+    <MemberComponentTemplate Name="NewFlyAwayBehavior" Guid="d7d9b6c7-d7df-4088-ad3a-9ce5f2c5b5aa" InheritanceParent="a1cca7f2-9a15-4a07-9ab7-31bda890427e"/>
 <MemberComponentTemplate Name="RageZombieBehavior" Guid="59be4ade-1f5d-4b46-a29a-8870460055f2" InheritanceParent="2d584a55-7ccb-42c7-8fc0-c3f288eefae9"/>
 <MemberComponentTemplate Name="ZombieRunAwayBehavior" Guid="cfa56cae-632a-457a-bce0-0a4b275024bb" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
         <MemberComponentTemplate Name="RunAwayBehavior" Guid="e8e7cb4d-09b2-408b-adff-9bb31731bd5a" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
@@ -2475,6 +2479,8 @@
 </EntityTemplate>
 
 <EntityTemplate Name="InfectedFlyTamed2" Guid="54f063f3-0c55-4589-9cb5-0c7eb5ad50df" InheritanceParent="0cb14482-b936-410e-9317-66d385d7d2fd">
+<MemberComponentTemplate Name="FlyAwayBehavior" Guid="b1d9e76c-2c9c-4c45-b273-b015c0407d89" InheritanceParent="a1cca7f2-9a15-4a07-9ab7-31bda890427e"/>
+    <MemberComponentTemplate Name="NewFlyAwayBehavior" Guid="0f63d8be-e5d3-4c37-9692-d89a34084b5a" InheritanceParent="a1cca7f2-9a15-4a07-9ab7-31bda890427e"/>
 <MemberComponentTemplate Name="SummonBehavior" Guid="06d0d0d3-a6bf-46a1-9204-c177270e6ea8" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
               <Parameter Name="IsEnabled" Guid="68c1a514-4cb5-4bd9-8baa-5021876a388f" Value="True" Type="bool"/>
             </MemberComponentTemplate>
@@ -2671,6 +2677,8 @@
     <MemberComponentTemplate Name="Spawn" Guid="0a4c47c8-f562-45e0-b040-6e97a22b24f8">
         <Parameter Name="AutoDespawn" Guid="343f9405-a175-4d90-9801-6b571cf76029" Value="False" Type="bool"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="FlyAwayBehavior" Guid="db8327cb-3bc6-4743-9565-3b40826ee5fd" InheritanceParent="a1cca7f2-9a15-4a07-9ab7-31bda890427e"/>
+    <MemberComponentTemplate Name="NewFlyAwayBehavior" Guid="1c37b761-6631-42fe-8e0f-9df9f52f9fac" InheritanceParent="a1cca7f2-9a15-4a07-9ab7-31bda890427e"/>
     <ParameterSet Name="CreatureEggData" Guid="c52aac85-a3fa-4948-b29d-48b6c1709c1b">
         <Parameter Name="Color" Guid="622be13f-e4fe-4c2b-b18e-6527e000c3f0" Value="86,139,25" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="80fb6313-8c7f-47a4-87f7-fc757189c64b" Value="7" Type="int"/>
@@ -2681,6 +2689,8 @@
 </EntityTemplate>
 
 <EntityTemplate Name="InfectedFlyTamed3" Guid="0faf17b8-76eb-4c0b-8e09-4906d27b6e4f" InheritanceParent="0cb14482-b936-410e-9317-66d385d7d2fd">
+<MemberComponentTemplate Name="FlyAwayBehavior" Guid="4aae483e-0eab-4e7a-ba3c-a372593e2ea1" InheritanceParent="a1cca7f2-9a15-4a07-9ab7-31bda890427e"/>
+    <MemberComponentTemplate Name="NewFlyAwayBehavior" Guid="7f85a348-2cc9-46d5-9125-2eb84d7cb245" InheritanceParent="a1cca7f2-9a15-4a07-9ab7-31bda890427e"/>
 <MemberComponentTemplate Name="SummonBehavior" Guid="682c5c35-7d1f-48de-bfcd-43be2f2ced2b" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
               <Parameter Name="IsEnabled" Guid="dfa7525b-616c-4870-9325-7005d820fc45" Value="True" Type="bool"/>
             </MemberComponentTemplate>
@@ -2773,6 +2783,8 @@
 </EntityTemplate>
 
 <EntityTemplate Name="FlyingInfectedBoss" Guid="d73bb1db-bab9-4e99-a634-be27df70796a" InheritanceParent="0cb14482-b936-410e-9317-66d385d7d2fd">
+<MemberComponentTemplate Name="FlyAwayBehavior" Guid="40f97640-6837-4ef8-960e-368b59bc5713" InheritanceParent="a1cca7f2-9a15-4a07-9ab7-31bda890427e"/>
+    <MemberComponentTemplate Name="NewFlyAwayBehavior" Guid="586f6189-9b1b-4ea6-881d-f2b3c19f2757" InheritanceParent="a1cca7f2-9a15-4a07-9ab7-31bda890427e"/>
 <MemberComponentTemplate Name="RageZombieBehavior" Guid="2bab73e7-1ec7-4786-a4f8-a34aedd2f08c" InheritanceParent="2d584a55-7ccb-42c7-8fc0-c3f288eefae9"/>
 <MemberComponentTemplate Name="ZombieRunAwayBehavior" Guid="2674aa8b-9d5b-4415-bc14-e3e1597c9f27" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
         <MemberComponentTemplate Name="RunAwayBehavior" Guid="ee4724bd-2092-4b67-8202-012fa6324090" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
@@ -2882,6 +2894,8 @@
 </EntityTemplate>
 
 <EntityTemplate Name="FlyingInfectedBossTamed" Guid="9c02bd72-5d77-4aee-b250-550c3e2eb3ee" InheritanceParent="0cb14482-b936-410e-9317-66d385d7d2fd">
+<MemberComponentTemplate Name="FlyAwayBehavior" Guid="0442c1cb-51b3-442f-a13e-f33409c317c7" InheritanceParent="a1cca7f2-9a15-4a07-9ab7-31bda890427e"/>
+    <MemberComponentTemplate Name="NewFlyAwayBehavior" Guid="3d5da363-3b46-4b6f-87a0-7fda328072f4" InheritanceParent="a1cca7f2-9a15-4a07-9ab7-31bda890427e"/>
 <MemberComponentTemplate Name="VehicleInventory" Guid="3a2e250c-b278-4f18-ab34-9b201a03f14f" InheritanceParent="87078009-8f4b-4324-9632-544521eec907">
     <Parameter Name="SlotsCount" Guid="006cd75c-652c-4bf2-b78e-72e55d3b5dad" Value="16" Type="int" />
 </MemberComponentTemplate>
@@ -9622,6 +9636,8 @@
                 <Parameter Name="ConstantSpawn" Guid="1c68ffd7-9ac8-4a53-b243-34d8258bafbf" Value="True" Type="bool"/>
               <Parameter Name="Description" Guid="b27a87ed-fd4e-4550-9bd8-076f058daf48" Value="[Description:InfectedBird]" Type="string"/>
             </MemberComponentTemplate>
+            <MemberComponentTemplate Name="FlyAwayBehavior" Guid="0589e84d-5f63-4917-b374-4f728c05c04a" InheritanceParent="a1cca7f2-9a15-4a07-9ab7-31bda890427e"/>
+    <MemberComponentTemplate Name="NewFlyAwayBehavior" Guid="28938de1-e9ca-4f96-83b3-9aa7bf3df8c7" InheritanceParent="a1cca7f2-9a15-4a07-9ab7-31bda890427e"/>
             <MemberComponentTemplate Name="RageZombieBehavior" Guid="a9243690-f874-4818-9b3f-5d4e6fe356cd" InheritanceParent="2d584a55-7ccb-42c7-8fc0-c3f288eefae9"/>
             <MemberComponentTemplate Name="ZombieRunAwayBehavior" Guid="560aa3c0-ce38-4736-8b48-c01da966468f" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
         <MemberComponentTemplate Name="RunAwayBehavior" Guid="a2518b8e-8f54-4f24-b2ee-70931d0051a0" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
@@ -9657,6 +9673,11 @@
             </EntityTemplate>
 
             <EntityTemplate Name="InfectedBirdTamed" Guid="cddd54bc-d23a-4490-9ff5-0ce9d3499d52" InheritanceParent="0cb14482-b936-410e-9317-66d385d7d2fd">
+            <MemberComponentTemplate Name="SummonBehavior" Guid="79e05aac-ce66-494b-903f-75fcd6b8c93c" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
+              <Parameter Name="IsEnabled" Guid="741d5feb-a92b-4d16-a283-129268c037c5" Value="True" Type="bool"/>
+            </MemberComponentTemplate>
+            <MemberComponentTemplate Name="FlyAwayBehavior" Guid="5ecf4f39-e0b9-47dd-b117-0bd7cfbd65f3" InheritanceParent="a1cca7f2-9a15-4a07-9ab7-31bda890427e"/>
+    <MemberComponentTemplate Name="NewFlyAwayBehavior" Guid="bd243704-a359-4182-9fad-5c2b85d84e94" InheritanceParent="a1cca7f2-9a15-4a07-9ab7-31bda890427e"/>
             <MemberComponentTemplate Name="RunAwayBehavior" Guid="09406146-6c3f-46cc-9409-89dffc648c97" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
 <MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="f39a99a3-4443-44d2-a49b-765ac13d75ce" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
     <MemberComponentTemplate Name="PoisonInfected" Guid="a07233cf-9dfb-40be-8276-54ecf47c034f" InheritanceParent="d5e7f9a1-b3c5-4d9f-1a3b-5c7d9f1a3b5c">
