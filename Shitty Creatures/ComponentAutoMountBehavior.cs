@@ -43,8 +43,14 @@ namespace Game
 
 		public virtual void Update(float dt)
 		{
-			// 🔧 CORREGIDO: No bloquear la actualización si ya está montado,
-			// incluso si CanBeMounted == false. Así reacciona a ataques recibidos.
+			// 🔧 CORREGIDO: Si la criatura jinete está muerta, forzar desmontaje y detener todo
+			if (m_componentCreature.ComponentHealth.Health <= 0f)
+			{
+				if (m_componentRider != null && m_componentRider.Mount != null)
+					m_componentRider.StartDismounting();
+				return;
+			}
+
 			if (!CanBeMounted && (m_componentRider == null || m_componentRider.Mount == null))
 				return;
 
