@@ -254,7 +254,6 @@
     <Parameter Name="Class" Guid="e43a2641-0995-446c-aa50-390e7c0e2c12" Value="Game.ComponentCreatureAI" Type="string" Description="Clase C# que implementa el componente"/>
     <Parameter Name="CanUseInventory" Guid="ddb27b73-4aa7-4580-a5bd-684db3139696" Value="false" Type="bool" Description="Si la criatura puede usar armas del inventario"/>
     <Parameter Name="CanEquipClothing" Guid="f5668c0a-04a1-4a3c-901a-9f877ef899c9" Value="false" Type="bool" Description="Si la criatura puede equiparse ropa y armadura automáticamente del inventario"/>
-    <Parameter Name="CanBeMounted" Guid="a0bbc150-96fa-4944-9397-3424a4bc4c0a" Value="false" Type="bool" Description="Indica si la criatura puede ser montada por otras criaturas"/>
 </ComponentTemplate>
 
 <ComponentTemplate Name="HumanModel" Description="Modelo humano con animaciones mejoradas y fluidas" Guid="da33e501-1378-4644-8b5f-ef90863234a5" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
