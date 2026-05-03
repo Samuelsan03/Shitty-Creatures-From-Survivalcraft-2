@@ -658,9 +658,14 @@ namespace Game
 				}
 			}
 
-			if (IsActive && m_target != null)
+			if ((IsActive || IsPartOfMountGroup) && m_target != null && m_target.ComponentHealth.Health > 0f)
 			{
 				m_chaseTime -= dt;
+				// Si está en un grupo de monta, mantenemos el tiempo de persecución para que no expire
+				if (IsPartOfMountGroup)
+				{
+					m_chaseTime = Math.Max(m_chaseTime, 1f);
+				}
 				m_componentCreature.ComponentCreatureModel.LookAtOrder = new Vector3?(m_target.ComponentCreatureModel.EyePosition);
 
 				float distance = GetDistanceToTarget();
@@ -2068,6 +2073,36 @@ namespace Game
 			return null;
 		}
 
+		private bool IsMounted
+		{
+			get
+			{
+				ComponentBody body = m_componentCreature.ComponentBody;
+				if (body.ParentBody != null)
+				{
+					return body.ParentBody.Entity.FindComponent<ComponentMount>() != null;
+				}
+				return false;
+			}
+		}
+
+		private bool HasRider
+		{
+			get
+			{
+				ComponentBody body = m_componentCreature.ComponentBody;
+				foreach (ComponentBody child in body.ChildBodies)
+				{
+					if (child.Entity.FindComponent<ComponentRider>() != null)
+						return true;
+				}
+				return false;
+			}
+		}
+
+		// Propiedad combinada: true si la criatura es jinete (montada en otra) o montura (con jinete encima)
+		private bool IsPartOfMountGroup => IsMounted || HasRider;
+
 		private bool IsBlockBreakable(int value)
 		{
 			int contents = Terrain.ExtractContents(value);
@@ -2546,18 +2581,22 @@ namespace Game
 				m_placedDirtBlocks.Clear();
 			}, () =>
 			{
-				if (!IsActive)
+				if (!IsActive && !(IsPartOfMountGroup && m_target != null && m_target.ComponentHealth.Health > 0f))
 				{
 					m_stateMachine.TransitionTo("LookingForTarget");
 					CancelRangedAim();
 					CancelThrowableAim();
 				}
-				else if (m_chaseTime <= 0f)
+				else if (m_chaseTime <= 0f && !IsPartOfMountGroup)
 				{
 					m_autoChaseSuppressionTime = m_random.Float(10f, 60f);
 					m_importanceLevel = 0f;
 					CancelRangedAim();
 					CancelThrowableAim();
+				}
+				if (IsPartOfMountGroup && m_target != null && m_target.ComponentHealth.Health > 0f)
+				{
+					m_importanceLevel = Math.Max(m_importanceLevel, 200f);
 				}
 				else if (m_target == null)
 				{
@@ -2579,13 +2618,13 @@ namespace Game
 					CancelRangedAim();
 					CancelThrowableAim();
 				}
-				else if (!m_isPersistent && m_componentPathfinding.IsStuck)
+				else if (!IsMounted && !m_isPersistent && m_componentPathfinding.IsStuck)
 				{
 					m_importanceLevel = 0f;
 					CancelRangedAim();
 					CancelThrowableAim();
 				}
-				else if (m_isPersistent && m_componentPathfinding.IsStuck)
+				else if (!IsMounted && m_isPersistent && m_componentPathfinding.IsStuck)
 				{
 					m_stateMachine.TransitionTo("RandomMoving");
 					CancelRangedAim();
@@ -2606,7 +2645,7 @@ namespace Game
 					}
 					else
 					{
-						if (!m_isAimingThrowable)
+						if (!m_isAimingThrowable && !IsMounted)  // No usar pathfinding si está montado
 						{
 							int maxPathfindingPositions = 0;
 							if (m_isPersistent)
