@@ -8,7 +8,7 @@ namespace Game
 {
 	public class ComponentDefensiveCreatureAI : Component, IUpdateable
 	{
-		public bool CanUseInventory = false;
+		public bool CanUseInventory;
 		public bool CanEquipClothing = false;
 		public Vector2 RangedAttackRange = new Vector2(5f, 100f);
 
@@ -58,6 +58,7 @@ namespace Game
 		private ComponentCreature m_componentCreature;
 		private ComponentPathfinding m_componentPathfinding;
 		private ComponentCreatureClothing m_componentCreatureClothing;
+		private ComponentDefensiveRunAwayBehavior m_componentDefensiveRunAway;
 		private SubsystemAudio m_subsystemAudio;
 		private Random m_random = new Random();
 
@@ -104,6 +105,7 @@ namespace Game
 			m_componentCreature = Entity.FindComponent<ComponentCreature>(true);
 			m_componentPathfinding = Entity.FindComponent<ComponentPathfinding>(true);
 			m_componentCreatureClothing = Entity.FindComponent<ComponentCreatureClothing>();
+			m_componentDefensiveRunAway = Entity.FindComponent<ComponentDefensiveRunAwayBehavior>();
 			m_subsystemAudio = Project.FindSubsystem<SubsystemAudio>(true);
 			CanUseInventory = valuesDictionary.GetValue<bool>("CanUseInventory", false);
 			CanEquipClothing = valuesDictionary.GetValue<bool>("CanEquipClothing", false);
@@ -161,6 +163,12 @@ namespace Game
 		{
 			if (!CanUseInventory || m_componentMiner == null || m_componentCreature == null)
 				return;
+
+			// Si el comportamiento de huida está activo, no detener el disparo ni apunte, seguir normal
+			if (m_componentDefensiveRunAway != null && m_componentDefensiveRunAway.IsActive)
+			{
+				// No se cancela nada, se sigue con la lógica normal de disparo y apunte
+			}
 
 			// Si estamos atascados: cancelar cualquier apuntado, no iniciar nuevos,
 			// no cambiar de ítem y salir inmediatamente.
