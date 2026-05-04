@@ -11,7 +11,7 @@ namespace Game
 		public bool CanUseInventory;
 
 		// Rangos de ataque para armas a distancia (NO expuestos en XML)
-		// X = distancia mínima, Y = distancia máxima
+		// X = distancia mínima (ya no se usa para detener el disparo), Y = distancia máxima
 		public Vector2 RangedAttackRange = new Vector2(5f, 100f);
 
 		// Internos del mosquete (NO expuestos en XML)
@@ -80,6 +80,8 @@ namespace Game
 			}
 		}
 
+		// CORRECCIÓN: Solo se verifica la distancia máxima y la validez del objetivo.
+		// La distancia mínima X ya no impide seguir disparando.
 		private bool IsTargetValidForRangedAttack()
 		{
 			if (m_componentChase == null || m_componentChase.Target == null)
@@ -89,7 +91,8 @@ namespace Game
 			float distance = Vector3.Distance(
 				m_componentCreature.ComponentBody.Position,
 				m_componentChase.Target.ComponentBody.Position);
-			return distance >= RangedAttackRange.X && distance <= RangedAttackRange.Y;
+			// Solo el límite superior (Y); si está dentro del alcance máximo, se permite atacar.
+			return distance <= RangedAttackRange.Y;
 		}
 
 		private Ray3 CalculateAimRay()
