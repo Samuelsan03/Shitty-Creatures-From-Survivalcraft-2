@@ -14,6 +14,9 @@ namespace Game
 		// Rangos para objetos lanzables
 		public Vector2 ThrowableAttackRange = new Vector2(5f, 15f);
 
+		// Rango de seguridad para virotes explosivos (X = distancia mínima para usar explosivos, Y = distancia máxima de ataque)
+		public Vector2 ExplosiveSafeRange = new Vector2(20f, 100f);
+
 		// Tiempos del mosquete
 		private float MusketAimTime = 1.5f;
 		private float MusketCooldown = 0.5f;
@@ -802,11 +805,20 @@ namespace Game
 			int activeValue = inventory.GetSlotValue(activeSlot);
 			int crossbowIndex = CrossbowBlock.Index;
 
-			ArrowBlock.ArrowType[] boltTypes = {
-				ArrowBlock.ArrowType.IronBolt,
-				ArrowBlock.ArrowType.DiamondBolt,
-				ArrowBlock.ArrowType.ExplosiveBolt
-			};
+			// Determinar qué virotes usar según la distancia de seguridad para explosivos
+			// X = distancia mínima para NO usar explosivos, Y = distancia donde se incluyen explosivos
+			float distanceToTarget = GetTargetDistance();
+			List<ArrowBlock.ArrowType> boltTypesList = new List<ArrowBlock.ArrowType>
+{
+	ArrowBlock.ArrowType.IronBolt,
+	ArrowBlock.ArrowType.DiamondBolt
+};
+			// Solo añadir explosivos si estamos FUERA del rango de seguridad (distancia >= X)
+			if (distanceToTarget >= ExplosiveSafeRange.X)
+			{
+				boltTypesList.Add(ArrowBlock.ArrowType.ExplosiveBolt);
+			}
+			ArrowBlock.ArrowType[] boltTypes = boltTypesList.ToArray();
 
 			if (Terrain.ExtractContents(activeValue) == crossbowIndex)
 			{
@@ -910,14 +922,23 @@ namespace Game
 			int activeValue = inventory.GetSlotValue(activeSlot);
 			int repeatCrossbowIndex = RepeatCrossbowBlock.Index;
 
-			RepeatArrowBlock.ArrowType[] boltTypes = {
-				RepeatArrowBlock.ArrowType.CopperArrow,
-				RepeatArrowBlock.ArrowType.IronArrow,
-				RepeatArrowBlock.ArrowType.DiamondArrow,
-				RepeatArrowBlock.ArrowType.ExplosiveArrow,
-				RepeatArrowBlock.ArrowType.PoisonArrow,
-				RepeatArrowBlock.ArrowType.SeriousPoisonArrow
-			};
+			// Determinar qué flechas usar según la distancia de seguridad para explosivos
+			// X = distancia mínima para NO usar explosivos, Y = distancia donde se incluyen explosivos
+			float distanceToTarget = GetTargetDistance();
+			List<RepeatArrowBlock.ArrowType> boltTypesList = new List<RepeatArrowBlock.ArrowType>
+{
+	RepeatArrowBlock.ArrowType.CopperArrow,
+	RepeatArrowBlock.ArrowType.IronArrow,
+	RepeatArrowBlock.ArrowType.DiamondArrow,
+	RepeatArrowBlock.ArrowType.PoisonArrow,
+	RepeatArrowBlock.ArrowType.SeriousPoisonArrow
+};
+			// Solo añadir explosivos si estamos FUERA del rango de seguridad (distancia >= X)
+			if (distanceToTarget >= ExplosiveSafeRange.X)
+			{
+				boltTypesList.Add(RepeatArrowBlock.ArrowType.ExplosiveArrow);
+			}
+			RepeatArrowBlock.ArrowType[] boltTypes = boltTypesList.ToArray();
 
 			if (Terrain.ExtractContents(activeValue) == repeatCrossbowIndex)
 			{
