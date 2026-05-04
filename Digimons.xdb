@@ -1,6 +1,10 @@
 <Digimon xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://gitee.com/THPRC/survivalcraft-api/raw/SCAPI1.8/Survivalcraft/Content/Assets/Database.xsd">
 
     <EntityTemplate Name="Veemon" Guid="27207048-7b75-409d-b98d-e400275b884c" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+    <MemberComponentTemplate Name="CreatureInventory" Guid="c36d44de-7077-44f9-8de6-31fe7e74421e" InheritanceParent="b0d27f89-dc61-4c44-b675-63d6a6f8bf78">
+    <Parameter Name="SlotsCount" Value="16" Type="int"/>
+    <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
+  </MemberComponentTemplate>
 <MemberComponentTemplate Name="RunAwayBehavior" Guid="dc1c730d-cc68-4fe6-bcc0-d5e5b193c4dd" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
 <MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="57264419-ce8c-43ef-9dff-3fdda8f9f075" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
 <MemberComponentTemplate Name="SummonBehavior" Guid="037f84b8-d239-48ab-a72f-0a82680bef83" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
@@ -58,7 +62,12 @@
     <MemberComponentTemplate Name="AutoJump" Guid="6d571c0a-3ad9-44da-bb24-bb1f4ac3b94d" InheritanceParent="ef94c9db-75b0-4e0f-9971-f575ac88661b">
               <Parameter Name="JumpStrength" Guid="1eb0c8de-bf44-49a1-adda-0e2591803e41" Value="1" Type="float"/>
             </MemberComponentTemplate>
-    <MemberComponentTemplate Name="Inventory" Guid="997c9d66-af9f-42b5-a5a0-6e89651093c0" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
+    <MemberComponentTemplate Name="Inventory" Guid="7eec8f27-b4a4-4ce0-8598-6b644fe52f54" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890"/>
+  <MemberComponentTemplate Name="NewCreatureCollect" Guid="287151d4-5842-4190-bcdf-cbb175b1b68a" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+    <Parameter Name="PickFactors" Guid="b6ca187e-e75f-41f3-95e8-553d5ba6fd89" Value="Tools;1.0,Weapons;1.0" Type="string"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="DefensiveCreatureAI" Guid="33b49bba-5ed0-45d3-99af-f812b74aaf1f" InheritanceParent="0f69cb1e-cf48-46bf-93ec-6990112112d5">
+  <Parameter Name="CanUseInventory" Guid="4c461dbc-2db4-4641-8509-5e2b85fa2332" Value="true" Type="bool" />
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="Spawn" Guid="bf57e634-5748-44c0-b1bb-05728824d4ed">
     <Parameter Name="AutoDespawn" Guid="f97872b2-677e-455b-906d-40f67ae84241" Value="False" Type="bool"/>
@@ -85,7 +94,7 @@
         <Parameter Name="AttackPower" Guid="de8b9e0b-d242-4f18-a121-388a689a6366" Value="20" Type="float"/>
     </MemberComponentTemplate>
 <MemberComponentTemplate Name="MinecraftHumanModel" Guid="32c6cea9-7502-4fc8-ad20-152a81c3319d" InheritanceParent="ce3990d2-70bd-4c37-8969-65bb9500795b">
-    <Parameter Name="ModelName" Guid="128fc1b0-d6a0-4684-b0b2-79c9e769b32b" Value="Models/MC 1" Type="string"/>
+    <Parameter Name="ModelName" Guid="128fc1b0-d6a0-4684-b0b2-79c9e769b32b" Value="Models/HumanMale MC" Type="string"/>
     <Parameter Name="TextureOverride" Guid="9d6830ee-f93a-46d4-9e83-c5cee458c3cf" Value="Textures/Veemon" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="ac3c5b57-7831-4349-8de5-b7b2f5b4fa00" Value="0.65" Type="float"/>
     <Parameter Name="WalkBobHeight" Guid="85808438-a854-47b8-a3c4-04ee1ffd44c1" Value="0.045" Type="float"/>
@@ -220,7 +229,7 @@
         <Parameter Name="AttackPower" Guid="5411571e-ef17-49b7-8c52-e14aaf1c0aa3" Value="28" Type="float"/>
     </MemberComponentTemplate>
 <MemberComponentTemplate Name="MinecraftHumanModel" Guid="1783df39-9235-4da2-b77c-c7e86cd5a801" InheritanceParent="ce3990d2-70bd-4c37-8969-65bb9500795b">
-    <Parameter Name="ModelName" Guid="dd1261ab-568c-4b26-b4c8-3c38be20e8d3" Value="Models/MC 1" Type="string"/>
+    <Parameter Name="ModelName" Guid="dd1261ab-568c-4b26-b4c8-3c38be20e8d3" Value="Models/HumanMale MC" Type="string"/>
     <Parameter Name="TextureOverride" Guid="2252a4db-1083-479e-98eb-d771586a61eb" Value="Textures/Shoutmon" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="21615436-9453-4fec-90c8-a822aed682f9" Value="0.65" Type="float"/>
     <Parameter Name="WalkBobHeight" Guid="912ca2fd-0571-40a7-8c34-78dc29dd45cd" Value="0.045" Type="float"/>
@@ -353,7 +362,7 @@
         <Parameter Name="AttackPower" Guid="04d9e397-1ab4-48f1-8ad3-a39fd3746de9" Value="25" Type="float"/>
     </MemberComponentTemplate>
 <MemberComponentTemplate Name="MinecraftHumanModel" Guid="b613fae4-da5a-47bc-a640-0525e701098f" InheritanceParent="ce3990d2-70bd-4c37-8969-65bb9500795b">
-    <Parameter Name="ModelName" Guid="59bcdb99-e517-4338-935e-89e90493daa2" Value="Models/MC 2" Type="string"/>
+    <Parameter Name="ModelName" Guid="59bcdb99-e517-4338-935e-89e90493daa2" Value="Models/HumanMale MC" Type="string"/>
     <Parameter Name="TextureOverride" Guid="ad314aaf-1e63-4b87-919a-2fa86d1781d6" Value="Textures/Agumon" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="fb3c122c-d874-4176-a596-d9ce98fd0320" Value="0.65" Type="float"/>
     <Parameter Name="WalkBobHeight" Guid="51220987-9fed-4599-b568-064ff0ca7aea" Value="0.045" Type="float"/>
@@ -494,7 +503,7 @@
         <Parameter Name="AttackPower" Guid="45062ab1-6ea8-4c68-8b5e-efcd3fbc7b86" Value="25" Type="float"/>
     </MemberComponentTemplate>
 <MemberComponentTemplate Name="MinecraftHumanModel" Guid="36fdac2f-334f-4596-8bb0-84732fb0ea7f" InheritanceParent="ce3990d2-70bd-4c37-8969-65bb9500795b">
-    <Parameter Name="ModelName" Guid="e3eebf25-67b4-4b34-8924-9370906cd7ec" Value="Models/MC 1" Type="string"/>
+    <Parameter Name="ModelName" Guid="e3eebf25-67b4-4b34-8924-9370906cd7ec" Value="Models/HumanMale MC" Type="string"/>
     <Parameter Name="TextureOverride" Guid="fc61df3b-3416-4ce6-be50-1255b6685818" Value="Textures/Guilmon" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="469dbbf4-807f-4b23-8955-866c174fcbb2" Value="0.65" Type="float"/>
     <Parameter Name="WalkBobHeight" Guid="a2a8fbbe-487c-498c-97ef-68e45942700e" Value="0.045" Type="float"/>
@@ -544,6 +553,9 @@
     <Parameter Name="SlotsCount" Value="16" Type="int"/>
     <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
   </MemberComponentTemplate>
+  <MemberComponentTemplate Name="DefensiveCreatureAI" Guid="ee3dbf33-6dec-49b5-a13b-6ed4398f5f6e" InheritanceParent="0f69cb1e-cf48-46bf-93ec-6990112112d5">
+  <Parameter Name="CanUseInventory" Guid="91e6c4e6-4ca6-4d96-9192-772aa6109e99" Value="true" Type="bool" />
+</MemberComponentTemplate>
 <MemberComponentTemplate Name="RunAwayBehavior" Guid="4ce2c844-d6ae-4799-8906-6a5e521f413a" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
 <MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="f43befe7-3f92-4efa-a188-f7df0a298c21" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
 <MemberComponentTemplate Name="SummonBehavior" Guid="2c891180-9243-42a5-9dad-723f05d7abb5" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
@@ -552,7 +564,6 @@
 <MemberComponentTemplate Name="Inventory" Guid="f8c266f5-6a80-470e-ac01-d81fc59f4d4d" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890"/>
   <MemberComponentTemplate Name="NewCreatureCollect" Guid="1d82d891-2fd4-41a5-905b-318b0b562a55" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
     <Parameter Name="PickFactors" Guid="a1fe7f57-768c-4182-8994-5e8a0e655d54" Value="Tools;1.0,Weapons;1.0" Type="string"/>
-    <Parameter Name="Class" Value="Game.ComponentNewCreatureCollect" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewChaseBehavior" Guid="733d5e97-8bea-4899-a244-a6b225c84f50" InheritanceParent="1db20f99-32ba-4e7a-8e76-10686a2e76e5">
   <Parameter Name="ChaseWhenAttackedProbability" Guid="781dc0ac-117f-4d95-b55a-60f8fa5c2c6d" Value="1" Type="float"/>
@@ -563,7 +574,6 @@
   <Parameter Name="NightChaseRange" Guid="29abf6e5-cfd3-4e9b-aad8-40851f380d92" Value="75" Type="float"/>
   <Parameter Name="AutoChaseMask" Guid="61ba89c0-2c10-4540-b9b8-08f101c70811" Value="LandPredator" Type="Game.CreatureCategory"/>
   <Parameter Name="ChaseNonPlayerProbability" Guid="80a4daba-84dd-4a62-86ed-d45d345df34d" Value="1" Type="float"/>
-  <Parameter Name="RangedAttackRange" Guid="d1c2ee1f-4372-457e-ad30-4fa5436ace5e" Value="5,100" Type="Vector2"/>
   <Parameter Name="DestroyBlocksWhenStuck" Guid="0b1328ab-fa13-4c39-a170-eadc6b9b9fbb" Value="true" Type="bool"/>
   <Parameter Name="PlaceBlocksWhenTargetHigh" Guid="af478095-fa86-44b5-a224-041a6e347553" Value="true" Type="bool"/>
 </MemberComponentTemplate>
@@ -623,7 +633,7 @@
         <Parameter Name="AttackPower" Guid="1849cf02-7d3b-4004-af27-adaf103c47be" Value="28" Type="float"/>
     </MemberComponentTemplate>
 <MemberComponentTemplate Name="MinecraftHumanModel" Guid="4791a518-fc92-47a6-b86d-90e3e9580ac3" InheritanceParent="ce3990d2-70bd-4c37-8969-65bb9500795b">
-    <Parameter Name="ModelName" Guid="8a09587b-c89b-40d7-82b4-2052bd73d762" Value="Models/MC 2" Type="string"/>
+    <Parameter Name="ModelName" Guid="8a09587b-c89b-40d7-82b4-2052bd73d762" Value="Models/HumanMale MC" Type="string"/>
     <Parameter Name="TextureOverride" Guid="417c64b9-7f6a-4fee-8ba0-ce394b78aad7" Value="Textures/Gumdramon" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="94406a12-3e7b-4fe3-b696-3ce07298a9ec" Value="0.65" Type="float"/>
     <Parameter Name="WalkBobHeight" Guid="bbeeb6f7-a0f7-4fd3-84ff-6ee1498fd5e8" Value="0.045" Type="float"/>
@@ -761,7 +771,7 @@
         <Parameter Name="AttackPower" Guid="94b70c70-062a-47b9-b78c-7f0624fe805d" Value="32" Type="float"/>
     </MemberComponentTemplate>
 <MemberComponentTemplate Name="MinecraftHumanModel" Guid="c48d115d-0797-40a0-b7f8-ec451469213b" InheritanceParent="ce3990d2-70bd-4c37-8969-65bb9500795b">
-    <Parameter Name="ModelName" Guid="e519f11c-fc47-41d7-ba62-ee8dc5fc2995" Value="Models/MC 2" Type="string"/>
+    <Parameter Name="ModelName" Guid="e519f11c-fc47-41d7-ba62-ee8dc5fc2995" Value="Models/HumanMale MC" Type="string"/>
     <Parameter Name="TextureOverride" Guid="14089671-711b-4767-9c09-88f8a886bef5" Value="Textures/BetelGammamon" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="5abc1091-ce03-4dde-ad78-84e72d3fa45d" Value="0.65" Type="float"/>
     <Parameter Name="WalkBobHeight" Guid="bf18c68c-9315-4756-8582-128e3f5c090a" Value="0.045" Type="float"/>
@@ -819,6 +829,9 @@
     <Parameter Name="SlotsCount" Value="16" Type="int"/>
     <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
   </MemberComponentTemplate>
+  <MemberComponentTemplate Name="DefensiveCreatureAI" Guid="f962761a-94d2-451b-92eb-9754c002553a" InheritanceParent="0f69cb1e-cf48-46bf-93ec-6990112112d5">
+  <Parameter Name="CanUseInventory" Guid="baa1fbae-aa10-43b3-8498-77ac50d6db5d" Value="true" Type="bool" />
+</MemberComponentTemplate>
 <MemberComponentTemplate Name="Inventory" Guid="2e4d6f83-73dc-4193-a775-6d8f94f6a96e" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890"/>
   <MemberComponentTemplate Name="NewCreatureCollect" Guid="fa21cc56-1cb8-456f-90bc-f4cc86664488" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
     <Parameter Name="PickFactors" Guid="b0fb09cc-fc9e-4186-b650-b32de37a373c" Value="Tools;1.0,Weapons;1.0" Type="string"/>
@@ -838,7 +851,6 @@
   <Parameter Name="NightChaseRange" Guid="2e411093-b4da-438a-b57b-411cc696c6f1" Value="75" Type="float"/>
   <Parameter Name="AutoChaseMask" Guid="a148055f-7fb4-431a-ac64-5c90a84aada9" Value="LandPredator" Type="Game.CreatureCategory"/>
   <Parameter Name="ChaseNonPlayerProbability" Guid="d0b13399-4167-4d20-bcae-56efc7e17a5b" Value="1" Type="float"/>
-  <Parameter Name="RangedAttackRange" Guid="62d53455-4112-400a-81af-1bf3dd1c1639" Value="5,100" Type="Vector2"/>
   <Parameter Name="DestroyBlocksWhenStuck" Guid="b9eaae3f-2f2d-41b1-a7a6-a79b06bf2bf5" Value="true" Type="bool"/>
   <Parameter Name="PlaceBlocksWhenTargetHigh" Guid="dd6f1d3a-7040-4524-a5c4-9d1cbdf929b3" Value="true" Type="bool"/>
 </MemberComponentTemplate>
@@ -909,7 +921,7 @@
         <Parameter Name="AttackPower" Guid="1286cdbd-ed77-42ab-b49c-f3127557618e" Value="30" Type="float"/>
     </MemberComponentTemplate>
 <MemberComponentTemplate Name="MinecraftHumanModel" Guid="1ac183f3-9cee-4778-8f58-2139517b893d" InheritanceParent="ce3990d2-70bd-4c37-8969-65bb9500795b">
-    <Parameter Name="ModelName" Guid="30d385eb-8538-45d2-8852-7d200479e349" Value="Models/MC 2" Type="string"/>
+    <Parameter Name="ModelName" Guid="30d385eb-8538-45d2-8852-7d200479e349" Value="Models/HumanMale MC" Type="string"/>
     <Parameter Name="TextureOverride" Guid="ddc7709a-aad8-433f-9443-446ca7c134da" Value="Textures/Gaomon" Type="string"/>
    <Parameter Name="WalkAnimationSpeed" Guid="f95b6b93-8fb1-4f2f-8634-6f6334c588f7" Value="0.65" Type="float"/>
     <Parameter Name="WalkBobHeight" Guid="bc51f6b6-f3d6-4d3b-a166-44aa174cc751" Value="0.045" Type="float"/>
@@ -1047,7 +1059,7 @@
         <Parameter Name="AttackPower" Guid="5e29c826-922d-4a81-b4bb-7c458b795096" Value="25" Type="float"/>
     </MemberComponentTemplate>
 <MemberComponentTemplate Name="MinecraftHumanModel" Guid="dd0c9e19-5f40-4a87-ac0f-832d2d38f6d5" InheritanceParent="ce3990d2-70bd-4c37-8969-65bb9500795b">
-    <Parameter Name="ModelName" Guid="3f4bfbaa-ea09-4b49-a253-3871e19019dc" Value="Models/MC 2" Type="string"/>
+    <Parameter Name="ModelName" Guid="3f4bfbaa-ea09-4b49-a253-3871e19019dc" Value="Models/HumanMale MC" Type="string"/>
     <Parameter Name="TextureOverride" Guid="712e0a3f-e53d-4c6b-94f4-f1d5423f1f7e" Value="Textures/Impmon" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="ec6f7306-6b32-4682-bc17-d61a79c3ed3e" Value="0.65" Type="float"/>
     <Parameter Name="WalkBobHeight" Guid="684a5af1-25bd-48e9-982d-40e9e9ee26bc" Value="0.045" Type="float"/>
@@ -1102,6 +1114,9 @@
               <Parameter Name="AttackSound" Guid="2a25bbda-3809-49b0-8ed3-a4de50f4e062" Value="Audio/Creatures/Hawkmon/Attack" Type="string"/>
               <Parameter Name="PainSound" Guid="44e262e6-cc83-4a4c-8cd5-1fbed86ad79f" Value="Audio/Creatures/Hawkmon/Pain" Type="string"/>
             </MemberComponentTemplate>
+            <MemberComponentTemplate Name="DefensiveCreatureAI" Guid="06967783-2a0d-4fef-9938-f5c4ff2ca2dc" InheritanceParent="0f69cb1e-cf48-46bf-93ec-6990112112d5">
+  <Parameter Name="CanUseInventory" Guid="5aaf22ba-e848-4fb7-93c2-e0d79a7ce635" Value="true" Type="bool" />
+</MemberComponentTemplate>
 <MemberComponentTemplate Name="NewAutoInteract" Guid="0a93e2b4-56cc-4523-8021-2715b5abe8c1" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
@@ -1123,7 +1138,6 @@
   <Parameter Name="NightChaseRange" Guid="3fb2d842-1727-4aef-9aff-38c61db6064b" Value="75" Type="float"/>
   <Parameter Name="AutoChaseMask" Guid="aaa196b2-5181-48a9-a297-c34bce820d66" Value="LandPredator" Type="Game.CreatureCategory"/>
   <Parameter Name="ChaseNonPlayerProbability" Guid="af40837e-9ee1-4e0b-a568-14d5096615ca" Value="1" Type="float"/>
-  <Parameter Name="RangedAttackRange" Guid="dae158c2-46c1-4574-a102-d70ae6f9f89a" Value="5,100" Type="Vector2"/>
   <Parameter Name="DestroyBlocksWhenStuck" Guid="d16dc2a5-6143-4b09-8540-913a4017fd08" Value="true" Type="bool"/>
   <Parameter Name="PlaceBlocksWhenTargetHigh" Guid="42ef08e0-d951-46d2-8c20-037bbfe9d682" Value="true" Type="bool"/>
 </MemberComponentTemplate>
@@ -1184,7 +1198,7 @@
         <Parameter Name="AttackPower" Guid="e45dc525-ec92-4bf9-8994-b847c96339b3" Value="35" Type="float"/>
     </MemberComponentTemplate>
 <MemberComponentTemplate Name="MinecraftHumanModel" Guid="0c297068-1a0f-4301-b6b0-8cc39699db24" InheritanceParent="ce3990d2-70bd-4c37-8969-65bb9500795b">
-    <Parameter Name="ModelName" Guid="6ef4f9ae-13f0-4cdc-8686-5f94585914a5" Value="Models/MC 2" Type="string"/>
+    <Parameter Name="ModelName" Guid="6ef4f9ae-13f0-4cdc-8686-5f94585914a5" Value="Models/HumanMale MC" Type="string"/>
     <Parameter Name="TextureOverride" Guid="6db85f88-7a5a-4090-b937-88671a2d83a5" Value="Textures/Hawkmon" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="854770d3-e0d8-4196-b2aa-de39e0849d87" Value="0.65" Type="float"/>
     <Parameter Name="WalkBobHeight" Guid="702dad9b-d64a-45d7-8293-62b8deb14981" Value="0.045" Type="float"/>
@@ -1235,6 +1249,9 @@
               <Parameter Name="AttackSound" Guid="cea8a3bc-8164-4a6f-9d34-5469540e914e" Value="Audio/Creatures/Gabumon/Attack" Type="string"/>
               <Parameter Name="PainSound" Guid="df7c9507-9f3a-401c-ab26-da6626eae704" Value="Audio/Creatures/Gabumon/Pain" Type="string"/>
             </MemberComponentTemplate>
+            <MemberComponentTemplate Name="DefensiveCreatureAI" Guid="6c589ba0-68d7-4b26-9ca2-a34e60290a94" InheritanceParent="0f69cb1e-cf48-46bf-93ec-6990112112d5">
+  <Parameter Name="CanUseInventory" Guid="45bdec1d-1b9a-4dcb-a926-3db016fa6a6d" Value="true" Type="bool" />
+</MemberComponentTemplate>
 <MemberComponentTemplate Name="RunAwayBehavior" Guid="9c6188cf-ba84-4858-bb30-104c43a2b21b" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
 <MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="d0fb2519-fbb0-4fae-9838-8b4ebc318cef" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
 <MemberComponentTemplate Name="CreatureInventory" Guid="3469d9be-18a2-40d0-8f3f-6c542dd73ed4" InheritanceParent="b0d27f89-dc61-4c44-b675-63d6a6f8bf78">
@@ -1253,7 +1270,6 @@
   <Parameter Name="NightChaseRange" Guid="86fe73de-c0a6-4048-a05b-a23ae9e7fd75" Value="75" Type="float"/>
   <Parameter Name="AutoChaseMask" Guid="66ac1e12-76eb-405c-a080-c7e76f0a002c" Value="LandPredator" Type="Game.CreatureCategory"/>
   <Parameter Name="ChaseNonPlayerProbability" Guid="4689512a-30b5-42b2-8653-e0d6cfc8b236" Value="1" Type="float"/>
-  <Parameter Name="RangedAttackRange" Guid="462854dd-a94c-4b94-bc2e-ba379b714761" Value="5,100" Type="Vector2"/>
   <Parameter Name="DestroyBlocksWhenStuck" Guid="fda13049-d9c7-4b73-b284-f3b4fcab83f5" Value="true" Type="bool"/>
   <Parameter Name="PlaceBlocksWhenTargetHigh" Guid="58b43f3a-75f0-4d4c-ae44-65f31ca87315" Value="true" Type="bool"/>
 </MemberComponentTemplate>
@@ -1314,7 +1330,7 @@
         <Parameter Name="AttackPower" Guid="2736e1f3-295f-4562-83ed-315dec616c87" Value="40" Type="float"/>
     </MemberComponentTemplate>
 <MemberComponentTemplate Name="MinecraftHumanModel" Guid="604d2b5a-8503-4b2e-bb5f-e3d3e4e587cb" InheritanceParent="ce3990d2-70bd-4c37-8969-65bb9500795b">
-    <Parameter Name="ModelName" Guid="3c0594dc-b23e-4c9f-bb6d-42d7d402a82d" Value="Models/MC 1" Type="string"/>
+    <Parameter Name="ModelName" Guid="3c0594dc-b23e-4c9f-bb6d-42d7d402a82d" Value="Models/HumanMale MC" Type="string"/>
     <Parameter Name="TextureOverride" Guid="852b1e91-49df-4e03-a21d-06a38acf5543" Value="Textures/Gabumon" Type="string"/>
     <Parameter Name="WalkAnimationSpeed" Guid="247a1016-6f43-4e2e-982f-fac06edf1d74" Value="0.65" Type="float"/>
     <Parameter Name="WalkBobHeight" Guid="c4b90f17-2bdf-4356-bdb8-cfe455e6c9bd" Value="0.045" Type="float"/>
