@@ -743,6 +743,8 @@ namespace Game
 			{
 				if (!hireable.IsHired)
 				{
+					AudioManager.PlaySound("Audio/UI/ButtonClick", 1f, 0f, 0f);
+					player.ComponentMiner.Poke(false);
 					player.ComponentGui.ModalPanelWidget = new HireWidget(player, hireable);
 					playerOperated = true;
 					return;
