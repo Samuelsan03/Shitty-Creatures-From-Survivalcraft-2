@@ -7,14 +7,9 @@ namespace Game
 {
 	public class ComponentDefensiveCreatureAI : Component, IUpdateable
 	{
-		// Parámetro de carga
 		public bool CanUseInventory;
-
-		// Rangos de ataque para armas a distancia (NO expuestos en XML)
-		// X = distancia mínima (ya no se usa para detener el disparo), Y = distancia máxima
 		public Vector2 RangedAttackRange = new Vector2(5f, 100f);
 
-		// Internos del mosquete (NO expuestos en XML)
 		private float MusketAimTime = 1.5f;
 		private float MusketCooldown = 0.5f;
 
@@ -44,13 +39,26 @@ namespace Game
 			if (!CanUseInventory || m_componentMiner == null || m_componentCreature == null)
 				return;
 
+			float distance = GetTargetDistance();
+			bool hasTarget = IsTargetValidForRangedAttack();
+
 			if (m_isAiming)
 			{
-				if (!IsTargetValidForRangedAttack())
+				// Si el objetivo muere, cancelar
+				if (!hasTarget)
 				{
 					CancelAiming();
 					return;
 				}
+
+				// Si está cerca y tenemos arma cuerpo a cuerpo, cambiar a ella y cancelar apuntado
+				if (distance <= RangedAttackRange.X && SwitchToMeleeWeapon())
+				{
+					CancelAiming();
+					return;
+				}
+
+				// Si no hay arma cuerpo a cuerpo o está lejos, continuar apuntando
 				m_aimTimer += dt;
 				Ray3 aimRay = CalculateAimRay();
 				if (m_aimTimer < MusketAimTime)
@@ -71,7 +79,21 @@ namespace Game
 					m_cooldownTimer -= dt;
 					return;
 				}
-				if (IsTargetValidForRangedAttack() && EnsureMusketEquipped())
+
+				if (!hasTarget)
+					return;
+
+				// Si está cerca, intentar cambiar a cuerpo a cuerpo
+				if (distance <= RangedAttackRange.X)
+				{
+					// Solo si se pudo cambiar a un arma melee dejamos de disparar
+					if (SwitchToMeleeWeapon())
+						return;
+					// Si no, seguimos con el mosquete (caemos en el siguiente bloque)
+				}
+
+				// Intentar disparar con mosquete (incluso si está cerca y no hay arma cuerpo a cuerpo)
+				if (distance <= RangedAttackRange.Y && EnsureMusketEquipped())
 				{
 					m_isAiming = true;
 					m_aimTimer = 0f;
@@ -80,19 +102,20 @@ namespace Game
 			}
 		}
 
-		// CORRECCIÓN: Solo se verifica la distancia máxima y la validez del objetivo.
-		// La distancia mínima X ya no impide seguir disparando.
+		private float GetTargetDistance()
+		{
+			if (m_componentChase == null || m_componentChase.Target == null)
+				return float.MaxValue;
+			return Vector3.Distance(
+				m_componentCreature.ComponentBody.Position,
+				m_componentChase.Target.ComponentBody.Position);
+		}
+
 		private bool IsTargetValidForRangedAttack()
 		{
 			if (m_componentChase == null || m_componentChase.Target == null)
 				return false;
-			if (m_componentChase.Target.ComponentHealth.Health <= 0f)
-				return false;
-			float distance = Vector3.Distance(
-				m_componentCreature.ComponentBody.Position,
-				m_componentChase.Target.ComponentBody.Position);
-			// Solo el límite superior (Y); si está dentro del alcance máximo, se permite atacar.
-			return distance <= RangedAttackRange.Y;
+			return m_componentChase.Target.ComponentHealth.Health > 0f;
 		}
 
 		private Ray3 CalculateAimRay()
@@ -101,6 +124,26 @@ namespace Game
 			Vector3 targetEye = m_componentChase.Target.ComponentCreatureModel.EyePosition;
 			Vector3 direction = Vector3.Normalize(targetEye - eyePos);
 			return new Ray3(eyePos, direction);
+		}
+
+		// Devuelve true si se cambió a un arma cuerpo a cuerpo, false en caso contrario
+		private bool SwitchToMeleeWeapon()
+		{
+			IInventory inventory = m_componentMiner.Inventory;
+			if (inventory == null) return false;
+
+			int currentContents = Terrain.ExtractContents(inventory.GetSlotValue(inventory.ActiveSlotIndex));
+			// Buscar cualquier objeto que no sea mosquete (priorizar el primer slot con algo)
+			for (int i = 0; i < inventory.SlotsCount; i++)
+			{
+				int slotValue = inventory.GetSlotValue(i);
+				if (slotValue != 0 && Terrain.ExtractContents(slotValue) != MusketBlock.Index)
+				{
+					inventory.ActiveSlotIndex = i;
+					return true; // Sí se cambió
+				}
+			}
+			return false; // No hay arma cuerpo a cuerpo
 		}
 
 		private bool EnsureMusketEquipped()
