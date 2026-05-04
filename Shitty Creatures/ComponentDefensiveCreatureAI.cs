@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Engine;
 using GameEntitySystem;
 using TemplatesDatabase;
@@ -9,6 +10,9 @@ namespace Game
 	{
 		public bool CanUseInventory;
 		public Vector2 RangedAttackRange = new Vector2(5f, 100f);
+
+		// Rangos para objetos lanzables
+		public Vector2 ThrowableAttackRange = new Vector2(5f, 15f);
 
 		// Tiempos del mosquete
 		private float MusketAimTime = 1.5f;
@@ -22,15 +26,23 @@ namespace Game
 		private float BowAimTime = 1.5f;
 		private float BowCooldown = 0.5f;
 
+		// Tiempos para lanzables
+		private float ThrowableAimTime = 1.55f;
+		private float ThrowableCooldown = 0.25f;
+
 		private SubsystemTime m_subsystemTime;
 		private ComponentMiner m_componentMiner;
 		private ComponentNewChaseBehavior m_componentChase;
 		private ComponentCreature m_componentCreature;
+		private ComponentPathfinding m_componentPathfinding;
 		private Random m_random = new Random();
 
 		private bool m_isAiming;
 		private float m_aimTimer;
 		private float m_cooldownTimer;
+
+		// Conjunto de índices de bloques lanzables
+		private HashSet<int> m_throwableIndices = new HashSet<int>();
 
 		public UpdateOrder UpdateOrder => UpdateOrder.Default;
 
@@ -40,7 +52,46 @@ namespace Game
 			m_componentMiner = Entity.FindComponent<ComponentMiner>(true);
 			m_componentChase = Entity.FindComponent<ComponentNewChaseBehavior>();
 			m_componentCreature = Entity.FindComponent<ComponentCreature>(true);
+			m_componentPathfinding = Entity.FindComponent<ComponentPathfinding>(true);
 			CanUseInventory = valuesDictionary.GetValue<bool>("CanUseInventory", false);
+
+			// Inicializar lista de bloques lanzables
+			InitializeThrowableIndices();
+		}
+
+		private void InitializeThrowableIndices()
+		{
+			// Añadir todos los tipos de bloques lanzables
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<StoneChunkBlock>(false, false));
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<SulphurChunkBlock>(false, false));
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<CoalChunkBlock>(false, false));
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<DiamondChunkBlock>(false, false));
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<GermaniumChunkBlock>(false, false));
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<GermaniumOreChunkBlock>(false, false));
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<IronOreChunkBlock>(false, false));
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<MalachiteChunkBlock>(false, false));
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<SaltpeterChunkBlock>(false, false));
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<GunpowderBlock>(false, false));
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<BombBlock>(false, false));
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<IncendiaryBombBlock>(false, false));
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<PoisonBombBlock>(false, false));
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<BrickBlock>(false, false));
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<SnowballBlock>(false, false));
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<EggBlock>(false, false));
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<CopperSpearBlock>(false, false));
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<DiamondSpearBlock>(false, false));
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<IronSpearBlock>(false, false));
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<WoodenSpearBlock>(false, false));
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<WoodenLongspearBlock>(false, false));
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<StoneSpearBlock>(false, false));
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<StoneLongspearBlock>(false, false));
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<IronLongspearBlock>(false, false));
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<LavaLongspearBlock>(false, false));
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<LavaSpearBlock>(false, false));
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<DiamondLongspearBlock>(false, false));
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<FreezingSnowballBlock>(false, false));
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<FreezeBombBlock>(false, false));
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<FireworksBlock>(false, false));
 		}
 
 		public void Update(float dt)
@@ -70,6 +121,12 @@ namespace Game
 				m_aimTimer += dt;
 				Ray3 aimRay = CalculateAimRay();
 
+				// Detener movimiento si se está apuntando con un lanzable
+				if (IsThrowable(activeContents))
+				{
+					StopMovement();
+				}
+
 				if (m_aimTimer < aimTime)
 				{
 					m_componentMiner.Aim(aimRay, AimState.InProgress);
@@ -80,10 +137,9 @@ namespace Game
 					m_isAiming = false;
 					m_cooldownTimer = GetCooldown(activeContents);
 
-					// Disparo realizado: gestionar desaparición de proyectiles y recarga inmediata
+					// Desaparición de proyectiles de arco/ballesta
 					if (activeContents == CrossbowBlock.Index || activeContents == BowBlock.Index)
 					{
-						// Hacer desaparecer todos los proyectiles de tipo flecha/virote
 						SubsystemProjectiles subsystemProjectiles = Project.FindSubsystem<SubsystemProjectiles>(true);
 						foreach (Projectile p in subsystemProjectiles.Projectiles)
 						{
@@ -99,8 +155,9 @@ namespace Game
 					}
 					else if (activeContents == MusketBlock.Index)
 					{
-						EnsureMusketEquipped(); // recargar mágicamente
+						EnsureMusketEquipped();
 					}
+					// Los lanzables se consumen solos, no es necesario recargar
 				}
 			}
 			else
@@ -120,34 +177,48 @@ namespace Game
 						return;
 				}
 
-				if (distance <= RangedAttackRange.Y)
+				// 1. Lanzables (máxima prioridad)
+				if (distance >= ThrowableAttackRange.X && distance <= ThrowableAttackRange.Y && HasThrowableInInventory())
 				{
-					if (HasCrossbowInInventory())
-					{
-						if (EnsureCrossbowEquipped())
-						{
-							m_isAiming = true;
-							m_aimTimer = 0f;
-							m_componentMiner.Aim(CalculateAimRay(), AimState.InProgress);
-							return;
-						}
-					}
-					if (HasBowInInventory())
-					{
-						if (EnsureBowEquipped())
-						{
-							m_isAiming = true;
-							m_aimTimer = 0f;
-							m_componentMiner.Aim(CalculateAimRay(), AimState.InProgress);
-							return;
-						}
-					}
-					if (EnsureMusketEquipped())
+					if (EnsureThrowableEquipped())
 					{
 						m_isAiming = true;
 						m_aimTimer = 0f;
 						m_componentMiner.Aim(CalculateAimRay(), AimState.InProgress);
+						return;
 					}
+				}
+
+				// 2. Ballesta
+				if (HasCrossbowInInventory())
+				{
+					if (EnsureCrossbowEquipped())
+					{
+						m_isAiming = true;
+						m_aimTimer = 0f;
+						m_componentMiner.Aim(CalculateAimRay(), AimState.InProgress);
+						return;
+					}
+				}
+
+				// 3. Arco
+				if (HasBowInInventory())
+				{
+					if (EnsureBowEquipped())
+					{
+						m_isAiming = true;
+						m_aimTimer = 0f;
+						m_componentMiner.Aim(CalculateAimRay(), AimState.InProgress);
+						return;
+					}
+				}
+
+				// 4. Mosquete
+				if (EnsureMusketEquipped())
+				{
+					m_isAiming = true;
+					m_aimTimer = 0f;
+					m_componentMiner.Aim(CalculateAimRay(), AimState.InProgress);
 				}
 			}
 		}
@@ -156,6 +227,7 @@ namespace Game
 		{
 			if (contents == CrossbowBlock.Index) return CrossbowAimTime;
 			if (contents == BowBlock.Index) return BowAimTime;
+			if (IsThrowable(contents)) return ThrowableAimTime;
 			return MusketAimTime;
 		}
 
@@ -163,7 +235,13 @@ namespace Game
 		{
 			if (contents == CrossbowBlock.Index) return CrossbowCooldown;
 			if (contents == BowBlock.Index) return BowCooldown;
+			if (IsThrowable(contents)) return ThrowableCooldown;
 			return MusketCooldown;
+		}
+
+		private bool IsThrowable(int contents)
+		{
+			return m_throwableIndices.Contains(contents);
 		}
 
 		private float GetTargetDistance()
@@ -190,6 +268,11 @@ namespace Game
 			return new Ray3(eyePos, direction);
 		}
 
+		private void StopMovement()
+		{
+			m_componentPathfinding?.Stop();
+		}
+
 		private bool SwitchToMeleeWeapon()
 		{
 			IInventory inventory = m_componentMiner.Inventory;
@@ -199,7 +282,43 @@ namespace Game
 			{
 				int slotValue = inventory.GetSlotValue(i);
 				int contents = Terrain.ExtractContents(slotValue);
-				if (slotValue != 0 && contents != MusketBlock.Index && contents != CrossbowBlock.Index && contents != BowBlock.Index)
+				if (slotValue != 0 && contents != MusketBlock.Index && contents != CrossbowBlock.Index && contents != BowBlock.Index && !IsThrowable(contents))
+				{
+					inventory.ActiveSlotIndex = i;
+					return true;
+				}
+			}
+			return false;
+		}
+
+		// ========== LANZABLES ==========
+		private bool HasThrowableInInventory()
+		{
+			IInventory inventory = m_componentMiner.Inventory;
+			if (inventory == null) return false;
+			for (int i = 0; i < inventory.SlotsCount; i++)
+			{
+				int slotValue = inventory.GetSlotValue(i);
+				if (slotValue != 0 && IsThrowable(Terrain.ExtractContents(slotValue)))
+					return true;
+			}
+			return false;
+		}
+
+		private bool EnsureThrowableEquipped()
+		{
+			IInventory inventory = m_componentMiner.Inventory;
+			if (inventory == null) return false;
+
+			int activeSlot = inventory.ActiveSlotIndex;
+			int activeValue = inventory.GetSlotValue(activeSlot);
+			if (activeValue != 0 && IsThrowable(Terrain.ExtractContents(activeValue)))
+				return true;
+
+			for (int i = 0; i < inventory.SlotsCount; i++)
+			{
+				int slotValue = inventory.GetSlotValue(i);
+				if (slotValue != 0 && IsThrowable(Terrain.ExtractContents(slotValue)))
 				{
 					inventory.ActiveSlotIndex = i;
 					return true;
@@ -315,7 +434,6 @@ namespace Game
 			int activeValue = inventory.GetSlotValue(activeSlot);
 			int bowIndex = BowBlock.Index;
 
-			// Flechas disponibles para el arco
 			ArrowBlock.ArrowType[] arrowTypes = {
 				ArrowBlock.ArrowType.WoodenArrow,
 				ArrowBlock.ArrowType.StoneArrow,
@@ -328,7 +446,6 @@ namespace Game
 			if (Terrain.ExtractContents(activeValue) == bowIndex)
 			{
 				int data = Terrain.ExtractData(activeValue);
-				// El arco debe estar completamente tensado (draw = 15) y tener una flecha
 				if (BowBlock.GetDraw(data) != 15 || BowBlock.GetArrowType(data) == null)
 				{
 					ArrowBlock.ArrowType randomArrow = arrowTypes[m_random.Int(0, arrowTypes.Length)];
