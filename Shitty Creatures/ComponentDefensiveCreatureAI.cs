@@ -193,17 +193,30 @@ namespace Game
 				}
 				else
 				{
+					// Capturar munición antes del disparo
+					BulletBlock.BulletType? musketBulletBeforeFire = null;
+					if (m_customWeaponContents == MusketBlock.Index)
+					{
+						int data = Terrain.ExtractData(m_componentMiner.Inventory.GetSlotValue(m_componentMiner.Inventory.ActiveSlotIndex));
+						musketBulletBeforeFire = MusketBlock.GetBulletType(data);
+					}
+
 					m_componentMiner.Aim(aimRayWeapon, AimState.Completed);
 					m_cooldownTimer = GetCooldown(m_customWeaponContents);
 
 					if (m_customWeaponContents == FlameThrowerBlock.Index)
 					{
-						// Seguir apuntando para el siguiente disparo en ráfaga
 						m_customAimTimer = 0f;
 					}
 					else
 					{
 						m_isCustomAiming = false;
+					}
+
+					// Triple disparo para criaturas especiales
+					if (musketBulletBeforeFire != null && m_random.Float(0f, 1f) < 0.05f)
+					{
+						FireMusketExtraShots(aimRayWeapon, musketBulletBeforeFire.Value);
 					}
 
 					if (m_customWeaponContents == CrossbowBlock.Index || m_customWeaponContents == BowBlock.Index)
@@ -274,17 +287,30 @@ namespace Game
 				}
 				else
 				{
+					// Capturar la munición del mosquete antes de disparar
+					BulletBlock.BulletType? musketBulletBeforeFire = null;
+					if (activeContents == MusketBlock.Index)
+					{
+						int data = Terrain.ExtractData(m_componentMiner.Inventory.GetSlotValue(m_componentMiner.Inventory.ActiveSlotIndex));
+						musketBulletBeforeFire = MusketBlock.GetBulletType(data);
+					}
+
 					m_componentMiner.Aim(aimRay, AimState.Completed);
 					m_cooldownTimer = GetCooldown(activeContents);
 
 					if (activeContents == FlameThrowerBlock.Index)
 					{
-						// Seguir apuntando para el siguiente disparo en ráfaga
 						m_aimTimer = 0f;
 					}
 					else
 					{
 						m_isAiming = false;
+					}
+
+					// Probabilidad del 5% de triple disparo para el mosquete
+					if (musketBulletBeforeFire != null && m_random.Float(0f, 1f) < 0.05f)
+					{
+						FireMusketExtraShots(aimRay, musketBulletBeforeFire.Value);
 					}
 
 					if (activeContents == CrossbowBlock.Index || activeContents == BowBlock.Index)
@@ -1080,6 +1106,31 @@ namespace Game
 				m_isAiming = false;
 				m_aimTimer = 0f;
 				m_cooldownTimer = 0f;
+			}
+		}
+
+		private void FireMusketExtraShots(Ray3 aimRay, BulletBlock.BulletType firedType)
+		{
+			Vector3 eyePos = aimRay.Position;
+			Vector3 direction = aimRay.Direction;
+			SubsystemProjectiles subsystemProjectiles = Project.FindSubsystem<SubsystemProjectiles>(true);
+
+			// Crear los tipos de bala que faltan (los que no se dispararon)
+			List<BulletBlock.BulletType> otherTypes = new List<BulletBlock.BulletType>();
+			foreach (BulletBlock.BulletType type in Enum.GetValues(typeof(BulletBlock.BulletType)))
+			{
+				if (type != firedType)
+				{
+					otherTypes.Add(type);
+				}
+			}
+
+			// Disparar cada tipo faltante como proyectil adicional
+			foreach (BulletBlock.BulletType type in otherTypes)
+			{
+				int bulletData = BulletBlock.SetBulletType(0, type);
+				int bulletValue = Terrain.MakeBlockValue(BulletBlock.Index, 0, bulletData);
+				subsystemProjectiles.FireProjectile(bulletValue, eyePos, direction * 60f, Vector3.Zero, m_componentCreature);
 			}
 		}
 
