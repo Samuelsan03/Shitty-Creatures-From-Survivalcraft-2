@@ -375,37 +375,27 @@ namespace Game
 			ComponentCreatureModel model = m_componentCreature.ComponentCreatureModel;
 			if (model == null) return;
 
-			// Posición aproximada de la mano derecha
-			Vector3 bodyPos = m_componentCreature.ComponentBody.Position;
-			Matrix bodyMatrix = m_componentCreature.ComponentBody.Matrix;
-			Vector3 handPos = bodyPos + bodyMatrix.Up * 0.7f + bodyMatrix.Right * 0.3f + bodyMatrix.Forward * 0.1f;
-
-			// Dirección hacia el punto al que apuntar
-			Vector3 targetPoint = aimRay.Position + aimRay.Direction * 10f;
-			Vector3 desiredDir = Vector3.Normalize(targetPoint - handPos);
-
-			// Rotación base del arma
+			// Rotación base del arma (la misma que usa el zombie, sin añadir offsets)
 			Vector3 baseRot = BaseWeaponRotations.ContainsKey(m_customWeaponContents)
 				? BaseWeaponRotations[m_customWeaponContents]
 				: Vector3.Zero;
 
-			// Proyectar la dirección deseada en el espacio local del cuerpo
-			float localX = Vector3.Dot(desiredDir, bodyMatrix.Right);
-			float localY = Vector3.Dot(desiredDir, bodyMatrix.Up);
-			float localZ = Vector3.Dot(desiredDir, bodyMatrix.Forward);
-
-			float yawOffset = MathF.Atan2(localX, localZ);
-			float pitchOffset = -MathF.Asin(localY);
-
-			// Componer: base + offset
-			model.InHandItemRotationOrder = baseRot + new Vector3(pitchOffset, yawOffset, 0f);
+			// Fijar la rotación del arma en la mano, sin cambios dinámicos
+			model.InHandItemRotationOrder = baseRot;
 			model.AimHandAngleOrder = 0f;
 
-			// Ajustar posición del arma en la mano
+			// Ajustar posición del arma en la mano (opcional)
 			if (m_customWeaponContents == BowBlock.Index)
 				model.InHandItemOffsetOrder = new Vector3(0.15f, -0.15f, 0.15f);
 			else
 				model.InHandItemOffsetOrder = new Vector3(-0.1f, -0.15f, 0.25f);
+
+			// Forzar que la criatura mire al objetivo (el cuerpo gira para apuntar)
+			if (m_componentChase != null && m_componentChase.Target != null)
+			{
+				model.LookAtOrder = m_componentChase.Target.ComponentCreatureModel.EyePosition;
+				model.LookRandomOrder = false;
+			}
 		}
 
 		private float GetAimTime(int contents)
