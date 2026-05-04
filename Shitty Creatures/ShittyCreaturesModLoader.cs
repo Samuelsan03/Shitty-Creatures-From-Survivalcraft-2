@@ -336,13 +336,14 @@ namespace Game
 						HorizontalAlignment = WidgetAlignment.Center,
 						Margin = new Vector2(0, 2)
 					};
-					modCopyrightRow.Children.Add(new LabelWidget
+					var modCopyrightLabel = new LabelWidget
 					{
 						Text = "© 2025-2026 Shitty Creatures",
-						Color = new Color(229,24,24),
 						FontScale = 0.7f,
-						DropShadow = true
-					});
+						DropShadow = true,
+						Name = "ModCopyrightLabel"
+					};
+					modCopyrightRow.Children.Add(modCopyrightLabel);
 					bottomInfos.Children.Insert(0, modCopyrightRow);
 				}
 
@@ -561,6 +562,15 @@ namespace Game
 				BevelledButtonWidget exitButton = mainMenu.Children.Find<BevelledButtonWidget>("ShittyExitButton", false);
 				if (exitButton != null && exitButton.IsClicked)
 					Environment.Exit(0);
+			}
+
+			// Efecto arcoíris en el copyright del mod
+			LabelWidget modCopyrightLabel = mainMenu.Children.Find<LabelWidget>("ModCopyrightLabel", true);
+			if (modCopyrightLabel != null)
+			{
+				float hue = (float)((Time.RealTime * 30.0) % 360.0);
+				Vector3 rgb = Color.HsvToRgb(new Vector3(hue, 1f, 1f));
+				modCopyrightLabel.Color = new Color(rgb);
 			}
 
 			// ─── Efecto arcoíris en el botón de ajustes del mod (fuera del bloque MainMenuScreen) ───
