@@ -30,6 +30,10 @@ namespace Game
 		private float ThrowableAimTime = 1.55f;
 		private float ThrowableCooldown = 0.25f;
 
+		// Tiempos para el lanzador de ítems
+		private float ItemsLauncherAimTime = 1.5f;
+		private float ItemsLauncherCooldown = 0.01f;
+
 		private SubsystemTime m_subsystemTime;
 		private ComponentMiner m_componentMiner;
 		private ComponentNewChaseBehavior m_componentChase;
@@ -55,7 +59,8 @@ namespace Game
 		{
 			{ MusketBlock.Index, new Vector3(-1.7f, 0f, 0f) },
 			{ CrossbowBlock.Index, new Vector3(-1.55f, 0f, 0f) },
-			{ BowBlock.Index, new Vector3(0f, -0.2f, 0f) }
+			{ BowBlock.Index, new Vector3(0f, -0.2f, 0f) },
+			{ ItemsLauncherBlock.Index, new Vector3(-1.7f, 0f, 0f) }
 		};
 
 		public UpdateOrder UpdateOrder => UpdateOrder.Default;
@@ -115,7 +120,8 @@ namespace Game
 			return templateName == "InfectedNormalTamed1" ||
 				   templateName == "InfectedNormalTamed2" ||
 				   templateName == "InfectedMuscleTamed1" ||
-				   templateName == "InfectedMuscleTamed2";
+				   templateName == "InfectedMuscleTamed2" ||
+				   templateName == "InfectedFreezerTamed";
 		}
 
 		public void Update(float dt)
@@ -142,28 +148,47 @@ namespace Game
 					return;
 				}
 
-				float aimTime = GetAimTime(m_customWeaponContents);
-				m_customAimTimer += dt;
-				Ray3 aimRay = CalculateAimRay();
-
-				// Llamar a InProgress para que los subsistemas preparen el arma (tensar, amartillar, etc.)
-				m_componentMiner.Aim(aimRay, AimState.InProgress);
-
-				// Sobrescribir la rotación del modelo para evitar que levante el brazo
-				UpdateWeaponRotation(aimRay);
-
-				if (m_customAimTimer < aimTime)
+				// ItemsLauncher: animación manual, sin Miner.Aim
+				if (m_customWeaponContents == ItemsLauncherBlock.Index)
 				{
-					// Seguir apuntando (no detenemos el movimiento)
+					m_customAimTimer += dt;
+					Ray3 aimRay = CalculateAimRay();
+
+					// Imitar la animación de apunte del Miner.Aim (valores exactos del subsistema)
+					UpdateWeaponRotation(aimRay);
+
+					float aimTime = GetAimTime(ItemsLauncherBlock.Index);
+					if (m_customAimTimer >= aimTime)
+					{
+						// Disparar manualmente la bola de mosquete
+						FireItemsLauncher(aimRay);
+						m_isCustomAiming = false;
+						m_cooldownTimer = GetCooldown(ItemsLauncherBlock.Index);
+
+						// Restaurar rotación tras disparar
+						ResetModelRotation();
+					}
+					return;
+				}
+
+				// Para ballesta, arco y mosquete (criaturas especiales)
+				float aimTimeWeapon = GetAimTime(m_customWeaponContents);
+				m_customAimTimer += dt;
+				Ray3 aimRayWeapon = CalculateAimRay();
+
+				m_componentMiner.Aim(aimRayWeapon, AimState.InProgress);
+				UpdateWeaponRotation(aimRayWeapon);
+
+				if (m_customAimTimer < aimTimeWeapon)
+				{
+					// seguir apuntando
 				}
 				else
 				{
-					// Disparar
-					m_componentMiner.Aim(aimRay, AimState.Completed);
+					m_componentMiner.Aim(aimRayWeapon, AimState.Completed);
 					m_isCustomAiming = false;
 					m_cooldownTimer = GetCooldown(m_customWeaponContents);
 
-					// Acciones post-disparo
 					if (m_customWeaponContents == CrossbowBlock.Index || m_customWeaponContents == BowBlock.Index)
 					{
 						SubsystemProjectiles subsystemProjectiles = Project.FindSubsystem<SubsystemProjectiles>(true);
@@ -184,14 +209,7 @@ namespace Game
 						EnsureMusketEquipped();
 					}
 
-					// Restaurar rotación del arma tras disparar
-					ComponentCreatureModel model = m_componentCreature.ComponentCreatureModel;
-					if (model != null)
-					{
-						model.InHandItemRotationOrder = Vector3.Zero;
-						model.InHandItemOffsetOrder = Vector3.Zero;
-						model.AimHandAngleOrder = 0f;
-					}
+					ResetModelRotation();
 				}
 				return;
 			}
@@ -269,7 +287,7 @@ namespace Game
 						return;
 				}
 
-				// 1. Lanzables (máxima prioridad) - siempre usan apuntado normal
+				// 1. Lanzables (máxima prioridad)
 				if (distance >= ThrowableAttackRange.X && distance <= ThrowableAttackRange.Y && HasThrowableInInventory())
 				{
 					if (EnsureThrowableEquipped())
@@ -281,24 +299,26 @@ namespace Game
 					}
 				}
 
-				// Para criaturas especiales: apuntado sin levantar brazo
+				// 2. Lanzador de ítems (nueva arma) – apuntado manual para todos
+				if (HasItemsLauncherInInventory() && EnsureItemsLauncherEquipped())
+				{
+					StartCustomAiming(ItemsLauncherBlock.Index);
+					return;
+				}
+
+				// Para criaturas especiales: ballesta, arco, mosquete con apuntado personalizado
 				if (IsSpecialNoRaiseCreature())
 				{
-					// 2. Ballesta
 					if (HasCrossbowInInventory() && EnsureCrossbowEquipped())
 					{
 						StartCustomAiming(CrossbowBlock.Index);
 						return;
 					}
-
-					// 3. Arco
 					if (HasBowInInventory() && EnsureBowEquipped())
 					{
 						StartCustomAiming(BowBlock.Index);
 						return;
 					}
-
-					// 4. Mosquete
 					if (EnsureMusketEquipped())
 					{
 						StartCustomAiming(MusketBlock.Index);
@@ -318,7 +338,6 @@ namespace Game
 							return;
 						}
 					}
-
 					if (HasBowInInventory())
 					{
 						if (EnsureBowEquipped())
@@ -329,7 +348,6 @@ namespace Game
 							return;
 						}
 					}
-
 					if (EnsureMusketEquipped())
 					{
 						m_isAiming = true;
@@ -340,33 +358,76 @@ namespace Game
 			}
 		}
 
+		// Dispara una bola de mosquete manualmente (sin Miner.Aim)
+		private void FireItemsLauncher(Ray3 aimRay)
+		{
+			Vector3 eyePos = aimRay.Position;
+			Vector3 direction = aimRay.Direction;
+
+			// Crear el valor del proyectil: BulletBlock con tipo MusketBall
+			int bulletData = BulletBlock.SetBulletType(0, BulletBlock.BulletType.MusketBall);
+			int bulletValue = Terrain.MakeBlockValue(BulletBlock.Index, 0, bulletData);
+
+			SubsystemProjectiles subsystemProjectiles = Project.FindSubsystem<SubsystemProjectiles>(true);
+			subsystemProjectiles.FireProjectile(bulletValue, eyePos, direction * 60f, Vector3.Zero, m_componentCreature);
+
+			m_subsystemAudio.PlaySound("Audio/Items/ItemLauncher/Item Cannon Fire", 1f, m_random.Float(-0.1f, 0.1f), eyePos, 15f, false);
+
+			SubsystemTerrain subsystemTerrain = Project.FindSubsystem<SubsystemTerrain>(true);
+			SubsystemParticles subsystemParticles = Project.FindSubsystem<SubsystemParticles>(true);
+			if (subsystemParticles != null && subsystemTerrain != null)
+			{
+				subsystemParticles.AddParticleSystem(
+					new GunSmokeParticleSystem(subsystemTerrain, eyePos + direction * 0.5f, direction),
+					false
+				);
+			}
+
+			// Ruido
+			SubsystemNoise subsystemNoise = Project.FindSubsystem<SubsystemNoise>(true);
+			if (subsystemNoise != null)
+			{
+				subsystemNoise.MakeNoise(eyePos, 1f, 40f);
+			}
+
+			// Retroceso
+			m_componentCreature.ComponentBody.ApplyImpulse(-2f * direction);
+		}
+
 		private void StartCustomAiming(int weaponContents)
 		{
 			m_isCustomAiming = true;
 			m_customAimTimer = 0f;
 			m_customWeaponContents = weaponContents;
 
-			if (m_componentCreature.ComponentCreatureModel != null)
-				m_componentCreature.ComponentCreatureModel.AimHandAngleOrder = 0f;
+			// No forzar AimHandAngleOrder a 0 aquí, lo hará UpdateWeaponRotation
 		}
 
 		private void StopCustomAiming()
 		{
 			if (m_isCustomAiming)
 			{
-				// Cancelar la puntería en el subsistema (para que suelte el martillo, etc.)
-				Ray3 aimRay = CalculateAimRay();
-				m_componentMiner.Aim(aimRay, AimState.Cancelled);
-
-				ComponentCreatureModel model = m_componentCreature.ComponentCreatureModel;
-				if (model != null)
+				// Solo cancelar Miner.Aim si el arma no es el lanzador de ítems
+				if (m_customWeaponContents != ItemsLauncherBlock.Index)
 				{
-					model.InHandItemRotationOrder = Vector3.Zero;
-					model.InHandItemOffsetOrder = Vector3.Zero;
-					model.AimHandAngleOrder = 0f;
+					Ray3 aimRay = CalculateAimRay();
+					m_componentMiner.Aim(aimRay, AimState.Cancelled);
 				}
+
+				ResetModelRotation();
 				m_isCustomAiming = false;
 				m_customAimTimer = 0f;
+			}
+		}
+
+		private void ResetModelRotation()
+		{
+			ComponentCreatureModel model = m_componentCreature.ComponentCreatureModel;
+			if (model != null)
+			{
+				model.InHandItemRotationOrder = Vector3.Zero;
+				model.InHandItemOffsetOrder = Vector3.Zero;
+				model.AimHandAngleOrder = 0f;
 			}
 		}
 
@@ -375,22 +436,31 @@ namespace Game
 			ComponentCreatureModel model = m_componentCreature.ComponentCreatureModel;
 			if (model == null) return;
 
-			// Rotación base del arma (la misma que usa el zombie, sin añadir offsets)
-			Vector3 baseRot = BaseWeaponRotations.ContainsKey(m_customWeaponContents)
-				? BaseWeaponRotations[m_customWeaponContents]
-				: Vector3.Zero;
-
-			// Fijar la rotación del arma en la mano, sin cambios dinámicos
-			model.InHandItemRotationOrder = baseRot;
-			model.AimHandAngleOrder = 0f;
-
-			// Ajustar posición del arma en la mano (opcional)
-			if (m_customWeaponContents == BowBlock.Index)
-				model.InHandItemOffsetOrder = new Vector3(0.15f, -0.15f, 0.15f);
+			// Usar exactamente los mismos valores que SubsystemItemsLauncherBlockBehavior.OnAim
+			// para ItemsLauncher, y las rotaciones base para las otras armas.
+			if (m_customWeaponContents == ItemsLauncherBlock.Index)
+			{
+				model.AimHandAngleOrder = 1.4f;
+				model.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
+				model.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
+			}
 			else
-				model.InHandItemOffsetOrder = new Vector3(-0.1f, -0.15f, 0.25f);
+			{
+				// Para ballesta, arco y mosquete (criaturas especiales) se usan las rotaciones base
+				Vector3 baseRot = BaseWeaponRotations.ContainsKey(m_customWeaponContents)
+					? BaseWeaponRotations[m_customWeaponContents]
+					: Vector3.Zero;
 
-			// Forzar que la criatura mire al objetivo (el cuerpo gira para apuntar)
+				model.InHandItemRotationOrder = baseRot;
+				model.AimHandAngleOrder = 0f; // Las armas normales no necesitan AimHandAngle
+
+				if (m_customWeaponContents == BowBlock.Index)
+					model.InHandItemOffsetOrder = new Vector3(0.15f, -0.15f, 0.15f);
+				else
+					model.InHandItemOffsetOrder = new Vector3(-0.1f, -0.15f, 0.25f);
+			}
+
+			// Forzar que la criatura mire al objetivo
 			if (m_componentChase != null && m_componentChase.Target != null)
 			{
 				model.LookAtOrder = m_componentChase.Target.ComponentCreatureModel.EyePosition;
@@ -403,6 +473,7 @@ namespace Game
 			if (contents == CrossbowBlock.Index) return CrossbowAimTime;
 			if (contents == BowBlock.Index) return BowAimTime;
 			if (IsThrowable(contents)) return ThrowableAimTime;
+			if (contents == ItemsLauncherBlock.Index) return ItemsLauncherAimTime;
 			return MusketAimTime;
 		}
 
@@ -411,6 +482,7 @@ namespace Game
 			if (contents == CrossbowBlock.Index) return CrossbowCooldown;
 			if (contents == BowBlock.Index) return BowCooldown;
 			if (IsThrowable(contents)) return ThrowableCooldown;
+			if (contents == ItemsLauncherBlock.Index) return ItemsLauncherCooldown;
 			return MusketCooldown;
 		}
 
@@ -457,7 +529,12 @@ namespace Game
 			{
 				int slotValue = inventory.GetSlotValue(i);
 				int contents = Terrain.ExtractContents(slotValue);
-				if (slotValue != 0 && contents != MusketBlock.Index && contents != CrossbowBlock.Index && contents != BowBlock.Index && !IsThrowable(contents))
+				if (slotValue != 0 &&
+					contents != MusketBlock.Index &&
+					contents != CrossbowBlock.Index &&
+					contents != BowBlock.Index &&
+					contents != ItemsLauncherBlock.Index &&
+					!IsThrowable(contents))
 				{
 					inventory.ActiveSlotIndex = i;
 					return true;
@@ -639,6 +716,40 @@ namespace Game
 				{
 					inventory.ActiveSlotIndex = i;
 					return EnsureBowEquipped();
+				}
+			}
+			return false;
+		}
+
+		// ========== LANZADOR DE ÍTEMS ==========
+		private bool HasItemsLauncherInInventory()
+		{
+			IInventory inventory = m_componentMiner.Inventory;
+			if (inventory == null) return false;
+			for (int i = 0; i < inventory.SlotsCount; i++)
+			{
+				if (Terrain.ExtractContents(inventory.GetSlotValue(i)) == ItemsLauncherBlock.Index)
+					return true;
+			}
+			return false;
+		}
+
+		private bool EnsureItemsLauncherEquipped()
+		{
+			IInventory inventory = m_componentMiner.Inventory;
+			if (inventory == null) return false;
+
+			int activeSlot = inventory.ActiveSlotIndex;
+			int activeValue = inventory.GetSlotValue(activeSlot);
+			if (Terrain.ExtractContents(activeValue) == ItemsLauncherBlock.Index)
+				return true;
+
+			for (int i = 0; i < inventory.SlotsCount; i++)
+			{
+				if (Terrain.ExtractContents(inventory.GetSlotValue(i)) == ItemsLauncherBlock.Index)
+				{
+					inventory.ActiveSlotIndex = i;
+					return true;
 				}
 			}
 			return false;
