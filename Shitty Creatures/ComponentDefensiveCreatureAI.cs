@@ -26,13 +26,17 @@ namespace Game
 		private float BowAimTime = 1.5f;
 		private float BowCooldown = 0.5f;
 
-		// Tiempos para lanzables
-		private float ThrowableAimTime = 1.55f;
-		private float ThrowableCooldown = 0.25f;
-
 		// Tiempos para el lanzador de ítems
 		private float ItemsLauncherAimTime = 1.5f;
 		private float ItemsLauncherCooldown = 0.01f;
+
+		// Tiempos para la ballesta repetidora
+		private float RepeatCrossbowAimTime = 1.5f;
+		private float RepeatCrossbowCooldown = 0.01f;
+
+		// Tiempos para lanzables
+		private float ThrowableAimTime = 1.55f;
+		private float ThrowableCooldown = 0.25f;
 
 		private SubsystemTime m_subsystemTime;
 		private ComponentMiner m_componentMiner;
@@ -60,7 +64,8 @@ namespace Game
 			{ MusketBlock.Index, new Vector3(-1.7f, 0f, 0f) },
 			{ CrossbowBlock.Index, new Vector3(-1.55f, 0f, 0f) },
 			{ BowBlock.Index, new Vector3(0f, -0.2f, 0f) },
-			{ ItemsLauncherBlock.Index, new Vector3(-1.7f, 0f, 0f) }
+			{ ItemsLauncherBlock.Index, new Vector3(-1.7f, 0f, 0f) },
+			{ RepeatCrossbowBlock.Index, new Vector3(-1.55f, 0f, 0f) }
 		};
 
 		public UpdateOrder UpdateOrder => UpdateOrder.Default;
@@ -201,6 +206,10 @@ namespace Game
 					{
 						EnsureMusketEquipped();
 					}
+					else if (m_customWeaponContents == RepeatCrossbowBlock.Index)
+					{
+						EnsureRepeatCrossbowEquipped();
+					}
 
 					ResetModelRotation();
 				}
@@ -261,6 +270,10 @@ namespace Game
 					{
 						EnsureMusketEquipped();
 					}
+					else if (activeContents == RepeatCrossbowBlock.Index)
+					{
+						EnsureRepeatCrossbowEquipped();
+					}
 				}
 			}
 			else
@@ -292,7 +305,24 @@ namespace Game
 					}
 				}
 
-				// 2. Lanzador de ítems (nueva arma) – apuntado manual para todos
+				// 2. Ballesta repetidora (segunda prioridad, entre lanzables y el resto de armas)
+				if (HasRepeatCrossbowInInventory() && EnsureRepeatCrossbowEquipped())
+				{
+					if (IsSpecialNoRaiseCreature())
+					{
+						StartCustomAiming(RepeatCrossbowBlock.Index);
+						return;
+					}
+					else
+					{
+						m_isAiming = true;
+						m_aimTimer = 0f;
+						m_componentMiner.Aim(CalculateAimRay(), AimState.InProgress);
+						return;
+					}
+				}
+
+				// 3. Lanzador de ítems (tercera prioridad) – apuntado manual para todos
 				if (HasItemsLauncherInInventory() && EnsureItemsLauncherEquipped())
 				{
 					StartCustomAiming(ItemsLauncherBlock.Index);
@@ -302,6 +332,7 @@ namespace Game
 				// Para criaturas especiales: ballesta, arco, mosquete con apuntado personalizado
 				if (IsSpecialNoRaiseCreature())
 				{
+					// Ballesta y arco normales
 					if (HasCrossbowInInventory() && EnsureCrossbowEquipped())
 					{
 						StartCustomAiming(CrossbowBlock.Index);
@@ -448,13 +479,13 @@ namespace Game
 			}
 			else
 			{
-				// For other weapons in custom aiming (special creatures only)
+				// Para las otras armas en apuntado personalizado (solo criaturas especiales)
 				Vector3 baseRot = BaseWeaponRotations.ContainsKey(m_customWeaponContents)
 					? BaseWeaponRotations[m_customWeaponContents]
 					: Vector3.Zero;
 
 				model.InHandItemRotationOrder = baseRot;
-				model.AimHandAngleOrder = 0f;
+				model.AimHandAngleOrder = 0f; // Nunca levantan el brazo
 
 				if (m_customWeaponContents == BowBlock.Index)
 					model.InHandItemOffsetOrder = new Vector3(0.15f, -0.15f, 0.15f);
@@ -462,6 +493,7 @@ namespace Game
 					model.InHandItemOffsetOrder = new Vector3(-0.1f, -0.15f, 0.25f);
 			}
 
+			// Forzar que la criatura mire al objetivo
 			if (m_componentChase != null && m_componentChase.Target != null)
 			{
 				model.LookAtOrder = m_componentChase.Target.ComponentCreatureModel.EyePosition;
@@ -475,6 +507,7 @@ namespace Game
 			if (contents == BowBlock.Index) return BowAimTime;
 			if (IsThrowable(contents)) return ThrowableAimTime;
 			if (contents == ItemsLauncherBlock.Index) return ItemsLauncherAimTime;
+			if (contents == RepeatCrossbowBlock.Index) return RepeatCrossbowAimTime;
 			return MusketAimTime;
 		}
 
@@ -484,6 +517,7 @@ namespace Game
 			if (contents == BowBlock.Index) return BowCooldown;
 			if (IsThrowable(contents)) return ThrowableCooldown;
 			if (contents == ItemsLauncherBlock.Index) return ItemsLauncherCooldown;
+			if (contents == RepeatCrossbowBlock.Index) return RepeatCrossbowCooldown;
 			return MusketCooldown;
 		}
 
@@ -535,6 +569,7 @@ namespace Game
 					contents != CrossbowBlock.Index &&
 					contents != BowBlock.Index &&
 					contents != ItemsLauncherBlock.Index &&
+					contents != RepeatCrossbowBlock.Index &&
 					!IsThrowable(contents))
 				{
 					inventory.ActiveSlotIndex = i;
@@ -717,6 +752,75 @@ namespace Game
 				{
 					inventory.ActiveSlotIndex = i;
 					return EnsureBowEquipped();
+				}
+			}
+			return false;
+		}
+
+		// ========== BALLESTA REPETIDORA ==========
+		private bool HasRepeatCrossbowInInventory()
+		{
+			IInventory inventory = m_componentMiner.Inventory;
+			if (inventory == null) return false;
+			for (int i = 0; i < inventory.SlotsCount; i++)
+			{
+				if (Terrain.ExtractContents(inventory.GetSlotValue(i)) == RepeatCrossbowBlock.Index)
+					return true;
+			}
+			return false;
+		}
+
+		private bool EnsureRepeatCrossbowEquipped()
+		{
+			IInventory inventory = m_componentMiner.Inventory;
+			if (inventory == null) return false;
+
+			int activeSlot = inventory.ActiveSlotIndex;
+			int activeValue = inventory.GetSlotValue(activeSlot);
+			int repeatCrossbowIndex = RepeatCrossbowBlock.Index;
+
+			RepeatArrowBlock.ArrowType[] boltTypes = {
+				RepeatArrowBlock.ArrowType.CopperArrow,
+				RepeatArrowBlock.ArrowType.IronArrow,
+				RepeatArrowBlock.ArrowType.DiamondArrow,
+				RepeatArrowBlock.ArrowType.ExplosiveArrow,
+				RepeatArrowBlock.ArrowType.PoisonArrow,
+				RepeatArrowBlock.ArrowType.SeriousPoisonArrow
+			};
+
+			if (Terrain.ExtractContents(activeValue) == repeatCrossbowIndex)
+			{
+				int data = Terrain.ExtractData(activeValue);
+				int draw = RepeatCrossbowBlock.GetDraw(data);
+				RepeatArrowBlock.ArrowType? arrowType = RepeatCrossbowBlock.GetArrowType(data);
+				int loadCount = RepeatCrossbowBlock.GetLoadCount(activeValue);
+
+				// Si no está tensada o no tiene flecha, prepararla
+				if (draw != 15 || arrowType == null)
+				{
+					RepeatArrowBlock.ArrowType randomBolt = boltTypes[m_random.Int(0, boltTypes.Length)];
+					data = RepeatCrossbowBlock.SetDraw(data, 15);
+					data = RepeatCrossbowBlock.SetArrowType(data, randomBolt);
+
+					// Asegurar que tenga al menos una carga para disparar
+					if (loadCount < 1)
+					{
+						loadCount = 1;
+					}
+
+					int newValue = Terrain.MakeBlockValue(repeatCrossbowIndex, loadCount, data);
+					inventory.RemoveSlotItems(activeSlot, 1);
+					inventory.AddSlotItems(activeSlot, newValue, 1);
+				}
+				return true;
+			}
+
+			for (int i = 0; i < inventory.SlotsCount; i++)
+			{
+				if (Terrain.ExtractContents(inventory.GetSlotValue(i)) == repeatCrossbowIndex)
+				{
+					inventory.ActiveSlotIndex = i;
+					return EnsureRepeatCrossbowEquipped();
 				}
 			}
 			return false;
