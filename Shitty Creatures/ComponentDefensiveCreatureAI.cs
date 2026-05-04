@@ -42,6 +42,10 @@ namespace Game
 		private float FlameThrowerAimTime = 1.5f;
 		private float FlameThrowerCooldown = 0.01f;
 
+		// Tiempos para el mosquete de doble cañón
+		private float DoubleMusketAimTime = 1.5f;
+		private float DoubleMusketCooldown = 0.5f;
+
 		private SubsystemTime m_subsystemTime;
 		private ComponentMiner m_componentMiner;
 		private ComponentNewChaseBehavior m_componentChase;
@@ -70,7 +74,8 @@ namespace Game
 			{ BowBlock.Index, new Vector3(0f, -0.2f, 0f) },
 			{ ItemsLauncherBlock.Index, new Vector3(-1.7f, 0f, 0f) },
 			{ RepeatCrossbowBlock.Index, new Vector3(-1.55f, 0f, 0f) },
-			{ FlameThrowerBlock.Index, new Vector3(-1.7f, 0f, 0f) }
+			{ FlameThrowerBlock.Index, new Vector3(-1.7f, 0f, 0f) },
+			{ DoubleMusketBlock.Index, new Vector3(-1.7f, 0f, 0f) }
 		};
 
 		public UpdateOrder UpdateOrder => UpdateOrder.Default;
@@ -174,7 +179,7 @@ namespace Game
 					return;
 				}
 
-				// Para ballesta, arco, mosquete y lanzallamas (criaturas especiales)
+				// Para ballesta, arco, mosquete, lanzallamas y mosquete doble (criaturas especiales)
 				float aimTimeWeapon = GetAimTime(m_customWeaponContents);
 				m_customAimTimer += dt;
 				Ray3 aimRayWeapon = CalculateAimRay();
@@ -227,6 +232,10 @@ namespace Game
 					else if (m_customWeaponContents == FlameThrowerBlock.Index)
 					{
 						EnsureFlameThrowerEquipped();
+					}
+					else if (m_customWeaponContents == DoubleMusketBlock.Index)
+					{
+						EnsureDoubleMusketEquipped();
 					}
 
 					ResetModelRotation();
@@ -305,6 +314,10 @@ namespace Game
 					{
 						EnsureFlameThrowerEquipped();
 					}
+					else if (activeContents == DoubleMusketBlock.Index)
+					{
+						EnsureDoubleMusketEquipped();
+					}
 				}
 			}
 			else
@@ -353,7 +366,7 @@ namespace Game
 					}
 				}
 
-				// 3. Lanzallamas (tercera prioridad) – igual que otras armas
+				// 3. Lanzallamas (tercera prioridad)
 				if (HasFlameThrowerInInventory() && EnsureFlameThrowerEquipped())
 				{
 					if (IsSpecialNoRaiseCreature())
@@ -370,14 +383,31 @@ namespace Game
 					}
 				}
 
-				// 4. Lanzador de ítems (cuarta prioridad) – apuntado manual para todos
+				// 4. Mosquete de doble cañón (cuarta prioridad)
+				if (HasDoubleMusketInInventory() && EnsureDoubleMusketEquipped())
+				{
+					if (IsSpecialNoRaiseCreature())
+					{
+						StartCustomAiming(DoubleMusketBlock.Index);
+						return;
+					}
+					else
+					{
+						m_isAiming = true;
+						m_aimTimer = 0f;
+						m_componentMiner.Aim(CalculateAimRay(), AimState.InProgress);
+						return;
+					}
+				}
+
+				// 5. Lanzador de ítems (quinta prioridad) – apuntado manual para todos
 				if (HasItemsLauncherInInventory() && EnsureItemsLauncherEquipped())
 				{
 					StartCustomAiming(ItemsLauncherBlock.Index);
 					return;
 				}
 
-				// Para criaturas especiales: ballesta, arco, mosquete con apuntado personalizado
+				// Para criaturas especiales: ballesta, arco, mosquete doble, mosquete con apuntado personalizado
 				if (IsSpecialNoRaiseCreature())
 				{
 					// Ballesta y arco normales
@@ -389,6 +419,11 @@ namespace Game
 					if (HasBowInInventory() && EnsureBowEquipped())
 					{
 						StartCustomAiming(BowBlock.Index);
+						return;
+					}
+					if (HasDoubleMusketInInventory() && EnsureDoubleMusketEquipped())
+					{
+						StartCustomAiming(DoubleMusketBlock.Index);
 						return;
 					}
 					if (EnsureMusketEquipped())
@@ -419,6 +454,13 @@ namespace Game
 							m_componentMiner.Aim(CalculateAimRay(), AimState.InProgress);
 							return;
 						}
+					}
+					if (HasDoubleMusketInInventory() && EnsureDoubleMusketEquipped())
+					{
+						m_isAiming = true;
+						m_aimTimer = 0f;
+						m_componentMiner.Aim(CalculateAimRay(), AimState.InProgress);
+						return;
 					}
 					if (EnsureMusketEquipped())
 					{
@@ -566,6 +608,7 @@ namespace Game
 			if (contents == ItemsLauncherBlock.Index) return ItemsLauncherAimTime;
 			if (contents == RepeatCrossbowBlock.Index) return RepeatCrossbowAimTime;
 			if (contents == FlameThrowerBlock.Index) return FlameThrowerAimTime;
+			if (contents == DoubleMusketBlock.Index) return DoubleMusketAimTime;
 			return MusketAimTime;
 		}
 
@@ -577,6 +620,7 @@ namespace Game
 			if (contents == ItemsLauncherBlock.Index) return ItemsLauncherCooldown;
 			if (contents == RepeatCrossbowBlock.Index) return RepeatCrossbowCooldown;
 			if (contents == FlameThrowerBlock.Index) return FlameThrowerCooldown;
+			if (contents == DoubleMusketBlock.Index) return DoubleMusketCooldown;
 			return MusketCooldown;
 		}
 
@@ -630,6 +674,7 @@ namespace Game
 					contents != ItemsLauncherBlock.Index &&
 					contents != RepeatCrossbowBlock.Index &&
 					contents != FlameThrowerBlock.Index &&
+					contents != DoubleMusketBlock.Index &&
 					!IsThrowable(contents))
 				{
 					inventory.ActiveSlotIndex = i;
@@ -915,10 +960,8 @@ namespace Game
 				int loadCount = FlameThrowerBlock.GetLoadCount(activeValue);
 				if (loadState != FlameThrowerBlock.LoadState.Loaded || loadCount <= 0)
 				{
-					// Recargar con 15 balas, alternando aleatoriamente entre fuego y veneno
-					FlameBulletBlock.FlameBulletType randomType = m_random.Bool()
-						? FlameBulletBlock.FlameBulletType.Poison
-						: FlameBulletBlock.FlameBulletType.Flame;
+					// Recargar con 15 balas de fuego o veneno al azar
+					FlameBulletBlock.FlameBulletType randomType = m_random.Bool() ? FlameBulletBlock.FlameBulletType.Poison : FlameBulletBlock.FlameBulletType.Flame;
 					int newData = 0;
 					newData = FlameThrowerBlock.SetLoadState(newData, FlameThrowerBlock.LoadState.Loaded);
 					newData = FlameThrowerBlock.SetBulletType(newData, randomType);
@@ -937,6 +980,59 @@ namespace Game
 				{
 					inventory.ActiveSlotIndex = i;
 					return EnsureFlameThrowerEquipped();
+				}
+			}
+			return false;
+		}
+
+		// ========== MOSQUETE DE DOBLE CAÑÓN ==========
+		private bool HasDoubleMusketInInventory()
+		{
+			IInventory inventory = m_componentMiner.Inventory;
+			if (inventory == null) return false;
+			for (int i = 0; i < inventory.SlotsCount; i++)
+			{
+				if (Terrain.ExtractContents(inventory.GetSlotValue(i)) == DoubleMusketBlock.Index)
+					return true;
+			}
+			return false;
+		}
+
+		private bool EnsureDoubleMusketEquipped()
+		{
+			IInventory inventory = m_componentMiner.Inventory;
+			if (inventory == null) return false;
+
+			int activeSlot = inventory.ActiveSlotIndex;
+			int activeValue = inventory.GetSlotValue(activeSlot);
+			int doubleMusketIndex = DoubleMusketBlock.Index;
+
+			if (Terrain.ExtractContents(activeValue) == doubleMusketIndex)
+			{
+				int data = Terrain.ExtractData(activeValue);
+				bool isLoaded = DoubleMusketBlock.IsLoaded(data);
+				int shotsRemaining = DoubleMusketBlock.GetShotsRemaining(data);
+				// Recargar completamente (2 disparos antitanque) si no está cargado o tiene menos de 2
+				if (!isLoaded || shotsRemaining < 2)
+				{
+					int newData = data;
+					newData = DoubleMusketBlock.SetLoaded(newData, true);
+					newData = DoubleMusketBlock.SetShotsRemaining(newData, 2);
+					newData = DoubleMusketBlock.SetAntiTanksBullet(newData, true);
+					newData = DoubleMusketBlock.SetHammerState(newData, false);
+					int newValue = Terrain.MakeBlockValue(doubleMusketIndex, 0, newData);
+					inventory.RemoveSlotItems(activeSlot, 1);
+					inventory.AddSlotItems(activeSlot, newValue, 1);
+				}
+				return true;
+			}
+
+			for (int i = 0; i < inventory.SlotsCount; i++)
+			{
+				if (Terrain.ExtractContents(inventory.GetSlotValue(i)) == doubleMusketIndex)
+				{
+					inventory.ActiveSlotIndex = i;
+					return EnsureDoubleMusketEquipped();
 				}
 			}
 			return false;
