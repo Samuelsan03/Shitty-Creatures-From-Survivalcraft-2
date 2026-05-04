@@ -132,7 +132,6 @@ namespace Game
 			IInventory inventory = m_componentMiner.Inventory;
 			if (inventory == null) return false;
 
-			int currentContents = Terrain.ExtractContents(inventory.GetSlotValue(inventory.ActiveSlotIndex));
 			// Buscar cualquier objeto que no sea mosquete (priorizar el primer slot con algo)
 			for (int i = 0; i < inventory.SlotsCount; i++)
 			{
@@ -189,6 +188,7 @@ namespace Game
 				m_componentMiner.Aim(CalculateAimRay(), AimState.Cancelled);
 				m_isAiming = false;
 				m_aimTimer = 0f;
+				m_cooldownTimer = 0f; // Reiniciar cooldown para reanudar el ataque a distancia inmediatamente si el objetivo se aleja
 			}
 		}
 
