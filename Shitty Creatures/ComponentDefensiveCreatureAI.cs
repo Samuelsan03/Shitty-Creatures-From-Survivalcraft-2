@@ -915,8 +915,10 @@ namespace Game
 				int loadCount = FlameThrowerBlock.GetLoadCount(activeValue);
 				if (loadState != FlameThrowerBlock.LoadState.Loaded || loadCount <= 0)
 				{
-					// Recargar con 15 balas de fuego o veneno al azar (variación normal sin probabilidades fijas)
-					FlameBulletBlock.FlameBulletType randomType = (FlameBulletBlock.FlameBulletType)m_random.Int(0, 1);
+					// Recargar con 15 balas, alternando aleatoriamente entre fuego y veneno
+					FlameBulletBlock.FlameBulletType randomType = m_random.Bool()
+						? FlameBulletBlock.FlameBulletType.Poison
+						: FlameBulletBlock.FlameBulletType.Flame;
 					int newData = 0;
 					newData = FlameThrowerBlock.SetLoadState(newData, FlameThrowerBlock.LoadState.Loaded);
 					newData = FlameThrowerBlock.SetBulletType(newData, randomType);
