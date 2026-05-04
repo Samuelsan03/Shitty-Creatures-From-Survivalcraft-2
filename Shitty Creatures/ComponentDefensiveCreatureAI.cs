@@ -18,6 +18,10 @@ namespace Game
 		private float CrossbowAimTime = 1.5f;
 		private float CrossbowCooldown = 0.5f;
 
+		// Tiempos del arco
+		private float BowAimTime = 1.5f;
+		private float BowCooldown = 0.5f;
+
 		private SubsystemTime m_subsystemTime;
 		private ComponentMiner m_componentMiner;
 		private ComponentNewChaseBehavior m_componentChase;
@@ -61,10 +65,8 @@ namespace Game
 					return;
 				}
 
-				// Determinar aimTime y cooldown según el arma actual
 				int activeContents = Terrain.ExtractContents(m_componentMiner.Inventory.GetSlotValue(m_componentMiner.Inventory.ActiveSlotIndex));
-				float aimTime = (activeContents == CrossbowBlock.Index) ? CrossbowAimTime : MusketAimTime;
-
+				float aimTime = GetAimTime(activeContents);
 				m_aimTimer += dt;
 				Ray3 aimRay = CalculateAimRay();
 
@@ -74,16 +76,15 @@ namespace Game
 				}
 				else
 				{
-					// Al completar el aim, la ballesta dispara normalmente y luego nosotros gestionamos la desaparición del proyectil
 					m_componentMiner.Aim(aimRay, AimState.Completed);
 					m_isAiming = false;
-					m_cooldownTimer = (activeContents == CrossbowBlock.Index) ? CrossbowCooldown : MusketCooldown;
+					m_cooldownTimer = GetCooldown(activeContents);
 
-					// Si es ballesta, hacer desaparecer los virotes del suelo (ya que se acaban de crear)
-					if (activeContents == CrossbowBlock.Index)
+					// Disparo realizado: gestionar desaparición de proyectiles y recarga inmediata
+					if (activeContents == CrossbowBlock.Index || activeContents == BowBlock.Index)
 					{
+						// Hacer desaparecer todos los proyectiles de tipo flecha/virote
 						SubsystemProjectiles subsystemProjectiles = Project.FindSubsystem<SubsystemProjectiles>(true);
-						// Recorremos los proyectiles y marcamos los que sean flechas/vitores para desaparecer
 						foreach (Projectile p in subsystemProjectiles.Projectiles)
 						{
 							if (p != null && Terrain.ExtractContents(p.Value) == ArrowBlock.Index)
@@ -91,6 +92,14 @@ namespace Game
 								p.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
 							}
 						}
+						if (activeContents == BowBlock.Index)
+							EnsureBowEquipped();
+						else
+							EnsureCrossbowEquipped();
+					}
+					else if (activeContents == MusketBlock.Index)
+					{
+						EnsureMusketEquipped(); // recargar mágicamente
 					}
 				}
 			}
@@ -123,6 +132,16 @@ namespace Game
 							return;
 						}
 					}
+					if (HasBowInInventory())
+					{
+						if (EnsureBowEquipped())
+						{
+							m_isAiming = true;
+							m_aimTimer = 0f;
+							m_componentMiner.Aim(CalculateAimRay(), AimState.InProgress);
+							return;
+						}
+					}
 					if (EnsureMusketEquipped())
 					{
 						m_isAiming = true;
@@ -131,6 +150,20 @@ namespace Game
 					}
 				}
 			}
+		}
+
+		private float GetAimTime(int contents)
+		{
+			if (contents == CrossbowBlock.Index) return CrossbowAimTime;
+			if (contents == BowBlock.Index) return BowAimTime;
+			return MusketAimTime;
+		}
+
+		private float GetCooldown(int contents)
+		{
+			if (contents == CrossbowBlock.Index) return CrossbowCooldown;
+			if (contents == BowBlock.Index) return BowCooldown;
+			return MusketCooldown;
 		}
 
 		private float GetTargetDistance()
@@ -166,7 +199,7 @@ namespace Game
 			{
 				int slotValue = inventory.GetSlotValue(i);
 				int contents = Terrain.ExtractContents(slotValue);
-				if (slotValue != 0 && contents != MusketBlock.Index && contents != CrossbowBlock.Index)
+				if (slotValue != 0 && contents != MusketBlock.Index && contents != CrossbowBlock.Index && contents != BowBlock.Index)
 				{
 					inventory.ActiveSlotIndex = i;
 					return true;
@@ -175,6 +208,7 @@ namespace Game
 			return false;
 		}
 
+		// ========== MOSQUETE ==========
 		private bool EnsureMusketEquipped()
 		{
 			IInventory inventory = m_componentMiner.Inventory;
@@ -211,16 +245,13 @@ namespace Game
 			return false;
 		}
 
+		// ========== BALLESTA ==========
 		private bool HasCrossbowInInventory()
 		{
 			IInventory inventory = m_componentMiner.Inventory;
 			if (inventory == null) return false;
-			int crossbowIndex = CrossbowBlock.Index;
 			for (int i = 0; i < inventory.SlotsCount; i++)
-			{
-				if (Terrain.ExtractContents(inventory.GetSlotValue(i)) == crossbowIndex)
-					return true;
-			}
+				if (Terrain.ExtractContents(inventory.GetSlotValue(i)) == CrossbowBlock.Index) return true;
 			return false;
 		}
 
@@ -233,7 +264,6 @@ namespace Game
 			int activeValue = inventory.GetSlotValue(activeSlot);
 			int crossbowIndex = CrossbowBlock.Index;
 
-			// Tipos de virote posibles
 			ArrowBlock.ArrowType[] boltTypes = {
 				ArrowBlock.ArrowType.IronBolt,
 				ArrowBlock.ArrowType.DiamondBolt,
@@ -261,6 +291,62 @@ namespace Game
 				{
 					inventory.ActiveSlotIndex = i;
 					return EnsureCrossbowEquipped();
+				}
+			}
+			return false;
+		}
+
+		// ========== ARCO ==========
+		private bool HasBowInInventory()
+		{
+			IInventory inventory = m_componentMiner.Inventory;
+			if (inventory == null) return false;
+			for (int i = 0; i < inventory.SlotsCount; i++)
+				if (Terrain.ExtractContents(inventory.GetSlotValue(i)) == BowBlock.Index) return true;
+			return false;
+		}
+
+		private bool EnsureBowEquipped()
+		{
+			IInventory inventory = m_componentMiner.Inventory;
+			if (inventory == null) return false;
+
+			int activeSlot = inventory.ActiveSlotIndex;
+			int activeValue = inventory.GetSlotValue(activeSlot);
+			int bowIndex = BowBlock.Index;
+
+			// Flechas disponibles para el arco
+			ArrowBlock.ArrowType[] arrowTypes = {
+				ArrowBlock.ArrowType.WoodenArrow,
+				ArrowBlock.ArrowType.StoneArrow,
+				ArrowBlock.ArrowType.CopperArrow,
+				ArrowBlock.ArrowType.IronArrow,
+				ArrowBlock.ArrowType.DiamondArrow,
+				ArrowBlock.ArrowType.FireArrow
+			};
+
+			if (Terrain.ExtractContents(activeValue) == bowIndex)
+			{
+				int data = Terrain.ExtractData(activeValue);
+				// El arco debe estar completamente tensado (draw = 15) y tener una flecha
+				if (BowBlock.GetDraw(data) != 15 || BowBlock.GetArrowType(data) == null)
+				{
+					ArrowBlock.ArrowType randomArrow = arrowTypes[m_random.Int(0, arrowTypes.Length)];
+					int newData = BowBlock.SetDraw(data, 15);
+					newData = BowBlock.SetArrowType(newData, randomArrow);
+					int newValue = Terrain.MakeBlockValue(bowIndex, 0, newData);
+					inventory.RemoveSlotItems(activeSlot, 1);
+					inventory.AddSlotItems(activeSlot, newValue, 1);
+				}
+				return true;
+			}
+
+			for (int i = 0; i < inventory.SlotsCount; i++)
+			{
+				if (Terrain.ExtractContents(inventory.GetSlotValue(i)) == bowIndex)
+				{
+					inventory.ActiveSlotIndex = i;
+					return EnsureBowEquipped();
 				}
 			}
 			return false;
