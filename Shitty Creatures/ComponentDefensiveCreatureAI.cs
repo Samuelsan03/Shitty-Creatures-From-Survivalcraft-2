@@ -35,14 +35,28 @@ namespace Game
 		private ComponentNewChaseBehavior m_componentChase;
 		private ComponentCreature m_componentCreature;
 		private ComponentPathfinding m_componentPathfinding;
+		private SubsystemAudio m_subsystemAudio;
 		private Random m_random = new Random();
 
 		private bool m_isAiming;
 		private float m_aimTimer;
 		private float m_cooldownTimer;
 
+		// Apuntado personalizado para criaturas que no levantan el brazo
+		private bool m_isCustomAiming;
+		private float m_customAimTimer;
+		private int m_customWeaponContents;
+
 		// Conjunto de índices de bloques lanzables
 		private HashSet<int> m_throwableIndices = new HashSet<int>();
+
+		// Rotaciones base que el zombie usa para apuntar cada arma (en radianes)
+		private static readonly Dictionary<int, Vector3> BaseWeaponRotations = new Dictionary<int, Vector3>
+		{
+			{ MusketBlock.Index, new Vector3(-1.7f, 0f, 0f) },
+			{ CrossbowBlock.Index, new Vector3(-1.55f, 0f, 0f) },
+			{ BowBlock.Index, new Vector3(0f, -0.2f, 0f) }
+		};
 
 		public UpdateOrder UpdateOrder => UpdateOrder.Default;
 
@@ -53,6 +67,7 @@ namespace Game
 			m_componentChase = Entity.FindComponent<ComponentNewChaseBehavior>();
 			m_componentCreature = Entity.FindComponent<ComponentCreature>(true);
 			m_componentPathfinding = Entity.FindComponent<ComponentPathfinding>(true);
+			m_subsystemAudio = Project.FindSubsystem<SubsystemAudio>(true);
 			CanUseInventory = valuesDictionary.GetValue<bool>("CanUseInventory", false);
 
 			// Inicializar lista de bloques lanzables
@@ -94,6 +109,15 @@ namespace Game
 			m_throwableIndices.Add(BlocksManager.GetBlockIndex<FireworksBlock>(false, false));
 		}
 
+		private bool IsSpecialNoRaiseCreature()
+		{
+			string templateName = m_componentCreature.Entity.ValuesDictionary.DatabaseObject.Name;
+			return templateName == "InfectedNormalTamed1" ||
+				   templateName == "InfectedNormalTamed2" ||
+				   templateName == "InfectedMuscleTamed1" ||
+				   templateName == "InfectedMuscleTamed2";
+		}
+
 		public void Update(float dt)
 		{
 			if (!CanUseInventory || m_componentMiner == null || m_componentCreature == null)
@@ -102,6 +126,77 @@ namespace Game
 			float distance = GetTargetDistance();
 			bool hasTarget = IsTargetValidForRangedAttack();
 
+			// Manejar apuntado personalizado (sin levantar brazo)
+			if (m_isCustomAiming)
+			{
+				if (!hasTarget)
+				{
+					StopCustomAiming();
+					return;
+				}
+
+				if (distance <= RangedAttackRange.X)
+				{
+					StopCustomAiming();
+					SwitchToMeleeWeapon();
+					return;
+				}
+
+				float aimTime = GetAimTime(m_customWeaponContents);
+				m_customAimTimer += dt;
+				Ray3 aimRay = CalculateAimRay();
+
+				// Llamar a InProgress para que los subsistemas preparen el arma (tensar, amartillar, etc.)
+				m_componentMiner.Aim(aimRay, AimState.InProgress);
+
+				// Sobrescribir la rotación del modelo para evitar que levante el brazo
+				UpdateWeaponRotation(aimRay);
+
+				if (m_customAimTimer < aimTime)
+				{
+					// Seguir apuntando (no detenemos el movimiento)
+				}
+				else
+				{
+					// Disparar
+					m_componentMiner.Aim(aimRay, AimState.Completed);
+					m_isCustomAiming = false;
+					m_cooldownTimer = GetCooldown(m_customWeaponContents);
+
+					// Acciones post-disparo
+					if (m_customWeaponContents == CrossbowBlock.Index || m_customWeaponContents == BowBlock.Index)
+					{
+						SubsystemProjectiles subsystemProjectiles = Project.FindSubsystem<SubsystemProjectiles>(true);
+						foreach (Projectile p in subsystemProjectiles.Projectiles)
+						{
+							if (p != null && Terrain.ExtractContents(p.Value) == ArrowBlock.Index)
+							{
+								p.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
+							}
+						}
+						if (m_customWeaponContents == BowBlock.Index)
+							EnsureBowEquipped();
+						else
+							EnsureCrossbowEquipped();
+					}
+					else if (m_customWeaponContents == MusketBlock.Index)
+					{
+						EnsureMusketEquipped();
+					}
+
+					// Restaurar rotación del arma tras disparar
+					ComponentCreatureModel model = m_componentCreature.ComponentCreatureModel;
+					if (model != null)
+					{
+						model.InHandItemRotationOrder = Vector3.Zero;
+						model.InHandItemOffsetOrder = Vector3.Zero;
+						model.AimHandAngleOrder = 0f;
+					}
+				}
+				return;
+			}
+
+			// Manejar apuntado normal (comportamiento original)
 			if (m_isAiming)
 			{
 				if (!hasTarget)
@@ -121,7 +216,6 @@ namespace Game
 				m_aimTimer += dt;
 				Ray3 aimRay = CalculateAimRay();
 
-				// Detener movimiento si se está apuntando con un lanzable
 				if (IsThrowable(activeContents))
 				{
 					StopMovement();
@@ -137,7 +231,6 @@ namespace Game
 					m_isAiming = false;
 					m_cooldownTimer = GetCooldown(activeContents);
 
-					// Desaparición de proyectiles de arco/ballesta
 					if (activeContents == CrossbowBlock.Index || activeContents == BowBlock.Index)
 					{
 						SubsystemProjectiles subsystemProjectiles = Project.FindSubsystem<SubsystemProjectiles>(true);
@@ -157,7 +250,6 @@ namespace Game
 					{
 						EnsureMusketEquipped();
 					}
-					// Los lanzables se consumen solos, no es necesario recargar
 				}
 			}
 			else
@@ -177,7 +269,7 @@ namespace Game
 						return;
 				}
 
-				// 1. Lanzables (máxima prioridad)
+				// 1. Lanzables (máxima prioridad) - siempre usan apuntado normal
 				if (distance >= ThrowableAttackRange.X && distance <= ThrowableAttackRange.Y && HasThrowableInInventory())
 				{
 					if (EnsureThrowableEquipped())
@@ -189,38 +281,131 @@ namespace Game
 					}
 				}
 
-				// 2. Ballesta
-				if (HasCrossbowInInventory())
+				// Para criaturas especiales: apuntado sin levantar brazo
+				if (IsSpecialNoRaiseCreature())
 				{
-					if (EnsureCrossbowEquipped())
+					// 2. Ballesta
+					if (HasCrossbowInInventory() && EnsureCrossbowEquipped())
+					{
+						StartCustomAiming(CrossbowBlock.Index);
+						return;
+					}
+
+					// 3. Arco
+					if (HasBowInInventory() && EnsureBowEquipped())
+					{
+						StartCustomAiming(BowBlock.Index);
+						return;
+					}
+
+					// 4. Mosquete
+					if (EnsureMusketEquipped())
+					{
+						StartCustomAiming(MusketBlock.Index);
+						return;
+					}
+				}
+				else
+				{
+					// Comportamiento normal para otras criaturas
+					if (HasCrossbowInInventory())
+					{
+						if (EnsureCrossbowEquipped())
+						{
+							m_isAiming = true;
+							m_aimTimer = 0f;
+							m_componentMiner.Aim(CalculateAimRay(), AimState.InProgress);
+							return;
+						}
+					}
+
+					if (HasBowInInventory())
+					{
+						if (EnsureBowEquipped())
+						{
+							m_isAiming = true;
+							m_aimTimer = 0f;
+							m_componentMiner.Aim(CalculateAimRay(), AimState.InProgress);
+							return;
+						}
+					}
+
+					if (EnsureMusketEquipped())
 					{
 						m_isAiming = true;
 						m_aimTimer = 0f;
 						m_componentMiner.Aim(CalculateAimRay(), AimState.InProgress);
-						return;
 					}
-				}
-
-				// 3. Arco
-				if (HasBowInInventory())
-				{
-					if (EnsureBowEquipped())
-					{
-						m_isAiming = true;
-						m_aimTimer = 0f;
-						m_componentMiner.Aim(CalculateAimRay(), AimState.InProgress);
-						return;
-					}
-				}
-
-				// 4. Mosquete
-				if (EnsureMusketEquipped())
-				{
-					m_isAiming = true;
-					m_aimTimer = 0f;
-					m_componentMiner.Aim(CalculateAimRay(), AimState.InProgress);
 				}
 			}
+		}
+
+		private void StartCustomAiming(int weaponContents)
+		{
+			m_isCustomAiming = true;
+			m_customAimTimer = 0f;
+			m_customWeaponContents = weaponContents;
+
+			if (m_componentCreature.ComponentCreatureModel != null)
+				m_componentCreature.ComponentCreatureModel.AimHandAngleOrder = 0f;
+		}
+
+		private void StopCustomAiming()
+		{
+			if (m_isCustomAiming)
+			{
+				// Cancelar la puntería en el subsistema (para que suelte el martillo, etc.)
+				Ray3 aimRay = CalculateAimRay();
+				m_componentMiner.Aim(aimRay, AimState.Cancelled);
+
+				ComponentCreatureModel model = m_componentCreature.ComponentCreatureModel;
+				if (model != null)
+				{
+					model.InHandItemRotationOrder = Vector3.Zero;
+					model.InHandItemOffsetOrder = Vector3.Zero;
+					model.AimHandAngleOrder = 0f;
+				}
+				m_isCustomAiming = false;
+				m_customAimTimer = 0f;
+			}
+		}
+
+		private void UpdateWeaponRotation(Ray3 aimRay)
+		{
+			ComponentCreatureModel model = m_componentCreature.ComponentCreatureModel;
+			if (model == null) return;
+
+			// Posición aproximada de la mano derecha
+			Vector3 bodyPos = m_componentCreature.ComponentBody.Position;
+			Matrix bodyMatrix = m_componentCreature.ComponentBody.Matrix;
+			Vector3 handPos = bodyPos + bodyMatrix.Up * 0.7f + bodyMatrix.Right * 0.3f + bodyMatrix.Forward * 0.1f;
+
+			// Dirección hacia el punto al que apuntar
+			Vector3 targetPoint = aimRay.Position + aimRay.Direction * 10f;
+			Vector3 desiredDir = Vector3.Normalize(targetPoint - handPos);
+
+			// Rotación base del arma
+			Vector3 baseRot = BaseWeaponRotations.ContainsKey(m_customWeaponContents)
+				? BaseWeaponRotations[m_customWeaponContents]
+				: Vector3.Zero;
+
+			// Proyectar la dirección deseada en el espacio local del cuerpo
+			float localX = Vector3.Dot(desiredDir, bodyMatrix.Right);
+			float localY = Vector3.Dot(desiredDir, bodyMatrix.Up);
+			float localZ = Vector3.Dot(desiredDir, bodyMatrix.Forward);
+
+			float yawOffset = MathF.Atan2(localX, localZ);
+			float pitchOffset = -MathF.Asin(localY);
+
+			// Componer: base + offset
+			model.InHandItemRotationOrder = baseRot + new Vector3(pitchOffset, yawOffset, 0f);
+			model.AimHandAngleOrder = 0f;
+
+			// Ajustar posición del arma en la mano
+			if (m_customWeaponContents == BowBlock.Index)
+				model.InHandItemOffsetOrder = new Vector3(0.15f, -0.15f, 0.15f);
+			else
+				model.InHandItemOffsetOrder = new Vector3(-0.1f, -0.15f, 0.25f);
 		}
 
 		private float GetAimTime(int contents)
@@ -485,6 +670,7 @@ namespace Game
 		public override void Dispose()
 		{
 			if (m_isAiming) CancelAiming();
+			if (m_isCustomAiming) StopCustomAiming();
 			base.Dispose();
 		}
 	}
