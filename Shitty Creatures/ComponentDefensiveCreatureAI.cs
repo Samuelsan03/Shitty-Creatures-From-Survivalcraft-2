@@ -189,8 +189,17 @@ namespace Game
 				else
 				{
 					m_componentMiner.Aim(aimRayWeapon, AimState.Completed);
-					m_isCustomAiming = false;
 					m_cooldownTimer = GetCooldown(m_customWeaponContents);
+
+					if (m_customWeaponContents == FlameThrowerBlock.Index)
+					{
+						// Seguir apuntando para el siguiente disparo en ráfaga
+						m_customAimTimer = 0f;
+					}
+					else
+					{
+						m_isCustomAiming = false;
+					}
 
 					if (m_customWeaponContents == CrossbowBlock.Index || m_customWeaponContents == BowBlock.Index)
 					{
@@ -257,8 +266,17 @@ namespace Game
 				else
 				{
 					m_componentMiner.Aim(aimRay, AimState.Completed);
-					m_isAiming = false;
 					m_cooldownTimer = GetCooldown(activeContents);
+
+					if (activeContents == FlameThrowerBlock.Index)
+					{
+						// Seguir apuntando para el siguiente disparo en ráfaga
+						m_aimTimer = 0f;
+					}
+					else
+					{
+						m_isAiming = false;
+					}
 
 					if (activeContents == CrossbowBlock.Index || activeContents == BowBlock.Index)
 					{
@@ -346,7 +364,7 @@ namespace Game
 					else
 					{
 						m_isAiming = true;
-						m_aimTimer = 0f;
+						m_aimTimer = GetAimTime(FlameThrowerBlock.Index); // Primer disparo inmediato
 						m_componentMiner.Aim(CalculateAimRay(), AimState.InProgress);
 						return;
 					}
@@ -451,8 +469,17 @@ namespace Game
 		private void StartCustomAiming(int weaponContents)
 		{
 			m_isCustomAiming = true;
-			m_customAimTimer = 0f;
 			m_customWeaponContents = weaponContents;
+
+			// Para el lanzallamas, el primer disparo es inmediato
+			if (weaponContents == FlameThrowerBlock.Index)
+			{
+				m_customAimTimer = GetAimTime(weaponContents);
+			}
+			else
+			{
+				m_customAimTimer = 0f;
+			}
 
 			// No forzar AimHandAngleOrder a 0 aquí, lo hará UpdateWeaponRotation
 		}
