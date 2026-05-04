@@ -14,6 +14,7 @@ namespace Game
 		private SubsystemAudio m_subsystemAudio;
 		private SubsystemPickables m_subsystemPickables;
 		private ComponentHealth m_componentHealth;
+		private ComponentCreatureSounds m_componentCreatureSounds; // NUEVO
 
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
@@ -21,6 +22,7 @@ namespace Game
 			m_subsystemAudio = Project.FindSubsystem<SubsystemAudio>(true);
 			m_subsystemPickables = Project.FindSubsystem<SubsystemPickables>(true);
 			m_componentHealth = Entity.FindComponent<ComponentHealth>();
+			m_componentCreatureSounds = Entity.FindComponent<ComponentCreatureSounds>(); // NUEVO
 
 			HirePrice = valuesDictionary.GetValue<int>("HirePrice", 100);
 			IsHired = valuesDictionary.GetValue<bool>("IsHired", false);
@@ -45,7 +47,6 @@ namespace Game
 			int coinIndex = BlocksManager.GetBlockIndex(typeof(NuclearCoinBlock).Name, true);
 			var inventory = buyer.ComponentMiner.Inventory;
 
-			// Contar monedas nucleares en el inventario del jugador
 			int totalCoins = 0;
 			for (int i = 0; i < inventory.SlotsCount; i++)
 			{
@@ -65,7 +66,6 @@ namespace Game
 				return false;
 			}
 
-			// Descontar las monedas
 			int remainingToRemove = HirePrice;
 			for (int i = 0; i < inventory.SlotsCount && remainingToRemove > 0; i++)
 			{
@@ -79,10 +79,14 @@ namespace Game
 				}
 			}
 
-			// Marcar como contratado
 			IsHired = true;
 
-			// Mensaje de éxito y sonido
+			// Reproducir sonido idle (feliz) del NPC
+			if (m_componentCreatureSounds != null)
+			{
+				m_componentCreatureSounds.PlayIdleSound(false); // false asegura que suene si ha pasado al menos 1s
+			}
+
 			string successMessage = LanguageControl.GetContentWidgets("HireWidget", "SuccessMessage");
 			buyer.ComponentGui.DisplaySmallMessage(successMessage, Color.Green, false, false);
 			m_subsystemAudio.PlaySound("Audio/UI/money", 1f, 0f, 0f, 0f);
@@ -92,7 +96,6 @@ namespace Game
 
 		public void Update(float dt)
 		{
-			// Sin actualizaciones periódicas necesarias
 		}
 	}
 }
