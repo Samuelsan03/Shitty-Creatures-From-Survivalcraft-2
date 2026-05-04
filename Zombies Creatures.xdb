@@ -49,9 +49,8 @@
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Inventory" Guid="a5d09a9c-2b78-47b6-9f70-29f6e148acc8" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="NewCreatureCollect" Guid="61ae9143-a1b8-4c68-b2dc-2686301598e5" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <MemberComponentTemplate Name="NewCreatureCollect" Guid="61ae9143-a1b8-4c68-b2dc-2686301598e5" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
     <Parameter Name="PickFactors" Guid="80b39166-9973-4a37-bbbd-a65549641336" Value="Tools;1.0,Weapons;1.0" Type="string"/>
-    <Parameter Name="Class" Value="Game.ComponentNewCreatureCollect" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="PoisonInfected" Guid="c7474795-b1de-4fa0-8952-1bc10c903207">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
@@ -172,7 +171,6 @@
   <Parameter Name="NightChaseRange" Guid="2cdf18c1-932b-45e1-911f-52aef53f70f2" Value="75" Type="float"/>
   <Parameter Name="AutoChaseMask" Guid="5bb5c4e0-1679-4e39-ae09-cb72811d8855" Value="LandPredator" Type="Game.CreatureCategory"/>
   <Parameter Name="ChaseNonPlayerProbability" Guid="4c110f53-7aeb-4c3f-b54a-09a9f4788850" Value="1" Type="float"/>
-  <Parameter Name="RangedAttackRange" Guid="0727b306-e072-49e6-a56d-939ccdf859d6" Value="5,100" Type="Vector2"/>
   <Parameter Name="DestroyBlocksWhenStuck" Guid="9e25354b-71fb-4cb4-857d-2ba10fbe0b57" Value="true" Type="bool"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="NewHerdBehavior" Guid="3b375243-6874-4416-bf63-c93c44f34010" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
@@ -208,6 +206,9 @@
         <Parameter Name="IdleSound" Guid="780c8fc5-2806-405c-a0cf-caa47ca9aa18" Value="Audio/Creatures/Zombie 1/Idie" Type="string"/>
         <Parameter Name="AttackSound" Guid="759e782e-9ab2-4467-8886-52c194fe1577" Value="Audio/Creatures/Zombie 1/Attack" Type="string"/>
             </MemberComponentTemplate>
+            <MemberComponentTemplate Name="DefensiveCreatureAI" Guid="261c72f9-f2d3-41c3-8eff-d12047704fc2" InheritanceParent="0f69cb1e-cf48-46bf-93ec-6990112112d5">
+  <Parameter Name="CanUseInventory" Guid="85817888-90e8-42f3-97a3-0b13652e074b" Value="true" Type="bool" />
+</MemberComponentTemplate>
             <MemberComponentTemplate Name="NewCreatureCollect" Guid="57e8fb4a-59e5-4247-b51a-f0c0fe2ee5cf" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
     <Parameter Name="PickFactors" Guid="3869a0f0-48ab-4339-9aa3-0ad35705b245" Value="Tools;1.0,Weapons;1.0" Type="string"/>
 </MemberComponentTemplate>
@@ -334,9 +335,8 @@
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Inventory" Guid="b75ecb85-20bf-4e2f-8dbb-aa5edb59af8b" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="NewCreatureCollect" Guid="4c65afb8-b416-4a32-a187-d24cf0da3af4" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <MemberComponentTemplate Name="NewCreatureCollect" Guid="4c65afb8-b416-4a32-a187-d24cf0da3af4" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
     <Parameter Name="PickFactors" Guid="c15f2bba-e809-4cfe-a6c2-ea3198478d48" Value="Tools;1.0,Weapons;1.0" Type="string"/>
-    <Parameter Name="Class" Value="Game.ComponentNewCreatureCollect" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="PoisonInfected" Guid="15e44e4c-20e2-496d-a21f-56b845b8b534">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
@@ -479,9 +479,8 @@
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Inventory" Guid="6108b9a0-7600-41a8-90a2-00f8a3db35c9" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="NewCreatureCollect" Guid="5283b617-eb95-49f6-b818-9fc58f32e300" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <MemberComponentTemplate Name="NewCreatureCollect" Guid="5283b617-eb95-49f6-b818-9fc58f32e300" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
     <Parameter Name="PickFactors" Guid="91ea4162-1715-44a5-a940-5242b7bc0cd1" Value="Tools;1.0,Weapons;1.0" Type="string"/>
-    <Parameter Name="Class" Value="Game.ComponentNewCreatureCollect" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="PoisonInfected" Guid="452fd3bc-46c6-4838-b788-33801abd64f4">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
@@ -499,7 +498,6 @@
   <Parameter Name="NightChaseRange" Guid="e6797e01-3951-4e85-84c0-b030c32ebf3f" Value="75" Type="float"/>
   <Parameter Name="AutoChaseMask" Guid="56aa6ea0-7521-44c8-9d17-c04f00ea5991" Value="LandPredator" Type="Game.CreatureCategory"/>
   <Parameter Name="ChaseNonPlayerProbability" Guid="8e64bb69-8003-4335-8a9f-43ff0f10689d" Value="1" Type="float"/>
-  <Parameter Name="RangedAttackRange" Guid="461636cd-df31-4d1e-bca5-4116424c0b20" Value="5,100" Type="Vector2"/>
   <Parameter Name="DestroyBlocksWhenStuck" Guid="c3be7e17-5a69-4177-bd6f-35cbfdc881ad" Value="true" Type="bool"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="NewHerdBehavior" Guid="6da8c96d-39e4-4312-be05-3d44d4942049" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
@@ -1122,9 +1120,8 @@
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Inventory" Guid="396e0dba-027e-4a5c-a640-f0e95fa46b16" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="NewCreatureCollect" Guid="4c60fdbf-5c58-41e0-a27a-8712b4f636d5" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <MemberComponentTemplate Name="NewCreatureCollect" Guid="4c60fdbf-5c58-41e0-a27a-8712b4f636d5" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
     <Parameter Name="PickFactors" Guid="cf563f83-0e27-4109-a4c8-b7ac8a217b8b" Value="Tools;1.0,Weapons;1.0" Type="string"/>
-    <Parameter Name="Class" Value="Game.ComponentNewCreatureCollect" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="PoisonInfected" Guid="ae44b50a-b850-4d6f-a655-9d89fec776b5">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
@@ -1237,6 +1234,9 @@
     <Parameter Name="SlotsCount" Value="16" Type="int"/>
     <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
   </MemberComponentTemplate>
+  <MemberComponentTemplate Name="DefensiveCreatureAI" Guid="487b6bd7-8c37-452d-b747-8d091f2b439a" InheritanceParent="0f69cb1e-cf48-46bf-93ec-6990112112d5">
+  <Parameter Name="CanUseInventory" Guid="ffb633c7-a6d9-4c42-8be4-9b917e436725" Value="true" Type="bool" />
+</MemberComponentTemplate>
         <MemberComponentTemplate Name="DeathSpawner" Guid="34890adb-4b45-47a9-ae32-4509d1b0a922" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="c8e5556d-cfbb-495a-8222-33e774a20b84"/>
     <Parameter Name="DeathSpawnTemplates" Value="GhostNormal:0.01;InfectedMuscle1:0.5" Type="string" Guid="a209b406-0a3f-494d-969f-b729f96ba971"/>
@@ -1253,7 +1253,6 @@
   <Parameter Name="NightChaseRange" Guid="08d5d5a1-6203-4cfd-a4e2-76d2fc8d1da9" Value="75" Type="float"/>
   <Parameter Name="AutoChaseMask" Guid="e1ef7640-0df3-4906-9a7e-799f2fd67c78" Value="LandPredator" Type="Game.CreatureCategory"/>
   <Parameter Name="ChaseNonPlayerProbability" Guid="00a29cd3-2884-4bc6-8883-b3b300fe3567" Value="1" Type="float"/>
-  <Parameter Name="RangedAttackRange" Guid="34ebd4ba-5e04-465b-b635-4e53c57e3c08" Value="5,100" Type="Vector2"/>
   <Parameter Name="DestroyBlocksWhenStuck" Guid="983be6c2-3365-494f-9eca-13ba6d955aeb" Value="true" Type="bool"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="NewHerdBehavior" Guid="b790f525-9431-4e36-990e-3dcbbcabaea7" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
@@ -1287,9 +1286,8 @@
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Inventory" Guid="fc703bc2-e57b-44d7-9ded-3b3b2f72fafb" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="NewCreatureCollect" Guid="128690e6-17ed-4311-aa32-aac554075190" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <MemberComponentTemplate Name="NewCreatureCollect" Guid="128690e6-17ed-4311-aa32-aac554075190" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
     <Parameter Name="PickFactors" Guid="556f07aa-7696-4594-9838-15c1b1274a10" Value="Tools;1.0,Weapons;1.0" Type="string"/>
-    <Parameter Name="Class" Value="Game.ComponentNewCreatureCollect" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="PoisonInfected" Guid="31ae77f1-e867-4f40-b328-757c3e0b4f79">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
@@ -1392,9 +1390,8 @@
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Inventory" Guid="c10ed204-a294-4c01-a004-3e8ea9cb296e" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="NewCreatureCollect" Guid="965cfa76-bb5f-4c9d-8029-400ac6b87d5d" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <MemberComponentTemplate Name="NewCreatureCollect" Guid="965cfa76-bb5f-4c9d-8029-400ac6b87d5d" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
     <Parameter Name="PickFactors" Guid="3e3562ac-f061-48c6-85f9-db541a5356b6" Value="Tools;1.0,Weapons;1.0" Type="string"/>
-    <Parameter Name="Class" Value="Game.ComponentNewCreatureCollect" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="PoisonInfected" Guid="eded4904-cd6d-4402-beb8-fae6ea54c713">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
@@ -1507,6 +1504,9 @@
     <Parameter Name="SlotsCount" Value="16" Type="int"/>
     <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
   </MemberComponentTemplate>
+  <MemberComponentTemplate Name="DefensiveCreatureAI" Guid="1bba3530-fe04-4b47-adb3-8352cc8bc631" InheritanceParent="0f69cb1e-cf48-46bf-93ec-6990112112d5">
+  <Parameter Name="CanUseInventory" Guid="c3d64458-af51-455c-bb8a-9d9c8730cc97" Value="true" Type="bool" />
+</MemberComponentTemplate>
         <MemberComponentTemplate Name="DeathSpawner" Guid="37cc4a1f-dfce-42cf-857e-609297c75d0a" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="d679bddf-6df5-4a38-b696-4ea67af17fc4"/>
     <Parameter Name="DeathSpawnTemplates" Value="InfectedMuscle2" Type="string" Guid="1c2b2215-cc2d-4a63-bf86-a1c2f6dc9625"/>
@@ -1520,7 +1520,6 @@
   <Parameter Name="NightChaseRange" Guid="75491c06-3f36-4f57-8bd7-b2134a0ea252" Value="75" Type="float"/>
   <Parameter Name="AutoChaseMask" Guid="65f809ad-5931-44bb-a355-44491ce7f2d5" Value="LandPredator" Type="Game.CreatureCategory"/>
   <Parameter Name="ChaseNonPlayerProbability" Guid="6431c540-fa39-4e22-92bc-82191aa5ce15" Value="1" Type="float"/>
-  <Parameter Name="RangedAttackRange" Guid="cbada280-8897-42b5-93a9-ebe236cd1458" Value="5,100" Type="Vector2"/>
   <Parameter Name="DestroyBlocksWhenStuck" Guid="472d3f04-b0cd-4f0a-8271-2a3d6632a9d7" Value="true" Type="bool"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="NewHerdBehavior" Guid="a08a8392-3591-4927-bce4-12c8e6840123" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
@@ -1554,9 +1553,8 @@
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Inventory" Guid="9f874659-c2a3-439b-9cf8-587b51871fe7" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="NewCreatureCollect" Guid="4d1aa3a7-b25a-4dac-bdcc-461e0b45119d" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <MemberComponentTemplate Name="NewCreatureCollect" Guid="4d1aa3a7-b25a-4dac-bdcc-461e0b45119d" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
     <Parameter Name="PickFactors" Guid="338e905b-6f3a-419c-8af2-20e57c386e35" Value="Tools;1.0,Weapons;1.0" Type="string"/>
-    <Parameter Name="Class" Value="Game.ComponentNewCreatureCollect" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="PoisonInfected" Guid="6c16bb67-5f56-469e-9a9f-463be5a1e240">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
@@ -3030,9 +3028,8 @@
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="Inventory" Guid="1b38a91a-37d0-4afe-83b8-bbb3c79e4708" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="NewCreatureCollect" Guid="821659c2-1e50-4f46-9105-e940440534a5" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <MemberComponentTemplate Name="NewCreatureCollect" Guid="821659c2-1e50-4f46-9105-e940440534a5" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
     <Parameter Name="PickFactors" Guid="04fcaae9-8d84-4d2e-bf9d-7c099de014a4" Value="Tools;1.0,Weapons;1.0" Type="string"/>
-    <Parameter Name="Class" Value="Game.ComponentNewCreatureCollect" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="ZombieAI2" Guid="d50741d1-7674-44a3-bff1-0bb7d22704a9" InheritanceParent="9d185bf8-92ec-4ea6-ad86-b8a99b650fd2">
     <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="378880e8-6b3f-4d38-b9ec-b1694b612233"/>
@@ -3178,6 +3175,9 @@
         <MemberComponentTemplate Name="SummonBehavior" Guid="b3600731-9c19-4c79-a5fd-661edd5a3909" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
               <Parameter Name="IsEnabled" Guid="0ae628f0-9433-475d-809e-8adfbca432ec" Value="True" Type="bool"/>
             </MemberComponentTemplate>
+            <MemberComponentTemplate Name="DefensiveCreatureAI" Guid="1a6ee99d-ae16-41ea-bc75-aa91ac7f18cf" InheritanceParent="0f69cb1e-cf48-46bf-93ec-6990112112d5">
+  <Parameter Name="CanUseInventory" Guid="05376080-b16c-44ae-8676-3e4f69893d56" Value="true" Type="bool" />
+</MemberComponentTemplate>
 <MemberComponentTemplate Name="NewChaseBehavior" Guid="79de41dd-0575-4789-85f8-a0c38d085e4a" InheritanceParent="1db20f99-32ba-4e7a-8e76-10686a2e76e5">
   <Parameter Name="ChaseWhenAttackedProbability" Guid="19f05942-3c01-4c99-9f05-cc689f68b26a" Value="1" Type="float"/>
   <Parameter Name="NightChaseTime" Guid="02994a3d-0a60-4629-89d0-a23c463b918c" Value="90" Type="float"/>
@@ -3202,9 +3202,8 @@
   </MemberComponentTemplate>
     <MemberComponentTemplate Name="Inventory" Guid="56fc113e-707c-4b28-86a9-3e7f732f7529" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="NewCreatureCollect" Guid="c3e2ec50-5b92-46b1-ab8f-8c8f8fbffd36" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <MemberComponentTemplate Name="NewCreatureCollect" Guid="c3e2ec50-5b92-46b1-ab8f-8c8f8fbffd36" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
     <Parameter Name="PickFactors" Guid="18e17844-5468-4ed9-aa02-ec5ffc6f93f4" Value="Tools;1.0,Weapons;1.0" Type="string"/>
-    <Parameter Name="Class" Value="Game.ComponentNewCreatureCollect" Type="string"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="GlowingEyes" Guid="2aa310a3-21e5-4444-b7f6-cc3bd444d6ce" InheritanceParent="bb8701d3-3a4f-44f7-8a1f-3a455533f632">
               <Parameter Name="GlowingEyesColor" Guid="ba5e41c8-bd71-43e8-b45f-45a56c09ccfb" Value="0,255,0" Type="Color"/>
@@ -3299,9 +3298,8 @@
         <EntityTemplate Name="Boomer2" Guid="0287aaeb-ea3f-46e3-9643-1b0821860c0a" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
         <MemberComponentTemplate Name="Inventory" Guid="0ac9a7b7-ee6e-416d-ae92-b34747826f8f" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="NewCreatureCollect" Guid="b5af08b7-060f-44f0-a346-0774f8308423" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <MemberComponentTemplate Name="NewCreatureCollect" Guid="b5af08b7-060f-44f0-a346-0774f8308423" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
     <Parameter Name="PickFactors" Guid="ebc81953-93d9-49e2-ad3d-da82b9e50342" Value="Tools;1.0,Weapons;1.0" Type="string"/>
-    <Parameter Name="Class" Value="Game.ComponentNewCreatureCollect" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="ZombieAI2" Guid="a155a5f0-bc14-4e8d-ae18-cee8a6828d4c" InheritanceParent="9d185bf8-92ec-4ea6-ad86-b8a99b650fd2">
     <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="984b0a1f-298d-4861-97c4-a148a962a406"/>
@@ -3468,6 +3466,9 @@
   <Parameter Name="FireDuration" Value="10" Type="float"/>
   <Parameter Name="PreventExplosion" Value="false" Type="bool"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="DefensiveCreatureAI" Guid="49cbfa93-ffd2-4543-a68a-e1f228010840" InheritanceParent="0f69cb1e-cf48-46bf-93ec-6990112112d5">
+  <Parameter Name="CanUseInventory" Guid="8cdb9a04-1a0e-4fbf-833b-0b1a7e06cd75" Value="true" Type="bool" />
+</MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureVomitBehavior" Guid="1df9b336-1b5c-400b-9119-5bec34b9db44" InheritanceParent="a91f3c5e-8c2d-4c1e-b7f4-6e2a9d3b7c11">
   <Parameter Name="VomitFire" Guid="387df872-b856-45ac-b7ab-002f56980c65" Value="true" Type="bool"/>
   <Parameter Name="VomitProbability" Guid="669f6c22-d9b8-42a4-954e-d98dc2749d1e" Value="0.05" Type="float"/>
@@ -3501,9 +3502,8 @@
   </MemberComponentTemplate>
     <MemberComponentTemplate Name="Inventory" Guid="7be05408-54cf-403d-a44a-7a7dc60f007f" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="NewCreatureCollect" Guid="9c9ed1fc-936b-4a6b-b7ce-a2eb5dedbdc3" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <MemberComponentTemplate Name="NewCreatureCollect" Guid="9c9ed1fc-936b-4a6b-b7ce-a2eb5dedbdc3" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
     <Parameter Name="PickFactors" Guid="c69af415-acfc-4694-b25b-9e688ac92f0b" Value="Tools;1.0,Weapons;1.0" Type="string"/>
-    <Parameter Name="Class" Value="Game.ComponentNewCreatureCollect" Type="string"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="GlowingEyes" Guid="29df3c78-f38e-4600-bd4d-10d836c20c16" InheritanceParent="bb8701d3-3a4f-44f7-8a1f-3a455533f632">
               <Parameter Name="GlowingEyesColor" Guid="1b30b0a1-eb64-4962-8589-2165fe74c33c" Value="0,255,0" Type="Color"/>
@@ -3598,9 +3598,8 @@
         <EntityTemplate Name="Boomer3" Guid="2f46410e-3472-4aaf-a898-9ce5614de7cd" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
         <MemberComponentTemplate Name="Inventory" Guid="1d31bc0a-d26c-46b5-951b-865d7c59e8b1" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="NewCreatureCollect" Guid="de4488da-6e35-42e4-a7ac-921cee57cca8" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <MemberComponentTemplate Name="NewCreatureCollect" Guid="de4488da-6e35-42e4-a7ac-921cee57cca8" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
     <Parameter Name="PickFactors" Guid="58212fda-d7c4-496d-a532-4079140fe463" Value="Tools;1.0,Weapons;1.0" Type="string"/>
-    <Parameter Name="Class" Value="Game.ComponentNewCreatureCollect" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="ZombieAI2" Guid="9f0cfd88-a7ff-4141-9061-cb0f67cc2207" InheritanceParent="9d185bf8-92ec-4ea6-ad86-b8a99b650fd2">
     <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="efd950fe-8710-4db1-bfe3-5747de7a0fdc"/>
@@ -3759,6 +3758,9 @@
   <Parameter Name="VomitCooldown" Guid="3c69ae34-4942-4691-b6de-6db10ad594f3" Value="35" Type="float"/>
   <Parameter Name="VomitDistanceRange" Guid="c125eccc-e3fc-47ae-9084-789b8d0ee450" Value="5,20" Type="Vector2"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="DefensiveCreatureAI" Guid="a5113851-52b6-4412-97ce-9efa0702e15f" InheritanceParent="0f69cb1e-cf48-46bf-93ec-6990112112d5">
+  <Parameter Name="CanUseInventory" Guid="286823ba-0951-418c-a984-5b3c57a00c54" Value="true" Type="bool" />
+</MemberComponentTemplate>
         <MemberComponentTemplate Name="SummonBehavior" Guid="8eae594a-f160-4973-8d86-4e3d76c5e3a4" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
               <Parameter Name="IsEnabled" Guid="aa766323-bd44-4279-98ee-9dc4ae1146f4" Value="True" Type="bool"/>
             </MemberComponentTemplate>
@@ -3786,9 +3788,8 @@
   </MemberComponentTemplate>
     <MemberComponentTemplate Name="Inventory" Guid="1a3b67fd-37f2-42c3-ad36-a4e16c262757" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="NewCreatureCollect" Guid="114a869b-aa5a-4650-9ab0-547fd93af136" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <MemberComponentTemplate Name="NewCreatureCollect" Guid="114a869b-aa5a-4650-9ab0-547fd93af136" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
     <Parameter Name="PickFactors" Guid="48211501-dbd5-4378-b9d3-e8a8c2d15e85" Value="Tools;1.0,Weapons;1.0" Type="string"/>
-    <Parameter Name="Class" Value="Game.ComponentNewCreatureCollect" Type="string"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="GlowingEyes" Guid="acc308db-5ec2-4933-b1da-17a7c7b0c6b3" InheritanceParent="bb8701d3-3a4f-44f7-8a1f-3a455533f632">
               <Parameter Name="GlowingEyesColor" Guid="a3ec4d72-895f-4895-9fbc-718fec492a79" Value="0,255,0" Type="Color"/>
@@ -5183,9 +5184,8 @@
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Inventory" Guid="e9056f61-bacb-4487-bf69-2ab4fc25ebe8" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="NewCreatureCollect" Guid="5e81200e-c2b4-490d-939a-bb9f7c493da9" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <MemberComponentTemplate Name="NewCreatureCollect" Guid="5e81200e-c2b4-490d-939a-bb9f7c493da9" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
     <Parameter Name="PickFactors" Guid="9cba40a5-b762-499b-b1c4-60157904483a" Value="Tools;1.0,Weapons;1.0" Type="string"/>
-    <Parameter Name="Class" Value="Game.ComponentNewCreatureCollect" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="PoisonInfected" Guid="476ab149-2295-4c3d-8bf2-71c3bbde3908">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
@@ -5315,6 +5315,9 @@
     <Parameter Name="SlotsCount" Value="16" Type="int"/>
     <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
   </MemberComponentTemplate>
+  <MemberComponentTemplate Name="DefensiveCreatureAI" Guid="c89cef70-8fe6-41bf-a559-9a838d64e166" InheritanceParent="0f69cb1e-cf48-46bf-93ec-6990112112d5">
+  <Parameter Name="CanUseInventory" Guid="0917b487-566a-4257-88b0-7bbeea34f348" Value="true" Type="bool" />
+</MemberComponentTemplate>
         <MemberComponentTemplate Name="SummonBehavior" Guid="a0b633dc-5a79-4d25-9db6-9238e25f1ce9" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
               <Parameter Name="IsEnabled" Guid="f8cdbcfb-d9b1-4e58-b0e0-dffe2e3f9488" Value="True" Type="bool"/>
             </MemberComponentTemplate>
@@ -5327,7 +5330,6 @@
   <Parameter Name="NightChaseRange" Guid="74a612fd-ae79-4863-9349-8c2d606e38ac" Value="75" Type="float"/>
   <Parameter Name="AutoChaseMask" Guid="7c317119-2f20-40a4-be8c-6cd00acd0b7c" Value="LandPredator" Type="Game.CreatureCategory"/>
   <Parameter Name="ChaseNonPlayerProbability" Guid="4aa6a1ae-3e80-42c1-9679-922f66c5bad0" Value="1" Type="float"/>
-  <Parameter Name="RangedAttackRange" Guid="7e4b9115-b751-4d7b-b2ee-834134b8cc7b" Value="5,100" Type="Vector2"/>
   <Parameter Name="DestroyBlocksWhenStuck" Guid="ccb3decc-5bb4-4229-afca-0800ae3f2839" Value="true" Type="bool"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="NewHerdBehavior" Guid="c8637ae9-c19a-48b9-af5f-2abe15c6587c" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
@@ -5357,9 +5359,8 @@
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Inventory" Guid="fcc40af4-d502-4c05-b4df-3cd5799a8b80" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="NewCreatureCollect" Guid="50ae9e54-f48d-43b0-a4c2-ca367e33356f" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <MemberComponentTemplate Name="NewCreatureCollect" Guid="50ae9e54-f48d-43b0-a4c2-ca367e33356f" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
     <Parameter Name="PickFactors" Guid="79b67d95-c3d7-49bd-bb75-0802852bd6a0" Value="Tools;1.0,Weapons;1.0" Type="string"/>
-    <Parameter Name="Class" Value="Game.ComponentNewCreatureCollect" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="PoisonInfected" Guid="fb79e058-8957-49f6-b4b4-b19ac7617cfb">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
@@ -5500,9 +5501,8 @@
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Inventory" Guid="33ffae80-dfbb-442e-871c-d5093181c998" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="NewCreatureCollect" Guid="bb6562d0-e65f-4283-a20e-eaa07b158c5d" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <MemberComponentTemplate Name="NewCreatureCollect" Guid="bb6562d0-e65f-4283-a20e-eaa07b158c5d" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
     <Parameter Name="PickFactors" Guid="04e66ca7-4af7-4183-9274-dc1b85cfb1c9" Value="Tools;1.0,Weapons;1.0" Type="string"/>
-    <Parameter Name="Class" Value="Game.ComponentNewCreatureCollect" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="PoisonInfected" Guid="63f8f174-e4c2-4bb7-a611-4f6c780549e8">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
@@ -5637,6 +5637,9 @@
     <Parameter Name="SlotsCount" Value="16" Type="int"/>
     <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
   </MemberComponentTemplate>
+  <MemberComponentTemplate Name="DefensiveCreatureAI" Guid="6ebbaf3f-e41b-48c0-8a97-78f93ac6a7cb" InheritanceParent="0f69cb1e-cf48-46bf-93ec-6990112112d5">
+  <Parameter Name="CanUseInventory" Guid="70abb607-5e99-4cfb-a606-d79ebbce3329" Value="true" Type="bool" />
+</MemberComponentTemplate>
         <MemberComponentTemplate Name="DeathSpawner" Guid="1829f380-dd91-439b-8341-1c6d669a5254" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="d557745e-5da3-4f20-b0f4-3f4de01b5bec"/>
     <Parameter Name="DeathSpawnTemplates" Value="GhostFast" Type="string" Guid="b9b89f68-b426-4e61-80e5-7d7d31f3c60d"/>
@@ -5653,7 +5656,6 @@
   <Parameter Name="NightChaseRange" Guid="5dde6d69-99ec-484a-9c34-ca69a981149e" Value="75" Type="float"/>
   <Parameter Name="AutoChaseMask" Guid="779b9ab9-977e-4021-88e8-e756dd4fed34" Value="LandPredator" Type="Game.CreatureCategory"/>
   <Parameter Name="ChaseNonPlayerProbability" Guid="8f980612-e4af-49aa-b6cc-f065f126e14f" Value="1" Type="float"/>
-  <Parameter Name="RangedAttackRange" Guid="c18c38d2-e862-4e1e-9a28-c3df39b3fc56" Value="5,100" Type="Vector2"/>
   <Parameter Name="DestroyBlocksWhenStuck" Guid="2082ef4f-0452-472b-86f2-0eb95853800e" Value="true" Type="bool"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="NewHerdBehavior" Guid="7188626e-0a9e-4a1c-a6da-f73d38a20370">
@@ -5686,9 +5688,8 @@
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Inventory" Guid="80eb59c3-afa7-4b98-b41d-b52e5875a365" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="NewCreatureCollect" Guid="931f06e3-dc6c-4aa3-9c9a-e865e860c105" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <MemberComponentTemplate Name="NewCreatureCollect" Guid="931f06e3-dc6c-4aa3-9c9a-e865e860c105" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
     <Parameter Name="PickFactors" Guid="1c4eb894-b34d-43e0-82fe-e1e00d3066ed" Value="Tools;1.0,Weapons;1.0" Type="string"/>
-    <Parameter Name="Class" Value="Game.ComponentNewCreatureCollect" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="PoisonInfected" Guid="a52bd30b-3734-4d42-8d6a-3c5bc892fd51">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
@@ -5816,9 +5817,8 @@
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Inventory" Guid="70c50ecb-b880-499e-a060-14b51ef5d3e1" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="NewCreatureCollect" Guid="16db9cb2-3171-453d-9696-0b873e5c0a56" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <MemberComponentTemplate Name="NewCreatureCollect" Guid="16db9cb2-3171-453d-9696-0b873e5c0a56" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
     <Parameter Name="PickFactors" Guid="194282d9-cf55-466b-9f7d-912ea28852d7" Value="Tools;1.0,Weapons;1.0" Type="string"/>
-    <Parameter Name="Class" Value="Game.ComponentNewCreatureCollect" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="PoisonInfected" Guid="c40364c2-c296-44d0-9757-5ff98e6bc545">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
@@ -5971,7 +5971,6 @@
   <Parameter Name="NightChaseRange" Guid="1726bd93-3b76-4a4e-bacf-870e12e34e38" Value="75" Type="float"/>
   <Parameter Name="AutoChaseMask" Guid="2d30e5be-6648-4507-9e24-a2e7fcf6bcd9" Value="LandPredator" Type="Game.CreatureCategory"/>
   <Parameter Name="ChaseNonPlayerProbability" Guid="c8d66571-d4c0-4b71-a8c6-799ae152b447" Value="1" Type="float"/>
-  <Parameter Name="RangedAttackRange" Guid="3f03b659-2797-40cf-a6ce-75fe4f0c7266" Value="5,100" Type="Vector2"/>
   <Parameter Name="DestroyBlocksWhenStuck" Guid="ea169362-0cee-46a8-9105-c6ef3797e77a" Value="true" Type="bool"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="NewHerdBehavior" Guid="dfd5f992-14aa-4acc-b222-d533d7324849">
@@ -6004,9 +6003,8 @@
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Inventory" Guid="283fc262-ebd6-43ed-97f1-0a0543df32f5" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="NewCreatureCollect" Guid="7aa0ad31-e486-4311-9575-e925d9e18256" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <MemberComponentTemplate Name="NewCreatureCollect" Guid="7aa0ad31-e486-4311-9575-e925d9e18256" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
     <Parameter Name="PickFactors" Guid="dab4837a-e27d-443e-a3fe-6d3f6feca0a2" Value="Tools;1.0,Weapons;1.0" Type="string"/>
-    <Parameter Name="Class" Value="Game.ComponentNewCreatureCollect" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="PoisonInfected" Guid="df61c872-0549-4bc2-ad8a-dc7413a3c442">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
@@ -6254,9 +6252,8 @@
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="Inventory" Guid="53f3f140-cf35-4dbd-b219-a1df1d990746" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="NewCreatureCollect" Guid="7995a09a-7260-4830-874b-54f6717bf4db" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <MemberComponentTemplate Name="NewCreatureCollect" Guid="7995a09a-7260-4830-874b-54f6717bf4db" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
     <Parameter Name="PickFactors" Guid="a897d124-7dc4-43da-bc26-b867542b8528" Value="Tools;1.0,Weapons;1.0" Type="string"/>
-    <Parameter Name="Class" Value="Game.ComponentNewCreatureCollect" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="ZombieAI2" Guid="29fc43b0-b943-4cc7-89da-b0ace26f4efc" InheritanceParent="9d185bf8-92ec-4ea6-ad86-b8a99b650fd2">
     <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="6bc0df7a-35d5-41f3-8626-56250b8b7671"/>
@@ -6289,6 +6286,9 @@
   <Parameter Name="DestroyBlocks" Value="true" Type="bool"/>
   <Parameter Name="PreventExplosion" Value="false" Type="bool"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="DefensiveCreatureAI" Guid="f7389592-a384-49d9-856c-09753fcae186" InheritanceParent="0f69cb1e-cf48-46bf-93ec-6990112112d5">
+  <Parameter Name="CanUseInventory" Guid="a1fac013-1d09-4614-9de7-e1fb36d661d8" Value="true" Type="bool" />
+</MemberComponentTemplate>
         <MemberComponentTemplate Name="SummonBehavior" Guid="2c0e38a5-7743-47ad-8165-ae9d9a70b67b" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
               <Parameter Name="IsEnabled" Guid="626191db-aeb0-4e4e-afa6-f44ac0e6a03e" Value="True" Type="bool"/>
             </MemberComponentTemplate>
@@ -6316,9 +6316,8 @@
   </MemberComponentTemplate>
     <MemberComponentTemplate Name="Inventory" Guid="0fdca6f5-9f04-4ddb-b8b6-cdcbd83d8048" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="NewCreatureCollect" Guid="09b2047c-3f44-4666-8642-074b7fc30acf" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <MemberComponentTemplate Name="NewCreatureCollect" Guid="09b2047c-3f44-4666-8642-074b7fc30acf" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
     <Parameter Name="PickFactors" Guid="8c71993a-504a-4d75-a81c-3d5a58f9a323" Value="Tools;1.0,Weapons;1.0" Type="string"/>
-    <Parameter Name="Class" Value="Game.ComponentNewCreatureCollect" Type="string"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="GlowingEyes" Guid="5b29425f-83ba-4e16-949c-14ef7ca644b3" InheritanceParent="bb8701d3-3a4f-44f7-8a1f-3a455533f632">
               <Parameter Name="GlowingEyesColor" Guid="15d1708b-ca57-4dd4-b954-7afd8ae466f5" Value="0,255,0" Type="Color"/>
@@ -6435,9 +6434,8 @@
         <EntityTemplate Name="GhostBoomer2" Guid="d7b28fd5-e14c-40e1-bbb7-1b7151d3903b" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
         <MemberComponentTemplate Name="Inventory" Guid="cdfc5926-59a9-4e1f-a59e-fcf6b3ea8fd7" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="NewCreatureCollect" Guid="2bcefa77-aa2e-4973-87e1-5f87c83cb989" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <MemberComponentTemplate Name="NewCreatureCollect" Guid="2bcefa77-aa2e-4973-87e1-5f87c83cb989" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
     <Parameter Name="PickFactors" Guid="c6e5af53-fee2-4830-8720-d20eb939f5ab" Value="Tools;1.0,Weapons;1.0" Type="string"/>
-    <Parameter Name="Class" Value="Game.ComponentNewCreatureCollect" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="ZombieAI2" Guid="686a28d7-5600-4c39-9c3d-998a5066d883" InheritanceParent="9d185bf8-92ec-4ea6-ad86-b8a99b650fd2">
     <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="44135139-cabb-47c8-a713-789aa0e603f8"/>
@@ -6628,6 +6626,9 @@
   <Parameter Name="FireDuration" Value="10" Type="float"/>
   <Parameter Name="PreventExplosion" Value="false" Type="bool"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="DefensiveCreatureAI" Guid="eafe9176-18f6-4cef-bb9f-0d08b2dad94d" InheritanceParent="0f69cb1e-cf48-46bf-93ec-6990112112d5">
+  <Parameter Name="CanUseInventory" Guid="72d96b43-bf38-454b-b084-5764d143bfff" Value="true" Type="bool" />
+</MemberComponentTemplate>
         <MemberComponentTemplate Name="SummonBehavior" Guid="a1641514-8807-49d9-b185-50b1c5e71ddc" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
               <Parameter Name="IsEnabled" Guid="81f34115-ea8d-4b76-9109-ec40e8784448" Value="True" Type="bool"/>
             </MemberComponentTemplate>
@@ -6655,9 +6656,8 @@
   </MemberComponentTemplate>
     <MemberComponentTemplate Name="Inventory" Guid="3d5c6fff-c2c1-42a9-8aae-8bdde1c83107" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="NewCreatureCollect" Guid="2da86227-646a-4746-9240-647d170b2fdc" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <MemberComponentTemplate Name="NewCreatureCollect" Guid="2da86227-646a-4746-9240-647d170b2fdc" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
     <Parameter Name="PickFactors" Guid="1cd017b3-dbfc-42b4-a7a5-278a7234d2b8" Value="Tools;1.0,Weapons;1.0" Type="string"/>
-    <Parameter Name="Class" Value="Game.ComponentNewCreatureCollect" Type="string"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="GlowingEyes" Guid="81709572-f898-49c2-a039-3fce8dbd0e5c" InheritanceParent="bb8701d3-3a4f-44f7-8a1f-3a455533f632">
               <Parameter Name="GlowingEyesColor" Guid="e3e6f3fb-6caf-4ea9-b9da-a52e1cd1df0b" Value="0,255,0" Type="Color"/>
@@ -6780,9 +6780,8 @@
         <EntityTemplate Name="GhostBoomer3" Guid="90ef2302-e35c-4885-98ac-709db5a17fcf" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
         <MemberComponentTemplate Name="Inventory" Guid="9288f5a0-b8ef-4379-9b05-fad0532b9f2d" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="NewCreatureCollect" Guid="e8ad7640-0ac5-44e3-8e49-8605309f28b5" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <MemberComponentTemplate Name="NewCreatureCollect" Guid="e8ad7640-0ac5-44e3-8e49-8605309f28b5" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
     <Parameter Name="PickFactors" Guid="05a71bc2-8746-4f61-9a80-3d8d8910d1a2" Value="Tools;1.0,Weapons;1.0" Type="string"/>
-    <Parameter Name="Class" Value="Game.ComponentNewCreatureCollect" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="ZombieAI2" Guid="0129ad55-1ebe-4210-a159-87e47502ba44" InheritanceParent="9d185bf8-92ec-4ea6-ad86-b8a99b650fd2">
     <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="c74a1778-c952-4ed7-9d53-e22c114e8ca2"/>
@@ -6957,6 +6956,9 @@
   <Parameter Name="ExplosionPressure" Value="40" Type="float"/>
   <Parameter Name="PreventExplosion" Value="false" Type="bool"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="DefensiveCreatureAI" Guid="6f17a9e3-e22a-4ba8-8bb5-0868edddcc40" InheritanceParent="0f69cb1e-cf48-46bf-93ec-6990112112d5">
+  <Parameter Name="CanUseInventory" Guid="e2d529fd-b65f-4771-a90b-de5e86e3ff32" Value="true" Type="bool" />
+</MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureVomitBehavior" Guid="89ab7be6-a5e3-4b89-808e-3f3c9a3233f6" InheritanceParent="a91f3c5e-8c2d-4c1e-b7f4-6e2a9d3b7c11">
   <Parameter Name="VomitShit" Guid="538938fa-e391-4223-a218-d7176331369f" Value="true" Type="bool"/>
   <Parameter Name="VomitProbability" Guid="5c0d1ead-2f28-4e6e-b844-e11771cd37bb" Value="0.05" Type="float"/>
@@ -7026,9 +7028,8 @@
   </MemberComponentTemplate>
             <MemberComponentTemplate Name="Inventory" Guid="540b927e-64ba-4c39-95fa-17d251f8b897" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="NewCreatureCollect" Guid="9fe7b9f5-f0f9-4b07-b22a-4f11766c97dc" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <MemberComponentTemplate Name="NewCreatureCollect" Guid="9fe7b9f5-f0f9-4b07-b22a-4f11766c97dc" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
     <Parameter Name="PickFactors" Guid="22fb031d-b45a-4a8a-8af1-10356a1d84ea" Value="Tools;1.0,Weapons;1.0" Type="string"/>
-    <Parameter Name="Class" Value="Game.ComponentNewCreatureCollect" Type="string"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="Loot" Guid="e9ede641-6305-4286-b9a3-ff4849e7403b">
                 <ParameterSet Name="Loot" Guid="0a63f036-7f10-4ee1-a55f-b62cb49658a2">
@@ -8351,7 +8352,6 @@
   <Parameter Name="AutoChaseMask" Guid="0c2cbab2-2599-4863-afe2-1459f79a7b00" Value="LandPredator" Type="Game.CreatureCategory"/>
   <Parameter Name="ChaseNonPlayerProbability" Guid="65f47312-a4a6-48ad-8f84-73bddacbf58c" Value="1" Type="float"/>
   <Parameter Name="DestroyBlocksWhenStuck" Guid="8d312a85-e311-47f6-9547-d2c085227dd2" Value="true" Type="bool"/>
-  <Parameter Name="RangedAttackRange" Guid="02e3439c-b2c6-4690-84f6-0b88eed68077" Value="5,100" Type="Vector2"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="NewHerdBehavior" Guid="c4b518f8-4ea7-439d-99b5-43480c849073" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
         <Parameter Name="HerdName" Value="player" Type="string" Guid="1e080e54-37d4-49d0-a629-99fa81ef39ad"/>
@@ -8585,7 +8585,6 @@
   <Parameter Name="NightChaseRange" Guid="fe2cc44c-bac9-46a8-854e-70271bec5585" Value="75" Type="float"/>
   <Parameter Name="AutoChaseMask" Guid="727e756d-ae71-4f1e-9e18-092444f3abb5" Value="LandPredator" Type="Game.CreatureCategory"/>
   <Parameter Name="ChaseNonPlayerProbability" Guid="b54feec6-4f7e-4b99-b5ad-7e93af6cc00f" Value="1" Type="float"/>
-  <Parameter Name="RangedAttackRange" Guid="58c1b9e5-a93e-4a0a-b43a-bd6691a8e363" Value="5,100" Type="Vector2"/>
   <Parameter Name="DestroyBlocksWhenStuck" Guid="47d1a36b-aa41-42e3-9f69-bc2ff449f983" Value="true" Type="bool"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="NewHerdBehavior" Guid="99dbf965-0d19-4f18-94ea-bd542ce3d702" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
@@ -9275,7 +9274,6 @@
   <Parameter Name="NightChaseRange" Guid="a65188d1-b9aa-415a-a12b-1afa76acd68f" Value="75" Type="float"/>
   <Parameter Name="AutoChaseMask" Guid="0be2e38d-d368-4a35-8ea7-9a100bef0703" Value="LandPredator" Type="Game.CreatureCategory"/>
   <Parameter Name="ChaseNonPlayerProbability" Guid="a42fb83b-76f8-489f-be4a-cbf41dff9404" Value="1" Type="float"/>
-  <Parameter Name="RangedAttackRange" Guid="c4bb42d0-48ff-47f4-8eab-124129eb5d5c" Value="5,100" Type="Vector2"/>
   <Parameter Name="DestroyBlocksWhenStuck" Guid="7db133e0-656e-497c-9bba-467670009b58" Value="true" Type="bool"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="NewHerdBehavior" Guid="06e74760-8500-499c-93be-a5c08f941177" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
@@ -10017,9 +10015,8 @@
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Inventory" Guid="78276612-9e83-4c10-89fa-fb84a88cc811" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="NewCreatureCollect" Guid="5afee036-44ba-4696-b06e-6fb039692605" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <MemberComponentTemplate Name="NewCreatureCollect" Guid="5afee036-44ba-4696-b06e-6fb039692605" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
     <Parameter Name="PickFactors" Guid="e1bad834-247f-4bc2-b035-b400f057b4be" Value="Tools;1.0,Weapons;1.0" Type="string"/>
-    <Parameter Name="Class" Value="Game.ComponentNewCreatureCollect" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="PoisonInfected" Guid="e74f46a9-b018-419c-928d-087d22b659da">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
@@ -10135,6 +10132,9 @@
 <MemberComponentTemplate Name="SummonBehavior" Guid="d8470fa4-52ff-4265-9da3-475c81460ef8" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
         <Parameter Name="IsEnabled" Guid="1e7221a9-ceb6-41e4-8a5f-4793050d1325" Value="True" Type="bool"/>
       </MemberComponentTemplate>
+      <MemberComponentTemplate Name="DefensiveCreatureAI" Guid="5227205e-2a9a-4de6-b3fc-ff0600f3ecd3" InheritanceParent="0f69cb1e-cf48-46bf-93ec-6990112112d5">
+  <Parameter Name="CanUseInventory" Guid="adfde8af-8815-4582-9b15-ca55991918c0" Value="true" Type="bool" />
+</MemberComponentTemplate>
 <MemberComponentTemplate Name="RunAwayBehavior" Guid="610445fe-653d-4ff6-a892-f01e82bff833" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
 <MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="ddf86415-3ec9-441b-bace-5cbc84569020" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
 <MemberComponentTemplate Name="NewChaseBehavior" Guid="1c73516b-392c-41dd-ae60-0cb19fa6c37a" InheritanceParent="1db20f99-32ba-4e7a-8e76-10686a2e76e5">
@@ -10146,7 +10146,6 @@
   <Parameter Name="NightChaseRange" Guid="0e862aab-3d80-4e15-87d4-cb9555e043f1" Value="75" Type="float"/>
   <Parameter Name="AutoChaseMask" Guid="8d453c6a-f478-4ca4-8205-c7cfd4f3ca88" Value="LandPredator" Type="Game.CreatureCategory"/>
   <Parameter Name="ChaseNonPlayerProbability" Guid="add000c7-7538-4ebd-a88f-1d74670c50b8" Value="1" Type="float"/>
-  <Parameter Name="RangedAttackRange" Guid="d27f39c9-cdf1-4f97-86c7-43653cff43ad" Value="5,100" Type="Vector2"/>
   <Parameter Name="DestroyBlocksWhenStuck" Guid="5cba4fda-5e98-4267-8dd0-05103f80af1f" Value="true" Type="bool"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="NewHerdBehavior" Guid="da4b293a-5852-4fe3-8f21-9268005a42c4" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
@@ -10227,9 +10226,8 @@
   </MemberComponentTemplate>
     <MemberComponentTemplate Name="Inventory" Guid="8cc00121-f4c5-4fce-b067-287e7ecf808b" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="NewCreatureCollect" Guid="e5e8bab8-6775-4b0f-9d4a-3b5446094bd8" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <MemberComponentTemplate Name="NewCreatureCollect" Guid="e5e8bab8-6775-4b0f-9d4a-3b5446094bd8" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
     <Parameter Name="PickFactors" Guid="6bc6da1f-de63-4acb-a979-a9604d6cca29" Value="Tools;1.0,Weapons;1.0" Type="string"/>
-    <Parameter Name="Class" Value="Game.ComponentNewCreatureCollect" Type="string"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="NewAutoInteract" Guid="69cd1d43-5b4b-4e82-b8d6-c61c4e6c57e6" InheritanceParent="0d193534-6d05-4939-bba8-4a8755d3b064">
     <Parameter Name="AutoInteractRate" Value="1.0" Type="float"/>
@@ -10275,9 +10273,8 @@
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Inventory" Guid="be29d09d-efb7-4c86-8866-04d6a5011635" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="NewCreatureCollect" Guid="515f52a0-0f31-41d0-95ee-364ac135075e" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <MemberComponentTemplate Name="NewCreatureCollect" Guid="515f52a0-0f31-41d0-95ee-364ac135075e" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
     <Parameter Name="PickFactors" Guid="44cc4924-d3c1-4a8a-8d95-979367cf4db5" Value="Tools;1.0,Weapons;1.0" Type="string"/>
-    <Parameter Name="Class" Value="Game.ComponentNewCreatureCollect" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="PoisonInfected" Guid="bf1ff5f7-7282-4c6c-bf47-af84005c8c48" InheritanceParent="d5e7f9a1-b3c5-4d9f-1a3b-5c7d9f1a3b5c">
     <Parameter Name="PoisonResistance" Value="-100" Type="float"/>
@@ -10394,6 +10391,9 @@
         <MemberComponentTemplate Name="SummonBehavior" Guid="88c23204-bcce-4621-bac5-3e1bf83ad644" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
               <Parameter Name="IsEnabled" Guid="877350d6-863a-4d1a-bfd1-9caf46d202da" Value="True" Type="bool"/>
             </MemberComponentTemplate>
+            <MemberComponentTemplate Name="DefensiveCreatureAI" Guid="953a5a17-a5ea-4252-801f-feb7ab5b0dc2" InheritanceParent="0f69cb1e-cf48-46bf-93ec-6990112112d5">
+  <Parameter Name="CanUseInventory" Guid="f4f2983f-887d-46fc-96e4-4f474e31542b" Value="true" Type="bool" />
+</MemberComponentTemplate>
             <MemberComponentTemplate Name="FluInfected" Guid="d86fd499-15f4-4098-b8ed-c5f670451029" InheritanceParent="4301cca7-d3dd-4e09-ab45-eed3ff27e6aa">
         <Parameter Name="FluResistance" Value="450" Type="float"/>
         <Parameter Name="CoughSound" Value="Audio/Creatures/MaleCough/MaleCough1" Type="string"/>
@@ -10408,7 +10408,6 @@
   <Parameter Name="NightChaseRange" Guid="e5976612-bba8-472a-912c-ca31588c33e6" Value="75" Type="float"/>
   <Parameter Name="AutoChaseMask" Guid="f9f1b54c-935f-4e96-8185-ef4532643b24" Value="LandPredator" Type="Game.CreatureCategory"/>
   <Parameter Name="ChaseNonPlayerProbability" Guid="e379186d-c96b-4bf6-96f3-a805c74b4705" Value="1" Type="float"/>
-  <Parameter Name="RangedAttackRange" Guid="c722e591-bdfc-4196-8765-53207ee98357" Value="5,100" Type="Vector2"/>
   <Parameter Name="DestroyBlocksWhenStuck" Guid="6740281e-7dbe-4383-acf8-53671ae97598" Value="true" Type="bool"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewHerdBehavior" Guid="5013c08d-375c-47fa-a727-5497f11a42b9" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
@@ -10536,9 +10535,8 @@
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="Inventory" Guid="936c9fb2-db23-417d-b487-ca5b376b8f23" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="NewCreatureCollect" Guid="28b055b0-893f-4f12-b57f-685632ea0ec9" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <MemberComponentTemplate Name="NewCreatureCollect" Guid="28b055b0-893f-4f12-b57f-685632ea0ec9" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
     <Parameter Name="PickFactors" Guid="bb3de20a-737b-4f80-bef8-860407b4a9cd" Value="Tools;1.0,Weapons;1.0" Type="string"/>
-    <Parameter Name="Class" Value="Game.ComponentNewCreatureCollect" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="ZombieAI2" Guid="2dfcc7c6-d11c-4f25-aded-dee54e6a53ee" InheritanceParent="9d185bf8-92ec-4ea6-ad86-b8a99b650fd2">
     <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="53c276c4-b3d4-417a-9cf1-2811ee10df6e"/>
@@ -10689,9 +10687,8 @@
   </MemberComponentTemplate>
 <MemberComponentTemplate Name="Inventory" Guid="9f6a8532-0706-4c7c-816d-e3219533ad2b" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="NewCreatureCollect" Guid="c698b476-9fc5-412c-bb8b-d00e516ceef9" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <MemberComponentTemplate Name="NewCreatureCollect" Guid="c698b476-9fc5-412c-bb8b-d00e516ceef9" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
     <Parameter Name="PickFactors" Guid="8831344b-87e0-46df-9e15-a3e544804e34" Value="Tools;1.0,Weapons;1.0" Type="string"/>
-    <Parameter Name="Class" Value="Game.ComponentNewCreatureCollect" Type="string"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="GlowingEyes" Guid="3e533fb5-dd91-4580-9c29-66135eb11257" InheritanceParent="bb8701d3-3a4f-44f7-8a1f-3a455533f632">
               <Parameter Name="GlowingEyesColor" Guid="87c34579-7ebc-4d46-a8ff-4097fc8620a5" Value="0,255,0" Type="Color"/>
@@ -10718,7 +10715,6 @@
   <Parameter Name="NightChaseRange" Guid="8a949ba1-4c30-411a-96c9-18c4a4901418" Value="75" Type="float"/>
   <Parameter Name="AutoChaseMask" Guid="17ba2760-0d32-4ca7-bc61-c979a9fca751" Value="LandPredator" Type="Game.CreatureCategory"/>
   <Parameter Name="ChaseNonPlayerProbability" Guid="787d1a04-715c-46b1-980f-c318545e0c95" Value="1" Type="float"/>
-  <Parameter Name="RangedAttackRange" Guid="e904ec74-a2f8-45e1-a9c2-823419723b7f" Value="5,100" Type="Vector2"/>
   <Parameter Name="DestroyBlocksWhenStuck" Guid="f1505ec3-c4da-4494-89a3-c0e22df29d53" Value="true" Type="bool"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="NewHerdBehavior" Guid="79a6351d-2cf0-4478-96fb-8f33b772f145" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
@@ -10856,9 +10852,8 @@
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Inventory" Guid="24740512-bb0a-4421-8b2c-37c61d31c0dc" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="NewCreatureCollect" Guid="fc0950c7-900e-434f-871e-b95ecf585168" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <MemberComponentTemplate Name="NewCreatureCollect" Guid="fc0950c7-900e-434f-871e-b95ecf585168" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
     <Parameter Name="PickFactors" Guid="5e3c7487-7410-4f17-9fc8-45fdf5f632a5" Value="Tools;1.0,Weapons;1.0" Type="string"/>
-    <Parameter Name="Class" Value="Game.ComponentNewCreatureCollect" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="FluInfected" Guid="2dc6d37d-d405-4bdc-850a-7f96dac507e8" InheritanceParent="4301cca7-d3dd-4e09-ab45-eed3ff27e6aa">
         <Parameter Name="FluResistance" Value="100" Type="float"/>
@@ -10998,6 +10993,9 @@
         <MemberComponentTemplate Name="SummonBehavior" Guid="617a952a-2507-4d2b-9e49-e62a4eaa2b74" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
               <Parameter Name="IsEnabled" Guid="19984025-401c-4492-bfe6-a20fb53bd9e1" Value="True" Type="bool"/>
             </MemberComponentTemplate>
+            <MemberComponentTemplate Name="DefensiveCreatureAI" Guid="f59199b2-8bcc-456c-a38d-601bb2cd23ba" InheritanceParent="0f69cb1e-cf48-46bf-93ec-6990112112d5">
+  <Parameter Name="CanUseInventory" Guid="b5c6fdaa-b4c6-42f0-9f57-21e40367f831" Value="true" Type="bool" />
+</MemberComponentTemplate>
 <MemberComponentTemplate Name="NewChaseBehavior" Guid="6b8a112a-0bbb-41bf-b584-8c25327174f1" InheritanceParent="1db20f99-32ba-4e7a-8e76-10686a2e76e5">
   <Parameter Name="ChaseWhenAttackedProbability" Guid="3f8b8104-0756-47e9-b9d9-515f7dbea69f" Value="1" Type="float"/>
   <Parameter Name="NightChaseTime" Guid="7834fa11-f525-4143-bbe2-9b197966cd3e" Value="90" Type="float"/>
@@ -11007,7 +11005,6 @@
   <Parameter Name="NightChaseRange" Guid="3c58cd77-16a6-44d8-a758-68757e5ee734" Value="75" Type="float"/>
   <Parameter Name="AutoChaseMask" Guid="39a0b5ef-0eba-4515-9774-52b0ace3804b" Value="LandPredator" Type="Game.CreatureCategory"/>
   <Parameter Name="ChaseNonPlayerProbability" Guid="b8e57be9-f956-460a-84a6-6dc468a7b2cf" Value="1" Type="float"/>
-  <Parameter Name="RangedAttackRange" Guid="5117f4a0-bddb-40cf-a03d-a0a8677d52f4" Value="5,100" Type="Vector2"/>
   <Parameter Name="DestroyBlocksWhenStuck" Guid="c3f1eb13-eaee-4575-ae3b-3883d822e127" Value="true" Type="bool"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="NewHerdBehavior" Guid="92cec5fc-a099-492e-86b0-e43afb5855ed" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
@@ -11294,9 +11291,8 @@
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="Inventory" Guid="8c3ae6c5-993d-408e-adef-28072bd6f3ad" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="NewCreatureCollect" Guid="cd352a18-7df2-4170-a3df-774ec2988124" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <MemberComponentTemplate Name="NewCreatureCollect" Guid="cd352a18-7df2-4170-a3df-774ec2988124" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
     <Parameter Name="PickFactors" Guid="c950abf6-8b3f-4059-813a-ce9b84f70304" Value="Tools;1.0,Weapons;1.0" Type="string"/>
-    <Parameter Name="Class" Value="Game.ComponentNewCreatureCollect" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="ZombieAI2" Guid="b0b4ee85-4e92-452e-bf58-c5c49a49c999" InheritanceParent="9d185bf8-92ec-4ea6-ad86-b8a99b650fd2">
     <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="60db9bdd-b8e1-4430-ad0d-d8c7fc28d536"/>
@@ -11321,6 +11317,9 @@
   <Parameter Name="NoExplosionSound" Value="false" Type="bool"/>
   <Parameter Name="PreventExplosion" Value="false" Type="bool"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="DefensiveCreatureAI" Guid="0d977f33-6fec-45de-ac76-99113d85a0ae" InheritanceParent="0f69cb1e-cf48-46bf-93ec-6990112112d5">
+  <Parameter Name="CanUseInventory" Guid="8fd087eb-9d22-4cff-84de-ec3eb18532e5" Value="true" Type="bool" />
+</MemberComponentTemplate>
         <MemberComponentTemplate Name="GlowingEyes" Guid="c4dca7ef-8c98-4181-8d77-961954012afa" InheritanceParent="bb8701d3-3a4f-44f7-8a1f-3a455533f632">
               <Parameter Name="GlowingEyesColor" Guid="404b72c2-ee16-4047-9be0-57b513753733" Value="0,255,0" Type="Color"/>
               <Parameter Name="GlowingEyesOffset" Guid="4b01c3a5-59fc-46bc-9822-97ee7d23ab17" Value="0.06,0.2,0.1" Type="Vector3"/>
@@ -11340,7 +11339,6 @@
   <Parameter Name="NightChaseRange" Guid="53d8c97c-4634-4f55-a727-b08063f0243e" Value="75" Type="float"/>
   <Parameter Name="AutoChaseMask" Guid="3ba90ed1-808b-4b88-b514-903f6029cf22" Value="LandPredator" Type="Game.CreatureCategory"/>
   <Parameter Name="ChaseNonPlayerProbability" Guid="17b7948e-a2f2-43b6-9219-f745063e2898" Value="1" Type="float"/>
-  <Parameter Name="RangedAttackRange" Guid="2f6d08c7-e9db-469e-9f8e-0a66c7fed3f3" Value="5,100" Type="Vector2"/>
   <Parameter Name="DestroyBlocksWhenStuck" Guid="ee5bf2c8-f0a2-4a84-9c10-274174b873fe" Value="true" Type="bool"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="NewHerdBehavior" Guid="5ef5f2f1-da70-4d06-821a-77ffbdf42b0b" InheritanceParent="24c8a629-49be-4cb4-b829-78d5a5a14204">
@@ -11458,9 +11456,8 @@
             <MemberComponentTemplate Name="WalkAroundBehavior" Guid="12b73ae6-1f0b-4cd9-ab4a-b7582a2aa90d" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
 <MemberComponentTemplate Name="Inventory" Guid="f38f042b-1dff-473c-8f34-bd5d7abe0086" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="NewCreatureCollect" Guid="a98c82ff-b0a5-46a0-8299-508a31b2bb98" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <MemberComponentTemplate Name="NewCreatureCollect" Guid="a98c82ff-b0a5-46a0-8299-508a31b2bb98" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
     <Parameter Name="PickFactors" Guid="dc3c5495-eb5c-4d6b-883c-a7c068c6cee8" Value="Tools;1.0,Weapons;1.0" Type="string"/>
-    <Parameter Name="Class" Value="Game.ComponentNewCreatureCollect" Type="string"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="FeedBehavior" Guid="57dd0170-9f39-4197-81c7-273dec734c3c" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="a3029fb5-76ca-492a-b629-a4687164cef3" Value="False" Type="bool"/>
