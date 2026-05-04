@@ -11,23 +11,18 @@ namespace Game
 		public SubsystemAudio m_subsystemAudio;
 		public SubsystemAmbientSounds m_subsystemAmbientSounds;
 		public SubsystemTime m_subsystemTime;
+		public SubsystemExplosions m_subsystemExplosions;  // nueva referencia
 		public Random m_random = new Random();
 		public List<Projectile> m_activeProjectiles = new List<Projectile>();
 
 		public override int[] HandledBlocks
 		{
-			get
-			{
-				return new int[] { BigStoneFlameChunkBlock.Index };
-			}
+			get { return new int[] { BigStoneFlameChunkBlock.Index }; }
 		}
 
 		public UpdateOrder UpdateOrder
 		{
-			get
-			{
-				return UpdateOrder.Default;
-			}
+			get { return UpdateOrder.Default; }
 		}
 
 		public override void OnFiredAsProjectile(Projectile projectile)
@@ -51,6 +46,14 @@ namespace Game
 				bool toRemove = projectile.ToRemove;
 				if (toRemove)
 				{
+					// 10% de probabilidad de explosión incendiaria similar a un barril mediano
+					if (this.m_random.Float(0f, 1f) < 0.1f)
+					{
+						int x = (int)MathF.Floor(projectile.Position.X);
+						int y = (int)MathF.Floor(projectile.Position.Y);
+						int z = (int)MathF.Floor(projectile.Position.Z);
+						this.m_subsystemExplosions.AddExplosion(x, y, z, 500f, isIncendiary: true, noExplosionSound: false);
+					}
 					this.m_activeProjectiles.RemoveAt(i);
 				}
 			}
@@ -63,6 +66,7 @@ namespace Game
 			this.m_subsystemAudio = base.Project.FindSubsystem<SubsystemAudio>(true);
 			this.m_subsystemAmbientSounds = base.Project.FindSubsystem<SubsystemAmbientSounds>(true);
 			this.m_subsystemTime = base.Project.FindSubsystem<SubsystemTime>(true);
+			this.m_subsystemExplosions = base.Project.FindSubsystem<SubsystemExplosions>(true);  // obtener el subsistema de explosiones
 		}
 	}
 }
