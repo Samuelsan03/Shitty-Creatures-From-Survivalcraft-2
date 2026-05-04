@@ -562,18 +562,18 @@ namespace Game
 				BevelledButtonWidget exitButton = mainMenu.Children.Find<BevelledButtonWidget>("ShittyExitButton", false);
 				if (exitButton != null && exitButton.IsClicked)
 					Environment.Exit(0);
+
+				// Efecto arcoíris en el copyright del mod (se busca dentro de mainMenu)
+				LabelWidget modCopyrightLabel = mainMenu.Children.Find<LabelWidget>("ModCopyrightLabel", true);
+				if (modCopyrightLabel != null)
+				{
+					float hue = (float)((Time.RealTime * 30.0) % 360.0);
+					Vector3 rgb = Color.HsvToRgb(new Vector3(hue, 1f, 1f));
+					modCopyrightLabel.Color = new Color(rgb);
+				}
 			}
 
-			// Efecto arcoíris en el copyright del mod
-			LabelWidget modCopyrightLabel = mainMenu.Children.Find<LabelWidget>("ModCopyrightLabel", true);
-			if (modCopyrightLabel != null)
-			{
-				float hue = (float)((Time.RealTime * 30.0) % 360.0);
-				Vector3 rgb = Color.HsvToRgb(new Vector3(hue, 1f, 1f));
-				modCopyrightLabel.Color = new Color(rgb);
-			}
-
-			// ─── Efecto arcoíris en el botón de ajustes del mod (fuera del bloque MainMenuScreen) ───
+			// ─── Efecto arcoíris en el botón de ajustes del mod ───
 			SettingsScreen settings = widget as SettingsScreen;
 			if (settings != null)
 			{
@@ -587,42 +587,42 @@ namespace Game
 				}
 			}
 
-			// ---------- HUD de coordenadas ----------
+			// ---------- HUD de coordenadas y sangrado ----------
 			GameWidget gameWidget = widget as GameWidget;
-			if (gameWidget == null)
-				return;
-
-			// ─── Sistema de sangrado (siempre se ejecuta cada frame) ───
-			UpdateBleedingSystems(gameWidget);
-
-			// ─── Coordenadas (solo si están activadas) ───
-			if (!ShittyCreaturesSettingsManager.CoordinateDisplayEnabled)
-				return;
-
-			ComponentPlayer player = gameWidget.PlayerData?.ComponentPlayer;
-			if (player == null || player.ComponentHealth.Health <= 0f)
-				return;
-
-			if (!m_coordinateLabels.ContainsKey(player))
+			if (gameWidget != null)
 			{
-				LabelWidget label = new LabelWidget
-				{
-					FontScale = 0.5f,
-					HorizontalAlignment = WidgetAlignment.Far,
-					VerticalAlignment = WidgetAlignment.Far,
-					Margin = new Vector2(0f, 0f),
-					Color = Color.White,
-					DropShadow = true,
-					IsHitTestVisible = false
-				};
-				gameWidget.GuiWidget.Children.Add(label);
-				m_coordinateLabels[player] = label;
-			}
+				// ─── Sistema de sangrado (siempre se ejecuta cada frame) ───
+				UpdateBleedingSystems(gameWidget);
 
-			LabelWidget coordLabel = m_coordinateLabels[player];
-			Vector3 pos = player.ComponentBody.Position;
-			string format = LanguageControl.Get(new string[] { "Coordinates", "0" });
-			coordLabel.Text = string.Format(format, pos.X.ToString("F1"), pos.Z.ToString("F1"), pos.Y.ToString("F1"));
+				// ─── Coordenadas (solo si están activadas) ───
+				if (ShittyCreaturesSettingsManager.CoordinateDisplayEnabled)
+				{
+					ComponentPlayer player = gameWidget.PlayerData?.ComponentPlayer;
+					if (player != null && player.ComponentHealth.Health > 0f)
+					{
+						if (!m_coordinateLabels.ContainsKey(player))
+						{
+							LabelWidget label = new LabelWidget
+							{
+								FontScale = 0.5f,
+								HorizontalAlignment = WidgetAlignment.Far,
+								VerticalAlignment = WidgetAlignment.Far,
+								Margin = new Vector2(0f, 0f),
+								Color = Color.White,
+								DropShadow = true,
+								IsHitTestVisible = false
+							};
+							gameWidget.GuiWidget.Children.Add(label);
+							m_coordinateLabels[player] = label;
+						}
+
+						LabelWidget coordLabel = m_coordinateLabels[player];
+						Vector3 pos = player.ComponentBody.Position;
+						string format = LanguageControl.Get(new string[] { "Coordinates", "0" });
+						coordLabel.Text = string.Format(format, pos.X.ToString("F1"), pos.Z.ToString("F1"), pos.Y.ToString("F1"));
+					}
+				}
+			}
 		}
 
 		public override void OnPlayerDead(PlayerData playerData)
