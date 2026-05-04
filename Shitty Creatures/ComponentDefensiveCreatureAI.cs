@@ -8,7 +8,8 @@ namespace Game
 {
 	public class ComponentDefensiveCreatureAI : Component, IUpdateable
 	{
-		public bool CanUseInventory;
+		public bool CanUseInventory = false;
+		public bool CanEquipClothing = false;
 		public Vector2 RangedAttackRange = new Vector2(5f, 100f);
 
 		// Rangos para objetos lanzables
@@ -56,6 +57,7 @@ namespace Game
 		private ComponentNewChaseBehavior m_componentChase;
 		private ComponentCreature m_componentCreature;
 		private ComponentPathfinding m_componentPathfinding;
+		private ComponentCreatureClothing m_componentCreatureClothing;
 		private SubsystemAudio m_subsystemAudio;
 		private Random m_random = new Random();
 
@@ -67,6 +69,13 @@ namespace Game
 		private bool m_isCustomAiming;
 		private float m_customAimTimer;
 		private int m_customWeaponContents;
+
+		// Equipamiento de ropa
+		private float m_clothingEquipTimer;
+		private bool m_clothingEquipPending;
+		private int m_pendingClothingMinerSlot;
+		private int m_pendingClothingValue;
+		private int m_pendingClothingSlotIndex;
 
 		// Conjunto de índices de bloques lanzables
 		private HashSet<int> m_throwableIndices = new HashSet<int>();
@@ -94,8 +103,10 @@ namespace Game
 			m_componentChase = Entity.FindComponent<ComponentNewChaseBehavior>();
 			m_componentCreature = Entity.FindComponent<ComponentCreature>(true);
 			m_componentPathfinding = Entity.FindComponent<ComponentPathfinding>(true);
+			m_componentCreatureClothing = Entity.FindComponent<ComponentCreatureClothing>();
 			m_subsystemAudio = Project.FindSubsystem<SubsystemAudio>(true);
 			CanUseInventory = valuesDictionary.GetValue<bool>("CanUseInventory", false);
+			CanEquipClothing = valuesDictionary.GetValue<bool>("CanEquipClothing", false);
 
 			// Inicializar lista de bloques lanzables
 			InitializeThrowableIndices();
@@ -159,6 +170,63 @@ namespace Game
 				if (m_isCustomAiming) StopCustomAiming();
 				m_cooldownTimer = 0f;
 				return;
+			}
+
+			// ===== LÓGICA DE EQUIPAMIENTO DE ROPA (INDEPENDIENTE) =====
+			if (CanEquipClothing && m_componentCreatureClothing != null && !m_isAiming && !m_isCustomAiming)
+			{
+				if (m_clothingEquipPending)
+				{
+					m_clothingEquipTimer -= dt;
+					if (m_clothingEquipTimer <= 0f)
+					{
+						IInventory minerInv = m_componentMiner.Inventory;
+						int slotValue = minerInv.GetSlotValue(m_pendingClothingMinerSlot);
+						if (slotValue == m_pendingClothingValue)
+						{
+							int processedCount;
+							int processedValue;
+							m_componentCreatureClothing.ProcessSlotItems(
+								m_pendingClothingSlotIndex, m_pendingClothingValue, 1, 1,
+								out processedValue, out processedCount);
+							if (processedCount > 0)
+							{
+								minerInv.RemoveSlotItems(m_pendingClothingMinerSlot, 1);
+							}
+						}
+						m_clothingEquipPending = false;
+					}
+				}
+				else
+				{
+					IInventory minerInv = m_componentMiner.Inventory;
+					for (int i = 0; i < minerInv.SlotsCount; i++)
+					{
+						int value = minerInv.GetSlotValue(i);
+						if (value == 0) continue;
+						Block block = BlocksManager.Blocks[Terrain.ExtractContents(value)];
+						if (!(block is ClothingBlock)) continue;
+						ClothingData data = block.GetClothingData(value);
+						if (data == null) continue;
+
+						int clothingSlotIndex = -1;
+						if (data.Slot == ClothingSlot.Head) clothingSlotIndex = 0;
+						else if (data.Slot == ClothingSlot.Torso) clothingSlotIndex = 1;
+						else if (data.Slot == ClothingSlot.Legs) clothingSlotIndex = 2;
+						else if (data.Slot == ClothingSlot.Feet) clothingSlotIndex = 3;
+						if (clothingSlotIndex == -1) continue;
+
+						if (m_componentCreatureClothing.GetSlotProcessCapacity(clothingSlotIndex, value) > 0)
+						{
+							m_pendingClothingMinerSlot = i;
+							m_pendingClothingValue = value;
+							m_pendingClothingSlotIndex = clothingSlotIndex;
+							m_clothingEquipTimer = 0.55f;
+							m_clothingEquipPending = true;
+							break;
+						}
+					}
+				}
 			}
 
 			float distance = GetTargetDistance();
