@@ -38,6 +38,10 @@ namespace Game
 		private float ThrowableAimTime = 1.55f;
 		private float ThrowableCooldown = 0.25f;
 
+		// Tiempos para el lanzallamas
+		private float FlameThrowerAimTime = 1.5f;
+		private float FlameThrowerCooldown = 0.01f;
+
 		private SubsystemTime m_subsystemTime;
 		private ComponentMiner m_componentMiner;
 		private ComponentNewChaseBehavior m_componentChase;
@@ -65,7 +69,8 @@ namespace Game
 			{ CrossbowBlock.Index, new Vector3(-1.55f, 0f, 0f) },
 			{ BowBlock.Index, new Vector3(0f, -0.2f, 0f) },
 			{ ItemsLauncherBlock.Index, new Vector3(-1.7f, 0f, 0f) },
-			{ RepeatCrossbowBlock.Index, new Vector3(-1.55f, 0f, 0f) }
+			{ RepeatCrossbowBlock.Index, new Vector3(-1.55f, 0f, 0f) },
+			{ FlameThrowerBlock.Index, new Vector3(-1.7f, 0f, 0f) }
 		};
 
 		public UpdateOrder UpdateOrder => UpdateOrder.Default;
@@ -169,7 +174,7 @@ namespace Game
 					return;
 				}
 
-				// Para ballesta, arco y mosquete (criaturas especiales)
+				// Para ballesta, arco, mosquete y lanzallamas (criaturas especiales)
 				float aimTimeWeapon = GetAimTime(m_customWeaponContents);
 				m_customAimTimer += dt;
 				Ray3 aimRayWeapon = CalculateAimRay();
@@ -209,6 +214,10 @@ namespace Game
 					else if (m_customWeaponContents == RepeatCrossbowBlock.Index)
 					{
 						EnsureRepeatCrossbowEquipped();
+					}
+					else if (m_customWeaponContents == FlameThrowerBlock.Index)
+					{
+						EnsureFlameThrowerEquipped();
 					}
 
 					ResetModelRotation();
@@ -274,6 +283,10 @@ namespace Game
 					{
 						EnsureRepeatCrossbowEquipped();
 					}
+					else if (activeContents == FlameThrowerBlock.Index)
+					{
+						EnsureFlameThrowerEquipped();
+					}
 				}
 			}
 			else
@@ -322,7 +335,24 @@ namespace Game
 					}
 				}
 
-				// 3. Lanzador de ítems (tercera prioridad) – apuntado manual para todos
+				// 3. Lanzallamas (tercera prioridad) – igual que otras armas
+				if (HasFlameThrowerInInventory() && EnsureFlameThrowerEquipped())
+				{
+					if (IsSpecialNoRaiseCreature())
+					{
+						StartCustomAiming(FlameThrowerBlock.Index);
+						return;
+					}
+					else
+					{
+						m_isAiming = true;
+						m_aimTimer = 0f;
+						m_componentMiner.Aim(CalculateAimRay(), AimState.InProgress);
+						return;
+					}
+				}
+
+				// 4. Lanzador de ítems (cuarta prioridad) – apuntado manual para todos
 				if (HasItemsLauncherInInventory() && EnsureItemsLauncherEquipped())
 				{
 					StartCustomAiming(ItemsLauncherBlock.Index);
@@ -508,6 +538,7 @@ namespace Game
 			if (IsThrowable(contents)) return ThrowableAimTime;
 			if (contents == ItemsLauncherBlock.Index) return ItemsLauncherAimTime;
 			if (contents == RepeatCrossbowBlock.Index) return RepeatCrossbowAimTime;
+			if (contents == FlameThrowerBlock.Index) return FlameThrowerAimTime;
 			return MusketAimTime;
 		}
 
@@ -518,6 +549,7 @@ namespace Game
 			if (IsThrowable(contents)) return ThrowableCooldown;
 			if (contents == ItemsLauncherBlock.Index) return ItemsLauncherCooldown;
 			if (contents == RepeatCrossbowBlock.Index) return RepeatCrossbowCooldown;
+			if (contents == FlameThrowerBlock.Index) return FlameThrowerCooldown;
 			return MusketCooldown;
 		}
 
@@ -570,6 +602,7 @@ namespace Game
 					contents != BowBlock.Index &&
 					contents != ItemsLauncherBlock.Index &&
 					contents != RepeatCrossbowBlock.Index &&
+					contents != FlameThrowerBlock.Index &&
 					!IsThrowable(contents))
 				{
 					inventory.ActiveSlotIndex = i;
@@ -821,6 +854,60 @@ namespace Game
 				{
 					inventory.ActiveSlotIndex = i;
 					return EnsureRepeatCrossbowEquipped();
+				}
+			}
+			return false;
+		}
+
+		// ========== LANZALLAMAS ==========
+		private bool HasFlameThrowerInInventory()
+		{
+			IInventory inventory = m_componentMiner.Inventory;
+			if (inventory == null) return false;
+			for (int i = 0; i < inventory.SlotsCount; i++)
+			{
+				if (Terrain.ExtractContents(inventory.GetSlotValue(i)) == FlameThrowerBlock.Index)
+					return true;
+			}
+			return false;
+		}
+
+		private bool EnsureFlameThrowerEquipped()
+		{
+			IInventory inventory = m_componentMiner.Inventory;
+			if (inventory == null) return false;
+
+			int activeSlot = inventory.ActiveSlotIndex;
+			int activeValue = inventory.GetSlotValue(activeSlot);
+			int flamethrowerIndex = FlameThrowerBlock.Index;
+
+			if (Terrain.ExtractContents(activeValue) == flamethrowerIndex)
+			{
+				int data = Terrain.ExtractData(activeValue);
+				FlameThrowerBlock.LoadState loadState = FlameThrowerBlock.GetLoadState(data);
+				int loadCount = FlameThrowerBlock.GetLoadCount(activeValue);
+				if (loadState != FlameThrowerBlock.LoadState.Loaded || loadCount <= 0)
+				{
+					// Recargar con 15 balas de fuego o veneno al azar
+					FlameBulletBlock.FlameBulletType randomType = (m_random.Bool(0.5f) ? FlameBulletBlock.FlameBulletType.Poison : FlameBulletBlock.FlameBulletType.Flame);
+					int newData = 0;
+					newData = FlameThrowerBlock.SetLoadState(newData, FlameThrowerBlock.LoadState.Loaded);
+					newData = FlameThrowerBlock.SetBulletType(newData, randomType);
+					newData = FlameThrowerBlock.SetSwitchState(newData, false);
+					int newValue = Terrain.MakeBlockValue(flamethrowerIndex, 0, newData);
+					newValue = FlameThrowerBlock.SetLoadCount(newValue, 15);
+					inventory.RemoveSlotItems(activeSlot, 1);
+					inventory.AddSlotItems(activeSlot, newValue, 1);
+				}
+				return true;
+			}
+
+			for (int i = 0; i < inventory.SlotsCount; i++)
+			{
+				if (Terrain.ExtractContents(inventory.GetSlotValue(i)) == flamethrowerIndex)
+				{
+					inventory.ActiveSlotIndex = i;
+					return EnsureFlameThrowerEquipped();
 				}
 			}
 			return false;
