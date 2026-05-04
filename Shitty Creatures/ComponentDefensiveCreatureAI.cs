@@ -141,13 +141,6 @@ namespace Game
 					return;
 				}
 
-				if (distance <= RangedAttackRange.X)
-				{
-					StopCustomAiming();
-					SwitchToMeleeWeapon();
-					return;
-				}
-
 				// ItemsLauncher: animación manual, sin Miner.Aim
 				if (m_customWeaponContents == ItemsLauncherBlock.Index)
 				{
@@ -327,7 +320,7 @@ namespace Game
 				}
 				else
 				{
-					// Comportamiento normal para otras criaturas
+					// Comportamiento normal para otras criaturas (respeta distancia mínima)
 					if (HasCrossbowInInventory())
 					{
 						if (EnsureCrossbowEquipped())
@@ -436,23 +429,32 @@ namespace Game
 			ComponentCreatureModel model = m_componentCreature.ComponentCreatureModel;
 			if (model == null) return;
 
-			// Usar exactamente los mismos valores que SubsystemItemsLauncherBlockBehavior.OnAim
-			// para ItemsLauncher, y las rotaciones base para las otras armas.
 			if (m_customWeaponContents == ItemsLauncherBlock.Index)
 			{
-				model.AimHandAngleOrder = 1.4f;
-				model.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
-				model.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
+				if (IsSpecialNoRaiseCreature())
+				{
+					// Special creatures: no arm raise, just weapon rotation
+					model.AimHandAngleOrder = 0f;
+					model.InHandItemOffsetOrder = new Vector3(-0.1f, -0.15f, 0.25f); // same as musket offset
+					model.InHandItemRotationOrder = BaseWeaponRotations[ItemsLauncherBlock.Index];
+				}
+				else
+				{
+					// Normal creatures: full arm raise (simulate Miner.Aim)
+					model.AimHandAngleOrder = 1.4f;
+					model.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
+					model.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
+				}
 			}
 			else
 			{
-				// Para ballesta, arco y mosquete (criaturas especiales) se usan las rotaciones base
+				// For other weapons in custom aiming (special creatures only)
 				Vector3 baseRot = BaseWeaponRotations.ContainsKey(m_customWeaponContents)
 					? BaseWeaponRotations[m_customWeaponContents]
 					: Vector3.Zero;
 
 				model.InHandItemRotationOrder = baseRot;
-				model.AimHandAngleOrder = 0f; // Las armas normales no necesitan AimHandAngle
+				model.AimHandAngleOrder = 0f;
 
 				if (m_customWeaponContents == BowBlock.Index)
 					model.InHandItemOffsetOrder = new Vector3(0.15f, -0.15f, 0.15f);
@@ -460,7 +462,6 @@ namespace Game
 					model.InHandItemOffsetOrder = new Vector3(-0.1f, -0.15f, 0.25f);
 			}
 
-			// Forzar que la criatura mire al objetivo
 			if (m_componentChase != null && m_componentChase.Target != null)
 			{
 				model.LookAtOrder = m_componentChase.Target.ComponentCreatureModel.EyePosition;
