@@ -49,6 +49,8 @@ namespace Game
 		private float DoubleMusketAimTime = 1.5f;
 		private float DoubleMusketCooldown = 0.5f;
 
+		private SubsystemTerrain m_subsystemTerrain;
+		private SubsystemBodies m_subsystemBodies;
 		private SubsystemTime m_subsystemTime;
 		private ComponentMiner m_componentMiner;
 		private ComponentNewChaseBehavior m_componentChase;
@@ -85,6 +87,8 @@ namespace Game
 
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
+			m_subsystemTerrain = Project.FindSubsystem<SubsystemTerrain>(true);
+			m_subsystemBodies = Project.FindSubsystem<SubsystemBodies>(true);
 			m_subsystemTime = Project.FindSubsystem<SubsystemTime>(true);
 			m_componentMiner = Entity.FindComponent<ComponentMiner>(true);
 			m_componentChase = Entity.FindComponent<ComponentNewChaseBehavior>();
@@ -147,13 +151,23 @@ namespace Game
 			if (!CanUseInventory || m_componentMiner == null || m_componentCreature == null)
 				return;
 
+			// Si estamos atascados: cancelar cualquier apuntado, no iniciar nuevos,
+			// no cambiar de ítem y salir inmediatamente.
+			if (m_componentPathfinding != null && m_componentPathfinding.IsStuck)
+			{
+				if (m_isAiming) CancelAiming();
+				if (m_isCustomAiming) StopCustomAiming();
+				m_cooldownTimer = 0f;
+				return;
+			}
+
 			float distance = GetTargetDistance();
 			bool hasTarget = IsTargetValidForRangedAttack();
 
 			// Manejar apuntado personalizado (sin levantar brazo)
 			if (m_isCustomAiming)
 			{
-				if (!hasTarget)
+				if (!hasTarget || !HasLineOfSightToTarget())
 				{
 					StopCustomAiming();
 					return;
@@ -262,7 +276,7 @@ namespace Game
 			// Manejar apuntado normal (comportamiento original)
 			if (m_isAiming)
 			{
-				if (!hasTarget)
+				if (!hasTarget || !HasLineOfSightToTarget())
 				{
 					CancelAiming();
 					return;
@@ -365,6 +379,10 @@ namespace Game
 					if (SwitchToMeleeWeapon())
 						return;
 				}
+
+				// Bloquear cualquier ataque a distancia si no hay línea de visión
+				if (!HasLineOfSightToTarget())
+					return;
 
 				// 1. Lanzables (máxima prioridad)
 				if (distance >= ThrowableAttackRange.X && distance <= ThrowableAttackRange.Y && HasThrowableInInventory())
@@ -1153,6 +1171,51 @@ namespace Game
 				int bulletValue = Terrain.MakeBlockValue(BulletBlock.Index, 0, bulletData);
 				subsystemProjectiles.FireProjectile(bulletValue, eyePos, direction * 60f, Vector3.Zero, m_componentCreature);
 			}
+		}
+
+		private bool HasLineOfSightToTarget()
+		{
+			if (m_componentChase == null || m_componentChase.Target == null)
+				return false;
+
+			Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
+			Vector3 targetEye = m_componentChase.Target.ComponentCreatureModel.EyePosition;
+			Vector3 toTarget = targetEye - eyePos;
+			float distance = toTarget.Length();
+			if (distance < 0.1f) return true;
+			Vector3 direction = toTarget / distance;
+
+			// Verificar cono de visión frontal (45°)
+			Vector3 bodyForward = m_componentCreature.ComponentBody.Matrix.Forward;
+			float dot = Vector3.Dot(bodyForward, direction);
+			float minDot = MathF.Cos(MathUtils.DegToRad(45f));
+			if (dot < minDot) return false;
+
+			// Raycast de terreno: ignora aire, se detiene en bloques sólidos.
+			Func<int, float, bool> terrainFilter = (int value, float dist) =>
+			{
+				int contents = Terrain.ExtractContents(value);
+				Block block = BlocksManager.Blocks[contents];
+				return block.IsCollidable_(value);
+			};
+			TerrainRaycastResult? terrainHit = m_subsystemTerrain.Raycast(
+				eyePos, eyePos + direction * distance, false, true, terrainFilter);
+			if (terrainHit != null && terrainHit.Value.Distance < distance - 0.1f)
+				return false; // bloqueado por terreno
+
+			// Raycast de cuerpos: ignora el propio cuerpo y el del objetivo.
+			BodyRaycastResult? bodyHit = m_subsystemBodies.Raycast(
+				eyePos, eyePos + direction * distance, 0f,
+				(ComponentBody body, float dist) =>
+				{
+					if (body == m_componentCreature.ComponentBody) return false;
+					if (body.Entity == m_componentChase.Target.Entity) return false;
+					return true;
+				});
+			if (bodyHit != null && bodyHit.Value.Distance < distance - 0.1f)
+				return false; // bloqueado por otro cuerpo
+
+			return true;
 		}
 
 		public override void Save(ValuesDictionary valuesDictionary, EntityToIdMap entityToIdMap) { }
