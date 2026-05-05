@@ -1294,7 +1294,10 @@ namespace Game
 			return true;
 		}
 
-		public override void Save(ValuesDictionary valuesDictionary, EntityToIdMap entityToIdMap) { }
+		public override void Save(ValuesDictionary valuesDictionary, EntityToIdMap entityToIdMap)
+		{
+			valuesDictionary.SetValue("CanUseInventory", CanUseInventory);
+		}
 
 		public override void Dispose()
 		{
