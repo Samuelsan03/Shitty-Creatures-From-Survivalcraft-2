@@ -1350,7 +1350,8 @@ namespace Game
 			// Lista de nombres de plantilla que NO sangran
 			var noBleedCreatures = new HashSet<string>
 	{
-		"HumanoidSkeleton"
+		"HumanoidSkeleton",
+		"HumanoidSkeletonTamed"
 	};
 
 			var allCreatures = new List<ComponentCreature>(creatureSpawn.Creatures);
