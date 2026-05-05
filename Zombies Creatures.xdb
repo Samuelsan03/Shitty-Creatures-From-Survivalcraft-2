@@ -10383,7 +10383,7 @@
                 <Parameter Name="TextureSlot" Guid="64c6330f-8a39-4046-b1fe-d015a695714a" Value="7" Type="int"/>
                 <Parameter Name="SwapUV" Guid="5c9ac6e7-a098-44c1-9b54-6221622d5e6b" Value="False" Type="bool"/>
                 <Parameter Name="DisplayName" Guid="1b998599-37a3-4b15-b310-fcf440a52245" Value="[DisplayName:InfectedFreezer]" Type="string"/>
-                <Parameter Name="EggTypeIndex" Guid="5f8a1704-afd4-4a55-85a2-2e7fb85e2e9e" Value="1042" Type="int"/>
+                <Parameter Name="EggTypeIndex" Guid="5f8a1704-afd4-4a55-85a2-2e7fb85e2e9e" Value="1047" Type="int"/>
             </ParameterSet>
         </EntityTemplate>
 
