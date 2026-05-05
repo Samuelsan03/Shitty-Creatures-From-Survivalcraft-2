@@ -8,7 +8,7 @@ namespace Game
 {
 	public class ComponentDefensiveCreatureAI : Component, IUpdateable
 	{
-		public bool CanUseInventory;
+		public bool CanUseInventory = false;
 		public bool CanEquipClothing = false;
 		public Vector2 RangedAttackRange = new Vector2(5f, 100f);
 
