@@ -10391,8 +10391,24 @@
         <MemberComponentTemplate Name="SummonBehavior" Guid="88c23204-bcce-4621-bac5-3e1bf83ad644" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
               <Parameter Name="IsEnabled" Guid="877350d6-863a-4d1a-bfd1-9caf46d202da" Value="True" Type="bool"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="DefensiveCreatureAI" Guid="953a5a17-a5ea-4252-801f-feb7ab5b0dc2" InheritanceParent="0f69cb1e-cf48-46bf-93ec-6990112112d5">
-  <Parameter Name="CanUseInventory" Guid="f4f2983f-887d-46fc-96e4-4f474e31542b" Value="true" Type="bool" />
+            <MemberComponentTemplate Name="DefensiveCreatureAI" Guid="04238934-d299-4f86-91fe-02b069300ca6" InheritanceParent="0f69cb1e-cf48-46bf-93ec-6990112112d5">
+  <Parameter Name="CanUseInventory" Guid="b522be7c-5db6-455d-a56e-b7a68d5ea21f" Value="true" Type="bool" />
+  <Parameter Name="CanEquipClothing" Guid="4a87ff39-a303-46cb-947b-f2abfbf2fdfa" Value="true" Type="bool" />
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureClothing" Guid="a6470832-0714-41c3-8fee-c755a71b4302" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
+  <ParameterSet Name="CreatureClothes" Guid="28af48b6-c0cb-4259-82c5-b4031795830f">
+    <Parameter Name="Head" Guid="bbae4147-e5f4-4cf7-b67a-6a6535f718e1" Value="" Type="string"/>
+    <Parameter Name="Torso" Guid="01602f07-55f9-4869-8936-3fc4c9e40206" Value="" Type="string"/>
+    <Parameter Name="Legs" Guid="f66e4c40-2233-4bc1-bd9d-c136d1323f95" Value="" Type="string"/>
+    <Parameter Name="Feet" Guid="a9c0afbd-2f60-4d75-abd7-e67a6bc4d5da" Value="" Type="string"/>
+  </ParameterSet>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="OuterClothingModel" Guid="9299686b-66d7-4c51-b768-2b66ef5b4ce8" InheritanceParent="c2429b7f-55e0-4ca7-b435-2c569f112229">
+              <Parameter Name="ModelName" Guid="16c34b89-f8b0-4cae-80ac-bf03d0016f3e" Value="Models/OuterClothingMale" Type="string"/>
+            </MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureCollect" Guid="cdbec585-995e-4901-842d-4cd48a876a14" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <Parameter Name="CanCollect" Guid="6943aadd-8697-42a7-a8e6-4e150e136337" Value="true" Type="bool"/>
+    <Parameter Name="CollectableItems" Guid="f5492d92-a98b-41da-98e4-6d5dfa7ccc64" Value="ClothingBlock" Type="string"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="FluInfected" Guid="d86fd499-15f4-4098-b8ed-c5f670451029" InheritanceParent="4301cca7-d3dd-4e09-ab45-eed3ff27e6aa">
         <Parameter Name="FluResistance" Value="450" Type="float"/>
@@ -10444,7 +10460,10 @@
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="Inventory" Guid="c5cfaa6f-f2c2-45cb-8d61-7f4222ad048f" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
             </MemberComponentTemplate>
-<MemberComponentTemplate Name="PoisonInfected" Guid="851eda7c-b11c-4243-9427-694615784926" InheritanceParent="c7f45092-a74d-429a-8e77-76b1ae5120a3">
+<MemberComponentTemplate Name="PoisonInfected" Guid="9a08f79f-2071-4e56-8784-51381424dee3">
+    <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="60" Type="int"/>
     <Parameter Name="PoisonResistance" Value="-100" Type="float"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidFireBehavior" Guid="69b9f46e-5893-4ae8-b6c8-ea012c05ba36" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
