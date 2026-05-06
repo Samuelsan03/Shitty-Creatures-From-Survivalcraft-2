@@ -6,7 +6,7 @@ using TemplatesDatabase;
 
 namespace Game
 {
-	public class ComponentDefensiveCreatureAI : ComponentBehavior, IUpdateable
+	public class ComponentDefensiveCreatureAI : Component, IUpdateable
 	{
 		public bool CanUseInventory = false;
 		public bool CanEquipClothing = false;
@@ -92,10 +92,6 @@ namespace Game
 			{ FlameThrowerBlock.Index, new Vector3(-1.7f, 0f, 0f) },
 			{ DoubleMusketBlock.Index, new Vector3(-1.7f, 0f, 0f) }
 		};
-
-		public override float ImportanceLevel => 100f;
-
-		public UpdateOrder UpdateOrder => UpdateOrder.Default;
 
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
