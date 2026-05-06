@@ -15,7 +15,6 @@ namespace Game
 
 		public override void DrawBlock(PrimitivesRenderer3D primitivesRenderer, int value, Color color, float size, ref Matrix matrix, DrawBlockEnvironmentData environmentData)
 		{
-			// Tamaño: 2.5, Color: RGB(159, 88, 140)
 			float adjustedSize = size * 2.5f;
 			Color bulletColor = new Color(159, 88, 140);
 			BlocksManager.DrawFlatOrImageExtrusionBlock(primitivesRenderer, value, adjustedSize, ref matrix, null, bulletColor, false, environmentData);
@@ -36,10 +35,9 @@ namespace Game
 			yield return Terrain.MakeBlockValue(Index, 0, 0);
 		}
 
-
 		public override int GetFaceTextureSlot(int face, int value)
 		{
-			return 229; // Misma textura que MusketBall
+			return 229;
 		}
 	}
 }
