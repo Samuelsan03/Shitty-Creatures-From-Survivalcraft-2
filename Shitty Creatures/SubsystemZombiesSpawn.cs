@@ -13,6 +13,7 @@ namespace Game
 		// Dependencias
 		private SubsystemGreenNightSky m_subsystemGreenNightSky;
 		private SubsystemCreatureSpawn m_subsystemCreatureSpawn;
+		private SubsystemSpawn m_subsystemSpawn;
 		private SubsystemTimeOfDay m_subsystemTimeOfDay;
 		private SubsystemGameInfo m_subsystemGameInfo;
 		private SubsystemPlayers m_subsystemPlayers;
@@ -30,13 +31,40 @@ namespace Game
 		private int m_currentWave = 1;
 		private List<WaveEntry> m_currentWaveEntries;
 
-		// Control de spawn
+		// Control de spawn (noche verde)
 		private float m_spawnTimer;
 		private float m_spawnInterval = 2f;
 		private const int MaxCreaturesPerArea = 60;
 		private const int MaxGlobalCreatures = 80;
 		private const int MaxSpawnsPerFrame = 3;
 		private const int GroupSpawnCount = 2;
+
+		// ===== SISTEMA DE SPAWN DE ESQUELETOS =====
+		private List<SpawnChunk> m_skeletonNewSpawnChunks = new List<SpawnChunk>();
+		private List<SpawnChunk> m_skeletonSpawnChunks = new List<SpawnChunk>();
+
+		// Spawn NORMAL - 100% de noche
+		private const int SkeletonNormalTotalLimit = 8;
+		private const int SkeletonNormalAreaLimit = 1;
+		private const int SkeletonNormalNewChunkAttempts = 3;
+		private const float SkeletonNormalSuitability = 1.0f;  // 100% cuando es noche
+
+		// Spawn CONSTANTE - 50% de noche
+		private const int SkeletonConstantTotalLimitNormal = 3;
+		private const int SkeletonConstantTotalLimitChallenging = 5;
+		private const int SkeletonConstantAreaLimit = 1;
+		private const float SkeletonConstantAreaRadius = 32f;
+		private const int SkeletonConstantChunkAttempts = 1;
+		private const float SkeletonConstantSuitability = 0.5f;  // 50% cuando es noche
+
+		private const float NightLightThreshold = 0.1f;
+		private const string SkeletonTemplateName = "HumanoidSkeleton";
+
+		private float m_constantSpawnCooldown;
+		private const float ConstantSpawnCooldownTime = 15f;
+
+		private DynamicArray<ComponentBody> m_tempBodiesArray = new DynamicArray<ComponentBody>();
+		// ===== FIN SISTEMA DE SPAWN DE ESQUELETOS =====
 
 		// Estado de jefes
 		private bool m_bossBattleActive;
@@ -77,7 +105,6 @@ namespace Game
 			"FlyingInfectedBoss", "InfectedBird"
 		};
 
-		// Nuevo: NPCs que solo aparecen en invierno o temperaturas bajas
 		private static readonly HashSet<string> ColdOnlyTemplates = new HashSet<string>
 		{
 			"InfectedFreezer",
@@ -104,6 +131,7 @@ namespace Game
 			}
 
 			m_subsystemCreatureSpawn = Project.FindSubsystem<SubsystemCreatureSpawn>(true);
+			m_subsystemSpawn = Project.FindSubsystem<SubsystemSpawn>(true);
 			m_subsystemTimeOfDay = Project.FindSubsystem<SubsystemTimeOfDay>(true);
 			m_subsystemGameInfo = Project.FindSubsystem<SubsystemGameInfo>(true);
 			m_subsystemPlayers = Project.FindSubsystem<SubsystemPlayers>(true);
@@ -115,14 +143,29 @@ namespace Game
 			m_subsystemSky = Project.FindSubsystem<SubsystemSky>(true);
 			m_subsystemAudio = Project.FindSubsystem<SubsystemAudio>(true);
 
+			if (m_subsystemSpawn != null)
+			{
+				m_subsystemSpawn.SpawningChunk += OnSpawningChunk;
+			}
+
 			InitializeForbiddenBlockIndices();
 			LoadWavesFromResources();
 			m_currentWave = valuesDictionary.GetValue<int>("CurrentWave", 1);
 			SetCurrentWave(m_currentWave);
 			m_wasGreenNightActive = m_subsystemGreenNightSky.IsGreenNightActive;
+			m_constantSpawnCooldown = ConstantSpawnCooldownTime;
 			Instance = this;
 
 			CreateCountdownLabel();
+		}
+
+		private void OnSpawningChunk(SpawnChunk chunk)
+		{
+			m_skeletonSpawnChunks.Add(chunk);
+			if (!chunk.IsSpawned)
+			{
+				m_skeletonNewSpawnChunks.Add(chunk);
+			}
 		}
 
 		private void InitializeForbiddenBlockIndices()
@@ -291,6 +334,54 @@ namespace Game
 			bool isGreenNightActive = m_subsystemGreenNightSky.IsGreenNightActive;
 			int maxWave = m_waves.Keys.Max();
 
+			// ===== VERIFICAR SI ES NOCHE NORMAL (no verde) =====
+			bool isNormalNight = IsNormalNight();
+
+			// ===== SPAWN DE ESQUELETOS - SOLO DE NOCHE =====
+
+			// 1. Spawn NORMAL - SOLO de noche (100% probabilidad)
+			if (m_skeletonNewSpawnChunks.Count > 0)
+			{
+				// CORREGIDO: Verificar que es noche Y no es noche verde
+				if (isNormalNight && !isGreenNightActive)
+				{
+					m_skeletonNewSpawnChunks.RandomShuffle((int max) => m_random.Int(0, max - 1));
+					foreach (SpawnChunk chunk in m_skeletonNewSpawnChunks)
+					{
+						SpawnNormalSkeletonsInChunk(chunk, SkeletonNormalNewChunkAttempts);
+					}
+				}
+				m_skeletonNewSpawnChunks.Clear();
+			}
+
+			// 2. Spawn CONSTANTE - Solo de noche con cooldown (50% probabilidad)
+			// Actualizar cooldown
+			if (!isNormalNight || isGreenNightActive)
+			{
+				m_constantSpawnCooldown = ConstantSpawnCooldownTime;
+			}
+			else
+			{
+				m_constantSpawnCooldown -= dt;
+			}
+
+			if (m_skeletonSpawnChunks.Count > 0)
+			{
+				// Solo spawnear constante si: es noche normal + no es noche verde + cooldown listo
+				if (isNormalNight && !isGreenNightActive && m_constantSpawnCooldown <= 0f)
+				{
+					m_skeletonSpawnChunks.RandomShuffle((int max) => m_random.Int(0, max - 1));
+					foreach (SpawnChunk chunk in m_skeletonSpawnChunks)
+					{
+						SpawnConstantSkeletonsInChunk(chunk, SkeletonConstantChunkAttempts);
+					}
+					// Resetear cooldown después de intentar spawn
+					m_constantSpawnCooldown = ConstantSpawnCooldownTime;
+				}
+				m_skeletonSpawnChunks.Clear();
+			}
+			// ===== FIN SPAWN DE ESQUELETOS =====
+
 			if (!m_wasGreenNightActive && isGreenNightActive)
 			{
 				PlayEvilLaugh();
@@ -366,6 +457,340 @@ namespace Game
 			}
 		}
 
+		// ===== SPAWN NORMAL DE ESQUELETOS (100% de noche) =====
+		private void SpawnNormalSkeletonsInChunk(SpawnChunk chunk, int maxAttempts)
+		{
+			int currentCount = CountSkeletons(false);
+			if (currentCount >= SkeletonNormalTotalLimit)
+				return;
+
+			Vector2 c1 = new Vector2(chunk.Point.X * 16, chunk.Point.Y * 16) - new Vector2(16);
+			Vector2 c2 = new Vector2((chunk.Point.X + 1) * 16, (chunk.Point.Y + 1) * 16) + new Vector2(16);
+			int areaCount = CountSkeletonsInArea(c1, c2, false);
+
+			for (int i = 0; i < maxAttempts; i++)
+			{
+				if (currentCount >= SkeletonNormalTotalLimit || areaCount >= SkeletonNormalAreaLimit)
+					break;
+
+				Point3? spawnPoint = GetRandomChunkSpawnPoint(chunk);
+				if (!spawnPoint.HasValue)
+					continue;
+
+				Point3 point = spawnPoint.Value;
+
+				float suitability = CalculateNormalSkeletonSuitability(point);
+				if (suitability <= 0f)
+					continue;
+
+				int spawned = SpawnSkeletonsAtPoint(point, false, 1);
+				currentCount += spawned;
+				areaCount += spawned;
+			}
+		}
+
+		private float CalculateNormalSkeletonSuitability(Point3 point)
+		{
+			int x = point.X;
+			int y = point.Y;
+			int z = point.Z;
+
+			// CORREGIDO: Verificar que es de noche
+			if (m_subsystemSky.SkyLightIntensity >= NightLightThreshold)
+				return 0f;
+
+			TerrainChunk chunk = m_subsystemTerrain.Terrain.GetChunkAtCell(x, z);
+			if (chunk == null || chunk.State <= TerrainChunkState.InvalidPropagatedLight)
+				return 0f;
+
+			int cellValueFast = m_subsystemTerrain.Terrain.GetCellValueFast(x, y - 1, z);
+			int cellValueFast2 = m_subsystemTerrain.Terrain.GetCellValueFast(x, y, z);
+			int cellValueFast3 = m_subsystemTerrain.Terrain.GetCellValueFast(x, y + 1, z);
+
+			Block block = BlocksManager.Blocks[Terrain.ExtractContents(cellValueFast)];
+			Block block2 = BlocksManager.Blocks[Terrain.ExtractContents(cellValueFast2)];
+			Block block3 = BlocksManager.Blocks[Terrain.ExtractContents(cellValueFast3)];
+
+			bool belowSolid = (block.IsCollidable_(cellValueFast) || block is WaterBlock);
+			bool currentEmpty = (!block2.IsCollidable_(cellValueFast2) && !(block2 is WaterBlock));
+			bool aboveEmpty = (!block3.IsCollidable_(cellValueFast3) && !(block3 is WaterBlock));
+
+			if (!belowSolid || !currentEmpty || !aboveEmpty)
+				return 0f;
+
+			int belowContents = Terrain.ExtractContents(cellValueFast);
+			if (m_forbiddenBlockIndices.Contains(belowContents))
+				return 0f;
+
+			if (belowContents != 2 && belowContents != 8)
+				return 0f;
+
+			int topHeight = m_subsystemTerrain.Terrain.GetTopHeight(x, z);
+			if (y > topHeight + 2)
+				return 0f;
+
+			return SkeletonNormalSuitability; // 1.0f - 100% cuando es noche
+		}
+		// ===== FIN SPAWN NORMAL =====
+
+		// ===== SPAWN CONSTANTE DE ESQUELETOS (50% de noche) =====
+		private void SpawnConstantSkeletonsInChunk(SpawnChunk chunk, int maxAttempts)
+		{
+			int totalLimit = (m_subsystemGameInfo.WorldSettings.GameMode >= GameMode.Challenging)
+				? SkeletonConstantTotalLimitChallenging
+				: SkeletonConstantTotalLimitNormal;
+
+			int currentCount = CountSkeletons(true);
+			if (currentCount >= totalLimit)
+				return;
+
+			Vector2 c1 = new Vector2(chunk.Point.X * 16, chunk.Point.Y * 16) - new Vector2(SkeletonConstantAreaRadius);
+			Vector2 c2 = new Vector2((chunk.Point.X + 1) * 16, (chunk.Point.Y + 1) * 16) + new Vector2(SkeletonConstantAreaRadius);
+			int areaCount = CountSkeletonsInArea(c1, c2, true);
+
+			for (int i = 0; i < maxAttempts; i++)
+			{
+				if (currentCount >= totalLimit || areaCount >= SkeletonConstantAreaLimit)
+					break;
+
+				Point3? spawnPoint = GetRandomChunkSpawnPoint(chunk);
+				if (!spawnPoint.HasValue)
+					continue;
+
+				Point3 point = spawnPoint.Value;
+
+				float suitability = CalculateConstantSkeletonSuitability(point);
+				if (suitability <= 0f)
+					continue;
+
+				int spawned = SpawnSkeletonsAtPoint(point, true, 1);
+				currentCount += spawned;
+				areaCount += spawned;
+			}
+		}
+
+		private float CalculateConstantSkeletonSuitability(Point3 point)
+		{
+			int x = point.X;
+			int y = point.Y;
+			int z = point.Z;
+
+			// Verificar que es de noche
+			if (m_subsystemSky.SkyLightIntensity >= NightLightThreshold)
+				return 0f;
+
+			TerrainChunk chunk = m_subsystemTerrain.Terrain.GetChunkAtCell(x, z);
+			if (chunk == null || chunk.State <= TerrainChunkState.InvalidPropagatedLight)
+				return 0f;
+
+			int cellValueFast = m_subsystemTerrain.Terrain.GetCellValueFast(x, y - 1, z);
+			int cellValueFast2 = m_subsystemTerrain.Terrain.GetCellValueFast(x, y, z);
+			int cellValueFast3 = m_subsystemTerrain.Terrain.GetCellValueFast(x, y + 1, z);
+
+			Block block = BlocksManager.Blocks[Terrain.ExtractContents(cellValueFast)];
+			Block block2 = BlocksManager.Blocks[Terrain.ExtractContents(cellValueFast2)];
+			Block block3 = BlocksManager.Blocks[Terrain.ExtractContents(cellValueFast3)];
+
+			bool belowSolid = (block.IsCollidable_(cellValueFast) || block is WaterBlock);
+			bool currentEmpty = (!block2.IsCollidable_(cellValueFast2) && !(block2 is WaterBlock));
+			bool aboveEmpty = (!block3.IsCollidable_(cellValueFast3) && !(block3 is WaterBlock));
+
+			if (!belowSolid || !currentEmpty || !aboveEmpty)
+				return 0f;
+
+			int belowContents = Terrain.ExtractContents(cellValueFast);
+			if (m_forbiddenBlockIndices.Contains(belowContents))
+				return 0f;
+
+			int cellLightFast = m_subsystemTerrain.Terrain.GetCellLightFast(x, y + 1, z);
+			if (cellLightFast > 7)
+				return 0f;
+
+			if (belowContents != 2 && belowContents != 8)
+				return 0f;
+
+			int topHeight = m_subsystemTerrain.Terrain.GetTopHeight(x, z);
+			if (y > topHeight + 2)
+				return 0f;
+
+			// Reducir probabilidad si hay varios
+			int currentCount = CountSkeletons(true);
+			int totalLimit = (m_subsystemGameInfo.WorldSettings.GameMode >= GameMode.Challenging)
+				? SkeletonConstantTotalLimitChallenging
+				: SkeletonConstantTotalLimitNormal;
+
+			float limitFactor = 1f - ((float)currentCount / totalLimit * 0.7f);
+
+			return SkeletonConstantSuitability * limitFactor; // 0.5f * factor - 50% base
+		}
+		// ===== FIN SPAWN CONSTANTE =====
+
+		// ===== MÉTODOS COMPARTIDOS =====
+
+		private Point3? GetRandomChunkSpawnPoint(SpawnChunk chunk)
+		{
+			for (int i = 0; i < 5; i++)
+			{
+				int x = 16 * chunk.Point.X + m_random.Int(0, 15);
+				int y = m_random.Int(10, 246);
+				int z = 16 * chunk.Point.Y + m_random.Int(0, 15);
+
+				Point3? result = ProcessSkeletonSpawnPoint(new Point3(x, y, z));
+				if (result.HasValue)
+				{
+					return result;
+				}
+			}
+			return null;
+		}
+
+		private Point3? ProcessSkeletonSpawnPoint(Point3 spawnPoint)
+		{
+			int x = spawnPoint.X;
+			int num = Math.Clamp(spawnPoint.Y, 1, 254);
+			int z = spawnPoint.Z;
+
+			TerrainChunk chunkAtCell = m_subsystemTerrain.Terrain.GetChunkAtCell(x, z);
+			if (chunkAtCell == null || chunkAtCell.State <= TerrainChunkState.InvalidPropagatedLight)
+				return null;
+
+			for (int i = 0; i < 30; i++)
+			{
+				Point3 pointUp = new Point3(x, num + i, z);
+				if (TestSkeletonSpawnPoint(pointUp))
+				{
+					return pointUp;
+				}
+
+				Point3 pointDown = new Point3(x, num - i, z);
+				if (TestSkeletonSpawnPoint(pointDown))
+				{
+					return pointDown;
+				}
+			}
+			return null;
+		}
+
+		private bool TestSkeletonSpawnPoint(Point3 spawnPoint)
+		{
+			int x = spawnPoint.X;
+			int y = spawnPoint.Y;
+			int z = spawnPoint.Z;
+
+			if (y <= 3 || y >= 253)
+				return false;
+
+			int cellValueFast = m_subsystemTerrain.Terrain.GetCellValueFast(x, y - 1, z);
+			int cellValueFast2 = m_subsystemTerrain.Terrain.GetCellValueFast(x, y, z);
+			int cellValueFast3 = m_subsystemTerrain.Terrain.GetCellValueFast(x, y + 1, z);
+
+			Block block = BlocksManager.Blocks[Terrain.ExtractContents(cellValueFast)];
+			Block block2 = BlocksManager.Blocks[Terrain.ExtractContents(cellValueFast2)];
+			Block block3 = BlocksManager.Blocks[Terrain.ExtractContents(cellValueFast3)];
+
+			return (block.IsCollidable_(cellValueFast) || block is WaterBlock)
+				&& !block2.IsCollidable_(cellValueFast2) && !(block2 is WaterBlock)
+				&& !block3.IsCollidable_(cellValueFast3) && !(block3 is WaterBlock);
+		}
+
+		private int SpawnSkeletonsAtPoint(Point3 point, bool constantSpawn, int count)
+		{
+			int spawned = 0;
+			int attempts = 0;
+
+			while (count > 0 && attempts < 50)
+			{
+				Point3 spawnPoint = point;
+				if (attempts > 0)
+				{
+					spawnPoint.X += m_random.Int(-8, 8);
+					spawnPoint.Y += m_random.Int(-4, 8);
+					spawnPoint.Z += m_random.Int(-8, 8);
+				}
+
+				Point3? processedPoint = ProcessSkeletonSpawnPoint(spawnPoint);
+				if (processedPoint.HasValue)
+				{
+					Vector3 position = new Vector3(
+						processedPoint.Value.X + m_random.Float(0.4f, 0.6f),
+						processedPoint.Value.Y + 1.1f,
+						processedPoint.Value.Z + m_random.Float(0.4f, 0.6f)
+					);
+
+					Entity entity = m_subsystemCreatureSpawn.SpawnCreature(
+						SkeletonTemplateName,
+						position,
+						constantSpawn
+					);
+
+					if (entity != null)
+					{
+						spawned++;
+						count--;
+					}
+				}
+				attempts++;
+			}
+			return spawned;
+		}
+
+		private int CountSkeletons(bool constantSpawn)
+		{
+			int count = 0;
+			foreach (ComponentBody body in m_subsystemBodies.Bodies)
+			{
+				ComponentCreature creature = body.Entity.FindComponent<ComponentCreature>();
+				if (creature != null && creature.ConstantSpawn == constantSpawn)
+				{
+					if (body.Entity.ValuesDictionary.DatabaseObject?.Name == SkeletonTemplateName)
+					{
+						count++;
+					}
+				}
+			}
+			return count;
+		}
+
+		private int CountSkeletonsInArea(Vector2 c1, Vector2 c2, bool constantSpawn)
+		{
+			int count = 0;
+			m_tempBodiesArray.Clear();
+			m_subsystemBodies.FindBodiesInArea(c1, c2, m_tempBodiesArray);
+
+			for (int i = 0; i < m_tempBodiesArray.Count; i++)
+			{
+				ComponentBody body = m_tempBodiesArray.Array[i];
+				ComponentCreature creature = body.Entity.FindComponent<ComponentCreature>();
+
+				if (creature != null && creature.ConstantSpawn == constantSpawn)
+				{
+					if (body.Entity.ValuesDictionary.DatabaseObject?.Name == SkeletonTemplateName)
+					{
+						Vector3 position = body.Position;
+						if (position.X >= c1.X && position.X <= c2.X &&
+							position.Z >= c1.Y && position.Z <= c2.Y)
+						{
+							count++;
+						}
+					}
+				}
+			}
+			return count;
+		}
+
+		// CORREGIDO: Método unificado para verificar noche
+		private bool IsNormalNight()
+		{
+			if (m_subsystemGreenNightSky.IsGreenNightActive)
+				return false;
+
+			if (m_subsystemGameInfo.WorldSettings.TimeOfDayMode != TimeOfDayMode.Changing)
+				return false;
+
+			return m_subsystemSky.SkyLightIntensity < NightLightThreshold;
+		}
+		// ===== FIN MÉTODOS COMPARTIDOS =====
+
 		private int TrySpawnGroup()
 		{
 			int spawned = 0;
@@ -431,12 +856,10 @@ namespace Game
 			return spawned;
 		}
 
-		// Método modificado para incluir los nuevos NPCs de frío
 		private bool CanSpawnCreature(string templateName, Vector3 pos)
 		{
 			if (ColdOnlyTemplates.Contains(templateName))
 			{
-				// Solo en invierno o temperatura baja
 				if (m_subsystemSeasons.Season == Season.Winter)
 					return true;
 
