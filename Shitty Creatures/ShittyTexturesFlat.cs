@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Engine;
 using Engine.Graphics;
 
@@ -23,24 +23,17 @@ namespace Game
 			}
 		}
 
-		// ¡IMPORTANTE! Generar geometría para el bloque colocado en el mundo
 		public override void GenerateTerrainVertices(BlockGeometryGenerator generator, TerrainGeometry geometry, int value, int x, int y, int z)
 		{
 			if (this.m_texture != null)
 			{
-				// Obtener la geometría para la textura personalizada
 				TerrainGeometry customGeometry = geometry.GetGeometry(this.m_texture);
-
-				// Generar un bloque plano en forma de cruz (como las plantas)
-				// Esto hace que la textura se vea desde todos los ángulos
 				GenerateCrossVertices(generator, value, x, y, z, customGeometry.SubsetAlphaTest);
 			}
 		}
 
-		// Método para generar vértices en forma de cruz (dos planos perpendiculares)
 		private void GenerateCrossVertices(BlockGeometryGenerator generator, int value, int x, int y, int z, TerrainGeometrySubset subset)
 		{
-			// Luz
 			int light = Terrain.ExtractLight(value);
 			float intensity = LightingManager.LightIntensityByLightValue[light];
 			Color color = Color.MultiplyColorOnlyNotSaturated(Color.White, intensity);
@@ -48,7 +41,6 @@ namespace Game
 			int textureSlot = this.GetFaceTextureSlot(4, value);
 			int textureSlotCount = this.GetTextureSlotCount(value);
 
-			// Coordenadas de textura (toda la imagen)
 			float u0 = (float)(textureSlot % textureSlotCount) / textureSlotCount;
 			float v0 = (float)(textureSlot / textureSlotCount) / textureSlotCount;
 			float u1 = u0 + 1.0f / textureSlotCount;
@@ -56,24 +48,20 @@ namespace Game
 
 			float halfSize = 0.45f;
 
-			// Plano en X (eje X, Z fijo en 0.5)
 			Vector3[] quadX = new Vector3[4];
 			quadX[0] = new Vector3(x + 0.5f - halfSize, y, z + 0.5f);
 			quadX[1] = new Vector3(x + 0.5f + halfSize, y, z + 0.5f);
 			quadX[2] = new Vector3(x + 0.5f + halfSize, y + 1f, z + 0.5f);
 			quadX[3] = new Vector3(x + 0.5f - halfSize, y + 1f, z + 0.5f);
 
-			// Plano en Z (eje Z, X fijo en 0.5)
 			Vector3[] quadZ = new Vector3[4];
 			quadZ[0] = new Vector3(x + 0.5f, y, z + 0.5f - halfSize);
 			quadZ[1] = new Vector3(x + 0.5f, y, z + 0.5f + halfSize);
 			quadZ[2] = new Vector3(x + 0.5f, y + 1f, z + 0.5f + halfSize);
 			quadZ[3] = new Vector3(x + 0.5f, y + 1f, z + 0.5f - halfSize);
 
-			// Función auxiliar para añadir un cuadrilátero con doble cara
 			void AddQuad(Vector3[] quad)
 			{
-				// Añadir los 4 vértices
 				int start = subset.Vertices.Count;
 				subset.Vertices.Count += 4;
 				var vertices = subset.Vertices.Array;
@@ -83,12 +71,10 @@ namespace Game
 				BlockGeometryGenerator.SetupVertex(quad[2].X, quad[2].Y, quad[2].Z, color, u1, v0, ref vertices[start + 2]);
 				BlockGeometryGenerator.SetupVertex(quad[3].X, quad[3].Y, quad[3].Z, color, u0, v0, ref vertices[start + 3]);
 
-				// Índices para ambas caras
 				int idxStart = subset.Indices.Count;
-				subset.Indices.Count += 12;  // 2 caras * 2 triángulos * 3 índices = 12
+				subset.Indices.Count += 12;
 				var indices = subset.Indices.Array;
 
-				// Cara frontal (orden original)
 				indices[idxStart] = start;
 				indices[idxStart + 1] = start + 1;
 				indices[idxStart + 2] = start + 2;
@@ -96,7 +82,6 @@ namespace Game
 				indices[idxStart + 4] = start + 3;
 				indices[idxStart + 5] = start;
 
-				// Cara trasera (orden inverso)
 				indices[idxStart + 6] = start;
 				indices[idxStart + 7] = start + 3;
 				indices[idxStart + 8] = start + 2;
@@ -108,6 +93,7 @@ namespace Game
 			AddQuad(quadX);
 			AddQuad(quadZ);
 		}
+
 		public override void DrawBlock(PrimitivesRenderer3D primitivesRenderer, int value, Color color, float size, ref Matrix matrix, DrawBlockEnvironmentData environmentData)
 		{
 			if (this.m_texture != null)
@@ -124,14 +110,19 @@ namespace Game
 			return placementData;
 		}
 
+		// Caja de colisión física: vacía (no bloquea al jugador)
 		public override BoundingBox[] GetCustomCollisionBoxes(SubsystemTerrain terrain, int value)
 		{
 			return new BoundingBox[0];
 		}
 
+		// Caja de interacción: pequeña, permite apuntar y romper el bloque
 		public override BoundingBox[] GetCustomInteractionBoxes(SubsystemTerrain terrain, int value)
 		{
-			return new BoundingBox[0];
+			return new BoundingBox[]
+			{
+				new BoundingBox(new Vector3(0.25f, 0f, 0.25f), new Vector3(0.75f, 1f, 0.75f))
+			};
 		}
 
 		public override bool IsFaceTransparent(SubsystemTerrain subsystemTerrain, int face, int value)
@@ -149,10 +140,8 @@ namespace Game
 			return 0;
 		}
 
-		public override void GetDropValues(SubsystemTerrain subsystemTerrain, int oldValue, int newValue, int toolLevel, List<BlockDropValue> dropValues, out bool showDebris)
-		{
-			showDebris = false;
-		}
+		// Se elimina la anulación de GetDropValues para que se usen los datos del CSV
+		// (DefaultDropContent, DefaultDropCount, etc.)
 
 		public override int GetTextureSlotCount(int value)
 		{
@@ -173,7 +162,29 @@ namespace Game
 		{
 			collisionBoxIndex = 0;
 			collisionBox = default(BoundingBox);
-			return null;
+
+			BoundingBox[] array = useInteractionBoxes ? this.GetCustomInteractionBoxes(subsystemTerrain, value) : this.GetCustomCollisionBoxes(subsystemTerrain, value);
+			if (array.Length == 0)
+			{
+				return null;
+			}
+
+			float? result = null;
+			for (int i = 0; i < array.Length; i++)
+			{
+				float? num = ray.Intersection(array[i]);
+				if (num != null && (result == null || num.Value < result.Value))
+				{
+					collisionBoxIndex = i;
+					result = num;
+				}
+			}
+
+			if (result != null)
+			{
+				collisionBox = array[collisionBoxIndex];
+			}
+			return result;
 		}
 	}
 }
