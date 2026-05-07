@@ -247,59 +247,77 @@ namespace Game
 
 		public static ShittyTreeType? GenerateRandomFruitTreeType(Random random, int temperature, int humidity, int y)
 		{
-			// Verificar que no sea un lugar frío
+			// Nunca en lugares helados
 			if (SubsystemWeather.IsPlaceFrozen(temperature, y))
 				return null;
 
-			// Probabilidades base ajustadas
-			float appleProb = 0.3f;   // 30% manzano - clima templado
-			float pearProb = 0.25f;   // 25% peral - clima fresco
-			float orangeProb = 0.25f; // 25% naranjo - clima cálido
-			float cherryProb = 0.2f;  // 20% cerezo - clima frío pero no helado
+			// Pesos para la selección (multiplicamos por random.Float como en vanilla)
+			float appleWeight = random.Float() * CalculateFruitTreeProbability(ShittyTreeType.Apple, temperature, humidity, y);
+			float pearWeight = random.Float() * CalculateFruitTreeProbability(ShittyTreeType.Pear, temperature, humidity, y);
+			float orangeWeight = random.Float() * CalculateFruitTreeProbability(ShittyTreeType.Orange, temperature, humidity, y);
+			float cherryWeight = random.Float() * CalculateFruitTreeProbability(ShittyTreeType.Cherry, temperature, humidity, y);
 
-			// Ajustar según temperatura y humedad
-			if (temperature >= 10 && humidity >= 6)
-			{
-				// Clima cálido y húmedo - favorece naranjos
-				orangeProb *= 1.5f;
-				appleProb *= 0.8f;
-			}
-			else if (temperature >= 8 && humidity >= 4)
-			{
-				// Clima templado - favorece manzanos
-				appleProb *= 1.3f;
-				orangeProb *= 0.8f;
-			}
-			else if (temperature >= 6 && humidity >= 3)
-			{
-				// Clima fresco - favorece perales
-				pearProb *= 1.3f;
-				orangeProb *= 0.6f;
-			}
+			float maxWeight = MathUtils.Max(appleWeight, pearWeight, orangeWeight, cherryWeight);
+			if (maxWeight <= 0f)
+				return null;
+
+			ShittyTreeType? result = null;
+			if (maxWeight == appleWeight)
+				result = ShittyTreeType.Apple;
+			else if (maxWeight == pearWeight)
+				result = ShittyTreeType.Pear;
+			else if (maxWeight == orangeWeight)
+				result = ShittyTreeType.Orange;
 			else
+				result = ShittyTreeType.Cherry;
+
+			// Filtro de densidad final (como random.Bool en el juego original)
+			if (random.Bool(CalculateFruitTreeDensity(result.Value, temperature, humidity, y)))
+				return result;
+
+			return null;
+		}
+
+		private static float CalculateFruitTreeProbability(ShittyTreeType type, int temperature, int humidity, int y)
+		{
+			// Rangos de clima y altura para cada frutal (basados en sus necesidades reales)
+			switch (type)
 			{
-				// Clima frío (pero no helado) - favorece cerezos
-				cherryProb *= 1.4f;
-				orangeProb *= 0.4f;
-				appleProb *= 0.7f;
+				case ShittyTreeType.Apple:
+					return RangeProbability(temperature, 5f, 7f, 12f, 14f) *
+						   RangeProbability(humidity, 4f, 6f, 12f, 14f) *
+						   RangeProbability(y, 64f, 66f, 90f, 95f);
+				case ShittyTreeType.Pear:
+					return RangeProbability(temperature, 4f, 6f, 11f, 13f) *
+						   RangeProbability(humidity, 4f, 6f, 13f, 15f) *
+						   RangeProbability(y, 64f, 66f, 88f, 92f);
+				case ShittyTreeType.Orange:
+					return RangeProbability(temperature, 11f, 13f, 15f, 16f) *
+						   RangeProbability(humidity, 7f, 9f, 15f, 16f) *
+						   RangeProbability(y, 64f, 66f, 80f, 85f);
+				case ShittyTreeType.Cherry:
+					return RangeProbability(temperature, 2f, 4f, 9f, 11f) *
+						   RangeProbability(humidity, 3f, 5f, 9f, 11f) *
+						   RangeProbability(y, 68f, 70f, 100f, 105f);
+				default:
+					return 0f;
 			}
+		}
 
-			// Normalizar probabilidades
-			float total = appleProb + pearProb + orangeProb + cherryProb;
-			appleProb /= total;
-			pearProb /= total;
-			orangeProb /= total;
-			cherryProb /= total;
+		private static float CalculateFruitTreeDensity(ShittyTreeType type, int temperature, int humidity, int y)
+		{
+			// Densidad baja para que no aparezcan en todos lados (ajusta según necesidad)
+			const float baseDensity = 0.04f;
+			return baseDensity * CalculateFruitTreeProbability(type, temperature, humidity, y);
+		}
 
-			float roll = random.Float(0f, 1f);
-
-			if (roll < appleProb)
-				return ShittyTreeType.Apple;
-			if (roll < appleProb + pearProb)
-				return ShittyTreeType.Pear;
-			if (roll < appleProb + pearProb + orangeProb)
-				return ShittyTreeType.Orange;
-			return ShittyTreeType.Cherry;
+		private static float RangeProbability(float v, float a, float b, float c, float d)
+		{
+			if (v < a) return 0f;
+			if (v < b) return (v - a) / (b - a);
+			if (v <= c) return 1f;
+			if (v <= d) return 1f - (v - c) / (d - c);
+			return 0f;
 		}
 	}
 }
