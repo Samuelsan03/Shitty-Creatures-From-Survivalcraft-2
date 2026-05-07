@@ -63,6 +63,7 @@
     "Line1_0_6_13": "• Translations have been fixed, polished, and improved.",
     "Line1_0_6_14": "• Improved creature artificial intelligence, they can now handle any weapon including ranged, throwables, firearms and melee.",
     "Line1_0_6_15": "• Creatures can now wear clothing and armor from their inventory just like the player. They will automatically equip any wearable item they carry. Armor with high protection values will absorb incoming damage, reducing or completely negating injuries based on the armor's strength, durability, and the affected body part. Armor pieces will take damage and eventually break with use, functioning identically to player-worn armor.",
+    "Line1_0_6_16": "• A bleeding system for creatures has been added. It allows players to see when they are close to death and how long their corpse remains before disappearing.",
     "Line1_0_5_1": "• Added new weapons: Flamethrower, Scythe, Trident, Repeating Crossbow, Poison Bomb, Item Cannon",
     "Line1_0_5_2": "• Added new NPCs: Digimon, Alliance members, Muerte members, Pirates, Infected (zombies)",
     "Line1_0_5_3": "• Added music system (background music, chase music for enemies)",
@@ -103,10 +104,18 @@
     "PunchCommandDescription": "Allies will attack and chase any NPC you hit, regardless of the type of attack",
     "CreativeDefenseDescription": "In Creative mode, when a creature hits the player, allies will attack the attacker",
     "FreeCameraDescription": "Enable/disable free camera mode (only in non-creative modes)",
-    "MenuMusicDescription": "Controls whether custom music is played while navigating the game menu",
     "BleedingDescription": "Toggle bleeding on wounded creatures",
-    "HealthBarDescription": "Show health bars on creatures"
+    "HealthBarDescription": "Show health bars on creatures",
+    "SkeletonSpawnDescription": "Spawn skeletons on normal nights"
   },
+  "SpecialThanksScreen": {
+  "0": "Special Thanks",
+  "1": "If you want to appear in the special thanks list, you can contact the author to provide ideas, bugs or more. Don't forget to include your nickname and the reason.",
+  "2": "Quotemante",
+  "3": "With his idea of adding Rayman as a new character.",
+  "4": "Richard Survivalcraft",
+  "5": "Because of the idea of ​​including characters from Sonic The Hedgehog"
+},
   "AntidoteBucket": {
     "NPCCured": "The NPC has been cured of poison and sickness!"
   },
