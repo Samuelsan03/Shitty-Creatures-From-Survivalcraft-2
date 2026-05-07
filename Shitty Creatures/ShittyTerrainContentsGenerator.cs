@@ -109,6 +109,49 @@ namespace Game
 				}
 				planted++;
 			}
+
+			// 3. Arbustos de arándanos
+			int blueberryBushIndex = ShittyPlantsManager.GetBlueberryBushIndex();
+			if (blueberryBushIndex != 0)
+			{
+				int targetBushes = (int)(4f * forestDensity); // Mayor densidad que árboles frutales
+				int bushPlanted = 0;
+				int bushAttempts = 0;
+				int maxBushAttempts = targetBushes * 3;
+
+				while (bushAttempts < maxBushAttempts && bushPlanted < targetBushes)
+				{
+					bushAttempts++;
+					int localX = random.Int(2, 13);
+					int localZ = random.Int(2, 13);
+					int worldX = chunkX * 16 + localX;
+					int worldZ = chunkZ * 16 + localZ;
+					int y = terrain.CalculateTopmostCellHeight(worldX, worldZ);
+
+					if (y < 66) continue;
+					int ground = terrain.GetCellContentsFast(worldX, y, worldZ);
+					// Solo sobre tierra o hierba (2 = dirt, 8 = grass)
+					if (ground != 2 && ground != 8) continue;
+
+					y++; // Posición del arbusto
+
+					// No colocar sobre otro arbusto o bloque ocupado
+					if (occupied[localX, localZ]) continue;
+					int existing = terrain.GetCellContentsFast(worldX, y, worldZ);
+					if (existing != 0) continue;
+
+					int adjustedTemp = baseTemperature + SubsystemWeather.GetTemperatureAdjustmentAtHeight(y);
+					if (!ShittyPlantsManager.CanPlaceBlueberryBush(adjustedTemp, humidity, y))
+						continue;
+
+					// Colocar el arbusto
+					terrain.SetCellValueFast(worldX, y, worldZ, Terrain.MakeBlockValue(blueberryBushIndex));
+					chunk.ModificationCounter++;
+					// Marcar posición ocupada para evitar superposición cercana
+					occupied[localX, localZ] = true;
+					bushPlanted++;
+				}
+			}
 		}
 	}
 }
