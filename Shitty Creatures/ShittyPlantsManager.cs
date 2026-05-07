@@ -40,17 +40,17 @@ namespace Game
 			// Peral
 			m_treeTrunksByType[(int)ShittyTreeType.Pear] = GetBlockIndex("PearWoodBlock");
 			m_treeLeavesByType[(int)ShittyTreeType.Pear] = GetBlockIndex("PearLeavesBlock");
-			m_treeFruitByType[(int)ShittyTreeType.Pear] = GetBlockIndex("PearBlock");   // <-- añadido
+			m_treeFruitByType[(int)ShittyTreeType.Pear] = GetBlockIndex("PearBlock");
 
 			// Naranjo
 			m_treeTrunksByType[(int)ShittyTreeType.Orange] = GetBlockIndex("OrangeWoodBlock");
 			m_treeLeavesByType[(int)ShittyTreeType.Orange] = GetBlockIndex("OrangeLeavesBlock");
-			m_treeFruitByType[(int)ShittyTreeType.Orange] = GetBlockIndex("OrangeBlock"); // <-- añadido
+			m_treeFruitByType[(int)ShittyTreeType.Orange] = GetBlockIndex("OrangeBlock");
 
 			// Cerezo
 			m_treeTrunksByType[(int)ShittyTreeType.Cherry] = GetBlockIndex("CherryWoodBlock");
 			m_treeLeavesByType[(int)ShittyTreeType.Cherry] = GetBlockIndex("CherryLeavesBlock");
-			m_treeFruitByType[(int)ShittyTreeType.Cherry] = GetBlockIndex("CherryBlock"); // <-- añadido
+			m_treeFruitByType[(int)ShittyTreeType.Cherry] = GetBlockIndex("CherryBlock");
 		}
 
 		private static int GetBlockIndex(string blockTypeName)
@@ -66,6 +66,23 @@ namespace Game
 			int wood = m_treeTrunksByType[(int)treeType];
 			int leaves = m_treeLeavesByType[(int)treeType];
 			int fruit = m_treeFruitByType[(int)treeType];
+
+			int maxFruit = 6;
+			switch (treeType)
+			{
+				case ShittyTreeType.Apple:
+					maxFruit = 6;
+					break;
+				case ShittyTreeType.Pear:
+					maxFruit = 5;
+					break;
+				case ShittyTreeType.Orange:
+					maxFruit = 8;
+					break;
+				case ShittyTreeType.Cherry:
+					maxFruit = 4;
+					break;
+			}
 
 			for (int i = 0; i < variations; i++)
 			{
@@ -97,12 +114,12 @@ namespace Game
 						break;
 				}
 
-				TerrainBrush brush = CreateFruitTreeBrush(random, wood, leaves, fruit, height, branchesCount, leafStartFactor);
+				TerrainBrush brush = CreateFruitTreeBrush(random, wood, leaves, fruit, height, branchesCount, leafStartFactor, maxFruit);
 				m_treeBrushesByType[(int)treeType].Add(brush);
 			}
 		}
 
-		public static TerrainBrush CreateFruitTreeBrush(Random random, int woodIndex, int leavesIndex, int fruitIndex, int height, int branchesCount, float leafStartFactor)
+		public static TerrainBrush CreateFruitTreeBrush(Random random, int woodIndex, int leavesIndex, int fruitIndex, int height, int branchesCount, float leafStartFactor, int maxFruit)
 		{
 			TerrainBrush brush = new TerrainBrush();
 
@@ -141,7 +158,7 @@ namespace Game
 				brush.AddRay(0, startY, 0, endX, endY, endZ, 1, 1, 1, branchBrush);
 			}
 
-			// Hojas y frutas - colocación mejorada
+			// Hojas y frutas
 			int fruitPlaced = 0;
 
 			for (int y = (int)(height * leafStartFactor); y <= height + 2; y++)
@@ -168,19 +185,12 @@ namespace Game
 									if (existing == null || Terrain.ExtractContents(existing.Value) != woodIndex)
 									{
 										bool placeFruit = false;
-										// Solo fruta si:
-										// 1. Hay fruta definida
-										// 2. Aún no se alcanzó el máximo
-										// 3. La celda está en el borde exterior (colgando)
-										// 4. No está en el centro del árbol
-										// 5. La altura está dentro de la mitad inferior (ny <= height)
-										if (fruitIndex != 0 && fruitPlaced < 8 && ny <= height)
+										if (fruitIndex != 0 && fruitPlaced < maxFruit && ny <= height)
 										{
 											bool isCenter = Math.Abs(nx) <= 1 && Math.Abs(nz) <= 1;
-											bool isOuterEdge = (dist > radius - 0.8f); // borde exterior del follaje
-											if (!isCenter && isOuterEdge && random.Float(0f, 1f) < 0.2f) // 20% prob al borde
+											bool isOuterEdge = (dist > radius - 0.8f);
+											if (!isCenter && isOuterEdge && random.Float(0f, 1f) < 0.2f)
 											{
-												// Comprobar que no haya otra fruta en celdas adyacentes (horizontal)
 												bool adjacentFruit = false;
 												for (int fx = -1; fx <= 1 && !adjacentFruit; fx++)
 												{
