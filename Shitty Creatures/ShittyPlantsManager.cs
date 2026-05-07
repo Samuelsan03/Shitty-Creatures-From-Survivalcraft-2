@@ -68,58 +68,63 @@ namespace Game
 			int fruit = m_treeFruitByType[(int)treeType];
 
 			int maxFruit = 6;
+			int heightMin = 5;
+			int heightMax = 8;
+			int branchesMin = 4;
+			int branchesMax = 8;
+			float leafStartFactor = 0.5f;
+			float fruitProbability = 0.3f;
+
 			switch (treeType)
 			{
 				case ShittyTreeType.Apple:
 					maxFruit = 6;
+					heightMin = 5;
+					heightMax = 7;
+					branchesMin = 4;
+					branchesMax = 7;
+					leafStartFactor = 0.55f;
+					fruitProbability = 0.35f;
 					break;
 				case ShittyTreeType.Pear:
 					maxFruit = 5;
+					heightMin = 6;
+					heightMax = 8;
+					branchesMin = 3;
+					branchesMax = 6;
+					leafStartFactor = 0.5f;
+					fruitProbability = 0.3f;
 					break;
 				case ShittyTreeType.Orange:
 					maxFruit = 8;
+					heightMin = 5;
+					heightMax = 7;
+					branchesMin = 5;
+					branchesMax = 8;
+					leafStartFactor = 0.6f;
+					fruitProbability = 0.4f;
 					break;
 				case ShittyTreeType.Cherry:
 					maxFruit = 4;
+					heightMin = 5;
+					heightMax = 6;
+					branchesMin = 3;
+					branchesMax = 5;
+					leafStartFactor = 0.5f;
+					fruitProbability = 0.25f;
 					break;
 			}
 
 			for (int i = 0; i < variations; i++)
 			{
-				int height = random.Int(5, 8);
-				int branchesCount = random.Int(4, 8);
-				float leafStartFactor = 0.5f;
-
-				switch (treeType)
-				{
-					case ShittyTreeType.Apple:
-						height = random.Int(5, 7);
-						branchesCount = random.Int(5, 9);
-						leafStartFactor = 0.55f;
-						break;
-					case ShittyTreeType.Pear:
-						height = random.Int(6, 8);
-						branchesCount = random.Int(4, 7);
-						leafStartFactor = 0.5f;
-						break;
-					case ShittyTreeType.Orange:
-						height = random.Int(5, 7);
-						branchesCount = random.Int(6, 10);
-						leafStartFactor = 0.6f;
-						break;
-					case ShittyTreeType.Cherry:
-						height = random.Int(5, 6);
-						branchesCount = random.Int(4, 6);
-						leafStartFactor = 0.5f;
-						break;
-				}
-
-				TerrainBrush brush = CreateFruitTreeBrush(random, wood, leaves, fruit, height, branchesCount, leafStartFactor, maxFruit);
+				int height = random.Int(heightMin, heightMax);
+				int branchesCount = random.Int(branchesMin, branchesMax);
+				TerrainBrush brush = CreateFruitTreeBrush(random, wood, leaves, fruit, height, branchesCount, leafStartFactor, maxFruit, fruitProbability);
 				m_treeBrushesByType[(int)treeType].Add(brush);
 			}
 		}
 
-		public static TerrainBrush CreateFruitTreeBrush(Random random, int woodIndex, int leavesIndex, int fruitIndex, int height, int branchesCount, float leafStartFactor, int maxFruit)
+		public static TerrainBrush CreateFruitTreeBrush(Random random, int woodIndex, int leavesIndex, int fruitIndex, int height, int branchesCount, float leafStartFactor, int maxFruit, float fruitProbability)
 		{
 			TerrainBrush brush = new TerrainBrush();
 
@@ -158,8 +163,9 @@ namespace Game
 				brush.AddRay(0, startY, 0, endX, endY, endZ, 1, 1, 1, branchBrush);
 			}
 
-			// Hojas y frutas
+			// Hojas y frutas con mejor separación
 			int fruitPlaced = 0;
+			HashSet<Point3> fruitPositions = new HashSet<Point3>();
 
 			for (int y = (int)(height * leafStartFactor); y <= height + 2; y++)
 			{
@@ -173,51 +179,55 @@ namespace Game
 				{
 					for (int dz = -rad; dz <= rad; dz++)
 					{
-						for (int dy = -1; dy <= 1; dy++)
+						float dist = MathF.Sqrt(dx * dx + dz * dz);
+						if (dist <= radius && random.Float(0f, 1f) < 0.7f)
 						{
-							int nx = dx, ny = y + dy, nz = dz;
-							float dist = MathF.Sqrt(dx * dx + dy * dy + dz * dz);
-							if (dist <= radius && random.Float(0f, 1f) < 0.7f)
+							Point3 pos = new Point3(dx, y, dz);
+							if (brush.GetValue(dx, y, dz) == null)
 							{
-								if (brush.GetValue(nx, ny, nz) == null)
+								int? existing = brush.GetValue(dx, y, dz);
+								if (existing == null || Terrain.ExtractContents(existing.Value) != woodIndex)
 								{
-									int? existing = brush.GetValue(nx, ny, nz);
-									if (existing == null || Terrain.ExtractContents(existing.Value) != woodIndex)
+									bool placeFruit = false;
+									if (fruitIndex != 0 && fruitPlaced < maxFruit && y <= height)
 									{
-										bool placeFruit = false;
-										if (fruitIndex != 0 && fruitPlaced < maxFruit && ny <= height)
+										bool isCenter = Math.Abs(dx) <= 1 && Math.Abs(dz) <= 1;
+										bool isOuterEdge = (dist > radius - 0.8f);
+
+										if (!isCenter && isOuterEdge && random.Float(0f, 1f) < fruitProbability)
 										{
-											bool isCenter = Math.Abs(nx) <= 1 && Math.Abs(nz) <= 1;
-											bool isOuterEdge = (dist > radius - 0.8f);
-											if (!isCenter && isOuterEdge && random.Float(0f, 1f) < 0.2f)
+											// Verificar que no haya otro fruto adyacente (en cualquier dirección)
+											bool adjacentFruit = false;
+											for (int fx = -1; fx <= 1 && !adjacentFruit; fx++)
 											{
-												bool adjacentFruit = false;
-												for (int fx = -1; fx <= 1 && !adjacentFruit; fx++)
+												for (int fy = -1; fy <= 1 && !adjacentFruit; fy++)
 												{
 													for (int fz = -1; fz <= 1 && !adjacentFruit; fz++)
 													{
-														if (fx == 0 && fz == 0) continue;
-														int? adj = brush.GetValue(nx + fx, ny, nz + fz);
-														if (adj != null && Terrain.ExtractContents(adj.Value) == fruitIndex)
+														if (fx == 0 && fy == 0 && fz == 0) continue;
+														Point3 checkPos = new Point3(dx + fx, y + fy, dz + fz);
+														if (fruitPositions.Contains(checkPos))
 														{
 															adjacentFruit = true;
 														}
 													}
 												}
-												if (!adjacentFruit)
-													placeFruit = true;
 											}
-										}
 
-										if (placeFruit)
-										{
-											brush.AddCell(nx, ny, nz, fruitIndex);
-											fruitPlaced++;
+											if (!adjacentFruit)
+												placeFruit = true;
 										}
-										else
-										{
-											brush.AddCell(nx, ny, nz, leavesIndex);
-										}
+									}
+
+									if (placeFruit)
+									{
+										brush.AddCell(dx, y, dz, fruitIndex);
+										fruitPositions.Add(pos);
+										fruitPlaced++;
+									}
+									else
+									{
+										brush.AddCell(dx, y, dz, leavesIndex);
 									}
 								}
 							}
@@ -237,13 +247,51 @@ namespace Game
 
 		public static ShittyTreeType? GenerateRandomFruitTreeType(Random random, int temperature, int humidity, int y)
 		{
-			float appleProb = 0.9f;
-			float pearProb = 0.03f;
-			float orangeProb = 0.04f;
-			float cherryProb = 0.03f;
+			// Verificar que no sea un lugar frío
+			if (SubsystemWeather.IsPlaceFrozen(temperature, y))
+				return null;
 
+			// Probabilidades base ajustadas
+			float appleProb = 0.3f;   // 30% manzano - clima templado
+			float pearProb = 0.25f;   // 25% peral - clima fresco
+			float orangeProb = 0.25f; // 25% naranjo - clima cálido
+			float cherryProb = 0.2f;  // 20% cerezo - clima frío pero no helado
+
+			// Ajustar según temperatura y humedad
+			if (temperature >= 10 && humidity >= 6)
+			{
+				// Clima cálido y húmedo - favorece naranjos
+				orangeProb *= 1.5f;
+				appleProb *= 0.8f;
+			}
+			else if (temperature >= 8 && humidity >= 4)
+			{
+				// Clima templado - favorece manzanos
+				appleProb *= 1.3f;
+				orangeProb *= 0.8f;
+			}
+			else if (temperature >= 6 && humidity >= 3)
+			{
+				// Clima fresco - favorece perales
+				pearProb *= 1.3f;
+				orangeProb *= 0.6f;
+			}
+			else
+			{
+				// Clima frío (pero no helado) - favorece cerezos
+				cherryProb *= 1.4f;
+				orangeProb *= 0.4f;
+				appleProb *= 0.7f;
+			}
+
+			// Normalizar probabilidades
 			float total = appleProb + pearProb + orangeProb + cherryProb;
-			float roll = random.Float(0f, total);
+			appleProb /= total;
+			pearProb /= total;
+			orangeProb /= total;
+			cherryProb /= total;
+
+			float roll = random.Float(0f, 1f);
 
 			if (roll < appleProb)
 				return ShittyTreeType.Apple;
