@@ -21,25 +21,24 @@ namespace Game
 			// 1. Árboles normales del juego (robles, abedules, pinos, etc.)
 			base.GenerateTrees(chunk);
 
-			// 2. Añadir manzanos adicionales
+			// 2. Añadir árboles frutales (manzano, peral, naranjo, cerezo)
 			if (!TGExtras) return;
 
 			Terrain terrain = m_subsystemTerrain.Terrain;
 			int chunkX = chunk.Coords.X;
 			int chunkZ = chunk.Coords.Y;
 
-			// Semilla diferente para no coincidir con la vanilla
 			Random random = new Random(m_seed + chunkX + 3943 * chunkZ + 12345);
 			int humidity = CalculateHumidity(chunkX * 16, chunkZ * 16);
 			int temperature = CalculateTemperature(chunkX * 16, chunkZ * 16);
 			float forestDensity = CalculateForestDensity(chunkX * 16, chunkZ * 16);
 
-			// Cuántos manzanos añadir (por ejemplo, la mitad de la densidad normal)
-			int targetAppleTrees = (int)(3f * forestDensity);
+			// Cantidad de árboles frutales a añadir (aproximadamente la mitad de la densidad normal)
+			int targetFruitTrees = (int)(3f * forestDensity);
 			int attempts = 0;
 			int planted = 0;
 
-			while (attempts < 36 && planted < targetAppleTrees)
+			while (attempts < 36 && planted < targetFruitTrees)
 			{
 				int x = chunkX * 16 + random.Int(2, 13);
 				int z = chunkZ * 16 + random.Int(2, 13);
@@ -52,20 +51,24 @@ namespace Game
 					{
 						y++; // posición de plantación
 
-						// Comprobar espacio alrededor
+						// Espacio libre alrededor
 						if (!BlocksManager.Blocks[terrain.GetCellContentsFast(x + 1, y, z)].IsCollidable &&
 							!BlocksManager.Blocks[terrain.GetCellContentsFast(x - 1, y, z)].IsCollidable &&
 							!BlocksManager.Blocks[terrain.GetCellContentsFast(x, y, z + 1)].IsCollidable &&
 							!BlocksManager.Blocks[terrain.GetCellContentsFast(x, y, z - 1)].IsCollidable)
 						{
-							// Obtener los brushes solo del manzano
-							var brushes = ShittyPlantsManager.GetTreeBrushes(ShittyTreeType.Apple);
-							if (brushes.Count > 0)
+							// Elegir tipo de árbol frutal según probabilidad
+							ShittyTreeType? fruitTreeType = ShittyPlantsManager.GenerateRandomFruitTreeType(random, temperature, humidity, y);
+							if (fruitTreeType != null)
 							{
-								TerrainBrush brush = brushes[random.Int(brushes.Count)];
-								brush.PaintFast(chunk, x, y, z);
-								chunk.AddBrushPaint(x, y, z, brush);
-								planted++;
+								var brushes = ShittyPlantsManager.GetTreeBrushes(fruitTreeType.Value);
+								if (brushes.Count > 0)
+								{
+									TerrainBrush brush = brushes[random.Int(brushes.Count)];
+									brush.PaintFast(chunk, x, y, z);
+									chunk.AddBrushPaint(x, y, z, brush);
+									planted++;
+								}
 							}
 						}
 					}
