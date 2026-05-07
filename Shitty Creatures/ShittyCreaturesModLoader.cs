@@ -1351,7 +1351,20 @@ namespace Game
 			var noBleedCreatures = new HashSet<string>
 	{
 		"HumanoidSkeleton",
-		"HumanoidSkeletonTamed"
+		"HumanoidSkeletonTamed",
+		"TankGhost1",
+		"TankGhost2",
+		"TankGhost3",
+		"FrozenTankGhost",
+		"GhostNormal",
+		"GhostFast",
+		"PoisonousGhost",
+		"GhostBoomer1",
+		"GhostBoomer2",
+		"GhostBoomer3",
+		"GhostCharger",
+		"FrozenGhost",
+		"FrozenGhostBoomer"
 	};
 
 			var allCreatures = new List<ComponentCreature>(creatureSpawn.Creatures);
