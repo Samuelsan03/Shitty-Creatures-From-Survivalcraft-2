@@ -600,6 +600,18 @@ namespace Game
 					ComponentPlayer player = gameWidget.PlayerData?.ComponentPlayer;
 					if (player != null && player.ComponentHealth.Health > 0f)
 					{
+						// Elegir la posición según la cámara activa
+						Vector3 displayPos;
+						Camera activeCam = gameWidget.ActiveCamera;
+						if (activeCam is FreeCamera || activeCam is DebugCamera)
+						{
+							displayPos = activeCam.ViewPosition; // posición de la cámara
+						}
+						else
+						{
+							displayPos = player.ComponentBody.Position; // posición del jugador
+						}
+
 						if (!m_coordinateLabels.ContainsKey(player))
 						{
 							LabelWidget label = new LabelWidget
@@ -617,9 +629,11 @@ namespace Game
 						}
 
 						LabelWidget coordLabel = m_coordinateLabels[player];
-						Vector3 pos = player.ComponentBody.Position;
 						string format = LanguageControl.Get(new string[] { "Coordinates", "0" });
-						coordLabel.Text = string.Format(format, pos.X.ToString("F1"), pos.Z.ToString("F1"), pos.Y.ToString("F1"));
+						coordLabel.Text = string.Format(format,
+							displayPos.X.ToString("F1"),
+							displayPos.Z.ToString("F1"),
+							displayPos.Y.ToString("F1"));
 					}
 				}
 			}
