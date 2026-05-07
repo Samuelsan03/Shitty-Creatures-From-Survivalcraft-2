@@ -37,20 +37,20 @@ namespace Game
 			m_treeLeavesByType[(int)ShittyTreeType.Apple] = GetBlockIndex("AppleLeavesBlock");
 			m_treeFruitByType[(int)ShittyTreeType.Apple] = GetBlockIndex("AppleBlock");
 
-			// Peral (sin fruta por ahora)
+			// Peral
 			m_treeTrunksByType[(int)ShittyTreeType.Pear] = GetBlockIndex("PearWoodBlock");
 			m_treeLeavesByType[(int)ShittyTreeType.Pear] = GetBlockIndex("PearLeavesBlock");
-			m_treeFruitByType[(int)ShittyTreeType.Pear] = 0;
+			m_treeFruitByType[(int)ShittyTreeType.Pear] = GetBlockIndex("PearBlock");   // <-- añadido
 
 			// Naranjo
 			m_treeTrunksByType[(int)ShittyTreeType.Orange] = GetBlockIndex("OrangeWoodBlock");
 			m_treeLeavesByType[(int)ShittyTreeType.Orange] = GetBlockIndex("OrangeLeavesBlock");
-			m_treeFruitByType[(int)ShittyTreeType.Orange] = 0;
+			m_treeFruitByType[(int)ShittyTreeType.Orange] = GetBlockIndex("OrangeBlock"); // <-- añadido
 
 			// Cerezo
 			m_treeTrunksByType[(int)ShittyTreeType.Cherry] = GetBlockIndex("CherryWoodBlock");
 			m_treeLeavesByType[(int)ShittyTreeType.Cherry] = GetBlockIndex("CherryLeavesBlock");
-			m_treeFruitByType[(int)ShittyTreeType.Cherry] = 0;
+			m_treeFruitByType[(int)ShittyTreeType.Cherry] = GetBlockIndex("CherryBlock"); // <-- añadido
 		}
 
 		private static int GetBlockIndex(string blockTypeName)
