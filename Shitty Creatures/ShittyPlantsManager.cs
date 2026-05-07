@@ -319,5 +319,22 @@ namespace Game
 			if (v <= d) return 1f - (v - c) / (d - c);
 			return 0f;
 		}
+
+		public static int GetBlueberryBushIndex()
+		{
+			// 421 es el índice del BlueberryBushBlock
+			return GetBlockIndex("BlueberryBushBlock");
+		}
+
+		// Condiciones para arándanos (ajusta según prefieras)
+		public static bool CanPlaceBlueberryBush(int temperature, int humidity, int y)
+		{
+			if (SubsystemWeather.IsPlaceFrozen(temperature, y))
+				return false;
+			// Ejemplo: rango de temperatura 2..10, humedad 4..12, altura 70..100
+			return temperature >= 2 && temperature <= 10
+				&& humidity >= 4 && humidity <= 12
+				&& y >= 70 && y <= 100;
+		}
 	}
 }
