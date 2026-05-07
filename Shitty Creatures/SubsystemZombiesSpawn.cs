@@ -339,121 +339,124 @@ namespace Game
 
 			// ===== SPAWN DE ESQUELETOS - SOLO DE NOCHE =====
 
-			// 1. Spawn NORMAL - SOLO de noche (100% probabilidad)
-			if (m_skeletonNewSpawnChunks.Count > 0)
+			if (ShittyCreaturesSettingsManager.SkeletonSpawnEnabled)
 			{
-				// CORREGIDO: Verificar que es noche Y no es noche verde
-				if (isNormalNight && !isGreenNightActive)
+				// 1. Spawn NORMAL - SOLO de noche (100% probabilidad)
+				if (m_skeletonNewSpawnChunks.Count > 0)
 				{
-					m_skeletonNewSpawnChunks.RandomShuffle((int max) => m_random.Int(0, max - 1));
-					foreach (SpawnChunk chunk in m_skeletonNewSpawnChunks)
+					// CORREGIDO: Verificar que es noche Y no es noche verde
+					if (isNormalNight && !isGreenNightActive)
 					{
-						SpawnNormalSkeletonsInChunk(chunk, SkeletonNormalNewChunkAttempts);
+						m_skeletonNewSpawnChunks.RandomShuffle((int max) => m_random.Int(0, max - 1));
+						foreach (SpawnChunk chunk in m_skeletonNewSpawnChunks)
+						{
+							SpawnNormalSkeletonsInChunk(chunk, SkeletonNormalNewChunkAttempts);
+						}
 					}
+					m_skeletonNewSpawnChunks.Clear();
 				}
-				m_skeletonNewSpawnChunks.Clear();
-			}
 
-			// 2. Spawn CONSTANTE - Solo de noche con cooldown (50% probabilidad)
-			// Actualizar cooldown
-			if (!isNormalNight || isGreenNightActive)
-			{
-				m_constantSpawnCooldown = ConstantSpawnCooldownTime;
-			}
-			else
-			{
-				m_constantSpawnCooldown -= dt;
-			}
-
-			if (m_skeletonSpawnChunks.Count > 0)
-			{
-				// Solo spawnear constante si: es noche normal + no es noche verde + cooldown listo
-				if (isNormalNight && !isGreenNightActive && m_constantSpawnCooldown <= 0f)
+				// 2. Spawn CONSTANTE - Solo de noche con cooldown (50% probabilidad)
+				// Actualizar cooldown
+				if (!isNormalNight || isGreenNightActive)
 				{
-					m_skeletonSpawnChunks.RandomShuffle((int max) => m_random.Int(0, max - 1));
-					foreach (SpawnChunk chunk in m_skeletonSpawnChunks)
-					{
-						SpawnConstantSkeletonsInChunk(chunk, SkeletonConstantChunkAttempts);
-					}
-					// Resetear cooldown después de intentar spawn
 					m_constantSpawnCooldown = ConstantSpawnCooldownTime;
 				}
-				m_skeletonSpawnChunks.Clear();
-			}
-			// ===== FIN SPAWN DE ESQUELETOS =====
-
-			if (!m_wasGreenNightActive && isGreenNightActive)
-			{
-				PlayEvilLaugh();
-				SendWaveMessage();
-
-				if (m_currentWave == maxWave && !m_hasSpawnedBossThisNight && !m_bossBattleActive)
+				else
 				{
-					StartBossBattle();
-					m_bossSpawnDelayed = true;
-					m_bossSpawnDelayTimer = 0.5f;
+					m_constantSpawnCooldown -= dt;
 				}
-			}
-			m_wasGreenNightActive = isGreenNightActive;
 
-			if (!isGreenNightActive)
-				return;
-
-			float timeOfDay = m_subsystemTimeOfDay.TimeOfDay;
-			float midnight = m_subsystemTimeOfDay.Midnight;
-			bool isMidnight = Math.Abs(timeOfDay - midnight) < 0.01f;
-
-			if (m_currentWave != maxWave)
-			{
-				if (!m_hasSpawnedBossThisNight && isMidnight && !m_bossBattleActive && !m_bossSpawnDelayed)
+				if (m_skeletonSpawnChunks.Count > 0)
 				{
-					StartBossBattle();
-					m_bossSpawnDelayed = true;
-					m_bossSpawnDelayTimer = 0.5f;
-				}
-			}
-
-			if (m_bossSpawnDelayed)
-			{
-				m_bossSpawnDelayTimer -= dt;
-				if (m_bossSpawnDelayTimer <= 0f)
-				{
-					m_bossSpawnDelayed = false;
-					if (m_bossBattleActive && m_currentBossEntity == null)
+					// Solo spawnear constante si: es noche normal + no es noche verde + cooldown listo
+					if (isNormalNight && !isGreenNightActive && m_constantSpawnCooldown <= 0f)
 					{
-						SpawnNextBoss();
+						m_skeletonSpawnChunks.RandomShuffle((int max) => m_random.Int(0, max - 1));
+						foreach (SpawnChunk chunk in m_skeletonSpawnChunks)
+						{
+							SpawnConstantSkeletonsInChunk(chunk, SkeletonConstantChunkAttempts);
+						}
+						// Resetear cooldown después de intentar spawn
+						m_constantSpawnCooldown = ConstantSpawnCooldownTime;
+					}
+					m_skeletonSpawnChunks.Clear();
+				}
+				// ===== FIN SPAWN DE ESQUELETOS =====
+
+				if (!m_wasGreenNightActive && isGreenNightActive)
+				{
+					PlayEvilLaugh();
+					SendWaveMessage();
+
+					if (m_currentWave == maxWave && !m_hasSpawnedBossThisNight && !m_bossBattleActive)
+					{
+						StartBossBattle();
+						m_bossSpawnDelayed = true;
+						m_bossSpawnDelayTimer = 0.5f;
 					}
 				}
-			}
+				m_wasGreenNightActive = isGreenNightActive;
 
-			if (m_bossBattleActive)
-			{
-				if (m_currentBossEntity != null && !IsEntityAlive(m_currentBossEntity))
+				if (!isGreenNightActive)
+					return;
+
+				float timeOfDay = m_subsystemTimeOfDay.TimeOfDay;
+				float midnight = m_subsystemTimeOfDay.Midnight;
+				bool isMidnight = Math.Abs(timeOfDay - midnight) < 0.01f;
+
+				if (m_currentWave != maxWave)
 				{
-					m_currentBossEntity = null;
-					AdvanceBossBattle();
+					if (!m_hasSpawnedBossThisNight && isMidnight && !m_bossBattleActive && !m_bossSpawnDelayed)
+					{
+						StartBossBattle();
+						m_bossSpawnDelayed = true;
+						m_bossSpawnDelayTimer = 0.5f;
+					}
 				}
-			}
 
-			int totalCreatures = m_subsystemCreatureSpawn.CountCreatures(false);
-			float dynamicInterval = m_bossBattleActive ? m_spawnInterval * 2f : m_spawnInterval;
-			if (totalCreatures > MaxGlobalCreatures * 0.8f)
-				dynamicInterval *= 1.5f;
-			else if (totalCreatures < MaxGlobalCreatures * 0.3f)
-				dynamicInterval *= 0.8f;
+				if (m_bossSpawnDelayed)
+				{
+					m_bossSpawnDelayTimer -= dt;
+					if (m_bossSpawnDelayTimer <= 0f)
+					{
+						m_bossSpawnDelayed = false;
+						if (m_bossBattleActive && m_currentBossEntity == null)
+						{
+							SpawnNextBoss();
+						}
+					}
+				}
 
-			m_spawnTimer += dt;
-			int spawnsThisFrame = 0;
+				if (m_bossBattleActive)
+				{
+					if (m_currentBossEntity != null && !IsEntityAlive(m_currentBossEntity))
+					{
+						m_currentBossEntity = null;
+						AdvanceBossBattle();
+					}
+				}
 
-			while (m_spawnTimer >= dynamicInterval && spawnsThisFrame < MaxSpawnsPerFrame)
-			{
-				m_spawnTimer -= dynamicInterval;
+				int totalCreatures = m_subsystemCreatureSpawn.CountCreatures(false);
+				float dynamicInterval = m_bossBattleActive ? m_spawnInterval * 2f : m_spawnInterval;
+				if (totalCreatures > MaxGlobalCreatures * 0.8f)
+					dynamicInterval *= 1.5f;
+				else if (totalCreatures < MaxGlobalCreatures * 0.3f)
+					dynamicInterval *= 0.8f;
 
-				int spawnedThisIteration = TrySpawnGroup();
-				spawnsThisFrame += spawnedThisIteration;
+				m_spawnTimer += dt;
+				int spawnsThisFrame = 0;
 
-				if (spawnedThisIteration == 0)
-					break;
+				while (m_spawnTimer >= dynamicInterval && spawnsThisFrame < MaxSpawnsPerFrame)
+				{
+					m_spawnTimer -= dynamicInterval;
+
+					int spawnedThisIteration = TrySpawnGroup();
+					spawnsThisFrame += spawnedThisIteration;
+
+					if (spawnedThisIteration == 0)
+						break;
+				}
 			}
 		}
 
