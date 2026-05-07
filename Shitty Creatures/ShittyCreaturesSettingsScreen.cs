@@ -17,6 +17,7 @@ namespace Game
 		private BevelledButtonWidget m_freeCameraButton;
 		private BevelledButtonWidget m_bleedingButton;
 		private BevelledButtonWidget m_healthBarButton;
+		private BevelledButtonWidget m_skeletonSpawnButton;
 		private StackPanelWidget m_contentPanel;
 		private LabelWidget m_titleLabel;
 
@@ -40,6 +41,7 @@ namespace Game
 			CreateOptionRow("ShittyCreaturesSettings", "FreeCameraDescription", out m_freeCameraButton, Color.LightGray, GetFreeCameraButtonText);
 			CreateOptionRow("ShittyCreaturesSettings", "BleedingDescription", out m_bleedingButton, Color.LightGray, GetBleedingButtonText);
 			CreateOptionRow("ShittyCreaturesSettings", "HealthBarDescription", out m_healthBarButton, Color.LightGray, GetHealthBarButtonText);
+			CreateOptionRow("ShittyCreaturesSettings", "SkeletonSpawnDescription", out m_skeletonSpawnButton, Color.LightGray, GetSkeletonSpawnButtonText);
 		}
 
 		private void CreateOptionRow(string category, string descriptionKey, out BevelledButtonWidget button, Color buttonColor, Func<string> getButtonTextFunc)
@@ -86,6 +88,7 @@ namespace Game
 		private string GetFreeCameraButtonText() => ShittyCreaturesSettingsManager.FreeCameraEnabled ? LanguageControl.On : LanguageControl.Off;
 		private string GetBleedingButtonText() => ShittyCreaturesSettingsManager.BleedingEnabled ? LanguageControl.On : LanguageControl.Off;
 		private string GetHealthBarButtonText() => ShittyCreaturesSettingsManager.HealthBarEnabled ? LanguageControl.On : LanguageControl.Off;
+		private string GetSkeletonSpawnButtonText() => ShittyCreaturesSettingsManager.SkeletonSpawnEnabled ? LanguageControl.On : LanguageControl.Off;
 
 		public override void Update()
 		{
@@ -152,6 +155,11 @@ namespace Game
 			{
 				ShittyCreaturesSettingsManager.HealthBarEnabled = !ShittyCreaturesSettingsManager.HealthBarEnabled;
 				m_healthBarButton.Text = GetHealthBarButtonText();
+			}
+			if (m_skeletonSpawnButton != null && m_skeletonSpawnButton.IsClicked)
+			{
+				ShittyCreaturesSettingsManager.SkeletonSpawnEnabled = !ShittyCreaturesSettingsManager.SkeletonSpawnEnabled;
+				m_skeletonSpawnButton.Text = GetSkeletonSpawnButtonText();
 			}
 		}
 	}
