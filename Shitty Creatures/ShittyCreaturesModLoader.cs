@@ -145,23 +145,30 @@ namespace Game
 		// Métodos auxiliares privados
 		// ---------------------------------------------------------------------------------
 
-			public override void OnProjectLoaded(Project project)
-	{
-		if (!m_greenNightHooksRegistered)
+		public override void OnProjectLoaded(Project project)
 		{
-			m_greenNightHooksRegistered = true;
-			SubsystemGreenNightSky greenNight = project.FindSubsystem<SubsystemGreenNightSky>(true);
-			if (greenNight != null)
+			if (!m_greenNightHooksRegistered)
 			{
-				greenNight.GreenNightStarted += () => CancelGreenNightChaseDelay(project);
+				m_greenNightHooksRegistered = true;
+				SubsystemGreenNightSky greenNight = project.FindSubsystem<SubsystemGreenNightSky>(true);
+				if (greenNight != null)
+				{
+					greenNight.GreenNightStarted += () => CancelGreenNightChaseDelay(project);
+				}
+			}
+			m_healthBarModelsRenderer = project.FindSubsystem<SubsystemModelsRenderer>(true);
+			m_healthBarCreatureSpawn = project.FindSubsystem<SubsystemCreatureSpawn>(true);
+			m_healthBarPlayers = project.FindSubsystem<SubsystemPlayers>(true);
+			HealthBarDrawable healthBarDrawable = new HealthBarDrawable(this);
+			project.FindSubsystem<SubsystemDrawing>(true).AddDrawable(healthBarDrawable);
+
+			// Reemplazar generador de terreno con árboles frutales (principalmente manzanos)
+			SubsystemTerrain terrainSubsystem = project.FindSubsystem<SubsystemTerrain>(true);
+			if (terrainSubsystem != null && terrainSubsystem.TerrainContentsGenerator is TerrainContentsGenerator24)
+			{
+				terrainSubsystem.TerrainContentsGenerator = new ShittyTerrainContentsGenerator(terrainSubsystem);
 			}
 		}
-		m_healthBarModelsRenderer = project.FindSubsystem<SubsystemModelsRenderer>(true);
-		m_healthBarCreatureSpawn = project.FindSubsystem<SubsystemCreatureSpawn>(true);
-		m_healthBarPlayers = project.FindSubsystem<SubsystemPlayers>(true);
-		HealthBarDrawable healthBarDrawable = new HealthBarDrawable(this);
-		project.FindSubsystem<SubsystemDrawing>(true).AddDrawable(healthBarDrawable);
-	}
 
 		private void CancelGreenNightChaseDelay(Project project)
 		{
