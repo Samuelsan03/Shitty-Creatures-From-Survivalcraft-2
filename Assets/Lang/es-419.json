@@ -63,6 +63,7 @@
     "Line1_0_6_13": "• Se han corregido, pulido y mejorado las traducciones.",
     "Line1_0_6_14": "• Se mejoró la inteligencia artificial de las criaturas; ahora pueden manejar cualquier arma, incluyendo armas a distancia, arrojadizas, de fuego y cuerpo a cuerpo.",
     "Line1_0_6_15": "• Las criaturas ahora pueden usar ropa y armaduras de su inventario igual que el jugador. Equiparán automáticamente cualquier objeto vestible que lleven. Las armaduras con altos valores de protección absorberán el daño entrante, reduciendo o anulando completamente las lesiones según la resistencia, durabilidad y la parte del cuerpo afectada. Las piezas de armadura recibirán daño y eventualmente se romperán con el uso, funcionando de manera idéntica a la armadura usada por el jugador.",
+    "Line1_0_6_16": "• Se ha añadido un sistema de sangrado para criaturas. Permite a los jugadores ver cuándo están cerca de la muerte y cuánto tiempo permanece su cadáver antes de desaparecer.",
     "Line1_0_5_1": "• Nuevas armas: Lanzallamas, Guadaña, Tridente, Ballesta Repetidora, Bomba Venenosa, Lanzaobjetos",
     "Line1_0_5_2": "• Nuevos NPCs: Digimon, miembros de la Alianza, miembros de Muerte, Piratas, Infectados (zombis)",
     "Line1_0_5_3": "• Nuevo sistema de música (música de fondo, música de persecución para enemigos)",
@@ -103,10 +104,18 @@
     "PunchCommandDescription": "Los aliados atacarán y perseguirán al NPC que golpees, sin importar el tipo de ataque",
     "CreativeDefenseDescription": "En modo Creativo, cuando una criatura golpea al jugador, los aliados atacarán al agresor",
     "FreeCameraDescription": "Activar/desactivar el modo de cámara libre (solo en modos no creativos)",
-    "MenuMusicDescription": "Controla si se reproduce música personalizada mientras se navega por el menú del juego",
     "BleedingDescription": "Activar/desactivar sangrado en criaturas heridas",
-    "HealthBarDescription": "Mostrar barras de salud en las criaturas"
+    "HealthBarDescription": "Mostrar barras de salud en las criaturas",
+    "SkeletonSpawnDescription": "Generar esqueletos en noches normales"
   },
+  "SpecialThanksScreen": {
+  "0": "Agradecimientos Especiales",
+  "1": "Si quieres aparecer en la lista de agradecimientos especiales, puedes contactar al autor para proporcionar ideas, errores o más. No olvides incluir tu apodo y el motivo.",
+  "2": "Quotemante",
+  "3": "Por su idea de añadir a Rayman como un nuevo personaje.",
+  "4": "Richard Survivalcraft",
+  "5": "Por la idea de incluir personajes de Sonic The Hedgehog"
+},
     "AntidoteBucket": {
       "NPCCured": "¡El NPC ha sido curado de veneno y enfermedades!"
     },
