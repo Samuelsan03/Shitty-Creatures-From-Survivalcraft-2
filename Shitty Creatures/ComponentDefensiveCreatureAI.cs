@@ -378,18 +378,14 @@ namespace Game
 					m_customAimTimer += dt;
 					Ray3 aimRay = CalculateAimRay();
 
-					// Imitar la animación de apunte del Miner.Aim (valores exactos del subsistema)
 					UpdateWeaponRotation(aimRay);
 
 					float aimTime = GetAimTime(ItemsLauncherBlock.Index);
 					if (m_customAimTimer >= aimTime)
 					{
-						// Disparar manualmente la bola de mosquete
 						FireItemsLauncher(aimRay);
 						m_isCustomAiming = false;
 						m_cooldownTimer = GetCooldown(ItemsLauncherBlock.Index);
-
-						// Restaurar rotación tras disparar
 						ResetModelRotation();
 					}
 					return;
@@ -400,97 +396,159 @@ namespace Game
 				m_customAimTimer += dt;
 				Ray3 aimRayWeapon = CalculateAimRay();
 
-				m_componentMiner.Aim(aimRayWeapon, AimState.InProgress);
-				UpdateWeaponRotation(aimRayWeapon);
-
-				if (m_customAimTimer < aimTimeWeapon)
+				int sniperIndex = BlocksManager.GetBlockIndex(typeof(SniperBlock), true, false);
+				if (m_customWeaponContents == sniperIndex)
 				{
-					// seguir apuntando
+					// Animación de apunte del sniper para criaturas especiales: SIN levantar el brazo
+					ComponentCreatureModel model = m_componentCreature.ComponentCreatureModel;
+					if (model != null)
+					{
+						model.AimHandAngleOrder = 0f;
+						model.InHandItemOffsetOrder = new Vector3(-0.1f, -0.15f, 0.25f);
+						model.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
+						if (m_componentChase != null && m_componentChase.Target != null)
+						{
+							model.LookAtOrder = m_componentChase.Target.ComponentCreatureModel.EyePosition;
+						}
+					}
+				}
+				else if (FirearmDefensiveConfigs.ContainsKey(m_customWeaponContents))
+				{
+					// Otras armas de fuego para criaturas especiales: SIN levantar el brazo
+					ComponentCreatureModel model = m_componentCreature.ComponentCreatureModel;
+					if (model != null)
+					{
+						model.AimHandAngleOrder = 0f;
+						model.InHandItemOffsetOrder = new Vector3(-0.1f, -0.15f, 0.25f);
+						model.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
+						if (m_componentChase != null && m_componentChase.Target != null)
+						{
+							model.LookAtOrder = m_componentChase.Target.ComponentCreatureModel.EyePosition;
+						}
+					}
 				}
 				else
 				{
-					// Si es un arma de fuego, la disparamos manualmente
-					if (FirearmDefensiveConfigs.TryGetValue(m_customWeaponContents, out FirearmDefConfig firearmCfg))
+					// Armas primitivas (ballesta, arco, mosquete, etc.): usan Miner.Aim y UpdateWeaponRotation
+					m_componentMiner.Aim(aimRayWeapon, AimState.InProgress);
+					UpdateWeaponRotation(aimRayWeapon);
+				}
+
+				// Fase de apuntado inicial (solo para armas de fuego)
+				if (FirearmDefensiveConfigs.TryGetValue(m_customWeaponContents, out FirearmDefConfig firearmCfg))
+				{
+					if (!m_hasCompletedInitialAim)
 					{
+						// Esperar el tiempo de apunte
+						if (m_customAimTimer < aimTimeWeapon)
+							return;
+
+						// Primer disparo
 						FireFirearm(aimRayWeapon, firearmCfg);
-						m_customAimTimer = 0f;
-						// Si necesita recarga, entra en recarga y sale del modo personalizado
-						if (m_firearmShotsSinceReload >= firearmCfg.MaxShotsBeforeReload)
+						m_lastFirearmShotTime = m_subsystemTime.GameTime;
+
+						if (firearmCfg.IsAutomatic)
 						{
-							StartFirearmReloading();
-							m_isCustomAiming = false;
-							ResetModelRotation();
+							m_hasCompletedInitialAim = true;
+							// Seguir apuntando sin salir
 						}
 						else
 						{
+							// Arma semiautomática o de un solo tiro
 							m_isCustomAiming = false;
-							m_cooldownTimer = firearmCfg.FireRate;
-							ResetModelRotation();
+							m_hasCompletedInitialAim = false;
+							if (m_firearmShotsSinceReload >= firearmCfg.MaxShotsBeforeReload)
+							{
+								StartFirearmReloading();
+								ResetModelRotation();
+							}
+							else
+							{
+								m_cooldownTimer = firearmCfg.FireRate;
+								ResetModelRotation();
+							}
 						}
 					}
 					else
 					{
-						// Lógica original para armas primitivas (mosquete, ballesta, etc.)
-						// Capturar munición antes del disparo
-						BulletBlock.BulletType? musketBulletBeforeFire = null;
-						if (m_customWeaponContents == MusketBlock.Index)
+						// Disparo automático en ráfaga
+						if ((m_subsystemTime.GameTime - m_lastFirearmShotTime) >= firearmCfg.FireRate)
 						{
-							int data = Terrain.ExtractData(m_componentMiner.Inventory.GetSlotValue(m_componentMiner.Inventory.ActiveSlotIndex));
-							musketBulletBeforeFire = MusketBlock.GetBulletType(data);
-						}
-
-						m_componentMiner.Aim(aimRayWeapon, AimState.Completed);
-						m_cooldownTimer = GetCooldown(m_customWeaponContents);
-
-						if (m_customWeaponContents == FlameThrowerBlock.Index)
-						{
-							m_customAimTimer = 0f;
-						}
-						else
-						{
-							m_isCustomAiming = false;
-						}
-
-						// Triple disparo para criaturas especiales
-						if (musketBulletBeforeFire != null && m_random.Float(0f, 1f) < 0.05f)
-						{
-							FireMusketExtraShots(aimRayWeapon, musketBulletBeforeFire.Value);
-						}
-
-						if (m_customWeaponContents == CrossbowBlock.Index || m_customWeaponContents == BowBlock.Index)
-						{
-							SubsystemProjectiles subsystemProjectiles = Project.FindSubsystem<SubsystemProjectiles>(true);
-							foreach (Projectile p in subsystemProjectiles.Projectiles)
+							FireFirearm(aimRayWeapon, firearmCfg);
+							m_lastFirearmShotTime = m_subsystemTime.GameTime;
+							if (m_firearmShotsSinceReload >= firearmCfg.MaxShotsBeforeReload)
 							{
-								if (p != null && Terrain.ExtractContents(p.Value) == ArrowBlock.Index)
-								{
-									p.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
-								}
+								m_isCustomAiming = false;
+								m_hasCompletedInitialAim = false;
+								StartFirearmReloading();
+								ResetModelRotation();
 							}
-							if (m_customWeaponContents == BowBlock.Index)
-								EnsureBowEquipped();
-							else
-								EnsureCrossbowEquipped();
 						}
-						else if (m_customWeaponContents == MusketBlock.Index)
-						{
-							EnsureMusketEquipped();
-						}
-						else if (m_customWeaponContents == RepeatCrossbowBlock.Index)
-						{
-							EnsureRepeatCrossbowEquipped();
-						}
-						else if (m_customWeaponContents == FlameThrowerBlock.Index)
-						{
-							EnsureFlameThrowerEquipped();
-						}
-						else if (m_customWeaponContents == DoubleMusketBlock.Index)
-						{
-							EnsureDoubleMusketEquipped();
-						}
-
-						ResetModelRotation();
 					}
+				}
+				else
+				{
+					// Lógica original para armas primitivas (mosquete, ballesta, etc.)
+					if (m_customAimTimer < aimTimeWeapon)
+						return;
+
+					BulletBlock.BulletType? musketBulletBeforeFire = null;
+					if (m_customWeaponContents == MusketBlock.Index)
+					{
+						int data = Terrain.ExtractData(m_componentMiner.Inventory.GetSlotValue(m_componentMiner.Inventory.ActiveSlotIndex));
+						musketBulletBeforeFire = MusketBlock.GetBulletType(data);
+					}
+
+					m_componentMiner.Aim(aimRayWeapon, AimState.Completed);
+					m_cooldownTimer = GetCooldown(m_customWeaponContents);
+
+					if (m_customWeaponContents == FlameThrowerBlock.Index)
+					{
+						m_customAimTimer = 0f;
+					}
+					else
+					{
+						m_isCustomAiming = false;
+					}
+
+					if (musketBulletBeforeFire != null && m_random.Float(0f, 1f) < 0.05f)
+					{
+						FireMusketExtraShots(aimRayWeapon, musketBulletBeforeFire.Value);
+					}
+
+					if (m_customWeaponContents == CrossbowBlock.Index || m_customWeaponContents == BowBlock.Index)
+					{
+						SubsystemProjectiles subsystemProjectiles = Project.FindSubsystem<SubsystemProjectiles>(true);
+						foreach (Projectile p in subsystemProjectiles.Projectiles)
+						{
+							if (p != null && Terrain.ExtractContents(p.Value) == ArrowBlock.Index)
+							{
+								p.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
+							}
+						}
+						if (m_customWeaponContents == BowBlock.Index)
+							EnsureBowEquipped();
+						else
+							EnsureCrossbowEquipped();
+					}
+					else if (m_customWeaponContents == MusketBlock.Index)
+					{
+						EnsureMusketEquipped();
+					}
+					else if (m_customWeaponContents == RepeatCrossbowBlock.Index)
+					{
+						EnsureRepeatCrossbowEquipped();
+					}
+					else if (m_customWeaponContents == FlameThrowerBlock.Index)
+					{
+						EnsureFlameThrowerEquipped();
+					}
+					else if (m_customWeaponContents == DoubleMusketBlock.Index)
+					{
+						EnsureDoubleMusketEquipped();
+					}
+
+					ResetModelRotation();
 				}
 				return;
 			}
