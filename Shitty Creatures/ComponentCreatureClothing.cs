@@ -32,7 +32,7 @@ namespace Game
 		public PrimitivesRenderer2D m_primitivesRenderer = new PrimitivesRenderer2D();
 		public bool m_clothedTexturesValid;
 
-		// Textura base de la piel, obtenida una sola vez y actualizable si es necesario
+		// Textura base de la piel
 		private Texture2D m_cachedSkinTexture;
 
 		public float m_baseDensity;
@@ -77,7 +77,6 @@ namespace Game
 			m_cachedSkinTexture = m_componentHumanModel.TextureOverride;
 			if (m_cachedSkinTexture == null)
 			{
-				// Intentar obtener del modelo (primer mesh part con TexturePath)
 				Model model = m_componentHumanModel.Model;
 				if (model != null)
 				{
@@ -95,7 +94,6 @@ namespace Game
 					}
 				}
 			}
-			// Si sigue siendo null, no se podrá renderizar (se usará textura por defecto del modelo, no se sobrescribe)
 
 			foreach (ClothingSlot slot in ClothingSlot.ClothingSlots.Values)
 				m_clothes[slot] = new List<int>();
@@ -135,8 +133,6 @@ namespace Game
 			Display.DeviceReset -= Display_DeviceReset;
 			if (m_componentHealth != null)
 				m_componentHealth.Injured -= OnInjured;
-			// No es necesario restaurar TextureOverride porque al destruir el componente
-			// el modelo quedará huérfano de textura, pero el motor lo manejará.
 		}
 
 		private void Display_DeviceReset() => m_clothedTexturesValid = false;
@@ -146,13 +142,8 @@ namespace Game
 			if (injury == null || m_componentHealth == null || m_componentHealth.Health <= 0f) return;
 			if (injury.Attackment != null)
 			{
-				// Reconstruir el daño original (antes de la resistencia de la criatura)
-				float originalDamage = injury.Amount * Math.Max(m_componentHealth.AttackResilience, 1f);
-				// Calcular cuánto daño queda después de la armadura
-				float remainingAfterArmor = ApplyArmorProtection(originalDamage);
-				// El daño real que recibe la criatura se reduce en lo absorbido
-				float absorbed = originalDamage - remainingAfterArmor;
-				injury.Amount = Math.Max(0f, injury.Amount - absorbed);
+				float remaining = ApplyArmorProtection(injury.Amount);
+				injury.Amount = remaining;
 			}
 		}
 
@@ -263,24 +254,32 @@ namespace Game
 			return MathF.Max(remaining, 0f);
 		}
 
+		// ========== MÉTODOS IInventory CORREGIDOS ==========
 		public int GetSlotValue(int slotIndex)
 		{
 			if (slotIndex < 0 || slotIndex >= 4) return 0;
-			var list = m_clothes[m_slotsOrder[slotIndex]];
+			ClothingSlot slot = m_slotsOrder[slotIndex];
+			var list = m_clothes[slot];
 			return list.Count > 0 ? list[list.Count - 1] : 0;
 		}
+
 		public int GetSlotCount(int slotIndex)
 		{
 			if (slotIndex < 0 || slotIndex >= 4) return 0;
-			return m_clothes[m_slotsOrder[slotIndex]].Count > 0 ? 1 : 0;
+			ClothingSlot slot = m_slotsOrder[slotIndex];
+			return m_clothes[slot].Count > 0 ? 1 : 0;
 		}
+
 		public int GetSlotCapacity(int slotIndex, int value) => 0;
+
 		public int GetSlotProcessCapacity(int slotIndex, int value)
 		{
 			Block block = BlocksManager.Blocks[Terrain.ExtractContents(value)];
 			return (block.CanWear(value) && CanWearClothing(value)) ? 1 : 0;
 		}
+
 		public void AddSlotItems(int slotIndex, int value, int count) { }
+
 		public void ProcessSlotItems(int slotIndex, int value, int count, int processCount, out int processedValue, out int processedCount)
 		{
 			processedValue = 0; processedCount = 0;
@@ -301,6 +300,7 @@ namespace Game
 				}
 			}
 		}
+
 		public int RemoveSlotItems(int slotIndex, int count)
 		{
 			if (slotIndex < 0 || slotIndex >= 4 || count != 1) return 0;
@@ -315,6 +315,7 @@ namespace Game
 			SetClothes(slot, newList);
 			return 1;
 		}
+
 		public void DropAllItems(Vector3 position)
 		{
 			Random rand = new Random();
@@ -336,7 +337,6 @@ namespace Game
 
 		private void UpdateRenderTargets()
 		{
-			// Si no hay textura de piel cacheada, intentar obtenerla de nuevo
 			if (m_cachedSkinTexture == null)
 			{
 				m_cachedSkinTexture = m_componentHumanModel.TextureOverride;
@@ -359,11 +359,9 @@ namespace Game
 						}
 					}
 				}
-				// Si sigue siendo null, no podemos hacer nada
 				if (m_cachedSkinTexture == null) return;
 			}
 
-			// Crear o reajustar render targets según tamaño de la piel
 			if (m_innerClothedTexture == null || m_innerClothedTexture.Width != m_cachedSkinTexture.Width || m_innerClothedTexture.Height != m_cachedSkinTexture.Height)
 			{
 				Utilities.Dispose(ref m_innerClothedTexture);
@@ -379,7 +377,6 @@ namespace Game
 				m_clothedTexturesValid = false;
 			}
 
-			// Siempre asignar los render targets para que el modelo tenga textura
 			m_componentHumanModel.TextureOverride = m_innerClothedTexture;
 			m_componentOuterClothingModel.TextureOverride = m_outerClothedTexture;
 
@@ -390,17 +387,14 @@ namespace Game
 				RenderTarget2D oldTarget = Display.RenderTarget;
 				try
 				{
-					// Dibujar capa interior (piel + ropa interior)
 					Display.RenderTarget = m_innerClothedTexture;
 					Display.Clear(new Vector4?(new Vector4(Color.Transparent)), null, null);
 					int batchIndex = 0;
 
-					// Capa base: piel
 					TexturedBatch2D batch = m_primitivesRenderer.TexturedBatch(m_cachedSkinTexture, false, batchIndex++,
 						DepthStencilState.None, null, BlendState.NonPremultiplied, SamplerState.PointClamp);
 					batch.QueueQuad(Vector2.Zero, new Vector2(m_cachedSkinTexture.Width, m_cachedSkinTexture.Height), 0f, Vector2.Zero, Vector2.One, Color.White);
 
-					// Capas de ropa interior
 					ClothingSlot[] innerOrder = ComponentClothing.m_innerSlotsOrder?.Length > 0
 						? ComponentClothing.m_innerSlotsOrder
 						: new[] { ClothingSlot.Head, ClothingSlot.Torso, ClothingSlot.Legs, ClothingSlot.Feet };
@@ -424,7 +418,6 @@ namespace Game
 					}
 					m_primitivesRenderer.Flush(true, int.MaxValue);
 
-					// Dibujar capa exterior
 					Display.RenderTarget = m_outerClothedTexture;
 					Display.Clear(new Vector4?(new Vector4(Color.Transparent)), null, null);
 					batchIndex = 0;
@@ -456,7 +449,6 @@ namespace Game
 				{
 					Log.Error($"Error en UpdateRenderTargets de ComponentCreatureClothing: {ex.Message}");
 					m_clothedTexturesValid = false;
-					// En caso de error, no desasignamos TextureOverride para mantener el último estado válido
 				}
 				finally
 				{
