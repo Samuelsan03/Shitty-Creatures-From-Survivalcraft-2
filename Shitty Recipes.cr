@@ -494,6 +494,18 @@
     "bab"
     " c "
 </Recipe>
+<Recipe Result="AppleSaplingBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="0" a="appleleaves" Description="[0]">
+    "a"
+</Recipe>
+<Recipe Result="PearSaplingBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="0" a="pearleaves" Description="[0]">
+    "a"
+</Recipe>
+<Recipe Result="CherrySaplingBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="0" a="cherryleaves" Description="[0]">
+    "a"
+</Recipe>
+<Recipe Result="OrangeSaplingBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="0" a="orangeleaves" Description="[0]">
+    "a"
+</Recipe>
         <Smelting>
         <Recipe Result="LavaMacheteBlock" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="6" a="diamondmachete" b="magmabucket" Description="[0]">
         "ab"
