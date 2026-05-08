@@ -232,6 +232,12 @@
     <Parameter Name="Class" Guid="4f3776df-b767-40b2-97d6-1edea8942a68" Value="Game.ComponentNewZombieModel" Type="string"/>
 </ComponentTemplate>
 
+<ComponentTemplate Name="DefensiveCreatureAI" Description="Allows a creature to use ranged weapons from inventory during combat and optionally equip clothing/armor" Guid="0f69cb1e-cf48-46bf-93ec-6990112112d5" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+  <Parameter Name="Class" Guid="7a6fa981-4a34-4282-bbe2-dbff9062a23f" Value="Game.ComponentDefensiveCreatureAI" Type="string" />
+  <Parameter Name="CanUseInventory" Description="If true, the creature can equip and use ranged weapons (muskets, bows, crossbows, throwables, etc.) from its inventory during combat. Requires line of sight and will be interrupted if stuck." Guid="3c5113b8-872d-4aeb-9a85-9ca7c6146d1c" Value="false" Type="bool" />
+  <Parameter Name="CanEquipClothing" Description="If true, the creature will automatically equip any wearable clothing/armor found in its inventory" Guid="418363ec-4f5a-4582-a554-e5221017ac03" Value="false" Type="bool" />
+</ComponentTemplate>
+
 <ComponentTemplate Name="ZombieAI2" Description="Inteligencia artificial avanzada para zombies con soporte para armas, recarga automática y animaciones" Guid="9d185bf8-92ec-4ea6-ad86-b8a99b650fd2" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
     <Parameter Name="Class" Guid="86cba08c-bbc6-464a-85df-76bc2791ebef" Value="Game.ComponentZombieAI2" Type="string" Description="Clase C# que implementa el componente de IA para zombies"/>
     <Parameter Name="CanUseInventory" Guid="fa80dc29-cf40-4617-af33-23ce40e094bf" Value="true" Type="bool" Description="Si el zombie puede usar armas del inventario"/>
@@ -562,7 +568,6 @@
   <Parameter Name="ChaseOnTouchProbability" Description="Probabilidad de perseguir al ser tocado por una criatura de AutoChaseMask" Guid="63590376-889c-4959-b586-fc58d5cc9bbf" Value="0" Type="float"/>
   <Parameter Name="AutoChaseMask" Description="Categorías de criaturas a perseguir automáticamente" Guid="5da7f87c-19be-463b-930e-57df04a0fd04" Value="LandPredator, LandOther, WaterPredator, WaterOther, Bird" Type="Game.CreatureCategory"/>
   <Parameter Name="ChaseNonPlayerProbability" Description="Probabilidad de perseguir objetivos no jugadores" Guid="0b3b2584-ce25-4c73-8269-cd1ebd5df44d" Value="1" Type="float"/>
-  <Parameter Name="RangedAttackRange" Description="Rango de ataque a distancia (X = distancia mínima para melee, Y = distancia máxima para ranged)" Guid="e5aaebe5-378d-426e-98dc-dd6fcca09ecb" Value="5,20" Type="Vector2"/>
   <Parameter Name="DestroyBlocksWhenStuck" Description="Si está activado, la criatura destruirá bloques para liberarse cuando esté atascada durante más de 2 segundos" Guid="5b766c40-2a37-4027-9da1-c3218e109aa6" Value="false" Type="bool"/>
   <Parameter Name="PlaceBlocksWhenTargetHigh" Description="Si está activado, la criatura colocará bloques de tierra para alcanzar a su presa cuando esta se encuentre en una altura elevada (máximo 2 bloques verticales a la vez)" Guid="f6ffc52c-883d-4e29-a333-c413ccd864d7" Value="false" Type="bool"/>
   <Parameter Name="InvokeLightningOnHit" Description="Si está activado, la criatura invocará un rayo sobre el objetivo cada vez que realice un golpe cuerpo a cuerpo exitoso" Guid="9ffef00f-7ee4-4fec-b94c-24ac538f344a" Value="false" Type="bool"/>
@@ -582,6 +587,12 @@
     </Folder>
 
     <ProjectTemplate Name="Project" Guid="85023bf8-1c90-4dd1-9442-e6c13691d078">
+    <MemberSubsystemTemplate Name="FruitSaplingBlockBehavior" Guid="ac8eb908-c247-4bbb-8649-35b5d4d2e05c" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+    <Parameter Name="Class" Value="Game.SubsystemFruitSaplingBlockBehavior" Type="string" Guid="2916b25e-8de9-446f-a453-638b297c58a0"/>
+</MemberSubsystemTemplate>
+    <MemberSubsystemTemplate Name="ShittyPlant" Guid="21cb571d-e56a-4699-8c72-69c3afe20491" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+    <Parameter Name="Class" Value="Game.SubsystemShittyPlant" Type="string" Guid="4d9e0efd-5b81-4aad-892a-bdf11f4ba415"/>
+</MemberSubsystemTemplate>
     <MemberSubsystemTemplate Name="DoubleMusketBlockBehavior" Guid="4d437bca-2625-479c-979d-c8e2984c959f" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
     <Parameter Name="Class" Value="Game.SubsystemDoubleMusketBlockBehavior" Type="string" Guid="4a100bd5-84d5-4aa9-a292-533eaf194c73"/>
 </MemberSubsystemTemplate>
