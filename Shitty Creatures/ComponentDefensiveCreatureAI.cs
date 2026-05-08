@@ -434,48 +434,59 @@ namespace Game
 					UpdateWeaponRotation(aimRayWeapon);
 				}
 
-				// Fase de apuntado inicial (solo para armas de fuego)
+				// Fase de apuntado personalizado para armas de fuego
 				if (FirearmDefensiveConfigs.TryGetValue(m_customWeaponContents, out FirearmDefConfig firearmCfg))
 				{
 					if (!m_hasCompletedInitialAim)
 					{
-						// Esperar el tiempo de apunte
 						if (m_customAimTimer < aimTimeWeapon)
 							return;
 
-						// Primer disparo
 						FireFirearm(aimRayWeapon, firearmCfg);
 						m_lastFirearmShotTime = m_subsystemTime.GameTime;
 
-						if (firearmCfg.IsAutomatic)
+						// Verificar recarga inmediata tras el primer disparo
+						if (m_firearmShotsSinceReload >= firearmCfg.MaxShotsBeforeReload)
 						{
-							m_hasCompletedInitialAim = true;
-							// Seguir apuntando sin salir
+							m_isCustomAiming = false;
+							m_hasCompletedInitialAim = false;
+							StartFirearmReloading();
+							ResetModelRotation();
 						}
 						else
 						{
-							// Arma semiautomática o de un solo tiro
-							m_isCustomAiming = false;
-							m_hasCompletedInitialAim = false;
-							if (m_firearmShotsSinceReload >= firearmCfg.MaxShotsBeforeReload)
-							{
-								StartFirearmReloading();
-								ResetModelRotation();
-							}
-							else
-							{
-								m_cooldownTimer = firearmCfg.FireRate;
-								ResetModelRotation();
-							}
+							m_hasCompletedInitialAim = true;
 						}
 					}
 					else
 					{
-						// Disparo automático en ráfaga
+						// Mantener animación de apunte para criaturas especiales
+						// Usamos la variable sniperIndex ya declarada en el ámbito exterior
+						ComponentCreatureModel model = m_componentCreature.ComponentCreatureModel;
+						if (model != null)
+						{
+							model.AimHandAngleOrder = 0f;
+							if (m_customWeaponContents == sniperIndex)
+							{
+								model.InHandItemOffsetOrder = new Vector3(-0.1f, -0.15f, 0.25f);
+								model.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
+							}
+							else
+							{
+								model.InHandItemOffsetOrder = new Vector3(-0.1f, -0.15f, 0.25f);
+								model.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
+							}
+							if (m_componentChase != null && m_componentChase.Target != null)
+							{
+								model.LookAtOrder = m_componentChase.Target.ComponentCreatureModel.EyePosition;
+							}
+						}
+
 						if ((m_subsystemTime.GameTime - m_lastFirearmShotTime) >= firearmCfg.FireRate)
 						{
 							FireFirearm(aimRayWeapon, firearmCfg);
 							m_lastFirearmShotTime = m_subsystemTime.GameTime;
+
 							if (m_firearmShotsSinceReload >= firearmCfg.MaxShotsBeforeReload)
 							{
 								m_isCustomAiming = false;
@@ -580,8 +591,8 @@ namespace Game
 				if (FirearmDefensiveConfigs.TryGetValue(activeContents, out FirearmDefConfig firearmConfig))
 				{
 					float aimTime = GetAimTime(activeContents);
-
 					int sniperIndex = BlocksManager.GetBlockIndex(typeof(SniperBlock), true, false);
+
 					if (!m_hasCompletedInitialAim)
 					{
 						m_aimTimer += dt;
@@ -591,7 +602,7 @@ namespace Game
 						}
 						else
 						{
-							// Animación de apunte del sniper (como en ComponentFirearmsShooters)
+							// Animación de apunte del sniper...
 							ComponentCreatureModel model = m_componentCreature.ComponentCreatureModel;
 							if (model != null)
 							{
@@ -610,36 +621,50 @@ namespace Game
 							FireFirearm(aimRay, firearmConfig);
 							m_lastFirearmShotTime = m_subsystemTime.GameTime;
 
-							if (firearmConfig.IsAutomatic)
-							{
-								m_hasCompletedInitialAim = true;
-								m_aimTimer = aimTime;
-							}
-							else
+							// Verificar recarga inmediata tras el primer disparo
+							if (m_firearmShotsSinceReload >= firearmConfig.MaxShotsBeforeReload)
 							{
 								m_isAiming = false;
 								m_hasCompletedInitialAim = false;
-								if (m_firearmShotsSinceReload >= firearmConfig.MaxShotsBeforeReload)
-								{
-									StartFirearmReloading();
-									ResetModelRotation();
-								}
-								else
-								{
-									m_cooldownTimer = firearmConfig.FireRate;
-									ResetModelRotation();
-								}
+								StartFirearmReloading();
+								ResetModelRotation();
+							}
+							else
+							{
+								// Tanto automáticas como semiautomáticas mantienen el apuntado
+								m_hasCompletedInitialAim = true;
+								m_aimTimer = aimTime;
 							}
 						}
 					}
-					else // arma automática ya apuntada (el sniper nunca entra aquí porque no es automático)
+					else
 					{
-						m_componentMiner.Aim(aimRay, AimState.InProgress);
+						// Apuntado mantenido para cualquier arma de fuego
+						if (activeContents != sniperIndex)
+						{
+							m_componentMiner.Aim(aimRay, AimState.InProgress);
+						}
+						else
+						{
+							// Animación del sniper (sin usar Miner.Aim)
+							ComponentCreatureModel model = m_componentCreature.ComponentCreatureModel;
+							if (model != null)
+							{
+								model.AimHandAngleOrder = 1.2f;
+								model.InHandItemOffsetOrder = new Vector3(-0.1f, -0.06f, 0.08f);
+								model.InHandItemRotationOrder = new Vector3(-1.5f, 0f, 0f);
+								if (m_componentChase != null && m_componentChase.Target != null)
+								{
+									model.LookAtOrder = m_componentChase.Target.ComponentCreatureModel.EyePosition;
+								}
+							}
+						}
 
 						if ((m_subsystemTime.GameTime - m_lastFirearmShotTime) >= firearmConfig.FireRate)
 						{
 							FireFirearm(aimRay, firearmConfig);
 							m_lastFirearmShotTime = m_subsystemTime.GameTime;
+
 							if (m_firearmShotsSinceReload >= firearmConfig.MaxShotsBeforeReload)
 							{
 								m_isAiming = false;
