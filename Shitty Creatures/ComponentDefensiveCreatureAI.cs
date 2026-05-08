@@ -38,10 +38,6 @@ namespace Game
 		private float RepeatCrossbowAimTime = 1.5f;
 		private float RepeatCrossbowCooldown = 0.01f;
 
-		// Tiempos para lanzables
-		private float ThrowableAimTime = 1.55f;
-		private float ThrowableCooldown = 0.25f;
-
 		// Tiempos para el lanzallamas
 		private float FlameThrowerAimTime = 1.5f;
 		private float FlameThrowerCooldown = 0.01f;
@@ -49,6 +45,10 @@ namespace Game
 		// Tiempos para el mosquete de doble cañón
 		private float DoubleMusketAimTime = 1.5f;
 		private float DoubleMusketCooldown = 0.5f;
+
+		// Tiempos para lanzables
+		private float ThrowableAimTime = 1.55f;
+		private float ThrowableCooldown = 0.01f;
 
 		private SubsystemTerrain m_subsystemTerrain;
 		private SubsystemBodies m_subsystemBodies;
@@ -394,7 +394,12 @@ namespace Game
 				// Para ballesta, arco, mosquete, lanzallamas, mosquete doble y armas de fuego (criaturas especiales)
 				float aimTimeWeapon = GetAimTime(m_customWeaponContents);
 				m_customAimTimer += dt;
-				Ray3 aimRayWeapon = CalculateAimRay();
+				if (!TryCalculateAimRay(out Ray3 aimRayWeapon))
+				{
+					// No se puede calcular el rayo, cancelar apuntado
+					StopCustomAiming();
+					return;
+				}
 
 				int sniperIndex = BlocksManager.GetBlockIndex(typeof(SniperBlock), true, false);
 				if (m_customWeaponContents == sniperIndex)
@@ -461,7 +466,6 @@ namespace Game
 					else
 					{
 						// Mantener animación de apunte para criaturas especiales
-						// Usamos la variable sniperIndex ya declarada en el ámbito exterior
 						ComponentCreatureModel model = m_componentCreature.ComponentCreatureModel;
 						if (model != null)
 						{
@@ -580,7 +584,11 @@ namespace Game
 				}
 
 				int activeContents = Terrain.ExtractContents(m_componentMiner.Inventory.GetSlotValue(m_componentMiner.Inventory.ActiveSlotIndex));
-				Ray3 aimRay = CalculateAimRay();
+				if (!TryCalculateAimRay(out Ray3 aimRay))
+				{
+					CancelAiming();
+					return;
+				}
 
 				if (IsThrowable(activeContents))
 				{
@@ -631,7 +639,6 @@ namespace Game
 							}
 							else
 							{
-								// Tanto automáticas como semiautomáticas mantienen el apuntado
 								m_hasCompletedInitialAim = true;
 								m_aimTimer = aimTime;
 							}
@@ -767,7 +774,21 @@ namespace Game
 				if (!HasLineOfSightToTarget())
 					return;
 
-				// 1. Armas de fuego modernas (MÁXIMA PRIORIDAD - incluye sniper)
+				// *** PRIORIDAD MODIFICADA: LANZABLES PRIMERO ***
+				// 1. Lanzables (primera prioridad, antes que armas de fuego)
+				if (distance >= ThrowableAttackRange.X && distance <= ThrowableAttackRange.Y && HasThrowableInInventory())
+				{
+					if (EnsureThrowableEquipped())
+					{
+						m_isAiming = true;
+						m_aimTimer = 0f;
+						m_hasCompletedInitialAim = false;
+						m_componentMiner.Aim(CalculateAimRay(), AimState.InProgress);
+						return;
+					}
+				}
+
+				// 2. Armas de fuego modernas (antes era 1, ahora 2)
 				if (HasFirearmInInventory() && EnsureFirearmEquipped())
 				{
 					int activeContents = Terrain.ExtractContents(m_componentMiner.Inventory.GetSlotValue(m_componentMiner.Inventory.ActiveSlotIndex));
@@ -789,20 +810,7 @@ namespace Game
 					return;
 				}
 
-				// 2. Lanzables (segunda prioridad)
-				if (distance >= ThrowableAttackRange.X && distance <= ThrowableAttackRange.Y && HasThrowableInInventory())
-				{
-					if (EnsureThrowableEquipped())
-					{
-						m_isAiming = true;
-						m_aimTimer = 0f;
-						m_hasCompletedInitialAim = false;
-						m_componentMiner.Aim(CalculateAimRay(), AimState.InProgress);
-						return;
-					}
-				}
-
-				// 3. Ballesta repetidora (tercera prioridad)
+				// 3. Ballesta repetidora
 				if (HasRepeatCrossbowInInventory() && EnsureRepeatCrossbowEquipped())
 				{
 					if (IsSpecialNoRaiseCreature())
@@ -819,7 +827,7 @@ namespace Game
 					}
 				}
 
-				// 4. Lanzallamas (cuarta prioridad)
+				// 4. Lanzallamas
 				if (HasFlameThrowerInInventory() && EnsureFlameThrowerEquipped())
 				{
 					if (IsSpecialNoRaiseCreature())
@@ -836,7 +844,7 @@ namespace Game
 					}
 				}
 
-				// 5. Mosquete de doble cañón (quinta prioridad)
+				// 5. Mosquete de doble cañón
 				if (HasDoubleMusketInInventory() && EnsureDoubleMusketEquipped())
 				{
 					if (IsSpecialNoRaiseCreature())
@@ -853,7 +861,7 @@ namespace Game
 					}
 				}
 
-				// 6. Lanzador de ítems (sexta prioridad) – apuntado manual para todos
+				// 6. Lanzador de ítems – apuntado manual para todos
 				if (HasItemsLauncherInInventory() && EnsureItemsLauncherEquipped())
 				{
 					StartCustomAiming(ItemsLauncherBlock.Index);
@@ -863,7 +871,6 @@ namespace Game
 				// Para criaturas especiales: ballesta, arco, mosquete doble, mosquete con apuntado personalizado
 				if (IsSpecialNoRaiseCreature())
 				{
-					// Ballesta y arco normales
 					if (HasCrossbowInInventory() && EnsureCrossbowEquipped())
 					{
 						StartCustomAiming(CrossbowBlock.Index);
@@ -887,7 +894,7 @@ namespace Game
 				}
 				else
 				{
-					// Comportamiento normal para otras criaturas (respeta distancia mínima)
+					// Comportamiento normal para otras criaturas
 					if (HasCrossbowInInventory())
 					{
 						if (EnsureCrossbowEquipped())
@@ -1005,8 +1012,6 @@ namespace Game
 			{
 				m_customAimTimer = 0f;
 			}
-
-			// No forzar AimHandAngleOrder a 0 aquí, lo hará UpdateWeaponRotation
 		}
 
 		private void StopCustomAiming()
@@ -1016,8 +1021,11 @@ namespace Game
 				int sniperIndex = BlocksManager.GetBlockIndex(typeof(SniperBlock), true, false);
 				if (m_customWeaponContents != ItemsLauncherBlock.Index && m_customWeaponContents != sniperIndex)
 				{
-					Ray3 aimRay = CalculateAimRay();
-					m_componentMiner.Aim(aimRay, AimState.Cancelled);
+					if (TryCalculateAimRay(out Ray3 aimRay))
+					{
+						m_componentMiner.Aim(aimRay, AimState.Cancelled);
+					}
+					// Si no se puede calcular el rayo, simplemente se omite la cancelación en el Miner
 				}
 				ResetModelRotation();
 				m_isCustomAiming = false;
@@ -1045,14 +1053,12 @@ namespace Game
 			{
 				if (IsSpecialNoRaiseCreature())
 				{
-					// Special creatures: no arm raise, just weapon rotation
 					model.AimHandAngleOrder = 0f;
 					model.InHandItemOffsetOrder = new Vector3(-0.1f, -0.15f, 0.25f);
 					model.InHandItemRotationOrder = BaseWeaponRotations[ItemsLauncherBlock.Index];
 				}
 				else
 				{
-					// Normal creatures: full arm raise (simulate Miner.Aim)
 					model.AimHandAngleOrder = 1.4f;
 					model.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
 					model.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
@@ -1060,17 +1066,14 @@ namespace Game
 			}
 			else
 			{
-				// Para las otras armas en apuntado personalizado (solo criaturas especiales)
 				model.AimHandAngleOrder = 0f; // Nunca levantan el brazo
 
-				// Rotación y offset según el tipo de arma
 				if (BaseWeaponRotations.TryGetValue(m_customWeaponContents, out Vector3 baseRot))
 				{
 					model.InHandItemRotationOrder = baseRot;
 				}
 				else if (FirearmDefensiveConfigs.ContainsKey(m_customWeaponContents))
 				{
-					// Rotación por defecto para armas de fuego (similar al mosquete)
 					model.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
 				}
 				else
@@ -1081,12 +1084,11 @@ namespace Game
 				if (m_customWeaponContents == BowBlock.Index)
 					model.InHandItemOffsetOrder = new Vector3(0.15f, -0.15f, 0.15f);
 				else if (FirearmDefensiveConfigs.ContainsKey(m_customWeaponContents))
-					model.InHandItemOffsetOrder = new Vector3(-0.1f, -0.15f, 0.25f); // mismo offset que el mosquete
+					model.InHandItemOffsetOrder = new Vector3(-0.1f, -0.15f, 0.25f);
 				else
 					model.InHandItemOffsetOrder = new Vector3(-0.1f, -0.15f, 0.25f);
 			}
 
-			// Forzar que la criatura mire al objetivo
 			if (m_componentChase != null && m_componentChase.Target != null)
 			{
 				model.LookAtOrder = m_componentChase.Target.ComponentCreatureModel.EyePosition;
@@ -1143,12 +1145,31 @@ namespace Game
 			return m_componentChase.Target.ComponentHealth.Health > 0f;
 		}
 
-		private Ray3 CalculateAimRay()
+		// Nuevo método seguro para calcular el rayo de apuntado
+		private bool TryCalculateAimRay(out Ray3 ray)
 		{
+			ray = default;
+			if (m_componentCreature == null || m_componentCreature.ComponentCreatureModel == null)
+				return false;
+			if (m_componentChase == null || m_componentChase.Target == null || m_componentChase.Target.ComponentCreatureModel == null)
+				return false;
+
 			Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
 			Vector3 targetEye = m_componentChase.Target.ComponentCreatureModel.EyePosition;
 			Vector3 direction = Vector3.Normalize(targetEye - eyePos);
-			return new Ray3(eyePos, direction);
+			ray = new Ray3(eyePos, direction);
+			return true;
+		}
+
+		// Método original se mantiene por compatibilidad, pero ahora delega en TryCalculateAimRay
+		private Ray3 CalculateAimRay()
+		{
+			if (!TryCalculateAimRay(out Ray3 ray))
+			{
+				// Si no se puede calcular, devolvemos un rayo por defecto (evita null, aunque no debería usarse)
+				return new Ray3(m_componentCreature.ComponentCreatureModel.EyePosition, Vector3.UnitZ);
+			}
+			return ray;
 		}
 
 		private void StopMovement()
@@ -1667,7 +1688,11 @@ namespace Game
 				int sniperIndex = BlocksManager.GetBlockIndex(typeof(SniperBlock), true, false);
 				if (activeContents != sniperIndex)
 				{
-					m_componentMiner.Aim(CalculateAimRay(), AimState.Cancelled);
+					if (TryCalculateAimRay(out Ray3 aimRay))
+					{
+						m_componentMiner.Aim(aimRay, AimState.Cancelled);
+					}
+					// Si no se puede obtener el rayo, simplemente se evita la llamada a Miner.Aim
 				}
 				else
 				{
