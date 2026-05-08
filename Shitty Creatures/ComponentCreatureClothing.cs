@@ -95,19 +95,10 @@ namespace Game
 					}
 				}
 			}
+			// Si sigue siendo null, no se podrá renderizar (se usará textura por defecto del modelo, no se sobrescribe)
 
-			// Asegurar que los cuatro slots básicos existen en ClothingSlot (deberían, pero por si algún mod los eliminó)
-			if (!ClothingSlot.ClothingSlots.ContainsKey("Head"))
-				ClothingSlot.Initialize();
-
-			// Inicializar los slots de ropa con listas vacías
 			foreach (ClothingSlot slot in ClothingSlot.ClothingSlots.Values)
-			{
-				if (!m_clothes.ContainsKey(slot))
-					m_clothes[slot] = new List<int>();
-			}
-			// Por si ClothingSlot.ClothingSlots estaba vacío y no se añadió nada, forzamos los básicos
-			EnsureBasicSlotsExist();
+				m_clothes[slot] = new List<int>();
 
 			ValuesDictionary clothesData = valuesDictionary.GetValue<ValuesDictionary>("CreatureClothes", null);
 			if (clothesData != null)
@@ -116,8 +107,7 @@ namespace Game
 				{
 					List<int> loadedClothes = HumanReadableConverter.ValuesListFromString<int>(
 						';', clothesData.GetValue<string>(key, "")).ToList();
-					if (ClothingSlot.ClothingSlots.TryGetValue(key, out ClothingSlot slot))
-						m_clothes[slot] = loadedClothes;
+					m_clothes[ClothingSlot.ClothingSlots[key]] = loadedClothes;
 				}
 			}
 
@@ -128,39 +118,12 @@ namespace Game
 			RecalculateDensity();
 		}
 
-		private void EnsureBasicSlotsExist()
-		{
-			// Añadir los cuatro slots básicos si no existen
-			AddSlotIfMissing("Head", 0);
-			AddSlotIfMissing("Torso", 1);
-			AddSlotIfMissing("Legs", 2);
-			AddSlotIfMissing("Feet", 3);
-		}
-
-		private void AddSlotIfMissing(string name, int stableId)
-		{
-			if (!ClothingSlot.ClothingSlots.ContainsKey(name))
-			{
-				var slot = new ClothingSlot { Name = name, StableId = stableId };
-				ClothingSlot.ClothingSlots[name] = slot;
-				ClothingSlot.ClothingSlotsByInt[stableId] = slot;
-			}
-			var existingSlot = ClothingSlot.ClothingSlots[name];
-			if (!m_clothes.ContainsKey(existingSlot))
-				m_clothes[existingSlot] = new List<int>();
-		}
-
 		public override void Save(ValuesDictionary valuesDictionary, EntityToIdMap entityToIdMap)
 		{
 			var clothesSave = new ValuesDictionary();
 			foreach (var kv in m_clothes)
-			{
-				if (kv.Value.Count > 0)
-					clothesSave.SetValue<string>(kv.Key.Name,
-						HumanReadableConverter.ValuesListToString<int>(';', kv.Value.ToArray()));
-				else
-					clothesSave.SetValue<string>(kv.Key.Name, "");
-			}
+				clothesSave.SetValue<string>(kv.Key.Name,
+					HumanReadableConverter.ValuesListToString<int>(';', kv.Value.ToArray()));
 			valuesDictionary.SetValue<ValuesDictionary>("CreatureClothes", clothesSave);
 		}
 
@@ -172,6 +135,8 @@ namespace Game
 			Display.DeviceReset -= Display_DeviceReset;
 			if (m_componentHealth != null)
 				m_componentHealth.Injured -= OnInjured;
+			// No es necesario restaurar TextureOverride porque al destruir el componente
+			// el modelo quedará huérfano de textura, pero el motor lo manejará.
 		}
 
 		private void Display_DeviceReset() => m_clothedTexturesValid = false;
@@ -181,33 +146,32 @@ namespace Game
 			if (injury == null || m_componentHealth == null || m_componentHealth.Health <= 0f) return;
 			if (injury.Attackment != null)
 			{
-				float remaining = ApplyArmorProtection(injury.Amount);
-				injury.Amount = remaining;
+				// Reconstruir el daño original (antes de la resistencia de la criatura)
+				float originalDamage = injury.Amount * Math.Max(m_componentHealth.AttackResilience, 1f);
+				// Calcular cuánto daño queda después de la armadura
+				float remainingAfterArmor = ApplyArmorProtection(originalDamage);
+				// El daño real que recibe la criatura se reduce en lo absorbido
+				float absorbed = originalDamage - remainingAfterArmor;
+				injury.Amount = Math.Max(0f, injury.Amount - absorbed);
 			}
 		}
 
 		public void SetClothes(ClothingSlot slot, IEnumerable<int> newClothes)
 		{
-			if (!m_clothes.TryGetValue(slot, out List<int> currentList))
-			{
-				currentList = new List<int>();
-				m_clothes[slot] = currentList;
-			}
 			List<int> clothesList = newClothes.ToList();
-			if (!currentList.SequenceEqual(clothesList))
+			if (!m_clothes[slot].SequenceEqual(clothesList))
 			{
-				foreach (int oldValue in currentList.Except(clothesList))
+				foreach (int oldValue in m_clothes[slot].Except(clothesList))
 				{
 					ClothingData data = GetClothingData(oldValue);
 					data?.Dismount?.Invoke(oldValue, null);
 				}
-				foreach (int newValue in clothesList.Except(currentList))
+				foreach (int newValue in clothesList.Except(m_clothes[slot]))
 				{
 					ClothingData data = GetClothingData(newValue);
 					data?.Mount?.Invoke(newValue, null);
 				}
-				currentList.Clear();
-				currentList.AddRange(clothesList);
+				m_clothes[slot] = clothesList;
 				m_clothedTexturesValid = false;
 				RecalculateDensity();
 			}
@@ -226,12 +190,7 @@ namespace Game
 			m_componentBody.Density = m_baseDensity + total;
 		}
 
-		public ReadOnlyList<int> GetClothes(ClothingSlot slot)
-		{
-			if (m_clothes.TryGetValue(slot, out List<int> list))
-				return new ReadOnlyList<int>(list);
-			return new ReadOnlyList<int>(new List<int>());
-		}
+		public ReadOnlyList<int> GetClothes(ClothingSlot slot) => new ReadOnlyList<int>(m_clothes[slot]);
 
 		private ClothingData GetClothingData(int value)
 		{
@@ -304,36 +263,24 @@ namespace Game
 			return MathF.Max(remaining, 0f);
 		}
 
-		// Métodos IInventory seguros ante diccionario incompleto
-
 		public int GetSlotValue(int slotIndex)
 		{
 			if (slotIndex < 0 || slotIndex >= 4) return 0;
-			ClothingSlot slot = m_slotsOrder[slotIndex];
-			if (slot == null || !m_clothes.TryGetValue(slot, out List<int> list))
-				return 0;
+			var list = m_clothes[m_slotsOrder[slotIndex]];
 			return list.Count > 0 ? list[list.Count - 1] : 0;
 		}
-
 		public int GetSlotCount(int slotIndex)
 		{
 			if (slotIndex < 0 || slotIndex >= 4) return 0;
-			ClothingSlot slot = m_slotsOrder[slotIndex];
-			if (slot == null || !m_clothes.TryGetValue(slot, out List<int> list))
-				return 0;
-			return list.Count > 0 ? 1 : 0;
+			return m_clothes[m_slotsOrder[slotIndex]].Count > 0 ? 1 : 0;
 		}
-
 		public int GetSlotCapacity(int slotIndex, int value) => 0;
-
 		public int GetSlotProcessCapacity(int slotIndex, int value)
 		{
 			Block block = BlocksManager.Blocks[Terrain.ExtractContents(value)];
 			return (block.CanWear(value) && CanWearClothing(value)) ? 1 : 0;
 		}
-
 		public void AddSlotItems(int slotIndex, int value, int count) { }
-
 		public void ProcessSlotItems(int slotIndex, int value, int count, int processCount, out int processedValue, out int processedCount)
 		{
 			processedValue = 0; processedCount = 0;
@@ -346,11 +293,7 @@ namespace Game
 				{
 					data.Mount?.Invoke(value, null);
 					ClothingSlot slot = m_slotsOrder[slotIndex];
-					if (!m_clothes.TryGetValue(slot, out List<int> newList))
-					{
-						newList = new List<int>();
-						m_clothes[slot] = newList;
-					}
+					List<int> newList = new List<int>(m_clothes[slot]);
 					newList.Add(value);
 					SetClothes(slot, newList);
 					processedValue = value;
@@ -358,20 +301,20 @@ namespace Game
 				}
 			}
 		}
-
 		public int RemoveSlotItems(int slotIndex, int count)
 		{
 			if (slotIndex < 0 || slotIndex >= 4 || count != 1) return 0;
 			ClothingSlot slot = m_slotsOrder[slotIndex];
-			if (!m_clothes.TryGetValue(slot, out List<int> current) || current.Count == 0) return 0;
+			List<int> current = m_clothes[slot];
+			if (current.Count == 0) return 0;
 			int lastValue = current[current.Count - 1];
 			ClothingData data = GetClothingData(lastValue);
 			data?.Dismount?.Invoke(lastValue, null);
-			current.RemoveAt(current.Count - 1);
-			SetClothes(slot, current);
+			List<int> newList = new List<int>(current);
+			newList.RemoveAt(newList.Count - 1);
+			SetClothes(slot, newList);
 			return 1;
 		}
-
 		public void DropAllItems(Vector3 position)
 		{
 			Random rand = new Random();
@@ -416,6 +359,7 @@ namespace Game
 						}
 					}
 				}
+				// Si sigue siendo null, no podemos hacer nada
 				if (m_cachedSkinTexture == null) return;
 			}
 
@@ -462,8 +406,8 @@ namespace Game
 						: new[] { ClothingSlot.Head, ClothingSlot.Torso, ClothingSlot.Legs, ClothingSlot.Feet };
 					foreach (ClothingSlot slot in innerOrder)
 					{
-						if (!m_clothes.TryGetValue(slot, out List<int> clothesList)) continue;
-						foreach (int value in clothesList)
+						if (!m_clothes.ContainsKey(slot)) continue;
+						foreach (int value in m_clothes[slot])
 						{
 							ClothingData data = GetClothingData(value);
 							if (data == null || data.IsOuter) continue;
@@ -490,8 +434,8 @@ namespace Game
 						: new[] { ClothingSlot.Head, ClothingSlot.Torso, ClothingSlot.Legs, ClothingSlot.Feet };
 					foreach (ClothingSlot slot in outerOrder)
 					{
-						if (!m_clothes.TryGetValue(slot, out List<int> clothesListOuter)) continue;
-						foreach (int value in clothesListOuter)
+						if (!m_clothes.ContainsKey(slot)) continue;
+						foreach (int value in m_clothes[slot])
 						{
 							ClothingData data = GetClothingData(value);
 							if (data == null || !data.IsOuter) continue;
@@ -512,6 +456,7 @@ namespace Game
 				{
 					Log.Error($"Error en UpdateRenderTargets de ComponentCreatureClothing: {ex.Message}");
 					m_clothedTexturesValid = false;
+					// En caso de error, no desasignamos TextureOverride para mantener el último estado válido
 				}
 				finally
 				{
