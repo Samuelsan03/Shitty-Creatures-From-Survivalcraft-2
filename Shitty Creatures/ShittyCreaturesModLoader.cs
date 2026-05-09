@@ -1306,6 +1306,8 @@ namespace Game
 				if (health == null) continue;
 				var body = creature.ComponentBody;
 				if (body == null) continue;
+				if (creature is ComponentPlayer player && camera.GameWidget.IsEntityFirstPersonTarget(player.Entity) && (body.ImmersionFactor > 0f || body.IsCrouching))
+					continue;
 				Vector3 center = (body.BoundingBox.Min + body.BoundingBox.Max) * 0.5f;
 				float height = body.BoundingBox.Max.Y - body.BoundingBox.Min.Y;
 				if (Vector3.Distance(camera.ViewPosition, center) > HealthBarVisibilityRadius) continue;
