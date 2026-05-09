@@ -11,7 +11,7 @@ namespace Game
 	{
 		private static readonly Dictionary<int, FirearmConfig> FirearmConfigs = new Dictionary<int, FirearmConfig>();
 
-		public float MaxShootingDistance = 100f;
+		public Vector2 MaxShootingDistance = new Vector2(5f, 100f);
 		public float SpreadFactor = 0.05f;
 		public float ReloadChance = 0.05f;
 		public float MinReloadInterval = 5f;
@@ -22,8 +22,6 @@ namespace Game
 		public float ReloadTime = 1.0f;
 		public float PistolAimTime = 0.5f;
 		public float SniperAimTime = 1.0f;
-		public float MeleeRange = 5f;
-		public bool UseMeleeSwitch = true;
 
 		private bool m_isAiming = false;
 		private bool m_isFiring = false;
@@ -102,7 +100,7 @@ namespace Game
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
 			base.Load(valuesDictionary, idToEntityMap);
-			MaxShootingDistance = valuesDictionary.GetValue<float>("MaxShootingDistance", 25f);
+			MaxShootingDistance = valuesDictionary.GetValue<Vector2>("MaxShootingDistance", new Vector2(5f, 25f));
 			SpreadFactor = valuesDictionary.GetValue<float>("SpreadFactor", 0.05f);
 			ReloadChance = valuesDictionary.GetValue<float>("ReloadChance", 0.05f);
 			MinReloadInterval = valuesDictionary.GetValue<float>("MinReloadInterval", 5f);
@@ -111,8 +109,6 @@ namespace Game
 			ReloadTime = valuesDictionary.GetValue<float>("ReloadTime", 1.0f);
 			PistolAimTime = valuesDictionary.GetValue<float>("PistolAimTime", 0.5f);
 			SniperAimTime = valuesDictionary.GetValue<float>("SniperAimTime", 1.0f);
-			MeleeRange = valuesDictionary.GetValue<float>("MeleeRange", 5f);
-			UseMeleeSwitch = valuesDictionary.GetValue<bool>("UseMeleeSwitch", true);
 			m_subsystemTime = base.Project.FindSubsystem<SubsystemTime>(true);
 			m_subsystemProjectiles = base.Project.FindSubsystem<SubsystemProjectiles>(true);
 			m_subsystemAudio = base.Project.FindSubsystem<SubsystemAudio>(true);
@@ -566,29 +562,37 @@ namespace Game
 				return;
 			}
 			float distance = Vector3.Distance(m_componentCreature.ComponentBody.Position, target.ComponentBody.Position);
-			if (UseMeleeSwitch)
+
+			// Reemplazo del antiguo bloque UseMeleeSwitch
+			if (distance <= MaxShootingDistance.X)
 			{
-				if (distance <= MeleeRange)
+				if (!m_isMelee)
 				{
-					if (!m_isMelee)
+					// Intenta equipar un arma cuerpo a cuerpo; si no hay, seguirá disparando
+					if (FindMeleeWeapon())
 					{
 						SwitchToMeleeMode();
 					}
+				}
+				if (m_isMelee)
+				{
 					UpdateMeleeMode(dt, target);
 					return;
 				}
-				else
+				// Si no tiene arma melee, continúa con el arma de fuego (cae al código siguiente)
+			}
+			else
+			{
+				if (m_isMelee)
 				{
-					if (m_isMelee)
-					{
-						SwitchToRangedMode();
-					}
+					SwitchToRangedMode();
 				}
 			}
-			float maxDistance = MaxShootingDistance;
+
+			float maxDistance = MaxShootingDistance.Y;
 			if (IsCurrentWeaponSniper() && m_currentWeaponIndex != -1)
 			{
-				maxDistance = MaxShootingDistance * 3f;
+				maxDistance = MaxShootingDistance.Y * 3f;
 			}
 			if (distance > maxDistance)
 			{
