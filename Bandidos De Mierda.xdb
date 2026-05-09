@@ -44,15 +44,13 @@
         </ParameterSet>
     </ParameterSet>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="FirearmsShooters" Guid="994eb977-da75-46d8-8a15-3c79763dc692" InheritanceParent="927c0a46-b1e5-42a9-a6bb-0979acbc2518">
-    <Parameter Name="MaxShootingDistance" Value="100" Type="float"/>
+<MemberComponentTemplate Name="FirearmsShooters" Guid="4e739ae6-49fd-44b3-8973-63abaaf0ea39" InheritanceParent="927c0a46-b1e5-42a9-a6bb-0979acbc2518">
+    <Parameter Name="MaxShootingDistance" Value="5,100" Type="Vector2"/>
     <Parameter Name="SpreadFactor" Value="0.05" Type="float"/>
     <Parameter Name="ReloadChance" Value="0.05" Type="float"/>
     <Parameter Name="MinReloadInterval" Value="5" Type="float"/>
     <Parameter Name="UseRandomReloads" Value="true" Type="bool"/>
     <Parameter Name="TargetHeightOffset" Value="0.5" Type="float"/>
-    <Parameter Name="MeleeRange" Value="0" Type="float"/>
-    <Parameter Name="UseMeleeSwitch" Value="false" Type="bool"/>
     <Parameter Name="ReloadTime" Value="1.0" Type="float"/>
     <Parameter Name="PistolAimTime" Value="0.5" Type="float"/>
     <Parameter Name="SniperAimTime" Value="1.0" Type="float"/>
@@ -174,15 +172,13 @@
         <Parameter Name="WalkSpeed" Guid="65a63c68-7dcc-4dc5-b6b6-042c55817c3e" Value="4" Type="float"/>
         <Parameter Name="LadderSpeed" Guid="48721dc6-37eb-43f2-94a8-d4d1d4ff0d4b" Value="1.0" Type="float"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="FirearmsShooters" Guid="821a6dc6-1ccf-4974-a17c-1facd59558dc" InheritanceParent="927c0a46-b1e5-42a9-a6bb-0979acbc2518">
-    <Parameter Name="MaxShootingDistance" Value="100" Type="float"/>
+    <MemberComponentTemplate Name="FirearmsShooters" Guid="05c5b50a-48ce-4591-90e6-46e47db4a383" InheritanceParent="927c0a46-b1e5-42a9-a6bb-0979acbc2518">
+    <Parameter Name="MaxShootingDistance" Value="5,100" Type="Vector2"/>
     <Parameter Name="SpreadFactor" Value="0.05" Type="float"/>
     <Parameter Name="ReloadChance" Value="0.05" Type="float"/>
     <Parameter Name="MinReloadInterval" Value="5" Type="float"/>
     <Parameter Name="UseRandomReloads" Value="true" Type="bool"/>
     <Parameter Name="TargetHeightOffset" Value="0.5" Type="float"/>
-    <Parameter Name="MeleeRange" Value="0" Type="float"/>
-    <Parameter Name="UseMeleeSwitch" Value="false" Type="bool"/>
     <Parameter Name="ReloadTime" Value="1.0" Type="float"/>
     <Parameter Name="PistolAimTime" Value="0.5" Type="float"/>
     <Parameter Name="SniperAimTime" Value="1.0" Type="float"/>
@@ -319,15 +315,13 @@
         </ParameterSet>
     </ParameterSet>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="FirearmsShooters" Guid="5419bef2-8aef-4d1d-b683-7df381b18f8a" InheritanceParent="927c0a46-b1e5-42a9-a6bb-0979acbc2518">
-    <Parameter Name="MaxShootingDistance" Value="100" Type="float"/>
+<MemberComponentTemplate Name="FirearmsShooters" Guid="d4732868-27cd-424d-844e-c48dea14658f" InheritanceParent="927c0a46-b1e5-42a9-a6bb-0979acbc2518">
+    <Parameter Name="MaxShootingDistance" Value="5,100" Type="Vector2"/>
     <Parameter Name="SpreadFactor" Value="0.05" Type="float"/>
     <Parameter Name="ReloadChance" Value="0.05" Type="float"/>
     <Parameter Name="MinReloadInterval" Value="5" Type="float"/>
     <Parameter Name="UseRandomReloads" Value="true" Type="bool"/>
     <Parameter Name="TargetHeightOffset" Value="0.5" Type="float"/>
-    <Parameter Name="MeleeRange" Value="0" Type="float"/>
-    <Parameter Name="UseMeleeSwitch" Value="false" Type="bool"/>
     <Parameter Name="ReloadTime" Value="1.0" Type="float"/>
     <Parameter Name="PistolAimTime" Value="0.5" Type="float"/>
     <Parameter Name="SniperAimTime" Value="1.0" Type="float"/>
@@ -457,15 +451,13 @@
         </ParameterSet>
     </ParameterSet>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="FirearmsShooters" Guid="d42749ac-dbea-43c6-899e-41e9662496b1" InheritanceParent="927c0a46-b1e5-42a9-a6bb-0979acbc2518">
-    <Parameter Name="MaxShootingDistance" Value="100" Type="float"/>
+<MemberComponentTemplate Name="FirearmsShooters" Guid="51e9a598-f359-48e5-9c7d-f89b1ebbe533" InheritanceParent="927c0a46-b1e5-42a9-a6bb-0979acbc2518">
+    <Parameter Name="MaxShootingDistance" Value="5,100" Type="Vector2"/>
     <Parameter Name="SpreadFactor" Value="0.05" Type="float"/>
     <Parameter Name="ReloadChance" Value="0.05" Type="float"/>
     <Parameter Name="MinReloadInterval" Value="5" Type="float"/>
     <Parameter Name="UseRandomReloads" Value="true" Type="bool"/>
     <Parameter Name="TargetHeightOffset" Value="0.5" Type="float"/>
-    <Parameter Name="MeleeRange" Value="0" Type="float"/>
-    <Parameter Name="UseMeleeSwitch" Value="false" Type="bool"/>
     <Parameter Name="ReloadTime" Value="1.0" Type="float"/>
     <Parameter Name="PistolAimTime" Value="0.5" Type="float"/>
     <Parameter Name="SniperAimTime" Value="1.0" Type="float"/>
@@ -595,15 +587,13 @@
         </ParameterSet>
     </ParameterSet>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="FirearmsShooters" Guid="064d123e-3c7b-4151-9f7a-cb2dc3825c1d" InheritanceParent="927c0a46-b1e5-42a9-a6bb-0979acbc2518">
-    <Parameter Name="MaxShootingDistance" Value="100" Type="float"/>
+<MemberComponentTemplate Name="FirearmsShooters" Guid="b3d07cc2-3e9b-4287-b03c-edbd0983f8d5" InheritanceParent="927c0a46-b1e5-42a9-a6bb-0979acbc2518">
+    <Parameter Name="MaxShootingDistance" Value="5,100" Type="Vector2"/>
     <Parameter Name="SpreadFactor" Value="0.05" Type="float"/>
     <Parameter Name="ReloadChance" Value="0.05" Type="float"/>
     <Parameter Name="MinReloadInterval" Value="5" Type="float"/>
     <Parameter Name="UseRandomReloads" Value="true" Type="bool"/>
     <Parameter Name="TargetHeightOffset" Value="0.5" Type="float"/>
-    <Parameter Name="MeleeRange" Value="0" Type="float"/>
-    <Parameter Name="UseMeleeSwitch" Value="false" Type="bool"/>
     <Parameter Name="ReloadTime" Value="1.0" Type="float"/>
     <Parameter Name="PistolAimTime" Value="0.5" Type="float"/>
     <Parameter Name="SniperAimTime" Value="1.0" Type="float"/>
@@ -733,15 +723,13 @@
         </ParameterSet>
     </ParameterSet>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="FirearmsShooters" Guid="b5cca5b8-0b54-44bf-92c5-c8785d7193a0" InheritanceParent="927c0a46-b1e5-42a9-a6bb-0979acbc2518">
-    <Parameter Name="MaxShootingDistance" Value="100" Type="float"/>
+<MemberComponentTemplate Name="FirearmsShooters" Guid="6b4a8a92-5b66-4f71-8ae0-463e1ee35a0e" InheritanceParent="927c0a46-b1e5-42a9-a6bb-0979acbc2518">
+    <Parameter Name="MaxShootingDistance" Value="5,100" Type="Vector2"/>
     <Parameter Name="SpreadFactor" Value="0.05" Type="float"/>
     <Parameter Name="ReloadChance" Value="0.05" Type="float"/>
     <Parameter Name="MinReloadInterval" Value="5" Type="float"/>
     <Parameter Name="UseRandomReloads" Value="true" Type="bool"/>
     <Parameter Name="TargetHeightOffset" Value="0.5" Type="float"/>
-    <Parameter Name="MeleeRange" Value="0" Type="float"/>
-    <Parameter Name="UseMeleeSwitch" Value="false" Type="bool"/>
     <Parameter Name="ReloadTime" Value="1.0" Type="float"/>
     <Parameter Name="PistolAimTime" Value="0.5" Type="float"/>
     <Parameter Name="SniperAimTime" Value="1.0" Type="float"/>
@@ -1017,14 +1005,12 @@
     </ParameterSet>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="FirearmsShooters" Guid="0770a2ea-48b0-4c48-844b-02bc33066790" InheritanceParent="927c0a46-b1e5-42a9-a6bb-0979acbc2518">
-    <Parameter Name="MaxShootingDistance" Value="100" Type="float"/>
+    <Parameter Name="MaxShootingDistance" Value="5,100" Type="Vector2"/>
     <Parameter Name="SpreadFactor" Value="0.05" Type="float"/>
     <Parameter Name="ReloadChance" Value="0.05" Type="float"/>
     <Parameter Name="MinReloadInterval" Value="5" Type="float"/>
     <Parameter Name="UseRandomReloads" Value="true" Type="bool"/>
     <Parameter Name="TargetHeightOffset" Value="0.5" Type="float"/>
-    <Parameter Name="MeleeRange" Value="0" Type="float"/>
-    <Parameter Name="UseMeleeSwitch" Value="false" Type="bool"/>
     <Parameter Name="ReloadTime" Value="1.0" Type="float"/>
     <Parameter Name="PistolAimTime" Value="0.5" Type="float"/>
     <Parameter Name="SniperAimTime" Value="1.0" Type="float"/>
@@ -1154,14 +1140,13 @@
         </ParameterSet>
     </ParameterSet>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="FirearmsShooters" Guid="0691972a-b83d-465c-bab0-e7908a1b27ba" InheritanceParent="927c0a46-b1e5-42a9-a6bb-0979acbc2518">
-    <Parameter Name="MaxShootingDistance" Value="100" Type="float"/>
+<MemberComponentTemplate Name="FirearmsShooters" Guid="b232f3bb-27c3-48f8-81f1-9458c3fa3113" InheritanceParent="927c0a46-b1e5-42a9-a6bb-0979acbc2518">
+    <Parameter Name="MaxShootingDistance" Value="5,100" Type="Vector2"/>
     <Parameter Name="SpreadFactor" Value="0.05" Type="float"/>
     <Parameter Name="ReloadChance" Value="0.05" Type="float"/>
     <Parameter Name="MinReloadInterval" Value="5" Type="float"/>
     <Parameter Name="UseRandomReloads" Value="true" Type="bool"/>
     <Parameter Name="TargetHeightOffset" Value="0.5" Type="float"/>
-    <Parameter Name="UseMeleeSwitch" Value="false" Type="bool"/>
     <Parameter Name="ReloadTime" Value="1.0" Type="float"/>
     <Parameter Name="PistolAimTime" Value="0.5" Type="float"/>
     <Parameter Name="SniperAimTime" Value="1.0" Type="float"/>
@@ -1291,15 +1276,13 @@
         </ParameterSet>
     </ParameterSet>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="FirearmsShooters" Guid="f693b251-b8fb-4c05-a358-89d6646ab8f8" InheritanceParent="927c0a46-b1e5-42a9-a6bb-0979acbc2518">
-    <Parameter Name="MaxShootingDistance" Value="100" Type="float"/>
+<MemberComponentTemplate Name="FirearmsShooters" Guid="e80aa648-2019-46ba-ab34-f89cbcd4c6de" InheritanceParent="927c0a46-b1e5-42a9-a6bb-0979acbc2518">
+    <Parameter Name="MaxShootingDistance" Value="5,100" Type="Vector2"/>
     <Parameter Name="SpreadFactor" Value="0.05" Type="float"/>
     <Parameter Name="ReloadChance" Value="0.05" Type="float"/>
     <Parameter Name="MinReloadInterval" Value="5" Type="float"/>
     <Parameter Name="UseRandomReloads" Value="true" Type="bool"/>
     <Parameter Name="TargetHeightOffset" Value="0.5" Type="float"/>
-    <Parameter Name="MeleeRange" Value="0" Type="float"/>
-    <Parameter Name="UseMeleeSwitch" Value="false" Type="bool"/>
     <Parameter Name="ReloadTime" Value="1.0" Type="float"/>
     <Parameter Name="PistolAimTime" Value="0.5" Type="float"/>
     <Parameter Name="SniperAimTime" Value="1.0" Type="float"/>
@@ -1720,15 +1703,13 @@
         </ParameterSet>
     </ParameterSet>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="FirearmsShooters" Guid="3fa7b48f-b0c7-4ff0-88da-a0e452912448" InheritanceParent="927c0a46-b1e5-42a9-a6bb-0979acbc2518">
-    <Parameter Name="MaxShootingDistance" Value="100" Type="float"/>
+<MemberComponentTemplate Name="FirearmsShooters" Guid="f28daca9-dfdc-46fc-8ac4-6b493591fd05" InheritanceParent="927c0a46-b1e5-42a9-a6bb-0979acbc2518">
+    <Parameter Name="MaxShootingDistance" Value="5,100" Type="Vector2"/>
     <Parameter Name="SpreadFactor" Value="0.05" Type="float"/>
     <Parameter Name="ReloadChance" Value="0.05" Type="float"/>
     <Parameter Name="MinReloadInterval" Value="5" Type="float"/>
     <Parameter Name="UseRandomReloads" Value="true" Type="bool"/>
     <Parameter Name="TargetHeightOffset" Value="0.5" Type="float"/>
-    <Parameter Name="MeleeRange" Value="0" Type="float"/>
-    <Parameter Name="UseMeleeSwitch" Value="false" Type="bool"/>
     <Parameter Name="ReloadTime" Value="1.0" Type="float"/>
     <Parameter Name="PistolAimTime" Value="0.5" Type="float"/>
     <Parameter Name="SniperAimTime" Value="1.0" Type="float"/>
@@ -1858,15 +1839,13 @@
         </ParameterSet>
     </ParameterSet>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="FirearmsShooters" Guid="ea7f1a86-948b-4647-8efe-28eab00a1bc1" InheritanceParent="927c0a46-b1e5-42a9-a6bb-0979acbc2518">
-    <Parameter Name="MaxShootingDistance" Value="100" Type="float"/>
+<MemberComponentTemplate Name="FirearmsShooters" Guid="47d41234-c306-4732-9a2d-5bfe419167b5" InheritanceParent="927c0a46-b1e5-42a9-a6bb-0979acbc2518">
+    <Parameter Name="MaxShootingDistance" Value="5,100" Type="Vector2"/>
     <Parameter Name="SpreadFactor" Value="0.05" Type="float"/>
     <Parameter Name="ReloadChance" Value="0.05" Type="float"/>
     <Parameter Name="MinReloadInterval" Value="5" Type="float"/>
     <Parameter Name="UseRandomReloads" Value="true" Type="bool"/>
     <Parameter Name="TargetHeightOffset" Value="0.5" Type="float"/>
-    <Parameter Name="MeleeRange" Value="0" Type="float"/>
-    <Parameter Name="UseMeleeSwitch" Value="false" Type="bool"/>
     <Parameter Name="ReloadTime" Value="1.0" Type="float"/>
     <Parameter Name="PistolAimTime" Value="0.5" Type="float"/>
     <Parameter Name="SniperAimTime" Value="1.0" Type="float"/>
@@ -1996,15 +1975,13 @@
         </ParameterSet>
     </ParameterSet>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="FirearmsShooters" Guid="93a13c4b-f187-4021-9d20-6bd751942179" InheritanceParent="927c0a46-b1e5-42a9-a6bb-0979acbc2518">
-    <Parameter Name="MaxShootingDistance" Value="100" Type="float"/>
+<MemberComponentTemplate Name="FirearmsShooters" Guid="f7d0bead-de29-4e5b-bab5-013eb405ce1c" InheritanceParent="927c0a46-b1e5-42a9-a6bb-0979acbc2518">
+    <Parameter Name="MaxShootingDistance" Value="5,100" Type="Vector2"/>
     <Parameter Name="SpreadFactor" Value="0.05" Type="float"/>
     <Parameter Name="ReloadChance" Value="0.05" Type="float"/>
     <Parameter Name="MinReloadInterval" Value="5" Type="float"/>
     <Parameter Name="UseRandomReloads" Value="true" Type="bool"/>
     <Parameter Name="TargetHeightOffset" Value="0.5" Type="float"/>
-    <Parameter Name="MeleeRange" Value="0" Type="float"/>
-    <Parameter Name="UseMeleeSwitch" Value="false" Type="bool"/>
     <Parameter Name="ReloadTime" Value="1.0" Type="float"/>
     <Parameter Name="PistolAimTime" Value="0.5" Type="float"/>
     <Parameter Name="SniperAimTime" Value="1.0" Type="float"/>
