@@ -8218,15 +8218,16 @@
         </ParameterSet>
     </ParameterSet>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="FirearmsShooters" Guid="a935d956-933c-4cf3-91e8-21fc54504ac3" InheritanceParent="927c0a46-b1e5-42a9-a6bb-0979acbc2518">
-    <Parameter Name="MaxShootingDistance" Value="100" Type="float"/>
+<MemberComponentTemplate Name="FirearmsShooters" Guid="f2f4635b-6651-4520-a0e0-529cbc94370f" InheritanceParent="927c0a46-b1e5-42a9-a6bb-0979acbc2518">
+    <Parameter Name="MaxShootingDistance" Value="5,100" Type="Vector2"/>
     <Parameter Name="SpreadFactor" Value="0.05" Type="float"/>
     <Parameter Name="ReloadChance" Value="0.05" Type="float"/>
     <Parameter Name="MinReloadInterval" Value="5" Type="float"/>
-    <Parameter Name="SoundVolume" Value="1.0" Type="float"/>
-    <Parameter Name="SoundRange" Value="10" Type="float"/>
     <Parameter Name="UseRandomReloads" Value="true" Type="bool"/>
     <Parameter Name="TargetHeightOffset" Value="0.5" Type="float"/>
+    <Parameter Name="ReloadTime" Value="1.0" Type="float"/>
+    <Parameter Name="PistolAimTime" Value="0.5" Type="float"/>
+    <Parameter Name="SniperAimTime" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="AvoidFireBehavior" Guid="fc1388d1-fb9e-4d57-84fa-5d62e02a91bf" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
             <MemberComponentTemplate Name="Locomotion" Guid="2d2e4336-228a-4537-9ff5-92c99df3230c">
@@ -8317,22 +8318,24 @@
         </EntityTemplate>
 
         <EntityTemplate Name="MachineGunInfectedTamed" Guid="0ced2f63-6233-4199-8463-2dfb4d458f02" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-        <MemberComponentTemplate Name="CreatureInventory" Guid="6026fc63-cabd-4e04-bc21-2a5c4027ea94" InheritanceParent="b0d27f89-dc61-4c44-b675-63d6a6f8bf78">
-    <Parameter Name="SlotsCount" Value="16" Type="int"/>
-    <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
-  </MemberComponentTemplate>
-<MemberComponentTemplate Name="FirearmsShooters" Guid="bf3a67c5-5c55-4736-a430-66dc2a293343" InheritanceParent="927c0a46-b1e5-42a9-a6bb-0979acbc2518">
-    <Parameter Name="MaxShootingDistance" Value="100" Type="float"/>
-    <Parameter Name="SpreadFactor" Value="0.05" Type="float"/>
-    <Parameter Name="ReloadChance" Value="0.05" Type="float"/>
-    <Parameter Name="MinReloadInterval" Value="5" Type="float"/>
-    <Parameter Name="UseRandomReloads" Value="true" Type="bool"/>
-    <Parameter Name="TargetHeightOffset" Value="0.5" Type="float"/>
-    <Parameter Name="MeleeRange" Value="5" Type="float"/>
-    <Parameter Name="UseMeleeSwitch" Value="true" Type="bool"/>
-    <Parameter Name="ReloadTime" Value="1.0" Type="float"/>
-    <Parameter Name="PistolAimTime" Value="0.5" Type="float"/>
-    <Parameter Name="SniperAimTime" Value="1.0" Type="float"/>
+<MemberComponentTemplate Name="DefensiveCreatureAI" Guid="45e8642a-8983-4511-b2ac-d450357c818f" InheritanceParent="0f69cb1e-cf48-46bf-93ec-6990112112d5">
+  <Parameter Name="CanUseInventory" Guid="444a3649-1a9e-4124-b3b2-2336f0b79ae6" Value="true" Type="bool" />
+  <Parameter Name="CanEquipClothing" Guid="8fda4590-208c-43e7-a9bc-e7f6e8865243" Value="true" Type="bool" />
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureClothing" Guid="1a6f8667-cad0-4565-a5a6-3f8fa9275cac" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
+  <ParameterSet Name="CreatureClothes" Guid="ad208706-8f38-4ba5-bd96-30e9e1c5c093">
+    <Parameter Name="Head" Guid="a597b458-a90d-42bc-be91-6c894c853e42" Value="" Type="string"/>
+    <Parameter Name="Torso" Guid="f0622923-67ba-4169-bb05-89517f79a207" Value="" Type="string"/>
+    <Parameter Name="Legs" Guid="ba7a1142-24d6-4d6e-8c55-b2b6d87a55a4" Value="" Type="string"/>
+    <Parameter Name="Feet" Guid="7076563f-164a-4a07-98ae-5f234469ee9a" Value="" Type="string"/>
+  </ParameterSet>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="OuterClothingModel" Guid="69a86cb2-75ed-40be-bb4b-8699d080aca3" InheritanceParent="c2429b7f-55e0-4ca7-b435-2c569f112229">
+              <Parameter Name="ModelName" Guid="e79ed53e-c459-48cd-a4e4-fe9f81b3d29d" Value="Models/Human_Strong_OuterclothingModel" Type="string"/>
+            </MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureCollect" Guid="b355c1c3-0081-40cb-b8b8-ab23b4f3f34e" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <Parameter Name="CanCollect" Guid="0038e7d5-9639-40cb-8619-78e76d3e3f0f" Value="true" Type="bool"/>
+    <Parameter Name="CollectableItems" Guid="0ca09b2f-d59b-46f4-bad9-ca73cbaa93f2" Value="ClothingBlock" Type="string"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="CreatureSounds" Guid="6918a37f-96c1-4e2f-82c4-7660115a1c50">
             <Parameter Name="PainSound" Guid="9c4fac7f-8fa6-4048-b939-9f42c57fc729" Value="Audio/Creatures/Infectado Ametrallador/Pain" Type="string"/>
@@ -8384,6 +8387,10 @@
     <Parameter Name="PoisonResistance" Value="1000" Type="float"/>
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureInventory" Guid="6026fc63-cabd-4e04-bc21-2a5c4027ea94" InheritanceParent="b0d27f89-dc61-4c44-b675-63d6a6f8bf78">
+    <Parameter Name="SlotsCount" Value="16" Type="int"/>
+    <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
+  </MemberComponentTemplate>
 <MemberComponentTemplate Name="Inventory" Guid="b8c1a073-b4c3-4822-a3e8-9cabf4a9088a" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
     <ParameterSet Name="Slots">
         <ParameterSet Name="Slot0">
