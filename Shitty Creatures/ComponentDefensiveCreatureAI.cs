@@ -775,7 +775,7 @@ namespace Game
 					return;
 
 				// *** PRIORIDAD MODIFICADA: LANZABLES PRIMERO ***
-				// 1. Lanzables (primera prioridad, antes que armas de fuego)
+				// 1. Lanzables (primera prioridad, antes que armas de fuego y cualquier otra arma a distancia)
 				if (distance >= ThrowableAttackRange.X && distance <= ThrowableAttackRange.Y && HasThrowableInInventory())
 				{
 					if (EnsureThrowableEquipped())
@@ -810,7 +810,7 @@ namespace Game
 					return;
 				}
 
-				// 3. Ballesta repetidora
+				// 3. Ballesta repetidora (tercera prioridad)
 				if (HasRepeatCrossbowInInventory() && EnsureRepeatCrossbowEquipped())
 				{
 					if (IsSpecialNoRaiseCreature())
@@ -827,7 +827,7 @@ namespace Game
 					}
 				}
 
-				// 4. Lanzallamas
+				// 4. Lanzallamas (cuarta prioridad)
 				if (HasFlameThrowerInInventory() && EnsureFlameThrowerEquipped())
 				{
 					if (IsSpecialNoRaiseCreature())
@@ -844,7 +844,7 @@ namespace Game
 					}
 				}
 
-				// 5. Mosquete de doble cañón
+				// 5. Mosquete de doble cañón (quinta prioridad)
 				if (HasDoubleMusketInInventory() && EnsureDoubleMusketEquipped())
 				{
 					if (IsSpecialNoRaiseCreature())
@@ -861,7 +861,7 @@ namespace Game
 					}
 				}
 
-				// 6. Lanzador de ítems – apuntado manual para todos
+				// 6. Lanzador de ítems (sexta prioridad) – apuntado manual para todos
 				if (HasItemsLauncherInInventory() && EnsureItemsLauncherEquipped())
 				{
 					StartCustomAiming(ItemsLauncherBlock.Index);
@@ -871,6 +871,7 @@ namespace Game
 				// Para criaturas especiales: ballesta, arco, mosquete doble, mosquete con apuntado personalizado
 				if (IsSpecialNoRaiseCreature())
 				{
+					// Ballesta y arco normales
 					if (HasCrossbowInInventory() && EnsureCrossbowEquipped())
 					{
 						StartCustomAiming(CrossbowBlock.Index);
@@ -894,7 +895,7 @@ namespace Game
 				}
 				else
 				{
-					// Comportamiento normal para otras criaturas
+					// Comportamiento normal para otras criaturas (respeta distancia mínima)
 					if (HasCrossbowInInventory())
 					{
 						if (EnsureCrossbowEquipped())
@@ -1012,6 +1013,8 @@ namespace Game
 			{
 				m_customAimTimer = 0f;
 			}
+
+			// No forzar AimHandAngleOrder a 0 aquí, lo hará UpdateWeaponRotation
 		}
 
 		private void StopCustomAiming()
@@ -1053,12 +1056,14 @@ namespace Game
 			{
 				if (IsSpecialNoRaiseCreature())
 				{
+					// Special creatures: no arm raise, just weapon rotation
 					model.AimHandAngleOrder = 0f;
 					model.InHandItemOffsetOrder = new Vector3(-0.1f, -0.15f, 0.25f);
 					model.InHandItemRotationOrder = BaseWeaponRotations[ItemsLauncherBlock.Index];
 				}
 				else
 				{
+					// Normal creatures: full arm raise (simulate Miner.Aim)
 					model.AimHandAngleOrder = 1.4f;
 					model.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
 					model.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
@@ -1066,14 +1071,17 @@ namespace Game
 			}
 			else
 			{
+				// Para las otras armas en apuntado personalizado (solo criaturas especiales)
 				model.AimHandAngleOrder = 0f; // Nunca levantan el brazo
 
+				// Rotación y offset según el tipo de arma
 				if (BaseWeaponRotations.TryGetValue(m_customWeaponContents, out Vector3 baseRot))
 				{
 					model.InHandItemRotationOrder = baseRot;
 				}
 				else if (FirearmDefensiveConfigs.ContainsKey(m_customWeaponContents))
 				{
+					// Rotación por defecto para armas de fuego (similar al mosquete)
 					model.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
 				}
 				else
@@ -1084,11 +1092,12 @@ namespace Game
 				if (m_customWeaponContents == BowBlock.Index)
 					model.InHandItemOffsetOrder = new Vector3(0.15f, -0.15f, 0.15f);
 				else if (FirearmDefensiveConfigs.ContainsKey(m_customWeaponContents))
-					model.InHandItemOffsetOrder = new Vector3(-0.1f, -0.15f, 0.25f);
+					model.InHandItemOffsetOrder = new Vector3(-0.1f, -0.15f, 0.25f); // mismo offset que el mosquete
 				else
 					model.InHandItemOffsetOrder = new Vector3(-0.1f, -0.15f, 0.25f);
 			}
 
+			// Forzar que la criatura mire al objetivo
 			if (m_componentChase != null && m_componentChase.Target != null)
 			{
 				model.LookAtOrder = m_componentChase.Target.ComponentCreatureModel.EyePosition;
@@ -1474,10 +1483,7 @@ namespace Game
 			IInventory inventory = m_componentMiner.Inventory;
 			if (inventory == null) return false;
 			for (int i = 0; i < inventory.SlotsCount; i++)
-			{
-				if (Terrain.ExtractContents(inventory.GetSlotValue(i)) == RepeatCrossbowBlock.Index)
-					return true;
-			}
+				if (Terrain.ExtractContents(inventory.GetSlotValue(i)) == RepeatCrossbowBlock.Index) return true;
 			return false;
 		}
 
