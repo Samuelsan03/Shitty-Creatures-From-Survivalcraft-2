@@ -236,6 +236,7 @@
   <Parameter Name="Class" Guid="7a6fa981-4a34-4282-bbe2-dbff9062a23f" Value="Game.ComponentDefensiveCreatureAI" Type="string" />
   <Parameter Name="CanUseInventory" Description="If true, the creature can equip and use ranged weapons (muskets, bows, crossbows, throwables, etc.) from its inventory during combat. Requires line of sight and will be interrupted if stuck." Guid="3c5113b8-872d-4aeb-9a85-9ca7c6146d1c" Value="false" Type="bool" />
   <Parameter Name="CanEquipClothing" Description="If true, the creature will automatically equip any wearable clothing/armor found in its inventory" Guid="418363ec-4f5a-4582-a554-e5221017ac03" Value="false" Type="bool" />
+  <Parameter Name="DomesticateCreatures" Description="If true, the creature will prioritize using a collar to tame compatible creatures instead of attacking them" Guid="6d618481-6d17-4aaf-bedc-baa6e0a09220" Value="false" Type="bool" />
 </ComponentTemplate>
 
 <ComponentTemplate Name="ZombieAI2" Description="Inteligencia artificial avanzada para zombies con soporte para armas, recarga automática y animaciones" Guid="9d185bf8-92ec-4ea6-ad86-b8a99b650fd2" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
@@ -332,16 +333,12 @@
 
 <ComponentTemplate Name="FirearmsShooters" Guid="927c0a46-b1e5-42a9-a6bb-0979acbc2518" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234" Description="Componente que permite a NPCs usar armas de fuego automáticamente">
     <Parameter Name="Class" Value="Game.ComponentFirearmsShooters" Type="string" Guid="05ae6aa2-3bb6-4bee-875d-89f2c1851e45" Description="Nombre de la clase C# que implementa el comportamiento de disparo con armas de fuego"/>
-    <Parameter Name="UpdateOrder" Value="1000" Type="int" Guid="69c93012-6088-405e-8a76-bf44e9d42fe1" Description="Orden de actualización del componente durante el ciclo del juego"/>
-    <Parameter Name="LoadOrder" Value="100" Type="int" Guid="9b5d5c7d-fc82-429f-a0e3-019f87c2f604" Description="Orden de carga del componente en la entidad"/>
-    <Parameter Name="MaxShootingDistance" Value="25" Type="float" Guid="bc9ac8cb-9633-46b9-a119-d169a2e2edef" Description="Distancia máxima a la que el NPC disparará (en metros)"/>
+    <Parameter Name="MaxShootingDistance" Value="5,25" Type="Vector2" Guid="bc9ac8cb-9633-46b9-a119-d169a2e2edef" Description="Vector2 donde X = distancia mínima para cambiar a cuerpo a cuerpo (si tiene arma melee), Y = distancia máxima de disparo"/>
     <Parameter Name="SpreadFactor" Value="0.05" Type="float" Guid="0a3cbe52-a53a-48ef-bb11-1e51b2a6260a" Description="Factor de dispersión de los disparos (imprecisión). Mayor valor = menos preciso"/>
     <Parameter Name="ReloadChance" Value="0.05" Type="float" Guid="9a937410-1aa3-42c0-abfe-6acc39fd7320" Description="Probabilidad (0-1) de recargar después de cada disparo. 0.05 = 5% de chance"/>
     <Parameter Name="MinReloadInterval" Value="5" Type="float" Guid="9120d3e1-2f7c-47f0-9fee-ff0119236f26" Description="Segundos mínimos entre recargas"/>
     <Parameter Name="UseRandomReloads" Value="true" Type="bool" Guid="786e20f7-df47-4c67-889b-8155bb125182" Description="Si es true, activa recargas aleatorias basadas en ReloadChance"/>
     <Parameter Name="TargetHeightOffset" Value="0.5" Type="float" Guid="1324e873-eb18-4495-909f-03011ea74cc0" Description="Ajuste vertical del apuntado (0 = cabeza, 0.5 = torso, 1.0 = pies)"/>
-    <Parameter Name="MeleeRange" Value="5" Type="float" Guid="87729eb8-c51a-4a1e-9d6a-ce643a4eb628" Description="Distancia a la que cambia a modo cuerpo a cuerpo (en metros)"/>
-    <Parameter Name="UseMeleeSwitch" Value="true" Type="bool" Guid="936285c1-4d66-4f30-ac95-0c3abe791525" Description="Activar/desactivar cambio automático a cuerpo a cuerpo cuando el objetivo está cerca"/>
     <Parameter Name="MeleeAttackInterval" Value="0.8" Type="float" Guid="7072b92e-1bed-44ec-893a-5429ceff71f8" Description="Tiempo entre ataques cuerpo a cuerpo (en segundos)"/>
     <Parameter Name="ReloadTime" Value="1.0" Type="float" Guid="f94332f8-dacb-4d13-b40f-afbd6b171d65" Description="Tiempo de recarga de armas de fuego (en segundos)"/>
     <Parameter Name="PistolAimTime" Value="0.5" Type="float" Guid="c2358547-8d40-4f5d-8089-1e0c267b9656" Description="Tiempo de apuntado para armas no automáticas (en segundos)"/>
