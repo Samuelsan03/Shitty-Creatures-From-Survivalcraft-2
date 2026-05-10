@@ -11,10 +11,12 @@ namespace Game
 		public Vector2 EngagementRange = new Vector2(5f, 100f);
 		public float MusketAimTime = 1.5f;
 		public float MusketCooldown = 0.5f;
+		public float BowAimTime = 1.5f;
+		public float BowCooldown = 0.01f;
 
 		// Dictionary parameters
-		public bool CanUseInventory;
-		public bool CanEquipClothing;
+		public bool CanUseInventory = false;
+		public bool CanEquipClothing = false;
 
 		SubsystemTime m_subsystemTime;
 		SubsystemProjectiles m_subsystemProjectiles;
@@ -36,6 +38,17 @@ namespace Game
 		int m_pendingClothingSlotIndex;
 		float m_clothingEquipTimer;
 
+		// Tipos de flecha permitidos (solo flechas, sin virotes)
+		static readonly ArrowBlock.ArrowType[] s_bowArrowTypes = new ArrowBlock.ArrowType[]
+		{
+			ArrowBlock.ArrowType.WoodenArrow,
+			ArrowBlock.ArrowType.StoneArrow,
+			ArrowBlock.ArrowType.IronArrow,
+			ArrowBlock.ArrowType.DiamondArrow,
+			ArrowBlock.ArrowType.FireArrow,
+			ArrowBlock.ArrowType.CopperArrow
+		};
+
 		public UpdateOrder UpdateOrder => UpdateOrder.Default;
 
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
@@ -50,6 +63,22 @@ namespace Game
 
 			CanUseInventory = valuesDictionary.GetValue<bool>("CanUseInventory");
 			CanEquipClothing = valuesDictionary.GetValue<bool>("CanEquipClothing");
+
+			// Suscribirse a proyectiles para forzar que las flechas desaparezcan al caer
+			m_subsystemProjectiles.ProjectileAdded += OnProjectileAdded;
+		}
+
+		void OnProjectileAdded(Projectile projectile)
+		{
+			// Solo si el dueño es esta criatura y es una flecha (no virote)
+			if (projectile.Owner == m_componentCreature)
+			{
+				int contents = Terrain.ExtractContents(projectile.Value);
+				if (contents == ArrowBlock.Index)
+				{
+					projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
+				}
+			}
 		}
 
 		public void Update(float dt)
@@ -109,7 +138,7 @@ namespace Game
 				}
 			}
 
-			// --- Weapon/musket logic (CanUseInventory) ---
+			// --- Weapon/musket/bow logic (CanUseInventory) ---
 			if (!CanUseInventory)
 				return;
 
@@ -138,6 +167,7 @@ namespace Game
 			bool targetVisible = targetInFront && IsTargetVisible(target);
 
 			int musketSlot = FindMusketSlot(inventory);
+			int bowSlot = FindBowSlot(inventory);
 			int meleeSlot = FindMeleeSlot(inventory);
 
 			// Choose weapon based on distance and visibility
@@ -146,6 +176,8 @@ namespace Game
 				CancelAiming(inventory);
 				if (musketSlot >= 0)
 					EquipSlot(inventory, musketSlot);
+				else if (bowSlot >= 0)
+					EquipSlot(inventory, bowSlot);
 				else if (meleeSlot >= 0)
 					EquipSlot(inventory, meleeSlot);
 			}
@@ -160,16 +192,22 @@ namespace Game
 				{
 					EquipSlot(inventory, musketSlot);
 				}
+				else if (bowSlot >= 0)
+				{
+					EquipSlot(inventory, bowSlot);
+				}
 			}
 			else
 			{
 				if (musketSlot >= 0)
 					EquipSlot(inventory, musketSlot);
+				else if (bowSlot >= 0)
+					EquipSlot(inventory, bowSlot);
 				else if (meleeSlot >= 0)
 					EquipSlot(inventory, meleeSlot);
 			}
 
-			// Process musket usage (only when target is visible and in range)
+			// Process current weapon usage (only when target is visible and in range)
 			int activeSlotValue = inventory.GetSlotValue(inventory.ActiveSlotIndex);
 			int activeContents = Terrain.ExtractContents(activeSlotValue);
 			if (activeContents == MusketBlock.Index && targetVisible)
@@ -225,6 +263,41 @@ namespace Game
 					}
 				}
 			}
+			else if (activeContents == BowBlock.Index && targetVisible)
+			{
+				EnsureBowLoaded(inventory);
+
+				if (m_cooldownTimer > 0f)
+				{
+					m_cooldownTimer -= dt;
+					if (m_cooldownTimer < 0f)
+						m_cooldownTimer = 0f;
+				}
+
+				if (!m_isAiming && m_cooldownTimer <= 0f)
+				{
+					m_isAiming = true;
+					m_aimTimer = 0f;
+				}
+
+				if (m_isAiming)
+				{
+					m_aimTimer += dt;
+					Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
+					Vector3 aimDir = m_componentCreature.ComponentCreatureModel.EyeRotation.GetForwardVector();
+
+					if (m_aimTimer >= BowAimTime)
+					{
+						m_componentMiner.Aim(new Ray3(eyePos, aimDir), AimState.Completed);
+						m_isAiming = false;
+						m_cooldownTimer = BowCooldown;
+					}
+					else
+					{
+						m_componentMiner.Aim(new Ray3(eyePos, aimDir), AimState.InProgress);
+					}
+				}
+			}
 			else
 			{
 				CancelAiming(inventory);
@@ -262,7 +335,8 @@ namespace Game
 			if (m_isAiming)
 			{
 				int slotValue = inventory.GetSlotValue(inventory.ActiveSlotIndex);
-				if (Terrain.ExtractContents(slotValue) == MusketBlock.Index)
+				int contents = Terrain.ExtractContents(slotValue);
+				if (contents == MusketBlock.Index || contents == BowBlock.Index)
 				{
 					Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
 					Vector3 aimDir = m_componentCreature.ComponentCreatureModel.EyeRotation.GetForwardVector();
@@ -292,6 +366,33 @@ namespace Game
 				inventory.RemoveSlotItems(slotIndex, 1);
 				inventory.AddSlotItems(slotIndex, Terrain.MakeBlockValue(MusketBlock.Index, 0, data), 1);
 			}
+		}
+
+		void EnsureBowLoaded(IInventory inventory)
+		{
+			int slotIndex = inventory.ActiveSlotIndex;
+			int slotValue = inventory.GetSlotValue(slotIndex);
+			if (slotValue == 0 || Terrain.ExtractContents(slotValue) != BowBlock.Index)
+				return;
+
+			int data = Terrain.ExtractData(slotValue);
+			ArrowBlock.ArrowType? currentArrow = BowBlock.GetArrowType(data);
+			int currentDraw = BowBlock.GetDraw(data);
+
+			if (currentArrow != null && currentDraw == 15)
+				return;
+
+			if (currentArrow == null)
+			{
+				// Solo tipos de flecha reales (sin virotes)
+				ArrowBlock.ArrowType randomArrowType = s_bowArrowTypes[m_random.Int(0, s_bowArrowTypes.Length - 1)];
+				data = BowBlock.SetArrowType(data, randomArrowType);
+			}
+
+			data = BowBlock.SetDraw(data, 15);
+			int newValue = Terrain.MakeBlockValue(BowBlock.Index, 0, data);
+			inventory.RemoveSlotItems(slotIndex, 1);
+			inventory.AddSlotItems(slotIndex, newValue, 1);
 		}
 
 		BulletBlock.BulletType GetRandomBulletType()
@@ -331,13 +432,24 @@ namespace Game
 			return -1;
 		}
 
+		int FindBowSlot(IInventory inventory)
+		{
+			for (int i = 0; i < inventory.SlotsCount; i++)
+			{
+				int slotValue = inventory.GetSlotValue(i);
+				if (Terrain.ExtractContents(slotValue) == BowBlock.Index && inventory.GetSlotCount(i) > 0)
+					return i;
+			}
+			return -1;
+		}
+
 		int FindMeleeSlot(IInventory inventory)
 		{
 			for (int i = 0; i < inventory.SlotsCount; i++)
 			{
 				int slotValue = inventory.GetSlotValue(i);
 				int contents = Terrain.ExtractContents(slotValue);
-				if (contents != 0 && contents != MusketBlock.Index && contents != BulletBlock.Index && inventory.GetSlotCount(i) > 0)
+				if (contents != 0 && contents != MusketBlock.Index && contents != BowBlock.Index && contents != BulletBlock.Index && inventory.GetSlotCount(i) > 0)
 					return i;
 			}
 			return -1;
