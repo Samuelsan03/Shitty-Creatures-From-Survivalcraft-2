@@ -8,6 +8,7 @@ namespace Game
 	public class ComponentCreatureAI : Component, IUpdateable
 	{
 		// Configurable fields (not from dictionary)
+		public Vector2 RangeOfExplosives = new Vector2(20f, 100f);
 		public Vector2 EngagementRange = new Vector2(5f, 100f);
 		public float MusketAimTime = 1.5f;
 		public float MusketCooldown = 0.5f;
@@ -15,7 +16,7 @@ namespace Game
 		public float BowCooldown = 0.01f;
 		public float CrossbowAimTime = 1.5f;
 		public float CrossbowCooldown = 0.01f;
-
+		
 		// Dictionary parameters
 		public bool CanUseInventory = false;
 		public bool CanEquipClothing = false;
@@ -319,7 +320,11 @@ namespace Game
 			}
 			else if (activeContents == CrossbowBlock.Index && targetVisible)
 			{
-				EnsureCrossbowLoaded(inventory);
+				// Calcular distancia actual para la lógica de virotes explosivos
+				float distToTarget = Vector3.Distance(
+					m_componentCreature.ComponentBody.Position,
+					target.ComponentBody.BoundingBox.Center());
+				EnsureCrossbowLoaded(inventory, distToTarget);
 
 				if (m_cooldownTimer > 0f)
 				{
@@ -448,7 +453,7 @@ namespace Game
 			inventory.AddSlotItems(slotIndex, newValue, 1);
 		}
 
-		void EnsureCrossbowLoaded(IInventory inventory)
+		void EnsureCrossbowLoaded(IInventory inventory, float distanceToTarget)
 		{
 			int slotIndex = inventory.ActiveSlotIndex;
 			int slotValue = inventory.GetSlotValue(slotIndex);
@@ -468,7 +473,17 @@ namespace Game
 
 			if (currentBolt == null)
 			{
-				ArrowBlock.ArrowType randomBoltType = s_crossbowBoltTypes[m_random.Int(0, s_crossbowBoltTypes.Length - 1)];
+				ArrowBlock.ArrowType randomBoltType;
+				// El virote explosivo solo se usa dentro del rango definido
+				if (distanceToTarget >= RangeOfExplosives.X && distanceToTarget <= RangeOfExplosives.Y)
+				{
+					randomBoltType = s_crossbowBoltTypes[m_random.Int(0, s_crossbowBoltTypes.Length - 1)];
+				}
+				else
+				{
+					// Solo virotes de hierro y diamante fuera del rango explosivo
+					randomBoltType = s_crossbowBoltTypes[m_random.Int(0, 1)];
+				}
 				data = CrossbowBlock.SetArrowType(data, randomBoltType);
 			}
 
