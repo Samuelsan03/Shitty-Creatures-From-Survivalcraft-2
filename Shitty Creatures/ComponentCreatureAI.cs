@@ -18,6 +18,8 @@ namespace Game
 		public float BowCooldown = 0.01f;
 		public float CrossbowAimTime = 1.5f;
 		public float CrossbowCooldown = 0.01f;
+		public float RepeatCrossbowAimTime = 1.5f;
+		public float RepeatCrossbowCooldown = 0.5f;
 		public float ThrowableAimTime = 1.55f;
 		public float ThrowableCooldown = 0.01f;
 
@@ -63,6 +65,16 @@ namespace Game
 			ArrowBlock.ArrowType.ExplosiveBolt
 		};
 
+		static readonly RepeatArrowBlock.ArrowType[] s_repeatArrowTypes = new RepeatArrowBlock.ArrowType[]
+		{
+			RepeatArrowBlock.ArrowType.CopperArrow,
+			RepeatArrowBlock.ArrowType.IronArrow,
+			RepeatArrowBlock.ArrowType.DiamondArrow,
+			RepeatArrowBlock.ArrowType.ExplosiveArrow,
+			RepeatArrowBlock.ArrowType.PoisonArrow,
+			RepeatArrowBlock.ArrowType.SeriousPoisonArrow
+		};
+
 		public UpdateOrder UpdateOrder => UpdateOrder.Default;
 
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
@@ -80,7 +92,6 @@ namespace Game
 
 			m_subsystemProjectiles.ProjectileAdded += OnProjectileAdded;
 
-			// Lista de todos los objetos lanzables
 			m_throwableIndices.Add(BlocksManager.GetBlockIndex<StoneChunkBlock>(false, false));
 			m_throwableIndices.Add(BlocksManager.GetBlockIndex<SulphurChunkBlock>(false, false));
 			m_throwableIndices.Add(BlocksManager.GetBlockIndex<CoalChunkBlock>(false, false));
@@ -118,7 +129,7 @@ namespace Game
 			if (projectile.Owner == m_componentCreature)
 			{
 				int contents = Terrain.ExtractContents(projectile.Value);
-				if (contents == ArrowBlock.Index)
+				if (contents == ArrowBlock.Index || contents == RepeatArrowBlock.Index)
 				{
 					projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
 				}
@@ -146,7 +157,6 @@ namespace Game
 			IInventory inventory = m_componentMiner.Inventory;
 			if (inventory == null) return;
 
-			// --- Vestimenta (independiente) ---
 			if (CanEquipClothing)
 			{
 				IInventory clothingInv = FindClothingInventory();
@@ -214,11 +224,9 @@ namespace Game
 			bool targetInFront = IsTargetInFront(target);
 			bool targetVisible = targetInFront && IsTargetVisible(target);
 
-			// --- Prioridad absoluta: objetos lanzables ---
 			int throwableSlot = FindThrowableSlot(inventory);
 			if (throwableSlot >= 0 && distance >= ThrowableRange.X && distance <= ThrowableRange.Y && targetVisible)
 			{
-				// Equipar el lanzable si no está ya activo
 				if (inventory.ActiveSlotIndex != throwableSlot)
 				{
 					CancelAiming(inventory);
@@ -226,13 +234,11 @@ namespace Game
 					m_cooldownTimer = 0f;
 				}
 
-				// Detenerse por completo para apuntar
 				if (!m_isThrowing)
 				{
 					m_isThrowing = true;
 					m_componentPathfinding.Stop();
 				}
-				// Cada frame mantenemos detenido el movimiento
 				m_componentPathfinding.Stop();
 
 				if (m_cooldownTimer > 0f)
@@ -258,7 +264,7 @@ namespace Game
 						m_componentMiner.Aim(new Ray3(eyePos, aimDir), AimState.Completed);
 						m_isAiming = false;
 						m_cooldownTimer = ThrowableCooldown;
-						m_isThrowing = false; // Permitir volver a moverse tras el lanzamiento
+						m_isThrowing = false;
 					}
 					else
 					{
@@ -276,12 +282,12 @@ namespace Game
 				}
 			}
 
-			// Si no hay lanzable o no está en rango, seguir con la selección normal
 			if (m_isThrowing) return;
 
 			int musketSlot = FindMusketSlot(inventory);
 			int bowSlot = FindBowSlot(inventory);
 			int crossbowSlot = FindCrossbowSlot(inventory);
+			int repeatCrossbowSlot = FindRepeatCrossbowSlot(inventory);
 			int meleeSlot = FindMeleeSlot(inventory);
 
 			if (distance > EngagementRange.Y)
@@ -290,6 +296,7 @@ namespace Game
 				if (musketSlot >= 0) EquipSlot(inventory, musketSlot);
 				else if (bowSlot >= 0) EquipSlot(inventory, bowSlot);
 				else if (crossbowSlot >= 0) EquipSlot(inventory, crossbowSlot);
+				else if (repeatCrossbowSlot >= 0) EquipSlot(inventory, repeatCrossbowSlot);
 				else if (meleeSlot >= 0) EquipSlot(inventory, meleeSlot);
 			}
 			else if (distance < EngagementRange.X)
@@ -302,12 +309,14 @@ namespace Game
 				else if (musketSlot >= 0) EquipSlot(inventory, musketSlot);
 				else if (bowSlot >= 0) EquipSlot(inventory, bowSlot);
 				else if (crossbowSlot >= 0) EquipSlot(inventory, crossbowSlot);
+				else if (repeatCrossbowSlot >= 0) EquipSlot(inventory, repeatCrossbowSlot);
 			}
 			else
 			{
 				if (musketSlot >= 0) EquipSlot(inventory, musketSlot);
 				else if (bowSlot >= 0) EquipSlot(inventory, bowSlot);
 				else if (crossbowSlot >= 0) EquipSlot(inventory, crossbowSlot);
+				else if (repeatCrossbowSlot >= 0) EquipSlot(inventory, repeatCrossbowSlot);
 				else if (meleeSlot >= 0) EquipSlot(inventory, meleeSlot);
 			}
 
@@ -385,6 +394,26 @@ namespace Game
 					else m_componentMiner.Aim(new Ray3(eyePos, aimDir), AimState.InProgress);
 				}
 			}
+			else if (activeContents == RepeatCrossbowBlock.Index && targetVisible)
+			{
+				float distToTarget = Vector3.Distance(m_componentCreature.ComponentBody.Position, target.ComponentBody.BoundingBox.Center());
+				EnsureRepeatCrossbowLoaded(inventory, distToTarget);
+				if (m_cooldownTimer > 0f) { m_cooldownTimer -= dt; if (m_cooldownTimer < 0f) m_cooldownTimer = 0f; }
+				if (!m_isAiming && m_cooldownTimer <= 0f) { m_isAiming = true; m_aimTimer = 0f; }
+				if (m_isAiming)
+				{
+					m_aimTimer += dt;
+					Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
+					Vector3 aimDir = m_componentCreature.ComponentCreatureModel.EyeRotation.GetForwardVector();
+					if (m_aimTimer >= RepeatCrossbowAimTime)
+					{
+						m_componentMiner.Aim(new Ray3(eyePos, aimDir), AimState.Completed);
+						m_isAiming = false;
+						m_cooldownTimer = RepeatCrossbowCooldown;
+					}
+					else m_componentMiner.Aim(new Ray3(eyePos, aimDir), AimState.InProgress);
+				}
+			}
 			else
 			{
 				CancelAiming(inventory);
@@ -416,7 +445,7 @@ namespace Game
 			{
 				int slotValue = inventory.GetSlotValue(inventory.ActiveSlotIndex);
 				int contents = Terrain.ExtractContents(slotValue);
-				if (contents == MusketBlock.Index || contents == BowBlock.Index || contents == CrossbowBlock.Index || IsThrowable(contents))
+				if (contents == MusketBlock.Index || contents == BowBlock.Index || contents == CrossbowBlock.Index || contents == RepeatCrossbowBlock.Index || IsThrowable(contents))
 				{
 					Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
 					Vector3 aimDir = m_componentCreature.ComponentCreatureModel.EyeRotation.GetForwardVector();
@@ -488,6 +517,40 @@ namespace Game
 			inventory.AddSlotItems(slotIndex, newValue, 1);
 		}
 
+		void EnsureRepeatCrossbowLoaded(IInventory inventory, float distanceToTarget)
+		{
+			int slotIndex = inventory.ActiveSlotIndex;
+			int slotValue = inventory.GetSlotValue(slotIndex);
+			if (slotValue == 0 || Terrain.ExtractContents(slotValue) != RepeatCrossbowBlock.Index) return;
+			int data = Terrain.ExtractData(slotValue);
+			int draw = RepeatCrossbowBlock.GetDraw(data);
+			RepeatArrowBlock.ArrowType? currentArrow = RepeatCrossbowBlock.GetArrowType(data);
+			if (draw == 15 && currentArrow != null) return;
+			if (draw != 15) data = RepeatCrossbowBlock.SetDraw(data, 15);
+			if (currentArrow == null)
+			{
+				RepeatArrowBlock.ArrowType randomArrow;
+				if (distanceToTarget >= RangeOfExplosives.X && distanceToTarget <= RangeOfExplosives.Y)
+				{
+					randomArrow = s_repeatArrowTypes[m_random.Int(0, s_repeatArrowTypes.Length - 1)];
+				}
+				else
+				{
+					do
+					{
+						randomArrow = s_repeatArrowTypes[m_random.Int(0, s_repeatArrowTypes.Length - 1)];
+					}
+					while (randomArrow == RepeatArrowBlock.ArrowType.ExplosiveArrow);
+				}
+				data = RepeatCrossbowBlock.SetArrowType(data, randomArrow);
+			}
+			int loadCount = RepeatCrossbowBlock.GetLoadCount(slotValue);
+			if (loadCount < 1) loadCount = 1;
+			int newValue = Terrain.MakeBlockValue(RepeatCrossbowBlock.Index, loadCount, data);
+			inventory.RemoveSlotItems(slotIndex, 1);
+			inventory.AddSlotItems(slotIndex, newValue, 1);
+		}
+
 		BulletBlock.BulletType GetRandomBulletType()
 		{
 			int index = m_random.Int(0, 2);
@@ -541,13 +604,23 @@ namespace Game
 			return -1;
 		}
 
+		int FindRepeatCrossbowSlot(IInventory inventory)
+		{
+			for (int i = 0; i < inventory.SlotsCount; i++)
+			{
+				int slotValue = inventory.GetSlotValue(i);
+				if (Terrain.ExtractContents(slotValue) == RepeatCrossbowBlock.Index && inventory.GetSlotCount(i) > 0) return i;
+			}
+			return -1;
+		}
+
 		int FindMeleeSlot(IInventory inventory)
 		{
 			for (int i = 0; i < inventory.SlotsCount; i++)
 			{
 				int slotValue = inventory.GetSlotValue(i);
 				int contents = Terrain.ExtractContents(slotValue);
-				if (contents != 0 && contents != MusketBlock.Index && contents != BowBlock.Index && contents != CrossbowBlock.Index && contents != BulletBlock.Index && !IsThrowable(contents) && inventory.GetSlotCount(i) > 0)
+				if (contents != 0 && contents != MusketBlock.Index && contents != BowBlock.Index && contents != CrossbowBlock.Index && contents != RepeatCrossbowBlock.Index && contents != BulletBlock.Index && !IsThrowable(contents) && inventory.GetSlotCount(i) > 0)
 					return i;
 			}
 			return -1;
