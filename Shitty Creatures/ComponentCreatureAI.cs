@@ -8,18 +8,21 @@ namespace Game
 	public class ComponentCreatureAI : Component, IUpdateable
 	{
 		// Configurable fields (not from dictionary)
-		public Vector2 EngagementRange = new Vector2(3f, 15f);
-		public float MusketAimTime = 2f;
-		public float MusketCooldown = 2f;
+		public Vector2 EngagementRange = new Vector2(5f, 100f);
+		public float MusketAimTime = 1.5f;
+		public float MusketCooldown = 0.5f;
 
-		// Dictionary parameter
+		// Dictionary parameters
 		public bool CanUseInventory;
+		public bool CanEquipClothing;
 
 		SubsystemTime m_subsystemTime;
+		SubsystemProjectiles m_subsystemProjectiles;
 
 		ComponentCreature m_componentCreature;
 		ComponentChaseBehavior m_chaseBehavior;
 		ComponentMiner m_componentMiner;
+		ComponentPathfinding m_componentPathfinding;
 
 		Random m_random = new Random();
 
@@ -28,23 +31,86 @@ namespace Game
 		bool m_isAiming;
 		float m_cooldownTimer;
 
+		// Clothing equip delay
+		int m_pendingClothingValue;
+		int m_pendingClothingSlotIndex;
+		float m_clothingEquipTimer;
+
 		public UpdateOrder UpdateOrder => UpdateOrder.Default;
 
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
 			m_subsystemTime = Project.FindSubsystem<SubsystemTime>(true);
+			m_subsystemProjectiles = Project.FindSubsystem<SubsystemProjectiles>(true);
 
 			m_componentCreature = Entity.FindComponent<ComponentCreature>(true);
 			m_chaseBehavior = Entity.FindComponent<ComponentChaseBehavior>(true);
 			m_componentMiner = Entity.FindComponent<ComponentMiner>(true);
+			m_componentPathfinding = Entity.FindComponent<ComponentPathfinding>(true);
 
 			CanUseInventory = valuesDictionary.GetValue<bool>("CanUseInventory");
+			CanEquipClothing = valuesDictionary.GetValue<bool>("CanEquipClothing");
 		}
 
 		public void Update(float dt)
 		{
 			IInventory inventory = m_componentMiner.Inventory;
-			if (!CanUseInventory || inventory == null)
+			if (inventory == null)
+				return;
+
+			// --- Clothing equip logic (independent) ---
+			if (CanEquipClothing)
+			{
+				IInventory clothingInventory = FindClothingInventory();
+				if (clothingInventory != null)
+				{
+					if (m_clothingEquipTimer > 0f)
+					{
+						m_clothingEquipTimer -= dt;
+						if (m_clothingEquipTimer <= 0f)
+						{
+							// Equip the stored clothing
+							clothingInventory.ProcessSlotItems(
+								m_pendingClothingSlotIndex,
+								m_pendingClothingValue,
+								1, 1,
+								out int _, out int _);
+							m_pendingClothingValue = 0;
+						}
+					}
+					else
+					{
+						// Search for a wearable clothing item
+						for (int i = 0; i < inventory.SlotsCount; i++)
+						{
+							int slotValue = inventory.GetSlotValue(i);
+							if (slotValue != 0)
+							{
+								Block block = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)];
+								ClothingData clothingData = block.GetClothingData(slotValue);
+								if (clothingData != null)
+								{
+									// Found clothing
+									int removed = inventory.RemoveSlotItems(i, 1);
+									if (removed > 0)
+									{
+										// Map clothing slot to inventory slot index
+										ClothingSlot clothingSlot = clothingData.Slot;
+										int targetSlot = ComponentCreatureClothing.GetClothingSlotIndex(clothingSlot);
+										m_pendingClothingValue = slotValue;
+										m_pendingClothingSlotIndex = targetSlot;
+										m_clothingEquipTimer = 0.55f;
+										break; // Only one at a time
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+
+			// --- Weapon/musket logic (CanUseInventory) ---
+			if (!CanUseInventory)
 				return;
 
 			if (m_componentCreature.ComponentHealth.Health <= 0f)
@@ -57,14 +123,27 @@ namespace Game
 				return;
 			}
 
-			float distance = Vector3.Distance(m_componentCreature.ComponentBody.Position, target.ComponentBody.Position);
+			// If stuck, stop all aiming/shooting and don't change weapons
+			if (m_componentPathfinding.IsStuck)
+			{
+				CancelAiming(inventory);
+				return;
+			}
+
+			Vector3 creaturePos = m_componentCreature.ComponentBody.Position;
+			Vector3 targetPos = target.ComponentBody.BoundingBox.Center();
+			float distance = Vector3.Distance(creaturePos, targetPos);
+
+			bool targetInFront = IsTargetInFront(target);
+			bool targetVisible = targetInFront && IsTargetVisible(target);
 
 			int musketSlot = FindMusketSlot(inventory);
 			int meleeSlot = FindMeleeSlot(inventory);
 
-			// Choose weapon based on distance
+			// Choose weapon based on distance and visibility
 			if (distance > EngagementRange.Y)
 			{
+				CancelAiming(inventory);
 				if (musketSlot >= 0)
 					EquipSlot(inventory, musketSlot);
 				else if (meleeSlot >= 0)
@@ -72,8 +151,15 @@ namespace Game
 			}
 			else if (distance < EngagementRange.X)
 			{
-				if (meleeSlot >= 0)
+				if (targetVisible && meleeSlot >= 0)
+				{
+					CancelAiming(inventory);
 					EquipSlot(inventory, meleeSlot);
+				}
+				else if (musketSlot >= 0)
+				{
+					EquipSlot(inventory, musketSlot);
+				}
 			}
 			else
 			{
@@ -83,10 +169,10 @@ namespace Game
 					EquipSlot(inventory, meleeSlot);
 			}
 
-			// Process musket usage
+			// Process musket usage (only when target is visible and in range)
 			int activeSlotValue = inventory.GetSlotValue(inventory.ActiveSlotIndex);
 			int activeContents = Terrain.ExtractContents(activeSlotValue);
-			if (activeContents == MusketBlock.Index)
+			if (activeContents == MusketBlock.Index && targetVisible)
 			{
 				EnsureMusketLoaded(inventory);
 
@@ -111,10 +197,27 @@ namespace Game
 
 					if (m_aimTimer >= MusketAimTime)
 					{
+						BulletBlock.BulletType? currentBulletType = MusketBlock.GetBulletType(
+							Terrain.ExtractData(inventory.GetSlotValue(inventory.ActiveSlotIndex)));
+
 						m_componentMiner.Aim(new Ray3(eyePos, aimDir), AimState.Completed);
 						m_isAiming = false;
 						m_cooldownTimer = MusketCooldown;
 						EnsureMusketLoaded(inventory);
+
+						if (m_random.Float(0f, 1f) < 0.05f)
+						{
+							Vector3 musketPos = eyePos + m_componentCreature.ComponentBody.Matrix.Right * 0.3f
+								- m_componentCreature.ComponentBody.Matrix.Up * 0.2f;
+							Vector3 musketDir = Vector3.Normalize(musketPos + aimDir * 10f - musketPos);
+
+							if (currentBulletType != BulletBlock.BulletType.MusketBall)
+								FireSingleProjectile(BulletBlock.BulletType.MusketBall, musketPos, musketDir, 120f, Vector3.Zero, 1);
+							if (currentBulletType != BulletBlock.BulletType.Buckshot)
+								FireBuckshot(musketPos, musketDir);
+							if (currentBulletType != BulletBlock.BulletType.BuckshotBall)
+								FireSingleProjectile(BulletBlock.BulletType.BuckshotBall, musketPos, musketDir, 60f, new Vector3(0.06f, 0.06f, 0f), 1);
+						}
 					}
 					else
 					{
@@ -126,6 +229,32 @@ namespace Game
 			{
 				CancelAiming(inventory);
 			}
+		}
+
+		void FireSingleProjectile(BulletBlock.BulletType type, Vector3 origin, Vector3 aimDirection, float speed, Vector3 spread, int count)
+		{
+			int bulletValue = Terrain.MakeBlockValue(BulletBlock.Index, 0, BulletBlock.SetBulletType(0, type));
+			Vector3 perp1 = Vector3.Normalize(Vector3.Cross(aimDirection, Vector3.UnitY));
+			Vector3 perp2 = Vector3.Normalize(Vector3.Cross(aimDirection, perp1));
+
+			for (int i = 0; i < count; i++)
+			{
+				Vector3 variant = aimDirection +
+					(m_random.Float(-spread.X, spread.X) * perp1) +
+					(m_random.Float(-spread.Y, spread.Y) * perp2) +
+					(m_random.Float(-spread.Z, spread.Z) * aimDirection);
+				Vector3 velocity = m_componentCreature.ComponentBody.Velocity + speed * variant;
+				Projectile projectile = m_subsystemProjectiles.FireProjectile(
+					bulletValue, origin, velocity, Vector3.Zero, m_componentCreature);
+				if (projectile != null)
+					projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
+			}
+		}
+
+		void FireBuckshot(Vector3 origin, Vector3 aimDirection)
+		{
+			FireSingleProjectile(BulletBlock.BulletType.BuckshotBall, origin, aimDirection, 80f,
+				new Vector3(0.04f, 0.04f, 0.25f), 8);
 		}
 
 		void CancelAiming(IInventory inventory)
@@ -171,6 +300,26 @@ namespace Game
 			return (BulletBlock.BulletType)index;
 		}
 
+		bool IsTargetInFront(ComponentCreature target)
+		{
+			Vector3 toTarget = target.ComponentBody.BoundingBox.Center() - m_componentCreature.ComponentBody.Position;
+			Vector3 forward = m_componentCreature.ComponentBody.Matrix.Forward;
+			return Vector3.Dot(forward, Vector3.Normalize(toTarget)) > 0.5f;
+		}
+
+		bool IsTargetVisible(ComponentCreature target)
+		{
+			Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
+			Vector3 targetCenter = target.ComponentBody.BoundingBox.Center();
+			float distance = Vector3.Distance(eyePos, targetCenter);
+			Ray3 ray = new Ray3(eyePos, Vector3.Normalize(targetCenter - eyePos));
+
+			BodyRaycastResult? bodyResult = m_componentMiner.Raycast<BodyRaycastResult>(
+				ray, RaycastMode.Interaction, true, true, true, distance + 1f);
+
+			return bodyResult != null && bodyResult.Value.ComponentBody == target.ComponentBody;
+		}
+
 		int FindMusketSlot(IInventory inventory)
 		{
 			for (int i = 0; i < inventory.SlotsCount; i++)
@@ -202,6 +351,17 @@ namespace Game
 				CancelAiming(inventory);
 				m_cooldownTimer = 0f;
 			}
+		}
+
+		IInventory FindClothingInventory()
+		{
+			ComponentCreatureClothing creatureClothing = Entity.FindComponent<ComponentCreatureClothing>();
+			if (creatureClothing != null) return creatureClothing;
+
+			ComponentClothing playerClothing = Entity.FindComponent<ComponentClothing>();
+			if (playerClothing != null) return playerClothing;
+
+			return null;
 		}
 	}
 }
