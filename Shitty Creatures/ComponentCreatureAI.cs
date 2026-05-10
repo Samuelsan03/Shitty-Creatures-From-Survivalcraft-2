@@ -18,9 +18,9 @@ namespace Game
 		public float BowCooldown = 0.01f;
 		public float CrossbowAimTime = 1.5f;
 		public float CrossbowCooldown = 0.01f;
-		public float ThrowableAimTime = 0.6f;
-		public float ThrowableCooldown = 0.8f;
-		
+		public float ThrowableAimTime = 1.55f;
+		public float ThrowableCooldown = 0.01f;
+
 		// Dictionary parameters
 		public bool CanUseInventory = false;
 		public bool CanEquipClothing = false;
@@ -35,21 +35,17 @@ namespace Game
 
 		Random m_random = new Random();
 
-		// Internal aim/cooldown state
 		float m_aimTimer;
 		bool m_isAiming;
 		float m_cooldownTimer;
 
-		// Clothing equip delay
 		int m_pendingClothingValue;
 		int m_pendingClothingSlotIndex;
 		float m_clothingEquipTimer;
 
-		// Throwable state
 		bool m_isThrowing;
 		List<int> m_throwableIndices = new List<int>();
 
-		// Tipos de flecha permitidos (solo flechas, sin virotes)
 		static readonly ArrowBlock.ArrowType[] s_bowArrowTypes = new ArrowBlock.ArrowType[]
 		{
 			ArrowBlock.ArrowType.WoodenArrow,
@@ -60,7 +56,6 @@ namespace Game
 			ArrowBlock.ArrowType.CopperArrow
 		};
 
-		// Tipos de virote para ballesta
 		static readonly ArrowBlock.ArrowType[] s_crossbowBoltTypes = new ArrowBlock.ArrowType[]
 		{
 			ArrowBlock.ArrowType.IronBolt,
@@ -83,10 +78,9 @@ namespace Game
 			CanUseInventory = valuesDictionary.GetValue<bool>("CanUseInventory");
 			CanEquipClothing = valuesDictionary.GetValue<bool>("CanEquipClothing");
 
-			// Suscribirse a proyectiles para forzar que las flechas y virotes desaparezcan al caer
 			m_subsystemProjectiles.ProjectileAdded += OnProjectileAdded;
 
-			// Inicializar lista de objetos lanzables
+			// Lista de todos los objetos lanzables
 			m_throwableIndices.Add(BlocksManager.GetBlockIndex<StoneChunkBlock>(false, false));
 			m_throwableIndices.Add(BlocksManager.GetBlockIndex<SulphurChunkBlock>(false, false));
 			m_throwableIndices.Add(BlocksManager.GetBlockIndex<CoalChunkBlock>(false, false));
@@ -121,7 +115,6 @@ namespace Game
 
 		void OnProjectileAdded(Projectile projectile)
 		{
-			// Solo si el dueño es esta criatura y es una flecha o virote
 			if (projectile.Owner == m_componentCreature)
 			{
 				int contents = Terrain.ExtractContents(projectile.Value);
@@ -137,35 +130,39 @@ namespace Game
 			return m_throwableIndices.Contains(contents);
 		}
 
+		int FindThrowableSlot(IInventory inventory)
+		{
+			for (int i = 0; i < inventory.SlotsCount; i++)
+			{
+				int value = inventory.GetSlotValue(i);
+				if (IsThrowable(Terrain.ExtractContents(value)) && inventory.GetSlotCount(i) > 0)
+					return i;
+			}
+			return -1;
+		}
+
 		public void Update(float dt)
 		{
 			IInventory inventory = m_componentMiner.Inventory;
-			if (inventory == null)
-				return;
+			if (inventory == null) return;
 
-			// --- Clothing equip logic (independent) ---
+			// --- Vestimenta (independiente) ---
 			if (CanEquipClothing)
 			{
-				IInventory clothingInventory = FindClothingInventory();
-				if (clothingInventory != null)
+				IInventory clothingInv = FindClothingInventory();
+				if (clothingInv != null)
 				{
 					if (m_clothingEquipTimer > 0f)
 					{
 						m_clothingEquipTimer -= dt;
 						if (m_clothingEquipTimer <= 0f)
 						{
-							// Equip the stored clothing
-							clothingInventory.ProcessSlotItems(
-								m_pendingClothingSlotIndex,
-								m_pendingClothingValue,
-								1, 1,
-								out int _, out int _);
+							clothingInv.ProcessSlotItems(m_pendingClothingSlotIndex, m_pendingClothingValue, 1, 1, out _, out _);
 							m_pendingClothingValue = 0;
 						}
 					}
 					else
 					{
-						// Search for a wearable clothing item
 						for (int i = 0; i < inventory.SlotsCount; i++)
 						{
 							int slotValue = inventory.GetSlotValue(i);
@@ -175,17 +172,15 @@ namespace Game
 								ClothingData clothingData = block.GetClothingData(slotValue);
 								if (clothingData != null)
 								{
-									// Found clothing
 									int removed = inventory.RemoveSlotItems(i, 1);
 									if (removed > 0)
 									{
-										// Map clothing slot to inventory slot index
-										ClothingSlot clothingSlot = clothingData.Slot;
-										int targetSlot = ComponentCreatureClothing.GetClothingSlotIndex(clothingSlot);
+										ClothingSlot slot = clothingData.Slot;
+										int targetSlot = ComponentCreatureClothing.GetClothingSlotIndex(slot);
 										m_pendingClothingValue = slotValue;
 										m_pendingClothingSlotIndex = targetSlot;
 										m_clothingEquipTimer = 0.55f;
-										break; // Only one at a time
+										break;
 									}
 								}
 							}
@@ -194,12 +189,8 @@ namespace Game
 				}
 			}
 
-			// --- Weapon/musket/bow/crossbow/throwable logic (CanUseInventory) ---
-			if (!CanUseInventory)
-				return;
-
-			if (m_componentCreature.ComponentHealth.Health <= 0f)
-				return;
+			if (!CanUseInventory) return;
+			if (m_componentCreature.ComponentHealth.Health <= 0f) return;
 
 			ComponentCreature target = m_chaseBehavior.Target;
 			if (target == null || target.ComponentHealth.Health <= 0f)
@@ -209,7 +200,6 @@ namespace Game
 				return;
 			}
 
-			// If stuck, stop all aiming/shooting and don't change weapons
 			if (m_componentPathfinding.IsStuck)
 			{
 				CancelAiming(inventory);
@@ -224,25 +214,31 @@ namespace Game
 			bool targetInFront = IsTargetInFront(target);
 			bool targetVisible = targetInFront && IsTargetVisible(target);
 
-			int activeSlotValue = inventory.GetSlotValue(inventory.ActiveSlotIndex);
-			int activeContents = Terrain.ExtractContents(activeSlotValue);
-			bool isThrowable = IsThrowable(activeContents);
-
-			// Prioridad absoluta para lanzables si estamos en rango y visibles
-			if (isThrowable && distance >= ThrowableRange.X && distance <= ThrowableRange.Y && targetVisible)
+			// --- Prioridad absoluta: objetos lanzables ---
+			int throwableSlot = FindThrowableSlot(inventory);
+			if (throwableSlot >= 0 && distance >= ThrowableRange.X && distance <= ThrowableRange.Y && targetVisible)
 			{
-				// Detener movimiento mientras apuntamos
+				// Equipar el lanzable si no está ya activo
+				if (inventory.ActiveSlotIndex != throwableSlot)
+				{
+					CancelAiming(inventory);
+					inventory.ActiveSlotIndex = throwableSlot;
+					m_cooldownTimer = 0f;
+				}
+
+				// Detenerse por completo para apuntar
 				if (!m_isThrowing)
 				{
 					m_isThrowing = true;
 					m_componentPathfinding.Stop();
 				}
+				// Cada frame mantenemos detenido el movimiento
+				m_componentPathfinding.Stop();
 
 				if (m_cooldownTimer > 0f)
 				{
 					m_cooldownTimer -= dt;
-					if (m_cooldownTimer < 0f)
-						m_cooldownTimer = 0f;
+					if (m_cooldownTimer < 0f) m_cooldownTimer = 0f;
 				}
 
 				if (!m_isAiming && m_cooldownTimer <= 0f)
@@ -262,22 +258,17 @@ namespace Game
 						m_componentMiner.Aim(new Ray3(eyePos, aimDir), AimState.Completed);
 						m_isAiming = false;
 						m_cooldownTimer = ThrowableCooldown;
-
-						// Después de lanzar, permitir movimiento de nuevo
-						m_isThrowing = false;
-						// Verificar si aún quedan lanzables; si no, se usará otra arma en el próximo ciclo
+						m_isThrowing = false; // Permitir volver a moverse tras el lanzamiento
 					}
 					else
 					{
 						m_componentMiner.Aim(new Ray3(eyePos, aimDir), AimState.InProgress);
 					}
 				}
-				// Si estamos lanzando, no procesamos otras armas
 				return;
 			}
 			else
 			{
-				// Si estábamos en modo lanzamiento pero ya no es válido, cancelar
 				if (m_isThrowing)
 				{
 					CancelAiming(inventory);
@@ -285,27 +276,21 @@ namespace Game
 				}
 			}
 
-			// Si se está lanzando, no continuar con otras armas
-			if (m_isThrowing)
-				return;
+			// Si no hay lanzable o no está en rango, seguir con la selección normal
+			if (m_isThrowing) return;
 
 			int musketSlot = FindMusketSlot(inventory);
 			int bowSlot = FindBowSlot(inventory);
 			int crossbowSlot = FindCrossbowSlot(inventory);
 			int meleeSlot = FindMeleeSlot(inventory);
 
-			// Choose weapon based on distance and visibility
 			if (distance > EngagementRange.Y)
 			{
 				CancelAiming(inventory);
-				if (musketSlot >= 0)
-					EquipSlot(inventory, musketSlot);
-				else if (bowSlot >= 0)
-					EquipSlot(inventory, bowSlot);
-				else if (crossbowSlot >= 0)
-					EquipSlot(inventory, crossbowSlot);
-				else if (meleeSlot >= 0)
-					EquipSlot(inventory, meleeSlot);
+				if (musketSlot >= 0) EquipSlot(inventory, musketSlot);
+				else if (bowSlot >= 0) EquipSlot(inventory, bowSlot);
+				else if (crossbowSlot >= 0) EquipSlot(inventory, crossbowSlot);
+				else if (meleeSlot >= 0) EquipSlot(inventory, meleeSlot);
 			}
 			else if (distance < EngagementRange.X)
 			{
@@ -314,73 +299,42 @@ namespace Game
 					CancelAiming(inventory);
 					EquipSlot(inventory, meleeSlot);
 				}
-				else if (musketSlot >= 0)
-				{
-					EquipSlot(inventory, musketSlot);
-				}
-				else if (bowSlot >= 0)
-				{
-					EquipSlot(inventory, bowSlot);
-				}
-				else if (crossbowSlot >= 0)
-				{
-					EquipSlot(inventory, crossbowSlot);
-				}
+				else if (musketSlot >= 0) EquipSlot(inventory, musketSlot);
+				else if (bowSlot >= 0) EquipSlot(inventory, bowSlot);
+				else if (crossbowSlot >= 0) EquipSlot(inventory, crossbowSlot);
 			}
 			else
 			{
-				if (musketSlot >= 0)
-					EquipSlot(inventory, musketSlot);
-				else if (bowSlot >= 0)
-					EquipSlot(inventory, bowSlot);
-				else if (crossbowSlot >= 0)
-					EquipSlot(inventory, crossbowSlot);
-				else if (meleeSlot >= 0)
-					EquipSlot(inventory, meleeSlot);
+				if (musketSlot >= 0) EquipSlot(inventory, musketSlot);
+				else if (bowSlot >= 0) EquipSlot(inventory, bowSlot);
+				else if (crossbowSlot >= 0) EquipSlot(inventory, crossbowSlot);
+				else if (meleeSlot >= 0) EquipSlot(inventory, meleeSlot);
 			}
 
-			// Process current weapon usage (only when target is visible and in range)
-			activeSlotValue = inventory.GetSlotValue(inventory.ActiveSlotIndex);
-			activeContents = Terrain.ExtractContents(activeSlotValue);
+			int activeSlotValue = inventory.GetSlotValue(inventory.ActiveSlotIndex);
+			int activeContents = Terrain.ExtractContents(activeSlotValue);
+
 			if (activeContents == MusketBlock.Index && targetVisible)
 			{
 				EnsureMusketLoaded(inventory);
-
-				if (m_cooldownTimer > 0f)
-				{
-					m_cooldownTimer -= dt;
-					if (m_cooldownTimer < 0f)
-						m_cooldownTimer = 0f;
-				}
-
-				if (!m_isAiming && m_cooldownTimer <= 0f)
-				{
-					m_isAiming = true;
-					m_aimTimer = 0f;
-				}
-
+				if (m_cooldownTimer > 0f) { m_cooldownTimer -= dt; if (m_cooldownTimer < 0f) m_cooldownTimer = 0f; }
+				if (!m_isAiming && m_cooldownTimer <= 0f) { m_isAiming = true; m_aimTimer = 0f; }
 				if (m_isAiming)
 				{
 					m_aimTimer += dt;
 					Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
 					Vector3 aimDir = m_componentCreature.ComponentCreatureModel.EyeRotation.GetForwardVector();
-
 					if (m_aimTimer >= MusketAimTime)
 					{
-						BulletBlock.BulletType? currentBulletType = MusketBlock.GetBulletType(
-							Terrain.ExtractData(inventory.GetSlotValue(inventory.ActiveSlotIndex)));
-
+						BulletBlock.BulletType? currentBulletType = MusketBlock.GetBulletType(Terrain.ExtractData(inventory.GetSlotValue(inventory.ActiveSlotIndex)));
 						m_componentMiner.Aim(new Ray3(eyePos, aimDir), AimState.Completed);
 						m_isAiming = false;
 						m_cooldownTimer = MusketCooldown;
 						EnsureMusketLoaded(inventory);
-
 						if (m_random.Float(0f, 1f) < 0.05f)
 						{
-							Vector3 musketPos = eyePos + m_componentCreature.ComponentBody.Matrix.Right * 0.3f
-								- m_componentCreature.ComponentBody.Matrix.Up * 0.2f;
+							Vector3 musketPos = eyePos + m_componentCreature.ComponentBody.Matrix.Right * 0.3f - m_componentCreature.ComponentBody.Matrix.Up * 0.2f;
 							Vector3 musketDir = Vector3.Normalize(musketPos + aimDir * 10f - musketPos);
-
 							if (currentBulletType != BulletBlock.BulletType.MusketBall)
 								FireSingleProjectile(BulletBlock.BulletType.MusketBall, musketPos, musketDir, 120f, Vector3.Zero, 1);
 							if (currentBulletType != BulletBlock.BulletType.Buckshot)
@@ -389,83 +343,46 @@ namespace Game
 								FireSingleProjectile(BulletBlock.BulletType.BuckshotBall, musketPos, musketDir, 60f, new Vector3(0.06f, 0.06f, 0f), 1);
 						}
 					}
-					else
-					{
-						m_componentMiner.Aim(new Ray3(eyePos, aimDir), AimState.InProgress);
-					}
+					else m_componentMiner.Aim(new Ray3(eyePos, aimDir), AimState.InProgress);
 				}
 			}
 			else if (activeContents == BowBlock.Index && targetVisible)
 			{
 				EnsureBowLoaded(inventory);
-
-				if (m_cooldownTimer > 0f)
-				{
-					m_cooldownTimer -= dt;
-					if (m_cooldownTimer < 0f)
-						m_cooldownTimer = 0f;
-				}
-
-				if (!m_isAiming && m_cooldownTimer <= 0f)
-				{
-					m_isAiming = true;
-					m_aimTimer = 0f;
-				}
-
+				if (m_cooldownTimer > 0f) { m_cooldownTimer -= dt; if (m_cooldownTimer < 0f) m_cooldownTimer = 0f; }
+				if (!m_isAiming && m_cooldownTimer <= 0f) { m_isAiming = true; m_aimTimer = 0f; }
 				if (m_isAiming)
 				{
 					m_aimTimer += dt;
 					Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
 					Vector3 aimDir = m_componentCreature.ComponentCreatureModel.EyeRotation.GetForwardVector();
-
 					if (m_aimTimer >= BowAimTime)
 					{
 						m_componentMiner.Aim(new Ray3(eyePos, aimDir), AimState.Completed);
 						m_isAiming = false;
 						m_cooldownTimer = BowCooldown;
 					}
-					else
-					{
-						m_componentMiner.Aim(new Ray3(eyePos, aimDir), AimState.InProgress);
-					}
+					else m_componentMiner.Aim(new Ray3(eyePos, aimDir), AimState.InProgress);
 				}
 			}
 			else if (activeContents == CrossbowBlock.Index && targetVisible)
 			{
-				float distToTarget = Vector3.Distance(
-					m_componentCreature.ComponentBody.Position,
-					target.ComponentBody.BoundingBox.Center());
+				float distToTarget = Vector3.Distance(m_componentCreature.ComponentBody.Position, target.ComponentBody.BoundingBox.Center());
 				EnsureCrossbowLoaded(inventory, distToTarget);
-
-				if (m_cooldownTimer > 0f)
-				{
-					m_cooldownTimer -= dt;
-					if (m_cooldownTimer < 0f)
-						m_cooldownTimer = 0f;
-				}
-
-				if (!m_isAiming && m_cooldownTimer <= 0f)
-				{
-					m_isAiming = true;
-					m_aimTimer = 0f;
-				}
-
+				if (m_cooldownTimer > 0f) { m_cooldownTimer -= dt; if (m_cooldownTimer < 0f) m_cooldownTimer = 0f; }
+				if (!m_isAiming && m_cooldownTimer <= 0f) { m_isAiming = true; m_aimTimer = 0f; }
 				if (m_isAiming)
 				{
 					m_aimTimer += dt;
 					Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
 					Vector3 aimDir = m_componentCreature.ComponentCreatureModel.EyeRotation.GetForwardVector();
-
 					if (m_aimTimer >= CrossbowAimTime)
 					{
 						m_componentMiner.Aim(new Ray3(eyePos, aimDir), AimState.Completed);
 						m_isAiming = false;
 						m_cooldownTimer = CrossbowCooldown;
 					}
-					else
-					{
-						m_componentMiner.Aim(new Ray3(eyePos, aimDir), AimState.InProgress);
-					}
+					else m_componentMiner.Aim(new Ray3(eyePos, aimDir), AimState.InProgress);
 				}
 			}
 			else
@@ -479,25 +396,18 @@ namespace Game
 			int bulletValue = Terrain.MakeBlockValue(BulletBlock.Index, 0, BulletBlock.SetBulletType(0, type));
 			Vector3 perp1 = Vector3.Normalize(Vector3.Cross(aimDirection, Vector3.UnitY));
 			Vector3 perp2 = Vector3.Normalize(Vector3.Cross(aimDirection, perp1));
-
 			for (int i = 0; i < count; i++)
 			{
-				Vector3 variant = aimDirection +
-					(m_random.Float(-spread.X, spread.X) * perp1) +
-					(m_random.Float(-spread.Y, spread.Y) * perp2) +
-					(m_random.Float(-spread.Z, spread.Z) * aimDirection);
+				Vector3 variant = aimDirection + (m_random.Float(-spread.X, spread.X) * perp1) + (m_random.Float(-spread.Y, spread.Y) * perp2) + (m_random.Float(-spread.Z, spread.Z) * aimDirection);
 				Vector3 velocity = m_componentCreature.ComponentBody.Velocity + speed * variant;
-				Projectile projectile = m_subsystemProjectiles.FireProjectile(
-					bulletValue, origin, velocity, Vector3.Zero, m_componentCreature);
-				if (projectile != null)
-					projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
+				Projectile projectile = m_subsystemProjectiles.FireProjectile(bulletValue, origin, velocity, Vector3.Zero, m_componentCreature);
+				if (projectile != null) projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
 			}
 		}
 
 		void FireBuckshot(Vector3 origin, Vector3 aimDirection)
 		{
-			FireSingleProjectile(BulletBlock.BulletType.BuckshotBall, origin, aimDirection, 80f,
-				new Vector3(0.04f, 0.04f, 0.25f), 8);
+			FireSingleProjectile(BulletBlock.BulletType.BuckshotBall, origin, aimDirection, 80f, new Vector3(0.04f, 0.04f, 0.25f), 8);
 		}
 
 		void CancelAiming(IInventory inventory)
@@ -521,18 +431,14 @@ namespace Game
 		{
 			int slotIndex = inventory.ActiveSlotIndex;
 			int slotValue = inventory.GetSlotValue(slotIndex);
-			if (slotValue == 0 || Terrain.ExtractContents(slotValue) != MusketBlock.Index)
-				return;
-
+			if (slotValue == 0 || Terrain.ExtractContents(slotValue) != MusketBlock.Index) return;
 			int data = Terrain.ExtractData(slotValue);
 			MusketBlock.LoadState loadState = MusketBlock.GetLoadState(data);
-
 			if (loadState != MusketBlock.LoadState.Loaded)
 			{
 				BulletBlock.BulletType bulletType = GetRandomBulletType();
 				data = MusketBlock.SetLoadState(data, MusketBlock.LoadState.Loaded);
 				data = MusketBlock.SetBulletType(data, bulletType);
-
 				inventory.RemoveSlotItems(slotIndex, 1);
 				inventory.AddSlotItems(slotIndex, Terrain.MakeBlockValue(MusketBlock.Index, 0, data), 1);
 			}
@@ -542,22 +448,16 @@ namespace Game
 		{
 			int slotIndex = inventory.ActiveSlotIndex;
 			int slotValue = inventory.GetSlotValue(slotIndex);
-			if (slotValue == 0 || Terrain.ExtractContents(slotValue) != BowBlock.Index)
-				return;
-
+			if (slotValue == 0 || Terrain.ExtractContents(slotValue) != BowBlock.Index) return;
 			int data = Terrain.ExtractData(slotValue);
 			ArrowBlock.ArrowType? currentArrow = BowBlock.GetArrowType(data);
 			int currentDraw = BowBlock.GetDraw(data);
-
-			if (currentArrow != null && currentDraw == 15)
-				return;
-
+			if (currentArrow != null && currentDraw == 15) return;
 			if (currentArrow == null)
 			{
 				ArrowBlock.ArrowType randomArrowType = s_bowArrowTypes[m_random.Int(0, s_bowArrowTypes.Length - 1)];
 				data = BowBlock.SetArrowType(data, randomArrowType);
 			}
-
 			data = BowBlock.SetDraw(data, 15);
 			int newValue = Terrain.MakeBlockValue(BowBlock.Index, 0, data);
 			inventory.RemoveSlotItems(slotIndex, 1);
@@ -568,33 +468,21 @@ namespace Game
 		{
 			int slotIndex = inventory.ActiveSlotIndex;
 			int slotValue = inventory.GetSlotValue(slotIndex);
-			if (slotValue == 0 || Terrain.ExtractContents(slotValue) != CrossbowBlock.Index)
-				return;
-
+			if (slotValue == 0 || Terrain.ExtractContents(slotValue) != CrossbowBlock.Index) return;
 			int data = Terrain.ExtractData(slotValue);
 			ArrowBlock.ArrowType? currentBolt = CrossbowBlock.GetArrowType(data);
 			int currentDraw = CrossbowBlock.GetDraw(data);
-
-			if (currentBolt != null && currentDraw == 15)
-				return;
-
-			if (currentDraw != 15)
-				data = CrossbowBlock.SetDraw(data, 15);
-
+			if (currentBolt != null && currentDraw == 15) return;
+			if (currentDraw != 15) data = CrossbowBlock.SetDraw(data, 15);
 			if (currentBolt == null)
 			{
 				ArrowBlock.ArrowType randomBoltType;
 				if (distanceToTarget >= RangeOfExplosives.X && distanceToTarget <= RangeOfExplosives.Y)
-				{
 					randomBoltType = s_crossbowBoltTypes[m_random.Int(0, s_crossbowBoltTypes.Length - 1)];
-				}
 				else
-				{
 					randomBoltType = s_crossbowBoltTypes[m_random.Int(0, 1)];
-				}
 				data = CrossbowBlock.SetArrowType(data, randomBoltType);
 			}
-
 			int newValue = Terrain.MakeBlockValue(CrossbowBlock.Index, 0, data);
 			inventory.RemoveSlotItems(slotIndex, 1);
 			inventory.AddSlotItems(slotIndex, newValue, 1);
@@ -619,10 +507,7 @@ namespace Game
 			Vector3 targetCenter = target.ComponentBody.BoundingBox.Center();
 			float distance = Vector3.Distance(eyePos, targetCenter);
 			Ray3 ray = new Ray3(eyePos, Vector3.Normalize(targetCenter - eyePos));
-
-			BodyRaycastResult? bodyResult = m_componentMiner.Raycast<BodyRaycastResult>(
-				ray, RaycastMode.Interaction, true, true, true, distance + 1f);
-
+			BodyRaycastResult? bodyResult = m_componentMiner.Raycast<BodyRaycastResult>(ray, RaycastMode.Interaction, true, true, true, distance + 1f);
 			return bodyResult != null && bodyResult.Value.ComponentBody == target.ComponentBody;
 		}
 
@@ -631,8 +516,7 @@ namespace Game
 			for (int i = 0; i < inventory.SlotsCount; i++)
 			{
 				int slotValue = inventory.GetSlotValue(i);
-				if (Terrain.ExtractContents(slotValue) == MusketBlock.Index && inventory.GetSlotCount(i) > 0)
-					return i;
+				if (Terrain.ExtractContents(slotValue) == MusketBlock.Index && inventory.GetSlotCount(i) > 0) return i;
 			}
 			return -1;
 		}
@@ -642,8 +526,7 @@ namespace Game
 			for (int i = 0; i < inventory.SlotsCount; i++)
 			{
 				int slotValue = inventory.GetSlotValue(i);
-				if (Terrain.ExtractContents(slotValue) == BowBlock.Index && inventory.GetSlotCount(i) > 0)
-					return i;
+				if (Terrain.ExtractContents(slotValue) == BowBlock.Index && inventory.GetSlotCount(i) > 0) return i;
 			}
 			return -1;
 		}
@@ -653,8 +536,7 @@ namespace Game
 			for (int i = 0; i < inventory.SlotsCount; i++)
 			{
 				int slotValue = inventory.GetSlotValue(i);
-				if (Terrain.ExtractContents(slotValue) == CrossbowBlock.Index && inventory.GetSlotCount(i) > 0)
-					return i;
+				if (Terrain.ExtractContents(slotValue) == CrossbowBlock.Index && inventory.GetSlotCount(i) > 0) return i;
 			}
 			return -1;
 		}
@@ -685,10 +567,8 @@ namespace Game
 		{
 			ComponentCreatureClothing creatureClothing = Entity.FindComponent<ComponentCreatureClothing>();
 			if (creatureClothing != null) return creatureClothing;
-
 			ComponentClothing playerClothing = Entity.FindComponent<ComponentClothing>();
 			if (playerClothing != null) return playerClothing;
-
 			return null;
 		}
 	}
