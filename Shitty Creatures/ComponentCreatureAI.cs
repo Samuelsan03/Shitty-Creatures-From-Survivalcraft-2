@@ -164,6 +164,11 @@ namespace Game
 
 		public UpdateOrder UpdateOrder => UpdateOrder.Default;
 
+		public override void Save(ValuesDictionary valuesDictionary, EntityToIdMap entityToIdMap)
+		{
+			valuesDictionary.SetValue("CanUseInventory", CanUseInventory);
+		}
+
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
 			m_subsystemTime = Project.FindSubsystem<SubsystemTime>(true);
