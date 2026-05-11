@@ -622,11 +622,45 @@ namespace Game
 					{
 						m_isFirearmReloading = false;
 						m_firearmShotsSinceReload = 0;
+						// Partículas de fin de recarga
+						if (m_subsystemParticles != null && m_subsystemTerrain != null)
+						{
+							try
+							{
+								Vector3 basePosition = m_componentCreature.ComponentCreatureModel.EyePosition;
+								Vector3 readyPosition = basePosition + new Vector3(0f, 0.2f, 0f);
+								KillParticleSystem readyParticles = new KillParticleSystem(m_subsystemTerrain, readyPosition, 0.5f);
+								m_subsystemParticles.AddParticleSystem(readyParticles, false);
+								for (int i = 0; i < 3; i++)
+								{
+									Vector3 offset = new Vector3(m_random.Float(-0.2f, 0.2f), m_random.Float(0.1f, 0.4f), m_random.Float(-0.2f, 0.2f));
+									KillParticleSystem additionalParticles = new KillParticleSystem(m_subsystemTerrain, basePosition + offset, 0.5f);
+									m_subsystemParticles.AddParticleSystem(additionalParticles, false);
+								}
+							}
+							catch (Exception)
+							{
+							}
+						}
 						m_subsystemAudio.PlaySound("Audio/Armas/reload", 1f, 0f, m_componentCreature.ComponentCreatureModel.EyePosition, 10f, true);
+						// Restaurar rotación del modelo tras recarga
+						ResetModelRotation();
 						m_isAiming = false;
 						m_aimTimer = 0f;
 						m_hasCompletedInitialAim = false;
 						m_cooldownTimer = 0f;
+					}
+					else
+					{
+						// Animación de recarga
+						ComponentCreatureModel model = m_componentCreature.ComponentCreatureModel;
+						if (model != null)
+						{
+							model.AimHandAngleOrder = 0f;
+							model.InHandItemOffsetOrder = Vector3.Zero;
+							model.InHandItemRotationOrder = Vector3.Zero;
+							model.LookAtOrder = null;
+						}
 					}
 					if (m_isAiming)
 					{
@@ -654,12 +688,31 @@ namespace Game
 					Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
 					Vector3 aimDir = m_componentCreature.ComponentCreatureModel.EyeRotation.GetForwardVector();
 					Ray3 aimRay = new Ray3(eyePos, aimDir);
+					float aimTime = config.IsSniper ? 1.0f : 0.5f;
 
 					if (!m_hasCompletedInitialAim)
 					{
 						m_aimTimer += dt;
-						m_componentMiner.Aim(aimRay, AimState.InProgress);
-						float aimTime = config.IsSniper ? 1.0f : 0.5f;
+						if (config.IsSniper)
+						{
+							// Animación de apunte del sniper (sin usar Miner.Aim)
+							ComponentCreatureModel model = m_componentCreature.ComponentCreatureModel;
+							if (model != null)
+							{
+								model.AimHandAngleOrder = 1.2f;
+								model.InHandItemOffsetOrder = new Vector3(-0.1f, -0.06f, 0.08f);
+								model.InHandItemRotationOrder = new Vector3(-1.5f, 0f, 0f);
+								if (m_chaseBehavior != null && m_chaseBehavior.Target != null)
+								{
+									model.LookAtOrder = m_chaseBehavior.Target.ComponentCreatureModel.EyePosition;
+								}
+							}
+						}
+						else
+						{
+							m_componentMiner.Aim(aimRay, AimState.InProgress);
+						}
+
 						if (m_aimTimer >= aimTime)
 						{
 							FireFirearm(aimRay, config);
@@ -675,7 +728,25 @@ namespace Game
 					else
 					{
 						// Mantener apunte
-						m_componentMiner.Aim(aimRay, AimState.InProgress);
+						if (config.IsSniper)
+						{
+							ComponentCreatureModel model = m_componentCreature.ComponentCreatureModel;
+							if (model != null)
+							{
+								model.AimHandAngleOrder = 1.2f;
+								model.InHandItemOffsetOrder = new Vector3(-0.1f, -0.06f, 0.08f);
+								model.InHandItemRotationOrder = new Vector3(-1.5f, 0f, 0f);
+								if (m_chaseBehavior != null && m_chaseBehavior.Target != null)
+								{
+									model.LookAtOrder = m_chaseBehavior.Target.ComponentCreatureModel.EyePosition;
+								}
+							}
+						}
+						else
+						{
+							m_componentMiner.Aim(aimRay, AimState.InProgress);
+						}
+
 						if ((m_subsystemTime.GameTime - m_lastFirearmShotTime) >= config.FireRate)
 						{
 							FireFirearm(aimRay, config);
@@ -731,14 +802,44 @@ namespace Game
 			m_firearmShotsSinceReload++;
 		}
 
+		private void ResetModelRotation()
+		{
+			ComponentCreatureModel model = m_componentCreature.ComponentCreatureModel;
+			if (model != null)
+			{
+				model.InHandItemRotationOrder = Vector3.Zero;
+				model.InHandItemOffsetOrder = Vector3.Zero;
+				model.AimHandAngleOrder = 0f;
+			}
+		}
+
 		void StartFirearmReload()
 		{
 			m_isFirearmReloading = true;
 			m_firearmReloadTimer = FirearmReloadTime;
 			m_isAiming = false;
 			m_hasCompletedInitialAim = false;
-			CancelAiming(m_componentMiner.Inventory);
+			// Partículas de inicio de recarga
+			if (m_subsystemParticles != null && m_subsystemTerrain != null)
+			{
+				try
+				{
+					Vector3 basePosition = m_componentCreature.ComponentBody.Position + new Vector3(0f, 1f, 0f);
+					KillParticleSystem reloadParticles = new KillParticleSystem(m_subsystemTerrain, basePosition, 0.5f);
+					m_subsystemParticles.AddParticleSystem(reloadParticles, false);
+					for (int i = 0; i < 3; i++)
+					{
+						Vector3 offset = new Vector3(m_random.Float(-0.2f, 0.2f), m_random.Float(0.1f, 0.4f), m_random.Float(-0.2f, 0.2f));
+						KillParticleSystem additionalParticles = new KillParticleSystem(m_subsystemTerrain, basePosition + offset, 0.5f);
+						m_subsystemParticles.AddParticleSystem(additionalParticles, false);
+					}
+				}
+				catch (Exception)
+				{
+				}
+			}
 			m_subsystemAudio.PlaySound("Audio/Armas/reload", 0.8f, 0f, m_componentCreature.ComponentCreatureModel.EyePosition, 10f, true);
+			ResetModelRotation();
 		}
 
 		void FireSingleProjectile(BulletBlock.BulletType type, Vector3 origin, Vector3 aimDirection, float speed, Vector3 spread, int count)
