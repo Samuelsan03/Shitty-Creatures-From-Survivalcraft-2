@@ -236,19 +236,11 @@
   <Parameter Name="Class" Guid="7a6fa981-4a34-4282-bbe2-dbff9062a23f" Value="Game.ComponentDefensiveCreatureAI" Type="string" />
   <Parameter Name="CanUseInventory" Description="If true, the creature can equip and use ranged weapons (muskets, bows, crossbows, throwables, etc.) from its inventory during combat. Requires line of sight and will be interrupted if stuck." Guid="3c5113b8-872d-4aeb-9a85-9ca7c6146d1c" Value="false" Type="bool" />
   <Parameter Name="CanEquipClothing" Description="If true, the creature will automatically equip any wearable clothing/armor found in its inventory" Guid="418363ec-4f5a-4582-a554-e5221017ac03" Value="false" Type="bool" />
-  <Parameter Name="DomesticateCreatures" Description="If true, the creature will prioritize using a collar to tame compatible creatures instead of attacking them" Guid="6d618481-6d17-4aaf-bedc-baa6e0a09220" Value="false" Type="bool" />
-</ComponentTemplate>
-
-<ComponentTemplate Name="ZombieAI2" Description="Inteligencia artificial avanzada para zombies con soporte para armas, recarga automática y animaciones" Guid="9d185bf8-92ec-4ea6-ad86-b8a99b650fd2" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
-    <Parameter Name="Class" Guid="86cba08c-bbc6-464a-85df-76bc2791ebef" Value="Game.ComponentZombieAI2" Type="string" Description="Clase C# que implementa el componente de IA para zombies"/>
-    <Parameter Name="CanUseInventory" Guid="fa80dc29-cf40-4617-af33-23ce40e094bf" Value="true" Type="bool" Description="Si el zombie puede usar armas del inventario"/>
-    <Parameter Name="CanEquipClothing" Guid="25a42bc3-f008-4eb9-bfcc-5da545faca9f" Value="true" Type="bool" Description="Si la criatura puede equiparse ropa y armadura automáticamente del inventario"/>
 </ComponentTemplate>
 
 <ComponentTemplate Name="ZombieAI" Description="Inteligencia artificial avanzada para zombies con soporte para armas, recarga automática y animaciones" Guid="dc91ba3e-c474-45c3-8d03-ca9a9996dc5f" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
     <Parameter Name="Class" Guid="7f034217-2fb5-4da2-b6a2-c1ffec350ddb" Value="Game.ComponentZombieAI" Type="string" Description="Clase C# que implementa el componente de IA para zombies"/>
     <Parameter Name="CanUseInventory" Guid="65316e97-6084-43e7-b97f-f1382258dded" Value="true" Type="bool" Description="Si el zombie puede usar armas del inventario"/>
-    <Parameter Name="AimHandAngleOrder" Guid="e7fe5453-3ba9-4139-a2b9-b534ee25ea9a" Value="90" Type="float" Description="Ángulo en grados que determina la orientación de la mano al apuntar el arma"/>
     <Parameter Name="CanEquipClothing" Guid="c0d6fa78-314f-4716-b02e-dc4f67519950" Value="true" Type="bool" Description="Si la criatura puede equiparse ropa y armadura automáticamente del inventario"/>
 </ComponentTemplate>
 
@@ -584,6 +576,9 @@
     </Folder>
 
     <ProjectTemplate Name="Project" Guid="85023bf8-1c90-4dd1-9442-e6c13691d078">
+    <MemberSubsystemTemplate Name="BulletsFromFirearms" Guid="32107ce4-28a7-43cc-aa7f-90c8f2ee1b70" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+    <Parameter Name="Class" Value="Game.SubsystemBulletsFromFirearms" Type="string" Guid="41910438-41a2-4f14-81d8-16d211bbaa88"/>
+</MemberSubsystemTemplate>
     <MemberSubsystemTemplate Name="FruitSaplingBlockBehavior" Guid="ac8eb908-c247-4bbb-8649-35b5d4d2e05c" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
     <Parameter Name="Class" Value="Game.SubsystemFruitSaplingBlockBehavior" Type="string" Guid="2916b25e-8de9-446f-a453-638b297c58a0"/>
 </MemberSubsystemTemplate>
