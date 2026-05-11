@@ -57,6 +57,78 @@ namespace Game
 		bool m_isThrowing;
 		List<int> m_throwableIndices = new List<int>();
 
+		// Firearm fields
+		private bool m_isFirearmReloading = false;
+		private float m_firearmReloadTimer = 0f;
+		private int m_firearmShotsSinceReload = 0;
+		private const float FirearmReloadTime = 1.0f;
+		private double m_lastFirearmShotTime;
+		private bool m_hasCompletedInitialAim = false;
+
+		// ========== CONFIGURACIÓN INTERNA DE ARMAS DE FUEGO ==========
+		private class FirearmDefConfig
+		{
+			public Type BulletBlockType;
+			public string ShootSound;
+			public float FireRate;
+			public float BulletSpeed;
+			public int ProjectilesPerShot;
+			public Vector3 SpreadVector;
+			public bool IsSniper;
+			public bool IsAutomatic;
+			public int MaxShotsBeforeReload;
+		}
+
+		private static Dictionary<int, FirearmDefConfig> m_firearmConfigs;
+
+		static ComponentCreatureAI()
+		{
+			m_firearmConfigs = new Dictionary<int, FirearmDefConfig>();
+			void Add(Type weaponType, Type bulletType, string sound, double fireRate, float bulletSpeed, int projPerShot, Vector3 spread, int maxShots = 30, bool sniper = false, bool automatic = false)
+			{
+				int idx = BlocksManager.GetBlockIndex(weaponType, true, false);
+				m_firearmConfigs[idx] = new FirearmDefConfig
+				{
+					BulletBlockType = bulletType,
+					ShootSound = sound,
+					FireRate = (float)fireRate,
+					BulletSpeed = bulletSpeed,
+					ProjectilesPerShot = projPerShot,
+					SpreadVector = spread,
+					IsSniper = sniper,
+					IsAutomatic = automatic,
+					MaxShotsBeforeReload = maxShots
+				};
+			}
+
+			Add(typeof(AK48Block), typeof(NuevaBala6), "Audio/Armas/AK48 fire", 0.17, 280f, 2, new Vector3(0.01f, 0.01f, 0.05f), 60, automatic: true);
+			Add(typeof(Master308Block), typeof(NuevaBala4), "Audio/Armas/308 Master fire", 0.48, 300f, 1, new Vector3(0.001f, 0.001f, 0.001f), 8);
+			Add(typeof(BK43Block), typeof(NuevaBala3), "Audio/Armas/bk 43", 1.5, 280f, 8, new Vector3(0.1f, 0.1f, 0.03f), 2);
+			Add(typeof(AKBlock), typeof(NuevaBala2), "Audio/Armas/ak 47 fuego", 0.17, 280f, 2, new Vector3(0.01f, 0.01f, 0.05f), 30, automatic: true);
+			Add(typeof(M4Block), typeof(NuevaBala2), "Audio/Armas/M4 fuego", 0.15, 300f, 3, new Vector3(0.008f, 0.008f, 0.04f), 22, automatic: true);
+			Add(typeof(KABlock), typeof(NuevaBala5), "Audio/Armas/KA fuego", 0.1, 320f, 3, new Vector3(0.007f, 0.007f, 0.03f), 40, automatic: true);
+			Add(typeof(Mac10Block), typeof(NuevaBala3), "Audio/Armas/mac 10 fuego", 0.1, 300f, 1, new Vector3(0.012f, 0.012f, 0.035f), 30, automatic: true);
+			Add(typeof(SWM500Block), typeof(NuevaBala4), "Audio/Armas/desert eagle fuego", 0.5, 320f, 1, new Vector3(0.02f, 0.02f, 0.05f), 5);
+			Add(typeof(G3Block), typeof(NuevaBala), "Audio/Armas/FX05", 0.12, 290f, 2, new Vector3(0.009f, 0.009f, 0.04f), 30, automatic: true);
+			Add(typeof(Izh43Block), typeof(NuevaBala), "Audio/Armas/shotgun fuego", 1.0, 280f, 8, new Vector3(0.09f, 0.09f, 0.09f), 2);
+			Add(typeof(MinigunBlock), typeof(NuevaBala6), "Audio/Armas/Chaingun fuego", 0.08, 260f, 1, new Vector3(0.02f, 0.02f, 0.08f), 100, automatic: true);
+			Add(typeof(SPAS12Block), typeof(NuevaBala), "Audio/Armas/SPAS 12 fuego", 0.8, 280f, 8, new Vector3(0.09f, 0.09f, 0.09f), 8);
+			Add(typeof(UziBlock), typeof(NuevaBala2), "Audio/Armas/Uzi fuego", 0.08, 320f, 2, new Vector3(0.015f, 0.015f, 0.06f), 30, automatic: true);
+			Add(typeof(SniperBlock), typeof(NuevaBala6), "Audio/Armas/Sniper fuego", 2.0, 450f, 1, new Vector3(0.001f, 0.001f, 0.001f), 1, sniper: true);
+			Add(typeof(AUGBlock), typeof(NuevaBala), "Audio/Armas/AUG fuego", 0.17, 280f, 2, new Vector3(0.01f, 0.01f, 0.05f), 30, automatic: true);
+			Add(typeof(P90Block), typeof(NuevaBala4), "Audio/Armas/FN P90 fuego", 0.067, 320f, 1, new Vector3(0.012f, 0.012f, 0.04f), 50, automatic: true);
+			Add(typeof(SCARBlock), typeof(NuevaBala3), "Audio/Armas/FN Scar fuego", 0.1, 310f, 1, new Vector3(0.01f, 0.01f, 0.03f), 30, automatic: true);
+			Add(typeof(RevolverBlock), typeof(NuevaBala4), "Audio/Armas/Revolver fuego", 0.6, 320f, 1, new Vector3(0.02f, 0.02f, 0.05f), 6);
+			Add(typeof(FamasBlock), typeof(NuevaBala4), "Audio/Armas/FAMAS fuego", 0.09, 450f, 1, new Vector3(0.012f, 0.012f, 0.04f), 30, automatic: true);
+			Add(typeof(AA12Block), typeof(NuevaBala6), "Audio/Armas/AA12 fuego", 0.2, 350f, 8, new Vector3(0.03f, 0.03f, 0.06f), 20, automatic: true);
+			Add(typeof(M249Block), typeof(NuevaBala5), "Audio/Armas/M249 fuego", 0.08, 400f, 1, new Vector3(0.01f, 0.01f, 0.01f), 100, automatic: true);
+			Add(typeof(NewG3Block), typeof(NuevaBala3), "Audio/Armas/G3 fuego", 0.12, 290f, 2, new Vector3(0.009f, 0.009f, 0.04f), 30, automatic: true);
+			Add(typeof(MP5SSDBlock), typeof(NuevaBala3), "Audio/Armas/MP5SSD fuego", 0.12, 290f, 2, new Vector3(0.009f, 0.009f, 0.04f), 30, automatic: true);
+			Add(typeof(MendozaBlock), typeof(NuevaBala3), "Audio/Armas/Mendoza fuego", 0.12, 290f, 2, new Vector3(0.009f, 0.009f, 0.04f), 30, automatic: true);
+			Add(typeof(GrozaBlock), typeof(NuevaBala3), "Audio/Armas/Groza fuego", 0.12, 290f, 2, new Vector3(0.009f, 0.009f, 0.04f), 30, automatic: true);
+		}
+		// ========== FIN CONFIGURACIÓN ARMAS DE FUEGO ==========
+
 		static readonly ArrowBlock.ArrowType[] s_bowArrowTypes = new ArrowBlock.ArrowType[]
 		{
 			ArrowBlock.ArrowType.WoodenArrow,
@@ -165,6 +237,18 @@ namespace Game
 			{
 				int value = inventory.GetSlotValue(i);
 				if (IsThrowable(Terrain.ExtractContents(value)) && inventory.GetSlotCount(i) > 0)
+					return i;
+			}
+			return -1;
+		}
+
+		int FindFirearmSlot(IInventory inventory)
+		{
+			for (int i = 0; i < inventory.SlotsCount; i++)
+			{
+				int slotValue = inventory.GetSlotValue(i);
+				int contents = Terrain.ExtractContents(slotValue);
+				if (m_firearmConfigs.ContainsKey(contents) && inventory.GetSlotCount(i) > 0)
 					return i;
 			}
 			return -1;
@@ -302,6 +386,7 @@ namespace Game
 
 			if (m_isThrowing) return;
 
+			int firearmSlot = FindFirearmSlot(inventory);
 			int musketSlot = FindMusketSlot(inventory);
 			int doubleMusketSlot = FindDoubleMusketSlot(inventory);
 			int flameThrowerSlot = FindFlameThrowerSlot(inventory);
@@ -314,7 +399,8 @@ namespace Game
 			if (distance > EngagementRange.Y)
 			{
 				CancelAiming(inventory);
-				if (musketSlot >= 0) EquipSlot(inventory, musketSlot);
+				if (firearmSlot >= 0) EquipSlot(inventory, firearmSlot);
+				else if (musketSlot >= 0) EquipSlot(inventory, musketSlot);
 				else if (doubleMusketSlot >= 0) EquipSlot(inventory, doubleMusketSlot);
 				else if (flameThrowerSlot >= 0) EquipSlot(inventory, flameThrowerSlot);
 				else if (itemsLauncherSlot >= 0) EquipSlot(inventory, itemsLauncherSlot);
@@ -330,6 +416,7 @@ namespace Game
 					CancelAiming(inventory);
 					EquipSlot(inventory, meleeSlot);
 				}
+				else if (firearmSlot >= 0) EquipSlot(inventory, firearmSlot);
 				else if (musketSlot >= 0) EquipSlot(inventory, musketSlot);
 				else if (doubleMusketSlot >= 0) EquipSlot(inventory, doubleMusketSlot);
 				else if (flameThrowerSlot >= 0) EquipSlot(inventory, flameThrowerSlot);
@@ -340,7 +427,8 @@ namespace Game
 			}
 			else
 			{
-				if (musketSlot >= 0) EquipSlot(inventory, musketSlot);
+				if (firearmSlot >= 0) EquipSlot(inventory, firearmSlot);
+				else if (musketSlot >= 0) EquipSlot(inventory, musketSlot);
 				else if (doubleMusketSlot >= 0) EquipSlot(inventory, doubleMusketSlot);
 				else if (flameThrowerSlot >= 0) EquipSlot(inventory, flameThrowerSlot);
 				else if (itemsLauncherSlot >= 0) EquipSlot(inventory, itemsLauncherSlot);
@@ -524,10 +612,133 @@ namespace Game
 					else m_componentMiner.Aim(new Ray3(eyePos, aimDir), AimState.InProgress);
 				}
 			}
+			else if (m_firearmConfigs.ContainsKey(activeContents) && targetVisible)
+			{
+				// *** ARMAS DE FUEGO MODERNAS ***
+				if (m_isFirearmReloading)
+				{
+					m_firearmReloadTimer -= dt;
+					if (m_firearmReloadTimer <= 0f)
+					{
+						m_isFirearmReloading = false;
+						m_firearmShotsSinceReload = 0;
+						m_subsystemAudio.PlaySound("Audio/Armas/reload", 1f, 0f, m_componentCreature.ComponentCreatureModel.EyePosition, 10f, true);
+						m_isAiming = false;
+						m_aimTimer = 0f;
+						m_hasCompletedInitialAim = false;
+						m_cooldownTimer = 0f;
+					}
+					if (m_isAiming)
+					{
+						CancelAiming(inventory);
+					}
+					return;
+				}
+
+				FirearmDefConfig config = m_firearmConfigs[activeContents];
+				if (m_cooldownTimer > 0f)
+				{
+					m_cooldownTimer -= dt;
+					if (m_cooldownTimer < 0f) m_cooldownTimer = 0f;
+				}
+
+				if (!m_isAiming && m_cooldownTimer <= 0f)
+				{
+					m_isAiming = true;
+					m_aimTimer = 0f;
+					m_hasCompletedInitialAim = false;
+				}
+
+				if (m_isAiming)
+				{
+					Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
+					Vector3 aimDir = m_componentCreature.ComponentCreatureModel.EyeRotation.GetForwardVector();
+					Ray3 aimRay = new Ray3(eyePos, aimDir);
+
+					if (!m_hasCompletedInitialAim)
+					{
+						m_aimTimer += dt;
+						m_componentMiner.Aim(aimRay, AimState.InProgress);
+						float aimTime = config.IsSniper ? 1.0f : 0.5f;
+						if (m_aimTimer >= aimTime)
+						{
+							FireFirearm(aimRay, config);
+							m_lastFirearmShotTime = m_subsystemTime.GameTime;
+							m_hasCompletedInitialAim = true;
+							m_aimTimer = aimTime; // mantener el temporizador en el valor de apunte
+							if (m_firearmShotsSinceReload >= config.MaxShotsBeforeReload)
+							{
+								StartFirearmReload();
+							}
+						}
+					}
+					else
+					{
+						// Mantener apunte
+						m_componentMiner.Aim(aimRay, AimState.InProgress);
+						if ((m_subsystemTime.GameTime - m_lastFirearmShotTime) >= config.FireRate)
+						{
+							FireFirearm(aimRay, config);
+							m_lastFirearmShotTime = m_subsystemTime.GameTime;
+							if (m_firearmShotsSinceReload >= config.MaxShotsBeforeReload)
+							{
+								StartFirearmReload();
+							}
+						}
+					}
+				}
+			}
 			else
 			{
 				CancelAiming(inventory);
 			}
+		}
+
+		void FireFirearm(Ray3 aimRay, FirearmDefConfig config)
+		{
+			Vector3 eyePos = aimRay.Position;
+			Vector3 direction = aimRay.Direction;
+			Vector3 muzzlePos = eyePos + m_componentCreature.ComponentBody.Matrix.Right * 0.3f - m_componentCreature.ComponentBody.Matrix.Up * 0.2f;
+			Vector3 dirNorm = Vector3.Normalize(muzzlePos + direction * 10f - muzzlePos);
+			Vector3 right = Vector3.Normalize(Vector3.Cross(dirNorm, Vector3.UnitY));
+			Vector3 up = Vector3.Normalize(Vector3.Cross(dirNorm, right));
+
+			for (int i = 0; i < config.ProjectilesPerShot; i++)
+			{
+				Vector3 spread = m_random.Float(-config.SpreadVector.X, config.SpreadVector.X) * right
+							   + m_random.Float(-config.SpreadVector.Y, config.SpreadVector.Y) * up
+							   + m_random.Float(-config.SpreadVector.Z, config.SpreadVector.Z) * dirNorm;
+				int bulletBlockIndex = BlocksManager.GetBlockIndex(config.BulletBlockType, true, false);
+				int bulletValue;
+				if (config.IsSniper)
+				{
+					bulletValue = Terrain.MakeBlockValue(bulletBlockIndex, 0, 180);
+				}
+				else
+				{
+					bulletValue = Terrain.MakeBlockValue(bulletBlockIndex, 0, 0);
+				}
+				Vector3 velocity = m_componentCreature.ComponentBody.Velocity + config.BulletSpeed * (dirNorm + spread);
+				m_subsystemProjectiles.FireProjectile(bulletValue, muzzlePos, velocity, Vector3.Zero, m_componentCreature);
+			}
+
+			m_subsystemAudio.PlaySound(config.ShootSound, 1f, m_random.Float(-0.1f, 0.1f), eyePos, 15f, false);
+			if (m_subsystemParticles != null)
+			{
+				m_subsystemParticles.AddParticleSystem(new GunFireParticleSystem(m_subsystemTerrain, muzzlePos + dirNorm * 0.5f, dirNorm), false);
+			}
+			m_componentCreature.ComponentBody.ApplyImpulse(-1f * dirNorm);
+			m_firearmShotsSinceReload++;
+		}
+
+		void StartFirearmReload()
+		{
+			m_isFirearmReloading = true;
+			m_firearmReloadTimer = FirearmReloadTime;
+			m_isAiming = false;
+			m_hasCompletedInitialAim = false;
+			CancelAiming(m_componentMiner.Inventory);
+			m_subsystemAudio.PlaySound("Audio/Armas/reload", 0.8f, 0f, m_componentCreature.ComponentCreatureModel.EyePosition, 10f, true);
 		}
 
 		void FireSingleProjectile(BulletBlock.BulletType type, Vector3 origin, Vector3 aimDirection, float speed, Vector3 spread, int count)
@@ -555,7 +766,7 @@ namespace Game
 			{
 				int slotValue = inventory.GetSlotValue(inventory.ActiveSlotIndex);
 				int contents = Terrain.ExtractContents(slotValue);
-				if (contents == MusketBlock.Index || contents == DoubleMusketBlock.Index || contents == FlameThrowerBlock.Index || contents == ItemsLauncherBlock.Index || contents == BowBlock.Index || contents == CrossbowBlock.Index || contents == RepeatCrossbowBlock.Index || IsThrowable(contents))
+				if (contents == MusketBlock.Index || contents == DoubleMusketBlock.Index || contents == FlameThrowerBlock.Index || contents == ItemsLauncherBlock.Index || contents == BowBlock.Index || contents == CrossbowBlock.Index || contents == RepeatCrossbowBlock.Index || IsThrowable(contents) || m_firearmConfigs.ContainsKey(contents))
 				{
 					Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
 					Vector3 aimDir = m_componentCreature.ComponentCreatureModel.EyeRotation.GetForwardVector();
@@ -565,6 +776,10 @@ namespace Game
 				}
 				m_isAiming = false;
 				m_aimTimer = 0f;
+				if (m_firearmConfigs.ContainsKey(contents))
+				{
+					m_hasCompletedInitialAim = false;
+				}
 			}
 		}
 
@@ -804,7 +1019,7 @@ namespace Game
 			{
 				int slotValue = inventory.GetSlotValue(i);
 				int contents = Terrain.ExtractContents(slotValue);
-				if (contents != 0 && contents != MusketBlock.Index && contents != DoubleMusketBlock.Index && contents != FlameThrowerBlock.Index && contents != ItemsLauncherBlock.Index && contents != BowBlock.Index && contents != CrossbowBlock.Index && contents != RepeatCrossbowBlock.Index && contents != BulletBlock.Index && !IsThrowable(contents) && inventory.GetSlotCount(i) > 0)
+				if (contents != 0 && contents != MusketBlock.Index && contents != DoubleMusketBlock.Index && contents != FlameThrowerBlock.Index && contents != ItemsLauncherBlock.Index && contents != BowBlock.Index && contents != CrossbowBlock.Index && contents != RepeatCrossbowBlock.Index && contents != BulletBlock.Index && !IsThrowable(contents) && !m_firearmConfigs.ContainsKey(contents) && inventory.GetSlotCount(i) > 0)
 					return i;
 			}
 			return -1;
