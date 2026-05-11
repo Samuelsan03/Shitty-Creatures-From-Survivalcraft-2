@@ -43,7 +43,7 @@ namespace Game
 		private ComponentBanditChaseBehavior m_componentBanditChaseBehavior;
 		private ComponentZombieChaseBehavior m_componentZombieChaseBehavior;
 		private ComponentCreatureModel m_componentModel;
-		private ComponentCreatureSounds m_componentCreatureSounds; // AÑADIDO
+		private ComponentCreatureSounds m_componentCreatureSounds;
 		private Game.Random m_random = new Game.Random();
 
 		private double m_lastShootTime;
@@ -95,6 +95,15 @@ namespace Game
 			});
 			if (bodyHit != null && bodyHit.Value.Distance < distance) return true;
 			return false;
+		}
+
+		// Verifica que el objetivo esté al frente (producto punto > 0)
+		private bool IsTargetInFront(ComponentCreature target)
+		{
+			if (target == null) return false;
+			Vector3 toTarget = target.ComponentCreatureModel.EyePosition - m_componentCreature.ComponentCreatureModel.EyePosition;
+			Vector3 forward = m_componentCreature.ComponentBody.Matrix.Forward;
+			return Vector3.Dot(forward, toTarget) > 0f;
 		}
 
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
@@ -561,6 +570,15 @@ namespace Game
 				m_currentWeaponIndex = -1;
 				return;
 			}
+
+			// Solo atacar si el objetivo está al frente (producto punto > 0)
+			if (!IsTargetInFront(target))
+			{
+				ResetAnimations();
+				m_currentWeaponIndex = -1;
+				return;
+			}
+
 			float distance = Vector3.Distance(m_componentCreature.ComponentBody.Position, target.ComponentBody.Position);
 
 			// Reemplazo del antiguo bloque UseMeleeSwitch
@@ -1046,7 +1064,7 @@ namespace Game
 				}
 				m_subsystemAudio.PlaySound(config.ShootSound, SoundVolume, pitchVariation, shootPosition, SoundRange, true);
 
-				// AÑADIDO: Reproducir sonido de ataque/enojado al disparar
+				// Reproducir sonido de ataque/enojado al disparar
 				if (m_componentCreatureSounds != null)
 				{
 					m_componentCreatureSounds.PlayAttackSound();
