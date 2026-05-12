@@ -9,7 +9,12 @@ namespace Game
 	{
 		public static float MusketCooldown = 0.5f;
 		public static float MusketAimTime = 1.5f;
+		public static float CrossbowCooldown = 0.5f;
+		public static float CrossbowAimTime = 1.0f;
+
 		public Vector2 AttackRange = new Vector2(5f, 100f);
+		public Vector2 ExplosiveRange = new Vector2(20f, 100f); // X = distancia mínima, Y = distancia máxima para usar virotes explosivos
+
 		private bool m_canUseInventory;
 		private ComponentMiner m_componentMiner;
 		private ComponentCreature m_componentCreature;
@@ -18,19 +23,14 @@ namespace Game
 		private ComponentZombieChaseBehavior m_chaseBehavior;
 		private SubsystemTime m_subsystemTime;
 		private ComponentCreatureModel m_creatureModel;
+		private SubsystemProjectiles m_subsystemProjectiles;
 		private float m_aimTimer;
 		private bool m_isAiming;
 		private float m_cooldownTimer;
+		private Random m_random = new Random();
 
-		public override float ImportanceLevel
-		{
-			get { return 100f; }
-		}
-
-		public UpdateOrder UpdateOrder
-		{
-			get { return UpdateOrder.Default; }
-		}
+		public override float ImportanceLevel => 100f;
+		public UpdateOrder UpdateOrder => UpdateOrder.Default;
 
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
@@ -41,43 +41,59 @@ namespace Game
 			m_componentBody = base.Entity.FindComponent<ComponentBody>(true);
 			m_inventory = m_componentMiner.Inventory;
 			m_creatureModel = m_componentCreature.ComponentCreatureModel;
+			m_subsystemProjectiles = base.Project.FindSubsystem<SubsystemProjectiles>(true);
 			m_chaseBehavior = base.Entity.FindComponent<ComponentZombieChaseBehavior>();
 			if (m_chaseBehavior == null)
 			{
-				Log.Warning("ComponentZombieAI: No se encontró ComponentZombieChaseBehavior en la entidad. IA desactivada.");
+				Log.Warning("ComponentZombieAI: No se encontró ComponentZombieChaseBehavior. IA desactivada.");
+			}
+
+			// Suscribirse a proyectiles añadidos para hacer desaparecer los virotes al impactar
+			m_subsystemProjectiles.ProjectileAdded += OnProjectileAdded;
+		}
+
+		private void OnProjectileAdded(Projectile projectile)
+		{
+			// Solo aplicar a proyectiles de este zombi que sean flechas/virotes (ArrowBlock = 192)
+			if (projectile.Owner == m_componentCreature &&
+				BlocksManager.Blocks[Terrain.ExtractContents(projectile.Value)] is ArrowBlock)
+			{
+				projectile.ProjectileStoppedAction = ProjectileStoppedAction.Disappear;
 			}
 		}
 
 		public virtual void Update(float dt)
 		{
 			if (!m_canUseInventory || m_componentMiner == null || m_chaseBehavior == null || m_inventory == null)
-			{
 				return;
-			}
+
 			if (m_componentCreature.ComponentHealth.Health <= 0f)
 			{
 				StopAiming();
 				return;
 			}
+
 			ComponentCreature target = m_chaseBehavior.m_target;
 			if (target == null || target.ComponentHealth.Health <= 0f)
 			{
 				StopAiming();
 				return;
 			}
+
 			int activeValue = m_inventory.GetSlotValue(m_inventory.ActiveSlotIndex);
 			if (activeValue == 0)
-			{
 				return;
-			}
+
 			Block activeBlock = BlocksManager.Blocks[Terrain.ExtractContents(activeValue)];
-			bool hasRangedWeapon = activeBlock is MusketBlock;
+			bool hasRangedWeapon = activeBlock is MusketBlock || activeBlock is CrossbowBlock;
 			bool hasMeleeWeapon = !hasRangedWeapon && activeBlock.GetMeleePower(activeValue) > 0f;
+
 			if (!hasRangedWeapon && !hasMeleeWeapon)
 			{
-				EquipRangedWeapon();
+				EquipBestRangedWeapon();
 				return;
 			}
+
 			float distance = GetMeleeDistanceToTarget(target.ComponentBody);
 			if (distance <= AttackRange.X)
 			{
@@ -98,17 +114,20 @@ namespace Game
 				PerformMeleeAttack(target);
 				return;
 			}
+
 			if (hasMeleeWeapon && distance > AttackRange.X)
 			{
-				EquipRangedWeapon();
+				EquipBestRangedWeapon();
 				return;
 			}
+
 			float distToTarget = Vector3.Distance(m_componentBody.Position, target.ComponentBody.Position);
 			if (distToTarget > AttackRange.Y)
 			{
 				StopAiming();
 				return;
 			}
+
 			UpdateRangedCombat(dt, target.ComponentBody.Position);
 		}
 
@@ -124,42 +143,61 @@ namespace Game
 
 		private void UpdateRangedCombat(float dt, Vector3 targetPos)
 		{
+			int activeValue = m_inventory.GetSlotValue(m_inventory.ActiveSlotIndex);
+			Block activeBlock = BlocksManager.Blocks[Terrain.ExtractContents(activeValue)];
+			bool isMusket = activeBlock is MusketBlock;
+			bool isCrossbow = activeBlock is CrossbowBlock;
+			if (!isMusket && !isCrossbow)
+				return;
+
+			float aimTime = isMusket ? MusketAimTime : CrossbowAimTime;
+			float cooldown = isMusket ? MusketCooldown : CrossbowCooldown;
+
 			if (m_cooldownTimer > 0f)
-			{
 				m_cooldownTimer -= dt;
-			}
+
 			if (!m_isAiming && m_cooldownTimer <= 0f)
-			{
 				StartAiming();
-			}
+
 			if (m_isAiming)
 			{
 				m_aimTimer += dt;
 				Vector3 eyePos = m_creatureModel.EyePosition;
-				// Calcula el rayo cada frame, no solo al completar
 				Vector3 dir = Vector3.Normalize(targetPos + new Vector3(0f, 1f, 0f) - eyePos);
 				Ray3 aimRay = new Ray3(eyePos, dir);
 
-				if (m_aimTimer < MusketAimTime)
+				if (m_aimTimer < aimTime)
 				{
-					// ⚠️ Llamada esencial: Inicia el apuntado en el subsistema (amartilla el percutor, etc.)
 					m_componentMiner.Aim(aimRay, AimState.InProgress);
-
-					// ⚠️ Ahora sobreescribe la pose para rotar solo el arma (manos quietas)
 					if (m_creatureModel != null)
 					{
-						m_creatureModel.AimHandAngleOrder = 0f;                // brazo quieto
-						m_creatureModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
-						m_creatureModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
+						m_creatureModel.AimHandAngleOrder = 0f;
+						if (isMusket)
+						{
+							m_creatureModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
+							m_creatureModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
+						}
+						else
+						{
+							m_creatureModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.1f, 0.07f);
+							m_creatureModel.InHandItemRotationOrder = new Vector3(-1.55f, 0f, 0f);
+						}
 					}
 				}
 				else
 				{
-					// Disparo real
 					m_componentMiner.Aim(aimRay, AimState.Completed);
-					ReloadMusketInstantly();
+					if (isMusket)
+					{
+						ReloadMusketInstantly();
+					}
+					else
+					{
+						float distanceToTarget = Vector3.Distance(m_componentBody.Position, targetPos);
+						ReloadCrossbowInstantly(distanceToTarget);
+					}
 					m_isAiming = false;
-					m_cooldownTimer = MusketCooldown;
+					m_cooldownTimer = cooldown;
 					ResetModelPose();
 				}
 			}
@@ -169,11 +207,9 @@ namespace Game
 		{
 			if (m_isAiming)
 			{
-				// ⚠️ Cancela el apuntado en el subsistema (baja el percutor, libera el diccionario)
 				Vector3 eyePos = m_creatureModel.EyePosition;
 				Ray3 dummyRay = new Ray3(eyePos, Vector3.UnitZ);
 				m_componentMiner.Aim(dummyRay, AimState.Cancelled);
-
 				m_isAiming = false;
 				m_aimTimer = 0f;
 				ResetModelPose();
@@ -183,6 +219,16 @@ namespace Game
 		private void StartAiming()
 		{
 			StopAiming();
+			int activeValue = m_inventory.GetSlotValue(m_inventory.ActiveSlotIndex);
+			Block activeBlock = BlocksManager.Blocks[Terrain.ExtractContents(activeValue)];
+			if (activeBlock is CrossbowBlock)
+			{
+				int data = Terrain.ExtractData(activeValue);
+				int draw = CrossbowBlock.GetDraw(data);
+				ArrowBlock.ArrowType? arrow = CrossbowBlock.GetArrowType(data);
+				if (draw != 15 || arrow == null)
+					ReloadCrossbowInstantly(Vector3.Distance(m_componentBody.Position, m_chaseBehavior.m_target.ComponentBody.Position));
+			}
 			m_isAiming = true;
 			m_aimTimer = 0f;
 		}
@@ -197,20 +243,24 @@ namespace Game
 			}
 		}
 
-		private void EquipRangedWeapon()
+		private void EquipBestRangedWeapon()
 		{
 			for (int i = 0; i < m_inventory.SlotsCount; i++)
 			{
 				int slotValue = m_inventory.GetSlotValue(i);
-				int slotCount = m_inventory.GetSlotCount(i);
-				if (slotCount > 0)
+				if (m_inventory.GetSlotCount(i) > 0 && BlocksManager.Blocks[Terrain.ExtractContents(slotValue)] is MusketBlock)
 				{
-					Block block = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)];
-					if (block is MusketBlock)
-					{
-						m_inventory.ActiveSlotIndex = i;
-						return;
-					}
+					m_inventory.ActiveSlotIndex = i;
+					return;
+				}
+			}
+			for (int i = 0; i < m_inventory.SlotsCount; i++)
+			{
+				int slotValue = m_inventory.GetSlotValue(i);
+				if (m_inventory.GetSlotCount(i) > 0 && BlocksManager.Blocks[Terrain.ExtractContents(slotValue)] is CrossbowBlock)
+				{
+					m_inventory.ActiveSlotIndex = i;
+					return;
 				}
 			}
 		}
@@ -222,15 +272,9 @@ namespace Game
 			for (int i = 0; i < m_inventory.SlotsCount; i++)
 			{
 				int slotValue = m_inventory.GetSlotValue(i);
-				if (m_inventory.GetSlotCount(i) == 0)
-				{
-					continue;
-				}
+				if (m_inventory.GetSlotCount(i) == 0) continue;
 				Block block = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)];
-				if (block is MusketBlock)
-				{
-					continue;
-				}
+				if (block is MusketBlock || block is CrossbowBlock) continue;
 				float power = block.GetMeleePower(slotValue);
 				if (power > bestPower)
 				{
@@ -249,14 +293,9 @@ namespace Game
 		private void PerformMeleeAttack(ComponentCreature target)
 		{
 			ComponentBody targetBody = target.ComponentBody;
-			if (targetBody == null)
-			{
+			if (targetBody == null || GetMeleeDistanceToTarget(targetBody) > AttackRange.X)
 				return;
-			}
-			if (GetMeleeDistanceToTarget(targetBody) > AttackRange.X)
-			{
-				return;
-			}
+
 			Vector3 myPos = m_componentBody.Position;
 			BoundingBox targetBox = targetBody.BoundingBox;
 			Vector3 hitPoint = new Vector3(
@@ -272,20 +311,48 @@ namespace Game
 		{
 			int activeSlot = m_inventory.ActiveSlotIndex;
 			int currentValue = m_inventory.GetSlotValue(activeSlot);
-			Block activeBlock = BlocksManager.Blocks[Terrain.ExtractContents(currentValue)];
-			if (!(activeBlock is MusketBlock))
-			{
+			if (!(BlocksManager.Blocks[Terrain.ExtractContents(currentValue)] is MusketBlock))
 				return;
-			}
+
 			m_inventory.RemoveSlotItems(activeSlot, 1);
-			int bulletType = new Random().Int(0, 2);
+			int bulletType = m_random.Int(0, 2); // 0:MusketBall, 1:Buckshot, 2:BuckshotBall
 			int data = 0;
 			data = MusketBlock.SetHammerState(data, false);
 			data = MusketBlock.SetLoadState(data, MusketBlock.LoadState.Loaded);
 			data = MusketBlock.SetBulletType(data, (BulletBlock.BulletType)bulletType);
-			int musketIndex = activeBlock.BlockIndex;
-			int loadedValue = Terrain.MakeBlockValue(musketIndex, 0, data);
-			m_inventory.AddSlotItems(activeSlot, loadedValue, 1);
+			m_inventory.AddSlotItems(activeSlot, Terrain.MakeBlockValue(MusketBlock.Index, 0, data), 1);
+		}
+
+		private void ReloadCrossbowInstantly(float distanceToTarget)
+		{
+			int activeSlot = m_inventory.ActiveSlotIndex;
+			int currentValue = m_inventory.GetSlotValue(activeSlot);
+			if (!(BlocksManager.Blocks[Terrain.ExtractContents(currentValue)] is CrossbowBlock))
+				return;
+
+			m_inventory.RemoveSlotItems(activeSlot, 1);
+
+			ArrowBlock.ArrowType boltType;
+			bool useExplosive = (distanceToTarget >= ExplosiveRange.X && distanceToTarget <= ExplosiveRange.Y);
+
+			if (useExplosive)
+			{
+				// Dentro del rango: 1/3 de probabilidad para cada tipo (Iron, Diamond, Explosive)
+				int r = m_random.Int(0, 2);
+				if (r == 0) boltType = ArrowBlock.ArrowType.IronBolt;
+				else if (r == 1) boltType = ArrowBlock.ArrowType.DiamondBolt;
+				else boltType = ArrowBlock.ArrowType.ExplosiveBolt;
+			}
+			else
+			{
+				// Fuera del rango: solo hierro y diamante (50% cada uno)
+				boltType = m_random.Bool() ? ArrowBlock.ArrowType.IronBolt : ArrowBlock.ArrowType.DiamondBolt;
+			}
+
+			int data = 0;
+			data = CrossbowBlock.SetDraw(data, 15);
+			data = CrossbowBlock.SetArrowType(data, boltType);
+			m_inventory.AddSlotItems(activeSlot, Terrain.MakeBlockValue(CrossbowBlock.Index, 0, data), 1);
 		}
 	}
 }
