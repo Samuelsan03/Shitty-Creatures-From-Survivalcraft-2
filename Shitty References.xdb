@@ -3,6 +3,7 @@
 <Parameter Name="Class" Guid="3bb544e4-4e2b-4b31-9172-7709a9271366" new-Value="Game.ComponentNewHumanModel" Type="string"/>
 <Parameter Name="Class" Guid="8c4f00ca-8f77-47c9-99bb-cefa4f94ee8d" new-Value="Game.ComponentNewVitalStats" Type="string"/>
 <Parameter Name="Class" Guid="b889d63d-0b71-45cf-8606-13ab2e94f6d2" new-Value="Game.ComponentNewFourLeggedModel" Type="string"/>
+<Parameter Name="Class" Guid="cdb6b509-23c4-4f83-a269-897a2970e245" new-Value="Game.ComponentNewBirdModel" Type="string" />
 
     <Folder Name="Gameplay" Guid="d509e5e2-2c10-49f1-8223-85cd892c63b0">
     <ComponentTemplate Name="CreatureClothing" Description="Handles clothes worn by creatures" Guid="c1965be4-62ff-42f9-90e6-4e12b4d9a3af" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
@@ -51,10 +52,6 @@
   <Parameter Name="Sleep" Description="Sleep level, 0 to 1" Guid="69e3578f-48ee-4fe1-b9af-c46b099a7328" Value="1" Type="float"/>
   <Parameter Name="Temperature" Description="Body temperature, in world temperature units" Guid="93b62c67-e897-431b-992d-13f2f8015006" Value="12" Type="float"/>
   <Parameter Name="Thirst" Description="Water/Thirst level, 0 to 1" Guid="f0878cb9-d7b8-458d-99f9-35e88fa29b5a" Value="1" Type="float"/>
-</ComponentTemplate>
-
-    <ComponentTemplate Name="RageZombieBehavior" Description="Hace que el zombi entre en furia con poca salud, aumentando su velocidad, atacando sin demora y mostrando ojos brillantes." Guid="2d584a55-7ccb-42c7-8fc0-c3f288eefae9" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
-    <Parameter Name="Class" Guid="e4fb314e-1a7a-43ae-afde-69d0033eabc1" Value="Game.ComponentZombieRageBehavior" Type="string"/>
 </ComponentTemplate>
 
     <ComponentTemplate Name="DefensiveRunAwayBehavior" Description="Versión de ComponentRunAwayBehavior que solo huye cuando es atacado, ignorando ruidos y salud baja." Guid="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
@@ -279,6 +276,19 @@
     <Parameter Name="FeedSmoothness" Description="Speed of transition when feeding. Lower is slower/smoother (Original: 2)" Guid="048b9c3d-c14a-494d-b3ce-ae555cd5ebc9" Value="2" Type="float" />
     <Parameter Name="AttackSmoothness" Description="Speed of transition when attacking. Lower is slower/smoother (Original: 4)" Guid="6e0f5152-b437-44e6-bcc3-438848bfcec5" Value="4" Type="float" />
     <Parameter Name="Class" Guid="a3d2ce77-4086-4603-a21d-1695037e9f3e" Value="Game.ComponentNewFourLeggedModel" Type="string" />
+</ComponentTemplate>
+
+<ComponentTemplate Name="BirdModel" Description="Bird model behavior and animation" Guid="0f741429-f651-4e53-a724-3739f96558da" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
+    <Parameter Name="BoundingSphereRadius" Guid="af24590c-66b7-4188-81c3-4ef15952e57a" Value="1" Type="float" />
+    <Parameter Name="WalkAnimationSpeed" Description="Walking animation speed, in cycles/meter" Guid="eee65c45-d8b1-446c-8387-ad364615d8c7" Value="1" Type="float" />
+    <Parameter Name="FlyAnimationSpeed" Description="Flying animation speed" Guid="91108288-b2bc-4e96-97a8-142696e47c3e" Value="1" Type="float" />
+    <Parameter Name="PeckAnimationSpeed" Description="Pecking animation speed, in cycles/second" Guid="05528ea8-6491-4671-812e-2afdc858d00e" Value="2" Type="float" />
+    <Parameter Name="WalkBobHeight" Description="Height of bobbing when creature walks, in meters" Guid="85d9e43c-e6d0-4fe1-93c8-439d57f08c02" Value="0" Type="float" />
+    <!-- Nuevos parámetros de suavidad -->
+    <Parameter Name="VisualSmoothness" Description="Smoothness of wings, legs, neck and head. Lower is softer (Original: 12)" Guid="f75b5adc-965d-4fd4-afc0-786ac2a8ce7c" Value="12" Type="float" />
+    <Parameter Name="BobSmoothness" Description="Smoothness of body vertical bobbing. Lower is softer (Original: 12)" Guid="891d8815-8edb-481c-b774-edc21341d3df" Value="12" Type="float" />
+    <Parameter Name="AttackSmoothness" Description="Speed of transition and kick speed when attacking. Lower is smoother (Original: 2)" Guid="102a29e3-eed4-40e7-a4eb-ebd26cf2431b" Value="2" Type="float" />
+    <Parameter Name="Class" Guid="a063981f-32b7-4077-a2e9-e75a89492acb" Value="Game.ComponentNewBirdModel" Type="string" />
 </ComponentTemplate>
         
 <ComponentTemplate Name="DeathSpawner" Description="Genera una entidad al morir, seleccionada aleatoriamente según probabilidades configuradas" Guid="32905e25-1938-46fb-8659-a86ee79cfaa4" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
