@@ -18,6 +18,11 @@ namespace Game
 		public Vector2 AttackRange = new Vector2(5f, 100f);
 		public Vector2 ExplosiveRange = new Vector2(20f, 100f);
 
+		// New throwable fields
+		public Vector2 ThrowableRange = new Vector2(5f, 15f);
+		public float ThrowableAimTime = 1.5f;
+		public float ThrowableCooldown = 0.02f;
+
 		private bool m_canUseInventory;
 		private bool m_canEquipClothing;
 		private ComponentMiner m_componentMiner;
@@ -40,6 +45,9 @@ namespace Game
 
 		private Random m_random = new Random();
 
+		// Lista de índices de bloques lanzables
+		private List<int> m_throwableIndices = new List<int>();
+
 		public override float ImportanceLevel => 100f;
 		public UpdateOrder UpdateOrder => UpdateOrder.Default;
 
@@ -61,6 +69,44 @@ namespace Game
 				Log.Warning("ComponentZombieAI: No se encontró ComponentZombieChaseBehavior. IA desactivada.");
 			}
 			m_subsystemProjectiles.ProjectileAdded += OnProjectileAdded;
+
+			// Inicializar lista de bloques lanzables
+			InitializeThrowableIndices();
+		}
+
+		private void InitializeThrowableIndices()
+		{
+			m_throwableIndices.Clear();
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<StoneChunkBlock>(false, false));
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<SulphurChunkBlock>(false, false));
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<CoalChunkBlock>(false, false));
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<DiamondChunkBlock>(false, false));
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<GermaniumChunkBlock>(false, false));
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<GermaniumOreChunkBlock>(false, false));
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<IronOreChunkBlock>(false, false));
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<MalachiteChunkBlock>(false, false));
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<SaltpeterChunkBlock>(false, false));
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<GunpowderBlock>(false, false));
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<BombBlock>(false, false));
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<IncendiaryBombBlock>(false, false));
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<PoisonBombBlock>(false, false));
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<BrickBlock>(false, false));
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<SnowballBlock>(false, false));
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<EggBlock>(false, false));
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<CopperSpearBlock>(false, false));
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<DiamondSpearBlock>(false, false));
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<IronSpearBlock>(false, false));
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<WoodenSpearBlock>(false, false));
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<WoodenLongspearBlock>(false, false));
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<StoneSpearBlock>(false, false));
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<StoneLongspearBlock>(false, false));
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<IronLongspearBlock>(false, false));
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<LavaLongspearBlock>(false, false));
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<LavaSpearBlock>(false, false));
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<DiamondLongspearBlock>(false, false));
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<FreezingSnowballBlock>(false, false));
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<FreezeBombBlock>(false, false));
+			m_throwableIndices.Add(BlocksManager.GetBlockIndex<FireworksBlock>(false, false));
 		}
 
 		public override void Save(ValuesDictionary valuesDictionary, EntityToIdMap entityToIdMap)
@@ -79,6 +125,7 @@ namespace Game
 
 		public virtual void Update(float dt)
 		{
+			// Clothing equipping (unchanged)
 			if (m_canEquipClothing && m_componentClothing != null)
 			{
 				if (m_isEquipping)
@@ -116,52 +163,85 @@ namespace Game
 			if (activeValue == 0)
 				return;
 
-			Block activeBlock = BlocksManager.Blocks[Terrain.ExtractContents(activeValue)];
-			bool hasRangedWeapon = activeBlock is MusketBlock || activeBlock is CrossbowBlock || activeBlock is BowBlock;
-			bool hasMeleeWeapon = !hasRangedWeapon && activeBlock.GetMeleePower(activeValue) > 0f;
+			int activeBlockIndex = Terrain.ExtractContents(activeValue);
+			Block activeBlock = BlocksManager.Blocks[activeBlockIndex];
+			bool isThrowable = IsThrowableBlock(activeBlockIndex);
+			bool isRanged = activeBlock is MusketBlock || activeBlock is CrossbowBlock || activeBlock is BowBlock;
+			bool isMelee = !isRanged && !isThrowable && activeBlock.GetMeleePower(activeValue) > 0f;
 
-			if (!hasRangedWeapon && !hasMeleeWeapon)
+			float distToTarget = Vector3.Distance(m_componentBody.Position, target.ComponentBody.Position);
+
+			// PRIORITY: throwable weapons when in throwable range
+			if (isThrowable && distToTarget >= ThrowableRange.X && distToTarget <= ThrowableRange.Y)
 			{
-				EquipBestRangedWeapon();
+				// Detener movimiento para apuntar y lanzar
+				StopMovement();
+				PerformThrowableAttack(dt, target.ComponentBody.Position);
+				return;
+			}
+			else if (!isThrowable && distToTarget >= ThrowableRange.X && distToTarget <= ThrowableRange.Y && HasThrowableInInventory())
+			{
+				// Equip a throwable weapon if we have one and range matches
+				EquipBestThrowableWeapon();
+				StopAiming();
 				return;
 			}
 
-			float distance = GetMeleeDistanceToTarget(target.ComponentBody);
+			// Not using throwables: fall back to normal ranged/melee logic
+			float meleeDist = GetMeleeDistanceToTarget(target.ComponentBody);
 
-			if (distance <= AttackRange.X)
+			if (meleeDist <= AttackRange.X)
 			{
-				if (!hasMeleeWeapon)
+				// Melee range: prefer melee weapon
+				if (!isMelee)
 				{
 					if (TryEquipBestMeleeWeapon())
 					{
 						PerformMeleeAttack(target);
-						return;
+					}
+					else if (isRanged)
+					{
+						UpdateRangedCombat(dt, target.ComponentBody.Position);
+						PerformMeleeAttack(target);
+					}
+					else if (isThrowable)
+					{
+						// Too close for throwable, switch to melee if possible
+						if (TryEquipBestMeleeWeapon())
+							PerformMeleeAttack(target);
 					}
 				}
 				else
 				{
 					PerformMeleeAttack(target);
-					return;
 				}
-				UpdateRangedCombat(dt, target.ComponentBody.Position);
-				PerformMeleeAttack(target);
 				return;
 			}
 
-			if (hasMeleeWeapon && distance > AttackRange.X)
+			// Out of melee range: check ranged distances
+			if (distToTarget <= AttackRange.Y)
 			{
-				EquipBestRangedWeapon();
-				return;
+				if (isMelee)
+				{
+					EquipBestRangedWeapon();
+				}
+				else if (isRanged)
+				{
+					UpdateRangedCombat(dt, target.ComponentBody.Position);
+				}
+				else if (isThrowable)
+				{
+					// Throwable equipped but target not in throwable range; switch to ranged if in ranged range
+					if (distToTarget > ThrowableRange.Y)
+						EquipBestRangedWeapon();
+					else if (distToTarget < ThrowableRange.X)
+						TryEquipBestMeleeWeapon(); // too close, switch back
+				}
 			}
-
-			float distToTarget = Vector3.Distance(m_componentBody.Position, target.ComponentBody.Position);
-			if (distToTarget > AttackRange.Y)
+			else // Outside maximum attack range
 			{
 				StopAiming();
-				return;
 			}
-
-			UpdateRangedCombat(dt, target.ComponentBody.Position);
 		}
 
 		private float GetMeleeDistanceToTarget(ComponentBody targetBody)
@@ -239,6 +319,59 @@ namespace Game
 			}
 		}
 
+		private void PerformThrowableAttack(float dt, Vector3 targetPos)
+		{
+			// Cooldown handling
+			if (m_cooldownTimer > 0f)
+			{
+				m_cooldownTimer -= dt;
+				return;
+			}
+
+			if (m_isAiming)
+			{
+				m_aimTimer += dt;
+				Vector3 eyePos = m_creatureModel.EyePosition;
+				Vector3 dir = Vector3.Normalize(targetPos + new Vector3(0f, 1f, 0f) - eyePos);
+				Ray3 aimRay = new Ray3(eyePos, dir);
+
+				if (m_aimTimer >= ThrowableAimTime)
+				{
+					// Complete aim -> throw
+					m_componentMiner.Aim(aimRay, AimState.Completed);
+					m_isAiming = false;
+					m_cooldownTimer = ThrowableCooldown;
+					m_aimTimer = 0f;
+					ResetModelPose();
+				}
+				else
+				{
+					// In progress
+					m_componentMiner.Aim(aimRay, AimState.InProgress);
+					// Set hand pose for throwing (matching SubsystemThrowableBlockBehavior)
+					if (m_creatureModel != null)
+					{
+						m_creatureModel.AimHandAngleOrder = 3.2f;
+						ComponentFirstPersonModel firstPerson = m_componentMiner.Entity.FindComponent<ComponentFirstPersonModel>();
+						if (firstPerson != null)
+						{
+							firstPerson.ItemOffsetOrder = new Vector3(0f, 0.35f, 0.17f);
+							firstPerson.ItemRotationOrder = new Vector3(-1.5f, 0f, 0f);
+						}
+						m_creatureModel.InHandItemOffsetOrder = new Vector3(0f, -0.25f, 0f);
+						m_creatureModel.InHandItemRotationOrder = new Vector3(3.14159f, 0f, 0f);
+					}
+				}
+			}
+			else
+			{
+				// Start aiming
+				StopAiming();
+				m_isAiming = true;
+				m_aimTimer = 0f;
+			}
+		}
+
 		private void StopAiming()
 		{
 			if (m_isAiming)
@@ -287,6 +420,16 @@ namespace Game
 			}
 		}
 
+		private void StopMovement()
+		{
+			// Detiene el movimiento del zombie para apuntar y lanzar
+			ComponentPathfinding pathfinding = base.Entity.FindComponent<ComponentPathfinding>();
+			if (pathfinding != null)
+			{
+				pathfinding.Stop();
+			}
+		}
+
 		private void EquipBestRangedWeapon()
 		{
 			for (int i = 0; i < m_inventory.SlotsCount; i++)
@@ -326,8 +469,9 @@ namespace Game
 			{
 				int slotValue = m_inventory.GetSlotValue(i);
 				if (m_inventory.GetSlotCount(i) == 0) continue;
-				Block block = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)];
-				if (block is MusketBlock || block is CrossbowBlock || block is BowBlock) continue;
+				int blockIndex = Terrain.ExtractContents(slotValue);
+				Block block = BlocksManager.Blocks[blockIndex];
+				if (block is MusketBlock || block is CrossbowBlock || block is BowBlock || IsThrowableBlock(blockIndex)) continue; // skip ranged and throwable
 				float power = block.GetMeleePower(slotValue);
 				if (power > bestPower)
 				{
@@ -416,12 +560,12 @@ namespace Game
 
 			ArrowBlock.ArrowType[] arrowTypes = new ArrowBlock.ArrowType[]
 			{
-		ArrowBlock.ArrowType.WoodenArrow,
-		ArrowBlock.ArrowType.StoneArrow,
-		ArrowBlock.ArrowType.CopperArrow,
-		ArrowBlock.ArrowType.IronArrow,
-		ArrowBlock.ArrowType.DiamondArrow,
-		ArrowBlock.ArrowType.FireArrow
+				ArrowBlock.ArrowType.WoodenArrow,
+				ArrowBlock.ArrowType.StoneArrow,
+				ArrowBlock.ArrowType.CopperArrow,
+				ArrowBlock.ArrowType.IronArrow,
+				ArrowBlock.ArrowType.DiamondArrow,
+				ArrowBlock.ArrowType.FireArrow
 			};
 
 			ArrowBlock.ArrowType arrowType = arrowTypes[m_random.Int(0, arrowTypes.Length - 1)];
@@ -432,6 +576,37 @@ namespace Game
 			m_inventory.AddSlotItems(activeSlot, Terrain.MakeBlockValue(BowBlock.Index, 0, data), 1);
 		}
 
+		// --- Throwable utility methods ---
+		private bool IsThrowableBlock(int blockIndex)
+		{
+			return m_throwableIndices.Contains(blockIndex);
+		}
+
+		private bool HasThrowableInInventory()
+		{
+			for (int i = 0; i < m_inventory.SlotsCount; i++)
+			{
+				int value = m_inventory.GetSlotValue(i);
+				if (m_inventory.GetSlotCount(i) > 0 && IsThrowableBlock(Terrain.ExtractContents(value)))
+					return true;
+			}
+			return false;
+		}
+
+		private void EquipBestThrowableWeapon()
+		{
+			for (int i = 0; i < m_inventory.SlotsCount; i++)
+			{
+				int value = m_inventory.GetSlotValue(i);
+				if (m_inventory.GetSlotCount(i) > 0 && IsThrowableBlock(Terrain.ExtractContents(value)))
+				{
+					m_inventory.ActiveSlotIndex = i;
+					return;
+				}
+			}
+		}
+
+		// Clothing methods (unchanged)
 		private void TryStartEquippingClothing()
 		{
 			for (int i = 0; i < m_inventory.SlotsCount; i++)
