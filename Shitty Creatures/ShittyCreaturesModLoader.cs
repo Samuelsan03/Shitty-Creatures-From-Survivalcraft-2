@@ -191,6 +191,7 @@ namespace Game
 
 				try
 				{
+					// Acceder al campo m_targetInRangeTime mediante reflexión
 					FieldInfo targetTimeField = typeof(ComponentChaseBehavior).GetField("m_targetInRangeTime",
 						BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
 					if (targetTimeField != null)
@@ -198,6 +199,7 @@ namespace Game
 						targetTimeField.SetValue(zombieChase, 1f);
 					}
 
+					// Acceder a la propiedad TargetInRangeTimeToChase mediante reflexión
 					PropertyInfo chaseTimeProp = typeof(ComponentChaseBehavior).GetProperty("TargetInRangeTimeToChase",
 						BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 					if (chaseTimeProp != null && chaseTimeProp.CanWrite)
@@ -205,15 +207,24 @@ namespace Game
 						chaseTimeProp.SetValue(zombieChase, 0f);
 					}
 
+					// Establecer Suppressed a false (es público en ComponentChaseBehavior)
 					zombieChase.Suppressed = false;
 
-					if (zombieChase.CurrentState == "Fleeing")
+					// Acceder al StateMachine interno para verificar el estado actual
+					FieldInfo stateMachineField = typeof(ComponentChaseBehavior).GetField("m_stateMachine",
+						BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+					if (stateMachineField != null)
 					{
-						MethodInfo transitionMethod = typeof(ComponentChaseBehavior).GetMethod("TransitionTo",
-							BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
-						if (transitionMethod != null)
+						StateMachine stateMachine = stateMachineField.GetValue(zombieChase) as StateMachine;
+						if (stateMachine != null && stateMachine.CurrentState == "Fleeing")
 						{
-							transitionMethod.Invoke(zombieChase, new object[] { "LookingForTarget" });
+							// Usar reflexión para llamar a TransitionTo en el StateMachine
+							MethodInfo transitionMethod = typeof(StateMachine).GetMethod("TransitionTo",
+								BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+							if (transitionMethod != null)
+							{
+								transitionMethod.Invoke(stateMachine, new object[] { "LookingForTarget" });
+							}
 						}
 					}
 
@@ -227,6 +238,7 @@ namespace Game
 
 			if (cancelledCount > 0)
 			{
+				// Opcional: Log.Information($"[ShittyCreatures] Se canceló el delay de caza para {cancelledCount} criaturas durante la noche verde.");
 			}
 		}
 
@@ -370,7 +382,7 @@ namespace Game
 					LinkWidget tikTokLink = new LinkWidget
 					{
 						Text = " @athormi",
-						Color = new Color (255,181,31),
+						Color = new Color(255, 181, 31),
 						FontScale = 0.7f,
 						VerticalAlignment = WidgetAlignment.Center,
 						Url = "https://www.tiktok.com/@athormi",
