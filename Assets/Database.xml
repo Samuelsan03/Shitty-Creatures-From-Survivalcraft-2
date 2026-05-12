@@ -94,6 +94,11 @@
               <Parameter Name="WalkBobHeight" Guid="b34f204a-af13-4ca8-890f-f87143b4fb04" Value="0.05" Type="float"/>
               <Parameter Name="TextureOverride" Guid="b6f3a9d7-437d-4cce-8210-ae277a8722ab" Value="" Type="string"/>
               <Parameter Name="WalkAnimationSpeed" Guid="cf6e7b39-5f98-4e5d-b60b-94aad3ce4d6a" Value="0.6" Type="float"/>
+              <Parameter Name="LegSmoothness" Guid="c48cd371-096d-4ae4-b9b3-2b63f0ec1944" Value="6" Type="float" />
+        <Parameter Name="HeadSmoothness" Guid="c1001604-6c17-4133-9eb7-d4e99714e088" Value="8" Type="float" />
+        <Parameter Name="BobSmoothness" Guid="0eacf159-3699-4be3-9fd5-26c479630690" Value="8" Type="float" />
+        <Parameter Name="FeedSmoothness" Guid="08c6a004-7c3b-4a44-8a96-accd0893f18b" Value="1.2" Type="float" />
+        <Parameter Name="AttackSmoothness" Guid="f171be5f-7203-47a7-8f20-f4738c2f18a4" Value="2.5" Type="float" />
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Udder" Guid="967f0d7c-12f7-45a7-b90d-87cd7a6fc963" InheritanceParent="32c8be61-7eca-4c96-98b3-5c5e7479129a"/>
             <MemberComponentTemplate Name="FeedBehavior" Guid="9fb82dad-ee89-4afe-a507-d32dc277f633" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad"/>
@@ -148,6 +153,11 @@
               <Parameter Name="WalkAnimationSpeed" Guid="7cd34777-2092-43c8-9b22-5b392e8295da" Value="0.6" Type="float"/>
               <Parameter Name="CanterLegsAngleFactor" Guid="829a3d34-1b2a-4772-9b34-8265bbf703b8" Value="1.5" Type="float"/>
               <Parameter Name="WalkFrontLegsAngle" Guid="c225b2a9-0f54-411f-a82f-184d24d6558a" Value="0.45" Type="float"/>
+              <Parameter Name="LegSmoothness" Guid="2ee1da44-632b-48bf-88e3-6b683df67a53" Value="6" Type="float" />
+        <Parameter Name="HeadSmoothness" Guid="078eca3c-2be2-4ea1-9865-7fa385353109" Value="8" Type="float" />
+        <Parameter Name="BobSmoothness" Guid="1b6a08d5-be18-41e8-9e4a-33f6c8d4b0d4" Value="8" Type="float" />
+        <Parameter Name="FeedSmoothness" Guid="f19daa8a-2d16-42ae-aab5-dc9bb57be3c3" Value="1.2" Type="float" />
+        <Parameter Name="AttackSmoothness" Guid="04c7f245-7f19-403f-ac12-4213a73b66bc" Value="2.5" Type="float" />
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Health" Guid="951a1477-f95e-48bb-91e8-83393859a27c">
               <Parameter Name="AttackResilience" Guid="b47eb827-b05f-4c33-a8ba-03b8d22013bd" Value="60" Type="float"/>
@@ -259,6 +269,11 @@
               <Parameter Name="WalkFrontLegsAngle" Guid="c567b8a6-0f6d-419a-bccf-88338d7abc4c" Value="0.5" Type="float"/>
               <Parameter Name="TextureOverride" Guid="e11c9326-ab53-42ca-9945-11c6234c9dde" Value="" Type="string"/>
               <Parameter Name="CanterLegsAngleFactor" Guid="e1e9aa55-bfcd-4792-aa76-608c15a19628" Value="1.65" Type="float"/>
+              <Parameter Name="LegSmoothness" Guid="cccf77de-0e34-4814-87c6-7d7abe9b9391" Value="6" Type="float" />
+        <Parameter Name="HeadSmoothness" Guid="6fb1c8fa-947d-416f-a92c-ac68e6d645fb" Value="8" Type="float" />
+        <Parameter Name="BobSmoothness" Guid="e02b5765-4363-4ad1-9d44-c757b43daebf" Value="8" Type="float" />
+        <Parameter Name="FeedSmoothness" Guid="f08d6a6a-68a5-4909-aa88-4aaae3d02c0e" Value="1.2" Type="float" />
+        <Parameter Name="AttackSmoothness" Guid="040fcb50-88ef-4c6b-8d38-f19322c3179b" Value="2.5" Type="float" />
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="OnFire" Guid="e3c96ba9-c5c4-4e32-8d63-f898a71f7fea"/>
             <MemberComponentTemplate Name="FeedBehavior" Guid="ed19557e-0ef8-4f1b-ae61-1b0fcb0b2b4a" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad"/>
@@ -311,6 +326,11 @@
               <Parameter Name="CanTrot" Guid="db73a29f-4891-4438-9cec-8d1ea6882c96" Value="True" Type="bool"/>
               <Parameter Name="WalkAnimationSpeed" Guid="dc3b5aca-131d-4fec-91f6-ad19e77e8155" Value="0.9" Type="float"/>
               <Parameter Name="TextureOverride" Guid="df6b8188-259f-46c1-adf7-8c8858804b27" Value="" Type="string"/>
+              <Parameter Name="LegSmoothness" Guid="aaddd802-8d1f-4fdb-949f-3c3ff65207fc" Value="6" Type="float" />
+        <Parameter Name="HeadSmoothness" Guid="76515f44-27be-4abb-b172-d923966cacb7" Value="8" Type="float" />
+        <Parameter Name="BobSmoothness" Guid="08facd1e-6c6d-4cdf-9a26-3ec1a4fdd3be" Value="8" Type="float" />
+        <Parameter Name="FeedSmoothness" Guid="0c9849a9-f27c-47bc-a13f-3e099c6e7d81" Value="1.2" Type="float" />
+        <Parameter Name="AttackSmoothness" Guid="b3ee4a81-3862-4f8f-ac32-0483bb62c0a3" Value="2.5" Type="float" />
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="WalkAroundBehavior" Guid="b07034d4-ac92-41bb-9309-47d73b13bbd7" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
             <MemberComponentTemplate Name="FeedBehavior" Guid="bb605e39-5fb3-4b05-982b-cea029e07959" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
@@ -501,6 +521,11 @@
               <Parameter Name="WalkBobHeight" Guid="8f5c0da0-011b-4609-b7fe-84c0b6b8037d" Value="0.05" Type="float"/>
               <Parameter Name="WalkAnimationSpeed" Guid="b3bddc8c-61b0-4fc1-92aa-8cccd641bf35" Value="0.52" Type="float"/>
               <Parameter Name="WalkHindLegsAngle" Guid="bfacbba7-5169-4a4b-adb9-ab34b879d3a3" Value="0.37" Type="float"/>
+              <Parameter Name="LegSmoothness" Guid="09859c0f-c864-4d8e-aed8-f3a6d5802822" Value="6" Type="float" />
+        <Parameter Name="HeadSmoothness" Guid="218dec31-a75a-4369-ab71-a5d7fc295577" Value="8" Type="float" />
+        <Parameter Name="BobSmoothness" Guid="58dc44c4-356a-4cfd-a8ce-a1a544064dfc" Value="8" Type="float" />
+        <Parameter Name="FeedSmoothness" Guid="299b2990-949b-47cd-8ccd-3c691961349a" Value="1.2" Type="float" />
+        <Parameter Name="AttackSmoothness" Guid="4c4e1b9c-a49d-4f3e-b118-8f0d4ce799af" Value="2.5" Type="float" />
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="DumpRiderBehavior" Guid="bedc95be-6e94-4ea9-a281-8ebb8d2f69ef" InheritanceParent="0ceada0a-8d0d-4442-a251-021beb0c9608"/>
             <MemberComponentTemplate Name="CreatureSounds" Guid="cca1d130-59ff-465a-8dc9-ad9b5558b41a">
@@ -955,6 +980,11 @@
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="FourLeggedModel" Guid="67e00f4b-7739-48fa-acaa-23ceff9f9c8d">
               <Parameter Name="TextureOverride" Guid="11ad576f-8285-466f-aefe-dbf02b57553b" Value="Textures/Creatures/Donkey_Saddled" Type="string"/>
+              <Parameter Name="LegSmoothness" Guid="ed9e9b77-f7dd-4218-91bc-eebc913621bc" Value="6" Type="float" />
+        <Parameter Name="HeadSmoothness" Guid="7ffb6c5f-1c2b-446f-b616-cf08b964b1fb" Value="8" Type="float" />
+        <Parameter Name="BobSmoothness" Guid="f1d94f17-f8ab-444c-b829-ccfc2e805f14" Value="8" Type="float" />
+        <Parameter Name="FeedSmoothness" Guid="f65fe0d8-6b8f-4613-a38f-3589ab46fccd" Value="1.2" Type="float" />
+        <Parameter Name="AttackSmoothness" Guid="fb4b3a67-d391-4cea-a0d9-c1207663b33a" Value="2.5" Type="float" />
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="SummonBehavior" Guid="993ad613-7212-4277-a62b-9c4a271008de">
               <Parameter Name="IsEnabled" Guid="80a738e3-3450-4b3a-a268-adccef1b6966" Value="True" Type="bool"/>
@@ -1315,6 +1345,11 @@
               <Parameter Name="WalkHindLegsAngle" Guid="71df5818-6e53-4b3e-af01-c0fe53a07619" Value="0.32" Type="float"/>
               <Parameter Name="WalkAnimationSpeed" Guid="b51d398e-0ea3-49f7-bd6b-58f61876d210" Value="0.6" Type="float"/>
               <Parameter Name="WalkFrontLegsAngle" Guid="b54f91d6-1ec3-41ab-98b5-9ceb6c854a52" Value="0.45" Type="float"/>
+              <Parameter Name="LegSmoothness" Guid="2ad73756-95da-495b-8abf-298cf547386b" Value="6" Type="float" />
+        <Parameter Name="HeadSmoothness" Guid="6005ce8a-1dd8-4785-bbeb-447e8e3b2159" Value="8" Type="float" />
+        <Parameter Name="BobSmoothness" Guid="8512e8d1-a67c-4bda-be02-7bf0d05a7dd6" Value="8" Type="float" />
+        <Parameter Name="FeedSmoothness" Guid="284ec769-c66f-4684-be02-57994d049d07" Value="1.2" Type="float" />
+        <Parameter Name="AttackSmoothness" Guid="17ae3851-37df-49d8-85d9-ae63f73cba2b" Value="2.5" Type="float" />
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Health" Guid="7b3d6231-46d1-4007-a757-f9b220ac96ab">
               <Parameter Name="AttackResilience" Guid="f592499c-ed2c-4d2f-905b-6cd38dd9b1f8" Value="40" Type="float"/>
@@ -1442,6 +1477,11 @@
               <Parameter Name="WalkFrontLegsAngle" Guid="cce83957-f070-4ee0-9384-e29f3811a53e" Value="0.55" Type="float"/>
               <Parameter Name="WalkHindLegsAngle" Guid="d8ea897f-0893-4119-82aa-24612a4ef227" Value="0.5" Type="float"/>
               <Parameter Name="WalkAnimationSpeed" Guid="e87ae1b9-5e00-4a7d-bc5b-28101a5baa71" Value="0.5" Type="float"/>
+              <Parameter Name="LegSmoothness" Guid="9a6cfc64-0654-489a-a5eb-0870eda536a4" Value="6" Type="float" />
+        <Parameter Name="HeadSmoothness" Guid="26891c58-250d-483e-bd69-cadff5862a05" Value="8" Type="float" />
+        <Parameter Name="BobSmoothness" Guid="ef60ad41-ec81-4f91-b952-f7f9bc7a051d" Value="8" Type="float" />
+        <Parameter Name="FeedSmoothness" Guid="23f15b24-44f1-4577-8c01-e6b0078874a7" Value="1.2" Type="float" />
+        <Parameter Name="AttackSmoothness" Guid="c829a35a-943c-41b4-bd19-e03eaa03bd9e" Value="2.5" Type="float" />
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Health" Guid="0ff4fb07-2768-418e-bfac-b5aa6b8788e3">
               <Parameter Name="AttackResilience" Guid="dc77d282-0e1b-4b5d-9054-7b124b691182" Value="150" Type="float"/>
@@ -1529,6 +1569,11 @@
               <Parameter Name="LadderSpeed" Guid="d225a5bc-5a9f-44eb-bb71-72dedca3b7f8" Value="0" Type="float"/>
               <Parameter Name="LookSpeed" Guid="d601512c-cb10-4b65-812d-c02d7cfba7db" Value="4" Type="float"/>
               <Parameter Name="AccelerationFactor" Guid="d943125b-8fff-4c7c-996c-4f698828a92d" Value="0.75" Type="float"/>
+              <Parameter Name="LegSmoothness" Guid="26d2dced-f2b5-4c9b-87bd-996d7dde3491" Value="6" Type="float" />
+        <Parameter Name="HeadSmoothness" Guid="ad517db9-ee38-4e60-a3db-48e4e03e38ae" Value="8" Type="float" />
+        <Parameter Name="BobSmoothness" Guid="f47edaeb-9fea-4bae-a927-eb0d06676ca4" Value="8" Type="float" />
+        <Parameter Name="FeedSmoothness" Guid="c471fce0-073e-4d4c-ab8c-6bcef2e60bfd" Value="1.2" Type="float" />
+        <Parameter Name="AttackSmoothness" Guid="ad6f194b-96fe-4c6b-9472-0982a32d3040" Value="2.5" Type="float" />
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="HerdBehavior" Guid="4ec7a260-5ee0-4751-885c-f8d5ca21b2d5" InheritanceParent="dfe7218e-ce14-4bde-8dac-f919c38e9efe">
               <Parameter Name="HerdName" Guid="bfa3f7dc-5275-469b-9a2b-971101420695" Value="Reindeer" Type="string"/>
@@ -1936,6 +1981,11 @@
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="FourLeggedModel" Guid="94411cf9-5b67-4a26-b83c-f06638fae786">
               <Parameter Name="TextureOverride" Guid="c3af6070-cadc-4dbf-a989-c9fe3616f21b" Value="Textures/Creatures/Tiger_White" Type="string"/>
+              <Parameter Name="LegSmoothness" Guid="80076469-8bf2-45dc-a9d0-8acd148433a6" Value="6" Type="float" />
+        <Parameter Name="HeadSmoothness" Guid="aa51052c-cd04-4988-9c88-c943ce146030" Value="8" Type="float" />
+        <Parameter Name="BobSmoothness" Guid="bbad1105-36ff-4194-a102-05947f28751e" Value="8" Type="float" />
+        <Parameter Name="FeedSmoothness" Guid="2bf38462-1080-4405-8ee7-bac5315bb13c" Value="1.2" Type="float" />
+        <Parameter Name="AttackSmoothness" Guid="868596e6-da64-4704-a3c1-64a8d1f34c2b" Value="2.5" Type="float" />
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Loot" Guid="e64b955f-9c7a-4336-a483-f4f15c1e0606">
               <ParameterSet Name="Loot" Guid="4c8b3db6-4a90-4080-aa68-359852161fac"/>
@@ -2255,6 +2305,11 @@
               <Parameter Name="TextureOverride" Guid="d58054b6-076f-4f9b-a46d-59b488f6ad1e" Value="Textures/Creatures/Giraffe" Type="string"/>
               <Parameter Name="ModelName" Guid="de7fdb68-faf9-47f7-9ede-793656699c47" Value="Models/Giraffe" Type="string"/>
               <Parameter Name="BoundingSphereRadius" Guid="e463d9f2-0d87-4be6-b67a-a930b8bd51e6" Value="5" Type="float"/>
+              <Parameter Name="LegSmoothness" Guid="b14ec941-2171-42b1-961c-6d771b2cda58" Value="6" Type="float" />
+        <Parameter Name="HeadSmoothness" Guid="10b48dba-2747-4ea0-9271-c3208a753786" Value="8" Type="float" />
+        <Parameter Name="BobSmoothness" Guid="a5c7f426-5186-465a-adda-a52436637451" Value="8" Type="float" />
+        <Parameter Name="FeedSmoothness" Guid="4cedb532-5e5d-440a-be71-a98839085a40" Value="1.2" Type="float" />
+        <Parameter Name="AttackSmoothness" Guid="c178fecb-40a5-40df-b9b6-3af45a78bfd9" Value="2.5" Type="float" />
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="OnFire" Guid="db056566-972b-427a-8225-ce9086c2be4c"/>
             <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="e51e81b3-2fa2-40a3-94c9-dec6c74060d3" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
@@ -2445,6 +2500,11 @@
               <Parameter Name="WalkHindLegsAngle" Guid="c413e42d-edc9-4e4a-ba6c-a8b65d830705" Value="0.4" Type="float"/>
               <Parameter Name="WalkFrontLegsAngle" Guid="d063a712-c456-4a78-94aa-e010d3f3ba6e" Value="0.55" Type="float"/>
               <Parameter Name="TextureOverride" Guid="fb9f784f-c1ef-40aa-a921-097a0bc59b71" Value="Textures/Creatures/Lion" Type="string"/>
+              <Parameter Name="LegSmoothness" Guid="2e9dcc40-a91d-498c-81d5-f69b9bf74cbf" Value="6" Type="float" />
+        <Parameter Name="HeadSmoothness" Guid="80518f1d-04a6-4c34-8082-755ee5ece483" Value="8" Type="float" />
+        <Parameter Name="BobSmoothness" Guid="1f46f651-3635-491a-9d21-e202d4a07a41" Value="8" Type="float" />
+        <Parameter Name="FeedSmoothness" Guid="2354834e-484c-42a2-8bf6-107b6cb917b8" Value="1.2" Type="float" />
+        <Parameter Name="AttackSmoothness" Guid="082b8365-01fc-4fd5-8d4e-e264125e9388" Value="2.5" Type="float" />
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Miner" Guid="46ab77a3-58cd-4457-9072-d7733c311fdb" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
               <Parameter Name="AttackPower" Guid="e8537845-827b-4234-bb57-b55e9d4f7f3e" Value="3.5" Type="float"/>
@@ -2532,6 +2592,11 @@
               <Parameter Name="WalkFrontLegsAngle" Guid="adf20674-e5a0-45f5-96d3-45b2bef5c48d" Value="0.55" Type="float"/>
               <Parameter Name="CanterLegsAngleFactor" Guid="e97b32dd-3269-4e43-835b-5db32a996cc1" Value="1.65" Type="float"/>
               <Parameter Name="TextureOverride" Guid="fe31b0f2-ad73-4034-865f-4feb722d0bd5" Value="Textures/Creatures/Tiger" Type="string"/>
+              <Parameter Name="LegSmoothness" Guid="d60d1718-4f21-4ab5-a50c-cfe21d51e14f" Value="6" Type="float" />
+        <Parameter Name="HeadSmoothness" Guid="a945407b-81e7-4ef3-8977-853aa9f9d5c5" Value="8" Type="float" />
+        <Parameter Name="BobSmoothness" Guid="34bb25f3-4b83-4e6e-a83c-c226e562a406" Value="8" Type="float" />
+        <Parameter Name="FeedSmoothness" Guid="f849a260-c507-475d-9e74-c38c8fe90dce" Value="1.2" Type="float" />
+        <Parameter Name="AttackSmoothness" Guid="f701b5aa-d1b3-4a8f-9f27-2690792f1cd8" Value="2.5" Type="float" />
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="FeedBehavior" Guid="1f09f35b-c731-4a49-bb6d-f5ace3a2ce35" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
               <Parameter Name="AutoFeed" Guid="cbd8d86e-b574-46d2-924d-11829e74cc00" Value="False" Type="bool"/>
@@ -2675,6 +2740,11 @@
               <Parameter Name="TextureOverride" Guid="b362d7d5-76c1-489a-ba79-10a1f473d960" Value="Textures/Creatures/Donkey" Type="string"/>
               <Parameter Name="WalkHindLegsAngle" Guid="d01d6cf2-e851-45d9-be0d-20aa8737c484" Value="0.37" Type="float"/>
               <Parameter Name="CanterLegsAngleFactor" Guid="d0d2c98a-7d69-44f2-bee5-cb8de4156604" Value="1.7" Type="float"/>
+              <Parameter Name="LegSmoothness" Guid="bbbcd874-765e-4aea-a879-93409b5ec925" Value="6" Type="float" />
+        <Parameter Name="HeadSmoothness" Guid="f9901954-8b7c-460f-af6a-32caab3d6942" Value="8" Type="float" />
+        <Parameter Name="BobSmoothness" Guid="51eea3eb-4afc-48e1-b2f1-6bb29f8cbf06" Value="8" Type="float" />
+        <Parameter Name="FeedSmoothness" Guid="070dde77-664d-4b1f-a5de-32c172d25f64" Value="1.2" Type="float" />
+        <Parameter Name="AttackSmoothness" Guid="44370f69-8e7b-4a51-880a-c20b73929d70" Value="2.5" Type="float" />
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Loot" Guid="3e18dcc2-2f48-4dce-b92e-cd9220b2cd78">
               <ParameterSet Name="LootOnFire" Guid="83a1b020-1717-440e-a46c-1ef0ed205a70"/>
@@ -2919,6 +2989,11 @@
               <Parameter Name="UseCanterSound" Guid="d750f37d-a383-4c59-83fc-1fc87ae59375" Value="False" Type="bool"/>
               <Parameter Name="CanterLegsAngleFactor" Guid="dd3568f7-eb94-4f74-b345-2b3341b16f78" Value="1.5" Type="float"/>
               <Parameter Name="CanTrot" Guid="f6a57b06-2f82-4996-b834-d0178db15a3f" Value="True" Type="bool"/>
+              <Parameter Name="LegSmoothness" Guid="bf0d018f-3663-460a-b0d8-2a24d37657c3" Value="6" Type="float" />
+        <Parameter Name="HeadSmoothness" Guid="01213861-3c0b-498d-84d0-2fa3da1a0bae" Value="8" Type="float" />
+        <Parameter Name="BobSmoothness" Guid="a8b8ae8d-f7ab-4db5-8b56-fe9c5ff4661a" Value="8" Type="float" />
+        <Parameter Name="FeedSmoothness" Guid="b26849de-06b6-4b2c-bb5f-db9c1e6abac2" Value="1.2" Type="float" />
+        <Parameter Name="AttackSmoothness" Guid="7bcc971c-25de-425e-a925-00c7f97f903f" Value="2.5" Type="float" />
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="CreatureSounds" Guid="d7812bed-a52c-4dbb-9a51-d5b4fdadf179">
               <Parameter Name="AttackSound" Guid="38edee73-9236-4135-adec-41b0496e6921" Value="Audio/Creatures/WildboarIdle" Type="string"/>
@@ -3156,6 +3231,11 @@
               <Parameter Name="CanterLegsAngleFactor" Guid="64eb3aac-852f-415f-b607-26d1a0377995" Value="1.65" Type="float"/>
               <Parameter Name="WalkBobHeight" Guid="7af22245-5c03-4bee-9797-2ea7810a2609" Value="0.05" Type="float"/>
               <Parameter Name="CanTrot" Guid="ba4f6549-8374-4c3a-8cca-12e34a5c1e1f" Value="True" Type="bool"/>
+              <Parameter Name="LegSmoothness" Guid="4391f5f8-cf5f-48b1-999c-190f871cd3b3" Value="6" Type="float" />
+        <Parameter Name="HeadSmoothness" Guid="e149e3de-2a0d-4392-8e1f-0e147f7db948" Value="8" Type="float" />
+        <Parameter Name="BobSmoothness" Guid="603a5fdc-5f25-4f30-9f5a-2c2d2bc51607" Value="8" Type="float" />
+        <Parameter Name="FeedSmoothness" Guid="4c44944c-a798-42a0-9e3c-e4ad14eab6d5" Value="1.2" Type="float" />
+        <Parameter Name="AttackSmoothness" Guid="7a1656ad-1578-4fdc-8b65-4d263b59af17" Value="2.5" Type="float" />
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="OnFire" Guid="4f7ea4fa-3489-4c50-89a7-5b986d8bef24"/>
             <MemberComponentTemplate Name="ChaseBehavior" Guid="72a99993-0e82-4ba2-b80c-2352880b829d" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
@@ -3657,6 +3737,11 @@
               <Parameter Name="CanterLegsAngleFactor" Guid="81dc6c2a-2f88-4f9d-8962-6bb21ce32a91" Value="1.65" Type="float"/>
               <Parameter Name="WalkFrontLegsAngle" Guid="93a04856-9fca-4fd9-a096-793751780434" Value="0.37" Type="float"/>
               <Parameter Name="WalkHindLegsAngle" Guid="e3f4cdc7-6dc3-4b1d-a863-8486e2242234" Value="0.3" Type="float"/>
+              <Parameter Name="LegSmoothness" Guid="3b621a9d-9d51-4fbd-a006-113d1ddaa8a1" Value="6" Type="float" />
+        <Parameter Name="HeadSmoothness" Guid="8dbadda9-875d-4375-ad88-615077e2e72b" Value="8" Type="float" />
+        <Parameter Name="BobSmoothness" Guid="9a23947b-bf20-4439-9ae6-6b697732155f" Value="8" Type="float" />
+        <Parameter Name="FeedSmoothness" Guid="b6f87818-710d-47f0-8c00-5a606f3d205b" Value="1.2" Type="float" />
+        <Parameter Name="AttackSmoothness" Guid="a2a0b023-19ee-49d4-bc02-84ef42708cb8" Value="2.5" Type="float" />
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Miner" Guid="49efc986-2d44-4d3d-a2e3-69a33a21e33d" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
               <Parameter Name="AttackPower" Guid="51961fe7-0ef9-41f2-a87e-8bfb3fe69bd7" Value="3" Type="float"/>
@@ -3767,6 +3852,11 @@
               <Parameter Name="UseCanterSound" Guid="960fa48f-c229-470f-a00e-b4efa18f713d" Value="False" Type="bool"/>
               <Parameter Name="WalkBobHeight" Guid="a1b00d15-e2eb-4982-90f6-b35defdcf1aa" Value="0.03" Type="float"/>
               <Parameter Name="CanterLegsAngleFactor" Guid="e82e783d-18af-4b1f-aef8-38199194d93e" Value="1.65" Type="float"/>
+              <Parameter Name="LegSmoothness" Guid="14c6286d-3d50-46a2-abc4-585b108108a3" Value="6" Type="float" />
+        <Parameter Name="HeadSmoothness" Guid="b6c75d87-8aae-42f9-948e-dde258cc5553" Value="8" Type="float" />
+        <Parameter Name="BobSmoothness" Guid="cdc432f0-dafc-47ea-b4e3-20a0b81500d0" Value="8" Type="float" />
+        <Parameter Name="FeedSmoothness" Guid="1ea43e86-c54c-452d-8625-319634c84460" Value="1.2" Type="float" />
+        <Parameter Name="AttackSmoothness" Guid="42576332-1871-44ca-b58d-0ea0629dafac" Value="2.5" Type="float" />
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Body" Guid="7ecdacef-9f3b-4afb-9353-052b669586ff">
               <Parameter Name="Mass" Guid="b3261dc4-05f9-4ec1-9a3b-3bdde5b72563" Value="100" Type="float"/>
