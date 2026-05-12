@@ -10,8 +10,10 @@ namespace Game
 	{
 		public static float MusketCooldown = 0.5f;
 		public static float MusketAimTime = 1.5f;
-		public static float CrossbowCooldown = 0.5f;
-		public static float CrossbowAimTime = 1.0f;
+		public static float CrossbowCooldown = 0.01f;
+		public static float CrossbowAimTime = 1.5f;
+		public static float BowCooldown = 0.01f;
+		public static float BowAimTime = 1.5f;
 
 		public Vector2 AttackRange = new Vector2(5f, 100f);
 		public Vector2 ExplosiveRange = new Vector2(20f, 100f);
@@ -115,7 +117,7 @@ namespace Game
 				return;
 
 			Block activeBlock = BlocksManager.Blocks[Terrain.ExtractContents(activeValue)];
-			bool hasRangedWeapon = activeBlock is MusketBlock || activeBlock is CrossbowBlock;
+			bool hasRangedWeapon = activeBlock is MusketBlock || activeBlock is CrossbowBlock || activeBlock is BowBlock;
 			bool hasMeleeWeapon = !hasRangedWeapon && activeBlock.GetMeleePower(activeValue) > 0f;
 
 			if (!hasRangedWeapon && !hasMeleeWeapon)
@@ -178,11 +180,12 @@ namespace Game
 			Block activeBlock = BlocksManager.Blocks[Terrain.ExtractContents(activeValue)];
 			bool isMusket = activeBlock is MusketBlock;
 			bool isCrossbow = activeBlock is CrossbowBlock;
-			if (!isMusket && !isCrossbow)
+			bool isBow = activeBlock is BowBlock;
+			if (!isMusket && !isCrossbow && !isBow)
 				return;
 
-			float aimTime = isMusket ? MusketAimTime : CrossbowAimTime;
-			float cooldown = isMusket ? MusketCooldown : CrossbowCooldown;
+			float aimTime = isMusket ? MusketAimTime : (isCrossbow ? CrossbowAimTime : BowAimTime);
+			float cooldown = isMusket ? MusketCooldown : (isCrossbow ? CrossbowCooldown : BowCooldown);
 
 			if (m_cooldownTimer > 0f)
 				m_cooldownTimer -= dt;
@@ -208,10 +211,15 @@ namespace Game
 							m_creatureModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
 							m_creatureModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
 						}
-						else
+						else if (isCrossbow)
 						{
 							m_creatureModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.1f, 0.07f);
 							m_creatureModel.InHandItemRotationOrder = new Vector3(-1.55f, 0f, 0f);
+						}
+						else // Bow
+						{
+							m_creatureModel.InHandItemOffsetOrder = Vector3.Zero;
+							m_creatureModel.InHandItemRotationOrder = new Vector3(0f, -0.2f, 0f);
 						}
 					}
 				}
@@ -219,14 +227,11 @@ namespace Game
 				{
 					m_componentMiner.Aim(aimRay, AimState.Completed);
 					if (isMusket)
-					{
 						ReloadMusketInstantly();
-					}
+					else if (isCrossbow)
+						ReloadCrossbowInstantly(Vector3.Distance(m_componentBody.Position, targetPos));
 					else
-					{
-						float distanceToTarget = Vector3.Distance(m_componentBody.Position, targetPos);
-						ReloadCrossbowInstantly(distanceToTarget);
-					}
+						ReloadBowInstantly();
 					m_isAiming = false;
 					m_cooldownTimer = cooldown;
 					ResetModelPose();
@@ -259,6 +264,14 @@ namespace Game
 				ArrowBlock.ArrowType? arrow = CrossbowBlock.GetArrowType(data);
 				if (draw != 15 || arrow == null)
 					ReloadCrossbowInstantly(Vector3.Distance(m_componentBody.Position, m_chaseBehavior.m_target.ComponentBody.Position));
+			}
+			else if (activeBlock is BowBlock)
+			{
+				int data = Terrain.ExtractData(activeValue);
+				int draw = BowBlock.GetDraw(data);
+				ArrowBlock.ArrowType? arrow = BowBlock.GetArrowType(data);
+				if (draw != 15 || arrow == null)
+					ReloadBowInstantly();
 			}
 			m_isAiming = true;
 			m_aimTimer = 0f;
@@ -294,6 +307,15 @@ namespace Game
 					return;
 				}
 			}
+			for (int i = 0; i < m_inventory.SlotsCount; i++)
+			{
+				int slotValue = m_inventory.GetSlotValue(i);
+				if (m_inventory.GetSlotCount(i) > 0 && BlocksManager.Blocks[Terrain.ExtractContents(slotValue)] is BowBlock)
+				{
+					m_inventory.ActiveSlotIndex = i;
+					return;
+				}
+			}
 		}
 
 		private bool TryEquipBestMeleeWeapon()
@@ -305,7 +327,7 @@ namespace Game
 				int slotValue = m_inventory.GetSlotValue(i);
 				if (m_inventory.GetSlotCount(i) == 0) continue;
 				Block block = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)];
-				if (block is MusketBlock || block is CrossbowBlock) continue;
+				if (block is MusketBlock || block is CrossbowBlock || block is BowBlock) continue;
 				float power = block.GetMeleePower(slotValue);
 				if (power > bestPower)
 				{
@@ -365,7 +387,6 @@ namespace Game
 
 			ArrowBlock.ArrowType boltType;
 			bool useExplosive = (distanceToTarget >= ExplosiveRange.X && distanceToTarget <= ExplosiveRange.Y);
-
 			if (useExplosive)
 			{
 				int r = m_random.Int(0, 2);
@@ -382,6 +403,33 @@ namespace Game
 			data = CrossbowBlock.SetDraw(data, 15);
 			data = CrossbowBlock.SetArrowType(data, boltType);
 			m_inventory.AddSlotItems(activeSlot, Terrain.MakeBlockValue(CrossbowBlock.Index, 0, data), 1);
+		}
+
+		private void ReloadBowInstantly()
+		{
+			int activeSlot = m_inventory.ActiveSlotIndex;
+			int currentValue = m_inventory.GetSlotValue(activeSlot);
+			if (!(BlocksManager.Blocks[Terrain.ExtractContents(currentValue)] is BowBlock))
+				return;
+
+			m_inventory.RemoveSlotItems(activeSlot, 1);
+
+			ArrowBlock.ArrowType[] arrowTypes = new ArrowBlock.ArrowType[]
+			{
+		ArrowBlock.ArrowType.WoodenArrow,
+		ArrowBlock.ArrowType.StoneArrow,
+		ArrowBlock.ArrowType.CopperArrow,
+		ArrowBlock.ArrowType.IronArrow,
+		ArrowBlock.ArrowType.DiamondArrow,
+		ArrowBlock.ArrowType.FireArrow
+			};
+
+			ArrowBlock.ArrowType arrowType = arrowTypes[m_random.Int(0, arrowTypes.Length - 1)];
+
+			int data = 0;
+			data = BowBlock.SetDraw(data, 15);
+			data = BowBlock.SetArrowType(data, arrowType);
+			m_inventory.AddSlotItems(activeSlot, Terrain.MakeBlockValue(BowBlock.Index, 0, data), 1);
 		}
 
 		private void TryStartEquippingClothing()
