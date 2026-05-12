@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Engine;
 using GameEntitySystem;
 using TemplatesDatabase;
@@ -13,9 +14,10 @@ namespace Game
 		public static float CrossbowAimTime = 1.0f;
 
 		public Vector2 AttackRange = new Vector2(5f, 100f);
-		public Vector2 ExplosiveRange = new Vector2(20f, 100f); // X = distancia mínima, Y = distancia máxima para usar virotes explosivos
+		public Vector2 ExplosiveRange = new Vector2(20f, 100f);
 
 		private bool m_canUseInventory;
+		private bool m_canEquipClothing;
 		private ComponentMiner m_componentMiner;
 		private ComponentCreature m_componentCreature;
 		private ComponentBody m_componentBody;
@@ -24,9 +26,16 @@ namespace Game
 		private SubsystemTime m_subsystemTime;
 		private ComponentCreatureModel m_creatureModel;
 		private SubsystemProjectiles m_subsystemProjectiles;
+		private ComponentCreatureClothing m_componentClothing;
+
 		private float m_aimTimer;
 		private bool m_isAiming;
 		private float m_cooldownTimer;
+
+		private bool m_isEquipping;
+		private float m_equipTimer;
+		private int m_pendingClothingValue;
+
 		private Random m_random = new Random();
 
 		public override float ImportanceLevel => 100f;
@@ -35,6 +44,7 @@ namespace Game
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
 			m_canUseInventory = valuesDictionary.GetValue<bool>("CanUseInventory", false);
+			m_canEquipClothing = valuesDictionary.GetValue<bool>("CanEquipClothing", false);
 			m_subsystemTime = base.Project.FindSubsystem<SubsystemTime>(true);
 			m_componentMiner = base.Entity.FindComponent<ComponentMiner>(true);
 			m_componentCreature = base.Entity.FindComponent<ComponentCreature>(true);
@@ -42,19 +52,22 @@ namespace Game
 			m_inventory = m_componentMiner.Inventory;
 			m_creatureModel = m_componentCreature.ComponentCreatureModel;
 			m_subsystemProjectiles = base.Project.FindSubsystem<SubsystemProjectiles>(true);
+			m_componentClothing = base.Entity.FindComponent<ComponentCreatureClothing>(false);
 			m_chaseBehavior = base.Entity.FindComponent<ComponentZombieChaseBehavior>();
 			if (m_chaseBehavior == null)
 			{
 				Log.Warning("ComponentZombieAI: No se encontró ComponentZombieChaseBehavior. IA desactivada.");
 			}
-
-			// Suscribirse a proyectiles añadidos para hacer desaparecer los virotes al impactar
 			m_subsystemProjectiles.ProjectileAdded += OnProjectileAdded;
+		}
+
+		public override void Save(ValuesDictionary valuesDictionary, EntityToIdMap entityToIdMap)
+		{
+			valuesDictionary.SetValue<bool>("CanUseInventory", m_canUseInventory);
 		}
 
 		private void OnProjectileAdded(Projectile projectile)
 		{
-			// Solo aplicar a proyectiles de este zombi que sean flechas/virotes (ArrowBlock = 192)
 			if (projectile.Owner == m_componentCreature &&
 				BlocksManager.Blocks[Terrain.ExtractContents(projectile.Value)] is ArrowBlock)
 			{
@@ -64,6 +77,23 @@ namespace Game
 
 		public virtual void Update(float dt)
 		{
+			if (m_canEquipClothing && m_componentClothing != null)
+			{
+				if (m_isEquipping)
+				{
+					m_equipTimer += dt;
+					if (m_equipTimer >= 0.55f)
+					{
+						EquipPendingClothing();
+						m_isEquipping = false;
+					}
+				}
+				else if (m_subsystemTime.PeriodicGameTimeEvent(1.0, 0.0))
+				{
+					TryStartEquippingClothing();
+				}
+			}
+
 			if (!m_canUseInventory || m_componentMiner == null || m_chaseBehavior == null || m_inventory == null)
 				return;
 
@@ -95,6 +125,7 @@ namespace Game
 			}
 
 			float distance = GetMeleeDistanceToTarget(target.ComponentBody);
+
 			if (distance <= AttackRange.X)
 			{
 				if (!hasMeleeWeapon)
@@ -315,7 +346,7 @@ namespace Game
 				return;
 
 			m_inventory.RemoveSlotItems(activeSlot, 1);
-			int bulletType = m_random.Int(0, 2); // 0:MusketBall, 1:Buckshot, 2:BuckshotBall
+			int bulletType = m_random.Int(0, 2);
 			int data = 0;
 			data = MusketBlock.SetHammerState(data, false);
 			data = MusketBlock.SetLoadState(data, MusketBlock.LoadState.Loaded);
@@ -337,7 +368,6 @@ namespace Game
 
 			if (useExplosive)
 			{
-				// Dentro del rango: 1/3 de probabilidad para cada tipo (Iron, Diamond, Explosive)
 				int r = m_random.Int(0, 2);
 				if (r == 0) boltType = ArrowBlock.ArrowType.IronBolt;
 				else if (r == 1) boltType = ArrowBlock.ArrowType.DiamondBolt;
@@ -345,7 +375,6 @@ namespace Game
 			}
 			else
 			{
-				// Fuera del rango: solo hierro y diamante (50% cada uno)
 				boltType = m_random.Bool() ? ArrowBlock.ArrowType.IronBolt : ArrowBlock.ArrowType.DiamondBolt;
 			}
 
@@ -353,6 +382,45 @@ namespace Game
 			data = CrossbowBlock.SetDraw(data, 15);
 			data = CrossbowBlock.SetArrowType(data, boltType);
 			m_inventory.AddSlotItems(activeSlot, Terrain.MakeBlockValue(CrossbowBlock.Index, 0, data), 1);
+		}
+
+		private void TryStartEquippingClothing()
+		{
+			for (int i = 0; i < m_inventory.SlotsCount; i++)
+			{
+				int value = m_inventory.GetSlotValue(i);
+				if (value != 0 && BlocksManager.Blocks[Terrain.ExtractContents(value)] is ClothingBlock)
+				{
+					ClothingData data = BlocksManager.Blocks[Terrain.ExtractContents(value)].GetClothingData(value);
+					if (data != null)
+					{
+						m_inventory.RemoveSlotItems(i, 1);
+						m_pendingClothingValue = value;
+						m_isEquipping = true;
+						m_equipTimer = 0f;
+						return;
+					}
+				}
+			}
+		}
+
+		private void EquipPendingClothing()
+		{
+			if (m_pendingClothingValue == 0 || m_componentClothing == null) return;
+
+			ClothingData data = BlocksManager.Blocks[Terrain.ExtractContents(m_pendingClothingValue)].GetClothingData(m_pendingClothingValue);
+			if (data == null) return;
+
+			List<int> clothes = new List<int>(m_componentClothing.GetClothes(data.Slot));
+			clothes.Add(m_pendingClothingValue);
+			clothes.Sort((a, b) =>
+			{
+				ClothingData da = BlocksManager.Blocks[Terrain.ExtractContents(a)].GetClothingData(a);
+				ClothingData db = BlocksManager.Blocks[Terrain.ExtractContents(b)].GetClothingData(b);
+				return (da?.Layer ?? 0) - (db?.Layer ?? 0);
+			});
+			m_componentClothing.SetClothes(data.Slot, clothes);
+			m_pendingClothingValue = 0;
 		}
 	}
 }
