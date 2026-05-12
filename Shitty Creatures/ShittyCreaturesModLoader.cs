@@ -1241,6 +1241,7 @@ namespace Game
 			int swm500BulletIndex = GetBlockIndexByName("SWM500Bullet");
 			int stoneAxeBlockIndex = GetBlockIndexByName("StoneAxeBlock");
 			int mediumFirstAidKitIndex = GetBlockIndexByName("MediumFirstAidKitBlock");
+			int CookedMeatBlock = GetBlockIndexByName("CookedMeatBlock");
 
 			// Añadir ítems
 			GiveItemToPlayer(inventory, ironMacheteIndex, 1);
@@ -1255,6 +1256,7 @@ namespace Game
 			// 12 balas extra
 			GiveItemToPlayer(inventory, swm500BulletIndex, 12);
 			GiveItemToPlayer(inventory, mediumFirstAidKitIndex, 5);
+			GiveItemToPlayer(inventory, CookedMeatBlock, 5);
 
 			return true;
 		}
