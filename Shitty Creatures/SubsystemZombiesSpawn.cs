@@ -781,15 +781,20 @@ namespace Game
 			return count;
 		}
 
-		// CORREGIDO: Método unificado para verificar noche
+		// CORREGIDO: Método unificado para verificar noche (incluye modo Night fijo)
 		private bool IsNormalNight()
 		{
 			if (m_subsystemGreenNightSky.IsGreenNightActive)
 				return false;
 
-			if (m_subsystemGameInfo.WorldSettings.TimeOfDayMode != TimeOfDayMode.Changing)
+			TimeOfDayMode mode = m_subsystemGameInfo.WorldSettings.TimeOfDayMode;
+
+			// Day y Sunrise nunca son noche
+			if (mode == TimeOfDayMode.Day || mode == TimeOfDayMode.Sunrise)
 				return false;
 
+			// Para Changing, Night y Sunset: verificar intensidad de luz
+			// Cuando mode == Night, TimeOfDay retorna Midnight, así que SkyLightIntensity será baja
 			return m_subsystemSky.SkyLightIntensity < NightLightThreshold;
 		}
 		// ===== FIN MÉTODOS COMPARTIDOS =====
