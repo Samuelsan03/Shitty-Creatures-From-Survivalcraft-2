@@ -2,6 +2,7 @@
 <Parameter Name="Class" Guid="9d071853-10cd-4208-9bdf-ffed6b5d5bdd" new-Value="Game.ComponentNewSleep" Type="string"/>
 <Parameter Name="Class" Guid="3bb544e4-4e2b-4b31-9172-7709a9271366" new-Value="Game.ComponentNewHumanModel" Type="string"/>
 <Parameter Name="Class" Guid="8c4f00ca-8f77-47c9-99bb-cefa4f94ee8d" new-Value="Game.ComponentNewVitalStats" Type="string"/>
+<Parameter Name="Class" Guid="b889d63d-0b71-45cf-8606-13ab2e94f6d2" new-Value="Game.ComponentNewFourLeggedModel" Type="string"/>
 
     <Folder Name="Gameplay" Guid="d509e5e2-2c10-49f1-8223-85cd892c63b0">
     <ComponentTemplate Name="CreatureClothing" Description="Handles clothes worn by creatures" Guid="c1965be4-62ff-42f9-90e6-4e12b4d9a3af" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
@@ -259,6 +260,25 @@
     <Parameter Name="AimSmoothFactor" Description="Factor de suavizado específico para apuntar (0.1-0.5)" Guid="9de74454-475d-4820-bac6-e38c8d24a2f8" Value="0.3" Type="float"/>
     <Parameter Name="AimTransitionSpeed" Description="Velocidad de transición para apuntar (3-8, menor = más lento)" Guid="607c17ad-8d6d-4551-99fb-f3bba5726ed4" Value="5" Type="float"/>
     <Parameter Name="Class" Guid="4a840f5c-acee-468a-babd-f2d835620c2a" Value="Game.ComponentNewHumanModel" Type="string"/>
+</ComponentTemplate>
+
+<ComponentTemplate Name="FourLeggedModel" Description="Four legged model behavior and animation with customizable smoothness" Guid="a1b2c3d4-e5f6-7890-abcd-ef1234567890" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
+    <Parameter Name="CanterLegsAngleFactor" Guid="993aa0f5-cdcf-48a5-a5b0-065514258ba0" Value="1.5" Type="float" />
+    <Parameter Name="CanCanter" Description="Whether a creature can canter" Guid="afe13e19-ba5a-4933-8f75-1e08dae2b35b" Value="True" Type="bool" />
+    <Parameter Name="UseCanterSound" Description="Whether to use canter sound or normal steps sound when cantering" Guid="835456c3-139a-4151-8805-8b50fde6aa29" Value="True" Type="bool" />
+    <Parameter Name="WalkFrontLegsAngle" Description="Animation angle of front legs, in radians" Guid="f7052208-e84d-494e-9b05-1101e996c020" Value="0.55" Type="float" />
+    <Parameter Name="WalkHindLegsAngle" Description="Animation angle of hind legs, in radians" Guid="bd80d6d0-7272-4fab-b6ce-94498efb817f" Value="0.4" Type="float" />
+    <Parameter Name="WalkBobHeight" Description="Height of bobbing when creature walks, in meters" Guid="8b0e2a34-2295-413b-bb0d-284a8cfef4fa" Value="0.025" Type="float" />
+    <Parameter Name="WalkAnimationSpeed" Description="Walking animation speed, in cycles/meter" Guid="be3811db-ae95-414f-8e2f-222aead7e2ca" Value="1" Type="float" />
+    <Parameter Name="CanTrot" Description="Whether a creature can trot" Guid="3c58f0cd-7d28-46ec-aedd-2b055ccbfa06" Value="False" Type="bool" />
+    <Parameter Name="MoveLegWhenFeeding" Description="Whether model should move front leg when feeding" Guid="32a5106d-f74b-4927-9dbc-970246626988" Value="False" Type="bool" />
+    <!-- Nuevos parámetros de suavidad -->
+    <Parameter Name="LegSmoothness" Description="Smoothness of leg animations. Lower is softer (Original: 12)" Guid="2e56a3aa-af33-4105-bc0d-8e7e909f04b4" Value="12" Type="float" />
+    <Parameter Name="HeadSmoothness" Description="Smoothness of head bob animation. Lower is softer (Original: 12)" Guid="8e6e66c1-21a4-47b1-a9ac-12b03d467b68" Value="12" Type="float" />
+    <Parameter Name="BobSmoothness" Description="Smoothness of body vertical bobbing. Lower is softer (Original: 12)" Guid="bebdb56b-21fa-48c6-8de8-960f0793af21" Value="12" Type="float" />
+    <Parameter Name="FeedSmoothness" Description="Speed of transition when feeding. Lower is slower/smoother (Original: 2)" Guid="048b9c3d-c14a-494d-b3ce-ae555cd5ebc9" Value="2" Type="float" />
+    <Parameter Name="AttackSmoothness" Description="Speed of transition when attacking. Lower is slower/smoother (Original: 4)" Guid="6e0f5152-b437-44e6-bcc3-438848bfcec5" Value="4" Type="float" />
+    <Parameter Name="Class" Guid="a3d2ce77-4086-4603-a21d-1695037e9f3e" Value="Game.ComponentNewFourLeggedModel" Type="string" />
 </ComponentTemplate>
         
 <ComponentTemplate Name="DeathSpawner" Description="Genera una entidad al morir, seleccionada aleatoriamente según probabilidades configuradas" Guid="32905e25-1938-46fb-8659-a86ee79cfaa4" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
