@@ -1,14 +1,14 @@
-﻿using System;
+using System;
 using Engine;
 using Engine.Graphics;
 using Game;
 
 namespace Game
 {
-	// Token: 0x020000B3 RID: 179
+	// Token: 0x020000F1 RID: 241
 	public class PoisonSmokeParticleSystem : ParticleSystem<PoisonSmokeParticleSystem.Particle>
 	{
-		// Token: 0x06000572 RID: 1394 RVA: 0x00022E68 File Offset: 0x00021068
+		// Token: 0x06000768 RID: 1896 RVA: 0x0002D5A0 File Offset: 0x0002B7A0
 		public PoisonSmokeParticleSystem(SubsystemTerrain terrain, Vector3 position, Vector3 direction) : base(50)
 		{
 			base.Texture = ContentManager.Get<Texture2D>("Textures/Gui/Puke Particle Remake");
@@ -26,22 +26,10 @@ namespace Game
 			num4 = MathUtils.Max(num4, terrain.Terrain.GetCellLight(num, num2, num3 + 1));
 			num4 = MathUtils.Max(num4, terrain.Terrain.GetCellLight(num, num2, num3 - 1));
 			float num5 = LightingManager.LightIntensityByLightValue[num4];
-
-			// CAMBIO AQUÍ: En lugar de usar solo la intensidad de luz (gris),
-			// multiplicamos por el color verde deseado (51, 255, 51)
-			// Dividimos por 255 para convertir de 0-255 a 0-1
-			float greenR = 51f / 255f;
-			float greenG = 255f / 255f;
-			float greenB = 51f / 255f;
-
-			this.m_color = new Color(
-				num5 * greenR,
-				num5 * greenG,
-				num5 * greenB
-			);
+			this.m_color = new Color(0, 255, 34);
 		}
 
-		// Token: 0x06000573 RID: 1395 RVA: 0x00022F7C File Offset: 0x0002117C
+		// Token: 0x06000769 RID: 1897 RVA: 0x0002D6B4 File Offset: 0x0002B8B4
 		public override bool Simulate(float dt)
 		{
 			this.m_time += dt;
@@ -97,34 +85,34 @@ namespace Game
 			return !flag && this.m_time >= 0.5f;
 		}
 
-		// Token: 0x04000322 RID: 802
+		// Token: 0x040004A6 RID: 1190
 		public Game.Random m_random = new Game.Random();
 
-		// Token: 0x04000323 RID: 803
+		// Token: 0x040004A7 RID: 1191
 		public float m_time;
 
-		// Token: 0x04000324 RID: 804
+		// Token: 0x040004A8 RID: 1192
 		public float m_toGenerate;
 
-		// Token: 0x04000325 RID: 805
+		// Token: 0x040004A9 RID: 1193
 		public Vector3 m_position;
 
-		// Token: 0x04000326 RID: 806
+		// Token: 0x040004AA RID: 1194
 		public Vector3 m_direction;
 
-		// Token: 0x04000327 RID: 807
+		// Token: 0x040004AB RID: 1195
 		public Color m_color;
 
-		// Token: 0x0200013F RID: 319
+		// Token: 0x020001A6 RID: 422
 		public class Particle : Game.Particle
 		{
-			// Token: 0x04000544 RID: 1348
+			// Token: 0x040007F6 RID: 2038
 			public Vector3 Velocity;
 
-			// Token: 0x04000545 RID: 1349
+			// Token: 0x040007F7 RID: 2039
 			public float Time;
 
-			// Token: 0x04000546 RID: 1350
+			// Token: 0x040007F8 RID: 2040
 			public float Duration;
 		}
 	}
