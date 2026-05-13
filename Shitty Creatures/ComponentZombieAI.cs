@@ -370,7 +370,6 @@ namespace Game
 				Ray3 aimRay = new Ray3(eyePos, dir);
 
 				// SOLO ItemsLauncher usa apuntado manual (para evitar el subsystem)
-				// TODAS las demás armas usan ComponentMiner.Aim normalmente
 				if (isItemsLauncher)
 				{
 					// Apuntado manual SIN usar ComponentMiner.Aim
@@ -389,13 +388,12 @@ namespace Game
 						ResetModelPose();
 					}
 				}
-				else
+				else if (IsHumanoidCreature())
 				{
-					// Para TODAS las demás armas, usar el sistema normal de apuntado (ComponentMiner.Aim)
+					// HUMANOS: usar ComponentMiner.Aim (el subsystem maneja las animaciones)
 					if (m_aimTimer < aimTime)
 					{
 						m_componentMiner.Aim(aimRay, AimState.InProgress);
-						// Las animaciones las maneja el SubsystemBlockBehavior correspondiente
 					}
 					else
 					{
@@ -403,6 +401,47 @@ namespace Game
 						m_isAiming = false;
 						m_cooldownTimer = cooldown;
 						ResetModelPose();
+					}
+				}
+				else
+				{
+					// NO HUMANOS (zombies normales): animación MANUAL (igual que antes)
+					if (m_aimTimer < aimTime)
+					{
+						if (m_creatureModel != null)
+						{
+							m_creatureModel.AimHandAngleOrder = 0f;
+							if (isMusket || isDoubleMusket || isFlameThrower || isItemsLauncher)
+							{
+								m_creatureModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
+								m_creatureModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
+							}
+							else if (isCrossbow || isRepeatCrossbow)
+							{
+								m_creatureModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.1f, 0.07f);
+								m_creatureModel.InHandItemRotationOrder = new Vector3(-1.55f, 0f, 0f);
+							}
+							else if (isBow)
+							{
+								m_creatureModel.InHandItemOffsetOrder = Vector3.Zero;
+								m_creatureModel.InHandItemRotationOrder = new Vector3(0f, -0.2f, 0f);
+							}
+						}
+
+						if (m_aimTimer >= aimTime)
+						{
+							// Disparar según el tipo de arma
+							if (isMusket) ReloadMusketInstantly();
+							else if (isCrossbow) ReloadCrossbowInstantly(Vector3.Distance(m_componentBody.Position, targetPos));
+							else if (isRepeatCrossbow) ReloadRepeatCrossbowInstantly(Vector3.Distance(m_componentBody.Position, targetPos));
+							else if (isBow) ReloadBowInstantly();
+							else if (isFlameThrower) ReloadFlameThrowerInstantly();
+							else if (isDoubleMusket) ReloadDoubleMusketInstantly();
+
+							m_isAiming = false;
+							m_cooldownTimer = cooldown;
+							ResetModelPose();
+						}
 					}
 				}
 			}
