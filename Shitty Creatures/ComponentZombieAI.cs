@@ -18,6 +18,8 @@ namespace Game
 		public static float RepeatCrossbowAimTime = 1.5f;
 		public static float FlameThrowerCooldown = 0f;
 		public static float FlameThrowerAimTime = 1.5f;
+		public static float DoubleMusketCooldown = 0.5f;
+		public static float DoubleMusketAimTime = 1.5f;
 
 		public Vector2 AttackRange = new Vector2(5f, 100f);
 		public Vector2 ExplosiveRange = new Vector2(20f, 100f);
@@ -175,20 +177,23 @@ namespace Game
 			int activeBlockIndex = Terrain.ExtractContents(activeValue);
 			Block activeBlock = BlocksManager.Blocks[activeBlockIndex];
 			bool isThrowable = IsThrowableBlock(activeBlockIndex);
-			bool isRanged = activeBlock is MusketBlock || activeBlock is CrossbowBlock || activeBlock is RepeatCrossbowBlock || activeBlock is BowBlock || activeBlock is FlameThrowerBlock;
+			bool isRanged = activeBlock is MusketBlock ||
+							activeBlock is CrossbowBlock ||
+							activeBlock is RepeatCrossbowBlock ||
+							activeBlock is BowBlock ||
+							activeBlock is FlameThrowerBlock ||
+							activeBlock is DoubleMusketBlock;
 			bool isMelee = !isRanged && !isThrowable && activeBlock.GetMeleePower(activeValue) > 0f;
 
 			float distToTarget = Vector3.Distance(m_componentBody.Position, target.ComponentBody.Position);
 			bool hasLOS = HasLineOfSightToTarget(target);
 			bool isStuck = (m_pathfinding != null && m_pathfinding.IsStuck);
 
-			// Cancelar apuntado si no hay visión o está atascado
 			if ((!hasLOS || isStuck) && m_isAiming)
 			{
 				StopAiming();
 			}
 
-			// Para lanzables
 			if (isThrowable && distToTarget >= ThrowableRange.X && distToTarget <= ThrowableRange.Y && hasLOS && !isStuck)
 			{
 				StopMovement();
@@ -279,15 +284,10 @@ namespace Game
 			if (distance < 0.1f) return true;
 			directionToTarget /= distance;
 
-			// Usar la rotación del CUERPO
 			Vector3 forwardDirection = m_componentBody.Rotation.GetForwardVector();
-			// Producto punto > 0.866 = ángulo menor a 30 grados (campo de visión de 60 grados)
-			// Usar 0.94 para campo de visión de 40 grados, o 0.98 para 20 grados
-			// 0.866 es un buen valor para "justo al frente" sin ser demasiado restrictivo
-			if (Vector3.Dot(forwardDirection, directionToTarget) < 0.866f)
+			if (Vector3.Dot(forwardDirection, directionToTarget) <= 0f)
 				return false;
 
-			// Raycast contra terreno
 			TerrainRaycastResult? terrainHit = m_subsystemTerrain.Raycast(eyePos, targetPos, false, false, (int value, float d) =>
 			{
 				return d > 0.1f && BlocksManager.Blocks[Terrain.ExtractContents(value)].IsCollidable_(value);
@@ -295,7 +295,6 @@ namespace Game
 			if (terrainHit != null && terrainHit.Value.Distance < distance)
 				return false;
 
-			// Raycast contra cuerpos
 			BodyRaycastResult? bodyHit = m_subsystemBodies.Raycast(eyePos, targetPos, 0f, (ComponentBody body, float d) =>
 			{
 				return body != m_componentBody && body != target.ComponentBody && d > 0.1f;
@@ -308,7 +307,6 @@ namespace Game
 
 		private void UpdateRangedCombat(float dt, Vector3 targetPos)
 		{
-			// Verificar visión y atasco antes de cualquier acción
 			if (!HasLineOfSightToTarget(m_chaseBehavior.m_target) || (m_pathfinding != null && m_pathfinding.IsStuck))
 			{
 				StopAiming();
@@ -322,8 +320,9 @@ namespace Game
 			bool isRepeatCrossbow = activeBlock is RepeatCrossbowBlock;
 			bool isBow = activeBlock is BowBlock;
 			bool isFlameThrower = activeBlock is FlameThrowerBlock;
+			bool isDoubleMusket = activeBlock is DoubleMusketBlock;
 
-			if (!isMusket && !isCrossbow && !isRepeatCrossbow && !isBow && !isFlameThrower)
+			if (!isMusket && !isCrossbow && !isRepeatCrossbow && !isBow && !isFlameThrower && !isDoubleMusket)
 				return;
 
 			float aimTime = 0f;
@@ -353,6 +352,11 @@ namespace Game
 			{
 				aimTime = FlameThrowerAimTime;
 				cooldown = FlameThrowerCooldown;
+			}
+			else if (isDoubleMusket)
+			{
+				aimTime = DoubleMusketAimTime;
+				cooldown = DoubleMusketCooldown;
 			}
 
 			if (m_cooldownTimer > 0f)
@@ -394,6 +398,11 @@ namespace Game
 							m_creatureModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
 							m_creatureModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
 						}
+						else if (isDoubleMusket)
+						{
+							m_creatureModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
+							m_creatureModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
+						}
 					}
 				}
 				else
@@ -409,6 +418,8 @@ namespace Game
 						ReloadBowInstantly();
 					else if (isFlameThrower)
 						ReloadFlameThrowerInstantly();
+					else if (isDoubleMusket)
+						ReloadDoubleMusketInstantly();
 					m_isAiming = false;
 					m_cooldownTimer = cooldown;
 					ResetModelPose();
@@ -518,6 +529,13 @@ namespace Game
 				if (loadCount == 0)
 					ReloadFlameThrowerInstantly();
 			}
+			else if (activeBlock is DoubleMusketBlock)
+			{
+				int data = Terrain.ExtractData(activeValue);
+				int shotsRemaining = DoubleMusketBlock.GetShotsRemaining(data);
+				if (shotsRemaining == 0)
+					ReloadDoubleMusketInstantly();
+			}
 			m_isAiming = true;
 			m_aimTimer = 0f;
 		}
@@ -547,6 +565,15 @@ namespace Game
 			{
 				int slotValue = m_inventory.GetSlotValue(i);
 				if (m_inventory.GetSlotCount(i) > 0 && BlocksManager.Blocks[Terrain.ExtractContents(slotValue)] is MusketBlock)
+				{
+					m_inventory.ActiveSlotIndex = i;
+					return;
+				}
+			}
+			for (int i = 0; i < m_inventory.SlotsCount; i++)
+			{
+				int slotValue = m_inventory.GetSlotValue(i);
+				if (m_inventory.GetSlotCount(i) > 0 && BlocksManager.Blocks[Terrain.ExtractContents(slotValue)] is DoubleMusketBlock)
 				{
 					m_inventory.ActiveSlotIndex = i;
 					return;
@@ -600,7 +627,8 @@ namespace Game
 				if (m_inventory.GetSlotCount(i) == 0) continue;
 				int blockIndex = Terrain.ExtractContents(slotValue);
 				Block block = BlocksManager.Blocks[blockIndex];
-				if (block is MusketBlock || block is CrossbowBlock || block is RepeatCrossbowBlock || block is BowBlock || block is FlameThrowerBlock || IsThrowableBlock(blockIndex))
+				if (block is MusketBlock || block is CrossbowBlock || block is RepeatCrossbowBlock || block is BowBlock ||
+					block is FlameThrowerBlock || block is DoubleMusketBlock || IsThrowableBlock(blockIndex))
 					continue;
 				float power = block.GetMeleePower(slotValue);
 				if (power > bestPower)
@@ -759,19 +787,37 @@ namespace Game
 			if (!(BlocksManager.Blocks[Terrain.ExtractContents(currentValue)] is FlameThrowerBlock))
 				return;
 
-			// Eliminar el lanzallamas actual
 			m_inventory.RemoveSlotItems(activeSlot, 1);
-
-			// Elegir tipo de bala aleatoriamente (Fuego o Veneno)
 			FlameBulletBlock.FlameBulletType bulletType = m_random.Bool()
 				? FlameBulletBlock.FlameBulletType.Flame
 				: FlameBulletBlock.FlameBulletType.Poison;
 
-			// Crear nuevo lanzallamas con carga 15 y el tipo de bala seleccionado
 			int data = 0;
 			data = FlameThrowerBlock.SetLoadState(data, FlameThrowerBlock.LoadState.Loaded);
 			data = FlameThrowerBlock.SetBulletType(data, bulletType);
 			int newValue = FlameThrowerBlock.SetLoadCount(Terrain.MakeBlockValue(FlameThrowerBlock.Index, 0, data), 15);
+			m_inventory.AddSlotItems(activeSlot, newValue, 1);
+		}
+
+		private void ReloadDoubleMusketInstantly()
+		{
+			int activeSlot = m_inventory.ActiveSlotIndex;
+			int currentValue = m_inventory.GetSlotValue(activeSlot);
+			if (!(BlocksManager.Blocks[Terrain.ExtractContents(currentValue)] is DoubleMusketBlock))
+				return;
+
+			m_inventory.RemoveSlotItems(activeSlot, 1);
+
+			// Recargar con 2 disparos, bala anti‑tanque, martillo sin cockear
+			int data = 0;
+			data = DoubleMusketBlock.SetLoaded(data, true);
+			data = DoubleMusketBlock.SetShotsRemaining(data, 2);
+			data = DoubleMusketBlock.SetAntiTanksBullet(data, true);
+			data = DoubleMusketBlock.SetHammerState(data, false);
+			// El tipo de bala no se usa realmente en DoubleMusket, pero lo ponemos por si acaso
+			data = DoubleMusketBlock.SetBulletType(data, BulletBlock.BulletType.MusketBall);
+
+			int newValue = Terrain.MakeBlockValue(DoubleMusketBlock.Index, 0, data);
 			m_inventory.AddSlotItems(activeSlot, newValue, 1);
 		}
 
