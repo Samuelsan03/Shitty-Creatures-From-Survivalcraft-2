@@ -325,7 +325,7 @@ namespace Game
 			bool isBow = activeBlock is BowBlock;
 			bool isFlameThrower = activeBlock is FlameThrowerBlock;
 			bool isDoubleMusket = activeBlock is DoubleMusketBlock;
-			bool isItemsLauncher = activeBlock is ItemsLauncherBlock; // <-- Añadido
+			bool isItemsLauncher = activeBlock is ItemsLauncherBlock;
 
 			if (!isMusket && !isCrossbow && !isRepeatCrossbow && !isBow && !isFlameThrower && !isDoubleMusket && !isItemsLauncher)
 				return;
@@ -363,7 +363,7 @@ namespace Game
 				aimTime = DoubleMusketAimTime;
 				cooldown = DoubleMusketCooldown;
 			}
-			else if (isItemsLauncher) // <-- Añadido
+			else if (isItemsLauncher)
 			{
 				aimTime = ItemsLauncherAimTime;
 				cooldown = ItemsLauncherCooldown;
@@ -382,64 +382,79 @@ namespace Game
 				Vector3 dir = Vector3.Normalize(targetPos + new Vector3(0f, 1f, 0f) - eyePos);
 				Ray3 aimRay = new Ray3(eyePos, dir);
 
-				if (m_aimTimer < aimTime)
+				if (isItemsLauncher)
 				{
-					m_componentMiner.Aim(aimRay, AimState.InProgress);
+					// Apuntado manual SIN usar ComponentMiner.Aim
 					if (m_creatureModel != null)
 					{
 						m_creatureModel.AimHandAngleOrder = 0f;
-						if (isMusket)
-						{
-							m_creatureModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
-							m_creatureModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
-						}
-						else if (isCrossbow || isRepeatCrossbow)
-						{
-							m_creatureModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.1f, 0.07f);
-							m_creatureModel.InHandItemRotationOrder = new Vector3(-1.55f, 0f, 0f);
-						}
-						else if (isBow)
-						{
-							m_creatureModel.InHandItemOffsetOrder = Vector3.Zero;
-							m_creatureModel.InHandItemRotationOrder = new Vector3(0f, -0.2f, 0f);
-						}
-						else if (isFlameThrower)
-						{
-							m_creatureModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
-							m_creatureModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
-						}
-						else if (isDoubleMusket)
-						{
-							m_creatureModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
-							m_creatureModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
-						}
-						else if (isItemsLauncher) // <-- Añadido: misma pose que mosquete
-						{
-							m_creatureModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
-							m_creatureModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
-						}
+						m_creatureModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
+						m_creatureModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
+					}
+
+					if (m_aimTimer >= aimTime)
+					{
+						ReloadItemsLauncherInstantly();
+						m_isAiming = false;
+						m_cooldownTimer = cooldown;
+						ResetModelPose();
 					}
 				}
 				else
 				{
-					m_componentMiner.Aim(aimRay, AimState.Completed);
-					if (isMusket)
-						ReloadMusketInstantly();
-					else if (isCrossbow)
-						ReloadCrossbowInstantly(Vector3.Distance(m_componentBody.Position, targetPos));
-					else if (isRepeatCrossbow)
-						ReloadRepeatCrossbowInstantly(Vector3.Distance(m_componentBody.Position, targetPos));
-					else if (isBow)
-						ReloadBowInstantly();
-					else if (isFlameThrower)
-						ReloadFlameThrowerInstantly();
-					else if (isDoubleMusket)
-						ReloadDoubleMusketInstantly();
-					else if (isItemsLauncher) // <-- Añadido
-						ReloadItemsLauncherInstantly();
-					m_isAiming = false;
-					m_cooldownTimer = cooldown;
-					ResetModelPose();
+					// Para las demás armas, usar el sistema normal de apuntado
+					if (m_aimTimer < aimTime)
+					{
+						m_componentMiner.Aim(aimRay, AimState.InProgress);
+						if (m_creatureModel != null)
+						{
+							m_creatureModel.AimHandAngleOrder = 0f;
+							if (isMusket)
+							{
+								m_creatureModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
+								m_creatureModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
+							}
+							else if (isCrossbow || isRepeatCrossbow)
+							{
+								m_creatureModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.1f, 0.07f);
+								m_creatureModel.InHandItemRotationOrder = new Vector3(-1.55f, 0f, 0f);
+							}
+							else if (isBow)
+							{
+								m_creatureModel.InHandItemOffsetOrder = Vector3.Zero;
+								m_creatureModel.InHandItemRotationOrder = new Vector3(0f, -0.2f, 0f);
+							}
+							else if (isFlameThrower)
+							{
+								m_creatureModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
+								m_creatureModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
+							}
+							else if (isDoubleMusket)
+							{
+								m_creatureModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
+								m_creatureModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
+							}
+						}
+					}
+					else
+					{
+						m_componentMiner.Aim(aimRay, AimState.Completed);
+						if (isMusket)
+							ReloadMusketInstantly();
+						else if (isCrossbow)
+							ReloadCrossbowInstantly(Vector3.Distance(m_componentBody.Position, targetPos));
+						else if (isRepeatCrossbow)
+							ReloadRepeatCrossbowInstantly(Vector3.Distance(m_componentBody.Position, targetPos));
+						else if (isBow)
+							ReloadBowInstantly();
+						else if (isFlameThrower)
+							ReloadFlameThrowerInstantly();
+						else if (isDoubleMusket)
+							ReloadDoubleMusketInstantly();
+						m_isAiming = false;
+						m_cooldownTimer = cooldown;
+						ResetModelPose();
+					}
 				}
 			}
 		}
