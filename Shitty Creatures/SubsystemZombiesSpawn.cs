@@ -259,33 +259,23 @@ namespace Game
 			m_countdownLabel.IsVisible = true;
 		}
 
+		// Modificado: Ya no depende de fase lunar, usa DaysSinceLastGreenNight
 		private int GetDaysUntilNextGreenNight()
 		{
-			int phase = m_subsystemSky.MoonPhase;
-			float timeOfDay = m_subsystemTimeOfDay.TimeOfDay;
-
 			if (!m_subsystemGreenNightSky.GreenNightEnabled)
 			{
-				if (phase == 0 || phase == 4)
-					return 4;
-				else if (phase < 4)
-					return 4 - phase;
-				else
-					return 8 - phase;
+				return 4;
 			}
 
-			if (phase == 0 || phase == 4)
+			if (m_subsystemGreenNightSky.IsGreenNightActive)
 			{
-				if (m_subsystemGreenNightSky.IsGreenNightActive)
-					return 0;
-				if (m_subsystemGreenNightSky.DaysSinceLastGreenNight == 0)
-					return 4;
 				return 0;
 			}
-			else if (phase < 4)
-				return 4 - phase;
-			else
-				return 8 - phase;
+
+			int daysSince = m_subsystemGreenNightSky.DaysSinceLastGreenNight;
+			int daysLeft = 4 - daysSince;
+
+			return Math.Max(0, daysLeft);
 		}
 
 		private void PlayEvilLaugh()
