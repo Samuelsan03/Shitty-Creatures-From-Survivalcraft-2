@@ -1531,10 +1531,10 @@ namespace Game
 			string templateName = deadEntity.ValuesDictionary?.DatabaseObject?.Name;
 			if (string.IsNullOrEmpty(templateName)) return;
 
-			// Verificar si es la criatura deseada
-			if (templateName == "CapitanPirata")
+			// Verificar si es CapitanPirata O PirataHostilComerciante
+			if (templateName == "CapitanPirata" || templateName == "PirataHostilComerciante")
 			{
-				// Ruta del sonido de muerte (ajústala si es diferente)
+				// Ruta del sonido de muerte
 				string deathSoundPath = "Audio/Die(1)";
 
 				// Intentar reproducir usando SubsystemAudio (efecto 3D)
@@ -1550,10 +1550,6 @@ namespace Game
 					AudioManager.PlaySound(deathSoundPath, 1f, 0f, 0f);
 				}
 			}
-
-			// IMPORTANTE: No olvides llamar a la implementación base si quieres conservar
-			// el comportamiento original (por si hay más lógica en la cadena de herencia).
-			// base.OnCreatureDied(health, injury, ref experienceOrbDropCount, ref calculateInKill);
 		}
 
 		public override void OnCreatureDying(ComponentHealth health, Injury injury)
@@ -1565,7 +1561,8 @@ namespace Game
 			if (creature == null) return;
 
 			string templateName = deadEntity.ValuesDictionary?.DatabaseObject?.Name;
-			if (templateName != "CapitanPirata") return;
+			// Verificar ambas criaturas
+			if (templateName != "CapitanPirata" && templateName != "PirataHostilComerciante") return;
 
 			ComponentCreatureSounds sounds = creature.ComponentCreatureSounds;
 			if (sounds == null) return;
@@ -1580,8 +1577,6 @@ namespace Game
 			if (painSoundField != null) painSoundField.SetValue(sounds, string.Empty);
 			if (moanSoundField != null) moanSoundField.SetValue(sounds, string.Empty);
 			if (attackSoundField != null) attackSoundField.SetValue(sounds, string.Empty);
-
-			// Establecer un tiempo futuro para evitar cualquier sonido basado en tiempo
 			if (lastSoundField != null) lastSoundField.SetValue(sounds, double.MaxValue);
 		}
 
@@ -1594,7 +1589,8 @@ namespace Game
 				if (injuredEntity != null)
 				{
 					string templateName = injuredEntity.ValuesDictionary?.DatabaseObject?.Name;
-					if (templateName == "CapitanPirata")
+					// Verificar si es CapitanPirata O PirataHostilComerciante
+					if (templateName == "CapitanPirata" || templateName == "PirataHostilComerciante")
 					{
 						// Suprimir el sonido de dolor SOLO cuando muere
 						playPainSound = false;
