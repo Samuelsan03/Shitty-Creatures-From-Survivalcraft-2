@@ -26,11 +26,12 @@ namespace Game
 					}
 					else
 					{
-						if (m_subsystemTimeOfDay != null && m_subsystemSky != null)
+						if (m_subsystemTimeOfDay != null)
 						{
 							float timeOfDay = m_subsystemTimeOfDay.TimeOfDay;
 							bool isNight = timeOfDay >= m_subsystemTimeOfDay.DuskStart || timeOfDay < m_subsystemTimeOfDay.DawnStart;
-							if (isNight && (m_subsystemSky.MoonPhase == 0 || m_subsystemSky.MoonPhase == 4))
+							// Modificado: Ya no depende de fase lunar, solo cada 4 dias
+							if (isNight && this.DaysSinceLastGreenNight >= 4)
 							{
 								IsGreenNightActive = true;
 								HasRolledTonight = true;
@@ -97,7 +98,8 @@ namespace Game
 			bool isStartMoment = Math.Abs(timeOfDay - middusk) < duskTolerance;
 			bool isEndMoment = Math.Abs(timeOfDay - middawn) < dawnTolerance;
 
-			if (!this.IsGreenNightActive && (this.m_subsystemSky.MoonPhase == 0 || this.m_subsystemSky.MoonPhase == 4))
+			// Modificado: Ya no depende de fase lunar, solo cada 4 dias
+			if (!this.IsGreenNightActive && this.DaysSinceLastGreenNight >= 4)
 			{
 				if (isStartMoment && !this.HasRolledTonight)
 				{
@@ -145,10 +147,7 @@ namespace Game
 
 			if (this.IsGreenNightActive && timeOfDay > this.m_subsystemTimeOfDay.DawnStart + 0.1f)
 			{
-				if (this.m_subsystemSky.MoonPhase != 0 && this.m_subsystemSky.MoonPhase != 4)
-				{
-					this.IsGreenNightActive = false;
-				}
+				// Modificado: Se removió dependencia de fase lunar - la noche verde ahora ocurre cada 4 días
 			}
 
 			if (this.HasRolledTonight && isEndMoment)
