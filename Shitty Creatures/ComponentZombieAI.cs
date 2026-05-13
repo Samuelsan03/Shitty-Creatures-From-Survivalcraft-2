@@ -66,7 +66,7 @@ namespace Game
 {
 	"GhostNormal", "GhostFast", "Boomer1", "Boomer2", "Boomer3",
 	"FrozenGhost", "FrozenGhostBoomer", "BoomerFrozen",
-	"GhostBoomer1", "GhostBoomer2", "GhostBoomer3"
+	"GhostBoomer1", "GhostBoomer2", "GhostBoomer3", "HumanoidSkeleton"
 };
 
 		private bool IsHumanoidCreature()
