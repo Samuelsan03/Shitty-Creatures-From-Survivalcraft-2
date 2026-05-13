@@ -137,6 +137,9 @@ namespace Game
 
 			ModsManager.RegisterHook("OnPlayerDead", this);
 			ModsManager.RegisterHook("OnProjectLoaded", this);
+			ModsManager.RegisterHook("OnCreatureDied", this);
+			ModsManager.RegisterHook("OnCreatureDying", this);
+			ModsManager.RegisterHook("ChangeVisualEffectOnInjury", this);
 			// Reemplazar overlay de captura de pantalla
 			ReplaceScreenCaptureOverlay();
 		}
@@ -1514,6 +1517,91 @@ namespace Game
 				m_bleedingSystems.Remove(c);
 		}
 
+		public override void OnCreatureDied(ComponentHealth health, Injury injury, ref int experienceOrbDropCount, ref bool calculateInKill)
+		{
+			// Obtener la entidad que murió
+			Entity deadEntity = health.Entity;
+			if (deadEntity == null) return;
+
+			// Obtener el ComponentCreature para acceder a su nombre y posición
+			ComponentCreature creature = deadEntity.FindComponent<ComponentCreature>();
+			if (creature == null) return;
+
+			// Obtener el nombre de la plantilla (template) de la criatura
+			string templateName = deadEntity.ValuesDictionary?.DatabaseObject?.Name;
+			if (string.IsNullOrEmpty(templateName)) return;
+
+			// Verificar si es la criatura deseada
+			if (templateName == "CapitanPirata")
+			{
+				// Ruta del sonido de muerte (ajústala si es diferente)
+				string deathSoundPath = "Audio/Die(1)";
+
+				// Intentar reproducir usando SubsystemAudio (efecto 3D)
+				SubsystemAudio audio = health.Project.FindSubsystem<SubsystemAudio>(true);
+				if (audio != null && creature.ComponentBody != null)
+				{
+					// Reproducir sonido en la posición del cuerpo, con distancia mínima 10f
+					audio.PlaySound(deathSoundPath, 1f, 0f, creature.ComponentBody.Position, 10f, false);
+				}
+				else
+				{
+					// Fallback: sonido global (sin efecto 3D)
+					AudioManager.PlaySound(deathSoundPath, 1f, 0f, 0f);
+				}
+			}
+
+			// IMPORTANTE: No olvides llamar a la implementación base si quieres conservar
+			// el comportamiento original (por si hay más lógica en la cadena de herencia).
+			// base.OnCreatureDied(health, injury, ref experienceOrbDropCount, ref calculateInKill);
+		}
+
+		public override void OnCreatureDying(ComponentHealth health, Injury injury)
+		{
+			Entity deadEntity = health.Entity;
+			if (deadEntity == null) return;
+
+			ComponentCreature creature = deadEntity.FindComponent<ComponentCreature>();
+			if (creature == null) return;
+
+			string templateName = deadEntity.ValuesDictionary?.DatabaseObject?.Name;
+			if (templateName != "CapitanPirata") return;
+
+			ComponentCreatureSounds sounds = creature.ComponentCreatureSounds;
+			if (sounds == null) return;
+
+			// Usar reflexión para acceder a los campos privados
+			var painSoundField = typeof(ComponentCreatureSounds).GetField("m_painSound", BindingFlags.Instance | BindingFlags.NonPublic);
+			var moanSoundField = typeof(ComponentCreatureSounds).GetField("m_moanSound", BindingFlags.Instance | BindingFlags.NonPublic);
+			var attackSoundField = typeof(ComponentCreatureSounds).GetField("m_attackSound", BindingFlags.Instance | BindingFlags.NonPublic);
+			var lastSoundField = typeof(ComponentCreatureSounds).GetField("m_lastSoundTime", BindingFlags.Instance | BindingFlags.NonPublic);
+
+			// Anular los sonidos que podrían reproducirse al morir
+			if (painSoundField != null) painSoundField.SetValue(sounds, string.Empty);
+			if (moanSoundField != null) moanSoundField.SetValue(sounds, string.Empty);
+			if (attackSoundField != null) attackSoundField.SetValue(sounds, string.Empty);
+
+			// Establecer un tiempo futuro para evitar cualquier sonido basado en tiempo
+			if (lastSoundField != null) lastSoundField.SetValue(sounds, double.MaxValue);
+		}
+
+		public override void ChangeVisualEffectOnInjury(ComponentHealth health, float lastHealth, ref float redScreenFactor, ref bool playPainSound, ref int healthBarFlashCount, ref float creatureModelRedFactor)
+		{
+			// Solo suprimir el sonido de dolor si la criatura está muriendo (salud <= 0)
+			if (health.Health <= 0f)
+			{
+				Entity injuredEntity = health.Entity;
+				if (injuredEntity != null)
+				{
+					string templateName = injuredEntity.ValuesDictionary?.DatabaseObject?.Name;
+					if (templateName == "CapitanPirata")
+					{
+						// Suprimir el sonido de dolor SOLO cuando muere
+						playPainSound = false;
+					}
+				}
+			}
+		}
 
 		// ---------------------------------------------------------------------------------
 		// SaveSettings / LoadSettings (heredados de ChaseMusicModLoader, vacíos)
