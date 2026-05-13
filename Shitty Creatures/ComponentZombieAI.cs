@@ -61,6 +61,21 @@ namespace Game
 		public override float ImportanceLevel => 100f;
 		public UpdateOrder UpdateOrder => UpdateOrder.Default;
 
+		// Lista de nombres de criaturas humanoides (manos alzadas)
+		private static readonly HashSet<string> HumanoidNames = new HashSet<string>
+{
+	"GhostNormal", "GhostFast", "Boomer1", "Boomer2", "Boomer3",
+	"FrozenGhost", "FrozenGhostBoomer", "BoomerFrozen",
+	"GhostBoomer1", "GhostBoomer2", "GhostBoomer3"
+};
+
+		private bool IsHumanoidCreature()
+		{
+			if (m_componentCreature == null) return false;
+			string displayName = m_componentCreature.DisplayName;
+			return !string.IsNullOrEmpty(displayName) && HumanoidNames.Contains(displayName);
+		}
+
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
 			m_canUseInventory = valuesDictionary.GetValue<bool>("CanUseInventory", false);
@@ -333,41 +348,13 @@ namespace Game
 			float aimTime = 0f;
 			float cooldown = 0f;
 
-			if (isMusket)
-			{
-				aimTime = MusketAimTime;
-				cooldown = MusketCooldown;
-			}
-			else if (isCrossbow)
-			{
-				aimTime = CrossbowAimTime;
-				cooldown = CrossbowCooldown;
-			}
-			else if (isRepeatCrossbow)
-			{
-				aimTime = RepeatCrossbowAimTime;
-				cooldown = RepeatCrossbowCooldown;
-			}
-			else if (isBow)
-			{
-				aimTime = BowAimTime;
-				cooldown = BowCooldown;
-			}
-			else if (isFlameThrower)
-			{
-				aimTime = FlameThrowerAimTime;
-				cooldown = FlameThrowerCooldown;
-			}
-			else if (isDoubleMusket)
-			{
-				aimTime = DoubleMusketAimTime;
-				cooldown = DoubleMusketCooldown;
-			}
-			else if (isItemsLauncher)
-			{
-				aimTime = ItemsLauncherAimTime;
-				cooldown = ItemsLauncherCooldown;
-			}
+			if (isMusket) { aimTime = MusketAimTime; cooldown = MusketCooldown; }
+			else if (isCrossbow) { aimTime = CrossbowAimTime; cooldown = CrossbowCooldown; }
+			else if (isRepeatCrossbow) { aimTime = RepeatCrossbowAimTime; cooldown = RepeatCrossbowCooldown; }
+			else if (isBow) { aimTime = BowAimTime; cooldown = BowCooldown; }
+			else if (isFlameThrower) { aimTime = FlameThrowerAimTime; cooldown = FlameThrowerCooldown; }
+			else if (isDoubleMusket) { aimTime = DoubleMusketAimTime; cooldown = DoubleMusketCooldown; }
+			else if (isItemsLauncher) { aimTime = ItemsLauncherAimTime; cooldown = ItemsLauncherCooldown; }
 
 			if (m_cooldownTimer > 0f)
 				m_cooldownTimer -= dt;
@@ -382,11 +369,14 @@ namespace Game
 				Vector3 dir = Vector3.Normalize(targetPos + new Vector3(0f, 1f, 0f) - eyePos);
 				Ray3 aimRay = new Ray3(eyePos, dir);
 
+				// SOLO ItemsLauncher usa apuntado manual (para evitar el subsystem)
+				// TODAS las demás armas usan ComponentMiner.Aim normalmente
 				if (isItemsLauncher)
 				{
-					// Apuntado manual (sin llamar a ComponentMiner.Aim)
+					// Apuntado manual SIN usar ComponentMiner.Aim
 					if (m_creatureModel != null)
 					{
+						m_creatureModel.AimHandAngleOrder = 0f;
 						m_creatureModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
 						m_creatureModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
 					}
@@ -401,55 +391,15 @@ namespace Game
 				}
 				else
 				{
-					// Para otras armas: usar el sistema normal de apuntado
+					// Para TODAS las demás armas, usar el sistema normal de apuntado (ComponentMiner.Aim)
 					if (m_aimTimer < aimTime)
 					{
 						m_componentMiner.Aim(aimRay, AimState.InProgress);
-						if (m_creatureModel != null)
-						{
-							m_creatureModel.AimHandAngleOrder = 0f;
-							if (isMusket)
-							{
-								m_creatureModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
-								m_creatureModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
-							}
-							else if (isCrossbow || isRepeatCrossbow)
-							{
-								m_creatureModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.1f, 0.07f);
-								m_creatureModel.InHandItemRotationOrder = new Vector3(-1.55f, 0f, 0f);
-							}
-							else if (isBow)
-							{
-								m_creatureModel.InHandItemOffsetOrder = Vector3.Zero;
-								m_creatureModel.InHandItemRotationOrder = new Vector3(0f, -0.2f, 0f);
-							}
-							else if (isFlameThrower)
-							{
-								m_creatureModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
-								m_creatureModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
-							}
-							else if (isDoubleMusket)
-							{
-								m_creatureModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
-								m_creatureModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
-							}
-						}
+						// Las animaciones las maneja el SubsystemBlockBehavior correspondiente
 					}
 					else
 					{
 						m_componentMiner.Aim(aimRay, AimState.Completed);
-						if (isMusket)
-							ReloadMusketInstantly();
-						else if (isCrossbow)
-							ReloadCrossbowInstantly(Vector3.Distance(m_componentBody.Position, targetPos));
-						else if (isRepeatCrossbow)
-							ReloadRepeatCrossbowInstantly(Vector3.Distance(m_componentBody.Position, targetPos));
-						else if (isBow)
-							ReloadBowInstantly();
-						else if (isFlameThrower)
-							ReloadFlameThrowerInstantly();
-						else if (isDoubleMusket)
-							ReloadDoubleMusketInstantly();
 						m_isAiming = false;
 						m_cooldownTimer = cooldown;
 						ResetModelPose();
