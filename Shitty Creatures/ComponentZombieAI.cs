@@ -20,6 +20,9 @@ namespace Game
 		public static float FlameThrowerAimTime = 1.5f;
 		public static float DoubleMusketCooldown = 0.5f;
 		public static float DoubleMusketAimTime = 1.5f;
+		// Nuevos valores para ItemsLauncher
+		public static float ItemsLauncherCooldown = 0.55f;
+		public static float ItemsLauncherAimTime = 1.0f;
 
 		public Vector2 AttackRange = new Vector2(5f, 100f);
 		public Vector2 ExplosiveRange = new Vector2(20f, 100f);
@@ -182,7 +185,8 @@ namespace Game
 							activeBlock is RepeatCrossbowBlock ||
 							activeBlock is BowBlock ||
 							activeBlock is FlameThrowerBlock ||
-							activeBlock is DoubleMusketBlock;
+							activeBlock is DoubleMusketBlock ||
+							activeBlock is ItemsLauncherBlock; // <-- Añadido
 			bool isMelee = !isRanged && !isThrowable && activeBlock.GetMeleePower(activeValue) > 0f;
 
 			float distToTarget = Vector3.Distance(m_componentBody.Position, target.ComponentBody.Position);
@@ -321,8 +325,9 @@ namespace Game
 			bool isBow = activeBlock is BowBlock;
 			bool isFlameThrower = activeBlock is FlameThrowerBlock;
 			bool isDoubleMusket = activeBlock is DoubleMusketBlock;
+			bool isItemsLauncher = activeBlock is ItemsLauncherBlock;
 
-			if (!isMusket && !isCrossbow && !isRepeatCrossbow && !isBow && !isFlameThrower && !isDoubleMusket)
+			if (!isMusket && !isCrossbow && !isRepeatCrossbow && !isBow && !isFlameThrower && !isDoubleMusket && !isItemsLauncher)
 				return;
 
 			float aimTime = 0f;
@@ -358,6 +363,11 @@ namespace Game
 				aimTime = DoubleMusketAimTime;
 				cooldown = DoubleMusketCooldown;
 			}
+			else if (isItemsLauncher)
+			{
+				aimTime = ItemsLauncherAimTime;
+				cooldown = ItemsLauncherCooldown;
+			}
 
 			if (m_cooldownTimer > 0f)
 				m_cooldownTimer -= dt;
@@ -372,57 +382,78 @@ namespace Game
 				Vector3 dir = Vector3.Normalize(targetPos + new Vector3(0f, 1f, 0f) - eyePos);
 				Ray3 aimRay = new Ray3(eyePos, dir);
 
-				if (m_aimTimer < aimTime)
+				if (isItemsLauncher)
 				{
-					m_componentMiner.Aim(aimRay, AimState.InProgress);
+					// Apuntado manual (sin llamar a ComponentMiner.Aim)
 					if (m_creatureModel != null)
 					{
-						m_creatureModel.AimHandAngleOrder = 0f;
-						if (isMusket)
-						{
-							m_creatureModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
-							m_creatureModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
-						}
-						else if (isCrossbow || isRepeatCrossbow)
-						{
-							m_creatureModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.1f, 0.07f);
-							m_creatureModel.InHandItemRotationOrder = new Vector3(-1.55f, 0f, 0f);
-						}
-						else if (isBow)
-						{
-							m_creatureModel.InHandItemOffsetOrder = Vector3.Zero;
-							m_creatureModel.InHandItemRotationOrder = new Vector3(0f, -0.2f, 0f);
-						}
-						else if (isFlameThrower)
-						{
-							m_creatureModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
-							m_creatureModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
-						}
-						else if (isDoubleMusket)
-						{
-							m_creatureModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
-							m_creatureModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
-						}
+						m_creatureModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
+						m_creatureModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
+					}
+
+					if (m_aimTimer >= aimTime)
+					{
+						ReloadItemsLauncherInstantly();
+						m_isAiming = false;
+						m_cooldownTimer = cooldown;
+						ResetModelPose();
 					}
 				}
 				else
 				{
-					m_componentMiner.Aim(aimRay, AimState.Completed);
-					if (isMusket)
-						ReloadMusketInstantly();
-					else if (isCrossbow)
-						ReloadCrossbowInstantly(Vector3.Distance(m_componentBody.Position, targetPos));
-					else if (isRepeatCrossbow)
-						ReloadRepeatCrossbowInstantly(Vector3.Distance(m_componentBody.Position, targetPos));
-					else if (isBow)
-						ReloadBowInstantly();
-					else if (isFlameThrower)
-						ReloadFlameThrowerInstantly();
-					else if (isDoubleMusket)
-						ReloadDoubleMusketInstantly();
-					m_isAiming = false;
-					m_cooldownTimer = cooldown;
-					ResetModelPose();
+					// Para otras armas: usar el sistema normal de apuntado
+					if (m_aimTimer < aimTime)
+					{
+						m_componentMiner.Aim(aimRay, AimState.InProgress);
+						if (m_creatureModel != null)
+						{
+							m_creatureModel.AimHandAngleOrder = 0f;
+							if (isMusket)
+							{
+								m_creatureModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
+								m_creatureModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
+							}
+							else if (isCrossbow || isRepeatCrossbow)
+							{
+								m_creatureModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.1f, 0.07f);
+								m_creatureModel.InHandItemRotationOrder = new Vector3(-1.55f, 0f, 0f);
+							}
+							else if (isBow)
+							{
+								m_creatureModel.InHandItemOffsetOrder = Vector3.Zero;
+								m_creatureModel.InHandItemRotationOrder = new Vector3(0f, -0.2f, 0f);
+							}
+							else if (isFlameThrower)
+							{
+								m_creatureModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
+								m_creatureModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
+							}
+							else if (isDoubleMusket)
+							{
+								m_creatureModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
+								m_creatureModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
+							}
+						}
+					}
+					else
+					{
+						m_componentMiner.Aim(aimRay, AimState.Completed);
+						if (isMusket)
+							ReloadMusketInstantly();
+						else if (isCrossbow)
+							ReloadCrossbowInstantly(Vector3.Distance(m_componentBody.Position, targetPos));
+						else if (isRepeatCrossbow)
+							ReloadRepeatCrossbowInstantly(Vector3.Distance(m_componentBody.Position, targetPos));
+						else if (isBow)
+							ReloadBowInstantly();
+						else if (isFlameThrower)
+							ReloadFlameThrowerInstantly();
+						else if (isDoubleMusket)
+							ReloadDoubleMusketInstantly();
+						m_isAiming = false;
+						m_cooldownTimer = cooldown;
+						ResetModelPose();
+					}
 				}
 			}
 		}
@@ -536,6 +567,7 @@ namespace Game
 				if (shotsRemaining == 0)
 					ReloadDoubleMusketInstantly();
 			}
+			// ItemsLauncher no requiere recarga (no busca munición)
 			m_isAiming = true;
 			m_aimTimer = 0f;
 		}
@@ -561,6 +593,7 @@ namespace Game
 
 		private void EquipBestRangedWeapon()
 		{
+			// Prioridad: Mosquete, Doble Mosquete, Lanzador de Ítems, Lanzallamas, Ballesta, Ballesta Rápida, Arco
 			for (int i = 0; i < m_inventory.SlotsCount; i++)
 			{
 				int slotValue = m_inventory.GetSlotValue(i);
@@ -574,6 +607,16 @@ namespace Game
 			{
 				int slotValue = m_inventory.GetSlotValue(i);
 				if (m_inventory.GetSlotCount(i) > 0 && BlocksManager.Blocks[Terrain.ExtractContents(slotValue)] is DoubleMusketBlock)
+				{
+					m_inventory.ActiveSlotIndex = i;
+					return;
+				}
+			}
+			// Añadido ItemsLauncher
+			for (int i = 0; i < m_inventory.SlotsCount; i++)
+			{
+				int slotValue = m_inventory.GetSlotValue(i);
+				if (m_inventory.GetSlotCount(i) > 0 && BlocksManager.Blocks[Terrain.ExtractContents(slotValue)] is ItemsLauncherBlock)
 				{
 					m_inventory.ActiveSlotIndex = i;
 					return;
@@ -628,7 +671,7 @@ namespace Game
 				int blockIndex = Terrain.ExtractContents(slotValue);
 				Block block = BlocksManager.Blocks[blockIndex];
 				if (block is MusketBlock || block is CrossbowBlock || block is RepeatCrossbowBlock || block is BowBlock ||
-					block is FlameThrowerBlock || block is DoubleMusketBlock || IsThrowableBlock(blockIndex))
+					block is FlameThrowerBlock || block is DoubleMusketBlock || block is ItemsLauncherBlock || IsThrowableBlock(blockIndex))
 					continue;
 				float power = block.GetMeleePower(slotValue);
 				if (power > bestPower)
@@ -808,17 +851,65 @@ namespace Game
 
 			m_inventory.RemoveSlotItems(activeSlot, 1);
 
-			// Recargar con 2 disparos, bala anti‑tanque, martillo sin cockear
 			int data = 0;
 			data = DoubleMusketBlock.SetLoaded(data, true);
 			data = DoubleMusketBlock.SetShotsRemaining(data, 2);
 			data = DoubleMusketBlock.SetAntiTanksBullet(data, true);
 			data = DoubleMusketBlock.SetHammerState(data, false);
-			// El tipo de bala no se usa realmente en DoubleMusket, pero lo ponemos por si acaso
 			data = DoubleMusketBlock.SetBulletType(data, BulletBlock.BulletType.MusketBall);
 
 			int newValue = Terrain.MakeBlockValue(DoubleMusketBlock.Index, 0, data);
 			m_inventory.AddSlotItems(activeSlot, newValue, 1);
+		}
+
+		// Nuevo método para el lanzador de ítems
+		private void ReloadItemsLauncherInstantly()
+		{
+			ComponentCreature target = m_chaseBehavior.m_target;
+			if (target == null) return;
+
+			// Posición de los ojos y dirección de la mira
+			Vector3 eyePos = m_creatureModel.EyePosition;
+			Vector3 aimDir = m_creatureModel.EyeRotation.GetForwardVector();
+
+			// Calcular la boca del cañón (igual que en CreatureAI)
+			Vector3 muzzlePos = eyePos + m_componentBody.Matrix.Right * 0.3f - m_componentBody.Matrix.Up * 0.2f;
+			Vector3 dirNorm = Vector3.Normalize(muzzlePos + aimDir * 10f - muzzlePos);
+
+			// Crear la bala MusketBall
+			int bulletBlockIndex = BlocksManager.GetBlockIndex<BulletBlock>(false, false);
+			if (bulletBlockIndex <= 0) return;
+
+			int bulletData = BulletBlock.SetBulletType(0, BulletBlock.BulletType.MusketBall);
+			int bulletValue = Terrain.MakeBlockValue(bulletBlockIndex, 0, bulletData);
+
+			// Velocidad del proyectil = velocidad del zombie + velocidad de disparo (60)
+			float speed = 100f;
+			Vector3 velocity = m_componentCreature.ComponentBody.Velocity + speed * dirNorm;
+
+			// Disparar
+			m_subsystemProjectiles.FireProjectile(bulletValue, muzzlePos, velocity, Vector3.Zero, m_componentCreature);
+
+			// Sonido (volumen 0.5f como en CreatureAI)
+			SubsystemAudio audio = base.Project.FindSubsystem<SubsystemAudio>(true);
+			if (audio != null)
+			{
+				audio.PlaySound("Audio/Items/ItemLauncher/Item Cannon Fire", 1f,
+					m_random.Float(-0.1f, 0.1f), eyePos, 10f, true);
+			}
+
+			// Partículas de humo
+			SubsystemParticles particles = base.Project.FindSubsystem<SubsystemParticles>(true);
+			if (particles != null && m_subsystemTerrain != null)
+			{
+				particles.AddParticleSystem(
+					new GunSmokeParticleSystem(m_subsystemTerrain, muzzlePos + 0.3f * dirNorm, dirNorm),
+					false
+				);
+			}
+
+			// Retroceso (igual que en CreatureAI: -4f * dirNorm)
+			m_componentBody.ApplyImpulse(-4f * dirNorm);
 		}
 
 		private bool IsThrowableBlock(int blockIndex)
