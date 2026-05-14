@@ -62,7 +62,7 @@ namespace Game
 		{
 			"GhostNormal", "GhostFast", "Boomer1", "Boomer2", "Boomer3",
 			"FrozenGhost", "FrozenGhostBoomer", "BoomerFrozen",
-			"GhostBoomer1", "GhostBoomer2", "GhostBoomer3"
+			"GhostBoomer1", "GhostBoomer2", "GhostBoomer3", "HumanoidSkeleton"
 		};
 
 		public override float ImportanceLevel => 100f;
@@ -148,8 +148,12 @@ namespace Game
 		private bool IsNormalHumanoid()
 		{
 			if (m_componentCreature == null) return false;
-			string displayName = m_componentCreature.DisplayName;
-			return !string.IsNullOrEmpty(displayName) && s_normalCreatureNames.Contains(displayName);
+
+			// Obtener el nombre real de la plantilla desde el ValuesDictionary de la entidad
+			string templateName = Entity.ValuesDictionary.DatabaseObject.Name;
+			bool result = !string.IsNullOrEmpty(templateName) && s_normalCreatureNames.Contains(templateName);
+
+			return result;
 		}
 
 		public virtual void Update(float dt)
@@ -344,44 +348,14 @@ namespace Game
 			if (!isMusket && !isCrossbow && !isRepeatCrossbow && !isBow && !isFlameThrower && !isDoubleMusket && !isItemsLauncher)
 				return;
 
-			float aimTime = 0f;
-			float cooldown = 0f;
-
-			if (isMusket)
-			{
-				aimTime = MusketAimTime;
-				cooldown = MusketCooldown;
-			}
-			else if (isCrossbow)
-			{
-				aimTime = CrossbowAimTime;
-				cooldown = CrossbowCooldown;
-			}
-			else if (isRepeatCrossbow)
-			{
-				aimTime = RepeatCrossbowAimTime;
-				cooldown = RepeatCrossbowCooldown;
-			}
-			else if (isBow)
-			{
-				aimTime = BowAimTime;
-				cooldown = BowCooldown;
-			}
-			else if (isFlameThrower)
-			{
-				aimTime = FlameThrowerAimTime;
-				cooldown = FlameThrowerCooldown;
-			}
-			else if (isDoubleMusket)
-			{
-				aimTime = DoubleMusketAimTime;
-				cooldown = DoubleMusketCooldown;
-			}
-			else if (isItemsLauncher)
-			{
-				aimTime = ItemsLauncherAimTime;
-				cooldown = ItemsLauncherCooldown;
-			}
+			float aimTime = 0f, cooldown = 0f;
+			if (isMusket) { aimTime = MusketAimTime; cooldown = MusketCooldown; }
+			else if (isCrossbow) { aimTime = CrossbowAimTime; cooldown = CrossbowCooldown; }
+			else if (isRepeatCrossbow) { aimTime = RepeatCrossbowAimTime; cooldown = RepeatCrossbowCooldown; }
+			else if (isBow) { aimTime = BowAimTime; cooldown = BowCooldown; }
+			else if (isFlameThrower) { aimTime = FlameThrowerAimTime; cooldown = FlameThrowerCooldown; }
+			else if (isDoubleMusket) { aimTime = DoubleMusketAimTime; cooldown = DoubleMusketCooldown; }
+			else if (isItemsLauncher) { aimTime = ItemsLauncherAimTime; cooldown = ItemsLauncherCooldown; }
 
 			if (m_cooldownTimer > 0f)
 				m_cooldownTimer -= dt;
@@ -398,13 +372,12 @@ namespace Game
 
 				bool isNormal = IsNormalHumanoid();
 
-				// UNIFICADO: TODAS las criaturas usan ComponentMiner.Aim para disparar
 				if (m_aimTimer < aimTime)
 				{
-					// Fase de apuntado - actualizar dirección constantemente
+					// Fase de apuntado: siempre actualizamos el rayo.
 					m_componentMiner.Aim(aimRay, AimState.InProgress);
 
-					// Ajustes visuales adicionales para criaturas no normales
+					// SOLO para criaturas NO normales aplicamos ajustes visuales manuales
 					if (!isNormal && m_creatureModel != null)
 					{
 						m_creatureModel.AimHandAngleOrder = 0f;
@@ -427,12 +400,11 @@ namespace Game
 				}
 				else
 				{
-					// DISPARO: Completar el aim para ejecutar el ataque
+					// Disparo: completar el aim y luego resetear la pose manual (solo la nuestra, no interfiere)
 					m_componentMiner.Aim(aimRay, AimState.Completed);
 					m_isAiming = false;
 					m_cooldownTimer = cooldown;
 					m_aimTimer = 0f;
-					ResetModelPose();
 				}
 			}
 		}
@@ -496,17 +468,18 @@ namespace Game
 			if (m_isAiming)
 			{
 				Vector3 eyePos = m_creatureModel.EyePosition;
-				// Siempre cancelar el aim independientemente del tipo de criatura
+				// Cancelar el aim actual
 				m_componentMiner.Aim(new Ray3(eyePos, Vector3.UnitZ), AimState.Cancelled);
 				m_isAiming = false;
 				m_aimTimer = 0f;
+				// Resetear la pose solo si no estamos en medio de un disparo (el behavior ya lo haría)
 				ResetModelPose();
 			}
 		}
 
 		private void StartAiming()
 		{
-			StopAiming();
+			// NO llamar a StopAiming() aquí, porque cancelaría el aim que estamos a punto de iniciar.
 			int activeValue = m_inventory.GetSlotValue(m_inventory.ActiveSlotIndex);
 			Block activeBlock = BlocksManager.Blocks[Terrain.ExtractContents(activeValue)];
 
