@@ -732,7 +732,7 @@ namespace Game
 				if (greenNightSky != null)
 				{
 					GreenNightToggleDialog dialog = new GreenNightToggleDialog(greenNightSky, player);
-					player.ComponentGui.ModalPanelWidget = dialog;
+					DialogsManager.ShowDialog(player.GuiWidget, dialog);
 					AudioManager.PlaySound("Audio/UI/ButtonClick", 1f, 0f, 0f);
 					playerOperated = true;
 					return;
@@ -1221,6 +1221,21 @@ namespace Game
 				componentPlayer.GuiWidget.Children.Add(label);
 				m_coordinateLabels[componentPlayer] = label;
 			}
+
+			// El diálogo debe mostrarse en TODOS los modos, incluyendo Creativo
+			if (componentPlayer.PlayerData.SpawnsCount == 1)
+			{
+				var greenNight = componentPlayer.Project.FindSubsystem<SubsystemGreenNightSky>(true);
+				if (greenNight != null)
+				{
+					Dispatcher.Dispatch(delegate
+					{
+						var dialog = new GreenNightIntervalDialog(greenNight, componentPlayer);
+						DialogsManager.ShowDialog(componentPlayer.GuiWidget, dialog);
+					}, false);
+				}
+			}
+
 			// Solo entregar en la primera aparición del mundo (no en respawns)
 			// SpawnsCount == 1 indica el primer spawn real; 0 es antes de spawnear.
 			if (componentPlayer.PlayerData.SpawnsCount != 1)
