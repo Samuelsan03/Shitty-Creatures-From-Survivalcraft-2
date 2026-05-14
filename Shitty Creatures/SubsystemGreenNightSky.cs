@@ -9,6 +9,7 @@ namespace Game
 	{
 		public event Action NaturalNightEnded;
 		public event Action GreenNightStarted;
+		public int GreenNightIntervalDays { get; set; } = 4;
 
 		public virtual bool IsGreenNightActive { get; set; }
 		private bool m_greenNightEnabled = true;
@@ -30,8 +31,8 @@ namespace Game
 						{
 							float timeOfDay = m_subsystemTimeOfDay.TimeOfDay;
 							bool isNight = timeOfDay >= m_subsystemTimeOfDay.DuskStart || timeOfDay < m_subsystemTimeOfDay.DawnStart;
-							// Modificado: Ya no depende de fase lunar, solo cada 4 dias
-							if (isNight && this.DaysSinceLastGreenNight >= 4)
+							// Usar el intervalo configurado
+							if (isNight && this.DaysSinceLastGreenNight >= this.GreenNightIntervalDays)
 							{
 								IsGreenNightActive = true;
 								HasRolledTonight = true;
@@ -64,10 +65,8 @@ namespace Game
 		{
 			if (!GreenNightEnabled) return;
 
-			// Si el modo de tiempo NO es "Changing", no procesamos la Noche Verde
 			if (m_subsystemGameInfo.WorldSettings.TimeOfDayMode != TimeOfDayMode.Changing)
 			{
-				// Aseguramos que la Noche Verde esté inactiva si el tiempo está congelado
 				if (IsGreenNightActive)
 				{
 					IsGreenNightActive = false;
@@ -98,8 +97,8 @@ namespace Game
 			bool isStartMoment = Math.Abs(timeOfDay - middusk) < duskTolerance;
 			bool isEndMoment = Math.Abs(timeOfDay - middawn) < dawnTolerance;
 
-			// Modificado: Ya no depende de fase lunar, solo cada 4 dias
-			if (!this.IsGreenNightActive && this.DaysSinceLastGreenNight >= 4)
+			// Usar el intervalo configurado
+			if (!this.IsGreenNightActive && this.DaysSinceLastGreenNight >= this.GreenNightIntervalDays)
 			{
 				if (isStartMoment && !this.HasRolledTonight)
 				{
@@ -147,7 +146,7 @@ namespace Game
 
 			if (this.IsGreenNightActive && timeOfDay > this.m_subsystemTimeOfDay.DawnStart + 0.1f)
 			{
-				// Modificado: Se removió dependencia de fase lunar - la noche verde ahora ocurre cada 4 días
+				// No se requiere acción adicional
 			}
 
 			if (this.HasRolledTonight && isEndMoment)
@@ -167,6 +166,7 @@ namespace Game
 			this.LastCheckedDay = valuesDictionary.GetValue<double>("LastCheckedDay");
 			this.DaysSinceLastGreenNight = valuesDictionary.GetValue<int>("DaysSinceLastGreenNight");
 			this.GreenNightEnabled = valuesDictionary.GetValue<bool>("GreenNightEnabled", true);
+			this.GreenNightIntervalDays = valuesDictionary.GetValue<int>("GreenNightIntervalDays", 4);
 
 			SubsystemGreenNightSky.Instance = this;
 		}
@@ -178,6 +178,7 @@ namespace Game
 			valuesDictionary.SetValue<double>("LastCheckedDay", this.LastCheckedDay);
 			valuesDictionary.SetValue<int>("DaysSinceLastGreenNight", this.DaysSinceLastGreenNight);
 			valuesDictionary.SetValue<bool>("GreenNightEnabled", this.GreenNightEnabled);
+			valuesDictionary.SetValue<int>("GreenNightIntervalDays", this.GreenNightIntervalDays);
 		}
 	}
 }
