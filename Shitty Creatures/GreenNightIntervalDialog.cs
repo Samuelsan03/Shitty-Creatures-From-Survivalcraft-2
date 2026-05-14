@@ -13,6 +13,7 @@ namespace Game
 		private bool m_isClosing;
 		private bool m_isFirstTime;
 		private bool m_showMessageOnAccept;
+		private Action<int> m_onAccept;
 
 		private BevelledButtonWidget m_daysButton;
 		private BevelledButtonWidget m_okButton;
@@ -36,12 +37,18 @@ namespace Game
 		}
 
 		public GreenNightIntervalDialog(SubsystemGreenNightSky greenNightSky, ComponentPlayer player, bool isFirstTime = false, bool showMessageOnAccept = true)
+			: this(greenNightSky, player, null, isFirstTime, showMessageOnAccept)
+		{
+		}
+
+		public GreenNightIntervalDialog(SubsystemGreenNightSky greenNightSky, ComponentPlayer player, Action<int> onAccept, bool isFirstTime = false, bool showMessageOnAccept = true)
 		{
 			m_greenNightSky = greenNightSky;
 			m_player = player;
 			m_selectedDays = m_greenNightSky.GreenNightIntervalDays;
 			m_isFirstTime = isFirstTime;
 			m_showMessageOnAccept = showMessageOnAccept;
+			m_onAccept = onAccept;
 
 			XElement node = ContentManager.Get<XElement>("Dialogs/GreenNightIntervalDialog");
 			LoadContents(null, node);
@@ -107,13 +114,18 @@ namespace Game
 			if (m_isClosing) return;
 			m_isClosing = true;
 
-			m_greenNightSky.GreenNightIntervalDays = m_selectedDays;
-
-			// Mostrar mensaje solo si se pide explícitamente
-			if (m_showMessageOnAccept)
+			if (m_onAccept != null)
 			{
-				string message = string.Format(GetText(11), m_selectedDays);
-				m_player.ComponentGui.DisplaySmallMessage(message, Color.White, false, true);
+				m_onAccept(m_selectedDays);
+			}
+			else
+			{
+				m_greenNightSky.GreenNightIntervalDays = m_selectedDays;
+				if (m_showMessageOnAccept)
+				{
+					string message = string.Format(GetText(11), m_selectedDays);
+					m_player.ComponentGui.DisplaySmallMessage(message, Color.White, false, true);
+				}
 			}
 
 			DialogsManager.HideDialog(this);
@@ -124,7 +136,6 @@ namespace Game
 			if (m_isClosing) return;
 			m_isClosing = true;
 
-			// Si es el primer spawn (diálogo inicial) y se cancela, mostrar mensaje con el intervalo original
 			if (m_isFirstTime && m_showMessageOnAccept)
 			{
 				string message = string.Format(GetText(11), m_greenNightSky.GreenNightIntervalDays);
