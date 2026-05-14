@@ -59,6 +59,13 @@ namespace Game
 			m_cancelButton = Children.Find<BevelledButtonWidget>("GreenNightIntervalDialog.CancelButton", true);
 			m_warningPanel = Children.Find<StackPanelWidget>("GreenNightIntervalDialog.WarningPanel", true);
 
+			// Aplicar color (113, 255, 61) al botón de días
+			if (m_daysButton != null)
+			{
+				m_daysButton.BevelColor = new Color(113, 255, 61);
+				m_daysButton.CenterColor = new Color(113, 255, 61);
+			}
+
 			if (m_warningPanel != null)
 			{
 				m_warningPanel.IsVisible = m_isFirstTime;
