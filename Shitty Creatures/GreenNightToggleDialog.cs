@@ -15,6 +15,8 @@ namespace Game
 		private ButtonWidget m_cancelButton;
 		private LabelWidget m_titleLabel;
 		private LabelWidget m_explanationLabel;
+		private LabelWidget m_intervalLabel;
+		private LabelWidget m_intervalHintLabel;
 		private bool m_lastCheckState;
 		private int m_originalIntervalDays;
 		private int m_tempIntervalDays;
@@ -35,11 +37,23 @@ namespace Game
 			m_explanationLabel = Children.Find<LabelWidget>("ExplanationLabel", true);
 			m_okButton = Children.Find<ButtonWidget>("OKButton", true);
 			m_cancelButton = Children.Find<ButtonWidget>("CancelButton", true);
+			m_intervalLabel = Children.Find<LabelWidget>("IntervalLabel", true);
+			m_intervalHintLabel = Children.Find<LabelWidget>("IntervalHintLabel", true);
 
-			m_titleLabel.Text = LanguageControl.Get("GreenNightDialog", "Title");
-			m_checkbox.Text = LanguageControl.Get("GreenNightDialog", "CheckboxText");
-			m_okButton.Text = LanguageControl.Get("GreenNightDialog", "OkButton");
-			m_cancelButton.Text = LanguageControl.Get("GreenNightDialog", "CancelButton");
+			m_titleLabel.Text = LanguageControl.GetContentWidgets("GreenNightToggleDialog", "Title");
+			m_checkbox.Text = LanguageControl.GetContentWidgets("GreenNightToggleDialog", "CheckboxText");
+			m_okButton.Text = LanguageControl.GetContentWidgets("GreenNightToggleDialog", "OkButton");
+			m_cancelButton.Text = LanguageControl.GetContentWidgets("GreenNightToggleDialog", "CancelButton");
+			m_intervalLabel.Text = LanguageControl.GetContentWidgets("GreenNightToggleDialog", "IntervalLabel");
+			m_intervalHintLabel.Text = LanguageControl.GetContentWidgets("GreenNightToggleDialog", "IntervalHintLabel");
+			m_daysButton.Text = LanguageControl.GetContentWidgets("GreenNightToggleDialog", "DaysButton");
+
+			// Aplicar color (39, 146, 0) al botón de días
+			if (m_daysButton is BevelledButtonWidget bevelledDaysButton)
+			{
+				bevelledDaysButton.BevelColor = new Color(39, 146, 0);
+				bevelledDaysButton.CenterColor = new Color(39, 146, 0);
+			}
 
 			m_checkbox.IsChecked = m_subsystemGreenNightSky.GreenNightEnabled;
 			m_lastCheckState = m_checkbox.IsChecked;
@@ -50,7 +64,7 @@ namespace Game
 		private void UpdateExplanationText()
 		{
 			string explanationKey = m_checkbox.IsChecked ? "EnableExplanation" : "DisableExplanation";
-			m_explanationLabel.Text = LanguageControl.Get("GreenNightDialog", explanationKey);
+			m_explanationLabel.Text = LanguageControl.GetContentWidgets("GreenNightToggleDialog", explanationKey);
 		}
 
 		public override void Update()
@@ -98,7 +112,7 @@ namespace Game
 				{
 					string messageKey = newValue ? "EnabledNotification" : "DisabledNotification";
 					Color messageColor = newValue ? new Color(0, 100, 0) : new Color(0, 255, 0);
-					string message = LanguageControl.Get("GreenNightDialog", messageKey);
+					string message = LanguageControl.GetContentWidgets("GreenNightToggleDialog", messageKey);
 					m_player.ComponentGui.DisplaySmallMessage(message, messageColor, false, true);
 				}
 			}
@@ -107,7 +121,7 @@ namespace Game
 			{
 				m_subsystemGreenNightSky.GreenNightIntervalDays = m_tempIntervalDays;
 				string intervalMessage = string.Format(
-					LanguageControl.GetContentWidgets("GreenNightIntervalDialog", 11),
+					LanguageControl.GetContentWidgets("GreenNightIntervalDialog", "11"),
 					m_tempIntervalDays);
 				m_player.ComponentGui.DisplaySmallMessage(intervalMessage, Color.White, false, true);
 			}
