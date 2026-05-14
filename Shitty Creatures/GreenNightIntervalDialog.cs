@@ -1,112 +1,136 @@
 using System;
 using System.Xml.Linq;
 using Engine;
-using Engine.Graphics;
+using Game;
 
 namespace Game
 {
-	public class GreenNightToggleDialog : Dialog
+	public class GreenNightIntervalDialog : Dialog
 	{
-		private SubsystemGreenNightSky m_subsystemGreenNightSky;
+		private SubsystemGreenNightSky m_greenNightSky;
 		private ComponentPlayer m_player;
-		private CheckboxWidget m_checkbox;
-		private ButtonWidget m_daysButton;
-		private ButtonWidget m_okButton;
-		private ButtonWidget m_cancelButton;
-		private LabelWidget m_titleLabel;
-		private LabelWidget m_explanationLabel;
-		private bool m_lastCheckState;
-		private int m_originalIntervalDays;  // Guardar el intervalo original
+		private int m_selectedDays;
+		private bool m_isClosing;
+		private bool m_isFirstTime;
+		private bool m_showMessageOnAccept;
 
-		public GreenNightToggleDialog(SubsystemGreenNightSky greenNightSky, ComponentPlayer player)
+		private BevelledButtonWidget m_daysButton;
+		private BevelledButtonWidget m_okButton;
+		private BevelledButtonWidget m_cancelButton;
+		private LabelWidget m_descriptionLabel;
+		private StackPanelWidget m_warningPanel;
+
+		private readonly int[] m_options = { 4, 8, 12, 16 };
+
+		private string GetText(int key)
 		{
-			m_subsystemGreenNightSky = greenNightSky;
-			m_player = player;
-			m_originalIntervalDays = m_subsystemGreenNightSky.GreenNightIntervalDays;  // Guardar valor original
-
-			XElement node = ContentManager.Get<XElement>("Dialogs/GreenNightToggleDialog");
-			LoadContents(this, node);
-
-			m_titleLabel = Children.Find<LabelWidget>("TitleLabel", true);
-			m_checkbox = Children.Find<CheckboxWidget>("Checkbox", true);
-			m_daysButton = Children.Find<ButtonWidget>("DaysButton", true);
-			m_explanationLabel = Children.Find<LabelWidget>("ExplanationLabel", true);
-			m_okButton = Children.Find<ButtonWidget>("OKButton", true);
-			m_cancelButton = Children.Find<ButtonWidget>("CancelButton", true);
-
-			m_titleLabel.Text = LanguageControl.Get("GreenNightDialog", "Title");
-			m_checkbox.Text = LanguageControl.Get("GreenNightDialog", "CheckboxText");
-			m_okButton.Text = LanguageControl.Get("GreenNightDialog", "OkButton");
-			m_cancelButton.Text = LanguageControl.Get("GreenNightDialog", "CancelButton");
-
-			m_checkbox.IsChecked = m_subsystemGreenNightSky.GreenNightEnabled;
-			m_lastCheckState = m_checkbox.IsChecked;
-
-			UpdateExplanationText();
+			return LanguageControl.GetContentWidgets("GreenNightIntervalDialog", key.ToString());
 		}
 
-		private void UpdateExplanationText()
+		private string GetDescription(int days)
 		{
-			string explanationKey = m_checkbox.IsChecked ? "EnableExplanation" : "DisableExplanation";
-			m_explanationLabel.Text = LanguageControl.Get("GreenNightDialog", explanationKey);
+			if (days == 4) return GetText(6);
+			if (days == 8) return GetText(7);
+			if (days == 12) return GetText(8);
+			return GetText(9);
+		}
+
+		public GreenNightIntervalDialog(SubsystemGreenNightSky greenNightSky, ComponentPlayer player, bool isFirstTime = false, bool showMessageOnAccept = true)
+		{
+			m_greenNightSky = greenNightSky;
+			m_player = player;
+			m_selectedDays = m_greenNightSky.GreenNightIntervalDays;
+			m_isFirstTime = isFirstTime;
+			m_showMessageOnAccept = showMessageOnAccept;
+
+			XElement node = ContentManager.Get<XElement>("Dialogs/GreenNightIntervalDialog");
+			LoadContents(null, node);
+
+			m_daysButton = Children.Find<BevelledButtonWidget>("GreenNightIntervalDialog.DaysButton", true);
+			m_descriptionLabel = Children.Find<LabelWidget>("GreenNightIntervalDialog.DescriptionLabel", true);
+			m_okButton = Children.Find<BevelledButtonWidget>("GreenNightIntervalDialog.OkButton", true);
+			m_cancelButton = Children.Find<BevelledButtonWidget>("GreenNightIntervalDialog.CancelButton", true);
+			m_warningPanel = Children.Find<StackPanelWidget>("GreenNightIntervalDialog.WarningPanel", true);
+
+			if (m_warningPanel != null)
+			{
+				m_warningPanel.IsVisible = m_isFirstTime;
+			}
+
+			UpdateDaysButton();
+			UpdateDescription(m_selectedDays);
+		}
+
+		private void UpdateDaysButton()
+		{
+			string format = GetText(12);
+			m_daysButton.Text = string.Format(format, m_selectedDays);
+		}
+
+		private void UpdateDescription(int days)
+		{
+			m_descriptionLabel.Text = GetDescription(days);
+			m_descriptionLabel.Color = new Color(255, 165, 0);
 		}
 
 		public override void Update()
 		{
-			if (m_checkbox.IsChecked != m_lastCheckState)
-			{
-				m_lastCheckState = m_checkbox.IsChecked;
-				UpdateExplanationText();
-			}
+			if (m_isClosing) return;
 
 			if (m_daysButton.IsClicked)
 			{
-				// isFirstTime = false (no muestra mensaje rojo), showMessageOnAccept = false (no muestra mensaje al aceptar)
-				var intervalDialog = new GreenNightIntervalDialog(m_subsystemGreenNightSky, m_player, false, false);
-				DialogsManager.ShowDialog(m_player.GuiWidget, intervalDialog);
+				CycleDays();
 			}
-
-			if (m_okButton.IsClicked)
+			else if (m_okButton.IsClicked)
 			{
-				bool oldValue = m_subsystemGreenNightSky.GreenNightEnabled;
-				bool newValue = m_checkbox.IsChecked;
-
-				if (oldValue != newValue)
-				{
-					m_subsystemGreenNightSky.GreenNightEnabled = newValue;
-
-					if (m_player != null && m_player.ComponentGui != null)
-					{
-						string messageKey = newValue ? "EnabledNotification" : "DisabledNotification";
-						Color messageColor = newValue ? new Color(0, 100, 0) : new Color(0, 255, 0);
-						string message = LanguageControl.Get("GreenNightDialog", messageKey);
-						m_player.ComponentGui.DisplaySmallMessage(message, messageColor, false, true);
-					}
-				}
-
-				// Verificar si el intervalo cambió (desde el diálogo de intervalo)
-				int currentInterval = m_subsystemGreenNightSky.GreenNightIntervalDays;
-				if (currentInterval != m_originalIntervalDays)
-				{
-					string intervalMessage = string.Format(
-						LanguageControl.GetContentWidgets("GreenNightIntervalDialog", 11), // "Green Night has been set to every {0} days."
-						currentInterval);
-					m_player.ComponentGui.DisplaySmallMessage(intervalMessage, Color.White, false, true);
-				}
-
-				AudioManager.PlaySound("Audio/UI/ButtonClick", 1f, 0f, 0f);
-				Dismiss();
+				Accept();
 			}
-
-			if (m_cancelButton.IsClicked || Input.Cancel)
+			else if (m_cancelButton.IsClicked)
 			{
-				AudioManager.PlaySound("Audio/UI/ButtonClick", 1f, 0f, 0f);
-				Dismiss();
+				Cancel();
 			}
+
+			base.Update();
 		}
 
-		private void Dismiss()
+		private void CycleDays()
 		{
+			int index = Array.IndexOf(m_options, m_selectedDays);
+			index = (index + 1) % m_options.Length;
+			m_selectedDays = m_options[index];
+			UpdateDaysButton();
+			UpdateDescription(m_selectedDays);
+		}
+
+		private void Accept()
+		{
+			if (m_isClosing) return;
+			m_isClosing = true;
+
+			m_greenNightSky.GreenNightIntervalDays = m_selectedDays;
+
+			// Mostrar mensaje solo si se pide explícitamente
+			if (m_showMessageOnAccept)
+			{
+				string message = string.Format(GetText(11), m_selectedDays);
+				m_player.ComponentGui.DisplaySmallMessage(message, Color.White, false, true);
+			}
+
+			DialogsManager.HideDialog(this);
+		}
+
+		private void Cancel()
+		{
+			if (m_isClosing) return;
+			m_isClosing = true;
+
+			// Si es el primer spawn (diálogo inicial) y se cancela, mostrar mensaje con el intervalo original
+			if (m_isFirstTime && m_showMessageOnAccept)
+			{
+				string message = string.Format(GetText(11), m_greenNightSky.GreenNightIntervalDays);
+				m_player.ComponentGui.DisplaySmallMessage(message, Color.White, false, true);
+			}
+
 			DialogsManager.HideDialog(this);
 		}
 	}
