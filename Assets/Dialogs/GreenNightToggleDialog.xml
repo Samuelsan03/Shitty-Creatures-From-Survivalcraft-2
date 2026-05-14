@@ -1,28 +1,29 @@
-<CanvasWidget xmlns="runtime-namespace:Game" Size="700, 320" HorizontalAlignment="Center" VerticalAlignment="Center" ClampToBounds="true">
+<CanvasWidget xmlns="runtime-namespace:Game" Size="700, 420" HorizontalAlignment="Center" VerticalAlignment="Center" ClampToBounds="true">
   <BevelledRectangleWidget Style="{Styles/DialogArea}" />
 
   <StackPanelWidget Direction="Vertical" HorizontalAlignment="Center" VerticalAlignment="Near" Margin="15, 15">
-    <!-- Título -->
-    <LabelWidget Name="TitleLabel" Text="Green Night Configuration" Color="255,255,255" HorizontalAlignment="Center" FontScale="1.55" Margin="0,10"/>
-
+    <LabelWidget Name="TitleLabel" Text="[GreenNightToggleDialog:Title]" Color="255,255,255" HorizontalAlignment="Center" FontScale="1.55" Margin="0,10"/>
     <CanvasWidget Size="0, 5" />
-
-    <!-- Checkbox -->
     <CanvasWidget Size="Infinity, 60">
       <StackPanelWidget Direction="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-        <CheckboxWidget Name="Checkbox" Text="Enable Green Night" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <CheckboxWidget Name="Checkbox" Text="[GreenNightToggleDialog:CheckboxText]" HorizontalAlignment="Center" VerticalAlignment="Center"/>
       </StackPanelWidget>
     </CanvasWidget>
-
-    <!-- Texto explicativo -->
-    <LabelWidget Name="ExplanationLabel" Text="" Color="255,140,0" HorizontalAlignment="Center" FontScale="0.8" WordWrap="true" Margin="10,5"/>
-
+    <LabelWidget Name="ExplanationLabel" Text="[GreenNightToggleDialog:EnableExplanation]" Color="255,140,0" HorizontalAlignment="Center" FontScale="0.8" WordWrap="true" Margin="10,5"/>
+    <CanvasWidget Size="0, 10" />
+    <StackPanelWidget Direction="Vertical" HorizontalAlignment="Center" Margin="0,5">
+      <LabelWidget Name="IntervalLabel" Text="[GreenNightToggleDialog:IntervalLabel]" Color="200,200,200" FontScale="0.7" HorizontalAlignment="Center" Margin="0,2"/>
+      <CanvasWidget Size="Infinity, 40">
+        <StackPanelWidget Direction="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+          <BevelledButtonWidget Name="DaysButton" Text="[GreenNightToggleDialog:DaysButton]" Size="200, 40" />
+        </StackPanelWidget>
+      </CanvasWidget>
+      <LabelWidget Name="IntervalHintLabel" Text="[GreenNightToggleDialog:IntervalHintLabel]" Color="150,150,150" FontScale="0.6" HorizontalAlignment="Center" Margin="0,2"/>
+    </StackPanelWidget>
     <CanvasWidget Size="0, Infinity" />
-
-    <!-- Botones -->
     <StackPanelWidget Direction="Horizontal" HorizontalAlignment="Center" Margin="0,10">
-      <BevelledButtonWidget Name="OKButton" Style="{Styles/ButtonStyle_160x60}" Text="OK" Margin="20, 0" BevelColor="255,255,255" CenterColor="0,0,0,0"/>
-      <BevelledButtonWidget Name="CancelButton" Style="{Styles/ButtonStyle_160x60}" Text="Cancel" Margin="20, 0" BevelColor="255,255,255" CenterColor="0,0,0,0"/>
+      <BevelledButtonWidget Name="OKButton" Style="{Styles/ButtonStyle_160x60}" Text="[GreenNightToggleDialog:OkButton]" Margin="20, 0" BevelColor="255,255,255" CenterColor="0,0,0,0"/>
+      <BevelledButtonWidget Name="CancelButton" Style="{Styles/ButtonStyle_160x60}" Text="[GreenNightToggleDialog:CancelButton]" Margin="20, 0" BevelColor="255,255,255" CenterColor="0,0,0,0"/>
     </StackPanelWidget>
   </StackPanelWidget>
 </CanvasWidget>
