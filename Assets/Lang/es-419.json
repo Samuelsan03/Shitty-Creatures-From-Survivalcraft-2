@@ -122,16 +122,6 @@
     "AntifluBucket": {
       "FluNPCCured": "¡La gripa del NPC ha sido curada!"
     },
-  "GreenNightDialog": {
-    "Title": "Configuración de Noche Verde",
-    "EnableExplanation": "Cuando está activado, hordas de infectados te atacarán cada noche. El mundo se vuelve más peligroso.",
-    "DisableExplanation": "Cuando está desactivado, el mundo vuelve a su progresión normal. No aparecerán eventos de Noche Verde ni hordas de infectados.",
-    "EnabledNotification": "¡Noche Verde activada! Las hordas de infectados ahora te atacarán por la noche.",
-    "DisabledNotification": "Noche Verde desactivada. El mundo volverá a progresar normalmente.",
-    "CheckboxText": "Activar Noche Verde",
-    "OkButton": "Aceptar",
-    "CancelButton": "Cancelar"
-  },
   "ZombiesSpawn": {
   "WaveMessage": "¡Estás en la ola {0}!",
   "FinalWave": "¡La ola final ha comenzado!",
@@ -453,6 +443,56 @@
     "Description": "Un mosquete de dos cañones que puede disparar dos veces antes de recargar. Puede usar balas estándar o potentes rondas Anti-Tanks que causan un daño masivo y penetran armaduras. Se fabrica con un mosquete, lingote de hierro y tablones.",
     "CRDescription:0": "Fabrica un mosquete doble con un mosquete, lingote de hierro y tablones"
   },
+  "AppleSaplingBlock:0": {
+    "DisplayName": "Retoño de Manzano",
+    "Description": "Un joven retoño de manzano. Cuando se planta en un suelo adecuado con suficiente luz y la temperatura correcta, crecerá hasta convertirse en un manzano completo que dará deliciosas manzanas. Los manzanos prosperan mejor en climas templados con humedad moderada.",
+    "CRDescription:0": "Cultivar retoño de manzano a partir de hojas de manzano"
+  },
+  "PearSaplingBlock:0": {
+    "DisplayName": "Retoño de Peral",
+    "Description": "Un joven retoño de peral. Plántalo en suelo fértil bajo cielo abierto y madurará hasta convertirse en un peral con peras dulces y jugosas. Los perales prefieren temperaturas ligeramente más cálidas y mayor humedad que los manzanos.",
+    "CRDescription:0": "Cultivar retoño de peral a partir de hojas de peral"
+  },
+  "CherrySaplingBlock:0": {
+    "DisplayName": "Retoño de Cerezo",
+    "Description": "Un joven retoño de cerezo. Cuando se coloca en tierra fértil con abundante luz solar, crecerá hasta convertirse en un hermoso cerezo lleno de pequeñas cerezas rojas. Los cerezos prefieren climas más frescos y humedad moderada.",
+    "CRDescription:0": "Cultivar retoño de cerezo a partir de hojas de cerezo"
+  },
+  "OrangeSaplingBlock:0": {
+    "DisplayName": "Retoño de Naranjo",
+    "Description": "Un joven retoño de naranjo. Plántalo en suelo cálido con buena exposición solar y se convertirá en un naranjo que producirá jugosas naranjas. Los naranjos requieren las temperaturas más cálidas y alta humedad entre los árboles frutales.",
+    "CRDescription:0": "Cultivar retoño de naranjo a partir de hojas de naranjo"
+  },
+  "BlueberryBushBlock:0": {
+  "DisplayName": "Arbusto de arándanos",
+  "Description": "Un arbusto silvestre que crece en entornos frescos con humedad moderada. Puedes cosechar arándanos frescos de él, los cuales son una buena fuente de hidratación."
+},
+  "PearWoodBlock:0": {
+    "DisplayName": "Madera de peral",
+    "Description": "Madera obtenida de árboles de peral. Útil para construcción y fabricación."
+  },
+  "PearLeavesBlock:0": {
+    "DisplayName": "Hojas de peral",
+    "Description": "Hojas de un peral. A veces pueden soltar peras."
+  },
+
+  "OrangeWoodBlock:0": {
+    "DisplayName": "Madera de naranjo",
+    "Description": "Madera obtenida de árboles de naranjo. Resistente y útil para fabricar objetos."
+  },
+  "OrangeLeavesBlock:0": {
+    "DisplayName": "Hojas de naranjo",
+    "Description": "Hojas de un naranjo. En ocasiones pueden soltar naranjas."
+  },
+
+  "CherryWoodBlock:0": {
+    "DisplayName": "Madera de cerezo",
+    "Description": "Madera obtenida de árboles de cerezo. Tiene un tono elegante y decorativo."
+  },
+  "CherryLeavesBlock:0": {
+    "DisplayName": "Hojas de cerezo",
+    "Description": "Hojas de un cerezo. A veces pueden soltar cerezas."
+  },
     "AppleWoodBlock:0": {
     "DisplayName": "Madera de manzano",
     "Description": "Madera obtenida de árboles de manzano. Se puede usar para construir y fabricar objetos."
@@ -463,19 +503,19 @@
   },
     "AppleBlock:0": {
     "DisplayName": "Manzana",
-    "Description": "Una fruta fresca y jugosa que restaura una pequeña cantidad de hambre y también ayuda a reducir la sed."
+    "Description": "Una fruta fresca y jugosa que restaura una pequeña cantidad de hambre y reduce ligeramente la sed. Crece en climas templados con humedad moderada."
   },
   "PearBlock:0": {
     "DisplayName": "Pera",
-    "Description": "Una fruta dulce y suave que proporciona nutrición moderada y contribuye a la hidratación."
+    "Description": "Una fruta dulce y suave que proporciona nutrición moderada y contribuye a la hidratación. Se encuentra en zonas templadas con alta humedad."
   },
   "OrangeBlock:0": {
     "DisplayName": "Naranja",
-    "Description": "Una fruta cítrica rica en jugo que restaura el hambre y aporta una buena cantidad de hidratación."
+    "Description": "Una fruta cítrica rica en jugo que restaura el hambre y proporciona una buena cantidad de hidratación. Crece en áreas tropicales cálidas y húmedas."
   },
   "CherryBlock:0": {
     "DisplayName": "Cereza",
-    "Description": "Una fruta pequeña y dulce que ofrece poca nutrición pero un ligero efecto de hidratación."
+    "Description": "Una fruta pequeña y dulce que ofrece baja nutrición pero un ligero efecto de hidratación. Prospera en climas fríos con baja humedad."
   },
   "SliceOfWatermelonBlock:0": {
     "DisplayName": "Trozo de sandía",
@@ -1142,6 +1182,33 @@
     }
 },
   "ContentWidgets": {
+    "GreenNightToggleDialog": {
+  "Title": "Configuración de Noche Verde",
+  "CheckboxText": "Activar Noche Verde",
+  "OkButton": "Aceptar",
+  "CancelButton": "Cancelar",
+  "DaysButton": "Días...",
+  "EnableExplanation": "La noche verde está activada. Durante estas noches, las criaturas serán más agresivas y peligrosas.",
+  "DisableExplanation": "La noche verde está desactivada. Las noches transcurrirán con normalidad.",
+  "EnabledNotification": "Noche Verde activada",
+  "DisabledNotification": "Noche Verde desactivada",
+  "IntervalLabel": "Configurar intervalo de noches verdes:",
+  "IntervalHintLabel": "(Cada cuántos días aparece la noche verde)"
+},
+    "GreenNightIntervalDialog": {
+  "1": "Configuración de Noche Verde",
+  "2": "¿Cada cuántos días quieres que ocurra la Noche Verde?",
+  "3": "Intervalo:",
+  "4": "Aceptar",
+  "5": "Cancelar",
+  "6": "Rápidas e intensas.\nCada 4 días llega la noche verde.",
+  "7": "Ritmo equilibrado.\nCada 8 días tendrás una noche verde.",
+  "8": "Tranquilo y pausado.\n12 días para construir y explorar.",
+  "9": "Muy relajado.\nSolo cada 16 días aparece la noche verde.",
+  "10": "Si cancelas, se restablecerá a 4 días por defecto.",
+  "11": "Se ha establecido la Noche Verde cada {0} días.",
+  "12": "{0} días"
+},
     "VehicleInventoryWidget": {
   "1": "Vehículo",
   "2": "Inventario"
