@@ -42,7 +42,7 @@ namespace Game
 			if (player != null && player.ComponentGui != null)
 			{
 				GreenNightToggleDialog dialog = new GreenNightToggleDialog(m_subsystemGreenNightSky, player);
-				player.ComponentGui.ModalPanelWidget = dialog;
+				DialogsManager.ShowDialog(player.GuiWidget, dialog);
 				return true;
 			}
 			return false;
