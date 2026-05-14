@@ -122,16 +122,6 @@
   "AntifluBucket": {
     "FluNPCCured": "NPC 的流感已治愈！"
   },
-  "GreenNightDialog": {
-    "Title": "绿色之夜设置",
-    "EnableExplanation": "启用后，每晚都会有感染者群袭击你，世界将变得更加危险。",
-    "DisableExplanation": "禁用后，世界将恢复正常进程。不会出现绿色之夜事件或感染者群。",
-    "EnabledNotification": "绿色之夜已开启！感染者群现在会在夜间攻击你。",
-    "DisabledNotification": "绿色之夜已关闭。世界将恢复正常发展。",
-    "CheckboxText": "启用绿色之夜",
-    "OkButton": "确认",
-    "CancelButton": "取消"
-  },
   "ZombiesSpawn": {
   "WaveMessage": "你在第 {0} 波！",
   "FinalWave": "最终波次开始了！",
@@ -453,6 +443,56 @@
     "Description": "双管火枪，装填后可连续发射两次。可使用标准子弹或强大的 Anti-Tanks 弹药，造成巨额伤害并穿透护甲。由火枪、铁锭和木板合成。",
     "CRDescription:0": "用火枪、铁锭和木板合成双管火枪"
   },
+  "BlueberryBushBlock:0": {
+  "DisplayName": "蓝莓灌木",
+  "Description": "一种生长在凉爽且湿度适中的环境中的野生灌木。你可以从中采摘新鲜蓝莓，它们是补充水分的良好来源。"
+},
+"AppleSaplingBlock:0": {
+    "DisplayName": "苹果树苗",
+    "Description": "一棵年轻的苹果树苗。种植在合适的土壤中，并拥有充足的光照和适宜的温度后，它会成长为一棵结满美味苹果的苹果树。苹果树最适合生长在温带且湿度适中的气候中。",
+    "CRDescription:0": "从苹果树叶培育苹果树苗"
+  },
+  "PearSaplingBlock:0": {
+    "DisplayName": "梨树苗",
+    "Description": "一棵年轻的梨树苗。将其种植在肥沃的土壤和开阔的环境下，它会成长为一棵结满香甜多汁梨子的梨树。梨树比苹果树更喜欢稍微温暖且湿度更高的环境。",
+    "CRDescription:0": "从梨树叶培育梨树苗"
+  },
+  "CherrySaplingBlock:0": {
+    "DisplayName": "樱桃树苗",
+    "Description": "一棵年轻的樱桃树苗。将其种植在肥沃的土地并给予充足阳光后，它会成长为一棵美丽的樱桃树，结满红色的小樱桃。樱桃树偏好较凉爽的气候和适中的湿度。",
+    "CRDescription:0": "从樱桃树叶培育樱桃树苗"
+  },
+  "OrangeSaplingBlock:0": {
+    "DisplayName": "橙树苗",
+    "Description": "一棵年轻的橙树苗。将其种植在温暖的土壤中并保证良好的阳光照射后，它会成长为一棵结出多汁橙子的橙树。在所有果树中，橙树需要最温暖的气候和较高的湿度。",
+    "CRDescription:0": "从橙树叶培育橙树苗"
+  },
+  "PearWoodBlock:0": {
+    "DisplayName": "梨木",
+    "Description": "从梨树获得的木材，可用于建造和制作物品。"
+  },
+  "PearLeavesBlock:0": {
+    "DisplayName": "梨树叶",
+    "Description": "梨树的叶子，有时会掉落梨子。"
+  },
+
+  "OrangeWoodBlock:0": {
+    "DisplayName": "橙木",
+    "Description": "从橙树获得的木材，坚固且适合制作物品。"
+  },
+  "OrangeLeavesBlock:0": {
+    "DisplayName": "橙树叶",
+    "Description": "橙树的叶子，有时会掉落橙子。"
+  },
+
+  "CherryWoodBlock:0": {
+    "DisplayName": "樱桃木",
+    "Description": "从樱桃树获得的木材，外观优雅且具有装饰性。"
+  },
+  "CherryLeavesBlock:0": {
+    "DisplayName": "樱桃树叶",
+    "Description": "樱桃树的叶子，有时会掉落樱桃。"
+  },
     "AppleWoodBlock:0": {
     "DisplayName": "苹果木",
     "Description": "从苹果树获得的木材，可用于建造和制作物品。"
@@ -463,19 +503,19 @@
   },
     "AppleBlock:0": {
     "DisplayName": "苹果",
-    "Description": "一种新鲜多汁的水果，可以恢复少量饥饿值，并略微减少口渴。"
+    "Description": "新鲜多汁的水果，可恢复少量饥饿值并略微减少口渴。生长在湿度适中的温带气候中。"
   },
   "PearBlock:0": {
     "DisplayName": "梨",
-    "Description": "一种香甜柔软的水果，提供适中的营养并有助于补充水分。"
+    "Description": "甜美柔软的水果，提供适度的营养并有助于补充水分。发现于高湿度的温带地区。"
   },
   "OrangeBlock:0": {
     "DisplayName": "橙子",
-    "Description": "富含汁液的柑橘类水果，可恢复饥饿值并提供良好的水分补充。"
+    "Description": "汁水丰富的柑橘类水果，可恢复饥饿感并提供良好的水分补充。生长在温暖湿润的热带地区。"
   },
   "CherryBlock:0": {
     "DisplayName": "樱桃",
-    "Description": "一种小而甜的水果，营养较低，但能提供轻微的水分补充。"
+    "Description": "小巧甜美的小水果，营养价值较低，但具有一定的补水效果。生长在湿度较低的凉爽气候中。"
   },
   "SliceOfWatermelonBlock:0": {
     "DisplayName": "西瓜片",
@@ -1142,6 +1182,33 @@
     }
   },
   "ContentWidgets": {
+    "GreenNightToggleDialog": {
+  "Title": "绿色之夜设置",
+  "CheckboxText": "启用绿色之夜",
+  "OkButton": "确定",
+  "CancelButton": "取消",
+  "DaysButton": "天数...",
+  "EnableExplanation": "绿色之夜已启用。在这些夜晚，生物会更加具有攻击性和危险。",
+  "DisableExplanation": "绿色之夜已禁用。夜晚将正常进行。",
+  "EnabledNotification": "绿色之夜已启用",
+  "DisabledNotification": "绿色之夜已禁用",
+  "IntervalLabel": "设置绿色之夜间隔：",
+  "IntervalHintLabel": "（每隔多少天出现一次绿色之夜）"
+},
+    "GreenNightIntervalDialog": {
+  "1": "绿色之夜设置",
+  "2": "你希望绿色之夜每隔多少天出现一次？",
+  "3": "间隔：",
+  "4": "确认",
+  "5": "取消",
+  "6": "快速而激烈。\n每4天会出现一次绿色之夜。",
+  "7": "节奏平衡。\n每8天会迎来一次绿色之夜。",
+  "8": "轻松而平稳。\n有12天时间用于建造和探索。",
+  "9": "非常悠闲。\n绿色之夜仅每16天出现一次。",
+  "10": "如果取消，将恢复为默认的4天。",
+  "11": "绿色之夜已设置为每{0}天一次。",
+  "12": "{0}天"
+},
     "VehicleInventoryWidget": {
   "1": "车辆",
   "2": "库存"
