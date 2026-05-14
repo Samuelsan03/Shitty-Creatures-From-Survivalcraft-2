@@ -1,0 +1,52 @@
+<CanvasWidget xmlns="runtime-namespace:Game">
+
+  <CanvasWidget Size="600, 420" ClampToBounds="true" HorizontalAlignment="Center" VerticalAlignment="Center">
+    <BevelledRectangleWidget Style="{Styles/DialogArea}" />
+
+    <StackPanelWidget Direction="Vertical" HorizontalAlignment="Center" Margin="10, 0" IsVisible="true">
+
+      <StackPanelWidget Name="GreenNightIntervalDialog.MainPage" Direction="Vertical">
+
+        <StackPanelWidget Direction="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+          <LabelWidget Text="[GreenNightIntervalDialog:1]" HorizontalAlignment="Center" Margin="0, 15" FontScale="1.2" />
+          <LabelWidget Text="[GreenNightIntervalDialog:2]" HorizontalAlignment="Center" Margin="0, 5" Color="192, 192, 192" FontScale="0.8" />
+        </StackPanelWidget>
+
+        <CanvasWidget Size="Infinity, Infinity">
+          <StackPanelWidget Direction="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+
+            <StackPanelWidget Margin="0, 5">
+              <CanvasWidget Size="120, 50" VerticalAlignment="Center">
+                <LabelWidget Text="[GreenNightIntervalDialog:3]" VerticalAlignment="Center" Color="128, 128, 128" />
+              </CanvasWidget>
+              <CanvasWidget Size="200, 50" VerticalAlignment="Center">
+                <BevelledButtonWidget Name="GreenNightIntervalDialog.DaysButton" Text="[GreenNightIntervalDialog:12]" Size="200, 50" />
+              </CanvasWidget>
+            </StackPanelWidget>
+
+            <StackPanelWidget Margin="0, 5">
+              <CanvasWidget Size="450, 60" VerticalAlignment="Center">
+                <LabelWidget Name="GreenNightIntervalDialog.DescriptionLabel" Text="[GreenNightIntervalDialog:6]" Color="255, 165, 0" FontScale="0.75" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10, 5" />
+              </CanvasWidget>
+            </StackPanelWidget>
+
+            <StackPanelWidget Margin="0, 5">
+              <CanvasWidget Size="450, 40" VerticalAlignment="Center">
+                <LabelWidget Text="[GreenNightIntervalDialog:10]" Color="255, 100, 100" FontScale="0.7" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10, 5" />
+              </CanvasWidget>
+            </StackPanelWidget>
+
+          </StackPanelWidget>
+        </CanvasWidget>
+
+      </StackPanelWidget>
+
+      <UniformSpacingPanelWidget Direction="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10, 15">
+        <BevelledButtonWidget Style="{Styles/ButtonStyle_160x60}" HorizontalAlignment="Center" Name="GreenNightIntervalDialog.OkButton" Text="[GreenNightIntervalDialog:4]" />
+        <BevelledButtonWidget Style="{Styles/ButtonStyle_160x60}" HorizontalAlignment="Center" Name="GreenNightIntervalDialog.CancelButton" Text="[GreenNightIntervalDialog:5]" />
+      </UniformSpacingPanelWidget>
+
+    </StackPanelWidget>
+
+  </CanvasWidget>
+</CanvasWidget>
