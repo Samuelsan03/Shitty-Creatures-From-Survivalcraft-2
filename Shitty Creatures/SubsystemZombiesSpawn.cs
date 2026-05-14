@@ -187,77 +187,78 @@ namespace Game
             }
         }
 
-        private void CreateCountdownLabel()
-        {
-            if (m_countdownLabel != null) return;
+		private void CreateCountdownLabel()
+		{
+			if (m_countdownLabel != null) return;
 
-            m_countdownLabel = new LabelWidget
-            {
-                DropShadow = true,
-                FontScale = 0.8f,
-                Margin = new Vector2(5f, 0f),
-                IsHitTestVisible = false,
-                TextAnchor = TextAnchor.HorizontalCenter,
-                HorizontalAlignment = WidgetAlignment.Far,
-                VerticalAlignment = WidgetAlignment.Center,
-                Color = new Color(255, 255, 0)
-            };
+			m_countdownLabel = new LabelWidget
+			{
+				DropShadow = true,
+				FontScale = 0.8f,
+				Margin = new Vector2(5f, 0f),
+				IsHitTestVisible = false,
+				TextAnchor = TextAnchor.HorizontalCenter,
+				HorizontalAlignment = WidgetAlignment.Far,
+				VerticalAlignment = WidgetAlignment.Center,
+				Color = new Color(255, 255, 0)
+			};
 
-            m_labelInitialized = false;
-            AttachLabelToPlayers();
-        }
+			m_labelInitialized = false;
+			// No llamar a AttachLabelToPlayers() aquí, se hará en UpdateCountdownLabel
+		}
 
-        private void AttachLabelToPlayers()
-        {
-            if (m_countdownLabel == null) return;
+		private void AttachLabelToPlayers()
+		{
+			if (m_countdownLabel == null) return;
 
-            bool attached = false;
-            foreach (var player in m_subsystemPlayers.ComponentPlayers)
-            {
-                var controlsContainer = player.GuiWidget.Children.Find<ContainerWidget>("ControlsContainer", true);
-                if (controlsContainer == null) continue;
+			bool attached = false;
+			foreach (var player in m_subsystemPlayers.ComponentPlayers)
+			{
+				var controlsContainer = player.GuiWidget.Children.Find<ContainerWidget>("ControlsContainer", true);
+				if (controlsContainer == null) continue;
 
-                if (!controlsContainer.Children.Contains(m_countdownLabel))
-                {
-                    controlsContainer.AddChildren(m_countdownLabel);
-                    attached = true;
-                }
-            }
-            if (attached)
-            {
-                m_labelInitialized = true;
-            }
-        }
+				if (!controlsContainer.Children.Contains(m_countdownLabel))
+				{
+					controlsContainer.AddChildren(m_countdownLabel);
+					attached = true;
+				}
+			}
+			m_labelInitialized = attached;
+		}
 
-        private void UpdateCountdownLabel()
-        {
-            if (m_countdownLabel == null)
-            {
-                CreateCountdownLabel();
-                return;
-            }
+		private void UpdateCountdownLabel()
+		{
+			if (m_countdownLabel == null)
+			{
+				CreateCountdownLabel();
+				return;
+			}
 
-            if (!m_labelInitialized)
-            {
-                AttachLabelToPlayers();
-                if (!m_labelInitialized) return;
-            }
+			// Reintentar adjuntar si la etiqueta no está inicializada o perdió su padre
+			if (!m_labelInitialized || m_countdownLabel.ParentWidget == null)
+			{
+				AttachLabelToPlayers();
+			}
 
-            if (!m_subsystemGreenNightSky.GreenNightEnabled ||
-                m_subsystemGameInfo.WorldSettings.TimeOfDayMode != TimeOfDayMode.Changing)
-            {
-                m_countdownLabel.IsVisible = false;
-                return;
-            }
+			if (!m_labelInitialized)
+				return;
 
-            int daysLeft = GetDaysUntilNextGreenNight();
-            if (daysLeft == 0)
-                m_countdownLabel.Text = LanguageControl.Get("ZombiesSpawn", "TheyComeTonight");
-            else
-                m_countdownLabel.Text = string.Format(LanguageControl.Get("ZombiesSpawn", "TheyComeInXDays"), daysLeft);
+			// Condiciones para mostrar el contador: Noche Verde activada y tiempo dinámico
+			if (!m_subsystemGreenNightSky.GreenNightEnabled ||
+				m_subsystemGameInfo.WorldSettings.TimeOfDayMode != TimeOfDayMode.Changing)
+			{
+				m_countdownLabel.IsVisible = false;
+				return;
+			}
 
-            m_countdownLabel.IsVisible = true;
-        }
+			int daysLeft = GetDaysUntilNextGreenNight();
+			if (daysLeft == 0)
+				m_countdownLabel.Text = LanguageControl.Get("ZombiesSpawn", "TheyComeTonight");
+			else
+				m_countdownLabel.Text = string.Format(LanguageControl.Get("ZombiesSpawn", "TheyComeInXDays"), daysLeft);
+
+			m_countdownLabel.IsVisible = true;
+		}
 
 		// Modificado: Ya no depende de fase lunar, usa DaysSinceLastGreenNight
 		private int GetDaysUntilNextGreenNight()
