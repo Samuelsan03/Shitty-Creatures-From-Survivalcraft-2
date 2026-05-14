@@ -1230,7 +1230,8 @@ namespace Game
 				{
 					Dispatcher.Dispatch(delegate
 					{
-						var dialog = new GreenNightIntervalDialog(greenNight, componentPlayer);
+						// showMessageOnAccept = true → muestra mensaje al aceptar
+						var dialog = new GreenNightIntervalDialog(greenNight, componentPlayer, true, true);
 						DialogsManager.ShowDialog(componentPlayer.GuiWidget, dialog);
 					}, false);
 				}
