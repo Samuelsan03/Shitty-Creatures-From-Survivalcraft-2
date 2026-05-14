@@ -5492,8 +5492,12 @@
                     <Parameter Name="Meat" Guid="3ed83417-8fdb-4712-9fb2-a5147fd1374a" Value="1" Type="float"/>
                 </ParameterSet>
             </MemberComponentTemplate>
-           <MemberComponentTemplate Name="Inventory" Guid="f756e2fb-a023-4d95-b5ab-1dc9705fb4bb" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
+            <MemberComponentTemplate Name="Loot" Guid="22493104-ac87-4fd6-b36a-233641b3c1e3">
+                <ParameterSet Name="Loot" Guid="12da07e6-192c-4f63-8303-ed8e8cdfb68b">
+                    <Parameter Name="1" Guid="81095a03-03ea-4b45-bedc-53c3a0964692" Value="NuclearCoinBlock;55;55;0.5" Type="string"/>
+                </ParameterSet>
             </MemberComponentTemplate>
+           <MemberComponentTemplate Name="Inventory" Guid="f756e2fb-a023-4d95-b5ab-1dc9705fb4bb" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890"/>
             <MemberComponentTemplate Name="NewCreatureCollect" Guid="00dd9fd1-358d-49c6-8d4f-00f7e3b63438" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
     <Parameter Name="PickFactors" Guid="43c0790e-6af1-4840-8cc4-d3b254fee241" Value="Tools;1.0,Weapons;1.0" Type="string"/>
 </MemberComponentTemplate>
@@ -5620,6 +5624,11 @@
                 <Parameter Name="PainSound" Guid="4136db73-cd00-4e67-a320-eaca575721dd" Value="Audio/Creatures/PirataExtra/Pain" Type="string"/>
                 <Parameter Name="IdleSound" Guid="4985b594-6870-4d7b-81c0-c496c727f51c" Value="Audio/Creatures/PirataExtra/Idie" Type="string"/>
                 <Parameter Name="AttackSound" Guid="fb9f2131-58ab-4951-be6a-1e70537f26f2" Value="Audio/Creatures/PirataExtra/Attack" Type="string"/>
+            </MemberComponentTemplate>
+            <MemberComponentTemplate Name="Loot" Guid="c7f0f6fa-0f44-4560-b3de-9da70123aa62">
+                <ParameterSet Name="Loot" Guid="fdf73be9-c801-4d28-9979-d03a751833df">
+                    <Parameter Name="1" Guid="c3b17255-6981-49f3-b797-a741f1a65636" Value="NuclearCoinBlock;100;100" Type="string"/>
+                </ParameterSet>
             </MemberComponentTemplate>
         <MemberComponentTemplate Name="HerdBehavior" Guid="c1aab959-eca9-4015-a343-41945f357f5d" InheritanceParent="dfe7218e-ce14-4bde-8dac-f919c38e9efe">
     <Parameter Name="HerdName" Guid="f91d5915-5627-494a-8553-df7d65825156" Value="Pirate" Type="string"/>
