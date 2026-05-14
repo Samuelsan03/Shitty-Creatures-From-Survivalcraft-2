@@ -24,10 +24,11 @@ namespace Game
 			XElement node = ContentManager.Get<XElement>("Dialogs/GreenNightToggleDialog");
 			LoadContents(this, node);
 
+			m_titleLabel = Children.Find<LabelWidget>("TitleLabel", true);
 			m_checkbox = Children.Find<CheckboxWidget>("Checkbox", true);
+			m_explanationLabel = Children.Find<LabelWidget>("ExplanationLabel", true);
 			m_okButton = Children.Find<ButtonWidget>("OKButton", true);
 			m_cancelButton = Children.Find<ButtonWidget>("CancelButton", true);
-			m_titleLabel = Children.Find<LabelWidget>("TitleLabel", true);
 
 			m_titleLabel.Text = LanguageControl.Get("GreenNightDialog", "Title");
 			m_checkbox.Text = LanguageControl.Get("GreenNightDialog", "CheckboxText");
@@ -37,60 +38,11 @@ namespace Game
 			m_checkbox.IsChecked = m_subsystemGreenNightSky.GreenNightEnabled;
 			m_lastCheckState = m_checkbox.IsChecked;
 
-			AddExplanationText();
 			UpdateExplanationText();
-		}
-
-		private void AddExplanationText()
-		{
-			StackPanelWidget mainStack = null;
-			foreach (var child in Children)
-			{
-				if (child is StackPanelWidget sp && sp.Direction == LayoutDirection.Vertical)
-				{
-					mainStack = sp;
-					break;
-				}
-			}
-
-			if (mainStack != null)
-			{
-				m_explanationLabel = new LabelWidget
-				{
-					Text = "",
-					Color = new Color(255, 140, 0),
-					HorizontalAlignment = WidgetAlignment.Center,
-					VerticalAlignment = WidgetAlignment.Center,
-					FontScale = 0.8f,
-					WordWrap = true,
-					Margin = new Vector2(10, 5)
-				};
-
-				CanvasWidget explanationContainer = new CanvasWidget
-				{
-					Size = new Vector2(float.PositiveInfinity, 90),
-					Children =
-					{
-						new RectangleWidget
-						{
-							FillColor = new Color(0, 0, 0, 100),
-							OutlineColor = Color.Transparent,
-							OutlineThickness = 0
-						},
-						m_explanationLabel
-					}
-				};
-
-				if (mainStack.Children.Count >= 3)
-				{
-					mainStack.Children.Insert(3, explanationContainer);
-				}
-			}
 		}
 
 		private void UpdateExplanationText()
 		{
-			if (m_explanationLabel == null) return;
 			string explanationKey = m_checkbox.IsChecked ? "EnableExplanation" : "DisableExplanation";
 			m_explanationLabel.Text = LanguageControl.Get("GreenNightDialog", explanationKey);
 		}
@@ -125,7 +77,7 @@ namespace Game
 				Dismiss();
 			}
 
-			if (m_cancelButton.IsClicked)
+			if (m_cancelButton.IsClicked || Input.Cancel)
 			{
 				AudioManager.PlaySound("Audio/UI/ButtonClick", 1f, 0f, 0f);
 				Dismiss();
@@ -134,10 +86,7 @@ namespace Game
 
 		private void Dismiss()
 		{
-			if (ParentWidget is ContainerWidget container)
-				container.Children.Remove(this);
-			else if (ParentWidget != null)
-				ParentWidget.Children.Remove(this);
+			DialogsManager.HideDialog(this);
 		}
 	}
 }
