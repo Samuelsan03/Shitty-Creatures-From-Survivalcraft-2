@@ -122,16 +122,6 @@
   "AntifluBucket": {
     "FluNPCCured": "The NPC's flu has been cured!"
   },
-  "GreenNightDialog": {
-    "Title": "Green Night Configuration",
-    "EnableExplanation": "When enabled, infected hordes will attack you every night. The world becomes more dangerous.",
-    "DisableExplanation": "When disabled, the world returns to normal progression. No Green Night events or infected hordes will appear.",
-    "EnabledNotification": "Green Night activated! Infected hordes will now attack you at night.",
-    "DisabledNotification": "Green Night deactivated. The world will now progress normally.",
-    "CheckboxText": "Enable Green Night",
-    "OkButton": "Accept",
-    "CancelButton": "Cancel"
-  },
   "ZombiesSpawn": {
   "WaveMessage": "You are in wave {0}!",
   "TheyComeTonight": "They are coming…",
@@ -453,6 +443,56 @@
     "Description": "A double-barreled musket that can fire two shots before reloading. It can use standard bullets or powerful Anti-Tanks rounds that deal massive damage and penetrate armor. Crafted with a musket, iron ingot, and planks.",
     "CRDescription:0": "Craft a double musket from a musket, iron ingot, and planks"
   },
+  "AppleSaplingBlock:0": {
+    "DisplayName": "Apple Sapling",
+    "Description": "A young apple tree sapling. When planted in suitable soil with enough light and proper temperature, it will grow into a full apple tree bearing delicious apples. Apple trees thrive best in temperate climates with moderate humidity.",
+    "CRDescription:0": "Grow apple sapling from apple leaves"
+  },
+  "PearSaplingBlock:0": {
+    "DisplayName": "Pear Sapling",
+    "Description": "A young pear tree sapling. Plant it in rich soil under open sky and it will mature into a pear tree with sweet, juicy pears. Pear trees prefer slightly warmer temperatures and higher humidity than apple trees.",
+    "CRDescription:0": "Grow pear sapling from pear leaves"
+  },
+  "CherrySaplingBlock:0": {
+    "DisplayName": "Cherry Sapling",
+    "Description": "A young cherry tree sapling. When placed in fertile ground with plenty of sunlight, it will grow into a beautiful cherry tree full of small red cherries. Cherry trees favor cooler climates and moderate humidity.",
+    "CRDescription:0": "Grow cherry sapling from cherry leaves"
+  },
+  "OrangeSaplingBlock:0": {
+    "DisplayName": "Orange Sapling",
+    "Description": "A young orange tree sapling. Plant it in warm soil with good sunlight exposure and it will develop into an orange tree producing juicy oranges. Orange trees require the warmest temperatures and high humidity among fruit trees.",
+    "CRDescription:0": "Grow orange sapling from orange leaves"
+  },
+  "BlueberryBushBlock:0": {
+  "DisplayName": "Blueberry Bush",
+  "Description": "A wild bush that grows in cool environments with moderate humidity. You can harvest fresh blueberries from it, which are a good source of hydration."
+},
+  "PearWoodBlock:0": {
+    "DisplayName": "Pear Wood",
+    "Description": "Wood obtained from pear trees. Useful for building and crafting."
+  },
+  "PearLeavesBlock:0": {
+    "DisplayName": "Pear Leaves",
+    "Description": "Leaves from a pear tree. They may occasionally drop pears."
+  },
+
+  "OrangeWoodBlock:0": {
+    "DisplayName": "Orange Wood",
+    "Description": "Wood obtained from orange trees. Durable and useful for crafting."
+  },
+  "OrangeLeavesBlock:0": {
+    "DisplayName": "Orange Leaves",
+    "Description": "Leaves from an orange tree. They can sometimes drop oranges."
+  },
+
+  "CherryWoodBlock:0": {
+    "DisplayName": "Cherry Wood",
+    "Description": "Wood obtained from cherry trees. It has a decorative and elegant appearance."
+  },
+  "CherryLeavesBlock:0": {
+    "DisplayName": "Cherry Leaves",
+    "Description": "Leaves from a cherry tree. They may occasionally drop cherries."
+  },
     "AppleWoodBlock:0": {
     "DisplayName": "Apple Wood",
     "Description": "Wood obtained from apple trees. Can be used for building and crafting."
@@ -463,19 +503,19 @@
   },
     "AppleBlock:0": {
     "DisplayName": "Apple",
-    "Description": "A fresh and juicy fruit that restores a small amount of hunger and slightly reduces thirst."
+    "Description": "A fresh and juicy fruit that restores a small amount of hunger and slightly reduces thirst. Grows in temperate climates with moderate humidity."
   },
   "PearBlock:0": {
     "DisplayName": "Pear",
-    "Description": "A sweet and soft fruit that provides moderate nutrition and contributes to hydration."
+    "Description": "A sweet and soft fruit that provides moderate nutrition and contributes to hydration. Found in temperate zones with high humidity."
   },
   "OrangeBlock:0": {
     "DisplayName": "Orange",
-    "Description": "A citrus fruit rich in juice that restores hunger and provides a good amount of hydration."
+    "Description": "A citrus fruit rich in juice that restores hunger and provides a good amount of hydration. Grows in warm, humid tropical areas."
   },
   "CherryBlock:0": {
     "DisplayName": "Cherry",
-    "Description": "A small and sweet fruit that offers low nutrition but a slight hydration effect."
+    "Description": "A small and sweet fruit that offers low nutrition but a slight hydration effect. Thrives in cooler climates with low humidity."
   },
   "SliceOfWatermelonBlock:0": {
     "DisplayName": "Watermelon Slice",
@@ -1140,6 +1180,33 @@
 }
 },
       "ContentWidgets": {
+        "GreenNightToggleDialog": {
+  "Title": "Green Night Settings",
+  "CheckboxText": "Enable Green Night",
+  "OkButton": "OK",
+  "CancelButton": "Cancel",
+  "DaysButton": "Days...",
+  "EnableExplanation": "Green Night is enabled. During these nights, creatures will be more aggressive and dangerous.",
+  "DisableExplanation": "Green Night is disabled. Nights will proceed normally.",
+  "EnabledNotification": "Green Night enabled",
+  "DisabledNotification": "Green Night disabled",
+  "IntervalLabel": "Set Green Night interval:",
+  "IntervalHintLabel": "(How many days between each Green Night)"
+},
+        "GreenNightIntervalDialog": {
+  "1": "Green Night Settings",
+  "2": "How often do you want the Green Night to occur?",
+  "3": "Interval:",
+  "4": "Accept",
+  "5": "Cancel",
+  "6": "Fast and intense.\nThe Green Night comes every 4 days.",
+  "7": "Balanced pace.\nYou will have a Green Night every 8 days.",
+  "8": "Calm and steady.\n12 days to build and explore.",
+  "9": "Very relaxed.\nThe Green Night appears only every 16 days.",
+  "10": "If you cancel, it will reset to the default of 4 days.",
+  "11": "Green Night has been set to every {0} days.",
+  "12": "{0} days"
+},
         "VehicleInventoryWidget": {
           "1": "Vehicle",
           "2": "Inventory"
