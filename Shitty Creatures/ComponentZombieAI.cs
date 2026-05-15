@@ -37,6 +37,7 @@ namespace Game
 		private ComponentBody m_componentBody;
 		private IInventory m_inventory;
 		private ComponentZombieChaseBehavior m_chaseBehavior;
+		private ComponentZombieRunAwayBehavior m_zombieRunAwayBehavior;
 		private SubsystemTime m_subsystemTime;
 		private ComponentCreatureModel m_creatureModel;
 		private SubsystemProjectiles m_subsystemProjectiles;
@@ -157,6 +158,12 @@ namespace Game
 			m_componentClothing = base.Entity.FindComponent<ComponentCreatureClothing>(false);
 			m_chaseBehavior = base.Entity.FindComponent<ComponentZombieChaseBehavior>();
 			m_pathfinding = base.Entity.FindComponent<ComponentPathfinding>();
+			m_zombieRunAwayBehavior = base.Entity.FindComponent<ComponentZombieRunAwayBehavior>();
+			if (m_zombieRunAwayBehavior != null)
+			{
+				// El componente ya tiene ImportanceLevel = 0f, pero lo forzamos a nunca activarse
+				// No hacemos nada aquí, solo aseguramos que no cancele el apuntado
+			}
 			if (m_chaseBehavior == null)
 			{
 				Log.Warning("ComponentZombieAI: No se encontró ComponentZombieChaseBehavior. IA desactivada.");
