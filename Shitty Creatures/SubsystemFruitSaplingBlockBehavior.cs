@@ -11,12 +11,13 @@ namespace Game
 	public class SubsystemFruitSaplingBlockBehavior : SubsystemBlockBehavior, IUpdateable
 	{
 		private static readonly string[] BlockNames = new string[]
-		{
-			"AppleSaplingBlock",
-			"PearSaplingBlock",
-			"CherrySaplingBlock",
-			"OrangeSaplingBlock"
-		};
+{
+	"AppleSaplingBlock",
+	"PearSaplingBlock",
+	"CherrySaplingBlock",
+	"OrangeSaplingBlock",
+	"BananaSaplingBlock"
+};
 
 		private Dictionary<int, ShittyTreeType> m_blockToTreeType;
 
@@ -123,11 +124,13 @@ namespace Game
 			int pearIdx = BlocksManager.GetBlockIndex("PearSaplingBlock", true);
 			int cherryIdx = BlocksManager.GetBlockIndex("CherrySaplingBlock", true);
 			int orangeIdx = BlocksManager.GetBlockIndex("OrangeSaplingBlock", true);
+			int bananaIdx = BlocksManager.GetBlockIndex("BananaSaplingBlock", true);  // ← agregado
 
 			m_blockToTreeType[appleIdx] = ShittyTreeType.Apple;
 			m_blockToTreeType[pearIdx] = ShittyTreeType.Pear;
 			m_blockToTreeType[cherryIdx] = ShittyTreeType.Cherry;
 			m_blockToTreeType[orangeIdx] = ShittyTreeType.Orange;
+			m_blockToTreeType[bananaIdx] = ShittyTreeType.Banana;  // ← agregado
 		}
 
 		private ShittyTreeType GetTreeTypeFromBlockValue(int value)
