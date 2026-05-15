@@ -47,6 +47,10 @@ namespace Game
 			m_treeTrunksByType[(int)ShittyTreeType.Cherry] = GetBlockIndex("CherryWoodBlock");
 			m_treeLeavesByType[(int)ShittyTreeType.Cherry] = GetBlockIndex("CherryLeavesBlock");
 			m_treeFruitByType[(int)ShittyTreeType.Cherry] = GetBlockIndex("CherryBlock");
+
+			m_treeTrunksByType[(int)ShittyTreeType.Banana] = GetBlockIndex("BananaWoodBlock");
+			m_treeLeavesByType[(int)ShittyTreeType.Banana] = GetBlockIndex("BananaLeavesBlock");
+			m_treeFruitByType[(int)ShittyTreeType.Banana] = GetBlockIndex("BananaBlock");
 		}
 
 		private static int GetBlockIndex(string blockTypeName)
@@ -148,6 +152,28 @@ namespace Game
 						m_treeBrushesByType[(int)treeType].Add(brush);
 					}
 					break;
+
+				case ShittyTreeType.Banana:
+					for (int i = 0; i < variations; i++)
+					{
+						int height = random.Int(6, 8);
+						int clearTrunk = random.Int(2, 3);
+						TerrainBrush brush = CreateFruitTreeBrush(
+							random, wood, leaves, fruit, height, clearTrunk,
+							(y, h) => {
+								if (y < clearTrunk) return 0f;
+								float t = (y - clearTrunk) / (float)(h - clearTrunk);
+								float r = 2.5f + t * 2.0f;
+								if (t > 0.6f) r += (t - 0.6f) * 1.5f;
+								return Math.Min(4.5f, r);
+							},
+							leafDensity: 1.2f,
+							maxFruit: 7, fruitProbability: 0.5f,
+							branchesCount: 6
+						);
+						m_treeBrushesByType[(int)treeType].Add(brush);
+					}
+					break;
 			}
 		}
 
@@ -234,7 +260,7 @@ namespace Game
 											float prob = leafDensity * (1f - distToAxis / (radius + 0.5f));
 											if (r < 2) prob += 0.2f;
 											if (random.Float(0f, 1f) < prob)
-												brush.AddCell(nx, ny, nz, 0); // temporal
+												brush.AddCell(nx, ny, nz, 0);
 										}
 									}
 								}
@@ -263,7 +289,6 @@ namespace Game
 						if (cell != null && Terrain.ExtractContents(cell.Value) == leavesIndex)
 						{
 							float dist = MathF.Sqrt(dx * dx + dz * dz);
-							// Solo hojas en el borde exterior
 							if (dist > radius - 0.7f)
 								edgeLeaves.Add(new Point3(dx, y, dz));
 						}
@@ -271,25 +296,20 @@ namespace Game
 				}
 			}
 
-			// Barajar para naturalidad
 			edgeLeaves.Sort((a, b) => random.Int(0, 1) - random.Int(0, 1));
 			foreach (Point3 leaf in edgeLeaves)
 			{
 				if (fruitPlaced >= maxFruit) break;
 
-				// Probabilidad dinámica: menos frutos -> más probable
 				float dynamicProb = fruitProbability * (1f - (float)fruitPlaced / maxFruit);
 				if (random.Float(0f, 1f) >= dynamicProb) continue;
 
-				// La fruta cuelga debajo de la hoja
 				int fx = leaf.X;
 				int fy = leaf.Y - 1;
 				int fz = leaf.Z;
 
-				// El espacio debajo debe estar vacío y no ser madera
 				if (brush.GetValue(fx, fy, fz) != null) continue;
 
-				// No amontonar frutos
 				bool adjacent = false;
 				for (int ix = -1; ix <= 1 && !adjacent; ix++)
 					for (int iy = -1; iy <= 1 && !adjacent; iy++)
@@ -320,21 +340,24 @@ namespace Game
 			float pearWeight = random.Float() * CalculateFruitTreeProbability(ShittyTreeType.Pear, temperature, humidity, y);
 			float orangeWeight = random.Float() * CalculateFruitTreeProbability(ShittyTreeType.Orange, temperature, humidity, y);
 			float cherryWeight = random.Float() * CalculateFruitTreeProbability(ShittyTreeType.Cherry, temperature, humidity, y);
+			float bananaWeight = random.Float() * CalculateFruitTreeProbability(ShittyTreeType.Banana, temperature, humidity, y);
 
-			float maxWeight = MathUtils.Max(appleWeight, pearWeight, orangeWeight, cherryWeight);
+			float maxWeight = MathUtils.Max(MathUtils.Max(appleWeight, pearWeight, orangeWeight, cherryWeight), bananaWeight);
 			if (maxWeight <= 0f) return null;
 
-			ShittyTreeType? result = maxWeight == appleWeight ? ShittyTreeType.Apple :
-									maxWeight == pearWeight ? ShittyTreeType.Pear :
-									maxWeight == orangeWeight ? ShittyTreeType.Orange :
-									ShittyTreeType.Cherry;
+			ShittyTreeType? result = null;
+			if (maxWeight == appleWeight) result = ShittyTreeType.Apple;
+			else if (maxWeight == pearWeight) result = ShittyTreeType.Pear;
+			else if (maxWeight == orangeWeight) result = ShittyTreeType.Orange;
+			else if (maxWeight == cherryWeight) result = ShittyTreeType.Cherry;
+			else if (maxWeight == bananaWeight) result = ShittyTreeType.Banana;
 
-			if (random.Bool(CalculateFruitTreeDensity(result.Value, temperature, humidity, y)))
+			if (result.HasValue && random.Bool(CalculateFruitTreeDensity(result.Value, temperature, humidity, y)))
 				return result;
 			return null;
 		}
 
-		private static float CalculateFruitTreeProbability(ShittyTreeType type, int temperature, int humidity, int y)
+		public static float CalculateFruitTreeProbability(ShittyTreeType type, int temperature, int humidity, int y)
 		{
 			switch (type)
 			{
@@ -354,6 +377,10 @@ namespace Game
 					return RangeProbability(temperature, 2f, 4f, 9f, 11f) *
 						   RangeProbability(humidity, 3f, 5f, 9f, 11f) *
 						   RangeProbability(y, 68f, 70f, 100f, 105f);
+				case ShittyTreeType.Banana:
+					return RangeProbability(temperature, 12f, 14f, 18f, 20f) *
+						   RangeProbability(humidity, 10f, 12f, 18f, 20f) *
+						   RangeProbability(y, 66f, 70f, 88f, 92f);
 				default: return 0f;
 			}
 		}
