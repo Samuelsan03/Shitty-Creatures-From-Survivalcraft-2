@@ -506,6 +506,9 @@
 <Recipe Result="OrangeSaplingBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="0" a="orangeleaves" Description="[0]">
     "a"
 </Recipe>
+<Recipe Result="BananaSaplingBlock" ResultCount="1" RequiredHeatLevel="0" RequiredPlayerLevel="0" a="bananaleaves" Description="[0]">
+    "a"
+</Recipe>
         <Smelting>
         <Recipe Result="LavaMacheteBlock" ResultCount="1" RequiredHeatLevel="2" RequiredPlayerLevel="6" a="diamondmachete" b="magmabucket" Description="[0]">
         "ab"
