@@ -606,6 +606,12 @@
     </Folder>
 
     <ProjectTemplate Name="Project" Guid="85023bf8-1c90-4dd1-9442-e6c13691d078">
+    <MemberSubsystemTemplate Name="ShittyRotBlockBehavior" Guid="44f9f379-c6dd-48bd-8f84-83cd6e237966" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+    <Parameter Name="LastRotTime" Guid="6b246499-5a25-4c37-ae75-234311d7a54a" Value="0" Type="double" />
+          <Parameter Name="RotStep" Guid="b5e44016-7ebe-4792-ac2a-25c3a8e98704" Value="0" Type="int" />
+          <Parameter Name="Dependencies" Guid="f2f583c1-41fd-429b-969b-32a1bd42047c" Value="GameInfo" Type="string" />
+    <Parameter Name="Class" Value="Game.SubsystemShittyRotBlockBehavior" Type="string" Guid="54992e6d-529b-4973-8d6b-ba81312ef198"/>
+</MemberSubsystemTemplate>
     <MemberSubsystemTemplate Name="BulletsFromFirearms" Guid="32107ce4-28a7-43cc-aa7f-90c8f2ee1b70" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
     <Parameter Name="Class" Value="Game.SubsystemBulletsFromFirearms" Type="string" Guid="41910438-41a2-4f14-81d8-16d211bbaa88"/>
 </MemberSubsystemTemplate>
