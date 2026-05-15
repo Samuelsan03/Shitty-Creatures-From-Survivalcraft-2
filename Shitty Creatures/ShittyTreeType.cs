@@ -1,10 +1,11 @@
-namespace Game
+﻿namespace Game
 {
 	public enum ShittyTreeType
 	{
 		Apple,
 		Pear,
 		Orange,
-		Cherry
+		Cherry,
+		Banana
 	}
 }
