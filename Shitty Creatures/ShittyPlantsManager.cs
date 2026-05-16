@@ -10,6 +10,7 @@ namespace Game
 		public static int[] m_treeTrunksByType;
 		public static int[] m_treeLeavesByType;
 		public static int[] m_treeFruitByType;
+		private static HashSet<int> s_allLeafIndices;
 
 		static ShittyPlantsManager()
 		{
@@ -20,6 +21,13 @@ namespace Game
 			m_treeFruitByType = new int[treeTypeCount];
 
 			RegisterBlockIndices();
+
+			// Inicializar conjunto de índices de hojas
+			s_allLeafIndices = new HashSet<int>();
+			foreach (int leaf in m_treeLeavesByType)
+			{
+				if (leaf != 0) s_allLeafIndices.Add(leaf);
+			}
 
 			Random random = new Random(33);
 			for (int i = 0; i < treeTypeCount; i++)
@@ -189,10 +197,10 @@ namespace Game
 		{
 			TerrainBrush brush = new TerrainBrush();
 
-			// Tronco principal desde el suelo hasta la copa
+			// Tronco principal
 			brush.AddRay(0, -1, 0, 0, height - 1, 0, 1, 1, 1, woodIndex);
 
-			// Ramas que nacen a lo largo del tronco
+			// Ramas
 			for (int i = 0; i < branchesCount; i++)
 			{
 				int startY = random.Int(1, height - 2);
@@ -271,7 +279,7 @@ namespace Game
 				brush.Replace(0, leavesIndex);
 			}
 
-			// Frutos: colocados DEBAJO de las hojas del borde
+			// Frutos (solo durante la generación inicial)
 			int fruitPlaced = 0;
 			List<Point3> edgeLeaves = new List<Point3>();
 			Point3 minB, maxB;
@@ -408,6 +416,12 @@ namespace Game
 			return temperature >= 2 && temperature <= 10
 				&& humidity >= 4 && humidity <= 12
 				&& y >= 70 && y <= 100;
+		}
+
+		// Nuevo método público para comprobar si un bloque es hoja de árbol frutal
+		public static bool IsLeafBlock(int blockIndex)
+		{
+			return s_allLeafIndices != null && s_allLeafIndices.Contains(blockIndex);
 		}
 	}
 }
