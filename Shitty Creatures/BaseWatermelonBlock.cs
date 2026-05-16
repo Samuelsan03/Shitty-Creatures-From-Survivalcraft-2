@@ -23,9 +23,10 @@ namespace Game
 			m_isRotten = isRotten;
 		}
 
+		private static readonly Color RottenColor = new(255, 160, 64);
+
 		public override void Initialize()
 		{
-			// CAMBIO: cargar textura diferente según si está podrido
 			if (m_isRotten)
 			{
 				m_texture1 = ContentManager.Get<Texture2D>("Textures/alimentos/textura melon sandia podrida");
@@ -44,7 +45,7 @@ namespace Game
 				Color color;
 				if (m_isRotten)
 				{
-					color = Color.White; // CAMBIO: sin tinte, la textura ya es podrida
+					color = Color.White;
 				}
 				else
 				{
@@ -123,9 +124,7 @@ namespace Game
 			bool isDead = GetIsDead(data);
 			if (size >= 1)
 			{
-				// CAMBIO: para podrido usar Color.White (sin tinte)
 				Color meshColor = m_isRotten ? Color.White : Color.White;
-				// Nota: para fresco siempre fue Color.White, para podrido antes era RottenColor
 				generator.GenerateMeshVertices(this,
 					x,
 					y,
@@ -136,21 +135,8 @@ namespace Game
 					geometry.GetGeometry(m_texture1).SubsetOpaque);
 			}
 
-			if (size == 0)
+			if (size >= 1 && size < 7 && !isDead)
 			{
-				// 种子
-				generator.GenerateCrossfaceVertices(this,
-					value,
-					x,
-					y,
-					z,
-					Color.White,
-					28,
-					geometry.SubsetAlphaTest);
-			}
-			else if (size < 7 && !isDead)
-			{
-				// 藤曼
 				generator.GenerateCrossfaceVertices(this, value, x, y, z, Color.White, 28, geometry.SubsetAlphaTest);
 			}
 		}
@@ -163,7 +149,6 @@ namespace Game
 			DrawBlockEnvironmentData environmentData)
 		{
 			int size2 = GetSize(Terrain.ExtractData(value));
-			// CAMBIO: usar siempre 'color' (sin RottenColor extra)
 			BlocksManager.DrawMeshBlock(primitivesRenderer,
 				m_standaloneBlockMeshesBySize[size2],
 				m_texture1,
@@ -178,24 +163,6 @@ namespace Game
 			return GetSize(Terrain.ExtractData(value));
 		}
 
-		public override void GetDropValues(SubsystemTerrain subsystemTerrain,
-			int oldValue,
-			int newValue,
-			int toolLevel,
-			List<BlockDropValue> dropValues,
-			out bool showDebris)
-		{
-			int size = GetSize(Terrain.ExtractData(oldValue));
-			if (size >= 1)
-			{
-				int value = SetDamage(Terrain.MakeBlockValue(BlockIndex, 0, SetSize(SetIsDead(0, isDead: true), size)),
-					GetDamage(oldValue));
-				dropValues.Add(new BlockDropValue { Value = value, Count = 1 });
-			}
-
-			showDebris = true;
-		}
-
 		public override BlockDebrisParticleSystem CreateDebrisParticleSystem(SubsystemTerrain subsystemTerrain,
 			Vector3 position,
 			int value,
@@ -204,7 +171,6 @@ namespace Game
 			int size = GetSize(Terrain.ExtractData(value));
 			float num = MathUtils.Lerp(0.2f, 1f, size / 7f);
 			Color color = (size == 7) ? Color.White : new Color(0, 128, 128);
-			// Para podrido usar color blanco (la textura ya tiene el aspecto)
 			color = m_isRotten ? Color.White : color;
 			return new BlockDebrisParticleSystem(subsystemTerrain,
 				position,
@@ -217,7 +183,7 @@ namespace Game
 
 		public override string GetDisplayName(SubsystemTerrain subsystemTerrain, int value)
 		{
-			string str = "BaseWaterMelonBlock";
+			string str = "BaseWatermelonBlock";
 			int size = GetSize(Terrain.ExtractData(value));
 			if (m_isRotten)
 			{
@@ -225,26 +191,30 @@ namespace Game
 				{
 					return string.Format(LanguageControl.Get(str, "2"), LanguageControl.Get(str, "4"));
 				}
-
-				return string.Format(LanguageControl.Get(str, "3"),
-					LanguageControl.Get(str, "4"),
-					LanguageControl.Get(str, "5"));
+				else
+				{
+					return string.Format(LanguageControl.Get(str, "3"), LanguageControl.Get(str, "4"), LanguageControl.Get(str, "5"));
+				}
 			}
-
-			if (size >= 7)
+			else
 			{
-				return LanguageControl.Get(str, "1");
+				if (size >= 7)
+				{
+					return LanguageControl.Get(str, "1");
+				}
+				else
+				{
+					return string.Format(LanguageControl.Get(str, "2"), LanguageControl.Get(str, "5"));
+				}
 			}
-
-			return string.Format(LanguageControl.Get(str, "2"), LanguageControl.Get(str, "5"));
 		}
 
 		public override IEnumerable<int> GetCreativeValues()
 		{
-			yield return Terrain.MakeBlockValue(BlockIndex, 0, SetSize(SetIsDead(0, isDead: true), 1));
-			yield return Terrain.MakeBlockValue(BlockIndex, 0, SetSize(SetIsDead(0, isDead: true), 3));
-			yield return Terrain.MakeBlockValue(BlockIndex, 0, SetSize(SetIsDead(0, isDead: true), 5));
-			yield return Terrain.MakeBlockValue(BlockIndex, 0, SetSize(SetIsDead(0, isDead: true), 7));
+			yield return Terrain.MakeBlockValue(BlockIndex, 0, SetSize(SetIsDead(0, false), 1));
+			yield return Terrain.MakeBlockValue(BlockIndex, 0, SetSize(SetIsDead(0, false), 3));
+			yield return Terrain.MakeBlockValue(BlockIndex, 0, SetSize(SetIsDead(0, false), 5));
+			yield return Terrain.MakeBlockValue(BlockIndex, 0, SetSize(SetIsDead(0, false), 7));
 		}
 
 		public static int GetSize(int data)
