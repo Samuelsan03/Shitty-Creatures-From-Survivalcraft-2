@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Engine;
 using GameEntitySystem;
@@ -28,7 +28,6 @@ namespace Game
 		ComponentCreatureSounds m_componentCreatureSounds;
 		ComponentNewHerdBehavior m_componentHerd;
 		ComponentNewChaseBehavior m_componentChase;
-		ComponentLocomotion m_componentLocomotion;
 
 		Random m_random = new Random();
 		StateMachine m_stateMachine = new StateMachine();
@@ -59,7 +58,6 @@ namespace Game
 			m_componentCreatureSounds = Entity.FindComponent<ComponentCreatureSounds>(true);
 			m_componentHerd = Entity.FindComponent<ComponentNewHerdBehavior>();
 			m_componentChase = Entity.FindComponent<ComponentNewChaseBehavior>();
-			m_componentLocomotion = Entity.FindComponent<ComponentLocomotion>();
 
 			SelfHealing = valuesDictionary.GetValue<bool>("SelfHealing", false);
 			HealCreatures = valuesDictionary.GetValue<bool>("HealCreatures", false);
@@ -104,15 +102,6 @@ namespace Game
 				m_selfHealParticles = new HealingParticleSystem();
 				m_subsystemParticles.AddParticleSystem(m_selfHealParticles, false);
 				m_componentPathfinding.Stop();
-				if (m_componentLocomotion != null)
-				{
-					m_componentLocomotion.WalkOrder = null;
-					m_componentLocomotion.FlyOrder = null;
-					m_componentLocomotion.SwimOrder = null;
-					m_componentLocomotion.JumpOrder = 0f;
-					m_componentLocomotion.TurnOrder = Vector2.Zero;
-					m_componentLocomotion.LookOrder = Vector2.Zero;
-				}
 				if (m_componentHerd != null)
 				{
 					m_componentHerd.IsActive = false;
@@ -159,15 +148,6 @@ namespace Game
 				m_subsystemParticles.AddParticleSystem(m_healerChargeParticles, false);
 
 				m_componentPathfinding.Stop();
-				if (m_componentLocomotion != null)
-				{
-					m_componentLocomotion.WalkOrder = null;
-					m_componentLocomotion.FlyOrder = null;
-					m_componentLocomotion.SwimOrder = null;
-					m_componentLocomotion.JumpOrder = 0f;
-					m_componentLocomotion.TurnOrder = Vector2.Zero;
-					m_componentLocomotion.LookOrder = Vector2.Zero;
-				}
 				if (m_componentHerd != null)
 				{
 					m_componentHerd.IsActive = false;
