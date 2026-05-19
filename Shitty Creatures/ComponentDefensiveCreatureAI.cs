@@ -20,19 +20,19 @@ namespace Game
 
 		// Tiempos del mosquete
 		private float MusketAimTime = 1.5f;
-		private float MusketCooldown = 0.5f;
+		private float MusketCooldown = 0.02f;
 
 		// Tiempos de la ballesta
 		private float CrossbowAimTime = 1.5f;
-		private float CrossbowCooldown = 0.5f;
+		private float CrossbowCooldown = 0.01f;
 
 		// Tiempos del arco
 		private float BowAimTime = 1.5f;
-		private float BowCooldown = 0.5f;
+		private float BowCooldown = 0.01f;
 
 		// Tiempos para el lanzador de ítems
 		private float ItemsLauncherAimTime = 1.5f;
-		private float ItemsLauncherCooldown = 0.01f;
+		private float ItemsLauncherCooldown = 0.02f;
 
 		// Tiempos para la ballesta repetidora
 		private float RepeatCrossbowAimTime = 1.5f;
@@ -44,7 +44,7 @@ namespace Game
 
 		// Tiempos para el mosquete de doble cañón
 		private float DoubleMusketAimTime = 1.5f;
-		private float DoubleMusketCooldown = 0.5f;
+		private float DoubleMusketCooldown = 0.02f;
 
 		// Tiempos para lanzables
 		private float ThrowableAimTime = 1.55f;
