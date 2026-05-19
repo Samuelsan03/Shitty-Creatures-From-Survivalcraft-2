@@ -540,7 +540,6 @@ namespace Game
 
 						double currentTime = m_subsystemTime.GameTime;
 						double timeSinceLastShot = currentTime - m_lastFirearmShotTime;
-						// Solo disparar si ha pasado suficiente tiempo y el tiempo actual es diferente al último (evita doble disparo en el mismo instante)
 						if (timeSinceLastShot >= config.FireRate - 0.0001f && currentTime != m_lastFirearmShotTime)
 						{
 							FireFirearm(aimRay, config);
@@ -553,16 +552,72 @@ namespace Game
 				return;
 			}
 
-			// Armas clásicas (mosquete, ballesta, etc.)
+			// ========== ITEMSLAUNCHER - MANEJO COMPLETAMENTE SEPARADO SIN MINER.AIM ==========
+			if (activeBlock is ItemsLauncherBlock)
+			{
+				if (m_cooldownTimer > 0f)
+					m_cooldownTimer -= dt;
+
+				if (!m_isAiming && m_cooldownTimer <= 0f)
+				{
+					m_isAiming = true;
+					m_aimTimer = 0f;
+				}
+
+				if (m_isAiming)
+				{
+					m_aimTimer += dt;
+					Vector3 eyePos = m_creatureModel.EyePosition;
+					Vector3 dir = Vector3.Normalize(targetPos + new Vector3(0f, 1f, 0f) - eyePos);
+
+					bool isNormal = IsNormalHumanoid();
+
+					if (m_aimTimer < ItemsLauncherAimTime)
+					{
+						// SOLO animaciones manuales, SIN llamar a miner.Aim
+						if (isNormal && m_creatureModel != null)
+						{
+							// Imitar animación de apuntado para humanoides (como lo hace SubsystemItemsLauncherBlockBehavior)
+							m_creatureModel.AimHandAngleOrder = 1.4f;
+							m_creatureModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
+							m_creatureModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
+							// Hacer que mire al objetivo
+							if (m_chaseBehavior != null && m_chaseBehavior.m_target != null)
+								m_creatureModel.LookAtOrder = m_chaseBehavior.m_target.ComponentCreatureModel.EyePosition;
+						}
+						else if (m_creatureModel != null)
+						{
+							// Animación para zombis no humanoides (sin rotación de cabeza hacia el objetivo)
+							m_creatureModel.AimHandAngleOrder = 0f;
+							m_creatureModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
+							m_creatureModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
+						}
+					}
+					else
+					{
+						// Disparar manualmente SIN usar miner.Aim
+						FireItemsLauncherManually(eyePos, dir);
+
+						m_isAiming = false;
+						m_cooldownTimer = ItemsLauncherCooldown;
+						m_aimTimer = 0f;
+						ResetModelPose();
+					}
+				}
+				return; // Salir antes de llegar al código de armas clásicas
+			}
+			// ========== FIN ITEMSLAUNCHER ==========
+
+			// Armas clásicas (mosquete, ballesta, etc.) - EXCLUYENDO ItemsLauncher
 			bool isMusket = activeBlock is MusketBlock;
 			bool isCrossbow = activeBlock is CrossbowBlock;
 			bool isRepeatCrossbow = activeBlock is RepeatCrossbowBlock;
 			bool isBow = activeBlock is BowBlock;
 			bool isFlameThrower = activeBlock is FlameThrowerBlock;
 			bool isDoubleMusket = activeBlock is DoubleMusketBlock;
-			bool isItemsLauncher = activeBlock is ItemsLauncherBlock;
+			// ItemsLauncher ya fue manejado arriba, ya no se incluye aquí
 
-			if (!isMusket && !isCrossbow && !isRepeatCrossbow && !isBow && !isFlameThrower && !isDoubleMusket && !isItemsLauncher)
+			if (!isMusket && !isCrossbow && !isRepeatCrossbow && !isBow && !isFlameThrower && !isDoubleMusket)
 				return;
 
 			float aimTimeValue = 0f, cooldown = 0f;
@@ -572,7 +627,6 @@ namespace Game
 			else if (isBow) { aimTimeValue = BowAimTime; cooldown = BowCooldown; }
 			else if (isFlameThrower) { aimTimeValue = FlameThrowerAimTime; cooldown = FlameThrowerCooldown; }
 			else if (isDoubleMusket) { aimTimeValue = DoubleMusketAimTime; cooldown = DoubleMusketCooldown; }
-			else if (isItemsLauncher) { aimTimeValue = ItemsLauncherAimTime; cooldown = ItemsLauncherCooldown; }
 
 			if (m_cooldownTimer > 0f)
 				m_cooldownTimer -= dt;
@@ -595,7 +649,7 @@ namespace Game
 					if (!isNormal && m_creatureModel != null)
 					{
 						m_creatureModel.AimHandAngleOrder = 0f;
-						if (isMusket || isDoubleMusket || isFlameThrower || isItemsLauncher)
+						if (isMusket || isDoubleMusket || isFlameThrower)
 						{
 							m_creatureModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
 							m_creatureModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
@@ -810,7 +864,9 @@ namespace Game
 				if (shotsRemaining == 0)
 					ReloadDoubleMusketInstantly();
 			}
-			// Las armas de fuego modernas no necesitan recarga manual aquí, se maneja en UpdateRangedCombat
+			// ItemsLauncher: NO llamar a ReloadItemsLauncherInstantly() aquí
+			// El disparo se maneja completamente en UpdateRangedCombat sin usar miner.Aim()
+			// Las armas de fuego modernas tampoco necesitan recarga manual aquí
 
 			m_isAiming = true;
 			m_aimTimer = 0f;
@@ -1115,17 +1171,15 @@ namespace Game
 			m_inventory.AddSlotItems(activeSlot, newValue, 1);
 		}
 
-		private void ReloadItemsLauncherInstantly()
+		/// <summary>
+		/// Dispara el ItemsLauncher manualmente sin usar miner.Aim, solo dispara MusketBall
+		/// </summary>
+		private void FireItemsLauncherManually(Vector3 eyePos, Vector3 aimDirection)
 		{
-			ComponentCreature target = m_chaseBehavior.m_target;
-			if (target == null) return;
-
-			Vector3 eyePos = m_creatureModel.EyePosition;
-			Vector3 aimDir = m_creatureModel.EyeRotation.GetForwardVector();
-
 			Vector3 muzzlePos = eyePos + m_componentBody.Matrix.Right * 0.3f - m_componentBody.Matrix.Up * 0.2f;
-			Vector3 dirNorm = Vector3.Normalize(muzzlePos + aimDir * 10f - muzzlePos);
+			Vector3 dirNorm = Vector3.Normalize(muzzlePos + aimDirection * 10f - muzzlePos);
 
+			// SIEMPRE usar MusketBall como munición principal
 			int bulletBlockIndex = BlocksManager.GetBlockIndex<BulletBlock>(false, false);
 			if (bulletBlockIndex <= 0) return;
 
@@ -1135,16 +1189,19 @@ namespace Game
 			float speed = 100f;
 			Vector3 velocity = m_componentCreature.ComponentBody.Velocity + speed * dirNorm;
 
+			// Disparar el proyectil
 			m_subsystemProjectiles.FireProjectile(bulletValue, muzzlePos, velocity, Vector3.Zero, m_componentCreature);
 
-			SubsystemAudio audio = base.Project.FindSubsystem<SubsystemAudio>(true);
+			// Reproducir sonido
+			SubsystemAudio audio = Project.FindSubsystem<SubsystemAudio>(true);
 			if (audio != null)
 			{
 				audio.PlaySound("Audio/Items/ItemLauncher/Item Cannon Fire", 1f,
 					m_random.Float(-0.1f, 0.1f), eyePos, 10f, true);
 			}
 
-			SubsystemParticles particles = base.Project.FindSubsystem<SubsystemParticles>(true);
+			// Efecto de humo del cañón
+			SubsystemParticles particles = Project.FindSubsystem<SubsystemParticles>(true);
 			if (particles != null && m_subsystemTerrain != null)
 			{
 				particles.AddParticleSystem(
@@ -1153,6 +1210,7 @@ namespace Game
 				);
 			}
 
+			// Retroceso
 			m_componentBody.ApplyImpulse(-4f * dirNorm);
 		}
 
