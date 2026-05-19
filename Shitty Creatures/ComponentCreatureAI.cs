@@ -13,13 +13,13 @@ namespace Game
 		public Vector2 EngagementRange = new Vector2(5f, 100f);
 		public Vector2 ThrowableRange = new Vector2(5f, 15f);
 		public float MusketAimTime = 1.5f;
-		public float MusketCooldown = 0.5f;
+		public float MusketCooldown = 0.02f;
 		public float DoubleMusketAimTime = 1.5f;
-		public float DoubleMusketCooldown = 0.5f;
+		public float DoubleMusketCooldown = 0.02f;
 		public float FlameThrowerAimTime = 1.5f;
 		public float FlameThrowerCooldown = 0.01f;
 		public float ItemsLauncherAimTime = 1.5f;
-		public float ItemsLauncherCooldown = 0.01f;
+		public float ItemsLauncherCooldown = 0.02f;
 		public float BowAimTime = 1.5f;
 		public float BowCooldown = 0.01f;
 		public float CrossbowAimTime = 1.5f;
