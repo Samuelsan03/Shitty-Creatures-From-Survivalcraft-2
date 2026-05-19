@@ -8,7 +8,7 @@ namespace Game
 	{
 		public BK43BulletBlock() : base("Textures/Armas De Mierda/.38ACP")
 		{
-			this.BlockIndex = 398;
+			this.BlockIndex = 430;
 		}
 	}
 }

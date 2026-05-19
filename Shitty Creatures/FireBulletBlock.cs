@@ -7,7 +7,7 @@ namespace Game
 {
 	public class FireBulletBlock : FlatBlock
 	{
-		public const int Index = 391; // Índice diferente para diferenciarlo
+		public const int Index = 451; // Índice diferente para diferenciarlo
 
 		// Tamaño fijo para la bala de fuego
 		private const float Scale = 1f;

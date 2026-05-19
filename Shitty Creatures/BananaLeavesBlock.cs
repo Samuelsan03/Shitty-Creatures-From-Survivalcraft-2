@@ -11,7 +11,7 @@ namespace Game
 		{
 		}
 
-		public static int Index = 424;
+		public static int Index = 421;
 
 		public override int GetFaceTextureSlot(int face, int value)
 		{

@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace Game
 {
-	public class BananaSaplingBlock : ShittyTexturesFlat
+	public class AppleSaplingBlock : ShittyTexturesFlat
 	{
-		public static int Index = 422;
+		public static int Index = 417;
 
-		public BananaSaplingBlock() : base("Textures/alimentos/arbol joven banano")
+		public AppleSaplingBlock() : base("Textures/alimentos/arbol joven manzano")
 		{
 		}
 

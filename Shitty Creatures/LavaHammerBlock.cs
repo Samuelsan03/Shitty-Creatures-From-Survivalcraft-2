@@ -7,6 +7,6 @@ namespace Game
 		public LavaHammerBlock() : base(47, 126)
 		{
 		}
-		public static int Index = 308;
+		public static int Index = 468;
 	}
 }

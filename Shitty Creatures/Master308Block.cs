@@ -5,7 +5,7 @@ namespace Game
 {
 	public class Master308Block : Block
 	{
-		public const int Index = 406;
+		public const int Index = 481;
 
 		private BlockMesh m_standaloneBlockMesh = new BlockMesh();
 		public Texture2D texture = ContentManager.Get<Texture2D>("Textures/Armas De Mierda/GUN");

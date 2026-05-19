@@ -7,7 +7,7 @@ namespace Game
 {
 	public class FreezeBombBlock : Block
 	{
-		public static int Index = 402;
+		public static int Index = 454;
 		public BlockMesh m_standaloneBlockMesh = new BlockMesh();
 
 		public override void Initialize()

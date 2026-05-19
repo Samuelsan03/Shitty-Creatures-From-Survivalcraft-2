@@ -5,7 +5,7 @@ namespace Game
 {
 	public class BananaBlock : ShittyTexturesFlat
 	{
-		public const int Index = 413;
+		public const int Index = 420;
 
 		public BananaBlock() : base("Textures/alimentos/Banana")
 		{

@@ -66,7 +66,7 @@ namespace Game
 			return "A flaming rock that creates fire on impact. The fire lasts for 30 seconds. Can kill instantly and sets area ablaze.";
 		}
 
-		public static int Index = 325;
+		public static int Index = 426;
 		private BlockMesh m_blockMesh;
 	}
 }

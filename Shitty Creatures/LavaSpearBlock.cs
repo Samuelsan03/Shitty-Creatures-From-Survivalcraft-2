@@ -7,6 +7,6 @@ namespace Game
 		public LavaSpearBlock() : base(47, 126)
 		{
 		}
-		public static int Index = 303;
+		public static int Index = 475;
 	}
 }

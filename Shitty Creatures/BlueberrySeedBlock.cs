@@ -1,14 +1,13 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Engine;
 using Engine.Graphics;
-using Game;
 
 namespace Game
 {
 	public class BlueberrySeedBlock : FlatBlock
 	{
-		public static int Index = 431;
+		public static int Index = 433;
 
 		public override IEnumerable<int> GetCreativeValues()
 		{
@@ -17,26 +16,25 @@ namespace Game
 
 		public override int GetFaceTextureSlot(int face, int value)
 		{
-			// Usar una ranura de textura específica para la semilla de arándano
-			return 75; // Puedes cambiar si existe otra textura
+			return 75; // Ranura de textura de la semilla
 		}
 
 		public override BlockPlacementData GetPlacementValue(SubsystemTerrain subsystemTerrain, ComponentMiner componentMiner, int value, TerrainRaycastResult raycastResult)
 		{
 			BlockPlacementData result = default(BlockPlacementData);
 			result.CellFace = raycastResult.CellFace;
-			if (raycastResult.CellFace.Face == 4) // Solo colocar en la cara superior
+			if (raycastResult.CellFace.Face == 4) // Solo en la cara superior (tierra)
 			{
-				// Colocar un arbusto de arándano (BlueberryBushBlock) con tamaño 0 (pequeño)
-				result.Value = Terrain.MakeBlockValue(422, 0, 0);
+				// Colocar arbusto en estado pequeño: data = 1 (bit 0 activado)
+				int smallData = FlowerBlock.SetIsSmall(0, true); // Devuelve 1
+				result.Value = Terrain.MakeBlockValue(BlueberryBushBlock.Index, 0, smallData);
 			}
 			return result;
 		}
 
 		public override void DrawBlock(PrimitivesRenderer3D primitivesRenderer, int value, Color color, float size, ref Matrix matrix, DrawBlockEnvironmentData environmentData)
 		{
-			// Tinte opcional para la semilla
-			color *= new Color(70, 90, 150); // Color azulado
+			color *= new Color(70, 90, 150); // Tinte azulado para la semilla
 			BlocksManager.DrawFlatOrImageExtrusionBlock(primitivesRenderer, value, size, ref matrix, null, color, false, environmentData);
 		}
 	}

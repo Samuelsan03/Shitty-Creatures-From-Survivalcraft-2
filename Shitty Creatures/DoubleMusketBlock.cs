@@ -6,7 +6,7 @@ namespace Game
 {
 	public class DoubleMusketBlock : Block
 	{
-		public static int Index = 425;
+		public static int Index = 447;
 
 		public BlockMesh m_standaloneBlockMeshUnloaded;
 		public BlockMesh m_standaloneBlockMeshLoaded;

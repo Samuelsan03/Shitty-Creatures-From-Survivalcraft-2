@@ -43,7 +43,7 @@ namespace Game
 		{
 			return new BlockDebrisParticleSystem(subsystemTerrain, position, strength, this.DestructionDebrisScale, Color.White, 0, m_texture);
 		}
-		public static int Index = 424; // ID único para este bloque
+		public static int Index = 427; // ID único para este bloque
 		private BlockMesh m_blockMesh;
 	}
 }

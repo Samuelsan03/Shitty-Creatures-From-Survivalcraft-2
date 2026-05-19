@@ -27,7 +27,7 @@ namespace Game
 		}
 
 		// Token: 0x04000689 RID: 1673
-		public const int Index = 10000;
+		public const int Index = 400;
 
 		// Token: 0x0400068A RID: 1674
 		public Texture2D m_texture;

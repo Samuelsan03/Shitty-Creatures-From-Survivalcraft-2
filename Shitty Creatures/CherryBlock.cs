@@ -5,11 +5,10 @@ namespace Game
 {
 	public class CherryBlock : ShittyTexturesFlat
 	{
-		public const int Index = 411;
+		public const int Index = 437;
 
 		public CherryBlock() : base("Textures/alimentos/cereza")
 		{
-			this.BlockIndex = Index;
 		}
 	}
 }

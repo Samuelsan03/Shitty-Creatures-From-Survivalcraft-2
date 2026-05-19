@@ -5,7 +5,7 @@ namespace Game
 {
 	public class CherrySaplingBlock : ShittyTexturesFlat
 	{
-		public static int Index;
+		public static int Index = 439;
 
 		public CherrySaplingBlock() : base("Textures/alimentos/arbol joven cerezo")
 		{

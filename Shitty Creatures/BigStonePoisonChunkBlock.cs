@@ -66,7 +66,7 @@ namespace Game
 			return "A giant rock imbued with toxic properties. Upon impact, it releases a poisonous cloud that slowly weakens its victims. While the initial damage is moderate, the lingering poison effect can be deadly over time. Like the rare giant rock, it cannot be crafted and can only be obtained through special means.";
 		}
 
-		public static int Index = 326; // ID único para este bloque
+		public static int Index = 428; // ID único para este bloque
 		private BlockMesh m_blockMesh;
 	}
 }

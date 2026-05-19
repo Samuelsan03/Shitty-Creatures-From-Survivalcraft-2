@@ -26,6 +26,8 @@ namespace Game
 			BlocksManager.DrawFlatBlock(primitivesRenderer, value, size * 0.05f, ref matrix, this.m_texture, Color.Black, true, environmentData);
 		}
 
+		public const int Index = 403;
+
 		// Token: 0x0400068E RID: 1678
 		public Texture2D m_texture;
 	}

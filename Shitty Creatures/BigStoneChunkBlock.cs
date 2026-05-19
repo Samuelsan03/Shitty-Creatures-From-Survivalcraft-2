@@ -66,7 +66,7 @@ namespace Game
 			return "A strange rock, seemingly unearthed from the Paleolithic era its true origin remains a mystery. Oh no! What makes it most alarming is its deadly power: a single throw can kill any person instantly. Even worse, the thought of Tanks wielding it as a throwable weapon is a dire omen. Beware if one of these massive stones is hurled your way, you are already as good as dead. As a note, this rare giant rock cannot be crafted; only Tanks will possess it. Unless you resort to cheats such as using Creative mode or similar methods to obtain one but it's not recommended.";
 		}
 
-		public static int Index = 323;
+		public static int Index = 425;
         private BlockMesh m_blockMesh;
     }
 }

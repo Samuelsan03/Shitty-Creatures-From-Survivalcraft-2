@@ -34,7 +34,7 @@ namespace Game
 		}
 
 		// Índice único para el bloque del bate (asegúrate de que no entre en conflicto con otros bloques)
-		public const int Index = 386;
+		public const int Index = 424;
 
 		private BlockMesh m_standaloneBlockMesh = new BlockMesh();
 

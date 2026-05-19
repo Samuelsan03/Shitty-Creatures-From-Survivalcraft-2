@@ -10,6 +10,6 @@ namespace Game
 		{
 		}
 		// Token: 0x040000EF RID: 239
-		public static int Index = 336; // Cambia el índice según lo necesites
+		public static int Index = 473; // Cambia el índice según lo necesites
 	}
 }

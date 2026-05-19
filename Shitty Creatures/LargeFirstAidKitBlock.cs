@@ -8,7 +8,7 @@ namespace Game
 	{
 		public LargeFirstAidKitBlock() : base("Textures/Items/botiquin grande")
 		{
-			this.BlockIndex = 393;
+			this.BlockIndex = 466;
 		}
 	}
 }

@@ -6,7 +6,7 @@ namespace Game
 {
 	public class BlueberryBushBlock : ShittyTexturesFlat
 	{
-		public const int Index = 421;
+		public const int Index = 432;
 
 		public BlueberryBushBlock()
 			: base("Textures/alimentos/arbusto de arandanos")

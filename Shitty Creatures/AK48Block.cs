@@ -6,7 +6,7 @@ namespace Game
 {
 	public class AK48Block : Block
 	{
-		public const int Index = 403; // Elige un índice único, por ejemplo 393. Verifica que no esté en uso.
+		public const int Index = 409; // Elige un índice único, por ejemplo 393. Verifica que no esté en uso.
 
 		private BlockMesh m_standaloneBlockMesh = new BlockMesh();
 

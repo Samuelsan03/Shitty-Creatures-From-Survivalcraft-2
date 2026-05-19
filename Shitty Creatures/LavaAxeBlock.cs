@@ -7,6 +7,6 @@ namespace Game
 		public LavaAxeBlock() : base(47, 126)
 		{
 		}
-		public static int Index = 309;
+		public static int Index = 467;
 	}
 }

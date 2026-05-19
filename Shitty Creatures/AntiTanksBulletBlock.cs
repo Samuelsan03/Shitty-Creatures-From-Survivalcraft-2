@@ -7,7 +7,7 @@ namespace Game
 {
 	public class AntiTanksBulletBlock : FlatBlock
 	{
-		public static int Index = 329;
+		public static int Index = 414;
 
 		public override void GenerateTerrainVertices(BlockGeometryGenerator generator, TerrainGeometry geometry, int value, int x, int y, int z)
 		{

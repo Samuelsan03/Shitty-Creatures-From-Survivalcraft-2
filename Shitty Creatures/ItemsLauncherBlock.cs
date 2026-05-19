@@ -99,7 +99,7 @@ public class ItemsLauncherBlock : Block
 	}
 
 	// Token: 0x04000011 RID: 17
-	public static int Index = 359;
+	public static int Index = 462;
 
 	// Token: 0x04000012 RID: 18
 	private const int SpeedMask = 3;

@@ -20,6 +20,6 @@ namespace Game
 			return string.IsNullOrEmpty(description) ? "The Copper Sharp Hammer is a powerful weapon. At first glance it looks like a simple work tool, but in reality its lethality surpasses that of the copper machete. Although it is not as durable as the machete, it is taller and far deadlier, capable of delivering devastating blows that make it one of the most dangerous copper-based weapons." : description;
 		}
 
-		public static int Index = 333;
+		public static int Index = 443;
 	}
 }

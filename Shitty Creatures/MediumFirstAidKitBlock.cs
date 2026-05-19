@@ -8,7 +8,7 @@ namespace Game
 	{
 		public MediumFirstAidKitBlock() : base("Textures/Items/botiquin mediano")
 		{
-			this.BlockIndex = 392;
+			this.BlockIndex = 483;
 		}
 	}
 }

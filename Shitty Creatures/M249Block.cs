@@ -35,7 +35,7 @@ namespace Game
 			return (data & ~2032) | ((bulletNum & 127) << 4); // 2032 = 127 << 4
 		}
 
-		public const int Index = 379; // Nuevo índice
+		public const int Index = 477; // Nuevo índice
 
 		private BlockMesh m_standaloneBlockMesh = new BlockMesh();
 

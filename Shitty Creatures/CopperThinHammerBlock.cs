@@ -11,6 +11,6 @@ namespace Game
 		}
 
 		// Token: 0x0400012E RID: 302
-		public static int Index = 417;
+		public static int Index = 444;
 	}
 }

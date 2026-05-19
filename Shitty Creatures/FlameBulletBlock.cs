@@ -79,7 +79,7 @@ namespace Game
 			return (data & -16) | (int)(flameBulletType & (FlameBulletBlock.FlameBulletType)15);
 		}
 
-		public static int Index = 320;
+		public static int Index = 452;
 		public Texture2D m_texture;
 		public Texture2D m_texturePoison;
 		public BlockMesh[] m_blockMeshes;
