@@ -579,8 +579,7 @@ namespace Game
 
 				int activeContents = Terrain.ExtractContents(m_componentMiner.Inventory.GetSlotValue(m_componentMiner.Inventory.ActiveSlotIndex));
 
-				// ========== CORRECCIÓN: VERIFICACIÓN DE DISTANCIA PARA LANZABLES ==========
-				// Si estamos apuntando con un objeto lanzable y la distancia está fuera del rango permitido, cancelamos el apuntado
+				// CORRECCIÓN: Verificar distancia para lanzables durante el apuntado
 				if (IsThrowable(activeContents))
 				{
 					if (distance < ThrowableAttackRange.X || distance > ThrowableAttackRange.Y)
@@ -589,7 +588,6 @@ namespace Game
 						return;
 					}
 				}
-				// ========== FIN DE LA CORRECCIÓN ==========
 
 				if (distance <= RangedAttackRange.X && SwitchToMeleeWeapon())
 				{
@@ -804,18 +802,18 @@ namespace Game
 				// 2. Armas de fuego modernas (antes era 1, ahora 2)
 				if (HasFirearmInInventory() && EnsureFirearmEquipped())
 				{
-					int activeContents2 = Terrain.ExtractContents(m_componentMiner.Inventory.GetSlotValue(m_componentMiner.Inventory.ActiveSlotIndex));
+					int activeContents = Terrain.ExtractContents(m_componentMiner.Inventory.GetSlotValue(m_componentMiner.Inventory.ActiveSlotIndex));
 					int sniperIndex3 = BlocksManager.GetBlockIndex(typeof(SniperBlock), true, false);
 					if (IsSpecialNoRaiseCreature())
 					{
-						StartCustomAiming(activeContents2);
+						StartCustomAiming(activeContents);
 					}
 					else
 					{
 						m_isAiming = true;
 						m_aimTimer = 0f;
 						m_hasCompletedInitialAim = false;
-						if (activeContents2 != sniperIndex3)
+						if (activeContents != sniperIndex3)
 						{
 							m_componentMiner.Aim(CalculateAimRay(), AimState.InProgress);
 						}
