@@ -8,7 +8,7 @@ namespace Game
 {
 	public class ComponentZombieAI : ComponentBehavior, IUpdateable
 	{
-		public static float MusketCooldown = 0.5f;
+		public static float MusketCooldown = 0.02f;
 		public static float MusketAimTime = 1.5f;
 		public static float CrossbowCooldown = 0.01f;
 		public static float CrossbowAimTime = 1.5f;
@@ -18,9 +18,9 @@ namespace Game
 		public static float RepeatCrossbowAimTime = 1.5f;
 		public static float FlameThrowerCooldown = 0f;
 		public static float FlameThrowerAimTime = 1.5f;
-		public static float DoubleMusketCooldown = 0.5f;
+		public static float DoubleMusketCooldown = 0.02f;
 		public static float DoubleMusketAimTime = 1.5f;
-		public static float ItemsLauncherCooldown = 0.55f;
+		public static float ItemsLauncherCooldown = 0.02f;
 		public static float ItemsLauncherAimTime = 1.0f;
 
 		public Vector2 AttackRange = new Vector2(5f, 100f);
