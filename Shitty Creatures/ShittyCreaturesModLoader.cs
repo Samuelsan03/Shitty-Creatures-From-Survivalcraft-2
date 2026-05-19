@@ -141,6 +141,7 @@ namespace Game
 			ModsManager.RegisterHook("OnCreatureDying", this);
 			ModsManager.RegisterHook("ChangeVisualEffectOnInjury", this);
 			ModsManager.RegisterHook("InitializeCreatureTypes", this);
+			ModsManager.RegisterHook("OnProjectileRaycastBody", this);
 			// Reemplazar overlay de captura de pantalla
 			ReplaceScreenCaptureOverlay();
 		}
@@ -165,12 +166,11 @@ namespace Game
 			m_healthBarPlayers = project.FindSubsystem<SubsystemPlayers>(true);
 			HealthBarDrawable healthBarDrawable = new HealthBarDrawable(this);
 			project.FindSubsystem<SubsystemDrawing>(true).AddDrawable(healthBarDrawable);
-
-			// Reemplazar generador de terreno con árboles frutales (principalmente manzanos)
-			SubsystemTerrain terrainSubsystem = project.FindSubsystem<SubsystemTerrain>(true);
-			if (terrainSubsystem != null && terrainSubsystem.TerrainContentsGenerator is TerrainContentsGenerator24)
+			var terrain = project.FindSubsystem<SubsystemTerrain>(true);
+			if (terrain != null && terrain.TerrainContentsGenerator is TerrainContentsGenerator24)
 			{
-				terrainSubsystem.TerrainContentsGenerator = new ShittyTerrainContentsGenerator(terrainSubsystem);
+				terrain.TerrainContentsGenerator = new ShittyTerrainContentsGenerator(terrain);
+				Log.Information("[ShittyCreatures] TerrainContentsGenerator reemplazado");
 			}
 		}
 
@@ -1720,6 +1720,54 @@ namespace Game
 					return subsystemCreatureSpawn.SpawnCreatures(ct, "CapitanPirata", point, 1).Count;
 				}
 			});
+
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Rayman", SpawnLocationType.Surface, true, false)
+            {
+                SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+                {
+                    // 1. Solo de día
+                    if (sky.SkyLightIntensity < 0.4f) return 0f;
+
+                    // 2. Calcular el factor de montaña usando la misma fórmula que el generador de terreno
+                    float mountainFactor = subsystemCreatureSpawn.m_subsystemTerrain.TerrainContentsGenerator.CalculateMountainRangeFactor((float)point.X, (float)point.Z);
+
+                    // 3. Si es >= 0.9f, es una zona de alta montaña (piedra/caliza)
+                    if (mountainFactor >= 0.9f)
+                    {
+                        return 2500f; // Peso altísimo para que aparezca inmediatamente en las montañas
+                    }
+
+                    return 0f;
+                },
+                SpawnFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+                {
+                    // Aparece solo 1
+                    return subsystemCreatureSpawn.SpawnCreatures(ct, "Rayman", point, 1).Count;
+                }
+            });
+		}
+
+		public override void OnProjectileRaycastBody(ComponentBody body, Projectile projectile, float distance, out bool ignore)
+		{
+			ignore = false;
+
+			// Solo interesar si el proyectil tiene dueño y es una criatura
+			if (projectile.Owner == null) return;
+
+			// Verificar si el dueño es un bandido (tiene ComponentBanditHerdBehavior)
+			ComponentBanditHerdBehavior ownerHerd = projectile.Owner.Entity.FindComponent<ComponentBanditHerdBehavior>();
+			if (ownerHerd == null) return;
+
+			// Verificar si el cuerpo impactado pertenece a un bandido
+			ComponentBanditHerdBehavior targetHerd = body.Entity.FindComponent<ComponentBanditHerdBehavior>();
+			if (targetHerd == null) return;
+
+			// Si ambos son bandidos y pertenecen a la misma manada, ignorar este cuerpo en el raycast
+			if (!string.IsNullOrEmpty(ownerHerd.HerdName) &&
+				string.Equals(ownerHerd.HerdName, targetHerd.HerdName, StringComparison.OrdinalIgnoreCase))
+			{
+				ignore = true;
+			}
 		}
 
 		// ---------------------------------------------------------------------------------
