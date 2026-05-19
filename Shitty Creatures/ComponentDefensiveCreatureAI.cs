@@ -577,13 +577,26 @@ namespace Game
 					return;
 				}
 
+				int activeContents = Terrain.ExtractContents(m_componentMiner.Inventory.GetSlotValue(m_componentMiner.Inventory.ActiveSlotIndex));
+
+				// ========== CORRECCIÓN: VERIFICACIÓN DE DISTANCIA PARA LANZABLES ==========
+				// Si estamos apuntando con un objeto lanzable y la distancia está fuera del rango permitido, cancelamos el apuntado
+				if (IsThrowable(activeContents))
+				{
+					if (distance < ThrowableAttackRange.X || distance > ThrowableAttackRange.Y)
+					{
+						CancelAiming();
+						return;
+					}
+				}
+				// ========== FIN DE LA CORRECCIÓN ==========
+
 				if (distance <= RangedAttackRange.X && SwitchToMeleeWeapon())
 				{
 					CancelAiming();
 					return;
 				}
 
-				int activeContents = Terrain.ExtractContents(m_componentMiner.Inventory.GetSlotValue(m_componentMiner.Inventory.ActiveSlotIndex));
 				if (!TryCalculateAimRay(out Ray3 aimRay))
 				{
 					CancelAiming();
@@ -599,12 +612,12 @@ namespace Game
 				if (FirearmDefensiveConfigs.TryGetValue(activeContents, out FirearmDefConfig firearmConfig))
 				{
 					float aimTime = GetAimTime(activeContents);
-					int sniperIndex = BlocksManager.GetBlockIndex(typeof(SniperBlock), true, false);
+					int sniperIndex2 = BlocksManager.GetBlockIndex(typeof(SniperBlock), true, false);
 
 					if (!m_hasCompletedInitialAim)
 					{
 						m_aimTimer += dt;
-						if (activeContents != sniperIndex)
+						if (activeContents != sniperIndex2)
 						{
 							m_componentMiner.Aim(aimRay, AimState.InProgress);
 						}
@@ -647,7 +660,7 @@ namespace Game
 					else
 					{
 						// Apuntado mantenido para cualquier arma de fuego
-						if (activeContents != sniperIndex)
+						if (activeContents != sniperIndex2)
 						{
 							m_componentMiner.Aim(aimRay, AimState.InProgress);
 						}
@@ -791,18 +804,18 @@ namespace Game
 				// 2. Armas de fuego modernas (antes era 1, ahora 2)
 				if (HasFirearmInInventory() && EnsureFirearmEquipped())
 				{
-					int activeContents = Terrain.ExtractContents(m_componentMiner.Inventory.GetSlotValue(m_componentMiner.Inventory.ActiveSlotIndex));
-					int sniperIndex = BlocksManager.GetBlockIndex(typeof(SniperBlock), true, false);
+					int activeContents2 = Terrain.ExtractContents(m_componentMiner.Inventory.GetSlotValue(m_componentMiner.Inventory.ActiveSlotIndex));
+					int sniperIndex3 = BlocksManager.GetBlockIndex(typeof(SniperBlock), true, false);
 					if (IsSpecialNoRaiseCreature())
 					{
-						StartCustomAiming(activeContents);
+						StartCustomAiming(activeContents2);
 					}
 					else
 					{
 						m_isAiming = true;
 						m_aimTimer = 0f;
 						m_hasCompletedInitialAim = false;
-						if (activeContents != sniperIndex)
+						if (activeContents2 != sniperIndex3)
 						{
 							m_componentMiner.Aim(CalculateAimRay(), AimState.InProgress);
 						}
