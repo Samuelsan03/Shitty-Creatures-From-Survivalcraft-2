@@ -68,44 +68,6 @@ namespace Game
 			return null;
 		}
 
-		private bool IsStuck()
-		{
-			return m_componentPathfinding != null && m_componentPathfinding.IsStuck;
-		}
-
-		private bool IsLineOfSightBlocked(ComponentCreature target)
-		{
-			if (target == null) return true;
-			Vector3 start = m_componentCreature.ComponentCreatureModel.EyePosition;
-			Vector3 end = target.ComponentCreatureModel.EyePosition;
-			float distance = Vector3.Distance(start, end);
-			if (distance <= 0.1f) return false;
-			TerrainRaycastResult? terrainHit = m_subsystemTerrain.Raycast(start, end, true, true, (int value, float d) =>
-			{
-				int contents = Terrain.ExtractContents(value);
-				Block block = BlocksManager.Blocks[contents];
-				return block.IsCollidable_(value);
-			});
-			if (terrainHit != null && terrainHit.Value.Distance < distance) return true;
-			BodyRaycastResult? bodyHit = m_subsystemBodies.Raycast(start, end, 0.35f, (ComponentBody body, float dist) =>
-			{
-				if (body == m_componentCreature.ComponentBody) return false;
-				if (body == target.ComponentBody) return false;
-				return true;
-			});
-			if (bodyHit != null && bodyHit.Value.Distance < distance) return true;
-			return false;
-		}
-
-		// Verifica que el objetivo esté al frente (producto punto > 0)
-		private bool IsTargetInFront(ComponentCreature target)
-		{
-			if (target == null) return false;
-			Vector3 toTarget = target.ComponentCreatureModel.EyePosition - m_componentCreature.ComponentCreatureModel.EyePosition;
-			Vector3 forward = m_componentCreature.ComponentBody.Matrix.Forward;
-			return Vector3.Dot(forward, toTarget) > 0f;
-		}
-
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
 			base.Load(valuesDictionary, idToEntityMap);
@@ -564,20 +526,6 @@ namespace Game
 				m_currentWeaponIndex = -1;
 				return;
 			}
-			if (IsStuck() || IsLineOfSightBlocked(target))
-			{
-				ResetAnimations();
-				m_currentWeaponIndex = -1;
-				return;
-			}
-
-			// Solo atacar si el objetivo está al frente (producto punto > 0)
-			if (!IsTargetInFront(target))
-			{
-				ResetAnimations();
-				m_currentWeaponIndex = -1;
-				return;
-			}
 
 			float distance = Vector3.Distance(m_componentCreature.ComponentBody.Position, target.ComponentBody.Position);
 
@@ -648,7 +596,7 @@ namespace Game
 				m_isAiming = false;
 				return;
 			}
-			if (target == null || IsLineOfSightBlocked(target))
+			if (target == null)
 			{
 				ResetAnimations();
 				m_isAiming = false;
@@ -694,7 +642,7 @@ namespace Game
 				m_isAiming = false;
 				return;
 			}
-			if (target == null || IsLineOfSightBlocked(target))
+			if (target == null)
 			{
 				ResetAnimations();
 				m_isAiming = false;
@@ -824,7 +772,7 @@ namespace Game
 				m_isAiming = false;
 				return;
 			}
-			if (target == null || IsLineOfSightBlocked(target))
+			if (target == null)
 			{
 				ResetAnimations();
 				m_isAiming = false;
@@ -1048,10 +996,16 @@ namespace Game
 					int bulletValue = Terrain.MakeBlockValue(bulletBlockIndex, 0, 2);
 					m_subsystemProjectiles.FireProjectile(bulletValue, shootPosition, config.BulletSpeed * (direction + spread), Vector3.Zero, m_componentCreature);
 				}
-				Vector3 particlePosition = shootPosition + direction * 1.3f;
+
+				// Partículas de fuego detrás del cuerpo (en la espalda/torso)
+				Vector3 bodyForward = m_componentCreature.ComponentBody.Matrix.Forward;
+				Vector3 bodyUp = m_componentCreature.ComponentBody.Matrix.Up;
+				float torsoHeight = m_componentCreature.ComponentBody.BoxSize.Y * 0.7f; // Altura aproximada del torso
+
+				Vector3 particlePosition = m_componentCreature.ComponentBody.Position + (bodyUp * torsoHeight) - (bodyForward * 0.3f);
 				if (m_subsystemParticles != null && m_subsystemTerrain != null)
 				{
-					m_subsystemParticles.AddParticleSystem(new GunFireParticleSystem(m_subsystemTerrain, particlePosition, direction), false);
+					m_subsystemParticles.AddParticleSystem(new GunFireParticleSystem(m_subsystemTerrain, particlePosition, -bodyForward), false);
 				}
 				if (m_subsystemNoise != null)
 				{
