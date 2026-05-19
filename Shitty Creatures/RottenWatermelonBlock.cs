@@ -4,7 +4,7 @@ namespace Game
 {
 	public class RottenWatermelonBlock : BaseWatermelonBlock
 	{
-		public static int Index = 431;
+		public static int Index = 514;
 
 		public RottenWatermelonBlock()
 			: base(isRotten: true)

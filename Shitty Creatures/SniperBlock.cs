@@ -40,7 +40,7 @@ namespace Game
 		{
 			return (data & -64) | (data & 63) << 4;
 		}
-		public const int Index = 355;
+		public const int Index = 519;
 
 		// Token: 0x040000A3 RID: 163
 		private BlockMesh m_standaloneBlockMesh = new BlockMesh();

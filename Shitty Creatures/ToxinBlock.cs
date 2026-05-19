@@ -8,7 +8,7 @@ namespace Game
 		// Token: 0x06000B92 RID: 2962 RVA: 0x000894A6 File Offset: 0x000876A6
 		public ToxinBlock() : base("Textures/Items/toxina")
 		{
-			this.BlockIndex = 394;
+			this.BlockIndex = 532;
 		}
 	}
 }

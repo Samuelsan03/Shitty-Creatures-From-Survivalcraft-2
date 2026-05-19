@@ -11,6 +11,6 @@ namespace Game
 		}
 
 		// Token: 0x040002AC RID: 684
-		public static int Index = 359;
+		public static int Index = 523;
 	}
 }

@@ -115,7 +115,7 @@ namespace Game
 			return value ^ ((value ^ count << 10) & 15360);
 		}
 
-		public static int Index = 302;
+		public static int Index = 504;
 		public BlockMesh[] m_standaloneBlockMeshes = new BlockMesh[16];
 		private Block arrowBlock;
 	}

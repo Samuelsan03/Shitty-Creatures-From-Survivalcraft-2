@@ -42,7 +42,7 @@ namespace Game
 			return (bulletCount & 63) << 4;
 		}
 
-		public const int Index = 353;
+		public const int Index = 528;
 		private BlockMesh m_standaloneBlockMesh = new BlockMesh();
 		public Texture2D texture = ContentManager.Get<Texture2D>("Textures/Armas De Mierda/deserteagle", null);
 	}

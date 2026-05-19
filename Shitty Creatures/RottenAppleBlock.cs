@@ -5,7 +5,7 @@ namespace Game
 {
 	public class RottenAppleBlock : ShittyTexturesFlat
 	{
-		public const int Index = 424;
+		public const int Index = 507;
 
 		public RottenAppleBlock() : base("Textures/alimentos/manzana podrida")
 		{

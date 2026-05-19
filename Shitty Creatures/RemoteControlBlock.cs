@@ -8,7 +8,7 @@ namespace Game
 	{
 		public RemoteControlBlock() : base("Textures/Items/control remoto")
 		{
-			this.BlockIndex = 400;
+			this.BlockIndex = 502;
 		}
 
 		public static int Index { get; internal set; }

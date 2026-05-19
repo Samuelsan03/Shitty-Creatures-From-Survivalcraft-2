@@ -40,7 +40,7 @@ namespace Game
 			BlocksManager.DrawMeshBlock(primitivesRenderer, m_standaloneBlockMesh, color, 2f * size, ref matrix, environmentData);
 		}
 
-		public static int Index = 423; // Índice libre
+		public static int Index = 535; // Índice libre
 		private BlockMesh m_standaloneBlockMesh = new BlockMesh();
 	}
 }

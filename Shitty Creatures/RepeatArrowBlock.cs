@@ -128,7 +128,7 @@ namespace Game
 			RepeatArrowBlock.m_explosionPressures = array;
 		}
 
-		public static int Index = 301;
+		public static int Index = 503;
 		public List<BlockMesh> m_standaloneBlockMeshes = new List<BlockMesh>();
 		public static int[] m_order = new int[]
 		{

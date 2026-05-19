@@ -5,7 +5,7 @@ namespace Game
 {
 	public class RottenBlueberryBlock : ShittyTexturesFlat
 	{
-		public const int Index = 430;
+		public const int Index = 509;
 
 		public RottenBlueberryBlock() : base("Textures/alimentos/arandanos podridos")
 		{

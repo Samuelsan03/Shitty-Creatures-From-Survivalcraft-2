@@ -37,7 +37,7 @@ namespace Game
 			return (data & ~112) | ((bulletNum & 7) << 4);
 		}
 
-		public const int Index = 370; // Siguiente índice después de SCAR
+		public const int Index = 505; // Siguiente índice después de SCAR
 
 		private BlockMesh m_standaloneBlockMesh = new BlockMesh();
 

@@ -8,6 +8,6 @@ namespace Game
 		{
 		}
 
-		public static int Index = 312;
+		public static int Index = 537;
 	}
 }

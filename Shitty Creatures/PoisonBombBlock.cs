@@ -29,7 +29,7 @@ namespace Game
 		}
 
 		// Token: 0x040006A4 RID: 1700
-		public static int Index = 328;
+		public static int Index = 499;
 
 		// Token: 0x040006A5 RID: 1701
 		public BlockMesh m_standaloneBlockMesh = new BlockMesh();

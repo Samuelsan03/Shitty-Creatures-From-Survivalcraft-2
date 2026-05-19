@@ -7,7 +7,7 @@ namespace Game
 {
 	public class PoisonBulletBlock : FlatBlock
 	{
-		public const int Index = 207;
+		public const int Index = 500;
 
 		// Tamaño fijo para la bala venenosa (similar a MusketBall)
 		private const float Scale = 1f;
