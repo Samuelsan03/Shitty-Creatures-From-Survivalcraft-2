@@ -166,13 +166,7 @@ namespace Game
 			m_healthBarPlayers = project.FindSubsystem<SubsystemPlayers>(true);
 			HealthBarDrawable healthBarDrawable = new HealthBarDrawable(this);
 			project.FindSubsystem<SubsystemDrawing>(true).AddDrawable(healthBarDrawable);
-			var terrain = project.FindSubsystem<SubsystemTerrain>(true);
-			if (terrain != null && terrain.TerrainContentsGenerator is TerrainContentsGenerator24)
-			{
-				terrain.TerrainContentsGenerator = new ShittyTerrainContentsGenerator(terrain);
-				Log.Information("[ShittyCreatures] TerrainContentsGenerator reemplazado");
 			}
-		}
 
 		private void CancelGreenNightChaseDelay(Project project)
 		{
