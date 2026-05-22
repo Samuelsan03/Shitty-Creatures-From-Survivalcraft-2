@@ -2415,7 +2415,7 @@
             <MemberComponentTemplate Name="FindPlayerBehavior" Guid="2d6d687d-932f-4ce6-969e-4857780cc5c4" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031" />
             <ParameterSet Name="CreatureEggData" Guid="a8ae4b4c-cd5e-4533-8669-2b9e19bb21a0">
               <Parameter Name="TextureSlot" Guid="6526334d-06ca-443c-bf6a-1ea106e406b2" Value="170" Type="int" />
-              <Parameter Name="Color" Guid="ba793e60-3a87-46b2-b9c6-9956861b332f" Value="160,0,0" Type="Color" />
+              <Parameter Name="Color" Guid="ba793e60-3a87-46b2-b9c6-9956861b332f" Value="176,115,115" Type="Color" />
               <Parameter Name="SwapUV" Guid="cbce6183-247e-4e0d-a309-719d06ffc149" Value="False" Type="bool" />
               <Parameter Name="DisplayName" Guid="7312500a-0b31-4344-9423-717e4c800ef9" Value="[DisplayName:Bandit17]" Type="string" />
               <Parameter Name="EggTypeIndex" Guid="e416a920-a399-472c-b323-f59deb1082d5" Value="2019" Type="int" />
