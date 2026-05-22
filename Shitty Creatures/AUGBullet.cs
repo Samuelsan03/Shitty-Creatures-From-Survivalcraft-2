@@ -25,7 +25,7 @@ namespace Game
 			BlocksManager.DrawMeshBlock(primitivesRenderer, this.m_standaloneBlockMesh, this.texture, color, 1.9f * size, ref matrix, environmentData);
 		}
 
-		public const int Index = 365;
+		public const int Index = 543;
 
 		private BlockMesh m_standaloneBlockMesh = new BlockMesh();
 

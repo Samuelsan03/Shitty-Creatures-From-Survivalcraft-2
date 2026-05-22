@@ -30,7 +30,7 @@ namespace Game
 		}
 
 		// Token: 0x04000087 RID: 135
-		public const int Index = 352;
+		public const int Index = 544;
 
 		// Token: 0x04000088 RID: 136
 		private BlockMesh m_standaloneBlockMesh = new BlockMesh();
