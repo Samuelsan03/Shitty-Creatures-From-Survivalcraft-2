@@ -142,6 +142,7 @@ namespace Game
 			ModsManager.RegisterHook("ChangeVisualEffectOnInjury", this);
 			ModsManager.RegisterHook("InitializeCreatureTypes", this);
 			ModsManager.RegisterHook("OnProjectileRaycastBody", this);
+			ModsManager.RegisterHook("OnProjectileHitBody", this);
 			// Reemplazar overlay de captura de pantalla
 			ReplaceScreenCaptureOverlay();
 		}
@@ -1761,6 +1762,28 @@ namespace Game
 				string.Equals(ownerHerd.HerdName, targetHerd.HerdName, StringComparison.OrdinalIgnoreCase))
 			{
 				ignore = true;
+			}
+		}
+
+		public override void OnProjectileHitBody(Projectile projectile, BodyRaycastResult bodyRaycastResult, ref Attackment attackment, ref Vector3 velocityAfterAttack, ref Vector3 angularVelocityAfterAttack, ref bool ignoreBody)
+		{
+			// Obtener el nombre del bloque del proyectil
+			int blockIndex = Terrain.ExtractContents(projectile.Value);
+			Block block = BlocksManager.Blocks[blockIndex];
+			string blockName = block.GetType().Name;
+
+			// Verificar si es una de las balas personalizadas
+			if (blockName == "NuevaBala" ||
+				blockName == "NuevaBala2" ||
+				blockName == "NuevaBala3" ||
+				blockName == "NuevaBala4" ||
+				blockName == "NuevaBala5" ||
+				blockName == "NuevaBala6")
+			{
+				// Eliminar el empuje (impulso) completamente
+				attackment.ImpulseFactor = 0f;
+				// También eliminar el aturdimiento si lo hubiera
+				attackment.StunTimeSet = 0f;
 			}
 		}
 
