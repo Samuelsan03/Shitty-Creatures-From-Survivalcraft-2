@@ -619,7 +619,7 @@ namespace Game
 			}
 			else if (m_firearmConfigs.ContainsKey(activeContents) && targetVisible)
 			{
-				// *** ARMAS DE FUEGO MODERNAS ***
+				// *** ARMAS DE FUEGO MODERNAS - SIN MINER.AIM, ANIMACIÓN MANUAL ***
 				if (m_isFirearmReloading)
 				{
 					m_firearmReloadTimer -= dt;
@@ -643,12 +643,9 @@ namespace Game
 									m_subsystemParticles.AddParticleSystem(additionalParticles, false);
 								}
 							}
-							catch (Exception)
-							{
-							}
+							catch (Exception) { }
 						}
 						m_subsystemAudio.PlaySound("Audio/Armas/reload", 1f, 0f, m_componentCreature.ComponentCreatureModel.EyePosition, 10f, true);
-						// Restaurar rotación del modelo tras recarga
 						ResetModelRotation();
 						m_isAiming = false;
 						m_aimTimer = 0f;
@@ -657,7 +654,6 @@ namespace Game
 					}
 					else
 					{
-						// Animación de recarga
 						ComponentCreatureModel model = m_componentCreature.ComponentCreatureModel;
 						if (model != null)
 						{
@@ -667,10 +663,7 @@ namespace Game
 							model.LookAtOrder = null;
 						}
 					}
-					if (m_isAiming)
-					{
-						CancelAiming(inventory);
-					}
+					if (m_isAiming) CancelAiming(inventory);
 					return;
 				}
 
@@ -692,74 +685,51 @@ namespace Game
 				{
 					Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
 					Vector3 aimDir = m_componentCreature.ComponentCreatureModel.EyeRotation.GetForwardVector();
-					Ray3 aimRay = new Ray3(eyePos, aimDir);
+					Vector3 targetEyePos = target.ComponentCreatureModel.EyePosition;
+					Vector3 targetDirection = Vector3.Normalize(targetPos - eyePos);
+					Ray3 aimRay = new Ray3(eyePos, targetDirection);
 					float aimTime = config.IsSniper ? 1.0f : 0.5f;
+
+					// Animación manual (sin Miner.Aim)
+					ComponentCreatureModel model = m_componentCreature.ComponentCreatureModel;
+					if (model != null)
+					{
+						if (config.IsSniper)
+						{
+							model.AimHandAngleOrder = 1.2f;
+							model.InHandItemOffsetOrder = new Vector3(-0.1f, -0.06f, 0.08f);
+							model.InHandItemRotationOrder = new Vector3(-1.5f, 0f, 0f);
+						}
+						else
+						{
+							model.AimHandAngleOrder = 1.4f;
+							model.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
+							model.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
+						}
+						model.LookAtOrder = target.ComponentCreatureModel.EyePosition;
+					}
 
 					if (!m_hasCompletedInitialAim)
 					{
 						m_aimTimer += dt;
-						if (config.IsSniper)
-						{
-							// Animación de apunte del sniper (sin usar Miner.Aim)
-							ComponentCreatureModel model = m_componentCreature.ComponentCreatureModel;
-							if (model != null)
-							{
-								model.AimHandAngleOrder = 1.2f;
-								model.InHandItemOffsetOrder = new Vector3(-0.1f, -0.06f, 0.08f);
-								model.InHandItemRotationOrder = new Vector3(-1.5f, 0f, 0f);
-								if (m_chaseBehavior != null && m_chaseBehavior.Target != null)
-								{
-									model.LookAtOrder = m_chaseBehavior.Target.ComponentCreatureModel.EyePosition;
-								}
-							}
-						}
-						else
-						{
-							m_componentMiner.Aim(aimRay, AimState.InProgress);
-						}
-
 						if (m_aimTimer >= aimTime)
 						{
 							FireFirearm(aimRay, config);
 							m_lastFirearmShotTime = m_subsystemTime.GameTime;
 							m_hasCompletedInitialAim = true;
-							m_aimTimer = aimTime; // mantener el temporizador en el valor de apunte
+							m_aimTimer = aimTime;
 							if (m_firearmShotsSinceReload >= config.MaxShotsBeforeReload)
-							{
 								StartFirearmReload();
-							}
 						}
 					}
 					else
 					{
-						// Mantener apunte
-						if (config.IsSniper)
-						{
-							ComponentCreatureModel model = m_componentCreature.ComponentCreatureModel;
-							if (model != null)
-							{
-								model.AimHandAngleOrder = 1.2f;
-								model.InHandItemOffsetOrder = new Vector3(-0.1f, -0.06f, 0.08f);
-								model.InHandItemRotationOrder = new Vector3(-1.5f, 0f, 0f);
-								if (m_chaseBehavior != null && m_chaseBehavior.Target != null)
-								{
-									model.LookAtOrder = m_chaseBehavior.Target.ComponentCreatureModel.EyePosition;
-								}
-							}
-						}
-						else
-						{
-							m_componentMiner.Aim(aimRay, AimState.InProgress);
-						}
-
 						if ((m_subsystemTime.GameTime - m_lastFirearmShotTime) >= config.FireRate)
 						{
 							FireFirearm(aimRay, config);
 							m_lastFirearmShotTime = m_subsystemTime.GameTime;
 							if (m_firearmShotsSinceReload >= config.MaxShotsBeforeReload)
-							{
 								StartFirearmReload();
-							}
 						}
 					}
 				}
@@ -872,20 +842,18 @@ namespace Game
 			{
 				int slotValue = inventory.GetSlotValue(inventory.ActiveSlotIndex);
 				int contents = Terrain.ExtractContents(slotValue);
-				if (contents == MusketBlock.Index || contents == DoubleMusketBlock.Index || contents == FlameThrowerBlock.Index || contents == ItemsLauncherBlock.Index || contents == BowBlock.Index || contents == CrossbowBlock.Index || contents == RepeatCrossbowBlock.Index || IsThrowable(contents) || m_firearmConfigs.ContainsKey(contents))
+				if (contents == MusketBlock.Index || contents == DoubleMusketBlock.Index || contents == FlameThrowerBlock.Index || contents == ItemsLauncherBlock.Index || contents == BowBlock.Index || contents == CrossbowBlock.Index || contents == RepeatCrossbowBlock.Index || IsThrowable(contents))
 				{
 					Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
 					Vector3 aimDir = m_componentCreature.ComponentCreatureModel.EyeRotation.GetForwardVector();
-					// Solo cancelar con miner.Aim si la usamos (no para ItemsLauncher)
-					if (contents != ItemsLauncherBlock.Index)
+					// Solo cancelar con miner.Aim si NO es arma de fuego
+					if (contents != ItemsLauncherBlock.Index && !m_firearmConfigs.ContainsKey(contents))
 						m_componentMiner.Aim(new Ray3(eyePos, aimDir), AimState.Cancelled);
 				}
 				m_isAiming = false;
 				m_aimTimer = 0f;
 				if (m_firearmConfigs.ContainsKey(contents))
-				{
 					m_hasCompletedInitialAim = false;
-				}
 			}
 		}
 
