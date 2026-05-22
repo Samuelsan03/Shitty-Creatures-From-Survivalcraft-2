@@ -491,25 +491,40 @@ namespace Game
 					Ray3 aimRay = new Ray3(eyePos, aimDir);
 					float aimDuration = config.IsSniper ? 1.0f : 0.5f;
 
-					if (!m_hasCompletedInitialAim)
+					// Animación manual (sin Miner.Aim)
+					bool isNormal = IsNormalHumanoid();
+					if (m_creatureModel != null)
 					{
-						m_aimTimer += dt;
-						if (config.IsSniper)
+						if (!isNormal)
 						{
-							if (m_creatureModel != null)
+							// Criaturas NO normales (zombis especiales): NO levantan el brazo
+							m_creatureModel.AimHandAngleOrder = 0f;
+							m_creatureModel.InHandItemOffsetOrder = new Vector3(-0.1f, -0.15f, 0.25f);
+							m_creatureModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
+						}
+						else
+						{
+							// Criaturas normales (humanoides): levantan el brazo
+							if (config.IsSniper)
 							{
 								m_creatureModel.AimHandAngleOrder = 1.2f;
 								m_creatureModel.InHandItemOffsetOrder = new Vector3(-0.1f, -0.06f, 0.08f);
 								m_creatureModel.InHandItemRotationOrder = new Vector3(-1.5f, 0f, 0f);
-								if (m_chaseBehavior != null && m_chaseBehavior.m_target != null)
-									m_creatureModel.LookAtOrder = m_chaseBehavior.m_target.ComponentCreatureModel.EyePosition;
+							}
+							else
+							{
+								m_creatureModel.AimHandAngleOrder = 1.4f;
+								m_creatureModel.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
+								m_creatureModel.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
 							}
 						}
-						else
-						{
-							m_componentMiner.Aim(aimRay, AimState.InProgress);
-						}
+						if (m_chaseBehavior != null && m_chaseBehavior.m_target != null)
+							m_creatureModel.LookAtOrder = m_chaseBehavior.m_target.ComponentCreatureModel.EyePosition;
+					}
 
+					if (!m_hasCompletedInitialAim)
+					{
+						m_aimTimer += dt;
 						if (m_aimTimer >= aimDuration)
 						{
 							FireFirearm(aimRay, config);
@@ -522,22 +537,6 @@ namespace Game
 					}
 					else
 					{
-						if (config.IsSniper)
-						{
-							if (m_creatureModel != null)
-							{
-								m_creatureModel.AimHandAngleOrder = 1.2f;
-								m_creatureModel.InHandItemOffsetOrder = new Vector3(-0.1f, -0.06f, 0.08f);
-								m_creatureModel.InHandItemRotationOrder = new Vector3(-1.5f, 0f, 0f);
-								if (m_chaseBehavior != null && m_chaseBehavior.m_target != null)
-									m_creatureModel.LookAtOrder = m_chaseBehavior.m_target.ComponentCreatureModel.EyePosition;
-							}
-						}
-						else
-						{
-							m_componentMiner.Aim(aimRay, AimState.InProgress);
-						}
-
 						double currentTime = m_subsystemTime.GameTime;
 						double timeSinceLastShot = currentTime - m_lastFirearmShotTime;
 						if (timeSinceLastShot >= config.FireRate - 0.0001f && currentTime != m_lastFirearmShotTime)
@@ -806,8 +805,14 @@ namespace Game
 		{
 			if (m_isAiming)
 			{
-				Vector3 eyePos = m_creatureModel.EyePosition;
-				m_componentMiner.Aim(new Ray3(eyePos, Vector3.UnitZ), AimState.Cancelled);
+				int activeValue = m_inventory.GetSlotValue(m_inventory.ActiveSlotIndex);
+				int activeContents = Terrain.ExtractContents(activeValue);
+				// Solo cancelar con Miner.Aim si NO es arma de fuego
+				if (!m_firearmConfigs.ContainsKey(activeContents))
+				{
+					Vector3 eyePos = m_creatureModel.EyePosition;
+					m_componentMiner.Aim(new Ray3(eyePos, Vector3.UnitZ), AimState.Cancelled);
+				}
 				m_isAiming = false;
 				m_aimTimer = 0f;
 				ResetModelPose();
