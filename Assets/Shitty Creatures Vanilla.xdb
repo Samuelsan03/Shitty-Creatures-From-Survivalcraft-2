@@ -1,6 +1,16 @@
 <Mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://gitee.com/THPRC/survivalcraft-api/raw/SCAPI1.8/Survivalcraft/Content/Assets/Database.xsd">
     <!-- Ajustes de las criaturas vanilla/originales-->
     <EntityTemplate Name="Player" Guid="4be6c1c5-d65d-4537-8a8b-a391969e6dc2">
+    <MemberComponentTemplate Name="Sleep" Guid="e7b98f0e-317f-4589-8033-ca605f92ee15" InheritanceParent="585d2fc1-f523-459a-9cb3-8fafa9fbadbd">
+    <Parameter Name="SleepStartTime" Guid="431d037d-2feb-4eb7-9a6f-2b4cba10cee0" Value="0" Type="double"/>
+          <Parameter Name="Class" Guid="5ea12b99-9031-4415-99d0-0098d02042a1" Value="Game.ComponentNewSleep" Type="string"/>
+          <Parameter Name="AllowManualWakeUp" Guid="5e0d87a7-1bd1-4e0d-81c9-24b95744b81e" Value="False" Type="bool"/>
+          </MemberComponentTemplate>
+    <MemberComponentTemplate Name="VitalStats" Guid="6fbe5b56-9107-4c10-bdb8-6b77ccd6e2fd" InheritanceParent="4f2ad7cc-d19a-4d64-99eb-5c6ca2b7a7b3">
+              <Parameter Name="Food" Guid="97f0f58e-44b1-4f49-a284-54250cab5049" Value="0.55" Type="float" />
+              <Parameter Name="Thirst" Guid="63090a81-d1fe-4ecd-967a-999df9175496" Value="0.55" Type="float" />
+              <Parameter Name="Class" Guid="920ab4a2-47ba-4a26-92e8-c18ecfb4f8c1" Value="Game.ComponentNewVitalStats" Type="string"/>
+            </MemberComponentTemplate>
     <MemberComponentTemplate Name="PoisonInfected" Guid="ca624a33-2f4d-4df5-a865-dd2275e80d16">
         <Parameter Name="Class" Guid="72fa6dbf-4ea7-4e2c-8509-b71e3d5bc1e3" Value="Game.ComponentPoisonInfected" Type="string"/>
         <Parameter Name="IsOptional" Guid="900f9ee2-f63b-410c-a6d4-1ccb3731d869" Value="true" Type="bool"/>
@@ -264,5 +274,171 @@
                 <Parameter Name="2" Guid="fa155dec-fedb-48ab-8099-a6c603f1031f" Value="NuclearCoinBlock;3;5;0.5" Type="string" />
               </ParameterSet>
             </MemberComponentTemplate>
+            </EntityTemplate>
+
+            <EntityTemplate Name="Camel_Saddled" Guid="3cfbb40d-b60f-4026-a2c9-d8f6ce5d3fe0" InheritanceParent="621a317e-478a-4623-9b47-6137dae37de9">
+            <MemberComponentTemplate Name="Loot" Guid="729c0c5a-a78d-436f-86f3-c32a014adac7">
+              <ParameterSet Name="Loot" Guid="d26faf81-cbe0-4846-81ba-16767cd8f517">
+                <Parameter Name="1" Guid="34347c4e-6a11-47c0-82c2-4d9e73df3c65" Value="SaddleBlock;1;1" Type="string" />
+                <Parameter Name="2" Guid="b91b0a7f-844c-4227-8833-6aa5de412cff" Value="NuclearCoinBlock;3;5;0.5" Type="string" />
+              </ParameterSet>
+            </MemberComponentTemplate>
+            <MemberComponentTemplate Name="DeathSpawner" Guid="27c54c63-c2ac-46e3-90e6-60f7f1a42ea7" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
+    <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="ba8cb7aa-da53-4f04-8f46-df900e602756"/>
+    <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:0.55;InfectedNormal2:0.55" Type="string" Guid="262af1cc-9441-46af-a015-f9fd6cdba6a7"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="PoisonInfected" Guid="4a2eeb00-ac70-4e00-ae65-f3453c5c37fe">
+    <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="100" Type="int"/>
+    <Parameter Name="PoisonResistance" Value="-5" Type="float"/>
+    <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
+</MemberComponentTemplate>
+            </EntityTemplate>
+
+            <EntityTemplate Name="Horse_Palomino_Saddled" Guid="b2326e8f-cdc0-406c-bc14-f3e96be3c376" InheritanceParent="35c74e15-469a-4520-99ca-bf1cbcc33046">
+            <MemberComponentTemplate Name="PoisonInfected" Guid="dae76b6d-4087-4066-b6b9-2936dc2292e3">
+    <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="100" Type="int"/>
+    <Parameter Name="PoisonResistance" Value="-5" Type="float"/>
+    <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="DeathSpawner" Guid="36c30a31-febd-42c4-9d69-18e9dcd32645" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
+    <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="c27c9d86-d550-426e-bad3-df95030446b6"/>
+    <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:0.55;InfectedNormal2:0.55" Type="string" Guid="fb2dab9e-0b4c-47d5-a891-ca9ed276891c"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="Loot" Guid="3421489d-f29f-40f8-a8e7-6cb74097e970">
+              <ParameterSet Name="Loot" Guid="5c400f6f-63d8-4288-8db1-dd0ae7deaae2">
+                <Parameter Name="1" Guid="fece71a0-eb5f-413c-8f69-c80b93e696fe" Value="SaddleBlock;1;1" Type="string" />
+                <Parameter Name="2" Guid="5b10bc15-913e-408d-8ee5-a1d400518535" Value="NuclearCoinBlock;3;5;0.5" Type="string" />
+              </ParameterSet>
+            </MemberComponentTemplate>
+            </EntityTemplate>
+
+            <EntityTemplate Name="Camel" Guid="621a317e-478a-4623-9b47-6137dae37de9" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+            <MemberComponentTemplate Name="DeathSpawner" Guid="516bb7ad-bc22-4cca-8f3e-98eeb9d5c29c" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
+    <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="68797155-92d1-4d68-9de7-597b8e6e0ce0"/>
+    <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:0.55;InfectedNormal2:0.55" Type="string" Guid="391beade-4caf-4f16-869d-8e5463a5685c"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="PoisonInfected" Guid="cb7dfcd3-028b-4830-98b1-225591b71dcb">
+    <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="100" Type="int"/>
+    <Parameter Name="PoisonResistance" Value="-5" Type="float"/>
+    <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="Loot" Guid="5a38f19e-f9b2-4557-bbee-ec9964001c23">
+              <ParameterSet Name="LootOnFire" Guid="038dac20-0938-4141-8a36-b3d144a9748d" />
+              <ParameterSet Name="Loot" Guid="1ef66f63-f4f1-4ea5-a48b-c9b2eb2bab50">
+                <Parameter Name="1" Guid="1474de58-6852-4659-8f20-ec98162df0ad" Value="LeatherBlock;4;4" Type="string" />
+                <Parameter Name="2" Guid="6088a747-bbb2-46e6-9812-746319c6e87b" Value="RawMeatBlock;1;1" Type="string" />
+                <Parameter Name="3" Guid="5581f993-d39d-4eed-9bcf-a286591c207a" Value="NuclearCoinBlock;3;5;0.5" Type="string" />
+              </ParameterSet>
+            </MemberComponentTemplate>
+            </EntityTemplate>
+
+            <EntityTemplate Name="Bison" Guid="f00144f5-ede0-461c-96f9-2206babbbf06" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+            <MemberComponentTemplate Name="DeathSpawner" Guid="10eafa28-c485-4ea0-a6ce-0b57a3685ec7" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
+    <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="9dc1d761-5245-42c3-9758-5972bb4342ec"/>
+    <Parameter Name="DeathSpawnTemplates" Value="InfectedMuscle1:0.55;InfectedMuscle2:0.55" Type="string" Guid="4f473fca-d518-4058-b1a4-4506cd69a414"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="PoisonInfected" Guid="feeda482-4509-4d37-9364-8331b0e51e0e">
+    <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="100" Type="int"/>
+    <Parameter Name="PoisonResistance" Value="-5" Type="float"/>
+    <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="Loot" Guid="df09a8d7-2d39-445f-9727-01be80be9da2">
+              <ParameterSet Name="Loot" Guid="6d37d656-ba46-4552-8564-cc720068db30">
+                <Parameter Name="1" Guid="0d3ada9a-4899-49d7-902b-81d259dc4076" Value="RawMeatBlock;2;4" Type="string" />
+                <Parameter Name="2" Guid="d5c18fdb-70cc-4a37-bcc8-a0fa07a20801" Value="FurBlock;3;5" Type="string" />
+                <Parameter Name="3" Guid="4413e082-ab94-40c5-bce3-482f7bcfcccc" Value="NuclearCoinBlock;5;9;0.5" Type="string" />
+              </ParameterSet>
+              <ParameterSet Name="LootOnFire" Guid="842682ca-df12-4fbc-b136-881757d32e82">
+                <Parameter Name="1" Guid="733d3860-a202-45d6-9dd0-6895380abc47" Value="CookedMeatBlock;2;4" Type="string" />
+              </ParameterSet>
+            </MemberComponentTemplate>
+            </EntityTemplate>
+
+            <EntityTemplate Name="Shark_GreatWhite" Guid="eb70714a-ee32-4812-8713-33726faaf1a3" InheritanceParent="f5333076-a57d-4864-a30e-19072248224f">
+            <MemberComponentTemplate Name="PoisonInfected" Guid="e133c201-2116-4fd1-a862-70e0ae338b5e">
+    <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="100" Type="int"/>
+    <Parameter Name="PoisonResistance" Value="-5" Type="float"/>
+    <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
+</MemberComponentTemplate>
+            <MemberComponentTemplate Name="DeathSpawner" Guid="633ee32f-f869-4534-b6d4-78b36f0807bb" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
+    <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="7f97bdfa-496d-468f-9984-a1c2c4ce1886"/>
+    <Parameter Name="DeathSpawnTemplates" Value="InfectedMuscle1:0.55;InfectedMuscle2:0.55" Type="string" Guid="f37d1bf3-b509-4e0b-b054-de3b9b27d315"/>
+</MemberComponentTemplate>
+            <MemberComponentTemplate Name="Loot" Guid="23a34a02-5a53-48e4-9f89-407a8b96c74e">
+              <ParameterSet Name="Loot" Guid="d53f4801-7595-4882-a916-c28074b8507b">
+                <Parameter Name="1" Guid="b16d8590-2463-46eb-879f-e3b0bf013762" Value="RawFishBlock;8;10" Type="string" />
+                <Parameter Name="2" Guid="ee3a67fb-a25c-46e8-8a07-d2c56e057810" Value="NuclearCoinBlock;5;10" Type="string" />
+              </ParameterSet>
+            </MemberComponentTemplate>
+            </EntityTemplate>
+
+            <EntityTemplate Name="Jaguar" Guid="f36d8eea-f172-4960-ab15-99de3aa1d423" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+            <MemberComponentTemplate Name="PoisonInfected" Guid="1f1f4360-9c86-485b-a68c-755433c6227c">
+    <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="100" Type="int"/>
+    <Parameter Name="PoisonResistance" Value="-5" Type="float"/>
+    <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="DeathSpawner" Guid="4cc9aaa1-1fbc-401c-bbad-c17dec50294e" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
+    <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="c744f40e-f49e-46d9-bf07-f87b2c782afe"/>
+    <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:0.55;InfectedNormal2:0.55" Type="string" Guid="956b479e-3acf-4291-854e-ad8189643e48"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="Loot" Guid="a9e38235-ae8e-4829-8006-e302836e6703">
+              <ParameterSet Name="Loot" Guid="b36bd45f-44d0-4814-b73b-c623874c502e">
+                <Parameter Name="1" Guid="5e7377cd-c829-4dc6-a7b4-1911776f1983" Value="LeatherBlock;1;1" Type="string" />
+                <Parameter Name="2" Guid="69a67302-8bbd-4149-b152-a004e2d4c963" Value="RottenMeatBlock;1;1;0.5" Type="string" />
+                <Parameter Name="3" Guid="5dc76f9b-42b4-459b-b10a-684214baa213" Value="NuclearCoinBlock;3;5;0.5" Type="string" />
+              </ParameterSet>
+            </MemberComponentTemplate>
+            </EntityTemplate>
+
+            <EntityTemplate Name="Seagull" Guid="dd2f737c-30f8-4762-8de3-9ab48559c3ae" InheritanceParent="0cb14482-b936-410e-9317-66d385d7d2fd">
+            <MemberComponentTemplate Name="PoisonInfected" Guid="67c780d4-e353-4843-afdd-5437026d9c4b">
+    <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="100" Type="int"/>
+    <Parameter Name="PoisonResistance" Value="-5" Type="float"/>
+    <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
+</MemberComponentTemplate>
+            <MemberComponentTemplate Name="Loot" Guid="dd5a77dd-7ba6-4a1a-8357-53879b784349">
+              <ParameterSet Name="LootOnFire" Guid="03390972-54ba-4440-9f8d-90b6d9ab6368">
+                <Parameter Name="1" Guid="b6201882-a1cc-49f9-9095-b46df9641b61" Value="CookedBirdBlock;1;1" Type="string" />
+              </ParameterSet>
+              <ParameterSet Name="Loot" Guid="823346f9-972f-4bf1-9592-3939191fa802">
+                <Parameter Name="1" Guid="add1d807-f980-44a9-b84e-75fe9f36e607" Value="RawBirdBlock;1;1" Type="string" />
+                <Parameter Name="2" Guid="c1e45187-f76b-4f1b-af54-c792698a07d9" Value="FeatherBlock;1;1" Type="string" />
+                <Parameter Name="3" Guid="1264f684-ba26-4b79-b9b5-9a17b75cf4c2" Value="NuclearCoinBlock;2;3;0.5" Type="string" />
+              </ParameterSet>
+            </MemberComponentTemplate>
+            <MemberComponentTemplate Name="DeathSpawner" Guid="5371394f-2ff9-4a42-b780-5e0a739eb606" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
+    <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="c54666cd-1353-461c-8d49-a2b948fa1d4b"/>
+    <Parameter Name="DeathSpawnTemplates" Value="InfectedBird" Type="string" Guid="74ac7e38-34e6-4536-b47d-e7dcb7162bb1"/>
+</MemberComponentTemplate>
+            </EntityTemplate>
+
+            <EntityTemplate Name="Hyena" Guid="da9a1c74-142c-4b2c-b61f-5c86def9f658" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+            <MemberComponentTemplate Name="Loot" Guid="6e3895e7-9750-48c3-a537-c346a02b0816">
+              <ParameterSet Name="Loot" Guid="06d9ad2f-3d30-44bc-899b-a7ad0b9829f6">
+                <Parameter Name="1" Guid="2c4fdb30-e032-44c2-9fdc-7d58f17add29" Value="LeatherBlock;1;1" Type="string" />
+                <Parameter Name="2" Guid="f4111177-8e86-4bd8-af7e-2e73c15e4d7a" Value="RottenMeatBlock;1;1;0.5" Type="string" />
+                <Parameter Name="3" Guid="064f4da2-79c2-47f0-a006-6eed93aab608" Value="NuclearCoinBlock;3;5;0.5" Type="string" />
+              </ParameterSet>
+              <ParameterSet Name="LootOnFire" Guid="56ac1204-6aa3-4a40-9ea3-16186603ee21" />
+            </MemberComponentTemplate>
+            <MemberComponentTemplate Name="DeathSpawner" Guid="8cc13ea7-21d3-4e92-976a-50a1dda3f244" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
+    <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="6ea3d639-9f69-467a-af28-770b00156095"/>
+    <Parameter Name="DeathSpawnTemplates" Value="InfectedHyena" Type="string" Guid="27a98ca3-1464-40a0-b541-b947ee429d62"/>
+</MemberComponentTemplate>
             </EntityTemplate>
 </Mod>
