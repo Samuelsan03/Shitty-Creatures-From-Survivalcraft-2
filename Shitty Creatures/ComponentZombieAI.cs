@@ -318,47 +318,49 @@ namespace Game
 			}
 
 			// ========== CAMBIO DE ARMA SEGÚN DISTANCIA ==========
-			// Dentro del rango mínimo: equipar arma cuerpo a cuerpo
+			// Dentro del rango mínimo: intentar equipar arma cuerpo a cuerpo si no la tenemos
 			if (meleeDist <= AttackRange.X)
 			{
 				if (!isMelee && TryEquipBestMeleeWeapon())
 				{
 					return; // Cambió de arma, esperar próximo frame
 				}
-				// No atacamos aquí. El ataque cuerpo a cuerpo lo hace el ComponentChaseBehavior.
 			}
-			// Dentro del rango máximo pero fuera del mínimo: equipar arma a distancia
+			// Dentro del rango máximo (pero fuera del mínimo) y el arma actual es melee: cambiar a distancia
 			else if (distToTarget <= AttackRange.Y)
 			{
-				// Si es melee, cambiar a ranged
 				if (isMelee)
 				{
 					EquipBestRangedWeapon();
 					return;
 				}
-
-				// Si es lanzable, manejar su rango
-				if (isThrowable)
-				{
-					if (distToTarget > ThrowableRange.Y && hasLOS && !isStuck)
-					{
-						EquipBestRangedWeapon();
-					}
-					else if (distToTarget < ThrowableRange.X && hasLOS && !isStuck)
-					{
-						TryEquipBestMeleeWeapon();
-					}
-					return;
-				}
-
-				// Si es a distancia, actualizar combate
-				if (isRanged && hasLOS && !isStuck)
-				{
-					UpdateRangedCombat(dt, target.ComponentBody.Position);
-					return;
-				}
 			}
-			else
+
+			// ========== COMBATE A DISTANCIA ==========
+			// Si el arma actual es a distancia, tenemos línea de visión, no estamos atascados,
+			// y estamos dentro del rango máximo, entonces disparar.
+			if (isRanged && hasLOS && !isStuck && distToTarget <= AttackRange.Y)
+			{
+				UpdateRangedCombat(dt, target.ComponentBody.Position);
+				return;
+			}
+
+			// ========== MANEJO DE LANZABLES FUERA DE SU RANGO ÓPTIMO ==========
+			if (isThrowable && distToTarget <= AttackRange.Y)
+			{
+				if (distToTarget > ThrowableRange.Y && hasLOS && !isStuck)
+				{
+					EquipBestRangedWeapon();
+				}
+				else if (distToTarget < ThrowableRange.X && hasLOS && !isStuck)
+				{
+					TryEquipBestMeleeWeapon();
+				}
+				return;
+			}
+
+			// Si estamos fuera del rango máximo, detener apuntado
+			if (distToTarget > AttackRange.Y)
 			{
 				StopAiming();
 			}
