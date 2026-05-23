@@ -269,8 +269,17 @@ namespace Game
 			}
 
 			int activeValue = m_inventory.GetSlotValue(m_inventory.ActiveSlotIndex);
-			if (activeValue == 0)
-				return;
+			int activeCount = m_inventory.GetSlotCount(m_inventory.ActiveSlotIndex);
+
+			float distToTarget = Vector3.Distance(m_componentBody.Position, target.ComponentBody.Position);
+
+			// Si el slot activo está vacío, equipar el mejor arma según la distancia
+			if (activeValue == 0 || activeCount == 0)
+			{
+				EquipBestWeaponForCurrentDistance(distToTarget);
+				activeValue = m_inventory.GetSlotValue(m_inventory.ActiveSlotIndex);
+				if (activeValue == 0) return;
+			}
 
 			int activeBlockIndex = Terrain.ExtractContents(activeValue);
 			Block activeBlock = BlocksManager.Blocks[activeBlockIndex];
@@ -282,10 +291,10 @@ namespace Game
 							activeBlock is FlameThrowerBlock ||
 							activeBlock is DoubleMusketBlock ||
 							activeBlock is ItemsLauncherBlock ||
-							m_firearmConfigs.ContainsKey(activeBlockIndex);  // Armas de fuego modernas
+							m_firearmConfigs.ContainsKey(activeBlockIndex);
 			bool isMelee = !isRanged && !isThrowable && activeBlock.GetMeleePower(activeValue) > 0f;
 
-			float distToTarget = Vector3.Distance(m_componentBody.Position, target.ComponentBody.Position);
+			float meleeDist = GetMeleeDistanceToTarget(target.ComponentBody);
 			bool hasLOS = HasLineOfSightToTarget(target);
 			bool isStuck = (m_pathfinding != null && m_pathfinding.IsStuck);
 
@@ -294,6 +303,7 @@ namespace Game
 				StopAiming();
 			}
 
+			// ========== MANEJO DE LANZABLES (rango específico) ==========
 			if (isThrowable && distToTarget >= ThrowableRange.X && distToTarget <= ThrowableRange.Y && hasLOS && !isStuck)
 			{
 				StopMovement();
@@ -307,60 +317,72 @@ namespace Game
 				return;
 			}
 
-			float meleeDist = GetMeleeDistanceToTarget(target.ComponentBody);
-
+			// ========== CAMBIO DE ARMA SEGÚN DISTANCIA ==========
+			// Dentro del rango mínimo: equipar arma cuerpo a cuerpo
 			if (meleeDist <= AttackRange.X)
 			{
-				if (!isMelee)
+				if (!isMelee && TryEquipBestMeleeWeapon())
 				{
-					if (TryEquipBestMeleeWeapon())
-					{
-						PerformMeleeAttack(target);
-					}
-					else if (isRanged && hasLOS && !isStuck)
-					{
-						UpdateRangedCombat(dt, target.ComponentBody.Position);
-						PerformMeleeAttack(target);
-					}
-					else if (isThrowable && hasLOS && !isStuck)
-					{
-						if (TryEquipBestMeleeWeapon())
-							PerformMeleeAttack(target);
-					}
+					return; // Cambió de arma, esperar próximo frame
 				}
-				else
-				{
-					PerformMeleeAttack(target);
-				}
-				return;
+				// No atacamos aquí. El ataque cuerpo a cuerpo lo hace el ComponentChaseBehavior.
 			}
-
-			if (distToTarget <= AttackRange.Y)
+			// Dentro del rango máximo pero fuera del mínimo: equipar arma a distancia
+			else if (distToTarget <= AttackRange.Y)
 			{
+				// Si es melee, cambiar a ranged
 				if (isMelee)
 				{
-					if (hasLOS && !isStuck)
-						EquipBestRangedWeapon();
+					EquipBestRangedWeapon();
+					return;
 				}
-				else if (isRanged)
-				{
-					if (hasLOS && !isStuck)
-						UpdateRangedCombat(dt, target.ComponentBody.Position);
-					else
-						StopAiming();
-				}
-				else if (isThrowable)
+
+				// Si es lanzable, manejar su rango
+				if (isThrowable)
 				{
 					if (distToTarget > ThrowableRange.Y && hasLOS && !isStuck)
+					{
 						EquipBestRangedWeapon();
+					}
 					else if (distToTarget < ThrowableRange.X && hasLOS && !isStuck)
+					{
 						TryEquipBestMeleeWeapon();
+					}
+					return;
+				}
+
+				// Si es a distancia, actualizar combate
+				if (isRanged && hasLOS && !isStuck)
+				{
+					UpdateRangedCombat(dt, target.ComponentBody.Position);
+					return;
 				}
 			}
 			else
 			{
 				StopAiming();
 			}
+		}
+
+		// Método auxiliar para equipar el mejor arma según la distancia actual
+		private void EquipBestWeaponForCurrentDistance(float distToTarget)
+		{
+			if (m_chaseBehavior == null || m_chaseBehavior.m_target == null) return;
+
+			float meleeDist = GetMeleeDistanceToTarget(m_chaseBehavior.m_target.ComponentBody);
+			if (meleeDist <= AttackRange.X)
+			{
+				if (TryEquipBestMeleeWeapon())
+					return;
+			}
+
+			if (distToTarget >= ThrowableRange.X && distToTarget <= ThrowableRange.Y && HasThrowableInInventory())
+			{
+				EquipBestThrowableWeapon();
+				return;
+			}
+
+			EquipBestRangedWeapon();
 		}
 
 		private float GetMeleeDistanceToTarget(ComponentBody targetBody)
