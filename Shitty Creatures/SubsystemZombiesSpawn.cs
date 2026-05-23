@@ -301,11 +301,11 @@ namespace Game
 			{
 				m_hasShownUnlockMessage = true;
 
-				string largeMessage = LanguageControl.Get("RemoteControlAchievement", "Unlocked");
+				string largeMessage = LanguageControl.Get("UnlockedItems", "Unlocked");
 				if (string.IsNullOrEmpty(largeMessage))
 					largeMessage = "Remote Control unlocked!";
 
-				string smallMessage = LanguageControl.Get("RemoteControlAchievement", "UnlockedInfo");
+				string smallMessage = LanguageControl.Get("UnlockedItems", "UnlockedInfo");
 				if (string.IsNullOrEmpty(smallMessage))
 					smallMessage = "You can now craft the Remote Control to manage the Green Nights.";
 
@@ -331,10 +331,10 @@ namespace Game
 			var player = m_subsystemPlayers.ComponentPlayers.FirstOrDefault();
 			if (player == null) return;
 
-			player.ComponentGui.DisplayLargeMessage(
-				"¡UN COFRE MISTERIOSO HA APARECIDO!",
-				"Busca el cofre que ha aparecido cerca de ti.",
-				5f, 1f);
+			string largeMessage = LanguageControl.Get("UnlockedItems", "ChestMessage");
+			string smallMessage = LanguageControl.Get("UnlockedItems", "ChestInfo");
+
+			player.ComponentGui.DisplayLargeMessage(largeMessage, smallMessage, 5f, 1f);
 
 			m_subsystemAudio.PlaySound("Audio/Throw", 1f, m_random.Float(-0.2f, 0.2f), player.ComponentBody.Position, 10f, false);
 
