@@ -756,6 +756,16 @@ namespace Game
 			if (IsHealingItem(activeBlockIndex))
 				return;
 
+			// --- CARTA DE GUERRA (LetterWarBlock) ---
+			if (activeBlock is LetterWarBlock)
+			{
+				LetterWarDialog dialog = new LetterWarDialog(player);
+				DialogsManager.ShowDialog(player.GuiWidget, dialog);
+				AudioManager.PlaySound("Audio/UI/ButtonClick", 1f, 0f, 0f);
+				playerOperated = true;
+				return;
+			}
+
 			// Raycast común
 			var result = player.ComponentMiner.Raycast<BodyRaycastResult>(
 				input.Interact.Value,
@@ -929,7 +939,7 @@ namespace Game
 						if (now - s_lastProhibitionMessageTime > 1.0)
 						{
 							s_lastProhibitionMessageTime = now;
-							string smallMessage = LanguageControl.Get("RemoteControlAchievement", "CraftingLocked");
+							string smallMessage = LanguageControl.Get("UnlockedItems", "CraftingLocked");
 							if (string.IsNullOrEmpty(smallMessage))
 								smallMessage = "You must survive all waves first!";
 
