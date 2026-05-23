@@ -1,0 +1,24 @@
+<CanvasWidget xmlns="runtime-namespace:Game">
+
+  <CanvasWidget Size="640, 520" ClampToBounds="true" HorizontalAlignment="Center" VerticalAlignment="Center">
+    <BevelledRectangleWidget Style="{Styles/DialogArea}" />
+
+    <StackPanelWidget Direction="Vertical" HorizontalAlignment="Center" Margin="15, 10">
+
+      <LabelWidget Text="CARTA DE GUERRA" HorizontalAlignment="Center" Margin="0, 15" FontScale="1.2" Color="200, 100, 0" />
+
+      <CanvasWidget Size="600, 340" Margin="0, 5">
+        <ScrollPanelWidget Name="LetterWarDialog.ScrollPanel" Direction="Vertical">
+          <LabelWidget Name="LetterWarDialog.MessageLabel" FontScale="0.85" Color="240, 220, 180" HorizontalAlignment="Center" Margin="10, 0" />
+        </ScrollPanelWidget>
+      </CanvasWidget>
+
+      <UniformSpacingPanelWidget Direction="Horizontal" HorizontalAlignment="Center" Margin="10, 20">
+        <BevelledButtonWidget Name="LetterWarDialog.AcceptButton" Text="ACEPTAR" Style="{Styles/ButtonStyle_160x60}" />
+        <BevelledButtonWidget Name="LetterWarDialog.RejectButton" Text="RECHAZAR" Style="{Styles/ButtonStyle_160x60}" />
+      </UniformSpacingPanelWidget>
+
+    </StackPanelWidget>
+
+  </CanvasWidget>
+</CanvasWidget>
