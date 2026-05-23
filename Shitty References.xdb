@@ -1,9 +1,9 @@
 <Mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://gitee.com/THPRC/survivalcraft-api/raw/SCAPI1.8/Survivalcraft/Content/Assets/Database.xsd">
 <Parameter Name="Class" Guid="9d071853-10cd-4208-9bdf-ffed6b5d5bdd" new-Value="Game.ComponentNewSleep" Type="string"/>
 <Parameter Name="Class" Guid="3bb544e4-4e2b-4b31-9172-7709a9271366" new-Value="Game.ComponentNewHumanModel" Type="string"/>
-<Parameter Name="Class" Guid="8c4f00ca-8f77-47c9-99bb-cefa4f94ee8d" new-Value="Game.ComponentNewVitalStats" Type="string"/>
 <Parameter Name="Class" Guid="b889d63d-0b71-45cf-8606-13ab2e94f6d2" new-Value="Game.ComponentNewFourLeggedModel" Type="string"/>
 <Parameter Name="Class" Guid="cdb6b509-23c4-4f83-a269-897a2970e245" new-Value="Game.ComponentNewBirdModel" Type="string" />
+<Parameter Name="Class" Guid="2d4833e9-1760-4f12-af7a-5c725d12a5fe" new-Value="Game.ComponentNewVitalStats" Type="string" />
 
 <Folder Name="Entities" Guid="5fcdf35f-7001-442c-883e-e0502b15d291">
     <EntityTemplate Name="RefrigeratorXiaomi" Guid="ba2820ea-9ea1-4b2f-9d4b-5811528dd244">
@@ -387,8 +387,6 @@
 
 <ComponentTemplate Name="ComponentBanditChase" Guid="c0b1cbec-0706-41cf-8bf4-9fd5647deca5" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3" Description="Componente de persecución mejorado para bandidos con ataques a todas las criaturas">
     <Parameter Name="Class" Value="Game.ComponentBanditChaseBehavior" Type="string" Guid="69363cb9-5c35-4d52-bff8-180338945516" Description="Nombre de la clase C# que implementa el comportamiento de persecución para bandidos"/>
-    <Parameter Name="UpdateOrder" Value="100" Type="int" Guid="fd8bed30-b402-44be-a7f2-03c50676683f" Description="Orden de actualización del componente durante el ciclo del juego"/>
-    <Parameter Name="LoadOrder" Value="80" Type="int" Guid="619e8331-7675-458b-bf8d-516c1409440a" Description="Orden de carga del componente en la entidad"/>
     <Parameter Name="DayChaseRange" Value="20" Type="float" Guid="34636b20-3970-4ce6-8e35-53a4af1d0ebb" Description="Rango de persecución durante el día (en unidades del juego)"/>
     <Parameter Name="NightChaseRange" Value="25" Type="float" Guid="76a02203-da67-4dea-a716-b2c5a50c599b" Description="Rango de persecución durante la noche (en unidades del juego)"/>
     <Parameter Name="DayChaseTime" Value="60" Type="float" Guid="11843324-ef21-43cb-a228-e8d33bd97528" Description="Tiempo máximo de persecución durante el día (en segundos)"/>
@@ -405,6 +403,7 @@
     <Parameter Name="ChaseTimeOnAttacked" Value="60" Type="float" Guid="ec86c422-3757-4edf-a814-b0740228ed52" Description="Tiempo de persecución cuando es atacado (en segundos)"/>
     <Parameter Name="ChasePersistentOnAttacked" Value="true" Type="bool" Guid="71622f8b-28dc-4d7d-9aa8-af3e3d97017f" Description="Si es true, la persecución cuando es atacado es persistente"/>
     <Parameter Name="ImportanceLevelPersistent" Value="300" Type="float" Guid="79a9991d-17fe-4622-ab39-e3844554e6a6" Description="Nivel de importancia para persecuciones persistentes"/>
+    <Parameter Name="IsDrugTraffickerMode" Value="false" Type="bool" Guid="00e79201-99d1-4286-aa5b-5531423fde7b" Description="Modo narcotraficante: si es true, prioriza atacar jugadores durante la invasión (se activa automáticamente al aceptar la guerra en la carta)"/>
 </ComponentTemplate>
 
 <ComponentTemplate Name="Gravity" Description="Makes creature fly away when hit" Guid="a773b42a-6f6d-4829-a453-49a2db96b132" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
@@ -617,6 +616,9 @@
     </Folder>
 
     <ProjectTemplate Name="Project" Guid="85023bf8-1c90-4dd1-9442-e6c13691d078">
+    <MemberSubsystemTemplate Name="SubsystemBanditInvasion" Guid="ed6cb5b3-943b-44f3-9280-7d9b9965fe42" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
+    <Parameter Name="Class" Value="Game.SubsystemBanditInvasion" Type="string" Guid="3c03dd98-e795-443b-822b-0c359c6a6d2e"/>
+</MemberSubsystemTemplate>
     <MemberSubsystemTemplate Name="ShittyRotBlockBehavior" Guid="44f9f379-c6dd-48bd-8f84-83cd6e237966" InheritanceParent="fefb9590-4972-4893-b02a-76063611b745">
     <Parameter Name="LastRotTime" Guid="6b246499-5a25-4c37-ae75-234311d7a54a" Value="0" Type="double" />
           <Parameter Name="RotStep" Guid="b5e44016-7ebe-4792-ac2a-25c3a8e98704" Value="0" Type="int" />
