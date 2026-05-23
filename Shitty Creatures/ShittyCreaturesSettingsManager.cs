@@ -22,6 +22,7 @@ namespace Game
 		public static bool BleedingEnabled { get; set; } = true;
 		public static bool HealthBarEnabled { get; set; } = true;
 		public static bool SkeletonSpawnEnabled { get; set; } = true;
+		public static bool FastMeleeEnabled { get; set; } = false;
 
 		public static void Load()
 		{
@@ -76,6 +77,9 @@ namespace Game
 								break;
 							case "SkeletonSpawnEnabled":
 								SkeletonSpawnEnabled = value;
+								break;
+							case "FastMeleeEnabled":
+								FastMeleeEnabled = value;
 								break;
 						}
 					}
@@ -152,6 +156,10 @@ namespace Game
                         new XAttribute("Name", "SkeletonSpawnEnabled"),
                         new XAttribute("Type", "bool"),
                         new XAttribute("Value", SkeletonSpawnEnabled)));
+					root.Add(new XElement("Value",
+                        new XAttribute("Name", "FastMeleeEnabled"),
+                        new XAttribute("Type", "bool"),
+                        new XAttribute("Value", FastMeleeEnabled)));
 
 					XmlUtils.SaveXmlToStream(root, stream, null, true);
 				}
