@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <BanditInvasion>
-  <Bandit name="Bandit1" count="3" probability="1"/>
-  <Bandit name="Bandit2" count="2" probability="1"/>
-  <Bandit name="Bandit3" count="2" probability="1"/>
+  <Bandit name="Bandit1" count="3" probability="0.5"/>
+  <Bandit name="Bandit2" count="2" probability="0.5"/>
+  <Bandit name="Bandit3" count="2" probability="0.5"/>
   <Bandit name="Bandit4" count="2" probability="0.5"/>
   <Bandit name="Bandit5" count="3" probability="0.5"/>
   <Bandit name="Bandit6" count="5" probability="0.5"/>
