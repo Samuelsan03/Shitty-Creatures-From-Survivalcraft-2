@@ -17,6 +17,11 @@ namespace Game
 		// Campos estáticos (heredados de los distintos ModLoaders originales)
 		// ---------------------------------------------------------------------------------
 
+		// Diccionarios para controlar el ritmo de golpes
+		private Dictionary<ComponentPlayer, double> m_lastHitGameTime = new Dictionary<ComponentPlayer, double>();
+		private Dictionary<ComponentPlayer, ComponentBody> m_lastHitTarget = new Dictionary<ComponentPlayer, ComponentBody>();
+		private Dictionary<ComponentPlayer, bool> m_fastHitMode = new Dictionary<ComponentPlayer, bool>();
+
 		private Dictionary<ComponentCreature, BloodParticleSystem> m_bleedingSystems = new Dictionary<ComponentCreature, BloodParticleSystem>();
 		private SubsystemModelsRenderer m_healthBarModelsRenderer;
 		private SubsystemCreatureSpawn m_healthBarCreatureSpawn;
@@ -143,6 +148,7 @@ namespace Game
 			ModsManager.RegisterHook("InitializeCreatureTypes", this);
 			ModsManager.RegisterHook("OnProjectileRaycastBody", this);
 			ModsManager.RegisterHook("OnProjectileHitBody", this);
+			ModsManager.RegisterHook("SetHitInterval", this);
 			// Reemplazar overlay de captura de pantalla
 			ReplaceScreenCaptureOverlay();
 		}
@@ -669,6 +675,17 @@ namespace Game
 					m_coordinateLabels.Remove(kvp.Key);
 				}
 			}
+
+			// Limpiar seguimiento de golpes rápidos
+			foreach (var hitKvp in m_lastHitGameTime.ToArray())
+			{
+				if (hitKvp.Key.PlayerData == playerData)
+				{
+					m_lastHitGameTime.Remove(hitKvp.Key);
+					m_lastHitTarget.Remove(hitKvp.Key);
+					m_fastHitMode.Remove(hitKvp.Key);
+				}
+			}
 		}
 
 		// ---------------------------------------------------------------------------------
@@ -1028,7 +1045,7 @@ namespace Game
 		{
 			flag = false;
 
-			// Suscribir al evento Injured del jugador si no lo está ya
+			// Suscribir al evento de daño (código existente)
 			if (player != null && player.ComponentHealth != null)
 			{
 				player.ComponentHealth.Injured -= OnPlayerInjuredForAllies;
@@ -1046,6 +1063,7 @@ namespace Game
 			if (miner == null)
 				return;
 
+			// Obtener el objetivo del golpe
 			BodyRaycastResult? result = miner.Raycast<BodyRaycastResult>(
 				input.Hit.Value, RaycastMode.Interaction, true, true, true, meleeAttackRange);
 
@@ -1057,20 +1075,51 @@ namespace Game
 					ComponentCreature targetCreature = hitBody.Entity.FindComponent<ComponentCreature>();
 					if (targetCreature != null && targetCreature.ComponentHealth.Health > 0f)
 					{
-						// ✅ Solo se activa si está habilitada la opción de comando por puñetazo
 						if (ShittyCreaturesSettingsManager.PunchCommandEnabled)
 						{
-							// SUSCRIBIRSE TEMPORALMENTE al evento Injured del objetivo
-							// para detectar CUANDO REALMENTE RECIBE DAÑO
 							targetCreature.ComponentHealth.Injured += (Injury injury) =>
 							{
-								// Verificar que el daño fue causado por el jugador
 								if (injury.Attacker == player)
-								{
 									CommandAlliesToAttack(player, targetCreature);
-								}
 							};
 						}
+					}
+
+					// ===== NUEVO: Lógica de golpes rápidos =====
+					// ===== Lógica de golpes rápidos (solo si está habilitada en configuración) =====
+					if (ShittyCreaturesSettingsManager.FastMeleeEnabled)
+					{
+						double currentGameTime = player.Project.FindSubsystem<SubsystemTime>(true).GameTime;
+						bool isFastHit = false;
+
+						if (m_lastHitGameTime.TryGetValue(player, out double lastTime) &&
+							m_lastHitTarget.TryGetValue(player, out ComponentBody lastBody))
+						{
+							// Si golpea al mismo objetivo en menos de 0.3 segundos → modo rápido
+							if (lastBody == hitBody && (currentGameTime - lastTime) < 0.3)
+							{
+								isFastHit = true;
+							}
+						}
+
+						// Actualizar registro
+						m_lastHitGameTime[player] = currentGameTime;
+						m_lastHitTarget[player] = hitBody;
+
+						if (isFastHit)
+						{
+							m_fastHitMode[player] = true;
+							timeIntervalHit = 0.1;   // permite otro golpe en 0.1 s
+						}
+						else
+						{
+							m_fastHitMode[player] = false;
+						}
+					}
+					else
+					{
+						// Asegurar que el modo rápido está desactivado si la opción está deshabilitada
+						m_fastHitMode[player] = false;
 					}
 				}
 			}
@@ -1784,6 +1833,18 @@ namespace Game
 				attackment.ImpulseFactor = 0f;
 				// También eliminar el aturdimiento si lo hubiera
 				attackment.StunTimeSet = 0f;
+			}
+		}
+
+		public override void SetHitInterval(ComponentMiner miner, ref double hitInterval)
+		{
+			if (miner.ComponentPlayer == null) return;
+
+			// Solo aplicar si la función rápida está habilitada en la configuración
+			if (ShittyCreaturesSettingsManager.FastMeleeEnabled &&
+				m_fastHitMode.TryGetValue(miner.ComponentPlayer, out bool fastMode) && fastMode)
+			{
+				hitInterval = 0.1;
 			}
 		}
 
