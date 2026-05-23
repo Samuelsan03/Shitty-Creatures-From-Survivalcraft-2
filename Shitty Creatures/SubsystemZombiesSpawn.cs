@@ -10,8 +10,9 @@ namespace Game
 {
     public class SubsystemZombiesSpawn : Subsystem, IUpdateable
     {
-        // Dependencias
-        private SubsystemGreenNightSky m_subsystemGreenNightSky;
+		// Dependencias
+		private SubsystemBlockEntities m_subsystemBlockEntities;
+		private SubsystemGreenNightSky m_subsystemGreenNightSky;
         private SubsystemCreatureSpawn m_subsystemCreatureSpawn;
         private SubsystemSpawn m_subsystemSpawn;
         private SubsystemTimeOfDay m_subsystemTimeOfDay;
@@ -63,7 +64,10 @@ namespace Game
         private float m_constantSpawnCooldown;
         private const float ConstantSpawnCooldownTime = 15f;
 
-        private DynamicArray<ComponentBody> m_tempBodiesArray = new DynamicArray<ComponentBody>();
+		private bool m_letterWarSpawned;
+		private const string LetterWarBlockName = "LetterWarBlock";
+
+		private DynamicArray<ComponentBody> m_tempBodiesArray = new DynamicArray<ComponentBody>();
         // ===== FIN SISTEMA DE SPAWN DE ESQUELETOS =====
 
         // Estado de jefes
@@ -140,10 +144,12 @@ namespace Game
             m_subsystemTerrain = Project.FindSubsystem<SubsystemTerrain>(true);
             m_subsystemTime = Project.FindSubsystem<SubsystemTime>(true);
             m_subsystemSeasons = Project.FindSubsystem<SubsystemSeasons>(true);
-            m_subsystemSky = Project.FindSubsystem<SubsystemSky>(true);
+			m_subsystemBlockEntities = Project.FindSubsystem<SubsystemBlockEntities>(true);
+			m_subsystemSky = Project.FindSubsystem<SubsystemSky>(true);
             m_subsystemAudio = Project.FindSubsystem<SubsystemAudio>(true);
+			m_letterWarSpawned = valuesDictionary.GetValue<bool>("LetterWarSpawned", false);
 
-            if (m_subsystemSpawn != null)
+			if (m_subsystemSpawn != null)
             {
                 m_subsystemSpawn.SpawningChunk += OnSpawningChunk;
             }
@@ -291,29 +297,119 @@ namespace Game
 
             AdvanceToNextWave();
 
-            if (waveBefore == maxWave && !m_hasShownUnlockMessage)
-            {
-                m_hasShownUnlockMessage = true;
+			if (waveBefore == maxWave && !m_hasShownUnlockMessage)
+			{
+				m_hasShownUnlockMessage = true;
 
-                string largeMessage = LanguageControl.Get("RemoteControlAchievement", "Unlocked");
-                if (string.IsNullOrEmpty(largeMessage))
-                    largeMessage = "Remote Control unlocked!";
+				string largeMessage = LanguageControl.Get("RemoteControlAchievement", "Unlocked");
+				if (string.IsNullOrEmpty(largeMessage))
+					largeMessage = "Remote Control unlocked!";
 
-                string smallMessage = LanguageControl.Get("RemoteControlAchievement", "UnlockedInfo");
-                if (string.IsNullOrEmpty(smallMessage))
-                    smallMessage = "You can now craft the Remote Control to manage the Green Nights.";
+				string smallMessage = LanguageControl.Get("RemoteControlAchievement", "UnlockedInfo");
+				if (string.IsNullOrEmpty(smallMessage))
+					smallMessage = "You can now craft the Remote Control to manage the Green Nights.";
 
-                foreach (var player in m_subsystemPlayers.ComponentPlayers)
-                {
-                    player.ComponentGui.DisplayLargeMessage(largeMessage, smallMessage, 5f, 0f);
-                }
-            }
-        }
+				foreach (var player in m_subsystemPlayers.ComponentPlayers)
+				{
+					player.ComponentGui.DisplayLargeMessage(largeMessage, smallMessage, 5f, 0f);
+				}
 
-        public override void Save(ValuesDictionary valuesDictionary)
+				// Programar la aparición de la carta después de 5 segundos (cuando el mensaje grande termina)
+				if (!m_letterWarSpawned && m_subsystemTime != null)
+				{
+					m_subsystemTime.QueueGameTimeDelayedExecution(m_subsystemTime.GameTime + 5.0, () =>
+					{
+						if (!m_letterWarSpawned)
+							ShowLetterAnnouncementAndSpawn();
+					});
+				}
+			}
+		}
+
+		private void ShowLetterAnnouncementAndSpawn()
+		{
+			var player = m_subsystemPlayers.ComponentPlayers.FirstOrDefault();
+			if (player == null) return;
+
+			player.ComponentGui.DisplayLargeMessage(
+				"¡UN COFRE MISTERIOSO HA APARECIDO!",
+				"Busca el cofre que ha aparecido cerca de ti.",
+				5f, 1f);
+
+			m_subsystemAudio.PlaySound("Audio/Throw", 1f, m_random.Float(-0.2f, 0.2f), player.ComponentBody.Position, 10f, false);
+
+			SpawnLetterChest(player);
+		}
+
+		private void SpawnLetterChest(ComponentPlayer player)
+		{
+			Vector3 playerPos = player.ComponentBody.Position;
+			for (int attempt = 0; attempt < 50; attempt++)
+			{
+				float angle = m_random.Float(0, 2 * MathUtils.PI);
+				float distance = m_random.Float(3f, 12f);
+				int x = (int)(playerPos.X + MathF.Cos(angle) * distance);
+				int z = (int)(playerPos.Z + MathF.Sin(angle) * distance);
+				int groundY = m_subsystemTerrain.Terrain.GetTopHeight(x, z); // bloque sólido superior
+
+				if (groundY <= 0 || groundY >= 255) continue;
+
+				// Verificar que el bloque del suelo sea sólido y no prohibido
+				int cellGround = m_subsystemTerrain.Terrain.GetCellValue(x, groundY, z);
+				int contentsGround = Terrain.ExtractContents(cellGround);
+				if (m_forbiddenBlockIndices.Contains(contentsGround)) continue;
+				Block blockGround = BlocksManager.Blocks[contentsGround];
+				if (!blockGround.IsCollidable) continue;
+
+				// Calcular orientación del cofre (mirando hacia el jugador)
+				int data = GetChestFacingData(playerPos, new Vector3(x + 0.5f, groundY + 1, z + 0.5f));
+				int chestValue = Terrain.MakeBlockValue(ChestBlock.Index, 0, data);
+				m_subsystemTerrain.ChangeCell(x, groundY + 1, z, chestValue);
+
+				// Obtener la entidad del cofre recién colocado
+				var blockEntities = Project.FindSubsystem<SubsystemBlockEntities>(true);
+				var blockEntity = blockEntities.GetBlockEntity(x, groundY + 1, z);
+				if (blockEntity != null)
+				{
+					var chest = blockEntity.Entity.FindComponent<ComponentChest>();
+					if (chest != null)
+					{
+						// Obtener el valor del bloque carta
+						int letterIndex = BlocksManager.GetBlockIndex<LetterWarBlock>(false, false);
+						if (letterIndex < 0) letterIndex = LetterWarBlock.Index;
+						int letterValue = Terrain.MakeBlockValue(letterIndex, 0, 0);
+						// Añadir la carta al inventario del cofre (slot 0)
+						chest.AddSlotItems(0, letterValue, 1);
+						m_letterWarSpawned = true;
+						return;
+					}
+				}
+
+				// Si no se pudo obtener el cofre, eliminar el bloque y reintentar
+				m_subsystemTerrain.ChangeCell(x, groundY + 1, z, 0);
+			}
+
+			Log.Error("[SubsystemZombiesSpawn] No se pudo colocar el cofre con la carta cerca del jugador.");
+		}
+
+		private int GetChestFacingData(Vector3 playerPos, Vector3 chestPos)
+		{
+			Vector3 dir = chestPos - playerPos;
+			dir.Y = 0;
+			dir = Vector3.Normalize(dir);
+			float angle = MathF.Atan2(dir.X, dir.Z);
+			// Datos: 0 = hacia +Z, 1 = hacia -X, 2 = hacia -Z, 3 = hacia +X (según ChestBlock)
+			if (angle < -0.785f) return 1;       // -X
+			else if (angle < 0.785f) return 0;   // +Z
+			else if (angle < 2.356f) return 3;   // +X
+			else return 2;                        // -Z
+		}
+
+		public override void Save(ValuesDictionary valuesDictionary)
         {
             valuesDictionary.SetValue("CurrentWave", m_currentWave);
-        }
+			valuesDictionary.SetValue("LetterWarSpawned", m_letterWarSpawned);
+		}
 
         public void Update(float dt)
         {
