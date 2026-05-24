@@ -1037,20 +1037,8 @@ namespace Game
 					int z = (int)(playerPos.Z + MathF.Sin(angle) * distance);
 					int y = m_random.Int(80, 120);
 
-					int groundY = m_subsystemTerrain.Terrain.GetTopHeight(x, z);
-					if (groundY > 0 && groundY < 255)
-					{
-						int cellValue = m_subsystemTerrain.Terrain.GetCellValue(x, groundY - 1, z);
-						int contents = Terrain.ExtractContents(cellValue);
-						// CAMBIADO: Verificar que el bloque esté en la lista PERMITIDA
-						if (m_allowedBlockIndices.Contains(contents))
-						{
-							Block block = BlocksManager.Blocks[contents];
-							if (block.IsCollidable)
-								return new Vector3(x + 0.5f, y, z + 0.5f);
-						}
-					}
-					else
+					// Los voladores aparecen en el aire, no verifican bloques del suelo
+					if (y >= 10 && y <= 255)
 					{
 						return new Vector3(x + 0.5f, y, z + 0.5f);
 					}
@@ -1323,6 +1311,7 @@ namespace Game
 						int groundY = point.Value.Y;
 						int airY = groundY + m_random.Int(10, 30);
 
+						// Los voladores aparecen en el aire, no verifican bloques del suelo
 						if (airY >= 1 && airY <= 255)
 						{
 							return new Vector3(point.Value.X + 0.5f, airY, point.Value.Z + 0.5f);
@@ -1338,6 +1327,8 @@ namespace Game
 					int x = (int)(playerPos.X + MathF.Cos(angle) * distance);
 					int z = (int)(playerPos.Z + MathF.Sin(angle) * distance);
 					int y = m_random.Int(70, 110);
+
+					// Los voladores aparecen en el aire, no verifican bloques del suelo
 					return new Vector3(x + 0.5f, y, z + 0.5f);
 				}
 			}
