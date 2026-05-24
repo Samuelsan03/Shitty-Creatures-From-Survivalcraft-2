@@ -173,7 +173,17 @@ namespace Game
 			m_healthBarPlayers = project.FindSubsystem<SubsystemPlayers>(true);
 			HealthBarDrawable healthBarDrawable = new HealthBarDrawable(this);
 			project.FindSubsystem<SubsystemDrawing>(true).AddDrawable(healthBarDrawable);
+
+			// Suscribir a todos los jugadores existentes al evento Injured (por si ya estaban cargados)
+			var playersSubsystem = project.FindSubsystem<SubsystemPlayers>(true);
+			if (playersSubsystem != null)
+			{
+				foreach (ComponentPlayer player in playersSubsystem.ComponentPlayers)
+				{
+					SubscribeToPlayerInjured(player);
+				}
 			}
+		}
 
 		private void CancelGreenNightChaseDelay(Project project)
 		{
@@ -1055,13 +1065,6 @@ namespace Game
 		{
 			flag = false;
 
-			// Suscribir al evento de daño (código existente)
-			if (player != null && player.ComponentHealth != null)
-			{
-				player.ComponentHealth.Injured -= OnPlayerInjuredForAllies;
-				player.ComponentHealth.Injured += OnPlayerInjuredForAllies;
-			}
-
 			if (playerOperated || skipVanilla || player == null)
 				return;
 
@@ -1073,7 +1076,6 @@ namespace Game
 			if (miner == null)
 				return;
 
-			// Obtener el objetivo del golpe
 			BodyRaycastResult? result = miner.Raycast<BodyRaycastResult>(
 				input.Hit.Value, RaycastMode.Interaction, true, true, true, meleeAttackRange);
 
@@ -1092,44 +1094,40 @@ namespace Game
 								if (injury.Attacker == player)
 									CommandAlliesToAttack(player, targetCreature);
 							};
+							CommandAlliesToAttack(player, targetCreature);
 						}
-					}
 
-					// ===== NUEVO: Lógica de golpes rápidos =====
-					// ===== Lógica de golpes rápidos (solo si está habilitada en configuración) =====
-					if (ShittyCreaturesSettingsManager.FastMeleeEnabled)
-					{
-						double currentGameTime = player.Project.FindSubsystem<SubsystemTime>(true).GameTime;
-						bool isFastHit = false;
-
-						if (m_lastHitGameTime.TryGetValue(player, out double lastTime) &&
-							m_lastHitTarget.TryGetValue(player, out ComponentBody lastBody))
+						if (ShittyCreaturesSettingsManager.FastMeleeEnabled)
 						{
-							// Si golpea al mismo objetivo en menos de 0.3 segundos → modo rápido
-							if (lastBody == hitBody && (currentGameTime - lastTime) < 0.3)
+							double currentGameTime = player.Project.FindSubsystem<SubsystemTime>(true).GameTime;
+							bool isFastHit = false;
+
+							if (m_lastHitGameTime.TryGetValue(player, out double lastTime) &&
+								m_lastHitTarget.TryGetValue(player, out ComponentBody lastBody))
 							{
-								isFastHit = true;
+								if (lastBody == hitBody && (currentGameTime - lastTime) < 0.3)
+								{
+									isFastHit = true;
+								}
 							}
-						}
 
-						// Actualizar registro
-						m_lastHitGameTime[player] = currentGameTime;
-						m_lastHitTarget[player] = hitBody;
+							m_lastHitGameTime[player] = currentGameTime;
+							m_lastHitTarget[player] = hitBody;
 
-						if (isFastHit)
-						{
-							m_fastHitMode[player] = true;
-							timeIntervalHit = 0.1;   // permite otro golpe en 0.1 s
+							if (isFastHit)
+							{
+								m_fastHitMode[player] = true;
+								timeIntervalHit = 0.1;
+							}
+							else
+							{
+								m_fastHitMode[player] = false;
+							}
 						}
 						else
 						{
 							m_fastHitMode[player] = false;
 						}
-					}
-					else
-					{
-						// Asegurar que el modo rápido está desactivado si la opción está deshabilitada
-						m_fastHitMode[player] = false;
 					}
 				}
 			}
@@ -1172,17 +1170,14 @@ namespace Game
 				if (creature == null || creature.ComponentHealth.Health <= 0f)
 					continue;
 
-				// Verificar si es aliado del jugador
 				bool isAlly = false;
 
-				// 1. Contratado por el jugador
 				ComponentHireableNPC hireable = creature.Entity.FindComponent<ComponentHireableNPC>();
 				if (hireable != null && hireable.IsHired)
 				{
 					isAlly = true;
 				}
 
-				// 2. Pertenece a manada "player" o "guardian"
 				if (!isAlly)
 				{
 					ComponentNewHerdBehavior herd = creature.Entity.FindComponent<ComponentNewHerdBehavior>();
@@ -1199,7 +1194,24 @@ namespace Game
 				if (!isAlly)
 					continue;
 
-				// Ordenar ataque sin límites
+				if (creature == target)
+					continue;
+
+				bool targetIsAlly = false;
+				ComponentNewHerdBehavior targetHerd = target.Entity.FindComponent<ComponentNewHerdBehavior>();
+				if (targetHerd != null && !string.IsNullOrEmpty(targetHerd.HerdName))
+				{
+					string targetHerdName = targetHerd.HerdName.ToLower();
+					if (targetHerdName == "player" || targetHerdName.Contains("guardian"))
+						targetIsAlly = true;
+				}
+				ComponentHireableNPC targetHireable = target.Entity.FindComponent<ComponentHireableNPC>();
+				if (targetHireable != null && targetHireable.IsHired)
+					targetIsAlly = true;
+
+				if (targetIsAlly)
+					continue;
+
 				ComponentNewChaseBehavior chase = creature.Entity.FindComponent<ComponentNewChaseBehavior>();
 				if (chase != null && !chase.Suppressed)
 				{
@@ -1211,28 +1223,20 @@ namespace Game
 		{
 			skipVanilla = false;
 
-			// 1. Verificar que el atacante NO sea un jugador
 			if (miner.ComponentPlayer != null)
 				return;
 
-			// 2. Verificar que el objetivo SÍ sea un jugador
 			ComponentPlayer targetPlayer = targetBody.Entity.FindComponent<ComponentPlayer>();
 			if (targetPlayer == null)
 				return;
 
-			// 3. Obtener el GameMode actual
 			SubsystemGameInfo gameInfo = targetPlayer.Project.FindSubsystem<SubsystemGameInfo>(true);
-
-			// 4. Solo aplicar esta lógica en modo Creativo.
-			//    En otros modos, el evento 'Injured' se encargará de la defensa.
 			if (gameInfo.WorldSettings.GameMode != GameMode.Creative)
 				return;
 
-			// 5. Verificar si la defensa en Creativo está habilitada
 			if (!ShittyCreaturesSettingsManager.CreativeDefenseEnabled)
 				return;
 
-			// 6. Ordenar a los aliados atacar al agresor
 			ComponentCreature attackerCreature = miner.ComponentCreature;
 			if (attackerCreature != null)
 			{
@@ -1277,6 +1281,9 @@ namespace Game
 				m_coordinateLabels[componentPlayer] = label;
 			}
 
+			// Suscribir al evento de daño del jugador
+			SubscribeToPlayerInjured(componentPlayer);
+
 			// El diálogo debe mostrarse en TODOS los modos, incluyendo Creativo
 			if (componentPlayer.PlayerData.SpawnsCount == 1)
 			{
@@ -1285,7 +1292,6 @@ namespace Game
 				{
 					Dispatcher.Dispatch(delegate
 					{
-						// showMessageOnAccept = true → muestra mensaje al aceptar
 						var dialog = new GreenNightIntervalDialog(greenNight, componentPlayer, true, true);
 						DialogsManager.ShowDialog(componentPlayer.GuiWidget, dialog);
 					}, false);
@@ -1293,21 +1299,17 @@ namespace Game
 			}
 
 			// Solo entregar en la primera aparición del mundo (no en respawns)
-			// SpawnsCount == 1 indica el primer spawn real; 0 es antes de spawnear.
 			if (componentPlayer.PlayerData.SpawnsCount != 1)
 				return true;
 
-			// Obtener el modo de juego actual
 			SubsystemGameInfo gameInfo = componentPlayer.Project.FindSubsystem<SubsystemGameInfo>(true);
 			if (gameInfo.WorldSettings.GameMode == GameMode.Creative)
-				return true; // No entregar ítems en Creativo
+				return true;
 
-			// Obtener inventario del jugador
 			IInventory inventory = componentPlayer.ComponentMiner.Inventory;
 			if (inventory == null)
 				return true;
 
-			// Usar nombres reales para obtener índices de bloque
 			int ironMacheteIndex = GetBlockIndexByName("IronMacheteBlock");
 			int boiledWaterBucketIndex = GetBlockIndexByName("BoiledWaterBucketBlock");
 			int nuclearCoinIndex = GetBlockIndexByName("NuclearCoinBlock");
@@ -1317,22 +1319,27 @@ namespace Game
 			int mediumFirstAidKitIndex = GetBlockIndexByName("MediumFirstAidKitBlock");
 			int CookedMeatBlock = GetBlockIndexByName("CookedMeatBlock");
 
-			// Añadir ítems
 			GiveItemToPlayer(inventory, ironMacheteIndex, 1);
 			GiveItemToPlayer(inventory, boiledWaterBucketIndex, 1);
 			GiveItemToPlayer(inventory, nuclearCoinIndex, 100);
 			GiveItemToPlayer(inventory, stoneAxeBlockIndex, 1);
 
-			// Desert Eagle con 8 balas cargadas
 			int swm500Value = Terrain.MakeBlockValue(swm500Index, 0, SWM500Block.SetBulletNum(8));
 			GiveItemToPlayer(inventory, swm500Value, 1);
-
-			// 12 balas extra
 			GiveItemToPlayer(inventory, swm500BulletIndex, 12);
 			GiveItemToPlayer(inventory, mediumFirstAidKitIndex, 5);
 			GiveItemToPlayer(inventory, CookedMeatBlock, 5);
 
 			return true;
+		}
+
+		private void SubscribeToPlayerInjured(ComponentPlayer player)
+		{
+			if (player != null && player.ComponentHealth != null)
+			{
+				player.ComponentHealth.Injured -= OnPlayerInjuredForAllies;
+				player.ComponentHealth.Injured += OnPlayerInjuredForAllies;
+			}
 		}
 
 		// Método auxiliar para obtener índice de bloque por nombre de clase
@@ -1921,7 +1928,6 @@ namespace Game
 		{
 			if (miner.ComponentPlayer == null) return;
 
-			// Solo aplicar si la función rápida está habilitada en la configuración
 			if (ShittyCreaturesSettingsManager.FastMeleeEnabled &&
 				m_fastHitMode.TryGetValue(miner.ComponentPlayer, out bool fastMode) && fastMode)
 			{
