@@ -1804,21 +1804,92 @@ namespace Game
 		public override void OnProjectileRaycastBody(ComponentBody body, Projectile projectile, float distance, out bool ignore)
 		{
 			ignore = false;
-
-			// Solo interesar si el proyectil tiene dueño y es una criatura
 			if (projectile.Owner == null) return;
 
-			// Verificar si el dueño es un bandido (tiene ComponentBanditHerdBehavior)
-			ComponentBanditHerdBehavior ownerHerd = projectile.Owner.Entity.FindComponent<ComponentBanditHerdBehavior>();
-			if (ownerHerd == null) return;
+			ComponentCreature ownerCreature = projectile.Owner;
 
-			// Verificar si el cuerpo impactado pertenece a un bandido
-			ComponentBanditHerdBehavior targetHerd = body.Entity.FindComponent<ComponentBanditHerdBehavior>();
-			if (targetHerd == null) return;
+			// -----------------------------------------------------------------
+			// 1. Manada del jugador (ComponentNewHerdBehavior)
+			// -----------------------------------------------------------------
+			bool isOwnerPlayerHerd = false;
+			if (ownerCreature is ComponentPlayer)
+			{
+				isOwnerPlayerHerd = true;
+			}
+			else
+			{
+				var ownerHerd = ownerCreature.Entity.FindComponent<ComponentNewHerdBehavior>();
+				if (ownerHerd != null && (ownerHerd.HerdName.Equals("player", StringComparison.OrdinalIgnoreCase) ||
+										  ownerHerd.HerdName.ToLower().Contains("guardian")))
+				{
+					isOwnerPlayerHerd = true;
+				}
+			}
 
-			// Si ambos son bandidos y pertenecen a la misma manada, ignorar este cuerpo en el raycast
-			if (!string.IsNullOrEmpty(ownerHerd.HerdName) &&
-				string.Equals(ownerHerd.HerdName, targetHerd.HerdName, StringComparison.OrdinalIgnoreCase))
+			if (isOwnerPlayerHerd)
+			{
+				// Prevención de fuego amigo para aliados del jugador
+				if (body.Entity == ownerCreature.Entity)
+				{
+					ignore = true;
+					return;
+				}
+				if (body.Entity.FindComponent<ComponentPlayer>() != null)
+				{
+					ignore = true;
+					return;
+				}
+				var targetHerd = body.Entity.FindComponent<ComponentNewHerdBehavior>();
+				if (targetHerd != null && targetHerd.IsSameHerdOrGuardian(ownerCreature))
+				{
+					ignore = true;
+					return;
+				}
+				return; // No ignorar a otros
+			}
+
+			// -----------------------------------------------------------------
+			// 2. Manadas de zombis (ComponentZombieHerdBehavior)
+			// -----------------------------------------------------------------
+			ComponentZombieHerdBehavior ownerZombieHerd = ownerCreature.Entity.FindComponent<ComponentZombieHerdBehavior>();
+			if (ownerZombieHerd != null)
+			{
+				ComponentZombieHerdBehavior targetZombieHerd = body.Entity.FindComponent<ComponentZombieHerdBehavior>();
+				if (targetZombieHerd != null && ownerZombieHerd.IsSameZombieHerd(ownerCreature))
+				{
+					ignore = true;
+					return;
+				}
+			}
+
+			// -----------------------------------------------------------------
+			// 3. MANADAS ORIGINALES "Alianza" y "Muerte" (ComponentHerdBehavior)
+			// -----------------------------------------------------------------
+			ComponentHerdBehavior ownerOriginalHerd = ownerCreature.Entity.FindComponent<ComponentHerdBehavior>();
+			if (ownerOriginalHerd != null)
+			{
+				string ownerHerdName = ownerOriginalHerd.HerdName;
+				// Solo aplicar si el nombre de la manada es "Alianza" o "Muerte"
+				if (ownerHerdName == "Alianza" || ownerHerdName == "Muerte")
+				{
+					ComponentHerdBehavior targetOriginalHerd = body.Entity.FindComponent<ComponentHerdBehavior>();
+					if (targetOriginalHerd != null && targetOriginalHerd.HerdName == ownerHerdName)
+					{
+						ignore = true;
+						return;
+					}
+				}
+			}
+
+			// -----------------------------------------------------------------
+			// 4. Bandidos (ComponentBanditHerdBehavior) - lógica original
+			// -----------------------------------------------------------------
+			ComponentBanditHerdBehavior ownerBanditHerd = ownerCreature.Entity.FindComponent<ComponentBanditHerdBehavior>();
+			if (ownerBanditHerd == null) return;
+			ComponentBanditHerdBehavior targetBanditHerd = body.Entity.FindComponent<ComponentBanditHerdBehavior>();
+			if (targetBanditHerd == null) return;
+			if (!string.IsNullOrEmpty(ownerBanditHerd.HerdName) &&
+				string.Equals(ownerBanditHerd.HerdName, targetBanditHerd.HerdName, StringComparison.OrdinalIgnoreCase))
 			{
 				ignore = true;
 			}
