@@ -48,6 +48,7 @@ namespace Game
 		private SubsystemNoise m_subsystemNoise;
 		private SubsystemCreatureSpawn m_subsystemCreatureSpawn;
 		private SubsystemGreenNightSky m_subsystemGreenNightSky;
+		private SubsystemBanditInvasion m_subsystemBanditInvasion;
 
 		private ComponentCreature m_componentCreature;
 		private ComponentPathfinding m_componentPathfinding;
@@ -99,9 +100,9 @@ namespace Game
 
 		// ===== PROPIEDADES AUXILIARES =====
 		private bool IsZombie => HerdName != null && HerdName.ToLower().Contains("zombie");
-		private bool IsBandit => HerdName != null && HerdName.ToLower().Contains("bandits");
+		private bool IsBanditType => HerdName != null && HerdName.ToLower().Contains("bandits");
 		private bool IsGreenNightActive => m_subsystemGreenNightSky != null && m_subsystemGreenNightSky.IsGreenNightActive;
-		private float SpecialChaseRange => (IsZombie && IsGreenNightActive) || IsBandit ? 50f : m_range;
+		private float SpecialChaseRange => (IsZombie && IsGreenNightActive) || IsBanditType ? 50f : m_range;
 
 		private bool ShouldProtectPlayer =>
 			!string.IsNullOrEmpty(HerdName) &&
@@ -116,6 +117,47 @@ namespace Game
 					m_componentHerd = Entity.FindComponent<ComponentNewHerdBehavior>();
 				return m_componentHerd != null ? m_componentHerd.HerdName : null;
 			}
+		}
+
+		// ===== NUEVO: Protección extrema anti-bandidos =====
+		private bool IsExtremeProtectionActive()
+		{
+			if (!ShouldProtectPlayer) return false;
+			if (m_subsystemBanditInvasion == null) return false;
+			if (!m_subsystemBanditInvasion.IsInvasionActive) return false;
+			// Noche normal (mismo umbral que en SubsystemBanditInvasion)
+			return m_subsystemSky.SkyLightIntensity < 0.1f;
+		}
+
+		private bool IsBanditCreature(ComponentCreature creature)
+		{
+			if (creature == null) return false;
+			return creature.Entity.FindComponent<ComponentBanditChaseBehavior>() != null;
+		}
+
+		private ComponentCreature FindNearestBandit()
+		{
+			if (m_subsystemCreatureSpawn == null) return null;
+			if (m_componentCreature?.ComponentBody == null) return null;
+
+			Vector3 pos = m_componentCreature.ComponentBody.Position;
+			ComponentCreature nearest = null;
+			float bestDistSq = m_range * m_range;
+
+			foreach (ComponentCreature creature in m_subsystemCreatureSpawn.Creatures)
+			{
+				if (creature == m_componentCreature) continue;
+				if (!IsBanditCreature(creature)) continue;
+				if (creature.ComponentHealth.Health <= 0f) continue;
+
+				float distSq = Vector3.DistanceSquared(pos, creature.ComponentBody.Position);
+				if (distSq < bestDistSq)
+				{
+					bestDistSq = distSq;
+					nearest = creature;
+				}
+			}
+			return nearest;
 		}
 
 		// ===== MÉTODOS PÚBLICOS =====
@@ -134,6 +176,14 @@ namespace Game
 				isPersistent = true;
 				maxChaseTime = Math.Max(maxChaseTime, 120f);
 				maxRange = Math.Max(maxRange, SpecialChaseRange);
+			}
+
+			// Protección extrema: override para bandidos
+			if (IsExtremeProtectionActive() && IsBanditCreature(target))
+			{
+				isPersistent = true;
+				maxChaseTime = Math.Max(maxChaseTime, 120f);
+				maxRange = Math.Max(maxRange, 40f);
 			}
 
 			m_target = target;
@@ -192,13 +242,43 @@ namespace Game
 			if (ShouldForceAttackPlayer())
 			{
 				ComponentPlayer player = FindNearestPlayer(SpecialChaseRange);
-				if (player != null && (m_target != player || m_target == null))
+				if (player != null)
 				{
 					StopAttack();
 					Attack(player, SpecialChaseRange, 120f, true);
 					m_chaseTime = 120f;
 					m_isPersistent = true;
 					return;
+				}
+			}
+
+			// Protección extrema anti‑bandidos durante la guerra nocturna
+			if (IsExtremeProtectionActive())
+			{
+				// Buscar bandidos cercanos
+				ComponentCreature bandit = FindNearestBandit();
+
+				if (bandit != null)
+				{
+					// Hay bandidos - prioridad absoluta
+					if (m_target != bandit)
+					{
+						Attack(bandit, 40f, 120f, true);
+					}
+					else if (m_target != null && !m_isPersistent || m_range < 40f || m_chaseTime < 60f)
+					{
+						Attack(m_target, 40f, 120f, true);
+					}
+				}
+				else
+				{
+					// No hay bandidos - permitir comportamiento normal de caza
+					// Si el objetivo actual es un bandido y ya no hay bandidos, detener el ataque
+					if (m_target != null && IsBanditCreature(m_target))
+					{
+						StopAttack();
+					}
+					// No hacer nada más - dejar que el comportamiento normal continúe
 				}
 			}
 
@@ -326,7 +406,7 @@ namespace Game
 
 		private bool ShouldForceAttackPlayer()
 		{
-			return (IsZombie && IsGreenNightActive) || IsBandit;
+			return (IsZombie && IsGreenNightActive) || IsBanditType;
 		}
 
 		private bool IsTargetInAttackRange(ComponentBody target)
@@ -541,6 +621,7 @@ namespace Game
 			m_subsystemNoise = Project.FindSubsystem<SubsystemNoise>(true);
 			m_subsystemCreatureSpawn = Project.FindSubsystem<SubsystemCreatureSpawn>(true);
 			m_subsystemGreenNightSky = Project.FindSubsystem<SubsystemGreenNightSky>(true);
+			m_subsystemBanditInvasion = Project.FindSubsystem<SubsystemBanditInvasion>(true);
 
 			m_componentCreature = Entity.FindComponent<ComponentCreature>(true);
 			m_componentPathfinding = Entity.FindComponent<ComponentPathfinding>(true);
@@ -976,7 +1057,7 @@ namespace Game
 		{
 			if (creature == null) return false;
 			bool isPlayer = creature.Entity.FindComponent<ComponentPlayer>() != null;
-			return (IsZombie && IsGreenNightActive && isPlayer) || (IsBandit && isPlayer);
+			return (IsZombie && IsGreenNightActive && isPlayer) || (IsBanditType && isPlayer);
 		}
 
 		private ComponentCreature FindTarget()
@@ -984,7 +1065,7 @@ namespace Game
 			if (m_componentHireable != null && !m_componentHireable.IsHired)
 				return null;
 
-			if ((IsZombie && IsGreenNightActive) || IsBandit)
+			if ((IsZombie && IsGreenNightActive) || IsBanditType)
 			{
 				ComponentPlayer player = FindNearestPlayer(SpecialChaseRange);
 				if (player != null)
@@ -1024,6 +1105,12 @@ namespace Game
 			if (!CanAttackCreature(creature))
 				return 0f;
 
+			// Protección extrema: bandidos obtienen prioridad muy alta (comparable a noche verde)
+			if (IsExtremeProtectionActive() && IsBanditCreature(creature))
+			{
+				return float.MaxValue / 2;
+			}
+
 			bool isPlayer = creature.Entity.FindComponent<ComponentPlayer>() != null;
 			bool isWaterPrey = m_componentCreature.Category != CreatureCategory.WaterPredator &&
 							  m_componentCreature.Category != CreatureCategory.WaterOther;
@@ -1036,7 +1123,8 @@ namespace Game
 			bool probabilityMatch = creature == Target || (categoryMatch &&
 				MathUtils.Remainder(randomSeed, 1.0) < m_chaseNonPlayerProbability);
 
-			if (isPlayer && ((IsZombie && IsGreenNightActive) || IsBandit))
+			// Prioridad máxima para jugadores durante noche verde (zombies) o banda (bandidos)
+			if (isPlayer && ((IsZombie && IsGreenNightActive) || IsBanditType))
 			{
 				return float.MaxValue / 2;
 			}
