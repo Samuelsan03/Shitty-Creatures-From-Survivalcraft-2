@@ -149,6 +149,7 @@ namespace Game
 			m_subsystemSky = Project.FindSubsystem<SubsystemSky>(true);
 			m_subsystemAudio = Project.FindSubsystem<SubsystemAudio>(true);
 			m_letterWarSpawned = valuesDictionary.GetValue<bool>("LetterWarSpawned", false);
+			m_hasShownUnlockMessage = valuesDictionary.GetValue<bool>("HasShownUnlockMessage", false);
 
 			if (m_subsystemSpawn != null)
 			{
@@ -395,6 +396,7 @@ namespace Game
 		{
 			valuesDictionary.SetValue("CurrentWave", m_currentWave);
 			valuesDictionary.SetValue("LetterWarSpawned", m_letterWarSpawned);
+			valuesDictionary.SetValue("HasShownUnlockMessage", m_hasShownUnlockMessage);
 		}
 
 		public void Update(float dt)
