@@ -1882,7 +1882,7 @@ namespace Game
 			{
 				string ownerHerdName = ownerOriginalHerd.HerdName;
 				// Solo aplicar si el nombre de la manada es "Alianza" o "Muerte"
-				if (ownerHerdName == "Alianza" || ownerHerdName == "Muerte")
+				if (ownerHerdName == "Alianza" || ownerHerdName == "Muerte" || ownerHerdName == "Pirate")
 				{
 					ComponentHerdBehavior targetOriginalHerd = body.Entity.FindComponent<ComponentHerdBehavior>();
 					if (targetOriginalHerd != null && targetOriginalHerd.HerdName == ownerHerdName)
