@@ -1927,6 +1927,20 @@ namespace Game
 				// También eliminar el aturdimiento si lo hubiera
 				attackment.StunTimeSet = 0f;
 			}
+
+			// ----- NUEVO: Ordenar a los aliados atacar al objetivo impactado por el proyectil -----
+			// Si el dueño del proyectil es un jugador y el impacto es sobre una criatura viva,
+			// se ordena a todos los aliados del jugador atacar a esa criatura.
+			ComponentCreature targetCreature = bodyRaycastResult.ComponentBody.Entity.FindComponent<ComponentCreature>();
+			if (targetCreature != null && targetCreature.ComponentHealth.Health > 0f)
+			{
+				ComponentPlayer ownerPlayer = projectile.Owner as ComponentPlayer;
+				if (ownerPlayer != null)
+				{
+					// Llamar al método que ordena ataque a los aliados
+					CommandAlliesToAttack(ownerPlayer, targetCreature);
+				}
+			}
 		}
 
 		public override void SetHitInterval(ComponentMiner miner, ref double hitInterval)
