@@ -1089,12 +1089,17 @@ namespace Game
 					{
 						if (ShittyCreaturesSettingsManager.PunchCommandEnabled)
 						{
-							targetCreature.ComponentHealth.Injured += (Injury injury) =>
+							// Suscribir al evento Injured para que solo se ordene ataque cuando el golpe sea exitoso (cause daño)
+							Action<Injury> handler = null;
+							handler = (Injury injury) =>
 							{
 								if (injury.Attacker == player)
+								{
 									CommandAlliesToAttack(player, targetCreature);
+									targetCreature.ComponentHealth.Injured -= handler; // autodesuscripción
+								}
 							};
-							CommandAlliesToAttack(player, targetCreature);
+							targetCreature.ComponentHealth.Injured += handler;
 						}
 
 						if (ShittyCreaturesSettingsManager.FastMeleeEnabled)
