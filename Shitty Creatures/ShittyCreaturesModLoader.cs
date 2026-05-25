@@ -1926,7 +1926,7 @@ namespace Game
 				attackment.StunTimeSet = 0f;
 			}
 
-			// Ordenar ataque a los aliados solo si PunchCommandEnabled está activado
+			// ----- Ordenar ataque de aliados cuando el jugador DISPARA y golpea a una criatura -----
 			if (ShittyCreaturesSettingsManager.PunchCommandEnabled)
 			{
 				ComponentCreature targetCreature = bodyRaycastResult.ComponentBody.Entity.FindComponent<ComponentCreature>();
@@ -1938,6 +1938,16 @@ namespace Game
 						CommandAlliesToAttack(ownerPlayer, targetCreature);
 					}
 				}
+			}
+
+			// ----- NUEVO: Ordenar ataque de aliados cuando el jugador RECIBE un proyectil -----
+			// Si el cuerpo impactado es un jugador (y no es el propio atacante), ordenamos a sus aliados atacar al dueño del proyectil.
+			ComponentPlayer hitPlayer = bodyRaycastResult.ComponentBody.Entity.FindComponent<ComponentPlayer>();
+			if (hitPlayer != null && projectile.Owner != null && hitPlayer != projectile.Owner)
+			{
+				ComponentCreature attackerCreature = projectile.Owner;
+				// Solo ordenamos ataque si el atacante es una criatura (puede ser otro jugador o un mob)
+				CommandAlliesToAttack(hitPlayer, attackerCreature);
 			}
 		}
 
