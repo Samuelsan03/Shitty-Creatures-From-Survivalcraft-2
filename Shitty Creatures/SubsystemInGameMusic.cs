@@ -1,539 +1,327 @@
 using System;
 using System.Collections.Generic;
 using Engine;
-using Engine.Audio;
-using Engine.Media;
-using TemplatesDatabase;
+using Game;
 using GameEntitySystem;
+using TemplatesDatabase;
 
 namespace Game
 {
 	public class SubsystemInGameMusic : Subsystem, IUpdateable
 	{
-		public SubsystemTime m_subsystemTime;
-		public Random m_random = new Random();
-		private double m_nextMusicTime = 1.0;
-		private double m_musicDuration = 0.0;
-		public SubsystemPlayers m_subsystemPlayers;
-		private readonly Queue<int> m_recentTracks = new Queue<int>(2);
-		private readonly List<int> m_availableTracks = new List<int>();
-
-		// Variables adicionales
-		private bool m_musicEnabled = false;
-		private ValuesDictionary m_valuesDictionary;
-		private StreamingSound m_currentMusic = null;
-		private bool m_isPlaying = false;
-		private double m_currentTrackStartTime;
-		private double m_currentTrackStartRealTime;
-
-		// Variables para mostrar mensajes
-		private double m_nextTrackNameDisplayTime = 0.0;
-		private string m_pendingTrackName = "";
-
-		// Variables para manejar los botones
-		private List<ComponentMusic> m_playerComponents = new List<ComponentMusic>();
-
-		// Lista de canciones con duraciones en segundos (solo para información)
-		private readonly SubsystemInGameMusic.TrackInfo[] m_tracks = new SubsystemInGameMusic.TrackInfo[]
-		{
-			new SubsystemInGameMusic.TrackInfo("MenuMusic/Dragon Quest NES Title Theme", 180f),
-			new SubsystemInGameMusic.TrackInfo("MenuMusic/Digimon 02 Target Wada Kouji", 268f),
-			new SubsystemInGameMusic.TrackInfo("MenuMusic/瞬間ときはファンタジー", 206f),
-			new SubsystemInGameMusic.TrackInfo("MenuMusic/Digimon Frontiers FIRE Wada Kouji", 253f),
-			new SubsystemInGameMusic.TrackInfo("MenuMusic/Alan Walker Alone High Pitch Speed Up", 145f),
-			new SubsystemInGameMusic.TrackInfo("MenuMusic/Power Rangers The Movie Title Theme SNES", 117f),
-			new SubsystemInGameMusic.TrackInfo("MenuMusic/Prince Of Persia (SNES) Recap", 129f),
-			new SubsystemInGameMusic.TrackInfo("MenuMusic/Prince Of Persia (SNES) Staff Roll", 185f),
-			new SubsystemInGameMusic.TrackInfo("MenuMusic/Sonic Boom Closing Theme Sonic CD", 213f),
-			new SubsystemInGameMusic.TrackInfo("MenuMusic/Sonar Pocket Never Give Up! Digimon Fusion", 257f),
-			new SubsystemInGameMusic.TrackInfo("MenuMusic/You Can Do Anything Sonic CD", 184f),
-			new SubsystemInGameMusic.TrackInfo("MenuMusic/Sparkster (SNES) Stage Lakeside", 115f),
-			new SubsystemInGameMusic.TrackInfo("MenuMusic/Rocket Knight Adventures Stage 1-2", 110f),
-			new SubsystemInGameMusic.TrackInfo("MenuMusic/Rocket Knight Adventures Stage 1-1", 147f),
-			new SubsystemInGameMusic.TrackInfo("MenuMusic/Sparkster (SEGA Genesis) Stage 1-1", 109f),
-			new SubsystemInGameMusic.TrackInfo("MenuMusic/FIELD OF VIEW 渇いた叫び - 捨てられた物。", 254f),
-			new SubsystemInGameMusic.TrackInfo("MenuMusic/Twill STAND UP Digimon Xros Wars Hunters", 247f),
-			new SubsystemInGameMusic.TrackInfo("MenuMusic/Chrono Trigger Main Theme", 124f),
-			new SubsystemInGameMusic.TrackInfo("MenuMusic/Yahpp Sorceress Elise", 118f),
-			new SubsystemInGameMusic.TrackInfo("MenuMusic/Mio Honda 本田未央 Step! ステップ", 260f),
-			new SubsystemInGameMusic.TrackInfo("MenuMusic/Sonic The Hedgehog 2 1992 Hill Top Zone", 108f),
-			new SubsystemInGameMusic.TrackInfo("MenuMusic/Sonic The Hedgehog 1991 Marble Zone", 88f),
-			new SubsystemInGameMusic.TrackInfo("MenuMusic/Sonic The Hedgehog 1991 Spring Yard Zone", 98f),
-			new SubsystemInGameMusic.TrackInfo("MenuMusic/SEGA CD American BIOS Gamerip Version 01", 89f),
-			new SubsystemInGameMusic.TrackInfo("MenuMusic/SEGA CD American BIOS Gamerip Version 02", 74f),
-			new SubsystemInGameMusic.TrackInfo("MenuMusic/SEGA Mega CD Japanese European Gamerip BIOS", 76f),
-			new SubsystemInGameMusic.TrackInfo("MenuMusic/Nichijou Koigokoro Wa Dangan Mo Yawarakakusuru", 82f),
-			new SubsystemInGameMusic.TrackInfo("MenuMusic/Super Hang-On Winning Run", 377f),
-			new SubsystemInGameMusic.TrackInfo("MenuMusic/Super Hang-On Sprinter", 296f),
-			new SubsystemInGameMusic.TrackInfo("MenuMusic/Super Hang-On Outride A Crisis", 310f),
-			new SubsystemInGameMusic.TrackInfo("MenuMusic/MAGICAL SOUND SHOWER OutRun", 348f),
-			new SubsystemInGameMusic.TrackInfo("MenuMusic/Space Harrier Theme", 456f),
-			new SubsystemInGameMusic.TrackInfo("MenuMusic/Touhou 6 Flandre Scarlets Theme U.N. Owen was her", 250f),
-			new SubsystemInGameMusic.TrackInfo("MenuMusic/Digimon 02 Evolution Break Up Ayumi Miyazaki", 248f),
-			new SubsystemInGameMusic.TrackInfo("MenuMusic/Digimon Adventure 01 Brave Heart Wada Kouji", 252f),
-			new SubsystemInGameMusic.TrackInfo("MenuMusic/Digimon Adventure 01 Butterfly Wada Kouji", 258f),
-			new SubsystemInGameMusic.TrackInfo("MenuMusic/Digimon Savers OP1 Theme Song Gouing Going My Soul Dynamite SHU", 231f),
-			new SubsystemInGameMusic.TrackInfo("MenuMusic/Digimon Savers OP2 Hirari Wada Kouji", 230f),
-			new SubsystemInGameMusic.TrackInfo("MenuMusic/Touhou 2 Mimas Theme Complete Darkness", 236f),
-			new SubsystemInGameMusic.TrackInfo("MenuMusic/Touhou 2 Eastern Wind", 218f),
-			new SubsystemInGameMusic.TrackInfo("MenuMusic/Touhou 2 Record of the Sealing of an Oriental Demon", 173f),
-		};
-
-		private void ShowMessageToAllPlayers(string message, Color? color = null)
-		{
-			if (m_subsystemPlayers == null)
-				return;
-
-			var componentPlayers = m_subsystemPlayers.ComponentPlayers;
-			if (componentPlayers.Count == 0)
-				return;
-
-			Color messageColor = color ?? Color.White;
-
-			foreach (ComponentPlayer componentPlayer in componentPlayers)
-			{
-				if (componentPlayer != null && componentPlayer.ComponentGui != null)
-				{
-					componentPlayer.ComponentGui.DisplaySmallMessage(message, messageColor, false, false);
-				}
-			}
-		}
-
 		public UpdateOrder UpdateOrder => UpdateOrder.Default;
 
-		public void Update(float dt)
+		private SubsystemPlayers m_subsystemPlayers;
+
+		// ===== PLAYLIST =====
+		private readonly List<(string Path, double Duration)> m_playlist = new List<(string, double)>
 		{
-			// Manejar botones de música para cada jugador
-			HandleMusicButtons();
+			("MenuMusic/Twill STAND UP Digimon Xros Wars Hunters", 247),
+			("MenuMusic/瞬間ときはファンタジー", 206),
+			("MenuMusic/Sparkster (SEGA Genesis) Stage 1-1", 109),
+			("MenuMusic/You Can Do Anything Sonic CD", 91),
+			("MenuMusic/Digimon Frontiers FIRE Wada Kouji", 253),
+			("MenuMusic/Dragon Quest NES Title Theme", 180),
+			("MenuMusic/Alan Walker Alone High Pitch Speed Up", 145),
+			("MenuMusic/Power Rangers The Movie Title Theme SNES", 117),
+			("MenuMusic/Prince Of Persia (SNES) Recap", 129),
+			("MenuMusic/Prince Of Persia (SNES) Staff Roll", 185),
+			("MenuMusic/Sonic Boom Closing Theme Sonic CD", 213),
+			("MenuMusic/Sonic Boom Sonic CD", 184),
+			("MenuMusic/Sonar Pocket Never Give Up! Digimon Fusion", 257),
+			("MenuMusic/Sparkster (SNES) Stage Lakeside", 115),
+			("MenuMusic/Rocket Knight Adventures Stage 1-2", 110),
+			("MenuMusic/Rocket Knight Adventures Stage 1-1", 147),
+			("MenuMusic/Sparkster (SEGA Genesis) Stage 1-1", 109),
+			("MenuMusic/FIELD OF VIEW 渇いた叫び - 捨てられた物。", 254),
+			("MenuMusic/Chrono Trigger Main Theme", 124),
+			("MenuMusic/Yahpp Sorceress Elise", 118),
+			("MenuMusic/Mio Honda 本田未央 Step! ステップ", 260),
+			("MenuMusic/Sonic The Hedgehog 2 1992 Hill Top Zone", 108),
+			("MenuMusic/Sonic The Hedgehog 1991 Marble Zone", 88),
+			("MenuMusic/Sonic The Hedgehog 1991 Spring Yard Zone", 98),
+			("MenuMusic/SEGA CD American BIOS Gamerip Version 01", 89),
+			("MenuMusic/SEGA CD American BIOS Gamerip Version 02", 74),
+			("MenuMusic/SEGA Mega CD Japanese European Gamerip BIOS", 76),
+			("MenuMusic/Nichijou Koigokoro Wa Dangan Mo Yawarakakusuru", 82),
+			("MenuMusic/Super Hang-On Winning Run", 377),
+			("MenuMusic/Super Hang-On Sprinter", 296),
+			("MenuMusic/Super Hang-On Outride A Crisis", 310),
+			("MenuMusic/MAGICAL SOUND SHOWER OutRun", 348),
+			("MenuMusic/Space Harrier Theme", 456),
+			("MenuMusic/Touhou 6 Flandre Scarlets Theme U.N. Owen was her", 250),
+			("MenuMusic/EoSD Credits Theme Crimson Belvedere Eastern Dream", 231),
+			("MenuMusic/Digimon Adventure 01 Brave Heart Wada Kouji", 252),
+			("MenuMusic/Digimon 02 Evolution Break Up Ayumi Miyazaki", 248),
+			("MenuMusic/Digimon Adventure 01 Butterfly Wada Kouji", 258),
+			("MenuMusic/Digimon Savers OP1 Theme Song Gouing Going My Soul Dynamite SHU", 231),
+			("MenuMusic/Digimon Savers OP2 Hirari Wada Kouji", 224),
+			("MenuMusic/Digimon Tamers The Biggest Dreamer Wada Kouji", 230),
+			("MenuMusic/Digimon 02 Target Wada Kouji", 268),
+			("MenuMusic/Touhou 2 Mimas Theme Complete Darkness", 236),
+			("MenuMusic/Touhou 2 Eastern Wind", 218),
+			("MenuMusic/Touhou 2 Record of the Sealing of an Oriental Demon", 173),
+		};
+		private int m_currentTrackIndex = 0;
+		private Random m_random = new Random();
+		// ==================
 
-			// Mostrar nombre de la canción con retraso
-			if (m_pendingTrackName != "" && m_subsystemTime != null &&
-				m_subsystemTime.GameTime >= m_nextTrackNameDisplayTime)
-			{
-				ShowMessageToAllPlayers(m_pendingTrackName, Color.Green);
-				m_pendingTrackName = "";
-			}
+		private bool m_isPlaying = false;
+		private bool m_isPaused = false;
+		private double m_playStartTime = 0.0;
 
-			// Si la música está desactivada, detener cualquier reproducción
-			if (!m_musicEnabled)
-			{
-				if (m_currentMusic != null && m_currentMusic.State == SoundState.Playing)
-				{
-					StopCurrentMusic();
-				}
-				return;
-			}
-
-			// Si no hay música sonando, iniciar una nueva
-			if (m_currentMusic == null)
-			{
-				PlayRandomMusic();
-				return;
-			}
-
-			// MÉTODO 1: Detectar si la música ha terminado naturalmente (estado Stopped)
-			if (m_currentMusic.State == SoundState.Stopped)
-			{
-				StopCurrentMusic();
-				PlayRandomMusic();
-				return;
-			}
-
-			// MÉTODO 2: Temporizador de respaldo usando tiempo real
-			if (m_musicDuration > 0)
-			{
-				double elapsedReal = Time.RealTime - m_currentTrackStartRealTime;
-				if (elapsedReal >= m_musicDuration + 0.5)
-				{
-					StopCurrentMusic();
-					PlayRandomMusic();
-					return;
-				}
-			}
-		}
-
-		private void HandleMusicButtons()
-		{
-			if (m_subsystemPlayers == null)
-				return;
-
-			var componentPlayers = m_subsystemPlayers.ComponentPlayers;
-
-			for (int i = 0; i < componentPlayers.Count; i++)
-			{
-				ComponentPlayer player = componentPlayers[i];
-				if (player != null && player.ComponentGui != null)
-				{
-					ComponentMusic existingComponent = null;
-					foreach (var component in m_playerComponents)
-					{
-						if (component != null && component.m_componentPlayer == player)
-						{
-							existingComponent = component;
-							break;
-						}
-					}
-
-					if (existingComponent == null)
-					{
-						existingComponent = new ComponentMusic(this, player);
-						m_playerComponents.Add(existingComponent);
-					}
-
-					existingComponent.Update(0f);
-				}
-			}
-
-			CleanupPlayerComponents();
-		}
-
-		private void CleanupPlayerComponents()
-		{
-			List<ComponentMusic> componentsToRemove = new List<ComponentMusic>();
-
-			foreach (var component in m_playerComponents)
-			{
-				if (component == null || component.m_componentPlayer == null || component.m_componentPlayer.ComponentGui == null)
-				{
-					componentsToRemove.Add(component);
-				}
-			}
-
-			foreach (var component in componentsToRemove)
-			{
-				m_playerComponents.Remove(component);
-			}
-		}
-
-		private void StopCurrentMusic()
-		{
-			if (m_currentMusic == null)
-				return;
-
-			m_currentMusic.Stop();
-			m_currentMusic.Dispose();
-			m_currentMusic = null;
-			m_isPlaying = false;
-		}
-
-		public void ToggleMusic()
-		{
-			bool oldState = m_musicEnabled;
-			m_musicEnabled = !m_musicEnabled;
-
-			if (m_valuesDictionary != null)
-			{
-				m_valuesDictionary.SetValue<bool>("MusicEnabled", m_musicEnabled);
-			}
-
-			if (m_musicEnabled)
-			{
-				string message = LanguageControl.Get("InGameMusic", "MusicEnabled", "Music enabled");
-				ShowMessageToAllPlayers(message);
-
-				// Si no hay música sonando, iniciar una
-				if (m_currentMusic == null)
-				{
-					PlayRandomMusic();
-				}
-			}
-			else
-			{
-				string message = LanguageControl.Get("InGameMusic", "MusicDisabled", "Music disabled");
-				ShowMessageToAllPlayers(message);
-
-				if (m_currentMusic != null && m_currentMusic.State > SoundState.Stopped)
-				{
-					StopCurrentMusic();
-				}
-			}
-
-			foreach (var component in m_playerComponents)
-			{
-				if (component != null)
-				{
-					component.UpdateButtonText();
-				}
-			}
-		}
-
-		private string GetTrackDisplayName(string trackPath)
-		{
-			try
-			{
-				string fileName = System.IO.Path.GetFileName(trackPath);
-				if (string.IsNullOrEmpty(fileName))
-					return LanguageControl.Get("InGameMusic", "UnknownTrack", "Unknown Track");
-
-				int dotIndex = fileName.LastIndexOf('.');
-				if (dotIndex > 0)
-					fileName = fileName.Substring(0, dotIndex);
-
-				fileName = fileName.Replace('_', ' ').Replace('-', ' ');
-				string[] words = fileName.Split(' ');
-				for (int i = 0; i < words.Length; i++)
-				{
-					if (!string.IsNullOrEmpty(words[i]))
-						words[i] = char.ToUpper(words[i][0]) + words[i].Substring(1).ToLower();
-				}
-				return string.Join(" ", words);
-			}
-			catch
-			{
-				return LanguageControl.Get("InGameMusic", "MusicTrack", "Music Track");
-			}
-		}
-
-		private void PlayTrack(string trackPath)
-		{
-			try
-			{
-				StopCurrentMusic();
-
-				var streamingSource = ContentManager.Get<StreamingSource>(trackPath);
-				if (streamingSource == null)
-				{
-					Log.Error($"StreamingSource not found for: {trackPath}");
-					string errorMessage = LanguageControl.Get("InGameMusic", "MusicFileNotFound", "Music file not found");
-					ShowMessageToAllPlayers(errorMessage, Color.Red);
-					return;
-				}
-
-				m_currentMusic = new StreamingSound(
-					streamingSource,
-					SettingsManager.MusicVolume,
-					1f,
-					0f,
-					false,
-					true,
-					1f
-				);
-
-				m_isPlaying = true;
-				m_currentMusic.Play();
-				m_currentTrackStartTime = m_subsystemTime.GameTime;
-				m_currentTrackStartRealTime = Time.RealTime;
-
-				string nowPlayingText = LanguageControl.Get("InGameMusic", "NowPlaying", "Now playing:");
-				ShowMessageToAllPlayers(nowPlayingText);
-
-				string displayName = GetTrackDisplayName(trackPath);
-				m_pendingTrackName = displayName;
-				m_nextTrackNameDisplayTime = m_subsystemTime.GameTime + 0.5;
-			}
-			catch (Exception ex)
-			{
-				Log.Error($"Error playing music \"{trackPath}\": {ex.Message}");
-				m_currentMusic = null;
-				m_isPlaying = false;
-				string errorMessage = LanguageControl.Get("InGameMusic", "MusicPlayError", "Error playing music");
-				ShowMessageToAllPlayers(errorMessage, Color.Red);
-			}
-		}
-
-		private void PlayRandomMusic()
-		{
-			if (m_tracks.Length == 0)
-			{
-				Log.Error("No tracks available to play");
-				return;
-			}
-
-			bool flag = m_availableTracks.Count == 0;
-			if (flag)
-			{
-				for (int i = 0; i < m_tracks.Length; i++)
-				{
-					bool flag2 = !m_recentTracks.Contains(i);
-					if (flag2)
-					{
-						m_availableTracks.Add(i);
-					}
-				}
-				bool flag3 = m_availableTracks.Count == 0;
-				if (flag3)
-				{
-					m_recentTracks.Clear();
-					for (int j = 0; j < m_tracks.Length; j++)
-					{
-						m_availableTracks.Add(j);
-					}
-				}
-			}
-
-			if (m_availableTracks.Count == 0)
-			{
-				Log.Error("No available tracks to play");
-				return;
-			}
-
-			int index = m_random.Int(0, m_availableTracks.Count - 1);
-			int num = m_availableTracks[index];
-			SubsystemInGameMusic.TrackInfo trackInfo = m_tracks[num];
-			UpdateTrackHistory(num);
-			m_musicDuration = (double)trackInfo.Duration;
-			PlayTrack(trackInfo.Path);
-		}
-
-		private void UpdateTrackHistory(int playedIndex)
-		{
-			m_recentTracks.Enqueue(playedIndex);
-			m_availableTracks.Remove(playedIndex);
-			bool flag = m_recentTracks.Count > 2;
-			if (flag)
-			{
-				int item = m_recentTracks.Dequeue();
-				bool flag2 = !m_availableTracks.Contains(item);
-				if (flag2)
-				{
-					m_availableTracks.Add(item);
-				}
-			}
-		}
+		private readonly List<InGameMusicWidget> m_widgets = new List<InGameMusicWidget>();
 
 		public override void Load(ValuesDictionary valuesDictionary)
 		{
-			m_subsystemTime = base.Project.FindSubsystem<SubsystemTime>(true);
-			m_subsystemPlayers = base.Project.FindSubsystem<SubsystemPlayers>(true);
-			m_valuesDictionary = valuesDictionary;
-			m_musicEnabled = valuesDictionary.GetValue<bool>("MusicEnabled", false);
+			m_subsystemPlayers = Project.FindSubsystem<SubsystemPlayers>(true);
 
-			for (int i = 0; i < m_tracks.Length; i++)
-			{
-				m_availableTracks.Add(i);
-			}
+			m_subsystemPlayers.PlayerAdded += OnPlayerAdded;
+			m_subsystemPlayers.PlayerRemoved += OnPlayerRemoved;
 
-			if (m_musicEnabled)
-			{
-				// Iniciamos la primera canción con un pequeño retraso
-				m_nextMusicTime = m_subsystemTime.GameTime + 1.0;
-			}
-			else
-			{
-				m_nextMusicTime = double.MaxValue;
-			}
+			foreach (var playerData in m_subsystemPlayers.PlayersData)
+				AddWidgetForPlayer(playerData);
 		}
 
 		public override void Dispose()
 		{
-			StopCurrentMusic();
-
-			foreach (var component in m_playerComponents)
+			if (m_subsystemPlayers != null)
 			{
-				if (component != null)
-				{
-					if (component.m_componentPlayer != null && component.m_componentPlayer.ComponentGui != null &&
-						component.MusicButton != null)
-					{
-						ContainerWidget rightControlsContainerWidget = component.m_componentPlayer.ComponentGui.m_rightControlsContainerWidget;
-						if (rightControlsContainerWidget != null)
-						{
-							rightControlsContainerWidget.Children.Remove(component.MusicButton);
-						}
-					}
-				}
+				m_subsystemPlayers.PlayerAdded -= OnPlayerAdded;
+				m_subsystemPlayers.PlayerRemoved -= OnPlayerRemoved;
 			}
 
-			m_playerComponents.Clear();
+			foreach (var widget in m_widgets)
+				widget?.Dispose();
+			m_widgets.Clear();
+
+			InGameMusicManager.StopMusic();
+			m_isPlaying = false;
+			m_isPaused = false;
+
 			base.Dispose();
 		}
 
-		public bool IsMusicEnabled => m_musicEnabled;
+		private void OnPlayerAdded(PlayerData playerData) => AddWidgetForPlayer(playerData);
 
-		private struct TrackInfo
+		private void OnPlayerRemoved(PlayerData playerData)
 		{
-			public TrackInfo(string path, float duration)
+			InGameMusicWidget toRemove = null;
+			foreach (var w in m_widgets)
+				if (w.PlayerData == playerData) { toRemove = w; break; }
+
+			if (toRemove != null && toRemove.ParentWidget != null)
 			{
-				this.Path = path;
-				this.Duration = duration;
+				toRemove.ParentWidget.Children.Remove(toRemove);
+				m_widgets.Remove(toRemove);
+				toRemove.Dispose();
 			}
-
-			public string Path;
-			public float Duration;
 		}
-	}
 
-	public class ComponentMusic
-	{
-		private SubsystemInGameMusic m_subsystemMusic;
-		public ComponentPlayer m_componentPlayer;
-		public BevelledButtonWidget MusicButton;
-		private bool m_buttonClicked;
-
-		public ComponentMusic(SubsystemInGameMusic subsystemMusic, ComponentPlayer player)
+		private void AddWidgetForPlayer(PlayerData playerData)
 		{
-			m_subsystemMusic = subsystemMusic;
-			m_componentPlayer = player;
-			CreateButton();
+			if (playerData?.GameWidget?.GuiWidget == null) return;
+
+			var rightControls = playerData.GameWidget.GuiWidget.Children.Find<ContainerWidget>("RightControlsContainer", true);
+			if (rightControls == null)
+				rightControls = playerData.GameWidget.GuiWidget.Children.Find<ContainerWidget>("ControlsContainer", true);
+
+			if (rightControls != null)
+			{
+				var widget = new InGameMusicWidget(playerData, this);
+				rightControls.Children.Add(widget);
+				m_widgets.Add(widget);
+			}
+		}
+
+		public void ToggleMusic(PlayerData playerData)
+		{
+			if (m_isPlaying)
+				StopMusic(playerData);
+			else
+			{
+				PickRandomTrack();
+				PlayCurrentTrack(playerData);
+			}
+		}
+
+		private void PickRandomTrack()
+		{
+			if (m_playlist.Count > 0)
+				m_currentTrackIndex = m_random.Int(0, m_playlist.Count - 1);
+		}
+
+		private void PlayCurrentTrack(PlayerData playerData)
+		{
+			if (m_playlist.Count == 0) return;
+
+			try
+			{
+				var track = m_playlist[m_currentTrackIndex];
+				InGameMusicManager.PlayMusic(track.Path, 0f);
+				m_isPlaying = true;
+				m_isPaused = false;
+				m_playStartTime = Time.RealTime;
+
+				string nowPlaying = LanguageControl.Get("InGameMusic", "NowPlaying");
+				string trackName = GetDisplayNameFromPath(track.Path);
+				ShowMessage(playerData, $"{nowPlaying}{trackName}");
+			}
+			catch (Exception ex)
+			{
+				Log.Error($"Error playing in-game music: {ex.Message}");
+				ShowMessage(playerData, LanguageControl.Get("InGameMusic", "MusicPlayError"));
+			}
+		}
+
+		private void NextTrack(PlayerData playerData)
+		{
+			if (m_playlist.Count == 0) return;
+
+			m_currentTrackIndex = (m_currentTrackIndex + 1) % m_playlist.Count;
+			var track = m_playlist[m_currentTrackIndex];
+
+			try
+			{
+				InGameMusicManager.PlayMusic(track.Path, 0f);
+				m_playStartTime = Time.RealTime;
+				m_isPaused = false;
+
+				string nowPlaying = LanguageControl.Get("InGameMusic", "NowPlaying");
+				string trackName = GetDisplayNameFromPath(track.Path);
+				ShowMessage(playerData, $"{nowPlaying}{trackName}");
+			}
+			catch (Exception ex)
+			{
+				Log.Error($"Error playing next track: {ex.Message}");
+				ShowMessage(playerData, LanguageControl.Get("InGameMusic", "MusicPlayError"));
+				m_currentTrackIndex = (m_currentTrackIndex + 1) % m_playlist.Count;
+			}
+		}
+
+		private void StopMusic(PlayerData playerData)
+		{
+			InGameMusicManager.StopMusic();
+			m_isPlaying = false;
+			m_isPaused = false;
+			ShowMessage(playerData, LanguageControl.Get("InGameMusic", "MusicDisabled"));
+		}
+
+		private void ShowMessage(PlayerData playerData, string message)
+		{
+			var player = playerData?.ComponentPlayer;
+			player?.ComponentGui?.DisplaySmallMessage(message, Color.White, true, false);
+		}
+
+		private string GetDisplayNameFromPath(string path)
+		{
+			string fileName = System.IO.Path.GetFileNameWithoutExtension(path);
+			if (string.IsNullOrEmpty(fileName))
+				fileName = path;
+			fileName = fileName.Replace('_', ' ');
+			return fileName;
 		}
 
 		public void Update(float dt)
 		{
-			if (MusicButton == null || m_componentPlayer == null || m_componentPlayer.ComponentGui == null)
+			// Detectar si la pantalla actual es la del juego (mundo visible)
+			bool isGameScreenActive = (ScreensManager.CurrentScreen is GameScreen);
+
+			if (m_isPlaying)
 			{
-				CreateButton();
-				return;
+				if (!isGameScreenActive && !m_isPaused)
+				{
+					// Guardar posición actual de la canción y detener
+					InGameMusicManager.SavePositionAndStop();
+					m_isPaused = true;
+				}
+				else if (isGameScreenActive && m_isPaused)
+				{
+					// Reanudar desde la posición guardada
+					InGameMusicManager.RestartFromSavedPosition();
+					m_isPaused = false;
+					m_playStartTime = Time.RealTime;
+				}
 			}
 
-			if (MusicButton.IsClicked && !m_buttonClicked)
+			foreach (var w in m_widgets)
+				w?.UpdateState(m_isPlaying && !m_isPaused);
+
+			if (!m_isPlaying || m_isPaused) return;
+
+			double currentDuration = m_playlist[m_currentTrackIndex].Duration;
+			if (Time.RealTime - m_playStartTime >= currentDuration)
 			{
-				m_buttonClicked = true;
-				m_subsystemMusic.ToggleMusic();
-				UpdateButtonText();
-			}
-			else if (!MusicButton.IsClicked && m_buttonClicked)
-			{
-				m_buttonClicked = false;
+				PlayerData anyPlayer = m_subsystemPlayers.PlayersData.Count > 0
+					? m_subsystemPlayers.PlayersData[0]
+					: null;
+				NextTrack(anyPlayer);
 			}
 		}
+	}
 
-		private void CreateButton()
+	// Widget del botón de música (sin cambios)
+	public class InGameMusicWidget : CanvasWidget
+	{
+		public PlayerData PlayerData { get; private set; }
+		private SubsystemInGameMusic m_subsystem;
+		private BevelledButtonWidget m_button;
+		private bool m_currentState = false;
+		private bool m_processedClick = false; // Evita procesar el mismo clic varias veces
+
+		public InGameMusicWidget(PlayerData playerData, SubsystemInGameMusic subsystem)
 		{
-			if (m_componentPlayer == null || m_componentPlayer.ComponentGui == null)
-				return;
+			PlayerData = playerData;
+			m_subsystem = subsystem;
 
-			ContainerWidget rightControlsContainerWidget = m_componentPlayer.ComponentGui.m_rightControlsContainerWidget;
-			if (rightControlsContainerWidget == null)
-				return;
+			HorizontalAlignment = WidgetAlignment.Far;
+			VerticalAlignment = WidgetAlignment.Center;
+			IsHitTestVisible = true;
+			Margin = new Vector2(5f, 0f);
 
-			MusicButton = rightControlsContainerWidget.Children.Find<BevelledButtonWidget>("InGameMusicButton", false);
-
-			if (MusicButton != null)
+			m_button = new BevelledButtonWidget
 			{
-				UpdateButtonText();
-				return;
-			}
-
-			MusicButton = new BevelledButtonWidget
-			{
-				Name = "InGameMusicButton",
-				Text = "",
-				Size = new Vector2(88f, 56f),
-				IsEnabled = true,
-				IsVisible = true,
-				HorizontalAlignment = WidgetAlignment.Far,
-				IsAutoCheckingEnabled = false
+				Text = GetButtonLabel(false),
+				HorizontalAlignment = WidgetAlignment.Center,
+				VerticalAlignment = WidgetAlignment.Center,
+				IsAutoCheckingEnabled = false,
+				FontScale = 0.5f,
+				Size = new Vector2(80f, 60f)
 			};
 
-			if (MusicButton.m_labelWidget != null)
-			{
-				MusicButton.m_labelWidget.FontScale = 0.8f;
-			}
-
-			rightControlsContainerWidget.Children.Add(MusicButton);
-			UpdateButtonText();
+			Children.Add(m_button);
 		}
 
-		public void UpdateButtonText()
+		public override void Update()
 		{
-			if (MusicButton == null) return;
+			// Usar IsClicked con bandera para evitar múltiples activaciones
+			if (m_button.IsClicked && !m_processedClick)
+			{
+				m_processedClick = true;
+				m_subsystem.ToggleMusic(PlayerData);
+			}
+			else if (!m_button.IsClicked)
+			{
+				m_processedClick = false;
+			}
+		}
 
-			string buttonText = LanguageControl.Get("InGameMusic", "MusicToggleButton", "Music");
-			string statusText = m_subsystemMusic.IsMusicEnabled ?
-				LanguageControl.Get("InGameMusic", "MusicOn", "ON") :
-				LanguageControl.Get("InGameMusic", "MusicOff", "OFF");
+		public void UpdateState(bool isPlaying)
+		{
+			if (m_currentState != isPlaying)
+			{
+				m_currentState = isPlaying;
+				m_button.Text = GetButtonLabel(isPlaying);
+			}
+		}
 
-			MusicButton.Text = $"{buttonText} {statusText}";
+		private string GetButtonLabel(bool isPlaying)
+		{
+			string toggleText = LanguageControl.Get("InGameMusic", "MusicToggleButton");
+			string stateText = isPlaying
+				? LanguageControl.Get("InGameMusic", "MusicOn")
+				: LanguageControl.Get("InGameMusic", "MusicOff");
+			return toggleText + stateText;
 		}
 	}
 }
