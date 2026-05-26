@@ -1,4 +1,11 @@
 {
+  "BaseWatermelonBlock": {
+    "1": "西瓜",
+    "2": "{0} 西瓜",
+    "3": "{0} {1} 西瓜",
+    "4": "腐烂",
+    "5": "未成熟"
+  },
   "Healing": {
     "0": "你已被{0}治疗。",
     "1": "{0}治愈了你的流感。",
@@ -13,10 +20,12 @@
   "SubsystemDoubleMusketBlockBehavior": {
   "0": "双管火枪尚未装填！"
 },
-  "RemoteControlAchievement": {
+  "UnlockedItems": {
   "CraftingLocked": "你必须先完成所有波次！",
   "Unlocked": "遥控器已解锁！",
-  "UnlockedInfo": "你现在可以制作遥控器来管理绿色之夜。"
+  "UnlockedInfo": "你现在可以制作遥控器来管理绿色之夜。",
+  "ChestMessage": "一个神秘宝箱出现了！",
+  "ChestInfo": "寻找出现在你附近的宝箱。"
 },
   "ComponentNewSleep": {
     "CantSleepGreenNight": "你不能在绿色之夜入睡"
@@ -106,7 +115,9 @@
     "FreeCameraDescription": "启用/禁用自由相机模式（仅在非创造模式下）",
     "BleedingDescription": "开启/关闭受伤生物的流血效果",
     "HealthBarDescription": "在生物上显示生命值条",
-    "SkeletonSpawnDescription": "在普通夜晚生成骷髅"
+    "SkeletonSpawnDescription": "在普通夜晚生成骷髅",
+    "FastMeleeDescription": "当快速点击/触摸同一目标时，允许连续快速的近战攻击",
+    "InGameMusicDescription": "在游戏内显示一个按钮，以便在游玩时播放随机的音乐曲目。"
   },
   "SpecialThanksScreen": {
   "0": "特别感谢",
@@ -170,12 +181,6 @@
     "Off": "关闭",
     "CoverageRadius": "覆盖半径"
   },
-  "RefrigeratorXiaomi": {
-    "RefrigeratorLabel": "冰箱",
-    "InventoryLabel": "库存",
-    "CoolingStatus": "制冷中...",
-    "NoPowerStatus": "无电源"
-  },
   "Injury": {
     "Poisoned": "中毒",
     "FrozenToDeath": "冻死",
@@ -187,6 +192,8 @@
     "DisplayName": {
       "FirearmsDealer": "枪械商",
       "Aimep3": "Aimep3",
+      "Bandit17": "强盗17",
+      "Bandit16": "强盗16",
       "Bandit15": "强盗15",
       "Bandit14": "强盗14",
       "Bandit13": "强盗13",
@@ -438,6 +445,18 @@
     }
   },
   "Blocks": {
+    "LetterWarBlock:0": {
+  "DisplayName": "神秘信件",
+  "Description": "一个没有寄件人姓名的密封信封。它似乎很重要……阅读它可能会让你卷入危险之中。你可以在一个宝箱中找到这封信，该宝箱会在你成功存活所有绿色夜晚波次后出现在你附近。"
+},
+    "WatermelonBlock:0": {
+  "DisplayName": "西瓜",
+  "Description": "一种生长在温暖气候地面的多汁西瓜。完全成熟后，会掉落西瓜片。"
+},
+"RottenWatermelonBlock:0": {
+  "DisplayName": "腐烂的西瓜",
+  "Description": "这个西瓜已经坏掉了。最好不要吃。"
+},
     "DoubleMusketBlock:0": {
     "DisplayName": "双管火枪",
     "Description": "双管火枪，装填后可连续发射两次。可使用标准子弹或强大的 Anti-Tanks 弹药，造成巨额伤害并穿透护甲。由火枪、铁锭和木板合成。",
@@ -522,8 +541,49 @@
     "Description": "一种非常清爽、含水量高的水果，可以显著降低口渴。"
   },
   "BananaBlock:0": {
-    "DisplayName": "香蕉",
-    "Description": "一种高能量水果，可恢复较多饥饿值，并提供不错的水分补充。"
+  "DisplayName": "香蕉",
+  "Description": "一种富含能量的水果，可以恢复大量饥饿值并提供不错的水分补充。生长于温暖潮湿气候中的香蕉树上。"
+},
+"BananaWoodBlock:0": {
+  "DisplayName": "香蕉木",
+  "Description": "从香蕉树获得的轻质纤维木材。虽然不像橡木那样坚固，但适合基础建筑和制作。"
+},
+"BananaLeavesBlock:0": {
+  "DisplayName": "香蕉叶",
+  "Description": "来自香蕉树的大型宽叶。它们可以提供阴凉，也可用作天然遮棚或装饰元素。"
+},
+"BananaSaplingBlock:0": {
+  "DisplayName": "香蕉树苗",
+  "Description": "一棵年轻的香蕉树，随着时间推移会成长为完整的香蕉树。将其种植在温暖环境中的土壤上，并等待其成熟。",
+  "CRDescription:0": "通过使用香蕉叶制作获得。"
+},
+"RottenAppleBlock:0": {
+    "DisplayName": "腐烂的苹果",
+    "Description": "一个腐坏的苹果，上面布满褐色斑点和霉菌。食用后可能导致食物中毒，并且毫无营养价值。"
+  },
+  "RottenPearBlock:0": {
+    "DisplayName": "腐烂的梨",
+    "Description": "这个梨已经变得软烂并散发恶臭。食用它可能会让你生病，而且几乎没有营养。"
+  },
+  "RottenOrangeBlock:0": {
+    "DisplayName": "腐烂的橙子",
+    "Description": "一个干瘪的橙子，带有苦涩的发酵气味。食用后可能引起胃痛和恶心。"
+  },
+  "RottenCherryBlock:0": {
+    "DisplayName": "腐烂的樱桃",
+    "Description": "这颗樱桃已经起皱并渗出黏稠汁液，早已过了最佳食用期。食用后可能导致疾病。"
+  },
+  "RottenSliceOfWatermelonBlock:0": {
+    "DisplayName": "腐烂的西瓜片",
+    "Description": "一片湿软变色的西瓜，散发着酸酵母味。很可能会引起消化不适。"
+  },
+  "RottenBananaBlock:0": {
+    "DisplayName": "腐烂的香蕉",
+    "Description": "一根发黑柔软并带有刺鼻酒精气味的香蕉。食用后可能让你恶心并消耗体力。"
+  },
+  "RottenBlueberryBlock:0": {
+    "DisplayName": "腐烂的蓝莓",
+    "Description": "这些蓝莓已经发霉并带有发酵味。除非你想生病，否则不适合食用。"
   },
   "BlueberryBlock:0": {
     "DisplayName": "蓝莓",
@@ -1182,6 +1242,20 @@
     }
   },
   "ContentWidgets": {
+    "LetterWarDialog": {
+    "Title": "战争信",
+    "AcceptButton": "接受",
+    "RejectButton": "拒绝",
+    "Message": "来自洛斯班迪多斯集团 (Cartel de Los Bandidos)：\n在经历绿色之夜后，你至少证明了\n自己能够活过那些绿色之夜，从最简单的\n到最困难的。\n然而，我们想向你宣战，作为新的\n挑战。我们想知道你是否还能再次活下来。\n如果你接受，明天黎明时分我们会狠狠干你一顿。\n但如果你能赢下这场战争，我们将永远放过你。\n不会再有一颗子弹射向你。\n如果你拒绝，你暂时还能继续阅读这封信。\n但所有人都会知道你是个懦夫，在真正战斗前\n就躲了起来。\n集团绝不宽恕。给老子好好选择。\n署名：班迪多斯议会",
+    "AcceptMessage": "你接受了战争，蠢货。集团会在黎明时把你碾碎。你已经签下了自己的死刑判决。",
+    "RejectMessage": "你拒绝了挑战，懦夫。这封信会继续留在这里，但别以为我们忘了你。集团总会回来。"
+  },
+    "RefrigeratorXiaomi": {
+    "RefrigeratorLabel": "冰箱",
+    "InventoryLabel": "库存",
+    "CoolingStatus": "制冷中...",
+    "NoPowerStatus": "无电源"
+  },
     "GreenNightToggleDialog": {
   "Title": "绿色之夜设置",
   "CheckboxText": "启用绿色之夜",
