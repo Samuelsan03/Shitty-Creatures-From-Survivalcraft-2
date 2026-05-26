@@ -121,6 +121,7 @@ namespace Game
 		private void AddWidgetForPlayer(PlayerData playerData)
 		{
 			if (playerData?.GameWidget?.GuiWidget == null) return;
+			if (!ShittyCreaturesSettingsManager.InGameMusicButtonEnabled) return;
 
 			var rightControls = playerData.GameWidget.GuiWidget.Children.Find<ContainerWidget>("RightControlsContainer", true);
 			if (rightControls == null)
