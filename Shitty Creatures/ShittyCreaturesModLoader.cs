@@ -468,7 +468,7 @@ namespace Game
 					Name = "ShittyButtonRow",
 					Direction = LayoutDirection.Horizontal,
 					HorizontalAlignment = WidgetAlignment.Center,
-					Margin = new Vector2(0f, 5f)
+					Margin = new Vector2(0f, 0f)   // Sin margen vertical extra (como las filas originales)
 				};
 
 				string aboutButtonText = LanguageControl.Get(new string[] { "ShittyCreaturesAbout", "AboutButton" });
@@ -479,7 +479,7 @@ namespace Game
 					Size = new Vector2(310f, 60f),
 					BevelColor = new Color(128, 0, 128),
 					CenterColor = new Color(128, 0, 128),
-					Margin = new Vector2(10f, 0f)
+					Margin = new Vector2(0f, 0f)   // Sin separación horizontal entre botones
 				};
 
 				string exitButtonText = LanguageControl.Get(new string[] { "ShittyCreaturesAbout", "ExitButton" });
@@ -488,9 +488,9 @@ namespace Game
 					Name = "ShittyExitButton",
 					Text = exitButtonText,
 					Size = new Vector2(310f, 60f),
-					BevelColor = new Color(128, 128, 128),
-					CenterColor = new Color(128, 128, 128),
-					Margin = new Vector2(10f, 0f)
+					BevelColor = new Color(181, 172, 154),  // Color estándar de bevel
+					CenterColor = new Color(181, 172, 154),  // Color estándar del centro
+					Margin = new Vector2(0f, 0f)
 				};
 
 				buttonRow.Children.Add(aboutButton);
@@ -1487,7 +1487,13 @@ namespace Game
 		"GhostBoomer3",
 		"GhostCharger",
 		"FrozenGhost",
-		"FrozenGhostBoomer"
+		"FrozenGhostBoomer",
+		"LaMuerteX",
+		"ElSenorDeLasTumbasMoradas",
+		"HombreLava",
+		"HombreAgua",
+		"LiderCalavericoSupremo",
+		"LiderCalavericoSupremoAlfa"
 	};
 
 			var allCreatures = new List<ComponentCreature>(creatureSpawn.Creatures);
