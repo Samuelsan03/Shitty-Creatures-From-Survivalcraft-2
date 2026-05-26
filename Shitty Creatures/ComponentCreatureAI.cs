@@ -329,6 +329,7 @@ namespace Game
 			float distance = Vector3.Distance(creaturePos, targetPos);
 
 			bool targetInFront = IsTargetInFront(target);
+			// SOLO LOS OBJETOS LANZABLES VERIFICAN VISIBILIDAD
 			bool targetVisible = targetInFront && IsTargetVisible(target);
 
 			int throwableSlot = FindThrowableSlot(inventory);
@@ -416,7 +417,8 @@ namespace Game
 			}
 			else if (distance < EngagementRange.X)
 			{
-				if (targetVisible && meleeSlot >= 0)
+				// SIN VERIFICACIÓN DE VISIBILIDAD PARA ARMAS CUERPO A CUERPO
+				if (meleeSlot >= 0)
 				{
 					CancelAiming(inventory);
 					EquipSlot(inventory, meleeSlot);
@@ -432,6 +434,7 @@ namespace Game
 			}
 			else
 			{
+				// RANGO MEDIO - SIN VERIFICACIÓN DE VISIBILIDAD
 				if (firearmSlot >= 0) EquipSlot(inventory, firearmSlot);
 				else if (musketSlot >= 0) EquipSlot(inventory, musketSlot);
 				else if (doubleMusketSlot >= 0) EquipSlot(inventory, doubleMusketSlot);
@@ -446,7 +449,8 @@ namespace Game
 			int activeSlotValue = inventory.GetSlotValue(inventory.ActiveSlotIndex);
 			int activeContents = Terrain.ExtractContents(activeSlotValue);
 
-			if (activeContents == MusketBlock.Index && targetVisible)
+			// MUSKET - SIN VERIFICACIÓN DE VISIBILIDAD
+			if (activeContents == MusketBlock.Index)
 			{
 				EnsureMusketLoaded(inventory);
 				if (m_cooldownTimer > 0f) { m_cooldownTimer -= dt; if (m_cooldownTimer < 0f) m_cooldownTimer = 0f; }
@@ -478,7 +482,8 @@ namespace Game
 					else m_componentMiner.Aim(new Ray3(eyePos, aimDir), AimState.InProgress);
 				}
 			}
-			else if (activeContents == DoubleMusketBlock.Index && targetVisible)
+			// DOUBLE MUSKET - SIN VERIFICACIÓN DE VISIBILIDAD
+			else if (activeContents == DoubleMusketBlock.Index)
 			{
 				EnsureDoubleMusketLoaded(inventory);
 				if (m_cooldownTimer > 0f) { m_cooldownTimer -= dt; if (m_cooldownTimer < 0f) m_cooldownTimer = 0f; }
@@ -497,7 +502,8 @@ namespace Game
 					else m_componentMiner.Aim(new Ray3(eyePos, aimDir), AimState.InProgress);
 				}
 			}
-			else if (activeContents == FlameThrowerBlock.Index && targetVisible)
+			// FLAMETHROWER - SIN VERIFICACIÓN DE VISIBILIDAD
+			else if (activeContents == FlameThrowerBlock.Index)
 			{
 				EnsureFlameThrowerLoaded(inventory);
 				if (m_cooldownTimer > 0f) { m_cooldownTimer -= dt; if (m_cooldownTimer < 0f) m_cooldownTimer = 0f; }
@@ -519,7 +525,8 @@ namespace Game
 					}
 				}
 			}
-			else if (activeContents == ItemsLauncherBlock.Index && targetVisible)
+			// ITEMS LAUNCHER - SIN VERIFICACIÓN DE VISIBILIDAD
+			else if (activeContents == ItemsLauncherBlock.Index)
 			{
 				// El lanzador de ítems no necesita Ensure porque no consume munición
 				if (m_cooldownTimer > 0f) { m_cooldownTimer -= dt; if (m_cooldownTimer < 0f) m_cooldownTimer = 0f; }
@@ -558,7 +565,8 @@ namespace Game
 					}
 				}
 			}
-			else if (activeContents == BowBlock.Index && targetVisible)
+			// BOW - SIN VERIFICACIÓN DE VISIBILIDAD
+			else if (activeContents == BowBlock.Index)
 			{
 				EnsureBowLoaded(inventory);
 				if (m_cooldownTimer > 0f) { m_cooldownTimer -= dt; if (m_cooldownTimer < 0f) m_cooldownTimer = 0f; }
@@ -577,7 +585,8 @@ namespace Game
 					else m_componentMiner.Aim(new Ray3(eyePos, aimDir), AimState.InProgress);
 				}
 			}
-			else if (activeContents == CrossbowBlock.Index && targetVisible)
+			// CROSSBOW - SIN VERIFICACIÓN DE VISIBILIDAD
+			else if (activeContents == CrossbowBlock.Index)
 			{
 				float distToTarget = Vector3.Distance(m_componentCreature.ComponentBody.Position, target.ComponentBody.BoundingBox.Center());
 				EnsureCrossbowLoaded(inventory, distToTarget);
@@ -597,7 +606,8 @@ namespace Game
 					else m_componentMiner.Aim(new Ray3(eyePos, aimDir), AimState.InProgress);
 				}
 			}
-			else if (activeContents == RepeatCrossbowBlock.Index && targetVisible)
+			// REPEAT CROSSBOW - SIN VERIFICACIÓN DE VISIBILIDAD
+			else if (activeContents == RepeatCrossbowBlock.Index)
 			{
 				float distToTarget = Vector3.Distance(m_componentCreature.ComponentBody.Position, target.ComponentBody.BoundingBox.Center());
 				EnsureRepeatCrossbowLoaded(inventory, distToTarget);
@@ -617,9 +627,9 @@ namespace Game
 					else m_componentMiner.Aim(new Ray3(eyePos, aimDir), AimState.InProgress);
 				}
 			}
-			else if (m_firearmConfigs.ContainsKey(activeContents) && targetVisible)
+			// ARMAS DE FUEGO MODERNAS - SIN VERIFICACIÓN DE VISIBILIDAD
+			else if (m_firearmConfigs.ContainsKey(activeContents))
 			{
-				// *** ARMAS DE FUEGO MODERNAS - SIN MINER.AIM, ANIMACIÓN MANUAL ***
 				if (m_isFirearmReloading)
 				{
 					m_firearmReloadTimer -= dt;
