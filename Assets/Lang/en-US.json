@@ -1,4 +1,11 @@
 {
+  "BaseWatermelonBlock": {
+    "1": "Watermelon",
+    "2": "{0} Watermelon",
+    "3": "{0} {1} Watermelon",
+    "4": "Rotten",
+    "5": "Unripe"
+  },
   "Healing": {
     "0": "You have been healed by {0}.",
     "1": "{0} has cured you of the flu.",
@@ -13,10 +20,12 @@
   "SubsystemDoubleMusketBlockBehavior": {
     "0": "The double musket is not loaded!"
   },
-  "RemoteControlAchievement": {
+  "UnlockedItems": {
   "CraftingLocked": "You must survive all waves first!",
   "Unlocked": "Remote Control unlocked!",
-  "UnlockedInfo": "You can now craft the Remote Control to manage the Green Nights."
+  "UnlockedInfo": "You can now craft the Remote Control to manage the Green Nights.",
+  "ChestMessage": "A MYSTERIOUS CHEST HAS APPEARED!",
+  "ChestInfo": "Search for the chest that has appeared near you."
 },
   "ComponentNewSleep": {
     "CantSleepGreenNight": "You can't sleep during the Green Night."
@@ -106,8 +115,10 @@
     "FreeCameraDescription": "Enable/disable free camera mode (only in non-creative modes)",
     "BleedingDescription": "Toggle bleeding on wounded creatures",
     "HealthBarDescription": "Show health bars on creatures",
-    "SkeletonSpawnDescription": "Spawn skeletons on normal nights"
-  },
+    "SkeletonSpawnDescription": "Spawn skeletons on normal nights",
+    "FastMeleeDescription": "Enable rapid consecutive melee attacks when clicking/tapping quickly on the same target",
+    "InGameMusicDescription": "Show a button in-game to play random music tracks while playing"
+},
   "SpecialThanksScreen": {
   "0": "Special Thanks",
   "1": "If you want to appear in the special thanks list, you can contact the author to provide ideas, bugs or more. Don't forget to include your nickname and the reason.",
@@ -170,12 +181,6 @@
   "Off": "Off",
   "CoverageRadius": "Coverage radius"
   },
-  "RefrigeratorXiaomi": {
-    "RefrigeratorLabel": "Refrigerator",
-    "InventoryLabel": "Inventory",
-    "CoolingStatus": "Cooling...",
-    "NoPowerStatus": "No Power"
-  },
   "Injury": {
     "Poisoned": "Poisoned",
     "FrozenToDeath": "Frozen to Death",
@@ -187,6 +192,8 @@
     "DisplayName": {
       "FirearmsDealer": "Firearms Dealer",
       "Aimep3": "Aimep3",
+      "Bandit17": "Bandit 17",
+      "Bandit16": "Bandit 16",
       "Bandit15": "Bandit 15",
       "Bandit14": "Bandit 14",
       "Bandit13": "Bandit 13",
@@ -437,6 +444,10 @@
   }
 },
   "Blocks": {
+    "LetterWarBlock:0": {
+  "DisplayName": "Mysterious Letter",
+  "Description": "A sealed envelope with no sender name. It seems important... Reading it might lead to something dangerous. You can find this letter inside a chest that appears near you after surviving all green night waves."
+},
     "DoubleMusketBlock:0": {
     "DisplayName": "Double Musket",
     "Description": "A double-barreled musket that can fire two shots before reloading. It can use standard bullets or powerful Anti-Tanks rounds that deal massive damage and penetrate armor. Crafted with a musket, iron ingot, and planks.",
@@ -500,6 +511,34 @@
     "DisplayName": "Apple Leaves",
     "Description": "Leaves from an apple tree. Sometimes they can drop apples."
   },
+  "RottenAppleBlock:0": {
+  "DisplayName": "Rotten Apple",
+  "Description": "A decayed apple covered in brown spots and mold. Eating it may cause food poisoning and offers no nutritional value."
+},
+"RottenPearBlock:0": {
+  "DisplayName": "Rotten Pear",
+  "Description": "This pear has turned mushy and foul-smelling. Consuming it could make you sick and provides little to no sustenance."
+},
+"RottenOrangeBlock:0": {
+  "DisplayName": "Rotten Orange",
+  "Description": "A shriveled orange with a bitter, fermented odor. Eating it risks stomach pain and nausea."
+},
+"RottenCherryBlock:0": {
+  "DisplayName": "Rotten Cherry",
+  "Description": "Wrinkled and leaking sticky juice, this cherry is well past its prime. Ingesting it may lead to illness."
+},
+"RottenSliceOfWatermelonBlock:0": {
+  "DisplayName": "Rotten Watermelon Slice",
+  "Description": "A soggy, discolored slice of watermelon that smells like sour yeast. Likely to cause digestive distress."
+},
+"RottenBananaBlock:0": {
+  "DisplayName": "Rotten Banana",
+  "Description": "A blackened, soft banana with a pungent alcoholic scent. Eating it can make you nauseous and drain your energy."
+},
+"RottenBlueberryBlock:0": {
+  "DisplayName": "Rotten Blueberries",
+  "Description": "These berries are moldy and have a fermented taste. Not safe for consumption unless you want to get sick."
+},
     "AppleBlock:0": {
     "DisplayName": "Apple",
     "Description": "A fresh and juicy fruit that restores a small amount of hunger and slightly reduces thirst. Grows in temperate climates with moderate humidity."
@@ -521,9 +560,22 @@
     "Description": "A very refreshing fruit with high water content that significantly reduces thirst."
   },
   "BananaBlock:0": {
-    "DisplayName": "Banana",
-    "Description": "An energy-rich fruit that restores a good amount of hunger and provides decent hydration."
-  },
+  "DisplayName": "Banana",
+  "Description": "An energy-rich fruit that restores a good amount of hunger and provides decent hydration. Grows on banana trees in warm, humid climates."
+},
+"BananaWoodBlock:0": {
+  "DisplayName": "Banana Wood",
+  "Description": "A lightweight, fibrous wood obtained from banana trees. Not as strong as oak, but useful for basic construction and crafting."
+},
+"BananaLeavesBlock:0": {
+  "DisplayName": "Banana Leaves",
+  "Description": "Large, broad leaves from banana trees. They provide shade and can be used as a natural canopy or decorative element."
+},
+"BananaSaplingBlock:0": {
+  "DisplayName": "Banana Sapling",
+  "Description": "A young banana tree that will grow into a full banana tree over time. Plant it on soil in warm environments and wait for it to mature.",
+  "CRDescription:0": "Obtained by crafting with Banana Leaves."
+},
   "BlueberryBlock:0": {
     "DisplayName": "Blueberry",
     "Description": "A small and nutritious fruit that offers little energy but slightly helps with thirst."
@@ -605,6 +657,14 @@
     "Description": "A bowl of cactus juice. Refreshing and restores some thirst.",
     "CRDescription:0": "Boil water with cactus"
   },
+  "WatermelonBlock:0": {
+  "DisplayName": "Watermelon",
+  "Description": "A juicy watermelon that grows on the ground in warm climates. When fully ripe, it drops watermelon slices."
+},
+"RottenWatermelonBlock:0": {
+  "DisplayName": "Rotten Watermelon",
+  "Description": "This watermelon has gone bad. Better not eat it."
+},
   "AntidoteBowlBlock:0": {
     "DisplayName": "Bowl of Antidote",
     "Description": "A medicinal bowl that cures poison and sickness.",
@@ -1179,6 +1239,20 @@
 }
 },
       "ContentWidgets": {
+        "LetterWarDialog": {
+    "Title": "WAR LETTER",
+    "AcceptButton": "ACCEPT",
+    "RejectButton": "REJECT",
+    "Message": "From the Cartel of Los Bandidos (Cartel de Los Bandidos):\nAfter surviving the Green Night, you proved that at least\nyou could make it through the green nights, from the easiest\nto the hardest.\nHowever, we want to declare war on you as a new\nchallenge. We want to know if you can survive once again.\nIf you accept, tomorrow at dawn we’re gonna beat the hell out of you.\nBut if you manage to win the war against us, we’ll leave you alone\nforever. Not a single bullet anymore.\nIf you refuse, you’ll still be able to read this letter for now.\nBut everyone will know you’re a damn coward hiding\nbefore a real fight.\nThe Cartel never forgives. Choose carefully, for your own damn sake.\nSigned: The Council of Bandidos",
+    "AcceptMessage": "You accepted the war, idiot. The Cartel is gonna crush you at dawn. You already signed your own sentence.",
+    "RejectMessage": "You rejected the challenge, coward. The letter will stay here, but don’t think we forgot about you. The Cartel always comes back."
+  },
+        "RefrigeratorXiaomi": {
+    "RefrigeratorLabel": "Refrigerator",
+    "InventoryLabel": "Inventory",
+    "CoolingStatus": "Cooling...",
+    "NoPowerStatus": "No Power"
+  },
         "GreenNightToggleDialog": {
   "Title": "Green Night Settings",
   "CheckboxText": "Enable Green Night",
