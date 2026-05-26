@@ -1,4 +1,11 @@
 {
+  "BaseWatermelonBlock": {
+    "1": "Sandía",
+    "2": "Sandía {0}",
+    "3": "Sandía {0} {1}",
+    "4": "Podrida",
+    "5": "Inmadura"
+  },
   "Healing": {
     "0": "Has sido curado por {0}.",
     "1": "{0} te ha curado de la gripe.",
@@ -13,10 +20,12 @@
   "SubsystemDoubleMusketBlockBehavior": {
   "0": "¡El mosquete de doble cañón no está cargado!"
 },
-  "RemoteControlAchievement": {
+  "UnlockedItems": {
   "CraftingLocked": "¡Debes sobrevivir a todas las oleadas primero!",
   "Unlocked": "¡Control remoto desbloqueado!",
-  "UnlockedInfo": "Ahora puedes fabricar el Control Remoto para gestionar las Noches Verdes."
+  "UnlockedInfo": "Ahora puedes fabricar el Control Remoto para gestionar las Noches Verdes.",
+  "ChestMessage": "¡UN COFRE MISTERIOSO HA APARECIDO!",
+  "ChestInfo": "Busca el cofre que ha aparecido cerca de ti."
 },
   "ComponentNewSleep": {
     "CantSleepGreenNight": "No puedes dormir durante la Noche Verde"
@@ -106,7 +115,10 @@
     "FreeCameraDescription": "Activar/desactivar el modo de cámara libre (solo en modos no creativos)",
     "BleedingDescription": "Activar/desactivar sangrado en criaturas heridas",
     "HealthBarDescription": "Mostrar barras de salud en las criaturas",
-    "SkeletonSpawnDescription": "Generar esqueletos en noches normales"
+    "SkeletonSpawnDescription": "Generar esqueletos en noches normales",
+    "FastMeleeDescription": "Permitir ataques cuerpo a cuerpo rápidos consecutivos al hacer clic/tocar rápidamente en el mismo objetivo",
+    "InGameMusicDescription": "Muestra un botón en el juego para reproducir pistas de música aleatorias durante la partida."
+
   },
   "SpecialThanksScreen": {
   "0": "Agradecimientos Especiales",
@@ -170,12 +182,6 @@
     "Off": "Apagado",
     "CoverageRadius": "Radio de Cobertura"
   },
-  "RefrigeratorXiaomi": {
-    "RefrigeratorLabel": "Refrigerador",
-    "InventoryLabel": "Inventario",
-    "CoolingStatus": "Refrigerando...",
-    "NoPowerStatus": "Sin energía"
-  },
   "Injury": {
     "Poisoned": "Envenenado",
     "FrozenToDeath": "Congelado hasta morir",
@@ -187,6 +193,8 @@
     "DisplayName": {
       "FirearmsDealer": "Comerciante de Armas",
       "Aimep3": "Aimep3",
+      "Bandit17": "Bandido 17",
+      "Bandit16": "Bandido 16",
       "Bandit15": "Bandido 15",
       "Bandit14": "Bandido 14",
       "Bandit13": "Bandido 13",
@@ -438,6 +446,18 @@
     }
   },
   "Blocks": {
+    "LetterWarBlock:0": {
+  "DisplayName": "Carta Misteriosa",
+  "Description": "Un sobre sellado sin nombre de remitente. Parece importante... Leerlo podría llevarte a algo peligroso. Puedes encontrar esta carta dentro de un cofre que aparece cerca de ti después de sobrevivir a todas las oleadas nocturnas verdes."
+},
+    "WatermelonBlock:0": {
+  "DisplayName": "Sandía",
+  "Description": "Una jugosa sandía que crece en el suelo en climas cálidos. Cuando está completamente madura, deja caer rodajas de sandía."
+},
+"RottenWatermelonBlock:0": {
+  "DisplayName": "Sandía podrida",
+  "Description": "Esta sandía se ha echado a perder. Mejor no comerla."
+},
     "DoubleMusketBlock:0": {
     "DisplayName": "Mosquete Doble",
     "Description": "Un mosquete de dos cañones que puede disparar dos veces antes de recargar. Puede usar balas estándar o potentes rondas Anti-Tanks que causan un daño masivo y penetran armaduras. Se fabrica con un mosquete, lingote de hierro y tablones.",
@@ -522,8 +542,49 @@
     "Description": "Una fruta muy refrescante con alto contenido de agua que ayuda significativamente a reducir la sed."
   },
   "BananaBlock:0": {
-    "DisplayName": "Banana",
-    "Description": "Una fruta energética que restaura bastante hambre y también proporciona una buena cantidad de hidratación."
+  "DisplayName": "Banana",
+  "Description": "Una fruta rica en energía que restaura una buena cantidad de hambre y proporciona una hidratación decente. Crece en plataneros en climas cálidos y húmedos."
+},
+"BananaWoodBlock:0": {
+  "DisplayName": "Madera de Banana",
+  "Description": "Una madera ligera y fibrosa obtenida de los plataneros. No es tan resistente como el roble, pero es útil para construcción básica y fabricación."
+},
+"BananaLeavesBlock:0": {
+  "DisplayName": "Hojas de Banana",
+  "Description": "Grandes y anchas hojas de platanero. Proporcionan sombra y pueden usarse como un dosel natural o elemento decorativo."
+},
+"BananaSaplingBlock:0": {
+  "DisplayName": "Brote de Banana",
+  "Description": "Un joven platanero que crecerá hasta convertirse en un árbol de banana completo con el tiempo. Plántalo en tierra en ambientes cálidos y espera a que madure.",
+  "CRDescription:0": "Se obtiene mediante fabricación con Hojas de Banano."
+},
+"RottenAppleBlock:0": {
+    "DisplayName": "Manzana Podrida",
+    "Description": "Una manzana en descomposición cubierta de manchas marrones y moho. Comerla puede causar intoxicación alimentaria y no aporta valor nutricional."
+  },
+  "RottenPearBlock:0": {
+    "DisplayName": "Pera Podrida",
+    "Description": "Esta pera se ha vuelto blanda y con mal olor. Consumirla podría enfermarte y ofrece poca o ninguna nutrición."
+  },
+  "RottenOrangeBlock:0": {
+    "DisplayName": "Naranja Podrida",
+    "Description": "Una naranja arrugada con un olor amargo y fermentado. Comerla puede provocar dolor de estómago y náuseas."
+  },
+  "RottenCherryBlock:0": {
+    "DisplayName": "Cereza Podrida",
+    "Description": "Arrugada y goteando jugo pegajoso, esta cereza ya pasó su mejor momento. Ingerirla puede causar enfermedades."
+  },
+  "RottenSliceOfWatermelonBlock:0": {
+    "DisplayName": "Rodaja de Sandía Podrida",
+    "Description": "Una rodaja de sandía empapada y descolorida que huele a levadura agria. Probablemente cause malestar digestivo."
+  },
+  "RottenBananaBlock:0": {
+    "DisplayName": "Banana Podrida",
+    "Description": "Una banana ennegrecida y blanda con un fuerte olor alcohólico. Comerla puede causarte náuseas y drenarte la energía."
+  },
+  "RottenBlueberryBlock:0": {
+    "DisplayName": "Arándanos Podridos",
+    "Description": "Estas bayas tienen moho y un sabor fermentado. No son seguras para el consumo a menos que quieras enfermarte."
   },
   "BlueberryBlock:0": {
     "DisplayName": "Arándano",
@@ -1182,6 +1243,20 @@
     }
 },
   "ContentWidgets": {
+    "LetterWarDialog": {
+      "Title": "CARTA DE GUERRA",
+      "AcceptButton": "ACEPTAR",
+      "RejectButton": "RECHAZAR",
+      "Message": "De parte del Cartel de Los Bandidos:\nTras terminar la noche verde nos demostraste que al menos\npudiste sobrevivir a las noches verdes, desde las faciles\nhasta las mas dificiles.\nSin embargo, queremos declararte la guerra como un nuevo\nreto. Queremos saber si eres capaz de otra vez sobrevivir.\nSi aceptas, manana al amanecer te vamos a dar en la madre.\nPero si logras ganarnos la guerra, te dejaremos en paz\npara siempre. Ni un solo plomazo mas.\nSi rechazas, podras volver a leer la carta por ahora.\nPero todos sabran que eres un pinche cobarde que se esconde\nantes de luchar de verdad.\nEl Cartel no perdona. Elige con cuidado, por tu puta madre.\nFirma: El Consejo de Bandidos",
+      "AcceptMessage": "Has aceptado la guerra, pendejo. El Cartel te va a triturar al amanecer. Ya firmaste tu sentencia.",
+      "RejectMessage": "Rechazaste el desafio, cobarde. La carta seguira aqui, pero no creas que te olvidamos. El Cartel siempre vuelve."
+    },
+    "RefrigeratorXiaomi": {
+    "RefrigeratorLabel": "Refrigerador",
+    "InventoryLabel": "Inventario",
+    "CoolingStatus": "Refrigerando...",
+    "NoPowerStatus": "Sin energía"
+  },
     "GreenNightToggleDialog": {
   "Title": "Configuración de Noche Verde",
   "CheckboxText": "Activar Noche Verde",
