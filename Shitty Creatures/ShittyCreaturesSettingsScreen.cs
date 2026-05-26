@@ -19,6 +19,7 @@ namespace Game
 		private BevelledButtonWidget m_healthBarButton;
 		private BevelledButtonWidget m_skeletonSpawnButton;
 		private BevelledButtonWidget m_fastMeleeButton;
+		private BevelledButtonWidget m_musicButton;
 		private StackPanelWidget m_contentPanel;
 		private LabelWidget m_titleLabel;
 
@@ -44,6 +45,7 @@ namespace Game
 			CreateOptionRow("ShittyCreaturesSettings", "HealthBarDescription", out m_healthBarButton, Color.LightGray, GetHealthBarButtonText);
 			CreateOptionRow("ShittyCreaturesSettings", "SkeletonSpawnDescription", out m_skeletonSpawnButton, Color.LightGray, GetSkeletonSpawnButtonText);
 			CreateOptionRow("ShittyCreaturesSettings", "FastMeleeDescription", out m_fastMeleeButton, Color.LightGray, GetFastMeleeButtonText);
+			CreateOptionRow("ShittyCreaturesSettings", "InGameMusicDescription", out m_musicButton, Color.LightGray, GetMusicButtonText);
 		}
 
 		private void CreateOptionRow(string category, string descriptionKey, out BevelledButtonWidget button, Color buttonColor, Func<string> getButtonTextFunc)
@@ -92,6 +94,7 @@ namespace Game
 		private string GetHealthBarButtonText() => ShittyCreaturesSettingsManager.HealthBarEnabled ? LanguageControl.On : LanguageControl.Off;
 		private string GetSkeletonSpawnButtonText() => ShittyCreaturesSettingsManager.SkeletonSpawnEnabled ? LanguageControl.On : LanguageControl.Off;
 		private string GetFastMeleeButtonText() => ShittyCreaturesSettingsManager.FastMeleeEnabled ? LanguageControl.On : LanguageControl.Off;
+		private string GetMusicButtonText() => ShittyCreaturesSettingsManager.InGameMusicButtonEnabled ? LanguageControl.On : LanguageControl.Off;
 
 		public override void Update()
 		{
@@ -168,6 +171,11 @@ namespace Game
 			{
 				ShittyCreaturesSettingsManager.FastMeleeEnabled = !ShittyCreaturesSettingsManager.FastMeleeEnabled;
 				m_fastMeleeButton.Text = GetFastMeleeButtonText();
+			}
+			if (m_musicButton != null && m_musicButton.IsClicked)
+			{
+				ShittyCreaturesSettingsManager.InGameMusicButtonEnabled = !ShittyCreaturesSettingsManager.InGameMusicButtonEnabled;
+				m_musicButton.Text = GetMusicButtonText();
 			}
 		}
 	}
