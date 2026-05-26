@@ -36,18 +36,19 @@ namespace Game
 			CreateOptionRow("ShittyCreaturesSettings", "GhostDescription", out m_ghostButton, Color.Gray, GetGhostButtonText);
 			CreateOptionRow("ShittyCreaturesSettings", "TankDescription", out m_tankButton, Color.Red, GetTankButtonText);
 			CreateOptionRow("ShittyCreaturesSettings", "SpawnDescription", out m_spawnButton, Color.LightGreen, GetSpawnButtonText);
-			CreateOptionRow("ShittyCreaturesSettings", "ThirstDescription", out m_thirstButton, Color.LightGray, GetThirstButtonText);
-			CreateOptionRow("ShittyCreaturesSettings", "CoordinateDisplay", out m_coordinateButton, Color.LightGray, GetCoordinateButtonText);
-			CreateOptionRow("ShittyCreaturesSettings", "PunchCommandDescription", out m_punchCommandButton, Color.LightGray, GetPunchCommandButtonText);
-			CreateOptionRow("ShittyCreaturesSettings", "CreativeDefenseDescription", out m_creativeDefenseButton, Color.LightGray, GetCreativeDefenseButtonText);
-			CreateOptionRow("ShittyCreaturesSettings", "FreeCameraDescription", out m_freeCameraButton, Color.LightGray, GetFreeCameraButtonText);
-			CreateOptionRow("ShittyCreaturesSettings", "BleedingDescription", out m_bleedingButton, Color.LightGray, GetBleedingButtonText);
-			CreateOptionRow("ShittyCreaturesSettings", "HealthBarDescription", out m_healthBarButton, Color.LightGray, GetHealthBarButtonText);
-			CreateOptionRow("ShittyCreaturesSettings", "SkeletonSpawnDescription", out m_skeletonSpawnButton, Color.LightGray, GetSkeletonSpawnButtonText);
-			CreateOptionRow("ShittyCreaturesSettings", "FastMeleeDescription", out m_fastMeleeButton, Color.LightGray, GetFastMeleeButtonText);
-			CreateOptionRow("ShittyCreaturesSettings", "InGameMusicDescription", out m_musicButton, Color.LightGray, GetMusicButtonText);
+			CreateOptionRow("ShittyCreaturesSettings", "ThirstDescription", out m_thirstButton, GetThirstButtonText);
+			CreateOptionRow("ShittyCreaturesSettings", "CoordinateDisplay", out m_coordinateButton, GetCoordinateButtonText);
+			CreateOptionRow("ShittyCreaturesSettings", "PunchCommandDescription", out m_punchCommandButton, GetPunchCommandButtonText);
+			CreateOptionRow("ShittyCreaturesSettings", "CreativeDefenseDescription", out m_creativeDefenseButton, GetCreativeDefenseButtonText);
+			CreateOptionRow("ShittyCreaturesSettings", "FreeCameraDescription", out m_freeCameraButton, GetFreeCameraButtonText);
+			CreateOptionRow("ShittyCreaturesSettings", "BleedingDescription", out m_bleedingButton, GetBleedingButtonText);
+			CreateOptionRow("ShittyCreaturesSettings", "HealthBarDescription", out m_healthBarButton, GetHealthBarButtonText);
+			CreateOptionRow("ShittyCreaturesSettings", "SkeletonSpawnDescription", out m_skeletonSpawnButton, GetSkeletonSpawnButtonText);
+			CreateOptionRow("ShittyCreaturesSettings", "FastMeleeDescription", out m_fastMeleeButton, GetFastMeleeButtonText);
+			CreateOptionRow("ShittyCreaturesSettings", "InGameMusicDescription", out m_musicButton, GetMusicButtonText);
 		}
 
+		// Sobrecarga CON color (para Ghost, Tank, Spawn)
 		private void CreateOptionRow(string category, string descriptionKey, out BevelledButtonWidget button, Color buttonColor, Func<string> getButtonTextFunc)
 		{
 			var rowPanel = new UniformSpacingPanelWidget
@@ -71,6 +72,38 @@ namespace Game
 				Size = new Vector2(310f, 60f),
 				BevelColor = buttonColor,
 				CenterColor = buttonColor,
+				Name = $"Button_{descriptionKey}",
+				VerticalAlignment = WidgetAlignment.Center,
+				Margin = new Vector2(20f, 0f),
+				Text = getButtonTextFunc()
+			};
+
+			rowPanel.Children.Add(descriptionLabel);
+			rowPanel.Children.Add(button);
+			m_contentPanel.Children.Add(rowPanel);
+		}
+
+		private void CreateOptionRow(string category, string descriptionKey, out BevelledButtonWidget button, Func<string> getButtonTextFunc)
+		{
+			var rowPanel = new UniformSpacingPanelWidget
+			{
+				Direction = LayoutDirection.Horizontal,
+				Margin = new Vector2(0f, 8f)
+			};
+
+			var descriptionLabel = new LabelWidget
+			{
+				Text = LanguageControl.Get(new string[] { category, descriptionKey }),
+				HorizontalAlignment = WidgetAlignment.Far,
+				VerticalAlignment = WidgetAlignment.Center,
+				Margin = new Vector2(20f, 0f),
+				Size = new Vector2(600f, -1f),
+				WordWrap = true
+			};
+
+			button = new BevelledButtonWidget
+			{
+				Size = new Vector2(310f, 60f),
 				Name = $"Button_{descriptionKey}",
 				VerticalAlignment = WidgetAlignment.Center,
 				Margin = new Vector2(20f, 0f),
