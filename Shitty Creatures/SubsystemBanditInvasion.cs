@@ -26,7 +26,13 @@ namespace Game
         private bool m_invasionStarted;
         private bool m_invasionCompleted;
 
-        private float m_spawnTimer;
+		private bool m_wasRejected;
+
+		public bool IsWarAccepted => m_acceptedWar;
+		public bool IsWarRejected => m_wasRejected;
+		public bool IsWarCompleted => m_invasionCompleted;
+
+		private float m_spawnTimer;
         private float m_spawnInterval = 3.0f;
         private const int MaxBanditsPerArea = 8;
         private const int MaxGlobalBandits = 35;
@@ -46,14 +52,16 @@ namespace Game
 				m_invasionActive = false;
 				m_invasionStarted = false;
 				m_acceptedWar = true;
+				m_wasRejected = false;
 				m_spawnTimer = 0f;
 				return;
 			}
 
-			// Si no está completada y aún no se había aceptado, simplemente activamos la aceptación
+			// Si no está completada y aún no se había aceptado, activamos la aceptación
 			if (!m_acceptedWar)
 			{
 				m_acceptedWar = true;
+				m_wasRejected = false;
 			}
 		}
 
@@ -92,6 +100,7 @@ namespace Game
 
 			m_acceptedWar = valuesDictionary.GetValue<bool>("AcceptedWar", false);
 			m_invasionCompleted = valuesDictionary.GetValue<bool>("InvasionCompleted", false);
+			m_wasRejected = valuesDictionary.GetValue<bool>("WasRejected", false);
 			m_wasNight = IsNightTime();
 
 			// Si la invasión estaba activa al cargar (por guardado durante la noche), restaurar modo narcotraficante
@@ -107,6 +116,7 @@ namespace Game
 		{
 			valuesDictionary.SetValue("AcceptedWar", m_acceptedWar);
 			valuesDictionary.SetValue("InvasionCompleted", m_invasionCompleted);
+			valuesDictionary.SetValue("WasRejected", m_wasRejected);
 		}
 
 		public void CancelWar()
@@ -114,12 +124,13 @@ namespace Game
 			if (m_invasionCompleted) return;
 
 			m_acceptedWar = false;
+			m_wasRejected = true;
 
 			// Si la invasión estaba activa, detenerla y restaurar bandidos a modo normal
 			if (m_invasionActive)
 			{
 				m_invasionActive = false;
-				m_invasionStarted = false; // Permitir reiniciar si se vuelve a aceptar en la misma noche
+				m_invasionStarted = false;
 				m_spawnTimer = 0f;
 				SetAllBanditsDrugTraffickerMode(false);
 			}
@@ -368,15 +379,13 @@ namespace Game
 			Block block2 = BlocksManager.Blocks[Terrain.ExtractContents(cellValueFast2)];
 			Block block3 = BlocksManager.Blocks[Terrain.ExtractContents(cellValueFast3)];
 
-			bool belowSolid = (block.IsCollidable_(cellValueFast) || block is WaterBlock);
+			// Solo permite spawnear sobre estos bloques específicos
+			bool isValidGround = block is GrassBlock || block is DirtBlock || block is SandBlock || block is GravelBlock;
+
 			bool currentEmpty = (!block2.IsCollidable_(cellValueFast2) && !(block2 is WaterBlock));
 			bool aboveEmpty = (!block3.IsCollidable_(cellValueFast3) && !(block3 is WaterBlock));
 
-			if (!belowSolid || !currentEmpty || !aboveEmpty)
-				return false;
-
-			int groundContents = Terrain.ExtractContents(cellValueFast);
-			if (groundContents == 18 || groundContents == 92)
+			if (!isValidGround || !currentEmpty || !aboveEmpty)
 				return false;
 
 			return true;
