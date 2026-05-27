@@ -814,18 +814,7 @@
         </ParameterSet>
     </ParameterSet>      
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="MusketShooterBehavior2" Guid="1cf95492-6805-4393-9628-d5d0cb67ae90" InheritanceParent="32352458-619e-4c17-9392-eefb8dd0ede3">
-    <Parameter Name="MaxDistance" Value="30" Type="float"/>
-    <Parameter Name="MeleeSwitchDistance" Value="5" Type="float"/>
-    <Parameter Name="ReloadTime" Value="1" Type="float"/>
-    <Parameter Name="AimTime" Value="0.8" Type="float"/>
-    <Parameter Name="CockTime" Value="0.5" Type="float"/>
-    <Parameter Name="MeleeAttackTime" Value="0.8" Type="float"/>
-    <Parameter Name="Accuracy" Value="0.015" Type="float"/>
-    <Parameter Name="UseRecoil" Value="False" Type="bool"/>
-    <Parameter Name="BulletSpeed" Value="140" Type="float"/>
-    <Parameter Name="RequireCocking" Value="True" Type="bool"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="MusketShooterBehavior" Guid="1cf95492-6805-4393-9628-d5d0cb67ae90" InheritanceParent="68a0cf69-c292-490d-9ca9-9ddc9930effb"/>
     <MemberComponentTemplate Name="Loot" Guid="98a2ba6d-8793-494e-b812-e62952626a56">
         <ParameterSet Name="Loot" Guid="54961395-8a25-4f24-a811-390822cf9493">
             <Parameter Name="1" Guid="48c7c608-e8e1-4175-91ac-00a2d1d10c6b" Value="StringBlock;1;4;1" Type="string"/>
@@ -951,24 +940,12 @@
 <MemberComponentTemplate Name="Inventory" Guid="f1c0c8e7-ec5c-42d9-a12f-5cbd6ec1a8a4" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
     <ParameterSet Name="Slots">
         <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="328" Type="int"/> <!-- Lanzallamas -->
+            <Parameter Name="Contents" Value="348" Type="int"/> <!-- Lanzallamas -->
             <Parameter Name="Count" Value="1" Type="int"/>
         </ParameterSet>
     </ParameterSet>   
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="FlameThrowerShooterBehavior" Guid="4d8a136c-0050-400c-9784-82d98ed218ff" InheritanceParent="b3bc9331-ad8a-4454-9a3a-fec7a52d85f2">
-    <Parameter Name="MaxDistance" Value="55" Type="float"/>
-    <Parameter Name="AimTime" Value="0.35" Type="float"/>
-    <Parameter Name="BurstTime" Value="5" Type="float"/>
-    <Parameter Name="CooldownTime" Value="1" Type="float"/>
-    <Parameter Name="FireSoundDistance" Value="100" Type="float"/>
-    <Parameter Name="HammerSoundDistance" Value="100" Type="float"/>
-    <Parameter Name="Accuracy" Value="0.12" Type="float"/>
-    <Parameter Name="UseRecoil" Value="true" Type="bool"/>
-    <Parameter Name="FlameSpeed" Value="35" Type="float"/>
-    <Parameter Name="BurstCount" Value="12" Type="int"/>
-    <Parameter Name="SpreadAngle" Value="15" Type="float"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="FlameThrowerShooterBehavior" Guid="4d8a136c-0050-400c-9784-82d98ed218ff" InheritanceParent="b3bc9331-ad8a-4454-9a3a-fec7a52d85f2"/>
     <MemberComponentTemplate Name="CreatureSounds" Guid="af01f5d9-3b84-4fb2-a842-e823f9521d4e">
         <Parameter Name="PainSound" Guid="759694c1-e8c1-4773-9f65-105764c01895" Value="Audio/Creatures/FumadorQuimico/Pain" Type="string"/>
         <Parameter Name="IdleSound" Guid="90015d6d-f972-4ee3-9c18-91d52934d524" Value="Audio/Creatures/FumadorQuimico/Idie" Type="string"/>
@@ -1383,18 +1360,7 @@
         </ParameterSet>
      </ParameterSet> 
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="MusketShooterBehavior2" Guid="c9e90304-974a-48d1-b7c8-30156330183f" InheritanceParent="32352458-619e-4c17-9392-eefb8dd0ede3">
-    <Parameter Name="MaxDistance" Value="30" Type="float"/>
-    <Parameter Name="MeleeSwitchDistance" Value="5" Type="float"/>
-    <Parameter Name="ReloadTime" Value="1" Type="float"/>
-    <Parameter Name="AimTime" Value="0.8" Type="float"/>
-    <Parameter Name="CockTime" Value="0.5" Type="float"/>
-    <Parameter Name="MeleeAttackTime" Value="0.8" Type="float"/>
-    <Parameter Name="Accuracy" Value="0.015" Type="float"/>
-    <Parameter Name="UseRecoil" Value="False" Type="bool"/>
-    <Parameter Name="BulletSpeed" Value="140" Type="float"/>
-    <Parameter Name="RequireCocking" Value="True" Type="bool"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="MusketShooterBehavior" Guid="c9e90304-974a-48d1-b7c8-30156330183f" InheritanceParent="68a0cf69-c292-490d-9ca9-9ddc9930effb"/>
     <MemberComponentTemplate Name="Loot" Guid="54d5d8da-2443-476c-bb9c-40ed9a8b1d8b">
         <ParameterSet Name="Loot" Guid="9677a3d6-e062-48e7-a5ea-d276db5907fe">
             <Parameter Name="1" Guid="1491e2eb-ce7e-4b25-9a54-de216ddd5757" Value="DiamondBlock;2;1;0.25" Type="string"/>
@@ -2656,14 +2622,7 @@
         </ParameterSet>
     </ParameterSet>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="CrossbowShooterBehavior" Guid="dc355fe3-21d1-4950-919f-78fd29bfefef" InheritanceParent="90581361-aa1f-4180-bc02-359795600942">
-    <Parameter Name="MaxDistance" Value="100" Type="float"/>
-    <Parameter Name="DrawTime" Value="0.3" Type="float"/>
-    <Parameter Name="AimTime" Value="0.55" Type="float"/>
-    <Parameter Name="Accuracy" Value="0" Type="float"/>
-    <Parameter Name="UseRecoil" Value="true" Type="bool"/>
-    <Parameter Name="BoltSpeed" Value="45" Type="float"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="CrossbowShooterBehavior" Guid="dc355fe3-21d1-4950-919f-78fd29bfefef" InheritanceParent="90581361-aa1f-4180-bc02-359795600942"/>
     <MemberComponentTemplate Name="Loot" Guid="81c253ce-396d-4632-8a25-e873ac46c7e5">
         <ParameterSet Name="Loot" Guid="bf4643b1-6c8f-4cd0-8ec4-93c5bd51fd0c">
             <Parameter Name="1" Guid="d154dc98-a50c-4942-974a-6a493a7936d1" Value="StringBlock;1;10;0.2" Type="string"/>
@@ -2927,14 +2886,7 @@
         </ParameterSet>
     </ParameterSet>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="BowShooterBehavior" Guid="1a7202f4-4fb5-437e-84ae-ba88167f3c5f" InheritanceParent="416961cf-2c1d-4611-a7a3-6c7197aba83e">
-    <Parameter Name="MaxDistance" Value="100" Type="float"/>
-    <Parameter Name="DrawTime" Value="0.3" Type="float"/>
-    <Parameter Name="AimTime" Value="0.55" Type="float"/>
-    <Parameter Name="Accuracy" Value="0.03" Type="float"/>
-    <Parameter Name="UseRecoil" Value="false" Type="bool"/>
-    <Parameter Name="ArrowSpeed" Value="40" Type="float"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="BowShooterBehavior" Guid="1a7202f4-4fb5-437e-84ae-ba88167f3c5f" InheritanceParent="416961cf-2c1d-4611-a7a3-6c7197aba83e"/>
     <MemberComponentTemplate Name="Loot" Guid="4bb110fe-f5f8-40a3-ad83-b25ee4e389ab">
         <ParameterSet Name="Loot" Guid="a11a74e9-6cdc-4b27-8e00-35da047fc2b2">
             <Parameter Name="1" Guid="08d3ac2f-ac07-4234-8041-2bc7f9aeaae7" Value="ArrowBlock;1;10;1" Type="string"/>
@@ -3077,14 +3029,7 @@
         </ParameterSet>
     </ParameterSet>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="BowShooterBehavior" Guid="b34e35aa-cddb-41eb-98fa-37bd0c6f8e09" InheritanceParent="416961cf-2c1d-4611-a7a3-6c7197aba83e">
-    <Parameter Name="MaxDistance" Value="100" Type="float"/>
-    <Parameter Name="DrawTime" Value="0.3" Type="float"/>
-    <Parameter Name="AimTime" Value="0.55" Type="float"/>
-    <Parameter Name="Accuracy" Value="0.03" Type="float"/>
-    <Parameter Name="UseRecoil" Value="false" Type="bool"/>
-    <Parameter Name="ArrowSpeed" Value="40" Type="float"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="BowShooterBehavior" Guid="b34e35aa-cddb-41eb-98fa-37bd0c6f8e09" InheritanceParent="416961cf-2c1d-4611-a7a3-6c7197aba83e"/>
     <MemberComponentTemplate Name="Loot" Guid="17f5367a-ccff-4cbd-801a-573906bcbfe3">
         <ParameterSet Name="Loot" Guid="de790e87-d30b-45ee-ac50-8a5fce82a94f">
             <Parameter Name="1" Guid="a3ef9d0e-6984-4e0f-ae1b-3d469877acd8" Value="ArrowBlock:4;1;10;1" Type="string"/>
@@ -3225,14 +3170,7 @@
         </ParameterSet>
     </ParameterSet>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="CrossbowShooterBehavior" Guid="180dadf6-724f-4e55-b5d4-f6e562b6b5c7" InheritanceParent="90581361-aa1f-4180-bc02-359795600942">
-    <Parameter Name="MaxDistance" Value="100" Type="float"/>
-    <Parameter Name="DrawTime" Value="0.3" Type="float"/>
-    <Parameter Name="AimTime" Value="0.55" Type="float"/>
-    <Parameter Name="Accuracy" Value="0" Type="float"/>
-    <Parameter Name="UseRecoil" Value="true" Type="bool"/>
-    <Parameter Name="BoltSpeed" Value="45" Type="float"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="CrossbowShooterBehavior" Guid="180dadf6-724f-4e55-b5d4-f6e562b6b5c7" InheritanceParent="90581361-aa1f-4180-bc02-359795600942"/>
     <MemberComponentTemplate Name="Loot" Guid="5e427b60-7196-4a0a-aed7-7e265da4ca33">
         <ParameterSet Name="Loot" Guid="15484f62-5b8e-4702-8c44-19a54f258190">
             <Parameter Name="1" Guid="e4f47ac8-02e0-4599-9cf1-b41d35adbd17" Value="ArrowBlock:5;1;10;1" Type="string"/>
@@ -3788,7 +3726,7 @@
     <MemberComponentTemplate Name="Inventory" Guid="c1d2e3f4-a5b6-6678-3456-89abcdef0125" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
     <ParameterSet Name="Slots">
         <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="367" Type="int"/> <!-- Cañon De Objetos -->
+            <Parameter Name="Contents" Value="352" Type="int"/> <!-- Cañon De Objetos -->
             <Parameter Name="Count" Value="1" Type="int"/>
         </ParameterSet>
     </ParameterSet> 
@@ -3952,18 +3890,7 @@
         </ParameterSet>
      </ParameterSet> 
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="MusketShooterBehavior2" Guid="5d204218-be7c-4346-b39a-f61dcec3638b" InheritanceParent="32352458-619e-4c17-9392-eefb8dd0ede3">
-    <Parameter Name="MaxDistance" Value="30" Type="float"/>
-    <Parameter Name="MeleeSwitchDistance" Value="5" Type="float"/>
-    <Parameter Name="ReloadTime" Value="1" Type="float"/>
-    <Parameter Name="AimTime" Value="0.8" Type="float"/>
-    <Parameter Name="CockTime" Value="0.5" Type="float"/>
-    <Parameter Name="MeleeAttackTime" Value="0.8" Type="float"/>
-    <Parameter Name="Accuracy" Value="0.015" Type="float"/>
-    <Parameter Name="UseRecoil" Value="False" Type="bool"/>
-    <Parameter Name="BulletSpeed" Value="140" Type="float"/>
-    <Parameter Name="RequireCocking" Value="True" Type="bool"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="MusketShooterBehavior" Guid="5d204218-be7c-4346-b39a-f61dcec3638b" InheritanceParent="68a0cf69-c292-490d-9ca9-9ddc9930effb"/>
     <MemberComponentTemplate Name="Loot" Guid="d3535cb9-466a-40d2-9a7d-8000b0c8fb92">
         <ParameterSet Name="Loot" Guid="64fc81ae-2479-4e09-bda4-2fd5362d4f7a">
             <Parameter Name="1" Guid="8821b95c-2e90-41a0-bc5b-31658aa98ad3" Value="BulletBlock:0;5;10;0.25" Type="string"/>
@@ -4129,18 +4056,7 @@
         </ParameterSet>
      </ParameterSet> 
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="MusketShooterBehavior2" Guid="35d05fed-9717-4e7a-b12a-a882ec400b0f" InheritanceParent="32352458-619e-4c17-9392-eefb8dd0ede3">
-    <Parameter Name="MaxDistance" Value="30" Type="float"/>
-    <Parameter Name="MeleeSwitchDistance" Value="5" Type="float"/>
-    <Parameter Name="ReloadTime" Value="1" Type="float"/>
-    <Parameter Name="AimTime" Value="0.8" Type="float"/>
-    <Parameter Name="CockTime" Value="0.5" Type="float"/>
-    <Parameter Name="MeleeAttackTime" Value="0.8" Type="float"/>
-    <Parameter Name="Accuracy" Value="0.015" Type="float"/>
-    <Parameter Name="UseRecoil" Value="False" Type="bool"/>
-    <Parameter Name="BulletSpeed" Value="140" Type="float"/>
-    <Parameter Name="RequireCocking" Value="True" Type="bool"/>
-</MemberComponentTemplate>
+<MemberComponentTemplate Name="MusketShooterBehavior" Guid="35d05fed-9717-4e7a-b12a-a882ec400b0f" InheritanceParent="68a0cf69-c292-490d-9ca9-9ddc9930effb"/>
     <MemberComponentTemplate Name="Loot" Guid="2387522f-6bf7-4377-bd8b-1c823946331e">
         <ParameterSet Name="Loot" Guid="16b5636b-1af2-4cdf-bfaa-1a9f9f740801">
             <Parameter Name="1" Guid="38c57250-30fd-42ba-9ffe-f90c5625d8f9" Value="DiamondBlock;15;25" Type="string"/>
@@ -4270,7 +4186,7 @@
     <MemberComponentTemplate Name="Inventory" Guid="b36efa22-5c93-46a2-889d-aa35798b2b76" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
     <ParameterSet Name="Slots">
         <ParameterSet Name="Slot0">
-            <Parameter Name="Contents" Value="314" Type="int"/> <!-- Machete de Piedra-->
+            <Parameter Name="Contents" Value="397" Type="int"/> <!-- Machete de Piedra-->
             <Parameter Name="Count" Value="1" Type="int"/>
         </ParameterSet>
      </ParameterSet>
@@ -4390,21 +4306,12 @@
     <MemberComponentTemplate Name="Inventory" Guid="80f33ca3-3fe9-4134-b9a4-a1b48c804a9f" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
         <ParameterSet Name="Slots">
             <ParameterSet Name="Slot0">
-                <Parameter Name="Contents" Value="311" Type="int"/>
+                <Parameter Name="Contents" Value="384" Type="int"/>
                 <Parameter Name="Count" Value="1" Type="int"/>
             </ParameterSet>
         </ParameterSet>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="RepeatCrossbowShooterBehavior" Guid="13db5ca4-3b92-4cb5-b4b1-c07943116e62" InheritanceParent="e40dd82e-a7a5-42de-83ee-8dc7d8cdf2f2">
-    <Parameter Name="MaxDistance" Value="100" Type="float"/>
-    <Parameter Name="DrawTime" Value="0.3" Type="float"/>
-    <Parameter Name="AimTime" Value="0.55" Type="float"/>
-    <Parameter Name="CooldownTime" Value="0.5" Type="float"/>
-    <Parameter Name="TimeBetweenShots" Value="1.0" Type="float"/>
-    <Parameter Name="MaxInaccuracy" Value="0.03" Type="float"/>
-    <Parameter Name="UseRecoil" Value="true" Type="bool"/>
-    <Parameter Name="BoltSpeed" Value="45" Type="float"/>
-</MemberComponentTemplate>
+    <MemberComponentTemplate Name="RepeatCrossbowShooterBehavior" Guid="13db5ca4-3b92-4cb5-b4b1-c07943116e62" InheritanceParent="e40dd82e-a7a5-42de-83ee-8dc7d8cdf2f2"/>
     <MemberComponentTemplate Name="AvoidFireBehavior" Guid="2d9409a2-11db-47fa-a987-501d3dbfc18c" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
     <MemberComponentTemplate Name="Locomotion" Guid="326a3597-7997-4114-9d13-435addc0b967">
         <Parameter Name="AccelerationFactor" Guid="0a1d31cf-bfd2-4116-ab34-55ae95048c9b" Value="1.2" Type="float"/>
@@ -5026,21 +4933,12 @@
             <MemberComponentTemplate Name="Inventory" Guid="df1f32f4-80a2-43d3-a430-362d68f42e37" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
         <ParameterSet Name="Slots">
             <ParameterSet Name="Slot0">
-                <Parameter Name="Contents" Value="311" Type="int"/>
+                <Parameter Name="Contents" Value="384" Type="int"/>
                 <Parameter Name="Count" Value="1" Type="int"/>
             </ParameterSet>
         </ParameterSet>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="RepeatCrossbowShooterBehavior" Guid="52fb86b1-57cd-4a25-b9ce-7b4c14ae8d8c" InheritanceParent="e40dd82e-a7a5-42de-83ee-8dc7d8cdf2f2">
-    <Parameter Name="MaxDistance" Value="100" Type="float"/>
-    <Parameter Name="DrawTime" Value="0.3" Type="float"/>
-    <Parameter Name="AimTime" Value="0.55" Type="float"/>
-    <Parameter Name="CooldownTime" Value="0.5" Type="float"/>
-    <Parameter Name="TimeBetweenShots" Value="1.0" Type="float"/>
-    <Parameter Name="MaxInaccuracy" Value="0.03" Type="float"/>
-    <Parameter Name="UseRecoil" Value="true" Type="bool"/>
-    <Parameter Name="BoltSpeed" Value="45" Type="float"/>
-</MemberComponentTemplate>
+    <MemberComponentTemplate Name="RepeatCrossbowShooterBehavior" Guid="52fb86b1-57cd-4a25-b9ce-7b4c14ae8d8c" InheritanceParent="e40dd82e-a7a5-42de-83ee-8dc7d8cdf2f2"/>
             <MemberComponentTemplate Name="AvoidFireBehavior" Guid="660f0fa3-11d8-47fc-b0a0-8cec8821b149" InheritanceParent="885b2df5-b47b-4c53-bda0-5c1a0c988a3c"/>
             <MemberComponentTemplate Name="Locomotion" Guid="5c8393f8-a9dc-43c3-a2f5-a53e5fa8da5e">
                 <Parameter Name="AccelerationFactor" Guid="747a08e0-806b-4495-bfb8-4f84f828b31f" Value="1.5" Type="float"/>
@@ -6072,6 +5970,9 @@
                     <Parameter Name="Meat" Guid="78d2fdff-88b2-43ae-8975-d0deb6c1e7ce" Value="1" Type="float"/>
                 </ParameterSet>
             </MemberComponentTemplate>
+            <MemberComponentTemplate Name="Spawn" Guid="4d63b05d-d3e7-40df-98df-9a5bc80469cd" InheritanceParent="65268743-4076-4ee3-aefe-f02a54d16b36">
+              <Parameter Name="AutoDespawn" Guid="da9aee03-f7dc-4a7e-83b3-55f702a0202c" Value="False" Type="bool" />
+            </MemberComponentTemplate>
             <MemberComponentTemplate Name="CreatureSounds" Guid="9414d6c2-767f-43fb-8d6c-1a8da1ddeb25">
 				<Parameter Name="IdleSound" Guid="df8f8b15-c020-4069-96d2-d25a5f34595c" Value="Audio/Creatures/aime" Type="string"/>
                 <Parameter Name="PainSound" Guid="8d4639c3-88ad-4247-9729-c9e49396d138" Value="Audio/Creatures/aime" Type="string"/>
@@ -6128,9 +6029,6 @@
     <Parameter Name="SlotsCount" Value="16" Type="int"/>
     <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
   </MemberComponentTemplate>
-            <MemberComponentTemplate Name="Spawn" Guid="51b2cf9f-0422-4db0-8a90-dd7775ce78a0">
-    <Parameter Name="AutoDespawn" Guid="5e8e36ed-97dd-4c08-bfbf-f02502589c50" Value="False" Type="bool"/>
-</MemberComponentTemplate>
             <MemberComponentTemplate Name="FindPlayerBehavior" Guid="c332aa4e-0067-4c9d-8ea2-dff037cf4b92" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
             <MemberComponentTemplate Name="Miner" Guid="42ec0aa3-503b-4efe-b067-17418a9e1fb0" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
                 <Parameter Name="AttackPower" Guid="13b4ac5e-7532-4c84-92b3-21ff8e5071ec" Value="666" Type="float"/>
