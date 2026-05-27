@@ -1,315 +1,207 @@
-// ComponentRepeatCrossbowShooterBehavior.cs - Usando ComponentMiner.Aim
 using System;
 using System.Collections.Generic;
 using Engine;
+using Game;
 using GameEntitySystem;
 using TemplatesDatabase;
 
 namespace Game
 {
+	/// <summary>
+	/// Componente que permite a una criatura usar la Ballesta Repetidora como arma a distancia,
+	/// con munición ilimitada, tiempo de apuntado configurable y tipo de flecha aleatorio.
+	/// Los virotes explosivos solo se disparan si la distancia al objetivo supera el mínimo seguro.
+	/// La criatura dispara siempre, sin importar si tiene arma cuerpo a cuerpo.
+	/// </summary>
 	public class ComponentRepeatCrossbowShooterBehavior : ComponentBehavior, IUpdateable
 	{
-		// Componentes necesarios
-		private ComponentCreature m_componentCreature;
-		private ComponentChaseBehavior m_componentChaseBehavior;
-		private ComponentInventory m_componentInventory;
-		private ComponentMiner m_componentMiner;
+		public float RepeatCrossbowCooldown = 0.02f;
+		public float RepeatCrossbowAimTime = 1.5f;
+		public Vector2 RepeatCrossbowRange = new Vector2(5f, 100f);
+		public Vector2 ExplosiveArrowRange = new Vector2(20f, 100f); // Distancia mínima segura para flecha explosiva
+
 		private SubsystemTime m_subsystemTime;
-		private SubsystemProjectiles m_subsystemProjectiles;
-		private SubsystemTerrain m_subsystemTerrain;
-		private SubsystemBodies m_subsystemBodies;
-		private ComponentPathfinding m_componentPathfinding;
-		private Game.Random m_random = new Game.Random();
+		private ComponentCreature m_componentCreature;
+		private ComponentMiner m_componentMiner;
+		private ComponentChaseBehavior m_componentChase;
 
-		// Configuración
-		public float MaxDistance = 25f;
-		public float BoltSpeed = 35f;
-		public float MaxInaccuracy = 0.04f;
-		public bool UseRecoil = true;
-
-		// Estado
-		private bool m_isAiming = false;
+		private ComponentCreature m_target;
 		private double m_aimStartTime;
-		private int m_crossbowSlot = -1;
-		private bool m_hasCrossbow = false;
-		private ComponentCreature m_currentTarget = null;
-		private Ray3 m_currentAimRay;
+		private double m_lastShootTime;
+		private bool m_isAiming;
 
-		// Tipos de flechas disponibles
-		private RepeatArrowBlock.ArrowType[] m_availableArrowTypes = new RepeatArrowBlock.ArrowType[]
-		{
-			RepeatArrowBlock.ArrowType.CopperArrow,
-			RepeatArrowBlock.ArrowType.IronArrow,
-			RepeatArrowBlock.ArrowType.DiamondArrow,
-			RepeatArrowBlock.ArrowType.ExplosiveArrow,
-			RepeatArrowBlock.ArrowType.PoisonArrow,
-			RepeatArrowBlock.ArrowType.SeriousPoisonArrow
-		};
+		private Random m_random = new Random();
 
-		public int UpdateOrder => 0;
-		public override float ImportanceLevel => 0.5f;
+		public override float ImportanceLevel => 200f;
+		public UpdateOrder UpdateOrder => UpdateOrder.Default;
 
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
 			base.Load(valuesDictionary, idToEntityMap);
 
-			MaxDistance = valuesDictionary.GetValue<float>("MaxDistance", 25f);
-			BoltSpeed = valuesDictionary.GetValue<float>("BoltSpeed", 35f);
-			MaxInaccuracy = valuesDictionary.GetValue<float>("MaxInaccuracy", 0.04f);
-			UseRecoil = valuesDictionary.GetValue<bool>("UseRecoil", true);
-
-			m_componentCreature = base.Entity.FindComponent<ComponentCreature>(true);
-			m_componentChaseBehavior = base.Entity.FindComponent<ComponentChaseBehavior>(true);
-			m_componentInventory = base.Entity.FindComponent<ComponentInventory>(true);
-			m_componentMiner = base.Entity.FindComponent<ComponentMiner>(true);
-			m_subsystemTime = base.Project.FindSubsystem<SubsystemTime>(true);
-			m_subsystemProjectiles = base.Project.FindSubsystem<SubsystemProjectiles>(true);
-			m_subsystemTerrain = base.Project.FindSubsystem<SubsystemTerrain>(true);
-			m_subsystemBodies = base.Project.FindSubsystem<SubsystemBodies>(true);
-			m_componentPathfinding = base.Entity.FindComponent<ComponentPathfinding>(false);
-		}
-
-		public override void OnEntityAdded()
-		{
-			base.OnEntityAdded();
-			FindCrossbow();
-		}
-
-		private bool IsStuck()
-		{
-			return m_componentPathfinding != null && m_componentPathfinding.IsStuck;
-		}
-
-		private bool IsLineOfSightBlocked(ComponentCreature target)
-		{
-			if (target == null) return true;
-			Vector3 start = m_componentCreature.ComponentCreatureModel.EyePosition;
-			Vector3 end = target.ComponentCreatureModel.EyePosition;
-			float distance = Vector3.Distance(start, end);
-			if (distance <= 0.1f) return false;
-
-			TerrainRaycastResult? terrainHit = m_subsystemTerrain.Raycast(start, end, true, true, (int value, float d) =>
-			{
-				int contents = Terrain.ExtractContents(value);
-				Block block = BlocksManager.Blocks[contents];
-				return block.IsCollidable_(value);
-			});
-
-			if (terrainHit != null && terrainHit.Value.Distance < distance) return true;
-
-			BodyRaycastResult? bodyHit = m_subsystemBodies.Raycast(start, end, 0.35f, (ComponentBody body, float dist) =>
-			{
-				if (body == m_componentCreature.ComponentBody) return false;
-				if (body == target.ComponentBody) return false;
-				return true;
-			});
-
-			if (bodyHit != null && bodyHit.Value.Distance < distance) return true;
-			return false;
-		}
-
-		private ComponentCreature GetChaseTarget()
-		{
-			if (m_componentChaseBehavior != null && m_componentChaseBehavior.Target != null)
-				return m_componentChaseBehavior.Target;
-			return null;
-		}
-
-		private void FindCrossbow()
-		{
-			for (int i = 0; i < m_componentInventory.SlotsCount; i++)
-			{
-				int slotValue = m_componentInventory.GetSlotValue(i);
-				if (slotValue != 0)
-				{
-					Block block = BlocksManager.Blocks[Terrain.ExtractContents(slotValue)];
-					if (block is RepeatCrossbowBlock)
-					{
-						m_crossbowSlot = i;
-						m_componentInventory.ActiveSlotIndex = i;
-						m_hasCrossbow = true;
-						break;
-					}
-				}
-			}
-
-			if (!m_hasCrossbow)
-			{
-				m_crossbowSlot = -1;
-			}
-		}
-
-		// Selección aleatoria normal de tipo de flecha (sin inventario)
-		private RepeatArrowBlock.ArrowType? SelectArrowTypeForDistance(float distance)
-		{
-			const float explosiveMinDistance = 20f;
-
-			if (distance >= explosiveMinDistance)
-			{
-				// A larga distancia: todos los tipos, incluyendo explosivo
-				if (m_availableArrowTypes.Length > 0)
-				{
-					int index = m_random.Int(0, m_availableArrowTypes.Length - 1);
-					return m_availableArrowTypes[index];
-				}
-			}
-			else
-			{
-				// A corta distancia: todos excepto explosivo
-				var nonExplosiveTypes = new List<RepeatArrowBlock.ArrowType>();
-				foreach (var arrowType in m_availableArrowTypes)
-				{
-					if (arrowType != RepeatArrowBlock.ArrowType.ExplosiveArrow)
-						nonExplosiveTypes.Add(arrowType);
-				}
-
-				if (nonExplosiveTypes.Count > 0)
-				{
-					int index = m_random.Int(0, nonExplosiveTypes.Count - 1);
-					return nonExplosiveTypes[index];
-				}
-			}
-
-			return m_availableArrowTypes.Length > 0 ? m_availableArrowTypes[0] : null;
-		}
-
-		// Carga la ballesta con un tipo aleatorio (similar a ComponentNewChaseBehavior)
-		private void LoadCrossbowWithRandomBolt()
-		{
-			int crossbowValue = m_componentInventory.GetSlotValue(m_crossbowSlot);
-			if (crossbowValue == 0) return;
-
-			int data = Terrain.ExtractData(crossbowValue);
-			int draw = RepeatCrossbowBlock.GetDraw(data);
-			RepeatArrowBlock.ArrowType? currentArrowType = RepeatCrossbowBlock.GetArrowType(data);
-
-			// Si ya está tensada y cargada, no hacer nada
-			if (draw == 15 && currentArrowType != null)
-				return;
-
-			float distance = Vector3.Distance(
-				m_componentCreature.ComponentBody.Position,
-				m_currentTarget.ComponentBody.Position
-			);
-
-			RepeatArrowBlock.ArrowType? selectedType = SelectArrowTypeForDistance(distance);
-			if (!selectedType.HasValue) return;
-
-			// Crear la nueva ballesta cargada
-			int newData = RepeatCrossbowBlock.SetDraw(data, 15);
-			newData = RepeatCrossbowBlock.SetArrowType(newData, selectedType.Value);
-			int newValue = Terrain.ReplaceData(crossbowValue, newData);
-
-			// Reemplazar el ítem en el inventario
-			m_componentInventory.RemoveSlotItems(m_crossbowSlot, 1);
-			m_componentInventory.AddSlotItems(m_crossbowSlot, newValue, 1);
+			m_subsystemTime = Project.FindSubsystem<SubsystemTime>(true);
+			m_componentCreature = Entity.FindComponent<ComponentCreature>(true);
+			m_componentMiner = Entity.FindComponent<ComponentMiner>(true);
+			m_componentChase = Entity.FindComponent<ComponentChaseBehavior>();
 		}
 
 		public void Update(float dt)
 		{
-			if (m_componentCreature.ComponentHealth.Health <= 0f)
-				return;
-
-			if (!m_hasCrossbow)
+			// Obtener objetivo del chase behavior
+			if (m_componentChase != null && m_componentChase.Target != null)
 			{
-				FindCrossbow();
-				if (!m_hasCrossbow) return;
+				m_target = m_componentChase.Target;
+				if (!IsActive)
+					IsActive = true;
 			}
-
-			ComponentCreature target = GetChaseTarget();
-
-			if (target == null || IsStuck() || IsLineOfSightBlocked(target))
+			else
 			{
-				if (m_isAiming)
+				if (IsActive)
 				{
-					// Cancelar apuntado
-					Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
-					Ray3 cancelRay = new Ray3(eyePos, Vector3.Zero);
-					m_componentMiner.Aim(cancelRay, AimState.Cancelled);
-					m_isAiming = false;
-					m_currentTarget = null;
+					IsActive = false;
+					StopAiming();
 				}
 				return;
 			}
 
-			float distance = Vector3.Distance(
-				m_componentCreature.ComponentBody.Position,
-				target.ComponentBody.Position
-			);
-
-			if (distance > MaxDistance)
+			if (!IsActive || m_target == null || m_target.ComponentHealth.Health <= 0f)
 			{
-				if (m_isAiming)
-				{
-					Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
-					Ray3 cancelRay = new Ray3(eyePos, Vector3.Zero);
-					m_componentMiner.Aim(cancelRay, AimState.Cancelled);
-					m_isAiming = false;
-					m_currentTarget = null;
-				}
+				StopAiming();
 				return;
 			}
 
-			// Asegurar que la ballesta está en la mano activa
-			if (m_componentInventory.ActiveSlotIndex != m_crossbowSlot)
+			if (!HasCrossbowEquipped())
 			{
-				m_componentInventory.ActiveSlotIndex = m_crossbowSlot;
+				StopAiming();
+				return;
 			}
 
-			// Calcular rayo hacia el objetivo
-			Vector3 eyePosition = m_componentCreature.ComponentCreatureModel.EyePosition;
-			Vector3 targetPosition = target.ComponentBody.Position;
-			targetPosition.Y += target.ComponentBody.BoxSize.Y * 0.5f;
-			Vector3 direction = Vector3.Normalize(targetPosition - eyePosition);
-			Ray3 aimRay = new Ray3(eyePosition, direction);
+			float distance = Vector3.Distance(m_componentCreature.ComponentBody.Position, m_target.ComponentBody.Position);
+
+			// Fuera de alcance máximo -> dejar de apuntar
+			if (distance > RepeatCrossbowRange.Y)
+			{
+				StopAiming();
+				return;
+			}
+
+			// Ya no se intenta cambiar a arma cuerpo a cuerpo.
+			// La criatura siempre dispara mientras esté dentro del alcance máximo.
+
+			double currentTime = m_subsystemTime.GameTime;
 
 			if (!m_isAiming)
 			{
-				// Iniciar apuntado: primero cargar la ballesta si es necesario
-				m_currentTarget = target;
-				m_currentAimRay = aimRay;
-				m_aimStartTime = m_subsystemTime.GameTime;
+				StartAiming();
+				m_aimStartTime = currentTime;
 				m_isAiming = true;
+			}
 
-				// Cargar la ballesta con un tipo aleatorio (si no está lista)
-				LoadCrossbowWithRandomBolt();
+			UpdateAimingModel();
 
-				// Llamar a Aim con estado InProgress
+			if (currentTime - m_aimStartTime >= RepeatCrossbowAimTime &&
+				currentTime - m_lastShootTime >= RepeatCrossbowCooldown)
+			{
+				// Preparar la ballesta con munición infinita y tipo de flecha adecuado a la distancia
+				PrepareCrossbowForShoot(distance);
+
+				// Disparar usando el sistema del bloque
+				ShootAtTarget();
+
+				m_lastShootTime = currentTime;
+				m_aimStartTime = currentTime;
+			}
+		}
+
+		private bool HasCrossbowEquipped()
+		{
+			if (m_componentMiner.Inventory == null)
+				return false;
+			int activeSlot = m_componentMiner.Inventory.ActiveSlotIndex;
+			int value = m_componentMiner.Inventory.GetSlotValue(activeSlot);
+			int crossbowIndex = BlocksManager.GetBlockIndex("RepeatCrossbowBlock", false);
+			return Terrain.ExtractContents(value) == crossbowIndex;
+		}
+
+		private void StartAiming()
+		{
+			Vector3 direction = Vector3.Normalize(m_target.ComponentCreatureModel.EyePosition - m_componentCreature.ComponentCreatureModel.EyePosition);
+			Ray3 aimRay = new Ray3(m_componentCreature.ComponentCreatureModel.EyePosition, direction);
+			m_componentMiner.Aim(aimRay, AimState.InProgress);
+		}
+
+		private void UpdateAimingModel()
+		{
+			if (m_isAiming && m_target != null)
+			{
+				Vector3 direction = Vector3.Normalize(m_target.ComponentCreatureModel.EyePosition - m_componentCreature.ComponentCreatureModel.EyePosition);
+				Ray3 aimRay = new Ray3(m_componentCreature.ComponentCreatureModel.EyePosition, direction);
 				m_componentMiner.Aim(aimRay, AimState.InProgress);
 			}
-			else if (m_isAiming)
+		}
+
+		/// <summary>
+		/// Obtiene un tipo de flecha aleatorio, excluyendo la explosiva si la distancia es menor al mínimo seguro.
+		/// </summary>
+		private RepeatArrowBlock.ArrowType GetRandomArrowType(float distance)
+		{
+			Array allTypes = Enum.GetValues(typeof(RepeatArrowBlock.ArrowType));
+			List<RepeatArrowBlock.ArrowType> availableTypes = new List<RepeatArrowBlock.ArrowType>();
+
+			foreach (RepeatArrowBlock.ArrowType type in allTypes)
 			{
-				// Actualizar apuntado mientras está en progreso
-				m_componentMiner.Aim(aimRay, AimState.InProgress);
+				if (type == RepeatArrowBlock.ArrowType.ExplosiveArrow && distance < ExplosiveArrowRange.X)
+					continue; // Excluir explosiva si estamos muy cerca
+				availableTypes.Add(type);
+			}
 
-				// Tiempo de apuntado antes de disparar
-				float aimTime = (float)(m_subsystemTime.GameTime - m_aimStartTime);
+			int index = m_random.Int(0, availableTypes.Count - 1);
+			return availableTypes[index];
+		}
 
-				if (aimTime >= 1.0f)
-				{
-					// Verificar que la ballesta esté realmente cargada
-					int crossbowValue = m_componentInventory.GetSlotValue(m_crossbowSlot);
-					if (crossbowValue != 0)
-					{
-						int data = Terrain.ExtractData(crossbowValue);
-						int draw = RepeatCrossbowBlock.GetDraw(data);
-						RepeatArrowBlock.ArrowType? loadedArrow = RepeatCrossbowBlock.GetArrowType(data);
+		private void PrepareCrossbowForShoot(float distanceToTarget)
+		{
+			IInventory inventory = m_componentMiner.Inventory;
+			if (inventory == null) return;
 
-						if (draw == 15 && loadedArrow.HasValue)
-						{
-							// Disparar
-							m_componentMiner.Aim(aimRay, AimState.Completed);
-						}
-						else
-						{
-							// Si por algún motivo no está cargada, cancelar el disparo
-							m_componentMiner.Aim(aimRay, AimState.Cancelled);
-						}
-					}
+			int activeSlot = inventory.ActiveSlotIndex;
+			int value = inventory.GetSlotValue(activeSlot);
+			int data = Terrain.ExtractData(value);
 
-					m_isAiming = false;
-					m_currentTarget = null;
-				}
+			// Elegir tipo de flecha según la distancia
+			RepeatArrowBlock.ArrowType selectedArrow = GetRandomArrowType(distanceToTarget);
+
+			// Forzar ballesta tensada, con el tipo seleccionado y carga máxima (8)
+			int newData = RepeatCrossbowBlock.SetDraw(data, 15);
+			newData = RepeatCrossbowBlock.SetArrowType(newData, selectedArrow);
+			int newValue = Terrain.MakeBlockValue(RepeatCrossbowBlock.Index, 0, newData);
+			newValue = RepeatCrossbowBlock.SetLoadCount(newValue, 8);
+
+			// Reemplazar en el inventario
+			inventory.RemoveSlotItems(activeSlot, inventory.GetSlotCount(activeSlot));
+			inventory.AddSlotItems(activeSlot, newValue, 1);
+		}
+
+		private void ShootAtTarget()
+		{
+			if (m_target == null) return;
+
+			Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
+			Vector3 targetPos = m_target.ComponentCreatureModel.EyePosition;
+			Vector3 direction = Vector3.Normalize(targetPos - eyePos);
+			Ray3 aimRay = new Ray3(eyePos, direction);
+
+			// El bloque se encarga del disparo (SubsystemRepeatCrossbowBlockBehavior)
+			m_componentMiner.Aim(aimRay, AimState.Completed);
+		}
+
+		private void StopAiming()
+		{
+			if (m_isAiming)
+			{
+				m_isAiming = false;
+				Ray3 dummyRay = new Ray3(Vector3.Zero, Vector3.UnitX);
+				m_componentMiner.Aim(dummyRay, AimState.Cancelled);
 			}
 		}
 	}
