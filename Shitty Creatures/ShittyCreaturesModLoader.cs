@@ -707,7 +707,8 @@ namespace Game
 					ComponentPlayer player = gameWidget.PlayerData?.ComponentPlayer;
 					if (player != null && m_achievementButtons.TryGetValue(player, out var btn) && btn != null && btn.IsClicked)
 					{
-						player.ComponentGui.DisplaySmallMessage("¡Logro desbloqueado!", Color.Yellow, false, true);
+						// Abrir panel de logros como modal
+						player.ComponentGui.ModalPanelWidget = new AchievementsWidget(player);
 					}
 					if (player != null && player.ComponentHealth.Health > 0f)
 					{
