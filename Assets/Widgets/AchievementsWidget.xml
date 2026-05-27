@@ -1,0 +1,16 @@
+<CanvasWidget xmlns="runtime-namespace:Game" Size="600, 400" HorizontalAlignment="Center" VerticalAlignment="Center">
+  <BevelledRectangleWidget BevelSize="3" />
+  <StackPanelWidget Direction="Vertical" HorizontalAlignment="Center">
+    <CanvasWidget Size="0, 12"/>
+    <LabelWidget Name="TitleLabel" Text="Logros" Color="255,255,255" HorizontalAlignment="Center" FontScale="1.2"/>
+    <CanvasWidget Size="0, 12"/>
+    <!-- Contenedor fijo para el área de scroll -->
+    <CanvasWidget Size="550, 280">
+      <ScrollPanelWidget Name="AchievementsScroll" ClampToBounds="true">
+        <StackPanelWidget Name="AchievementsStack" Direction="Vertical"/>
+      </ScrollPanelWidget>
+    </CanvasWidget>
+    <CanvasWidget Size="0, 12"/>
+    <BevelledButtonWidget Name="CloseButton" Text="Cerrar" Size="120, 40" HorizontalAlignment="Center"/>
+  </StackPanelWidget>
+</CanvasWidget>
