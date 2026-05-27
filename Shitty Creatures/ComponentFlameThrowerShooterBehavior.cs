@@ -1,324 +1,242 @@
 using System;
 using Engine;
-using Game;
 using GameEntitySystem;
 using TemplatesDatabase;
 
 namespace Game
 {
+	/// <summary>
+	/// Comportamiento que permite a una criatura usar un lanzallamas (FlameThrowerBlock)
+	/// equipado en su inventario. Dispara usando ComponentMiner.Aim.
+	/// Munición infinita con alternancia entre fuego y veneno cuando se agota un tipo.
+	/// </summary>
 	public class ComponentFlameThrowerShooterBehavior : ComponentBehavior, IUpdateable
 	{
-		// Componentes necesarios
-		private ComponentCreature m_componentCreature;
-		private ComponentChaseBehavior m_componentChaseBehavior;
+		public float FlameThrowerAimTime = 1.5f;
+		public float FlameThrowerCooldown = 0.02f;
+		public Vector2 Range = new Vector2(5f, 100f);
+
 		private ComponentMiner m_componentMiner;
+		private ComponentCreature m_componentCreature;
+		private ComponentCreatureModel m_componentCreatureModel;
+		private ComponentChaseBehavior m_componentChaseBehavior;
 		private SubsystemTime m_subsystemTime;
-		private SubsystemTerrain m_subsystemTerrain;
-		private SubsystemBodies m_subsystemBodies;
+		private IInventory m_inventory;
 
-		// Configuración
-		public float MaxDistance = 20f;
-		public float AimTime = 0.5f;
-		public float BurstTime = 2.0f;
-		public float CooldownTime = 1.0f;
+		private float m_cooldownRemaining;
+		private float m_aimStartTime;
+		private bool m_isAiming;
+		private ComponentCreature m_currentTarget;
 
-		// Estado
-		private bool m_isAiming = false;
-		private bool m_isFiring = false;
-		private bool m_isReloading = false;
-		private double m_stateStartTime;
-		private Random m_random = new Random();
-		private int m_flameThrowerBlockIndex = -1;
-		private int m_flameBulletBlockIndex = -1;
-
-		public int UpdateOrder => 0;
-		public override float ImportanceLevel => 0.5f;
+		public override float ImportanceLevel => 100f;
+		public UpdateOrder UpdateOrder => UpdateOrder.Default;
 
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
 			base.Load(valuesDictionary, idToEntityMap);
 
-			MaxDistance = valuesDictionary.GetValue<float>("MaxDistance", 20f);
-			AimTime = valuesDictionary.GetValue<float>("AimTime", 0.5f);
-			BurstTime = valuesDictionary.GetValue<float>("BurstTime", 5.0f);
-			CooldownTime = valuesDictionary.GetValue<float>("CooldownTime", 1.0f);
+			m_componentMiner = Entity.FindComponent<ComponentMiner>(true);
+			m_componentCreature = Entity.FindComponent<ComponentCreature>(true);
+			m_componentCreatureModel = Entity.FindComponent<ComponentCreatureModel>(true);
+			m_componentChaseBehavior = Entity.FindComponent<ComponentChaseBehavior>();
+			m_subsystemTime = Project.FindSubsystem<SubsystemTime>(true);
+			m_inventory = Entity.FindComponent<ComponentInventory>();
 
-			m_componentCreature = base.Entity.FindComponent<ComponentCreature>(true);
-			m_componentChaseBehavior = base.Entity.FindComponent<ComponentChaseBehavior>(true);
-			m_componentMiner = base.Entity.FindComponent<ComponentMiner>(true);
-			m_subsystemTime = base.Project.FindSubsystem<SubsystemTime>(true);
-			m_subsystemTerrain = base.Project.FindSubsystem<SubsystemTerrain>(true);
-			m_subsystemBodies = base.Project.FindSubsystem<SubsystemBodies>(true);
-
-			m_flameThrowerBlockIndex = BlocksManager.GetBlockIndex<FlameThrowerBlock>(false, false);
-			m_flameBulletBlockIndex = BlocksManager.GetBlockIndex<FlameBulletBlock>(false, false);
+			m_cooldownRemaining = 0f;
+			m_isAiming = false;
 		}
 
 		public void Update(float dt)
 		{
-			if (m_componentCreature.ComponentHealth.Health <= 0f)
-				return;
+			if (m_cooldownRemaining > 0f)
+				m_cooldownRemaining -= dt;
 
-			if (m_componentChaseBehavior.Target == null)
+			ComponentCreature target = m_componentChaseBehavior?.Target;
+			if (target == null || target.ComponentHealth.Health <= 0f)
 			{
-				Reset();
-				return;
-			}
-
-			Vector3 shooterEye = m_componentCreature.ComponentCreatureModel.EyePosition;
-			Vector3 targetEye = m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition;
-
-			float distance = Vector3.Distance(shooterEye, targetEye);
-			bool hasLOS = HasLineOfSight(shooterEye, targetEye);
-
-			if (distance > MaxDistance || !hasLOS)
-			{
-				Reset();
+				CancelAim();
 				return;
 			}
 
-			// Siempre mirar al objetivo
-			m_componentCreature.ComponentCreatureModel.LookAtOrder = new Vector3?(targetEye);
+			float distance = Vector3.Distance(m_componentCreature.ComponentBody.Position, target.ComponentBody.Position);
 
-			// Asegurar que el lanzallamas está en el slot activo
-			EnsureFlameThrowerActive();
-
-			// Si el lanzallamas está vacío, recargar (con tipo aleatorio si es necesario)
-			if (IsFlameThrowerEmpty())
+			// Cambio a melee si hay y distancia es menor al mínimo
+			if (distance < Range.X && EquipMeleeWeapon())
 			{
-				ReloadFlameThrower();
+				CancelAim();
+				return;
 			}
 
-			// Máquina de estados
-			if (m_isAiming)
+			if (distance > Range.Y)
 			{
-				if (m_subsystemTime.GameTime - m_stateStartTime >= AimTime)
+				CancelAim();
+				return;
+			}
+
+			if (!EquipFlameThrower())
+			{
+				CancelAim();
+				return;
+			}
+
+			// Asegurar que el lanzallamas tenga munición infinita y variada
+			EnsureFlameThrowerHasAmmo();
+
+			if (m_cooldownRemaining > 0f)
+			{
+				if (m_isAiming) CancelAim();
+				return;
+			}
+
+			if (!m_isAiming)
+			{
+				StartAiming(target);
+			}
+			else
+			{
+				if (m_currentTarget != target)
 				{
-					m_isAiming = false;
-					StartFiring();
+					CancelAim();
+					StartAiming(target);
+					return;
+				}
+
+				float aimTime = (float)m_subsystemTime.GameTime - m_aimStartTime;
+				if (aimTime >= FlameThrowerAimTime)
+				{
+					ShootAt(target);
+					CancelAim();
+					m_cooldownRemaining = FlameThrowerCooldown;
 				}
 				else
 				{
-					CallAim(AimState.InProgress);
-				}
-			}
-			else if (m_isFiring)
-			{
-				CallAim(AimState.InProgress);
-
-				if (m_subsystemTime.GameTime - m_stateStartTime >= BurstTime)
-				{
-					m_isFiring = false;
-					StartReloading();
-				}
-			}
-			else if (m_isReloading)
-			{
-				CallAim(AimState.Cancelled);
-
-				if (m_subsystemTime.GameTime - m_stateStartTime >= CooldownTime)
-				{
-					m_isReloading = false;
-					StartAiming();
-				}
-			}
-			else
-			{
-				StartAiming();
-			}
-		}
-
-		private bool HasLineOfSight(Vector3 from, Vector3 to)
-		{
-			TerrainRaycastResult? terrainHit = m_subsystemTerrain.Raycast(from, to, false, true, (value, distance) =>
-			{
-				int contents = Terrain.ExtractContents(value);
-				Block block = BlocksManager.Blocks[contents];
-				return block.IsCollidable_(value) && block.BlockIndex != 0;
-			});
-
-			if (terrainHit != null && terrainHit.Value.Distance < Vector3.Distance(from, to) - 0.1f)
-				return false;
-
-			BodyRaycastResult? bodyHit = m_subsystemBodies.Raycast(from, to, 0.2f, (body, distance) =>
-			{
-				if (body.Entity == m_componentCreature.Entity || body.Entity == m_componentChaseBehavior.Target.Entity)
-					return false;
-				if (body.IsChildOfBody(m_componentCreature.ComponentBody))
-					return false;
-				return true;
-			});
-
-			if (bodyHit != null && bodyHit.Value.Distance < Vector3.Distance(from, to) - 0.1f)
-				return false;
-
-			return true;
-		}
-
-		private void EnsureFlameThrowerActive()
-		{
-			if (m_componentMiner.Inventory == null)
-				return;
-
-			for (int i = 0; i < m_componentMiner.Inventory.SlotsCount; i++)
-			{
-				int slotValue = m_componentMiner.Inventory.GetSlotValue(i);
-				if (slotValue != 0)
-				{
-					int blockIndex = Terrain.ExtractContents(slotValue);
-					if (blockIndex == m_flameThrowerBlockIndex)
-					{
-						if (m_componentMiner.Inventory.ActiveSlotIndex != i)
-							m_componentMiner.Inventory.ActiveSlotIndex = i;
-						return;
-					}
+					Vector3 eyePos = m_componentCreatureModel.EyePosition;
+					Vector3 targetPos = target.ComponentCreatureModel.EyePosition;
+					Vector3 direction = Vector3.Normalize(targetPos - eyePos);
+					Ray3 aimRay = new Ray3(eyePos, direction);
+					m_componentMiner.Aim(aimRay, AimState.InProgress);
 				}
 			}
 		}
 
-		private bool IsFlameThrowerEmpty()
+		private bool EquipFlameThrower()
 		{
-			if (m_componentMiner.Inventory == null)
-				return true;
+			if (m_inventory == null) return false;
 
-			int activeSlot = m_componentMiner.Inventory.ActiveSlotIndex;
-			if (activeSlot < 0)
-				return true;
+			int activeSlot = m_inventory.ActiveSlotIndex;
+			if (activeSlot >= 0)
+			{
+				int activeValue = m_inventory.GetSlotValue(activeSlot);
+				if (Terrain.ExtractContents(activeValue) == FlameThrowerBlock.Index)
+					return true;
+			}
 
-			int slotValue = m_componentMiner.Inventory.GetSlotValue(activeSlot);
-			int contents = Terrain.ExtractContents(slotValue);
+			for (int i = 0; i < m_inventory.SlotsCount; i++)
+			{
+				int value = m_inventory.GetSlotValue(i);
+				if (Terrain.ExtractContents(value) == FlameThrowerBlock.Index)
+				{
+					m_inventory.ActiveSlotIndex = i;
+					return true;
+				}
+			}
 
-			if (contents != m_flameThrowerBlockIndex)
-				return true;
+			return false;
+		}
 
-			int data = Terrain.ExtractData(slotValue);
+		private bool EquipMeleeWeapon()
+		{
+			if (m_inventory == null) return false;
+
+			int activeSlot = m_inventory.ActiveSlotIndex;
+			if (activeSlot >= 0)
+			{
+				int activeValue = m_inventory.GetSlotValue(activeSlot);
+				if (activeValue != 0 && Terrain.ExtractContents(activeValue) != FlameThrowerBlock.Index)
+					return true;
+			}
+
+			for (int i = 0; i < m_inventory.SlotsCount; i++)
+			{
+				int value = m_inventory.GetSlotValue(i);
+				if (value != 0 && Terrain.ExtractContents(value) != FlameThrowerBlock.Index)
+				{
+					m_inventory.ActiveSlotIndex = i;
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		/// <summary>
+		/// Garantiza que el lanzallamas tenga munición. Si se acabó (loadCount == 0 o estado Empty),
+		/// cambia al otro tipo de bala y recarga a 15.
+		/// También asegura que el estado sea Loaded y que el tipo sea válido.
+		/// </summary>
+		private void EnsureFlameThrowerHasAmmo()
+		{
+			int slot = m_inventory.ActiveSlotIndex;
+			int value = m_inventory.GetSlotValue(slot);
+			int data = Terrain.ExtractData(value);
+			int loadCount = FlameThrowerBlock.GetLoadCount(value);
 			FlameThrowerBlock.LoadState loadState = FlameThrowerBlock.GetLoadState(data);
+			FlameBulletBlock.FlameBulletType? currentType = FlameThrowerBlock.GetBulletType(data);
 
-			return loadState == FlameThrowerBlock.LoadState.Empty;
-		}
-
-		private FlameBulletBlock.FlameBulletType? GetCurrentBulletType()
-		{
-			if (m_componentMiner.Inventory == null)
-				return null;
-
-			int activeSlot = m_componentMiner.Inventory.ActiveSlotIndex;
-			if (activeSlot < 0)
-				return null;
-
-			int slotValue = m_componentMiner.Inventory.GetSlotValue(activeSlot);
-			int contents = Terrain.ExtractContents(slotValue);
-
-			if (contents != m_flameThrowerBlockIndex)
-				return null;
-
-			int data = Terrain.ExtractData(slotValue);
-			return FlameThrowerBlock.GetBulletType(data);
-		}
-
-		private void ReloadFlameThrower()
-		{
-			if (m_componentMiner.Inventory == null)
-				return;
-
-			int activeSlot = m_componentMiner.Inventory.ActiveSlotIndex;
-			if (activeSlot < 0)
-				return;
-
-			int slotValue = m_componentMiner.Inventory.GetSlotValue(activeSlot);
-			int contents = Terrain.ExtractContents(slotValue);
-
-			if (contents != m_flameThrowerBlockIndex)
-				return;
-
-			// Obtener el tipo de munición actual (si existe)
-			FlameBulletBlock.FlameBulletType? currentBulletType = GetCurrentBulletType();
-
-			FlameBulletBlock.FlameBulletType bulletTypeToUse;
-			if (currentBulletType.HasValue)
+			// Si no tiene balas o está vacío, cambiar tipo y recargar
+			if (loadState != FlameThrowerBlock.LoadState.Loaded || loadCount <= 0)
 			{
-				// Mantener el tipo que ya tenía
-				bulletTypeToUse = currentBulletType.Value;
-			}
-			else
-			{
-				// Si está vacío y sin tipo, elegir aleatoriamente entre fuego y veneno
-				bulletTypeToUse = m_random.Bool()
-					? FlameBulletBlock.FlameBulletType.Flame
-					: FlameBulletBlock.FlameBulletType.Poison;
-			}
+				// Determinar el nuevo tipo (si no hay tipo actual, elegir aleatoriamente entre fuego o veneno)
+				FlameBulletBlock.FlameBulletType newType;
+				if (currentType == null)
+				{
+					// Primera carga: elegir aleatoriamente fuego o veneno
+					Random random = new Random();
+					newType = random.Bool()
+						? FlameBulletBlock.FlameBulletType.Flame
+						: FlameBulletBlock.FlameBulletType.Poison;
+				}
+				else
+				{
+					// Alternar siempre al otro tipo
+					newType = (currentType.Value == FlameBulletBlock.FlameBulletType.Flame)
+						? FlameBulletBlock.FlameBulletType.Poison
+						: FlameBulletBlock.FlameBulletType.Flame;
+				}
 
-			// Crear un lanzallamas cargado con el tipo de munición determinado
-			int newValue = Terrain.MakeBlockValue(
-				m_flameThrowerBlockIndex,
-				0,
-				FlameThrowerBlock.SetLoadState(
-					FlameThrowerBlock.SetBulletType(
-						FlameThrowerBlock.SetLoadCount(0, 15),
-						bulletTypeToUse
-					),
-					FlameThrowerBlock.LoadState.Loaded
-				)
-			);
-
-			// Reemplazar el item en el inventario
-			m_componentMiner.Inventory.RemoveSlotItems(activeSlot, 1);
-			m_componentMiner.Inventory.AddSlotItems(activeSlot, newValue, 1);
+				int newData = FlameThrowerBlock.SetLoadState(data, FlameThrowerBlock.LoadState.Loaded);
+				newData = FlameThrowerBlock.SetBulletType(newData, newType);
+				int newValue = Terrain.MakeBlockValue(FlameThrowerBlock.Index, 15, newData);
+				m_inventory.RemoveSlotItems(slot, 1);
+				m_inventory.AddSlotItems(slot, newValue, 1);
+			}
 		}
 
-		private void CallAim(AimState state)
-		{
-			EnsureFlameThrowerActive();
-
-			Vector3 from = m_componentCreature.ComponentCreatureModel.EyePosition;
-			Vector3 to = m_componentChaseBehavior.Target.ComponentCreatureModel.EyePosition;
-			Vector3 direction = Vector3.Normalize(to - from);
-			Ray3 ray = new Ray3(from, direction);
-
-			m_componentMiner.Aim(ray, state);
-		}
-
-		private void StartAiming()
+		private void StartAiming(ComponentCreature target)
 		{
 			m_isAiming = true;
-			m_isFiring = false;
-			m_isReloading = false;
-			m_stateStartTime = m_subsystemTime.GameTime;
-
-			CallAim(AimState.InProgress);
+			m_aimStartTime = (float)m_subsystemTime.GameTime;
+			m_currentTarget = target;
 		}
 
-		private void StartFiring()
+		private void ShootAt(ComponentCreature target)
 		{
-			m_isAiming = false;
-			m_isFiring = true;
-			m_isReloading = false;
-			m_stateStartTime = m_subsystemTime.GameTime;
+			Vector3 eyePos = m_componentCreatureModel.EyePosition;
+			Vector3 targetPos = target.ComponentCreatureModel.EyePosition;
+			Vector3 direction = Vector3.Normalize(targetPos - eyePos);
+			Ray3 aimRay = new Ray3(eyePos, direction);
 
-			CallAim(AimState.InProgress);
+			m_componentMiner.Aim(aimRay, AimState.InProgress);
+			m_componentMiner.Aim(aimRay, AimState.Completed);
 		}
 
-		private void StartReloading()
+		private void CancelAim()
 		{
+			if (!m_isAiming) return;
+			Ray3 dummyRay = new Ray3(m_componentCreatureModel.EyePosition, Vector3.Zero);
+			m_componentMiner.Aim(dummyRay, AimState.Cancelled);
 			m_isAiming = false;
-			m_isFiring = false;
-			m_isReloading = true;
-			m_stateStartTime = m_subsystemTime.GameTime;
-
-			CallAim(AimState.Cancelled);
-		}
-
-		private void Reset()
-		{
-			if (m_isAiming || m_isFiring || m_isReloading)
-			{
-				CallAim(AimState.Cancelled);
-			}
-
-			m_isAiming = false;
-			m_isFiring = false;
-			m_isReloading = false;
-			m_componentCreature.ComponentCreatureModel.LookAtOrder = null;
+			m_currentTarget = null;
 		}
 	}
 }
