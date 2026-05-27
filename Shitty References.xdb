@@ -439,46 +439,18 @@
 </ComponentTemplate>
 
 <ComponentTemplate Name="FlameThrowerShooterBehavior" Description="Comportamiento para NPCs que usan lanzallamas con disparos ilimitados de fuego y veneno" Guid="b3bc9331-ad8a-4454-9a3a-fec7a52d85f2" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
-    <Parameter Name="MaxDistance" Description="Distancia máxima de disparo efectivo" Guid="4346bf5f-3a19-40cd-9ed8-2fdebdeebea3" Value="20" Type="float"/>
-    <Parameter Name="AimTime" Description="Tiempo de apuntado antes de comenzar a disparar" Guid="fff3a361-6506-4837-a432-1d1e41b5939c" Value="0.5" Type="float"/>
-    <Parameter Name="BurstTime" Description="Duración de la ráfaga de llamas en segundos" Guid="d52172f1-c19c-4f9d-81a9-6c53a6cf15a7" Value="2.0" Type="float"/>
-    <Parameter Name="CooldownTime" Description="Tiempo de enfriamiento entre ráfagas en segundos" Guid="42656985-a446-44d8-bf8f-c5896bda2b60" Value="1.0" Type="float"/>
-    <Parameter Name="Accuracy" Description="Precisión del disparo (menor = más preciso)" Guid="b171a609-bb53-4b89-84eb-725d6b8ca0c8" Value="0.1" Type="float"/>
-    <Parameter Name="UseRecoil" Description="Aplicar retroceso físico al disparar" Guid="4ec72dcf-7df4-40ba-bfdf-557c0efb4cd5" Value="true" Type="bool"/>
-    <Parameter Name="FlameSpeed" Description="Velocidad base de las llamas" Guid="24c33087-7809-429f-881c-6388b89fa1f8" Value="40" Type="float"/>
-    <Parameter Name="BurstCount" Description="Número de proyectiles de fuego por ráfaga" Guid="b2f4cd6c-cb67-4407-a595-81db3ca1a076" Value="15" Type="int"/>
-    <Parameter Name="SpreadAngle" Description="Ángulo de dispersión de las llamas en grados" Guid="a967f7ff-f503-4e51-a6f0-565394f43fc9" Value="15" Type="float"/>
     <Parameter Name="Class" Guid="a7ada27d-d400-43ce-ba43-1e9f37cd848a" Value="Game.ComponentFlameThrowerShooterBehavior" Type="string"/>
 </ComponentTemplate>
 
 <ComponentTemplate Name="RepeatCrossbowShooterBehavior" Description="Comportamiento para NPCs que usan ballestas repetidoras con disparos ilimitados y ráfagas múltiples" Guid="e40dd82e-a7a5-42de-83ee-8dc7d8cdf2f2" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
-    <Parameter Name="MaxDistance" Description="Distancia máxima de disparo efectivo" Guid="9fa47466-a1bc-49a7-b965-85b21e08476d" Value="25" Type="float"/>
-    <Parameter Name="DrawTime" Description="Tiempo para tensar completamente la ballesta en segundos" Guid="ebe23e28-67f7-4fc4-bacf-bddf3fce892e" Value="2.5" Type="float"/>
-    <Parameter Name="AimTime" Description="Tiempo de apuntado antes de comenzar a tensar" Guid="6317aefb-5093-439e-9e48-82677d8b305b" Value="0.5" Type="float"/>
-    <Parameter Name="TimeBetweenShots" Description="Tiempo entre disparos de flechas múltiples" Guid="00f885cd-9916-4a0e-8941-9d6147cdb9da" Value="1.0" Type="float"/>
-    <Parameter Name="MaxInaccuracy" Description="Imprecisión máxima del disparo (menor = más preciso)" Guid="0a7f258c-47ab-4eb3-8ea9-c8db44e7e6db" Value="0.03" Type="float"/>
-    <Parameter Name="UseRecoil" Description="Aplicar retroceso al disparar" Guid="c01e98f4-f8d2-4756-8f57-c00602b33f1e" Value="true" Type="bool"/>
-    <Parameter Name="BoltSpeed" Description="Velocidad base de las flechas" Guid="340aa374-0e22-43cf-94b2-00b5fba46724" Value="40" Type="float"/>
     <Parameter Name="Class" Guid="c852e0cc-bb4b-434b-9dc1-0f1795bd7a49" Value="Game.ComponentRepeatCrossbowShooterBehavior" Type="string"/>
 </ComponentTemplate>
 
 <ComponentTemplate Name="CrossbowShooterBehavior" Description="Comportamiento para NPCs que usan ballestas con animaciones de tensado vertical y disparo cíclico de virotes" Guid="90581361-aa1f-4180-bc02-359795600942" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
-    <Parameter Name="MaxDistance" Description="Distancia máxima de disparo efectivo" Guid="d00af5da-9704-4ebf-bbd4-a5e55f32a2bc" Value="25" Type="float"/>
-    <Parameter Name="DrawTime" Description="Tiempo para tensar completamente la ballesta en segundos" Guid="e1e3e770-4f64-4698-b207-af3cf61e1e7e" Value="1.5" Type="float"/>
-    <Parameter Name="AimTime" Description="Tiempo de apuntado antes de comenzar a tensar" Guid="127e199b-c61a-43a4-9bd3-fb52bd1051f5" Value="0.5" Type="float"/>
-    <Parameter Name="Accuracy" Description="Precisión del disparo (menor = más preciso)" Guid="62ca364e-ac7b-468b-99ef-a8203042ed06" Value="0.02" Type="float"/>
-    <Parameter Name="UseRecoil" Description="Aplicar retroceso al disparar" Guid="f58a5acc-5209-497d-86ad-93c08ca7d7dc" Value="true" Type="bool"/>
-    <Parameter Name="BoltSpeed" Description="Velocidad base del virote" Guid="b48d1874-cac2-4aca-852c-294b1e6b248d" Value="45" Type="float"/>
     <Parameter Name="Class" Guid="ecccd78d-08f2-4eda-9a24-0c2025d52a54" Value="Game.ComponentCrossbowShooterBehavior" Type="string"/>
 </ComponentTemplate>
 
     <ComponentTemplate Name="BowShooterBehavior" Description="Comportamiento para NPCs que usan arcos con animaciones de tensado y disparo cíclico de flechas" Guid="416961cf-2c1d-4611-a7a3-6c7197aba83e" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
-    <Parameter Name="MaxDistance" Description="Distancia máxima de disparo efectivo" Guid="326ccc85-0f14-4967-8ee4-2300a82667a2" Value="25" Type="float"/>
-    <Parameter Name="DrawTime" Description="Tiempo para tensar completamente el arco en segundos" Guid="f519747b-9801-4465-a28f-887468287bf9" Value="1.5" Type="float"/>
-    <Parameter Name="AimTime" Description="Tiempo de apuntado antes de comenzar a tensar" Guid="bad1bc14-3cd9-4c58-9ecd-32dbcb8d8295" Value="0.8" Type="float"/>
-    <Parameter Name="Accuracy" Description="Precisión del disparo (menor = más preciso)" Guid="c43eb388-a8ff-47b0-bf48-8d519ee9a929" Value="0.03" Type="float"/>
-    <Parameter Name="UseRecoil" Description="Aplicar retroceso al disparar" Guid="35f6db09-32b8-4721-9b4b-e731c8f5bacd" Value="false" Type="bool"/>
-    <Parameter Name="ArrowSpeed" Description="Velocidad base de la flecha (afectada por tensión)" Guid="59e8e75d-8b04-42d5-8a11-1a57d571f7f3" Value="40" Type="float"/>
     <Parameter Name="Class" Guid="a48fe137-0abb-4b57-b215-364d7e60f86d" Value="Game.ComponentBowShooterBehavior" Type="string"/>
 </ComponentTemplate>
 
@@ -498,30 +470,7 @@
 </ComponentTemplate>
 
 <ComponentTemplate Name="MusketShooterBehavior" Description="Comportamiento especializado para NPCs que usan mosquetes con animaciones de apuntado, recarga y amartillado." Guid="68a0cf69-c292-490d-9ca9-9ddc9930effb" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
-    <Parameter Name="MaxDistance" Description="Distancia máxima de disparo efectivo" Guid="fc2f30af-424f-4f3b-8a09-9cc18c546ebf" Value="25" Type="float"/>
-    <Parameter Name="ReloadTime" Description="Tiempo de recarga en segundos" Guid="a2a78ac6-3118-44a1-9062-bb607229118a" Value="2" Type="float"/>
-    <Parameter Name="AimTime" Description="Tiempo de apuntado antes de disparar" Guid="5e60d9de-57c6-4ce2-a84e-cdb1239b1af6" Value="1" Type="float"/>
-    <Parameter Name="CockTime" Description="Tiempo de amartillado" Guid="f9c65451-ed2a-4956-861e-7229de15402f" Value="0.5" Type="float"/>
-    <Parameter Name="Accuracy" Description="Precisión del disparo (menor = más preciso)" Guid="43344e94-6169-4eb9-b5ba-2a9ee359732b" Value="0.02" Type="float"/>
-    <Parameter Name="UseRecoil" Description="Aplicar retroceso al disparar" Guid="b0a6e3e2-ae9f-4550-a0da-558fab1b03e7" Value="true" Type="bool"/>
-    <Parameter Name="BulletSpeed" Description="Velocidad de la bala" Guid="afd24068-ff98-4352-a770-54a1560bb8e7" Value="120" Type="float"/>
-    <Parameter Name="RequireCocking" Description="Requiere amartillar antes de disparar" Guid="0fd229d9-7e4a-4b79-9bbc-05da8aeaf001" Value="true" Type="bool"/>
     <Parameter Name="Class" Guid="ed17b4db-55ca-4d00-b26d-923adf011da7" Value="Game.ComponentMusketShooterBehavior" Type="string"/>
-</ComponentTemplate>
-
-    <ComponentTemplate Name="MusketShooterBehavior2" Description="Comportamiento especializado para NPCs que usan mosquetes con animaciones de apuntado, recarga y amartillado. Incluye cambio automático a armas cuerpo a cuerpo cuando el enemigo está cerca." Guid="32352458-619e-4c17-9392-eefb8dd0ede3" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
-    <Parameter Name="MaxDistance" Description="Distancia máxima de disparo efectivo" Guid="428c9c59-0558-4b33-bbcd-b248453fcc25" Value="25" Type="float"/>
-    <Parameter Name="MeleeSwitchDistance" Description="Distancia a la que cambia a armas cuerpo a cuerpo" Guid="ede656da-1885-4863-890a-082d61aa51cb" Value="5" Type="float"/>
-    <Parameter Name="ReloadTime" Description="Tiempo de recarga en segundos" Guid="9a8e5af1-1358-41ab-9115-1963c3981c55" Value="0.55" Type="float"/>
-    <Parameter Name="AimTime" Description="Tiempo de apuntado antes de disparar" Guid="ad1b63cf-55c5-4593-876d-954d4646f602" Value="1" Type="float"/>
-    <Parameter Name="CockTime" Description="Tiempo de amartillado" Guid="e646e8ba-5b8a-46b6-b1d8-5d4847a1bca9" Value="0.5" Type="float"/>
-    <Parameter Name="MeleeAttackTime" Description="Tiempo entre ataques cuerpo a cuerpo" Guid="8159cc8a-1d5c-451d-bfd7-5ae2e4edd391" Value="0.8" Type="float"/>
-    <Parameter Name="Accuracy" Description="Precisión del disparo (menor = más preciso)" Guid="71fc1196-b143-4835-9abb-7504ea73ea07" Value="0.02" Type="float"/>
-    <Parameter Name="UseRecoil" Description="Aplicar retroceso al disparar" Guid="fc414769-1ff0-41a5-88f4-4b5fff633524" Value="true" Type="bool"/>
-    <Parameter Name="BulletSpeed" Description="Velocidad de la bala" Guid="d37514e7-406d-4824-9c8d-2c60f4be77ba" Value="120" Type="float"/>
-    <Parameter Name="OptimalRangeTolerance" Description="Tolerancia para la distancia óptima de disparo (cuánto puede desviarse antes de moverse)" Guid="fe6debf7-3afc-4b8a-9a81-f9701b755354" Value="1.5" Type="float"/>
-    <Parameter Name="RequireCocking" Description="Requiere amartillar antes de disparar" Guid="923a51f8-0302-4841-9329-c72be4c844de" Value="true" Type="bool"/>
-    <Parameter Name="Class" Guid="c1321f2f-5e52-4146-8b57-9b42276ef099" Value="Game.ComponentMusketShooterBehavior2" Type="string"/>
 </ComponentTemplate>
 
         <ComponentTemplate Name="TargetedChaseBehavior" Description="Similar a ChaseBehavior con la diferencia de usar nombres de entidades en vez de categorias, trabaja en conjunto con ChaseBehavior" Guid="e2dbbc55-2e19-44a9-9ae5-4e3313459c6a" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
