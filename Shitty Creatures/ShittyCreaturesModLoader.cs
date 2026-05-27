@@ -17,6 +17,9 @@ namespace Game
 		// Campos estáticos (heredados de los distintos ModLoaders originales)
 		// ---------------------------------------------------------------------------------
 
+		// Añadir campo para almacenar los botones creados (opcional, solo para referencia)
+		private Dictionary<ComponentPlayer, ButtonWidget> m_achievementButtons = new Dictionary<ComponentPlayer, ButtonWidget>();
+
 		// Diccionarios para controlar el ritmo de golpes
 		private Dictionary<ComponentPlayer, double> m_lastHitGameTime = new Dictionary<ComponentPlayer, double>();
 		private Dictionary<ComponentPlayer, ComponentBody> m_lastHitTarget = new Dictionary<ComponentPlayer, ComponentBody>();
@@ -183,6 +186,76 @@ namespace Game
 					SubscribeToPlayerInjured(player);
 				}
 			}
+
+			// Añadir botones de logro a todos los jugadores (una sola vez, fuera del bucle)
+			AddAchievementButtonToPlayers(project);
+		}
+
+		private void AddAchievementButtonToPlayers(Project project)
+		{
+			var playersSubsystem = project.FindSubsystem<SubsystemPlayers>(true);
+			if (playersSubsystem == null) return;
+
+			foreach (var player in playersSubsystem.ComponentPlayers)
+			{
+				AddAchievementButton(player);
+			}
+		}
+
+		private void AddAchievementButton(ComponentPlayer player)
+		{
+			if (player == null || player.GuiWidget == null) return;
+			if (m_achievementButtons.ContainsKey(player)) return;
+
+			var timeOfDayButton = player.GuiWidget.Children.Find<ButtonWidget>("TimeOfDayButton", true);
+			if (timeOfDayButton == null) return;
+
+			ContainerWidget parentContainer = timeOfDayButton.ParentWidget as ContainerWidget;
+			if (parentContainer == null) return;
+
+			Subtexture logroTexture = ContentManager.Get<Subtexture>("Textures/Gui/logro");
+			if (logroTexture == null)
+			{
+				Log.Warning("[ShittyCreatures] No se pudo cargar la textura 'Textures/Gui/logro'");
+				return;
+			}
+
+			// Usar BevelledButtonWidget (concreto, no abstracto)
+			BevelledButtonWidget iconButton = new BevelledButtonWidget
+			{
+				Name = "AchievementButton",
+				Size = new Vector2(60f, 60f),
+				Margin = timeOfDayButton.Margin,
+				// Hacer el fondo transparente
+				BevelColor = Color.Transparent,
+				CenterColor = Color.Transparent,
+				Color = Color.White,
+				Text = ""  // Sin texto
+			};
+
+			// Agregar la imagen como hijo
+			RectangleWidget icon = new RectangleWidget
+			{
+				Size = new Vector2(50f, 50f),
+				TextureLinearFilter = true,
+				HorizontalAlignment = WidgetAlignment.Center,
+				VerticalAlignment = WidgetAlignment.Center,
+				Subtexture = logroTexture,
+				OutlineColor = Color.Transparent,
+				FillColor = Color.White,
+				IsVisible = true,
+				TextureAnisotropicFilter = true,
+				BlendState = BlendState.NonPremultiplied
+			};
+			iconButton.Children.Add(icon);
+
+			int index = parentContainer.Children.IndexOf(timeOfDayButton);
+			if (index >= 0 && index < parentContainer.Children.Count)
+				parentContainer.Children.Insert(index + 1, iconButton);
+			else
+				parentContainer.Children.Add(iconButton);
+
+			m_achievementButtons[player] = iconButton;
 		}
 
 		private void CancelGreenNightChaseDelay(Project project)
@@ -632,6 +705,10 @@ namespace Game
 				if (ShittyCreaturesSettingsManager.CoordinateDisplayEnabled)
 				{
 					ComponentPlayer player = gameWidget.PlayerData?.ComponentPlayer;
+					if (player != null && m_achievementButtons.TryGetValue(player, out var btn) && btn != null && btn.IsClicked)
+					{
+						player.ComponentGui.DisplaySmallMessage("¡Logro desbloqueado!", Color.Yellow, false, true);
+					}
 					if (player != null && player.ComponentHealth.Health > 0f)
 					{
 						// Elegir la posición según la cámara activa
@@ -1794,29 +1871,29 @@ namespace Game
 			});
 
 			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Rayman", SpawnLocationType.Surface, true, false)
-            {
-                SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
-                {
-                    // 1. Solo de día
-                    if (sky.SkyLightIntensity < 0.4f) return 0f;
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					// 1. Solo de día
+					if (sky.SkyLightIntensity < 0.4f) return 0f;
 
-                    // 2. Calcular el factor de montaña usando la misma fórmula que el generador de terreno
-                    float mountainFactor = subsystemCreatureSpawn.m_subsystemTerrain.TerrainContentsGenerator.CalculateMountainRangeFactor((float)point.X, (float)point.Z);
+					// 2. Calcular el factor de montaña usando la misma fórmula que el generador de terreno
+					float mountainFactor = subsystemCreatureSpawn.m_subsystemTerrain.TerrainContentsGenerator.CalculateMountainRangeFactor((float)point.X, (float)point.Z);
 
-                    // 3. Si es >= 0.9f, es una zona de alta montaña (piedra/caliza)
-                    if (mountainFactor >= 0.9f)
-                    {
-                        return 2500f; // Peso altísimo para que aparezca inmediatamente en las montañas
-                    }
+					// 3. Si es >= 0.9f, es una zona de alta montaña (piedra/caliza)
+					if (mountainFactor >= 0.9f)
+					{
+						return 2500f; // Peso altísimo para que aparezca inmediatamente en las montañas
+					}
 
-                    return 0f;
-                },
-                SpawnFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
-                {
-                    // Aparece solo 1
-                    return subsystemCreatureSpawn.SpawnCreatures(ct, "Rayman", point, 1).Count;
-                }
-            });
+					return 0f;
+				},
+				SpawnFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					// Aparece solo 1
+					return subsystemCreatureSpawn.SpawnCreatures(ct, "Rayman", point, 1).Count;
+				}
+			});
 		}
 
 		public override void OnProjectileRaycastBody(ComponentBody body, Projectile projectile, float distance, out bool ignore)
