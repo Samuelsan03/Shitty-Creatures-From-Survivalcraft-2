@@ -23,7 +23,6 @@ namespace Game
 			m_acceptButton = Children.Find<ButtonWidget>("LetterWarDialog.AcceptButton", true);
 			m_rejectButton = Children.Find<ButtonWidget>("LetterWarDialog.RejectButton", true);
 
-			// El mensaje se carga desde el JSON (con el formato original de líneas)
 			m_messageLabel.Text = LanguageControl.GetContentWidgets("LetterWarDialog", "Message");
 		}
 
@@ -34,14 +33,25 @@ namespace Game
 
 			if (m_acceptButton.IsClicked)
 			{
-				// Si ya se aceptó (guerra activa o completada) solo cerrar sin mensaje
-				if (invasionSubsystem.IsWarAccepted || invasionSubsystem.IsWarCompleted)
+				// CASO 1: Guerra completada → Reiniciar para nueva guerra
+				if (invasionSubsystem.IsWarCompleted)
+				{
+					invasionSubsystem.AcceptWar(); // Esto reinicia el estado internamente
+					m_player.ComponentGui.DisplaySmallMessage(
+						LanguageControl.GetContentWidgets("LetterWarDialog", "AcceptMessage"),
+						new Color(255, 50, 50), false, true);
+					DialogsManager.HideDialog(this);
+					return;
+				}
+
+				// CASO 2: Guerra ya aceptada y en curso → Solo cerrar sin mensaje
+				if (invasionSubsystem.IsWarAccepted)
 				{
 					DialogsManager.HideDialog(this);
 					return;
 				}
 
-				// En caso contrario, aceptar la guerra
+				// CASO 3: Primera vez aceptando la guerra
 				invasionSubsystem.AcceptWar();
 				m_player.ComponentGui.DisplaySmallMessage(
 					LanguageControl.GetContentWidgets("LetterWarDialog", "AcceptMessage"),
@@ -50,25 +60,32 @@ namespace Game
 			}
 			else if (m_rejectButton.IsClicked || Input.Cancel)
 			{
-				// Si ya se rechazó, solo cerrar sin mensaje
+				// Si ya se rechazó antes, solo cerrar sin mensaje
 				if (invasionSubsystem.IsWarRejected)
 				{
 					DialogsManager.HideDialog(this);
 					return;
 				}
 
-				// Si la guerra ya está completada, no se puede rechazar (solo cerrar)
+				// Si la guerra está completada, solo cerrar (no tiene sentido rechazar algo terminado)
 				if (invasionSubsystem.IsWarCompleted)
 				{
 					DialogsManager.HideDialog(this);
 					return;
 				}
 
-				// En caso contrario (guerra pendiente o activa), rechazar la guerra
-				invasionSubsystem.CancelWar();
-				m_player.ComponentGui.DisplaySmallMessage(
-					LanguageControl.GetContentWidgets("LetterWarDialog", "RejectMessage"),
-					new Color(200, 200, 200), false, true);
+				// Si la guerra fue aceptada (activa o pendiente de noche), cancelarla
+				if (invasionSubsystem.IsWarAccepted)
+				{
+					invasionSubsystem.CancelWar();
+					m_player.ComponentGui.DisplaySmallMessage(
+						LanguageControl.GetContentWidgets("LetterWarDialog", "RejectMessage"),
+						new Color(200, 200, 200), false, true);
+					DialogsManager.HideDialog(this);
+					return;
+				}
+
+				// Si no hay guerra aceptada ni rechazada (estado inicial), solo cerrar
 				DialogsManager.HideDialog(this);
 			}
 		}
