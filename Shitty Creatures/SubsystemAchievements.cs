@@ -12,6 +12,9 @@ namespace Game
 		private Dictionary<int, string> m_achievements = new Dictionary<int, string>();
 		private HashSet<int> m_claimedRewards = new HashSet<int>();
 
+		// Contador de infectados matados por cada jugador (clave = PlayerIndex)
+		private Dictionary<int, int> m_infectedKills = new Dictionary<int, int>();
+
 		public bool IsAchievementUnlocked(int achievementNumber)
 		{
 			return m_achievements.ContainsKey(achievementNumber);
@@ -36,6 +39,18 @@ namespace Game
 			m_claimedRewards.Add(achievementNumber);
 		}
 
+		public int GetInfectedKills(int playerIndex)
+		{
+			return m_infectedKills.TryGetValue(playerIndex, out int kills) ? kills : 0;
+		}
+
+		public void AddInfectedKill(int playerIndex)
+		{
+			if (!m_infectedKills.ContainsKey(playerIndex))
+				m_infectedKills[playerIndex] = 0;
+			m_infectedKills[playerIndex]++;
+		}
+
 		public override void Load(ValuesDictionary valuesDictionary)
 		{
 			// Cargar logros desbloqueados
@@ -53,14 +68,11 @@ namespace Game
 			{
 				if (rawValue is int intValue)
 				{
-					// Versión antigua: se guardaba el máximo reclamado (ej: 3)
-					// Convertir a conjunto con todos los números desde 1 hasta intValue
 					for (int i = 1; i <= intValue; i++)
 						m_claimedRewards.Add(i);
 				}
 				else if (rawValue is string strValue && !string.IsNullOrEmpty(strValue))
 				{
-					// Versión antigua: lista separada por comas (ej: "1,2,3")
 					foreach (string part in strValue.Split(','))
 					{
 						if (int.TryParse(part, out int num))
@@ -69,11 +81,27 @@ namespace Game
 				}
 				else if (rawValue is List<object> list)
 				{
-					// Formato futuro: lista de enteros
 					foreach (var obj in list)
 					{
 						if (obj is int num)
 							m_claimedRewards.Add(num);
+					}
+				}
+			}
+
+			// Cargar contador de infectados
+			if (valuesDictionary.TryGetValue("InfectedKills", out object infectedRaw) && infectedRaw != null)
+			{
+				if (infectedRaw is string infectedStr && !string.IsNullOrEmpty(infectedStr))
+				{
+					// Formato: "playerIndex1:kills1;playerIndex2:kills2;..."
+					foreach (string pair in infectedStr.Split(';', StringSplitOptions.RemoveEmptyEntries))
+					{
+						string[] parts = pair.Split(':');
+						if (parts.Length == 2 && int.TryParse(parts[0], out int idx) && int.TryParse(parts[1], out int kills))
+						{
+							m_infectedKills[idx] = kills;
+						}
 					}
 				}
 			}
@@ -87,12 +115,24 @@ namespace Game
 				valuesDictionary.SetValue<string>($"Achievement{kvp.Key}", kvp.Value);
 			}
 
-			// Guardar recompensas reclamadas como lista de enteros (string separado por comas)
+			// Guardar recompensas reclamadas como string separado por comas
 			if (m_claimedRewards.Count > 0)
 			{
 				var sorted = m_claimedRewards.OrderBy(x => x).ToList();
 				string claimedStr = string.Join(",", sorted);
 				valuesDictionary.SetValue("ClaimedRewards", claimedStr);
+			}
+
+			// Guardar contador de infectados
+			if (m_infectedKills.Count > 0)
+			{
+				List<string> pairs = new List<string>();
+				foreach (var kvp in m_infectedKills)
+				{
+					pairs.Add($"{kvp.Key}:{kvp.Value}");
+				}
+				string infectedStr = string.Join(";", pairs);
+				valuesDictionary.SetValue("InfectedKills", infectedStr);
 			}
 		}
 	}
