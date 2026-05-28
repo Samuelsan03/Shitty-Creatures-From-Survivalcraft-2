@@ -1707,7 +1707,6 @@ namespace Game
 
 		public override void OnCreatureDied(ComponentHealth health, Injury injury, ref int experienceOrbDropCount, ref bool calculateInKill)
 		{
-			// Codigo original para CapitanPirata, etc...
 			Entity deadEntity = health.Entity;
 			if (deadEntity == null) return;
 
@@ -1716,22 +1715,30 @@ namespace Game
 
 			string templateName = deadEntity.ValuesDictionary?.DatabaseObject?.Name;
 
-			// Logro: Mata un Tank
-			if (templateName == "Tank1")
+			ComponentPlayer killer = null;
+			if (injury != null && injury.Attacker != null)
 			{
-				ComponentPlayer killer = null;
-				if (injury != null && injury.Attacker != null)
-				{
-					killer = injury.Attacker.Entity.FindComponent<ComponentPlayer>();
-				}
-
-				if (killer != null)
-				{
-					UnlockAchievement(killer, 1, "KillTank", "Mata un Tank");
-				}
+				killer = injury.Attacker.Entity.FindComponent<ComponentPlayer>();
 			}
 
-			// Codigo original para CapitanPirata y PirataHostilComerciante
+			// Logro 1: Mata un Tank
+			if (templateName == "Tank1" && killer != null)
+			{
+				UnlockAchievement(killer, 1, "KillTank", LanguageControl.Get(AchievementsWidget.fName, 6));
+			}
+
+			// Logro 2: Mata un Infectado
+			if (killer != null && deadEntity.FindComponent<ComponentZombieHerdBehavior>() != null)
+			{
+				UnlockAchievement(killer, 2, "KillInfected", LanguageControl.Get(AchievementsWidget.fName, 8));
+			}
+
+			// Logro 3: Mata un Bandido
+			if (killer != null && deadEntity.FindComponent<ComponentBanditHerdBehavior>() != null)
+			{
+				UnlockAchievement(killer, 3, "KillBandit", LanguageControl.Get(AchievementsWidget.fName, 10));
+			}
+
 			if (templateName == "CapitanPirata" || templateName == "PirataHostilComerciante")
 			{
 				string deathSoundPath = "Audio/Die(1)";
@@ -2087,7 +2094,9 @@ namespace Game
 
 			s_subsystemAchievements.UnlockAchievement(achievementNumber, achievementId);
 
-			player.ComponentGui.DisplayLargeMessage("¡LOGRO DESBLOQUEADO!", displayName, 4f, 0f);
+			player.ComponentGui.DisplayLargeMessage(
+				LanguageControl.Get("AchievementsMessages", 0),
+				displayName, 4f, 0f);
 			AudioManager.PlaySound("Audio/UI/ButtonClick", 1f, 0f, 0f);
 		}
 
@@ -2103,7 +2112,6 @@ namespace Game
 			if (!s_subsystemAchievements.IsAchievementUnlocked(achievementNumber)) return false;
 			if (s_subsystemAchievements.IsRewardClaimed(achievementNumber)) return false;
 
-			// Otorgar recompensa: añadir monedas nucleares al inventario
 			IInventory inventory = player.ComponentMiner.Inventory;
 			if (inventory == null) return false;
 
@@ -2118,7 +2126,9 @@ namespace Game
 				int slot = ComponentInventoryBase.FindAcquireSlotForItem(inventory, coinValue);
 				if (slot < 0)
 				{
-					player.ComponentGui.DisplaySmallMessage("¡No hay suficiente espacio en el inventario!", Color.Red, false, true);
+					player.ComponentGui.DisplaySmallMessage(
+						LanguageControl.Get("AchievementsMessages", 2),
+						Color.Red, false, true);
 					return false;
 				}
 				int capacity = inventory.GetSlotCapacity(slot, coinValue);
@@ -2130,10 +2140,7 @@ namespace Game
 				remaining -= canAdd;
 			}
 
-			// Marcar como reclamado en el subsistema
 			s_subsystemAchievements.ClaimReward(achievementNumber);
-
-			// Opcional: guardar cambios inmediatamente (el subsistema se guarda al cerrar el mundo)
 			return true;
 		}
 
