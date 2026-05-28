@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+  Archivo de datos de logros para Shitty Creatures.
+  Cada elemento <Achievement> define:
+    Number      = Número interno del logro (coincide con el usado en AchievementsManager y SubsystemAchievements)
+    TitleKey    = Clave en LanguageControl (dentro de "AchievementsWidget") para el título
+    DescriptionKey = Clave en LanguageControl para la descripción
+    Reward      = Cantidad de monedas nucleares que da al reclamar
+-->
+<AchievementsData>
+  <!-- Logros existentes (combate) -->
+  <Achievement Number="1" TitleKey="6"  DescriptionKey="7"  Reward="50" />
+  <Achievement Number="2" TitleKey="8"  DescriptionKey="9"  Reward="25" />
+  <Achievement Number="3" TitleKey="10" DescriptionKey="11" Reward="30" />
+  <Achievement Number="4" TitleKey="12" DescriptionKey="13" Reward="30" />
+  <Achievement Number="5" TitleKey="14" DescriptionKey="15" Reward="30" />
+  
+  <!-- Logros de noche verde -->
+  <Achievement Number="6" TitleKey="16" DescriptionKey="17" Reward="50" />
+  <Achievement Number="7" TitleKey="18" DescriptionKey="19" Reward="150" />
+  
+  <!-- Logro de invasión de narcos -->
+  <Achievement Number="8" TitleKey="20" DescriptionKey="21" Reward="100" />
+  
+  <!-- NUEVOS logros por días sobrevividos -->
+  <Achievement Number="9"  TitleKey="22" DescriptionKey="23" Reward="10" />
+  <Achievement Number="10" TitleKey="24" DescriptionKey="25" Reward="20" />
+  <Achievement Number="11" TitleKey="26" DescriptionKey="27" Reward="50" />
+  <Achievement Number="12" TitleKey="28" DescriptionKey="29" Reward="100" />
+  <Achievement Number="13" TitleKey="30" DescriptionKey="31" Reward="150" />
+  <Achievement Number="14" TitleKey="32" DescriptionKey="33" Reward="500" />
+</AchievementsData>
