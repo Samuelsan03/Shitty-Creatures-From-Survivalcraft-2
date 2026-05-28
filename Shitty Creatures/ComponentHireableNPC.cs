@@ -14,7 +14,7 @@ namespace Game
 		private SubsystemAudio m_subsystemAudio;
 		private SubsystemPickables m_subsystemPickables;
 		private ComponentHealth m_componentHealth;
-		private ComponentCreatureSounds m_componentCreatureSounds; // NUEVO
+		private ComponentCreatureSounds m_componentCreatureSounds;
 
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
@@ -22,7 +22,7 @@ namespace Game
 			m_subsystemAudio = Project.FindSubsystem<SubsystemAudio>(true);
 			m_subsystemPickables = Project.FindSubsystem<SubsystemPickables>(true);
 			m_componentHealth = Entity.FindComponent<ComponentHealth>();
-			m_componentCreatureSounds = Entity.FindComponent<ComponentCreatureSounds>(); // NUEVO
+			m_componentCreatureSounds = Entity.FindComponent<ComponentCreatureSounds>();
 
 			HirePrice = valuesDictionary.GetValue<int>("HirePrice", 100);
 			IsHired = valuesDictionary.GetValue<bool>("IsHired", false);
@@ -81,11 +81,12 @@ namespace Game
 
 			IsHired = true;
 
-			// Reproducir sonido idle (feliz) del NPC
 			if (m_componentCreatureSounds != null)
 			{
-				m_componentCreatureSounds.PlayIdleSound(false); // false asegura que suene si ha pasado al menos 1s
+				m_componentCreatureSounds.PlayIdleSound(false);
 			}
+
+			AchievementsManager.OnHireMercenary(buyer);
 
 			string successMessage = LanguageControl.GetContentWidgets("HireWidget", "SuccessMessage");
 			buyer.ComponentGui.DisplaySmallMessage(successMessage, Color.Green, false, false);
