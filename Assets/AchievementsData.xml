@@ -1,32 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- 
-  Archivo de datos de logros para Shitty Creatures.
-  Cada elemento <Achievement> define:
-    Number      = Número interno del logro (coincide con el usado en AchievementsManager y SubsystemAchievements)
-    TitleKey    = Clave en LanguageControl (dentro de "AchievementsWidget") para el título
-    DescriptionKey = Clave en LanguageControl para la descripción
-    Reward      = Cantidad de monedas nucleares que da al reclamar
--->
 <AchievementsData>
-  <!-- Logros existentes (combate) -->
+<!-- Achievement Number="numero del logro" TitleKey="key del título del languagecontrol" DescriptionKey="key de la descripción del languagecontrol" Reward="recompensa" -->
   <Achievement Number="1" TitleKey="6"  DescriptionKey="7"  Reward="50" />
   <Achievement Number="2" TitleKey="8"  DescriptionKey="9"  Reward="25" />
   <Achievement Number="3" TitleKey="10" DescriptionKey="11" Reward="30" />
   <Achievement Number="4" TitleKey="12" DescriptionKey="13" Reward="30" />
   <Achievement Number="5" TitleKey="14" DescriptionKey="15" Reward="30" />
-  
-  <!-- Logros de noche verde -->
   <Achievement Number="6" TitleKey="16" DescriptionKey="17" Reward="50" />
   <Achievement Number="7" TitleKey="18" DescriptionKey="19" Reward="150" />
-  
-  <!-- Logro de invasión de narcos -->
   <Achievement Number="8" TitleKey="20" DescriptionKey="21" Reward="100" />
-  
-  <!-- NUEVOS logros por días sobrevividos -->
   <Achievement Number="9"  TitleKey="22" DescriptionKey="23" Reward="10" />
   <Achievement Number="10" TitleKey="24" DescriptionKey="25" Reward="20" />
   <Achievement Number="11" TitleKey="26" DescriptionKey="27" Reward="50" />
   <Achievement Number="12" TitleKey="28" DescriptionKey="29" Reward="100" />
   <Achievement Number="13" TitleKey="30" DescriptionKey="31" Reward="150" />
   <Achievement Number="14" TitleKey="32" DescriptionKey="33" Reward="500" />
+  <Achievement Number="15" TitleKey="34" DescriptionKey="35" Reward="75" />
+  <Achievement Number="16" TitleKey="36" DescriptionKey="37" Reward="15" />
+  <Achievement Number="17" TitleKey="38" DescriptionKey="39" Reward="30" />
+  <Achievement Number="18" TitleKey="40" DescriptionKey="41" Reward="60" />
+  <Achievement Number="19" TitleKey="42" DescriptionKey="43" Reward="20" />
+  <Achievement Number="20" TitleKey="44" DescriptionKey="45" Reward="40" />
+  <Achievement Number="21" TitleKey="46" DescriptionKey="47" Reward="80" />
+  <Achievement Number="22" TitleKey="48" DescriptionKey="49" Reward="20" />
+  <Achievement Number="23" TitleKey="50" DescriptionKey="51" Reward="40" />
+  <Achievement Number="24" TitleKey="52" DescriptionKey="53" Reward="80" />
+  <Achievement Number="25" TitleKey="54" DescriptionKey="55" Reward="15" />
+  <Achievement Number="26" TitleKey="56" DescriptionKey="57" Reward="30" />
+  <Achievement Number="27" TitleKey="58" DescriptionKey="59" Reward="60" />
+  <Achievement Number="28" TitleKey="60" DescriptionKey="61" Reward="25" />
+  <Achievement Number="29" TitleKey="62" DescriptionKey="63" Reward="50" />
+  <Achievement Number="30" TitleKey="64" DescriptionKey="65" Reward="100" />
+  <Achievement Number="31" TitleKey="66" DescriptionKey="67" Reward="20" />
+  <Achievement Number="32" TitleKey="68" DescriptionKey="69" Reward="40" />
+  <Achievement Number="33" TitleKey="70" DescriptionKey="71" Reward="80" />
+  <Achievement Number="34" TitleKey="72" DescriptionKey="73" Reward="20" />
+  <Achievement Number="35" TitleKey="74" DescriptionKey="75" Reward="40" />
+  <Achievement Number="36" TitleKey="76" DescriptionKey="77" Reward="80" />
+  <Achievement Number="37" TitleKey="78" DescriptionKey="79" Reward="50" />
+  <Achievement Number="38" TitleKey="80" DescriptionKey="81" Reward="25" />
+  <Achievement Number="39" TitleKey="82" DescriptionKey="83" Reward="50" />
+  <Achievement Number="40" TitleKey="84" DescriptionKey="85" Reward="100" />
+  <Achievement Number="41" TitleKey="86" DescriptionKey="87" Reward="50" />
+  <Achievement Number="42" TitleKey="88" DescriptionKey="89" Reward="75" />
+  <Achievement Number="43" TitleKey="90" DescriptionKey="91" Reward="150" />
 </AchievementsData>
