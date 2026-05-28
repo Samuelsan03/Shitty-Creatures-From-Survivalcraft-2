@@ -5,6 +5,7 @@ using Engine;
 using Engine.Graphics;
 using GameEntitySystem;
 using TemplatesDatabase;
+using System.Timers;
 
 namespace Game
 {
@@ -39,6 +40,8 @@ namespace Game
 		private const int MaxGlobalCreatures = 80;
 		private const int MaxSpawnsPerFrame = 3;
 		private const int GroupSpawnCount = 2;
+
+		public event Action<int, int> WaveAdvanced; // (oldWave, newWave)
 
 		// ===== SISTEMA DE SPAWN DE ESQUELETOS =====
 		private List<SpawnChunk> m_skeletonNewSpawnChunks = new List<SpawnChunk>();
@@ -288,38 +291,90 @@ namespace Game
 
 		private void OnNaturalNightEnded()
 		{
-			int waveBefore = m_currentWave;
+			int oldWave = m_currentWave;
 			int maxWave = m_waves.Keys.Max();
 
 			AdvanceToNextWave();
+			int newWave = m_currentWave;
 
-			if (waveBefore == maxWave && !m_hasShownUnlockMessage)
+			// Disparar evento para logros
+			WaveAdvanced?.Invoke(oldWave, newWave);
+
+			// Logro 6: Primera noche verde sobrevivida
+			if (oldWave == 1 && newWave == 2)
 			{
-				m_hasShownUnlockMessage = true;
-
-				string largeMessage = LanguageControl.Get("UnlockedItems", "Unlocked");
-				if (string.IsNullOrEmpty(largeMessage))
-					largeMessage = "Remote Control unlocked!";
-
-				string smallMessage = LanguageControl.Get("UnlockedItems", "UnlockedInfo");
-				if (string.IsNullOrEmpty(smallMessage))
-					smallMessage = "You can now craft the Remote Control to manage the Green Nights.";
-
 				foreach (var player in m_subsystemPlayers.ComponentPlayers)
 				{
-					player.ComponentGui.DisplayLargeMessage(largeMessage, smallMessage, 5f, 0f);
-				}
-
-				if (!m_letterWarSpawned && m_subsystemTime != null)
-				{
-					m_subsystemTime.QueueGameTimeDelayedExecution(m_subsystemTime.GameTime + 5.0, () =>
-					{
-						if (!m_letterWarSpawned)
-							ShowLetterAnnouncementAndSpawn();
-					});
+					AchievementsManager.UnlockAchievementStatic(player, 6, "FirstWaveSurvived", LanguageControl.Get(AchievementsWidget.fName, 16));
 				}
 			}
-		}
+
+			// Logro 7: Todas las oleadas completadas
+			if (oldWave == maxWave && !m_hasShownUnlockMessage)
+			{
+				// Mostrar el logro y su mensaje inmediatamente
+				foreach (var player in m_subsystemPlayers.ComponentPlayers)
+				{
+					AchievementsManager.UnlockAchievementStatic(player, 7, "AllWavesCompleted", LanguageControl.Get(AchievementsWidget.fName, 18));
+				}
+
+				// Programar el mensaje del control remoto después de 2 segundos usando un Timer
+				System.Timers.Timer timer1 = new System.Timers.Timer(4000);
+				timer1.Elapsed += (sender, e) =>
+				{
+					timer1.Stop();
+					timer1.Dispose();
+					Dispatcher.Dispatch(() =>
+					{
+						if (!m_hasShownUnlockMessage)
+						{
+							m_hasShownUnlockMessage = true;
+
+							string largeMessage = LanguageControl.Get("UnlockedItems", "Unlocked");
+							if (string.IsNullOrEmpty(largeMessage))
+								largeMessage = "Remote Control unlocked!";
+
+							string smallMessage = LanguageControl.Get("UnlockedItems", "UnlockedInfo");
+							if (string.IsNullOrEmpty(smallMessage))
+								smallMessage = "You can now craft the Remote Control to manage the Green Nights.";
+
+							foreach (var player in m_subsystemPlayers.ComponentPlayers)
+							{
+								player.ComponentGui.DisplayLargeMessage(largeMessage, smallMessage, 5f, 0f);
+							}
+
+							// Programar el cofre después de 5 segundos adicionales
+							System.Timers.Timer timer2 = new System.Timers.Timer(5000);
+							timer2.Elapsed += (sender2, e2) =>
+							{
+								timer2.Stop();
+								timer2.Dispose();
+								Dispatcher.Dispatch(() =>
+								{
+									if (!m_letterWarSpawned)
+										ShowLetterAnnouncementAndSpawn();
+								});
+							};
+							timer2.Start();
+						}
+					});
+				};
+				timer1.Start();
+			}
+			else
+				{
+					// Fallback si no hay subsistema de tiempo
+					m_hasShownUnlockMessage = true;
+					string largeMessage = LanguageControl.Get("UnlockedItems", "Unlocked");
+					string smallMessage = LanguageControl.Get("UnlockedItems", "UnlockedInfo");
+					foreach (var player in m_subsystemPlayers.ComponentPlayers)
+					{
+						player.ComponentGui.DisplayLargeMessage(largeMessage, smallMessage, 5f, 0f);
+					}
+					if (!m_letterWarSpawned)
+						ShowLetterAnnouncementAndSpawn();
+				}
+			}
 
 		private void ShowLetterAnnouncementAndSpawn()
 		{
