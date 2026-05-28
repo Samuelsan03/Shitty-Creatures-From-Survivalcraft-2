@@ -32,33 +32,31 @@ namespace Game
 				m_closeButton.Text = LanguageControl.Get(fName, 1);
 			}
 
-			var achievements = new[]
+			// Cargar datos de logros desde XML
+			XElement achievementsXml = ContentManager.Get<XElement>("AchievementsData");
+			if (achievementsXml == null)
 			{
-		new { Number = 1, TitleKey = 6, DescKey = 7, Reward = 50 },
-		new { Number = 2, TitleKey = 8, DescKey = 9, Reward = 25 },
-		new { Number = 3, TitleKey = 10, DescKey = 11, Reward = 30 },
-		new { Number = 4, TitleKey = 12, DescKey = 13, Reward = 30 },
-		new { Number = 5, TitleKey = 14, DescKey = 15, Reward = 30 },
-		new { Number = 6, TitleKey = 16, DescKey = 17, Reward = 50 },
-		new { Number = 7, TitleKey = 18, DescKey = 19, Reward = 150 },
-		new { Number = 8, TitleKey = 20, DescKey = 21, Reward = 100 },
-		new { Number = 9,  TitleKey = 22, DescKey = 23, Reward = 10 },
-	new { Number = 10, TitleKey = 24, DescKey = 25, Reward = 20 },
-	new { Number = 11, TitleKey = 26, DescKey = 27, Reward = 50 },
-	new { Number = 12, TitleKey = 28, DescKey = 29, Reward = 100 },
-	new { Number = 13, TitleKey = 30, DescKey = 31, Reward = 150 },
-	new { Number = 14, TitleKey = 32, DescKey = 33, Reward = 500 },
-	};
+				Log.Error("[AchievementsWidget] No se pudo cargar Data/AchievementsData.xml");
+				return;
+			}
 
-			foreach (var a in achievements)
+			foreach (XElement elem in achievementsXml.Elements("Achievement"))
 			{
+				int number = (int)elem.Attribute("Number");
+				int titleKey = (int)elem.Attribute("TitleKey");
+				int descKey = (int)elem.Attribute("DescriptionKey");
+				int reward = (int)elem.Attribute("Reward");
+
+				string title = LanguageControl.Get(fName, titleKey);
+				string description = LanguageControl.Get(fName, descKey);
+
 				CreateAchievementItem(
-					title: LanguageControl.Get(fName, a.TitleKey),
-					description: LanguageControl.Get(fName, a.DescKey),
-					achievementNumber: a.Number,
-					rewardAmount: a.Reward,
-					unlocked: AchievementsManager.IsAchievementUnlocked(m_componentPlayer, a.Number),
-					rewardClaimed: AchievementsManager.IsRewardClaimed(m_componentPlayer, a.Number)
+					title: title,
+					description: description,
+					achievementNumber: number,
+					rewardAmount: reward,
+					unlocked: AchievementsManager.IsAchievementUnlocked(m_componentPlayer, number),
+					rewardClaimed: AchievementsManager.IsRewardClaimed(m_componentPlayer, number)
 				);
 			}
 		}
