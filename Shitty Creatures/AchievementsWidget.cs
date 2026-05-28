@@ -41,7 +41,13 @@ namespace Game
 		new { Number = 5, TitleKey = 14, DescKey = 15, Reward = 30 },
 		new { Number = 6, TitleKey = 16, DescKey = 17, Reward = 50 },
 		new { Number = 7, TitleKey = 18, DescKey = 19, Reward = 150 },
-		new { Number = 8, TitleKey = 20, DescKey = 21, Reward = 100 }
+		new { Number = 8, TitleKey = 20, DescKey = 21, Reward = 100 },
+		new { Number = 9,  TitleKey = 22, DescKey = 23, Reward = 10 },
+	new { Number = 10, TitleKey = 24, DescKey = 25, Reward = 20 },
+	new { Number = 11, TitleKey = 26, DescKey = 27, Reward = 50 },
+	new { Number = 12, TitleKey = 28, DescKey = 29, Reward = 100 },
+	new { Number = 13, TitleKey = 30, DescKey = 31, Reward = 150 },
+	new { Number = 14, TitleKey = 32, DescKey = 33, Reward = 500 },
 	};
 
 			foreach (var a in achievements)
@@ -138,6 +144,30 @@ namespace Game
 			};
 			bottomRow.Children.Add(rewardLabel);
 
+			// Determinar si el botón debe estar habilitado
+			bool buttonEnabled = unlocked && !rewardClaimed;
+
+			// Colores: verde/verde desaturado cuando está desbloqueado, gris cuando NO está desbloqueado
+			// Cuando está desbloqueado pero la recompensa ya fue reclamada -> verde desaturado pero deshabilitado
+			Color buttonColor;
+			Color bevelColor;
+			Color centerColor;
+
+			if (unlocked)
+			{
+				// Logro completado: colores verdes
+				buttonColor = rewardClaimed ? new Color(100, 100, 100) : Color.White; // Texto blanco o gris claro
+				bevelColor = new Color(0, 80, 0);    // Verde oscuro
+				centerColor = new Color(0, 60, 0);   // Verde más oscuro
+			}
+			else
+			{
+				// Logro pendiente: colores grises
+				buttonColor = Color.Gray;
+				bevelColor = new Color(80, 80, 80);
+				centerColor = new Color(60, 60, 60);
+			}
+
 			var claimButton = new BevelledButtonWidget
 			{
 				Name = $"ClaimButton_{achievementNumber}",
@@ -147,10 +177,10 @@ namespace Game
 				Margin = new Vector2(15, 0),
 				HorizontalAlignment = WidgetAlignment.Center,
 				VerticalAlignment = WidgetAlignment.Center,
-				IsEnabled = unlocked && !rewardClaimed,
-				Color = unlocked && !rewardClaimed ? Color.White : Color.Gray,
-				BevelColor = unlocked && !rewardClaimed ? new Color(0, 100, 0) : new Color(80, 80, 80),
-				CenterColor = unlocked && !rewardClaimed ? new Color(0, 80, 0) : new Color(60, 60, 60)
+				IsEnabled = buttonEnabled,
+				Color = buttonColor,
+				BevelColor = bevelColor,
+				CenterColor = centerColor
 			};
 			bottomRow.Children.Add(claimButton);
 
@@ -196,6 +226,13 @@ namespace Game
 									m_componentPlayer.ComponentGui.DisplaySmallMessage(
 										LanguageControl.Get("AchievementsMessages", 1),
 										Color.Green, false, true);
+
+									// Reproducir sonido de éxito
+									var audio = m_componentPlayer.Project.FindSubsystem<SubsystemAudio>(true);
+									if (audio != null)
+									{
+										audio.PlaySound("Audio/UI/success", 1f, 0f, m_componentPlayer.ComponentBody.Position, 10f, false);
+									}
 								}
 							}
 						}
