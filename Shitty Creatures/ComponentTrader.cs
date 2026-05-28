@@ -447,6 +447,12 @@ namespace Game
 				LanguageControl.GetContentWidgets("Trader", "PurchaseSuccessful"),
 				Color.Green, false, false);
 			m_subsystemAudio.PlaySound("Audio/UI/money", 1f, 0f, 0f, 0f);
+
+			// Logro por comprar al Pirata Hostil Comerciante
+			if (Entity != null && Entity.ValuesDictionary?.DatabaseObject?.Name == "PirataHostilComerciante")
+			{
+				AchievementsManager.OnBuyFromPirateTrader(buyer);
+			}
 			return true;
 		}
 		public void Update(float dt)
