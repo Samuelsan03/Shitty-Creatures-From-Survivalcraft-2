@@ -714,8 +714,11 @@ namespace Game
 					ComponentPlayer player = gameWidget.PlayerData?.ComponentPlayer;
 					if (player != null && m_achievementButtons.TryGetValue(player, out var btn) && btn != null && btn.IsClicked)
 					{
-						// Abrir panel de logros como modal
-						player.ComponentGui.ModalPanelWidget = new AchievementsWidget(player);
+						// Toggle: si ya está abierto, lo cierra; si no, lo abre
+						if (player.ComponentGui.ModalPanelWidget is AchievementsWidget)
+							player.ComponentGui.ModalPanelWidget = null;
+						else
+							player.ComponentGui.ModalPanelWidget = new AchievementsWidget(player);
 					}
 					if (player != null && player.ComponentHealth.Health > 0f)
 					{
@@ -753,6 +756,8 @@ namespace Game
 							displayPos.X.ToString("F1"),
 							displayPos.Z.ToString("F1"),
 							displayPos.Y.ToString("F1"));
+
+						AchievementsManager.UpdateDayAchievements();
 					}
 				}
 			}
@@ -1717,6 +1722,27 @@ namespace Game
 			ComponentCreature creature = deadEntity.FindComponent<ComponentCreature>();
 			if (creature == null) return;
 			string templateName = deadEntity.ValuesDictionary?.DatabaseObject?.Name;
+
+			// Logros de piratas
+			ComponentPlayer killer = null;
+			if (injury != null && injury.Attacker != null)
+				killer = injury.Attacker.Entity.FindComponent<ComponentPlayer>();
+
+			if (killer != null)
+			{
+				if (templateName == "PirataNormal" || templateName == "PirataElite")
+				{
+					AchievementsManager.OnPirateKill(killer);
+				}
+				else if (templateName == "PirataHostilComerciante")
+				{
+					AchievementsManager.OnKillPirateTrader(killer);
+				}
+				else if (templateName == "CapitanPirata")
+				{
+					AchievementsManager.OnKillPirateCaptain(killer);
+				}
+			}
 
 			if (templateName == "CapitanPirata" || templateName == "PirataHostilComerciante")
 			{
