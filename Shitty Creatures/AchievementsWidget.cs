@@ -10,6 +10,9 @@ namespace Game
 		private ComponentPlayer m_componentPlayer;
 		private BevelledButtonWidget m_closeButton;
 		private StackPanelWidget m_achievementsStack;
+		private LabelWidget m_titleLabel;
+
+		public static string fName = "AchievementsWidget";
 
 		public AchievementsWidget(ComponentPlayer player)
 		{
@@ -18,17 +21,35 @@ namespace Game
 			LoadContents(this, node);
 			m_closeButton = Children.Find<BevelledButtonWidget>("CloseButton", true);
 			m_achievementsStack = Children.Find<StackPanelWidget>("AchievementsStack", true);
+			m_titleLabel = Children.Find<LabelWidget>("TitleLabel", true);
 
-			bool unlocked = ShittyCreaturesModLoader.IsAchievementUnlocked(m_componentPlayer, 1);
-			bool rewardClaimed = ShittyCreaturesModLoader.IsRewardClaimed(m_componentPlayer, 1);
-			CreateAchievementItem(
-				title: "Mata un Tank",
-				description: "Elimina un Tank con cualquier arma (cuerpo a cuerpo o distancia)",
-				achievementNumber: 1,
-				rewardAmount: 50,
-				unlocked: unlocked,
-				rewardClaimed: rewardClaimed
-			);
+			if (m_titleLabel != null)
+			{
+				m_titleLabel.Text = LanguageControl.Get(fName, 0);
+			}
+			if (m_closeButton != null)
+			{
+				m_closeButton.Text = LanguageControl.Get(fName, 1);
+			}
+
+			var achievements = new[]
+			{
+				new { Number = 1, TitleKey = 6, DescKey = 7, Reward = 50 },
+				new { Number = 2, TitleKey = 8, DescKey = 9, Reward = 25 },
+				new { Number = 3, TitleKey = 10, DescKey = 11, Reward = 30 }
+			};
+
+			foreach (var a in achievements)
+			{
+				CreateAchievementItem(
+					title: LanguageControl.Get(fName, a.TitleKey),
+					description: LanguageControl.Get(fName, a.DescKey),
+					achievementNumber: a.Number,
+					rewardAmount: a.Reward,
+					unlocked: ShittyCreaturesModLoader.IsAchievementUnlocked(m_componentPlayer, a.Number),
+					rewardClaimed: ShittyCreaturesModLoader.IsRewardClaimed(m_componentPlayer, a.Number)
+				);
+			}
 		}
 
 		private void CreateAchievementItem(string title, string description, int achievementNumber, int rewardAmount, bool unlocked, bool rewardClaimed)
@@ -48,10 +69,9 @@ namespace Game
 			};
 			achievementContainer.Children.Add(background);
 
-			// Estado (esquina superior izquierda)
 			var statusLabel = new LabelWidget
 			{
-				Text = unlocked ? "COMPLETADO" : "PENDIENTE",
+				Text = unlocked ? LanguageControl.Get(fName, 2) : LanguageControl.Get(fName, 3),
 				Color = unlocked ? Color.Green : Color.Red,
 				FontScale = 0.7f,
 				HorizontalAlignment = WidgetAlignment.Near,
@@ -60,7 +80,6 @@ namespace Game
 			};
 			achievementContainer.Children.Add(statusLabel);
 
-			// 1. Título (centrado, arriba)
 			var titleLabel = new LabelWidget
 			{
 				Text = title,
@@ -72,7 +91,6 @@ namespace Game
 			};
 			achievementContainer.Children.Add(titleLabel);
 
-			// 2. Descripción (centrada, debajo del título)
 			var descLabel = new LabelWidget
 			{
 				Text = description,
@@ -84,7 +102,6 @@ namespace Game
 			};
 			achievementContainer.Children.Add(descLabel);
 
-			// 3. Fila recompensa + botón (abajo)
 			var bottomRow = new StackPanelWidget
 			{
 				Direction = LayoutDirection.Horizontal,
@@ -94,7 +111,6 @@ namespace Game
 			};
 			achievementContainer.Children.Add(bottomRow);
 
-			// Icono de moneda
 			Block nuclearCoinBlock = BlocksManager.GetBlock<NuclearCoinBlock>(false, false);
 			int coinValue = nuclearCoinBlock != null ? nuclearCoinBlock.BlockIndex : 490;
 			BlockIconWidget coinIcon = new BlockIconWidget
@@ -107,10 +123,9 @@ namespace Game
 			};
 			bottomRow.Children.Add(coinIcon);
 
-			// Texto recompensa
 			var rewardLabel = new LabelWidget
 			{
-				Text = $"Recompensa: {rewardAmount} monedas nucleares",
+				Text = string.Format(LanguageControl.Get(fName, 4), rewardAmount),
 				Color = unlocked ? new Color(255, 215, 0) : new Color(150, 150, 150),
 				FontScale = 0.7f,
 				Margin = new Vector2(5, 0),
@@ -118,13 +133,12 @@ namespace Game
 			};
 			bottomRow.Children.Add(rewardLabel);
 
-			// Botón Reclamar
 			var claimButton = new BevelledButtonWidget
 			{
 				Name = $"ClaimButton_{achievementNumber}",
-				Text = "Reclamar",
-				Size = new Vector2(95, 25),  // Botón más pequeño
-				FontScale = 0.75f,            // Texto más pequeño dentro del botón
+				Text = LanguageControl.Get(fName, 5),
+				Size = new Vector2(95, 35),
+				FontScale = 0.75f,
 				Margin = new Vector2(15, 0),
 				HorizontalAlignment = WidgetAlignment.Center,
 				VerticalAlignment = WidgetAlignment.Center,
@@ -174,7 +188,9 @@ namespace Game
 								{
 									claimButton.IsEnabled = false;
 									claimButton.Color = Color.Gray;
-									m_componentPlayer.ComponentGui.DisplaySmallMessage("¡Recompensa reclamada!", Color.Green, false, true);
+									m_componentPlayer.ComponentGui.DisplaySmallMessage(
+										LanguageControl.Get("AchievementsMessages", 1),
+										Color.Green, false, true);
 								}
 							}
 						}
