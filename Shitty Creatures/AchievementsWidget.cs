@@ -2,7 +2,6 @@ using System;
 using System.Xml.Linq;
 using Engine;
 using Game;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Game
 {
