@@ -23,6 +23,8 @@ namespace Game
 		public static event Action<ComponentPlayer, int, int> OnGhostCounterChanged;
 		public static event Action<ComponentPlayer, int, int> OnGhostTankCounterChanged;
 		public static event Action<ComponentPlayer, int, int> OnBanditCounterChanged;
+		public static event Action<ComponentPlayer, int, int> OnHealCounterChanged;
+		public static event Action<ComponentPlayer, int, int> OnPirateCounterChanged;
 
 		public static void Initialize(Project project)
 		{
@@ -267,6 +269,79 @@ namespace Game
 			}
 		}
 
+		public static void OnHeal(ComponentPlayer healer)
+		{
+			if (s_subsystemAchievements == null || healer == null) return;
+
+			int playerIndex = healer.PlayerData.PlayerIndex;
+			s_subsystemAchievements.AddHeal(playerIndex);
+			int total = s_subsystemAchievements.GetHeals(playerIndex);
+
+			if (total <= 100)
+			{
+				if (total <= 10) OnHealCounterChanged?.Invoke(healer, total, 10);
+				else if (total <= 50) OnHealCounterChanged?.Invoke(healer, total, 50);
+				else OnHealCounterChanged?.Invoke(healer, total, 100);
+			}
+
+			if (total >= 10 && !s_subsystemAchievements.IsAchievementUnlocked(34))
+				UnlockAchievement(healer, 34, "Heal10", LanguageControl.Get(AchievementsWidget.fName, 72));
+			if (total >= 50 && !s_subsystemAchievements.IsAchievementUnlocked(35))
+				UnlockAchievement(healer, 35, "Heal50", LanguageControl.Get(AchievementsWidget.fName, 74));
+			if (total >= 100 && !s_subsystemAchievements.IsAchievementUnlocked(36))
+				UnlockAchievement(healer, 36, "Heal100", LanguageControl.Get(AchievementsWidget.fName, 76));
+		}
+
+		public static void OnPirateKill(ComponentPlayer killer)
+		{
+			if (s_subsystemAchievements == null || killer == null) return;
+			int playerIndex = killer.PlayerData.PlayerIndex;
+			s_subsystemAchievements.AddPirateKill(playerIndex);
+			int kills = s_subsystemAchievements.GetPirateKills(playerIndex);
+
+			if (kills <= 100)
+			{
+				if (kills <= 10) OnPirateCounterChanged?.Invoke(killer, kills, 10);
+				else if (kills <= 50) OnPirateCounterChanged?.Invoke(killer, kills, 50);
+				else OnPirateCounterChanged?.Invoke(killer, kills, 100);
+			}
+
+			if (kills >= 10 && !s_subsystemAchievements.IsAchievementUnlocked(38))
+				UnlockAchievement(killer, 38, "Kill10Pirates", LanguageControl.Get(AchievementsWidget.fName, 80));
+			if (kills >= 50 && !s_subsystemAchievements.IsAchievementUnlocked(39))
+				UnlockAchievement(killer, 39, "Kill50Pirates", LanguageControl.Get(AchievementsWidget.fName, 82));
+			if (kills >= 100 && !s_subsystemAchievements.IsAchievementUnlocked(40))
+				UnlockAchievement(killer, 40, "Kill100Pirates", LanguageControl.Get(AchievementsWidget.fName, 84));
+		}
+
+		public static void OnBuyFromPirateTrader(ComponentPlayer buyer)
+		{
+			if (s_subsystemAchievements == null || buyer == null) return;
+			if (!s_subsystemAchievements.IsAchievementUnlocked(41))
+				UnlockAchievement(buyer, 41, "BuyFromPirateTrader", LanguageControl.Get(AchievementsWidget.fName, 86));
+		}
+
+		public static void OnKillPirateTrader(ComponentPlayer killer)
+		{
+			if (s_subsystemAchievements == null || killer == null) return;
+			if (!s_subsystemAchievements.IsAchievementUnlocked(42))
+				UnlockAchievement(killer, 42, "KillPirateTrader", LanguageControl.Get(AchievementsWidget.fName, 88));
+		}
+
+		public static void OnKillPirateCaptain(ComponentPlayer killer)
+		{
+			if (s_subsystemAchievements == null || killer == null) return;
+			if (!s_subsystemAchievements.IsAchievementUnlocked(43))
+				UnlockAchievement(killer, 43, "KillPirateCaptain", LanguageControl.Get(AchievementsWidget.fName, 90));
+		}
+
+		public static void OnHireMercenary(ComponentPlayer player)
+		{
+			if (s_subsystemAchievements == null || player == null) return;
+			if (!s_subsystemAchievements.IsAchievementUnlocked(37))
+				UnlockAchievement(player, 37, "HireMercenary", LanguageControl.Get(AchievementsWidget.fName, 78));
+		}
+
 		private static void OnInvasionCompleted()
 		{
 			if (s_subsystemAchievements == null) return;
@@ -304,6 +379,8 @@ namespace Game
 		public static int GetGhostKills(ComponentPlayer player) => player == null ? 0 : s_subsystemAchievements?.GetGhostKills(player.PlayerData.PlayerIndex) ?? 0;
 		public static int GetGhostTankKills(ComponentPlayer player) => player == null ? 0 : s_subsystemAchievements?.GetGhostTankKills(player.PlayerData.PlayerIndex) ?? 0;
 		public static int GetBanditKills(ComponentPlayer player) => player == null ? 0 : s_subsystemAchievements?.GetBanditKills(player.PlayerData.PlayerIndex) ?? 0;
+		public static int GetHeals(ComponentPlayer player) => player == null ? 0 : s_subsystemAchievements?.GetHeals(player.PlayerData.PlayerIndex) ?? 0;
+		public static int GetPirateKills(ComponentPlayer player) => player == null ? 0 : s_subsystemAchievements?.GetPirateKills(player.PlayerData.PlayerIndex) ?? 0;
 
 		public static bool ClaimAchievementReward(ComponentPlayer player, int achievementNumber, int rewardAmount)
 		{
