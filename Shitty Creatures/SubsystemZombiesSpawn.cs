@@ -309,7 +309,7 @@ namespace Game
 				}
 			}
 
-			// Logro 7: Todas las oleadas completadas
+			// Logro 7: Todas las oleadas completadas (solo en la última ola)
 			if (oldWave == maxWave && !m_hasShownUnlockMessage)
 			{
 				// Mostrar el logro y su mensaje inmediatamente
@@ -318,52 +318,54 @@ namespace Game
 					AchievementsManager.UnlockAchievementStatic(player, 7, "AllWavesCompleted", LanguageControl.Get(AchievementsWidget.fName, 18));
 				}
 
-				// Programar el mensaje del control remoto después de 2 segundos usando un Timer
-				System.Timers.Timer timer1 = new System.Timers.Timer(4000);
-				timer1.Elapsed += (sender, e) =>
+				// Programar el mensaje del control remoto después de 4 segundos
+				if (m_subsystemTime != null)
 				{
-					timer1.Stop();
-					timer1.Dispose();
-					Dispatcher.Dispatch(() =>
+					System.Timers.Timer timer1 = new System.Timers.Timer(4000);
+					timer1.Elapsed += (sender, e) =>
 					{
-						if (!m_hasShownUnlockMessage)
+						timer1.Stop();
+						timer1.Dispose();
+						Dispatcher.Dispatch(() =>
 						{
-							m_hasShownUnlockMessage = true;
-
-							string largeMessage = LanguageControl.Get("UnlockedItems", "Unlocked");
-							if (string.IsNullOrEmpty(largeMessage))
-								largeMessage = "Remote Control unlocked!";
-
-							string smallMessage = LanguageControl.Get("UnlockedItems", "UnlockedInfo");
-							if (string.IsNullOrEmpty(smallMessage))
-								smallMessage = "You can now craft the Remote Control to manage the Green Nights.";
-
-							foreach (var player in m_subsystemPlayers.ComponentPlayers)
+							if (!m_hasShownUnlockMessage)
 							{
-								player.ComponentGui.DisplayLargeMessage(largeMessage, smallMessage, 5f, 0f);
-							}
+								m_hasShownUnlockMessage = true;
 
-							// Programar el cofre después de 5 segundos adicionales
-							System.Timers.Timer timer2 = new System.Timers.Timer(5000);
-							timer2.Elapsed += (sender2, e2) =>
-							{
-								timer2.Stop();
-								timer2.Dispose();
-								Dispatcher.Dispatch(() =>
+								string largeMessage = LanguageControl.Get("UnlockedItems", "Unlocked");
+								if (string.IsNullOrEmpty(largeMessage))
+									largeMessage = "Remote Control unlocked!";
+
+								string smallMessage = LanguageControl.Get("UnlockedItems", "UnlockedInfo");
+								if (string.IsNullOrEmpty(smallMessage))
+									smallMessage = "You can now craft the Remote Control to manage the Green Nights.";
+
+								foreach (var player in m_subsystemPlayers.ComponentPlayers)
 								{
-									if (!m_letterWarSpawned)
-										ShowLetterAnnouncementAndSpawn();
-								});
-							};
-							timer2.Start();
-						}
-					});
-				};
-				timer1.Start();
-			}
-			else
+									player.ComponentGui.DisplayLargeMessage(largeMessage, smallMessage, 5f, 0f);
+								}
+
+								// Programar el cofre después de 5 segundos adicionales
+								System.Timers.Timer timer2 = new System.Timers.Timer(5000);
+								timer2.Elapsed += (sender2, e2) =>
+								{
+									timer2.Stop();
+									timer2.Dispose();
+									Dispatcher.Dispatch(() =>
+									{
+										if (!m_letterWarSpawned)
+											ShowLetterAnnouncementAndSpawn();
+									});
+								};
+								timer2.Start();
+							}
+						});
+					};
+					timer1.Start();
+				}
+				else
 				{
-					// Fallback si no hay subsistema de tiempo
+					// Fallback si no hay subsistema de tiempo (caso extremo)
 					m_hasShownUnlockMessage = true;
 					string largeMessage = LanguageControl.Get("UnlockedItems", "Unlocked");
 					string smallMessage = LanguageControl.Get("UnlockedItems", "UnlockedInfo");
@@ -375,6 +377,7 @@ namespace Game
 						ShowLetterAnnouncementAndSpawn();
 				}
 			}
+		}
 
 		private void ShowLetterAnnouncementAndSpawn()
 		{
