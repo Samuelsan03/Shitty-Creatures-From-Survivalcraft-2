@@ -2,6 +2,7 @@ using System;
 using System.Xml.Linq;
 using Engine;
 using Game;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Game
 {
@@ -34,10 +35,15 @@ namespace Game
 
 			var achievements = new[]
 			{
-				new { Number = 1, TitleKey = 6, DescKey = 7, Reward = 50 },
-				new { Number = 2, TitleKey = 8, DescKey = 9, Reward = 25 },
-				new { Number = 3, TitleKey = 10, DescKey = 11, Reward = 30 }
-			};
+		new { Number = 1, TitleKey = 6, DescKey = 7, Reward = 50 },
+		new { Number = 2, TitleKey = 8, DescKey = 9, Reward = 25 },
+		new { Number = 3, TitleKey = 10, DescKey = 11, Reward = 30 },
+		new { Number = 4, TitleKey = 12, DescKey = 13, Reward = 30 },
+		new { Number = 5, TitleKey = 14, DescKey = 15, Reward = 30 },
+		new { Number = 6, TitleKey = 16, DescKey = 17, Reward = 50 },
+		new { Number = 7, TitleKey = 18, DescKey = 19, Reward = 150 },
+		new { Number = 8, TitleKey = 20, DescKey = 21, Reward = 100 }
+	};
 
 			foreach (var a in achievements)
 			{
@@ -46,8 +52,8 @@ namespace Game
 					description: LanguageControl.Get(fName, a.DescKey),
 					achievementNumber: a.Number,
 					rewardAmount: a.Reward,
-					unlocked: ShittyCreaturesModLoader.IsAchievementUnlocked(m_componentPlayer, a.Number),
-					rewardClaimed: ShittyCreaturesModLoader.IsRewardClaimed(m_componentPlayer, a.Number)
+					unlocked: AchievementsManager.IsAchievementUnlocked(m_componentPlayer, a.Number),
+					rewardClaimed: AchievementsManager.IsRewardClaimed(m_componentPlayer, a.Number)
 				);
 			}
 		}
@@ -179,7 +185,7 @@ namespace Game
 						{
 							if (claimButton.IsClicked && claimButton.IsEnabled)
 							{
-								bool success = ShittyCreaturesModLoader.ClaimAchievementReward(
+								bool success = AchievementsManager.ClaimAchievementReward(
 									m_componentPlayer,
 									data.AchievementNumber,
 									data.RewardAmount
