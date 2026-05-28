@@ -4,9 +4,8 @@
     <CanvasWidget Size="0, 12"/>
     <LabelWidget Name="TitleLabel" Text="Logros" Color="255,255,255" HorizontalAlignment="Center" FontScale="1.2"/>
     <CanvasWidget Size="0, 12"/>
-    <!-- Contenedor fijo para el área de scroll -->
     <CanvasWidget Size="550, 280">
-      <ScrollPanelWidget Name="AchievementsScroll" ClampToBounds="true">
+      <ScrollPanelWidget Name="AchievementsScroll" Direction="Vertical" ClampToBounds="true">
         <StackPanelWidget Name="AchievementsStack" Direction="Vertical"/>
       </ScrollPanelWidget>
     </CanvasWidget>
