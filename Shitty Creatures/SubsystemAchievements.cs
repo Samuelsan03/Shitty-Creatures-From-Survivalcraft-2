@@ -10,7 +10,7 @@ namespace Game
 	public class SubsystemAchievements : Subsystem
 	{
 		private Dictionary<int, string> m_achievements = new Dictionary<int, string>();
-		private int m_highestClaimedReward = 0;
+		private HashSet<int> m_claimedRewards = new HashSet<int>();
 
 		public bool IsAchievementUnlocked(int achievementNumber)
 		{
@@ -26,21 +26,19 @@ namespace Game
 
 		public bool IsRewardClaimed(int achievementNumber)
 		{
-			return achievementNumber <= m_highestClaimedReward;
+			return m_claimedRewards.Contains(achievementNumber);
 		}
 
 		public void ClaimReward(int achievementNumber)
 		{
 			if (!IsAchievementUnlocked(achievementNumber))
 				return;
-			if (achievementNumber > m_highestClaimedReward)
-			{
-				m_highestClaimedReward = achievementNumber;
-			}
+			m_claimedRewards.Add(achievementNumber);
 		}
 
 		public override void Load(ValuesDictionary valuesDictionary)
 		{
+			// Cargar logros desbloqueados
 			for (int i = 1; i <= 100; i++)
 			{
 				string achievementId = valuesDictionary.GetValue<string>($"Achievement{i}", null);
@@ -50,43 +48,51 @@ namespace Game
 				}
 			}
 
-			// Leer ClaimedRewards con compatibilidad hacia atrás
-			// Mundo nuevo: guarda un int directamente (ej: 3)
-			// Mundo viejo: guardaba un string (ej: "1,2,3")
-			object rawValue;
-			if (valuesDictionary.TryGetValue("ClaimedRewards", out rawValue) && rawValue != null)
+			// Cargar recompensas reclamadas (compatibilidad con versiones anteriores)
+			if (valuesDictionary.TryGetValue("ClaimedRewards", out object rawValue) && rawValue != null)
 			{
 				if (rawValue is int intValue)
 				{
-					m_highestClaimedReward = intValue;
+					// Versión antigua: se guardaba el máximo reclamado (ej: 3)
+					// Convertir a conjunto con todos los números desde 1 hasta intValue
+					for (int i = 1; i <= intValue; i++)
+						m_claimedRewards.Add(i);
 				}
 				else if (rawValue is string strValue && !string.IsNullOrEmpty(strValue))
 				{
-					// Formato viejo: "1,2,3" -> tomar el mayor
-					int max = 0;
+					// Versión antigua: lista separada por comas (ej: "1,2,3")
 					foreach (string part in strValue.Split(','))
 					{
-						int num;
-						if (int.TryParse(part, out num) && num > max)
-						{
-							max = num;
-						}
+						if (int.TryParse(part, out int num))
+							m_claimedRewards.Add(num);
 					}
-					m_highestClaimedReward = max;
+				}
+				else if (rawValue is List<object> list)
+				{
+					// Formato futuro: lista de enteros
+					foreach (var obj in list)
+					{
+						if (obj is int num)
+							m_claimedRewards.Add(num);
+					}
 				}
 			}
 		}
 
 		public override void Save(ValuesDictionary valuesDictionary)
 		{
+			// Guardar logros desbloqueados
 			foreach (var kvp in m_achievements)
 			{
 				valuesDictionary.SetValue<string>($"Achievement{kvp.Key}", kvp.Value);
 			}
 
-			if (m_highestClaimedReward > 0)
+			// Guardar recompensas reclamadas como lista de enteros (string separado por comas)
+			if (m_claimedRewards.Count > 0)
 			{
-				valuesDictionary.SetValue<int>("ClaimedRewards", m_highestClaimedReward);
+				var sorted = m_claimedRewards.OrderBy(x => x).ToList();
+				string claimedStr = string.Join(",", sorted);
+				valuesDictionary.SetValue("ClaimedRewards", claimedStr);
 			}
 		}
 	}
