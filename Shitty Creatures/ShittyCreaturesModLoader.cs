@@ -180,7 +180,6 @@ namespace Game
 			HealthBarDrawable healthBarDrawable = new HealthBarDrawable(this);
 			project.FindSubsystem<SubsystemDrawing>(true).AddDrawable(healthBarDrawable);
 
-			// Suscribir a todos los jugadores existentes al evento Injured (por si ya estaban cargados)
 			var playersSubsystem = project.FindSubsystem<SubsystemPlayers>(true);
 			if (playersSubsystem != null)
 			{
@@ -190,15 +189,13 @@ namespace Game
 				}
 			}
 
-			// Añadir botones de logro a todos los jugadores (una sola vez, fuera del bucle)
+			// Inicializar el manager de logros
+			AchievementsManager.Initialize(project);
+
+			// Añadir botones de logro a todos los jugadores
 			AddAchievementButtonToPlayers(project);
 
-			// Obtener el subsistema de logros (ya debe existir en el proyecto por tu .xdb)
-			s_subsystemAchievements = project.FindSubsystem<SubsystemAchievements>(true);
-			if (s_subsystemAchievements == null)
-			{
-				Log.Warning("[ShittyCreatures] No se encontró SubsystemAchievements en el proyecto. Los logros no se guardarán.");
-			}
+			// Ya no se necesita s_subsystemAchievements
 		}
 
 		private void AddAchievementButtonToPlayers(Project project)
@@ -1707,37 +1704,15 @@ namespace Game
 
 		public override void OnCreatureDied(ComponentHealth health, Injury injury, ref int experienceOrbDropCount, ref bool calculateInKill)
 		{
+			// Delegar la lógica de logros al manager
+			AchievementsManager.OnCreatureDied(health, injury);
+
+			// Mantener el sonido especial para piratas
 			Entity deadEntity = health.Entity;
 			if (deadEntity == null) return;
-
 			ComponentCreature creature = deadEntity.FindComponent<ComponentCreature>();
 			if (creature == null) return;
-
 			string templateName = deadEntity.ValuesDictionary?.DatabaseObject?.Name;
-
-			ComponentPlayer killer = null;
-			if (injury != null && injury.Attacker != null)
-			{
-				killer = injury.Attacker.Entity.FindComponent<ComponentPlayer>();
-			}
-
-			// Logro 1: Mata un Tank
-			if (templateName == "Tank1" && killer != null)
-			{
-				UnlockAchievement(killer, 1, "KillTank", LanguageControl.Get(AchievementsWidget.fName, 6));
-			}
-
-			// Logro 2: Mata un Infectado
-			if (killer != null && deadEntity.FindComponent<ComponentZombieHerdBehavior>() != null)
-			{
-				UnlockAchievement(killer, 2, "KillInfected", LanguageControl.Get(AchievementsWidget.fName, 8));
-			}
-
-			// Logro 3: Mata un Bandido
-			if (killer != null && deadEntity.FindComponent<ComponentBanditHerdBehavior>() != null)
-			{
-				UnlockAchievement(killer, 3, "KillBandit", LanguageControl.Get(AchievementsWidget.fName, 10));
-			}
 
 			if (templateName == "CapitanPirata" || templateName == "PirataHostilComerciante")
 			{
@@ -2079,69 +2054,6 @@ namespace Game
 			{
 				hitInterval = 0.1;
 			}
-		}
-
-		public static bool IsAchievementUnlocked(ComponentPlayer player, int achievementNumber)
-		{
-			if (s_subsystemAchievements == null) return false;
-			return s_subsystemAchievements.IsAchievementUnlocked(achievementNumber);
-		}
-
-		private void UnlockAchievement(ComponentPlayer player, int achievementNumber, string achievementId, string displayName)
-		{
-			if (s_subsystemAchievements == null) return;
-			if (s_subsystemAchievements.IsAchievementUnlocked(achievementNumber)) return;
-
-			s_subsystemAchievements.UnlockAchievement(achievementNumber, achievementId);
-
-			player.ComponentGui.DisplayLargeMessage(
-				LanguageControl.Get("AchievementsMessages", 0),
-				displayName, 4f, 0f);
-			AudioManager.PlaySound("Audio/UI/ButtonClick", 1f, 0f, 0f);
-		}
-
-		public static bool IsRewardClaimed(ComponentPlayer player, int achievementNumber)
-		{
-			if (s_subsystemAchievements == null) return false;
-			return s_subsystemAchievements.IsRewardClaimed(achievementNumber);
-		}
-
-		public static bool ClaimAchievementReward(ComponentPlayer player, int achievementNumber, int rewardAmount)
-		{
-			if (s_subsystemAchievements == null) return false;
-			if (!s_subsystemAchievements.IsAchievementUnlocked(achievementNumber)) return false;
-			if (s_subsystemAchievements.IsRewardClaimed(achievementNumber)) return false;
-
-			IInventory inventory = player.ComponentMiner.Inventory;
-			if (inventory == null) return false;
-
-			Block nuclearCoinBlock = BlocksManager.GetBlock<NuclearCoinBlock>(false, false);
-			if (nuclearCoinBlock == null) return false;
-
-			int coinValue = nuclearCoinBlock.BlockIndex;
-			int remaining = rewardAmount;
-
-			while (remaining > 0)
-			{
-				int slot = ComponentInventoryBase.FindAcquireSlotForItem(inventory, coinValue);
-				if (slot < 0)
-				{
-					player.ComponentGui.DisplaySmallMessage(
-						LanguageControl.Get("AchievementsMessages", 2),
-						Color.Red, false, true);
-					return false;
-				}
-				int capacity = inventory.GetSlotCapacity(slot, coinValue);
-				int existing = inventory.GetSlotCount(slot);
-				int canAdd = Math.Min(capacity - existing, remaining);
-				if (canAdd <= 0) continue;
-
-				inventory.AddSlotItems(slot, coinValue, canAdd);
-				remaining -= canAdd;
-			}
-
-			s_subsystemAchievements.ClaimReward(achievementNumber);
-			return true;
 		}
 
 		// ---------------------------------------------------------------------------------
