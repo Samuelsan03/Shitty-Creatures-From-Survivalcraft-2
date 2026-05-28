@@ -22,22 +22,18 @@ namespace Game
 			if (componentMiner == null || componentMiner.ComponentCreature == null)
 				return false;
 
-			// Verificar si el bloque clickeado es un LargeFirstAidKitBlock
 			int blockValue = raycastResult.Value;
 			int blockIndex = Terrain.ExtractContents(blockValue);
 
 			if (blockIndex != BlocksManager.GetBlockIndex<LargeFirstAidKitBlock>())
 				return false;
 
-			// Intentar curar al objetivo
 			bool healed = TryHealTargetFromInteract(raycastResult, componentMiner);
 
 			if (healed)
 			{
-				// Reproducir sonido de curación
 				m_subsystemAudio.PlaySound("Audio/UI/cured", 1f, 0f, raycastResult.HitPoint(), 5f, false);
 
-				// Destruir el botiquín después de usarlo
 				SubsystemTerrain terrain = componentMiner.Project.FindSubsystem<SubsystemTerrain>(true);
 				terrain.DestroyCell(0, raycastResult.CellFace.X, raycastResult.CellFace.Y,
 					raycastResult.CellFace.Z, 0, false, false);
@@ -61,19 +57,16 @@ namespace Game
 			if (componentPlayer == null)
 				return false;
 
-			// Verificar si el item activo es un LargeFirstAidKitBlock
 			int activeBlockValue = componentMiner.ActiveBlockValue;
 			int activeBlockIndex = Terrain.ExtractContents(activeBlockValue);
 
 			if (activeBlockIndex != BlocksManager.GetBlockIndex<LargeFirstAidKitBlock>())
 				return false;
 
-			// Realizar raycast para detectar entidades cercanas
 			Entity targetEntity = null;
 			ComponentBody hitBody = null;
 			float? hitDistance = null;
 
-			// Buscar todas las entidades cercanas
 			var componentBodies = new DynamicArray<ComponentBody>();
 
 			Vector2 center = new Vector2(componentPlayer.ComponentBody.Position.X, componentPlayer.ComponentBody.Position.Z);
@@ -81,18 +74,15 @@ namespace Game
 
 			m_subsystemBodies.FindBodiesAroundPoint(center, searchRadius, componentBodies);
 
-			// Crear un rayo desde la posición del jugador
 			Vector3 rayStart = componentPlayer.ComponentCreatureModel.EyePosition;
 			Vector3 rayDirection = ray.Direction;
 			float maxDistance = 5f;
 
-			// Verificar intersección con cada cuerpo (excluyendo al jugador primero)
 			foreach (ComponentBody body in componentBodies)
 			{
 				if (body.Entity == componentPlayer.Entity)
-					continue; // Saltar al jugador primero
+					continue;
 
-				// Verificar si el rayo intersecta con el bounding box del cuerpo
 				float? distance = RayBoxIntersection(rayStart, rayDirection, body.BoundingBox);
 				if (distance.HasValue && distance.Value < maxDistance &&
 					(!hitDistance.HasValue || distance.Value < hitDistance.Value))
@@ -102,7 +92,6 @@ namespace Game
 				}
 			}
 
-			// Si no se encontró un NPC, verificar si estamos apuntando al jugador mismo
 			if (hitBody == null)
 			{
 				float? playerDistance = RayBoxIntersection(rayStart, rayDirection, componentPlayer.ComponentBody.BoundingBox);
@@ -118,35 +107,29 @@ namespace Game
 			}
 			else
 			{
-				// Si no se encontró ningún objetivo, NO hacer nada
 				return false;
 			}
 
-			// Verificar si el objetivo necesita curación
 			ComponentHealth health = targetEntity.FindComponent<ComponentHealth>();
-			if (health == null || health.Health >= 1f) // Solo cura si NO está al 100%
+			if (health == null || health.Health >= 1f)
 				return false;
 
-			// Verificar si la entidad está muerta usando ComponentHealth.DeathTime
 			if (health.DeathTime.HasValue)
 				return false;
 
-			// CURACIÓN AL 100% - Diferencia clave con el Medium
-			float targetHealth = 1f; // Siempre curar al 100%
+			float targetHealth = 1f;
 			float healAmount = targetHealth - health.Health;
 
-			// Asegurarse de que la cantidad de curación sea positiva
 			if (healAmount <= 0)
 				return false;
 
-			// Aplicar curación completa
 			health.Heal(healAmount);
 
-			// Reproducir sonido
+			AchievementsManager.OnHeal(componentPlayer);
+
 			Vector3 position = componentPlayer.ComponentBody.Position;
 			m_subsystemAudio.PlaySound("Audio/UI/cured", 1f, 0f, position, 5f, false);
 
-			// Mostrar mensaje de curación completa
 			if (targetEntity == componentPlayer.Entity)
 			{
 				string message = LanguageControl.Get("LargeFirstAidKit", "PlayerHealed");
@@ -166,7 +149,6 @@ namespace Game
 				}
 			}
 
-			// Consumir un item del botiquín
 			if (componentMiner.Inventory != null)
 			{
 				componentMiner.Inventory.RemoveSlotItems(
@@ -184,7 +166,6 @@ namespace Game
 			if (componentPlayer == null)
 				return false;
 
-			// Buscar todas las entidades cercanas al punto de impacto
 			var componentBodies = new DynamicArray<ComponentBody>();
 
 			Vector3 hitPoint = raycastResult.HitPoint();
@@ -193,7 +174,6 @@ namespace Game
 
 			m_subsystemBodies.FindBodiesAroundPoint(center, searchRadius, componentBodies);
 
-			// Buscar la entidad más cercana al punto de impacto
 			ComponentBody closestBody = null;
 			float closestDistance = float.MaxValue;
 
@@ -212,27 +192,23 @@ namespace Game
 
 			Entity targetEntity = closestBody.Entity;
 
-			// Verificar si el objetivo necesita curación
 			ComponentHealth health = targetEntity.FindComponent<ComponentHealth>();
-			if (health == null || health.Health >= 1f) // Solo cura si NO está al 100%
+			if (health == null || health.Health >= 1f)
 				return false;
 
-			// Verificar si la entidad está muerta usando ComponentHealth.DeathTime
 			if (health.DeathTime.HasValue)
 				return false;
 
-			// CURACIÓN AL 100% - Diferencia clave con el Medium
-			float targetHealth = 1f; // Siempre curar al 100%
+			float targetHealth = 1f;
 			float healAmount = targetHealth - health.Health;
 
-			// Asegurarse de que la cantidad de curación sea positiva
 			if (healAmount <= 0)
 				return false;
 
-			// Aplicar curación completa
 			health.Heal(healAmount);
 
-			// Mostrar mensaje de curación completa
+			AchievementsManager.OnHeal(componentPlayer);
+
 			if (targetEntity == componentPlayer.Entity)
 			{
 				string message = LanguageControl.Get("LargeFirstAidKit", "PlayerHealed");
