@@ -18,6 +18,7 @@ namespace Game
 		public SubsystemTerrain m_subsystemTerrain;
 		public ComponentPlayer m_componentPlayer;
 		public SubsystemGreenNightSky m_subsystemGreenNightSky;
+		public SubsystemBanditInvasion m_subsystemBanditInvasion; // NUEVO
 
 		public float m_sleepFactor;
 		public bool m_allowManualWakeUp;
@@ -68,7 +69,6 @@ namespace Game
 			if (!base.IsSleeping)
 			{
 				base.Sleep(allowManualWakeup);
-				// Nuestras variables adicionales
 				m_allowManualWakeUp = allowManualWakeup;
 				m_minWetness = float.MaxValue;
 				m_messageFactor = 0f;
@@ -85,7 +85,7 @@ namespace Game
 
 		public override void Update(float dt)
 		{
-			// Lógica personalizada: despertar si la Noche Verde está activa
+			// Despertar si la Noche Verde está activa
 			if (m_subsystemGreenNightSky != null && m_subsystemGreenNightSky.IsGreenNightActive && base.IsSleeping && GetCurrentSleepDuration() > 1.0)
 			{
 				WakeUp();
@@ -97,7 +97,18 @@ namespace Game
 				});
 			}
 
-			// Llamar a la implementación base para mantener toda la lógica original
+			// NUEVO: Despertar si la invasión de narcotraficantes se activa mientras duermes
+			if (m_subsystemBanditInvasion != null && m_subsystemBanditInvasion.IsInvasionActive && base.IsSleeping && GetCurrentSleepDuration() > 1.0)
+			{
+				WakeUp();
+				m_subsystemTime.QueueGameTimeDelayedExecution(m_subsystemTime.GameTime + 1.0, delegate
+				{
+					string msg = LanguageControl.Get("ComponentNewSleep", "CantSleepBanditInvasion");
+					if (string.IsNullOrEmpty(msg)) msg = "You can't sleep during the drug trafficker war!";
+					m_componentPlayer.ComponentGui.DisplaySmallMessage(msg, Color.Yellow, false, true);
+				});
+			}
+
 			base.Update(dt);
 		}
 
@@ -114,6 +125,7 @@ namespace Game
 			m_subsystemTerrain = Project.FindSubsystem<SubsystemTerrain>(true);
 			m_componentPlayer = Entity.FindComponent<ComponentPlayer>(true);
 			m_subsystemGreenNightSky = Project.FindSubsystem<SubsystemGreenNightSky>(true);
+			m_subsystemBanditInvasion = Project.FindSubsystem<SubsystemBanditInvasion>(false); // NUEVO: no obligatorio
 
 			m_allowManualWakeUp = valuesDictionary.GetValue<bool>("AllowManualWakeUp");
 
@@ -124,7 +136,6 @@ namespace Game
 					WakeUp();
 			}));
 
-			// Condiciones para dormir (incluyendo Noche Verde)
 			m_conditionsToSleep["OnDryLand"] = delegate
 			{
 				if (m_componentPlayer.ComponentBody.StandingOnValue == null || BlocksManager.Blocks[Terrain.ExtractContents(m_componentPlayer.ComponentBody.StandingOnValue.Value)] == null || m_componentPlayer.ComponentBody.ImmersionDepth > 0f)
@@ -182,11 +193,24 @@ namespace Game
 				}
 				return string.Empty;
 			};
+
+			// NUEVO: Condición para bloquear sueño durante la invasión de narcotraficantes
+			m_conditionsToSleep["BanditInvasion"] = delegate
+			{
+				if (m_subsystemBanditInvasion != null && m_subsystemBanditInvasion.IsInvasionActive)
+				{
+					string msg = LanguageControl.Get("ComponentNewSleep", "CantSleepBanditInvasion");
+					if (string.IsNullOrEmpty(msg)) msg = "You can't sleep during the drug trafficker war!";
+					return msg;
+				}
+				return string.Empty;
+			};
 		}
 
 		public override void Save(ValuesDictionary valuesDictionary, EntityToIdMap entityToIdMap)
 		{
 			base.Save(valuesDictionary, entityToIdMap);
+			valuesDictionary.SetValue("AllowManualWakeUp", m_minWetness);
 			valuesDictionary.SetValue("AllowManualWakeUp", m_allowManualWakeUp);
 		}
 	}
