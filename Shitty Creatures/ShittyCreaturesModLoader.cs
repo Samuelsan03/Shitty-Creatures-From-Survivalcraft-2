@@ -763,8 +763,7 @@ namespace Game
 
 		public override void OnPlayerDead(PlayerData playerData)
 		{
-			// Eliminar cualquier label de coordenadas asociado a este PlayerData,
-			// independientemente de la instancia de ComponentPlayer que esté registrada.
+			// Eliminar label de coordenadas
 			foreach (var kvp in m_coordinateLabels.ToArray())
 			{
 				if (kvp.Key.PlayerData == playerData)
@@ -772,6 +771,15 @@ namespace Game
 					kvp.Value.ParentWidget?.Children.Remove(kvp.Value);
 					m_coordinateLabels.Remove(kvp.Key);
 				}
+			}
+
+			// --- NUEVO: Eliminar el botón de logros asociado al ComponentPlayer que muere ---
+			ComponentPlayer deadPlayer = playerData.ComponentPlayer;
+			if (deadPlayer != null && m_achievementButtons.ContainsKey(deadPlayer))
+			{
+				var btn = m_achievementButtons[deadPlayer];
+				btn.ParentWidget?.Children.Remove(btn);  // opcional: eliminar visualmente
+				m_achievementButtons.Remove(deadPlayer);
 			}
 
 			// Limpiar seguimiento de golpes rápidos
@@ -1373,6 +1381,9 @@ namespace Game
 				componentPlayer.GuiWidget.Children.Add(label);
 				m_coordinateLabels[componentPlayer] = label;
 			}
+
+			// --- NUEVO: Añadir botón de logros al jugador recién aparecido ---
+			AddAchievementButton(componentPlayer);
 
 			// Suscribir al evento de daño del jugador
 			SubscribeToPlayerInjured(componentPlayer);
@@ -2078,6 +2089,52 @@ namespace Game
 
 			player.ComponentGui.DisplayLargeMessage("¡LOGRO DESBLOQUEADO!", displayName, 4f, 0f);
 			AudioManager.PlaySound("Audio/UI/ButtonClick", 1f, 0f, 0f);
+		}
+
+		public static bool IsRewardClaimed(ComponentPlayer player, int achievementNumber)
+		{
+			if (s_subsystemAchievements == null) return false;
+			return s_subsystemAchievements.IsRewardClaimed(achievementNumber);
+		}
+
+		public static bool ClaimAchievementReward(ComponentPlayer player, int achievementNumber, int rewardAmount)
+		{
+			if (s_subsystemAchievements == null) return false;
+			if (!s_subsystemAchievements.IsAchievementUnlocked(achievementNumber)) return false;
+			if (s_subsystemAchievements.IsRewardClaimed(achievementNumber)) return false;
+
+			// Otorgar recompensa: añadir monedas nucleares al inventario
+			IInventory inventory = player.ComponentMiner.Inventory;
+			if (inventory == null) return false;
+
+			Block nuclearCoinBlock = BlocksManager.GetBlock<NuclearCoinBlock>(false, false);
+			if (nuclearCoinBlock == null) return false;
+
+			int coinValue = nuclearCoinBlock.BlockIndex;
+			int remaining = rewardAmount;
+
+			while (remaining > 0)
+			{
+				int slot = ComponentInventoryBase.FindAcquireSlotForItem(inventory, coinValue);
+				if (slot < 0)
+				{
+					player.ComponentGui.DisplaySmallMessage("¡No hay suficiente espacio en el inventario!", Color.Red, false, true);
+					return false;
+				}
+				int capacity = inventory.GetSlotCapacity(slot, coinValue);
+				int existing = inventory.GetSlotCount(slot);
+				int canAdd = Math.Min(capacity - existing, remaining);
+				if (canAdd <= 0) continue;
+
+				inventory.AddSlotItems(slot, coinValue, canAdd);
+				remaining -= canAdd;
+			}
+
+			// Marcar como reclamado en el subsistema
+			s_subsystemAchievements.ClaimReward(achievementNumber);
+
+			// Opcional: guardar cambios inmediatamente (el subsistema se guarda al cerrar el mundo)
+			return true;
 		}
 
 		// ---------------------------------------------------------------------------------
