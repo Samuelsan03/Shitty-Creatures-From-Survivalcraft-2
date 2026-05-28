@@ -17,6 +17,9 @@ namespace Game
 		// Campos estáticos (heredados de los distintos ModLoaders originales)
 		// ---------------------------------------------------------------------------------
 
+		// Referencia estática al subsistema de logros (se asigna en OnProjectLoaded)
+		private static SubsystemAchievements s_subsystemAchievements;
+
 		// Añadir campo para almacenar los botones creados (opcional, solo para referencia)
 		private Dictionary<ComponentPlayer, ButtonWidget> m_achievementButtons = new Dictionary<ComponentPlayer, ButtonWidget>();
 
@@ -189,6 +192,13 @@ namespace Game
 
 			// Añadir botones de logro a todos los jugadores (una sola vez, fuera del bucle)
 			AddAchievementButtonToPlayers(project);
+
+			// Obtener el subsistema de logros (ya debe existir en el proyecto por tu .xdb)
+			s_subsystemAchievements = project.FindSubsystem<SubsystemAchievements>(true);
+			if (s_subsystemAchievements == null)
+			{
+				Log.Warning("[ShittyCreatures] No se encontró SubsystemAchievements en el proyecto. Los logros no se guardarán.");
+			}
 		}
 
 		private void AddAchievementButtonToPlayers(Project project)
@@ -1686,34 +1696,41 @@ namespace Game
 
 		public override void OnCreatureDied(ComponentHealth health, Injury injury, ref int experienceOrbDropCount, ref bool calculateInKill)
 		{
-			// Obtener la entidad que murió
+			// Codigo original para CapitanPirata, etc...
 			Entity deadEntity = health.Entity;
 			if (deadEntity == null) return;
 
-			// Obtener el ComponentCreature para acceder a su nombre y posición
 			ComponentCreature creature = deadEntity.FindComponent<ComponentCreature>();
 			if (creature == null) return;
 
-			// Obtener el nombre de la plantilla (template) de la criatura
 			string templateName = deadEntity.ValuesDictionary?.DatabaseObject?.Name;
-			if (string.IsNullOrEmpty(templateName)) return;
 
-			// Verificar si es CapitanPirata O PirataHostilComerciante
+			// Logro: Mata un Tank
+			if (templateName == "Tank1")
+			{
+				ComponentPlayer killer = null;
+				if (injury != null && injury.Attacker != null)
+				{
+					killer = injury.Attacker.Entity.FindComponent<ComponentPlayer>();
+				}
+
+				if (killer != null)
+				{
+					UnlockAchievement(killer, 1, "KillTank", "Mata un Tank");
+				}
+			}
+
+			// Codigo original para CapitanPirata y PirataHostilComerciante
 			if (templateName == "CapitanPirata" || templateName == "PirataHostilComerciante")
 			{
-				// Ruta del sonido de muerte
 				string deathSoundPath = "Audio/Die(1)";
-
-				// Intentar reproducir usando SubsystemAudio (efecto 3D)
 				SubsystemAudio audio = health.Project.FindSubsystem<SubsystemAudio>(true);
 				if (audio != null && creature.ComponentBody != null)
 				{
-					// Reproducir sonido en la posición del cuerpo, con distancia mínima 10f
 					audio.PlaySound(deathSoundPath, 1f, 0f, creature.ComponentBody.Position, 10f, false);
 				}
 				else
 				{
-					// Fallback: sonido global (sin efecto 3D)
 					AudioManager.PlaySound(deathSoundPath, 1f, 0f, 0f);
 				}
 			}
@@ -2044,6 +2061,23 @@ namespace Game
 			{
 				hitInterval = 0.1;
 			}
+		}
+
+		public static bool IsAchievementUnlocked(ComponentPlayer player, int achievementNumber)
+		{
+			if (s_subsystemAchievements == null) return false;
+			return s_subsystemAchievements.IsAchievementUnlocked(achievementNumber);
+		}
+
+		private void UnlockAchievement(ComponentPlayer player, int achievementNumber, string achievementId, string displayName)
+		{
+			if (s_subsystemAchievements == null) return;
+			if (s_subsystemAchievements.IsAchievementUnlocked(achievementNumber)) return;
+
+			s_subsystemAchievements.UnlockAchievement(achievementNumber, achievementId);
+
+			player.ComponentGui.DisplayLargeMessage("¡LOGRO DESBLOQUEADO!", displayName, 4f, 0f);
+			AudioManager.PlaySound("Audio/UI/ButtonClick", 1f, 0f, 0f);
 		}
 
 		// ---------------------------------------------------------------------------------
