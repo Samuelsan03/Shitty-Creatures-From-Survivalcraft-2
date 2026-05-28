@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Xml.Linq;
 using Engine;
 using Game;
@@ -11,6 +12,9 @@ namespace Game
 		private BevelledButtonWidget m_closeButton;
 		private StackPanelWidget m_achievementsStack;
 		private LabelWidget m_titleLabel;
+
+		// Almacenar referencias a los contenedores de logros y sus datos
+		private Dictionary<int, AchievementItemData> m_achievementItems = new Dictionary<int, AchievementItemData>();
 
 		public static string fName = "AchievementsWidget";
 
@@ -32,11 +36,14 @@ namespace Game
 				m_closeButton.Text = LanguageControl.Get(fName, 1);
 			}
 
+			// Suscribirse al evento de cambio de contador de infectados
+			AchievementsManager.OnInfectedCounterChanged += OnInfectedCounterChanged;
+
 			// Cargar datos de logros desde XML
 			XElement achievementsXml = ContentManager.Get<XElement>("AchievementsData");
 			if (achievementsXml == null)
 			{
-				Log.Error("[AchievementsWidget] No se pudo cargar Data/AchievementsData.xml");
+				Log.Error("[AchievementsWidget] No se pudo cargar AchievementsData.xml");
 				return;
 			}
 
@@ -52,7 +59,7 @@ namespace Game
 
 				CreateAchievementItem(
 					title: title,
-					description: description,
+					baseDescription: description,
 					achievementNumber: number,
 					rewardAmount: reward,
 					unlocked: AchievementsManager.IsAchievementUnlocked(m_componentPlayer, number),
@@ -61,7 +68,33 @@ namespace Game
 			}
 		}
 
-		private void CreateAchievementItem(string title, string description, int achievementNumber, int rewardAmount, bool unlocked, bool rewardClaimed)
+		private void OnInfectedCounterChanged(ComponentPlayer player, int currentKills, int targetKills)
+		{
+			// Solo actualizar si es el jugador actual
+			if (player != m_componentPlayer) return;
+
+			// Actualizar la descripción de los logros de infectados (16, 17, 18)
+			for (int i = 16; i <= 18; i++)
+			{
+				if (m_achievementItems.TryGetValue(i, out var item))
+				{
+					// Determinar el target correspondiente
+					int target = 0;
+					if (i == 16) target = 10;
+					else if (i == 17) target = 50;
+					else if (i == 18) target = 100;
+
+					if (target > 0)
+					{
+						int displayKills = Math.Min(currentKills, target);
+						string newDesc = $"{item.BaseDescription} ({displayKills}/{target})";
+						item.DescriptionLabel.Text = newDesc;
+					}
+				}
+			}
+		}
+
+		private void CreateAchievementItem(string title, string baseDescription, int achievementNumber, int rewardAmount, bool unlocked, bool rewardClaimed)
 		{
 			var achievementContainer = new CanvasWidget
 			{
@@ -100,9 +133,23 @@ namespace Game
 			};
 			achievementContainer.Children.Add(titleLabel);
 
+			// Descripción con posible texto dinámico
+			string finalDescription = baseDescription;
+			if (achievementNumber >= 16 && achievementNumber <= 18 && !unlocked)
+			{
+				int currentKills = AchievementsManager.GetInfectedKills(m_componentPlayer);
+				int target = 0;
+				if (achievementNumber == 16) target = 10;
+				else if (achievementNumber == 17) target = 50;
+				else if (achievementNumber == 18) target = 100;
+
+				int displayKills = Math.Min(currentKills, target);
+				finalDescription = $"{baseDescription} ({displayKills}/{target})";
+			}
+
 			var descLabel = new LabelWidget
 			{
-				Text = description,
+				Text = finalDescription,
 				Color = unlocked ? new Color(200, 200, 200) : new Color(140, 140, 140),
 				FontScale = 0.65f,
 				HorizontalAlignment = WidgetAlignment.Center,
@@ -142,25 +189,19 @@ namespace Game
 			};
 			bottomRow.Children.Add(rewardLabel);
 
-			// Determinar si el botón debe estar habilitado
 			bool buttonEnabled = unlocked && !rewardClaimed;
-
-			// Colores: verde/verde desaturado cuando está desbloqueado, gris cuando NO está desbloqueado
-			// Cuando está desbloqueado pero la recompensa ya fue reclamada -> verde desaturado pero deshabilitado
 			Color buttonColor;
 			Color bevelColor;
 			Color centerColor;
 
 			if (unlocked)
 			{
-				// Logro completado: colores verdes
-				buttonColor = rewardClaimed ? new Color(100, 100, 100) : Color.White; // Texto blanco o gris claro
-				bevelColor = new Color(0, 80, 0);    // Verde oscuro
-				centerColor = new Color(0, 60, 0);   // Verde más oscuro
+				buttonColor = rewardClaimed ? new Color(100, 100, 100) : Color.White;
+				bevelColor = new Color(0, 80, 0);
+				centerColor = new Color(0, 60, 0);
 			}
 			else
 			{
-				// Logro pendiente: colores grises
 				buttonColor = Color.Gray;
 				bevelColor = new Color(80, 80, 80);
 				centerColor = new Color(60, 60, 60);
@@ -190,12 +231,22 @@ namespace Game
 			};
 
 			m_achievementsStack.Children.Add(achievementContainer);
+
+			// Guardar referencia para actualizaciones dinámicas
+			m_achievementItems[achievementNumber] = new AchievementItemData
+			{
+				Container = achievementContainer,
+				DescriptionLabel = descLabel,
+				BaseDescription = baseDescription
+			};
 		}
 
 		public override void Update()
 		{
 			if (m_closeButton.IsClicked)
 			{
+				// Limpiar evento al cerrar
+				AchievementsManager.OnInfectedCounterChanged -= OnInfectedCounterChanged;
 				m_componentPlayer.ComponentGui.ModalPanelWidget = null;
 				return;
 			}
@@ -225,7 +276,6 @@ namespace Game
 										LanguageControl.Get("AchievementsMessages", 1),
 										Color.Green, false, true);
 
-									// Reproducir sonido de éxito
 									var audio = m_componentPlayer.Project.FindSubsystem<SubsystemAudio>(true);
 									if (audio != null)
 									{
@@ -244,6 +294,13 @@ namespace Game
 			public int AchievementNumber;
 			public int RewardAmount;
 			public BevelledButtonWidget ClaimButton;
+		}
+
+		private class AchievementItemData
+		{
+			public CanvasWidget Container;
+			public LabelWidget DescriptionLabel;
+			public string BaseDescription;
 		}
 	}
 }
