@@ -20,13 +20,6 @@ namespace Game
 				Log.Warning("[AchievementsManager] No se encontró SubsystemAchievements. Los logros no se guardarán.");
 			}
 
-			var zombiesSpawn = project.FindSubsystem<SubsystemZombiesSpawn>(true);
-			if (zombiesSpawn != null)
-			{
-				zombiesSpawn.WaveAdvanced -= OnWaveAdvanced;
-				zombiesSpawn.WaveAdvanced += OnWaveAdvanced;
-			}
-
 			var banditInvasion = project.FindSubsystem<SubsystemBanditInvasion>(true);
 			if (banditInvasion != null)
 			{
@@ -39,9 +32,6 @@ namespace Game
 		{
 			if (s_currentProject != null)
 			{
-				var zombiesSpawn = s_currentProject.FindSubsystem<SubsystemZombiesSpawn>(true);
-				if (zombiesSpawn != null)
-					zombiesSpawn.WaveAdvanced -= OnWaveAdvanced;
 
 				var banditInvasion = s_currentProject.FindSubsystem<SubsystemBanditInvasion>(true);
 				if (banditInvasion != null)
@@ -75,8 +65,14 @@ namespace Game
 				UnlockAchievement(killer, 1, "KillTank", LanguageControl.Get(AchievementsWidget.fName, 6));
 			}
 
-			// Logro 2: Infectado (ComponentZombieHerdBehavior)
-			if (deadEntity.FindComponent<ComponentZombieHerdBehavior>() != null)
+			// Logro 2: Infectado
+			if (killer != null && (
+	templateName == "InfectedNormal1" ||
+	templateName == "InfectedNormal2" ||
+	templateName == "InfectedFast1" ||
+	templateName == "InfectedFast2" ||
+	templateName == "InfectedMuscle1" ||
+	templateName == "InfectedMuscle2"))
 			{
 				UnlockAchievement(killer, 2, "KillInfected", LanguageControl.Get(AchievementsWidget.fName, 8));
 			}
@@ -100,33 +96,6 @@ namespace Game
 				templateName == "FrozenTankGhost")
 			{
 				UnlockAchievement(killer, 5, "KillGhostTank", LanguageControl.Get(AchievementsWidget.fName, 14));
-			}
-		}
-
-		private static void OnWaveAdvanced(int oldWave, int newWave)
-		{
-			if (s_subsystemAchievements == null) return;
-
-			var players = s_currentProject?.FindSubsystem<SubsystemPlayers>(true);
-			if (players == null) return;
-
-			// Logro 6: Primera ola sobrevivida (pasó de 1 a 2)
-			if (oldWave == 1 && newWave == 2)
-			{
-				foreach (var player in players.ComponentPlayers)
-					UnlockAchievement(player, 6, "FirstWaveSurvived", LanguageControl.Get(AchievementsWidget.fName, 16));
-			}
-
-			// Logro 7: Todas las olas completadas
-			var zombiesSpawn = s_currentProject?.FindSubsystem<SubsystemZombiesSpawn>(true);
-			if (zombiesSpawn != null)
-			{
-				int maxWave = zombiesSpawn.MaxWave;
-				if (oldWave == maxWave && newWave > maxWave)
-				{
-					foreach (var player in players.ComponentPlayers)
-						UnlockAchievement(player, 7, "AllWavesCompleted", LanguageControl.Get(AchievementsWidget.fName, 18));
-				}
 			}
 		}
 
