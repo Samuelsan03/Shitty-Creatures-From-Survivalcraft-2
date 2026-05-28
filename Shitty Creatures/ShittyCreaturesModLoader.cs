@@ -971,6 +971,10 @@ namespace Game
 			var greenNight = SubsystemGreenNightSky.Instance;
 			if (greenNight != null && greenNight.IsGreenNightActive)
 				skipVanilla = true;
+
+			var banditInvasion = vitalStats.Entity.Project.FindSubsystem<SubsystemBanditInvasion>(false);
+			if (banditInvasion != null && banditInvasion.IsInvasionActive)
+				skipVanilla = true;
 		}
 
 		// ---------------------------------------------------------------------------------
