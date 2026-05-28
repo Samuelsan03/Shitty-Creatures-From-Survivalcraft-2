@@ -38,6 +38,8 @@ namespace Game
 			AchievementsManager.OnGhostCounterChanged += OnGhostCounterChanged;
 			AchievementsManager.OnGhostTankCounterChanged += OnGhostTankCounterChanged;
 			AchievementsManager.OnBanditCounterChanged += OnBanditCounterChanged;
+			AchievementsManager.OnHealCounterChanged += OnHealCounterChanged;
+			AchievementsManager.OnPirateCounterChanged += OnPirateCounterChanged;
 
 			XElement achievementsXml = ContentManager.Get<XElement>("AchievementsData");
 			if (achievementsXml == null)
@@ -152,6 +154,30 @@ namespace Game
 				UpdateCounterDescription(33, currentKills, 100, item33.BaseDescription, item33.DescriptionLabel);
 		}
 
+		// Curaciones: logros 34, 35, 36 (progresivos)
+		private void OnHealCounterChanged(ComponentPlayer player, int currentHeals, int targetHeals)
+		{
+			if (player != m_componentPlayer) return;
+
+			if (m_achievementItems.TryGetValue(34, out var item34) && !AchievementsManager.IsAchievementUnlocked(player, 34))
+				UpdateCounterDescription(34, currentHeals, 10, item34.BaseDescription, item34.DescriptionLabel);
+			if (m_achievementItems.TryGetValue(35, out var item35) && !AchievementsManager.IsAchievementUnlocked(player, 35))
+				UpdateCounterDescription(35, currentHeals, 50, item35.BaseDescription, item35.DescriptionLabel);
+			if (m_achievementItems.TryGetValue(36, out var item36) && !AchievementsManager.IsAchievementUnlocked(player, 36))
+				UpdateCounterDescription(36, currentHeals, 100, item36.BaseDescription, item36.DescriptionLabel);
+		}
+
+		private void OnPirateCounterChanged(ComponentPlayer player, int currentKills, int targetKills)
+		{
+			if (player != m_componentPlayer) return;
+			if (m_achievementItems.TryGetValue(38, out var item38) && !AchievementsManager.IsAchievementUnlocked(player, 38))
+				UpdateCounterDescription(38, currentKills, 10, item38.BaseDescription, item38.DescriptionLabel);
+			if (m_achievementItems.TryGetValue(39, out var item39) && !AchievementsManager.IsAchievementUnlocked(player, 39))
+				UpdateCounterDescription(39, currentKills, 50, item39.BaseDescription, item39.DescriptionLabel);
+			if (m_achievementItems.TryGetValue(40, out var item40) && !AchievementsManager.IsAchievementUnlocked(player, 40))
+				UpdateCounterDescription(40, currentKills, 100, item40.BaseDescription, item40.DescriptionLabel);
+		}
+
 		private void CreateAchievementItem(string title, string baseDescription, int achievementNumber, int rewardAmount, bool unlocked, bool rewardClaimed)
 		{
 			var achievementContainer = new CanvasWidget
@@ -191,7 +217,7 @@ namespace Game
 			};
 			achievementContainer.Children.Add(titleLabel);
 
-			// Descripción dinámica SOLO para logros progresivos (16-33, excepto los base 1-15 individuales)
+			// Descripción dinámica SOLO para logros progresivos (16-36, excepto los base 1-15 individuales)
 			string finalDescription = baseDescription;
 			if (!unlocked)
 			{
@@ -225,6 +251,13 @@ namespace Game
 					case 31: currentKills = AchievementsManager.GetBanditKills(m_componentPlayer); target = 10; break;
 					case 32: currentKills = AchievementsManager.GetBanditKills(m_componentPlayer); target = 50; break;
 					case 33: currentKills = AchievementsManager.GetBanditKills(m_componentPlayer); target = 100; break;
+					// Curaciones
+					case 34: currentKills = AchievementsManager.GetHeals(m_componentPlayer); target = 10; break;
+					case 35: currentKills = AchievementsManager.GetHeals(m_componentPlayer); target = 50; break;
+					case 36: currentKills = AchievementsManager.GetHeals(m_componentPlayer); target = 100; break;
+					case 38: currentKills = AchievementsManager.GetPirateKills(m_componentPlayer); target = 10; break;
+					case 39: currentKills = AchievementsManager.GetPirateKills(m_componentPlayer); target = 50; break;
+					case 40: currentKills = AchievementsManager.GetPirateKills(m_componentPlayer); target = 100; break;
 				}
 
 				if (target > 0)
@@ -335,6 +368,8 @@ namespace Game
 				AchievementsManager.OnGhostCounterChanged -= OnGhostCounterChanged;
 				AchievementsManager.OnGhostTankCounterChanged -= OnGhostTankCounterChanged;
 				AchievementsManager.OnBanditCounterChanged -= OnBanditCounterChanged;
+				AchievementsManager.OnHealCounterChanged -= OnHealCounterChanged;
+				AchievementsManager.OnPirateCounterChanged -= OnPirateCounterChanged;
 				m_componentPlayer.ComponentGui.ModalPanelWidget = null;
 				return;
 			}
