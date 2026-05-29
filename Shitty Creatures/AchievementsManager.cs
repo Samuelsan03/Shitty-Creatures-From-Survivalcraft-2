@@ -110,19 +110,18 @@ namespace Game
 				return;
 			s_lastDayCheckGameTime = currentGameTime;
 
-			double totalElapsed = s_subsystemGameInfo.TotalElapsedGameTime;
-			double dayDuration = s_subsystemTimeOfDay.DayDuration;
-			if (dayDuration <= 0) return;
-			int currentDay = (int)Math.Floor(totalElapsed / dayDuration) + 1;
+			// ✅ Obtener el día real usando SubsystemTimeOfDay
+			double rawDay = s_subsystemTimeOfDay.Day;
+			int currentDay = (int)Math.Floor(rawDay) + 1;   // Día 1, 2, 3...
 
 			var dayAchievements = new (int days, int number, string id, int titleKey)[]
 			{
-				(5,   9, "Survive5Days",   22),
-				(10, 10, "Survive10Days",  24),
-				(25, 11, "Survive25Days",  26),
-				(75, 12, "Survive75Days",  28),
-				(100,13, "Survive100Days", 30),
-				(300,14, "Survive300Days", 32)
+		(5,   9, "Survive5Days",   22),
+		(10, 10, "Survive10Days",  24),
+		(25, 11, "Survive25Days",  26),
+		(75, 12, "Survive75Days",  28),
+		(100,13, "Survive100Days", 30),
+		(300,14, "Survive300Days", 32)
 			};
 
 			var players = s_currentProject?.FindSubsystem<SubsystemPlayers>(true);
