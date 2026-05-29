@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Xml.Linq;
 using Engine;
 using GameEntitySystem;
 using TemplatesDatabase;
@@ -15,6 +16,7 @@ namespace Game
 		private static SubsystemTimeOfDay s_subsystemTimeOfDay;
 		private static double s_lastDayCheckGameTime = -1.0;
 		private const double DAY_CHECK_INTERVAL = 5.0;
+		private static Dictionary<int, int> s_achievementRewards;
 
 		// Eventos para actualizar UI
 		public static event Action<ComponentPlayer, int, int> OnInfectedCounterChanged;
@@ -26,6 +28,37 @@ namespace Game
 		public static event Action<ComponentPlayer, int, int> OnHealCounterChanged;
 		public static event Action<ComponentPlayer, int, int> OnPirateCounterChanged;
 
+		private static void LoadAchievementRewards()
+		{
+			if (s_achievementRewards != null) return;
+			s_achievementRewards = new Dictionary<int, int>();
+			try
+			{
+				XElement achievementsXml = ContentManager.Get<XElement>("AchievementsData");
+				if (achievementsXml == null)
+				{
+					Log.Warning("[AchievementsManager] No se pudo cargar AchievementsData.xml");
+					return;
+				}
+				foreach (XElement elem in achievementsXml.Elements("Achievement"))
+				{
+					int number = (int)elem.Attribute("Number");
+					int reward = (int)elem.Attribute("Reward");
+					s_achievementRewards[number] = reward;
+				}
+			}
+			catch (Exception ex)
+			{
+				Log.Error($"[AchievementsManager] Error cargando recompensas: {ex.Message}");
+			}
+		}
+
+		private static int GetRewardForAchievement(int achievementNumber)
+		{
+			if (s_achievementRewards == null) LoadAchievementRewards();
+			return s_achievementRewards != null && s_achievementRewards.TryGetValue(achievementNumber, out int reward) ? reward : 0;
+		}
+
 		public static void Initialize(Project project)
 		{
 			s_currentProject = project;
@@ -33,6 +66,7 @@ namespace Game
 			s_subsystemTime = project.FindSubsystem<SubsystemTime>(true);
 			s_subsystemGameInfo = project.FindSubsystem<SubsystemGameInfo>(true);
 			s_subsystemTimeOfDay = project.FindSubsystem<SubsystemTimeOfDay>(true);
+			LoadAchievementRewards();
 
 			if (s_subsystemAchievements == null)
 				Log.Warning("[AchievementsManager] No se encontró SubsystemAchievements.");
@@ -357,9 +391,13 @@ namespace Game
 			if (s_subsystemAchievements.IsAchievementUnlocked(achievementNumber)) return;
 
 			s_subsystemAchievements.UnlockAchievement(achievementNumber, achievementId);
+
+			int reward = GetRewardForAchievement(achievementNumber);
+
 			player.ComponentGui.DisplayLargeMessage(
-				LanguageControl.Get("AchievementsMessages", 0),
-				displayName, 4f, 0f);
+				string.Format(LanguageControl.Get("AchievementsMessages", 0), displayName),
+				string.Format(LanguageControl.Get("AchievementsMessages", 1), reward),
+				4f, 0f);
 
 			var audio = player.Project.FindSubsystem<SubsystemAudio>(true);
 			if (audio != null)
@@ -424,7 +462,13 @@ namespace Game
 			if (s_subsystemAchievements.IsAchievementUnlocked(achievementNumber)) return;
 
 			s_subsystemAchievements.UnlockAchievement(achievementNumber, achievementId);
-			player.ComponentGui.DisplayLargeMessage(LanguageControl.Get("AchievementsMessages", 0), displayName, 4f, 0f);
+
+			int reward = GetRewardForAchievement(achievementNumber);
+
+			player.ComponentGui.DisplayLargeMessage(
+				string.Format(LanguageControl.Get("AchievementsMessages", 0), displayName),
+				string.Format(LanguageControl.Get("AchievementsMessages", 1), reward),
+				4f, 0f);
 
 			var audio = player.Project.FindSubsystem<SubsystemAudio>(true);
 			if (audio != null)
