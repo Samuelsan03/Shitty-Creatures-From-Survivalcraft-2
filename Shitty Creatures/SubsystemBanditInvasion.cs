@@ -8,23 +8,25 @@ using TemplatesDatabase;
 
 namespace Game
 {
-    public class SubsystemBanditInvasion : Subsystem, IUpdateable
-    {
-        private SubsystemGameInfo m_subsystemGameInfo;
-        private SubsystemTimeOfDay m_subsystemTimeOfDay;
-        private SubsystemSky m_subsystemSky;
-        private SubsystemTerrain m_subsystemTerrain;
-        private SubsystemBodies m_subsystemBodies;
-        private SubsystemPlayers m_subsystemPlayers;
-        private Random m_random = new Random();
+	public class SubsystemBanditInvasion : Subsystem, IUpdateable
+	{
+		private SubsystemGameInfo m_subsystemGameInfo;
+		private SubsystemTimeOfDay m_subsystemTimeOfDay;
+		private SubsystemSky m_subsystemSky;
+		private SubsystemTerrain m_subsystemTerrain;
+		private SubsystemBodies m_subsystemBodies;
+		private SubsystemPlayers m_subsystemPlayers;
+		private Random m_random = new Random();
 
-        private List<BanditSpawnData> m_bandits = new List<BanditSpawnData>();
-        private float m_totalProbabilitySum;
+		public event Action InvasionCompleted;
 
-        private bool m_acceptedWar;
-        private bool m_invasionActive;
-        private bool m_invasionStarted;
-        private bool m_invasionCompleted;
+		private List<BanditSpawnData> m_bandits = new List<BanditSpawnData>();
+		private float m_totalProbabilitySum;
+
+		private bool m_acceptedWar;
+		private bool m_invasionActive;
+		private bool m_invasionStarted;
+		private bool m_invasionCompleted;
 
 		private bool m_wasRejected;
 
@@ -33,15 +35,15 @@ namespace Game
 		public bool IsWarCompleted => m_invasionCompleted;
 
 		private float m_spawnTimer;
-        private float m_spawnInterval = 3.0f;
-        private const int MaxBanditsPerArea = 8;
-        private const int MaxGlobalBandits = 35;
-        private const int MaxSpawnsPerFrame = 2;
+		private float m_spawnInterval = 3.0f;
+		private const int MaxBanditsPerArea = 8;
+		private const int MaxGlobalBandits = 35;
+		private const int MaxSpawnsPerFrame = 2;
 
-        private bool m_wasNight;
+		private bool m_wasInvasionTime;
 
-        public UpdateOrder UpdateOrder => UpdateOrder.Default;
-        public bool IsInvasionActive => m_invasionActive;
+		public UpdateOrder UpdateOrder => UpdateOrder.Default;
+		public bool IsInvasionActive => m_invasionActive;
 
 		public void AcceptWar()
 		{
@@ -73,12 +75,10 @@ namespace Game
 				if (banditChase != null)
 				{
 					banditChase.IsDrugTraffickerMode = enabled;
-					// Al desactivar, forzar a que dejen de atacar inmediatamente
 					if (!enabled)
 					{
 						banditChase.StopAttack();
 					}
-					// También al activar, reiniciamos su ataque para que busquen al jugador con la nueva prioridad
 					else
 					{
 						banditChase.StopAttack();
@@ -101,10 +101,10 @@ namespace Game
 			m_acceptedWar = valuesDictionary.GetValue<bool>("AcceptedWar", false);
 			m_invasionCompleted = valuesDictionary.GetValue<bool>("InvasionCompleted", false);
 			m_wasRejected = valuesDictionary.GetValue<bool>("WasRejected", false);
-			m_wasNight = IsNightTime();
+			m_wasInvasionTime = IsInvasionTime();
 
-			// Si la invasión estaba activa al cargar (por guardado durante la noche), restaurar modo narcotraficante
-			if (m_acceptedWar && !m_invasionCompleted && m_wasNight)
+			// Si la invasión estaba activa al cargar (por guardado durante dusk/night), restaurar modo narcotraficante
+			if (m_acceptedWar && !m_invasionCompleted && m_wasInvasionTime)
 			{
 				m_invasionActive = true;
 				m_invasionStarted = true;
@@ -180,7 +180,7 @@ namespace Game
 			if (m_invasionCompleted)
 				return;
 
-			bool isNight = IsNightTime();
+			bool isInvasionTime = IsInvasionTime();
 
 			// Si no hay guerra aceptada, desactivamos cualquier invasión activa
 			if (!m_acceptedWar)
@@ -190,33 +190,34 @@ namespace Game
 					m_invasionActive = false;
 					SetAllBanditsDrugTraffickerMode(false);
 				}
-				m_wasNight = isNight;
+				m_wasInvasionTime = isInvasionTime;
 				return;
 			}
 
 			// Si la guerra está aceptada y la invasión no está activa
 			if (!m_invasionActive)
 			{
-				// Si es de noche, activamos inmediatamente (útil para reactivar tras cancelar)
-				if (isNight)
+				// Si es hora de invasión (dusk o después), activamos inmediatamente
+				if (isInvasionTime)
 				{
 					m_invasionActive = true;
 					m_invasionStarted = true;
 					m_spawnTimer = 0f;
 					SetAllBanditsDrugTraffickerMode(true);
 				}
-				// Si no es de noche, esperamos a que oscurezca (la transición se manejará normalmente)
+				// Si no es hora, esperamos a que caiga el dusk
 			}
 
-			// Manejar finalización al amanecer
-			if (m_wasNight && !isNight && m_invasionActive)
+			// Manejar finalización al llegar a dawn (transición de invasion time a no invasion time)
+			if (m_wasInvasionTime && !isInvasionTime && m_invasionActive)
 			{
 				m_invasionActive = false;
 				m_invasionCompleted = true;
 				SetAllBanditsDrugTraffickerMode(false);
+				InvasionCompleted?.Invoke();
 			}
 
-			m_wasNight = isNight;
+			m_wasInvasionTime = isInvasionTime;
 
 			if (!m_invasionActive)
 				return;
@@ -235,6 +236,38 @@ namespace Game
 				if (TrySpawnBanditGroup())
 					spawnsThisFrame++;
 			}
+		}
+
+		/// <summary>
+		/// Determina si es hora de invasión: desde DuskStart hasta DawnStart
+		/// </summary>
+		private bool IsInvasionTime()
+		{
+			TimeOfDayMode mode = m_subsystemGameInfo.WorldSettings.TimeOfDayMode;
+
+			// Modos donde NO hay invasión
+			if (mode == TimeOfDayMode.Day || mode == TimeOfDayMode.Sunrise)
+				return false;
+
+			// Modos donde SÍ hay invasión
+			if (mode == TimeOfDayMode.Night || mode == TimeOfDayMode.Sunset)
+				return true;
+
+			// Modo Changing: verificar si estamos entre Dusk y Dawn
+			if (mode == TimeOfDayMode.Changing)
+			{
+				float timeOfDay = m_subsystemTimeOfDay.TimeOfDay;
+				float duskStart = m_subsystemTimeOfDay.DuskStart;
+				float dawnStart = m_subsystemTimeOfDay.DawnStart;
+
+				// La invasión está activa desde DuskStart hasta DawnStart
+				// El ciclo es: DawnStart -> DayStart -> DuskStart -> NightStart -> DawnStart
+				// Entonces: timeOfDay >= DuskStart (estamos en dusk/night) 
+				//           OR timeOfDay < DawnStart (estamos en madrugada antes del amanecer)
+				return timeOfDay >= duskStart || timeOfDay < dawnStart;
+			}
+
+			return false;
 		}
 
 		private bool TrySpawnBanditGroup()
@@ -379,7 +412,6 @@ namespace Game
 			Block block2 = BlocksManager.Blocks[Terrain.ExtractContents(cellValueFast2)];
 			Block block3 = BlocksManager.Blocks[Terrain.ExtractContents(cellValueFast3)];
 
-			// Solo permite spawnear sobre estos bloques específicos
 			bool isValidGround = block is GrassBlock || block is DirtBlock || block is SandBlock || block is GravelBlock;
 
 			bool currentEmpty = (!block2.IsCollidable_(cellValueFast2) && !(block2 is WaterBlock));
@@ -442,14 +474,6 @@ namespace Game
 		{
 			if (string.IsNullOrEmpty(name)) return false;
 			return name.StartsWith("Bandit") && name != "FirearmsDealer";
-		}
-
-		private bool IsNightTime()
-		{
-			if (m_subsystemGameInfo.WorldSettings.TimeOfDayMode == TimeOfDayMode.Day ||
-				m_subsystemGameInfo.WorldSettings.TimeOfDayMode == TimeOfDayMode.Sunrise)
-				return false;
-			return m_subsystemSky.SkyLightIntensity < 0.1f;
 		}
 
 		private class BanditSpawnData
