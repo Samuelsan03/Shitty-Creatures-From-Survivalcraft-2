@@ -135,7 +135,10 @@ namespace Game
 
 			health.Heal(healAmount);
 
-			AchievementsManager.OnHeal(componentPlayer);
+			if (IsAlly(componentPlayer, targetEntity))
+			{
+				AchievementsManager.OnHeal(componentPlayer);
+			}
 
 			Vector3 position = componentPlayer.ComponentBody.Position;
 			m_subsystemAudio.PlaySound("Audio/UI/cured", 1f, 0f, position, 5f, false);
@@ -285,6 +288,17 @@ namespace Game
 			}
 
 			return tmin;
+		}
+
+		private bool IsAlly(ComponentPlayer player, Entity targetEntity)
+		{
+			if (targetEntity == player.Entity) return true;
+			var playerHerd = player.Entity.FindComponent<ComponentNewHerdBehavior>();
+			var targetCreature = targetEntity.FindComponent<ComponentCreature>();
+			if (playerHerd == null || targetCreature == null) return false;
+			var targetHerd = targetCreature.Entity.FindComponent<ComponentNewHerdBehavior>();
+			if (targetHerd == null) return false;
+			return playerHerd.IsSameHerdOrGuardian(targetCreature);
 		}
 
 		public override void Load(ValuesDictionary valuesDictionary)
