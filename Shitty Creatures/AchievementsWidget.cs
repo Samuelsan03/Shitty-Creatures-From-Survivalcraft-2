@@ -178,6 +178,20 @@ namespace Game
 				UpdateCounterDescription(40, currentKills, 100, item40.BaseDescription, item40.DescriptionLabel);
 		}
 
+		private void OnFlyingCounterChanged(ComponentPlayer player, int currentKills, int targetKills)
+		{
+			if (player != m_componentPlayer) return;
+
+			// Logros: 44=10, 45=25, 46=50, 47=100
+			if (m_achievementItems.TryGetValue(44, out var item44) && !AchievementsManager.IsAchievementUnlocked(player, 44))
+				UpdateCounterDescription(44, currentKills, 10, item44.BaseDescription, item44.DescriptionLabel);
+			if (m_achievementItems.TryGetValue(45, out var item45) && !AchievementsManager.IsAchievementUnlocked(player, 45))
+				UpdateCounterDescription(45, currentKills, 25, item45.BaseDescription, item45.DescriptionLabel);
+			if (m_achievementItems.TryGetValue(46, out var item46) && !AchievementsManager.IsAchievementUnlocked(player, 46))
+				UpdateCounterDescription(46, currentKills, 50, item46.BaseDescription, item46.DescriptionLabel);
+			if (m_achievementItems.TryGetValue(47, out var item47) && !AchievementsManager.IsAchievementUnlocked(player, 47))
+				UpdateCounterDescription(47, currentKills, 100, item47.BaseDescription, item47.DescriptionLabel);
+		}
 		private void CreateAchievementItem(string title, string baseDescription, int achievementNumber, int rewardAmount, bool unlocked, bool rewardClaimed)
 		{
 			var achievementContainer = new CanvasWidget
@@ -258,6 +272,11 @@ namespace Game
 					case 38: currentKills = AchievementsManager.GetPirateKills(m_componentPlayer); target = 10; break;
 					case 39: currentKills = AchievementsManager.GetPirateKills(m_componentPlayer); target = 50; break;
 					case 40: currentKills = AchievementsManager.GetPirateKills(m_componentPlayer); target = 100; break;
+					// Voladores
+					case 44: currentKills = AchievementsManager.GetFlyingKills(m_componentPlayer); target = 10; break;
+					case 45: currentKills = AchievementsManager.GetFlyingKills(m_componentPlayer); target = 25; break;
+					case 46: currentKills = AchievementsManager.GetFlyingKills(m_componentPlayer); target = 50; break;
+					case 47: currentKills = AchievementsManager.GetFlyingKills(m_componentPlayer); target = 100; break;
 				}
 
 				if (target > 0)
@@ -370,6 +389,7 @@ namespace Game
 				AchievementsManager.OnBanditCounterChanged -= OnBanditCounterChanged;
 				AchievementsManager.OnHealCounterChanged -= OnHealCounterChanged;
 				AchievementsManager.OnPirateCounterChanged -= OnPirateCounterChanged;
+				AchievementsManager.OnFlyingCounterChanged += OnFlyingCounterChanged;
 				m_componentPlayer.ComponentGui.ModalPanelWidget = null;
 				return;
 			}
@@ -396,7 +416,7 @@ namespace Game
 									claimButton.IsEnabled = false;
 									claimButton.Color = Color.Gray;
 									m_componentPlayer.ComponentGui.DisplaySmallMessage(
-										LanguageControl.Get("AchievementsMessages", 1),
+										LanguageControl.Get("AchievementsMessages", 3),
 										Color.Green, false, true);
 
 									var audio = m_componentPlayer.Project.FindSubsystem<SubsystemAudio>(true);
