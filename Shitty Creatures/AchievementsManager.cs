@@ -27,6 +27,11 @@ namespace Game
 		public static event Action<ComponentPlayer, int, int> OnBanditCounterChanged;
 		public static event Action<ComponentPlayer, int, int> OnHealCounterChanged;
 		public static event Action<ComponentPlayer, int, int> OnPirateCounterChanged;
+		public static event Action<ComponentPlayer, int, int> OnFlyingCounterChanged;
+		public static event Action<ComponentPlayer, int, int> OnBoomerCounterChanged;
+		public static event Action<ComponentPlayer, int, int> OnMeleeInfectedCounterChanged;
+public static event Action<ComponentPlayer, int, int> OnMeleeGhostCounterChanged;
+public static event Action<ComponentPlayer, int, int> OnMeleeBanditCounterChanged;
 
 		private static void LoadAchievementRewards()
 		{
@@ -110,18 +115,17 @@ namespace Game
 				return;
 			s_lastDayCheckGameTime = currentGameTime;
 
-			// ✅ Obtener el día real usando SubsystemTimeOfDay
 			double rawDay = s_subsystemTimeOfDay.Day;
-			int currentDay = (int)Math.Floor(rawDay) + 1;   // Día 1, 2, 3...
+			int currentDay = (int)Math.Floor(rawDay) + 1;
 
 			var dayAchievements = new (int days, int number, string id, int titleKey)[]
 			{
-		(5,   9, "Survive5Days",   22),
-		(10, 10, "Survive10Days",  24),
-		(25, 11, "Survive25Days",  26),
-		(75, 12, "Survive75Days",  28),
-		(100,13, "Survive100Days", 30),
-		(300,14, "Survive300Days", 32)
+				(5,   9, "Survive5Days",   22),
+				(10, 10, "Survive10Days",  24),
+				(25, 11, "Survive25Days",  26),
+				(75, 12, "Survive75Days",  28),
+				(100,13, "Survive100Days", 30),
+				(300,14, "Survive300Days", 32)
 			};
 
 			var players = s_currentProject?.FindSubsystem<SubsystemPlayers>(true);
@@ -161,12 +165,10 @@ namespace Game
 				s_subsystemAchievements.AddTankKill(playerIndex);
 				int kills = s_subsystemAchievements.GetTankKills(playerIndex);
 
-				if (kills <= 100)
-				{
-					if (kills <= 10) OnTankCounterChanged?.Invoke(killer, kills, 10);
-					else if (kills <= 50) OnTankCounterChanged?.Invoke(killer, kills, 50);
-					else OnTankCounterChanged?.Invoke(killer, kills, 100);
-				}
+				// CORRECCIÓN: Usar 'if' independientes y sin límite <= 100 para que siempre notifique a la UI
+				if (!s_subsystemAchievements.IsAchievementUnlocked(22)) OnTankCounterChanged?.Invoke(killer, kills, 10);
+				if (!s_subsystemAchievements.IsAchievementUnlocked(23)) OnTankCounterChanged?.Invoke(killer, kills, 50);
+				if (!s_subsystemAchievements.IsAchievementUnlocked(24)) OnTankCounterChanged?.Invoke(killer, kills, 100);
 
 				if (kills >= 10 && !s_subsystemAchievements.IsAchievementUnlocked(22))
 					UnlockAchievement(killer, 22, "Kill10Tanks", LanguageControl.Get(AchievementsWidget.fName, 48));
@@ -178,26 +180,21 @@ namespace Game
 
 			// ========== INFECTADO NORMAL ==========
 			bool isNormalInfected = (templateName == "InfectedNormal1" || templateName == "InfectedNormal2" ||
-									 templateName == "InfectedFast1" || templateName == "InfectedFast2" ||
-									 templateName == "InfectedMuscle1" || templateName == "InfectedMuscle2" ||
-									 templateName == "InfectedFreezer" || templateName == "HumanoidSkeleton" ||
-									 templateName == "PredatoryChameleon" || templateName == "InfectedFly3" ||
-									 templateName == "InfectedBird" || templateName == "Boomer1" ||
-									 templateName == "Boomer2" || templateName == "Boomer3" ||
-									 templateName == "BoomerFrozen" || templateName == "InfectedBear" ||
-									 templateName == "InfectedFly1" || templateName == "InfectedFly2");
+						 templateName == "InfectedFast1" || templateName == "InfectedFast2" ||
+						 templateName == "InfectedMuscle1" || templateName == "InfectedMuscle2" ||
+						 templateName == "InfectedFreezer" || templateName == "HumanoidSkeleton" ||
+						 templateName == "PredatoryChameleon" || templateName == "InfectedFly3" ||
+						 templateName == "InfectedBird" || templateName == "InfectedBear" ||
+						 templateName == "InfectedFly1" || templateName == "InfectedFly2" || templateName == "Charger1" || templateName == "Charger2");
 			if (isNormalInfected)
 			{
 				UnlockAchievement(killer, 2, "KillInfected", LanguageControl.Get(AchievementsWidget.fName, 8));
 				s_subsystemAchievements.AddInfectedKill(playerIndex);
 				int kills = s_subsystemAchievements.GetInfectedKills(playerIndex);
 
-				if (kills <= 100)
-				{
-					if (kills <= 10) OnInfectedCounterChanged?.Invoke(killer, kills, 10);
-					else if (kills <= 50) OnInfectedCounterChanged?.Invoke(killer, kills, 50);
-					else OnInfectedCounterChanged?.Invoke(killer, kills, 100);
-				}
+				if (!s_subsystemAchievements.IsAchievementUnlocked(16)) OnInfectedCounterChanged?.Invoke(killer, kills, 10);
+				if (!s_subsystemAchievements.IsAchievementUnlocked(17)) OnInfectedCounterChanged?.Invoke(killer, kills, 50);
+				if (!s_subsystemAchievements.IsAchievementUnlocked(18)) OnInfectedCounterChanged?.Invoke(killer, kills, 100);
 
 				if (kills >= 10 && !s_subsystemAchievements.IsAchievementUnlocked(16))
 					UnlockAchievement(killer, 16, "Kill10Infected", LanguageControl.Get(AchievementsWidget.fName, 36));
@@ -214,12 +211,9 @@ namespace Game
 				s_subsystemAchievements.AddBanditKill(playerIndex);
 				int kills = s_subsystemAchievements.GetBanditKills(playerIndex);
 
-				if (kills <= 100)
-				{
-					if (kills <= 10) OnBanditCounterChanged?.Invoke(killer, kills, 10);
-					else if (kills <= 50) OnBanditCounterChanged?.Invoke(killer, kills, 50);
-					else OnBanditCounterChanged?.Invoke(killer, kills, 100);
-				}
+				if (!s_subsystemAchievements.IsAchievementUnlocked(31)) OnBanditCounterChanged?.Invoke(killer, kills, 10);
+				if (!s_subsystemAchievements.IsAchievementUnlocked(32)) OnBanditCounterChanged?.Invoke(killer, kills, 50);
+				if (!s_subsystemAchievements.IsAchievementUnlocked(33)) OnBanditCounterChanged?.Invoke(killer, kills, 100);
 
 				if (kills >= 10 && !s_subsystemAchievements.IsAchievementUnlocked(31))
 					UnlockAchievement(killer, 31, "Kill10Bandits", LanguageControl.Get(AchievementsWidget.fName, 66));
@@ -231,20 +225,16 @@ namespace Game
 
 			// ========== FANTASMA NORMAL ==========
 			bool isGhost = (templateName == "GhostNormal" || templateName == "GhostFast" || templateName == "PoisonousGhost" ||
-							templateName == "GhostBoomer1" || templateName == "GhostBoomer2" || templateName == "GhostBoomer3" ||
-							templateName == "FrozenGhost");
+				templateName == "FrozenGhost" || templateName == "GhostCharger");
 			if (isGhost)
 			{
 				UnlockAchievement(killer, 4, "KillGhost", LanguageControl.Get(AchievementsWidget.fName, 12));
 				s_subsystemAchievements.AddGhostKill(playerIndex);
 				int kills = s_subsystemAchievements.GetGhostKills(playerIndex);
 
-				if (kills <= 100)
-				{
-					if (kills <= 10) OnGhostCounterChanged?.Invoke(killer, kills, 10);
-					else if (kills <= 50) OnGhostCounterChanged?.Invoke(killer, kills, 50);
-					else OnGhostCounterChanged?.Invoke(killer, kills, 100);
-				}
+				if (!s_subsystemAchievements.IsAchievementUnlocked(25)) OnGhostCounterChanged?.Invoke(killer, kills, 10);
+				if (!s_subsystemAchievements.IsAchievementUnlocked(26)) OnGhostCounterChanged?.Invoke(killer, kills, 50);
+				if (!s_subsystemAchievements.IsAchievementUnlocked(27)) OnGhostCounterChanged?.Invoke(killer, kills, 100);
 
 				if (kills >= 10 && !s_subsystemAchievements.IsAchievementUnlocked(25))
 					UnlockAchievement(killer, 25, "Kill10Ghosts", LanguageControl.Get(AchievementsWidget.fName, 54));
@@ -263,12 +253,9 @@ namespace Game
 				s_subsystemAchievements.AddGhostTankKill(playerIndex);
 				int kills = s_subsystemAchievements.GetGhostTankKills(playerIndex);
 
-				if (kills <= 100)
-				{
-					if (kills <= 10) OnGhostTankCounterChanged?.Invoke(killer, kills, 10);
-					else if (kills <= 50) OnGhostTankCounterChanged?.Invoke(killer, kills, 50);
-					else OnGhostTankCounterChanged?.Invoke(killer, kills, 100);
-				}
+				if (!s_subsystemAchievements.IsAchievementUnlocked(28)) OnGhostTankCounterChanged?.Invoke(killer, kills, 10);
+				if (!s_subsystemAchievements.IsAchievementUnlocked(29)) OnGhostTankCounterChanged?.Invoke(killer, kills, 50);
+				if (!s_subsystemAchievements.IsAchievementUnlocked(30)) OnGhostTankCounterChanged?.Invoke(killer, kills, 100);
 
 				if (kills >= 10 && !s_subsystemAchievements.IsAchievementUnlocked(28))
 					UnlockAchievement(killer, 28, "Kill10GhostTanks", LanguageControl.Get(AchievementsWidget.fName, 60));
@@ -286,12 +273,9 @@ namespace Game
 				s_subsystemAchievements.AddBossKill(playerIndex);
 				int kills = s_subsystemAchievements.GetBossKills(playerIndex);
 
-				if (kills <= 100)
-				{
-					if (kills <= 10) OnBossCounterChanged?.Invoke(killer, kills, 10);
-					else if (kills <= 50) OnBossCounterChanged?.Invoke(killer, kills, 50);
-					else OnBossCounterChanged?.Invoke(killer, kills, 100);
-				}
+				if (!s_subsystemAchievements.IsAchievementUnlocked(19)) OnBossCounterChanged?.Invoke(killer, kills, 10);
+				if (!s_subsystemAchievements.IsAchievementUnlocked(20)) OnBossCounterChanged?.Invoke(killer, kills, 50);
+				if (!s_subsystemAchievements.IsAchievementUnlocked(21)) OnBossCounterChanged?.Invoke(killer, kills, 100);
 
 				if (kills >= 10 && !s_subsystemAchievements.IsAchievementUnlocked(19))
 					UnlockAchievement(killer, 19, "Kill10Bosses", LanguageControl.Get(AchievementsWidget.fName, 42));
@@ -300,6 +284,149 @@ namespace Game
 				if (kills >= 100 && !s_subsystemAchievements.IsAchievementUnlocked(21))
 					UnlockAchievement(killer, 21, "Kill100Bosses", LanguageControl.Get(AchievementsWidget.fName, 46));
 			}
+
+			// ========== VOLADORES ==========
+			bool isFlying = IsFlyingCreature(templateName);
+			if (isFlying)
+			{
+				s_subsystemAchievements.AddFlyingKill(playerIndex);
+				int kills = s_subsystemAchievements.GetFlyingKills(playerIndex);
+
+				if (!s_subsystemAchievements.IsAchievementUnlocked(44)) OnFlyingCounterChanged?.Invoke(killer, kills, 10);
+				if (!s_subsystemAchievements.IsAchievementUnlocked(45)) OnFlyingCounterChanged?.Invoke(killer, kills, 25);
+				if (!s_subsystemAchievements.IsAchievementUnlocked(46)) OnFlyingCounterChanged?.Invoke(killer, kills, 50);
+				if (!s_subsystemAchievements.IsAchievementUnlocked(47)) OnFlyingCounterChanged?.Invoke(killer, kills, 100);
+
+				if (kills >= 10 && !s_subsystemAchievements.IsAchievementUnlocked(44))
+					UnlockAchievement(killer, 44, "Kill10Flying", LanguageControl.Get(AchievementsWidget.fName, 92));
+				if (kills >= 25 && !s_subsystemAchievements.IsAchievementUnlocked(45))
+					UnlockAchievement(killer, 45, "Kill25Flying", LanguageControl.Get(AchievementsWidget.fName, 94));
+				if (kills >= 50 && !s_subsystemAchievements.IsAchievementUnlocked(46))
+					UnlockAchievement(killer, 46, "Kill50Flying", LanguageControl.Get(AchievementsWidget.fName, 96));
+				if (kills >= 100 && !s_subsystemAchievements.IsAchievementUnlocked(47))
+					UnlockAchievement(killer, 47, "Kill100Flying", LanguageControl.Get(AchievementsWidget.fName, 98));
+			}
+
+			// ========== BOOMER (normal y fantasma) ==========
+			bool isBoomer = (templateName == "Boomer1" || templateName == "Boomer2" || templateName == "Boomer3" || templateName == "BoomerFrozen" ||
+							 templateName == "GhostBoomer1" || templateName == "GhostBoomer2" || templateName == "GhostBoomer3");
+			if (isBoomer)
+			{
+				UnlockAchievement(killer, 48, "KillBoomer", LanguageControl.Get(AchievementsWidget.fName, 100)); // Logro base (opcional, si quieres uno por el primer Boomer)
+				s_subsystemAchievements.AddBoomerKill(playerIndex);
+				int kills = s_subsystemAchievements.GetBoomerKills(playerIndex);
+
+				// Notificar a la UI para los cuatro logros progresivos
+				if (!s_subsystemAchievements.IsAchievementUnlocked(48)) OnBoomerCounterChanged?.Invoke(killer, kills, 10);
+				if (!s_subsystemAchievements.IsAchievementUnlocked(49)) OnBoomerCounterChanged?.Invoke(killer, kills, 25);
+				if (!s_subsystemAchievements.IsAchievementUnlocked(50)) OnBoomerCounterChanged?.Invoke(killer, kills, 55);
+				if (!s_subsystemAchievements.IsAchievementUnlocked(51)) OnBoomerCounterChanged?.Invoke(killer, kills, 100);
+
+				// Desbloquear cada logro al alcanzar el objetivo
+				if (kills >= 10 && !s_subsystemAchievements.IsAchievementUnlocked(48))
+					UnlockAchievement(killer, 48, "Kill10Boomers", LanguageControl.Get(AchievementsWidget.fName, 100));
+				if (kills >= 25 && !s_subsystemAchievements.IsAchievementUnlocked(49))
+					UnlockAchievement(killer, 49, "Kill25Boomers", LanguageControl.Get(AchievementsWidget.fName, 102));
+				if (kills >= 55 && !s_subsystemAchievements.IsAchievementUnlocked(50))
+					UnlockAchievement(killer, 50, "Kill55Boomers", LanguageControl.Get(AchievementsWidget.fName, 104));
+				if (kills >= 100 && !s_subsystemAchievements.IsAchievementUnlocked(51))
+					UnlockAchievement(killer, 51, "Kill100Boomers", LanguageControl.Get(AchievementsWidget.fName, 106));
+			}
+
+			// ========== ASESINATOS CUERPO A CUERPO (PUÑO + ARMAS) ==========
+			// MeleeAttackment incluye: puño limpio, espadas, hachas, machetes, cuchillos, etc.
+			bool isMeleeKill = (injury is MeleeAttackment) || IsPlayerUsingMeleeWeapon(killer);
+			if (isMeleeKill)
+			{
+				// Infectados normales
+				if (isNormalInfected)
+				{
+					s_subsystemAchievements.AddMeleeInfectedKill(playerIndex);
+					int kills = s_subsystemAchievements.GetMeleeInfectedKills(playerIndex);
+
+					if (!s_subsystemAchievements.IsAchievementUnlocked(52)) OnMeleeInfectedCounterChanged?.Invoke(killer, kills, 10);
+					if (!s_subsystemAchievements.IsAchievementUnlocked(53)) OnMeleeInfectedCounterChanged?.Invoke(killer, kills, 25);
+					if (!s_subsystemAchievements.IsAchievementUnlocked(54)) OnMeleeInfectedCounterChanged?.Invoke(killer, kills, 55);
+					if (!s_subsystemAchievements.IsAchievementUnlocked(55)) OnMeleeInfectedCounterChanged?.Invoke(killer, kills, 100);
+					if (!s_subsystemAchievements.IsAchievementUnlocked(56)) OnMeleeInfectedCounterChanged?.Invoke(killer, kills, 200);
+					if (!s_subsystemAchievements.IsAchievementUnlocked(57)) OnMeleeInfectedCounterChanged?.Invoke(killer, kills, 500);
+
+					if (kills >= 10 && !s_subsystemAchievements.IsAchievementUnlocked(52))
+						UnlockAchievement(killer, 52, "Melee10Infected", LanguageControl.Get(AchievementsWidget.fName, 108));
+					if (kills >= 25 && !s_subsystemAchievements.IsAchievementUnlocked(53))
+						UnlockAchievement(killer, 53, "Melee25Infected", LanguageControl.Get(AchievementsWidget.fName, 110));
+					if (kills >= 55 && !s_subsystemAchievements.IsAchievementUnlocked(54))
+						UnlockAchievement(killer, 54, "Melee55Infected", LanguageControl.Get(AchievementsWidget.fName, 112));
+					if (kills >= 100 && !s_subsystemAchievements.IsAchievementUnlocked(55))
+						UnlockAchievement(killer, 55, "Melee100Infected", LanguageControl.Get(AchievementsWidget.fName, 114));
+					if (kills >= 200 && !s_subsystemAchievements.IsAchievementUnlocked(56))
+						UnlockAchievement(killer, 56, "Melee200Infected", LanguageControl.Get(AchievementsWidget.fName, 116));
+					if (kills >= 500 && !s_subsystemAchievements.IsAchievementUnlocked(57))
+						UnlockAchievement(killer, 57, "Melee500Infected", LanguageControl.Get(AchievementsWidget.fName, 118));
+				}
+
+				// Fantasmas normales
+				if (isGhost)
+				{
+					s_subsystemAchievements.AddMeleeGhostKill(playerIndex);
+					int kills = s_subsystemAchievements.GetMeleeGhostKills(playerIndex);
+
+					if (!s_subsystemAchievements.IsAchievementUnlocked(58)) OnMeleeGhostCounterChanged?.Invoke(killer, kills, 10);
+					if (!s_subsystemAchievements.IsAchievementUnlocked(59)) OnMeleeGhostCounterChanged?.Invoke(killer, kills, 25);
+					if (!s_subsystemAchievements.IsAchievementUnlocked(60)) OnMeleeGhostCounterChanged?.Invoke(killer, kills, 55);
+					if (!s_subsystemAchievements.IsAchievementUnlocked(61)) OnMeleeGhostCounterChanged?.Invoke(killer, kills, 100);
+					if (!s_subsystemAchievements.IsAchievementUnlocked(62)) OnMeleeGhostCounterChanged?.Invoke(killer, kills, 200);
+					if (!s_subsystemAchievements.IsAchievementUnlocked(63)) OnMeleeGhostCounterChanged?.Invoke(killer, kills, 500);
+
+					if (kills >= 10 && !s_subsystemAchievements.IsAchievementUnlocked(58))
+						UnlockAchievement(killer, 58, "Melee10Ghost", LanguageControl.Get(AchievementsWidget.fName, 120));
+					if (kills >= 25 && !s_subsystemAchievements.IsAchievementUnlocked(59))
+						UnlockAchievement(killer, 59, "Melee25Ghost", LanguageControl.Get(AchievementsWidget.fName, 122));
+					if (kills >= 55 && !s_subsystemAchievements.IsAchievementUnlocked(60))
+						UnlockAchievement(killer, 60, "Melee55Ghost", LanguageControl.Get(AchievementsWidget.fName, 124));
+					if (kills >= 100 && !s_subsystemAchievements.IsAchievementUnlocked(61))
+						UnlockAchievement(killer, 61, "Melee100Ghost", LanguageControl.Get(AchievementsWidget.fName, 126));
+					if (kills >= 200 && !s_subsystemAchievements.IsAchievementUnlocked(62))
+						UnlockAchievement(killer, 62, "Melee200Ghost", LanguageControl.Get(AchievementsWidget.fName, 128));
+					if (kills >= 500 && !s_subsystemAchievements.IsAchievementUnlocked(63))
+						UnlockAchievement(killer, 63, "Melee500Ghost", LanguageControl.Get(AchievementsWidget.fName, 130));
+				}
+
+				// Bandidos (ComponentBanditHerdBehavior)
+				if (deadEntity.FindComponent<ComponentBanditHerdBehavior>() != null)
+				{
+					s_subsystemAchievements.AddMeleeBanditKill(playerIndex);
+					int kills = s_subsystemAchievements.GetMeleeBanditKills(playerIndex);
+
+					if (!s_subsystemAchievements.IsAchievementUnlocked(64)) OnMeleeBanditCounterChanged?.Invoke(killer, kills, 10);
+					if (!s_subsystemAchievements.IsAchievementUnlocked(65)) OnMeleeBanditCounterChanged?.Invoke(killer, kills, 25);
+					if (!s_subsystemAchievements.IsAchievementUnlocked(66)) OnMeleeBanditCounterChanged?.Invoke(killer, kills, 55);
+					if (!s_subsystemAchievements.IsAchievementUnlocked(67)) OnMeleeBanditCounterChanged?.Invoke(killer, kills, 100);
+					if (!s_subsystemAchievements.IsAchievementUnlocked(68)) OnMeleeBanditCounterChanged?.Invoke(killer, kills, 200);
+					if (!s_subsystemAchievements.IsAchievementUnlocked(69)) OnMeleeBanditCounterChanged?.Invoke(killer, kills, 500);
+
+					if (kills >= 10 && !s_subsystemAchievements.IsAchievementUnlocked(64))
+						UnlockAchievement(killer, 64, "Melee10Bandit", LanguageControl.Get(AchievementsWidget.fName, 132));
+					if (kills >= 25 && !s_subsystemAchievements.IsAchievementUnlocked(65))
+						UnlockAchievement(killer, 65, "Melee25Bandit", LanguageControl.Get(AchievementsWidget.fName, 134));
+					if (kills >= 55 && !s_subsystemAchievements.IsAchievementUnlocked(66))
+						UnlockAchievement(killer, 66, "Melee55Bandit", LanguageControl.Get(AchievementsWidget.fName, 136));
+					if (kills >= 100 && !s_subsystemAchievements.IsAchievementUnlocked(67))
+						UnlockAchievement(killer, 67, "Melee100Bandit", LanguageControl.Get(AchievementsWidget.fName, 138));
+					if (kills >= 200 && !s_subsystemAchievements.IsAchievementUnlocked(68))
+						UnlockAchievement(killer, 68, "Melee200Bandit", LanguageControl.Get(AchievementsWidget.fName, 140));
+					if (kills >= 500 && !s_subsystemAchievements.IsAchievementUnlocked(69))
+						UnlockAchievement(killer, 69, "Melee500Bandit", LanguageControl.Get(AchievementsWidget.fName, 142));
+				}
+			}
+		}
+
+		private static bool IsFlyingCreature(string templateName)
+		{
+			return templateName == "InfectedFly1" ||
+				   templateName == "InfectedFly2" ||
+				   templateName == "InfectedFly3" ||
+				   templateName == "InfectedBird";
 		}
 
 		public static void OnHeal(ComponentPlayer healer)
@@ -310,12 +437,9 @@ namespace Game
 			s_subsystemAchievements.AddHeal(playerIndex);
 			int total = s_subsystemAchievements.GetHeals(playerIndex);
 
-			if (total <= 100)
-			{
-				if (total <= 10) OnHealCounterChanged?.Invoke(healer, total, 10);
-				else if (total <= 50) OnHealCounterChanged?.Invoke(healer, total, 50);
-				else OnHealCounterChanged?.Invoke(healer, total, 100);
-			}
+			if (!s_subsystemAchievements.IsAchievementUnlocked(34)) OnHealCounterChanged?.Invoke(healer, total, 10);
+			if (!s_subsystemAchievements.IsAchievementUnlocked(35)) OnHealCounterChanged?.Invoke(healer, total, 50);
+			if (!s_subsystemAchievements.IsAchievementUnlocked(36)) OnHealCounterChanged?.Invoke(healer, total, 100);
 
 			if (total >= 10 && !s_subsystemAchievements.IsAchievementUnlocked(34))
 				UnlockAchievement(healer, 34, "Heal10", LanguageControl.Get(AchievementsWidget.fName, 72));
@@ -332,12 +456,9 @@ namespace Game
 			s_subsystemAchievements.AddPirateKill(playerIndex);
 			int kills = s_subsystemAchievements.GetPirateKills(playerIndex);
 
-			if (kills <= 100)
-			{
-				if (kills <= 10) OnPirateCounterChanged?.Invoke(killer, kills, 10);
-				else if (kills <= 50) OnPirateCounterChanged?.Invoke(killer, kills, 50);
-				else OnPirateCounterChanged?.Invoke(killer, kills, 100);
-			}
+			if (!s_subsystemAchievements.IsAchievementUnlocked(38)) OnPirateCounterChanged?.Invoke(killer, kills, 10);
+			if (!s_subsystemAchievements.IsAchievementUnlocked(39)) OnPirateCounterChanged?.Invoke(killer, kills, 50);
+			if (!s_subsystemAchievements.IsAchievementUnlocked(40)) OnPirateCounterChanged?.Invoke(killer, kills, 100);
 
 			if (kills >= 10 && !s_subsystemAchievements.IsAchievementUnlocked(38))
 				UnlockAchievement(killer, 38, "Kill10Pirates", LanguageControl.Get(AchievementsWidget.fName, 80));
@@ -418,7 +539,27 @@ namespace Game
 		public static int GetBanditKills(ComponentPlayer player) => player == null ? 0 : s_subsystemAchievements?.GetBanditKills(player.PlayerData.PlayerIndex) ?? 0;
 		public static int GetHeals(ComponentPlayer player) => player == null ? 0 : s_subsystemAchievements?.GetHeals(player.PlayerData.PlayerIndex) ?? 0;
 		public static int GetPirateKills(ComponentPlayer player) => player == null ? 0 : s_subsystemAchievements?.GetPirateKills(player.PlayerData.PlayerIndex) ?? 0;
+		public static int GetFlyingKills(ComponentPlayer player) => player == null ? 0 : s_subsystemAchievements?.GetFlyingKills(player.PlayerData.PlayerIndex) ?? 0;
+		public static int GetBoomerKills(ComponentPlayer player) => player == null ? 0 : s_subsystemAchievements?.GetBoomerKills(player.PlayerData.PlayerIndex) ?? 0;
+		public static int GetMeleeInfectedKills(ComponentPlayer player) => player == null ? 0 : s_subsystemAchievements?.GetMeleeInfectedKills(player.PlayerData.PlayerIndex) ?? 0;
+		public static int GetMeleeGhostKills(ComponentPlayer player) => player == null ? 0 : s_subsystemAchievements?.GetMeleeGhostKills(player.PlayerData.PlayerIndex) ?? 0;
+		public static int GetMeleeBanditKills(ComponentPlayer player) => player == null ? 0 : s_subsystemAchievements?.GetMeleeBanditKills(player.PlayerData.PlayerIndex) ?? 0;
 
+		private static bool IsPlayerUsingMeleeWeapon(ComponentPlayer player)
+		{
+			if (player == null || player.ComponentMiner == null) return false;
+
+			int activeBlock = player.ComponentMiner.ActiveBlockValue;
+			if (activeBlock == 0) return true; // Puño limpio cuenta como melee
+
+			int content = Terrain.ExtractContents(activeBlock);
+			Block block = BlocksManager.Blocks[content];
+
+			// Un arma cuerpo a cuerpo tiene poder de melee > 0 o probabilidad de golpe > 0
+			float meleePower = block.GetMeleePower(activeBlock);
+			float meleeHitProb = block.GetMeleeHitProbability(activeBlock);
+			return meleePower > 0f || meleeHitProb > 0f;
+		}
 		public static bool ClaimAchievementReward(ComponentPlayer player, int achievementNumber, int rewardAmount)
 		{
 			if (s_subsystemAchievements == null) return false;
