@@ -68,6 +68,10 @@ namespace Game
 		private float m_aimTimer;
 		private float m_cooldownTimer;
 
+		private float m_flankTimer;
+		private Vector3 m_flankDirection;
+		private bool m_isFlanking;
+
 		// Apuntado personalizado para criaturas que no levantan el brazo
 		private bool m_isCustomAiming;
 		private float m_customAimTimer;
@@ -236,6 +240,17 @@ namespace Game
 
 		public void Update(float dt)
 		{
+			// Si estamos flanqueando, actualizar temporizador y salir
+			if (m_isFlanking)
+			{
+				m_flankTimer -= dt;
+				if (m_flankTimer <= 0f)
+				{
+					StopFlanking();
+				}
+				return;
+			}
+
 			if (!CanUseInventory || m_componentMiner == null || m_componentCreature == null)
 				return;
 
@@ -366,10 +381,25 @@ namespace Game
 			// Manejar apuntado personalizado (sin levantar brazo)
 			if (m_isCustomAiming)
 			{
-				if (!hasTarget || !HasLineOfSightToTarget())
+				bool hasLineOfSight = true;
+				if (IsThrowable(m_customWeaponContents))
+				{
+					hasLineOfSight = HasLineOfSightToTarget();
+				}
+
+				if (!hasTarget || (IsThrowable(m_customWeaponContents) && !hasLineOfSight))
 				{
 					StopCustomAiming();
+
+					if (IsThrowable(m_customWeaponContents) && !hasLineOfSight && !m_isFlanking && m_componentChase?.Target != null)
+					{
+						StartFlanking(m_componentChase.Target.ComponentBody.Position);
+					}
 					return;
+				}
+				else
+				{
+					if (m_isFlanking) StopFlanking();
 				}
 
 				// ItemsLauncher: animación manual, sin Miner.Aim
@@ -443,16 +473,7 @@ namespace Game
 				if (FirearmDefensiveConfigs.TryGetValue(m_customWeaponContents, out FirearmDefConfig firearmCfg))
 				{
 					// Animación manual SIN Miner.Aim
-					ComponentCreatureModel model = m_componentCreature.ComponentCreatureModel;
-					if (model != null)
-					{
-						// Criaturas especiales: NO levantan el brazo
-						model.AimHandAngleOrder = 0f;
-						model.InHandItemOffsetOrder = new Vector3(-0.1f, -0.15f, 0.25f);
-						model.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
-						if (m_componentChase != null && m_componentChase.Target != null)
-							model.LookAtOrder = m_componentChase.Target.ComponentCreatureModel.EyePosition;
-					}
+					UpdateWeaponRotation(aimRayWeapon);
 
 					if (!m_hasCompletedInitialAim)
 					{
@@ -560,13 +581,27 @@ namespace Game
 			// Manejar apuntado normal (comportamiento original)
 			if (m_isAiming)
 			{
-				if (!hasTarget || !HasLineOfSightToTarget())
+				bool hasLineOfSight = true;
+				int activeContents = Terrain.ExtractContents(m_componentMiner.Inventory.GetSlotValue(m_componentMiner.Inventory.ActiveSlotIndex));
+				if (IsThrowable(activeContents))
 				{
-					CancelAiming();
-					return;
+					hasLineOfSight = HasLineOfSightToTarget();
 				}
 
-				int activeContents = Terrain.ExtractContents(m_componentMiner.Inventory.GetSlotValue(m_componentMiner.Inventory.ActiveSlotIndex));
+				if (!hasTarget || (IsThrowable(activeContents) && !hasLineOfSight))
+				{
+					CancelAiming();
+
+					if (IsThrowable(activeContents) && !hasLineOfSight && !m_isFlanking)
+					{
+						StartFlanking(m_componentChase.Target.ComponentBody.Position);
+					}
+					return;
+				}
+				else
+				{
+					if (m_isFlanking) StopFlanking();
+				}
 
 				// CORRECCIÓN: Verificar distancia para lanzables durante el apuntado
 				if (IsThrowable(activeContents))
@@ -757,13 +792,9 @@ namespace Game
 						return;
 				}
 
-				// Bloquear cualquier ataque a distancia si no hay línea de visión
-				if (!HasLineOfSightToTarget())
-					return;
-
 				// *** PRIORIDAD MODIFICADA: LANZABLES PRIMERO ***
-				// 1. Lanzables (primera prioridad, antes que armas de fuego y cualquier otra arma a distancia)
-				if (distance >= ThrowableAttackRange.X && distance <= ThrowableAttackRange.Y && HasThrowableInInventory())
+				// 1. Lanzables (primera prioridad) - CON VERIFICACIÓN DE VISIBILIDAD
+				if (distance >= ThrowableAttackRange.X && distance <= ThrowableAttackRange.Y && HasThrowableInInventory() && HasLineOfSightToTarget())
 				{
 					if (EnsureThrowableEquipped())
 					{
@@ -775,29 +806,16 @@ namespace Game
 					}
 				}
 
-				// 2. Armas de fuego modernas (antes era 1, ahora 2)
+				// 2. Armas de fuego modernas (sin verificación de visibilidad)
 				if (HasFirearmInInventory() && EnsureFirearmEquipped())
 				{
 					int activeContents = Terrain.ExtractContents(m_componentMiner.Inventory.GetSlotValue(m_componentMiner.Inventory.ActiveSlotIndex));
-					int sniperIndex3 = BlocksManager.GetBlockIndex(typeof(SniperBlock), true, false);
-					if (IsSpecialNoRaiseCreature())
-					{
-						StartCustomAiming(activeContents);
-					}
-					else
-					{
-						m_isAiming = true;
-						m_aimTimer = 0f;
-						m_hasCompletedInitialAim = false;
-						if (activeContents != sniperIndex3)
-						{
-							m_componentMiner.Aim(CalculateAimRay(), AimState.InProgress);
-						}
-					}
+					// Siempre usar apuntado personalizado (sin Miner.Aim) para armas de fuego
+					StartCustomAiming(activeContents);
 					return;
 				}
 
-				// 3. Ballesta repetidora (tercera prioridad)
+				// 3. Ballesta repetidora (sin verificación de visibilidad)
 				if (HasRepeatCrossbowInInventory() && EnsureRepeatCrossbowEquipped())
 				{
 					if (IsSpecialNoRaiseCreature())
@@ -814,7 +832,7 @@ namespace Game
 					}
 				}
 
-				// 4. Lanzallamas (cuarta prioridad)
+				// 4. Lanzallamas (sin verificación de visibilidad)
 				if (HasFlameThrowerInInventory() && EnsureFlameThrowerEquipped())
 				{
 					if (IsSpecialNoRaiseCreature())
@@ -831,7 +849,7 @@ namespace Game
 					}
 				}
 
-				// 5. Mosquete de doble cañón (quinta prioridad)
+				// 5. Mosquete de doble cañón (sin verificación de visibilidad)
 				if (HasDoubleMusketInInventory() && EnsureDoubleMusketEquipped())
 				{
 					if (IsSpecialNoRaiseCreature())
@@ -848,7 +866,7 @@ namespace Game
 					}
 				}
 
-				// 6. Lanzador de ítems (sexta prioridad) – apuntado manual para todos
+				// 6. Lanzador de ítems (sin verificación de visibilidad) – apuntado manual para todos
 				if (HasItemsLauncherInInventory() && EnsureItemsLauncherEquipped())
 				{
 					StartCustomAiming(ItemsLauncherBlock.Index);
@@ -858,7 +876,7 @@ namespace Game
 				// Para criaturas especiales: ballesta, arco, mosquete doble, mosquete con apuntado personalizado
 				if (IsSpecialNoRaiseCreature())
 				{
-					// Ballesta y arco normales
+					// Ballesta y arco normales (sin verificación de visibilidad)
 					if (HasCrossbowInInventory() && EnsureCrossbowEquipped())
 					{
 						StartCustomAiming(CrossbowBlock.Index);
@@ -882,7 +900,7 @@ namespace Game
 				}
 				else
 				{
-					// Comportamiento normal para otras criaturas (respeta distancia mínima)
+					// Comportamiento normal para otras criaturas (respeta distancia mínima) - SIN VERIFICACIÓN DE VISIBILIDAD
 					if (HasCrossbowInInventory())
 					{
 						if (EnsureCrossbowEquipped())
@@ -1009,13 +1027,15 @@ namespace Game
 			if (m_isCustomAiming)
 			{
 				int sniperIndex = BlocksManager.GetBlockIndex(typeof(SniperBlock), true, false);
-				if (m_customWeaponContents != ItemsLauncherBlock.Index && m_customWeaponContents != sniperIndex)
+				// Solo cancelar Miner.Aim si NO es arma de fuego y NO es ItemsLauncher
+				if (m_customWeaponContents != ItemsLauncherBlock.Index &&
+					m_customWeaponContents != sniperIndex &&
+					!FirearmDefensiveConfigs.ContainsKey(m_customWeaponContents))
 				{
 					if (TryCalculateAimRay(out Ray3 aimRay))
 					{
 						m_componentMiner.Aim(aimRay, AimState.Cancelled);
 					}
-					// Si no se puede calcular el rayo, simplemente se omite la cancelación en el Miner
 				}
 				ResetModelRotation();
 				m_isCustomAiming = false;
@@ -1068,24 +1088,37 @@ namespace Game
 				}
 				else if (FirearmDefensiveConfigs.ContainsKey(m_customWeaponContents))
 				{
-					// Rotación por defecto para armas de fuego (similar al mosquete)
-					model.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
+					// Armas de fuego: animación manual SIN Miner.Aim
+					if (IsSpecialNoRaiseCreature())
+					{
+						model.AimHandAngleOrder = 0f;
+						model.InHandItemOffsetOrder = new Vector3(-0.1f, -0.15f, 0.25f);
+						model.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
+					}
+					else
+					{
+						// Criaturas normales: levantan el brazo
+						var config = FirearmDefensiveConfigs[m_customWeaponContents];
+						if (config.IsSniper)
+						{
+							model.AimHandAngleOrder = 1.2f;
+							model.InHandItemOffsetOrder = new Vector3(-0.1f, -0.06f, 0.08f);
+							model.InHandItemRotationOrder = new Vector3(-1.5f, 0f, 0f);
+						}
+						else
+						{
+							model.AimHandAngleOrder = 1.4f;
+							model.InHandItemOffsetOrder = new Vector3(-0.08f, -0.08f, 0.07f);
+							model.InHandItemRotationOrder = new Vector3(-1.7f, 0f, 0f);
+						}
+					}
+					if (m_componentChase != null && m_componentChase.Target != null)
+						model.LookAtOrder = m_componentChase.Target.ComponentCreatureModel.EyePosition;
 				}
-				else
-				{
-					model.InHandItemRotationOrder = Vector3.Zero;
-				}
-
-				if (m_customWeaponContents == BowBlock.Index)
-					model.InHandItemOffsetOrder = new Vector3(0.15f, -0.15f, 0.15f);
-				else if (FirearmDefensiveConfigs.ContainsKey(m_customWeaponContents))
-					model.InHandItemOffsetOrder = new Vector3(-0.1f, -0.15f, 0.25f); // mismo offset que el mosquete
-				else
-					model.InHandItemOffsetOrder = new Vector3(-0.1f, -0.15f, 0.25f);
 			}
 
-			// Forzar que la criatura mire al objetivo
-			if (m_componentChase != null && m_componentChase.Target != null)
+				// Forzar que la criatura mire al objetivo
+				if (m_componentChase != null && m_componentChase.Target != null)
 			{
 				model.LookAtOrder = m_componentChase.Target.ComponentCreatureModel.EyePosition;
 				model.LookRandomOrder = false;
@@ -1758,6 +1791,47 @@ namespace Game
 				return false;
 
 			return true;
+		}
+
+		private void StartFlanking(Vector3 targetPos)
+		{
+			m_isFlanking = true;
+			m_flankTimer = 2.0f;
+
+			Vector3 toTarget = targetPos - m_componentCreature.ComponentBody.Position;
+			Vector3 right = Vector3.Normalize(Vector3.Cross(Vector3.UnitY, toTarget));
+			float randomSign = m_random.Float(-1f, 1f) > 0 ? 1f : -1f;
+			m_flankDirection = right * randomSign;
+
+			CancelAiming();
+			// Desactivar chase behavior para que no intervenga
+			if (m_componentChase != null)
+			{
+				m_componentChase.Suppressed = true;
+			}
+
+			Vector3 flankTarget = m_componentCreature.ComponentBody.Position + m_flankDirection * 5f;
+			m_componentPathfinding.SetDestination(flankTarget, 3f, 1f, 50, false, false, false, null);
+		}
+
+		private void StopFlanking()
+		{
+			m_isFlanking = false;
+			m_flankTimer = 0f;
+			m_flankDirection = Vector3.Zero;
+			m_componentPathfinding.Stop();
+
+			// Reactivar chase behavior
+			if (m_componentChase != null)
+			{
+				m_componentChase.Suppressed = false;
+				// Opcional: forzar reevaluación del objetivo si existe
+				if (m_componentChase.Target != null && m_componentChase.Target.ComponentHealth.Health > 0f)
+				{
+					m_componentChase.StopAttack();
+					m_componentChase.Attack(m_componentChase.Target, 100f, 10f, false);
+				}
+			}
 		}
 
 		public override void Save(ValuesDictionary valuesDictionary, EntityToIdMap entityToIdMap)
