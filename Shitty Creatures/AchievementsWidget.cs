@@ -40,6 +40,7 @@ namespace Game
 			AchievementsManager.OnBanditCounterChanged += OnBanditCounterChanged;
 			AchievementsManager.OnHealCounterChanged += OnHealCounterChanged;
 			AchievementsManager.OnPirateCounterChanged += OnPirateCounterChanged;
+			AchievementsManager.OnBoomerCounterChanged += OnBoomerCounterChanged;
 
 			XElement achievementsXml = ContentManager.Get<XElement>("AchievementsData");
 			if (achievementsXml == null)
@@ -192,6 +193,52 @@ namespace Game
 			if (m_achievementItems.TryGetValue(47, out var item47) && !AchievementsManager.IsAchievementUnlocked(player, 47))
 				UpdateCounterDescription(47, currentKills, 100, item47.BaseDescription, item47.DescriptionLabel);
 		}
+		private void OnBoomerCounterChanged(ComponentPlayer player, int currentKills, int targetKills)
+		{
+			if (player != m_componentPlayer) return;
+
+			if (m_achievementItems.TryGetValue(48, out var item48) && !AchievementsManager.IsAchievementUnlocked(player, 48))
+				UpdateCounterDescription(48, currentKills, 10, item48.BaseDescription, item48.DescriptionLabel);
+			if (m_achievementItems.TryGetValue(49, out var item49) && !AchievementsManager.IsAchievementUnlocked(player, 49))
+				UpdateCounterDescription(49, currentKills, 25, item49.BaseDescription, item49.DescriptionLabel);
+			if (m_achievementItems.TryGetValue(50, out var item50) && !AchievementsManager.IsAchievementUnlocked(player, 50))
+				UpdateCounterDescription(50, currentKills, 55, item50.BaseDescription, item50.DescriptionLabel);
+			if (m_achievementItems.TryGetValue(51, out var item51) && !AchievementsManager.IsAchievementUnlocked(player, 51))
+				UpdateCounterDescription(51, currentKills, 100, item51.BaseDescription, item51.DescriptionLabel);
+		}
+
+		private void OnMeleeInfectedCounterChanged(ComponentPlayer player, int currentKills, int targetKills)
+		{
+			if (player != m_componentPlayer) return;
+			if (m_achievementItems.TryGetValue(52, out var i52) && !AchievementsManager.IsAchievementUnlocked(player, 52)) UpdateCounterDescription(52, currentKills, 10, i52.BaseDescription, i52.DescriptionLabel);
+			if (m_achievementItems.TryGetValue(53, out var i53) && !AchievementsManager.IsAchievementUnlocked(player, 53)) UpdateCounterDescription(53, currentKills, 25, i53.BaseDescription, i53.DescriptionLabel);
+			if (m_achievementItems.TryGetValue(54, out var i54) && !AchievementsManager.IsAchievementUnlocked(player, 54)) UpdateCounterDescription(54, currentKills, 55, i54.BaseDescription, i54.DescriptionLabel);
+			if (m_achievementItems.TryGetValue(55, out var i55) && !AchievementsManager.IsAchievementUnlocked(player, 55)) UpdateCounterDescription(55, currentKills, 100, i55.BaseDescription, i55.DescriptionLabel);
+			if (m_achievementItems.TryGetValue(56, out var i56) && !AchievementsManager.IsAchievementUnlocked(player, 56)) UpdateCounterDescription(56, currentKills, 200, i56.BaseDescription, i56.DescriptionLabel);
+			if (m_achievementItems.TryGetValue(57, out var i57) && !AchievementsManager.IsAchievementUnlocked(player, 57)) UpdateCounterDescription(57, currentKills, 500, i57.BaseDescription, i57.DescriptionLabel);
+		}
+
+		private void OnMeleeGhostCounterChanged(ComponentPlayer player, int currentKills, int targetKills)
+		{
+			if (player != m_componentPlayer) return;
+			if (m_achievementItems.TryGetValue(58, out var i58) && !AchievementsManager.IsAchievementUnlocked(player, 58)) UpdateCounterDescription(58, currentKills, 10, i58.BaseDescription, i58.DescriptionLabel);
+			if (m_achievementItems.TryGetValue(59, out var i59) && !AchievementsManager.IsAchievementUnlocked(player, 59)) UpdateCounterDescription(59, currentKills, 25, i59.BaseDescription, i59.DescriptionLabel);
+			if (m_achievementItems.TryGetValue(60, out var i60) && !AchievementsManager.IsAchievementUnlocked(player, 60)) UpdateCounterDescription(60, currentKills, 55, i60.BaseDescription, i60.DescriptionLabel);
+			if (m_achievementItems.TryGetValue(61, out var i61) && !AchievementsManager.IsAchievementUnlocked(player, 61)) UpdateCounterDescription(61, currentKills, 100, i61.BaseDescription, i61.DescriptionLabel);
+			if (m_achievementItems.TryGetValue(62, out var i62) && !AchievementsManager.IsAchievementUnlocked(player, 62)) UpdateCounterDescription(62, currentKills, 200, i62.BaseDescription, i62.DescriptionLabel);
+			if (m_achievementItems.TryGetValue(63, out var i63) && !AchievementsManager.IsAchievementUnlocked(player, 63)) UpdateCounterDescription(63, currentKills, 500, i63.BaseDescription, i63.DescriptionLabel);
+		}
+
+		private void OnMeleeBanditCounterChanged(ComponentPlayer player, int currentKills, int targetKills)
+		{
+			if (player != m_componentPlayer) return;
+			if (m_achievementItems.TryGetValue(64, out var i64) && !AchievementsManager.IsAchievementUnlocked(player, 64)) UpdateCounterDescription(64, currentKills, 10, i64.BaseDescription, i64.DescriptionLabel);
+			if (m_achievementItems.TryGetValue(65, out var i65) && !AchievementsManager.IsAchievementUnlocked(player, 65)) UpdateCounterDescription(65, currentKills, 25, i65.BaseDescription, i65.DescriptionLabel);
+			if (m_achievementItems.TryGetValue(66, out var i66) && !AchievementsManager.IsAchievementUnlocked(player, 66)) UpdateCounterDescription(66, currentKills, 55, i66.BaseDescription, i66.DescriptionLabel);
+			if (m_achievementItems.TryGetValue(67, out var i67) && !AchievementsManager.IsAchievementUnlocked(player, 67)) UpdateCounterDescription(67, currentKills, 100, i67.BaseDescription, i67.DescriptionLabel);
+			if (m_achievementItems.TryGetValue(68, out var i68) && !AchievementsManager.IsAchievementUnlocked(player, 68)) UpdateCounterDescription(68, currentKills, 200, i68.BaseDescription, i68.DescriptionLabel);
+			if (m_achievementItems.TryGetValue(69, out var i69) && !AchievementsManager.IsAchievementUnlocked(player, 69)) UpdateCounterDescription(69, currentKills, 500, i69.BaseDescription, i69.DescriptionLabel);
+		}
 		private void CreateAchievementItem(string title, string baseDescription, int achievementNumber, int rewardAmount, bool unlocked, bool rewardClaimed)
 		{
 			var achievementContainer = new CanvasWidget
@@ -277,6 +324,32 @@ namespace Game
 					case 45: currentKills = AchievementsManager.GetFlyingKills(m_componentPlayer); target = 25; break;
 					case 46: currentKills = AchievementsManager.GetFlyingKills(m_componentPlayer); target = 50; break;
 					case 47: currentKills = AchievementsManager.GetFlyingKills(m_componentPlayer); target = 100; break;
+					// Boomers
+					case 48: currentKills = AchievementsManager.GetBoomerKills(m_componentPlayer); target = 10; break;
+					case 49: currentKills = AchievementsManager.GetBoomerKills(m_componentPlayer); target = 25; break;
+					case 50: currentKills = AchievementsManager.GetBoomerKills(m_componentPlayer); target = 55; break;
+					case 51: currentKills = AchievementsManager.GetBoomerKills(m_componentPlayer); target = 100; break;
+					// Melee Infectados
+					case 52: currentKills = AchievementsManager.GetMeleeInfectedKills(m_componentPlayer); target = 10; break;
+					case 53: currentKills = AchievementsManager.GetMeleeInfectedKills(m_componentPlayer); target = 25; break;
+					case 54: currentKills = AchievementsManager.GetMeleeInfectedKills(m_componentPlayer); target = 55; break;
+					case 55: currentKills = AchievementsManager.GetMeleeInfectedKills(m_componentPlayer); target = 100; break;
+					case 56: currentKills = AchievementsManager.GetMeleeInfectedKills(m_componentPlayer); target = 200; break;
+					case 57: currentKills = AchievementsManager.GetMeleeInfectedKills(m_componentPlayer); target = 500; break;
+					// Melee Fantasmas
+					case 58: currentKills = AchievementsManager.GetMeleeGhostKills(m_componentPlayer); target = 10; break;
+					case 59: currentKills = AchievementsManager.GetMeleeGhostKills(m_componentPlayer); target = 25; break;
+					case 60: currentKills = AchievementsManager.GetMeleeGhostKills(m_componentPlayer); target = 55; break;
+					case 61: currentKills = AchievementsManager.GetMeleeGhostKills(m_componentPlayer); target = 100; break;
+					case 62: currentKills = AchievementsManager.GetMeleeGhostKills(m_componentPlayer); target = 200; break;
+					case 63: currentKills = AchievementsManager.GetMeleeGhostKills(m_componentPlayer); target = 500; break;
+					// Melee Bandidos
+					case 64: currentKills = AchievementsManager.GetMeleeBanditKills(m_componentPlayer); target = 10; break;
+					case 65: currentKills = AchievementsManager.GetMeleeBanditKills(m_componentPlayer); target = 25; break;
+					case 66: currentKills = AchievementsManager.GetMeleeBanditKills(m_componentPlayer); target = 55; break;
+					case 67: currentKills = AchievementsManager.GetMeleeBanditKills(m_componentPlayer); target = 100; break;
+					case 68: currentKills = AchievementsManager.GetMeleeBanditKills(m_componentPlayer); target = 200; break;
+					case 69: currentKills = AchievementsManager.GetMeleeBanditKills(m_componentPlayer); target = 500; break;
 				}
 
 				if (target > 0)
@@ -389,7 +462,11 @@ namespace Game
 				AchievementsManager.OnBanditCounterChanged -= OnBanditCounterChanged;
 				AchievementsManager.OnHealCounterChanged -= OnHealCounterChanged;
 				AchievementsManager.OnPirateCounterChanged -= OnPirateCounterChanged;
-				AchievementsManager.OnFlyingCounterChanged += OnFlyingCounterChanged;
+				AchievementsManager.OnFlyingCounterChanged -= OnFlyingCounterChanged;
+				AchievementsManager.OnBoomerCounterChanged -= OnBoomerCounterChanged;
+				AchievementsManager.OnMeleeInfectedCounterChanged -= OnMeleeInfectedCounterChanged;
+				AchievementsManager.OnMeleeGhostCounterChanged -= OnMeleeGhostCounterChanged;
+				AchievementsManager.OnMeleeBanditCounterChanged -= OnMeleeBanditCounterChanged;
 				m_componentPlayer.ComponentGui.ModalPanelWidget = null;
 				return;
 			}
