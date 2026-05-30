@@ -1018,6 +1018,44 @@ namespace Game
 						m_componentPathfinding.SetDestination(targetCenter + followFactor * dist * m_target.ComponentBody.Velocity,
 															1f, 1.5f, maxPathfindingPositions, true, false, true, m_target.ComponentBody);
 
+						// Movimiento en agua tipo ladder - compensa WaterDrag que se aplica DESPUÉS
+						float immersion = m_componentCreature.ComponentBody.ImmersionFactor;
+						if (immersion > 0.15f)
+						{
+							Vector3 toTarget = m_target.ComponentBody.Position - m_componentCreature.ComponentBody.Position;
+							float verticalDiff = toTarget.Y;
+							float horizontalDist = new Vector2(toTarget.X, toTarget.Z).Length();
+
+							// Velocidad tipo escalera para subir en agua
+							float climbSpeed = 2.8f;
+
+							// Subir cuando el objetivo está arriba
+							if (verticalDiff > 0.2f)
+							{
+								float upForce = MathUtils.Saturate((verticalDiff - 0.2f) / 1.5f) * climbSpeed * m_dt;
+								// Multiplicar por factor que contrarresta el WaterDrag
+								upForce *= 1f + immersion * 2f;
+								m_componentCreature.ComponentBody.ApplyImpulse(new Vector3(0f, upForce, 0f));
+							}
+
+							// Subir a superficie si está muy sumergido sin necesidad clara de bajar
+							if (immersion > 0.6f && verticalDiff > -0.3f)
+							{
+								float surfaceForce = MathUtils.Saturate((immersion - 0.6f) / 0.4f) * climbSpeed * 0.7f * m_dt;
+								surfaceForce *= 1f + immersion * 2f;
+								m_componentCreature.ComponentBody.ApplyImpulse(new Vector3(0f, surfaceForce, 0f));
+							}
+
+							// Impulso horizontal para contrarrestar arrastre del agua
+							if (horizontalDist > 0.2f)
+							{
+								Vector2 horizDir = new Vector2(toTarget.X, toTarget.Z) / horizontalDist;
+								// Fuerza proporcional a inmersión, compensando WaterDrag
+								float horizForce = immersion * 12f * m_dt;
+								m_componentCreature.ComponentBody.ApplyImpulse(new Vector3(horizDir.X * horizForce, 0f, horizDir.Y * horizForce));
+							}
+						}
+
 						if (PlayAngrySoundWhenChasing && m_random.Float(0f, 1f) < 0.33f * m_dt)
 						{
 							m_componentCreature.ComponentCreatureSounds.PlayAttackSound();
