@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Engine;
 using GameEntitySystem;
@@ -46,6 +46,45 @@ namespace Game
 		List<HealingParticleSystem> m_allyHealParticles = new List<HealingParticleSystem>();
 		bool m_alliesHealApplied;
 
+		/// <summary>
+		/// Verifica si una criatura está realmente viva y puede ser curada
+		/// </summary>
+		private bool IsCreatureAliveAndHealable(ComponentCreature creature)
+		{
+			if (creature == null)
+				return false;
+
+			var health = creature.ComponentHealth;
+			if (health == null)
+				return false;
+
+			// Si la salud es 0 o menor, está muerta
+			if (health.Health <= 0f)
+				return false;
+
+			// Si tiene DeathTime establecido, ya murió (incluso si por algún bug Health > 0)
+			if (health.DeathTime.HasValue)
+				return false;
+
+			// Si el cuerpo no existe o fue destruido
+			if (creature.ComponentBody == null)
+				return false;
+
+			return true;
+		}
+
+		/// <summary>
+		/// Verifica si una criatura está herida Y puede ser curada (no muerta)
+		/// </summary>
+		private bool IsCreatureHurtAndHealable(ComponentCreature creature)
+		{
+			if (!IsCreatureAliveAndHealable(creature))
+				return false;
+
+			// Solo considerar herida si tiene menos del 20% de salud
+			return creature.ComponentHealth.Health < 0.2f;
+		}
+
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
 			m_subsystemTime = Project.FindSubsystem<SubsystemTime>(true);
@@ -72,12 +111,16 @@ namespace Game
 		{
 			m_stateMachine.AddState("Idle", null, () =>
 			{
+				// No intentar curar si el sanador está muerto
+				if (!IsCreatureAliveAndHealable(m_componentCreature))
+					return;
+
 				if (m_subsystemTime.GameTime >= m_nextUpdateTime)
 				{
 					m_dt = m_random.Float(0.25f, 0.35f);
 					m_nextUpdateTime = m_subsystemTime.GameTime + m_dt;
 
-					if (SelfHealing && m_componentHealth.Health > 0f && m_componentHealth.Health < 0.2f && m_random.Float(0f, 1f) < Probability)
+					if (SelfHealing && m_componentHealth.Health > 0f && m_componentHealth.Health < 0.2f && !m_componentHealth.DeathTime.HasValue && m_random.Float(0f, 1f) < Probability)
 					{
 						m_stateMachine.TransitionTo("SelfHealing");
 						return;
@@ -97,6 +140,13 @@ namespace Game
 
 			m_stateMachine.AddState("SelfHealing", () =>
 			{
+				// Doble verificación antes de iniciar
+				if (!IsCreatureAliveAndHealable(m_componentCreature))
+				{
+					m_stateMachine.TransitionTo("Idle");
+					return;
+				}
+
 				m_isSelfHealing = true;
 				m_selfHealStartTime = m_subsystemTime.GameTime;
 				m_selfHealParticles = new HealingParticleSystem();
@@ -111,12 +161,42 @@ namespace Game
 				m_subsystemAudio.PlaySound("Audio/Shapeshift", 1f, 0f, m_componentCreature.ComponentBody.Position, 3f, true);
 			}, () =>
 			{
+				// Si murió durante la curación, cancelar inmediatamente
+				if (!IsCreatureAliveAndHealable(m_componentCreature))
+				{
+					m_componentCreatureModel.AimHandAngleOrder = 0f;
+					if (m_selfHealParticles != null)
+						m_selfHealParticles.Stopped = true;
+					m_isSelfHealing = false;
+					if (m_componentHerd != null)
+					{
+						m_componentHerd.IsActive = true;
+					}
+					m_stateMachine.TransitionTo("Idle");
+					return;
+				}
+
 				double elapsed = m_subsystemTime.GameTime - m_selfHealStartTime;
 				m_selfHealParticles.BoundingBox = m_componentCreature.ComponentBody.BoundingBox;
 				m_componentCreatureModel.AimHandAngleOrder = 3.2f;
 
 				if (elapsed >= 1.5)
 				{
+					// Verificación FINAL antes de curar
+					if (!IsCreatureAliveAndHealable(m_componentCreature))
+					{
+						m_componentCreatureModel.AimHandAngleOrder = 0f;
+						if (m_selfHealParticles != null)
+							m_selfHealParticles.Stopped = true;
+						m_isSelfHealing = false;
+						if (m_componentHerd != null)
+						{
+							m_componentHerd.IsActive = true;
+						}
+						m_stateMachine.TransitionTo("Idle");
+						return;
+					}
+
 					if (CureDiseases)
 						CureCreatureDiseases(m_componentCreature, null);
 
@@ -139,6 +219,13 @@ namespace Game
 
 			m_stateMachine.AddState("HealingAllies", () =>
 			{
+				// El sanador debe estar vivo para curar aliados
+				if (!IsCreatureAliveAndHealable(m_componentCreature))
+				{
+					m_stateMachine.TransitionTo("Idle");
+					return;
+				}
+
 				if (m_componentChase != null) m_componentChase.Suppressed = true;
 
 				m_isHealingAllies = true;
@@ -160,9 +247,13 @@ namespace Game
 
 				m_allyHealParticles.Clear();
 				m_allyHealBodies.Clear();
+
 				foreach (var ally in m_healTargets)
 				{
-					if (ally == null) continue;
+					// NO agregar partículas para criaturas muertas
+					if (!IsCreatureAliveAndHealable(ally))
+						continue;
+
 					var allyParticles = new HealingParticleSystem();
 					m_allyHealParticles.Add(allyParticles);
 					m_subsystemParticles.AddParticleSystem(allyParticles, false);
@@ -170,10 +261,27 @@ namespace Game
 					m_allyHealBodies.Add(ally.ComponentBody);
 				}
 
+				// Si después de filtrar no quedan aliados vivos, cancelar
+				if (m_allyHealBodies.Count == 0)
+				{
+					CleanupHealingAllies();
+					m_stateMachine.TransitionTo("Idle");
+					return;
+				}
+
 				m_alliesHealApplied = false;
 			}, () =>
 			{
-				m_healTargets.RemoveAll(c => c == null || c.ComponentHealth.Health <= 0f);
+				// Si el sanador murió, cancelar todo
+				if (!IsCreatureAliveAndHealable(m_componentCreature))
+				{
+					CleanupHealingAllies();
+					m_stateMachine.TransitionTo("Idle");
+					return;
+				}
+
+				// Remover aliados que murieron durante la carga
+				m_healTargets.RemoveAll(c => !IsCreatureAliveAndHealable(c));
 
 				if (m_healTargets.Count == 0)
 				{
@@ -196,28 +304,37 @@ namespace Game
 				{
 					foreach (var ally in m_healTargets)
 					{
-						if (ally != null && ally.ComponentHealth.Health > 0f)
+						// VERIFICACIÓN FINAL: No curar bajo ninguna circunstancia si está muerto
+						if (!IsCreatureAliveAndHealable(ally))
+							continue;
+
+						// Verificación de seguridad adicional
+						if (ally.ComponentHealth.Health <= 0f || ally.ComponentHealth.DeathTime.HasValue)
+							continue;
+
+						// Curar enfermedades si está activado
+						bool diseaseCured = false;
+						if (CureDiseases)
+							diseaseCured = CureCreatureDiseases(ally, m_componentCreature);
+
+						// Verificar NUEVAMENTE después de curar enfermedades (por si algo lo mató)
+						if (!IsCreatureAliveAndHealable(ally))
+							continue;
+
+						// Restaurar salud solo si está vivo Y herido
+						if (ally.ComponentHealth.Health > 0f && ally.ComponentHealth.Health < 1f)
 						{
-							// Curar enfermedades si está activado
-							bool diseaseCured = false;
-							if (CureDiseases)
-								diseaseCured = CureCreatureDiseases(ally, m_componentCreature);
+							ally.ComponentHealth.Health = 1f;
 
-							// Restaurar salud
-							if (ally.ComponentHealth.Health < 1f)
+							// Mostrar mensaje genérico solo si NO se curó ninguna enfermedad
+							if (!diseaseCured && ally is ComponentPlayer player)
 							{
-								ally.ComponentHealth.Health = 1f;
-
-								// Mostrar mensaje genérico solo si NO se curó ninguna enfermedad
-								if (!diseaseCured && ally is ComponentPlayer player)
+								string healMsg = LanguageControl.Get("Healing", "0");
+								if (!string.IsNullOrEmpty(healMsg))
 								{
-									string healMsg = LanguageControl.Get("Healing", "0");
-									if (!string.IsNullOrEmpty(healMsg))
-									{
-										healMsg = string.Format(healMsg, m_componentCreature.DisplayName);
-										player.ComponentGui.DisplaySmallMessage(healMsg, new Color(50, 200, 50), false, false);
-										m_subsystemAudio.PlaySound("Audio/UI/success", 1f, 0f, 0f, 0f);
-									}
+									healMsg = string.Format(healMsg, m_componentCreature.DisplayName);
+									player.ComponentGui.DisplaySmallMessage(healMsg, new Color(50, 200, 50), false, false);
+									m_subsystemAudio.PlaySound("Audio/UI/success", 1f, 0f, 0f, 0f);
 								}
 							}
 						}
@@ -244,6 +361,7 @@ namespace Game
 				foreach (var ps in m_allyHealParticles)
 					if (ps != null) ps.Stopped = true;
 				m_allyHealParticles.Clear();
+				m_allyHealBodies.Clear();
 				m_healTargets.Clear();
 				m_isHealingAllies = false;
 				if (m_componentChase != null) m_componentChase.Suppressed = false;
@@ -256,6 +374,17 @@ namespace Game
 
 		public virtual void Update(float dt)
 		{
+			// No actualizar si la criatura está muerta
+			if (!IsCreatureAliveAndHealable(m_componentCreature))
+			{
+				// Forzar limpieza si está en medio de una acción
+				if (m_isSelfHealing || m_isHealingAllies)
+				{
+					m_stateMachine.TransitionTo("Idle");
+				}
+				return;
+			}
+
 			m_stateMachine.Update();
 		}
 
@@ -268,9 +397,15 @@ namespace Game
 			Vector3 pos = m_componentCreature.ComponentBody.Position;
 			float radiusSq = HealRadius * HealRadius;
 			SubsystemGameInfo gameInfo = Project.FindSubsystem<SubsystemGameInfo>(true);
+
 			foreach (ComponentCreature creature in Project.FindSubsystem<SubsystemCreatureSpawn>(true).Creatures)
 			{
-				if (creature == m_componentCreature || creature.ComponentHealth.Health <= 0f)
+				// No curarse a sí mismo (ya se maneja en SelfHealing)
+				if (creature == m_componentCreature)
+					continue;
+
+				// VERIFICACIÓN PRINCIPAL: No incluir criaturas muertas
+				if (!IsCreatureAliveAndHealable(creature))
 					continue;
 
 				if (Vector3.DistanceSquared(pos, creature.ComponentBody.Position) > radiusSq)
@@ -297,7 +432,7 @@ namespace Game
 					if (gameInfo.WorldSettings.GameMode == GameMode.Creative ||
 						!gameInfo.WorldSettings.AreAdventureSurvivalMechanicsEnabled)
 					{
-						isDiseased = false; // En creativo no puede tener enfermedades
+						isDiseased = false;
 					}
 				}
 
@@ -310,7 +445,12 @@ namespace Game
 
 		bool CureCreatureDiseases(ComponentCreature creature, ComponentCreature healer)
 		{
-			if (creature == null) return false;
+			if (creature == null)
+				return false;
+
+			// No curar enfermedades a criaturas muertas
+			if (!IsCreatureAliveAndHealable(creature))
+				return false;
 
 			// Si es jugador en creativo o sin mecánicas de supervivencia, no intentamos curar enfermedades
 			if (creature is ComponentPlayer)
