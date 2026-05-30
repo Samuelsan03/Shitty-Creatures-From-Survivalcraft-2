@@ -65,6 +65,10 @@ namespace Game
 		private double m_lastFirearmShotTime;
 		private bool m_hasCompletedInitialAim = false;
 
+		private float m_flankTimer;
+		private Vector3 m_flankDirection;
+		private bool m_isFlanking;
+
 		// ========== CONFIGURACIÓN INTERNA DE ARMAS DE FUEGO ==========
 		private class FirearmDefConfig
 		{
@@ -219,6 +223,49 @@ namespace Game
 			m_throwableIndices.Add(BlocksManager.GetBlockIndex<FireworksBlock>(false, false));
 		}
 
+		private void StartFlanking(Vector3 targetPos)
+		{
+			m_isFlanking = true;
+			m_flankTimer = 2.0f;
+
+			Vector3 toTarget = targetPos - m_componentCreature.ComponentBody.Position;
+			Vector3 right = Vector3.Normalize(Vector3.Cross(Vector3.UnitY, toTarget));
+			float randomSign = m_random.Float(-1f, 1f) > 0 ? 1f : -1f;
+			m_flankDirection = right * randomSign;
+
+			CancelAiming(m_componentMiner.Inventory);
+
+			// Desactivar el chase behavior para que no interfiera
+			if (m_chaseBehavior != null)
+			{
+				m_chaseBehavior.Suppressed = true;
+			}
+
+			Vector3 flankTarget = m_componentCreature.ComponentBody.Position + m_flankDirection * 5f;
+			m_componentPathfinding.SetDestination(flankTarget, 3f, 1f, 50, false, false, false, null);
+		}
+
+		private void StopFlanking()
+		{
+			m_isFlanking = false;
+			m_flankTimer = 0f;
+			m_flankDirection = Vector3.Zero;
+			m_componentPathfinding.Stop();
+
+			// Reactivar el chase behavior si todavía hay objetivo
+			if (m_chaseBehavior != null)
+			{
+				m_chaseBehavior.Suppressed = false;
+				// Opcional: forzar una reevaluación inmediata del objetivo
+				if (m_chaseBehavior.Target != null && m_chaseBehavior.Target.ComponentHealth.Health > 0f)
+				{
+					m_chaseBehavior.StopAttack();
+					m_chaseBehavior.Attack(m_chaseBehavior.Target, 100f, 10f, false);
+				}
+			}
+		}
+
+
 		void OnProjectileAdded(Projectile projectile)
 		{
 			if (projectile.Owner == m_componentCreature)
@@ -362,6 +409,61 @@ namespace Game
 				}
 
 				if (m_isAiming)
+{
+	int currentThrowableContents = Terrain.ExtractContents(inventory.GetSlotValue(inventory.ActiveSlotIndex));
+
+	if (IsThrowable(currentThrowableContents))
+	{
+		bool hasLineOfSight = targetVisible && IsTargetVisible(target);
+
+		if (!hasLineOfSight)
+		{
+			CancelAiming(inventory);
+
+			if (!m_isFlanking)
+			{
+				StartFlanking(target.ComponentBody.Position);
+			}
+			else
+			{
+				m_flankTimer -= dt;
+				if (m_flankTimer <= 0f)
+				{
+					StopFlanking();
+				}
+			}
+			return;
+		}
+		else
+		{
+							if (m_isFlanking)
+							{
+								// Actualizar el temporizador de flanqueo
+								m_flankTimer -= dt;
+								if (m_flankTimer <= 0f)
+								{
+									StopFlanking();
+								}
+								return;
+							}
+						}
+	}
+	m_aimTimer += dt;
+	Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
+	Vector3 aimDir = m_componentCreature.ComponentCreatureModel.EyeRotation.GetForwardVector();
+
+	if (m_aimTimer >= ThrowableAimTime)
+	{
+		m_componentMiner.Aim(new Ray3(eyePos, aimDir), AimState.Completed);
+		m_isAiming = false;
+		m_cooldownTimer = ThrowableCooldown;
+		m_isThrowing = false;
+	}
+	else
+	{
+		m_componentMiner.Aim(new Ray3(eyePos, aimDir), AimState.InProgress);
+	}
+}
 				{
 					m_aimTimer += dt;
 					Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
