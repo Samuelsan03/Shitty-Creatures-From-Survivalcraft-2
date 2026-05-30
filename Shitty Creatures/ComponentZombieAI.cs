@@ -57,6 +57,11 @@ namespace Game
 
 		private Random m_random = new Random();
 
+		// Flanqueo lateral para lanzables
+		private float m_flankTimer;
+		private Vector3 m_flankDirection;
+		private bool m_isFlanking;
+
 		private List<int> m_throwableIndices = new List<int>();
 
 		// ========== ARMAS DE FUEGO MODERNAS ==========
@@ -235,6 +240,17 @@ namespace Game
 
 		public virtual void Update(float dt)
 		{
+			// Si estamos flanqueando, actualizar temporizador y salir
+			if (m_isFlanking)
+			{
+				m_flankTimer -= dt;
+				if (m_flankTimer <= 0f)
+				{
+					StopFlanking();
+				}
+				return;
+			}
+
 			if (m_canEquipClothing && m_componentClothing != null)
 			{
 				if (m_isEquipping)
@@ -295,22 +311,44 @@ namespace Game
 			bool isMelee = !isRanged && !isThrowable && activeBlock.GetMeleePower(activeValue) > 0f;
 
 			float meleeDist = GetMeleeDistanceToTarget(target.ComponentBody);
-			bool hasLOS = HasLineOfSightToTarget(target);
+
+			// ========== SOLO LOS LANZABLES VERIFICAN LÍNEA DE VISIÓN ==========
+			bool hasLOS = true; // Por defecto, las armas no lanzables NO verifican visibilidad
 			bool isStuck = (m_pathfinding != null && m_pathfinding.IsStuck);
 
-			if ((!hasLOS || isStuck) && m_isAiming)
+			// No detener apuntado si estamos flanqueando
+			if (!m_isFlanking && (isThrowable && (!HasLineOfSightToTarget(target) || isStuck)) && m_isAiming)
+			{
+				StopAiming();
+			}
+			// Para armas no lanzables, solo detener apuntado si está atascado
+			else if (!isThrowable && isStuck && m_isAiming)
 			{
 				StopAiming();
 			}
 
-			// ========== MANEJO DE LANZABLES (rango específico) ==========
-			if (isThrowable && distToTarget >= ThrowableRange.X && distToTarget <= ThrowableRange.Y && hasLOS && !isStuck)
+			// ========== MANEJO DE LANZABLES (rango específico) - CON VISIBILIDAD ==========
+			bool throwableHasLOS = HasLineOfSightToTarget(target);
+			if (isThrowable && distToTarget >= ThrowableRange.X && distToTarget <= ThrowableRange.Y && throwableHasLOS && !isStuck)
 			{
 				StopMovement();
 				PerformThrowableAttack(dt, target.ComponentBody.Position);
 				return;
 			}
-			else if (!isThrowable && distToTarget >= ThrowableRange.X && distToTarget <= ThrowableRange.Y && HasThrowableInInventory() && hasLOS && !isStuck)
+			else if (isThrowable && (!throwableHasLOS || isStuck))
+			{
+				if (!m_isFlanking)
+				{
+					StartFlanking(target.ComponentBody.Position);
+				}
+				else
+				{
+					m_flankTimer -= dt;
+					if (m_flankTimer <= 0f) StopFlanking();
+				}
+				return;
+			}
+			else if (!isThrowable && distToTarget >= ThrowableRange.X && distToTarget <= ThrowableRange.Y && HasThrowableInInventory() && throwableHasLOS && !isStuck)
 			{
 				EquipBestThrowableWeapon();
 				StopAiming();
@@ -336,23 +374,24 @@ namespace Game
 				}
 			}
 
-			// ========== COMBATE A DISTANCIA ==========
-			// Si el arma actual es a distancia, tenemos línea de visión, no estamos atascados,
-			// y estamos dentro del rango máximo, entonces disparar.
-			if (isRanged && hasLOS && !isStuck && distToTarget <= AttackRange.Y)
+			// ========== COMBATE A DISTANCIA - SIN VERIFICACIÓN DE VISIBILIDAD (excepto lanzables ya manejados) ==========
+			// Si el arma actual es a distancia (no lanzable), no verificamos línea de visión
+			// Solo verificamos que no estemos atascados y que estemos dentro del rango
+			if (isRanged && !isThrowable && !isStuck && distToTarget <= AttackRange.Y)
 			{
 				UpdateRangedCombat(dt, target.ComponentBody.Position);
 				return;
 			}
+			// Si es arma de fuego o similar, también entra aquí (isRanged=true, isThrowable=false)
 
 			// ========== MANEJO DE LANZABLES FUERA DE SU RANGO ÓPTIMO ==========
 			if (isThrowable && distToTarget <= AttackRange.Y)
 			{
-				if (distToTarget > ThrowableRange.Y && hasLOS && !isStuck)
+				if (distToTarget > ThrowableRange.Y && throwableHasLOS && !isStuck)
 				{
 					EquipBestRangedWeapon();
 				}
-				else if (distToTarget < ThrowableRange.X && hasLOS && !isStuck)
+				else if (distToTarget < ThrowableRange.X && throwableHasLOS && !isStuck)
 				{
 					TryEquipBestMeleeWeapon();
 				}
@@ -431,14 +470,27 @@ namespace Game
 
 		private void UpdateRangedCombat(float dt, Vector3 targetPos)
 		{
-			if (!HasLineOfSightToTarget(m_chaseBehavior.m_target) || (m_pathfinding != null && m_pathfinding.IsStuck))
+			// ========== IMPORTANTE: Para armas NO lanzables, NO verificamos línea de visión ==========
+			// Solo verificamos que no estemos atascados
+			int activeValue = m_inventory.GetSlotValue(m_inventory.ActiveSlotIndex);
+			int activeContents = Terrain.ExtractContents(activeValue);
+			bool isThrowable = IsThrowableBlock(activeContents);
+
+			// Si es lanzable, verificamos visibilidad (pero esto ya debería manejarse en el bloque de lanzables)
+			if (isThrowable)
+			{
+				if (!HasLineOfSightToTarget(m_chaseBehavior.m_target) || (m_pathfinding != null && m_pathfinding.IsStuck))
+				{
+					StopAiming();
+					return;
+				}
+			}
+			else if (m_pathfinding != null && m_pathfinding.IsStuck)
 			{
 				StopAiming();
 				return;
 			}
 
-			int activeValue = m_inventory.GetSlotValue(m_inventory.ActiveSlotIndex);
-			int activeContents = Terrain.ExtractContents(activeValue);
 			Block activeBlock = BlocksManager.Blocks[activeContents];
 
 			// Detectar si es un arma de fuego moderna
@@ -773,7 +825,8 @@ namespace Game
 
 		private void PerformThrowableAttack(float dt, Vector3 targetPos)
 		{
-			if (!HasLineOfSightToTarget(m_chaseBehavior.m_target) || (m_pathfinding != null && m_pathfinding.IsStuck))
+			// Los lanzables ya verificaron visibilidad antes de entrar aquí
+			if (m_pathfinding != null && m_pathfinding.IsStuck)
 			{
 				StopAiming();
 				return;
@@ -1288,6 +1341,50 @@ namespace Game
 						m_equipTimer = 0f;
 						return;
 					}
+				}
+			}
+		}
+
+		private void StartFlanking(Vector3 targetPos)
+		{
+			m_isFlanking = true;
+			m_flankTimer = 2.0f;
+
+			Vector3 toTarget = targetPos - m_componentBody.Position;
+			Vector3 right = Vector3.Normalize(Vector3.Cross(Vector3.UnitY, toTarget));
+			float randomSign = m_random.Float(-1f, 1f) > 0 ? 1f : -1f;
+			m_flankDirection = right * randomSign;
+
+			StopAiming();
+
+			// Desactivar chase behavior
+			if (m_chaseBehavior != null)
+			{
+				m_chaseBehavior.Suppressed = true;
+			}
+
+			Vector3 flankTarget = m_componentBody.Position + m_flankDirection * 5f;
+			if (m_pathfinding != null)
+			{
+				m_pathfinding.SetDestination(flankTarget, 3f, 1f, 50, false, false, false, null);
+			}
+		}
+
+		private void StopFlanking()
+		{
+			m_isFlanking = false;
+			m_flankTimer = 0f;
+			m_flankDirection = Vector3.Zero;
+			if (m_pathfinding != null) m_pathfinding.Stop();
+
+			// Reactivar chase behavior
+			if (m_chaseBehavior != null)
+			{
+				m_chaseBehavior.Suppressed = false;
+				if (m_chaseBehavior.m_target != null && m_chaseBehavior.m_target.ComponentHealth.Health > 0f)
+				{
+					m_chaseBehavior.StopAttack();
+					m_chaseBehavior.Attack(m_chaseBehavior.m_target, 100f, 10f, false);
 				}
 			}
 		}
