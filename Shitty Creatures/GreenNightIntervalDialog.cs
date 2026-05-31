@@ -218,7 +218,8 @@ namespace Game
 				m_greenNightSky.GreenNightIntervalDays = m_selectedDays;
 				if (m_showMessageOnAccept)
 				{
-					string message = string.Format(GetText(11), m_selectedDays);
+					string difficultyName = GetDifficultyName(m_currentDifficulty);
+					string message = string.Format(GetText(11), difficultyName, m_selectedDays);
 					m_player.ComponentGui.DisplaySmallMessage(message, Color.White, false, true);
 				}
 			}
