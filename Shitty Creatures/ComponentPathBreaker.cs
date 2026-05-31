@@ -469,22 +469,27 @@ namespace Game
 		// ===== MÉTODO CLAVE: VERIFICA SI UN BLOQUE PUEDE SER ROTO =====
 		private bool IsBlockBreakable(int value)
 		{
+			// EN DIFICULTADES BAJAS NO ROMPER NUNCA
+			if (m_subsystemGreenNightSky != null)
+			{
+				DifficultyMode mode = m_subsystemGreenNightSky.DifficultyMode;
+				if (mode == DifficultyMode.Easy || mode == DifficultyMode.Normal)
+				{
+					return false;
+				}
+			}
+
 			int num = Terrain.ExtractContents(value);
 			if (num == 0)
 				return false;
 
 			Block block = BlocksManager.Blocks[num];
 
-			// --- NUEVA COMPROBACIÓN: bloques indestructibles (como bedrock) ---
-			// GetExplosionResilience devuelve float.MaxValue para bloques que no pueden ser destruidos por explosiones.
-			// Usamos el mismo criterio para el pathbreaker.
 			if (block.GetExplosionResilience(value) >= float.MaxValue)
 				return false;
 
-			// Verificar si está en la lista específica (si se definió)
 			bool specificOk = this.m_specificBlockIds.Count == 0 || this.m_specificBlockIds.Contains(num);
 
-			// Condiciones originales: colisionable, resiliencia de excavación >= 0 (no negativo) y cumple specificOk
 			return block.IsCollidable_(value) && block.DigResilience >= 0f && specificOk;
 		}
 
