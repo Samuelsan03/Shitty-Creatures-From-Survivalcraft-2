@@ -12,7 +12,7 @@ namespace Game
 		private bool m_isClosing;
 		private bool m_isFirstTime;
 		private bool m_showMessageOnAccept;
-		private Action<int> m_onAccept;
+		private Action<int, DifficultyMode> m_onAccept;  // Cambiado para incluir dificultad
 
 		private BevelledButtonWidget m_daysButton;
 		private BevelledButtonWidget m_okButton;
@@ -61,7 +61,7 @@ namespace Game
 		public GreenNightIntervalDialog(SubsystemGreenNightSky greenNightSky, ComponentPlayer player, bool isFirstTime = false, bool showMessageOnAccept = true)
 			: this(greenNightSky, player, null, isFirstTime, showMessageOnAccept) { }
 
-		public GreenNightIntervalDialog(SubsystemGreenNightSky greenNightSky, ComponentPlayer player, Action<int> onAccept, bool isFirstTime = false, bool showMessageOnAccept = true)
+		public GreenNightIntervalDialog(SubsystemGreenNightSky greenNightSky, ComponentPlayer player, Action<int, DifficultyMode> onAccept, bool isFirstTime = false, bool showMessageOnAccept = true)
 		{
 			m_greenNightSky = greenNightSky;
 			m_player = player;
@@ -155,7 +155,6 @@ namespace Game
 
 		private void CycleDifficulty()
 		{
-			// SOLO cambiar la dificultad temporal y la visual, NO la del subsistema
 			m_tempDifficulty = GetNextDifficulty(m_tempDifficulty);
 			m_currentDisplayDifficulty = m_tempDifficulty;
 			UpdateDifficultyUI();
@@ -210,28 +209,31 @@ namespace Game
 			if (m_isClosing) return;
 			m_isClosing = true;
 
-			// Aplicar los cambios SOLO al aceptar
-			m_greenNightSky.DifficultyMode = m_tempDifficulty;
-			ShittyCreaturesModLoader.NotifyDifficultyChanged(m_greenNightSky);
-
 			if (m_onAccept != null)
-				m_onAccept(m_selectedDays);
+			{
+				// En lugar de aplicar cambios directamente, pasamos los valores al callback
+				m_onAccept(m_selectedDays, m_tempDifficulty);
+			}
 			else
 			{
+				// Comportamiento original (cuando se usa directamente, sin toggle)
 				m_greenNightSky.GreenNightIntervalDays = m_selectedDays;
+				m_greenNightSky.DifficultyMode = m_tempDifficulty;
+				ShittyCreaturesModLoader.NotifyDifficultyChanged(m_greenNightSky);
+
 				if (m_showMessageOnAccept)
 				{
 					string difficultyName = GetDifficultyName(m_tempDifficulty);
 					string message = string.Format(GetText(11), difficultyName, m_selectedDays);
 					m_player.ComponentGui.DisplaySmallMessage(message, Color.White, false, true);
 				}
-			}
 
-			// Forzar actualización del label de dificultad en el HUD
-			var zombiesSpawn = m_greenNightSky.Project.FindSubsystem<SubsystemZombiesSpawn>(true);
-			if (zombiesSpawn != null)
-			{
-				zombiesSpawn.ForceUpdateDifficultyLabel();
+				// Forzar actualización del label de dificultad en el HUD
+				var zombiesSpawn = m_greenNightSky.Project.FindSubsystem<SubsystemZombiesSpawn>(true);
+				if (zombiesSpawn != null)
+				{
+					zombiesSpawn.ForceUpdateDifficultyLabel();
+				}
 			}
 
 			DialogsManager.HideDialog(this);
