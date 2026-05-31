@@ -44,4 +44,12 @@
   <Achievement Number="41" TitleKey="86" DescriptionKey="87" Reward="50" />
   <Achievement Number="42" TitleKey="88" DescriptionKey="89" Reward="75" />
   <Achievement Number="43" TitleKey="90" DescriptionKey="91" Reward="150" />
+  <Achievement Number="44" TitleKey="92" DescriptionKey="93" Reward="15" />
+  <Achievement Number="45" TitleKey="94" DescriptionKey="95" Reward="30" />
+  <Achievement Number="46" TitleKey="96" DescriptionKey="97" Reward="60" />
+  <Achievement Number="47" TitleKey="98" DescriptionKey="99" Reward="100" />
+  <Achievement Number="48" TitleKey="100" DescriptionKey="101" Reward="15" />
+  <Achievement Number="49" TitleKey="102" DescriptionKey="103" Reward="30" />
+  <Achievement Number="50" TitleKey="104" DescriptionKey="105" Reward="60" />
+  <Achievement Number="51" TitleKey="106" DescriptionKey="107" Reward="100" />
 </AchievementsData>
