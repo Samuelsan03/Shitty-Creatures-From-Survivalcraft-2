@@ -78,13 +78,6 @@ namespace Game
 			{
 				banditInvasion.InvasionCompleted -= OnInvasionCompleted;
 				banditInvasion.InvasionCompleted += OnInvasionCompleted;
-
-				var greenNight = project.FindSubsystem<SubsystemGreenNightSky>(true);
-				if (greenNight != null)
-				{
-					greenNight.NaturalNightEnded -= OnNaturalNightEnded;
-					greenNight.NaturalNightEnded += OnNaturalNightEnded;
-				}
 			}
 		}
 
@@ -101,13 +94,6 @@ namespace Game
 			s_subsystemTime = null;
 			s_subsystemGameInfo = null;
 			s_subsystemTimeOfDay = null;
-
-			if (s_currentProject != null)
-			{
-				var greenNight = s_currentProject.FindSubsystem<SubsystemGreenNightSky>(true);
-				if (greenNight != null)
-					greenNight.NaturalNightEnded -= OnNaturalNightEnded;
-			}
 		}
 
 		public static void UpdateDayAchievements()
@@ -156,16 +142,12 @@ namespace Game
 		private static void OnNaturalNightEnded()
 		{
 			if (s_subsystemAchievements == null) return;
-
 			var greenNight = s_currentProject?.FindSubsystem<SubsystemGreenNightSky>(true);
 			if (greenNight == null) return;
 			if (greenNight.DifficultyMode != DifficultyMode.Extreme) return;
-
 			if (s_subsystemAchievements.IsAchievementUnlocked(52)) return;
-
 			var players = s_currentProject?.FindSubsystem<SubsystemPlayers>(true);
 			if (players == null) return;
-
 			string title = LanguageControl.Get(AchievementsWidget.fName, 108);
 			foreach (var player in players.ComponentPlayers)
 			{
