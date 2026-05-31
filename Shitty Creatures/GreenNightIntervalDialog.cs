@@ -161,6 +161,9 @@ namespace Game
 			m_greenNightSky.DifficultyMode = m_currentDifficulty;
 			UpdateDifficultyUI();
 			AudioManager.PlaySound("Audio/UI/ButtonClick", 1f, 0f, 0f);
+
+			// Notificar a todas las criaturas del cambio de dificultad
+			ShittyCreaturesModLoader.NotifyDifficultyChanged(m_greenNightSky);
 		}
 
 		private void UpdateDifficultyDescription()
@@ -179,6 +182,21 @@ namespace Game
 		{
 			m_descriptionLabel.Text = GetDescription(days);
 			m_descriptionLabel.Color = new Color(255, 165, 0);
+		}
+
+		public static void NotifyDifficultyChanged(SubsystemGreenNightSky greenNightSky)
+		{
+			if (greenNightSky == null) return;
+
+			// Buscar el mod loader por tipo
+			foreach (var modLoader in ModsManager.ModLoaders)
+			{
+				if (modLoader is ShittyCreaturesModLoader shittyLoader)
+				{
+					shittyLoader.EnforceBlockBreakingByDifficulty(greenNightSky.Project);
+					break;
+				}
+			}
 		}
 
 		public override void Update()
@@ -232,10 +250,9 @@ namespace Game
 			if (m_isClosing) return;
 			m_isClosing = true;
 
-			// Siempre mostrar mensaje 11 con la configuración actual
+			// SE CONSERVA EL MOSTRAR MENSAJES: al cancelar aquí se guardan los días temporales en el ToggleDialog
 			if (m_showMessageOnAccept)
 			{
-				// Obtener la dificultad ACTUAL del subsistema (no la temporal del diálogo)
 				string difficultyName = GetDifficultyName(m_greenNightSky.DifficultyMode);
 				int currentDays = m_greenNightSky.GreenNightIntervalDays;
 				string message = string.Format(GetText(11), difficultyName, currentDays);
