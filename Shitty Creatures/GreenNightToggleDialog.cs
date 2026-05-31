@@ -21,7 +21,7 @@ namespace Game
 		private int m_originalIntervalDays;
 		private int m_tempIntervalDays;
 		private DifficultyMode m_originalDifficulty;
-		private DifficultyMode m_tempDifficulty;  // Nueva variable temporal
+		private DifficultyMode m_tempDifficulty;
 
 		public GreenNightToggleDialog(SubsystemGreenNightSky greenNightSky, ComponentPlayer player)
 		{
@@ -30,7 +30,7 @@ namespace Game
 			m_originalIntervalDays = m_subsystemGreenNightSky.GreenNightIntervalDays;
 			m_tempIntervalDays = m_originalIntervalDays;
 			m_originalDifficulty = m_subsystemGreenNightSky.DifficultyMode;
-			m_tempDifficulty = m_originalDifficulty;  // Inicializar
+			m_tempDifficulty = m_originalDifficulty;
 
 			XElement node = ContentManager.Get<XElement>("Dialogs/GreenNightToggleDialog");
 			LoadContents(this, node);
@@ -115,14 +115,29 @@ namespace Game
 				ShittyCreaturesModLoader.NotifyDifficultyChanged(m_subsystemGreenNightSky);
 			}
 
-			if ((enabledChanged || intervalChanged || difficultyChanged) && m_player != null && m_player.ComponentGui != null)
+			// Mostrar mensaje apropiado
+			if (m_player != null && m_player.ComponentGui != null)
 			{
-				string difficultyName = GetDifficultyName(m_tempDifficulty);
-				string message = string.Format(
-					LanguageControl.GetContentWidgets("GreenNightIntervalDialog", "11"),
-					difficultyName,
-					m_tempIntervalDays);
-				m_player.ComponentGui.DisplaySmallMessage(message, Color.White, false, true);
+				bool onlyEnabledChanged = enabledChanged && !intervalChanged && !difficultyChanged;
+
+				if (onlyEnabledChanged)
+				{
+					// Solo se activó/desactivó la noche verde
+					string key = newValue ? "EnabledNotification" : "DisabledNotification";
+					string message = LanguageControl.GetContentWidgets("GreenNightToggleDialog", key);
+					Color color = newValue ? Color.DarkGreen : Color.LightGreen;
+					m_player.ComponentGui.DisplaySmallMessage(message, color, false, true);
+				}
+				else if (enabledChanged || intervalChanged || difficultyChanged)
+				{
+					// Hubo cambios en días o dificultad (con o sin cambio del checkbox)
+					string difficultyName = GetDifficultyName(m_tempDifficulty);
+					string message = string.Format(
+						LanguageControl.GetContentWidgets("GreenNightIntervalDialog", "11"),
+						difficultyName,
+						m_tempIntervalDays);
+					m_player.ComponentGui.DisplaySmallMessage(message, Color.White, false, true);
+				}
 			}
 
 			// Forzar actualización del label de dificultad en el HUD
