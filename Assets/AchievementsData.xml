@@ -52,4 +52,5 @@
   <Achievement Number="49" TitleKey="102" DescriptionKey="103" Reward="30" />
   <Achievement Number="50" TitleKey="104" DescriptionKey="105" Reward="60" />
   <Achievement Number="51" TitleKey="106" DescriptionKey="107" Reward="100" />
+  <Achievement Number="52" TitleKey="108" DescriptionKey="109" Reward="250" />
 </AchievementsData>
