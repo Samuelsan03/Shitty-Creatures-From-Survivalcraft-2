@@ -2103,20 +2103,22 @@ namespace Game
 			var creatureSpawn = project.FindSubsystem<SubsystemCreatureSpawn>(true);
 			if (creatureSpawn == null) return;
 
-			// Recorrer todas las criaturas y forzar actualización
+			var modLoader = ModsManager.ModLoaders.OfType<ShittyCreaturesModLoader>().FirstOrDefault();
+			if (modLoader == null) return;
+
 			foreach (ComponentCreature creature in creatureSpawn.Creatures)
 			{
 				if (creature == null) continue;
 
-				// Para PathBreaker
+				// SOLO aplicar a las criaturas de la lista
+				if (!modLoader.IsDifficultyAffectedCreature(creature)) continue;
+
 				var pathBreaker = creature.Entity.FindComponent<ComponentPathBreaker>();
 				pathBreaker?.ApplyDifficultyToPathBreaker();
-
-				// Para ChaseBehavior y HerdBehavior, ya se actualizan solos en su Update()
-				// Para Combat Stats (salud/daño/velocidad) – llamamos al método privado desde la instancia
-				var modLoader = ModsManager.ModLoaders.OfType<ShittyCreaturesModLoader>().FirstOrDefault();
-				modLoader?.EnforceCombatStatsByDifficulty(project);
 			}
+
+			// Reaplicar stats de combate (ya filtrado internamente)
+			modLoader.EnforceCombatStatsByDifficulty(project);
 		}
 
 		// Método para forzar la configuración de ruptura de bloques según dificultad en TODAS las criaturas
@@ -2142,20 +2144,18 @@ namespace Game
 			foreach (ComponentCreature creature in creatureSpawn.Creatures)
 			{
 				if (creature == null) continue;
+
+				// SOLO aplicar a las criaturas de la lista
+				if (!IsDifficultyAffectedCreature(creature)) continue;
+
 				var pathBreaker = creature.Entity.FindComponent<ComponentPathBreaker>();
 				if (pathBreaker != null)
 				{
-					// Forzar los valores independientemente de la plantilla
 					pathBreaker.CanBreakBlocks = shouldBreak;
 					if (shouldBreak)
 					{
-						// Mantener la probabilidad base pero escalada (asumiendo que ya tiene un valor por defecto)
-						// Si quieres escalar sobre el valor original, necesitas almacenar el original en otro lado.
-						// Por simplicidad, asumimos que el valor actual es el base (para Normal) y lo escalamos.
-						// Como no tenemos acceso a m_baseBreakProbability desde aquí, usamos un enfoque alternativo:
-						// Si el valor actual es 0, establecemos uno por defecto.
 						if (pathBreaker.BreakProbability <= 0f)
-							pathBreaker.BreakProbability = 0.5f; // valor por defecto razonable
+							pathBreaker.BreakProbability = 0.5f;
 						pathBreaker.BreakProbability = pathBreaker.BreakProbability * probabilityMultiplier;
 					}
 					else
@@ -2166,7 +2166,7 @@ namespace Game
 			}
 		}
 
-		// Ajusta salud (resistencia) y daño de todas las criaturas según dificultad
+		// Ajusta salud (resistencia), daño y velocidad según dificultad y tipo de criatura
 		private void EnforceCombatStatsByDifficulty(Project project)
 		{
 			var greenNight = project.FindSubsystem<SubsystemGreenNightSky>(true);
@@ -2174,39 +2174,47 @@ namespace Game
 
 			DifficultyMode mode = greenNight.DifficultyMode;
 
-			// Factor de resistencia al daño (AttackResilienceFactor) – más alto = más resistente
-			float resilienceFactor = 1f;
-			// Multiplicador de daño de ataque (AttackPower) para criaturas no jugador
-			float damageMult = 1f;
-			// Multiplicador de velocidad de movimiento (WalkSpeed) para criaturas no jugador
-			float speedMult = 1f;
+			// Factores BASE genéricos
+			float baseResilienceFactor = 1f;
+			float baseDamageMult = 1f;
+			float baseSpeedMult = 1f;
+
+			// Factores para JEFES (más resistencia, más daño, menos velocidad)
+			float bossResilienceFactor = 1f;
+			float bossDamageMult = 1f;
+			float bossSpeedMult = 1f;
+
+			// Factores para VOLADORES (menos resistencia, menos daño, más velocidad)
+			float flyingResilienceFactor = 1f;
+			float flyingDamageMult = 1f;
+			float flyingSpeedMult = 1f;
 
 			switch (mode)
 			{
 				case DifficultyMode.Easy:
-					resilienceFactor = 0.7f;   // menos resistentes (mueren más fácil)
-					damageMult = 0.5f;         // hacen menos daño
-					speedMult = 0.9f;          // un poco más lentos
+					baseResilienceFactor = 0.7f; baseDamageMult = 0.5f; baseSpeedMult = 0.9f;
+					bossResilienceFactor = 0.8f; bossDamageMult = 0.6f; bossSpeedMult = 0.95f;
+					flyingResilienceFactor = 0.5f; flyingDamageMult = 0.4f; flyingSpeedMult = 1.0f;
 					break;
 				case DifficultyMode.Normal:
-					resilienceFactor = 1.0f;
-					damageMult = 1.0f;
-					speedMult = 1.0f;
+					baseResilienceFactor = 1.0f; baseDamageMult = 1.0f; baseSpeedMult = 1.0f;
+					bossResilienceFactor = 1.0f; bossDamageMult = 1.0f; bossSpeedMult = 1.0f;
+					flyingResilienceFactor = 1.0f; flyingDamageMult = 1.0f; flyingSpeedMult = 1.0f;
 					break;
 				case DifficultyMode.Medium:
-					resilienceFactor = 1.2f;
-					damageMult = 1.2f;
-					speedMult = 1.1f;
+					baseResilienceFactor = 1.2f; baseDamageMult = 1.2f; baseSpeedMult = 1.1f;
+					bossResilienceFactor = 1.5f; bossDamageMult = 1.4f; bossSpeedMult = 1.05f;
+					flyingResilienceFactor = 1.0f; flyingDamageMult = 1.1f; flyingSpeedMult = 1.2f;
 					break;
 				case DifficultyMode.Hard:
-					resilienceFactor = 1.5f;
-					damageMult = 1.5f;
-					speedMult = 1.2f;
+					baseResilienceFactor = 1.5f; baseDamageMult = 1.5f; baseSpeedMult = 1.2f;
+					bossResilienceFactor = 2.0f; bossDamageMult = 1.8f; bossSpeedMult = 1.1f;
+					flyingResilienceFactor = 1.2f; flyingDamageMult = 1.3f; flyingSpeedMult = 1.4f;
 					break;
 				case DifficultyMode.Extreme:
-					resilienceFactor = 2.0f;
-					damageMult = 2.0f;
-					speedMult = 1.4f;
+					baseResilienceFactor = 2.0f; baseDamageMult = 2.0f; baseSpeedMult = 1.4f;
+					bossResilienceFactor = 3.0f; bossDamageMult = 2.5f; bossSpeedMult = 1.2f;
+					flyingResilienceFactor = 1.5f; flyingDamageMult = 1.6f; flyingSpeedMult = 1.6f;
 					break;
 			}
 
@@ -2217,25 +2225,48 @@ namespace Game
 			{
 				if (creature == null) continue;
 
-				// Ajustar resistencia al daño (solo para criaturas, no para jugadores)
+				string templateName = creature.Entity.ValuesDictionary?.DatabaseObject?.Name;
+				if (string.IsNullOrEmpty(templateName)) continue;
+
+				// Determinar qué factores usar
+				float resilienceFactor = baseResilienceFactor;
+				float damageMult = baseDamageMult;
+				float speedMult = baseSpeedMult;
+
+				if (m_bossTemplates.Contains(templateName))
+				{
+					resilienceFactor = bossResilienceFactor;
+					damageMult = bossDamageMult;
+					speedMult = bossSpeedMult;
+				}
+				else if (m_flyingTemplates.Contains(templateName))
+				{
+					resilienceFactor = flyingResilienceFactor;
+					damageMult = flyingDamageMult;
+					speedMult = flyingSpeedMult;
+				}
+				else if (!m_difficultyAffectedCreatures.Contains(templateName))
+				{
+					continue; // No afectado
+				}
+
+				// Aplicar resistencia (vida efectiva)
 				var health = creature.ComponentHealth;
 				if (health != null && creature.Entity.FindComponent<ComponentPlayer>() == null)
 				{
-					// AttackResilienceFactor es público y existe en ComponentHealth
 					health.AttackResilienceFactor = resilienceFactor;
 				}
 
-				// Ajustar daño de ataque (solo para criaturas, no jugadores)
+				// Aplicar daño de ataque
 				var miner = creature.Entity.FindComponent<ComponentMiner>();
 				if (miner != null && creature.Entity.FindComponent<ComponentPlayer>() == null)
 				{
-					// Guardar el valor base original la primera vez que se ajusta
 					if (!m_originalAttackPower.ContainsKey(creature))
 						m_originalAttackPower[creature] = miner.AttackPower;
 					miner.AttackPower = m_originalAttackPower[creature] * damageMult;
 				}
 
-				// Ajustar velocidad de movimiento (solo para criaturas, no jugadores)
+				// Aplicar velocidad
 				var locomotion = creature.Entity.FindComponent<ComponentLocomotion>();
 				if (locomotion != null && creature.Entity.FindComponent<ComponentPlayer>() == null)
 				{
@@ -2244,6 +2275,69 @@ namespace Game
 					locomotion.WalkSpeed = m_originalWalkSpeed[creature] * speedMult;
 				}
 			}
+		}
+
+		// Lista de nombres de plantillas que se ven afectadas por los cambios de dificultad (genérico)
+		private static readonly HashSet<string> m_difficultyAffectedCreatures = new HashSet<string>
+{
+	"InfectedNormal1",
+	"InfectedNormal2",
+	"InfectedMuscle1",
+	"InfectedMuscle2",
+	"GhostNormal",
+	"GhostFast",
+	"Boomer1",
+	"Boomer2",
+	"Boomer3",
+	"GhostBoomer1",
+	"GhostBoomer2",
+	"GhostBoomer3",
+	"InfectedFast1",
+	"InfectedFast2",
+	"PoisonousInfected1",
+	"PoisonousInfected2",
+	"PoisonousGhost",
+	"InfectedBear",
+	"InfectedWildboar",
+	"PredatoryChameleon",
+	"InfectedFreezer",
+	"HumanoidSkeleton"
+};
+
+		// ===== NUEVOS CONJUNTOS SEPARADOS =====
+		private static readonly HashSet<string> m_bossTemplates = new HashSet<string>
+{
+	"Tank1",
+	"Tank2",
+	"Tank3",
+	"TankGhost1",
+	"TankGhost2",
+	"TankGhost3",
+	"MachineGunInfected",
+	"FlyingInfectedBoss",
+	"FrozenTank",
+	"FrozenTankGhost"
+};
+
+		private static readonly HashSet<string> m_flyingTemplates = new HashSet<string>
+{
+	"InfectedFly1",
+	"InfectedFly2",
+	"InfectedFly3",
+	"InfectedBird",
+	"FlyingInfectedBoss"  // También es jefe, prioridad jefe
+};
+
+		private bool IsDifficultyAffectedCreature(ComponentCreature creature)
+		{
+			if (creature == null || creature.Entity == null) return false;
+			string templateName = creature.Entity.ValuesDictionary?.DatabaseObject?.Name;
+			if (string.IsNullOrEmpty(templateName)) return false;
+
+			// Verificar si está en alguna de las listas
+			return m_difficultyAffectedCreatures.Contains(templateName) ||
+				   m_bossTemplates.Contains(templateName) ||
+				   m_flyingTemplates.Contains(templateName);
 		}
 
 		// ---------------------------------------------------------------------------------
