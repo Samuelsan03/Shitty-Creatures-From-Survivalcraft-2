@@ -98,6 +98,7 @@ namespace Game
 
 		// Label estático para la cuenta regresiva
 		private LabelWidget m_countdownLabel;
+		private LabelWidget m_difficultyLabel;   // <-- NUEVO
 		private bool m_labelInitialized = false;
 
 		// Listas estáticas de templates
@@ -208,24 +209,52 @@ namespace Game
 		{
 			if (m_countdownLabel != null) return;
 
+			// Crear un panel vertical para apilar las dos etiquetas
+			var stackPanel = new StackPanelWidget
+			{
+				Direction = LayoutDirection.Vertical,
+				IsInverted = false,
+				HorizontalAlignment = WidgetAlignment.Far,
+				VerticalAlignment = WidgetAlignment.Center,
+				Margin = new Vector2(5f, 0f),
+				IsHitTestVisible = false
+			};
+
+			// Etiqueta del contador (arriba)
 			m_countdownLabel = new LabelWidget
 			{
 				DropShadow = true,
 				FontScale = 0.8f,
-				Margin = new Vector2(5f, 0f),
-				IsHitTestVisible = false,
-				TextAnchor = TextAnchor.HorizontalCenter,
-				HorizontalAlignment = WidgetAlignment.Far,
-				VerticalAlignment = WidgetAlignment.Center,
-				Color = new Color(255, 255, 0)
+				Color = new Color(255, 255, 0),
+				HorizontalAlignment = WidgetAlignment.Center,
+				IsHitTestVisible = false
 			};
 
+			// Etiqueta de dificultad (debajo)
+			m_difficultyLabel = new LabelWidget
+			{
+				DropShadow = true,
+				FontScale = 0.7f,
+				Color = new Color(200, 200, 200),
+				HorizontalAlignment = WidgetAlignment.Center,
+				IsHitTestVisible = false
+			};
+
+			stackPanel.Children.Add(m_countdownLabel);
+			stackPanel.Children.Add(m_difficultyLabel);
+
+			// Almacenar el stackPanel en lugar de las etiquetas individuales para adjuntarlo
+			// Modificar AttachLabelToPlayers() para usar el stackPanel
+			m_countdownLabel.Tag = stackPanel;  // Guardar referencia al panel
 			m_labelInitialized = false;
 		}
 
 		private void AttachLabelToPlayers()
 		{
-			if (m_countdownLabel == null) return;
+			if (m_countdownLabel == null || m_difficultyLabel == null) return;
+
+			var stackPanel = m_countdownLabel.Tag as StackPanelWidget;
+			if (stackPanel == null) return;
 
 			bool attached = false;
 			foreach (var player in m_subsystemPlayers.ComponentPlayers)
@@ -233,24 +262,43 @@ namespace Game
 				var controlsContainer = player.GuiWidget.Children.Find<ContainerWidget>("ControlsContainer", true);
 				if (controlsContainer == null) continue;
 
-				if (!controlsContainer.Children.Contains(m_countdownLabel))
+				if (!controlsContainer.Children.Contains(stackPanel))
 				{
-					controlsContainer.AddChildren(m_countdownLabel);
+					controlsContainer.AddChildren(stackPanel);
 					attached = true;
 				}
 			}
 			m_labelInitialized = attached;
 		}
 
+		private string GetDifficultyLocalizedName()
+		{
+			DifficultyMode mode = m_subsystemGreenNightSky.DifficultyMode;
+			string key = mode switch
+			{
+				DifficultyMode.Easy => "Easy_Name",
+				DifficultyMode.Normal => "Normal_Name",
+				DifficultyMode.Medium => "Medium_Name",
+				DifficultyMode.Hard => "Hard_Name",
+				DifficultyMode.Extreme => "Extreme_Name",
+				_ => "Normal_Name"
+			};
+			string difficultyName = LanguageControl.GetContentWidgets("GreenNightDifficulty", key);
+			return string.IsNullOrEmpty(difficultyName) ? mode.ToString() : difficultyName;
+		}
+
 		private void UpdateCountdownLabel()
 		{
-			if (m_countdownLabel == null)
+			if (m_countdownLabel == null || m_difficultyLabel == null)
 			{
 				CreateCountdownLabel();
 				return;
 			}
 
-			if (!m_labelInitialized || m_countdownLabel.ParentWidget == null)
+			var stackPanel = m_countdownLabel.Tag as StackPanelWidget;
+			if (stackPanel == null) return;
+
+			if (!m_labelInitialized || stackPanel.ParentWidget == null)
 			{
 				AttachLabelToPlayers();
 			}
@@ -258,10 +306,12 @@ namespace Game
 			if (!m_labelInitialized)
 				return;
 
-			if (!m_subsystemGreenNightSky.GreenNightEnabled ||
-				m_subsystemGameInfo.WorldSettings.TimeOfDayMode != TimeOfDayMode.Changing)
+			bool visible = m_subsystemGreenNightSky.GreenNightEnabled &&
+						   m_subsystemGameInfo.WorldSettings.TimeOfDayMode == TimeOfDayMode.Changing;
+
+			if (!visible)
 			{
-				m_countdownLabel.IsVisible = false;
+				stackPanel.IsVisible = false;
 				return;
 			}
 
@@ -271,7 +321,19 @@ namespace Game
 			else
 				m_countdownLabel.Text = string.Format(LanguageControl.Get("ZombiesSpawn", "TheyComeInXDays"), daysLeft);
 
-			m_countdownLabel.IsVisible = true;
+			string difficultyText = GetDifficultyLocalizedName();
+			m_difficultyLabel.Text = string.Format(LanguageControl.Get("ZombiesSpawn", "CurrentDifficulty"), difficultyText);
+
+			stackPanel.IsVisible = true;
+		}
+
+		public void ForceUpdateDifficultyLabel()
+		{
+			if (m_difficultyLabel == null) return;
+			string difficultyText = GetDifficultyLocalizedName();
+			string format = LanguageControl.Get("ZombiesSpawn", "CurrentDifficulty");
+			if (string.IsNullOrEmpty(format)) format = "Difficulty: {0}";
+			m_difficultyLabel.Text = string.Format(format, difficultyText);
 		}
 
 		private int GetDaysUntilNextGreenNight()
@@ -301,8 +363,9 @@ namespace Game
 		{
 			int oldWave = m_currentWave;
 			int maxWave = m_waves.Keys.Max();
+			bool wasLastWave = (oldWave == maxWave);
 
-			AdvanceToNextWave();
+			bool completed = AdvanceToNextWave();  // true si avanzó a la siguiente oleada
 			int newWave = m_currentWave;
 
 			// Disparar evento para logros
@@ -314,6 +377,24 @@ namespace Game
 				foreach (var player in m_subsystemPlayers.ComponentPlayers)
 				{
 					AchievementsManager.UnlockAchievementStatic(player, 6, "FirstWaveSurvived", LanguageControl.Get(AchievementsWidget.fName, 16));
+				}
+			}
+
+			if (m_subsystemGreenNightSky.DifficultyMode == DifficultyMode.Extreme && wasLastWave && !completed)
+			{
+				// Completamos la última oleada exitosamente
+				foreach (var player in m_subsystemPlayers.ComponentPlayers)
+				{
+					AchievementsManager.UnlockAchievementStatic(player, 52, "ExtremeNightSurvived", LanguageControl.Get(AchievementsWidget.fName, 108));
+				}
+			}
+
+			// CORRECCIÓN: Logro 52 solo si estábamos en la última oleada Y logramos avanzar más allá (completamos todas)
+			if (m_subsystemGreenNightSky.DifficultyMode == DifficultyMode.Extreme && wasLastWave && newWave > maxWave)
+			{
+				foreach (var player in m_subsystemPlayers.ComponentPlayers)
+				{
+					AchievementsManager.UnlockAchievementStatic(player, 52, "ExtremeNightSurvived", LanguageControl.Get(AchievementsWidget.fName, 108));
 				}
 			}
 
@@ -1331,9 +1412,9 @@ namespace Game
 			}
 		}
 
-		private void AdvanceToNextWave()
+		private bool AdvanceToNextWave()
 		{
-			if (m_isAdvancingWave) return;
+			if (m_isAdvancingWave) return false;
 			m_isAdvancingWave = true;
 
 			m_hasSpawnedBossThisNight = false;
@@ -1344,13 +1425,17 @@ namespace Game
 
 			int nextWave = m_currentWave + 1;
 			int maxWave = m_waves.Keys.Max();
+
+			bool advanced = false;
 			if (nextWave <= maxWave && m_waves.ContainsKey(nextWave))
 			{
 				m_currentWave = nextWave;
 				SetCurrentWave(m_currentWave);
+				advanced = true;
 			}
 
 			m_isAdvancingWave = false;
+			return advanced;
 		}
 
 		private Vector3 GetValidSpawnPoint()
