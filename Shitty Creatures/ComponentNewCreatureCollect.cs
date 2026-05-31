@@ -4,7 +4,6 @@ using Engine;
 using Game;
 using GameEntitySystem;
 using TemplatesDatabase;
-using static Game.TerrainContentsGenerator21;
 
 namespace Game
 {
@@ -313,6 +312,15 @@ namespace Game
 
 			float randomChance = this.m_random.Float(0f, 1f);
 			string name = base.Entity.ValuesDictionary.DatabaseObject.Name;
+
+			// Obtener dificultad actual
+			DifficultyMode currentDifficulty = DifficultyMode.Normal;
+			var greenNight = Project.FindSubsystem<SubsystemGreenNightSky>(true);
+			if (greenNight != null)
+			{
+				currentDifficulty = greenNight.DifficultyMode;
+			}
+			bool isHardOrHigher = (currentDifficulty >= DifficultyMode.Hard);
 
 			// ===== CAPITAN PIRATA =====
 			if (name == "CapitanPirata")
@@ -641,9 +649,9 @@ namespace Game
 					}
 				}
 			}
-			else if (name == "InfectedNormal1" || name == "InfectedNormal2" || name == "InfectedMuscle1" || name == "InfectedMuscle2" || name == "Werewolf" || name == "GhostNormal" || name == "GhostFast" || name == "Boomer1" || name == "Boomer2" || name == "Boomer3" || name == "GhostBoomer1" || name == "GhostBoomer2" || name == "GhostBoomer3")
+			// ===== WEREWOLF (código original conservado intacto) =====
+			else if (name == "Werewolf")
 			{
-				// ===== LÓGICA ORIGINAL PARA EL RESTO DE PIRATAS =====
 				int weaponValue = 0;
 
 				if (randomChance < 0.40f)
@@ -756,39 +764,182 @@ namespace Game
 							Console.WriteLine($"No hay suficiente espacio para todas las bombas. Faltaron: {remainingBombs}");
 					}
 				}
-			}	
-			
-			// Ahora la lógica para HumanoidSkeleton
+			}
+			// ===== INFECTADOS COMUNES (con lógica por dificultad) =====
+			else if (name == "InfectedNormal1" || name == "InfectedNormal2" || name == "InfectedMuscle1" || name == "InfectedMuscle2" || name == "GhostNormal" || name == "GhostFast" || name == "Boomer1" || name == "Boomer2" || name == "Boomer3" || name == "GhostBoomer1" || name == "GhostBoomer2" || name == "GhostBoomer3")
+			{
+				int weaponValue = 0;
+
+				if (!isHardOrHigher)
+				{
+					// ===== EASY / NORMAL / MEDIUM: SOLO CUERPO A CUERPO =====
+					float meleeChance = this.m_random.Float(0f, 1f);
+					if (meleeChance < 0.7f)
+					{
+						float weaponTypeChance = this.m_random.Float(0f, 1f);
+						if (weaponTypeChance < 0.5f)
+						{
+							float macheteRoll = this.m_random.Float(0f, 1f);
+							if (macheteRoll < 0.1667f) weaponValue = Terrain.MakeBlockValue(WoodMacheteBlock.Index);
+							else if (macheteRoll < 0.3333f) weaponValue = Terrain.MakeBlockValue(StoneMacheteBlock.Index);
+							else if (macheteRoll < 0.5f) weaponValue = Terrain.MakeBlockValue(CopperMacheteBlock.Index);
+							else if (macheteRoll < 0.6667f) weaponValue = Terrain.MakeBlockValue(IronMacheteBlock.Index);
+							else if (macheteRoll < 0.8333f) weaponValue = Terrain.MakeBlockValue(DiamondMacheteBlock.Index);
+							else weaponValue = Terrain.MakeBlockValue(LavaMacheteBlock.Index);
+						}
+						else
+						{
+							float axeRoll = this.m_random.Float(0f, 1f);
+							if (axeRoll < 0.1667f) weaponValue = Terrain.MakeBlockValue(WoodAxeBlock.Index);
+							else if (axeRoll < 0.3333f) weaponValue = Terrain.MakeBlockValue(StoneAxeOriginalBlock.Index);
+							else if (axeRoll < 0.5f) weaponValue = Terrain.MakeBlockValue(CopperAxeBlock.Index);
+							else if (axeRoll < 0.6667f) weaponValue = Terrain.MakeBlockValue(IronAxeBlock.Index);
+							else if (axeRoll < 0.8333f) weaponValue = Terrain.MakeBlockValue(DiamondAxeBlock.Index);
+							else weaponValue = Terrain.MakeBlockValue(LavaAxeBlock.Index);
+						}
+					}
+				}
+				else
+				{
+					// ===== HARD / EXTREME: usa la lógica ORIGINAL completa =====
+					if (randomChance < 0.40f)
+					{
+						float mainWeaponChance = this.m_random.Float(0f, 1f);
+						if (mainWeaponChance < 0.20f)
+							weaponValue = Terrain.MakeBlockValue(MusketBlock.Index);
+						else if (mainWeaponChance < 0.40f)
+							weaponValue = Terrain.MakeBlockValue(BowBlock.Index);
+						else if (mainWeaponChance < 0.60f)
+							weaponValue = Terrain.MakeBlockValue(CrossbowBlock.Index);
+						else if (mainWeaponChance < 0.80f)
+							weaponValue = Terrain.MakeBlockValue(RepeatCrossbowBlock.Index);
+						else
+							weaponValue = FlameThrowerBlock.SetLoadCount(Terrain.MakeBlockValue(FlameThrowerBlock.Index, 0, FlameThrowerBlock.SetBulletType(FlameThrowerBlock.SetLoadState(0, FlameThrowerBlock.LoadState.Loaded), new FlameBulletBlock.FlameBulletType?(this.m_random.Bool(0.5f) ? FlameBulletBlock.FlameBulletType.Flame : FlameBulletBlock.FlameBulletType.Poison))), 8);
+					}
+					else
+					{
+						float weaponTypeChance = this.m_random.Float(0f, 1f);
+						if (weaponTypeChance < 0.3333f)
+						{
+							float macheteRoll = this.m_random.Float(0f, 1f);
+							if (macheteRoll < 0.1667f) weaponValue = Terrain.MakeBlockValue(WoodMacheteBlock.Index);
+							else if (macheteRoll < 0.3333f) weaponValue = Terrain.MakeBlockValue(StoneMacheteBlock.Index);
+							else if (macheteRoll < 0.5f) weaponValue = Terrain.MakeBlockValue(CopperMacheteBlock.Index);
+							else if (macheteRoll < 0.6667f) weaponValue = Terrain.MakeBlockValue(IronMacheteBlock.Index);
+							else if (macheteRoll < 0.8333f) weaponValue = Terrain.MakeBlockValue(DiamondMacheteBlock.Index);
+							else weaponValue = Terrain.MakeBlockValue(LavaMacheteBlock.Index);
+						}
+						else if (weaponTypeChance < 0.6666f)
+						{
+							float spearRoll = this.m_random.Float(0f, 1f);
+							if (spearRoll < 0.1667f) weaponValue = Terrain.MakeBlockValue(WoodenSpearBlock.Index);
+							else if (spearRoll < 0.3333f) weaponValue = Terrain.MakeBlockValue(StoneSpearBlock.Index);
+							else if (spearRoll < 0.5f) weaponValue = Terrain.MakeBlockValue(CopperSpearBlock.Index);
+							else if (spearRoll < 0.6667f) weaponValue = Terrain.MakeBlockValue(IronSpearBlock.Index);
+							else if (spearRoll < 0.8333f) weaponValue = Terrain.MakeBlockValue(DiamondSpearBlock.Index);
+							else weaponValue = Terrain.MakeBlockValue(LavaSpearBlock.Index);
+						}
+						else if (weaponTypeChance < 0.75f)
+						{
+							float longspearRoll = this.m_random.Float(0f, 1f);
+							if (longspearRoll < 0.1667f) weaponValue = Terrain.MakeBlockValue(WoodenLongspearBlock.Index);
+							else if (longspearRoll < 0.3333f) weaponValue = Terrain.MakeBlockValue(StoneLongspearBlock.Index);
+							else if (longspearRoll < 0.5f) weaponValue = Terrain.MakeBlockValue(CopperLongspearBlock.Index);
+							else if (longspearRoll < 0.6667f) weaponValue = Terrain.MakeBlockValue(IronLongspearBlock.Index);
+							else if (longspearRoll < 0.8333f) weaponValue = Terrain.MakeBlockValue(DiamondLongspearBlock.Index);
+							else weaponValue = Terrain.MakeBlockValue(LavaLongspearBlock.Index);
+						}
+						else
+						{
+							float axeRoll = this.m_random.Float(0f, 1f);
+							if (axeRoll < 0.1667f) weaponValue = Terrain.MakeBlockValue(WoodAxeBlock.Index);
+							else if (axeRoll < 0.3333f) weaponValue = Terrain.MakeBlockValue(StoneAxeOriginalBlock.Index);
+							else if (axeRoll < 0.5f) weaponValue = Terrain.MakeBlockValue(CopperAxeBlock.Index);
+							else if (axeRoll < 0.6667f) weaponValue = Terrain.MakeBlockValue(IronAxeBlock.Index);
+							else if (axeRoll < 0.8333f) weaponValue = Terrain.MakeBlockValue(DiamondAxeBlock.Index);
+							else weaponValue = Terrain.MakeBlockValue(LavaAxeBlock.Index);
+						}
+					}
+				}
+
+				if (weaponValue != 0)
+					inventory.AddSlotItems(0, weaponValue, 1);
+
+				// Bombas: probabilidad y cantidad según dificultad
+				float bombProb = isHardOrHigher ? 0.25f : 0.15f;
+				if (randomChance < bombProb)
+				{
+					float bombTypeChance = this.m_random.Float(0f, 1f);
+					int bombValue = 0;
+					if (bombTypeChance < 0.3333f)
+						bombValue = Terrain.MakeBlockValue(BombBlock.Index);
+					else if (bombTypeChance < 0.6666f)
+						bombValue = Terrain.MakeBlockValue(IncendiaryBombBlock.Index);
+					else
+						bombValue = Terrain.MakeBlockValue(PoisonBombBlock.Index);
+
+					if (bombValue != 0)
+					{
+						int bombCount = isHardOrHigher ? this.m_random.Int(8, 12) : this.m_random.Int(4, 8);
+						int remainingBombs = bombCount;
+						for (int i = 0; i < inventory.SlotsCount && remainingBombs > 0; i++)
+						{
+							int slotValue = inventory.GetSlotValue(i);
+							if (slotValue == bombValue)
+							{
+								int currentCount = inventory.GetSlotCount(i);
+								int slotCapacity = inventory.GetSlotCapacity(i, bombValue);
+								int spaceLeft = slotCapacity - currentCount;
+								if (spaceLeft > 0)
+								{
+									int addAmount = Math.Min(spaceLeft, remainingBombs);
+									inventory.AddSlotItems(i, bombValue, addAmount);
+									remainingBombs -= addAmount;
+								}
+							}
+						}
+						for (int i = 0; i < inventory.SlotsCount && remainingBombs > 0; i++)
+						{
+							if (inventory.GetSlotCount(i) == 0)
+							{
+								int slotCapacity = inventory.GetSlotCapacity(i, bombValue);
+								int addAmount = Math.Min(slotCapacity, remainingBombs);
+								if (addAmount > 0)
+								{
+									inventory.AddSlotItems(i, bombValue, addAmount);
+									remainingBombs -= addAmount;
+								}
+							}
+						}
+						if (remainingBombs > 0)
+							Console.WriteLine($"No hay suficiente espacio para todas las bombas. Faltaron: {remainingBombs}");
+					}
+				}
+			}
+			// ===== HUMANOLID SKELETON (con lógica por dificultad) =====
 			else if (name == "HumanoidSkeleton")
 			{
 				// PRIMER SLOT - Armas cuerpo a cuerpo (siempre)
 				float firstSlotMeleeChance = this.m_random.Float(0f, 1f);
 				int firstSlotValue = 0;
 
-				// 50% Clubs, 50% Machetes para el primer slot
-				if (firstSlotMeleeChance < 0.5f) // Clubs
+				if (firstSlotMeleeChance < 0.5f)
 				{
 					float clubRoll = this.m_random.Float(0f, 1f);
-					if (clubRoll < 0.5f) // 50% - WoodenClub
+					if (clubRoll < 0.5f)
 						firstSlotValue = Terrain.MakeBlockValue(WoodenClubBlock.Index);
-					else // 50% - StoneClub
+					else
 						firstSlotValue = Terrain.MakeBlockValue(StoneClubBlock.Index);
 				}
-				else // Machetes
+				else
 				{
 					float macheteRoll = this.m_random.Float(0f, 1f);
-					if (macheteRoll < 0.1667f)
-						firstSlotValue = Terrain.MakeBlockValue(WoodMacheteBlock.Index);
-					else if (macheteRoll < 0.3333f)
-						firstSlotValue = Terrain.MakeBlockValue(StoneMacheteBlock.Index);
-					else if (macheteRoll < 0.5f)
-						firstSlotValue = Terrain.MakeBlockValue(CopperMacheteBlock.Index);
-					else if (macheteRoll < 0.6667f)
-						firstSlotValue = Terrain.MakeBlockValue(IronMacheteBlock.Index);
-					else if (macheteRoll < 0.8333f)
-						firstSlotValue = Terrain.MakeBlockValue(DiamondMacheteBlock.Index);
-					else
-						firstSlotValue = Terrain.MakeBlockValue(LavaMacheteBlock.Index);
+					if (macheteRoll < 0.1667f) firstSlotValue = Terrain.MakeBlockValue(WoodMacheteBlock.Index);
+					else if (macheteRoll < 0.3333f) firstSlotValue = Terrain.MakeBlockValue(StoneMacheteBlock.Index);
+					else if (macheteRoll < 0.5f) firstSlotValue = Terrain.MakeBlockValue(CopperMacheteBlock.Index);
+					else if (macheteRoll < 0.6667f) firstSlotValue = Terrain.MakeBlockValue(IronMacheteBlock.Index);
+					else if (macheteRoll < 0.8333f) firstSlotValue = Terrain.MakeBlockValue(DiamondMacheteBlock.Index);
+					else firstSlotValue = Terrain.MakeBlockValue(LavaMacheteBlock.Index);
 				}
 
 				if (firstSlotValue != 0)
@@ -797,98 +948,86 @@ namespace Game
 						inventory.AddSlotItems(0, firstSlotValue, 1);
 				}
 
-				// SEGUNDO SLOT - Armas a distancia (siempre)
-				float secondSlotRangedChance = this.m_random.Float(0f, 1f);
-				int secondSlotValue = 0;
+				// SEGUNDO SLOT - Armas a distancia SOLO en Hard/Extreme
+				if (isHardOrHigher)
+				{
+					float secondSlotRangedChance = this.m_random.Float(0f, 1f);
+					int secondSlotValue = 0;
 
-				if (secondSlotRangedChance < 0.5f) // 50% - Arco
-				{
-					secondSlotValue = Terrain.MakeBlockValue(BowBlock.Index);
-				}
-				else if (secondSlotRangedChance < 0.8f) // 30% - Otras armas a distancia
-				{
-					float rangedChance = this.m_random.Float(0f, 1f);
-					if (rangedChance < 0.25f)
-						secondSlotValue = Terrain.MakeBlockValue(MusketBlock.Index);
-					else if (rangedChance < 0.5f)
-						secondSlotValue = Terrain.MakeBlockValue(CrossbowBlock.Index);
-					else if (rangedChance < 0.75f)
-						secondSlotValue = Terrain.MakeBlockValue(RepeatCrossbowBlock.Index);
-					else if (rangedChance < 0.9f)
-						secondSlotValue = Terrain.MakeBlockValue(ItemsLauncherBlock.Index);
+					if (secondSlotRangedChance < 0.5f)
+					{
+						secondSlotValue = Terrain.MakeBlockValue(BowBlock.Index);
+					}
+					else if (secondSlotRangedChance < 0.8f)
+					{
+						float rangedChance = this.m_random.Float(0f, 1f);
+						if (rangedChance < 0.25f)
+							secondSlotValue = Terrain.MakeBlockValue(MusketBlock.Index);
+						else if (rangedChance < 0.5f)
+							secondSlotValue = Terrain.MakeBlockValue(CrossbowBlock.Index);
+						else if (rangedChance < 0.75f)
+							secondSlotValue = Terrain.MakeBlockValue(RepeatCrossbowBlock.Index);
+						else if (rangedChance < 0.9f)
+							secondSlotValue = Terrain.MakeBlockValue(ItemsLauncherBlock.Index);
+						else
+						{
+							secondSlotValue = FlameThrowerBlock.SetLoadCount(
+								Terrain.MakeBlockValue(FlameThrowerBlock.Index, 0,
+									FlameThrowerBlock.SetBulletType(
+										FlameThrowerBlock.SetLoadState(0, FlameThrowerBlock.LoadState.Loaded),
+										new FlameBulletBlock.FlameBulletType?(this.m_random.Bool(0.5f) ? FlameBulletBlock.FlameBulletType.Flame : FlameBulletBlock.FlameBulletType.Poison)
+									)
+								),
+								8
+							);
+						}
+					}
 					else
 					{
-						secondSlotValue = FlameThrowerBlock.SetLoadCount(
-							Terrain.MakeBlockValue(FlameThrowerBlock.Index, 0,
-								FlameThrowerBlock.SetBulletType(
-									FlameThrowerBlock.SetLoadState(0, FlameThrowerBlock.LoadState.Loaded),
-									new FlameBulletBlock.FlameBulletType?(this.m_random.Bool(0.5f) ?
-										FlameBulletBlock.FlameBulletType.Flame :
-										FlameBulletBlock.FlameBulletType.Poison)
-								)
-							),
-							8
-						);
+						secondSlotValue = Terrain.MakeBlockValue(CrossbowBlock.Index);
+					}
+
+					if (secondSlotValue != 0)
+					{
+						if (inventory.GetSlotCapacity(1, secondSlotValue) >= 1)
+							inventory.AddSlotItems(1, secondSlotValue, 1);
 					}
 				}
-				else // 20% - Ballesta (Crossbow) por defecto si no entra en las otras
-				{
-					secondSlotValue = Terrain.MakeBlockValue(CrossbowBlock.Index);
-				}
 
-				if (secondSlotValue != 0)
-				{
-					if (inventory.GetSlotCapacity(1, secondSlotValue) >= 1)
-						inventory.AddSlotItems(1, secondSlotValue, 1);
-				}
-
-				// TERCER SLOT - Objetos lanzables (60% probabilidad) o vacío (40%)
-				float thirdSlotChance = this.m_random.Float(0f, 1f);
-
-				if (thirdSlotChance < 0.6f) // 60% de probabilidad de tener objeto lanzable
+				// TERCER SLOT - Objetos lanzables (mayor probabilidad en Hard/Extreme)
+				float thirdSlotChance = isHardOrHigher ? 0.8f : 0.6f;
+				if (this.m_random.Float(0f, 1f) < thirdSlotChance)
 				{
 					int thirdSlotValue = 0;
 					float throwableType = this.m_random.Float(0f, 1f);
 
-					if (throwableType < 0.4f) // 40% - Spears
+					if (throwableType < 0.4f)
 					{
 						float spearRoll = this.m_random.Float(0f, 1f);
-						if (spearRoll < 0.1667f)
-							thirdSlotValue = Terrain.MakeBlockValue(WoodenSpearBlock.Index);
-						else if (spearRoll < 0.3333f)
-							thirdSlotValue = Terrain.MakeBlockValue(StoneSpearBlock.Index);
-						else if (spearRoll < 0.5f)
-							thirdSlotValue = Terrain.MakeBlockValue(CopperSpearBlock.Index);
-						else if (spearRoll < 0.6667f)
-							thirdSlotValue = Terrain.MakeBlockValue(IronSpearBlock.Index);
-						else if (spearRoll < 0.8333f)
-							thirdSlotValue = Terrain.MakeBlockValue(DiamondSpearBlock.Index);
-						else
-							thirdSlotValue = Terrain.MakeBlockValue(LavaSpearBlock.Index);
+						if (spearRoll < 0.1667f) thirdSlotValue = Terrain.MakeBlockValue(WoodenSpearBlock.Index);
+						else if (spearRoll < 0.3333f) thirdSlotValue = Terrain.MakeBlockValue(StoneSpearBlock.Index);
+						else if (spearRoll < 0.5f) thirdSlotValue = Terrain.MakeBlockValue(CopperSpearBlock.Index);
+						else if (spearRoll < 0.6667f) thirdSlotValue = Terrain.MakeBlockValue(IronSpearBlock.Index);
+						else if (spearRoll < 0.8333f) thirdSlotValue = Terrain.MakeBlockValue(DiamondSpearBlock.Index);
+						else thirdSlotValue = Terrain.MakeBlockValue(LavaSpearBlock.Index);
 
 						if (thirdSlotValue != 0 && inventory.GetSlotCapacity(2, thirdSlotValue) >= 1)
 							inventory.AddSlotItems(2, thirdSlotValue, 1);
 					}
-					else if (throwableType < 0.7f) // 30% - Longspears
+					else if (throwableType < 0.7f)
 					{
 						float longspearRoll = this.m_random.Float(0f, 1f);
-						if (longspearRoll < 0.1667f)
-							thirdSlotValue = Terrain.MakeBlockValue(WoodenLongspearBlock.Index);
-						else if (longspearRoll < 0.3333f)
-							thirdSlotValue = Terrain.MakeBlockValue(StoneLongspearBlock.Index);
-						else if (longspearRoll < 0.5f)
-							thirdSlotValue = Terrain.MakeBlockValue(CopperLongspearBlock.Index);
-						else if (longspearRoll < 0.6667f)
-							thirdSlotValue = Terrain.MakeBlockValue(IronLongspearBlock.Index);
-						else if (longspearRoll < 0.8333f)
-							thirdSlotValue = Terrain.MakeBlockValue(DiamondLongspearBlock.Index);
-						else
-							thirdSlotValue = Terrain.MakeBlockValue(LavaLongspearBlock.Index);
+						if (longspearRoll < 0.1667f) thirdSlotValue = Terrain.MakeBlockValue(WoodenLongspearBlock.Index);
+						else if (longspearRoll < 0.3333f) thirdSlotValue = Terrain.MakeBlockValue(StoneLongspearBlock.Index);
+						else if (longspearRoll < 0.5f) thirdSlotValue = Terrain.MakeBlockValue(CopperLongspearBlock.Index);
+						else if (longspearRoll < 0.6667f) thirdSlotValue = Terrain.MakeBlockValue(IronLongspearBlock.Index);
+						else if (longspearRoll < 0.8333f) thirdSlotValue = Terrain.MakeBlockValue(DiamondLongspearBlock.Index);
+						else thirdSlotValue = Terrain.MakeBlockValue(LavaLongspearBlock.Index);
 
 						if (thirdSlotValue != 0 && inventory.GetSlotCapacity(2, thirdSlotValue) >= 1)
 							inventory.AddSlotItems(2, thirdSlotValue, 1);
 					}
-					else // 30% - Bombas (cantidad 5-8) - MANEJO ESPECIAL PARA ITEMS APILABLES
+					else
 					{
 						float bombTypeChance = this.m_random.Float(0f, 1f);
 						int bombValue = 0;
@@ -900,10 +1039,7 @@ namespace Game
 						else
 							bombValue = Terrain.MakeBlockValue(PoisonBombBlock.Index);
 
-						int bombCount = this.m_random.Int(5, 8);
-						int maxStack = BlocksManager.Blocks[Terrain.ExtractContents(bombValue)].GetMaxStacking(bombValue);
-
-						// Las bombas son apilables, así que verificamos la capacidad del slot 2
+						int bombCount = isHardOrHigher ? this.m_random.Int(8, 12) : this.m_random.Int(5, 8);
 						int slotCapacity = inventory.GetSlotCapacity(2, bombValue);
 						int addCount = Math.Min(bombCount, slotCapacity);
 
@@ -911,11 +1047,9 @@ namespace Game
 						{
 							inventory.AddSlotItems(2, bombValue, addCount);
 
-							// Si sobran bombas, intentar ponerlas en otro slot
 							if (addCount < bombCount)
 							{
 								int remainingBombs = bombCount - addCount;
-								// Buscar otro slot vacío o con bombas del mismo tipo
 								for (int i = 3; i < inventory.SlotsCount && remainingBombs > 0; i++)
 								{
 									int slotValue = inventory.GetSlotValue(i);
@@ -946,79 +1080,58 @@ namespace Game
 						}
 					}
 				}
-				// 40% restante: el tercer slot queda vacío
 			}
+			// ===== CRIATURAS DE HIELO (con ajustes por dificultad) =====
 			else if (name == "InfectedFreezer" || name == "FrozenGhostBoomer" || name == "BoomerFrozen" || name == "FrozenGhost")
 			{
-				// Obtener índices de bloques por nombre usando BlocksManager
 				int freezingSnowballIndex = BlocksManager.GetBlockIndex("FreezingSnowballBlock");
 				int freezeBombIndex = BlocksManager.GetBlockIndex("FreezeBombBlock");
 
-				// Probabilidad equitativa entre 3 opciones principales (33.33% cada una)
+				float emptyChance = isHardOrHigher ? 0.2f : 0.3333f;
+				float trapChance = isHardOrHigher ? 0.3f : 0.3333f;
+				float normalChance = isHardOrHigher ? 0.5f : 0.3333f;
+
 				float mainChoice = m_random.Float(0f, 1f);
 
-				if (mainChoice < 0.3333f) // Opción 1: Inventario realmente vacío (sin nada)
+				if (mainChoice < emptyChance)
 				{
-					// No agregar ningún item - inventario completamente vacío
-					// El NPC no tiene nada
+					// No agregar ningún item
 				}
-				else if (mainChoice < 0.6666f) // Opción 2: Inventario "trampa" (parece vacío pero tiene items)
+				else if (mainChoice < emptyChance + trapChance)
 				{
-					// Esta opción aplica la lógica normal de items pero el jugador creerá que está vacío
-					// (esto es solo para engañar al jugador, el código es el mismo que la opción 3)
+					bool hasSnowball = isHardOrHigher ? m_random.Float(0f, 1f) < 0.8f : m_random.Float(0f, 1f) < 0.5f;
+					bool hasFreezeBomb = isHardOrHigher ? m_random.Float(0f, 1f) < 0.01f : m_random.Float(0f, 1f) < 0.0005f;
+					bool hasMeleeWeapon = isHardOrHigher ? m_random.Float(0f, 1f) < 0.8f : m_random.Float(0f, 1f) < 0.5f;
 
-					// Determinar qué items tiene este NPC (puede tener bola, bomba congelante, arma, combinaciones)
-					bool hasSnowball = m_random.Float(0f, 1f) < 0.5f; // 50% de tener bola de nieve
-					bool hasFreezeBomb = m_random.Float(0f, 1f) < 0.0005f; // 0.05% de tener bomba congelante
-					bool hasMeleeWeapon = m_random.Float(0f, 1f) < 0.5f; // 50% de tener arma melee
-
-					// Bola de Nieve Congelante (si aplica)
 					if (hasSnowball && freezingSnowballIndex >= 0)
 					{
 						int snowballValue = Terrain.MakeBlockValue(freezingSnowballIndex);
 						int snowballCount;
-
-						// Obtener capacidad máxima del slot 0
 						int slotCapacity = inventory.GetSlotCapacity(0, snowballValue);
-
-						// 50% probabilidad de 40, 50% probabilidad de 5
-						if (m_random.Float(0f, 1f) < 0.5f)
-							snowballCount = Math.Min(40, slotCapacity);
+						if (isHardOrHigher)
+							snowballCount = Math.Min(m_random.Int(20, 40), slotCapacity);
 						else
-							snowballCount = Math.Min(5, slotCapacity);
-
-						// Solo agregar si hay al menos 1 item que quepa
+							snowballCount = Math.Min(m_random.Bool() ? 40 : 5, slotCapacity);
 						if (snowballCount > 0)
 							inventory.AddSlotItems(0, snowballValue, snowballCount);
 					}
 
-					// Bomba Congelante (0.05% de probabilidad)
 					if (hasFreezeBomb && freezeBombIndex >= 0)
 					{
 						int freezeBombValue = Terrain.MakeBlockValue(freezeBombIndex);
 						int freezeBombCount;
-
-						// Obtener capacidad máxima del slot 0 (o el primer slot disponible)
-						int slotIndex = 0;
-						int slotCapacity = inventory.GetSlotCapacity(slotIndex, freezeBombValue);
-
-						// Similar a FreezingSnowball: 50% probabilidad de 40, 50% probabilidad de 5
-						if (m_random.Float(0f, 1f) < 0.5f)
-							freezeBombCount = Math.Min(40, slotCapacity);
+						int slotCapacity = inventory.GetSlotCapacity(0, freezeBombValue);
+						if (isHardOrHigher)
+							freezeBombCount = Math.Min(m_random.Int(10, 20), slotCapacity);
 						else
-							freezeBombCount = Math.Min(5, slotCapacity);
-
-						// Solo agregar si hay al menos 1 item que quepa
+							freezeBombCount = Math.Min(m_random.Bool() ? 40 : 5, slotCapacity);
 						if (freezeBombCount > 0)
 						{
-							// Si el slot 0 está ocupado por snowball, buscar otro slot
 							if (hasSnowball && inventory.GetSlotCount(0) > 0)
 							{
-								// Buscar el primer slot vacío o con el mismo tipo de bomba
 								for (int i = 1; i < inventory.SlotsCount; i++)
 								{
-									int slotValue = inventory.GetSlotValue(i);
-									if (slotValue == freezeBombValue || inventory.GetSlotCount(i) == 0)
+									if (inventory.GetSlotValue(i) == freezeBombValue || inventory.GetSlotCount(i) == 0)
 									{
 										int altSlotCapacity = inventory.GetSlotCapacity(i, freezeBombValue);
 										if (altSlotCapacity >= freezeBombCount)
@@ -1031,149 +1144,101 @@ namespace Game
 							}
 							else
 							{
-								inventory.AddSlotItems(slotIndex, freezeBombValue, freezeBombCount);
+								inventory.AddSlotItems(0, freezeBombValue, freezeBombCount);
 							}
 						}
 					}
 
-					// Arma cuerpo a cuerpo (si aplica)
 					if (hasMeleeWeapon)
 					{
 						int weaponValue = 0;
 						float weaponType = m_random.Float(0f, 1f);
 
-						if (weaponType < 0.3333f) // Clubs
+						if (weaponType < 0.3333f)
 						{
 							float clubRoll = m_random.Float(0f, 1f);
-							if (clubRoll < 0.5f)
-								weaponValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("WoodenClubBlock"));
-							else
-								weaponValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("StoneClubBlock"));
+							if (clubRoll < 0.5f) weaponValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("WoodenClubBlock"));
+							else weaponValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("StoneClubBlock"));
 						}
-						else if (weaponType < 0.6666f) // Machetes
+						else if (weaponType < 0.6666f)
 						{
 							float macheteRoll = m_random.Float(0f, 1f);
-							if (macheteRoll < 0.1667f)
-								weaponValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("WoodMacheteBlock"));
-							else if (macheteRoll < 0.3333f)
-								weaponValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("StoneMacheteBlock"));
-							else if (macheteRoll < 0.5f)
-								weaponValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("CopperMacheteBlock"));
-							else if (macheteRoll < 0.6667f)
-								weaponValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("IronMacheteBlock"));
-							else if (macheteRoll < 0.8333f)
-								weaponValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("DiamondMacheteBlock"));
-							else
-								weaponValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("LavaMacheteBlock"));
+							if (macheteRoll < 0.1667f) weaponValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("WoodMacheteBlock"));
+							else if (macheteRoll < 0.3333f) weaponValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("StoneMacheteBlock"));
+							else if (macheteRoll < 0.5f) weaponValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("CopperMacheteBlock"));
+							else if (macheteRoll < 0.6667f) weaponValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("IronMacheteBlock"));
+							else if (macheteRoll < 0.8333f) weaponValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("DiamondMacheteBlock"));
+							else weaponValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("LavaMacheteBlock"));
 						}
-						else // Hachas
+						else
 						{
 							float axeRoll = m_random.Float(0f, 1f);
-							if (axeRoll < 0.1667f)
-								weaponValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("WoodAxeBlock"));
-							else if (axeRoll < 0.3333f)
-								weaponValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("StoneAxeOriginalBlock"));
-							else if (axeRoll < 0.5f)
-								weaponValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("CopperAxeBlock"));
-							else if (axeRoll < 0.6667f)
-								weaponValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("IronAxeBlock"));
-							else if (axeRoll < 0.8333f)
-								weaponValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("DiamondAxeBlock"));
-							else
-								weaponValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("LavaAxeBlock"));
+							if (axeRoll < 0.1667f) weaponValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("WoodAxeBlock"));
+							else if (axeRoll < 0.3333f) weaponValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("StoneAxeOriginalBlock"));
+							else if (axeRoll < 0.5f) weaponValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("CopperAxeBlock"));
+							else if (axeRoll < 0.6667f) weaponValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("IronAxeBlock"));
+							else if (axeRoll < 0.8333f) weaponValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("DiamondAxeBlock"));
+							else weaponValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("LavaAxeBlock"));
 						}
 
 						if (weaponValue != 0)
 						{
-							// Buscar un slot para el arma (preferiblemente slot 1, pero si está ocupado buscar otro)
 							int weaponSlot = -1;
-
-							// Verificar si el slot 1 está disponible
-							if (inventory.GetSlotCount(1) == 0)
-							{
-								int slotCapacity = inventory.GetSlotCapacity(1, weaponValue);
-								if (slotCapacity >= 1)
-									weaponSlot = 1;
-							}
-
-							// Si el slot 1 no está disponible, buscar otro slot vacío
-							if (weaponSlot == -1)
+							if (inventory.GetSlotCount(1) == 0 && inventory.GetSlotCapacity(1, weaponValue) >= 1)
+								weaponSlot = 1;
+							else
 							{
 								for (int i = 0; i < inventory.SlotsCount; i++)
 								{
-									if ((i == 0 && hasSnowball) || (i == 0 && hasFreezeBomb)) continue; // Saltar slot 0 si ya tiene bola o bomba
-
-									if (inventory.GetSlotCount(i) == 0)
+									if ((i == 0 && (hasSnowball || hasFreezeBomb))) continue;
+									if (inventory.GetSlotCount(i) == 0 && inventory.GetSlotCapacity(i, weaponValue) >= 1)
 									{
-										int slotCapacity = inventory.GetSlotCapacity(i, weaponValue);
-										if (slotCapacity >= 1)
-										{
-											weaponSlot = i;
-											break;
-										}
+										weaponSlot = i;
+										break;
 									}
 								}
 							}
-
 							if (weaponSlot != -1)
 								inventory.AddSlotItems(weaponSlot, weaponValue, 1);
 						}
 					}
 				}
-				else // Opción 3: Inventario normal con items (visible para el jugador)
+				else
 				{
-					// Determinar qué items tiene este NPC (puede tener bola, bomba congelante, arma, combinaciones)
-					bool hasSnowball = m_random.Float(0f, 1f) < 0.5f; // 50% de tener bola de nieve
-					bool hasFreezeBomb = m_random.Float(0f, 1f) < 0.0005f; // 0.05% de tener bomba congelante
-					bool hasMeleeWeapon = m_random.Float(0f, 1f) < 0.5f; // 50% de tener arma melee
+					// Opción 3: Inventario normal (visible) - misma lógica que trampa
+					bool hasSnowball = isHardOrHigher ? m_random.Float(0f, 1f) < 0.8f : m_random.Float(0f, 1f) < 0.5f;
+					bool hasFreezeBomb = isHardOrHigher ? m_random.Float(0f, 1f) < 0.01f : m_random.Float(0f, 1f) < 0.0005f;
+					bool hasMeleeWeapon = isHardOrHigher ? m_random.Float(0f, 1f) < 0.8f : m_random.Float(0f, 1f) < 0.5f;
 
-					// Bola de Nieve Congelante (si aplica)
 					if (hasSnowball && freezingSnowballIndex >= 0)
 					{
 						int snowballValue = Terrain.MakeBlockValue(freezingSnowballIndex);
 						int snowballCount;
-
-						// Obtener capacidad máxima del slot 0
 						int slotCapacity = inventory.GetSlotCapacity(0, snowballValue);
-
-						// 50% probabilidad de 40, 50% probabilidad de 5
-						if (m_random.Float(0f, 1f) < 0.5f)
-							snowballCount = Math.Min(40, slotCapacity);
+						if (isHardOrHigher)
+							snowballCount = Math.Min(m_random.Int(20, 40), slotCapacity);
 						else
-							snowballCount = Math.Min(5, slotCapacity);
-
-						// Solo agregar si hay al menos 1 item que quepa
+							snowballCount = Math.Min(m_random.Bool() ? 40 : 5, slotCapacity);
 						if (snowballCount > 0)
 							inventory.AddSlotItems(0, snowballValue, snowballCount);
 					}
 
-					// Bomba Congelante (0.05% de probabilidad)
 					if (hasFreezeBomb && freezeBombIndex >= 0)
 					{
 						int freezeBombValue = Terrain.MakeBlockValue(freezeBombIndex);
 						int freezeBombCount;
-
-						// Obtener capacidad máxima del slot 0 (o el primer slot disponible)
-						int slotIndex = 0;
-						int slotCapacity = inventory.GetSlotCapacity(slotIndex, freezeBombValue);
-
-						// Similar a FreezingSnowball: 50% probabilidad de 40, 50% probabilidad de 5
-						if (m_random.Float(0f, 1f) < 0.5f)
-							freezeBombCount = Math.Min(40, slotCapacity);
+						int slotCapacity = inventory.GetSlotCapacity(0, freezeBombValue);
+						if (isHardOrHigher)
+							freezeBombCount = Math.Min(m_random.Int(10, 20), slotCapacity);
 						else
-							freezeBombCount = Math.Min(5, slotCapacity);
-
-						// Solo agregar si hay al menos 1 item que quepa
+							freezeBombCount = Math.Min(m_random.Bool() ? 40 : 5, slotCapacity);
 						if (freezeBombCount > 0)
 						{
-							// Si el slot 0 está ocupado por snowball, buscar otro slot
 							if (hasSnowball && inventory.GetSlotCount(0) > 0)
 							{
-								// Buscar el primer slot vacío o con el mismo tipo de bomba
 								for (int i = 1; i < inventory.SlotsCount; i++)
 								{
-									int slotValue = inventory.GetSlotValue(i);
-									if (slotValue == freezeBombValue || inventory.GetSlotCount(i) == 0)
+									if (inventory.GetSlotValue(i) == freezeBombValue || inventory.GetSlotCount(i) == 0)
 									{
 										int altSlotCapacity = inventory.GetSlotCapacity(i, freezeBombValue);
 										if (altSlotCapacity >= freezeBombCount)
@@ -1186,90 +1251,60 @@ namespace Game
 							}
 							else
 							{
-								inventory.AddSlotItems(slotIndex, freezeBombValue, freezeBombCount);
+								inventory.AddSlotItems(0, freezeBombValue, freezeBombCount);
 							}
 						}
 					}
 
-					// Arma cuerpo a cuerpo (si aplica)
 					if (hasMeleeWeapon)
 					{
 						int weaponValue = 0;
 						float weaponType = m_random.Float(0f, 1f);
 
-						if (weaponType < 0.3333f) // Clubs
+						if (weaponType < 0.3333f)
 						{
 							float clubRoll = m_random.Float(0f, 1f);
-							if (clubRoll < 0.5f)
-								weaponValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("WoodenClubBlock"));
-							else
-								weaponValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("StoneClubBlock"));
+							if (clubRoll < 0.5f) weaponValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("WoodenClubBlock"));
+							else weaponValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("StoneClubBlock"));
 						}
-						else if (weaponType < 0.6666f) // Machetes
+						else if (weaponType < 0.6666f)
 						{
 							float macheteRoll = m_random.Float(0f, 1f);
-							if (macheteRoll < 0.1667f)
-								weaponValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("WoodMacheteBlock"));
-							else if (macheteRoll < 0.3333f)
-								weaponValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("StoneMacheteBlock"));
-							else if (macheteRoll < 0.5f)
-								weaponValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("CopperMacheteBlock"));
-							else if (macheteRoll < 0.6667f)
-								weaponValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("IronMacheteBlock"));
-							else if (macheteRoll < 0.8333f)
-								weaponValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("DiamondMacheteBlock"));
-							else
-								weaponValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("LavaMacheteBlock"));
+							if (macheteRoll < 0.1667f) weaponValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("WoodMacheteBlock"));
+							else if (macheteRoll < 0.3333f) weaponValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("StoneMacheteBlock"));
+							else if (macheteRoll < 0.5f) weaponValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("CopperMacheteBlock"));
+							else if (macheteRoll < 0.6667f) weaponValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("IronMacheteBlock"));
+							else if (macheteRoll < 0.8333f) weaponValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("DiamondMacheteBlock"));
+							else weaponValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("LavaMacheteBlock"));
 						}
-						else // Hachas
+						else
 						{
 							float axeRoll = m_random.Float(0f, 1f);
-							if (axeRoll < 0.1667f)
-								weaponValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("WoodAxeBlock"));
-							else if (axeRoll < 0.3333f)
-								weaponValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("StoneAxeOriginalBlock"));
-							else if (axeRoll < 0.5f)
-								weaponValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("CopperAxeBlock"));
-							else if (axeRoll < 0.6667f)
-								weaponValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("IronAxeBlock"));
-							else if (axeRoll < 0.8333f)
-								weaponValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("DiamondAxeBlock"));
-							else
-								weaponValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("LavaAxeBlock"));
+							if (axeRoll < 0.1667f) weaponValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("WoodAxeBlock"));
+							else if (axeRoll < 0.3333f) weaponValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("StoneAxeOriginalBlock"));
+							else if (axeRoll < 0.5f) weaponValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("CopperAxeBlock"));
+							else if (axeRoll < 0.6667f) weaponValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("IronAxeBlock"));
+							else if (axeRoll < 0.8333f) weaponValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("DiamondAxeBlock"));
+							else weaponValue = Terrain.MakeBlockValue(BlocksManager.GetBlockIndex("LavaAxeBlock"));
 						}
 
 						if (weaponValue != 0)
 						{
-							// Buscar un slot para el arma (preferiblemente slot 1, pero si está ocupado buscar otro)
 							int weaponSlot = -1;
-
-							// Verificar si el slot 1 está disponible
-							if (inventory.GetSlotCount(1) == 0)
-							{
-								int slotCapacity = inventory.GetSlotCapacity(1, weaponValue);
-								if (slotCapacity >= 1)
-									weaponSlot = 1;
-							}
-
-							// Si el slot 1 no está disponible, buscar otro slot vacío
-							if (weaponSlot == -1)
+							if (inventory.GetSlotCount(1) == 0 && inventory.GetSlotCapacity(1, weaponValue) >= 1)
+								weaponSlot = 1;
+							else
 							{
 								for (int i = 0; i < inventory.SlotsCount; i++)
 								{
-									if ((i == 0 && hasSnowball) || (i == 0 && hasFreezeBomb)) continue; // Saltar slot 0 si ya tiene bola o bomba
-
-									if (inventory.GetSlotCount(i) == 0)
+									if ((i == 0 && (hasSnowball || hasFreezeBomb))) continue;
+									if (inventory.GetSlotCount(i) == 0 && inventory.GetSlotCapacity(i, weaponValue) >= 1)
 									{
-										int slotCapacity = inventory.GetSlotCapacity(i, weaponValue);
-										if (slotCapacity >= 1)
-										{
-											weaponSlot = i;
-											break;
-										}
+										weaponSlot = i;
+										break;
 									}
 								}
 							}
-
 							if (weaponSlot != -1)
 								inventory.AddSlotItems(weaponSlot, weaponValue, 1);
 						}
