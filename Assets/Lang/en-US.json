@@ -107,7 +107,9 @@
 "104": "Detonation Wave",
 "105": "Kill 55 Boomers",
 "106": "Lord of Explosions",
-"107": "Kill 100 Boomers"
+"107": "Kill 100 Boomers",
+"108": "Green, how I want you green... and crazy",
+  "109": "Complete all waves of a Green Night on \"Failed to Load Sanity\" difficulty."
   },
   "AchievementsMessages": {
     "0": "ACHIEVEMENT {0} UNLOCKED!",
@@ -254,6 +256,7 @@
   "WaveMessage": "You are in wave {0}!",
   "TheyComeTonight": "They are coming…",
   "TheyComeInXDays": "They come in {0} days",
+  "CurrentDifficulty": "Difficulty: {0}",
   "FinalWave": "Final Wave has begun!",
   "BossTank": "A Tank has appeared!",
   "BossGhostTank": "A Ghost Tank has appeared!",
@@ -1393,23 +1396,23 @@
   "7": "Balanced pace.\nIdeal for preparing without losing the excitement.",
   "8": "Calm and steady.\nMore time to build before the event.",
   "9": "Very relaxed.\nEnjoy exploration at your own pace.",
-  "10": "If you prefer not to choose, simply cancel.\nGreen Night will occur on Normal difficulty every 4 days by default.",
+  "10": "If you'd rather not choose, simply cancel.\nGreen Night will occur on \"Start Praying\" difficulty every 4 days by default.",
   "11": "Green Night has been set to {0} every {1} days.",
   "12": "{0} days",
   "DifficultyLabel": "Difficulty",
   "DifficultyPlaceholder": "Select a difficulty"
 },
 "GreenNightDifficulty": {
-  "Easy_Name": "Easy",
-  "Easy_Desc": "The infected are clumsy and slow.\nThey cannot break blocks, use ranged attacks, or wield firearms.",
-  "Normal_Name": "Normal",
-  "Normal_Desc": "The infected behave normally,\nproviding a fair and enjoyable experience.",
-  "Medium_Name": "Medium",
-  "Medium_Desc": "The infected can now destroy\nfragile structures, but still do not use\nranged attacks or firearms.",
-  "Hard_Name": "Hard",
-  "Hard_Desc": "The infected destroy all types of blocks\nand fight using ranged weapons and firearms.",
-  "Extreme_Name": "Extreme",
-  "Extreme_Desc": "The infected possess relentless and unpredictable\nartificial intelligence. Completing this difficulty\ngrants a special achievement and a unique reward."
+  "Easy_Name": "Therapy Waiting List",
+  "Easy_Desc": "The infected bring flowers, not bullets.\nThey trip over their own feet.\nYour biggest threat is boredom.\n(They still break nothing, barely multiply, and run away fast.)",
+  "Normal_Name": "Monday Morning",
+  "Normal_Desc": "The infected have read the manual.\nThey show up on time and hit back.\nNothing personal – they just hate your smile.\n(Standard spawns, normal aggression, no flanking.)",
+  "Medium_Name": "Structural Damage",
+  "Medium_Desc": "Walls? What walls?\nThe infected now chew through your base like termites on meth.\nThey call for backup and laugh at your blueprints.\n(Blocks can break, help calls always happen, flanking disabled.)",
+  "Hard_Name": "The Last Architect",
+  "Hard_Desc": "Your base is a suggestion, not a defense.\nZombies flank, coordinate, and use ranged weapons.\nThey don't flee – they fight to the death.\n(Flanking enabled, block breaking high, extreme aggression.)",
+  "Extreme_Name": "Failed to Load Sanity",
+  "Extreme_Desc": "The infected are relentless, persistent, and smart.\nThey chase you forever, destroy everything, and feel no pain.\nSurviving this unlocks a therapist's direct line.\n(Persistent chase, max spawns, max block break, no mercy.)"
 },
         "VehicleInventoryWidget": {
           "1": "Vehicle",
