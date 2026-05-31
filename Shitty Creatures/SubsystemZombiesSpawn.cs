@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Timers;
 using Engine;
 using Engine.Graphics;
 using GameEntitySystem;
 using TemplatesDatabase;
-using System.Timers;
+using static Game.SubsystemGreenNightSky;
 
 namespace Game
 {
@@ -69,6 +70,12 @@ namespace Game
 
 		private bool m_letterWarSpawned;
 		private const string LetterWarBlockName = "LetterWarBlock";
+
+		private int m_maxGlobalCreatures = 80;
+		private int m_maxCreaturesPerArea = 60;
+		private int m_groupSpawnCount = 2;
+		private float m_baseSpawnInterval = 2.5f;
+		private DifficultyMode m_lastAppliedDifficulty;
 
 		private DynamicArray<ComponentBody> m_tempBodiesArray = new DynamicArray<ComponentBody>();
 		// ===== FIN SISTEMA DE SPAWN DE ESQUELETOS =====
@@ -168,6 +175,7 @@ namespace Game
 			Instance = this;
 
 			CreateCountdownLabel();
+			ApplyDifficultySettings();
 		}
 
 		private void OnSpawningChunk(SpawnChunk chunk)
@@ -588,6 +596,12 @@ namespace Game
 					break;
 			}
 			// ===== FIN LÓGICA DE NOCHE VERDE =====
+
+			// Actualizar dificultad si cambió
+			if (m_subsystemGreenNightSky != null)
+			{
+				ApplyDifficultySettings();
+			}
 		}
 
 		// ===== SPAWN NORMAL DE ESQUELETOS (100% de noche) =====
@@ -924,7 +938,7 @@ namespace Game
 		{
 			int spawned = 0;
 			int totalCreatures = m_subsystemCreatureSpawn.CountCreatures(false);
-			if (totalCreatures >= MaxGlobalCreatures)
+			if (totalCreatures >= m_maxGlobalCreatures)
 				return 0;
 
 			var entry = GetRandomWeightedEntry(m_currentWaveEntries);
@@ -944,7 +958,7 @@ namespace Game
 			Vector2 areaMin = new Vector2(spawnPos.X - 16, spawnPos.Z - 16);
 			Vector2 areaMax = new Vector2(spawnPos.X + 16, spawnPos.Z + 16);
 			int nearby = m_subsystemCreatureSpawn.CountCreaturesInArea(areaMin, areaMax, false);
-			if (nearby >= MaxCreaturesPerArea)
+			if (nearby >= m_maxCreaturesPerArea)
 				return 0;
 
 			if (CanSpawnCreature(entry.TemplateName, spawnPos))
@@ -957,7 +971,7 @@ namespace Game
 				return 0;
 			}
 
-			int groupCount = m_random.Int(1, GroupSpawnCount);
+			int groupCount = m_random.Int(1, m_groupSpawnCount);
 			for (int i = 0; i < groupCount && spawned < MaxSpawnsPerFrame; i++)
 			{
 				var extraEntry = GetRandomWeightedEntry(m_currentWaveEntries);
@@ -1143,7 +1157,7 @@ namespace Game
 			{
 				m_currentWaveEntries = entries;
 				m_currentWave = wave;
-				m_spawnInterval = Math.Max(1.2f, 2.5f - (wave * 0.04f));
+				m_spawnInterval = Math.Max(1.2f, m_baseSpawnInterval - (wave * 0.04f));
 			}
 			else
 			{
@@ -1446,6 +1460,28 @@ namespace Game
 			if (bossTemplate == "FlyingInfectedBoss")
 				return "BossFlying";
 			return "BossGeneric";
+		}
+
+		private void ApplyDifficultySettings()
+		{
+			if (m_subsystemGreenNightSky == null) return;
+			DifficultyMode mode = m_subsystemGreenNightSky.DifficultyMode;
+			if (mode == m_lastAppliedDifficulty) return;
+			m_lastAppliedDifficulty = mode;
+
+			float countMult = DifficultyModifiers.GetSpawnCountMultiplier(mode);
+			m_maxGlobalCreatures = (int)(80 * countMult);
+			m_maxCreaturesPerArea = (int)(60 * countMult);
+			m_groupSpawnCount = Math.Max(1, (int)(2 * countMult));
+
+			float intervalMult = DifficultyModifiers.GetSpawnIntervalMultiplier(mode);
+			m_baseSpawnInterval = 2.5f * intervalMult;
+
+			// Re-aplicar el intervalo actual si estamos en una oleada activa
+			if (m_currentWaveEntries != null)
+			{
+				m_spawnInterval = Math.Max(1.2f, m_baseSpawnInterval - (m_currentWave * 0.04f));
+			}
 		}
 	}
 }
