@@ -10,6 +10,7 @@ namespace Game
 		public event Action NaturalNightEnded;
 		public event Action GreenNightStarted;
 		public int GreenNightIntervalDays { get; set; } = 4;
+		public DifficultyMode DifficultyMode { get; set; } = DifficultyMode.Normal;
 
 		public virtual bool IsGreenNightActive { get; set; }
 		private bool m_greenNightEnabled = true;
@@ -31,7 +32,6 @@ namespace Game
 						{
 							float timeOfDay = m_subsystemTimeOfDay.TimeOfDay;
 							bool isNight = timeOfDay >= m_subsystemTimeOfDay.DuskStart || timeOfDay < m_subsystemTimeOfDay.DawnStart;
-							// Usar el intervalo configurado
 							if (isNight && this.DaysSinceLastGreenNight >= this.GreenNightIntervalDays)
 							{
 								IsGreenNightActive = true;
@@ -97,7 +97,6 @@ namespace Game
 			bool isStartMoment = Math.Abs(timeOfDay - middusk) < duskTolerance;
 			bool isEndMoment = Math.Abs(timeOfDay - middawn) < dawnTolerance;
 
-			// Usar el intervalo configurado
 			if (!this.IsGreenNightActive && this.DaysSinceLastGreenNight >= this.GreenNightIntervalDays)
 			{
 				if (isStartMoment && !this.HasRolledTonight)
@@ -144,11 +143,6 @@ namespace Game
 				}
 			}
 
-			if (this.IsGreenNightActive && timeOfDay > this.m_subsystemTimeOfDay.DawnStart + 0.1f)
-			{
-				// No se requiere acción adicional
-			}
-
 			if (this.HasRolledTonight && isEndMoment)
 			{
 				this.HasRolledTonight = false;
@@ -167,6 +161,7 @@ namespace Game
 			this.DaysSinceLastGreenNight = valuesDictionary.GetValue<int>("DaysSinceLastGreenNight");
 			this.GreenNightEnabled = valuesDictionary.GetValue<bool>("GreenNightEnabled", true);
 			this.GreenNightIntervalDays = valuesDictionary.GetValue<int>("GreenNightIntervalDays", 4);
+			this.DifficultyMode = (DifficultyMode)valuesDictionary.GetValue<int>("DifficultyMode", 1);
 
 			SubsystemGreenNightSky.Instance = this;
 		}
@@ -179,6 +174,7 @@ namespace Game
 			valuesDictionary.SetValue<int>("DaysSinceLastGreenNight", this.DaysSinceLastGreenNight);
 			valuesDictionary.SetValue<bool>("GreenNightEnabled", this.GreenNightEnabled);
 			valuesDictionary.SetValue<int>("GreenNightIntervalDays", this.GreenNightIntervalDays);
+			valuesDictionary.SetValue<int>("DifficultyMode", (int)this.DifficultyMode);
 		}
 	}
 }
