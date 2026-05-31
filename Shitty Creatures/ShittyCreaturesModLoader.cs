@@ -34,6 +34,10 @@ namespace Game
 		private SubsystemPlayers m_healthBarPlayers;
 		public float HealthBarVisibilityRadius = 50f;
 
+		// Diccionarios para almacenar valores base de cada criatura (evita acumular multiplicadores)
+		private Dictionary<ComponentCreature, float> m_originalAttackPower = new Dictionary<ComponentCreature, float>();
+		private Dictionary<ComponentCreature, float> m_originalWalkSpeed = new Dictionary<ComponentCreature, float>();
+
 		// ShittyModLoader (original)
 		static FieldInfo m_cachesField;
 
@@ -197,6 +201,8 @@ namespace Game
 
 			// Forzar configuración de ruptura según dificultad actual
 			EnforceBlockBreakingByDifficulty(project);
+			// Ajustar salud, daño y velocidad según dificultad
+			EnforceCombatStatsByDifficulty(project);
 
 			// Ya no se necesita s_subsystemAchievements
 		}
@@ -2097,20 +2103,19 @@ namespace Game
 			var creatureSpawn = project.FindSubsystem<SubsystemCreatureSpawn>(true);
 			if (creatureSpawn == null) return;
 
-			DifficultyMode newDifficulty = greenNightSky.DifficultyMode;
-
+			// Recorrer todas las criaturas y forzar actualización
 			foreach (ComponentCreature creature in creatureSpawn.Creatures)
 			{
 				if (creature == null) continue;
 
+				// Para PathBreaker
 				var pathBreaker = creature.Entity.FindComponent<ComponentPathBreaker>();
-				if (pathBreaker != null)
-				{
-					// Forzar re-evaluación en el próximo Update
-					// No necesitamos hacer nada más porque el Update ya llama a ApplyDifficultyToPathBreaker()
-					// Pero podemos forzar una actualización inmediata si queremos:
-					pathBreaker.ApplyDifficultyToPathBreaker(); // Este método debería ser público o interno
-				}
+				pathBreaker?.ApplyDifficultyToPathBreaker();
+
+				// Para ChaseBehavior y HerdBehavior, ya se actualizan solos en su Update()
+				// Para Combat Stats (salud/daño/velocidad) – llamamos al método privado desde la instancia
+				var modLoader = ModsManager.ModLoaders.OfType<ShittyCreaturesModLoader>().FirstOrDefault();
+				modLoader?.EnforceCombatStatsByDifficulty(project);
 			}
 		}
 
@@ -2157,6 +2162,86 @@ namespace Game
 					{
 						pathBreaker.BreakProbability = 0f;
 					}
+				}
+			}
+		}
+
+		// Ajusta salud (resistencia) y daño de todas las criaturas según dificultad
+		private void EnforceCombatStatsByDifficulty(Project project)
+		{
+			var greenNight = project.FindSubsystem<SubsystemGreenNightSky>(true);
+			if (greenNight == null) return;
+
+			DifficultyMode mode = greenNight.DifficultyMode;
+
+			// Factor de resistencia al daño (AttackResilienceFactor) – más alto = más resistente
+			float resilienceFactor = 1f;
+			// Multiplicador de daño de ataque (AttackPower) para criaturas no jugador
+			float damageMult = 1f;
+			// Multiplicador de velocidad de movimiento (WalkSpeed) para criaturas no jugador
+			float speedMult = 1f;
+
+			switch (mode)
+			{
+				case DifficultyMode.Easy:
+					resilienceFactor = 0.7f;   // menos resistentes (mueren más fácil)
+					damageMult = 0.5f;         // hacen menos daño
+					speedMult = 0.9f;          // un poco más lentos
+					break;
+				case DifficultyMode.Normal:
+					resilienceFactor = 1.0f;
+					damageMult = 1.0f;
+					speedMult = 1.0f;
+					break;
+				case DifficultyMode.Medium:
+					resilienceFactor = 1.2f;
+					damageMult = 1.2f;
+					speedMult = 1.1f;
+					break;
+				case DifficultyMode.Hard:
+					resilienceFactor = 1.5f;
+					damageMult = 1.5f;
+					speedMult = 1.2f;
+					break;
+				case DifficultyMode.Extreme:
+					resilienceFactor = 2.0f;
+					damageMult = 2.0f;
+					speedMult = 1.4f;
+					break;
+			}
+
+			var creatureSpawn = project.FindSubsystem<SubsystemCreatureSpawn>(true);
+			if (creatureSpawn == null) return;
+
+			foreach (ComponentCreature creature in creatureSpawn.Creatures)
+			{
+				if (creature == null) continue;
+
+				// Ajustar resistencia al daño (solo para criaturas, no para jugadores)
+				var health = creature.ComponentHealth;
+				if (health != null && creature.Entity.FindComponent<ComponentPlayer>() == null)
+				{
+					// AttackResilienceFactor es público y existe en ComponentHealth
+					health.AttackResilienceFactor = resilienceFactor;
+				}
+
+				// Ajustar daño de ataque (solo para criaturas, no jugadores)
+				var miner = creature.Entity.FindComponent<ComponentMiner>();
+				if (miner != null && creature.Entity.FindComponent<ComponentPlayer>() == null)
+				{
+					// Guardar el valor base original la primera vez que se ajusta
+					if (!m_originalAttackPower.ContainsKey(creature))
+						m_originalAttackPower[creature] = miner.AttackPower;
+					miner.AttackPower = m_originalAttackPower[creature] * damageMult;
+				}
+
+				// Ajustar velocidad de movimiento (solo para criaturas, no jugadores)
+				var locomotion = creature.Entity.FindComponent<ComponentLocomotion>();
+				if (locomotion != null && creature.Entity.FindComponent<ComponentPlayer>() == null)
+				{
+					if (!m_originalWalkSpeed.ContainsKey(creature))
+						m_originalWalkSpeed[creature] = locomotion.WalkSpeed;
+					locomotion.WalkSpeed = m_originalWalkSpeed[creature] * speedMult;
 				}
 			}
 		}
