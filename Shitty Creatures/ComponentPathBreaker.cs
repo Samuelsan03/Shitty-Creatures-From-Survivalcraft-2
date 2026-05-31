@@ -76,10 +76,7 @@ namespace Game
 						}
 					}
 
-					foreach (string text in this.SpecificBlocks.Split(new char[]
-					{
-						','
-					}, StringSplitOptions.RemoveEmptyEntries))
+					foreach (string text in this.SpecificBlocks.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
 					{
 						string text2 = text.Trim();
 						int item;
@@ -99,10 +96,74 @@ namespace Game
 					Log.Warning("Error parsing SpecificBlocks in ComponentPathBreaker: " + ex.Message);
 				}
 			}
+
+			// ===== INICIALIZACIÓN DE DIFICULTAD (MOVIDA AQUÍ) =====
+			m_baseBreakProbability = this.BreakProbability;
+			m_subsystemGreenNightSky = Project.FindSubsystem<SubsystemGreenNightSky>(true);
+			if (m_subsystemGreenNightSky != null)
+			{
+				m_currentDifficulty = m_subsystemGreenNightSky.DifficultyMode;
+				ApplyDifficultyToPathBreaker();
+			}
+		}
+
+		public void ApplyDifficultyToPathBreaker()
+		{
+			if (m_subsystemGreenNightSky == null)
+			{
+				// Si no hay subsistema, por seguridad NO romper
+				this.CanBreakBlocks = false;
+				this.BreakProbability = 0f;
+				return;
+			}
+
+			DifficultyMode mode = m_subsystemGreenNightSky.DifficultyMode;
+			if (mode == m_currentDifficulty) return;
+			m_currentDifficulty = mode;
+
+			switch (mode)
+			{
+				case DifficultyMode.Easy:
+				case DifficultyMode.Normal:
+					this.CanBreakBlocks = false;
+					this.BreakProbability = 0f;
+					break;
+				case DifficultyMode.Medium:
+					this.CanBreakBlocks = true;
+					this.BreakProbability = m_baseBreakProbability * 0.3f;
+					break;
+				case DifficultyMode.Hard:
+					this.CanBreakBlocks = true;
+					this.BreakProbability = m_baseBreakProbability * 0.7f;
+					break;
+				case DifficultyMode.Extreme:
+					this.CanBreakBlocks = true;
+					this.BreakProbability = m_baseBreakProbability * 1.0f;
+					break;
+				default:
+					this.CanBreakBlocks = true;
+					this.BreakProbability = m_baseBreakProbability;
+					break;
+			}
 		}
 
 		public void Update(float dt)
 		{
+			if (m_subsystemGreenNightSky != null)
+			{
+				ApplyDifficultyToPathBreaker();
+			}
+			else
+			{
+				// Si por alguna razón no tenemos referencia al subsistema, asumir comportamiento seguro
+				// En dificultades bajas no deben romper. Como no sabemos, desactivamos rotura.
+				if (this.CanBreakBlocks)
+				{
+					Log.Warning("[PathBreaker] Sin referencia a GreenNightSky. Desactivando rotura por seguridad.");
+					this.CanBreakBlocks = false;
+					this.BreakProbability = 0f;
+				}
+			}
 			// Verificar si la criatura está muerta (solo si existe ComponentHealth)
 			if (this.m_componentHealth != null && this.m_componentHealth.Health <= 0f)
 			{
@@ -482,6 +543,10 @@ namespace Game
 		private double m_lastActionTime;
 		private Point3? m_blockToBreak;
 		private const float ActionCooldown = 0.5f;
+
+		private DifficultyMode m_currentDifficulty;
+		private float m_baseBreakProbability;
+		private SubsystemGreenNightSky m_subsystemGreenNightSky;
 
 		public enum AnimationType
 		{
