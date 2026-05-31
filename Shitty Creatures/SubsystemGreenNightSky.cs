@@ -61,6 +61,12 @@ namespace Game
 		public SubsystemTimeOfDay m_subsystemTimeOfDay;
 		private Random m_random = new Random();
 
+		// Método auxiliar para obtener mensajes localizados
+		private string GetLocalizedMessage(string key)
+		{
+			return LanguageControl.Get("GreenNightSky", key);
+		}
+
 		public virtual void Update(float dt)
 		{
 			if (!GreenNightEnabled) return;
@@ -114,9 +120,8 @@ namespace Game
 						{
 							if (componentPlayer?.ComponentGui != null)
 							{
-								componentPlayer.ComponentGui.DisplaySmallMessage(
-									LanguageControl.Get("GreenNightSky", "GreenMoonBegins"),
-									new Color(5, 154, 0), false, true);
+								string message = GetLocalizedMessage("GreenMoonBegins");
+								componentPlayer.ComponentGui.DisplaySmallMessage(message, new Color(5, 154, 0), false, true);
 							}
 						}
 					}
@@ -135,9 +140,8 @@ namespace Game
 					{
 						if (componentPlayer?.ComponentGui != null)
 						{
-							componentPlayer.ComponentGui.DisplaySmallMessage(
-								LanguageControl.Get("GreenNightSky", "GreenMoonEnds"),
-								new Color(5, 154, 0), false, true);
+							string message = GetLocalizedMessage("GreenMoonEnds");
+							componentPlayer.ComponentGui.DisplaySmallMessage(message, new Color(5, 154, 0), false, true);
 						}
 					}
 				}
@@ -175,6 +179,76 @@ namespace Game
 			valuesDictionary.SetValue<bool>("GreenNightEnabled", this.GreenNightEnabled);
 			valuesDictionary.SetValue<int>("GreenNightIntervalDays", this.GreenNightIntervalDays);
 			valuesDictionary.SetValue<int>("DifficultyMode", (int)this.DifficultyMode);
+		}
+
+		public static class DifficultyModifiers
+		{
+			public static float GetSpawnCountMultiplier(DifficultyMode mode)
+			{
+				switch (mode)
+				{
+					case DifficultyMode.Easy: return 0.5f;
+					case DifficultyMode.Normal: return 1.0f;
+					case DifficultyMode.Medium: return 1.2f;
+					case DifficultyMode.Hard: return 1.5f;
+					case DifficultyMode.Extreme: return 2.0f;
+					default: return 1.0f;
+				}
+			}
+
+			public static float GetSpawnIntervalMultiplier(DifficultyMode mode)
+			{
+				switch (mode)
+				{
+					case DifficultyMode.Easy: return 1.5f;
+					case DifficultyMode.Normal: return 1.0f;
+					case DifficultyMode.Medium: return 0.9f;
+					case DifficultyMode.Hard: return 0.7f;
+					case DifficultyMode.Extreme: return 0.5f;
+					default: return 1.0f;
+				}
+			}
+
+			public static float GetAggressionRangeMultiplier(DifficultyMode mode)
+			{
+				switch (mode)
+				{
+					case DifficultyMode.Easy: return 0.7f;
+					case DifficultyMode.Normal: return 1.0f;
+					case DifficultyMode.Medium: return 1.2f;
+					case DifficultyMode.Hard: return 1.5f;
+					case DifficultyMode.Extreme: return 2.0f;
+					default: return 1.0f;
+				}
+			}
+
+			public static bool ShouldUseFlanking(DifficultyMode mode)
+			{
+				return mode == DifficultyMode.Hard || mode == DifficultyMode.Extreme;
+			}
+
+			public static bool ShouldAlwaysCallHelp(DifficultyMode mode)
+			{
+				return mode >= DifficultyMode.Medium;
+			}
+
+			public static float GetHelpCallRangeMultiplier(DifficultyMode mode)
+			{
+				switch (mode)
+				{
+					case DifficultyMode.Easy: return 0.5f;
+					case DifficultyMode.Normal: return 1.0f;
+					case DifficultyMode.Medium: return 1.2f;
+					case DifficultyMode.Hard: return 1.5f;
+					case DifficultyMode.Extreme: return 2.0f;
+					default: return 1.0f;
+				}
+			}
+
+			public static bool IsChasePersistent(DifficultyMode mode)
+			{
+				return mode == DifficultyMode.Extreme;
+			}
 		}
 	}
 }
