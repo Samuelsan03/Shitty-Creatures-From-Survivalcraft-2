@@ -195,6 +195,9 @@ namespace Game
 			// Añadir botones de logro a todos los jugadores
 			AddAchievementButtonToPlayers(project);
 
+			// Forzar configuración de ruptura según dificultad actual
+			EnforceBlockBreakingByDifficulty(project);
+
 			// Ya no se necesita s_subsystemAchievements
 		}
 
@@ -2083,6 +2086,78 @@ namespace Game
 				m_fastHitMode.TryGetValue(miner.ComponentPlayer, out bool fastMode) && fastMode)
 			{
 				hitInterval = 0.1;
+			}
+		}
+
+		// Método para que todas las criaturas reaccionen al cambio de dificultad
+		public static void NotifyDifficultyChanged(SubsystemGreenNightSky greenNightSky)
+		{
+			if (greenNightSky == null) return;
+			var project = greenNightSky.Project;
+			var creatureSpawn = project.FindSubsystem<SubsystemCreatureSpawn>(true);
+			if (creatureSpawn == null) return;
+
+			DifficultyMode newDifficulty = greenNightSky.DifficultyMode;
+
+			foreach (ComponentCreature creature in creatureSpawn.Creatures)
+			{
+				if (creature == null) continue;
+
+				var pathBreaker = creature.Entity.FindComponent<ComponentPathBreaker>();
+				if (pathBreaker != null)
+				{
+					// Forzar re-evaluación en el próximo Update
+					// No necesitamos hacer nada más porque el Update ya llama a ApplyDifficultyToPathBreaker()
+					// Pero podemos forzar una actualización inmediata si queremos:
+					pathBreaker.ApplyDifficultyToPathBreaker(); // Este método debería ser público o interno
+				}
+			}
+		}
+
+		// Método para forzar la configuración de ruptura de bloques según dificultad en TODAS las criaturas
+		public void EnforceBlockBreakingByDifficulty(Project project)
+		{
+			var greenNight = project.FindSubsystem<SubsystemGreenNightSky>(true);
+			if (greenNight == null) return;
+
+			DifficultyMode mode = greenNight.DifficultyMode;
+			bool shouldBreak = (mode == DifficultyMode.Medium || mode == DifficultyMode.Hard || mode == DifficultyMode.Extreme);
+			float probabilityMultiplier = 1f;
+			switch (mode)
+			{
+				case DifficultyMode.Medium: probabilityMultiplier = 0.3f; break;
+				case DifficultyMode.Hard: probabilityMultiplier = 0.7f; break;
+				case DifficultyMode.Extreme: probabilityMultiplier = 1.0f; break;
+				default: shouldBreak = false; break;
+			}
+
+			var creatureSpawn = project.FindSubsystem<SubsystemCreatureSpawn>(true);
+			if (creatureSpawn == null) return;
+
+			foreach (ComponentCreature creature in creatureSpawn.Creatures)
+			{
+				if (creature == null) continue;
+				var pathBreaker = creature.Entity.FindComponent<ComponentPathBreaker>();
+				if (pathBreaker != null)
+				{
+					// Forzar los valores independientemente de la plantilla
+					pathBreaker.CanBreakBlocks = shouldBreak;
+					if (shouldBreak)
+					{
+						// Mantener la probabilidad base pero escalada (asumiendo que ya tiene un valor por defecto)
+						// Si quieres escalar sobre el valor original, necesitas almacenar el original en otro lado.
+						// Por simplicidad, asumimos que el valor actual es el base (para Normal) y lo escalamos.
+						// Como no tenemos acceso a m_baseBreakProbability desde aquí, usamos un enfoque alternativo:
+						// Si el valor actual es 0, establecemos uno por defecto.
+						if (pathBreaker.BreakProbability <= 0f)
+							pathBreaker.BreakProbability = 0.5f; // valor por defecto razonable
+						pathBreaker.BreakProbability = pathBreaker.BreakProbability * probabilityMultiplier;
+					}
+					else
+					{
+						pathBreaker.BreakProbability = 0f;
+					}
+				}
 			}
 		}
 
