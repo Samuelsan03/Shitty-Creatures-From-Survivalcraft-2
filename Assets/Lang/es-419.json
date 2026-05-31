@@ -271,7 +271,6 @@
     "SkeletonSpawnDescription": "Generar esqueletos en noches normales",
     "FastMeleeDescription": "Permitir ataques cuerpo a cuerpo rápidos consecutivos al hacer clic/tocar rápidamente en el mismo objetivo",
     "InGameMusicDescription": "Muestra un botón en el juego para reproducir pistas de música aleatorias durante la partida."
-
   },
   "SpecialThanksScreen": {
   "0": "Agradecimientos Especiales",
@@ -1411,7 +1410,7 @@
     "NoPowerStatus": "Sin energía"
   },
     "GreenNightToggleDialog": {
-  "Title": "Configuración de Noche Verde",
+  "Title": "Configuración de la Noche Verde",
   "CheckboxText": "Activar Noche Verde",
   "OkButton": "Aceptar",
   "CancelButton": "Cancelar",
@@ -1420,22 +1419,36 @@
   "DisableExplanation": "El mundo está en calma. Las noches transcurren normalmente sin amenazas especiales.",
   "EnabledNotification": "Noche Verde activada",
   "DisabledNotification": "Noche Verde desactivada",
-  "IntervalLabel": "Configurar intervalo de noches verdes:",
-  "IntervalHintLabel": "(Cada cuántos días aparece la noche verde)"
+  "IntervalLabel": "Establecer intervalo de la Noche Verde:",
+  "IntervalHintLabel": "(Cuántos días entre cada Noche Verde)"
 },
-    "GreenNightIntervalDialog": {
-  "1": "Configuración de Noche Verde",
-  "2": "¿Cada cuántos días quieres que ocurra la Noche Verde?",
+"GreenNightIntervalDialog": {
+  "1": "Configuración de la Noche Verde",
+  "2": "¿Con qué frecuencia deseas que ocurra la Noche Verde?",
   "3": "Intervalo:",
   "4": "Aceptar",
   "5": "Cancelar",
   "6": "Rápido e intenso.\nPerfecto para jugadores que buscan acción constante.",
-  "7": "Ritmo equilibrado.\nIdeal para prepararte sin perder la emoción.",
-  "8": "Tranquilo y estable.\nMás tiempo para construir antes del evento.",
-  "9": "Muy relajado.\nPara disfrutar de la exploración sin prisas.",
-  "10": "Si prefieres no elegir, simplemente cancela. \nLa Noche Verde ocurrirá entonces cada 4 días por defecto.",
-  "11": "Se ha establecido la Noche Verde cada {0} días.",
-  "12": "{0} días"
+  "7": "Ritmo equilibrado.\nIdeal para prepararse sin perder la emoción.",
+  "8": "Tranquilo y constante.\nMás tiempo para construir antes del evento.",
+  "9": "Muy relajado.\nDisfruta de la exploración sin prisas.",
+  "10": "Si prefieres no elegir, simplemente cancela.\nLa Noche Verde ocurrirá cada 4 días de forma predeterminada.",
+  "11": "La Noche Verde se ha configurado en {0} cada {1} días.",
+  "12": "{0} días",
+  "DifficultyLabel": "Dificultad",
+  "DifficultyPlaceholder": "Selecciona una dificultad"
+},
+"GreenNightDifficulty": {
+  "Easy_Name": "Fácil",
+  "Easy_Desc": "Los infectados son torpes y lentos.\nNo pueden romper bloques, lanzar ataques a distancia ni usar armas de fuego.",
+  "Normal_Name": "Normal",
+  "Normal_Desc": "Los infectados se comportan normalmente,\nofreciendo una experiencia justa y entretenida.",
+  "Medium_Name": "Media",
+  "Medium_Desc": "Los infectados ahora pueden destruir\nestructuras frágiles, pero aún no usan\nataques a distancia ni armas de fuego.",
+  "Hard_Name": "Difícil",
+  "Hard_Desc": "Los infectados destruyen todo tipo de bloques\ny combaten con armas a distancia y armas de fuego.",
+  "Extreme_Name": "Extrema",
+  "Extreme_Desc": "Los infectados poseen una inteligencia\nartificial implacable y errática. Completar esta dificultad\notorga un logro especial y una recompensa única."
 },
     "VehicleInventoryWidget": {
   "1": "Vehículo",
