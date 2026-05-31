@@ -20,14 +20,13 @@ namespace Game
 		private LabelWidget m_descriptionLabel;
 		private StackPanelWidget m_warningPanel;
 
-		// Botón único de dificultad
 		private BevelledButtonWidget m_difficultyButton;
 		private LabelWidget m_difficultyDescLabel;
-		private DifficultyMode m_currentDifficulty;
+		private DifficultyMode m_currentDisplayDifficulty;
+		private DifficultyMode m_tempDifficulty;
 
 		private readonly int[] m_options = { 4, 8, 12, 16 };
 
-		// Modos de dificultad (solo lógica, los textos vienen del JSON)
 		private readonly DifficultyMode[] m_difficultyModes = {
 			DifficultyMode.Easy,
 			DifficultyMode.Normal,
@@ -36,20 +35,18 @@ namespace Game
 			DifficultyMode.Extreme
 		};
 
-		// Colores fijos (no se localizan)
 		private readonly Color[] m_difficultyColors = {
-			new Color(100, 200, 100),   // Verde claro
-            new Color(100, 100, 255),   // Azul
-            new Color(255, 200, 0),     // Amarillo
-            new Color(255, 80, 80),     // Rojo
-            new Color(150, 0, 150)      // Morado
-        };
+			new Color(100, 200, 100),
+			new Color(100, 100, 255),
+			new Color(255, 200, 0),
+			new Color(255, 80, 80),
+			new Color(150, 0, 150)
+		};
 
 		private string GetText(int key) => LanguageControl.GetContentWidgets("GreenNightIntervalDialog", key.ToString());
 
 		private string GetDescription(int days)
 		{
-			// Las descripciones están en el JSON con claves 6,7,8,9
 			string key = days switch
 			{
 				4 => "6",
@@ -72,7 +69,8 @@ namespace Game
 			m_isFirstTime = isFirstTime;
 			m_showMessageOnAccept = showMessageOnAccept;
 			m_onAccept = onAccept;
-			m_currentDifficulty = m_greenNightSky.DifficultyMode;
+			m_currentDisplayDifficulty = m_greenNightSky.DifficultyMode;
+			m_tempDifficulty = m_greenNightSky.DifficultyMode;
 
 			XElement node = ContentManager.Get<XElement>("Dialogs/GreenNightIntervalDialog");
 			LoadContents(null, node);
@@ -102,10 +100,10 @@ namespace Game
 
 		private void UpdateDifficultyUI()
 		{
-			int idx = GetDifficultyIndex(m_currentDifficulty);
+			int idx = GetDifficultyIndex(m_currentDisplayDifficulty);
 			if (m_difficultyButton != null)
 			{
-				string difficultyName = GetDifficultyName(m_currentDifficulty);
+				string difficultyName = GetDifficultyName(m_currentDisplayDifficulty);
 				m_difficultyButton.Text = difficultyName;
 				m_difficultyButton.BevelColor = m_difficultyColors[idx];
 				m_difficultyButton.CenterColor = m_difficultyColors[idx];
@@ -117,12 +115,12 @@ namespace Game
 		{
 			for (int i = 0; i < m_difficultyModes.Length; i++)
 				if (m_difficultyModes[i] == mode) return i;
-			return 1; // Normal
+			return 1;
 		}
 
-		private DifficultyMode GetNextDifficulty()
+		private DifficultyMode GetNextDifficulty(DifficultyMode current)
 		{
-			int idx = GetDifficultyIndex(m_currentDifficulty);
+			int idx = GetDifficultyIndex(current);
 			idx = (idx + 1) % m_difficultyModes.Length;
 			return m_difficultyModes[idx];
 		}
@@ -157,19 +155,17 @@ namespace Game
 
 		private void CycleDifficulty()
 		{
-			m_currentDifficulty = GetNextDifficulty();
-			m_greenNightSky.DifficultyMode = m_currentDifficulty;
+			// SOLO cambiar la dificultad temporal y la visual, NO la del subsistema
+			m_tempDifficulty = GetNextDifficulty(m_tempDifficulty);
+			m_currentDisplayDifficulty = m_tempDifficulty;
 			UpdateDifficultyUI();
 			AudioManager.PlaySound("Audio/UI/ButtonClick", 1f, 0f, 0f);
-
-			// Notificar a todas las criaturas del cambio de dificultad
-			ShittyCreaturesModLoader.NotifyDifficultyChanged(m_greenNightSky);
 		}
 
 		private void UpdateDifficultyDescription()
 		{
 			if (m_difficultyDescLabel != null)
-				m_difficultyDescLabel.Text = GetDifficultyDescription(m_currentDifficulty);
+				m_difficultyDescLabel.Text = GetDifficultyDescription(m_currentDisplayDifficulty);
 		}
 
 		private void UpdateDaysButton()
@@ -182,21 +178,6 @@ namespace Game
 		{
 			m_descriptionLabel.Text = GetDescription(days);
 			m_descriptionLabel.Color = new Color(255, 165, 0);
-		}
-
-		public static void NotifyDifficultyChanged(SubsystemGreenNightSky greenNightSky)
-		{
-			if (greenNightSky == null) return;
-
-			// Buscar el mod loader por tipo
-			foreach (var modLoader in ModsManager.ModLoaders)
-			{
-				if (modLoader is ShittyCreaturesModLoader shittyLoader)
-				{
-					shittyLoader.EnforceBlockBreakingByDifficulty(greenNightSky.Project);
-					break;
-				}
-			}
 		}
 
 		public override void Update()
@@ -229,6 +210,10 @@ namespace Game
 			if (m_isClosing) return;
 			m_isClosing = true;
 
+			// Aplicar los cambios SOLO al aceptar
+			m_greenNightSky.DifficultyMode = m_tempDifficulty;
+			ShittyCreaturesModLoader.NotifyDifficultyChanged(m_greenNightSky);
+
 			if (m_onAccept != null)
 				m_onAccept(m_selectedDays);
 			else
@@ -236,10 +221,17 @@ namespace Game
 				m_greenNightSky.GreenNightIntervalDays = m_selectedDays;
 				if (m_showMessageOnAccept)
 				{
-					string difficultyName = GetDifficultyName(m_currentDifficulty);
+					string difficultyName = GetDifficultyName(m_tempDifficulty);
 					string message = string.Format(GetText(11), difficultyName, m_selectedDays);
 					m_player.ComponentGui.DisplaySmallMessage(message, Color.White, false, true);
 				}
+			}
+
+			// Forzar actualización del label de dificultad en el HUD
+			var zombiesSpawn = m_greenNightSky.Project.FindSubsystem<SubsystemZombiesSpawn>(true);
+			if (zombiesSpawn != null)
+			{
+				zombiesSpawn.ForceUpdateDifficultyLabel();
 			}
 
 			DialogsManager.HideDialog(this);
@@ -250,7 +242,6 @@ namespace Game
 			if (m_isClosing) return;
 			m_isClosing = true;
 
-			// SE CONSERVA EL MOSTRAR MENSAJES: al cancelar aquí se guardan los días temporales en el ToggleDialog
 			if (m_showMessageOnAccept)
 			{
 				string difficultyName = GetDifficultyName(m_greenNightSky.DifficultyMode);
