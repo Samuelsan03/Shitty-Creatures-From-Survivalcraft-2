@@ -29,9 +29,6 @@ namespace Game
 		public static event Action<ComponentPlayer, int, int> OnPirateCounterChanged;
 		public static event Action<ComponentPlayer, int, int> OnFlyingCounterChanged;
 		public static event Action<ComponentPlayer, int, int> OnBoomerCounterChanged;
-		public static event Action<ComponentPlayer, int, int> OnMeleeInfectedCounterChanged;
-public static event Action<ComponentPlayer, int, int> OnMeleeGhostCounterChanged;
-public static event Action<ComponentPlayer, int, int> OnMeleeBanditCounterChanged;
 
 		private static void LoadAchievementRewards()
 		{
@@ -332,93 +329,6 @@ public static event Action<ComponentPlayer, int, int> OnMeleeBanditCounterChange
 				if (kills >= 100 && !s_subsystemAchievements.IsAchievementUnlocked(51))
 					UnlockAchievement(killer, 51, "Kill100Boomers", LanguageControl.Get(AchievementsWidget.fName, 106));
 			}
-
-			// ========== ASESINATOS CUERPO A CUERPO (PUÑO + ARMAS) ==========
-			// MeleeAttackment incluye: puño limpio, espadas, hachas, machetes, cuchillos, etc.
-			bool isMeleeKill = (injury is MeleeAttackment) || IsPlayerUsingMeleeWeapon(killer);
-			if (isMeleeKill)
-			{
-				// Infectados normales
-				if (isNormalInfected)
-				{
-					s_subsystemAchievements.AddMeleeInfectedKill(playerIndex);
-					int kills = s_subsystemAchievements.GetMeleeInfectedKills(playerIndex);
-
-					if (!s_subsystemAchievements.IsAchievementUnlocked(52)) OnMeleeInfectedCounterChanged?.Invoke(killer, kills, 10);
-					if (!s_subsystemAchievements.IsAchievementUnlocked(53)) OnMeleeInfectedCounterChanged?.Invoke(killer, kills, 25);
-					if (!s_subsystemAchievements.IsAchievementUnlocked(54)) OnMeleeInfectedCounterChanged?.Invoke(killer, kills, 55);
-					if (!s_subsystemAchievements.IsAchievementUnlocked(55)) OnMeleeInfectedCounterChanged?.Invoke(killer, kills, 100);
-					if (!s_subsystemAchievements.IsAchievementUnlocked(56)) OnMeleeInfectedCounterChanged?.Invoke(killer, kills, 200);
-					if (!s_subsystemAchievements.IsAchievementUnlocked(57)) OnMeleeInfectedCounterChanged?.Invoke(killer, kills, 500);
-
-					if (kills >= 10 && !s_subsystemAchievements.IsAchievementUnlocked(52))
-						UnlockAchievement(killer, 52, "Melee10Infected", LanguageControl.Get(AchievementsWidget.fName, 108));
-					if (kills >= 25 && !s_subsystemAchievements.IsAchievementUnlocked(53))
-						UnlockAchievement(killer, 53, "Melee25Infected", LanguageControl.Get(AchievementsWidget.fName, 110));
-					if (kills >= 55 && !s_subsystemAchievements.IsAchievementUnlocked(54))
-						UnlockAchievement(killer, 54, "Melee55Infected", LanguageControl.Get(AchievementsWidget.fName, 112));
-					if (kills >= 100 && !s_subsystemAchievements.IsAchievementUnlocked(55))
-						UnlockAchievement(killer, 55, "Melee100Infected", LanguageControl.Get(AchievementsWidget.fName, 114));
-					if (kills >= 200 && !s_subsystemAchievements.IsAchievementUnlocked(56))
-						UnlockAchievement(killer, 56, "Melee200Infected", LanguageControl.Get(AchievementsWidget.fName, 116));
-					if (kills >= 500 && !s_subsystemAchievements.IsAchievementUnlocked(57))
-						UnlockAchievement(killer, 57, "Melee500Infected", LanguageControl.Get(AchievementsWidget.fName, 118));
-				}
-
-				// Fantasmas normales
-				if (isGhost)
-				{
-					s_subsystemAchievements.AddMeleeGhostKill(playerIndex);
-					int kills = s_subsystemAchievements.GetMeleeGhostKills(playerIndex);
-
-					if (!s_subsystemAchievements.IsAchievementUnlocked(58)) OnMeleeGhostCounterChanged?.Invoke(killer, kills, 10);
-					if (!s_subsystemAchievements.IsAchievementUnlocked(59)) OnMeleeGhostCounterChanged?.Invoke(killer, kills, 25);
-					if (!s_subsystemAchievements.IsAchievementUnlocked(60)) OnMeleeGhostCounterChanged?.Invoke(killer, kills, 55);
-					if (!s_subsystemAchievements.IsAchievementUnlocked(61)) OnMeleeGhostCounterChanged?.Invoke(killer, kills, 100);
-					if (!s_subsystemAchievements.IsAchievementUnlocked(62)) OnMeleeGhostCounterChanged?.Invoke(killer, kills, 200);
-					if (!s_subsystemAchievements.IsAchievementUnlocked(63)) OnMeleeGhostCounterChanged?.Invoke(killer, kills, 500);
-
-					if (kills >= 10 && !s_subsystemAchievements.IsAchievementUnlocked(58))
-						UnlockAchievement(killer, 58, "Melee10Ghost", LanguageControl.Get(AchievementsWidget.fName, 120));
-					if (kills >= 25 && !s_subsystemAchievements.IsAchievementUnlocked(59))
-						UnlockAchievement(killer, 59, "Melee25Ghost", LanguageControl.Get(AchievementsWidget.fName, 122));
-					if (kills >= 55 && !s_subsystemAchievements.IsAchievementUnlocked(60))
-						UnlockAchievement(killer, 60, "Melee55Ghost", LanguageControl.Get(AchievementsWidget.fName, 124));
-					if (kills >= 100 && !s_subsystemAchievements.IsAchievementUnlocked(61))
-						UnlockAchievement(killer, 61, "Melee100Ghost", LanguageControl.Get(AchievementsWidget.fName, 126));
-					if (kills >= 200 && !s_subsystemAchievements.IsAchievementUnlocked(62))
-						UnlockAchievement(killer, 62, "Melee200Ghost", LanguageControl.Get(AchievementsWidget.fName, 128));
-					if (kills >= 500 && !s_subsystemAchievements.IsAchievementUnlocked(63))
-						UnlockAchievement(killer, 63, "Melee500Ghost", LanguageControl.Get(AchievementsWidget.fName, 130));
-				}
-
-				// Bandidos (ComponentBanditHerdBehavior)
-				if (deadEntity.FindComponent<ComponentBanditHerdBehavior>() != null)
-				{
-					s_subsystemAchievements.AddMeleeBanditKill(playerIndex);
-					int kills = s_subsystemAchievements.GetMeleeBanditKills(playerIndex);
-
-					if (!s_subsystemAchievements.IsAchievementUnlocked(64)) OnMeleeBanditCounterChanged?.Invoke(killer, kills, 10);
-					if (!s_subsystemAchievements.IsAchievementUnlocked(65)) OnMeleeBanditCounterChanged?.Invoke(killer, kills, 25);
-					if (!s_subsystemAchievements.IsAchievementUnlocked(66)) OnMeleeBanditCounterChanged?.Invoke(killer, kills, 55);
-					if (!s_subsystemAchievements.IsAchievementUnlocked(67)) OnMeleeBanditCounterChanged?.Invoke(killer, kills, 100);
-					if (!s_subsystemAchievements.IsAchievementUnlocked(68)) OnMeleeBanditCounterChanged?.Invoke(killer, kills, 200);
-					if (!s_subsystemAchievements.IsAchievementUnlocked(69)) OnMeleeBanditCounterChanged?.Invoke(killer, kills, 500);
-
-					if (kills >= 10 && !s_subsystemAchievements.IsAchievementUnlocked(64))
-						UnlockAchievement(killer, 64, "Melee10Bandit", LanguageControl.Get(AchievementsWidget.fName, 132));
-					if (kills >= 25 && !s_subsystemAchievements.IsAchievementUnlocked(65))
-						UnlockAchievement(killer, 65, "Melee25Bandit", LanguageControl.Get(AchievementsWidget.fName, 134));
-					if (kills >= 55 && !s_subsystemAchievements.IsAchievementUnlocked(66))
-						UnlockAchievement(killer, 66, "Melee55Bandit", LanguageControl.Get(AchievementsWidget.fName, 136));
-					if (kills >= 100 && !s_subsystemAchievements.IsAchievementUnlocked(67))
-						UnlockAchievement(killer, 67, "Melee100Bandit", LanguageControl.Get(AchievementsWidget.fName, 138));
-					if (kills >= 200 && !s_subsystemAchievements.IsAchievementUnlocked(68))
-						UnlockAchievement(killer, 68, "Melee200Bandit", LanguageControl.Get(AchievementsWidget.fName, 140));
-					if (kills >= 500 && !s_subsystemAchievements.IsAchievementUnlocked(69))
-						UnlockAchievement(killer, 69, "Melee500Bandit", LanguageControl.Get(AchievementsWidget.fName, 142));
-				}
-			}
 		}
 
 		private static bool IsFlyingCreature(string templateName)
@@ -541,25 +451,6 @@ public static event Action<ComponentPlayer, int, int> OnMeleeBanditCounterChange
 		public static int GetPirateKills(ComponentPlayer player) => player == null ? 0 : s_subsystemAchievements?.GetPirateKills(player.PlayerData.PlayerIndex) ?? 0;
 		public static int GetFlyingKills(ComponentPlayer player) => player == null ? 0 : s_subsystemAchievements?.GetFlyingKills(player.PlayerData.PlayerIndex) ?? 0;
 		public static int GetBoomerKills(ComponentPlayer player) => player == null ? 0 : s_subsystemAchievements?.GetBoomerKills(player.PlayerData.PlayerIndex) ?? 0;
-		public static int GetMeleeInfectedKills(ComponentPlayer player) => player == null ? 0 : s_subsystemAchievements?.GetMeleeInfectedKills(player.PlayerData.PlayerIndex) ?? 0;
-		public static int GetMeleeGhostKills(ComponentPlayer player) => player == null ? 0 : s_subsystemAchievements?.GetMeleeGhostKills(player.PlayerData.PlayerIndex) ?? 0;
-		public static int GetMeleeBanditKills(ComponentPlayer player) => player == null ? 0 : s_subsystemAchievements?.GetMeleeBanditKills(player.PlayerData.PlayerIndex) ?? 0;
-
-		private static bool IsPlayerUsingMeleeWeapon(ComponentPlayer player)
-		{
-			if (player == null || player.ComponentMiner == null) return false;
-
-			int activeBlock = player.ComponentMiner.ActiveBlockValue;
-			if (activeBlock == 0) return true; // Puño limpio cuenta como melee
-
-			int content = Terrain.ExtractContents(activeBlock);
-			Block block = BlocksManager.Blocks[content];
-
-			// Un arma cuerpo a cuerpo tiene poder de melee > 0 o probabilidad de golpe > 0
-			float meleePower = block.GetMeleePower(activeBlock);
-			float meleeHitProb = block.GetMeleeHitProbability(activeBlock);
-			return meleePower > 0f || meleeHitProb > 0f;
-		}
 		public static bool ClaimAchievementReward(ComponentPlayer player, int achievementNumber, int rewardAmount)
 		{
 			if (s_subsystemAchievements == null) return false;
