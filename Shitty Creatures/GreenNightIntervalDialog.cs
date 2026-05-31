@@ -231,9 +231,13 @@ namespace Game
 			if (m_isClosing) return;
 			m_isClosing = true;
 
-			if (m_isFirstTime && m_showMessageOnAccept)
+			// Siempre mostrar mensaje 11 con la configuración actual
+			if (m_showMessageOnAccept)
 			{
-				string message = string.Format(GetText(11), m_greenNightSky.GreenNightIntervalDays);
+				// Obtener la dificultad ACTUAL del subsistema (no la temporal del diálogo)
+				string difficultyName = GetDifficultyName(m_greenNightSky.DifficultyMode);
+				int currentDays = m_greenNightSky.GreenNightIntervalDays;
+				string message = string.Format(GetText(11), difficultyName, currentDays);
 				m_player.ComponentGui.DisplaySmallMessage(message, Color.White, false, true);
 			}
 
