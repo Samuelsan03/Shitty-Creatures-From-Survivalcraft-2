@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Engine;
 using GameEntitySystem;
 using TemplatesDatabase;
+using static Game.SubsystemGreenNightSky;
 
 namespace Game
 {
@@ -46,6 +47,7 @@ namespace Game
 		private SubsystemBodies m_subsystemBodies;
 		private ComponentPathfinding m_pathfinding;
 		private SubsystemParticles m_subsystemParticles;
+		private SubsystemGreenNightSky m_subsystemGreenNightSky;
 
 		private float m_aimTimer;
 		private bool m_isAiming;
@@ -63,6 +65,9 @@ namespace Game
 		private bool m_isFlanking;
 
 		private List<int> m_throwableIndices = new List<int>();
+
+		private DifficultyMode m_currentDifficulty;
+		private bool m_flankingEnabled;
 
 		// ========== ARMAS DE FUEGO MODERNAS ==========
 		private class FirearmDefConfig
@@ -153,6 +158,7 @@ namespace Game
 			m_subsystemTime = base.Project.FindSubsystem<SubsystemTime>(true);
 			m_subsystemTerrain = base.Project.FindSubsystem<SubsystemTerrain>(true);
 			m_subsystemBodies = base.Project.FindSubsystem<SubsystemBodies>(true);
+			m_subsystemGreenNightSky = base.Project.FindSubsystem<SubsystemGreenNightSky>(true);
 			m_componentMiner = base.Entity.FindComponent<ComponentMiner>(true);
 			m_componentCreature = base.Entity.FindComponent<ComponentCreature>(true);
 			m_componentBody = base.Entity.FindComponent<ComponentBody>(true);
@@ -176,6 +182,28 @@ namespace Game
 			m_subsystemProjectiles.ProjectileAdded += OnProjectileAdded;
 
 			InitializeThrowableIndices();
+
+			var greenNight = Project.FindSubsystem<SubsystemGreenNightSky>(true);
+			if (greenNight != null)
+			{
+				m_currentDifficulty = greenNight.DifficultyMode;
+				ApplyDifficultyToAI();
+			}
+		}
+
+		private void ApplyDifficultyToAI()
+		{
+			if (m_subsystemGreenNightSky == null) return;
+			DifficultyMode mode = m_subsystemGreenNightSky.DifficultyMode;
+			if (mode == m_currentDifficulty) return;
+			m_currentDifficulty = mode;
+
+			m_flankingEnabled = DifficultyModifiers.ShouldUseFlanking(mode);
+
+			// Ajustar rango de ataque según dificultad
+			float rangeMult = DifficultyModifiers.GetAggressionRangeMultiplier(mode);
+			AttackRange = new Vector2(AttackRange.X, AttackRange.Y * rangeMult);
+			ThrowableRange = new Vector2(ThrowableRange.X, ThrowableRange.Y * rangeMult);
 		}
 
 		private void InitializeThrowableIndices()
@@ -240,6 +268,11 @@ namespace Game
 
 		public virtual void Update(float dt)
 		{
+			if (m_subsystemGreenNightSky != null)
+			{
+				ApplyDifficultyToAI();
+			}
+
 			// Si estamos flanqueando, actualizar temporizador y salir
 			if (m_isFlanking)
 			{
@@ -337,14 +370,23 @@ namespace Game
 			}
 			else if (isThrowable && (!throwableHasLOS || isStuck))
 			{
-				if (!m_isFlanking)
+				if (m_flankingEnabled && !m_isFlanking)
 				{
 					StartFlanking(target.ComponentBody.Position);
 				}
-				else
+				else if (!m_flankingEnabled)
 				{
-					m_flankTimer -= dt;
-					if (m_flankTimer <= 0f) StopFlanking();
+					// Sin flanqueo: simplemente esperar o moverse aleatoriamente
+					if (m_pathfinding != null && m_pathfinding.Destination == null)
+					{
+						Vector3 randomDir = new Vector3(m_random.Float(-1f, 1f), 0f, m_random.Float(-1f, 1f));
+						if (randomDir.LengthSquared() > 0.01f)
+						{
+							randomDir = Vector3.Normalize(randomDir);
+							Vector3 destination = m_componentBody.Position + randomDir * 5f;
+							m_pathfinding.SetDestination(destination, 1f, 1f, 50, false, true, false, null);
+						}
+					}
 				}
 				return;
 			}
