@@ -23,9 +23,6 @@ namespace Game
 		private Dictionary<int, int> m_pirateKills = new Dictionary<int, int>();
 		private Dictionary<int, int> m_flyingKills = new Dictionary<int, int>();
 		private Dictionary<int, int> m_boomerKills = new Dictionary<int, int>();
-		private Dictionary<int, int> m_meleeInfectedKills = new Dictionary<int, int>();
-		private Dictionary<int, int> m_meleeGhostKills = new Dictionary<int, int>();
-		private Dictionary<int, int> m_meleeBanditKills = new Dictionary<int, int>();
 
 		public bool IsAchievementUnlocked(int achievementNumber)
 		{
@@ -151,27 +148,6 @@ namespace Game
 			m_boomerKills[playerIndex]++;
 		}
 
-		public int GetMeleeInfectedKills(int playerIndex) => m_meleeInfectedKills.TryGetValue(playerIndex, out int v) ? v : 0;
-		public void AddMeleeInfectedKill(int playerIndex)
-		{
-			if (!m_meleeInfectedKills.ContainsKey(playerIndex)) m_meleeInfectedKills[playerIndex] = 0;
-			m_meleeInfectedKills[playerIndex]++;
-		}
-
-		public int GetMeleeGhostKills(int playerIndex) => m_meleeGhostKills.TryGetValue(playerIndex, out int v) ? v : 0;
-		public void AddMeleeGhostKill(int playerIndex)
-		{
-			if (!m_meleeGhostKills.ContainsKey(playerIndex)) m_meleeGhostKills[playerIndex] = 0;
-			m_meleeGhostKills[playerIndex]++;
-		}
-
-		public int GetMeleeBanditKills(int playerIndex) => m_meleeBanditKills.TryGetValue(playerIndex, out int v) ? v : 0;
-		public void AddMeleeBanditKill(int playerIndex)
-		{
-			if (!m_meleeBanditKills.ContainsKey(playerIndex)) m_meleeBanditKills[playerIndex] = 0;
-			m_meleeBanditKills[playerIndex]++;
-		}
-
 		public override void Load(ValuesDictionary valuesDictionary)
 		{
 			// Logros desbloqueados
@@ -215,9 +191,6 @@ namespace Game
 			LoadCounter(valuesDictionary, "PirateKills", m_pirateKills);
 			LoadCounter(valuesDictionary, "FlyingKills", m_flyingKills);
 			LoadCounter(valuesDictionary, "BoomerKills", m_boomerKills);
-			LoadCounter(valuesDictionary, "MeleeInfectedKills", m_meleeInfectedKills);
-			LoadCounter(valuesDictionary, "MeleeGhostKills", m_meleeGhostKills);
-			LoadCounter(valuesDictionary, "MeleeBanditKills", m_meleeBanditKills);
 		}
 
 		public override void Save(ValuesDictionary valuesDictionary)
@@ -244,9 +217,6 @@ namespace Game
 			SaveCounter(valuesDictionary, "PirateKills", m_pirateKills);
 			SaveCounter(valuesDictionary, "FlyingKills", m_flyingKills);
 			SaveCounter(valuesDictionary, "BoomerKills", m_boomerKills);
-			SaveCounter(valuesDictionary, "MeleeInfectedKills", m_meleeInfectedKills);
-			SaveCounter(valuesDictionary, "MeleeGhostKills", m_meleeGhostKills);
-			SaveCounter(valuesDictionary, "MeleeBanditKills", m_meleeBanditKills);
 		}
 	}
 }
