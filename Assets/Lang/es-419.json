@@ -107,7 +107,9 @@
 "104": "Ola de detonación",
 "105": "Mata a 55 Boomers",
 "106": "Señor de las explosiones",
-"107": "Mata a 100 Boomers"
+"107": "Mata a 100 Boomers",
+"108": "Verde que te quiero verde... y loco",
+  "109": "Completa todas las oleadas de una Noche Verde en la dificultad\n \"Error al Cargar la Cordura\"."
   },
   "AchievementsMessages": {
     "0": "¡LOGRO {0} DESBLOQUEADO!",
@@ -256,6 +258,7 @@
   "BossTank": "¡Ha aparecido un Tank!",
   "TheyComeTonight": "Ellos vendrán…",
   "TheyComeInXDays": "Vienen en {0} días",
+  "CurrentDifficulty": "Dificultad:\n {0}",
   "BossGhostTank": "¡Ha aparecido un Tank Fantasma!",
   "BossMachineGun": "¡Ha aparecido Infectado Ametrallador!",
   "BossFlying": "¡Ha aparecido Jefe Infectado Volador!",
@@ -1396,24 +1399,24 @@
   "7": "Ritmo equilibrado.\nIdeal para prepararse sin perder la emoción.",
   "8": "Tranquilo y constante.\nMás tiempo para construir antes del evento.",
   "9": "Muy relajado.\nDisfruta de la exploración sin prisas.",
-  "10": "Si prefieres no elegir, simplemente cancela.\nLa Noche Verde ocurrirá en dificultad Normal cada 4 días de forma predeterminada.",
+  "10": "Si prefieres no elegir, simplemente cancela.\nLa Noche Verde ocurrirá en la dificultad \"Empieza a Rezar\" cada 4 días de forma predeterminada.",
   "11": "La Noche Verde se ha configurado en {0} cada {1} días.",
   "12": "{0} días",
   "DifficultyLabel": "Dificultad",
   "DifficultyPlaceholder": "Selecciona una dificultad"
 },
 "GreenNightDifficulty": {
-  "Easy_Name": "Fácil",
-  "Easy_Desc": "Los infectados son torpes y lentos.\nNo pueden romper bloques, lanzar ataques a distancia ni usar armas de fuego.",
-  "Normal_Name": "Normal",
-  "Normal_Desc": "Los infectados se comportan normalmente,\nofreciendo una experiencia justa y entretenida.",
-  "Medium_Name": "Media",
-  "Medium_Desc": "Los infectados ahora pueden destruir\nestructuras frágiles, pero aún no usan\nataques a distancia ni armas de fuego.",
-  "Hard_Name": "Difícil",
-  "Hard_Desc": "Los infectados destruyen todo tipo de bloques\ny combaten con armas a distancia y armas de fuego.",
-  "Extreme_Name": "Extrema",
-  "Extreme_Desc": "Los infectados poseen una inteligencia\nartificial implacable y errática. Completar esta dificultad\notorga un logro especial y una recompensa única."
-},
+    "Easy_Name": "Lista de Espera para Terapia",
+    "Easy_Desc": "Los infectados traen flores, no balas.\nTropiezan con sus propios pies.\nTu mayor amenaza es el aburrimiento.\n(Todavía casi no rompen nada, apenas se multiplican y huyen rápido.)",
+    "Normal_Name": "Lunes por la Mañana",
+    "Normal_Desc": "Los infectados se han leído el manual.\nLlegan puntuales y devuelven los golpes.\nNada personal: simplemente odian tu sonrisa.\n(Apariciones estándar, agresividad normal, sin flanqueos.)",
+    "Medium_Name": "Daño Estructural",
+    "Medium_Desc": "¿Muros? ¿Qué muros?\nLos infectados ahora devoran tu base como termitas drogadas.\nLlaman refuerzos y se ríen de tus planos.\n(Los bloques pueden romperse, las llamadas de ayuda siempre ocurren, flanqueo desactivado.)",
+    "Hard_Name": "El Último Arquitecto",
+    "Hard_Desc": "Tu base es una sugerencia, no una defensa.\nLos zombis flanquean, se coordinan y usan armas a distancia.\nNo huyen: luchan hasta la muerte.\n(Flanqueo activado, alta destrucción de bloques, agresividad extrema.)",
+    "Extreme_Name": "Error al Cargar la Cordura",
+    "Extreme_Desc": "Los infectados son implacables, persistentes e inteligentes.\nTe perseguirán para siempre, destruirán todo y no sienten dolor.\nSobrevivir a esto desbloquea la línea directa de un terapeuta.\n(Persecución persistente, máximo número de apariciones, máxima destrucción de bloques, sin piedad.)"
+  },
     "VehicleInventoryWidget": {
   "1": "Vehículo",
   "2": "Inventario"
