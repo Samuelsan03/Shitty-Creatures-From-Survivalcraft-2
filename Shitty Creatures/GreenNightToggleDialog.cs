@@ -40,15 +40,6 @@ namespace Game
 			m_intervalLabel = Children.Find<LabelWidget>("IntervalLabel", true);
 			m_intervalHintLabel = Children.Find<LabelWidget>("IntervalHintLabel", true);
 
-			m_titleLabel.Text = LanguageControl.GetContentWidgets("GreenNightToggleDialog", "Title");
-			m_checkbox.Text = LanguageControl.GetContentWidgets("GreenNightToggleDialog", "CheckboxText");
-			m_okButton.Text = LanguageControl.GetContentWidgets("GreenNightToggleDialog", "OkButton");
-			m_cancelButton.Text = LanguageControl.GetContentWidgets("GreenNightToggleDialog", "CancelButton");
-			m_intervalLabel.Text = LanguageControl.GetContentWidgets("GreenNightToggleDialog", "IntervalLabel");
-			m_intervalHintLabel.Text = LanguageControl.GetContentWidgets("GreenNightToggleDialog", "IntervalHintLabel");
-			m_daysButton.Text = LanguageControl.GetContentWidgets("GreenNightToggleDialog", "DaysButton");
-
-			// Aplicar color (39, 146, 0) al botón de días
 			if (m_daysButton is BevelledButtonWidget bevelledDaysButton)
 			{
 				bevelledDaysButton.BevelColor = new Color(39, 146, 0);
@@ -86,13 +77,11 @@ namespace Game
 				);
 				DialogsManager.ShowDialog(m_player.GuiWidget, intervalDialog);
 			}
-
-			if (m_okButton.IsClicked)
+			else if (m_okButton.IsClicked)
 			{
 				Accept();
 			}
-
-			if (m_cancelButton.IsClicked || Input.Cancel)
+			else if (m_cancelButton.IsClicked || Input.Cancel)
 			{
 				AudioManager.PlaySound("Audio/UI/ButtonClick", 1f, 0f, 0f);
 				Dismiss();
@@ -105,29 +94,39 @@ namespace Game
 			bool newValue = m_checkbox.IsChecked;
 
 			if (oldValue != newValue)
-			{
 				m_subsystemGreenNightSky.GreenNightEnabled = newValue;
 
-				if (m_player != null && m_player.ComponentGui != null)
-				{
-					string messageKey = newValue ? "EnabledNotification" : "DisabledNotification";
-					Color messageColor = newValue ? new Color(0, 100, 0) : new Color(0, 255, 0);
-					string message = LanguageControl.GetContentWidgets("GreenNightToggleDialog", messageKey);
-					m_player.ComponentGui.DisplaySmallMessage(message, messageColor, false, true);
-				}
-			}
-
 			if (m_tempIntervalDays != m_originalIntervalDays)
-			{
 				m_subsystemGreenNightSky.GreenNightIntervalDays = m_tempIntervalDays;
-				string intervalMessage = string.Format(
+
+			// Mensaje único: dificultad actual + días
+			if (m_player != null && m_player.ComponentGui != null)
+			{
+				DifficultyMode currentDifficulty = m_subsystemGreenNightSky.DifficultyMode;
+				string difficultyName = GetDifficultyName(currentDifficulty);
+				string message = string.Format(
 					LanguageControl.GetContentWidgets("GreenNightIntervalDialog", "11"),
+					difficultyName,
 					m_tempIntervalDays);
-				m_player.ComponentGui.DisplaySmallMessage(intervalMessage, Color.White, false, true);
+				m_player.ComponentGui.DisplaySmallMessage(message, Color.White, false, true);
 			}
 
 			AudioManager.PlaySound("Audio/UI/ButtonClick", 1f, 0f, 0f);
 			Dismiss();
+		}
+
+		private string GetDifficultyName(DifficultyMode mode)
+		{
+			string key = mode switch
+			{
+				DifficultyMode.Easy => "Easy_Name",
+				DifficultyMode.Normal => "Normal_Name",
+				DifficultyMode.Medium => "Medium_Name",
+				DifficultyMode.Hard => "Hard_Name",
+				DifficultyMode.Extreme => "Extreme_Name",
+				_ => "Normal_Name"
+			};
+			return LanguageControl.GetContentWidgets("GreenNightDifficulty", key);
 		}
 
 		private void Dismiss()
