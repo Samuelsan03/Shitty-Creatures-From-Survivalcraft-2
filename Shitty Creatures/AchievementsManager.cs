@@ -517,13 +517,13 @@ namespace Game
 
 			if (remainingSeconds <= 0f)
 			{
-				// En lugar de una sola reproducción, usar el bucle que dura 60 segundos
-				StartLoopingMusic(player, "MenuMusic/Sparkster Genesis Normal Ending", 60f);
-				ScheduleFireworksAndStopMusic(player);
+				// Música en bucle durante 150 segundos (2:30)
+				StartLoopingMusic(player, "MenuMusic/Sparkster Genesis Normal Ending", 150f);
+				// Fuegos artificiales durante 150 segundos
+				ScheduleFireworksAndStopMusic(player, 150.0);
 				return;
 			}
 
-			// Programar el siguiente frame
 			GameManager.SyncDispatcher.Add(() => {
 				StartFireworkCountdown(player, remainingSeconds - Time.FrameDuration);
 				return true;
@@ -532,71 +532,101 @@ namespace Game
 
 		private static void StartLoopingMusic(ComponentPlayer player, string musicPath, float totalDurationSeconds)
 		{
-			float musicLength = 47f; // Duración real de la pista en segundos (ajústala si es diferente)
-			float elapsed = 0f;
+			double endTime = Time.RealTime + totalDurationSeconds;
+			bool firstPlay = true;
 
-			Action playNext = null;
-			playNext = () => {
-				if (elapsed >= totalDurationSeconds || player?.Project == null)
+			Action loop = null;
+			loop = () => {
+				// Verificar si debemos detenernos
+				if (player?.Project == null || Time.RealTime >= endTime)
+				{
+					InGameMusicManager.StopMusic();
 					return;
+				}
 
-				InGameMusicManager.PlayMusic(musicPath, 0f);
-				elapsed += musicLength;
+				// Si es la primera vez, o la música no está reproduciéndose, o terminó de reproducirse
+				bool needsRestart = firstPlay
+					|| !InGameMusicManager.IsPlaying
+					|| InGameMusicManager.IsPlaybackComplete();
 
-				// Esperar musicLength segundos usando SyncDispatcher (evita QueueGameTimeDelayedExecution)
-				float remaining = musicLength;
-				Action wait = null;
-				wait = () => {
-					if (remaining <= 0f)
-					{
-						GameManager.SyncDispatcher.Add(() => { playNext(); return true; });
-						return;
-					}
-					remaining -= Time.FrameDuration;
-					GameManager.SyncDispatcher.Add(() => { wait(); return true; });
-				};
-				wait();
+				if (needsRestart)
+				{
+					InGameMusicManager.PlayMusic(musicPath, 0f);
+					firstPlay = false;
+				}
+
+				// Continuar verificando cada frame
+				GameManager.SyncDispatcher.Add(() => { loop(); return true; });
 			};
 
-			playNext();
+			loop();
 		}
 
-		private static void ScheduleFireworksAndStopMusic(ComponentPlayer player)
+		private static void ScheduleFireworksAndStopMusic(ComponentPlayer player, double durationSeconds = 150.0)
 		{
 			if (player == null || player.Project == null) return;
+
 			var time = player.Project.FindSubsystem<SubsystemTime>(true);
 			double startTime = time.GameTime;
-			double endTime = startTime + 60.0;
+			double endTime = startTime + durationSeconds;
+			int fireworkIndex = 0;
+			const double interval = 0.5; // 0.5 segundos entre fuegos
+			int totalFireworks = (int)(durationSeconds / interval); // 150 / 0.5 = 300
 
-			// Programar fuegos artificiales cada 0.5 segundos durante 60 segundos (120 eventos)
-			for (int i = 0; i < 120; i++)
+			Action scheduleNext = null;
+			scheduleNext = () =>
 			{
-				double fireTime = startTime + i * 0.5;
-				if (fireTime >= endTime) break;
-				time.QueueGameTimeDelayedExecution(fireTime, () => SpawnRandomFirework(player));
-			}
+				if (player?.Project == null) return;
 
-			// Detener música al final
-			time.QueueGameTimeDelayedExecution(endTime, () => InGameMusicManager.StopMusic());
+				double currentTime = time.GameTime;
+				double nextFireTime = startTime + (fireworkIndex + 1) * interval;
+
+				if (currentTime >= nextFireTime && fireworkIndex < totalFireworks)
+				{
+					SpawnRandomFirework(player);
+					fireworkIndex++;
+				}
+
+				if (currentTime < endTime)
+				{
+					GameManager.SyncDispatcher.Add(() => { scheduleNext(); return true; });
+				}
+				else
+				{
+					InGameMusicManager.FadeOutAndStop(3f);
+				}
+			};
+
+			scheduleNext();
 		}
 
 		private static void SpawnRandomFirework(ComponentPlayer player)
 		{
 			if (player == null || player.Project == null) return;
-			var fireworksBehavior = player.Project.FindSubsystem<SubsystemFireworksBlockBehavior>(true);
-			if (fireworksBehavior == null) return;
-			Vector3 pos = player.ComponentBody.Position;
+			var projectiles = player.Project.FindSubsystem<SubsystemProjectiles>(true);
+			if (projectiles == null) return;
+
 			Random rand = new Random();
-			float dx = rand.Float(-20f, 20f);
-			float dz = rand.Float(-20f, 20f);
-			float y = pos.Y + rand.Float(10f, 30f);
-			Vector3 fireworkPos = new Vector3(pos.X + dx, y, pos.Z + dz);
+			Vector3 playerPos = player.ComponentBody.Position;
+
+			// Posición aleatoria en un círculo de radio 15-30 alrededor del jugador
+			float angle = rand.Float(0f, MathF.PI * 2);
+			float radius = rand.Float(15f, 30f);
+			float dx = MathF.Cos(angle) * radius;
+			float dz = MathF.Sin(angle) * radius;
+			Vector3 launchPos = new Vector3(playerPos.X + dx, playerPos.Y + 0.5f, playerPos.Z + dz);
+
+			// Datos aleatorios del fuego artificial
 			int data = 0;
 			data = FireworksBlock.SetShape(data, (FireworksBlock.Shape)rand.Int(0, 7));
 			data = FireworksBlock.SetColor(data, rand.Int(0, 7));
-			data = FireworksBlock.SetAltitude(data, rand.Int(0, 1));
+			data = FireworksBlock.SetAltitude(data, rand.Int(0, 1)); // 0 = baja, 1 = alta
 			data = FireworksBlock.SetFlickering(data, rand.Float(0f, 1f) < 0.25f);
-			fireworksBehavior.ExplodeFireworks(fireworkPos, data);
+			int value = Terrain.MakeBlockValue(215, 0, data);
+
+			// Velocidad inicial: hacia arriba con ligera dispersión horizontal
+			Vector3 velocity = new Vector3(rand.Float(-3f, 3f), 45f, rand.Float(-3f, 3f));
+			projectiles.FireProjectile(value, launchPos, velocity, Vector3.Zero, null);
 		}
 
 		public static bool ClaimAchievementReward(ComponentPlayer player, int achievementNumber, int rewardAmount)
