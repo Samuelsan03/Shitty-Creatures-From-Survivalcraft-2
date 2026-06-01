@@ -37,6 +37,7 @@ namespace Game
 		// Diccionarios para almacenar valores base de cada criatura (evita acumular multiplicadores)
 		private Dictionary<ComponentCreature, float> m_originalAttackPower = new Dictionary<ComponentCreature, float>();
 		private Dictionary<ComponentCreature, float> m_originalWalkSpeed = new Dictionary<ComponentCreature, float>();
+		private Dictionary<ComponentCreature, float> m_originalFlySpeed = new Dictionary<ComponentCreature, float>(); // ← NUEVO
 
 		// ShittyModLoader (original)
 		static FieldInfo m_cachesField;
@@ -2197,10 +2198,10 @@ namespace Game
 			float bossDamageMult = 1f;
 			float bossSpeedMult = 1f;
 
-			// Factores para VOLADORES (menos resistencia, menos daño, más velocidad)
+			// Factores para VOLADORES (menos resistencia, menos daño, MÁS VELOCIDAD DE VUELO)
 			float flyingResilienceFactor = 1f;
 			float flyingDamageMult = 1f;
-			float flyingSpeedMult = 1f;
+			float flyingSpeedMult = 1f;      // ← Este se aplicará a FlySpeed, NO a WalkSpeed
 
 			switch (mode)
 			{
@@ -2217,17 +2218,17 @@ namespace Game
 				case DifficultyMode.Medium:
 					baseResilienceFactor = 1.2f; baseDamageMult = 1.2f; baseSpeedMult = 1.1f;
 					bossResilienceFactor = 1.5f; bossDamageMult = 1.4f; bossSpeedMult = 1.05f;
-					flyingResilienceFactor = 1.0f; flyingDamageMult = 1.1f; flyingSpeedMult = 1.2f;
+					flyingResilienceFactor = 1.0f; flyingDamageMult = 1.1f; flyingSpeedMult = 1.2f;  // +20% velocidad de vuelo
 					break;
 				case DifficultyMode.Hard:
 					baseResilienceFactor = 1.5f; baseDamageMult = 1.5f; baseSpeedMult = 1.2f;
 					bossResilienceFactor = 2.0f; bossDamageMult = 1.8f; bossSpeedMult = 1.1f;
-					flyingResilienceFactor = 1.2f; flyingDamageMult = 1.3f; flyingSpeedMult = 1.4f;
+					flyingResilienceFactor = 1.2f; flyingDamageMult = 1.3f; flyingSpeedMult = 1.4f;  // +40% velocidad de vuelo
 					break;
 				case DifficultyMode.Extreme:
 					baseResilienceFactor = 2.0f; baseDamageMult = 2.0f; baseSpeedMult = 1.4f;
 					bossResilienceFactor = 3.0f; bossDamageMult = 2.5f; bossSpeedMult = 1.2f;
-					flyingResilienceFactor = 1.5f; flyingDamageMult = 1.6f; flyingSpeedMult = 1.6f;
+					flyingResilienceFactor = 1.5f; flyingDamageMult = 1.6f; flyingSpeedMult = 1.6f;  // +60% velocidad de vuelo
 					break;
 			}
 
@@ -2244,19 +2245,27 @@ namespace Game
 				// Determinar qué factores usar
 				float resilienceFactor = baseResilienceFactor;
 				float damageMult = baseDamageMult;
-				float speedMult = baseSpeedMult;
+				float speedMult = baseSpeedMult;     // WalkSpeed para terrestres
+				float flySpeedMult = baseSpeedMult;  // FlySpeed para voladores (por defecto igual que walk)
 
-				if (m_bossTemplates.Contains(templateName))
+				bool isFlying = m_flyingTemplates.Contains(templateName);
+				bool isBoss = m_bossTemplates.Contains(templateName);
+
+				if (isBoss)
 				{
 					resilienceFactor = bossResilienceFactor;
 					damageMult = bossDamageMult;
 					speedMult = bossSpeedMult;
+					flySpeedMult = bossSpeedMult;
 				}
-				else if (m_flyingTemplates.Contains(templateName))
+				else if (isFlying)
 				{
 					resilienceFactor = flyingResilienceFactor;
 					damageMult = flyingDamageMult;
-					speedMult = flyingSpeedMult;
+					// Los voladores NO modifican WalkSpeed (no la usan para volar)
+					// speedMult se mantiene en 1f para no afectar caminata terrestre accidental
+					speedMult = 1f;
+					flySpeedMult = flyingSpeedMult;  // ← Aplicar a FlySpeed
 				}
 				else if (!m_difficultyAffectedCreatures.Contains(templateName))
 				{
@@ -2279,13 +2288,24 @@ namespace Game
 					miner.AttackPower = m_originalAttackPower[creature] * damageMult;
 				}
 
-				// Aplicar velocidad
+				// Aplicar velocidad - diferenciando WalkSpeed vs FlySpeed
 				var locomotion = creature.Entity.FindComponent<ComponentLocomotion>();
 				if (locomotion != null && creature.Entity.FindComponent<ComponentPlayer>() == null)
 				{
+					// Guardar valores originales si no existen
 					if (!m_originalWalkSpeed.ContainsKey(creature))
 						m_originalWalkSpeed[creature] = locomotion.WalkSpeed;
+					if (!m_originalFlySpeed.ContainsKey(creature))
+						m_originalFlySpeed[creature] = locomotion.FlySpeed;
+
+					// Aplicar multiplicadores según corresponda
 					locomotion.WalkSpeed = m_originalWalkSpeed[creature] * speedMult;
+
+					// Para voladores, modificar FlySpeed; para no voladores, dejarlo igual
+					if (isFlying || isBoss)  // Los bosses también pueden volar (FlyingInfectedBoss)
+					{
+						locomotion.FlySpeed = m_originalFlySpeed[creature] * flySpeedMult;
+					}
 				}
 			}
 		}
