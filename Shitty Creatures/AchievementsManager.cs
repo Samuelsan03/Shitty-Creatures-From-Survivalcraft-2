@@ -537,14 +537,15 @@ namespace Game
 
 			Action loop = null;
 			loop = () => {
-				// Verificar si debemos detenernos
-				if (player?.Project == null || Time.RealTime >= endTime)
-				{
-					InGameMusicManager.StopMusic();
+				// Si ya se inició el fade out, dejar de reiniciar música
+				if (InGameMusicManager.IsFadingOut)
 					return;
-				}
 
-				// Si es la primera vez, o la música no está reproduciéndose, o terminó de reproducirse
+				// Si pasó el tiempo, simplemente parar el loop (no StopMusic)
+				if (player?.Project == null || Time.RealTime >= endTime)
+					return;
+
+				// Reiniciar música si terminó
 				bool needsRestart = firstPlay
 					|| !InGameMusicManager.IsPlaying
 					|| InGameMusicManager.IsPlaybackComplete();
@@ -555,7 +556,6 @@ namespace Game
 					firstPlay = false;
 				}
 
-				// Continuar verificando cada frame
 				GameManager.SyncDispatcher.Add(() => { loop(); return true; });
 			};
 
@@ -570,8 +570,9 @@ namespace Game
 			double startTime = time.GameTime;
 			double endTime = startTime + durationSeconds;
 			int fireworkIndex = 0;
-			const double interval = 0.5; // 0.5 segundos entre fuegos
-			int totalFireworks = (int)(durationSeconds / interval); // 150 / 0.5 = 300
+			const double interval = 0.5;
+			int totalFireworks = (int)(durationSeconds / interval);
+			bool fadeStarted = false;
 
 			Action scheduleNext = null;
 			scheduleNext = () =>
@@ -591,9 +592,22 @@ namespace Game
 				{
 					GameManager.SyncDispatcher.Add(() => { scheduleNext(); return true; });
 				}
-				else
+				else if (!fadeStarted)
 				{
-					InGameMusicManager.FadeOutAndStop(3f);
+					// TERMINÓ la celebración - iniciar fade out
+					fadeStarted = true;
+					InGameMusicManager.FadeOutAndStop();
+
+					// Actualizar fade hasta que termine
+					Action fadeLoop = null;
+					fadeLoop = () => {
+						InGameMusicManager.Update();
+						if (InGameMusicManager.IsFadingOut)
+						{
+							GameManager.SyncDispatcher.Add(() => { fadeLoop(); return true; });
+						}
+					};
+					fadeLoop();
 				}
 			};
 
