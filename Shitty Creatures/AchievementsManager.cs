@@ -440,14 +440,20 @@ namespace Game
 
 			int reward = GetRewardForAchievement(achievementNumber);
 
+			// Mostrar mensaje del logro
 			player.ComponentGui.DisplayLargeMessage(
 				string.Format(LanguageControl.Get("AchievementsMessages", 0), displayName),
 				string.Format(LanguageControl.Get("AchievementsMessages", 1), reward),
 				4f, 0f);
 
+			// Sonido del logro
 			var audio = player.Project.FindSubsystem<SubsystemAudio>(true);
 			if (audio != null)
 				audio.PlaySound("Audio/pump it up", 1f, 0f, player.ComponentBody.Position, 10f, false);
+
+			// Programar la verificación del último logro después de 8 segundos
+			var time = player.Project.FindSubsystem<SubsystemTime>(true);
+			time.QueueGameTimeDelayedExecution(time.GameTime + 8.0, () => CheckAndTriggerAllAchievements(player));
 		}
 
 		public static bool IsAchievementUnlocked(ComponentPlayer player, int achievementNumber)
@@ -467,6 +473,101 @@ namespace Game
 		public static int GetPirateKills(ComponentPlayer player) => player == null ? 0 : s_subsystemAchievements?.GetPirateKills(player.PlayerData.PlayerIndex) ?? 0;
 		public static int GetFlyingKills(ComponentPlayer player) => player == null ? 0 : s_subsystemAchievements?.GetFlyingKills(player.PlayerData.PlayerIndex) ?? 0;
 		public static int GetBoomerKills(ComponentPlayer player) => player == null ? 0 : s_subsystemAchievements?.GetBoomerKills(player.PlayerData.PlayerIndex) ?? 0;
+
+		// Agregar estos métodos estáticos:
+
+		private static void CheckAndTriggerAllAchievements(ComponentPlayer player)
+		{
+			if (s_subsystemAchievements == null || player == null) return;
+			if (s_achievementRewards == null) LoadAchievementRewards();
+			int totalAchievements = s_achievementRewards.Count;
+			int unlocked = s_subsystemAchievements.GetUnlockedAchievementCount();
+			if (unlocked >= totalAchievements && !s_subsystemAchievements.IsAllAchievementsCelebrationTriggered())
+			{
+				s_subsystemAchievements.SetAllAchievementsCelebrationTriggered(true);
+				StartAllAchievementsCelebration(player);
+			}
+		}
+
+		private static void StartAllAchievementsCelebration(ComponentPlayer player)
+		{
+			// Mensaje especial
+			player.ComponentGui.DisplayLargeMessage(
+				LanguageControl.Get("AchievementsMessages", 4),
+				LanguageControl.Get("AchievementsMessages", 5),
+				5f, 0f);
+
+			// Sonido especial (8 segundos)
+			var audio = player.Project.FindSubsystem<SubsystemAudio>(true);
+			if (audio != null)
+				audio.PlaySound("Audio/Death of King Gedol", 1f, 0f, player.ComponentBody.Position, 30f, false);
+
+			// Programar todo el resto usando SyncDispatcher, no QueueGameTimeDelayedExecution
+			GameManager.SyncDispatcher.Add(() => {
+				// Esperar 8 segundos contando frames (8 segundos ≈ 8 * 60 = 480 frames a 60fps)
+				// Usamos una variable estática para contar
+				StartFireworkCountdown(player, 8.0f);
+				return true;
+			});
+		}
+
+		private static void StartFireworkCountdown(ComponentPlayer player, float remainingSeconds)
+		{
+			if (player == null || player.Project == null) return;
+
+			if (remainingSeconds <= 0f)
+			{
+				// Iniciar fuegos artificiales y música
+				InGameMusicManager.PlayMusic("MenuMusic/Sparkster Genesis Normal Ending", 0f);
+				ScheduleFireworksAndStopMusic(player);
+				return;
+			}
+
+			// Programar el siguiente frame
+			GameManager.SyncDispatcher.Add(() => {
+				StartFireworkCountdown(player, remainingSeconds - Time.FrameDuration);
+				return true;
+			});
+		}
+
+		private static void ScheduleFireworksAndStopMusic(ComponentPlayer player)
+		{
+			if (player == null || player.Project == null) return;
+			var time = player.Project.FindSubsystem<SubsystemTime>(true);
+			double startTime = time.GameTime;
+			double endTime = startTime + 60.0;
+
+			// Programar fuegos artificiales cada 0.5 segundos durante 60 segundos (120 eventos)
+			for (int i = 0; i < 120; i++)
+			{
+				double fireTime = startTime + i * 0.5;
+				if (fireTime >= endTime) break;
+				time.QueueGameTimeDelayedExecution(fireTime, () => SpawnRandomFirework(player));
+			}
+
+			// Detener música al final
+			time.QueueGameTimeDelayedExecution(endTime, () => InGameMusicManager.StopMusic());
+		}
+
+		private static void SpawnRandomFirework(ComponentPlayer player)
+		{
+			if (player == null || player.Project == null) return;
+			var fireworksBehavior = player.Project.FindSubsystem<SubsystemFireworksBlockBehavior>(true);
+			if (fireworksBehavior == null) return;
+			Vector3 pos = player.ComponentBody.Position;
+			Random rand = new Random();
+			float dx = rand.Float(-20f, 20f);
+			float dz = rand.Float(-20f, 20f);
+			float y = pos.Y + rand.Float(10f, 30f);
+			Vector3 fireworkPos = new Vector3(pos.X + dx, y, pos.Z + dz);
+			int data = 0;
+			data = FireworksBlock.SetShape(data, (FireworksBlock.Shape)rand.Int(0, 7));
+			data = FireworksBlock.SetColor(data, rand.Int(0, 7));
+			data = FireworksBlock.SetAltitude(data, rand.Int(0, 1));
+			data = FireworksBlock.SetFlickering(data, rand.Float(0f, 1f) < 0.25f);
+			fireworksBehavior.ExplodeFireworks(fireworkPos, data);
+		}
+
 		public static bool ClaimAchievementReward(ComponentPlayer player, int achievementNumber, int rewardAmount)
 		{
 			if (s_subsystemAchievements == null) return false;
@@ -520,6 +621,10 @@ namespace Game
 			var audio = player.Project.FindSubsystem<SubsystemAudio>(true);
 			if (audio != null)
 				audio.PlaySound("Audio/pump it up", 1f, 0f, player.ComponentBody.Position, 10f, false);
+
+			// Programar la verificación después de 8 segundos
+			var time = player.Project.FindSubsystem<SubsystemTime>(true);
+			time.QueueGameTimeDelayedExecution(time.GameTime + 8.0, () => CheckAndTriggerAllAchievements(player));
 		}
 	}
 }
