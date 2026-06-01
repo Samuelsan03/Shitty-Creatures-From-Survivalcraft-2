@@ -16,13 +16,16 @@ namespace Game
 		private BevelledRectangleWidget m_originalBackground;
 		private ImageWidgetSimple m_backgroundImageWidget;
 		private PaintButtonWidget m_paintButton;
-		private int m_backgroundState = 0; // 0=original, 1=textura found, 2=semitransparente
+		private int m_backgroundState = 0;
 
-		// Guardar colores originales del fondo para restaurarlos después del modo semitransparente
 		private Color m_originalCenterColor;
 		private Color m_originalBevelColor;
 
 		private Dictionary<int, AchievementItemData> m_achievementItems = new Dictionary<int, AchievementItemData>();
+
+		private float m_bgTransitionFactor = 1f;
+		private int m_pendingBgState = -1;
+		private bool m_isBgTransitioning = false;
 
 		public static string fName = "AchievementsWidget";
 
@@ -35,7 +38,6 @@ namespace Game
 			m_achievementsStack = Children.Find<StackPanelWidget>("AchievementsStack", true);
 			m_titleLabel = Children.Find<LabelWidget>("TitleLabel", true);
 
-			// Obtener el fondo original por su nombre y guardar sus colores originales
 			m_originalBackground = Children.Find<BevelledRectangleWidget>("Background", true);
 			if (m_originalBackground != null)
 			{
@@ -47,7 +49,6 @@ namespace Game
 				Log.Error("[AchievementsWidget] No se encontró el fondo con nombre 'Background'");
 			}
 
-			// Crear el widget de imagen para el fondo alternativo
 			m_backgroundImageWidget = new ImageWidgetSimple
 			{
 				IsVisible = false,
@@ -55,10 +56,8 @@ namespace Game
 				VerticalAlignment = WidgetAlignment.Stretch,
 				Margin = Vector2.Zero
 			};
-			// Insertarlo detrás de todos los demás hijos (índice 0)
 			Children.Insert(0, m_backgroundImageWidget);
 
-			// Crear el botón de pintura
 			Subtexture paintTexture = ContentManager.Get<Subtexture>("Textures/Gui/pintura");
 			if (paintTexture != null)
 			{
@@ -86,7 +85,6 @@ namespace Game
 			if (m_closeButton != null)
 				m_closeButton.Text = LanguageControl.Get(fName, 1);
 
-			// Suscribirse a eventos
 			AchievementsManager.OnInfectedCounterChanged += OnInfectedCounterChanged;
 			AchievementsManager.OnBossCounterChanged += OnBossCounterChanged;
 			AchievementsManager.OnTankCounterChanged += OnTankCounterChanged;
@@ -98,7 +96,6 @@ namespace Game
 			AchievementsManager.OnFlyingCounterChanged += OnFlyingCounterChanged;
 			AchievementsManager.OnBoomerCounterChanged += OnBoomerCounterChanged;
 
-			// Cargar logros
 			XElement achievementsXml = ContentManager.Get<XElement>("AchievementsData");
 			if (achievementsXml == null)
 			{
@@ -126,7 +123,6 @@ namespace Game
 				);
 			}
 
-			// Restaurar estado guardado
 			var subsystemAchievements = m_componentPlayer.Project.FindSubsystem<SubsystemAchievements>(true);
 			if (subsystemAchievements != null)
 			{
@@ -137,21 +133,66 @@ namespace Game
 
 		private void ChangeBackground()
 		{
-			m_backgroundState = (m_backgroundState + 1) % 3;
+			if (m_isBgTransitioning) return;
 
-			// Guardar el nuevo estado en el subsistema
-			var subsystemAchievements = m_componentPlayer?.Project?.FindSubsystem<SubsystemAchievements>(true);
-			if (subsystemAchievements != null)
-				subsystemAchievements.SetBackgroundState(m_backgroundState);
+			m_pendingBgState = (m_backgroundState + 1) % 3;
+			m_bgTransitionFactor = 0f;
+			m_isBgTransitioning = true;
+		}
 
-			ApplyBackgroundState();
+		private void UpdateBackgroundTransition()
+		{
+			if (!m_isBgTransitioning) return;
+
+			m_bgTransitionFactor += 6f * MathUtils.Min(Time.FrameDuration, 0.1f);
+
+			if (m_bgTransitionFactor >= 0.5f && m_pendingBgState >= 0)
+			{
+				m_backgroundState = m_pendingBgState;
+
+				var subsystemAchievements = m_componentPlayer?.Project?.FindSubsystem<SubsystemAchievements>(true);
+				if (subsystemAchievements != null)
+					subsystemAchievements.SetBackgroundState(m_backgroundState);
+
+				ApplyBackgroundState();
+				m_pendingBgState = -1;
+			}
+
+			if (m_bgTransitionFactor >= 1f)
+			{
+				m_bgTransitionFactor = 1f;
+				m_isBgTransitioning = false;
+				base.ColorTransform = Color.White;
+				base.RenderTransform = Matrix.Identity;
+				return;
+			}
+
+			float scale;
+			if (m_bgTransitionFactor < 0.5f)
+			{
+				float t = m_bgTransitionFactor * 2f;
+				scale = 0.5f + 0.5f * MathF.Pow(1f - t, 0.1f);
+			}
+			else
+			{
+				float t = (m_bgTransitionFactor - 0.5f) * 2f;
+				scale = 0.5f + 0.5f * MathF.Pow(t, 0.1f);
+			}
+
+			Vector2 size = base.ActualSize;
+			if (size.X > 0f && size.Y > 0f)
+			{
+				base.RenderTransform = Matrix.CreateTranslation((0f - size.X) / 2f, (0f - size.Y) / 2f, 0f)
+									 * Matrix.CreateScale(scale, scale, 1f)
+									 * Matrix.CreateTranslation(size.X / 2f, size.Y / 2f, 0f);
+			}
 		}
 
 		private void ApplyBackgroundState()
 		{
 			switch (m_backgroundState)
 			{
-				case 0: // Original
+				case 0:
 					if (m_originalBackground != null)
 					{
 						m_originalBackground.IsVisible = true;
@@ -160,7 +201,7 @@ namespace Game
 					}
 					m_backgroundImageWidget.IsVisible = false;
 					break;
-				case 1: // Textura "found"
+				case 1:
 					if (m_originalBackground != null)
 						m_originalBackground.IsVisible = false;
 					m_backgroundImageWidget.IsVisible = true;
@@ -170,7 +211,7 @@ namespace Game
 					else
 						Log.Error("[AchievementsWidget] No se encontró 'Textures/Wallpapers/found'");
 					break;
-				case 2: // Semitransparente
+				case 2:
 					if (m_originalBackground != null)
 					{
 						m_originalBackground.IsVisible = true;
@@ -189,11 +230,9 @@ namespace Game
 			descLabel.Text = $"{baseDescription} ({displayKills}/{target})";
 		}
 
-		// Infectados: logros 16, 17, 18 (progresivos)
 		private void OnInfectedCounterChanged(ComponentPlayer player, int currentKills, int targetKills)
 		{
 			if (player != m_componentPlayer) return;
-
 			if (m_achievementItems.TryGetValue(16, out var item16) && !AchievementsManager.IsAchievementUnlocked(player, 16))
 				UpdateCounterDescription(16, currentKills, 10, item16.BaseDescription, item16.DescriptionLabel);
 			if (m_achievementItems.TryGetValue(17, out var item17) && !AchievementsManager.IsAchievementUnlocked(player, 17))
@@ -202,11 +241,9 @@ namespace Game
 				UpdateCounterDescription(18, currentKills, 100, item18.BaseDescription, item18.DescriptionLabel);
 		}
 
-		// Jefes: logros 19, 20, 21 (progresivos)
 		private void OnBossCounterChanged(ComponentPlayer player, int currentKills, int targetKills)
 		{
 			if (player != m_componentPlayer) return;
-
 			if (m_achievementItems.TryGetValue(19, out var item19) && !AchievementsManager.IsAchievementUnlocked(player, 19))
 				UpdateCounterDescription(19, currentKills, 10, item19.BaseDescription, item19.DescriptionLabel);
 			if (m_achievementItems.TryGetValue(20, out var item20) && !AchievementsManager.IsAchievementUnlocked(player, 20))
@@ -215,11 +252,9 @@ namespace Game
 				UpdateCounterDescription(21, currentKills, 100, item21.BaseDescription, item21.DescriptionLabel);
 		}
 
-		// Tanks: logros 22, 23, 24 (progresivos)
 		private void OnTankCounterChanged(ComponentPlayer player, int currentKills, int targetKills)
 		{
 			if (player != m_componentPlayer) return;
-
 			if (m_achievementItems.TryGetValue(22, out var item22) && !AchievementsManager.IsAchievementUnlocked(player, 22))
 				UpdateCounterDescription(22, currentKills, 10, item22.BaseDescription, item22.DescriptionLabel);
 			if (m_achievementItems.TryGetValue(23, out var item23) && !AchievementsManager.IsAchievementUnlocked(player, 23))
@@ -228,11 +263,9 @@ namespace Game
 				UpdateCounterDescription(24, currentKills, 100, item24.BaseDescription, item24.DescriptionLabel);
 		}
 
-		// Fantasmas: logros 25, 26, 27 (progresivos)
 		private void OnGhostCounterChanged(ComponentPlayer player, int currentKills, int targetKills)
 		{
 			if (player != m_componentPlayer) return;
-
 			if (m_achievementItems.TryGetValue(25, out var item25) && !AchievementsManager.IsAchievementUnlocked(player, 25))
 				UpdateCounterDescription(25, currentKills, 10, item25.BaseDescription, item25.DescriptionLabel);
 			if (m_achievementItems.TryGetValue(26, out var item26) && !AchievementsManager.IsAchievementUnlocked(player, 26))
@@ -241,11 +274,9 @@ namespace Game
 				UpdateCounterDescription(27, currentKills, 100, item27.BaseDescription, item27.DescriptionLabel);
 		}
 
-		// Tanks Fantasmas: logros 28, 29, 30 (progresivos)
 		private void OnGhostTankCounterChanged(ComponentPlayer player, int currentKills, int targetKills)
 		{
 			if (player != m_componentPlayer) return;
-
 			if (m_achievementItems.TryGetValue(28, out var item28) && !AchievementsManager.IsAchievementUnlocked(player, 28))
 				UpdateCounterDescription(28, currentKills, 10, item28.BaseDescription, item28.DescriptionLabel);
 			if (m_achievementItems.TryGetValue(29, out var item29) && !AchievementsManager.IsAchievementUnlocked(player, 29))
@@ -254,11 +285,9 @@ namespace Game
 				UpdateCounterDescription(30, currentKills, 100, item30.BaseDescription, item30.DescriptionLabel);
 		}
 
-		// Bandidos/Narcotraficantes: logros 31, 32, 33 (progresivos)
 		private void OnBanditCounterChanged(ComponentPlayer player, int currentKills, int targetKills)
 		{
 			if (player != m_componentPlayer) return;
-
 			if (m_achievementItems.TryGetValue(31, out var item31) && !AchievementsManager.IsAchievementUnlocked(player, 31))
 				UpdateCounterDescription(31, currentKills, 10, item31.BaseDescription, item31.DescriptionLabel);
 			if (m_achievementItems.TryGetValue(32, out var item32) && !AchievementsManager.IsAchievementUnlocked(player, 32))
@@ -267,11 +296,9 @@ namespace Game
 				UpdateCounterDescription(33, currentKills, 100, item33.BaseDescription, item33.DescriptionLabel);
 		}
 
-		// Curaciones: logros 34, 35, 36 (progresivos)
 		private void OnHealCounterChanged(ComponentPlayer player, int currentHeals, int targetHeals)
 		{
 			if (player != m_componentPlayer) return;
-
 			if (m_achievementItems.TryGetValue(34, out var item34) && !AchievementsManager.IsAchievementUnlocked(player, 34))
 				UpdateCounterDescription(34, currentHeals, 10, item34.BaseDescription, item34.DescriptionLabel);
 			if (m_achievementItems.TryGetValue(35, out var item35) && !AchievementsManager.IsAchievementUnlocked(player, 35))
@@ -294,7 +321,6 @@ namespace Game
 		private void OnFlyingCounterChanged(ComponentPlayer player, int currentKills, int targetKills)
 		{
 			if (player != m_componentPlayer) return;
-
 			if (m_achievementItems.TryGetValue(44, out var item44) && !AchievementsManager.IsAchievementUnlocked(player, 44))
 				UpdateCounterDescription(44, currentKills, 10, item44.BaseDescription, item44.DescriptionLabel);
 			if (m_achievementItems.TryGetValue(45, out var item45) && !AchievementsManager.IsAchievementUnlocked(player, 45))
@@ -308,7 +334,6 @@ namespace Game
 		private void OnBoomerCounterChanged(ComponentPlayer player, int currentKills, int targetKills)
 		{
 			if (player != m_componentPlayer) return;
-
 			if (m_achievementItems.TryGetValue(48, out var item48) && !AchievementsManager.IsAchievementUnlocked(player, 48))
 				UpdateCounterDescription(48, currentKills, 10, item48.BaseDescription, item48.DescriptionLabel);
 			if (m_achievementItems.TryGetValue(49, out var item49) && !AchievementsManager.IsAchievementUnlocked(player, 49))
@@ -500,6 +525,8 @@ namespace Game
 
 		public override void Update()
 		{
+			UpdateBackgroundTransition();
+
 			if (m_closeButton.IsClicked)
 			{
 				AchievementsManager.OnInfectedCounterChanged -= OnInfectedCounterChanged;
@@ -516,41 +543,43 @@ namespace Game
 				return;
 			}
 
-			// Detectar clic en el botón de pintura
-			if (m_paintButton != null && m_paintButton.IsClicked)
+			if (m_paintButton != null && m_paintButton.IsClicked && !m_isBgTransitioning)
 			{
 				ChangeBackground();
 			}
 
-			foreach (var child in m_achievementsStack.Children)
+			if (!m_isBgTransitioning)
 			{
-				if (child is CanvasWidget container)
+				foreach (var child in m_achievementsStack.Children)
 				{
-					var bottomRow = container.Children.Find<StackPanelWidget>(null, false);
-					if (bottomRow != null)
+					if (child is CanvasWidget container)
 					{
-						var claimButton = bottomRow.Children.Find<BevelledButtonWidget>(null, false);
-						if (claimButton != null && claimButton.Tag is AchievementButtonData data)
+						var bottomRow = container.Children.Find<StackPanelWidget>(null, false);
+						if (bottomRow != null)
 						{
-							if (claimButton.IsClicked && claimButton.IsEnabled)
+							var claimButton = bottomRow.Children.Find<BevelledButtonWidget>(null, false);
+							if (claimButton != null && claimButton.Tag is AchievementButtonData data)
 							{
-								bool success = AchievementsManager.ClaimAchievementReward(
-									m_componentPlayer,
-									data.AchievementNumber,
-									data.RewardAmount
-								);
-								if (success)
+								if (claimButton.IsClicked && claimButton.IsEnabled)
 								{
-									claimButton.IsEnabled = false;
-									claimButton.Color = Color.Gray;
-									m_componentPlayer.ComponentGui.DisplaySmallMessage(
-										LanguageControl.Get("AchievementsMessages", 3),
-										Color.Green, false, true);
-
-									var audio = m_componentPlayer.Project.FindSubsystem<SubsystemAudio>(true);
-									if (audio != null)
+									bool success = AchievementsManager.ClaimAchievementReward(
+										m_componentPlayer,
+										data.AchievementNumber,
+										data.RewardAmount
+									);
+									if (success)
 									{
-										audio.PlaySound("Audio/UI/success", 1f, 0f, m_componentPlayer.ComponentBody.Position, 10f, false);
+										claimButton.IsEnabled = false;
+										claimButton.Color = Color.Gray;
+										m_componentPlayer.ComponentGui.DisplaySmallMessage(
+											LanguageControl.Get("AchievementsMessages", 3),
+											Color.Green, false, true);
+
+										var audio = m_componentPlayer.Project.FindSubsystem<SubsystemAudio>(true);
+										if (audio != null)
+										{
+											audio.PlaySound("Audio/UI/success", 1f, 0f, m_componentPlayer.ComponentBody.Position, 10f, false);
+										}
 									}
 								}
 							}
@@ -574,7 +603,6 @@ namespace Game
 			public string BaseDescription;
 		}
 
-		// Widget simple para mostrar una textura como fondo
 		private class ImageWidgetSimple : Widget
 		{
 			public Texture2D Texture;
@@ -594,7 +622,6 @@ namespace Game
 			}
 		}
 
-		// Botón de imagen simple que hereda de ClickableWidget
 		private class PaintButtonWidget : ClickableWidget
 		{
 			public Subtexture Subtexture;
