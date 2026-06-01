@@ -268,6 +268,9 @@ namespace Game
 
 		public virtual void Update(float dt)
 		{
+			// Si la celebración está activa, no realizar ninguna acción de ataque/apuntado
+			if (AchievementsManager.IsCelebrationActive) return;
+
 			if (m_subsystemGreenNightSky != null)
 			{
 				ApplyDifficultyToAI();
