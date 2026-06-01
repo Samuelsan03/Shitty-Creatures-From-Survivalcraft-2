@@ -1413,7 +1413,7 @@
     "Medium_Name": "Daño Estructural",
     "Medium_Desc": "¿Muros? ¿Qué muros?\nLos infectados ahora devoran tu base como termitas drogadas.\nLlaman refuerzos y se ríen de tus planos.\n(Los bloques pueden romperse, las llamadas de ayuda siempre ocurren, flanqueo desactivado.)",
     "Hard_Name": "El Último Arquitecto",
-    "Hard_Desc": "Tu base es una sugerencia, no una defensa.\nLos zombis flanquean, se coordinan y usan armas a distancia.\nNo huyen: luchan hasta la muerte.\n(Flanqueo activado, alta destrucción de bloques, agresividad extrema.)",
+    "Hard_Desc": "Tu base es una sugerencia, no una defensa.\nLos infectados flanquean, se coordinan y usan armas a distancia.\nNo huyen: luchan hasta la muerte.\n(Flanqueo activado, alta destrucción de bloques, agresividad extrema.)",
     "Extreme_Name": "Error al Cargar la Cordura",
     "Extreme_Desc": "Los infectados son implacables, persistentes e inteligentes.\nTe perseguirán para siempre, destruirán todo y no sienten dolor.\nSobrevivir a esto desbloquea la línea directa de un terapeuta.\n(Persecución persistente, máximo número de apariciones, máxima destrucción de bloques, sin piedad.)"
   },
