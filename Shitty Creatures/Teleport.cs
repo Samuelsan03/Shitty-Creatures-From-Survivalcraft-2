@@ -1,91 +1,269 @@
 using System;
 using Engine;
-using Engine.Graphics;
+using GameEntitySystem;
+using TemplatesDatabase;
 
 namespace Game
 {
-	public class TeleportParticleSystem : ParticleSystem<TeleportParticleSystem.Particle>
+	public class Teleport : Component, IUpdateable
 	{
-		private static readonly Color TeleportColorInner = new Color(180, 60, 255, 255);
-		private static readonly Color TeleportColorOuter = new Color(100, 20, 180, 200);
+		// ===== DISTANCIA FIJA DE CERCANÍA (no se carga del diccionario) =====
+		private const float CloseRangeDistance = 1.5f;
+		private const float HiddenY = -100f;
 
-		public TeleportParticleSystem(SubsystemTerrain terrain, Vector3 position, float size, bool isAppearEffect)
-			: base(20)
+		// ===== PROPIEDADES PÚBLICAS =====
+		public UpdateOrder UpdateOrder => UpdateOrder.Default;
+
+		public float TeleportationDistance { get; private set; }
+		public float TeleportationCooldown { get; private set; }
+		public float DisappearDuration { get; private set; }
+		public float ProbabilityOfTeleporting { get; private set; }
+
+		// ===== ESTADO INTERNO =====
+		private SubsystemTerrain m_subsystemTerrain;
+		private SubsystemAudio m_subsystemAudio;
+		private SubsystemParticles m_subsystemParticles;
+		private SubsystemTime m_subsystemTime;
+
+		private ComponentCreature m_componentCreature;
+		private ComponentBody m_componentBody;
+		private ComponentNewChaseBehavior m_componentChase;
+
+		private double m_lastTeleportTime;
+		private bool m_isTeleporting;
+		private float m_teleportPhase;
+		private float m_phaseTimer;
+		private Vector3 m_teleportDestination;
+		private Vector3 m_teleportOrigin;
+
+		private Random m_random = new Random();
+
+		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
-			base.Texture = ContentManager.Get<Texture2D>("Textures/KillParticle");
-			int num = Terrain.ToCell(position.X);
-			int num2 = Terrain.ToCell(position.Y);
-			int num3 = Terrain.ToCell(position.Z);
-			int num4 = 0;
-			num4 = MathUtils.Max(num4, terrain.Terrain.GetCellLight(num + 1, num2, num3));
-			num4 = MathUtils.Max(num4, terrain.Terrain.GetCellLight(num - 1, num2, num3));
-			num4 = MathUtils.Max(num4, terrain.Terrain.GetCellLight(num, num2 + 1, num3));
-			num4 = MathUtils.Max(num4, terrain.Terrain.GetCellLight(num, num2 - 1, num3));
-			num4 = MathUtils.Max(num4, terrain.Terrain.GetCellLight(num, num2, num3 + 1));
-			num4 = MathUtils.Max(num4, terrain.Terrain.GetCellLight(num, num2, num3 - 1));
-			base.TextureSlotsCount = 2;
-			Color color = m_random.Bool() ? TeleportColorInner : TeleportColorOuter;
-			float s = LightingManager.LightIntensityByLightValue[num4];
-			color *= s;
-			color.A = byte.MaxValue;
-			for (int i = 0; i < base.Particles.Length; i++)
-			{
-				TeleportParticleSystem.Particle particle = base.Particles[i];
-				particle.IsActive = true;
-				particle.Position = position + 0.4f * size * new Vector3(m_random.Float(-1f, 1f), m_random.Float(-1f, 1f), m_random.Float(-1f, 1f));
-				particle.Color = color;
-				particle.Size = new Vector2(0.3f * size);
-				particle.TimeToLive = m_random.Float(0.5f, 3.5f);
+			m_subsystemTerrain = Project.FindSubsystem<SubsystemTerrain>(true);
+			m_subsystemAudio = Project.FindSubsystem<SubsystemAudio>(true);
+			m_subsystemParticles = Project.FindSubsystem<SubsystemParticles>(true);
+			m_subsystemTime = Project.FindSubsystem<SubsystemTime>(true);
 
-				if (isAppearEffect)
+			m_componentCreature = Entity.FindComponent<ComponentCreature>(true);
+			m_componentBody = Entity.FindComponent<ComponentBody>(true);
+			m_componentChase = Entity.FindComponent<ComponentNewChaseBehavior>();
+
+			TeleportationDistance = valuesDictionary.GetValue<float>("TeleportationDistance");
+			TeleportationCooldown = valuesDictionary.GetValue<float>("TeleportationCooldown");
+			DisappearDuration = valuesDictionary.GetValue<float>("DisappearDuration");
+			ProbabilityOfTeleporting = valuesDictionary.GetValue<float>("ProbabilityOfTeleporting");
+
+			m_lastTeleportTime = -TeleportationCooldown;
+		}
+
+		public override void Save(ValuesDictionary valuesDictionary, EntityToIdMap entityToIdMap)
+		{
+		}
+
+		public void Update(float dt)
+		{
+			if (m_componentBody == null || m_componentChase == null)
+				return;
+
+			if (m_isTeleporting)
+			{
+				UpdateTeleportation(dt);
+				return;
+			}
+
+			if (!CanTeleport())
+				return;
+
+			ComponentCreature target = m_componentChase.Target;
+			if (target == null || target.ComponentBody == null || target.ComponentHealth.Health <= 0f)
+				return;
+
+			float distance = Vector3.Distance(m_componentBody.Position, target.ComponentBody.Position);
+
+			if (distance > CloseRangeDistance && distance >= TeleportationDistance)
+			{
+				if (m_random.Float(0f, 1f) < ProbabilityOfTeleporting)
 				{
-					particle.Velocity = -1.2f * size * new Vector3(m_random.Float(-1f, 1f), m_random.Float(-1f, 1f), m_random.Float(-1f, 1f));
+					StartTeleportation(target);
 				}
 				else
 				{
-					particle.Velocity = 1.2f * size * new Vector3(m_random.Float(-1f, 1f), m_random.Float(-1f, 1f), m_random.Float(-1f, 1f));
+					m_lastTeleportTime = m_subsystemTime.GameTime;
 				}
-
-				particle.FlipX = m_random.Bool();
-				particle.FlipY = m_random.Bool();
 			}
 		}
 
-		public override bool Simulate(float dt)
+		private bool CanTeleport()
 		{
-			dt = Math.Clamp(dt, 0f, 0.1f);
-			float s = MathF.Pow(0.1f, dt);
-			bool flag = false;
-			for (int i = 0; i < base.Particles.Length; i++)
+			double currentTime = m_subsystemTime.GameTime;
+			if (currentTime - m_lastTeleportTime < TeleportationCooldown)
+				return false;
+
+			if (m_componentChase == null || !m_componentChase.IsActive)
+				return false;
+
+			if (m_componentCreature.ComponentHealth.Health <= 0f)
+				return false;
+
+			return true;
+		}
+
+		private void StartTeleportation(ComponentCreature target)
+		{
+			m_isTeleporting = true;
+			m_teleportPhase = 1;
+			m_phaseTimer = 0f;
+			m_teleportOrigin = m_componentBody.Position;
+			m_teleportDestination = CalculateTeleportDestination(target);
+
+			Vector3 particlePos = m_componentBody.Position + new Vector3(0f, m_componentBody.StanceBoxSize.Y / 2f, 0f);
+			float size = m_componentBody.StanceBoxSize.X;
+
+			TeleportParticleSystem particles = new TeleportParticleSystem(m_subsystemTerrain, particlePos, size, false);
+			m_subsystemParticles.AddParticleSystem(particles, false);
+
+			HideBody();
+
+			m_subsystemAudio.PlaySound("Audio/teleport 1", 1f, 0f, m_teleportOrigin, 4f, false);
+		}
+
+		private void UpdateTeleportation(float dt)
+		{
+			m_phaseTimer += dt;
+
+			if (m_teleportPhase == 1)
 			{
-				TeleportParticleSystem.Particle particle = base.Particles[i];
-				if (particle.IsActive)
+				if (m_phaseTimer >= DisappearDuration)
 				{
-					flag = true;
-					particle.TimeToLive -= dt;
-					if (particle.TimeToLive > 0f)
+					ShowBody(m_teleportDestination);
+
+					Vector3 particlePos = m_teleportDestination + new Vector3(0f, m_componentBody.StanceBoxSize.Y / 2f, 0f);
+					float size = m_componentBody.StanceBoxSize.X;
+
+					TeleportParticleSystem particles = new TeleportParticleSystem(m_subsystemTerrain, particlePos, size, true);
+					m_subsystemParticles.AddParticleSystem(particles, false);
+
+					m_teleportPhase = 2;
+					m_phaseTimer = 0f;
+
+					m_subsystemAudio.PlaySound("Audio/teleport 2", 1f, 0f, m_teleportDestination, 4f, false);
+				}
+			}
+			else if (m_teleportPhase == 2)
+			{
+				if (m_phaseTimer >= 0.4f)
+				{
+					m_isTeleporting = false;
+					m_teleportPhase = 0;
+					m_lastTeleportTime = m_subsystemTime.GameTime;
+				}
+			}
+		}
+
+		private void HideBody()
+		{
+			m_componentBody.Position = new Vector3(m_teleportOrigin.X, HiddenY, m_teleportOrigin.Z);
+			m_componentBody.Velocity = Vector3.Zero;
+		}
+
+		private void ShowBody(Vector3 position)
+		{
+			m_componentBody.Position = position;
+			m_componentBody.Velocity = Vector3.Zero;
+		}
+
+		private Vector3 CalculateTeleportDestination(ComponentCreature target)
+		{
+			Vector3 targetPos = target.ComponentBody.Position;
+
+			float angle = 180f + m_random.Float(-45f, 45f);
+
+			float radians = angle * MathUtils.DegToRad(1f);
+			Vector3 offset = new Vector3(
+				MathF.Sin(radians) * CloseRangeDistance,
+				0f,
+				MathF.Cos(radians) * CloseRangeDistance);
+
+			Vector3 destination = targetPos + offset;
+
+			destination.Y = FindGroundLevel(destination);
+
+			return destination;
+		}
+
+		private float FindGroundLevel(Vector3 position)
+		{
+			int x = Terrain.ToCell(position.X);
+			int startY = Terrain.ToCell(position.Y + 5);
+			int z = Terrain.ToCell(position.Z);
+
+			for (int y = Math.Min(startY, 254); y >= 0; y--)
+			{
+				if (m_subsystemTerrain.Terrain.IsCellValid(x, y, z))
+				{
+					int cellValue = m_subsystemTerrain.Terrain.GetCellValue(x, y, z);
+					int contents = Terrain.ExtractContents(cellValue);
+					Block block = BlocksManager.Blocks[contents];
+
+					if (block.IsCollidable_(cellValue))
 					{
-						particle.Position += particle.Velocity * dt;
-						TeleportParticleSystem.Particle particle2 = particle;
-						particle2.Velocity.Y = particle2.Velocity.Y + 1f * dt;
-						particle.Velocity *= s;
-						particle.TextureSlot = (int)(3.99f * MathUtils.Saturate(2f - particle.TimeToLive));
-					}
-					else
-					{
-						particle.IsActive = false;
+						int aboveValue = m_subsystemTerrain.Terrain.GetCellValue(x, y + 1, z);
+						int aboveContents = Terrain.ExtractContents(aboveValue);
+						Block aboveBlock = BlocksManager.Blocks[aboveContents];
+
+						if (!aboveBlock.IsCollidable_(aboveValue))
+						{
+							return y + 1.01f;
+						}
 					}
 				}
 			}
-			return !flag;
+
+			return position.Y;
 		}
 
-		public Random m_random = new Random();
-
-		public class Particle : Game.Particle
+		public void ForceTeleportTo(Vector3 destination)
 		{
-			public Vector3 Velocity;
-			public float TimeToLive;
+			if (m_isTeleporting)
+				return;
+
+			m_isTeleporting = true;
+			m_teleportPhase = 1;
+			m_phaseTimer = 0f;
+			m_teleportOrigin = m_componentBody.Position;
+			m_teleportDestination = destination;
+
+			Vector3 particlePos = m_componentBody.Position + new Vector3(0f, m_componentBody.StanceBoxSize.Y / 2f, 0f);
+			float size = m_componentBody.StanceBoxSize.X;
+
+			TeleportParticleSystem particles = new TeleportParticleSystem(m_subsystemTerrain, particlePos, size, false);
+			m_subsystemParticles.AddParticleSystem(particles, false);
+
+			HideBody();
+
+			m_subsystemAudio.PlaySound("Audio/teleport 1", 1f, 0f, m_teleportOrigin, 4f, false);
+		}
+
+		public void CancelTeleport()
+		{
+			if (m_isTeleporting)
+			{
+				ShowBody(m_teleportOrigin);
+				m_isTeleporting = false;
+				m_teleportPhase = 0;
+			}
+		}
+
+		public bool IsTeleporting => m_isTeleporting;
+
+		public float RemainingCooldown
+		{
+			get
+			{
+				double elapsed = m_subsystemTime.GameTime - m_lastTeleportTime;
+				return Math.Max(0f, (float)(TeleportationCooldown - elapsed));
+			}
 		}
 	}
 }
