@@ -125,7 +125,6 @@ namespace Game
 			TeleportParticleSystem particles = new TeleportParticleSystem(m_subsystemTerrain, particlePos, size, false);
 			m_subsystemParticles.AddParticleSystem(particles, false);
 
-			// Pausar pathfinding antes de ocultar para evitar detección de atasco
 			if (m_componentPathfinding != null)
 			{
 				m_componentPathfinding.Stop();
@@ -144,19 +143,15 @@ namespace Game
 			{
 				if (m_phaseTimer >= DisappearDuration)
 				{
-					// Verificar que el objetivo siga siendo válido
 					ComponentCreature target = m_componentChase?.Target;
 					if (target == null || target.ComponentHealth.Health <= 0f)
 					{
-						// El objetivo ya no es válido → cancelar teletransporte
 						CancelTeleport();
 						return;
 					}
 
-					// Recalcular destino con datos actualizados
-					m_teleportDestination = CalculateTeleportDestination(target);
 					ShowBody(m_teleportDestination);
-					FaceTarget(target); // Forzar rotación hacia el objetivo
+					FaceTarget(target);
 
 					Vector3 particlePos = m_teleportDestination + new Vector3(0f, m_componentBody.StanceBoxSize.Y / 2f, 0f);
 					float size = m_componentBody.StanceBoxSize.X;
@@ -204,12 +199,6 @@ namespace Game
 
 			HideBody();
 
-			// Guardar target para usarlo después
-			if (target != null)
-			{
-				// Podrías almacenar target en un campo temporal si es necesario
-			}
-
 			m_subsystemAudio.PlaySound("Audio/teleport 1", 1f, 0f, m_teleportOrigin, 4f, false);
 		}
 
@@ -228,53 +217,59 @@ namespace Game
 		private Vector3 CalculateTeleportDestination(ComponentCreature target)
 		{
 			Vector3 targetPos = target.ComponentBody.Position;
-			Vector3 targetForward = target.ComponentBody.Matrix.Forward; // Dirección a la que mira el objetivo
 
-			// Teletransportar DELANTE del objetivo (en la dirección que mira)
-			// Ángulo de 0 grados = justo enfrente
-			float angle = m_random.Float(-30f, 30f); // Pequeña variación lateral
+			// Usar dirección desde posición original hacia el objetivo (no depende de hacia dónde mira el jugador)
+			Vector3 toTarget = targetPos - m_teleportOrigin;
+			toTarget.Y = 0f;
 
-			float radians = angle * MathUtils.DegToRad(1f);
+			if (toTarget.LengthSquared() < 0.01f)
+			{
+				float randomAngle = m_random.Float(0f, 2f * MathF.PI);
+				toTarget = new Vector3(MathF.Cos(randomAngle), 0f, MathF.Sin(randomAngle));
+			}
+			else
+			{
+				toTarget = Vector3.Normalize(toTarget);
+			}
+
+			// Pequeña variación lateral (-30 a +30 grados)
+			float lateralAngle = m_random.Float(-30f, 30f) * MathUtils.DegToRad(1f);
+			float cos = MathF.Cos(lateralAngle);
+			float sin = MathF.Sin(lateralAngle);
+
 			Vector3 offset = new Vector3(
-				MathF.Sin(radians) * CloseRangeDistance,
+				toTarget.X * cos - toTarget.Z * sin,
 				0f,
-				MathF.Cos(radians) * CloseRangeDistance);
+				toTarget.X * sin + toTarget.Z * cos
+			) * CloseRangeDistance;
 
-			// Rotar el offset según la orientación del objetivo
-			Matrix targetMatrix = target.ComponentBody.Matrix;
-			Vector3 localOffset = offset.X * targetMatrix.Right + offset.Z * targetMatrix.Forward;
-
-			Vector3 destination = targetPos + localOffset;
+			// Posicionarse a CloseRangeDistance del objetivo, mirándolo
+			Vector3 destination = targetPos - offset;
 			destination.Y = FindGroundLevel(destination);
 
 			return destination;
 		}
 
-		// NUEVO: Método para forzar la rotación hacia el objetivo
 		private void FaceTarget(ComponentCreature target)
 		{
 			if (target == null || target.ComponentBody == null)
 				return;
 
 			Vector3 directionToTarget = target.ComponentBody.Position - m_componentBody.Position;
-			directionToTarget.Y = 0f; // Ignorar diferencia de altura
+			directionToTarget.Y = 0f;
 
 			if (directionToTarget.Length() > 0.01f)
 			{
 				directionToTarget = Vector3.Normalize(directionToTarget);
 
-				// Calcular ángulo Yaw (rotación horizontal)
 				float yaw = MathF.Atan2(directionToTarget.X, directionToTarget.Z);
 				Quaternion targetRotation = Quaternion.CreateFromYawPitchRoll(yaw, 0f, 0f);
 
-				// Aplicar rotación al cuerpo
 				m_componentBody.Rotation = targetRotation;
 
-				// También rotar el modelo visual si existe
 				ComponentCreatureModel model = Entity.FindComponent<ComponentCreatureModel>();
 				if (model != null)
 				{
-					// Forzar que mire al objetivo inmediatamente
 					model.LookAtOrder = target.ComponentBody.Position;
 					model.LookRandomOrder = false;
 				}
@@ -310,33 +305,6 @@ namespace Game
 			}
 
 			return position.Y;
-		}
-
-		public void ForceTeleportTo(Vector3 destination)
-		{
-			if (m_isTeleporting)
-				return;
-
-			m_isTeleporting = true;
-			m_teleportPhase = 1;
-			m_phaseTimer = 0f;
-			m_teleportOrigin = m_componentBody.Position;
-			m_teleportDestination = destination;
-
-			Vector3 particlePos = m_componentBody.Position + new Vector3(0f, m_componentBody.StanceBoxSize.Y / 2f, 0f);
-			float size = m_componentBody.StanceBoxSize.X;
-
-			TeleportParticleSystem particles = new TeleportParticleSystem(m_subsystemTerrain, particlePos, size, false);
-			m_subsystemParticles.AddParticleSystem(particles, false);
-
-			if (m_componentPathfinding != null)
-			{
-				m_componentPathfinding.Stop();
-			}
-
-			HideBody();
-
-			m_subsystemAudio.PlaySound("Audio/teleport 1", 1f, 0f, m_teleportOrigin, 4f, false);
 		}
 
 		public void CancelTeleport()
