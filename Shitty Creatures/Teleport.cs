@@ -28,6 +28,7 @@ namespace Game
 		private ComponentCreature m_componentCreature;
 		private ComponentBody m_componentBody;
 		private ComponentNewChaseBehavior m_componentChase;
+		private ComponentPathfinding m_componentPathfinding;
 
 		private double m_lastTeleportTime;
 		private bool m_isTeleporting;
@@ -48,6 +49,7 @@ namespace Game
 			m_componentCreature = Entity.FindComponent<ComponentCreature>(true);
 			m_componentBody = Entity.FindComponent<ComponentBody>(true);
 			m_componentChase = Entity.FindComponent<ComponentNewChaseBehavior>();
+			m_componentPathfinding = Entity.FindComponent<ComponentPathfinding>();
 
 			TeleportationDistance = valuesDictionary.GetValue<float>("TeleportationDistance");
 			TeleportationCooldown = valuesDictionary.GetValue<float>("TeleportationCooldown");
@@ -122,6 +124,12 @@ namespace Game
 
 			TeleportParticleSystem particles = new TeleportParticleSystem(m_subsystemTerrain, particlePos, size, false);
 			m_subsystemParticles.AddParticleSystem(particles, false);
+
+			// Pausar pathfinding antes de ocultar para evitar detección de atasco
+			if (m_componentPathfinding != null)
+			{
+				m_componentPathfinding.Stop();
+			}
 
 			HideBody();
 
@@ -239,6 +247,11 @@ namespace Game
 
 			TeleportParticleSystem particles = new TeleportParticleSystem(m_subsystemTerrain, particlePos, size, false);
 			m_subsystemParticles.AddParticleSystem(particles, false);
+
+			if (m_componentPathfinding != null)
+			{
+				m_componentPathfinding.Stop();
+			}
 
 			HideBody();
 
