@@ -5998,6 +5998,12 @@
       <MemberComponentTemplate Name="AutoJump" Guid="87850c4c-5b80-4b01-a5c8-e2aaef3baf15" InheritanceParent="ef94c9db-75b0-4e0f-9971-f575ac88661b">
               <Parameter Name="JumpStrength" Guid="194d169e-50d0-4c12-9dd2-71ef16910d9d" Value="0.7" Type="float"/>
             </MemberComponentTemplate>
+            <MemberComponentTemplate Name="Teleport" Guid="375d9252-791b-4d1a-b57d-37b041a46425" InheritanceParent="6f1098fa-759e-4cb5-adfa-a42ebf9aab74">
+  <Parameter Name="TeleportationDistance" Guid="64fd05be-a18e-4b75-9a44-daacc0f1ba4e" Value="15" Type="float" />
+  <Parameter Name="TeleportationCooldown" Guid="8ef3bff9-5b50-4e5d-b2e1-bcc3d440021f" Value="3" Type="float" />
+  <Parameter Name="DisappearDuration" Guid="2529e06e-c90c-4c6d-bbaa-d76cf0648af8" Value="3" Type="float" />
+  <Parameter Name="ProbabilityOfTeleporting" Guid="aac3436f-ee36-42f2-b3fc-5444e7d48df8" Value="0.1" Type="float" />
+</MemberComponentTemplate>
             <MemberComponentTemplate Name="Loot" Guid="1d665fa7-105c-4acf-b485-92e3ed3d0145">
                 <ParameterSet Name="Loot" Guid="cc3a3343-d443-40e6-91d7-dd7247fdb58e">
                     <Parameter Name="1" Guid="ccc42ecc-bf63-4213-83fa-75c555ac5381" Value="RottenMeatBlock;5;10;0.5" Type="string"/>
