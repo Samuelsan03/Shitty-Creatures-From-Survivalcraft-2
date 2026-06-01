@@ -30,6 +30,13 @@ namespace Game
 		public static event Action<ComponentPlayer, int, int> OnFlyingCounterChanged;
 		public static event Action<ComponentPlayer, int, int> OnBoomerCounterChanged;
 
+		// Eventos para celebración de todos los logros
+		public static event Action OnCelebrationStarted;
+		public static event Action OnCelebrationEnded;
+
+		// Variable para saber si la celebración está activa
+		public static bool IsCelebrationActive { get; private set; } = false;
+
 		private static void LoadAchievementRewards()
 		{
 			if (s_achievementRewards != null) return;
@@ -491,6 +498,9 @@ namespace Game
 
 		private static void StartAllAchievementsCelebration(ComponentPlayer player)
 		{
+			// No activar celebración todavía, solo mostrar mensaje y sonido inicial
+			// La celebración real (bailes, supresión de ataques) comenzará después de 8 segundos, junto con la música
+
 			// Mensaje especial
 			player.ComponentGui.DisplayLargeMessage(
 				LanguageControl.Get("AchievementsMessages", 4),
@@ -502,10 +512,8 @@ namespace Game
 			if (audio != null)
 				audio.PlaySound("Audio/Death of King Gedol", 1f, 0f, player.ComponentBody.Position, 30f, false);
 
-			// Programar todo el resto usando SyncDispatcher, no QueueGameTimeDelayedExecution
+			// Programar la cuenta atrás de 8 segundos; al terminar, iniciar la celebración real
 			GameManager.SyncDispatcher.Add(() => {
-				// Esperar 8 segundos contando frames (8 segundos ≈ 8 * 60 = 480 frames a 60fps)
-				// Usamos una variable estática para contar
 				StartFireworkCountdown(player, 8.0f);
 				return true;
 			});
@@ -517,6 +525,10 @@ namespace Game
 
 			if (remainingSeconds <= 0f)
 			{
+				// ¡Comienza la celebración real!
+				IsCelebrationActive = true;
+				OnCelebrationStarted?.Invoke();
+
 				// Música en bucle durante 150 segundos (2:30)
 				StartLoopingMusic(player, "MenuMusic/Sparkster Genesis Normal Ending", 150f);
 				// Fuegos artificiales durante 150 segundos
@@ -594,11 +606,13 @@ namespace Game
 				}
 				else if (!fadeStarted)
 				{
-					// TERMINÓ la celebración - iniciar fade out
 					fadeStarted = true;
 					InGameMusicManager.FadeOutAndStop();
 
-					// Actualizar fade hasta que termine
+					// Desactivar estado de celebración global y notificar
+					IsCelebrationActive = false;
+					OnCelebrationEnded?.Invoke();
+
 					Action fadeLoop = null;
 					fadeLoop = () => {
 						InGameMusicManager.Update();
