@@ -1,5 +1,5 @@
 <CanvasWidget xmlns="runtime-namespace:Game" Size="600, 400" HorizontalAlignment="Center" VerticalAlignment="Center">
-  <BevelledRectangleWidget BevelSize="3" />
+  <BevelledRectangleWidget Name="Background" BevelSize="3" />
   <StackPanelWidget Direction="Vertical" HorizontalAlignment="Center">
     <CanvasWidget Size="0, 12"/>
     <LabelWidget Name="TitleLabel" Text="[AchievementsWidget:0]" Color="255,255,255" HorizontalAlignment="Center" FontScale="1.2"/>
