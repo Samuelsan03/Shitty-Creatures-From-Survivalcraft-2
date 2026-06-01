@@ -1080,9 +1080,6 @@
         </EntityTemplate>
 
         <EntityTemplate Name="InfectedMuscle1" Guid="d11a472b-c681-43f2-a2a7-f779ceee8b5e" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="ZombieAI" Guid="49a3c2e1-9725-4dcb-aa71-7689e574d4cd" InheritanceParent="dc91ba3e-c474-45c3-8d03-ca9a9996dc5f">
-    <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="241d13af-f5fd-44be-a87b-2bd9af3f298d"/>
-</MemberComponentTemplate>
         <MemberComponentTemplate Name="DeathSpawner" Guid="82ab898c-c459-421d-84b5-387287cc0a65" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.01" Type="float" Guid="46449690-f7c5-4540-b845-4459ca96868a"/>
     <Parameter Name="DeathSpawnTemplates" Value="GhostNormal:0.01" Type="string" Guid="a178e383-e3b9-4685-a20e-b6fbe20575d4"/>
@@ -1108,8 +1105,10 @@
         <Parameter Name="IdleSound" Guid="3f7b6be9-0a04-42bc-9c5e-6f12423e09fe" Value="Audio/Creatures/Zombie 1/Idie" Type="string"/>
         <Parameter Name="AttackSound" Guid="c3882607-c340-471c-8c87-ae24c6a41bb8" Value="Audio/Creatures/Zombie 1/Attack" Type="string"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="Inventory" Guid="396e0dba-027e-4a5c-a640-f0e95fa46b16" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
-            </MemberComponentTemplate>
+            <MemberComponentTemplate Name="ZombieAI" Guid="49a3c2e1-9725-4dcb-aa71-7689e574d4cd" InheritanceParent="dc91ba3e-c474-45c3-8d03-ca9a9996dc5f">
+    <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="241d13af-f5fd-44be-a87b-2bd9af3f298d"/>
+</MemberComponentTemplate>
+            <MemberComponentTemplate Name="Inventory" Guid="396e0dba-027e-4a5c-a640-f0e95fa46b16" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890"/>
             <MemberComponentTemplate Name="NewCreatureCollect" Guid="4c60fdbf-5c58-41e0-a27a-8712b4f636d5" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
     <Parameter Name="PickFactors" Guid="cf563f83-0e27-4109-a4c8-b7ac8a217b8b" Value="Tools;1.0,Weapons;1.0" Type="string"/>
 </MemberComponentTemplate>
@@ -1348,9 +1347,6 @@
         </EntityTemplate>
 
         <EntityTemplate Name="InfectedMuscle2" Guid="cf56e0f6-2c40-46fa-8f8a-4225a1a5be28" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-<MemberComponentTemplate Name="ZombieAI" Guid="e3845daa-c175-4388-85ea-743bcb2a9561" InheritanceParent="dc91ba3e-c474-45c3-8d03-ca9a9996dc5f">
-    <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="f1da6828-9a58-47ea-a2be-b619d9b800e1"/>
-</MemberComponentTemplate>
         <MemberComponentTemplate Name="DeathSpawner" Guid="fd2a9264-11ce-4c4d-87df-8a3f24e2c0a8" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.01" Type="float" Guid="13f2cff3-3d39-4f96-b1b1-53af7a003d75"/>
     <Parameter Name="DeathSpawnTemplates" Value="GhostNormal:0.01" Type="string" Guid="045168a0-a6c1-4d2f-bb42-a82d70b0da00"/>
@@ -1376,8 +1372,10 @@
         <Parameter Name="IdleSound" Guid="472d8273-3d5c-42f8-ae7a-18ba040c6ee3" Value="Audio/Creatures/Zombie 1/Idie" Type="string"/>
         <Parameter Name="AttackSound" Guid="c0b79e3a-dfa2-4421-ba63-ddd7ce4f9e2a" Value="Audio/Creatures/Zombie 1/Attack" Type="string"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="Inventory" Guid="c10ed204-a294-4c01-a004-3e8ea9cb296e" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
-            </MemberComponentTemplate>
+            <MemberComponentTemplate Name="ZombieAI" Guid="e3845daa-c175-4388-85ea-743bcb2a9561" InheritanceParent="dc91ba3e-c474-45c3-8d03-ca9a9996dc5f">
+    <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="f1da6828-9a58-47ea-a2be-b619d9b800e1"/>
+</MemberComponentTemplate>
+            <MemberComponentTemplate Name="Inventory" Guid="c10ed204-a294-4c01-a004-3e8ea9cb296e" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890"/>
             <MemberComponentTemplate Name="NewCreatureCollect" Guid="965cfa76-bb5f-4c9d-8029-400ac6b87d5d" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
     <Parameter Name="PickFactors" Guid="3e3562ac-f061-48c6-85f9-db541a5356b6" Value="Tools;1.0,Weapons;1.0" Type="string"/>
 </MemberComponentTemplate>
