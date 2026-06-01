@@ -2337,7 +2337,10 @@ namespace Game
 	"HumanoidSkeleton",
 	"Charger1",
 	"Charger2",
-	"GhostCharger"
+	"GhostCharger",
+	"InfectedHyena",
+	"InfectedWerewolf",
+	"InfectedWolf"
 };
 
 		// ===== NUEVOS CONJUNTOS SEPARADOS =====
