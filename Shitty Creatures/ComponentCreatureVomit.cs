@@ -117,6 +117,10 @@ namespace Game
 
 		public void Update(float dt)
 		{
+
+			// Si la celebración está activa, no realizar ninguna acción de vómito
+			if (AchievementsManager.IsCelebrationActive) return;
+
 			if (m_componentCreature.ComponentHealth.Health <= 0f)
 				return;
 
