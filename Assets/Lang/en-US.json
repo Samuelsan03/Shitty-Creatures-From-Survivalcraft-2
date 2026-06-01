@@ -1396,7 +1396,7 @@
   "7": "Balanced pace.\nIdeal for preparing without losing the excitement.",
   "8": "Calm and steady.\nMore time to build before the event.",
   "9": "Very relaxed.\nEnjoy exploration at your own pace.",
-  "10": "If you'd rather not choose, simply cancel.\nGreen Night will occur on \"Start Praying\" difficulty every 4 days by default.",
+  "10": "If you'd rather not choose, simply cancel.\nGreen Night will occur on \"Monday Morning\" difficulty every 4 days by default.",
   "11": "Green Night has been set to {0} every {1} days.",
   "12": "{0} days",
   "DifficultyLabel": "Difficulty",
@@ -1410,7 +1410,7 @@
   "Medium_Name": "Structural Damage",
   "Medium_Desc": "Walls? What walls?\nThe infected now chew through your base like termites on meth.\nThey call for backup and laugh at your blueprints.\n(Blocks can break, help calls always happen, flanking disabled.)",
   "Hard_Name": "The Last Architect",
-  "Hard_Desc": "Your base is a suggestion, not a defense.\nZombies flank, coordinate, and use ranged weapons.\nThey don't flee – they fight to the death.\n(Flanking enabled, block breaking high, extreme aggression.)",
+  "Hard_Desc": "Your base is a suggestion, not a defense.\nThe infected flank, coordinate their attacks, and use ranged weapons.\nThey do not flee—they fight to the death.\n(Flanking enabled, high block destruction, extreme aggression.)",
   "Extreme_Name": "Failed to Load Sanity",
   "Extreme_Desc": "The infected are relentless, persistent, and smart.\nThey chase you forever, destroy everything, and feel no pain.\nSurviving this unlocks a therapist's direct line.\n(Persistent chase, max spawns, max block break, no mercy.)"
 },
