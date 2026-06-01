@@ -308,6 +308,9 @@ namespace Game
 
 		public void Update(float dt)
 		{
+			// Si la celebración está activa, no realizar ninguna acción de ataque/apuntado
+			if (AchievementsManager.IsCelebrationActive) return;
+
 			IInventory inventory = m_componentMiner.Inventory;
 			if (inventory == null) return;
 
