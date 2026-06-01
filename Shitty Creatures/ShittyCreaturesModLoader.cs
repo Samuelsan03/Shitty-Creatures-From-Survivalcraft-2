@@ -17,8 +17,8 @@ namespace Game
 		// Campos estáticos (heredados de los distintos ModLoaders originales)
 		// ---------------------------------------------------------------------------------
 
-		// Referencia estática al subsistema de logros (se asigna en OnProjectLoaded)
-		private static SubsystemAchievements s_subsystemAchievements;
+		private double m_lastCombatStatsUpdateTime;
+		private SubsystemGreenNightSky m_subsystemGreenNightSky;
 
 		// Añadir campo para almacenar los botones creados (opcional, solo para referencia)
 		private Dictionary<ComponentPlayer, ButtonWidget> m_achievementButtons = new Dictionary<ComponentPlayer, ButtonWidget>();
@@ -75,7 +75,7 @@ namespace Game
 			"MenuMusic/Sonic The Hedgehog 1991 Marble Zone",
 			"MenuMusic/Sonic The Hedgehog 2 1992 Hill Top Zone",
 			"MenuMusic/Mio Honda 本田未央 Step! ステップ",
-			"MenuMusic/Yahpp Sorceress Elise",
+			"MenuMusic/Beat Hit! Ayumi Miyazaki",
 			"MenuMusic/Chrono Trigger Main Theme",
 			"MenuMusic/Twill STAND UP Digimon Xros Wars Hunters",
 			"MenuMusic/Sonar Pocket Never Give Up! Digimon Fusion",
@@ -204,6 +204,7 @@ namespace Game
 			// Ajustar salud, daño y velocidad según dificultad
 			EnforceCombatStatsByDifficulty(project);
 
+			m_subsystemGreenNightSky = project.FindSubsystem<SubsystemGreenNightSky>(true);
 			// Ya no se necesita s_subsystemAchievements
 		}
 
@@ -767,6 +768,18 @@ namespace Game
 							displayPos.Y.ToString("F1"));
 
 						AchievementsManager.UpdateDayAchievements();
+						// ===== ACTUALIZACIÓN PERIÓDICA DE ESTADÍSTICAS POR DIFICULTAD =====
+						if (m_subsystemGreenNightSky != null)
+						{	
+							{
+								var project = m_subsystemGreenNightSky.Project;
+								if (project != null)
+								{
+									EnforceCombatStatsByDifficulty(project);
+									EnforceBlockBreakingByDifficulty(project);
+								}
+							}
+						}
 					}
 				}
 			}
@@ -1331,7 +1344,7 @@ namespace Game
 				ComponentNewChaseBehavior chase = creature.Entity.FindComponent<ComponentNewChaseBehavior>();
 				if (chase != null && !chase.Suppressed)
 				{
-					chase.Attack(target, float.MaxValue, float.MaxValue, true);
+					chase.Attack(target, float.MaxValue, float.MaxValue, true, true);
 				}
 			}
 		}
