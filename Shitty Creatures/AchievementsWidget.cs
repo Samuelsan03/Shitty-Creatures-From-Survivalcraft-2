@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Xml.Linq;
 using Engine;
+using Engine.Graphics;
 using Game;
 
 namespace Game
@@ -12,6 +13,14 @@ namespace Game
 		private BevelledButtonWidget m_closeButton;
 		private StackPanelWidget m_achievementsStack;
 		private LabelWidget m_titleLabel;
+		private BevelledRectangleWidget m_originalBackground;
+		private ImageWidgetSimple m_backgroundImageWidget;
+		private PaintButtonWidget m_paintButton;
+		private int m_backgroundState = 0; // 0=original, 1=textura found, 2=semitransparente
+
+		// Guardar colores originales del fondo para restaurarlos después del modo semitransparente
+		private Color m_originalCenterColor;
+		private Color m_originalBevelColor;
 
 		private Dictionary<int, AchievementItemData> m_achievementItems = new Dictionary<int, AchievementItemData>();
 
@@ -26,12 +35,58 @@ namespace Game
 			m_achievementsStack = Children.Find<StackPanelWidget>("AchievementsStack", true);
 			m_titleLabel = Children.Find<LabelWidget>("TitleLabel", true);
 
+			// Obtener el fondo original por su nombre y guardar sus colores originales
+			m_originalBackground = Children.Find<BevelledRectangleWidget>("Background", true);
+			if (m_originalBackground != null)
+			{
+				m_originalCenterColor = m_originalBackground.CenterColor;
+				m_originalBevelColor = m_originalBackground.BevelColor;
+			}
+			else
+			{
+				Log.Error("[AchievementsWidget] No se encontró el fondo con nombre 'Background'");
+			}
+
+			// Crear el widget de imagen para el fondo alternativo
+			m_backgroundImageWidget = new ImageWidgetSimple
+			{
+				IsVisible = false,
+				HorizontalAlignment = WidgetAlignment.Stretch,
+				VerticalAlignment = WidgetAlignment.Stretch,
+				Margin = Vector2.Zero
+			};
+			// Insertarlo detrás de todos los demás hijos (índice 0)
+			Children.Insert(0, m_backgroundImageWidget);
+
+			// Crear el botón de pintura
+			Subtexture paintTexture = ContentManager.Get<Subtexture>("Textures/Gui/pintura");
+			if (paintTexture != null)
+			{
+				m_paintButton = new PaintButtonWidget
+				{
+					Subtexture = paintTexture,
+					Size = new Vector2(32, 32),
+					HorizontalAlignment = WidgetAlignment.Far,
+					VerticalAlignment = WidgetAlignment.Near,
+					MarginLeft = 0,
+					MarginTop = 10,
+					MarginRight = 15,
+					MarginBottom = 0,
+					SoundName = "Audio/Click"
+				};
+				Children.Add(m_paintButton);
+			}
+			else
+			{
+				Log.Error("[AchievementsWidget] No se encontró la textura 'Textures/Gui/pintura'");
+			}
+
 			if (m_titleLabel != null)
 				m_titleLabel.Text = LanguageControl.Get(fName, 0);
 			if (m_closeButton != null)
 				m_closeButton.Text = LanguageControl.Get(fName, 1);
 
-			// Suscribirse a todos los eventos
+			// Suscribirse a eventos
 			AchievementsManager.OnInfectedCounterChanged += OnInfectedCounterChanged;
 			AchievementsManager.OnBossCounterChanged += OnBossCounterChanged;
 			AchievementsManager.OnTankCounterChanged += OnTankCounterChanged;
@@ -40,8 +95,10 @@ namespace Game
 			AchievementsManager.OnBanditCounterChanged += OnBanditCounterChanged;
 			AchievementsManager.OnHealCounterChanged += OnHealCounterChanged;
 			AchievementsManager.OnPirateCounterChanged += OnPirateCounterChanged;
+			AchievementsManager.OnFlyingCounterChanged += OnFlyingCounterChanged;
 			AchievementsManager.OnBoomerCounterChanged += OnBoomerCounterChanged;
 
+			// Cargar logros
 			XElement achievementsXml = ContentManager.Get<XElement>("AchievementsData");
 			if (achievementsXml == null)
 			{
@@ -67,6 +124,61 @@ namespace Game
 					unlocked: AchievementsManager.IsAchievementUnlocked(m_componentPlayer, number),
 					rewardClaimed: AchievementsManager.IsRewardClaimed(m_componentPlayer, number)
 				);
+			}
+
+			// Restaurar estado guardado
+			var subsystemAchievements = m_componentPlayer.Project.FindSubsystem<SubsystemAchievements>(true);
+			if (subsystemAchievements != null)
+			{
+				m_backgroundState = subsystemAchievements.GetBackgroundState();
+				ApplyBackgroundState();
+			}
+		}
+
+		private void ChangeBackground()
+		{
+			m_backgroundState = (m_backgroundState + 1) % 3;
+
+			// Guardar el nuevo estado en el subsistema
+			var subsystemAchievements = m_componentPlayer?.Project?.FindSubsystem<SubsystemAchievements>(true);
+			if (subsystemAchievements != null)
+				subsystemAchievements.SetBackgroundState(m_backgroundState);
+
+			ApplyBackgroundState();
+		}
+
+		private void ApplyBackgroundState()
+		{
+			switch (m_backgroundState)
+			{
+				case 0: // Original
+					if (m_originalBackground != null)
+					{
+						m_originalBackground.IsVisible = true;
+						m_originalBackground.CenterColor = m_originalCenterColor;
+						m_originalBackground.BevelColor = m_originalBevelColor;
+					}
+					m_backgroundImageWidget.IsVisible = false;
+					break;
+				case 1: // Textura "found"
+					if (m_originalBackground != null)
+						m_originalBackground.IsVisible = false;
+					m_backgroundImageWidget.IsVisible = true;
+					Texture2D foundTexture = ContentManager.Get<Texture2D>("Textures/Wallpapers/found");
+					if (foundTexture != null)
+						m_backgroundImageWidget.Texture = foundTexture;
+					else
+						Log.Error("[AchievementsWidget] No se encontró 'Textures/Wallpapers/found'");
+					break;
+				case 2: // Semitransparente
+					if (m_originalBackground != null)
+					{
+						m_originalBackground.IsVisible = true;
+						m_originalBackground.CenterColor = new Color(0, 0, 0, 80);
+						m_originalBackground.BevelColor = new Color(0, 0, 0, 80);
+					}
+					m_backgroundImageWidget.IsVisible = false;
+					break;
 			}
 		}
 
@@ -183,7 +295,6 @@ namespace Game
 		{
 			if (player != m_componentPlayer) return;
 
-			// Logros: 44=10, 45=25, 46=50, 47=100
 			if (m_achievementItems.TryGetValue(44, out var item44) && !AchievementsManager.IsAchievementUnlocked(player, 44))
 				UpdateCounterDescription(44, currentKills, 10, item44.BaseDescription, item44.DescriptionLabel);
 			if (m_achievementItems.TryGetValue(45, out var item45) && !AchievementsManager.IsAchievementUnlocked(player, 45))
@@ -193,6 +304,7 @@ namespace Game
 			if (m_achievementItems.TryGetValue(47, out var item47) && !AchievementsManager.IsAchievementUnlocked(player, 47))
 				UpdateCounterDescription(47, currentKills, 100, item47.BaseDescription, item47.DescriptionLabel);
 		}
+
 		private void OnBoomerCounterChanged(ComponentPlayer player, int currentKills, int targetKills)
 		{
 			if (player != m_componentPlayer) return;
@@ -206,6 +318,7 @@ namespace Game
 			if (m_achievementItems.TryGetValue(51, out var item51) && !AchievementsManager.IsAchievementUnlocked(player, 51))
 				UpdateCounterDescription(51, currentKills, 100, item51.BaseDescription, item51.DescriptionLabel);
 		}
+
 		private void CreateAchievementItem(string title, string baseDescription, int achievementNumber, int rewardAmount, bool unlocked, bool rewardClaimed)
 		{
 			var achievementContainer = new CanvasWidget
@@ -245,53 +358,42 @@ namespace Game
 			};
 			achievementContainer.Children.Add(titleLabel);
 
-			// Descripción dinámica SOLO para logros progresivos (16-36, excepto los base 1-15 individuales)
 			string finalDescription = baseDescription;
 			if (!unlocked)
 			{
 				int currentKills = 0;
 				int target = 0;
 
-				// Solo los logros progresivos (10, 50, 100) tienen contador
 				switch (achievementNumber)
 				{
-					// Infectados
 					case 16: currentKills = AchievementsManager.GetInfectedKills(m_componentPlayer); target = 10; break;
 					case 17: currentKills = AchievementsManager.GetInfectedKills(m_componentPlayer); target = 50; break;
 					case 18: currentKills = AchievementsManager.GetInfectedKills(m_componentPlayer); target = 100; break;
-					// Jefes
 					case 19: currentKills = AchievementsManager.GetBossKills(m_componentPlayer); target = 10; break;
 					case 20: currentKills = AchievementsManager.GetBossKills(m_componentPlayer); target = 50; break;
 					case 21: currentKills = AchievementsManager.GetBossKills(m_componentPlayer); target = 100; break;
-					// Tanks
 					case 22: currentKills = AchievementsManager.GetTankKills(m_componentPlayer); target = 10; break;
 					case 23: currentKills = AchievementsManager.GetTankKills(m_componentPlayer); target = 50; break;
 					case 24: currentKills = AchievementsManager.GetTankKills(m_componentPlayer); target = 100; break;
-					// Fantasmas
 					case 25: currentKills = AchievementsManager.GetGhostKills(m_componentPlayer); target = 10; break;
 					case 26: currentKills = AchievementsManager.GetGhostKills(m_componentPlayer); target = 50; break;
 					case 27: currentKills = AchievementsManager.GetGhostKills(m_componentPlayer); target = 100; break;
-					// Tanks Fantasmas
 					case 28: currentKills = AchievementsManager.GetGhostTankKills(m_componentPlayer); target = 10; break;
 					case 29: currentKills = AchievementsManager.GetGhostTankKills(m_componentPlayer); target = 50; break;
 					case 30: currentKills = AchievementsManager.GetGhostTankKills(m_componentPlayer); target = 100; break;
-					// Bandidos
 					case 31: currentKills = AchievementsManager.GetBanditKills(m_componentPlayer); target = 10; break;
 					case 32: currentKills = AchievementsManager.GetBanditKills(m_componentPlayer); target = 50; break;
 					case 33: currentKills = AchievementsManager.GetBanditKills(m_componentPlayer); target = 100; break;
-					// Curaciones
 					case 34: currentKills = AchievementsManager.GetHeals(m_componentPlayer); target = 10; break;
 					case 35: currentKills = AchievementsManager.GetHeals(m_componentPlayer); target = 50; break;
 					case 36: currentKills = AchievementsManager.GetHeals(m_componentPlayer); target = 100; break;
 					case 38: currentKills = AchievementsManager.GetPirateKills(m_componentPlayer); target = 10; break;
 					case 39: currentKills = AchievementsManager.GetPirateKills(m_componentPlayer); target = 50; break;
 					case 40: currentKills = AchievementsManager.GetPirateKills(m_componentPlayer); target = 100; break;
-					// Voladores
 					case 44: currentKills = AchievementsManager.GetFlyingKills(m_componentPlayer); target = 10; break;
 					case 45: currentKills = AchievementsManager.GetFlyingKills(m_componentPlayer); target = 25; break;
 					case 46: currentKills = AchievementsManager.GetFlyingKills(m_componentPlayer); target = 50; break;
 					case 47: currentKills = AchievementsManager.GetFlyingKills(m_componentPlayer); target = 100; break;
-					// Boomers
 					case 48: currentKills = AchievementsManager.GetBoomerKills(m_componentPlayer); target = 10; break;
 					case 49: currentKills = AchievementsManager.GetBoomerKills(m_componentPlayer); target = 25; break;
 					case 50: currentKills = AchievementsManager.GetBoomerKills(m_componentPlayer); target = 55; break;
@@ -408,10 +510,16 @@ namespace Game
 				AchievementsManager.OnBanditCounterChanged -= OnBanditCounterChanged;
 				AchievementsManager.OnHealCounterChanged -= OnHealCounterChanged;
 				AchievementsManager.OnPirateCounterChanged -= OnPirateCounterChanged;
-				AchievementsManager.OnFlyingCounterChanged += OnFlyingCounterChanged;
-				AchievementsManager.OnBoomerCounterChanged += OnBoomerCounterChanged;
+				AchievementsManager.OnFlyingCounterChanged -= OnFlyingCounterChanged;
+				AchievementsManager.OnBoomerCounterChanged -= OnBoomerCounterChanged;
 				m_componentPlayer.ComponentGui.ModalPanelWidget = null;
 				return;
+			}
+
+			// Detectar clic en el botón de pintura
+			if (m_paintButton != null && m_paintButton.IsClicked)
+			{
+				ChangeBackground();
 			}
 
 			foreach (var child in m_achievementsStack.Children)
@@ -464,6 +572,58 @@ namespace Game
 			public CanvasWidget Container;
 			public LabelWidget DescriptionLabel;
 			public string BaseDescription;
+		}
+
+		// Widget simple para mostrar una textura como fondo
+		private class ImageWidgetSimple : Widget
+		{
+			public Texture2D Texture;
+			public override void Draw(Widget.DrawContext dc)
+			{
+				if (Texture != null)
+				{
+					TexturedBatch2D batch = dc.PrimitivesRenderer2D.TexturedBatch(Texture, false, 0, DepthStencilState.None, null, BlendState.AlphaBlend, SamplerState.PointClamp);
+					int count = batch.TriangleVertices.Count;
+					batch.QueueQuad(Vector2.Zero, base.ActualSize, 0f, Vector2.Zero, Vector2.One, base.GlobalColorTransform);
+					batch.TransformTriangles(base.GlobalTransform, count, -1);
+				}
+			}
+			public override void MeasureOverride(Vector2 parentAvailableSize)
+			{
+				base.IsDrawRequired = true;
+			}
+		}
+
+		// Botón de imagen simple que hereda de ClickableWidget
+		private class PaintButtonWidget : ClickableWidget
+		{
+			public Subtexture Subtexture;
+			private Vector2 m_size;
+			public Vector2 Size
+			{
+				get => m_size;
+				set { m_size = value; }
+			}
+
+			public override void MeasureOverride(Vector2 parentAvailableSize)
+			{
+				base.DesiredSize = m_size;
+				base.IsDrawRequired = true;
+				base.IsHitTestVisible = true;
+			}
+
+			public override void Draw(Widget.DrawContext dc)
+			{
+				if (Subtexture != null && Subtexture.Texture != null)
+				{
+					TexturedBatch2D batch = dc.PrimitivesRenderer2D.TexturedBatch(Subtexture.Texture, false, 0, DepthStencilState.None, null, BlendState.AlphaBlend, SamplerState.PointClamp);
+					int count = batch.TriangleVertices.Count;
+					Vector2 texCoord1 = Subtexture.TopLeft;
+					Vector2 texCoord2 = Subtexture.BottomRight;
+					batch.QueueQuad(Vector2.Zero, m_size, 0f, texCoord1, texCoord2, base.GlobalColorTransform);
+					batch.TransformTriangles(base.GlobalTransform, count, -1);
+				}
+			}
 		}
 	}
 }
