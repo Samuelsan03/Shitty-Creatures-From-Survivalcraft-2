@@ -517,8 +517,8 @@ namespace Game
 
 			if (remainingSeconds <= 0f)
 			{
-				// Iniciar fuegos artificiales y música
-				InGameMusicManager.PlayMusic("MenuMusic/Sparkster Genesis Normal Ending", 0f);
+				// En lugar de una sola reproducción, usar el bucle que dura 60 segundos
+				StartLoopingMusic(player, "MenuMusic/Sparkster Genesis Normal Ending", 60f);
 				ScheduleFireworksAndStopMusic(player);
 				return;
 			}
@@ -528,6 +528,37 @@ namespace Game
 				StartFireworkCountdown(player, remainingSeconds - Time.FrameDuration);
 				return true;
 			});
+		}
+
+		private static void StartLoopingMusic(ComponentPlayer player, string musicPath, float totalDurationSeconds)
+		{
+			float musicLength = 47f; // Duración real de la pista en segundos (ajústala si es diferente)
+			float elapsed = 0f;
+
+			Action playNext = null;
+			playNext = () => {
+				if (elapsed >= totalDurationSeconds || player?.Project == null)
+					return;
+
+				InGameMusicManager.PlayMusic(musicPath, 0f);
+				elapsed += musicLength;
+
+				// Esperar musicLength segundos usando SyncDispatcher (evita QueueGameTimeDelayedExecution)
+				float remaining = musicLength;
+				Action wait = null;
+				wait = () => {
+					if (remaining <= 0f)
+					{
+						GameManager.SyncDispatcher.Add(() => { playNext(); return true; });
+						return;
+					}
+					remaining -= Time.FrameDuration;
+					GameManager.SyncDispatcher.Add(() => { wait(); return true; });
+				};
+				wait();
+			};
+
+			playNext();
 		}
 
 		private static void ScheduleFireworksAndStopMusic(ComponentPlayer player)
