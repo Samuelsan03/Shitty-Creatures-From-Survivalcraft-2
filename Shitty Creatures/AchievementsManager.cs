@@ -77,6 +77,9 @@ namespace Game
 			s_subsystemTimeOfDay = project.FindSubsystem<SubsystemTimeOfDay>(true);
 			LoadAchievementRewards();
 
+			// 🔁 Reiniciar el temporizador de verificación de días
+			s_lastDayCheckGameTime = -1.0;
+
 			if (s_subsystemAchievements == null)
 				Log.Warning("[AchievementsManager] No se encontró SubsystemAchievements.");
 
@@ -101,6 +104,8 @@ namespace Game
 			s_subsystemTime = null;
 			s_subsystemGameInfo = null;
 			s_subsystemTimeOfDay = null;
+
+			s_lastDayCheckGameTime = -1.0;
 		}
 
 		public static void UpdateDayAchievements()
