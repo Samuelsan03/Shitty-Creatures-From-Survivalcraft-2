@@ -448,6 +448,10 @@ namespace Game
 
 		public void Update(float dt)
 		{
+
+			// Si la celebración está activa, no realizar ninguna acción de disparo/ataque
+			if (AchievementsManager.IsCelebrationActive) return;
+
 			double currentTime = m_subsystemTime.GameTime;
 			if (m_componentCreature.ComponentHealth.Health <= 0f)
 			{
