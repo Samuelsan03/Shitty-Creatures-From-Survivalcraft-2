@@ -26,17 +26,6 @@ namespace Game
 				{
 					m_subsystemExplosions.TryExplodeBlock(cellFace.Value.X, cellFace.Value.Y, cellFace.Value.Z, cellValue);
 				}
-
-				// Sonido de rebote para bloques densos
-				if (block.GetDensity(cellValue) >= 1.5f && worldItem.Velocity.Length() > 30f)
-				{
-					if (m_random.Float(0f, 1f) < 1f) // 100% probabilidad de rebote
-					{
-						m_subsystemAudio.PlayRandomSound("Audio/Ricochets", 1f, m_random.Float(-0.2f, 0.2f),
-							new Vector3(cellFace.Value.X, cellFace.Value.Y, cellFace.Value.Z), 8f, true);
-						result = false;
-					}
-				}
 			}
 
 			return result;
