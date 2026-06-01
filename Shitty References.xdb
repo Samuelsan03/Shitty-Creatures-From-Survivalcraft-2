@@ -17,6 +17,14 @@
 </Folder>
 
     <Folder Name="Gameplay" Guid="d509e5e2-2c10-49f1-8223-85cd892c63b0">
+    <ComponentTemplate Name="Teleport" Description="Permite a la criatura teletransportarse cerca de su objetivo cuando la distancia es mayor a la indicada." Guid="6f1098fa-759e-4cb5-adfa-a42ebf9aab74" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+  <Parameter Name="Class" Guid="3c6db030-b7f6-41d1-a981-acf64bb4cc8b" Value="Game.Teleport" Type="string" />
+  <Parameter Name="TeleportationDistance" Description="Distancia mínima a la que debe estar el objetivo para que la criatura se teletransporte." Guid="ce17d8f8-5b1f-48d4-b319-ea61534a94b2" Value="15" Type="float" />
+  <Parameter Name="TeleportationCooldown" Description="Tiempo en segundos que debe esperar la criatura antes de poder volver a teletransportarse." Guid="23e0d3b0-15e2-41e3-9a3e-a1213cc2300d" Value="8" Type="float" />
+  <Parameter Name="DisappearDuration" Description="Tiempo en segundos que la criatura permanece invisible antes de aparecer en el destino." Guid="142b78c9-1602-4504-9eaf-abae03eccc30" Value="1" Type="float" />
+  <Parameter Name="ProbabilityOfTeleporting" Description="Probabilidad de que la criatura se teletransporte cuando cumple las condiciones de distancia." Guid="878c7008-58d1-4819-84f9-17ae7f721ff8" Value="1" Type="float" />
+</ComponentTemplate>
+
     <ComponentTemplate Name="CreatureClothing" Description="Handles clothes worn by creatures" Guid="c1965be4-62ff-42f9-90e6-4e12b4d9a3af" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
   <Parameter Name="Class" Guid="dbbfd94b-2a9e-45bd-81c0-7a2b6dbb06ec" Value="Game.ComponentCreatureClothing" Type="string"/>
   <ParameterSet Name="CreatureClothes" Description="Contains clothes worn by creature" Guid="4f57a2eb-2f66-4c72-8005-8fd1f9c65b35">
