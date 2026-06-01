@@ -24,6 +24,12 @@ namespace Game
 		private Dictionary<int, int> m_flyingKills = new Dictionary<int, int>();
 		private Dictionary<int, int> m_boomerKills = new Dictionary<int, int>();
 
+		private bool m_allAchievementsCelebrationTriggered = false;
+
+		public bool IsAllAchievementsCelebrationTriggered() => m_allAchievementsCelebrationTriggered;
+		public void SetAllAchievementsCelebrationTriggered(bool triggered) => m_allAchievementsCelebrationTriggered = triggered;
+		public int GetUnlockedAchievementCount() => m_achievements.Count;
+
 		public bool IsAchievementUnlocked(int achievementNumber)
 		{
 			return m_achievements.ContainsKey(achievementNumber);
@@ -191,6 +197,8 @@ namespace Game
 			LoadCounter(valuesDictionary, "PirateKills", m_pirateKills);
 			LoadCounter(valuesDictionary, "FlyingKills", m_flyingKills);
 			LoadCounter(valuesDictionary, "BoomerKills", m_boomerKills);
+			if (valuesDictionary.TryGetValue("AllAchievementsCelebrationTriggered", out object triggerValue) && triggerValue is bool flag)
+				m_allAchievementsCelebrationTriggered = flag;
 		}
 
 		public override void Save(ValuesDictionary valuesDictionary)
@@ -217,6 +225,7 @@ namespace Game
 			SaveCounter(valuesDictionary, "PirateKills", m_pirateKills);
 			SaveCounter(valuesDictionary, "FlyingKills", m_flyingKills);
 			SaveCounter(valuesDictionary, "BoomerKills", m_boomerKills);
+			valuesDictionary.SetValue("AllAchievementsCelebrationTriggered", m_allAchievementsCelebrationTriggered);
 		}
 	}
 }
