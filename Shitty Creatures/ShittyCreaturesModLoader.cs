@@ -2314,7 +2314,10 @@ namespace Game
 	"InfectedWildboar",
 	"PredatoryChameleon",
 	"InfectedFreezer",
-	"HumanoidSkeleton"
+	"HumanoidSkeleton",
+	"Charger1",
+	"Charger2",
+	"GhostCharger"
 };
 
 		// ===== NUEVOS CONJUNTOS SEPARADOS =====
