@@ -38,6 +38,9 @@ namespace Game
 		private Dictionary<ComponentCreature, float> m_originalAttackPower = new Dictionary<ComponentCreature, float>();
 		private Dictionary<ComponentCreature, float> m_originalWalkSpeed = new Dictionary<ComponentCreature, float>();
 		private Dictionary<ComponentCreature, float> m_originalFlySpeed = new Dictionary<ComponentCreature, float>(); // ← NUEVO
+																													  // Campos para celebración de logros
+		private bool m_celebrationActive = false;
+		private Dictionary<ComponentCreature, bool> m_originalSuppressedState = new Dictionary<ComponentCreature, bool>();
 
 		// ShittyModLoader (original)
 		static FieldInfo m_cachesField;
@@ -206,7 +209,10 @@ namespace Game
 			EnforceCombatStatsByDifficulty(project);
 
 			m_subsystemGreenNightSky = project.FindSubsystem<SubsystemGreenNightSky>(true);
-			// Ya no se necesita s_subsystemAchievements
+
+			// Suscribirse a eventos de celebración de logros
+			AchievementsManager.OnCelebrationStarted += OnCelebrationStarted;
+			AchievementsManager.OnCelebrationEnded += OnCelebrationEnded;
 		}
 
 		private void AddAchievementButtonToPlayers(Project project)
@@ -718,6 +724,12 @@ namespace Game
 			{
 				// ─── Sistema de sangrado (siempre se ejecuta cada frame) ───
 				UpdateBleedingSystems(gameWidget);
+
+				// ─── Hacer bailar a las criaturas durante la celebración ───
+				if (m_celebrationActive)
+				{
+					MakeCreaturesDance(gameWidget);
+				}
 
 				// ─── Coordenadas (solo si están activadas) ───
 				if (ShittyCreaturesSettingsManager.CoordinateDisplayEnabled)
@@ -2378,6 +2390,160 @@ namespace Game
 				   m_bossTemplates.Contains(templateName) ||
 				   m_flyingTemplates.Contains(templateName);
 		}
+
+		public override void OnProjectDisposed()
+		{
+			// Desuscribirse de eventos de celebración
+			AchievementsManager.OnCelebrationStarted -= OnCelebrationStarted;
+			AchievementsManager.OnCelebrationEnded -= OnCelebrationEnded;
+
+			// Restaurar comportamiento de criaturas
+			RestoreCreaturesBehavior();
+		}
+
+		private void OnCelebrationStarted()
+		{
+			m_celebrationActive = true;
+			var project = m_subsystemGreenNightSky?.Project;
+			if (project == null) return;
+
+			var creatureSpawn = project.FindSubsystem<SubsystemCreatureSpawn>(true);
+			if (creatureSpawn == null) return;
+
+			m_originalSuppressedState.Clear();
+
+			foreach (ComponentCreature creature in creatureSpawn.Creatures)
+			{
+				if (creature == null || creature.Entity.FindComponent<ComponentPlayer>() != null)
+					continue;
+
+				// 1. ComponentNewChaseBehavior (propio)
+				var chaseNew = creature.Entity.FindComponent<ComponentNewChaseBehavior>();
+				if (chaseNew != null)
+				{
+					m_originalSuppressedState[creature] = chaseNew.Suppressed;
+					chaseNew.Suppressed = true;
+					chaseNew.StopAttack();
+				}
+
+				// 2. ComponentZombieChaseBehavior
+				var chaseZombie = creature.Entity.FindComponent<ComponentZombieChaseBehavior>();
+				if (chaseZombie != null)
+				{
+					m_originalSuppressedState[creature] = chaseZombie.Suppressed;
+					chaseZombie.Suppressed = true;
+					chaseZombie.StopAttack();
+				}
+
+				// 3. ComponentBanditChaseBehavior
+				var chaseBandit = creature.Entity.FindComponent<ComponentBanditChaseBehavior>();
+				if (chaseBandit != null)
+				{
+					m_originalSuppressedState[creature] = chaseBandit.Suppressed;
+					chaseBandit.Suppressed = true;
+					chaseBandit.StopAttack();
+				}
+
+				// 4. ComponentChaseBehavior (base, por si alguna criatura lo usa directamente)
+				var chaseBase = creature.Entity.FindComponent<ComponentChaseBehavior>();
+				if (chaseBase != null && !m_originalSuppressedState.ContainsKey(creature))
+				{
+					// Guardar estado original (no tenemos acceso directo a Suppressed? En ComponentChaseBehavior es público)
+					m_originalSuppressedState[creature] = chaseBase.Suppressed;
+					chaseBase.Suppressed = true;
+					chaseBase.StopAttack();
+				}
+
+				// Detener pathfinding para evitar movimiento aleatorio
+				var pathfinding = creature.Entity.FindComponent<ComponentPathfinding>();
+				if (pathfinding != null)
+					pathfinding.Stop();
+			}
+		}
+
+		private void OnCelebrationEnded()
+		{
+			m_celebrationActive = false;
+			RestoreCreaturesBehavior();
+		}
+
+		private void RestoreCreaturesBehavior()
+		{
+			if (m_subsystemGreenNightSky?.Project == null) return;
+			var creatureSpawn = m_subsystemGreenNightSky.Project.FindSubsystem<SubsystemCreatureSpawn>(true);
+			if (creatureSpawn == null) return;
+
+			foreach (var kvp in m_originalSuppressedState)
+			{
+				ComponentCreature creature = kvp.Key;
+				if (creature == null || creature.Entity == null) continue;
+
+				var chaseNew = creature.Entity.FindComponent<ComponentNewChaseBehavior>();
+				if (chaseNew != null)
+					chaseNew.Suppressed = kvp.Value;
+
+				var chaseZombie = creature.Entity.FindComponent<ComponentZombieChaseBehavior>();
+				if (chaseZombie != null)
+					chaseZombie.Suppressed = kvp.Value;
+
+				var chaseBandit = creature.Entity.FindComponent<ComponentBanditChaseBehavior>();
+				if (chaseBandit != null)
+					chaseBandit.Suppressed = kvp.Value;
+
+				var chaseBase = creature.Entity.FindComponent<ComponentChaseBehavior>();
+				if (chaseBase != null)
+					chaseBase.Suppressed = kvp.Value;
+			}
+			m_originalSuppressedState.Clear();
+		}
+
+		private void MakeCreaturesDance(GameWidget gameWidget)
+		{
+			var project = gameWidget.PlayerData?.SubsystemPlayers?.Project;
+			if (project == null) return;
+
+			var creatureSpawn = project.FindSubsystem<SubsystemCreatureSpawn>(true);
+			if (creatureSpawn == null) return;
+
+			float time = (float)Time.RealTime;
+			float danceSpeed = 1.2f;      // Velocidad de giro
+			float moveSpeed = 1.5f;       // Velocidad de movimiento
+			float jumpInterval = 1.5f;    // Saltos cada ~1.5 segundos
+
+			foreach (ComponentCreature creature in creatureSpawn.Creatures)
+			{
+				if (creature == null || creature.Entity.FindComponent<ComponentPlayer>() != null)
+					continue;
+
+				var locomotion = creature.ComponentLocomotion;
+				if (locomotion == null) continue;
+
+				// 1. Giro rítmico (depende del tiempo)
+				locomotion.TurnOrder = new Vector2(danceSpeed * MathF.Sin(time * 2f), 0f);
+
+				// 2. Mirada arriba/abajo (ondulación)
+				float lookY = MathF.Sin(time * 3f) * 0.6f;
+				locomotion.LookOrder = new Vector2(0f, lookY);
+
+				// 3. Movimiento aleatorio: caminar en círculo o zigzag
+				//    Usamos el seno y coseno del tiempo para dar una trayectoria circular
+				float angle = time * 1.2f;
+				float walkX = MathF.Cos(angle);
+				float walkZ = MathF.Sin(angle);
+				locomotion.WalkOrder = new Vector2(walkX, walkZ);
+
+				// 4. Saltos periódicos (usando el tiempo)
+				if (Math.Floor(time / jumpInterval) % 2 == 0)
+					locomotion.JumpOrder = 0.8f;
+				else
+					locomotion.JumpOrder = 0f;
+
+				// 5. Desactivar vuelo y nado para que no interfieran
+				locomotion.FlyOrder = null;
+				locomotion.SwimOrder = null;
+			}
+		}
+
 
 		// ---------------------------------------------------------------------------------
 		// SaveSettings / LoadSettings (heredados de ChaseMusicModLoader, vacíos)
