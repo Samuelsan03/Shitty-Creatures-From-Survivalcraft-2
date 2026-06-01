@@ -73,6 +73,7 @@ namespace Game
 		private double m_nextUpdateTime;
 		private float m_dt;
 		private float m_autoChaseSuppressionTime;
+		private bool m_isForcedTarget;
 
 		private Vector3 m_lastStuckCheckPosition;
 		private double m_stuckDetectionStartTime;
@@ -161,7 +162,7 @@ namespace Game
 		}
 
 		// ===== MÉTODOS PÚBLICOS =====
-		public virtual void Attack(ComponentCreature target, float maxRange, float maxChaseTime, bool isPersistent)
+		public virtual void Attack(ComponentCreature target, float maxRange, float maxChaseTime, bool isPersistent, bool isForced = false)
 		{
 			if (m_componentHireable != null && !m_componentHireable.IsHired)
 				return;
@@ -191,6 +192,7 @@ namespace Game
 			m_range = maxRange;
 			m_chaseTime = maxChaseTime;
 			m_isPersistent = isPersistent;
+			m_isForcedTarget = isForced;
 			m_importanceLevel = isPersistent ? ImportanceLevelPersistent : ImportanceLevelNonPersistent;
 			m_stuckStartTime = 0;
 			m_lastStuckCheckPosition = m_componentCreature.ComponentBody.Position;
@@ -255,30 +257,36 @@ namespace Game
 			// Protección extrema anti‑bandidos durante la guerra nocturna
 			if (IsExtremeProtectionActive())
 			{
-				// Buscar bandidos cercanos
-				ComponentCreature bandit = FindNearestBandit();
-
-				if (bandit != null)
+				// Si el objetivo actual es forzado y sigue siendo válido, no lo reemplazamos
+				if (m_isForcedTarget && m_target != null && m_target.ComponentHealth.Health > 0f)
 				{
-					// Hay bandidos - prioridad absoluta
-					if (m_target != bandit)
-					{
-						Attack(bandit, 40f, 120f, true);
-					}
-					else if (m_target != null && !m_isPersistent || m_range < 40f || m_chaseTime < 60f)
-					{
-						Attack(m_target, 40f, 120f, true);
-					}
+					// Mantener el objetivo forzado, no hacer nada
 				}
 				else
 				{
-					// No hay bandidos - permitir comportamiento normal de caza
-					// Si el objetivo actual es un bandido y ya no hay bandidos, detener el ataque
-					if (m_target != null && IsBanditCreature(m_target))
+					// Buscar bandidos cercanos
+					ComponentCreature bandit = FindNearestBandit();
+
+					if (bandit != null)
 					{
-						StopAttack();
+						// Hay bandidos - prioridad absoluta
+						if (m_target != bandit)
+						{
+							Attack(bandit, 40f, 120f, true, false);
+						}
+						else if (m_target != null && !m_isPersistent || m_range < 40f || m_chaseTime < 60f)
+						{
+							Attack(m_target, 40f, 120f, true, false);
+						}
 					}
-					// No hacer nada más - dejar que el comportamiento normal continúe
+					else
+					{
+						// No hay bandidos - permitir comportamiento normal de caza
+						if (m_target != null && IsBanditCreature(m_target))
+						{
+							StopAttack();
+						}
+					}
 				}
 			}
 
@@ -683,7 +691,7 @@ namespace Game
 			ComponentCreature attacker = injury.Attacker;
 			if (attacker != null && CanAttackCreature(attacker))
 			{
-				Attack(attacker, 20f, 30f, false);
+				Attack(attacker, 20f, 30f, false, true);
 
 				if (m_componentHerd != null)
 				{
@@ -780,7 +788,7 @@ namespace Game
 					float time = ChaseTimeOnAttacked ?? 7f;
 					bool persistent = ChasePersistentOnAttacked ?? false;
 
-					Attack(attacker, range, time, persistent);
+					Attack(attacker, range, time, persistent, true);
 
 					if (m_componentHerd != null)
 					{
@@ -964,15 +972,18 @@ namespace Game
 				}
 				else if (m_chaseTime <= 0f)
 				{
+					m_isForcedTarget = false;
 					m_autoChaseSuppressionTime = m_random.Float(10f, 60f);
 					m_importanceLevel = 0f;
 				}
 				else if (m_target == null)
 				{
+					m_isForcedTarget = false;
 					m_importanceLevel = 0f;
 				}
 				else if (m_target.ComponentHealth.Health <= 0f)
 				{
+					m_isForcedTarget = false;
 					if (m_componentFeedBehavior != null)
 					{
 						m_subsystemTime.QueueGameTimeDelayedExecution(m_subsystemTime.GameTime + m_random.Float(1f, 3f), () =>
