@@ -534,10 +534,10 @@ namespace Game
 				IsCelebrationActive = true;
 				OnCelebrationStarted?.Invoke();
 
-				// Música en bucle durante 150 segundos (2:30)
-				StartLoopingMusic(player, "MenuMusic/Sparkster Genesis Normal Ending", 150f);
+				// Música en bucle durante 60 segundos (10:00)
+				StartLoopingMusic(player, "MenuMusic/Sparkster Genesis Normal Ending", 600f);
 				// Fuegos artificiales durante 150 segundos
-				ScheduleFireworksAndStopMusic(player, 150.0);
+				ScheduleFireworksAndStopMusic(player, 600.0);
 				return;
 			}
 
@@ -551,18 +551,33 @@ namespace Game
 		{
 			double endTime = Time.RealTime + totalDurationSeconds;
 			bool firstPlay = true;
+			bool wasActive = true; // para saber si la última vez estaba activo
 
 			Action loop = null;
 			loop = () => {
-				// Si ya se inició el fade out, dejar de reiniciar música
-				if (InGameMusicManager.IsFadingOut)
-					return;
-
-				// Si pasó el tiempo, simplemente parar el loop (no StopMusic)
 				if (player?.Project == null || Time.RealTime >= endTime)
 					return;
 
-				// Reiniciar música si terminó
+				bool isActive = IsGameActive(player);
+
+				// Si pasó de activo a inactivo, detener música
+				if (wasActive && !isActive)
+				{
+					InGameMusicManager.StopMusic();
+				}
+
+				wasActive = isActive;
+
+				if (!isActive)
+				{
+					// No hacer nada, solo esperar
+					GameManager.SyncDispatcher.Add(() => { loop(); return true; });
+					return;
+				}
+
+				if (InGameMusicManager.IsFadingOut)
+					return;
+
 				bool needsRestart = firstPlay
 					|| !InGameMusicManager.IsPlaying
 					|| InGameMusicManager.IsPlaybackComplete();
@@ -577,6 +592,38 @@ namespace Game
 			};
 
 			loop();
+		}
+
+		private static bool IsGameActive(ComponentPlayer player)
+		{
+			if (player?.Project == null) return false;
+
+			var currentScreen = ScreensManager.CurrentScreen;
+			if (currentScreen == null) return false;
+
+			string screenName = currentScreen.GetType().Name;
+
+			// 🔇 Solo detener la música si la pantalla es Configuración o Ayuda
+			if (screenName == "SettingsScreen" || screenName == "HelpScreen")
+				return false;
+
+			// Para cualquier otra pantalla (GameScreen, BestiaryScreen, RecipaediaScreen, etc.)
+			// asumimos que el juego sigue activo (la música no se detiene)
+
+			// Verificar pausa por tiempo detenido (opcional)
+			var subsystemTime = player.Project.FindSubsystem<SubsystemTime>(true);
+			if (subsystemTime != null && subsystemTime.GameTimeDelta == 0f)
+				return false;
+
+			// Verificar si hay un panel modal que no sea el juego (como GameMenuDialog)
+			// Esto es opcional, pero evita que suene música en el menú de pausa si lo deseas
+			if (player.ComponentGui.ModalPanelWidget != null)
+			{
+				// Si quieres que la música también se detenga en el menú de pausa, descomenta:
+				// return false;
+			}
+
+			return true;
 		}
 
 		private static void ScheduleFireworksAndStopMusic(ComponentPlayer player, double durationSeconds = 150.0)
@@ -596,16 +643,20 @@ namespace Game
 			{
 				if (player?.Project == null) return;
 
-				double currentTime = time.GameTime;
-				double nextFireTime = startTime + (fireworkIndex + 1) * interval;
-
-				if (currentTime >= nextFireTime && fireworkIndex < totalFireworks)
+				// Solo generar fuegos artificiales si el juego está activo
+				if (IsGameActive(player))
 				{
-					SpawnRandomFirework(player);
-					fireworkIndex++;
+					double currentTime = time.GameTime;
+					double nextFireTime = startTime + (fireworkIndex + 1) * interval;
+
+					if (currentTime >= nextFireTime && fireworkIndex < totalFireworks)
+					{
+						SpawnRandomFirework(player);
+						fireworkIndex++;
+					}
 				}
 
-				if (currentTime < endTime)
+				if (time.GameTime < endTime)
 				{
 					GameManager.SyncDispatcher.Add(() => { scheduleNext(); return true; });
 				}
@@ -614,7 +665,6 @@ namespace Game
 					fadeStarted = true;
 					InGameMusicManager.FadeOutAndStop();
 
-					// Desactivar estado de celebración global y notificar
 					IsCelebrationActive = false;
 					OnCelebrationEnded?.Invoke();
 
