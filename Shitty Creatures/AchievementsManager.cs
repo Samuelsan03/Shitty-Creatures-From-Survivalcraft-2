@@ -668,16 +668,8 @@ namespace Game
 			if (screenName == "SettingsScreen" || screenName == "HelpScreen")
 				return false;
 
-			// Verificar pausa por tiempo detenido (opcional)
-			var subsystemTime = player.Project.FindSubsystem<SubsystemTime>(true);
-			if (subsystemTime != null && subsystemTime.GameTimeDelta == 0f)
-				return false;
-
-			if (player.ComponentGui.ModalPanelWidget != null)
-			{
-				return false; // descomentar si quieres detener música en menú de pausa
-			}
-
+			// Para cualquier otra pantalla (GameScreen, Bestiary, CreativeInventory, etc.)
+			// el juego sigue activo y la música debe continuar.
 			return true;
 		}
 
