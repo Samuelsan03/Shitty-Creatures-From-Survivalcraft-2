@@ -94,6 +94,35 @@ namespace Game
 				banditInvasion.InvasionCompleted -= OnInvasionCompleted;
 				banditInvasion.InvasionCompleted += OnInvasionCompleted;
 			}
+
+			// --- RESTAURAR CELEBRACIÓN SI ESTABA ACTIVA Y AÚN NO HA TERMINADO ---
+			if (s_subsystemAchievements != null && s_subsystemAchievements.IsAllAchievementsCelebrationTriggered())
+			{
+				double endTime = s_subsystemAchievements.GetCelebrationEndTime();
+				double now = Time.RealTime;
+				if (endTime > now)
+				{
+					// Aún queda tiempo, reactivar celebración
+					double remaining = endTime - now;
+					// Retrasar la restauración hasta el próximo frame para asegurar que todos los suscriptores (ej. ShittyCreaturesModLoader) ya estén listos
+					GameManager.SyncDispatcher.Add(() =>
+					{
+						var playersSubsystem = project.FindSubsystem<SubsystemPlayers>(true);
+						if (playersSubsystem != null && playersSubsystem.ComponentPlayers.Count > 0)
+						{
+							ComponentPlayer anyPlayer = playersSubsystem.ComponentPlayers[0];
+							RestartCelebration(anyPlayer, remaining);
+						}
+						return true;
+					});
+				}
+				else
+				{
+					// Ya pasó el tiempo, asegurar que la bandera esté limpia
+					s_subsystemAchievements.SetAllAchievementsCelebrationTriggered(false);
+					s_subsystemAchievements.SetCelebrationEndTime(0);
+				}
+			}
 		}
 
 		public static void Shutdown()
@@ -519,9 +548,6 @@ namespace Game
 
 		private static void StartAllAchievementsCelebration(ComponentPlayer player)
 		{
-			// No activar celebración todavía, solo mostrar mensaje y sonido inicial
-			// La celebración real (bailes, supresión de ataques) comenzará después de 8 segundos, junto con la música
-
 			// Mensaje especial
 			player.ComponentGui.DisplayLargeMessage(
 				LanguageControl.Get("AchievementsMessages", 4),
@@ -532,6 +558,11 @@ namespace Game
 			var audio = player.Project.FindSubsystem<SubsystemAudio>(true);
 			if (audio != null)
 				audio.PlaySound("Audio/Death of King Gedol", 1f, 0f, player.ComponentBody.Position, 30f, false);
+
+			// Calcular tiempo de finalización (600 segundos = 10 minutos)
+			double endTimeReal = Time.RealTime + 600.0;
+			if (s_subsystemAchievements != null)
+				s_subsystemAchievements.SetCelebrationEndTime(endTimeReal);
 
 			// Programar la cuenta atrás de 8 segundos; al terminar, iniciar la celebración real
 			GameManager.SyncDispatcher.Add(() => {
@@ -564,11 +595,26 @@ namespace Game
 			});
 		}
 
+		private static void RestartCelebration(ComponentPlayer player, double remainingSeconds)
+		{
+			if (player == null || player.Project == null) return;
+
+			// Activar celebración inmediatamente
+			IsCelebrationActive = true;
+			s_isGeneratingFireworks = true;
+			OnCelebrationStarted?.Invoke();
+
+			// Iniciar música en bucle con la duración restante
+			StartLoopingMusic(player, "MenuMusic/Sparkster Genesis Normal Ending", (float)remainingSeconds);
+			// Iniciar generación continua de fuegos artificiales con la duración restante
+			StartContinuousFireworks(player, remainingSeconds);
+		}
+
 		private static void StartLoopingMusic(ComponentPlayer player, string musicPath, float totalDurationSeconds)
 		{
 			double endTime = Time.RealTime + totalDurationSeconds;
 			bool firstPlay = true;
-			bool wasActive = true; // para saber si la última vez estaba activo
+			bool wasActive = true;
 
 			Action loop = null;
 			loop = () => {
@@ -577,7 +623,6 @@ namespace Game
 
 				bool isActive = IsGameActive(player);
 
-				// Si pasó de activo a inactivo, detener música
 				if (wasActive && !isActive)
 				{
 					InGameMusicManager.StopMusic();
@@ -587,7 +632,6 @@ namespace Game
 
 				if (!isActive)
 				{
-					// No hacer nada, solo esperar
 					GameManager.SyncDispatcher.Add(() => { loop(); return true; });
 					return;
 				}
@@ -615,7 +659,6 @@ namespace Game
 		{
 			if (player?.Project == null) return false;
 
-			// Verificar si la pantalla actual es GameScreen
 			var currentScreen = ScreensManager.CurrentScreen;
 			if (currentScreen == null) return false;
 
@@ -625,20 +668,14 @@ namespace Game
 			if (screenName == "SettingsScreen" || screenName == "HelpScreen")
 				return false;
 
-			// Para cualquier otra pantalla (GameScreen, BestiaryScreen, RecipaediaScreen, etc.)
-			// asumimos que el juego sigue activo (la música no se detiene)
-
 			// Verificar pausa por tiempo detenido (opcional)
 			var subsystemTime = player.Project.FindSubsystem<SubsystemTime>(true);
 			if (subsystemTime != null && subsystemTime.GameTimeDelta == 0f)
 				return false;
 
-			// Verificar si hay un panel modal que no sea el juego (como GameMenuDialog)
-			// Esto es opcional, pero evita que suene música en el menú de pausa si lo deseas
 			if (player.ComponentGui.ModalPanelWidget != null)
 			{
-				// Si quieres que la música también se detenga en el menú de pausa, descomenta:
-				// return false;
+				return false; // descomentar si quieres detener música en menú de pausa
 			}
 
 			return true;
@@ -667,6 +704,13 @@ namespace Game
 					IsCelebrationActive = false;
 					OnCelebrationEnded?.Invoke();
 
+					// Limpiar bandera de celebración en subsistema
+					if (s_subsystemAchievements != null && s_subsystemAchievements.IsAllAchievementsCelebrationTriggered())
+					{
+						s_subsystemAchievements.SetAllAchievementsCelebrationTriggered(false);
+						s_subsystemAchievements.SetCelebrationEndTime(0);
+					}
+
 					Action fadeLoop = null;
 					fadeLoop = () => {
 						InGameMusicManager.Update();
@@ -679,15 +723,14 @@ namespace Game
 					return;
 				}
 
-				// Calcular intensidad basada en el tiempo restante (más fuegos al principio y al final)
 				float timeLeft = (float)(endTime - currentTime);
 				float intensity = 1.5f;
 				if (timeLeft < 30f)
-					intensity = 4f; // Gran final
+					intensity = 4f;
 				else if (timeLeft > durationSeconds - 30f)
-					intensity = 3f; // Comienzo fuerte
+					intensity = 3f;
 				else
-					intensity = 1.2f; // Normal
+					intensity = 1.2f;
 
 				float probability = intensity * (float)Time.FrameDuration;
 
@@ -704,8 +747,6 @@ namespace Game
 
 		private static void ScheduleFireworksAndStopMusic(ComponentPlayer player, double durationSeconds = 150.0)
 		{
-			// Este método se mantiene por compatibilidad pero no se usa
-			// La generación de fuegos ahora se maneja con StartContinuousFireworks
 			StartContinuousFireworks(player, durationSeconds);
 		}
 
@@ -717,22 +758,19 @@ namespace Game
 
 			Vector3 playerPos = player.ComponentBody.Position;
 
-			// Posición aleatoria en un círculo de radio 15-30 alrededor del jugador
 			float angle = s_fireworkRandom.Float(0f, MathF.PI * 2);
 			float radius = s_fireworkRandom.Float(15f, 30f);
 			float dx = MathF.Cos(angle) * radius;
 			float dz = MathF.Sin(angle) * radius;
 			Vector3 launchPos = new Vector3(playerPos.X + dx, playerPos.Y + 0.5f, playerPos.Z + dz);
 
-			// Datos aleatorios del fuego artificial
 			int data = 0;
 			data = FireworksBlock.SetShape(data, (FireworksBlock.Shape)s_fireworkRandom.Int(0, 7));
 			data = FireworksBlock.SetColor(data, s_fireworkRandom.Int(0, 7));
-			data = FireworksBlock.SetAltitude(data, s_fireworkRandom.Int(0, 1)); // 0 = baja, 1 = alta
+			data = FireworksBlock.SetAltitude(data, s_fireworkRandom.Int(0, 1));
 			data = FireworksBlock.SetFlickering(data, s_fireworkRandom.Float(0f, 1f) < 0.25f);
 			int value = Terrain.MakeBlockValue(215, 0, data);
 
-			// Velocidad inicial: hacia arriba con ligera dispersión horizontal
 			Vector3 velocity = new Vector3(s_fireworkRandom.Float(-3f, 3f), 45f, s_fireworkRandom.Float(-3f, 3f));
 			projectiles.FireProjectile(value, launchPos, velocity, Vector3.Zero, null);
 		}
