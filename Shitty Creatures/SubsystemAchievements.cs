@@ -25,10 +25,14 @@ namespace Game
 		private Dictionary<int, int> m_boomerKills = new Dictionary<int, int>();
 
 		private bool m_allAchievementsCelebrationTriggered = false;
+		private int m_backgroundState = 0;   // 0=original, 1=textura found, 2=semitransparente
 
 		public bool IsAllAchievementsCelebrationTriggered() => m_allAchievementsCelebrationTriggered;
 		public void SetAllAchievementsCelebrationTriggered(bool triggered) => m_allAchievementsCelebrationTriggered = triggered;
 		public int GetUnlockedAchievementCount() => m_achievements.Count;
+
+		public int GetBackgroundState() => m_backgroundState;
+		public void SetBackgroundState(int state) => m_backgroundState = state;
 
 		public bool IsAchievementUnlocked(int achievementNumber)
 		{
@@ -140,6 +144,7 @@ namespace Game
 				dict.SetValue(key, string.Join(";", pairs));
 			}
 		}
+
 		public int GetPirateKills(int playerIndex) => m_pirateKills.TryGetValue(playerIndex, out int v) ? v : 0;
 		public void AddPirateKill(int playerIndex)
 		{
@@ -197,8 +202,15 @@ namespace Game
 			LoadCounter(valuesDictionary, "PirateKills", m_pirateKills);
 			LoadCounter(valuesDictionary, "FlyingKills", m_flyingKills);
 			LoadCounter(valuesDictionary, "BoomerKills", m_boomerKills);
+
 			if (valuesDictionary.TryGetValue("AllAchievementsCelebrationTriggered", out object triggerValue) && triggerValue is bool flag)
 				m_allAchievementsCelebrationTriggered = flag;
+
+			// Cargar estado del fondo
+			if (valuesDictionary.TryGetValue("BackgroundState", out object bgState) && bgState is int state)
+				m_backgroundState = state;
+			else
+				m_backgroundState = 0;
 		}
 
 		public override void Save(ValuesDictionary valuesDictionary)
@@ -225,7 +237,9 @@ namespace Game
 			SaveCounter(valuesDictionary, "PirateKills", m_pirateKills);
 			SaveCounter(valuesDictionary, "FlyingKills", m_flyingKills);
 			SaveCounter(valuesDictionary, "BoomerKills", m_boomerKills);
+
 			valuesDictionary.SetValue("AllAchievementsCelebrationTriggered", m_allAchievementsCelebrationTriggered);
+			valuesDictionary.SetValue("BackgroundState", m_backgroundState);
 		}
 	}
 }
