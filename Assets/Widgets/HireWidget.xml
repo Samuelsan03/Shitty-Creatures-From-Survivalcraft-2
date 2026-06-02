@@ -15,6 +15,6 @@
         </StackPanelWidget>
 
         <CanvasWidget Size="0,25" />
-        <BevelledButtonWidget Name="HireButton" FontScale="1.3" HorizontalAlignment="Center" Size="120,45" />
+        <BevelledButtonWidget Name="HireButton" FontScale="1.3" HorizontalAlignment="Center" Size="220,45" />
     </StackPanelWidget>
 </CanvasWidget>
