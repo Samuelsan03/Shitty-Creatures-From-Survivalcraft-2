@@ -37,6 +37,11 @@ namespace Game
 		// Variable para saber si la celebración está activa
 		public static bool IsCelebrationActive { get; private set; } = false;
 
+		// Control de generación de fuegos artificiales
+		private static Random s_fireworkRandom = new Random();
+		private static double s_celebrationEndTime = 0;
+		private static bool s_isGeneratingFireworks = false;
+
 		private static void LoadAchievementRewards()
 		{
 			if (s_achievementRewards != null) return;
@@ -93,6 +98,16 @@ namespace Game
 
 		public static void Shutdown()
 		{
+			// Detener generación de fuegos artificiales
+			s_isGeneratingFireworks = false;
+
+			// Detener música de celebración
+			if (IsCelebrationActive)
+			{
+				InGameMusicManager.StopMusic();
+				IsCelebrationActive = false;
+			}
+
 			if (s_currentProject != null)
 			{
 				var banditInvasion = s_currentProject.FindSubsystem<SubsystemBanditInvasion>(true);
@@ -106,6 +121,7 @@ namespace Game
 			s_subsystemTimeOfDay = null;
 
 			s_lastDayCheckGameTime = -1.0;
+			s_celebrationEndTime = 0;
 		}
 
 		public static void UpdateDayAchievements()
@@ -532,12 +548,13 @@ namespace Game
 			{
 				// ¡Comienza la celebración real!
 				IsCelebrationActive = true;
+				s_isGeneratingFireworks = true;
 				OnCelebrationStarted?.Invoke();
 
-				// Música en bucle durante 60 segundos (10:00)
+				// Música en bucle durante 600 segundos
 				StartLoopingMusic(player, "MenuMusic/Sparkster Genesis Normal Ending", 600f);
-				// Fuegos artificiales durante 150 segundos
-				ScheduleFireworksAndStopMusic(player, 600.0);
+				// Iniciar generación continua de fuegos artificiales
+				StartContinuousFireworks(player, 600.0);
 				return;
 			}
 
@@ -598,6 +615,7 @@ namespace Game
 		{
 			if (player?.Project == null) return false;
 
+			// Verificar si la pantalla actual es GameScreen
 			var currentScreen = ScreensManager.CurrentScreen;
 			if (currentScreen == null) return false;
 
@@ -626,45 +644,26 @@ namespace Game
 			return true;
 		}
 
-		private static void ScheduleFireworksAndStopMusic(ComponentPlayer player, double durationSeconds = 150.0)
+		private static void StartContinuousFireworks(ComponentPlayer player, double durationSeconds)
 		{
 			if (player == null || player.Project == null) return;
 
-			var time = player.Project.FindSubsystem<SubsystemTime>(true);
-			double startTime = time.GameTime;
+			double startTime = Time.RealTime;
 			double endTime = startTime + durationSeconds;
-			int fireworkIndex = 0;
-			const double interval = 0.5;
-			int totalFireworks = (int)(durationSeconds / interval);
-			bool fadeStarted = false;
+			s_celebrationEndTime = endTime;
 
-			Action scheduleNext = null;
-			scheduleNext = () =>
+			Action generateFireworks = null;
+			generateFireworks = () =>
 			{
 				if (player?.Project == null) return;
+				if (!s_isGeneratingFireworks) return;
 
-				// Solo generar fuegos artificiales si el juego está activo
-				if (IsGameActive(player))
+				double currentTime = Time.RealTime;
+				if (currentTime >= endTime)
 				{
-					double currentTime = time.GameTime;
-					double nextFireTime = startTime + (fireworkIndex + 1) * interval;
-
-					if (currentTime >= nextFireTime && fireworkIndex < totalFireworks)
-					{
-						SpawnRandomFirework(player);
-						fireworkIndex++;
-					}
-				}
-
-				if (time.GameTime < endTime)
-				{
-					GameManager.SyncDispatcher.Add(() => { scheduleNext(); return true; });
-				}
-				else if (!fadeStarted)
-				{
-					fadeStarted = true;
+					// Terminar celebración
+					s_isGeneratingFireworks = false;
 					InGameMusicManager.FadeOutAndStop();
-
 					IsCelebrationActive = false;
 					OnCelebrationEnded?.Invoke();
 
@@ -677,10 +676,37 @@ namespace Game
 						}
 					};
 					fadeLoop();
+					return;
 				}
+
+				// Calcular intensidad basada en el tiempo restante (más fuegos al principio y al final)
+				float timeLeft = (float)(endTime - currentTime);
+				float intensity = 1.5f;
+				if (timeLeft < 30f)
+					intensity = 4f; // Gran final
+				else if (timeLeft > durationSeconds - 30f)
+					intensity = 3f; // Comienzo fuerte
+				else
+					intensity = 1.2f; // Normal
+
+				float probability = intensity * (float)Time.FrameDuration;
+
+				if (s_fireworkRandom.Float(0f, 1f) < probability && IsGameActive(player))
+				{
+					SpawnRandomFirework(player);
+				}
+
+				GameManager.SyncDispatcher.Add(() => { generateFireworks(); return true; });
 			};
 
-			scheduleNext();
+			generateFireworks();
+		}
+
+		private static void ScheduleFireworksAndStopMusic(ComponentPlayer player, double durationSeconds = 150.0)
+		{
+			// Este método se mantiene por compatibilidad pero no se usa
+			// La generación de fuegos ahora se maneja con StartContinuousFireworks
+			StartContinuousFireworks(player, durationSeconds);
 		}
 
 		private static void SpawnRandomFirework(ComponentPlayer player)
@@ -689,26 +715,25 @@ namespace Game
 			var projectiles = player.Project.FindSubsystem<SubsystemProjectiles>(true);
 			if (projectiles == null) return;
 
-			Random rand = new Random();
 			Vector3 playerPos = player.ComponentBody.Position;
 
 			// Posición aleatoria en un círculo de radio 15-30 alrededor del jugador
-			float angle = rand.Float(0f, MathF.PI * 2);
-			float radius = rand.Float(15f, 30f);
+			float angle = s_fireworkRandom.Float(0f, MathF.PI * 2);
+			float radius = s_fireworkRandom.Float(15f, 30f);
 			float dx = MathF.Cos(angle) * radius;
 			float dz = MathF.Sin(angle) * radius;
 			Vector3 launchPos = new Vector3(playerPos.X + dx, playerPos.Y + 0.5f, playerPos.Z + dz);
 
 			// Datos aleatorios del fuego artificial
 			int data = 0;
-			data = FireworksBlock.SetShape(data, (FireworksBlock.Shape)rand.Int(0, 7));
-			data = FireworksBlock.SetColor(data, rand.Int(0, 7));
-			data = FireworksBlock.SetAltitude(data, rand.Int(0, 1)); // 0 = baja, 1 = alta
-			data = FireworksBlock.SetFlickering(data, rand.Float(0f, 1f) < 0.25f);
+			data = FireworksBlock.SetShape(data, (FireworksBlock.Shape)s_fireworkRandom.Int(0, 7));
+			data = FireworksBlock.SetColor(data, s_fireworkRandom.Int(0, 7));
+			data = FireworksBlock.SetAltitude(data, s_fireworkRandom.Int(0, 1)); // 0 = baja, 1 = alta
+			data = FireworksBlock.SetFlickering(data, s_fireworkRandom.Float(0f, 1f) < 0.25f);
 			int value = Terrain.MakeBlockValue(215, 0, data);
 
 			// Velocidad inicial: hacia arriba con ligera dispersión horizontal
-			Vector3 velocity = new Vector3(rand.Float(-3f, 3f), 45f, rand.Float(-3f, 3f));
+			Vector3 velocity = new Vector3(s_fireworkRandom.Float(-3f, 3f), 45f, s_fireworkRandom.Float(-3f, 3f));
 			projectiles.FireProjectile(value, launchPos, velocity, Vector3.Zero, null);
 		}
 
