@@ -17,6 +17,7 @@ namespace Game
 		private static double s_lastDayCheckGameTime = -1.0;
 		private const double DAY_CHECK_INTERVAL = 5.0;
 		private static Dictionary<int, int> s_achievementRewards;
+		private static bool m_musicPaused = false;
 
 		// Eventos para actualizar UI
 		public static event Action<ComponentPlayer, int, int> OnInfectedCounterChanged;
@@ -623,9 +624,18 @@ namespace Game
 
 				bool isActive = IsGameActive(player);
 
-				if (wasActive && !isActive)
+				if (wasActive && !isActive && !m_musicPaused)
 				{
-					InGameMusicManager.StopMusic();
+					// Salir del GameScreen - guardar posición y pausar
+					InGameMusicManager.SavePositionAndStop();
+					m_musicPaused = true;
+				}
+				else if (!wasActive && isActive && m_musicPaused)
+				{
+					// Volver al GameScreen - reanudar desde posición guardada
+					InGameMusicManager.RestartFromSavedPosition();
+					m_musicPaused = false;
+					firstPlay = false;
 				}
 
 				wasActive = isActive;
@@ -643,7 +653,7 @@ namespace Game
 					|| !InGameMusicManager.IsPlaying
 					|| InGameMusicManager.IsPlaybackComplete();
 
-				if (needsRestart)
+				if (needsRestart && !m_musicPaused)
 				{
 					InGameMusicManager.PlayMusic(musicPath, 0f);
 					firstPlay = false;
@@ -657,20 +667,8 @@ namespace Game
 
 		private static bool IsGameActive(ComponentPlayer player)
 		{
-			if (player?.Project == null) return false;
-
-			var currentScreen = ScreensManager.CurrentScreen;
-			if (currentScreen == null) return false;
-
-			string screenName = currentScreen.GetType().Name;
-
-			// 🔇 Solo detener la música si la pantalla es Configuración o Ayuda
-			if (screenName == "SettingsScreen" || screenName == "HelpScreen")
-				return false;
-
-			// Para cualquier otra pantalla (GameScreen, Bestiary, CreativeInventory, etc.)
-			// el juego sigue activo y la música debe continuar.
-			return true;
+			// La música de celebración solo suena cuando la pantalla actual es GameScreen
+			return ScreensManager.CurrentScreen is GameScreen;
 		}
 
 		private static void StartContinuousFireworks(ComponentPlayer player, double durationSeconds)
