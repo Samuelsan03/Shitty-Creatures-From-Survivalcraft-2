@@ -969,4 +969,24 @@
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
 </MemberComponentTemplate>
             </EntityTemplate>
+
+            <EntityTemplate Name="Horse_Black_Saddled" Guid="9d89b0fb-8222-4fb3-9fb9-e239d09000e6" InheritanceParent="853e2aef-2cc6-4140-82cb-924d47883c0a">
+            <MemberComponentTemplate Name="Loot" Guid="b10180b2-1cd2-4d88-972d-c4d10360a4ad">
+              <ParameterSet Name="Loot" Guid="34d020c9-0ebc-4cf8-9e80-b5d6641a33d4">
+                <Parameter Name="1" Guid="fdae35c9-b491-4ee8-b953-eaa13172b8e0" Value="SaddleBlock;1;1" Type="string" />
+                <Parameter Name="2" Guid="566ebd61-476f-4e36-8736-1f816d34d742" Value="NuclearCoinBlock;3;5;0.5" Type="string" />
+              </ParameterSet>
+            </MemberComponentTemplate>
+            <MemberComponentTemplate Name="DeathSpawner" Guid="2f819a92-925a-4b53-9ae3-23c7a83717b9" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
+    <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="e6e0bf58-f0fd-4255-9889-284114561958"/>
+    <Parameter Name="DeathSpawnTemplates" Value="InfectedNormal1:0.55;InfectedNormal2:0.55" Type="string" Guid="eda51ca7-d1f3-4295-b2ea-1f9612da860c"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="PoisonInfected" Guid="1f8f3fad-b50b-4762-bc3b-68bc9dd92b35">
+    <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="100" Type="int"/>
+    <Parameter Name="PoisonResistance" Value="-5" Type="float"/>
+    <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
+</MemberComponentTemplate>
+            </EntityTemplate>
 </Mod>
