@@ -346,10 +346,10 @@ namespace Game
 				else return FlameThrowerBlock.SetLoadCount(Terrain.MakeBlockValue(FlameThrowerBlock.Index, 0, FlameThrowerBlock.SetBulletType(FlameThrowerBlock.SetLoadState(0, FlameThrowerBlock.LoadState.Loaded), new FlameBulletBlock.FlameBulletType?(this.m_random.Bool(0.5f) ? FlameBulletBlock.FlameBulletType.Flame : FlameBulletBlock.FlameBulletType.Poison))), 8);
 			}
 
-			// MÉTODO LOCAL: EXCLUSIVO PARA INFECTADOS. Arma a distancia o arma de fuego (5% prob) DE FORMA SEGURA
+			// MÉTODO LOCAL: EXCLUSIVO PARA INFECTADOS. Arma a distancia o arma de fuego (1% prob) DE FORMA SEGURA
 			int GetInfectedRangedOrFirearm()
 			{
-				if (this.m_random.Float(0f, 1f) < 0.05f)
+				if (this.m_random.Float(0f, 1f) < 0.01f)
 				{
 					string[] firearmNames = new string[] { "AKBlock", "SPAS12Block", "SWM500Block", "BK43Block", "M4Block", "AK48Block", "AUGBlock", "P90Block", "SCARBlock", "M249Block", "SniperBlock", "Izh43Block", "KABlock", "G3Block", "NewG3Block", "MendozaBlock", "GrozaBlock", "Master308Block", "AA12Block", "MinigunBlock", "Mac10Block", "UziBlock", "MP5SSDBlock", "FamasBlock", "RevolverBlock" };
 					string chosenFirearm = firearmNames[this.m_random.Int(0, firearmNames.Length)];
