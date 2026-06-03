@@ -352,7 +352,9 @@ namespace Game
 				if (this.m_random.Float(0f, 1f) < 0.01f)
 				{
 					string[] firearmNames = new string[] { "AKBlock", "SPAS12Block", "SWM500Block", "BK43Block", "M4Block", "AK48Block", "AUGBlock", "P90Block", "SCARBlock", "M249Block", "SniperBlock", "Izh43Block", "KABlock", "G3Block", "NewG3Block", "MendozaBlock", "GrozaBlock", "Master308Block", "AA12Block", "MinigunBlock", "Mac10Block", "UziBlock", "MP5SSDBlock", "FamasBlock", "RevolverBlock" };
-					string chosenFirearm = firearmNames[this.m_random.Int(0, firearmNames.Length)];
+
+					// CORRECCIÓN: Se resta 1 a Length porque Game.Random incluye el límite superior
+					string chosenFirearm = firearmNames[this.m_random.Int(0, firearmNames.Length - 1)];
 					int firearmIndex = BlocksManager.GetBlockIndex(chosenFirearm);
 
 					// SEGURIDAD: Evitar crasheo si el bloque del arma de fuego no existe
