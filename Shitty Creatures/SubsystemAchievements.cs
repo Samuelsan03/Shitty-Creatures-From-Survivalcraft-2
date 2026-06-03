@@ -24,41 +24,64 @@ namespace Game
 		private Dictionary<int, int> m_flyingKills = new Dictionary<int, int>();
 		private Dictionary<int, int> m_boomerKills = new Dictionary<int, int>();
 
+		// NUEVOS: Contadores de domesticación
+		private Dictionary<int, int> m_normalTames = new Dictionary<int, int>();   // Infectados normales (no jefe, no fantasma)
+		private Dictionary<int, int> m_bossTames = new Dictionary<int, int>();     // Jefes (Tanks, MachineGun, FlyingInfectedBoss)
+		private Dictionary<int, int> m_ghostTames = new Dictionary<int, int>();    // Fantasmas (todos los tipos fantasma)
+
 		private bool m_allAchievementsCelebrationTriggered = false;
-		private int m_backgroundState = 0;   // 0=original, 1=textura found, 2=semitransparente
+		private double m_celebrationEndTime = 0;
+		private int m_backgroundState = 0;
 
 		public bool IsAllAchievementsCelebrationTriggered() => m_allAchievementsCelebrationTriggered;
 		public void SetAllAchievementsCelebrationTriggered(bool triggered) => m_allAchievementsCelebrationTriggered = triggered;
-		public int GetUnlockedAchievementCount() => m_achievements.Count;
 
+		public double GetCelebrationEndTime() => m_celebrationEndTime;
+		public void SetCelebrationEndTime(double time) => m_celebrationEndTime = time;
+
+		public int GetUnlockedAchievementCount() => m_achievements.Count;
 		public int GetBackgroundState() => m_backgroundState;
 		public void SetBackgroundState(int state) => m_backgroundState = state;
 
-		public bool IsAchievementUnlocked(int achievementNumber)
-		{
-			return m_achievements.ContainsKey(achievementNumber);
-		}
-
+		public bool IsAchievementUnlocked(int achievementNumber) => m_achievements.ContainsKey(achievementNumber);
 		public void UnlockAchievement(int achievementNumber, string achievementId)
 		{
-			if (m_achievements.ContainsKey(achievementNumber))
-				return;
+			if (m_achievements.ContainsKey(achievementNumber)) return;
 			m_achievements.Add(achievementNumber, achievementId);
 		}
 
-		public bool IsRewardClaimed(int achievementNumber)
-		{
-			return m_claimedRewards.Contains(achievementNumber);
-		}
-
+		public bool IsRewardClaimed(int achievementNumber) => m_claimedRewards.Contains(achievementNumber);
 		public void ClaimReward(int achievementNumber)
 		{
-			if (!IsAchievementUnlocked(achievementNumber))
-				return;
+			if (!IsAchievementUnlocked(achievementNumber)) return;
 			m_claimedRewards.Add(achievementNumber);
 		}
 
-		// Infectados
+		// ========== DOMESTICACIONES NORMALES ==========
+		public int GetNormalTames(int playerIndex) => m_normalTames.TryGetValue(playerIndex, out int v) ? v : 0;
+		public void AddNormalTame(int playerIndex)
+		{
+			if (!m_normalTames.ContainsKey(playerIndex)) m_normalTames[playerIndex] = 0;
+			m_normalTames[playerIndex]++;
+		}
+
+		// ========== DOMESTICACIONES JEFES ==========
+		public int GetBossTames(int playerIndex) => m_bossTames.TryGetValue(playerIndex, out int v) ? v : 0;
+		public void AddBossTame(int playerIndex)
+		{
+			if (!m_bossTames.ContainsKey(playerIndex)) m_bossTames[playerIndex] = 0;
+			m_bossTames[playerIndex]++;
+		}
+
+		// ========== DOMESTICACIONES FANTASMAS ==========
+		public int GetGhostTames(int playerIndex) => m_ghostTames.TryGetValue(playerIndex, out int v) ? v : 0;
+		public void AddGhostTame(int playerIndex)
+		{
+			if (!m_ghostTames.ContainsKey(playerIndex)) m_ghostTames[playerIndex] = 0;
+			m_ghostTames[playerIndex]++;
+		}
+
+		// ========== MÉTODOS EXISTENTES (infectados, jefes, tanques, etc.) ==========
 		public int GetInfectedKills(int playerIndex) => m_infectedKills.TryGetValue(playerIndex, out int v) ? v : 0;
 		public void AddInfectedKill(int playerIndex)
 		{
@@ -66,7 +89,6 @@ namespace Game
 			m_infectedKills[playerIndex]++;
 		}
 
-		// Jefes
 		public int GetBossKills(int playerIndex) => m_bossKills.TryGetValue(playerIndex, out int v) ? v : 0;
 		public void AddBossKill(int playerIndex)
 		{
@@ -74,7 +96,6 @@ namespace Game
 			m_bossKills[playerIndex]++;
 		}
 
-		// Tanks
 		public int GetTankKills(int playerIndex) => m_tankKills.TryGetValue(playerIndex, out int v) ? v : 0;
 		public void AddTankKill(int playerIndex)
 		{
@@ -82,7 +103,6 @@ namespace Game
 			m_tankKills[playerIndex]++;
 		}
 
-		// Fantasmas normales
 		public int GetGhostKills(int playerIndex) => m_ghostKills.TryGetValue(playerIndex, out int v) ? v : 0;
 		public void AddGhostKill(int playerIndex)
 		{
@@ -90,7 +110,6 @@ namespace Game
 			m_ghostKills[playerIndex]++;
 		}
 
-		// Tanks Fantasmas
 		public int GetGhostTankKills(int playerIndex) => m_ghostTankKills.TryGetValue(playerIndex, out int v) ? v : 0;
 		public void AddGhostTankKill(int playerIndex)
 		{
@@ -98,7 +117,6 @@ namespace Game
 			m_ghostTankKills[playerIndex]++;
 		}
 
-		// Bandidos/Narcotraficantes
 		public int GetBanditKills(int playerIndex) => m_banditKills.TryGetValue(playerIndex, out int v) ? v : 0;
 		public void AddBanditKill(int playerIndex)
 		{
@@ -106,7 +124,6 @@ namespace Game
 			m_banditKills[playerIndex]++;
 		}
 
-		// Curaciones
 		public int GetHeals(int playerIndex) => m_heals.TryGetValue(playerIndex, out int v) ? v : 0;
 		public void AddHeal(int playerIndex)
 		{
@@ -119,6 +136,20 @@ namespace Game
 		{
 			if (!m_flyingKills.ContainsKey(playerIndex)) m_flyingKills[playerIndex] = 0;
 			m_flyingKills[playerIndex]++;
+		}
+
+		public int GetPirateKills(int playerIndex) => m_pirateKills.TryGetValue(playerIndex, out int v) ? v : 0;
+		public void AddPirateKill(int playerIndex)
+		{
+			if (!m_pirateKills.ContainsKey(playerIndex)) m_pirateKills[playerIndex] = 0;
+			m_pirateKills[playerIndex]++;
+		}
+
+		public int GetBoomerKills(int playerIndex) => m_boomerKills.TryGetValue(playerIndex, out int v) ? v : 0;
+		public void AddBoomerKill(int playerIndex)
+		{
+			if (!m_boomerKills.ContainsKey(playerIndex)) m_boomerKills[playerIndex] = 0;
+			m_boomerKills[playerIndex]++;
 		}
 
 		private void LoadCounter(ValuesDictionary dict, string key, Dictionary<int, int> target)
@@ -143,20 +174,6 @@ namespace Game
 					pairs.Add($"{kvp.Key}:{kvp.Value}");
 				dict.SetValue(key, string.Join(";", pairs));
 			}
-		}
-
-		public int GetPirateKills(int playerIndex) => m_pirateKills.TryGetValue(playerIndex, out int v) ? v : 0;
-		public void AddPirateKill(int playerIndex)
-		{
-			if (!m_pirateKills.ContainsKey(playerIndex)) m_pirateKills[playerIndex] = 0;
-			m_pirateKills[playerIndex]++;
-		}
-
-		public int GetBoomerKills(int playerIndex) => m_boomerKills.TryGetValue(playerIndex, out int v) ? v : 0;
-		public void AddBoomerKill(int playerIndex)
-		{
-			if (!m_boomerKills.ContainsKey(playerIndex)) m_boomerKills[playerIndex] = 0;
-			m_boomerKills[playerIndex]++;
 		}
 
 		public override void Load(ValuesDictionary valuesDictionary)
@@ -191,7 +208,7 @@ namespace Game
 				}
 			}
 
-			// Contadores
+			// Contadores existentes
 			LoadCounter(valuesDictionary, "InfectedKills", m_infectedKills);
 			LoadCounter(valuesDictionary, "BossKills", m_bossKills);
 			LoadCounter(valuesDictionary, "TankKills", m_tankKills);
@@ -203,10 +220,17 @@ namespace Game
 			LoadCounter(valuesDictionary, "FlyingKills", m_flyingKills);
 			LoadCounter(valuesDictionary, "BoomerKills", m_boomerKills);
 
+			// NUEVOS: Contadores de domesticación
+			LoadCounter(valuesDictionary, "NormalTames", m_normalTames);
+			LoadCounter(valuesDictionary, "BossTames", m_bossTames);
+			LoadCounter(valuesDictionary, "GhostTames", m_ghostTames);
+
 			if (valuesDictionary.TryGetValue("AllAchievementsCelebrationTriggered", out object triggerValue) && triggerValue is bool flag)
 				m_allAchievementsCelebrationTriggered = flag;
 
-			// Cargar estado del fondo
+			if (valuesDictionary.TryGetValue("CelebrationEndTime", out object endTimeValue) && endTimeValue is double endTime)
+				m_celebrationEndTime = endTime;
+
 			if (valuesDictionary.TryGetValue("BackgroundState", out object bgState) && bgState is int state)
 				m_backgroundState = state;
 			else
@@ -226,7 +250,7 @@ namespace Game
 				valuesDictionary.SetValue("ClaimedRewards", string.Join(",", sorted));
 			}
 
-			// Contadores
+			// Contadores existentes
 			SaveCounter(valuesDictionary, "InfectedKills", m_infectedKills);
 			SaveCounter(valuesDictionary, "BossKills", m_bossKills);
 			SaveCounter(valuesDictionary, "TankKills", m_tankKills);
@@ -238,7 +262,13 @@ namespace Game
 			SaveCounter(valuesDictionary, "FlyingKills", m_flyingKills);
 			SaveCounter(valuesDictionary, "BoomerKills", m_boomerKills);
 
+			// NUEVOS: Contadores de domesticación
+			SaveCounter(valuesDictionary, "NormalTames", m_normalTames);
+			SaveCounter(valuesDictionary, "BossTames", m_bossTames);
+			SaveCounter(valuesDictionary, "GhostTames", m_ghostTames);
+
 			valuesDictionary.SetValue("AllAchievementsCelebrationTriggered", m_allAchievementsCelebrationTriggered);
+			valuesDictionary.SetValue("CelebrationEndTime", m_celebrationEndTime);
 			valuesDictionary.SetValue("BackgroundState", m_backgroundState);
 		}
 	}
