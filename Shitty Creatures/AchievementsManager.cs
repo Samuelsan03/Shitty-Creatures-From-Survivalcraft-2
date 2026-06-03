@@ -29,6 +29,9 @@ namespace Game
 		public static event Action<ComponentPlayer, int, int> OnPirateCounterChanged;
 		public static event Action<ComponentPlayer, int, int> OnFlyingCounterChanged;
 		public static event Action<ComponentPlayer, int, int> OnBoomerCounterChanged;
+		public static event Action<ComponentPlayer, int, int> OnNormalTameCounterChanged;   // Domesticaciones normales
+		public static event Action<ComponentPlayer, int, int> OnBossTameCounterChanged;     // Domesticaciones jefes
+		public static event Action<ComponentPlayer, int, int> OnGhostTameCounterChanged;    // Domesticaciones fantasmas
 
 		// Eventos para celebración de todos los logros
 		public static event Action OnCelebrationStarted;
@@ -406,6 +409,77 @@ namespace Game
 			}
 		}
 
+		// Domesticaciones normales (infectados que no son jefe ni fantasma)
+		public static void OnNormalTame(ComponentPlayer player)
+		{
+			if (s_subsystemAchievements == null || player == null) return;
+			int idx = player.PlayerData.PlayerIndex;
+			s_subsystemAchievements.AddNormalTame(idx);
+			int total = s_subsystemAchievements.GetNormalTames(idx);
+
+			// Notificar UI - umbrales 10, 25, 50, 100
+			if (!s_subsystemAchievements.IsAchievementUnlocked(57)) OnNormalTameCounterChanged?.Invoke(player, total, 10);
+			if (!s_subsystemAchievements.IsAchievementUnlocked(58)) OnNormalTameCounterChanged?.Invoke(player, total, 25);
+			if (!s_subsystemAchievements.IsAchievementUnlocked(59)) OnNormalTameCounterChanged?.Invoke(player, total, 50);
+			if (!s_subsystemAchievements.IsAchievementUnlocked(60)) OnNormalTameCounterChanged?.Invoke(player, total, 100);
+
+			// Desbloquear logros
+			if (total >= 10 && !s_subsystemAchievements.IsAchievementUnlocked(57))
+				UnlockAchievement(player, 57, "TameNormal10", LanguageControl.Get(AchievementsWidget.fName, 110));
+			if (total >= 25 && !s_subsystemAchievements.IsAchievementUnlocked(58))
+				UnlockAchievement(player, 58, "TameNormal25", LanguageControl.Get(AchievementsWidget.fName, 112));
+			if (total >= 50 && !s_subsystemAchievements.IsAchievementUnlocked(59))
+				UnlockAchievement(player, 59, "TameNormal50", LanguageControl.Get(AchievementsWidget.fName, 114));
+			if (total >= 100 && !s_subsystemAchievements.IsAchievementUnlocked(60))
+				UnlockAchievement(player, 60, "TameNormal100", LanguageControl.Get(AchievementsWidget.fName, 116));
+		}
+
+		// Domesticaciones jefes (Tanks, MachineGun, FlyingInfectedBoss, FrozenTank)
+		public static void OnBossTame(ComponentPlayer player)
+		{
+			if (s_subsystemAchievements == null || player == null) return;
+			int idx = player.PlayerData.PlayerIndex;
+			s_subsystemAchievements.AddBossTame(idx);
+			int total = s_subsystemAchievements.GetBossTames(idx);
+
+			if (!s_subsystemAchievements.IsAchievementUnlocked(61)) OnBossTameCounterChanged?.Invoke(player, total, 10);
+			if (!s_subsystemAchievements.IsAchievementUnlocked(62)) OnBossTameCounterChanged?.Invoke(player, total, 25);
+			if (!s_subsystemAchievements.IsAchievementUnlocked(63)) OnBossTameCounterChanged?.Invoke(player, total, 50);
+			if (!s_subsystemAchievements.IsAchievementUnlocked(64)) OnBossTameCounterChanged?.Invoke(player, total, 100);
+
+			if (total >= 10 && !s_subsystemAchievements.IsAchievementUnlocked(61))
+				UnlockAchievement(player, 61, "TameBoss10", LanguageControl.Get(AchievementsWidget.fName, 118));
+			if (total >= 25 && !s_subsystemAchievements.IsAchievementUnlocked(62))
+				UnlockAchievement(player, 62, "TameBoss25", LanguageControl.Get(AchievementsWidget.fName, 120));
+			if (total >= 50 && !s_subsystemAchievements.IsAchievementUnlocked(63))
+				UnlockAchievement(player, 63, "TameBoss50", LanguageControl.Get(AchievementsWidget.fName, 122));
+			if (total >= 100 && !s_subsystemAchievements.IsAchievementUnlocked(64))
+				UnlockAchievement(player, 64, "TameBoss100", LanguageControl.Get(AchievementsWidget.fName, 124));
+		}
+
+		// Domesticaciones fantasmas (todos los tipos fantasma)
+		public static void OnGhostTame(ComponentPlayer player)
+		{
+			if (s_subsystemAchievements == null || player == null) return;
+			int idx = player.PlayerData.PlayerIndex;
+			s_subsystemAchievements.AddGhostTame(idx);
+			int total = s_subsystemAchievements.GetGhostTames(idx);
+
+			if (!s_subsystemAchievements.IsAchievementUnlocked(65)) OnGhostTameCounterChanged?.Invoke(player, total, 10);
+			if (!s_subsystemAchievements.IsAchievementUnlocked(66)) OnGhostTameCounterChanged?.Invoke(player, total, 25);
+			if (!s_subsystemAchievements.IsAchievementUnlocked(67)) OnGhostTameCounterChanged?.Invoke(player, total, 50);
+			if (!s_subsystemAchievements.IsAchievementUnlocked(68)) OnGhostTameCounterChanged?.Invoke(player, total, 100);
+
+			if (total >= 10 && !s_subsystemAchievements.IsAchievementUnlocked(65))
+				UnlockAchievement(player, 65, "TameGhost10", LanguageControl.Get(AchievementsWidget.fName, 126));
+			if (total >= 25 && !s_subsystemAchievements.IsAchievementUnlocked(66))
+				UnlockAchievement(player, 66, "TameGhost25", LanguageControl.Get(AchievementsWidget.fName, 128));
+			if (total >= 50 && !s_subsystemAchievements.IsAchievementUnlocked(67))
+				UnlockAchievement(player, 67, "TameGhost50", LanguageControl.Get(AchievementsWidget.fName, 130));
+			if (total >= 100 && !s_subsystemAchievements.IsAchievementUnlocked(68))
+				UnlockAchievement(player, 68, "TameGhost100", LanguageControl.Get(AchievementsWidget.fName, 132));
+		}
+
 		private static bool IsFlyingCreature(string templateName)
 		{
 			return templateName == "InfectedFly1" ||
@@ -532,6 +606,9 @@ namespace Game
 		public static int GetPirateKills(ComponentPlayer player) => player == null ? 0 : s_subsystemAchievements?.GetPirateKills(player.PlayerData.PlayerIndex) ?? 0;
 		public static int GetFlyingKills(ComponentPlayer player) => player == null ? 0 : s_subsystemAchievements?.GetFlyingKills(player.PlayerData.PlayerIndex) ?? 0;
 		public static int GetBoomerKills(ComponentPlayer player) => player == null ? 0 : s_subsystemAchievements?.GetBoomerKills(player.PlayerData.PlayerIndex) ?? 0;
+		public static int GetNormalTames(ComponentPlayer player) => player == null ? 0 : s_subsystemAchievements?.GetNormalTames(player.PlayerData.PlayerIndex) ?? 0;
+		public static int GetBossTames(ComponentPlayer player) => player == null ? 0 : s_subsystemAchievements?.GetBossTames(player.PlayerData.PlayerIndex) ?? 0;
+		public static int GetGhostTames(ComponentPlayer player) => player == null ? 0 : s_subsystemAchievements?.GetGhostTames(player.PlayerData.PlayerIndex) ?? 0;
 
 		// Agregar estos métodos estáticos:
 
