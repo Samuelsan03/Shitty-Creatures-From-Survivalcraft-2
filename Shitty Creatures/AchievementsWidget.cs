@@ -229,21 +229,23 @@ namespace Game
 
 		private void UpdateCounterDescription(int achievementNumber, int currentKills, int target, string baseDescription, LabelWidget descLabel)
 		{
-			// Obtenemos el itemData (hay que modificar AchievementItemData para incluir TextStack)
+			// Si el proyecto ya se está cerrando, no hacer nada
+			if (m_componentPlayer?.Project == null) return;
+
 			if (!m_achievementItems.TryGetValue(achievementNumber, out var itemData) || itemData.Container == null)
 				return;
+
+			if (itemData.TextStack == null) return;
 
 			int displayKills = Math.Min(currentKills, target);
 			string newText = $"{baseDescription} ({displayKills}/{target})";
 
-			// Volver a wrap el texto
 			BitmapFont font = LabelWidget.BitmapFont;
 			float fontScale = 0.65f;
 			float maxWidth = 500f;
 			List<string> newWrappedLines = WrapText(font, newText, maxWidth, fontScale);
 			float lineHeight = font.LineHeight * fontScale * font.Scale;
 
-			// Limpiar y reconstruir el StackPanel
 			itemData.TextStack.Children.Clear();
 			foreach (string line in newWrappedLines)
 			{
@@ -258,19 +260,21 @@ namespace Game
 				itemData.TextStack.Children.Add(lineLabel);
 			}
 
-			// Recalcular altura
-			float statusHeight = 20f;
-			float titleHeight = 25f;
-			float textStackHeight = newWrappedLines.Count * lineHeight + (newWrappedLines.Count - 1) * 4f;
-			float bottomRowHeight = 40f;
-			float totalHeight = statusHeight + titleHeight + textStackHeight + bottomRowHeight + 20f;
-			totalHeight = Math.Max(95f, totalHeight);
+			// Solo redimensionar si el contenedor sigue en el árbol de widgets
+			if (itemData.Container.ParentWidget != null)
+			{
+				float statusHeight = 20f;
+				float titleHeight = 25f;
+				float textStackHeight = newWrappedLines.Count * lineHeight + (newWrappedLines.Count - 1) * 4f;
+				float bottomRowHeight = 40f;
+				float totalHeight = statusHeight + titleHeight + textStackHeight + bottomRowHeight + 20f;
+				totalHeight = Math.Max(95f, totalHeight);
 
-			// Redimensionar contenedor y fondo
-			itemData.Container.Size = new Vector2(530, totalHeight);
-			var background = itemData.Container.Children.Find<BevelledRectangleWidget>(null, false);
-			if (background != null)
-				background.Size = new Vector2(530, totalHeight);
+				itemData.Container.Size = new Vector2(530, totalHeight);
+				var background = itemData.Container.Children.Find<BevelledRectangleWidget>(null, false);
+				if (background != null)
+					background.Size = new Vector2(530, totalHeight);
+			}
 		}
 
 		private void OnInfectedCounterChanged(ComponentPlayer player, int currentKills, int targetKills)
@@ -711,6 +715,7 @@ namespace Game
 
 			if (m_closeButton.IsClicked)
 			{
+				// Remover eventos
 				AchievementsManager.OnInfectedCounterChanged -= OnInfectedCounterChanged;
 				AchievementsManager.OnBossCounterChanged -= OnBossCounterChanged;
 				AchievementsManager.OnTankCounterChanged -= OnTankCounterChanged;
@@ -724,7 +729,11 @@ namespace Game
 				AchievementsManager.OnNormalTameCounterChanged -= OnNormalTameCounterChanged;
 				AchievementsManager.OnBossTameCounterChanged -= OnBossTameCounterChanged;
 				AchievementsManager.OnGhostTameCounterChanged -= OnGhostTameCounterChanged;
-				m_componentPlayer.ComponentGui.ModalPanelWidget = null;
+
+				if (m_componentPlayer?.ComponentGui != null)
+				{
+					m_componentPlayer.ComponentGui.ModalPanelWidget = null;
+				}
 				return;
 			}
 
