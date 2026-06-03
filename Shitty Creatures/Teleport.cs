@@ -5,327 +5,250 @@ using TemplatesDatabase;
 
 namespace Game
 {
+	/// <summary>
+	/// Componente que permite a una criatura teletransportarse hacia su objetivo cuando la distancia supera un umbral.
+	/// </summary>
 	public class Teleport : Component, IUpdateable
 	{
-		// ===== DISTANCIA FIJA DE CERCANÍA (no se carga del diccionario) =====
-		private const float CloseRangeDistance = 1.5f;
-		private const float HiddenY = -100f;
+		// ===== PARÁMETROS CONFIGURABLES =====
+		public float TeleportationDistance = 15f;
+		public float TeleportationCooldown = 5f;
+		public float DisappearanceTime = 0.75f;
+		public float ChanceToTeleport = 0.3f;
 
-		// ===== PROPIEDADES PÚBLICAS =====
-		public UpdateOrder UpdateOrder => UpdateOrder.Default;
-
-		public float TeleportationDistance { get; private set; }
-		public float TeleportationCooldown { get; private set; }
-		public float DisappearDuration { get; private set; }
-		public float ProbabilityOfTeleporting { get; private set; }
-
-		// ===== ESTADO INTERNO =====
-		private SubsystemTerrain m_subsystemTerrain;
+		// ===== REFERENCIAS =====
+		private SubsystemTime m_subsystemTime;
 		private SubsystemAudio m_subsystemAudio;
 		private SubsystemParticles m_subsystemParticles;
-		private SubsystemTime m_subsystemTime;
+		private SubsystemTerrain m_subsystemTerrain;
+		private Random m_random = new Random();
 
 		private ComponentCreature m_componentCreature;
 		private ComponentBody m_componentBody;
-		private ComponentNewChaseBehavior m_componentChase;
 		private ComponentPathfinding m_componentPathfinding;
+		private ComponentCreatureModel m_componentCreatureModel;
+		private ComponentNewChaseBehavior m_chaseBehavior; // Referencia al comportamiento de caza
 
-		private double m_lastTeleportTime;
-		private bool m_isTeleporting;
-		private float m_teleportPhase;
-		private float m_phaseTimer;
-		private Vector3 m_teleportDestination;
-		private Vector3 m_teleportOrigin;
+		// ===== ESTADO INTERNO =====
+		private ComponentCreature m_targetCreature;
+		private bool m_isDisappeared;
+		private float m_disappearRemaining;
+		private float m_cooldownRemaining;
+		private Vector3 m_originalPosition;
+		private bool m_originalBodyCollidable;
+		private bool m_originalIsRaycastTransparent;
 
-		private Random m_random = new Random();
+		// ===== PROPIEDADES PÚBLICAS =====
+		public ComponentCreature Target
+		{
+			get => m_targetCreature;
+			set => m_targetCreature = value;
+		}
 
+		public UpdateOrder UpdateOrder => UpdateOrder.Default;
+
+		// ===== MÉTODOS PÚBLICOS =====
+		public void ForceTeleport(ComponentCreature target)
+		{
+			if (target == null || m_isDisappeared)
+				return;
+			m_targetCreature = target;
+			StartTeleport();
+		}
+
+		public void StopTeleport()
+		{
+			if (m_isDisappeared)
+				Reappear();
+			m_cooldownRemaining = TeleportationCooldown;
+			m_targetCreature = null;
+		}
+
+		// ===== CICLO DE VIDA =====
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
-			m_subsystemTerrain = Project.FindSubsystem<SubsystemTerrain>(true);
+			m_subsystemTime = Project.FindSubsystem<SubsystemTime>(true);
 			m_subsystemAudio = Project.FindSubsystem<SubsystemAudio>(true);
 			m_subsystemParticles = Project.FindSubsystem<SubsystemParticles>(true);
-			m_subsystemTime = Project.FindSubsystem<SubsystemTime>(true);
+			m_subsystemTerrain = Project.FindSubsystem<SubsystemTerrain>(true);
 
 			m_componentCreature = Entity.FindComponent<ComponentCreature>(true);
 			m_componentBody = Entity.FindComponent<ComponentBody>(true);
-			m_componentChase = Entity.FindComponent<ComponentNewChaseBehavior>();
 			m_componentPathfinding = Entity.FindComponent<ComponentPathfinding>();
+			m_componentCreatureModel = Entity.FindComponent<ComponentCreatureModel>();
+			m_chaseBehavior = Entity.FindComponent<ComponentNewChaseBehavior>();
 
-			TeleportationDistance = valuesDictionary.GetValue<float>("TeleportationDistance");
-			TeleportationCooldown = valuesDictionary.GetValue<float>("TeleportationCooldown");
-			DisappearDuration = valuesDictionary.GetValue<float>("DisappearDuration");
-			ProbabilityOfTeleporting = valuesDictionary.GetValue<float>("ProbabilityOfTeleporting");
-
-			m_lastTeleportTime = -TeleportationCooldown;
+			TeleportationDistance = valuesDictionary.GetValue<float>("TeleportationDistance", TeleportationDistance);
+			TeleportationCooldown = valuesDictionary.GetValue<float>("TeleportationCooldown", TeleportationCooldown);
+			DisappearanceTime = valuesDictionary.GetValue<float>("DisappearanceTime", DisappearanceTime);
+			ChanceToTeleport = valuesDictionary.GetValue<float>("ChanceToTeleport", ChanceToTeleport);
 		}
 
-		public override void Save(ValuesDictionary valuesDictionary, EntityToIdMap entityToIdMap)
-		{
-		}
+		public override void Save(ValuesDictionary valuesDictionary, EntityToIdMap entityToIdMap) { }
 
-		public void Update(float dt)
+		public virtual void Update(float dt)
 		{
-			if (m_componentBody == null || m_componentChase == null)
+			if (m_cooldownRemaining > 0f)
+				m_cooldownRemaining -= dt;
+
+			if (m_isDisappeared)
+			{
+				m_disappearRemaining -= dt;
+				if (m_disappearRemaining <= 0f)
+					Reappear();
+				return;
+			}
+
+			// Actualizar el objetivo SOLO si el comportamiento de caza está activo y tiene un objetivo válido
+			UpdateTargetFromChaseBehavior();
+
+			// Si no hay objetivo válido, no hacer nada
+			if (m_targetCreature == null || m_cooldownRemaining > 0f)
 				return;
 
-			if (m_isTeleporting)
-			{
-				UpdateTeleportation(dt);
-				return;
-			}
-
-			if (!CanTeleport())
+			// Solo teletransportar si la criatura está persiguiendo activamente
+			bool isChasing = m_chaseBehavior != null && m_chaseBehavior.IsActive && m_chaseBehavior.Target != null;
+			if (!isChasing)
 				return;
 
-			ComponentCreature target = m_componentChase.Target;
-			if (target == null || target.ComponentBody == null || target.ComponentHealth.Health <= 0f)
+			float distance = Vector3.Distance(m_componentBody.Position, m_targetCreature.ComponentBody.Position);
+			if (distance >= TeleportationDistance && m_random.Float(0f, 1f) <= ChanceToTeleport)
+				StartTeleport();
+		}
+
+		// ===== MÉTODOS PRIVADOS =====
+		private void UpdateTargetFromChaseBehavior()
+		{
+			if (m_chaseBehavior == null)
 				return;
 
-			float distance = Vector3.Distance(m_componentBody.Position, target.ComponentBody.Position);
-
-			if (distance > CloseRangeDistance && distance >= TeleportationDistance)
+			// Si el chase behavior está activo y tiene un objetivo, usarlo
+			if (m_chaseBehavior.IsActive && m_chaseBehavior.Target != null)
 			{
-				if (m_random.Float(0f, 1f) < ProbabilityOfTeleporting)
-				{
-					StartTeleportation(target);
-				}
-				else
-				{
-					m_lastTeleportTime = m_subsystemTime.GameTime;
-				}
-			}
-		}
-
-		private bool CanTeleport()
-		{
-			double currentTime = m_subsystemTime.GameTime;
-			if (currentTime - m_lastTeleportTime < TeleportationCooldown)
-				return false;
-
-			if (m_componentChase == null || !m_componentChase.IsActive)
-				return false;
-
-			if (m_componentCreature.ComponentHealth.Health <= 0f)
-				return false;
-
-			return true;
-		}
-
-		private void StartTeleportation(ComponentCreature target)
-		{
-			m_isTeleporting = true;
-			m_teleportPhase = 1;
-			m_phaseTimer = 0f;
-			m_teleportOrigin = m_componentBody.Position;
-			m_teleportDestination = CalculateTeleportDestination(target);
-
-			Vector3 particlePos = m_componentBody.Position + new Vector3(0f, m_componentBody.StanceBoxSize.Y / 2f, 0f);
-			float size = m_componentBody.StanceBoxSize.X;
-
-			TeleportParticleSystem particles = new TeleportParticleSystem(m_subsystemTerrain, particlePos, size, false);
-			m_subsystemParticles.AddParticleSystem(particles, false);
-
-			if (m_componentPathfinding != null)
-			{
-				m_componentPathfinding.Stop();
-			}
-
-			HideBody();
-
-			m_subsystemAudio.PlaySound("Audio/teleport 1", 1f, 0f, m_teleportOrigin, 4f, false);
-		}
-
-		private void UpdateTeleportation(float dt)
-		{
-			m_phaseTimer += dt;
-
-			if (m_teleportPhase == 1)
-			{
-				if (m_phaseTimer >= DisappearDuration)
-				{
-					ComponentCreature target = m_componentChase?.Target;
-					if (target == null || target.ComponentHealth.Health <= 0f)
-					{
-						CancelTeleport();
-						return;
-					}
-
-					ShowBody(m_teleportDestination);
-					FaceTarget(target);
-
-					Vector3 particlePos = m_teleportDestination + new Vector3(0f, m_componentBody.StanceBoxSize.Y / 2f, 0f);
-					float size = m_componentBody.StanceBoxSize.X;
-
-					TeleportParticleSystem particles = new TeleportParticleSystem(m_subsystemTerrain, particlePos, size, true);
-					m_subsystemParticles.AddParticleSystem(particles, false);
-
-					m_teleportPhase = 2;
-					m_phaseTimer = 0f;
-					m_subsystemAudio.PlaySound("Audio/teleport 2", 1f, 0f, m_teleportDestination, 4f, false);
-				}
-			}
-			else if (m_teleportPhase == 2)
-			{
-				if (m_phaseTimer >= 0.4f)
-				{
-					m_isTeleporting = false;
-					m_teleportPhase = 0;
-					m_lastTeleportTime = m_subsystemTime.GameTime;
-				}
-			}
-		}
-
-		public void ForceTeleportTo(Vector3 destination, ComponentCreature target = null)
-		{
-			if (m_isTeleporting)
-				return;
-
-			m_isTeleporting = true;
-			m_teleportPhase = 1;
-			m_phaseTimer = 0f;
-			m_teleportOrigin = m_componentBody.Position;
-			m_teleportDestination = destination;
-
-			Vector3 particlePos = m_componentBody.Position + new Vector3(0f, m_componentBody.StanceBoxSize.Y / 2f, 0f);
-			float size = m_componentBody.StanceBoxSize.X;
-
-			TeleportParticleSystem particles = new TeleportParticleSystem(m_subsystemTerrain, particlePos, size, false);
-			m_subsystemParticles.AddParticleSystem(particles, false);
-
-			if (m_componentPathfinding != null)
-			{
-				m_componentPathfinding.Stop();
-			}
-
-			HideBody();
-
-			m_subsystemAudio.PlaySound("Audio/teleport 1", 1f, 0f, m_teleportOrigin, 4f, false);
-		}
-
-		private void HideBody()
-		{
-			m_componentBody.Position = new Vector3(m_teleportOrigin.X, HiddenY, m_teleportOrigin.Z);
-			m_componentBody.Velocity = Vector3.Zero;
-		}
-
-		private void ShowBody(Vector3 position)
-		{
-			m_componentBody.Position = position;
-			m_componentBody.Velocity = Vector3.Zero;
-		}
-
-		private Vector3 CalculateTeleportDestination(ComponentCreature target)
-		{
-			Vector3 targetPos = target.ComponentBody.Position;
-
-			// Usar dirección desde posición original hacia el objetivo (no depende de hacia dónde mira el jugador)
-			Vector3 toTarget = targetPos - m_teleportOrigin;
-			toTarget.Y = 0f;
-
-			if (toTarget.LengthSquared() < 0.01f)
-			{
-				float randomAngle = m_random.Float(0f, 2f * MathF.PI);
-				toTarget = new Vector3(MathF.Cos(randomAngle), 0f, MathF.Sin(randomAngle));
+				m_targetCreature = m_chaseBehavior.Target;
 			}
 			else
 			{
-				toTarget = Vector3.Normalize(toTarget);
+				// Si el chase behavior ya no persigue, limpiar el objetivo
+				m_targetCreature = null;
 			}
-
-			// Pequeña variación lateral (-30 a +30 grados)
-			float lateralAngle = m_random.Float(-30f, 30f) * MathUtils.DegToRad(1f);
-			float cos = MathF.Cos(lateralAngle);
-			float sin = MathF.Sin(lateralAngle);
-
-			Vector3 offset = new Vector3(
-				toTarget.X * cos - toTarget.Z * sin,
-				0f,
-				toTarget.X * sin + toTarget.Z * cos
-			) * CloseRangeDistance;
-
-			// Posicionarse a CloseRangeDistance del objetivo, mirándolo
-			Vector3 destination = targetPos - offset;
-			destination.Y = FindGroundLevel(destination);
-
-			return destination;
 		}
 
-		private void FaceTarget(ComponentCreature target)
+		private void StartTeleport()
 		{
-			if (target == null || target.ComponentBody == null)
+			if (m_targetCreature == null || m_isDisappeared)
 				return;
 
-			Vector3 directionToTarget = target.ComponentBody.Position - m_componentBody.Position;
-			directionToTarget.Y = 0f;
+			// Guardar estado original
+			m_originalPosition = m_componentBody.Position;
+			m_originalBodyCollidable = m_componentBody.BodyCollidable;
+			m_originalIsRaycastTransparent = m_componentBody.IsRaycastTransparent;
 
-			if (directionToTarget.Length() > 0.01f)
-			{
-				directionToTarget = Vector3.Normalize(directionToTarget);
+			// Efecto desaparición (sonido y partículas en la posición actual)
+			PlaySound("Audio/teleport 1", m_originalPosition);
+			AddTeleportParticles(m_originalPosition, false);
 
-				float yaw = MathF.Atan2(directionToTarget.X, directionToTarget.Z);
-				Quaternion targetRotation = Quaternion.CreateFromYawPitchRoll(yaw, 0f, 0f);
+			// Desactivar colisiones y raycast
+			m_componentBody.BodyCollidable = false;
+			m_componentBody.IsRaycastTransparent = true;
 
-				m_componentBody.Rotation = targetRotation;
+			// Ocultar el modelo (opcional)
+			if (m_componentCreatureModel != null)
+				m_componentCreatureModel.Opacity = 0f;
 
-				ComponentCreatureModel model = Entity.FindComponent<ComponentCreatureModel>();
-				if (model != null)
-				{
-					model.LookAtOrder = target.ComponentBody.Position;
-					model.LookRandomOrder = false;
-				}
-			}
+			// Detener pathfinding
+			if (m_componentPathfinding != null)
+				m_componentPathfinding.Stop();
+
+			// Mover a coordenadas muy alejadas para desaparecer visualmente
+			m_componentBody.Position = new Vector3(0f, -1000f, 0f);
+
+			m_isDisappeared = true;
+			m_disappearRemaining = DisappearanceTime;
 		}
 
-		private float FindGroundLevel(Vector3 position)
+		private void Reappear()
 		{
-			int x = Terrain.ToCell(position.X);
-			int startY = Terrain.ToCell(position.Y + 5);
-			int z = Terrain.ToCell(position.Z);
+			Vector3 finalPosition;
+			if (m_targetCreature != null && m_targetCreature.ComponentHealth.Health > 0f)
+				finalPosition = FindTeleportPositionNearTarget(m_targetCreature.ComponentBody.Position);
+			else
+				finalPosition = m_originalPosition; // Fallback
 
-			for (int y = Math.Min(startY, 254); y >= 0; y--)
+			// Teletransportar de vuelta
+			m_componentBody.Position = finalPosition;
+			m_componentBody.MoveToFreeSpace();
+
+			// Restaurar estado
+			m_componentBody.BodyCollidable = m_originalBodyCollidable;
+			m_componentBody.IsRaycastTransparent = m_originalIsRaycastTransparent;
+			if (m_componentCreatureModel != null)
+				m_componentCreatureModel.Opacity = null;
+
+			// Efecto aparición
+			PlaySound("Audio/teleport 2", finalPosition);
+			AddTeleportParticles(finalPosition, true);
+
+			m_cooldownRemaining = TeleportationCooldown;
+			m_isDisappeared = false;
+		}
+
+		private Vector3 FindTeleportPositionNearTarget(Vector3 targetPos)
+		{
+			int cx = Terrain.ToCell(targetPos.X);
+			int cz = Terrain.ToCell(targetPos.Z);
+			int startY = Terrain.ToCell(targetPos.Y + 1.5f);
+
+			for (int dx = -1; dx <= 1; dx++)
 			{
-				if (m_subsystemTerrain.Terrain.IsCellValid(x, y, z))
+				for (int dz = -1; dz <= 1; dz++)
 				{
-					int cellValue = m_subsystemTerrain.Terrain.GetCellValue(x, y, z);
-					int contents = Terrain.ExtractContents(cellValue);
-					Block block = BlocksManager.Blocks[contents];
-
-					if (block.IsCollidable_(cellValue))
+					int x = cx + dx;
+					int z = cz + dz;
+					for (int yOffset = 0; yOffset <= 3; yOffset++)
 					{
-						int aboveValue = m_subsystemTerrain.Terrain.GetCellValue(x, y + 1, z);
-						int aboveContents = Terrain.ExtractContents(aboveValue);
-						Block aboveBlock = BlocksManager.Blocks[aboveContents];
+						int y = startY - yOffset;
+						if (y < 0 || y > 255) continue;
 
-						if (!aboveBlock.IsCollidable_(aboveValue))
+						int cellValue = m_subsystemTerrain.Terrain.GetCellValue(x, y, z);
+						int content = Terrain.ExtractContents(cellValue);
+						Block block = BlocksManager.Blocks[content];
+						if (block.IsCollidable_(cellValue))
 						{
-							return y + 1.01f;
+							BoundingBox[] boxes = block.GetCustomCollisionBoxes(m_subsystemTerrain, cellValue);
+							if (boxes != null && boxes.Length > 0)
+							{
+								float surfaceY = y + boxes[0].Max.Y;
+								return new Vector3(x + 0.5f, surfaceY + 0.05f, z + 0.5f);
+							}
+							else
+							{
+								return new Vector3(x + 0.5f, y + 1.0f, z + 0.5f);
+							}
 						}
 					}
 				}
 			}
-
-			return position.Y;
+			return targetPos + new Vector3(0f, 1.5f, 0f);
 		}
 
-		public void CancelTeleport()
+		private void PlaySound(string soundName, Vector3 position)
 		{
-			if (m_isTeleporting)
+			if (m_subsystemAudio != null)
 			{
-				ShowBody(m_teleportOrigin);
-				m_isTeleporting = false;
-				m_teleportPhase = 0;
+				m_subsystemAudio.PlaySound(soundName, 1f, m_random.Float(-0.2f, 0.2f),
+					position, 4f, false);
 			}
 		}
 
-		public bool IsTeleporting => m_isTeleporting;
-
-		public float RemainingCooldown
+		private void AddTeleportParticles(Vector3 position, bool isAppearEffect)
 		{
-			get
-			{
-				double elapsed = m_subsystemTime.GameTime - m_lastTeleportTime;
-				return Math.Max(0f, (float)(TeleportationCooldown - elapsed));
-			}
+			if (m_subsystemParticles == null)
+				return;
+
+			float size = Math.Max(0.8f, m_componentBody.BoxSize.Length() * 0.6f);
+			var particleSys = new TeleportParticleSystem(m_subsystemTerrain, position, size, isAppearEffect);
+			m_subsystemParticles.AddParticleSystem(particleSys, false);
 		}
 	}
 }
