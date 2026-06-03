@@ -320,7 +320,7 @@ namespace Game
 			}
 			bool isHardOrHigher = (currentDifficulty >= DifficultyMode.Hard);
 
-			// MÉTODO LOCAL AUXILIAR: Agrega un item de forma segura buscando el primer slot vacío válido
+			// MÉTODO LOCAL: Agrega un item de forma segura buscando el primer slot vacío válido
 			int AddSafe(int value, int count = 1, int startSlot = 0)
 			{
 				if (value == 0 || Terrain.ExtractContents(value) <= 0 || Terrain.ExtractContents(value) >= 1024) return -1;
@@ -335,8 +335,19 @@ namespace Game
 				return -1;
 			}
 
-			// MÉTODO LOCAL AUXILIAR: Genera un arma a distancia normal o un arma de fuego (5% prob) DE FORMA SEGURA
-			int GetRangedOrFirearm()
+			// MÉTODO LOCAL: Armas a distancia NORMALES (Sin armas de fuego, para Piratas/Werewolf)
+			int GetNormalRanged()
+			{
+				float r = this.m_random.Float(0f, 1f);
+				if (r < 0.20f) return Terrain.MakeBlockValue(MusketBlock.Index);
+				else if (r < 0.40f) return Terrain.MakeBlockValue(BowBlock.Index);
+				else if (r < 0.60f) return Terrain.MakeBlockValue(CrossbowBlock.Index);
+				else if (r < 0.80f) return Terrain.MakeBlockValue(RepeatCrossbowBlock.Index);
+				else return FlameThrowerBlock.SetLoadCount(Terrain.MakeBlockValue(FlameThrowerBlock.Index, 0, FlameThrowerBlock.SetBulletType(FlameThrowerBlock.SetLoadState(0, FlameThrowerBlock.LoadState.Loaded), new FlameBulletBlock.FlameBulletType?(this.m_random.Bool(0.5f) ? FlameBulletBlock.FlameBulletType.Flame : FlameBulletBlock.FlameBulletType.Poison))), 8);
+			}
+
+			// MÉTODO LOCAL: EXCLUSIVO PARA INFECTADOS. Arma a distancia o arma de fuego (5% prob) DE FORMA SEGURA
+			int GetInfectedRangedOrFirearm()
 			{
 				if (this.m_random.Float(0f, 1f) < 0.05f)
 				{
@@ -344,7 +355,7 @@ namespace Game
 					string chosenFirearm = firearmNames[this.m_random.Int(0, firearmNames.Length)];
 					int firearmIndex = BlocksManager.GetBlockIndex(chosenFirearm);
 
-					// SEGURIDAD: Evitar crasheo si el bloque del arma de fuego no existe (-1)
+					// SEGURIDAD: Evitar crasheo si el bloque del arma de fuego no existe
 					if (firearmIndex > 0 && firearmIndex < 1024) return Terrain.MakeBlockValue(firearmIndex);
 				}
 
@@ -356,7 +367,7 @@ namespace Game
 				else return FlameThrowerBlock.SetLoadCount(Terrain.MakeBlockValue(FlameThrowerBlock.Index, 0, FlameThrowerBlock.SetBulletType(FlameThrowerBlock.SetLoadState(0, FlameThrowerBlock.LoadState.Loaded), new FlameBulletBlock.FlameBulletType?(this.m_random.Bool(0.5f) ? FlameBulletBlock.FlameBulletType.Flame : FlameBulletBlock.FlameBulletType.Poison))), 8);
 			}
 
-			// MÉTODO LOCAL AUXILIAR: Genera un arma cuerpo a cuerpo genérica
+			// MÉTODO LOCAL: Genera un arma cuerpo a cuerpo genérica
 			int GetRandomMelee()
 			{
 				float weaponTypeChance = this.m_random.Float(0f, 1f);
@@ -398,7 +409,7 @@ namespace Game
 				}
 			}
 
-			// MÉTODO LOCAL AUXILIAR: Agrega bombas de forma 100% segura
+			// MÉTODO LOCAL: Agrega bombas de forma 100% segura
 			void AddBombsToInventory(int startSlot)
 			{
 				float bombTypeChance = this.m_random.Float(0f, 1f);
@@ -412,7 +423,6 @@ namespace Game
 					int bombCount = isHardOrHigher ? this.m_random.Int(8, 12) : this.m_random.Int(4, 8);
 					int remainingBombs = bombCount;
 
-					// Primero intentar apilar en slots que ya tengan la misma bomba
 					for (int i = startSlot; i < inventory.SlotsCount && remainingBombs > 0; i++)
 					{
 						if (inventory.GetSlotValue(i) == bombValue)
@@ -427,7 +437,6 @@ namespace Game
 							}
 						}
 					}
-					// Si sobran, buscar slots completamente vacíos
 					for (int i = startSlot; i < inventory.SlotsCount && remainingBombs > 0; i++)
 					{
 						if (inventory.GetSlotCount(i) == 0)
@@ -518,7 +527,7 @@ namespace Game
 			// ===== PIRATA ELITE =====
 			else if (name == "PirataElite")
 			{
-				int weaponValue = GetRangedOrFirearm();
+				int weaponValue = GetNormalRanged(); // Usa el método normal
 				if (weaponValue > 0) AddSafe(weaponValue);
 
 				int meleeValue = GetRandomMelee();
@@ -533,7 +542,7 @@ namespace Game
 			// ===== PIRATA NORMAL =====
 			else if (name == "PirataNormal")
 			{
-				int weaponValue = GetRangedOrFirearm();
+				int weaponValue = GetNormalRanged(); // Usa el método normal
 				if (weaponValue > 0) AddSafe(weaponValue);
 
 				int meleeValue = GetRandomMelee();
@@ -549,7 +558,7 @@ namespace Game
 			else if (name == "Werewolf")
 			{
 				int weaponValue = 0;
-				if (randomChance < 0.40f) weaponValue = GetRangedOrFirearm();
+				if (randomChance < 0.40f) weaponValue = GetNormalRanged(); // Usa el método normal
 				else weaponValue = GetRandomMelee();
 
 				if (weaponValue > 0) AddSafe(weaponValue);
@@ -573,11 +582,11 @@ namespace Game
 					if (mainChoice < 0.55f)
 					{
 						firstSlotValue = GetRandomMelee();
-						secondSlotValue = GetRangedOrFirearm();
+						secondSlotValue = GetInfectedRangedOrFirearm(); // MÉTODO EXCLUSIVO CON ARMAS DE FUEGO
 					}
 					else if (mainChoice < 0.90f)
 					{
-						firstSlotValue = GetRangedOrFirearm();
+						firstSlotValue = GetInfectedRangedOrFirearm(); // MÉTODO EXCLUSIVO CON ARMAS DE FUEGO
 						secondSlotValue = GetRandomMelee();
 					}
 					else
@@ -664,7 +673,7 @@ namespace Game
 
 					if (hasRangedWeapon)
 					{
-						int rangedValue = GetRangedOrFirearm();
+						int rangedValue = GetInfectedRangedOrFirearm(); // MÉTODO EXCLUSIVO CON ARMAS DE FUEGO
 						if (rangedValue > 0) AddSafe(rangedValue, 1, 1);
 					}
 
