@@ -29,6 +29,11 @@ namespace Game
 		private SubsystemAudio m_subsystemAudio;
 		private Random m_random = new Random();
 
+		// Estado de jefes - variables para persistencia
+		private bool m_needsToFindBoss = false;
+		private string m_pendingBossTemplateName = "";
+		private Vector3 m_pendingBossPosition = Vector3.Zero;
+
 		// Datos de oleadas
 		private Dictionary<int, List<WaveEntry>> m_waves = new Dictionary<int, List<WaveEntry>>();
 		private int m_currentWave = 1;
@@ -174,6 +179,40 @@ namespace Game
 			m_wasGreenNightActive = m_subsystemGreenNightSky.IsGreenNightActive;
 			m_constantSpawnCooldown = ConstantSpawnCooldownTime;
 			Instance = this;
+
+			// ===== CARGAR ESTADO DEL JEFE =====
+			m_bossBattleActive = valuesDictionary.GetValue<bool>("BossBattleActive", false);
+			m_hasSpawnedBossThisNight = valuesDictionary.GetValue<bool>("HasSpawnedBossThisNight", false);
+			m_bossSpawnDelayed = valuesDictionary.GetValue<bool>("BossSpawnDelayed", false);
+			m_bossSpawnDelayTimer = valuesDictionary.GetValue<float>("BossSpawnDelayTimer", 0f);
+
+			// Cargar la cola de jefes
+			string savedBossQueue = valuesDictionary.GetValue<string>("BossQueue", "");
+			if (!string.IsNullOrEmpty(savedBossQueue))
+			{
+				string[] bosses = savedBossQueue.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+				foreach (string boss in bosses)
+				{
+					m_bossQueue.Enqueue(boss.Trim());
+				}
+			}
+
+			// Cargar información del jefe actual para buscarlo después de cargar entidades
+			m_pendingBossTemplateName = valuesDictionary.GetValue<string>("CurrentBossTemplate", "");
+			m_pendingBossPosition = valuesDictionary.GetValue<Vector3>("CurrentBossPosition", Vector3.Zero);
+
+			// Marcar para buscar el jefe en el primer Update (las entidades aún no están cargadas)
+			if (m_bossBattleActive && !string.IsNullOrEmpty(m_pendingBossTemplateName))
+			{
+				m_needsToFindBoss = true;
+			}
+			else if (m_bossBattleActive && string.IsNullOrEmpty(m_pendingBossTemplateName) && m_bossQueue.Count > 0)
+			{
+				// No había jefe actual pero sí hay en la cola, preparar para spawnear
+				m_bossSpawnDelayed = true;
+				m_bossSpawnDelayTimer = BossSpawnDelay;
+			}
+			// ===== FIN CARGAR ESTADO DEL JEFE =====
 
 			CreateCountdownLabel();
 			ApplyDifficultySettings();
@@ -544,10 +583,93 @@ namespace Game
 			valuesDictionary.SetValue("CurrentWave", m_currentWave);
 			valuesDictionary.SetValue("LetterWarSpawned", m_letterWarSpawned);
 			valuesDictionary.SetValue("HasShownUnlockMessage", m_hasShownUnlockMessage);
+
+			// ===== GUARDAR ESTADO DEL JEFE =====
+			valuesDictionary.SetValue("BossBattleActive", m_bossBattleActive);
+			valuesDictionary.SetValue("HasSpawnedBossThisNight", m_hasSpawnedBossThisNight);
+			valuesDictionary.SetValue("BossSpawnDelayed", m_bossSpawnDelayed);
+			valuesDictionary.SetValue("BossSpawnDelayTimer", m_bossSpawnDelayTimer);
+
+			// Guardar el jefe actual
+			if (m_currentBossEntity != null && IsEntityAlive(m_currentBossEntity))
+			{
+				valuesDictionary.SetValue("CurrentBossTemplate", m_currentBossEntity.ValuesDictionary.DatabaseObject?.Name ?? "");
+				var body = m_currentBossEntity.FindComponent<ComponentBody>();
+				valuesDictionary.SetValue("CurrentBossPosition", body?.Position ?? Vector3.Zero);
+			}
+			else
+			{
+				valuesDictionary.SetValue("CurrentBossTemplate", "");
+				valuesDictionary.SetValue("CurrentBossPosition", Vector3.Zero);
+			}
+
+			// Guardar la cola de jefes
+			valuesDictionary.SetValue("BossQueue", string.Join(",", m_bossQueue));
+			// ===== FIN GUARDAR ESTADO DEL JEFE =====
 		}
+
+		/// <summary>
+		/// Busca una entidad de jefe existente que coincida con el template y posición guardados
+		/// </summary>
+		private Entity FindExistingBoss(string templateName, Vector3 lastKnownPosition)
+		{
+			if (string.IsNullOrEmpty(templateName))
+				return null;
+
+			Entity bestMatch = null;
+			float bestDistance = float.MaxValue;
+
+			foreach (Entity entity in Project.Entities)
+			{
+				if (entity.ValuesDictionary.DatabaseObject?.Name == templateName)
+				{
+					var body = entity.FindComponent<ComponentBody>();
+					if (body != null)
+					{
+						var health = entity.FindComponent<ComponentHealth>();
+						if (health != null && health.Health > 0f)
+						{
+							float distance = Vector3.Distance(body.Position, lastKnownPosition);
+							if (distance < bestDistance)
+							{
+								bestDistance = distance;
+								bestMatch = entity;
+							}
+						}
+					}
+				}
+			}
+
+			// Solo retornar si está razonablemente cerca (tolerancia de 100 bloques por si se movió)
+			return (bestMatch != null && bestDistance < 100f) ? bestMatch : null;
+		}
+
 
 		public void Update(float dt)
 		{
+			// ===== BUSCAR JEFE PENDIENTE AL CARGAR =====
+			if (m_needsToFindBoss)
+			{
+				m_currentBossEntity = FindExistingBoss(m_pendingBossTemplateName, m_pendingBossPosition);
+				m_needsToFindBoss = false;
+
+				// Si no se encontró el jefe (murió o desapareció)
+				if (m_bossBattleActive && m_currentBossEntity == null)
+				{
+					if (m_bossQueue.Count > 0)
+					{
+						// Hay más jefes en la cola, preparar para spawnear el siguiente
+						m_bossSpawnDelayed = true;
+						m_bossSpawnDelayTimer = BossSpawnDelay;
+					}
+					else
+					{
+						// No hay más jefes, terminar la batalla
+						m_bossBattleActive = false;
+					}
+				}
+			}
+
 			UpdateCountdownLabel();
 
 			bool isGreenNightActive = m_subsystemGreenNightSky.IsGreenNightActive;
