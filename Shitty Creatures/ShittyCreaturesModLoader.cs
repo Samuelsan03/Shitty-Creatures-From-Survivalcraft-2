@@ -163,6 +163,9 @@ namespace Game
 			ModsManager.RegisterHook("OnProjectileRaycastBody", this);
 			ModsManager.RegisterHook("OnProjectileHitBody", this);
 			ModsManager.RegisterHook("SetHitInterval", this);
+			ModsManager.RegisterHook("OnChaseBehaviorAttacked", this, 100);  // Prioridad alta para cancelar
+			ModsManager.RegisterHook("OnMinerHit", this, 100);  // Para criaturas que usan ComponentMiner directamente
+
 			// Reemplazar overlay de captura de pantalla
 			ReplaceScreenCaptureOverlay();
 		}
@@ -1365,6 +1368,17 @@ namespace Game
 		{
 			skipVanilla = false;
 
+			// ===== NUEVO: Cancelar golpes de CRIATURAS durante la celebración =====
+			if (m_celebrationActive && miner.ComponentPlayer == null)
+			{
+				attackPower = 0f;
+				hitProbability = 0f;
+				hitProbability2 = 0f;
+				skipVanilla = true;
+				return;  // Salir inmediatamente, no ejecutar el resto
+			}
+
+			// ===== Lógica original: defensa en modo Creativo =====
 			if (miner.ComponentPlayer != null)
 				return;
 
@@ -2510,6 +2524,36 @@ namespace Game
 			float moveSpeed = 1.5f;       // Velocidad de movimiento
 			float jumpInterval = 1.5f;    // Saltos cada ~1.5 segundos
 
+			// ===== LISTAS EXPLÍCITAS (TÚ LAS COMPLETAS MANUALMENTE) =====
+			HashSet<string> flyingTemplates = new HashSet<string>
+	{
+		"InfectedFly1",
+		"InfectedFly2",
+		"InfectedFly3",
+		"InfectedBird",
+		"FlyingInfectedBoss",
+		"Seagull",
+		"Raven",
+		"Sparrow",
+		"Duck",
+		"Pigeon"
+	};
+
+			HashSet<string> aquaticTemplates = new HashSet<string>
+	{
+		"Shark_GreatWhite",
+		"Bass_Sea",
+		"Ray_Brown",
+		"Ray_Yellow",
+		"Piranha",
+		"Shark_Tiger",
+		"Shark_Bull",
+		"Orca",
+		"Barracuda",
+		"Beluga",
+		"Bass_Freshwater"
+	};
+
 			foreach (ComponentCreature creature in creatureSpawn.Creatures)
 			{
 				if (creature == null || creature.Entity.FindComponent<ComponentPlayer>() != null)
@@ -2518,32 +2562,81 @@ namespace Game
 				var locomotion = creature.ComponentLocomotion;
 				if (locomotion == null) continue;
 
-				// 1. Giro rítmico (depende del tiempo)
+				string templateName = creature.Entity.ValuesDictionary?.DatabaseObject?.Name ?? "";
+
+				bool isFlyer = flyingTemplates.Contains(templateName);
+				bool isAquatic = aquaticTemplates.Contains(templateName);
+
+				// Ángulo de baile
+				float angle = time * 1.2f;
+
+				// 1. Giro rítmico
 				locomotion.TurnOrder = new Vector2(danceSpeed * MathF.Sin(time * 2f), 0f);
 
 				// 2. Mirada arriba/abajo (ondulación)
 				float lookY = MathF.Sin(time * 3f) * 0.6f;
 				locomotion.LookOrder = new Vector2(0f, lookY);
 
-				// 3. Movimiento aleatorio: caminar en círculo o zigzag
-				//    Usamos el seno y coseno del tiempo para dar una trayectoria circular
-				float angle = time * 1.2f;
-				float walkX = MathF.Cos(angle);
-				float walkZ = MathF.Sin(angle);
-				locomotion.WalkOrder = new Vector2(walkX, walkZ);
+				// 3. Movimiento según el tipo
+				if (isFlyer)
+				{
+					// Voladores: vuelo circular + oscilación vertical (NO saltan)
+					float flyX = MathF.Cos(angle);
+					float flyZ = MathF.Sin(angle);
+					float flyY = MathF.Sin(angle * 2f) * 0.5f;
+					locomotion.FlyOrder = new Vector3(flyX, flyY, flyZ);
+					locomotion.WalkOrder = null;
+					locomotion.SwimOrder = null;
+					locomotion.JumpOrder = 0f;   // NUNCA saltan
+				}
+				else if (isAquatic)
+				{
+					// Acuáticos: nadan en círculo (pueden saltar si están fuera del agua)
+					float swimX = MathF.Cos(angle);
+					float swimZ = MathF.Sin(angle);
+					locomotion.SwimOrder = new Vector3(swimX, 0f, swimZ);
+					locomotion.WalkOrder = null;
+					locomotion.FlyOrder = null;
 
-				// 4. Saltos periódicos (usando el tiempo)
-				if (Math.Floor(time / jumpInterval) % 2 == 0)
-					locomotion.JumpOrder = 0.8f;
+					// Salto periódico (igual que terrestres)
+					if (Math.Floor(time / jumpInterval) % 2 == 0)
+						locomotion.JumpOrder = 0.8f;
+					else
+						locomotion.JumpOrder = 0f;
+				}
 				else
-					locomotion.JumpOrder = 0f;
+				{
+					// Terrestres: caminan en círculo + saltos
+					float walkX = MathF.Cos(angle);
+					float walkZ = MathF.Sin(angle);
+					locomotion.WalkOrder = new Vector2(walkX, walkZ);
+					locomotion.FlyOrder = null;
+					locomotion.SwimOrder = null;
 
-				// 5. Desactivar vuelo y nado para que no interfieran
-				locomotion.FlyOrder = null;
-				locomotion.SwimOrder = null;
+					if (Math.Floor(time / jumpInterval) % 2 == 0)
+						locomotion.JumpOrder = 0.8f;
+					else
+						locomotion.JumpOrder = 0f;
+				}
+
+				// 4. Desactivar cualquier ataque (por si acaso)
+				var creatureModel = creature.ComponentCreatureModel;
+				if (creatureModel != null)
+					creatureModel.AttackOrder = false;
 			}
 		}
 
+		public override void OnChaseBehaviorAttacked(ComponentChaseBehavior chaseBehavior, float chaseTimeBefore, ref float chaseTime, ref bool bodyToHit, ref bool playAttackSound)
+		{
+			if (m_celebrationActive)
+			{
+				// Cancelar el golpe por completo
+				bodyToHit = false;
+				playAttackSound = false;
+				// Reducir tiempo de persecución para que se detenga pronto
+				chaseTime = Math.Min(chaseTime, 0.1f);
+			}
+		}
 
 		// ---------------------------------------------------------------------------------
 		// SaveSettings / LoadSettings (heredados de ChaseMusicModLoader, vacíos)
