@@ -412,36 +412,35 @@ namespace Game
 				}
 
 				if (m_isAiming)
-{
-	int currentThrowableContents = Terrain.ExtractContents(inventory.GetSlotValue(inventory.ActiveSlotIndex));
-
-	if (IsThrowable(currentThrowableContents))
-	{
-		bool hasLineOfSight = targetVisible && IsTargetVisible(target);
-
-		if (!hasLineOfSight)
-		{
-			CancelAiming(inventory);
-
-			if (!m_isFlanking)
-			{
-				StartFlanking(target.ComponentBody.Position);
-			}
-			else
-			{
-				m_flankTimer -= dt;
-				if (m_flankTimer <= 0f)
 				{
-					StopFlanking();
-				}
-			}
-			return;
-		}
-		else
-		{
+					int currentThrowableContents = Terrain.ExtractContents(inventory.GetSlotValue(inventory.ActiveSlotIndex));
+
+					if (IsThrowable(currentThrowableContents))
+					{
+						bool hasLineOfSight = targetVisible && IsTargetVisible(target);
+
+						if (!hasLineOfSight)
+						{
+							CancelAiming(inventory);
+
+							if (!m_isFlanking)
+							{
+								StartFlanking(target.ComponentBody.Position);
+							}
+							else
+							{
+								m_flankTimer -= dt;
+								if (m_flankTimer <= 0f)
+								{
+									StopFlanking();
+								}
+							}
+							return;
+						}
+						else
+						{
 							if (m_isFlanking)
 							{
-								// Actualizar el temporizador de flanqueo
 								m_flankTimer -= dt;
 								if (m_flankTimer <= 0f)
 								{
@@ -450,23 +449,25 @@ namespace Game
 								return;
 							}
 						}
-	}
-	m_aimTimer += dt;
-	Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
-	Vector3 aimDir = m_componentCreature.ComponentCreatureModel.EyeRotation.GetForwardVector();
+					}
 
-	if (m_aimTimer >= ThrowableAimTime)
-	{
-		m_componentMiner.Aim(new Ray3(eyePos, aimDir), AimState.Completed);
-		m_isAiming = false;
-		m_cooldownTimer = ThrowableCooldown;
-		m_isThrowing = false;
-	}
-	else
-	{
-		m_componentMiner.Aim(new Ray3(eyePos, aimDir), AimState.InProgress);
-	}
-}
+					m_aimTimer += dt;
+					Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
+					Vector3 aimDir = m_componentCreature.ComponentCreatureModel.EyeRotation.GetForwardVector();
+
+					if (m_aimTimer >= ThrowableAimTime)
+					{
+						m_componentMiner.Aim(new Ray3(eyePos, aimDir), AimState.Completed);
+						m_isAiming = false;
+						m_cooldownTimer = ThrowableCooldown;
+						m_isThrowing = false;
+					}
+					else
+					{
+						m_componentMiner.Aim(new Ray3(eyePos, aimDir), AimState.InProgress);
+					}
+				}
+				return;
 				{
 					m_aimTimer += dt;
 					Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
