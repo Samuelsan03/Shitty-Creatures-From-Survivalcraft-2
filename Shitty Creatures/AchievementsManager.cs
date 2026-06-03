@@ -382,17 +382,19 @@ namespace Game
 							 templateName == "GhostBoomer1" || templateName == "GhostBoomer2" || templateName == "GhostBoomer3");
 			if (isBoomer)
 			{
-				UnlockAchievement(killer, 48, "KillBoomer", LanguageControl.Get(AchievementsWidget.fName, 100)); // Logro base (opcional, si quieres uno por el primer Boomer)
+
 				s_subsystemAchievements.AddBoomerKill(playerIndex);
 				int kills = s_subsystemAchievements.GetBoomerKills(playerIndex);
 
-				// Notificar a la UI para los cuatro logros progresivos
-				if (!s_subsystemAchievements.IsAchievementUnlocked(48)) OnBoomerCounterChanged?.Invoke(killer, kills, 10);
-				if (!s_subsystemAchievements.IsAchievementUnlocked(49)) OnBoomerCounterChanged?.Invoke(killer, kills, 25);
-				if (!s_subsystemAchievements.IsAchievementUnlocked(50)) OnBoomerCounterChanged?.Invoke(killer, kills, 55);
-				if (!s_subsystemAchievements.IsAchievementUnlocked(51)) OnBoomerCounterChanged?.Invoke(killer, kills, 100);
+				if (!s_subsystemAchievements.IsAchievementUnlocked(48))
+					OnBoomerCounterChanged?.Invoke(killer, kills, 10);
+				if (!s_subsystemAchievements.IsAchievementUnlocked(49))
+					OnBoomerCounterChanged?.Invoke(killer, kills, 25);
+				if (!s_subsystemAchievements.IsAchievementUnlocked(50))
+					OnBoomerCounterChanged?.Invoke(killer, kills, 55);
+				if (!s_subsystemAchievements.IsAchievementUnlocked(51))
+					OnBoomerCounterChanged?.Invoke(killer, kills, 100);
 
-				// Desbloquear cada logro al alcanzar el objetivo
 				if (kills >= 10 && !s_subsystemAchievements.IsAchievementUnlocked(48))
 					UnlockAchievement(killer, 48, "Kill10Boomers", LanguageControl.Get(AchievementsWidget.fName, 100));
 				if (kills >= 25 && !s_subsystemAchievements.IsAchievementUnlocked(49))
