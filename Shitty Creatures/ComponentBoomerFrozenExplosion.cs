@@ -4,26 +4,19 @@ using TemplatesDatabase;
 
 namespace Game
 {
-	/// <summary>
-	/// Componente para un Boomer que al explotar solo propaga gripe (flu) sin dañar bloques.
-	/// Al morir la entidad, genera una explosión congelante que infecta a las criaturas cercanas.
-	/// </summary>
 	public class ComponentBoomerFrozenExplosion : Component, IUpdateable
 	{
-		// ===== CONFIGURACIÓN =====
-		public float FreezePressure = 50f;          // Presión que determina el radio de la explosión (3 a 10 bloques)
-		public float FluDuration = 300f;            // Duración de la gripe en segundos
-		public bool NoExplosionSound = false;       // Suprimir sonido de explosión
-		public bool PreventExplosion = false;       // Evita que explote (útil para depuración)
+		public float FreezePressure = 50f;
+		public float FluDuration = 300f;
+		public bool NoExplosionSound = false;
+		public bool PreventExplosion = false;
 
-		// ===== REFERENCIAS =====
 		private SubsystemFreezeExplosions m_subsystemFreezeExplosions;
 		private SubsystemAudio m_subsystemAudio;
 		private ComponentHealth m_componentHealth;
 		private ComponentBody m_componentBody;
 		private Random m_random = new Random();
 
-		// ===== ESTADO INTERNO =====
 		private bool m_exploded = false;
 		private float m_lastHealth = 0f;
 
@@ -88,6 +81,39 @@ namespace Game
 
 			m_exploded = true;
 
+			// Escalar por dificultad
+			DifficultyMode difficulty = DifficultyMode.Normal;
+			if (SubsystemGreenNightSky.Instance != null)
+				difficulty = SubsystemGreenNightSky.Instance.DifficultyMode;
+
+			float pressureMult = 1f, fluDurationMult = 1f;
+			switch (difficulty)
+			{
+				case DifficultyMode.Easy:
+					pressureMult = 0.6f;
+					fluDurationMult = 0.5f;
+					break;
+				case DifficultyMode.Normal:
+					pressureMult = 1.0f;
+					fluDurationMult = 1.0f;
+					break;
+				case DifficultyMode.Medium:
+					pressureMult = 1.2f;
+					fluDurationMult = 1.2f;
+					break;
+				case DifficultyMode.Hard:
+					pressureMult = 1.5f;
+					fluDurationMult = 1.5f;
+					break;
+				case DifficultyMode.Extreme:
+					pressureMult = 2.0f;
+					fluDurationMult = 2.0f;
+					break;
+			}
+
+			float finalPressure = FreezePressure * pressureMult;
+			float finalFluDuration = FluDuration * fluDurationMult;
+
 			Vector3 position = m_componentBody.Position;
 			int x = (int)MathUtils.Floor(position.X);
 			int y = (int)MathUtils.Floor(position.Y);
@@ -101,14 +127,13 @@ namespace Game
 
 			if (m_subsystemFreezeExplosions != null)
 			{
-				m_subsystemFreezeExplosions.AddFreezeExplosion(x, y, z, FreezePressure, FluDuration, NoExplosionSound);
+				m_subsystemFreezeExplosions.AddFreezeExplosion(x, y, z, finalPressure, finalFluDuration, NoExplosionSound);
 			}
 		}
 
 		public override void OnEntityRemoved()
 		{
 			base.OnEntityRemoved();
-
 			if (!PreventExplosion && !m_exploded && m_componentBody != null)
 			{
 				CreateFreezeExplosion();
