@@ -121,6 +121,10 @@ namespace Game
 			if (componentHealth != null && componentHealth.Health <= 0f)
 				return false;
 			string currentEntityName = entity.ValuesDictionary.DatabaseObject.Name;
+
+			// Obtener el ComponentPlayer fuera de los bloques para usarlo en ambos casos
+			ComponentPlayer componentPlayer = FindPlayerWithMiner(componentMiner);
+
 			if (m_tameableCreatures.ContainsKey(currentEntityName))
 			{
 				bool isBoomer = currentEntityName.StartsWith("Boomer") || currentEntityName.StartsWith("GhostBoomer");
@@ -192,7 +196,7 @@ namespace Game
 				bool isTamedInfectedFreezer = entityTemplateName == "InfectedFreezerTamed";
 				bool isTamedFrozenTank = entityTemplateName == "FrozenTankTamed";
 				bool isTamedFrozenTankGhost = entityTemplateName == "FrozenTankGhostTamed";
-				ComponentPlayer componentPlayer = FindPlayerWithMiner(componentMiner);
+
 				if (componentPlayer != null)
 				{
 					try
@@ -543,12 +547,36 @@ namespace Game
 						}
 						componentPlayer.ComponentGui.DisplaySmallMessage(defaultMessage, defaultColor, false, true);
 					}
+
+					// ========== REGISTRAR LA DOMESTICACIÓN PARA LOGROS ==========
+					// Clasificación CORRECTA según lo solicitado:
+					// - Normales: Todo lo que NO es jefe Y NO es fantasma (Boomers, Chargers, Wolves, etc. incluidos)
+					// - Jefes: Tanks (normales y fantasmas), MachineGun, FlyingInfectedBoss, FrozenTank, FrozenTankGhost
+					// - Fantasmas: GhostNormal, GhostFast, PoisonousGhost, GhostCharger, GhostBoomer, FrozenGhost, FrozenGhostBoomer (EXCLUYENDO TankGhost y FrozenTankGhost que son jefes)
+
+					bool isBossTame = isTamedTank || isTamedGhostTank || isTamedMachineGun || isTamedBoss || isTamedFrozenTank || isTamedFrozenTankGhost;
+					bool isGhostTame = isTamedGhost || isTamedGhostCharger || isTamedGhostBoomer || isTamedFrozenGhost || isTamedFrozenGhostBoomer;
+
+					if (isBossTame)
+					{
+						AchievementsManager.OnBossTame(componentPlayer);
+					}
+					else if (isGhostTame)
+					{
+						AchievementsManager.OnGhostTame(componentPlayer);
+					}
+					else
+					{
+						// Normal: Boomers, Chargers, Wolves, Werewolves, Hyenas, Bears, HumanoidSkeleton, PredatoryChameleon, InfectedBird, InfectedWildboar, InfectedFreezer, etc.
+						AchievementsManager.OnNormalTame(componentPlayer);
+					}
 				}
 				componentMiner.RemoveActiveTool(1);
 				return true;
 			}
 			else
 			{
+				// Caso: collar usado en criatura NO tameable (NPC normal)
 				string entityTemplateName = CollarVariants[this.m_random.Next(CollarVariants.Length)];
 				Entity entity2 = DatabaseManager.CreateEntity(base.Project, entityTemplateName, false);
 				if (entity2 == null) return true;
