@@ -27,7 +27,7 @@ namespace Game
 		private ComponentBody m_componentBody;
 		private ComponentPathfinding m_componentPathfinding;
 		private ComponentCreatureModel m_componentCreatureModel;
-		private ComponentNewChaseBehavior m_chaseBehavior; // Referencia al comportamiento de caza
+		private ComponentNewChaseBehavior m_chaseBehavior;
 
 		// ===== ESTADO INTERNO =====
 		private ComponentCreature m_targetCreature;
@@ -99,20 +99,19 @@ namespace Game
 				return;
 			}
 
-			// Actualizar el objetivo SOLO si el comportamiento de caza está activo y tiene un objetivo válido
 			UpdateTargetFromChaseBehavior();
 
-			// Si no hay objetivo válido, no hacer nada
 			if (m_targetCreature == null || m_cooldownRemaining > 0f)
 				return;
 
-			// Solo teletransportar si la criatura está persiguiendo activamente
 			bool isChasing = m_chaseBehavior != null && m_chaseBehavior.IsActive && m_chaseBehavior.Target != null;
 			if (!isChasing)
 				return;
 
 			float distance = Vector3.Distance(m_componentBody.Position, m_targetCreature.ComponentBody.Position);
-			if (distance >= TeleportationDistance && m_random.Float(0f, 1f) <= ChanceToTeleport)
+
+			// CORRECCIÓN: usar m_random.Bool() que está diseñado para probabilidades
+			if (distance >= TeleportationDistance && m_random.Bool(ChanceToTeleport))
 				StartTeleport();
 		}
 
@@ -122,16 +121,10 @@ namespace Game
 			if (m_chaseBehavior == null)
 				return;
 
-			// Si el chase behavior está activo y tiene un objetivo, usarlo
 			if (m_chaseBehavior.IsActive && m_chaseBehavior.Target != null)
-			{
 				m_targetCreature = m_chaseBehavior.Target;
-			}
 			else
-			{
-				// Si el chase behavior ya no persigue, limpiar el objetivo
 				m_targetCreature = null;
-			}
 		}
 
 		private void StartTeleport()
@@ -139,28 +132,22 @@ namespace Game
 			if (m_targetCreature == null || m_isDisappeared)
 				return;
 
-			// Guardar estado original
 			m_originalPosition = m_componentBody.Position;
 			m_originalBodyCollidable = m_componentBody.BodyCollidable;
 			m_originalIsRaycastTransparent = m_componentBody.IsRaycastTransparent;
 
-			// Efecto desaparición (sonido y partículas en la posición actual)
 			PlaySound("Audio/teleport 1", m_originalPosition);
 			AddTeleportParticles(m_originalPosition, false);
 
-			// Desactivar colisiones y raycast
 			m_componentBody.BodyCollidable = false;
 			m_componentBody.IsRaycastTransparent = true;
 
-			// Ocultar el modelo (opcional)
 			if (m_componentCreatureModel != null)
 				m_componentCreatureModel.Opacity = 0f;
 
-			// Detener pathfinding
 			if (m_componentPathfinding != null)
 				m_componentPathfinding.Stop();
 
-			// Mover a coordenadas muy alejadas para desaparecer visualmente
 			m_componentBody.Position = new Vector3(0f, -1000f, 0f);
 
 			m_isDisappeared = true;
@@ -173,19 +160,16 @@ namespace Game
 			if (m_targetCreature != null && m_targetCreature.ComponentHealth.Health > 0f)
 				finalPosition = FindTeleportPositionNearTarget(m_targetCreature.ComponentBody.Position);
 			else
-				finalPosition = m_originalPosition; // Fallback
+				finalPosition = m_originalPosition;
 
-			// Teletransportar de vuelta
 			m_componentBody.Position = finalPosition;
 			m_componentBody.MoveToFreeSpace();
 
-			// Restaurar estado
 			m_componentBody.BodyCollidable = m_originalBodyCollidable;
 			m_componentBody.IsRaycastTransparent = m_originalIsRaycastTransparent;
 			if (m_componentCreatureModel != null)
 				m_componentCreatureModel.Opacity = null;
 
-			// Efecto aparición
 			PlaySound("Audio/teleport 2", finalPosition);
 			AddTeleportParticles(finalPosition, true);
 
@@ -221,10 +205,7 @@ namespace Game
 								float surfaceY = y + boxes[0].Max.Y;
 								return new Vector3(x + 0.5f, surfaceY + 0.05f, z + 0.5f);
 							}
-							else
-							{
-								return new Vector3(x + 0.5f, y + 1.0f, z + 0.5f);
-							}
+							return new Vector3(x + 0.5f, y + 1.0f, z + 0.5f);
 						}
 					}
 				}
