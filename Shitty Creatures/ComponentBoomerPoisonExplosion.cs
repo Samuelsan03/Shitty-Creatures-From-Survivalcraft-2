@@ -103,51 +103,38 @@ namespace Game
 			if (SubsystemGreenNightSky.Instance != null)
 				difficulty = SubsystemGreenNightSky.Instance.DifficultyMode;
 
-			float pressureMult = 1f, poisonIntensityMult = 1f, poisonRadiusMult = 1f, cloudDurationMult = 1f, cloudRadiusMult = 1f;
+			float pressureMult = 1f, poisonIntensityMult = 1f, poisonRadiusMult = 1f;
 			switch (difficulty)
 			{
 				case DifficultyMode.Easy:
 					pressureMult = 0.6f;
 					poisonIntensityMult = 0.5f;
 					poisonRadiusMult = 0.8f;
-					cloudDurationMult = 0.6f;
-					cloudRadiusMult = 0.8f;
 					break;
 				case DifficultyMode.Normal:
 					pressureMult = 1.0f;
 					poisonIntensityMult = 1.0f;
 					poisonRadiusMult = 1.0f;
-					cloudDurationMult = 1.0f;
-					cloudRadiusMult = 1.0f;
 					break;
 				case DifficultyMode.Medium:
 					pressureMult = 1.2f;
 					poisonIntensityMult = 1.3f;
 					poisonRadiusMult = 1.1f;
-					cloudDurationMult = 1.2f;
-					cloudRadiusMult = 1.1f;
 					break;
 				case DifficultyMode.Hard:
 					pressureMult = 1.5f;
 					poisonIntensityMult = 1.6f;
 					poisonRadiusMult = 1.25f;
-					cloudDurationMult = 1.5f;
-					cloudRadiusMult = 1.25f;
 					break;
 				case DifficultyMode.Extreme:
 					pressureMult = 2.0f;
 					poisonIntensityMult = 2.0f;
 					poisonRadiusMult = 1.5f;
-					cloudDurationMult = 2.0f;
-					cloudRadiusMult = 1.5f;
 					break;
 			}
 
 			float finalPressure = ExplosionPressure * pressureMult;
 			float finalPoisonIntensity = PoisonIntensity * poisonIntensityMult;
-			float finalPoisonRadius = PoisonRadius * poisonRadiusMult;
-			float finalCloudDuration = CloudDuration * cloudDurationMult;
-			float finalCloudRadius = CloudRadius * cloudRadiusMult;
 
 			Vector3 position = m_componentBody.Position;
 			int x = (int)MathUtils.Floor(position.X);
@@ -156,38 +143,33 @@ namespace Game
 
 			if (m_subsystemPoisonExplosions != null)
 			{
-				// Usar el método con todos los parámetros escalados
-				m_subsystemPoisonExplosions.AddPoisonExplosion(
-					x, y, z,
-					finalPressure,
-					finalPoisonIntensity,
-					false, // noExplosionSound
-					finalCloudDuration,
-					finalCloudRadius,
-					finalPoisonRadius);
+				// Usar la firma correcta: AddPoisonExplosion(x, y, z, pressure, poisonIntensity, noExplosionSound)
+				m_subsystemPoisonExplosions.AddPoisonExplosion(x, y, z, finalPressure, finalPoisonIntensity, false);
 			}
 			else
 			{
-				CreatePoisonExplosionLegacy(position, finalPoisonIntensity, finalPoisonRadius, finalCloudDuration, finalCloudRadius);
+				CreatePoisonExplosionLegacy(position, finalPoisonIntensity, poisonRadiusMult);
 			}
 		}
 
-		public void CreatePoisonExplosionLegacy(Vector3 position, float poisonIntensity, float poisonRadius, float cloudDur, float cloudRad)
+		public void CreatePoisonExplosionLegacy(Vector3 position, float poisonIntensity, float radiusMult)
 		{
 			if (m_subsystemAudio != null)
 			{
 				m_subsystemAudio.PlaySound("Audio/Explosion De Mierda/Smoke Explosion", 1f, 0f, position, 15f, true);
 			}
 
-			CreatePressureEffect(position, cloudRad);
-			InfectNearbyEntities(position, poisonIntensity, poisonRadius);
+			CreatePressureEffect(position);
+			float finalPoisonRadius = PoisonRadius * radiusMult;
+			InfectNearbyEntities(position, poisonIntensity, finalPoisonRadius);
 		}
 
-		public void CreatePressureEffect(Vector3 center, float cloudRad)
+		public void CreatePressureEffect(Vector3 center)
 		{
 			if (m_subsystemBodies == null) return;
 
-			float radius = cloudRad;
+			float radius = CloudRadius;
+			float pressure = ExplosionPressure;
 
 			foreach (ComponentBody body in m_subsystemBodies.Bodies)
 			{
@@ -201,7 +183,7 @@ namespace Game
 					float forceMultiplier = 1f - (distance / radius);
 					Vector3 direction = Vector3.Normalize(bodyPos - center);
 
-					float force = ExplosionPressure * forceMultiplier * 3f;
+					float force = pressure * forceMultiplier * 3f;
 					body.ApplyImpulse(direction * force);
 					body.ApplyImpulse(new Vector3(0f, force * 0.3f, 0f));
 				}
