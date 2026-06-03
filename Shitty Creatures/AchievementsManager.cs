@@ -678,6 +678,11 @@ namespace Game
 			double startTime = Time.RealTime;
 			double endTime = startTime + durationSeconds;
 			s_celebrationEndTime = endTime;
+			double lastTime = Time.RealTime;
+
+			// Cachear subsistemas para evitar buscarlos cada frame
+			var subsystemTerrain = player.Project.FindSubsystem<SubsystemTerrain>(true);
+			var subsystemProjectiles = player.Project.FindSubsystem<SubsystemProjectiles>(true);
 
 			Action generateFireworks = null;
 			generateFireworks = () =>
@@ -686,6 +691,10 @@ namespace Game
 				if (!s_isGeneratingFireworks) return;
 
 				double currentTime = Time.RealTime;
+				// Calcular dt real (cap a 100ms para evitar spikes)
+				float dt = Math.Min((float)(currentTime - lastTime), 0.1f);
+				lastTime = currentTime;
+
 				if (currentTime >= endTime)
 				{
 					// Terminar celebración
@@ -694,7 +703,6 @@ namespace Game
 					IsCelebrationActive = false;
 					OnCelebrationEnded?.Invoke();
 
-					// Limpiar bandera de celebración en subsistema
 					if (s_subsystemAchievements != null && s_subsystemAchievements.IsAllAchievementsCelebrationTriggered())
 					{
 						s_subsystemAchievements.SetAllAchievementsCelebrationTriggered(false);
@@ -714,25 +722,78 @@ namespace Game
 				}
 
 				float timeLeft = (float)(endTime - currentTime);
-				float intensity = 1.5f;
+
+				// === FÓRMULA DEL ORIGINAL ADAPTADA ===
+				float intensity;
 				if (timeLeft < 30f)
-					intensity = 4f;
-				else if (timeLeft > durationSeconds - 30f)
-					intensity = 3f;
-				else
-					intensity = 1.2f;
-
-				float probability = intensity * (float)Time.FrameDuration;
-
-				if (s_fireworkRandom.Float(0f, 1f) < probability && IsGameActive(player))
 				{
-					SpawnRandomFirework(player);
+					// Últimos 30 segundos: máxima intensidad
+					intensity = 20f;
+				}
+				else if (timeLeft > durationSeconds - 30f)
+				{
+					// Primeros 30 segundos: intensidad alta ascendente
+					float progress = (float)(durationSeconds - timeLeft) / 30f;
+					intensity = MathUtils.Lerp(3f, 12f, 0.5f * MathF.Sin(progress * MathF.PI) + 0.5f);
+				}
+				else
+				{
+					// Durante la celebración: onda senoidal entre 1 y 7 (igual que el original)
+					intensity = MathUtils.Lerp(1f, 7f, 0.5f * MathF.Sin(0.25f * timeLeft) + 0.5f);
+				}
+
+				if (s_fireworkRandom.Float(0f, 1f) < intensity * dt && IsGameActive(player))
+				{
+					SpawnRandomFireworkWithRaycast(player, subsystemTerrain, subsystemProjectiles);
 				}
 
 				GameManager.SyncDispatcher.Add(() => { generateFireworks(); return true; });
 			};
 
 			generateFireworks();
+		}
+
+		private static void SpawnRandomFireworkWithRaycast(ComponentPlayer player, SubsystemTerrain subsystemTerrain, SubsystemProjectiles subsystemProjectiles)
+		{
+			if (player == null || player.Project == null) return;
+			if (subsystemTerrain == null || subsystemProjectiles == null) return;
+
+			Vector3 playerPos = player.ComponentBody.Position;
+
+			// === IGUAL QUE EL ORIGINAL: vector2 aleatorio entre 35-50 de distancia ===
+			Vector2 offset = s_fireworkRandom.Vector2(35f, 50f);
+			Vector3 targetPos = playerPos + new Vector3(offset.X, 0f, offset.Y);
+
+			// === IGUAL QUE EL ORIGINAL: raycast desde arriba para encontrar posición de lanzamiento ===
+			TerrainRaycastResult? raycastResult = subsystemTerrain.Raycast(
+				new Vector3(targetPos.X, 120f, targetPos.Z),
+				new Vector3(targetPos.X, 40f, targetPos.Z),
+				false, true, null);
+
+			if (raycastResult == null) return;
+
+			// Preparar datos del bloque de fuegos artificiales
+			int data = 0;
+			data = FireworksBlock.SetShape(data, (FireworksBlock.Shape)s_fireworkRandom.Int(0, 7));
+			data = FireworksBlock.SetColor(data, s_fireworkRandom.Int(0, 7));
+			data = FireworksBlock.SetAltitude(data, s_fireworkRandom.Int(0, 1));
+			data = FireworksBlock.SetFlickering(data, s_fireworkRandom.Float(0f, 1f) < 0.25f);
+			int value = Terrain.MakeBlockValue(215, 0, data);
+
+			// Posición de lanzamiento (un bloque arriba del punto de impacto)
+			TerrainRaycastResult result = raycastResult.Value;
+			Vector3 launchPos = new Vector3(
+				(float)result.CellFace.Point.X,
+				(float)result.CellFace.Point.Y + 1,
+				(float)result.CellFace.Point.Z);
+
+			// === IGUAL QUE EL ORIGINAL: velocidad aleatoria ===
+			Vector3 velocity = new Vector3(
+				s_fireworkRandom.Float(-3f, 3f),
+				45f,
+				s_fireworkRandom.Float(-3f, 3f));
+
+			subsystemProjectiles.FireProjectile(value, launchPos, velocity, Vector3.Zero, null);
 		}
 
 		private static void ScheduleFireworksAndStopMusic(ComponentPlayer player, double durationSeconds = 150.0)
@@ -743,26 +804,66 @@ namespace Game
 		private static void SpawnRandomFirework(ComponentPlayer player)
 		{
 			if (player == null || player.Project == null) return;
-			var projectiles = player.Project.FindSubsystem<SubsystemProjectiles>(true);
-			if (projectiles == null) return;
+
+			var subsystemTerrain = player.Project.FindSubsystem<SubsystemTerrain>(true);
+			var subsystemProjectiles = player.Project.FindSubsystem<SubsystemProjectiles>(true);
+
+			if (subsystemProjectiles == null) return;
 
 			Vector3 playerPos = player.ComponentBody.Position;
 
+			// Usar el mismo approach con raycast si hay terreno
+			if (subsystemTerrain != null)
+			{
+				Vector2 offset = s_fireworkRandom.Vector2(15f, 30f);
+				Vector3 targetPos = playerPos + new Vector3(offset.X, 0f, offset.Y);
+
+				TerrainRaycastResult? raycastResult = subsystemTerrain.Raycast(
+					new Vector3(targetPos.X, 120f, targetPos.Z),
+					new Vector3(targetPos.X, 40f, targetPos.Z),
+					false, true, null);
+
+				if (raycastResult != null)
+				{
+					int data = 0;
+					data = FireworksBlock.SetShape(data, (FireworksBlock.Shape)s_fireworkRandom.Int(0, 7));
+					data = FireworksBlock.SetColor(data, s_fireworkRandom.Int(0, 7));
+					data = FireworksBlock.SetAltitude(data, s_fireworkRandom.Int(0, 1));
+					data = FireworksBlock.SetFlickering(data, s_fireworkRandom.Float(0f, 1f) < 0.25f);
+					int value = Terrain.MakeBlockValue(215, 0, data);
+
+					TerrainRaycastResult result = raycastResult.Value;
+					Vector3 raycastLaunchPos = new Vector3(
+						(float)result.CellFace.Point.X,
+						(float)result.CellFace.Point.Y + 1,
+						(float)result.CellFace.Point.Z);
+
+					Vector3 velocity = new Vector3(
+						s_fireworkRandom.Float(-3f, 3f),
+						45f,
+						s_fireworkRandom.Float(-3f, 3f));
+
+					subsystemProjectiles.FireProjectile(value, raycastLaunchPos, velocity, Vector3.Zero, null);
+					return;
+				}
+			}
+
+			// Fallback: método original sin raycast
 			float angle = s_fireworkRandom.Float(0f, MathF.PI * 2);
 			float radius = s_fireworkRandom.Float(15f, 30f);
 			float dx = MathF.Cos(angle) * radius;
 			float dz = MathF.Sin(angle) * radius;
-			Vector3 launchPos = new Vector3(playerPos.X + dx, playerPos.Y + 0.5f, playerPos.Z + dz);
+			Vector3 fallbackLaunchPos = new Vector3(playerPos.X + dx, playerPos.Y + 0.5f, playerPos.Z + dz);
 
-			int data = 0;
-			data = FireworksBlock.SetShape(data, (FireworksBlock.Shape)s_fireworkRandom.Int(0, 7));
-			data = FireworksBlock.SetColor(data, s_fireworkRandom.Int(0, 7));
-			data = FireworksBlock.SetAltitude(data, s_fireworkRandom.Int(0, 1));
-			data = FireworksBlock.SetFlickering(data, s_fireworkRandom.Float(0f, 1f) < 0.25f);
-			int value = Terrain.MakeBlockValue(215, 0, data);
+			int data2 = 0;
+			data2 = FireworksBlock.SetShape(data2, (FireworksBlock.Shape)s_fireworkRandom.Int(0, 7));
+			data2 = FireworksBlock.SetColor(data2, s_fireworkRandom.Int(0, 7));
+			data2 = FireworksBlock.SetAltitude(data2, s_fireworkRandom.Int(0, 1));
+			data2 = FireworksBlock.SetFlickering(data2, s_fireworkRandom.Float(0f, 1f) < 0.25f);
+			int value2 = Terrain.MakeBlockValue(215, 0, data2);
 
-			Vector3 velocity = new Vector3(s_fireworkRandom.Float(-3f, 3f), 45f, s_fireworkRandom.Float(-3f, 3f));
-			projectiles.FireProjectile(value, launchPos, velocity, Vector3.Zero, null);
+			Vector3 velocity2 = new Vector3(s_fireworkRandom.Float(-3f, 3f), 45f, s_fireworkRandom.Float(-3f, 3f));
+			subsystemProjectiles.FireProjectile(value2, fallbackLaunchPos, velocity2, Vector3.Zero, null);
 		}
 
 		public static bool ClaimAchievementReward(ComponentPlayer player, int achievementNumber, int rewardAmount)
