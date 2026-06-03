@@ -136,7 +136,14 @@ namespace Game
 			// Detener música de celebración
 			if (IsCelebrationActive)
 			{
-				InGameMusicManager.StopMusic();
+				try
+				{
+					InGameMusicManager.StopMusic();
+				}
+				catch (Exception ex)
+				{
+					Log.Warning($"[AchievementsManager] Error stopping music: {ex.Message}");
+				}
 				IsCelebrationActive = false;
 			}
 
@@ -144,7 +151,16 @@ namespace Game
 			{
 				var banditInvasion = s_currentProject.FindSubsystem<SubsystemBanditInvasion>(true);
 				if (banditInvasion != null)
-					banditInvasion.InvasionCompleted -= OnInvasionCompleted;
+				{
+					try
+					{
+						banditInvasion.InvasionCompleted -= OnInvasionCompleted;
+					}
+					catch (Exception ex)
+					{
+						Log.Warning($"[AchievementsManager] Error removing invasion event: {ex.Message}");
+					}
+				}
 			}
 			s_subsystemAchievements = null;
 			s_currentProject = null;
