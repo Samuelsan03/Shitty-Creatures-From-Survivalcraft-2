@@ -19,7 +19,6 @@ namespace Game
 		public float ShockwaveForce = 50f;
 		public bool DestroyBlocks = true;
 
-		// ===== NUEVA VARIABLE PARA PREVENIR EXPLOSIÓN =====
 		public bool PreventExplosion = false;
 
 		// ===== REFERENCIAS =====
@@ -31,7 +30,6 @@ namespace Game
 		public ComponentHealth m_componentHealth;
 		public ComponentBody m_componentBody;
 
-		// ===== ESTADO INTERNO =====
 		public bool m_exploded = false;
 		public float m_lastHealth = 0f;
 
@@ -41,7 +39,6 @@ namespace Game
 		{
 			base.Load(valuesDictionary, idToEntityMap);
 
-			// CARGAR PARÁMETROS
 			ActivationRange = valuesDictionary.GetValue<float>("ActivationRange", ActivationRange);
 			UseStandardExplosion = valuesDictionary.GetValue<bool>("UseStandardExplosion", UseStandardExplosion);
 			UseCustomShockwave = valuesDictionary.GetValue<bool>("UseCustomShockwave", UseCustomShockwave);
@@ -54,7 +51,6 @@ namespace Game
 			ShockwaveForce = valuesDictionary.GetValue<float>("ShockwaveForce", ShockwaveForce);
 			DestroyBlocks = valuesDictionary.GetValue<bool>("DestroyBlocks", DestroyBlocks);
 
-			// Obtener referencias
 			m_subsystemExplosions = base.Project.FindSubsystem<SubsystemExplosions>(true);
 			m_subsystemAudio = base.Project.FindSubsystem<SubsystemAudio>(true);
 			m_subsystemTime = base.Project.FindSubsystem<SubsystemTime>(true);
@@ -69,7 +65,6 @@ namespace Game
 				m_lastHealth = m_componentHealth.Health;
 			}
 
-			// VALIDACIÓN Y AJUSTES
 			ActivationRange = MathUtils.Clamp(ActivationRange, 0.5f, 20f);
 			ExplosionRadius = MathUtils.Clamp(ExplosionRadius, 1f, 50f);
 			BlockDamageRadius = MathUtils.Clamp(BlockDamageRadius, 0f, ExplosionRadius);
@@ -92,8 +87,6 @@ namespace Game
 		public override void Save(ValuesDictionary valuesDictionary, EntityToIdMap entityToIdMap)
 		{
 			base.Save(valuesDictionary, entityToIdMap);
-			// NO guardar ningún valor en el diccionario
-			// Los valores se cargarán desde la plantilla pero no se persistirán
 		}
 
 		public void Update(float dt)
@@ -102,7 +95,6 @@ namespace Game
 				return;
 
 			CheckForDeath();
-			// Se eliminó CheckForEntityProximity() para que solo explote al morir
 		}
 
 		public void CheckForDeath()
@@ -124,71 +116,104 @@ namespace Game
 
 			m_exploded = true;
 
+			// Obtener dificultad actual
+			DifficultyMode difficulty = DifficultyMode.Normal;
+			if (SubsystemGreenNightSky.Instance != null)
+				difficulty = SubsystemGreenNightSky.Instance.DifficultyMode;
+
+			// Factores de escala según dificultad
+			float pressureMult = 1f, damageMult = 1f, forceMult = 1f, radiusMult = 1f;
+			switch (difficulty)
+			{
+				case DifficultyMode.Easy:
+					pressureMult = 0.6f;
+					damageMult = 0.5f;
+					forceMult = 0.7f;
+					radiusMult = 0.8f;
+					break;
+				case DifficultyMode.Normal:
+					pressureMult = 1.0f;
+					damageMult = 1.0f;
+					forceMult = 1.0f;
+					radiusMult = 1.0f;
+					break;
+				case DifficultyMode.Medium:
+					pressureMult = 1.2f;
+					damageMult = 1.3f;
+					forceMult = 1.2f;
+					radiusMult = 1.1f;
+					break;
+				case DifficultyMode.Hard:
+					pressureMult = 1.5f;
+					damageMult = 1.6f;
+					forceMult = 1.5f;
+					radiusMult = 1.25f;
+					break;
+				case DifficultyMode.Extreme:
+					pressureMult = 2.0f;
+					damageMult = 2.0f;
+					forceMult = 2.0f;
+					radiusMult = 1.5f;
+					break;
+			}
+
+			float finalPressure = ExplosionPressure * pressureMult;
+			float finalShockwaveDamage = ShockwaveDamage * damageMult;
+			float finalShockwaveForce = ShockwaveForce * forceMult;
+			float finalEntityRadius = EntityDamageRadius * radiusMult;
+			float finalBlockRadius = BlockDamageRadius * radiusMult;
+
 			Vector3 position = m_componentBody.Position;
 			int x = (int)MathUtils.Floor(position.X);
 			int y = (int)MathUtils.Floor(position.Y);
 			int z = (int)MathUtils.Floor(position.Z);
 
-			// 1. EXPLOSIÓN ESTÁNDAR
-			if (UseStandardExplosion && m_subsystemExplosions != null && ExplosionPressure > 0)
+			if (UseStandardExplosion && m_subsystemExplosions != null && finalPressure > 0)
 			{
-				m_subsystemExplosions.AddExplosion(x, y, z, ExplosionPressure, IsIncendiary, false);
-				CreateScaledExplosion(x, y, z);
+				m_subsystemExplosions.AddExplosion(x, y, z, finalPressure, IsIncendiary, false);
+				CreateScaledExplosion(x, y, z, finalPressure);
 			}
 
-			// 2. ONDA EXPANSIVA PERSONALIZADA
 			if (UseCustomShockwave)
 			{
-				if (ShockwaveDamage > 0 && EntityDamageRadius > 0)
+				if (finalShockwaveDamage > 0 && finalEntityRadius > 0)
 				{
-					DamageNearbyEntities(position);
+					DamageNearbyEntities(position, finalShockwaveDamage, finalShockwaveForce, finalEntityRadius);
 				}
 
-				if (DestroyBlocks && BlockDamageRadius > 0 && m_subsystemTerrain != null)
+				if (DestroyBlocks && finalBlockRadius > 0 && m_subsystemTerrain != null)
 				{
-					DamageNearbyBlocks(position);
+					DamageNearbyBlocks(position, finalBlockRadius);
 				}
 			}
 		}
 
-		public void CreateScaledExplosion(int centerX, int centerY, int centerZ)
+		public void CreateScaledExplosion(int centerX, int centerY, int centerZ, float basePressure)
 		{
 			if (m_subsystemExplosions == null) return;
 
 			if (ExplosionRadius > 6f)
 			{
 				int extraExplosions = (int)(ExplosionRadius / 4f);
-
 				for (int i = 0; i < extraExplosions; i++)
 				{
 					float angle = (float)i * (MathUtils.PI * 2f / extraExplosions);
 					float distance = MathUtils.Lerp(2f, ExplosionRadius * 0.7f, (float)i / extraExplosions);
-
 					int offsetX = (int)(MathUtils.Cos(angle) * distance);
 					int offsetZ = (int)(MathUtils.Sin(angle) * distance);
-
-					float secondaryPressure = ExplosionPressure * MathUtils.Lerp(0.7f, 0.3f, distance / ExplosionRadius);
-
+					float secondaryPressure = basePressure * MathUtils.Lerp(0.7f, 0.3f, distance / ExplosionRadius);
 					if (secondaryPressure > 10f)
 					{
-						m_subsystemExplosions.AddExplosion(
-							centerX + offsetX,
-							centerY,
-							centerZ + offsetZ,
-							secondaryPressure,
-							IsIncendiary,
-							false
-						);
+						m_subsystemExplosions.AddExplosion(centerX + offsetX, centerY, centerZ + offsetZ, secondaryPressure, IsIncendiary, false);
 					}
 				}
 			}
 		}
 
-		public void DamageNearbyEntities(Vector3 center)
+		public void DamageNearbyEntities(Vector3 center, float damage, float force, float radius)
 		{
-			if (m_subsystemBodies == null || EntityDamageRadius <= 0) return;
-
-			float entityRadiusSquared = EntityDamageRadius * EntityDamageRadius;
+			if (m_subsystemBodies == null || radius <= 0) return;
+			float radiusSquared = radius * radius;
 
 			foreach (ComponentBody body in m_subsystemBodies.Bodies)
 			{
@@ -197,53 +222,47 @@ namespace Game
 				Vector3 offset = body.Position - center;
 				float distanceSquared = offset.LengthSquared();
 
-				if (distanceSquared <= entityRadiusSquared)
+				if (distanceSquared <= radiusSquared)
 				{
 					float distance = MathUtils.Sqrt(distanceSquared);
-					float damageMultiplier = 1f - (distance / EntityDamageRadius);
-					float damage = ShockwaveDamage * damageMultiplier;
+					float damageMultiplier = 1f - (distance / radius);
+					float finalDamage = damage * damageMultiplier;
 
-					// Aplicar daño a CUALQUIER entidad con salud
 					ComponentHealth health = body.Entity.FindComponent<ComponentHealth>();
-					if (health != null && damage > 1f)
+					if (health != null && finalDamage > 1f)
 					{
-						// Usar LanguageControl para la causa de muerte
 						string deathCause = LanguageControl.Get("DeathByBoomer", "Blown to pieces by a Boomer");
-						health.Injure(damage, null, false, deathCause);
+						health.Injure(finalDamage, null, false, deathCause);
 					}
 
-					// Aplicar fuerza de empuje
-					if (ShockwaveForce > 0 && body.Entity != base.Entity && distance > 0.1f)
+					if (force > 0 && body.Entity != base.Entity && distance > 0.1f)
 					{
 						Vector3 forceDirection = offset / distance;
 						forceDirection.Y += 0.3f;
-
-						float forceMultiplier = 1f - (distance / EntityDamageRadius);
-						body.ApplyImpulse(forceDirection * ShockwaveForce * forceMultiplier);
+						float forceMultiplier = 1f - (distance / radius);
+						body.ApplyImpulse(forceDirection * force * forceMultiplier);
 					}
 				}
 			}
 		}
 
-		public void DamageNearbyBlocks(Vector3 center)
+		public void DamageNearbyBlocks(Vector3 center, float radius)
 		{
-			if (m_subsystemTerrain == null || BlockDamageRadius <= 0) return;
+			if (m_subsystemTerrain == null || radius <= 0) return;
 
 			int centerX = (int)center.X;
 			int centerY = (int)center.Y;
 			int centerZ = (int)center.Z;
+			int r = (int)MathUtils.Ceiling(radius);
+			float radiusSquared = radius * radius;
 
-			int radius = (int)MathUtils.Ceiling(BlockDamageRadius);
-			float radiusSquared = BlockDamageRadius * BlockDamageRadius;
-
-			for (int dx = -radius; dx <= radius; dx++)
+			for (int dx = -r; dx <= r; dx++)
 			{
-				for (int dy = -radius; dy <= radius; dy++)
+				for (int dy = -r; dy <= r; dy++)
 				{
-					for (int dz = -radius; dz <= radius; dz++)
+					for (int dz = -r; dz <= r; dz++)
 					{
 						float distanceSquared = dx * dx + dy * dy + dz * dz;
-
 						if (distanceSquared <= radiusSquared)
 						{
 							int x = centerX + dx;
@@ -254,16 +273,11 @@ namespace Game
 							if (cellValue != 0)
 							{
 								float distance = MathUtils.Sqrt(distanceSquared);
-								float destructionChance = 1f - (distance / BlockDamageRadius);
-
+								float destructionChance = 1f - (distance / radius);
 								if (destructionChance > 0.5f)
-								{
 									m_subsystemTerrain.DestroyCell(0, x, y, z, 0, false, false);
-								}
 								else if (destructionChance > 0.2f)
-								{
 									m_subsystemTerrain.ChangeCell(x, y, z, 0, false);
-								}
 							}
 						}
 					}
@@ -274,7 +288,6 @@ namespace Game
 		public override void OnEntityRemoved()
 		{
 			base.OnEntityRemoved();
-
 			if (!PreventExplosion && !m_exploded && m_componentBody != null)
 			{
 				CreateExplosionImmediately();
