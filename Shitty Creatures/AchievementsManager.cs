@@ -17,7 +17,6 @@ namespace Game
 		private static double s_lastDayCheckGameTime = -1.0;
 		private const double DAY_CHECK_INTERVAL = 5.0;
 		private static Dictionary<int, int> s_achievementRewards;
-		private static bool m_musicPaused = false;
 
 		// Eventos para actualizar UI
 		public static event Action<ComponentPlayer, int, int> OnInfectedCounterChanged;
@@ -624,18 +623,9 @@ namespace Game
 
 				bool isActive = IsGameActive(player);
 
-				if (wasActive && !isActive && !m_musicPaused)
+				if (wasActive && !isActive)
 				{
-					// Salir del GameScreen - guardar posición y pausar
-					InGameMusicManager.SavePositionAndStop();
-					m_musicPaused = true;
-				}
-				else if (!wasActive && isActive && m_musicPaused)
-				{
-					// Volver al GameScreen - reanudar desde posición guardada
-					InGameMusicManager.RestartFromSavedPosition();
-					m_musicPaused = false;
-					firstPlay = false;
+					InGameMusicManager.StopMusic();
 				}
 
 				wasActive = isActive;
@@ -653,7 +643,7 @@ namespace Game
 					|| !InGameMusicManager.IsPlaying
 					|| InGameMusicManager.IsPlaybackComplete();
 
-				if (needsRestart && !m_musicPaused)
+				if (needsRestart)
 				{
 					InGameMusicManager.PlayMusic(musicPath, 0f);
 					firstPlay = false;
@@ -667,8 +657,16 @@ namespace Game
 
 		private static bool IsGameActive(ComponentPlayer player)
 		{
-			// La música de celebración solo suena cuando la pantalla actual es GameScreen
-			return ScreensManager.CurrentScreen is GameScreen;
+			if (player?.Project == null) return false;
+
+			var currentScreen = ScreensManager.CurrentScreen;
+			if (currentScreen == null) return false;
+
+			string screenName = currentScreen.GetType().Name;
+
+			// La música solo suena si la pantalla actual es GameScreen
+			// En cualquier otra pantalla (Settings, Help, Bestiary, etc.) se detiene
+			return screenName == "GameScreen";
 		}
 
 		private static void StartContinuousFireworks(ComponentPlayer player, double durationSeconds)
