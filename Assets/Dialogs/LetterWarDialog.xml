@@ -5,18 +5,18 @@
 
     <StackPanelWidget Direction="Vertical" HorizontalAlignment="Center" Margin="15, 10">
 
-      <LabelWidget Text="CARTA DE GUERRA" HorizontalAlignment="Center" Margin="0, 15" FontScale="1.2" Color="200, 100, 0" />
+      <LabelWidget Text="[LetterWarDialog:Title]" HorizontalAlignment="Center" Margin="0, 15" FontScale="1.2" Color="200, 100, 0" />
 
       <CanvasWidget Size="600, 340" Margin="0, 5">
         <ScrollPanelWidget Name="LetterWarDialog.ScrollPanel" Direction="Vertical">
-          <LabelWidget Name="LetterWarDialog.MessageLabel" FontScale="0.85" Color="240, 220, 180" HorizontalAlignment="Center" Margin="10, 0" />
+          <LabelWidget Name="LetterWarDialog.MessageLabel" FontScale="0.75" Color="240, 220, 180" HorizontalAlignment="Center" Margin="10, 0" />
         </ScrollPanelWidget>
       </CanvasWidget>
 
-      <UniformSpacingPanelWidget Direction="Horizontal" HorizontalAlignment="Center" Margin="10, 20">
-        <BevelledButtonWidget Name="LetterWarDialog.AcceptButton" Text="ACEPTAR" Style="{Styles/ButtonStyle_160x60}" />
-        <BevelledButtonWidget Name="LetterWarDialog.RejectButton" Text="RECHAZAR" Style="{Styles/ButtonStyle_160x60}" />
-      </UniformSpacingPanelWidget>
+      <StackPanelWidget Direction="Horizontal" HorizontalAlignment="Center" Margin="10, 20">
+        <BevelledButtonWidget Name="LetterWarDialog.AcceptButton" Text="[LetterWarDialog:AcceptButton]" Style="{Styles/ButtonStyle_160x60}" />
+        <BevelledButtonWidget Name="LetterWarDialog.RejectButton" Text="[LetterWarDialog:RejectButton]" Style="{Styles/ButtonStyle_160x60}" />
+      </StackPanelWidget>
 
     </StackPanelWidget>
 
