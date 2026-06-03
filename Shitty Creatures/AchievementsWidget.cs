@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Xml.Linq;
 using Engine;
 using Engine.Graphics;
+using Engine.Media;
 using Game;
 
 namespace Game
@@ -95,6 +96,9 @@ namespace Game
 			AchievementsManager.OnPirateCounterChanged += OnPirateCounterChanged;
 			AchievementsManager.OnFlyingCounterChanged += OnFlyingCounterChanged;
 			AchievementsManager.OnBoomerCounterChanged += OnBoomerCounterChanged;
+			AchievementsManager.OnNormalTameCounterChanged += OnNormalTameCounterChanged;
+			AchievementsManager.OnBossTameCounterChanged += OnBossTameCounterChanged;
+			AchievementsManager.OnGhostTameCounterChanged += OnGhostTameCounterChanged;
 
 			XElement achievementsXml = ContentManager.Get<XElement>("AchievementsData");
 			if (achievementsXml == null)
@@ -225,9 +229,48 @@ namespace Game
 
 		private void UpdateCounterDescription(int achievementNumber, int currentKills, int target, string baseDescription, LabelWidget descLabel)
 		{
-			if (descLabel == null) return;
+			// Obtenemos el itemData (hay que modificar AchievementItemData para incluir TextStack)
+			if (!m_achievementItems.TryGetValue(achievementNumber, out var itemData) || itemData.Container == null)
+				return;
+
 			int displayKills = Math.Min(currentKills, target);
-			descLabel.Text = $"{baseDescription} ({displayKills}/{target})";
+			string newText = $"{baseDescription} ({displayKills}/{target})";
+
+			// Volver a wrap el texto
+			BitmapFont font = LabelWidget.BitmapFont;
+			float fontScale = 0.65f;
+			float maxWidth = 500f;
+			List<string> newWrappedLines = WrapText(font, newText, maxWidth, fontScale);
+			float lineHeight = font.LineHeight * fontScale * font.Scale;
+
+			// Limpiar y reconstruir el StackPanel
+			itemData.TextStack.Children.Clear();
+			foreach (string line in newWrappedLines)
+			{
+				var lineLabel = new LabelWidget
+				{
+					Text = line,
+					Color = itemData.Container.Children.Find<BevelledRectangleWidget>(null, false)?.CenterColor ?? new Color(200, 200, 200),
+					FontScale = fontScale,
+					HorizontalAlignment = WidgetAlignment.Center,
+					Margin = new Vector2(0, 2)
+				};
+				itemData.TextStack.Children.Add(lineLabel);
+			}
+
+			// Recalcular altura
+			float statusHeight = 20f;
+			float titleHeight = 25f;
+			float textStackHeight = newWrappedLines.Count * lineHeight + (newWrappedLines.Count - 1) * 4f;
+			float bottomRowHeight = 40f;
+			float totalHeight = statusHeight + titleHeight + textStackHeight + bottomRowHeight + 20f;
+			totalHeight = Math.Max(95f, totalHeight);
+
+			// Redimensionar contenedor y fondo
+			itemData.Container.Size = new Vector2(530, totalHeight);
+			var background = itemData.Container.Children.Find<BevelledRectangleWidget>(null, false);
+			if (background != null)
+				background.Size = new Vector2(530, totalHeight);
 		}
 
 		private void OnInfectedCounterChanged(ComponentPlayer player, int currentKills, int targetKills)
@@ -344,8 +387,48 @@ namespace Game
 				UpdateCounterDescription(51, currentKills, 100, item51.BaseDescription, item51.DescriptionLabel);
 		}
 
+		private void OnNormalTameCounterChanged(ComponentPlayer player, int current, int target)
+		{
+			if (player != m_componentPlayer) return;
+			if (m_achievementItems.TryGetValue(57, out var i57) && !AchievementsManager.IsAchievementUnlocked(player, 57))
+				UpdateCounterDescription(57, current, 10, i57.BaseDescription, i57.DescriptionLabel);
+			if (m_achievementItems.TryGetValue(58, out var i58) && !AchievementsManager.IsAchievementUnlocked(player, 58))
+				UpdateCounterDescription(58, current, 25, i58.BaseDescription, i58.DescriptionLabel);
+			if (m_achievementItems.TryGetValue(59, out var i59) && !AchievementsManager.IsAchievementUnlocked(player, 59))
+				UpdateCounterDescription(59, current, 50, i59.BaseDescription, i59.DescriptionLabel);
+			if (m_achievementItems.TryGetValue(60, out var i60) && !AchievementsManager.IsAchievementUnlocked(player, 60))
+				UpdateCounterDescription(60, current, 100, i60.BaseDescription, i60.DescriptionLabel);
+		}
+
+		private void OnBossTameCounterChanged(ComponentPlayer player, int current, int target)
+		{
+			if (player != m_componentPlayer) return;
+			if (m_achievementItems.TryGetValue(61, out var i61) && !AchievementsManager.IsAchievementUnlocked(player, 61))
+				UpdateCounterDescription(61, current, 1, i61.BaseDescription, i61.DescriptionLabel);
+			if (m_achievementItems.TryGetValue(62, out var i62) && !AchievementsManager.IsAchievementUnlocked(player, 62))
+				UpdateCounterDescription(62, current, 5, i62.BaseDescription, i62.DescriptionLabel);
+			if (m_achievementItems.TryGetValue(63, out var i63) && !AchievementsManager.IsAchievementUnlocked(player, 63))
+				UpdateCounterDescription(63, current, 10, i63.BaseDescription, i63.DescriptionLabel);
+			if (m_achievementItems.TryGetValue(64, out var i64) && !AchievementsManager.IsAchievementUnlocked(player, 64))
+				UpdateCounterDescription(64, current, 25, i64.BaseDescription, i64.DescriptionLabel);
+		}
+
+		private void OnGhostTameCounterChanged(ComponentPlayer player, int current, int target)
+		{
+			if (player != m_componentPlayer) return;
+			if (m_achievementItems.TryGetValue(65, out var i65) && !AchievementsManager.IsAchievementUnlocked(player, 65))
+				UpdateCounterDescription(65, current, 5, i65.BaseDescription, i65.DescriptionLabel);
+			if (m_achievementItems.TryGetValue(66, out var i66) && !AchievementsManager.IsAchievementUnlocked(player, 66))
+				UpdateCounterDescription(66, current, 10, i66.BaseDescription, i66.DescriptionLabel);
+			if (m_achievementItems.TryGetValue(67, out var i67) && !AchievementsManager.IsAchievementUnlocked(player, 67))
+				UpdateCounterDescription(67, current, 25, i67.BaseDescription, i67.DescriptionLabel);
+			if (m_achievementItems.TryGetValue(68, out var i68) && !AchievementsManager.IsAchievementUnlocked(player, 68))
+				UpdateCounterDescription(68, current, 50, i68.BaseDescription, i68.DescriptionLabel);
+		}
+
 		private void CreateAchievementItem(string title, string baseDescription, int achievementNumber, int rewardAmount, bool unlocked, bool rewardClaimed)
 		{
+			// Crear contenedor principal (altura se ajustará dinámicamente)
 			var achievementContainer = new CanvasWidget
 			{
 				Size = new Vector2(530, 95),
@@ -383,14 +466,16 @@ namespace Game
 			};
 			achievementContainer.Children.Add(titleLabel);
 
+			// Preparar texto final
 			string finalDescription = baseDescription;
+			int currentKills = 0;
+			int target = 0;
+
 			if (!unlocked)
 			{
-				int currentKills = 0;
-				int target = 0;
-
 				switch (achievementNumber)
 				{
+					// Logros existentes (16-51) - mantener los que ya tienes
 					case 16: currentKills = AchievementsManager.GetInfectedKills(m_componentPlayer); target = 10; break;
 					case 17: currentKills = AchievementsManager.GetInfectedKills(m_componentPlayer); target = 50; break;
 					case 18: currentKills = AchievementsManager.GetInfectedKills(m_componentPlayer); target = 100; break;
@@ -423,6 +508,24 @@ namespace Game
 					case 49: currentKills = AchievementsManager.GetBoomerKills(m_componentPlayer); target = 25; break;
 					case 50: currentKills = AchievementsManager.GetBoomerKills(m_componentPlayer); target = 55; break;
 					case 51: currentKills = AchievementsManager.GetBoomerKills(m_componentPlayer); target = 100; break;
+
+					// ========== DOMESTICACIONES NORMALES (57-60) ==========
+					case 57: currentKills = AchievementsManager.GetNormalTames(m_componentPlayer); target = 10; break;
+					case 58: currentKills = AchievementsManager.GetNormalTames(m_componentPlayer); target = 25; break;
+					case 59: currentKills = AchievementsManager.GetNormalTames(m_componentPlayer); target = 50; break;
+					case 60: currentKills = AchievementsManager.GetNormalTames(m_componentPlayer); target = 100; break;
+
+					// ========== DOMESTICACIONES JEFES (61-64) ==========
+					case 61: currentKills = AchievementsManager.GetBossTames(m_componentPlayer); target = 10; break;
+					case 62: currentKills = AchievementsManager.GetBossTames(m_componentPlayer); target = 25; break;
+					case 63: currentKills = AchievementsManager.GetBossTames(m_componentPlayer); target = 50; break;
+					case 64: currentKills = AchievementsManager.GetBossTames(m_componentPlayer); target = 100; break;
+
+					// ========== DOMESTICACIONES FANTASMAS (65-68) ==========
+					case 65: currentKills = AchievementsManager.GetGhostTames(m_componentPlayer); target = 10; break;
+					case 66: currentKills = AchievementsManager.GetGhostTames(m_componentPlayer); target = 25; break;
+					case 67: currentKills = AchievementsManager.GetGhostTames(m_componentPlayer); target = 50; break;
+					case 68: currentKills = AchievementsManager.GetGhostTames(m_componentPlayer); target = 100; break;
 				}
 
 				if (target > 0)
@@ -432,23 +535,45 @@ namespace Game
 				}
 			}
 
-			var descLabel = new LabelWidget
+			// Crear un StackPanel para las líneas de descripción
+			var textStack = new StackPanelWidget
 			{
-				Text = finalDescription,
-				Color = unlocked ? new Color(200, 200, 200) : new Color(140, 140, 140),
-				FontScale = 0.65f,
+				Direction = LayoutDirection.Vertical,
 				HorizontalAlignment = WidgetAlignment.Center,
 				VerticalAlignment = WidgetAlignment.Center,
-				Margin = new Vector2(0, 0)
+				Margin = new Vector2(15, 0)
 			};
-			achievementContainer.Children.Add(descLabel);
 
+			// Dividir el texto en líneas (Wrap)
+			BitmapFont font = LabelWidget.BitmapFont;
+			float fontScale = 0.65f;
+			float maxWidth = 500f;
+			List<string> wrappedLines = WrapText(font, finalDescription, maxWidth, fontScale);
+			float lineHeight = font.LineHeight * fontScale * font.Scale;
+
+			// Crear un LabelWidget por cada línea
+			foreach (string line in wrappedLines)
+			{
+				var lineLabel = new LabelWidget
+				{
+					Text = line,
+					Color = unlocked ? new Color(200, 200, 200) : new Color(140, 140, 140),
+					FontScale = fontScale,
+					HorizontalAlignment = WidgetAlignment.Center,
+					Margin = new Vector2(0, 2) // pequeño margen entre líneas
+				};
+				textStack.Children.Add(lineLabel);
+			}
+
+			achievementContainer.Children.Add(textStack);
+
+			// Bottom row (monedas y botón)
 			var bottomRow = new StackPanelWidget
 			{
 				Direction = LayoutDirection.Horizontal,
 				HorizontalAlignment = WidgetAlignment.Center,
 				VerticalAlignment = WidgetAlignment.Far,
-				Margin = new Vector2(0, 5)
+				Margin = new Vector2(0, 8)
 			};
 			achievementContainer.Children.Add(bottomRow);
 
@@ -476,7 +601,6 @@ namespace Game
 
 			bool buttonEnabled = unlocked && !rewardClaimed;
 			Color buttonColor, bevelColor, centerColor;
-
 			if (unlocked)
 			{
 				buttonColor = rewardClaimed ? new Color(100, 100, 100) : Color.White;
@@ -505,7 +629,6 @@ namespace Game
 				CenterColor = centerColor
 			};
 			bottomRow.Children.Add(claimButton);
-
 			claimButton.Tag = new AchievementButtonData
 			{
 				AchievementNumber = achievementNumber,
@@ -513,14 +636,73 @@ namespace Game
 				ClaimButton = claimButton
 			};
 
+			// Calcular altura total necesaria
+			float statusHeight = 20f;
+			float titleHeight = 25f;
+			float textStackHeight = wrappedLines.Count * lineHeight + (wrappedLines.Count - 1) * 4f; // 4px de margen entre líneas
+			float bottomRowHeight = 40f;
+			float totalHeight = statusHeight + titleHeight + textStackHeight + bottomRowHeight + 20f; // + padding
+			totalHeight = Math.Max(95f, totalHeight);
+
+			// Aplicar tamaño final al contenedor y fondo
+			achievementContainer.Size = new Vector2(530, totalHeight);
+			background.Size = new Vector2(530, totalHeight);
+
 			m_achievementsStack.Children.Add(achievementContainer);
 
 			m_achievementItems[achievementNumber] = new AchievementItemData
 			{
 				Container = achievementContainer,
-				DescriptionLabel = descLabel,
-				BaseDescription = baseDescription
+				DescriptionLabel = null, // ya no usamos un solo descLabel, usamos el stack
+				BaseDescription = baseDescription,
+				TextStack = textStack,    // guardamos el stack para actualizarlo después
+				WrappedLines = wrappedLines
 			};
+		}
+
+		// Método para dividir texto en líneas según ancho máximo
+		private List<string> WrapText(BitmapFont font, string text, float maxWidth, float fontScale)
+		{
+			List<string> lines = new List<string>();
+			if (string.IsNullOrEmpty(text))
+			{
+				lines.Add("");
+				return lines;
+			}
+
+			string[] words = text.Split(' ');
+			string currentLine = "";
+
+			foreach (string word in words)
+			{
+				string testLine = string.IsNullOrEmpty(currentLine) ? word : currentLine + " " + word;
+				float testWidth = font.MeasureText(testLine, new Vector2(fontScale), Vector2.Zero).X;
+
+				if (testWidth <= maxWidth)
+				{
+					currentLine = testLine;
+				}
+				else
+				{
+					if (!string.IsNullOrEmpty(currentLine))
+					{
+						lines.Add(currentLine);
+					}
+					currentLine = word;
+				}
+			}
+
+			if (!string.IsNullOrEmpty(currentLine))
+			{
+				lines.Add(currentLine);
+			}
+
+			if (lines.Count == 0)
+			{
+				lines.Add("");
+			}
+
+			return lines;
 		}
 
 		public override void Update()
@@ -539,6 +721,9 @@ namespace Game
 				AchievementsManager.OnPirateCounterChanged -= OnPirateCounterChanged;
 				AchievementsManager.OnFlyingCounterChanged -= OnFlyingCounterChanged;
 				AchievementsManager.OnBoomerCounterChanged -= OnBoomerCounterChanged;
+				AchievementsManager.OnNormalTameCounterChanged -= OnNormalTameCounterChanged;
+				AchievementsManager.OnBossTameCounterChanged -= OnBossTameCounterChanged;
+				AchievementsManager.OnGhostTameCounterChanged -= OnGhostTameCounterChanged;
 				m_componentPlayer.ComponentGui.ModalPanelWidget = null;
 				return;
 			}
@@ -599,8 +784,10 @@ namespace Game
 		private class AchievementItemData
 		{
 			public CanvasWidget Container;
-			public LabelWidget DescriptionLabel;
+			public LabelWidget DescriptionLabel; // puede quedar null o eliminarse
 			public string BaseDescription;
+			public StackPanelWidget TextStack;    // nuevo
+			public List<string> WrappedLines;     // nuevo (opcional)
 		}
 
 		private class ImageWidgetSimple : Widget
