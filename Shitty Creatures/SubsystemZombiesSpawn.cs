@@ -29,11 +29,6 @@ namespace Game
 		private SubsystemAudio m_subsystemAudio;
 		private Random m_random = new Random();
 
-		// Estado de jefes - variables para persistencia
-		private bool m_needsToFindBoss = false;
-		private string m_pendingBossTemplateName = "";
-		private Vector3 m_pendingBossPosition = Vector3.Zero;
-
 		// Datos de oleadas
 		private Dictionary<int, List<WaveEntry>> m_waves = new Dictionary<int, List<WaveEntry>>();
 		private int m_currentWave = 1;
@@ -103,7 +98,7 @@ namespace Game
 
 		// Label estático para la cuenta regresiva
 		private LabelWidget m_countdownLabel;
-		private LabelWidget m_difficultyLabel;   // <-- NUEVO
+		private LabelWidget m_difficultyLabel;
 		private bool m_labelInitialized = false;
 
 		// Listas estáticas de templates
@@ -135,7 +130,7 @@ namespace Game
 			"FrozenTank"
 		};
 
-		// CAMBIADO: Lista de bloques PERMITIDOS para spawnear
+		// Lista de bloques PERMITIDOS para spawnear
 		private HashSet<int> m_allowedBlockIndices = new HashSet<int>();
 
 		public UpdateOrder UpdateOrder => UpdateOrder.Default;
@@ -176,43 +171,17 @@ namespace Game
 			LoadWavesFromResources();
 			m_currentWave = valuesDictionary.GetValue<int>("CurrentWave", 1);
 			SetCurrentWave(m_currentWave);
+
+			// Al cargar, SIEMPRE asumimos que no hay batalla ni se ha spawneado jefe esta noche.
+			// El sistema detectará automáticamente si el jefe de la noche anterior sigue vivo.
 			m_wasGreenNightActive = m_subsystemGreenNightSky.IsGreenNightActive;
+			m_hasSpawnedBossThisNight = false;
+			m_bossBattleActive = false;
+			m_bossQueue.Clear();
+			m_currentBossEntity = null;
+
 			m_constantSpawnCooldown = ConstantSpawnCooldownTime;
 			Instance = this;
-
-			// ===== CARGAR ESTADO DEL JEFE =====
-			m_bossBattleActive = valuesDictionary.GetValue<bool>("BossBattleActive", false);
-			m_hasSpawnedBossThisNight = valuesDictionary.GetValue<bool>("HasSpawnedBossThisNight", false);
-			m_bossSpawnDelayed = valuesDictionary.GetValue<bool>("BossSpawnDelayed", false);
-			m_bossSpawnDelayTimer = valuesDictionary.GetValue<float>("BossSpawnDelayTimer", 0f);
-
-			// Cargar la cola de jefes
-			string savedBossQueue = valuesDictionary.GetValue<string>("BossQueue", "");
-			if (!string.IsNullOrEmpty(savedBossQueue))
-			{
-				string[] bosses = savedBossQueue.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-				foreach (string boss in bosses)
-				{
-					m_bossQueue.Enqueue(boss.Trim());
-				}
-			}
-
-			// Cargar información del jefe actual para buscarlo después de cargar entidades
-			m_pendingBossTemplateName = valuesDictionary.GetValue<string>("CurrentBossTemplate", "");
-			m_pendingBossPosition = valuesDictionary.GetValue<Vector3>("CurrentBossPosition", Vector3.Zero);
-
-			// Marcar para buscar el jefe en el primer Update (las entidades aún no están cargadas)
-			if (m_bossBattleActive && !string.IsNullOrEmpty(m_pendingBossTemplateName))
-			{
-				m_needsToFindBoss = true;
-			}
-			else if (m_bossBattleActive && string.IsNullOrEmpty(m_pendingBossTemplateName) && m_bossQueue.Count > 0)
-			{
-				// No había jefe actual pero sí hay en la cola, preparar para spawnear
-				m_bossSpawnDelayed = true;
-				m_bossSpawnDelayTimer = BossSpawnDelay;
-			}
-			// ===== FIN CARGAR ESTADO DEL JEFE =====
 
 			CreateCountdownLabel();
 			ApplyDifficultySettings();
@@ -227,10 +196,8 @@ namespace Game
 			}
 		}
 
-		// CAMBIADO: Ahora inicializa bloques PERMITIDOS
 		private void InitializeAllowedBlockIndices()
 		{
-			// Lista de bloques DONDE SE PUEDEN SPAWNEAR las criaturas
 			foreach (var block in BlocksManager.Blocks)
 			{
 				if (block != null &&
@@ -248,7 +215,6 @@ namespace Game
 		{
 			if (m_countdownLabel != null) return;
 
-			// Crear un panel vertical para apilar las dos etiquetas
 			var stackPanel = new StackPanelWidget
 			{
 				Direction = LayoutDirection.Vertical,
@@ -259,7 +225,6 @@ namespace Game
 				IsHitTestVisible = false
 			};
 
-			// Etiqueta del contador (arriba)
 			m_countdownLabel = new LabelWidget
 			{
 				DropShadow = true,
@@ -269,7 +234,6 @@ namespace Game
 				IsHitTestVisible = false
 			};
 
-			// Etiqueta de dificultad (debajo)
 			m_difficultyLabel = new LabelWidget
 			{
 				DropShadow = true,
@@ -282,9 +246,7 @@ namespace Game
 			stackPanel.Children.Add(m_countdownLabel);
 			stackPanel.Children.Add(m_difficultyLabel);
 
-			// Almacenar el stackPanel en lugar de las etiquetas individuales para adjuntarlo
-			// Modificar AttachLabelToPlayers() para usar el stackPanel
-			m_countdownLabel.Tag = stackPanel;  // Guardar referencia al panel
+			m_countdownLabel.Tag = stackPanel;
 			m_labelInitialized = false;
 		}
 
@@ -404,13 +366,11 @@ namespace Game
 			int maxWave = m_waves.Keys.Max();
 			bool wasLastWave = (oldWave == maxWave);
 
-			bool completed = AdvanceToNextWave();  // true si avanzó a la siguiente oleada
+			bool completed = AdvanceToNextWave();
 			int newWave = m_currentWave;
 
-			// Disparar evento para logros
 			WaveAdvanced?.Invoke(oldWave, newWave);
 
-			// Logro 6: Primera noche verde sobrevivida
 			if (oldWave == 1 && newWave == 2)
 			{
 				foreach (var player in m_subsystemPlayers.ComponentPlayers)
@@ -421,14 +381,12 @@ namespace Game
 
 			if (m_subsystemGreenNightSky.DifficultyMode == DifficultyMode.Extreme && wasLastWave && !completed)
 			{
-				// Completamos la última oleada exitosamente
 				foreach (var player in m_subsystemPlayers.ComponentPlayers)
 				{
 					AchievementsManager.UnlockAchievementStatic(player, 52, "ExtremeNightSurvived", LanguageControl.Get(AchievementsWidget.fName, 108));
 				}
 			}
 
-			// CORRECCIÓN: Logro 52 solo si estábamos en la última oleada Y logramos avanzar más allá (completamos todas)
 			if (m_subsystemGreenNightSky.DifficultyMode == DifficultyMode.Extreme && wasLastWave && newWave > maxWave)
 			{
 				foreach (var player in m_subsystemPlayers.ComponentPlayers)
@@ -437,16 +395,13 @@ namespace Game
 				}
 			}
 
-			// Logro 7: Todas las oleadas completadas (solo en la última ola)
 			if (oldWave == maxWave && !m_hasShownUnlockMessage)
 			{
-				// Mostrar el logro y su mensaje inmediatamente
 				foreach (var player in m_subsystemPlayers.ComponentPlayers)
 				{
 					AchievementsManager.UnlockAchievementStatic(player, 7, "AllWavesCompleted", LanguageControl.Get(AchievementsWidget.fName, 18));
 				}
 
-				// Programar el mensaje del control remoto después de 4 segundos
 				if (m_subsystemTime != null)
 				{
 					System.Timers.Timer timer1 = new System.Timers.Timer(4000);
@@ -473,7 +428,6 @@ namespace Game
 									player.ComponentGui.DisplayLargeMessage(largeMessage, smallMessage, 5f, 0f);
 								}
 
-								// Programar el cofre después de 5 segundos adicionales
 								System.Timers.Timer timer2 = new System.Timers.Timer(5000);
 								timer2.Elapsed += (sender2, e2) =>
 								{
@@ -493,7 +447,6 @@ namespace Game
 				}
 				else
 				{
-					// Fallback si no hay subsistema de tiempo (caso extremo)
 					m_hasShownUnlockMessage = true;
 					string largeMessage = LanguageControl.Get("UnlockedItems", "Unlocked");
 					string smallMessage = LanguageControl.Get("UnlockedItems", "UnlockedInfo");
@@ -535,7 +488,6 @@ namespace Game
 
 				if (groundY <= 0 || groundY >= 255) continue;
 
-				// CAMBIADO: Verificar que el bloque del suelo esté en la lista PERMITIDA
 				int cellGround = m_subsystemTerrain.Terrain.GetCellValue(x, groundY, z);
 				int contentsGround = Terrain.ExtractContents(cellGround);
 				if (!m_allowedBlockIndices.Contains(contentsGround)) continue;
@@ -580,96 +532,35 @@ namespace Game
 
 		public override void Save(ValuesDictionary valuesDictionary)
 		{
+			// Solo guardamos la oleada y estados de logros.
+			// NO guardamos el estado de la batalla de jefes, las entidades se guardan por separado en el juego.
 			valuesDictionary.SetValue("CurrentWave", m_currentWave);
 			valuesDictionary.SetValue("LetterWarSpawned", m_letterWarSpawned);
 			valuesDictionary.SetValue("HasShownUnlockMessage", m_hasShownUnlockMessage);
-
-			// ===== GUARDAR ESTADO DEL JEFE =====
-			valuesDictionary.SetValue("BossBattleActive", m_bossBattleActive);
-			valuesDictionary.SetValue("HasSpawnedBossThisNight", m_hasSpawnedBossThisNight);
-			valuesDictionary.SetValue("BossSpawnDelayed", m_bossSpawnDelayed);
-			valuesDictionary.SetValue("BossSpawnDelayTimer", m_bossSpawnDelayTimer);
-
-			// Guardar el jefe actual
-			if (m_currentBossEntity != null && IsEntityAlive(m_currentBossEntity))
-			{
-				valuesDictionary.SetValue("CurrentBossTemplate", m_currentBossEntity.ValuesDictionary.DatabaseObject?.Name ?? "");
-				var body = m_currentBossEntity.FindComponent<ComponentBody>();
-				valuesDictionary.SetValue("CurrentBossPosition", body?.Position ?? Vector3.Zero);
-			}
-			else
-			{
-				valuesDictionary.SetValue("CurrentBossTemplate", "");
-				valuesDictionary.SetValue("CurrentBossPosition", Vector3.Zero);
-			}
-
-			// Guardar la cola de jefes
-			valuesDictionary.SetValue("BossQueue", string.Join(",", m_bossQueue));
-			// ===== FIN GUARDAR ESTADO DEL JEFE =====
 		}
 
 		/// <summary>
-		/// Busca una entidad de jefe existente que coincida con el template y posición guardados
+		/// Busca si hay algún jefe vivo en el mundo actualmente (por si saliste y volviste a entrar)
 		/// </summary>
-		private Entity FindExistingBoss(string templateName, Vector3 lastKnownPosition)
+		private Entity FindAliveBoss()
 		{
-			if (string.IsNullOrEmpty(templateName))
-				return null;
-
-			Entity bestMatch = null;
-			float bestDistance = float.MaxValue;
-
 			foreach (Entity entity in Project.Entities)
 			{
-				if (entity.ValuesDictionary.DatabaseObject?.Name == templateName)
+				if (entity.ValuesDictionary.DatabaseObject != null &&
+					BossTemplates.Contains(entity.ValuesDictionary.DatabaseObject.Name))
 				{
-					var body = entity.FindComponent<ComponentBody>();
-					if (body != null)
+					var health = entity.FindComponent<ComponentHealth>();
+					if (health != null && health.Health > 0f)
 					{
-						var health = entity.FindComponent<ComponentHealth>();
-						if (health != null && health.Health > 0f)
-						{
-							float distance = Vector3.Distance(body.Position, lastKnownPosition);
-							if (distance < bestDistance)
-							{
-								bestDistance = distance;
-								bestMatch = entity;
-							}
-						}
+						return entity;
 					}
 				}
 			}
-
-			// Solo retornar si está razonablemente cerca (tolerancia de 100 bloques por si se movió)
-			return (bestMatch != null && bestDistance < 100f) ? bestMatch : null;
+			return null;
 		}
-
 
 		public void Update(float dt)
 		{
-			// ===== BUSCAR JEFE PENDIENTE AL CARGAR =====
-			if (m_needsToFindBoss)
-			{
-				m_currentBossEntity = FindExistingBoss(m_pendingBossTemplateName, m_pendingBossPosition);
-				m_needsToFindBoss = false;
-
-				// Si no se encontró el jefe (murió o desapareció)
-				if (m_bossBattleActive && m_currentBossEntity == null)
-				{
-					if (m_bossQueue.Count > 0)
-					{
-						// Hay más jefes en la cola, preparar para spawnear el siguiente
-						m_bossSpawnDelayed = true;
-						m_bossSpawnDelayTimer = BossSpawnDelay;
-					}
-					else
-					{
-						// No hay más jefes, terminar la batalla
-						m_bossBattleActive = false;
-					}
-				}
-			}
-
 			UpdateCountdownLabel();
 
 			bool isGreenNightActive = m_subsystemGreenNightSky.IsGreenNightActive;
@@ -718,20 +609,32 @@ namespace Game
 			}
 			else
 			{
-				// Limpiar las listas aunque el spawn esté deshabilitado para evitar acumulación
 				m_skeletonNewSpawnChunks.Clear();
 				m_skeletonSpawnChunks.Clear();
 			}
 			// ===== FIN SPAWN DE ESQUELETOS NORMALES =====
 
-			// ===== LÓGICA DE NOCHE VERDE - NO depende de SkeletonSpawnEnabled =====
+			// ===== LÓGICA DE NOCHE VERDE =====
 			if (!m_wasGreenNightActive && isGreenNightActive)
 			{
 				PlayEvilLaugh();
 				SendWaveMessage();
 
-				if (m_currentWave == maxWave && !m_hasSpawnedBossThisNight && !m_bossBattleActive)
+				// COMPROBAR SI EL JEFE DE LA NOCHE ANTERIOR SIGUE VIVO
+				Entity existingBoss = FindAliveBoss();
+				if (existingBoss != null)
 				{
+					// El jefe sigue vivo, lo reclamamos
+					m_currentBossEntity = existingBoss;
+					m_bossBattleActive = true;
+					m_hasSpawnedBossThisNight = true;
+
+					// Reconstruir la cola basándonos en lo que falte
+					RebuildBossQueue();
+				}
+				else if (m_currentWave == maxWave && !m_hasSpawnedBossThisNight && !m_bossBattleActive)
+				{
+					// No hay jefe vivo, es la última oleada, iniciar batalla normal
 					StartBossBattle();
 					m_bossSpawnDelayed = true;
 					m_bossSpawnDelayTimer = 0.5f;
@@ -748,11 +651,23 @@ namespace Game
 
 			if (m_currentWave != maxWave)
 			{
-				if (!m_hasSpawnedBossThisNight && isMidnight && !m_bossBattleActive && !m_bossSpawnDelayed)
+				// Comprobar de nuevo si hay un jefe vivo por si acabas de entrar al mundo
+				if (!m_hasSpawnedBossThisNight && !m_bossBattleActive && !m_bossSpawnDelayed)
 				{
-					StartBossBattle();
-					m_bossSpawnDelayed = true;
-					m_bossSpawnDelayTimer = 0.5f;
+					Entity existingBoss = FindAliveBoss();
+					if (existingBoss != null)
+					{
+						m_currentBossEntity = existingBoss;
+						m_bossBattleActive = true;
+						m_hasSpawnedBossThisNight = true;
+						RebuildBossQueue();
+					}
+					else if (isMidnight)
+					{
+						StartBossBattle();
+						m_bossSpawnDelayed = true;
+						m_bossSpawnDelayTimer = 0.5f;
+					}
 				}
 			}
 
@@ -800,10 +715,41 @@ namespace Game
 			}
 			// ===== FIN LÓGICA DE NOCHE VERDE =====
 
-			// Actualizar dificultad si cambió
 			if (m_subsystemGreenNightSky != null)
 			{
 				ApplyDifficultySettings();
+			}
+		}
+
+		/// <summary>
+		/// Reconstruye la cola de jefes pendientes basándose en el jefe actual que sigue vivo
+		/// </summary>
+		private void RebuildBossQueue()
+		{
+			m_bossQueue.Clear();
+			if (m_currentBossEntity == null) return;
+
+			string currentBossName = m_currentBossEntity.ValuesDictionary.DatabaseObject?.Name;
+			if (string.IsNullOrEmpty(currentBossName)) return;
+
+			var bosses = new List<string>();
+			foreach (var entry in m_currentWaveEntries)
+			{
+				if (BossTemplates.Contains(entry.TemplateName) && !bosses.Contains(entry.TemplateName))
+					bosses.Add(entry.TemplateName);
+			}
+
+			bool foundCurrent = false;
+			foreach (string boss in bosses)
+			{
+				if (foundCurrent)
+				{
+					m_bossQueue.Enqueue(boss);
+				}
+				else if (boss == currentBossName)
+				{
+					foundCurrent = true;
+				}
 			}
 		}
 
@@ -869,7 +815,6 @@ namespace Game
 
 			int belowContents = Terrain.ExtractContents(cellValueFast);
 
-			// CAMBIADO: Verificar que el bloque esté en la lista PERMITIDA
 			if (!m_allowedBlockIndices.Contains(belowContents))
 				return 0f;
 
@@ -947,7 +892,6 @@ namespace Game
 
 			int belowContents = Terrain.ExtractContents(cellValueFast);
 
-			// CAMBIADO: Verificar que el bloque esté en la lista PERMITIDA
 			if (!m_allowedBlockIndices.Contains(belowContents))
 				return 0f;
 
@@ -1239,7 +1183,6 @@ namespace Game
 					{
 						int cellValue = m_subsystemTerrain.Terrain.GetCellValue(x, y - 1, z);
 						int contents = Terrain.ExtractContents(cellValue);
-						// CAMBIADO: Verificar que el bloque esté en la lista PERMITIDA
 						if (m_allowedBlockIndices.Contains(contents))
 						{
 							Block block = BlocksManager.Blocks[contents];
@@ -1269,7 +1212,6 @@ namespace Game
 					{
 						int cellValue = m_subsystemTerrain.Terrain.GetCellValue(x, y - 1, z);
 						int contents = Terrain.ExtractContents(cellValue);
-						// CAMBIADO: Verificar que el bloque esté en la lista PERMITIDA
 						if (m_allowedBlockIndices.Contains(contents))
 						{
 							Block block = BlocksManager.Blocks[contents];
@@ -1298,7 +1240,6 @@ namespace Game
 					{
 						int cellValue = m_subsystemTerrain.Terrain.GetCellValue(x, y - 1, z);
 						int contents = Terrain.ExtractContents(cellValue);
-						// CAMBIADO: Verificar que el bloque esté en la lista PERMITIDA
 						if (m_allowedBlockIndices.Contains(contents))
 						{
 							Block block = BlocksManager.Blocks[contents];
@@ -1324,7 +1265,6 @@ namespace Game
 					int z = (int)(playerPos.Z + MathF.Sin(angle) * distance);
 					int y = m_random.Int(80, 120);
 
-					// Los voladores aparecen en el aire, no verifican bloques del suelo
 					if (y >= 10 && y <= 255)
 					{
 						return new Vector3(x + 0.5f, y, z + 0.5f);
@@ -1456,7 +1396,6 @@ namespace Game
 						int z = point.Value.Z;
 						int cellValue = m_subsystemTerrain.Terrain.GetCellValue(x, y, z);
 						int contents = Terrain.ExtractContents(cellValue);
-						// CAMBIADO: Verificar que el bloque esté en la lista PERMITIDA
 						if (m_allowedBlockIndices.Contains(contents))
 						{
 							Block block = BlocksManager.Blocks[contents];
@@ -1576,7 +1515,6 @@ namespace Game
 
 						int cellValue = m_subsystemTerrain.Terrain.GetCellValue(x, y, z);
 						int contents = Terrain.ExtractContents(cellValue);
-						// CAMBIADO: Verificar que el bloque esté en la lista PERMITIDA
 						if (m_allowedBlockIndices.Contains(contents))
 						{
 							Block block = BlocksManager.Blocks[contents];
@@ -1602,7 +1540,6 @@ namespace Game
 						int groundY = point.Value.Y;
 						int airY = groundY + m_random.Int(10, 30);
 
-						// Los voladores aparecen en el aire, no verifican bloques del suelo
 						if (airY >= 1 && airY <= 255)
 						{
 							return new Vector3(point.Value.X + 0.5f, airY, point.Value.Z + 0.5f);
@@ -1619,7 +1556,6 @@ namespace Game
 					int z = (int)(playerPos.Z + MathF.Sin(angle) * distance);
 					int y = m_random.Int(70, 110);
 
-					// Los voladores aparecen en el aire, no verifican bloques del suelo
 					return new Vector3(x + 0.5f, y, z + 0.5f);
 				}
 			}
@@ -1684,7 +1620,6 @@ namespace Game
 			float intervalMult = DifficultyModifiers.GetSpawnIntervalMultiplier(mode);
 			m_baseSpawnInterval = 2.5f * intervalMult;
 
-			// Re-aplicar el intervalo actual si estamos en una oleada activa
 			if (m_currentWaveEntries != null)
 			{
 				m_spawnInterval = Math.Max(1.2f, m_baseSpawnInterval - (m_currentWave * 0.04f));
