@@ -9,6 +9,7 @@ namespace Game
 	{
 		public bool IsEnabled { get; set; } = true;
 		public Vector2 FullLookOrder { get; private set; }
+		public float ExternalVerticalInput { get; set; }
 
 		// Campos propios
 		private SubsystemTime m_subsystemTime;
@@ -195,6 +196,11 @@ namespace Game
 				{
 					verticalInput = rider.ComponentInput.PlayerInput.Move.Y;
 				}
+				else
+				{
+					// Si el jinete no es un jugador (IA), usar el valor externo
+					verticalInput = ExternalVerticalInput;
+				}
 			}
 
 			// ===== NUEVO: Detección de plataforma móvil y control por inclinación de cabeza =====
@@ -287,6 +293,9 @@ if (canFly && m_componentNewMount?.Rider != null)
 				m_componentLocomotion.JumpOrder = JumpOrder;
 
 			FullLookOrder = new Vector2(2f * m_turnSpeed, verticalInput);
+
+			// Reiniciar input externo para que no persista entre frames
+			ExternalVerticalInput = 0f;
 		}
 	}
 }
