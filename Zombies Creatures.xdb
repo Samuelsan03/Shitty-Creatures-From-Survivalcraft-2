@@ -202,8 +202,24 @@
         <Parameter Name="IdleSound" Guid="780c8fc5-2806-405c-a0cf-caa47ca9aa18" Value="Audio/Creatures/Zombie 1/Idie" Type="string"/>
         <Parameter Name="AttackSound" Guid="759e782e-9ab2-4467-8886-52c194fe1577" Value="Audio/Creatures/Zombie 1/Attack" Type="string"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="DefensiveCreatureAI" Guid="261c72f9-f2d3-41c3-8eff-d12047704fc2" InheritanceParent="0f69cb1e-cf48-46bf-93ec-6990112112d5">
-  <Parameter Name="CanUseInventory" Guid="85817888-90e8-42f3-97a3-0b13652e074b" Value="true" Type="bool" />
+            <MemberComponentTemplate Name="DefensiveCreatureAI" Guid="c719ea04-ad3a-4ad2-a8e3-a964457629f5" InheritanceParent="0f69cb1e-cf48-46bf-93ec-6990112112d5">
+  <Parameter Name="CanUseInventory" Guid="45021af0-c05d-4873-9698-72d8476e0fca" Value="true" Type="bool" />
+  <Parameter Name="CanEquipClothing" Guid="c6d12582-531e-494e-8545-73dd50bdf278" Value="true" Type="bool" />
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureClothing" Guid="b98625a0-23aa-4dd4-a9df-e2eece8ccadb" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
+  <ParameterSet Name="CreatureClothes" Guid="05cedc50-8c6d-4ecf-88a7-abe9118b6ac0">
+    <Parameter Name="Head" Guid="a896e0c9-6aa9-417b-b410-2becd23279a8" Value="" Type="string"/>
+    <Parameter Name="Torso" Guid="04da024a-cc02-4944-bd64-da9e2cb12258" Value="" Type="string"/>
+    <Parameter Name="Legs" Guid="8da6c3bd-ce2d-400c-97d6-1e19ba892711" Value="" Type="string"/>
+    <Parameter Name="Feet" Guid="86991499-48ef-4973-9d7a-d9ce4076298b" Value="" Type="string"/>
+  </ParameterSet>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="OuterClothingModel" Guid="d48eeb66-a92b-4ded-86c8-f9d0a756b613" InheritanceParent="c2429b7f-55e0-4ca7-b435-2c569f112229">
+              <Parameter Name="ModelName" Guid="9615ac28-f657-4ec2-a70c-bc3350607bea" Value="Models/OuterClothingMale" Type="string"/>
+            </MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureCollect" Guid="ab13ab5a-620b-40c9-8372-dadc1e93f20d" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <Parameter Name="CanCollect" Guid="0bdac31d-04a7-4c0e-94eb-aa45aff138db" Value="true" Type="bool"/>
+    <Parameter Name="CollectableItems" Guid="754314d7-2d24-456c-a8fb-86682f3d47d4" Value="ClothingBlock" Type="string"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="NewCreatureCollect" Guid="57e8fb4a-59e5-4247-b51a-f0c0fe2ee5cf" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
     <Parameter Name="PickFactors" Guid="3869a0f0-48ab-4339-9aa3-0ad35705b245" Value="Tools;1.0,Weapons;1.0" Type="string"/>
@@ -471,8 +487,26 @@
         <Parameter Name="IdleSound" Guid="25e0e0be-f1ad-4411-bc0b-3c5562611ffa" Value="Audio/Creatures/Zombie 1/Idie" Type="string"/>
         <Parameter Name="AttackSound" Guid="4be0cee5-e4c7-4709-bc44-4e2548c90072" Value="Audio/Creatures/Zombie 1/Attack" Type="string"/>
             </MemberComponentTemplate>
-            <MemberComponentTemplate Name="Inventory" Guid="6108b9a0-7600-41a8-90a2-00f8a3db35c9" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
+            <MemberComponentTemplate Name="DefensiveCreatureAI" Guid="d4ae3f2f-9d3e-4f8c-a8b5-3305cebf358d" InheritanceParent="0f69cb1e-cf48-46bf-93ec-6990112112d5">
+  <Parameter Name="CanUseInventory" Guid="892f388e-e3c3-423e-805b-43fa792de290" Value="true" Type="bool" />
+  <Parameter Name="CanEquipClothing" Guid="1d01c9d9-fca5-4e69-a407-ff6d237dca25" Value="true" Type="bool" />
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureClothing" Guid="aaedcf7d-d7cf-4e8a-8e93-82eafefd7e92" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
+  <ParameterSet Name="CreatureClothes" Guid="66431e39-0362-4e5f-bd10-3863984ab77a">
+    <Parameter Name="Head" Guid="e19313f1-0164-4eb5-b6ce-0a9c7abd7441" Value="" Type="string"/>
+    <Parameter Name="Torso" Guid="df4168e8-89d5-4399-b298-df83e4cf6659" Value="" Type="string"/>
+    <Parameter Name="Legs" Guid="5ac22fd1-3b1a-43e8-a1de-080f5b3f6fa8" Value="" Type="string"/>
+    <Parameter Name="Feet" Guid="5da16c64-728c-447d-af61-3940c0a27222" Value="" Type="string"/>
+  </ParameterSet>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="OuterClothingModel" Guid="39c01b09-890c-413f-a03e-92a88234e786" InheritanceParent="c2429b7f-55e0-4ca7-b435-2c569f112229">
+              <Parameter Name="ModelName" Guid="08d11d20-abda-46a7-8db4-21fdaa3a00df" Value="Models/OuterClothingMale" Type="string"/>
             </MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureCollect" Guid="608e526c-201a-48ed-ac2f-a1238b79ab1b" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <Parameter Name="CanCollect" Guid="a7e33497-3a61-4d25-b065-2d234f3fbc65" Value="true" Type="bool"/>
+    <Parameter Name="CollectableItems" Guid="b5bcce75-3a2f-4e1d-af86-8556a596f5e2" Value="ClothingBlock" Type="string"/>
+</MemberComponentTemplate>
+            <MemberComponentTemplate Name="Inventory" Guid="6108b9a0-7600-41a8-90a2-00f8a3db35c9" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890"/>
             <MemberComponentTemplate Name="NewCreatureCollect" Guid="5283b617-eb95-49f6-b818-9fc58f32e300" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
     <Parameter Name="PickFactors" Guid="91ea4162-1715-44a5-a940-5242b7bc0cd1" Value="Tools;1.0,Weapons;1.0" Type="string"/>
 </MemberComponentTemplate>
@@ -5140,7 +5174,7 @@
   </ParameterSet>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="OuterClothingModel" Guid="2f8881e9-7c1f-474a-ab3e-6969e1f922f7" InheritanceParent="c2429b7f-55e0-4ca7-b435-2c569f112229">
-              <Parameter Name="ModelName" Guid="e1723284-3f84-4b84-ba0b-e0ca7b248057" Value="Models/OuterClothingFemale" Type="string"/>
+              <Parameter Name="ModelName" Guid="e1723284-3f84-4b84-ba0b-e0ca7b248057" Value="Models/OuterClothingMale" Type="string"/>
             </MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureCollect" Guid="ac199f16-b8c0-435a-9b34-7c661cc11a94" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
             <Parameter Name="CanCollect" Guid="4aa417ca-7c64-427b-9d84-76743765f002" Value="true" Type="bool"/>
