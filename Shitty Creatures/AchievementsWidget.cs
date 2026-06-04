@@ -28,6 +28,11 @@ namespace Game
 		private int m_pendingBgState = -1;
 		private bool m_isBgTransitioning = false;
 
+		// Nuevos indicadores
+		private LabelWidget m_progressLabel;
+		private LabelWidget m_unlockedLabel;
+		private int m_totalAchievements = 0;
+
 		public static string fName = "AchievementsWidget";
 
 		public AchievementsWidget(ComponentPlayer player)
@@ -107,8 +112,11 @@ namespace Game
 				return;
 			}
 
+			// Contar logros totales
+			m_totalAchievements = 0;
 			foreach (XElement elem in achievementsXml.Elements("Achievement"))
 			{
+				m_totalAchievements++;
 				int number = (int)elem.Attribute("Number");
 				int titleKey = (int)elem.Attribute("TitleKey");
 				int descKey = (int)elem.Attribute("DescriptionKey");
@@ -133,6 +141,30 @@ namespace Game
 				m_backgroundState = subsystemAchievements.GetBackgroundState();
 				ApplyBackgroundState();
 			}
+
+			// ========== Crear los nuevos indicadores ==========
+			m_progressLabel = new LabelWidget
+			{
+				Text = "",
+				FontScale = 0.7f,
+				Color = Color.White,
+				HorizontalAlignment = WidgetAlignment.Near,
+				VerticalAlignment = WidgetAlignment.Far,
+				MarginLeft = 10,
+				MarginBottom = 10
+			};
+			m_unlockedLabel = new LabelWidget
+			{
+				Text = "",
+				FontScale = 0.7f,
+				Color = Color.White,
+				HorizontalAlignment = WidgetAlignment.Far,
+				VerticalAlignment = WidgetAlignment.Far,
+				MarginRight = 10,
+				MarginBottom = 10
+			};
+			Children.Add(m_progressLabel);
+			Children.Add(m_unlockedLabel);
 		}
 
 		private void ChangeBackground()
@@ -229,7 +261,6 @@ namespace Game
 
 		private void UpdateCounterDescription(int achievementNumber, int currentKills, int target, string baseDescription, LabelWidget descLabel)
 		{
-			// Si el proyecto ya se está cerrando, no hacer nada
 			if (m_componentPlayer?.Project == null) return;
 
 			if (!m_achievementItems.TryGetValue(achievementNumber, out var itemData) || itemData.Container == null)
@@ -260,7 +291,6 @@ namespace Game
 				itemData.TextStack.Children.Add(lineLabel);
 			}
 
-			// Solo redimensionar si el contenedor sigue en el árbol de widgets
 			if (itemData.Container.ParentWidget != null)
 			{
 				float statusHeight = 20f;
@@ -432,7 +462,6 @@ namespace Game
 
 		private void CreateAchievementItem(string title, string baseDescription, int achievementNumber, int rewardAmount, bool unlocked, bool rewardClaimed)
 		{
-			// Crear contenedor principal (altura se ajustará dinámicamente)
 			var achievementContainer = new CanvasWidget
 			{
 				Size = new Vector2(530, 95),
@@ -470,7 +499,6 @@ namespace Game
 			};
 			achievementContainer.Children.Add(titleLabel);
 
-			// Preparar texto final
 			string finalDescription = baseDescription;
 			int currentKills = 0;
 			int target = 0;
@@ -479,7 +507,6 @@ namespace Game
 			{
 				switch (achievementNumber)
 				{
-					// Logros existentes (16-51) - mantener los que ya tienes
 					case 16: currentKills = AchievementsManager.GetInfectedKills(m_componentPlayer); target = 10; break;
 					case 17: currentKills = AchievementsManager.GetInfectedKills(m_componentPlayer); target = 50; break;
 					case 18: currentKills = AchievementsManager.GetInfectedKills(m_componentPlayer); target = 100; break;
@@ -512,20 +539,14 @@ namespace Game
 					case 49: currentKills = AchievementsManager.GetBoomerKills(m_componentPlayer); target = 25; break;
 					case 50: currentKills = AchievementsManager.GetBoomerKills(m_componentPlayer); target = 55; break;
 					case 51: currentKills = AchievementsManager.GetBoomerKills(m_componentPlayer); target = 100; break;
-
-					// ========== DOMESTICACIONES NORMALES (57-60) ==========
 					case 57: currentKills = AchievementsManager.GetNormalTames(m_componentPlayer); target = 10; break;
 					case 58: currentKills = AchievementsManager.GetNormalTames(m_componentPlayer); target = 25; break;
 					case 59: currentKills = AchievementsManager.GetNormalTames(m_componentPlayer); target = 50; break;
 					case 60: currentKills = AchievementsManager.GetNormalTames(m_componentPlayer); target = 100; break;
-
-					// ========== DOMESTICACIONES JEFES (61-64) ==========
 					case 61: currentKills = AchievementsManager.GetBossTames(m_componentPlayer); target = 10; break;
 					case 62: currentKills = AchievementsManager.GetBossTames(m_componentPlayer); target = 25; break;
 					case 63: currentKills = AchievementsManager.GetBossTames(m_componentPlayer); target = 50; break;
 					case 64: currentKills = AchievementsManager.GetBossTames(m_componentPlayer); target = 100; break;
-
-					// ========== DOMESTICACIONES FANTASMAS (65-68) ==========
 					case 65: currentKills = AchievementsManager.GetGhostTames(m_componentPlayer); target = 10; break;
 					case 66: currentKills = AchievementsManager.GetGhostTames(m_componentPlayer); target = 25; break;
 					case 67: currentKills = AchievementsManager.GetGhostTames(m_componentPlayer); target = 50; break;
@@ -539,7 +560,6 @@ namespace Game
 				}
 			}
 
-			// Crear un StackPanel para las líneas de descripción
 			var textStack = new StackPanelWidget
 			{
 				Direction = LayoutDirection.Vertical,
@@ -548,14 +568,12 @@ namespace Game
 				Margin = new Vector2(15, 0)
 			};
 
-			// Dividir el texto en líneas (Wrap)
 			BitmapFont font = LabelWidget.BitmapFont;
 			float fontScale = 0.65f;
 			float maxWidth = 500f;
 			List<string> wrappedLines = WrapText(font, finalDescription, maxWidth, fontScale);
 			float lineHeight = font.LineHeight * fontScale * font.Scale;
 
-			// Crear un LabelWidget por cada línea
 			foreach (string line in wrappedLines)
 			{
 				var lineLabel = new LabelWidget
@@ -564,14 +582,13 @@ namespace Game
 					Color = unlocked ? new Color(200, 200, 200) : new Color(140, 140, 140),
 					FontScale = fontScale,
 					HorizontalAlignment = WidgetAlignment.Center,
-					Margin = new Vector2(0, 2) // pequeño margen entre líneas
+					Margin = new Vector2(0, 2)
 				};
 				textStack.Children.Add(lineLabel);
 			}
 
 			achievementContainer.Children.Add(textStack);
 
-			// Bottom row (monedas y botón)
 			var bottomRow = new StackPanelWidget
 			{
 				Direction = LayoutDirection.Horizontal,
@@ -640,15 +657,13 @@ namespace Game
 				ClaimButton = claimButton
 			};
 
-			// Calcular altura total necesaria
 			float statusHeight = 20f;
 			float titleHeight = 25f;
-			float textStackHeight = wrappedLines.Count * lineHeight + (wrappedLines.Count - 1) * 4f; // 4px de margen entre líneas
+			float textStackHeight = wrappedLines.Count * lineHeight + (wrappedLines.Count - 1) * 4f;
 			float bottomRowHeight = 40f;
-			float totalHeight = statusHeight + titleHeight + textStackHeight + bottomRowHeight + 20f; // + padding
+			float totalHeight = statusHeight + titleHeight + textStackHeight + bottomRowHeight + 20f;
 			totalHeight = Math.Max(95f, totalHeight);
 
-			// Aplicar tamaño final al contenedor y fondo
 			achievementContainer.Size = new Vector2(530, totalHeight);
 			background.Size = new Vector2(530, totalHeight);
 
@@ -657,14 +672,13 @@ namespace Game
 			m_achievementItems[achievementNumber] = new AchievementItemData
 			{
 				Container = achievementContainer,
-				DescriptionLabel = null, // ya no usamos un solo descLabel, usamos el stack
+				DescriptionLabel = null,
 				BaseDescription = baseDescription,
-				TextStack = textStack,    // guardamos el stack para actualizarlo después
+				TextStack = textStack,
 				WrappedLines = wrappedLines
 			};
 		}
 
-		// Método para dividir texto en líneas según ancho máximo
 		private List<string> WrapText(BitmapFont font, string text, float maxWidth, float fontScale)
 		{
 			List<string> lines = new List<string>();
@@ -713,9 +727,11 @@ namespace Game
 		{
 			UpdateBackgroundTransition();
 
+			// Actualizar los indicadores de progreso y desbloqueados
+			UpdateStatistics();
+
 			if (m_closeButton.IsClicked)
 			{
-				// Remover eventos
 				AchievementsManager.OnInfectedCounterChanged -= OnInfectedCounterChanged;
 				AchievementsManager.OnBossCounterChanged -= OnBossCounterChanged;
 				AchievementsManager.OnTankCounterChanged -= OnTankCounterChanged;
@@ -783,6 +799,22 @@ namespace Game
 			}
 		}
 
+		private void UpdateStatistics()
+		{
+			if (m_componentPlayer?.Project == null) return;
+			var subsystemAchievements = m_componentPlayer.Project.FindSubsystem<SubsystemAchievements>(true);
+			if (subsystemAchievements == null) return;
+
+			int unlockedCount = subsystemAchievements.GetUnlockedAchievementCount();
+			int percentage = m_totalAchievements > 0 ? (int)((float)unlockedCount / m_totalAchievements * 100f) : 0;
+
+			string progressText = $"{LanguageControl.Get("AchievementsMessages", 6)}: {percentage}%";
+			string unlockedText = $"{LanguageControl.Get("AchievementsMessages", 7)}: {unlockedCount}/{m_totalAchievements}";
+
+			m_progressLabel.Text = progressText;
+			m_unlockedLabel.Text = unlockedText;
+		}
+
 		private class AchievementButtonData
 		{
 			public int AchievementNumber;
@@ -793,10 +825,10 @@ namespace Game
 		private class AchievementItemData
 		{
 			public CanvasWidget Container;
-			public LabelWidget DescriptionLabel; // puede quedar null o eliminarse
+			public LabelWidget DescriptionLabel;
 			public string BaseDescription;
-			public StackPanelWidget TextStack;    // nuevo
-			public List<string> WrappedLines;     // nuevo (opcional)
+			public StackPanelWidget TextStack;
+			public List<string> WrappedLines;
 		}
 
 		private class ImageWidgetSimple : Widget
