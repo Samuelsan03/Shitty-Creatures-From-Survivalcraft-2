@@ -28,6 +28,7 @@ namespace Game
 		private ComponentPathfinding m_componentPathfinding;
 		private ComponentCreatureModel m_componentCreatureModel;
 		private ComponentNewChaseBehavior m_chaseBehavior;
+		private ComponentRider m_componentRider;
 
 		// ===== ESTADO INTERNO =====
 		private ComponentCreature m_targetCreature;
@@ -76,6 +77,7 @@ namespace Game
 			m_componentBody = Entity.FindComponent<ComponentBody>(true);
 			m_componentPathfinding = Entity.FindComponent<ComponentPathfinding>();
 			m_componentCreatureModel = Entity.FindComponent<ComponentCreatureModel>();
+			m_componentRider = Entity.FindComponent<ComponentRider>();
 			m_chaseBehavior = Entity.FindComponent<ComponentNewChaseBehavior>();
 
 			TeleportationDistance = valuesDictionary.GetValue<float>("TeleportationDistance", TeleportationDistance);
@@ -98,6 +100,10 @@ namespace Game
 					Reappear();
 				return;
 			}
+
+			// NUEVO: Si la criatura está montada, no teletransportarse
+			if (m_componentRider != null && m_componentRider.Mount != null)
+				return;
 
 			UpdateTargetFromChaseBehavior();
 
@@ -130,6 +136,10 @@ namespace Game
 		private void StartTeleport()
 		{
 			if (m_targetCreature == null || m_isDisappeared)
+				return;
+
+			// NUEVO: No teletransportar si está montado
+			if (m_componentRider != null && m_componentRider.Mount != null)
 				return;
 
 			m_originalPosition = m_componentBody.Position;
