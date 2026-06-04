@@ -417,7 +417,6 @@ namespace Game
 			ComponentMount mountComp = m_componentRider.Mount;
 			Entity mountEntity = mountComp.Entity;
 
-			// Intentar obtener ComponentNewSteedBehavior, si no, el base ComponentSteedBehavior
 			ComponentSteedBehavior steedBase = mountEntity.FindComponent<ComponentNewSteedBehavior>();
 			ComponentNewSteedBehavior newSteed = steedBase as ComponentNewSteedBehavior;
 			if (newSteed == null) steedBase = mountEntity.FindComponent<ComponentSteedBehavior>();
@@ -426,7 +425,9 @@ namespace Game
 			Vector3 mountPos = mountComp.ComponentBody.Position;
 			Vector3 mountForward = mountComp.ComponentBody.Matrix.Forward;
 			Vector3 toTarget = targetPos - mountPos;
+			float horizontalDist = new Vector2(toTarget.X, toTarget.Z).Length();
 			toTarget.Y = 0f;
+
 			if (toTarget.LengthSquared() < 0.01f)
 			{
 				steedBase.SpeedOrder = 0;
@@ -444,11 +445,18 @@ namespace Game
 			float turn = -Math.Clamp(angleDifference / (MathF.PI / 2f), -0.5f, 0.5f);
 			steedBase.TurnOrder = turn;
 
-			float distance = toTarget.Length();
-			float desiredSpeed = (distance > 1.5f) ? 1f : 0f;
+			// Velocidad progresiva como en el Summon original (se reduce al acercarse)
+			float desiredSpeed;
+			if (horizontalDist > 5f)
+				desiredSpeed = 1f;
+			else if (horizontalDist < 1.5f)
+				desiredSpeed = 0f;
+			else
+				desiredSpeed = MathUtils.Lerp(0.4f, 1f, (horizontalDist - 1.5f) / 3.5f);
+
 			steedBase.SpeedOrder = Math.Sign(desiredSpeed);
 
-			// Control vertical para monturas voladoras
+			// Control vertical para voladores: también reduce sensibilidad al acercarse
 			if (newSteed != null)
 			{
 				ComponentLocomotion loco = mountEntity.FindComponent<ComponentLocomotion>();
@@ -456,9 +464,14 @@ namespace Game
 				if (canFly)
 				{
 					float heightDiff = targetPos.Y - mountPos.Y;
-					const float maxHeightDiff = 3f;
-					float verticalInput = Math.Clamp(heightDiff / maxHeightDiff, -1f, 1f);
-					if (Math.Abs(verticalInput) < 0.1f) verticalInput = 0f;
+					// Rango de altura: si está muy cerca, ignorar diferencia para evitar oscilaciones
+					float verticalInput = 0f;
+					if (horizontalDist > 1.5f)
+					{
+						const float maxHeightDiff = 2.5f;
+						verticalInput = Math.Clamp(heightDiff / maxHeightDiff, -1f, 1f);
+						if (Math.Abs(verticalInput) < 0.1f) verticalInput = 0f;
+					}
 					newSteed.ExternalVerticalInput = verticalInput;
 				}
 				else
@@ -467,7 +480,7 @@ namespace Game
 				}
 			}
 
-			// Salto si está atascado
+			// Salto si está atascado (solo para monturas terrestres)
 			if (m_componentPathfinding != null && m_componentPathfinding.IsStuck && m_random.Float(0f, 1f) < 0.02f)
 				steedBase.JumpOrder = 1f;
 			else
