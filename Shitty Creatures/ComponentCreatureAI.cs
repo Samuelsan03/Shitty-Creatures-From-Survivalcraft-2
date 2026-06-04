@@ -326,20 +326,18 @@ namespace Game
 			if (m_componentRider.Mount != null) return;
 			if (m_componentCreature.ComponentHealth.Health <= 0f) return;
 
-			// Buscar montura cada segundo
+			// Buscar montura cada 0.2 segundos (más reactivo)
 			m_mountSearchCooldown -= dt;
 			if (m_mountSearchCooldown <= 0f)
 			{
-				m_mountSearchCooldown = 1.0f;
-
-				// Buscar montura cercana (mismo estilo que FindNearestMount del ejemplo)
-				ComponentMount nearestMount = FindNearestMount(1.5f);
+				m_mountSearchCooldown = 0.2f;
+				ComponentMount nearestMount = FindNearestMount(4f); // radio de 4 bloques
 				if (nearestMount != null)
 				{
-					// Montar INMEDIATAMENTE, sin temporizador de 0.55 segundos
 					m_componentRider.StartMounting(nearestMount);
 					m_mountedCombatActive = true;
 					if (m_chaseBehavior != null) m_chaseBehavior.Suppressed = false;
+					m_componentPathfinding.Stop();
 				}
 			}
 		}
@@ -365,25 +363,21 @@ namespace Game
 				ComponentMount mount = body.Entity.FindComponent<ComponentMount>();
 				if (mount == null) continue;
 
-				// Verificar si es una montura válida (ensillada)
 				string templateName = mount.Entity.ValuesDictionary.DatabaseObject.Name;
 				if (!MountableCreatureTemplates.Contains(templateName)) continue;
 
-				// Verificar salud
 				ComponentHealth health = mount.Entity.FindComponent<ComponentHealth>();
 				if (health != null && health.Health <= 0f) continue;
 
-				// Verificar que no tenga jinete
 				if (mount.Rider != null) continue;
 
-				// Calcular distancia REAL (no la puntuación)
-				Vector3 mountPos = mount.ComponentBody.Position;
-				float distance = Vector3.Distance(m_componentCreature.ComponentBody.Position, mountPos);
-
-				// SOLO montar si está realmente cerca (MountNearDistance = 1.2f)
-				if (distance < MountNearDistance)
+				// Calcular distancia al punto de montura (con offset)
+				Vector3 mountOffsetPos = mount.ComponentBody.Position + Vector3.Transform(mount.MountOffset, mount.ComponentBody.Rotation);
+				Vector3 toMount = mountOffsetPos - m_componentCreature.ComponentCreatureModel.EyePosition;
+				float distance = toMount.Length();
+				if (distance < maxDistance)
 				{
-					float score = maxDistance - distance; // Mientras más cerca, mayor puntuación
+					float score = maxDistance - distance; // puntuación = más cerca = mejor
 					if (score > bestScore)
 					{
 						bestScore = score;
