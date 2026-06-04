@@ -675,7 +675,8 @@ namespace Game
 				DescriptionLabel = null,
 				BaseDescription = baseDescription,
 				TextStack = textStack,
-				WrappedLines = wrappedLines
+				WrappedLines = wrappedLines,
+				ClaimButton = claimButton  // <-- AGREGAR ESTO
 			};
 		}
 
@@ -760,39 +761,44 @@ namespace Game
 
 			if (!m_isBgTransitioning)
 			{
-				foreach (var child in m_achievementsStack.Children)
+				// Usar referencias directas en lugar de Find
+				foreach (var kvp in m_achievementItems)
 				{
-					if (child is CanvasWidget container)
-					{
-						var bottomRow = container.Children.Find<StackPanelWidget>(null, false);
-						if (bottomRow != null)
-						{
-							var claimButton = bottomRow.Children.Find<BevelledButtonWidget>(null, false);
-							if (claimButton != null && claimButton.Tag is AchievementButtonData data)
-							{
-								if (claimButton.IsClicked && claimButton.IsEnabled)
-								{
-									bool success = AchievementsManager.ClaimAchievementReward(
-										m_componentPlayer,
-										data.AchievementNumber,
-										data.RewardAmount
-									);
-									if (success)
-									{
-										claimButton.IsEnabled = false;
-										claimButton.Color = Color.Gray;
-										m_componentPlayer.ComponentGui.DisplaySmallMessage(
-											LanguageControl.Get("AchievementsMessages", 3),
-											Color.Green, false, true);
+					var claimButton = kvp.Value.ClaimButton;
+					if (claimButton == null) continue;
+					if (!claimButton.IsClicked || !claimButton.IsEnabled) continue;
 
-										var audio = m_componentPlayer.Project.FindSubsystem<SubsystemAudio>(true);
-										if (audio != null)
-										{
-											audio.PlaySound("Audio/UI/success", 1f, 0f, m_componentPlayer.ComponentBody.Position, 10f, false);
-										}
-									}
-								}
-							}
+					int achievementNumber = kvp.Key;
+					int rewardAmount = 0;
+
+					// Obtener reward del Tag
+					if (claimButton.Tag is AchievementButtonData data)
+					{
+						rewardAmount = data.RewardAmount;
+					}
+					else
+					{
+						continue;
+					}
+
+					bool success = AchievementsManager.ClaimAchievementReward(
+						m_componentPlayer,
+						achievementNumber,
+						rewardAmount
+					);
+
+					if (success)
+					{
+						claimButton.IsEnabled = false;
+
+						m_componentPlayer.ComponentGui.DisplaySmallMessage(
+							LanguageControl.Get("AchievementsMessages", 3),
+							Color.Green, false, true);
+
+						var audio = m_componentPlayer.Project.FindSubsystem<SubsystemAudio>(true);
+						if (audio != null)
+						{
+							audio.PlaySound("Audio/UI/success", 1f, 0f, m_componentPlayer.ComponentBody.Position, 10f, false);
 						}
 					}
 				}
@@ -829,6 +835,7 @@ namespace Game
 			public string BaseDescription;
 			public StackPanelWidget TextStack;
 			public List<string> WrappedLines;
+			public BevelledButtonWidget ClaimButton;  // <-- AGREGAR ESTO
 		}
 
 		private class ImageWidgetSimple : Widget
