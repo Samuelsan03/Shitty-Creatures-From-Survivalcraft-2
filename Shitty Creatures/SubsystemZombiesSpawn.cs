@@ -101,6 +101,9 @@ namespace Game
 		private LabelWidget m_difficultyLabel;
 		private bool m_labelInitialized = false;
 
+		// Flag para indicar que necesitamos verificar el estado del jefe al cargar
+		private bool m_needsBossStateVerification = false;
+
 		// Listas estáticas de templates
 		private static readonly HashSet<string> BossTemplates = new HashSet<string>
 		{
@@ -159,6 +162,7 @@ namespace Game
 			m_subsystemBlockEntities = Project.FindSubsystem<SubsystemBlockEntities>(true);
 			m_subsystemSky = Project.FindSubsystem<SubsystemSky>(true);
 			m_subsystemAudio = Project.FindSubsystem<SubsystemAudio>(true);
+
 			m_letterWarSpawned = valuesDictionary.GetValue<bool>("LetterWarSpawned", false);
 			m_hasShownUnlockMessage = valuesDictionary.GetValue<bool>("HasShownUnlockMessage", false);
 
@@ -172,13 +176,36 @@ namespace Game
 			m_currentWave = valuesDictionary.GetValue<int>("CurrentWave", 1);
 			SetCurrentWave(m_currentWave);
 
-			// Al cargar, SIEMPRE asumimos que no hay batalla ni se ha spawneado jefe esta noche.
-			// El sistema detectará automáticamente si el jefe de la noche anterior sigue vivo.
-			m_wasGreenNightActive = m_subsystemGreenNightSky.IsGreenNightActive;
-			m_hasSpawnedBossThisNight = false;
-			m_bossBattleActive = false;
+			// ===== CARGAR ESTADO COMPLETO DE LA BATALLA DE JEFES =====
+			m_bossBattleActive = valuesDictionary.GetValue<bool>("BossBattleActive", false);
+			m_hasSpawnedBossThisNight = valuesDictionary.GetValue<bool>("HasSpawnedBossThisNight", false);
+			m_bossSpawnDelayed = valuesDictionary.GetValue<bool>("BossSpawnDelayed", false);
+			m_bossSpawnDelayTimer = valuesDictionary.GetValue<float>("BossSpawnDelayTimer", 0f);
+
+			// Cargar la cola de jefes pendientes
+			string bossQueueStr = valuesDictionary.GetValue<string>("BossQueue", "");
 			m_bossQueue.Clear();
+			if (!string.IsNullOrEmpty(bossQueueStr))
+			{
+				string[] bosses = bossQueueStr.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+				foreach (string boss in bosses)
+				{
+					string trimmed = boss.Trim();
+					if (!string.IsNullOrWhiteSpace(trimmed))
+					{
+						m_bossQueue.Enqueue(trimmed);
+					}
+				}
+			}
+
+			// Establecer el estado de la noche anterior
+			m_wasGreenNightActive = m_subsystemGreenNightSky.IsGreenNightActive;
+
+			// Si hay batalla activa, necesitamos verificar el estado del jefe
+			// No lo hacemos aquí porque las entidades pueden no estar cargadas todavía
+			m_needsBossStateVerification = m_bossBattleActive;
 			m_currentBossEntity = null;
+			// ===== FIN CARGAR ESTADO DE LA BATALLA DE JEFES =====
 
 			m_constantSpawnCooldown = ConstantSpawnCooldownTime;
 			Instance = this;
@@ -532,15 +559,25 @@ namespace Game
 
 		public override void Save(ValuesDictionary valuesDictionary)
 		{
-			// Solo guardamos la oleada y estados de logros.
-			// NO guardamos el estado de la batalla de jefes, las entidades se guardan por separado en el juego.
+			// Guardar oleada y estados de logros
 			valuesDictionary.SetValue("CurrentWave", m_currentWave);
 			valuesDictionary.SetValue("LetterWarSpawned", m_letterWarSpawned);
 			valuesDictionary.SetValue("HasShownUnlockMessage", m_hasShownUnlockMessage);
+
+			// ===== GUARDAR ESTADO COMPLETO DE LA BATALLA DE JEFES =====
+			valuesDictionary.SetValue("BossBattleActive", m_bossBattleActive);
+			valuesDictionary.SetValue("HasSpawnedBossThisNight", m_hasSpawnedBossThisNight);
+			valuesDictionary.SetValue("BossSpawnDelayed", m_bossSpawnDelayed);
+			valuesDictionary.SetValue("BossSpawnDelayTimer", m_bossSpawnDelayTimer);
+
+			// Guardar la cola de jefes pendientes como string separado por comas
+			string bossQueueStr = m_bossQueue.Count > 0 ? string.Join(",", m_bossQueue) : "";
+			valuesDictionary.SetValue("BossQueue", bossQueueStr);
+			// ===== FIN GUARDAR ESTADO DE LA BATALLA DE JEFES =====
 		}
 
 		/// <summary>
-		/// Busca si hay algún jefe vivo en el mundo actualmente (por si saliste y volviste a entrar)
+		/// Busca si hay algún jefe vivo en el mundo actualmente
 		/// </summary>
 		private Entity FindAliveBoss()
 		{
@@ -559,6 +596,49 @@ namespace Game
 			return null;
 		}
 
+		/// <summary>
+		/// Verifica y restaura el estado de la batalla de jefes después de cargar el mundo
+		/// </summary>
+		private void VerifyAndRestoreBossState()
+		{
+			if (!m_needsBossStateVerification) return;
+			m_needsBossStateVerification = false;
+
+			if (!m_bossBattleActive) return;
+
+			// Buscar si hay un jefe vivo
+			Entity aliveBoss = FindAliveBoss();
+
+			if (aliveBoss != null)
+			{
+				// Hay un jefe vivo, reclamarlo
+				m_currentBossEntity = aliveBoss;
+				Log.Verbose($"[SubsystemZombiesSpawn] Jefe restaurado: {aliveBoss.ValuesDictionary.DatabaseObject?.Name}");
+
+				// Reconstruir la cola basándonos en lo que falte
+				RebuildBossQueue();
+			}
+			else
+			{
+				// No hay jefe vivo
+				m_currentBossEntity = null;
+
+				if (m_bossQueue.Count > 0)
+				{
+					// Hay jefes pendientes, preparar para spawnear el siguiente
+					m_bossSpawnDelayed = true;
+					m_bossSpawnDelayTimer = 0.5f;
+					Log.Verbose($"[SubsystemZombiesSpawn] No se encontró jefe vivo, preparando spawn de siguiente jefe. Pendientes: {m_bossQueue.Count}");
+				}
+				else
+				{
+					// No hay jefes pendientes ni vivo, la batalla terminó
+					m_bossBattleActive = false;
+					Log.Verbose("[SubsystemZombiesSpawn] Batalla de jefes terminada (no hay jefes vivos ni pendientes)");
+				}
+			}
+		}
+
 		public void Update(float dt)
 		{
 			UpdateCountdownLabel();
@@ -567,6 +647,18 @@ namespace Game
 			int maxWave = m_waves.Keys.Max();
 
 			bool isNormalNight = IsNormalNight();
+
+			// ===== VERIFICAR ESTADO DEL JEFE DESPUÉS DE CARGAR =====
+			if (m_needsBossStateVerification)
+			{
+				// Esperar un poco para que las entidades se carguen completamente
+				// Usamos un pequeño delay implícito al verificar cada frame
+				if (Project.Entities.Count > 0)
+				{
+					VerifyAndRestoreBossState();
+				}
+			}
+			// ===== FIN VERIFICACIÓN =====
 
 			// ===== SPAWN DE ESQUELETOS NORMALES - SOLO si está habilitado =====
 			if (ShittyCreaturesSettingsManager.SkeletonSpawnEnabled)
@@ -649,11 +741,13 @@ namespace Game
 			float midnight = m_subsystemTimeOfDay.Midnight;
 			bool isMidnight = Math.Abs(timeOfDay - midnight) < 0.01f;
 
+			// ===== VERIFICAR SI HAY QUE INICIAR BATALLA (para oleadas que no son la última) =====
 			if (m_currentWave != maxWave)
 			{
-				// Comprobar de nuevo si hay un jefe vivo por si acabas de entrar al mundo
+				// Solo iniciar si NO se ha spawneado jefe esta noche
 				if (!m_hasSpawnedBossThisNight && !m_bossBattleActive && !m_bossSpawnDelayed)
 				{
+					// Primero verificar si hay un jefe vivo (por si acabas de entrar al mundo)
 					Entity existingBoss = FindAliveBoss();
 					if (existingBoss != null)
 					{
@@ -670,7 +764,9 @@ namespace Game
 					}
 				}
 			}
+			// ===== FIN VERIFICACIÓN =====
 
+			// ===== GESTIONAR RETRASO DE SPAWN DE JEFE =====
 			if (m_bossSpawnDelayed)
 			{
 				m_bossSpawnDelayTimer -= dt;
@@ -683,7 +779,9 @@ namespace Game
 					}
 				}
 			}
+			// ===== FIN GESTIÓN RETRASO =====
 
+			// ===== VERIFICAR SI EL JEFE ACTUAL MURIÓ =====
 			if (m_bossBattleActive)
 			{
 				if (m_currentBossEntity != null && !IsEntityAlive(m_currentBossEntity))
@@ -691,8 +789,16 @@ namespace Game
 					m_currentBossEntity = null;
 					AdvanceBossBattle();
 				}
+				// También verificar si por alguna razón no hay jefe actual pero hay pendientes
+				else if (m_currentBossEntity == null && m_bossQueue.Count > 0 && !m_bossSpawnDelayed)
+				{
+					m_bossSpawnDelayed = true;
+					m_bossSpawnDelayTimer = 0.5f;
+				}
 			}
+			// ===== FIN VERIFICACIÓN MUERTE JEFE =====
 
+			// ===== SPAWN NORMAL DE CRIATURAS =====
 			int totalCreatures = m_subsystemCreatureSpawn.CountCreatures(false);
 			float dynamicInterval = m_bossBattleActive ? m_spawnInterval * 2f : m_spawnInterval;
 			if (totalCreatures > MaxGlobalCreatures * 0.8f)
@@ -713,7 +819,7 @@ namespace Game
 				if (spawnedThisIteration == 0)
 					break;
 			}
-			// ===== FIN LÓGICA DE NOCHE VERDE =====
+			// ===== FIN SPAWN NORMAL DE CRIATURAS =====
 
 			if (m_subsystemGreenNightSky != null)
 			{
