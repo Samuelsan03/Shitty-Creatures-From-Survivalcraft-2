@@ -54,6 +54,7 @@ namespace Game
 		private ComponentRider m_componentRider;
 		private ComponentSteedBehavior m_componentSteed;
 		private ComponentSummonBehavior m_componentSummon;
+		private ComponentWalkAroundBehavior m_walkAroundBehavior;
 
 		private enum MountState { None, Searching, Mounting }
 		private MountState m_mountState = MountState.None;
@@ -208,6 +209,7 @@ namespace Game
 			m_subsystemTerrain = Project.FindSubsystem<SubsystemTerrain>(true);
 			m_subsystemBodies = Project.FindSubsystem<SubsystemBodies>(true);
 			m_componentSummon = Entity.FindComponent<ComponentSummonBehavior>();
+			m_walkAroundBehavior = Entity.FindComponent<ComponentWalkAroundBehavior>();
 			m_componentRider = Entity.FindComponent<ComponentRider>();
 			m_componentSteed = null; // Se obtendrá dinámicamente cuando se necesite
 
@@ -343,7 +345,7 @@ namespace Game
 			ComponentCreature target = m_componentChase?.Target;
 			if (target == null || target.ComponentHealth.Health <= 0f)
 			{
-				steedBase.SpeedOrder = 0;
+				steedBase.SpeedOrder = -1;   // Reduce el nivel de velocidad hasta 0
 				steedBase.TurnOrder = 0f;
 				steedBase.JumpOrder = 0f;
 				if (newSteed != null) newSteed.ExternalVerticalInput = 0f;
@@ -430,7 +432,7 @@ namespace Game
 
 			if (toTarget.LengthSquared() < 0.01f)
 			{
-				steedBase.SpeedOrder = 0;
+				steedBase.SpeedOrder = -1;   // Reduce el nivel de velocidad hasta 0
 				steedBase.TurnOrder = 0f;
 				steedBase.JumpOrder = 0f;
 				if (newSteed != null) newSteed.ExternalVerticalInput = 0f;
@@ -1128,7 +1130,25 @@ namespace Game
 				}
 
 				if (!hasTarget)
+				{
+					// Si está montado y perdió el objetivo, detener el combate montado
+					if (m_componentRider != null && m_componentRider.Mount != null)
+					{
+						ComponentMount mountComp = m_componentRider.Mount;
+						Entity mountEntity = mountComp.Entity;
+						ComponentSteedBehavior steedBase = mountEntity.FindComponent<ComponentNewSteedBehavior>();
+						if (steedBase == null) steedBase = mountEntity.FindComponent<ComponentSteedBehavior>();
+						if (steedBase != null)
+						{
+							steedBase.SpeedOrder = -1;   // Reduce el nivel de velocidad hasta 0
+							steedBase.TurnOrder = 0f;
+							steedBase.JumpOrder = 0f;
+							if (steedBase is ComponentNewSteedBehavior newSteed)
+								newSteed.ExternalVerticalInput = 0f;
+						}
+					}
 					return;
+				}
 
 				if (distance <= RangedAttackRange.X)
 				{
