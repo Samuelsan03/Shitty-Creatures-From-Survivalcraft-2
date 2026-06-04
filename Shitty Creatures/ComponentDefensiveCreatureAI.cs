@@ -52,6 +52,8 @@ namespace Game
 		private float ThrowableCooldown = 0.01f;
 
 		private ComponentRider m_componentRider;
+		private ComponentSteedBehavior m_componentSteed;
+		private ComponentSummonBehavior m_componentSummon;
 
 		private enum MountState { None, Searching, Mounting }
 		private MountState m_mountState = MountState.None;
@@ -205,7 +207,9 @@ namespace Game
 		{
 			m_subsystemTerrain = Project.FindSubsystem<SubsystemTerrain>(true);
 			m_subsystemBodies = Project.FindSubsystem<SubsystemBodies>(true);
+			m_componentSummon = Entity.FindComponent<ComponentSummonBehavior>();
 			m_componentRider = Entity.FindComponent<ComponentRider>();
+			m_componentSteed = null; // Se obtendrá dinámicamente cuando se necesite
 
 			// NUEVO: Si ya estaba montado al cargar, restaurar el estado de combate montado
 			if (m_componentRider != null && m_componentRider.Mount != null)
@@ -406,6 +410,70 @@ namespace Game
 				steedBase.JumpOrder = 0f;
 		}
 
+		private void HandleSummonMountedMovement(float dt, Vector3 targetPos)
+		{
+			if (m_componentRider == null || m_componentRider.Mount == null) return;
+
+			ComponentMount mountComp = m_componentRider.Mount;
+			Entity mountEntity = mountComp.Entity;
+
+			// Intentar obtener ComponentNewSteedBehavior, si no, el base ComponentSteedBehavior
+			ComponentSteedBehavior steedBase = mountEntity.FindComponent<ComponentNewSteedBehavior>();
+			ComponentNewSteedBehavior newSteed = steedBase as ComponentNewSteedBehavior;
+			if (newSteed == null) steedBase = mountEntity.FindComponent<ComponentSteedBehavior>();
+			if (steedBase == null) return;
+
+			Vector3 mountPos = mountComp.ComponentBody.Position;
+			Vector3 mountForward = mountComp.ComponentBody.Matrix.Forward;
+			Vector3 toTarget = targetPos - mountPos;
+			toTarget.Y = 0f;
+			if (toTarget.LengthSquared() < 0.01f)
+			{
+				steedBase.SpeedOrder = 0;
+				steedBase.TurnOrder = 0f;
+				steedBase.JumpOrder = 0f;
+				if (newSteed != null) newSteed.ExternalVerticalInput = 0f;
+				return;
+			}
+
+			Vector3 dirToTarget = Vector3.Normalize(toTarget);
+
+			float currentAngle = MathF.Atan2(mountForward.X, mountForward.Z);
+			float targetAngle = MathF.Atan2(dirToTarget.X, dirToTarget.Z);
+			float angleDifference = MathUtils.NormalizeAngle(targetAngle - currentAngle);
+			float turn = -Math.Clamp(angleDifference / (MathF.PI / 2f), -0.5f, 0.5f);
+			steedBase.TurnOrder = turn;
+
+			float distance = toTarget.Length();
+			float desiredSpeed = (distance > 1.5f) ? 1f : 0f;
+			steedBase.SpeedOrder = Math.Sign(desiredSpeed);
+
+			// Control vertical para monturas voladoras
+			if (newSteed != null)
+			{
+				ComponentLocomotion loco = mountEntity.FindComponent<ComponentLocomotion>();
+				bool canFly = (loco != null && loco.FlySpeed > 0f);
+				if (canFly)
+				{
+					float heightDiff = targetPos.Y - mountPos.Y;
+					const float maxHeightDiff = 3f;
+					float verticalInput = Math.Clamp(heightDiff / maxHeightDiff, -1f, 1f);
+					if (Math.Abs(verticalInput) < 0.1f) verticalInput = 0f;
+					newSteed.ExternalVerticalInput = verticalInput;
+				}
+				else
+				{
+					newSteed.ExternalVerticalInput = 0f;
+				}
+			}
+
+			// Salto si está atascado
+			if (m_componentPathfinding != null && m_componentPathfinding.IsStuck && m_random.Float(0f, 1f) < 0.02f)
+				steedBase.JumpOrder = 1f;
+			else
+				steedBase.JumpOrder = 0f;
+		}
+
 		private void InitializeThrowableIndices()
 		{
 			// Añadir todos los tipos de bloques lanzables
@@ -535,6 +603,36 @@ namespace Game
 				{
 					HandleMountedCombat(dt);
 					// No retornamos: el combate normal (armas) también debe ejecutarse
+				}
+			}
+
+			// ===== PRIORIDAD: Responder al silbato (sin desmontarse) =====
+			if (m_componentSummon != null && m_componentSummon.SummonTarget != null && m_componentSummon.IsEnabled)
+			{
+				ComponentBody summonTargetBody = m_componentSummon.SummonTarget;
+				if (summonTargetBody != null && summonTargetBody.Entity != null)
+				{
+					ComponentCreature targetCreature = summonTargetBody.Entity.FindComponent<ComponentCreature>();
+					if (targetCreature != null && targetCreature.ComponentHealth.Health > 0f)
+					{
+						// Si está montado, usar control de montura para acercarse
+						if (m_componentRider != null && m_componentRider.Mount != null)
+						{
+							HandleSummonMountedMovement(dt, summonTargetBody.Position);
+							return; // Salir del update para no hacer combate
+						}
+						else
+						{
+							// Si no está montado, usar pathfinding normal
+							m_componentPathfinding.SetDestination(summonTargetBody.Position, 1f, 1.5f, 0, false, true, false, summonTargetBody);
+							return; // No hacer combate mientras se acerca
+						}
+					}
+					else
+					{
+						// Objetivo inválido (muerto o desaparecido), limpiar SummonTarget
+						m_componentSummon.SummonTarget = null;
+					}
 				}
 			}
 
