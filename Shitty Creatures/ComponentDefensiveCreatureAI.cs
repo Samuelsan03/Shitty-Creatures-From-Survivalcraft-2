@@ -206,6 +206,14 @@ namespace Game
 			m_subsystemTerrain = Project.FindSubsystem<SubsystemTerrain>(true);
 			m_subsystemBodies = Project.FindSubsystem<SubsystemBodies>(true);
 			m_componentRider = Entity.FindComponent<ComponentRider>();
+
+			// NUEVO: Si ya estaba montado al cargar, restaurar el estado de combate montado
+			if (m_componentRider != null && m_componentRider.Mount != null)
+			{
+				m_mountedCombatActive = true;
+				if (m_componentChase != null) m_componentChase.Suppressed = false;
+			}
+
 			m_subsystemTime = Project.FindSubsystem<SubsystemTime>(true);
 			m_componentMiner = Entity.FindComponent<ComponentMiner>(true);
 			m_componentChase = Entity.FindComponent<ComponentNewChaseBehavior>();
@@ -312,7 +320,12 @@ namespace Game
 
 		private void HandleMountedCombat(float dt)
 		{
-			if (m_componentRider == null || m_componentRider.Mount == null) return;
+			if (m_componentRider == null || m_componentRider.Mount == null)
+			{
+				// Si perdimos la montura, desactivar el flag de combate montado
+				if (m_mountedCombatActive) m_mountedCombatActive = false;
+				return;
+			}
 
 			ComponentMount mountComp = m_componentRider.Mount;
 			Entity mountEntity = mountComp.Entity;
