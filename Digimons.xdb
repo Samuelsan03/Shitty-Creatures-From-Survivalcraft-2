@@ -59,6 +59,9 @@
         <Parameter Name="WalkSpeed" Guid="5a74b4b7-b60a-463e-b441-1e289e4b3cdd" Value="7.0" Type="float"/>
         <Parameter Name="LadderSpeed" Guid="42434728-56b6-4804-a2ba-278145a46f10" Value="0" Type="float"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Rider" Guid="3986810c-5a46-43bc-b04d-ae5f701d1fa5" InheritanceParent="894cdf33-9691-4320-a342-3aba1fd1c746">
+              <Parameter Name="RiderOffset" Guid="bb7253f3-c1ed-4c3c-a053-fa7fb8898244" Value="0,-0.71,0" Type="Vector3" />
+            </MemberComponentTemplate>
     <MemberComponentTemplate Name="AutoJump" Guid="6d571c0a-3ad9-44da-bb24-bb1f4ac3b94d" InheritanceParent="ef94c9db-75b0-4e0f-9971-f575ac88661b">
               <Parameter Name="JumpStrength" Guid="1eb0c8de-bf44-49a1-adda-0e2591803e41" Value="1" Type="float"/>
             </MemberComponentTemplate>
@@ -69,6 +72,7 @@
 <MemberComponentTemplate Name="DefensiveCreatureAI" Guid="f28a057f-793e-42d7-804c-83e8a8edaaeb" InheritanceParent="0f69cb1e-cf48-46bf-93ec-6990112112d5">
   <Parameter Name="CanUseInventory" Guid="98fa9085-8f45-4997-a2e2-972098b79bb7" Value="true" Type="bool" />
   <Parameter Name="CanEquipClothing" Guid="298de32d-a938-4188-9a60-8532f4509d2b" Value="true" Type="bool" />
+  <Parameter Name="CanBeMounted" Guid="1a44e7db-ffc1-40e9-ab4f-2e87707254ff" Value="true" Type="bool"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureClothing" Guid="f641d946-2b93-4b51-810e-e1bac50d3a30" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
   <ParameterSet Name="CreatureClothes" Guid="65b9162c-cc46-4e5d-8641-bf71f1bbb3d2">
@@ -244,18 +248,21 @@
     <MemberComponentTemplate Name="Miner" Guid="49e82d79-78bc-4e00-b5e3-35103403325c" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="5411571e-ef17-49b7-8c52-e14aaf1c0aa3" Value="28" Type="float"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Rider" Guid="7bf3ad6a-66ae-4cd1-9f4c-62143c8f6595" InheritanceParent="894cdf33-9691-4320-a342-3aba1fd1c746">
+              <Parameter Name="RiderOffset" Guid="dc34967e-be41-4907-912e-f0b0ea66fc99" Value="0,-0.71,0" Type="Vector3" />
+            </MemberComponentTemplate>
     <MemberComponentTemplate Name="CreatureInventory" Guid="1ae42253-640d-47c6-a4ab-6bb8c5e9248d" InheritanceParent="b0d27f89-dc61-4c44-b675-63d6a6f8bf78">
     <Parameter Name="SlotsCount" Value="16" Type="int"/>
     <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
   </MemberComponentTemplate>
-<MemberComponentTemplate Name="Inventory" Guid="4de976b5-e81a-45de-884c-e899e089a995" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
-    </MemberComponentTemplate>
+<MemberComponentTemplate Name="Inventory" Guid="4de976b5-e81a-45de-884c-e899e089a995" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890"/>
     <MemberComponentTemplate Name="NewCreatureCollect" Guid="ca9e4049-a1c4-4a46-bd38-072fe01725ad" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
     <Parameter Name="PickFactors" Guid="6257e999-67f3-4a03-85c8-73b108b2f04b" Value="Tools;1.0,Weapons;1.0" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="DefensiveCreatureAI" Guid="e9b248fb-9490-4743-b6a5-78eef305b05b" InheritanceParent="0f69cb1e-cf48-46bf-93ec-6990112112d5">
   <Parameter Name="CanUseInventory" Guid="8284e4f3-aeb9-46e3-bec8-19700280be04" Value="true" Type="bool" />
   <Parameter Name="CanEquipClothing" Guid="3e2e550d-1120-4ead-82e8-8b8b8ee6cd12" Value="true" Type="bool" />
+  <Parameter Name="CanBeMounted" Guid="a3f21beb-d1f5-401e-92f9-2d705ff07892" Value="true" Type="bool"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureClothing" Guid="8383800e-bc06-45f0-a719-16384d7c6247" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
   <ParameterSet Name="CreatureClothes" Guid="61072c62-9dd6-49a0-b7f5-6503890f0ed0">
@@ -401,6 +408,9 @@
         <Parameter Name="KillVerbs" Guid="9a8603ff-566c-4366-a13e-3aac1c895cc1" Value="burned" Type="string"/>
         <Parameter Name="ConstantSpawn" Guid="fb392996-287f-43d0-aa0c-260c0a9e18b5" Value="True" Type="bool"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Rider" Guid="67bcef66-ccc6-4c4c-b853-760210f047d7" InheritanceParent="894cdf33-9691-4320-a342-3aba1fd1c746">
+              <Parameter Name="RiderOffset" Guid="ec9537b4-6452-493a-a156-9b024dc5ab11" Value="0,-0.71,0" Type="Vector3" />
+            </MemberComponentTemplate>
     <MemberComponentTemplate Name="FindPlayerBehavior" Guid="49a7292f-9a8e-4f05-88ac-16ef3f5f4b8e" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031"/>
     <MemberComponentTemplate Name="Miner" Guid="ff99b342-d5fe-487c-be19-d8068bca4458" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="04d9e397-1ab4-48f1-8ad3-a39fd3746de9" Value="25" Type="float"/>
@@ -417,6 +427,7 @@
 <MemberComponentTemplate Name="DefensiveCreatureAI" Guid="ff88b3b9-0820-4d5a-89bf-0fa936372f97" InheritanceParent="0f69cb1e-cf48-46bf-93ec-6990112112d5">
   <Parameter Name="CanUseInventory" Guid="34b1f9b2-ab4e-48bf-925f-2adcc33689d0" Value="true" Type="bool" />
   <Parameter Name="CanEquipClothing" Guid="eb68ec1d-c8aa-4755-9b0b-27b7b9c9930d" Value="true" Type="bool" />
+  <Parameter Name="CanBeMounted" Guid="fe0aabd5-6fb4-416a-9623-5f18c8b0c55a" Value="true" Type="bool"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureClothing" Guid="a007e35e-9afe-47b2-830c-1b6817dd9c12" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
   <ParameterSet Name="CreatureClothes" Guid="a6c44f5c-2964-4a40-a944-070d95048265">
@@ -574,17 +585,20 @@
     <MemberComponentTemplate Name="Miner" Guid="f7bd13c2-81c9-4b86-9286-3dcc495e639f" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
         <Parameter Name="AttackPower" Guid="45062ab1-6ea8-4c68-8b5e-efcd3fbc7b86" Value="25" Type="float"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Rider" Guid="9d36bc19-b045-4b46-becc-c8a884923816" InheritanceParent="894cdf33-9691-4320-a342-3aba1fd1c746">
+              <Parameter Name="RiderOffset" Guid="16759ea0-04f4-49a5-ae15-cc7abf830fb0" Value="0,-0.71,0" Type="Vector3" />
+            </MemberComponentTemplate>
     <MemberComponentTemplate Name="CreatureInventory" Guid="ceeaf483-716f-471f-80cd-b701cf8b11d9" InheritanceParent="b0d27f89-dc61-4c44-b675-63d6a6f8bf78">
     <Parameter Name="SlotsCount" Value="16" Type="int"/>
     <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
   </MemberComponentTemplate>
-<MemberComponentTemplate Name="Inventory" Guid="6e312e87-d60e-469a-9f57-014bc3811a82" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
-    </MemberComponentTemplate>
+<MemberComponentTemplate Name="Inventory" Guid="6e312e87-d60e-469a-9f57-014bc3811a82" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890"/>
     <MemberComponentTemplate Name="NewCreatureCollect" Guid="c5202702-1c07-4226-9dbb-b1efd4b075b8" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
     <Parameter Name="PickFactors" Guid="518017df-bb3c-47b7-9c6f-5c06919b8355" Value="Tools;1.0,Weapons;1.0" Type="string"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="DefensiveCreatureAI" Guid="95c12065-d844-4c53-8628-1950e47de967" InheritanceParent="0f69cb1e-cf48-46bf-93ec-6990112112d5">
   <Parameter Name="CanUseInventory" Guid="86d476a7-c81d-4a29-b092-2ecb9b5d4d0f" Value="true" Type="bool" />
+  <Parameter Name="CanBeMounted" Guid="9ddb83f8-ea70-4e91-ad55-13dadd89b526" Value="true" Type="bool"/>
   <Parameter Name="CanEquipClothing" Guid="6e5c3645-3b88-4e8b-bbea-5cabed6e3bdc" Value="true" Type="bool" />
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureClothing" Guid="c2b25862-c894-409e-80e6-cf3a1e57e35e" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
@@ -656,6 +670,7 @@
   <MemberComponentTemplate Name="DefensiveCreatureAI" Guid="7c43f01d-ddca-4418-9fce-d527cc23606e" InheritanceParent="0f69cb1e-cf48-46bf-93ec-6990112112d5">
   <Parameter Name="CanUseInventory" Guid="f05c40d6-076c-41a4-8db4-c9a3e1a8c48e" Value="true" Type="bool" />
   <Parameter Name="CanEquipClothing" Guid="71b2a19a-a14c-4c92-a0e8-4b192b730f3e" Value="true" Type="bool" />
+  <Parameter Name="CanBeMounted" Guid="ec663d91-69c9-43dc-888b-62cb5674cf0d" Value="true" Type="bool"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureClothing" Guid="7aa5f015-ff5c-44cf-9c83-7ffbfc5a0243" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
   <ParameterSet Name="CreatureClothes" Guid="ccbc405f-9b78-498d-8a8b-83b5314dded7">
@@ -676,6 +691,9 @@
 <MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="f43befe7-3f92-4efa-a188-f7df0a298c21" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
 <MemberComponentTemplate Name="SummonBehavior" Guid="2c891180-9243-42a5-9dad-723f05d7abb5" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
               <Parameter Name="IsEnabled" Guid="8b8cc3bd-83e1-41e5-a0f0-651d2af6542f" Value="True" Type="bool"/>
+            </MemberComponentTemplate>
+            <MemberComponentTemplate Name="Rider" Guid="c3ccc88e-10d0-4a9d-a2bd-67dc21bbda85" InheritanceParent="894cdf33-9691-4320-a342-3aba1fd1c746">
+              <Parameter Name="RiderOffset" Guid="c703f579-0c3f-470f-a23b-6275db6fe75f" Value="0,-0.71,0" Type="Vector3" />
             </MemberComponentTemplate>
 <MemberComponentTemplate Name="Inventory" Guid="f8c266f5-6a80-470e-ac01-d81fc59f4d4d" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890"/>
   <MemberComponentTemplate Name="NewCreatureCollect" Guid="1d82d891-2fd4-41a5-905b-318b0b562a55" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
@@ -865,18 +883,21 @@
         </ParameterSet>
         <ParameterSet Name="LootOnFire" Guid="49cbdec7-2131-4541-b569-9db6dbfde2e1"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Rider" Guid="bd7f72d2-ec53-4de5-88f6-07ef5cbd1381" InheritanceParent="894cdf33-9691-4320-a342-3aba1fd1c746">
+              <Parameter Name="RiderOffset" Guid="086e59d3-1c16-496e-a231-953f2c2bf96c" Value="0,-0.71,0" Type="Vector3" />
+            </MemberComponentTemplate>
     <MemberComponentTemplate Name="CreatureInventory" Guid="8bfbd4bf-3d3a-46f9-9547-fd62a9c1d79c" InheritanceParent="b0d27f89-dc61-4c44-b675-63d6a6f8bf78">
     <Parameter Name="SlotsCount" Value="16" Type="int"/>
     <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
   </MemberComponentTemplate>
-    <MemberComponentTemplate Name="Inventory" Guid="42965f8a-911e-4b56-9eec-a19748601440" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
-    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Inventory" Guid="42965f8a-911e-4b56-9eec-a19748601440" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890"/>
     <MemberComponentTemplate Name="NewCreatureCollect" Guid="3d4a3f79-0480-433e-b3f8-6b4d5eac4013" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
     <Parameter Name="PickFactors" Guid="d52ae323-4515-45ff-bbb6-7bfe1c09b5e1" Value="Tools;1.0,Weapons;1.0" Type="string"/>
 </MemberComponentTemplate>
   <MemberComponentTemplate Name="DefensiveCreatureAI" Guid="b29165af-66fe-4ea3-8e2f-5e74abfc04e3" InheritanceParent="0f69cb1e-cf48-46bf-93ec-6990112112d5">
   <Parameter Name="CanUseInventory" Guid="3348befd-e309-4b2b-8605-823243b3c163" Value="true" Type="bool" />
   <Parameter Name="CanEquipClothing" Guid="2515ba6d-c779-4148-9310-17a2c3720dbd" Value="true" Type="bool" />
+  <Parameter Name="CanBeMounted" Guid="a5c68494-fe85-4364-b935-36a839e516f7" Value="true" Type="bool"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureClothing" Guid="0095d247-a067-4ec1-b144-c5ac2e8a0ce9" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
   <ParameterSet Name="CreatureClothes" Guid="c7c7ac66-c672-438a-978d-36e785ae506e">
@@ -973,9 +994,13 @@
     <Parameter Name="SlotsCount" Value="16" Type="int"/>
     <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
   </MemberComponentTemplate>
+  <MemberComponentTemplate Name="Rider" Guid="6dc6de1c-ced4-4bd7-99b3-00cbcabd2458" InheritanceParent="894cdf33-9691-4320-a342-3aba1fd1c746">
+              <Parameter Name="RiderOffset" Guid="8ec2b289-7618-4dc7-bd1f-b3573c1cc459" Value="0,-0.71,0" Type="Vector3" />
+            </MemberComponentTemplate>
   <MemberComponentTemplate Name="DefensiveCreatureAI" Guid="b54873d5-d49e-4bc8-a331-48a8f31764ba" InheritanceParent="0f69cb1e-cf48-46bf-93ec-6990112112d5">
   <Parameter Name="CanUseInventory" Guid="623f4677-a9ae-49e8-9b63-2842ea7ea4af" Value="true" Type="bool" />
   <Parameter Name="CanEquipClothing" Guid="7b41ea4b-49d0-4d17-b4eb-28b7b9062e8f" Value="true" Type="bool" />
+  <Parameter Name="CanBeMounted" Guid="66db9ef9-3e35-4ead-9497-2ee87f476933" Value="true" Type="bool"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureClothing" Guid="b2e5750b-877e-45eb-a283-fbf052efba4d" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
   <ParameterSet Name="CreatureClothes" Guid="0ff7ce85-8af3-441b-8b35-a0a5b853733b">
@@ -1134,9 +1159,13 @@
     <Parameter Name="SlotsCount" Value="16" Type="int"/>
     <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
   </MemberComponentTemplate>
+  <MemberComponentTemplate Name="Rider" Guid="1f7cb1f3-4b09-444a-ba4b-5088364197e9" InheritanceParent="894cdf33-9691-4320-a342-3aba1fd1c746">
+              <Parameter Name="RiderOffset" Guid="49f5fe1e-3f42-4ac7-9c1d-0f77d29c2a7a" Value="0,-0.71,0" Type="Vector3" />
+            </MemberComponentTemplate>
 <MemberComponentTemplate Name="DefensiveCreatureAI" Guid="ce57773c-f809-4065-8f51-10cf12df5260" InheritanceParent="0f69cb1e-cf48-46bf-93ec-6990112112d5">
   <Parameter Name="CanUseInventory" Guid="a5544f02-877a-403e-855b-5d12831eda81" Value="true" Type="bool" />
   <Parameter Name="CanEquipClothing" Guid="1bf90119-75e3-4ff3-a816-d12476ebadb6" Value="true" Type="bool" />
+  <Parameter Name="CanBeMounted" Guid="f31f6979-7b07-487e-9435-66318c107a33" Value="true" Type="bool"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureClothing" Guid="2418682f-d497-4959-8830-509e7dd2dcd6" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
   <ParameterSet Name="CreatureClothes" Guid="b98ee619-4bdb-4180-aa75-dcd27e842b16">
@@ -1300,8 +1329,12 @@
               <Parameter Name="AttackSound" Guid="2a25bbda-3809-49b0-8ed3-a4de50f4e062" Value="Audio/Creatures/Hawkmon/Attack" Type="string"/>
               <Parameter Name="PainSound" Guid="44e262e6-cc83-4a4c-8cd5-1fbed86ad79f" Value="Audio/Creatures/Hawkmon/Pain" Type="string"/>
             </MemberComponentTemplate>
+            <MemberComponentTemplate Name="Rider" Guid="e4d499d7-033d-46be-bcdf-bf6945a6e73f" InheritanceParent="894cdf33-9691-4320-a342-3aba1fd1c746">
+              <Parameter Name="RiderOffset" Guid="c650a5d1-5bfb-4d2f-8b39-7f91417b67da" Value="0,-0.71,0" Type="Vector3" />
+            </MemberComponentTemplate>
             <MemberComponentTemplate Name="DefensiveCreatureAI" Guid="fcb9061c-dde4-425e-8db9-bd9b76d3354b" InheritanceParent="0f69cb1e-cf48-46bf-93ec-6990112112d5">
   <Parameter Name="CanUseInventory" Guid="81a63d6c-71b4-4f93-bf0a-57e639d2941f" Value="true" Type="bool" />
+  <Parameter Name="CanBeMounted" Guid="9d49bf94-3b1c-4127-af95-cd3e7eb62534" Value="true" Type="bool"/>
   <Parameter Name="CanEquipClothing" Guid="53859047-2695-4559-a8fa-1259b75dbc97" Value="true" Type="bool" />
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureClothing" Guid="4849de38-77e3-42f3-850b-5a495312be40" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
@@ -1450,9 +1483,13 @@
               <Parameter Name="AttackSound" Guid="cea8a3bc-8164-4a6f-9d34-5469540e914e" Value="Audio/Creatures/Gabumon/Attack" Type="string"/>
               <Parameter Name="PainSound" Guid="df7c9507-9f3a-401c-ab26-da6626eae704" Value="Audio/Creatures/Gabumon/Pain" Type="string"/>
             </MemberComponentTemplate>
+            <MemberComponentTemplate Name="Rider" Guid="3d806c06-8af7-4e37-bdbc-c199c91e54ca" InheritanceParent="894cdf33-9691-4320-a342-3aba1fd1c746">
+              <Parameter Name="RiderOffset" Guid="9f187579-a756-4504-9b70-cae2d53bc587" Value="0,-0.71,0" Type="Vector3" />
+            </MemberComponentTemplate>
             <MemberComponentTemplate Name="DefensiveCreatureAI" Guid="fbff9fe5-f6c1-4d3d-86fe-f6dc3ea9ee9e" InheritanceParent="0f69cb1e-cf48-46bf-93ec-6990112112d5">
   <Parameter Name="CanUseInventory" Guid="8d386b00-05f4-4d23-b32f-68c054d32942" Value="true" Type="bool" />
   <Parameter Name="CanEquipClothing" Guid="0d5bc1e2-e3be-4a5f-a746-83c37f2fc2bb" Value="true" Type="bool" />
+  <Parameter Name="CanBeMounted" Guid="3d018381-e308-463f-9f41-968d1e1b572a" Value="true" Type="bool"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureClothing" Guid="2dd30e82-712a-4c79-a676-9452ecb93cec" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
   <ParameterSet Name="CreatureClothes" Guid="2ab6cfa0-17f3-4f7a-9c31-fae1195bd911">
