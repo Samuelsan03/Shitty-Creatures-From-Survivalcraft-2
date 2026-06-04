@@ -126,6 +126,7 @@
     <Parameter Name="ChaseTimeOnAttacked" Value="60" Type="float"/>
     <Parameter Name="ChasePersistentOnAttacked" Value="true" Type="bool"/>
     <Parameter Name="ImportanceLevelPersistent" Value="300" Type="float"/>
+    <Parameter Name="IsDrugTraffickerMode" Value="true" Type="bool"/>
 </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="4dcca829-556f-4ca9-899b-cd15c378efb8">
         <Parameter Name="Color" Guid="909373fa-f7f3-43f4-a47a-c489da9f0f29" Value="176,115,115" Type="Color"/>
@@ -261,6 +262,7 @@
     <Parameter Name="ChaseTimeOnAttacked" Value="60" Type="float"/>
     <Parameter Name="ChasePersistentOnAttacked" Value="true" Type="bool"/>
     <Parameter Name="ImportanceLevelPersistent" Value="300" Type="float"/>
+    <Parameter Name="IsDrugTraffickerMode" Value="true" Type="bool"/>
 </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="0a15bb69-f0cf-43d4-8903-2fe6d74c538f">
         <Parameter Name="Color" Guid="69060b7f-e051-4757-a343-f09edf4b6df3" Value="176,115,115" Type="Color"/>
@@ -380,6 +382,7 @@
     <Parameter Name="ChaseTimeOnAttacked" Value="999" Type="float"/>
     <Parameter Name="ChasePersistentOnAttacked" Value="true" Type="bool"/>
     <Parameter Name="ImportanceLevelPersistent" Value="300" Type="float"/>
+    <Parameter Name="IsDrugTraffickerMode" Value="true" Type="bool"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="BanditHerdBehavior" Guid="39723cdd-a5b1-40a7-99c8-a520b3b38eed" InheritanceParent="a511bc31-fbbf-47af-a2a8-4d51dad1d563">
     <Parameter Name="HerdName" Value="bandits" Type="string"/>
@@ -522,6 +525,7 @@
     <Parameter Name="ChaseTimeOnAttacked" Value="999" Type="float"/>
     <Parameter Name="ChasePersistentOnAttacked" Value="true" Type="bool"/>
     <Parameter Name="ImportanceLevelPersistent" Value="300" Type="float"/>
+    <Parameter Name="IsDrugTraffickerMode" Value="true" Type="bool"/>
 </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="242f9e82-e29d-42b7-8756-870b88d5d5b2">
         <Parameter Name="Color" Guid="1241efc3-364c-4392-8f0a-64bd594444a4" Value="176,115,115" Type="Color"/>
@@ -658,6 +662,7 @@
     <Parameter Name="ChaseTimeOnAttacked" Value="999" Type="float"/>
     <Parameter Name="ChasePersistentOnAttacked" Value="true" Type="bool"/>
     <Parameter Name="ImportanceLevelPersistent" Value="300" Type="float"/>
+    <Parameter Name="IsDrugTraffickerMode" Value="true" Type="bool"/>
 </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="8bf634c0-e337-43a3-912b-584b23036b3b">
         <Parameter Name="Color" Guid="ff77ecb2-4a2e-42cc-9c45-5287e5495cc6" Value="176,115,115" Type="Color"/>
@@ -794,6 +799,7 @@
     <Parameter Name="ChaseTimeOnAttacked" Value="999" Type="float"/>
     <Parameter Name="ChasePersistentOnAttacked" Value="true" Type="bool"/>
     <Parameter Name="ImportanceLevelPersistent" Value="300" Type="float"/>
+    <Parameter Name="IsDrugTraffickerMode" Value="true" Type="bool"/>
 </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="bdeb8b14-d29c-4249-a48d-7de400ccd78b">
         <Parameter Name="Color" Guid="71c59716-6d04-48de-97e8-13716046dd71" Value="176,115,115" Type="Color"/>
@@ -846,6 +852,9 @@
     <Parameter Name="WalkSpeed" Guid="3aa56158-39a4-4fff-8581-98bba4c523ac" Value="4" Type="float"/>
     <Parameter Name="LadderSpeed" Guid="d24fa30d-323c-4df9-93e5-2f37dc6ffc64" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="Rider" Guid="0394e60d-1345-4d5a-87c0-56f164ab422d" InheritanceParent="894cdf33-9691-4320-a342-3aba1fd1c746">
+              <Parameter Name="RiderOffset" Guid="42a68c4e-2540-4b00-acbd-adda00ce315b" Value="0,-0.71,0" Type="Vector3" />
+            </MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureInventory" Guid="ee857124-c103-4810-a8c5-26775de8ea79" InheritanceParent="b0d27f89-dc61-4c44-b675-63d6a6f8bf78">
     <Parameter Name="SlotsCount" Value="16" Type="int"/>
     <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
@@ -856,6 +865,7 @@
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="DefensiveCreatureAI" Guid="a8e136c7-72cf-4cba-803f-ba4cac375227" InheritanceParent="0f69cb1e-cf48-46bf-93ec-6990112112d5">
   <Parameter Name="CanUseInventory" Guid="147c3262-61f3-4be6-a08d-7bc4102bf589" Value="true" Type="bool" />
+  <Parameter Name="CanBeMounted" Guid="c76baacc-6417-4920-a485-c2eac99fa8a4" Value="true" Type="bool"/>
   <Parameter Name="CanEquipClothing" Guid="3a08d085-8e9b-4957-b7e6-68f5b0a29aba" Value="true" Type="bool" />
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureClothing" Guid="85e58de3-c550-4052-aa8b-2b9c424e2972" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
@@ -1075,6 +1085,7 @@
     <Parameter Name="ChaseTimeOnAttacked" Value="60" Type="float"/>
     <Parameter Name="ChasePersistentOnAttacked" Value="true" Type="bool"/>
     <Parameter Name="ImportanceLevelPersistent" Value="300" Type="float"/>
+    <Parameter Name="IsDrugTraffickerMode" Value="true" Type="bool"/>
 </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="d9fba799-c8bb-4225-8793-777d1a594c49">
         <Parameter Name="Color" Guid="eca696f8-9079-4c60-a661-b51023569b62" Value="176,115,115" Type="Color"/>
@@ -1211,6 +1222,7 @@
     <Parameter Name="ChaseTimeOnAttacked" Value="60" Type="float"/>
     <Parameter Name="ChasePersistentOnAttacked" Value="true" Type="bool"/>
     <Parameter Name="ImportanceLevelPersistent" Value="300" Type="float"/>
+    <Parameter Name="IsDrugTraffickerMode" Value="true" Type="bool"/>
 </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="eb99ff63-1601-4cc4-8810-24545c926f45">
         <Parameter Name="Color" Guid="2dfa56cb-5d4d-40f1-b6e2-76cdb13605c3" Value="176,115,115" Type="Color"/>
@@ -1347,6 +1359,7 @@
     <Parameter Name="ChaseTimeOnAttacked" Value="60" Type="float"/>
     <Parameter Name="ChasePersistentOnAttacked" Value="true" Type="bool"/>
     <Parameter Name="ImportanceLevelPersistent" Value="300" Type="float"/>
+    <Parameter Name="IsDrugTraffickerMode" Value="true" Type="bool"/>
 </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="b1a095ab-0c14-4007-a66f-0715a211ffe1">
         <Parameter Name="Color" Guid="44c47408-2246-46b5-ab67-96181b03b786" Value="176,115,115" Type="Color"/>
@@ -1399,6 +1412,9 @@
     <Parameter Name="WalkSpeed" Guid="0c6ba45d-cf03-4610-8880-f0490d00fbbe" Value="4" Type="float"/>
     <Parameter Name="LadderSpeed" Guid="0704e67e-c641-48c4-8c33-1497cdf214e8" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="Rider" Guid="3ee4f5be-7684-4281-8cac-ca50783831e5" InheritanceParent="894cdf33-9691-4320-a342-3aba1fd1c746">
+              <Parameter Name="RiderOffset" Guid="a5c293ca-315c-4ac9-858f-22b24be34ae7" Value="0,-0.71,0" Type="Vector3" />
+            </MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureInventory" Guid="b4318c29-0a46-4359-9156-85fc1d92cee8" InheritanceParent="b0d27f89-dc61-4c44-b675-63d6a6f8bf78">
     <Parameter Name="SlotsCount" Value="16" Type="int"/>
     <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
@@ -1411,6 +1427,7 @@
 <MemberComponentTemplate Name="DefensiveCreatureAI" Guid="b7d8ff84-2f54-4ef8-9a71-e63a76584df0" InheritanceParent="0f69cb1e-cf48-46bf-93ec-6990112112d5">
   <Parameter Name="CanUseInventory" Guid="927c464d-516a-4d89-8f5e-c856379bba19" Value="true" Type="bool" />
   <Parameter Name="CanEquipClothing" Guid="437f75d4-168b-436d-8fa4-46b1c4728390" Value="true" Type="bool" />
+  <Parameter Name="CanBeMounted" Guid="8b320280-0009-4ff7-8f8e-f956945f093b" Value="true" Type="bool"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureClothing" Guid="5ca7c875-7fd8-4865-bbd2-f11d348cd219" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
   <ParameterSet Name="CreatureClothes" Guid="9dd27979-a65f-4284-8186-f72b92abef11">
@@ -1545,6 +1562,9 @@
     <Parameter Name="WalkSpeed" Guid="9acc1ae7-e7a6-4246-97a3-49595eb91d76" Value="4" Type="float"/>
     <Parameter Name="LadderSpeed" Guid="90db32e5-b0b6-497f-84de-64754bb0b277" Value="1.0" Type="float"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="Rider" Guid="a028b231-c8e4-4348-b1ed-d0c26837b173" InheritanceParent="894cdf33-9691-4320-a342-3aba1fd1c746">
+              <Parameter Name="RiderOffset" Guid="3bfd4f27-d68c-43e5-bb3a-bfafc737b1e4" Value="0,-0.71,0" Type="Vector3" />
+            </MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureInventory" Guid="669acff0-29e9-4868-a253-d119c5141975" InheritanceParent="b0d27f89-dc61-4c44-b675-63d6a6f8bf78">
     <Parameter Name="SlotsCount" Value="16" Type="int"/>
     <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
@@ -1556,6 +1576,7 @@
 <MemberComponentTemplate Name="DefensiveCreatureAI" Guid="c9f99349-6d23-40c3-8f12-03023d725b19" InheritanceParent="0f69cb1e-cf48-46bf-93ec-6990112112d5">
   <Parameter Name="CanUseInventory" Guid="8ae34bae-3cdf-4341-b76b-3a5974775afb" Value="true" Type="bool" />
   <Parameter Name="CanEquipClothing" Guid="487ca851-74d1-49b5-af1b-38a6e152a61d" Value="true" Type="bool" />
+  <Parameter Name="CanBeMounted" Guid="20646327-d6e3-414a-9c0e-2cb30ad988a1" Value="true" Type="bool"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureClothing" Guid="a130d96c-745f-4bbc-9f7f-1530afddbe87" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
   <ParameterSet Name="CreatureClothes" Guid="d0c9f669-1068-4a54-a8e7-1d21e5eb5473">
@@ -1769,6 +1790,7 @@
     <Parameter Name="ChaseTimeOnAttacked" Value="60" Type="float"/>
     <Parameter Name="ChasePersistentOnAttacked" Value="true" Type="bool"/>
     <Parameter Name="ImportanceLevelPersistent" Value="300" Type="float"/>
+    <Parameter Name="IsDrugTraffickerMode" Value="true" Type="bool"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="0964edc6-a59a-4803-83e7-f5de7f20d416"/>
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="43cb7c60-11f1-4312-a50b-e087466f1b2c" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
@@ -1905,6 +1927,7 @@
     <Parameter Name="ChaseTimeOnAttacked" Value="60" Type="float"/>
     <Parameter Name="ChasePersistentOnAttacked" Value="true" Type="bool"/>
     <Parameter Name="ImportanceLevelPersistent" Value="300" Type="float"/>
+    <Parameter Name="IsDrugTraffickerMode" Value="true" Type="bool"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="476cc074-85ad-47ab-a0ae-9d5117eb7cf9"/>
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="ec0d6441-f58c-4eed-afbd-b3693dc1a0e7" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
@@ -2041,6 +2064,7 @@
     <Parameter Name="ChaseTimeOnAttacked" Value="60" Type="float"/>
     <Parameter Name="ChasePersistentOnAttacked" Value="true" Type="bool"/>
     <Parameter Name="ImportanceLevelPersistent" Value="300" Type="float"/>
+    <Parameter Name="IsDrugTraffickerMode" Value="true" Type="bool"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="264a54d0-a57f-46ca-aadc-b4b0d40b932e"/>
     <MemberComponentTemplate Name="WalkAroundBehavior" Guid="471cb201-bfdf-444a-91c1-ae2795ff09e4" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71"/>
@@ -2257,6 +2281,7 @@
     <Parameter Name="ChaseTimeOnAttacked" Value="60" Type="float"/>
     <Parameter Name="ChasePersistentOnAttacked" Value="true" Type="bool"/>
     <Parameter Name="ImportanceLevelPersistent" Value="300" Type="float"/>
+    <Parameter Name="IsDrugTraffickerMode" Value="true" Type="bool"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="Locomotion" Guid="a8c10747-e1a1-4941-860e-4f7cb6fecc6d">
               <Parameter Name="LadderSpeed" Guid="a36f279c-ba26-44d5-aae3-fcf139d97725" Value="1.0" Type="float"/>
@@ -2282,12 +2307,18 @@
           </EntityTemplate>
 
           <EntityTemplate Name="Bandit17" Guid="cb593488-6e11-4d85-89eb-c996d19cf3c1" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d"> <!-- bandido aliado del jugador -->
+            <MemberComponentTemplate Name="Rider" Guid="667e9adf-3af4-4129-aded-eaec9e1b2c0f" InheritanceParent="894cdf33-9691-4320-a342-3aba1fd1c746">
+              <Parameter Name="RiderOffset" Guid="03e3316c-3f0a-45c1-b033-c0e5fa89129f" Value="0,-0.71,0" Type="Vector3" />
+            </MemberComponentTemplate>
             <MemberComponentTemplate Name="Creature" Guid="c49a8f15-f30c-4e15-9a45-0d970216c426">
               <Parameter Name="Description" Guid="49cadc83-1ce7-4825-8a68-cf8e79b683c5" Value="[Description:Bandit1]" Type="string" />
               <Parameter Name="Category" Guid="de08fbc7-60ee-451a-9552-4a79559903df" Value="LandOther" Type="Game.CreatureCategory" />
               <Parameter Name="DisplayName" Guid="26c3a5ce-0531-4115-bec1-d66a5a8d683a" Value="[DisplayName:Bandit17]" Type="string" />
               <Parameter Name="ConstantSpawn" Guid="900a977a-8d7e-4e16-982d-237ce54e693a" Value="True" Type="bool" />
               <Parameter Name="KillVerbs" Guid="1a27862c-f937-43ae-a1d3-b3296bb5fb34" Value="massacred" Type="string" />
+            </MemberComponentTemplate>
+            <MemberComponentTemplate Name="Spawn" Guid="411a5bd3-c6a5-4981-a9ff-a99e97d371ce" InheritanceParent="65268743-4076-4ee3-aefe-f02a54d16b36">
+              <Parameter Name="AutoDespawn" Guid="2d9629c2-6496-4480-b3a2-e36806411f9b" Value="False" Type="bool" />
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Body" Guid="a6dfef8f-4cd6-4652-9390-a1c5f913e985">
               <Parameter Name="BoxSize" Guid="3e2487d0-e54b-4f56-b0b1-8de8410d23a0" Value="0.7,1.8,0.7" Type="Vector3" />
@@ -2362,6 +2393,7 @@
 <MemberComponentTemplate Name="DefensiveCreatureAI" Guid="bf038d70-e93e-4f7a-9440-eca5ce6551cb" InheritanceParent="0f69cb1e-cf48-46bf-93ec-6990112112d5">
   <Parameter Name="CanUseInventory" Guid="fb34b5b2-40a6-46a2-9dd2-610559090d73" Value="true" Type="bool" />
   <Parameter Name="CanEquipClothing" Guid="45e4b09f-bff9-4df4-8345-d567b2bd0bbf" Value="true" Type="bool" />
+  <Parameter Name="CanBeMounted" Guid="f01f0b3e-1827-4cc2-a2f8-23d71826cb0c" Value="true" Type="bool"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureClothing" Guid="42675e2c-3543-47f1-a9e8-dbf6466aa4d1" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
   <ParameterSet Name="CreatureClothes" Guid="413bb763-ca09-4b79-b46d-421bc205aef6">
