@@ -240,6 +240,9 @@ namespace Game
 
 		public void Update(float dt)
 		{
+			// Si la celebración está activa, solo bloquear combate, pero permitir equipar ropa
+			bool celebrationActive = AchievementsManager.IsCelebrationActive;
+
 			// Si estamos flanqueando, actualizar temporizador y salir
 			if (m_isFlanking)
 			{
@@ -250,6 +253,66 @@ namespace Game
 				}
 				return;
 			}
+
+			// ===== LÓGICA DE EQUIPAMIENTO DE ROPA (INDEPENDIENTE) =====
+			if (CanEquipClothing && m_componentCreatureClothing != null && !m_isAiming && !m_isCustomAiming && !m_isFirearmReloading)
+			{
+				if (m_clothingEquipPending)
+				{
+					m_clothingEquipTimer -= dt;
+					if (m_clothingEquipTimer <= 0f)
+					{
+						IInventory minerInv = m_componentMiner.Inventory;
+						int slotValue = minerInv.GetSlotValue(m_pendingClothingMinerSlot);
+						if (slotValue == m_pendingClothingValue)
+						{
+							int processedCount;
+							int processedValue;
+							m_componentCreatureClothing.ProcessSlotItems(
+								m_pendingClothingSlotIndex, m_pendingClothingValue, 1, 1,
+								out processedValue, out processedCount);
+							if (processedCount > 0)
+							{
+								minerInv.RemoveSlotItems(m_pendingClothingMinerSlot, 1);
+							}
+						}
+						m_clothingEquipPending = false;
+					}
+				}
+				else
+				{
+					IInventory minerInv = m_componentMiner.Inventory;
+					for (int i = 0; i < minerInv.SlotsCount; i++)
+					{
+						int value = minerInv.GetSlotValue(i);
+						if (value == 0) continue;
+						Block block = BlocksManager.Blocks[Terrain.ExtractContents(value)];
+						if (!(block is ClothingBlock)) continue;
+						ClothingData data = block.GetClothingData(value);
+						if (data == null) continue;
+
+						int clothingSlotIndex = -1;
+						if (data.Slot == ClothingSlot.Head) clothingSlotIndex = 0;
+						else if (data.Slot == ClothingSlot.Torso) clothingSlotIndex = 1;
+						else if (data.Slot == ClothingSlot.Legs) clothingSlotIndex = 2;
+						else if (data.Slot == ClothingSlot.Feet) clothingSlotIndex = 3;
+						if (clothingSlotIndex == -1) continue;
+
+						if (m_componentCreatureClothing.GetSlotProcessCapacity(clothingSlotIndex, value) > 0)
+						{
+							m_pendingClothingMinerSlot = i;
+							m_pendingClothingValue = value;
+							m_pendingClothingSlotIndex = clothingSlotIndex;
+							m_clothingEquipTimer = 0.55f;
+							m_clothingEquipPending = true;
+							break;
+						}
+					}
+				}
+			}
+
+			// Si la celebración está activa, NO hacer nada de combate después de esto
+			if (celebrationActive) return;
 
 			if (!CanUseInventory || m_componentMiner == null || m_componentCreature == null)
 				return;
@@ -316,63 +379,6 @@ namespace Game
 					}
 				}
 				return;
-			}
-
-			// ===== LÓGICA DE EQUIPAMIENTO DE ROPA (INDEPENDIENTE) =====
-			if (CanEquipClothing && m_componentCreatureClothing != null && !m_isAiming && !m_isCustomAiming && !m_isFirearmReloading)
-			{
-				if (m_clothingEquipPending)
-				{
-					m_clothingEquipTimer -= dt;
-					if (m_clothingEquipTimer <= 0f)
-					{
-						IInventory minerInv = m_componentMiner.Inventory;
-						int slotValue = minerInv.GetSlotValue(m_pendingClothingMinerSlot);
-						if (slotValue == m_pendingClothingValue)
-						{
-							int processedCount;
-							int processedValue;
-							m_componentCreatureClothing.ProcessSlotItems(
-								m_pendingClothingSlotIndex, m_pendingClothingValue, 1, 1,
-								out processedValue, out processedCount);
-							if (processedCount > 0)
-							{
-								minerInv.RemoveSlotItems(m_pendingClothingMinerSlot, 1);
-							}
-						}
-						m_clothingEquipPending = false;
-					}
-				}
-				else
-				{
-					IInventory minerInv = m_componentMiner.Inventory;
-					for (int i = 0; i < minerInv.SlotsCount; i++)
-					{
-						int value = minerInv.GetSlotValue(i);
-						if (value == 0) continue;
-						Block block = BlocksManager.Blocks[Terrain.ExtractContents(value)];
-						if (!(block is ClothingBlock)) continue;
-						ClothingData data = block.GetClothingData(value);
-						if (data == null) continue;
-
-						int clothingSlotIndex = -1;
-						if (data.Slot == ClothingSlot.Head) clothingSlotIndex = 0;
-						else if (data.Slot == ClothingSlot.Torso) clothingSlotIndex = 1;
-						else if (data.Slot == ClothingSlot.Legs) clothingSlotIndex = 2;
-						else if (data.Slot == ClothingSlot.Feet) clothingSlotIndex = 3;
-						if (clothingSlotIndex == -1) continue;
-
-						if (m_componentCreatureClothing.GetSlotProcessCapacity(clothingSlotIndex, value) > 0)
-						{
-							m_pendingClothingMinerSlot = i;
-							m_pendingClothingValue = value;
-							m_pendingClothingSlotIndex = clothingSlotIndex;
-							m_clothingEquipTimer = 0.55f;
-							m_clothingEquipPending = true;
-							break;
-						}
-					}
-				}
 			}
 
 			float distance = GetTargetDistance();
