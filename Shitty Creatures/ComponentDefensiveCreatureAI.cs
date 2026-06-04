@@ -318,16 +318,18 @@ namespace Game
 			Entity mountEntity = mountComp.Entity;
 
 			// Intentar obtener ComponentNewSteedBehavior, si no, el base ComponentSteedBehavior
-			ComponentSteedBehavior steed = mountEntity.FindComponent<ComponentNewSteedBehavior>();
-			if (steed == null) steed = mountEntity.FindComponent<ComponentSteedBehavior>();
-			if (steed == null) return;
+			ComponentSteedBehavior steedBase = mountEntity.FindComponent<ComponentNewSteedBehavior>();
+			ComponentNewSteedBehavior newSteed = steedBase as ComponentNewSteedBehavior;
+			if (newSteed == null) steedBase = mountEntity.FindComponent<ComponentSteedBehavior>();
+			if (steedBase == null) return;
 
 			ComponentCreature target = m_componentChase?.Target;
 			if (target == null || target.ComponentHealth.Health <= 0f)
 			{
-				steed.SpeedOrder = 0;
-				steed.TurnOrder = 0f;
-				steed.JumpOrder = 0f;
+				steedBase.SpeedOrder = 0;
+				steedBase.TurnOrder = 0f;
+				steedBase.JumpOrder = 0f;
+				if (newSteed != null) newSteed.ExternalVerticalInput = 0f;
 				return;
 			}
 
@@ -344,7 +346,7 @@ namespace Game
 			float targetAngle = MathF.Atan2(dirToTarget.X, dirToTarget.Z);
 			float angleDifference = MathUtils.NormalizeAngle(targetAngle - currentAngle);
 			float turn = -Math.Clamp(angleDifference / (MathF.PI / 2f), -0.5f, 0.5f);
-			steed.TurnOrder = turn;
+			steedBase.TurnOrder = turn;
 
 			float distance = toTarget.Length();
 			float desiredSpeed = 0f;
@@ -357,18 +359,38 @@ namespace Game
 			else
 			{
 				if (distance > RangedAttackRange.X)
-					desiredSpeed = 1f;   // Acelerar si está lejos
+					desiredSpeed = 1f;
 				else
-					desiredSpeed = 0.5f; // Mantener velocidad baja para atacar de cerca
+					desiredSpeed = 0.5f;
 			}
 
-			steed.SpeedOrder = Math.Sign(desiredSpeed);
+			steedBase.SpeedOrder = Math.Sign(desiredSpeed);
+
+			// ===== NUEVO: Control vertical para monturas voladoras =====
+			if (newSteed != null)
+			{
+				// Verificar si la montura puede volar (FlySpeed > 0)
+				ComponentLocomotion loco = mountEntity.FindComponent<ComponentLocomotion>();
+				bool canFly = (loco != null && loco.FlySpeed > 0f);
+				if (canFly)
+				{
+					float heightDiff = targetPos.Y - mountPos.Y;
+					const float maxHeightDiff = 3f;
+					float verticalInput = Math.Clamp(heightDiff / maxHeightDiff, -1f, 1f);
+					if (Math.Abs(verticalInput) < 0.1f) verticalInput = 0f;
+					newSteed.ExternalVerticalInput = verticalInput;
+				}
+				else
+				{
+					newSteed.ExternalVerticalInput = 0f;
+				}
+			}
 
 			// Salto si está atascado
 			if (m_componentPathfinding != null && m_componentPathfinding.IsStuck && m_random.Float(0f, 1f) < 0.02f)
-				steed.JumpOrder = 1f;
+				steedBase.JumpOrder = 1f;
 			else
-				steed.JumpOrder = 0f;
+				steedBase.JumpOrder = 0f;
 		}
 
 		private void InitializeThrowableIndices()
