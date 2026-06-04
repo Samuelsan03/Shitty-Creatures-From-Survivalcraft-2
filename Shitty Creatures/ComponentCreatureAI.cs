@@ -410,63 +410,53 @@ namespace Game
 			ComponentMount mountComp = m_componentRider.Mount;
 			Entity mountEntity = mountComp.Entity;
 			ComponentSteedBehavior steed = mountEntity.FindComponent<ComponentSteedBehavior>();
-			if (steed == null) return; // La montura no tiene comportamiento de cabalgadura
+			if (steed == null) return;
 
-			ComponentCreature target = m_chaseBehavior.Target;
+			ComponentCreature target = m_chaseBehavior?.Target;
 			if (target == null || target.ComponentHealth.Health <= 0f)
 			{
-				// Sin objetivo: detener la montura
 				steed.SpeedOrder = 0;
 				steed.TurnOrder = 0f;
 				steed.JumpOrder = 0f;
 				return;
 			}
 
-			// Obtener posición y orientación de la montura
 			Vector3 mountPos = mountComp.ComponentBody.Position;
 			Vector3 mountForward = mountComp.ComponentBody.Matrix.Forward;
 			Vector3 targetPos = target.ComponentBody.BoundingBox.Center();
 			Vector3 toTarget = targetPos - mountPos;
-			toTarget.Y = 0f; // Ignorar altura para el giro
+			toTarget.Y = 0f;
 			if (toTarget.LengthSquared() < 0.01f) return;
 
 			Vector3 dirToTarget = Vector3.Normalize(toTarget);
 
-			// Calcular ángulo actual de la montura y ángulo hacia el objetivo (en radianes)
 			float currentAngle = MathF.Atan2(mountForward.X, mountForward.Z);
 			float targetAngle = MathF.Atan2(dirToTarget.X, dirToTarget.Z);
-
-			// Diferencia normalizada entre -PI y PI
 			float angleDifference = MathUtils.NormalizeAngle(targetAngle - currentAngle);
-
-			// Convertir a TurnOrder (invertir signo porque en ComponentLocomotion se resta)
-			// Máximo 90 grados => 0.5, mínimo -90 => -0.5
 			float turn = -Math.Clamp(angleDifference / (MathF.PI / 2f), -0.5f, 0.5f);
 			steed.TurnOrder = turn;
 
 			float distance = toTarget.Length();
 			float desiredSpeed = 0f;
 
-			// Si el ángulo de desviación es grande (>30°), frenar para girar en el sitio
+			// Si el ángulo es grande (>30°), frenar para girar en el sitio
 			if (MathF.Abs(angleDifference) > 0.5f)
 			{
 				desiredSpeed = 0f;
 			}
 			else
 			{
-				// Control de velocidad según distancia al rango de combate
-				if (distance > EngagementRange.X + 1f)
-					desiredSpeed = 1f;
-				else if (distance < EngagementRange.X - 1f)
-					desiredSpeed = -1f;
+				// Siempre avanzar si hay objetivo, NUNCA retroceder
+				// Velocidad constante para acercarse y atacar cuerpo a cuerpo
+				if (distance > EngagementRange.X)
+					desiredSpeed = 1f;   // Acelerar si está lejos
 				else
-					desiredSpeed = 0f;
+					desiredSpeed = 0.5f; // Mantener velocidad baja para atacar de cerca, NO retroceder
 			}
 
 			steed.SpeedOrder = Math.Sign(desiredSpeed);
 
-			// Salto ocasional si está atascado (opcional)
-			if (m_componentPathfinding.IsStuck && m_random.Float(0f, 1f) < 0.02f)
+			if (m_componentPathfinding != null && m_componentPathfinding.IsStuck && m_random.Float(0f, 1f) < 0.02f)
 				steed.JumpOrder = 1f;
 			else
 				steed.JumpOrder = 0f;
