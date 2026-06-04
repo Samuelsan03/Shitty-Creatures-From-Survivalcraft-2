@@ -65,6 +65,7 @@ namespace Game
 		SubsystemParticles m_subsystemParticles;
 		SubsystemTerrain m_subsystemTerrain;
 
+		private ComponentWalkAroundBehavior m_walkAroundBehavior;
 		ComponentCreature m_componentCreature;
 		ComponentChaseBehavior m_chaseBehavior;
 		ComponentMiner m_componentMiner;
@@ -209,6 +210,7 @@ namespace Game
 			m_subsystemBodies = Project.FindSubsystem<SubsystemBodies>(true);   // NUEVO
 
 			m_componentCreature = Entity.FindComponent<ComponentCreature>(true);
+			m_walkAroundBehavior = Entity.FindComponent<ComponentWalkAroundBehavior>();
 			m_chaseBehavior = Entity.FindComponent<ComponentChaseBehavior>(true);
 			m_componentMiner = Entity.FindComponent<ComponentMiner>(true);
 			m_componentPathfinding = Entity.FindComponent<ComponentPathfinding>(true);
@@ -418,6 +420,7 @@ namespace Game
 				steed.SpeedOrder = 0;
 				steed.TurnOrder = 0f;
 				steed.JumpOrder = 0f;
+				// No desmontar, simplemente dejar de mover la montura
 				return;
 			}
 
@@ -621,6 +624,32 @@ namespace Game
 			{
 				CancelAiming(inventory);
 				m_isThrowing = false;
+
+				// Si está montado y perdió el objetivo, detener el combate montado y pasear
+				if (m_componentRider != null && m_componentRider.Mount != null)
+				{
+					// Detener órdenes de la montura
+					ComponentMount mountComp = m_componentRider.Mount;
+					Entity mountEntity = mountComp.Entity;
+					ComponentSteedBehavior steed = mountEntity.FindComponent<ComponentSteedBehavior>();
+					if (steed != null)
+					{
+						steed.SpeedOrder = 0;
+						steed.TurnOrder = 0f;
+						steed.JumpOrder = 0f;
+					}
+
+					// Si existe comportamiento de paseo, asegurarse de que esté activo
+					if (m_walkAroundBehavior != null && !m_walkAroundBehavior.IsActive)
+					{
+						// Forzar que el paseo se active (no se puede activar directamente,
+						// pero se puede establecer su importancia)
+						// En este caso, simplemente no hacemos nada, el sistema de estados
+						// del walkaround se activará por sí solo cuando el chase behavior no tenga importancia.
+						// Para forzar, podríamos llamar a un método público si existiera, pero no es necesario.
+					}
+				}
+
 				return;
 			}
 
