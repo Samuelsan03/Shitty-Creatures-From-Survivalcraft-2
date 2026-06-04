@@ -32,6 +32,32 @@ namespace Game
 		// Dictionary parameters
 		public bool CanUseInventory = false;
 		public bool CanEquipClothing = false;
+		public bool CanBeMounted = false;
+
+		// Lista de nombres de plantillas de entidades que pueden ser montadas
+		private static readonly HashSet<string> MountableCreatureTemplates = new HashSet<string>
+		{
+			"Horse_Black_Saddled",
+			"Horse_Palomino_Saddled",
+			"Camel_Saddled",
+			"Horse_Chestnut_Saddled",
+			"Horse_White_Saddled",
+			"Donkey_Saddled",
+			"Horse_Bay_Saddled"
+		};
+
+		// Componentes y variables de estado para montar
+		private SubsystemBodies m_subsystemBodies;
+		private ComponentRider m_componentRider;
+		private enum MountState { None, Searching, Mounting }
+		private MountState m_mountState = MountState.None;
+		private float m_mountTimer = 0f;
+		private ComponentMount m_targetMount = null;
+		private float m_mountSearchCooldown = 0f;
+		private const float MountNearDistance = 1.2f;   // Distancia mínima para comenzar a montar
+
+		// Flag para saber si estamos en combate montado (ya montado y controlando la montura)
+		private bool m_mountedCombatActive = false;
 
 		SubsystemTime m_subsystemTime;
 		SubsystemProjectiles m_subsystemProjectiles;
@@ -180,14 +206,23 @@ namespace Game
 			m_subsystemAudio = Project.FindSubsystem<SubsystemAudio>(true);
 			m_subsystemParticles = Project.FindSubsystem<SubsystemParticles>(true);
 			m_subsystemTerrain = Project.FindSubsystem<SubsystemTerrain>(true);
+			m_subsystemBodies = Project.FindSubsystem<SubsystemBodies>(true);   // NUEVO
 
 			m_componentCreature = Entity.FindComponent<ComponentCreature>(true);
 			m_chaseBehavior = Entity.FindComponent<ComponentChaseBehavior>(true);
 			m_componentMiner = Entity.FindComponent<ComponentMiner>(true);
 			m_componentPathfinding = Entity.FindComponent<ComponentPathfinding>(true);
+			m_componentRider = Entity.FindComponent<ComponentRider>();   // NUEVO
 
 			CanUseInventory = valuesDictionary.GetValue<bool>("CanUseInventory");
 			CanEquipClothing = valuesDictionary.GetValue<bool>("CanEquipClothing");
+			CanBeMounted = valuesDictionary.GetValue<bool>("CanBeMounted");   // NUEVO
+
+			if (m_componentRider != null && m_componentRider.Mount != null)
+			{
+				m_mountedCombatActive = true;
+				if (m_chaseBehavior != null) m_chaseBehavior.Suppressed = false;
+			}
 
 			m_subsystemProjectiles.ProjectileAdded += OnProjectileAdded;
 
@@ -222,6 +257,227 @@ namespace Game
 			m_throwableIndices.Add(BlocksManager.GetBlockIndex<FreezeBombBlock>(false, false));
 			m_throwableIndices.Add(BlocksManager.GetBlockIndex<FireworksBlock>(false, false));
 		}
+
+		// ========== NUEVO: Lógica de búsqueda y montura ==========
+		private ComponentMount FindBestMount(float radius)
+		{
+			if (m_subsystemBodies == null || m_componentCreature == null)
+				return null;
+
+			DynamicArray<ComponentBody> bodies = new DynamicArray<ComponentBody>();
+			Vector2 center = new Vector2(m_componentCreature.ComponentBody.Position.X, m_componentCreature.ComponentBody.Position.Z);
+			m_subsystemBodies.FindBodiesAroundPoint(center, radius, bodies);
+
+			ComponentMount bestMount = null;
+			float bestDistanceSq = radius * radius;
+
+			for (int i = 0; i < bodies.Count; i++)
+			{
+				ComponentBody body = bodies.Array[i];
+				if (body == null || body.Entity == null) continue;
+
+				ComponentMount mount = body.Entity.FindComponent<ComponentMount>();
+				if (mount == null) continue;
+
+				string templateName = mount.Entity.ValuesDictionary.DatabaseObject.Name;
+				if (!MountableCreatureTemplates.Contains(templateName)) continue;
+
+				ComponentHealth health = mount.Entity.FindComponent<ComponentHealth>();
+				if (health != null && health.Health <= 0f) continue;
+
+				if (mount.Rider != null) continue;
+
+				float distSq = Vector3.DistanceSquared(m_componentCreature.ComponentBody.Position, body.Position);
+				// SOLO permitir montura si está realmente cerca
+				if (distSq < MountNearDistance * MountNearDistance && distSq < bestDistanceSq)
+				{
+					bestDistanceSq = distSq;
+					bestMount = mount;
+				}
+			}
+
+			return bestMount;
+		}
+
+		private void StartMountingAttempt(ComponentMount mount)
+		{
+			if (mount == null) return;
+			m_mountState = MountState.Mounting;
+			m_mountTimer = 0.55f;
+			m_targetMount = mount;
+			CancelAiming(m_componentMiner.Inventory);
+			// No suprimimos el chase behavior para que siga teniendo objetivo mientras montamos
+			// if (m_chaseBehavior != null) m_chaseBehavior.Suppressed = true;
+			m_componentPathfinding.Stop();
+		}
+
+		private void CancelMounting()
+		{
+			m_mountState = MountState.None;
+			m_mountTimer = 0f;
+			m_targetMount = null;
+			m_mountedCombatActive = false;
+			if (m_chaseBehavior != null) m_chaseBehavior.Suppressed = false;
+		}
+
+		private void UpdateMounting(float dt)
+		{
+			if (!CanBeMounted || m_componentRider == null) return;
+			if (m_componentRider.Mount != null) return;
+			if (m_componentCreature.ComponentHealth.Health <= 0f) return;
+
+			// Buscar montura cada segundo
+			m_mountSearchCooldown -= dt;
+			if (m_mountSearchCooldown <= 0f)
+			{
+				m_mountSearchCooldown = 1.0f;
+
+				// Buscar montura cercana (mismo estilo que FindNearestMount del ejemplo)
+				ComponentMount nearestMount = FindNearestMount(1.5f);
+				if (nearestMount != null)
+				{
+					// Montar INMEDIATAMENTE, sin temporizador de 0.55 segundos
+					m_componentRider.StartMounting(nearestMount);
+					m_mountedCombatActive = true;
+					if (m_chaseBehavior != null) m_chaseBehavior.Suppressed = false;
+				}
+			}
+		}
+
+		// Buscar la montura más cercana (sin temporizador, evaluación inmediata)
+		private ComponentMount FindNearestMount(float maxDistance)
+		{
+			if (m_subsystemBodies == null || m_componentCreature == null)
+				return null;
+
+			DynamicArray<ComponentBody> bodies = new DynamicArray<ComponentBody>();
+			Vector2 center = new Vector2(m_componentCreature.ComponentBody.Position.X, m_componentCreature.ComponentBody.Position.Z);
+			m_subsystemBodies.FindBodiesAroundPoint(center, maxDistance, bodies);
+
+			ComponentMount bestMount = null;
+			float bestScore = -1f;
+
+			for (int i = 0; i < bodies.Count; i++)
+			{
+				ComponentBody body = bodies.Array[i];
+				if (body == null || body.Entity == null) continue;
+
+				ComponentMount mount = body.Entity.FindComponent<ComponentMount>();
+				if (mount == null) continue;
+
+				// Verificar si es una montura válida (ensillada)
+				string templateName = mount.Entity.ValuesDictionary.DatabaseObject.Name;
+				if (!MountableCreatureTemplates.Contains(templateName)) continue;
+
+				// Verificar salud
+				ComponentHealth health = mount.Entity.FindComponent<ComponentHealth>();
+				if (health != null && health.Health <= 0f) continue;
+
+				// Verificar que no tenga jinete
+				if (mount.Rider != null) continue;
+
+				// Calcular distancia REAL (no la puntuación)
+				Vector3 mountPos = mount.ComponentBody.Position;
+				float distance = Vector3.Distance(m_componentCreature.ComponentBody.Position, mountPos);
+
+				// SOLO montar si está realmente cerca (MountNearDistance = 1.2f)
+				if (distance < MountNearDistance)
+				{
+					float score = maxDistance - distance; // Mientras más cerca, mayor puntuación
+					if (score > bestScore)
+					{
+						bestScore = score;
+						bestMount = mount;
+					}
+				}
+			}
+
+			return bestMount;
+		}
+
+		// Puntuación de montura (basada en distancia y orientación)
+		private float ScoreMount(ComponentMount mount, float maxDistance)
+		{
+			Vector3 mountOffsetPos = mount.ComponentBody.Position + Vector3.Transform(mount.MountOffset, mount.ComponentBody.Rotation);
+			Vector3 toMount = mountOffsetPos - m_componentCreature.ComponentCreatureModel.EyePosition;
+
+			if (toMount.Length() < maxDistance)
+			{
+				return maxDistance - toMount.Length();
+			}
+			return 0f;
+		}
+
+		// Nueva función: manejar combate mientras se está montado (control de la montura)
+		private void HandleMountedCombat(float dt)
+		{
+			if (m_componentRider == null || m_componentRider.Mount == null) return;
+
+			ComponentMount mountComp = m_componentRider.Mount;
+			Entity mountEntity = mountComp.Entity;
+			ComponentSteedBehavior steed = mountEntity.FindComponent<ComponentSteedBehavior>();
+			if (steed == null) return; // La montura no tiene comportamiento de cabalgadura
+
+			ComponentCreature target = m_chaseBehavior.Target;
+			if (target == null || target.ComponentHealth.Health <= 0f)
+			{
+				// Sin objetivo: detener la montura
+				steed.SpeedOrder = 0;
+				steed.TurnOrder = 0f;
+				steed.JumpOrder = 0f;
+				return;
+			}
+
+			// Obtener posición y orientación de la montura
+			Vector3 mountPos = mountComp.ComponentBody.Position;
+			Vector3 mountForward = mountComp.ComponentBody.Matrix.Forward;
+			Vector3 targetPos = target.ComponentBody.BoundingBox.Center();
+			Vector3 toTarget = targetPos - mountPos;
+			toTarget.Y = 0f; // Ignorar altura para el giro
+			if (toTarget.LengthSquared() < 0.01f) return;
+
+			Vector3 dirToTarget = Vector3.Normalize(toTarget);
+
+			// Calcular ángulo actual de la montura y ángulo hacia el objetivo (en radianes)
+			float currentAngle = MathF.Atan2(mountForward.X, mountForward.Z);
+			float targetAngle = MathF.Atan2(dirToTarget.X, dirToTarget.Z);
+
+			// Diferencia normalizada entre -PI y PI
+			float angleDifference = MathUtils.NormalizeAngle(targetAngle - currentAngle);
+
+			// Convertir a TurnOrder (invertir signo porque en ComponentLocomotion se resta)
+			// Máximo 90 grados => 0.5, mínimo -90 => -0.5
+			float turn = -Math.Clamp(angleDifference / (MathF.PI / 2f), -0.5f, 0.5f);
+			steed.TurnOrder = turn;
+
+			float distance = toTarget.Length();
+			float desiredSpeed = 0f;
+
+			// Si el ángulo de desviación es grande (>30°), frenar para girar en el sitio
+			if (MathF.Abs(angleDifference) > 0.5f)
+			{
+				desiredSpeed = 0f;
+			}
+			else
+			{
+				// Control de velocidad según distancia al rango de combate
+				if (distance > EngagementRange.X + 1f)
+					desiredSpeed = 1f;
+				else if (distance < EngagementRange.X - 1f)
+					desiredSpeed = -1f;
+				else
+					desiredSpeed = 0f;
+			}
+
+			steed.SpeedOrder = Math.Sign(desiredSpeed);
+
+			// Salto ocasional si está atascado (opcional)
+			if (m_componentPathfinding.IsStuck && m_random.Float(0f, 1f) < 0.02f)
+				steed.JumpOrder = 1f;
+			else
+				steed.JumpOrder = 0f;
+		}
+		// ========== FIN NUEVO ==========
 
 		private void StartFlanking(Vector3 targetPos)
 		{
@@ -353,6 +609,20 @@ namespace Game
 							}
 						}
 					}
+				}
+			}
+
+			// NUEVO: Lógica de montura (antes del combate, durante celebración también se salta)
+			if (!celebrationActive)
+			{
+				UpdateMounting(dt);
+				if (m_mountState != MountState.None) return;
+
+				// Si ya está montado y el combate montado está activo, manejamos la persecución con la montura
+				if (m_componentRider != null && m_componentRider.Mount != null && m_mountedCombatActive)
+				{
+					HandleMountedCombat(dt);
+					// No retornamos: el combate normal (armas) también debe ejecutarse
 				}
 			}
 
