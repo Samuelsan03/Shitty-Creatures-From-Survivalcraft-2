@@ -28,7 +28,13 @@ namespace Game
 		private ComponentPathfinding m_componentPathfinding;
 		private ComponentCreatureModel m_componentCreatureModel;
 		private ComponentNewChaseBehavior m_chaseBehavior;
+
+		// Componentes de montura (caché)
 		private ComponentRider m_componentRider;
+		private ComponentMount m_componentMount;
+		private ComponentNewMount m_componentNewMount;
+		private ComponentSteedBehavior m_componentSteed;
+		private ComponentNewSteedBehavior m_componentNewSteed;
 
 		// ===== ESTADO INTERNO =====
 		private ComponentCreature m_targetCreature;
@@ -52,6 +58,8 @@ namespace Game
 		public void ForceTeleport(ComponentCreature target)
 		{
 			if (target == null || m_isDisappeared)
+				return;
+			if (IsMountedOrMounting())
 				return;
 			m_targetCreature = target;
 			StartTeleport();
@@ -77,8 +85,14 @@ namespace Game
 			m_componentBody = Entity.FindComponent<ComponentBody>(true);
 			m_componentPathfinding = Entity.FindComponent<ComponentPathfinding>();
 			m_componentCreatureModel = Entity.FindComponent<ComponentCreatureModel>();
-			m_componentRider = Entity.FindComponent<ComponentRider>();
 			m_chaseBehavior = Entity.FindComponent<ComponentNewChaseBehavior>();
+
+			// Obtener todos los componentes relacionados con montura
+			m_componentRider = Entity.FindComponent<ComponentRider>();
+			m_componentMount = Entity.FindComponent<ComponentMount>();
+			m_componentNewMount = Entity.FindComponent<ComponentNewMount>();
+			m_componentSteed = Entity.FindComponent<ComponentSteedBehavior>();
+			m_componentNewSteed = Entity.FindComponent<ComponentNewSteedBehavior>();
 
 			TeleportationDistance = valuesDictionary.GetValue<float>("TeleportationDistance", TeleportationDistance);
 			TeleportationCooldown = valuesDictionary.GetValue<float>("TeleportationCooldown", TeleportationCooldown);
@@ -101,8 +115,8 @@ namespace Game
 				return;
 			}
 
-			// NUEVO: Si la criatura está montada, no teletransportarse
-			if (m_componentRider != null && m_componentRider.Mount != null)
+			// Verificar estado de montura (jinete o montura)
+			if (IsMountedOrMounting())
 				return;
 
 			UpdateTargetFromChaseBehavior();
@@ -115,13 +129,74 @@ namespace Game
 				return;
 
 			float distance = Vector3.Distance(m_componentBody.Position, m_targetCreature.ComponentBody.Position);
-
-			// CORRECCIÓN: usar m_random.Bool() que está diseñado para probabilidades
 			if (distance >= TeleportationDistance && m_random.Bool(ChanceToTeleport))
 				StartTeleport();
 		}
 
 		// ===== MÉTODOS PRIVADOS =====
+
+		/// <summary>
+		/// Detecta si la criatura está montada (es jinete) o es una montura (tiene un jinete).
+		/// </summary>
+		private bool IsMountedOrMounting()
+		{
+			// 1. Es jinete (está montando algo)
+			if (m_componentRider != null && m_componentRider.Mount != null)
+				return true;
+
+			// 2. Es montura (alguien lo está montando) - ComponentMount tradicional
+			if (m_componentMount != null && m_componentMount.Rider != null)
+				return true;
+
+			// 3. Es montura - ComponentNewMount (nuevo sistema)
+			if (m_componentNewMount != null && m_componentNewMount.Rider != null)
+				return true;
+
+			// 4. ComponentSteedBehavior (base) - puede tener un jinete
+			if (m_componentSteed != null)
+			{
+				// Intentar obtener la propiedad pública "Rider"
+				var riderProp = m_componentSteed.GetType().GetProperty("Rider");
+				if (riderProp != null)
+				{
+					var rider = riderProp.GetValue(m_componentSteed) as ComponentRider;
+					if (rider != null)
+						return true;
+				}
+				// Intentar obtener el campo privado "m_rider" (por si la propiedad no es pública)
+				var riderField = m_componentSteed.GetType().GetField("m_rider",
+					System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+				if (riderField != null)
+				{
+					var rider = riderField.GetValue(m_componentSteed) as ComponentRider;
+					if (rider != null)
+						return true;
+				}
+			}
+
+			// 5. ComponentNewSteedBehavior (derivado) - mismo proceso
+			if (m_componentNewSteed != null)
+			{
+				var riderProp = m_componentNewSteed.GetType().GetProperty("Rider");
+				if (riderProp != null)
+				{
+					var rider = riderProp.GetValue(m_componentNewSteed) as ComponentRider;
+					if (rider != null)
+						return true;
+				}
+				var riderField = m_componentNewSteed.GetType().GetField("m_rider",
+					System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+				if (riderField != null)
+				{
+					var rider = riderField.GetValue(m_componentNewSteed) as ComponentRider;
+					if (rider != null)
+						return true;
+				}
+			}
+
+			return false;
+		}
+
 		private void UpdateTargetFromChaseBehavior()
 		{
 			if (m_chaseBehavior == null)
@@ -137,9 +212,8 @@ namespace Game
 		{
 			if (m_targetCreature == null || m_isDisappeared)
 				return;
-
-			// NUEVO: No teletransportar si está montado
-			if (m_componentRider != null && m_componentRider.Mount != null)
+			// Doble verificación por si cambió durante el frame
+			if (IsMountedOrMounting())
 				return;
 
 			m_originalPosition = m_componentBody.Position;
