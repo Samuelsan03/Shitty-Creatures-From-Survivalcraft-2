@@ -661,7 +661,7 @@ namespace Game
 
 			// Programar la cuenta atrás de 8 segundos; al terminar, iniciar la celebración real
 			GameManager.SyncDispatcher.Add(() => {
-				StartFireworkCountdown(player, 8.0f);
+				StartFireworkCountdown(player, 9.0f);
 				return true;
 			});
 		}
