@@ -268,8 +268,8 @@ namespace Game
 
 		public virtual void Update(float dt)
 		{
-			// Si la celebración está activa, no realizar ninguna acción de ataque/apuntado
-			if (AchievementsManager.IsCelebrationActive) return;
+			// Si la celebración está activa, solo bloquear combate, pero permitir equipar ropa
+			bool celebrationActive = AchievementsManager.IsCelebrationActive;
 
 			if (m_subsystemGreenNightSky != null)
 			{
@@ -303,6 +303,9 @@ namespace Game
 					TryStartEquippingClothing();
 				}
 			}
+
+			// Si la celebración está activa, NO hacer nada de combate después de esto
+			if (celebrationActive) return;
 
 			if (!m_canUseInventory || m_componentMiner == null || m_chaseBehavior == null || m_inventory == null)
 				return;
