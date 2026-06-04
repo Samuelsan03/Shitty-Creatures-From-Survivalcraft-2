@@ -308,8 +308,8 @@ namespace Game
 
 		public void Update(float dt)
 		{
-			// Si la celebración está activa, no realizar ninguna acción de ataque/apuntado
-			if (AchievementsManager.IsCelebrationActive) return;
+			// Si la celebración está activa, solo bloquear combate, pero permitir equipar ropa
+			bool celebrationActive = AchievementsManager.IsCelebrationActive;
 
 			IInventory inventory = m_componentMiner.Inventory;
 			if (inventory == null) return;
@@ -355,6 +355,9 @@ namespace Game
 					}
 				}
 			}
+
+			// Si la celebración está activa, NO hacer nada de combate después de esto
+			if (celebrationActive) return;
 
 			if (!CanUseInventory) return;
 			if (m_componentCreature.ComponentHealth.Health <= 0f) return;
@@ -451,24 +454,6 @@ namespace Game
 						}
 					}
 
-					m_aimTimer += dt;
-					Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
-					Vector3 aimDir = m_componentCreature.ComponentCreatureModel.EyeRotation.GetForwardVector();
-
-					if (m_aimTimer >= ThrowableAimTime)
-					{
-						m_componentMiner.Aim(new Ray3(eyePos, aimDir), AimState.Completed);
-						m_isAiming = false;
-						m_cooldownTimer = ThrowableCooldown;
-						m_isThrowing = false;
-					}
-					else
-					{
-						m_componentMiner.Aim(new Ray3(eyePos, aimDir), AimState.InProgress);
-					}
-				}
-				return;
-				{
 					m_aimTimer += dt;
 					Vector3 eyePos = m_componentCreature.ComponentCreatureModel.EyePosition;
 					Vector3 aimDir = m_componentCreature.ComponentCreatureModel.EyeRotation.GetForwardVector();
@@ -654,7 +639,7 @@ namespace Game
 						Vector3 muzzlePos = eyePos + m_componentCreature.ComponentBody.Matrix.Right * 0.3f - m_componentCreature.ComponentBody.Matrix.Up * 0.2f;
 						Vector3 dirNorm = Vector3.Normalize(muzzlePos + aimDir * 10f - muzzlePos);
 						int musketBallValue = Terrain.MakeBlockValue(BulletBlock.Index, 0, BulletBlock.SetBulletType(0, BulletBlock.BulletType.MusketBall));
-						float speed = 60f; // Velocidad fija razonable
+						float speed = 60f;
 						Vector3 velocity = m_componentCreature.ComponentBody.Velocity + speed * dirNorm;
 						Projectile projectile = m_subsystemProjectiles.FireProjectile(musketBallValue, muzzlePos, velocity, Vector3.Zero, m_componentCreature);
 						if (projectile != null)
