@@ -639,7 +639,41 @@ namespace Game
 				}
 			}
 
-			// ===== Lógica de montura (antes del combate) =====
+			// ===== PRIORIDAD MÁXIMA: Responder al silbato (ANTES de montura/combate) =====
+			if (m_componentSummon != null && m_componentSummon.SummonTarget != null && m_componentSummon.IsEnabled)
+			{
+				ComponentBody summonTargetBody = m_componentSummon.SummonTarget;
+				if (summonTargetBody != null && summonTargetBody.Entity != null)
+				{
+					ComponentCreature targetCreature = summonTargetBody.Entity.FindComponent<ComponentCreature>();
+					if (targetCreature != null && targetCreature.ComponentHealth.Health > 0f)
+					{
+						// Cancelar cualquier apuntado en curso para no interferir
+						if (m_isAiming) CancelAiming();
+						if (m_isCustomAiming) StopCustomAiming();
+
+						// Asegurar que el combate montado no esté activo
+						m_mountedCombatActive = false;
+
+						// Si está montado, usar control de montura para acercarse
+						if (m_componentRider != null && m_componentRider.Mount != null)
+						{
+							HandleSummonMountedMovement(dt, summonTargetBody.Position);
+						}
+						// Si no está montado, dejar que ComponentSummonBehavior maneje el movimiento
+						// con sus parámetros originales (maxPathLength=2000, ignorePathfinding=true)
+
+						return; // Salir del update para no hacer combate ni lógica de montura
+					}
+					else
+					{
+						// Objetivo inválido (muerto o desaparecido), limpiar SummonTarget
+						m_componentSummon.SummonTarget = null;
+					}
+				}
+			}
+
+			// ===== Lógica de montura (después de verificar silbato) =====
 			if (!celebrationActive)
 			{
 				// NUEVO: Verificar salud ANTES de manejar montura
@@ -668,36 +702,6 @@ namespace Game
 				{
 					// Si no está montado, resetear el flag
 					m_mountedCombatActive = false;
-				}
-			}
-
-			// ===== PRIORIDAD: Responder al silbato (sin desmontarse) =====
-			if (m_componentSummon != null && m_componentSummon.SummonTarget != null && m_componentSummon.IsEnabled)
-			{
-				ComponentBody summonTargetBody = m_componentSummon.SummonTarget;
-				if (summonTargetBody != null && summonTargetBody.Entity != null)
-				{
-					ComponentCreature targetCreature = summonTargetBody.Entity.FindComponent<ComponentCreature>();
-					if (targetCreature != null && targetCreature.ComponentHealth.Health > 0f)
-					{
-						// Si está montado, usar control de montura para acercarse
-						if (m_componentRider != null && m_componentRider.Mount != null)
-						{
-							HandleSummonMountedMovement(dt, summonTargetBody.Position);
-							return; // Salir del update para no hacer combate
-						}
-						else
-						{
-							// Si no está montado, usar pathfinding normal
-							m_componentPathfinding.SetDestination(summonTargetBody.Position, 1f, 1.5f, 0, false, true, false, summonTargetBody);
-							return; // No hacer combate mientras se acerca
-						}
-					}
-					else
-					{
-						// Objetivo inválido (muerto o desaparecido), limpiar SummonTarget
-						m_componentSummon.SummonTarget = null;
-					}
 				}
 			}
 
