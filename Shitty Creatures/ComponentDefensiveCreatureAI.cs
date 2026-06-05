@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Engine;
+using System.Reflection;
 using GameEntitySystem;
 using TemplatesDatabase;
 
@@ -352,7 +353,6 @@ namespace Game
 			ComponentCreature target = m_componentChase?.Target;
 			if (target == null || target.ComponentHealth.Health <= 0f)
 			{
-				// CAMBIADO: Usar StopMountCompletely en vez de solo poner órdenes a -1
 				StopMountCompletely();
 				return;
 			}
@@ -2244,29 +2244,68 @@ namespace Game
 
 			ComponentMount mountComp = m_componentRider.Mount;
 			Entity mountEntity = mountComp.Entity;
+			ComponentBody mountBody = mountComp.ComponentBody;
 
-			// Intentar obtener ComponentNewSteedBehavior primero, luego el base
-			ComponentSteedBehavior steed = mountEntity.FindComponent<ComponentNewSteedBehavior>();
-			if (steed == null) steed = mountEntity.FindComponent<ComponentSteedBehavior>();
+			// Intentar obtener ComponentNewSteedBehavior primero
+			ComponentNewSteedBehavior newSteed = mountEntity.FindComponent<ComponentNewSteedBehavior>();
+			ComponentSteedBehavior steed = newSteed ?? mountEntity.FindComponent<ComponentSteedBehavior>();
 
 			if (steed != null)
 			{
-				// Forzar parada inmediata - acceder directamente a los valores internos
-				// m_speedLevels = { -0.33f, 0f, 0.33f, 0.66f, 1f }
-				// Nivel 1 = velocidad 0 (completamente parado)
-				steed.m_speedLevel = 1;
-				steed.m_speed = 0f;
-				steed.m_turnSpeed = 0f;
+				if (newSteed != null)
+				{
+					// IMPORTANTE: ComponentNewSteedBehavior oculta los campos m_speedLevel, m_speed, m_turnSpeed
+					// de la clase base con sus propios campos. Usamos reflexión para acceder a los
+					// campos de la clase DERIVADA, que son los que realmente usa ProcessRidingOrders()
+					try
+					{
+						System.Reflection.BindingFlags flags = System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance;
+
+						System.Reflection.FieldInfo speedLevelField = typeof(ComponentNewSteedBehavior).GetField("m_speedLevel", flags);
+						System.Reflection.FieldInfo speedField = typeof(ComponentNewSteedBehavior).GetField("m_speed", flags);
+						System.Reflection.FieldInfo turnSpeedField = typeof(ComponentNewSteedBehavior).GetField("m_turnSpeed", flags);
+
+						if (speedLevelField != null) speedLevelField.SetValue(newSteed, 1); // Nivel 1 = velocidad 0
+						if (speedField != null) speedField.SetValue(newSteed, 0f);
+						if (turnSpeedField != null) turnSpeedField.SetValue(newSteed, 0f);
+					}
+					catch (Exception)
+					{
+						// Si la reflexión falla, usar método alternativo
+					}
+
+					newSteed.ExternalVerticalInput = 0f;
+
+					// CRÍTICO: Para monturas voladoras, desactivar el vuelo creativo
+					// Si no se hace, la montura seguirá flotando sin control
+					ComponentLocomotion loco = mountEntity.FindComponent<ComponentLocomotion>();
+					if (loco != null && loco.FlySpeed > 0f)
+					{
+						loco.IsCreativeFlyEnabled = false;
+						loco.FlyOrder = Vector3.Zero;
+						loco.WalkOrder = null;
+					}
+				}
+				else
+				{
+					// Para ComponentSteedBehavior base, acceder directamente a sus campos
+					steed.m_speedLevel = 1;
+					steed.m_speed = 0f;
+					steed.m_turnSpeed = 0f;
+				}
+
 				steed.SpeedOrder = 0;
 				steed.TurnOrder = 0f;
 				steed.JumpOrder = 0f;
+			}
 
-				// Si es NewSteedBehavior, también resetear el input vertical
-				ComponentNewSteedBehavior newSteed = steed as ComponentNewSteedBehavior;
-				if (newSteed != null)
-				{
-					newSteed.ExternalVerticalInput = 0f;
-				}
+			// RESPALDO: Forzar la velocidad del cuerpo a cero horizontalmente
+			// Esto asegura que la montura se detenga inmediatamente sin importar
+			// si la reflexión funcionó o no
+			if (mountBody != null)
+			{
+				Vector3 vel = mountBody.Velocity;
+				mountBody.Velocity = new Vector3(0f, vel.Y, 0f); // Mantener Y para caída natural
 			}
 
 			// Resetear flag de combate montado
