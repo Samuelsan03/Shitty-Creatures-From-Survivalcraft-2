@@ -409,6 +409,13 @@ namespace Game
 		{
 			if (m_componentRider == null || m_componentRider.Mount == null) return;
 
+			// NUEVO: Verificar si el jinete está vivo ANTES de hacer nada
+			if (m_componentCreature.ComponentHealth.Health <= 0f)
+			{
+				StopMountCompletely();
+				return;
+			}
+
 			ComponentMount mountComp = m_componentRider.Mount;
 			Entity mountEntity = mountComp.Entity;
 			ComponentSteedBehavior steed = mountEntity.FindComponent<ComponentSteedBehavior>();
@@ -417,10 +424,8 @@ namespace Game
 			ComponentCreature target = m_chaseBehavior?.Target;
 			if (target == null || target.ComponentHealth.Health <= 0f)
 			{
-				steed.SpeedOrder = 0;
-				steed.TurnOrder = 0f;
-				steed.JumpOrder = 0f;
-				// No desmontar, simplemente dejar de mover la montura
+				// CAMBIADO: Usar StopMountCompletely en vez de solo poner órdenes a 0
+				StopMountCompletely();
 				return;
 			}
 
@@ -449,12 +454,12 @@ namespace Game
 			}
 			else
 			{
-				// Siempre avanzar si hay objetivo, NUNCA retroceder
-				// Velocidad constante para acercarse y atacar cuerpo a cuerpo
-				if (distance > EngagementRange.X)
-					desiredSpeed = 1f;   // Acelerar si está lejos
+				if (distance > EngagementRange.Y)
+					desiredSpeed = 1f;
+				else if (distance > EngagementRange.X)
+					desiredSpeed = 0.66f;
 				else
-					desiredSpeed = 0.5f; // Mantener velocidad baja para atacar de cerca, NO retroceder
+					desiredSpeed = 0.33f;  // CAMBIADO: velocidad baja en vez de 0.5f para mejor control
 			}
 
 			steed.SpeedOrder = Math.Sign(desiredSpeed);
@@ -557,6 +562,18 @@ namespace Game
 			IInventory inventory = m_componentMiner.Inventory;
 			if (inventory == null) return;
 
+			// NUEVO: Si el jinete está muerto, detener todo inmediatamente
+			if (m_componentCreature.ComponentHealth.Health <= 0f)
+			{
+				if (m_mountedCombatActive)
+				{
+					StopMountCompletely();
+				}
+				CancelAiming(inventory);
+				m_isThrowing = false;
+				return;
+			}
+
 			if (CanEquipClothing)
 			{
 				IInventory clothingInv = FindClothingInventory();
@@ -599,17 +616,30 @@ namespace Game
 				}
 			}
 
-			// NUEVO: Lógica de montura (antes del combate, durante celebración también se salta)
+			// NUEVO: Lógica de montura
 			if (!celebrationActive)
 			{
 				UpdateMounting(dt);
 				if (m_mountState != MountState.None) return;
 
-				// Si ya está montado y el combate montado está activo, manejamos la persecución con la montura
-				if (m_componentRider != null && m_componentRider.Mount != null && m_mountedCombatActive)
+				// NUEVO: Verificar salud ANTES de manejar combate montado
+				if (m_componentCreature.ComponentHealth.Health <= 0f)
 				{
+					StopMountCompletely();
+					return;
+				}
+
+				// Si ya está montado, manejar la persecución con la montura
+				if (m_componentRider != null && m_componentRider.Mount != null)
+				{
+					m_mountedCombatActive = true;
 					HandleMountedCombat(dt);
 					// No retornamos: el combate normal (armas) también debe ejecutarse
+				}
+				else
+				{
+					// Si no está montado, resetear el flag
+					m_mountedCombatActive = false;
 				}
 			}
 
@@ -625,29 +655,10 @@ namespace Game
 				CancelAiming(inventory);
 				m_isThrowing = false;
 
-				// Si está montado y perdió el objetivo, detener el combate montado y pasear
+				// CAMBIADO: Usar StopMountCompletely
 				if (m_componentRider != null && m_componentRider.Mount != null)
 				{
-					// Detener órdenes de la montura
-					ComponentMount mountComp = m_componentRider.Mount;
-					Entity mountEntity = mountComp.Entity;
-					ComponentSteedBehavior steed = mountEntity.FindComponent<ComponentSteedBehavior>();
-					if (steed != null)
-					{
-						steed.SpeedOrder = 0;
-						steed.TurnOrder = 0f;
-						steed.JumpOrder = 0f;
-					}
-
-					// Si existe comportamiento de paseo, asegurarse de que esté activo
-					if (m_walkAroundBehavior != null && !m_walkAroundBehavior.IsActive)
-					{
-						// Forzar que el paseo se active (no se puede activar directamente,
-						// pero se puede establecer su importancia)
-						// En este caso, simplemente no hacemos nada, el sistema de estados
-						// del walkaround se activará por sí solo cuando el chase behavior no tenga importancia.
-						// Para forzar, podríamos llamar a un método público si existiera, pero no es necesario.
-					}
+					StopMountCompletely();
 				}
 
 				return;
@@ -1491,6 +1502,31 @@ namespace Game
 				CancelAiming(inventory);
 				m_cooldownTimer = 0f;
 			}
+		}
+
+		// ========== NUEVO MÉTODO: Detener montura completamente ==========
+		private void StopMountCompletely()
+		{
+			if (m_componentRider == null || m_componentRider.Mount == null) return;
+
+			ComponentMount mountComp = m_componentRider.Mount;
+			Entity mountEntity = mountComp.Entity;
+			ComponentSteedBehavior steed = mountEntity.FindComponent<ComponentSteedBehavior>();
+			if (steed != null)
+			{
+				// Forzar parada inmediata - establecer directamente los valores internos
+				// m_speedLevels = { -0.33f, 0f, 0.33f, 0.66f, 1f }
+				// Nivel 1 = velocidad 0 (completamente parado)
+				steed.m_speedLevel = 1;
+				steed.m_speed = 0f;
+				steed.m_turnSpeed = 0f;
+				steed.SpeedOrder = 0;
+				steed.TurnOrder = 0f;
+				steed.JumpOrder = 0f;
+			}
+
+			// Resetear flag de combate montado
+			m_mountedCombatActive = false;
 		}
 
 		IInventory FindClothingInventory()
