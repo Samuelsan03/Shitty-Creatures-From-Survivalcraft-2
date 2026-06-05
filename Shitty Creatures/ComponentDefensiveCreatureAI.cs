@@ -333,6 +333,13 @@ namespace Game
 				return;
 			}
 
+			// NUEVO: Verificar si el jinete está vivo ANTES de hacer nada
+			if (m_componentCreature.ComponentHealth.Health <= 0f)
+			{
+				StopMountCompletely();
+				return;
+			}
+
 			ComponentMount mountComp = m_componentRider.Mount;
 			Entity mountEntity = mountComp.Entity;
 
@@ -345,10 +352,8 @@ namespace Game
 			ComponentCreature target = m_componentChase?.Target;
 			if (target == null || target.ComponentHealth.Health <= 0f)
 			{
-				steedBase.SpeedOrder = -1;   // Reduce el nivel de velocidad hasta 0
-				steedBase.TurnOrder = 0f;
-				steedBase.JumpOrder = 0f;
-				if (newSteed != null) newSteed.ExternalVerticalInput = 0f;
+				// CAMBIADO: Usar StopMountCompletely en vez de solo poner órdenes a -1
+				StopMountCompletely();
 				return;
 			}
 
@@ -377,18 +382,20 @@ namespace Game
 			}
 			else
 			{
-				if (distance > RangedAttackRange.X)
+				// CAMBIADO: Lógica mejorada de rangos
+				if (distance > RangedAttackRange.Y)
 					desiredSpeed = 1f;
+				else if (distance > RangedAttackRange.X)
+					desiredSpeed = 0.66f;
 				else
-					desiredSpeed = 0.5f;
+					desiredSpeed = 0.33f;  // Velocidad baja al estar cerca
 			}
 
 			steedBase.SpeedOrder = Math.Sign(desiredSpeed);
 
-			// ===== NUEVO: Control vertical para monturas voladoras =====
+			// ===== Control vertical para monturas voladoras =====
 			if (newSteed != null)
 			{
-				// Verificar si la montura puede volar (FlySpeed > 0)
 				ComponentLocomotion loco = mountEntity.FindComponent<ComponentLocomotion>();
 				bool canFly = (loco != null && loco.FlySpeed > 0f);
 				if (canFly)
@@ -416,6 +423,13 @@ namespace Game
 		{
 			if (m_componentRider == null || m_componentRider.Mount == null) return;
 
+			// NUEVO: Verificar salud del jinete
+			if (m_componentCreature.ComponentHealth.Health <= 0f)
+			{
+				StopMountCompletely();
+				return;
+			}
+
 			ComponentMount mountComp = m_componentRider.Mount;
 			Entity mountEntity = mountComp.Entity;
 
@@ -432,10 +446,8 @@ namespace Game
 
 			if (toTarget.LengthSquared() < 0.01f)
 			{
-				steedBase.SpeedOrder = -1;   // Reduce el nivel de velocidad hasta 0
-				steedBase.TurnOrder = 0f;
-				steedBase.JumpOrder = 0f;
-				if (newSteed != null) newSteed.ExternalVerticalInput = 0f;
+				// CAMBIADO: Usar StopMountCompletely
+				StopMountCompletely();
 				return;
 			}
 
@@ -447,7 +459,7 @@ namespace Game
 			float turn = -Math.Clamp(angleDifference / (MathF.PI / 2f), -0.5f, 0.5f);
 			steedBase.TurnOrder = turn;
 
-			// Velocidad progresiva como en el Summon original (se reduce al acercarse)
+			// Velocidad progresiva como en el Summon original
 			float desiredSpeed;
 			if (horizontalDist > 5f)
 				desiredSpeed = 1f;
@@ -456,9 +468,16 @@ namespace Game
 			else
 				desiredSpeed = MathUtils.Lerp(0.4f, 1f, (horizontalDist - 1.5f) / 3.5f);
 
+			// Si la velocidad es prácticamente cero, detener completamente
+			if (desiredSpeed < 0.01f)
+			{
+				StopMountCompletely();
+				return;
+			}
+
 			steedBase.SpeedOrder = Math.Sign(desiredSpeed);
 
-			// Control vertical para voladores: también reduce sensibilidad al acercarse
+			// Control vertical para voladores
 			if (newSteed != null)
 			{
 				ComponentLocomotion loco = mountEntity.FindComponent<ComponentLocomotion>();
@@ -466,7 +485,6 @@ namespace Game
 				if (canFly)
 				{
 					float heightDiff = targetPos.Y - mountPos.Y;
-					// Rango de altura: si está muy cerca, ignorar diferencia para evitar oscilaciones
 					float verticalInput = 0f;
 					if (horizontalDist > 1.5f)
 					{
@@ -539,6 +557,20 @@ namespace Game
 			// Si la celebración está activa, solo bloquear combate, pero permitir equipar ropa
 			bool celebrationActive = AchievementsManager.IsCelebrationActive;
 
+			// NUEVO: Si el jinete está muerto, detener todo inmediatamente
+			if (m_componentCreature != null && m_componentCreature.ComponentHealth.Health <= 0f)
+			{
+				if (m_mountedCombatActive)
+				{
+					StopMountCompletely();
+				}
+				CancelAiming();
+				if (m_isCustomAiming) StopCustomAiming();
+				m_isFlanking = false;
+				m_flankTimer = 0f;
+				return;
+			}
+
 			// Si estamos flanqueando, actualizar temporizador y salir
 			if (m_isFlanking)
 			{
@@ -607,17 +639,35 @@ namespace Game
 				}
 			}
 
-			// ===== NUEVO: Lógica de montura (antes del combate) =====
+			// ===== Lógica de montura (antes del combate) =====
 			if (!celebrationActive)
 			{
+				// NUEVO: Verificar salud ANTES de manejar montura
+				if (m_componentCreature.ComponentHealth.Health <= 0f)
+				{
+					if (m_mountedCombatActive)
+					{
+						StopMountCompletely();
+					}
+					CancelAiming();
+					if (m_isCustomAiming) StopCustomAiming();
+					return;
+				}
+
 				UpdateMounting(dt);
 				if (m_mountState != MountState.None) return;
 
-				// Si ya está montado y el combate montado está activo, manejamos la persecución con la montura
-				if (m_componentRider != null && m_componentRider.Mount != null && m_mountedCombatActive)
+				// Si ya está montado, manejar la persecución con la montura
+				if (m_componentRider != null && m_componentRider.Mount != null)
 				{
+					m_mountedCombatActive = true;
 					HandleMountedCombat(dt);
 					// No retornamos: el combate normal (armas) también debe ejecutarse
+				}
+				else
+				{
+					// Si no está montado, resetear el flag
+					m_mountedCombatActive = false;
 				}
 			}
 
@@ -1131,21 +1181,10 @@ namespace Game
 
 				if (!hasTarget)
 				{
-					// Si está montado y perdió el objetivo, detener el combate montado
+					// CAMBIADO: Usar StopMountCompletely
 					if (m_componentRider != null && m_componentRider.Mount != null)
 					{
-						ComponentMount mountComp = m_componentRider.Mount;
-						Entity mountEntity = mountComp.Entity;
-						ComponentSteedBehavior steedBase = mountEntity.FindComponent<ComponentNewSteedBehavior>();
-						if (steedBase == null) steedBase = mountEntity.FindComponent<ComponentSteedBehavior>();
-						if (steedBase != null)
-						{
-							steedBase.SpeedOrder = -1;   // Reduce el nivel de velocidad hasta 0
-							steedBase.TurnOrder = 0f;
-							steedBase.JumpOrder = 0f;
-							if (steedBase is ComponentNewSteedBehavior newSteed)
-								newSteed.ExternalVerticalInput = 0f;
-						}
+						StopMountCompletely();
 					}
 					return;
 				}
@@ -1481,8 +1520,8 @@ namespace Game
 				}
 			}
 
-				// Forzar que la criatura mire al objetivo
-				if (m_componentChase != null && m_componentChase.Target != null)
+			// Forzar que la criatura mire al objetivo
+			if (m_componentChase != null && m_componentChase.Target != null)
 			{
 				model.LookAtOrder = m_componentChase.Target.ComponentCreatureModel.EyePosition;
 				model.LookRandomOrder = false;
@@ -2196,6 +2235,42 @@ namespace Game
 					m_componentChase.Attack(m_componentChase.Target, 100f, 10f, false);
 				}
 			}
+		}
+
+		// ========== NUEVO MÉTODO: Detener montura completamente ==========
+		private void StopMountCompletely()
+		{
+			if (m_componentRider == null || m_componentRider.Mount == null) return;
+
+			ComponentMount mountComp = m_componentRider.Mount;
+			Entity mountEntity = mountComp.Entity;
+
+			// Intentar obtener ComponentNewSteedBehavior primero, luego el base
+			ComponentSteedBehavior steed = mountEntity.FindComponent<ComponentNewSteedBehavior>();
+			if (steed == null) steed = mountEntity.FindComponent<ComponentSteedBehavior>();
+
+			if (steed != null)
+			{
+				// Forzar parada inmediata - acceder directamente a los valores internos
+				// m_speedLevels = { -0.33f, 0f, 0.33f, 0.66f, 1f }
+				// Nivel 1 = velocidad 0 (completamente parado)
+				steed.m_speedLevel = 1;
+				steed.m_speed = 0f;
+				steed.m_turnSpeed = 0f;
+				steed.SpeedOrder = 0;
+				steed.TurnOrder = 0f;
+				steed.JumpOrder = 0f;
+
+				// Si es NewSteedBehavior, también resetear el input vertical
+				ComponentNewSteedBehavior newSteed = steed as ComponentNewSteedBehavior;
+				if (newSteed != null)
+				{
+					newSteed.ExternalVerticalInput = 0f;
+				}
+			}
+
+			// Resetear flag de combate montado
+			m_mountedCombatActive = false;
 		}
 
 		public override void Save(ValuesDictionary valuesDictionary, EntityToIdMap entityToIdMap)
