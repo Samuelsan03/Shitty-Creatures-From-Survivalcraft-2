@@ -23,15 +23,17 @@ namespace Game
 		public bool VomitShit { get; set; }
 		public bool VomitFire { get; set; }
 		public bool VomitFrozen { get; set; }
+		public bool VomitBlood { get; set; }
 		public float VomitProbability { get; set; } = 0.1f;
 		public float VomitCooldown { get; set; } = 5f;
-		public Vector2 VomitDistanceRange { get; set; } = new Vector2(2f, 12f); // X = min, Y = max
+		public Vector2 VomitDistanceRange { get; set; } = new Vector2(2f, 12f);
 
 		private double m_lastVomitTime;
 		private double m_vomitStartTime;
 		private PoisonVomitParticleSystem m_activePoisonVomit;
 		private FireVomitParticleSystem m_activeFireVomit;
 		private FrozenVomitParticleSystem m_activeFrozenVomit;
+		private BloodVomitParticleSystem m_activeBloodVomit;
 		private Random m_random = new Random();
 
 		public UpdateOrder UpdateOrder => UpdateOrder.Default;
@@ -54,6 +56,7 @@ namespace Game
 			VomitShit = valuesDictionary.GetValue<bool>("VomitShit", false);
 			VomitFire = valuesDictionary.GetValue<bool>("VomitFire", false);
 			VomitFrozen = valuesDictionary.GetValue<bool>("VomitFrozen", false);
+			VomitBlood = valuesDictionary.GetValue<bool>("VomitBlood", false);
 			VomitProbability = valuesDictionary.GetValue<float>("VomitProbability", 0.1f);
 			VomitCooldown = valuesDictionary.GetValue<float>("VomitCooldown", 5f);
 			VomitDistanceRange = valuesDictionary.GetValue<Vector2>("VomitDistanceRange", new Vector2(2f, 12f));
@@ -107,7 +110,6 @@ namespace Game
 			return distance >= VomitDistanceRange.X && distance <= VomitDistanceRange.Y;
 		}
 
-		// Nueva comprobación para saber si el objetivo está demasiado cerca
 		private bool IsTargetTooClose(ComponentCreature target)
 		{
 			if (target == null) return false;
@@ -117,8 +119,6 @@ namespace Game
 
 		public void Update(float dt)
 		{
-
-			// Si la celebración está activa, no realizar ninguna acción de vómito
 			if (AchievementsManager.IsCelebrationActive) return;
 
 			if (m_componentCreature.ComponentHealth.Health <= 0f)
@@ -126,7 +126,6 @@ namespace Game
 
 			ComponentCreature target = GetCurrentChaseTarget();
 
-			// ---- Vómito de veneno activo ----
 			if (m_activePoisonVomit != null)
 			{
 				bool shouldStop = false;
@@ -134,7 +133,7 @@ namespace Game
 					shouldStop = true;
 				else if (!IsTargetInViewCone(target))
 					shouldStop = true;
-				else if (IsTargetTooClose(target))          // <<< NUEVO: cancela si se acerca demasiado
+				else if (IsTargetTooClose(target))
 					shouldStop = true;
 				else if (m_subsystemTime.GameTime - m_vomitStartTime > 3.5f)
 					shouldStop = true;
@@ -152,7 +151,6 @@ namespace Game
 				return;
 			}
 
-			// ---- Vómito de fuego activo ----
 			if (m_activeFireVomit != null)
 			{
 				bool shouldStop = false;
@@ -160,7 +158,7 @@ namespace Game
 					shouldStop = true;
 				else if (!IsTargetInViewCone(target))
 					shouldStop = true;
-				else if (IsTargetTooClose(target))          // <<< NUEVO
+				else if (IsTargetTooClose(target))
 					shouldStop = true;
 				else if (m_subsystemTime.GameTime - m_vomitStartTime > 3.5f)
 					shouldStop = true;
@@ -178,7 +176,6 @@ namespace Game
 				return;
 			}
 
-			// ---- Vómito congelado activo ----
 			if (m_activeFrozenVomit != null)
 			{
 				bool shouldStop = false;
@@ -186,7 +183,7 @@ namespace Game
 					shouldStop = true;
 				else if (!IsTargetInViewCone(target))
 					shouldStop = true;
-				else if (IsTargetTooClose(target))          // <<< NUEVO
+				else if (IsTargetTooClose(target))
 					shouldStop = true;
 				else if (m_subsystemTime.GameTime - m_vomitStartTime > 3.5f)
 					shouldStop = true;
@@ -204,7 +201,31 @@ namespace Game
 				return;
 			}
 
-			// ---- Iniciar nuevo vómito ----
+			if (m_activeBloodVomit != null)
+			{
+				bool shouldStop = false;
+				if (target == null)
+					shouldStop = true;
+				else if (!IsTargetInViewCone(target))
+					shouldStop = true;
+				else if (IsTargetTooClose(target))
+					shouldStop = true;
+				else if (m_subsystemTime.GameTime - m_vomitStartTime > 3.5f)
+					shouldStop = true;
+
+				if (shouldStop || m_activeBloodVomit.IsStopped)
+				{
+					m_activeBloodVomit.IsStopped = true;
+					m_activeBloodVomit = null;
+				}
+				else
+				{
+					m_activeBloodVomit.Position = GetVomitMouthPosition();
+					m_activeBloodVomit.Direction = Vector3.Normalize(target.ComponentCreatureModel.EyePosition - m_activeBloodVomit.Position);
+				}
+				return;
+			}
+
 			if (target == null)
 				return;
 
@@ -214,7 +235,6 @@ namespace Game
 			if (!IsTargetInDistanceRange(target))
 				return;
 
-			// Probabilidad por frame
 			if (m_random.Float(0f, 1f) > VomitProbability * dt)
 				return;
 
@@ -222,11 +242,11 @@ namespace Game
 			if (currentTime - m_lastVomitTime < (double)VomitCooldown)
 				return;
 
-			// Elegir aleatoriamente entre todos los tipos habilitados
 			System.Collections.Generic.List<int> availableTypes = new System.Collections.Generic.List<int>();
-			if (VomitShit) availableTypes.Add(0);   // 0 = Veneno
-			if (VomitFire) availableTypes.Add(1);   // 1 = Fuego
-			if (VomitFrozen) availableTypes.Add(2); // 2 = Congelado
+			if (VomitShit) availableTypes.Add(0);
+			if (VomitFire) availableTypes.Add(1);
+			if (VomitFrozen) availableTypes.Add(2);
+			if (VomitBlood) availableTypes.Add(3);
 
 			if (availableTypes.Count == 0)
 				return;
@@ -236,7 +256,7 @@ namespace Game
 			Vector3 mouthPos = GetVomitMouthPosition();
 			Vector3 direction = Vector3.Normalize(target.ComponentCreatureModel.EyePosition - mouthPos);
 
-			if (chosenType == 0) // Veneno
+			if (chosenType == 0)
 			{
 				m_activePoisonVomit = new PoisonVomitParticleSystem(
 					m_subsystemTerrain, m_subsystemBodies, m_subsystemSoundMaterials,
@@ -246,7 +266,7 @@ namespace Game
 				m_activePoisonVomit.PoisonIntensity = 180f;
 				m_subsystemParticles.AddParticleSystem(m_activePoisonVomit, false);
 			}
-			else if (chosenType == 1) // Fuego
+			else if (chosenType == 1)
 			{
 				m_activeFireVomit = new FireVomitParticleSystem(
 					m_subsystemTerrain, m_subsystemBodies, m_subsystemSoundMaterials,
@@ -256,7 +276,7 @@ namespace Game
 				m_activeFireVomit.FireDuration = 30f;
 				m_subsystemParticles.AddParticleSystem(m_activeFireVomit, false);
 			}
-			else if (chosenType == 2) // Congelado
+			else if (chosenType == 2)
 			{
 				m_activeFrozenVomit = new FrozenVomitParticleSystem(
 					m_subsystemTerrain, m_subsystemBodies, m_subsystemSoundMaterials,
@@ -264,6 +284,16 @@ namespace Game
 				m_activeFrozenVomit.Position = mouthPos;
 				m_activeFrozenVomit.Direction = direction;
 				m_subsystemParticles.AddParticleSystem(m_activeFrozenVomit, false);
+			}
+			else if (chosenType == 3)
+			{
+				m_activeBloodVomit = new BloodVomitParticleSystem(
+					m_subsystemTerrain, m_subsystemBodies, m_subsystemSoundMaterials,
+					m_subsystemTime, m_subsystemParticles, m_componentCreature);
+				m_activeBloodVomit.Position = mouthPos;
+				m_activeBloodVomit.Direction = direction;
+				m_activeBloodVomit.BleedingIntensity = 180f;
+				m_subsystemParticles.AddParticleSystem(m_activeBloodVomit, false);
 			}
 
 			m_lastVomitTime = currentTime;
@@ -290,6 +320,8 @@ namespace Game
 				m_activeFireVomit.IsStopped = true;
 			if (m_activeFrozenVomit != null)
 				m_activeFrozenVomit.IsStopped = true;
+			if (m_activeBloodVomit != null)
+				m_activeBloodVomit.IsStopped = true;
 		}
 	}
 }
