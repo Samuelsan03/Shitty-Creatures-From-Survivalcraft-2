@@ -6101,7 +6101,7 @@
   <Parameter Name="TeleportationDistance" Guid="837b0b8b-bd05-49e1-a64c-dbafd98e848e" Value="15" Type="float" />
   <Parameter Name="TeleportationCooldown" Guid="97171c7a-9cf6-43c7-b615-dd306e56a368" Value="3" Type="float" />
   <Parameter Name="DisappearanceTime" Guid="21f7ed1f-7c9b-4c59-b8f3-bd222f8f7cbc" Value="3" Type="float" />
-  <Parameter Name="ChanceToTeleport" Guid="42b59e44-3f86-44df-9ab6-a61eaa8b1c53" Value="0.1" Type="float" />
+  <Parameter Name="ChanceToTeleport" Guid="42b59e44-3f86-44df-9ab6-a61eaa8b1c53" Value="0.05" Type="float" />
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="Loot" Guid="1d665fa7-105c-4acf-b485-92e3ed3d0145">
                 <ParameterSet Name="Loot" Guid="cc3a3343-d443-40e6-91d7-dd7247fdb58e">
@@ -6119,6 +6119,7 @@
   <Parameter Name="VomitShit" Guid="0d44f5c5-f89c-4184-a1d2-7c9c88a2dc53" Value="true" Type="bool"/>
 <Parameter Name="VomitFire" Guid="e8101cda-8c82-4847-bd6b-19bc0770efc2" Value="true" Type="bool"/>
 <Parameter Name="VomitFrozen" Guid="c1569a76-a5f3-4239-8549-e3212eac3cb1" Value="true" Type="bool"/>
+<Parameter Name="VomitBlood" Guid="306b5f11-fb44-4e7f-80b7-131b01b0dac4" Value="true" Type="bool"/>
   <Parameter Name="VomitProbability" Guid="f3a7261b-a02f-4258-a3d1-92e090413079" Value="0.1" Type="float"/>
   <Parameter Name="VomitCooldown" Guid="d05796d0-b4ed-4a72-81dc-ca6d76fd0544" Value="35" Type="float"/>
   <Parameter Name="VomitDistanceRange" Guid="3d754deb-c9cf-4662-b653-17b6feae42f0" Value="5,55" Type="Vector2"/>
