@@ -183,7 +183,7 @@ namespace Game
 					Vector3 dirOffset = m_random.Vector3(0.02f);
 					particle.Velocity = normalizedDir * 100f;
 					particle.TimeToLive = m_random.Float(1.5f, 2.2f);
-					particle.Size = new Vector2(1f);
+					particle.Size = new Vector2(0.55f);
 					particle.FlipX = m_random.Bool();
 					particle.FlipY = m_random.Bool();
 					m_toGenerate -= 1f;
