@@ -490,8 +490,13 @@ namespace Game
 			{
 				if (isMelee)
 				{
-					EquipBestRangedWeapon();
-					return;
+					// Solo equipar arma a distancia si la dificultad es Hard o Extreme
+					if (m_currentDifficulty >= DifficultyMode.Hard)
+					{
+						EquipBestRangedWeapon();
+						return;
+					}
+					// En dificultades bajas, mantener melee aunque esté fuera del rango óptimo
 				}
 			}
 
@@ -500,8 +505,22 @@ namespace Game
 			// Solo verificamos que no estemos atascados y que estemos dentro del rango
 			if (isRanged && !isThrowable && !isStuck && distToTarget <= AttackRange.Y)
 			{
-				UpdateRangedCombat(dt, target.ComponentBody.Position);
-				return;
+				// Solo permitir usar armas a distancia en dificultades Hard o Extreme
+				if (m_currentDifficulty >= DifficultyMode.Hard)
+				{
+					UpdateRangedCombat(dt, target.ComponentBody.Position);
+					return;
+				}
+				else
+				{
+					// En dificultades bajas, no usar armas a distancia: intentar equipar melee
+					if (!isMelee && TryEquipBestMeleeWeapon())
+					{
+						return; // Cambió a melee, esperar próximo frame
+					}
+					// Si no hay melee, simplemente no atacar (retornar sin hacer nada)
+					return;
+				}
 			}
 			// Si es arma de fuego o similar, también entra aquí (isRanged=true, isThrowable=false)
 
@@ -1096,6 +1115,10 @@ namespace Game
 
 		private void EquipBestRangedWeapon()
 		{
+			// No equipar armas a distancia en dificultades bajas
+			if (m_currentDifficulty < DifficultyMode.Hard)
+				return;
+
 			// Priorizar armas de fuego modernas
 			for (int i = 0; i < m_inventory.SlotsCount; i++)
 			{
