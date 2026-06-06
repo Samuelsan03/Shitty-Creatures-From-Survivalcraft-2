@@ -76,9 +76,13 @@
             <MemberComponentTemplate Name="NewCreatureCollect" Guid="61ae9143-a1b8-4c68-b2dc-2686301598e5" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
     <Parameter Name="PickFactors" Guid="80b39166-9973-4a37-bbbd-a65549641336" Value="Tools;1.0,Weapons;1.0" Type="string"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="Rider" Guid="c55bc279-497f-48ab-ab86-329099a97844" InheritanceParent="894cdf33-9691-4320-a342-3aba1fd1c746">
+              <Parameter Name="RiderOffset" Guid="b607cc6a-78ec-4b91-b670-4e3b340f2cd5" Value="0,-0.71,0" Type="Vector3" />
+            </MemberComponentTemplate>
             <MemberComponentTemplate Name="ZombieAI" Guid="3e1f7d5c-a75e-4ab4-9508-74158a3b77db" InheritanceParent="dc91ba3e-c474-45c3-8d03-ca9a9996dc5f">
     <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="a6a22c0e-ef30-4327-b444-81c917cf11c7"/>
     <Parameter Name="CanEquipClothing" Guid="716bd56d-9573-487b-b4c4-4d48a89e6739" Value="true" Type="bool"/>
+    <Parameter Name="CanBeMounted" Guid="19b47837-eb01-4939-834e-e2738103855a" Value="true" Type="bool"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureClothing" Guid="c1762bec-b774-414c-8e09-f891e20f6285" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
   <ParameterSet Name="CreatureClothes" Guid="08b8e823-f0e7-431f-9a8d-403b9dea523f">
@@ -303,9 +307,13 @@
         </EntityTemplate>
 
         <EntityTemplate Name="InfectedNormal2" Guid="cfbb6a98-d6a1-42b8-a459-80c3e44b78c1" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <MemberComponentTemplate Name="Rider" Guid="06ea33f6-5c52-4d21-989f-adf4d5134f41" InheritanceParent="894cdf33-9691-4320-a342-3aba1fd1c746">
+              <Parameter Name="RiderOffset" Guid="2d13ae23-bbd5-4436-83f3-c0f9c92209a5" Value="0,-0.71,0" Type="Vector3" />
+            </MemberComponentTemplate>
 <MemberComponentTemplate Name="ZombieAI" Guid="aba5452f-e7f2-48d5-8f44-929577b3771e" InheritanceParent="dc91ba3e-c474-45c3-8d03-ca9a9996dc5f">
     <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="da463ff3-9ea2-47a7-9dce-41890350c0ae"/>
 <Parameter Name="CanEquipClothing" Guid="fa360897-7f35-4438-8687-688d75b7a7f5" Value="true" Type="bool"/>
+<Parameter Name="CanBeMounted" Guid="febc0c08-d538-483b-b2c9-693b7f9070c3" Value="true" Type="bool"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureClothing" Guid="8e58a07f-6544-49b1-b440-8969dfeecc90" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
   <ParameterSet Name="CreatureClothes" Guid="5518b064-fd18-49dc-b295-d27bded19bae">
@@ -1147,8 +1155,12 @@
         <Parameter Name="IdleSound" Guid="3f7b6be9-0a04-42bc-9c5e-6f12423e09fe" Value="Audio/Creatures/Zombie 1/Idie" Type="string"/>
         <Parameter Name="AttackSound" Guid="c3882607-c340-471c-8c87-ae24c6a41bb8" Value="Audio/Creatures/Zombie 1/Attack" Type="string"/>
             </MemberComponentTemplate>
+            <MemberComponentTemplate Name="Rider" Guid="77804bcb-62ee-4994-8ee1-316a77610d7c" InheritanceParent="894cdf33-9691-4320-a342-3aba1fd1c746">
+              <Parameter Name="RiderOffset" Guid="7158df3d-918b-46ea-a67a-68490e8d7888" Value="0,-0.71,0" Type="Vector3" />
+            </MemberComponentTemplate>
             <MemberComponentTemplate Name="ZombieAI" Guid="49a3c2e1-9725-4dcb-aa71-7689e574d4cd" InheritanceParent="dc91ba3e-c474-45c3-8d03-ca9a9996dc5f">
     <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="241d13af-f5fd-44be-a87b-2bd9af3f298d"/>
+    <Parameter Name="CanBeMounted" Guid="f0b7a29d-dfb6-422a-b155-0423b1b8b245" Value="true" Type="bool"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="Inventory" Guid="396e0dba-027e-4a5c-a640-f0e95fa46b16" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890"/>
             <MemberComponentTemplate Name="NewCreatureCollect" Guid="4c60fdbf-5c58-41e0-a27a-8712b4f636d5" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
@@ -1418,8 +1430,12 @@
         <Parameter Name="IdleSound" Guid="472d8273-3d5c-42f8-ae7a-18ba040c6ee3" Value="Audio/Creatures/Zombie 1/Idie" Type="string"/>
         <Parameter Name="AttackSound" Guid="c0b79e3a-dfa2-4421-ba63-ddd7ce4f9e2a" Value="Audio/Creatures/Zombie 1/Attack" Type="string"/>
             </MemberComponentTemplate>
+            <MemberComponentTemplate Name="Rider" Guid="cd995099-01fc-4094-9d69-8af80c058ec7" InheritanceParent="894cdf33-9691-4320-a342-3aba1fd1c746">
+              <Parameter Name="RiderOffset" Guid="f9840bc8-da0b-410f-94fb-0a9eaad8c99b" Value="0,-0.71,0" Type="Vector3" />
+            </MemberComponentTemplate>
             <MemberComponentTemplate Name="ZombieAI" Guid="e3845daa-c175-4388-85ea-743bcb2a9561" InheritanceParent="dc91ba3e-c474-45c3-8d03-ca9a9996dc5f">
     <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="f1da6828-9a58-47ea-a2be-b619d9b800e1"/>
+    <Parameter Name="CanBeMounted" Guid="891ed7aa-d060-4e65-8704-6d40a1c440cd" Value="true" Type="bool"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="Inventory" Guid="c10ed204-a294-4c01-a004-3e8ea9cb296e" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890"/>
             <MemberComponentTemplate Name="NewCreatureCollect" Guid="965cfa76-bb5f-4c9d-8029-400ac6b87d5d" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
@@ -2201,6 +2217,13 @@
         </EntityTemplate>
 
         <EntityTemplate Name="InfectedFly1" Guid="fb860ae9-04c2-4c12-a721-3fe7157db639" InheritanceParent="0cb14482-b936-410e-9317-66d385d7d2fd">
+        <MemberComponentTemplate Name="ZombieMount" Guid="172d7e6b-6e74-4ef7-a53c-f60298106b8f" InheritanceParent="043a41d8-4a2e-447f-b735-88cc3082132a">
+        <Parameter Name="DismountOffset" Guid="d8448ebf-c1df-410f-a367-f99a18caf831" Value="1.5,0.3,0" Type="Vector3"/>
+        <Parameter Name="MountOffset" Guid="0ad548f5-a8b7-4475-b0c9-b395e098c820" Value="0.0, 1.0, 0.0" Type="Vector3"/>
+        <Parameter Name="CanPlayersRide" Guid="b6b73b16-a411-47b2-91a9-e9115befbf80" Value="False" Type="bool" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="ZombieSteedBehavior" Guid="7b85dcaa-47da-4a8a-8011-0db43fbf2d82" InheritanceParent="80fae8e1-d7fd-4343-8180-dda98dfa120f"/>
+    <MemberComponentTemplate Name="ZombieStubbornSteedBehavior" Guid="de01f04b-2d7f-4a1d-b523-9e0994e1cf0c" InheritanceParent="e59e0320-ceb2-40ae-a20c-6e7c9861eb8a"/>
         <MemberComponentTemplate Name="NewFlyAwayBehavior" Guid="a4efbf06-68e7-4015-97e7-6334a8af1677" InheritanceParent="a1cca7f2-9a15-4a07-9ab7-31bda890427e"/>
         <MemberComponentTemplate Name="FlyAwayBehavior" Guid="4df93d9d-f210-4cef-a48a-d1e34c90ac82" InheritanceParent="a1cca7f2-9a15-4a07-9ab7-31bda890427e"/>
         <MemberComponentTemplate Name="ZombieRunAwayBehavior" Guid="475ffe78-79d5-4327-9af0-d2881846ed97" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
@@ -3066,8 +3089,12 @@
             <MemberComponentTemplate Name="NewCreatureCollect" Guid="821659c2-1e50-4f46-9105-e940440534a5" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
     <Parameter Name="PickFactors" Guid="04fcaae9-8d84-4d2e-bf9d-7c099de014a4" Value="Tools;1.0,Weapons;1.0" Type="string"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="Rider" Guid="75dcccb2-cfda-44a1-b543-b07cd177ae45" InheritanceParent="894cdf33-9691-4320-a342-3aba1fd1c746">
+              <Parameter Name="RiderOffset" Guid="6684187a-5120-42aa-8069-3d9f7bee8674" Value="0,-0.71,0" Type="Vector3" />
+            </MemberComponentTemplate>
 <MemberComponentTemplate Name="ZombieAI" Guid="8ded660f-f442-4ba6-9379-d79b82fa3488" InheritanceParent="dc91ba3e-c474-45c3-8d03-ca9a9996dc5f">
     <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="4c6205bc-48de-4085-b653-60c876c14e92"/>
+    <Parameter Name="CanBeMounted" Guid="320ea0b1-64ce-4eba-8d9f-84680ec217a5" Value="true" Type="bool"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="GlowingEyes" Guid="539d8369-6cfb-42c0-a64e-b70a40d07e4e" InheritanceParent="bb8701d3-3a4f-44f7-8a1f-3a455533f632">
               <Parameter Name="GlowingEyesColor" Guid="e281f42f-191d-429f-b545-bebce2c3ac03" Value="0,255,0" Type="Color"/>
@@ -3340,8 +3367,12 @@
             <MemberComponentTemplate Name="NewCreatureCollect" Guid="b5af08b7-060f-44f0-a346-0774f8308423" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
     <Parameter Name="PickFactors" Guid="ebc81953-93d9-49e2-ad3d-da82b9e50342" Value="Tools;1.0,Weapons;1.0" Type="string"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="Rider" Guid="f93065a7-b52a-45f4-8b4a-a9f633621a11" InheritanceParent="894cdf33-9691-4320-a342-3aba1fd1c746">
+              <Parameter Name="RiderOffset" Guid="ee11627e-1ca9-492b-8dc2-c51c19337ed9" Value="0,-0.71,0" Type="Vector3" />
+            </MemberComponentTemplate>
 <MemberComponentTemplate Name="ZombieAI" Guid="26377d51-b31e-4847-bf0f-23798bb663c8" InheritanceParent="dc91ba3e-c474-45c3-8d03-ca9a9996dc5f">
     <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="7aa66894-3322-4179-bce3-bd96a165dfba"/>
+    <Parameter Name="CanBeMounted" Guid="1f5b9a55-8d3b-43f3-a1e6-c3e2c968001c" Value="true" Type="bool"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="BoomerFireExplosion" Guid="df57628f-5c2d-4fb4-b7f4-ee828bb5ffc7" InheritanceParent="aeba3d06-e20a-4a04-bd51-ae8d5b2d03c0">
   <Parameter Name="ActivationRange" Value="3" Type="float"/>
@@ -3644,8 +3675,12 @@
             <MemberComponentTemplate Name="NewCreatureCollect" Guid="de4488da-6e35-42e4-a7ac-921cee57cca8" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
     <Parameter Name="PickFactors" Guid="58212fda-d7c4-496d-a532-4079140fe463" Value="Tools;1.0,Weapons;1.0" Type="string"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="Rider" Guid="380063b0-5d29-4f35-91da-0707aeeb9a5e" InheritanceParent="894cdf33-9691-4320-a342-3aba1fd1c746">
+              <Parameter Name="RiderOffset" Guid="31aff674-096f-4954-9814-a783fda1b05f" Value="0,-0.71,0" Type="Vector3" />
+            </MemberComponentTemplate>
 <MemberComponentTemplate Name="ZombieAI" Guid="a3f1c59e-10da-4569-bf39-c19893cffa8e" InheritanceParent="dc91ba3e-c474-45c3-8d03-ca9a9996dc5f">
     <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="59c3fa91-7b71-4dde-a6cd-9fd131e450c6"/>
+    <Parameter Name="CanBeMounted" Guid="7d0d0431-53a6-456b-b38d-ea89230954d7" Value="true" Type="bool"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureVomitBehavior" Guid="b9ecaa34-0e07-490f-b4bd-a2d76292a89c" InheritanceParent="a91f3c5e-8c2d-4c1e-b7f4-6e2a9d3b7c11">
   <Parameter Name="VomitShit" Guid="1559907e-f96b-4c56-979f-6542e6a8d3aa" Value="true" Type="bool"/>
@@ -5189,6 +5224,9 @@
 		<Parameter Name="SpecificBlocks" Guid="ea3ff525-bd0a-47bc-9836-57e3d724bf13" Value="" Type="string"/>
 		<Parameter Name="BreakProbability" Guid="8c3526fe-b85e-4384-85ce-3f14353133a0" Value="1.0" Type="float"/>
 	</MemberComponentTemplate>
+    <MemberComponentTemplate Name="Rider" Guid="083d6811-dcc4-497b-abc7-94d09e43c859" InheritanceParent="894cdf33-9691-4320-a342-3aba1fd1c746">
+              <Parameter Name="RiderOffset" Guid="d80f71e8-85c3-4db9-876f-d349d902c6da" Value="0,-0.71,0" Type="Vector3" />
+            </MemberComponentTemplate>
 <MemberComponentTemplate Name="ZombieAI" Guid="0efb0473-fd96-4241-b341-85fa297653b8" InheritanceParent="dc91ba3e-c474-45c3-8d03-ca9a9996dc5f">
     <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="3a9cae34-d3b3-4a18-bc07-dc691691d0b6"/>
     <Parameter Name="CanEquipClothing" Guid="1278c2d3-90f0-48d7-be1c-fb795b2781e7" Value="true" Type="bool"/>
@@ -5516,8 +5554,12 @@
         </EntityTemplate>
 
         <EntityTemplate Name="GhostFast" Guid="fdf8136a-4b3a-432d-bf2f-bbec4458b60e" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+        <MemberComponentTemplate Name="Rider" Guid="5f566820-81ed-44d6-8a30-bef31153365a" InheritanceParent="894cdf33-9691-4320-a342-3aba1fd1c746">
+              <Parameter Name="RiderOffset" Guid="a2300e6b-0da3-41c3-a213-daa2868e5bea" Value="0,-0.71,0" Type="Vector3" />
+            </MemberComponentTemplate>
         <MemberComponentTemplate Name="ZombieAI" Guid="46eab151-3cba-4a18-9ce9-e7c1587153c6" InheritanceParent="dc91ba3e-c474-45c3-8d03-ca9a9996dc5f">
     <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="e9828735-d826-41ef-b076-b1ad44dd00a8"/>
+    <Parameter Name="CanBeMounted" Guid="c2d0cbaf-5c61-48b1-af0c-1908b6d81f48" Value="true" Type="bool"/>
     <Parameter Name="CanEquipClothing" Guid="9f4a5f30-74d3-43e6-bf54-7c230344cd80" Value="true" Type="bool"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureClothing" Guid="544f5806-12aa-4176-ae3a-306648a369df" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
@@ -6284,8 +6326,12 @@
 <MemberComponentTemplate Name="NewCreatureCollect" Guid="7995a09a-7260-4830-874b-54f6717bf4db" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
     <Parameter Name="PickFactors" Guid="a897d124-7dc4-43da-bc26-b867542b8528" Value="Tools;1.0,Weapons;1.0" Type="string"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="Rider" Guid="454e490b-36bc-47a3-9a61-b935fb88829a" InheritanceParent="894cdf33-9691-4320-a342-3aba1fd1c746">
+              <Parameter Name="RiderOffset" Guid="0fecc702-7409-4418-9b61-4d9d61299e2e" Value="0,-0.71,0" Type="Vector3" />
+            </MemberComponentTemplate>
 <MemberComponentTemplate Name="ZombieAI" Guid="90038ca0-5684-482a-a572-a02163f71889" InheritanceParent="dc91ba3e-c474-45c3-8d03-ca9a9996dc5f">
     <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="9ae32f37-c761-42dd-8702-9c944bf502b7"/>
+    <Parameter Name="CanBeMounted" Guid="0fce877f-4672-4ea1-b7d5-7b09ed768742" Value="true" Type="bool"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="Miner" Guid="06597916-a295-45aa-affd-cf5f3281578e" InheritanceParent="8acca888-ba39-464f-bcf5-6ae15e448c62">
               <Parameter Name="AttackPower" Guid="2e9b2143-36ce-4d28-8c1d-4f11d0d38ee5" Value="5.5" Type="float" />
@@ -6498,13 +6544,16 @@
         </EntityTemplate>
 
         <EntityTemplate Name="GhostBoomer2" Guid="d7b28fd5-e14c-40e1-bbb7-1b7151d3903b" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-        <MemberComponentTemplate Name="Inventory" Guid="cdfc5926-59a9-4e1f-a59e-fcf6b3ea8fd7" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
-            </MemberComponentTemplate>
+        <MemberComponentTemplate Name="Inventory" Guid="cdfc5926-59a9-4e1f-a59e-fcf6b3ea8fd7" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890"/>
             <MemberComponentTemplate Name="NewCreatureCollect" Guid="2bcefa77-aa2e-4973-87e1-5f87c83cb989" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
     <Parameter Name="PickFactors" Guid="c6e5af53-fee2-4830-8720-d20eb939f5ab" Value="Tools;1.0,Weapons;1.0" Type="string"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="Rider" Guid="3a73cceb-61e8-4e40-a197-16fabe2fd8ff" InheritanceParent="894cdf33-9691-4320-a342-3aba1fd1c746">
+              <Parameter Name="RiderOffset" Guid="073a8a10-a946-4537-965a-1b64ed7b0617" Value="0,-0.71,0" Type="Vector3" />
+            </MemberComponentTemplate>
 <MemberComponentTemplate Name="ZombieAI" Guid="ffcbb5d5-8001-4a5d-9088-282dd76d47cb" InheritanceParent="dc91ba3e-c474-45c3-8d03-ca9a9996dc5f">
     <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="b6094cdd-f9ff-48fe-939a-122a2e3bf45f"/>
+    <Parameter Name="CanBeMounted" Guid="c25e8e1f-39ca-43d2-9622-1537062a732f" Value="true" Type="bool"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="BoomerFireExplosion" Guid="7877db50-cd03-4819-bb29-73ac1812b8b3" InheritanceParent="aeba3d06-e20a-4a04-bd51-ae8d5b2d03c0">
   <Parameter Name="ActivationRange" Value="3" Type="float"/>
@@ -6847,13 +6896,16 @@
         </EntityTemplate>
 
         <EntityTemplate Name="GhostBoomer3" Guid="90ef2302-e35c-4885-98ac-709db5a17fcf" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
-        <MemberComponentTemplate Name="Inventory" Guid="9288f5a0-b8ef-4379-9b05-fad0532b9f2d" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
-            </MemberComponentTemplate>
+        <MemberComponentTemplate Name="Inventory" Guid="9288f5a0-b8ef-4379-9b05-fad0532b9f2d" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890"/>
             <MemberComponentTemplate Name="NewCreatureCollect" Guid="e8ad7640-0ac5-44e3-8e49-8605309f28b5" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
     <Parameter Name="PickFactors" Guid="05a71bc2-8746-4f61-9a80-3d8d8910d1a2" Value="Tools;1.0,Weapons;1.0" Type="string"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="Rider" Guid="46b34dab-3228-4c63-a649-e3ee45084d41" InheritanceParent="894cdf33-9691-4320-a342-3aba1fd1c746">
+              <Parameter Name="RiderOffset" Guid="1696d673-6e01-4396-8192-b51d01faf9de" Value="0,-0.71,0" Type="Vector3" />
+            </MemberComponentTemplate>
 <MemberComponentTemplate Name="ZombieAI" Guid="8d40aef2-0d05-4e23-9407-d675d6eaf071" InheritanceParent="dc91ba3e-c474-45c3-8d03-ca9a9996dc5f">
     <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="f683f938-5028-4662-99b4-171663b8cd4b"/>
+    <Parameter Name="CanBeMounted" Guid="da50728d-043c-45da-b152-e1c42f5b1fa4" Value="true" Type="bool"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="BoomerPoisonExplosion" Guid="05467507-246d-42e5-a028-be4d1b0247cc" InheritanceParent="b1966e3c-5e1f-4483-acc9-90f88c0e0748">
   <Parameter Name="PoisonRadius" Value="15" Type="float"/>
@@ -9275,6 +9327,13 @@
 </EntityTemplate>
 
 <EntityTemplate Name="InfectedBear" Guid="a77f0d44-5b1c-407f-b4bd-32e4f5d0376f" InheritanceParent="437e6af3-ea9f-4f3c-8b96-d81de6223831">
+<MemberComponentTemplate Name="ZombieMount" Guid="d7169f9b-3988-44fa-a9d9-bc4777833c2e" InheritanceParent="043a41d8-4a2e-447f-b735-88cc3082132a">
+        <Parameter Name="DismountOffset" Guid="04732285-41ef-4542-af00-e8db64f4983b" Value="1.5,0.3,0" Type="Vector3"/>
+        <Parameter Name="MountOffset" Guid="0d658f77-a853-4dc9-9724-dedb8804ab9c" Value="0.0, 1.75, 0.0" Type="Vector3"/>
+        <Parameter Name="CanPlayersRide" Guid="3ab70935-36ec-48d6-a30d-25d0dc8ba50d" Value="False" Type="bool" />
+    </MemberComponentTemplate>
+    <MemberComponentTemplate Name="ZombieSteedBehavior" Guid="4b1a1386-b508-482c-8fc9-2a55fd9efe20" InheritanceParent="80fae8e1-d7fd-4343-8180-dda98dfa120f"/>
+    <MemberComponentTemplate Name="ZombieStubbornSteedBehavior" Guid="7786e927-a84c-4c1f-9377-0e5fe185a799" InheritanceParent="e59e0320-ceb2-40ae-a20c-6e7c9861eb8a"/>
 <MemberComponentTemplate Name="ZombieRunAwayBehavior" Guid="2218e140-5a64-4038-abec-b9f6f84021b2" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
         <MemberComponentTemplate Name="RunAwayBehavior" Guid="7a6c2130-9159-461d-b990-b7fe68e1bd57" InheritanceParent="4cb713ec-4ae6-472b-b102-2d629200fe10"/>
 <MemberComponentTemplate Name="AvoidPlayerBehavior" Guid="0d228d3f-2452-4985-bcca-ce264070ab3e" InheritanceParent="3942e891-6b50-467c-8da5-a15bc63e59e0">
@@ -10089,9 +10148,13 @@
               <Parameter Name="IdleSound" Guid="3b28785d-31c9-4a0d-8288-955bb91990db" Value="Audio/Creatures/Skeleton/Idle" Type="string"/>
               <Parameter Name="PainSound" Guid="e61767ad-6091-4ef8-9e2c-6dc64ebe2d9c" Value="Audio/Creatures/Skeleton/Pain" Type="string"/>
             </MemberComponentTemplate>
+            <MemberComponentTemplate Name="Rider" Guid="70b40443-ebc7-4820-b64f-ea0f36c5a246" InheritanceParent="894cdf33-9691-4320-a342-3aba1fd1c746">
+              <Parameter Name="RiderOffset" Guid="ec4d8190-9301-4579-9008-11032a44aecc" Value="0,-0.71,0" Type="Vector3" />
+            </MemberComponentTemplate>
 <MemberComponentTemplate Name="ZombieAI" Guid="28f46262-f69c-4baf-9d46-1e557470ac90" InheritanceParent="dc91ba3e-c474-45c3-8d03-ca9a9996dc5f">
     <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="95c66763-a24a-4c09-b394-6015da017870"/>
     <Parameter Name="CanEquipClothing" Guid="e4ed9f55-2bb1-4b39-891b-a844a42c7699" Value="true" Type="bool"/>
+    <Parameter Name="CanBeMounted" Guid="53abdfbe-fc0d-4042-826d-f612f61b1aae" Value="true" Type="bool"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureClothing" Guid="315bc85e-50d6-441b-958f-c528f0a2fa88" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
   <ParameterSet Name="CreatureClothes" Guid="a1bce054-7380-42ea-9dad-48c285305896">
@@ -10376,9 +10439,29 @@
   <Parameter Name="VomitCooldown" Guid="ff36567d-5a31-471e-a003-67ad1b4d4a33" Value="35" Type="float"/>
   <Parameter Name="VomitDistanceRange" Guid="aeee784b-5b0a-4a87-a36f-2cd54eb8cdae" Value="5,20" Type="Vector2"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureCollect" Guid="8b589624-cab6-46ef-b231-1de2b9d7b064" InheritanceParent="b0295147-0a80-4aed-9a1b-c784faf1297b">
+            <Parameter Name="CanCollect" Guid="59454a1a-c8dc-4426-92b4-f2dbbbb8dffc" Value="true" Type="bool"/>
+    <Parameter Name="CollectableItems" Guid="959fe226-c19f-4467-a385-87b61dc0d836" Value="ClothingBlock" Type="string"/>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="Rider" Guid="cdc038a2-14bc-41cb-a452-7fe407390dc1" InheritanceParent="894cdf33-9691-4320-a342-3aba1fd1c746">
+              <Parameter Name="RiderOffset" Guid="11a45b84-37e0-412f-ad41-f94bd77e1fca" Value="0,-0.71,0" Type="Vector3" />
+            </MemberComponentTemplate>
 <MemberComponentTemplate Name="ZombieAI" Guid="c3d49b06-8141-43cc-bcb6-f9f9eab18266" InheritanceParent="dc91ba3e-c474-45c3-8d03-ca9a9996dc5f">
     <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="d0b85c86-035f-4284-8e70-66f3c6119aea"/>
+    <Parameter Name="CanEquipClothing" Guid="79b2ed98-aa7a-4462-b7da-d3d3bdcfce5c" Value="true" Type="bool"/>
+    <Parameter Name="CanBeMounted" Guid="71a44b5d-2578-4c68-935e-6816ce83c01a" Value="true" Type="bool"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureClothing" Guid="dae53018-67e0-4378-89b5-7d6141fd8174" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
+  <ParameterSet Name="CreatureClothes" Guid="4df7f6ce-7d86-4f5a-8c26-837e07925195">
+    <Parameter Name="Head" Guid="dcde652b-d0ba-4b23-ba87-1f0f2616c38e" Value="" Type="string"/>
+    <Parameter Name="Torso" Guid="e63ec6fd-5707-4a0c-8198-f5a7c07d31e5" Value="" Type="string"/>
+    <Parameter Name="Legs" Guid="e6d27ccd-c3bf-417a-8dbe-42a583c84744" Value="" Type="string"/>
+    <Parameter Name="Feet" Guid="d2518551-e83d-4128-b5fa-799b66891dcb" Value="" Type="string"/>
+  </ParameterSet>
+</MemberComponentTemplate>
+<MemberComponentTemplate Name="OuterClothingModel" Guid="60447cc9-d147-4165-ba92-1f4b8ec65f4f" InheritanceParent="c2429b7f-55e0-4ca7-b435-2c569f112229">
+              <Parameter Name="ModelName" Guid="533ffafa-5da3-4bc1-b6ff-7e8e58f2523f" Value="Models/OuterClothingMale" Type="string"/>
+            </MemberComponentTemplate>
         <MemberComponentTemplate Name="DeathSpawner" Guid="32c62fa2-84ec-427b-9075-f4b1d2241ed2" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="19f98779-8c3e-45ae-9a13-7ef9d7222e58"/>
     <Parameter Name="DeathSpawnTemplates" Value="GhostNormal:0.01" Type="string" Guid="5bc2a34e-49eb-4003-bbe4-93506216b584"/>
@@ -10687,13 +10770,16 @@
   <Parameter Name="VomitCooldown" Guid="0e043e5d-1a4f-4d77-9858-192aa24067ae" Value="35" Type="float"/>
   <Parameter Name="VomitDistanceRange" Guid="459fa5a3-0554-49b3-82de-d70c8eb1b116" Value="5,20" Type="Vector2"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="Inventory" Guid="936c9fb2-db23-417d-b487-ca5b376b8f23" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
-            </MemberComponentTemplate>
+<MemberComponentTemplate Name="Inventory" Guid="936c9fb2-db23-417d-b487-ca5b376b8f23" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890"/>
             <MemberComponentTemplate Name="NewCreatureCollect" Guid="28b055b0-893f-4f12-b57f-685632ea0ec9" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
     <Parameter Name="PickFactors" Guid="bb3de20a-737b-4f80-bef8-860407b4a9cd" Value="Tools;1.0,Weapons;1.0" Type="string"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="Rider" Guid="a5e8162d-9cb1-402f-9958-1f1ed3978b4c" InheritanceParent="894cdf33-9691-4320-a342-3aba1fd1c746">
+              <Parameter Name="RiderOffset" Guid="d395386f-4374-465f-a5f9-de1ab4757d37" Value="0,-0.71,0" Type="Vector3" />
+            </MemberComponentTemplate>
 <MemberComponentTemplate Name="ZombieAI" Guid="8d66c93e-6bf9-4425-8afd-34a5d2180fca" InheritanceParent="dc91ba3e-c474-45c3-8d03-ca9a9996dc5f">
     <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="9cfb3b93-e84c-47dc-a2e2-33a5791e3f0d"/>
+    <Parameter Name="CanBeMounted" Guid="b078baa7-1270-4b09-9091-2907635eb7a7" Value="true" Type="bool"/>
 </MemberComponentTemplate>
         <MemberComponentTemplate Name="GlowingEyes" Guid="7cdf08f9-2e8f-4cdb-9799-4af5b89e5660" InheritanceParent="bb8701d3-3a4f-44f7-8a1f-3a455533f632">
               <Parameter Name="GlowingEyesColor" Guid="80ae560a-1cae-436b-bca3-1780edae0956" Value="0,255,0" Type="Color"/>
@@ -10963,12 +11049,16 @@
   <Parameter Name="VomitCooldown" Guid="61bea9f3-32df-4f62-b357-b3e1b3a2015a" Value="35" Type="float"/>
   <Parameter Name="VomitDistanceRange" Guid="4e50e85a-75cf-4a72-a7f5-a84d4493cf9c" Value="5,20" Type="Vector2"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="Rider" Guid="141004e2-7f5d-432f-9843-2c92a6aa3eae" InheritanceParent="894cdf33-9691-4320-a342-3aba1fd1c746">
+              <Parameter Name="RiderOffset" Guid="50041422-cb57-4253-8159-d1c507fc379a" Value="0,-0.71,0" Type="Vector3" />
+            </MemberComponentTemplate>
         <MemberComponentTemplate Name="DeathSpawner" Guid="30fb8841-8bf1-4cda-a471-b4cbc6d8f35d" InheritanceParent="32905e25-1938-46fb-8659-a86ee79cfaa4">
     <Parameter Name="DeathSpawnProbability" Value="0.5" Type="float" Guid="31f10bfe-7295-40cc-b051-0a3731a0e752"/>
     <Parameter Name="DeathSpawnTemplates" Value="GhostNormal" Type="string" Guid="b4da0406-b9ed-4cd0-9925-0bf3640b1693"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="ZombieAI" Guid="15927287-5c0f-4696-a761-6ae0b2100608" InheritanceParent="dc91ba3e-c474-45c3-8d03-ca9a9996dc5f">
     <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="a4a7bde5-77ea-4424-a72a-2fdc7816f022"/>
+    <Parameter Name="CanBeMounted" Guid="b71b0fe2-cca0-42f2-bc4d-5e10d6f7d036" Value="true" Type="bool"/>
     <Parameter Name="CanEquipClothing" Guid="4ea2b327-1ffe-4143-a967-b77ebd6b7365" Value="true" Type="bool"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="CreatureClothing" Guid="9355046e-0cae-4aa1-9657-241ec38d675a" InheritanceParent="c1965be4-62ff-42f9-90e6-4e12b4d9a3af">
@@ -11460,13 +11550,16 @@
     <Parameter Name="IsPersistentHelp" Value="false" Type="bool" Guid="b89c8acf-dc6a-410a-a2b3-84774fcb65e8"/>
     <Parameter Name="ZombieAggressiveGrouping" Value="false" Type="bool" Guid="45382a6c-e854-4dda-ace9-2bf374d930f8"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="Inventory" Guid="8c3ae6c5-993d-408e-adef-28072bd6f3ad" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
-            </MemberComponentTemplate>
+<MemberComponentTemplate Name="Inventory" Guid="8c3ae6c5-993d-408e-adef-28072bd6f3ad" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890"/>
             <MemberComponentTemplate Name="NewCreatureCollect" Guid="cd352a18-7df2-4170-a3df-774ec2988124" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
     <Parameter Name="PickFactors" Guid="c950abf6-8b3f-4059-813a-ce9b84f70304" Value="Tools;1.0,Weapons;1.0" Type="string"/>
 </MemberComponentTemplate>
+<MemberComponentTemplate Name="Rider" Guid="b79481b0-8cf3-4ffe-96ef-d692f5078f0c" InheritanceParent="894cdf33-9691-4320-a342-3aba1fd1c746">
+              <Parameter Name="RiderOffset" Guid="5b4318c4-d51f-41c5-bffa-5dacdfd0c1d0" Value="0,-0.71,0" Type="Vector3" />
+            </MemberComponentTemplate>
 <MemberComponentTemplate Name="ZombieAI" Guid="1153a2c8-4d20-445f-b4a5-9b36a668bcd5" InheritanceParent="dc91ba3e-c474-45c3-8d03-ca9a9996dc5f">
     <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="5faaf088-8399-45c4-a9d6-25642f55ae29"/>
+    <Parameter Name="CanBeMounted" Guid="c0d924c8-649b-4bb5-84bc-580acdc125c9" Value="true" Type="bool"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="FeedBehavior" Guid="aef04c75-55ba-42ae-af69-c0b1422fc25d" InheritanceParent="3d5c9b46-1592-45de-ae90-9d050021a5ad">
                 <Parameter Name="AutoFeed" Guid="49aef9b1-5775-4195-a1fc-43fa4925dd15" Value="False" Type="bool"/>
