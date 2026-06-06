@@ -15,11 +15,9 @@
         <CanvasWidget Size="Infinity, Infinity" HorizontalAlignment="Center">
           <StackPanelWidget Direction="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
 
-            <StackPanelWidget Margin="0, 5" HorizontalAlignment="Center">
-              <CanvasWidget Size="120, 50" VerticalAlignment="Center">
-                <LabelWidget Text="[GreenNightIntervalDialog:3]" VerticalAlignment="Center" Color="128, 128, 128" HorizontalAlignment="Center" />
-              </CanvasWidget>
-              <CanvasWidget Size="200, 50" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <StackPanelWidget Margin="0, 5" HorizontalAlignment="Near">
+              <LabelWidget Text="[GreenNightIntervalDialog:3]" VerticalAlignment="Center" Color="128, 128, 128" FontScale="0.65" MarginRight="1" />
+              <CanvasWidget Size="200, 50" VerticalAlignment="Center">
                 <BevelledButtonWidget Name="GreenNightIntervalDialog.DaysButton" Text="[GreenNightIntervalDialog:12]" Size="200, 50" HorizontalAlignment="Center" />
               </CanvasWidget>
             </StackPanelWidget>
