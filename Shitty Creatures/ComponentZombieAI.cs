@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using Engine;
 using GameEntitySystem;
 using TemplatesDatabase;
@@ -48,6 +49,25 @@ namespace Game
 		private ComponentPathfinding m_pathfinding;
 		private SubsystemParticles m_subsystemParticles;
 		private SubsystemGreenNightSky m_subsystemGreenNightSky;
+
+		// Nuevo: capacidad de montar
+		public bool CanBeMounted = false;
+		private ComponentRider m_componentRider;
+		private bool m_mountedCombatActive = false;
+		private float m_mountSearchCooldown;
+
+		// Lista de criaturas montables (caballos originales + InfectedFly1)
+		private static readonly HashSet<string> MountableCreatureTemplates = new HashSet<string>
+{
+	"Horse_Black_Saddled",
+	"Horse_Palomino_Saddled",
+	"Camel_Saddled",
+	"Horse_Chestnut_Saddled",
+	"Horse_White_Saddled",
+	"Donkey_Saddled",
+	"Horse_Bay_Saddled",
+	"InfectedFly1"   // nueva montura voladora
+};
 
 		private float m_aimTimer;
 		private bool m_isAiming;
@@ -158,6 +178,8 @@ namespace Game
 			m_subsystemTime = base.Project.FindSubsystem<SubsystemTime>(true);
 			m_subsystemTerrain = base.Project.FindSubsystem<SubsystemTerrain>(true);
 			m_subsystemBodies = base.Project.FindSubsystem<SubsystemBodies>(true);
+			m_componentRider = base.Entity.FindComponent<ComponentRider>();
+			CanBeMounted = valuesDictionary.GetValue<bool>("CanBeMounted", false);
 			m_subsystemGreenNightSky = base.Project.FindSubsystem<SubsystemGreenNightSky>(true);
 			m_componentMiner = base.Entity.FindComponent<ComponentMiner>(true);
 			m_componentCreature = base.Entity.FindComponent<ComponentCreature>(true);
@@ -271,6 +293,36 @@ namespace Game
 			// Si la celebración está activa, solo bloquear combate, pero permitir equipar ropa
 			bool celebrationActive = AchievementsManager.IsCelebrationActive;
 
+			if (!celebrationActive && CanBeMounted && m_componentRider != null && m_componentRider.Mount == null && m_componentCreature.ComponentHealth.Health > 0f)
+			{
+				// Buscar montura cada 0.2 segundos
+				m_mountSearchCooldown -= dt;
+				if (m_mountSearchCooldown <= 0f)
+				{
+					m_mountSearchCooldown = 0.2f;
+					ComponentMount nearest = FindNearestMount(4f);
+					if (nearest != null)
+					{
+						m_componentRider.StartMounting(nearest);
+						m_mountedCombatActive = true;
+						if (m_chaseBehavior != null) m_chaseBehavior.Suppressed = false;
+						if (m_pathfinding != null) m_pathfinding.Stop();
+					}
+				}
+			}
+
+			// Si ya está montado, manejar combate montado (control de la montura)
+			if (!celebrationActive && m_componentRider != null && m_componentRider.Mount != null)
+			{
+				m_mountedCombatActive = true;  // SIEMPRE true mientras esté montado
+				HandleMountedCombat(dt);
+				// El combate normal (armas) aún debe ejecutarse
+			}
+			else
+			{
+				m_mountedCombatActive = false;
+			}
+
 			if (m_subsystemGreenNightSky != null)
 			{
 				ApplyDifficultyToAI();
@@ -310,9 +362,14 @@ namespace Game
 			if (!m_canUseInventory || m_componentMiner == null || m_chaseBehavior == null || m_inventory == null)
 				return;
 
+			// NUEVO: Si el zombi está muerto, detener montura completamente
 			if (m_componentCreature.ComponentHealth.Health <= 0f)
 			{
 				StopAiming();
+				if (m_componentRider?.Mount != null)
+				{
+					StopMountCompletely();
+				}
 				return;
 			}
 
@@ -320,6 +377,11 @@ namespace Game
 			if (target == null || target.ComponentHealth.Health <= 0f)
 			{
 				StopAiming();
+				// NUEVO: También detener montura si está montado y no hay target
+				if (m_mountedCombatActive && m_componentRider?.Mount != null)
+				{
+					StopMountCompletely();
+				}
 				return;
 			}
 
@@ -1454,6 +1516,152 @@ namespace Game
 			});
 			m_componentClothing.SetClothes(data.Slot, clothes);
 			m_pendingClothingValue = 0;
+		}
+
+		private ComponentMount FindNearestMount(float maxDistance)
+		{
+			if (m_subsystemBodies == null || m_componentCreature == null || !CanBeMounted)
+				return null;
+
+			DynamicArray<ComponentBody> bodies = new DynamicArray<ComponentBody>();
+			Vector2 center = new Vector2(m_componentBody.Position.X, m_componentBody.Position.Z);
+			m_subsystemBodies.FindBodiesAroundPoint(center, maxDistance, bodies);
+
+			ComponentMount bestMount = null;
+			float bestScore = -1f;
+
+			for (int i = 0; i < bodies.Count; i++)
+			{
+				ComponentBody body = bodies.Array[i];
+				if (body?.Entity == null) continue;
+
+				ComponentMount mount = body.Entity.FindComponent<ComponentMount>();
+				if (mount == null) continue;
+
+				string templateName = mount.Entity.ValuesDictionary.DatabaseObject.Name;
+				if (!MountableCreatureTemplates.Contains(templateName)) continue;
+
+				ComponentHealth health = mount.Entity.FindComponent<ComponentHealth>();
+				if (health != null && health.Health <= 0f) continue;
+				if (mount.Rider != null) continue;
+
+				Vector3 mountPos = mount.ComponentBody.Position + Vector3.Transform(mount.MountOffset, mount.ComponentBody.Rotation);
+				float distance = Vector3.Distance(m_componentBody.Position, mountPos);
+				if (distance < maxDistance)
+				{
+					float score = maxDistance - distance;
+					if (score > bestScore)
+					{
+						bestScore = score;
+						bestMount = mount;
+					}
+				}
+			}
+			return bestMount;
+		}
+
+		private void HandleMountedCombat(float dt)
+		{
+			if (m_componentRider?.Mount == null) return;
+
+			ComponentMount mountComp = m_componentRider.Mount;
+			ComponentSteedBehavior steed = mountComp.Entity.FindComponent<ComponentSteedBehavior>();
+			if (steed == null) return;
+
+			ComponentCreature target = m_chaseBehavior?.m_target;
+			if (target == null || target.ComponentHealth.Health <= 0f)
+			{
+				// CAMBIADO: Usar StopMountCompletely en vez de solo poner órdenes a 0
+				StopMountCompletely();
+				return;
+			}
+
+			Vector3 mountPos = mountComp.ComponentBody.Position;
+			Vector3 mountForward = mountComp.ComponentBody.Matrix.Forward;
+			Vector3 targetPos = target.ComponentBody.BoundingBox.Center();
+			Vector3 toTarget = targetPos - mountPos;
+			toTarget.Y = 0f;
+			if (toTarget.LengthSquared() < 0.01f) return;
+
+			Vector3 dirToTarget = Vector3.Normalize(toTarget);
+			float currentAngle = MathF.Atan2(mountForward.X, mountForward.Z);
+			float targetAngle = MathF.Atan2(dirToTarget.X, dirToTarget.Z);
+			float angleDiff = MathUtils.NormalizeAngle(targetAngle - currentAngle);
+			float turn = -Math.Clamp(angleDiff / (MathF.PI / 2f), -0.5f, 0.5f);
+			steed.TurnOrder = turn;
+
+			float distance = toTarget.Length();
+			float desiredSpeed = 0f;
+			if (MathF.Abs(angleDiff) > 0.5f)
+				desiredSpeed = 0f;
+			else if (distance > AttackRange.Y)
+				desiredSpeed = 1f;
+			else if (distance > AttackRange.X)
+				desiredSpeed = 0.66f;
+			else
+				desiredSpeed = 0.33f;
+
+			steed.SpeedOrder = Math.Sign(desiredSpeed);
+
+			if (m_pathfinding != null && m_pathfinding.IsStuck && m_random.Float(0f, 1f) < 0.02f)
+				steed.JumpOrder = 1f;
+			else
+				steed.JumpOrder = 0f;
+		}
+
+		// ========== NUEVO MÉTODO: Detener montura completamente ==========
+		private void StopMountCompletely()
+		{
+			if (m_componentRider?.Mount == null) return;
+
+			ComponentMount mountComp = m_componentRider.Mount;
+			Entity mountEntity = mountComp.Entity;
+			ComponentBody mountBody = mountComp.ComponentBody;
+
+			ComponentZombieSteedBehavior zombieSteed = mountEntity.FindComponent<ComponentZombieSteedBehavior>();
+			ComponentSteedBehavior steed = zombieSteed ?? mountEntity.FindComponent<ComponentSteedBehavior>();
+
+			if (steed != null)
+			{
+				// Ordenar detenerse (deja que la interpolación natural frene la montura)
+				steed.SpeedOrder = 0;
+				steed.TurnOrder = 0f;
+				steed.JumpOrder = 0f;
+
+				if (zombieSteed != null)
+				{
+					// Resetear input vertical
+					zombieSteed.ExternalVerticalInput = 0f;
+
+					// Para monturas voladoras como InfectedFly1, desactivar el vuelo creativo
+					ComponentLocomotion loco = mountEntity.FindComponent<ComponentLocomotion>();
+					if (loco != null && loco.FlySpeed > 0f)
+					{
+						loco.IsCreativeFlyEnabled = false;
+						loco.FlyOrder = Vector3.Zero;
+						loco.WalkOrder = null;
+					}
+				}
+				else
+				{
+					// Para ComponentSteedBehavior base (caballos normales), acceder a campos públicos
+					steed.m_speed = 0f;
+					steed.m_turnSpeed = 0f;
+				}
+			}
+
+			// Para monturas voladoras, forzar velocidad horizontal a 0 para que caigan en lugar de seguir volando
+			if (zombieSteed != null && mountBody != null)
+			{
+				ComponentLocomotion loco = mountEntity.FindComponent<ComponentLocomotion>();
+				if (loco != null && loco.FlySpeed > 0f)
+				{
+					Vector3 vel = mountBody.Velocity;
+					mountBody.Velocity = new Vector3(0f, vel.Y, 0f);
+				}
+			}
+
+			// NO poner m_mountedCombatActive = false aquí, eso lo maneja el bloque principal
 		}
 	}
 }
