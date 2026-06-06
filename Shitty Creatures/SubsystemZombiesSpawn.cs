@@ -34,6 +34,8 @@ namespace Game
 		private float m_horseMountProbability = 0.1f;   // Baja
 		private float m_bearMountProbability = 0.3f;    // Media
 		private float m_flyMountProbability = 0.3f;     // Media
+		// Probabilidad global de que un zombi normal aparezca montado (0.0 = nunca, 1.0 = siempre)
+		private float m_mountedSpawnProbability = 0.2f;  // 20%
 
 		private static readonly HashSet<string> MountableHorseTemplates = new HashSet<string>
 {
@@ -1234,10 +1236,11 @@ namespace Game
 			if (CanSpawnCreature(entry.TemplateName, spawnPos))
 			{
 				bool spawnedMounted = false;
-				// Intentar spawnear montado solo para criaturas normales (no jefes)
+				// Intentar spawnear montado solo para criaturas normales (no jefes) y con probabilidad global
 				if (m_mountedZombiesEnabled &&
 					!BossTemplates.Contains(entry.TemplateName) &&
-					!MiniBossTemplates.Contains(entry.TemplateName))
+					!MiniBossTemplates.Contains(entry.TemplateName) &&
+					m_random.Float(0f, 1f) < m_mountedSpawnProbability)
 				{
 					spawnedMounted = TrySpawnMountedCreature(entry.TemplateName, spawnPos);
 				}
