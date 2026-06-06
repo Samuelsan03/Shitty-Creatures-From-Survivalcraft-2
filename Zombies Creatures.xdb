@@ -2317,6 +2317,7 @@
         <Parameter Name="Color" Guid="949f61bd-74d2-4a45-b993-9af42facad99" Value="86,139,25" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="b39da8e4-bda3-4261-abc7-98d96fd9974e" Value="7" Type="int"/>
         <Parameter Name="SwapUV" Guid="38140ebd-0e36-4cac-9819-da515db56d74" Value="False" Type="bool"/>
+        <Parameter Name="Scale" Guid="b8e40536-fec3-4cb4-b9fd-dd60f57a237e" Value="0.99" Type="float" />
         <Parameter Name="DisplayName" Guid="87498924-f96e-462d-9391-338be1f0d944" Value="[DisplayName:InfectedFly1]" Type="string"/>
         <Parameter Name="EggTypeIndex" Guid="ef301616-2616-42e9-99f0-657cd2ea181b" Value="1008" Type="int"/>
     </ParameterSet>
@@ -2532,6 +2533,7 @@
         <Parameter Name="Color" Guid="bd84d573-d487-40d7-9a80-c9b913db3eb5" Value="86,139,25" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="3014aca0-cdd8-44cd-9ef2-532e6dc6cd15" Value="7" Type="int"/>
         <Parameter Name="SwapUV" Guid="0866bc88-e012-40d8-b746-10cb0a4b14a2" Value="False" Type="bool"/>
+        <Parameter Name="Scale" Guid="c8ba6ce7-586e-469d-b01b-68b9e5603e40" Value="0.99" Type="float" />
         <Parameter Name="DisplayName" Guid="1373496d-9073-45f4-ad2e-4cc1ddbd4c3d" Value="[DisplayName:InfectedFly2]" Type="string"/>
         <Parameter Name="EggTypeIndex" Guid="940dc27b-770f-472e-9c7b-0f4fbd53ce56" Value="1010" Type="int"/>
     </ParameterSet>
@@ -2741,6 +2743,7 @@
         <Parameter Name="Color" Guid="622be13f-e4fe-4c2b-b18e-6527e000c3f0" Value="86,139,25" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="80fb6313-8c7f-47a4-87f7-fc757189c64b" Value="7" Type="int"/>
         <Parameter Name="SwapUV" Guid="845875b9-84d8-4293-b2c6-fe4b300f6728" Value="False" Type="bool"/>
+        <Parameter Name="Scale" Guid="ccc18955-c9c8-439b-8839-2a311c33dd22" Value="0.99" Type="float" />
         <Parameter Name="DisplayName" Guid="8b5d1fab-7449-4d53-8b7f-372fffe29683" Value="[DisplayName:InfectedFly3]" Type="string"/>
         <Parameter Name="EggTypeIndex" Guid="be91c744-dc27-4ef1-8dab-99dec8f2b5be" Value="1011" Type="int"/>
     </ParameterSet>
@@ -9841,6 +9844,7 @@
             <ParameterSet Name="CreatureEggData" Guid="892c57ab-c2b4-4064-bb52-047cdc23927d">
               <Parameter Name="Color" Guid="99fb9026-dbf1-4072-99b2-dcf386c4d036" Value="112,128,115" Type="Color"/>
               <Parameter Name="TextureSlot" Guid="e268a2e5-6fae-4904-b393-a7d01dee2036" Value="163" Type="int"/>
+              <Parameter Name="Scale" Guid="662bd260-fd8d-408b-b36a-1afff222687d" Value="0.99" Type="float" />
               <Parameter Name="DisplayName" Guid="57f9e911-65f2-4ae9-abdb-fe2f0d9640ec" Value="[DisplayName:InfectedBird]" Type="string"/>
               <Parameter Name="EggTypeIndex" Guid="72a82f64-e7a5-4fd8-9dd3-14518ae27bd2" Value="1039" Type="int"/>
             </ParameterSet>
