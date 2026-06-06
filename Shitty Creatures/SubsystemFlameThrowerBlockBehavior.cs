@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Engine;
 using Game;
@@ -21,7 +21,12 @@ namespace Game
 
 		public override bool OnEditInventoryItem(IInventory inventory, int slotIndex, ComponentPlayer componentPlayer)
 		{
-			if (componentPlayer.ComponentGui.ModalPanelWidget == null)
+			// CORREGIDO: Lógica de toggle - cierra si ya está abierto, abre si está cerrado
+			if (componentPlayer.ComponentGui.ModalPanelWidget is FlameThrowerWidget)
+			{
+				componentPlayer.ComponentGui.ModalPanelWidget = null;
+			}
+			else
 			{
 				componentPlayer.ComponentGui.ModalPanelWidget = new FlameThrowerWidget(inventory, slotIndex);
 			}
