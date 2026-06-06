@@ -17,12 +17,34 @@
 </Folder>
 
     <Folder Name="Gameplay" Guid="d509e5e2-2c10-49f1-8223-85cd892c63b0">
-    <ComponentTemplate Name="Teleport" Description="Permite a la criatura teletransportarse cerca de su objetivo cuando la distancia es mayor a la indicada." Guid="6f1098fa-759e-4cb5-adfa-a42ebf9aab74" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
-  <Parameter Name="Class" Guid="3c6db030-b7f6-41d1-a981-acf64bb4cc8b" Value="Game.Teleport" Type="string" />
-  <Parameter Name="TeleportationDistance" Description="Distancia mínima a la que debe estar el objetivo para que la criatura se teletransporte." Guid="ce17d8f8-5b1f-48d4-b319-ea61534a94b2" Value="15" Type="float" />
-  <Parameter Name="TeleportationCooldown" Description="Tiempo en segundos que debe esperar la criatura antes de poder volver a teletransportarse." Guid="23e0d3b0-15e2-41e3-9a3e-a1213cc2300d" Value="8" Type="float" />
-  <Parameter Name="DisappearanceTime" Description="Tiempo en segundos que la criatura permanece invisible antes de aparecer en el destino." Guid="142b78c9-1602-4504-9eaf-abae03eccc30" Value="1" Type="float" />
-  <Parameter Name="ChanceToTeleport" Description="Probabilidad de que la criatura se teletransporte cuando cumple las condiciones de distancia." Guid="878c7008-58d1-4819-84f9-17ae7f721ff8" Value="1" Type="float" />
+    <ComponentTemplate Name="ZombieRider" Description="Rider component for zombies - prevents player mounting on zombie mounts" Guid="ee35f217-d9a7-49b2-a493-43f8e499ffc6" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
+          <Parameter Name="RiderOffset" Description="Offset from mount position when riding" Guid="c6082b96-4004-42bb-a6e5-aa4e7a39205c" Value="0,0,0" Type="Vector3" />
+          <Parameter Name="Class" Guid="c14111e4-f34d-4526-8cd4-3e8c76c0d5a1" Value="Game.ComponentZombieRider" Type="string" />
+        </ComponentTemplate>
+
+    <ComponentTemplate Name="ZombieMount" Description="Mount component for zombie entities - prevents player mounting" Guid="043a41d8-4a2e-447f-b735-88cc3082132a" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
+          <Parameter Name="DismountOffset" Description="Offset from mount position when dismounting" Guid="a59a2dde-52ad-45a5-851a-5bb42bc5ce6b" Value="0,0,0" Type="Vector3" />
+          <Parameter Name="MountOffset" Description="Offset from mount position when mounting" Guid="dd4133ea-8845-4ec4-bae0-1ee366691d99" Value="0,0,0" Type="Vector3" />
+          <Parameter Name="CanPlayersRide" Description="Whether players are allowed to ride this zombie mount" Guid="9e5e6697-d914-4f8f-b9ca-f03f3c549522" Value="False" Type="bool" />
+          <Parameter Name="Class" Guid="6f58f0fd-8c9d-4c38-84b1-e255d79efbc2" Value="Game.ComponentZombieMount" Type="string" />
+        </ComponentTemplate>
+
+<ComponentTemplate Name="ZombieSteedBehavior" Description="Steed behavior for zombie mounts - ignores player riding orders" Guid="80fae8e1-d7fd-4343-8180-dda98dfa120f" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+          <Parameter Name="Class" Guid="a0996c8c-5851-4029-a8b5-9ad031ef378f" Value="Game.ComponentZombieSteedBehavior" Type="string" />
+        </ComponentTemplate>
+
+<ComponentTemplate Name="ZombieStubbornSteedBehavior" Description="Stubborn behavior for zombie mounts - only activates for non-player riders" Guid="e59e0320-ceb2-40ae-a20c-6e7c9861eb8a" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+          <Parameter Name="StubbornProbability" Description="Probability that the zombie mount becomes stubborn" Guid="178f540b-6c23-4df5-96bd-1f267c41f1e1" Value="0.005" Type="float" />
+          <Parameter Name="Class" Guid="2dc95167-764a-4338-8fe1-f47ef1e16ae7" Value="Game.ComponentZombieStubbornSteedBehavior" Type="string" />
+          <Parameter Name="StubbornEndTime" Description="Time when stubborn behavior ends" Guid="c6c49f05-d592-48f5-89d6-caf15c970d60" Value="0" Type="double" />
+        </ComponentTemplate>
+
+    <ComponentTemplate Name="Teleport" Description="Allows a creature to teleport near its target when the distance becomes too large." Guid="e37b81d3-464f-4ec5-9462-14392c30450f" InheritanceParent="6cc7245f-56f2-4a77-a3db-5f628b6369b3">
+  <Parameter Name="Class" Guid="690f56dc-ba67-4b92-8780-a55f5514db15" Value="Game.Teleport" Type="string" />
+  <Parameter Name="TeleportationDistance" Description="Minimum distance from the target before teleportation can occur." Guid="9b438247-0aeb-4342-8401-378d51182986" Value="15" Type="float" />
+  <Parameter Name="TeleportationCooldown" Description="Time in seconds before another teleport can occur." Guid="5b0c5ac5-130e-4c0b-a1ef-99789e0c3bb6" Value="5" Type="float" />
+  <Parameter Name="DisappearanceTime" Description="Duration in seconds the creature remains vanished." Guid="1f9780a0-aba9-4564-8340-52756e8652c2" Value="0.75" Type="float" />
+  <Parameter Name="ChanceToTeleport" Description="Probability of teleporting when the distance condition is met." Guid="bf84bf82-4e56-4ac9-adbf-6d99e7b892b7" Value="0.3" Type="float" />
 </ComponentTemplate>
 
     <ComponentTemplate Name="CreatureClothing" Description="Handles clothes worn by creatures" Guid="c1965be4-62ff-42f9-90e6-4e12b4d9a3af" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
@@ -56,6 +78,7 @@
   <Parameter Name="VomitShit" Description="Activa el vómito venenoso (daño tipo veneno)." Guid="b12c4a91-3f8d-4f4d-9d8c-1a2b3c4d5e61" Value="false" Type="bool"/>
   <Parameter Name="VomitFire" Description="Activa el vómito de fuego (daño tipo fuego)." Guid="c23d5b82-4e9f-5a6b-8c7d-2b3c4d5e6f72" Value="false" Type="bool"/>
   <Parameter Name="VomitFrozen" Description="Activa el vómito congelante (causa gripe, reduce temperatura y daño leve)." Guid="a78451cc-725e-4165-b091-6fdd3fa124fe" Value="false" Type="bool"/>
+  <Parameter Name="VomitBlood" Description="Activa el vómito de sangre (daño progresivo a criaturas)." Guid="5e087060-f114-4852-b8d4-fb9470b6c1df" Value="false" Type="bool"/>
   <Parameter Name="VomitProbability" Description="Probabilidad por segundo de ejecutar el ataque de vómito cuando el objetivo está a distancia válida." Guid="d34e6c93-5f0a-6b7c-9d8e-3c4d5e6f7a83" Value="0.1" Type="float"/>
   <Parameter Name="VomitCooldown" Description="Tiempo mínimo en segundos entre cada uso del ataque de vómito." Guid="e45f7da4-6a1b-7c8d-0e9f-4d5e6f7a8b94" Value="5" Type="float"/>
   <Parameter Name="VomitDistanceRange" Description="Rango de distancia (mínima, máxima) en bloques a la que la criatura puede vomitar. Formato: X,Y donde X es la distancia mínima e Y la máxima." Guid="e93d0f52-5283-41f1-8fa2-9516d5c32b71" Value="2,12" Type="Vector2"/>
@@ -253,18 +276,21 @@
   <Parameter Name="Class" Guid="7a6fa981-4a34-4282-bbe2-dbff9062a23f" Value="Game.ComponentDefensiveCreatureAI" Type="string" />
   <Parameter Name="CanUseInventory" Description="If true, the creature can equip and use ranged weapons (muskets, bows, crossbows, throwables, etc.) from its inventory during combat. Requires line of sight and will be interrupted if stuck." Guid="3c5113b8-872d-4aeb-9a85-9ca7c6146d1c" Value="false" Type="bool" />
   <Parameter Name="CanEquipClothing" Description="If true, the creature will automatically equip any wearable clothing/armor found in its inventory" Guid="418363ec-4f5a-4582-a554-e5221017ac03" Value="false" Type="bool" />
+  <Parameter Name="CanBeMounted" Description="If true, the creature will automatically find and mount nearby rideable creatures (horses, camels, infected mounts, etc.) when in combat" Guid="ed9f30b9-f298-4105-9c78-df607801c32f" Value="false" Type="bool" />
 </ComponentTemplate>
 
 <ComponentTemplate Name="ZombieAI" Description="Inteligencia artificial avanzada para zombies con soporte para armas, recarga automática y animaciones" Guid="dc91ba3e-c474-45c3-8d03-ca9a9996dc5f" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
     <Parameter Name="Class" Guid="7f034217-2fb5-4da2-b6a2-c1ffec350ddb" Value="Game.ComponentZombieAI" Type="string" Description="Clase C# que implementa el componente de IA para zombies"/>
     <Parameter Name="CanUseInventory" Guid="65316e97-6084-43e7-b97f-f1382258dded" Value="true" Type="bool" Description="Si el zombie puede usar armas del inventario"/>
     <Parameter Name="CanEquipClothing" Guid="c0d6fa78-314f-4716-b02e-dc4f67519950" Value="true" Type="bool" Description="Si la criatura puede equiparse ropa y armadura automáticamente del inventario"/>
+    <Parameter Name="CanBeMounted" Guid="0a6ecb48-6d35-46fe-bb42-c77832984d38" Value="false" Type="bool" Description="Si la criatura puede montar monturas (caballos, camellos, etc.) automáticamente"/>
 </ComponentTemplate>
 
 <ComponentTemplate Name="CreatureAI" Description="Inteligencia artificial para criaturas con soporte para armas y recarga automática" Guid="a703e514-0246-49c4-a58d-282a2e0737d1" InheritanceParent="b05700ed-7e4e-4679-98f5-b597f421496b">
     <Parameter Name="Class" Guid="e43a2641-0995-446c-aa50-390e7c0e2c12" Value="Game.ComponentCreatureAI" Type="string" Description="Clase C# que implementa el componente"/>
     <Parameter Name="CanUseInventory" Guid="ddb27b73-4aa7-4580-a5bd-684db3139696" Value="false" Type="bool" Description="Si la criatura puede usar armas del inventario"/>
     <Parameter Name="CanEquipClothing" Guid="f5668c0a-04a1-4a3c-901a-9f877ef899c9" Value="false" Type="bool" Description="Si la criatura puede equiparse ropa y armadura automáticamente del inventario"/>
+    <Parameter Name="CanBeMounted" Guid="ab507689-7b01-41bf-9a41-5cae8f33bc0b" Value="false" Type="bool" Description="Si la criatura puede ser montada como una montura (caballos, camellos, etc.)"/>
 </ComponentTemplate>
 
 <ComponentTemplate Name="HumanModel" Description="Modelo humano con animaciones mejoradas y fluidas" Guid="da33e501-1378-4644-8b5f-ef90863234a5" InheritanceParent="681a5886-5bff-418a-bf5f-ac84f290a311">
