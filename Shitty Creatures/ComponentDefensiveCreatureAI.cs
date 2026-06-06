@@ -214,12 +214,11 @@ namespace Game
 			m_componentRider = Entity.FindComponent<ComponentRider>();
 			m_componentSteed = null; // Se obtendrá dinámicamente cuando se necesite
 
-			// NUEVO: Si ya estaba montado al cargar, restaurar el estado de combate montado
-			if (m_componentRider != null && m_componentRider.Mount != null)
-			{
-				m_mountedCombatActive = true;
-				if (m_componentChase != null) m_componentChase.Suppressed = false;
-			}
+			// CORRECCIÓN: No acceder a m_componentRider.Mount durante Load().
+			// El montaje se restaurará naturalmente en el primer Update() cuando
+			// todas las entidades ya estén cargadas y las referencias sean válidas.
+			// Acceder aquí causa NullReferenceException porque la entidad montura
+			// aún no existe en IdToEntityMap en este punto de la carga.
 
 			m_subsystemTime = Project.FindSubsystem<SubsystemTime>(true);
 			m_componentMiner = Entity.FindComponent<ComponentMiner>(true);
