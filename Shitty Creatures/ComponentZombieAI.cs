@@ -1650,6 +1650,9 @@ namespace Game
 				}
 				else
 				{
+					// Para ComponentSteedBehavior base (caballos originales)
+					// Igual que hace el estado "Steed" del código original
+					steed.m_speedLevel = 1;  // <-- FALTABA ESTA LÍNEA
 					steed.m_speed = 0f;
 					steed.m_turnSpeed = 0f;
 				}
