@@ -20,6 +20,11 @@ namespace Game
 		private double m_lastCombatStatsUpdateTime;
 		private SubsystemGreenNightSky m_subsystemGreenNightSky;
 
+		private double m_lastMountBlockMessageTime = -10.0;
+
+		private Dictionary<ComponentPlayer, bool> m_previousToggleMountState = new Dictionary<ComponentPlayer, bool>();
+		private Dictionary<ComponentPlayer, double> m_lastMountAttemptMessageTime = new Dictionary<ComponentPlayer, double>();
+
 		// Añadir campo para almacenar los botones creados (opcional, solo para referencia)
 		private Dictionary<ComponentPlayer, ButtonWidget> m_achievementButtons = new Dictionary<ComponentPlayer, ButtonWidget>();
 
@@ -165,6 +170,9 @@ namespace Game
 			ModsManager.RegisterHook("SetHitInterval", this);
 			ModsManager.RegisterHook("OnChaseBehaviorAttacked", this, 100);  // Prioridad alta para cancelar
 			ModsManager.RegisterHook("OnMinerHit", this, 100);  // Para criaturas que usan ComponentMiner directamente
+			
+			// Bloquear montura zombi para jugadores
+			ModsManager.RegisterHook("ScoreMount", this);
 
 			// Reemplazar overlay de captura de pantalla
 			ReplaceScreenCaptureOverlay();
@@ -793,6 +801,39 @@ namespace Game
 								{
 									EnforceCombatStatsByDifficulty(project);
 									EnforceBlockBreakingByDifficulty(project);
+								}
+
+								// Detectar intento activo de montar (tecla o botón GUI)
+								if (player != null && player.ComponentInput != null)
+								{
+									PlayerInput input = player.ComponentInput.PlayerInput;
+									bool currentToggle = input.ToggleMount;
+
+									// También comprobar si el botón de montar fue clickeado
+									ButtonWidget mountButton = player.GuiWidget?.Children.Find<ButtonWidget>("MountButton", true);
+									bool buttonClicked = mountButton != null && mountButton.IsClicked;
+
+									bool mountingRequested = currentToggle || buttonClicked;
+
+									// Detectar flanco ascendente
+									bool previous = m_previousToggleMountState.GetValueOrDefault(player);
+									if (mountingRequested && !previous)
+									{
+										// El jugador acaba de intentar montar
+										double now = Time.RealTime;
+										if (!m_lastMountAttemptMessageTime.ContainsKey(player) || now - m_lastMountAttemptMessageTime[player] > 1.0)
+										{
+											// Buscar monturas zombi no montables cerca
+											ComponentMount nearestZombieMount = FindNearestUnrideableZombieMount(player);
+											if (nearestZombieMount != null)
+											{
+												m_lastMountAttemptMessageTime[player] = now;
+												string message = LanguageControl.Get("MountLock", 0);
+												player.ComponentGui?.DisplaySmallMessage(message, new Color (255,110,110), false, true);
+											}
+										}
+									}
+									m_previousToggleMountState[player] = mountingRequested;
 								}
 							}
 						}
@@ -2636,6 +2677,62 @@ namespace Game
 				// Reducir tiempo de persecución para que se detenga pronto
 				chaseTime = Math.Min(chaseTime, 0.1f);
 			}
+		}
+
+		public override void ScoreMount(ComponentRider rider, ComponentMount mount, out float? score)
+		{
+			score = null;
+
+			// Solo interesar si el jinete es un jugador
+			ComponentPlayer player = rider.Entity.FindComponent<ComponentPlayer>();
+			if (player == null) return;
+
+			// Verificar si la montura es un ComponentZombieMount
+			ComponentZombieMount zombieMount = mount as ComponentZombieMount;
+			if (zombieMount == null)
+				zombieMount = mount.Entity.FindComponent<ComponentZombieMount>();
+
+			if (zombieMount != null && !zombieMount.CanPlayersRide)
+			{
+				// Puntuación negativa para que no sea seleccionada
+				score = -1f;
+				// NO mostrar mensaje aquí
+			}
+		}
+
+		private ComponentMount FindNearestUnrideableZombieMount(ComponentPlayer player)
+		{
+			if (player == null || player.Project == null) return null;
+			var bodiesSubsystem = player.Project.FindSubsystem<SubsystemBodies>(true);
+			if (bodiesSubsystem == null) return null;
+
+			Vector3 center = player.ComponentBody.Position;
+			float radius = 4f;
+			DynamicArray<ComponentBody> bodies = new DynamicArray<ComponentBody>();
+			bodiesSubsystem.FindBodiesAroundPoint(new Vector2(center.X, center.Z), radius, bodies);
+
+			ComponentMount bestMount = null;
+			float bestDistSq = radius * radius;
+
+			for (int i = 0; i < bodies.Count; i++)
+			{
+				ComponentBody body = bodies.Array[i];
+				if (body?.Entity == null) continue;
+
+				ComponentZombieMount zombieMount = body.Entity.FindComponent<ComponentZombieMount>();
+				if (zombieMount == null) continue;
+
+				if (!zombieMount.CanPlayersRide)
+				{
+					float distSq = Vector3.DistanceSquared(center, body.Position);
+					if (distSq < bestDistSq)
+					{
+						bestDistSq = distSq;
+						bestMount = zombieMount;
+					}
+				}
+			}
+			return bestMount;
 		}
 
 		// ---------------------------------------------------------------------------------
