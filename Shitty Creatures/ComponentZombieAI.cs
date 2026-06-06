@@ -66,7 +66,8 @@ namespace Game
 	"Horse_White_Saddled",
 	"Donkey_Saddled",
 	"Horse_Bay_Saddled",
-	"InfectedFly1"   // nueva montura voladora
+	"InfectedFly1",
+	"InfectedBear"
 };
 
 		private float m_aimTimer;
