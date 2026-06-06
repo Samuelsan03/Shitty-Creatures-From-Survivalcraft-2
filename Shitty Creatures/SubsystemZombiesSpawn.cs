@@ -29,6 +29,23 @@ namespace Game
 		private SubsystemAudio m_subsystemAudio;
 		private Random m_random = new Random();
 
+		// ===== SPAWN DE ZOMBIS MONTADOS =====
+		private bool m_mountedZombiesEnabled = false;
+		private float m_horseMountProbability = 0.1f;   // Baja
+		private float m_bearMountProbability = 0.3f;    // Media
+		private float m_flyMountProbability = 0.3f;     // Media
+
+		private static readonly HashSet<string> MountableHorseTemplates = new HashSet<string>
+{
+	"Horse_Black_Saddled",
+	"Horse_Palomino_Saddled",
+	"Camel_Saddled",
+	"Horse_Chestnut_Saddled",
+	"Horse_White_Saddled",
+	"Donkey_Saddled",
+	"Horse_Bay_Saddled"
+};
+
 		// Datos de oleadas
 		private Dictionary<int, List<WaveEntry>> m_waves = new Dictionary<int, List<WaveEntry>>();
 		private int m_currentWave = 1;
@@ -1216,8 +1233,23 @@ namespace Game
 
 			if (CanSpawnCreature(entry.TemplateName, spawnPos))
 			{
-				m_subsystemCreatureSpawn.SpawnCreature(entry.TemplateName, spawnPos, false);
-				spawned++;
+				bool spawnedMounted = false;
+				// Intentar spawnear montado solo para criaturas normales (no jefes)
+				if (m_mountedZombiesEnabled &&
+					!BossTemplates.Contains(entry.TemplateName) &&
+					!MiniBossTemplates.Contains(entry.TemplateName))
+				{
+					spawnedMounted = TrySpawnMountedCreature(entry.TemplateName, spawnPos);
+				}
+				if (spawnedMounted)
+				{
+					spawned = 1;
+				}
+				else
+				{
+					m_subsystemCreatureSpawn.SpawnCreature(entry.TemplateName, spawnPos, false);
+					spawned++;
+				}
 			}
 			else
 			{
@@ -1730,6 +1762,68 @@ namespace Game
 			{
 				m_spawnInterval = Math.Max(1.2f, m_baseSpawnInterval - (m_currentWave * 0.04f));
 			}
+
+			// Habilitar zombis montados a partir de dificultad Hard
+			m_mountedZombiesEnabled = (mode == DifficultyMode.Hard || mode == DifficultyMode.Extreme);
+		}
+
+		private string GetRandomMountTemplateForZombie()
+		{
+			float roll = m_random.Float(0f, 1f);
+			if (roll < m_flyMountProbability)
+				return "InfectedFly1";
+			if (roll < m_flyMountProbability + m_bearMountProbability)
+				return "InfectedBear";
+			if (roll < m_flyMountProbability + m_bearMountProbability + m_horseMountProbability)
+			{
+				List<string> horseList = new List<string>(MountableHorseTemplates);
+				return horseList[m_random.Int(0, horseList.Count - 1)];
+			}
+			return null;
+		}
+
+		private bool TrySpawnMountedCreature(string zombieTemplate, Vector3 spawnPos)
+		{
+			if (!m_mountedZombiesEnabled) return false;
+
+			string mountTemplate = GetRandomMountTemplateForZombie();
+			if (string.IsNullOrEmpty(mountTemplate)) return false;
+
+			int totalCreatures = m_subsystemCreatureSpawn.CountCreatures(false);
+			if (totalCreatures + 2 > m_maxGlobalCreatures) return false;
+
+			Vector2 areaMin = new Vector2(spawnPos.X - 16, spawnPos.Z - 16);
+			Vector2 areaMax = new Vector2(spawnPos.X + 16, spawnPos.Z + 16);
+			int areaCount = m_subsystemCreatureSpawn.CountCreaturesInArea(areaMin, areaMax, false);
+			if (areaCount + 2 > m_maxCreaturesPerArea) return false;
+
+			Entity mountEntity = m_subsystemCreatureSpawn.SpawnCreature(mountTemplate, spawnPos, false);
+			if (mountEntity == null) return false;
+
+			ComponentMount mountComp = mountEntity.FindComponent<ComponentMount>();
+			if (mountComp == null)
+			{
+				Project.RemoveEntity(mountEntity, true);
+				return false;
+			}
+
+			Entity zombieEntity = m_subsystemCreatureSpawn.SpawnCreature(zombieTemplate, spawnPos, false);
+			if (zombieEntity == null)
+			{
+				Project.RemoveEntity(mountEntity, true);
+				return false;
+			}
+
+			ComponentRider rider = zombieEntity.FindComponent<ComponentRider>();
+			if (rider == null)
+			{
+				Project.RemoveEntity(zombieEntity, true);
+				Project.RemoveEntity(mountEntity, true);
+				return false;
+			}
+
+			rider.StartMounting(mountComp);
+			return true;
 		}
 	}
 }
