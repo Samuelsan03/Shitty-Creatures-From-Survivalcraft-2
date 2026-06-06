@@ -227,6 +227,15 @@ namespace Game
 			float rangeMult = DifficultyModifiers.GetAggressionRangeMultiplier(mode);
 			AttackRange = new Vector2(AttackRange.X, AttackRange.Y * rangeMult);
 			ThrowableRange = new Vector2(ThrowableRange.X, ThrowableRange.Y * rangeMult);
+
+			// Habilitar montura solo en dificultades altas
+			if (!CanBeMounted) return;
+			bool mountingEnabled = (mode == DifficultyMode.Hard || mode == DifficultyMode.Extreme);
+			if (!mountingEnabled && m_componentRider?.Mount != null)
+			{
+				// Forzar desmontaje si está montado
+				m_componentRider.StartDismounting();
+			}
 		}
 
 		private void InitializeThrowableIndices()
@@ -294,9 +303,22 @@ namespace Game
 			// Si la celebración está activa, solo bloquear combate, pero permitir equipar ropa
 			bool celebrationActive = AchievementsManager.IsCelebrationActive;
 
-			if (!celebrationActive && CanBeMounted && m_componentRider != null && m_componentRider.Mount == null && m_componentCreature.ComponentHealth.Health > 0f)
+			// Si ya está montado, manejar combate montado (control de la montura)
+			if (!celebrationActive && m_componentRider != null && m_componentRider.Mount != null)
 			{
-				// Buscar montura cada 0.2 segundos
+				m_mountedCombatActive = true;  // SIEMPRE true mientras esté montado
+				HandleMountedCombat(dt);
+				// El combate normal (armas) aún debe ejecutarse
+			}
+			else
+			{
+				m_mountedCombatActive = false;
+			}
+
+			if (!celebrationActive && CanBeMounted && m_currentDifficulty >= DifficultyMode.Hard &&
+	m_componentRider != null && m_componentRider.Mount == null &&
+	m_componentCreature.ComponentHealth.Health > 0f)
+			{
 				m_mountSearchCooldown -= dt;
 				if (m_mountSearchCooldown <= 0f)
 				{
@@ -310,18 +332,6 @@ namespace Game
 						if (m_pathfinding != null) m_pathfinding.Stop();
 					}
 				}
-			}
-
-			// Si ya está montado, manejar combate montado (control de la montura)
-			if (!celebrationActive && m_componentRider != null && m_componentRider.Mount != null)
-			{
-				m_mountedCombatActive = true;  // SIEMPRE true mientras esté montado
-				HandleMountedCombat(dt);
-				// El combate normal (armas) aún debe ejecutarse
-			}
-			else
-			{
-				m_mountedCombatActive = false;
 			}
 
 			if (m_subsystemGreenNightSky != null)
@@ -1572,7 +1582,6 @@ namespace Game
 			ComponentCreature target = m_chaseBehavior?.m_target;
 			if (target == null || target.ComponentHealth.Health <= 0f)
 			{
-				// CAMBIADO: Usar StopMountCompletely en vez de solo poner órdenes a 0
 				StopMountCompletely();
 				return;
 			}
@@ -1624,17 +1633,13 @@ namespace Game
 
 			if (steed != null)
 			{
-				// Ordenar detenerse (deja que la interpolación natural frene la montura)
 				steed.SpeedOrder = 0;
 				steed.TurnOrder = 0f;
 				steed.JumpOrder = 0f;
 
 				if (zombieSteed != null)
 				{
-					// Resetear input vertical
 					zombieSteed.ExternalVerticalInput = 0f;
-
-					// Para monturas voladoras como InfectedFly1, desactivar el vuelo creativo
 					ComponentLocomotion loco = mountEntity.FindComponent<ComponentLocomotion>();
 					if (loco != null && loco.FlySpeed > 0f)
 					{
@@ -1645,13 +1650,11 @@ namespace Game
 				}
 				else
 				{
-					// Para ComponentSteedBehavior base (caballos normales), acceder a campos públicos
 					steed.m_speed = 0f;
 					steed.m_turnSpeed = 0f;
 				}
 			}
 
-			// Para monturas voladoras, forzar velocidad horizontal a 0 para que caigan en lugar de seguir volando
 			if (zombieSteed != null && mountBody != null)
 			{
 				ComponentLocomotion loco = mountEntity.FindComponent<ComponentLocomotion>();
@@ -1661,8 +1664,6 @@ namespace Game
 					mountBody.Velocity = new Vector3(0f, vel.Y, 0f);
 				}
 			}
-
-			// NO poner m_mountedCombatActive = false aquí, eso lo maneja el bloque principal
 		}
 	}
 }
