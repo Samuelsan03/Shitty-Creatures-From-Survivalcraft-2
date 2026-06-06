@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Engine;
 using GameEntitySystem;
 using TemplatesDatabase;
+using static Game.SubsystemGreenNightSky;
 
 namespace Game
 {
@@ -14,6 +15,18 @@ namespace Game
 			get => base.Suppressed;
 			set => base.Suppressed = value;
 		}
+
+		// Lista de nombres de criaturas que NO deben ser atacadas (monturas)
+		private static readonly HashSet<string> s_excludedMountNames = new HashSet<string>
+{
+	"Horse_Black_Saddled",
+	"Horse_Palomino_Saddled",
+	"Camel_Saddled",
+	"Horse_Chestnut_Saddled",
+	"Horse_White_Saddled",
+	"Donkey_Saddled",
+	"Horse_Bay_Saddled"
+};
 		public string CurrentState => this.m_stateMachine?.CurrentState;
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
@@ -55,6 +68,12 @@ namespace Game
 			{
 				this.TargetInRangeTimeToChase = 0f;
 				this.m_targetInRangeTime = this.TargetInRangeTimeToChase + 1f;
+			}
+			m_baseRange = this.m_range;
+			if (m_subsystemGreenNightSky != null)
+			{
+				m_currentDifficulty = m_subsystemGreenNightSky.DifficultyMode;
+				ApplyDifficultyToChase();
 			}
 		}
 
@@ -256,7 +275,18 @@ namespace Game
 			ComponentCreature retaliationTarget = this.GetNextRetaliationTarget();
 			if (retaliationTarget != null)
 			{
-				return retaliationTarget;
+				// Verificar exclusión según dificultad
+				bool shouldExcludeMounts = (m_currentDifficulty == DifficultyMode.Hard || m_currentDifficulty == DifficultyMode.Extreme);
+				if (shouldExcludeMounts)
+				{
+					string name = retaliationTarget.Entity.ValuesDictionary.DatabaseObject.Name;
+					if (!s_excludedMountNames.Contains(name))
+						return retaliationTarget;
+				}
+				else
+				{
+					return retaliationTarget;
+				}
 			}
 
 			// Solo si ForceAttackDuringGreenNight es true, se busca jugadores durante noche verde
@@ -281,11 +311,20 @@ namespace Game
 				this.m_componentBodies.Clear();
 				this.m_subsystemBodies.FindBodiesAroundPoint(new Vector2(position.X, position.Z), this.m_range, this.m_componentBodies);
 
+				bool shouldExcludeMounts = (m_currentDifficulty == DifficultyMode.Hard || m_currentDifficulty == DifficultyMode.Extreme);
+
 				for (int i = 0; i < this.m_componentBodies.Count; i++)
 				{
 					ComponentCreature candidate = this.m_componentBodies.Array[i].Entity.FindComponent<ComponentCreature>();
 					if (candidate != null && !this.IsSameHerd(candidate))
 					{
+						if (shouldExcludeMounts)
+						{
+							string templateName = candidate.Entity.ValuesDictionary.DatabaseObject.Name;
+							if (!string.IsNullOrEmpty(templateName) && s_excludedMountNames.Contains(templateName))
+								continue;
+						}
+
 						float score = this.ScoreTarget(candidate);
 						if (score > bestScore)
 						{
@@ -317,6 +356,14 @@ namespace Game
 			{
 				ComponentCreature latestAttacker = this.m_retaliationQueue[this.m_retaliationQueue.Count - 1];
 
+				bool shouldExcludeMounts = (m_currentDifficulty == DifficultyMode.Hard || m_currentDifficulty == DifficultyMode.Extreme);
+				if (shouldExcludeMounts)
+				{
+					string name = latestAttacker.Entity.ValuesDictionary.DatabaseObject.Name;
+					if (!string.IsNullOrEmpty(name) && s_excludedMountNames.Contains(name))
+						return null;
+				}
+
 				bool isValid = (!this.IsSameHerd(latestAttacker) || this.m_attacksSameHerd) &&
 							   Vector3.Distance(this.m_componentCreature.ComponentBody.Position,
 											   latestAttacker.ComponentBody.Position) <= this.m_range * 2f;
@@ -332,6 +379,21 @@ namespace Game
 
 		public override float ScoreTarget(ComponentCreature componentCreature)
 		{
+			if (componentCreature != null)
+			{
+				// Determinar si debemos excluir monturas según dificultad
+				bool shouldExcludeMounts = (m_currentDifficulty == DifficultyMode.Hard || m_currentDifficulty == DifficultyMode.Extreme);
+
+				if (shouldExcludeMounts)
+				{
+					string templateName = componentCreature.Entity.ValuesDictionary.DatabaseObject.Name;
+					if (!string.IsNullOrEmpty(templateName) && s_excludedMountNames.Contains(templateName))
+					{
+						return 0f;
+					}
+				}
+			}
+
 			if (!this.m_attacksSameHerd && this.IsSameHerd(componentCreature))
 			{
 				return 0f;
@@ -398,6 +460,19 @@ namespace Game
 
 		private void FleeFromTarget(ComponentCreature target)
 		{
+			// En Hard y Extreme no huyen, contraatacan
+			if (m_subsystemGreenNightSky != null && m_subsystemGreenNightSky.DifficultyMode >= DifficultyMode.Hard)
+			{
+				if (target != null && !m_isRetaliating)
+				{
+					this.Attack(target, this.m_range, 60f, true);
+					m_isRetaliating = true;
+					m_retaliationTarget = target;
+				}
+				return;
+			}
+
+			// Comportamiento original de huida para Easy/Normal/Medium
 			if (target != null && this.m_componentCreature.ComponentHealth.Health > 0f)
 			{
 				this.m_target = target;
@@ -407,6 +482,11 @@ namespace Game
 
 		public override void Update(float dt)
 		{
+			if (m_subsystemGreenNightSky != null)
+			{
+				ApplyDifficultyToChase();
+			}
+
 			base.Update(dt);
 
 			if (this.m_retaliationCooldown > 0f)
@@ -548,6 +628,17 @@ namespace Game
 			}
 		}
 
+		private void ApplyDifficultyToChase()
+		{
+			if (m_subsystemGreenNightSky == null) return;
+			DifficultyMode mode = m_subsystemGreenNightSky.DifficultyMode;
+			if (mode == m_currentDifficulty) return;
+			m_currentDifficulty = mode;
+
+			float rangeMult = SubsystemGreenNightSky.DifficultyModifiers.GetAggressionRangeMultiplier(mode);
+			this.m_range = m_baseRange * rangeMult;
+		}
+
 		public override void StopAttack()
 		{
 			base.StopAttack();
@@ -571,5 +662,7 @@ namespace Game
 		private List<ComponentCreature> m_retaliationQueue = new List<ComponentCreature>();
 		private bool m_isRetaliating;
 		private ComponentCreature m_retaliationTarget;
+		private DifficultyMode m_currentDifficulty;
+		private float m_baseRange;
 	}
 }
