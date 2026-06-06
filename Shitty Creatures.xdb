@@ -6285,6 +6285,26 @@
     <Parameter Name="PoisonResistance" Value="2" Type="float"/>
     <Parameter Name="IsJumpMove" Value="false" Type="bool"/>
   </MemberComponentTemplate>
+  <MemberComponentTemplate Name="Rider" Guid="2cdd18a3-6e52-425b-8b0a-e044e574da61" InheritanceParent="894cdf33-9691-4320-a342-3aba1fd1c746">
+              <Parameter Name="RiderOffset" Guid="b5ecc7c5-5dfc-467e-9c19-73a50c4af087" Value="0,-0.71,0" Type="Vector3" />
+            </MemberComponentTemplate>
+<MemberComponentTemplate Name="CreatureAI" Guid="6f8f93f6-e1d1-44e5-a35f-dacfddfd9353" InheritanceParent="a703e514-0246-49c4-a58d-282a2e0737d1">
+    <Parameter Name="CanUseInventory" Value="true" Type="bool" Guid="b8b75d59-65bf-4d9b-be8b-299e811da4a1"/>
+    <Parameter Name="CanEquipClothing" Guid="0b013de2-94d1-438d-acc2-996821d821b5" Value="true" Type="bool"/>
+    <Parameter Name="CanBeMounted" Guid="71959ccb-c4c7-4770-b4b6-826a25dd50f0" Value="true" Type="bool"/>
+</MemberComponentTemplate>
+  <MemberComponentTemplate Name="ChaseBehavior" Guid="c96e44a8-7ecc-4462-be2b-7ebb8a21c607" InheritanceParent="31894441-d90a-4549-9264-db9dbe20e234">
+                <Parameter Name="AutoChaseMask" Guid="11c132d4-994a-4ca0-af75-aac3287f3c4b" Value="LandPredator" Type="Game.CreatureCategory"/>
+                <Parameter Name="DayChaseRange" Guid="7205ca7d-86c6-43fd-8fd8-1e9ccfce19d3" Value="1.0" Type="float"/>
+                <Parameter Name="NightChaseRange" Guid="1579593c-e786-44e3-ac49-559aa7918040" Value="1.0" Type="float"/>
+                <Parameter Name="ChaseNonPlayerProbability" Guid="e6db61a2-4570-41c9-9911-28e1cef27900" Value="0.01" Type="float"/>
+                <Parameter Name="NightChaseTime" Guid="45fe1d5c-d0f7-4bb5-9363-9d6582b661b1" Value="1.0" Type="float"/>
+            </MemberComponentTemplate>
+  <MemberComponentTemplate Name="HerdBehavior" Guid="a1e15475-5056-4f66-afc3-d608b3088c90" InheritanceParent="dfe7218e-ce14-4bde-8dac-f919c38e9efe">
+                <Parameter Name="HerdName" Guid="e489a8e0-d126-469d-88b0-07ce813df4c4" Value="Alianza" Type="string"/>
+                <Parameter Name="HerdingRange" Guid="dba94538-1721-46d8-9650-4e781fabea85" Value="40" Type="float"/>
+                <Parameter Name="AutoNearbyCreaturesHelp" Guid="f87fc76c-c169-4878-a93c-fcd16608950a" Value="True" Type="bool"/>
+            </MemberComponentTemplate>
     <ParameterSet Name="CreatureEggData" Guid="edb6dfc8-6665-42b2-91f8-3edc5e682209">
         <Parameter Name="Color" Guid="3bd85e25-a02f-4836-901b-ca2e5bbe7f38" Value="127,0,255" Type="Color"/>
         <Parameter Name="TextureSlot" Guid="4dcd7f0e-ffa3-4c6f-8c77-0cf8be6be716" Value="8" Type="int"/>
