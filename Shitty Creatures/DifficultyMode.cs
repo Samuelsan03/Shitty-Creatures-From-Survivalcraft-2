@@ -4,6 +4,7 @@ namespace Game
 {
 	public enum DifficultyMode
 	{
+	    VeryEasy,
 		Easy,
 		Normal,
 		Medium,
