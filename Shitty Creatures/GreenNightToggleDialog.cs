@@ -155,6 +155,7 @@ namespace Game
 		{
 			string key = mode switch
 			{
+				DifficultyMode.VeryEasy => "VeryEasy_Name",   // <-- NUEVO
 				DifficultyMode.Easy => "Easy_Name",
 				DifficultyMode.Normal => "Normal_Name",
 				DifficultyMode.Medium => "Medium_Name",
