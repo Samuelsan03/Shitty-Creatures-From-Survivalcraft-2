@@ -89,6 +89,10 @@ namespace Game
 			float pressureMult = 1f, fluDurationMult = 1f;
 			switch (difficulty)
 			{
+				case DifficultyMode.VeryEasy:
+					pressureMult = 0.4f;
+					fluDurationMult = 0.4f;
+					break;
 				case DifficultyMode.Easy:
 					pressureMult = 0.6f;
 					fluDurationMult = 0.5f;
