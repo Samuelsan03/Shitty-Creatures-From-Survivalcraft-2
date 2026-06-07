@@ -2140,6 +2140,11 @@ namespace Game
 
 			switch (mode)
 			{
+				case DifficultyMode.VeryEasy:
+					baseResilienceFactor = 0.5f; baseDamageMult = 0.3f; baseSpeedMult = 0.8f;
+					bossResilienceFactor = 0.6f; bossDamageMult = 0.4f; bossSpeedMult = 0.9f;
+					flyingResilienceFactor = 0.4f; flyingDamageMult = 0.3f; flyingSpeedMult = 0.9f;
+					break;
 				case DifficultyMode.Easy:
 					baseResilienceFactor = 0.7f; baseDamageMult = 0.5f; baseSpeedMult = 0.9f;
 					bossResilienceFactor = 0.8f; bossDamageMult = 0.6f; bossSpeedMult = 0.95f;
