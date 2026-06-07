@@ -113,13 +113,30 @@ namespace Game
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
 				{
+					// 1. Solo de día
 					if (sky.SkyLightIntensity < 0.4f) return 0f;
+
+					// 2. Factor de montaña (0..1, valores altos = cadenas montañosas)
 					float mountainFactor = subsystemCreatureSpawn.m_subsystemTerrain.TerrainContentsGenerator.CalculateMountainRangeFactor((float)point.X, (float)point.Z);
-					return (mountainFactor >= 0.9f) ? 2500f : 0f;
+
+					// 3. Altura real del terreno en esta celda
+					int topHeight = subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetTopHeight(point.X, point.Z);
+
+					// 4. Si el punto está dentro de los 5 bloques superiores de la montaña
+					bool nearTop = (point.Y >= topHeight - 5);
+
+					// Umbrales elevados: mountainFactor >= 0.95 Y altura >= 120 Y cerca de la cima
+					if (mountainFactor >= 0.95f && topHeight >= 120 && nearTop)
+						return 5000f;   // Prioridad muy alta para que aparezca rápido
+					else
+						return 0f;
 				},
 				SpawnFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
 				{
-					return subsystemCreatureSpawn.SpawnCreatures(ct, "Rayman", point, 1).Count;
+					// Ajustar la posición final a la cima real del terreno (evita spawn en laderas)
+					int topHeight = subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetTopHeight(point.X, point.Z);
+					Point3 correctedPoint = new Point3(point.X, topHeight, point.Z);
+					return subsystemCreatureSpawn.SpawnCreatures(ct, "Rayman", correctedPoint, 1).Count;
 				}
 			});
 		}
