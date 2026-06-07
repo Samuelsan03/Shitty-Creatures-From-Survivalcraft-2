@@ -223,12 +223,11 @@ namespace Game
 
 			m_flankingEnabled = DifficultyModifiers.ShouldUseFlanking(mode);
 
-			// Ajustar rango de ataque según dificultad
 			float rangeMult = DifficultyModifiers.GetAggressionRangeMultiplier(mode);
 			AttackRange = new Vector2(AttackRange.X, AttackRange.Y * rangeMult);
 			ThrowableRange = new Vector2(ThrowableRange.X, ThrowableRange.Y * rangeMult);
 
-			// Habilitar montura solo en dificultades altas
+			// Montura solo en Hard/Extreme
 			if (!CanBeMounted) return;
 			bool mountingEnabled = (mode == DifficultyMode.Hard || mode == DifficultyMode.Extreme);
 			if (!mountingEnabled && m_componentRider?.Mount != null)
