@@ -106,6 +106,11 @@ namespace Game
 			float pressureMult = 1f, poisonIntensityMult = 1f, poisonRadiusMult = 1f;
 			switch (difficulty)
 			{
+				case DifficultyMode.VeryEasy:
+					pressureMult = 0.4f;
+					poisonIntensityMult = 0.3f;
+					poisonRadiusMult = 0.7f;
+					break;
 				case DifficultyMode.Easy:
 					pressureMult = 0.6f;
 					poisonIntensityMult = 0.5f;
