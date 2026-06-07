@@ -472,7 +472,7 @@ namespace Game
 				return;
 			}
 
-			// Comportamiento original de huida para Easy/Normal/Medium
+			// Comportamiento original de huida para VeryEasy, Easy, Normal, Medium
 			if (target != null && this.m_componentCreature.ComponentHealth.Health > 0f)
 			{
 				this.m_target = target;
