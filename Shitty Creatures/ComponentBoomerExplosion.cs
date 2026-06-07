@@ -125,6 +125,12 @@ namespace Game
 			float pressureMult = 1f, damageMult = 1f, forceMult = 1f, radiusMult = 1f;
 			switch (difficulty)
 			{
+				case DifficultyMode.VeryEasy:
+					pressureMult = 0.4f;
+					damageMult = 0.3f;
+					forceMult = 0.5f;
+					radiusMult = 0.7f;
+					break;
 				case DifficultyMode.Easy:
 					pressureMult = 0.6f;
 					damageMult = 0.5f;
