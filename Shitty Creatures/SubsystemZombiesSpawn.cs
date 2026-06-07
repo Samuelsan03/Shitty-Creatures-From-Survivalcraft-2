@@ -313,6 +313,7 @@ namespace Game
 			DifficultyMode mode = m_subsystemGreenNightSky.DifficultyMode;
 			string key = mode switch
 			{
+				DifficultyMode.VeryEasy => "VeryEasy_Name",
 				DifficultyMode.Easy => "Easy_Name",
 				DifficultyMode.Normal => "Normal_Name",
 				DifficultyMode.Medium => "Medium_Name",
