@@ -111,7 +111,6 @@ namespace Game
 		{
 			if (m_subsystemGreenNightSky == null)
 			{
-				// Si no hay subsistema, por seguridad NO romper
 				this.CanBreakBlocks = false;
 				this.BreakProbability = 0f;
 				return;
@@ -123,6 +122,7 @@ namespace Game
 
 			switch (mode)
 			{
+				case DifficultyMode.VeryEasy:
 				case DifficultyMode.Easy:
 				case DifficultyMode.Normal:
 					this.CanBreakBlocks = false;
