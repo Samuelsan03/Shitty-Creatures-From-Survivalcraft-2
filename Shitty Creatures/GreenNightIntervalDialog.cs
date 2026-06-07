@@ -28,14 +28,16 @@ namespace Game
 		private readonly int[] m_options = { 4, 8, 12, 16 };
 
 		private readonly DifficultyMode[] m_difficultyModes = {
-			DifficultyMode.Easy,
-			DifficultyMode.Normal,
-			DifficultyMode.Medium,
-			DifficultyMode.Hard,
-			DifficultyMode.Extreme
-		};
+	DifficultyMode.VeryEasy,
+    DifficultyMode.Easy,
+	DifficultyMode.Normal,
+	DifficultyMode.Medium,
+	DifficultyMode.Hard,
+	DifficultyMode.Extreme
+};
 
 		private readonly Color[] m_difficultyColors = {
+	        new Color(136, 187, 255),
 			new Color(100, 200, 100),
 			new Color(100, 100, 255),
 			new Color(255, 200, 0),
@@ -129,6 +131,7 @@ namespace Game
 		{
 			string key = mode switch
 			{
+				DifficultyMode.VeryEasy => "VeryEasy_Name",
 				DifficultyMode.Easy => "Easy_Name",
 				DifficultyMode.Normal => "Normal_Name",
 				DifficultyMode.Medium => "Medium_Name",
@@ -143,6 +146,7 @@ namespace Game
 		{
 			string key = mode switch
 			{
+				DifficultyMode.VeryEasy => "VeryEasy_Desc",   // <-- NUEVO
 				DifficultyMode.Easy => "Easy_Desc",
 				DifficultyMode.Normal => "Normal_Desc",
 				DifficultyMode.Medium => "Medium_Desc",
