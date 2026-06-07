@@ -30,23 +30,29 @@ namespace Game
 		private Random m_random = new Random();
 
 		// ===== SPAWN DE ZOMBIS MONTADOS =====
-		private bool m_mountedZombiesEnabled = false;
-		private float m_horseMountProbability = 0.1f;   // Baja
-		private float m_bearMountProbability = 0.3f;    // Media
-		private float m_flyMountProbability = 0.3f;     // Media
-		// Probabilidad global de que un zombi normal aparezca montado (0.0 = nunca, 1.0 = siempre)
-		private float m_mountedSpawnProbability = 0.2f;  // 20%
+		private const bool MountedZombiesEnabled = false;
+		private float m_horseMountProbability = 0.1f;
+		private float m_bearMountProbability = 0.3f;
+		private float m_flyMountProbability = 0.3f;
+		private const float MountedSpawnProbability = 0.2f;
 
 		private static readonly HashSet<string> MountableHorseTemplates = new HashSet<string>
-{
-	"Horse_Black_Saddled",
-	"Horse_Palomino_Saddled",
-	"Camel_Saddled",
-	"Horse_Chestnut_Saddled",
-	"Horse_White_Saddled",
-	"Donkey_Saddled",
-	"Horse_Bay_Saddled"
-};
+		{
+			"Horse_Black_Saddled",
+			"Horse_Palomino_Saddled",
+			"Camel_Saddled",
+			"Horse_Chestnut_Saddled",
+			"Horse_White_Saddled",
+			"Donkey_Saddled",
+			"Horse_Bay_Saddled"
+		};
+
+		// ===== LÍMITES DE SPAWN (valores fijos, como SubsystemCreatureSpawn) =====
+		private const int MaxCreaturesPerArea = 60;
+		private const int MaxGlobalCreatures = 80;
+		private const int MaxSpawnsPerFrame = 3;
+		private const int GroupSpawnCount = 2;
+		private const float BaseSpawnInterval = 2.5f;
 
 		// Datos de oleadas
 		private Dictionary<int, List<WaveEntry>> m_waves = new Dictionary<int, List<WaveEntry>>();
@@ -55,13 +61,9 @@ namespace Game
 
 		// Control de spawn (noche verde)
 		private float m_spawnTimer;
-		private float m_spawnInterval = 2f;
-		private const int MaxCreaturesPerArea = 60;
-		private const int MaxGlobalCreatures = 80;
-		private const int MaxSpawnsPerFrame = 3;
-		private const int GroupSpawnCount = 2;
+		private float m_spawnInterval = BaseSpawnInterval;
 
-		public event Action<int, int> WaveAdvanced; // (oldWave, newWave)
+		public event Action<int, int> WaveAdvanced;
 
 		// ===== SISTEMA DE SPAWN DE ESQUELETOS =====
 		private List<SpawnChunk> m_skeletonNewSpawnChunks = new List<SpawnChunk>();
@@ -89,12 +91,6 @@ namespace Game
 
 		private bool m_letterWarSpawned;
 		private const string LetterWarBlockName = "LetterWarBlock";
-
-		private int m_maxGlobalCreatures = 80;
-		private int m_maxCreaturesPerArea = 60;
-		private int m_groupSpawnCount = 2;
-		private float m_baseSpawnInterval = 2.5f;
-		private DifficultyMode m_lastAppliedDifficulty;
 
 		private DynamicArray<ComponentBody> m_tempBodiesArray = new DynamicArray<ComponentBody>();
 		// ===== FIN SISTEMA DE SPAWN DE ESQUELETOS =====
@@ -201,7 +197,6 @@ namespace Game
 			m_bossSpawnDelayed = valuesDictionary.GetValue<bool>("BossSpawnDelayed", false);
 			m_bossSpawnDelayTimer = valuesDictionary.GetValue<float>("BossSpawnDelayTimer", 0f);
 
-			// Cargar la cola de jefes pendientes
 			string bossQueueStr = valuesDictionary.GetValue<string>("BossQueue", "");
 			m_bossQueue.Clear();
 			if (!string.IsNullOrEmpty(bossQueueStr))
@@ -217,11 +212,7 @@ namespace Game
 				}
 			}
 
-			// Establecer el estado de la noche anterior
 			m_wasGreenNightActive = m_subsystemGreenNightSky.IsGreenNightActive;
-
-			// Si hay batalla activa, necesitamos verificar el estado del jefe
-			// No lo hacemos aquí porque las entidades pueden no estar cargadas todavía
 			m_needsBossStateVerification = m_bossBattleActive;
 			m_currentBossEntity = null;
 			// ===== FIN CARGAR ESTADO DE LA BATALLA DE JEFES =====
@@ -230,7 +221,6 @@ namespace Game
 			Instance = this;
 
 			CreateCountdownLabel();
-			ApplyDifficultySettings();
 		}
 
 		private void OnSpawningChunk(SpawnChunk chunk)
@@ -578,26 +568,19 @@ namespace Game
 
 		public override void Save(ValuesDictionary valuesDictionary)
 		{
-			// Guardar oleada y estados de logros
 			valuesDictionary.SetValue("CurrentWave", m_currentWave);
 			valuesDictionary.SetValue("LetterWarSpawned", m_letterWarSpawned);
 			valuesDictionary.SetValue("HasShownUnlockMessage", m_hasShownUnlockMessage);
 
-			// ===== GUARDAR ESTADO COMPLETO DE LA BATALLA DE JEFES =====
 			valuesDictionary.SetValue("BossBattleActive", m_bossBattleActive);
 			valuesDictionary.SetValue("HasSpawnedBossThisNight", m_hasSpawnedBossThisNight);
 			valuesDictionary.SetValue("BossSpawnDelayed", m_bossSpawnDelayed);
 			valuesDictionary.SetValue("BossSpawnDelayTimer", m_bossSpawnDelayTimer);
 
-			// Guardar la cola de jefes pendientes como string separado por comas
 			string bossQueueStr = m_bossQueue.Count > 0 ? string.Join(",", m_bossQueue) : "";
 			valuesDictionary.SetValue("BossQueue", bossQueueStr);
-			// ===== FIN GUARDAR ESTADO DE LA BATALLA DE JEFES =====
 		}
 
-		/// <summary>
-		/// Busca si hay algún jefe vivo en el mundo actualmente
-		/// </summary>
 		private Entity FindAliveBoss()
 		{
 			foreach (Entity entity in Project.Entities)
@@ -615,9 +598,6 @@ namespace Game
 			return null;
 		}
 
-		/// <summary>
-		/// Verifica y restaura el estado de la batalla de jefes después de cargar el mundo
-		/// </summary>
 		private void VerifyAndRestoreBossState()
 		{
 			if (!m_needsBossStateVerification) return;
@@ -625,33 +605,26 @@ namespace Game
 
 			if (!m_bossBattleActive) return;
 
-			// Buscar si hay un jefe vivo
 			Entity aliveBoss = FindAliveBoss();
 
 			if (aliveBoss != null)
 			{
-				// Hay un jefe vivo, reclamarlo
 				m_currentBossEntity = aliveBoss;
 				Log.Verbose($"[SubsystemZombiesSpawn] Jefe restaurado: {aliveBoss.ValuesDictionary.DatabaseObject?.Name}");
-
-				// Reconstruir la cola basándonos en lo que falte
 				RebuildBossQueue();
 			}
 			else
 			{
-				// No hay jefe vivo
 				m_currentBossEntity = null;
 
 				if (m_bossQueue.Count > 0)
 				{
-					// Hay jefes pendientes, preparar para spawnear el siguiente
 					m_bossSpawnDelayed = true;
 					m_bossSpawnDelayTimer = 0.5f;
 					Log.Verbose($"[SubsystemZombiesSpawn] No se encontró jefe vivo, preparando spawn de siguiente jefe. Pendientes: {m_bossQueue.Count}");
 				}
 				else
 				{
-					// No hay jefes pendientes ni vivo, la batalla terminó
 					m_bossBattleActive = false;
 					Log.Verbose("[SubsystemZombiesSpawn] Batalla de jefes terminada (no hay jefes vivos ni pendientes)");
 				}
@@ -670,8 +643,6 @@ namespace Game
 			// ===== VERIFICAR ESTADO DEL JEFE DESPUÉS DE CARGAR =====
 			if (m_needsBossStateVerification)
 			{
-				// Esperar un poco para que las entidades se carguen completamente
-				// Usamos un pequeño delay implícito al verificar cada frame
 				if (Project.Entities.Count > 0)
 				{
 					VerifyAndRestoreBossState();
@@ -679,7 +650,7 @@ namespace Game
 			}
 			// ===== FIN VERIFICACIÓN =====
 
-			// ===== SPAWN DE ESQUELETOS NORMALES - SOLO si está habilitado =====
+			// ===== SPAWN DE ESQUELETOS NORMALES =====
 			if (ShittyCreaturesSettingsManager.SkeletonSpawnEnabled)
 			{
 				if (m_skeletonNewSpawnChunks.Count > 0)
@@ -731,21 +702,16 @@ namespace Game
 				PlayEvilLaugh();
 				SendWaveMessage();
 
-				// COMPROBAR SI EL JEFE DE LA NOCHE ANTERIOR SIGUE VIVO
 				Entity existingBoss = FindAliveBoss();
 				if (existingBoss != null)
 				{
-					// El jefe sigue vivo, lo reclamamos
 					m_currentBossEntity = existingBoss;
 					m_bossBattleActive = true;
 					m_hasSpawnedBossThisNight = true;
-
-					// Reconstruir la cola basándonos en lo que falte
 					RebuildBossQueue();
 				}
 				else if (m_currentWave == maxWave && !m_hasSpawnedBossThisNight && !m_bossBattleActive)
 				{
-					// No hay jefe vivo, es la última oleada, iniciar batalla normal
 					StartBossBattle();
 					m_bossSpawnDelayed = true;
 					m_bossSpawnDelayTimer = 0.5f;
@@ -760,13 +726,11 @@ namespace Game
 			float midnight = m_subsystemTimeOfDay.Midnight;
 			bool isMidnight = Math.Abs(timeOfDay - midnight) < 0.01f;
 
-			// ===== VERIFICAR SI HAY QUE INICIAR BATALLA (para oleadas que no son la última) =====
+			// ===== VERIFICAR SI HAY QUE INICIAR BATALLA =====
 			if (m_currentWave != maxWave)
 			{
-				// Solo iniciar si NO se ha spawneado jefe esta noche
 				if (!m_hasSpawnedBossThisNight && !m_bossBattleActive && !m_bossSpawnDelayed)
 				{
-					// Primero verificar si hay un jefe vivo (por si acabas de entrar al mundo)
 					Entity existingBoss = FindAliveBoss();
 					if (existingBoss != null)
 					{
@@ -808,7 +772,6 @@ namespace Game
 					m_currentBossEntity = null;
 					AdvanceBossBattle();
 				}
-				// También verificar si por alguna razón no hay jefe actual pero hay pendientes
 				else if (m_currentBossEntity == null && m_bossQueue.Count > 0 && !m_bossSpawnDelayed)
 				{
 					m_bossSpawnDelayed = true;
@@ -839,16 +802,8 @@ namespace Game
 					break;
 			}
 			// ===== FIN SPAWN NORMAL DE CRIATURAS =====
-
-			if (m_subsystemGreenNightSky != null)
-			{
-				ApplyDifficultySettings();
-			}
 		}
 
-		/// <summary>
-		/// Reconstruye la cola de jefes pendientes basándose en el jefe actual que sigue vivo
-		/// </summary>
 		private void RebuildBossQueue()
 		{
 			m_bossQueue.Clear();
@@ -878,7 +833,7 @@ namespace Game
 			}
 		}
 
-		// ===== SPAWN NORMAL DE ESQUELETOS (100% de noche) =====
+		// ===== SPAWN NORMAL DE ESQUELETOS =====
 		private void SpawnNormalSkeletonsInChunk(SpawnChunk chunk, int maxAttempts)
 		{
 			int currentCount = CountSkeletons(false);
@@ -951,7 +906,7 @@ namespace Game
 		}
 		// ===== FIN SPAWN NORMAL =====
 
-		// ===== SPAWN CONSTANTE DE ESQUELETOS (50% de noche) =====
+		// ===== SPAWN CONSTANTE DE ESQUELETOS =====
 		private void SpawnConstantSkeletonsInChunk(SpawnChunk chunk, int maxAttempts)
 		{
 			int totalLimit = (m_subsystemGameInfo.WorldSettings.GameMode >= GameMode.Challenging)
@@ -1210,7 +1165,7 @@ namespace Game
 		{
 			int spawned = 0;
 			int totalCreatures = m_subsystemCreatureSpawn.CountCreatures(false);
-			if (totalCreatures >= m_maxGlobalCreatures)
+			if (totalCreatures >= MaxGlobalCreatures)
 				return 0;
 
 			var entry = GetRandomWeightedEntry(m_currentWaveEntries);
@@ -1230,17 +1185,16 @@ namespace Game
 			Vector2 areaMin = new Vector2(spawnPos.X - 16, spawnPos.Z - 16);
 			Vector2 areaMax = new Vector2(spawnPos.X + 16, spawnPos.Z + 16);
 			int nearby = m_subsystemCreatureSpawn.CountCreaturesInArea(areaMin, areaMax, false);
-			if (nearby >= m_maxCreaturesPerArea)
+			if (nearby >= MaxCreaturesPerArea)
 				return 0;
 
 			if (CanSpawnCreature(entry.TemplateName, spawnPos))
 			{
 				bool spawnedMounted = false;
-				// Intentar spawnear montado solo para criaturas normales (no jefes) y con probabilidad global
-				if (m_mountedZombiesEnabled &&
+				if (MountedZombiesEnabled &&
 					!BossTemplates.Contains(entry.TemplateName) &&
 					!MiniBossTemplates.Contains(entry.TemplateName) &&
-					m_random.Float(0f, 1f) < m_mountedSpawnProbability)
+					m_random.Float(0f, 1f) < MountedSpawnProbability)
 				{
 					spawnedMounted = TrySpawnMountedCreature(entry.TemplateName, spawnPos);
 				}
@@ -1259,7 +1213,7 @@ namespace Game
 				return 0;
 			}
 
-			int groupCount = m_random.Int(1, m_groupSpawnCount);
+			int groupCount = m_random.Int(1, GroupSpawnCount);
 			for (int i = 0; i < groupCount && spawned < MaxSpawnsPerFrame; i++)
 			{
 				var extraEntry = GetRandomWeightedEntry(m_currentWaveEntries);
@@ -1441,13 +1395,13 @@ namespace Game
 			{
 				m_currentWaveEntries = entries;
 				m_currentWave = wave;
-				m_spawnInterval = Math.Max(1.2f, m_baseSpawnInterval - (wave * 0.04f));
+				m_spawnInterval = Math.Max(1.2f, BaseSpawnInterval - (wave * 0.04f));
 			}
 			else
 			{
 				m_currentWaveEntries = m_waves.ContainsKey(1) ? m_waves[1] : new List<WaveEntry>();
 				m_currentWave = 1;
-				m_spawnInterval = 2.5f;
+				m_spawnInterval = BaseSpawnInterval;
 			}
 		}
 
@@ -1746,30 +1700,6 @@ namespace Game
 			return "BossGeneric";
 		}
 
-		private void ApplyDifficultySettings()
-		{
-			if (m_subsystemGreenNightSky == null) return;
-			DifficultyMode mode = m_subsystemGreenNightSky.DifficultyMode;
-			if (mode == m_lastAppliedDifficulty) return;
-			m_lastAppliedDifficulty = mode;
-
-			float countMult = DifficultyModifiers.GetSpawnCountMultiplier(mode);
-			m_maxGlobalCreatures = (int)(80 * countMult);
-			m_maxCreaturesPerArea = (int)(60 * countMult);
-			m_groupSpawnCount = Math.Max(1, (int)(2 * countMult));
-
-			float intervalMult = DifficultyModifiers.GetSpawnIntervalMultiplier(mode);
-			m_baseSpawnInterval = 2.5f * intervalMult;
-
-			if (m_currentWaveEntries != null)
-			{
-				m_spawnInterval = Math.Max(1.2f, m_baseSpawnInterval - (m_currentWave * 0.04f));
-			}
-
-			// Habilitar zombis montados a partir de dificultad Hard
-			m_mountedZombiesEnabled = (mode == DifficultyMode.Hard || mode == DifficultyMode.Extreme);
-		}
-
 		private string GetRandomMountTemplateForZombie()
 		{
 			float roll = m_random.Float(0f, 1f);
@@ -1787,18 +1717,18 @@ namespace Game
 
 		private bool TrySpawnMountedCreature(string zombieTemplate, Vector3 spawnPos)
 		{
-			if (!m_mountedZombiesEnabled) return false;
+			if (!MountedZombiesEnabled) return false;
 
 			string mountTemplate = GetRandomMountTemplateForZombie();
 			if (string.IsNullOrEmpty(mountTemplate)) return false;
 
 			int totalCreatures = m_subsystemCreatureSpawn.CountCreatures(false);
-			if (totalCreatures + 2 > m_maxGlobalCreatures) return false;
+			if (totalCreatures + 2 > MaxGlobalCreatures) return false;
 
 			Vector2 areaMin = new Vector2(spawnPos.X - 16, spawnPos.Z - 16);
 			Vector2 areaMax = new Vector2(spawnPos.X + 16, spawnPos.Z + 16);
 			int areaCount = m_subsystemCreatureSpawn.CountCreaturesInArea(areaMin, areaMax, false);
-			if (areaCount + 2 > m_maxCreaturesPerArea) return false;
+			if (areaCount + 2 > MaxCreaturesPerArea) return false;
 
 			Entity mountEntity = m_subsystemCreatureSpawn.SpawnCreature(mountTemplate, spawnPos, false);
 			if (mountEntity == null) return false;
