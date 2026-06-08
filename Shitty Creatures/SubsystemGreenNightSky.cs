@@ -164,7 +164,7 @@ namespace Game
 			this.DaysSinceLastGreenNight = valuesDictionary.GetValue<int>("DaysSinceLastGreenNight");
 			this.GreenNightEnabled = valuesDictionary.GetValue<bool>("GreenNightEnabled", true);
 			this.GreenNightIntervalDays = valuesDictionary.GetValue<int>("GreenNightIntervalDays", 4);
-			this.DifficultyMode = (DifficultyMode)valuesDictionary.GetValue<int>("DifficultyMode", 1);
+			this.DifficultyMode = (DifficultyMode)valuesDictionary.GetValue<int>("DifficultyMode", 2);
 
 			SubsystemGreenNightSky.Instance = this;
 		}
