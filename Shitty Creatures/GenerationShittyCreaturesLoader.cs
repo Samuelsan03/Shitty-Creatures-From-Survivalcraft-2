@@ -22,6 +22,8 @@ namespace Game
 			SubsystemTimeOfDay timeOfDay = subsystemCreatureSpawn.Project.FindSubsystem<SubsystemTimeOfDay>(true);
 			SubsystemGameInfo gameInfo = subsystemCreatureSpawn.Project.FindSubsystem<SubsystemGameInfo>(true);
 			SubsystemSky sky = subsystemCreatureSpawn.Project.FindSubsystem<SubsystemSky>(true);
+			SubsystemSeasons seasons = subsystemCreatureSpawn.Project.FindSubsystem<SubsystemSeasons>(true);
+			Season currentSeason = seasons.Season;
 
 			// Función auxiliar: detectar si un punto está cerca del agua
 			Func<Point3, bool> isNearWater = delegate (Point3 point)
@@ -107,7 +109,7 @@ namespace Game
 			});
 
 			// ==========================================
-			// 5. RAYMAN (montañas, siempre)
+			// 5. RAYMAN (montañas altas)
 			// ==========================================
 			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("Rayman", SpawnLocationType.Surface, true, false)
 			{
@@ -115,17 +117,117 @@ namespace Game
 				{
 					if (sky.SkyLightIntensity < 0.4f) return 0f;
 					float mountainFactor = subsystemCreatureSpawn.m_subsystemTerrain.TerrainContentsGenerator.CalculateMountainRangeFactor((float)point.X, (float)point.Z);
-					return (mountainFactor >= 0.9f) ? 2500f : 0f;
+					int topHeight = subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetTopHeight(point.X, point.Z);
+					bool nearTop = (point.Y >= topHeight - 5);
+					if (mountainFactor >= 0.95f && topHeight >= 120 && nearTop)
+						return 5000f;
+					else
+						return 0f;
 				},
 				SpawnFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
 				{
-					return subsystemCreatureSpawn.SpawnCreatures(ct, "Rayman", point, 1).Count;
+					int topHeight = subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetTopHeight(point.X, point.Z);
+					Point3 correctedPoint = new Point3(point.X, topHeight, point.Z);
+					return subsystemCreatureSpawn.SpawnCreatures(ct, "Rayman", correctedPoint, 1).Count;
+				}
+			});
+
+			// ==========================================
+			// 6. FANGTHE SNIPER (desiertos con cactus cerca)
+			// ==========================================
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("FangTheSniper", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					if (sky.SkyLightIntensity < 0.4f) return 0f;
+
+					int temperature = subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetTemperature(point.X, point.Z);
+					int humidity = subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetHumidity(point.X, point.Z);
+					if (temperature < 10 || humidity > 4) return 0f;
+
+					int blockUnder = Terrain.ExtractContents(subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z));
+					if (blockUnder != SandBlock.Index) return 0f;
+
+					float shoreDistance = subsystemCreatureSpawn.m_subsystemTerrain.TerrainContentsGenerator.CalculateOceanShoreDistance((float)point.X, (float)point.Z);
+					if (shoreDistance < 20f) return 0f;
+
+					// Buscar cactus en un radio de 3 bloques
+					bool hasCactusNearby = false;
+					for (int dx = -3; dx <= 3; dx++)
+					{
+						for (int dz = -3; dz <= 3; dz++)
+						{
+							int cactusCell = subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetCellContents(point.X + dx, point.Y, point.Z + dz);
+							if (cactusCell == CactusBlock.Index)
+							{
+								hasCactusNearby = true;
+								break;
+							}
+							int cactusBelow = subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetCellContents(point.X + dx, point.Y - 1, point.Z + dz);
+							if (cactusBelow == CactusBlock.Index)
+							{
+								hasCactusNearby = true;
+								break;
+							}
+						}
+						if (hasCactusNearby) break;
+					}
+
+					if (!hasCactusNearby) return 0f;
+
+					int topHeight = subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetTopHeight(point.X, point.Z);
+					if (point.Y < topHeight - 2) return 0f;
+
+					return 5f;
+				},
+				SpawnFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					int topHeight = subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetTopHeight(point.X, point.Z);
+					Point3 correctedPoint = new Point3(point.X, topHeight, point.Z);
+					return subsystemCreatureSpawn.SpawnCreatures(ct, "FangTheSniper", correctedPoint, 1).Count;
+				}
+			});
+
+			// ==========================================
+			// 7. SONIC THE HEDGEHOG (solo en Grass, Dirt, Sand, Gravel - solo primavera y verano)
+			// ==========================================
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("SonicTheHedgehog", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					// Solo de día
+					if (sky.SkyLightIntensity < 0.4f) return 0f;
+
+					// Obtener la estación actual
+					Season currentSeason = subsystemCreatureSpawn.m_subsystemSeasons.Season;
+
+					// Solo aparece en Primavera (Spring) o Verano (Summer)
+					if (currentSeason != Season.Spring && currentSeason != Season.Summer)
+						return 0f;
+
+					// Verificar el bloque bajo la criatura usando BlocksManager
+					int blockUnder = Terrain.ExtractContents(subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z));
+
+					// Solo aparece en Grass(8), Dirt(2), Sand(7) o Gravel(6)
+					if (blockUnder != GrassBlock.Index &&
+						blockUnder != DirtBlock.Index &&
+						blockUnder != SandBlock.Index &&
+						blockUnder != GravelBlock.Index)
+						return 0f;
+
+					// Asegurar que está en la superficie (top height)
+					int topHeight = subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetTopHeight(point.X, point.Z);
+					if (point.Y < topHeight - 2) return 0f;
+
+					return 2.5f;
+				},
+				SpawnFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					int topHeight = subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetTopHeight(point.X, point.Z);
+					Point3 correctedPoint = new Point3(point.X, topHeight, point.Z);
+					return subsystemCreatureSpawn.SpawnCreatures(ct, "SonicTheHedgehog", correctedPoint, 1).Count;
 				}
 			});
 		}
-
-		// Los siguientes métodos no son necesarios para la generación, pero se dejan vacíos para cumplir con ModLoader
-		public override void SaveSettings(XElement xElement) { }
-		public override void LoadSettings(XElement xElement) { }
 	}
 }
