@@ -2,7 +2,7 @@
   <BevelledRectangleWidget Name="Background" BevelSize="3" />
   <StackPanelWidget Direction="Vertical" HorizontalAlignment="Center">
     <CanvasWidget Size="0, 12"/>
-    <LabelWidget Name="TitleLabel" Text="[AchievementsWidget:0]" Color="255,255,255" HorizontalAlignment="Center" FontScale="1.2"/>
+    <LabelWidget Name="TitleLabel" Text="[AchievementsWidget:0]" Color="255,255,255" HorizontalAlignment="Center" FontScale="1"/>
     <CanvasWidget Size="0, 12"/>
     <CanvasWidget Size="550, 280">
       <ScrollPanelWidget Name="AchievementsScroll" Direction="Vertical" ClampToBounds="true">
