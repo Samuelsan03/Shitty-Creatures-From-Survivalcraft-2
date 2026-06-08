@@ -38,13 +38,17 @@ namespace Game
 		public SubsystemProjectiles m_subsystemProjectiles;
 		public SubsystemTime m_subsystemTime;
 		public Random m_random = new Random();
+		public StateMachine m_stateMachine = new StateMachine();
 
 		// Nuevos componentes para control de línea de visión y aturdimiento
 		private SubsystemBodies m_subsystemBodies;
 		private ComponentLocomotion m_componentLocomotion;
 
 		public override float ImportanceLevel => 0f;
+
 		public UpdateOrder UpdateOrder => UpdateOrder.Default;
+
+		UpdateOrder IUpdateable.UpdateOrder => ((IUpdateable)m_subsystemProjectiles).UpdateOrder;
 
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
@@ -129,9 +133,8 @@ namespace Game
 				Log.Warning("ComponentTankLauncherBehavior: No valid items found, using default");
 			}
 
-			// Inicializar el cooldown correctamente
-			m_ChargeTime = 1.0;
-			m_nextUpdateTime = m_subsystemTime.GameTime + 0.5; // Pequeño delay inicial
+			// Asegurar que el índice inicial sea válido
+			m_currentItemIndex = 0;
 
 			IsActive = true;
 		}
@@ -140,7 +143,7 @@ namespace Game
 		{
 			if (AchievementsManager.IsCelebrationActive) return;
 
-			// Gestión de la animación de lanzamiento (al inicio para que no bloquee)
+			// Gestión de la animación de lanzamiento
 			if (m_isLaunching)
 			{
 				m_launchAnimationTimer += dt;
@@ -157,99 +160,51 @@ namespace Game
 			{
 				m_distance = 10f;
 
-				if (CanLaunch())
+				// Verificación simple como el código original de DayZ
+				ComponentCreature target = GetCurrentTarget();
+				bool flag2 = target != null && m_componentCreature.ComponentHealth.Health > 0f;
+				if (flag2)
 				{
-					ComponentCreature target = GetCurrentTarget();
-					if (target != null)
+					// Posición de lanzamiento
+					Vector3 launchPosition = m_componentCreature.ComponentCreatureModel.EyePosition
+						+ m_componentCreature.ComponentBody.Matrix.Right * 0.3f
+						- m_componentCreature.ComponentBody.Matrix.Up * 0.2f
+						+ m_componentCreature.ComponentBody.Matrix.Forward * 0.2f;
+
+					// Cálculo de dirección al target
+					Vector3 v = target.ComponentBody.Position - launchPosition;
+					m_distance = v.Length();
+
+					// Animación de manos
+					ComponentHumanModel componentHumanModel = m_componentCreature.ComponentCreatureModel as ComponentHumanModel;
+					bool flag3 = componentHumanModel != null;
+					if (flag3)
 					{
-						// Posición de lanzamiento
-						Vector3 launchPosition = m_componentCreature.ComponentCreatureModel.EyePosition
-							+ m_componentCreature.ComponentBody.Matrix.Right * 0.3f
-							- m_componentCreature.ComponentBody.Matrix.Up * 0.2f
-							+ m_componentCreature.ComponentBody.Matrix.Forward * 0.2f;
-
-						// Animación de manos
-						var componentHumanModel = m_componentCreature.ComponentCreatureModel as ComponentHumanModel;
-						if (componentHumanModel != null)
-						{
-							componentHumanModel.m_handAngles2 = new Vector2(4f, -5f);
-							componentHumanModel.m_handAngles1 = new Vector2(4f, 3f);
-							m_isLaunching = true;
-							m_launchAnimationTimer = 0f;
-						}
-
-						// Cálculo de velocidad
-						Vector3 targetPos = target.ComponentBody.Position;
-						float targetHeight = target.ComponentBody.StanceBoxSize.Y;
-						Vector3 aimPoint = targetPos + new Vector3(0f, targetHeight * TargetHeightFactor, 0f);
-
-						Vector3 direction = aimPoint - launchPosition;
-						float distance = direction.Length();
-
-						float speed = MathUtils.Lerp(MinLaunchSpeed, MaxLaunchSpeed, distance / 20f);
-						Vector3 velocity = Vector3.Normalize(direction) * speed + new Vector3(0f, VerticalBoost, 0f);
-
-						// Seleccionar item a lanzar (con protección)
-						int itemToLaunch = GetNextValidItem();
-
-						// Lanzar proyectil
-						m_subsystemProjectiles.FireProjectile(
-							itemToLaunch,
-							launchPosition,
-							velocity,
-							Vector3.Zero,
-							m_componentCreature
-						);
-
-						// Cooldown SOLO después de lanzar exitosamente
-						m_ChargeTime = 1.0;
-						m_nextUpdateTime = m_subsystemTime.GameTime + m_ChargeTime;
+						componentHumanModel.m_handAngles2 = new Vector2(4f, -5f);
+						componentHumanModel.m_handAngles1 = new Vector2(4f, 3f);
+						m_isLaunching = true;
+						m_launchAnimationTimer = 0f;
 					}
-					else
-					{
-						// Target se perdió, reintentar pronto
-						m_nextUpdateTime = m_subsystemTime.GameTime + 0.1;
-					}
+
+					// Cálculo de velocidad
+					Vector3 aimPoint = target.ComponentBody.Position + new Vector3(0f, target.ComponentBody.StanceBoxSize.Y * TargetHeightFactor, 0f);
+					Vector3 direction = aimPoint - launchPosition;
+					float speed = MathUtils.Lerp(MinLaunchSpeed, MaxLaunchSpeed, m_distance / 20f);
+					Vector3 velocity = Vector3.Normalize(direction) * speed + new Vector3(0f, VerticalBoost, 0f);
+
+					// Obtener item a lanzar (con protección de índice)
+					int itemToLaunch = m_launchItemIndices[m_currentItemIndex];
+					m_currentItemIndex = (m_currentItemIndex + 1) % m_launchItemIndices.Count;
+
+					// Lanzar proyectil
+					m_subsystemProjectiles.FireProjectile(itemToLaunch, launchPosition, velocity, Vector3.Zero, m_componentCreature);
 				}
-				else
-				{
-					// No se puede lanzar ahora, reintentar pronto (no esperar cooldown completo)
-					m_nextUpdateTime = m_subsystemTime.GameTime + 0.1;
-				}
+
+				// Cooldown SIEMPRE al final, como el código original de DayZ
+				m_ChargeTime = 1.0;
+				m_nextUpdateTime = m_subsystemTime.GameTime + m_ChargeTime;
+				m_stateMachine.Update();
 			}
-		}
-
-		/// <summary>
-		/// Obtiene el siguiente item válido de la lista, saltando items inválidos.
-		/// </summary>
-		private int GetNextValidItem()
-		{
-			if (m_launchItemIndices.Count == 0)
-				return 0;
-
-			int attempts = 0;
-			int startIndex = m_currentItemIndex;
-
-			do
-			{
-				int itemToLaunch = m_launchItemIndices[m_currentItemIndex];
-				m_currentItemIndex = (m_currentItemIndex + 1) % m_launchItemIndices.Count;
-				attempts++;
-
-				// Verificar que el item sea válido
-				if (itemToLaunch > 0)
-				{
-					return itemToLaunch;
-				}
-
-				// Si dimos la vuelta completa, devolver lo que haya
-				if (m_currentItemIndex == startIndex)
-				{
-					return m_launchItemIndices[0];
-				}
-			} while (attempts < m_launchItemIndices.Count);
-
-			return m_launchItemIndices[0];
 		}
 
 		private ComponentCreature GetCurrentTarget()
@@ -268,7 +223,7 @@ namespace Game
 
 		private void ResetHandsAnimation()
 		{
-			var componentHumanModel = m_componentCreature.ComponentCreatureModel as ComponentHumanModel;
+			ComponentHumanModel componentHumanModel = m_componentCreature.ComponentCreatureModel as ComponentHumanModel;
 			if (componentHumanModel != null)
 			{
 				componentHumanModel.m_handAngles2 = Vector2.Zero;
@@ -335,14 +290,11 @@ namespace Game
 
 		public void ForceLaunch()
 		{
-			if (!CanLaunch())
-				return;
-
 			ComponentCreature target = GetCurrentTarget();
-			if (target == null)
+			if (target == null || m_componentCreature.ComponentHealth.Health <= 0f)
 				return;
 
-			var componentHumanModel = m_componentCreature.ComponentCreatureModel as ComponentHumanModel;
+			ComponentHumanModel componentHumanModel = m_componentCreature.ComponentCreatureModel as ComponentHumanModel;
 			if (componentHumanModel != null)
 			{
 				componentHumanModel.m_handAngles2 = new Vector2(4f, -5f);
@@ -356,27 +308,17 @@ namespace Game
 				- m_componentCreature.ComponentBody.Matrix.Up * 0.2f
 				+ m_componentCreature.ComponentBody.Matrix.Forward * 0.2f;
 
-			Vector3 targetPos = target.ComponentBody.Position;
-			float targetHeight = target.ComponentBody.StanceBoxSize.Y;
-			Vector3 aimPoint = targetPos + new Vector3(0f, targetHeight * TargetHeightFactor, 0f);
-
+			Vector3 aimPoint = target.ComponentBody.Position + new Vector3(0f, target.ComponentBody.StanceBoxSize.Y * TargetHeightFactor, 0f);
 			Vector3 direction = aimPoint - launchPosition;
 			float distance = direction.Length();
-
 			float speed = MathUtils.Lerp(MinLaunchSpeed, MaxLaunchSpeed, distance / 20f);
 			Vector3 velocity = Vector3.Normalize(direction) * speed + new Vector3(0f, VerticalBoost, 0f);
 
-			int itemToLaunch = GetNextValidItem();
+			int itemToLaunch = m_launchItemIndices[m_currentItemIndex];
+			m_currentItemIndex = (m_currentItemIndex + 1) % m_launchItemIndices.Count;
 
-			m_subsystemProjectiles.FireProjectile(
-				itemToLaunch,
-				launchPosition,
-				velocity,
-				Vector3.Zero,
-				m_componentCreature
-			);
+			m_subsystemProjectiles.FireProjectile(itemToLaunch, launchPosition, velocity, Vector3.Zero, m_componentCreature);
 
-			// Aplicar cooldown después de lanzamiento forzado
 			m_ChargeTime = 1.0;
 			m_nextUpdateTime = m_subsystemTime.GameTime + m_ChargeTime;
 		}
