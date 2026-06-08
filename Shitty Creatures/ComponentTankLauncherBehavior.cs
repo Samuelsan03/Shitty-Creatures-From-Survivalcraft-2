@@ -12,7 +12,7 @@ namespace Game
 		private const float MinLaunchSpeed = 20f;
 		private const float MaxLaunchSpeed = 35f;
 		private const float VerticalBoost = 2f;
-		private const float TargetHeightFactor = 0.75f; // Apuntar al 75% de la altura de la caja de stance
+		private const float TargetHeightFactor = 0.75f;
 
 		// Items a lanzar
 		public string m_itemsToLaunch = "";
@@ -58,15 +58,13 @@ namespace Game
 			m_componentTankModel = base.Entity.FindComponent<ComponentTankModel>(false);
 			m_componentNewGhostTankModel = base.Entity.FindComponent<ComponentNewGhostTankModel>(false);
 
-			// Todos los chase son opcionales
 			m_componentZombieChaseBehavior = base.Entity.FindComponent<ComponentZombieChaseBehavior>(false);
 			m_componentChaseBehavior = base.Entity.FindComponent<ComponentChaseBehavior>(false);
 			m_componentNewChaseBehavior = base.Entity.FindComponent<ComponentNewChaseBehavior>(false);
 
-			// Locomotion (necesario para aturdimiento)
 			m_componentLocomotion = m_componentCreature.ComponentLocomotion;
 
-			// Cargar items a lanzar (soporta múltiples separados por coma)
+			// Cargar items a lanzar
 			m_itemsToLaunch = valuesDictionary.GetValue<string>("ItemsToLaunch", "");
 			m_launchItemIndices.Clear();
 
@@ -131,68 +129,18 @@ namespace Game
 				Log.Warning("ComponentTankLauncherBehavior: No valid items found, using default");
 			}
 
+			// Inicializar el cooldown correctamente
+			m_ChargeTime = 1.0;
+			m_nextUpdateTime = m_subsystemTime.GameTime + 0.5; // Pequeño delay inicial
+
 			IsActive = true;
 		}
 
 		public void Update(float dt)
 		{
-			bool flag = m_subsystemTime.GameTime >= m_nextUpdateTime;
-			if (flag)
-			{
-				m_distance = 10f;
+			if (AchievementsManager.IsCelebrationActive) return;
 
-				// Verificar si se puede lanzar (incluye línea de visión, aturdimiento, etc.)
-				if (CanLaunch())
-				{
-					ComponentCreature target = GetCurrentTarget();
-
-					// Posición de lanzamiento
-					Vector3 launchPosition = m_componentCreature.ComponentCreatureModel.EyePosition
-						+ m_componentCreature.ComponentBody.Matrix.Right * 0.3f
-						- m_componentCreature.ComponentBody.Matrix.Up * 0.2f
-						+ m_componentCreature.ComponentBody.Matrix.Forward * 0.2f;
-
-					// Animación de manos
-					var componentHumanModel = m_componentCreature.ComponentCreatureModel as ComponentHumanModel;
-					if (componentHumanModel != null)
-					{
-						componentHumanModel.m_handAngles2 = new Vector2(4f, -5f);
-						componentHumanModel.m_handAngles1 = new Vector2(4f, 3f);
-						m_isLaunching = true;
-						m_launchAnimationTimer = 0f;
-					}
-
-					// Cálculo de velocidad (inspirado en InvShooter)
-					Vector3 targetPos = target.ComponentBody.Position;
-					float targetHeight = target.ComponentBody.StanceBoxSize.Y;
-					Vector3 aimPoint = targetPos + new Vector3(0f, targetHeight * TargetHeightFactor, 0f);
-
-					Vector3 direction = aimPoint - launchPosition;
-					float distance = direction.Length();
-
-					float speed = MathUtils.Lerp(MinLaunchSpeed, MaxLaunchSpeed, distance / 20f);
-					Vector3 velocity = Vector3.Normalize(direction) * speed + new Vector3(0f, VerticalBoost, 0f);
-
-					// Seleccionar item a lanzar
-					int itemToLaunch = m_launchItemIndices[m_currentItemIndex];
-					m_currentItemIndex = (m_currentItemIndex + 1) % m_launchItemIndices.Count;
-
-					// Lanzar proyectil
-					m_subsystemProjectiles.FireProjectile(
-						itemToLaunch,
-						launchPosition,
-						velocity,
-						Vector3.Zero,
-						m_componentCreature
-					);
-				}
-
-				// Tiempo de recarga fijo 1.0 segundo
-				m_ChargeTime = 1.0;
-				m_nextUpdateTime = m_subsystemTime.GameTime + m_ChargeTime;
-			}
-
-			// Gestión de la animación de lanzamiento
+			// Gestión de la animación de lanzamiento (al inicio para que no bloquee)
 			if (m_isLaunching)
 			{
 				m_launchAnimationTimer += dt;
@@ -203,6 +151,105 @@ namespace Game
 					m_launchAnimationTimer = 0f;
 				}
 			}
+
+			bool flag = m_subsystemTime.GameTime >= m_nextUpdateTime;
+			if (flag)
+			{
+				m_distance = 10f;
+
+				if (CanLaunch())
+				{
+					ComponentCreature target = GetCurrentTarget();
+					if (target != null)
+					{
+						// Posición de lanzamiento
+						Vector3 launchPosition = m_componentCreature.ComponentCreatureModel.EyePosition
+							+ m_componentCreature.ComponentBody.Matrix.Right * 0.3f
+							- m_componentCreature.ComponentBody.Matrix.Up * 0.2f
+							+ m_componentCreature.ComponentBody.Matrix.Forward * 0.2f;
+
+						// Animación de manos
+						var componentHumanModel = m_componentCreature.ComponentCreatureModel as ComponentHumanModel;
+						if (componentHumanModel != null)
+						{
+							componentHumanModel.m_handAngles2 = new Vector2(4f, -5f);
+							componentHumanModel.m_handAngles1 = new Vector2(4f, 3f);
+							m_isLaunching = true;
+							m_launchAnimationTimer = 0f;
+						}
+
+						// Cálculo de velocidad
+						Vector3 targetPos = target.ComponentBody.Position;
+						float targetHeight = target.ComponentBody.StanceBoxSize.Y;
+						Vector3 aimPoint = targetPos + new Vector3(0f, targetHeight * TargetHeightFactor, 0f);
+
+						Vector3 direction = aimPoint - launchPosition;
+						float distance = direction.Length();
+
+						float speed = MathUtils.Lerp(MinLaunchSpeed, MaxLaunchSpeed, distance / 20f);
+						Vector3 velocity = Vector3.Normalize(direction) * speed + new Vector3(0f, VerticalBoost, 0f);
+
+						// Seleccionar item a lanzar (con protección)
+						int itemToLaunch = GetNextValidItem();
+
+						// Lanzar proyectil
+						m_subsystemProjectiles.FireProjectile(
+							itemToLaunch,
+							launchPosition,
+							velocity,
+							Vector3.Zero,
+							m_componentCreature
+						);
+
+						// Cooldown SOLO después de lanzar exitosamente
+						m_ChargeTime = 1.0;
+						m_nextUpdateTime = m_subsystemTime.GameTime + m_ChargeTime;
+					}
+					else
+					{
+						// Target se perdió, reintentar pronto
+						m_nextUpdateTime = m_subsystemTime.GameTime + 0.1;
+					}
+				}
+				else
+				{
+					// No se puede lanzar ahora, reintentar pronto (no esperar cooldown completo)
+					m_nextUpdateTime = m_subsystemTime.GameTime + 0.1;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Obtiene el siguiente item válido de la lista, saltando items inválidos.
+		/// </summary>
+		private int GetNextValidItem()
+		{
+			if (m_launchItemIndices.Count == 0)
+				return 0;
+
+			int attempts = 0;
+			int startIndex = m_currentItemIndex;
+
+			do
+			{
+				int itemToLaunch = m_launchItemIndices[m_currentItemIndex];
+				m_currentItemIndex = (m_currentItemIndex + 1) % m_launchItemIndices.Count;
+				attempts++;
+
+				// Verificar que el item sea válido
+				if (itemToLaunch > 0)
+				{
+					return itemToLaunch;
+				}
+
+				// Si dimos la vuelta completa, devolver lo que haya
+				if (m_currentItemIndex == startIndex)
+				{
+					return m_launchItemIndices[0];
+				}
+			} while (attempts < m_launchItemIndices.Count);
+
+			return m_launchItemIndices[0];
 		}
 
 		private ComponentCreature GetCurrentTarget()
@@ -229,9 +276,6 @@ namespace Game
 			}
 		}
 
-		/// <summary>
-		/// Verifica si existe línea de visión directa hacia el objetivo, sin bloques ni cuerpos en medio.
-		/// </summary>
 		private bool HasLineOfSight(ComponentCreature target)
 		{
 			Vector3 start = m_componentCreature.ComponentCreatureModel.EyePosition;
@@ -239,7 +283,6 @@ namespace Game
 			Vector3 aimPoint = target.ComponentBody.Position + new Vector3(0f, targetHeight * TargetHeightFactor, 0f);
 			float targetDistance = Vector3.Distance(start, aimPoint);
 
-			// Raycast contra el terreno (bloques)
 			SubsystemTerrain terrain = base.Project.FindSubsystem<SubsystemTerrain>(true);
 			if (terrain != null)
 			{
@@ -247,22 +290,19 @@ namespace Game
 				{
 					int contents = Terrain.ExtractContents(value);
 					if (contents != 0 && BlocksManager.Blocks[contents].IsCollidable_(value))
-						return true; // detener en cualquier bloque sólido
+						return true;
 					return false;
 				});
 				if (terrainHit != null && terrainHit.Value.Distance < targetDistance - 0.1f)
 					return false;
 			}
 
-			// Raycast contra cuerpos (criaturas)
 			if (m_subsystemBodies != null)
 			{
 				BodyRaycastResult? bodyHit = m_subsystemBodies.Raycast(start, aimPoint, targetDistance, (body, dist) =>
 				{
-					// Ignorar el propio cuerpo y el del objetivo
 					if (body == m_componentCreature.ComponentBody || body == target.ComponentBody)
 						return false;
-					// Considerar cualquier otro cuerpo como bloqueante
 					return true;
 				});
 				if (bodyHit != null && bodyHit.Value.Distance < targetDistance - 0.1f)
@@ -272,9 +312,6 @@ namespace Game
 			return true;
 		}
 
-		/// <summary>
-		/// Determina si se puede realizar un lanzamiento en este momento.
-		/// </summary>
 		public bool CanLaunch()
 		{
 			if (m_isLaunching)
@@ -287,28 +324,24 @@ namespace Game
 			if (target == null)
 				return false;
 
-			// Aturdido (stun)
 			if (m_componentLocomotion != null && m_componentLocomotion.StunTime > 0f)
 				return false;
 
-			// Línea de visión bloqueada
 			if (!HasLineOfSight(target))
 				return false;
 
 			return true;
 		}
 
-		/// <summary>
-		/// Fuerza un lanzamiento si es posible (respeta condiciones de línea de visión y aturdimiento).
-		/// </summary>
 		public void ForceLaunch()
 		{
 			if (!CanLaunch())
 				return;
 
 			ComponentCreature target = GetCurrentTarget();
+			if (target == null)
+				return;
 
-			// Animación de manos
 			var componentHumanModel = m_componentCreature.ComponentCreatureModel as ComponentHumanModel;
 			if (componentHumanModel != null)
 			{
@@ -323,7 +356,6 @@ namespace Game
 				- m_componentCreature.ComponentBody.Matrix.Up * 0.2f
 				+ m_componentCreature.ComponentBody.Matrix.Forward * 0.2f;
 
-			// Cálculo de velocidad
 			Vector3 targetPos = target.ComponentBody.Position;
 			float targetHeight = target.ComponentBody.StanceBoxSize.Y;
 			Vector3 aimPoint = targetPos + new Vector3(0f, targetHeight * TargetHeightFactor, 0f);
@@ -334,8 +366,7 @@ namespace Game
 			float speed = MathUtils.Lerp(MinLaunchSpeed, MaxLaunchSpeed, distance / 20f);
 			Vector3 velocity = Vector3.Normalize(direction) * speed + new Vector3(0f, VerticalBoost, 0f);
 
-			int itemToLaunch = m_launchItemIndices[m_currentItemIndex];
-			m_currentItemIndex = (m_currentItemIndex + 1) % m_launchItemIndices.Count;
+			int itemToLaunch = GetNextValidItem();
 
 			m_subsystemProjectiles.FireProjectile(
 				itemToLaunch,
@@ -344,11 +375,12 @@ namespace Game
 				Vector3.Zero,
 				m_componentCreature
 			);
+
+			// Aplicar cooldown después de lanzamiento forzado
+			m_ChargeTime = 1.0;
+			m_nextUpdateTime = m_subsystemTime.GameTime + m_ChargeTime;
 		}
 
-		/// <summary>
-		/// Asigna un objetivo de ataque a los comportamientos de persecución.
-		/// </summary>
 		public void SetAttackTarget(ComponentCreature target)
 		{
 			if (m_componentNewChaseBehavior != null)
