@@ -133,7 +133,7 @@ namespace Game
 			});
 
 			// ==========================================
-			// 6. FANGTHE SNIPER (desiertos con cactus cerca)
+			// 6. FANGTHE SNIPER (solo desiertos, sin cactus)
 			// ==========================================
 			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("FangTheSniper", SpawnLocationType.Surface, true, false)
 			{
@@ -150,30 +150,6 @@ namespace Game
 
 					float shoreDistance = subsystemCreatureSpawn.m_subsystemTerrain.TerrainContentsGenerator.CalculateOceanShoreDistance((float)point.X, (float)point.Z);
 					if (shoreDistance < 20f) return 0f;
-
-					// Buscar cactus en un radio de 3 bloques
-					bool hasCactusNearby = false;
-					for (int dx = -3; dx <= 3; dx++)
-					{
-						for (int dz = -3; dz <= 3; dz++)
-						{
-							int cactusCell = subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetCellContents(point.X + dx, point.Y, point.Z + dz);
-							if (cactusCell == CactusBlock.Index)
-							{
-								hasCactusNearby = true;
-								break;
-							}
-							int cactusBelow = subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetCellContents(point.X + dx, point.Y - 1, point.Z + dz);
-							if (cactusBelow == CactusBlock.Index)
-							{
-								hasCactusNearby = true;
-								break;
-							}
-						}
-						if (hasCactusNearby) break;
-					}
-
-					if (!hasCactusNearby) return 0f;
 
 					int topHeight = subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetTopHeight(point.X, point.Z);
 					if (point.Y < topHeight - 2) return 0f;
@@ -195,27 +171,19 @@ namespace Game
 			{
 				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
 				{
-					// Solo de día
 					if (sky.SkyLightIntensity < 0.4f) return 0f;
 
-					// Obtener la estación actual
 					Season currentSeason = subsystemCreatureSpawn.m_subsystemSeasons.Season;
-
-					// Solo aparece en Primavera (Spring) o Verano (Summer)
 					if (currentSeason != Season.Spring && currentSeason != Season.Summer)
 						return 0f;
 
-					// Verificar el bloque bajo la criatura usando BlocksManager
 					int blockUnder = Terrain.ExtractContents(subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z));
-
-					// Solo aparece en Grass(8), Dirt(2), Sand(7) o Gravel(6)
 					if (blockUnder != GrassBlock.Index &&
 						blockUnder != DirtBlock.Index &&
 						blockUnder != SandBlock.Index &&
 						blockUnder != GravelBlock.Index)
 						return 0f;
 
-					// Asegurar que está en la superficie (top height)
 					int topHeight = subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetTopHeight(point.X, point.Z);
 					if (point.Y < topHeight - 2) return 0f;
 
@@ -226,6 +194,83 @@ namespace Game
 					int topHeight = subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetTopHeight(point.X, point.Z);
 					Point3 correctedPoint = new Point3(point.X, topHeight, point.Z);
 					return subsystemCreatureSpawn.SpawnCreatures(ct, "SonicTheHedgehog", correctedPoint, 1).Count;
+				}
+			});
+
+			// ==========================================
+			// 8. MILES "TAILS" PROWER (día ≥ 2, alta probabilidad si Sonic está cerca)
+			// ==========================================
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("MilesTailsPrower", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					if (sky.SkyLightIntensity < 0.4f) return 0f;
+
+					// Día mínimo 2
+					double totalDays = timeOfDay.CalculateDay(gameInfo.TotalElapsedGameTime);
+					if (totalDays < 2.0) return 0f;
+
+					int topHeight = subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetTopHeight(point.X, point.Z);
+					if (point.Y < topHeight - 2) return 0f;
+
+					// Buscar Sonic cerca (radio 8 bloques)
+					bool sonicNearby = false;
+					Vector3 center = new Vector3(point.X, point.Y, point.Z);
+					var bodiesSubsystem = subsystemCreatureSpawn.m_subsystemBodies;
+					DynamicArray<ComponentBody> bodies = new DynamicArray<ComponentBody>();
+					bodiesSubsystem.FindBodiesAroundPoint(new Vector2(center.X, center.Z), 8f, bodies);
+
+					for (int i = 0; i < bodies.Count; i++)
+					{
+						ComponentBody body = bodies.Array[i];
+						if (body?.Entity != null && Vector3.DistanceSquared(center, body.Position) <= 64f)
+						{
+							ComponentCreature creature = body.Entity.FindComponent<ComponentCreature>();
+							if (creature != null && creature.Entity.ValuesDictionary?.DatabaseObject?.Name == "SonicTheHedgehog")
+							{
+								sonicNearby = true;
+								break;
+							}
+						}
+					}
+
+					// Alta probabilidad si Sonic está cerca, baja si no
+					return sonicNearby ? 15f : 1.5f;
+				},
+				SpawnFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					int topHeight = subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetTopHeight(point.X, point.Z);
+					Point3 correctedPoint = new Point3(point.X, topHeight, point.Z);
+					return subsystemCreatureSpawn.SpawnCreatures(ct, "MilesTailsPrower", correctedPoint, 1).Count;
+				}
+			});
+
+			// ==========================================
+			// 9. KNUCKLES THE ECHIDNA (montañas altas, solo invierno)
+			// ==========================================
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("KnucklesTheEchidna", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					if (sky.SkyLightIntensity < 0.4f) return 0f;
+
+					Season currentSeason = subsystemCreatureSpawn.m_subsystemSeasons.Season;
+					if (currentSeason != Season.Winter) return 0f;
+
+					float mountainFactor = subsystemCreatureSpawn.m_subsystemTerrain.TerrainContentsGenerator.CalculateMountainRangeFactor((float)point.X, (float)point.Z);
+					int topHeight = subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetTopHeight(point.X, point.Z);
+					bool nearTop = (point.Y >= topHeight - 5);
+
+					if (mountainFactor >= 0.95f && topHeight >= 120 && nearTop)
+						return 5000f;
+					else
+						return 0f;
+				},
+				SpawnFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					int topHeight = subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetTopHeight(point.X, point.Z);
+					Point3 correctedPoint = new Point3(point.X, topHeight, point.Z);
+					return subsystemCreatureSpawn.SpawnCreatures(ct, "KnucklesTheEchidna", correctedPoint, 1).Count;
 				}
 			});
 		}
