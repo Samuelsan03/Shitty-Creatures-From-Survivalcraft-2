@@ -6428,6 +6428,9 @@
         <Parameter Name="CoughSound" Value="Audio/Creatures/MaleCough/MaleCough1" Type="string"/>
         <Parameter Name="SneezeSound" Value="Audio/Creatures/MaleSneeze/MaleSneeze1" Type="string"/>
     </MemberComponentTemplate>
+    <MemberComponentTemplate Name="Spawn" Guid="ffef7f01-e2cc-4228-9425-12f3cb9c6ac1" InheritanceParent="65268743-4076-4ee3-aefe-f02a54d16b36">
+              <Parameter Name="AutoDespawn" Guid="f9557e90-1dc2-48b3-9876-cff953a5bb63" Value="False" Type="bool" />
+            </MemberComponentTemplate>
             <MemberComponentTemplate Name="FindPlayerBehavior" Guid="86b7f3e6-c602-49d4-9e88-35b63583b783" InheritanceParent="44c9a961-258c-4eb3-81d1-d3ae249ae031" />
             <ParameterSet Name="CreatureEggData" Guid="2fd471fe-9483-4e8f-900a-8b10538dc62d">
               <Parameter Name="TextureSlot" Guid="7947ba30-3cdf-48c4-98b8-ef67556fcead" Value="38" Type="int" />
@@ -6445,6 +6448,9 @@
   </MemberComponentTemplate>
   <MemberComponentTemplate Name="SummonBehavior" Guid="f5019e6c-999d-477a-8386-7e0039289a25" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
               <Parameter Name="IsEnabled" Guid="76c23f62-243b-4730-962e-bacad0da0753" Value="True" Type="bool"/>
+            </MemberComponentTemplate>
+            <MemberComponentTemplate Name="Spawn" Guid="b8a10409-5b28-4e68-8b1b-ff26ffb6dfbd" InheritanceParent="65268743-4076-4ee3-aefe-f02a54d16b36">
+              <Parameter Name="AutoDespawn" Guid="6f872ff9-9f3b-455e-b94d-90ab572be54d" Value="False" Type="bool" />
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Creature" Guid="bb6ded6d-3611-413c-bceb-20b0ea3f65d2">
               <Parameter Name="Description" Guid="8a8767c2-953b-4384-9b5c-c185442ce789" Value="[Description:MilesTailsPrower]" Type="string" />
@@ -6570,6 +6576,9 @@
   </MemberComponentTemplate>
   <MemberComponentTemplate Name="SummonBehavior" Guid="c18ff8d8-a299-4697-a082-4b076fec7796" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
               <Parameter Name="IsEnabled" Guid="9dfa7099-d737-40a0-a1c2-8c92005f02ab" Value="True" Type="bool"/>
+            </MemberComponentTemplate>
+            <MemberComponentTemplate Name="Spawn" Guid="58093c7a-89de-44b8-981c-c3a24cf08664" InheritanceParent="65268743-4076-4ee3-aefe-f02a54d16b36">
+              <Parameter Name="AutoDespawn" Guid="98fcd54b-fb84-4f35-9c2d-0df2412f6235" Value="False" Type="bool" />
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Creature" Guid="98f74a77-111d-43c6-8644-163ebb5849ca">
               <Parameter Name="Description" Guid="2dd20ead-36e6-41ed-9912-a02cc1962c1c" Value="[Description:KnucklesTheEchidna]" Type="string" />
@@ -6704,6 +6713,9 @@
               <Parameter Name="ConstantSpawn" Guid="aea573e9-9c6b-4069-b73e-ebd1655ad70c" Value="True" Type="bool" />
               <Parameter Name="KillVerbs" Guid="36d237c0-c950-41eb-b8e7-b305254108f9" Value="massacred" Type="string" />
             </MemberComponentTemplate>
+            <MemberComponentTemplate Name="Spawn" Guid="520bb27f-fdc9-48d4-bedb-48334ff2836f" InheritanceParent="65268743-4076-4ee3-aefe-f02a54d16b36">
+              <Parameter Name="AutoDespawn" Guid="f70b079c-7a4b-4258-80ca-3a690aabf706" Value="False" Type="bool" />
+            </MemberComponentTemplate>
             <MemberComponentTemplate Name="Inventory" Guid="b4d2e816-909a-4d3a-abe5-6cdfc342cc17" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890"/>
 <MemberComponentTemplate Name="DefensiveCreatureAI" Guid="61b87f57-bd9a-418b-893e-b606c0ed23ee" InheritanceParent="0f69cb1e-cf48-46bf-93ec-6990112112d5">
   <Parameter Name="CanUseInventory" Guid="52c66178-df6a-4a47-81ba-e9e90403afcc" Value="true" Type="bool" />
@@ -6828,6 +6840,9 @@
               <Parameter Name="DisplayName" Guid="7b64a922-f170-444d-80dc-63db7b2ceb12" Value="[DisplayName:InfiniteTheJackal]" Type="string" />
               <Parameter Name="ConstantSpawn" Guid="0ee68deb-2438-4b3c-a13e-2ee783d09152" Value="True" Type="bool" />
               <Parameter Name="KillVerbs" Guid="99e8b726-7144-4796-92f0-f2bb4089c688" Value="massacred" Type="string" />
+            </MemberComponentTemplate>
+            <MemberComponentTemplate Name="Spawn" Guid="9abd4f9c-9991-458d-b72e-40cfc4279bb2" InheritanceParent="65268743-4076-4ee3-aefe-f02a54d16b36">
+              <Parameter Name="AutoDespawn" Guid="9db4dadb-4134-4f6c-811d-96d55dd3b709" Value="False" Type="bool" />
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Inventory" Guid="11a2b592-3c72-4a1f-af63-8982b9570808" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890"/>
 <MemberComponentTemplate Name="DefensiveCreatureAI" Guid="5efc7f59-b2ba-45b7-8426-6ff47e74e5db" InheritanceParent="0f69cb1e-cf48-46bf-93ec-6990112112d5">
