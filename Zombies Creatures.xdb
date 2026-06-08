@@ -9787,7 +9787,10 @@
         <Parameter Name="FleeDistance" Guid="4ebe7761-cd75-4281-9c2c-fac7e21842e7" Value="10" Type="float"/>
         <Parameter Name="ForceAttackDuringGreenNight" Guid="1bbdf78d-dca8-4827-ad95-fd5b2cd93cc6" Value="true" Type="bool"/>
     </MemberComponentTemplate>
-    <MemberComponentTemplate Name="PoisonInfected" Guid="8906748b-fe0a-4ef5-bb8b-6f99ef7008ff" InheritanceParent="d5e7f9a1-b3c5-4d9f-1a3b-5c7d9f1a3b5c">
+    <MemberComponentTemplate Name="PoisonInfected" Guid="9845f8e5-d4b1-4f53-b4e1-327d1873ef78">
+    <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="111" Type="int"/>
     <Parameter Name="PoisonResistance" Value="5" Type="float"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="CreatureSounds" Guid="5d74683a-c7eb-400d-bc83-a2f6edf54ad1">
@@ -9858,7 +9861,10 @@
     <MemberComponentTemplate Name="NewFlyAwayBehavior" Guid="bd243704-a359-4182-9fad-5c2b85d84e94" InheritanceParent="a1cca7f2-9a15-4a07-9ab7-31bda890427e"/>
             <MemberComponentTemplate Name="RunAwayBehavior" Guid="09406146-6c3f-46cc-9409-89dffc648c97" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
 <MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="f39a99a3-4443-44d2-a49b-765ac13d75ce" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
-    <MemberComponentTemplate Name="PoisonInfected" Guid="a07233cf-9dfb-40be-8276-54ecf47c034f" InheritanceParent="d5e7f9a1-b3c5-4d9f-1a3b-5c7d9f1a3b5c">
+    <MemberComponentTemplate Name="PoisonInfected" Guid="77d3fe50-8229-4e37-969f-c08f344e035d">
+    <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="111" Type="int"/>
     <Parameter Name="PoisonResistance" Value="5" Type="float"/>
 </MemberComponentTemplate>
             <MemberComponentTemplate Name="CreatureSounds" Guid="fe19a058-a977-4a3f-962e-83f439223737">
@@ -9993,7 +9999,10 @@
     <Parameter Name="FireResilience" Guid="65f4766f-a532-45f1-848a-3065d8137e36" Value="20" Type="float"/>
     <Parameter Name="ExplosionResilience" Guid="8c9d16a4-5445-4acb-9406-d138cece887a" Value="25" Type="float"/>
 </MemberComponentTemplate>
-    <MemberComponentTemplate Name="PoisonInfected" Guid="660f335b-216b-4e13-9f31-0ed3b99ec44c" InheritanceParent="d5e7f9a1-b3c5-4d9f-1a3b-5c7d9f1a3b5c">
+    <MemberComponentTemplate Name="PoisonInfected" Guid="db72a540-ec44-444d-9659-92938c5cc296">
+    <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="111" Type="int"/>
     <Parameter Name="PoisonResistance" Value="55" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="ZombieHerdBehavior" Guid="3412314e-0787-4014-9ed4-b088c4679105" InheritanceParent="384dbb1e-8baf-4880-9e86-db1ef0b51169">
@@ -10129,7 +10138,10 @@
     <Parameter Name="FireResilience" Guid="ef7b4e59-6bc2-4e3d-82ad-0f10df6a8150" Value="20" Type="float"/>
     <Parameter Name="ExplosionResilience" Guid="fefb1ca5-6ac4-4fc2-b78b-7645bc2a7e3b" Value="25" Type="float"/>
 </MemberComponentTemplate>
-    <MemberComponentTemplate Name="PoisonInfected" Guid="01df2245-ce8e-427c-a2fb-a2d5ee858465" InheritanceParent="d5e7f9a1-b3c5-4d9f-1a3b-5c7d9f1a3b5c">
+    <MemberComponentTemplate Name="PoisonInfected" Guid="ad333091-3af3-4a51-bcc4-ff56e860f681">
+    <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="111" Type="int"/>
     <Parameter Name="PoisonResistance" Value="55" Type="float"/>
 </MemberComponentTemplate>
     <MemberComponentTemplate Name="OnFire" Guid="3a5e812d-e74a-4592-adf0-901b03008eae"/>
@@ -10495,7 +10507,10 @@
             <MemberComponentTemplate Name="NewCreatureCollect" Guid="515f52a0-0f31-41d0-95ee-364ac135075e" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
     <Parameter Name="PickFactors" Guid="44cc4924-d3c1-4a8a-8d95-979367cf4db5" Value="Tools;1.0,Weapons;1.0" Type="string"/>
 </MemberComponentTemplate>
-<MemberComponentTemplate Name="PoisonInfected" Guid="bf1ff5f7-7282-4c6c-bf47-af84005c8c48" InheritanceParent="d5e7f9a1-b3c5-4d9f-1a3b-5c7d9f1a3b5c">
+<MemberComponentTemplate Name="PoisonInfected" Guid="e209f332-4cf0-4945-b820-b9022bdd0ed9">
+    <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
+    <Parameter Name="IsOptional" Value="true" Type="bool"/>
+    <Parameter Name="LoadOrder" Value="111" Type="int"/>
     <Parameter Name="PoisonResistance" Value="-100" Type="float"/>
 </MemberComponentTemplate>
 <MemberComponentTemplate Name="ZombieChaseBehavior" Guid="ac58e221-d481-4918-bab7-fff581ea703b" InheritanceParent="1a05e72e-fd6b-4eb3-b72b-59e530c4c7b9">
@@ -10681,8 +10696,7 @@
             <MemberComponentTemplate Name="NewCreatureCollect" Guid="de9af43a-d6ff-4433-b570-23e0614e42dc" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
     <Parameter Name="PickFactors" Guid="b7b9781c-3e33-4b7b-a609-bdf5cecb8136" Value="Tools;1.0,Weapons;1.0" Type="string"/>
 </MemberComponentTemplate>
-            <MemberComponentTemplate Name="Inventory" Guid="c5cfaa6f-f2c2-45cb-8d61-7f4222ad048f" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890">
-            </MemberComponentTemplate>
+            <MemberComponentTemplate Name="Inventory" Guid="c5cfaa6f-f2c2-45cb-8d61-7f4222ad048f" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890"/>
 <MemberComponentTemplate Name="PoisonInfected" Guid="9a08f79f-2071-4e56-8784-51381424dee3">
     <Parameter Name="Class" Value="Game.ComponentPoisonInfected" Type="string"/>
     <Parameter Name="IsOptional" Value="true" Type="bool"/>
