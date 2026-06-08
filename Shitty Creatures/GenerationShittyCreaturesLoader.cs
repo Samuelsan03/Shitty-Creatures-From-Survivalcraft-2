@@ -133,38 +133,6 @@ namespace Game
 			});
 
 			// ==========================================
-			// 6. FANGTHE SNIPER (solo desiertos, sin cactus)
-			// ==========================================
-			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("FangTheSniper", SpawnLocationType.Surface, true, false)
-			{
-				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
-				{
-					if (sky.SkyLightIntensity < 0.4f) return 0f;
-
-					int temperature = subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetTemperature(point.X, point.Z);
-					int humidity = subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetHumidity(point.X, point.Z);
-					if (temperature < 10 || humidity > 4) return 0f;
-
-					int blockUnder = Terrain.ExtractContents(subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z));
-					if (blockUnder != SandBlock.Index) return 0f;
-
-					float shoreDistance = subsystemCreatureSpawn.m_subsystemTerrain.TerrainContentsGenerator.CalculateOceanShoreDistance((float)point.X, (float)point.Z);
-					if (shoreDistance < 20f) return 0f;
-
-					int topHeight = subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetTopHeight(point.X, point.Z);
-					if (point.Y < topHeight - 2) return 0f;
-
-					return 5f;
-				},
-				SpawnFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
-				{
-					int topHeight = subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetTopHeight(point.X, point.Z);
-					Point3 correctedPoint = new Point3(point.X, topHeight, point.Z);
-					return subsystemCreatureSpawn.SpawnCreatures(ct, "FangTheSniper", correctedPoint, 1).Count;
-				}
-			});
-
-			// ==========================================
 			// 7. SONIC THE HEDGEHOG (solo en Grass, Dirt, Sand, Gravel - solo primavera y verano)
 			// ==========================================
 			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("SonicTheHedgehog", SpawnLocationType.Surface, true, false)
@@ -271,6 +239,76 @@ namespace Game
 					int topHeight = subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetTopHeight(point.X, point.Z);
 					Point3 correctedPoint = new Point3(point.X, topHeight, point.Z);
 					return subsystemCreatureSpawn.SpawnCreatures(ct, "KnucklesTheEchidna", correctedPoint, 1).Count;
+				}
+			});
+
+			// ==========================================
+			// FANG THE SNIPER (desierto, día)
+			// ==========================================
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("FangTheSniper", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					// Solo de día
+					if (sky.SkyLightIntensity < 0.4f) return 0f;
+
+					int humidity = subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetHumidity(point.X, point.Z);
+					int temperature = subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetTemperature(point.X, point.Z);
+					int blockUnder = Terrain.ExtractContents(subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z));
+
+					// Condiciones de desierto: baja humedad, alta temperatura, sobre arena
+					if (humidity >= 8 || temperature <= 8 || blockUnder != SandBlock.Index)
+						return 0f;
+
+					// No demasiado cerca del océano
+					float shoreDistance = subsystemCreatureSpawn.m_subsystemTerrain.TerrainContentsGenerator.CalculateOceanShoreDistance((float)point.X, (float)point.Z);
+					if (shoreDistance <= 20f) return 0f;
+
+					int topHeight = subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetTopHeight(point.X, point.Z);
+					if (point.Y < topHeight - 2) return 0f;
+
+					return 2.5f;
+				},
+				SpawnFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					int topHeight = subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetTopHeight(point.X, point.Z);
+					Point3 correctedPoint = new Point3(point.X, topHeight, point.Z);
+					return subsystemCreatureSpawn.SpawnCreatures(ct, "FangTheSniper", correctedPoint, 1).Count;
+				}
+			});
+
+			// ==========================================
+			// INFINITE THE JACKAL (desierto, noche)
+			// ==========================================
+			creatureTypes.Add(new SubsystemCreatureSpawn.CreatureType("InfiniteTheJackal", SpawnLocationType.Surface, true, false)
+			{
+				SpawnSuitabilityFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					// Solo de noche
+					if (sky.SkyLightIntensity >= 0.1f) return 0f;
+
+					int humidity = subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetHumidity(point.X, point.Z);
+					int temperature = subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetTemperature(point.X, point.Z);
+					int blockUnder = Terrain.ExtractContents(subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z));
+
+					// Condiciones de desierto: baja humedad, alta temperatura, sobre arena
+					if (humidity >= 8 || temperature <= 8 || blockUnder != SandBlock.Index)
+						return 0f;
+
+					// No demasiado cerca del océano
+					float shoreDistance = subsystemCreatureSpawn.m_subsystemTerrain.TerrainContentsGenerator.CalculateOceanShoreDistance((float)point.X, (float)point.Z);
+					if (shoreDistance <= 20f) return 0f;
+
+					int topHeight = subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetTopHeight(point.X, point.Z);
+					if (point.Y < topHeight - 2) return 0f;
+
+					return 2.5f;
+				},
+				SpawnFunction = delegate (SubsystemCreatureSpawn.CreatureType ct, Point3 point)
+				{
+					int topHeight = subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetTopHeight(point.X, point.Z);
+					Point3 correctedPoint = new Point3(point.X, topHeight, point.Z);
+					return subsystemCreatureSpawn.SpawnCreatures(ct, "InfiniteTheJackal", correctedPoint, 1).Count;
 				}
 			});
 		}
