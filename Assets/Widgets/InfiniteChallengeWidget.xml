@@ -1,0 +1,46 @@
+<CanvasWidget xmlns="runtime-namespace:Game" Size="614, 440">
+  <BevelledRectangleWidget BevelSize="3" CenterColor="20, 20, 28, 255" />
+
+  <StackPanelWidget Direction="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10">
+
+    <CanvasWidget Size="0, 8"/>
+
+    <LabelWidget Name="TitleLabel" Text="Infinite the Jackal" Color="255, 160, 80" FontScale="1.3" HorizontalAlignment="Center"/>
+    <CanvasWidget Size="0, 4" />
+    <LabelWidget Text="Challenge" Color="160, 160, 160, 255" HorizontalAlignment="Center" />
+
+    <CanvasWidget Size="0, 16"/>
+
+    <!-- Área de texto con scroll (altura fija) -->
+    <CanvasWidget Size="560, 220">
+      <ScrollPanelWidget Direction="Vertical">
+        <StackPanelWidget Direction="Vertical" Margin="0, 0, 0, 10">
+          <LabelWidget Text="I have been watching you from the shadows." Color="220, 220, 220" HorizontalAlignment="Center" WordWrap="true"/>
+          <CanvasWidget Size="0, 12"/>
+          <LabelWidget Text="My family needs another warrior. Not a follower who hides behind allies — a true lone wolf." Color="220, 220, 220" HorizontalAlignment="Center" WordWrap="true"/>
+          <CanvasWidget Size="0, 12"/>
+          <LabelWidget Text="Fight me. One on one. No companions, no summoned creatures, no outside help." Color="220, 220, 220" HorizontalAlignment="Center" WordWrap="true"/>
+          <CanvasWidget Size="0, 12"/>
+          <LabelWidget Text="If you win, you will be honored as part of my family. If you lose... you will remain here, waiting for someone strong enough to defeat me." Color="220, 220, 220" HorizontalAlignment="Center" WordWrap="true"/>
+          <CanvasWidget Size="0, 16"/>
+          <LabelWidget Text="Do you accept the challenge?" Color="255, 200, 100" HorizontalAlignment="Center" FontScale="1.1" WordWrap="true"/>
+        </StackPanelWidget>
+      </ScrollPanelWidget>
+    </CanvasWidget>
+
+    <CanvasWidget Size="0, 16"/>
+
+    <StackPanelWidget Direction="Horizontal" HorizontalAlignment="Center">
+      <BevelledButtonWidget Name="AcceptButton" Size="140, 48" Margin="16,0" Style="{Styles/ButtonStyle_160x60}">
+        <LabelWidget Text="Accept" Color="160, 255, 160" HorizontalAlignment="Center" VerticalAlignment="Center" FontScale="1.1"/>
+      </BevelledButtonWidget>
+
+      <BevelledButtonWidget Name="RejectButton" Size="140, 48" Margin="16,0" Style="{Styles/ButtonStyle_160x60}">
+        <LabelWidget Text="Reject" Color="255, 160, 160" HorizontalAlignment="Center" VerticalAlignment="Center" FontScale="1.1"/>
+      </BevelledButtonWidget>
+    </StackPanelWidget>
+
+    <CanvasWidget Size="0, 12"/>
+
+  </StackPanelWidget>
+</CanvasWidget>
