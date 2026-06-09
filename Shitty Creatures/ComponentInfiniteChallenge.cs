@@ -246,7 +246,6 @@ namespace Game
 			CacheComponents();
 			SaveOriginalValues();
 
-			// Inicializar rastreo de salud
 			if (m_health != null)
 			{
 				m_previousHealth = m_health.Health;
@@ -260,12 +259,18 @@ namespace Game
 			SetAllyAttackBlock(true);
 			DisableAlliesChase();
 
+			// Reproducir sonido de inicio del duelo
+			if (m_subsystemAudio != null)
+			{
+				m_subsystemAudio.PlaySound("Audio/UI/Attack", 1f, 0f, 0f, 0f);
+			}
+
 			string duelStartMsg = LanguageControl.Get("ComponentInfiniteChallenge", 0);
 			m_challenger.ComponentGui.DisplaySmallMessage(
 				duelStartMsg,
 				Color.Yellow,
 				false,
-				true);
+				false);
 
 			if (m_baseChase != null)
 			{
