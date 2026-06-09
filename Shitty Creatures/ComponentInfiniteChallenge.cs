@@ -56,6 +56,15 @@ namespace Game
 		private const float NumberDisplayDuration = 0.9f;
 		private const float NumberDisplayDelay = 0f;
 
+		// ===== RASTREO DE DAÑO DEL JUGADOR =====
+		private float m_previousHealth = -1f;
+		private double m_lastPlayerHitTime = -10f;
+		private const double PLAYER_HIT_VALIDITY_WINDOW = 1.5;
+
+		// Cache del campo de Injury para no buscarlo cada frame
+		private bool m_injuryFieldCached = false;
+		private FieldInfo m_injuryFieldInfo = null;
+
 		public UpdateOrder UpdateOrder => UpdateOrder.Default;
 		public bool HasBeenDefeated => m_hasBeenDefeated;
 		public bool IsDuelActive => m_state == ChallengeState.Countdown || m_state == ChallengeState.DuelInProgress;
@@ -81,10 +90,8 @@ namespace Game
 
 			if (!accepted)
 			{
-				m_state = ChallengeState.Idle;  // Back to Idle (NOT Idle!)
-
-				m_challenger = null;    // ← FIX: Clear reference!
-
+				m_state = ChallengeState.Idle;
+				m_challenger = null;
 				return;
 			}
 
@@ -210,7 +217,7 @@ namespace Game
 			}
 			catch (Exception ex)
 			{
-				Log.Warning($"[InfiniteChallenge] Error al forzar persecución inmediata: {ex.Message}");
+				Log.Error($"[InfiniteChallenge] Error al forzar persecución inmediata: {ex.Message}");
 			}
 		}
 
@@ -220,12 +227,19 @@ namespace Game
 
 			if (m_challenger == null || m_infiniteCreature == null)
 			{
-				EndDuel(false);
+				EndDuel(false, true);
 				return;
 			}
 
 			CacheComponents();
 			SaveOriginalValues();
+
+			// Inicializar rastreo de salud
+			if (m_health != null)
+			{
+				m_previousHealth = m_health.Health;
+				m_lastPlayerHitTime = -10f;
+			}
 
 			if (m_herd != null)
 				m_herd.HerdName = "duel_enemy";
@@ -259,7 +273,99 @@ namespace Game
 			}
 		}
 
-		private void EndDuel(bool playerWon)
+		/// <summary>
+		/// Verifica si el último daño recibido por Infinite fue causado por el jugador.
+		/// Usa reflection para acceder al campo m_injury de ComponentHealth.
+		/// </summary>
+		private bool WasLastDamageFromPlayer()
+		{
+			if (m_health == null || m_challenger == null) return false;
+
+			try
+			{
+				// Cache del campo para evitar buscar cada frame
+				if (!m_injuryFieldCached)
+				{
+					m_injuryFieldInfo = typeof(ComponentHealth).GetField("m_injury",
+						BindingFlags.Instance | BindingFlags.NonPublic);
+					m_injuryFieldCached = true;
+				}
+
+				if (m_injuryFieldInfo != null)
+				{
+					Injury injury = m_injuryFieldInfo.GetValue(m_health) as Injury;
+					if (injury != null && injury.Attacker != null)
+					{
+						return injury.Attacker.Entity == m_challenger.Entity;
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				Log.Warning($"[InfiniteChallenge] Error verificando atacante via Injury: {ex.Message}");
+			}
+
+			// Fallback: verificar si el jugador hizo daño melee reciente
+			bool recentPlayerHit = (m_subsystemTime.GameTime - m_lastPlayerHitTime) < PLAYER_HIT_VALIDITY_WINDOW;
+			return recentPlayerHit;
+		}
+
+		/// <summary>
+		/// Rastrea si el jugador acaba de golpear a Infinite en melee.
+		/// Se llama cuando se detecta que la salud de Infinite bajó.
+		/// </summary>
+		private void TrackPlayerMeleeHit()
+		{
+			if (m_challenger == null || m_infiniteCreature == null) return;
+
+			// PokingPhase > 0 indica que el jugador acaba de hacer un golpe melee
+			if (m_challenger.ComponentMiner.PokingPhase > 0f)
+			{
+				float distance = Vector3.Distance(
+					m_challenger.ComponentBody.Position,
+					m_infiniteCreature.ComponentBody.Position);
+
+				// Rango de melee es ~5 bloques, damos margen de 6
+				if (distance < 6f)
+				{
+					m_lastPlayerHitTime = m_subsystemTime.GameTime;
+				}
+			}
+		}
+
+		private void UpdateDuel()
+		{
+			// Verificar si el jugador murió
+			if (m_challenger != null && m_challenger.ComponentHealth.Health <= 0f)
+			{
+				EndDuel(false, true);
+				return;
+			}
+
+			if (m_infiniteCreature != null && m_health != null)
+			{
+				float currentHealth = m_health.Health;
+
+				// Detectar si Infinite recibió daño este frame
+				if (m_previousHealth > 0f && currentHealth < m_previousHealth)
+				{
+					TrackPlayerMeleeHit();
+				}
+
+				m_previousHealth = currentHealth;
+
+				// Verificar si Infinite fue derrotado
+				if (currentHealth <= VictoryHealthThreshold)
+				{
+					// SOLO victoria si el jugador fue quien causó el daño
+					bool playerDefeatedInfinite = WasLastDamageFromPlayer();
+					EndDuel(playerDefeatedInfinite, false);
+					return;
+				}
+			}
+		}
+
+		private void EndDuel(bool playerWon, bool playerDied)
 		{
 			if (m_state == ChallengeState.Finished) return;
 
@@ -288,7 +394,7 @@ namespace Game
 					false,
 					true);
 
-				// ========== NUEVO: Desbloquear logro por derrotar a Infinite ==========
+				// Desbloquear logro SOLO si el jugador derrotó a Infinite
 				if (m_challenger != null)
 				{
 					string achievementTitle = LanguageControl.Get(AchievementsWidget.fName, 134);
@@ -297,8 +403,20 @@ namespace Game
 
 				m_state = ChallengeState.Finished;
 			}
+			else if (playerDied)
+			{
+				// Jugador murió durante el duelo
+				RestoreOriginalStats();
+
+				if (m_herd != null)
+					m_herd.HerdName = m_originalHerdName ?? "player";
+
+				m_state = ChallengeState.Idle;
+			}
 			else
 			{
+				// Infinite fue derrotado por algo que NO fue el jugador (otra criatura, daño ambiental, etc.)
+				// El duelo se cancela sin recompensa ni logro
 				RestoreOriginalStats();
 
 				if (m_herd != null)
@@ -446,13 +564,12 @@ namespace Game
 				PerformPostLoadCleanup();
 			}
 
-			// --- NUEVO: Si estamos esperando respuesta pero el widget ya no está, cancelar ---
+			// Si estamos esperando respuesta pero el widget ya no está, cancelar
 			if (m_state == ChallengeState.WaitingResponse && m_challenger != null)
 			{
 				Widget currentModal = m_challenger.ComponentGui.ModalPanelWidget;
 				if (!(currentModal is InfiniteChallengeWidget))
 				{
-					// El widget fue cerrado sin respuesta (por otro modal o acción externa)
 					OnChallengeResponse(false);
 				}
 			}
@@ -470,13 +587,11 @@ namespace Game
 
 		/// <summary>
 		/// Limpieza que se ejecuta en el primer Update() después del Load()
-		/// Aquí es seguro llamar a StopAttack() porque el StateMachine ya está inicializado
 		/// </summary>
 		private void PerformPostLoadCleanup()
 		{
 			try
 			{
-				// Ahora sí es seguro llamar a StopAttack()
 				if (m_baseChase != null)
 				{
 					m_baseChase.Suppressed = true;
@@ -488,7 +603,6 @@ namespace Game
 					m_newChase.StopAttack();
 				}
 
-				// Limpiar cualquier orden de vuelo residual
 				if (m_locomotion != null)
 				{
 					m_locomotion.FlyOrder = null;
@@ -496,29 +610,13 @@ namespace Game
 					m_locomotion.SwimOrder = null;
 				}
 
-				// Detener pathfinding
 				ComponentPathfinding pathfinding = m_infiniteCreature?.Entity?.FindComponent<ComponentPathfinding>();
 				if (pathfinding != null)
 					pathfinding.Stop();
-
-				Log.Warning("[InfiniteChallenge] Limpieza post-load completada");
 			}
 			catch (Exception ex)
 			{
-				Log.Warning($"[InfiniteChallenge] Error en limpieza post-load: {ex.Message}");
-			}
-		}
-
-		private void UpdateDuel()
-		{
-			if (m_challenger != null && m_challenger.ComponentHealth.Health <= 0f)
-			{
-				EndDuel(false);
-				return;
-			}
-			if (m_infiniteCreature != null && m_infiniteCreature.ComponentHealth.Health <= VictoryHealthThreshold)
-			{
-				EndDuel(true);
+				Log.Error($"[InfiniteChallenge] Error en limpieza post-load: {ex.Message}");
 			}
 		}
 
@@ -537,39 +635,26 @@ namespace Game
 			int savedState = valuesDictionary.GetValue<int>("ChallengeState", 0);
 			m_state = (ChallengeState)savedState;
 
-			// Cachear componentes
 			CacheComponents();
 
-			// ===== Si el duelo estaba activo, marcar para limpieza post-Load =====
 			if (m_state == ChallengeState.Countdown || m_state == ChallengeState.DuelInProgress)
 			{
-				Log.Warning("[InfiniteChallenge] Duelo interrumpido por reload, se limpiará en primer Update()");
-
-				// Solo forzar Suppressed (no tocar StateMachine ni locomoción)
 				if (m_baseChase != null)
 					m_baseChase.Suppressed = true;
 				if (m_newChase != null)
 					m_newChase.Suppressed = true;
 
-				// Restaurar manada inmediatamente
 				if (m_herd != null)
 					m_herd.HerdName = "player";
 
-				// Limpiar bloqueos
 				SetAllyAttackBlock(false);
 
-				// NO tocar WalkSpeed, FlySpeed ni otros stats
-				// NO llamar a StopAttack()
-
-				// Marcar para limpieza en primer Update()
 				m_needsPostLoadCleanup = true;
 
-				// Resetear estado
 				m_state = ChallengeState.Idle;
 				m_valuesSaved = false;
 			}
 
-			// Si fue derrotado, asegurar que esté en la manada del jugador
 			if (m_hasBeenDefeated)
 			{
 				if (m_herd != null)
