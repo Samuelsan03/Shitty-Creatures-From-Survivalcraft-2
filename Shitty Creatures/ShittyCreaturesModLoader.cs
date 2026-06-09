@@ -1481,9 +1481,9 @@ namespace Game
 				LabelWidget label = new LabelWidget
 				{
 					FontScale = 0.5f,
-					HorizontalAlignment = WidgetAlignment.Far,
-					VerticalAlignment = WidgetAlignment.Far,
-					Margin = new Vector2(0f, 0f),
+					HorizontalAlignment = WidgetAlignment.Near,  // ← izquierda (cerca del triángulo)
+					VerticalAlignment = WidgetAlignment.Near,    // ← arriba
+					Margin = new Vector2(70f, 10f),              // ← desplazado a la derecha para no tapar el botón
 					Color = Color.White,
 					DropShadow = true,
 					IsHitTestVisible = false
