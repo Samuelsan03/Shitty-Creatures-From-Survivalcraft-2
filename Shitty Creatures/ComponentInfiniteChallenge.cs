@@ -288,6 +288,13 @@ namespace Game
 					false,
 					true);
 
+				// ========== NUEVO: Desbloquear logro por derrotar a Infinite ==========
+				if (m_challenger != null)
+				{
+					string achievementTitle = LanguageControl.Get(AchievementsWidget.fName, 134);
+					AchievementsManager.UnlockAchievementStatic(m_challenger, 69, "DefeatInfinite", achievementTitle);
+				}
+
 				m_state = ChallengeState.Finished;
 			}
 			else
