@@ -65,9 +65,10 @@ namespace Game
 		public bool HasBeenDefeated => m_hasBeenDefeated;
 		public bool IsDuelActive => m_state == ChallengeState.Countdown || m_state == ChallengeState.DuelInProgress;
 
+		private ComponentPlayer m_challenger;
+
 		public void StartChallenge(ComponentPlayer player)
 		{
-			// No permitir iniciar si ya fue derrotado ESTA entidad específica
 			if (m_state != ChallengeState.Idle || m_hasBeenDefeated) return;
 
 			m_challenger = player;
@@ -75,8 +76,6 @@ namespace Game
 
 			InfiniteChallengeWidget.Show(player, OnChallengeResponse);
 		}
-
-		private ComponentPlayer m_challenger;
 
 		private void OnChallengeResponse(bool accepted)
 		{
@@ -158,7 +157,6 @@ namespace Game
 
 			if (m_baseChase != null)
 			{
-				// Si newChase no existía, usar baseChase para los valores originales
 				if (m_newChase == null)
 				{
 					m_originalAttacksPlayer = m_baseChase.AttacksPlayer;
@@ -229,7 +227,6 @@ namespace Game
 			CacheComponents();
 			SaveOriginalValues();
 
-			// Cambiar manada para que sea enemigo
 			if (m_herd != null)
 				m_herd.HerdName = "duel_enemy";
 
@@ -237,7 +234,6 @@ namespace Game
 			SetAllyAttackBlock(true);
 			DisableAlliesChase();
 
-			// Mensaje localizado
 			string duelStartMsg = LanguageControl.Get("ComponentInfiniteChallenge", 0);
 			m_challenger.ComponentGui.DisplaySmallMessage(
 				duelStartMsg,
@@ -245,7 +241,6 @@ namespace Game
 				false,
 				true);
 
-			// Configurar chase behaviors para atacar al jugador
 			if (m_baseChase != null)
 			{
 				m_baseChase.Suppressed = false;
@@ -268,8 +263,7 @@ namespace Game
 		{
 			if (m_state == ChallengeState.Finished) return;
 
-			// ===== SIEMPRE detener ataques y restaurar comportamiento =====
-			StopAllAttacks();
+			StopAllAttacksSafe();
 			RestoreChaseBehavior();
 			RestoreAlliesChase();
 			UnlockInventory();
@@ -277,16 +271,10 @@ namespace Game
 
 			if (playerWon)
 			{
-				// Solo marcar como derrotado ESTA entidad específica
 				m_hasBeenDefeated = true;
 
-				// Cambiar a manada del jugador (ahora es aliado)
 				if (m_herd != null)
 					m_herd.HerdName = "player";
-
-				// NO restaurar stats - se queda con stats de jefe como aliado
-				// O si prefieres que tenga stats normales, descomenta:
-				// RestoreOriginalStats();
 
 				string victoryMsg = LanguageControl.Get("ComponentInfiniteChallenge", 1);
 				m_challenger?.ComponentGui?.DisplaySmallMessage(
@@ -299,10 +287,8 @@ namespace Game
 			}
 			else
 			{
-				// Jugador perdió o canceló - restaurar TODO
 				RestoreOriginalStats();
 
-				// Restaurar manada original
 				if (m_herd != null)
 					m_herd.HerdName = m_originalHerdName ?? "player";
 
@@ -313,7 +299,65 @@ namespace Game
 		}
 
 		/// <summary>
-		/// Detiene todos los ataques de Infinite
+		/// Detiene todos los ataques de forma segura (puede llamarse durante Load)
+		/// NO usa StopAttack() porque el StateMachine puede no estar inicializado
+		/// </summary>
+		private void StopAllAttacksSafe()
+		{
+			// Para ComponentNewChaseBehavior - forzar parada sin usar StateMachine
+			if (m_newChase != null)
+			{
+				try
+				{
+					m_newChase.Suppressed = true;
+
+					// Acceder directamente al campo m_target y limpiarlo
+					FieldInfo targetField = typeof(ComponentNewChaseBehavior).GetField("m_target",
+						BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+					if (targetField != null)
+						targetField.SetValue(m_newChase, null);
+
+					// Acceder a IsActive
+					PropertyInfo isActiveProp = typeof(ComponentBehavior).GetProperty("IsActive");
+					if (isActiveProp != null && isActiveProp.CanWrite)
+						isActiveProp.SetValue(m_newChase, false);
+
+					// Detener pathfinding si está activo
+					ComponentPathfinding pathfinding = m_infiniteCreature?.Entity?.FindComponent<ComponentPathfinding>();
+					if (pathfinding != null)
+						pathfinding.Stop();
+				}
+				catch (Exception ex)
+				{
+					Log.Warning($"[InfiniteChallenge] Error al detener NewChase: {ex.Message}");
+				}
+			}
+
+			// Para ComponentChaseBehavior - usar StopAttack() con try-catch
+			if (m_baseChase != null)
+			{
+				try
+				{
+					m_baseChase.StopAttack();
+				}
+				catch (Exception ex)
+				{
+					// Si falla (StateMachine no inicializado), forzar limpieza manual
+					try
+					{
+						m_baseChase.Suppressed = true;
+						FieldInfo targetField = typeof(ComponentChaseBehavior).GetField("m_target",
+							BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+						if (targetField != null)
+							targetField.SetValue(m_baseChase, null);
+					}
+					catch { }
+				}
+			}
+		}
+
+		/// <summary>
+		/// Detiene ataques de forma normal (solo usar cuando el juego está corriendo)
 		/// </summary>
 		private void StopAllAttacks()
 		{
@@ -391,7 +435,6 @@ namespace Game
 				BossFightBlocker.UnblockAttacksOnCreature(m_infiniteCreature);
 		}
 
-		// ===== Deshabilitar persecución de TODOS los aliados =====
 		private void DisableAlliesChase()
 		{
 			if (Project == null) return;
@@ -490,26 +533,23 @@ namespace Game
 			BossSpeedMultiplier = valuesDictionary.GetValue<float>("BossSpeedMultiplier", BossSpeedMultiplier);
 			VictoryHealthThreshold = valuesDictionary.GetValue<float>("VictoryHealthThreshold", VictoryHealthThreshold);
 
-			// ===== SOLO cargar estado de ESTA entidad (no global) =====
 			m_hasBeenDefeated = valuesDictionary.GetValue<bool>("HasBeenDefeated", false);
 
-			// Cargar estado del duelo para manejar correctamente el reload
 			int savedState = valuesDictionary.GetValue<int>("ChallengeState", 0);
 			m_state = (ChallengeState)savedState;
 
-			// Cachear componentes para posible restauración
+			// Cachear componentes
 			CacheComponents();
 
-			// ===== CORRECCIÓN CRÍTICA: Si el duelo estaba activo al guardar, cancelarlo =====
+			// ===== CORRECCIÓN: Usar método seguro que no depende de StateMachine =====
 			if (m_state == ChallengeState.Countdown || m_state == ChallengeState.DuelInProgress)
 			{
-				Log.Warning($"[InfiniteChallenge] Duelo interrumpido por reload, restaurando estado...");
+				Log.Warning("[InfiniteChallenge] Duelo interrumpido por reload, restaurando estado...");
 
-				// Detener cualquier ataque en curso
-				StopAllAttacks();
+				// Usar método seguro que no llama a StopAttack()
+				StopAllAttacksSafe();
 
-				// Restaurar comportamiento de chase a sus valores por defecto
-				// (no tenemos los originales guardados en este punto)
+				// Forzar Suppressed = true directamente
 				if (m_baseChase != null)
 				{
 					m_baseChase.Suppressed = true;
@@ -527,11 +567,18 @@ namespace Game
 				if (m_herd != null)
 					m_herd.HerdName = "player";
 
-				// Restaurar stats originales (cargarlos del archivo de configuración de la criatura)
-				RestoreStatsFromTemplate();
+				// Restaurar stats base (hardcodeado para evitar errores)
+				if (m_health != null)
+					m_health.AttackResilienceFactor = 1f;
+				if (m_miner != null)
+					m_miner.AttackPower = 1f;
+				if (m_locomotion != null)
+				{
+					m_locomotion.WalkSpeed = 1f;
+					m_locomotion.FlySpeed = 1f;
+				}
 
 				// Limpiar bloqueos
-				RestoreAlliesChase();
 				SetAllyAttackBlock(false);
 
 				// Resetear estado
@@ -547,88 +594,10 @@ namespace Game
 			}
 		}
 
-		/// <summary>
-		/// Restaura los stats desde los valores de la plantilla de la criatura
-		/// Se usa cuando se interrumpe un duelo por reload del mundo
-		/// </summary>
-		private void RestoreStatsFromTemplate()
-		{
-			if (m_infiniteCreature == null || m_infiniteCreature.Entity?.ValuesDictionary == null)
-				return;
-
-			var entityDict = m_infiniteCreature.Entity.ValuesDictionary;
-
-			// Buscar en el ValuesDictionary de la entidad
-			// Estos valores se cargan desde la plantilla al crear la entidad
-
-			if (m_health != null)
-			{
-				// AttackResilience por defecto es 1.0 si no está definido
-				float defaultResilience = 1f;
-				if (entityDict.TryGetValue("AttackResilience", out object resilienceValue))
-				{
-					if (resilienceValue is float f)
-						defaultResilience = f;
-					else if (resilienceValue is double d)
-						defaultResilience = (float)d;
-					else if (resilienceValue is int i)
-						defaultResilience = i;
-				}
-				m_health.AttackResilienceFactor = defaultResilience;
-			}
-
-			if (m_miner != null)
-			{
-				// AttackPower por defecto es 1.0 si no está definido
-				float defaultPower = 1f;
-				if (entityDict.TryGetValue("AttackPower", out object powerValue))
-				{
-					if (powerValue is float f)
-						defaultPower = f;
-					else if (powerValue is double d)
-						defaultPower = (float)d;
-					else if (powerValue is int i)
-						defaultPower = i;
-				}
-				m_miner.AttackPower = defaultPower;
-			}
-
-			if (m_locomotion != null)
-			{
-				// WalkSpeed por defecto es 1.0
-				float defaultWalk = 1f;
-				if (entityDict.TryGetValue("WalkSpeed", out object walkValue))
-				{
-					if (walkValue is float f)
-						defaultWalk = f;
-					else if (walkValue is double d)
-						defaultWalk = (float)d;
-					else if (walkValue is int i)
-						defaultWalk = i;
-				}
-				m_locomotion.WalkSpeed = defaultWalk;
-
-				// FlySpeed por defecto es 1.0
-				float defaultFly = 1f;
-				if (entityDict.TryGetValue("FlySpeed", out object flyValue))
-				{
-					if (flyValue is float f)
-						defaultFly = f;
-					else if (flyValue is double d)
-						defaultFly = (float)d;
-					else if (flyValue is int i)
-						defaultFly = i;
-				}
-				m_locomotion.FlySpeed = defaultFly;
-			}
-		}
-
 		public override void Save(ValuesDictionary valuesDictionary, EntityToIdMap entityToIdMap)
 		{
-			// ===== SOLO guardar estado de ESTA entidad (no global) =====
 			valuesDictionary.SetValue<bool>("HasBeenDefeated", m_hasBeenDefeated);
 			valuesDictionary.SetValue<int>("ChallengeState", (int)m_state);
-
 			valuesDictionary.SetValue<float>("BossHealthMultiplier", BossHealthMultiplier);
 			valuesDictionary.SetValue<float>("BossDamageMultiplier", BossDamageMultiplier);
 			valuesDictionary.SetValue<float>("BossSpeedMultiplier", BossSpeedMultiplier);
@@ -637,10 +606,9 @@ namespace Game
 
 		public override void Dispose()
 		{
-			// Si hay un duelo activo al disposing, limpiar todo
 			if (m_state == ChallengeState.Countdown || m_state == ChallengeState.DuelInProgress)
 			{
-				StopAllAttacks();
+				StopAllAttacksSafe();
 				RestoreAlliesChase();
 				UnlockInventory();
 				SetAllyAttackBlock(false);
