@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using Engine;
 using GameEntitySystem;
 using TemplatesDatabase;
@@ -126,8 +127,6 @@ namespace Game
 		{
 			m_herd = m_infiniteCreature.Entity.FindComponent<ComponentNewHerdBehavior>();
 			m_newChase = m_infiniteCreature.Entity.FindComponent<ComponentNewChaseBehavior>();
-			// NewChaseBehavior hereda de ChaseBehavior, así que obtenemos la misma instancia
-			// pero podemos llamar a los métodos de la clase base
 			m_baseChase = m_infiniteCreature.Entity.FindComponent<ComponentChaseBehavior>();
 			m_health = m_infiniteCreature.ComponentHealth;
 			m_miner = m_infiniteCreature.Entity.FindComponent<ComponentMiner>();
@@ -146,6 +145,13 @@ namespace Game
 				m_originalAttacksPlayer = m_newChase.AttacksPlayer;
 				m_originalAttacksNonPlayerCreature = m_newChase.AttacksNonPlayerCreature;
 				m_originalSuppressed = m_newChase.Suppressed;
+			}
+
+			if (m_baseChase != null)
+			{
+				m_originalAttacksPlayer = m_baseChase.AttacksPlayer;
+				m_originalAttacksNonPlayerCreature = m_baseChase.AttacksNonPlayerCreature;
+				m_originalSuppressed = m_baseChase.Suppressed;
 			}
 
 			if (m_health != null)
@@ -177,7 +183,6 @@ namespace Game
 			SaveOriginalValues();
 
 			// 1. Cambiar HerdName para que NO sea aliado durante el duelo
-			// Esto permite que los sistemas de chase ataquen al jugador
 			if (m_herd != null)
 			{
 				m_herd.HerdName = "duel_enemy";
@@ -194,24 +199,22 @@ namespace Game
 				false,
 				true);
 
-			// 4. Usar el VIEJO ComponentChaseBehavior para forzar la persecución
-			// La firma base tiene 4 parámetros (no 5 como NewChaseBehavior)
+			// 4. Usar el VIEJO ComponentChaseBehavior para forzar la persecución INMEDIATA
 			if (m_baseChase != null)
 			{
-				// Asegurar que no esté suprimido
 				m_baseChase.Suppressed = false;
-				// Forzar que ataque al jugador
 				m_baseChase.AttacksPlayer = true;
 				m_baseChase.AttacksNonPlayerCreature = false;
-				// Iniciar persecución persistente (no se detiene hasta que el duelo termine)
 				m_baseChase.Attack(m_challenger, 50f, 600f, true);
+
+				// FORZAR actualización del StateMachine para que persiga INMEDIATAMENTO
+				ForceStateMachineUpdate(m_baseChase);
 			}
 		}
 
 		private void EndDuel(bool playerWon)
 		{
 			if (m_state == ChallengeState.Finished) return;
-			m_state = ChallengeState.Finished;
 
 			// 1. Detener toda persecución inmediatamente
 			if (m_baseChase != null)
@@ -224,15 +227,13 @@ namespace Game
 				m_newChase.StopAttack();
 			}
 
-			// 2. Restaurar HerdName a "player" (se une a la manada al ganar)
+			// 2. Restaurar HerdName
 			if (m_herd != null)
 			{
-				// Si ganó, asegurarse de que esté en "player"
-				// Si perdió, restaurar al valor original (que ya era "player" según el XML)
 				m_herd.HerdName = playerWon ? "player" : (m_originalHerdName ?? "player");
 			}
 
-			// 3. Restaurar configuración de NewChaseBehavior
+			// 3. Restaurar configuración de chase behaviors
 			if (m_newChase != null)
 			{
 				m_newChase.AttacksPlayer = m_originalAttacksPlayer;
@@ -240,7 +241,6 @@ namespace Game
 				m_newChase.Suppressed = m_originalSuppressed;
 			}
 
-			// 4. Restaurar AttacksPlayer del ChaseBehavior base
 			if (m_baseChase != null)
 			{
 				m_baseChase.AttacksPlayer = m_originalAttacksPlayer;
@@ -248,7 +248,7 @@ namespace Game
 				m_baseChase.Suppressed = m_originalSuppressed;
 			}
 
-			// 5. Resultado del duelo
+			// 4. Resultado del duelo
 			if (playerWon)
 			{
 				m_hasBeenDefeated = true;
@@ -264,9 +264,40 @@ namespace Game
 				RestoreOriginalStats();
 			}
 
-			// 6. Limpiar
+			// 5. Limpiar
 			UnlockInventory();
 			SetAllyAttackBlock(false);
+
+			// 6. IMPORTANTE: Si perdió, volver a Idle (no a Finished) para poder reintentar
+			m_state = playerWon ? ChallengeState.Finished : ChallengeState.Idle;
+		}
+
+		private void ForceStateMachineUpdate(ComponentChaseBehavior chase)
+		{
+			if (chase == null) return;
+
+			try
+			{
+				FieldInfo stateMachineField = typeof(ComponentChaseBehavior).GetField("m_stateMachine",
+					BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+				if (stateMachineField != null)
+				{
+					StateMachine stateMachine = stateMachineField.GetValue(chase) as StateMachine;
+					if (stateMachine != null)
+					{
+						MethodInfo updateMethod = typeof(StateMachine).GetMethod("Update",
+							BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+						if (updateMethod != null)
+						{
+							updateMethod.Invoke(stateMachine, null);
+						}
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				Log.Warning($"[InfiniteChallenge] Error al forzar StateMachine.Update: {ex.Message}");
+			}
 		}
 
 		private void LockInventory()
@@ -342,6 +373,8 @@ namespace Game
 				case ChallengeState.DuelInProgress:
 					UpdateDuel();
 					break;
+
+					// Idle y Finished no hacen nada
 			}
 		}
 
@@ -372,7 +405,6 @@ namespace Game
 			VictoryHealthThreshold = valuesDictionary.GetValue<float>("VictoryHealthThreshold", VictoryHealthThreshold);
 			m_hasBeenDefeated = valuesDictionary.GetValue<bool>("HasBeenDefeated", false);
 
-			// Si ya fue derrotado, asegurarse de que esté en la manada del jugador
 			if (m_hasBeenDefeated)
 			{
 				var herd = Entity.FindComponent<ComponentNewHerdBehavior>();
@@ -410,12 +442,26 @@ namespace Game
 					m_newChase.Suppressed = m_originalSuppressed;
 				}
 
+				// Restaurar BaseChase
+				if (m_baseChase != null)
+				{
+					m_baseChase.AttacksPlayer = m_originalAttacksPlayer;
+					m_baseChase.AttacksNonPlayerCreature = m_originalAttacksNonPlayerCreature;
+					m_baseChase.Suppressed = m_originalSuppressed;
+				}
+
 				// Restaurar stats
 				if (!m_hasBeenDefeated)
 					RestoreOriginalStats();
 
 				UnlockInventory();
 				SetAllyAttackBlock(false);
+
+				// Si estaba en countdown o duelo, volver a Idle al dispose (para permitir reintentar al revivir)
+				if (m_state != ChallengeState.Finished)
+				{
+					m_state = ChallengeState.Idle;
+				}
 			}
 			base.Dispose();
 		}
