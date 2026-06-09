@@ -265,12 +265,16 @@ namespace Game
 				m_subsystemAudio.PlaySound("Audio/UI/Attack", 1f, 0f, 0f, 0f);
 			}
 
-			string duelStartMsg = LanguageControl.Get("ComponentInfiniteChallenge", 0);
-			m_challenger.ComponentGui.DisplaySmallMessage(
-				duelStartMsg,
-				Color.Yellow,
-				false,
-				false);
+			// ✅ SOLO mostrar mensaje de inicio si Infinite NO ha sido derrotado antes
+			if (!m_hasBeenDefeated)
+			{
+				string duelStartMsg = LanguageControl.Get("ComponentInfiniteChallenge", 0);
+				m_challenger.ComponentGui.DisplaySmallMessage(
+					duelStartMsg,
+					Color.Yellow,
+					false,
+					false);
+			}
 
 			if (m_baseChase != null)
 			{
@@ -371,12 +375,24 @@ namespace Game
 
 				m_previousHealth = currentHealth;
 
-				// Verificar si Infinite fue derrotado
-				if (currentHealth <= VictoryHealthThreshold)
+				// ✅ VERIFICAR UMBRAL (NO muerte)
+				// Si la vida está por debajo del umbral Y el jugador fue quien causó el daño
+				if (currentHealth <= VictoryHealthThreshold && currentHealth > 0f)
 				{
-					// SOLO victoria si el jugador fue quien causó el daño
 					bool playerDefeatedInfinite = WasLastDamageFromPlayer();
-					EndDuel(playerDefeatedInfinite, false);
+					if (playerDefeatedInfinite)
+					{
+						EndDuel(true, false);  // Victoria por umbral
+						return;
+					}
+				}
+
+				// ❌ Si la vida llega a 0 (muerte real), NO es victoria (solo si el umbral es 0)
+				// Nota: Si VictoryHealthThreshold = 0, entonces esto aplicaría, pero normalmente es >0
+				if (currentHealth <= 0f)
+				{
+					// Muerte real - NO mostrar mensaje de victoria
+					EndDuel(false, false);
 					return;
 				}
 			}
@@ -386,7 +402,7 @@ namespace Game
 		{
 			if (m_state == ChallengeState.Finished) return;
 
-			// Detener ataques de forma normal (el juego está corriendo)
+			// Detener ataques
 			if (m_baseChase != null)
 				m_baseChase.StopAttack();
 			if (m_newChase != null)
@@ -404,6 +420,8 @@ namespace Game
 				if (m_herd != null)
 					m_herd.HerdName = "player";
 
+				// ✅ SOLO mostrar mensaje de victoria si el jugador activó el UMBRAL
+				// (no cuando la criatura murió realmente)
 				string victoryMsg = LanguageControl.Get("ComponentInfiniteChallenge", 1);
 				m_challenger?.ComponentGui?.DisplaySmallMessage(
 					victoryMsg,
@@ -411,7 +429,7 @@ namespace Game
 					false,
 					true);
 
-				// Desbloquear logro SOLO si el jugador derrotó a Infinite
+				// Desbloquear logro
 				if (m_challenger != null)
 				{
 					string achievementTitle = LanguageControl.Get(AchievementsWidget.fName, 134);
@@ -432,8 +450,8 @@ namespace Game
 			}
 			else
 			{
-				// Infinite fue derrotado por algo que NO fue el jugador (otra criatura, daño ambiental, etc.)
-				// El duelo se cancela sin recompensa ni logro
+				// Infinite fue derrotado por otra causa (muerte real, daño ambiental, etc.)
+				// ✅ NO mostrar mensaje de victoria, solo restaurar todo
 				RestoreOriginalStats();
 
 				if (m_herd != null)
