@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using Engine;
 using GameEntitySystem;
@@ -47,11 +48,17 @@ namespace Game
 		private ComponentMiner m_miner;
 		private ComponentLocomotion m_locomotion;
 
+		// Guardado de estados de aliados para restaurar después
+		private Dictionary<ComponentCreature, bool> m_alliesOriginalSuppressed = new Dictionary<ComponentCreature, bool>();
+
 		// Multiplicadores
 		public float BossHealthMultiplier = 3f;
 		public float BossDamageMultiplier = 2.5f;
 		public float BossSpeedMultiplier = 1.4f;
 		public float VictoryHealthThreshold = 0.1f;
+
+		// Clave para guardar en SubsystemGameInfo.ValuesDictionary (persistente)
+		private const string GAME_INFO_KEY = "InfiniteChallenge_Defeated";
 
 		private const double CountdownInterval = 1.0;
 		private const float NumberDisplayDuration = 0.9f;
@@ -59,6 +66,92 @@ namespace Game
 
 		public UpdateOrder UpdateOrder => UpdateOrder.Default;
 		public bool HasBeenDefeated => m_hasBeenDefeated;
+
+		// ===== Persistencia mediante SubsystemGameInfo.ValuesDictionary (SÍ guarda entre sesiones) =====
+		private void SaveDefeatedStateToGameInfo(bool defeated)
+		{
+			if (Project == null) return;
+			var gameInfo = Project.FindSubsystem<SubsystemGameInfo>(true);
+			if (gameInfo != null && gameInfo.ValuesDictionary != null)
+			{
+				gameInfo.ValuesDictionary.SetValue<bool>(GAME_INFO_KEY, defeated);
+			}
+		}
+
+		private bool LoadDefeatedStateFromGameInfo()
+		{
+			if (Project == null) return false;
+			var gameInfo = Project.FindSubsystem<SubsystemGameInfo>(true);
+			if (gameInfo != null && gameInfo.ValuesDictionary != null)
+			{
+				return gameInfo.ValuesDictionary.GetValue<bool>(GAME_INFO_KEY, false);
+			}
+			return false;
+		}
+		// ===== Fin persistencia =====
+
+		// ===== Deshabilitar persecución de TODOS los aliados =====
+		private void DisableAlliesChase()
+		{
+			if (Project == null) return;
+			var creatureSpawn = Project.FindSubsystem<SubsystemCreatureSpawn>(true);
+			if (creatureSpawn == null) return;
+
+			m_alliesOriginalSuppressed.Clear();
+
+			foreach (ComponentCreature creature in creatureSpawn.Creatures)
+			{
+				if (creature == null || creature == m_infiniteCreature) continue;
+				if (creature.Entity.FindComponent<ComponentPlayer>() != null) continue;
+
+				bool isAlly = false;
+				ComponentNewHerdBehavior herd = creature.Entity.FindComponent<ComponentNewHerdBehavior>();
+				if (herd != null && !string.IsNullOrEmpty(herd.HerdName))
+				{
+					string herdName = herd.HerdName.ToLower();
+					if (herdName == "player" || herdName.Contains("guardian"))
+						isAlly = true;
+				}
+				ComponentHireableNPC hireable = creature.Entity.FindComponent<ComponentHireableNPC>();
+				if (hireable != null && hireable.IsHired)
+					isAlly = true;
+
+				if (!isAlly) continue;
+
+				ComponentNewChaseBehavior chase = creature.Entity.FindComponent<ComponentNewChaseBehavior>();
+				if (chase != null)
+				{
+					m_alliesOriginalSuppressed[creature] = chase.Suppressed;
+					chase.Suppressed = true;
+					chase.StopAttack();
+				}
+				ComponentChaseBehavior baseChase = creature.Entity.FindComponent<ComponentChaseBehavior>();
+				if (baseChase != null)
+				{
+					if (!m_alliesOriginalSuppressed.ContainsKey(creature))
+						m_alliesOriginalSuppressed[creature] = baseChase.Suppressed;
+					baseChase.Suppressed = true;
+					baseChase.StopAttack();
+				}
+			}
+		}
+
+		private void RestoreAlliesChase()
+		{
+			if (Project == null) return;
+			foreach (var kvp in m_alliesOriginalSuppressed)
+			{
+				ComponentCreature creature = kvp.Key;
+				if (creature == null || creature.Entity == null) continue;
+				ComponentNewChaseBehavior chase = creature.Entity.FindComponent<ComponentNewChaseBehavior>();
+				if (chase != null)
+					chase.Suppressed = kvp.Value;
+				ComponentChaseBehavior baseChase = creature.Entity.FindComponent<ComponentChaseBehavior>();
+				if (baseChase != null)
+					baseChase.Suppressed = kvp.Value;
+			}
+			m_alliesOriginalSuppressed.Clear();
+		}
 
 		public void StartChallenge(ComponentPlayer player)
 		{
@@ -169,6 +262,40 @@ namespace Game
 			m_valuesSaved = true;
 		}
 
+		private void ForceImmediateChase()
+		{
+			if (m_baseChase == null) return;
+
+			try
+			{
+				FieldInfo targetInRangeField = typeof(ComponentChaseBehavior).GetField("m_targetInRangeTime",
+					BindingFlags.Instance | BindingFlags.NonPublic);
+				if (targetInRangeField != null)
+					targetInRangeField.SetValue(m_baseChase, 10f);
+
+				FieldInfo stateMachineField = typeof(ComponentChaseBehavior).GetField("m_stateMachine",
+					BindingFlags.Instance | BindingFlags.NonPublic);
+				if (stateMachineField != null)
+				{
+					StateMachine stateMachine = stateMachineField.GetValue(m_baseChase) as StateMachine;
+					if (stateMachine != null && stateMachine.CurrentState == "LookingForTarget")
+					{
+						MethodInfo transitionMethod = typeof(StateMachine).GetMethod("TransitionTo",
+							BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+						transitionMethod?.Invoke(stateMachine, new object[] { "Chasing" });
+					}
+				}
+
+				MethodInfo updateMethod = typeof(ComponentChaseBehavior).GetMethod("Update",
+					BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+				updateMethod?.Invoke(m_baseChase, new object[] { 0.033f });
+			}
+			catch (Exception ex)
+			{
+				Log.Warning($"[InfiniteChallenge] Error al forzar persecución inmediata: {ex.Message}");
+			}
+		}
+
 		private void StartDuel()
 		{
 			m_state = ChallengeState.DuelInProgress;
@@ -182,33 +309,27 @@ namespace Game
 			CacheComponents();
 			SaveOriginalValues();
 
-			// 1. Cambiar HerdName para que NO sea aliado durante el duelo
 			if (m_herd != null)
-			{
 				m_herd.HerdName = "duel_enemy";
-			}
 
-			// 2. Aplicar stats de jefe
 			ApplyBossStats();
 			SetAllyAttackBlock(true);
 
-			// 3. Mostrar mensaje de inicio del duelo
+			DisableAlliesChase();
+
 			m_challenger.ComponentGui.DisplaySmallMessage(
 				"The duel against Infinite has begun!",
 				Color.Yellow,
 				false,
 				true);
 
-			// 4. Usar el VIEJO ComponentChaseBehavior para forzar la persecución INMEDIATA
 			if (m_baseChase != null)
 			{
 				m_baseChase.Suppressed = false;
 				m_baseChase.AttacksPlayer = true;
 				m_baseChase.AttacksNonPlayerCreature = false;
 				m_baseChase.Attack(m_challenger, 50f, 600f, true);
-
-				// FORZAR actualización del StateMachine para que persiga INMEDIATAMENTO
-				ForceStateMachineUpdate(m_baseChase);
+				ForceImmediateChase();
 			}
 		}
 
@@ -216,31 +337,20 @@ namespace Game
 		{
 			if (m_state == ChallengeState.Finished) return;
 
-			// 1. Detener toda persecución inmediatamente
 			if (m_baseChase != null)
-			{
 				m_baseChase.StopAttack();
-			}
-
 			if (m_newChase != null)
-			{
 				m_newChase.StopAttack();
-			}
 
-			// 2. Restaurar HerdName
 			if (m_herd != null)
-			{
 				m_herd.HerdName = playerWon ? "player" : (m_originalHerdName ?? "player");
-			}
 
-			// 3. Restaurar configuración de chase behaviors
 			if (m_newChase != null)
 			{
 				m_newChase.AttacksPlayer = m_originalAttacksPlayer;
 				m_newChase.AttacksNonPlayerCreature = m_originalAttacksNonPlayerCreature;
 				m_newChase.Suppressed = m_originalSuppressed;
 			}
-
 			if (m_baseChase != null)
 			{
 				m_baseChase.AttacksPlayer = m_originalAttacksPlayer;
@@ -248,10 +358,10 @@ namespace Game
 				m_baseChase.Suppressed = m_originalSuppressed;
 			}
 
-			// 4. Resultado del duelo
 			if (playerWon)
 			{
 				m_hasBeenDefeated = true;
+				SaveDefeatedStateToGameInfo(true);
 				m_challenger?.ComponentGui?.DisplaySmallMessage(
 					"You have proven your strength! Infinite now joins your family.",
 					new Color(100, 255, 100),
@@ -260,44 +370,14 @@ namespace Game
 			}
 			else
 			{
-				// Si perdió, restaurar stats originales
 				RestoreOriginalStats();
 			}
 
-			// 5. Limpiar
+			RestoreAlliesChase();
 			UnlockInventory();
 			SetAllyAttackBlock(false);
 
-			// 6. IMPORTANTE: Si perdió, volver a Idle (no a Finished) para poder reintentar
 			m_state = playerWon ? ChallengeState.Finished : ChallengeState.Idle;
-		}
-
-		private void ForceStateMachineUpdate(ComponentChaseBehavior chase)
-		{
-			if (chase == null) return;
-
-			try
-			{
-				FieldInfo stateMachineField = typeof(ComponentChaseBehavior).GetField("m_stateMachine",
-					BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
-				if (stateMachineField != null)
-				{
-					StateMachine stateMachine = stateMachineField.GetValue(chase) as StateMachine;
-					if (stateMachine != null)
-					{
-						MethodInfo updateMethod = typeof(StateMachine).GetMethod("Update",
-							BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-						if (updateMethod != null)
-						{
-							updateMethod.Invoke(stateMachine, null);
-						}
-					}
-				}
-			}
-			catch (Exception ex)
-			{
-				Log.Warning($"[InfiniteChallenge] Error al forzar StateMachine.Update: {ex.Message}");
-			}
 		}
 
 		private void LockInventory()
@@ -315,17 +395,10 @@ namespace Game
 		private void ApplyBossStats()
 		{
 			if (m_infiniteCreature == null) return;
-
 			if (m_health != null)
-			{
 				m_health.AttackResilienceFactor = m_originalAttackResilienceFactor * BossHealthMultiplier;
-			}
-
 			if (m_miner != null)
-			{
 				m_miner.AttackPower = m_originalAttackPower * BossDamageMultiplier;
-			}
-
 			if (m_locomotion != null)
 			{
 				m_locomotion.WalkSpeed = m_originalWalkSpeed * BossSpeedMultiplier;
@@ -336,17 +409,10 @@ namespace Game
 		private void RestoreOriginalStats()
 		{
 			if (!m_valuesSaved || m_infiniteCreature == null) return;
-
 			if (m_health != null)
-			{
 				m_health.AttackResilienceFactor = m_originalAttackResilienceFactor;
-			}
-
 			if (m_miner != null)
-			{
 				m_miner.AttackPower = m_originalAttackPower;
-			}
-
 			if (m_locomotion != null)
 			{
 				m_locomotion.WalkSpeed = m_originalWalkSpeed;
@@ -369,25 +435,19 @@ namespace Game
 				case ChallengeState.Countdown:
 					UpdateCountdown(dt);
 					break;
-
 				case ChallengeState.DuelInProgress:
 					UpdateDuel();
 					break;
-
-					// Idle y Finished no hacen nada
 			}
 		}
 
 		private void UpdateDuel()
 		{
-			// Verificar si el jugador murió
 			if (m_challenger != null && m_challenger.ComponentHealth.Health <= 0f)
 			{
 				EndDuel(false);
 				return;
 			}
-
-			// Verificar si Infinite fue derrotado (salud baja al umbral)
 			if (m_infiniteCreature != null && m_infiniteCreature.ComponentHealth.Health <= VictoryHealthThreshold)
 			{
 				EndDuel(true);
@@ -403,46 +463,46 @@ namespace Game
 			BossDamageMultiplier = valuesDictionary.GetValue<float>("BossDamageMultiplier", BossDamageMultiplier);
 			BossSpeedMultiplier = valuesDictionary.GetValue<float>("BossSpeedMultiplier", BossSpeedMultiplier);
 			VictoryHealthThreshold = valuesDictionary.GetValue<float>("VictoryHealthThreshold", VictoryHealthThreshold);
-			m_hasBeenDefeated = valuesDictionary.GetValue<bool>("HasBeenDefeated", false);
+
+			// Leer desde SubsystemGameInfo (persistente)
+			bool defeatedFromGameInfo = LoadDefeatedStateFromGameInfo();
+			// Fallback: leer del componente local (por si acaso)
+			bool defeatedFromComponent = valuesDictionary.GetValue<bool>("HasBeenDefeated", false);
+			m_hasBeenDefeated = defeatedFromGameInfo || defeatedFromComponent;
 
 			if (m_hasBeenDefeated)
 			{
 				var herd = Entity.FindComponent<ComponentNewHerdBehavior>();
 				if (herd != null)
-				{
 					herd.HerdName = "player";
-				}
 			}
 		}
 
 		public override void Save(ValuesDictionary valuesDictionary, EntityToIdMap entityToIdMap)
 		{
 			valuesDictionary.SetValue<bool>("HasBeenDefeated", m_hasBeenDefeated);
+			// También guardamos en SubsystemGameInfo para persistencia global
+			SaveDefeatedStateToGameInfo(m_hasBeenDefeated);
 		}
 
 		public override void Dispose()
 		{
 			if (m_state == ChallengeState.Countdown || m_state == ChallengeState.DuelInProgress)
 			{
-				// Forzar fin del duelo sin victoria
 				if (m_baseChase != null)
 					m_baseChase.StopAttack();
 				if (m_newChase != null)
 					m_newChase.StopAttack();
 
-				// Restaurar HerdName
 				if (m_herd != null)
 					m_herd.HerdName = m_originalHerdName ?? "player";
 
-				// Restaurar NewChase
 				if (m_newChase != null)
 				{
 					m_newChase.AttacksPlayer = m_originalAttacksPlayer;
 					m_newChase.AttacksNonPlayerCreature = m_originalAttacksNonPlayerCreature;
 					m_newChase.Suppressed = m_originalSuppressed;
 				}
-
-				// Restaurar BaseChase
 				if (m_baseChase != null)
 				{
 					m_baseChase.AttacksPlayer = m_originalAttacksPlayer;
@@ -450,18 +510,15 @@ namespace Game
 					m_baseChase.Suppressed = m_originalSuppressed;
 				}
 
-				// Restaurar stats
 				if (!m_hasBeenDefeated)
 					RestoreOriginalStats();
 
+				RestoreAlliesChase();
 				UnlockInventory();
 				SetAllyAttackBlock(false);
 
-				// Si estaba en countdown o duelo, volver a Idle al dispose (para permitir reintentar al revivir)
 				if (m_state != ChallengeState.Finished)
-				{
 					m_state = ChallengeState.Idle;
-				}
 			}
 			base.Dispose();
 		}
@@ -469,8 +526,7 @@ namespace Game
 
 	public static class InventoryBlocker
 	{
-		private static System.Collections.Generic.Dictionary<ComponentPlayer, bool> s_lockedPlayers =
-			new System.Collections.Generic.Dictionary<ComponentPlayer, bool>();
+		private static Dictionary<ComponentPlayer, bool> s_lockedPlayers = new Dictionary<ComponentPlayer, bool>();
 
 		public static void LockForPlayer(ComponentPlayer player, bool locked)
 		{
@@ -488,8 +544,7 @@ namespace Game
 
 	public static class BossFightBlocker
 	{
-		private static System.Collections.Generic.HashSet<ComponentCreature> s_blockedCreatures =
-			new System.Collections.Generic.HashSet<ComponentCreature>();
+		private static HashSet<ComponentCreature> s_blockedCreatures = new HashSet<ComponentCreature>();
 
 		public static void BlockAttacksOnCreature(ComponentCreature creature)
 		{
