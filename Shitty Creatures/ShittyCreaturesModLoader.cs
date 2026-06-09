@@ -172,7 +172,6 @@ namespace Game
 			
 			// Bloquear montura zombi para jugadores
 			ModsManager.RegisterHook("ScoreMount", this);
-
 			// Reemplazar overlay de captura de pantalla
 			ReplaceScreenCaptureOverlay();
 		}
@@ -970,6 +969,20 @@ namespace Game
 			// Verificar si el objetivo está muerto
 			var health = target.FindComponent<ComponentHealth>();
 			if (health != null && (health.Health <= 0f || health.DeathTime.HasValue)) return;
+			Entity targetEntity = targetBody.Entity;
+
+			// --- DESAFÍO DE INFINITE (solo para InfiniteTheJackal) ---
+			string targetEntityName = targetEntity.ValuesDictionary?.DatabaseObject?.Name;
+			if (targetEntityName == "InfiniteTheJackal")
+			{
+				ComponentInfiniteChallenge challenge = targetEntity.FindComponent<ComponentInfiniteChallenge>();
+				if (challenge != null && !challenge.HasBeenDefeated)
+				{
+					challenge.StartChallenge(player);
+					playerOperated = true;
+					return;
+				}
+			}
 
 			// --- VehicleInventory (criaturas montables) ---
 			var vehicleInv = target.FindComponent<ComponentVehicleInventory>();
@@ -1339,6 +1352,9 @@ namespace Game
 		// Ordena a todas las criaturas aliadas atacar al objetivo sin límites
 		private void CommandAlliesToAttack(ComponentPlayer player, ComponentCreature target)
 		{
+			if (player == null || target == null) return;
+			if (BossFightBlocker.IsAttackBlocked(target)) return;
+
 			if (player == null || target == null)
 				return;
 
