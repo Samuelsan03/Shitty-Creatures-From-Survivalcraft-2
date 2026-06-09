@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <AchievementsData>
-<!-- Achievement Number="numero del logro" TitleKey="key del título del languagecontrol" DescriptionKey="key de la descripción del languagecontrol" Reward="recompensa" -->
+  <!-- Achievement Number="numero del logro" TitleKey="key del título del languagecontrol" DescriptionKey="key de la descripción del languagecontrol" Reward="recompensa" -->
   <Achievement Number="1" TitleKey="6"  DescriptionKey="7"  Reward="50" />
   <Achievement Number="2" TitleKey="8"  DescriptionKey="9"  Reward="25" />
   <Achievement Number="3" TitleKey="10" DescriptionKey="11" Reward="30" />
@@ -53,4 +53,17 @@
   <Achievement Number="50" TitleKey="104" DescriptionKey="105" Reward="60" />
   <Achievement Number="51" TitleKey="106" DescriptionKey="107" Reward="100" />
   <Achievement Number="52" TitleKey="108" DescriptionKey="109" Reward="250" />
+  <Achievement Number="57" TitleKey="110" DescriptionKey="111" Reward="25" />
+  <Achievement Number="58" TitleKey="112" DescriptionKey="113" Reward="50" />
+  <Achievement Number="59" TitleKey="114" DescriptionKey="115" Reward="100" />
+  <Achievement Number="60" TitleKey="116" DescriptionKey="117" Reward="200" />
+  <Achievement Number="61" TitleKey="118" DescriptionKey="119" Reward="50" />
+  <Achievement Number="62" TitleKey="120" DescriptionKey="121" Reward="100" />
+  <Achievement Number="63" TitleKey="122" DescriptionKey="123" Reward="200" />
+  <Achievement Number="64" TitleKey="124" DescriptionKey="125" Reward="400" />
+  <Achievement Number="65" TitleKey="126" DescriptionKey="127" Reward="30" />
+  <Achievement Number="66" TitleKey="128" DescriptionKey="129" Reward="60" />
+  <Achievement Number="67" TitleKey="130" DescriptionKey="131" Reward="120" />
+  <Achievement Number="68" TitleKey="132" DescriptionKey="133" Reward="250" />
+  <Achievement Number="69" TitleKey="134" DescriptionKey="135" Reward="1000" />
 </AchievementsData>
