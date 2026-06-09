@@ -6845,6 +6845,9 @@
               <Parameter Name="AutoDespawn" Guid="9db4dadb-4134-4f6c-811d-96d55dd3b709" Value="False" Type="bool" />
             </MemberComponentTemplate>
             <MemberComponentTemplate Name="Inventory" Guid="11a2b592-3c72-4a1f-af63-8982b9570808" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890"/>
+            <MemberComponentTemplate Name="NewCreatureCollect" Guid="4f2b714b-48e6-41e2-a45e-16818c6d1742" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
+    <Parameter Name="PickFactors" Guid="93c00784-2b6c-4b46-a921-dcd80a012030" Value="Tools;1.0,Weapons;1.0" Type="string"/>
+</MemberComponentTemplate>
 <MemberComponentTemplate Name="DefensiveCreatureAI" Guid="5efc7f59-b2ba-45b7-8426-6ff47e74e5db" InheritanceParent="0f69cb1e-cf48-46bf-93ec-6990112112d5">
   <Parameter Name="CanUseInventory" Guid="4f0a85a0-375f-4477-b8d5-4cd96412c411" Value="true" Type="bool" />
   <Parameter Name="CanEquipClothing" Guid="fd115598-9a66-493f-9340-3e5f94ddbb72" Value="true" Type="bool" />
@@ -6898,6 +6901,12 @@
               <Parameter Name="BoxSize" Guid="b9aedc7d-7929-4dd5-9909-d7e259efe55c" Value="0.7,1.8,0.7" Type="Vector3" />
               <Parameter Name="Mass" Guid="e0fa3e22-fdb0-44f6-ab01-f06ee476eba5" Value="55" Type="float" />
             </MemberComponentTemplate>
+            <MemberComponentTemplate Name="InfiniteChallenge" Guid="a1c3ddb9-4f77-4161-908d-2ec3e95c4af3" InheritanceParent="ac362fac-dca6-4e17-9c29-b0b5ef2d199a">
+  <Parameter Name="BossHealthMultiplier" Guid="3024262a-8e98-4282-93b1-0790244f9120" Value="5" Type="float" />
+  <Parameter Name="BossDamageMultiplier" Guid="48414cfa-45e5-46a9-8fa6-0bcebd29ea23" Value="3.5" Type="float" />
+  <Parameter Name="BossSpeedMultiplier" Guid="11152238-4763-4660-bdc1-ff601605431a" Value="1.5" Type="float" />
+  <Parameter Name="VictoryHealthThreshold" Guid="b61aea17-5276-4a52-a114-f0136a1220f8" Value="0.1" Type="float" />
+</MemberComponentTemplate>
             <MemberComponentTemplate Name="WalkAroundBehavior" Guid="44b1afdb-59ec-41b8-8b06-7ad90e02cd6c" InheritanceParent="aebb86ce-4ee6-4ca0-850d-cd60051e1d71" />
             <MemberComponentTemplate Name="Health" Guid="cd503fb5-6918-41cb-af7d-31d11e864e03">
               <Parameter Name="AttackResilience" Guid="a6f4e1ec-b857-4b57-ab48-817a695a5b23" Value="120" Type="float" />
