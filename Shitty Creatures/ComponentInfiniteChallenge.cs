@@ -10,6 +10,7 @@ namespace Game
 	public class ComponentInfiniteChallenge : Component, IUpdateable
 	{
 		private SubsystemTime m_subsystemTime;
+		private SubsystemAudio m_subsystemAudio;
 		private ComponentCreature m_infiniteCreature;
 
 		private enum ChallengeState
@@ -117,6 +118,12 @@ namespace Game
 				string.Empty,
 				NumberDisplayDuration,
 				NumberDisplayDelay);
+
+			// Sonido de conteo para cada número
+			if (m_subsystemAudio != null)
+			{
+				m_subsystemAudio.PlaySound("Audio/UI/count", 1f, 0f, 0f, 0f);
+			}
 		}
 
 		private void UpdateCountdown(float dt)
@@ -130,6 +137,11 @@ namespace Game
 
 				if (m_countdownValue <= 0)
 				{
+					// Sonido de inicio del duelo al llegar a 0
+					if (m_subsystemAudio != null)
+					{
+						m_subsystemAudio.PlaySound("Audio/UI/Attack", 1f, 0f, 0f, 0f);
+					}
 					StartDuel();
 					return;
 				}
@@ -623,6 +635,7 @@ namespace Game
 		public override void Load(ValuesDictionary valuesDictionary, IdToEntityMap idToEntityMap)
 		{
 			m_subsystemTime = Project.FindSubsystem<SubsystemTime>(true);
+			m_subsystemAudio = Project.FindSubsystem<SubsystemAudio>(true);
 			m_infiniteCreature = Entity.FindComponent<ComponentCreature>(true);
 
 			BossHealthMultiplier = valuesDictionary.GetValue<float>("BossHealthMultiplier", BossHealthMultiplier);
@@ -666,10 +679,6 @@ namespace Game
 		{
 			valuesDictionary.SetValue<bool>("HasBeenDefeated", m_hasBeenDefeated);
 			valuesDictionary.SetValue<int>("ChallengeState", (int)m_state);
-			valuesDictionary.SetValue<float>("BossHealthMultiplier", BossHealthMultiplier);
-			valuesDictionary.SetValue<float>("BossDamageMultiplier", BossDamageMultiplier);
-			valuesDictionary.SetValue<float>("BossSpeedMultiplier", BossSpeedMultiplier);
-			valuesDictionary.SetValue<float>("VictoryHealthThreshold", VictoryHealthThreshold);
 		}
 
 		public override void Dispose()
