@@ -17,7 +17,6 @@ namespace Game
 		private readonly List<(string Path, double Duration)> m_playlist = new List<(string, double)>
 		{
 			("MenuMusic/Twill STAND UP Digimon Xros Wars Hunters", 247),
-			("MenuMusic/瞬間ときはファンタジー", 206),
 			("MenuMusic/Sparkster (SEGA Genesis) Stage 1-1", 109),
 			("MenuMusic/You Can Do Anything Sonic CD", 91),
 			("MenuMusic/Digimon Frontiers FIRE Wada Kouji", 253),
