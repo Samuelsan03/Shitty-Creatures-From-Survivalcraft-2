@@ -81,8 +81,10 @@ namespace Game
 
 			if (!accepted)
 			{
-				m_state = ChallengeState.Idle;
-				m_challenger = null;
+				m_state = ChallengeState.Idle;  // Back to Idle (NOT Idle!)
+
+				m_challenger = null;    // ← FIX: Clear reference!
+
 				return;
 			}
 
