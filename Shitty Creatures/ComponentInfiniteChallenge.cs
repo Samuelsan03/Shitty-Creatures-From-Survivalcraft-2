@@ -24,11 +24,9 @@ namespace Game
 		private ChallengeState m_state = ChallengeState.Idle;
 		private bool m_hasBeenDefeated = false;
 
-		// Contador
 		private int m_countdownValue = 5;
 		private double m_countdownTimer = 0;
 
-		// Valores originales para restaurar
 		private string m_originalHerdName;
 		private bool m_originalAttacksPlayer;
 		private bool m_originalAttacksNonPlayerCreature;
@@ -40,7 +38,6 @@ namespace Game
 		private float m_originalFlySpeed;
 		private bool m_valuesSaved = false;
 
-		// Componentes cacheados
 		private ComponentNewHerdBehavior m_herd;
 		private ComponentNewChaseBehavior m_newChase;
 		private ComponentChaseBehavior m_baseChase;
@@ -48,10 +45,8 @@ namespace Game
 		private ComponentMiner m_miner;
 		private ComponentLocomotion m_locomotion;
 
-		// Guardado de estados de aliados para restaurar después
 		private Dictionary<ComponentCreature, bool> m_alliesOriginalSuppressed = new Dictionary<ComponentCreature, bool>();
 
-		// Multiplicadores
 		public float BossHealthMultiplier = 3f;
 		public float BossDamageMultiplier = 2.5f;
 		public float BossSpeedMultiplier = 1.4f;
@@ -66,6 +61,9 @@ namespace Game
 		public bool IsDuelActive => m_state == ChallengeState.Countdown || m_state == ChallengeState.DuelInProgress;
 
 		private ComponentPlayer m_challenger;
+
+		// ===== FLAGS para restaurar en primer Update después de Load =====
+		private bool m_needsPostLoadCleanup = false;
 
 		public void StartChallenge(ComponentPlayer player)
 		{
@@ -263,7 +261,12 @@ namespace Game
 		{
 			if (m_state == ChallengeState.Finished) return;
 
-			StopAllAttacksSafe();
+			// Detener ataques de forma normal (el juego está corriendo)
+			if (m_baseChase != null)
+				m_baseChase.StopAttack();
+			if (m_newChase != null)
+				m_newChase.StopAttack();
+
 			RestoreChaseBehavior();
 			RestoreAlliesChase();
 			UnlockInventory();
@@ -298,78 +301,6 @@ namespace Game
 			m_challenger = null;
 		}
 
-		/// <summary>
-		/// Detiene todos los ataques de forma segura (puede llamarse durante Load)
-		/// NO usa StopAttack() porque el StateMachine puede no estar inicializado
-		/// </summary>
-		private void StopAllAttacksSafe()
-		{
-			// Para ComponentNewChaseBehavior - forzar parada sin usar StateMachine
-			if (m_newChase != null)
-			{
-				try
-				{
-					m_newChase.Suppressed = true;
-
-					// Acceder directamente al campo m_target y limpiarlo
-					FieldInfo targetField = typeof(ComponentNewChaseBehavior).GetField("m_target",
-						BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
-					if (targetField != null)
-						targetField.SetValue(m_newChase, null);
-
-					// Acceder a IsActive
-					PropertyInfo isActiveProp = typeof(ComponentBehavior).GetProperty("IsActive");
-					if (isActiveProp != null && isActiveProp.CanWrite)
-						isActiveProp.SetValue(m_newChase, false);
-
-					// Detener pathfinding si está activo
-					ComponentPathfinding pathfinding = m_infiniteCreature?.Entity?.FindComponent<ComponentPathfinding>();
-					if (pathfinding != null)
-						pathfinding.Stop();
-				}
-				catch (Exception ex)
-				{
-					Log.Warning($"[InfiniteChallenge] Error al detener NewChase: {ex.Message}");
-				}
-			}
-
-			// Para ComponentChaseBehavior - usar StopAttack() con try-catch
-			if (m_baseChase != null)
-			{
-				try
-				{
-					m_baseChase.StopAttack();
-				}
-				catch (Exception ex)
-				{
-					// Si falla (StateMachine no inicializado), forzar limpieza manual
-					try
-					{
-						m_baseChase.Suppressed = true;
-						FieldInfo targetField = typeof(ComponentChaseBehavior).GetField("m_target",
-							BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
-						if (targetField != null)
-							targetField.SetValue(m_baseChase, null);
-					}
-					catch { }
-				}
-			}
-		}
-
-		/// <summary>
-		/// Detiene ataques de forma normal (solo usar cuando el juego está corriendo)
-		/// </summary>
-		private void StopAllAttacks()
-		{
-			if (m_baseChase != null)
-				m_baseChase.StopAttack();
-			if (m_newChase != null)
-				m_newChase.StopAttack();
-		}
-
-		/// <summary>
-		/// Restaura el comportamiento de persecución a sus valores originales
-		/// </summary>
 		private void RestoreChaseBehavior()
 		{
 			if (m_baseChase != null && m_valuesSaved)
@@ -499,6 +430,13 @@ namespace Game
 
 		public void Update(float dt)
 		{
+			// ===== Limpieza post-Load: ejecutar UNA VEZ cuando el juego ya está corriendo =====
+			if (m_needsPostLoadCleanup)
+			{
+				m_needsPostLoadCleanup = false;
+				PerformPostLoadCleanup();
+			}
+
 			switch (m_state)
 			{
 				case ChallengeState.Countdown:
@@ -507,6 +445,47 @@ namespace Game
 				case ChallengeState.DuelInProgress:
 					UpdateDuel();
 					break;
+			}
+		}
+
+		/// <summary>
+		/// Limpieza que se ejecuta en el primer Update() después del Load()
+		/// Aquí es seguro llamar a StopAttack() porque el StateMachine ya está inicializado
+		/// </summary>
+		private void PerformPostLoadCleanup()
+		{
+			try
+			{
+				// Ahora sí es seguro llamar a StopAttack()
+				if (m_baseChase != null)
+				{
+					m_baseChase.Suppressed = true;
+					m_baseChase.StopAttack();
+				}
+				if (m_newChase != null)
+				{
+					m_newChase.Suppressed = true;
+					m_newChase.StopAttack();
+				}
+
+				// Limpiar cualquier orden de vuelo residual
+				if (m_locomotion != null)
+				{
+					m_locomotion.FlyOrder = null;
+					m_locomotion.WalkOrder = null;
+					m_locomotion.SwimOrder = null;
+				}
+
+				// Detener pathfinding
+				ComponentPathfinding pathfinding = m_infiniteCreature?.Entity?.FindComponent<ComponentPathfinding>();
+				if (pathfinding != null)
+					pathfinding.Stop();
+
+				Log.Warning("[InfiniteChallenge] Limpieza post-load completada");
+			}
+			catch (Exception ex)
+			{
+				Log.Warning($"[InfiniteChallenge] Error en limpieza post-load: {ex.Message}");
 			}
 		}
 
@@ -541,45 +520,29 @@ namespace Game
 			// Cachear componentes
 			CacheComponents();
 
-			// ===== CORRECCIÓN: Usar método seguro que no depende de StateMachine =====
+			// ===== Si el duelo estaba activo, marcar para limpieza post-Load =====
 			if (m_state == ChallengeState.Countdown || m_state == ChallengeState.DuelInProgress)
 			{
-				Log.Warning("[InfiniteChallenge] Duelo interrumpido por reload, restaurando estado...");
+				Log.Warning("[InfiniteChallenge] Duelo interrumpido por reload, se limpiará en primer Update()");
 
-				// Usar método seguro que no llama a StopAttack()
-				StopAllAttacksSafe();
-
-				// Forzar Suppressed = true directamente
+				// Solo forzar Suppressed (no tocar StateMachine ni locomoción)
 				if (m_baseChase != null)
-				{
 					m_baseChase.Suppressed = true;
-					m_baseChase.AttacksPlayer = false;
-					m_baseChase.AttacksNonPlayerCreature = false;
-				}
 				if (m_newChase != null)
-				{
 					m_newChase.Suppressed = true;
-					m_newChase.AttacksPlayer = false;
-					m_newChase.AttacksNonPlayerCreature = false;
-				}
 
-				// Restaurar manada
+				// Restaurar manada inmediatamente
 				if (m_herd != null)
 					m_herd.HerdName = "player";
 
-				// Restaurar stats base (hardcodeado para evitar errores)
-				if (m_health != null)
-					m_health.AttackResilienceFactor = 1f;
-				if (m_miner != null)
-					m_miner.AttackPower = 1f;
-				if (m_locomotion != null)
-				{
-					m_locomotion.WalkSpeed = 1f;
-					m_locomotion.FlySpeed = 1f;
-				}
-
 				// Limpiar bloqueos
 				SetAllyAttackBlock(false);
+
+				// NO tocar WalkSpeed, FlySpeed ni otros stats
+				// NO llamar a StopAttack()
+
+				// Marcar para limpieza en primer Update()
+				m_needsPostLoadCleanup = true;
 
 				// Resetear estado
 				m_state = ChallengeState.Idle;
@@ -608,7 +571,6 @@ namespace Game
 		{
 			if (m_state == ChallengeState.Countdown || m_state == ChallengeState.DuelInProgress)
 			{
-				StopAllAttacksSafe();
 				RestoreAlliesChase();
 				UnlockInventory();
 				SetAllyAttackBlock(false);
