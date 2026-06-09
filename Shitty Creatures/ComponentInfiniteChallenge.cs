@@ -439,6 +439,17 @@ namespace Game
 				PerformPostLoadCleanup();
 			}
 
+			// --- NUEVO: Si estamos esperando respuesta pero el widget ya no está, cancelar ---
+			if (m_state == ChallengeState.WaitingResponse && m_challenger != null)
+			{
+				Widget currentModal = m_challenger.ComponentGui.ModalPanelWidget;
+				if (!(currentModal is InfiniteChallengeWidget))
+				{
+					// El widget fue cerrado sin respuesta (por otro modal o acción externa)
+					OnChallengeResponse(false);
+				}
+			}
+
 			switch (m_state)
 			{
 				case ChallengeState.Countdown:
