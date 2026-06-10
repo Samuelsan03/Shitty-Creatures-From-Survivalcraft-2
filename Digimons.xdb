@@ -164,6 +164,10 @@
 </EntityTemplate>
 
 <EntityTemplate Name="Shoutmon" Guid="82b317b7-89f9-408d-a722-578a8b61ace9" InheritanceParent="e4275171-a39f-413f-8888-4c472868364d">
+<MemberComponentTemplate Name="CreatureInventory" Guid="1ae42253-640d-47c6-a4ab-6bb8c5e9248d" InheritanceParent="b0d27f89-dc61-4c44-b675-63d6a6f8bf78">
+    <Parameter Name="SlotsCount" Value="16" Type="int"/>
+    <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
+  </MemberComponentTemplate>
 <MemberComponentTemplate Name="RunAwayBehavior" Guid="0347b234-bb2a-4994-ac33-8cfb20919964" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
 <MemberComponentTemplate Name="DefensiveRunAwayBehavior" Guid="e217a3d1-24f9-4f1e-8496-3d96c5cb584d" InheritanceParent="fd28cb72-1c75-4a8e-920e-3cd1457ee6e1"/>
 <MemberComponentTemplate Name="SummonBehavior" Guid="d2e40db4-0fe1-4f33-a095-dd1eba8b3c60" InheritanceParent="8ff32cf0-32b0-4517-a9b7-16cceba7276a">
@@ -251,10 +255,6 @@
     <MemberComponentTemplate Name="Rider" Guid="7bf3ad6a-66ae-4cd1-9f4c-62143c8f6595" InheritanceParent="894cdf33-9691-4320-a342-3aba1fd1c746">
               <Parameter Name="RiderOffset" Guid="dc34967e-be41-4907-912e-f0b0ea66fc99" Value="0,-0.71,0" Type="Vector3" />
             </MemberComponentTemplate>
-    <MemberComponentTemplate Name="CreatureInventory" Guid="1ae42253-640d-47c6-a4ab-6bb8c5e9248d" InheritanceParent="b0d27f89-dc61-4c44-b675-63d6a6f8bf78">
-    <Parameter Name="SlotsCount" Value="16" Type="int"/>
-    <Parameter Name="ActiveSlotIndex" Value="0" Type="int"/>
-  </MemberComponentTemplate>
 <MemberComponentTemplate Name="Inventory" Guid="4de976b5-e81a-45de-884c-e899e089a995" InheritanceParent="de5c0cb9-42d1-4ee4-b58f-bb9bb668b890"/>
     <MemberComponentTemplate Name="NewCreatureCollect" Guid="ca9e4049-a1c4-4a46-bd38-072fe01725ad" InheritanceParent="e3793c3b-587f-43dd-a1e6-d2a6b4a28520">
     <Parameter Name="PickFactors" Guid="6257e999-67f3-4a03-85c8-73b108b2f04b" Value="Tools;1.0,Weapons;1.0" Type="string"/>
