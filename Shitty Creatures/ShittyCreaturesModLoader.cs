@@ -190,6 +190,8 @@ namespace Game
 					greenNight.GreenNightStarted += () => CancelGreenNightChaseDelay(project);
 				}
 			}
+			UpdateCoordinateLabelsPosition(project);
+
 			m_healthBarModelsRenderer = project.FindSubsystem<SubsystemModelsRenderer>(true);
 			m_healthBarCreatureSpawn = project.FindSubsystem<SubsystemCreatureSpawn>(true);
 			m_healthBarPlayers = project.FindSubsystem<SubsystemPlayers>(true);
@@ -835,6 +837,43 @@ namespace Game
 							}
 						}
 					}
+				}
+			}
+		}
+
+		private void UpdateCoordinateLabelsPosition(Project project)
+		{
+			var playersSubsystem = project.FindSubsystem<SubsystemPlayers>(true);
+			if (playersSubsystem == null) return;
+
+			foreach (var player in playersSubsystem.ComponentPlayers)
+			{
+				if (player == null || player.GuiWidget == null) continue;
+
+				// Si ya existe un label para este jugador
+				if (m_coordinateLabels.TryGetValue(player, out LabelWidget existingLabel))
+				{
+					// Cambiar su alineación y margen a los nuevos valores
+					existingLabel.HorizontalAlignment = WidgetAlignment.Near;  // izquierda
+					existingLabel.VerticalAlignment = WidgetAlignment.Near;    // arriba
+					existingLabel.Margin = new Vector2(70f, 10f);              // mismo margen
+																			   // No necesitas QueueLayout, el cambio de propiedades se aplica automáticamente
+				}
+				else
+				{
+					// Si por alguna razón no existe, créalo
+					LabelWidget newLabel = new LabelWidget
+					{
+						FontScale = 0.5f,
+						HorizontalAlignment = WidgetAlignment.Near,
+						VerticalAlignment = WidgetAlignment.Near,
+						Margin = new Vector2(70f, 10f),
+						Color = Color.White,
+						DropShadow = true,
+						IsHitTestVisible = false
+					};
+					player.GuiWidget.Children.Add(newLabel);
+					m_coordinateLabels[player] = newLabel;
 				}
 			}
 		}
