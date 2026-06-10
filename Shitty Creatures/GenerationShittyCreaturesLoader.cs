@@ -203,6 +203,14 @@ namespace Game
 					double totalDays = timeOfDay.CalculateDay(gameInfo.TotalElapsedGameTime);
 					if (totalDays < 2.0) return 0f;
 
+					// ===== NUEVO: Verificar bloque bajo (como Sonic) =====
+					int blockUnder = Terrain.ExtractContents(subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetCellValueFast(point.X, point.Y - 1, point.Z));
+					if (blockUnder != GrassBlock.Index &&
+						blockUnder != DirtBlock.Index &&
+						blockUnder != SandBlock.Index &&
+						blockUnder != GravelBlock.Index)
+						return 0f;
+
 					int topHeight = subsystemCreatureSpawn.m_subsystemTerrain.Terrain.GetTopHeight(point.X, point.Z);
 					if (point.Y < topHeight - 2) return 0f;
 
