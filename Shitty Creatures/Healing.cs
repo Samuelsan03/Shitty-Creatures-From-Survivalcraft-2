@@ -197,6 +197,15 @@ namespace Game
 						return;
 					}
 
+					if (!CanHealCreature(m_componentCreature))
+					{
+						m_componentCreatureModel.AimHandAngleOrder = 0f;
+						if (m_selfHealParticles != null)
+							m_selfHealParticles.Stopped = true;
+						m_stateMachine.TransitionTo("Idle");
+						return;
+					}
+
 					if (CureDiseases)
 						CureCreatureDiseases(m_componentCreature, null);
 
@@ -304,6 +313,10 @@ namespace Game
 				{
 					foreach (var ally in m_healTargets)
 					{
+
+						if (!CanHealCreature(ally))
+							continue;
+
 						// VERIFICACIÓN FINAL: No curar bajo ninguna circunstancia si está muerto
 						if (!IsCreatureAliveAndHealable(ally))
 							continue;
@@ -316,6 +329,9 @@ namespace Game
 						bool diseaseCured = false;
 						if (CureDiseases)
 							diseaseCured = CureCreatureDiseases(ally, m_componentCreature);
+
+						if (!CanHealCreature(ally)) // verificar de nuevo por si la enfermedad lo mató
+							continue;
 
 						// Verificar NUEVAMENTE después de curar enfermedades (por si algo lo mató)
 						if (!IsCreatureAliveAndHealable(ally))
@@ -445,6 +461,9 @@ namespace Game
 
 		bool CureCreatureDiseases(ComponentCreature creature, ComponentCreature healer)
 		{
+			if (!CanHealCreature(creature))
+				return false;
+
 			if (creature == null)
 				return false;
 
@@ -522,6 +541,15 @@ namespace Game
 			}
 
 			return hadFlu || hadPoison;
+		}
+
+		private bool CanHealCreature(ComponentCreature creature)
+		{
+			if (creature == null) return false;
+			var infiniteChallenge = creature.Entity.FindComponent<ComponentInfiniteChallenge>();
+			if (infiniteChallenge != null && !infiniteChallenge.HasBeenDefeated)
+				return false;
+			return true;
 		}
 	}
 }
