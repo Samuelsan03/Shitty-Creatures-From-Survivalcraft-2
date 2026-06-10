@@ -980,12 +980,42 @@ namespace Game
 					// ✅ Duelo activo → convertir interacción en ataque SOLO EN MÓVIL
 					if (challenge.IsDuelActive && player.ComponentInput.IsControlledByTouch)
 					{
-						// Realizar un ataque cuerpo a cuerpo (solo en móvil)
 						if (result.HasValue && result.Value.ComponentBody != null)
 						{
+							ComponentBody hitBody = result.Value.ComponentBody;
 							Vector3 hitPoint = result.Value.HitPoint();
 							Vector3 hitDirection = player.ComponentInput.PlayerInput.Interact.Value.Direction;
-							player.ComponentMiner.Hit(result.Value.ComponentBody, hitPoint, hitDirection);
+
+							// Obtener tiempo actual del juego
+							double currentGameTime = player.Project.FindSubsystem<SubsystemTime>(true).GameTime;
+							double hitInterval = player.ComponentMiner.HitInterval; // Intervalo entre golpes
+
+							// Verificar cooldown (usando m_lastHitGameTime del mod)
+							if (m_lastHitGameTime.TryGetValue(player, out double lastTime) && (currentGameTime - lastTime) < hitInterval)
+							{
+								playerOperated = true;
+								return; // Enfriamiento, no atacar
+							}
+
+							// Calcular si es golpe rápido (solo si la opción está activada)
+							bool isFastHit = false;
+							if (ShittyCreaturesSettingsManager.FastMeleeEnabled)
+							{
+								if (m_lastHitTarget.TryGetValue(player, out ComponentBody lastBody) &&
+									lastBody == hitBody &&
+									(currentGameTime - lastTime) < 0.3)
+								{
+									isFastHit = true;
+								}
+							}
+
+							// Actualizar registros para la detección de golpes rápidos
+							m_lastHitGameTime[player] = currentGameTime;
+							m_lastHitTarget[player] = hitBody;
+							m_fastHitMode[player] = isFastHit;
+
+							// Ejecutar el ataque
+							player.ComponentMiner.Hit(hitBody, hitPoint, hitDirection);
 						}
 						playerOperated = true;
 						return;
