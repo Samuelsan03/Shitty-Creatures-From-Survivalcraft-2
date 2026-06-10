@@ -9,7 +9,9 @@ namespace Game
 {
 	public class SubsystemAchievements : Subsystem
 	{
+		private Dictionary<int, int> m_baseOrder = new Dictionary<int, int>();
 		public static event Action<int> AchievementUnlocked;
+		public bool HasBaseOrder => m_baseOrder.Count > 0;
 		private Dictionary<int, long> m_unlockTimes = new Dictionary<int, long>();
 		private Dictionary<int, string> m_achievements = new Dictionary<int, string>();
 		private HashSet<int> m_claimedRewards = new HashSet<int>();
@@ -46,6 +48,15 @@ namespace Game
 		public void SetBackgroundState(int state) => m_backgroundState = state;
 
 		public bool IsAchievementUnlocked(int achievementNumber) => m_achievements.ContainsKey(achievementNumber);
+		public int GetBaseOrder(int achievementNumber)
+		{
+			return m_baseOrder.TryGetValue(achievementNumber, out int order) ? order : int.MaxValue;
+		}
+
+		public void SetBaseOrder(Dictionary<int, int> order)
+		{
+			m_baseOrder = new Dictionary<int, int>(order);
+		}
 		public void UnlockAchievement(int achievementNumber, string achievementId)
 		{
 			if (m_achievements.ContainsKey(achievementNumber)) return;
@@ -259,11 +270,29 @@ namespace Game
 					if (parts.Length == 2 && int.TryParse(parts[0], out int num) && long.TryParse(parts[1], out long ticks))
 						m_unlockTimes[num] = ticks;
 				}
+
+				if (valuesDictionary.TryGetValue("BaseOrder", out object baseOrderObj) && baseOrderObj is string baseOrderStr)
+				{
+					foreach (string pair in baseOrderStr.Split(';', StringSplitOptions.RemoveEmptyEntries))
+					{
+						string[] parts = pair.Split(':');
+						if (parts.Length == 2 && int.TryParse(parts[0], out int num) && int.TryParse(parts[1], out int order))
+							m_baseOrder[num] = order;
+					}
+				}
 			}
 		}
 
 		public override void Save(ValuesDictionary valuesDictionary)
 		{
+			if (m_baseOrder.Count > 0)
+			{
+				List<string> pairs = new List<string>();
+				foreach (var kvp in m_baseOrder)
+					pairs.Add($"{kvp.Key}:{kvp.Value}");
+				valuesDictionary.SetValue("BaseOrder", string.Join(";", pairs));
+			}
+
 			// Logros desbloqueados
 			foreach (var kvp in m_achievements)
 				valuesDictionary.SetValue<string>($"Achievement{kvp.Key}", kvp.Value);
