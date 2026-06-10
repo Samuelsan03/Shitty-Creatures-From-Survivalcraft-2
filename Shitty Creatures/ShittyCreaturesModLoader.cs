@@ -975,11 +975,29 @@ namespace Game
 			if (targetEntityName == "InfiniteTheJackal")
 			{
 				ComponentInfiniteChallenge challenge = targetEntity.FindComponent<ComponentInfiniteChallenge>();
-				if (challenge != null && !challenge.HasBeenDefeated)
+				if (challenge != null)
 				{
-					challenge.StartChallenge(player);
-					playerOperated = true;
-					return;
+					// ✅ Duelo activo → convertir interacción en ataque SOLO EN MÓVIL
+					if (challenge.IsDuelActive && player.ComponentInput.IsControlledByTouch)
+					{
+						// Realizar un ataque cuerpo a cuerpo (solo en móvil)
+						if (result.HasValue && result.Value.ComponentBody != null)
+						{
+							Vector3 hitPoint = result.Value.HitPoint();
+							Vector3 hitDirection = player.ComponentInput.PlayerInput.Interact.Value.Direction;
+							player.ComponentMiner.Hit(result.Value.ComponentBody, hitPoint, hitDirection);
+						}
+						playerOperated = true;
+						return;
+					}
+
+					// Si no ha sido derrotado, iniciar desafío (como estaba originalmente)
+					if (!challenge.HasBeenDefeated)
+					{
+						challenge.StartChallenge(player);
+						playerOperated = true;
+						return;
+					}
 				}
 			}
 
