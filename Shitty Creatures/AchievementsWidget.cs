@@ -143,6 +143,41 @@ namespace Game
 			}
 
 			var subsystemAchievements = m_componentPlayer.Project.FindSubsystem<SubsystemAchievements>(true);
+			if (subsystemAchievements != null && !subsystemAchievements.HasBaseOrder)
+			{
+				// Generar orden aleatorio base usando la semilla del mundo
+				var worldSeed = m_componentPlayer.Project.FindSubsystem<SubsystemGameInfo>(true)?.WorldSeed ?? 0;
+				var rng = new Random(worldSeed);
+				var achievementNumbers = new List<int>(m_achievementItems.Keys);
+				// Mezclar la lista (Fisher-Yates)
+				for (int i = achievementNumbers.Count - 1; i > 0; i--)
+				{
+					int j = rng.Int(i + 1);
+					int temp = achievementNumbers[i];
+					achievementNumbers[i] = achievementNumbers[j];
+					achievementNumbers[j] = temp;
+				}
+				// Construir diccionario de orden (índice)
+				var baseOrder = new Dictionary<int, int>();
+				for (int i = 0; i < achievementNumbers.Count; i++)
+				{
+					baseOrder[achievementNumbers[i]] = i;
+				}
+				subsystemAchievements.SetBaseOrder(baseOrder);
+
+				// Reordenar los contenedores según el orden base
+				var orderedContainers = new List<Widget>();
+				foreach (int num in achievementNumbers)
+				{
+					if (m_achievementItems.TryGetValue(num, out var itemData))
+						orderedContainers.Add(itemData.Container);
+				}
+				m_achievementsStack.Children.Clear();
+				foreach (var container in orderedContainers)
+					m_achievementsStack.Children.Add(container);
+			}
+			// Luego llamar a ReorderAchievements para aplicar el orden dinámico inicial
+			ReorderAchievements();
 			if (subsystemAchievements != null)
 			{
 				m_backgroundState = subsystemAchievements.GetBackgroundState();
@@ -1017,9 +1052,10 @@ namespace Game
 		{
 			if (m_achievementsStack == null || m_achievementItems.Count == 0) return;
 
+			var subsystem = m_componentPlayer?.Project?.FindSubsystem<SubsystemAchievements>(true);
+
 			// Recopilar datos de ordenamiento
 			m_sortData.Clear();
-			var subsystem = m_componentPlayer?.Project?.FindSubsystem<SubsystemAchievements>(true);
 			foreach (var item in m_achievementItems)
 			{
 				int num = item.Key;
@@ -1035,24 +1071,40 @@ namespace Game
 				});
 			}
 
-			// Ordenar
+			// Ordenar según reglas: completados por unlockTime descendente, luego no completados por progreso descendente,
+			// y como desempate usar el orden base (índice aleatorio inicial)
 			m_sortData.Sort((a, b) =>
 			{
 				if (a.Unlocked != b.Unlocked)
 					return a.Unlocked ? -1 : 1;
+
 				if (a.Unlocked)
-					return b.UnlockTime.CompareTo(a.UnlockTime); // Más reciente primero
+				{
+					int timeCompare = b.UnlockTime.CompareTo(a.UnlockTime);
+					if (timeCompare != 0)
+						return timeCompare;
+					// Mismo tiempo de desbloqueo: usar orden base
+					int baseA = subsystem?.GetBaseOrder(a.Number) ?? int.MaxValue;
+					int baseB = subsystem?.GetBaseOrder(b.Number) ?? int.MaxValue;
+					return baseA.CompareTo(baseB);
+				}
 				else
-					return b.Progress.CompareTo(a.Progress); // Mayor progreso primero
+				{
+					int progressCompare = b.Progress.CompareTo(a.Progress);
+					if (progressCompare != 0)
+						return progressCompare;
+					// Mismo progreso: usar orden base
+					int baseA = subsystem?.GetBaseOrder(a.Number) ?? int.MaxValue;
+					int baseB = subsystem?.GetBaseOrder(b.Number) ?? int.MaxValue;
+					return baseA.CompareTo(baseB);
+				}
 			});
 
 			// Reconstruir la lista de hijos en el nuevo orden
-			// Primero, obtener todos los containers en el orden actual
 			var currentContainers = new List<Widget>();
 			foreach (var child in m_achievementsStack.Children)
 				currentContainers.Add(child);
 
-			// Ordenar los containers según m_sortData
 			var orderedContainers = new List<Widget>();
 			foreach (var sortData in m_sortData)
 			{
@@ -1060,7 +1112,7 @@ namespace Game
 					orderedContainers.Add(itemData.Container);
 			}
 
-			// Si el orden ya es el mismo, no hacer nada
+			// Verificar si el orden cambió para evitar operaciones innecesarias
 			bool orderChanged = false;
 			for (int i = 0; i < currentContainers.Count; i++)
 			{
@@ -1073,7 +1125,6 @@ namespace Game
 
 			if (orderChanged)
 			{
-				// Limpiar y volver a agregar en el orden correcto
 				m_achievementsStack.Children.Clear();
 				foreach (var container in orderedContainers)
 					m_achievementsStack.Children.Add(container);
